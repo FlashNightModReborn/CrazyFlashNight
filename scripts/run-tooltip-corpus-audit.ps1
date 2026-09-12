@@ -3,7 +3,8 @@ param(
     [ValidateRange(1, 3600)]
     [int]$TimeoutSeconds = 300,
     [string]$OutputRelativePath = 'tmp/tooltip-audit/tooltip-corpus.trace',
-    [switch]$SkipCompile
+    [switch]$SkipCompile,
+    [switch]$IncludeContext
 )
 
 $ErrorActionPreference = 'Stop'
@@ -70,8 +71,8 @@ if ([regex]::Matches($templateSource, '__FOCUSED_RUN_ID__').Count -ne 2 -or
 }
 $suiteSource = Get-Content -LiteralPath $suitePath -Raw -Encoding UTF8
 if ($suiteSource -notmatch 'class\s+org\.flashNight\.gesh\.tooltip\.test\.TooltipCorpusDump\s*\{' -or
-    $suiteSource -notmatch 'public\s+static\s+function\s+runAllTests\s*\(\s*runId:String\s*\)') {
-    throw 'TooltipCorpusDump class or runAllTests(runId) entry is missing.'
+    $suiteSource -notmatch 'public\s+static\s+function\s+runAllTests\s*\(\s*runId:String\s*,\s*includeContext:Boolean\s*\)') {
+    throw 'TooltipCorpusDump class or runAllTests(runId, includeContext) entry is missing.'
 }
 
 $relativeOutput = [System.IO.Path]::GetFullPath((Join-Path $projectDir $OutputRelativePath))
@@ -121,6 +122,10 @@ try {
 
     Copy-Item -LiteralPath $templatePath -Destination $runnerPath -Force
     $runnerText = [System.IO.File]::ReadAllText($runnerPath, [System.Text.Encoding]::UTF8)
+    $includeContextLiteral = if ($IncludeContext.IsPresent) { 'true' } else { 'false' }
+    $runnerText = $runnerText.Replace(
+        'runAllTests("__FOCUSED_RUN_ID__")',
+        'runAllTests("' + $runId + '", ' + $includeContextLiteral + ')')
     [System.IO.File]::WriteAllText(
         $runnerPath, $runnerText.Replace('__FOCUSED_RUN_ID__', $runId),
         [System.Text.UTF8Encoding]::new($true))
@@ -235,11 +240,12 @@ try {
         }
         [System.IO.File]::WriteAllText(
             $relativeOutput, $blocks[0].Value, [System.Text.UTF8Encoding]::new($false))
-        Write-Host ('[OK] tooltip-corpus: records={0}, base={1}, equipment={2}, tiers={3}, mods1={4}, mods3={5}, modCoverage={6}/{7}; 32K retry=0, compiler 0/0.' -f
+        Write-Host ('[OK] tooltip-corpus: records={0}, base={1}, equipment={2}, tiers={3}, mods1={4}, mods3={5}, modCoverage={6}/{7}; includeContext={8}; 32K retry=0, compiler 0/0.' -f
             $total.Groups['records'].Value, $total.Groups['base'].Value,
             $total.Groups['equipment'].Value, $total.Groups['tiers'].Value,
             $total.Groups['mods1'].Value, $total.Groups['mods3'].Value,
-            $total.Groups['modsCovered'].Value, $total.Groups['modDefinitions'].Value)
+            $total.Groups['modsCovered'].Value, $total.Groups['modDefinitions'].Value,
+            $includeContextLiteral)
         Write-Host ("[OK] corpus trace: $relativeOutput")
     }
 } finally {

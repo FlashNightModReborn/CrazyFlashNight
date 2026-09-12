@@ -1143,6 +1143,7 @@ var EquipmentTuningRender = (function() {
                     iconHtml:PanelTooltip.dynamicIconHtml ? PanelTooltip.dynamicIconHtml(candidateIconName(value)) : '',
                     iconUrl:PanelTooltip.staticIconUrl ? PanelTooltip.staticIconUrl(candidateIconName(value)) : '',
                     descHTML:descHtml,
+                    document:rich && rich.document,
                     rootClass:'equipment-tuning-tooltip',
                     layoutType:PanelTooltip.inferLayoutType
                         ? PanelTooltip.inferLayoutType(rich && (rich.itemType || rich.itemUse) || 'material') : ''

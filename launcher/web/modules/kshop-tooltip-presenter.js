@@ -109,6 +109,7 @@
             iconUrl:PanelTooltip.staticIconUrl(item.icon),
             introHTML:data.introHTML,
             descHTML:data.descHTML,
+            document:data.document,
             metaHTML:balanceMetaHtml(item),
             rootClass:'kshop-tt-rich-context',
             suffix:locked ? '<div class="flash-tt-lock-banner kshop-tt-lock-banner">⚿ 锁定 — 需要 Lv.' + item.level + '</div>' : '',
@@ -136,6 +137,7 @@
         return PanelTooltip.buildItemRichHtml({
             iconHtml:this._iconHtml(iconKey), iconUrl:PanelTooltip.staticIconUrl(iconKey),
             introHTML:data.introHTML || '', descHTML:data.descHTML || '',
+            document:data.document,
             metaHTML:balanceMetaHtml(item),
             rootClass:'kshop-tt-rich-context inventory-owned-tt-context',
             layoutType:PanelTooltip.inferLayoutType(data.itemType || item.majorType || item.use)
@@ -214,7 +216,8 @@
                 if (resp && resp.success) {
                     var rich = {
                         descHTML:resp.descHTML || '',
-                        introHTML:resp.introHTML || ''
+                        introHTML:resp.introHTML || '',
+                        document:resp.document
                     };
                     self._catalogCache[idx] = rich;
                     if (self._inspectorRequest === inspectorRequest

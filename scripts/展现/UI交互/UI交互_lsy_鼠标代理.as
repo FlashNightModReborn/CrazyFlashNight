@@ -7,7 +7,7 @@
 //
 // 对外 API（保持不变）：
 //   _root.鼠标.gotoAndStop(state) / gotoAndPlay(state) / removeMovieClip()
-//   _root.鼠标.物品图标容器.attachMovie(...)
+//   _root.鼠标.物品图标容器            —— attachMovie 已无生产者退役；容器仅作兼容占位（恒空）
 //   _root.鼠标代理.命中目标(target, shapeFlag)
 //   _root.鼠标代理.清理拖拽图标()
 

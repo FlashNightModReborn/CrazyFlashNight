@@ -1338,6 +1338,7 @@
                     iconUrl: iconUrl,
                     introHTML: data.introHTML || '',
                     descHTML: data.descHTML || '',
+                    document: data.document,
                     rootClass: 'kshop-tt-rich-context merc-tt-rich team-managed-gun-tt-context',
                     layoutType: layoutType
                 });

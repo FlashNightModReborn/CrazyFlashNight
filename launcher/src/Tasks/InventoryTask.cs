@@ -2062,7 +2062,7 @@ namespace CF7Launcher.Tasks
                 return true;
             }
 
-            if (!HasExactKeys(
+            if (!TooltipDocumentSanitizer.HasExactKeysAllowingOptionalDocument(
                     message,
                     "task", "callId", "success", "v", "itemName",
                     "displayname", "iconName", "itemType", "descHTML",
@@ -2089,6 +2089,7 @@ namespace CF7Launcher.Tasks
                 ["descHTML"] = message.Value<string>("descHTML"),
                 ["introHTML"] = message.Value<string>("introHTML")
             };
+            TooltipDocumentSanitizer.ApplyTo(message["document"], normalized);
             return true;
         }
 

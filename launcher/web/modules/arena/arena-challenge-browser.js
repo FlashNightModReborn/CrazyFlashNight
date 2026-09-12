@@ -1275,6 +1275,7 @@
             iconUrl:   PanelTooltip.staticIconUrl(iconKey),
             introHTML: data.introHTML,
             descHTML:  data.descHTML,
+            document:  data.document,
             rootClass: 'arena-tt-rich'
         });
     }
@@ -1290,6 +1291,7 @@
                 success:true,
                 descHTML: resp.descHTML || '',
                 introHTML: resp.introHTML || '',
+                document: resp.document,
                 displayname: resp.displayname || '',
                 itemName: resp.itemName || raw
             };

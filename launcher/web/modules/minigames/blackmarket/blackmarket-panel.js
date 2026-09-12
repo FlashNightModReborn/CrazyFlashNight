@@ -1004,6 +1004,7 @@ var BlackMarketPanel = (function() {
             descHTML: descHTML
         };
         if (rich && typeof rich.introHTML === "string") richOpts.introHTML = rich.introHTML;
+        if (rich && rich.document != null) richOpts.document = rich.document;
         return PanelTooltip.buildItemRichHtml(richOpts);
     }
 
@@ -1038,7 +1039,8 @@ var BlackMarketPanel = (function() {
                     || !PanelTooltip.isVisible(TIP_OWNER)) return;
             PanelTooltip.updateContent(buildRevealTipHtml(pending.entry, pending.info, {
                 introHTML: typeof data.introHTML === "string" ? data.introHTML : "",
-                descHTML: typeof data.descHTML === "string" ? data.descHTML : ""
+                descHTML: typeof data.descHTML === "string" ? data.descHTML : "",
+                document: data.document
             }), TIP_OWNER);
         });
     }

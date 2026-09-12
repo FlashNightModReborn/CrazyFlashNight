@@ -2155,9 +2155,11 @@
         var callId = sendPanelMsg('tooltip', { itemName: name }, function(data) {
             if (reqSession !== _session) return;
             clearTimeout(timer);
-            if (data && data.success && (data.introHTML !== undefined || data.descHTML !== undefined)) {
+            if (data && data.success && (data.introHTML !== undefined || data.descHTML !== undefined
+                    || data.document != null)) {
                 // 注：物品类型用 itemType（不能用 type——会与 panel_resp 信封的 type 字段冲突）
                 callback({success:true,introHTML:data.introHTML || '',descHTML:data.descHTML || '',
+                    document:data.document,
                     type:data.itemType || '',icon:data.iconName || data.icon || icon || name});
             } else {
                 callback({success:false,error:data && data.error || 'tooltip_unavailable'});
@@ -2203,6 +2205,7 @@
             iconPlaceholder: '<span style="opacity:.5">?</span>',
             introHTML: resp.introHTML || ('<b>' + plainText(name) + '</b>'),
             descHTML: resp.descHTML || '',
+            document: resp && resp.document,
             layoutType: PanelTooltip.inferLayoutType(resp.type),
             rootClass: 'task-tt-rich'
         });

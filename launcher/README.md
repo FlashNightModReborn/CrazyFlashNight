@@ -88,7 +88,7 @@ bootstrap preflight
 
 `GuardianForm` 是主窗口与 Flash 容器。运行态 UI 由 Native HUD、Web Overlay、Panel backdrop/input shield 和原生 cursor 按状态组合；Panel 打开时由 `PanelHostController` 统一协调 snapshot、焦点、输入屏障、Native HUD suspend/resume 和 WebView2 几何。右上 × 保留退出并在按钮内显示保存状态：成功短暂亮起/淡出，未确认静止，空闲无动画；不扩大合成/命中区。见 [R1 收尾记录](../docs/R1存盘API迁移收尾-2026-09-05.md)。
 
-正式 Panel 路由由 `LauncherCommandRouter` 与领域 handler 授权。Web 不得凭本地 DOM 状态制造业务能力；AS2 仍是需要游戏状态或存档写入的最终裁决方。跨层请求必须遵守 exact envelope、instance/session、generation、nonce/token、revision 和迟到回包 fence，具体以 [迁移护栏](../agentsDoc/as2-web-panel-migration.md)为准。
+正式 Panel 由 LauncherCommandRouter 与领域 handler 授权；AS2 裁决游戏状态及存档写入，Web DOM 不授予业务能力。身份、版本及迟到回包规则见 [迁移护栏](../agentsDoc/as2-web-panel-migration.md)；NPC 菜单沿用 NativeHud 风格、注释以旧 Web 为视觉和交互权威的工作区增量及人验边界见 [专项 ADR](../docs/NPC菜单与原生注释迁移-ADR-2026-09-12.md)。
 ### 通信面
 
 | 通道 | 用途 | 约束 |

@@ -246,6 +246,7 @@ function Get-Cf7ProductionChecks {
         'modules\perf-frame-limiter.js', 'modules\cursor-feedback.js',
         'modules\lazy-loader.js', 'modules\panels.js',
         'modules\panel-scale.js', 'modules\panels-lazy-registry.js', 'modules\tooltip.js',
+        'modules\tooltip-document.js',
         'modules\icons.js', 'modules\panel-runtime.js', 'modules\workbench-lifecycle.js',
         'modules\workbench-focus.js', 'modules\workbench-primitives.js',
         'modules\workbench-profile.js', 'modules\workbench.js',

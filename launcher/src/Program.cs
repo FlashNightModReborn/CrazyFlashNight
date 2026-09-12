@@ -1556,6 +1556,8 @@ class Program
         CF7Launcher.Guardian.Hud.RightContextWidget rightContext = null;
         CF7Launcher.Guardian.Hud.MapHudDataCatalog mapCatalog = CF7Launcher.Guardian.Hud.MapHudDataCatalog.FromPayload(null);
         CF7Launcher.Guardian.Hud.Loot.LootFeedWidget lootFeedWidget = null;
+        CF7Launcher.Guardian.Hud.NpcMenuWidget npcMenuWidget = null;
+        CF7Launcher.Guardian.Hud.Tooltip.NativeTooltipWidget nativeTooltipWidget = null;
         CF7Launcher.Guardian.Hud.PlayerInfo.PlayerInfoSplitSurface
             playerInfoSurface = null;
         string playerInfoFixtureRaw = Environment.GetEnvironmentVariable(
@@ -1713,6 +1715,16 @@ class Program
                     config.PreparationNavigationV1);
             notchWidget.SetCommandRouter(commandRouter);
             nativeHud.AddWidget(notchWidget);
+            // native_interaction 交互浮层：文档 tooltip + NPC 菜单。AddWidget 尾部 =
+            // 绘制最上 + 命中最先，盖住全部常驻控件；菜单再叠在 tooltip 之上。
+            // 两者都不暂停 Flash、不经 WebPanel 暂停路径（面板打开改由压隐终结会话）。
+            nativeTooltipWidget =
+                new CF7Launcher.Guardian.Hud.Tooltip.NativeTooltipWidget(
+                    form.FlashHostPanel, lootIconCatalog);
+            nativeHud.AddWidget(nativeTooltipWidget);
+            npcMenuWidget =
+                new CF7Launcher.Guardian.Hud.NpcMenuWidget(form.FlashHostPanel);
+            nativeHud.AddWidget(npcMenuWidget);
             // webOverlay 的 toast/notch 出口固定指向 nativeHud：WebOverlayForm.AddMessage/AddNotice
             // 直接转发 _toastFallback / _notchFallback（= nativeHud），无需 ExecScript。
             webOverlay.SetFallback(nativeHud, nativeHud);
@@ -2183,9 +2195,30 @@ class Program
         {
             fontPackTask = new FontPackTask(projectRoot, notchSink, toastSink);
         }
+        // native_interaction：NPC 菜单 + 文档 tooltip 共享同一任务与 AS2 身份序列（ni:<n>）。
+        // 菜单/tooltip 均不经 WebPanel 暂停路径；输入观察复用 WebOverlayForm 的 WH_MOUSE_LL。
+        NativeInteractionTask nativeInteractionTask = new NativeInteractionTask(
+            socketServer,
+            npcMenuWidget,
+            new CF7Launcher.Guardian.Hud.NativeTooltipSurfaceAdapter(nativeTooltipWidget),
+            delegate(Action a) { try { form.BeginInvoke(a); } catch { } });
+        webOverlay.SetInteractionInputProbes(
+            nativeInteractionTask.NotifyPhysicalButtonDown,
+            delegate(int sx, int sy, int wheelDelta)
+            {
+                return CF7Launcher.Guardian.Hud.NativeInteractionWheelRoute
+                    .Dispatch(nativeTooltipWidget, sx, sy, wheelDelta);
+            }, nativeTooltipWidget.QueuePointerMove);
+        socketServer.OnClientDisconnected += nativeInteractionTask.HandleTransportDisconnected;
+        panelHost.SetInteractionHudCompanion(
+            new CF7Launcher.Guardian.Hud.NativeInteractionPanelCompanion(nativeInteractionTask));
+        form.SetInteractionEscSurface(
+            nativeInteractionTask.IsInteractionEscapable,
+            nativeInteractionTask.NotifyInteractionEscape);
+
         using (PerfTrace.Scope("task.registry_register_all"))
         {
-            TaskRegistry.RegisterAll(router, gomokuTask, toastTask, frameTask, stageOutcomeTask, warlordStageTask, warlordBattleTask, dataQueryTask, audioTask, dollBakeTask, shopTask, inventoryTask, lootTask, lootFeedTask, lootPanelCoordinator, npcShopTask, craftingTask, materialShopAccessTask, hairdresserTask, plasticSurgeryTask, settingsTask, equipmentTuningTask, characterBuildTask, itemUseTask, skillTask, mapTask, stageSelectTask, arenaTask, arenaCalibrationTask, agentControlTask, petTask, mercTask, taskTask, intelligenceTask, blackMarketTask, archiveTask, benchTask, fontPackTask, webOverlay, commandRouter, mapDomainTask);
+            TaskRegistry.RegisterAll(router, gomokuTask, toastTask, frameTask, stageOutcomeTask, warlordStageTask, warlordBattleTask, dataQueryTask, audioTask, dollBakeTask, shopTask, inventoryTask, lootTask, lootFeedTask, lootPanelCoordinator, npcShopTask, craftingTask, materialShopAccessTask, hairdresserTask, plasticSurgeryTask, settingsTask, equipmentTuningTask, characterBuildTask, itemUseTask, skillTask, mapTask, stageSelectTask, arenaTask, arenaCalibrationTask, agentControlTask, petTask, mercTask, taskTask, intelligenceTask, blackMarketTask, archiveTask, benchTask, fontPackTask, webOverlay, commandRouter, mapDomainTask, nativeInteractionTask);
         }
         StartupDiagnostics.Mark("task.registry_register_all_ok");
 

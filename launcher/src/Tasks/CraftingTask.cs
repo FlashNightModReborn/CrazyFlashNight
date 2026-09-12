@@ -994,6 +994,8 @@ namespace CF7Launcher.Tasks
                 // 边界翻译，Web 不再猜测多种展示字段。
                 sanitized["displayName"] = sanitized["displayname"];
                 sanitized.Remove("displayname");
+                // document 为可选增量：净化后转发；非法则剥离该键，不影响旧 HTML 字段。
+                TooltipDocumentSanitizer.ApplyTo(msg["document"], sanitized);
             }
             return true;
         }
@@ -2136,7 +2138,9 @@ namespace CF7Launcher.Tasks
 
         private static bool IsAuthoritativeTooltip(JObject msg, PendingRequest entry)
         {
-            return HasExactResponseKeys(msg, "v", "itemName", "displayname", "descHTML", "introHTML")
+            return TooltipDocumentSanitizer.HasExactKeysAllowingOptionalDocument(
+                    msg, "task", "callId", "success", "v",
+                    "itemName", "displayname", "descHTML", "introHTML")
                 && HasProtocolVersion(msg)
                 && string.Equals(ReadExactString(msg["itemName"]),
                     ReadExactString(entry.NormalizedPayload["itemName"]), StringComparison.Ordinal)

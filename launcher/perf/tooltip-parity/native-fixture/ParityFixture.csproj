@@ -1,0 +1,23 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <!-- tooltip-parity 原生侧 fixture：真实生产 NativeTooltipWidget 离屏 Form 绘制。
+       AssemblyName=Launcher.Tests 走现有 InternalsVisibleTo 读取 Plan 几何。 -->
+  <PropertyGroup>
+    <TargetFramework>net10.0-windows</TargetFramework>
+    <OutputType>Exe</OutputType>
+    <UseWindowsForms>true</UseWindowsForms>
+    <PlatformTarget>x64</PlatformTarget>
+    <Nullable>disable</Nullable>
+    <LangVersion>latest</LangVersion>
+    <AssemblyName>Launcher.Tests</AssemblyName>
+    <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
+    <EnableDefaultEmbeddedResourceItems>false</EnableDefaultEmbeddedResourceItems>
+    <GenerateAssemblyInfo>true</GenerateAssemblyInfo>
+    <NoWarn>$(NoWarn);CA1416;MSB3277</NoWarn>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Include="ParityFixture.cs" />
+    <ProjectReference Include="ParityCore.csproj" />
+    <PackageReference Include="Newtonsoft.Json" />
+  </ItemGroup>
+</Project>

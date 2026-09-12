@@ -91,6 +91,7 @@ function(FacetCountsModule) {
             iconUrl:tooltip.staticIconUrl ? tooltip.staticIconUrl(iconKey) : '',
             introHTML:data.introHTML || '',
             descHTML:data.descHTML || '',
+            document:data.document,
             metaHTML:meta,
             rootClass:'kshop-tt-rich-context character-build-loadout-tt-context',
             layoutType:tooltip.inferLayoutType

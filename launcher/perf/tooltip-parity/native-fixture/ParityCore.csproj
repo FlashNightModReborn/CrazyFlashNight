@@ -1,0 +1,51 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <!-- tooltip-parity 原生侧生产源码闭包：直接编译 launcher/src 真实源文件。
+       与 launcher 主 csproj 不共享 obj（本目录独立），不触碰共享构建。
+       源清单沿用 tmp/native-interaction-migration-20260912/native-tooltip/scratch/CompileCheck.csproj。 -->
+  <PropertyGroup>
+    <TargetFramework>net10.0-windows</TargetFramework>
+    <OutputType>Library</OutputType>
+    <UseWindowsForms>true</UseWindowsForms>
+    <PlatformTarget>x64</PlatformTarget>
+    <Nullable>disable</Nullable>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <LangVersion>latest</LangVersion>
+    <AssemblyName>CRAZYFLASHER7MercenaryEmpire.Core</AssemblyName>
+    <RootNamespace>CF7Launcher</RootNamespace>
+    <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
+    <EnableDefaultEmbeddedResourceItems>false</EnableDefaultEmbeddedResourceItems>
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+    <NoWarn>$(NoWarn);CA1416;CS0067;CS0162;CS9191;SYSLIB0014;MSB3277;WFO0003</NoWarn>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <!-- InternalsVisibleTo("Launcher.Tests") / ("HitNumberVisualHarness") -->
+    <Compile Include="..\..\..\src\AssemblyInfo.cs" />
+    <Compile Include="..\..\..\src\Guardian\Hud\Tooltip\*.cs" />
+    <!-- ITooltipInspectionProjection 现在 TooltipInspectionController.cs 里，
+         其依赖链（NativeInteractionSupport → IPanelHudCompanion/Tasks）拖入宿主侧
+         重资产。Fixture 只编译接口同名占位（见 ProjectionInterfaceStub.cs，
+         接口漂移会让编译立刻报错）。已给 parity-input 提案：把该接口拆独立文件。 -->
+    <Compile Include="ProjectionInterfaceStub.cs" />
+    <Compile Include="..\..\..\src\Guardian\LogManager.cs" />
+    <Compile Include="..\..\..\src\Guardian\FlashCoordinateMapper.cs" />
+    <Compile Include="..\..\..\src\Guardian\Hud\INativeHudWidget.cs" />
+    <Compile Include="..\..\..\src\Guardian\Hud\WidgetScaler.cs" />
+    <Compile Include="..\..\..\src\Guardian\Hud\NativeHudTheme.cs" />
+    <Compile Include="..\..\..\src\Guardian\Hud\NativeHudFonts.cs" />
+    <Compile Include="..\..\..\src\Fonts\RuntimeFontCatalog.cs" />
+    <Compile Include="..\..\..\src\Guardian\Hud\MapHudImageDecoder.cs" />
+    <Compile Include="..\..\..\src\Guardian\Hud\BitmapLruCache.cs" />
+    <Compile Include="..\..\..\src\Guardian\Hud\Loot\DollPortraitKey.cs" />
+    <Compile Include="..\..\..\src\Guardian\Hud\Loot\DollPortraitBakeService.cs" />
+    <Compile Include="..\..\..\src\Guardian\Hud\Loot\DollPortraitPngValidator.cs" />
+    <Compile Include="..\..\..\src\Guardian\Hud\Loot\LootIconCatalog.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Newtonsoft.Json" />
+    <PackageReference Include="Microsoft.Web.WebView2" />
+    <PackageReference Include="SkiaSharp" />
+    <PackageReference Include="Svg.Skia" />
+  </ItemGroup>
+</Project>

@@ -2447,6 +2447,7 @@
                         success: true,
                         descHTML: resp.descHTML || '',
                         introHTML: resp.introHTML || '',
+                        document: resp.document,
                         displayname: resp.displayname || '',
                         itemName: resp.itemName || it.raw,
                         iconName: resp.iconName || ''
@@ -2477,6 +2478,7 @@
             iconUrl:   PanelTooltip.staticIconUrl(iconKey),
             introHTML: data.introHTML,
             descHTML:  data.descHTML,
+            document:  data.document,
             rootClass: 'merc-tt-rich'
         });
     }
@@ -2493,6 +2495,7 @@
                 success: true,
                 descHTML: resp.descHTML || '',
                 introHTML: resp.introHTML || '',
+                document: resp.document,
                 displayname: resp.displayname || '',
                 itemName: resp.itemName || item.raw
             });

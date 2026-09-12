@@ -119,11 +119,18 @@ namespace CF7Launcher.Tasks
             else if (entry.WebCommand == "stashTooltip")
             {
                 if (!IsExactObject(data, "success", "tooltip") || !(data["tooltip"] is JObject info)
-                    || !IsExactObject(info, "itemName", "displayname", "iconName", "itemType", "descHTML", "introHTML")) return false;
+                    || !TooltipDocumentSanitizer.HasExactKeysAllowingOptionalDocument(
+                        info, "itemName", "displayname", "iconName", "itemType", "descHTML", "introHTML")) return false;
                 foreach (var field in info.Properties())
+                {
+                    if (field.Name == TooltipDocumentSanitizer.DocumentKey) continue;
                     if (field.Value.Type != JTokenType.String || field.Value.Value<string>().Length >
                         (field.Name == "descHTML" || field.Name == "introHTML" ? 32768 : 256)) return false;
+                }
                 clean = (JObject)data.DeepClone();
+                var cleanInfo = (JObject)clean["tooltip"];
+                cleanInfo.Remove(TooltipDocumentSanitizer.DocumentKey);
+                TooltipDocumentSanitizer.ApplyTo(info["document"], cleanInfo);
             }
             else if (entry.WebCommand == "stashResume")
             {

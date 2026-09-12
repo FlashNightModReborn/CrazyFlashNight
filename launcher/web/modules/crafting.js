@@ -2440,6 +2440,7 @@ var CraftingPanel = (function() {
                     iconHtml:PanelTooltip.dynamicIconHtml(value.icon),
                     iconUrl:PanelTooltip.staticIconUrl(value.icon),
                     introHTML:rich.introHTML || '', descHTML:rich.descHTML || '',
+                    document:rich && rich.document,
                     rootClass:'crafting-tooltip', layoutType:PanelTooltip.inferLayoutType(value.majorType || value.use)
                 });
             },

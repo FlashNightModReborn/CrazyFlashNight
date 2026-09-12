@@ -102,6 +102,21 @@ namespace CF7Launcher.Guardian
         public bool PanelEscEnabled { get { return _panelEscEnabled; } }
         public void SetPanelEscapeEnabled(bool enabled) { _panelEscEnabled = enabled; }
 
+        // native_interaction ESC（NPC 菜单 / pinned tooltip 存活时吞掉 ESC 转交宿主关闭）。
+        // 探针由 GuardianForm.SetInteractionEscSurface 注入，在本钩子专用线程同步调用，
+        // 必须 O(1) 返回；实现侧异常按 false 处理，绝不让宿主代码异常逃出钩子回调。
+        private volatile Func<bool> _interactionEscProbe;
+        public void SetInteractionEscapeProbe(Func<bool> probe) { _interactionEscProbe = probe; }
+        public bool InteractionEscActive
+        {
+            get
+            {
+                Func<bool> p = _interactionEscProbe;
+                if (p == null) return false;
+                try { return p(); } catch { return false; }
+            }
+        }
+
         public KeyboardHook()
         {
             _myPid = (uint)System.Diagnostics.Process.GetCurrentProcess().Id;
@@ -222,8 +237,8 @@ namespace CF7Launcher.Guardian
                     if (_ctrlHeld && _blockedVks.Contains(vk))
                         shouldBlock = true;
 
-                    // Escape（全屏时 或 面板打开时）
-                    if (vk == VK_ESCAPE && (_escEnabled || _panelEscEnabled))
+                    // Escape（全屏时 / 面板打开时 / native_interaction 交互会话存活时）
+                    if (vk == VK_ESCAPE && (_escEnabled || _panelEscEnabled || InteractionEscActive))
                         shouldBlock = true;
 
                     if (shouldBlock && ShouldInterceptForOurApp(_strictVks.Contains(vk)))

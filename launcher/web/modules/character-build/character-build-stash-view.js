@@ -137,7 +137,8 @@
                 var info = data.tooltip;
                 detail.innerHTML = PanelTooltip.buildItemRichHtml({
                     iconHtml:PanelTooltip.dynamicIconHtml(info.iconName),iconUrl:PanelTooltip.staticIconUrl(info.iconName),
-                    introHTML:info.introHTML,descHTML:info.descHTML,rootClass:'kshop-tt-rich-context inventory-owned-tt-context',
+                    introHTML:info.introHTML,descHTML:info.descHTML,document:info.document,
+                    rootClass:'kshop-tt-rich-context inventory-owned-tt-context',
                     layoutType:PanelTooltip.inferLayoutType(info.itemType)});
             });
         }

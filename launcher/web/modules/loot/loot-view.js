@@ -1772,6 +1772,7 @@ var LootView = (function() {
             iconUrl:PanelTooltip.staticIconUrl(iconKey),
             introHTML:data.introHTML||'',
             descHTML:data.descHTML||'',
+            document:data.document,
             rootClass:'kshop-tt-rich-context loot-tooltip-context',
             layoutType:PanelTooltip.inferLayoutType(data.itemType||item.majorType||item.use)
         });

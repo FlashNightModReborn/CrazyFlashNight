@@ -136,6 +136,7 @@ namespace CF7Launcher.Guardian
         public void Suspend()
         {
             CancelPointerGesture("panel_suspend");
+            NotifySuppressed("panel_suspend");
             if (FocusTrace.Enabled) FocusTrace.Record("hud.suspend");
             _suspendedForPanel = true;
             if (_animTick != null) _animTick.Stop();
@@ -413,18 +414,18 @@ namespace CF7Launcher.Guardian
                 if (FocusTrace.Enabled) _focusPlacementGeneration++;
                 if (FocusTrace.Enabled) FocusTrace.Record("hud.placement",
                     new { hudRect, shown = _shown, suspended = _suspendedForPanel, insertAfter = insertAfter.ToInt64() });
-                // z-order：插在 _zOrderInsertAfter（HitNumber.Handle）之后，让 NativeHud 沉到
-                // HitNumber/Cursor 之下。高频 repaint 不重复 SetWindowPos/ShowWindow，避免 combo 输入期整层闪烁。
-                SetWindowPos(this.Handle, insertAfter, hudRect.X, hudRect.Y, hudRect.Width, hudRect.Height,
-                    SWP_NOACTIVATE);
-                // 用 ShowOverlayBelow 而非 ShowOverlay：后者会把 z-order 拉到 HWND_TOP，覆盖上面的 insertAfter。
-                ShowOverlayBelow(insertAfter);
-                // ShowOverlayBelow 的 CanShowOverlayNow 会接受 owner/嵌入 Flash 会话，
-                // 但外部应用已经前台时保持隐藏；禁止无条件 ShowWindow 绕过 owner 状态。
             }
             _renderPending = false;
             if (_renderCoalesceTimer != null) _renderCoalesceTimer.Stop();
+            // ULW 一次提交新位图、位置和尺寸。提前 SetWindowPos 会把整层旧内容
+            // 移到新原点；tooltip 显隐/避让改变 union 时，其余 HUD 就会短暂错位。
             RenderToBitmapAndCommit();
+            if (windowPlacementChanged)
+            {
+                // 首次显示也必须在新画面提交后；这里只恢复层级/可见性，不再改几何。
+                // 原有 owner/前台门控与 HitNumber/Cursor 层级由 ShowOverlayBelow 保留。
+                ShowOverlayBelow(insertAfter);
+            }
             MaybeStartTick();
         }
 
@@ -863,7 +864,29 @@ namespace CF7Launcher.Guardian
         protected override void OnOwnerVisibilityChanged(bool ownerVisible)
         {
             base.OnOwnerVisibilityChanged(ownerVisible);
-            if (!ownerVisible) CancelPointerGesture("owner_hidden");
+            if (!ownerVisible)
+            {
+                CancelPointerGesture("owner_hidden");
+                NotifySuppressed("owner_hidden");
+            }
+        }
+
+        /// <summary>
+        /// 宿主压隐广播：整层被强制收起（panel suspend / owner 失焦）时，互动会话型
+        /// widget（NPC 菜单等）需要就地终结而不是随层隐藏后在 Resume 复活。
+        /// 只向显式实现 INativeHudSuppressionAware 的 widget 派发；逐个隔离异常。
+        /// </summary>
+        private void NotifySuppressed(string reason)
+        {
+            INativeHudWidget[] snapshot;
+            lock (_widgetsLock) { snapshot = _widgets.ToArray(); }
+            for (int i = 0; i < snapshot.Length; i++)
+            {
+                INativeHudSuppressionAware aware = snapshot[i] as INativeHudSuppressionAware;
+                if (aware == null) continue;
+                try { aware.OnHostSuppressed(reason); }
+                catch (Exception ex) { LogManager.Log("[NativeHud] widget OnHostSuppressed throw: " + ex.Message); }
+            }
         }
 
         protected override void OnMouseCaptureChanged(EventArgs e)

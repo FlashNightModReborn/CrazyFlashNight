@@ -538,6 +538,7 @@
             iconHtml:tooltip.dynamicIconHtml(item.icon),
             iconUrl:tooltip.staticIconUrl(item.icon),
             introHTML:rich.introHTML || '', descHTML:rich.descHTML || '',
+            document:rich.document,
             metaHTML:workbench.ItemCard.balanceTooltipMetaHtml(item),
             rootClass:'npcshop-tooltip',
             layoutType:tooltip.inferLayoutType(item.majorType || item.use)

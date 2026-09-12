@@ -2440,35 +2440,78 @@ namespace CF7Launcher.Guardian
             return DoOpen(name, initDataJson, null, false, null);
         }
 
+        // native_interaction（NPC 菜单 / pinned tooltip）的第二 companion 槽：
+        // 面板打开时经它压隐终结交互会话；native_interaction 自身不经 WebPanel 暂停路径，
+        // 本槽只做"面板开 → 交互关闭"的连带生命周期，不构成菜单的显示通道。
+        private IPanelHudCompanion _interactionCompanion;
+        private bool _interactionCompanionSuspended;
+
+        internal void SetInteractionHudCompanion(IPanelHudCompanion companion)
+        {
+            _interactionCompanion = companion;
+        }
+
         private void SuspendHudCompanion()
         {
-            if (_hudCompanion == null || _hudCompanionSuspended) return;
-            try
+            if (_hudCompanion != null && !_hudCompanionSuspended)
             {
-                _hudCompanion.Suspend();
-                _hudCompanionSuspended = true;
+                try
+                {
+                    _hudCompanion.Suspend();
+                    _hudCompanionSuspended = true;
+                }
+                catch (Exception ex)
+                {
+                    LogManager.Log(
+                        "[PanelHost] hud companion.Suspend failed: " +
+                        ex.Message);
+                }
             }
-            catch (Exception ex)
+            if (_interactionCompanion != null && !_interactionCompanionSuspended)
             {
-                LogManager.Log(
-                    "[PanelHost] hud companion.Suspend failed: " +
-                    ex.Message);
+                try
+                {
+                    _interactionCompanion.Suspend();
+                    _interactionCompanionSuspended = true;
+                }
+                catch (Exception ex)
+                {
+                    LogManager.Log(
+                        "[PanelHost] interaction companion.Suspend failed: " +
+                        ex.Message);
+                }
             }
         }
 
         private void ResumeHudCompanion()
         {
-            if (_hudCompanion == null || !_hudCompanionSuspended) return;
-            try
+            if (_hudCompanion != null && _hudCompanionSuspended)
             {
-                _hudCompanion.Resume();
-                _hudCompanionSuspended = false;
+                try
+                {
+                    _hudCompanion.Resume();
+                    _hudCompanionSuspended = false;
+                }
+                catch (Exception ex)
+                {
+                    LogManager.Log(
+                        "[PanelHost] hud companion.Resume failed: " +
+                        ex.Message);
+                }
             }
-            catch (Exception ex)
+            if (_interactionCompanion != null && _interactionCompanionSuspended)
             {
-                LogManager.Log(
-                    "[PanelHost] hud companion.Resume failed: " +
-                    ex.Message);
+                try
+                {
+                    _interactionCompanion.Resume();
+                    _interactionCompanionSuspended = false;
+                }
+                catch (Exception ex)
+                {
+                    LogManager.Log(
+                        "[PanelHost] interaction companion.Resume failed: " +
+                        ex.Message);
+                }
             }
         }
 

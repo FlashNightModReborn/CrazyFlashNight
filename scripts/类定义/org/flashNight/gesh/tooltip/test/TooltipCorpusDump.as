@@ -1,5 +1,6 @@
 ﻿import org.flashNight.gesh.tooltip.test.MockTooltipContainer;
 import org.flashNight.gesh.tooltip.test.MockItemFactory;
+import org.flashNight.gesh.tooltip.test.TooltipCorpusContextLoader;
 import org.flashNight.gesh.tooltip.TooltipLayout;
 import org.flashNight.gesh.tooltip.TooltipBridge;
 import org.flashNight.gesh.tooltip.TooltipConstants;
@@ -16,11 +17,16 @@ import org.flashNight.gesh.xml.LoadXml.EquipModListLoader;
 /**
  * TooltipCorpusDump — 审计 Web 注释布局所需的 AS2 权威物品语料。
  *
- * 主入口 runAllTests(runId) 逐层加载正式装备配置、物品表和插件表，输出：
+ * 主入口 runAllTests(runId, includeContext) 逐层加载正式装备配置、物品表和插件表，输出：
  *   - 全部基础物品（装备为 0 插件真实 BaseItem；stack 按线上 null-baseItem 语义）；
  *   - 每件装备的全部合法 tier；
  *   - 每件装备一条合法 1 插件与 3 插件实例，用于宿主/堆叠形态覆盖；
  *   - 每个正式插件定义至少一条实际可安装路径（含最多 3 层前置依赖搜索）。
+ *
+ * includeContext === true 时，mod 表就绪后先经 TooltipCorpusContextLoader
+ * 复刻 BootSequencer S9 静态上下文（合成/商店/K店/竞技场 → SynthesisIndex +
+ * ItemObtainIndex）再进分帧 dump，使升阶路线·升自/可升与获取方式区块随真实
+ * 索引输出；false（默认）保持逐字节不变的既有基本语料模式。
  *
  * 旧 runWithRealData() 几何 dump 入口保留为兼容诊断，但 Web 容量审计只消费
  * TC_ITEM / TC_TOTAL / TOOLTIP_CORPUS_DONE 协议。
@@ -61,9 +67,13 @@ class org.flashNight.gesh.tooltip.test.TooltipCorpusDump {
     private static var _coveredModCount:Number = 0;
     private static var _coveredModDict:Object = {};
     private static var _composeFailures:Number = 0;
+    private static var _exportState:Object = null;
+    private static var _exportPump:MovieClip = null;
+    private static var FRAME_BUDGET_MS:Number = 8;
+    private static var FRAME_STEP_LIMIT:Number = 1024;
 
     /** 全量语料入口；完成标记携带 runId，供异步 focused runner 精确截取。 */
-    public static function runAllTests(runId:String):Void {
+    public static function runAllTests(runId:String, includeContext:Boolean):Void {
         if (runId == undefined || runId == null || runId.length == 0) runId = "manual";
         resetCorpusCounters();
         trace("TOOLTIP_CORPUS_BEGIN|" + escapeBar(runId));
@@ -82,7 +92,15 @@ class org.flashNight.gesh.tooltip.test.TooltipCorpusDump {
                         return;
                     }
                     EquipmentUtil.loadModData(modEnvelope.mod);
-                    dumpTooltipCorpus(runId);
+                    if (includeContext === true) {
+                        TooltipCorpusContextLoader.load(function():Void {
+                            dumpTooltipCorpus(runId);
+                        }, function(reason:String):Void {
+                            finishCorpusFailure(runId, "context_load_failed:" + reason);
+                        });
+                    } else {
+                        dumpTooltipCorpus(runId);
+                    }
                 }, function():Void {
                     finishCorpusFailure(runId, "mod_load_failed");
                 });
@@ -95,6 +113,7 @@ class org.flashNight.gesh.tooltip.test.TooltipCorpusDump {
     }
 
     private static function resetCorpusCounters():Void {
+        stopExportPump();
         _recordSequence = 0;
         _baseCount = 0;
         _equipmentCount = 0;
@@ -109,11 +128,13 @@ class org.flashNight.gesh.tooltip.test.TooltipCorpusDump {
     }
 
     private static function finishCorpusFailure(runId:String, reason:String):Void {
+        stopExportPump();
         MockTooltipContainer.teardown();
         trace("TOOLTIP_CORPUS_FAILED|" + escapeBar(runId) + "|" + escapeBar(reason));
         trace("TOOLTIP_CORPUS_END|" + escapeBar(runId));
     }
 
+    /** 每帧以 8ms 为预算、最多 1024 个工作步；配件路径也用显式栈分片，不在一帧递归穷举。 */
     private static function dumpTooltipCorpus(runId:String):Void {
         var allItems:Array = ItemUtil.itemDataArray;
         trace("TC_HEAD|id|variant|name|displayname|type|use|tier|mods|icon|modslot|tierOptions|authorChars|split|introHTML|descHTML");
@@ -121,49 +142,210 @@ class org.flashNight.gesh.tooltip.test.TooltipCorpusDump {
             finishCorpusFailure(runId, "item_array_empty");
             return;
         }
-        _modDefinitionCount = EquipmentUtil.modList instanceof Array
-            ? EquipmentUtil.modList.length : 0;
+        _modDefinitionCount = EquipmentUtil.modList instanceof Array ? EquipmentUtil.modList.length : 0;
+        _exportState = {runId:runId, items:allItems, index:0, phase:"items", search:null, frames:0, maxFrameMs:0, steps:0, lastProgress:getTimer(), reachablePools:{}, coverageSkipped:0};
+        _exportPump = _root.createEmptyMovieClip("__tooltipCorpusPump", _root.getNextHighestDepth());
+        _exportPump.onEnterFrame = function():Void { TooltipCorpusDump.pumpExport(); };
+    }
 
-        for (var i:Number = 0; i < allItems.length; i++) {
-            var item:Object = allItems[i];
-            if (!item || !item.name) continue;
-            var isEquipment:Boolean = ItemUtil.isEquipment(item.name);
-            var baseItem:BaseItem = isEquipment ? BaseItem.create(item.name, 1, 0) : null;
-            emitCorpusRecord("base", item, baseItem, "", []);
-            _baseCount++;
-
-            if (!isEquipment || baseItem == null) continue;
-            _equipmentCount++;
-
-            var tierOptions:Array = TierSystem.getAllTierOptions(baseItem);
-            for (var tierIndex:Number = 0; tierIndex < tierOptions.length; tierIndex++) {
-                var option:Object = tierOptions[tierIndex];
-                if (!option || option.available !== true) continue;
-                var tierItem:BaseItem = BaseItem.create(item.name, 1, 0);
-                if (tierItem == null) continue;
-                tierItem.value.tier = String(option.name);
-                emitCorpusRecord("tier", item, tierItem, String(option.name), []);
-                _tierCount++;
-            }
-
-            var oneItem:BaseItem = BaseItem.create(item.name, 1, 0);
-            var onePath:Array = emitDirectModCoverageAndGetFirst(item, oneItem);
-            if (onePath != null && onePath.length == 1) {
-                oneItem.value.mods = onePath.concat();
-                emitCorpusRecord("mods-1", item, oneItem, "", onePath);
-                _mod1Count++;
-            }
-
-            var threeItem:BaseItem = BaseItem.create(item.name, 1, 0);
-            var threePath:Array = findLegalModPath(threeItem, 3);
-            if (threePath != null && threePath.length == 3) {
-                threeItem.value.mods = threePath.concat();
-                emitCorpusRecord("mods-3", item, threeItem, "", threePath);
-                _mod3Count++;
-            }
+    private static function stopExportPump():Void {
+        if (_exportPump != null) {
+            delete _exportPump.onEnterFrame;
+            _exportPump.removeMovieClip();
         }
+        _exportPump = null;
+        _exportState = null;
+    }
 
-        var uncoveredMods:Array = emitModDefinitionCoverage(allItems);
+    private static function pumpExport():Void {
+        var state:Object = _exportState;
+        if (state == null) return;
+        var started:Number = getTimer();
+        state.frames++;
+        var steps:Number = 0;
+        while (_exportState == state && steps < FRAME_STEP_LIMIT) {
+            steps++;
+            if (state.search != null) advanceSearch(state);
+            else if (state.phase == "items") advanceItem(state);
+            else advanceCoverage(state);
+            if (getTimer() - started >= FRAME_BUDGET_MS) break;
+        }
+        var elapsed:Number = getTimer() - started;
+        if (elapsed > state.maxFrameMs) state.maxFrameMs = elapsed;
+        state.steps += steps;
+        if (_exportState == state && getTimer() - state.lastProgress >= 5000) {
+            state.lastProgress = getTimer();
+            trace("TC_PROGRESS|phase=" + state.phase + "|index=" + state.index
+                + "|frames=" + state.frames + "|steps=" + state.steps
+                + "|records=" + _recordSequence + "|modsCovered=" + _coveredModCount
+                + "|coverageSkipped=" + state.coverageSkipped);
+        }
+    }
+
+    private static function advanceItem(state:Object):Void {
+        if (state.index >= state.items.length) {
+            state.phase = "coverage";
+            state.index = 0;
+            return;
+        }
+        var item:Object = state.items[state.index++];
+        if (!item || !item.name) return;
+        var isEquipment:Boolean = ItemUtil.isEquipment(item.name);
+        var baseItem:BaseItem = isEquipment ? BaseItem.create(item.name, 1, 0) : null;
+        emitCorpusRecord("base", item, baseItem, "", []);
+        _baseCount++;
+        if (!isEquipment || baseItem == null) return;
+        _equipmentCount++;
+        var options:Array = TierSystem.getAllTierOptions(baseItem);
+        for (var t:Number = 0; t < options.length; t++) {
+            var option:Object = options[t];
+            if (!option || option.available !== true) continue;
+            var tierItem:BaseItem = BaseItem.create(item.name, 1, 0);
+            if (tierItem == null) continue;
+            tierItem.value.tier = String(option.name);
+            emitCorpusRecord("tier", item, tierItem, String(option.name), []);
+            _tierCount++;
+        }
+        var oneItem:BaseItem = BaseItem.create(item.name, 1, 0);
+        var onePath:Array = emitDirectModCoverageAndGetFirst(item, oneItem);
+        if (onePath != null && onePath.length == 1) {
+            oneItem.value.mods = onePath.concat();
+            emitCorpusRecord("mods-1", item, oneItem, "", onePath);
+            _mod1Count++;
+        }
+        var threeItem:BaseItem = BaseItem.create(item.name, 1, 0);
+        var data:Object = ItemUtil.getItemData(item.name);
+        var slots = data && data.data ? data.data.modslot : undefined;
+        if (threeItem != null && !(slots !== undefined && Number(slots) < 3))
+            beginSearch(state, item, threeItem, data, 3, false);
+    }
+
+    private static function advanceCoverage(state:Object):Void {
+        if (_coveredModCount >= _modDefinitionCount || state.index >= state.items.length) {
+            var uncovered:Array = [];
+            for (var m:Number = 0; m < EquipmentUtil.modList.length; m++) {
+                var name:String = String(EquipmentUtil.modList[m]);
+                if (!_coveredModDict[name]) uncovered.push(name);
+            }
+            uncovered.sort();
+            trace("TC_FRAMES|frames=" + state.frames + "|maxFrameMs=" + state.maxFrameMs
+                + "|budgetMs=" + FRAME_BUDGET_MS + "|stepLimit=" + FRAME_STEP_LIMIT);
+            finishExport(state.runId, uncovered);
+            return;
+        }
+        var source:Object = state.items[state.index++];
+        if (!source || !source.name || !ItemUtil.isEquipment(source.name)) return;
+        if (!canReachUncoveredMod(state, source)) {
+            state.coverageSkipped++;
+            return;
+        }
+        var item:BaseItem = BaseItem.create(source.name, 1, 0);
+        if (item == null) return;
+        var data:Object = ItemUtil.getItemData(source.name);
+        var depth:Number = 3;
+        if (data && data.data && data.data.modslot != undefined) {
+            var configured:Number = Math.floor(Number(data.data.modslot));
+            if (!isNaN(configured) && configured > 0) depth = Math.min(3, configured);
+        }
+        beginSearch(state, source, item, data, depth, true);
+    }
+
+    /**
+     * 只裁掉候选池闭包都不含剩余定义的装备。闭包保守纳入所有 grantsUse，
+     * 不依据 tag、属性阈值或安装次序猜测；真实路径仍逐步交由 EquipmentUtil 复核。
+     * 例如剩余全是长枪弹种时，无跨池授权的鞋服无需穷举三配件组合。
+     */
+    private static function canReachUncoveredMod(state:Object, source:Object):Boolean {
+        var raw:Object = ItemUtil.getRawItemData(source.name);
+        if (!raw || raw.use == undefined) return true;
+        var key:String = "$" + String(raw.use);
+        var reachable:Object = state.reachablePools[key];
+        if (reachable == undefined) {
+            reachable = {};
+            var queued:Object = {};
+            var queue:Array = [String(raw.use)];
+            queued[key] = true;
+            for (var q:Number = 0; q < queue.length; q++) {
+                var pool:Array = EquipmentUtil.modUseLists[queue[q]];
+                if (!(pool instanceof Array)) continue;
+                for (var m:Number = 0; m < pool.length; m++) {
+                    var name:String = String(pool[m]);
+                    reachable[name] = true;
+                    var definition:Object = EquipmentUtil.modDict[name];
+                    if (!definition || !definition.grantsUseDict) continue;
+                    for (var granted:String in definition.grantsUseDict) {
+                        var grantKey:String = "$" + granted;
+                        if (queued[grantKey]) continue;
+                        queued[grantKey] = true;
+                        queue.push(granted);
+                    }
+                }
+            }
+            state.reachablePools[key] = reachable;
+        }
+        for (var index:Number = 0; index < EquipmentUtil.modList.length; index++) {
+            var candidate:String = String(EquipmentUtil.modList[index]);
+            if (!_coveredModDict[candidate] && reachable[candidate]) return true;
+        }
+        return false;
+    }
+
+    private static function beginSearch(state:Object, source:Object, item:BaseItem,
+            data:Object, maxDepth:Number, coverage:Boolean):Void {
+        item.value.mods = [];
+        var job:Object = {source:source, item:item, data:data, maxDepth:maxDepth,
+            coverage:coverage, stack:[], visited:{}};
+        pushSearchFrame(job, []);
+        state.search = job;
+    }
+
+    private static function pushSearchFrame(job:Object, path:Array):Void {
+        if (job.coverage) {
+            var sorted:Array = path.concat();
+            sorted.sort();
+            var signature:String = sorted.join(String.fromCharCode(31));
+            if (job.visited[signature]) return;
+            job.visited[signature] = true;
+        }
+        job.item.value.mods = path.concat();
+        var candidates:Array = EquipmentUtil.getAvailableModMaterials(job.item);
+        if (!(candidates instanceof Array)) candidates = [];
+        candidates.sort();
+        job.stack.push({path:path, candidates:candidates, index:0});
+    }
+
+    /** 一步只复核一个候选；失败的子路径也能在下一帧继续。 */
+    private static function advanceSearch(state:Object):Void {
+        var job:Object = state.search;
+        if (job.stack.length == 0 || (job.coverage && _coveredModCount >= _modDefinitionCount)) {
+            state.search = null;
+            return;
+        }
+        var frame:Object = job.stack[job.stack.length - 1];
+        if (frame.index >= frame.candidates.length) {
+            job.stack.pop();
+            return;
+        }
+        job.item.value.mods = frame.path.concat();
+        var name:String = String(frame.candidates[frame.index++]);
+        if (EquipmentUtil.isModMaterialAvailable(job.item, job.data, name) !== 1) return;
+        var path:Array = frame.path.concat();
+        path.push(name);
+        job.item.value.mods = path.concat();
+        if (job.coverage && !_coveredModDict[name]) {
+            emitCorpusRecord("mods-cover", job.source, job.item, "", path);
+            _modCoverageRecordCount++;
+        }
+        if (!job.coverage && path.length >= job.maxDepth) {
+            emitCorpusRecord("mods-3", job.source, job.item, "", path);
+            _mod3Count++;
+            state.search = null;
+            return;
+        }
+        if (path.length < job.maxDepth) pushSearchFrame(job, path);
+    }
+
+    private static function finishExport(runId:String, uncoveredMods:Array):Void {
         trace("TC_MOD_COVERAGE|definitions=" + _modDefinitionCount
             + "|covered=" + _coveredModCount
             + "|records=" + _modCoverageRecordCount
@@ -184,41 +366,12 @@ class org.flashNight.gesh.tooltip.test.TooltipCorpusDump {
             + "|modDefinitions=" + _modDefinitionCount
             + "|modsCovered=" + _coveredModCount
             + "|composeFailures=" + _composeFailures);
+        stopExportPump();
         MockTooltipContainer.teardown();
         trace("TOOLTIP_CORPUS_DONE|" + escapeBar(runId)
             + "|records=" + _recordSequence
             + "|composeFailures=" + _composeFailures);
         trace("TOOLTIP_CORPUS_END|" + escapeBar(runId));
-    }
-
-    /** 找到一条每一步都通过正式 isModMaterialAvailable 的安装链。 */
-    private static function findLegalModPath(item:BaseItem, targetLength:Number):Array {
-        if (item == null || targetLength <= 0) return [];
-        if (!(item.value.mods instanceof Array)) item.value.mods = [];
-        var rawItemData:Object = ItemUtil.getItemData(item.name);
-        // 容量不足时提前结束。否则 modslot=1/2 的大量武器会穷举所有合法前缀，
-        // 明知第三步必然被槽位门拒绝仍做 O(n^target) 搜索，阻塞 TestLoader 主帧。
-        var modslot = rawItemData && rawItemData.data
-            ? rawItemData.data.modslot : undefined;
-        if (modslot !== undefined && Number(modslot) < targetLength) return null;
-        return searchLegalModPath(item, rawItemData, targetLength);
-    }
-
-    private static function searchLegalModPath(item:BaseItem, rawItemData:Object, targetLength:Number):Array {
-        var installed:Array = item.value.mods;
-        if (installed.length >= targetLength) return installed.concat();
-        var candidates:Array = EquipmentUtil.getAvailableModMaterials(item);
-        if (!candidates || candidates.length == 0) return null;
-        candidates.sort();
-        for (var i:Number = 0; i < candidates.length; i++) {
-            var modName:String = String(candidates[i]);
-            if (EquipmentUtil.isModMaterialAvailable(item, rawItemData, modName) !== 1) continue;
-            installed.push(modName);
-            var found:Array = searchLegalModPath(item, rawItemData, targetLength);
-            installed.pop();
-            if (found != null) return found;
-        }
-        return null;
     }
 
     /**
@@ -247,67 +400,6 @@ class org.flashNight.gesh.tooltip.test.TooltipCorpusDump {
             item.value.mods.pop();
         }
         return firstPath;
-    }
-
-    /**
-     * 为每个正式插件定义找到至少一条实际可安装路径。直接安装已随主循环覆盖；这里只为
-     * 仍未覆盖的依赖插件搜索最多 3 槽状态，状态按已安装集合去重，避免排列爆炸。
-     */
-    private static function emitModDefinitionCoverage(allItems:Array):Array {
-        var modList:Array = EquipmentUtil.modList;
-        if (!(modList instanceof Array) || modList.length == 0) return [];
-
-        var itemIndex:Number;
-        // 只有依赖 tag/grantsUse 的插件会到这里。
-        for (itemIndex = 0; itemIndex < allItems.length && _coveredModCount < _modDefinitionCount; itemIndex++) {
-            var pathSource:Object = allItems[itemIndex];
-            if (!pathSource || !pathSource.name || !ItemUtil.isEquipment(pathSource.name)) continue;
-            var pathItem:BaseItem = BaseItem.create(pathSource.name, 1, 0);
-            if (pathItem == null) continue;
-            var pathData:Object = ItemUtil.getItemData(pathSource.name);
-            var maxDepth:Number = 3;
-            if (pathData && pathData.data && pathData.data.modslot != undefined) {
-                var configuredDepth:Number = Math.floor(Number(pathData.data.modslot));
-                if (!isNaN(configuredDepth) && configuredDepth > 0) maxDepth = configuredDepth;
-            }
-            if (maxDepth > 3) maxDepth = 3;
-            exploreModCoveragePaths(pathSource, pathItem, pathData, 0, maxDepth, {});
-        }
-
-        var uncovered:Array = [];
-        for (var modIndex:Number = 0; modIndex < modList.length; modIndex++) {
-            var modName:String = String(modList[modIndex]);
-            if (!_coveredModDict[modName]) uncovered.push(modName);
-        }
-        uncovered.sort();
-        return uncovered;
-    }
-
-    private static function exploreModCoveragePaths(sourceItem:Object, item:BaseItem,
-            rawItemData:Object, depth:Number, maxDepth:Number, visited:Object):Void {
-        if (_coveredModCount >= _modDefinitionCount || depth >= maxDepth) return;
-        var signatureParts:Array = item.value.mods.concat();
-        signatureParts.sort();
-        var signature:String = signatureParts.join("\u001f");
-        if (visited[signature]) return;
-        visited[signature] = true;
-
-        var candidates:Array = EquipmentUtil.getAvailableModMaterials(item);
-        if (!(candidates instanceof Array)) return;
-        candidates.sort();
-        for (var candidateIndex:Number = 0;
-                candidateIndex < candidates.length && _coveredModCount < _modDefinitionCount;
-                candidateIndex++) {
-            var candidateName:String = String(candidates[candidateIndex]);
-            if (EquipmentUtil.isModMaterialAvailable(item, rawItemData, candidateName) !== 1) continue;
-            item.value.mods.push(candidateName);
-            if (!_coveredModDict[candidateName]) {
-                emitCorpusRecord("mods-cover", sourceItem, item, "", item.value.mods.concat());
-                _modCoverageRecordCount++;
-            }
-            exploreModCoveragePaths(sourceItem, item, rawItemData, depth + 1, maxDepth, visited);
-            item.value.mods.pop();
-        }
     }
 
     private static function markCoveredMods(mods:Array):Void {

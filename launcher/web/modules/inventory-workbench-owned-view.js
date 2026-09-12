@@ -46,6 +46,7 @@
             iconUrl:tooltip.staticIconUrl(iconKey),
             introHTML:data.introHTML || '',
             descHTML:data.descHTML || '',
+            document:data.document,
             rootClass:'kshop-tt-rich-context inventory-owned-tt-context',
             layoutType:tooltip.inferLayoutType(data.itemType || item.majorType || item.use)
         });

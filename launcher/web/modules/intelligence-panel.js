@@ -837,6 +837,7 @@ var IntelligencePanel = (function() {
             iconPlaceholder: '<span class="intel-catalog-icon-placeholder">?</span>',
             introHTML:       resp.introHTML,
             descHTML:        resp.descHTML,
+            document:        resp.document,
             metaHTML:        meta,
             rootClass:       'intel-tt-rich',
             layoutType:      PanelTooltip.inferLayoutType(item && item.type)

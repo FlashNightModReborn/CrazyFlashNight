@@ -11,6 +11,8 @@ import org.flashNight.gesh.tooltip.test.TooltipRegressionTest;
 import org.flashNight.gesh.tooltip.test.SkillTooltipComposerTest;
 import org.flashNight.gesh.tooltip.test.SynthesisIndexTest;
 import org.flashNight.gesh.tooltip.test.UpgradePathBuilderTest;
+import org.flashNight.gesh.tooltip.test.NativeTooltipDocumentTest;
+import org.flashNight.gesh.tooltip.test.NativeTooltipBridgeTest;
 import org.flashNight.gesh.tooltip.test.TestDataBootstrap;
 
 /**
@@ -58,6 +60,10 @@ class org.flashNight.gesh.tooltip.test.TooltipTestSuite {
         collectStats(SynthesisIndexTest);
         UpgradePathBuilderTest.runAllTests();
         collectStats(UpgradePathBuilderTest);
+        TestDataBootstrap.runIsolated(NativeTooltipDocumentTest.runAllTests);
+        collectStats(NativeTooltipDocumentTest);
+        NativeTooltipBridgeTest.runAllTests();
+        collectStats(NativeTooltipBridgeTest);
 
         if (includeBenchmarks) {
             TestDataBootstrap.runIsolated(TooltipPerfBenchmark.runAllTests);

@@ -1,6 +1,7 @@
 ﻿import org.flashNight.arki.item.itemCollection.ArrayInventory;
 
 import org.flashNight.gesh.tooltip.TooltipComposer;
+import org.flashNight.gesh.tooltip.NativeTooltipDocument;
 import org.flashNight.arki.item.BaseItem;
 import org.flashNight.arki.item.EquipmentUtil;
 import org.flashNight.arki.item.PlayerAssetTransaction;
@@ -264,7 +265,13 @@ class org.flashNight.arki.item.InventoryPanelService {
             // wire 由 sendResponse 的 stringifySafe 统一转义；保留原始 htmlText 双引号属性，
             // Web 端 convertAS2Html 的 DOMParser 两种引号风格都正确解析。
             descHTML: descHTML,
-            introHTML: introHTML
+            introHTML: introHTML,
+            // COMMON v1 语义文档：与同次 intro/desc 同源构建；title/icon 与上方
+            // projection.displayName/icon 严格一致（装备实例经 getData() 涂装覆盖）。
+            // title 与 runs[].text 为已解析纯文本，Host/Web 不得二次 Flatten/解码。
+            document: NativeTooltipDocument.buildItem(String(item.name), itemData,
+                {displayname: projection.displayName, icon: projection.icon},
+                introHTML, descHTML)
         };
     }
 

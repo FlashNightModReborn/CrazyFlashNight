@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Threading;
 using CF7Launcher.Tasks;
@@ -696,8 +696,12 @@ namespace CF7Launcher.Tests.Tasks
             Assert.False(h.Task.TryArmRewardNavigation(Panel, Generation));
         }
 
-        [Fact]
-        public void StashTooltip_RemainsReadOnlyAndChecksBoundedProjection()
+        [Theory]
+        [InlineData(0)]
+        [InlineData(1)]
+        [InlineData(2)]
+        [InlineData(3)]
+        public void StashTooltip_RemainsReadOnlyAndChecksBoundedProjection(int documentCase)
         {
             using var h = new Harness();
             var request = Request("stashTooltip", "web.stashTooltip");
@@ -712,8 +716,25 @@ namespace CF7Launcher.Tests.Tasks
             response["data"] = new JObject { ["success"] = true, ["tooltip"] = new JObject {
                 ["itemName"] = "测试装备", ["displayname"] = "测试装备", ["iconName"] = "a",
                 ["itemType"] = "武器", ["descHTML"] = "<b>完整实例</b>", ["introHTML"] = "测试" } };
+            var info = (JObject)response["data"]["tooltip"];
+            if (documentCase == 1 || documentCase == 2)
+                info["document"] = new JObject { ["version"] = documentCase,
+                    ["title"] = "<纯文本>&amp;", ["unexpected"] = "剥离" };
+            if (documentCase == 3) info["unexpected"] = "拒绝";
             h.Task.HandleFlashResponse(response, null);
-            Assert.True(Assert.Single(h.Web).Value<bool>("success"));
+            var result = Assert.Single(h.Web);
+            Assert.Equal(documentCase != 3, result.Value<bool>("success"));
+            if (documentCase != 3)
+            {
+                var accepted = (JObject)result["data"]["tooltip"];
+                Assert.Equal("<b>完整实例</b>", accepted.Value<string>("descHTML"));
+                if (documentCase == 1)
+                {
+                    Assert.Equal("<纯文本>&amp;", accepted["document"].Value<string>("title"));
+                    Assert.Null(accepted["document"]["unexpected"]);
+                }
+                else Assert.Null(accepted["document"]);
+            }
             Assert.Equal("idle", h.Task.WriteState);
             Assert.False(h.Task.TryArmRewardNavigation(Panel, Generation));
         }

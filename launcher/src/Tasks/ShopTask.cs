@@ -1052,7 +1052,7 @@ namespace CF7Launcher.Tasks
             out JObject output)
         {
             output = null;
-            if (!HasExactKeys(message,
+            if (!TooltipDocumentSanitizer.HasExactKeysAllowingOptionalDocument(message,
                     "task", "callId", "success", "descHTML", "introHTML",
                     "itemName", "displayname", "iconName")
                 || !IsStringToken(message["descHTML"], 250000, true)
@@ -1077,6 +1077,7 @@ namespace CF7Launcher.Tasks
                 ["displayname"] = message.Value<string>("displayname"),
                 ["iconName"] = message.Value<string>("iconName")
             };
+            TooltipDocumentSanitizer.ApplyTo(message["document"], output);
             return true;
         }
 

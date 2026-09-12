@@ -450,6 +450,15 @@ namespace CF7Launcher.Guardian
                             "{\"type\":\"panel_esc\",\"reason\":\"escape\"}");
                     })); } catch {}
                 }
+                else if (_kbHook.InteractionEscActive)
+                {
+                    // native_interaction：NPC 菜单 / pinned tooltip 存活 → ESC 关闭交互会话。
+                    // 面板未开时才到达此分支（PanelEscEnabled 已先判定），不吃 Web 面板 ESC。
+                    try { this.BeginInvoke(new Action(delegate {
+                        Action h = _interactionEscHandler;
+                        if (h != null) h();
+                    })); } catch {}
+                }
                 else
                 {
                     // Phase A Step A3b: 非 Ready 态 no-op
@@ -824,6 +833,22 @@ namespace CF7Launcher.Guardian
         public IPanelEscapeSource GetPanelEscapeSource()
         {
             return _kbHook;
+        }
+
+        // native_interaction ESC 处理器（NPC 菜单 / pinned tooltip 关闭）——
+        // 复用 KeyboardHook 单一钩子：probe 决定 ESC 是否被吞，handler 在 UI 线程执行关闭。
+        private volatile Action _interactionEscHandler;
+
+        /// <summary>
+        /// native_interaction 的 ESC 面：activeProbe 注入 KeyboardHook（ESC 拦截判定），
+        /// escHandler 在 ESC 动作回调里经 BeginInvoke 到 UI 线程执行。
+        /// 优先级：PanelEscEnabled（Web 面板）> 交互会话 > 全屏——与原"面板优先于全屏"同构。
+        /// fallback（_kbHook==null）下交互 ESC 不可用，handler 永不触发；调用方不得依赖。
+        /// </summary>
+        public void SetInteractionEscSurface(Func<bool> activeProbe, Action escHandler)
+        {
+            if (_kbHook != null) _kbHook.SetInteractionEscapeProbe(activeProbe);
+            _interactionEscHandler = escHandler;
         }
 
         /// <summary>

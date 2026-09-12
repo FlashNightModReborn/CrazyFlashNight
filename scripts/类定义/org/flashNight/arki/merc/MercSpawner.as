@@ -72,7 +72,10 @@ class org.flashNight.arki.merc.MercSpawner {
         }
         _root.同伴数据 = compact;
         _root.佣兵是否出战信息 = compactDeploy;
-        _root.gameworld[_root.菜单MC对应名].removeMovieClip();
+        // 场景单位删除只认权威 mercId：同伴 MC 进场时 用户ID = 同伴数据[i][2]
+        // （关卡系统_lsy_场景转换.as 加载佣兵/加载单个佣兵 与 MercPanelService
+        // handleDeploy 三处 attach 一致）。不再经 _root.菜单MC对应名 间接定位——
+        // 该值只是旧右键菜单留下的"最后点击实例名"，可能指向其他单位而误删。
         for (var unit:String in _root.gameworld) {
             if (_root.gameworld[unit].用户ID == mercId) {
                 _root.gameworld[unit].removeMovieClip();

@@ -1506,6 +1506,7 @@ namespace CF7Launcher.Tasks
                 && !IsSafeString(msg["itemType"], 128, true)) return false;
             sanitized = CopyResponseKeys(msg, "success", "v", "itemName", "displayname",
                 "iconName", "itemType", "descHTML", "introHTML");
+            TooltipDocumentSanitizer.ApplyTo(msg["document"], sanitized);
             return true;
         }
 

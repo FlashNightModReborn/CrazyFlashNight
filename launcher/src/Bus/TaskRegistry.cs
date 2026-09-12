@@ -34,6 +34,7 @@ namespace CF7Launcher.Bus
     ///   task_response   JSON async AS2↔C# (任务 Web panel 运行态)
     ///   intelligence_response JSON async AS2↔C# (情报 Web panel runtime 状态 / tooltip)
     ///   font_pack       JSON async AS2↔C#  httpCallable=true (字体包按需下载/状态查询)
+    ///   native_interaction JSON sync AS2→C#  (NPC 菜单 + 文档 tooltip 原生宿主；不经 WebPanel 暂停路径)
     /// </summary>
     public static class TaskRegistry
     {
@@ -480,7 +481,8 @@ namespace CF7Launcher.Bus
             FontPackTask fontPackTask,
             WebOverlayForm webOverlay,
             LauncherCommandRouter commandRouter,
-            MapDomainTask mapDomainTask = null)
+            MapDomainTask mapDomainTask = null,
+            NativeInteractionTask nativeInteractionTask = null)
         {
             // JSON 路由 task（经 MessageRouter 分发）
             router.RegisterAsync("gomoku_eval", gomoku.HandleAsync);
@@ -585,6 +587,12 @@ namespace CF7Launcher.Bus
             // 地图面板回包路由
             if (mapTask != null)
                 router.RegisterAsync("map_response", mapTask.HandleFlashResponse);
+
+            // native_interaction：NPC 菜单 + 文档 tooltip 共享的原生交互宿主。
+            // fire-and-forget JSON sync；payload 经 task 内部 UI 派发到 NativeHud widget，
+            // 回包经 nativeInteractionAction/Cancel。仅 native HUD 路径构造 task。
+            if (nativeInteractionTask != null)
+                router.RegisterSync("native_interaction", nativeInteractionTask.Handle);
 
             // 选关面板回包路由
             if (stageSelectTask != null)
@@ -865,6 +873,7 @@ namespace CF7Launcher.Bus
             first = AppendTask(sb, "task_response",        "json_async","AS2<->C#",false, first);
             first = AppendTask(sb, "task_delivery",        "json_sync","AS2->C#",false, first);
             first = AppendTask(sb, "intelligence_response","json_async","AS2<->C#",false, first);
+            first = AppendTask(sb, "native_interaction","json_sync", "AS2->C#", false, first);
             first = AppendTask(sb, "cursor_control", "json_sync", "AS2->C#", false, first);
             first = AppendTask(sb, "panel_request",  "json_sync", "AS2->C#", false, first);
             first = AppendTask(sb, "archive",        "json_async","AS2<->C#",true,  first);

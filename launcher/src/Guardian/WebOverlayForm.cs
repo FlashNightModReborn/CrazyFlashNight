@@ -1412,6 +1412,13 @@ namespace CF7Launcher.Guardian
         private int _cursorHookPendingY;
         private int _cursorHookLastX = Int32.MinValue;
         private int _cursorHookLastY = Int32.MinValue;
+        // native_interaction 探针（SetInteractionInputProbes 注入）：
+        //   buttonProbe(x,y,message) 物理按下观察——只读语义，不得吞事件；
+        //   wheelProbe(x,y,delta)→bool 滚轮消费——true 时钩子吞掉该滚轮事件。
+        // 两者在 CursorHookCallback 内同步执行（=本 Form UI 线程），必须 O(1) 且不抛。
+        private volatile Action<int, int> _interactionMoveProbe;
+        private volatile Action<int, int, int> _interactionButtonProbe;
+        private volatile Func<int, int, int, bool> _interactionWheelProbe;
         private long _lastCursorHookPostTick;
         private string _bgmTitle = ""; // 当前曲目标题（由 UiData bgm: 设置）
         private bool _bgmPaused;        // 暂停标记
@@ -3518,6 +3525,26 @@ namespace CF7Launcher.Guardian
                 _cursorTimer.Start();
         }
 
+        /// <summary>
+        /// native_interaction 输入探针注入（Program.cs 装配）。复用既有 WH_MOUSE_LL
+        /// 全局观察钩子，不新建 hook：
+        /// - buttonProbe(screenX, screenY, message)：物理按下（L/R/M/X down）观察，
+        ///   宿主据此做菜单外点击关闭；只读语义，事件照常进入 CallNextHookEx 链。
+        /// - wheelProbe(screenX, screenY, wheelDelta) → bool：滚轮消费声明；
+        ///   返回 true 时钩子吞掉该滚轮事件（pinned tooltip 框内滚动，防穿透到游戏）。
+        /// 探针在 CursorHookCallback 内同步执行（本 Form UI 线程），实现必须 O(1) 返回；
+        /// 抛异常已被钩子侧隔离。传 null 对即摘除。
+        /// </summary>
+        internal void SetInteractionInputProbes(
+            Action<int, int, int> buttonProbe,
+            Func<int, int, int, bool> wheelProbe,
+            Action<int, int> moveProbe = null)
+        {
+            _interactionMoveProbe = moveProbe;
+            _interactionButtonProbe = buttonProbe;
+            _interactionWheelProbe = wheelProbe;
+        }
+
         private void EnsureCursorHook()
         {
             if (_cursorHook != IntPtr.Zero || _disposed)
@@ -3566,6 +3593,42 @@ namespace CF7Launcher.Guardian
                     QueueHookCursorSample(info.pt.X, info.pt.Y);
                     if (message == WM_LBUTTONUP)
                         QueuePhysicalCursorRelease();
+
+                    // native_interaction 输入探针：复用本全局观察钩子（不另建 hook）。
+                    // 物理按下 → 菜单外点击判定，纯观察不吞事件；
+                    // 滚轮 → pinned tooltip 命中时消费并吞掉（不进 CallNextHookEx 链，
+                    // 防穿透到游戏缩放），未命中照常放行。
+                    Action<int, int> moveProbe = _interactionMoveProbe;
+                    if (moveProbe != null && message == WM_MOUSEMOVE)
+                    {
+                        // 仅投递坐标，布局和绘制由消费者在合并后的 UI 帧执行。
+                        try { moveProbe(info.pt.X, info.pt.Y); }
+                        catch (Exception ex) { LogManager.Log("[Cursor] interaction move probe throw: " + ex.Message); }
+                    }
+                    Action<int, int, int> btnProbe = _interactionButtonProbe;
+                    if (btnProbe != null
+                        && (message == WM_LBUTTONDOWN || message == WM_RBUTTONDOWN
+                            || message == WM_MBUTTONDOWN || message == WM_XBUTTONDOWN))
+                    {
+                        try { btnProbe(info.pt.X, info.pt.Y, message); }
+                        catch (Exception ex)
+                        {
+                            LogManager.Log("[Cursor] interaction button probe throw: " + ex.Message);
+                        }
+                    }
+                    Func<int, int, int, bool> wheelProbe = _interactionWheelProbe;
+                    if (wheelProbe != null && message == WM_MOUSEWHEEL)
+                    {
+                        int wheelDelta = unchecked((short)((info.mouseData >> 16) & 0xFFFF));
+                        bool consumed = false;
+                        try { consumed = wheelProbe(info.pt.X, info.pt.Y, wheelDelta); }
+                        catch (Exception ex)
+                        {
+                            LogManager.Log("[Cursor] interaction wheel probe throw: " + ex.Message);
+                        }
+                        if (consumed)
+                            return new IntPtr(1);
+                    }
                 }
             }
 

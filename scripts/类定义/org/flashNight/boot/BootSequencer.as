@@ -81,7 +81,7 @@ class org.flashNight.boot.BootSequencer {
             case S_TASKTEXT:  this.stepTaskText();     break;
             case S_PARSE:     this.parseTaskAndStartGuide(); this.state = S_SYNCSYS; break;
             case S_SYNCSYS:   this.stepSyncSys();      break;
-            case S_SYNCLOGIC: this.b.s7_syncLogic(); this.host.打印加载内容("加载杂项数据……"); this.b.s7_miscLoaders(); this.state = S_FANOUT; break;
+            case S_SYNCLOGIC: this.b.s7_syncLogic(); this.host.打印加载内容("加载杂项数据……"); this.b.s7_miscLoaders(); org.flashNight.arki.interaction.NativeMenuBridge.install(); this.state = S_FANOUT; break;
             case S_FANOUT:    this.b.s8_fanout();      this.state = S_CRAFTING;  break;
             case S_CRAFTING:  this.stepCrafting();     break;
             case S_HANDOFF:   this.handoff();          break;

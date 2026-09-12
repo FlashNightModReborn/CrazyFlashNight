@@ -354,7 +354,9 @@ class org.flashNight.arki.task.TaskPanelService {
             descHTML: tt.descHTML,
             introHTML: tt.introHTML,
             iconName: itemIconName(itemName),
-            itemType: itemType
+            itemType: itemType,
+            // COMMON v1 语义文档：纯数据透传（纯文本 title/runs，Host/Web 不得二次解析）
+            document: tt.document
         });
     }
 

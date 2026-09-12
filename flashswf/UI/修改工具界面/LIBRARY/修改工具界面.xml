@@ -70,7 +70,7 @@ _root.全部翻译(this);
 		}
 		temp_a[p].onRollOver = function()
 		{
-			_root.物品图标注释(_root.id物品名对应表[this.物品id],1);
+			_root.物品图标注释(_root.id物品名对应表[this.物品id],1,null,this);
 		};
 		temp_a[p].onRollOut = function()
 		{
@@ -141,7 +141,7 @@ function 查询排列物品图标(页数, 查询的物品)
 				}
 				temp_a[p].onRollOver = function()
 				{
-					_root.物品图标注释(_root.id物品名对应表[this.物品id],1);
+					_root.物品图标注释(_root.id物品名对应表[this.物品id],1,null,this);
 				};
 				temp_a[p].onRollOut = function()
 				{

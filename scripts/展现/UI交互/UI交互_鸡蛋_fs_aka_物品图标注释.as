@@ -2,8 +2,9 @@
  * 物品图标注释主入口函数
  * @param name:String 物品名称
  * @param value:Object 物品数值对象，包含level、tier等属性
+ * @param ownerClip:MovieClip 可选，真实 owner/图标剪辑；有效时原生注释携带 _root 系 anchorRect
  */
-_root.物品图标注释 = function(name, value, baseItem) {
+_root.物品图标注释 = function(name, value, baseItem, ownerClip) {
     var 强化等级:Number = (value.level > 0) ? value.level : 1;
 
     // 始终使用基础数据来生成简介内容（以正确显示属性增益）
@@ -25,8 +26,11 @@ _root.物品图标注释 = function(name, value, baseItem) {
         iconData = baseItem.getData();
     }
 
-    // 4) 使用智能显示算法自动优化长短内容，传递 iconData 以支持涂装图标覆盖
-    TooltipComposer.renderItemTooltipSmart(name, value, 描述文本, 简介文本, null, iconData);
+    // 4) 原生注释出口：document 经 native_interaction 下发；通道不可用时回退旧 Flash 渲染
+    var doc:Object = NativeTooltipDocument.buildItem(name, itemData, iconData, 简介文本, 描述文本);
+    if (NativeTooltipBridge.show(doc, ownerClip) == null) {
+        TooltipComposer.renderItemTooltipSmart(name, value, 描述文本, 简介文本, null, iconData);
+    }
 };
 
 
@@ -60,8 +64,11 @@ _root.技能栏技能图标注释 = function(对应数组号) {
     // 描述文本（独立出来，用于智能分栏）
     var 描述文本 = 技能信息.Description ? String(技能信息.Description) : "";
 
-    // 使用技能专用智能分栏渲染（委托给 SkillTooltipComposer）
-    SkillTooltipComposer.renderSkillTooltipSmart(技能名, 简介文本, 描述文本);
+    // 原生注释出口：document 经 native_interaction 下发；通道不可用时回退旧 Flash 渲染
+    var 技能文档:Object = NativeTooltipDocument.buildSkill(技能名, 简介文本, 描述文本);
+    if (NativeTooltipBridge.show(技能文档) == null) {
+        SkillTooltipComposer.renderSkillTooltipSmart(技能名, 简介文本, 描述文本);
+    }
 };
 
 /**
@@ -91,19 +98,27 @@ _root.学习界面技能图标注释 = function(对应数组号) {
     // 描述文本（独立出来，用于智能分栏）
     var 描述文本 = 技能信息.Description ? String(技能信息.Description) : "";
 
-    // 使用技能专用智能分栏渲染（委托给 SkillTooltipComposer）
-    SkillTooltipComposer.renderSkillTooltipSmart(技能名, 简介文本, 描述文本);
+    // 原生注释出口：document 经 native_interaction 下发；通道不可用时回退旧 Flash 渲染
+    var 学习文档:Object = NativeTooltipDocument.buildSkill(技能名, 简介文本, 描述文本);
+    if (NativeTooltipBridge.show(学习文档) == null) {
+        SkillTooltipComposer.renderSkillTooltipSmart(技能名, 简介文本, 描述文本);
+    }
 };
 
 
 /**
- * 注释显示函数 (兼容接口，转发到 TooltipLayout.showTooltip)
- * @param 宽度:Number 注释框宽度
+ * 注释显示函数 (兼容接口，优先经 native_interaction 下发；通道不可用时转发到 TooltipLayout.showTooltip)
+ * @param 宽度:Number 注释框宽度（旧布局参考值，原生路径不以此为布局依据）
  * @param 内容:String 注释内容HTML文本
  * @param 框体:String 框体类型（可选，默认为主框体）
  */
 _root.注释 = function(宽度, 内容, 框体) {
-    TooltipLayout.showTooltip(宽度, 内容, 框体);
+    var doc:Object = NativeTooltipDocument.buildBody(
+        (内容 == undefined || 内容 == null) ? "" : String(内容),
+        NativeTooltipDocument.PROFILE_SIMPLE);
+    if (NativeTooltipBridge.show(doc) == null) {
+        TooltipLayout.showTooltip(宽度, 内容, 框体);
+    }
 };
 
 /**
@@ -116,7 +131,7 @@ _root.注释 = function(宽度, 内容, 框体) {
  * - 各 panel 的 *_WebView.as 只需做：参数解析 → 调用本函数 → 按自身 task 名包成 response → sendResponse。
  *
  * @param name:String 物品名（缺省时返回 null）
- * @return Object | null  形如 { descHTML, introHTML, displayname, itemData }；item 找不到返回 null
+ * @return Object | null  形如 { descHTML, introHTML, displayname, itemData, document }；item 找不到返回 null
  */
 _root.Web物品注释HTML = function(name:String):Object {
     if (name == undefined || name == null || name == "") return null;
@@ -132,14 +147,17 @@ _root.Web物品注释HTML = function(name:String):Object {
         descHTML: descHTML,
         introHTML: introHTML,
         displayname: String(itemData.displayname || name),
-        itemData: itemData
+        itemData: itemData,
+        // COMMON v1 语义文档（纯数据字段，消费方需先经白名单协调再接入 wire）
+        document: NativeTooltipDocument.buildItem(name, itemData, null, introHTML, descHTML)
     };
 };
 
 /**
- * 注释结束函数 (兼容接口，转发到 TooltipLayout.hideTooltip)
+ * 注释结束函数 (兼容接口，先按身份下发 native hide，再清旧 Flash 注释兜底)
  */
 _root.注释结束 = function() {
+    NativeTooltipBridge.hideCurrent();
     TooltipLayout.hideTooltip();
 };
 

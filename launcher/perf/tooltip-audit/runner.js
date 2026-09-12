@@ -8,8 +8,15 @@ const {chromium} = require('playwright');
 const {startServer, stopServer} = require('../lib/server.js');
 
 const ROOT = path.resolve(__dirname, '..', '..', '..');
-const CORPUS_PATH = path.join(ROOT, 'tmp', 'tooltip-audit', 'tooltip-corpus.json');
-const REPORT_DIR = path.join(ROOT, 'tmp', 'tooltip-audit');
+function argumentPath(name, fallback) {
+    const index = process.argv.indexOf(name);
+    if (index < 0) return fallback;
+    const value = process.argv[index + 1];
+    if (!value || value.startsWith('--')) throw new Error(name + ' requires a path');
+    return path.resolve(ROOT, value);
+}
+const CORPUS_PATH = argumentPath('--corpus', path.join(ROOT, 'tmp', 'tooltip-audit', 'tooltip-corpus.json'));
+const REPORT_DIR = argumentPath('--out', path.join(ROOT, 'tmp', 'tooltip-audit'));
 const REPORT_JSON = path.join(REPORT_DIR, 'report.json');
 const REPORT_MD = path.join(REPORT_DIR, 'report.md');
 const FIXTURE_URL = 'launcher/perf/tooltip-audit/fixture.html';

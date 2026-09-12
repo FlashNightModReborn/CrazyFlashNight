@@ -5,11 +5,27 @@
  *  背景：
  *    主时间轴旧鼠标 MovieClip 移除后，旧 UI 仍依赖如下入口：
  *      _root.鼠标.gotoAndStop(...)
- *      _root.鼠标.物品图标容器.attachMovie(...)
  *      _root.鼠标代理.命中目标(target, shapeFlag)
  *      _root.鼠标代理.清理拖拽图标()
- *    手型视觉交给 Launcher C# CursorOverlayForm；
- *    物品拖拽图标暂留 AS2，并且只在拖拽期间同步位置。
+ *    手型视觉交给 Launcher C# CursorOverlayForm（cursor_control {state, dragging}）。
+ *
+ *  2026-09-12 精简（native-interaction cleanup）：
+ *    旧"物品拖影"通道已确认无活跃生产者——现役物品/窗口拖拽全部由
+ *    UI 元件自身 startDrag(this,0) 承载（对话框界面、新版物品栏/商店/仓库等），
+ *    没有任何代码再向 _root.鼠标.物品图标容器 attachMovie。退役：
+ *      - 图标容器 attachMovie 挂接拦截（原 wrapAttachMovie）
+ *      - 子图标 removeMovieClip 包装（原 wrapChildRemove）
+ *      - 空容器逐帧跟随（原 onEnterFrame = syncDragPos）
+ *    保留：
+ *      - _root.鼠标 兼容状态入口（gotoAndStop/gotoAndPlay → setState）
+ *      - _root.鼠标代理.命中目标 / 清理拖拽图标 签名
+ *      - 窗口 startDrag 场景的逻辑 dragging 状态：isDragging 经 sendState
+ *        上报 cursor_control dragging 字段，由 C# HandleCursorControl 仲裁
+ *      - 物理释放 / 场景复位协议：stopDragSync 清标志并发终态；
+ *        关卡系统_lsy_场景转换 仍调 清理拖拽图标 + _root.鼠标.gotoAndStop(1)
+ *    物品图标容器 MovieClip 本体保留为兼容占位（场景转换兜底分支与
+ *    _root.鼠标.物品图标容器 引用可达），但不再拦截 attachMovie。
+ *    cursor_control 消息与 WebOverlayForm 输入协调不在本类改动范围。
  *
  *  为什么 class 化：
  *    asLoader 帧脚本中创建的 Function 闭包会暗中持有定义时的 With 链，
@@ -86,34 +102,8 @@ class org.flashNight.arki.cursor.MouseProxy {
         }
 
         container = layer.物品图标容器;
-        if (container.__mouseProxyWrapped != true) MouseProxy.wrapAttachMovie(container);
-
         MouseProxy._containerReady = true;
         return container;
-    }
-
-    private static function wrapAttachMovie(container:MovieClip):Void {
-        var rawAttach:Function = container.attachMovie;
-        container.__mouseProxyRawAttach = rawAttach;
-        container.attachMovie = function(linkage:String, name:String, depth:Number) {
-            var child:MovieClip = this.__mouseProxyRawAttach(linkage, name, depth);
-            if (child != undefined) {
-                MouseProxy.wrapChildRemove(child);
-                MouseProxy.startDragSync();
-            }
-            return child;
-        };
-        container.__mouseProxyWrapped = true;
-    }
-
-    private static function wrapChildRemove(child:MovieClip):Void {
-        var rawRemove:Function = child.removeMovieClip;
-        child.__mouseProxyRawRemove = rawRemove;
-        child.removeMovieClip = function():Void {
-            this.__mouseProxyRawRemove();
-            MouseProxy.stopDragSync();
-            MouseProxy.sendState(MouseProxy.currentState);
-        };
     }
 
     //----------------------------------
@@ -144,42 +134,24 @@ class org.flashNight.arki.cursor.MouseProxy {
     }
 
     //----------------------------------
-    // 拖拽同步（onEnterFrame）
+    // 拖拽同步（逻辑标志）
     //----------------------------------
 
-    // onEnterFrame handler：直接挂到 _root.鼠标图标层 MC 上，
-    // this 即宿主 MC，不再走 _root.鼠标图标层 域链。
-    //
-    // AS2 静态方法体内不允许使用 this（编译报错），所以走函数工厂：
-    // createSyncDragPos 是普通静态方法，返回一个匿名 function expression；
-    // 匿名函数不被静态语义约束，可以使用 this，运行时由 onEnterFrame 注入 host MC。
-    // 工厂只在类加载时调用一次，得到的 Function 引用挂在静态字段上，持久存活。
-    //
-    // 引用局部 var mc 强制 DF2（H10）：DF1=1079ns vs DF2=485ns，每帧调用值得做。
-    public static var syncDragPos:Function = MouseProxy.createSyncDragPos();
-
-    private static function createSyncDragPos():Function {
-        return function():Void {
-            var mc:MovieClip = this;
-            mc._x = _root._xmouse;
-            mc._y = _root._ymouse;
-        };
-    }
-
+    // 物理跟随已退役：物品图标容器恒空，现役拖拽由 UI 元件自身 startDrag 承载，
+    // 没有东西需要逐帧贴鼠标。本组方法只维护 isDragging 逻辑标志——
+    // 窗口 startDrag 期间经 sendState 上报 cursor_control dragging 字段，
+    // 供 C# CursorOverlayForm 仲裁原生光标显示。
     public static function startDragSync():Void {
         if (MouseProxy.isDragging) return;
         MouseProxy.isDragging = true;
-        var layer:MovieClip = _root.鼠标图标层;
-        layer._x = _root._xmouse;
-        layer._y = _root._ymouse;
-        layer.onEnterFrame = MouseProxy.syncDragPos;
         MouseProxy.sendState(MouseProxy.currentState);
     }
 
     public static function stopDragSync():Void {
         if (!MouseProxy.isDragging) return;
         MouseProxy.isDragging = false;
-        delete _root.鼠标图标层.onEnterFrame;
+        // 防御：旧会话/旧 SWF 遗留的物理跟随 handler 在复位时一并摘除
+        if (_root.鼠标图标层 != undefined) delete _root.鼠标图标层.onEnterFrame;
         MouseProxy.sendState(MouseProxy.currentState);
     }
 
@@ -222,7 +194,6 @@ class org.flashNight.arki.cursor.MouseProxy {
         ns.设置状态 = MouseProxy.setState;
         ns.启用拖拽同步 = MouseProxy.startDragSync;
         ns.停止拖拽同步 = MouseProxy.stopDragSync;
-        ns.同步拖拽位置 = MouseProxy.syncDragPos;
         ns.标准化状态 = MouseProxy.normalizeState;
         ns.发送状态 = MouseProxy.sendState;
         ns.确保容器 = MouseProxy.ensureContainer;
@@ -231,7 +202,10 @@ class org.flashNight.arki.cursor.MouseProxy {
         ns.普通状态 = MouseProxy.DEFAULT_STATE;
         _root.鼠标代理 = ns;
 
+        // 复位：旧实例可能遗留物理跟随 handler 与 dragging 标志，统一归零后上报
         if (_root.鼠标图标层 != undefined) delete _root.鼠标图标层.onEnterFrame;
+        MouseProxy.isDragging = false;
+        MouseProxy.currentState = MouseProxy.DEFAULT_STATE;
         MouseProxy.sendState(MouseProxy.DEFAULT_STATE);
     }
 }

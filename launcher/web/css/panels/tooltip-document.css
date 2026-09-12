@@ -1,0 +1,21 @@
+/* PanelTooltipDocument — document 渲染的 Web 权威约束
+ *
+ * 注释视觉权威 = 迁移前 Web（foundation-rest.css 的 #panel-tooltip --tt-* token 与
+ * .flash-tt-* 布局原语，逐项对齐 AS2 Symbol 274 / TooltipConstants）。document
+ * 适配（modules/tooltip-document.js）输出与 buildItemRichHtml 完全同款的
+ * .flash-tt-rich/.kshop-tt-* 骨架，本文件【不】重写任何 --tt-* token、颜色、
+ * 字体或布局——上一轮把 NativeHudTheme 值灌进 .ntt-doc 是错误改动，已移除。
+ *
+ * ntt-* 类只是语义标记（测试/对比 harness 识别 document 渲染），全部零视觉规则：
+ *   .ntt-doc          根标记，挂在 .flash-tt-rich 上
+ *   .ntt-intro-panel / .ntt-intro / .ntt-desc / .ntt-icon / .ntt-suffix
+ *                     与 flash-tt-* 和 kshop-tt-* 同位
+ *   .ntt-title        document.title 的标题行块（等价 legacy <b>标题</b><br> 首行）
+ *   .ntt-sec          每个 section 的块容器（等价 legacy 段间 <br> 行结构；
+ *                     div 无默认 margin，不得加间距规则，否则偏离 legacy 排版）
+ *   .ntt-icon-placeholder / .ntt-icon-image
+ *                     图标占位/实图标记
+ *
+ * data-doc-profile="simple|dense|pinned" 同样只是标注：交互 profile 由 tooltip.js
+ * profileForDocument 映射到 data-tooltip-profile，样式仍走既有 profile 规则。
+ */

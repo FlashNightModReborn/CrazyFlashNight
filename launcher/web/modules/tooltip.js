@@ -330,7 +330,133 @@ var PanelTooltip = (function() {
         return scrollable;
     }
 
+    // ── COMMON native_interaction tooltip document 适配 ──
+    //
+    // document 语义/归一化/HTML 渲染由同目录 tooltip-document.js 承载（浏览器全局
+    // PanelTooltipDocument，Node 可 require）。本模块只负责把 document 接到既有
+    // show/update/bindAsync 管线：owner、scope、_showGen、迟到回包拒绝、定位与
+    // 滚动语义不变，document 不产生第二套生命周期状态。
+    //
+    // 加载：tooltip-document.js 与 tooltip.js 同目录部署；init() 时按本文件
+    // script URL 推导同目录路径注入。注入失败/尚未就绪时 document 入口安全回落
+    // （buildDocumentHtml → '' → 调用方回落 legacy HTML 路径）。
+
+    var _documentModuleSrc = null;
+    var _documentModuleRequested = false;
+
+    function docApi() {
+        if (typeof PanelTooltipDocument !== 'undefined' && PanelTooltipDocument) {
+            return PanelTooltipDocument;
+        }
+        if (typeof window !== 'undefined' && window.PanelTooltipDocument) {
+            return window.PanelTooltipDocument;
+        }
+        return null;
+    }
+
+    function ensureDocumentModule() {
+        if (docApi() || _documentModuleRequested) return;
+        if (typeof document === 'undefined' || !document.createElement) return;
+        var src = _documentModuleSrc;
+        if (!src && document.querySelectorAll) {
+            // 兜底：currentScript 不可用（少数注入形态）时扫 script[src$="tooltip.js"]
+            var scripts = document.querySelectorAll('script[src]');
+            for (var i = 0; i < scripts.length; i++) {
+                var s = scripts[i].src || '';
+                if (/tooltip\.js([?#].*)?$/.test(s)) {
+                    src = s.replace(/tooltip\.js([?#].*)?$/, 'tooltip-document.js');
+                    break;
+                }
+            }
+        }
+        if (!src) return;
+        _documentModuleRequested = true;
+        try {
+            var el = document.createElement('script');
+            el.src = src;
+            el.async = true;
+            el.onerror = function() {};
+            var host = document.head || document.documentElement;
+            if (host && host.appendChild) host.appendChild(el);
+        } catch (e) { }
+    }
+
+    function normalizedDocumentOf(input) {
+        var api = docApi();
+        if (!api || typeof api.normalize !== 'function') return null;
+        try { return api.normalize(input); } catch (e) { return null; }
+    }
+
+    function buildDocumentHtml(input, opts) {
+        var api = docApi();
+        if (!api || typeof api.buildHtml !== 'function') return '';
+        try { return api.buildHtml(input, opts || {}); } catch (e) { return ''; }
+    }
+
+    // document.profile（simple/dense/pinned）→ 宿主交互 profile；
+    // opts.profile 显式传入时面板场景优先。
+    function profileForDocument(doc, override) {
+        if (override) return normalizeProfile(override);
+        if (doc && doc.profile === 'dense') return PROFILE_DENSE;
+        if (doc && doc.profile === 'pinned') return PROFILE_PINNED;
+        return PROFILE_SIMPLE;
+    }
+
+    function copyShowOpts(opts) {
+        var copy = {};
+        if (opts) {
+            for (var key in opts) {
+                if (Object.prototype.hasOwnProperty.call(opts, key)) copy[key] = opts[key];
+            }
+        }
+        return copy;
+    }
+
+    // native_interaction 直连入口：host 转发 tooltip.show payload 时使用。
+    // e 为 {clientX, clientY}——payload.x/y 是 Flash 逻辑锚点，坐标换算由调用方
+    // （host 转发层）完成，本模块不在这里承担缩放换算。
+    function showDocumentAtMouse(document_, e, owner, opts) {
+        var doc = normalizedDocumentOf(document_);
+        if (!doc) return false;
+        var html = buildDocumentHtml(doc, opts);
+        if (!html) return false;
+        var o = copyShowOpts(opts);
+        o.profile = profileForDocument(doc, o.profile);
+        if (o.profile === PROFILE_PINNED && o.title == null && doc.title) o.title = doc.title;
+        return showAtMouse(html, e, owner, o);
+    }
+
+    function showDocumentAnchored(document_, anchorEl, opts) {
+        var doc = normalizedDocumentOf(document_);
+        if (!doc) return false;
+        var html = buildDocumentHtml(doc, opts);
+        if (!html) return false;
+        var o = copyShowOpts(opts);
+        o.profile = profileForDocument(doc, o.profile);
+        if (o.profile === PROFILE_PINNED && o.title == null && doc.title) o.title = doc.title;
+        return showAnchored(html, anchorEl, o);
+    }
+
+    function showDocumentPinned(document_, anchorEl, opts) {
+        var doc = normalizedDocumentOf(document_);
+        if (!doc) return false;
+        var html = buildDocumentHtml(doc, opts);
+        if (!html) return false;
+        var o = copyShowOpts(opts);
+        if (o.title == null && doc.title) o.title = doc.title;
+        return showPinned(html, anchorEl, o);
+    }
+
+    // 同一 show 内的 document 内容刷新（对应 native-tooltip "同 requestId 重复
+    // show = 内容/锚点刷新"语义）；owner 不匹配或不可见时按 updateContent 拒绝。
+    function updateContentDocument(document_, owner, opts) {
+        var html = buildDocumentHtml(document_, opts);
+        if (!html) return false;
+        return updateContent(html, owner);
+    }
+
     function init() {
+        ensureDocumentModule();
         _el = document.getElementById('panel-tooltip');
         if (_el) {
             _el.setAttribute('role', 'tooltip');
@@ -405,6 +531,9 @@ var PanelTooltip = (function() {
         _owner = owner == null ? null : owner;
         configureProfile(requestedProfile,
             requestedProfile === PROFILE_DENSE ? 'scan' : 'idle');
+        if (requestedProfile === PROFILE_PINNED) {
+            _pinnedTitle = typeof opts.title === 'string' ? opts.title : '';
+        }
         resetPlacementState(opts.placement);
         replaceTooltipContent(html);
         _el.style.display = 'block';
@@ -1089,8 +1218,18 @@ var PanelTooltip = (function() {
     //                    在 .flash-tt-rich 上写 data-layout="narrow"，CSS 局部覆盖 token。
     //                    判断规则参考 ItemUseTypes.TYPE_WEAPON/TYPE_ARMOR/TYPE_SKILL/POTION，
     //                    其他类型物品 (消耗品/材料/收集品/情报/…) 由 caller 显式传 'narrow'。
+    //   document       - 可选，COMMON native_interaction tooltip document（或完整
+    //                    tooltip.show payload）。存在且归一化成功 → 走 document 渲染
+    //                    （intro/desc 字段不再消费；iconHtml/metaHTML/suffix/rootClass/
+    //                    layoutType/splitMode 等 chrome 参数继续生效，icon 缺省解析
+    //                    document.icon）。document 无效或模块未就绪 → 回落下方原路径。
     function buildItemRichHtml(opts) {
         opts = opts || {};
+        if (opts.document != null) {
+            var docHtml = buildDocumentHtml(opts.document, opts);
+            if (docHtml) return docHtml;
+            // document 无效 → 回落 legacy intro/desc 路径，行为与未传 document 一致
+        }
         var iconBlock = '';
         if (opts.iconHtml) {
             iconBlock = '<div class="flash-tt-icon kshop-tt-icon">' + opts.iconHtml + '</div>';
@@ -1400,6 +1539,18 @@ var PanelTooltip = (function() {
      *   - inspectionMoveTolerance: number                  重新计时的位移阈值，默认 8px
      *   - inspectionSpeed: number                          重新计时的速度阈值，默认 0.45px/ms
      *   - events: 'pointer' | 'mouse'                     默认 pointer；mouse 兼容旧代码
+     *   - document: 'prefer' | 'only' | true(='prefer')    可选；响应对象带有效
+     *                                                     COMMON document 字段时切换
+     *                                                     document 渲染。prefer=无效
+     *                                                     回落 renderRich；only=无效
+     *                                                     document 走 renderFailure。
+     *                                                     缺省关闭，旧调用方零感知。
+     *   - renderDocument: function(item, doc, response) -> html|null
+     *                                                     可选 document 渲染器（保留
+     *                                                     metaHTML/suffix/rootClass 等
+     *                                                     面板 chrome 时用）；缺省
+     *                                                     buildDocumentHtml(doc)。返回
+     *                                                     空 → prefer 回落 renderRich。
      */
     function bindAsync(node, options) {
         if (!node || !options) return noBinding();
@@ -1680,10 +1831,38 @@ var PanelTooltip = (function() {
             else node.removeAttribute('aria-describedby');
         }
 
+        var documentMode = options.document === true ? 'prefer'
+            : (options.document === 'prefer' || options.document === 'only'
+                ? options.document : null);
+
+        // rich 内容分派：document 模式开启且响应带有效 document 时优先/仅走
+        // document 渲染；其余走原 renderRich。返回 null = 本次无可渲染 rich 内容。
+        function richHtmlFor(item, data) {
+            if (documentMode && data && data.document != null) {
+                var doc = normalizedDocumentOf(data.document);
+                var html = null;
+                if (doc) {
+                    html = (typeof options.renderDocument === 'function')
+                        ? options.renderDocument(item, doc, data)
+                        : buildDocumentHtml(doc);
+                }
+                if (html) return html;
+                if (documentMode === 'only') return null;
+            }
+            return (typeof options.renderRich === 'function')
+                ? options.renderRich(item, data) : null;
+        }
+
         function renderRichIfCurrent(key, response) {
-            if (!isLive() || activeKey !== key || !isVisible(owner)
-                    || typeof options.renderRich !== 'function') return;
-            updateContent(options.renderRich(activeItem, response), owner);
+            if (!isLive() || activeKey !== key || !isVisible(owner)) return;
+            var html = richHtmlFor(activeItem, response);
+            if (html == null) {
+                // document:'only' 且 document 无效 → 失败渲染；document 关闭且
+                // 缺 renderRich 的旧调用方维持原空转语义（不调 renderFailure）。
+                if (documentMode === 'only') renderFailureIfCurrent(key, response);
+                return;
+            }
+            updateContent(html, owner);
         }
 
         function renderFailureIfCurrent(key, response) {
@@ -1740,9 +1919,18 @@ var PanelTooltip = (function() {
             var item = resolveItem(event);
             activeKey = key;
             activeItem = item;
-            var html = cache[key] && typeof options.renderRich === 'function'
-                ? options.renderRich(item, cache[key])
-                : (typeof options.renderBasic === 'function' ? options.renderBasic(item) : '');
+            var html;
+            if (cache[key]) {
+                // 缓存命中与异步回包走同一 document/renderRich 分派
+                html = richHtmlFor(item, cache[key]);
+                if (html == null) {
+                    html = typeof options.renderBasic === 'function'
+                        ? options.renderBasic(item) : '';
+                }
+            } else {
+                html = typeof options.renderBasic === 'function'
+                    ? options.renderBasic(item) : '';
+            }
             var tooltipAnchor = resolveTooltipAnchor(event);
             var shown;
             if (pointerSource) shown = showAtMouse(html, lastPointerEvent || event, owner, {
@@ -2113,6 +2301,15 @@ var PanelTooltip = (function() {
         return 'narrow';
     }
 
+    // tooltip-document.js 同目录路径推导：必须在模块求值时取 currentScript
+    //（脚本执行完即失效）；取不到时 ensureDocumentModule 还有 script[src] 扫描兜底。
+    try {
+        if (typeof document !== 'undefined' && document.currentScript && document.currentScript.src) {
+            _documentModuleSrc = String(document.currentScript.src)
+                .replace(/[^\/]*([?#].*)?$/, 'tooltip-document.js');
+        }
+    } catch (e) { _documentModuleSrc = null; }
+
     if (document.readyState === 'loading') window.addEventListener('load', init);
     else init();
 
@@ -2139,6 +2336,13 @@ var PanelTooltip = (function() {
         htmlTextScore: htmlTextScore,
         shouldSplitWeb: shouldSplitWeb,
         inferLayoutType: inferLayoutType,
+        // COMMON native_interaction tooltip document 入口（委托 tooltip-document.js）
+        normalizeDocument: normalizedDocumentOf,
+        buildDocumentHtml: buildDocumentHtml,
+        showDocumentAtMouse: showDocumentAtMouse,
+        showDocumentAnchored: showDocumentAnchored,
+        showDocumentPinned: showDocumentPinned,
+        updateContentDocument: updateContentDocument,
         profiles: {
             simple: PROFILE_SIMPLE,
             dense: PROFILE_DENSE,

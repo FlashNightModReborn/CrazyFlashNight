@@ -1,5 +1,7 @@
 # AS2 UI 到 Web Panel 迁移护栏
 
+**2026-09-12 工作区增量**：NPC 场景菜单迁入 NativeHud，两个开发占位保留兼容接口，AS2 注释语义由 C#/Web 分别渲染，注释样式和交互以旧 Web 为权威。当前仍在实现与候选验证，未人验或部署；协议、兼容与验收边界见 [专项 ADR](../docs/NPC菜单与原生注释迁移-ADR-2026-09-12.md)。
+
 **文档角色**：AS2 UI 迁移到 Launcher Web Panel 的专题 canonical doc。
 **最后核对代码基线**：release source commit `c59b9b4cdb9319c04503a703019a9dff30bc04a1`（2026-09-08，医务室整形与共享外观；tag `runtime-build-v2/20260908-plastic-surgery-v1`；限定 `HUMAN_ACCEPTANCE_PASSED / promoted`）。动态 identity/closure、签名共识与审计只读 [runtime manifest](../runtime/cf7-runtime-manifest.tsv)、[runtime release consensus](../config/build/runtime-release-consensus.json)和 [runtime build reproducibility](../docs/runtime-build-reproducibility.md)；整形的人类证据范围见下节，合并上游后的正式产物未重跑游戏业务，不称业务 `standard_entry_verified`。2026-08-30 稳定性修复列车的既有 `promoted / FIELD_REVALIDATION_PENDING` 边界不因此扩大。
 **上一正式发布**：commit `732898b8aa1308cf820976324f47bba97f654e41`（2026-08-27，关卡结果原生状态槽与基地结算工作台；deployment `339b15694d631d483736880c0dfd44429f6926a3`）完成双故障域共识、39/39 production policy 与正式入口身份/总线/正常退出窄验证；未选存档且没有 fresh reveal，不称业务或完整入口 `standard_entry_verified`。

@@ -20,6 +20,8 @@ node launcher/perf/tooltip-audit/runner.js
 - 每个正式插件定义至少一条实际合法安装路径，依赖插件会搜索最多 3 层前置；
 - 实际 `introHTML`、`descHTML` 以及作者输入长度。
 
+语料导出按帧推进：每帧以 8ms 为时间预算、最多推进 1024 个工作步，依赖配件搜索使用显式栈，跨帧保留遍历状态。单次业务调用可能超过预算，`TC_FRAMES` 记录实际帧数和最大耗时；不能把预算当硬实时保证。完成、失败或重入均清理临时帧泵。输出记录次序、编号、真实 composer 与全配件定义覆盖要求保持原样，不通过截断配件路径消除慢脚本提示。
+
 第二步严格校验行协议、连续编号、分类汇总、插件定义覆盖为 100% 和 `composeFailures=0`。这不是声称穷举插件排列的笛卡尔积：每个插件的作者全文由基础“插件材料”注释覆盖，每个定义另有合法安装态，所有装备再有 1/3 插件堆叠形态；布局安全由可滚动上限和非命中合同保证，不依赖恰好撞中最长排列。第三步在真实 `panels.css`、`tooltip.js` 和 `skills-render.js` 中测量全部物品语料与 `data/skills/skills.xml`：
 
 - `1024×576`、`1366×768`、`1920×1080`；
@@ -30,7 +32,7 @@ node launcher/perf/tooltip-audit/runner.js
 
 结果写入忽略目录 `tmp/tooltip-audit/report.json` 和 `report.md`。覆盖相邻格本身不是失败：`dense-inspect` 的浮层不参与 hit-test；源格无法继续命中、浮层越出视口或 profile 漂移才是硬失败。
 
-当前工作树的 fresh 结果为 3652 条物品语料、插件定义 105/105、87648 次 dense 物品测量和 396 次技能测量；视口越界、鼠标热点失守、pointer-events/profile 错误均为 0。106 次需要 dense owner 转发滚动，78286 次覆盖相邻格；后者验证了“不要靠动态避让消灭视觉覆盖，而要让 dense 浮层退出输入平面”的设计前提。同一语料另执行 10956 次 pinned 检视器测量，195 次需要检视器自身滚动，视口越界与 pointer-events/profile 错误同为 0。
+2026-08-15 历史 fresh 结果为 3652 条物品语料、插件定义 105/105、87648 次 dense 物品测量和 396 次技能测量；视口越界、鼠标热点失守、pointer-events/profile 错误均为 0。106 次需要 dense owner 转发滚动，78286 次覆盖相邻格；后者验证了“不要靠动态避让消灭视觉覆盖，而要让 dense 浮层退出输入平面”的设计前提。同一语料另执行 10956 次 pinned 检视器测量，195 次需要检视器自身滚动，视口越界与 pointer-events/profile 错误同为 0。
 
 ## 源码诊断结论
 
@@ -67,3 +69,9 @@ node launcher/perf/tooltip-audit/runner.js
 ## 证据边界
 
 `run-tooltip-corpus-audit.ps1` 只在编译器 0 error / 0 warning、没有 32K retry、且日志出现同一随机 `runId` 的唯一 BEGIN / DONE / END 闭包后落盘。超时或异步闭包不完整会保留 `scripts/compile_state_uncertain.marker`，必须先确认 Flash、JSFL 和旧 test player 已静止并检查迟到日志，不能直接删除闸门。
+
+2026-09-12 分帧导出复验：保留显式 DFS 栈，每帧 8ms 工作预算/最多 1024 步，每 5 秒输出 `TC_PROGRESS`，终态输出 `TC_FRAMES`；候选池 `grantsUse` 闭包只裁掉不可能覆盖剩余配件的装备，实际安装路径仍逐步复核。真实 CS6 run `42f2d246cc5748328ba54f72b94ebdf3` 完成 3706 条/106 种配件全覆盖、Compiler 0/0、零 32K 重试；所有 `TC_ITEM` 原始行与同日同步版逐字节一致（SHA-256 `14f45e070dbc77cbb29b72e4d2e9a64c57ee08b23694d1109e1ca00b2ca3fc87`）。5547 帧、实测最重帧 325ms：单个物品合成仍是原子步骤，8ms 是让出预算，不是硬时限。该入口不依赖 Computer Use；语料涵盖基础词条/进阶/配件，完整游戏的来源索引及运行态上下文另验。
+
+浏览器审计可用 `node launcher/perf/tooltip-audit/runner.js --corpus <本轮新鲜语料.json> --out <独立证据目录>` 指定输入与输出；无参数保留历史默认路径。指定独立输出避免覆盖较早审计证据。
+
+需要真实升阶与获取方式文案时，在导出命令加 `-IncludeContext`：额外加载正式 crafting、shops、kshop 与 arena 静态目录，构建 SynthesisIndex / ItemObtainIndex 后再进入相同分帧泵。默认不开启，便于与历史基础语料复验。该模式不读取玩家存档、不伪造动态掉落/任务发现记录；任一必需目录失败即终止导出。

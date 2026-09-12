@@ -77,6 +77,37 @@ namespace CF7Launcher.Guardian.Hud
     }
 
     /// <summary>
+    /// 可选的宿主压隐通知。NativeHudOverlay 在两条"整层被宿主强制收起"的路径上向实现
+    /// 本接口的 widget 派发 OnHostSuppressed：
+    ///   - Suspend()（Web 面板打开，reason="panel_suspend"）
+    ///   - OnOwnerVisibilityChanged(false)（owner 失焦/最小化，reason="owner_hidden"）
+    ///
+    /// 语义：承载互动会话的 widget（NPC 菜单、pinned tooltip）必须在收到通知时就地
+    /// 终结会话，而不是仅随层隐藏——否则 Resume()/回焦会让无凭据的旧会话原地复活。
+    /// 需要向 AS2 回报关闭的 widget 在自身回调里触发（task 决定发不发 cancel）。
+    /// 通知在 UI 线程派发；实现不得抛出。
+    /// </summary>
+    public interface INativeHudSuppressionAware
+    {
+        /// <param name="reason">"panel_suspend" / "owner_hidden"（供日志与 cancel reason 用）</param>
+        void OnHostSuppressed(string reason);
+    }
+
+    /// <summary>
+    /// 可选的滚轮消费声明。NativeHud 是 WS_EX_NOACTIVATE 分层窗、永不持焦，
+    /// 收不到常规 WM_MOUSEWHEEL；实际路由由 WebOverlayForm 的 WH_MOUSE_LL
+    /// 全局观察完成：命中消费的滚轮事件被钩子吞掉（返回非 0），未命中放行。
+    /// widget 侧只需声明命中语义（如 pinned tooltip 框内滚动），返回是否实际消费。
+    /// </summary>
+    public interface INativeHudWheelConsumer
+    {
+        /// <param name="screenPt">滚轮事件屏幕坐标</param>
+        /// <param name="wheelDelta">原始 wheel delta（±120 倍数）</param>
+        /// <returns>true = 已消费（钩子吞掉该滚轮事件，不再透传给游戏）</returns>
+        bool OnMouseWheel(Point screenPt, int wheelDelta);
+    }
+
+    /// <summary>
     /// Widget 实现此接口表示需要从 UiData snapshot 接收推送。
     /// NativeHudOverlay 在 snapshot 变化时遍历 _widgets.OfType IUiDataConsumer 并调 OnUiDataChanged。
     ///

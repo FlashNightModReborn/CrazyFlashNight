@@ -433,7 +433,9 @@ class org.flashNight.arki.item.CraftingPanelService {
         return {success:true, v:1, itemName:itemName,
             displayname:String(tooltip.displayname || itemName),
             descHTML:String(tooltip.descHTML || ""),
-            introHTML:String(tooltip.introHTML || "")};
+            introHTML:String(tooltip.introHTML || ""),
+            // COMMON v1 语义文档：纯数据透传（纯文本 title/runs，Host/Web 不得二次解析）
+            document: tooltip.document};
     }
 
     private static function executeCommit(params:Object):Object {

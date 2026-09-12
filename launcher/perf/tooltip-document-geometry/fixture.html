@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<title>tooltip-document-geometry fixture</title>
+<!-- 生产级联复刻：overlay.css 提供 body 字体/--cf7-overlay-scale 缺省，
+     panels.css 链入 foundation-*（注释视觉权威）+ tooltip-document.css（零视觉） -->
+<link rel="stylesheet" href="/web/css/overlay.css">
+<link rel="stylesheet" href="/web/css/panels.css">
+<style>
+/* fixture 专用：生产由 tooltip.js 控制 #panel-tooltip 显隐/定位；
+   这里固定左上、强制可见，让 getBoundingClientRect 稳定可读。
+   不写任何 .flash-tt-*/.ntt-* 规则，避免污染被测样式面。 */
+html, body { margin:0; }
+#panel-tooltip { display:block !important; position:absolute; left:12px; top:12px;
+    visibility:visible !important; }
+</style>
+</head>
+<body>
+<div id="panel-tooltip"></div>
+<script>
+/* Icons 桩：icon.name → 不存在的 png（必然 onerror），类名透传，
+   与生产 Icons.html 的输出形态一致（img + 调用方 attrs）。 */
+window.Icons = {
+    html: function(name, cls, attrs) {
+        return '<img src="/web/icons/__missing__' + encodeURIComponent(String(name)) + '.png"'
+            + (cls ? ' class="' + cls + '"' : '') + (attrs || '') + '>';
+    },
+    resolveStatic: function() { return null; }
+};
+</script>
+<script src="/web/generated/font-catalog.js"></script>
+<script src="/web/modules/tooltip.js"></script>
+<script src="/web/modules/tooltip-document.js"></script>
+<script>
+(function() {
+'use strict';
+/* 与 bridge.js 同源缩放：vpH/864，只作用 #panel-tooltip */
+document.documentElement.style.setProperty('--cf7-overlay-scale',
+    String(Math.max(0.25, window.innerHeight / 864)));
+
+var tt = document.getElementById('panel-tooltip');
+
+function mount(html) {
+    tt.innerHTML = html == null ? '' : String(html);
+    return tt;
+}
+
+function rectOf(el) {
+    if (!el) return null;
+    var r = el.getBoundingClientRect();
+    return { w: Math.round(r.width * 100) / 100, h: Math.round(r.height * 100) / 100 };
+}
+
+function q(sel) { return tt.querySelector(sel); }
+
+function measure() {
+    var introPanel = q('.flash-tt-intro-panel');
+    var intro = q('.flash-tt-intro');
+    var desc = q('.flash-tt-desc');
+    var icon = q('.flash-tt-icon');
+    var iconImg = q('.flash-tt-icon img');
+    var root = q('.flash-tt-rich');
+    var cs = function(el, prop) { return el ? getComputedStyle(el)[prop] : null; };
+    return {
+        root: rectOf(root),
+        merged: !!(root && root.className.indexOf('flash-tt-rich--merge') >= 0),
+        layout: root ? (root.getAttribute('data-layout') || 'wide') : null,
+        docProfile: root ? root.getAttribute('data-doc-profile') : null,
+        introPanel: rectOf(introPanel),
+        intro: rectOf(intro),
+        desc: rectOf(desc),
+        hasDesc: !!desc,
+        icon: rectOf(icon),
+        iconImg: rectOf(iconImg),
+        /* 主题/排版 computed：Web 权威断言面 */
+        fontFamily: cs(intro || tt, 'fontFamily'),
+        fontSize: cs(intro || tt, 'fontSize'),
+        lineHeight: cs(intro || tt, 'lineHeight'),
+        introColor: cs(intro, 'color'),
+        introPanelBg: cs(introPanel, 'backgroundImage'),
+        descBg: cs(desc, 'backgroundImage'),
+        iconBlend: cs(iconImg, 'mixBlendMode'),
+        text: tt.innerText
+    };
+}
+
+/* spec = {introHTML, descHTML, iconHtml?, docIcon?, iconName?,
+ *         layoutType?, splitMode?, document}
+ * docIcon=true 时 legacy 侧走 dynamicIconHtml 等价路径（Icons.html +
+ * hide-self onerror），与 document 的 doc.icon 解析链对齐。 */
+function legacyIconFor(spec) {
+    if (spec.docIcon && spec.iconName && window.Icons && Icons.html) {
+        return Icons.html(spec.iconName, '', ' onerror="this.style.display=\'none\'"');
+    }
+    return spec.iconHtml || null;
+}
+
+window.__tdgRun = function(spec) {
+    var opts = {
+        introHTML: spec.introHTML || '',
+        descHTML: spec.descHTML || '',
+        layoutType: spec.layoutType || null,
+        splitMode: spec.splitMode || 'auto'
+    };
+    var lIcon = legacyIconFor(spec);
+    if (lIcon) opts.iconHtml = lIcon;
+    if (spec.metaHTML) opts.metaHTML = spec.metaHTML;
+    if (spec.suffix) opts.suffix = spec.suffix;
+    var legacyHtml = window.PanelTooltip.buildItemRichHtml(opts);
+    mount(legacyHtml);
+    var legacy = measure();
+    legacy._htmlLen = legacyHtml.length;
+
+    var docOpts = { layoutType: spec.layoutType || null, splitMode: spec.splitMode || 'auto' };
+    if (!spec.docIcon && spec.iconHtml) docOpts.iconHtml = spec.iconHtml;
+    if (spec.metaHTML) docOpts.metaHTML = spec.metaHTML;
+    if (spec.suffix) docOpts.suffix = spec.suffix;
+    var docHtml = window.PanelTooltipDocument.buildHtml(spec.document, docOpts);
+    mount(docHtml);
+    var doc = measure();
+    doc._htmlLen = docHtml.length;
+    return { legacy: legacy, doc: doc };
+};
+
+/* 截图用：只挂载其中一种渲染 */
+window.__tdgMount = function(which, spec) {
+    var html;
+    if (which === 'legacy') {
+        html = window.PanelTooltip.buildItemRichHtml({
+            introHTML: spec.introHTML || '', descHTML: spec.descHTML || '',
+            iconHtml: legacyIconFor(spec),
+            metaHTML: spec.metaHTML || '', suffix: spec.suffix || '',
+            layoutType: spec.layoutType || null, splitMode: spec.splitMode || 'auto'
+        });
+    } else {
+        html = window.PanelTooltipDocument.buildHtml(spec.document, {
+            iconHtml: spec.docIcon ? null : (spec.iconHtml || null),
+            metaHTML: spec.metaHTML || '', suffix: spec.suffix || '',
+            layoutType: spec.layoutType || null, splitMode: spec.splitMode || 'auto'
+        });
+    }
+    mount(html);
+    return html.length;
+};
+
+window.__tdgReady = !!(window.PanelTooltip && window.PanelTooltipDocument);
+})();
+</script>
+</body>
+</html>

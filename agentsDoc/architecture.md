@@ -1,5 +1,7 @@
 # 项目技术架构总览
 
+**2026-09-12 工作区增量**（基线 `cde09af935`）：新增 `native_interaction` 场景菜单/注释通道，AS2 持有场景与目标权威，C# 复用 NativeHud 绘制表面，NPC 沿用常驻风格，注释以旧 Web 为视觉和交互权威；Web 面板使用同一语义文档；实现与验收状态见 [专项 ADR](../docs/NPC菜单与原生注释迁移-ADR-2026-09-12.md)。
+
 > **字体 Gate E（2026-08-21）**：根 `fonts/fonts.xml` 是 C#/Web runtime authority，表达 14 asset、28 个语义 role、9 个 `accepted` preset 与 `permanent/on-demand` residency。`fontctl generate` 产出 XML-hash 绑定的 `launcher/web/generated/font-catalog.{json,css,js}` 和 FontPack 兼容 manifest。
 > `RuntimeFontCatalog` 在 WebView2/Native HUD 构造前加载投影，按 face-major（每个 face 内 `temporary/custom → temporary/cache → permanent/runtime`）解析；成功项按 asset 复用同一已验证 byte snapshot，并通过 exact-set `WebResourceRequested` + 内容 ETag 提供字体，未命中不缓存。Web CSS/Canvas/动态 SVG/Tooltip 与 Native HUD/Combo/HitNumber/mono/symbol 均走 role。
 > JetBrains Mono 和 Source Han Serif CN Regular 为常驻，其余按需；旧 `%LOCALAPPDATA%/CF7FlashNight/fonts/` 可能仍有惰性文件，但导入和 Web 字体副本已退役，运行时、CLI 与 harness 均忽略。打包层收 permanent、排除 temporary，并显式收入三项 generated Web 投影。Flash/AS2/FLA/XFL 和 legacy 作者字体不在该图内。机器 Gate 与维护者人工观感已通过；正式部署状态以 runtime consensus 和标准入口证据为准。

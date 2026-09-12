@@ -369,6 +369,13 @@ class org.flashNight.gesh.tooltip.TooltipComposer {
     var lines:Array = TooltipTextBuilder.buildTierInfo(equipDisplayName, itemName, tierName, tierData);
     if (lines.length == 0) return;
     if (width == undefined) width = TooltipConstants.BASE_NUM;
-    TooltipLayout.showTooltip(width, lines.join(""));
+    // 原生注释出口：document 经 native_interaction 下发；通道不可用时回退旧 Flash 渲染
+    var doc:Object = NativeTooltipDocument.buildSectioned(
+        equipDisplayName + " " + tierName, null,
+        [NativeTooltipDocument.makeSection(NativeTooltipDocument.ROLE_BODY, lines.join(""))],
+        NativeTooltipDocument.PROFILE_DENSE);
+    if (NativeTooltipBridge.show(doc) == null) {
+      TooltipLayout.showTooltip(width, lines.join(""));
+    }
   }
 }

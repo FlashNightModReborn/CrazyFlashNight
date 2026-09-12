@@ -257,10 +257,39 @@ class org.flashNight.gesh.tooltip.TooltipTextBuilder {
         if (skill.mp && skill.mp != 0) result.push("，", TooltipConstants.LBL_COST, skill.mp, TooltipConstants.SUF_MP);
         result.push("。");
       }
+      result.push("<BR>");
+    } else if (typeof skill == "object" && !(skill instanceof Array)
+            && !(skill instanceof String)) {
+      // 结构化战技对象（<skill><skillname/>…</skill>，如血色光剑天秤）：无
+      // description 时 String(skill) 只会得到 "[object Object]"。与上方
+      // description 分支同构——skillname 充当战技名行，信息段取
+      // information 或回退"冷却/消耗"概要；都为空时只留战技名行。
+      // 无可显示 skillname 的空对象不产任何内容，也不追加 lone <BR>。
+      if (skill.skillname != undefined && String(skill.skillname).length > 0) {
+        result.push("<font color='" + TooltipConstants.COL_HL + "'>" + TooltipConstants.LBL_ACTIVE_SKILL + "</font>", TooltipFormatter.normalizeDescription(String(skill.skillname)));
+        if (skill.information) {
+          result.push("<BR><font color='" + TooltipConstants.COL_HL + "'>" + TooltipConstants.LBL_SKILL_INFO + "</font>", skill.information);
+        } else {
+          var infoText:String = "";
+          var skillCooldown:Number = Number(skill.cd) / 1000;
+          if (!isNaN(skillCooldown) && skillCooldown > 0) {
+            infoText += TooltipConstants.LBL_COOLDOWN + skillCooldown + TooltipConstants.SUF_SECOND;
+          }
+          if (skill.hp && Number(skill.hp) != 0) {
+            infoText += "，" + TooltipConstants.LBL_COST + skill.hp + TooltipConstants.SUF_HP;
+          }
+          if (skill.mp && Number(skill.mp) != 0) {
+            infoText += "，" + TooltipConstants.LBL_COST + skill.mp + TooltipConstants.SUF_MP;
+          }
+          if (infoText.length > 0) {
+            result.push("<BR><font color='" + TooltipConstants.COL_HL + "'>" + TooltipConstants.LBL_SKILL_INFO + "</font>", infoText, "。");
+          }
+        }
+        result.push("<BR>");
+      }
     } else {
-      result.push(TooltipFormatter.normalizeDescription(String(skill)));
+      result.push(TooltipFormatter.normalizeDescription(String(skill)), "<BR>");
     }
-    result.push("<BR>");
     return result;
   }
 

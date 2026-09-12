@@ -300,6 +300,13 @@ class org.flashNight.arki.merc.ArenaPanelService {
         var descHTML:String = TooltipComposer.generateItemDescriptionText(itemData, item);
         var introHTML:String = TooltipComposer.generateIntroPanelContent(item, itemData, item.value);
 
+        // getData() 仅取 displayname/icon 覆盖键（涂装实例），与 intro 标题头同源；
+        // 不会改动 item.value / Buff / 装备状态。
+        var iconData:Object = null;
+        if (item.getData != undefined && ItemUtil.isEquipment(item.name)) {
+            iconData = item.getData();
+        }
+
         sendResponse({
             task: "arena_response",
             callId: callId,
@@ -310,7 +317,11 @@ class org.flashNight.arki.merc.ArenaPanelService {
             // 真实数据里存在双引号属性（如 <font color="#ff00ff">）：旧 &quot; 替换会让
             // convertAS2Html 的白名单校验丢样式，' 替换会破坏 wire JSON；两者都已废弃。
             descHTML: descHTML,
-            introHTML: introHTML
+            introHTML: introHTML,
+            // COMMON v1 语义文档：同一真实实例与同次 intro/desc 同源构建（含 equipLevel），
+            // title/icon 走 getData() 覆盖键；纯文本 runs，Host/Web 不得二次解析。
+            document: NativeTooltipDocument.buildItem(String(item.name), itemData, iconData,
+                introHTML, descHTML)
         });
     }
 

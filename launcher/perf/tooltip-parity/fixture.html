@@ -1,0 +1,318 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<!--
+  tooltip-parity Web 端真实渲染 fixture。
+  复用 launcher/perf/tooltip-audit 的模式：最小页面壳 + 真实生产模块。
+  本文件自身不算生产代码；渲染路径（tooltip.js / icons.js / panels.css 链）
+  全部经 runner 的 route 拦截打到 --baseline 冻结副本，未冻结的数据资产
+  （icons/*.webp、manifest.json）由静态服务器直接发自工作树。
+  <base href="/launcher/web/"> 让 icons.js 的相对 fetch 命中生产图标目录。
+-->
+<base href="/launcher/web/">
+<link rel="stylesheet" href="/launcher/web/css/game-ui-behavior.css">
+<link rel="stylesheet" href="/launcher/web/css/overlay.css">
+<link rel="stylesheet" href="/launcher/web/css/panels.css">
+<style>
+html, body { margin:0; width:100%; height:100%; overflow:hidden; background:#181a1c; }
+  /* 仅真实 anchorRect 或 pinned 场景使用此元素；普通点锚走无 DOM 的 pointer fallback。
+     元素矩形按 Flash 逻辑坐标等比留边映射，不用 1px 元素冒充鼠标点。 */
+#parity-anchor { position:fixed; left:0; top:0; width:0; height:0; pointer-events:none; }
+</style>
+</head>
+<body>
+<div id="panel-tooltip" aria-hidden="true"></div>
+<div id="parity-anchor"></div>
+<script src="/launcher/web/generated/font-catalog.js"></script>
+<script src="/launcher/web/modules/asset-timeline.js"></script>
+<script src="/launcher/web/modules/icons.js"></script>
+<script src="/launcher/web/modules/tooltip.js"></script>
+<script src="/launcher/web/modules/tooltip-document.js"></script>
+<script>
+(function() {
+    'use strict';
+    var anchorEl = document.getElementById('parity-anchor');
+    var _owner = {};
+
+    // 与生产 bridge.js OverlayScale 同公式：max(0.25, innerHeight / 864)。
+    // fixture 不加载 bridge.js（其 WebView2 通道在 headless 下不存在），
+    // scale 变量按同源公式直写，几何结果等价。
+    function updateOverlayScale() {
+        var h = window.innerHeight || 0;
+        var v = h > 0 ? Math.max(0.25, h / 864) : 1;
+        document.documentElement.style.setProperty('--cf7-overlay-scale', String(v));
+        return v;
+    }
+    updateOverlayScale();
+    window.addEventListener('resize', updateOverlayScale);
+
+    function px(v) { return Math.round(v * 1000) / 1000; }
+
+    function rectOf(node) {
+        if (!node) return null;
+        var r = node.getBoundingClientRect();
+        return { left:px(r.left), top:px(r.top), right:px(r.right), bottom:px(r.bottom),
+            width:px(r.width), height:px(r.height) };
+    }
+
+    // 文本行抽取（视觉折行口径，与 native VisualLine 对齐）：
+    // 对每个 text node 建 Range，getClientRects() 给出逐行片段框；
+    // 按 top 聚合、按 left 排序拼接同视觉行（多样式 span 合并）。
+    // 排除：display:none / visibility:hidden 子树、空白文本节点、
+    // 零宽/零高测量片段。返回 null = 无法可靠采集（标 unknown，不造假）。
+    function isVisibleTextNode(tn) {
+        var el = tn.parentElement;
+        if (!el) return false;
+        var cs = getComputedStyle(el);
+        if (cs.display === 'none' || cs.visibility === 'hidden' || cs.visibility === 'collapse')
+            return false;
+        return true;
+    }
+
+    function visualLinesOf(node) {
+        if (!node) return null;
+        var csNode = getComputedStyle(node);
+        if (csNode.display === 'none' || csNode.visibility === 'hidden') return null;
+        var walker = document.createTreeWalker(node, NodeFilter.SHOW_TEXT);
+        var rows = [];   // [{top, bottom, parts:[{left,ch}]}]
+        var tn, saw = 0, sawAnyNode = false;
+        var range = document.createRange();
+        while ((tn = walker.nextNode())) {
+            var txt = tn.nodeValue;
+            if (!txt || !txt.replace(/\s+/g, '').length) continue;
+            if (!isVisibleTextNode(tn)) continue;
+            sawAnyNode = true;
+            // 逐字符 Range：同 node 折行后每行只取落在该行框内的字符，
+            // 不能把整 nodeValue 塞进每个行框（root 实测重复整段 bug）。
+            for (var i = 0; i < txt.length; i++) {
+                var code = txt.charCodeAt(i);
+                if (code >= 0xDC00 && code <= 0xDFFF) continue;   // 低代理随上一字符
+                var end = (code >= 0xD800 && code <= 0xDBFF && i + 1 < txt.length) ? i + 2 : i + 1;
+                range.setStart(tn, i);
+                range.setEnd(tn, end);
+                var rects = range.getClientRects();
+                if (!rects || !rects.length) continue;
+                var r = rects[0];
+                if (r.width <= 0.5 || r.height <= 0.5) continue;
+                saw++;
+                // 按纵向重叠聚行：同行不同字号 span（如 size=15 混排）行框 top
+                // 不同但 y 区间必然重叠；相邻视觉行框不重叠。
+                var row = null;
+                for (var k = 0; k < rows.length; k++) {
+                    var ov = Math.min(rows[k].bottom, r.bottom) - Math.max(rows[k].top, r.top);
+                    if (ov > 0 && ov >= 0.5 * Math.min(rows[k].bottom - rows[k].top, r.height))
+                        { row = rows[k]; break; }
+                }
+                if (!row) { row = { top: r.top, bottom: r.bottom, parts: [] }; rows.push(row); }
+                else { row.top = Math.min(row.top, r.top); row.bottom = Math.max(row.bottom, r.bottom); }
+                row.parts.push({ left: r.left, ch: txt.slice(i, end) });
+            }
+        }
+        range.detach();
+        // 有文本节点但全部被过滤 → 不可信返回 null；容器无文本 → 合法空数组。
+        if (!saw) return sawAnyNode ? null : [];
+        rows.sort(function(a, b) { return a.top - b.top; });
+        var out = [];
+        rows.forEach(function(row) {
+            row.parts.sort(function(a, b) { return a.left - b.left; });
+            var s = row.parts.map(function(p) { return p.ch; }).join('');
+            s = s.replace(/\r/g, '').replace(/[\t \u3000]+$/g, '').replace(/^\s+/, '');
+            if (s.replace(/\s+/g, '').length) out.push(s);
+        });
+        return out;
+    }
+
+    // 与折行无关的全文通道：textContent 轻量归一（缺内容核对用，不做像素判断）。
+    function normText(node) {
+        if (!node) return null;
+        return String(node.textContent || '').replace(/\s+/g, ' ').trim();
+    }
+
+    function scrollInfo(node) {
+        if (!node) return null;
+        var max = Math.max(0, node.scrollHeight - node.clientHeight);
+        var prev = node.scrollTop;
+        node.scrollTop = 1e9;
+        var reached = node.scrollTop;
+        node.scrollTop = prev;
+        return { scrollable: max > 1, scrollHeight: node.scrollHeight,
+            clientHeight: node.clientHeight, maxScrollTop: reached,
+            reachBottom: reached >= max - 1 };
+    }
+
+    function collectGeometry(profileUsed) {
+        var el = PanelTooltip.getElement();
+        var dbg = PanelTooltip.debugState();
+        var rich = el.querySelector('.flash-tt-rich');
+        var introPanel = el.querySelector('.flash-tt-intro-panel');
+        var introText = el.querySelector('.flash-tt-intro');
+        var desc = el.querySelector('.flash-tt-desc');
+        var iconBox = el.querySelector('.flash-tt-icon');
+        var iconImg = el.querySelector('.flash-tt-icon img, .flash-tt-icon .cfn-layered-icon');
+        var inspBody = el.querySelector('.panel-tooltip-inspector-body');
+        // 普通短提示没有 rich 骨架；其本体就是唯一文字面板。
+        if (!rich && !inspBody) introPanel = el;
+        var introVL = visualLinesOf(introPanel);
+        var descNode = desc || inspBody;
+        var descVL = descNode ? visualLinesOf(descNode) : null;
+        var cs = getComputedStyle(el);
+        var scale = parseFloat(getComputedStyle(document.documentElement)
+            .getPropertyValue('--cf7-overlay-scale')) || 1;
+        return {
+            profile: dbg.profile || profileUsed || null,
+            placement: (dbg.lastPlacement && dbg.lastPlacement.placement)
+                || el.getAttribute('data-placement') || null,
+            overlayScale: scale,
+            tooltipRect: rectOf(el),
+            introPanelRect: rectOf(introPanel),
+            descPanelRect: rectOf(desc),
+            iconRect: rectOf(iconBox),
+            iconImgRect: rectOf(iconImg),
+            iconNatural: (iconImg && iconImg.tagName === 'IMG')
+                ? { w: iconImg.naturalWidth, h: iconImg.naturalHeight, src: iconImg.getAttribute('src') }
+                : null,
+            layout: {
+                split: !!desc,
+                merge: !!(rich && rich.classList.contains('flash-tt-rich--merge')),
+                stacked: !!(rich && rich.classList.contains('flash-tt-rich--stacked')),
+                narrow: !!(rich && rich.getAttribute('data-layout') === 'narrow')
+            },
+            text: {
+                title: (el.querySelector('.ntt-title') || {}).innerText || null,
+                // 视觉折行口径；null = 无法可靠采集（unknown），'absent' = 无该面板。
+                // introText/descText = 与折行无关的 textContent 全文（缺内容核对用）。
+                intro: introVL, desc: descVL,
+                introText: normText(introPanel), descText: normText(desc || inspBody),
+                introStatus: introVL === null ? 'unknown' : 'ok',
+                descStatus: !(desc || inspBody) ? 'absent' : (descVL === null ? 'unknown' : 'ok')
+            },
+            scroll: scrollInfo(desc || inspBody),
+            fonts: {
+                tooltip: cs.fontFamily, size: cs.fontSize, lineHeight: cs.lineHeight
+            },
+            insideViewport: !!(dbg.lastPlacement && dbg.lastPlacement.insideViewport)
+        };
+    }
+
+    function buildLegacyHtml(sample) {
+        if (typeof sample.plainHTML === 'string')
+            return PanelTooltip.convertAS2Html(sample.plainHTML);
+        var typeField = sample.itemType === '消耗品' ? (sample.itemUse || '') : sample.itemType;
+        var layoutType = sample.layoutType || PanelTooltip.inferLayoutType(typeField);
+        return PanelTooltip.buildItemRichHtml({
+            iconHtml: sample.icon && sample.icon.name
+                ? Icons.html(sample.icon.name, 'parity-tt-icon',
+                    ' onerror="this.style.display=\'none\'"') : '',
+            introHTML: sample.introHTML || '',
+            descHTML: sample.descHTML || '',
+            rootClass: 'parity-tt-item',
+            layoutType: layoutType
+        });
+    }
+
+    function buildDocHtml(sample) {
+        if (typeof PanelTooltipDocument === 'undefined' || !PanelTooltipDocument.buildHtml) {
+            throw new Error('tooltip-document.js not loaded');
+        }
+        var typeField = sample.itemType === '消耗品' ? (sample.itemUse || '') : sample.itemType;
+        return PanelTooltipDocument.buildHtml(sample.document, {
+            layoutType: sample.layoutType || PanelTooltip.inferLayoutType(typeField)
+        });
+    }
+
+    var PROFILE_MAP = { simple: 'simple-tooltip', dense: 'dense-inspect', pinned: 'pinned-inspector' };
+
+    // scenario: {anchor:{x,y}, viewport:{w,h}, profile?, placement?, scrollLines?}
+    // anchor 为 Flash 逻辑 1024x576 坐标；与 FlashCoordinateMapper 相同，
+    // 非 16:9 视口保留 letterbox，不能按整窗独立拉伸 X/Y。
+    function show(sample, scenario, mode) {
+        var st = scenario || {};
+        var vw = window.innerWidth, vh = window.innerHeight;
+        var stageScale = Math.min(vw / 1024, vh / 576);
+        var cx = (vw - 1024 * stageScale) / 2
+            + (st.anchor && st.anchor.x != null ? st.anchor.x : 512) * stageScale;
+        var cy = (vh - 576 * stageScale) / 2
+            + (st.anchor && st.anchor.y != null ? st.anchor.y : 288) * stageScale;
+        anchorEl.style.left = cx + 'px';
+        anchorEl.style.top = cy + 'px';
+        anchorEl.style.width = '0px';
+        anchorEl.style.height = '0px';
+        if (st.anchorRect) {
+            anchorEl.style.left = ((vw - 1024 * stageScale) / 2 + st.anchorRect.x * stageScale) + 'px';
+            anchorEl.style.top = ((vh - 576 * stageScale) / 2 + st.anchorRect.y * stageScale) + 'px';
+            anchorEl.style.width = (st.anchorRect.width * stageScale) + 'px';
+            anchorEl.style.height = (st.anchorRect.height * stageScale) + 'px';
+        }
+
+        var html = (mode === 'doc') ? buildDocHtml(sample) : buildLegacyHtml(sample);
+        var profile = PROFILE_MAP[st.profile || (sample.document && sample.document.profile) || 'dense']
+            || 'dense-inspect';
+
+        var shown;
+        if (profile === 'pinned-inspector') {
+            shown = PanelTooltip.showPinned(html, anchorEl, {
+                owner: _owner, placement: st.placement || 'left', outsideClick: false,
+                title: sample.name || null
+            });
+        } else {
+            shown = PanelTooltip.showAtMouse(html, {
+                clientX: cx, clientY: cy
+            }, _owner, { profile: profile, anchor: st.anchorRect ? anchorEl : null, placement: st.placement });
+        }
+        if (!shown) return { shown: false };
+
+        // 与生产 scheduleReposition 同级等待：字体 ready + 双 rAF + 图片 load + 80ms 兜底。
+        return waitSettled().then(function() {
+            if (st.scrollLines) applyScroll(st.scrollLines);
+            var geo = collectGeometry(profile);
+            geo.shown = true;
+            return geo;
+        });
+    }
+
+    function applyScroll(lines) {
+        var el = PanelTooltip.getElement();
+        var desc = el.querySelector('.flash-tt-desc') || el.querySelector('.panel-tooltip-inspector-body');
+        if (!desc) return;
+        // 模拟真实滚动：走模块 wheel 语义等价路径——直接设 scrollTop，
+        // 每“行”= computed line-height 像素。
+        var lh = parseFloat(getComputedStyle(desc).lineHeight) || 15;
+        desc.scrollTop = Math.min(desc.scrollHeight - desc.clientHeight,
+            Math.max(0, desc.scrollTop + lines * lh));
+    }
+
+    function waitSettled() {
+        var el = PanelTooltip.getElement();
+        var fontsReady = (document.fonts && document.fonts.ready) || Promise.resolve();
+        var imgs = Array.prototype.slice.call(el.querySelectorAll('img'));
+        var imgWaits = imgs.map(function(img) {
+            if (img.complete) return Promise.resolve();
+            return new Promise(function(res) {
+                img.addEventListener('load', res, { once: true });
+                img.addEventListener('error', res, { once: true });
+            });
+        });
+        var raf2 = new Promise(function(res) {
+            requestAnimationFrame(function() { requestAnimationFrame(res); });
+        });
+        var cap = new Promise(function(res) { setTimeout(res, 120); });
+        return Promise.all([fontsReady, raf2].concat(imgWaits, [cap]));
+    }
+
+    function hide() {
+        PanelTooltip.hide(_owner);
+        return !PanelTooltip.isVisible(_owner);
+    }
+
+    window.__parity = {
+        show: show, hide: hide,
+        iconsReady: function() {
+            return new Promise(function(res) { Icons.load(function() { res(true); }); });
+        },
+        version: 'cf7.tooltip-parity-fixture.v1'
+    };
+})();
+</script>
+</body>
+</html>

@@ -67,16 +67,25 @@ function(PanelRuntime, global) {
                 'panel', 'panelInstanceId'
             ]) && typeof data.error === 'string';
         }
-        return ownKeys(data, [
+        // document 是 Host 可选增量键（TooltipDocumentSanitizer 净化后转发）；
+        // 键存在时计入白名单并要求对象形态，内部字段异常由消费端 normalize
+        // 降级回落 intro/desc，不否决整包；其余未知键仍一律拒绝。
+        var expected = [
             'success', 'v', 'itemName', 'displayname', 'iconName', 'itemType',
             'descHTML', 'introHTML', 'type', 'domain', 'cmd', 'callId',
             'panel', 'panelInstanceId'
-        ]) && data.v === 1 && typeof data.itemName === 'string'
+        ];
+        var hasDocument = Object.prototype.hasOwnProperty.call(data, 'document');
+        return ownKeys(data, hasDocument ? expected.concat('document') : expected)
+            && data.v === 1 && typeof data.itemName === 'string'
             && typeof data.displayname === 'string'
             && typeof data.iconName === 'string'
             && typeof data.itemType === 'string'
             && typeof data.descHTML === 'string'
-            && typeof data.introHTML === 'string';
+            && typeof data.introHTML === 'string'
+            && (!hasDocument || (data.document !== null
+                && typeof data.document === 'object'
+                && !(data.document instanceof Array)));
     }
 
     function createTooltipMux(options) {
@@ -217,6 +226,7 @@ function(PanelRuntime, global) {
                     iconUrl:self._tooltip.staticIconUrl(iconKey),
                     introHTML:data.introHTML || '',
                     descHTML:data.descHTML || '',
+                    document:data.document,
                     rootClass:'kshop-tt-rich-context character-build-candidate-tt-context',
                     layoutType:self._tooltip.inferLayoutType(
                         data.itemType || projection && (
