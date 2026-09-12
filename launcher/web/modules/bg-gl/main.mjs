@@ -1,885 +1,296 @@
-// PM19 质数幻方电子战背景层 · 控制器与装配
-// 叙事绑定：相位由真实启动事件驱动（BootstrapApp 消息 + DOM 事件），不是定时循环演示。
-// 性能契约（交付方）：仅 SCRAMBLE / FAULT / RESCRAMBLE 相位期间以 8–12Hz 换棋盘
-// （engine.nextInto + renderer.updateValues）；ROW / COLUMN / DIAGONAL / SYNCHRONIZED
-// 期间冻结当前合法棋盘，只更新视觉 uniform。
-// 二面体变轨间奏（约每 2–4 个环境插播周期一次）期间换盘暂停，动画结束瞬间换数据。
+// CF7 PM19 V2. The launch controller owns all commands; this module observes.
+import { loadPrimeMagicSeedBank, loadPrimeMagicSeed } from './pm19/binary-seed.js';
+import { PrimeMagicSeedBankOrbitEngine } from './pm19/seed-bank-engine.js';
+import { transformBoardInto, DIHEDRAL_KINDS } from './dihedral.mjs';
+import { EnvironmentRenderer } from './environment-renderer.mjs';
 
-import { loadPrimeMagicSeedBank, loadPrimeMagicSeed } from "./pm19/binary-seed.js";
-import { PrimeMagicSeedBankOrbitEngine } from "./pm19/seed-bank-engine.js";
-import { PrimeMagicGridRenderer } from "./renderer.mjs";
-import { PrimeMagicCanvasRenderer } from "./canvas-renderer.mjs";
-import { DIHEDRAL_KINDS, transformBoardInto } from "./dihedral.mjs";
+const SEED_BANK = new URL('../../assets/pm19/seed-bank.json', import.meta.url);
+const CYCLE_MS = 8000, CUE_MS = 2000;
+const media = window.matchMedia('(prefers-reduced-motion: reduce)');
+let canvas = document.getElementById('bg-gl');
+let renderer = null, engine = null, board = null, scratch = null;
+let retired = false, failed = false, userPaused = false, blocked = false;
+let time = 0, previousNow = 0, nextCycle = CYCLE_MS;
+let timer = 0, raf = 0, layoutDirty = true, paintDirty = true;
+let cue = null, firstList = false, hostState = null, userIntent = false;
+let commits = 0, cycles = 0, callbacks = 0, cues = 0;
+const unsubs = [], observers = [], disposers = [];
+const state = { kind: 'quiet', progress: 0, still: false };
 
-// ───────────────────────── 常量区 ─────────────────────────
-
-// 相位 id（渲染器 uniform 契约）
-const PHASE = {
-  SCRAMBLE: 0,      // 频谱扰动（环境底态）
-  ROW: 1,           // 行向量捕获
-  COLUMN: 2,        // 列相干校验
-  DIAGONAL: 3,      // 双对角锁定
-  SYNCHRONIZED: 4,  // 矩阵同步完成
-  FAULT: 5,         // 敌对故障注入
-  RESCRAMBLE: 6,    // 轨道重置
-};
-
-const GRID_SIZE = 19;
-const DIGIT_SLOTS = 8;
-const MAX_DPR = 1.0; // 背景层 DPR 上限
-
-// iGPU 性能压制（实测 240Hz 全速 rAF 会把核显压到 80%+）：
-// 限帧 30fps + 半分辨率渲染（CSS 放大，背景层视觉无损）；两项合计填充率开销约降为 1/16
-const TARGET_FPS = 30;
-const FRAME_INTERVAL_MS = 1000 / TARGET_FPS;
-const RENDER_SCALE = 0.5;
-
-// 相位时长（ms）
-const ROW_SWEEP_MS = 1700;       // 首个 list_resp → 扫行
-const COLUMN_SWEEP_MS = 1600;    // 扫行后 → 扫列
-const DIAGONAL_SWEEP_MS = 1800;  // 确认启动 → 双对角扫描
-const RESCRAMBLE_MS = 700;       // 状态回到 Idle → 轨道重置
-
-// 环境态插播：每 6–10s 一次 ROW / COLUMN 扫描（交替）
-const AMBIENT_SCAN_MIN_MS = 6000;
-const AMBIENT_SCAN_MAX_MS = 10000;
-
-// 换棋盘频率 8–12Hz（仅 SCRAMBLE / FAULT / RESCRAMBLE 相位）
-const BOARD_SWAP_MIN_MS = 1000 / 12;
-const BOARD_SWAP_MAX_MS = 1000 / 8;
-
-// 二面体变轨间奏：环境态下约每 2–4 个插播周期触发一次整盘旋转 / 镜像
-const SPIN_PERIOD_MIN = 2;
-const SPIN_PERIOD_MAX = 4;
-const SPIN_MIN_MS = 900;
-const SPIN_MAX_MS = 1400;
-const FAULT_SPIN = 0.30;              // 变轨期间短暂升高的故障强度（「变轨」感）
-
-// 校验和读数：19×19 完整质数幻方行 / 列 / 双对角和恒等，读数直接写真值
-const MAGIC_SUM = 190000361;
-const READOUT_SETTLE_MS = 70;         // 行 / 列号切换后读数「收敛」伪动画时长
-const READOUT_PENDING_SUM = "·········"; // 降级模式下锁定前的静态占位
-
-// SYNCHRONIZED 进入脉冲（破门冲击波）时长，播完转保持
-const SYNC_BURST_MS = 900;
-
-// 叙事日志（左下角事件流）：相位与真实启动事件 → 电子战 lore 文本
-const LOG_MAX_LINES = 5;              // 最多保留行数（旧行自动淘汰）
-const LOG_LINE_TTL_MS = 12000;        // 单行滞留上限（超时淡出，避免陈年信息残留）
-
-// prefers-reduced-motion 降级
-const REDUCED_MOTION_QUERY = "(prefers-reduced-motion: reduce)";
-const REDUCED_FAULT_SCALE = 0.3;      // 降级模式故障强度统一缩放
-const REDUCED_SWAP_MIN_MS = 1000 / 4; // 降级换盘 2–4Hz
-const REDUCED_SWAP_MAX_MS = 1000 / 2;
-
-// 读数 DOM 样式（运行时注入 <style>，不触碰 bg-gl 以外的任何文件）
-const READOUT_CSS = `
-#bg-gl-readout {
-  position: fixed;
-  right: 14px;
-  bottom: 44px; /* 避开 .bottom 底栏（z-20），两行读数不与其文字重叠 */
-  z-index: 3;
-  pointer-events: none;
-  font: 11px/1.6 ui-monospace, "Cascadia Mono", Consolas, monospace;
-  letter-spacing: 0.08em;
-  text-align: right;
-  color: rgba(61, 213, 255, 0.62);
-  text-shadow: 0 0 6px rgba(61, 213, 255, 0.30);
-  opacity: 0.55;
-  user-select: none;
+function listen(target, name, fn, options) {
+  if (!target) return;
+  target.addEventListener(name, fn, options);
+  disposers.push(() => target.removeEventListener(name, fn, options));
 }
-#bg-gl-readout .lock {
-  color: rgba(200, 178, 138, 0.80);
-  text-shadow: 0 0 6px rgba(200, 178, 138, 0.30);
+function clearSchedule() {
+  if (timer) clearTimeout(timer);
+  if (raf) cancelAnimationFrame(raf);
+  timer = raf = 0;
 }
-#bg-gl-readout.quiet {
-  opacity: 0.16;
+function covered() {
+  const b = document.body;
+  const modal = document.getElementById('modal-host');
+  // 普通加载是透明遮罩，背景仍可见；视频与建角才停止持续绘制。
+  return document.hidden || b.classList.contains('intro-video')
+    || b.classList.contains('character-create-preparing') || b.classList.contains('character-create-active')
+    || (modal && modal.style.display !== 'none')
+    || !canvas || !canvas.isConnected
+    || (!loading() && ['view-welcome', 'view-slots'].every(id => document.getElementById(id)?.hidden));
 }
-/* 双对角锁定保持期：读数呼吸（reduced-motion 下 JS 侧不会加这个 class） */
-#bg-gl-readout.breathe {
-  animation: bgGlReadoutBreathe 1.6s ease-in-out infinite;
-}
-@keyframes bgGlReadoutBreathe {
-  0%, 100% { opacity: 0.55; }
-  50% { opacity: 0.95; }
-}
-`;
+function loading() { return document.body.classList.contains('intro-playing'); }
+function isStatic() { return userPaused || media.matches || failed; }
+function visualKind() { return hostState === 'Error' ? 'error' : cue ? cue.kind : loading() ? 'loading' : 'quiet'; }
 
-// 叙事日志 DOM 样式（左下角事件流；与读数同为运行时注入，不触碰 HTML）
-const LOG_CSS = `
-#bg-gl-log {
-  position: fixed;
-  left: 50%;
-  transform: translateX(-50%);
-  bottom: 44px; /* 与读数同高，避开 .bottom 底栏；居中落在中央卡片正下方的空白带 */
-  z-index: 3;
-  pointer-events: none;
-  font: 11px/1.7 ui-monospace, "Cascadia Mono", Consolas, monospace;
-  letter-spacing: 0.08em;
-  color: rgba(61, 213, 255, 0.60);
-  text-shadow: 0 0 6px rgba(61, 213, 255, 0.28);
-  user-select: none;
-  max-width: 44vw;
-}
-#bg-gl-log .ln {
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  animation: bgGlLogIn 0.24s ease-out;
-}
-#bg-gl-log .ln.old { opacity: 0.34; }
-#bg-gl-log .ln.fade { opacity: 0; transition: opacity 0.6s; }
-#bg-gl-log .ln .ts { color: rgba(106, 98, 88, 0.85); margin-right: 8px; }
-#bg-gl-log .ln.ok { color: rgba(200, 178, 138, 0.85); text-shadow: 0 0 6px rgba(200, 178, 138, 0.3); }
-#bg-gl-log .ln.err { color: rgba(255, 92, 78, 0.9); text-shadow: 0 0 8px rgba(184, 58, 46, 0.5); }
-@keyframes bgGlLogIn {
-  from { opacity: 0; transform: translateX(-8px); }
-  to { opacity: 1; transform: none; }
-}
-/* reduced-motion：JS 侧不加 ln 动画无妨，这里统一关停 */
-@media (prefers-reduced-motion: reduce) {
-  #bg-gl-log .ln { animation: none; }
-}
-`;
-
-// 故障强度（faultIntensity）
-const FAULT_BOOT = 0.45;        // 页面加载完成后的初始 SCRAMBLE
-const FAULT_AMBIENT = 0.18;     // 环境态（低）
-const FAULT_SWEEP = 0.10;       // 行/列扫描期间
-const FAULT_DIAGONAL = 0.05;    // 对角锁定期间
-const FAULT_SYNC = 0.0;         // 矩阵同步完成
-const FAULT_RESCRAMBLE = 0.85;  // 轨道重置
-const FAULT_ERROR = 1.0;        // Error 态故障注入（拉满）
-
-// 允许换棋盘的相位集合
-const SWAP_PHASES = new Set([PHASE.SCRAMBLE, PHASE.FAULT, PHASE.RESCRAMBLE]);
-
-// 种子库 URL：相对本模块解析，与页面 base URL 解耦
-const SEED_BANK_URL = new URL("../../assets/pm19/seed-bank.json", import.meta.url);
-
-// ───────────────────────── 运行态 ─────────────────────────
-
-let engine = null;
-let renderer = null;
-let board = null;
-
-const machine = {
-  phase: PHASE.SCRAMBLE,
-  startedAt: performance.now(),
-  duration: Infinity,  // 有限时长相位到期触发 onDone；Infinity = 保持相位
-  holdProgress: 0,     // 保持相位使用的 progress
-  fault: FAULT_BOOT,
-  signal: 1,
-  onDone: null,
-};
-
-let phaseTimer = null;    // 有限时长相位的到期定时器
-let ambientTimer = null;  // 环境态插播定时器
-let swapTimer = null;     // 换棋盘定时器链
-let rafId = 0;
-let paused = false;
-let characterCreateActive = false;
-let bodyClassObserver = null;
-let retired = false;
-let confirmButton = null;
-const messageUnsubscribers = [];
-let lastFrameAt = -Infinity; // 上一实际渲染帧时刻（限帧用）
-let sawFirstListResp = false;
-let lastState = null;
-let ambientAlternate = false; // 环境插播 ROW / COLUMN 交替
-
-// 二面体变轨间奏运行态
-let spinCountdown = 0;    // 距下次变轨的插播周期数（main 中初始化）
-const spin = { active: false, kind: null, startedAt: 0, duration: 0 };
-let spinScratch = null;   // 变轨数据变换复用缓冲（与 board 双缓冲互换）
-
-// 校验和读数运行态（DOM 运行时注入，teardown 移除）
-const readout = {
-  style: null, root: null, lineMain: null, lineSub: null,
-  key: "",               // 上一帧读数指纹（避免无谓 DOM 写）
-  phase: -1, lastIndex: -1, indexChangedAt: 0,
-};
-
-// 叙事日志运行态（DOM 运行时注入，teardown 移除）
-const logBox = { style: null, root: null, lines: 0 };
-const logTimers = new Set();
-
-// prefers-reduced-motion 降级运行态
-let reducedMedia = null;
-let reducedMotion = false;
-
-// ───────────────────── 相位机 ─────────────────────
-
-function clearPhaseTimers() {
-  if (phaseTimer !== null) { clearTimeout(phaseTimer); phaseTimer = null; }
-  if (ambientTimer !== null) { clearTimeout(ambientTimer); ambientTimer = null; }
-}
-
-function startSwapLoop() {
-  if (retired || swapTimer !== null || engine === null || renderer === null) return;
-  const step = () => {
-    swapTimer = null;
-    if (retired || !SWAP_PHASES.has(machine.phase)) return; // 相位已切走，链自然终止
-    engine.nextInto(board);
-    renderer.updateValues(board);
-    swapTimer = setTimeout(step, nextSwapDelay());
-  };
-  swapTimer = setTimeout(step, nextSwapDelay());
-}
-
-// 换盘间隔：常规 8–12Hz；prefers-reduced-motion 降级为 2–4Hz
-function nextSwapDelay() {
-  const min = reducedMotion ? REDUCED_SWAP_MIN_MS : BOARD_SWAP_MIN_MS;
-  const max = reducedMotion ? REDUCED_SWAP_MAX_MS : BOARD_SWAP_MAX_MS;
-  return min + Math.random() * (max - min);
-}
-
-// 故障强度单点缩放：prefers-reduced-motion 降级统一 ×REDUCED_FAULT_SCALE
-function scaleFault(fault) {
-  return reducedMotion ? fault * REDUCED_FAULT_SCALE : fault;
-}
-
-function stopSwapLoop() {
-  if (swapTimer !== null) { clearTimeout(swapTimer); swapTimer = null; }
-}
-
-function enterPhase(phase, options = {}) {
-  if (retired) return;
-  const {
-    duration = Infinity,
-    fault = machine.fault,
-    signal = 1,
-    holdProgress = 0,
-    onDone = null,
-  } = options;
-  finalizeSpin(); // 真实事件打断变轨动画：先落盘到终态再进新相位
-  clearPhaseTimers();
-  machine.phase = phase;
-  machine.startedAt = performance.now();
-  machine.duration = duration;
-  machine.holdProgress = holdProgress;
-  machine.fault = scaleFault(fault);
-  machine.signal = signal;
-  machine.onDone = onDone;
-  if (SWAP_PHASES.has(phase)) startSwapLoop(); else stopSwapLoop();
-  if (Number.isFinite(duration)) {
-    phaseTimer = setTimeout(() => {
-      phaseTimer = null;
-      const callback = machine.onDone;
-      machine.onDone = null;
-      if (callback) callback();
-    }, duration);
-  }
-}
-
-// 对角锁定：扫满 1.8s 后进保持期（双对角行波循环）。
-// 注意：任何快速到达的真实事件都不许截断扫描 —— WaitingGameReady 不再拉满、
-// Ready / flash_ready 只置 syncPending，等扫描自然播完再进 SYNCHRONIZED（保证动画可见）。
-let syncPending = false; // Ready/flash_ready 已到达但对角扫描未播完
-
-function onDiagonalSweepDone() {
-  machine.duration = Infinity;
-  machine.holdProgress = 1;
-  if (syncPending) {
-    if (characterCreateActive) {
-      enterAmbient();
-      return;
-    }
-    syncPending = false;
-    enterSynchronized();
-  }
-}
-
-function enterDiagonalLock() {
-  if (machine.phase !== PHASE.DIAGONAL) {
-    enterPhase(PHASE.DIAGONAL, {
-      duration: DIAGONAL_SWEEP_MS,
-      fault: FAULT_DIAGONAL,
-      onDone: onDiagonalSweepDone,
-    });
-  }
-}
-
-function enterSynchronized() {
-  syncPending = false;
-  narrativeLog(`Σ=${MAGIC_SUM} · 全轨道同步 · 通路打开`, "ok");
-  // 进入脉冲：900ms 破门冲击波（shader 按 progress<1 播径向爆闪），随后转保持
-  enterPhase(PHASE.SYNCHRONIZED, {
-    duration: SYNC_BURST_MS,
-    fault: FAULT_SYNC,
-    onDone: () => {
-      machine.duration = Infinity;
-      machine.holdProgress = 1;
-    },
-  });
-}
-
-// Ready / flash_ready 入口：对角扫描在播则挂起等播完，否则立即同步
-function requestSynchronized() {
-  if (characterCreateActive) {
-    syncPending = true;
-    if (machine.phase !== PHASE.DIAGONAL || !Number.isFinite(machine.duration)) enterAmbient();
-    return;
-  }
-  if (machine.phase === PHASE.SYNCHRONIZED) return;
-  if (machine.phase === PHASE.DIAGONAL && Number.isFinite(machine.duration)) {
-    syncPending = true;
-    return;
-  }
-  enterSynchronized();
-}
-
-function enterAmbient() {
-  if (retired) return;
-  enterPhase(PHASE.SCRAMBLE, { fault: FAULT_AMBIENT });
-  ambientTimer = setTimeout(() => {
-    ambientTimer = null;
-    if (retired) return;
-    // 二面体变轨间奏：约每 2–4 个插播周期一次（prefers-reduced-motion 降级下禁用）
-    if (!reducedMotion) {
-      spinCountdown -= 1;
-      if (spinCountdown <= 0) {
-        spinCountdown = randomSpinCountdown();
-        startSpinInterlude();
-        return;
-      }
-    }
-    const isRow = !ambientAlternate;
-    ambientAlternate = !ambientAlternate;
-    enterPhase(isRow ? PHASE.ROW : PHASE.COLUMN, {
-      duration: isRow ? ROW_SWEEP_MS : COLUMN_SWEEP_MS,
-      fault: FAULT_SWEEP,
-      onDone: enterAmbient,
-    });
-  }, AMBIENT_SCAN_MIN_MS + Math.random() * (AMBIENT_SCAN_MAX_MS - AMBIENT_SCAN_MIN_MS));
-}
-
-// ───────────────────── 二面体变轨间奏 ─────────────────────
-
-function randomSpinCountdown() {
-  return SPIN_PERIOD_MIN + Math.floor(Math.random() * (SPIN_PERIOD_MAX - SPIN_PERIOD_MIN + 1));
-}
-
-// 触发变轨：相位保持 SCRAMBLE，仅故障短暂升高制造「变轨」感；动画期间棋盘数据不变
-function startSpinInterlude() {
-  stopSwapLoop(); // 换盘暂停，动画结束（或被打断落盘）后由 enterAmbient 恢复
-  spin.active = true;
-  spin.kind = DIHEDRAL_KINDS[Math.floor(Math.random() * DIHEDRAL_KINDS.length)];
-  spin.startedAt = performance.now();
-  spin.duration = SPIN_MIN_MS + Math.random() * (SPIN_MAX_MS - SPIN_MIN_MS);
-  machine.fault = scaleFault(FAULT_SPIN);
-  narrativeLog(`ORBIT 变轨 · ${spin.kind.name.toUpperCase()} · 幻性保持`);
-}
-
-// 动画结束 / 被打断：把棋盘数据替换为旋转 / 镜像后的棋盘（二面体对称，恒为合法幻方），
-// uSpin / uMirror 归零 —— 终态变换与变换后数据渲染结果一致，视觉无缝。
-function finalizeSpin() {
-  if (!spin.active) return;
-  spin.active = false;
-  const kind = spin.kind;
-  spin.kind = null;
-  transformBoardInto(board, spinScratch, GRID_SIZE, kind);
-  const previous = board;
-  board = spinScratch;
-  spinScratch = previous;
-  if (renderer !== null) {
-    renderer.updateValues(board);
-    renderer.setDihedralTransform(0, 1);
-  }
-}
-
-// 渲染循环中推进变轨动画：缓入缓出插值 uSpin / uMirror；镜像以 x 缩放连续翻过 0
-function updateSpin(now) {
-  if (!spin.active || renderer === null) return;
-  const raw = Math.min(1, (now - spin.startedAt) / spin.duration);
-  const eased = 0.5 - 0.5 * Math.cos(raw * Math.PI); // 缓入缓出
-  const mirror = spin.kind.mirror < 0 ? 1 - 2 * eased : 1;
-  renderer.setDihedralTransform(spin.kind.spin * eased, mirror);
-  if (raw >= 1) {
-    finalizeSpin();
-    enterAmbient(); // 恢复换盘链并排程下一轮插播
-  }
-}
-
-// ───────────────────── 事件映射 ─────────────────────
-
-function onFirstListResp() {
-  if (sawFirstListResp) return;
-  sawFirstListResp = true;
-  narrativeLog("黑铁网络接入 · 存档清单同步", "ok");
-  narrativeLog("行向量捕获开始");
-  enterPhase(PHASE.ROW, {
-    duration: ROW_SWEEP_MS,
-    fault: FAULT_SWEEP,
-    onDone: () => {
-      narrativeLog("19 行向量捕获 · Σ 全部命中");
-      narrativeLog("列相干校验开始");
-      enterPhase(PHASE.COLUMN, {
-        duration: COLUMN_SWEEP_MS,
-        fault: FAULT_SWEEP,
-        onDone: () => {
-          narrativeLog("19 列相干校验通过 · 转入监听态", "ok");
-          enterAmbient();
-        },
-      });
-    },
-  });
-}
-
-function onLaunchState(msg) {
-  const state = msg && msg.state;
-  if (typeof state !== "string") return;
-  const previous = lastState;
-  lastState = state;
-  switch (state) {
-    case "Spawning":
-      narrativeLog("θ-FLOOD 载波建立 · 进程拉起");
-      enterDiagonalLock();
-      break;
-    case "WaitingConnect":
-      narrativeLog("等待渲染进程连接…");
-      enterDiagonalLock();
-      break;
-    case "WaitingHandshake":
-      narrativeLog("诺亚终端握手…");
-      enterDiagonalLock();
-      break;
-    case "Embedding":
-      narrativeLog("AVM1 沙箱嵌入…");
-      enterDiagonalLock();
-      break;
-    case "WaitingGameReady":
-      narrativeLog("等待游戏就绪信号…");
-      enterDiagonalLock();
-      break;
-    case "Ready":
-      narrativeLog("游戏就绪 · 矩阵同步", "ok");
-      requestSynchronized();
-      break;
-    case "Error":
-      syncPending = false;
-      narrativeLog("敌对故障注入 · 链路中断", "err");
-      enterPhase(PHASE.FAULT, { fault: FAULT_ERROR, signal: 0.75 });
-      break;
-    case "Idle":
-      // 首次消息或本就是 Idle 不算「回到 Idle」，避免开场误触发重置
-      syncPending = false;
-      if (previous !== null && previous !== "Idle") {
-        narrativeLog("轨道重置 · 回到监听态");
-        enterPhase(PHASE.RESCRAMBLE, {
-          duration: RESCRAMBLE_MS,
-          fault: FAULT_RESCRAMBLE,
-          onDone: enterAmbient,
-        });
-      }
-      break;
-    default:
-      break;
-  }
-}
-
-// ───────────────────── 校验和收敛读数（叙事 DOM，全部运行时注入） ─────────────────────
-
-function createReadout() {
-  const style = document.createElement("style");
-  style.id = "bg-gl-readout-style";
-  style.textContent = READOUT_CSS;
-  document.head.appendChild(style);
-
-  const root = document.createElement("div");
-  root.id = "bg-gl-readout";
-  root.className = "quiet";
-  const lineMain = document.createElement("div");
-  const lineSub = document.createElement("div");
-  root.appendChild(lineMain);
-  root.appendChild(lineSub);
-  document.body.appendChild(root);
-
-  readout.style = style;
-  readout.root = root;
-  readout.lineMain = lineMain;
-  readout.lineSub = lineSub;
-}
-
-function removeReadout() {
-  if (readout.root !== null) { readout.root.remove(); readout.root = null; }
-  if (readout.style !== null) { readout.style.remove(); readout.style = null; }
-  readout.lineMain = null;
-  readout.lineSub = null;
-  readout.key = "";
-  readout.phase = -1;
-  readout.lastIndex = -1;
-}
-
-// ───────────────────── 叙事日志（电子战事件流） ─────────────────────
-
-function createLog() {
-  if (logBox.root !== null) return;
-  const style = document.createElement("style");
-  style.id = "bg-gl-log-style";
-  style.textContent = LOG_CSS;
-  document.head.appendChild(style);
-  const root = document.createElement("div");
-  root.id = "bg-gl-log";
-  root.setAttribute("aria-hidden", "true");
-  document.body.appendChild(root);
-  logBox.style = style;
-  logBox.root = root;
-}
-
-function removeLog() {
-  for (const timer of logTimers) clearTimeout(timer);
-  logTimers.clear();
-  if (logBox.root !== null) { logBox.root.remove(); logBox.root = null; }
-  if (logBox.style !== null) { logBox.style.remove(); logBox.style = null; }
-  logBox.lines = 0;
-}
-
-function scheduleLogTimeout(callback, delay) {
-  const timer = setTimeout(() => {
-    logTimers.delete(timer);
-    callback();
-  }, delay);
-  logTimers.add(timer);
-  return timer;
-}
-
-// tone: "" 默认信息 / "ok" 锁定与就绪 / "err" 敌对故障
-function narrativeLog(text, tone = "") {
-  if (logBox.root === null) return;
-  const root = logBox.root;
-  const line = document.createElement("div");
-  line.className = "ln" + (tone ? " " + tone : "");
-  const ts = document.createElement("span");
-  ts.className = "ts";
-  ts.textContent = new Date().toTimeString().slice(0, 8);
-  line.appendChild(ts);
-  line.appendChild(document.createTextNode(text));
-  root.appendChild(line);
-  // 超龄行先标 fade 再移除；旧行降透明度
-  const items = root.children;
-  while (items.length > LOG_MAX_LINES) {
-    const oldest = items[0];
-    oldest.classList.add("fade");
-    scheduleLogTimeout(() => oldest.remove(), 650);
-    if (items.length > LOG_MAX_LINES * 2) oldest.remove(); // 兜底防堆积
-    break;
-  }
-  for (let i = 0; i < items.length - 1; i += 1) items[i].classList.add("old");
-  scheduleLogTimeout(() => {
-    line.classList.add("fade");
-    scheduleLogTimeout(() => line.remove(), 650);
-  }, LOG_LINE_TTL_MS);
-  logBox.lines += 1;
-}
-
-// 收敛伪动画的随机滚动值（9 位数，与真值同量级）
-function garbleSum() {
-  return String(100000000 + Math.floor(Math.random() * 900000000));
-}
-
-function setReadout(mainText, mainLocked, subText, subLocked, quiet) {
-  if (readout.root === null) return;
-  const key = `${mainText}|${subText}|${mainLocked}|${subLocked}|${quiet}`;
-  if (key === readout.key) return;
-  readout.key = key;
-  readout.lineMain.textContent = mainText;
-  readout.lineSub.textContent = subText;
-  readout.lineMain.className = mainLocked ? "lock" : "";
-  readout.lineSub.className = subLocked ? "lock" : "";
-  readout.root.className = quiet ? "quiet" : "";
-}
-
-function updateReadout(now, progress, activeRow, activeColumn) {
-  if (readout.root === null) return;
-  const phase = machine.phase;
-  if (phase !== readout.phase) {
-    readout.phase = phase;
-    readout.lastIndex = -1;
-    readout.indexChangedAt = now;
-  }
-  if (phase === PHASE.ROW || phase === PHASE.COLUMN) {
-    // 行 / 列扫描：行号快速滚动，每次切换后先滚动随机值再定格真值（数学上恒等）
-    const index = Math.max(0, phase === PHASE.ROW ? activeRow : activeColumn);
-    if (index !== readout.lastIndex) {
-      readout.lastIndex = index;
-      readout.indexChangedAt = now;
-    }
-    // 降级模式无滚动动画，直接显示定格值
-    const settled = reducedMotion || now - readout.indexChangedAt >= READOUT_SETTLE_MS;
-    const sum = settled ? `${MAGIC_SUM} ✓` : garbleSum();
-    const label = phase === PHASE.ROW ? "ROW" : "COL";
-    setReadout(`${label} ${String(index).padStart(2, "0")} Σ=${sum}`, settled, "", false, false);
-  } else if (phase === PHASE.DIAGONAL) {
-    // 双对角锁定：MAIN 先收敛（前半程），ANTI 后收敛（后半程）
-    const mainLocked = progress * 2 >= 1;
-    const antiProgress = progress * 2 - 1;
-    const antiLocked = antiProgress >= 1;
-    const pending = reducedMotion ? READOUT_PENDING_SUM : garbleSum();
-    const mainSum = mainLocked ? `${MAGIC_SUM} ✓` : pending;
-    const subText = antiProgress <= 0 ? "" : `ANTI Σ=${antiLocked ? `${MAGIC_SUM} ✓` : pending}`;
-    setReadout(`MAIN Σ=${mainSum}`, mainLocked, subText, antiLocked, false);
-    // 锁定保持期：读数呼吸（与 shader 双对角行波同步的「等待 Ready」活信号）
-    if (readout.root) readout.root.classList.toggle("breathe", progress >= 1 && !reducedMotion);
-  } else if (phase === PHASE.SYNCHRONIZED) {
-    setReadout(`Σ=${MAGIC_SUM} · 361/361 VALID`, true, "", false, false);
-  } else {
-    // SCRAMBLE / FAULT / RESCRAMBLE：极低透明度常显真值；变轨期间升级为 ORBIT 标签
-    if (spin.active && spin.kind) {
-      setReadout(`ORBIT ${spin.kind.name.toUpperCase()} · Σ=${MAGIC_SUM}`, false, "", false, false);
-    } else {
-      setReadout(`Σ=${MAGIC_SUM}`, false, "", false, true);
+function measure() {
+  const masks = [];
+  function add(selector, fade) {
+    for (const el of document.querySelectorAll(selector)) {
+      if (!el.getClientRects().length || el.closest('[hidden]')) continue;
+      const r = el.getBoundingClientRect();
+      if (r.width && r.height) masks.push({ x: r.x - 2, y: r.y - 2, width: r.width + 4, height: r.height + 4, fade });
     }
   }
+  add('.welcome-card', 22);
+  add('.side-l .block', 14);
+  add('.side-r > .lbl, .side-r > .ver, .side-r > .ver-tail, .side-r > .row, .side-r .faction', 6);
+  add('.topbar, .bottom', 8);
+  add('#intro-ov.on.loading .loading-indicator', 24);
+  add('#view-slots .slots-header, #view-slots .toolbar', 10);
+  // Slot cards have opaque backing; masking the scrolling grid also keeps light
+  // out of card gaps when reading an unfamiliar or corrupt save.
+  add('#view-slots .cards', 8);
+  renderer.resize(canvas.clientWidth, canvas.clientHeight, masks);
+  layoutDirty = false;
 }
-
-// ───────────────────── prefers-reduced-motion 降级 ─────────────────────
-
-function applyReducedMotion() {
-  if (renderer !== null) renderer.setVisualEffects(!reducedMotion); // 着色器动画总开关
-  if (reducedMotion && spin.active) {
-    finalizeSpin();   // 变轨间奏在降级下禁用：立即落盘
-    enterAmbient();   // 恢复换盘链与插播排程
-  }
+function paint() {
+  if (!renderer || retired) return;
+  if (layoutDirty) measure();
+  state.still = isStatic();
+  state.kind = visualKind();
+  state.progress = cue ? Math.min(1, (time - cue.at) / cue.duration) : 0;
+  renderer.render(time / 1000, state);
+  paintDirty = false;
 }
-
-function onReducedMotionChange(event) {
-  reducedMotion = event.matches;
-  applyReducedMotion();
+function safePaint() {
+  try { paint(); }
+  catch (error) { fail(error); }
 }
-
-// ───────────────────── 渲染循环与暂停 ─────────────────────
-
-function tick(now) {
-  rafId = 0;
-  if (paused) return;
-  // 限帧：rAF 链保持（240Hz 也照跑），但只在到达帧间隔时真正渲染
-  if (now - lastFrameAt < FRAME_INTERVAL_MS) {
-    rafId = requestAnimationFrame(tick);
-    return;
-  }
-  lastFrameAt = now;
+function beginCue(kind, duration = CUE_MS, commit = false) {
+  if (retired || failed) return;
+  // Cancel the OLD uncommitted animation. There is no half-board to finalize.
+  cue = { kind, at: time, duration, commit };
+  cues++;
+  paintDirty = true;
+}
+function commitBoard() {
+  if (cycles % 2 === 1) transformBoardInto(board, scratch, 19, DIHEDRAL_KINDS[1]);
+  else engine.nextInto(scratch);
+  const old = board; board = scratch; scratch = old;
+  renderer.updateValues(board);
+  commits++;
+}
+function frame(now) {
+  raf = 0; callbacks++;
+  if (retired || blocked || isStatic() || !renderer) return;
+  // Only visible active time advances. No resume catch-up and no hidden swaps.
+  if (previousNow) time += Math.min(120, Math.max(0, now - previousNow));
+  previousNow = now;
   try {
-    const progress = machine.duration === Infinity
-      ? machine.holdProgress
-      : Math.min(1, (now - machine.startedAt) / machine.duration);
-    let activeRow = -1;
-    let activeColumn = -1;
-    if (machine.phase === PHASE.ROW) {
-      activeRow = Math.min(GRID_SIZE - 1, Math.floor(progress * GRID_SIZE));
-    } else if (machine.phase === PHASE.COLUMN) {
-      activeColumn = Math.min(GRID_SIZE - 1, Math.floor(progress * GRID_SIZE));
+    if (cue && time - cue.at >= cue.duration) {
+      if (cue.commit) commitBoard();
+      cue = null;
     }
-    renderer.setVisualState({
-      phase: machine.phase,
-      progress,
-      activeRow,
-      activeColumn,
-      faultIntensity: machine.fault,
-      signalIntensity: machine.signal,
-    });
-    updateSpin(now); // 变轨动画推进 / 落盘（可能在 render 前换掉棋盘数据）
-    updateReadout(now, progress, activeRow, activeColumn);
-    renderer.render(now / 1000);
-  } catch (error) {
-    // 渲染期异常（如 GPU context lost）：静默撤下，绝不上抛到全局
-    console.warn("[bg-gl] 渲染循环异常，背景层已撤下:", error);
-    teardown("render-failed");
-    return;
-  }
-  rafId = requestAnimationFrame(tick);
-}
-
-function isPaused() {
-  // WebView2/WinForms 仅隐藏宿主 Control 时不保证 document.hidden 更新。
-  // BootstrapPanel 在游戏 reveal 前先设置 cf7-host-hidden，让这一条 30fps
-  // WebGL rAF 链真正停下，随后 Host 才请求 CoreWebView2 suspend。
-  return document.hidden
-    || document.body.classList.contains("intro-video")
-    || document.body.classList.contains("cf7-host-hidden");
-}
-
-function updatePause() {
-  // Ready reveal 是单向的 Bootstrap → Flash 权威交接。BootstrapPanel 虽仍可
-  // 保留为可诊断的 DOM，但背景 GPU 资源没有恢复价值；彻底销毁比仅停 rAF
-  // 更可靠，也覆盖换盘 timer 在 reveal race 中仍可能写 GPU buffer 的情况。
-  if (document.body.classList.contains("cf7-host-hidden")) {
-    teardown("host-retired");
-    return;
-  }
-  const shouldPause = isPaused();
-  document.body.dataset.bgGlLifecycle = shouldPause ? "paused" : "active";
-  if (shouldPause === paused) return;
-  paused = shouldPause;
-  if (paused) {
-    if (rafId !== 0) { cancelAnimationFrame(rafId); rafId = 0; }
-  } else if (rafId === 0 && renderer !== null) {
-    rafId = requestAnimationFrame(tick);
-  }
-}
-
-function isCharacterCreateActive() {
-  return document.body.classList.contains("character-create-active")
-    || document.body.classList.contains("character-create-preparing");
-}
-
-// 建角期间沿用 PM19 自身的环境相位，不额外叠加另一套“幻方”图形。
-// Ready 仍被记住；退出建角后回到同一同步终态。
-function updateCharacterCreateMode() {
-  if (retired) return;
-  const next = isCharacterCreateActive();
-  if (next === characterCreateActive) return;
-  characterCreateActive = next;
-  const canvas = document.getElementById("bg-gl");
-  if (canvas) canvas.dataset.characterCreateMotion = next ? "ambient" : "synchronized";
-  if (next) {
-    if (lastState === "Ready" || machine.phase === PHASE.SYNCHRONIZED) syncPending = true;
-    if (machine.phase !== PHASE.DIAGONAL || !Number.isFinite(machine.duration)) enterAmbient();
-  } else if (lastState === "Ready" || syncPending) {
-    requestSynchronized();
-  }
-}
-
-function updateBodyState() {
-  updatePause();
-  // updatePause 可能因 cf7-host-hidden 同步退休整个页面；同一批 class
-  // mutation 不能再进入建角相位并复活 timer 链。
-  if (retired) return;
-  updateCharacterCreateMode();
-}
-
-function teardown(reason = "retired") {
-  if (retired) return;
-  document.body.dataset.bgGlLifecycle = reason;
-  retired = true;
-  paused = true;
-  clearPhaseTimers();
-  stopSwapLoop();
-  spin.active = false;
-  spin.kind = null;
-  if (reducedMedia !== null && typeof reducedMedia.removeEventListener === "function") {
-    reducedMedia.removeEventListener("change", onReducedMotionChange);
-  }
-  reducedMedia = null;
-  if (bodyClassObserver !== null) bodyClassObserver.disconnect();
-  bodyClassObserver = null;
-  document.removeEventListener("visibilitychange", updatePause);
-  if (confirmButton !== null) confirmButton.removeEventListener("click", onConfirmStart, true);
-  confirmButton = null;
-  for (const unsubscribe of messageUnsubscribers.splice(0)) {
-    try { unsubscribe(); }
-    catch (error) { console.warn("[bg-gl] 消息退订异常，继续退休背景:", error); }
-  }
-  removeReadout();
-  removeLog();
-  if (rafId !== 0) { cancelAnimationFrame(rafId); rafId = 0; }
-  const canvas = document.getElementById("bg-gl");
-  if (renderer !== null && typeof renderer.dispose === "function") {
-    try {
-      renderer.dispose();
-    } catch (error) {
-      console.warn("[bg-gl] 背景资源回收异常，继续撤下挂载点:", error);
+    if (!cue && !loading() && hostState !== 'Error' && time >= nextCycle) {
+      cycles++;
+      beginCue('exchange', CUE_MS, true);
+      nextCycle = time + CYCLE_MS;
     }
+    paint();
+  } catch (error) { fail(error); return; }
+  schedule();
+}
+function schedule() {
+  if (retired || failed || blocked || isStatic() || !renderer || timer || raf) return;
+  // A timeout sleeps BETWEEN useful frames. Unlike the original, it does not
+  // pump 144/240-Hz rAF merely to discard almost all callbacks.
+  const period = cue || loading() ? 1000 / 24 : 1000 / 12;
+  const delay = Math.max(0, period - (performance.now() - previousNow) - 5);
+  timer = setTimeout(() => {
+    timer = 0;
+    if (!retired && !blocked && !isStatic()) raf = requestAnimationFrame(frame);
+  }, delay);
+}
+function reconcile() {
+  if (retired) return;
+  if (document.body.classList.contains('cf7-host-hidden')) { retire('host-retired'); return; }
+  const topHeight = document.querySelector('.topbar')?.getBoundingClientRect().height || 46;
+  const topValue = `${Math.ceil(topHeight)}px`;
+  if (document.body.style.getPropertyValue('--pm19-topbar-height') !== topValue) document.body.style.setProperty('--pm19-topbar-height', topValue);
+  const wasBlocked = blocked;
+  blocked = covered();
+  document.body.dataset.bgGlLifecycle = failed ? 'static-fallback' : blocked ? 'paused-covered' : isStatic() ? 'paused-static' : renderer ? 'active' : 'loading';
+  if (blocked || isStatic()) { clearSchedule(); previousNow = 0; }
+  else if (wasBlocked) { previousNow = performance.now(); layoutDirty = paintDirty = true; }
+  if (!blocked && paintDirty) safePaint();
+  schedule();
+  updatePauseControl();
+}
+function onLayout() {
+  if (retired) return;
+  layoutDirty = paintDirty = true;
+  // Resize in static mode repaints ONCE with the same committed board.
+  reconcile();
+}
+function pauseBackground(value) {
+  if (retired) return;
+  userPaused = !!value;
+  previousNow = 0;
+  paintDirty = true;
+  reconcile();
+}
+function updatePauseControl() {
+  const checkbox = document.getElementById('pm19-pause');
+  if (!checkbox) return;
+  checkbox.checked = userPaused;
+  checkbox.disabled = failed;
+  const text = document.getElementById('pm19-motion-note');
+  const copy = failed ? '背景已静态回退；启动与存档操作不受影响。' : media.matches ? '系统已启用减少动态，背景保持静止。' : '仅本次启动生效；不改变音频和显示设置。';
+  if (text && text.textContent !== copy) text.textContent = copy;
+}
+function mountPauseControl() {
+  if (retired) return;
+  const parent = document.querySelector('#about-pane-document .audio-toggles');
+  if (parent && !document.getElementById('pm19-pause')) {
+    const section = document.createElement('div');
+    section.id = 'pm19-motion';
+    section.innerHTML = '<label class="audio-toggle"><input type="checkbox" id="pm19-pause"><span>暂停背景动态</span></label><p id="pm19-motion-note"></p>';
+    parent.after(section);
+    section.querySelector('input').addEventListener('change', event => pauseBackground(event.target.checked));
   }
-  if (canvas) canvas.remove();
+  updatePauseControl();
+}
+function fail(error) {
+  if (retired || failed) return;
+  failed = true;
+  clearSchedule(); cue = null;
+  console.warn('[bg-gl] V2 static fallback:', error);
+  // Retain CSS environmental detail; release damaged bitmaps. Never remove UI.
+  if (renderer) renderer.dispose();
   renderer = null;
-  engine = null;
+  if (canvas) canvas.hidden = true;
+  document.body.dataset.bgGlLifecycle = 'static-fallback';
+  updatePauseControl();
 }
-
-function onConfirmStart() {
+function retire(reason = 'retired') {
   if (retired) return;
-  narrativeLog("操作员确认 · 双对角锁定开始");
-  enterDiagonalLock();
+  retired = true;
+  clearSchedule();
+  for (const observer of observers) observer.disconnect();
+  for (const dispose of disposers.splice(0)) dispose();
+  for (const off of unsubs.splice(0)) off();
+  if (renderer) renderer.dispose();
+  renderer = engine = board = scratch = null;
+  cue = null;
+  if (canvas) canvas.remove();
+  canvas = null;
+  document.getElementById('pm19-motion')?.remove();
+  document.body.dataset.bgGlLifecycle = reason;
 }
 
-// ───────────────────── 装配 ─────────────────────
+// Dev-only pull inspection, no production toolbar and no hot-path snapshots.
+// Callers receive COPIES, never a mutable authoritative board or engine.
+export function inspect() {
+  return { version: 2, renderer: renderer ? 'canvas2d-cached' : null,
+    retired, failed, blocked, paused: userPaused, reduced: media.matches,
+    time, commits, cycles, callbacks, cues, scheduled: !!(timer || raf),
+    cue: cue ? { ...cue } : null, hostState, userIntent, visualKind: visualKind(),
+    canvas: renderer ? { width: renderer.width, height: renderer.height, cache: renderer.useCache,
+      masks: renderer.masks.map(({ x, y, w, h }) => ({ x, y, w, h })),
+      renders: renderer.renders, rebuilds: renderer.rebuilds, estimatedPixelBytes: renderer.width * renderer.height * 4 * (renderer.surfaces.length + 1) } : null,
+    board: board ? Array.from(board) : null };
+}
 
 async function main() {
-  const canvas = document.getElementById("bg-gl");
-  if (!(canvas instanceof HTMLCanvasElement)) return; // 无挂载点，静默退出
-  if (document.body.classList.contains("cf7-host-hidden")) {
-    teardown("host-retired");
-    return;
+  if (!(canvas instanceof HTMLCanvasElement)) return;
+  // Arm single-way teardown BEFORE the first await.
+  listen(window, 'pagehide', () => retire('pagehide'));
+  listen(document, 'visibilitychange', reconcile);
+  listen(window, 'resize', onLayout);
+  listen(document, 'scroll', onLayout, true);
+  listen(media, 'change', () => { paintDirty = true; previousNow = 0; reconcile(); });
+  listen(canvas, 'contextlost', () => fail(new Error('2D context lost')));
+  const bodyObserver = new MutationObserver(onLayout);
+  bodyObserver.observe(document.body, { attributes: true, attributeFilter: ['class'] });
+  observers.push(bodyObserver);
+  const viewObserver = new MutationObserver(onLayout);
+  for (const id of ['view-welcome', 'view-slots']) {
+    const el = document.getElementById(id);
+    if (el) viewObserver.observe(el, { attributes: true, attributeFilter: ['hidden', 'class'] });
   }
-
-  // 1) 加载种子库（8 张 verified seed，fetch + SHA-256 校验由引擎完成）。
-  //    vendored manifest 的 url 是 /web/assets/... 站点绝对路径，在内存中重映射到
-  //    与本模块相对的资产目录（vendored 文件保持逐字节不变）。
-  const manifest = await loadPrimeMagicSeedBank(SEED_BANK_URL);
-  const entries = manifest.seeds.map((entry) => ({
-    ...entry,
-    url: new URL(entry.url.slice(entry.url.lastIndexOf("/") + 1), SEED_BANK_URL).href,
-  }));
-  const seeds = await Promise.all(entries.map(loadPrimeMagicSeed));
-  if (retired || document.body.classList.contains("cf7-host-hidden")) {
-    teardown("host-retired");
-    return;
+  viewObserver.observe(document.documentElement, { attributes: true, attributeFilter: ['style'] });
+  observers.push(viewObserver);
+  const modal = document.getElementById('modal-host');
+  if (modal) {
+    const mo = new MutationObserver(() => { mountPauseControl(); reconcile(); });
+    mo.observe(modal, { attributes: true, attributeFilter: ['style'], childList: true, subtree: true });
+    observers.push(mo);
   }
-
-  // 2) 引擎：随机种子取自 Web Crypto，避免固定轨道序列
-  const randomSeed = crypto.getRandomValues(new BigUint64Array(1))[0];
-  engine = new PrimeMagicSeedBankOrbitEngine(seeds, randomSeed);
-  board = new Uint32Array(engine.cellCount);
-  spinScratch = new Uint32Array(engine.cellCount); // 变轨数据变换复用缓冲
-  spinCountdown = randomSpinCountdown();
-
-  // 3) 渲染器：WebGL2 → Canvas2D 逐级回退；再失败由外层 catch 撤下 canvas
-  try {
-    renderer = new PrimeMagicGridRenderer(canvas, GRID_SIZE, DIGIT_SLOTS, MAX_DPR, RENDER_SCALE);
-  } catch (glError) {
-    console.warn("[bg-gl] WebGL2 不可用，回退 Canvas2D:", glError);
-    renderer = new PrimeMagicCanvasRenderer(canvas, GRID_SIZE, DIGIT_SLOTS, MAX_DPR, RENDER_SCALE);
+  if (typeof ResizeObserver === 'function') {
+    const ro = new ResizeObserver(onLayout);
+    for (const selector of ['.welcome-card', '.topbar', '#cards', '.side-r .faction']) {
+      const el = document.querySelector(selector); if (el) ro.observe(el);
+    }
+    observers.push(ro);
   }
-
-  // 初始棋盘
-  engine.nextInto(board);
-  renderer.updateValues(board);
-
-  // 3.5) 校验和读数 + 叙事日志 DOM + prefers-reduced-motion 监听（change 时即时切换降级）
-  createReadout();
-  createLog();
-  narrativeLog("PM19 轨道引擎上线 · 8 轨 ×7.43 亿态", "ok");
-  narrativeLog("质数幻方种子库验讫 · SHA-256 OK", "ok");
-  reducedMedia = window.matchMedia(REDUCED_MOTION_QUERY);
-  reducedMotion = reducedMedia.matches;
-  if (typeof reducedMedia.addEventListener === "function") {
-    reducedMedia.addEventListener("change", onReducedMotionChange);
-  }
-  applyReducedMotion();
-
-  // 4) 初始相位：页面加载完成 → SCRAMBLE（持续）
-  enterPhase(PHASE.SCRAMBLE, { fault: FAULT_BOOT });
-
-  // 5) 事件订阅：BootstrapApp 可能尚未定义，缺失时退化为 DOM 事件 + 环境循环
+  reconcile();
+  if (retired) return;
   const app = window.BootstrapApp;
-  if (app && typeof app.onMessage === "function") {
-    messageUnsubscribers.push(
-      app.onMessage("list_resp", onFirstListResp, { replayLatest: true }),
-      app.onMessage("state", onLaunchState, { replayLatest: true }),
-      app.onMessage("flash_ready", requestSynchronized, { replayLatest: true }),
-      app.onMessage("flash_ready", () => narrativeLog("封面帧到达 · 黑铁通路打开", "ok"), { replayLatest: true }),
-    );
-  } else {
-    console.warn("[bg-gl] BootstrapApp 未就绪，仅使用 DOM 事件 + 环境循环");
-    enterAmbient();
+  if (app?.onMessage) {
+    unsubs.push(app.onMessage('list_resp', () => {
+      if (!firstList) { firstList = true; beginCue('arrival'); }
+      layoutDirty = paintDirty = true; reconcile();
+    }, { replayLatest: true }));
+    unsubs.push(app.onMessage('state', message => {
+      const next = message.state;
+      if (next === hostState) return;
+      const old = hostState; hostState = next;
+      paintDirty = true;
+      if (old === 'Error') cue = null;
+      if (next === 'Error') { userIntent = false; beginCue('error', 1500); }
+      else if (next === 'Idle' && old && old !== 'Idle') {
+        userIntent = false; nextCycle = time + CYCLE_MS; beginCue('return', 1200);
+      }
+      // Ready is often PREWARM. Never start, reveal, retire or declare success.
+      reconcile();
+    }, { replayLatest: true }));
+    unsubs.push(app.onMessage('flash_ready', () => { reconcile(); }, { replayLatest: true }));
   }
-
-  confirmButton = document.getElementById("btn-confirm-start");
-  if (confirmButton) {
-    confirmButton.addEventListener("click", onConfirmStart, true);
+  listen(document.getElementById('btn-confirm-start'), 'click', event => {
+    if (event.currentTarget.disabled || retired || covered()) return;
+    userIntent = true; beginCue('confirm', 1200); safePaint();
+    // Original handler continues immediately, including video/loading coverage.
+  }, true);
+  for (const id of ['btn-switch-slot', 'btn-back-welcome']) {
+    listen(document.getElementById(id), 'click', () => { beginCue('return', 1000); });
   }
-
-  // 6) 暂停/恢复：页面隐藏或片头视频（body.intro-video）期间停 rAF
-  document.addEventListener("visibilitychange", updatePause);
-  bodyClassObserver = new MutationObserver(updateBodyState);
-  bodyClassObserver.observe(document.body, { attributes: true, attributeFilter: ["class"] });
-  updateBodyState();
-  if (!paused) rafId = requestAnimationFrame(tick);
+  const manifest = await loadPrimeMagicSeedBank(SEED_BANK);
+  if (retired) return;
+  const entries = manifest.seeds.map(entry => ({ ...entry,
+    url: new URL(entry.url.slice(entry.url.lastIndexOf('/') + 1), SEED_BANK).href }));
+  const seeds = await Promise.all(entries.map(loadPrimeMagicSeed));
+  if (retired) return;
+  engine = new PrimeMagicSeedBankOrbitEngine(seeds, crypto.getRandomValues(new BigUint64Array(1))[0]);
+  board = new Uint32Array(engine.cellCount); scratch = new Uint32Array(engine.cellCount);
+  engine.nextInto(board); commits++;
+  renderer = new EnvironmentRenderer(canvas);
+  renderer.updateValues(board);
+  previousNow = performance.now();
+  layoutDirty = paintDirty = true;
+  reconcile();
+  // Fonts may settle after cached numerals. Invalidate only once and never revive.
+  const fontsPending = document.fonts?.status !== 'loaded';
+  document.fonts?.ready.then(() => {
+    if (fontsPending && !retired && !failed && renderer) { renderer.dirty = true; paintDirty = true; reconcile(); }
+  });
 }
-
-main().catch((error) => {
-  // 静默回退总闸：种子/引擎/双渲染器任一失败，撤下 canvas 并告警，绝不影响主流程
-  console.warn("[bg-gl] 背景层初始化失败，已静默撤下:", error);
-  teardown("failed");
-});
+main().catch(fail);

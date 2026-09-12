@@ -332,7 +332,7 @@ Bootstrap Web 发出的命令必须由 `BootstrapMessageHandler` exact dispatch�
 | `repair_force_continue` | repair 明示继续 |
 <!-- launcher-bootstrap-command-registry:end -->
 `config_set` 只写白名单。启动前门的 attempt/slot/displayName/backup/reveal、durable/SceneReady、catalog 与 exact retry 边界见 [AS2 → Web 迁移护栏](../agentsDoc/as2-web-panel-migration.md)；`bootstrap_reveal_ready` 不代签 `s:1|ga:<attemptId>`，重建不预删 SOL。FontPack 的真实探针、exact HTTPS allow-list 与字节/ETag/WOFF2 边界见[字体目录](../fonts/README.md)。
-Bootstrap 建角在准备期由 `openRequestId` 关联完整遮罩：live snapshot 与纸娃娃有效首帧汇合，且 canvas 至少有 501 个非透明像素，再经过双 `requestAnimationFrame` 才移除 `inert`。准备遮罩不叠加专用幻方；既有 PM19 幻方在建角全过程保持 ambient，退出后再与 Ready 同步，动效从不参与 ready 判定。显式资源失败或 12 秒期限只降级展示。title/snapshot/scene deadline 继续分相，编辑期无 watchdog；迟到回调不得揭开新页，durable 后故障不得重放创建。
+Bootstrap 建角遮罩按 `openRequestId` 关联，snapshot 与有效首帧（≥501 非透明像素）后再等双 rAF 开放；失败/12 秒只降级，迟到不可揭新页。PM19 V2 在建角/Modal/视频中暂停，透明加载持续扫光；Error 的背景与文字反馈持续到宿主退出错误态，绘制失败不影响重试。双缓存、12/24Hz 和本次暂停不参与启动判定。几何避让与验收见 [PM19 背景](../docs/启动引导-PM19质数幻方背景-设计与施工-2026-08-05.md)。
 角色名为主，存档显示名在高级选项中默认跟随；确认页仅在自定义名不同时另列。建角固定 `1024×576` + `PanelScale`，窗口/全屏只等比缩放。外观保留三装备槽、单发型槽和左侧唯一身高；紧凑/完整均挂载 77 项，完整卡片使用可辨识短名与候选池内部滚动，三步零页面滚屏；脸型只走 exact wire，注释统一用 `PanelTooltip`。作者/版本正文来自 `web/content/*.md`；版本记录为近全屏单节点浏览器，运行版本只读 `web/config/version.js`，历史证据与视频提纲按[版本考古规范](../docs/version-archaeology/README.md)收口。
 ## Panel 与 minigame 注册表
 

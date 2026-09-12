@@ -659,8 +659,7 @@ async function preparationPresentation(page) {
             overlayBeforeContent:getComputedStyle(overlay, '::before').content,
             overlayAfterContent:getComputedStyle(overlay, '::after').content,
             overlayRect:{left:rect.left, top:rect.top, right:rect.right, bottom:rect.bottom},
-            backgroundMotion:(document.getElementById('bg-gl') || {}).dataset
-                ? document.getElementById('bg-gl').dataset.characterCreateMotion || '' : '',
+            backgroundLifecycle:document.body.dataset.bgGlLifecycle || '',
             viewInert:view.hasAttribute('inert'),
             viewBusy:view.getAttribute('aria-busy'),
             viewVisibility:getComputedStyle(view).visibility,
@@ -721,7 +720,7 @@ async function run() {
                         const view = document.getElementById('view-character-create');
                         return shell && parseFloat(getComputedStyle(shell).getPropertyValue('--panel-scale')) > 0
                             && !view.classList.contains('view-enter')
-                            && document.getElementById('bg-gl').dataset.characterCreateMotion === 'ambient';
+                            && document.body.dataset.bgGlLifecycle === 'paused-covered';
                     });
                     const scaleLayout = await page.evaluate(() => {
                         const shell = document.querySelector('.cc-scale-shell.panel-scale-shell');
@@ -804,7 +803,7 @@ async function run() {
                             workflowWidth:document.getElementById('cc-form').getBoundingClientRect().width,
                             appearanceView:window.BootstrapCharacterCreate.debugState().appearanceView,
                             density:window.BootstrapCharacterCreate.debugState().appearanceDensity,
-                            backgroundMotion:document.getElementById('bg-gl').dataset.characterCreateMotion,
+                            backgroundLifecycle:document.body.dataset.bgGlLifecycle,
                             slots:document.querySelectorAll('.cc-equipped-slot').length,
                             selectedSlots:document.querySelectorAll('.cc-equipped-slot[aria-checked="true"]').length,
                             poolOptions:equipmentPool.querySelectorAll('[role="option"]').length,
@@ -871,7 +870,7 @@ async function run() {
                     expect(equipmentLayout.appearanceView === 'equipment'
                         && equipmentLayout.density.equipment === 'full'
                         && equipmentLayout.density.hair === 'compact'
-                        && equipmentLayout.backgroundMotion === 'ambient'
+                        && equipmentLayout.backgroundLifecycle === 'paused-covered'
                         && equipmentLayout.slots === 3 && equipmentLayout.selectedSlots === 1
                         && equipmentLayout.poolOptions > 0 && !equipmentLayout.poolCompact
                         && equipmentLayout.poolFull,

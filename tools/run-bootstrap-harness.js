@@ -103,8 +103,9 @@ function startServer() {
                 });
                 response.end(body);
             };
-            // 强制 list_resp 先于 PM19 的异步种子加载完成，稳定覆盖晚订阅重放路径。
-            if (requestUrl.pathname === '/modules/assets/pm19/seed-bank.json') setTimeout(send, 150);
+            // 延迟入口模块才能覆盖晚订阅；只延迟种子时 V2 已经完成订阅。
+            if (requestUrl.pathname === '/modules/bg-gl/main.mjs'
+                    || requestUrl.pathname === '/assets/pm19/seed-bank.json') setTimeout(send, 150);
             else send();
         } catch (error) {
             response.writeHead(500).end(String(error));
@@ -119,6 +120,26 @@ function startServer() {
 async function closeServer(server) {
     if (!server) return;
     await new Promise(resolve => server.close(resolve));
+}
+
+async function backgroundState(page) {
+    return page.evaluate(async () => (await import('./modules/bg-gl/main.mjs')).inspect());
+}
+
+function assertMagicBoard(board, original) {
+    if (!board || board.length !== 361 || new Set(board).size !== 361
+            || board.some(value => !Number.isInteger(value))) throw new Error('invalid PM19 board');
+    if (original && board.some(value => !new Set(original).has(value))) {
+        throw new Error('PM19 exchange changed the original element set');
+    }
+    let diagonal = 0, reverse = 0;
+    for (let r = 0; r < 19; r += 1) {
+        let row = 0, column = 0;
+        for (let c = 0; c < 19; c += 1) { row += board[r * 19 + c]; column += board[c * 19 + r]; }
+        if (row !== 190000361 || column !== 190000361) throw new Error('PM19 row/column sum drift');
+        diagonal += board[r * 20]; reverse += board[(r + 1) * 18];
+    }
+    if (diagonal !== 190000361 || reverse !== 190000361) throw new Error('PM19 diagonal sum drift');
 }
 
 async function main() {
@@ -215,14 +236,217 @@ async function main() {
         });
 
         await check('pm19-late-subscription-replay', async () => {
+            // 安装测试侧只读引用，再用同步条件轮询；Promise 本身不能代表就绪。
+            await page.evaluate(async () => {
+                window.__pm19Harness = await import('./modules/bg-gl/main.mjs');
+            });
             await page.waitForFunction(() => {
-                const log = document.getElementById('bg-gl-log');
-                return log && log.textContent.includes('黑铁网络接入') && log.textContent.includes('行向量捕获开始');
+                const state = window.__pm19Harness.inspect();
+                return state.canvas && state.commits === 1
+                    && document.body.dataset.bgGlLifecycle === 'paused-static';
             }, null, { timeout: 10000 });
-            const syncCount = await page.locator('#bg-gl-log').evaluate(element =>
-                (element.textContent.match(/全轨道同步 · 通路打开/g) || []).length);
-            if (syncCount !== 1) throw new Error('expected one synchronized transition, got ' + syncCount);
-            return 'list/state/flash_ready replayed once after delayed PM19 initialization';
+            const state = await backgroundState(page);
+            if (state.version !== 2 || state.hostState !== 'Ready' || state.cues !== 1
+                    || state.retired || state.userIntent || state.scheduled || state.commits !== 1) {
+                throw new Error('late replay must initialize once without treating prewarm Ready as confirmation: '
+                    + JSON.stringify({ ...state, board:state.board && state.board.length }));
+            }
+            assertMagicBoard(state.board);
+            await page.evaluate(() => {
+                window.__bootstrapHarnessEmit({ cmd:'list_resp', slots:[], introEnabled:false });
+                window.__bootstrapHarnessEmit({ cmd:'state', state:'Ready' });
+                window.__bootstrapHarnessEmit({ cmd:'flash_ready' });
+            });
+            const repeated = await backgroundState(page);
+            if (repeated.cues !== state.cues || repeated.commits !== state.commits || repeated.retired) {
+                throw new Error('duplicate host replay restarted or retired the background');
+            }
+            return 'delayed module replays host state once; prewarm never confirms or retires';
+        });
+
+        await check('pm19-static-resize-and-session-pause', async () => {
+            const before = await backgroundState(page);
+            await page.setViewportSize({ width:viewport.width - 16, height:viewport.height });
+            await page.waitForTimeout(180);
+            const resized = await backgroundState(page);
+            if (resized.callbacks !== before.callbacks || resized.time !== before.time
+                    || resized.scheduled || JSON.stringify(resized.board) !== JSON.stringify(before.board)) {
+                throw new Error('reduced motion resize advanced the clock or board: '
+                    + JSON.stringify({ before:{ ...before, board:before.board && before.board.length },
+                        resized:{ ...resized, board:resized.board && resized.board.length } }));
+            }
+            await page.setViewportSize(viewport);
+            await page.locator('#btn-about').click();
+            await page.locator('#pm19-pause').check();
+            await page.keyboard.press('Escape');
+            await page.emulateMedia({ reducedMotion:'no-preference' });
+            const paused = await backgroundState(page);
+            await page.waitForTimeout(180);
+            const still = await backgroundState(page);
+            if (!still.paused || still.scheduled || still.callbacks !== paused.callbacks
+                    || still.time !== paused.time || still.commits !== paused.commits) {
+                throw new Error('session pause left background work running');
+            }
+            const writes = await page.evaluate(() => window.__bootstrapHarnessEvents.filter(event =>
+                event.direction === 'out' && event.cmd === 'config_set'));
+            if (writes.length) throw new Error('session pause persisted a preference');
+            await page.locator('#btn-about').click();
+            await page.locator('#pm19-pause').uncheck();
+            await page.keyboard.press('Escape');
+            return 'resize preserves the committed board; session pause stops scheduling and writes no config';
+        });
+
+        await check('pm19-visible-cycle-and-coverage', async () => {
+            const start = await backgroundState(page);
+            await page.waitForFunction(value => window.__pm19Harness.inspect().commits > value,
+            start.commits, { timeout:15000 });
+            const exchanged = await backgroundState(page);
+            assertMagicBoard(exchanged.board, start.board);
+            if (exchanged.time < 9900 || exchanged.commits !== start.commits + 1) {
+                throw new Error('orbit committed before its eight-second wait and two-second cue: '
+                    + JSON.stringify({ start:{ ...start, board:start.board && start.board.length },
+                        exchanged:{ ...exchanged, board:exchanged.board && exchanged.board.length } }));
+            }
+            for (const className of ['intro-video',
+                'character-create-preparing', 'character-create-active']) {
+                await page.evaluate(name => document.body.classList.add(name), className);
+                await page.waitForFunction(() => document.body.dataset.bgGlLifecycle === 'paused-covered');
+                const covered = await backgroundState(page);
+                await page.waitForTimeout(160);
+                const after = await backgroundState(page);
+                if (after.scheduled || after.time !== covered.time || after.commits !== covered.commits
+                        || after.callbacks !== covered.callbacks) {
+                    throw new Error(className + ' left hidden background work running');
+                }
+                await page.evaluate(name => document.body.classList.remove(name), className);
+            }
+            await page.emulateMedia({ reducedMotion:'reduce' });
+            return 'one complete legal exchange; video/character-create coverage freezes all background work';
+        });
+
+        await check('pm19-right-column-remains-visible', async () => {
+            await page.setViewportSize({ width:1366, height:900 });
+            await page.waitForTimeout(180);
+            const pixels = await page.evaluate(() => {
+                const side = document.querySelector('.side-r').getBoundingClientRect();
+                const copy = document.querySelector('.side-r .faction').getBoundingClientRect();
+                const canvas = document.getElementById('bg-gl');
+                const x = Math.ceil(side.x + 12), y = Math.ceil(copy.bottom + 24);
+                const w = Math.floor(side.width - 24), h = Math.floor(side.bottom - y - 16);
+                if (w < 1 || h < 20) throw new Error('right-column probe has no visible blank area');
+                const data = canvas.getContext('2d').getImageData(x, y, w, h).data;
+                let visible = 0;
+                for (let i = 3; i < data.length; i += 4) if (data[i] > 8) visible++;
+                return visible;
+            });
+            await page.setViewportSize(viewport);
+            if (pixels < 50) throw new Error('right-column blank area lost its matrix: ' + pixels);
+            return 'actual canvas pixels remain in the right-column blank area: ' + pixels;
+        });
+
+        await check('pm19-confirm-keeps-business-authority', async () => {
+            await page.emulateMedia({ reducedMotion:'no-preference' });
+            await page.evaluate(() => window.__bootstrapHarnessEmit({ cmd:'list_resp', introEnabled:false,
+                lastPlayedSlot:'pm19-fixture', slots:[{ slot:'pm19-fixture', characterName:'测试角色',
+                    displayName:'测试存档', size:4096, lastModified:'2026-09-13T00:00:00', corrupt:false }] }));
+            await page.locator('#btn-confirm-start').click();
+            const state = await backgroundState(page);
+            const starts = await page.evaluate(() => window.__bootstrapHarnessEvents.filter(event =>
+                event.direction === 'out' && event.cmd === 'start_game'));
+            if (!state.userIntent || starts.length !== 1 || starts[0].payload.slot !== 'pm19-fixture'
+                    || starts[0].payload.requireFlashReveal !== true || state.blocked || !state.scheduled) {
+                throw new Error('confirm must send the original single launch and keep its visible background active');
+            }
+            await page.waitForTimeout(1800);
+            const waiting = await backgroundState(page);
+            if (waiting.callbacks <= state.callbacks || waiting.time <= state.time
+                    || waiting.visualKind !== 'loading' || waiting.commits !== state.commits) {
+                throw new Error('transparent loading must animate the committed board without hidden swaps');
+            }
+            const indicator = await page.locator('#intro-ov .loading-indicator').boundingBox();
+            if (waiting.canvas.masks.some(mask => mask.w > indicator.width + 8 || mask.h > indicator.height + 8)) {
+                throw new Error('loading retained the hidden welcome-card or side-column mask');
+            }
+            await page.evaluate(() => window.__bootstrapHarnessEmit({ cmd:'state', state:'Error', msg:'flash_exited_pre_reveal' }));
+            await page.locator('#view-welcome .launch-feedback').waitFor({ state:'visible' });
+            await page.waitForTimeout(1900);
+            const error = await backgroundState(page);
+            if (error.visualKind !== 'error' || error.cue || error.commits !== waiting.commits
+                    || !(await page.locator('#btn-confirm-start.retry').isVisible())) {
+                throw new Error('error feedback ended before the host left Error');
+            }
+            const faultPixels = await page.evaluate(() => {
+                const canvas = document.getElementById('bg-gl');
+                const data = canvas.getContext('2d').getImageData(0, 0, canvas.width, canvas.height).data;
+                let red = 0;
+                for (let i = 0; i < data.length; i += 4) {
+                    if (data[i + 3] > 24 && data[i] > data[i + 1] * 1.45 && data[i] > data[i + 2] * 1.35) red++;
+                }
+                return red / (canvas.width * canvas.height);
+            });
+            if (faultPixels < .002) throw new Error('fault performance was erased by foreground masks: ' + faultPixels);
+            await page.setViewportSize({ width:640, height:360 });
+            await page.evaluate(() => window.__bootstrapHarnessEmit({ cmd:'list_resp', uiFontScale:1.75,
+                lastPlayedSlot:'pm19-fixture', slots:[{ slot:'pm19-fixture', characterName:'测试角色', size:4096 }] }));
+            try { await page.waitForFunction(() => ['#btn-confirm-start', '#view-welcome .launch-feedback'].every(selector => {
+                const r = document.querySelector(selector).getBoundingClientRect();
+                return r.width > 0 && r.y >= 0 && r.bottom <= innerHeight - 20;
+            }), null, { timeout:3000 }); }
+            catch (error) {
+                const bounds = await page.evaluate(() => ['#btn-confirm-start', '#view-welcome .launch-feedback']
+                    .map(selector => ({ selector, rect:document.querySelector(selector).getBoundingClientRect().toJSON() })));
+                await page.setViewportSize(viewport);
+                await page.reload({ waitUntil:'load' });
+                throw new Error('compact error controls clipped: ' + JSON.stringify(bounds));
+            }
+            await page.emulateMedia({ reducedMotion:'reduce' });
+            await page.evaluate(() => document.getElementById('bg-gl').dispatchEvent(new Event('contextlost')));
+            if (!(await backgroundState(page)).failed
+                    || !(await page.locator('#view-welcome .launch-feedback').isVisible())) {
+                throw new Error('background failure hid the business error feedback');
+            }
+            await page.locator('#btn-confirm-start').click();
+            const retries = await page.evaluate(() => window.__bootstrapHarnessEvents.filter(event =>
+                event.direction === 'out' && event.cmd === 'retry'));
+            if (retries.length !== 1) throw new Error('error recovery did not send exactly one original retry');
+            await page.evaluate(() => window.__bootstrapHarnessEmit({ cmd:'state', state:'Spawning' }));
+            if (await page.locator('.launch-feedback:visible').count()) throw new Error('new attempt retained stale error copy');
+            await page.evaluate(() => {
+                window.__bootstrapHarnessEmit({ cmd:'state', state:'Idle' });
+                window.__bootstrapHarnessEmit({ cmd:'list_resp', slots:[], introEnabled:false });
+            });
+            if ((await backgroundState(page)).userIntent) throw new Error('cancel did not clear background intent');
+            await page.setViewportSize(viewport);
+            await page.reload({ waitUntil:'load' });
+            await page.evaluate(async () => { window.__pm19Harness = await import('./modules/bg-gl/main.mjs'); });
+            await page.waitForFunction(() => !!window.__pm19Harness.inspect().canvas);
+            return 'single start/retry; loading stays animated; Error persists; reduced motion/context loss preserve visible recovery';
+        });
+
+        await check('pm19-retire-during-seed-load', async () => {
+            const late = await browser.newPage({ viewport });
+            let held;
+            await late.route('https://cfn-fonts.local/**', route => route.fulfill({ status:204, body:'' }));
+            await late.route('**/assets/pm19/seed-bank.json', route => { held = route; });
+            try {
+                await Promise.all([
+                    late.waitForRequest('**/assets/pm19/seed-bank.json'),
+                    late.goto('http://127.0.0.1:' + port + '/bootstrap.html', { waitUntil:'domcontentloaded' })
+                ]);
+                await late.evaluate(() => document.body.classList.add('cf7-host-hidden'));
+                await late.waitForFunction(() => document.body.dataset.bgGlLifecycle === 'host-retired');
+                await held.continue();
+                held = null;
+                await late.waitForTimeout(350);
+                const state = await backgroundState(late);
+                if (!state.retired || state.canvas || state.board || state.scheduled || state.commits) {
+                    throw new Error('late seed completion revived a retired background');
+                }
+            } finally {
+                if (held) await held.continue();
+                await late.close();
+            }
+            return 'retirement before seed completion prevents all late engine/canvas creation';
         });
 
         await check('host-reveal-retires-gpu-background', async () => {
@@ -234,7 +458,18 @@ async function main() {
                 && !document.getElementById('bg-gl')
                 && !document.getElementById('bg-gl-readout')
                 && !document.getElementById('bg-gl-log'), null, { timeout: 3000 });
-            return 'host reveal cancels timers/rAF, releases the renderer context, and removes PM19 layers';
+            const state = await backgroundState(page);
+            if (!state.retired || state.scheduled || state.board || state.canvas) {
+                throw new Error('host retirement retained background resources');
+            }
+            await page.evaluate(() => document.body.classList.remove('cf7-host-hidden'));
+            await page.emulateMedia({ reducedMotion:'no-preference' });
+            await page.waitForTimeout(160);
+            if (!(await backgroundState(page)).retired || await page.locator('#bg-gl').count()) {
+                throw new Error('retired background revived after host visibility returned');
+            }
+            await page.emulateMedia({ reducedMotion:'reduce' });
+            return 'host reveal cancels scheduling and releases board/caches; visibility cannot revive it';
         });
 
         await check('tooltip-binding', async () => {

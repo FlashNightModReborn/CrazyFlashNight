@@ -830,6 +830,11 @@
       if (state === 'Idle' && prevState !== 'Idle' && _prefsAmbientEnabled) Audio.startAmbient();
     }
     stateBadge.textContent = state + (msg ? ': ' + msg : '');
+    stateBadge.title = stateBadge.textContent;
+    document.body.classList.toggle('launch-error', state === 'Error');
+    document.querySelectorAll('.launch-feedback').forEach(function(node) {
+      node.hidden = state !== 'Error';
+    });
     stateBadge.className = 'state-badge';
     if (state === 'Ready')       stateBadge.className += ' ready';
     else if (state === 'Error')  stateBadge.className += ' error';
