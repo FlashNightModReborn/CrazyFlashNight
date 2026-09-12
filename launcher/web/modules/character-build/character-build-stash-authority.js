@@ -265,6 +265,16 @@ function(SessionModule, ItemUseModule, Transport) {
                 try { waiters[index](result); } catch (_) {}
             }
         };
+        prototype._onItemUseSessionState = function(state, reason) {
+            if (this._itemUseReadyWaiters.length) {
+                var ready = state === 'idle' || state === 'flush_failed'
+                    ? this.itemUseAuthority() : null;
+                if (ready || reason === 'open_failed'
+                        || state === 'closed' || state === 'finalized') {
+                    this._flushItemUseReadyWaiters(ready);
+                }
+            }
+        };
         prototype.itemUseAuthority = function() {
             var generation = this._session.getSessionGeneration();
             var state = this._session.getState();

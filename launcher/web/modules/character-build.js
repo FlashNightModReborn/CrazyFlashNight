@@ -207,14 +207,7 @@ function(SessionModule, ViewModule, TuningModule, Mutation, Pose, Projection,
                 : state === 'write_pending' ? '构筑正在写入，完成后才能进入收纳。'
                     : locked ? '构筑正在结算，完成后才能进入收纳。' : '');
         }
-        if (this._itemUseReadyWaiters.length) {
-            var ready = state === 'idle' || state === 'flush_failed'
-                ? this.itemUseAuthority() : null;
-            if (ready || reason === 'open_failed'
-                    || state === 'closed' || state === 'finalized') {
-                this._flushItemUseReadyWaiters(ready);
-            }
-        }
+        this._onItemUseSessionState(state, reason);
         if (this._ports.onSessionState) this._ports.onSessionState(state, reason, debug);
     };
     CharacterBuildController.prototype._error = function(response, command) {
