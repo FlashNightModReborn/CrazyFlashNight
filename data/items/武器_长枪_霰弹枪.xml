@@ -581,6 +581,7 @@
       切换机制：武器系统根据蓄力状态智能切换，蓄力完成时自动启用光炮模式，蓄力丢失时回归地雷模式。</description>
       <cd>5000</cd>
       <mp>50</mp>
+      <skillLocked>true</skillLocked>
     </skill>
     <data>
       <level>40</level>
@@ -613,11 +614,13 @@
               <skillname>气锤地雷</skillname>
               <cd>5000</cd>
               <mp>50</mp>
+              <skillLocked>true</skillLocked>
             </skill_0>
             <skill_1>
               <skillname>气锤光炮</skillname>
               <cd>5000</cd>
               <mp>50</mp>
+              <skillLocked>true</skillLocked>
             </skill_1>
           </initParam>
         </init>

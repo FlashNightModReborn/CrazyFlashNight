@@ -108,12 +108,14 @@
               <skillname>瞬步斩</skillname>
               <cd>10000</cd>
               <mp>30</mp>
+              <skillLocked>true</skillLocked>
             </skill_0>
             <!-- 空中战技配置 -->
             <skill_1>
               <skillname>镰刀追踪充能</skillname>
               <cd>1000</cd>
               <mp>0</mp>
+              <skillLocked>true</skillLocked>
             </skill_1>
           </initParam>
         </init>
@@ -337,6 +339,7 @@
       <description>手持该武器时可以使用回旋裂地。</description>
       <cd>7000</cd>
       <mp>50</mp>
+      <skillLocked>true</skillLocked>
     </skill>
     <description>联合大学的工匠参考黑市流出的设计图制出的武器，设计者信息不明，仅知代号为“Spark621”。
     融合了机械美学与毁灭力量的重型武器。

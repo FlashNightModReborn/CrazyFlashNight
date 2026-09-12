@@ -15,6 +15,7 @@
       <description>手持该武器时可以使用地狱斩绝。</description>
       <cd>9000</cd>
       <mp>50</mp>
+      <skillLocked>true</skillLocked>
     </skill>
     <description>暂定。</description>
     <data>
@@ -416,6 +417,7 @@
       <description>手持该武器时可以使用Excalibur。</description>
       <cd>30000</cd>
       <mp>300</mp>
+      <skillLocked>true</skillLocked>
     </skill>
     <description>石中剑，也被称为选王之剑。
     据说，只有具备成王资质的天生王者，才能得到这柄剑的认可，将其挥舞自如。</description>
@@ -443,6 +445,7 @@
       <description>手持该武器时可以使用重力操作。</description>
       <cd>25000</cd>
       <mp>100</mp>
+      <skillLocked>true</skillLocked>
     </skill>
     <description>由未知的晶石铸成的剑，有着能改变重力的能量。
     然而，由于其本身不稳定的特性，以及剑身之中的巨大空隙，在面对攻击时，使用者难以用其进行格挡。
@@ -686,6 +689,7 @@
       <power>12</power>
       <range>72</range>
       <knockback>18</knockback>
+      <skillLocked>true</skillLocked>
     </skill>
     <description>人们不相信星座，但是比星座更令人难以理解的事情已经发生了，又为何纠结前者这样的概念是否切实际呢？
     天秤衡量世间万物，以审判者自居。
@@ -745,6 +749,7 @@
       <description>手持该武器可以使用神杀枪。</description>
       <cd>8000</cd>
       <mp>30</mp>
+      <skillLocked>true</skillLocked>
     </skill>
     <description>造型独特且颇具历史色彩的武器，在末世往往有着惊天动地的力量。
     刀身弯曲，通体金色且散发金光的金蛇剑很难被人看作是趁手武器。
@@ -803,6 +808,7 @@
       <cd>24000</cd>
       <hp>0</hp>
       <mp>0</mp>
+      <skillLocked>true</skillLocked>
     </skill>
     <lifecycle>
       <attr_0>
@@ -869,6 +875,7 @@
       不处于攻击或冲击时则可以使用追踪五连刺，对中距离内的敌人进行追踪攻击，优先锁定最近敌人，启动时按奔跑键取消追踪，按互动键优先追踪血量最高敌人。</description>
       <cd>7000</cd>
       <mp>60</mp>
+      <skillLocked>true</skillLocked>
     </skill>
     <data>
       <level>30</level>
@@ -916,6 +923,7 @@
       不处于攻击或冲击时则可以使用追踪五连刺，对中距离内的敌人进行追踪攻击，优先锁定最近敌人，启动时按奔跑键取消追踪，按互动键优先追踪血量最高敌人。</description>
       <cd>7000</cd>
       <mp>60</mp>
+      <skillLocked>true</skillLocked>
     </skill>
     <data>
       <level>30</level>
@@ -959,6 +967,7 @@
       战技启动时，按奔跑键取消追踪，按互动键优先追踪血量最高敌人。</description>
       <cd>11000</cd>
       <mp>50</mp>
+      <skillLocked>true</skillLocked>
     </skill>
     <description>源自唐代环首刀，是中国古代冷兵器的巅峰之作。
     核心工艺在于‌包钢夹钢法‌和‌覆土烧刃技术‌：以熟铁为外皮包裹高碳钢芯，刀刃局部淬火，使刃口硬度极高（HRC 60以上）而刀脊保持韧性，实现了“削铁如泥”与“柔可绕指”的完美结合。</description>

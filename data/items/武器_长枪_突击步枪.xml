@@ -1290,6 +1290,7 @@
       <bullet>无壳穿刺子弹</bullet>
       <sound>re_shotgun_m870.wav</sound>
       <split>3</split>
+      <skillLocked>true</skillLocked>
     </skill>
     <data>
       <level>32</level>
@@ -1937,6 +1938,7 @@
       <bullet>铁枪磁轨弹</bullet>
       <sound>re_shotgun_m870.wav</sound>
       <power>9</power>
+      <skillLocked>true</skillLocked>
     </skill>
     <data>
       <level>44</level>

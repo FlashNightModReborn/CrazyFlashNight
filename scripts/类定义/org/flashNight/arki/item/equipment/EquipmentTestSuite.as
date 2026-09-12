@@ -835,6 +835,9 @@ class org.flashNight.arki.item.equipment.EquipmentTestSuite {
         result += testTagManager_StatusCode_SlotFull();       // -1
         result += testTagManager_StatusCode_AlreadyEquipped();// -2
         result += testTagManager_StatusCode_SkillConflict();  // -4
+        result += testTagManager_StatusCode_SkillReplaceable(); // 1
+        result += testTagManager_StatusCode_SkillLocked();    // -4
+        result += testTagManager_StatusCode_SkillLockedWithoutRootSkill(); // -4
         result += testTagManager_StatusCode_SameTag();        // -8
         result += testTagManager_StatusCode_MissingTag();     // -16
         result += testTagManager_StatusCode_DependentMods();  // -32
@@ -1031,7 +1034,7 @@ class org.flashNight.arki.item.equipment.EquipmentTestSuite {
     }
 
     /**
-     * 状态码 -4: 已有战技
+     * 状态码 -4: 装备根的 <skill> 不是战技定义（无 skillname 的说明文本）
      */
     private static function testTagManager_StatusCode_SkillConflict():String {
         var testItem = {
@@ -1040,13 +1043,81 @@ class org.flashNight.arki.item.equipment.EquipmentTestSuite {
         };
         var testItemData = {
             data: { modslot: 3 },
-            skill: { name: "装备自带战技" }  // 装备已有战技
+            skill: { name: "装备自带战技" }  // 无 skillname，不是可装载的战技定义
         };
 
         var code:Number = TagManager.checkModAvailability(testItem, testItemData, "战技插件");
         var passed:Boolean = (code == -4);
 
         return passed ? "✓ 状态码-4(战技冲突)测试通过\n" : "✗ 状态码-4测试失败（返回" + code + "）\n";
+    }
+
+    /**
+     * 状态码 1: 装备自带的通用/凑数战技默认可被战技插件覆盖
+     * （未声明 <skillLocked> 子元素 = 可更换）
+     */
+    private static function testTagManager_StatusCode_SkillReplaceable():String {
+        var testItem = {
+            name: "测试装备",
+            value: { mods: [] }
+        };
+        var testItemData = {
+            data: { modslot: 3 },
+            skill: { skillname: "弧光斩", mp: 40 }  // 未声明 skillLocked = 可更换
+        };
+
+        var code:Number = TagManager.checkModAvailability(testItem, testItemData, "战技插件");
+        var passed:Boolean = (code == 1);
+
+        return passed ? "✓ 状态码1(战技可更换)测试通过\n" : "✗ 战技可更换测试失败（返回" + code + "）\n";
+    }
+
+    /**
+     * 状态码 -4: 根层 <skill> 内声明 <skillLocked>true</skillLocked>
+     * 的专属/定制战技不可更换
+     */
+    private static function testTagManager_StatusCode_SkillLocked():String {
+        var testItem = {
+            name: "测试装备",
+            value: { mods: [] }
+        };
+        var testItemData = {
+            data: { modslot: 3 },
+            skill: { skillname: "掌炮", skillLocked: true }
+        };
+
+        var code:Number = TagManager.checkModAvailability(testItem, testItemData, "战技插件");
+        var passed:Boolean = (code == -4);
+
+        return passed ? "✓ 状态码-4(战技不可更换)测试通过\n" : "✗ 战技不可更换测试失败（返回" + code + "）\n";
+    }
+
+    /**
+     * 状态码 -4: 战技只声明在 lifecycle 的 initParam 中，根层无 skill，
+     * 声明处带 <skillLocked>true</skillLocked> 同样不可更换
+     */
+    private static function testTagManager_StatusCode_SkillLockedWithoutRootSkill():String {
+        var testItem = {
+            name: "测试装备",
+            value: { mods: [] }
+        };
+        var testItemData = {
+            data: { modslot: 3 },
+            lifecycle: {
+                attr_0: {
+                    init: {
+                        initParam: {
+                            skill_0: { skillname: "撼地烈狱", skillLocked: true }
+                        }
+                    }
+                }
+            }
+        };
+
+        var code:Number = TagManager.checkModAvailability(testItem, testItemData, "战技插件");
+        var passed:Boolean = (code == -4);
+
+        return passed ? "✓ 状态码-4(无根层战技但不可更换)测试通过\n" : "✗ 无根层战技但不可更换测试失败（返回" + code + "）\n";
     }
 
     /**

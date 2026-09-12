@@ -321,6 +321,7 @@
         <description>手持该武器时可以使用暴走，随角色等级增加刀锋利度与角色速度。</description>
         <cd>60000</cd>
         <mp>200</mp>
+        <skillLocked>true</skillLocked>
       </skill>
       <description>一把饱经风霜的匕首，根据外观可知其原型为上世纪A国动作电影《RAMBO II》中主角使用的生存刀。
       在二十一世纪初，尘都ZF为了解决日益严重的治安与DEATH
@@ -353,6 +354,7 @@
         <description>手持该武器时可以使用Eternal Maximum Drive技能。</description>
         <cd>5000</cd>
         <mp>50</mp>
+        <skillLocked>true</skillLocked>
       </skill>
       <description>据传，代号为3XD的黑市商人曾参观过许多遥远异域的武器，并通过搬运引入了诸多仿品，而这把刀的不同之处在于，这是他亲自下场锻造仿制而成的杀器。
       其名为永恒之刃。
@@ -383,6 +385,7 @@
         <information>将敌人拉扯到周围并造成范围性伤害。冷却5秒，消耗5%MP。</information>
         <cd>5000</cd>
         <mp>5%</mp>
+        <skillLocked>true</skillLocked>
       </skill>
       <description>人们不相信星座，但是比星座更令人难以理解的事情已经发生了，又为何纠结前者这样的概念是否切实际呢？
       短小且迸发绿光的刀刃极其适合短兵相接，这就是光刃摩羯的用处。

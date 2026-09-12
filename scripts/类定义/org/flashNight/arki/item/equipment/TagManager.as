@@ -206,11 +206,35 @@ class org.flashNight.arki.item.equipment.TagManager {
         }
 
         // 检查特殊槽冲突。普通战技与长枪副武器共享同一个特殊槽。
+        //
+        // 装备自带的主动战技默认可被「战技插件」覆盖（安装即替换本体战技，由
+        // EquipmentCalculator.calculateInPlace 完成替换），因此这里不再一律拒绝。
+        // 标记跟着战技走：在声明战技的 <skill> / <skill_N> 元素内加一个子元素
+        // <skillLocked>true</skillLocked> 即不可更换；
+        // **不填 = 可更换**（判定是严格的 === true，undefined 不算锁定）。
+        // 只有以下三种情况继续返回 -4：
+        //   1. 装备自带长枪副武器——副武器是同一个特殊槽的另一种占用，且战技插件
+        //      不会清除 itemData.subweapon，放行会造成双占用；
+        //   2. 战技声明处带 <skillLocked>true</skillLocked>——专属 / 定制 /
+        //      与装备生命周期绑定的战技不可更换；
+        //   3. 装备根的 <skill> 只是说明文本等非战技定义（无 skillname）。
+        // 副武器插件（下挂武器）同理不会清掉本体战技，故对已有战技的装备仍整体拒绝。
         var resolvedModSkill:Object = ModRegistry.resolveSkillForUse(modData, itemUseLookup);
         var resolvedModSubweapon:Object = modData.subweapon;
         if (resolvedModSkill || resolvedModSubweapon) {
-            if (itemData.skill || itemData.subweapon) {
-                return -4; // 已有战技
+            if (itemData.subweapon) {
+                return -4; // 长枪副武器占用共享特殊槽
+            }
+            if (isSkillReplaceableLocked(itemData)) {
+                return -4; // 战技声明处标记为不可更换
+            }
+            if (itemData.skill) {
+                if (!resolvedModSkill) {
+                    return -4; // 副武器插件不覆盖本体战技，不能与已有战技共存
+                }
+                if (itemData.skill.skillname == undefined) {
+                    return -4; // <skill> 非战技定义（说明文本），不能被覆盖
+                }
             }
             for (var specialIndex:Number = 0; specialIndex < mods.length; specialIndex++) {
                 var installedSpecialMod:Object = ModRegistry.getModData(mods[specialIndex]);
@@ -472,6 +496,54 @@ class org.flashNight.arki.item.equipment.TagManager {
         }
 
         return filtered;
+    }
+
+    /**
+     * 判断装备自带战技是否被声明处标记为不可更换。
+     *
+     * 标记形态是战技声明处的一个子元素：
+     * <code>&lt;skillLocked&gt;true&lt;/skillLocked&gt;</code>。
+     * 战技可能声明在装备根的 <skill>，也可能只声明在 lifecycle 的
+     * attr_N/skill 或 attr_N/init/initParam/skill_M 中；标记写在战技声明处，
+     * 因此两处都要看。
+     *
+     * **未声明该子元素的战技默认可更换**（可被「战技插件」覆盖）：这里用
+     * 严格 === true 判定，缺省解析出来是 undefined，不等于 true，所以
+     * 不需要给默认值，缺省即隐式「可更换」。
+     *
+     * @private
+     */
+    private static function isSkillReplaceableLocked(itemData:Object):Boolean {
+        var rootSkill:Object = itemData.skill;
+        // 注意必须是 === true：undefined（未声明）与 ""（空元素写法）都不算锁定
+        if (rootSkill && rootSkill.skillLocked === true) {
+            return true;
+        }
+
+        var lifecycle:Object = itemData.lifecycle;
+        if (!lifecycle || typeof lifecycle != "object") return false;
+
+        for (var attrName:String in lifecycle) {
+            var attr:Object = lifecycle[attrName];
+            if (!attr || typeof attr != "object") continue;
+
+            var attrSkill:Object = attr.skill;
+            if (attrSkill && attrSkill.skillLocked === true) {
+                return true;
+            }
+
+            var init:Object = attr.init;
+            var params:Object = init ? init.initParam : null;
+            if (!params) continue;
+            for (var paramName:String in params) {
+                var paramSkill:Object = params[paramName];
+                if (paramSkill && paramSkill.skillLocked === true) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
     }
 
     /**

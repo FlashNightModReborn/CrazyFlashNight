@@ -463,6 +463,7 @@
       <description>召唤自机的投影，嘲讽敌人。</description>
       <cd>2000</cd>
       <mp>15</mp>
+      <skillLocked>true</skillLocked>
     </skill>
     <level>32</level>
     <lifecycle>
@@ -580,6 +581,7 @@
       <clipname>战术核弹手雷</clipname>
       <power>100000</power>
       <split>1</split>
+      <skillLocked>true</skillLocked>
     </skill>
     <data>
       <level>60</level>

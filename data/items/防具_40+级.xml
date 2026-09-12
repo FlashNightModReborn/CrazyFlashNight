@@ -1746,6 +1746,7 @@
       再次使用时可释放狂瀑顶。</description>
       <cd>5000</cd>
       <mp>100</mp>
+      <skillLocked>true</skillLocked>
     </skill>
     <data>
       <level>60</level>
@@ -2230,6 +2231,7 @@
       空中时可以自由移动落点，点按触发时再次点按战技键可提前坠落，长按触发则松开战技键时坠落。</description>
       <cd>10000</cd>
       <mp>100</mp>
+      <skillLocked>true</skillLocked>
     </skill>
     <data>
       <level>60</level>
@@ -2320,6 +2322,7 @@
       按切换键可切换至消耗能量电池模式，发射能量弹，大幅增加基础伤害，蓄力解锁一定追踪能力并增加弹数，获得更高转化效率，蓄能达一秒即可发射高能电浆炮。</description>
       <cd>500</cd>
       <mp>30</mp>
+      <skillLocked>true</skillLocked>
     </skill>
     <data>
       <level>41</level>
@@ -2492,6 +2495,7 @@
       &lt;font color="#020202"&gt;“伸手及月”&lt;/font&gt;是由深渊原生生物加工制成的粘稠的黑色物质，形如蛛网，可以造成腐蚀类附加伤害，并阻碍敌方行动，在5秒内使得敌方行走速度降低90%。</description>
       <cd>3000</cd>
       <mp>100</mp>
+      <skillLocked>true</skillLocked>
     </skill>
     <data>
       <level>60</level>
@@ -2804,7 +2808,7 @@
     <use>头部装备</use>
     <setId>true_cat_demon</setId>
     <price>850000</price>
-    <description>九命猫妖，“笑面虎”，妖界杀手，虎村的绝世天才，拳术大师收养的弟子，蛊王的守护兽与宿敌，死神和阎罗王的“老朋友”，捉妖人的师父。</description>
+    <description>九命猫妖，“笑面虎”，妖界杀手，虎村的绝世天才，拳术大师收养的弟子，蛊术士的守护兽与宿敌，死神和阎罗王的“老朋友”，捉妖人的师父。</description>
     <helmet>true</helmet>
     <data>
       <level>50</level>
@@ -2865,7 +2869,7 @@
     <use>上装装备</use>
     <setId>true_cat_demon</setId>
     <price>850000</price>
-    <description>九命猫妖，“笑面虎”，妖界杀手，虎村的绝世天才，拳术大师收养的弟子，蛊王的守护兽与宿敌，死神和阎罗王的“老朋友”，捉妖人的师父。</description>
+    <description>九命猫妖，“笑面虎”，妖界杀手，虎村的绝世天才，拳术大师收养的弟子，蛊术士的守护兽与宿敌，死神和阎罗王的“老朋友”，捉妖人的师父。</description>
     <data>
       <level>50</level>
       <weight>1</weight>
@@ -2891,7 +2895,7 @@
     <setId>true_cat_demon</setId>
     <actiontype>兽形拳</actiontype>
     <price>850000</price>
-    <description>九命猫妖，“笑面虎”，妖界杀手，虎村的绝世天才，拳术大师收养的弟子，蛊王的守护兽与宿敌，死神和阎罗王的“老朋友”，捉妖人的师父。</description>
+    <description>九命猫妖，“笑面虎”，妖界杀手，虎村的绝世天才，拳术大师收养的弟子，蛊术士的守护兽与宿敌，死神和阎罗王的“老朋友”，捉妖人的师父。</description>
     <skill>
       <skillname>飞身踢</skillname>
       <description>空手状态下可以施展飞身踢。</description>
@@ -2920,7 +2924,7 @@
     <use>下装装备</use>
     <setId>true_cat_demon</setId>
     <price>850000</price>
-    <description>九命猫妖，“笑面虎”，妖界杀手，虎村的绝世天才，拳术大师收养的弟子，蛊王的守护兽与宿敌，死神和阎罗王的“老朋友”，捉妖人的师父。</description>
+    <description>九命猫妖，“笑面虎”，妖界杀手，虎村的绝世天才，拳术大师收养的弟子，蛊术士的守护兽与宿敌，死神和阎罗王的“老朋友”，捉妖人的师父。</description>
     <data>
       <level>50</level>
       <weight>1</weight>
@@ -2944,7 +2948,7 @@
     <use>脚部装备</use>
     <setId>true_cat_demon</setId>
     <price>850000</price>
-    <description>九命猫妖，“笑面虎”，妖界杀手，虎村的绝世天才，拳术大师收养的弟子，蛊王的守护兽与宿敌，死神和阎罗王的“老朋友”，捉妖人的师父。</description>
+    <description>九命猫妖，“笑面虎”，妖界杀手，虎村的绝世天才，拳术大师收养的弟子，蛊术士的守护兽与宿敌，死神和阎罗王的“老朋友”，捉妖人的师父。</description>
     <data>
       <level>50</level>
       <weight>1</weight>

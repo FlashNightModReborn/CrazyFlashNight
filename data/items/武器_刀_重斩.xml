@@ -103,6 +103,7 @@
             <skillname>凶斩</skillname>
             <cd>8000</cd>
             <mp>25</mp>
+            <skillLocked>true</skillLocked>
           </skill>
           <bullet>
             <bullet_0>
@@ -260,6 +261,7 @@
         <description>手持该武器时可以使用狼跳。</description>
         <cd>8000</cd>
         <mp>35</mp>
+        <skillLocked>true</skillLocked>
       </skill>
       <description>造型独特且颇具历史色彩的武器，在末世往往有着惊天动地的力量。
       刀背黛青，刃面湖蓝泛冰色，锲有罗盘一般外饰的斩马刀在末世保有自己的作用。
@@ -424,6 +426,7 @@
         <description>手持该武器时可以使用破坏殆尽。</description>
         <cd>8000</cd>
         <mp>50</mp>
+        <skillLocked>true</skillLocked>
       </skill>
       <description>造型独特且颇具历史色彩的武器，在末世往往有着惊天动地的力量。
       黑背白锋刃流光，三孔贯穿如魔龙睁眼。
@@ -674,11 +677,13 @@
                 <cd>5000</cd>
                 <hp>0</hp>
                 <mp>25</mp>
+                <skillLocked>true</skillLocked>
               </skill_0>
               <skill_1>
                 <skillname>弧光斩</skillname>
                 <cd>8000</cd>
                 <mp>50</mp>
+                <skillLocked>true</skillLocked>
               </skill_1>
             </initParam>
           </init>
@@ -836,6 +841,7 @@
         <description>【Overdrive】释放内在魔力，快速打出四连剑气击穿敌人。</description>
         <cd>6000</cd>
         <mp>50</mp>
+        <skillLocked>true</skillLocked>
       </skill>
       <data>
         <level>60</level>
@@ -896,6 +902,7 @@
       <description>手持该武器时可以使用破坏殆尽。</description>
       <cd>8000</cd>
       <mp>50</mp>
+      <skillLocked>true</skillLocked>
     </skill>
     <description>可通过组件升阶的变形武器。
     可在刀形态与斧形态之间自由切换。
