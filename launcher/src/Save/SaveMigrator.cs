@@ -148,9 +148,9 @@ namespace CF7Launcher.Save
             NormalizeKnownEmptyArrayField(stash, "entries");
             if (stash["entries"] is JArray entries)
                 foreach (JObject entry in entries.OfType<JObject>())
-                    if (entry["item"]?["value"] is JObject equipment)
+                    if (entry["item"] is JObject item && item["value"] is JObject equipment)
                         NormalizeKnownEmptyArrayField(equipment, "mods");
-            if (stash["lastCommit"]?["result"] is JObject result)
+            if (stash["lastCommit"] is JObject commit && commit["result"] is JObject result)
                 foreach (string field in new[] { "accepted", "blocked", "packages" })
                     NormalizeKnownEmptyArrayField(result, field);
             if (stash["legacy"] is JObject legacy && HasExactVersion(legacy, 1))

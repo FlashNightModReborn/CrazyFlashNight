@@ -561,5 +561,111 @@ check('post-consume reselection adopts only the fresh same-slot lease', function
     assert.strictEqual(controller._itemUseResumeSelection, null);
 });
 
+check('stash page preserves old payload and adds only an optional filter object', function() {
+    const run = harness();
+    run.controller.requestStashPage(32, () => {});
+    const legacy = run.sent[0];
+    assert.deepStrictEqual(Object.keys(legacy.payload).sort(), [
+        'offset', 'panelInstanceId', 'sessionGeneration', 'v'
+    ]);
+    assert.strictEqual(legacy.payload.v, 2);
+    respond(run, legacy, {success:true,
+        data:{storeId:'stash.saved', revision:7, offset:32, total:40, entries:[]}});
+    let page;
+    run.controller.requestStashPage(0, value => { page = value; }, {major:'weapon'});
+    const filtered = run.sent[1];
+    assert.deepStrictEqual(filtered.payload.filterSpec, {major:'weapon'});
+    assert.strictEqual('limit' in filtered.payload, false);
+    respond(run, filtered, {success:true,
+        data:{storeId:'stash.saved', revision:8, offset:0, total:3, entries:[]}});
+    assert.strictEqual(page.revision, 8);
+    for (const invalid of [null, 'weapon', []]) {
+        assert.strictEqual(run.controller.requestStashPage(0, () => {}, invalid), null);
+    }
+    assert.strictEqual(run.sent.length, 2);
+    run.controller.destroy();
+});
+
+check('targeted stash intent uses explicit page authority and reconciles the same operation', function() {
+    const run = harness();
+    const settled = [];
+    run.controller.invokeStash('stashTake', {
+        storeId:'stash.saved', expectedRevision:9,
+        entries:[{entryId:'stash.saved.e1', revision:2, quantity:1}],
+        target:{containerId:'背包', slot:4, expectedLease:'lease.4'}
+    }, (value, committed) => settled.push({value, committed}));
+    const write = run.sent[0];
+    assert.strictEqual(write.cmd, 'stashTake');
+    assert.deepStrictEqual(write.payload.target,
+        {containerId:'背包', slot:4, expectedLease:'lease.4'});
+    assert.strictEqual(write.payload.storeId, 'stash.saved');
+    assert.strictEqual(write.payload.expectedRevision, 9);
+    respond(run, write, {success:false,error:'client_timeout',requiresReconcile:true});
+    const query = run.sent.find(message => message.cmd === 'stashQuery');
+    assert.strictEqual(query.payload.operationId, write.payload.operationId);
+    assert.strictEqual(query.payload.expectedRevision, 9);
+    respond(run, query, {success:true,data:{state:'committed',result:{accepted:[],blocked:[]}}});
+    assert.strictEqual(settled.length, 1);
+    assert.strictEqual(settled[0].committed, true);
+    assert.strictEqual(run.sent.filter(message => message.cmd === 'stashTake').length, 1);
+    run.controller.destroy();
+});
+
+check('stash tooltip unwraps the production envelope for the shared rich renderer', function() {
+    const run = harness(), Owned = require('../launcher/web/modules/inventory-workbench-owned-view.js');
+    const info = {itemName:'普通hp药剂',displayname:'普通hp药剂',iconName:'hp',itemType:'药剂',
+        introHTML:'普通hp药剂<br>HP+150',descHTML:'恢复体力，加速伤口愈合',document:{version:1}};
+    const source = require('../launcher/web/modules/inventory-workbench-stash-source.js').create({itemUse:run.controller});
+    source.refresh();
+    respond(run, run.sent.at(-1), {success:true,data:{success:true,storeId:'stash.saved',revision:2,
+        offset:0,total:1,entries:[{entryId:'stash.saved.e1',revision:2,quantity:12,
+            item:{name:'普通hp药剂',displayName:'普通hp药剂',itemKind:'stack',quantity:12}}]}});
+    let rich;
+    source.tooltip(source.getSnapshot().slots[0], value => {
+        assert.strictEqual(value.success, true);
+        rich = Owned.richTooltip({}, value, {dynamicIconHtml:() => '',staticIconUrl:() => '',
+            inferLayoutType:() => 'item',buildItemRichHtml:options => options});
+    });
+    const request = run.sent.at(-1);
+    assert.strictEqual(request.cmd, 'stashTooltip');
+    respond(run, request, {success:true,data:{success:true,tooltip:info}});
+    assert.strictEqual(rich.introHTML, info.introHTML);
+    assert.strictEqual(rich.descHTML, info.descHTML);
+    assert.deepStrictEqual(rich.document, info.document);
+    source.destroy();
+    run.controller.destroy();
+});
+
+check('a closed item-use channel refuses stash reads and writes', function() {
+    const run = harness();
+    run.controller.close();
+    assert.strictEqual(run.controller.requestStashPage(0, () => {}), null);
+    assert.strictEqual(run.controller.invokeStash('stashTake', {
+        storeId:'stash.saved', expectedRevision:9,
+        entries:[{entryId:'stash.saved.e1', revision:2, quantity:1}]
+    }, () => {}), null);
+    assert.strictEqual(run.sent.length, 0);
+    run.controller.destroy();
+});
+
+check('reward inbox now delegates to the facade storage-source port', function() {
+    const opened = [];
+    function Controller() {}
+    ItemUseChannel.install(Controller.prototype);
+    const controller = new Controller();
+    controller._itemUse = {
+        inbox:function() { return {summary:{recoveryRequired:false}, authority:null}; }
+    };
+    controller._ports = {
+        openStorageSource:function(sourceId) { opened.push(sourceId); return true; }
+    };
+    assert.strictEqual(controller._openRewardInbox(), true);
+    assert.deepStrictEqual(opened, ['stash']);
+    const toasts = [];
+    controller._ports = {toast:function(message) { toasts.push(message); }};
+    assert.strictEqual(controller._openRewardInbox(), false);
+    assert.deepStrictEqual(toasts, ['暂存入口尚未就绪，请重试。']);
+});
+
 process.stdout.write(
     'Character Build item use: ' + passed + '/' + passed + ' passed\n');

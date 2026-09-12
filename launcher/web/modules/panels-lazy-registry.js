@@ -78,7 +78,11 @@
          'modules/inventory-workbench-header.js',
          'modules/inventory-workbench-quick-transfer.js',
          'modules/inventory-workbench-owned-view.js',
+         'modules/inventory-workbench-stash-source.js',
+         'modules/inventory-workbench-storage-source.js',
+         'modules/inventory-workbench-storage-controls.js',
          'modules/inventory-workbench-feature-loader.js',
+         'modules/inventory-workbench-stash-navigation.js',
          'modules/inventory-storage-workbench.js',
          'modules/inventory-workbench.js'],
         noop);

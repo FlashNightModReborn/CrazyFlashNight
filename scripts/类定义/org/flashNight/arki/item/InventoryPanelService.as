@@ -217,6 +217,9 @@ class org.flashNight.arki.item.InventoryPanelService {
      * 这是纯读操作；槽位或实例已变化时返回 stale_state，不回退到 Web 投影猜测。
      */
     private static function executeTooltip(params:Object):Object {
+        if (params.source != undefined && params.source.quantity !== undefined) {
+            return fail("invalid_payload");
+        }
         var sourceCheck:Object = validateSlotRef(params.source, true, false);
         if (!sourceCheck.success) return sourceCheck;
 
@@ -277,6 +280,7 @@ class org.flashNight.arki.item.InventoryPanelService {
 
     private static function executeDiscard(params:Object):Object {
         var source:Object = params.source;
+        if (source != undefined && source.quantity !== undefined) return fail("invalid_payload");
         var sourceCheck:Object = validateSlotRef(source, true, false);
         if (!sourceCheck.success) return sourceCheck;
         if (sourceCheck.containerId != "背包") return fail("discard_forbidden");
@@ -301,6 +305,12 @@ class org.flashNight.arki.item.InventoryPanelService {
     }
 
     private static function executeTransfer(commandName:String, params:Object):Object {
+        if (commandName == "swap" && params.source != undefined && params.source.quantity !== undefined) {
+            return fail("invalid_payload");
+        }
+        if (params.target != undefined && params.target.quantity !== undefined) {
+            return fail("invalid_payload");
+        }
         var sourceCheck:Object = validateSlotRef(params.source, true, commandName == "merge");
         if (!sourceCheck.success) return sourceCheck;
         var targetMustOccupy:Boolean = commandName == "merge" || commandName == "swap";
@@ -319,11 +329,26 @@ class org.flashNight.arki.item.InventoryPanelService {
         }
         if (commandName == "swap" && targetCheck.item == null) return fail("target_empty");
 
+        var quantity:Object = normalizeTransferQuantity(params.source == undefined ? undefined : params.source.quantity,
+            sourceCheck.item);
+        if (!quantity.success) return quantity;
+        var partial:Boolean = quantity.count > 0 && quantity.count < Number(sourceCheck.item.value);
+        if (commandName == "merge" && partial) {
+            var mergedTotal:Number = Number(targetCheck.item.value) + quantity.count;
+            if (!isWholeNumber(mergedTotal) || mergedTotal > 9007199254740991) {
+                return fail("merge_rejected");
+            }
+        }
+
         _busy = true;
         var committed:Boolean;
-        if (commandName == "move") committed = commitMove(sourceCheck, targetCheck);
-        else if (commandName == "merge") committed = commitMerge(sourceCheck, targetCheck);
-        else committed = commitSwap(sourceCheck, targetCheck);
+        if (commandName == "move") {
+            committed = partial ? commitMovePartial(sourceCheck, targetCheck, quantity.count).success === true
+                : commitMove(sourceCheck, targetCheck);
+        } else if (commandName == "merge") {
+            committed = partial ? commitMergePartial(sourceCheck, targetCheck, quantity.count).success === true
+                : commitMerge(sourceCheck, targetCheck);
+        } else committed = commitSwap(sourceCheck, targetCheck);
 
         if (!committed) {
             _busy = false;
@@ -333,7 +358,13 @@ class org.flashNight.arki.item.InventoryPanelService {
         invalidateSlot(sourceCheck.containerId, sourceCheck.slot);
         invalidateSlot(targetCheck.containerId, targetCheck.slot);
         markDirty();
-        publishTransferEvents(commandName, sourceCheck, targetCheck);
+        if (partial) {
+            sourceCheck.inventory.publishTransactionChange(sourceCheck.slot, "value");
+            targetCheck.inventory.publishTransactionChange(targetCheck.slot,
+                commandName == "merge" ? "value" : "added");
+        } else {
+            publishTransferEvents(commandName, sourceCheck, targetCheck);
+        }
         var snapshots:Array = buildAffectedSnapshots(sourceCheck, targetCheck);
         _busy = false;
         return {success: true, v: 1, operation: commandName, snapshots: snapshots};
@@ -347,6 +378,10 @@ class org.flashNight.arki.item.InventoryPanelService {
     private static function executeAutoTransfer(params:Object):Object {
         var sourceCheck:Object = validateSlotRef(params.source, true, false);
         if (!sourceCheck.success) return sourceCheck;
+        var quantity:Object = normalizeTransferQuantity(params.source == undefined ? undefined : params.source.quantity,
+            sourceCheck.item);
+        if (!quantity.success) return quantity;
+        var partial:Boolean = quantity.count > 0 && quantity.count < Number(sourceCheck.item.value);
 
         var targetContainerId:String = params.targetContainerId == undefined
             ? "" : String(params.targetContainerId);
@@ -391,6 +426,19 @@ class org.flashNight.arki.item.InventoryPanelService {
             }
         }
         var operation:String = "merge";
+        if (targetSlot >= 0 && partial
+                && Number(targetItem.value) + quantity.count > 9007199254740991) {
+            // mergeThenEmpty：数量合并使目标合计越安全整数界时改投首个空格；
+            // 上面的扫描在命中同名堆时已提前 break，这里补一次有界空格扫描。
+            for (var emptyScan:Number = 0; emptyScan < targetCapacity; emptyScan++) {
+                if (targetInventory.getItem(String(emptyScan)) == null) {
+                    firstEmptySlot = emptyScan;
+                    break;
+                }
+            }
+            targetSlot = -1;
+            targetItem = null;
+        }
         if (targetSlot < 0) {
             if (firstEmptySlot < 0) return fail("target_full");
             targetSlot = firstEmptySlot;
@@ -407,8 +455,10 @@ class org.flashNight.arki.item.InventoryPanelService {
         };
         _busy = true;
         var committed:Boolean = operation == "merge"
-            ? commitMerge(sourceCheck, targetCheck)
-            : commitMove(sourceCheck, targetCheck);
+            ? (partial ? commitMergePartial(sourceCheck, targetCheck, quantity.count).success === true
+                : commitMerge(sourceCheck, targetCheck))
+            : (partial ? commitMovePartial(sourceCheck, targetCheck, quantity.count).success === true
+                : commitMove(sourceCheck, targetCheck));
         if (!committed) {
             _busy = false;
             return fail("commit_failed");
@@ -417,7 +467,13 @@ class org.flashNight.arki.item.InventoryPanelService {
         invalidateSlot(sourceCheck.containerId, sourceCheck.slot);
         invalidateSlot(targetCheck.containerId, targetCheck.slot);
         markDirty();
-        publishTransferEvents(operation, sourceCheck, targetCheck);
+        if (partial) {
+            sourceCheck.inventory.publishTransactionChange(sourceCheck.slot, "value");
+            targetCheck.inventory.publishTransactionChange(targetCheck.slot,
+                operation == "merge" ? "value" : "added");
+        } else {
+            publishTransferEvents(operation, sourceCheck, targetCheck);
+        }
         var snapshots:Array = buildWindowSnapshots(windowCheck.normalized);
         _busy = false;
         return {
@@ -562,6 +618,13 @@ class org.flashNight.arki.item.InventoryPanelService {
         for (i = 0; i < refs.length; i++) {
             var checked:Object = validateSlotRef(refs[i], true, false);
             if (!checked.success) return checked;
+            // 全部来源数量校验都在规划与任何提交之前完成；非法数量整批拒绝。
+            var quantity:Object = normalizeTransferQuantity(refs[i].quantity, checked.item);
+            if (!quantity.success) return quantity;
+            if (quantity.count > 0 && quantity.count < Number(checked.item.value)) {
+                checked.takeCount = quantity.count;
+                checked.partial = true;
+            }
             sources.push(checked);
         }
         return {
@@ -632,18 +695,28 @@ class org.flashNight.arki.item.InventoryPanelService {
         for (var i:Number = 0; i < sources.length; i++) {
             var source:Object = sources[i];
             var isStack:Boolean = typeof source.item.value == "number";
+            var partial:Boolean = source.partial === true;
+            var amount:Number = isStack
+                ? (partial ? Number(source.takeCount) : Number(source.item.value)) : 1;
             var stackKey:String = isStack ? batchStackKey(String(source.item.name)) : "";
             var targetState:Object = isStack ? scan.firstStacks[stackKey] : null;
             var operation:String;
             if (targetState != null) {
-                operation = "merge";
-                if (targetState.touched !== true) {
-                    targetState.touched = true;
-                    targetStates.push(targetState);
+                var mergedTotal:Number = Number(targetState.finalValue) + amount;
+                if (partial && (!isWholeNumber(mergedTotal) || mergedTotal > 9007199254740991)) {
+                    // mergeThenEmpty：数量转移合并越安全整数界时在计划阶段改落空格
+                    targetState = null;
+                } else {
+                    operation = "merge";
+                    if (targetState.touched !== true) {
+                        targetState.touched = true;
+                        targetStates.push(targetState);
+                    }
+                    targetState.finalValue = mergedTotal;
+                    targetState.hasFinalValue = true;
                 }
-                targetState.finalValue = Number(targetState.finalValue) + Number(source.item.value);
-                targetState.hasFinalValue = true;
-            } else {
+            }
+            if (targetState == null) {
                 if (emptyIndex >= scan.emptySlots.length) {
                     failure = {index:i, error:"target_full"};
                     break;
@@ -653,19 +726,31 @@ class org.flashNight.arki.item.InventoryPanelService {
                 targetState = {
                     slot:targetSlot,
                     beforeItem:null,
-                    afterItem:source.item,
-                    finalValue:isStack ? Number(source.item.value) : 0,
+                    afterItem:partial
+                        ? new BaseItem(String(source.item.name), amount, Number(source.item.lastUpdate))
+                        : source.item,
+                    finalValue:isStack ? amount : 0,
                     hasFinalValue:false,
                     touched:true
                 };
                 targetStates.push(targetState);
                 if (isStack) scan.firstStacks[stackKey] = targetState;
             }
-            sourceChanges.push({
-                slot:source.slot,
-                expectedItem:source.item,
-                item:null
-            });
+            if (partial) {
+                sourceChanges.push({
+                    slot:source.slot,
+                    expectedItem:source.item,
+                    item:source.item,
+                    hasFinalValue:true,
+                    finalValue:Number(source.item.value) - amount
+                });
+            } else {
+                sourceChanges.push({
+                    slot:source.slot,
+                    expectedItem:source.item,
+                    item:null
+                });
+            }
             results.push({
                 operation:operation,
                 destination:{
@@ -747,7 +832,9 @@ class org.flashNight.arki.item.InventoryPanelService {
                                                             sourceInventory:ArrayInventory,
                                                             targetInventory:ArrayInventory):Void {
         for (var i:Number = 0; i < plan.sourceChanges.length; i++) {
-            sourceInventory.publishTransactionChange(Number(plan.sourceChanges[i].slot), "removed");
+            var sourceChange:Object = plan.sourceChanges[i];
+            sourceInventory.publishTransactionChange(Number(sourceChange.slot),
+                sourceChange.item == null ? "removed" : "value");
         }
         for (i = 0; i < plan.targetStates.length; i++) {
             var state:Object = plan.targetStates[i];
@@ -879,6 +966,66 @@ class org.flashNight.arki.item.InventoryPanelService {
             return false;
         }
         return true;
+    }
+
+    /**
+     * 数字堆叠部分数量转移：来源原位减量（保留对象引用），目标空格放新堆或同名堆加量。
+     * 与批量提交走同一 slot 事务原语；跨容器先写来源、目标失败时按 receipt 精确回滚，
+     * 并按 commitAutoTransferBatch 同一约定把 rollbackComplete 带回给调用方。
+     */
+    private static function commitQuantityTransfer(source:Object, target:Object,
+                                                   sourceChanges:Array, targetChanges:Array):Object {
+        if (source.inventory === target.inventory) {
+            return commitSlotBatch(source.containerId, source.inventory,
+                sourceChanges.concat(targetChanges));
+        }
+        var sourceReceipt:Object = commitSlotBatch(source.containerId, source.inventory, sourceChanges);
+        if (sourceReceipt == null || sourceReceipt.success !== true) {
+            return {success:false, rollbackComplete:true};
+        }
+        var targetReceipt:Object = commitSlotBatch(target.containerId, target.inventory, targetChanges);
+        if (targetReceipt == null || targetReceipt.success !== true) {
+            var rolledBack:Boolean = source.inventory.rollbackSlotTransaction(sourceReceipt);
+            return {success:false, rollbackComplete:rolledBack};
+        }
+        return {success:true, sourceReceipt:sourceReceipt, targetReceipt:targetReceipt};
+    }
+
+    private static function commitMergePartial(source:Object, target:Object, count:Number):Object {
+        var sourceChanges:Array = [{
+            slot:source.slot, expectedItem:source.item, item:source.item,
+            hasFinalValue:true, finalValue:Number(source.item.value) - count
+        }];
+        var targetChanges:Array = [{
+            slot:target.slot, expectedItem:target.item, item:target.item,
+            hasFinalValue:true, finalValue:Number(target.item.value) + count
+        }];
+        return commitQuantityTransfer(source, target, sourceChanges, targetChanges);
+    }
+
+    private static function commitMovePartial(source:Object, target:Object, count:Number):Object {
+        var split:BaseItem = new BaseItem(String(source.item.name), count, Number(source.item.lastUpdate));
+        var sourceChanges:Array = [{
+            slot:source.slot, expectedItem:source.item, item:source.item,
+            hasFinalValue:true, finalValue:Number(source.item.value) - count
+        }];
+        var targetChanges:Array = [{slot:target.slot, expectedItem:null, item:split}];
+        return commitQuantityTransfer(source, target, sourceChanges, targetChanges);
+    }
+
+    /**
+     * 来源 ref 上的可选 quantity：缺省为整项；只允许数字堆叠的正安全整数且不超过当前值。
+     * 返回 {success:true, count} —— count<=0 表示未携带（整项），count==当前值走整项路径。
+     */
+    private static function normalizeTransferQuantity(raw:Object, item:Object):Object {
+        if (raw === undefined) return {success:true, count:-1};
+        if (item == null || typeof item.value != "number") return fail("invalid_payload");
+        if (typeof raw != "number" || !isWholeNumber(raw)) return fail("invalid_payload");
+        var count:Number = Number(raw);
+        if (count < 1 || count > Number(item.value) || count > 9007199254740991) {
+            return fail("invalid_payload");
+        }
+        return {success:true, count:count};
     }
 
     private static function publishTransferEvents(commandName:String, source:Object, target:Object):Void {
@@ -1044,6 +1191,14 @@ class org.flashNight.arki.item.InventoryPanelService {
      */
     public static function validateExternalSlotRef(ref:Object, checkCount:Boolean):Object {
         return validateSlotRef(ref, true, checkCount == true);
+    }
+
+    /**
+     * 供显式领域命令校验可能为空的目标槽位（如暂存定点领取）。
+     * lease、容量边界与确认投影校验与占有槽完全一致；调用方自行判定占用兼容性。
+     */
+    public static function validateExternalTargetRef(ref:Object):Object {
+        return validateSlotRef(ref, false, false);
     }
 
     /** 显式领域命令提交后，使被写槽位的旧 lease 失效。 */
@@ -1248,6 +1403,65 @@ class org.flashNight.arki.item.InventoryPanelService {
             if (code < 32 || code == 127) return false;
         }
         return true;
+    }
+
+    /**
+     * 供暂存等兄弟领域复用同一 filterSpec 规范化：先按 wire 严格形状核对
+     * （非空对象、非数组、仅已知键、值一律 string、set/category 键集互不混用），
+     * 再交给库存同一 normalizeFilterSpec 做语义白名单。非法输入返回 null。
+     */
+    public static function normalizeItemFilterSpec(input:Object):Object {
+        if (input == null || typeof input != "object" || input instanceof Array) return null;
+        if (input.branch !== undefined && typeof input.branch != "string") return null;
+        var setBranch:Boolean = String(input.branch) == "set";
+        for (var key:String in input) {
+            if (typeof input[key] != "string") return null;
+            if (key == "branch") continue;
+            if (setBranch) {
+                if (key != "setId") return null;
+            } else if (key != "major" && key != "use" && key != "subtype") return null;
+        }
+        return normalizeFilterSpec(input);
+    }
+
+    /** 供暂存条目判定复用同一分类口径；filterSpec 必须先经 normalizeItemFilterSpec。 */
+    public static function itemMatchesItemFilter(item:Object, filterSpec:Object):Boolean {
+        if (filterSpec == null) return true;
+        return itemMatchesFilter(item, "all", filterSpec, true);
+    }
+
+    /**
+     * 供暂存等非容器条目集合生成与库存快照同形状的 facet 树。
+     * items 为 {name,value} 类纯数据对象；分类口径与库存 facet 完全一致。
+     */
+    public static function buildExternalFilterFacets(items:Array):Object {
+        var facets:Array = [];
+        var itemCount:Number = 0;
+        var setFacets:Array = [];
+        var setItemCount:Number = 0;
+        for (var i:Number = 0; i < items.length; i++) {
+            var item:Object = items[i];
+            if (item == null) continue;
+            itemCount++;
+            var taxonomy:Object = itemTaxonomy(item, true);
+            var majorNode:Object = facetNode(facets, taxonomy.major, taxonomy.label);
+            majorNode.count++;
+            var useNode:Object = facetNode(majorNode.children, taxonomy.use, taxonomy.use);
+            useNode.count++;
+            if (taxonomy.subtype != "") {
+                facetNode(useNode.children, taxonomy.subtype, taxonomy.subtype).count++;
+            }
+            var setData:Object = org.flashNight.arki.item.ItemUtil.getItemData(item.name);
+            var setId:String = setData == null || setData.setId == undefined ? "" : String(setData.setId);
+            var setName:String = setData == null || setData.setName == undefined ? "" : String(setData.setName);
+            if (setId != "" && setName != "") {
+                setItemCount++;
+                var setOrder:Number = Number(setData.setOrder);
+                if (isNaN(setOrder)) setOrder = 0;
+                facetNode(setFacets, setId, setName, setOrder).count++;
+            }
+        }
+        return {facets:facets, itemCount:itemCount, setFacets:setFacets, setItemCount:setItemCount};
     }
 
     private static function itemTaxonomy(item:Object,

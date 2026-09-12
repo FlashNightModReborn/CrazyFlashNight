@@ -136,7 +136,7 @@ class org.flashNight.arki.item.ItemUseService {
             response.error = context == null ? "service_not_ready" : String(context.error); return response;
         }
         var result:Object;
-        if (commandName == "stashPage") result = RewardStashService.page(Number(params.offset));
+        if (commandName == "stashPage") result = RewardStashService.page(Number(params.offset), params.filterSpec);
         else if (commandName == "stashTooltip") result = RewardStashService.tooltip(params);
         else if (commandName == "stashTake") result = RewardStashService.take(params);
         else if (commandName == "stashQuery") result = RewardStashService.query(params);
@@ -158,7 +158,12 @@ class org.flashNight.arki.item.ItemUseService {
         var keys:Array = ["task", "action", "callId", "v", "panelInstanceId", "sessionGeneration"];
         if (commandName == "stashPage") {
             keys.push("offset");
-            return onlyKeys(params, keys) && RewardStashStore.whole(params.offset);
+            if (params.filterSpec !== undefined) keys.push("filterSpec");
+            if (!onlyKeys(params, keys) || !RewardStashStore.whole(params.offset)) return false;
+            // 语义白名单由 RewardStashService.page 内经 normalizeItemFilterSpec 最终判定。
+            return params.filterSpec === undefined
+                || (typeof params.filterSpec == "object" && params.filterSpec != null
+                    && !(params.filterSpec instanceof Array));
         }
         if (commandName == "stashTooltip") {
             keys.push("storeId"); keys.push("entryId"); keys.push("revision");
@@ -174,6 +179,7 @@ class org.flashNight.arki.item.ItemUseService {
         if (commandName == "stashQuery" || commandName == "stashMigrate") return onlyKeys(params, keys);
         if (commandName == "stashTake") {
             keys.push("entries");
+            if (params.target !== undefined) keys.push("target");
             if (!onlyKeys(params, keys) || !(params.entries instanceof Array)
                     || params.entries.length < 1 || params.entries.length > 32) return false;
             for (var i:Number = 0; i < params.entries.length; i++) {
@@ -181,6 +187,16 @@ class org.flashNight.arki.item.ItemUseService {
                 if (!onlyKeys(row, ["entryId", "revision", "quantity"])
                         || typeof row.entryId != "string" || row.entryId.length > 160
                         || !RewardStashStore.whole(row.revision) || (!RewardStashStore.whole(row.quantity) || row.quantity < 1)) return false;
+            }
+            if (params.target !== undefined) {
+                // 定点领取仅单项：沿用库存 slotRef 命名，容器固定背包。
+                if (params.entries.length != 1) return false;
+                var target:Object = params.target;
+                if (target == null || !onlyKeys(target, ["containerId", "slot", "expectedLease"])
+                        || String(target.containerId) != "背包"
+                        || !RewardStashStore.whole(target.slot) || target.slot < 0 || target.slot >= 50
+                        || typeof target.expectedLease != "string"
+                        || target.expectedLease.length < 1 || target.expectedLease.length > 160) return false;
             }
             return true;
         }

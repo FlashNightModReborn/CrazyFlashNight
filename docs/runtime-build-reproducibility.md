@@ -2,7 +2,25 @@
 
 **文档角色**：Launcher Windows runtime 的身份、构建、证明、排队、promotion 与 CI 策略 canonical deep doc。
 
-## 2026-09-12 当前正式发布：原生菜单与共享物品注释
+## 2026-09-13 当前正式发布：暂存与战备箱共享收纳工作台
+
+暂存、战备箱和仓库共用双栏布局、物品视图、数量控件、转移与注释生命周期。从暂存入口直接进入，堆叠数量可在底栏输入或滑动；修复药剂领取引导、完整注释输出及切源后注释失效。批量选择限定当前页，受阻暂存物品保留，未加入跨页自动领取循环。测试员已确认最终体验；实现和人验范围见[共享收纳专档](暂存物资并入共享收纳工作台-调研与施工方案-2026-09-12.md#109-正式部署与收尾证据)。
+
+- 最终 release source `c78cf257ff8e216c89c670c654202275391ddc47`，不可变 tag `runtime-build-v2/20260912-stash-shared-workbench-v2`，release tree `329cc57c95da4bf9177ed1796198f00941df8444`；request `B4983FB43A23F13E4B639F0E057C612247002A1DDABA5DBE29FEB03BC26EAD3B`，request commit `d0671da19c4dab70b7c3b896a9a6809d0b50030d`。标签日期沿用 9 月 12 日启动的列车，原子部署在北京时间 9 月 13 日完成。
+- artifact source `040B77250C6B1496C930B900F774D0B96661857B7CFDA734E50E5ED9C499479F`；producer recipe `0AED3CE28E95E2FD1D6D1F516424D977FC5411F7446380C1A70D3836D243D49F`；toolchain lock `7B83229BE93F8244810CDD23DAFD97875B23857E547DE520035FE23B453CB3CD`；build identity `25C34B89E2E32A71717F0694FB233D386BCE71F5602090794E9979C72461D584`。
+- 33-file payload closure `0B07119555D1628CD9F3ADD124378817FB47DE1245DC171DA606B5ED4CA28B81`；Core DLL SHA-256 `E6810E980B92CE56AF523304C8108C28CF4DDB91D6C8D9454FC6ED06D62A59CB`，与最终已验收候选相同。
+- 本地 X509 `builder-local-b / physical-host-b` 与 GitHub OIDC/Sigstore `github-hosted-windows` 独立构建得到相同 identity/closure；[最终 cloud run 34703639787](https://github.com/FlashNightModReborn/CrazyFlashNight/actions/runs/34703639787) 已验证不可变标签、tag API、workflow SHA 和 run headSha。promotion 对本地真实 CAS 与最终云端证明重放，strict v2 确认 2 signer / 2 faultDomain；最终源仅调整 Web 职责归属和发布绑定，按相同原生 identity 复用真实本地签名。[源码 Audit 34703627973](https://github.com/FlashNightModReborn/CrazyFlashNight/actions/runs/34703627973) 成功，发布前状态为 `source-ahead / deploymentChanged=false`。
+- production policy **40/40**；policy hash `55352CB1967EAAFC22DAFAC3AB97ECFEAC1243F9C03043FEF32AF4E420D6C73C`；receipt SHA-256 `55F3B7339F2BA3056D7AA82D715B353623A585535C763EBECADEB0B22BD41CD3`；manifest SHA-256 `974D851A2F5F9258EC670382F16324D7FF7A0D198A7F277A560C1F5C7B910DD0`；磁盘 consensus SHA-256 `A1D0329A8AA44179344794069EC4343F7D7493484ED8AD71541EB46ABE36ABA2`。原子 promotion 时间 `2026-09-12T16:07:23.8137792Z`，完整部署闭包和根 bootstrap 校验通过；上一版保留于 `tmp/runtime-promotions/20260912T160655464Z-2de8712243fe4015be1758da45e9e514/previous`。部署提交 `75830157e0b1dce7dd020257d2136473a2331b43` 已快进推送 `main`；[事后 Audit 34705020122](https://github.com/FlashNightModReborn/CrazyFlashNight/actions/runs/34705020122) 成功，独立重放最终云端证明，在 Index 中核验 33 文件、2 signer / 2 faultDomain，并明确输出 `state=promoted / deploymentChanged=true`。
+- C# canonical **5,335 passed / 3 existing skipped / 0 failed**，SDK resolver **7/7**；暂存 AS2 **114/114**、库存 **194/194**、EquipmentInventory **28/28** 均有 fresh trace；定向 Host **408/408**、SaveMigrator **71/71**。最终严格工作台审计 **0 错误 / 0 告警**、ratchet **67/67**；共享真实 DOM 覆盖两条入口各三轮切源、迟到注释回包、数量与领取，Bridge 权威数据为夹具，不外推真实写入证明。既有纸娃娃布局 harness 的基线失败范围见专档 §10.3，未改写该测试。
+- 快进合入上游 `d35277e83b7c390dadbf1e0e6f4b428e9d46ce53` 后由 CS6 fresh publish asLoader：**1,344,938B**，SHA-256 `495FA286F9DB397A477C5AFE97AB326056496FF308820A3DFB63A58802B2D7CA`；新鲜 Compiler **0/0**，同时保留天启大封印与暂存新增方法。外层等待 180 秒超时后原 JSFL 于 23:24 完成，经新鲜诊断、SWF 与 IDE 静止复核解除本轮 uncertain marker；未重复触发编译或改编主 XFL。
+
+首次 v1 源 `9154bbced7de54637c359786c26c2fcee652a7dc` 的云端构建成功，但 production policy 严格门阻断了 `character-build.js` 641/640 行告警，ratchet 为 66/67，没有通过 receipt 或部署。v2 将原有就绪通知移到已有 authority 模块，主控制器回到 634 行，相关回归通过；未提高阈值、删除保护或改动玩家操作。v1 tag、request 和 cloud run `34702454701` 保留为 **superseded / NOT_DEPLOYED**，不充当最终源证明。SWE2 可选补充审阅因非交互权限退出，未计作独立审阅或构建证据。
+
+准确状态 **HUMAN_ACCEPTANCE_PASSED / promoted**。无 candidate 参数的正式入口核对实际 Core PID **37704**、路径、DLL、identity/closure 与 bus ready，目视正式欢迎页；未确认进入玩家存档，后台预热到期正常退回 Idle，Flash 退出码 0。窗口正常关闭后日志记录 `guardian.shutdown_complete` / `core.main_exit`，无本次 Core/Flash 遗留。此证据只覆盖正式启动身份与退出，未重跑领取、保存重启业务，不称本专项 `standard_entry_verified`。
+
+正式目录 22 份存档 JSON 中，21 份与开工哈希一致；`cf7_agent_task_detail_callid_v1.json` 的最后写入时间为 `2026-09-12T15:35:15.2788935Z`，早于本次正式入口启动（16:12 UTC），已与开工基线不同。启动 AutoRepair 对全部 22 槽为 `clean, skip / applied=0`；该既有测试槽差异保留原状，不归因于本次启动或覆盖恢复。`.launcher-version-marker.json` 在启动时重写。本轮 `C:/cf7-stash-0912/resources` worktree 已移除，74 份源码差异、验收存档和日志逐项验哈希后存于本地 `tmp/stash-shared-20260912/retired-stash03`；其他三处任务 worktree 及 worker 报告的三处既有孤立 checkout 均未触及。
+
+## 2026-09-12 上一正式发布：原生菜单与共享物品注释
 
 NPC 功能菜单迁移到 NativeHud；开发中的修改/查看详细菜单撤去入口并保留接口。注释以现役 Web 的样式、排版和交互为权威，共享 AS2 内容聚合，修复 Native 短提示宽度、DPI 滚动、密集图标避让与合成层闪烁，补齐角色构筑背包及结构化战技文案。测试员已验收最终 ni08；范围及保留的 AS2 入口见[迁移 ADR](NPC菜单与原生注释迁移-ADR-2026-09-12.md)。
 

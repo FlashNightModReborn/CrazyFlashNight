@@ -9,10 +9,10 @@ var InventoryWorkbench = (function() {
     var _runtimeConfig = (typeof window !== 'undefined'
         && window.__INVENTORY_WORKBENCH_CONFIG__) || {};
     var _activationEpoch = 0;
-    var _closing = false, _statsMode = false, _closeSent = false, _buttons = {};
+    var _closing = false, _statsMode = false, _buttons = {};
     var _buildInteractionLocked = false, _buildLockReason = '';
     var _preparationNavigationV1 = false;
-    var _featureGate = null;
+    var _featureGate = null, _stashNav = null;
 
     function toast(message) {
         if (typeof Toast !== 'undefined') Toast.add(message);
@@ -167,7 +167,8 @@ var InventoryWorkbench = (function() {
                 || InventoryStorageWorkbench.switchView(initialView);
         }
         _storageReady = InventoryStorageWorkbench.activate(
-            controllerPorts(),
+            InventoryWorkbenchStashNavigation.decorateControllerPorts(
+                controllerPorts(), stashNav),
             initialView);
         refreshHeader();
         return _storageReady;
@@ -175,7 +176,7 @@ var InventoryWorkbench = (function() {
 
     function buildPorts() {
         var activationEpoch = _activationEpoch;
-        return {
+        return InventoryWorkbenchStashNavigation.decorateBuildPorts({
             shell:_shell,
             getDensity:function() {
                 return _density.mode;
@@ -224,7 +225,7 @@ var InventoryWorkbench = (function() {
                     _panelInstanceId, activationEpoch);
                 toast(message);
             }
-        };
+        }, stashNav);
     }
 
     function acceptBuildMount(panelInstanceId, activationEpoch) {
@@ -242,6 +243,25 @@ var InventoryWorkbench = (function() {
                 Panels.rejectActiveMount('workbench', _panelInstanceId);
             }
         }, 0);
+    }
+
+    function stashNav() {
+        if (!_stashNav) _stashNav = InventoryWorkbenchStashNavigation.create({
+            context:stashContext, requestView:requestView, active:active,
+            setClosing:function(value) { _closing = value; }
+        });
+        return _stashNav;
+    }
+
+    function stashContext() {
+        return {
+            build:_build, view:_view, closing:_closing, shell:_shell,
+            storageReady:_storageReady, panelInstanceId:_panelInstanceId,
+            epoch:_activationEpoch, runtimeConfig:_runtimeConfig,
+            navigation:_navigation, featureLoading:featureLoading(),
+            buildLockReason:_view === 'build' && _buildInteractionLocked
+                ? _buildLockReason || '构筑操作完成前不能进入暂存。' : ''
+        };
     }
 
     function ensureBuild() {
@@ -279,6 +299,7 @@ var InventoryWorkbench = (function() {
                 _view = next;
                 refreshHeader();
                 updateChrome();
+                if (_stashNav) _stashNav.onView(next);
             },
             toast:toast
         });
@@ -293,12 +314,14 @@ var InventoryWorkbench = (function() {
             return false;
         }
         if (_closing || featureLoading()
+                || (_stashNav && _stashNav.switching()
+                    && (!options || options.origin !== 'storage-source'))
                 || (next !== 'storage' && next !== 'tuning' && next !== 'build')
                 || next === _view) {
             return false;
         }
         return !!(_featureGate && _featureGate.run(next, function() {
-            return _navigation && _navigation.request(next, options);
+            return stashNav().prepareView(next, function() { return _navigation && _navigation.request(next, options); });
         }, {initial:false}));
     }
 
@@ -310,35 +333,6 @@ var InventoryWorkbench = (function() {
         else _root.insertBefore(header, _root.firstChild);
         updateChrome();
         return _statsMode ? _buttons['back-build'] : opener;
-    }
-
-    function finishClose(reason) {
-        if (_closeSent) return false;
-        _closeSent = true;
-        var message = InventoryWorkbenchConfig.createCloseMessage(
-            _panelInstanceId, reason);
-        if (Bridge.send(message) === false) {
-            _closeSent = false;
-            toast('启动器连接不可用，工作台保持打开。');
-            return false;
-        }
-        Panels.close();
-        return true;
-    }
-
-    function finalizeClose(reason) {
-        if (!_build) return finishClose(reason);
-        if (_build.canClose()) return finishClose(reason);
-        _closing = true;
-        var callId = _build.finalize(function(accepted) {
-            _closing = false;
-            if (accepted) finishClose(reason);
-        });
-        if (!callId) {
-            _closing = false;
-            toast('角色构筑仍在同步，请稍候关闭。');
-        }
-        return !!callId;
     }
 
     function requestPreparationNavigation(reason) {
@@ -375,7 +369,7 @@ var InventoryWorkbench = (function() {
         if (reason === 'escape' && _preparationMenu
                 && _preparationMenu.consumeEscape()) return true;
         if (_preparationMenu) _preparationMenu.close(false);
-        if (_closing) return false;
+        if (_closing || _stashNav && _stashNav.switching()) return false;
         if (_navigation && _navigation.rejectIfPending()) return false;
         if (_shell && _shell.hasModal()) {
             return _shell.closeModal(reason || 'close');
@@ -386,6 +380,8 @@ var InventoryWorkbench = (function() {
         }
         if (reason === 'escape' && _view !== 'build'
                 && InventoryStorageWorkbench.consumeEscape()) return true;
+        if (reason === 'escape' && _stashNav
+                && _stashNav.consumeEscape()) return true;
         var returnPlan = reason === 'escape' && _navigation
             ? _navigation.returnPlan('escape') : null;
         if (returnPlan) {
@@ -398,14 +394,16 @@ var InventoryWorkbench = (function() {
         if (_storageReady && _view !== 'build') {
             return InventoryStorageWorkbench.prepareClose(reason, function(ready) {
                 if (!ready) return;
-                finalizeClose(reason);
+                stashNav().finalizeClose(reason);
             });
         }
-        return finalizeClose(reason);
+        return stashNav().finalizeClose(reason);
     }
 
     function teardown() {
         _activationEpoch++;
+        if (_stashNav) _stashNav.destroy();
+        _stashNav = null;
         if (_storageReady) InventoryStorageWorkbench.deactivate();
         if (_build) _build.destroy();
         if (_tuningHeader) _tuningHeader.destroy();
@@ -431,7 +429,6 @@ var InventoryWorkbench = (function() {
         _panelInstanceId = '';
         if (_featureGate) _featureGate.cancel();
         _featureGate = null;
-        _closeSent = false;
         clear(_scaleEl);
     }
 
@@ -444,6 +441,7 @@ var InventoryWorkbench = (function() {
         }
         _activationEpoch++;
         var activationEpoch = _activationEpoch;
+        _stashNav = null;
         _profile = launch.profile;
         _view = launch.view;
         _preparationNavigationV1 = launch.preparationNavigationV1;
@@ -453,7 +451,6 @@ var InventoryWorkbench = (function() {
                 ? 'header:' + launch.returnFocusAction : ''
         });
         _panelInstanceId = launch.panelInstanceId;
-        _closeSent = false;
         _shell = new Workbench.DualPaneShell({
             profile:_view === 'build' ? 'character-build'
                 : _view === 'tuning' ? 'library-decision' : 'transfer-pair',
@@ -541,6 +538,7 @@ var InventoryWorkbench = (function() {
             state.buildLockReason = _buildLockReason;
             state.storage = storage;
             state.build = _build ? _build.debugState() : null;
+            state.stashSource = _stashNav ? _stashNav.debugState() : null;
             state.viewStack = _navigation ? _navigation.snapshot() : [];
             state.viewTransition = _navigation ? _navigation.debugState() : null;
             return state;

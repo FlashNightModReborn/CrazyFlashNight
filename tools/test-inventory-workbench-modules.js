@@ -1149,6 +1149,7 @@ test('facade owns registration and delegates to the bounded storage controller',
     const buildController = fs.readFileSync(path.join(__dirname, '..', 'launcher', 'web', 'modules', 'character-build.js'), 'utf8');
     const buildTuning = fs.readFileSync(path.join(__dirname, '..', 'launcher', 'web', 'modules', 'character-build', 'character-build-tuning.js'), 'utf8');
     const tuningView = fs.readFileSync(path.join(__dirname, '..', 'launcher', 'web', 'modules', 'equipment-tuning-view.js'), 'utf8');
+    const sourceNavigation = fs.readFileSync(path.join(__dirname, '../launcher/web/modules/inventory-workbench-stash-navigation.js'), 'utf8');
     const extracted = ['inventory-workbench-config.js', 'inventory-workbench-navigation.js',
         'inventory-workbench-preparation-menu.js', 'inventory-workbench-header.js',
         'inventory-workbench-quick-transfer.js', 'inventory-workbench-owned-view.js',
@@ -1184,8 +1185,8 @@ test('facade owns registration and delegates to the bounded storage controller',
     assert(facade.includes('InventoryWorkbenchFeatureLoader.createPanelGate({'));
     assert(facade.includes('_featureGate.run(next, function()'));
     assert(facade.includes('_featureGate.run(_view, mountInitial, {initial:true})'));
-    assert(featureLoaderSource.includes("loadTuning:function() { return loadView('tuning'); }"));
-    assert(featureLoaderSource.includes("loadBuild:function() { return loadView('build'); }"));
+    assert(featureLoaderSource.includes("loadTuning:function() { return loadFeature(descriptor('tuning')); }"));
+    assert(featureLoaderSource.includes("loadBuild:function() { return loadFeature(descriptor('build')); }"));
     assert(featureLoaderSource.includes('load returned a non-thenable'));
     assert(featureLoaderSource.includes('.catch(function(error)'));
     assert(featureLoaderSource.includes('options.reject();'));
@@ -1200,7 +1201,7 @@ test('facade owns registration and delegates to the bounded storage controller',
     assert(source.includes('body.appendChild(_quickBarView.root)'));
     assert(!/addHeaderAction\(_quick(StatusNode|DepositButton|WithdrawButton|CommitButton)/.test(source));
     assert(source.includes('commitQuickTransfer'));
-    assert(/InventoryStorageWorkbench\.activate\(\s*controllerPorts\(\),\s*initialView\s*\)/.test(facade));
+    assert(/InventoryStorageWorkbench\.activate\(\s*InventoryWorkbenchStashNavigation\.decorateControllerPorts\(\s*controllerPorts\(\), stashNav\),\s*initialView\s*\)/.test(facade));
     assert(facade.includes('InventoryStorageWorkbench.deactivate()'));
     assert(extracted.includes('function createWorkbenchHeader(options)'));
     assert(extracted.includes("createActionButton(document, 'close', '×'"));
@@ -1225,7 +1226,8 @@ test('facade owns registration and delegates to the bounded storage controller',
     assert(!source.includes('Panels.open'));
     assert(source.includes('complete(false)'));
     assert(source.includes('complete(true)'));
-    assert(facade.includes('function finalizeClose(reason)'));
+    assert(sourceNavigation.includes('function finalizeClose(reason)'));
+    assert(facade.includes('stashNav().finalizeClose(reason)'));
     assert(extracted.includes("append(buildActions, 'skills', '技能配置'"));
     assert(facade.includes("requestPreparationNavigation('navigate_skills')"));
     assert(facade.includes("case 'battlebox': return requestView("));
@@ -1259,6 +1261,8 @@ test('facade owns registration and delegates to the bounded storage controller',
             'equipEquipment', 'unequipEquipment', 'equipDrug', 'unequipDrug'
         ]);
     assert(!/Panels\.register|Bridge\.send/.test(buildSession));
+    assert(!/new (?:[^;\n]*\.)?(?:PanelRequestMux|InventoryCoordinator)\(/.test(sourceNavigation));
+    assert(sourceNavigation.includes('function finalizeClose('));
     assert(!/Bridge\.send|RequestMux|InventoryCoordinator/.test(extracted), 'extracted modules must not own transport or authority');
     // Readable parent orchestration is budgeted explicitly; do not line-compress the facade merely
     // to satisfy the old pre-extraction threshold. audit-workbench-ui.js carries the same ceiling.

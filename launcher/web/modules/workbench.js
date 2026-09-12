@@ -266,15 +266,7 @@
     DualPaneShell.prototype.getHost = function(slotId) { return this._hosts[slotId] || null; };
     DualPaneShell.prototype.getSlotFrame = function(slotId) { return this._slotFrames[slotId] || null; };
     DualPaneShell.prototype.setProfile = WorkbenchShellProfile.setProfile;
-    DualPaneShell.prototype.setSlotLabel = function(slotId, label) {
-        var frame = this._slotFrames[slotId];
-        if (!frame) return false;
-        var text = String(label || '');
-        var marker = frame.querySelector('.workbench-slot-marker span');
-        if (marker) marker.textContent = text;
-        frame.setAttribute('aria-label', '工作台栏位 ' + slotId + ' ' + text);
-        return true;
-    };
+    DualPaneShell.prototype.setSlotLabel = WorkbenchShellProfile.setSlotLabel;
 
     DualPaneShell.prototype.focusSlot = function(slotId) {
         if (this._destroyed || !this._slotFrames[slotId] || this._activeSlot === slotId) return false;
@@ -292,10 +284,7 @@
 
     DualPaneShell.prototype.getActiveSlot = function() { return this._activeSlot; };
 
-    DualPaneShell.prototype.setTitle = function(title, subtitle) {
-        this._title.textContent = title || '';
-        this._subtitle.textContent = subtitle || '';
-    };
+    DualPaneShell.prototype.setTitle = WorkbenchShellProfile.setTitle;
 
     DualPaneShell.prototype.setStatus = function(text, state) {
         var label = text || '';
@@ -338,6 +327,16 @@
         if (this._views[key] && this._views[key] !== view) throw new Error('duplicate workbench instanceKey: ' + key);
         this._views[key] = view;
         return view;
+    };
+
+    DualPaneShell.prototype.unregisterView = function(view) {
+        var key = viewKey(view);
+        if (!key || this._views[key] !== view) return false;
+        for (var slot in this._hosts) {
+            if (this._hosts[slot].currentView === view || this._defaults[slot] === view) return false;
+        }
+        delete this._views[key];
+        return true;
     };
 
     DualPaneShell.prototype.setDefault = function(slotId, view) {

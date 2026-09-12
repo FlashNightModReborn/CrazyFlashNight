@@ -82,17 +82,83 @@
     }
 
     function storageHelpSpec(containerId) {
-        var target = containerId === '战备箱' ? '战备箱' : '仓库';
+        var target = containerId === 'stash' ? '暂存物资' : containerId === '战备箱' ? '战备箱' : '仓库';
         return {
             kind:'inventory-storage-help',
             title:target + '收纳帮助',
-            message:'常用操作\n• 精确放置：先选择一侧物品，再选择另一侧目标格；也可以直接拖拽到目标位置。\n• 单件快移：按住 Ctrl 单击物品，系统会优先合并同名堆叠，再寻找首个空格。',
-            detail:'批量处理\n• 点击下方“批量存入”或“批量取出”，再依次点击多个物品完成暂存；重复点击可取消。\n• 确认计数后点击“执行转移”，队列会逐件使用现有自动落位规则。\n• Esc 会先取消尚未执行的批次；任一物品状态过期、目标已满或同步失败时，队列会停止并重新核对。\n\n浏览\n• 紧凑模式适合快速收纳，完整模式显示名称与状态；筛选、分页和整理都基于完整权威容器。',
+            message:'常用操作\n• 选中物品后，点击下方“' + (containerId === 'stash' ? '领取' : '存入 / 取出') + '”即可自动归位，也可按住 Ctrl 单击物品。\n• 精确放置：先选择物品，再选择另一侧目标格；也可以直接拖拽到目标位置。',
+            detail:'数量与批量\n• 选中堆叠物品后，直接使用下方滑条或输入框调整数量，再领取或移动。\n• 点击下方批量模式，再依次选择本页物品；重复点击取消，点击“执行转移”一次提交所选项。\n• 切页、筛选或切换来源会清空未执行的选择。Esc 先取消选择，再返回。\n\n' + (containerId === 'stash' ? '暂存物资只取不存；材料、情报、药剂等点击“领取”会放入适用位置。背包放不下的物品继续保留，仍可领取能放下的其他物品。' : '自动归位优先合并同名堆叠，再寻找空格；批量在首个放不下的物品前停止。'),
             actions:[{id:'close', label:'知道了', primary:true, audioCue:'activate'}]
         };
     }
 
+    function stashResultMessage(result) {
+        if (!result || !result.success) return errorMessage(result && result.error);
+        var data = result.data || result, accepted = data.accepted || [], blocked = data.blocked || [];
+        if (!accepted.length && !blocked.length) return '暂存与背包已同步。';
+        var destinations = {}, reasons = {}, parts = [];
+        accepted.forEach(function(row) {
+            var target = typeof row.destination === 'string' ? row.destination : row.destination && row.destination.containerId;
+            target = target || '对应位置';
+            destinations[target] = (destinations[target] || 0) + Number(row.quantity || 0);
+        });
+        Object.keys(destinations).forEach(function(key) { parts.push(destinations[key] + ' 件已放入' + key); });
+        var labels = {inventory_full:'背包已满', target_full:'背包已满', target_stale:'目标格已变化',
+            target_occupied:'目标格已被占用', target_incompatible:'需自动归位，请选中后点击“领取”'};
+        blocked.forEach(function(row) { reasons[labels[row.reason] || '当前无法领取'] = true; });
+        if (blocked.length) parts.push(blocked.length + ' 项仍保留在暂存（' + Object.keys(reasons).join('、') + '）');
+        return parts.join('；') + '。';
+    }
+
+    function bindTooltip(options) {
+        var slot = options.slot, item = slot.item || {};
+        return options.tooltip.bindAsyncHover(options.node, {
+            profile:'dense-inspect', cache:options.cache,
+            key:options.containerId + ':' + (slot.entryId || slot.physicalSlot) + ':' + String(slot.revision || slot.slotLease || ''),
+            item:item, isSuppressed:options.isSuppressed,
+            renderBasic:function(value) { return basicTooltip(value, options.escapeHtml); },
+            renderRich:function(value, data) { return richTooltip(value, data, options.richTooltip); },
+            fetch:function(_, callback) { options.fetch(callback); }
+        });
+    }
+
+    function projectQuickSelection(root, views, quick) {
+        if (!root) return;
+        var nodes = root.querySelectorAll('.inventory-slot-card');
+        for (var i = 0; i < nodes.length; i++) nodes[i].classList.remove('quick-transfer-pending', 'quick-transfer-inflight');
+        Object.keys(quick.entries).forEach(function(key) {
+            var entry = quick.entries[key], view = views[entry.containerId];
+            if (!view) return;
+            var tiles = view.root.querySelectorAll('[data-workbench-key]');
+            for (var n = 0; n < tiles.length; n++) {
+                if (tiles[n].getAttribute('data-workbench-key') !== String(entry.slot)) continue;
+                tiles[n].classList.add('quick-transfer-pending');
+                if (entry.inflight) tiles[n].classList.add('quick-transfer-inflight');
+                break;
+            }
+        });
+    }
+
+    function createPagedView(options) {
+        var config = options.config, id = config.rightContainerId;
+        var view = options.createView(id, config.title, options.layoutMode);
+        var pager = new options.inventoryUI.InventoryWindowPager({
+            containerId:id, containerLabel:config.title, columns:config.pageColumns,
+            defaultOffset:0, defaultLimit:config.rightLimit, defaultCapacity:config.rightCapacity,
+            getSnapshot:function() { return options.source.getWindow(id); },
+            getRequest:function() { return options.source.getRequest(id); },
+            shortcutEnabled:options.shortcutEnabled, onBeforeChange:options.beforeChange,
+            onRequest:function(offset, limit, callback) { return options.source.setWindow(id, offset, limit, callback); },
+            onResult:options.onResult
+        });
+        return {view:view, pager:pager};
+    }
+
     function presentationFor(containerId, snapshot) {
+        if (containerId === 'stash') return {
+            emptyText:snapshot && snapshot.unfilteredTotal ? '当前分类暂无物品' : '暂存区是空的',
+            meta:snapshot ? snapshot.total + ' 项 · 单向领取' : '同步中'
+        };
         var equipmentScope = snapshot && String(snapshot.scope || 'all') === 'equipment';
         var filtered = snapshot && (String(snapshot.filterKey || 'all') !== 'all' || equipmentScope);
         var emptyText = equipmentScope ? '背包中暂无可调制装备'
@@ -165,6 +231,7 @@
             throw new Error('Inventory owned view requires presentation adapters and explicit state ports');
         }
         var containerId = String(options.containerId);
+        var rowKey = options.keyOf || function(slot) { return slot.physicalSlot; };
         var interaction = authorityInteraction(options.getAuthorityState(), false);
         var ownedShell = new UI.OwnedInventoryViewShell({
             containerId:containerId,
@@ -174,10 +241,11 @@
                 var snapshot = options.getSnapshot(containerId);
                 return snapshot ? snapshot.slots : [];
             },
-            keyOf:function(slot) { return slot.physicalSlot; },
+            keyOf:rowKey,
             renderItem:function(slot) {
                 return UI.renderOwnedSlot(containerId, slot, {
                     iconHtml:options.iconHtml,
+                    containerLabel:options.title,
                     allowDiscard:containerId === '背包'
                 });
             },
@@ -185,13 +253,28 @@
                 options.bindSlot(containerId, node, slot, function() { return interaction; });
             },
             exportOffer:function(slot) {
+                if (options.exportOffer) return options.exportOffer(containerId, slot);
                 var state = options.getAuthorityState() || {};
                 if (!slot || !slot.occupied || !state.ready || state.busyOwner || state.refreshRequired) return null;
-                return {subjectKind:'ownedSlot', sourceRef:options.slotRef(containerId, slot),
+                var quantity = options.sourceQuantity ? options.sourceQuantity(containerId, slot) : undefined;
+                return {subjectKind:containerId === 'stash' ? 'stashEntry' : 'ownedSlot',
+                    sourceRef:options.slotRef(containerId, slot, quantity),
                     offeredOperations:['inventory.transfer']};
             },
             probeAccept:function(offer, hit) {
+                if (options.probeAccept) return options.probeAccept(containerId, offer, hit);
                 var target = hit && hit.item;
+                if (containerId === 'stash') return {accepted:false, reason:'withdraw_only'};
+                if (offer && offer.subjectKind === 'stashEntry' && target) {
+                    var item = offer.sourceRef && offer.sourceRef.item || {};
+                    if (containerId !== '背包' || item.majorType === '收集品' || item.majorType === '材料')
+                        return {accepted:false, reason:'target_incompatible'};
+                    if (target.occupied && (item.itemKind === 'equipment' || !target.item
+                            || target.item.name !== item.name || target.item.itemKind === 'equipment'))
+                        return {accepted:false, reason:'target_occupied'};
+                    return {accepted:true,operationId:'inventory.transfer',
+                        targetRef:options.slotRef(containerId, target),hint:target.occupied ? 'merge' : 'move'};
+                }
                 if (!offer || offer.subjectKind !== 'ownedSlot' || !target) return {accepted:false, reason:'unsupported'};
                 var targetRef = options.slotRef(containerId, target);
                 if (options.samePhysicalSlot(offer.sourceRef, targetRef)) return {accepted:false, reason:'same_slot'};
@@ -201,7 +284,7 @@
             title:options.title,
             meta:'同步中',
             className:'inventory-owned-view inventory-owned-' + (containerId === '背包' ? 'backpack' : 'warehouse')
-                + (containerId === '战备箱' ? ' inventory-owned-battlebox' : ''),
+                + (containerId === '战备箱' || containerId === 'stash' ? ' inventory-owned-battlebox' : ''),
             gridClassName:'inventory-owned-grid',
             emptyText:'正在同步库存…',
             allowedSlots:containerId === '背包' ? ['L'] : ['R'],
@@ -212,7 +295,7 @@
             view:ownedShell.view,
             shell:ownedShell,
             getSnapshot:function() { return options.getSnapshot(containerId); },
-            keyOf:function(slot) { return slot && slot.physicalSlot; },
+            keyOf:rowKey,
             interaction:interaction,
             onInteractionChange:function(projection) {
                 interaction = projection;
@@ -238,7 +321,7 @@
             + (options.pager ? ' inventory-battlebox-toolbar' : ' inventory-no-pager');
         var controls = new UI.InventorySortControls({
             filterOptions:UI.categoryFilterOptions(), filterLabel:'', filterAriaLabel:containerId + '分类筛选',
-            authorityOptions:UI.authoritySortOptions(), authorityLabel:'', authorityAriaLabel:containerId + '整理方式',
+            authorityOptions:options.allowAuthority === false ? [] : UI.authoritySortOptions(), authorityLabel:'', authorityAriaLabel:containerId + '整理方式',
             commitLabel:'整理' + containerId,
             onFilterChange:function(filterKey) {
                 options.beforeFilter();
@@ -286,6 +369,10 @@
         errorMessage:errorMessage,
         resolveExactSourceSlot:resolveExactSourceSlot,
         storageHelpSpec:storageHelpSpec,
+        stashResultMessage:stashResultMessage,
+        bindTooltip:bindTooltip,
+        projectQuickSelection:projectQuickSelection,
+        createPagedView:createPagedView,
         createView:createView,
         createToolbar:createToolbar
     };

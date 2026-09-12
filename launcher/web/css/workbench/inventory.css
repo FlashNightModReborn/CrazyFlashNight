@@ -1224,3 +1224,14 @@
 .inventory-toolbar-field select { min-width:0; width:100%; padding:0 3px; }
 .inventory-toolbar-field.authority { grid-area:authority; color:#a17b4f; }
 .inventory-sort-commit { grid-area:commit; color:#f0bd78; border-color:#725532; background:#1b1510; white-space:nowrap; }
+
+/* 来源入口与共享数量控件沿用同一工作台按钮，不派生暂存皮肤。 */
+.inventory-source-action { margin-left:auto; min-height:23px; }
+.inventory-inline-quantity[hidden], .inventory-move-selected[hidden], .inventory-select-page[hidden] { display:none; }
+.inventory-inline-quantity {
+    grid-template-columns:24px 58px 24px 43px 96px;
+    margin-right:5px;
+}
+.inventory-inline-quantity .workbench-quantity-range-shell { grid-column:5; grid-row:1; }
+.inventory-inline-quantity .workbench-quantity-feedback { grid-column:1 / -1; }
+.inventory-move-selected:not(:disabled) { color:var(--wb-accent); border-color:var(--wb-accent); }

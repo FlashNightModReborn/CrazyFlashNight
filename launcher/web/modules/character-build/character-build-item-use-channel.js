@@ -168,17 +168,11 @@
                     } else if (self._ports.toast) self._ports.toast('上次领取尚待恢复，请重试。');
                 });
             }
-            var stashView = typeof module !== 'undefined' && module.exports
-                ? require('./character-build-stash-view.js') : globalThis.CharacterBuildStashView;
-            return stashView.open(this._view, this._itemUse, {
-                toast:this._ports.toast,
-                changed:function() {
-                    self._candidateCache = null;
-                    self._session.refreshSnapshot(function(snapshot, accepted) {
-                        if (accepted && self._view) self._applySnapshot(snapshot.payload, false);
-                    });
-                }
-            });
+            if (this._ports.openStorageSource) {
+                return !!this._ports.openStorageSource('stash');
+            }
+            if (this._ports.toast) this._ports.toast('暂存入口尚未就绪，请重试。');
+            return false;
         };
         controller._itemUseSettled = function(response, committed, pending) {
             var self = this;

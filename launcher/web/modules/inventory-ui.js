@@ -227,7 +227,10 @@
         var node = document.createElement(options.tagName === 'span' ? 'span' : 'article');
         node.className = 'item-card item-card-owned inventory-slot-card ' + (slot.occupied ? 'occupied' : 'empty');
         node.setAttribute('data-container-id', containerId);
-        node.setAttribute('data-physical-slot', slot.physicalSlot);
+        var entry = slot.entryId != null;
+        var label = options.containerLabel || containerId;
+        if (entry) node.setAttribute('data-entry-id', String(slot.entryId));
+        else node.setAttribute('data-physical-slot', slot.physicalSlot);
         if (!slot.occupied) {
             node.setAttribute('aria-label', containerId + '空槽 ' + (Number(slot.physicalSlot) + 1));
             return node;
@@ -247,7 +250,7 @@
         var itemCard = WorkbenchApi && WorkbenchApi.ItemCard;
         var balanceAria = itemCard && itemCard.balanceAriaLabel ? itemCard.balanceAriaLabel(item) : '';
         var projectionAria = ownedProjectionAria(item);
-        node.setAttribute('aria-label', containerId + '槽位 ' + (Number(slot.physicalSlot) + 1) + '，'
+        node.setAttribute('aria-label', label + (entry ? '，' : '槽位 ' + (Number(slot.physicalSlot) + 1) + '，')
             + String(item.displayName || '未知物品')
             + (projectionAria ? '，' + projectionAria : '') + (balanceAria ? '，' + balanceAria : ''));
         var icon = typeof options.iconHtml === 'function'

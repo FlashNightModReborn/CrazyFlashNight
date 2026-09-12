@@ -37,12 +37,17 @@
                 if (callback) callback(response, !!accepted);
             });
         };
-        Controller.prototype.requestStashPage = function(offset, callback) {
+        Controller.prototype.requestStashPage = function(offset, callback, filterSpec) {
             if (this._destroyed || this._state === 'closed') return null;
+            if (filterSpec !== undefined && (!filterSpec
+                    || typeof filterSpec !== 'object' || Array.isArray(filterSpec))) return null;
             var payload = this._base(); payload.v = 2; payload.offset = offset;
-            return this._mux.request('stashPage', payload, {kind:'stash_page', latestWins:true}, function(response) {
-                callback(response && response.success === true ? response.data : null, response);
-            });
+            if (filterSpec !== undefined) payload.filterSpec = filterSpec;
+            return this._mux.request('stashPage', payload,
+                {kind:'stash_page', latestWins:true}, function(response) {
+                    if (callback) callback(response && response.success === true
+                        ? response.data : null, response);
+                });
         };
         Controller.prototype.requestStashTooltip = function(storeId, entry, callback) {
             if (this._destroyed || this._state === 'closed') return null;

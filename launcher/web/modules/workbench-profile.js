@@ -35,9 +35,26 @@
         return true;
     }
 
+    function setSlotLabel(slotId, label) {
+        var frame = this._slotFrames[slotId];
+        if (!frame) return false;
+        var text = String(label || '');
+        var marker = frame.querySelector('.workbench-slot-marker span');
+        if (marker) marker.textContent = text;
+        frame.setAttribute('aria-label', '工作台栏位 ' + slotId + ' ' + text);
+        return true;
+    }
+
+    function setTitle(title, subtitle) {
+        this._title.textContent = title || '';
+        this._subtitle.textContent = subtitle || '';
+    }
+
     return {
         validProfiles: VALID_PROFILE_NAMES,
         requireProfile: requireProfile,
-        setProfile: setProfile
+        setProfile: setProfile,
+        setSlotLabel: setSlotLabel,
+        setTitle: setTitle
     };
 });

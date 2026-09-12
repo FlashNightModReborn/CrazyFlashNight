@@ -36,6 +36,34 @@ namespace CF7Launcher.Tests.Save
             Assert.IsType<JArray>(md["ext"]["mapStashSources"]["consumed"]);
         }
 
+        [Fact]
+        public void RewardStash_UnclaimedSnapshotWithNullCommitRemainsLoadable()
+        {
+            var md = BuildValidMydata();
+            md["ext"] = JObject.Parse(@"{'rewardInbox':{'v':2,'storeId':'s','commitRevision':0,'sequence':1,
+                'entries':[{'entryId':'s.e1','revision':1,'item':{'name':'黄铜','value':7,'lastUpdate':5}}],
+                'lastCommit':null,'legacy':{'v':1,'sequence':0,'authorityRevision':1,'batches':[],
+                    'receipts':[],'migrations':[],'supplyKeys':[],'activeClaimRoot':null,'claimRootTerminal':null}}}");
+            var before = md["ext"].DeepClone();
+            SaveMigrator.NormalizeResolvedSnapshot(md);
+            Assert.True(SaveMigrator.ValidateResolvedSnapshot(md));
+            Assert.True(JToken.DeepEquals(before, md["ext"]));
+        }
+
+        [Theory]
+        [InlineData("null")]
+        [InlineData("12")]
+        [InlineData("'unknown'")]
+        public void RewardStash_ScalarProofOrItemIsPreservedForAuthorityValidation(string scalar)
+        {
+            var md = BuildValidMydata();
+            md["ext"] = JObject.Parse("{'rewardInbox':{'v':2,'entries':[{'item':" + scalar +
+                "}],'lastCommit':" + scalar + "}}");
+            var before = md["ext"].DeepClone();
+            SaveMigrator.NormalizeResolvedSnapshot(md);
+            Assert.True(JToken.DeepEquals(before, md["ext"]));
+        }
+
         [Theory]
         [InlineData(2)]
         [InlineData(3)]
