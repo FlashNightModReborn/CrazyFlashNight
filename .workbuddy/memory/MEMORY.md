@@ -73,8 +73,13 @@ Git Bash：`bash scripts/compile_test.sh -Target publish -TimeoutSeconds 180`
 - 自查：`grep -l 'linkageExportForAS="true"' <元件>.xml`；`ffdec-cli.exe -export symbolClass <out> <swf>` 拿 `symbols.csv`（1.5 秒）确认符号表
 - 环境：managed 3.13 **没 Pillow**，用系统 `C:/Users/Akatosh/AppData/Local/Programs/Python/Python310/python.exe`
 - 耗时被 FFDec `-swf2xml` 吃掉（4.8MB → 254MB XML、191 秒，**必然超默认 120s**）；超时只让 sprite_graph 退化成空 → 静态首帧，对静态图标无害。9 个图标 ≈ 2 分钟
-- 跳过行为：无 `--force-overwrite-existing` 时，一致 → `unchanged`；有差异 → `layout_protected`（**保留旧图**）；只有缺文件才 `created`
-- **`data/items/asset_source_map.xml` 是 auto-generated，禁止手改**；易过期（曾发现 HEAD 版某背景 SWF 出现 0 次，重跑后冒出 33 条 conflict）
+- 跳过行为：无 `--force-overwrite-existing` 时，一致 → `unchanged`；有差异 → `layout_protected`（**保留旧图**）；只有缺文件才 `created`。所以**增量加图标天然安全**，不会覆盖已有
+- `--name` 收**裸名**（物品名，不带 `图标-` 前缀），逗号分隔或重复多次都可以；`--dry-run` 只跑不写
+- 成功判据看 `tmp/icon-bake-offline-report.json`：`counts.created=1 / processed=1`、`unresolvedSummary` 为空、`protectExistingLayout: true`
+- ⚠ 脚本启动时会清空 `tmp/icon-bake-offline`（上次留下的 227 个文件），有几率被安全策略拦成 `[safe-delete][SAFE_DELETE_BULK_CONFIRM_REQUIRED]` 打印一行就退出——**这是无害噪声，产物已落盘**（对照 manifest 与 `ls -lat launcher/web/icons/*.webp` 确认，别当失败重跑）
+- **`data/items/asset_source_map.xml` 是 auto-generated，禁止手改**；易过期（曾发现 HEAD 版某背景 SWF 出现 0 次，重跑后冒出 33 条 conflict）。它常落后于库里实际元件（新增元件不重扫就不进表），所以看到"少条目"先重扫再判断
+- 重扫后**必做差分核对**：备份旧 map → 按 `<asset id=... swf=... symbolName=...>` 正则解析成 dict → 比 `新增 / 消失 / 改指向`。正常结果是"纯新增、消失 0、改指向 0"；出现消失或改指向才是回归。注意 `grep -c '<asset '` 与正则计数口径不同（属性顺序差异），别拿两个数相减
+- 羊皮卷/文书类图标（`tmp/gen_san_die_icon.py`，出 `图标-三蝶手稿.svg`）：撕边轮廓（左上角做成**撕掉一块**的参差缺口）+ 铺满的"虫形"折线文字 + **受潮三件套**。水渍画法：暗影 → **用受光亮色把中间洗一遍（发白）** → 水线环（`ring_blob`：一个多边形里"外圈正走+内圈倒走"挖空）；中间若用纸色洗，整块就变成"泥斑"
 
 ## 给 CS6 画 SVG 只能用保守子集
 
@@ -103,6 +108,17 @@ CS6 老导入器不支持 `<linearGradient>` + `fill="url(#id)"`、`<clipPath>`�
 - **既有惯例**：`_root.技能函数.XXX = function(){}`（144 条，`单位函数_lsy_主角技能.as`），容器里写 `掌炮攻击();`。**容器挂在 unit 下** → 帧脚本里 `this` = 容器、`this._parent` = 施术者
 
 `scripts/逻辑/单位函数/*.as` 由 `scripts/asLoaderManifest/frame36.as` `#include`，**改完必须保留 UTF-8 BOM**。
+
+### 战技数据的字段与 tooltip 显示
+
+战技数据（物品 XML 的 `<skill>` 块）字段：`skillname` / `description` / `cd`(毫秒) / `hp` / `mp` / `sp` / `level`。
+`sp` = 技能点消耗，运行时在 `单位函数_fs_aka_玩家模板迁移.as:1851` 读成 `当前战技.消耗sp`（余额校验与扣除在「释放主动战技」里）。
+
+**【战技信息】行的拼装在 `TooltipTextBuilder.buildSkillInfo`，它有两条分支、改一处必须同步另一处**：
+① `skill.description` 存在（普通战技，如「天启大封印」）② 只有 `skillname` 的结构化对象（如「猩红天秤／血色光剑」）。
+两条都走「冷却 → 消耗HP → 消耗MP → 消耗SP」同一顺序，后缀常量在 `TooltipConstants.SUF_*`（`SUF_SP = "SP"`）。
+`sp` 缺省或 0 时不显示。物料走 `ModStatBuilder.buildSkillInfo(modData.skill)`，取的是 `item.skill` 原始对象 → XML 里加字段即可显示。
+同名的 `_root.技能栏技能图标注释` / `_root.学习界面技能图标注释` 读的是**另一套数据**（`_root.技能表对象` / `_root.技能表`，用 `MP`/`UnlockSP` 大写键），与战技无关，别改错。
 
 ## 封印领域（天启大封印）的 Z 轴口径
 

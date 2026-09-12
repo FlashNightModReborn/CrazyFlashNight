@@ -49,6 +49,7 @@ class org.flashNight.gesh.tooltip.TooltipConstants {
   public static var SUF_PERCENT:String = "%";
   public static var SUF_HP:String = "HP";
   public static var SUF_MP:String = "MP";
+  public static var SUF_SP:String = "SP";
   public static var SUF_BLOOD:String = "%血量";
   public static var SUF_SECOND:String = "秒";
   public static var SUF_FIRE_RATE:String = "发/秒";

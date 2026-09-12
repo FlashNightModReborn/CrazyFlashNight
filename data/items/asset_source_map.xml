@@ -5,7 +5,7 @@
   <!-- orphan="true" = XML present in LIBRARY/ but not in DOMDocument <Include>; 
        Flash IDE library panel cannot see it but .swf compile may still expose linkage -->
 
-  <!-- 5645 unique assets -->
+  <!-- 5652 unique assets -->
   <asset id="(劣质)蓝色刀光" swf="flashswf/arts/new/雾人整合特效.swf" symbolName="尚未整理/(劣质)蓝色刀光/(劣质)蓝色刀光" />
   <asset id="0" swf="flashswf/arts/new/3XD的素材.swf" symbolName="1主武器/一部分武器/武器部分/mk23/MK23手枪" />
   <asset id="1" swf="flashswf/arts/new/3XD的素材.swf" symbolName="1主武器/一部分武器1/武器本体/PKM战术版/元件 16" />
@@ -972,6 +972,7 @@
   <asset id="图标-三尖两刃刀" swf="flashswf/arts/new/雾人装备调整.swf" symbolName="1.冷兵器/长柄/15.三尖两刃刀/图标-三尖两刃刀" />
   <asset id="图标-三戈戟一型" swf="flashswf/arts/new/雾人装备调整.swf" symbolName="1.冷兵器/长柄/11.三戈戟一型/图标-三戈戟一型" />
   <asset id="图标-三戈戟二型" swf="flashswf/arts/new/雾人装备调整.swf" symbolName="1.冷兵器/长柄/12.三戈戟二型/图标-三戈戟二型" />
+  <asset id="图标-三蝶手稿" swf="flashswf/arts/素材库-物品技能图标.swf" symbolName="情报物品相关/图标-三蝶手稿" />
   <asset id="图标-三阶复合防御组件" swf="flashswf/arts/素材库-物品技能图标.swf" symbolName="材料相关/图标-三阶复合防御组件" />
   <asset id="图标-上古青萍元气剑" swf="flashswf/arts/things切割.swf" symbolName="冷兵/锐器/刀剑/上古青萍元气剑/图标-上古青萍元气剑" />
   <asset id="图标-上古饮血大太刀" swf="flashswf/arts/things切割.swf" symbolName="冷兵/锐器/刀剑/上古饮血大太刀/图标-上古饮血大太刀" />
@@ -2317,6 +2318,10 @@
   <asset id="大气斩波" swf="flashswf/arts/new/原体融合生物.swf" />
   <asset id="天使虫" swf="flashswf/arts/new/偷吃屑鱼坟头贡品.swf" />
   <asset id="天冲命中" swf="flashswf/arts/原版素材库-子弹.swf" symbolName="子弹-气功组/天冲命中" />
+  <asset id="天启大封印" swf="flashswf/arts/new/瓦巴杰克.swf" symbolName="特效与子弹/天启大封印" />
+  <asset id="天启大封印地面效果" swf="flashswf/arts/new/瓦巴杰克.swf" symbolName="特效与子弹/天启大封印地面效果" />
+  <asset id="天启大封印法阵" swf="flashswf/arts/new/瓦巴杰克.swf" symbolName="特效与子弹/自瞄准星特效/天启大封印法阵" />
+  <asset id="天启大封印驱逐白瀑" swf="flashswf/arts/new/瓦巴杰克.swf" symbolName="特效与子弹/天启大封印驱逐白瀑" />
   <asset id="天秤之力" swf="flashswf/arts/new/雾人整合特效.swf" symbolName="1.特效文件夹/12.星座轮盘/天秤之力" />
   <asset id="天网大家庭" swf="flashswf/arts/new/天网大家庭.swf" />
   <asset id="天网豪华单间" swf="flashswf/arts/new/天网豪华单间.swf" />
@@ -3325,6 +3330,7 @@
   <asset id="战技容器-回旋裂地" swf="flashswf/arts/things0.swf" symbolName="容器/战技容器/战技容器-回旋裂地" />
   <asset id="战技容器-地狱斩绝" swf="flashswf/arts/things0.swf" symbolName="容器/战技容器/战技容器-地狱斩绝" />
   <asset id="战技容器-地狱穿心剑" swf="flashswf/arts/things0.swf" symbolName="容器/战技容器/战技容器-地狱穿心剑" />
+  <asset id="战技容器-天启大封印" swf="flashswf/arts/things0.swf" symbolName="容器/战技容器/战技容器-天启大封印" />
   <asset id="战技容器-居合次元斩" swf="flashswf/arts/things0.swf" symbolName="容器/战技容器/战技容器-居合次元斩" />
   <asset id="战技容器-弧光斩" swf="flashswf/arts/things0.swf" symbolName="容器/战技容器/战技容器-弧光斩" />
   <asset id="战技容器-战技小跳" swf="flashswf/arts/things0.swf" symbolName="容器/战技容器/战技容器-战技小跳" />
@@ -4174,6 +4180,7 @@
   <asset id="物品图标" swf="flashswf/UI/物品与技能相关界面.swf" symbolName="物品栏/新版物品图标" />
   <asset id="物品改装界面" swf="flashswf/UI/物品改装界面.swf" symbolName="UI重构/物品改装界面" />
   <asset id="物品栏界面" swf="flashswf/UI/物品与技能相关界面.swf" symbolName="新版物品栏界面" />
+  <asset id="特效-猩红天秤余波" swf="flashswf/arts/things0.swf" symbolName="Codex/Ti61-血剑战技/特效-猩红天秤余波" />
   <asset id="特殊友军-保护仪器" swf="flashswf/arts/new/素材库-诺亚新敌人.swf" symbolName="保护仪器/特殊友军-保护仪器" />
   <asset id="特殊敌人-兵工厂中枢" swf="flashswf/arts/new/素材库-诺亚新敌人.swf" symbolName="兵工厂特殊单位/特殊敌人-兵工厂中枢" />
   <asset id="特殊敌人-地球" swf="flashswf/arts/new/素材库-诺亚新敌人.swf" />

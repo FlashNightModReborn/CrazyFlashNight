@@ -255,6 +255,8 @@ class org.flashNight.gesh.tooltip.TooltipTextBuilder {
         result.push(TooltipConstants.LBL_COOLDOWN, cooldown, TooltipConstants.SUF_SECOND);
         if (skill.hp && skill.hp != 0) result.push("，", TooltipConstants.LBL_COST, skill.hp, TooltipConstants.SUF_HP);
         if (skill.mp && skill.mp != 0) result.push("，", TooltipConstants.LBL_COST, skill.mp, TooltipConstants.SUF_MP);
+        // SP（技能点）消耗：对应战技数据里的 <sp>n</sp>，与 装载主动战技 的 当前战技.消耗sp 同源
+        if (skill.sp && skill.sp != 0) result.push("，", TooltipConstants.LBL_COST, skill.sp, TooltipConstants.SUF_SP);
         result.push("。");
       }
       result.push("<BR>");
@@ -280,6 +282,10 @@ class org.flashNight.gesh.tooltip.TooltipTextBuilder {
           }
           if (skill.mp && Number(skill.mp) != 0) {
             infoText += "，" + TooltipConstants.LBL_COST + skill.mp + TooltipConstants.SUF_MP;
+          }
+          // SP（技能点）消耗：同上，<sp>n</sp>；缺省或 0 时不显示
+          if (skill.sp && Number(skill.sp) != 0) {
+            infoText += "，" + TooltipConstants.LBL_COST + skill.sp + TooltipConstants.SUF_SP;
           }
           if (infoText.length > 0) {
             result.push("<BR><font color='" + TooltipConstants.COL_HL + "'>" + TooltipConstants.LBL_SKILL_INFO + "</font>", infoText, "。");
