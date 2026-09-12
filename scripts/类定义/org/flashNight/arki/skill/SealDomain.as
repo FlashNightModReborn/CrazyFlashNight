@@ -657,7 +657,12 @@ class org.flashNight.arki.skill.SealDomain {
 
         for (var 子键:String in 节点) {
             var 子 = 节点[子键];
-            if (typeof 子 == "movieclip") {
+            // ⚠ 必须验证 _parent === 节点：for in 除了真子元件，还会枚举**引用型动态属性**。
+            //   敌人身上只要存有指向其他单位的 MovieClip 引用（攻击/技能/特效元件运行时写的），
+            //   typeof 就是 "movieclip"，裸递归会把**玩家**当成"子元件"停掉——
+            //   封印期间玩家被冻结、封印结束又被 恢复时间轴 play 回来，
+            //   即"有概率冻住玩家"的根源（旧 时间停止 元件的 for in stop 同病）。
+            if (typeof 子 == "movieclip" && 子._parent === 节点) {
                 SealDomain.停时间轴(子, 深度 + 1, 记录);
             }
         }
