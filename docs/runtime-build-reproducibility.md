@@ -2,7 +2,23 @@
 
 **文档角色**：Launcher Windows runtime 的身份、构建、证明、排队、promotion 与 CI 策略 canonical deep doc。
 
-## 2026-09-12 当前正式发布：报告打开恢复、结算状态与焦点诊断
+## 2026-09-12 当前正式发布：原生菜单与共享物品注释
+
+NPC 功能菜单迁移到 NativeHud；开发中的修改/查看详细菜单撤去入口并保留接口。注释以现役 Web 的样式、排版和交互为权威，共享 AS2 内容聚合，修复 Native 短提示宽度、DPI 滚动、密集图标避让与合成层闪烁，补齐角色构筑背包及结构化战技文案。测试员已验收最终 ni08；范围及保留的 AS2 入口见[迁移 ADR](NPC菜单与原生注释迁移-ADR-2026-09-12.md)。
+
+- 最终 release source `a64d00d93e59bce5178bbfe02155dc24ac459ca3`，不可变 tag `runtime-build-v2/20260912-native-menus-tooltip-v3`，release tree `6c081fe367adbe700c17e36577d6d2c5820e0d55`；request `EFBE0A54C4021579CF6601C8391E3483F95F8FA1DFBE21841A5C9EF5FF02CAB7`，request commit `a5f54b3831d9a57a99fb6a0096652f846183c4e1`。
+- artifact source `54944CF446FB4570311DC87FC6651A26BDBE108466B07DE4D1D5A89123765059`；producer recipe `0AED3CE28E95E2FD1D6D1F516424D977FC5411F7446380C1A70D3836D243D49F`；toolchain lock `7B83229BE93F8244810CDD23DAFD97875B23857E547DE520035FE23B453CB3CD`；build identity `6C35AAD91E3941B49A1CB5004C61A63B134B8FC08552DED582820ABF3DFFE0FD`。
+- 33-file payload closure `D3678FF27D7C6879DFBDAE20EC80D2ECD140A97689D8C48A8CF89821560055BF`；Core DLL SHA-256 `4AA64059BF89B7D469DADFF546676C5DDEABD1F3DABC236FC804443DEF1C50B3`，与已验收 ni08 相同。
+- 本地 X509 `builder-local-b / physical-host-b` 与 GitHub OIDC/Sigstore `github-hosted-windows` 达成相同 identity/closure；[最终 cloud run 34689029041](https://github.com/FlashNightModReborn/CrazyFlashNight/actions/runs/34689029041) 已验证 tag API、workflow SHA、run headSha 与不可变规则。promotion 对本地真实 CAS 和最终 cloud proof 全链重放，strict v2 确认 2 signer / 2 faultDomain；最终源按同 build identity 复用真实本地签名。
+- production policy **40/40**；policy hash `B4ADCB09034950A7CB8778D9284CACF4F2F3BF3C14115E191D794AB7BCD18282`；receipt SHA-256 `4296DDBCF29AC873589C3210E717368851CA822D7D4521ADE7E3A6C96138E445`；manifest SHA-256 `EF0518A9AC5D0AB315D1D17F8722CC6B1F3EBD2E8DEFD7F7305D35D009CB94D8`；磁盘 consensus SHA-256 `B3341C9E0220A77AD5B87A123B0A5DB050159E0E6938163F25CF377561AF1AB7`。原子 promotion 时间 `2026-09-12T10:57:12.0586043Z`；上一版保留于 `tmp/runtime-promotions/20260912T105643780Z-b454439aecea4e41bacef0c9563a1c17/previous`。部署提交与远端事后 Audit 在完成后补记。
+- C# canonical **5,267 passed / 3 existing skipped / 0 failed**；Web document **42/42**、binding **14/14**、consumers **12/12**；真实 Web 定位函数参照 **63 cases / 96 steps**，26 组重点图片 **0 hard fail**。fresh CS6 七套件（文档 **138/138**、桥接 **71/71**）及 Compiler **0/0**，图片软告警仍不等同像素级一致。
+- 合入上游 `85f160dedf` 后 fresh CS6 发布 asLoader：**1,342,632B**，SHA-256 `E114A96FC3D30841A207E62C7C64AFB42302DD82DABB6BEB063908E43E614C66`。主 SWF `9E91D8499E6304D1101ACACB43C019194A1550A380F66394E06D3E12F4B27D67`、修改工具独立 SWF `C08747C0FC0D3F817F22850799BD5782C5770C7D4A7544C62836521C745DC629` 保留 ni08 已验收字节。
+
+中间失败按原证据保留：v1 source Audit 34687986703 检出四个离屏 fixture 源文件缺少 descriptor 绑定；v2 production policy **39/40** 检出样式导入顺序清单漏项。两处均补齐明确输入，未放宽保护或改动已验收生产绘制；v1/v2 tag、request、cloud proof 为 **superseded / NOT_DEPLOYED**，不充当最终源证明。最终 v3 source Audit 34688989496 成功。
+
+准确状态 **HUMAN_ACCEPTANCE_PASSED / promoted**。无 candidate 参数的正式入口已核对实际 Core PID **29136**、路径、DLL、identity/closure 与 bus ready；随后通过窗口关闭入口取消预热并正常结束，Flash 退出码 0，Guardian 记录完整关闭。22 项存档 JSON 哈希不变，仅 `.launcher-version-marker.json` 重写启动时间戳。此证据只覆盖启动身份与退出，未重跑正式菜单/注释业务旅程，不称本专项 `standard_entry_verified`。本轮 `C:/cf7-ni-0912/resources` 隔离 worktree 已移除，源码差异、验收存档和日志备份在本地 `tmp/native-interaction-migration-20260912/retired-ni08`；其他任务 worktree 保持原状。
+
+## 2026-09-12 上一正式发布：报告打开恢复、结算状态与焦点诊断
 
 报告首次打开遇到宿主尚未揭示时，在同一绑定内有限重试；WebView 渲染进程退出先退役旧文档属主再有限重载，浏览器进程退出如实提示需要重启。结算错误提示区分保存未知、保存失败与恢复失败；焦点输入、报告接收/采用/绘制、WebView 崩溃与诊断包补齐有界证据。未重放奖励写入，未声称原黑屏或卡手根因已消除。实现与取证边界见[焦点诊断 §9.15](焦点管理-诊断与卡顿排查-2026-05-24.md#915-2026-09-12结算报告打开竞态的有界重试与-webview-进程失败证据链)。
 
