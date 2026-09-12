@@ -263,6 +263,15 @@
           "excludePrefixes": ["launcher/tests/bin/", "launcher/tests/obj/"]
         },
         {
+          "path": "launcher/perf/tooltip-parity",
+          "includeExtensions": [".cs", ".csproj", ".js", ".json", ".html"],
+          "excludePaths": [],
+          "excludePrefixes": [
+            "launcher/perf/tooltip-parity/native-fixture/bin/",
+            "launcher/perf/tooltip-parity/native-fixture/obj/"
+          ]
+        },
+        {
           "path": "launcher/scripts",
           "includeExtensions": [".ts", ".js", ".json"],
           "excludePaths": [],

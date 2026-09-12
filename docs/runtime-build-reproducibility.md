@@ -579,6 +579,8 @@ native 源码前缀内的非二进制契约文档也必须显式绑定，不能�
 
 `payloadClosureHash` 对根 `CRAZYFLASHER7MercenaryEmpire.exe` 与 `runtime/**` 的实际 payload 文件有序计算，明确排除 `runtime/cf7-runtime-manifest.tsv`、证明与 release record。这样 manifest/policy 元数据变化不会被误判成二进制失衡；manifest v2 再记录四个构建字段中的前三个、`buildIdentityHash`、`payloadClosureHash`、工具链可读名和逐文件大小/SHA-256。
 
+离屏注释对比工具位于 launcher/perf/tooltip-parity，其 C# 项目和源码、JS/JSON/HTML 参照输入归入 policy 域；native-fixture 的 bin/obj 必须排除。它已被生产 csproj 的 perf 排除项隔离，不进入 artifactSourceHash；新增测试 C# 文件仍须被 descriptor 绑定，不能因为位于 perf 就绕过广义 native 文件准入检查。
+
 ## producer 与政策闸门
 
 发布链分成三个职责，不能重新合并：
