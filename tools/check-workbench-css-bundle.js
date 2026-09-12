@@ -16,6 +16,7 @@ const IMPORTS = [
     './panels/foundation-top.css',
     './workbench/tokens.css',
     './panels/foundation-rest.css',
+    './panels/tooltip-document.css',
     './workbench/core.css',
     './workbench/profiles.css',
     './panels/features.css',
