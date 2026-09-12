@@ -2,17 +2,17 @@
 
 ## 编译（Flash CS6 自动化）
 
-计划任务拉起 `Flash.exe` 跑 JSFL 自动 `publish()`/`testMovie()`；省的是手动点击，**CS6 仍在链路上**。
+计划任务拉起 `Flash.exe` 跑 JSFL 自动 `publish()`/`testMovie()`；**CS6 仍在链路上**。
 `powershell -ExecutionPolicy Bypass -File scripts/compile_test.ps1 -Target publish -TimeoutSeconds 180`（Git Bash 用 `.sh`）。唯一入口，别单独跑 `compile_action.jsfl`。
 
 | 改动位置 | Target |
 | --- | --- |
-| `scripts/类定义/`、`*_WebView.as`、`*PanelService.as`（注入 `_root`） | `publish` |
-| `TestLoader.as`、测试 class / fixture（要 trace 断言） | `test` |
+| `scripts/类定义/`、`*_WebView.as`、`*PanelService.as` | `publish` |
+| `TestLoader.as`、测试 class / fixture | `test` |
 | `CRAZYFLASHER7MercenaryEmpire/`、`LIBRARY/*`、主时间轴、主文件 linkage | `main`（**不更新 asLoader.swf**） |
 | `flashswf/UI levels` | levels |
 
-- `publish`/`main` 别名隐含 publish-only + 自动 `-VerifySwf`；`-Target` 自己 close+reopen 从磁盘重读，不用预先开 XFL
+- `publish`/`main` 隐含 publish-only + 自动 `-VerifySwf`；`-Target` 自己 close+reopen 从磁盘重读，不用预先开 XFL
 - `scripts/类定义/` 走 classpath 自动编译，不在 `asLoaderManifest` 里，新类 import 即可
 - **编译环境没好时不要编，除非用户要求**。前提：管理员跑过 `setup_compile_env.bat`（两个计划任务须 `RunLevel=Highest`）、Node.js 在 PATH
 - 成功判据（两条同时成立）：① `scripts/compiler_errors.txt` 属本轮且严格 0 错 0 警；② 目标 SWF 已刷新。`publish_done.marker` 单独出现不算；publish-only 不产 trace，`flashlog.txt` 不刷新正常
@@ -41,14 +41,6 @@
 - authored 子级的 `onClipEvent(load)`（含 `初始化NPC`）在 attachMovie 时同步执行，**早于** initGameWorld 建本场景 DepthManager（instance=null，AVM1 静默空操作）→ 注册/劫持不可靠，兜底走 `SceneManager.initGameWorld → hijackAuthoredChildren`
 - 素材库出生点 `swapDepths(-this._y)` = "永远在最底"，劫持后钳到 yMin 桶，语义保持
 
-## 立绘管线
-
-`tools/bake-dialogue-portraits.py` → `launcher/web/assets/dialogue-portraits/`（`external/` 外部 SWF、`internal/` 内置矢量肖像，带 manifest.json/report.json）
-
-- 外部立绘 3x 超采样 `--supersample 3`（FFDec 按 zoom×ss 渲染再 LANCZOS 降回，几何尺寸不变）；**内置 sprite 不能超采样**：zoom>1 必抛 `InternalError: Odd number of new curves!`，只有 1x 能跑
-- **`--semantic-baseline-dir` 默认等于输出目录，必须指向含旧产物的目录**：23 个内置空肖像靠它做 alpha 等价复用（保住 775 宽）；指向空目录会重导成 851 宽 = 回归
-- 补跑/增量写 `tmp/` 一次性脚本（读已有导出 → 只重建 external → 写回 manifest），不动原脚本
-
 ## 图标管线（SWF 是唯一真源）
 
 双通道：Flash 内 `attachMovie("图标-" + itemData.icon)` 读 `flashswf/arts/素材库-物品技能图标.swf`；Web/Launcher 读 `launcher/web/icons/manifest.json` + `*.webp`，由 `tools/bake-icons-offline.py` + `tools/ffdec/ffdec-cli.exe` **离线**扒出。`Icons.resolve()` 只查 manifest，**无 AS2 动态采样回退**。
@@ -61,6 +53,14 @@
 - 成功判据 `tmp/icon-bake-offline-report.json`：`created=1 / processed=1`、`unresolvedSummary` 空、`protectExistingLayout: true`；自查符号表用 `grep -l 'linkageExportForAS="true"' <元件>.xml` 或 `ffdec-cli.exe -export symbolClass <out> <swf>`（1.5 秒）
 - ⚠ 启动清空 `tmp/icon-bake-offline` 时可能被拦成 `[safe-delete][SAFE_DELETE_BULK_CONFIRM_REQUIRED]` 打一行就退出——**无害噪声，产物已落盘**（对照 manifest 与 `ls -lat launcher/web/icons/*.webp` 确认）
 - **`data/items/asset_source_map.xml` auto-generated，禁止手改**，且常落后于库里实际元件（新增元件不重扫就不进表）→ 看到"少条目"先重扫；**重扫后必做差分核对**：备份旧 map → 按 `<asset id=... swf=... symbolName=...>` 解析成 dict → 比 `新增/消失/改指向`，正常是"纯新增、消失 0、改指向 0"；`grep -c '<asset '` 与正则计数口径不同，别拿两个数相减
+
+## 立绘管线
+
+`tools/bake-dialogue-portraits.py` → `launcher/web/assets/dialogue-portraits/`（`external/` 外部 SWF、`internal/` 内置矢量肖像，带 manifest.json/report.json）
+
+- 外部立绘 3x 超采样 `--supersample 3`（FFDec 按 zoom×ss 渲染再 LANCZOS 降回，几何尺寸不变）；**内置 sprite 不能超采样**：zoom>1 必抛 `InternalError: Odd number of new curves!`，只有 1x 能跑
+- **`--semantic-baseline-dir` 默认等于输出目录，必须指向含旧产物的目录**：23 个内置空肖像靠它做 alpha 等价复用（保住 775 宽）；指向空目录会重导成 851 宽 = 回归
+- 补跑/增量写 `tmp/` 一次性脚本（读已有导出 → 只重建 external → 写回 manifest），不动原脚本
 
 ## 给 CS6 画 SVG 只能用保守子集
 
@@ -101,20 +101,33 @@ CS6 老导入器不支持 `<linearGradient>`+`fill="url(#id)"`、`<clipPath>`、
 - 特殊槽：`主动战技[攻击模式]` 一个槽，普通战技与**长枪副武器**（`<subweapon>` / 下挂武器插件）共用
 - `EquipmentCalculator.calculateInPlace` 收尾：`modifiers.subweapon` 优先，**else if** `modifiers.skill` 覆盖 `itemData.skill`。即战技插件是**替换**本体战技（可撤回），副武器插件**不清**本体战技 → 有战技的装备装下挂武器会双占用，必须继续拒绝
 - **2026-09-13 起**：装备自带战技**默认允许被战技插件覆盖**（原来一律 -4）。仍 -4 只有三种：① `itemData.subweapon` ② 声明战技处写了 `<skillLocked>true</skillLocked>`（专属/定制/生命周期绑定的战技；**缺省 = 可更换**）③ 根层 `<skill>` 无 skillname（说明文本）
-- 标记**跟着战技走**：作为**子元素**写在声明该战技的 `<skill>` / `<skill_N>` 元素内（用户要求，**既不要放 `<item>` 根层、也不要写成属性**）。**正向命名 `skillLocked`（值 `true`）**，不用反向的 `skillReplaceable=false` —— 用户："很明显这个语义才适合可选参数"。判定入口 `TagManager.isSkillReplaceableLocked()`：先看根 `itemData.skill.skillLocked`，再扫 `lifecycle.attr_N.skill` 与 `lifecycle.attr_N.init.initParam.skill_M`，三处都是严格 `=== true`
-- **属性 vs 单文本子元素在 AS2 侧完全等价**：XMLParser `parseXMLNodeInner` 对属性走 `result[attr]=convertDataTypeFast(attrs[attr])`，对「单文本子节点」走 `childValue=convertDataTypeFast(cChildren[0].nodeValue)`，同一函数 → `"false"` 都变布尔 false。**唯一差别**是属性在子节点循环之前写入，若属性与子元素撞名会被数组提升成 `[属性值,子元素值]`；空元素写法会解析成 `""` 而非布尔。工具侧（`tools/cf7-balance-tool`）两种写法都会多出一个未注册字段，等价
-- 当时口径：含真实战技 217 件（刀 183/手部装备 22/长枪 12）→ **锁定 46 件（52 处标记）**、可换 171；另 10 件根层 `<skill>` 是说明文本、11 件带 `<subweapon>`。其中 5 件根层没有带 skillname 的 `<skill>`，标记落在 lifecycle：远古诛神剑（initParam.skill_0）、龙破军霜（attr_0/skill）、炎魔斩new（skill_0/1）、键盘镰刀（skill_0/1）、吉他喷火器（skill_0）。共用技能名的"凑数战技"全部保持可换（弧光斩/滑步/凶斩/追踪五连/回旋斩击/回旋裂地/狼跳/突刺/破坏殆尽/旋风腿/黑刀斩术/深冲利刺/瞬步斩/飞身踢/震地/旋转抡枪），它们本就是插件可授予的（护手→弧光斩、配重坠→回旋裂地、手柄皮→凶斩、环格护手→追踪五连、震动吸收器→破坏殆尽、燕归沉→一文字落雷、三蝶手稿→天启大封印（刀/手部装备/长枪）、骨誓铭牌→黑刀斩术|震地、骨芯颅印→滑步、骨约晨星→闪现、绳扣穿孔片→长枪旋转抡枪）
-- **改完必做「应锁集合独立重算」**：全库扫出「含真战技 且（带 lifecycle 或 战技名全局唯一）」的应锁名单，与实际标记逐名**双向**比对（漏标 + 多标）。此前就是靠这步发现 `杀戮风暴`（镰刀，lifecycle 自转机制）漏标 —— 早期迁移脚本的遗留
-- 改造人巨拳的「血肉洪流」description 自己写着「暂未实装」，全仓仅 XML 一处出现、`_root.主动战技函数` 无此键 → 该战技实际是死的（锁着等于白锁，待用户定夺）
-- 回归测试在 `EquipmentTestSuite.as`（`testTagManager_StatusCode_SkillReplaceable`/`_SkillLocked`/`_SkillLockedWithoutRootSkill`；原 `_SkillConflict` 的 fixture skill 无 skillname，仍是 -4）
+- `skillLocked` 作为**子元素**写在声明该战技的 `<skill>` / `<skill_N>` 元素内（**既不放 `<item>` 根层、也不写成属性**）。判定入口 `TagManager.isSkillReplaceableLocked()`：根 `itemData.skill` → `lifecycle.attr_N.skill` → `lifecycle.attr_N.init.initParam.skill_M`，三处都是严格 `=== true`
+- **属性 vs 单文本子元素在 AS2 侧完全等价**（XMLParser `parseXMLNodeInner` 同一函数 → `"false"` 都变布尔 false）；唯一差别是空元素写法会解析成 `""` 而非布尔
+- **改完必做「应锁集合独立重算」**：全库扫出「含真战技 且（带 lifecycle 或 战技名全局唯一）」的应锁名单，与实际标记逐名**双向**比对（漏标 + 多标）
+- 回归测试在 `EquipmentTestSuite.as`（`testTagManager_StatusCode_SkillReplaceable`/`_SkillLocked`/`_SkillLockedWithoutRootSkill`）
 
-## 封印领域（天启大封印）的 Z 轴口径
+## 装备/敌人数值口径（做数值分析时必查）
 
-`SealDomain.as` 两套坐标并存：
+- 敌人 `hp满血值`/`空手攻击力` = `根据等级计算值(min,max,等级) × _root.难度等级`；**`基本防御力` 不乘难度**
+- `根据等级计算值(min,max,等级)` = `min + (max-min)/(_root.最大等级-1) × 等级`，`_root.最大等级 = 60`，默认 floor（第4参 允许小数、第5参 禁止超出最大等级）
+- `_root.难度等级`：简单 1 / 冒险 1.5 / 修罗 2 / **地狱 2.5**（`通信_鸡蛋_任务系统.as` 的 `_root.计算难度等级`；`StageSelectPanelService.difficultyRank` 的 fallback 4 不一致但走不到）
+- 敌人等级 = 关卡兵种配置的 `Level`（`WaveSpawner.spawn` 里 `enemyPara.等级`），缺省 1；不是玩家等级
+- 敌人数值表在 `data/enemy_properties/*.xml`（`hp_min`/`hp_max`/`空手攻击力_min|max`/`基本防御力_min|max`）；`units.json` 的 `level` 是兵种表基础值
+- 无精英/BOSS 血量倍率；`韧性系数` 只影响受击硬直，不进任何额度公式
+
+## 封印领域（天启大封印）
+
+`scripts/类定义/org/flashNight/arki/skill/SealDomain.as`：两套坐标并存。
 
 - **起手选目标**：`按距离索敌`（`单位函数_fs_aka_玩家模板迁移.as`）双方都读 `Z轴坐标`，圆形欧氏距离
-- **封印收押**：单位侧读 `单位.Z轴坐标`；中心侧只能读 `宿主._y`（宿主是 attachMovie 的子弹元件，没有 `Z轴坐标`），偏移换算全在中心侧做
-- **判定圆心 = 视觉中心**：光柱元件为配合 Z 排序把**原点画在形状下端**，所以 `中心Z = 宿主._y - 宿主Y偏移(SealDomain) = 宿主._y - 法阵Y偏移(主动战技.as)`。两处偏移常量**必须同步**（现 80）；法阵"贴敌人脚下"的跟随带同一偏移（目标 `_y + 80`）
-- **Z 判定（对称椭圆）**：`dz = 单位.Z轴坐标 - 中心Z`，`dx²/300² + dz²/80² ≤ 1`，无上下不对称。落到宿主坐标 = `单位.Z轴坐标 ∈ [宿主._y-160, 宿主._y]`：比宿主原点更靠下（Z 更大）的**一律收不到**
-- 放逐 = 并集（带 `魔法抗性.凡俗` 标签收押当帧即逐，其余攒强度达标才逐）
+- **封印收押**：单位侧读 `单位.Z轴坐标`；中心侧只能读 `宿主._y`（宿主是 attachMovie 的子弹元件，没有 `Z轴坐标`）
+- **判定圆心 = 视觉中心**：`中心Z = 宿主._y - 宿主Y偏移(SealDomain) = 宿主._y - 法阵Y偏移(主动战技.as)`，两处偏移常量**必须同步**（现 80）
+- **Z 判定（对称椭圆）**：`dx²/300² + dz²/80² ≤ 1`，落到宿主坐标 = `单位.Z轴坐标 ∈ [宿主._y-160, 宿主._y]`；比宿主原点更靠下（Z 更大）的**一律收不到**
+- **强度逐单位独立累计**（不是领域级）：`记录.强度 += 每秒强度 / 帧率`，`记录.强度 ≥ 记录.额度` 放逐；晚进范围的敌人从自己 0 开始攒
+  - `每秒强度 = 5000`（静态），`总时长秒 = 50` → 单单位 50 秒上限 250000
+  - **额度 = `hp满血值 × 1 + 防御力 × 50 + 空手攻击力 × 100`**（系数在 `SealDomain` 顶部可调）
+  - **强度倍率**（三蝶手稿）：判定 `手部装备数据.skill.skillname == "天启大封印"`（`手部装备数据` = `BaseItem.getData()` 的 itemData，`EquipmentCalculator.calculateInPlace` 的 `modifiers.skill` 覆盖进去；装在刀/长枪时不成立）。真猫妖手套 ×2.0、猫妖手套 ×1.5。倍率在 `封()` 里快照到 `状态.强度倍率`，**不动全局静态 `每秒强度`**
+- 放逐 = 并集（带 `魔法抗性.凡俗` 标签收押当帧即逐，其余攒强度达标才逐）；`凡俗` 只在 `SealDomain.立即放逐标签`，**千万别写进 `MagicDamageTypes.magicDamageTypesHash`**（会给全场打标签）
+- 收尾：`解除/终止` 幂等，逐项还原短路函数、AI 冻结位、无敌、坐标、时间轴；宿主侧的 `_挂宿主收尾` onEnterFrame 在 `状态.已结束` 时 `removeMovieClip`
 - **⚠ for in 递归单位必须验 `子._parent === 节点`**：引用型动态属性（敌人身上存的攻击目标/技能元件引用等指向玩家的 clip）typeof 也是 "movieclip"，裸递归会把玩家当子元件 stop/play——"封印/时停偶尔冻住玩家、控制结束才恢复"的根因（停时间轴 已加守卫；旧 时间停止.xml 的 for in stop 同病）
+- **结构性弱点**：`每帧` 里 `状态.已存续帧++` 在开头、**到点判定在函数末尾**，逐单位处理中途抛错则到点判定永远走不到 → 元件侧可加兜底（循环段帧脚本里 `持续秒数 >= 55` 时调 `解除(this)` + `removeMovieClip()`，阈值不可低于总时长）
