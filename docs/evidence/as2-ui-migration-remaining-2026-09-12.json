@@ -1,0 +1,2548 @@
+{
+  "schema": "cf7-as2-ui-remaining-research-v1",
+  "observedAt": "2026-09-12T12:55:05.034Z",
+  "baseCommit": "c1e51dd1e8dba6bf72452cfef3af8b6f09b36acf",
+  "headAtCapture": "c1e51dd1e8dba6bf72452cfef3af8b6f09b36acf",
+  "kind": "research_snapshot_not_runtime_acceptance",
+  "gameExecuted": false,
+  "compilerInvoked": false,
+  "promoted": false,
+  "scopeNotes": [
+    "All 35 top-level map SWFs were exported; 28 lack a sibling XFL DOMDocument. This is script inspection, not live reachability of every placement.",
+    "Known loader patterns were searched in actual bytecode exports. Dynamic expressions, unrelated art/movie SWFs and live visual/input behavior are not globally proved absent.",
+    "No-XFL UI script excerpts are persisted here so the conclusions do not depend solely on local tmp exports.",
+    "One old B/C row maps once; container and component rows are not additive product counts. Work estimates are judgment under stated scope, not measured throughput.",
+    "Existing unrelated reward-stash worktree changes were present; this snapshot does not claim they are promoted."
+  ],
+  "orchestration": {
+    "cli": "Kimi Code 0.42.0",
+    "model": "kimi-code/k3",
+    "configuredMaxContext": 1048576,
+    "observedThinkingEffort": "max",
+    "researchLanes": 3,
+    "astraReview": true,
+    "changesToGlobalModelConfig": false,
+    "laneCompletion": {
+      "entry": "report saved; process exit 0",
+      "planning": "report saved; process exit 0",
+      "surfaces": "report saved; final-response prefix observed; trailing CLI stream did not finish, so only the verified task process tree was stopped during cleanup"
+    },
+    "limits": "Agent reports are research leads. Parent verification overruled several reachability and estimate claims; their conclusions are not accepted wholesale."
+  },
+  "oldInventory": [
+    {
+      "id": "B01",
+      "oldName": "玩家信息界面主体（HP/MP/韧性/经验+玩家必要信息+战技栏/攻击模式/弹药）",
+      "label": "玩家信息 HUD 主体",
+      "disposition": "U1；真实状态、动效、交互与旧 MC 解耦"
+    },
+    {
+      "id": "B02",
+      "oldName": "快捷技能界面（12 槽）+输入/冷却服务",
+      "label": "12 槽快捷技能",
+      "disposition": "U1 包内，含卸技能；不另加整包工期"
+    },
+    {
+      "id": "B03",
+      "oldName": "快捷药剂界面（2组×4）+药剂输入/使用药剂入口",
+      "label": "双组快捷药剂",
+      "disposition": "U1 包内，含卸药/冷却/槽身份；后端已迁不等于 HUD 完成"
+    },
+    {
+      "id": "B04",
+      "oldName": "Buff 图标条",
+      "label": "Buff 图标条",
+      "disposition": "U1 包内；顶部区域和管理器重绑"
+    },
+    {
+      "id": "B05",
+      "oldName": "场景对话框+portraits 立绘群",
+      "label": "场景对话框与立绘",
+      "disposition": "U2，包含资源治理和运行态会话"
+    },
+    {
+      "id": "B06",
+      "oldName": "情报信息界面（旧\"独立情报阅读\"层 SWF+渲染函数）",
+      "label": "旧情报信息界面",
+      "disposition": "R：导入/初始化代码仍存，所查范围未找到显示入口；保留 Web 情报与数据"
+    },
+    {
+      "id": "B07",
+      "oldName": "奖励物品界面 SWF",
+      "label": "奖励物品界面 SWF",
+      "disposition": "R：仍导入并自隐，所查范围未找到生成调用；不凭旧注释新增随机逻辑迁移"
+    },
+    {
+      "id": "B08",
+      "oldName": "通缉令界面 SWF",
+      "label": "通缉令界面 SWF",
+      "disposition": "U5，现役酒馆复合功能，不是纯残留"
+    },
+    {
+      "id": "B09",
+      "oldName": "学习界面 MC（旧技能学习界面）",
+      "label": "学习界面 MC",
+      "disposition": "R：旧技能 surface 与兼容名称分开；既有 skills Web-only 口径不扩大"
+    },
+    {
+      "id": "B10",
+      "oldName": "修改工具界面（修改器）",
+      "label": "修改工具界面",
+      "disposition": "U11，开发/修改用途单列，是否迁移待选择"
+    },
+    {
+      "id": "B11",
+      "oldName": "角斗场返回路径",
+      "label": "角斗场返回路径",
+      "disposition": "V：既有专项范围外的返回旅程，不计新面板"
+    },
+    {
+      "id": "B12",
+      "oldName": "佣兵世界内雇佣退役收尾",
+      "label": "佣兵世界内雇佣退役收尾",
+      "disposition": "R：明确旧符号闭包与产物归属后处理"
+    },
+    {
+      "id": "B13",
+      "oldName": "PM19 启动引导背景",
+      "label": "PM19 启动背景",
+      "disposition": "V：已有 Web 呈现，保留启动旅程证据边界"
+    },
+    {
+      "id": "B14",
+      "oldName": "地图 Lockbox 正式玩法",
+      "label": "地图 Lockbox 正式玩法",
+      "disposition": "N：原型转产品须另立玩法/经济范围"
+    },
+    {
+      "id": "B15",
+      "oldName": "战场即时补给品",
+      "label": "战场即时补给品",
+      "disposition": "N：新功能与配方/数值决策，不算旧 UI 未迁"
+    },
+    {
+      "id": "B16",
+      "oldName": "暂存物资并入共享收纳工作台",
+      "label": "暂存物资共享收纳",
+      "disposition": "在途：跟随专档，避免重复启动同一施工"
+    },
+    {
+      "id": "B17",
+      "oldName": "持久状态权威/战术携行集（CombatLoadout）",
+      "label": "持久状态权威／CombatLoadout",
+      "disposition": "A：领域与存档架构，不纳 UI 迁移总数"
+    },
+    {
+      "id": "B18",
+      "oldName": "单位数据镜像/C# 原生绘制与碰撞",
+      "label": "单位数据镜像／原生绘制碰撞",
+      "disposition": "A：独立架构路线；与窄世界 UI 投影分层"
+    },
+    {
+      "id": "B19",
+      "oldName": "装备幻化（受限防具一期）",
+      "label": "装备幻化一期",
+      "disposition": "N：新增产品能力与存档/跨层范围"
+    },
+    {
+      "id": "B20",
+      "oldName": "任务成就判定层共享 B（V8 下沉）",
+      "label": "任务成就判定 V8 下沉",
+      "disposition": "A：后端权威迁移，已有 Web 页不因此变成未迁"
+    },
+    {
+      "id": "B21",
+      "oldName": "选关 Stage 3 全量 3D",
+      "label": "Stage 3 全量 3D",
+      "disposition": "N：地图内容工程，另立范围"
+    },
+    {
+      "id": "C01",
+      "oldName": "全屏UI层 + 引导界面合集",
+      "label": "全屏 UI 层与引导合集",
+      "disposition": "U8；容器并包，不另计一项产品"
+    },
+    {
+      "id": "C02",
+      "oldName": "通用UI层/外部导入UI界面（loadMovie 宿主层）",
+      "label": "通用 UI 层／外部导入 UI",
+      "disposition": "I：六类现役消费者共用；最后再收尾"
+    },
+    {
+      "id": "C03",
+      "oldName": "宠物信息界面（宠物图标横条）",
+      "label": "宠物信息横条",
+      "disposition": "R：当前主 XFL/根 SWF 未找到旧实例；恢复常驻投影另见条件项 U9"
+    },
+    {
+      "id": "C04",
+      "oldName": "任务接取提示（NPC 头顶叹号）",
+      "label": "NPC 任务叹号",
+      "disposition": "U10；保留多处任务条件，不附带未经证实的修复"
+    },
+    {
+      "id": "C05",
+      "oldName": "健身房训练 MC",
+      "label": "健身房训练 MC",
+      "disposition": "U4 包内，与 C15 共同估计"
+    },
+    {
+      "id": "C06",
+      "oldName": "基建系统 MC/第一防线调度板",
+      "label": "基建系统 MC／第一防线调度板",
+      "disposition": "I：Web 调度入口与地图设施展示分开；不凭 MC 名字新增面板"
+    },
+    {
+      "id": "C07",
+      "oldName": "单位血条/血条色彩",
+      "label": "单位血条",
+      "disposition": "U10；单位级世界 UI，先明确实现边界"
+    },
+    {
+      "id": "C08",
+      "oldName": "新版人物文字信息（单位头顶文字）",
+      "label": "新版人物文字信息／名牌",
+      "disposition": "U10；世界内文字与其 Buff 素材依赖分开"
+    },
+    {
+      "id": "C09",
+      "oldName": "显示列表引擎",
+      "label": "显示列表引擎",
+      "disposition": "I：调度设施，随真实消费者调整，不是独立面板"
+    },
+    {
+      "id": "C10",
+      "oldName": "俄罗斯方块小游戏",
+      "label": "俄罗斯方块",
+      "disposition": "R：没有找到生产实例化时只记检查范围，不宣布永久不迁"
+    },
+    {
+      "id": "C11",
+      "oldName": "消息窗（调试日志窗）",
+      "label": "消息窗",
+      "disposition": "R：根 SWF 无该导入，主舞台未找到实例；开发兼容分支不证明实例存在"
+    },
+    {
+      "id": "C12",
+      "oldName": "图片容器",
+      "label": "图片容器",
+      "disposition": "U2 包内；配图会话/清理一起处理"
+    },
+    {
+      "id": "C13",
+      "oldName": "加载背景",
+      "label": "加载背景",
+      "disposition": "U12；实际可见加载阶段待确认"
+    },
+    {
+      "id": "C14",
+      "oldName": "加载进度条",
+      "label": "加载进度条",
+      "disposition": "U12 包内；不是 PM19 的重复项"
+    },
+    {
+      "id": "C15",
+      "oldName": "基地特殊UI合集（含挂机功能菜单等）",
+      "label": "基地特殊 UI／挂机菜单",
+      "disposition": "U4 包内；仅需消费的菜单和执行链，不能整库一刀切"
+    },
+    {
+      "id": "C16",
+      "oldName": "弹出公告层（弹出公告界面/公告消息栏/任务开启栏）",
+      "label": "弹出公告层",
+      "disposition": "R：当前主时间轴对应层为空；保留限定范围的残留结论"
+    },
+    {
+      "id": "C17",
+      "oldName": "角斗场选择界面 MC",
+      "label": "角斗场选择界面 MC",
+      "disposition": "R：当前主库无有效放置/调用链；与 Web arena 分开"
+    },
+    {
+      "id": "C18",
+      "oldName": "睡觉界面",
+      "label": "睡觉界面",
+      "disposition": "U3；静态源码、当前 SWF 与用户可达反馈一致"
+    },
+    {
+      "id": "C19",
+      "oldName": "素材库-物品技能图标 + 素材库-文字效果",
+      "label": "物品技能图标／文字效果素材库",
+      "disposition": "I：素材源随 U1/U10 等消费者处理；不算两套界面"
+    }
+  ],
+  "packages": [
+    {
+      "id": "U1",
+      "name": "完整玩家 HUD",
+      "scope": "HP/MP/韧性/经验/必要信息/模式弹药/战技、12 技能、双组药剂、顶部 Buff；含窄写入口和旧实例解耦",
+      "estimate": "XL；8–16",
+      "reuseAndCost": "保留 B0 SVG/缓存/窗口、技能/药剂/冷却服务；补真实投影、命中、动效、重建与性能",
+      "confidence": "范围高、工期低；首个全区域真实候选后重估。**不含 U9 宠物**"
+    },
+    {
+      "id": "U2",
+      "name": "现场对白与立绘",
+      "scope": "无头对白会话、普通/任务/关卡/佣兵入口、图片容器、高清取帧/变体与资源闭包",
+      "estimate": "XL；8–15",
+      "reuseAndCost": "复用头像解析/纸娃娃；成本在表情取帧、中文排版、暂停交接和大画面合成",
+      "confidence": "专项文档原估；先过高清小样和现场宿主小样。**不含 U10 世界叹号**"
+    },
+    {
+      "id": "U3",
+      "name": "睡觉",
+      "scope": "基地/大学入口、6/19 时刻选择、转场动画、关闭/重开/切场景",
+      "estimate": "M；1–3",
+      "reuseAndCost": "复用天气权威、普通命令与界面基座；不新增时间存档或治疗功能",
+      "confidence": "范围高、工期中；先验证保持现有不额外暂停语义的宿主路线"
+    },
+    {
+      "id": "U4",
+      "name": "健身训练与挂机",
+      "scope": "三器械动态目录、金币/K 点付费、属性训练、经验/SP 计时奖励、退出与保存",
+      "estimate": "L；5–9",
+      "reuseAndCost": "菜单与领域校验共用；两种完成路径、计时器/角色动画/场景引用是主要成本",
+      "confidence": "范围中高、工期低；先核两种完成/取消及存档边界再冻结接口"
+    },
+    {
+      "id": "U5",
+      "name": "酒馆功能墙",
+      "scope": "通缉海报/副本转接收敛；买酒、对白序号、售罄、情报解锁及返回",
+      "estimate": "L；暂不锁总价；入口收敛 S，事务部分先作小样",
+      "reuseAndCost": "复用 Web tasks/dungeon 与现有对白/情报；不能重做一套任务权威",
+      "confidence": "入口高、完整成本低；付费与对白/情报一次性语义梳理后再估"
+    },
+    {
+      "id": "U6",
+      "name": "书架读物",
+      "scope": "两本书的静态内容、章节/翻页、关闭；保留宿舍主线解锁",
+      "estimate": "M；2–4",
+      "reuseAndCost": "可复用文本阅读组件；成本主要在 SWF 内嵌文本/排版取出与完整性核对",
+      "confidence": "中；与“情报信息界面”是不同内容源，不按名称合并"
+    },
+    {
+      "id": "U7",
+      "name": "地铁与彩蛋选关",
+      "scope": "保留两套门槛/目的地/难度，接现有选关权威；分别验证入口",
+      "estimate": "L；3–6（合包）",
+      "reuseAndCost": "共用导航适配；需核旧 `配置关卡属性/选关界面进入关卡` 的兼容入口与返回",
+      "confidence": "中低；不能只打开 Web 首页就算保留了原选关语义"
+    },
+    {
+      "id": "U8",
+      "name": "全屏引导",
+      "scope": "7 个引导资源及全部触发器、关闭/转场清理",
+      "estimate": "M；2–4",
+      "reuseAndCost": "复用图像和原生/有界呈现设施；保留每项文字与输入、任务/关卡触发语义",
+      "confidence": "中；6 个 stage Guidance + 1 个新档任务触发逐项核对"
+    },
+    {
+      "id": "U9",
+      "name": "宠物横条（条件项）",
+      "scope": "仅在决定恢复常驻宠物投影时立项；当前未证实有需等价迁移的旧实例",
+      "estimate": "暂撤工期，范围待定",
+      "reuseAndCost": "可讨论复用 U1 设施；现役 Web team/partner 已有宠物管理",
+      "confidence": "C03 先归残留核实；不是现役迁移包，也不自动增加 U1 范围"
+    },
+    {
+      "id": "U10",
+      "name": "世界锚定 UI",
+      "scope": "任务叹号、单位血条、头顶名字/文字；保留各自的可见性权威",
+      "estimate": "L/XL；全量待估，先定小样范围",
+      "reuseAndCost": "可借已有世界坐标投影经验，但逐单位可见性、层级/遮挡/回收不等于普通面板",
+      "confidence": "血条/名牌保留既有单位镜像提案的未接受状态；小叹号可另评窄投影，见 §3.2"
+    },
+    {
+      "id": "U11",
+      "name": "修改工具",
+      "scope": "保留现有开发/修改功能，评估与 Settings 开发页及库存权威的复用",
+      "estimate": "待核后估",
+      "reuseAndCost": "不以少量库元件数代替写权限、字段和保存分支盘点",
+      "confidence": "是否投入迁移是产品选择；登记现役用途，不单方宣布永久保留 Flash"
+    },
+    {
+      "id": "U12",
+      "name": "加载画面",
+      "scope": "Flash 加载背景与进度显示的可见阶段、覆盖关系和交接",
+      "estimate": "M；待可见阶段小样后估",
+      "reuseAndCost": "与 Bootstrap PM19 分开；先查到底在哪个加载阶段有独立玩家价值",
+      "confidence": "保留清单，不因“非面板”漏记，也不默认为所有转场重设计"
+    },
+    {
+      "id": "U13",
+      "name": "车库购车与确认",
+      "scope": "三种车辆购买、驾驶等级/金币校验、拥有状态、成功/失败/取消、购买后地图与战备箱权益",
+      "estimate": "M/L；3–5",
+      "reuseAndCost": "复用确认呈现与现役地图；先把地图帧中的购买闭包收为窄领域命令，保持 AS2 权威",
+      "confidence": "范围高、工期中低；需验证重复确认、拒绝、保存重启及权益刷新，不是删除确认壳"
+    }
+  ],
+  "mapBinaryScan": {
+    "plannedCount": 35,
+    "completedCount": 35,
+    "scriptCount": 1578,
+    "records": [
+      {
+        "file": "flashswf/levels/地图-靶场.swf",
+        "sha256": "c88e4f1e7a51c39a9dd05147f34c344c7703b95fa5ab56fb62cf47fb170259ea",
+        "bytes": 3121368,
+        "hasXfl": true,
+        "exitCode": 0,
+        "scriptCount": 39,
+        "matches": [],
+        "elapsedMs": 14989
+      },
+      {
+        "file": "flashswf/levels/地图-彩蛋地图.swf",
+        "sha256": "5ee95d87068c853e72644ca01c47aabfb96499d1da19026fc47a5d1571c3bf2f",
+        "bytes": 4881675,
+        "hasXfl": true,
+        "exitCode": 0,
+        "scriptCount": 95,
+        "matches": [
+          {
+            "script": "scripts/DefineSprite_465_地图-彩蛋地图/frame_1/PlaceObject2_464_626/CLIPACTIONRECORD on(release).as",
+            "line": 2,
+            "excerpt": "on(release){\n   _root.加载外部UI(\"flashswf/UI/彩蛋地图关卡界面.swf\");\n}\n"
+          }
+        ],
+        "elapsedMs": 11986
+      },
+      {
+        "file": "flashswf/levels/地图-测试空间.swf",
+        "sha256": "36e8eaed59a2cd1fb65701893f1f46ed3c416ec074e4f878c9b9ce2560c4b69a",
+        "bytes": 3502,
+        "hasXfl": false,
+        "exitCode": 0,
+        "scriptCount": 5,
+        "matches": [],
+        "elapsedMs": 12595
+      },
+      {
+        "file": "flashswf/levels/地图-大学操场.swf",
+        "sha256": "e5fe3512310088fe7f4e3fea9a0622be489dfe433503d9327e30684111dfe977",
+        "bytes": 187826,
+        "hasXfl": false,
+        "exitCode": 0,
+        "scriptCount": 11,
+        "matches": [],
+        "elapsedMs": 4155
+      },
+      {
+        "file": "flashswf/levels/地图-大学地下工坊.swf",
+        "sha256": "e17dd534868b57b9477096518e7288b673b46c89d8251797496727c23c9d9195",
+        "bytes": 571932,
+        "hasXfl": false,
+        "exitCode": 0,
+        "scriptCount": 38,
+        "matches": [],
+        "elapsedMs": 6886
+      },
+      {
+        "file": "flashswf/levels/地图-大学内部.swf",
+        "sha256": "b7613caeefb46de0a8640aa21070f5069e570361cae4c893c39527b9307659b3",
+        "bytes": 819029,
+        "hasXfl": false,
+        "exitCode": 0,
+        "scriptCount": 31,
+        "matches": [],
+        "elapsedMs": 7648
+      },
+      {
+        "file": "flashswf/levels/地图-大学宿舍.swf",
+        "sha256": "40da36be88a32fe5fb359827cf831c5237c0eed91693c45aa0cd11d0d880ac91",
+        "bytes": 84168,
+        "hasXfl": false,
+        "exitCode": 0,
+        "scriptCount": 28,
+        "matches": [
+          {
+            "script": "scripts/DefineButton2_40/BUTTONCONDACTION on(release).as",
+            "line": 2,
+            "excerpt": "on(release){\n   _root.加载外部UI(\"flashswf/UI/睡觉界面.swf\");\n}\n"
+          }
+        ],
+        "elapsedMs": 4727
+      },
+      {
+        "file": "flashswf/levels/地图-大学宿舍楼下.swf",
+        "sha256": "a1ef6b0592f24978c8275ab941172bca9c21f672bf2012f2164ff36b6ed28b17",
+        "bytes": 356431,
+        "hasXfl": false,
+        "exitCode": 0,
+        "scriptCount": 13,
+        "matches": [],
+        "elapsedMs": 4681
+      },
+      {
+        "file": "flashswf/levels/地图-第一防线防区.swf",
+        "sha256": "0c1c2c4bb28e0958292739f93519fd56967f9621c913d781003b107b3ee94056",
+        "bytes": 1277245,
+        "hasXfl": true,
+        "exitCode": 0,
+        "scriptCount": 51,
+        "matches": [],
+        "elapsedMs": 18118
+      },
+      {
+        "file": "flashswf/levels/地图-堕落城酒吧.swf",
+        "sha256": "093e361a25907eeceeb62d62b1acb196ca4c4ad418ae2b32594c6b844bca7f06",
+        "bytes": 179970,
+        "hasXfl": false,
+        "exitCode": 0,
+        "scriptCount": 42,
+        "matches": [],
+        "elapsedMs": 6906
+      },
+      {
+        "file": "flashswf/levels/地图-堕落城酒吧门口.swf",
+        "sha256": "6faec00fea296b7520bbdd98a396844d9d855398841feb0b3f6f9fd18a386166",
+        "bytes": 604344,
+        "hasXfl": false,
+        "exitCode": 0,
+        "scriptCount": 10,
+        "matches": [],
+        "elapsedMs": 4694
+      },
+      {
+        "file": "flashswf/levels/地图-堕落城商业街.swf",
+        "sha256": "6e2523b97835cfcba39c3c198cf0da13d5b3ea892ea17909929d443edd73a7aa",
+        "bytes": 3147451,
+        "hasXfl": false,
+        "exitCode": 0,
+        "scriptCount": 41,
+        "matches": [],
+        "elapsedMs": 7021
+      },
+      {
+        "file": "flashswf/levels/地图-黑铁阁.swf",
+        "sha256": "8330ada07a08c4c24a341918cde7e48d2cabd1a362ca3b540d5e8d769dae32b9",
+        "bytes": 430614,
+        "hasXfl": false,
+        "exitCode": 0,
+        "scriptCount": 19,
+        "matches": [],
+        "elapsedMs": 23171
+      },
+      {
+        "file": "flashswf/levels/地图-黑铁会修炼场.swf",
+        "sha256": "e3cc7192ad6db3e806061bacafb1927a1dc681d5752aa6c290df5c31d345d4ab",
+        "bytes": 459876,
+        "hasXfl": false,
+        "exitCode": 0,
+        "scriptCount": 44,
+        "matches": [],
+        "elapsedMs": 14944
+      },
+      {
+        "file": "flashswf/levels/地图-剑道社.swf",
+        "sha256": "11e1789ee19b62fc24a4c3a63cc216ac661a3861b33f84009bb22b000053309b",
+        "bytes": 156666,
+        "hasXfl": false,
+        "exitCode": 0,
+        "scriptCount": 29,
+        "matches": [],
+        "elapsedMs": 10028
+      },
+      {
+        "file": "flashswf/levels/地图-教学楼办公室.swf",
+        "sha256": "1edda5c244c562c865b3abae3ea1c9e819a6c10a6d602185971ddade7ad3d4fd",
+        "bytes": 173693,
+        "hasXfl": false,
+        "exitCode": 0,
+        "scriptCount": 29,
+        "matches": [],
+        "elapsedMs": 17012
+      },
+      {
+        "file": "flashswf/levels/地图-教学楼内部.swf",
+        "sha256": "a05925c2879d85c80890934b187021b452da627aea90ec7c8d07ad29f115beb1",
+        "bytes": 1222868,
+        "hasXfl": false,
+        "exitCode": 0,
+        "scriptCount": 75,
+        "matches": [],
+        "elapsedMs": 18405
+      },
+      {
+        "file": "flashswf/levels/地图-界外街道.swf",
+        "sha256": "39df7658686c7b36b2696b71df99cac85c681b22403fa0d6b2450b2e1994b9f1",
+        "bytes": 1383196,
+        "hasXfl": false,
+        "exitCode": 0,
+        "scriptCount": 77,
+        "matches": [],
+        "elapsedMs": 12366
+      },
+      {
+        "file": "flashswf/levels/地图-军阀基地.swf",
+        "sha256": "bd86606e28c93c58352ee709e7d9e471906945546f893e064cc045d219e6c512",
+        "bytes": 1599124,
+        "hasXfl": true,
+        "exitCode": 0,
+        "scriptCount": 37,
+        "matches": [],
+        "elapsedMs": 11201
+      },
+      {
+        "file": "flashswf/levels/地图-军阀帐篷.swf",
+        "sha256": "beeb99fe2979038b776f17aad600c98e685a1c2878701c0b7a8be0883f21a20d",
+        "bytes": 227535,
+        "hasXfl": false,
+        "exitCode": 0,
+        "scriptCount": 16,
+        "matches": [],
+        "elapsedMs": 12055
+      },
+      {
+        "file": "flashswf/levels/地图-联合大学.swf",
+        "sha256": "aac6abcc6ac8a5788716b6c13e201a47e5abb86d108a9dcfaff7bf3b29c12d87",
+        "bytes": 336004,
+        "hasXfl": true,
+        "exitCode": 0,
+        "scriptCount": 56,
+        "matches": [],
+        "elapsedMs": 17516
+      },
+      {
+        "file": "flashswf/levels/地图-实验室.swf",
+        "sha256": "7025b066ece8a88d1402f62832e349f2fd5316da9b5d8a2812fb7a41e65c832b",
+        "bytes": 108508,
+        "hasXfl": false,
+        "exitCode": 0,
+        "scriptCount": 11,
+        "matches": [],
+        "elapsedMs": 5553
+      },
+      {
+        "file": "flashswf/levels/地图-食堂.swf",
+        "sha256": "40c34b5f7236edcc1ba33f4a3103c451242832bb0d38c1c3f8fac588033560fc",
+        "bytes": 3197578,
+        "hasXfl": false,
+        "exitCode": 0,
+        "scriptCount": 39,
+        "matches": [],
+        "elapsedMs": 13993
+      },
+      {
+        "file": "flashswf/levels/地图-隧道据点.swf",
+        "sha256": "5f69a9a2746dd5dd1f4c3865ba9e09006da9099f1a7559455fe67c6f4f3dfd1d",
+        "bytes": 2036881,
+        "hasXfl": false,
+        "exitCode": 0,
+        "scriptCount": 17,
+        "matches": [
+          {
+            "script": "scripts/DefineButton2_64/BUTTONCONDACTION on(release).as",
+            "line": 2,
+            "excerpt": "on(release){\n   _root.加载外部UI(\"flashswf/UI/地铁线路.swf\");\n}\n"
+          }
+        ],
+        "elapsedMs": 14374
+      },
+      {
+        "file": "flashswf/levels/地图-同盟通路.swf",
+        "sha256": "8ca74ace2254446882b55620151bc3e16f46bced2fccbcf7c35bd5a0b91de5b2",
+        "bytes": 1041535,
+        "hasXfl": false,
+        "exitCode": 0,
+        "scriptCount": 18,
+        "matches": [],
+        "elapsedMs": 6348
+      },
+      {
+        "file": "flashswf/levels/地图-同盟下水道.swf",
+        "sha256": "605efa411c3b3acaef726ca39d932f22f8577db8919999da61e9f39875c921b7",
+        "bytes": 267399,
+        "hasXfl": false,
+        "exitCode": 0,
+        "scriptCount": 30,
+        "matches": [],
+        "elapsedMs": 8283
+      },
+      {
+        "file": "flashswf/levels/地图-同盟卸货站.swf",
+        "sha256": "3952e7df3c6a0a9434639f863b013d0b65bf88d6d24ad6fc64b29b8d880a7405",
+        "bytes": 448092,
+        "hasXfl": false,
+        "exitCode": 0,
+        "scriptCount": 34,
+        "matches": [],
+        "elapsedMs": 7675
+      },
+      {
+        "file": "flashswf/levels/地图-小马地图.swf",
+        "sha256": "a8189532aa65a0801baa0b8c186c3c57aff5fba5350a37ba64dc573b3d1847eb",
+        "bytes": 145484,
+        "hasXfl": false,
+        "exitCode": 0,
+        "scriptCount": 15,
+        "matches": [],
+        "elapsedMs": 5671
+      },
+      {
+        "file": "flashswf/levels/地图-幸存者营地.swf",
+        "sha256": "cc0ed21314514062bb454472a9ccff460f7c0e10cb9f4e3f6415f046a384d6c3",
+        "bytes": 365953,
+        "hasXfl": true,
+        "exitCode": 0,
+        "scriptCount": 74,
+        "matches": [],
+        "elapsedMs": 9686
+      },
+      {
+        "file": "flashswf/levels/地图-摇滚公园.swf",
+        "sha256": "9e09ac79cd8e64489873b0ee3a31d818570d33a77d40c3be607088cb13a9a6aa",
+        "bytes": 1396317,
+        "hasXfl": false,
+        "exitCode": 0,
+        "scriptCount": 30,
+        "matches": [],
+        "elapsedMs": 8774
+      },
+      {
+        "file": "flashswf/levels/地图-摇滚排练室.swf",
+        "sha256": "6171324631bcf4b23dde27914b9774115b51b2e1596841fd21cc39d6a6b4f8c0",
+        "bytes": 183657,
+        "hasXfl": false,
+        "exitCode": 0,
+        "scriptCount": 11,
+        "matches": [],
+        "elapsedMs": 4624
+      },
+      {
+        "file": "flashswf/levels/地图-走廊.swf",
+        "sha256": "7fa4f5e2f42b75859f1aa76988e0363ff89ccda83444a9c78f3542b401c39c68",
+        "bytes": 1171133,
+        "hasXfl": false,
+        "exitCode": 0,
+        "scriptCount": 21,
+        "matches": [],
+        "elapsedMs": 20987
+      },
+      {
+        "file": "flashswf/levels/基地场景合集.swf",
+        "sha256": "ae7f591ceb46e781f0f4b5ec9378c17852c6f8834fd1b29fb7d5ad785c72c43e",
+        "bytes": 2976960,
+        "hasXfl": true,
+        "exitCode": 0,
+        "scriptCount": 472,
+        "matches": [
+          {
+            "script": "scripts/DefineButton2_109/BUTTONCONDACTION on(release).as",
+            "line": 2,
+            "excerpt": "on(release){\n   _root.加载外部UI(\"flashswf/UI/睡觉界面.swf\");\n}\n"
+          },
+          {
+            "script": "scripts/DefineButton2_274/BUTTONCONDACTION on(release).as",
+            "line": 5,
+            "excerpt": "      _root.获取深蹲杠铃训练项();\n      var 挂机功能菜单 = _root.从库中加载外部UI(\"挂机功能菜单\");\n      挂机功能菜单.挂机项目 = this._name;\n      挂机功能菜单._visible = 1;"
+          },
+          {
+            "script": "scripts/DefineButton2_278/BUTTONCONDACTION on(release).as",
+            "line": 5,
+            "excerpt": "      _root.获取哑铃训练项();\n      var 挂机功能菜单 = _root.从库中加载外部UI(\"挂机功能菜单\");\n      挂机功能菜单.挂机项目 = this._name;\n      挂机功能菜单._visible = 1;"
+          },
+          {
+            "script": "scripts/DefineButton2_284/BUTTONCONDACTION on(release).as",
+            "line": 5,
+            "excerpt": "      _root.获取木人桩训练项();\n      var 挂机功能菜单 = _root.从库中加载外部UI(\"挂机功能菜单\");\n      挂机功能菜单.挂机项目 = this._name;\n      挂机功能菜单._visible = 1;"
+          },
+          {
+            "script": "scripts/DefineButton2_74/BUTTONCONDACTION on(release).as",
+            "line": 2,
+            "excerpt": "on(release){\n   _root.加载外部UI(\"flashswf/UI/睡觉界面.swf\");\n}\n"
+          },
+          {
+            "script": "scripts/DefineButton2_849/BUTTONCONDACTION on(release).as",
+            "line": 5,
+            "excerpt": "   {\n      _root.加载外部UI(\"flashswf/UI/通缉令界面.swf\");\n      _root.NPC功能菜单._visible = 1;\n      _root.NPC功能菜单._x = _root._xmouse;"
+          },
+          {
+            "script": "scripts/DefineSprite_131_基地场景-房间/frame_1/PlaceObject3_111_184/CLIPACTIONRECORD on(release).as",
+            "line": 2,
+            "excerpt": "on(release){\n   _root.加载外部UI(\"flashswf/UI/书架界面.swf\");\n}\n"
+          },
+          {
+            "script": "scripts/DefineSprite_131_基地场景-房间/frame_1/PlaceObject3_111_184/CLIPACTIONRECORD onClipEvent(load).as",
+            "line": 2,
+            "excerpt": "onClipEvent(load){\n   _root.书架界面._visible = false;\n   if(_root.主线任务进度 < 17)\n   {"
+          }
+        ],
+        "elapsedMs": 463
+      },
+      {
+        "file": "flashswf/levels/角斗场-1.swf",
+        "sha256": "70b53f62f09e5e50f53309d13226917abcaa0d5838bfa431806e8df090001839",
+        "bytes": 3801,
+        "hasXfl": false,
+        "exitCode": 0,
+        "scriptCount": 14,
+        "matches": [],
+        "elapsedMs": 15100
+      },
+      {
+        "file": "flashswf/levels/wuxianguotu_1.swf",
+        "sha256": "4b455a2325845b5aa84e663bc4484d86d0aff2b7cf2060dda0a00be2849b3c73",
+        "bytes": 2117,
+        "hasXfl": false,
+        "exitCode": 0,
+        "scriptCount": 6,
+        "matches": [],
+        "elapsedMs": 10404
+      }
+    ]
+  },
+  "currentTopLevelUiSwfs": [
+    {
+      "file": "flashswf/UI/书架界面.swf",
+      "bytes": 57387,
+      "sha256": "2ead6beb02d11fedce2af70a795fba247156db24c7396f0a12b8745a3bfbdf0c"
+    },
+    {
+      "file": "flashswf/UI/任务栏界面.swf",
+      "bytes": 17365027,
+      "sha256": "ef9aa71afa22e84a743c3a7afa9dc8f9dd28931e5a529096fdc1b862224dd463"
+    },
+    {
+      "file": "flashswf/UI/修改工具界面.swf",
+      "bytes": 29136,
+      "sha256": "c08747c0fc0d3f817f22850799bd5782c5770c7d4a7544c62836521c745dc629"
+    },
+    {
+      "file": "flashswf/UI/加载背景.swf",
+      "bytes": 4458807,
+      "sha256": "a9d5dbf2ddb9d435e749a54da5275f3484738d169a1b7abfa46bb24f0ef9a98d"
+    },
+    {
+      "file": "flashswf/UI/商城界面.swf",
+      "bytes": 16746,
+      "sha256": "90ba552800c195dfd67dab4fd4518dfacd221c0341d299f47f92e31ab58d80a3"
+    },
+    {
+      "file": "flashswf/UI/图片容器.swf",
+      "bytes": 32124,
+      "sha256": "8795e2b8eb4b982e3848eea758e041f5f50a5949ee4d275d5b983f9d625080f6"
+    },
+    {
+      "file": "flashswf/UI/地图界面.swf",
+      "bytes": 27913207,
+      "sha256": "0ba54d4f3f92033413f91275ef46e0e0680c8234b292bb2273d7045a8b4b3105"
+    },
+    {
+      "file": "flashswf/UI/地铁线路.swf",
+      "bytes": 1491518,
+      "sha256": "1bc78fc3b16896b060e00e280504a74ceb2d0495ec023827ee2b474a7864b2ab"
+    },
+    {
+      "file": "flashswf/UI/基地特殊UI合集.swf",
+      "bytes": 5337,
+      "sha256": "8224d298b54915de0d0516705add8db8f697718de2915ab9c144a3463f4db577"
+    },
+    {
+      "file": "flashswf/UI/奖励物品界面.swf",
+      "bytes": 6537,
+      "sha256": "bc51fa0d2794e5fd3f74e60f154d08bab883429bf07d8036b0b7661af375122a"
+    },
+    {
+      "file": "flashswf/UI/存档显示.swf",
+      "bytes": 5877,
+      "sha256": "905043935eb51303d828a13575b2d1965f536eb57a9d73bed7ea77c59945f9fb"
+    },
+    {
+      "file": "flashswf/UI/对话框界面.swf",
+      "bytes": 1071988,
+      "sha256": "c4159f6852f99b2385789dcabc40782ede59726c2d9a3c933c4f9faf262793c7"
+    },
+    {
+      "file": "flashswf/UI/帮助界面.swf",
+      "bytes": 96487,
+      "sha256": "9840ab972756994c8cde852ec3cd742d88671f4319ed69be2a74e6abf8f7e498"
+    },
+    {
+      "file": "flashswf/UI/平板电脑界面.swf",
+      "bytes": 179947,
+      "sha256": "de38f01850d0340af84573d9e0c6fc7015cbb8bfdcae4def78b1d3783e5e349c"
+    },
+    {
+      "file": "flashswf/UI/彩蛋地图关卡界面.swf",
+      "bytes": 294399,
+      "sha256": "6b5d3fa7f54cffad6ca693d818a3f8cd0def0de6784231bd18859524f357ce96"
+    },
+    {
+      "file": "flashswf/UI/情报信息界面.swf",
+      "bytes": 7509,
+      "sha256": "f44b54e0245bfe9edd4309e9b6e01ba4ae82fbf61bfc8982d5ac58aa0ccc0157"
+    },
+    {
+      "file": "flashswf/UI/战宠相关界面.swf",
+      "bytes": 2880315,
+      "sha256": "22db038d452e5f489bd88ab2311fa00d877bfb43593893b94ddf75b86e5d5fab"
+    },
+    {
+      "file": "flashswf/UI/新任务栏界面.swf",
+      "bytes": 693200,
+      "sha256": "207d40f3bf087814ca579d4343b37ee42728147a325ecaabece3f6c31d05d4c0"
+    },
+    {
+      "file": "flashswf/UI/无限过图计时器.swf",
+      "bytes": 4486,
+      "sha256": "ffc0db2fc544283d3c1d1d8b92f9c1d697c71815700aca9c9d97281459b2dc15"
+    },
+    {
+      "file": "flashswf/UI/注释框.swf",
+      "bytes": 1101,
+      "sha256": "4822ac536f8e01d13fb370ccf78bdf595b33bef45b486be3ee282a5e62c093d2"
+    },
+    {
+      "file": "flashswf/UI/消息窗.swf",
+      "bytes": 1324,
+      "sha256": "a5c2dc018b78e0b755377b364d7e972eee1b80619ce5e4a302f4adef84c4046c"
+    },
+    {
+      "file": "flashswf/UI/物品与技能相关界面.swf",
+      "bytes": 65521,
+      "sha256": "c92beaf595a751171c13d6f8ec75c7f4a4a38e1698ab7a517581def69cf5403c"
+    },
+    {
+      "file": "flashswf/UI/物品与技能相关界面_个人信息界面.swf",
+      "bytes": 55304,
+      "sha256": "8d8c621d16c383134091e0435ce152871b70452554e1e1c5519d617c4fde810e"
+    },
+    {
+      "file": "flashswf/UI/物品改装界面.swf",
+      "bytes": 6866,
+      "sha256": "1d432dd67ffaa8ee69df8a64500cd64de2fc8b50f4b13cce746c1d82b90a4fa6"
+    },
+    {
+      "file": "flashswf/UI/玩家信息界面.swf",
+      "bytes": 105013,
+      "sha256": "63fad7e1dfcb28e2928fc6b7b7514d355addda0286efb936c0037fb948c2d764"
+    },
+    {
+      "file": "flashswf/UI/睡觉界面.swf",
+      "bytes": 68830,
+      "sha256": "210cd0199e1ca43eca5d74bd763925325e1020738d1ad077eb5503bf6c695aa9"
+    },
+    {
+      "file": "flashswf/UI/系统设置UI.swf",
+      "bytes": 8505,
+      "sha256": "839e2f1f2e2268b455e99d49db86e856a642bc2d1f669c65296dc60d6cedffe7"
+    },
+    {
+      "file": "flashswf/UI/经济面板.swf",
+      "bytes": 8020,
+      "sha256": "da7e5e8441beacdd0943b8fa6ef662b1a04468b9641327abc63b21bf81376239"
+    },
+    {
+      "file": "flashswf/UI/获得任务奖励.swf",
+      "bytes": 4601,
+      "sha256": "7b3f97d1e3c78cffb105c68ae60b22b61f7c561261116ed7663d7c5a76898b75"
+    },
+    {
+      "file": "flashswf/UI/选关界面.swf",
+      "bytes": 2094401,
+      "sha256": "44410beb1d987a0fe92e26bac87f4f4a54c5ceb9ea2faad04443bcf081fb3d35"
+    },
+    {
+      "file": "flashswf/UI/通缉令界面.swf",
+      "bytes": 450612,
+      "sha256": "15c0eaa8b8cb66dd12af6e75c3e838c0888d3f9907015e94917b334198ccb38d"
+    },
+    {
+      "file": "flashswf/UI/验证失败界面.swf",
+      "bytes": 5495,
+      "sha256": "dac328333ff4e94aae9e62abc14e827bf268161fd81092bb17b01151619c3fab"
+    }
+  ],
+  "sourceSamples": [
+    {
+      "id": "generic-ui-loader",
+      "file": "scripts/展现/UI交互/UI交互_lsy_UI管理.as",
+      "sha256": "34c48d4d205e2e288abbd2ed267c2f8006559e59ea2a6d61c1098433e240986f",
+      "line": 1,
+      "lineEnd": 38,
+      "excerpt": "_root.加载外部UI = function(url){\n    _root.通用UI层.外部导入UI界面._visible = true;\n    if(url != _root.通用UI层.外部UIURL){\n        _root.通用UI层.外部UIURL = url;\n        _root.通用UI层.外部导入UI界面._x = 0;\n        _root.通用UI层.外部导入UI界面._y = 0;\n        _root.通用UI层.外部导入UI界面._xscale = 100;\n        _root.通用UI层.外部导入UI界面._yscale = 100;\n        _root.通用UI层.外部导入UI界面.loadMovie(url);\n    }\n}\n\n_root.打开整形手术 = function(){\n    if(!org.flashNight.arki.ui.PlasticSurgeryPanelService.openPanel())\n        _root.最上层发布文字提示(\"整形界面暂时无法打开，请稍后重试。\");\n};\n\n_root.从库中加载外部UI = function(identifier){\n    var UI = _root.通用UI层[identifier];\n    if(UI != null){\n        UI._visible = true;\n        return UI;\n    }\n    if(!_root.通用UI层.外部UI列表) _root.通用UI层.外部UI列表 = [];\n    UI = _root.通用UI层.attachMovie(identifier,identifier,_root.通用UI层.getNextHighestDepth());\n    _root.通用UI层.外部UI列表.push(UI);\n    return UI;\n\n}\n\n_root.卸载外部UI = function(){\n    _root.通用UI层.外部UIURL = null;\n    _root.通用UI层.外部导入UI界面.unloadMovie();\n    for(var i = 0; i<_root.通用UI层.外部UI列表.length; i++){\n        _root.通用UI层.外部UI列表[i].removeMovieClip();\n    }\n    _root.通用UI层.外部UI列表 = null;\n}"
+    },
+    {
+      "id": "sleep-base-first",
+      "file": "flashswf/levels/基地场景合集/LIBRARY/地图/宿舍房间.xml",
+      "sha256": "4187d4c0289fec05df513de74705141088d5900970537a1aa1a48991d7e7d97a",
+      "line": 210,
+      "lineEnd": 217,
+      "excerpt": "                    <Point x=\"165.7\" y=\"114.5\"/>\n                  </transformationPoint>\n                  <Actionscript>\n                    <script><![CDATA[on (release) {\n\t_root.加载外部UI(\"flashswf/UI/睡觉界面.swf\");\n}]]></script>\n                  </Actionscript>\n                </DOMSymbolInstance>"
+    },
+    {
+      "id": "sleep-base-second",
+      "file": "flashswf/levels/基地场景合集/LIBRARY/地图/宿舍房间.xml",
+      "sha256": "4187d4c0289fec05df513de74705141088d5900970537a1aa1a48991d7e7d97a",
+      "line": 613,
+      "lineEnd": 620,
+      "excerpt": "                    <Point/>\n                  </transformationPoint>\n                  <Actionscript>\n                    <script><![CDATA[on (release) {\n    _root.加载外部UI(\"flashswf/UI/睡觉界面.swf\");\n}]]></script>\n                  </Actionscript>\n                </DOMSymbolInstance>"
+    },
+    {
+      "id": "bookshelf-base-gate",
+      "file": "flashswf/levels/基地场景合集/LIBRARY/地图/宿舍房间.xml",
+      "sha256": "4187d4c0289fec05df513de74705141088d5900970537a1aa1a48991d7e7d97a",
+      "line": 223,
+      "lineEnd": 238,
+      "excerpt": "                    <Point x=\"68.4\" y=\"84.9\"/>\n                  </transformationPoint>\n                  <Actionscript>\n                    <script><![CDATA[onClipEvent (load) {\n\t_root.书架界面._visible = false;\n\tif (_root.主线任务进度 < 17)\n\t{\n\t\tthis._visible = false;\n\t}\n\t//第三集结点解锁  \n\t//this._name = 名字 = \"书架\";\n}\non (release) {\n\t_root.加载外部UI(\"flashswf/UI/书架界面.swf\");\n}]]></script>\n                  </Actionscript>"
+    },
+    {
+      "id": "sleep-morning",
+      "file": "flashswf/UI/睡觉界面/DOMDocument.xml",
+      "sha256": "64c29cafdf7977335c88a98ef12f17a32ff0c1ea96fb3de11c83f67ec10f12ec",
+      "line": 56,
+      "lineEnd": 60,
+      "excerpt": "                                                  <script><![CDATA[on (release) {\n\t_root.天气系统.当前时间 = 6;\n\t_root.发布消息(\"一觉醒来……当前时间：清晨6点\");\n\t_root.最上层加载外部动画(\"flashswf/movies/黑色渐隐过场.swf\");\n\t_parent._visible = false;"
+    },
+    {
+      "id": "sleep-night",
+      "file": "flashswf/UI/睡觉界面/DOMDocument.xml",
+      "sha256": "64c29cafdf7977335c88a98ef12f17a32ff0c1ea96fb3de11c83f67ec10f12ec",
+      "line": 93,
+      "lineEnd": 97,
+      "excerpt": "                                                  <script><![CDATA[on (release) {\n\t_root.天气系统.当前时间 = 19;\n\t_root.发布消息(\"一觉醒来……当前时间：夜晚7点\");\n\t_root.最上层加载外部动画(\"flashswf/movies/黑色渐隐过场.swf\");\n\t_parent._visible = false;"
+    },
+    {
+      "id": "weather-legacy-bridge",
+      "file": "scripts/类定义/org/flashNight/arki/weather/WeatherSystem.as",
+      "sha256": "b1bc714925ac96d1c3a1c9cfcf2b16c48ad51f5780e62299634c81a36577a784",
+      "line": 85,
+      "lineEnd": 94,
+      "excerpt": "     * 在帧结束后被回收，闭包捕获的局部变量会变成 undefined。\n     * class 方法中的 this 由 EventBus/调用方绑定，始终有效。\n     */\n    public function setupLegacyBridge():Void {\n        var self:WeatherSystem = this;\n        // 睡觉界面.swf: 读写 当前时间\n        this.addProperty(\"当前时间\",\n            function():Number { return self.currentTime; },\n            function(v:Number):Void { self.currentTime = v; });\n        // 新版人物文字信息.swf / things0: 只读 人物信息透明度"
+    },
+    {
+      "id": "tavern-opener",
+      "file": "flashswf/levels/基地场景合集/LIBRARY/sprite/Symbol 2813.xml",
+      "sha256": "00f306c9496a6180e040aa5a2b1b8664303529024ec873ac83bba289e3260368",
+      "line": 97,
+      "lineEnd": 110,
+      "excerpt": "                    <script><![CDATA[on (press) {\n\t_root.是否达成任务检测();\n}\non (release) {\n\t_root.是否达成任务检测();\n\tif (_root.点击npc后检测任务(名字, this) == \"路过\")\n\t{\n\t\t_root.加载外部UI(\"flashswf/UI/通缉令界面.swf\");\n\t\t_root.NPC功能菜单._visible = 1;\n\t\t_root.NPC功能菜单._x = _root._xmouse;\n\t\t_root.NPC功能菜单._y = _root._ymouse;\n\t\t_root.NPC功能菜单.当前NPC = this._name;\n\t\t_root.NPC功能菜单.刷新显示();\n\t}"
+    },
+    {
+      "id": "wanted-task-bridge",
+      "file": "flashswf/UI/通缉令界面/DOMDocument.xml",
+      "sha256": "796ecd122eb5f34ba3d655055d6e5d0f34dac26e87361575e7ca64c6f182c4da",
+      "line": 175,
+      "lineEnd": 184,
+      "excerpt": "function 组装副本任务(对象)\n{\n\tvar taskData = _root.getTaskData(对象.NPC任务_任务_关卡路径);\n\t// 副本任务已迁 web（task 面板副本 tab）：通缉单直发 openWebDungeon。\n\t// 旧 Symbol 1873(_root.委托任务界面) fallback 已退役删除（主 FLA 已删该元件）。\n\tif (_root.gameCommands.openWebDungeon != undefined)\n\t{\n\t\t_root.gameCommands.openWebDungeon({taskId: taskData.id});\n\t}\n}"
+    },
+    {
+      "id": "tavern-purchase",
+      "file": "flashswf/UI/通缉令界面/DOMDocument.xml",
+      "sha256": "796ecd122eb5f34ba3d655055d6e5d0f34dac26e87361575e7ca64c6f182c4da",
+      "line": 186,
+      "lineEnd": 216,
+      "excerpt": "function 买一杯酒(对象)\n{\n\tif (对象.对话完毕)\n\t{\n\t\treturn;\n\t}\n\tif (_root.金钱 >= 对象.价格)\n\t{\n\t\tvar assetContext = {source:\"tavern_purchase\", reason:\"buy_drink\", mergeScope:\"operation\"};\n\t\t_root.金钱 -= 对象.价格;\n\t\t_root.记录玩家货币变化(\n\t\t\t-Number(对象.价格), 0, assetContext);\n\t\tif (_root.存档系统 != undefined) _root.存档系统.dirtyMark = true;\n\t\t_root.SetDialogue(对象.对话[对象.对话index], true);\n\t\t对象.对话index += 1;\n\t\t对象.显示文字 = \"$\" + 对象.价格 + \" (\" + 对象.对话index + \"/\" + 对象.对话.length + \")\";\n\t\tif (对象.对话index >= 对象.对话.length)\n\t\t{\n\t\t\t对象.显示文字 = \"SOLD OUT\";\n\t\t\t对象.对话完毕 = true;\n\t\t\t对象.对话完毕回调函数();\n\t\t}\n\t}\n\telse\n\t{\n\t\t_root.发布消息(\"金钱不足！\");\n\t}\n}\n\n当前页数 = 1;\nstop();"
+    },
+    {
+      "id": "tavern-beer-intel",
+      "file": "flashswf/UI/通缉令界面/DOMDocument.xml",
+      "sha256": "796ecd122eb5f34ba3d655055d6e5d0f34dac26e87361575e7ca64c6f182c4da",
+      "line": 1081,
+      "lineEnd": 1099,
+      "excerpt": "                                                  <script><![CDATA[onClipEvent (load) {\n\t价格 = 50;\n\t显示文字 = \"$\" + 价格;\n\t对话index = 0;\n\t对话 = _root.读取NPC对话(\"酒泡氤氲-啤酒\");\n\t对话完毕 = false;\n\tfunction 对话完毕回调函数(){\n\t\tif(_root.收集品栏.情报.getValue(\"酒泡氤氲\") == 0){\n\t\t\t_root.收集品栏.情报.add(\"酒泡氤氲\",1);\n\t\t\t_root.记录玩家物资变化(\n\t\t\t\t\"gain\", \"intel\", \"酒泡氤氲\", 1,\n\t\t\t\t{source:\"tavern_purchase\", reason:\"beer_intelligence\"});\n\t\t\t_root.最上层发布文字提示(\"已将对话整理为新的情报页面\");\n\t\t}\n\t}\n}\non (rollOver) {\n\tgotoAndStop(2);\n\tthis.swapDepths(_parent.getNextHighestDepth());"
+    },
+    {
+      "id": "tavern-cocktail-intel",
+      "file": "flashswf/UI/通缉令界面/DOMDocument.xml",
+      "sha256": "796ecd122eb5f34ba3d655055d6e5d0f34dac26e87361575e7ca64c6f182c4da",
+      "line": 1119,
+      "lineEnd": 1140,
+      "excerpt": "                                                  <script><![CDATA[onClipEvent (load) {\n\t价格 = 200;\n\t显示文字 = \"$\" + 价格;\n\t对话index = 0;\n\t对话 = _root.读取NPC对话(\"酒泡氤氲-鸡尾酒\");\n\t对话完毕 = false;\n\tif (_root.主线任务进度 < 23)\n\t{\n\t\t对话完毕 = true;\n\t\t显示文字 = \"补货中\"\n\t}\n\tfunction 对话完毕回调函数(){\n\t\tif(_root.收集品栏.情报.getValue(\"酒泡氤氲\") == 1){\n\t\t\t_root.收集品栏.情报.addValue(\"酒泡氤氲\",1);\n\t\t\t_root.记录玩家物资变化(\n\t\t\t\t\"gain\", \"intel\", \"酒泡氤氲\", 1,\n\t\t\t\t{source:\"tavern_purchase\", reason:\"cocktail_intelligence\"});\n\t\t\t_root.最上层发布文字提示(\"已将对话整理为新的情报页面\");\n\t\t}\n\t}\n}\non(rollOver){"
+    },
+    {
+      "id": "gym-catalog",
+      "file": "scripts/展现/UI交互/UI交互_aka_健身房训练.as",
+      "sha256": "7bcdae8ef1d62c9f6811f71cc11b752b5ecad9b3356c6b80af4d95cf929f8393",
+      "line": 17,
+      "lineEnd": 40,
+      "excerpt": "_root.获取木人桩训练项 = function(){\n\t\t_root.健身房训练类型 = [];\n\t\t_root.健身房训练类型[0] = {属性名:\"全局健身空攻加成\", 加成名:\"空手攻击力\", 加成:3, 货币名:\"金钱\", 消耗:60000, 时长:10000, 上限:500};\n\t\t_root.健身房训练类型[1] = {属性名:\"全局健身空攻加成\", 加成名:\"空手攻击力\", 加成:9, 货币名:\"K点\", 消耗:6000, 时长:10000, 上限:500};\n\t\t_root.健身房训练类型[2] = {属性名:\"全局健身空攻加成\", 加成名:\"空手攻击力\", 加成:30, 货币名:\"金钱\", 消耗:800000, 时长:10000, 上限:500};\n\t\t_root.健身房训练类型[3] = {属性名:\"全局健身内力加成\", 加成名:\"内力\", 加成:20, 货币名:\"金钱\", 消耗:800000, 时长:20000, 上限:100};\n\t\tif(_root.主线任务进度 >=68){\n\t\t\t_root.健身房训练类型[4] = {属性名:\"全局健身空攻加成\", 加成名:\"空手攻击力\", 加成:120, 货币名:\"金钱\", 消耗:3600000, 时长:10000, 上限:500};\n\t\t\t_root.健身房训练类型[5] = {属性名:\"全局健身空攻加成\", 加成名:\"空手攻击力\", 加成:120, 货币名:\"K点\", 消耗:120000, 时长:10000, 上限:500};\n\t\t}\n\t\tif(_root.主线任务进度 >=120){\n\t\t\t_root.健身房训练类型[6] = {属性名:\"全局健身空攻加成\", 加成名:\"空手攻击力\", 加成:500, 货币名:\"K点\", 消耗:600000, 时长:30000, 上限:500};\n\t\t}\n\t\t_root.健身房训练类型[7] = {属性名:\"技能点\", 加成名:\"技能点\", 加成:25, 货币名:\"K点\", 消耗:1250, 时长:1000};\n\t\t_root.健身房训练类型[8] = {属性名:\"技能点\", 加成名:\"技能点\", 加成:100, 货币名:\"K点\", 消耗:5000, 时长:1000};\n\t\t_root.健身房训练类型[9] = {属性名:\"技能点\", 加成名:\"技能点\", 加成:500, 货币名:\"K点\", 消耗:25000, 时长:1000};\n\t\tif(_root.等级>=35){\n\t\t\t_root.健身房训练类型[10] = {属性名:\"技能点\", 加成名:\"技能点\", 加成:1000, 货币名:\"K点\", 消耗:35000, 时长:1000};\n\t\t\t_root.健身房训练类型[11] = {属性名:\"技能点\", 加成名:\"技能点\", 加成:2000, 货币名:\"K点\", 消耗:70000, 时长:1000};\n\t\t}\n\t\tif(_root.等级>=50){\n\t\t\t_root.健身房训练类型[12] = {属性名:\"技能点\", 加成名:\"技能点\", 加成:5000, 货币名:\"K点\", 消耗:100000, 时长:1000};\n\t\t}\n}"
+    },
+    {
+      "id": "gym-timer-rewards",
+      "file": "flashswf/levels/基地场景合集/LIBRARY/sprite/计时器.xml",
+      "sha256": "7d4dd520a43d13b22b44f0a987360e576e9ca6f05c7b5967d8fa25f26b743943",
+      "line": 9,
+      "lineEnd": 20,
+      "excerpt": "                <script><![CDATA[function 训练结束加经验值(值)\n{\n\t_root.经验值 = Number(_root.经验值) + 值;\n\tif (_root.存档系统 != undefined) _root.存档系统.dirtyMark = true;\n\t_root.发布消息(_root.获得翻译(\"属性得到提升，请刷新场景后查看！\"));\n\t_root.健身房主角是否升级();\n}\nfunction 训练结束加技能点(值)\n{\n\t_root.技能点数 = Number(_root.技能点数) + 值;\n\tif (_root.存档系统 != undefined) _root.存档系统.dirtyMark = true;\n\t_root.发布消息(_root.获得翻译(\"获得技能点：\") + 值);"
+    },
+    {
+      "id": "gym-timer-payments",
+      "file": "flashswf/levels/基地场景合集/LIBRARY/sprite/计时器.xml",
+      "sha256": "7d4dd520a43d13b22b44f0a987360e576e9ca6f05c7b5967d8fa25f26b743943",
+      "line": 112,
+      "lineEnd": 151,
+      "excerpt": "function 虚拟币支付(amount, 商品编号, 训练毫秒, 增加经验, 挂机项目)\n{\n\tif (_root.虚拟币 >= amount)\n\t{\n\t\t_root.虚拟币 -= amount;\n\t\t_root.记录玩家货币变化(\n\t\t\t0, -Number(amount),\n\t\t\t{source:\"gym_training\", reason:\"experience_training\", mergeScope:\"operation\"});\n\t\tif (_root.存档系统 != undefined) _root.存档系统.dirtyMark = true;\n\t\t_root.联机2015发送传言(\"K点消费\");\n\t\t_root.发布消息(_root.获得翻译(\"支付成功！\"));\n\t\t_root.播放音效(\"收银机.mp3\");\n\t\t_root.gameworld.挂机计时器.挂机项目 = 挂机项目;\n\t\t_root.gameworld[挂机项目].开始挂机();\n\t\t_root.gameworld.挂机计时器.计时初始化(训练毫秒,增加经验);\n\t\t_root.获取虚拟币值();\n\t}\n\telse\n\t{\n\t\t_root.发布消息(_root.获得翻译(\"K点不足！\"));\n\t}\n}\nfunction 虚拟币支付2(amount, 商品编号, 训练毫秒, 增加技能点, 挂机项目)\n{\n\tif (_root.虚拟币 >= amount)\n\t{\n\t\t_root.虚拟币 -= amount;\n\t\t_root.记录玩家货币变化(\n\t\t\t0, -Number(amount),\n\t\t\t{source:\"gym_training\", reason:\"skill_training\", mergeScope:\"operation\"});\n\t\tif (_root.存档系统 != undefined) _root.存档系统.dirtyMark = true;\n\t\t_root.发布消息(_root.获得翻译(\"支付成功！\"));\n\t\t_root.播放音效(\"收银机.mp3\");\n\t\t_root.gameworld.挂机计时器.挂机项目 = 挂机项目;\n\t\t_root.gameworld[挂机项目].开始挂机();\n\t\t_root.gameworld.挂机计时器.计时初始化2(训练毫秒,增加技能点);\n\t\t_root.获取虚拟币值();\n\t}\n\telse\n\t{"
+    },
+    {
+      "id": "quest-sign-live-conditions",
+      "file": "flashswf/levels/基地场景合集/LIBRARY/任务接取提示.xml",
+      "sha256": "b3e328690bd5f34c97367730a5c1b3c54d22fabca0216865f52d77031f08adcd",
+      "line": 9,
+      "lineEnd": 22,
+      "excerpt": "            </DOMFrame>\n            <DOMFrame index=\"1\" keyMode=\"9728\">\n              <Actionscript>\n                <script><![CDATA[\n\tif (_root.NPCTaskCheck(_parent._parent.名字).result == \"接受任务\")\n\t{\n         this._alpha = 100;\n\t}else {\n        this._alpha = 0;\n    }]]></script>\n              </Actionscript>\n              <elements/>\n            </DOMFrame>\n            <DOMFrame index=\"2\" keyMode=\"9728\">"
+    },
+    {
+      "id": "main-audit-scope",
+      "file": "tools/audit-main-legacy-ui-reachability.js",
+      "sha256": "ec4a05fbb3fa54b7e67d486baf2605599e3eff58fe153cab43257b2af31b477d",
+      "line": 4,
+      "lineEnd": 52,
+      "excerpt": "// Fail-closed structural gate for retired AS2 UI assets in the published main.\n//\n// The source half reads only the main XFL DOMDocument Include manifest and the\n// included library XML files.  It intentionally does not grep the repository,\n// comments, CDATA/ActionScript, documentation, or orphan library XML.\n//\n// The binary half converts the published main SWF to FFDec XML and inspects only\n// ImportAssets, linkage-name, and PlaceObject structures.  Script string pools\n// are deliberately outside this gate.\n\nconst childProcess = require('child_process');\nconst fs = require('fs');\nconst os = require('os');\nconst path = require('path');\n\nconst DEFAULT_DOM = path.join(\n    'CRAZYFLASHER7MercenaryEmpire',\n    'DOMDocument.xml'\n);\nconst DEFAULT_SWF = 'CRAZYFLASHER7MercenaryEmpire.swf';\n\nconst FORBIDDEN_EXTERNAL_SWFS = Object.freeze([\n    '物品与技能相关界面.swf',\n    '物品改装界面.swf'\n]);\n\nconst FORBIDDEN_UI_IDENTIFIERS = Object.freeze([\n    '物品改装界面',\n    '物品栏界面',\n    '购买物品界面',\n    '仓库界面',\n    '学习技能界面',\n    '资源箱界面'\n]);\n\n// Some retired authoring symbols have opaque Flash-generated names.  Keep the\n// aliases explicit so re-placing an unnamed legacy symbol cannot bypass the\n// human-readable linkage/instance checks.\nconst FORBIDDEN_LIBRARY_ITEMS = Object.freeze({\n    'import/UI组件/物品改装界面': '物品改装界面',\n    'import/UI组件/新版物品栏界面': '物品栏界面',\n    'import/UI组件/新版商店界面': '购买物品界面',\n    'import/UI组件/新版仓库界面': '仓库界面',\n    'import/UI组件/资源箱界面': '资源箱界面',\n    'sprite/Symbol 1779': '学习技能界面'\n});\n\nconst SWF_LINKAGE_TAGS = new Set([\n    'ImportAssetsTag',"
+    },
+    {
+      "id": "garage-map-reachability",
+      "file": "data/map/map_definition.json",
+      "sha256": "fa0c307a91c9656dbfcb2a8f0e37dd772da4ecac028b5a3ca32a5e7bf5f6e93a",
+      "line": 4233,
+      "lineEnd": 4248,
+      "excerpt": "    \"base_garage\": {\n      \"label\": \"基地车库\",\n      \"sceneName\": \"基地车库\",\n      \"sceneKind\": \"base\",\n      \"enabled\": true,\n      \"enterWhen\": {\n        \"type\": \"always\"\n      },\n      \"visibleWhen\": {\n        \"type\": \"always\"\n      },\n      \"tone\": \"base\",\n      \"sceneBinding\": {\n        \"sourceSwf\": \"flashswf/levels/基地场景合集.swf\",\n        \"linkage\": \"基地场景-基地车库\"\n      }"
+    },
+    {
+      "id": "garage-bicycle-purchase",
+      "file": "flashswf/levels/基地场景合集/LIBRARY/地图/车库.xml",
+      "sha256": "bff8ba06d0f15642e1b19b4dd0a8a6ee5f32b19ae2932cb126cf741102a994ba",
+      "line": 262,
+      "lineEnd": 286,
+      "excerpt": "                    <script><![CDATA[on (release) {\n\tif (!_root.基建系统.infrastructure.自行车)\n\t{\n\t\t_root.确认通用面板.名称 = \"购买自行车\";\n\t\t_root.确认通用面板.说明 = \"是否要购买自行车？总花费合计8000金币。\\n购买后可解锁较近距离阵营与区域的地图快速传送功能，例如废城。\";\n\t\t_root.确认通用面板.成功说明 = \"成功购买自行车！\";\n\t\t_root.确认通用面板.失败说明 = \"购买失败！\";\n\t\t_root.确认通用面板.确认 = function()\n\t\t{\n\t\t\tif (_root.金钱 < 8000)\n\t\t\t{\n\t\t\t\t_root.确认通用面板.失败说明 = \"购买失败，金币不足！\";\n\t\t\t\treturn false;\n\t\t\t}\n\t\t\t_root.金钱 -= 8000;\n\t\t\t_root.基建系统.infrastructure.自行车 = 1;\n\t\t\t_root.记录玩家货币变化(\n\t\t\t\t-8000, 0, {source:\"vehicle_service\", reason:\"buy_bicycle\", mergeScope:\"operation\"});\n\t\t\tif (_root.存档系统 != undefined) _root.存档系统.dirtyMark = true;\n\t\t\treturn true;\n\t\t};\n\t\t_root.确认通用面板.启动();\n\t}else{\n\t\t_root.gameCommands[\"openWebMap\"]({ source: \"as2_garage_bike\", pageId: \"defense\" });\n\t}"
+    },
+    {
+      "id": "garage-motorcycle-purchase",
+      "file": "flashswf/levels/基地场景合集/LIBRARY/地图/车库.xml",
+      "sha256": "bff8ba06d0f15642e1b19b4dd0a8a6ee5f32b19ae2932cb126cf741102a994ba",
+      "line": 310,
+      "lineEnd": 344,
+      "excerpt": "                    <script><![CDATA[on (release) {\n\tif (!_root.基建系统.infrastructure.摩托车)\n\t{\n\t\t_root.确认通用面板.名称 = \"购买摩托车\";\n\t\t_root.确认通用面板.说明 = \"是否要购买摩托车？需要学习1级驾驶技能，总花费合计35000金币。\\n购买后可解锁中等距离阵营与区域的地图快速传送功能，例如堕落城。\";\n\t\t_root.确认通用面板.成功说明 = \"成功购买摩托车！\";\n\t\t_root.确认通用面板.失败说明 = \"购买失败！\";\n\t\t_root.确认通用面板.确认 = function()\n\t\t{\n\t\t\tif (_root.主角被动技能.驾驶 && _root.主角被动技能.驾驶.等级 >= 1)\n\t\t\t{\n\t\t\t\tif (_root.金钱 < 35000)\n\t\t\t\t{\n\t\t\t\t\t_root.确认通用面板.失败说明 = \"购买失败，金币不足！\";\n\t\t\t\t\treturn false;\n\t\t\t\t}\n\t\t\t\t_root.金钱 -= 35000;\n\t\t\t\t_root.基建系统.infrastructure.摩托车 = 1;\n\t\t\t\t_root.记录玩家货币变化(\n\t\t\t\t\t-35000, 0, {source:\"vehicle_service\", reason:\"buy_motorcycle\", mergeScope:\"operation\"});\n\t\t\t\tif (_root.存档系统 != undefined) _root.存档系统.dirtyMark = true;\n\t\t\t}\n\t\t\telse\n\t\t\t{\n\t\t\t\t_root.确认通用面板.失败说明 = \"购买失败，驾驶摩托车需获得驾照，请学习驾驶技能！\";\n\t\t\t\treturn false;\n\t\t\t}\n\t\t\treturn true;\n\t\t};\n\t\t_root.确认通用面板.启动();\n\t}\n\telse\n\t{\n\t\t_root.gameCommands[\"openWebMap\"]({ source: \"as2_garage_motorcycle\", pageId: \"faction\" });\n\t}"
+    },
+    {
+      "id": "garage-offroad-purchase",
+      "file": "flashswf/levels/基地场景合集/LIBRARY/地图/车库.xml",
+      "sha256": "bff8ba06d0f15642e1b19b4dd0a8a6ee5f32b19ae2932cb126cf741102a994ba",
+      "line": 367,
+      "lineEnd": 401,
+      "excerpt": "                    <script><![CDATA[on (release) {\n\tif (!_root.基建系统.infrastructure.越野车)\n\t{\n\t\t_root.确认通用面板.名称 = \"购买越野车\";\n\t\t_root.确认通用面板.说明 = \"是否要购买越野车？需要学习2级驾驶技能，总花费合计50万金币。\\n购买后可解锁所有阵营与区域的地图快速传送功能，例如军阀基地，并可增加一页后勤战备箱。\";\n\t\t_root.确认通用面板.成功说明 = \"成功购买越野车！\";\n\t\t_root.确认通用面板.失败说明 = \"购买失败！\";\n\t\t_root.确认通用面板.确认 = function()\n\t\t{\n\t\t\tif (_root.主角被动技能.驾驶 && _root.主角被动技能.驾驶.等级 >= 2)\n\t\t\t{\n\t\t\t\tif (_root.金钱 < 500000)\n\t\t\t\t{\n\t\t\t\t\t_root.确认通用面板.失败说明 = \"购买失败，金币不足！\";\n\t\t\t\t\treturn false;\n\t\t\t\t}\n\t\t\t\t_root.金钱 -= 500000;\n\t\t\t\t_root.基建系统.infrastructure.越野车 = 1;\n\t\t\t\t_root.记录玩家货币变化(\n\t\t\t\t\t-500000, 0, {source:\"vehicle_service\", reason:\"buy_offroad\", mergeScope:\"operation\"});\n\t\t\t\tif (_root.存档系统 != undefined) _root.存档系统.dirtyMark = true;\n\t\t\t}\n\t\t\telse\n\t\t\t{\n\t\t\t\t_root.确认通用面板.失败说明 = \"购买失败，驾驶越野车需获得驾照，请学习驾驶技能至2级！\";\n\t\t\t\treturn false;\n\t\t\t}\n\t\t\treturn true;\n\t\t};\n\t\t_root.确认通用面板.启动();\n\t}\n\telse\n\t{\n\t\t_root.gameCommands[\"openWebMap\"]({ source: \"as2_garage_offroad\", pageId: \"faction\" });\n\t}"
+    },
+    {
+      "id": "generic-confirm-lifecycle",
+      "file": "CRAZYFLASHER7MercenaryEmpire/LIBRARY/sprite/悬浮UI/确认confirm.xml",
+      "sha256": "a80bd0cec934035ae7c7ca545e77ca7103b5508e558655f2c7d716d69eb2623a",
+      "line": 26,
+      "lineEnd": 49,
+      "excerpt": "默认确认 = function(){\n\t//清除掉传入的执行函数\n}\n启动 = function(){\n\tgotoAndStop(1);\n\tthis._visible = true;\n}\n结束 = function(){\n\t确认 = 默认确认;\n\t名称 = \"确认面板\";\n\t说明 = \"是否确定？\";\n\t成功说明 = \"操作成功！\";\n\t失败说明 = \"操作失败！\";\n\tthis._visible = false;\n\tgotoAndStop(1);\n}\nif(!确认){\n\t确认 = 默认确认;\n}\n名称 = 名称? 名称 : \"确认面板\";\n说明 = 说明? 说明: \"是否确定？\";\n成功说明 = 成功说明? 成功说明 :\"操作成功！\";\n失败说明 = 失败说明? 失败说明:\"操作失败！\";\n"
+    },
+    {
+      "id": "generic-confirm-execution",
+      "file": "CRAZYFLASHER7MercenaryEmpire/LIBRARY/sprite/悬浮UI/确认confirm.xml",
+      "sha256": "a80bd0cec934035ae7c7ca545e77ca7103b5508e558655f2c7d716d69eb2623a",
+      "line": 122,
+      "lineEnd": 131,
+      "excerpt": "}\non (release) {\n\tgotoAndStop(1);\n\tif(_parent.确认()){\n\t\t_parent.gotoAndStop(\"成功\");\n\t}else{\n\t\t_parent.gotoAndStop(\"失败\");\n\t}\n}\non (press) {"
+    },
+    {
+      "id": "infrastructure-save-write",
+      "file": "scripts/类定义/org/flashNight/neur/Server/SaveManager.as",
+      "sha256": "9abf6498720e8bf426da6475e65cbaf5e0811d225e2633a82d14c8724d5ba2f7",
+      "line": 2391,
+      "lineEnd": 2397,
+      "excerpt": "        mydata[7] = [_root.全局健身HP加成, _root.全局健身MP加成, _root.全局健身空攻加成, _root.全局健身防御加成, _root.全局健身内力加成];\n        mydata.inventory = 物品储存数据;\n        mydata.collection = 收集品储存数据;\n        mydata.infrastructure = _root.基建系统.infrastructure;\n        mydata.lastSaved = packTimestamp();\n        mydata.others = 其他存储数据;\n"
+    },
+    {
+      "id": "infrastructure-save-read",
+      "file": "scripts/类定义/org/flashNight/neur/Server/SaveManager.as",
+      "sha256": "9abf6498720e8bf426da6475e65cbaf5e0811d225e2633a82d14c8724d5ba2f7",
+      "line": 2693,
+      "lineEnd": 2699,
+      "excerpt": "        };\n\n        // 基建\n        _root.基建系统.infrastructure = mydata.infrastructure;\n\n        // 其他数据\n        if (mydata.others) {"
+    },
+    {
+      "id": "offroad-stash-entitlement",
+      "file": "scripts/类定义/org/flashNight/arki/item/InventoryPanelService.as",
+      "sha256": "fcc823d714a3ad01c799a6b2adb9538a9134aa107dff8dfd75c336feb7d523ff",
+      "line": 2281,
+      "lineEnd": 2286,
+      "excerpt": "            challengeProgress = Number(_root.task_chains_progress.挑战);\n        }\n        if (!isNaN(challengeProgress)) {\n            if (challengeProgress > 0) pages++;\n            if (challengeProgress > 2) pages++;\n        }"
+    },
+    {
+      "id": "pet-empty-main-layer",
+      "file": "CRAZYFLASHER7MercenaryEmpire/DOMDocument.xml",
+      "sha256": "1293906f59377fe9e577fde33dd5e505177bdc1c2f9649fa367bfb285e188184",
+      "line": 2563,
+      "lineEnd": 2576,
+      "excerpt": "                    <DOMLayer name=\"宠物信息界面\" color=\"#45F649\" parentLayerIndex=\"20\" autoNamed=\"false\">\n                         <frames>\n                              <DOMFrame index=\"0\" duration=\"134\" keyMode=\"9728\">\n                                   <elements/>\n                              </DOMFrame>\n                              <DOMFrame index=\"134\" duration=\"26\" keyMode=\"9728\">\n                                   <elements/>\n                              </DOMFrame>\n                              <DOMFrame index=\"160\" duration=\"51\" keyMode=\"9728\">\n                                   <elements/>\n                              </DOMFrame>\n                         </frames>\n                    </DOMLayer>\n                    <DOMLayer name=\"通用UI层\" color=\"#9933CC\" parentLayerIndex=\"20\" locked=\"true\" outline=\"true\" useOutlineView=\"true\" autoNamed=\"false\">"
+    },
+    {
+      "id": "pet-old-button-not-strip-instance",
+      "file": "CRAZYFLASHER7MercenaryEmpire/LIBRARY/底部UI/底部UI组.xml",
+      "sha256": "a03c96edddc15e4934dae0b96162a1c5ab2b6fd41e10c2a16388619168bc44d3",
+      "line": 44,
+      "lineEnd": 61,
+      "excerpt": "                <DOMSymbolInstance libraryItemName=\"sprite/战宠按钮\" centerPoint3DX=\"272.2\" centerPoint3DY=\"12.45\">\n                  <matrix>\n                    <Matrix tx=\"237.15\" ty=\"-5.65\"/>\n                  </matrix>\n                  <transformationPoint>\n                    <Point y=\"11.8\"/>\n                  </transformationPoint>\n                  <Actionscript>\n                    <script><![CDATA[on(release){\n   _root.宠物信息界面.排列宠物图标();\n   _root.宠物信息界面._visible = !_root.宠物信息界面._visible;\n}\n]]></script>\n                  </Actionscript>\n                  <filters>\n                    <DropShadowFilter alpha=\"0.8\" blurX=\"0\" blurY=\"0\" distance=\"2\"/>\n                  </filters>\n                </DOMSymbolInstance>"
+    },
+    {
+      "id": "pet-optional-projection",
+      "file": "scripts/类定义/org/flashNight/arki/merc/PetPanelService.as",
+      "sha256": "34d42ee1cf25b5661ad8331d992ae185b984dfe4dffe7608c851c36e790d5152",
+      "line": 1431,
+      "lineEnd": 1444,
+      "excerpt": "    /**\n     * Flash 宠物图标只是权威状态的可选投影。帧脚本异常不能截断 Web 成功回包，\n     * 否则领养、进阶、升级或删除会被误判成未知结果并被客户端重放。\n     */\n    private static function refreshPetIconsSafely(reason:String):Void {\n        try {\n            if (_root.宠物信息界面 != undefined\n                    && _root.宠物信息界面.排列宠物图标 != undefined) {\n                _root.宠物信息界面.排列宠物图标();\n            }\n        } catch (petIconRefreshError) {\n            trace(\"[PetPanelService] post-commit icon refresh failed reason=\"\n                + reason + \" error=\" + petIconRefreshError);\n        }"
+    },
+    {
+      "id": "pets-current-host-route",
+      "file": "launcher/src/Guardian/LauncherCommandRouter.cs",
+      "sha256": "06b2dd3e9390340f083e73aa96deec6bc174e4c532322351cfa3ed118c53040a",
+      "line": 2992,
+      "lineEnd": 2998,
+      "excerpt": "                // 隐藏兼容命令：旧入口仍可打开统一战队面板，但不再注册独立 pets/mercs panel。\n                case \"PETS\":\n                    if (TrySendGameCommand(\"mercPanelOpen\"))\n                        OpenPanel(\"team\", \"{\\\"initialTab\\\":\\\"partner\\\"}\");\n                    else\n                        PostToWeb(\"{\\\"type\\\":\\\"toast\\\",\\\"text\\\":\\\"战队面板暂时不可用\\\"}\");\n                    break;"
+    },
+    {
+      "id": "world-mirror-route-state",
+      "file": "docs/单位数据镜像-CSharp原生绘制与碰撞判定-长期迁移路线-ADR-2026-08-09.md",
+      "sha256": "deabbbb1f41d8179778381694891b07f22dd69c6f52495fe2b46b26553d9c50c",
+      "line": 5,
+      "lineEnd": 7,
+      "excerpt": "**状态**：`PROPOSED / ROUTE_FROZEN / NOT_IMPLEMENTED / P0_EVIDENCE_PENDING`。\n\n`ROUTE_FROZEN` 只表示本提案的目标、边界、已冻结输入与未决项已经固定供评审；后续变化必须进入决策日志。它不等于 `ROUTE_ACCEPTED`，也不授权 P0 施工或任何 gameplay authority 切换。"
+    },
+    {
+      "id": "intel-parking-stop",
+      "file": "CRAZYFLASHER7MercenaryEmpire/LIBRARY/import/库-UI.xml",
+      "sha256": "3161763325526aa96fd0fb71501355ca0836313e23083d64780d13aa1144faa0",
+      "line": 7,
+      "lineEnd": 11,
+      "excerpt": "            <DOMFrame index=\"0\" keyMode=\"9728\">\n              <Actionscript>\n                <script><![CDATA[stop();]]></script>\n              </Actionscript>\n              <elements/>"
+    },
+    {
+      "id": "intel-parking-frame-five",
+      "file": "CRAZYFLASHER7MercenaryEmpire/LIBRARY/import/库-UI.xml",
+      "sha256": "3161763325526aa96fd0fb71501355ca0836313e23083d64780d13aa1144faa0",
+      "line": 57,
+      "lineEnd": 64,
+      "excerpt": "            <DOMFrame index=\"5\" keyMode=\"9728\">\n              <elements>\n                <DOMSymbolInstance libraryItemName=\"import/UI组件/情报信息界面\" centerPoint3DX=\"30.5\" centerPoint3DY=\"9.75\">\n                  <transformationPoint>\n                    <Point x=\"30.5\" y=\"9.75\"/>\n                  </transformationPoint>\n                </DOMSymbolInstance>\n              </elements>"
+    },
+    {
+      "id": "debug-message-conditional",
+      "file": "scripts/引擎/引擎_fs_调试模式.as",
+      "sha256": "db06995f3bc4623f0f6100f70c0b450c350f9d0da355c7d1439ce8fea6fcb931",
+      "line": 22,
+      "lineEnd": 44,
+      "excerpt": "_root.发布调试消息 = function(消息)\n{\n\tif (_root.调试模式)\n\t{\n\t\tif (消息窗)\n\t\t{\n\t\t\t_root.服务器.发布服务器消息(消息)\n\t\t\t消息窗.文字显示框._height = Stage.height * 0.9;\n\t\t\t消息窗.文字显示框._width = Stage.width * 0.9;\n\t\t\t消息窗.gotoAndStop(消息窗.动画结束帧);\n\t\t\t消息窗.mytext += 消息 + \"<BR>\";\n\t\t\tif (消息窗.文字显示框.textHeight > 消息窗.文字显示框._height - 10)\n\t\t\t{\n\t\t\t\t消息窗.mytext = 消息窗.mytext.split(\"<BR>\").slice(3).join(\"<BR>\");\n\t\t\t}\n\t\t}\n\t\telse\n\t\t{\n\t\t\ttrace(消息);\n\t\t}\n\t}\n};\n"
+    }
+  ],
+  "binaryFragments": [
+    {
+      "id": "sleep-payload",
+      "file": "flashswf/UI/睡觉界面.swf",
+      "sha256": "210cd0199e1ca43eca5d74bd763925325e1020738d1ad077eb5503bf6c695aa9",
+      "matches": [
+        {
+          "script": "scripts/DefineSprite_11/frame_1/PlaceObject3_10_1/CLIPACTIONRECORD on(release).as",
+          "line": 2,
+          "excerpt": "on(release){\n   _root.天气系统.当前时间 = 19;\n   _root.发布消息(\"一觉醒来……当前时间：夜晚七点\");\n}\n"
+        },
+        {
+          "script": "scripts/DefineSprite_20/frame_1/PlaceObject3_19_1/CLIPACTIONRECORD on(release).as",
+          "line": 2,
+          "excerpt": "on(release){\n   _root.天气系统.当前时间 = 6;\n   _root.发布消息(\"一觉醒来……当前时间：清晨六点\");\n}\n"
+        },
+        {
+          "script": "scripts/frame_1/PlaceObject2_11_4/CLIPACTIONRECORD on(release).as",
+          "line": 2,
+          "excerpt": "on(release){\n   _root.天气系统.当前时间 = 19;\n   _root.发布消息(\"一觉醒来……当前时间：夜晚7点\");\n   _root.最上层加载外部动画(\"flashswf/movies/黑色渐隐过场.swf\");\n   _parent._visible = false;\n}"
+        },
+        {
+          "script": "scripts/frame_1/PlaceObject2_20_6/CLIPACTIONRECORD on(release).as",
+          "line": 2,
+          "excerpt": "on(release){\n   _root.天气系统.当前时间 = 6;\n   _root.发布消息(\"一觉醒来……当前时间：清晨6点\");\n   _root.最上层加载外部动画(\"flashswf/movies/黑色渐隐过场.swf\");\n   _parent._visible = false;\n}"
+        }
+      ]
+    },
+    {
+      "id": "subway-navigation",
+      "file": "flashswf/UI/地铁线路.swf",
+      "sha256": "1bc78fc3b16896b060e00e280504a74ceb2d0495ec023827ee2b474a7864b2ab",
+      "matches": [
+        {
+          "script": "scripts/DefineSprite_68_地铁线路UI/frame_1/DoAction.as",
+          "line": 344,
+          "excerpt": "      this.配置关卡属性 = _root.配置关卡属性;\n      this.配置关卡属性(this._shortName);\n      this.选关界面进入关卡 = _root.选关界面进入关卡;\n      this.选关界面进入关卡(this._difficulty);\n      this._parent._visible = false;\n   };"
+        },
+        {
+          "script": "scripts/DefineSprite_68_地铁线路UI/frame_1/DoAction.as",
+          "line": 354,
+          "excerpt": "   {\n      _root.通用UI层.外部UIURL = \"\";\n      _root.通用UI层.外部导入UI界面._visible = false;\n   };\n}\nrebuildViewPortMask();"
+        }
+      ]
+    },
+    {
+      "id": "subway-gates",
+      "file": "flashswf/UI/地铁线路.swf",
+      "sha256": "1bc78fc3b16896b060e00e280504a74ceb2d0495ec023827ee2b474a7864b2ab",
+      "matches": [
+        {
+          "script": "scripts/DefineSprite_68_地铁线路UI/frame_1/DoAction.as",
+          "line": 122,
+          "excerpt": "{\n   if(_root.task_chains_progress.彩蛋 >= 4 && _root.主线任务进度 >= 67)\n   {\n      return 3;\n   }\n   return 1;"
+        },
+        {
+          "script": "scripts/DefineSprite_68_地铁线路UI/frame_1/DoAction.as",
+          "line": 286,
+          "excerpt": "{\n   return _root.主线任务进度 >= 45;\n},getFrame:function()\n{\n   if(_root.主线任务进度 >= 30)\n   {"
+        },
+        {
+          "script": "scripts/DefineSprite_68_地铁线路UI/frame_1/DoAction.as",
+          "line": 289,
+          "excerpt": "{\n   if(_root.主线任务进度 >= 30)\n   {\n      return 2;\n   }\n   return 1;"
+        },
+        {
+          "script": "scripts/DefineSprite_68_地铁线路UI/frame_1/DoAction.as",
+          "line": 296,
+          "excerpt": "{\n   return _root.task_chains_progress.彩蛋 >= 4;\n},getFrame:function()\n{\n   if(_root.主线任务进度 >= 67)\n   {"
+        },
+        {
+          "script": "scripts/DefineSprite_68_地铁线路UI/frame_1/DoAction.as",
+          "line": 299,
+          "excerpt": "{\n   if(_root.主线任务进度 >= 67)\n   {\n      return 2;\n   }\n   return 1;"
+        },
+        {
+          "script": "scripts/DefineSprite_68_地铁线路UI/frame_1/DoAction.as",
+          "line": 306,
+          "excerpt": "{\n   return _root.主线任务进度 >= 20;\n},getFrame:function()\n{\n   if(_root.任务进度 && _root.任务进度.自由广场已完成)\n   {"
+        },
+        {
+          "script": "scripts/DefineSprite_68_地铁线路UI/frame_1/DoAction.as",
+          "line": 319,
+          "excerpt": "{\n   if(_root.主线任务进度 >= 50)\n   {\n      return 2;\n   }\n   return 1;"
+        }
+      ]
+    },
+    {
+      "id": "bookshelf-reading",
+      "file": "flashswf/UI/书架界面.swf",
+      "sha256": "2ead6beb02d11fedce2af70a795fba247156db24c7396f0a12b8745a3bfbdf0c",
+      "matches": [
+        {
+          "script": "scripts/frame_1/PlaceObject2_59_117/CLIPACTIONRECORD on(release).as",
+          "line": 2,
+          "excerpt": "on(release){\n   _parent.gotoAndStop(\"尘都诡谈\");\n   _root.尘都诡谈阅读界面 = true;\n}\n"
+        },
+        {
+          "script": "scripts/frame_1/PlaceObject2_59_117/CLIPACTIONRECORD on(release).as",
+          "line": 3,
+          "excerpt": "   _parent.gotoAndStop(\"尘都诡谈\");\n   _root.尘都诡谈阅读界面 = true;\n}\n"
+        },
+        {
+          "script": "scripts/frame_1/PlaceObject2_65_132/CLIPACTIONRECORD on(release).as",
+          "line": 2,
+          "excerpt": "on(release){\n   _parent.gotoAndStop(\"光明巴比伦\");\n   _root.光明巴比伦阅读界面 = true;\n}\n"
+        },
+        {
+          "script": "scripts/frame_1/PlaceObject2_65_132/CLIPACTIONRECORD on(release).as",
+          "line": 3,
+          "excerpt": "   _parent.gotoAndStop(\"光明巴比伦\");\n   _root.光明巴比伦阅读界面 = true;\n}\n"
+        }
+      ]
+    },
+    {
+      "id": "egg-navigation",
+      "file": "flashswf/UI/彩蛋地图关卡界面.swf",
+      "sha256": "6b5d3fa7f54cffad6ca693d818a3f8cd0def0de6784231bd18859524f357ce96",
+      "matches": [
+        {
+          "script": "scripts/DefineButton2_59/BUTTONCONDACTION on(release).as",
+          "line": 5,
+          "excerpt": "      this.配置关卡属性 = _root.配置关卡属性;\n      this.配置关卡属性(\"密林深处\");\n      this.选关界面进入关卡 = _root.选关界面进入关卡;\n      选关界面进入关卡(\"简单\");\n      this._visible = 0;\n   }"
+        },
+        {
+          "script": "scripts/DefineButton2_59/BUTTONCONDACTION on(release).as",
+          "line": 13,
+          "excerpt": "      this.配置关卡属性 = _root.配置关卡属性;\n      this.配置关卡属性(\"机器游荡区\");\n      this.选关界面进入关卡 = _root.选关界面进入关卡;\n      选关界面进入关卡(\"简单\");\n      this._visible = 0;\n   }"
+        },
+        {
+          "script": "scripts/DefineButton2_59/BUTTONCONDACTION on(release).as",
+          "line": 21,
+          "excerpt": "      this.配置关卡属性 = _root.配置关卡属性;\n      this.配置关卡属性(\"密林中央\");\n      this.选关界面进入关卡 = _root.选关界面进入关卡;\n      选关界面进入关卡(\"冒险\");\n      this._visible = 0;\n   }"
+        },
+        {
+          "script": "scripts/frame_32/PlaceObject3_25_19/CLIPACTIONRECORD onClipEvent(load).as",
+          "line": 3,
+          "excerpt": "   this.配置关卡属性 = _root.配置关卡属性;\n   this.配置关卡属性(\"data/stages/副本任务/密林中央.xml\");\n}\n"
+        },
+        {
+          "script": "scripts/frame_32/PlaceObject3_28_21/CLIPACTIONRECORD onClipEvent(load).as",
+          "line": 3,
+          "excerpt": "   this.配置关卡属性 = _root.配置关卡属性;\n   this.配置关卡属性(\"data/stages/副本任务/机器游荡区.xml\");\n}\n"
+        },
+        {
+          "script": "scripts/frame_32/PlaceObject3_31_23/CLIPACTIONRECORD onClipEvent(load).as",
+          "line": 3,
+          "excerpt": "   this.配置关卡属性 = _root.配置关卡属性;\n   this.配置关卡属性(\"data/stages/副本任务/密林深处.xml\");\n}\n"
+        },
+        {
+          "script": "scripts/frame_48/PlaceObject3_25_19/CLIPACTIONRECORD onClipEvent(load).as",
+          "line": 3,
+          "excerpt": "   this.配置关卡属性 = _root.配置关卡属性;\n   this.配置关卡属性(\"data/stages/副本任务/密林中央.xml\");\n}\n"
+        },
+        {
+          "script": "scripts/frame_48/PlaceObject3_28_21/CLIPACTIONRECORD onClipEvent(load).as",
+          "line": 3,
+          "excerpt": "   this.配置关卡属性 = _root.配置关卡属性;\n   this.配置关卡属性(\"data/stages/副本任务/机器游荡区.xml\");\n}\n"
+        }
+      ]
+    },
+    {
+      "id": "tavern-purchase-binary",
+      "file": "flashswf/UI/通缉令界面.swf",
+      "sha256": "15c0eaa8b8cb66dd12af6e75c3e838c0888d3f9907015e94917b334198ccb38d",
+      "matches": [
+        {
+          "script": "scripts/frame_1/DoAction.as",
+          "line": 4,
+          "excerpt": "   var _loc2_ = _root.getTaskData(对象.NPC任务_任务_关卡路径);\n   if(_root.gameCommands.openWebDungeon != undefined)\n   {\n      _root.gameCommands.openWebDungeon({taskId:_loc2_.id});\n   }\n}"
+        },
+        {
+          "script": "scripts/frame_1/DoAction.as",
+          "line": 6,
+          "excerpt": "   {\n      _root.gameCommands.openWebDungeon({taskId:_loc2_.id});\n   }\n}\nfunction 买一杯酒(对象)\n{"
+        },
+        {
+          "script": "scripts/frame_1/DoAction.as",
+          "line": 18,
+          "excerpt": "      var _loc3_ = {source:\"tavern_purchase\",reason:\"buy_drink\",mergeScope:\"operation\"};\n      _root.金钱 -= 对象.价格;\n      _root.记录玩家货币变化(- Number(对象.价格),0,_loc3_);\n      if(_root.存档系统 != undefined)\n      {\n         _root.存档系统.dirtyMark = true;"
+        },
+        {
+          "script": "scripts/frame_1/PlaceObject2_53_62/CLIPACTIONRECORD onClipEvent(load).as",
+          "line": 6,
+          "excerpt": "      {\n         _root.收集品栏.情报.add(\"酒泡氤氲\",1);\n         _root.记录玩家物资变化(\"gain\",\"intel\",\"酒泡氤氲\",1,{source:\"tavern_purchase\",reason:\"beer_intelligence\"});\n         _root.最上层发布文字提示(\"已将对话整理为新的情报页面\");\n      }\n   }"
+        },
+        {
+          "script": "scripts/frame_1/PlaceObject2_59_66/CLIPACTIONRECORD onClipEvent(load).as",
+          "line": 6,
+          "excerpt": "      {\n         _root.收集品栏.情报.addValue(\"酒泡氤氲\",1);\n         _root.记录玩家物资变化(\"gain\",\"intel\",\"酒泡氤氲\",1,{source:\"tavern_purchase\",reason:\"cocktail_intelligence\"});\n         _root.最上层发布文字提示(\"已将对话整理为新的情报页面\");\n      }\n   }"
+        }
+      ]
+    },
+    {
+      "id": "garage-vehicle-purchase-binary",
+      "file": "flashswf/levels/基地场景合集.swf",
+      "sha256": "ae7f591ceb46e781f0f4b5ec9378c17852c6f8834fd1b29fb7d5ad785c72c43e",
+      "matches": [
+        {
+          "script": "scripts/DefineSprite_1246_基地场景-基地车库/frame_1/PlaceObject2_1195_29/CLIPACTIONRECORD on(release).as",
+          "line": 17,
+          "excerpt": "         _root.基建系统.infrastructure.自行车 = 1;\n         _root.记录玩家货币变化(-8000,0,{source:\"vehicle_service\",reason:\"buy_bicycle\",mergeScope:\"operation\"});\n         if(_root.存档系统 != undefined)\n         {\n            _root.存档系统.dirtyMark = true;\n         }"
+        },
+        {
+          "script": "scripts/DefineSprite_1246_基地场景-基地车库/frame_1/PlaceObject2_1195_29/CLIPACTIONRECORD on(release).as",
+          "line": 24,
+          "excerpt": "      };\n      _root.确认通用面板.启动();\n   }\n   else\n   {\n      _root.gameCommands.openWebMap({source:\"as2_garage_bike\",pageId:\"defense\"});"
+        },
+        {
+          "script": "scripts/DefineSprite_1246_基地场景-基地车库/frame_1/PlaceObject2_1198_36/CLIPACTIONRECORD on(release).as",
+          "line": 19,
+          "excerpt": "            _root.基建系统.infrastructure.摩托车 = 1;\n            _root.记录玩家货币变化(-35000,0,{source:\"vehicle_service\",reason:\"buy_motorcycle\",mergeScope:\"operation\"});\n            if(_root.存档系统 != undefined)\n            {\n               _root.存档系统.dirtyMark = true;\n            }"
+        },
+        {
+          "script": "scripts/DefineSprite_1246_基地场景-基地车库/frame_1/PlaceObject2_1198_36/CLIPACTIONRECORD on(release).as",
+          "line": 29,
+          "excerpt": "      };\n      _root.确认通用面板.启动();\n   }\n   else\n   {\n      _root.gameCommands.openWebMap({source:\"as2_garage_motorcycle\",pageId:\"faction\"});"
+        },
+        {
+          "script": "scripts/DefineSprite_1246_基地场景-基地车库/frame_1/PlaceObject2_1203_202/CLIPACTIONRECORD on(release).as",
+          "line": 19,
+          "excerpt": "            _root.基建系统.infrastructure.越野车 = 1;\n            _root.记录玩家货币变化(-500000,0,{source:\"vehicle_service\",reason:\"buy_offroad\",mergeScope:\"operation\"});\n            if(_root.存档系统 != undefined)\n            {\n               _root.存档系统.dirtyMark = true;\n            }"
+        },
+        {
+          "script": "scripts/DefineSprite_1246_基地场景-基地车库/frame_1/PlaceObject2_1203_202/CLIPACTIONRECORD on(release).as",
+          "line": 29,
+          "excerpt": "      };\n      _root.确认通用面板.启动();\n   }\n   else\n   {\n      _root.gameCommands.openWebMap({source:\"as2_garage_offroad\",pageId:\"faction\"});"
+        }
+      ]
+    },
+    {
+      "id": "main-confirm-execution",
+      "file": "CRAZYFLASHER7MercenaryEmpire.swf",
+      "sha256": "9e91d8499e6304d1101acacb43c019194a1550a380f66394e06d3e12f4b27d67",
+      "matches": [
+        {
+          "script": "scripts/DefineButton2_205/BUTTONCONDACTION on(release).as",
+          "line": 2,
+          "excerpt": "on(release){\n   this.结束();\n}\n"
+        },
+        {
+          "script": "scripts/DefineSprite_215/frame_1/DoAction.as",
+          "line": 11,
+          "excerpt": "{\n   确认 = 默认确认;\n   名称 = \"确认面板\";\n   说明 = \"是否确定？\";\n   成功说明 = \"操作成功！\";\n   失败说明 = \"操作失败！\";"
+        },
+        {
+          "script": "scripts/DefineSprite_215/frame_1/DoAction.as",
+          "line": 21,
+          "excerpt": "{\n   确认 = 默认确认;\n}\n名称 = !名称 ? \"确认面板\" : 名称;\n说明 = !说明 ? \"是否确定？\" : 说明;\n成功说明 = !成功说明 ? \"操作成功！\" : 成功说明;"
+        },
+        {
+          "script": "scripts/DefineSprite_215/frame_1/PlaceObject2_208_11/CLIPACTIONRECORD on(release).as",
+          "line": 3,
+          "excerpt": "   gotoAndStop(1);\n   if(_parent.确认())\n   {\n      _parent.gotoAndStop(\"成功\");\n   }\n   else"
+        },
+        {
+          "script": "scripts/DefineSprite_215/frame_16/DoAction.as",
+          "line": 1,
+          "excerpt": "this.结束();\n"
+        }
+      ]
+    },
+    {
+      "id": "intel-symbol-initialization-code",
+      "file": "flashswf/UI/情报信息界面.swf",
+      "sha256": "f44b54e0245bfe9edd4309e9b6e01ba4ae82fbf61bfc8982d5ac58aa0ccc0157",
+      "matches": [
+        {
+          "script": "scripts/DefineSprite_33_情报信息界面/frame_1/DoAction.as",
+          "line": 1,
+          "excerpt": "this.初始化情报信息界面 = _root.物品UI函数.初始化情报信息界面;\nthis.显示情报信息 = _root.物品UI函数.显示情报信息;\nthis.刷新情报信息 = _root.物品UI函数.刷新情报信息;\n初始化情报信息界面();\n"
+        },
+        {
+          "script": "scripts/DefineSprite_33_情报信息界面/frame_1/DoAction.as",
+          "line": 2,
+          "excerpt": "this.初始化情报信息界面 = _root.物品UI函数.初始化情报信息界面;\nthis.显示情报信息 = _root.物品UI函数.显示情报信息;\nthis.刷新情报信息 = _root.物品UI函数.刷新情报信息;\n初始化情报信息界面();\n"
+        },
+        {
+          "script": "scripts/DefineSprite_33_情报信息界面/frame_1/DoAction.as",
+          "line": 4,
+          "excerpt": "this.刷新情报信息 = _root.物品UI函数.刷新情报信息;\n初始化情报信息界面();\n"
+        }
+      ]
+    }
+  ],
+  "mainSwfStructure": {
+    "file": "CRAZYFLASHER7MercenaryEmpire.swf",
+    "sha256": "9e91d8499e6304d1101acacb43c019194a1550a380f66394e06d3e12f4b27d67",
+    "xmlExportSha256": "07757c606d2473cad0cf7debc440478a4aec36bac10772c5afd639813b758971",
+    "imports": [
+      {
+        "url": "flashswf/UI/加载背景.swf",
+        "line": 3279
+      },
+      {
+        "url": "scripts/asLoader.swf",
+        "line": 4281
+      },
+      {
+        "url": "flashswf/levels/wuxianguotu_1.swf",
+        "line": 4849
+      },
+      {
+        "url": "flashswf/levels/基地场景合集.swf",
+        "line": 4898
+      },
+      {
+        "url": "flashswf/levels/地图-摇滚公园.swf",
+        "line": 4956
+      },
+      {
+        "url": "flashswf/levels/地图-军阀基地.swf",
+        "line": 4964
+      },
+      {
+        "url": "flashswf/levels/地图-幸存者营地.swf",
+        "line": 4972
+      },
+      {
+        "url": "flashswf/levels/地图-界外街道.swf",
+        "line": 4980
+      },
+      {
+        "url": "flashswf/levels/地图-彩蛋地图.swf",
+        "line": 4988
+      },
+      {
+        "url": "flashswf/levels/地图-靶场.swf",
+        "line": 4996
+      },
+      {
+        "url": "flashswf/levels/地图-堕落城酒吧.swf",
+        "line": 5004
+      },
+      {
+        "url": "flashswf\\\\levels\\\\地图-小马地图.swf",
+        "line": 5012
+      },
+      {
+        "url": "flashswf/levels/地图-联合大学.swf",
+        "line": 5020
+      },
+      {
+        "url": "flashswf/levels/地图-军阀帐篷.swf",
+        "line": 5028
+      },
+      {
+        "url": "flashswf/levels/地图-测试空间.swf",
+        "line": 5036
+      },
+      {
+        "url": "flashswf/levels/地图-食堂.swf",
+        "line": 5044
+      },
+      {
+        "url": "flashswf/levels/地图-走廊.swf",
+        "line": 5052
+      },
+      {
+        "url": "flashswf/levels/地图-实验室.swf",
+        "line": 5060
+      },
+      {
+        "url": "flashswf\\\\levels\\\\地图-第一防线防区.swf",
+        "line": 5068
+      },
+      {
+        "url": "flashswf\\\\levels\\\\地图-同盟卸货站.swf",
+        "line": 5076
+      },
+      {
+        "url": "flashswf\\\\levels\\\\地图-同盟通路.swf",
+        "line": 5084
+      },
+      {
+        "url": "flashswf/levels/地图-堕落城商业街.swf",
+        "line": 5092
+      },
+      {
+        "url": "flashswf/levels/地图-堕落城酒吧门口.swf",
+        "line": 5100
+      },
+      {
+        "url": "flashswf/levels/地图-摇滚排练室.swf",
+        "line": 5108
+      },
+      {
+        "url": "flashswf/levels/地图-黑铁会修炼场.swf",
+        "line": 5116
+      },
+      {
+        "url": "flashswf/levels/地图-黑铁阁.swf",
+        "line": 5124
+      },
+      {
+        "url": "flashswf/levels/地图-大学内部.swf",
+        "line": 5132
+      },
+      {
+        "url": "flashswf/levels/地图-教学楼内部.swf",
+        "line": 5140
+      },
+      {
+        "url": "flashswf/levels/地图-大学地下工坊.swf",
+        "line": 5148
+      },
+      {
+        "url": "flashswf/levels/地图-教学楼办公室.swf",
+        "line": 5156
+      },
+      {
+        "url": "flashswf/levels/地图-剑道社.swf",
+        "line": 5164
+      },
+      {
+        "url": "flashswf/levels/地图-大学宿舍楼下.swf",
+        "line": 5172
+      },
+      {
+        "url": "flashswf/levels/地图-大学操场.swf",
+        "line": 5180
+      },
+      {
+        "url": "flashswf/levels/地图-大学宿舍.swf",
+        "line": 5188
+      },
+      {
+        "url": "flashswf/levels/地图-隧道据点.swf",
+        "line": 5196
+      },
+      {
+        "url": "flashswf\\\\levels\\\\地图-同盟下水道.swf",
+        "line": 5204
+      },
+      {
+        "url": "flashswf/arts/things.swf",
+        "line": 5530
+      },
+      {
+        "url": "flashswf/arts/things0.swf",
+        "line": 5538
+      },
+      {
+        "url": "flashswf/arts/things1.swf",
+        "line": 5546
+      },
+      {
+        "url": "flashswf/arts/things2.swf",
+        "line": 5554
+      },
+      {
+        "url": "flashswf/arts/things3.swf",
+        "line": 5562
+      },
+      {
+        "url": "flashswf/arts/things4.swf",
+        "line": 5570
+      },
+      {
+        "url": "flashswf/arts/things5.swf",
+        "line": 5578
+      },
+      {
+        "url": "flashswf/arts/things6.swf",
+        "line": 5586
+      },
+      {
+        "url": "flashswf/arts/things7.swf",
+        "line": 5594
+      },
+      {
+        "url": "flashswf/arts/素材库-文字效果.swf",
+        "line": 5602
+      },
+      {
+        "url": "flashswf/arts/素材库-物品技能图标.swf",
+        "line": 5676
+      },
+      {
+        "url": "flashswf/arts/原版素材库-子弹.swf",
+        "line": 5689
+      },
+      {
+        "url": "flashswf/arts/things-new.swf",
+        "line": 5725
+      },
+      {
+        "url": "flashswf/UI/基地特殊UI合集.swf",
+        "line": 5738
+      },
+      {
+        "url": "flashswf/UI/情报信息界面.swf",
+        "line": 5795
+      },
+      {
+        "url": "flashswf/UI/注释框.swf",
+        "line": 6524
+      },
+      {
+        "url": "flashswf/arts/新版人物文字信息.swf",
+        "line": 6916
+      },
+      {
+        "url": "flashswf/UI/玩家信息界面.swf",
+        "line": 6945
+      },
+      {
+        "url": "flashswf/UI/奖励物品界面.swf",
+        "line": 7769
+      },
+      {
+        "url": "flashswf/UI/平板电脑界面.swf",
+        "line": 7788
+      },
+      {
+        "url": "flashswf/UI/对话框界面.swf",
+        "line": 7799
+      },
+      {
+        "url": "flashswf/UI/图片容器.swf",
+        "line": 7810
+      },
+      {
+        "url": "flashswf/UI/修改工具界面.swf",
+        "line": 8140
+      }
+    ],
+    "namedPlacements": [
+      {
+        "name": "_video",
+        "characterId": "7",
+        "line": 92
+      },
+      {
+        "name": "boundingBox_mc",
+        "characterId": "6",
+        "line": 150
+      },
+      {
+        "name": "txt",
+        "characterId": "25",
+        "line": 1240
+      },
+      {
+        "name": "片头动画小提示",
+        "characterId": "33",
+        "line": 1576
+      },
+      {
+        "name": "基本款",
+        "characterId": "47",
+        "line": 2055
+      },
+      {
+        "name": "area",
+        "characterId": "43",
+        "line": 2081
+      },
+      {
+        "name": "图标壳",
+        "characterId": "48",
+        "line": 2093
+      },
+      {
+        "name": "mytext",
+        "characterId": "50",
+        "line": 2104
+      },
+      {
+        "name": "默认天空",
+        "characterId": "60",
+        "line": 3270
+      },
+      {
+        "name": "天空盒",
+        "characterId": "61",
+        "line": 3276
+      },
+      {
+        "name": "性能帧率显示器",
+        "characterId": "69",
+        "line": 4110
+      },
+      {
+        "name": "asLoader",
+        "characterId": "71",
+        "line": 4289
+      },
+      {
+        "name": "加载内容文本",
+        "characterId": "91",
+        "line": 4732
+      },
+      {
+        "name": "跳转中标签",
+        "characterId": "161",
+        "line": 6320
+      },
+      {
+        "name": "游戏提示文本",
+        "characterId": "164",
+        "line": 6338
+      },
+      {
+        "name": "淡出动画",
+        "characterId": "184",
+        "line": 6472
+      },
+      {
+        "name": "注释框",
+        "characterId": "187",
+        "line": 6532
+      },
+      {
+        "name": "外部动画加载壳mc",
+        "characterId": "55",
+        "line": 6650
+      },
+      {
+        "name": "buff详细图标",
+        "characterId": "192",
+        "line": 6936
+      },
+      {
+        "name": "玩家buff界面",
+        "characterId": "193",
+        "line": 6942
+      },
+      {
+        "name": "玩家信息界面",
+        "characterId": "194",
+        "line": 6953
+      },
+      {
+        "name": "外部导入UI界面",
+        "characterId": "196",
+        "line": 7230
+      },
+      {
+        "name": "通用UI层",
+        "characterId": "197",
+        "line": 7236
+      },
+      {
+        "name": "文本",
+        "characterId": "207",
+        "line": 7461
+      },
+      {
+        "name": "txt",
+        "characterId": "206",
+        "line": 7645
+      },
+      {
+        "name": "确认按钮",
+        "characterId": "208",
+        "line": 7648
+      },
+      {
+        "name": "txt",
+        "characterId": "213",
+        "line": 7712
+      },
+      {
+        "name": "txt",
+        "characterId": "214",
+        "line": 7725
+      },
+      {
+        "name": "确认通用面板",
+        "characterId": "215",
+        "line": 7758
+      },
+      {
+        "name": "奖励物品界面",
+        "characterId": "216",
+        "line": 7777
+      },
+      {
+        "name": "平板电脑界面",
+        "characterId": "217",
+        "line": 7796
+      },
+      {
+        "name": "对话框界面",
+        "characterId": "218",
+        "line": 7807
+      },
+      {
+        "name": "图片容器",
+        "characterId": "219",
+        "line": 7818
+      },
+      {
+        "name": "全屏UI层",
+        "characterId": "221",
+        "line": 8133
+      },
+      {
+        "name": "修改工具界面",
+        "characterId": "222",
+        "line": 8148
+      },
+      {
+        "name": "text1",
+        "characterId": "226",
+        "line": 8336
+      },
+      {
+        "name": "text2",
+        "characterId": "227",
+        "line": 8339
+      },
+      {
+        "name": "text3",
+        "characterId": "228",
+        "line": 8342
+      },
+      {
+        "name": "text4",
+        "characterId": "229",
+        "line": 8345
+      },
+      {
+        "name": "text5",
+        "characterId": "230",
+        "line": 8348
+      },
+      {
+        "name": "bt1",
+        "characterId": "231",
+        "line": 8351
+      },
+      {
+        "name": "bt2",
+        "characterId": "232",
+        "line": 8354
+      },
+      {
+        "name": "bt3",
+        "characterId": "233",
+        "line": 8357
+      },
+      {
+        "name": "bt4",
+        "characterId": "234",
+        "line": 8360
+      },
+      {
+        "name": "NPC功能菜单",
+        "characterId": "235",
+        "line": 8366
+      },
+      {
+        "name": "查看详细菜单",
+        "characterId": "239",
+        "line": 8432
+      },
+      {
+        "name": "修改详细菜单",
+        "characterId": "242",
+        "line": 8491
+      },
+      {
+        "name": "gameworld层级定位器",
+        "characterId": "43",
+        "line": 8522
+      },
+      {
+        "name": "门口佣兵刷新器",
+        "characterId": "245",
+        "line": 8674
+      },
+      {
+        "name": "gameworld层级定位器",
+        "characterId": "43",
+        "line": 8694
+      },
+      {
+        "name": "gameworld层级定位器",
+        "characterId": "43",
+        "line": 8754
+      },
+      {
+        "name": "gameworld层级定位器",
+        "characterId": "43",
+        "line": 8793
+      }
+    ],
+    "directUiUrlCount": 10,
+    "limits": "Actual root SWF import and named placement inventory; no claim that external dynamic creation is globally impossible."
+  },
+  "supplementalSearches": [
+    {
+      "id": "current-authored-scripts",
+      "fileCount": 1901,
+      "inputSetSha256": "f2efd3c415a3e9a3a05053ab183853ac636cdc2a2da39354d93b60ee3a66d6e1",
+      "queryResults": [
+        {
+          "token": "显示情报信息",
+          "matchingLines": 1,
+          "matches": [
+            {
+              "file": "scripts/展现/UI交互/UI交互_lsy_物品栏UI.as",
+              "line": 191,
+              "text": "_root.物品UI函数.显示情报信息 = function(name, value):Void {"
+            }
+          ]
+        },
+        {
+          "token": "生成关卡随机奖励品",
+          "matchingLines": 1,
+          "matches": [
+            {
+              "file": "scripts/类定义/org/flashNight/arki/item/DropLuckRoller.as",
+              "line": 17,
+              "text": " * 关卡通关奖励 (_root.奖励物品界面.生成关卡随机奖励品) 当前住在"
+            }
+          ]
+        },
+        {
+          "token": "宠物信息界面",
+          "matchingLines": 13,
+          "matches": [
+            {
+              "file": "scripts/展现/UI交互/UI交互_lsy_UI管理.as",
+              "line": 95,
+              "text": "    _root.宠物信息界面.排列宠物图标();"
+            },
+            {
+              "file": "scripts/展现/UI交互/UI交互_lsy_UI管理.as",
+              "line": 96,
+              "text": "    _root.宠物信息界面._visible = !_root.宠物信息界面._visible;"
+            },
+            {
+              "file": "scripts/引擎/引擎_lsy_战宠系统.as",
+              "line": 66,
+              "text": "\t\tif(_root.宠物信息界面 && typeof _root.宠物信息界面.排列宠物图标 == \"function\"){"
+            },
+            {
+              "file": "scripts/引擎/引擎_lsy_战宠系统.as",
+              "line": 67,
+              "text": "\t\t\t_root.宠物信息界面.排列宠物图标();"
+            },
+            {
+              "file": "scripts/类定义/org/flashNight/arki/merc/ManagedLongGunServiceTest.as",
+              "line": 738,
+              "text": "        var oldPetInfoPanel:Object = _root.宠物信息界面;"
+            },
+            {
+              "file": "scripts/类定义/org/flashNight/arki/merc/ManagedLongGunServiceTest.as",
+              "line": 765,
+              "text": "        _root.宠物信息界面 = {排列宠物图标:function():Void {}};"
+            },
+            {
+              "file": "scripts/类定义/org/flashNight/arki/merc/ManagedLongGunServiceTest.as",
+              "line": 1318,
+              "text": "            _root.宠物信息界面 = oldPetInfoPanel;"
+            },
+            {
+              "file": "scripts/类定义/org/flashNight/arki/merc/ManagedLongGunServiceTest.as",
+              "line": 1497,
+              "text": "        var oldPetInfoPanel:Object = _root.宠物信息界面;"
+            },
+            {
+              "file": "scripts/类定义/org/flashNight/arki/merc/ManagedLongGunServiceTest.as",
+              "line": 1521,
+              "text": "            _root.宠物信息界面 = undefined;"
+            },
+            {
+              "file": "scripts/类定义/org/flashNight/arki/merc/ManagedLongGunServiceTest.as",
+              "line": 2009,
+              "text": "            _root.宠物信息界面 = oldPetInfoPanel;"
+            },
+            {
+              "file": "scripts/类定义/org/flashNight/arki/merc/PetPanelService.as",
+              "line": 1437,
+              "text": "            if (_root.宠物信息界面 != undefined"
+            },
+            {
+              "file": "scripts/类定义/org/flashNight/arki/merc/PetPanelService.as",
+              "line": 1438,
+              "text": "                    && _root.宠物信息界面.排列宠物图标 != undefined) {"
+            },
+            {
+              "file": "scripts/类定义/org/flashNight/arki/merc/PetPanelService.as",
+              "line": 1439,
+              "text": "                _root.宠物信息界面.排列宠物图标();"
+            }
+          ]
+        },
+        {
+          "token": "确认通用面板",
+          "matchingLines": 0,
+          "matches": []
+        },
+        {
+          "token": "TetrisGame",
+          "matchingLines": 8,
+          "matches": [
+            {
+              "file": "scripts/类定义/org/flashNight/hana/Tetris/TetrisGame.as",
+              "line": 1,
+              "text": "// scripts\\类定义\\org\\flashNight\\hana\\Tetris\\TetrisGame.as"
+            },
+            {
+              "file": "scripts/类定义/org/flashNight/hana/Tetris/TetrisGame.as",
+              "line": 2,
+              "text": "class org.flashNight.hana.Tetris.TetrisGame {"
+            },
+            {
+              "file": "scripts/类定义/org/flashNight/hana/Tetris/TetrisGame.as",
+              "line": 4,
+              "text": "    static var CLASS_NAME:String = \"org.flashNight.hana.Tetris.TetrisGame\";"
+            },
+            {
+              "file": "scripts/类定义/org/flashNight/hana/Tetris/TetrisGame.as",
+              "line": 122,
+              "text": "    function TetrisGame(host:MovieClip, config:Object) {"
+            },
+            {
+              "file": "scripts/类定义/org/flashNight/hana/Tetris/TetrisGame.as",
+              "line": 123,
+              "text": "        org.flashNight.hana.Tetris.TetrisGame._instanceCounter++;"
+            },
+            {
+              "file": "scripts/类定义/org/flashNight/hana/Tetris/TetrisGame.as",
+              "line": 124,
+              "text": "        this.instId = org.flashNight.hana.Tetris.TetrisGame._instanceCounter;"
+            },
+            {
+              "file": "scripts/类定义/org/flashNight/hana/Tetris/TetrisGame.as",
+              "line": 179,
+              "text": "            var self:TetrisGame = this;"
+            },
+            {
+              "file": "scripts/类定义/org/flashNight/hana/Tetris/TetrisGame.as",
+              "line": 193,
+              "text": "        var that:TetrisGame = this;"
+            }
+          ]
+        },
+        {
+          "token": "消息窗",
+          "matchingLines": 7,
+          "matches": [
+            {
+              "file": "scripts/引擎/引擎_fs_调试模式.as",
+              "line": 26,
+              "text": "\t\tif (消息窗)"
+            },
+            {
+              "file": "scripts/引擎/引擎_fs_调试模式.as",
+              "line": 29,
+              "text": "\t\t\t消息窗.文字显示框._height = Stage.height * 0.9;"
+            },
+            {
+              "file": "scripts/引擎/引擎_fs_调试模式.as",
+              "line": 30,
+              "text": "\t\t\t消息窗.文字显示框._width = Stage.width * 0.9;"
+            },
+            {
+              "file": "scripts/引擎/引擎_fs_调试模式.as",
+              "line": 31,
+              "text": "\t\t\t消息窗.gotoAndStop(消息窗.动画结束帧);"
+            },
+            {
+              "file": "scripts/引擎/引擎_fs_调试模式.as",
+              "line": 32,
+              "text": "\t\t\t消息窗.mytext += 消息 + \"<BR>\";"
+            },
+            {
+              "file": "scripts/引擎/引擎_fs_调试模式.as",
+              "line": 33,
+              "text": "\t\t\tif (消息窗.文字显示框.textHeight > 消息窗.文字显示框._height - 10)"
+            },
+            {
+              "file": "scripts/引擎/引擎_fs_调试模式.as",
+              "line": 35,
+              "text": "\t\t\t\t消息窗.mytext = 消息窗.mytext.split(\"<BR>\").slice(3).join(\"<BR>\");"
+            }
+          ]
+        }
+      ],
+      "limits": "Literal-token survey. Matches include definitions, comments and test fixtures; lack of a literal is not proof against dynamic name construction. At most 20 sample lines per token."
+    },
+    {
+      "id": "authored-map-xml",
+      "fileCount": 2708,
+      "inputSetSha256": "ca9a9fc217e15002efb974e4da4b1d0146a725e19e183ae9e1f37c629e4220c9",
+      "queryResults": [
+        {
+          "token": "显示情报信息",
+          "matchingLines": 0,
+          "matches": []
+        },
+        {
+          "token": "生成关卡随机奖励品",
+          "matchingLines": 0,
+          "matches": []
+        },
+        {
+          "token": "宠物信息界面",
+          "matchingLines": 0,
+          "matches": []
+        },
+        {
+          "token": "确认通用面板",
+          "matchingLines": 23,
+          "matches": [
+            {
+              "file": "flashswf/levels/基地场景合集/LIBRARY/地图/车库.xml",
+              "line": 265,
+              "text": "\t\t_root.确认通用面板.名称 = \"购买自行车\";"
+            },
+            {
+              "file": "flashswf/levels/基地场景合集/LIBRARY/地图/车库.xml",
+              "line": 266,
+              "text": "\t\t_root.确认通用面板.说明 = \"是否要购买自行车？总花费合计8000金币。\\n购买后可解锁较近距离阵营与区域的地图快速传送功能，例如废城。\";"
+            },
+            {
+              "file": "flashswf/levels/基地场景合集/LIBRARY/地图/车库.xml",
+              "line": 267,
+              "text": "\t\t_root.确认通用面板.成功说明 = \"成功购买自行车！\";"
+            },
+            {
+              "file": "flashswf/levels/基地场景合集/LIBRARY/地图/车库.xml",
+              "line": 268,
+              "text": "\t\t_root.确认通用面板.失败说明 = \"购买失败！\";"
+            },
+            {
+              "file": "flashswf/levels/基地场景合集/LIBRARY/地图/车库.xml",
+              "line": 269,
+              "text": "\t\t_root.确认通用面板.确认 = function()"
+            },
+            {
+              "file": "flashswf/levels/基地场景合集/LIBRARY/地图/车库.xml",
+              "line": 273,
+              "text": "\t\t\t\t_root.确认通用面板.失败说明 = \"购买失败，金币不足！\";"
+            },
+            {
+              "file": "flashswf/levels/基地场景合集/LIBRARY/地图/车库.xml",
+              "line": 283,
+              "text": "\t\t_root.确认通用面板.启动();"
+            },
+            {
+              "file": "flashswf/levels/基地场景合集/LIBRARY/地图/车库.xml",
+              "line": 313,
+              "text": "\t\t_root.确认通用面板.名称 = \"购买摩托车\";"
+            },
+            {
+              "file": "flashswf/levels/基地场景合集/LIBRARY/地图/车库.xml",
+              "line": 314,
+              "text": "\t\t_root.确认通用面板.说明 = \"是否要购买摩托车？需要学习1级驾驶技能，总花费合计35000金币。\\n购买后可解锁中等距离阵营与区域的地图快速传送功能，例如堕落城。\";"
+            },
+            {
+              "file": "flashswf/levels/基地场景合集/LIBRARY/地图/车库.xml",
+              "line": 315,
+              "text": "\t\t_root.确认通用面板.成功说明 = \"成功购买摩托车！\";"
+            },
+            {
+              "file": "flashswf/levels/基地场景合集/LIBRARY/地图/车库.xml",
+              "line": 316,
+              "text": "\t\t_root.确认通用面板.失败说明 = \"购买失败！\";"
+            },
+            {
+              "file": "flashswf/levels/基地场景合集/LIBRARY/地图/车库.xml",
+              "line": 317,
+              "text": "\t\t_root.确认通用面板.确认 = function()"
+            },
+            {
+              "file": "flashswf/levels/基地场景合集/LIBRARY/地图/车库.xml",
+              "line": 323,
+              "text": "\t\t\t\t\t_root.确认通用面板.失败说明 = \"购买失败，金币不足！\";"
+            },
+            {
+              "file": "flashswf/levels/基地场景合集/LIBRARY/地图/车库.xml",
+              "line": 334,
+              "text": "\t\t\t\t_root.确认通用面板.失败说明 = \"购买失败，驾驶摩托车需获得驾照，请学习驾驶技能！\";"
+            },
+            {
+              "file": "flashswf/levels/基地场景合集/LIBRARY/地图/车库.xml",
+              "line": 339,
+              "text": "\t\t_root.确认通用面板.启动();"
+            },
+            {
+              "file": "flashswf/levels/基地场景合集/LIBRARY/地图/车库.xml",
+              "line": 370,
+              "text": "\t\t_root.确认通用面板.名称 = \"购买越野车\";"
+            },
+            {
+              "file": "flashswf/levels/基地场景合集/LIBRARY/地图/车库.xml",
+              "line": 371,
+              "text": "\t\t_root.确认通用面板.说明 = \"是否要购买越野车？需要学习2级驾驶技能，总花费合计50万金币。\\n购买后可解锁所有阵营与区域的地图快速传送功能，例如军阀基地，并可增加一页后勤战备箱。\";"
+            },
+            {
+              "file": "flashswf/levels/基地场景合集/LIBRARY/地图/车库.xml",
+              "line": 372,
+              "text": "\t\t_root.确认通用面板.成功说明 = \"成功购买越野车！\";"
+            },
+            {
+              "file": "flashswf/levels/基地场景合集/LIBRARY/地图/车库.xml",
+              "line": 373,
+              "text": "\t\t_root.确认通用面板.失败说明 = \"购买失败！\";"
+            },
+            {
+              "file": "flashswf/levels/基地场景合集/LIBRARY/地图/车库.xml",
+              "line": 374,
+              "text": "\t\t_root.确认通用面板.确认 = function()"
+            }
+          ]
+        },
+        {
+          "token": "TetrisGame",
+          "matchingLines": 0,
+          "matches": []
+        },
+        {
+          "token": "消息窗",
+          "matchingLines": 0,
+          "matches": []
+        }
+      ],
+      "limits": "Literal-token survey. Matches include definitions, comments and test fixtures; lack of a literal is not proof against dynamic name construction. At most 20 sample lines per token."
+    },
+    {
+      "id": "all-35-exported-maps",
+      "fileCount": 1578,
+      "inputSetSha256": "42b106df544480aa711516eceabfe2fcf8d65a6c676688cc99ee9dc8250ea020",
+      "queryResults": [
+        {
+          "token": "显示情报信息",
+          "matchingLines": 0,
+          "matches": []
+        },
+        {
+          "token": "生成关卡随机奖励品",
+          "matchingLines": 0,
+          "matches": []
+        },
+        {
+          "token": "宠物信息界面",
+          "matchingLines": 0,
+          "matches": []
+        },
+        {
+          "token": "确认通用面板",
+          "matchingLines": 23,
+          "matches": [
+            {
+              "file": "tmp/as2-ui-deepening-20260912/parent-base-swf/scripts/DefineSprite_1246_基地场景-基地车库/frame_1/PlaceObject2_1195_29/CLIPACTIONRECORD on(release).as",
+              "line": 4,
+              "text": "      _root.确认通用面板.名称 = \"购买自行车\";"
+            },
+            {
+              "file": "tmp/as2-ui-deepening-20260912/parent-base-swf/scripts/DefineSprite_1246_基地场景-基地车库/frame_1/PlaceObject2_1195_29/CLIPACTIONRECORD on(release).as",
+              "line": 5,
+              "text": "      _root.确认通用面板.说明 = \"是否要购买自行车？总花费合计8000金币。\\n购买后可解锁较近距离阵营与区域的地图快速传送功能，例如废城。\";"
+            },
+            {
+              "file": "tmp/as2-ui-deepening-20260912/parent-base-swf/scripts/DefineSprite_1246_基地场景-基地车库/frame_1/PlaceObject2_1195_29/CLIPACTIONRECORD on(release).as",
+              "line": 6,
+              "text": "      _root.确认通用面板.成功说明 = \"成功购买自行车！\";"
+            },
+            {
+              "file": "tmp/as2-ui-deepening-20260912/parent-base-swf/scripts/DefineSprite_1246_基地场景-基地车库/frame_1/PlaceObject2_1195_29/CLIPACTIONRECORD on(release).as",
+              "line": 7,
+              "text": "      _root.确认通用面板.失败说明 = \"购买失败！\";"
+            },
+            {
+              "file": "tmp/as2-ui-deepening-20260912/parent-base-swf/scripts/DefineSprite_1246_基地场景-基地车库/frame_1/PlaceObject2_1195_29/CLIPACTIONRECORD on(release).as",
+              "line": 8,
+              "text": "      _root.确认通用面板.确认 = function()"
+            },
+            {
+              "file": "tmp/as2-ui-deepening-20260912/parent-base-swf/scripts/DefineSprite_1246_基地场景-基地车库/frame_1/PlaceObject2_1195_29/CLIPACTIONRECORD on(release).as",
+              "line": 12,
+              "text": "            _root.确认通用面板.失败说明 = \"购买失败，金币不足！\";"
+            },
+            {
+              "file": "tmp/as2-ui-deepening-20260912/parent-base-swf/scripts/DefineSprite_1246_基地场景-基地车库/frame_1/PlaceObject2_1195_29/CLIPACTIONRECORD on(release).as",
+              "line": 24,
+              "text": "      _root.确认通用面板.启动();"
+            },
+            {
+              "file": "tmp/as2-ui-deepening-20260912/parent-base-swf/scripts/DefineSprite_1246_基地场景-基地车库/frame_1/PlaceObject2_1198_36/CLIPACTIONRECORD on(release).as",
+              "line": 4,
+              "text": "      _root.确认通用面板.名称 = \"购买摩托车\";"
+            },
+            {
+              "file": "tmp/as2-ui-deepening-20260912/parent-base-swf/scripts/DefineSprite_1246_基地场景-基地车库/frame_1/PlaceObject2_1198_36/CLIPACTIONRECORD on(release).as",
+              "line": 5,
+              "text": "      _root.确认通用面板.说明 = \"是否要购买摩托车？需要学习1级驾驶技能，总花费合计35000金币。\\n购买后可解锁中等距离阵营与区域的地图快速传送功能，例如堕落城。\";"
+            },
+            {
+              "file": "tmp/as2-ui-deepening-20260912/parent-base-swf/scripts/DefineSprite_1246_基地场景-基地车库/frame_1/PlaceObject2_1198_36/CLIPACTIONRECORD on(release).as",
+              "line": 6,
+              "text": "      _root.确认通用面板.成功说明 = \"成功购买摩托车！\";"
+            },
+            {
+              "file": "tmp/as2-ui-deepening-20260912/parent-base-swf/scripts/DefineSprite_1246_基地场景-基地车库/frame_1/PlaceObject2_1198_36/CLIPACTIONRECORD on(release).as",
+              "line": 7,
+              "text": "      _root.确认通用面板.失败说明 = \"购买失败！\";"
+            },
+            {
+              "file": "tmp/as2-ui-deepening-20260912/parent-base-swf/scripts/DefineSprite_1246_基地场景-基地车库/frame_1/PlaceObject2_1198_36/CLIPACTIONRECORD on(release).as",
+              "line": 8,
+              "text": "      _root.确认通用面板.确认 = function()"
+            },
+            {
+              "file": "tmp/as2-ui-deepening-20260912/parent-base-swf/scripts/DefineSprite_1246_基地场景-基地车库/frame_1/PlaceObject2_1198_36/CLIPACTIONRECORD on(release).as",
+              "line": 14,
+              "text": "               _root.确认通用面板.失败说明 = \"购买失败，金币不足！\";"
+            },
+            {
+              "file": "tmp/as2-ui-deepening-20260912/parent-base-swf/scripts/DefineSprite_1246_基地场景-基地车库/frame_1/PlaceObject2_1198_36/CLIPACTIONRECORD on(release).as",
+              "line": 26,
+              "text": "         _root.确认通用面板.失败说明 = \"购买失败，驾驶摩托车需获得驾照，请学习驾驶技能！\";"
+            },
+            {
+              "file": "tmp/as2-ui-deepening-20260912/parent-base-swf/scripts/DefineSprite_1246_基地场景-基地车库/frame_1/PlaceObject2_1198_36/CLIPACTIONRECORD on(release).as",
+              "line": 29,
+              "text": "      _root.确认通用面板.启动();"
+            },
+            {
+              "file": "tmp/as2-ui-deepening-20260912/parent-base-swf/scripts/DefineSprite_1246_基地场景-基地车库/frame_1/PlaceObject2_1203_202/CLIPACTIONRECORD on(release).as",
+              "line": 4,
+              "text": "      _root.确认通用面板.名称 = \"购买越野车\";"
+            },
+            {
+              "file": "tmp/as2-ui-deepening-20260912/parent-base-swf/scripts/DefineSprite_1246_基地场景-基地车库/frame_1/PlaceObject2_1203_202/CLIPACTIONRECORD on(release).as",
+              "line": 5,
+              "text": "      _root.确认通用面板.说明 = \"是否要购买越野车？需要学习2级驾驶技能，总花费合计50万金币。\\n购买后可解锁所有阵营与区域的地图快速传送功能，例如军阀基地，并可增加一页后勤战备箱。\";"
+            },
+            {
+              "file": "tmp/as2-ui-deepening-20260912/parent-base-swf/scripts/DefineSprite_1246_基地场景-基地车库/frame_1/PlaceObject2_1203_202/CLIPACTIONRECORD on(release).as",
+              "line": 6,
+              "text": "      _root.确认通用面板.成功说明 = \"成功购买越野车！\";"
+            },
+            {
+              "file": "tmp/as2-ui-deepening-20260912/parent-base-swf/scripts/DefineSprite_1246_基地场景-基地车库/frame_1/PlaceObject2_1203_202/CLIPACTIONRECORD on(release).as",
+              "line": 7,
+              "text": "      _root.确认通用面板.失败说明 = \"购买失败！\";"
+            },
+            {
+              "file": "tmp/as2-ui-deepening-20260912/parent-base-swf/scripts/DefineSprite_1246_基地场景-基地车库/frame_1/PlaceObject2_1203_202/CLIPACTIONRECORD on(release).as",
+              "line": 8,
+              "text": "      _root.确认通用面板.确认 = function()"
+            }
+          ]
+        },
+        {
+          "token": "TetrisGame",
+          "matchingLines": 0,
+          "matches": []
+        },
+        {
+          "token": "消息窗",
+          "matchingLines": 0,
+          "matches": []
+        }
+      ],
+      "limits": "Literal-token survey. Matches include definitions, comments and test fixtures; lack of a literal is not proof against dynamic name construction. At most 20 sample lines per token."
+    },
+    {
+      "id": "current-root-swf-scripts",
+      "fileCount": 153,
+      "inputSetSha256": "bd2262cae74f92b54678f45a5ad265b8972c428d98ea063a2a8461bb0e2d4db4",
+      "queryResults": [
+        {
+          "token": "显示情报信息",
+          "matchingLines": 0,
+          "matches": []
+        },
+        {
+          "token": "生成关卡随机奖励品",
+          "matchingLines": 0,
+          "matches": []
+        },
+        {
+          "token": "宠物信息界面",
+          "matchingLines": 0,
+          "matches": []
+        },
+        {
+          "token": "确认通用面板",
+          "matchingLines": 0,
+          "matches": []
+        },
+        {
+          "token": "TetrisGame",
+          "matchingLines": 0,
+          "matches": []
+        },
+        {
+          "token": "消息窗",
+          "matchingLines": 0,
+          "matches": []
+        }
+      ],
+      "limits": "Literal-token survey. Matches include definitions, comments and test fixtures; lack of a literal is not proof against dynamic name construction. At most 20 sample lines per token."
+    }
+  ],
+  "reproduction": {
+    "tool": "JPEXS FFDec 21.1.1",
+    "exampleArguments": [
+      "-Djava.awt.headless=true",
+      "-jar",
+      "tools/ffdec/ffdec-cli.jar",
+      "-export",
+      "script",
+      "<temporary-output-dir>",
+      "<input-swf>"
+    ],
+    "notes": "Use Java directly to await the exporter; do not compile or modify the input SWF. Verify the input SHA-256 before comparing scripts."
+  }
+}
