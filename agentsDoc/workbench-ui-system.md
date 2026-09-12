@@ -14,6 +14,8 @@
 
 本文未带状态标签的规范句只描述已经落地并由现役门保护的稳定规则；仍属前向目标的规则必须逐条标为“目标态（未实装；见 ADR 对应批次）”。实现与验证没有同轮闭合前，不得仅凭 ADR 接受状态把未来 API、参数或 fail-closed 门写成现役事实。
 
+**目标态（未实装；2026-09-12 暂存收纳收敛）**：暂存物资计划并入现役背包—战备箱的同一 `InventoryStorageWorkbench`，直接共用布局、CSS 与交互控制器，仅以领域适配表达单向取出等差异；数量和结果反馈等通用改进由各收纳来源共同使用。当前仍是独立暂存视图，已确认决策、会话与事务差异、旧 UI 退役和施工顺序见[调研与施工方案](../docs/暂存物资并入共享收纳工作台-调研与施工方案-2026-09-12.md)。
+
 美术维护入口 `asset-workbench` 复用 `archive-reference` 双栏 profile、全 anchor 容器和 `.panel-scale-shell + PanelScale.attach()`，并已登记 direct shell 调用清单；它以显式命令驱动候选预览和素材应用。物品图标局部预览使用 `Icons.createPreview()`，销毁时释放自身动画，不替换全局清单；操作契约见 [物品素材工作台](../tools/asset-workbench/README.md)。
 
 其帮助页复用 `WorkbenchComponents.SecondaryPage` 的 underlay inert、Escape 返回和焦点归还，正文直接渲染版本化的 `launcher/web/help/asset-workbench.md`。帮助只做阅读与显式复制；打开时暂停预览动画，返回原选择后恢复，不新增 Host 命令。
