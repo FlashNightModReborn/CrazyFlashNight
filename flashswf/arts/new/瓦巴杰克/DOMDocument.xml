@@ -408,6 +408,7 @@
           <Include href="各种图素材等/补间 6.xml" itemIcon="1" loadImmediate="false" itemID="65e1c32d-00000384" lastModified="1709294875"/>
           <Include href="各种图素材等/补间 7.xml" itemIcon="1" loadImmediate="false" itemID="65e1c32f-00000386" lastModified="1709294383"/>
           <Include href="各种图素材等/技能背景.xml" loadImmediate="false" itemID="659a876f-00001d04" lastModified="1704626031"/>
+          <Include href="光柱.xml" itemIcon="1" loadImmediate="false" itemID="6aa54ab6-00000162" lastModified="1789228304"/>
           <Include href="黑铁-落剑.xml" itemID="67bde3a3-000010b8" lastModified="1740497827"/>
           <Include href="闪电特效素材/shape 506.xml" itemIcon="1" loadImmediate="false" itemID="58132c1e-000001fb" lastModified="1477651486"/>
           <Include href="闪电特效素材/shape 507.xml" itemIcon="1" loadImmediate="false" itemID="58132c1e-000001fc" lastModified="1477651486"/>
@@ -630,8 +631,9 @@
           <Include href="特效与子弹/特效素材/重力井素材/Symbol 1941.xml" itemIcon="1" loadImmediate="false" itemID="6577efbc-000007e4" lastModified="1702098593"/>
           <Include href="特效与子弹/特效素材/重力井素材/Symbol 1942.xml" itemIcon="1" loadImmediate="false" itemID="6577efbc-000007e5" lastModified="1702098593"/>
           <Include href="特效与子弹/特效素材/重力井素材/Symbol 1943.xml" itemIcon="1" loadImmediate="false" itemID="6577efbc-000007e6" lastModified="1702098593"/>
-          <Include href="特效与子弹/天启大封印.xml" itemID="6aa424c8-000012de" lastModified="1789160655"/>
-          <Include href="特效与子弹/天启大封印驱逐白瀑.xml" itemID="6aa44ea4-00000caa" lastModified="1789153267"/>
+          <Include href="特效与子弹/天启大封印.xml" itemID="6aa424c8-000012de" lastModified="1789229246"/>
+          <Include href="特效与子弹/天启大封印地面效果.xml" itemID="6aa564b4-000009ea" lastModified="1789229921"/>
+          <Include href="特效与子弹/天启大封印驱逐白瀑.xml" itemID="6aa44ea4-00000caa" lastModified="1789227399"/>
           <Include href="特效与子弹/新电球.xml" itemID="65e090d8-00002020" lastModified="1766486993"/>
           <Include href="特效与子弹/一瞬千击多次/素材/Symbol 5140.xml" loadImmediate="false" itemID="65536bc5-00002918" lastModified="1698481640"/>
           <Include href="特效与子弹/一瞬千击多次/素材/Symbol 5142.xml" loadImmediate="false" itemID="65536bc5-00002919" lastModified="1698481640"/>
@@ -657,8 +659,8 @@
           <Include href="特效与子弹/重力井.xml" itemID="659a5c28-00000adb" lastModified="1789157918"/>
           <Include href="特效与子弹/自瞄准星特效/导弹自瞄准星.xml" itemID="66e7eca6-0000161a" lastModified="1729345226"/>
           <Include href="特效与子弹/自瞄准星特效/火力支援新瞄准镜.xml" loadImmediate="false" itemID="671399a0-00002828" lastModified="1729337760"/>
-          <Include href="特效与子弹/自瞄准星特效/天启大封印法阵.xml" itemID="6aa4222f-0000129a" lastModified="1789158152"/>
-          <Include href="特效与子弹/自瞄准星特效/自瞄准星.xml" itemID="66e6ff72-00000d99" lastModified="1789152479"/>
+          <Include href="特效与子弹/自瞄准星特效/天启大封印法阵.xml" itemID="6aa4222f-0000129a" lastModified="1789227275"/>
+          <Include href="特效与子弹/自瞄准星特效/自瞄准星.xml" itemID="66e6ff72-00000d99" lastModified="1789226097"/>
           <Include href="图标阴影.xml" itemIcon="1" loadImmediate="false" itemID="69454edc-00000e2e" lastModified="1718516867"/>
           <Include href="瓦巴杰克.xml" itemIcon="1" itemID="659a511c-00000302" lastModified="1704612124"/>
           <Include href="武器/3D打印：炎/0.area.xml" loadImmediate="false" itemID="66e6f8cc-00000d5d" lastModified="1701486304"/>
@@ -1086,6 +1088,16 @@
      </persistentData>
      <PrinterSettings/>
      <publishHistory>
+          <PublishItem publishSize="3078605" publishTime="1789229875"/>
+          <PublishItem publishSize="3078604" publishTime="1789229258"/>
+          <PublishItem publishSize="3082145" publishTime="1789229007"/>
+          <PublishItem publishSize="3081074" publishTime="1789228021"/>
+          <PublishItem publishSize="3081075" publishTime="1789227867"/>
+          <PublishItem publishSize="3081074" publishTime="1789227638"/>
+          <PublishItem publishSize="3080890" publishTime="1789227501"/>
+          <PublishItem publishSize="3080756" publishTime="1789227325"/>
+          <PublishItem publishSize="3103862" publishTime="1789226845"/>
+          <PublishItem publishSize="3103862" publishTime="1789226141"/>
           <PublishItem publishSize="3079787" publishTime="1789160540"/>
           <PublishItem publishSize="3078938" publishTime="1789158098"/>
           <PublishItem publishSize="3078833" publishTime="1789157330"/>
@@ -1096,15 +1108,5 @@
           <PublishItem publishSize="2972825" publishTime="1789151221"/>
           <PublishItem publishSize="2972821" publishTime="1789151049"/>
           <PublishItem publishSize="2972795" publishTime="1789150849"/>
-          <PublishItem publishSize="3006858" publishTime="1789143453"/>
-          <PublishItem publishSize="2763132" publishTime="1777370986"/>
-          <PublishItem publishSize="2763128" publishTime="1777370888"/>
-          <PublishItem publishSize="2763110" publishTime="1777370623"/>
-          <PublishItem publishSize="2757818" publishTime="1770589987"/>
-          <PublishItem publishSize="2757814" publishTime="1770589739"/>
-          <PublishItem publishSize="2757813" publishTime="1770589564"/>
-          <PublishItem publishSize="2757800" publishTime="1770589212"/>
-          <PublishItem publishSize="2757827" publishTime="1770589034"/>
-          <PublishItem publishSize="2757629" publishTime="1770217808"/>
      </publishHistory>
 </DOMDocument>
