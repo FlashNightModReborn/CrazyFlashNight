@@ -2885,6 +2885,7 @@ namespace CF7Launcher.Guardian
 
         private void OnFlashRevealWatchdogFired(string attemptIdSnap)
         {
+            bool degraded = false;
             lock (_stateLock)
             {
                 if (_currentAttemptId != attemptIdSnap) return;  // attempt 已切换
@@ -2922,8 +2923,20 @@ namespace CF7Launcher.Guardian
                 LogManager.Log("[LaunchFlow] Flash reveal watchdog fired after "
                     + _flashRevealWatchdogMs + "ms, force-revealing (SWF 可能未部署 sendRevealReady)");
                 _revealWaitingFlash = false;
+                degraded = true;
                 PerfTrace.Mark("launch.flash_reveal_watchdog", "attemptId=" + attemptIdSnap);
                 TryPerformRevealLocked();
+            }
+            // 列车 C-C5：锁外补发带 degraded 标记的 flash_ready；
+            // 正常路径的 flash_ready 不带该字段（web 按缺省 false 处理）。
+            if (degraded && _form != null && _form.BootstrapPanel != null)
+            {
+                JObject notify = new JObject();
+                notify["type"] = "bootstrap";
+                notify["cmd"] = "flash_ready";
+                notify["degraded"] = true;
+                try { _form.BootstrapPanel.PostToWeb(notify.ToString(Newtonsoft.Json.Formatting.None)); }
+                catch (Exception ex) { LogManager.Log("[LaunchFlow] degraded flash_ready broadcast error: " + ex.Message); }
             }
         }
 

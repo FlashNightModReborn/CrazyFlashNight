@@ -215,6 +215,9 @@ async function main() {
                             cmd:'config_set_resp', requestId:message.requestId, key:message.key,
                             ok:true, currentValue:message.value
                         }), 0);
+                    } else if (message.cmd === 'log') {
+                        // 列车 C 场景：模拟不识 'log' 的老宿主回执，供 web 侧能力探测停用水槽。
+                        setTimeout(() => emit({ cmd:'log_resp', ok:false, error:'unknown_cmd' }), 0);
                     }
                 }
             };
@@ -1092,8 +1095,29 @@ async function main() {
             if (!Array.isArray(state.lore) || !state.lore.length) {
                 throw new Error('inspect().lore must expose a non-empty line snapshot during loading');
             }
+            // FIFO 无 TTL：静默等待 1.3s 行数不减少；state 头行驻留计时随 tick 增长。
+            // tick 在 reduced-motion 下按纪律停摆，本段临时切回 no-preference 再恢复。
+            await page.emulateMedia({ reducedMotion:'no-preference' });
+            const before = await page.evaluate(() => ({
+                count: document.querySelectorAll('#bg-gl-log .ln').length,
+                head: (document.querySelector('#bg-gl-log .ln:last-child .dim') || { textContent: '' }).textContent,
+            }));
+            await page.waitForTimeout(1300);
+            const after = await page.evaluate(() => ({
+                count: document.querySelectorAll('#bg-gl-log .ln').length,
+                head: (document.querySelector('#bg-gl-log .ln:last-child .dim') || { textContent: '' }).textContent,
+            }));
+            await page.emulateMedia({ reducedMotion:'reduce' });
+            if (after.count < before.count) {
+                throw new Error('FIFO queue lost lines to a hidden TTL: '
+                    + JSON.stringify({ before, after }));
+            }
+            if (after.head === before.head && /^\w+ · \+\d+\.\d+s/.test(before.head)) {
+                throw new Error('head state line dwell did not tick: '
+                    + JSON.stringify({ before, after }));
+            }
             // retire 后 #bg-gl-log 不存在的复验由 host-reveal-retires-gpu-background 既有断言覆盖。
-            return 'lore stream is visible during loading and inspect() exposes its line snapshot';
+            return 'lore FIFO persists without TTL and head dwell ticks live';
         });
 
         await check('pm19-lore-masked', async () => {
@@ -1107,6 +1131,113 @@ async function main() {
                     && Math.abs(mask.w - rect.width) <= 8 && Math.abs(mask.h - rect.height) <= 8);
             }, null, { timeout:3000 });
             return 'the loading mask set covers the lore stream within 8px';
+        });
+
+        await check('pm19-boot-lines', async () => {
+            await page.evaluate(() => window.__bootstrapHarnessEmit({
+                cmd:'boot', frame:53,
+                messages:'[BootstrapAS] 合成表数据加载完毕|[BootstrapAS] S2_ENTER|其它噪声|[BootstrapAS] 读取存档数据……'
+            }));
+            await page.waitForFunction(() => {
+                const lines = window.__pm19Harness.inspect().lore || [];
+                return lines.some(line => line.text === '合成表数据加载完毕')
+                    && lines.some(line => line.text === '读取存档数据……');
+            }, null, { timeout:3000 });
+            const lines = (await backgroundState(page)).lore || [];
+            if (lines.some(line => /S2_ENTER|其它噪声/.test(line.text + ' ' + line.suffix))) {
+                throw new Error('boot stream leaked a signal token or prefix-less noise');
+            }
+            const bootLine = lines.find(line => line.text === '合成表数据加载完毕');
+            if (bootLine.suffix && bootLine.suffix !== 'boot · 批次 f53') {
+                throw new Error('boot line carried an unexpected suffix: ' + bootLine.suffix);
+            }
+            return 'two Chinese boot lines narrated; S2_ENTER token and prefix-less noise dropped';
+        });
+
+        await check('pm19-comm-suffix', async () => {
+            // 600ms 沉降让 lore 洪水窗口排空，socket 后缀断言不被省后缀机制吞掉。
+            await page.waitForTimeout(600);
+            await page.evaluate(() => window.__bootstrapHarnessEmit({
+                cmd:'state', state:'WaitingGameReady',
+                socketPort:1924, httpPort:1192, flashConnected:true
+            }));
+            await page.waitForFunction(() => {
+                const state = window.__pm19Harness.inspect();
+                const last = state.lore && state.lore[state.lore.length - 1];
+                return !!(state.comm && state.comm.socketPort === 1924
+                    && last && (last.text + ' ' + last.suffix).includes('socket=1924'));
+            }, null, { timeout:3000 });
+            const state = await backgroundState(page);
+            if (state.comm.httpPort !== 1192 || state.comm.flashConnected !== true) {
+                throw new Error('comm snapshot dropped httpPort/flashConnected: ' + JSON.stringify(state.comm));
+            }
+            return 'WaitingGameReady lore suffix carries socket=1924; inspect().comm snapshots all three fields';
+        });
+
+        await check('pm19-degraded-reveal', async () => {
+            await page.waitForTimeout(600);
+            await page.evaluate(() => window.__bootstrapHarnessEmit({ cmd:'flash_ready', degraded:true }));
+            await page.waitForFunction(() => {
+                const lines = window.__pm19Harness.inspect().lore || [];
+                return lines.some(line => line.text.includes('降级开门'));
+            }, null, { timeout:3000 });
+            const line = (await backgroundState(page)).lore.find(entry => entry.text.includes('降级开门'));
+            if (!line || line.suffix !== 'degraded:true') {
+                throw new Error('degraded reveal lost its dim suffix: ' + JSON.stringify(line));
+            }
+            return 'degraded flash_ready narrates 降级开门 with degraded:true dim suffix';
+        });
+
+        await check('pm19-weblog-sink', async () => {
+            // sink 的 2s 泵自 lore 挂载起就批量外发；mock 对每条 log 即回 log_resp unknown_cmd，
+            // 能力探测在首个回执后永久停用——运行到这里 dead 早已成立，只验证据链。
+            await page.waitForFunction(() => {
+                const sent = window.__bootstrapHarnessEvents
+                    .some(event => event.direction === 'out' && event.cmd === 'log');
+                return sent && window.__pm19Harness.inspect().logSinkDead === true;
+            }, null, { timeout:10000 });
+            const first = await page.evaluate(() => {
+                const event = window.__bootstrapHarnessEvents
+                    .find(entry => entry.direction === 'out' && entry.cmd === 'log');
+                return event ? String(event.payload.text || '') : '';
+            });
+            if (!first.includes('质数幻方种子库验讫')) {
+                throw new Error('first weblog batch did not carry lore text: ' + first.slice(0, 160));
+            }
+            const sentBefore = await page.evaluate(() => window.__bootstrapHarnessEvents
+                .filter(event => event.direction === 'out' && event.cmd === 'log').length);
+            // dead 后泵仍排水但不再出站；再产一行 lore 佐证。
+            await page.evaluate(() => window.__bootstrapHarnessEmit({ cmd:'state', state:'Spawning', msg:'sink-probe' }));
+            await page.waitForTimeout(2400);
+            const sentAfter = await page.evaluate(() => window.__bootstrapHarnessEvents
+                .filter(event => event.direction === 'out' && event.cmd === 'log').length);
+            if (sentAfter !== sentBefore) {
+                throw new Error('weblog sink kept sending after unknown_cmd: ' + sentBefore + ' -> ' + sentAfter);
+            }
+            return 'lore lines batched to host once; unknown_cmd receipt permanently disabled the sink';
+        });
+
+        await check('pm19-orbit-readout', async () => {
+            // 前序 check 经真实确认流程进过 loading 相：_introActive 是 bootstrap-main 内部旗标，
+            // 不移除它 ESC 会被 intro 层吃掉（发 cancel_launch）而非关 modal；Idle 广播走正规解除路径。
+            await page.evaluate(() => {
+                window.__bootstrapHarnessEmit({ cmd:'state', state:'Idle' });
+                document.body.classList.remove('intro-playing', 'intro-video');
+                document.getElementById('btn-about').click();
+            });
+            await page.waitForFunction(() => {
+                const el = document.getElementById('pm19-orbit');
+                return !!(el && /^轨道 #\d+ · 中心质数 \d+ · Σ=190,000,361 · 单轨 743,178,240 态$/.test(el.textContent));
+            }, null, { timeout:5000 });
+            const text = (await page.locator('#pm19-orbit').textContent()) || '';
+            const center = Number((/中心质数 (\d+)/.exec(text) || [])[1]);
+            const KNOWN_CENTERS = [9961981, 10037957, 10031191, 9973049, 10025497, 10008491, 10007293, 10011367];
+            if (!KNOWN_CENTERS.includes(center)) {
+                throw new Error('orbit center is not a packaged prime: ' + text);
+            }
+            await page.keyboard.press('Escape');
+            await page.locator('#modal-host').waitFor({ state:'hidden' });
+            return text;
         });
 
         await check('pm19-kinds-known', async () => {

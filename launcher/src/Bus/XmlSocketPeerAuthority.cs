@@ -438,6 +438,7 @@ namespace CF7Launcher.Bus
         private const int AddressFamilyInterNetworkV6 = 23;
         private const uint ErrorSuccess = 0;
         private const uint ErrorInsufficientBuffer = 122;
+        private const uint TcpStateListen = 2;
         private const uint TcpStateEstablished = 5;
         private const int MaximumTableBytes = 16 * 1024 * 1024;
 
@@ -500,6 +501,59 @@ namespace CF7Launcher.Bus
             }
 
             processId = matches[0];
+            reasonCode = null;
+            return true;
+        }
+
+        /// <summary>
+        /// 反查指定端口上的 LISTEN 占用进程（启动 FATAL 诊断用）。
+        /// 先查 IPv4 表，无命中再查 IPv6，与双 loopback 监听模型对齐。
+        /// </summary>
+        public bool TryResolveListenOwner(
+            int port,
+            out int pid,
+            out string name,
+            out string reasonCode)
+        {
+            pid = 0;
+            name = null;
+            if (!OperatingSystem.IsWindows())
+            {
+                reasonCode =
+                    "xml_socket_peer_owner_unavailable";
+                return false;
+            }
+
+            List<int> matches = ReadIpv4ListenOwners(
+                port,
+                out reasonCode);
+            if (matches == null)
+                return false;
+            if (matches.Count == 0)
+            {
+                matches = ReadIpv6ListenOwners(
+                    port,
+                    out reasonCode);
+                if (matches == null)
+                    return false;
+            }
+            if (matches.Count == 0)
+            {
+                reasonCode =
+                    "xml_socket_listen_owner_not_found";
+                return false;
+            }
+
+            pid = matches[0];
+            try
+            {
+                name = Process.GetProcessById(pid)
+                    .ProcessName;
+            }
+            catch
+            {
+                name = null;
+            }
             reasonCode = null;
             return true;
         }
@@ -575,6 +629,62 @@ namespace CF7Launcher.Bus
                             == server.Port
                         && row.OwningProcessId > 0
                         && row.OwningProcessId <= int.MaxValue)
+                    {
+                        matches.Add(
+                            checked((int)
+                                row.OwningProcessId));
+                    }
+                },
+                out reasonCode);
+        }
+
+        private static List<int> ReadIpv4ListenOwners(
+            int port,
+            out string reasonCode)
+        {
+            return ReadTable(
+                AddressFamilyInterNetwork,
+                typeof(MibTcpRowOwnerPid),
+                (rowPointer, matches) =>
+                {
+                    MibTcpRowOwnerPid row =
+                        Marshal.PtrToStructure<
+                            MibTcpRowOwnerPid>(
+                            rowPointer);
+                    if (row.State != TcpStateListen)
+                        return;
+                    if (DecodePort(row.LocalPort) == port
+                        && row.OwningProcessId > 0
+                        && row.OwningProcessId
+                            <= int.MaxValue)
+                    {
+                        matches.Add(
+                            checked((int)
+                                row.OwningProcessId));
+                    }
+                },
+                out reasonCode);
+        }
+
+        private static List<int> ReadIpv6ListenOwners(
+            int port,
+            out string reasonCode)
+        {
+            return ReadTable(
+                AddressFamilyInterNetworkV6,
+                typeof(MibTcp6RowOwnerPid),
+                (rowPointer, matches) =>
+                {
+                    MibTcp6RowOwnerPid row =
+                        Marshal.PtrToStructure<
+                            MibTcp6RowOwnerPid>(
+                            rowPointer);
+                    if (row.State != TcpStateListen)
+                        return;
+                    if (DecodePort(row.LocalPort) == port
+                        && row.OwningProcessId > 0
+                        && row.OwningProcessId
+                            <= int.MaxValue)
                     {
                         matches.Add(
                             checked((int)

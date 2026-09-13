@@ -45,7 +45,7 @@ export class EnvironmentRenderer {
     const w = Math.max(1, Math.round(width * ratio));
     const h = Math.max(1, Math.round(height * ratio));
     this.masks = masks.map(r => ({ x: r.x * ratio, y: r.y * ratio,
-      w: r.width * ratio, h: r.height * ratio, fade: r.fade * ratio }));
+      w: r.width * ratio, h: r.height * ratio, fade: r.fade * ratio, erase: r.erase }));
     // Build feather gradients only when the layout changes, never per frame.
     for (const r of this.masks) {
       const {x,y,w,h,fade:f} = r;
@@ -151,15 +151,18 @@ export class EnvironmentRenderer {
     // Geometry is sampled only on layout/view/font changes, not every frame.
     // Feathered silence under foreground; no scan can cross a button or copy.
     ctx.globalCompositeOperation = 'destination-out';
-    ctx.globalAlpha = 1;
     for (const r of this.masks) {
       const x = r.x, y = r.y, w = r.w, h = r.h, f = r.fade;
+      // erase<1 退化为"压暗玻璃"：数字以低浓度幽灵透出，不留生硬挖空黑洞。
+      const a = r.erase == null ? 1 : r.erase;
+      ctx.globalAlpha = a;
       ctx.fillStyle = '#000'; ctx.fillRect(x, y, w, h);
       if (!f) continue;
       for (const s of r.strips) {
         ctx.fillStyle = s.g; ctx.fillRect(s.x, s.y, s.w, s.h);
       }
     }
+    ctx.globalAlpha = 1;
     ctx.globalCompositeOperation = 'source-over';
   }
 

@@ -18,7 +18,10 @@ let time = 0, previousNow = 0, nextCycle = CYCLE_MS;
 let timer = 0, raf = 0, layoutDirty = true, paintDirty = true;
 let cue = null, firstList = false, hostState = null, userIntent = false;
 let commits = 0, cycles = 0, callbacks = 0, cues = 0;
-let lore = null, attempts = 0, lastStateAt = 0, loadingSince = 0, unfreezeCommits = 0, sigmaSent = false;
+let lore = null, attempts = 0, loadingSince = 0, unfreezeCommits = 0, sigmaSent = false;
+// state 捎带通信字段：最新值或 null（宿主不带字段时保持 null，陈旧值可接受）。
+const comm = { socketPort: null, httpPort: null, flashConnected: null };
+let logSinkDead = false, orbitCenters = null, orbitMagicSum = 0;
 const unsubs = [], observers = [], disposers = [];
 const state = { kind: 'quiet', progress: 0, still: false };
 
@@ -54,24 +57,25 @@ function syncGate() {
 
 function measure() {
   const masks = [];
-  function add(selector, fade) {
+  function add(selector, fade, erase) {
     for (const el of document.querySelectorAll(selector)) {
       if (!el.getClientRects().length || el.closest('[hidden]')) continue;
       const r = el.getBoundingClientRect();
-      if (r.width && r.height) masks.push({ x: r.x - 2, y: r.y - 2, width: r.width + 4, height: r.height + 4, fade });
+      if (r.width && r.height) masks.push({ x: r.x - 2, y: r.y - 2, width: r.width + 4, height: r.height + 4, fade, erase });
     }
   }
   add('.welcome-card', 22);
   add('.side-l .block', 14);
   add('.side-r > .lbl, .side-r > .ver, .side-r > .ver-tail, .side-r > .row, .side-r .faction', 6);
   add('.topbar, .bottom', 8);
-  add('#intro-ov.on.loading .loading-indicator', 24);
+  // 加载指示器用压暗玻璃（erase .68）+ 大羽化：数字幽灵透出，不是挖空黑洞。
+  add('#intro-ov.on.loading .loading-indicator', 72, .68);
   add('#view-slots .slots-header, #view-slots .toolbar', 10);
   // Slot cards have opaque backing; masking the scrolling grid also keeps light
   // out of card gaps when reading an unfamiliar or corrupt save.
   add('#view-slots .cards', 8);
-  // lore 事件流容器也进遮罩；无 .visible 时 getClientRects 为空自然跳过。
-  add('#bg-gl-log', 6);
+  // lore 事件流容器也进遮罩；小字号文字保持全遮罩，无 .visible 时自然跳过。
+  add('#bg-gl-log', 16);
   renderer.resize(canvas.clientWidth, canvas.clientHeight, masks);
   layoutDirty = false;
 }
@@ -115,6 +119,7 @@ function commitBoard(forceNext = false) {
   const old = board; board = scratch; scratch = old;
   renderer.updateValues(board);
   commits++;
+  updateOrbitReadout();
 }
 function frame(now) {
   raf = 0; callbacks++;
@@ -208,6 +213,17 @@ function updatePauseControl() {
   const text = document.getElementById('pm19-motion-note');
   const copy = failed ? '背景已静态回退；启动与存档操作不受影响。' : media.matches ? '系统已启用减少动态，背景保持静止。' : '仅本次启动生效；不改变音频和显示设置。';
   if (text && text.textContent !== copy) text.textContent = copy;
+  updateOrbitReadout();
+}
+// about 轨道读数：引擎未就绪（含 fail/未加载完）时静态占位；值变化才写 DOM。
+function updateOrbitReadout() {
+  const el = document.getElementById('pm19-orbit');
+  if (!el) return;
+  const idx = engine && renderer && orbitCenters ? engine.lastSeedIndex() : -1;
+  const copy = idx >= 0
+    ? `轨道 #${idx + 1} · 中心质数 ${orbitCenters[idx]} · Σ=${orbitMagicSum.toLocaleString()} · 单轨 743,178,240 态`
+    : '轨道引擎未就绪';
+  if (el.textContent !== copy) el.textContent = copy;
 }
 function mountPauseControl() {
   if (retired) return;
@@ -215,7 +231,7 @@ function mountPauseControl() {
   if (parent && !document.getElementById('pm19-pause')) {
     const section = document.createElement('div');
     section.id = 'pm19-motion';
-    section.innerHTML = '<label class="audio-toggle"><input type="checkbox" id="pm19-pause"><span>暂停背景动态</span></label><p id="pm19-motion-note"></p>';
+    section.innerHTML = '<label class="audio-toggle"><input type="checkbox" id="pm19-pause"><span>暂停背景动态</span></label><p id="pm19-motion-note"></p><p id="pm19-orbit"></p>';
     parent.after(section);
     section.querySelector('input').addEventListener('change', event => pauseBackground(event.target.checked));
   }
@@ -258,6 +274,7 @@ export function inspect() {
     time, commits, cycles, callbacks, cues, scheduled: !!(timer || raf),
     cue: cue ? { ...cue } : null, hostState, userIntent, visualKind: visualKind(),
     pendingSync, loadingSince, unfreezeCommits, attempts, lore: lore ? lore.lines() : null,
+    comm: { ...comm }, logSinkDead,
     canvas: renderer ? { width: renderer.width, height: renderer.height, cache: renderer.useCache,
       masks: renderer.masks.map(({ x, y, w, h }) => ({ x, y, w, h })),
       renders: renderer.renders, rebuilds: renderer.rebuilds, estimatedPixelBytes: renderer.width * renderer.height * 4 * (renderer.surfaces.length + 1) } : null,
@@ -305,13 +322,18 @@ async function main() {
     }, { replayLatest: true }));
     unsubs.push(app.onMessage('state', message => {
       const next = message.state;
+      // 捎带字段在去重早退前也刷新：state 重放/同态再发都可能带新值。
+      if (message.socketPort !== undefined) comm.socketPort = message.socketPort;
+      if (message.httpPort !== undefined) comm.httpPort = message.httpPort;
+      if (message.flashConnected !== undefined) comm.flashConnected = message.flashConnected;
       if (next === hostState) return;
-      const now = Date.now();
-      const prevDwellMs = lastStateAt ? now - lastStateAt : 0;
-      lastStateAt = now;
       const old = hostState; hostState = next;
       paintDirty = true;
-      if (lore) try { lore.state(next, message.msg, { attempt: attempts, prevDwellMs }); } catch (_) {}
+      if (lore) try {
+        lore.state(next, message.msg, { attempt: attempts,
+          socketPort: message.socketPort, httpPort: message.httpPort,
+          flashConnected: message.flashConnected });
+      } catch (_) {}
       if (old === 'Error') cue = null;
       if (next === 'Error' || next === 'Idle') pendingSync = false;
       if (next === 'Ready' || next === 'Idle') attempts = 0;
@@ -323,7 +345,30 @@ async function main() {
       // Ready is often PREWARM. Never start, reveal, retire or declare success.
       reconcile();
     }, { replayLatest: true }));
-    unsubs.push(app.onMessage('flash_ready', () => { reconcile(); }, { replayLatest: true }));
+    unsubs.push(app.onMessage('flash_ready', message => {
+      // 看门狗降级开门仍是一次 reveal；degraded 缺省按 false 处理。
+      if (message && message.degraded === true && lore) {
+        try { lore.event('degraded-reveal'); } catch (_) {}
+      }
+      reconcile();
+    }, { replayLatest: true }));
+    // BootstrapAS 启动日志透传：宿主不带此消息时本订阅静默；lore 未挂载前的行丢弃。
+    unsubs.push(app.onMessage('boot', message => {
+      try {
+        for (const line of String((message && message.messages) || '').split('|')) {
+          if (line.indexOf('[BootstrapAS]') !== 0) continue;
+          const text = line.slice('[BootstrapAS]'.length).trim();
+          if (text && lore) lore.boot(text, { frame: message.frame });
+        }
+      } catch (_) {}
+    }));
+    // log 回写能力探测：老宿主回 error/unknown_cmd（或 log_resp!ok）即永久停用水槽。
+    unsubs.push(app.onMessage('log_resp', message => {
+      if (message && (message.ok === false || message.error === 'unknown_cmd')) logSinkDead = true;
+    }));
+    unsubs.push(app.onMessage('error', message => {
+      if (message && message.code === 'unknown_cmd' && message.msg === 'log') logSinkDead = true;
+    }));
   }
   // 确认与顶栏重试（Error 态）是同一启动动作的两个入口，叙事层镜像同一武装。
   // loading() 挡业务已受理后的键盘 Enter 重入（按钮不失效，event.repeat 挡长按）。
@@ -349,12 +394,21 @@ async function main() {
   }
   const manifest = await loadPrimeMagicSeedBank(SEED_BANK);
   if (retired) return;
+  orbitCenters = manifest.seeds.map(entry => entry.centerValue);
+  orbitMagicSum = manifest.magicSum;
   const entries = manifest.seeds.map(entry => ({ ...entry,
     url: new URL(entry.url.slice(entry.url.lastIndexOf('/') + 1), SEED_BANK).href }));
   const seeds = await Promise.all(entries.map(loadPrimeMagicSeed));
   if (retired) return;
   // lore 不依赖 renderer：种子验讫即挂，渲染器 fail() 后事件流仍可工作。
-  try { lore = mountLore(); lore.ready({ seeds: seeds.length }); }
+  try {
+    lore = mountLore({ sink: lines => {
+      // 能力探测：一旦宿主回过 unknown_cmd 即永久停用，对老宿主零噪声。
+      if (logSinkDead) return;
+      try { window.BootstrapApp?.send({ cmd: 'log', text: lines.join('\n') }); } catch (_) {}
+    } });
+    lore.ready({ seeds: seeds.length });
+  }
   catch (_) { lore = null; }
   // lore 行增删/TTL 消退改变容器尺寸：单独观察它让遮罩随内容刷新，
   // 否则扫光会从文字底下碾过（slots"横线穿字"同类透印）。

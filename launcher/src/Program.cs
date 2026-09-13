@@ -243,6 +243,76 @@ class Program
         }
     }
 
+    // 列车 C-C3：FATAL 时实名枚举端口占用者；纯诊断，任何枚举失败只降级
+    // 文案，不得影响既有 FATAL 上报路径。
+    private static readonly WindowsTcpOwnerProcessResolver
+        s_tcpListenOwnerResolver =
+            new WindowsTcpOwnerProcessResolver();
+
+    private static string DescribePortOwner(int port)
+    {
+        try
+        {
+            int pid;
+            string name;
+            string reason;
+            if (s_tcpListenOwnerResolver.TryResolveListenOwner(
+                    port, out pid, out name, out reason))
+            {
+                if (pid == 4)
+                {
+                    return " owner=http.sys/系统内核态(pid 4)，"
+                        + "可能是 URL 保留或系统服务";
+                }
+                return " owner=" + (name ?? "?")
+                    + "(pid " + pid + ")";
+            }
+            return " owner=unknown("
+                + (reason ?? "no_reason") + ")";
+        }
+        catch (Exception ex)
+        {
+            return " owner=unknown("
+                + ex.GetType().Name + ")";
+        }
+    }
+
+    private static string DescribeCandidateOwners(
+        PortAllocator alloc)
+    {
+        try
+        {
+            if (alloc == null)
+                return "";
+            var parts = new List<string>();
+            foreach (int candidate in alloc.PortList)
+            {
+                int pid;
+                string name;
+                string reason;
+                if (!s_tcpListenOwnerResolver
+                        .TryResolveListenOwner(
+                            candidate,
+                            out pid,
+                            out name,
+                            out reason))
+                {
+                    continue;
+                }
+                parts.Add(
+                    candidate + ":" + (name ?? "?")
+                        + "(" + pid + ")");
+            }
+            return " occupied={"
+                + string.Join(",", parts) + "}";
+        }
+        catch (Exception ex)
+        {
+            return " occupied={enum_failed:"
+                + ex.GetType().Name + "}";
+        }
+    }
+
     private static Task<bool> MarshalAgentRuntimeToUi(
         Control owner,
         Action callback,
@@ -1268,7 +1338,10 @@ class Program
                 "socket_start_failed",
                 "CF7-LAUNCH-SOCKET-START",
                 "本地通信端口启动失败",
-                "socketPort=" + socketPort,
+                "socketPort=" + socketPort
+                    + (socketPort >= 0
+                        ? DescribePortOwner(socketPort)
+                        : DescribeCandidateOwners(portAlloc)),
                 "请关闭重复启动的游戏/启动器后重试；如果仍失败，请重启 Windows 或把诊断包发给开发组。",
                 null,
                 config.SwfPath,
@@ -1340,6 +1413,10 @@ class Program
             projectRoot,
             socketServer,
             legacyHttpAccess);
+        // 列车 C-C1：[BootstrapAS] 日志批次转发到 bootstrap 面板；
+        // bus-only 模式 BootstrapPanel 为 null，sink 内可空容忍。
+        httpServer.SetBootstrapLogSink(
+            payload => form.BootstrapPanel?.PostToWeb(payload));
         bool httpStarted = false;
         if (httpPort >= 0)
         {
@@ -1357,7 +1434,10 @@ class Program
                 "http_start_failed",
                 "CF7-LAUNCH-HTTP-START",
                 "本地 HTTP 服务启动失败",
-                "httpPort=" + httpPort,
+                "httpPort=" + httpPort
+                    + (httpPort >= 0
+                        ? DescribePortOwner(httpPort)
+                        : DescribeCandidateOwners(portAlloc)),
                 "请关闭重复启动的游戏/启动器后重试；如果仍失败，请重启 Windows 或把诊断包发给开发组。",
                 null,
                 config.SwfPath,
@@ -2807,6 +2887,11 @@ class Program
             obj["cmd"] = "state";
             obj["state"] = state;
             obj["msg"] = smsg ?? "";
+            // 列车 C-C2：捎带通信读数；值只在 state 变迁时刷新，web 侧已知可陈旧。
+            obj["socketPort"] = socketPort;
+            obj["httpPort"] = httpPort;
+            obj["flashConnected"] =
+                socketServer != null && socketServer.IsClientReady;
             if (form.BootstrapPanel != null)
                 form.BootstrapPanel.PostToWeb(obj.ToString(Newtonsoft.Json.Formatting.None));
         };

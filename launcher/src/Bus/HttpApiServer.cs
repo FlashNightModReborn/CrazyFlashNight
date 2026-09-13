@@ -45,6 +45,7 @@ namespace CF7Launcher.Bus
         private readonly XmlSocketServer _socketServer;
         private MessageRouter _router;
         private Action _shutdownAction;
+        private Action<string> _bootstrapLogSink;
 
         // 诊断包打包器依赖：在 launcher 完整初始化后注入
         private string _swfPathForDiagnostic;
@@ -86,6 +87,15 @@ namespace CF7Launcher.Bus
         public void SetShutdownAction(Action action)
         {
             _shutdownAction = action;
+        }
+
+        /// <summary>
+        /// 注入 [BootstrapAS] 日志转发 sink（bootstrap WebView 通道，列车 C-C1）。
+        /// 可空：bus-only / 无面板模式保持 null 即为关。
+        /// </summary>
+        public void SetBootstrapLogSink(Action<string> sink)
+        {
+            _bootstrapLogSink = sink;
         }
 
         /// <summary>
@@ -284,7 +294,41 @@ namespace CF7Launcher.Bus
             string decoded = NormalizeLogBatchForLog(body);
             CF7Launcher.Diagnostic.FocusTrace.CaptureAs2LogBatch(decoded);
             LogManager.Log("[LogBatch] " + decoded);
+            MaybeForwardBootstrapLog(body, decoded);
             WriteResponse(ctx, "OK");
+        }
+
+        /// <summary>
+        /// C1：logBatch 中含 [BootstrapAS] 时整批透传给 bootstrap 面板。
+        /// 这里不拆 '|' 行 —— 保住上方"每请求一条物理记录"边界，拆行归前端。
+        /// </summary>
+        private void MaybeForwardBootstrapLog(string body, string decoded)
+        {
+            Action<string> sink = _bootstrapLogSink;
+            if (sink == null
+                || decoded == null
+                || decoded.IndexOf("[BootstrapAS]", StringComparison.Ordinal) < 0)
+            {
+                return;
+            }
+            try
+            {
+                int frame;
+                Newtonsoft.Json.Linq.JObject payload =
+                    new Newtonsoft.Json.Linq.JObject();
+                payload["type"] = "bootstrap";
+                payload["cmd"] = "boot";
+                payload["frame"] =
+                    int.TryParse(ParseFormValue(body, "frame"), out frame)
+                        ? new Newtonsoft.Json.Linq.JValue(frame)
+                        : Newtonsoft.Json.Linq.JValue.CreateNull();
+                payload["messages"] = ParseFormValue(body, "messages");
+                sink(payload.ToString(Newtonsoft.Json.Formatting.None));
+            }
+            catch (Exception ex)
+            {
+                LogManager.Log("[HTTP] bootstrap log forward failed: " + ex.Message);
+            }
         }
 
         internal static string NormalizeLogBatchForLog(

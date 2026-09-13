@@ -299,7 +299,6 @@ Agent Runtime adapter 自身的 `--adapter`、`--slot` 等 wrapper 参数见 [Co
 ## Bootstrap Web 协议
 
 Bootstrap Web 发出的命令必须由 `BootstrapMessageHandler` exact dispatch；未知命令、错误 payload 或越权状态应 fail-closed。下表是当前 command registry，处理细节以 [BootstrapMessageHandler.cs](src/Guardian/BootstrapMessageHandler.cs)和 `src/Guardian/Handlers/` 为准。
-
 <!-- launcher-bootstrap-command-registry:start -->
 | cmd | 领域 |
 |---|---|
@@ -325,6 +324,7 @@ Bootstrap Web 发出的命令必须由 `BootstrapMessageHandler` exact dispatch�
 | `open_saves_dir` | 打开存档目录 |
 | `diagnostic` | 导出诊断包 |
 | `audio_preview` | 音频预览 |
+| `log` | web→host 日志回写（免回执、512 截断、1s/20 条节流） |
 | `config_set` | 用户偏好写入 |
 | `fontpack_status` | 字体包状态；逐文件返回 `verificationState` |
 | `fontpack_install` | 字体包安装；成功项返回同字节验证状态 |
