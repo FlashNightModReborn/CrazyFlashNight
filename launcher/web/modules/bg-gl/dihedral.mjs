@@ -2,12 +2,13 @@
 // 数学依据：19×19 完整质数幻方的轨道群包含全部 8 个二面体对称（轴反转 + 转置），
 // 旋转 / 镜像当前棋盘仍在同一轨道内，结果恒为合法幻方（行 / 列 / 双对角和不变）。
 //
-// 与 renderer.mjs vertex shader 的逐帧契约（旋转中心 = size / 2，y 向下的 grid 空间）：
+// spin / mirror 字段是已退役 V1 WebGL 渲染器 vertex shader 的历史契约存档
+// （uSpin/uMirror 逐帧插值，旋转中心 = size / 2，y 向下的 grid 空间）：
 //   uSpin = +π/2  ↔ rot90：  new[r][c] = old[n-1-c][r]
 //   uSpin =  π    ↔ rot180： new[r][c] = old[n-1-r][n-1-c]
 //   uSpin = -π/2  ↔ rot270： new[r][c] = old[c][n-1-r]
 //   uMirror = -1  ↔ mirrorH：new[r][c] = old[r][n-1-c]
-// 动画把 uSpin / uMirror 缓动插值到目标值，结束瞬间换数据并归零，视觉无缝。
+// 现役消费只有 source 映射（transformBoardInto 的 CPU 侧整盘变换）。
 
 export const DIHEDRAL_KINDS = [
   { name: "rot90", spin: Math.PI / 2, mirror: 1, source: (row, column, n) => (n - 1 - column) * n + row },

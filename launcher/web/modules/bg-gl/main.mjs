@@ -1,19 +1,24 @@
-// CF7 PM19 V2. The launch controller owns all commands; this module observes.
+// CF7 PM19 V3. The launch controller owns all commands; this module observes.
 import { loadPrimeMagicSeedBank, loadPrimeMagicSeed } from './pm19/binary-seed.js';
 import { PrimeMagicSeedBankOrbitEngine } from './pm19/seed-bank-engine.js';
 import { transformBoardInto, DIHEDRAL_KINDS } from './dihedral.mjs';
 import { EnvironmentRenderer } from './environment-renderer.mjs';
+import { mountLore } from './lore.mjs';
 
 const SEED_BANK = new URL('../../assets/pm19/seed-bank.json', import.meta.url);
 const CYCLE_MS = 8000, CUE_MS = 2000;
+const CUE_PRIORITY = { error: 100, sync: 90, confirm: 80, arrival: 70, 'slots-pick': 60, 'return': 50, exchange: 40, 'exchange-pair': 40, unfreeze: 30 };
+let pendingSync = false;
 const media = window.matchMedia('(prefers-reduced-motion: reduce)');
 let canvas = document.getElementById('bg-gl');
+const modalHost = document.getElementById('modal-host');
 let renderer = null, engine = null, board = null, scratch = null;
 let retired = false, failed = false, userPaused = false, blocked = false;
 let time = 0, previousNow = 0, nextCycle = CYCLE_MS;
 let timer = 0, raf = 0, layoutDirty = true, paintDirty = true;
 let cue = null, firstList = false, hostState = null, userIntent = false;
 let commits = 0, cycles = 0, callbacks = 0, cues = 0;
+let lore = null, attempts = 0, lastStateAt = 0, loadingSince = 0, unfreezeCommits = 0, sigmaSent = false;
 const unsubs = [], observers = [], disposers = [];
 const state = { kind: 'quiet', progress: 0, still: false };
 
@@ -29,17 +34,23 @@ function clearSchedule() {
 }
 function covered() {
   const b = document.body;
-  const modal = document.getElementById('modal-host');
   // 普通加载是透明遮罩，背景仍可见；视频与建角才停止持续绘制。
   return document.hidden || b.classList.contains('intro-video')
     || b.classList.contains('character-create-preparing') || b.classList.contains('character-create-active')
-    || (modal && modal.style.display !== 'none')
+    || (modalHost && modalHost.style.display !== 'none')
     || !canvas || !canvas.isConnected
     || (!loading() && ['view-welcome', 'view-slots'].every(id => document.getElementById(id)?.hidden));
 }
 function loading() { return document.body.classList.contains('intro-playing'); }
 function isStatic() { return userPaused || media.matches || failed; }
 function visualKind() { return hostState === 'Error' ? 'error' : cue ? cue.kind : loading() ? 'loading' : 'quiet'; }
+// SYNC 同心收束只在"真启动且仍 loading"放行；PREWARM Ready 无 userIntent 天然不触发。
+// 建角流程同 lore 纪律一并排除：cc 的 Ready 不归启动叙事。
+function syncGate() {
+  const b = document.body.classList;
+  return hostState === 'Ready' && userIntent && loading()
+    && !b.contains('intro-video') && !b.contains('character-create-preparing') && !b.contains('character-create-active');
+}
 
 function measure() {
   const masks = [];
@@ -59,6 +70,8 @@ function measure() {
   // Slot cards have opaque backing; masking the scrolling grid also keeps light
   // out of card gaps when reading an unfamiliar or corrupt save.
   add('#view-slots .cards', 8);
+  // lore 事件流容器也进遮罩；无 .visible 时 getClientRects 为空自然跳过。
+  add('#bg-gl-log', 6);
   renderer.resize(canvas.clientWidth, canvas.clientHeight, masks);
   layoutDirty = false;
 }
@@ -77,13 +90,27 @@ function safePaint() {
 }
 function beginCue(kind, duration = CUE_MS, commit = false) {
   if (retired || failed) return;
-  // Cancel the OLD uncommitted animation. There is no half-board to finalize.
+  // 低优先级不抢占在播 cue：sync 改挂 pendingSync 等空档，其余直接丢弃。
+  if (cue && CUE_PRIORITY[kind] < CUE_PRIORITY[cue.kind]) {
+    if (kind === 'sync') pendingSync = true;
+    return;
+  }
+  // 覆盖在播 cue（含未及 commit 的 commit 型）是已记录的取舍；无半盘需收尾。
   cue = { kind, at: time, duration, commit };
   cues++;
   paintDirty = true;
+  // 首帧不等下个调度边界；blocked 时仅留脏标记，复显由 reconcile 补画。
+  if (!isStatic() && !blocked) { clearSchedule(); schedule(); }
 }
-function commitBoard() {
-  if (cycles % 2 === 1) transformBoardInto(board, scratch, 19, DIHEDRAL_KINDS[1]);
+function tryStartSync() {
+  if (!pendingSync || !syncGate()) return;
+  pendingSync = false;
+  beginCue('sync', 1100);
+}
+// unfreeze 恒 nextInto 换新盘（不推进 cycles 奇偶，若随 rot180 会在两盘间往复）；
+// exchange 拍保持 cycles 奇偶交替（奇 rot180 / 偶 nextInto）。
+function commitBoard(forceNext = false) {
+  if (!forceNext && cycles % 2 === 1) transformBoardInto(board, scratch, 19, DIHEDRAL_KINDS[1]);
   else engine.nextInto(scratch);
   const old = board; board = scratch; scratch = old;
   renderer.updateValues(board);
@@ -97,12 +124,21 @@ function frame(now) {
   previousNow = now;
   try {
     if (cue && time - cue.at >= cue.duration) {
-      if (cue.commit) commitBoard();
+      const doneKind = cue.kind;
+      if (cue.commit) commitBoard(doneKind === 'unfreeze');
       cue = null;
+      if (doneKind === 'unfreeze') unfreezeCommits++;
+      else if (doneKind === 'sync' && lore) { try { lore.event('sync-done'); } catch (_) {} }
+      tryStartSync();
+    }
+    // 解冻换盘：仅 loading 持续 >12s 才走 cue+commit（包络近零处换值）；harness 全程 <12s 不触发。
+    if (!cue && loading() && hostState !== 'Error' && !pendingSync && loadingSince && time - loadingSince > 12000) {
+      beginCue('unfreeze', 1600, true);
+      loadingSince = time;
     }
     if (!cue && !loading() && hostState !== 'Error' && time >= nextCycle) {
       cycles++;
-      beginCue('exchange', CUE_MS, true);
+      beginCue(cycles % 2 === 0 ? 'exchange-pair' : 'exchange', CUE_MS, true);
       nextCycle = time + CYCLE_MS;
     }
     paint();
@@ -128,6 +164,22 @@ function reconcile() {
   if (document.body.style.getPropertyValue('--pm19-topbar-height') !== topValue) document.body.style.setProperty('--pm19-topbar-height', topValue);
   const wasBlocked = blocked;
   blocked = covered();
+  // loading 计时锚点用 frame 时钟；lore 可见性跟随真实 DOM 相位而非 hostState。
+  if (loading() && !loadingSince) loadingSince = time;
+  else if (!loading()) { loadingSince = 0; sigmaSent = false; }
+  if (lore) {
+    const modalOpen = !!(modalHost && modalHost.style.display !== 'none');
+    // 建角准备/进行时是游戏内流程，不归启动叙事：lore 不显眼也不抢"正在准备角色"。
+    const ccMode = document.body.classList.contains('character-create-preparing')
+      || document.body.classList.contains('character-create-active');
+    const loreVisible = loading() && !document.body.classList.contains('intro-video') && !modalOpen && !ccMode;
+    try {
+      // phase 先行解冻（Error 冻结只在新一轮 loading 解开），随后才发行；
+      // 每轮 loading 首次可见补一条 Σ 常显行（普通行，吃 TTL 自然消退）。
+      lore.phase(loreVisible);
+      if (loreVisible && !sigmaSent) { sigmaSent = true; lore.event('sigma'); }
+    } catch (_) {}
+  }
   document.body.dataset.bgGlLifecycle = failed ? 'static-fallback' : blocked ? 'paused-covered' : isStatic() ? 'paused-static' : renderer ? 'active' : 'loading';
   if (blocked || isStatic()) { clearSchedule(); previousNow = 0; }
   else if (wasBlocked) { previousNow = performance.now(); layoutDirty = paintDirty = true; }
@@ -173,7 +225,7 @@ function fail(error) {
   if (retired || failed) return;
   failed = true;
   clearSchedule(); cue = null;
-  console.warn('[bg-gl] V2 static fallback:', error);
+  console.warn('[bg-gl] static fallback:', error);
   // Retain CSS environmental detail; release damaged bitmaps. Never remove UI.
   if (renderer) renderer.dispose();
   renderer = null;
@@ -191,6 +243,7 @@ function retire(reason = 'retired') {
   if (renderer) renderer.dispose();
   renderer = engine = board = scratch = null;
   cue = null;
+  if (lore) { try { lore.dispose(); } catch (_) {} lore = null; }
   if (canvas) canvas.remove();
   canvas = null;
   document.getElementById('pm19-motion')?.remove();
@@ -204,6 +257,7 @@ export function inspect() {
     retired, failed, blocked, paused: userPaused, reduced: media.matches,
     time, commits, cycles, callbacks, cues, scheduled: !!(timer || raf),
     cue: cue ? { ...cue } : null, hostState, userIntent, visualKind: visualKind(),
+    pendingSync, loadingSince, unfreezeCommits, attempts, lore: lore ? lore.lines() : null,
     canvas: renderer ? { width: renderer.width, height: renderer.height, cache: renderer.useCache,
       masks: renderer.masks.map(({ x, y, w, h }) => ({ x, y, w, h })),
       renders: renderer.renders, rebuilds: renderer.rebuilds, estimatedPixelBytes: renderer.width * renderer.height * 4 * (renderer.surfaces.length + 1) } : null,
@@ -229,10 +283,9 @@ async function main() {
   }
   viewObserver.observe(document.documentElement, { attributes: true, attributeFilter: ['style'] });
   observers.push(viewObserver);
-  const modal = document.getElementById('modal-host');
-  if (modal) {
+  if (modalHost) {
     const mo = new MutationObserver(() => { mountPauseControl(); reconcile(); });
-    mo.observe(modal, { attributes: true, attributeFilter: ['style'], childList: true, subtree: true });
+    mo.observe(modalHost, { attributes: true, attributeFilter: ['style'], childList: true, subtree: true });
     observers.push(mo);
   }
   if (typeof ResizeObserver === 'function') {
@@ -253,22 +306,43 @@ async function main() {
     unsubs.push(app.onMessage('state', message => {
       const next = message.state;
       if (next === hostState) return;
+      const now = Date.now();
+      const prevDwellMs = lastStateAt ? now - lastStateAt : 0;
+      lastStateAt = now;
       const old = hostState; hostState = next;
       paintDirty = true;
+      if (lore) try { lore.state(next, message.msg, { attempt: attempts, prevDwellMs }); } catch (_) {}
       if (old === 'Error') cue = null;
+      if (next === 'Error' || next === 'Idle') pendingSync = false;
+      if (next === 'Ready' || next === 'Idle') attempts = 0;
       if (next === 'Error') { userIntent = false; beginCue('error', 1500); }
       else if (next === 'Idle' && old && old !== 'Idle') {
         userIntent = false; nextCycle = time + CYCLE_MS; beginCue('return', 1200);
       }
+      if (next === 'Ready' && syncGate()) { pendingSync = true; tryStartSync(); }
       // Ready is often PREWARM. Never start, reveal, retire or declare success.
       reconcile();
     }, { replayLatest: true }));
     unsubs.push(app.onMessage('flash_ready', () => { reconcile(); }, { replayLatest: true }));
   }
-  listen(document.getElementById('btn-confirm-start'), 'click', event => {
-    if (event.currentTarget.disabled || retired || covered()) return;
-    userIntent = true; beginCue('confirm', 1200); safePaint();
+  // 确认与顶栏重试（Error 态）是同一启动动作的两个入口，叙事层镜像同一武装。
+  // loading() 挡业务已受理后的键盘 Enter 重入（按钮不失效，event.repeat 挡长按）。
+  function armLaunchIntent(event) {
+    if (event.currentTarget.disabled || event.repeat || retired || covered() || loading()) return;
+    userIntent = true; attempts++;
+    beginCue('confirm', 1200);
+    if (lore) try { lore.event('confirm'); } catch (_) {}
+    safePaint();
     // Original handler continues immediately, including video/loading coverage.
+  }
+  listen(document.getElementById('btn-confirm-start'), 'click', armLaunchIntent, true);
+  listen(document.getElementById('btn-retry'), 'click', armLaunchIntent, true);
+  // PM19 V3: 槽位卡"选择"委托绑定，#cards innerHTML 重绘不失效；
+  // 选择只是选定不是启动意图——只放列扫光（校验通道），不武装 userIntent/attempts。
+  listen(document.getElementById('cards'), 'click', event => {
+    const btn = event.target.closest('.btn-start');
+    if (!btn || btn.disabled || retired || covered()) return;
+    beginCue('slots-pick', 900);
   }, true);
   for (const id of ['btn-switch-slot', 'btn-back-welcome']) {
     listen(document.getElementById(id), 'click', () => { beginCue('return', 1000); });
@@ -279,6 +353,15 @@ async function main() {
     url: new URL(entry.url.slice(entry.url.lastIndexOf('/') + 1), SEED_BANK).href }));
   const seeds = await Promise.all(entries.map(loadPrimeMagicSeed));
   if (retired) return;
+  // lore 不依赖 renderer：种子验讫即挂，渲染器 fail() 后事件流仍可工作。
+  try { lore = mountLore(); lore.ready({ seeds: seeds.length }); }
+  catch (_) { lore = null; }
+  // lore 行增删/TTL 消退改变容器尺寸：单独观察它让遮罩随内容刷新，
+  // 否则扫光会从文字底下碾过（slots"横线穿字"同类透印）。
+  if (lore && typeof ResizeObserver === 'function') {
+    const loreRoot = document.getElementById('bg-gl-log');
+    if (loreRoot) { const lro = new ResizeObserver(onLayout); lro.observe(loreRoot); observers.push(lro); }
+  }
   engine = new PrimeMagicSeedBankOrbitEngine(seeds, crypto.getRandomValues(new BigUint64Array(1))[0]);
   board = new Uint32Array(engine.cellCount); scratch = new Uint32Array(engine.cellCount);
   engine.nextInto(board); commits++;

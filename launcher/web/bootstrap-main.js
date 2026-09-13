@@ -844,6 +844,14 @@
                          || state === 'WaitingHandshake' || state === 'Embedding'
                          || state === 'WaitingGameReady');
     cancelLaunchBtn.style.display = launchInProgress ? '' : 'none';
+    // PM19 V3: loading 相阶段文字随真实 state 更新；建角准备文案优先；容忍跳态（只写最新到达的）。
+    var stageTextMap = { Spawning:'正在拉起进程', WaitingConnect:'正在连接渲染进程',
+                         WaitingHandshake:'正在终端握手', Embedding:'正在嵌入沙箱',
+                         WaitingGameReady:'正在等待游戏就绪' };
+    if (!_characterCreatePrepToken && stageTextMap[state]) {
+      var stageEl = document.querySelector('#intro-ov .loading-text');
+      if (stageEl) stageEl.textContent = stageTextMap[state];
+    }
 
     // 欢迎页确认按钮在 Error 态切成重试样式
     if (btnConfirmStart) {
