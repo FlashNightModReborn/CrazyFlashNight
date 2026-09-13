@@ -2,7 +2,19 @@
 
 **文档角色**：Launcher Windows runtime 的身份、构建、证明、排队、promotion 与 CI 策略 canonical deep doc。
 
-## 2026-09-13 当前正式发布：现场对白、原版界面与高清立绘
+## 2026-09-13 当前正式发布：输入防御与 WebView 头像兼容
+
+完成危险 SVG 回退封堵、历史 dump 归属分离、左右 Ctrl / 消费配对、迟到点击与 capture 释放保护、分层输入观察，以及同版 Core 独立守护进程。合并上游特效并重新发布 asLoader；真实 W 故障、复活切焦和旧档报告业务仍待现场复验，准确状态 **promoted / FIELD_REVALIDATION_PENDING**。范围见[事故交接 §9](测试员输入与WebView故障-调查结论与跨机施工清单-2026-09-13.md#9-上游合并与正式发布列车2026-09-13)，机器身份见[发布证据](evidence/input-webview-runtime-release-2026-09-13.json)。
+
+- release source `fbbc47a8c0829019bec7b53b3cf173d948f9bba5`，tag `runtime-build-v2/20260913-input-webview-fix-v1`，release tree `7474442190f2ccb2f7fb102699d6e1712456f9a3`；request `A83784B1579EC153ED81E4CEC27FEDF305E3CD05646DBE880F4C18026CB72116`。
+- build identity `9BB2CB53BE4FEE27291FFCD4FD9833870894DE27A90870C70ACF5FD2BA4696CD`，33-file payload closure `7CFF130DFBDAD5F4A25A2101E6C1C843D2060D7E5D92D73FC6BBB440C33E6C61`；正式 Core DLL SHA-256 `AD2ED7DCD4C6BBA0922680641C0AAE38CB0C8F6B002B6B6C2DE2D1FF4C63E37A`。
+- 注册本地 X509 `builder-local-c / physical-host-c` 与 [GitHub hosted OIDC run 34755775524](https://github.com/FlashNightModReborn/CrazyFlashNight/actions/runs/34755775524) 对同一冻结树独立生产并达成共识，2 signer / 2 faultDomain；production policy **40/40**，policy hash `D52E741AD7682C3347B5372C4273DC2658C78563FD97F2132DC51341F845CBD0`。
+- receipt SHA-256 `2F2CBAB863863776CF416C58901EE9435C8191C06905F6244A8564E07E4C6F83`，manifest SHA-256 `1A0190E12460309C836978E551AD15D6BEC4A20C34A7BBEE1187AFA659BE4227`；promotion `2026-09-13T12:04:19.3318418Z`。旧包保留于 `tmp/runtime-promotions/20260913T120350799Z-a8b099b221684223a9582e6e3e389725/previous`。
+- C# **5424 pass + 4 explicit skip**、合并后 AS2 **795/795**、fresh Compiler **0/0**；asLoader **1351221B** / `5008394E6C8D687DBDB83FFAC775288A90AA566BFA61308F6BEE851094395CDA`。两个独立冻结树构建以正式 closure 为准，前期开发目录候选的不同字节不充当正式 builder vote 或体验代签。
+
+无候选参数的正式入口已核实 runtime 路径/identity/closure、可见前门、同版 Core 守护子进程及正常关闭，父/子进程无残留。5 份玩家/测试存档 JSON 哈希未变，启动器 `.launcher-version-marker.json` 按正常流程刷新；没有点击前门确认进入存档，不称输入/复活/报告业务 `standard_entry_verified`。主线部署提交与首次远端 Audit 在后续收尾记录中补齐。
+
+## 2026-09-13 上一正式发布：现场对白、原版界面与高清立绘
 
 现场对白迁入 NativeHud，AS2 保留剧情、句序、暂停与完成权威；恢复原 XFL 壳体和按钮，静态立绘采用高清无损 WebP，动态纸娃娃修正重复适配、统一字形比例并增加跨启动缓存。用户授权正式发布；v5 的真实游戏体验仍待复验，准确状态为 **promoted / FIELD_REVALIDATION_PENDING**。范围见[对白专项 §14](对话框迁移与高清立绘治理-调研与施工准备-2026-09-12.md#14-正式发布列车2026-09-13)，机器可读身份见[发布证据](evidence/dialogue-runtime-release-2026-09-13.json)。
 
@@ -656,7 +668,7 @@ prepare 中的派生器必须字节幂等；例如 save-repair dictionary 仅在
 
 ### 独立输入进程的构建归属（2026-09-13）
 
-`launcher/src/Guardian/HotkeyGuard.cs` 已取消 artifact source 与 csproj 排除，随 Core 编译。宿主通过同一 apphost 的 `--hotkey-guard <parentPid> <coreMvid>` 启动独立进程；该源码构建的候选及后续正式发布只能得到自身版本的拦截器，不再读取根目录历史 `hotkey_guard.exe`；既有正式 Core 的路径行为仍保持其冻结版本，需后续 promotion 才更新。这不新增 payload side-car 或工具链；模块身份与父路径验证发生在 hook 安装前。source descriptor、队列夹具与 Core CLI 注册表同步更新；此处只记录源码归属变化，不改变本文当前正式 promotion 身份。
+`launcher/src/Guardian/HotkeyGuard.cs` 已取消 artifact source 与 csproj 排除，随 Core 编译。宿主通过同一 apphost 的 `--hotkey-guard <parentPid> <coreMvid>` 启动独立进程；本次正式 promotion 后，候选与正式 Core 均使用自身版本的拦截器，不再读取根目录历史 `hotkey_guard.exe`。这不新增 payload side-car 或工具链；模块身份与父路径验证发生在 hook 安装前。source descriptor、队列夹具与 Core CLI 注册表同步更新；此处只记录源码归属变化，不改变本文当前正式 promotion 身份。
 
 ## 精确环境与隔离输出
 
