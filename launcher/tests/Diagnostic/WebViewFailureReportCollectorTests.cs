@@ -421,5 +421,16 @@ namespace CF7Launcher.Tests.Diagnostic
                 Assert.Null(WebViewFailureReportCollector.TimestampProp(new JObject { ["atUtc"] = value }));
             Assert.Null(WebViewFailureReportCollector.TimestampProp(new JObject()));
         }
+
+        [Fact]
+        public void OutOfRangeOptionalNumbersCannotAbortCollection()
+        {
+            string folder = WriteReportFolder(Path.Combine(OverlayCrashpad(), "reports"), "data.dmp");
+            string line = FailureLine(folder, "session-1").Replace("-2147483645", "9999999999999999999999999999999");
+            WriteJsonl(line);
+            Collect();
+            JToken item = Assert.Single(ReadManifest()["included"]);
+            Assert.Equal(JTokenType.Null, item["directoryReferrers"][0]["exitCode"].Type);
+        }
     }
 }

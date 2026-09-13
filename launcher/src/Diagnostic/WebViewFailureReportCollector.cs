@@ -678,7 +678,9 @@ namespace CF7Launcher.Diagnostic
         private static long? IntProp(JObject entry, string name)
         {
             JToken v = entry[name];
-            return v != null && v.Type == JTokenType.Integer ? (long?)v.Value<long>() : null;
+            return v != null && v.Type == JTokenType.Integer
+                && long.TryParse(v.ToString(), NumberStyles.Integer, CultureInfo.InvariantCulture, out long parsed)
+                ? parsed : (long?)null;
         }
 
         private static JToken NumOrNull(long? v)

@@ -654,6 +654,10 @@ Audio Platform v2 的 H1/H2 是独立的产品验收证据，不是通用 runtim
 
 prepare 中的派生器必须字节幂等；例如 save-repair dictionary 仅在结构内容变化时刷新 `generated.at`。重复 prepare 因时间戳制造 diff 属于构建门故障，不能要求维护者提交无语义的时间漂移。
 
+### 独立输入进程的构建归属（2026-09-13）
+
+`launcher/src/Guardian/HotkeyGuard.cs` 已取消 artifact source 与 csproj 排除，随 Core 编译。宿主通过同一 apphost 的 `--hotkey-guard <parentPid> <coreMvid>` 启动独立进程；该源码构建的候选及后续正式发布只能得到自身版本的拦截器，不再读取根目录历史 `hotkey_guard.exe`；既有正式 Core 的路径行为仍保持其冻结版本，需后续 promotion 才更新。这不新增 payload side-car 或工具链；模块身份与父路径验证发生在 hook 安装前。source descriptor、队列夹具与 Core CLI 注册表同步更新；此处只记录源码归属变化，不改变本文当前正式 promotion 身份。
+
 ## 精确环境与隔离输出
 
 - 新机器先运行 `tools/bootstrap-runtime-build-env.ps1`；已有环境用 `-VerifyOnly`。若已有实例的精确 MSVC 字节不匹配，bootstrap 不会用旧实例的同名 component ID 冒充锁定 payload，而会走锁定 bootstrapper 的专用 side-by-side 目录；只有工具字节已匹配、仅缺 SDK 时才对该实例执行 `modify`。Windows PowerShell 5.1 下必须逐个输出 `vswhere` 解析到的实例，禁止把顶层 JSON 数组作为单个 `Object[]` 返回后拼接安装路径。正式 producer 每次仍会重跑 `tools/check-runtime-build-env.ps1`。断网复用已有精确匹配 candidate 不需要云端；断网重建则必须预先安装通过锁定门的工具链，并已缓存 NuGet/Cargo 依赖。

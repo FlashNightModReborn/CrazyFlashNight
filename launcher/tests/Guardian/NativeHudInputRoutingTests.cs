@@ -84,6 +84,9 @@ namespace CF7Launcher.Tests.Guardian
             }
 
             public bool SessionForegroundForTest;
+            public uint? QueuedTimeForTest;
+            protected override bool HasQueuedPointerTimestamp() { return QueuedTimeForTest.HasValue; }
+            protected override uint QueuedPointerMessageTime() { return QueuedTimeForTest.Value; }
 
             protected override bool IsOwnerSessionForeground()
             {
@@ -121,6 +124,48 @@ namespace CF7Launcher.Tests.Guardian
                     MouseEventKind.Up,
                     MouseEventKind.Click
                 }, widget.Events);
+            }
+        }
+
+        [Fact]
+        public void QueuedDownBeforeFocusBoundaryCannotStartNewGestureWithDiagnosticsOff()
+        {
+            Assert.False(FocusTrace.Enabled);
+            using (Form owner = CreateOwner())
+            using (TestNativeHudOverlay hud = CreateHud(owner, out RecordingWidget widget))
+            {
+                Point center = Center(widget.ScreenBounds);
+                uint oldTime = unchecked((uint)(Environment.TickCount - 1000));
+                hud.SimulateOwnerHidden();
+                hud.SessionForegroundForTest = true;
+                hud.Resume();
+                hud.QueuedTimeForTest = oldTime;
+                SendMouse(hud, WM_LBUTTONDOWN, center);
+                Assert.DoesNotContain(MouseEventKind.Down, widget.Events);
+                hud.QueuedTimeForTest = unchecked((uint)(Environment.TickCount + 1));
+                SendMouse(hud, WM_LBUTTONUP, center);
+                Assert.DoesNotContain(MouseEventKind.Click, widget.Events);
+                widget.Events.Clear();
+                SendMouse(hud, WM_LBUTTONDOWN, center);
+                SendMouse(hud, WM_LBUTTONUP, center);
+                Assert.Contains(MouseEventKind.Click, widget.Events);
+            }
+        }
+
+        [Fact]
+        public void RejectedQueuedUpReleasesCaptureWithoutClick()
+        {
+            using (Form owner = CreateOwner())
+            using (TestNativeHudOverlay hud = CreateHud(owner, out RecordingWidget widget))
+            {
+                Point center = Center(widget.ScreenBounds);
+                SendMouse(hud, WM_LBUTTONDOWN, center);
+                hud.Capture = true;
+                hud.CancelPointerGesture("business_replaced");
+                hud.QueuedTimeForTest = unchecked((uint)(Environment.TickCount - 1000));
+                SendMouse(hud, WM_LBUTTONUP, center);
+                Assert.False(hud.Capture);
+                Assert.DoesNotContain(MouseEventKind.Click, widget.Events);
             }
         }
 

@@ -1,4 +1,4 @@
-param(
+﻿param(
     [string]$ProjectRoot,
     [string]$TestTempRoot = $env:CF7_RUNTIME_TEST_TEMP_ROOT
 )
@@ -165,7 +165,6 @@ try {
 
     foreach ($source in @(Get-ChildItem -LiteralPath (Join-Path $ProjectRoot 'launcher\src') -Recurse -File -Filter '*.cs')) {
         $relative = $source.FullName.Substring($ProjectRoot.Length + 1).Replace('\','/')
-        if ($relative -eq 'launcher/src/Guardian/HotkeyGuard.cs') { continue }
         Assert-QueueTest ($artifactSet.Contains($relative)) "managed compile input is outside artifactSource: $relative"
     }
     foreach ($source in @(Get-ChildItem -LiteralPath (Join-Path $ProjectRoot 'launcher\native') -Recurse -File | Where-Object {

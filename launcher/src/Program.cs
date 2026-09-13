@@ -1,4 +1,4 @@
-// CF7:ME Guardian Process — 入口
+﻿// CF7:ME Guardian Process — 入口
 // C# 5 语法
 
 using System;
@@ -440,6 +440,9 @@ class Program
             }
             return TrustedUnattendedRunner.Run(args);
         }
+
+        // 独立输入进程复用同一不可变 Core，先验证父进程路径和模块身份，不触达存档/游戏启动。
+        if (HotkeyGuard.IsInvocation(args)) return HotkeyGuard.Run(args[1..]);
 
         // candidate runtime-only 是显式的人类验收能力，不能让目录 walk-up 隐式触发。
         string explicitProjectRoot = TryGetProjectRootFromArgs(args);
@@ -2501,7 +2504,7 @@ class Program
         // === 正常模式：启动 Flash Player 并嵌入 ===
 
         // 快捷键拦截（独立进程）
-        string guardExe = Path.Combine(projectRoot, "hotkey_guard.exe");
+        string guardExe = Environment.ProcessPath;
         Process guardProc = null;
         if (File.Exists(guardExe))
         {
@@ -2509,11 +2512,27 @@ class Program
             {
                 ProcessStartInfo gsi = new ProcessStartInfo();
                 gsi.FileName = guardExe;
-                gsi.Arguments = Process.GetCurrentProcess().Id.ToString();
+                gsi.Arguments = "--hotkey-guard " + Process.GetCurrentProcess().Id.ToString()
+                    + " " + typeof(HotkeyGuard).Assembly.ManifestModule.ModuleVersionId.ToString("D")
+                    + (FocusTrace.Enabled ? " --diag-input" : "");
                 gsi.UseShellExecute = false;
                 gsi.CreateNoWindow = true;
-                guardProc = Process.Start(gsi);
+                gsi.RedirectStandardOutput = FocusTrace.Enabled;
+                guardProc = new Process { StartInfo = gsi };
+                if (gsi.RedirectStandardOutput)
+                    guardProc.OutputDataReceived += (_, line) => {
+                        if (line.Data != null && line.Data.Length <= 1024
+                            && line.Data.StartsWith("[HotkeyGuardInput] ", StringComparison.Ordinal))
+                            FocusTrace.Record("keyboard.guard_decision", new { raw = line.Data });
+                    };
+                guardProc.Start();
+                if (gsi.RedirectStandardOutput) guardProc.BeginOutputReadLine();
                 LogManager.Log("[Guardian] HotkeyGuard started, PID=" + guardProc.Id);
+                if (FocusTrace.Enabled) FocusTrace.Record("keyboard.guard_started", new {
+                    pid = guardProc.Id, path = guardExe,
+                    sha256 = Convert.ToHexString(System.Security.Cryptography.SHA256.HashData(File.ReadAllBytes(guardExe))),
+                    observation = "same_core_mvid", moduleVersionId = typeof(HotkeyGuard).Assembly.ManifestModule.ModuleVersionId.ToString("D")
+                });
                 StartupDiagnostics.Mark("hotkey_guard.started", "pid=" + guardProc.Id);
             }
             catch (Exception ex)
@@ -2524,7 +2543,7 @@ class Program
         }
         else
         {
-            LogManager.Log("[Guardian] hotkey_guard.exe not found, shortcuts not blocked");
+            LogManager.Log("[Guardian] Core apphost not found; independent shortcut guard unavailable");
             StartupDiagnostics.Warn("hotkey_guard.missing", guardExe);
         }
 

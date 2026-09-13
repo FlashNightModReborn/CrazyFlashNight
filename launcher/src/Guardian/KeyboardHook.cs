@@ -90,7 +90,32 @@ namespace CF7Launcher.Guardian
         private readonly HashSet<uint> _strictVks;
         private readonly uint _myPid;
         private volatile uint _flashPid; // Flash 进程 PID（嵌入前前台是 Flash 而非 Guardian）
-        private volatile bool _ctrlHeld;
+        private bool _leftCtrlHeld, _rightCtrlHeld;
+        private bool _ctrlHeld { get { return _leftCtrlHeld || _rightCtrlHeld; } }
+        [DllImport("user32.dll")] private static extern short GetAsyncKeyState(int vk);
+
+        internal static bool ControlSideAfterEvent(uint side, uint vk, bool down, bool asyncHeld)
+        {
+            // LL 回调内当前键的异步状态仍是上一边沿，当前键只服从事件。
+            return vk == side ? down : asyncHeld;
+        }
+
+        internal Func<int, short> ReadAsyncKeyState = GetAsyncKeyState;
+        internal Func<bool> LiveForegroundProbeForTests;
+
+        private void ReconcileKeyState(uint vk, bool down)
+        {
+            _leftCtrlHeld = ControlSideAfterEvent(VK_LCONTROL, vk, down, (ReadAsyncKeyState((int)VK_LCONTROL) & 0x8000) != 0);
+            _rightCtrlHeld = ControlSideAfterEvent(VK_RCONTROL, vk, down, (ReadAsyncKeyState((int)VK_RCONTROL) & 0x8000) != 0);
+            // 被本 hook 消费的 down 可能未更新 OS 异步键态，不能用 false 清其长按锁存。
+            // 外部前台的事件不被我们消费，此时可清理外部释放遗留的锁存。
+            bool external = !IsLiveApplicationForeground() && GetForegroundWindow() != IntPtr.Zero;
+            _physicalKeysDown.RemoveWhere(key => (key != vk || down)
+                && (external || (!_dialogueConsumedKeys.Contains(key) && !_shortcutConsumedKeys.Contains(key)))
+                && (ReadAsyncKeyState((int)key) & 0x8000) == 0);
+            _dialogueConsumedKeys.RemoveWhere(key => (key != vk || down) && !_physicalKeysDown.Contains(key));
+            _shortcutConsumedKeys.RemoveWhere(key => (key != vk || down) && !_physicalKeysDown.Contains(key));
+        }
         // 去抖后的进程级激活状态探针（GuardianForm 注入 AppActivationState.IsAppActive）。
         // 可空：未注入时退化为纯前台窗口判定。
         private volatile Func<bool> _isAppActive;
@@ -108,6 +133,7 @@ namespace CF7Launcher.Guardian
         private volatile Func<bool> _interactionEscProbe;
         private volatile Func<uint, Action> _dialogueKeyProbe;
         private readonly HashSet<uint> _physicalKeysDown = new HashSet<uint>();
+        private readonly HashSet<uint> _shortcutConsumedKeys = new HashSet<uint>();
         private readonly HashSet<uint> _dialogueConsumedKeys = new HashSet<uint>();
         public void SetDialogueKeyProbe(Func<uint, Action> probe) { _dialogueKeyProbe = probe; }
         public void SetInteractionEscapeProbe(Func<bool> probe) { _interactionEscProbe = probe; }
@@ -179,6 +205,10 @@ namespace CF7Launcher.Guardian
 
         public bool Install()
         {
+            _physicalKeysDown.Clear();
+            _dialogueConsumedKeys.Clear();
+            _shortcutConsumedKeys.Clear();
+            _leftCtrlHeld = _rightCtrlHeld = false;
             _running = true;
             ManualResetEvent ready = new ManualResetEvent(false);
 
@@ -222,21 +252,33 @@ namespace CF7Launcher.Guardian
         /// </summary>
         private IntPtr HookCallback(int nCode, IntPtr wParam, IntPtr lParam)
         {
-            if (nCode >= 0)
+            if (nCode >= 0 && ProcessKeyEdge(wParam.ToInt32(), lParam) != IntPtr.Zero) return new IntPtr(1);
+            return CallNextHookEx(_hookId, nCode, wParam, lParam);
+        }
+
+        internal IntPtr ProcessKeyEdge(int msg, IntPtr lParam)
+        {
             {
-                int msg = wParam.ToInt32();
                 uint vk = (uint)Marshal.ReadInt32(lParam);
+                if (vk == VK_CONTROL) vk = (Marshal.ReadInt32(lParam, 8) & 1) != 0 ? VK_RCONTROL : VK_LCONTROL;
                 bool down = msg == WM_KEYDOWN || msg == WM_SYSKEYDOWN;
                 bool up = msg == WM_KEYUP || msg == WM_SYSKEYUP;
+                ReconcileKeyState(vk, down);
                 bool repeated = down && !_physicalKeysDown.Add(vk);
                 if (up) _physicalKeysDown.Remove(vk);
+
+                if (_shortcutConsumedKeys.Contains(vk))
+                {
+                    if (up) _shortcutConsumedKeys.Remove(vk);
+                    if ((down || up) && IsLiveApplicationForeground()) return TraceDecision(vk, msg, lParam, true);
+                }
 
                 // 对话按一次推进一次。先于显示而已按住的互动键也不能被自动重复采纳。
                 // 捕获的 Action 已绑定当时行号；不得在异步执行时重新选择当前对话。
                 if (_dialogueConsumedKeys.Contains(vk))
                 {
                     if (up) _dialogueConsumedKeys.Remove(vk);
-                    if ((down || up) && IsLiveApplicationForeground()) return new IntPtr(1);
+                    if ((down || up) && IsLiveApplicationForeground()) return TraceDecision(vk, msg, lParam, true);
                 }
                 if (down && !repeated && msg == WM_KEYDOWN && !_ctrlHeld
                     && !_physicalKeysDown.Contains(0x10) && !_physicalKeysDown.Contains(0xA0)
@@ -251,14 +293,8 @@ namespace CF7Launcher.Guardian
                     {
                         _dialogueConsumedKeys.Add(vk);
                         ThreadPool.QueueUserWorkItem(_ => dialogueAction());
-                        return new IntPtr(1);
+                        return TraceDecision(vk, msg, lParam, true);
                     }
-                }
-
-                // 追踪 Ctrl 物理状态
-                if (vk == VK_CONTROL || vk == VK_LCONTROL || vk == VK_RCONTROL)
-                {
-                    _ctrlHeld = (msg == WM_KEYDOWN || msg == WM_SYSKEYDOWN);
                 }
 
                 if (msg == WM_KEYDOWN || msg == WM_SYSKEYDOWN)
@@ -275,18 +311,35 @@ namespace CF7Launcher.Guardian
 
                     if (shouldBlock && ShouldInterceptForOurApp(_strictVks.Contains(vk)))
                     {
+                        _shortcutConsumedKeys.Add(vk);
                         // 触发动作回调（异步，不阻塞钩子线程）
                         Action action;
                         if (_actionVks.TryGetValue(vk, out action) && action != null)
                         {
                             ThreadPool.QueueUserWorkItem(delegate { action(); });
                         }
-                        return new IntPtr(1); // 拦截
+                        return TraceDecision(vk, msg, lParam, true); // 拦截
                     }
                 }
             }
 
-            return CallNextHookEx(_hookId, nCode, wParam, lParam);
+            return TraceDecision((uint)Marshal.ReadInt32(lParam), msg, lParam, false);
+        }
+
+        private IntPtr TraceDecision(uint vk, int message, IntPtr data, bool blocked)
+        {
+            if (CF7Launcher.Diagnostic.FocusTrace.Enabled &&
+                (vk == 0x57 || vk == 0x41 || vk == 0x53 || vk == 0x44 || vk == 0x52
+                    || vk == VK_LCONTROL || vk == VK_RCONTROL))
+                CF7Launcher.Diagnostic.FocusTrace.Record("keyboard.decision", new {
+                    hook = "KeyboardHook", vk, message, blocked,
+                    leftCtrl = _leftCtrlHeld, rightCtrl = _rightCtrlHeld,
+                    hookTime = unchecked((uint)Marshal.ReadInt32(data, 12)),
+                    flags = Marshal.ReadInt32(data, 8),
+                    foreground = GetForegroundWindow().ToInt64(),
+                    liveApplicationForeground = IsLiveApplicationForeground()
+                });
+            return blocked ? new IntPtr(1) : IntPtr.Zero;
         }
 
         /// <summary>
@@ -329,6 +382,7 @@ namespace CF7Launcher.Guardian
 
         private bool IsLiveApplicationForeground()
         {
+            if (LiveForegroundProbeForTests != null) return LiveForegroundProbeForTests();
             IntPtr foreground = GetForegroundWindow();
             if (foreground == IntPtr.Zero) return false;
             uint pid;

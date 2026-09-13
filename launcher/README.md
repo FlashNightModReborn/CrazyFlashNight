@@ -46,7 +46,7 @@ compiled → candidate_built → candidate_executed → e2e_verified → promote
 | SDK | exact .NET SDK，禁止 feature-band 漂移 | [global.json](../global.json) |
 | NuGet | WebView2、ClearScript、Vortice、SkiaSharp、Svg.Skia、Newtonsoft.Json | [Directory.Packages.props](Directory.Packages.props) |
 | Web | HTML/CSS/JavaScript、WebView2、V8 模块 | [web](web/) |
-| Native | C++ bootstrap、HotkeyGuard、miniaudio side-car | [native](native/) |
+| Native | C++ bootstrap、miniaudio side-car | [native](native/) |
 | Tests | xUnit、Node browser/harness、专项 PowerShell/Python gate | [tests](tests/) 与 [testing guide](../agentsDoc/testing-guide.md) |
 
 ## 运行架构
@@ -138,7 +138,7 @@ Agent Runtime 的 wire、受信 runner、credential bootstrap、30 秒预算和 
 | [src/AgentRuntime](src/AgentRuntime/) | named pipe、MCP/JSON adapters、观察与写 lease |
 | [src/Config](src/Config/) | `config.toml` 与用户偏好解析 |
 | [web](web/) | Bootstrap、Overlay、Panel、minigame、样式和静态资源 |
-| [native](native/) | bootstrap、HotkeyGuard 和原生 side-car 源码 |
+| [native](native/) | bootstrap 和原生 side-car 源码 |
 | [tests](tests/) | Launcher xUnit 工程、fixtures 和 exact-SDK runner |
 | [perf](perf/) | Web Overlay 性能 harness 与审计说明 |
 | [data](data/) | Launcher 运行时 schema、字体与数据资源 |
@@ -192,7 +192,7 @@ chcp.com 65001 | Out-Null
 powershell -File launcher/tests/run_tests.ps1
 ```
 
-Runner 先验证 exact SDK resolver 与 `xunit.runner.json`，再从仓库根执行 Release `dotnet test`。SDK 由 [global.json](../global.json)精确锁定；测试集合串行策略由 [xunit.runner.json](tests/xunit.runner.json)与对应测试共同约束。
+Runner 验证 exact SDK resolver 与串行 xUnit 策略，再从仓库根执行 Release `dotnet test`；SDK 锁定见 [global.json](../global.json)。真实头像 WebView2 夹具只在 `CF7_TEST_PORTRAIT_WEBVIEW=1` 时运行，证据和边界见[头像工具说明](../tools/portrait-pilot/README.md)。
 
 ### 测试覆盖
 
@@ -282,6 +282,8 @@ Web/Node、真实 Edge harness、AS2 runner、Flash CS6 publish-only smoke、can
 | 参数 | 类别 | 作用 |
 |---|---|---|
 | `--project-root <abs>` | bootstrap → Core | 注入项目根；Core 消费后从其余参数剥离 |
+| `--hotkey-guard <pid> <mvid>` | 宿主内部 | 以同一 Core apphost 启动独立键盘守护进程；父路径与模块身份必须一致 |
+| `--diag-input` | 守护子模式内部 | 只随 hotkey-guard 输出有界白名单键态，不启动游戏或采任意键盘文本 |
 | `--bus-only` | 开发 | 跳过正式 Flash 启动链，保留 Bus/Overlay 供 CS6 testMovie 或工具连接 |
 | `--force-webview-fail` | 测试 | 强制 WebView2 预检失败分支 |
 | `--verify-only` | bootstrap verifier | 校验正式根部署后退出 |
@@ -417,8 +419,6 @@ Bootstrap 存档编辑器当前提供 schema 驱动的简易系统设置、原�
 | candidate/正式身份不符 | verifier 输出、process path、manifest、identity、closure 和 consensus |
 Flash/AS2 变更的编译与 smoke 必须遵守 [Flash CS6 自动化说明](../scripts/FlashCS6自动化编译.md)；没有新鲜 trace、Output Panel 或 IDE 复核时，不声称“已编译通过”。
 ## 维护规则
-
-以下变化必须在同轮更新本 README 对应 registry/地图，并运行文档治理：
 
 - Core/Bootstrap 入口、参数或启动阶段变化；`AppConfig` key、环境覆盖或用户偏好写入边界变化；
 - Bootstrap `cmd`、Panel id、lazy 最终模块或 minigame 入口变化；

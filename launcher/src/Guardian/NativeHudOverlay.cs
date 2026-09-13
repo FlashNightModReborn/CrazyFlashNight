@@ -150,6 +150,7 @@ namespace CF7Launcher.Guardian
         /// <summary>Panel 关闭后调用：重新评估 widget union 决定可见性。</summary>
         public void Resume()
         {
+            _pointerBoundary = unchecked((uint)Environment.TickCount);
             _suspendedForPanel = false;
             NotifyResumableState();
             if (FocusTrace.Enabled) FocusTrace.Record("hud.resume");
@@ -794,6 +795,28 @@ namespace CF7Launcher.Guardian
 
         protected override void WndProc(ref Message m)
         {
+            if (IsFocusMouseMessage(m.Msg) && HasQueuedPointerTimestamp())
+            {
+                uint messageTime = QueuedPointerMessageTime();
+                long packed = m.LParam.ToInt64();
+                Point point = PointToScreen(new Point((short)packed, (short)(packed >> 16)));
+                var decision = HitTestScreen(point) as RightContextWidget;
+                bool current = !_suspendedForPanel && IsOwnerSessionForeground()
+                    && (!_pointerBoundary.HasValue || PointerInputBoundary.IsCurrent(messageTime, _pointerBoundary.Value))
+                    && (decision == null || PointerInputBoundary.IsCurrent(messageTime, decision.InputBoundaryTick));
+                if (!current)
+                {
+                    if (FocusTrace.Enabled) FocusTrace.Record("hud.stale_pointer", new {
+                        message = m.Msg, messageTime, boundary = _pointerBoundary,
+                        businessBoundary = decision?.InputBoundaryTick, foreground = IsOwnerSessionForeground()
+                    });
+                    CancelPointerGesture("stale_queued_edge", false);
+                    // 被拒绝的 up 不进入 WinForms 默认处理，必须自行释放旧 capture。
+                    if (Capture) Capture = false;
+                    m.Result = IntPtr.Zero;
+                    return;
+                }
+            }
             if (m.Msg == WM_MOUSEACTIVATE)
             {
                 // 关键：返回 MA_NOACTIVATE 让点击不抢前台。
@@ -840,9 +863,11 @@ namespace CF7Launcher.Guardian
         private bool _handlingMouseUp;
 
         private string _focusGesture;
+        private uint? _pointerBoundary;
 
-        internal void CancelPointerGesture(string reason = "explicit")
+        internal void CancelPointerGesture(string reason = "explicit", bool advanceBoundary = true)
         {
+            if (advanceBoundary) _pointerBoundary = unchecked((uint)Environment.TickCount);
             if (FocusTrace.Enabled && _leftDownWidget != null)
                 FocusTrace.Record("hud.cancel", new { reason, widget = _leftDownWidget.GetType().Name }, _focusGesture);
             INativeHudWidget down = _leftDownWidget;
@@ -866,6 +891,7 @@ namespace CF7Launcher.Guardian
 
         protected override void OnOwnerVisibilityChanged(bool ownerVisible)
         {
+            _pointerBoundary = unchecked((uint)Environment.TickCount);
             base.OnOwnerVisibilityChanged(ownerVisible);
             if (!ownerVisible)
             {
