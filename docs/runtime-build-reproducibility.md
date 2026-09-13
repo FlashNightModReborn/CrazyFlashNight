@@ -17,6 +17,8 @@
 
 首次 v1 源 `5df93d1d524742de8ccf3aa652713f8f9988dd4c` 已获本地及 cloud run `34745615347` 的相同构建，但 policy 为 **38/40**，未部署。v2 同步上游三蝶手稿独立图标对应的身份计数与材料来源哈希侧车，源码 Audit `34746355321` 发现 JSON 夹具未绑定发布输入，进行中的 policy 主动终止。v3 补入精确夹具路径；未改变材料字典 XML、三名分离反例或检查门槛。v1/v2 tag、request 与失败或中止日志保留为 **superseded / NOT_DEPLOYED**。
 
+部署提交 `33d4276134d2cc5ecf63781848acdf3268f5c018` 已快进推送 `main`；[事后 Audit 34747462287](https://github.com/FlashNightModReborn/CrazyFlashNight/actions/runs/34747462287) 成功，远端独立重放最终云端证明、核验 33 文件与 2 signer / 2 faultDomain，明确输出 `state=promoted / deploymentChanged=true`。本地 Index strict verifier 同样通过；上一整包保留于 `tmp/runtime-promotions/20260913T081441012Z-f3deff9048b848328a005027b92e11b6/previous`。专项真实游戏复验仍为 pending。
+
 ## 2026-09-13 上一正式发布：暂存与战备箱共享收纳工作台
 
 暂存、战备箱和仓库共用双栏布局、物品视图、数量控件、转移与注释生命周期。从暂存入口直接进入，堆叠数量可在底栏输入或滑动；修复药剂领取引导、完整注释输出及切源后注释失效。批量选择限定当前页，受阻暂存物品保留，未加入跨页自动领取循环。测试员已确认最终体验；实现和人验范围见[共享收纳专档](暂存物资并入共享收纳工作台-调研与施工方案-2026-09-12.md#109-正式部署与收尾证据)。

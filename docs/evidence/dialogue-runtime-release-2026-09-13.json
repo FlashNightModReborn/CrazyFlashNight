@@ -74,7 +74,20 @@
     "tmp/u2-dialogue-20260913/release-promote.log": "1337A340C086ECA2AE29EBBD96FEB23D27D4BAF0474598D8854A30154DE871E1",
     "tmp/u2-dialogue-20260913/asLoader-publish-release-output.txt": "4079A3F186452C17A1D53EFC7D0144B4A1746CE6829F625EFA8D25A56220ED72",
     "tmp/u2-dialogue-20260913/asLoader-publish-release-errors.txt": "6D64657E843CFA06C243B6B51F8732C1B5910EBD29940AA7F6F9342B38034FD3",
-    "tmp/u2-dialogue-20260913/v1-release-local.log": "7A4075EB5EB45137695D2CD50295309232DCB20A5262BB606DBFBAAA3DE600E9"
+    "tmp/u2-dialogue-20260913/v1-release-local.log": "7A4075EB5EB45137695D2CD50295309232DCB20A5262BB606DBFBAAA3DE600E9",
+    "tmp/u2-dialogue-20260913/release-staged-verify.log": "E335642F478B9297B119ACEF443F41E0D49839A06BB705B602FE5F1B6158C336",
+    "tmp/u2-dialogue-20260913/release-deployment-audit.log": "BF59DAB1EE33E6623AC8A2EB7CC4277C2B55C48AD4C4214AD65F37B0086CBF44"
   },
-  "previousBundlePath": "tmp/runtime-promotions/20260913T081441012Z-f3deff9048b848328a005027b92e11b6/previous"
+  "previousBundlePath": "tmp/runtime-promotions/20260913T081441012Z-f3deff9048b848328a005027b92e11b6/previous",
+  "deploymentCommit": "33d4276134d2cc5ecf63781848acdf3268f5c018",
+  "deploymentAudit": {
+    "runId": 34747462287,
+    "url": "https://github.com/FlashNightModReborn/CrazyFlashNight/actions/runs/34747462287",
+    "conclusion": "success",
+    "state": "promoted",
+    "deploymentChanged": true,
+    "signers": 2,
+    "faultDomains": 2,
+    "gameplayRevalidated": false
+  }
 }
