@@ -2,7 +2,22 @@
 
 **文档角色**：Launcher Windows runtime 的身份、构建、证明、排队、promotion 与 CI 策略 canonical deep doc。
 
-## 2026-09-13 当前正式发布：暂存与战备箱共享收纳工作台
+## 2026-09-13 当前正式发布：现场对白、原版界面与高清立绘
+
+现场对白迁入 NativeHud，AS2 保留剧情、句序、暂停与完成权威；恢复原 XFL 壳体和按钮，静态立绘采用高清无损 WebP，动态纸娃娃修正重复适配、统一字形比例并增加跨启动缓存。用户授权正式发布；v5 的真实游戏体验仍待复验，准确状态为 **promoted / FIELD_REVALIDATION_PENDING**。范围见[对白专项 §14](对话框迁移与高清立绘治理-调研与施工准备-2026-09-12.md#14-正式发布列车2026-09-13)，机器可读身份见[发布证据](evidence/dialogue-runtime-release-2026-09-13.json)。
+
+- release source `e04f86be7b258d1eb4995c03a9216ea3ba0fc155`，不可变 tag `runtime-build-v2/20260913-native-dialogue-hd-v3`，release tree `471ab7bdc9b346679757a0d3add8fb53ac1cbf2e`；request `F28B9F3678E56071542A10769F3E6F3DE6BF4FEACCD98C00204B242AB386F03F`。
+- artifact source `988A6499EB43447CBD591F2535AD7ECAE680A33EA58AA93E869733ED1CB55549`；producer recipe `0AED3CE28E95E2FD1D6D1F516424D977FC5411F7446380C1A70D3836D243D49F`；toolchain lock `7B83229BE93F8244810CDD23DAFD97875B23857E547DE520035FE23B453CB3CD`；build identity `E96A9A3B95CD10B473DB712181966D1011E647A8DF32A23A35E34682B01B1AF3`。
+- 33-file payload closure `8D9630E2BB294607A7AB8988B8AF280A932C9925082DF82355011B42C1FDD870`；Core DLL SHA-256 `CDBE4B8EA961CFB758EBDF425EB5BA965555A4F76D1C4483D53CF7617A954F6A`，与 v5-cache 组件验证候选一致。
+- 本地 X509 `builder-local-b / physical-host-b` 与 GitHub hosted OIDC/Sigstore 独立构建并通过相同 identity/closure；[云端 run 34746666853](https://github.com/FlashNightModReborn/CrazyFlashNight/actions/runs/34746666853) 核对不可变标签、tag API、workflow SHA 和 run headSha。本地沿相同原生 identity 复用首次真实 CAS 签名，云端对最终标签重新出具证明。[源码 Audit 34746610918](https://github.com/FlashNightModReborn/CrazyFlashNight/actions/runs/34746610918) 通过，部署前为 source-ahead。
+- production policy **40/40**；policy hash `EB7BAA5E6E7E9B4482D8CF2A6237DAA4ABEB0D99D11D33EDEF6F87B757366E4E`；receipt SHA-256 `CAC19D9CD636E468D1A162E8E881298BFE411150487EAC1BB2F2CA2E7B7519A4`；manifest SHA-256 `8FE7F58CC26394CE8D6EE88C301B7ED98AC3215A489F6C53B419046329180991`；consensus SHA-256 `5BBBFB6D87056738F7FA8FD287DB92B2B4A00F70CD3840B1E352D98D1B238E96`。原子 promotion `2026-09-13T08:15:07.9677856Z`；通用事务包含严格双签名/双故障域和 full-install bootstrap 完整性验证。
+- C# canonical **5,409 passed / 3 existing skipped / 0 failed**，构建输入合同 **184/184**。新旧上游合并后的 asLoader 为 **1,350,391B** / `79AA4BB4910A53917D2FBC501CADC807878DEFE43C9D62013D5B04E3C7642CB5`；fresh CS6 publish **440 秒，Compiler 0/0**。对白原 150 项 AS2 断言和 20 张组件成图仍按原证据范围保留，不外推真实游戏验证。
+
+部署前后 23 份存档 JSON（含启动器版本标记）哈希一致，未运行游戏对白或回滚玩家进度。用户此前发现并反馈的问题、最新修复和体验边界继续见专项；不称对白业务 `standard_entry_verified`。源码、发布请求、测试、共识与部署是不同证据层，未以 CI 绿灯补签实际体验。
+
+首次 v1 源 `5df93d1d524742de8ccf3aa652713f8f9988dd4c` 已获本地及 cloud run `34745615347` 的相同构建，但 policy 为 **38/40**，未部署。v2 同步上游三蝶手稿独立图标对应的身份计数与材料来源哈希侧车，源码 Audit `34746355321` 发现 JSON 夹具未绑定发布输入，进行中的 policy 主动终止。v3 补入精确夹具路径；未改变材料字典 XML、三名分离反例或检查门槛。v1/v2 tag、request 与失败或中止日志保留为 **superseded / NOT_DEPLOYED**。
+
+## 2026-09-13 上一正式发布：暂存与战备箱共享收纳工作台
 
 暂存、战备箱和仓库共用双栏布局、物品视图、数量控件、转移与注释生命周期。从暂存入口直接进入，堆叠数量可在底栏输入或滑动；修复药剂领取引导、完整注释输出及切源后注释失效。批量选择限定当前页，受阻暂存物品保留，未加入跨页自动领取循环。测试员已确认最终体验；实现和人验范围见[共享收纳专档](暂存物资并入共享收纳工作台-调研与施工方案-2026-09-12.md#109-正式部署与收尾证据)。
 
