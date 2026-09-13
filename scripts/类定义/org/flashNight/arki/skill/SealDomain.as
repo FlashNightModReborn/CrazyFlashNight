@@ -62,7 +62,7 @@ class org.flashNight.arki.skill.SealDomain {
      * ⚠ 必须与 `_root.主动战技函数.长枪.天启大封印.法阵Y偏移` 保持一致 ——
      *   那边管「元件摆在哪」，这边管「判定圆心在哪」。两边对不上，判定整体偏移。
      */
-    public static var 宿主Y偏移:Number = 80;
+    public static var 宿主Y偏移:Number = 120;
 
     /** X 轴判定半径（像素）：圆心左右各 300。 */
     public static var 范围半径X:Number = 300;
@@ -77,7 +77,7 @@ class org.flashNight.arki.skill.SealDomain {
      * ⚠ 改这个值只影响纵深，不影响左右；法阵素材的高度若与判定不一致，
      *   需要在元件里调图形，不要反过来把判定改成不对称。
      */
-    public static var 范围半径Z:Number = 80;
+    public static var 范围半径Z:Number = 120;
 
     /**
      * 每隔多少帧补收一次新走进范围的敌人（1 = 每帧，越大越省）。

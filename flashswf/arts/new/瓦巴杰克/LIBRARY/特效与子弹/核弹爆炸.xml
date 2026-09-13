@@ -1,8 +1,8 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="特效与子弹/核弹爆炸" itemID="68937d80-000006ec" linkageExportForAS="true" linkageIdentifier="核弹爆炸" lastModified="1789287688">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="特效与子弹/核弹爆炸" itemID="68937d80-000006ec" linkageExportForAS="true" linkageIdentifier="核弹爆炸" lastModified="1789297282">
   <timeline>
-    <DOMTimeline name="核弹爆炸" currentFrame="78">
+    <DOMTimeline name="核弹爆炸" currentFrame="12">
       <layers>
-        <DOMLayer name="Script Layer" color="#83CD50" locked="true">
+        <DOMLayer name="Script Layer" color="#83CD50" locked="true" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <Actionscript>
@@ -166,7 +166,7 @@ this.removeMovieClip();
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 2" color="#31E18C" outline="true" current="true" isSelected="true" useOutlineView="true">
+        <DOMLayer name="Layer 2" color="#31E18C" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements/>
@@ -325,7 +325,7 @@ this.removeMovieClip();
               <elements>
                 <DOMSymbolInstance libraryItemName="特效与子弹/上帝之杖/无AS链接/Symbol 13" centerPoint3DX="-671.2" centerPoint3DY="-609.7">
                   <matrix>
-                    <Matrix a="5.97727966308594" d="3.69923400878906" tx="-71.75" ty="-78.75"/>
+                    <Matrix a="5.97727966308594" d="3.69921875" tx="-71.75" ty="-78.75"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="14.3" y="24.65"/>
