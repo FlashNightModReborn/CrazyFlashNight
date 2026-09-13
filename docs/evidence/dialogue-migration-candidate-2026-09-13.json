@@ -1,0 +1,741 @@
+{
+  "schema": "cf7.dialogue-migration-candidate-evidence.v1",
+  "role": "Historical implementation and verification snapshot; not a runtime authority or release gate",
+  "recordedAtUtc": "2026-09-13T00:29:04.573789+00:00",
+  "baseCommit": "757ef93637e99cb1a41b1f5dfa8ec9c9e4d6a4d9",
+  "state": "candidate_built",
+  "deploymentStatus": "NOT_DEPLOYED",
+  "committedThisImplementation": false,
+  "pushedThisImplementation": false,
+  "nativeCandidate": {
+    "directory": "tmp/runtime-candidates/v2/u2-dialogue-v2",
+    "buildIdentityHash": "A1F4F940EBD793FA21EB301CF45EA5B341F9B1EE912D752D058F84BF1E829C70",
+    "payloadClosureHash": "B990274C5CFEF269D6B2BA9E3298A9CEFE22617C6EB6BB85C54DA46D282BE033",
+    "artifactSourceHash": "45D6F53DABD0B8F002A8060DAD0CFEA3EDB20B935B763739962DA66A77DE328C",
+    "producerRecipeHash": "0AED3CE28E95E2FD1D6D1F516424D977FC5411F7446380C1A70D3836D243D49F",
+    "toolchainLockHash": "7B83229BE93F8244810CDD23DAFD97875B23857E547DE520035FE23B453CB3CD",
+    "core": {
+      "path": "tmp/runtime-candidates/v2/u2-dialogue-v2/runtime/CRAZYFLASHER7MercenaryEmpire.Core.dll",
+      "bytes": 4507648,
+      "sha256": "89d4260cf479f17c893df92ce68dcd32933bbcb7f1818fc21d475237c3c667b8"
+    },
+    "metadata": {
+      "path": "tmp/runtime-candidates/v2/u2-dialogue-v2/runtime-build-metadata.v2.json",
+      "bytes": 1241,
+      "sha256": "b66084a96b0b47409f7aa97c5dc0ac309c40c35932d463a77f1abb00c28eba09"
+    },
+    "buildLog": {
+      "path": "tmp/u2-dialogue-20260913/candidate-build-2.log",
+      "bytes": 5568,
+      "sha256": "9a966fb8135795197a6a4fecfbe30df85e3fbb9c449b9b9fc23accc0b191a3ac"
+    }
+  },
+  "as2": {
+    "lastFocusedPassed": 109,
+    "lastFocusedFailed": 0,
+    "runId": "da124ea619ec43b2af92d21157600f76",
+    "currentSourceFullyCompiledAndTested": false,
+    "untestedDelta": "Legacy append restart, detached caller array and player-name placeholder; four new assertions await compile recovery",
+    "latePublish": "300s timeout then fresh SWF, zero compiler errors/warnings and terminal Output; baseline restored",
+    "evidence": [
+      {
+        "path": "tmp/u2-dialogue-20260913/as2-tests-3.log",
+        "bytes": 7049,
+        "sha256": "179fe6bfaea93d3e8cbea1d791b747f18ca473c208f0065e92e5ccf1ffb7f100"
+      },
+      {
+        "path": "tmp/u2-dialogue-20260913/as2-tests-3-trace.txt",
+        "bytes": 4869,
+        "sha256": "b540c4cfd2f8395f1516d0aa4e1b538ba77bfc85dd54cd27fd6bcfdc3733c2e2"
+      },
+      {
+        "path": "tmp/u2-dialogue-20260913/asLoader-publish-2.log",
+        "bytes": 1187,
+        "sha256": "e42edf8a80577ae16294e35b2852a078d8e4c590b4a2ac17dad3087bc9708d96"
+      },
+      {
+        "path": "tmp/u2-dialogue-20260913/asLoader-publish-2-output.txt",
+        "bytes": 67,
+        "sha256": "4079a3f186452c17a1d53efc7d0144b4a1746ce6829f625efa8d25a56220ed72"
+      },
+      {
+        "path": "tmp/u2-dialogue-20260913/asLoader-candidate.swf",
+        "bytes": 1349196,
+        "sha256": "19ab4ed93ced96fc4f5eca791aa259a7d2e2b9821fb436d5321c4531ca930a19"
+      }
+    ]
+  },
+  "hostTests": {
+    "passed": 63,
+    "failed": 0,
+    "dialogueTests": 50,
+    "nativeHudInputRoutingTests": 13,
+    "filter": "FullyQualifiedName~NativeDialogue|FullyQualifiedName~NativeHudInputRoutingTests",
+    "log": {
+      "path": "tmp/u2-dialogue-20260913/dialogue-tests-4.log",
+      "bytes": 50760,
+      "sha256": "407ea3cdc29d827194a5e6f44c5c7791781b57bedd84a833aff0618d867f6279"
+    }
+  },
+  "staticPortraits": {
+    "entries": 95,
+    "assets": 152,
+    "totalBytes": 34348766,
+    "format": "lossless-webp",
+    "zoom": 2,
+    "supersample": 2,
+    "nestedMinimumVisibleHeight": 1024,
+    "missingFrames": [],
+    "missingExternalSwf": [],
+    "sourceCollisions": 6,
+    "manifest": {
+      "path": "launcher/web/assets/dialogue-portraits/manifest.json",
+      "bytes": 105113,
+      "sha256": "14d39a70dfdd262d9ed002230417319509b9e61134b1fe99d8c3e9ed03ab8fb7"
+    },
+    "report": {
+      "path": "launcher/web/assets/dialogue-portraits/report.json",
+      "bytes": 3560,
+      "sha256": "4ebe643d1f044734a47c759a992d688fdf48c28e22166c2d90199c5fe1bb087d"
+    },
+    "verification": {
+      "path": "tmp/u2-dialogue-20260913/portrait-authority-final.log",
+      "bytes": 511,
+      "sha256": "fa629fabdc7cc1a6675b7eddf76bba64b06e328a7ecbf824ea94894c1d72abc5"
+    }
+  },
+  "faceExports": {
+    "status": "only_dialogue_face_entries_changed",
+    "skinKeyCount": 2860,
+    "changed": [
+      "女变装-基本脸型",
+      "男变装-基本脸型"
+    ],
+    "otherTopLevelDataPreserved": true,
+    "assets": [
+      {
+        "key": "女变装-基本脸型",
+        "expression": "普通",
+        "path": "launcher/web/assets/dressup/skins/f84992cd_1.png",
+        "bytes": 15523,
+        "sha256": "34c7cdceb5c05e8387e7a8d29ec0c91854b99592d09b8086b72b50fa012cc7b3"
+      },
+      {
+        "key": "女变装-基本脸型",
+        "expression": "愤怒",
+        "path": "launcher/web/assets/dressup/skins/f84992cd_expr_2.png",
+        "bytes": 16079,
+        "sha256": "a30b8ba00225350bd9b1e65a7e55298716d328cc6cdcf351e5b007852973b010"
+      },
+      {
+        "key": "女变装-基本脸型",
+        "expression": "微笑",
+        "path": "launcher/web/assets/dressup/skins/f84992cd_expr_3.png",
+        "bytes": 15900,
+        "sha256": "c4008a7a7265e4147c4153869de0937849cf4be67fff36bb484565d2a96e2533"
+      },
+      {
+        "key": "女变装-基本脸型",
+        "expression": "大笑",
+        "path": "launcher/web/assets/dressup/skins/f84992cd_expr_4.png",
+        "bytes": 14855,
+        "sha256": "78588bff4f9c12ecbd929c4116eb22cc8dd94ab95c188aede9156aa8367dba1a"
+      },
+      {
+        "key": "女变装-基本脸型",
+        "expression": "严肃",
+        "path": "launcher/web/assets/dressup/skins/f84992cd_expr_5.png",
+        "bytes": 15958,
+        "sha256": "d5f9c4115f7107a02042b83989b5f28fbb6538aebbab3226b22832b0c87d3af2"
+      },
+      {
+        "key": "男变装-基本脸型",
+        "expression": "普通",
+        "path": "launcher/web/assets/dressup/skins/db0204be_1.png",
+        "bytes": 21926,
+        "sha256": "cda3cef017769a95c572110ec6bdbf94f82fbdadfa3b8fcb92978feefc3bc82e"
+      },
+      {
+        "key": "男变装-基本脸型",
+        "expression": "愤怒",
+        "path": "launcher/web/assets/dressup/skins/db0204be_expr_2.png",
+        "bytes": 24360,
+        "sha256": "e55ca2967209642fa51b38cb1d011f69921b0817de7dfa8818d0ebd329d3e6e0"
+      },
+      {
+        "key": "男变装-基本脸型",
+        "expression": "微笑",
+        "path": "launcher/web/assets/dressup/skins/db0204be_expr_3.png",
+        "bytes": 22042,
+        "sha256": "8d30e86f9254e3e8af70486141d352cdd62c80653aab039d224988d0093c2ab2"
+      },
+      {
+        "key": "男变装-基本脸型",
+        "expression": "大笑",
+        "path": "launcher/web/assets/dressup/skins/db0204be_expr_4.png",
+        "bytes": 21876,
+        "sha256": "2b787b20304f52da2687ef99136436a57a7433523188dacf043a649ac6bbac20"
+      },
+      {
+        "key": "男变装-基本脸型",
+        "expression": "严肃",
+        "path": "launcher/web/assets/dressup/skins/db0204be_expr_5.png",
+        "bytes": 22316,
+        "sha256": "c9dad9d06fb1c1358f4c1e975291b49da7aac8358d3707f4e0b47253b655d875"
+      }
+    ]
+  },
+  "dressupIntegrity": {
+    "result": {
+      "skinKeys": 2860,
+      "nestedLayers": 27,
+      "compressedNestedLayers": 15,
+      "exportableMissingExport": 0,
+      "orphanSkinPngs": 0,
+      "skinPngTotalBytes": 105364476,
+      "reportTimelineCompressedFrameRefs": 215,
+      "failures": []
+    },
+    "manifest": {
+      "path": "launcher/web/assets/dressup/manifest.json",
+      "bytes": 4656504,
+      "sha256": "e8e89e657a274d6f33cd29b0290c09a605cb6fa89fd67c0a185bc0bd5026235e"
+    }
+  },
+  "shopDerivedClosure": {
+    "subjectsUnchanged": true,
+    "count": 35,
+    "scopeComparison": {
+      "path": "tmp/u2-dialogue-20260913/shop-scope-closure.json",
+      "bytes": 11543,
+      "sha256": "270c5b95f073a4df078fc91d816331c82a4ae7c3e97bccf5217fee06c48bcbcd"
+    },
+    "manifest": {
+      "path": "launcher/web/assets/shop-portraits/manifest.json",
+      "bytes": 12322,
+      "sha256": "5e28de6479fdc55acc90f4a75ae9136554ac36549ff330e392f6b455eb10e4bb"
+    },
+    "provenance": {
+      "path": "launcher/web/assets/shop-portraits/provenance.json",
+      "bytes": 38056,
+      "sha256": "b18f70a7469e490ce660b86768785b52cbfe0defa9f55fd66e6ce44b57a5008e"
+    },
+    "receipt": {
+      "path": "launcher/web/assets/shop-portraits/promotion-receipt.json",
+      "bytes": 539,
+      "sha256": "1ecfda699ec912f3d66d5cfb85938c056d538ed7473c851f85745ea2cf1e555e"
+    },
+    "verification": {
+      "path": "tmp/u2-dialogue-20260913/shop-authority-final.log",
+      "bytes": 381,
+      "sha256": "7e90ca5f5b567207055cee51d6ea8b82d3df4eff10bce91cea727948b12e7e78"
+    }
+  },
+  "pixelFixture": {
+    "result": {
+      "path": "tmp/u2-dialogue-20260913/webview-smoke-4/result.json",
+      "bytes": 7127,
+      "sha256": "b12c3d2fa3473d72805a141b0464376b5f213268f79b7e207bd5523225203194"
+    },
+    "browserVersion": "152.0.4191.66",
+    "coreSha256": "89D4260CF479F17C893DF92CE68DCD32933BBCB7F1818FC21D475237C3C667B8",
+    "hidden": true,
+    "dynamicWebRequests": 3,
+    "samples": [
+      {
+        "name": "male-normal",
+        "gender": "男",
+        "expression": "普通",
+        "width": 768,
+        "height": 768,
+        "alphaPixels": 205169,
+        "sha256": "BB65D7D07F393D0DF7FBEA5EE75057A7E4C8CED64C7BC13CE63DAAD99B7D0748"
+      },
+      {
+        "name": "male-normal-native",
+        "width": 1024,
+        "height": 576,
+        "meanBitmapPaintMs": 4.95835,
+        "idleRequestsAnimation": false,
+        "sha256": "B129A749B2AD1B114A701EBAFC447E35FD067B29348CBD2371235A4279BC60EF"
+      },
+      {
+        "name": "male-normal-native",
+        "width": 1920,
+        "height": 1080,
+        "meanBitmapPaintMs": 10.532491666666667,
+        "idleRequestsAnimation": false,
+        "sha256": "D104FF1BA0FD3429EE7ACB82EEC20DCF5EF3389CA3A8494F6DB15D9F6665AA95"
+      },
+      {
+        "name": "male-angry",
+        "gender": "男",
+        "expression": "愤怒",
+        "width": 768,
+        "height": 768,
+        "alphaPixels": 205167,
+        "sha256": "F3873307111F42145B6EBF34795452E7A3AF39B36E46A0002B6183599B3D0E55"
+      },
+      {
+        "name": "female-normal",
+        "gender": "女",
+        "expression": "普通",
+        "width": 768,
+        "height": 768,
+        "alphaPixels": 165269,
+        "sha256": "5ADA9182EB07964304E70DB0CD18C5379D1C31CC15EBFED93A93E445F6500364"
+      },
+      {
+        "name": "male-normal-cached",
+        "gender": "男",
+        "expression": "普通",
+        "width": 768,
+        "height": 768,
+        "alphaPixels": 205169,
+        "sha256": "BB65D7D07F393D0DF7FBEA5EE75057A7E4C8CED64C7BC13CE63DAAD99B7D0748"
+      },
+      {
+        "name": "legacy-loot-web-icon",
+        "width": 256,
+        "height": 256,
+        "alphaPixels": 22278,
+        "sha256": "E5D6381D3559A172098BE9CF8D2794660EE88CA18292EE4ACAD2618460C89E96"
+      },
+      {
+        "name": "blue",
+        "key": "Blue",
+        "expression": "普通",
+        "width": 595,
+        "height": 633,
+        "sha256": "74942FEBE034069875D38E9B6BD0D9135C3E7A79F05CC4BDC0FB10C0DAE7F890"
+      },
+      {
+        "name": "blue-native",
+        "width": 1024,
+        "height": 576,
+        "meanBitmapPaintMs": 3.8810083333333334,
+        "idleRequestsAnimation": false,
+        "sha256": "B17C058AA8B7C9D4533A1BA149016A1F6BCC012700F30098C733255D7B4B8BF0"
+      },
+      {
+        "name": "blue-native",
+        "width": 1920,
+        "height": 1080,
+        "meanBitmapPaintMs": 10.265333333333333,
+        "idleRequestsAnimation": false,
+        "sha256": "37A0AF00643EBA5923A1D303525793D8561F51F65B61188CB296771256702A1A"
+      },
+      {
+        "name": "weapon-master",
+        "key": "武器大师",
+        "expression": "普通",
+        "width": 780,
+        "height": 713,
+        "sha256": "BB017A310629876ECD0580026B7C6C7064541314C235C71725996E28761DEC6A"
+      },
+      {
+        "name": "weapon-master-native",
+        "width": 1024,
+        "height": 576,
+        "meanBitmapPaintMs": 4.878566666666667,
+        "idleRequestsAnimation": false,
+        "sha256": "9602E47EC5BEE57875F0ABD0A048F2F2E9CBC2777380D8E49828169AC438C649"
+      },
+      {
+        "name": "weapon-master-native",
+        "width": 1920,
+        "height": 1080,
+        "meanBitmapPaintMs": 13.397525,
+        "idleRequestsAnimation": false,
+        "sha256": "EA2119688FDD3FCEEFED5D5DA68C9803DC6915892B067BDCFE202D637AB97D40"
+      },
+      {
+        "name": "roommate-male",
+        "key": "室友-男",
+        "expression": "普通",
+        "width": 754,
+        "height": 1536,
+        "sha256": "03AC63EEC1AFE95311F557B38620CBF3DB2E1766406A050415D9174F76B1D0BA"
+      },
+      {
+        "name": "roommate-male-native",
+        "width": 1024,
+        "height": 576,
+        "meanBitmapPaintMs": 3.1670916666666664,
+        "idleRequestsAnimation": false,
+        "sha256": "B8D291F4096BB3288B80BC16508E83485F12184728F1EBDF81E7B7F8B2C9C2B0"
+      },
+      {
+        "name": "roommate-male-native",
+        "width": 1920,
+        "height": 1080,
+        "meanBitmapPaintMs": 16.0252,
+        "idleRequestsAnimation": false,
+        "sha256": "181B38ECD5C289C3A07D468D1B80E6D786AD8B7761128176D709D767F51386DB"
+      },
+      {
+        "name": "roommate-female",
+        "key": "室友-女",
+        "expression": "普通",
+        "width": 744,
+        "height": 1070,
+        "sha256": "7AE685AD98152A2290324539A7D91E542EEF5BBE2D324F2E8974E033B85ED703"
+      },
+      {
+        "name": "roommate-female-native",
+        "width": 1024,
+        "height": 576,
+        "meanBitmapPaintMs": 3.3022916666666666,
+        "idleRequestsAnimation": false,
+        "sha256": "48D252D0B864353BCDE983ABFC6AFDB60C221EA8603337CF60798637D2401AB2"
+      },
+      {
+        "name": "roommate-female-native",
+        "width": 1920,
+        "height": 1080,
+        "meanBitmapPaintMs": 8.569133333333333,
+        "idleRequestsAnimation": false,
+        "sha256": "36885EC40577A2A517728E8730B65A03D903DAF7E0A7146FF757962B188BED8F"
+      },
+      {
+        "name": "artist-angry",
+        "key": "artist",
+        "expression": "愤怒",
+        "width": 884,
+        "height": 1142,
+        "sha256": "0A607CE04A5AE3194B72DF79BE5083ADEBCFFC1B1B6969A276A676E5F01A6440"
+      },
+      {
+        "name": "artist-angry-native",
+        "width": 1024,
+        "height": 576,
+        "meanBitmapPaintMs": 3.562925,
+        "idleRequestsAnimation": false,
+        "sha256": "15624DB3A4245FE86DC1F93F804C7B36D09CFE7377E1AFA84067BE48BF9A8B88"
+      },
+      {
+        "name": "artist-angry-native",
+        "width": 1920,
+        "height": 1080,
+        "meanBitmapPaintMs": 7.5364,
+        "idleRequestsAnimation": false,
+        "sha256": "B86DCABBF6471BD63EAC0C5AC46E86EE82CCAE6CCC0A542DFF166514714E3729"
+      },
+      {
+        "name": "andy-type2",
+        "key": "Andy Law",
+        "expression": "微笑2",
+        "width": 1312,
+        "height": 715,
+        "sha256": "0B9DEC90F103BB54C32B24C4D30118567D1AD8331296C420DCC593FD946D4E66"
+      },
+      {
+        "name": "andy-type2-native",
+        "width": 1024,
+        "height": 576,
+        "meanBitmapPaintMs": 3.6929083333333335,
+        "idleRequestsAnimation": false,
+        "sha256": "D0B4FADAE75CF48111A6E839E9B18113B35C3EAA774B46E5D4963BD06596EE5D"
+      },
+      {
+        "name": "andy-type2-native",
+        "width": 1920,
+        "height": 1080,
+        "meanBitmapPaintMs": 8.554941666666666,
+        "idleRequestsAnimation": false,
+        "sha256": "13FA20AD0FC439B10EC1087C26849ACF395B81B6BC1240CD2411146A72653351"
+      }
+    ],
+    "scope": "Hidden WebView2 fixture, production portrait decoding and NativeHud bitmap paint; not a player dialogue, physical-input or save journey"
+  },
+  "gameStartupAttempt": {
+    "pid": 21620,
+    "asLoaderSha256": "C4D82973DE48343623F4E229EB4FF995AFD7047758086C57A63AB31C7F3A8161",
+    "path": "C:/cf7-u2-lab-20260913/tmp/runtime-candidates/v2/u2-dialogue-v1/runtime/CRAZYFLASHER7MercenaryEmpire.Core.exe",
+    "startedAt": "2026-09-13T07:37:02.8085790+08:00",
+    "result": "CF7-LAUNCH-STEAM-RUNTIME / dll_missing",
+    "flashEntered": false,
+    "diagnosticClosedNormally": true,
+    "labDirectory": "C:/cf7-u2-lab-20260913",
+    "layout": "Real candidate/saves/config/cache copies; other resources partly junctions to working source",
+    "launchReady": false
+  },
+  "localExecutionLimit": {
+    "action": "Clear terminal compile recovery marker and copy existing Steam runtime dependency into lab",
+    "result": "automatic approval rejected",
+    "toolReason": "blocked by policy",
+    "bypassAttempted": false,
+    "compileMarkerPreserved": true
+  },
+  "independentReview": {
+    "model": "swe-2-max",
+    "permissionMode": "smart",
+    "scope": "Final NativeHud resumable visibility wiring; static review, not runtime proof",
+    "report": {
+      "path": "tmp/u2-dialogue-20260913/G-review.md",
+      "bytes": 6347,
+      "sha256": "af11e7de6e2d77051e6e3aacaaaf307a0df7770dd2c20a64c32aec6e625ccd5c"
+    }
+  },
+  "documentationAndScope": {
+    "governancePassed": true,
+    "diffWhitespacePassed": true,
+    "governanceLog": {
+      "path": "tmp/u2-dialogue-20260913/doc-governance-final.log",
+      "bytes": 107,
+      "sha256": "c1638351d8ac3db36bf77e5f0c80348a2b04b39877ee799a365c0abe652e9581"
+    },
+    "whitespaceLog": {
+      "path": "tmp/u2-dialogue-20260913/diff-check-final.log",
+      "bytes": 2522,
+      "sha256": "3d1590fddc9bdb8a0aea9d5f7afec29b1c6d7424438fce896b8e232e5ab41458"
+    },
+    "retainedLocalDirectories": [
+      "tmp/u2-dialogue-20260913",
+      "tmp/runtime-candidates/v2/u2-dialogue-v1",
+      "tmp/runtime-candidates/v2/u2-dialogue-v2",
+      "C:/cf7-u2-lab-20260913"
+    ],
+    "formalPathsGitDiffEmpty": true
+  },
+  "formalState": {
+    "asLoaderAndRootExeAndSaveJsonUnchanged": true,
+    "filesCompared": 25,
+    "before": {
+      "path": "tmp/u2-dialogue-20260913/formal-before-journey.json",
+      "bytes": 2694,
+      "sha256": "b6b12813e3f0f9c9820a250186fa52097b894ab2257e336a7ee03bb31f1f3e13"
+    },
+    "runtimePromotionPerformed": false,
+    "gitWorktreeCreated": false
+  },
+  "remaining": [
+    "Compile and test final AS2 append, source-array and player-name compatibility",
+    "Complete isolated startup dependencies and bind final Core/SWF",
+    "Actual NPC/quest/stage/merc dialogue journey and physical input",
+    "Human art/input acceptance, disconnect story-skip policy and higher-resolution display review",
+    "Scoped commit/push and runtime release only after separate authorization"
+  ],
+  "sourceInputs": [
+    {
+      "path": "launcher/src/Tasks/NativeDialogueTask.cs",
+      "bytes": 12019,
+      "sha256": "e03317e0b18c40ecb21b4dcb2d9552ae73a69fac44d3d9db4444652d6255ceb6"
+    },
+    {
+      "path": "launcher/src/Guardian/Dialogue/DialoguePortraitService.cs",
+      "bytes": 16122,
+      "sha256": "b706b712b192d30791c5ef0a601c0b54ed7d01c1ed62fbcc10cd525e2acdff8f"
+    },
+    {
+      "path": "launcher/src/Guardian/Hud/Dialogue/NativeDialogueWidget.cs",
+      "bytes": 54054,
+      "sha256": "801d1df2f0523aa4b37deb1239d38c33fe72141f81b27fcaf545d5ed0c440d9d"
+    },
+    {
+      "path": "launcher/src/Guardian/Hud/Dialogue/NativeDialogueFrame.cs",
+      "bytes": 3852,
+      "sha256": "3c9efb3abce54a3fd70869998945c631b44a0b04e5452a0910ed3a52f0c52d2f"
+    },
+    {
+      "path": "launcher/src/Guardian/Hud/Dialogue/NativeDialogueTextLayout.cs",
+      "bytes": 9800,
+      "sha256": "7e0ec2e47ac34a859bab2993b133469d2eebb9077db53ca54c1057157e558772"
+    },
+    {
+      "path": "launcher/src/Guardian/KeyboardHook.cs",
+      "bytes": 16116,
+      "sha256": "0afacd05a8654de9866bdc45b010cec8ad350b7f62300a6d51a6d5c0e36a0846"
+    },
+    {
+      "path": "launcher/src/Program.cs",
+      "bytes": 161796,
+      "sha256": "91e3d7226fe30783aef4ef761d990670eb304b0b5b01441a5081d75573d69044"
+    },
+    {
+      "path": "launcher/src/Guardian/NativeHudOverlay.cs",
+      "bytes": 56682,
+      "sha256": "0b32e6a54ecb8a9d045bb1a89b340961ce23c48490f711e5c55241342dce2df1"
+    },
+    {
+      "path": "launcher/src/Guardian/Hud/INativeHudWidget.cs",
+      "bytes": 9422,
+      "sha256": "1ff14e9ee254f8486e5b5f20c20411ac86632f73b01a39e25be60b993c102745"
+    },
+    {
+      "path": "launcher/src/Guardian/WebOverlayForm.cs",
+      "bytes": 443303,
+      "sha256": "4b8335190250e582108e48e2d1520f26213f1c8f9bfe3b226d643db5a3e7bf91"
+    },
+    {
+      "path": "launcher/src/Guardian/GuardianForm.cs",
+      "bytes": 74644,
+      "sha256": "e81dc0f0d5521d3c2df9cbc3b396dd4d8f8c85a774e8a7c2ba4877e7b307a361"
+    },
+    {
+      "path": "launcher/src/Bus/TaskRegistry.cs",
+      "bytes": 43605,
+      "sha256": "d0c1afe0a5ebc3d7cd1b4807117dd287bb4026fe107aabe4f8cc80b6ce4af218"
+    },
+    {
+      "path": "scripts/类定义/org/flashNight/arki/dialogue/NativeDialogueService.as",
+      "bytes": 18279,
+      "sha256": "f0a4ad5863827848d003d9e02932ac29cb00dd76badb7f89f04e9f302c177ed5"
+    },
+    {
+      "path": "scripts/类定义/org/flashNight/arki/dialogue/NativeDialogueAppearance.as",
+      "bytes": 6729,
+      "sha256": "bef1015e794390ce82908484f9cbe01e793ac10e4e13e2c8a7fa683ac0dcd439"
+    },
+    {
+      "path": "scripts/类定义/org/flashNight/arki/dialogue/NativeDialogueServiceTest.as",
+      "bytes": 29739,
+      "sha256": "29d304d8feb85823a549fe9e79a22fe3cc180a8434eb8c36be70f754194d2bfa"
+    },
+    {
+      "path": "scripts/类定义/org/flashNight/arki/pause/PauseManager.as",
+      "bytes": 15401,
+      "sha256": "8f0c488b3e01e2371c72dc17564a6ffab6fec4732ad6834c91458f3256c1ed06"
+    },
+    {
+      "path": "scripts/类定义/org/flashNight/arki/scene/StageEvent.as",
+      "bytes": 10890,
+      "sha256": "74b26c77251851773723037f02aeb938170d76efca6a45485972f5cbafa07e04"
+    },
+    {
+      "path": "scripts/类定义/org/flashNight/arki/task/TaskPanelService.as",
+      "bytes": 89860,
+      "sha256": "6a648d188324ea648534ce7099a71ecb30d19ab62d3b7b3322085dcbfde8c13b"
+    },
+    {
+      "path": "scripts/类定义/org/flashNight/boot/BootSequencer.as",
+      "bytes": 23402,
+      "sha256": "8de80a1c8b2da28bfc68870dcc1c9956c30c8cb9341c9dc5491fe8843da55ab7"
+    },
+    {
+      "path": "scripts/类定义/org/flashNight/neur/Server/ServerManager.as",
+      "bytes": 40855,
+      "sha256": "d3a4801cabfba79e478a22c29a5ea5f49b271faf7c4883321c4dba025301dfe8"
+    },
+    {
+      "path": "scripts/逻辑/关卡系统/关卡系统_lsy_场景转换.as",
+      "bytes": 34821,
+      "sha256": "14b487a9431a10ab4437e97e92a51e0e2bc065035ebeef108ebb1f3380c0bfa6"
+    },
+    {
+      "path": "scripts/展现/UI交互/UI交互_lsy_对话文本.as",
+      "bytes": 5575,
+      "sha256": "dbd162bd7bca8481c493280da2edb2d8f69604aba48be023de489ffcc0c179ac"
+    },
+    {
+      "path": "scripts/展现/UI交互/UI交互_lsy_对话框UI.as",
+      "bytes": 17096,
+      "sha256": "fd384df0ed6959bd39b5c019cbb0e06a0d6f1368ca8d4c4a6caea8ed52b31e19"
+    },
+    {
+      "path": "launcher/web/modules/dialogue/dialogue-view.js",
+      "bytes": 25436,
+      "sha256": "3f4029ffee0244be39e7fb4c0d39c89c54672c98d3d9df7b62cfafae13fe6948"
+    },
+    {
+      "path": "launcher/web/modules/dialogue/live-portrait.js",
+      "bytes": 23567,
+      "sha256": "0567bf539dbf8c4c299862ff9bfde9a0cdb117c77f7bfd664d0072e06caea534"
+    },
+    {
+      "path": "launcher/web/modules/dialogue/live-portrait-bake.js",
+      "bytes": 3585,
+      "sha256": "fe4b0cb179dc7bdc486de085c41d6a4b5b92ae4245668de968e251ac81c19d4b"
+    },
+    {
+      "path": "launcher/web/modules/dressup-doll-renderer.js",
+      "bytes": 45660,
+      "sha256": "6b8f4ce4beb79f23b26a0f452a95ccaee9216ddb41dcfc465bac7325dfa24084"
+    },
+    {
+      "path": "launcher/web/overlay.html",
+      "bytes": 4076,
+      "sha256": "9d309003abd102da2f6753cf0cd383cfeabd4fe54301c87103c9a2907e51ebe5"
+    },
+    {
+      "path": "tools/bake-dialogue-portraits.py",
+      "bytes": 53694,
+      "sha256": "c1d365beac69e8461b0c9430103978c3197dc8717c6cb6dbc43ce917f1bf748e"
+    },
+    {
+      "path": "tools/dialogue_svg_fallback.py",
+      "bytes": 5185,
+      "sha256": "a8569e82d46d343d19d69d6bbec09c8187d23e1aa607609a198c82d4c7b03b97"
+    },
+    {
+      "path": "tools/dialogue_portrait_variants.py",
+      "bytes": 8195,
+      "sha256": "2c6749300aa25becf12e566a0f3968a7ccf9e8673b14f321ad018376fdd65750"
+    },
+    {
+      "path": "tools/dialogue-portrait-source-review/requirements.txt",
+      "bytes": 141,
+      "sha256": "96f34fac52b02291bc737b0a6e254aa8cab79664616103ee4d634ae091069211"
+    },
+    {
+      "path": "tools/bake-dressup-offline.py",
+      "bytes": 177473,
+      "sha256": "549f8d87619dc5e3c374cf9f442885747c71ddf1e824806f15bf4dacdaf7c673"
+    },
+    {
+      "path": "tools/test-dialogue-portrait-authority.py",
+      "bytes": 15099,
+      "sha256": "bccc238b5f94c8109e1a228c63941885a8c49745edce2560b9dc18d075c863f8"
+    },
+    {
+      "path": "tools/test-dressup-manifest-integrity.py",
+      "bytes": 36158,
+      "sha256": "cfc4c4820a0a05cc6179e7f13cb50e2b5658575199d5f80126fdfc92a377a225"
+    },
+    {
+      "path": "tools/native-dialogue-webview2-smoke/Program.cs",
+      "bytes": 12101,
+      "sha256": "b6d74b5876c52e6455ce0311725c706afbaa6d84a86837e9a8e8fbbdecb8741c"
+    },
+    {
+      "path": "tools/native-dialogue-webview2-smoke/fixture.html",
+      "bytes": 598,
+      "sha256": "1d4aa391133f2a4dd86f35de10e4297887cfa5c99bf178b8f36c5d6e422e0959"
+    },
+    {
+      "path": "tools/native-dialogue-webview2-smoke/NativeDialogue.Smoke.csproj",
+      "bytes": 423,
+      "sha256": "a8c3cce4f6182f60783cea8b91b310141b66f13e9109b3e4b14a9bc31f516199"
+    },
+    {
+      "path": "tools/native-dialogue-webview2-smoke/.gitignore",
+      "bytes": 12,
+      "sha256": "bed6308a89cccf01b2576cade9bc0e84c47e1b496ad8fc21750722966ce27692"
+    },
+    {
+      "path": "tools/run-native-dialogue-webview2-smoke.ps1",
+      "bytes": 1034,
+      "sha256": "8ce7aedc058f04ef05ffb4027f8aa768b2675ae4b27d325cea17ee7fe7eb8010"
+    },
+    {
+      "path": "scripts/run-native-dialogue-tests.ps1",
+      "bytes": 1172,
+      "sha256": "2ea88bdc8afc4d92bdbab5939180b2eb7449439f4a48a004df196df503e75427"
+    },
+    {
+      "path": "scripts/test-runners/native-dialogue/TestLoader.as.template",
+      "bytes": 213,
+      "sha256": "bfba6d5e04887bf36ffc0958a0800caccfb39efdba59737e9bcde58631b3270c"
+    },
+    {
+      "path": "launcher/tests/Tasks/NativeDialogueTaskTests.cs",
+      "bytes": 8108,
+      "sha256": "f9b00c379ca4cea1e002af02751171162cc757ecd86c3ab6c8d1af7b3f9e4a37"
+    },
+    {
+      "path": "launcher/tests/Guardian/Dialogue/NativeDialogueWidgetTests.cs",
+      "bytes": 34349,
+      "sha256": "85e4b1bcc4ef724b495cad32627c95bd2e7489e5a3cd59894b31e1a24c32725b"
+    }
+  ]
+}

@@ -2,6 +2,8 @@
 
 **2026-09-12 工作区增量**（基线 `cde09af935`）：新增 `native_interaction` 场景菜单/注释通道，AS2 持有场景与目标权威，C# 复用 NativeHud 绘制表面，NPC 沿用常驻风格，注释以旧 Web 为视觉和交互权威；Web 面板使用同一语义文档；实现与验收状态见 [专项 ADR](../docs/NPC菜单与原生注释迁移-ADR-2026-09-12.md)。
 
+**2026-09-13 工作区增量**（基线 `757ef93637` 加工作区）：现场对白迁入 NativeHud 表面。`native_dialogue` v1 保持 AS2 台词顺序、完成/取消与剧情权威；关卡对白的可合并暂停租约与窗口暂停责任取逻辑或，普通 NPC 对白不额外暂停。Host 只做原生文字/立绘绘制，`nativeDialogueAction` 回传 advance/close；`INativeHudResumable` 合并面板遮挡与 owner 失焦，全部解除后恢复打字。动态立绘经既有 Web 纸娃娃生成 768 PNG（`dialogue_portrait_result` 返回），静态为两倍尺寸、经过超采样的无损 WebP。断连按 finish 清理自身暂停并消费一次后续事件，存在跳过未读台词的体验取舍。状态 `candidate_built / NOT_DEPLOYED`，修复待人验，原版背景/按钮/字段从 XFL 导出 SVG 与布局，按钮按状态单独绘制；外部立绘取景与位图同修订投递，纸娃娃使用固定作者窗口，768 位图沿内存与有界磁盘缓存复用，键绑定外观、表情及渲染版本；有限富文本共用 `NativeTooltipMarkup`；专项见[对话框迁移与高清立绘治理](../docs/对话框迁移与高清立绘治理-调研与施工准备-2026-09-12.md)。
+
 > **字体 Gate E（2026-08-21）**：根 `fonts/fonts.xml` 是 C#/Web runtime authority，表达 14 asset、28 个语义 role、9 个 `accepted` preset 与 `permanent/on-demand` residency。`fontctl generate` 产出 XML-hash 绑定的 `launcher/web/generated/font-catalog.{json,css,js}` 和 FontPack 兼容 manifest。
 > `RuntimeFontCatalog` 在 WebView2/Native HUD 构造前加载投影，按 face-major（每个 face 内 `temporary/custom → temporary/cache → permanent/runtime`）解析；成功项按 asset 复用同一已验证 byte snapshot，并通过 exact-set `WebResourceRequested` + 内容 ETag 提供字体，未命中不缓存。Web CSS/Canvas/动态 SVG/Tooltip 与 Native HUD/Combo/HitNumber/mono/symbol 均走 role。
 > JetBrains Mono 和 Source Han Serif CN Regular 为常驻，其余按需；旧 `%LOCALAPPDATA%/CF7FlashNight/fonts/` 可能仍有惰性文件，但导入和 Web 字体副本已退役，运行时、CLI 与 harness 均忽略。打包层收 permanent、排除 temporary，并显式收入三项 generated Web 投影。Flash/AS2/FLA/XFL 和 legacy 作者字体不在该图内。机器 Gate 与维护者人工观感已通过；正式部署状态以 runtime consensus 和标准入口证据为准。

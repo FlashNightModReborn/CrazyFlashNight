@@ -218,6 +218,11 @@
       <genericFallback family="monospace" classification="system-owned"/>
     </role>
 
+    <role id="native.dialogue.body" label="原版对话框文字" status="accepted" allowPresetOverride="false">
+      <systemFallback family="Microsoft YaHei" classification="system-owned"/>
+      <genericFallback family="sans-serif" classification="system-owned"/>
+    </role>
+
     <role id="native.hud.body" label="原生 HUD 正文" status="accepted" allowPresetOverride="false">
       <use face="source-han-serif-cn-regular-400"/>
       <systemFallback family="Noto Serif CJK SC" classification="compatibility"/>

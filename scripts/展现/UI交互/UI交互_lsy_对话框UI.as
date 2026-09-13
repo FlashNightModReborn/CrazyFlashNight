@@ -190,6 +190,8 @@ _root.对话框UI.立绘大小写字典 = {
 
 // ===============================
 //  刷新内容（增强：支持 [7]=滤镜风格, [8]=滤镜参数）
+//  —— 仅旧 MovieClip 路径使用；headless 下 clip 已被 初始化对话框界面 桩化，
+//     此处函数体保留供立绘资产/回退参考，不再挂到新实例。
 // ===============================
 _root.对话框UI.刷新内容 = function(){
     var dialogueInfo = 本轮对话内容[对话进度];
@@ -346,44 +348,44 @@ _root.对话框UI.关闭 = function(){
     this.gotoAndStop("close");
 };
 
+// headless 语义：旧 onClose 裸写 _root.暂停=false 并直接 publish
+// followingEvent 的路径禁止复活——显式结束转发给 NativeDialogueService
+// 的一次性 finish（terminal 态下重入安全），场景取消走 cancel 不触发本函数。
 _root.对话框UI.onClose = function(){
-    this._visible = false;
-    本轮对话内容 = [];
-    对话条数 = 0;
-    人物名字 = null;
-    人物表情 = null;
-    _root.暂停 = false;
-    图片容器.卸载图片();
-    // if (结束对话后是否跳转帧){
-    //     _root.淡出动画.淡出跳转帧(结束对话后跳转帧);
-    //     结束对话后跳转帧 = "";
-    //     结束对话后是否跳转帧 = false;
-    // }
-    if(this.followingEvent && this.followingEvent.name){
-        if(this.followingEvent.args){
-           _root.gameworld.dispatcher.publish.apply(_root.gameworld.dispatcher, this.followingEvent.args);
-        }else{
-            _root.gameworld.dispatcher.publish(this.followingEvent.name);
-        }
-        this.followingEvent = null;
-    }
+    var svc = _global.org.flashNight.arki.dialogue.NativeDialogueService;
+    if (svc != undefined) svc.finishSession();
 };
 
 // ===============================
-//  初始化对话框界面（保持原逻辑）
+//  初始化对话框界面（headless compat）
+//  authored 实例（含 AVM1 同路径重绑回来的新实例）只停住隐藏；
+//  _root.对话框界面 换绑到 NativeDialogueService 的普通 Object facade。
+//  立绘/头像源功能（loadPortraitDict、刷新NPC头像、滤镜、外部立绘缓存）
+//  仍挂在 _root.对话框UI 上供其他功能使用，不随 clip 退役。
 // ===============================
 _root.对话框UI.初始化对话框界面 = function(对话框界面:MovieClip){
-    对话框界面.刷新内容 = _root.对话框UI.刷新内容;
-    对话框界面.打字 = _root.对话框UI.打字;
-    对话框界面.结束打字 = _root.对话框UI.结束打字;
-    对话框界面.下一句 = _root.对话框UI.下一句;
-    对话框界面.关闭 = _root.对话框UI.关闭;
-    对话框界面.onClose = _root.对话框UI.onClose;
+    对话框界面.stop();
+    对话框界面._visible = false;
+    对话框界面.刷新内容 = function(){};
+    对话框界面.打字 = function(){};
+    对话框界面.结束打字 = function(){};
+    对话框界面.下一句 = function(){};
+    // 只做 MC 本地收尾（stop+hide），不回调服务，避免与 cancelActive 的
+    // MC 分支互调形成递归；会话级取消由 facade.关闭 / 场景清理负责。
+    对话框界面.关闭 = function(){
+        this.stop();
+        this._visible = false;
+    };
+    对话框界面.onClose = function(){};
 
     对话框界面.刷新立绘 = _root.对话框UI.刷新立绘;
     对话框界面.刷新外部导入立绘 = _root.对话框UI.刷新外部导入立绘;
 
-    对话框界面.关闭();
+    var svc = _global.org.flashNight.arki.dialogue.NativeDialogueService;
+    if (svc != undefined) {
+        svc.install();
+        svc.ensureCompat();
+    }
 };
 
 // ===============================

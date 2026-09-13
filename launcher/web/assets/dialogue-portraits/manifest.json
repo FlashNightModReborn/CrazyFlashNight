@@ -1,17 +1,17 @@
 {
   "schema": "cf7-dialogue-portraits-v2",
-  "generatedAt": "2026-09-11T02:04:08+0800",
-  "zoom": 1,
+  "generatedAt": "2026-09-13T07:47:57+0800",
+  "zoom": 2,
   "baseSize": {
-    "width": 1024,
-    "height": 576
+    "width": 2048,
+    "height": 1152
   },
   "portraitWindow": {
     "external-swf": {
-      "x": 30,
-      "y": 30,
-      "width": 880,
-      "height": 375
+      "x": 60,
+      "y": 60,
+      "width": 1760,
+      "height": 750
     }
   },
   "heroKeys": [
@@ -26,489 +26,6 @@
     "collisionPolicy": "explicit-human-authority"
   },
   "entries": {
-    "无头像": {
-      "key": "无头像",
-      "aliases": [],
-      "source": "dialogue-ui-sprite",
-      "sourcePath": "flashswf/UI/对话框界面.swf",
-      "defaultExpression": "普通",
-      "expressions": {
-        "普通": {
-          "uri": "internal/p_49a1377ac18d/e_7cda072d452b.png",
-          "width": 775,
-          "height": 1000,
-          "frame": 47,
-          "bounds": {
-            "x": 461,
-            "y": 301,
-            "width": 109,
-            "height": 178
-          }
-        }
-      }
-    },
-    "爱国青年": {
-      "key": "爱国青年",
-      "aliases": [],
-      "source": "dialogue-ui-sprite",
-      "sourcePath": "flashswf/UI/对话框界面.swf",
-      "defaultExpression": "普通",
-      "expressions": {
-        "普通": {
-          "uri": "internal/p_f893dd0ed13b/e_7cda072d452b.png",
-          "width": 775,
-          "height": 1000,
-          "frame": 109,
-          "bounds": {
-            "x": 411,
-            "y": 321,
-            "width": 203,
-            "height": 158
-          }
-        }
-      }
-    },
-    "被改造的方舟无人机": {
-      "key": "被改造的方舟无人机",
-      "aliases": [],
-      "source": "dialogue-ui-sprite",
-      "sourcePath": "flashswf/UI/对话框界面.swf",
-      "defaultExpression": "普通",
-      "expressions": {
-        "普通": {
-          "uri": "internal/p_fc0475a21b64/e_7cda072d452b.png",
-          "width": 775,
-          "height": 1000,
-          "frame": 121,
-          "bounds": {
-            "x": 374,
-            "y": 353,
-            "width": 167,
-            "height": 119
-          }
-        }
-      }
-    },
-    "长生军战士": {
-      "key": "长生军战士",
-      "aliases": [],
-      "source": "dialogue-ui-sprite",
-      "sourcePath": "flashswf/UI/对话框界面.swf",
-      "defaultExpression": "普通",
-      "expressions": {
-        "普通": {
-          "uri": "internal/p_b3272e4811d6/e_7cda072d452b.png",
-          "width": 775,
-          "height": 1000,
-          "frame": 127,
-          "bounds": {
-            "x": 388,
-            "y": 316,
-            "width": 167,
-            "height": 163
-          }
-        }
-      }
-    },
-    "A兵团士兵": {
-      "key": "A兵团士兵",
-      "aliases": [],
-      "source": "dialogue-ui-sprite",
-      "sourcePath": "flashswf/UI/对话框界面.swf",
-      "defaultExpression": "普通",
-      "expressions": {
-        "普通": {
-          "uri": "internal/p_9e821c1ce1f5/e_7cda072d452b.png",
-          "width": 775,
-          "height": 1000,
-          "frame": 133,
-          "bounds": {
-            "x": 358,
-            "y": 315,
-            "width": 173,
-            "height": 164
-          }
-        }
-      }
-    },
-    "暮光闪闪": {
-      "key": "暮光闪闪",
-      "aliases": [],
-      "source": "dialogue-ui-sprite",
-      "sourcePath": "flashswf/UI/对话框界面.swf",
-      "defaultExpression": "普通",
-      "expressions": {
-        "普通": {
-          "uri": "internal/p_6ed41005666e/e_7cda072d452b.png",
-          "width": 775,
-          "height": 1000,
-          "frame": 145,
-          "bounds": {
-            "x": 325,
-            "y": 327,
-            "width": 306,
-            "height": 152
-          }
-        }
-      }
-    },
-    "魔女": {
-      "key": "魔女",
-      "aliases": [],
-      "source": "dialogue-ui-sprite",
-      "sourcePath": "flashswf/UI/对话框界面.swf",
-      "defaultExpression": "普通",
-      "expressions": {
-        "普通": {
-          "uri": "internal/p_0bc68f900f76/e_7cda072d452b.png",
-          "width": 775,
-          "height": 1000,
-          "frame": 150,
-          "bounds": {
-            "x": 276,
-            "y": 212,
-            "width": 425,
-            "height": 267
-          }
-        }
-      }
-    },
-    "LEE": {
-      "key": "LEE",
-      "aliases": [],
-      "source": "dialogue-ui-sprite",
-      "sourcePath": "flashswf/UI/对话框界面.swf",
-      "defaultExpression": "普通",
-      "expressions": {
-        "普通": {
-          "uri": "internal/p_42009b75438f/e_7cda072d452b.png",
-          "width": 775,
-          "height": 1000,
-          "frame": 155,
-          "bounds": {
-            "x": 383,
-            "y": 261,
-            "width": 203,
-            "height": 218
-          }
-        }
-      }
-    },
-    "虚拟向导": {
-      "key": "虚拟向导",
-      "aliases": [],
-      "source": "dialogue-ui-sprite",
-      "sourcePath": "flashswf/UI/对话框界面.swf",
-      "defaultExpression": "普通",
-      "expressions": {
-        "普通": {
-          "uri": "internal/p_497f78f0bcf1/e_7cda072d452b.png",
-          "width": 775,
-          "height": 1000,
-          "frame": 168,
-          "bounds": {
-            "x": 408,
-            "y": 285,
-            "width": 94,
-            "height": 194
-          }
-        }
-      }
-    },
-    "lochan": {
-      "key": "lochan",
-      "aliases": [],
-      "source": "dialogue-ui-sprite",
-      "sourcePath": "flashswf/UI/对话框界面.swf",
-      "defaultExpression": "普通",
-      "expressions": {
-        "普通": {
-          "uri": "internal/p_7abef730066f/e_7cda072d452b.png",
-          "width": 775,
-          "height": 1000,
-          "frame": 176,
-          "bounds": {
-            "x": 383,
-            "y": 283,
-            "width": 237,
-            "height": 196
-          }
-        }
-      }
-    },
-    "PROPHET": {
-      "key": "PROPHET",
-      "aliases": [],
-      "source": "dialogue-ui-sprite",
-      "sourcePath": "flashswf/UI/对话框界面.swf",
-      "defaultExpression": "普通",
-      "expressions": {
-        "普通": {
-          "uri": "internal/p_f1f0b8fd6686/e_7cda072d452b.png",
-          "width": 775,
-          "height": 1000,
-          "frame": 183,
-          "bounds": {
-            "x": 366,
-            "y": 227,
-            "width": 228,
-            "height": 252
-          }
-        }
-      }
-    },
-    "PROPHET2": {
-      "key": "PROPHET2",
-      "aliases": [],
-      "source": "dialogue-ui-sprite",
-      "sourcePath": "flashswf/UI/对话框界面.swf",
-      "defaultExpression": "普通",
-      "expressions": {
-        "普通": {
-          "uri": "internal/p_fc838707fed0/e_7cda072d452b.png",
-          "width": 775,
-          "height": 1000,
-          "frame": 188,
-          "bounds": {
-            "x": 366,
-            "y": 227,
-            "width": 228,
-            "height": 252
-          }
-        }
-      }
-    },
-    "劳埃德": {
-      "key": "劳埃德",
-      "aliases": [],
-      "source": "dialogue-ui-sprite",
-      "sourcePath": "flashswf/UI/对话框界面.swf",
-      "defaultExpression": "普通",
-      "expressions": {
-        "普通": {
-          "uri": "internal/p_28058519e27c/e_7cda072d452b.png",
-          "width": 775,
-          "height": 1000,
-          "frame": 193,
-          "bounds": {
-            "x": 358,
-            "y": 184,
-            "width": 341,
-            "height": 295
-          }
-        }
-      }
-    },
-    "枫": {
-      "key": "枫",
-      "aliases": [],
-      "source": "dialogue-ui-sprite",
-      "sourcePath": "flashswf/UI/对话框界面.swf",
-      "defaultExpression": "普通",
-      "expressions": {
-        "普通": {
-          "uri": "internal/p_188aed17edc3/e_7cda072d452b.png",
-          "width": 775,
-          "height": 1000,
-          "frame": 200,
-          "bounds": {
-            "x": 323,
-            "y": 212,
-            "width": 356,
-            "height": 267
-          }
-        }
-      }
-    },
-    "王道": {
-      "key": "王道",
-      "aliases": [],
-      "source": "dialogue-ui-sprite",
-      "sourcePath": "flashswf/UI/对话框界面.swf",
-      "defaultExpression": "普通",
-      "expressions": {
-        "普通": {
-          "uri": "internal/p_e3a710ef7839/e_7cda072d452b.png",
-          "width": 775,
-          "height": 1000,
-          "frame": 204,
-          "bounds": {
-            "x": 284,
-            "y": 136,
-            "width": 408,
-            "height": 343
-          }
-        }
-      }
-    },
-    "BLACK-L": {
-      "key": "BLACK-L",
-      "aliases": [],
-      "source": "dialogue-ui-sprite",
-      "sourcePath": "flashswf/UI/对话框界面.swf",
-      "defaultExpression": "普通",
-      "expressions": {
-        "普通": {
-          "uri": "internal/p_5b0134cce833/e_7cda072d452b.png",
-          "width": 775,
-          "height": 1000,
-          "frame": 209,
-          "bounds": {
-            "x": 310,
-            "y": 253,
-            "width": 390,
-            "height": 226
-          }
-        }
-      }
-    },
-    "千夏沐晓": {
-      "key": "千夏沐晓",
-      "aliases": [],
-      "source": "dialogue-ui-sprite",
-      "sourcePath": "flashswf/UI/对话框界面.swf",
-      "defaultExpression": "普通",
-      "expressions": {
-        "普通": {
-          "uri": "internal/p_84c31bbf4dfd/e_7cda072d452b.png",
-          "width": 775,
-          "height": 1000,
-          "frame": 217,
-          "bounds": {
-            "x": 365,
-            "y": 242,
-            "width": 220,
-            "height": 237
-          }
-        }
-      }
-    },
-    "已转移": {
-      "key": "已转移",
-      "aliases": [],
-      "source": "dialogue-ui-sprite",
-      "sourcePath": "flashswf/UI/对话框界面.swf",
-      "defaultExpression": "普通",
-      "expressions": {
-        "普通": {
-          "uri": "internal/p_d550de9ece00/e_7cda072d452b.png",
-          "width": 775,
-          "height": 1000,
-          "frame": 225,
-          "bounds": {
-            "x": 405,
-            "y": 195,
-            "width": 181,
-            "height": 284
-          }
-        }
-      }
-    },
-    "PD421": {
-      "key": "PD421",
-      "aliases": [],
-      "source": "dialogue-ui-sprite",
-      "sourcePath": "flashswf/UI/对话框界面.swf",
-      "defaultExpression": "普通",
-      "expressions": {
-        "普通": {
-          "uri": "internal/p_dd35ee2ff80c/e_7cda072d452b.png",
-          "width": 775,
-          "height": 1000,
-          "frame": 233,
-          "bounds": {
-            "x": 276,
-            "y": 120,
-            "width": 423,
-            "height": 359
-          }
-        }
-      }
-    },
-    "乔恩": {
-      "key": "乔恩",
-      "aliases": [],
-      "source": "dialogue-ui-sprite",
-      "sourcePath": "flashswf/UI/对话框界面.swf",
-      "defaultExpression": "普通",
-      "expressions": {
-        "普通": {
-          "uri": "internal/p_81f0112f1873/e_7cda072d452b.png",
-          "width": 775,
-          "height": 1000,
-          "frame": 239,
-          "bounds": {
-            "x": 291,
-            "y": 135,
-            "width": 402,
-            "height": 344
-          }
-        }
-      }
-    },
-    "和平": {
-      "key": "和平",
-      "aliases": [],
-      "source": "dialogue-ui-sprite",
-      "sourcePath": "flashswf/UI/对话框界面.swf",
-      "defaultExpression": "普通",
-      "expressions": {
-        "普通": {
-          "uri": "internal/p_0c4c3b0e8ef9/e_7cda072d452b.png",
-          "width": 775,
-          "height": 1000,
-          "frame": 244,
-          "bounds": {
-            "x": 369,
-            "y": 147,
-            "width": 269,
-            "height": 332
-          }
-        }
-      }
-    },
-    "云吞魔芋": {
-      "key": "云吞魔芋",
-      "aliases": [],
-      "source": "dialogue-ui-sprite",
-      "sourcePath": "flashswf/UI/对话框界面.swf",
-      "defaultExpression": "普通",
-      "expressions": {
-        "普通": {
-          "uri": "internal/p_8a06a60f208c/e_7cda072d452b.png",
-          "width": 775,
-          "height": 1000,
-          "frame": 249,
-          "bounds": {
-            "x": 396,
-            "y": 145,
-            "width": 237,
-            "height": 334
-          }
-        }
-      }
-    },
-    "武器大师": {
-      "key": "武器大师",
-      "aliases": [],
-      "source": "dialogue-ui-sprite",
-      "sourcePath": "flashswf/UI/对话框界面.swf",
-      "defaultExpression": "普通",
-      "expressions": {
-        "普通": {
-          "uri": "internal/p_2bc606d5f82a/e_7cda072d452b.png",
-          "width": 851,
-          "height": 1000,
-          "frame": 257,
-          "bounds": {
-            "x": 313,
-            "y": 125,
-            "width": 388,
-            "height": 354
-          }
-        }
-      }
-    },
     "Andy Law": {
       "key": "Andy Law",
       "aliases": [
@@ -522,231 +39,333 @@
       "defaultExpression": "普通",
       "expressions": {
         "普通": {
-          "uri": "external/p_aecce8196efa/e_7cda072d452b.png",
-          "width": 1024,
-          "height": 576,
+          "uri": "external/p_aecce8196efa/e_7cda072d452b.webp",
+          "width": 2048,
+          "height": 1152,
           "frame": 1,
+          "sha256": "e8d43a9fe94e6a87784eba48b65239b7395966ef57c80220410921ec558b6949",
+          "bytes": 613006,
+          "format": "webp",
           "bounds": {
-            "x": 88,
-            "y": 70,
-            "width": 473,
-            "height": 355
+            "x": 178,
+            "y": 143,
+            "width": 944,
+            "height": 704
           }
         },
         "微笑": {
-          "uri": "external/p_aecce8196efa/e_cdd57ddef6ed.png",
-          "width": 1024,
-          "height": 576,
+          "uri": "external/p_aecce8196efa/e_cdd57ddef6ed.webp",
+          "width": 2048,
+          "height": 1152,
           "frame": 6,
+          "sha256": "d6334b4f65a2c491ae162695b13b58a0d86254cdb9189d1d0a4a2c3852138218",
+          "bytes": 612298,
+          "format": "webp",
           "bounds": {
-            "x": 88,
-            "y": 70,
-            "width": 473,
-            "height": 355
+            "x": 178,
+            "y": 143,
+            "width": 944,
+            "height": 704
           }
         },
         "大笑": {
-          "uri": "external/p_aecce8196efa/e_6a50f99fc5e9.png",
-          "width": 1024,
-          "height": 576,
+          "uri": "external/p_aecce8196efa/e_6a50f99fc5e9.webp",
+          "width": 2048,
+          "height": 1152,
           "frame": 7,
+          "sha256": "d6334b4f65a2c491ae162695b13b58a0d86254cdb9189d1d0a4a2c3852138218",
+          "bytes": 612298,
+          "format": "webp",
           "bounds": {
-            "x": 88,
-            "y": 70,
-            "width": 473,
-            "height": 355
+            "x": 178,
+            "y": 143,
+            "width": 944,
+            "height": 704
           }
         },
         "严肃": {
-          "uri": "external/p_aecce8196efa/e_fe976b0943ff.png",
-          "width": 1024,
-          "height": 576,
+          "uri": "external/p_aecce8196efa/e_fe976b0943ff.webp",
+          "width": 2048,
+          "height": 1152,
           "frame": 11,
+          "sha256": "74db281c3bc6cad7870ea1d502ba88b26fd722d3c043ace4ca97c4f106c384c8",
+          "bytes": 612174,
+          "format": "webp",
           "bounds": {
-            "x": 88,
-            "y": 70,
-            "width": 473,
-            "height": 355
+            "x": 178,
+            "y": 143,
+            "width": 944,
+            "height": 704
           }
         },
         "坏笑": {
-          "uri": "external/p_aecce8196efa/e_3e49b4427878.png",
-          "width": 1024,
-          "height": 576,
+          "uri": "external/p_aecce8196efa/e_3e49b4427878.webp",
+          "width": 2048,
+          "height": 1152,
           "frame": 12,
+          "sha256": "74db281c3bc6cad7870ea1d502ba88b26fd722d3c043ace4ca97c4f106c384c8",
+          "bytes": 612174,
+          "format": "webp",
           "bounds": {
-            "x": 88,
-            "y": 70,
-            "width": 473,
-            "height": 355
+            "x": 178,
+            "y": 143,
+            "width": 944,
+            "height": 704
           }
         },
         "愤怒": {
-          "uri": "external/p_aecce8196efa/e_afa04bf58472.png",
-          "width": 1024,
-          "height": 576,
+          "uri": "external/p_aecce8196efa/e_afa04bf58472.webp",
+          "width": 2048,
+          "height": 1152,
           "frame": 16,
+          "sha256": "3abd9debf5a250f2ecac6cd448fc365c4cdf0b6a59d42a6303435cb65e9e95ac",
+          "bytes": 613920,
+          "format": "webp",
           "bounds": {
-            "x": 88,
-            "y": 70,
-            "width": 473,
-            "height": 355
+            "x": 178,
+            "y": 143,
+            "width": 944,
+            "height": 704
           }
         },
         "悲伤": {
-          "uri": "external/p_aecce8196efa/e_a0c45ee31309.png",
-          "width": 1024,
-          "height": 576,
+          "uri": "external/p_aecce8196efa/e_a0c45ee31309.webp",
+          "width": 2048,
+          "height": 1152,
           "frame": 21,
+          "sha256": "14a72ef68688ba0035c92c3b66bb7aa481bc78232b23f81831b6fa3dd3b40947",
+          "bytes": 612044,
+          "format": "webp",
           "bounds": {
-            "x": 88,
-            "y": 70,
-            "width": 473,
-            "height": 355
+            "x": 178,
+            "y": 143,
+            "width": 944,
+            "height": 704
           }
         },
         "无奈": {
-          "uri": "external/p_aecce8196efa/e_127ae2c5d51f.png",
-          "width": 1024,
-          "height": 576,
+          "uri": "external/p_aecce8196efa/e_127ae2c5d51f.webp",
+          "width": 2048,
+          "height": 1152,
           "frame": 22,
+          "sha256": "14a72ef68688ba0035c92c3b66bb7aa481bc78232b23f81831b6fa3dd3b40947",
+          "bytes": 612044,
+          "format": "webp",
           "bounds": {
-            "x": 88,
-            "y": 70,
-            "width": 473,
-            "height": 355
+            "x": 178,
+            "y": 143,
+            "width": 944,
+            "height": 704
           }
         },
         "侦察": {
-          "uri": "external/p_aecce8196efa/e_5a0497dcea44.png",
-          "width": 1024,
-          "height": 576,
+          "uri": "external/p_aecce8196efa/e_5a0497dcea44.webp",
+          "width": 2048,
+          "height": 1152,
           "frame": 26,
+          "sha256": "a513476204bda46bfd2b1e4cc9b6789566cf6103db46bad46032b238c6347f7b",
+          "bytes": 620548,
+          "format": "webp",
           "bounds": {
-            "x": 88,
-            "y": 70,
-            "width": 473,
-            "height": 355
+            "x": 178,
+            "y": 143,
+            "width": 944,
+            "height": 704
           }
         },
         "惊讶": {
-          "uri": "external/p_aecce8196efa/e_bd6bd4738cba.png",
-          "width": 1024,
-          "height": 576,
+          "uri": "external/p_aecce8196efa/e_bd6bd4738cba.webp",
+          "width": 2048,
+          "height": 1152,
           "frame": 27,
+          "sha256": "a513476204bda46bfd2b1e4cc9b6789566cf6103db46bad46032b238c6347f7b",
+          "bytes": 620548,
+          "format": "webp",
           "bounds": {
-            "x": 88,
-            "y": 70,
-            "width": 473,
-            "height": 355
+            "x": 178,
+            "y": 143,
+            "width": 944,
+            "height": 704
           }
         },
         "挑战": {
-          "uri": "external/p_aecce8196efa/e_9294c931e171.png",
-          "width": 1024,
-          "height": 576,
+          "uri": "external/p_aecce8196efa/e_9294c931e171.webp",
+          "width": 2048,
+          "height": 1152,
           "frame": 31,
+          "sha256": "6fa2f1f9283ddca2cacc0f18e672c2f9b038b4b0009377cbfe7f586df49aec8b",
+          "bytes": 983332,
+          "format": "webp",
           "bounds": {
-            "x": 28,
-            "y": 46,
-            "width": 659,
-            "height": 378
+            "x": 59,
+            "y": 95,
+            "width": 1313,
+            "height": 751
           }
         },
         "普通2": {
-          "uri": "external/p_aecce8196efa/e_b9bb26b45e5b.png",
-          "width": 1024,
-          "height": 576,
+          "uri": "external/p_aecce8196efa/e_b9bb26b45e5b.webp",
+          "width": 2048,
+          "height": 1152,
           "frame": 37,
+          "sha256": "d0acff8d1f4e65c494dc8f2080913dc16a180a054aedaeb33488a2e6f7e02094",
+          "bytes": 145012,
+          "format": "webp",
           "bounds": {
-            "x": 180,
-            "y": 143,
-            "width": 215,
-            "height": 334
+            "x": 364,
+            "y": 288,
+            "width": 424,
+            "height": 663
           }
         },
         "侦查2": {
-          "uri": "external/p_aecce8196efa/e_07e323ea15cb.png",
-          "width": 1024,
-          "height": 576,
-          "frame": 47,
+          "uri": "external/p_aecce8196efa/e_07e323ea15cb.webp",
+          "width": 2048,
+          "height": 1152,
+          "frame": 38,
+          "sha256": "d0acff8d1f4e65c494dc8f2080913dc16a180a054aedaeb33488a2e6f7e02094",
+          "bytes": 145012,
+          "format": "webp",
           "bounds": {
-            "x": 180,
-            "y": 143,
-            "width": 215,
-            "height": 334
+            "x": 364,
+            "y": 288,
+            "width": 424,
+            "height": 663
           }
         },
         "微笑2": {
-          "uri": "external/p_aecce8196efa/e_4364bcc6a061.png",
-          "width": 1024,
-          "height": 576,
-          "frame": 52,
+          "uri": "external/p_aecce8196efa/e_4364bcc6a061.webp",
+          "width": 2048,
+          "height": 1152,
+          "frame": 43,
+          "sha256": "f00abf8a21be07abc2afa9600acd8cff27f1ced3521a4724a1bcd4a14601e1d1",
+          "bytes": 144962,
+          "format": "webp",
           "bounds": {
-            "x": 180,
-            "y": 143,
-            "width": 215,
-            "height": 334
+            "x": 364,
+            "y": 288,
+            "width": 424,
+            "height": 663
           }
         },
         "惊讶2": {
-          "uri": "external/p_aecce8196efa/e_93867cba2077.png",
-          "width": 1024,
-          "height": 576,
-          "frame": 54,
+          "uri": "external/p_aecce8196efa/e_93867cba2077.webp",
+          "width": 2048,
+          "height": 1152,
+          "frame": 44,
+          "sha256": "f00abf8a21be07abc2afa9600acd8cff27f1ced3521a4724a1bcd4a14601e1d1",
+          "bytes": 144962,
+          "format": "webp",
           "bounds": {
-            "x": 180,
-            "y": 143,
-            "width": 215,
-            "height": 334
+            "x": 364,
+            "y": 288,
+            "width": 424,
+            "height": 663
           }
         },
         "坏笑2": {
-          "uri": "external/p_aecce8196efa/e_6ca5fb3f3f2e.png",
-          "width": 1024,
-          "height": 576,
-          "frame": 59,
+          "uri": "external/p_aecce8196efa/e_6ca5fb3f3f2e.webp",
+          "width": 2048,
+          "height": 1152,
+          "frame": 49,
+          "sha256": "4f93ef105159aeca62c85e4036918f40d9180756254ad75857f99c84ccc8fa50",
+          "bytes": 144530,
+          "format": "webp",
           "bounds": {
-            "x": 180,
-            "y": 143,
-            "width": 215,
-            "height": 334
+            "x": 364,
+            "y": 288,
+            "width": 424,
+            "height": 663
           }
         },
         "大笑2": {
-          "uri": "external/p_aecce8196efa/e_d094926f5398.png",
-          "width": 1024,
-          "height": 576,
-          "frame": 62,
+          "uri": "external/p_aecce8196efa/e_d094926f5398.webp",
+          "width": 2048,
+          "height": 1152,
+          "frame": 50,
+          "sha256": "4f93ef105159aeca62c85e4036918f40d9180756254ad75857f99c84ccc8fa50",
+          "bytes": 144530,
+          "format": "webp",
           "bounds": {
-            "x": 180,
-            "y": 143,
-            "width": 215,
-            "height": 334
+            "x": 364,
+            "y": 288,
+            "width": 424,
+            "height": 663
           }
         },
         "严肃2": {
-          "uri": "external/p_aecce8196efa/e_bd25d46a68ed.png",
-          "width": 1024,
-          "height": 576,
-          "frame": 67,
+          "uri": "external/p_aecce8196efa/e_bd25d46a68ed.webp",
+          "width": 2048,
+          "height": 1152,
+          "frame": 55,
+          "sha256": "2a8169beb7f89be5619f8e7e100ea18125e764b62cf0a1017bc5c2d3d2e2ab57",
+          "bytes": 144374,
+          "format": "webp",
           "bounds": {
-            "x": 180,
-            "y": 143,
-            "width": 215,
-            "height": 334
+            "x": 364,
+            "y": 288,
+            "width": 424,
+            "height": 663
           }
         },
         "挑战2": {
-          "uri": "external/p_aecce8196efa/e_ab66e16e5bae.png",
-          "width": 1024,
-          "height": 576,
-          "frame": 69,
+          "uri": "external/p_aecce8196efa/e_ab66e16e5bae.webp",
+          "width": 2048,
+          "height": 1152,
+          "frame": 56,
+          "sha256": "2a8169beb7f89be5619f8e7e100ea18125e764b62cf0a1017bc5c2d3d2e2ab57",
+          "bytes": 144374,
+          "format": "webp",
           "bounds": {
-            "x": 180,
-            "y": 143,
-            "width": 215,
-            "height": 334
+            "x": 364,
+            "y": 288,
+            "width": 424,
+            "height": 663
+          }
+        },
+        "愤怒2": {
+          "uri": "external/p_aecce8196efa/e_8e365e6b5879.webp",
+          "width": 2048,
+          "height": 1152,
+          "frame": 61,
+          "sha256": "04d2ef0fc424dee266887d52edb09f7fa6f588afe736d1948016f1e0e95c5482",
+          "bytes": 145510,
+          "format": "webp",
+          "bounds": {
+            "x": 364,
+            "y": 288,
+            "width": 424,
+            "height": 663
+          }
+        },
+        "悲伤2": {
+          "uri": "external/p_aecce8196efa/e_11a1352dacad.webp",
+          "width": 2048,
+          "height": 1152,
+          "frame": 67,
+          "sha256": "ca5c9eca59bca84b2a08b9de876fef7f0cdf7685204641ffd2ea1c88839c860b",
+          "bytes": 145012,
+          "format": "webp",
+          "bounds": {
+            "x": 364,
+            "y": 288,
+            "width": 424,
+            "height": 663
+          }
+        },
+        "无奈2": {
+          "uri": "external/p_aecce8196efa/e_5b25ae498bdb.webp",
+          "width": 2048,
+          "height": 1152,
+          "frame": 68,
+          "sha256": "ca5c9eca59bca84b2a08b9de876fef7f0cdf7685204641ffd2ea1c88839c860b",
+          "bytes": 145012,
+          "format": "webp",
+          "bounds": {
+            "x": 364,
+            "y": 288,
+            "width": 424,
+            "height": 663
           }
         }
       }
@@ -764,51 +383,63 @@
       "defaultExpression": "普通",
       "expressions": {
         "普通": {
-          "uri": "external/p_812b20620aa0/e_7cda072d452b.png",
-          "width": 1024,
-          "height": 576,
+          "uri": "external/p_812b20620aa0/e_7cda072d452b.webp",
+          "width": 2048,
+          "height": 1152,
           "frame": 1,
+          "sha256": "0f320d2f41f04daef4ccf3605b898309af8866be19da40f33fde6607836bcfec",
+          "bytes": 388598,
+          "format": "webp",
           "bounds": {
-            "x": 110,
-            "y": 76,
-            "width": 518,
-            "height": 348
+            "x": 222,
+            "y": 156,
+            "width": 1030,
+            "height": 690
           }
         },
         "微笑": {
-          "uri": "external/p_812b20620aa0/e_cdd57ddef6ed.png",
-          "width": 1024,
-          "height": 576,
+          "uri": "external/p_812b20620aa0/e_cdd57ddef6ed.webp",
+          "width": 2048,
+          "height": 1152,
           "frame": 7,
+          "sha256": "855d3e7f6ecbbc04930905c4ed25d91fdda20262bccf8382e46818923304551a",
+          "bytes": 388438,
+          "format": "webp",
           "bounds": {
-            "x": 110,
-            "y": 76,
-            "width": 518,
-            "height": 348
+            "x": 222,
+            "y": 155,
+            "width": 1030,
+            "height": 691
           }
         },
         "严肃": {
-          "uri": "external/p_812b20620aa0/e_fe976b0943ff.png",
-          "width": 1024,
-          "height": 576,
+          "uri": "external/p_812b20620aa0/e_fe976b0943ff.webp",
+          "width": 2048,
+          "height": 1152,
           "frame": 12,
+          "sha256": "b3f0d045630ef4527623f3e6033c49dc711d0af900b22464e926f730afab4b7f",
+          "bytes": 387270,
+          "format": "webp",
           "bounds": {
-            "x": 110,
-            "y": 76,
-            "width": 518,
-            "height": 348
+            "x": 222,
+            "y": 155,
+            "width": 1030,
+            "height": 691
           }
         },
         "悲伤": {
-          "uri": "external/p_812b20620aa0/e_a0c45ee31309.png",
-          "width": 1024,
-          "height": 576,
+          "uri": "external/p_812b20620aa0/e_a0c45ee31309.webp",
+          "width": 2048,
+          "height": 1152,
           "frame": 17,
+          "sha256": "3ea9b78a992eaa774ff6cff4994bacb221d89fa452ad02bbdd058e9563f53ea9",
+          "bytes": 388356,
+          "format": "webp",
           "bounds": {
-            "x": 110,
-            "y": 76,
-            "width": 518,
-            "height": 348
+            "x": 222,
+            "y": 155,
+            "width": 1030,
+            "height": 691
           }
         }
       }
@@ -826,63 +457,78 @@
       "defaultExpression": "普通",
       "expressions": {
         "普通": {
-          "uri": "external/p_bff1d62b2263/e_7cda072d452b.png",
-          "width": 1024,
-          "height": 576,
+          "uri": "external/p_bff1d62b2263/e_7cda072d452b.webp",
+          "width": 2048,
+          "height": 1152,
           "frame": 1,
+          "sha256": "ce43f07323c7d9e3a8425b55f5717b96d279f708c3dee3b8169ff006d7cd8a9e",
+          "bytes": 284998,
+          "format": "webp",
           "bounds": {
-            "x": 63,
-            "y": 38,
-            "width": 326,
-            "height": 373
+            "x": 129,
+            "y": 78,
+            "width": 646,
+            "height": 742
           }
         },
         "微笑": {
-          "uri": "external/p_bff1d62b2263/e_cdd57ddef6ed.png",
-          "width": 1024,
-          "height": 576,
+          "uri": "external/p_bff1d62b2263/e_cdd57ddef6ed.webp",
+          "width": 2048,
+          "height": 1152,
           "frame": 7,
+          "sha256": "9730c66d4721a7686c392100ab1ea2b82cd1ed7a20a2e8d723725f7ffe01b4b0",
+          "bytes": 285228,
+          "format": "webp",
           "bounds": {
-            "x": 63,
-            "y": 38,
-            "width": 326,
-            "height": 373
+            "x": 129,
+            "y": 78,
+            "width": 646,
+            "height": 742
           }
         },
         "严肃": {
-          "uri": "external/p_bff1d62b2263/e_fe976b0943ff.png",
-          "width": 1024,
-          "height": 576,
+          "uri": "external/p_bff1d62b2263/e_fe976b0943ff.webp",
+          "width": 2048,
+          "height": 1152,
           "frame": 12,
+          "sha256": "3e14bd3be534f7e88d2fec7ef1703389bca7756fb4db656a8591fcc72dc984d2",
+          "bytes": 284998,
+          "format": "webp",
           "bounds": {
-            "x": 63,
-            "y": 38,
-            "width": 326,
-            "height": 373
+            "x": 129,
+            "y": 78,
+            "width": 646,
+            "height": 742
           }
         },
         "悲伤": {
-          "uri": "external/p_bff1d62b2263/e_a0c45ee31309.png",
-          "width": 1024,
-          "height": 576,
+          "uri": "external/p_bff1d62b2263/e_a0c45ee31309.webp",
+          "width": 2048,
+          "height": 1152,
           "frame": 17,
+          "sha256": "3bdeb91ff73772ed26c7334036bd07617c80e82b76aa9589829d9053d75d737f",
+          "bytes": 285148,
+          "format": "webp",
           "bounds": {
-            "x": 63,
-            "y": 38,
-            "width": 326,
-            "height": 373
+            "x": 129,
+            "y": 78,
+            "width": 646,
+            "height": 742
           }
         },
         "怜悯": {
-          "uri": "external/p_bff1d62b2263/e_160cc6cf30f2.png",
-          "width": 1024,
-          "height": 576,
+          "uri": "external/p_bff1d62b2263/e_160cc6cf30f2.webp",
+          "width": 2048,
+          "height": 1152,
           "frame": 22,
+          "sha256": "547bdeffc97d8bf3e102394b98bf560013ee031266bafa4db82b22a77bf4d0e7",
+          "bytes": 285104,
+          "format": "webp",
           "bounds": {
-            "x": 63,
-            "y": 38,
-            "width": 326,
-            "height": 373
+            "x": 129,
+            "y": 78,
+            "width": 646,
+            "height": 742
           }
         }
       }
@@ -898,51 +544,63 @@
       "defaultExpression": "普通",
       "expressions": {
         "普通": {
-          "uri": "external/p_7d44bc449c2a/e_7cda072d452b.png",
-          "width": 1024,
-          "height": 576,
+          "uri": "external/p_7d44bc449c2a/e_7cda072d452b.webp",
+          "width": 2048,
+          "height": 1152,
           "frame": 1,
+          "sha256": "cf417bbd2ebd710e904d27f3d330566c44bfb73fdd6fe4b56e436e4538cf0e7a",
+          "bytes": 206946,
+          "format": "webp",
           "bounds": {
-            "x": 112,
-            "y": 87,
-            "width": 300,
-            "height": 325
+            "x": 226,
+            "y": 177,
+            "width": 595,
+            "height": 644
           }
         },
         "微笑": {
-          "uri": "external/p_7d44bc449c2a/e_cdd57ddef6ed.png",
-          "width": 1024,
-          "height": 576,
+          "uri": "external/p_7d44bc449c2a/e_cdd57ddef6ed.webp",
+          "width": 2048,
+          "height": 1152,
           "frame": 6,
+          "sha256": "caa4e10cbf12adac45fdbdd0b209b92d21ac26b1da53fa7bb5f98c3f8bdffbbf",
+          "bytes": 206986,
+          "format": "webp",
           "bounds": {
-            "x": 112,
-            "y": 87,
-            "width": 300,
-            "height": 325
+            "x": 226,
+            "y": 177,
+            "width": 595,
+            "height": 644
           }
         },
         "愤怒": {
-          "uri": "external/p_7d44bc449c2a/e_afa04bf58472.png",
-          "width": 1024,
-          "height": 576,
+          "uri": "external/p_7d44bc449c2a/e_afa04bf58472.webp",
+          "width": 2048,
+          "height": 1152,
           "frame": 11,
+          "sha256": "e85a29c9b0bc599d1c6576248e939b6ffc99579f3aa0a8eade935944b817b7b5",
+          "bytes": 208470,
+          "format": "webp",
           "bounds": {
-            "x": 112,
-            "y": 87,
-            "width": 300,
-            "height": 325
+            "x": 226,
+            "y": 177,
+            "width": 595,
+            "height": 644
           }
         },
         "悲伤": {
-          "uri": "external/p_7d44bc449c2a/e_a0c45ee31309.png",
-          "width": 1024,
-          "height": 576,
+          "uri": "external/p_7d44bc449c2a/e_a0c45ee31309.webp",
+          "width": 2048,
+          "height": 1152,
           "frame": 16,
+          "sha256": "b2023b6a1d6a534b74b8de00bd5fdb9dcfbdaf2d6380460d7b8eb8709b44ef79",
+          "bytes": 206930,
+          "format": "webp",
           "bounds": {
-            "x": 112,
-            "y": 87,
-            "width": 300,
-            "height": 325
+            "x": 226,
+            "y": 177,
+            "width": 595,
+            "height": 644
           }
         }
       }
@@ -958,15 +616,18 @@
       "defaultExpression": "普通",
       "expressions": {
         "普通": {
-          "uri": "external/p_c7f26da76ca9/e_7cda072d452b.png",
-          "width": 1024,
-          "height": 576,
+          "uri": "external/p_c7f26da76ca9/e_7cda072d452b.webp",
+          "width": 2048,
+          "height": 1152,
           "frame": 1,
+          "sha256": "44bde3c025d5617c706e4df9c31544ddaa93c7b6005f8b57bb5d75eb8394ae93",
+          "bytes": 355366,
+          "format": "webp",
           "bounds": {
-            "x": 119,
-            "y": 86,
-            "width": 304,
-            "height": 323
+            "x": 238,
+            "y": 172,
+            "width": 608,
+            "height": 643
           }
         }
       }
@@ -982,51 +643,63 @@
       "defaultExpression": "普通",
       "expressions": {
         "普通": {
-          "uri": "external/p_b9dc9d8cb52e/e_7cda072d452b.png",
-          "width": 1024,
-          "height": 576,
+          "uri": "external/p_b9dc9d8cb52e/e_7cda072d452b.webp",
+          "width": 2048,
+          "height": 1152,
           "frame": 1,
+          "sha256": "6f7a0b91129fc6838c29a9eb9383ef2f5b6d72133b35049c2d3a0c8df232d678",
+          "bytes": 208552,
+          "format": "webp",
           "bounds": {
-            "x": 157,
-            "y": 69,
-            "width": 273,
-            "height": 342
+            "x": 317,
+            "y": 141,
+            "width": 540,
+            "height": 678
           }
         },
         "微笑": {
-          "uri": "external/p_b9dc9d8cb52e/e_cdd57ddef6ed.png",
-          "width": 1024,
-          "height": 576,
+          "uri": "external/p_b9dc9d8cb52e/e_cdd57ddef6ed.webp",
+          "width": 2048,
+          "height": 1152,
           "frame": 6,
+          "sha256": "747309bbebdd3bb5d0a83943bfafa8afa75b3aaeabcede4edf8cf7b62e7da588",
+          "bytes": 208334,
+          "format": "webp",
           "bounds": {
-            "x": 157,
-            "y": 69,
-            "width": 273,
-            "height": 342
+            "x": 317,
+            "y": 141,
+            "width": 540,
+            "height": 678
           }
         },
         "愤怒": {
-          "uri": "external/p_b9dc9d8cb52e/e_afa04bf58472.png",
-          "width": 1024,
-          "height": 576,
+          "uri": "external/p_b9dc9d8cb52e/e_afa04bf58472.webp",
+          "width": 2048,
+          "height": 1152,
           "frame": 11,
+          "sha256": "a025b46f33dc92738a0b239f2e130598b12701c28837df9c0c83c43bf4f8ba1a",
+          "bytes": 208830,
+          "format": "webp",
           "bounds": {
-            "x": 157,
-            "y": 69,
-            "width": 273,
-            "height": 342
+            "x": 317,
+            "y": 141,
+            "width": 540,
+            "height": 678
           }
         },
         "悲伤": {
-          "uri": "external/p_b9dc9d8cb52e/e_a0c45ee31309.png",
-          "width": 1024,
-          "height": 576,
+          "uri": "external/p_b9dc9d8cb52e/e_a0c45ee31309.webp",
+          "width": 2048,
+          "height": 1152,
           "frame": 16,
+          "sha256": "5c552bb09a4e554c7aee92523addb2cfe588d501b6a36f7cd9184744a33b27fb",
+          "bytes": 207798,
+          "format": "webp",
           "bounds": {
-            "x": 157,
-            "y": 69,
-            "width": 273,
-            "height": 342
+            "x": 317,
+            "y": 141,
+            "width": 540,
+            "height": 678
           }
         }
       }
@@ -1041,15 +714,18 @@
       "defaultExpression": "普通",
       "expressions": {
         "普通": {
-          "uri": "external/p_e46e7fc687d0/e_7cda072d452b.png",
-          "width": 1024,
-          "height": 576,
+          "uri": "external/p_e46e7fc687d0/e_7cda072d452b.webp",
+          "width": 2048,
+          "height": 1152,
           "frame": 1,
+          "sha256": "4675037a50a42728d2eb832999df8293f0b8d28afd3bde1d11737b7a6ef2d3cb",
+          "bytes": 329652,
+          "format": "webp",
           "bounds": {
-            "x": 142,
-            "y": 59,
-            "width": 281,
-            "height": 349
+            "x": 283,
+            "y": 118,
+            "width": 563,
+            "height": 696
           }
         }
       }
@@ -1065,87 +741,108 @@
       "defaultExpression": "普通",
       "expressions": {
         "普通": {
-          "uri": "external/p_364d37be779d/e_7cda072d452b.png",
-          "width": 1024,
-          "height": 576,
+          "uri": "external/p_364d37be779d/e_7cda072d452b.webp",
+          "width": 2048,
+          "height": 1152,
           "frame": 1,
+          "sha256": "767d2fa4ab1481630db6ba0507464fefb0994462033f7a51401ffc9617c766d1",
+          "bytes": 185448,
+          "format": "webp",
           "bounds": {
-            "x": 125,
-            "y": 83,
-            "width": 264,
-            "height": 325
+            "x": 253,
+            "y": 168,
+            "width": 523,
+            "height": 646
           }
         },
         "坏笑": {
-          "uri": "external/p_364d37be779d/e_3e49b4427878.png",
-          "width": 1024,
-          "height": 576,
+          "uri": "external/p_364d37be779d/e_3e49b4427878.webp",
+          "width": 2048,
+          "height": 1152,
           "frame": 6,
+          "sha256": "21a9f3c47c721dec9e71cfa2b60ec92ec3da6869c295d31587dea6760ae994f4",
+          "bytes": 185274,
+          "format": "webp",
           "bounds": {
-            "x": 125,
-            "y": 83,
-            "width": 264,
-            "height": 325
+            "x": 253,
+            "y": 168,
+            "width": 523,
+            "height": 646
           }
         },
         "微笑": {
-          "uri": "external/p_364d37be779d/e_cdd57ddef6ed.png",
-          "width": 1024,
-          "height": 576,
+          "uri": "external/p_364d37be779d/e_cdd57ddef6ed.webp",
+          "width": 2048,
+          "height": 1152,
           "frame": 7,
+          "sha256": "21a9f3c47c721dec9e71cfa2b60ec92ec3da6869c295d31587dea6760ae994f4",
+          "bytes": 185274,
+          "format": "webp",
           "bounds": {
-            "x": 125,
-            "y": 83,
-            "width": 264,
-            "height": 325
+            "x": 253,
+            "y": 168,
+            "width": 523,
+            "height": 646
           }
         },
         "大笑": {
-          "uri": "external/p_364d37be779d/e_6a50f99fc5e9.png",
-          "width": 1024,
-          "height": 576,
+          "uri": "external/p_364d37be779d/e_6a50f99fc5e9.webp",
+          "width": 2048,
+          "height": 1152,
           "frame": 8,
+          "sha256": "21a9f3c47c721dec9e71cfa2b60ec92ec3da6869c295d31587dea6760ae994f4",
+          "bytes": 185274,
+          "format": "webp",
           "bounds": {
-            "x": 125,
-            "y": 83,
-            "width": 264,
-            "height": 325
+            "x": 253,
+            "y": 168,
+            "width": 523,
+            "height": 646
           }
         },
         "愤怒": {
-          "uri": "external/p_364d37be779d/e_afa04bf58472.png",
-          "width": 1024,
-          "height": 576,
+          "uri": "external/p_364d37be779d/e_afa04bf58472.webp",
+          "width": 2048,
+          "height": 1152,
           "frame": 11,
+          "sha256": "f05e98e8d4d4b3e45f0656cabd7d2646341bfc0eec25c79199b748e9da21a84a",
+          "bytes": 186408,
+          "format": "webp",
           "bounds": {
-            "x": 125,
-            "y": 83,
-            "width": 264,
-            "height": 325
+            "x": 253,
+            "y": 168,
+            "width": 523,
+            "height": 646
           }
         },
         "悲伤": {
-          "uri": "external/p_364d37be779d/e_a0c45ee31309.png",
-          "width": 1024,
-          "height": 576,
+          "uri": "external/p_364d37be779d/e_a0c45ee31309.webp",
+          "width": 2048,
+          "height": 1152,
           "frame": 16,
+          "sha256": "68efdae620c0d1d40fa0ad2b411ad1dcecb03d4011a88d2cf9635cc14314385f",
+          "bytes": 185024,
+          "format": "webp",
           "bounds": {
-            "x": 125,
-            "y": 83,
-            "width": 264,
-            "height": 325
+            "x": 253,
+            "y": 169,
+            "width": 523,
+            "height": 645
           }
         },
         "严肃": {
-          "uri": "external/p_364d37be779d/e_fe976b0943ff.png",
-          "width": 1024,
-          "height": 576,
+          "uri": "external/p_364d37be779d/e_fe976b0943ff.webp",
+          "width": 2048,
+          "height": 1152,
           "frame": 17,
+          "sha256": "68efdae620c0d1d40fa0ad2b411ad1dcecb03d4011a88d2cf9635cc14314385f",
+          "bytes": 185024,
+          "format": "webp",
           "bounds": {
-            "x": 125,
-            "y": 83,
-            "width": 264,
-            "height": 325
+            "x": 253,
+            "y": 169,
+            "width": 523,
+            "height": 645
           }
         }
       }
@@ -1161,51 +858,63 @@
       "defaultExpression": "普通",
       "expressions": {
         "普通": {
-          "uri": "external/p_768107c0b455/e_7cda072d452b.png",
-          "width": 1024,
-          "height": 576,
+          "uri": "external/p_768107c0b455/e_7cda072d452b.webp",
+          "width": 2048,
+          "height": 1152,
           "frame": 1,
+          "sha256": "94ff3d6d951c5aedc9e0f22445d06922209aa9be4ff2ca1b1059153a027efab8",
+          "bytes": 393996,
+          "format": "webp",
           "bounds": {
-            "x": 83,
-            "y": 44,
-            "width": 387,
-            "height": 408
+            "x": 168,
+            "y": 90,
+            "width": 770,
+            "height": 811
           }
         },
         "微笑": {
-          "uri": "external/p_768107c0b455/e_cdd57ddef6ed.png",
-          "width": 1024,
-          "height": 576,
+          "uri": "external/p_768107c0b455/e_cdd57ddef6ed.webp",
+          "width": 2048,
+          "height": 1152,
           "frame": 6,
+          "sha256": "8522176ad9968054de30badc813c24aefc1d839ce6c49f80845fa284f3929ef0",
+          "bytes": 393886,
+          "format": "webp",
           "bounds": {
-            "x": 83,
-            "y": 44,
-            "width": 387,
-            "height": 408
+            "x": 168,
+            "y": 90,
+            "width": 770,
+            "height": 811
           }
         },
         "愤怒": {
-          "uri": "external/p_768107c0b455/e_afa04bf58472.png",
-          "width": 1024,
-          "height": 576,
+          "uri": "external/p_768107c0b455/e_afa04bf58472.webp",
+          "width": 2048,
+          "height": 1152,
           "frame": 11,
+          "sha256": "2fd978a7fd7126bb9d2f719937495510cff7c26d04c637cde9684a139d9627da",
+          "bytes": 394522,
+          "format": "webp",
           "bounds": {
-            "x": 83,
-            "y": 44,
-            "width": 387,
-            "height": 408
+            "x": 168,
+            "y": 90,
+            "width": 770,
+            "height": 811
           }
         },
         "悲伤": {
-          "uri": "external/p_768107c0b455/e_a0c45ee31309.png",
-          "width": 1024,
-          "height": 576,
+          "uri": "external/p_768107c0b455/e_a0c45ee31309.webp",
+          "width": 2048,
+          "height": 1152,
           "frame": 16,
+          "sha256": "a809e63f5e9bf00de210be5035de53422c78e20feb320a163956aa27077389a8",
+          "bytes": 393766,
+          "format": "webp",
           "bounds": {
-            "x": 83,
-            "y": 44,
-            "width": 387,
-            "height": 408
+            "x": 168,
+            "y": 90,
+            "width": 770,
+            "height": 811
           }
         }
       }
@@ -1218,15 +927,18 @@
       "defaultExpression": "普通",
       "expressions": {
         "普通": {
-          "uri": "external/p_63873b8fee5c/e_7cda072d452b.png",
-          "width": 1024,
-          "height": 576,
+          "uri": "external/p_63873b8fee5c/e_7cda072d452b.webp",
+          "width": 2048,
+          "height": 1152,
           "frame": 1,
+          "sha256": "84085d7815d4d8a69300d4c4010d1f5a5ea9a6277d4a1460532c168419687087",
+          "bytes": 119232,
+          "format": "webp",
           "bounds": {
-            "x": 126,
-            "y": 110,
-            "width": 272,
-            "height": 356
+            "x": 256,
+            "y": 222,
+            "width": 538,
+            "height": 708
           }
         }
       }
@@ -1239,15 +951,18 @@
       "defaultExpression": "普通",
       "expressions": {
         "普通": {
-          "uri": "external/p_d9f6a1fb7715/e_7cda072d452b.png",
-          "width": 1024,
-          "height": 576,
+          "uri": "external/p_d9f6a1fb7715/e_7cda072d452b.webp",
+          "width": 2048,
+          "height": 1152,
           "frame": 1,
+          "sha256": "ae1745b2431790076060e52e53d1244e4cb1a7121ca5c65d11f74e27f681f464",
+          "bytes": 281664,
+          "format": "webp",
           "bounds": {
-            "x": 131,
-            "y": 71,
-            "width": 326,
-            "height": 339
+            "x": 265,
+            "y": 145,
+            "width": 647,
+            "height": 672
           }
         }
       }
@@ -1260,15 +975,18 @@
       "defaultExpression": "普通",
       "expressions": {
         "普通": {
-          "uri": "external/p_dc4f9eb56dfb/e_7cda072d452b.png",
-          "width": 1024,
-          "height": 576,
+          "uri": "external/p_dc4f9eb56dfb/e_7cda072d452b.webp",
+          "width": 2048,
+          "height": 1152,
           "frame": 1,
+          "sha256": "3235380803cfe00a62cb01462af5173b181f4b12c2888490bf52b688ac6b8d4c",
+          "bytes": 252236,
+          "format": "webp",
           "bounds": {
-            "x": 82,
-            "y": 75,
-            "width": 357,
-            "height": 336
+            "x": 167,
+            "y": 153,
+            "width": 707,
+            "height": 667
           }
         }
       }
@@ -1281,15 +999,18 @@
       "defaultExpression": "普通",
       "expressions": {
         "普通": {
-          "uri": "external/p_d4de374c952d/e_7cda072d452b.png",
-          "width": 1024,
-          "height": 576,
+          "uri": "external/p_d4de374c952d/e_7cda072d452b.webp",
+          "width": 2048,
+          "height": 1152,
           "frame": 1,
+          "sha256": "a30f6cf9105c8cc7b5c7df5923adbc7c35a26fc61ba1e1ef18ba2e9b04b6d084",
+          "bytes": 205580,
+          "format": "webp",
           "bounds": {
-            "x": 128,
-            "y": 72,
-            "width": 274,
-            "height": 338
+            "x": 259,
+            "y": 147,
+            "width": 544,
+            "height": 670
           }
         }
       }
@@ -1302,15 +1023,18 @@
       "defaultExpression": "普通",
       "expressions": {
         "普通": {
-          "uri": "external/p_d6a92ad00be8/e_7cda072d452b.png",
-          "width": 1024,
-          "height": 576,
+          "uri": "external/p_d6a92ad00be8/e_7cda072d452b.webp",
+          "width": 2048,
+          "height": 1152,
           "frame": 1,
+          "sha256": "ced5610da4eb85540969dc07f41bf07fb2fe990e95269c59230aef69f18d5976",
+          "bytes": 268910,
+          "format": "webp",
           "bounds": {
-            "x": 171,
-            "y": 52,
-            "width": 296,
-            "height": 355
+            "x": 344,
+            "y": 106,
+            "width": 587,
+            "height": 706
           }
         }
       }
@@ -1323,15 +1047,18 @@
       "defaultExpression": "普通",
       "expressions": {
         "普通": {
-          "uri": "external/p_f3c00d063a27/e_7cda072d452b.png",
-          "width": 1024,
-          "height": 576,
+          "uri": "external/p_f3c00d063a27/e_7cda072d452b.webp",
+          "width": 2048,
+          "height": 1152,
           "frame": 1,
+          "sha256": "01b7828374dca94d99f552d046d2d0138131d82a9d6ad3cf05714842252ee4e1",
+          "bytes": 234710,
+          "format": "webp",
           "bounds": {
-            "x": 120,
-            "y": 75,
-            "width": 298,
-            "height": 333
+            "x": 242,
+            "y": 154,
+            "width": 591,
+            "height": 659
           }
         }
       }
@@ -1344,15 +1071,18 @@
       "defaultExpression": "普通",
       "expressions": {
         "普通": {
-          "uri": "external/p_b5e7b14bc845/e_7cda072d452b.png",
-          "width": 1024,
-          "height": 576,
+          "uri": "external/p_b5e7b14bc845/e_7cda072d452b.webp",
+          "width": 2048,
+          "height": 1152,
           "frame": 1,
+          "sha256": "d0589cccf709ee18fbbc3dae026e7eab0cd9f4ccc2425a57e30084379b3769fe",
+          "bytes": 354532,
+          "format": "webp",
           "bounds": {
-            "x": 138,
-            "y": 55,
-            "width": 314,
-            "height": 353
+            "x": 278,
+            "y": 113,
+            "width": 624,
+            "height": 701
           }
         }
       }
@@ -1368,15 +1098,18 @@
       "defaultExpression": "普通",
       "expressions": {
         "普通": {
-          "uri": "external/p_99c9c6da0806/e_7cda072d452b.png",
-          "width": 1024,
-          "height": 576,
+          "uri": "external/p_99c9c6da0806/e_7cda072d452b.webp",
+          "width": 2048,
+          "height": 1152,
           "frame": 1,
+          "sha256": "c8f1bd3d80cf85364a4925adead969c25a07d84e9c24842668251a860495d96d",
+          "bytes": 313362,
+          "format": "webp",
           "bounds": {
-            "x": 106,
-            "y": 71,
-            "width": 322,
-            "height": 338
+            "x": 215,
+            "y": 145,
+            "width": 638,
+            "height": 670
           }
         }
       }
@@ -1392,15 +1125,18 @@
       "defaultExpression": "普通",
       "expressions": {
         "普通": {
-          "uri": "external/p_94af6c408810/e_7cda072d452b.png",
-          "width": 1024,
-          "height": 576,
+          "uri": "external/p_94af6c408810/e_7cda072d452b.webp",
+          "width": 2048,
+          "height": 1152,
           "frame": 1,
+          "sha256": "2896480a338ff8d0c135d5822134b5e517f16abb329b0121c57dbeb583a687ed",
+          "bytes": 476526,
+          "format": "webp",
           "bounds": {
-            "x": 39,
-            "y": 68,
-            "width": 432,
-            "height": 342
+            "x": 80,
+            "y": 135,
+            "width": 860,
+            "height": 682
           }
         }
       }
@@ -1416,15 +1152,18 @@
       "defaultExpression": "普通",
       "expressions": {
         "普通": {
-          "uri": "external/p_6662c40bac78/e_7cda072d452b.png",
-          "width": 1024,
-          "height": 576,
+          "uri": "external/p_6662c40bac78/e_7cda072d452b.webp",
+          "width": 2048,
+          "height": 1152,
           "frame": 1,
+          "sha256": "ecfd13a13e1f5fb6de1706cffe5e6b293fa0b3193b4064a7ea94784fce6a2eeb",
+          "bytes": 335032,
+          "format": "webp",
           "bounds": {
-            "x": 66,
-            "y": 21,
-            "width": 406,
-            "height": 391
+            "x": 134,
+            "y": 44,
+            "width": 808,
+            "height": 777
           }
         }
       }
@@ -1439,15 +1178,18 @@
       "defaultExpression": "普通",
       "expressions": {
         "普通": {
-          "uri": "external/p_dfe2db74975e/e_7cda072d452b.png",
-          "width": 1024,
-          "height": 576,
+          "uri": "external/p_dfe2db74975e/e_7cda072d452b.webp",
+          "width": 2048,
+          "height": 1152,
           "frame": 1,
+          "sha256": "6f4e7a68dc4495cf5b9371a0918660b44dc4b193bba7c90529fa6a06a6d3a7aa",
+          "bytes": 301244,
+          "format": "webp",
           "bounds": {
-            "x": 28,
-            "y": 83,
-            "width": 455,
-            "height": 329
+            "x": 59,
+            "y": 168,
+            "width": 905,
+            "height": 653
           }
         }
       }
@@ -1460,39 +1202,93 @@
       "defaultExpression": "普通",
       "expressions": {
         "普通": {
-          "uri": "external/p_04fb6dd57845/e_7cda072d452b.png",
-          "width": 1024,
-          "height": 576,
+          "uri": "external/p_04fb6dd57845/e_7cda072d452b.webp",
+          "width": 2048,
+          "height": 1152,
           "frame": 1,
+          "sha256": "1bb722104cfc6d66a4a37e57a3ac1251b3ac9759a32e40178a9008c8c06f507c",
+          "bytes": 6426,
+          "format": "webp",
           "bounds": {
-            "x": 206,
-            "y": 225,
-            "width": 117,
-            "height": 187
+            "x": 415,
+            "y": 452,
+            "width": 228,
+            "height": 369
           }
         },
         "黑铁死士": {
-          "uri": "external/p_04fb6dd57845/e_effb7e567370.png",
-          "width": 1024,
-          "height": 576,
+          "uri": "external/p_04fb6dd57845/e_effb7e567370.webp",
+          "width": 2048,
+          "height": 1152,
           "frame": 5,
+          "sha256": "40ffa1c3b07cd327a82a137943aee8662a6bf00a9edf0d976a4002d3d13020dc",
+          "bytes": 107826,
+          "format": "webp",
           "bounds": {
-            "x": 131,
-            "y": 114,
-            "width": 272,
-            "height": 416
+            "x": 265,
+            "y": 231,
+            "width": 538,
+            "height": 826
           }
         },
         "黑铁游侠": {
-          "uri": "external/p_04fb6dd57845/e_b7394a56bfaf.png",
-          "width": 1024,
-          "height": 576,
+          "uri": "external/p_04fb6dd57845/e_b7394a56bfaf.webp",
+          "width": 2048,
+          "height": 1152,
           "frame": 12,
+          "sha256": "39656fabebd6071333ebcda0f5a8b64388309e255e1d6abe0dda8b1611aa5bda",
+          "bytes": 118732,
+          "format": "webp",
           "bounds": {
-            "x": 148,
-            "y": 85,
-            "width": 260,
-            "height": 373
+            "x": 298,
+            "y": 171,
+            "width": 516,
+            "height": 743
+          }
+        },
+        "摇滚学姐": {
+          "uri": "external/p_04fb6dd57845/e_8acdca1aa46b.webp",
+          "width": 2048,
+          "height": 1152,
+          "frame": 19,
+          "sha256": "0896fb866d581870c3e6c3d2c2bed2a0121af1e19b494bb1600972c8485f8679",
+          "bytes": 135294,
+          "format": "webp",
+          "bounds": {
+            "x": 280,
+            "y": 250,
+            "width": 574,
+            "height": 846
+          }
+        },
+        "掠夺少女": {
+          "uri": "external/p_04fb6dd57845/e_a7ba8a9aa7fa.webp",
+          "width": 2048,
+          "height": 1152,
+          "frame": 26,
+          "sha256": "cfda93bd2c07f925e2eeef492a8f5bb34c6b4915fb86dd2d858ee11e044f0c2b",
+          "bytes": 82724,
+          "format": "webp",
+          "bounds": {
+            "x": 391,
+            "y": 270,
+            "width": 283,
+            "height": 605
+          }
+        },
+        "精锐掠夺少女": {
+          "uri": "external/p_04fb6dd57845/e_6ca3ccd01ef9.webp",
+          "width": 2048,
+          "height": 1152,
+          "frame": 33,
+          "sha256": "222efaee907f0ff53832cd384ac4d4fbceb5a3b01953a23a44b9780ac54cedec",
+          "bytes": 94434,
+          "format": "webp",
+          "bounds": {
+            "x": 286,
+            "y": 226,
+            "width": 442,
+            "height": 660
           }
         }
       }
@@ -1507,15 +1303,18 @@
       "defaultExpression": "普通",
       "expressions": {
         "普通": {
-          "uri": "external/p_0c7c74cb6d9f/e_7cda072d452b.png",
-          "width": 1024,
-          "height": 576,
+          "uri": "external/p_0c7c74cb6d9f/e_7cda072d452b.webp",
+          "width": 2048,
+          "height": 1152,
           "frame": 1,
+          "sha256": "54c6cd160dd8e43183e737f53210d6b6d3d1285447ce8fa4c4d2e7700ad7b9c0",
+          "bytes": 71752,
+          "format": "webp",
           "bounds": {
-            "x": 202,
-            "y": 132,
-            "width": 187,
-            "height": 288
+            "x": 407,
+            "y": 266,
+            "width": 368,
+            "height": 571
           }
         }
       }
@@ -1528,15 +1327,18 @@
       "defaultExpression": "普通",
       "expressions": {
         "普通": {
-          "uri": "external/p_beb1b1fdfccb/e_7cda072d452b.png",
-          "width": 1024,
-          "height": 576,
+          "uri": "external/p_beb1b1fdfccb/e_7cda072d452b.webp",
+          "width": 2048,
+          "height": 1152,
           "frame": 1,
+          "sha256": "01c82e32806027402b4d002431219e73db2df156ceec50680e563741a5d4d85d",
+          "bytes": 479406,
+          "format": "webp",
           "bounds": {
-            "x": 62,
-            "y": 63,
-            "width": 413,
-            "height": 351
+            "x": 126,
+            "y": 129,
+            "width": 822,
+            "height": 696
           }
         }
       }
@@ -1549,15 +1351,18 @@
       "defaultExpression": "普通",
       "expressions": {
         "普通": {
-          "uri": "external/p_9429eba2f66e/e_7cda072d452b.png",
-          "width": 1024,
-          "height": 576,
+          "uri": "external/p_9429eba2f66e/e_7cda072d452b.webp",
+          "width": 2048,
+          "height": 1152,
           "frame": 1,
+          "sha256": "d99103d1a7863cf110aabdfddddd2f7861d4bed58fd27b480777e42c6ef59e95",
+          "bytes": 540770,
+          "format": "webp",
           "bounds": {
-            "x": 104,
-            "y": 6,
-            "width": 343,
-            "height": 404
+            "x": 211,
+            "y": 13,
+            "width": 683,
+            "height": 804
           }
         }
       }
@@ -1570,15 +1375,18 @@
       "defaultExpression": "普通",
       "expressions": {
         "普通": {
-          "uri": "external/p_6eef50f4b788/e_7cda072d452b.png",
-          "width": 1024,
-          "height": 576,
+          "uri": "external/p_6eef50f4b788/e_7cda072d452b.webp",
+          "width": 2048,
+          "height": 1152,
           "frame": 1,
+          "sha256": "6f937ed81b9287e60a4749d035e2442b55db6ab8cf03bf4fd862a061ab0428ac",
+          "bytes": 1024782,
+          "format": "webp",
           "bounds": {
-            "x": 70,
-            "y": 27,
-            "width": 811,
-            "height": 397
+            "x": 140,
+            "y": 11,
+            "width": 1618,
+            "height": 835
           }
         }
       }
@@ -1591,15 +1399,18 @@
       "defaultExpression": "普通",
       "expressions": {
         "普通": {
-          "uri": "external/p_d0a623cb0d2d/e_7cda072d452b.png",
-          "width": 1024,
-          "height": 576,
+          "uri": "external/p_d0a623cb0d2d/e_7cda072d452b.webp",
+          "width": 2048,
+          "height": 1152,
           "frame": 1,
+          "sha256": "eb911f71417723087450549f53118c584de18b01b05f4762c1bec012ef4689cc",
+          "bytes": 702480,
+          "format": "webp",
           "bounds": {
-            "x": 56,
-            "y": 40,
-            "width": 428,
-            "height": 367
+            "x": 115,
+            "y": 81,
+            "width": 853,
+            "height": 731
           }
         }
       }
@@ -1612,15 +1423,18 @@
       "defaultExpression": "普通",
       "expressions": {
         "普通": {
-          "uri": "external/p_286a6a310431/e_7cda072d452b.png",
-          "width": 1024,
-          "height": 576,
+          "uri": "external/p_286a6a310431/e_7cda072d452b.webp",
+          "width": 2048,
+          "height": 1152,
           "frame": 1,
+          "sha256": "faaa94ce6f1ad5eb128896b2af3a9e933f5ec0cb2a60d987462cb289f4fac03f",
+          "bytes": 462780,
+          "format": "webp",
           "bounds": {
-            "x": 14,
-            "y": 60,
-            "width": 526,
-            "height": 348
+            "x": 28,
+            "y": 121,
+            "width": 1051,
+            "height": 692
           }
         }
       }
@@ -1635,15 +1449,18 @@
       "defaultExpression": "普通",
       "expressions": {
         "普通": {
-          "uri": "external/p_13b5c69f9386/e_7cda072d452b.png",
-          "width": 1024,
-          "height": 576,
+          "uri": "external/p_13b5c69f9386/e_7cda072d452b.webp",
+          "width": 2048,
+          "height": 1152,
           "frame": 1,
+          "sha256": "9e716c4ab2ae1f47704fb2a0305e7ccf8247f794c7bf79ae466d162c66c1b077",
+          "bytes": 166070,
+          "format": "webp",
           "bounds": {
-            "x": 138,
-            "y": 161,
-            "width": 350,
-            "height": 303
+            "x": 278,
+            "y": 324,
+            "width": 695,
+            "height": 602
           }
         }
       }
@@ -1659,15 +1476,18 @@
       "defaultExpression": "普通",
       "expressions": {
         "普通": {
-          "uri": "external/p_06c3b32834cd/e_7cda072d452b.png",
-          "width": 1024,
-          "height": 576,
+          "uri": "external/p_06c3b32834cd/e_7cda072d452b.webp",
+          "width": 2048,
+          "height": 1152,
           "frame": 1,
+          "sha256": "ef136c406297df2d66fe8f343c0e1405285c855b0873b00d398a2c3722b60802",
+          "bytes": 151744,
+          "format": "webp",
           "bounds": {
-            "x": 144,
-            "y": 144,
-            "width": 443,
-            "height": 351
+            "x": 292,
+            "y": 291,
+            "width": 879,
+            "height": 697
           }
         }
       }
@@ -1680,15 +1500,18 @@
       "defaultExpression": "普通",
       "expressions": {
         "普通": {
-          "uri": "external/p_557e5ff04f5e/e_7cda072d452b.png",
-          "width": 1024,
-          "height": 576,
+          "uri": "external/p_557e5ff04f5e/e_7cda072d452b.webp",
+          "width": 2048,
+          "height": 1152,
           "frame": 1,
+          "sha256": "ca99cfea203a8b9d7b99dca13d181685c8e6dfcc585faf41ea8420ed29a7d74f",
+          "bytes": 116282,
+          "format": "webp",
           "bounds": {
-            "x": 154,
-            "y": 191,
-            "width": 304,
-            "height": 385
+            "x": 311,
+            "y": 384,
+            "width": 602,
+            "height": 768
           }
         }
       }
@@ -1701,15 +1524,18 @@
       "defaultExpression": "普通",
       "expressions": {
         "普通": {
-          "uri": "external/p_bf4315bac7e7/e_7cda072d452b.png",
-          "width": 1024,
-          "height": 576,
+          "uri": "external/p_bf4315bac7e7/e_7cda072d452b.webp",
+          "width": 2048,
+          "height": 1152,
           "frame": 1,
+          "sha256": "4388e26dcadf6824cf3283be05449fcf8e2d733aee6a069275b6673493a8a2c9",
+          "bytes": 111918,
+          "format": "webp",
           "bounds": {
-            "x": 154,
-            "y": 182,
-            "width": 413,
-            "height": 301
+            "x": 310,
+            "y": 366,
+            "width": 821,
+            "height": 597
           }
         }
       }
@@ -1722,15 +1548,18 @@
       "defaultExpression": "普通",
       "expressions": {
         "普通": {
-          "uri": "external/p_5c350bb23741/e_7cda072d452b.png",
-          "width": 1024,
-          "height": 576,
+          "uri": "external/p_5c350bb23741/e_7cda072d452b.webp",
+          "width": 2048,
+          "height": 1152,
           "frame": 1,
+          "sha256": "a43d87cd68e433ab026d7372507a548a50336643269d6337c4b8ef55b0e86eaf",
+          "bytes": 215446,
+          "format": "webp",
           "bounds": {
-            "x": 94,
-            "y": 142,
-            "width": 222,
-            "height": 434
+            "x": 190,
+            "y": 287,
+            "width": 439,
+            "height": 865
           }
         }
       }
@@ -1743,15 +1572,18 @@
       "defaultExpression": "普通",
       "expressions": {
         "普通": {
-          "uri": "external/p_dc84b9196919/e_7cda072d452b.png",
-          "width": 1024,
-          "height": 576,
+          "uri": "external/p_dc84b9196919/e_7cda072d452b.webp",
+          "width": 2048,
+          "height": 1152,
           "frame": 1,
+          "sha256": "f75c9204a4d7ef6b82455b32787462e8f3d023469b370cbd10fde2e0e5d49fe4",
+          "bytes": 137988,
+          "format": "webp",
           "bounds": {
-            "x": 171,
-            "y": 94,
-            "width": 219,
-            "height": 482
+            "x": 344,
+            "y": 191,
+            "width": 432,
+            "height": 961
           }
         }
       }
@@ -1764,15 +1596,18 @@
       "defaultExpression": "普通",
       "expressions": {
         "普通": {
-          "uri": "external/p_367ecafc74e3/e_7cda072d452b.png",
-          "width": 1024,
-          "height": 576,
+          "uri": "external/p_367ecafc74e3/e_7cda072d452b.webp",
+          "width": 2048,
+          "height": 1152,
           "frame": 1,
+          "sha256": "bb233a2bd33f331d1924e00029daa88d95c33897163092b5516dc152fefc8823",
+          "bytes": 115274,
+          "format": "webp",
           "bounds": {
-            "x": 194,
-            "y": 106,
-            "width": 176,
-            "height": 330
+            "x": 391,
+            "y": 214,
+            "width": 347,
+            "height": 656
           }
         }
       }
@@ -1785,63 +1620,93 @@
       "defaultExpression": "普通",
       "expressions": {
         "普通": {
-          "uri": "external/p_9e6296a6e4d6/e_7cda072d452b.png",
-          "width": 550,
-          "height": 400,
+          "uri": "external/p_9e6296a6e4d6/e_7cda072d452b.webp",
+          "width": 1100,
+          "height": 800,
           "frame": 1,
+          "sha256": "049225f377a5ad75845423bd4533f772915a3f3aa6f4e565095c0920283aa5d1",
+          "bytes": 143642,
+          "format": "webp",
           "bounds": {
-            "x": 185,
-            "y": 111,
-            "width": 187,
-            "height": 289
+            "x": 372,
+            "y": 224,
+            "width": 369,
+            "height": 576
           }
         },
         "微笑": {
-          "uri": "external/p_9e6296a6e4d6/e_cdd57ddef6ed.png",
-          "width": 550,
-          "height": 400,
-          "frame": 21,
+          "uri": "external/p_9e6296a6e4d6/e_cdd57ddef6ed.webp",
+          "width": 1100,
+          "height": 800,
+          "frame": 10,
+          "sha256": "f284a76b9b60dae14f658535529a3b6f14af27023e79c20966d315c0e4118eeb",
+          "bytes": 142554,
+          "format": "webp",
           "bounds": {
-            "x": 185,
-            "y": 111,
-            "width": 187,
-            "height": 289
+            "x": 372,
+            "y": 224,
+            "width": 369,
+            "height": 576
           }
         },
         "呲牙": {
-          "uri": "external/p_9e6296a6e4d6/e_479d95f1cdfc.png",
-          "width": 550,
-          "height": 400,
-          "frame": 31,
+          "uri": "external/p_9e6296a6e4d6/e_479d95f1cdfc.webp",
+          "width": 1100,
+          "height": 800,
+          "frame": 20,
+          "sha256": "80de91c0abe9d4b7343aee41ca734534b949c8c9071b080a432c30b33a650353",
+          "bytes": 142836,
+          "format": "webp",
           "bounds": {
-            "x": 185,
-            "y": 111,
-            "width": 187,
-            "height": 289
+            "x": 372,
+            "y": 224,
+            "width": 369,
+            "height": 576
           }
         },
         "难过": {
-          "uri": "external/p_9e6296a6e4d6/e_7d048ef4858f.png",
-          "width": 550,
-          "height": 400,
-          "frame": 42,
+          "uri": "external/p_9e6296a6e4d6/e_7d048ef4858f.webp",
+          "width": 1100,
+          "height": 800,
+          "frame": 31,
+          "sha256": "5335f67316657710f2f9f9486111bce9be25e4d3f5c460a5284f9abaf25e6632",
+          "bytes": 143170,
+          "format": "webp",
           "bounds": {
-            "x": 186,
-            "y": 111,
-            "width": 176,
-            "height": 289
+            "x": 372,
+            "y": 224,
+            "width": 369,
+            "height": 576
           }
         },
         "思考": {
-          "uri": "external/p_9e6296a6e4d6/e_a6c1499244b7.png",
-          "width": 550,
-          "height": 400,
-          "frame": 51,
+          "uri": "external/p_9e6296a6e4d6/e_a6c1499244b7.webp",
+          "width": 1100,
+          "height": 800,
+          "frame": 40,
+          "sha256": "a119dd082a0becdc5e5a8b597118c65933cf92dcc1bda47e1be64e8e69f0c93e",
+          "bytes": 146940,
+          "format": "webp",
           "bounds": {
-            "x": 185,
-            "y": 111,
-            "width": 239,
-            "height": 289
+            "x": 375,
+            "y": 224,
+            "width": 347,
+            "height": 576
+          }
+        },
+        "比划": {
+          "uri": "external/p_9e6296a6e4d6/e_d552254a360e.webp",
+          "width": 1100,
+          "height": 800,
+          "frame": 46,
+          "sha256": "7a90e69c0497af82d7c59b535702de374bac9fe1550d042a1ab2b10266f1bd61",
+          "bytes": 158588,
+          "format": "webp",
+          "bounds": {
+            "x": 372,
+            "y": 224,
+            "width": 473,
+            "height": 576
           }
         }
       }
@@ -1854,15 +1719,18 @@
       "defaultExpression": "普通",
       "expressions": {
         "普通": {
-          "uri": "external/p_e22a89c8fda2/e_7cda072d452b.png",
-          "width": 1024,
-          "height": 576,
+          "uri": "external/p_e22a89c8fda2/e_7cda072d452b.webp",
+          "width": 2048,
+          "height": 1152,
           "frame": 1,
+          "sha256": "e2921d39b1eb8ec31723058d98248a7fc954db8ac43c0d0042cf551c9206adb2",
+          "bytes": 123736,
+          "format": "webp",
           "bounds": {
-            "x": 123,
-            "y": 148,
-            "width": 278,
-            "height": 358
+            "x": 248,
+            "y": 298,
+            "width": 552,
+            "height": 712
           }
         }
       }
@@ -1875,15 +1743,18 @@
       "defaultExpression": "普通",
       "expressions": {
         "普通": {
-          "uri": "external/p_955233ca8909/e_7cda072d452b.png",
-          "width": 1024,
-          "height": 576,
+          "uri": "external/p_955233ca8909/e_7cda072d452b.webp",
+          "width": 2048,
+          "height": 1152,
           "frame": 1,
+          "sha256": "e04d40a1eb44c98ba95d83dc295890952267425d4caf0eb99244d1016cf3fa03",
+          "bytes": 484390,
+          "format": "webp",
           "bounds": {
-            "x": 27,
-            "y": 10,
-            "width": 354,
-            "height": 566
+            "x": 56,
+            "y": 23,
+            "width": 704,
+            "height": 1129
           }
         }
       }
@@ -1896,31 +1767,97 @@
       "defaultExpression": "普通",
       "expressions": {
         "普通": {
-          "uri": "external/p_1d7493ea7364/e_7cda072d452b.png",
-          "width": 1024,
-          "height": 576,
+          "uri": "external/p_1d7493ea7364/e_7cda072d452b.webp",
+          "width": 2048,
+          "height": 1152,
           "frame": 1,
+          "sha256": "f4f3860fb66ad9f9c16b27296692fdb40c7e4482748f3c8af06f73e082e8c5d9",
+          "bytes": 84310,
+          "format": "webp",
           "bounds": {
-            "x": 134,
-            "y": 138,
-            "width": 275,
-            "height": 438
+            "x": 270,
+            "y": 279,
+            "width": 545,
+            "height": 873
           }
         }
       }
     },
-    "室友": {
-      "key": "室友",
+    "室友-男": {
+      "key": "室友-男",
       "aliases": [],
       "source": "external-swf",
       "sourcePath": "flashswf/portraits/室友.swf",
+      "sourceKey": "室友",
+      "sourceSpriteId": 6,
+      "coordinateSpace": "sprite-natural",
+      "selection": {
+        "rule": "player-gender",
+        "gender": "男"
+      },
       "defaultExpression": "普通",
       "expressions": {
         "普通": {
-          "uri": "external/p_706a50dca479/e_7cda072d452b.png",
-          "width": 1024,
-          "height": 576,
-          "frame": 1
+          "uri": "external/p_1a06b27818e8/e_7cda072d452b.webp",
+          "width": 1084,
+          "height": 2209,
+          "frame": 2,
+          "sha256": "dc779c6571bec995cc61bfdac8d2371599b55f302fdafc8ff8aee7afd847a470",
+          "bytes": 349246,
+          "format": "webp",
+          "bounds": {
+            "x": 0,
+            "y": 0,
+            "width": 1084,
+            "height": 2209
+          },
+          "rasterization": {
+            "renderer": "ffdec-svg-cairosvg",
+            "sourceSpriteId": 6,
+            "zoom": 2,
+            "supersample": 2,
+            "resolutionScale": 8,
+            "minimumVisibleHeight": 1024
+          }
+        }
+      }
+    },
+    "室友-女": {
+      "key": "室友-女",
+      "aliases": [],
+      "source": "external-swf",
+      "sourcePath": "flashswf/portraits/室友.swf",
+      "sourceKey": "室友",
+      "sourceSpriteId": 6,
+      "coordinateSpace": "sprite-natural",
+      "selection": {
+        "rule": "player-gender",
+        "gender": "女"
+      },
+      "defaultExpression": "普通",
+      "expressions": {
+        "普通": {
+          "uri": "external/p_2f980cde7cbd/e_7cda072d452b.webp",
+          "width": 1084,
+          "height": 2209,
+          "frame": 16,
+          "sha256": "a65cc17ffdc2461d9adebfc4248dccd16a1a94afa3e804a4a3e4fd208471f20c",
+          "bytes": 236538,
+          "format": "webp",
+          "bounds": {
+            "x": 53,
+            "y": 24,
+            "width": 744,
+            "height": 1070
+          },
+          "rasterization": {
+            "renderer": "ffdec-svg-cairosvg",
+            "sourceSpriteId": 6,
+            "zoom": 2,
+            "supersample": 2,
+            "resolutionScale": 8,
+            "minimumVisibleHeight": 1024
+          }
         }
       }
     },
@@ -1932,15 +1869,18 @@
       "defaultExpression": "普通",
       "expressions": {
         "普通": {
-          "uri": "external/p_5c47c3ee4bac/e_7cda072d452b.png",
-          "width": 1024,
-          "height": 576,
+          "uri": "external/p_5c47c3ee4bac/e_7cda072d452b.webp",
+          "width": 2048,
+          "height": 1152,
           "frame": 1,
+          "sha256": "aa59b7d23af3e48795932d1a1e2ad869d5e141e8b7eddcce116af0117431f83e",
+          "bytes": 109158,
+          "format": "webp",
           "bounds": {
-            "x": 213,
-            "y": 219,
-            "width": 170,
-            "height": 357
+            "x": 429,
+            "y": 441,
+            "width": 335,
+            "height": 711
           }
         }
       }
@@ -1953,15 +1893,18 @@
       "defaultExpression": "普通",
       "expressions": {
         "普通": {
-          "uri": "external/p_61124eeee03c/e_7cda072d452b.png",
-          "width": 1024,
-          "height": 576,
+          "uri": "external/p_61124eeee03c/e_7cda072d452b.webp",
+          "width": 2048,
+          "height": 1152,
           "frame": 1,
+          "sha256": "3efb647ff94d3a8e8cf1e59399a730356f3583acb83aa4688af8da52ad18b20f",
+          "bytes": 97278,
+          "format": "webp",
           "bounds": {
-            "x": 196,
-            "y": 234,
-            "width": 146,
-            "height": 339
+            "x": 395,
+            "y": 470,
+            "width": 286,
+            "height": 674
           }
         }
       }
@@ -1974,15 +1917,18 @@
       "defaultExpression": "普通",
       "expressions": {
         "普通": {
-          "uri": "external/p_622ed4a3c4b8/e_7cda072d452b.png",
-          "width": 1024,
-          "height": 576,
+          "uri": "external/p_622ed4a3c4b8/e_7cda072d452b.webp",
+          "width": 2048,
+          "height": 1152,
           "frame": 1,
+          "sha256": "fa906d8899bcda4ee5ab002b12380e0350377354f032f8c8bc77769b73c4cb48",
+          "bytes": 134388,
+          "format": "webp",
           "bounds": {
-            "x": 117,
-            "y": 157,
-            "width": 278,
-            "height": 383
+            "x": 237,
+            "y": 317,
+            "width": 551,
+            "height": 761
           }
         }
       }
@@ -1997,15 +1943,18 @@
       "defaultExpression": "普通",
       "expressions": {
         "普通": {
-          "uri": "external/p_83499828853a/e_7cda072d452b.png",
-          "width": 1024,
-          "height": 576,
+          "uri": "external/p_83499828853a/e_7cda072d452b.webp",
+          "width": 2048,
+          "height": 1152,
           "frame": 1,
+          "sha256": "602fbf9f9cb319e231e9e33d5a444095c9759d6a74ac209266e3c88f7e806baf",
+          "bytes": 221654,
+          "format": "webp",
           "bounds": {
-            "x": 21,
-            "y": 197,
-            "width": 410,
-            "height": 379
+            "x": 47,
+            "y": 397,
+            "width": 812,
+            "height": 755
           }
         }
       }
@@ -2020,15 +1969,18 @@
       "defaultExpression": "普通",
       "expressions": {
         "普通": {
-          "uri": "external/p_b448a0265648/e_7cda072d452b.png",
-          "width": 1024,
-          "height": 576,
+          "uri": "external/p_b448a0265648/e_7cda072d452b.webp",
+          "width": 2048,
+          "height": 1152,
           "frame": 1,
+          "sha256": "6e04108897d1092cecfc52a0d8e4e9a32d3f50a30bd948767f0f40eeb1e00ca2",
+          "bytes": 82272,
+          "format": "webp",
           "bounds": {
-            "x": 179,
-            "y": 120,
-            "width": 247,
-            "height": 445
+            "x": 361,
+            "y": 243,
+            "width": 489,
+            "height": 887
           }
         }
       }
@@ -2044,15 +1996,18 @@
       "defaultExpression": "普通",
       "expressions": {
         "普通": {
-          "uri": "external/p_2a5b90ffdbdc/e_7cda072d452b.png",
-          "width": 1024,
-          "height": 576,
+          "uri": "external/p_2a5b90ffdbdc/e_7cda072d452b.webp",
+          "width": 2048,
+          "height": 1152,
           "frame": 1,
+          "sha256": "3391a7ec2a669fc5691f127c5feb61718357eca0361d935149fbd546ca99d451",
+          "bytes": 177882,
+          "format": "webp",
           "bounds": {
-            "x": 130,
-            "y": 47,
-            "width": 296,
-            "height": 529
+            "x": 263,
+            "y": 97,
+            "width": 586,
+            "height": 1055
           }
         }
       }
@@ -2065,15 +2020,18 @@
       "defaultExpression": "普通",
       "expressions": {
         "普通": {
-          "uri": "external/p_f24caa490488/e_7cda072d452b.png",
-          "width": 1024,
-          "height": 576,
+          "uri": "external/p_f24caa490488/e_7cda072d452b.webp",
+          "width": 2048,
+          "height": 1152,
           "frame": 1,
+          "sha256": "a9ac7ae42228b48e49f9dc9ce55f5788aa682c622f0c389caa627d70444b21db",
+          "bytes": 95150,
+          "format": "webp",
           "bounds": {
-            "x": 172,
-            "y": 152,
-            "width": 157,
-            "height": 424
+            "x": 348,
+            "y": 308,
+            "width": 309,
+            "height": 844
           }
         }
       }
@@ -2088,15 +2046,18 @@
       "defaultExpression": "普通",
       "expressions": {
         "普通": {
-          "uri": "external/p_235acfdf1375/e_7cda072d452b.png",
-          "width": 1024,
-          "height": 576,
+          "uri": "external/p_235acfdf1375/e_7cda072d452b.webp",
+          "width": 2048,
+          "height": 1152,
           "frame": 1,
+          "sha256": "b2181b375ab248d1a387c69c47e93243ce81d457867a89437a39810135eb0eb6",
+          "bytes": 66080,
+          "format": "webp",
           "bounds": {
-            "x": 224,
-            "y": 219,
-            "width": 127,
-            "height": 357
+            "x": 450,
+            "y": 441,
+            "width": 249,
+            "height": 711
           }
         }
       }
@@ -2112,15 +2073,18 @@
       "defaultExpression": "普通",
       "expressions": {
         "普通": {
-          "uri": "external/p_acdf41b2a875/e_7cda072d452b.png",
-          "width": 1024,
-          "height": 576,
+          "uri": "external/p_acdf41b2a875/e_7cda072d452b.webp",
+          "width": 2048,
+          "height": 1152,
           "frame": 1,
+          "sha256": "79503c6037da8aae55cccba7ad4f0c48972578111e8436e6e52c8b2e2be83662",
+          "bytes": 92406,
+          "format": "webp",
           "bounds": {
-            "x": 116,
-            "y": 224,
-            "width": 269,
-            "height": 352
+            "x": 235,
+            "y": 451,
+            "width": 532,
+            "height": 701
           }
         }
       }
@@ -2133,15 +2097,18 @@
       "defaultExpression": "普通",
       "expressions": {
         "普通": {
-          "uri": "external/p_411f1947dfa3/e_7cda072d452b.png",
-          "width": 1024,
-          "height": 576,
+          "uri": "external/p_411f1947dfa3/e_7cda072d452b.webp",
+          "width": 2048,
+          "height": 1152,
           "frame": 1,
+          "sha256": "e8c4f0503e455d0dc90d3ab7a02e6ec984705bc364b60dc2540f97b714baf2f8",
+          "bytes": 78064,
+          "format": "webp",
           "bounds": {
-            "x": 89,
-            "y": 239,
-            "width": 267,
-            "height": 337
+            "x": 181,
+            "y": 481,
+            "width": 529,
+            "height": 671
           }
         }
       }
@@ -2154,38 +2121,148 @@
       "defaultExpression": "普通",
       "expressions": {
         "普通": {
-          "uri": "external/p_8e8ba4ec4c71/e_7cda072d452b.png",
-          "width": 1024,
-          "height": 576,
+          "uri": "external/p_8e8ba4ec4c71/e_7cda072d452b.webp",
+          "width": 2048,
+          "height": 1152,
           "frame": 1,
+          "sha256": "ec6d6ec5f8de6b0b7b28375ce33f3e0b448d05ba6851876431e8d25a527424d7",
+          "bytes": 69626,
+          "format": "webp",
           "bounds": {
-            "x": 108,
-            "y": 225,
-            "width": 380,
-            "height": 260
+            "x": 218,
+            "y": 452,
+            "width": 754,
+            "height": 516
           }
         }
       }
     },
     "artist": {
       "key": "artist",
-      "aliases": [
-        "ARTIST"
-      ],
+      "aliases": [],
       "source": "external-swf",
       "sourcePath": "flashswf/portraits/artist.swf",
+      "sourceKey": "artist",
+      "sourceSpriteId": 7,
+      "coordinateSpace": "sprite-natural",
+      "selection": {
+        "rule": "expression"
+      },
       "defaultExpression": "普通",
       "expressions": {
         "普通": {
-          "uri": "external/p_55051f2531bd/e_7cda072d452b.png",
-          "width": 1024,
-          "height": 576,
+          "uri": "external/p_55051f2531bd/e_7cda072d452b.webp",
+          "width": 884,
+          "height": 1142,
           "frame": 1,
+          "sha256": "a2461d9f7311a0788e38c3fe85d5d343317413cfd233108f5fdfb41ffe2c6165",
+          "bytes": 62710,
+          "format": "webp",
           "bounds": {
-            "x": 150,
-            "y": 155,
-            "width": 258,
-            "height": 421
+            "x": 0,
+            "y": 0,
+            "width": 884,
+            "height": 1142
+          },
+          "rasterization": {
+            "renderer": "ffdec-svg-cairosvg",
+            "sourceSpriteId": 7,
+            "zoom": 2,
+            "supersample": 2,
+            "resolutionScale": 7,
+            "minimumVisibleHeight": 1024
+          }
+        },
+        "愤怒": {
+          "uri": "external/p_55051f2531bd/e_afa04bf58472.webp",
+          "width": 884,
+          "height": 1142,
+          "frame": 2,
+          "sha256": "f6d854166104fce30094dda3e08709fd9c91a8702b38922b21fe6878875bbc34",
+          "bytes": 70448,
+          "format": "webp",
+          "bounds": {
+            "x": 0,
+            "y": 0,
+            "width": 884,
+            "height": 1142
+          },
+          "rasterization": {
+            "renderer": "ffdec-svg-cairosvg",
+            "sourceSpriteId": 7,
+            "zoom": 2,
+            "supersample": 2,
+            "resolutionScale": 7,
+            "minimumVisibleHeight": 1024
+          }
+        },
+        "微笑": {
+          "uri": "external/p_55051f2531bd/e_cdd57ddef6ed.webp",
+          "width": 884,
+          "height": 1142,
+          "frame": 3,
+          "sha256": "51e6cd81efd528471a7aee88751f9a5559ac00f948502ff3e534699579bb97e5",
+          "bytes": 63908,
+          "format": "webp",
+          "bounds": {
+            "x": 0,
+            "y": 0,
+            "width": 884,
+            "height": 1142
+          },
+          "rasterization": {
+            "renderer": "ffdec-svg-cairosvg",
+            "sourceSpriteId": 7,
+            "zoom": 2,
+            "supersample": 2,
+            "resolutionScale": 7,
+            "minimumVisibleHeight": 1024
+          }
+        },
+        "大笑": {
+          "uri": "external/p_55051f2531bd/e_6a50f99fc5e9.webp",
+          "width": 884,
+          "height": 1142,
+          "frame": 4,
+          "sha256": "ef0733887c35aed93cc32d46f77c81c43aad61e1e702e4fa3dac6407e3a9d953",
+          "bytes": 66504,
+          "format": "webp",
+          "bounds": {
+            "x": 0,
+            "y": 0,
+            "width": 884,
+            "height": 1142
+          },
+          "rasterization": {
+            "renderer": "ffdec-svg-cairosvg",
+            "sourceSpriteId": 7,
+            "zoom": 2,
+            "supersample": 2,
+            "resolutionScale": 7,
+            "minimumVisibleHeight": 1024
+          }
+        },
+        "严肃": {
+          "uri": "external/p_55051f2531bd/e_fe976b0943ff.webp",
+          "width": 884,
+          "height": 1142,
+          "frame": 5,
+          "sha256": "0665ad20b7488571c2ddcec5bc3bcc3cd048321877e13527b5563f515de7cd5f",
+          "bytes": 60100,
+          "format": "webp",
+          "bounds": {
+            "x": 0,
+            "y": 0,
+            "width": 884,
+            "height": 1142
+          },
+          "rasterization": {
+            "renderer": "ffdec-svg-cairosvg",
+            "sourceSpriteId": 7,
+            "zoom": 2,
+            "supersample": 2,
+            "resolutionScale": 7,
+            "minimumVisibleHeight": 1024
           }
         }
       }
@@ -2200,15 +2277,18 @@
       "defaultExpression": "普通",
       "expressions": {
         "普通": {
-          "uri": "external/p_5a58d848204b/e_7cda072d452b.png",
-          "width": 1024,
-          "height": 576,
+          "uri": "external/p_5a58d848204b/e_7cda072d452b.webp",
+          "width": 2048,
+          "height": 1152,
           "frame": 1,
+          "sha256": "9228c8916af64f2c99246cf3bd9e7fd636e07925abb38f261eb8f69fb8cdd594",
+          "bytes": 153646,
+          "format": "webp",
           "bounds": {
-            "x": 90,
-            "y": 133,
-            "width": 366,
-            "height": 343
+            "x": 182,
+            "y": 268,
+            "width": 727,
+            "height": 682
           }
         }
       }
@@ -2221,15 +2301,18 @@
       "defaultExpression": "普通",
       "expressions": {
         "普通": {
-          "uri": "external/p_39f28f52106d/e_7cda072d452b.png",
-          "width": 1024,
-          "height": 576,
+          "uri": "external/p_39f28f52106d/e_7cda072d452b.webp",
+          "width": 2048,
+          "height": 1152,
           "frame": 1,
+          "sha256": "73eb994a888ef0fd427bdc8137b071f1e0007054013ee946beda97b278872893",
+          "bytes": 142990,
+          "format": "webp",
           "bounds": {
-            "x": 130,
-            "y": 147,
-            "width": 247,
-            "height": 429
+            "x": 263,
+            "y": 296,
+            "width": 489,
+            "height": 856
           }
         }
       }
@@ -2242,15 +2325,18 @@
       "defaultExpression": "普通",
       "expressions": {
         "普通": {
-          "uri": "external/p_68af1c7fcb3b/e_7cda072d452b.png",
-          "width": 1024,
-          "height": 576,
+          "uri": "external/p_68af1c7fcb3b/e_7cda072d452b.webp",
+          "width": 2048,
+          "height": 1152,
           "frame": 1,
+          "sha256": "6fa783de48c090efadb53c925de8aef6b1dffd649f2d01d664163508291e5089",
+          "bytes": 179838,
+          "format": "webp",
           "bounds": {
-            "x": 153,
-            "y": 121,
-            "width": 280,
-            "height": 455
+            "x": 308,
+            "y": 245,
+            "width": 555,
+            "height": 907
           }
         }
       }
@@ -2263,15 +2349,18 @@
       "defaultExpression": "普通",
       "expressions": {
         "普通": {
-          "uri": "external/p_c73c7d856353/e_7cda072d452b.png",
-          "width": 1024,
-          "height": 576,
+          "uri": "external/p_c73c7d856353/e_7cda072d452b.webp",
+          "width": 2048,
+          "height": 1152,
           "frame": 1,
+          "sha256": "0fa20e1bf70657200acdb81c74aede460d443e2bd49e6c9008f098c80014a897",
+          "bytes": 120630,
+          "format": "webp",
           "bounds": {
-            "x": 138,
-            "y": 99,
-            "width": 245,
-            "height": 477
+            "x": 279,
+            "y": 201,
+            "width": 484,
+            "height": 951
           }
         }
       }
@@ -2287,15 +2376,18 @@
       "defaultExpression": "普通",
       "expressions": {
         "普通": {
-          "uri": "external/p_e9eec82caf04/e_7cda072d452b.png",
-          "width": 1024,
-          "height": 576,
+          "uri": "external/p_e9eec82caf04/e_7cda072d452b.webp",
+          "width": 2048,
+          "height": 1152,
           "frame": 1,
+          "sha256": "6a18121e5abd9a01100446a9e212ffecab6b79cdc5901d456ab86c5d43c5ad92",
+          "bytes": 97416,
+          "format": "webp",
           "bounds": {
-            "x": 119,
-            "y": 146,
-            "width": 217,
-            "height": 421
+            "x": 241,
+            "y": 294,
+            "width": 428,
+            "height": 838
           }
         }
       }
@@ -2308,15 +2400,18 @@
       "defaultExpression": "普通",
       "expressions": {
         "普通": {
-          "uri": "external/p_68543b216f39/e_7cda072d452b.png",
-          "width": 1024,
-          "height": 576,
+          "uri": "external/p_68543b216f39/e_7cda072d452b.webp",
+          "width": 2048,
+          "height": 1152,
           "frame": 1,
+          "sha256": "0d875bd030f3f458541db1e38c3ee3e291232a179bec6d9beed31a2e11d91189",
+          "bytes": 150090,
+          "format": "webp",
           "bounds": {
-            "x": 111,
-            "y": 122,
-            "width": 277,
-            "height": 454
+            "x": 224,
+            "y": 246,
+            "width": 549,
+            "height": 906
           }
         }
       }
@@ -2329,15 +2424,18 @@
       "defaultExpression": "普通",
       "expressions": {
         "普通": {
-          "uri": "external/p_e54ad409106a/e_7cda072d452b.png",
-          "width": 1024,
-          "height": 576,
+          "uri": "external/p_e54ad409106a/e_7cda072d452b.webp",
+          "width": 2048,
+          "height": 1152,
           "frame": 1,
+          "sha256": "643d65c21ec8ab5cebaf1ae47f4c64ac5392094ebfb9ed6a6eacd06c8dbc4ee2",
+          "bytes": 115172,
+          "format": "webp",
           "bounds": {
-            "x": 123,
-            "y": 207,
-            "width": 258,
-            "height": 369
+            "x": 247,
+            "y": 416,
+            "width": 511,
+            "height": 736
           }
         }
       }
@@ -2350,15 +2448,18 @@
       "defaultExpression": "普通",
       "expressions": {
         "普通": {
-          "uri": "external/p_387852d1fbce/e_7cda072d452b.png",
-          "width": 1024,
-          "height": 576,
+          "uri": "external/p_387852d1fbce/e_7cda072d452b.webp",
+          "width": 2048,
+          "height": 1152,
           "frame": 1,
+          "sha256": "4460bead3b8ed9b2a30b536e474fdb5ddb55936fa065268f7e9071aa0fb549a2",
+          "bytes": 186766,
+          "format": "webp",
           "bounds": {
             "x": 0,
-            "y": 93,
-            "width": 657,
-            "height": 483
+            "y": 189,
+            "width": 1311,
+            "height": 963
           }
         }
       }
@@ -2371,15 +2472,18 @@
       "defaultExpression": "普通",
       "expressions": {
         "普通": {
-          "uri": "external/p_dafdd9e7a80e/e_7cda072d452b.png",
-          "width": 1024,
-          "height": 576,
+          "uri": "external/p_dafdd9e7a80e/e_7cda072d452b.webp",
+          "width": 2048,
+          "height": 1152,
           "frame": 1,
+          "sha256": "900f114602be9ccdedceec51bc27525b2ebf5b591c488130f08051c1b62dd2d4",
+          "bytes": 227798,
+          "format": "webp",
           "bounds": {
-            "x": 108,
-            "y": 99,
-            "width": 268,
-            "height": 314
+            "x": 219,
+            "y": 200,
+            "width": 529,
+            "height": 623
           }
         }
       }
@@ -2395,15 +2499,18 @@
       "defaultExpression": "普通",
       "expressions": {
         "普通": {
-          "uri": "external/p_fa4fe5be9ef6/e_7cda072d452b.png",
-          "width": 1024,
-          "height": 576,
+          "uri": "external/p_fa4fe5be9ef6/e_7cda072d452b.webp",
+          "width": 2048,
+          "height": 1152,
           "frame": 1,
+          "sha256": "ae9f999e035e32ff2e608c4d35334d67ae9b53000ca4c15cb6468d0fbf6c6654",
+          "bytes": 155822,
+          "format": "webp",
           "bounds": {
-            "x": 138,
-            "y": 213,
-            "width": 225,
-            "height": 363
+            "x": 279,
+            "y": 428,
+            "width": 445,
+            "height": 724
           }
         }
       }
@@ -2416,15 +2523,18 @@
       "defaultExpression": "普通",
       "expressions": {
         "普通": {
-          "uri": "external/p_077a375bc18a/e_7cda072d452b.png",
-          "width": 1024,
-          "height": 576,
+          "uri": "external/p_077a375bc18a/e_7cda072d452b.webp",
+          "width": 2048,
+          "height": 1152,
           "frame": 1,
+          "sha256": "5b26d9c0717ad1f063e61b6c535b9a61950f837d6f75b6f5382f92a5218aa4c8",
+          "bytes": 83444,
+          "format": "webp",
           "bounds": {
-            "x": 132,
-            "y": 223,
-            "width": 175,
-            "height": 313
+            "x": 267,
+            "y": 448,
+            "width": 345,
+            "height": 624
           }
         }
       }
@@ -2437,15 +2547,18 @@
       "defaultExpression": "普通",
       "expressions": {
         "普通": {
-          "uri": "external/p_53d675d81650/e_7cda072d452b.png",
-          "width": 1024,
-          "height": 576,
+          "uri": "external/p_53d675d81650/e_7cda072d452b.webp",
+          "width": 2048,
+          "height": 1152,
           "frame": 1,
+          "sha256": "85b30c4e764ca0f0603e22897f5ae4ec697c41977a929cbb7f1ff2d859ca4075",
+          "bytes": 102374,
+          "format": "webp",
           "bounds": {
-            "x": 128,
-            "y": 231,
-            "width": 342,
-            "height": 283
+            "x": 258,
+            "y": 465,
+            "width": 680,
+            "height": 561
           }
         }
       }
@@ -2458,15 +2571,18 @@
       "defaultExpression": "普通",
       "expressions": {
         "普通": {
-          "uri": "external/p_a10ec4d29b12/e_7cda072d452b.png",
-          "width": 1024,
-          "height": 576,
+          "uri": "external/p_a10ec4d29b12/e_7cda072d452b.webp",
+          "width": 2048,
+          "height": 1152,
           "frame": 1,
+          "sha256": "d8bb4af17deb11f2cadf3d2c989addd530c9ad4f3855d6df1f2e639b6c949524",
+          "bytes": 121240,
+          "format": "webp",
           "bounds": {
-            "x": 109,
-            "y": 214,
-            "width": 193,
-            "height": 362
+            "x": 220,
+            "y": 430,
+            "width": 382,
+            "height": 722
           }
         }
       }
@@ -2481,15 +2597,18 @@
       "defaultExpression": "普通",
       "expressions": {
         "普通": {
-          "uri": "external/p_e022273fd223/e_7cda072d452b.png",
-          "width": 1024,
-          "height": 576,
+          "uri": "external/p_e022273fd223/e_7cda072d452b.webp",
+          "width": 2048,
+          "height": 1152,
           "frame": 1,
+          "sha256": "35d65c857e63bde1ccba42501703a4f7224922736b8ebc2def0749f1472a2eb7",
+          "bytes": 92036,
+          "format": "webp",
           "bounds": {
-            "x": 127,
-            "y": 191,
-            "width": 151,
-            "height": 364
+            "x": 257,
+            "y": 384,
+            "width": 296,
+            "height": 724
           }
         }
       }
@@ -2504,15 +2623,18 @@
       "defaultExpression": "普通",
       "expressions": {
         "普通": {
-          "uri": "external/p_7e22ea473607/e_7cda072d452b.png",
-          "width": 1024,
-          "height": 576,
+          "uri": "external/p_7e22ea473607/e_7cda072d452b.webp",
+          "width": 2048,
+          "height": 1152,
           "frame": 1,
+          "sha256": "aae46ca3778f7f424cbe06a1d2e9c6fa22eb3c1150f8c767ecd3e062132849a1",
+          "bytes": 124628,
+          "format": "webp",
           "bounds": {
-            "x": 201,
-            "y": 116,
-            "width": 181,
-            "height": 460
+            "x": 405,
+            "y": 235,
+            "width": 357,
+            "height": 917
           }
         }
       }
@@ -2525,15 +2647,18 @@
       "defaultExpression": "普通",
       "expressions": {
         "普通": {
-          "uri": "external/p_c16e2efef8e4/e_7cda072d452b.png",
-          "width": 550,
-          "height": 400,
+          "uri": "external/p_c16e2efef8e4/e_7cda072d452b.webp",
+          "width": 1100,
+          "height": 800,
           "frame": 1,
+          "sha256": "858eb173e06b96bddd090fce16e0c960d940eba1f9064216b0f85ef20a97da93",
+          "bytes": 58310,
+          "format": "webp",
           "bounds": {
-            "x": 155,
-            "y": 119,
-            "width": 211,
-            "height": 281
+            "x": 313,
+            "y": 241,
+            "width": 416,
+            "height": 559
           }
         }
       }
@@ -2546,15 +2671,18 @@
       "defaultExpression": "普通",
       "expressions": {
         "普通": {
-          "uri": "external/p_4e936cc411b5/e_7cda072d452b.png",
-          "width": 550,
-          "height": 400,
+          "uri": "external/p_4e936cc411b5/e_7cda072d452b.webp",
+          "width": 1100,
+          "height": 800,
           "frame": 1,
+          "sha256": "44ea3b3d1f5e58fcacb8962de19651dbfc5239b39d9f757546435c11e1c8a0f8",
+          "bytes": 107442,
+          "format": "webp",
           "bounds": {
-            "x": 138,
-            "y": 126,
-            "width": 234,
-            "height": 274
+            "x": 279,
+            "y": 254,
+            "width": 463,
+            "height": 546
           }
         }
       }
@@ -2567,15 +2695,18 @@
       "defaultExpression": "普通",
       "expressions": {
         "普通": {
-          "uri": "external/p_3a2b1b39069c/e_7cda072d452b.png",
-          "width": 1024,
-          "height": 576,
+          "uri": "external/p_3a2b1b39069c/e_7cda072d452b.webp",
+          "width": 2048,
+          "height": 1152,
           "frame": 1,
+          "sha256": "4703ef3b61ebe7d9b71ef3a7c8dd52dec42a3b9f8f0d8485fa396b42b0b2f896",
+          "bytes": 466566,
+          "format": "webp",
           "bounds": {
-            "x": 87,
-            "y": 96,
-            "width": 549,
-            "height": 447
+            "x": 176,
+            "y": 195,
+            "width": 1094,
+            "height": 888
           }
         }
       }
@@ -2588,15 +2719,18 @@
       "defaultExpression": "普通",
       "expressions": {
         "普通": {
-          "uri": "external/p_1e6c6a3df7da/e_7cda072d452b.png",
-          "width": 1024,
-          "height": 576,
+          "uri": "external/p_1e6c6a3df7da/e_7cda072d452b.webp",
+          "width": 2048,
+          "height": 1152,
           "frame": 1,
+          "sha256": "2b9b5c580ddfdef361f9094bc58fcde102cb55a352193e31e293a36cbbc22b73",
+          "bytes": 167816,
+          "format": "webp",
           "bounds": {
-            "x": 47,
-            "y": 134,
-            "width": 248,
-            "height": 442
+            "x": 97,
+            "y": 270,
+            "width": 490,
+            "height": 882
           }
         }
       }
@@ -2609,28 +2743,783 @@
       "defaultExpression": "普通",
       "expressions": {
         "普通": {
-          "uri": "external/p_b56323085eda/e_7cda072d452b.png",
-          "width": 1024,
-          "height": 576,
+          "uri": "external/p_b56323085eda/e_7cda072d452b.webp",
+          "width": 2048,
+          "height": 1152,
           "frame": 1,
+          "sha256": "99c4e1b092ce05df0b3c1c469626c59a31aba0819e24e571e90824794cfd963f",
+          "bytes": 130814,
+          "format": "webp",
           "bounds": {
-            "x": 123,
-            "y": 141,
-            "width": 174,
-            "height": 435
+            "x": 248,
+            "y": 285,
+            "width": 346,
+            "height": 867
+          }
+        }
+      }
+    },
+    "无头像": {
+      "key": "无头像",
+      "aliases": [],
+      "source": "dialogue-ui-sprite",
+      "sourcePath": "flashswf/UI/对话框界面.swf",
+      "defaultExpression": "普通",
+      "expressions": {
+        "普通": {
+          "uri": "internal/p_49a1377ac18d/e_7cda072d452b.webp",
+          "width": 1703,
+          "height": 2000,
+          "frame": 47,
+          "sha256": "d09a2dee98246172991c1aa1e3ecfbdd9e3baca6fa764eae69aaf8ae25a42fa0",
+          "bytes": 6994,
+          "format": "webp",
+          "bounds": {
+            "x": 920,
+            "y": 600,
+            "width": 223,
+            "height": 360
+          },
+          "rasterization": {
+            "renderer": "ffdec-svg-cairosvg",
+            "cairoSvgVersion": "2.9.1",
+            "cairoVersion": "1.18.4",
+            "width": 3406,
+            "height": 4001,
+            "zoom": 4,
+            "resolutionScale": 1
+          }
+        }
+      }
+    },
+    "爱国青年": {
+      "key": "爱国青年",
+      "aliases": [],
+      "source": "dialogue-ui-sprite",
+      "sourcePath": "flashswf/UI/对话框界面.swf",
+      "defaultExpression": "普通",
+      "expressions": {
+        "普通": {
+          "uri": "internal/p_f893dd0ed13b/e_7cda072d452b.webp",
+          "width": 1703,
+          "height": 2000,
+          "frame": 109,
+          "sha256": "a1be2cb1973163222550bd6923df1f51cc32caa7d304d838302e8f549414e92a",
+          "bytes": 46944,
+          "format": "webp",
+          "bounds": {
+            "x": 820,
+            "y": 640,
+            "width": 410,
+            "height": 320
+          },
+          "rasterization": {
+            "renderer": "ffdec-svg-cairosvg",
+            "cairoSvgVersion": "2.9.1",
+            "cairoVersion": "1.18.4",
+            "width": 3406,
+            "height": 4001,
+            "zoom": 4,
+            "resolutionScale": 1
+          }
+        }
+      }
+    },
+    "被改造的方舟无人机": {
+      "key": "被改造的方舟无人机",
+      "aliases": [],
+      "source": "dialogue-ui-sprite",
+      "sourcePath": "flashswf/UI/对话框界面.swf",
+      "defaultExpression": "普通",
+      "expressions": {
+        "普通": {
+          "uri": "internal/p_fc0475a21b64/e_7cda072d452b.webp",
+          "width": 1703,
+          "height": 2000,
+          "frame": 121,
+          "sha256": "1cba254dff8f85b1988df61875777f6b84d9b4a5dbdf1f0028d804b518a246f3",
+          "bytes": 34728,
+          "format": "webp",
+          "bounds": {
+            "x": 746,
+            "y": 703,
+            "width": 338,
+            "height": 243
+          },
+          "rasterization": {
+            "renderer": "ffdec-svg-cairosvg",
+            "cairoSvgVersion": "2.9.1",
+            "cairoVersion": "1.18.4",
+            "width": 3406,
+            "height": 4001,
+            "zoom": 4,
+            "resolutionScale": 1
+          }
+        }
+      }
+    },
+    "长生军战士": {
+      "key": "长生军战士",
+      "aliases": [],
+      "source": "dialogue-ui-sprite",
+      "sourcePath": "flashswf/UI/对话框界面.swf",
+      "defaultExpression": "普通",
+      "expressions": {
+        "普通": {
+          "uri": "internal/p_b3272e4811d6/e_7cda072d452b.webp",
+          "width": 1703,
+          "height": 2000,
+          "frame": 127,
+          "sha256": "ee94365a498487e34a87fda5a4c53638f4762707db59ed64cea6e181308e2d31",
+          "bytes": 36562,
+          "format": "webp",
+          "bounds": {
+            "x": 775,
+            "y": 630,
+            "width": 336,
+            "height": 330
+          },
+          "rasterization": {
+            "renderer": "ffdec-svg-cairosvg",
+            "cairoSvgVersion": "2.9.1",
+            "cairoVersion": "1.18.4",
+            "width": 3406,
+            "height": 4001,
+            "zoom": 4,
+            "resolutionScale": 1
+          }
+        }
+      }
+    },
+    "A兵团士兵": {
+      "key": "A兵团士兵",
+      "aliases": [],
+      "source": "dialogue-ui-sprite",
+      "sourcePath": "flashswf/UI/对话框界面.swf",
+      "defaultExpression": "普通",
+      "expressions": {
+        "普通": {
+          "uri": "internal/p_9e821c1ce1f5/e_7cda072d452b.webp",
+          "width": 1703,
+          "height": 2000,
+          "frame": 133,
+          "sha256": "73e7cc6084f3f17af3921e4d200332cd64148fbaebaa57737aa056b288694170",
+          "bytes": 71526,
+          "format": "webp",
+          "bounds": {
+            "x": 714,
+            "y": 628,
+            "width": 349,
+            "height": 332
+          },
+          "rasterization": {
+            "renderer": "ffdec-svg-cairosvg",
+            "cairoSvgVersion": "2.9.1",
+            "cairoVersion": "1.18.4",
+            "width": 3406,
+            "height": 4001,
+            "zoom": 4,
+            "resolutionScale": 1
+          }
+        }
+      }
+    },
+    "暮光闪闪": {
+      "key": "暮光闪闪",
+      "aliases": [],
+      "source": "dialogue-ui-sprite",
+      "sourcePath": "flashswf/UI/对话框界面.swf",
+      "defaultExpression": "普通",
+      "expressions": {
+        "普通": {
+          "uri": "internal/p_6ed41005666e/e_7cda072d452b.webp",
+          "width": 1703,
+          "height": 2000,
+          "frame": 145,
+          "sha256": "d1521d8b34209856aaae4d8e1e2e6a8e96d1f4d2a572a68a066864242874ff52",
+          "bytes": 73170,
+          "format": "webp",
+          "bounds": {
+            "x": 648,
+            "y": 652,
+            "width": 615,
+            "height": 308
+          },
+          "rasterization": {
+            "renderer": "ffdec-svg-cairosvg",
+            "cairoSvgVersion": "2.9.1",
+            "cairoVersion": "1.18.4",
+            "width": 3406,
+            "height": 4001,
+            "zoom": 4,
+            "resolutionScale": 1
+          }
+        }
+      }
+    },
+    "魔女": {
+      "key": "魔女",
+      "aliases": [],
+      "source": "dialogue-ui-sprite",
+      "sourcePath": "flashswf/UI/对话框界面.swf",
+      "defaultExpression": "普通",
+      "expressions": {
+        "普通": {
+          "uri": "internal/p_0bc68f900f76/e_7cda072d452b.webp",
+          "width": 1703,
+          "height": 2000,
+          "frame": 150,
+          "sha256": "0a0dd4916ff9833ae7237d4794653dae193fb222e2f5ede6bae3d9ca266cd964",
+          "bytes": 124862,
+          "format": "webp",
+          "bounds": {
+            "x": 549,
+            "y": 420,
+            "width": 856,
+            "height": 540
+          },
+          "rasterization": {
+            "renderer": "ffdec-svg-cairosvg",
+            "cairoSvgVersion": "2.9.1",
+            "cairoVersion": "1.18.4",
+            "width": 3406,
+            "height": 4001,
+            "zoom": 4,
+            "resolutionScale": 1
+          }
+        }
+      }
+    },
+    "LEE": {
+      "key": "LEE",
+      "aliases": [],
+      "source": "dialogue-ui-sprite",
+      "sourcePath": "flashswf/UI/对话框界面.swf",
+      "defaultExpression": "普通",
+      "expressions": {
+        "普通": {
+          "uri": "internal/p_42009b75438f/e_7cda072d452b.webp",
+          "width": 1703,
+          "height": 2000,
+          "frame": 155,
+          "sha256": "25c3bb76b91bb45c9673b00299f79a81f42ba00fc67ffc4fd0264215f6ddacba",
+          "bytes": 59178,
+          "format": "webp",
+          "bounds": {
+            "x": 764,
+            "y": 520,
+            "width": 410,
+            "height": 440
+          },
+          "rasterization": {
+            "renderer": "ffdec-svg-cairosvg",
+            "cairoSvgVersion": "2.9.1",
+            "cairoVersion": "1.18.4",
+            "width": 3406,
+            "height": 4001,
+            "zoom": 4,
+            "resolutionScale": 1
+          }
+        }
+      }
+    },
+    "虚拟向导": {
+      "key": "虚拟向导",
+      "aliases": [],
+      "source": "dialogue-ui-sprite",
+      "sourcePath": "flashswf/UI/对话框界面.swf",
+      "defaultExpression": "普通",
+      "expressions": {
+        "普通": {
+          "uri": "internal/p_497f78f0bcf1/e_7cda072d452b.webp",
+          "width": 1703,
+          "height": 2000,
+          "frame": 168,
+          "sha256": "0dcddd5814d4ac71a6f0d2c6ac73cf3da109b8916089a8c446b94214ee7f9ace",
+          "bytes": 30974,
+          "format": "webp",
+          "bounds": {
+            "x": 815,
+            "y": 568,
+            "width": 190,
+            "height": 392
+          },
+          "rasterization": {
+            "renderer": "ffdec-svg-cairosvg",
+            "cairoSvgVersion": "2.9.1",
+            "cairoVersion": "1.18.4",
+            "width": 3406,
+            "height": 4001,
+            "zoom": 4,
+            "resolutionScale": 1
+          }
+        }
+      }
+    },
+    "lochan": {
+      "key": "lochan",
+      "aliases": [],
+      "source": "dialogue-ui-sprite",
+      "sourcePath": "flashswf/UI/对话框界面.swf",
+      "defaultExpression": "普通",
+      "expressions": {
+        "普通": {
+          "uri": "internal/p_7abef730066f/e_7cda072d452b.webp",
+          "width": 1703,
+          "height": 2000,
+          "frame": 176,
+          "sha256": "48cf542b5e5663019eb260c9ed60c735a27fcb3b868a13f2985c5aa26940d1cd",
+          "bytes": 95088,
+          "format": "webp",
+          "bounds": {
+            "x": 764,
+            "y": 566,
+            "width": 479,
+            "height": 394
+          },
+          "rasterization": {
+            "renderer": "ffdec-svg-cairosvg",
+            "cairoSvgVersion": "2.9.1",
+            "cairoVersion": "1.18.4",
+            "width": 3406,
+            "height": 4001,
+            "zoom": 4,
+            "resolutionScale": 1
+          }
+        }
+      }
+    },
+    "PROPHET": {
+      "key": "PROPHET",
+      "aliases": [],
+      "source": "dialogue-ui-sprite",
+      "sourcePath": "flashswf/UI/对话框界面.swf",
+      "defaultExpression": "普通",
+      "expressions": {
+        "普通": {
+          "uri": "internal/p_f1f0b8fd6686/e_7cda072d452b.webp",
+          "width": 1703,
+          "height": 2000,
+          "frame": 183,
+          "sha256": "629c055651c97cfa7cbde87183f13aa693e1b3c9355b84eaa152ac8ad3aa7973",
+          "bytes": 96418,
+          "format": "webp",
+          "bounds": {
+            "x": 729,
+            "y": 452,
+            "width": 461,
+            "height": 508
+          },
+          "rasterization": {
+            "renderer": "ffdec-svg-cairosvg",
+            "cairoSvgVersion": "2.9.1",
+            "cairoVersion": "1.18.4",
+            "width": 3406,
+            "height": 4001,
+            "zoom": 4,
+            "resolutionScale": 1
+          }
+        }
+      }
+    },
+    "PROPHET2": {
+      "key": "PROPHET2",
+      "aliases": [],
+      "source": "dialogue-ui-sprite",
+      "sourcePath": "flashswf/UI/对话框界面.swf",
+      "defaultExpression": "普通",
+      "expressions": {
+        "普通": {
+          "uri": "internal/p_fc838707fed0/e_7cda072d452b.webp",
+          "width": 1703,
+          "height": 2000,
+          "frame": 188,
+          "sha256": "7cb6c009f6aacb84c7ea969810df481659c2d608e07111b94fd5134eb30d55dd",
+          "bytes": 95854,
+          "format": "webp",
+          "bounds": {
+            "x": 729,
+            "y": 452,
+            "width": 461,
+            "height": 508
+          },
+          "rasterization": {
+            "renderer": "ffdec-svg-cairosvg",
+            "cairoSvgVersion": "2.9.1",
+            "cairoVersion": "1.18.4",
+            "width": 3406,
+            "height": 4001,
+            "zoom": 4,
+            "resolutionScale": 1
+          }
+        }
+      }
+    },
+    "劳埃德": {
+      "key": "劳埃德",
+      "aliases": [],
+      "source": "dialogue-ui-sprite",
+      "sourcePath": "flashswf/UI/对话框界面.swf",
+      "defaultExpression": "普通",
+      "expressions": {
+        "普通": {
+          "uri": "internal/p_28058519e27c/e_7cda072d452b.webp",
+          "width": 1703,
+          "height": 2000,
+          "frame": 193,
+          "sha256": "907516b68bb1a583f1f2ee968b70539cd48baa28458b44319acccc6fed468ec8",
+          "bytes": 195892,
+          "format": "webp",
+          "bounds": {
+            "x": 715,
+            "y": 366,
+            "width": 684,
+            "height": 594
+          },
+          "rasterization": {
+            "renderer": "ffdec-svg-cairosvg",
+            "cairoSvgVersion": "2.9.1",
+            "cairoVersion": "1.18.4",
+            "width": 3406,
+            "height": 4001,
+            "zoom": 4,
+            "resolutionScale": 1
+          }
+        }
+      }
+    },
+    "枫": {
+      "key": "枫",
+      "aliases": [],
+      "source": "dialogue-ui-sprite",
+      "sourcePath": "flashswf/UI/对话框界面.swf",
+      "defaultExpression": "普通",
+      "expressions": {
+        "普通": {
+          "uri": "internal/p_188aed17edc3/e_7cda072d452b.webp",
+          "width": 1703,
+          "height": 2000,
+          "frame": 200,
+          "sha256": "90afaee0ea1b1714e8275161214b44aab513e8d93c9ff7fa353978e281770d32",
+          "bytes": 132872,
+          "format": "webp",
+          "bounds": {
+            "x": 645,
+            "y": 423,
+            "width": 713,
+            "height": 537
+          },
+          "rasterization": {
+            "renderer": "ffdec-svg-cairosvg",
+            "cairoSvgVersion": "2.9.1",
+            "cairoVersion": "1.18.4",
+            "width": 3406,
+            "height": 4001,
+            "zoom": 4,
+            "resolutionScale": 1
+          }
+        }
+      }
+    },
+    "王道": {
+      "key": "王道",
+      "aliases": [],
+      "source": "dialogue-ui-sprite",
+      "sourcePath": "flashswf/UI/对话框界面.swf",
+      "defaultExpression": "普通",
+      "expressions": {
+        "普通": {
+          "uri": "internal/p_e3a710ef7839/e_7cda072d452b.webp",
+          "width": 1703,
+          "height": 2000,
+          "frame": 204,
+          "sha256": "57018acfb5d99c3501cd65b9ca4119abf9d645fa8c3d809db222c13d576f298b",
+          "bytes": 291276,
+          "format": "webp",
+          "bounds": {
+            "x": 566,
+            "y": 273,
+            "width": 820,
+            "height": 687
+          },
+          "rasterization": {
+            "renderer": "ffdec-svg-cairosvg",
+            "cairoSvgVersion": "2.9.1",
+            "cairoVersion": "1.18.4",
+            "width": 3406,
+            "height": 4001,
+            "zoom": 4,
+            "resolutionScale": 1
+          }
+        }
+      }
+    },
+    "BLACK-L": {
+      "key": "BLACK-L",
+      "aliases": [],
+      "source": "dialogue-ui-sprite",
+      "sourcePath": "flashswf/UI/对话框界面.swf",
+      "defaultExpression": "普通",
+      "expressions": {
+        "普通": {
+          "uri": "internal/p_5b0134cce833/e_7cda072d452b.webp",
+          "width": 1703,
+          "height": 2000,
+          "frame": 209,
+          "sha256": "d6605c1ec90faa0552da5875f291469d5058b4f51f9e79a57d397a61b0babdc0",
+          "bytes": 91916,
+          "format": "webp",
+          "bounds": {
+            "x": 621,
+            "y": 506,
+            "width": 780,
+            "height": 454
+          },
+          "rasterization": {
+            "renderer": "ffdec-svg-cairosvg",
+            "cairoSvgVersion": "2.9.1",
+            "cairoVersion": "1.18.4",
+            "width": 3406,
+            "height": 4001,
+            "zoom": 4,
+            "resolutionScale": 1
+          }
+        }
+      }
+    },
+    "千夏沐晓": {
+      "key": "千夏沐晓",
+      "aliases": [],
+      "source": "dialogue-ui-sprite",
+      "sourcePath": "flashswf/UI/对话框界面.swf",
+      "defaultExpression": "普通",
+      "expressions": {
+        "普通": {
+          "uri": "internal/p_84c31bbf4dfd/e_7cda072d452b.webp",
+          "width": 1703,
+          "height": 2000,
+          "frame": 217,
+          "sha256": "078ad147498eefeed6f37e5176a2bba48bc40f8b7af74f25169a92739aebdb2b",
+          "bytes": 149794,
+          "format": "webp",
+          "bounds": {
+            "x": 730,
+            "y": 481,
+            "width": 442,
+            "height": 479
+          },
+          "rasterization": {
+            "renderer": "ffdec-svg-cairosvg",
+            "cairoSvgVersion": "2.9.1",
+            "cairoVersion": "1.18.4",
+            "width": 3406,
+            "height": 4001,
+            "zoom": 4,
+            "resolutionScale": 1
+          }
+        }
+      }
+    },
+    "已转移": {
+      "key": "已转移",
+      "aliases": [],
+      "source": "dialogue-ui-sprite",
+      "sourcePath": "flashswf/UI/对话框界面.swf",
+      "defaultExpression": "普通",
+      "expressions": {
+        "普通": {
+          "uri": "internal/p_d550de9ece00/e_7cda072d452b.webp",
+          "width": 1703,
+          "height": 2000,
+          "frame": 225,
+          "sha256": "fe1ffd9fc4c74cbfa6e2c78508047b1816050c331b3a677928de7681892f3a97",
+          "bytes": 147202,
+          "format": "webp",
+          "bounds": {
+            "x": 809,
+            "y": 387,
+            "width": 365,
+            "height": 573
+          },
+          "rasterization": {
+            "renderer": "ffdec-svg-cairosvg",
+            "cairoSvgVersion": "2.9.1",
+            "cairoVersion": "1.18.4",
+            "width": 3406,
+            "height": 4001,
+            "zoom": 4,
+            "resolutionScale": 1
+          }
+        }
+      }
+    },
+    "PD421": {
+      "key": "PD421",
+      "aliases": [],
+      "source": "dialogue-ui-sprite",
+      "sourcePath": "flashswf/UI/对话框界面.swf",
+      "defaultExpression": "普通",
+      "expressions": {
+        "普通": {
+          "uri": "internal/p_dd35ee2ff80c/e_7cda072d452b.webp",
+          "width": 1703,
+          "height": 2000,
+          "frame": 233,
+          "sha256": "ed205b7b7323a06fd235144f8347704be2f08eaf078f69065b0a9f4ff8723eb2",
+          "bytes": 180586,
+          "format": "webp",
+          "bounds": {
+            "x": 558,
+            "y": 238,
+            "width": 841,
+            "height": 722
+          },
+          "rasterization": {
+            "renderer": "ffdec-svg-cairosvg",
+            "cairoSvgVersion": "2.9.1",
+            "cairoVersion": "1.18.4",
+            "width": 3406,
+            "height": 4001,
+            "zoom": 4,
+            "resolutionScale": 1
+          }
+        }
+      }
+    },
+    "乔恩": {
+      "key": "乔恩",
+      "aliases": [],
+      "source": "dialogue-ui-sprite",
+      "sourcePath": "flashswf/UI/对话框界面.swf",
+      "defaultExpression": "普通",
+      "expressions": {
+        "普通": {
+          "uri": "internal/p_81f0112f1873/e_7cda072d452b.webp",
+          "width": 1703,
+          "height": 2000,
+          "frame": 239,
+          "sha256": "7e2a3b7008a0c763e0b5c49949dbc1521a8dee832a5f0ed04c758ca3ea844ce3",
+          "bytes": 324486,
+          "format": "webp",
+          "bounds": {
+            "x": 579,
+            "y": 270,
+            "width": 809,
+            "height": 690
+          },
+          "rasterization": {
+            "renderer": "ffdec-svg-cairosvg",
+            "cairoSvgVersion": "2.9.1",
+            "cairoVersion": "1.18.4",
+            "width": 3406,
+            "height": 4001,
+            "zoom": 4,
+            "resolutionScale": 1
+          }
+        }
+      }
+    },
+    "和平": {
+      "key": "和平",
+      "aliases": [],
+      "source": "dialogue-ui-sprite",
+      "sourcePath": "flashswf/UI/对话框界面.swf",
+      "defaultExpression": "普通",
+      "expressions": {
+        "普通": {
+          "uri": "internal/p_0c4c3b0e8ef9/e_7cda072d452b.webp",
+          "width": 1703,
+          "height": 2000,
+          "frame": 244,
+          "sha256": "433f730bc1981676ab5d3f398c6335ee0ef9d8d6b2e0828605ae7bf6d214adcb",
+          "bytes": 163182,
+          "format": "webp",
+          "bounds": {
+            "x": 737,
+            "y": 293,
+            "width": 540,
+            "height": 667
+          },
+          "rasterization": {
+            "renderer": "ffdec-svg-cairosvg",
+            "cairoSvgVersion": "2.9.1",
+            "cairoVersion": "1.18.4",
+            "width": 3406,
+            "height": 4001,
+            "zoom": 4,
+            "resolutionScale": 1
+          }
+        }
+      }
+    },
+    "云吞魔芋": {
+      "key": "云吞魔芋",
+      "aliases": [],
+      "source": "dialogue-ui-sprite",
+      "sourcePath": "flashswf/UI/对话框界面.swf",
+      "defaultExpression": "普通",
+      "expressions": {
+        "普通": {
+          "uri": "internal/p_8a06a60f208c/e_7cda072d452b.webp",
+          "width": 1703,
+          "height": 2000,
+          "frame": 249,
+          "sha256": "66e00fe359341e01ec9256f30d3d7458351edee02c0df8da5ab7af4754e265cc",
+          "bytes": 128302,
+          "format": "webp",
+          "bounds": {
+            "x": 790,
+            "y": 289,
+            "width": 479,
+            "height": 671
+          },
+          "rasterization": {
+            "renderer": "ffdec-svg-cairosvg",
+            "cairoSvgVersion": "2.9.1",
+            "cairoVersion": "1.18.4",
+            "width": 3406,
+            "height": 4001,
+            "zoom": 4,
+            "resolutionScale": 1
+          }
+        }
+      }
+    },
+    "武器大师": {
+      "key": "武器大师",
+      "aliases": [],
+      "source": "dialogue-ui-sprite",
+      "sourcePath": "flashswf/UI/对话框界面.swf",
+      "defaultExpression": "普通",
+      "expressions": {
+        "普通": {
+          "uri": "internal/p_2bc606d5f82a/e_7cda072d452b.webp",
+          "width": 1703,
+          "height": 2000,
+          "frame": 257,
+          "sha256": "a463ecc8f737bd39d96fe51cb3ac0bd8484783f731c6230737847c8a3d927c8e",
+          "bytes": 179814,
+          "format": "webp",
+          "bounds": {
+            "x": 625,
+            "y": 247,
+            "width": 780,
+            "height": 713
+          },
+          "rasterization": {
+            "renderer": "ffdec-svg-cairosvg",
+            "cairoSvgVersion": "2.9.1",
+            "cairoVersion": "1.18.4",
+            "width": 3406,
+            "height": 4001,
+            "zoom": 4,
+            "resolutionScale": 1
           }
         }
       }
     }
   },
   "aliases": {
-    "a兵团士兵": "A兵团士兵",
-    "lee": "LEE",
-    "LOCHAN": "lochan",
-    "prophet": "PROPHET",
-    "prophet2": "PROPHET2",
-    "black-l": "BLACK-L",
-    "pd421": "PD421",
     "andy law": "Andy Law",
     "ANDY LAW": "Andy Law",
     "AndyLaw": "Andy Law",
@@ -2679,6 +3568,31 @@
     "bard": "Bard",
     "BARD": "Bard",
     "小f": "小F",
-    "RESEARCHER": "researcher"
-  }
+    "RESEARCHER": "researcher",
+    "a兵团士兵": "A兵团士兵",
+    "lee": "LEE",
+    "LOCHAN": "lochan",
+    "prophet": "PROPHET",
+    "prophet2": "PROPHET2",
+    "black-l": "BLACK-L",
+    "pd421": "PD421"
+  },
+  "generatorInputs": [
+    {
+      "path": "tools/bake-dialogue-portraits.py",
+      "sha256": "c1d365beac69e8461b0c9430103978c3197dc8717c6cb6dbc43ce917f1bf748e"
+    },
+    {
+      "path": "tools/dialogue_svg_fallback.py",
+      "sha256": "a8569e82d46d343d19d69d6bbec09c8187d23e1aa607609a198c82d4c7b03b97"
+    },
+    {
+      "path": "tools/dialogue_portrait_variants.py",
+      "sha256": "2c6749300aa25becf12e566a0f3968a7ccf9e8673b14f321ad018376fdd65750"
+    },
+    {
+      "path": "tools/dialogue-portrait-source-review/requirements.txt",
+      "sha256": "96f34fac52b02291bc737b0a6e254aa8cab79664616103ee4d634ae091069211"
+    }
+  ]
 }

@@ -139,6 +139,7 @@ namespace CF7Launcher.Guardian
             NotifySuppressed("panel_suspend");
             if (FocusTrace.Enabled) FocusTrace.Record("hud.suspend");
             _suspendedForPanel = true;
+            NotifyResumableState();
             if (_animTick != null) _animTick.Stop();
             _lastTickMs = 0;
             if (_renderCoalesceTimer != null) _renderCoalesceTimer.Stop();
@@ -150,6 +151,7 @@ namespace CF7Launcher.Guardian
         public void Resume()
         {
             _suspendedForPanel = false;
+            NotifyResumableState();
             if (FocusTrace.Enabled) FocusTrace.Record("hud.resume");
             RecomputeBounds();
         }
@@ -198,6 +200,7 @@ namespace CF7Launcher.Guardian
                     }
                 }
             }
+            SetResumableState(widget);
             widget.BoundsOrVisibilityChanged += OnWidgetBoundsChanged;
             widget.RepaintRequested += OnWidgetRepaintRequested;
             widget.AnimationStateChanged += OnWidgetAnimationStateChanged;
@@ -869,6 +872,22 @@ namespace CF7Launcher.Guardian
                 CancelPointerGesture("owner_hidden");
                 NotifySuppressed("owner_hidden");
             }
+            NotifyResumableState();
+        }
+
+        private void SetResumableState(INativeHudWidget widget)
+        {
+            INativeHudResumable resumable = widget as INativeHudResumable;
+            if (resumable == null) return;
+            try { resumable.SetHostSuppressed(_suspendedForPanel || !_ownerVisible); }
+            catch (Exception ex) { LogManager.Log("[NativeHud] widget SetHostSuppressed throw: " + ex.Message); }
+        }
+
+        private void NotifyResumableState()
+        {
+            INativeHudWidget[] snapshot;
+            lock (_widgetsLock) { snapshot = _widgets.ToArray(); }
+            for (int i = 0; i < snapshot.Length; i++) SetResumableState(snapshot[i]);
         }
 
         /// <summary>

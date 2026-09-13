@@ -1079,6 +1079,9 @@ class org.flashNight.arki.task.TaskPanelService {
                                 && _root.soundEffectManager.stopBGMForTransition != undefined) {
                             _root.soundEffectManager.stopBGMForTransition();
                         }
+                        // _visible 在 headless facade 上是惰性影子字段：
+                        // 写入只记录不驱动 NativeDialogueService 会话终结/重启；
+                        // 真正的取消由场景转换的 followingEvent=null + 关闭() 完成。
                         if (_root.对话框界面 != undefined) _root.对话框界面._visible = false;
                         _root.淡出动画.淡出跳转帧(fadeFrame);
                     } catch (transitionError) {
@@ -1200,6 +1203,8 @@ class org.flashNight.arki.task.TaskPanelService {
             limitLevel:restriction != undefined && restriction != null
                 ? restriction.limitLevel : undefined,
             dialogue:dialogue,
+            // headless 下 facade._visible 是惰性影子：保存/恢复只影响字段值，
+            // 不会终结或重启原生对白会话。
             dialogueVisible:dialogue != undefined && dialogue != null
                 ? dialogue._visible : undefined
         };

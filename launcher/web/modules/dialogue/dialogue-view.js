@@ -184,6 +184,7 @@
     }
 
     function portraitWindowFor(manifest, entry) {
+        if (entry && entry.coordinateSpace === 'sprite-natural') return null;
         var source = entry && entry.source;
         var fromManifest = manifest && manifest.portraitWindow;
         if (fromManifest && source && fromManifest[source]) return fromManifest[source];
@@ -483,6 +484,10 @@
         function renderPortraitFor(item) {
             if (!item || !loadedManifest) return;
             var key = item.portrait.key;
+            if (key === '室友') {
+                var hero = options.heroPortrait || item.line.heroPortrait || {};
+                key = '室友-' + ((hero.gender || (hero.appearance && hero.appearance.gender)) === '女' ? '女' : '男');
+            }
             if (loadedHeroKeys[key] || item.line.portraitType === 'hero') {
                 renderHeroPortrait(item.slot, options.heroPortrait || item.line.heroPortrait || null);
                 return;

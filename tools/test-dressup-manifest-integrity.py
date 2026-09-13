@@ -2,8 +2,10 @@
 from __future__ import annotations
 
 import json
+import xml.etree.ElementTree as ET
 from pathlib import Path
 from typing import Any, Iterable
+from PIL import Image
 
 
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
@@ -72,6 +74,10 @@ def distinct_keys(frames: list[dict[str, Any]]) -> set[tuple[Any, ...]]:
 
 
 def frame_lists_from_entry(entry: dict[str, Any], owner: str) -> Iterable[tuple[str, list[dict[str, Any]], bool]]:
+    # 表情是显式静态选帧，不与常规 frames 合并成自动播放时间轴。
+    expressions = entry.get("expressions") or {}
+    for name, frame in expressions.items():
+        yield owner + ".expressions[" + name + "]", [frame], False
     frames = entry.get("frames") or []
     if frames:
         yield owner + ".frames", frames, False
@@ -327,6 +333,41 @@ def assert_required_appearance_keys(manifest: dict[str, Any], failures: list[str
             failures.append(f"{key} should be covered")
         if not entry.get("export"):
             failures.append(f"{key} should have export metadata")
+
+
+def assert_dialogue_face_expressions(manifest: dict[str, Any], failures: list[str]) -> None:
+    expected = {"普通": 0, "愤怒": 1, "微笑": 2, "大笑": 3, "严肃": 4}
+    for gender, xfl in (
+        ("男", "flashswf/UI/对话框界面/LIBRARY/sprite/主角/男变装-基本脸型.xml"),
+        ("女", "flashswf/arts/things0/LIBRARY/sprite/女变装-基本脸型.xml"),
+    ):
+        key = gender + "变装-基本脸型"
+        skin = manifest["skinKeys"][key]
+        expressions = skin.get("expressions") or {}
+        labels = {node.get("name"): int(node.get("index")) for node in ET.parse(PROJECT_ROOT / xfl).getroot().iter()
+                  if node.tag.endswith("DOMFrame") and node.get("name") in expected}
+        if labels != expected or skin.get("expressionSource", {}).get("labels") != labels:
+            failures.append(f"{key} expression source labels drifted")
+        if set(expressions) != set(expected) or skin.get("defaultExpression") != "普通":
+            failures.append(f"{key} must expose exactly five authored expressions and normal default")
+        frames = skin.get("frames") or []
+        if len(frames) != 1 or not expressions or expressions.get("普通") != frames[0]:
+            failures.append(f"{key} changed static-first-frame behavior")
+        for expression, frame in expressions.items():
+            path = (MANIFEST_PATH.parent / frame["uri"]).resolve()
+            if not path.is_relative_to(MANIFEST_PATH.parent.resolve()):
+                failures.append(f"{key} expression path escapes asset root")
+                continue
+            try:
+                with Image.open(path) as image:
+                    if image.format != "PNG" or image.size != (frame["width"], frame["height"]) or image.height < 300:
+                        failures.append(f"{key}/{expression} PNG dimensions or resolution mismatch")
+                    if image.convert("RGBA").getchannel("A").getbbox() is None:
+                        failures.append(f"{key}/{expression} is fully transparent")
+                if frame.get("sourceFrame") != expected[expression] + 1:
+                    failures.append(f"{key}/{expression} source frame mismatch")
+            except (OSError, KeyError) as error:
+                failures.append(f"{key}/{expression}: {error}")
 
 
 def assert_required_item_helmet_flags(manifest: dict[str, Any], failures: list[str]) -> None:
@@ -641,6 +682,7 @@ def main() -> None:
 
     assert_a_corps_body(manifest, failures)
     assert_required_appearance_keys(manifest, failures)
+    assert_dialogue_face_expressions(manifest, failures)
     assert_required_item_helmet_flags(manifest, failures)
     assert_battle_rig(manifest, failures)
     assert_attack_mode_runtime_variant(manifest, failures)

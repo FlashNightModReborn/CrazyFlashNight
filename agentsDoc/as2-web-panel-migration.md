@@ -1,5 +1,7 @@
 # AS2 UI 到 Web Panel 迁移护栏
 
+**2026-09-13 工作区增量**（基线 `757ef93637` 加工作区）：现场对白迁入 NativeHud。`native_dialogue` v1 以 requestId `nd:<seq>` / sceneId / revision 做有序快照；`nativeDialogueAction` 仅承载 Host→AS2 的 advance/close 意图，`dialogue_portrait_result` 是唯一允许的 Web 返回。AS2 保持台词顺序、完成与取消权威；关卡对白的可合并暂停租约与窗口暂停责任取逻辑或，普通 NPC 对白不额外暂停。动态人形沿现有 Web 纸娃娃出 768 PNG 后回 Host，静态为两倍尺寸、经过超采样的无损 WebP。面板遮挡与失焦只暂停呈现，全部解除后恢复；断连按 finish 清理自身暂停并消费一次后续事件，跳过未读台词的取舍待体验确认。输入要求真实前台、无面板并受修饰键/长按门控；Web 图像结果不构成剧情指令。当前 `candidate_built / NOT_DEPLOYED`，三项用户反馈已修、待复验；原版美术由 XFL→SVG 导出复用，按钮分态绘制、外部立绘保作者取景；纸娃娃固定作者窗口，内存与有界磁盘缓存绑定外观、表情及渲染版本；空关卡属性表取玩家权威装备，真实佣兵保持自身；协议与验收边界见[对话框迁移与高清立绘治理](../docs/对话框迁移与高清立绘治理-调研与施工准备-2026-09-12.md)。
+
 **2026-09-12 工作区增量**：NPC 场景菜单迁入 NativeHud，两个开发占位保留兼容接口，AS2 注释语义由 C#/Web 分别渲染，注释样式和交互以旧 Web 为权威。当前仍在实现与候选验证，未人验或部署；协议、兼容与验收边界见 [专项 ADR](../docs/NPC菜单与原生注释迁移-ADR-2026-09-12.md)。
 
 **文档角色**：AS2 UI 迁移到 Launcher Web Panel 的专题 canonical doc。

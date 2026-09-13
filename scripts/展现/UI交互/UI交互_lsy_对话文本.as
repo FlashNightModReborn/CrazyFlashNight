@@ -12,6 +12,9 @@ _root.translateStrings = function(strings) { return strings.join(""); };
 _root.全部翻译 = function(mc) {};
 
 _root.对话赋值到对话框 = function(内容数组){
+	// native_dialogue headless 接管：服务安装后由 NativeDialogueService 持有会话
+	var svc = _global.org.flashNight.arki.dialogue.NativeDialogueService;
+	if (svc != undefined && svc.handleAssign(内容数组, false)) return;
 	var i = 0;
 	while (i < 内容数组.length){
 		_root.对话框界面.本轮对话内容.push(内容数组[i]);
@@ -23,6 +26,8 @@ _root.对话赋值到对话框 = function(内容数组){
 }
 
 _root.对话覆盖赋值到对话框 = function(内容数组){
+	var svc = _global.org.flashNight.arki.dialogue.NativeDialogueService;
+	if (svc != undefined && svc.handleAssign(内容数组, true)) return;
 	_root.对话框界面.本轮对话内容 = [];
 	var i = 0;
 	while (i < 内容数组.length){

@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import importlib.util
+import hashlib
 import json
 import tempfile
 from pathlib import Path
@@ -206,26 +207,59 @@ def main() -> None:
         for portrait in production_manifest["entries"].values()
         for expression in portrait["expressions"].values()
     ]
+    for portrait in production_manifest["entries"].values():
+        if portrait.get("coordinateSpace") == "sprite-natural":
+            for asset in portrait["expressions"].values():
+                minimum = 512 * production_manifest["zoom"]
+                require(asset.get("bounds", {}).get("height", 0) >= minimum,
+                        f"nested portrait lacks visible resolution: {portrait['key']}")
+                require(asset.get("rasterization", {}).get("minimumVisibleHeight") == minimum,
+                        f"nested portrait resolution evidence missing: {portrait['key']}")
     require(assets, "production manifest has no portrait assets")
     bounded_assets = [asset for asset in assets if "bounds" in asset]
     bounds_coverage = len(bounded_assets) / len(assets)
     require(bounds_coverage >= 0.99, "production manifest bounds coverage must remain at least 99%")
     require(
         all((PRODUCTION_ASSET_ROOT / asset["uri"]).is_file() for asset in assets),
-        "production manifest references a missing PNG",
+        "production manifest references a missing image",
     )
     referenced_assets = {asset["uri"] for asset in assets}
     on_disk_assets = {
         path.relative_to(PRODUCTION_ASSET_ROOT).as_posix()
-        for path in PRODUCTION_ASSET_ROOT.rglob("*.png")
+        for path in PRODUCTION_ASSET_ROOT.rglob("*") if path.suffix.lower() in baker.IMAGE_SUFFIXES
     }
-    require(on_disk_assets == referenced_assets, "production PNG set must exactly equal manifest URI set")
+    require(on_disk_assets == referenced_assets, "production image set must exactly equal manifest URI set")
     asset_closure = production_report.get("assetClosure") or {}
     require(
-        asset_closure.get("referencedPngs") == len(referenced_assets)
-        and asset_closure.get("onDiskPngs") == len(on_disk_assets),
+        asset_closure.get("referencedAssets", asset_closure.get("referencedPngs")) == len(referenced_assets)
+        and asset_closure.get("onDiskAssets", asset_closure.get("onDiskPngs")) == len(on_disk_assets),
         "production asset closure report mismatch",
     )
+
+    for asset in assets:
+        path = PRODUCTION_ASSET_ROOT / asset["uri"]
+        require(path.resolve().is_relative_to(PRODUCTION_ASSET_ROOT.resolve()), f"asset escapes portrait root: {path}")
+        if "sha256" in asset:
+            require(hashlib.sha256(path.read_bytes()).hexdigest() == asset["sha256"], f"asset hash mismatch: {path}")
+            require(path.stat().st_size == asset["bytes"], f"asset byte count mismatch: {path}")
+        if path.suffix == ".webp":
+            require(baker.raster_magic(path.read_bytes()) == "webp", f"WebP signature mismatch: {path}")
+            require("sha256" in asset, f"WebP asset lacks integrity metadata: {path}")
+        with Image.open(path) as decoded:
+            require(decoded.size == (asset["width"], asset["height"]), f"asset dimensions mismatch: {path}")
+            require(max(decoded.size) <= 4096, f"asset exceeds Host decode dimension budget: {path}")
+            bounds = asset.get("bounds")
+            if bounds:
+                expected = (bounds["x"], bounds["y"], bounds["x"] + bounds["width"], bounds["y"] + bounds["height"])
+                require(decoded.convert("RGBA").getchannel("A").getbbox() == expected, f"alpha bounds mismatch: {path}")
+    for generator in production_manifest.get("generatorInputs", []):
+        source = (ROOT / generator["path"]).resolve()
+        require(source.is_relative_to(ROOT.resolve()), "generator path escapes root")
+        require(hashlib.sha256(source.read_bytes()).hexdigest() == generator["sha256"],
+                f"generator input changed since bake: {generator['path']}")
+    if "totalBytes" in asset_closure:
+        require(asset_closure["totalBytes"] == sum((PRODUCTION_ASSET_ROOT / u).stat().st_size for u in referenced_assets),
+                "production asset byte budget report mismatch")
 
     try:
         baker.validate_authority_policy_coverage(

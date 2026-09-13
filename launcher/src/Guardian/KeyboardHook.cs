@@ -106,6 +106,10 @@ namespace CF7Launcher.Guardian
         // 探针由 GuardianForm.SetInteractionEscSurface 注入，在本钩子专用线程同步调用，
         // 必须 O(1) 返回；实现侧异常按 false 处理，绝不让宿主代码异常逃出钩子回调。
         private volatile Func<bool> _interactionEscProbe;
+        private volatile Func<uint, Action> _dialogueKeyProbe;
+        private readonly HashSet<uint> _physicalKeysDown = new HashSet<uint>();
+        private readonly HashSet<uint> _dialogueConsumedKeys = new HashSet<uint>();
+        public void SetDialogueKeyProbe(Func<uint, Action> probe) { _dialogueKeyProbe = probe; }
         public void SetInteractionEscapeProbe(Func<bool> probe) { _interactionEscProbe = probe; }
         public bool InteractionEscActive
         {
@@ -222,6 +226,34 @@ namespace CF7Launcher.Guardian
             {
                 int msg = wParam.ToInt32();
                 uint vk = (uint)Marshal.ReadInt32(lParam);
+                bool down = msg == WM_KEYDOWN || msg == WM_SYSKEYDOWN;
+                bool up = msg == WM_KEYUP || msg == WM_SYSKEYUP;
+                bool repeated = down && !_physicalKeysDown.Add(vk);
+                if (up) _physicalKeysDown.Remove(vk);
+
+                // 对话按一次推进一次。先于显示而已按住的互动键也不能被自动重复采纳。
+                // 捕获的 Action 已绑定当时行号；不得在异步执行时重新选择当前对话。
+                if (_dialogueConsumedKeys.Contains(vk))
+                {
+                    if (up) _dialogueConsumedKeys.Remove(vk);
+                    if ((down || up) && IsLiveApplicationForeground()) return new IntPtr(1);
+                }
+                if (down && !repeated && msg == WM_KEYDOWN && !_ctrlHeld
+                    && !_physicalKeysDown.Contains(0x10) && !_physicalKeysDown.Contains(0xA0)
+                    && !_physicalKeysDown.Contains(0xA1) && !_physicalKeysDown.Contains(0x12)
+                    && !_physicalKeysDown.Contains(0xA4) && !_physicalKeysDown.Contains(0xA5)
+                    && !_panelEscEnabled && !(vk == VK_ESCAPE && InteractionEscActive)
+                    && IsLiveApplicationForeground())
+                {
+                    Action dialogueAction = null;
+                    try { dialogueAction = _dialogueKeyProbe?.Invoke(vk); } catch { }
+                    if (dialogueAction != null)
+                    {
+                        _dialogueConsumedKeys.Add(vk);
+                        ThreadPool.QueueUserWorkItem(_ => dialogueAction());
+                        return new IntPtr(1);
+                    }
+                }
 
                 // 追踪 Ctrl 物理状态
                 if (vk == VK_CONTROL || vk == VK_LCONTROL || vk == VK_RCONTROL)
@@ -292,6 +324,15 @@ namespace CF7Launcher.Guardian
 
             uint pid;
             GetWindowThreadProcessId(fg, out pid);
+            return pid == _myPid || (_flashPid != 0 && pid == _flashPid);
+        }
+
+        private bool IsLiveApplicationForeground()
+        {
+            IntPtr foreground = GetForegroundWindow();
+            if (foreground == IntPtr.Zero) return false;
+            uint pid;
+            GetWindowThreadProcessId(foreground, out pid);
             return pid == _myPid || (_flashPid != 0 && pid == _flashPid);
         }
 

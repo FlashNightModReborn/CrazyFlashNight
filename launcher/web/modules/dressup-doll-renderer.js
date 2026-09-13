@@ -136,6 +136,17 @@ var DressupDollRenderer = (function() {
         if (options.attackMode) state.attackMode = options.attackMode;
         if (options.strictFields === true) state.strictFields = true;
         if (options['攻击模式']) state['攻击模式'] = options['攻击模式'];
+        if (options.expression != null && options.expression !== '') {
+            state.expression = String(options.expression);
+        }
+        if (options.fieldExpressions && typeof options.fieldExpressions === 'object') {
+            state.fieldExpressions = {};
+            Object.keys(options.fieldExpressions).forEach(function(key) {
+                if (options.fieldExpressions[key] != null && options.fieldExpressions[key] !== '') {
+                    state.fieldExpressions[key] = String(options.fieldExpressions[key]);
+                }
+            });
+        }
         if (options.directSkinKey) {
             state.directSkinKey = String(options.directSkinKey);
             state.keyMap[DIRECT_SKIN_FIELD] = state.directSkinKey;
@@ -559,21 +570,107 @@ var DressupDollRenderer = (function() {
         return new URL(uri, manifest.__baseUrl || document.baseURI).href;
     }
 
-    function selectSkinFrame(skin, nowMs, fallbackFps) {
-        if (!skin) return { frame: null, animated: false };
-        var frames = playbackFrames(skin);
-        if (!frames.length) {
+    // 显式表情选帧：表情名是脸型元件时间轴上的帧标签（对齐 AS2
+    // gotoAndStop(人物表情) 语义），baker 把每个标签落成与 frames[] 同构的
+    // 帧条目放进 skin.expressions。请求表情缺失时按 AS2 旧行为显式回退
+    // defaultExpression（通常为"普通"），再退到 expressions 里帧号最小者；
+    // 整链都走 stop 帧，绝不把停帧脸型当普通时间轴动画播放。
+    var EXPRESSION_FALLBACK_NONE = false;
+    function expressionEntryOrder(expressions) {
+        return Object.keys(expressions).sort(function(left, right) {
+            var lf = numberOr((expressions[left] || {}).frame, numberOr((expressions[left] || {}).sourceFrame, 0));
+            var rf = numberOr((expressions[right] || {}).frame, numberOr((expressions[right] || {}).sourceFrame, 0));
+            if (lf !== rf) return lf - rf;
+            return left < right ? -1 : (left > right ? 1 : 0);
+        });
+    }
+
+    function resolveExpressionFrame(entry, expression) {
+        var requested = expression == null ? '' : String(expression);
+        if (!entry || !requested) return null;
+        var expressions = entry.expressions;
+        if (!expressions || typeof expressions !== 'object') {
             return {
+                requested: requested,
+                resolved: null,
+                frame: null,
+                fallback: 'no-expressions'
+            };
+        }
+        if (expressions[requested]) {
+            return {
+                requested: requested,
+                resolved: requested,
+                frame: expressions[requested],
+                fallback: EXPRESSION_FALLBACK_NONE
+            };
+        }
+        var fallbackName = entry.defaultExpression || '普通';
+        if (fallbackName && expressions[fallbackName]) {
+            return {
+                requested: requested,
+                resolved: fallbackName,
+                frame: expressions[fallbackName],
+                fallback: 'default'
+            };
+        }
+        var order = expressionEntryOrder(expressions);
+        if (order.length) {
+            return {
+                requested: requested,
+                resolved: order[0],
+                frame: expressions[order[0]],
+                fallback: 'first'
+            };
+        }
+        return {
+            requested: requested,
+            resolved: null,
+            frame: null,
+            fallback: 'empty'
+        };
+    }
+
+    function expressionForRenderable(holder, renderable, stateContext) {
+        var map = stateContext && stateContext.fieldExpressions;
+        if (map && typeof map === 'object') {
+            if (holder && holder.field && map[holder.field] != null) return map[holder.field];
+            if (renderable && renderable.key && map[renderable.key] != null) return map[renderable.key];
+        }
+        return stateContext ? stateContext.expression : null;
+    }
+
+    function selectSkinFrame(skin, nowMs, fallbackFps, expression) {
+        if (!skin) return { frame: null, animated: false };
+        var expressionSelection = expression != null && expression !== ''
+            ? resolveExpressionFrame(skin, expression)
+            : null;
+        if (expressionSelection && expressionSelection.frame) {
+            return {
+                frame: expressionSelection.frame,
+                animated: false,
+                expressionSelection: expressionSelection
+            };
+        }
+        var frames = playbackFrames(skin);
+        var selected;
+        if (!frames.length) {
+            selected = {
                 frame: skin.export ? { uri: skin.export.uri, width: skin.export.width, height: skin.export.height } : null,
                 animated: false
             };
+        } else {
+            selected = Timeline.select(skin, nowMs, {
+                frames: frames,
+                fallbackFps: fallbackFps,
+                defaultFps: fallbackFps,
+                identity: ['uri', 'width', 'height', 'originX', 'originY']
+            });
         }
-        return Timeline.select(skin, nowMs, {
-            frames: frames,
-            fallbackFps: fallbackFps,
-            defaultFps: fallbackFps,
-            identity: ['uri', 'width', 'height', 'originX', 'originY']
-        });
+        // 请求了表情但条目没有 expressions 元数据：仍走原有时间轴/静态选帧，
+        // 但把 requested 记录透出给调用方，可观测而非静默吞掉。
+        if (expressionSelection) selected.expressionSelection = expressionSelection;
+        return selected;
     }
 
     function createImageCache() {
@@ -750,6 +847,9 @@ var DressupDollRenderer = (function() {
             var pendingImages = 0;
             var failedImages = 0;
             var drawnImages = 0;
+            var expressionSelections = [];
+            var expressionRequests = 0;
+            var expressionsUnmatched = [];
             function imageDrawable(image) {
                 return !!(image && image.complete && image.naturalWidth > 0);
             }
@@ -759,9 +859,29 @@ var DressupDollRenderer = (function() {
             function imageErrored(image) {
                 return !!(image && image.complete && !(image.naturalWidth > 0));
             }
-            function drawLayer(layer, nowMs) {
+            function noteExpressionSelection(holder, renderable, selected) {
+                var selection = selected && selected.expressionSelection;
+                if (!selection) return;
+                expressionRequests++;
+                var record = {
+                    field: holder && holder.field || '',
+                    skinKey: renderable && renderable.key || '',
+                    requested: selection.requested,
+                    resolved: selection.resolved,
+                    frame: selection.frame ? selection.frame.frame : null,
+                    fallback: selection.fallback
+                };
+                if (selection.fallback === 'no-expressions') {
+                    // 条目根本没有 expressions 元数据：不伪装成有效表情选择，
+                    // 单独列出来便于排查"烘焙未带表情"与"字段不适用"两种情形。
+                    expressionsUnmatched.push(record);
+                    return;
+                }
+                expressionSelections.push(record);
+            }
+            function drawLayer(layer, nowMs, expression) {
                 if (!layer || !layer.export) return;
-                var selected = selectSkinFrame(layer, nowMs, fallbackFps);
+                var selected = selectSkinFrame(layer, nowMs, fallbackFps, expression);
                 needsAnimation = needsAnimation || selected.animated;
                 var frame = selected.frame;
                 var uri = resolveImageUri(frame && frame.uri, manifest);
@@ -769,7 +889,7 @@ var DressupDollRenderer = (function() {
                 ctx.save();
                 applyMatrix(ctx, matrixFrom(layer.matrix));
                 nestedLayers(layer, 'under').forEach(function(childLayer) {
-                    drawLayer(childLayer, nowMs);
+                    drawLayer(childLayer, nowMs, expression);
                 });
                 if (imageDrawable(image)) {
                     drawFrameImage(ctx, layer, frame, image);
@@ -780,7 +900,7 @@ var DressupDollRenderer = (function() {
                     failedImages++;
                 }
                 nestedLayers(layer, 'over').forEach(function(childLayer) {
-                    drawLayer(childLayer, nowMs);
+                    drawLayer(childLayer, nowMs, expression);
                 });
                 ctx.restore();
             }
@@ -802,7 +922,9 @@ var DressupDollRenderer = (function() {
                 //   skin's frame by that index instead of selectSkinFrame's own clock. Deferred to
                 //   avoid destabilizing the working independent-holder render; sync holders currently
                 //   animate on their own clock (visually close for single-frame head skins).
-                var selected = selectSkinFrame(renderable.entry, nowMs, fallbackFps);
+                var expression = expressionForRenderable(holder, renderable, stateContext);
+                var selected = selectSkinFrame(renderable.entry, nowMs, fallbackFps, expression);
+                noteExpressionSelection(holder, renderable, selected);
                 needsAnimation = needsAnimation || selected.animated;
                 var frame = selected.frame;
                 var uri = resolveImageUri(frame && frame.uri, manifest);
@@ -813,7 +935,7 @@ var DressupDollRenderer = (function() {
                 applyMatrix(ctx, matrixForRenderable(holder, renderable));
                 if (renderable.entry) {
                     nestedLayers(renderable.entry, 'under').forEach(function(layer) {
-                        drawLayer(layer, nowMs);
+                        drawLayer(layer, nowMs, expression);
                     });
                 }
                 if (renderable.entry && image && image.complete && image.naturalWidth > 0) {
@@ -824,7 +946,7 @@ var DressupDollRenderer = (function() {
                 }
                 if (renderable.entry) {
                     nestedLayers(renderable.entry, 'over').forEach(function(layer) {
-                        drawLayer(layer, nowMs);
+                        drawLayer(layer, nowMs, expression);
                     });
                 }
                 ctx.restore();
@@ -848,7 +970,10 @@ var DressupDollRenderer = (function() {
                 missing: missing,
                 pendingImages: pendingImages,
                 failedImages: failedImages,
-                drawnImages: drawnImages
+                drawnImages: drawnImages,
+                expressionRequests: expressionRequests,
+                expressions: expressionSelections,
+                expressionsUnmatched: expressionsUnmatched
             };
             if (typeof options.onRender === 'function') options.onRender(result);
             return result;
@@ -907,6 +1032,7 @@ var DressupDollRenderer = (function() {
         measureState: measureState,
         measureEnvelope: measureEnvelope,
         withFitEnvelope: withFitEnvelope,
+        resolveExpressionFrame: resolveExpressionFrame,
         create: create
     };
 })();

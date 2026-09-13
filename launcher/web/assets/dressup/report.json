@@ -14,15 +14,15 @@
     "compatAliasSkinKeys": 9,
     "manualCompatAliasSkinKeys": 9,
     "autoOppositeGenderCompatAliasSkinKeys": 0,
-    "exportedSkinKeys": 1,
+    "exportedSkinKeys": 2,
     "exportedFrames": 2992,
-    "exportedBasicKeys": 23,
-    "exportedBasicFrames": 32,
+    "exportedBasicKeys": 0,
+    "exportedBasicFrames": 0,
     "metadataErrors": 0,
     "timelineScriptErrors": 0,
     "spriteGraphErrors": 0,
-    "staticStopSkinKeys": 1,
-    "staticStopCollapsedFrames": 5,
+    "staticStopSkinKeys": 2,
+    "staticStopCollapsedFrames": 18,
     "purgedStaleFrames": 0,
     "nestedAnimationSkinKeys": 24,
     "nestedLayerUnsupportedDescendants": 0,
@@ -39,8 +39,12 @@
     "conditionalVariantRemovedPlaceObjects": 0,
     "animatedSkinKeys": 17,
     "staticCollapsedSkinKeys": 22,
-    "preservedSkinKeyExports": 2712,
-    "preservedBasicHolderExports": 231
+    "preservedSkinKeyExports": 2717,
+    "preservedBasicHolderExports": 259,
+    "expressionSkinKeys": 2,
+    "expressionFrames": 10,
+    "expressionFrameImages": 8,
+    "missingExpressionFrame": 0
   },
   "missingSummary": {
     "byUse": {
@@ -6524,20 +6528,15 @@
     }
   },
   "assetExport": {
-    "selectedSkinKeys": 1,
-    "resolvedSkinKeys": 1,
-    "exportedSkinKeys": 1,
-    "exportedFrames": 1,
-    "resolvedBasicKeys": 23,
-    "exportedBasicKeys": 23,
-    "exportedBasicFrames": 32,
+    "selectedSkinKeys": 2,
+    "resolvedSkinKeys": 2,
+    "exportedSkinKeys": 2,
+    "exportedFrames": 2,
+    "resolvedBasicKeys": 0,
+    "exportedBasicKeys": 0,
+    "exportedBasicFrames": 0,
     "missingSymbol": [],
-    "missingBasicSymbol": [
-      {
-        "linkageId": "女变装-基本脸型",
-        "swf": "flashswf/UI/对话框界面.swf"
-      }
-    ],
+    "missingBasicSymbol": [],
     "symbolErrors": [],
     "exportErrors": [],
     "metadataErrors": [],
@@ -6546,14 +6545,21 @@
     "missingBasicFrame": [],
     "timelineScriptErrors": [],
     "spriteGraphErrors": [],
-    "staticStopSkinKeys": 1,
-    "staticStopCollapsedFrames": 5,
+    "staticStopSkinKeys": 2,
+    "staticStopCollapsedFrames": 18,
     "purgedStaleFrames": 0,
     "staticStopSamples": [
       {
-        "skinKey": "枪-长枪-XM214-CageFrame",
-        "characterId": 913,
-        "sourceFrameCount": 6,
+        "skinKey": "女变装-基本脸型",
+        "characterId": 2783,
+        "sourceFrameCount": 10,
+        "playback": "static-first-frame",
+        "reason": "frame1_plain_stop"
+      },
+      {
+        "skinKey": "男变装-基本脸型",
+        "characterId": 45,
+        "sourceFrameCount": 10,
         "playback": "static-first-frame",
         "reason": "frame1_plain_stop"
       }
@@ -6565,27 +6571,22 @@
     "exportedNestedLayerKeys": 0,
     "exportedNestedLayerFrames": 0,
     "missingNestedLayerFrame": [],
-    "uniqueFrameImages": 29,
-    "duplicateFrameRefs": 4,
-    "timelineLogicalFrames": 33,
-    "timelineFrameEntries": 29,
-    "timelineCompressedFrameRefs": 4,
-    "timelineCompressionSamples": [
-      {
-        "owner": "basic:男变装-基本脸型",
-        "logicalFrames": 10,
-        "timelineFrames": 6,
-        "savedFrameEntries": 4,
-        "uniqueUris": 6,
-        "longestHoldFrames": 5
-      }
-    ],
+    "uniqueFrameImages": 2,
+    "duplicateFrameRefs": 0,
+    "timelineLogicalFrames": 2,
+    "timelineFrameEntries": 2,
+    "timelineCompressedFrameRefs": 0,
+    "timelineCompressionSamples": [],
     "conditionalVariantSkinKeys": 0,
     "conditionalVariantFrames": 0,
     "conditionalVariantRemovedPlaceObjects": 0,
     "conditionalVariantSamples": [],
-    "preservedSkinKeyExports": 2712,
-    "preservedBasicHolderExports": 231
+    "expressionSkinKeys": 2,
+    "expressionFrames": 10,
+    "expressionFrameImages": 8,
+    "missingExpressionFrame": [],
+    "preservedSkinKeyExports": 2717,
+    "preservedBasicHolderExports": 259
   },
   "animatedSkinKeys": [
     {

@@ -16,6 +16,7 @@ from pathlib import Path
 from typing import Any
 
 from PIL import Image
+from dialogue_portrait_variants import plans_for, render_variant_frames
 
 SCHEMA = "cf7-dialogue-portraits-v2"
 AUTHORITY_POLICY_SCHEMA = "cf7.dialogue-portrait-source-authority-policy.v1"
@@ -24,9 +25,19 @@ DEFAULT_EXPRESSION = "普通"
 HERO_KEYS = {"$PC_CHAR", "玩家", "主角模板"}
 SKIP_INTERNAL_KEYS = {"玩家", "主角模板"}
 SOURCE_IDS = {"external-swf", "dialogue-ui-sprite"}
+IMAGE_SUFFIXES = (".png", ".webp")
 
-FRAME_LABEL_RE = re.compile(r'<item\s+type="FrameLabelTag"[^>]*\sname="([^"]*)"')
-SHOW_FRAME_RE = re.compile(r'<item\s+type="ShowFrameTag"')
+# FFDec -swf2xml 把 DefineSpriteTag 的子时间轴包在 <subTags> 里；根时间轴只认
+# <tags> 的直接子项，任何 <subTags> 内的 ShowFrame/FrameLabel 只计入该 sprite 自己
+# 的帧计数。逐项匹配 open/close 才能区分层级（item 可嵌套，sprite 可再含 sprite）。
+SWF_XML_TOKEN_RE = re.compile(
+    r'<item\s+type="(?P<itype>[^"]+)"(?P<iattrs>[^>]*?)(?P<iclosed>/?)>'
+    r'|</item\s*>'
+    r'|<subTags\s*[^>]*>'
+    r'|</subTags\s*>'
+)
+SWF_ITEM_NAME_RE = re.compile(r'\sname="([^"]*)"')
+SWF_SPRITE_ID_RE = re.compile(r'\sspriteId="(\d+)"')
 
 
 def parse_args() -> argparse.Namespace:
@@ -55,6 +66,18 @@ def parse_args() -> argparse.Namespace:
         help="Ignored cache for rejected-source PNGs used by the human authority review page.",
     )
     parser.add_argument("--zoom", type=int, default=1)
+    parser.add_argument("--internal-renderer", choices=["auto", "ffdec", "svg"], default="auto",
+                        help="auto preserves legacy 1x PNG exports; HD/WebP uses same-source SVG rasterization.")
+    parser.add_argument(
+        "--image-format",
+        choices=["png", "webp"],
+        default="png",
+        help=(
+            "Final asset encoding. Intermediate FFDec frames and supersample downscaling always stay "
+            "PNG; only the manifest-referenced output is encoded. webp is written lossless+exact "
+            "(fully transparent pixels keep their RGB), URI extension follows the format."
+        ),
+    )
     parser.add_argument(
         "--supersample",
         type=int,
@@ -68,6 +91,24 @@ def parse_args() -> argparse.Namespace:
         ),
     )
     parser.add_argument("--limit", type=int, default=0, help="Only export the first N external portraits; internal still exports.")
+    parser.add_argument(
+        "--keys",
+        default="",
+        help=(
+            "Comma-separated portrait keys to bake (external list.xml names or SWF stems, and internal "
+            "label keys). Bounded subset for trial exports; requires a non-production --output-dir. "
+            "Empty bakes everything."
+        ),
+    )
+    parser.add_argument(
+        "--expressions",
+        default="",
+        help=(
+            "Comma-separated expression/frame-label names to export per selected key. "
+            f"{DEFAULT_EXPRESSION} is always kept because manifest defaultExpression requires it. "
+            "Requires a non-production --output-dir. Empty exports all labels."
+        ),
+    )
     parser.add_argument("--external-only", action="store_true")
     parser.add_argument("--internal-only", action="store_true")
     parser.add_argument("--keep-tmp", action="store_true")
@@ -100,8 +141,8 @@ def stable_dir(kind: str, key: str) -> str:
     return f"{kind}_{short_hash(key)}"
 
 
-def stable_file(expression: str) -> str:
-    return f"e_{short_hash(expression)}.png"
+def stable_file(expression: str, image_format: str = "png") -> str:
+    return f"e_{short_hash(expression)}.{image_format}"
 
 
 def normalize_key(value: Any) -> str:
@@ -156,16 +197,19 @@ def run_command(args: list[str], cwd: Path, timeout_seconds: int) -> subprocess.
     return result
 
 
-def png_size(path: Path) -> tuple[int, int]:
+def raster_size(path: Path) -> tuple[int, int]:
     with path.open("rb") as fh:
         header = fh.read(24)
-    if len(header) < 24 or header[:8] != b"\x89PNG\r\n\x1a\n":
-        return 0, 0
-    width, height = struct.unpack(">II", header[16:24])
-    return int(width), int(height)
+    if len(header) >= 24 and header[:8] == b"\x89PNG\r\n\x1a\n":
+        width, height = struct.unpack(">II", header[16:24])
+        return int(width), int(height)
+    if len(header) >= 12 and header[:4] == b"RIFF" and header[8:12] == b"WEBP":
+        with Image.open(path) as img:
+            return int(img.width), int(img.height)
+    return 0, 0
 
 
-def png_alpha_bounds(path: Path) -> dict[str, int] | None:
+def raster_alpha_bounds(path: Path) -> dict[str, int] | None:
     with Image.open(path) as img:
         alpha = img.convert("RGBA").getchannel("A")
         bbox = alpha.getbbox()
@@ -191,8 +235,8 @@ def normalized_visible_rgba(image: Image.Image, bbox: tuple[int, int, int, int])
     return bytes(pixels)
 
 
-def internal_assets_are_alpha_equivalent(candidate_path: Path, baseline_png: bytes) -> bool:
-    with Image.open(candidate_path) as candidate_image, Image.open(io.BytesIO(baseline_png)) as baseline_image:
+def internal_assets_are_alpha_equivalent(candidate_path: Path, baseline_data: bytes) -> bool:
+    with Image.open(candidate_path) as candidate_image, Image.open(io.BytesIO(baseline_data)) as baseline_image:
         candidate = candidate_image.convert("RGBA")
         baseline = baseline_image.convert("RGBA")
         candidate_bbox = candidate.getchannel("A").getbbox()
@@ -221,12 +265,12 @@ def load_semantic_baseline(baseline_dir: Path) -> dict[str, dict[str, Any]]:
             source_path = (baseline_root / Path(uri)).resolve()
             if baseline_root not in source_path.parents or not source_path.is_file():
                 raise RuntimeError(f"Semantic baseline asset is missing or escapes its root: {uri}")
-            baseline_png = source_path.read_bytes()
-            width, height = png_size(source_path)
-            bounds = png_alpha_bounds(source_path)
+            baseline_data = source_path.read_bytes()
+            width, height = raster_size(source_path)
+            bounds = raster_alpha_bounds(source_path)
             if width != asset.get("width") or height != asset.get("height") or bounds != asset.get("bounds"):
                 raise RuntimeError(f"Semantic baseline metadata drift: {uri}")
-            result[uri] = {"asset": dict(asset), "png": baseline_png}
+            result[uri] = {"asset": dict(asset), "raster": baseline_data}
     return result
 
 
@@ -248,23 +292,119 @@ def swf_lookup(portrait_dir: Path) -> dict[str, Path]:
     return lookup
 
 
+def parse_selection_csv(raw: str) -> set[str] | None:
+    values = {normalize_key(part) for part in (raw or "").split(",")}
+    values.discard("")
+    return values or None
+
+
+def ensure_subset_output_dir(
+    output_dir: Path,
+    production_output_dir: Path,
+    selection_active: bool,
+) -> None:
+    """子集烘焙禁止落在生产资产目录：资产闭包会删除未引用的 PNG/WebP。"""
+    if selection_active and output_dir == production_output_dir:
+        raise SystemExit(
+            "--keys/--expressions subset bakes must use an explicit non-production --output-dir: "
+            "the asset closure deletes every unreferenced PNG/WebP in the output directory"
+        )
+
+
+def ensure_review_candidate_dir(review_candidate_dir: Path, project_root: Path) -> None:
+    """人审落选来源的候选缓存只允许留在项目 tmp/ 下。"""
+    allowed_review_root = (project_root / "tmp").resolve()
+    if allowed_review_root not in review_candidate_dir.parents:
+        raise RuntimeError(f"Review candidate directory must stay under tmp/: {review_candidate_dir}")
+
+
+def external_name_selected(name: str, lookup: dict[str, Path], selected_keys: set[str]) -> bool:
+    if normalize_key(name) in selected_keys:
+        return True
+    swf = lookup.get(name) or lookup.get(name.lower())
+    return swf is not None and normalize_key(swf.stem) in selected_keys
+
+
+def filter_expression_frames(
+    frames: dict[str, int],
+    selected_expressions: set[str] | None,
+) -> dict[str, int]:
+    if selected_expressions is None:
+        return frames
+    return {
+        expression: frame_no
+        for expression, frame_no in frames.items()
+        if expression in selected_expressions or expression == DEFAULT_EXPRESSION
+    }
+
+
 def export_swf_xml(ffdec: Path, project_root: Path, swf: Path, xml_path: Path, timeout_seconds: int) -> None:
     xml_path.parent.mkdir(parents=True, exist_ok=True)
     run_command([str(ffdec), "-swf2xml", str(swf), str(xml_path)], project_root, timeout_seconds)
 
 
-def timeline_labels_from_swf_xml(xml_path: Path) -> dict[str, int]:
-    labels: dict[str, int] = {}
+def swf_xml_timelines(xml_path: Path) -> dict[str, Any]:
+    """按时间轴分层收集 FFDec swf2xml 导出的帧标签。
+
+    返回 {"root": {标签: 根帧号}, "sprites": {spriteId: {标签: sprite 内帧号}},
+    "rootFrames": 根 ShowFrame 数}。旧实现逐行累计全文 ShowFrameTag，DefineSpriteTag
+    <subTags> 内的嵌套帧会抬高其后的根标签帧号（如 Andy Law「侦查2」实际根帧 38 被
+    记为 47），嵌套 sprite 的标签也会混进根标签表（如「室友」的 男/女 实际位于
+    sprite 6 内）。这里用 <subTags> 开闭维护时间轴栈：栈外只统计根帧，栈内每层
+    sprite 独立计数；标签取首次出现，与既有根标签去重语义一致。
+    """
+    root_labels: dict[str, int] = {}
+    sprites: dict[str, dict[str, int]] = {}
+    item_stack: list[tuple[str, str | None]] = []
+    timeline_stack: list[dict[str, Any]] = []
     frame = 1
     with xml_path.open("r", encoding="utf-8", errors="replace") as fh:
         for line in fh:
-            m = FRAME_LABEL_RE.search(line)
-            if m:
-                label = normalize_key(html.unescape(m.group(1)))
-                if label and label not in labels:
-                    labels[label] = frame
-            if SHOW_FRAME_RE.search(line):
-                frame += 1
+            for match in SWF_XML_TOKEN_RE.finditer(line):
+                token = match.group(0)
+                if token.startswith("</item"):
+                    if item_stack:
+                        item_stack.pop()
+                    continue
+                if token.startswith("</subTags"):
+                    if timeline_stack:
+                        closed = timeline_stack.pop()
+                        if closed["id"] is not None and closed["labels"]:
+                            sprites.setdefault(closed["id"], {}).update(closed["labels"])
+                    continue
+                if token.startswith("<subTags"):
+                    sprite_id = next(
+                        (sid for itype, sid in reversed(item_stack) if itype == "DefineSpriteTag"),
+                        None,
+                    )
+                    timeline_stack.append({"id": sprite_id, "frame": 1, "labels": {}})
+                    continue
+                item_type = match.group("itype")
+                if item_type == "ShowFrameTag":
+                    if timeline_stack:
+                        timeline_stack[-1]["frame"] += 1
+                    else:
+                        frame += 1
+                elif item_type == "FrameLabelTag":
+                    name_match = SWF_ITEM_NAME_RE.search(token)
+                    label = normalize_key(html.unescape(name_match.group(1))) if name_match else ""
+                    if label:
+                        if timeline_stack:
+                            ctx = timeline_stack[-1]
+                            ctx["labels"].setdefault(label, ctx["frame"])
+                        else:
+                            root_labels.setdefault(label, frame)
+                if match.group("iclosed") != "/":
+                    sprite_id = None
+                    if item_type == "DefineSpriteTag":
+                        id_match = SWF_SPRITE_ID_RE.search(token)
+                        sprite_id = id_match.group(1) if id_match else None
+                    item_stack.append((item_type, sprite_id))
+    return {"root": root_labels, "sprites": sprites, "rootFrames": frame - 1}
+
+
+def timeline_labels_from_swf_xml(xml_path: Path) -> dict[str, int]:
+    labels = dict(swf_xml_timelines(xml_path)["root"])
     if DEFAULT_EXPRESSION not in labels:
         labels[DEFAULT_EXPRESSION] = 1
     return labels
@@ -393,6 +533,14 @@ def export_internal_sprite(
     return find_exported_frame_dir(out_dir, sprite_id)
 
 
+def raster_magic(data: bytes) -> str:
+    if data[:8] == b"\x89PNG\r\n\x1a\n":
+        return "png"
+    if data[:4] == b"RIFF" and data[8:12] == b"WEBP":
+        return "webp"
+    return ""
+
+
 def copy_asset(
     src: Path,
     output_dir: Path,
@@ -400,23 +548,27 @@ def copy_asset(
     expression: str,
     *,
     source_kind: str = "",
+    image_format: str = "png",
     semantic_baseline: dict[str, dict[str, Any]] | None = None,
     semantic_noop_assets: list[dict[str, Any]] | None = None,
 ) -> dict[str, Any]:
-    dst_rel = Path(rel_dir) / stable_file(expression)
+    dst_rel = Path(rel_dir) / stable_file(expression, image_format)
     dst = output_dir / dst_rel
     dst.parent.mkdir(parents=True, exist_ok=True)
     uri = dst_rel.as_posix()
     baseline = (semantic_baseline or {}).get(uri)
+    # 复用只在同一 URI（后缀即格式）且字节魔数与目标格式一致时成立：
+    # 基线里的 PNG 字节绝不能直接写成 .webp 文件。
     reused = (
         source_kind == "dialogue-ui-sprite"
         and baseline is not None
-        and internal_assets_are_alpha_equivalent(src, baseline["png"])
+        and raster_magic(baseline["raster"]) == image_format
+        and internal_assets_are_alpha_equivalent(src, baseline["raster"])
     )
     if reused:
-        dst.write_bytes(baseline["png"])
+        dst.write_bytes(baseline["raster"])
         if semantic_noop_assets is not None:
-            candidate_width, candidate_height = png_size(src)
+            candidate_width, candidate_height = raster_size(src)
             semantic_noop_assets.append(
                 {
                     "uri": uri,
@@ -428,16 +580,24 @@ def copy_asset(
                     },
                 }
             )
+    elif image_format == "webp":
+        # lossless+exact：RGBA 逐像素保真，全透明像素保留原 RGB（主控实测与
+        # 源 PNG RGBA 等值）。中间帧始终是 PNG，仅此最终编码为 webp。
+        with Image.open(src) as opened:
+            opened.convert("RGBA").save(dst, format="WEBP", lossless=True, exact=True, quality=100, method=6)
     else:
         shutil.copy2(src, dst)
-    width, height = png_size(dst)
+    width, height = raster_size(dst)
     asset = {
         "uri": uri,
         "width": width,
         "height": height,
         "frame": int(src.stem) if src.stem.isdigit() else None,
+        "sha256": hashlib.sha256(dst.read_bytes()).hexdigest(),
+        "bytes": dst.stat().st_size,
+        "format": image_format,
     }
-    bounds = png_alpha_bounds(dst)
+    bounds = raster_alpha_bounds(dst)
     if bounds:
         asset["bounds"] = bounds
     return asset
@@ -661,6 +821,14 @@ def validate_baked_authority(
         )
 
 
+def on_disk_assets(output_dir: Path) -> set[str]:
+    return {
+        path.relative_to(output_dir).as_posix()
+        for path in output_dir.rglob("*")
+        if path.is_file() and path.suffix.lower() in IMAGE_SUFFIXES
+    }
+
+
 def enforce_asset_closure(
     output_dir: Path,
     manifest: dict[str, Any],
@@ -673,11 +841,11 @@ def enforce_asset_closure(
             if not uri or uri in referenced:
                 raise RuntimeError(f"Invalid or duplicate dialogue portrait manifest asset URI: {uri!r}")
             referenced.add(uri)
-    on_disk = {path.relative_to(output_dir).as_posix() for path in output_dir.rglob("*.png")}
+    on_disk = on_disk_assets(output_dir)
     missing = sorted(referenced - on_disk)
     if missing:
         raise RuntimeError(
-            "Dialogue portrait asset closure has missing PNGs: "
+            "Dialogue portrait asset closure has missing images: "
             + json.dumps(missing, ensure_ascii=False)
         )
     pruned = sorted(on_disk - referenced)
@@ -696,7 +864,7 @@ def enforce_asset_closure(
     for directory in directories:
         if not any(directory.iterdir()):
             directory.rmdir()
-    final_on_disk = {path.relative_to(output_dir).as_posix() for path in output_dir.rglob("*.png")}
+    final_on_disk = on_disk_assets(output_dir)
     if final_on_disk != referenced:
         raise RuntimeError("Dialogue portrait asset closure did not converge after pruning")
     return referenced, pruned
@@ -707,12 +875,16 @@ def bake_external(
     manifest: dict[str, Any],
     report: dict[str, Any],
     authority_decisions: dict[str, str],
+    selected_keys: set[str] | None = None,
+    selected_expressions: set[str] | None = None,
 ) -> None:
     project_root = Path(args.project_root)
     ffdec = Path(args.ffdec)
     portrait_dir = project_root / "flashswf" / "portraits"
     lookup = swf_lookup(portrait_dir)
     names = read_external_names(portrait_dir / "list.xml")
+    if selected_keys is not None:
+        names = [name for name in names if external_name_selected(name, lookup, selected_keys)]
     if args.limit > 0:
         names = names[: args.limit]
     tmp_base = Path(args.tmp_dir) / "external"
@@ -727,7 +899,55 @@ def bake_external(
         xml_path = tmp_base / stem_id / "source.xml"
         frames_dir = tmp_base / stem_id / "frames"
         export_swf_xml(ffdec, project_root, swf, xml_path, args.ffdec_timeout_seconds)
-        labels = timeline_labels_from_swf_xml(xml_path)
+        timelines = swf_xml_timelines(xml_path)
+        if timelines["sprites"]:
+            # 嵌套 sprite 自带标签 = 运行时变体（如「室友」按玩家性别选 男/女 帧）。
+            # 静态根帧导出不能等价复现，先把逐 sprite 标签写进报告供变体裁决使用。
+            report["nestedTimelineLabels"][key] = {
+                sprite_id: dict(sprite_labels)
+                for sprite_id, sprite_labels in sorted(
+                    timelines["sprites"].items(), key=lambda item: int(item[0])
+                )
+            }
+        variant_plans = plans_for(key, timelines)
+        if variant_plans:
+            if selected_expressions is not None:
+                variant_plans = [p for p in variant_plans
+                                 if p["expression"] == DEFAULT_EXPRESSION or p["expression"] in selected_expressions]
+            variant_dir = tmp_base / stem_id / "variants"
+            results = render_variant_frames(ffdec, project_root, swf, variant_plans,
+                                            variant_dir, args.zoom * args.supersample,
+                                            args.ffdec_timeout_seconds)
+            for sprite_id in {r["sourceSpriteId"] for r in results}:
+                downscale_supersampled_frames(variant_dir / "frames" / f"sprite_{sprite_id}", args.supersample)
+            entries = {}
+            for result in results:
+                variant_key = result["key"]
+                entry = entries.setdefault(variant_key, {
+                    "key": variant_key, "aliases": [], "source": "external-swf",
+                    "sourcePath": swf.relative_to(project_root).as_posix(), "sourceKey": key,
+                    "sourceSpriteId": result["sourceSpriteId"], "coordinateSpace": "sprite-natural",
+                    "selection": result["selection"], "defaultExpression": DEFAULT_EXPRESSION,
+                    "expressions": {},
+                })
+                asset = copy_asset(variant_dir / result["png"], Path(args.output_dir),
+                                   f"external/{stable_dir('p', variant_key)}", result["expression"],
+                                   image_format=args.image_format)
+                asset["rasterization"] = {"renderer": result["renderer"],
+                                          "sourceSpriteId": result["sourceSpriteId"],
+                                          "zoom": args.zoom, "supersample": args.supersample,
+                                          "resolutionScale": result["resolutionScale"],
+                                          "minimumVisibleHeight": result["minimumVisibleHeight"] // args.supersample}
+                entry["expressions"][result["expression"]] = asset
+            for entry in entries.values():
+                append_entry(manifest, entry, authority_decisions, report)
+                report["externalEntries"] += 1
+                report["externalExpressions"] += len(entry["expressions"])
+            continue
+        labels = dict(timelines["root"])
+        if DEFAULT_EXPRESSION not in labels:
+            labels[DEFAULT_EXPRESSION] = 1
+        labels = filter_expression_frames(labels, selected_expressions)
         render_zoom = ffdec_render_zoom(args)
         export_external_frames(ffdec, project_root, swf, labels, frames_dir, render_zoom, args.ffdec_timeout_seconds)
         if missing_label_frames(frames_dir, labels):
@@ -762,6 +982,7 @@ def bake_external(
                 Path(args.output_dir),
                 f"external/{stable_dir('p', key)}",
                 expression,
+                image_format=args.image_format,
             )
         append_entry(manifest, entry, authority_decisions, report)
         report["externalEntries"] += 1
@@ -775,6 +996,8 @@ def bake_internal(
     authority_decisions: dict[str, str],
     semantic_baseline: dict[str, dict[str, Any]],
     semantic_noop_assets: list[dict[str, Any]],
+    selected_keys: set[str] | None = None,
+    selected_expressions: set[str] | None = None,
 ) -> None:
     project_root = Path(args.project_root)
     ffdec = Path(args.ffdec)
@@ -790,22 +1013,13 @@ def bake_internal(
     if sprite_id is None:
         raise RuntimeError(f"Cannot resolve exported symbol {INTERNAL_PORTRAIT_EXPORT_NAME} in {swf}")
     report["internalPortraitSpriteId"] = sprite_id
-    # 内置对话框肖像（矢量 UI 美术，851x1000）不能超采样：FFDec 在 zoom>1 渲染其形状时
-    # 会抛 java.lang.InternalError: Odd number of new curves!（矢量曲线缩放的已知缺陷），
-    # 1x/2x/3x/4x 实测只有 1x 能成功。它本来就是按原生尺寸渲染的矢量图，不需要 SSAA。
-    frame_dir = export_internal_sprite(
-        ffdec,
-        project_root,
-        swf,
-        tmp_base / "sprite",
-        sprite_id,
-        args.zoom,
-        args.ffdec_timeout_seconds,
-    )
+    plans = []
     ranges = frame_ranges_from_dialogue_portrait(portrait_xml)
     for item in ranges:
         key = item["key"]
         if key.startswith("--") or key in SKIP_INTERNAL_KEYS:
+            continue
+        if selected_keys is not None and normalize_key(key) not in selected_keys:
             continue
         start = int(item["index"])
         duration = int(item["duration"])
@@ -827,6 +1041,33 @@ def bake_internal(
                 frame_no = start + int(child_index) + 1
                 if frame_no >= start + 1 and frame_no <= start + max(duration, 1):
                     expression_frames[expression] = frame_no
+        expression_frames = filter_expression_frames(expression_frames, selected_expressions)
+        plans.append((entry, expression_frames))
+
+    if not plans:
+        return
+    renderer = args.internal_renderer
+    if renderer == "auto":
+        renderer = "ffdec" if args.zoom == 1 and args.image_format == "png" else "svg"
+    raster_evidence = {}
+    if renderer == "svg":
+        # Java2D 在 sprite981 的武器大师曲线上确定失败；SVG 保留同一源的形状和剪裁，
+        # 只栅格化实际需要的帧，避免为了29个静态立绘逐一渲染262帧。
+        from dialogue_svg_fallback import recover_sprite_frames
+
+        frame_dir = tmp_base / "svg-pixels"
+        wanted = sorted({frame for _, frames in plans for frame in frames.values()})
+        raster_evidence = recover_sprite_frames(
+            ffdec, project_root, swf, sprite_id, wanted, frame_dir, tmp_base / "svg-source",
+            ffdec_render_zoom(args), args.ffdec_timeout_seconds,
+        )
+        downscale_supersampled_frames(frame_dir, args.supersample)
+    else:
+        frame_dir = export_internal_sprite(ffdec, project_root, swf, tmp_base / "sprite",
+                                           sprite_id, args.zoom, args.ffdec_timeout_seconds)
+    report["internalRenderer"] = renderer
+    for entry, expression_frames in plans:
+        key = entry["key"]
         for expression, frame_no in sorted(expression_frames.items(), key=lambda item: (item[1], item[0])):
             frame_path = frame_dir / f"{frame_no}.png"
             if not frame_path.exists():
@@ -838,9 +1079,12 @@ def bake_internal(
                 f"internal/{stable_dir('p', key)}",
                 expression,
                 source_kind="dialogue-ui-sprite",
+                image_format=args.image_format,
                 semantic_baseline=semantic_baseline,
                 semantic_noop_assets=semantic_noop_assets,
             )
+            if frame_no in raster_evidence:
+                entry["expressions"][expression]["rasterization"] = raster_evidence[frame_no]
         if entry["expressions"]:
             append_entry(manifest, entry, authority_decisions, report)
             report["internalEntries"] += 1
@@ -849,6 +1093,10 @@ def bake_internal(
 
 def main() -> None:
     args = parse_args()
+    if args.zoom < 1 or args.zoom > 4 or args.supersample < 1 or args.supersample > 4:
+        raise SystemExit("zoom and supersample must each be in 1..4")
+    if args.zoom * args.supersample > 8:
+        raise SystemExit("combined render zoom must not exceed 8")
     if args.external_only and args.internal_only:
         raise SystemExit("--external-only and --internal-only are mutually exclusive")
     project_root = Path(args.project_root).resolve()
@@ -861,7 +1109,24 @@ def main() -> None:
         else output_dir
     )
     review_candidate_dir = Path(args.review_candidate_dir).resolve()
-    full_bake = not args.external_only and not args.internal_only and args.limit == 0
+    selected_keys = parse_selection_csv(args.keys)
+    selected_expressions = parse_selection_csv(args.expressions)
+    production_output_dir = (
+        project_root / "launcher" / "web" / "assets" / "dialogue-portraits"
+    ).resolve()
+    ensure_subset_output_dir(
+        output_dir,
+        production_output_dir,
+        selected_keys is not None or selected_expressions is not None
+        or args.external_only or args.internal_only or args.limit > 0,
+    )
+    full_bake = (
+        not args.external_only
+        and not args.internal_only
+        and args.limit == 0
+        and selected_keys is None
+        and selected_expressions is None
+    )
     if not Path(args.ffdec).exists():
         raise SystemExit(f"Missing FFDec CLI: {args.ffdec}")
     authority_policy, authority_decisions, authority_policy_digest = load_authority_policy(authority_policy_path)
@@ -870,17 +1135,22 @@ def main() -> None:
         if not args.external_only and not args.internal_only
         else []
     )
+    if selected_keys is not None:
+        portrait_lookup = swf_lookup(project_root / "flashswf" / "portraits")
+        collisions = [
+            name
+            for name in collisions
+            if external_name_selected(name, portrait_lookup, selected_keys)
+        ]
     validate_authority_policy_coverage(
         authority_decisions,
         collisions,
-        require_exact=not args.external_only and not args.internal_only and args.limit == 0,
+        require_exact=full_bake,
     )
     semantic_baseline = load_semantic_baseline(semantic_baseline_dir)
     active_review_candidate_dir: Path | None = None
     if full_bake:
-        allowed_review_root = (project_root / "tmp").resolve()
-        if allowed_review_root not in review_candidate_dir.parents:
-            raise RuntimeError(f"Review candidate directory must stay under tmp/: {review_candidate_dir}")
+        ensure_review_candidate_dir(review_candidate_dir, project_root)
         if review_candidate_dir.exists():
             shutil.rmtree(review_candidate_dir)
         review_candidate_dir.mkdir(parents=True, exist_ok=True)
@@ -929,6 +1199,8 @@ def main() -> None:
         # 超采样只影响画质、不影响几何，故只进 report，不改 manifest schema。
         "supersample": args.supersample,
         "renderZoom": ffdec_render_zoom(args),
+        # 最终资产编码（png/webp）同样只进 report：manifest URI 后缀即格式。
+        "imageFormat": args.image_format,
         "missingExternalSwf": [],
         "missingFrames": [],
         "sourceAuthority": {
@@ -937,11 +1209,19 @@ def main() -> None:
             "reviewReceipt": authority_policy.get("reviewReceipt"),
         },
         "sourceCollisions": [],
+        # 外部源里「嵌套 sprite 内标签」清单（如 室友 的 sprite6 男/女 帧）。
+        # 普通根标签修复不覆盖这类运行时变体，需要单独的变体选择与取帧规则。
+        "nestedTimelineLabels": {},
+        "selection": {
+            "keys": sorted(selected_keys) if selected_keys else [],
+            "expressions": sorted(selected_expressions) if selected_expressions else [],
+        },
+        "unmatchedKeys": [],
     }
     semantic_noop_assets: list[dict[str, Any]] = []
 
     if not args.internal_only:
-        bake_external(args, manifest, report, authority_decisions)
+        bake_external(args, manifest, report, authority_decisions, selected_keys, selected_expressions)
     if not args.external_only:
         bake_internal(
             args,
@@ -950,8 +1230,20 @@ def main() -> None:
             authority_decisions,
             semantic_baseline,
             semantic_noop_assets,
+            selected_keys,
+            selected_expressions,
         )
     rebuild_aliases(manifest)
+    if selected_keys is not None:
+        baked_keys = {normalize_key(key) for key in manifest["entries"]}
+        baked_keys.update(
+            normalize_key(alias)
+            for entry in manifest["entries"].values()
+            for alias in entry.get("aliases") or []
+        )
+        baked_keys.update(normalize_key(entry["sourceKey"]) for entry in manifest["entries"].values()
+                          if entry.get("sourceKey"))
+        report["unmatchedKeys"] = sorted(selected_keys - baked_keys)
     report["sourceCollisions"].sort(key=lambda item: item["key"])
     validate_baked_authority(manifest, report, collisions, authority_decisions)
     referenced_assets, pruned_assets = enforce_asset_closure(
@@ -969,11 +1261,22 @@ def main() -> None:
         "assets": retained_semantic_noops,
     }
     report["assetClosure"] = {
-        "referencedPngs": len(referenced_assets),
-        "onDiskPngs": len(referenced_assets),
-        "prunedPngs": len(pruned_assets),
+        "referencedPngs": sum(uri.endswith(".png") for uri in referenced_assets),
+        "onDiskPngs": sum(uri.endswith(".png") for uri in referenced_assets),
+        "prunedPngs": sum(uri.endswith(".png") for uri in pruned_assets),
         "prunedAssets": pruned_assets,
+        "referencedAssets": len(referenced_assets),
+        "onDiskAssets": len(referenced_assets),
+        "totalBytes": sum((output_dir / uri).stat().st_size for uri in referenced_assets),
     }
+    manifest["generatorInputs"] = [
+        {"path": source.relative_to(project_root).as_posix(),
+         "sha256": hashlib.sha256(source.read_bytes()).hexdigest()}
+        for source in (project_root / "tools" / "bake-dialogue-portraits.py",
+                       project_root / "tools" / "dialogue_svg_fallback.py",
+                       project_root / "tools" / "dialogue_portrait_variants.py",
+                       project_root / "tools" / "dialogue-portrait-source-review" / "requirements.txt")
+    ]
 
     manifest_path = output_dir / "manifest.json"
     manifest_path.write_text(json.dumps(manifest, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")

@@ -165,15 +165,20 @@ class org.flashNight.arki.scene.StageEvent {
 
     private function executeDialogue(){
        if(dialogue.length > 0){
-            _root.暂停 = true;
-            _root.SetDialogue(StageInfo.parseSingleDialogue(dialogue));
-            // 附加跟随事件
+            // 暂停责任与 followingEvent 移交 NativeDialogueService（claim-OR）；
+            // 服务终结前事件不可达，场景取消绝不发布。
+            // 修正历史 bug：unshift 返回的是数组长度而非数组本身，
+            // 旧代码 apply(dispatcher, Number) 导致参数从未送达；
+            // 现在 followingEvent.args 是纯参数数组，由服务 publish.apply 分发。
+            var follow:Object = null;
             if(followingEvent.EventName){
-                _root.对话框界面.followingEvent = {
+                follow = {
                     name: followingEvent.EventName,
-                    args: followingEvent.Parameter ? ObjectUtil.toArray(followingEvent.Parameter).unshift(followingEvent.EventName) : null
+                    args: followingEvent.Parameter ? ObjectUtil.toArray(followingEvent.Parameter) : null
                 }
             }
+            org.flashNight.arki.dialogue.NativeDialogueService.beginStage(
+                StageInfo.parseSingleDialogue(dialogue), follow);
         }
     }
 

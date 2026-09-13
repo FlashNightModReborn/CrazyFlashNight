@@ -25,7 +25,7 @@ Guardian Launcher 是 C# WinForms 长跑宿主，负责：
 
 它不负责：
 
-- 替代 AS2 业务裁决；Web 只能展示 Host/AS2 授权的数据和意图；
+- 替代 AS2 业务裁决；Web 只能展示 Host/AS2 授权的数据和意图；现场对白台词顺序/完成/取消仍归 AS2，`nativeDialogueAction` 仅回传 advance/close 意图（`native_dialogue` v1，candidate_built / NOT_DEPLOYED，见[对话框迁移与立绘治理](../docs/对话框迁移与高清立绘治理-调研与施工准备-2026-09-12.md)）；
 - 用浏览器 harness 代签真实 WebView2 → Flash、物理输入或游戏内 E2E；
 - 通过 `launcher/build.ps1` 直接部署正式 runtime；
 - 把 Audio H2、截图或听感证据塞进通用 runtime promotion 门。
@@ -109,7 +109,7 @@ bootstrap preflight
 - `LootIconCatalog` 从 `launcher/web/icons/manifest.json`、敌人头像 manifest 与 `launcher/data/doll-portraits` 解析图标。64px `Bitmap` 只由有界 LRU 持有，图标帧集不得跨 LRU 淘汰保存位图引用；动画整组超过预算时降级静态首帧。
 - 主角/佣兵击杀缺少预烘焙头像时，Host 发 WebView2 message `{type:"dollBake",key,requestId,tuple}`。Web 只负责渲染，并经 allowlisted task `doll_bake_result` 回传 `{key,requestId,pngBase64|error}`；`requestId` 必须与当前 key 的唯一在飞项 exact 匹配。缺失、foreign、duplicate、timeout 后迟到或无在飞项的回包一律拒绝，且不得清除更新请求。
 - `DollBakeTask` 只接受可完整解码的 exact 256×256 PNG。Web 离屏渲染显式固定 `pixelRatio:1` 并关闭一次性快照的动画循环，使传输尺寸不受宿主 125%、150%、175% DPI 放大。校验通过后才原子写入 `launcher/data/doll-portraits/<hex>.png`；拒绝尺寸/内容时记录 key、requestId 与原因。
-  调度器首次复用历史缓存时执行同一完整校验，旧尺寸或损坏文件不再短路请求而会触发重烘焙；目录读取端也拒绝非 256×256 文件。匹配请求的失败终态只释放该请求以允许重试；成功终态再触发 `PortraitReady`，让仍存活的占位卡重探图标。Web 不拥有任意文件名、缓存路径或跨 key 写权限。
+  调度器首次复用历史缓存时执行同一完整校验，旧尺寸或损坏文件不再短路请求而会触发重烘焙；目录读取端也拒绝非 256×256 文件。匹配请求的失败终态只释放该请求以允许重试；成功终态再触发 `PortraitReady`，让仍存活的占位卡重探图标。Web 不拥有任意文件名、缓存路径或跨 key 写权限。对白立绘复用该链：Host 发 `dialoguePortraitBake`，只收 `dialogue_portrait_result` 的 768 PNG；静态为 2x supersampled 无损 WebP，图像结果不构成剧情指令。
 ### 原生音频平台 v2
 
 原生音频 bridge、格式能力和可观测性以 [Audio Platform v2 ADR](../docs/原生音频平台-v2-格式能力桥接契约与可观测性-ADR-2026-08-09.md)为准。通用 runtime promotion 只证明供应链与部署完整性；Audio H2 仍是独立产品验收，不从通用 promotion 或其他 Panel smoke 外推。
@@ -120,7 +120,7 @@ Agent Runtime 的 wire、受信 runner、credential bootstrap、30 秒预算和 
 
 ## 源码职责地图
 
-**最后核对代码基线**：commit `04718fa57afb64836e95893f0c4ff821d25ca043`（2026-08-16）。
+**最后核对代码基线**：commit `757ef93637` 加 2026-09-13 对白候选工作区；其他子系统职责保持原有边界。
 
 本节是职责地图，不是手写文件 inventory。C# 主项目采用 SDK 默认递归 `**/*.cs`，实际排除项以 [主 csproj 的 `DefaultItemExcludes`](CRAZYFLASHER7MercenaryEmpire.csproj)为准；测试项目同样使用 SDK 隐式项。
 
@@ -129,9 +129,9 @@ Agent Runtime 的 wire、受信 runner、credential bootstrap、30 秒预算和 
 |---|---|
 | [CRAZYFLASHER7MercenaryEmpire.csproj](CRAZYFLASHER7MercenaryEmpire.csproj) | Host 编译边界、依赖、嵌入资源和确定性构建设置 |
 | [src/Program.cs](src/Program.cs) | Core 入口、运行模式、依赖装配和启动顺序 |
-| [src/Guardian](src/Guardian/) | 窗口、启动 UI、WebView2、Native HUD、Panel、焦点和命令路由 |
+| [src/Guardian](src/Guardian/) | 窗口、WebView2、Native HUD、Panel、焦点；对白呈现见 [Hud/Dialogue](src/Guardian/Hud/Dialogue/)，图像服务见 [Dialogue](src/Guardian/Dialogue/) |
 | [src/Fonts](src/Fonts/) | XML-hash runtime 投影、face-major 来源解析、已验证字节快照缓存、Native role 创建与 WebView2 exact-set/ETag 资源处理 |
-| [src/Tasks](src/Tasks/) | Flash/Host 任务实现与领域消息处理；竞技场标定组合由 Host 按 session ID 反查 canonical roster |
+| [src/Tasks](src/Tasks/) | Flash/Host 任务与领域消息；[NativeDialogueTask](src/Tasks/NativeDialogueTask.cs) 校验对白快照与输入归属；竞技场标定仍按 session ID 反查 canonical roster |
 | [src/Bus](src/Bus/) | HTTP、XMLSocket、V8 和消息总线 |
 | [src/Save](src/Save/) | 启动期存档决议、备份、repair 与用户存档操作 |
 | [src/Audio](src/Audio/) | Audio Platform v2 managed bridge、协调与专项诊断 |

@@ -94,6 +94,16 @@ namespace CF7Launcher.Guardian.Hud
     }
 
     /// <summary>
+    /// 可恢复的宿主压隐：面板打开或 owner 离开前台时暂停呈现与输入，保留会话。
+    /// NativeHudOverlay 合并两个原因；全部解除后恢复，新注册的 widget 也同步当前状态。
+    /// 与 INativeHudSuppressionAware 的终结语义独立；回调在 UI 线程派发，不得抛出。
+    /// </summary>
+    public interface INativeHudResumable
+    {
+        void SetHostSuppressed(bool suppressed);
+    }
+
+    /// <summary>
     /// 可选的滚轮消费声明。NativeHud 是 WS_EX_NOACTIVATE 分层窗、永不持焦，
     /// 收不到常规 WM_MOUSEWHEEL；实际路由由 WebOverlayForm 的 WH_MOUSE_LL
     /// 全局观察完成：命中消费的滚轮事件被钩子吞掉（返回非 0），未命中放行。

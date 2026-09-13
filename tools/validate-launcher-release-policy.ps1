@@ -359,6 +359,12 @@ function Get-Cf7ProductionChecks {
         'modules\portrait-resolver.js', 'assets\enemy-portraits\manifest.json',
         'modules\shop-portrait-resolver.js', 'assets\shop-portraits\manifest.json',
         'modules\dialogue\dialogue-view.js', 'assets\dialogue-portraits\manifest.json',
+        'modules\dialogue\live-portrait.js', 'modules\dialogue\live-portrait-bake.js',
+        'assets\dialogue-ui\manifest.json', 'assets\dialogue-ui\layout.json',
+        'assets\dialogue-ui\source.svg',
+        'assets\dialogue-ui\buttons\close-up.svg', 'assets\dialogue-ui\buttons\close-over.svg',
+        'assets\dialogue-ui\buttons\close-down.svg', 'assets\dialogue-ui\buttons\drag-up.svg',
+        'assets\dialogue-ui\buttons\drag-over.svg', 'assets\dialogue-ui\buttons\drag-down.svg',
         'generated\font-catalog.json', 'generated\font-catalog.css', 'generated\font-catalog.js',
         'assets\fonts\font-pack-manifest.json'
     )

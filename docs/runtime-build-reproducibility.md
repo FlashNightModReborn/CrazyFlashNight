@@ -615,6 +615,8 @@ native 源码前缀内的非二进制契约文档也必须显式绑定，不能�
 
 离屏注释对比工具位于 launcher/perf/tooltip-parity，其 C# 项目和源码、JS/JSON/HTML 参照输入归入 policy 域；native-fixture 的 bin/obj 必须排除。它已被生产 csproj 的 perf 排除项隔离，不进入 artifactSourceHash；新增测试 C# 文件仍须被 descriptor 绑定，不能因为位于 perf 就绕过广义 native 文件准入检查。
 
+现场对白的隐藏 WebView2 组件工具位于 `tools/native-dialogue-webview2-smoke`：源码、项目、HTML 与运行入口绑定 policy 域，bin/obj 排除；它不进入正式 DLL 输入域。必需 Web 资源检查包含动态立绘两条脚本与 XFL 派生皮肤入口；组件测试仍不构成真实游戏对白验收。
+
 ## producer 与政策闸门
 
 发布链分成三个职责，不能重新合并：

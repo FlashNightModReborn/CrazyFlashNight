@@ -1,6 +1,6 @@
 {
   "schema": "cf7-dressup-manifest-v1",
-  "generatedAt": "2026-09-05T22:16:13+0800",
+  "generatedAt": "2026-09-13T04:01:40+0800",
   "genders": [
     "男",
     "女"
@@ -53387,12 +53387,12 @@
       ],
       "export": {
         "format": "png",
-        "zoom": 2,
-        "fps": 24,
+        "zoom": 4,
+        "fps": 24.0,
         "frameCount": 1,
         "uri": "skins/f84992cd_1.png",
-        "width": 126,
-        "height": 165,
+        "width": 252,
+        "height": 330,
         "playback": "static-first-frame",
         "sourceFrameCount": 10,
         "timelineScriptFrames": [
@@ -53407,12 +53407,70 @@
           "uri": "skins/f84992cd_1.png",
           "frame": 1,
           "sourceFrame": 1,
-          "width": 126,
-          "height": 165,
-          "originX": 62.5,
-          "originY": 81.2
+          "width": 252,
+          "height": 330,
+          "originX": 125.0,
+          "originY": 162.4
         }
-      ]
+      ],
+      "expressions": {
+        "普通": {
+          "uri": "skins/f84992cd_1.png",
+          "frame": 1,
+          "sourceFrame": 1,
+          "width": 252,
+          "height": 330,
+          "originX": 125.0,
+          "originY": 162.4
+        },
+        "愤怒": {
+          "uri": "skins/f84992cd_expr_2.png",
+          "frame": 2,
+          "sourceFrame": 2,
+          "width": 252,
+          "height": 330,
+          "originX": 125.0,
+          "originY": 162.4
+        },
+        "微笑": {
+          "uri": "skins/f84992cd_expr_3.png",
+          "frame": 3,
+          "sourceFrame": 3,
+          "width": 252,
+          "height": 330,
+          "originX": 125.0,
+          "originY": 162.4
+        },
+        "大笑": {
+          "uri": "skins/f84992cd_expr_4.png",
+          "frame": 4,
+          "sourceFrame": 4,
+          "width": 252,
+          "height": 330,
+          "originX": 125.0,
+          "originY": 162.4
+        },
+        "严肃": {
+          "uri": "skins/f84992cd_expr_5.png",
+          "frame": 5,
+          "sourceFrame": 5,
+          "width": 252,
+          "height": 330,
+          "originX": 125.0,
+          "originY": 162.4
+        }
+      },
+      "defaultExpression": "普通",
+      "expressionSource": {
+        "kind": "xfl-labels",
+        "labels": {
+          "普通": 0,
+          "愤怒": 1,
+          "微笑": 2,
+          "大笑": 3,
+          "严肃": 4
+        }
+      }
     },
     "女变装-夜行侦查上装上臂": {
       "covered": true,
@@ -108957,12 +109015,12 @@
       ],
       "export": {
         "format": "png",
-        "zoom": 2,
-        "fps": 24,
+        "zoom": 4,
+        "fps": 24.0,
         "frameCount": 1,
         "uri": "skins/db0204be_1.png",
-        "width": 126,
-        "height": 158,
+        "width": 252,
+        "height": 316,
         "playback": "static-first-frame",
         "sourceFrameCount": 10,
         "timelineScriptFrames": [
@@ -108977,12 +109035,70 @@
           "uri": "skins/db0204be_1.png",
           "frame": 1,
           "sourceFrame": 1,
-          "width": 126,
-          "height": 158,
-          "originX": 62.1,
-          "originY": 78.5
+          "width": 252,
+          "height": 316,
+          "originX": 124.2,
+          "originY": 157.0
         }
-      ]
+      ],
+      "expressions": {
+        "普通": {
+          "uri": "skins/db0204be_1.png",
+          "frame": 1,
+          "sourceFrame": 1,
+          "width": 252,
+          "height": 316,
+          "originX": 124.2,
+          "originY": 157.0
+        },
+        "愤怒": {
+          "uri": "skins/db0204be_expr_2.png",
+          "frame": 2,
+          "sourceFrame": 2,
+          "width": 252,
+          "height": 316,
+          "originX": 124.2,
+          "originY": 157.0
+        },
+        "微笑": {
+          "uri": "skins/db0204be_expr_3.png",
+          "frame": 3,
+          "sourceFrame": 3,
+          "width": 252,
+          "height": 316,
+          "originX": 124.2,
+          "originY": 157.0
+        },
+        "大笑": {
+          "uri": "skins/db0204be_expr_4.png",
+          "frame": 4,
+          "sourceFrame": 4,
+          "width": 252,
+          "height": 316,
+          "originX": 124.2,
+          "originY": 157.0
+        },
+        "严肃": {
+          "uri": "skins/db0204be_expr_5.png",
+          "frame": 5,
+          "sourceFrame": 5,
+          "width": 252,
+          "height": 316,
+          "originX": 124.2,
+          "originY": 157.0
+        }
+      },
+      "defaultExpression": "普通",
+      "expressionSource": {
+        "kind": "xfl-labels",
+        "labels": {
+          "普通": 0,
+          "愤怒": 1,
+          "微笑": 2,
+          "大笑": 3,
+          "严肃": 4
+        }
+      }
     },
     "男变装-复镕望远热感仪": {
       "covered": true,

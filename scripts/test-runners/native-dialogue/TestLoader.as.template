@@ -1,0 +1,3 @@
+﻿trace("FocusedTestRunId native-dialogue Start: __FOCUSED_RUN_ID__");
+org.flashNight.arki.dialogue.NativeDialogueServiceTest.runAllTests();
+trace("FocusedTestRunId native-dialogue Complete: __FOCUSED_RUN_ID__");

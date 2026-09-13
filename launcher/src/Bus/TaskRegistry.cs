@@ -482,7 +482,8 @@ namespace CF7Launcher.Bus
             WebOverlayForm webOverlay,
             LauncherCommandRouter commandRouter,
             MapDomainTask mapDomainTask = null,
-            NativeInteractionTask nativeInteractionTask = null)
+            NativeInteractionTask nativeInteractionTask = null,
+            NativeDialogueTask nativeDialogueTask = null)
         {
             // JSON 路由 task（经 MessageRouter 分发）
             router.RegisterAsync("gomoku_eval", gomoku.HandleAsync);
@@ -593,6 +594,11 @@ namespace CF7Launcher.Bus
             // 回包经 nativeInteractionAction/Cancel。仅 native HUD 路径构造 task。
             if (nativeInteractionTask != null)
                 router.RegisterSync("native_interaction", nativeInteractionTask.Handle);
+            if (nativeDialogueTask != null)
+            {
+                router.RegisterSync("native_dialogue", nativeDialogueTask.Handle);
+                router.RegisterSync("dialogue_portrait_result", nativeDialogueTask.HandlePortraitResult);
+            }
 
             // 选关面板回包路由
             if (stageSelectTask != null)
@@ -874,6 +880,8 @@ namespace CF7Launcher.Bus
             first = AppendTask(sb, "task_delivery",        "json_sync","AS2->C#",false, first);
             first = AppendTask(sb, "intelligence_response","json_async","AS2<->C#",false, first);
             first = AppendTask(sb, "native_interaction","json_sync", "AS2->C#", false, first);
+            first = AppendTask(sb, "native_dialogue","json_sync", "AS2->C#", false, first);
+            first = AppendTask(sb, "dialogue_portrait_result","json_sync", "Web->C#", false, first);
             first = AppendTask(sb, "cursor_control", "json_sync", "AS2->C#", false, first);
             first = AppendTask(sb, "panel_request",  "json_sync", "AS2->C#", false, first);
             first = AppendTask(sb, "archive",        "json_async","AS2<->C#",true,  first);

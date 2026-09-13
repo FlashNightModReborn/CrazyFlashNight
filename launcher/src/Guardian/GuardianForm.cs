@@ -851,6 +851,11 @@ namespace CF7Launcher.Guardian
             _interactionEscHandler = escHandler;
         }
 
+        public void SetDialogueKeyboardSurface(Func<uint, Action> captureAction)
+        {
+            if (_kbHook != null) _kbHook.SetDialogueKeyProbe(captureAction);
+        }
+
         /// <summary>
         /// 面板状态变化回调（由 WebOverlayForm 调用，可能来自任意线程）。
         /// 仅切换 _panelEscEnabled 标志，不动态改绑 ESC 回调。

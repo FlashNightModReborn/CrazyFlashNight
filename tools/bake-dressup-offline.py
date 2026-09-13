@@ -145,6 +145,13 @@ ARENA_LEGACY_VIRTUAL_ITEMS: dict[str, dict[str, Any]] = {
 }
 DRESSUP_TIMELINE_IDENTITY_KEYS = ("uri", "width", "height", "originX", "originY")
 DRESSUP_FACE_SKINS = ("男变装-基本脸型", "女变装-基本脸型")
+# 表情帧导出为显式 opt-in（--export-expressions / --expression-map）。脸型源元件
+# 10 帧、首帧 stop()：前 5 帧在 XFL「Labels Layer」带表情名（普通/愤怒/微笑/大笑/
+# 严肃），后 5 帧为第二头型组、无标签。AS2 权威语义是 gotoAndStop(表情名)，缺失
+# 表情由调用方显式回退——本导出只负责把标签帧落成独立 PNG 并写映射，不改
+# static-first-frame 折叠（全局取消折叠会让全部皮肤自行播放）。
+EXPRESSION_SKIN_KEYS = frozenset(DRESSUP_FACE_SKINS)
+DEFAULT_FACE_EXPRESSION = "普通"
 PRESERVED_EXPORT_KEYS = (
     "export",
     "frames",
@@ -152,6 +159,9 @@ PRESERVED_EXPORT_KEYS = (
     "nestedAnimation",
     "runtimeVariants",
     "conditionalVisibility",
+    "expressions",
+    "defaultExpression",
+    "expressionSource",
 )
 DRESSUP_CONFLICT_SOURCE_PREFERENCES = {
     "刀-砖头": (
@@ -424,6 +434,27 @@ def parse_args() -> argparse.Namespace:
         ),
     )
     parser.add_argument(
+        "--export-expressions",
+        action="store_true",
+        help=(
+            "Export labeled expression frames (e.g. face skins' 普通/愤怒/微笑/大笑/严肃) as a "
+            "side-channel expressions map on the skin entry. Labels are read from the resolved "
+            "source SWF's sibling XFL LIBRARY xml (SWF frame = label index + 1). The collapsed "
+            "static-first-frame default export is unchanged. Applies to the built-in face skin "
+            "allowlist only; combine with --name/--export-missing-assets for incremental runs."
+        ),
+    )
+    parser.add_argument(
+        "--expression-map",
+        default="",
+        help=(
+            "Optional JSON file extending/overriding the expression plan: "
+            '{"<skinKey>": {"labels": {"<name>": <0-based frame index>}, "default": "<name>"}} '
+            "or the shorthand {\"<skinKey>\": {\"<name>\": <index>}}. Entries here win over the "
+            "XFL-derived labels for the same skin key."
+        ),
+    )
+    parser.add_argument(
         "--tmp-dir",
         default=str(project_root / "tmp" / "dressup-bake-offline"),
         help="Temporary FFDec export directory. Default: tmp/dressup-bake-offline.",
@@ -442,6 +473,8 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--keep-tmp", action="store_true", help="Keep temporary FFDec exports after completion.")
     parser.add_argument("--asset-map", default="", help="Optional source-map snapshot, used by the asset workbench.")
     parser.add_argument("--skip-basic-assets", action="store_true", help="Reuse existing rig basic exports during a selected-skin bake.")
+    parser.add_argument("--expressions-only", action="store_true",
+                        help="Update selected face exports on an existing manifest without rebuilding unrelated catalog records.")
     return parser.parse_args()
 
 
@@ -2782,13 +2815,22 @@ def export_asset_identity(entry: dict[str, Any]) -> tuple[Any, ...]:
     )
 
 
-def missing_export_skin_keys(manifest: dict[str, Any], existing_manifest: dict[str, Any] | None) -> list[str]:
+def missing_export_skin_keys(
+    manifest: dict[str, Any],
+    existing_manifest: dict[str, Any] | None,
+    expression_plans: dict[str, dict[str, Any]] | None = None,
+) -> list[str]:
     existing_skin_keys = (existing_manifest or {}).get("skinKeys") or {}
     result: list[str] = []
     for key, entry in (manifest.get("skinKeys") or {}).items():
         if not is_exportable_skin_entry(entry):
             continue
         existing_entry = existing_skin_keys.get(key)
+        # 表情计划已声明但既有 manifest 还没有 expressions 的皮肤，同样算缺失：
+        # 否则增量 --export-missing-assets 永远不会补导脸型表情帧。
+        if expression_plans and key in expression_plans and not (existing_entry or {}).get("expressions"):
+            result.append(key)
+            continue
         if skin_entry_has_export(existing_entry) and export_asset_identity(entry) == export_asset_identity(existing_entry):
             continue
         compat_alias = entry.get("compatAlias") or {}
@@ -3029,6 +3071,188 @@ def parent_timeline_collapses(playback: dict[str, Any]) -> bool:
     return playback.get("playback") in ("static-first-frame", "static-parent-nested-animation")
 
 
+def expression_labels_for_asset(project_root: Path, asset: dict[str, Any]) -> dict[str, int]:
+    """从皮肤已裁决来源 SWF 的兄弟 XFL 库读取表情标签（Labels Layer）。
+
+    返回 {表情名: 0 基帧号}；SWF 帧号 = index + 1。找不到 XFL/标签时返回 {}。
+    """
+    swf_rel = (asset or {}).get("swf") or ""
+    symbol_name = (asset or {}).get("symbolName") or ""
+    if not swf_rel.lower().endswith(".swf") or not symbol_name:
+        return {}
+    library_dir = project_root / swf_rel[: -len(".swf")] / "LIBRARY"
+    if not library_dir.exists():
+        return {}
+    # symbolName 可能带 LIBRARY 内目录前缀（sprite/主角/男变装-基本脸型），文件名取末段。
+    file_stem = symbol_name.rsplit("/", 1)[-1]
+    xml_path: Path | None = None
+    symbol: dict[str, Any] | None = None
+    stem_match: tuple[Path, dict[str, Any]] | None = None
+    for candidate in sorted(library_dir.rglob(f"{file_stem}.xml")):
+        try:
+            parsed = parse_symbol_file(candidate)
+        except ET.ParseError:
+            continue
+        # 同名 xml 可能多处存在（如 LIBRARY 根目录的壳元件与 sprite/主角/ 下
+        # 带标签的实心件），优先 XFL name 全等于 symbolName 者，其次末段一致者。
+        if xml_path is None:
+            xml_path, symbol = candidate, parsed
+        if stem_match is None and (parsed.get("name") or "") == file_stem:
+            stem_match = (candidate, parsed)
+        if (parsed.get("name") or "") == symbol_name:
+            xml_path, symbol = candidate, parsed
+            stem_match = None
+            break
+    if symbol is None:
+        return {}
+    if stem_match is not None and (symbol.get("name") or "") != symbol_name:
+        xml_path, symbol = stem_match
+    labels: dict[str, int] = {}
+    for index, name in sorted((symbol.get("labels") or {}).items()):
+        name = str(name).strip()
+        if name and name not in labels:
+            labels[name] = int(index)
+    return labels
+
+
+def load_expression_plans(
+    args: Any,
+    project_root: Path,
+    manifest: dict[str, Any],
+    report: dict[str, Any],
+) -> dict[str, dict[str, Any]]:
+    """汇总表情导出计划：--export-expressions 的白名单 XFL 标签 + --expression-map 覆盖。
+
+    plan = {"labels": {表情名: 0 基帧号}, "default": 表情名|None, "source": str}
+    """
+    plans: dict[str, dict[str, Any]] = {}
+    skin_keys = manifest.get("skinKeys") or {}
+    if getattr(args, "export_expressions", False):
+        for key in sorted(EXPRESSION_SKIN_KEYS):
+            entry = skin_keys.get(key) or {}
+            asset = entry.get("asset") or {}
+            labels = expression_labels_for_asset(project_root, asset)
+            if labels:
+                plans[key] = {
+                    "labels": labels,
+                    "default": DEFAULT_FACE_EXPRESSION,
+                    "source": "xfl-labels",
+                }
+            else:
+                report.setdefault("assetExport", {}).setdefault("expressionLabelsMissing", []).append(
+                    {"skinKey": key, "swf": asset.get("swf") or "", "symbolName": asset.get("symbolName") or ""}
+                )
+    expression_map = getattr(args, "expression_map", "") or ""
+    if expression_map:
+        map_path = resolve_path(expression_map, project_root)
+        raw = json.loads(map_path.read_text(encoding="utf-8-sig"))
+        for key, spec in raw.items():
+            if not isinstance(spec, dict):
+                continue
+            if "labels" in spec:
+                labels = {
+                    str(name): int(index)
+                    for name, index in (spec.get("labels") or {}).items()
+                }
+                default = spec.get("default")
+            else:
+                labels = {str(name): int(index) for name, index in spec.items()}
+                default = None
+            if labels:
+                plans[str(key)] = {
+                    "labels": labels,
+                    "default": default,
+                    "source": "expression-map",
+                }
+    return plans
+
+
+def attach_expression_entries(
+    skin_entry: dict[str, Any],
+    skin_key: str,
+    plan: dict[str, Any],
+    frames: list[Path],
+    frames_written: list[Path],
+    frame_entries: list[dict[str, Any]],
+    asset_dir: Path,
+    asset_dir_name: str,
+    file_prefix: str,
+    no_write: bool,
+    origins: dict[int, tuple[float, float]] | None,
+    export_report: dict[str, Any],
+) -> set[str]:
+    """按 plan.labels 把已导出的源帧落成表情帧，并写 skin_entry.expressions。
+
+    - expressions[表情名] 与主 frames[] 条目同构（uri/width/height/originX/originY +
+      frame/sourceFrame=真实 SWF 帧号），渲染器按表情名直接取条目，不需要二次索引。
+    - 与默认导出逐像素相同的表情（典型如“普通”=首帧）复用已有 uri，不重复落盘；
+      其余写 <file_prefix>_expr_<SWF帧号>.png（非数字后缀，天然避开
+      purge_unreferenced_frame_files 的数字后缀清理）。
+    """
+    labels = plan.get("labels") or {}
+    ordered = sorted(labels.items(), key=lambda item: (item[1], item[0]))
+    frames_by_number = {int(path.stem): path for path in frames if path.stem.isdigit()}
+    digest_to_entry: dict[str, dict[str, Any]] = {}
+    for path, entry in zip(frames_written, frame_entries):
+        digest_to_entry[frame_pixel_digest(path)] = entry
+
+    expressions: dict[str, Any] = {}
+    referenced_names: set[str] = set()
+    for name, label_index in ordered:
+        source_frame = label_index + 1
+        source_path = frames_by_number.get(source_frame)
+        if source_path is None:
+            export_report["missingExpressionFrame"].append(
+                {"skinKey": skin_key, "expression": name, "sourceFrame": source_frame}
+            )
+            continue
+        digest = frame_pixel_digest(source_path)
+        existing = digest_to_entry.get(digest)
+        if existing is not None:
+            expr_entry = {
+                "uri": existing["uri"],
+                "frame": source_frame,
+                "sourceFrame": source_frame,
+            }
+            for field in ("width", "height", "originX", "originY"):
+                if field in existing:
+                    expr_entry[field] = existing[field]
+        else:
+            file_name = f"{file_prefix}_expr_{source_frame}.png"
+            if not no_write:
+                shutil.copy2(source_path, asset_dir / file_name)
+            size = image_size(source_path)
+            expr_entry = {
+                "uri": f"{asset_dir_name}/{file_name}",
+                "frame": source_frame,
+                "sourceFrame": source_frame,
+            }
+            if size:
+                expr_entry["width"] = size[0]
+                expr_entry["height"] = size[1]
+            if origins and source_frame in origins:
+                expr_entry["originX"] = round(origins[source_frame][0], 6)
+                expr_entry["originY"] = round(origins[source_frame][1], 6)
+            digest_to_entry[digest] = expr_entry
+            export_report["expressionFrameImages"] += 1
+        expressions[name] = expr_entry
+        referenced_names.add(Path(expr_entry["uri"]).name)
+        export_report["expressionFrames"] += 1
+
+    if expressions:
+        skin_entry["expressions"] = expressions
+        default = plan.get("default")
+        if not default or default not in expressions:
+            default = DEFAULT_FACE_EXPRESSION if DEFAULT_FACE_EXPRESSION in expressions else ordered[0][0]
+        skin_entry["defaultExpression"] = default
+        skin_entry["expressionSource"] = {
+            "kind": plan.get("source") or "unknown",
+            "labels": {name: int(index) for name, index in ordered},
+        }
+        export_report["expressionSkinKeys"] += 1
+    return referenced_names
+
+
 def attach_direct_layer_exports(
     playback: dict[str, Any],
     layer_plans: list[dict[str, Any]],
@@ -3161,6 +3385,7 @@ def export_skin_assets(
     static_stop_policy: str,
     timeout_seconds: int,
     export_basics: bool = True,
+    expression_plans: dict[str, dict[str, Any]] | None = None,
 ) -> None:
     if not ffdec.exists():
         raise SystemExit(f"Missing FFDec CLI: {ffdec}")
@@ -3211,6 +3436,10 @@ def export_skin_assets(
         "conditionalVariantFrames": 0,
         "conditionalVariantRemovedPlaceObjects": 0,
         "conditionalVariantSamples": [],
+        "expressionSkinKeys": 0,
+        "expressionFrames": 0,
+        "expressionFrameImages": 0,
+        "missingExpressionFrame": [],
     }
 
     keys = selected_skin_keys(manifest, names, limit, require_name_match=require_name_match)
@@ -3528,6 +3757,23 @@ def export_skin_assets(
                     fps,
                     export_report,
                 )
+            expression_plan = (expression_plans or {}).get(key)
+            expression_referenced_names: set[str] = set()
+            if expression_plan:
+                expression_referenced_names = attach_expression_entries(
+                    manifest["skinKeys"][key],
+                    key,
+                    expression_plan,
+                    frames,
+                    frames_to_write,
+                    frame_entries,
+                    asset_dir,
+                    asset_dir_name,
+                    file_prefix,
+                    no_write,
+                    origins,
+                    export_report,
+                )
             runtime_variants: dict[str, Any] = {}
             if conditional_visibility and conditional_frame_dir:
                 variant_frames = find_exported_frame_paths_in_dir(conditional_frame_dir, char_id)
@@ -3580,6 +3826,7 @@ def export_skin_assets(
                         }
                     )
             referenced_file_names = {Path(entry["uri"]).name for entry in frame_entries}
+            referenced_file_names.update(expression_referenced_names)
             for variant in runtime_variants.values():
                 referenced_file_names.update(Path(entry["uri"]).name for entry in variant.get("frames") or [])
             export_report["purgedStaleFrames"] += purge_unreferenced_frame_files(
@@ -3609,6 +3856,12 @@ def export_skin_assets(
             else:
                 skin_entry.pop("runtimeVariants", None)
                 skin_entry.pop("conditionalVisibility", None)
+            if not expression_plan:
+                # 本轮重导出但未带表情计划：清掉可能由增量 preserve 留下的旧映射，
+                # 避免 expressions 与全新 frames/uri 失配后还自称有效。
+                skin_entry.pop("expressions", None)
+                skin_entry.pop("defaultExpression", None)
+                skin_entry.pop("expressionSource", None)
             if len(timeline_entries) < len(frame_entries):
                 skin_entry["timelineFrames"] = timeline_entries
             else:
@@ -3648,6 +3901,7 @@ def export_skin_assets(
         "missingNestedLayerFrame",
         "timelineCompressionSamples",
         "conditionalVariantSamples",
+        "missingExpressionFrame",
     ):
         export_report[list_key] = export_report[list_key][:200]
     report["assetExport"] = export_report
@@ -3674,6 +3928,10 @@ def export_skin_assets(
     report["counts"]["conditionalVariantSkinKeys"] = export_report["conditionalVariantSkinKeys"]
     report["counts"]["conditionalVariantFrames"] = export_report["conditionalVariantFrames"]
     report["counts"]["conditionalVariantRemovedPlaceObjects"] = export_report["conditionalVariantRemovedPlaceObjects"]
+    report["counts"]["expressionSkinKeys"] = export_report["expressionSkinKeys"]
+    report["counts"]["expressionFrames"] = export_report["expressionFrames"]
+    report["counts"]["expressionFrameImages"] = export_report["expressionFrameImages"]
+    report["counts"]["missingExpressionFrame"] = len(export_report["missingExpressionFrame"])
     attach_animation_summary(manifest, report)
 
 
@@ -3923,6 +4181,10 @@ def collect_entry_asset_uris(entry: dict[str, Any]) -> set[str]:
                 uri = frame.get("uri")
                 if isinstance(uri, str):
                     uris.add(uri)
+        for frame in (owner.get("expressions") or {}).values():
+            uri = frame.get("uri") if isinstance(frame, dict) else None
+            if isinstance(uri, str):
+                uris.add(uri)
         nested = export.get("nestedAnimation") or owner.get("nestedAnimation") or {}
         for layer in nested.get("layers") or []:
             collect_frames(layer)
@@ -3969,6 +4231,22 @@ def prune_orphan_asset_files(
     return len(purged), purged[:40]
 
 
+def basic_exports_missing(manifest: dict[str, Any], existing_manifest: dict[str, Any] | None) -> bool:
+    if existing_manifest is None:
+        return True
+    exported_linkage: set[str] = set()
+    for holder in iter_basic_holders(existing_manifest):
+        basic = holder.get("basic") or {}
+        linkage_id = basic.get("linkageId") or ""
+        if linkage_id and basic.get("export") and basic.get("frames"):
+            exported_linkage.add(linkage_id)
+    for holder in iter_basic_holders(manifest):
+        linkage_id = ((holder.get("basic") or {}).get("linkageId") or "")
+        if linkage_id and linkage_id not in exported_linkage:
+            return True
+    return False
+
+
 def main() -> int:
     args = parse_args()
     project_root = Path(__file__).resolve().parents[1]
@@ -3976,7 +4254,6 @@ def main() -> int:
     ASSET_MAP_OVERRIDE = resolve_path(args.asset_map, project_root) if args.asset_map else None
     output_dir = resolve_path(args.output_dir, project_root)
     genders = genders_from_arg(args.genders)
-    manifest, report = build_manifest(project_root, genders)
     tmp_dir = resolve_path(args.tmp_dir, project_root)
     preserved_skin_exports = 0
     preserved_basic_exports = 0
@@ -3984,11 +4261,23 @@ def main() -> int:
     existing_manifest_path = output_dir / "manifest.json"
     if existing_manifest_path.exists():
         existing_manifest = json.loads(existing_manifest_path.read_text(encoding="utf-8-sig"))
+    if args.expressions_only:
+        if (existing_manifest is None or not args.export_assets or not args.export_expressions
+                or not args.skip_basic_assets or args.export_missing_assets or args.prune_orphan_assets
+                or args.limit or not args.name or not set(args.name).issubset(EXPRESSION_SKIN_KEYS)):
+            raise SystemExit("--expressions-only requires an existing manifest, explicit face names, --export-assets --export-expressions --skip-basic-assets; no missing/prune/limit sweep.")
+        manifest = copy.deepcopy(existing_manifest)
+        manifest["generatedAt"] = time.strftime("%Y-%m-%dT%H:%M:%S%z")
+        old_report = output_dir / "report.json"
+        report = json.loads(old_report.read_text(encoding="utf-8-sig")) if old_report.exists() else {"counts": {}}
+    else:
+        manifest, report = build_manifest(project_root, genders)
+    expression_plans = load_expression_plans(args, project_root, manifest, report)
     if args.export_assets:
         export_names = set(args.name)
         missing_export_targets: list[str] = []
         if args.export_missing_assets:
-            missing_export_targets = missing_export_skin_keys(manifest, existing_manifest)
+            missing_export_targets = missing_export_skin_keys(manifest, existing_manifest, expression_plans)
             export_names.update(missing_export_targets)
             report.setdefault("assetExport", {})["missingExportSkinKeys"] = len(missing_export_targets)
             report.setdefault("assetExport", {})["missingExportSamples"] = missing_export_targets[:40]
@@ -4024,7 +4313,9 @@ def main() -> int:
             args.fps,
             args.static_stop_policy,
             args.ffdec_timeout_seconds,
-            export_basics=not args.skip_basic_assets,
+            export_basics=not args.skip_basic_assets
+            and not (args.export_missing_assets and not basic_exports_missing(manifest, existing_manifest)),
+            expression_plans=expression_plans,
         )
         if preserved_skin_exports:
             report.setdefault("assetExport", {})["preservedSkinKeyExports"] = preserved_skin_exports

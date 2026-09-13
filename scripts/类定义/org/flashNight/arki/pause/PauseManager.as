@@ -18,9 +18,12 @@
  *    2. **side-channel writer tag**：set(value, owner) 在写入瞬间挂 _writerTag，
  *       watch 回调读取后立刻清零；subscribers 收到的 tag 区分"launcher 写"vs
  *       "AS2 直写"，无需改业务侧的 _root.暂停 = ... 写法。
- *    3. **lease/CAS**：lease(value, owner) 记下打开瞬间的 prevValue，
- *       releaseLease 比较当前值是否仍等于自己设的值——是才还原，否表示
- *       业务侧已经接管暂停语义，留给业务侧自己负责。
+ *    3. **claim-OR（lease 的现行语义）**：lease(true, owner) 登记为一条暂停
+ *       责任声明；多条 claim 之间是 OR——任何一条存活期间实体恒 true，
+ *       期间业务侧裸写只更新 _unownedPause 基值意图而不降下暂停；最后一条
+ *       claim 释放时才把 _unownedPause 写回。这取代早期“各自记录 prevValue
+ *       再 CAS 还原”的实现：两份布尔 lease 交叠（对白+web/shop）会错序
+ *       提前解除暂停。lease(false,...) 仍走原 prevValue/CAS 路径（现无调用方）。
  *
  *  使用示例：
  *    bootstrap（UI管理.as 帧脚本一次性调用）：
@@ -58,9 +61,15 @@ class org.flashNight.arki.pause.PauseManager {
         PauseManager.install();
         if (value === PauseManager._rewardCommitPending) return;
         if (value) {
-            PauseManager._rewardResumeValue = PauseManager.isPaused();
+            // claim 存续期间 isPaused() 反映的是 claim 强制值而非业务基值；
+            // 以 _unownedPause 为恢复候选，避免把对话/web 的暂停责任永久化。
+            PauseManager._rewardResumeValue = (PauseManager._claimCount > 0)
+                ? PauseManager._unownedPause : PauseManager.isPaused();
             PauseManager._rewardCommitPending = true;
+            // 强制 true 不是基值意图，按 claim 内部写处理，不污染 _unownedPause。
+            PauseManager._claimWriting = true;
             PauseManager.set(true, "reward_save");
+            PauseManager._claimWriting = false;
         } else {
             PauseManager._rewardCommitPending = false;
             PauseManager.set(PauseManager._rewardResumeValue, "reward_save");
@@ -76,6 +85,15 @@ class org.flashNight.arki.pause.PauseManager {
     // side-channel writer tag：set(value, owner) 期间临时挂上，watch 回调读取后立刻清零；
     // null 表示当前是业务侧直接 _root.暂停 = ... 写入（无 owner）。
     private static var _writerTag:String = null;
+
+    // claim 表（lease(true,...) 的现行载体）：{claimId:String -> {owner:String}}
+    // OR 语义：任一 claim 存活期间 _root.暂停 恒 true；最后一条释放才恢复基值。
+    private static var _claims:Object;
+    private static var _claimCount:Number = 0;
+    // 无 claim 时业务侧对 _root.暂停 的取值意图；claim 存续期间由外部写持续更新。
+    private static var _unownedPause:Boolean = false;
+    // claim/lease 内部写标记：acquire/release 路径的 set 不参与基值记账。
+    private static var _claimWriting:Boolean = false;
 
     // 自增 id 计数器
     private static var _nextLeaseId:Number = 1;
@@ -93,6 +111,10 @@ class org.flashNight.arki.pause.PauseManager {
         PauseManager._initialized = true;
         PauseManager._subscribers = [];
         PauseManager._leases = {};
+        PauseManager._claims = {};
+        PauseManager._claimCount = 0;
+        PauseManager._unownedPause = false;
+        PauseManager._claimWriting = false;
         PauseManager._writerTag = null;
         // 占用 _root.暂停 唯一 watch 槽位；后续任何 _root.watch("暂停", ...) 都会
         // 覆盖此 callback，必须走 PauseManager.subscribe 而非 _root.watch。
@@ -111,8 +133,21 @@ class org.flashNight.arki.pause.PauseManager {
         // **不会收到该次嵌套写入的通知**。这是设计意图：避免无限递归 + 避免分发顺序乱套。
         // 业务约束：subscriber 内不要做"会改 _root.暂停 又依赖被其他 subscriber 同步观察到"的操作。
         var tag:String = PauseManager._writerTag;
+        // claim 记账先于 reward 折叠：必须使用调用方原始入参（newVal 改写前），
+        // 否则 pending 期被 reward 折成 true 的值会污染基值意图。
+        // reward_save 自己的 force/resume 写不表达业务基值意图，跳过记账——
+        // pending 期间的 resume 值已含 claim 产生的强制 true，回写会永久化。
+        if (PauseManager._claimCount > 0 && !PauseManager._claimWriting
+                && tag != "reward_save") {
+            PauseManager._unownedPause = (newVal === true);
+        }
         if (PauseManager._rewardCommitPending && tag != "reward_save") {
             PauseManager._rewardResumeValue = newVal === true;
+            newVal = true;
+        }
+        if (PauseManager._claimCount > 0 && !PauseManager._claimWriting) {
+            // OR：任一 claim 存活期间，外部写（裸写/其他 owner 的 set/reward_save
+            // 的 resume 写）一律不降下暂停，只进上面的基值意图记账。
             newVal = true;
         }
         if (PauseManager._dispatching) return newVal;
@@ -156,8 +191,13 @@ class org.flashNight.arki.pause.PauseManager {
             if (count == 1) owner = String(PauseManager._leases[leaseId].owner || "");
             if (count > 1) return "multiple_leases";
         }
+        for (var claimId:String in PauseManager._claims) {
+            count++;
+            if (count == 1) owner = String(PauseManager._claims[claimId].owner || "");
+            if (count > 1) return "multiple_leases";
+        }
         if (count == 0) return "unowned_pause";
-        if (owner == "shop" || owner == "webpanel") return owner;
+        if (owner == "shop" || owner == "webpanel" || owner == "dialogue") return owner;
         return "other_lease";
     }
 
@@ -194,16 +234,32 @@ class org.flashNight.arki.pause.PauseManager {
     }
 
     //----------------------------------
-    // Lease / CAS-on-release
+    // Lease → claim-OR（lease(true,...)）／ legacy CAS（lease(false,...)）
     //
-    // lease(value, owner)：写入新值，记录 prevValue，返回 leaseId
-    // releaseLease(leaseId)：只有当前值仍等于 leasedValue 时才还原 prevValue；
-    //   否则说明业务侧已经写了新值（如对话开场设置暂停=true），不动它，
-    //   把暂停归属权交还给业务侧。
+    // lease(true, owner)：登记一条暂停责任声明。首个 claim 建立时把当前
+    //   _root.暂停（reward pending 时取 _rewardResumeValue 意图）记为
+    //   _unownedPause 基值；claim 存续期间任何外部写只更新基值、实体恒 true；
+    //   最后一条 claim 释放时 set(_unownedPause, owner+":release") 落回——
+    //   reward pending 仍在时该写会被 watch 折入 _rewardResumeValue，实体保持
+    //   true，由 reward_save 终局统一恢复。
+    // lease(false,...)：保留原 prevValue/CAS 路径（当前无调用方，防御性保留）。
     //----------------------------------
 
     public static function lease(value:Boolean, owner:String):String {
+        PauseManager.install();
         var leaseId:String = "lease" + (PauseManager._nextLeaseId++);
+        if (value === true) {
+            if (PauseManager._claimCount == 0) {
+                PauseManager._unownedPause = PauseManager._rewardCommitPending
+                    ? PauseManager._rewardResumeValue : PauseManager.isPaused();
+            }
+            PauseManager._claims[leaseId] = {owner: owner};
+            PauseManager._claimCount++;
+            PauseManager._claimWriting = true;
+            PauseManager.set(true, owner);
+            PauseManager._claimWriting = false;
+            return leaseId;
+        }
         PauseManager._leases[leaseId] = {
             owner: owner,
             prevValue: PauseManager.isPaused(),
@@ -214,6 +270,20 @@ class org.flashNight.arki.pause.PauseManager {
     }
 
     public static function releaseLease(leaseId:String):Void {
+        var claim:Object = PauseManager._claims != undefined
+            ? PauseManager._claims[leaseId] : undefined;
+        if (claim != undefined) {
+            delete PauseManager._claims[leaseId];
+            PauseManager._claimCount--;
+            if (PauseManager._claimCount <= 0) {
+                PauseManager._claimCount = 0;
+                PauseManager._claimWriting = true;
+                PauseManager.set(PauseManager._unownedPause, claim.owner + ":release");
+                PauseManager._claimWriting = false;
+            }
+            return;
+        }
+
         var data:Object = PauseManager._leases[leaseId];
         if (data == undefined) return;
         delete PauseManager._leases[leaseId];

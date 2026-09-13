@@ -82,7 +82,7 @@ cd "<项目根目录>"
 
 `-Status` 只读报告当前身份、精确匹配和同身份闭包分叉；`-ReuseOnly` 禁止缓存未命中时构建；`-ForceBuild` 强制新建 candidate，但新旧同身份闭包不一致仍 fail-closed；`-BuildOnly` 只选择/构建并验证 candidate，不启动进程。`-CandidateLeaf` 只允许与 exact `-ForceBuild -BuildOnly` 组合使用，值必须是 1–32 个小写 ASCII 字母、数字或连字符组成的单一路径段；入口在 `tmp/runtime-candidates/v2` 下构造 direct child、复用既有 canonical/reparse 护栏并预检 bootstrap `<260` 路径预算，再把绝对 `CandidateRoot` 交给 producer。已存在的叶节点一律按 immutable candidate 拒绝，绝不启用 `ForceReplace`。该参数用于长路径隔离 Worktree，不改变 build identity、payload closure 或正式发布协议。忽略路径 `tmp/runtime-dev/active.v1.json` 只是便于精确复用的索引，每次执行前都会重算 Worktree 身份并重验 candidate，不是信任或部署证据。
 
-完整游戏 E2E 还受 Flash 既有资源定位约束：当前项目根的 canonical 路径必须保留 `...\resources` 这一层级语义。任意名的普通 Worktree 即使能生成并启动 candidate，也可能因 `PathManager` 无法建立资源基址而停在任务数据加载。需要隔离实机验证时，应把独立 Worktree 建成 `<隔离目录>\resources`，再从该根运行 `automation/dev.ps1`；不要为满足路径约束覆盖、复制或清理正在使用的 Steam `resources` 工作区。仅构建、静态门和 Host/Web 单测不需要这一完整游戏路径形态。
+完整游戏 E2E 还受 Flash 既有资源定位约束：当前项目根的 canonical 路径必须保留 `...\resources` 这一层级语义。现有 main 仓库已满足该条件，可直接从根 `本地开发启动.cmd` 测试；开发隔离由 candidate 提供，不要求额外 Worktree 或 Steam 所有权验证。仅在确需独立源码/存档环境时，才把额外 Worktree 建成 `<隔离目录>\resources` 并从该根运行 `automation/dev.ps1`；不要把普通目录副本当成 Git 开发仓库，也不要覆盖其他施工物料。仅构建、静态门和 Host/Web 单测不需要这一完整游戏路径形态。
 
 断网可以完成已有 candidate 的精确复用；若需重建，本机必须已安装并通过锁定的 .NET / MSVC / Windows SDK / Rust 工具链，且 NuGet / Cargo 依赖已在本地缓存。首次开发机供给仍可能需要联网，这与正式云端双生产者验证是两个独立问题。
 

@@ -21,6 +21,7 @@ launcher/data/save_repair_dict.json.tmp
 
 # 运行时纸娃娃胸像缓存（DollBakeTask 经 WebView2 烘焙落盘，运行时产物不提交）
 launcher/data/doll-portraits/
+launcher/data/dialogue-portraits/
 
 # Launcher 历史的 self-contained single-file exe（~146MB）已替换为 FDD + bootstrap 形态；
 # 用户面 CRAZYFLASHER7MercenaryEmpire.exe 现在是 ~134KB 的 native C++ bootstrap，可安全入 git。

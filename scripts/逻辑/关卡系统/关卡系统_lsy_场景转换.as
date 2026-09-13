@@ -870,8 +870,10 @@ _root.清除游戏世界组件 = function(清理请求:Object):Boolean{
 	_root.卸载全屏UI();
 	
 	_root.对话框UI.清理外部立绘缓存(3);
-	_root.对话框界面.关闭();
+	// 先清 followingEvent 再关：场景取消语义是“绝不执行后续事件”，
+	// 旧顺序允许 close 帧/onClose 抢跑发布。
 	_root.对话框界面.followingEvent = null;
+	_root.对话框界面.关闭();
 
 	_root.关卡结束界面._visible = false;
 	_root.关卡结束界面.关卡是否结束 = false;

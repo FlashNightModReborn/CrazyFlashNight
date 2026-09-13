@@ -6282,6 +6282,10 @@ namespace CF7Launcher.Guardian
                     StringComparison.Ordinal)
                 || string.Equals(
                     taskName,
+                    "dialogue_portrait_result",
+                    StringComparison.Ordinal)
+                || string.Equals(
+                    taskName,
                     "loot_request",
                     StringComparison.Ordinal);
         }

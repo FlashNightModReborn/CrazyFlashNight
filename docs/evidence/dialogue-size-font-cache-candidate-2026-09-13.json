@@ -1,0 +1,632 @@
+{
+  "schema": "cf7-dialogue-size-font-cache-evidence.v1",
+  "recordedAtUtc": "2026-09-13T05:22:30.836561+00:00",
+  "kind": "historical engineering snapshot, not a release gate",
+  "sourceCommit": "757ef93637e99cb1a41b1f5dfa8ec9c9e4d6a4d9",
+  "sourceIncludesUncommittedWorktree": true,
+  "previousEvidence": "docs/evidence/dialogue-xfl-ui-followup-2026-09-13.json",
+  "candidate": {
+    "schema": "cf7-local-dev-runtime-selection.v1",
+    "candidateRelativePath": "tmp/runtime-candidates/v2/u2-dialogue-v5-cache",
+    "artifactSourceHash": "988A6499EB43447CBD591F2535AD7ECAE680A33EA58AA93E869733ED1CB55549",
+    "producerRecipeHash": "0AED3CE28E95E2FD1D6D1F516424D977FC5411F7446380C1A70D3836D243D49F",
+    "toolchainLockHash": "7B83229BE93F8244810CDD23DAFD97875B23857E547DE520035FE23B453CB3CD",
+    "buildIdentityHash": "E96A9A3B95CD10B473DB712181966D1011E647A8DF32A23A35E34682B01B1AF3",
+    "payloadClosureHash": "8D9630E2BB294607A7AB8988B8AF280A932C9925082DF82355011B42C1FDD870",
+    "coreSha256": "CDBE4B8EA961CFB758EBDF425EB5BA965555A4F76D1C4483D53CF7617A954F6A",
+    "activatedAtUtc": "2026-09-13T05:21:09.2393809Z",
+    "trust": "INDEX_ONLY_REVERIFY_BEFORE_EXECUTION",
+    "lifecycleState": "candidate_built",
+    "deploymentStatus": "NOT_DEPLOYED",
+    "humanStatus": "HUMAN_REVALIDATION_PENDING",
+    "gameExecutedByAgent": false,
+    "entry": "本地开发启动.cmd",
+    "selectionState": "ready"
+  },
+  "as2": {
+    "changedSinceV4": false,
+    "swfSha256": "810AAC73DF15FC9A6D223129AE54227AD3377AB7AF976BD1AB4DCF500C66BC97",
+    "priorEvidence": "docs/evidence/dialogue-xfl-ui-followup-2026-09-13.json",
+    "priorAssertionsPassed": 150,
+    "compiledAgainThisTurn": false
+  },
+  "csharp": {
+    "passed": 87,
+    "failed": 0,
+    "log": "tmp/u2-dialogue-20260913/dialogue-tests-12.log"
+  },
+  "web": {
+    "passed": 8,
+    "failed": 0,
+    "command": "node tools/test-live-dialogue-portrait.js"
+  },
+  "geometry": {
+    "scope": "source coordinates and production pure geometry, no original Flash screenshot",
+    "armoredDoll": {
+      "gender": "男",
+      "rig": "dialogue",
+      "stateLabel": "",
+      "fitHolders": 6,
+      "totalHolders": 21,
+      "strictFields": false,
+      "bounds": {
+        "minX": -30.887207099999998,
+        "minY": -127.62560669999999,
+        "maxX": 149.62718669999998,
+        "maxY": 77.5039224
+      }
+    },
+    "rigRootMatrix": {
+      "a": 1.170883,
+      "b": 0,
+      "c": 0,
+      "d": 1.170883,
+      "tx": 50.1,
+      "ty": 118.4
+    },
+    "genderMatrix": {
+      "a": 1.170883,
+      "b": 0,
+      "c": 0,
+      "d": 1.170883,
+      "tx": 23.286775,
+      "ty": 74.433337
+    },
+    "rawFitScale": 3.6659763384597954,
+    "clampedFitScale": 3,
+    "currentEffectiveRigScale": 1.4267578125,
+    "fixedAuthorEnvelope": {
+      "minX": -135,
+      "minY": -257.3,
+      "maxX": 290.2,
+      "maxY": 167.9
+    },
+    "fixedEffectiveRigScale": 1,
+    "pig": {
+      "key": "Pig",
+      "aliases": [
+        "pig",
+        "PIG"
+      ],
+      "source": "external-swf",
+      "sourcePath": "flashswf/portraits/Pig.swf",
+      "defaultExpression": "普通",
+      "expressions": {
+        "普通": {
+          "uri": "external/p_768107c0b455/e_7cda072d452b.webp",
+          "width": 2048,
+          "height": 1152,
+          "frame": 1,
+          "sha256": "94ff3d6d951c5aedc9e0f22445d06922209aa9be4ff2ca1b1059153a027efab8",
+          "bytes": 393996,
+          "format": "webp",
+          "bounds": {
+            "x": 168,
+            "y": 90,
+            "width": 770,
+            "height": 811
+          }
+        },
+        "微笑": {
+          "uri": "external/p_768107c0b455/e_cdd57ddef6ed.webp",
+          "width": 2048,
+          "height": 1152,
+          "frame": 6,
+          "sha256": "8522176ad9968054de30badc813c24aefc1d839ce6c49f80845fa284f3929ef0",
+          "bytes": 393886,
+          "format": "webp",
+          "bounds": {
+            "x": 168,
+            "y": 90,
+            "width": 770,
+            "height": 811
+          }
+        },
+        "愤怒": {
+          "uri": "external/p_768107c0b455/e_afa04bf58472.webp",
+          "width": 2048,
+          "height": 1152,
+          "frame": 11,
+          "sha256": "2fd978a7fd7126bb9d2f719937495510cff7c26d04c637cde9684a139d9627da",
+          "bytes": 394522,
+          "format": "webp",
+          "bounds": {
+            "x": 168,
+            "y": 90,
+            "width": 770,
+            "height": 811
+          }
+        },
+        "悲伤": {
+          "uri": "external/p_768107c0b455/e_a0c45ee31309.webp",
+          "width": 2048,
+          "height": 1152,
+          "frame": 16,
+          "sha256": "a809e63f5e9bf00de210be5035de53422c78e20feb320a163956aa27077389a8",
+          "bytes": 393766,
+          "format": "webp",
+          "bounds": {
+            "x": 168,
+            "y": 90,
+            "width": 770,
+            "height": 811
+          }
+        }
+      }
+    }
+  },
+  "fonts": {
+    "role": "native.dialogue.body",
+    "family": "Microsoft YaHei",
+    "change": "保留字段位置、占用宽度和字高；字形等比绘制，消除非等比矩阵导致的拉宽和压窄",
+    "flashPixelEquivalentClaimed": false
+  },
+  "cache": {
+    "memoryBytes": 25165824,
+    "diskMaxFiles": 128,
+    "diskMaxBytes": 67108864,
+    "directory": "launcher/data/dialogue-portraits",
+    "tracked": false,
+    "identity": "normalized appearance, expression, 768 size, manifest and renderer sources",
+    "pixelValidation": "complete PNG decode, exact dimensions, nonempty alpha via bulk row access",
+    "sameAppearanceExpressionRefreshKeepsPriorImage": true,
+    "differentAppearanceKeepsPriorImage": false
+  },
+  "fixture": {
+    "result": "tmp/u2-dialogue-20260913/webview-smoke-8/result.json",
+    "resultSha256": "8CE9CABB0CE17B722D14919C6D4DE7E643815CBAA7194EFDAF56DF70B3D4F715",
+    "assemblySha256": "CDBE4B8EA961CFB758EBDF425EB5BA965555A4F76D1C4483D53CF7617A954F6A",
+    "browserVersion": "152.0.4191.66",
+    "nativePaintCount": 20,
+    "viewports": [
+      "1024x576",
+      "1920x1080"
+    ],
+    "diskCacheCrossInstance": true,
+    "webPosts": 4,
+    "dynamicLoadSamples": [
+      {
+        "name": "male-normal",
+        "gender": "男",
+        "expression": "普通",
+        "loadMs": 458.0654,
+        "width": 768,
+        "height": 768,
+        "alphaPixels": 84001,
+        "sha256": "95F880F05F3163E3A119A866695E0FE08FBA238C9964F0E574C8F2F29EA6FB65"
+      },
+      {
+        "name": "male-angry",
+        "gender": "男",
+        "expression": "愤怒",
+        "loadMs": 121.7165,
+        "width": 768,
+        "height": 768,
+        "alphaPixels": 84001,
+        "sha256": "F9732FA8A8F725C01F1D3D50ADF37913A2DE086DD16D20C5D00E14701E324E6A"
+      },
+      {
+        "name": "female-normal",
+        "gender": "女",
+        "expression": "普通",
+        "loadMs": 77.9562,
+        "width": 768,
+        "height": 768,
+        "alphaPixels": 70537,
+        "sha256": "140266CC2DB5C2EB66113F3762F9DA44CCD194150937A7838AE0BFDED4C2E2AD"
+      },
+      {
+        "name": "male-armored",
+        "gender": "男",
+        "expression": "普通",
+        "loadMs": 158.0887,
+        "width": 768,
+        "height": 768,
+        "alphaPixels": 119026,
+        "sha256": "D0400C97423CF3C26E93B0680B590CE280936E30083AB86969522B2D7D29AB19"
+      },
+      {
+        "name": "male-normal-cached",
+        "gender": "男",
+        "expression": "普通",
+        "loadMs": 0.3374,
+        "width": 768,
+        "height": 768,
+        "alphaPixels": 84001,
+        "sha256": "95F880F05F3163E3A119A866695E0FE08FBA238C9964F0E574C8F2F29EA6FB65"
+      },
+      {
+        "name": "male-normal-disk",
+        "gender": "男",
+        "expression": "普通",
+        "loadMs": 24.2503,
+        "width": 768,
+        "height": 768,
+        "alphaPixels": 84001,
+        "sha256": "95F880F05F3163E3A119A866695E0FE08FBA238C9964F0E574C8F2F29EA6FB65"
+      }
+    ],
+    "pixelPaintResults": [
+      {
+        "name": "male-normal-native",
+        "width": 1024,
+        "height": 576,
+        "authorStageRect": null,
+        "meanBitmapPaintMs": 10.927900000000001,
+        "idleRequestsAnimation": false,
+        "sha256": "50EB79D1895304D194EF0474E88105C6C4EA2702626BAE09B0C20D6523795E10"
+      },
+      {
+        "name": "male-normal-native",
+        "width": 1920,
+        "height": 1080,
+        "authorStageRect": null,
+        "meanBitmapPaintMs": 14.170441666666667,
+        "idleRequestsAnimation": false,
+        "sha256": "40268E3D34E62FC4FCC5CE86C548EE07E2ED652DAE60FE73CAC5CF6B7433C377"
+      },
+      {
+        "name": "male-armored-native",
+        "width": 1024,
+        "height": 576,
+        "authorStageRect": null,
+        "meanBitmapPaintMs": 7.934091666666667,
+        "idleRequestsAnimation": false,
+        "sha256": "6AFFB927863085E4714D17406B46AF2B1A4D6B0145F3A206BEE1620F6DD01297"
+      },
+      {
+        "name": "male-armored-native",
+        "width": 1920,
+        "height": 1080,
+        "authorStageRect": null,
+        "meanBitmapPaintMs": 21.289191666666667,
+        "idleRequestsAnimation": false,
+        "sha256": "92C21B9FE7E48E920719DEF59110BD5D70386D53B4492657B988CAB1F75F4E12"
+      },
+      {
+        "name": "pig-native",
+        "width": 1024,
+        "height": 576,
+        "authorStageRect": {
+          "Location": {
+            "IsEmpty": false,
+            "X": 84.0,
+            "Y": 45.0
+          },
+          "Size": "385, 360",
+          "X": 84.0,
+          "Y": 45.0,
+          "Width": 385.0,
+          "Height": 360.0,
+          "Left": 84.0,
+          "Top": 45.0,
+          "Right": 469.0,
+          "Bottom": 405.0,
+          "IsEmpty": false
+        },
+        "meanBitmapPaintMs": 8.998966666666666,
+        "idleRequestsAnimation": false,
+        "sha256": "E1C7A70281B77D8C63ED5DA47FD9D553FE641D4A2765AEF390541EE2FDFE1F49"
+      },
+      {
+        "name": "pig-native",
+        "width": 1920,
+        "height": 1080,
+        "authorStageRect": {
+          "Location": {
+            "IsEmpty": false,
+            "X": 84.0,
+            "Y": 45.0
+          },
+          "Size": "385, 360",
+          "X": 84.0,
+          "Y": 45.0,
+          "Width": 385.0,
+          "Height": 360.0,
+          "Left": 84.0,
+          "Top": 45.0,
+          "Right": 469.0,
+          "Bottom": 405.0,
+          "IsEmpty": false
+        },
+        "meanBitmapPaintMs": 25.015649999999997,
+        "idleRequestsAnimation": false,
+        "sha256": "E0225D89AF0069E3CD86A5B81FF825DBEF72823E5B0127F0304429BF8A51342B"
+      },
+      {
+        "name": "blue-native",
+        "width": 1024,
+        "height": 576,
+        "authorStageRect": {
+          "Location": {
+            "IsEmpty": false,
+            "X": 113.0,
+            "Y": 88.5
+          },
+          "Size": "297.5, 316.5",
+          "X": 113.0,
+          "Y": 88.5,
+          "Width": 297.5,
+          "Height": 316.5,
+          "Left": 113.0,
+          "Top": 88.5,
+          "Right": 410.5,
+          "Bottom": 405.0,
+          "IsEmpty": false
+        },
+        "meanBitmapPaintMs": 7.653708333333333,
+        "idleRequestsAnimation": false,
+        "sha256": "4FD7A89963EFE679802F35E82E3A5023350207365FEE59D525ACA0AFE8B89384"
+      },
+      {
+        "name": "blue-native",
+        "width": 1920,
+        "height": 1080,
+        "authorStageRect": {
+          "Location": {
+            "IsEmpty": false,
+            "X": 113.0,
+            "Y": 88.5
+          },
+          "Size": "297.5, 316.5",
+          "X": 113.0,
+          "Y": 88.5,
+          "Width": 297.5,
+          "Height": 316.5,
+          "Left": 113.0,
+          "Top": 88.5,
+          "Right": 410.5,
+          "Bottom": 405.0,
+          "IsEmpty": false
+        },
+        "meanBitmapPaintMs": 20.0349,
+        "idleRequestsAnimation": false,
+        "sha256": "DFAD9EB8EC601B2646E0C1D8E63038AF4231A4F76D400BBEA114E987D508DE08"
+      },
+      {
+        "name": "the-girl-native",
+        "width": 1024,
+        "height": 576,
+        "authorStageRect": {
+          "Location": {
+            "IsEmpty": false,
+            "X": 64.5,
+            "Y": 39.0
+          },
+          "Size": "323, 366",
+          "X": 64.5,
+          "Y": 39.0,
+          "Width": 323.0,
+          "Height": 366.0,
+          "Left": 64.5,
+          "Top": 39.0,
+          "Right": 387.5,
+          "Bottom": 405.0,
+          "IsEmpty": false
+        },
+        "meanBitmapPaintMs": 7.948925,
+        "idleRequestsAnimation": false,
+        "sha256": "F521246683D08A2A07BB513F76E40BCF45444048DD339DA4D065A607A75B2250"
+      },
+      {
+        "name": "the-girl-native",
+        "width": 1920,
+        "height": 1080,
+        "authorStageRect": {
+          "Location": {
+            "IsEmpty": false,
+            "X": 64.5,
+            "Y": 39.0
+          },
+          "Size": "323, 366",
+          "X": 64.5,
+          "Y": 39.0,
+          "Width": 323.0,
+          "Height": 366.0,
+          "Left": 64.5,
+          "Top": 39.0,
+          "Right": 387.5,
+          "Bottom": 405.0,
+          "IsEmpty": false
+        },
+        "meanBitmapPaintMs": 21.095658333333333,
+        "idleRequestsAnimation": false,
+        "sha256": "BAD993108E98FFC693C337DBC3395B44A93EAFC9339A941F561007E5AE33D7B0"
+      },
+      {
+        "name": "weapon-master-native",
+        "width": 1024,
+        "height": 576,
+        "authorStageRect": null,
+        "meanBitmapPaintMs": 9.101791666666667,
+        "idleRequestsAnimation": false,
+        "sha256": "F70E07E8D66B8F6993E8C052FC85D68CB924D92D8C7D8395EDA4A79C44CF59E1"
+      },
+      {
+        "name": "weapon-master-native",
+        "width": 1920,
+        "height": 1080,
+        "authorStageRect": null,
+        "meanBitmapPaintMs": 16.880916666666668,
+        "idleRequestsAnimation": false,
+        "sha256": "53FB6B997F903E01250849DE66D203A8F7A46D36C5D9AE8581BA6FFB22EE19B6"
+      },
+      {
+        "name": "roommate-male-native",
+        "width": 1024,
+        "height": 576,
+        "authorStageRect": null,
+        "meanBitmapPaintMs": 6.960533333333333,
+        "idleRequestsAnimation": false,
+        "sha256": "728D63EA035784CB320CBAA114121A85A16A72EA2956210C2FE21FB00D154325"
+      },
+      {
+        "name": "roommate-male-native",
+        "width": 1920,
+        "height": 1080,
+        "authorStageRect": null,
+        "meanBitmapPaintMs": 16.354516666666665,
+        "idleRequestsAnimation": false,
+        "sha256": "99BEDA3FBE67EAFC808EF4A74049D744A658723B1DED920B9E6EF40A25174FF8"
+      },
+      {
+        "name": "roommate-female-native",
+        "width": 1024,
+        "height": 576,
+        "authorStageRect": null,
+        "meanBitmapPaintMs": 6.1341833333333335,
+        "idleRequestsAnimation": false,
+        "sha256": "D171CEB7716346494954FE0F130BB306CA469BE92DD880D28E0D6FB60FEB2CCD"
+      },
+      {
+        "name": "roommate-female-native",
+        "width": 1920,
+        "height": 1080,
+        "authorStageRect": null,
+        "meanBitmapPaintMs": 15.732,
+        "idleRequestsAnimation": false,
+        "sha256": "04D49C7D88BDB8C66F2BC57701967EB210D2FEEB250E413B99BC7ECCCE17FF8F"
+      },
+      {
+        "name": "artist-angry-native",
+        "width": 1024,
+        "height": 576,
+        "authorStageRect": null,
+        "meanBitmapPaintMs": 7.4030249999999995,
+        "idleRequestsAnimation": false,
+        "sha256": "7B9DC544B5B6E804111989A2DFB7F72D588930E1765C35839C4D49479B87E7FA"
+      },
+      {
+        "name": "artist-angry-native",
+        "width": 1920,
+        "height": 1080,
+        "authorStageRect": null,
+        "meanBitmapPaintMs": 16.79350833333333,
+        "idleRequestsAnimation": false,
+        "sha256": "5A657FC877911EEB0C3C083A474A2E35575A1912C1BAB30272649BE588DD4B87"
+      },
+      {
+        "name": "andy-type2-native",
+        "width": 1024,
+        "height": 576,
+        "authorStageRect": {
+          "Location": {
+            "IsEmpty": false,
+            "X": 30.0,
+            "Y": 47.5
+          },
+          "Size": "656, 357.5",
+          "X": 30.0,
+          "Y": 47.5,
+          "Width": 656.0,
+          "Height": 357.5,
+          "Left": 30.0,
+          "Top": 47.5,
+          "Right": 686.0,
+          "Bottom": 405.0,
+          "IsEmpty": false
+        },
+        "meanBitmapPaintMs": 6.930533333333333,
+        "idleRequestsAnimation": false,
+        "sha256": "07F6319CBC2645B37A0511CE956C6699182795F0B93D24D9C399624B4D17ED5F"
+      },
+      {
+        "name": "andy-type2-native",
+        "width": 1920,
+        "height": 1080,
+        "authorStageRect": {
+          "Location": {
+            "IsEmpty": false,
+            "X": 30.0,
+            "Y": 47.5
+          },
+          "Size": "656, 357.5",
+          "X": 30.0,
+          "Y": 47.5,
+          "Width": 656.0,
+          "Height": 357.5,
+          "Left": 30.0,
+          "Top": 47.5,
+          "Right": 686.0,
+          "Bottom": 405.0,
+          "IsEmpty": false
+        },
+        "meanBitmapPaintMs": 20.366216666666666,
+        "idleRequestsAnimation": false,
+        "sha256": "578111F9AEC44F4E588D377A96A1FA80380AC7F8679C1B3941822180151F261D"
+      }
+    ],
+    "scope": "Hidden WebView2 fixture, production portrait decoding and NativeHud bitmap paint; not a player dialogue, physical-input or save journey",
+    "measurementBoundary": "one sample per case in hidden WebView2; not game FPS, percentile or gameplay timing"
+  },
+  "humanFeedback": {
+    "v4": "大体能用；尺寸、字体、纸娃娃延迟需改进",
+    "v5": "pending"
+  },
+  "protectedState": {
+    "baseline": "tmp/u2-dialogue-20260913/formal-before-journey.json",
+    "comparedFileCount": 25,
+    "changes": [
+      {
+        "path": "saves/.launcher-version-marker.json",
+        "beforeSha256": "DF51FB1BDFBC89064A79EFA75062C12EB1D8557970C1B77AF4DAA7BD7A30F9C2",
+        "afterSha256": "EAAC787F772A5578D9789DACAF0F13776A0607F13F7B66ECBF410D3DB3641026"
+      },
+      {
+        "path": "saves/cf7_agent_task_detail_callid_v1.json",
+        "beforeSha256": "BDCE64B0A8B51CC2040C2618EF03BAD31D806B092F04930FE7880F3A35B2CA49",
+        "afterSha256": "5F63ED69508695138EBBAE64D022DE439E7D0ADA64EE8B26A496EE65B3EBF638"
+      },
+      {
+        "path": "scripts/asLoader.swf",
+        "beforeSha256": "322087BFE010F5A6A4EFC9492B7DEE5D515FB9CAAA13FABD47D67F3A62807C59",
+        "afterSha256": "810AAC73DF15FC9A6D223129AE54227AD3377AB7AF976BD1AB4DCF500C66BC97"
+      }
+    ],
+    "rootExeSha256": "55EABB5C3280FDFEE8302843D969C6B6354808F1AF4DC24DB5E2397AA80499D8",
+    "nativeDeploymentClosureChanged": false,
+    "selectedSaveChange": "保留用户测试进度，未回滚"
+  },
+  "limitations": [
+    "native SVG filters/Bevel 未还原，multiply/tween 不保证等价",
+    "外部 mask 尾部仍为矩形近似；内部静态与 sprite-natural 仍统一 fit，逐角色注册点待后续校准",
+    "有限 HTML 不表示完整 HTML/CSS 样式支持",
+    "未测 1440p/4K 真实显示和整窗游戏负载",
+    "隐藏 WebView2 和原生位图不覆盖真实关卡、点击、暂停释放和存档旅程",
+    "首次新外观仍需要合成；缓存耗时样本不代签低帧率游戏体验",
+    "壳体和 Pig 已核作者坐标，尚无同场景 Flash 原版截图对照"
+  ],
+  "sourceInputs": {
+    "fonts/fonts.xml": "3BC20D0A08EAB2B249DAF8287C8EAE69C72B9491C620F1EA14AEBC3F62647358",
+    "launcher/src/Guardian/Dialogue/DialoguePortraitDiskCache.cs": "09BE70B8D0DB70157CFC8417D99C122A0139575777E2B8008C3BA66F049F81B9",
+    "launcher/src/Guardian/Dialogue/DialoguePortraitService.cs": "66E6FD2CFF7B446F8102B907C6B6AAD772370CDFD701AD41AB19850E40C0EEFB",
+    "launcher/src/Guardian/Hud/Dialogue/DialogueUiSkin.cs": "EF71FA6E96023147AA6D7B4017B0E61BC6876776DBAE454EF955FF5E3BEB152B",
+    "launcher/src/Guardian/Hud/Dialogue/NativeDialogueFrame.cs": "3C9EFB3ABCE54A3FD70869998945C631B44A0B04E5452A0910ED3A52F0C52D2F",
+    "launcher/src/Guardian/Hud/Dialogue/NativeDialogueTextLayout.cs": "AC7064C5E005EE82FE0414B9F23DB7E15729ED784B6D4C56515F2F173FD5A352",
+    "launcher/src/Guardian/Hud/Dialogue/NativeDialogueWidget.cs": "FBB3E34242881156C4BBFA7C96AAE54259E195AA27BA9B35175D212C0ADC3154",
+    "launcher/src/Program.cs": "06879F18A69CF4E3E3DB52EE5E19E44A6005DEA8A6E6ED5FBE910A76EBC7C148",
+    "launcher/src/Tasks/NativeDialogueTask.cs": "E004ADC542C526A91DBBD3A749CDC88E21043580B0C7925520E3569BF67CF092",
+    "launcher/tests/Guardian/Dialogue/NativeDialogueCacheTests.cs": "25EC7A911B70368BC1A43D0532EAB8D3A174BF7A39391A35183FD04558F1818E",
+    "launcher/tests/Guardian/Dialogue/NativeDialogueClockTests.cs": "233B263E9F333E0C73177C9D072A21FB2001DA6CD3DD9D75D2B705F5F83D6888",
+    "launcher/tests/Guardian/Dialogue/NativeDialogueMarkupTests.cs": "91D3BF80FAB2F72660131D5176E4628763CF2282D4C06243F86B2CEA8A6BAB99",
+    "launcher/tests/Guardian/Dialogue/NativeDialogueWidgetTests.cs": "C8FE9B1FF0AA41DE7BAEC71AC541F8FDCF4C8279C843159E4466A715C514FA97",
+    "launcher/web/assets/dialogue-portraits/manifest.json": "14D39A70DFDD262D9ED002230417319509B9E61134B1FE99D8C3E9ED03AB8FB7",
+    "launcher/web/assets/dialogue-ui/manifest.json": "B0BBFB4289248ABDDA0A5547A222A5E8D15CE0B6F3EFED7925C1BF4795DF29FC",
+    "launcher/web/assets/dressup/manifest.json": "E8E89E657A274D6F33CD29B0290C09A605CB6FA89FD67C0A185BC0BD5026235E",
+    "launcher/web/modules/dialogue/live-portrait-bake.js": "8F17987F48C820E934C9E611A004867E17B69C17009BF235DC771A2EDC1F1EE8",
+    "launcher/web/modules/dialogue/live-portrait.js": "325893C5A2F3CDADFF7643EAED69970C726B5E6F8AD183C9FE45790A9CE97A2F",
+    "scripts/类定义/org/flashNight/arki/dialogue/NativeDialogueAppearance.as": "77614450468D4477A8393DFB62097C7A7518979F4FA3ABB50AC55FB29EA6A47B",
+    "scripts/类定义/org/flashNight/arki/dialogue/NativeDialogueService.as": "F0A4AD5863827848D003D9E02932AC29CB00DD76BADB7F89F04E9F302C177ED5",
+    "scripts/类定义/org/flashNight/arki/dialogue/NativeDialogueServiceTest.as": "34F92E3FFA8096745EBDFFD0B33C7C22742B074789F42401B18E8815C3DF9953",
+    "tools/native-dialogue-webview2-smoke/Program.cs": "C75E1AEF7C308B67AD4599A225E713D8894A1777BA3395A2C1CCB75D0C6E072C",
+    "tools/run-native-dialogue-webview2-smoke.ps1": "7A55596C3FC531530E1E535181DED36E712B5B72C25C60AC0C75EFEEDA240116",
+    "tools/xfl-ui-svg/xfl_to_svg.py": "D22F9177F8BE15D8DFFF14230A6E44F974085CCE75844136406A302B296DB107"
+  },
+  "evidenceDigests": {
+    "tmp/u2-dialogue-20260913/dialogue-tests-12.log": "DD7CBA42FF89E9012986E047876148C52C85F3E79312CEE50DE33D7F1C455D9D",
+    "tmp/u2-dialogue-20260913/main-dev-build-6.log": "1E2C9D914526027CE4131EBF9F9B22E8EEB8D888E66B03D3ED358AA13D40EBF7",
+    "tmp/u2-dialogue-20260913/main-dev-status-v5-cache.log": "1E31E77565A8EDED639C9C35AB1649106D0FE765021854F813F4870680D3239C",
+    "tmp/u2-dialogue-20260913/size-comparison-v5.json": "971B8916862EAED3A98CF2DF2B5CB2D68A605F52C214D3724E5DB621D86D1204",
+    "tmp/u2-dialogue-20260913/K3-result.md": "E85928040E997D9E42B203E4CCE157B025281D67B78574EAB3BD444049AF6884"
+  }
+}

@@ -1,0 +1,133 @@
+{
+  "tool": "tools/xfl-ui-svg/xfl_to_svg.py",
+  "toolSha256": "d22f9177f8be15d8dfff14230a6e44f974085cce75844136406a302b296db107",
+  "generatedAt": "deterministic (no timestamp)",
+  "source": {
+    "symbol": "对话框界面",
+    "frameIndex": 1,
+    "frameLabel": "open",
+    "stage": [
+      1024,
+      576
+    ],
+    "separateButtons": true
+  },
+  "sources": [
+    {
+      "path": "LIBRARY/button/Symbol 1879.xml",
+      "sha256": "05aa21e83676d97310b5a050955d83c9911e75646286db411e2e3a9e5289dc4d"
+    },
+    {
+      "path": "LIBRARY/button/Symbol 1880.xml",
+      "sha256": "247d27960a54f5990eb40ad6ad670851db73a9356f6260d8a44dcface4df7b12"
+    },
+    {
+      "path": "LIBRARY/button/Symbol 1881.xml",
+      "sha256": "c03558b53c015e6be21a3f96e91267ac3f3b4b6262122c0fa3f0a249dd963ce7"
+    },
+    {
+      "path": "LIBRARY/shape/Symbol 473.xml",
+      "sha256": "9755540da95d4c09ca4dd60f84e33beb8d84fb739c338f00bd89eaef7c78fe51"
+    },
+    {
+      "path": "LIBRARY/shape/Symbol 482.xml",
+      "sha256": "57d909766402c3d5a7426fe92f68b33d1580112a9c4df86cc4eb4426f55bcb8f"
+    },
+    {
+      "path": "LIBRARY/shape/Symbol 535.xml",
+      "sha256": "3fad04e6fa247b385789a26ecbcfc7212ab65e77bfa3431ddf4aca41d0372298"
+    },
+    {
+      "path": "LIBRARY/shape/Symbol 537.xml",
+      "sha256": "387a27deb8a7f7335bb8d784054bc7e1daef8845b6f834541f6c0bb2cbb3e72f"
+    },
+    {
+      "path": "LIBRARY/sprite/悬浮UI/Symbol 1883.xml",
+      "sha256": "30ff0123abc49b25cf99dbf2c8c79037ac6d35aba6e7095577adca5c4bcac1b7"
+    },
+    {
+      "path": "LIBRARY/sprite/悬浮UI/Symbol 880.xml",
+      "sha256": "b599ac6ea0be92b00862b9e0e1e0ab94e48188df6faa431b434f1f43ccd63100"
+    },
+    {
+      "path": "LIBRARY/sprite/透明控件.xml",
+      "sha256": "79d03b6ad7dea69ea7643cca2bd4d06d4bee6170e9b3ed20f6f91103fc740d9d"
+    },
+    {
+      "path": "LIBRARY/外部立绘层.xml",
+      "sha256": "2db8e667d4d95ae24762dcdf8461586ee51d390face01eafef2d2d0d327d94c8"
+    },
+    {
+      "path": "LIBRARY/对话框UI/Symbol 1874.xml",
+      "sha256": "db9fc7d14e57d8c935e34ca1b5a212b9e8342a5ea1d22bb9ff6932b9bee60603"
+    },
+    {
+      "path": "LIBRARY/对话框UI/Symbol 1875.xml",
+      "sha256": "c4e1977a2fe5ede4e7259de4f5259eb2e4d79a3c578e80cd3274b00430b83b39"
+    },
+    {
+      "path": "LIBRARY/对话框界面.xml",
+      "sha256": "acb623af78f63a72301fb8aee221255eaa90d2727be91b76c0e6e69437ac21c4"
+    },
+    {
+      "path": "LIBRARY/对话框肖像.xml",
+      "sha256": "fbbe55b4f8110755921e0b4b5618567cdaabb3c4721a45cffdda7c46cd80ed59"
+    },
+    {
+      "path": "LIBRARY/拖拽动画.xml",
+      "sha256": "0e674cad370f2ad0f5b3cecf29f031d6e7c3e7be0d6425bb13e982ba5242d3fc"
+    },
+    {
+      "path": "LIBRARY/拖拽动画2.xml",
+      "sha256": "148e5a0fc73d71aea96c6d87b3d4ede375d74a818207a29b88bc953a1b452678"
+    }
+  ],
+  "outputs": {
+    "buttons/close-down.svg": "80545ef7d7920d04899d3af1704c10f9a7ef8d3223261c49b849ff5000cb2530",
+    "buttons/close-over.svg": "80545ef7d7920d04899d3af1704c10f9a7ef8d3223261c49b849ff5000cb2530",
+    "buttons/close-up.svg": "f508dd4cc3595b992e61ba801d86c052c16e02472bd55bb7273ab8e81612163a",
+    "buttons/drag-down.svg": "e4c30d49db12a98beef7b39493a6d862b730c46a466a289f0e7ac7e94d06fa81",
+    "buttons/drag-over.svg": "8f04d81a21f9e1760261b55433314b80e82a5a4ef09946b0728facb78b46569f",
+    "buttons/drag-up.svg": "69d6cd82f0570d94b1b36f67e1abf166fe6bdf09c842bdd32af1dd5179b17b50",
+    "layout.json": "01f0329981239f738a75d21adbdf9393b623161f561b69d7497b7ee4b8964006",
+    "source.svg": "6c149aa24f2e4930ab7dbaa6125cfafe73ea800ab46d8e78007990a7879b599b"
+  },
+  "skipped": [
+    {
+      "symbol": "button/Symbol 1881",
+      "reason": "hitTestOnly"
+    },
+    {
+      "where": "shape/Symbol 482",
+      "reason": "allPaintsInvisible"
+    },
+    {
+      "symbol": "外部立绘层",
+      "reason": "portraitDep"
+    },
+    {
+      "symbol": "对话框肖像",
+      "reason": "portraitDep"
+    }
+  ],
+  "unsupported": [
+    {
+      "feature": "blendMode=multiply",
+      "where": "对话框界面:互动键扳机",
+      "effect": "已写 mix-blend-mode；CairoSVG 光栅化可能忽略"
+    },
+    {
+      "feature": "BevelFilter",
+      "where": "对话框界面:Layer 9",
+      "effect": "斜面高光/阴影未导出"
+    },
+    {
+      "feature": "BevelFilter",
+      "where": "对话框界面:对话框背景",
+      "effect": "斜面高光/阴影未导出"
+    }
+  ],
+  "warnings": [
+    "sprite/悬浮UI/Symbol 1883: 含 ActionScript，未执行"
+  ]
+}

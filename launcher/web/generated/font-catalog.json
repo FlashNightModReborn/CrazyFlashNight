@@ -3,7 +3,7 @@
   "catalogVersion": "1",
   "gate": "E",
   "runtimeAuthority": true,
-  "sourceSha256": "3501a756e911d7052366a7d73688401662acfe7fb8fdedd2105ea6a93e25132a",
+  "sourceSha256": "3bc20d0a08eab2b249daf8287c8eae69c72b9491c620f1ea14aebc3f62647358",
   "virtualFontOrigin": "https://cfn-fonts.local/",
   "allowedHosts": [
     "github.com",
@@ -1063,6 +1063,25 @@
       "generic": [
         {
           "family": "monospace",
+          "classification": "system-owned"
+        }
+      ]
+    },
+    "native.dialogue.body": {
+      "id": "native.dialogue.body",
+      "label": "原版对话框文字",
+      "status": "accepted",
+      "allowPresetOverride": false,
+      "faces": [],
+      "system": [
+        {
+          "family": "Microsoft YaHei",
+          "classification": "system-owned"
+        }
+      ],
+      "generic": [
+        {
+          "family": "sans-serif",
           "classification": "system-owned"
         }
       ]

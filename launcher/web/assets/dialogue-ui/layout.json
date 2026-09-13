@@ -1,0 +1,291 @@
+{
+  "stage": {
+    "width": 1024,
+    "height": 576
+  },
+  "source": {
+    "symbol": "对话框界面",
+    "frameIndex": 1,
+    "frameLabel": "open"
+  },
+  "buttonRendering": "separate",
+  "fields": [
+    {
+      "id": "人物称号",
+      "variableName": "人物称号",
+      "kind": "dynamicText",
+      "matrix": [
+        1.155029296875,
+        0.0,
+        0.0,
+        1.0,
+        346.4,
+        418.25
+      ],
+      "rect": {
+        "w": 162.0,
+        "h": 18.45
+      },
+      "stageRect": [
+        346.4,
+        418.25,
+        533.51474609375,
+        436.7
+      ],
+      "font": {
+        "face": "MicrosoftYaHei",
+        "size": 14.0,
+        "color": "#FFFFFF",
+        "lineSpacing": 0.0,
+        "indent": 0.0,
+        "letterSpacing": 0.0
+      },
+      "multiline": true,
+      "html": true,
+      "selectable": false,
+      "sampleText": "1",
+      "layer": "称号"
+    },
+    {
+      "id": "人物名字",
+      "variableName": "人物名字",
+      "kind": "dynamicText",
+      "matrix": [
+        1.47080993652344,
+        0.0,
+        0.0,
+        1.0,
+        109.65,
+        406.0
+      ],
+      "rect": {
+        "w": 154.95,
+        "h": 31.7
+      },
+      "stageRect": [
+        109.65,
+        406.0,
+        337.551999664307,
+        437.7
+      ],
+      "font": {
+        "face": "MicrosoftYaHei",
+        "size": 24.0,
+        "color": "#FFFFFF",
+        "lineSpacing": 0.0,
+        "indent": 0.0,
+        "letterSpacing": 0.0
+      },
+      "multiline": true,
+      "html": false,
+      "selectable": false,
+      "sampleText": "1",
+      "layer": "名字"
+    },
+    {
+      "id": "打字内容",
+      "variableName": "打字内容",
+      "kind": "dynamicText",
+      "matrix": [
+        1.36569213867188,
+        0.0,
+        0.0,
+        1.62921142578125,
+        101.25,
+        443.3
+      ],
+      "rect": {
+        "w": 573.0,
+        "h": 72.65
+      },
+      "stageRect": [
+        101.25,
+        443.3,
+        883.7915954589873,
+        561.6622100830078
+      ],
+      "font": {
+        "face": "MicrosoftYaHei",
+        "size": 12.0,
+        "color": null,
+        "lineSpacing": 0.0,
+        "indent": 6.0,
+        "letterSpacing": 0.0
+      },
+      "multiline": true,
+      "html": true,
+      "selectable": false,
+      "sampleText": "我朝你牢牢的我朝你牢牢的我朝你牢牢的",
+      "layer": "文本"
+    }
+  ],
+  "buttons": [
+    {
+      "symbol": "button/Symbol 1881",
+      "matrix": [
+        32.0397644042969,
+        0.0,
+        0.0,
+        5.7252197265625,
+        496.45,
+        510.55
+      ],
+      "states": {},
+      "hitTestOnly": true,
+      "script": "on (press) { 下一句(); } on (release) { 结束打字(); }",
+      "stageRect": [
+        95.95294494628871,
+        438.98475341796876,
+        896.8825218368343,
+        582.1037150725725
+      ],
+      "hitRect": [
+        95.95294494628871,
+        438.98475341796876,
+        896.8825218368343,
+        582.1037150725725
+      ],
+      "layer": "按钮控制",
+      "id": "next"
+    },
+    {
+      "symbol": "button/Symbol 1880",
+      "matrix": [
+        1.92239379882813,
+        0.0,
+        0.0,
+        1.92239379882813,
+        63.4,
+        422.15
+      ],
+      "states": {
+        "up": "buttons/drag-up.svg",
+        "over": "buttons/drag-over.svg",
+        "down": "buttons/drag-down.svg"
+      },
+      "hitTestOnly": false,
+      "alpha": 0.8008,
+      "script": "on(release){ this.getNextHighestDepth(); stopDrag(); } on(press){ startDrag(this,0); _root.鼠标.gotoAndStop(\"手型抓取\"); } on(rollOver){ _root.鼠标.gotoAndStop(\"手型准备抓取\"); } on(rollOut){ _root.鼠标.gotoAndStop(\"手型普通\"); }",
+      "stageRect": [
+        45.13725891113276,
+        403.98337860107415,
+        81.47050170898441,
+        443.2963317871094
+      ],
+      "hitRect": [
+        45.13725891113276,
+        403.98337860107415,
+        81.47050170898441,
+        443.2963317871094
+      ],
+      "layer": "移动",
+      "id": "drag"
+    },
+    {
+      "symbol": "button/Symbol 1879",
+      "matrix": [
+        1.91667175292969,
+        0.0,
+        0.0,
+        1.91482543945313,
+        878.85,
+        380.45
+      ],
+      "states": {
+        "up": "buttons/close-up.svg",
+        "over": "buttons/close-over.svg",
+        "down": "buttons/close-down.svg"
+      },
+      "hitTestOnly": false,
+      "alpha": 0.8008,
+      "script": "on (release) { this.关闭(); }",
+      "stageRect": [
+        860.9291191101074,
+        361.206004333496,
+        897.1542152404786,
+        400.36418457031255
+      ],
+      "hitRect": [
+        860.9291191101074,
+        361.206004333496,
+        897.1542152404786,
+        400.36418457031255
+      ],
+      "layer": "关闭",
+      "id": "close"
+    }
+  ],
+  "portraitSlots": [
+    {
+      "id": "外部立绘层",
+      "symbol": "外部立绘层",
+      "matrix": [
+        1.0,
+        0.0,
+        0.0,
+        1.0,
+        0.0,
+        0.0
+      ],
+      "layer": "外部立绘层",
+      "clip": "clip:外部立绘层"
+    },
+    {
+      "id": "肖像",
+      "symbol": "对话框肖像",
+      "matrix": [
+        1.0,
+        0.0,
+        0.0,
+        1.0,
+        164.55,
+        298.25
+      ],
+      "clip": "internalPortraitClip",
+      "layer": "头像"
+    }
+  ],
+  "clips": {
+    "clip:外部立绘层": "M774.3 405.25Q774.35 405.35 774.5 405.35Q775.6 406.85 777 407.65L778.45 409.55L779.3 409.95Q780.15 410.55 780.75 411.45L783.7 413.95L784.15 414.8L785.6 415.85L785.8 416.7L788.55 419.2L788.625 419.35L477.7 419.35Q477.2279 418.767 476.8 418.15Q475.25 416.9 473.5 416.1L473.1 414.5Q472.9 414.5 472.8 414.4Q470.6 412.5 468.2 411.6Q468.2 411.2 468.05 410.9Q467.6 410 466.15 409.95Q466.15 409.55 465.95 409.4Q465.05 408.7 464.1 408.35Q463.9789 407.5264 463.4 407.025L463.4 405L30 405L30 30L910 30L910 405L773.875 405Q774.0568 405.1564 774.3 405.25",
+    "portraitClip": "M774.3 405.25Q774.35 405.35 774.5 405.35Q775.6 406.85 777 407.65L778.45 409.55L779.3 409.95Q780.15 410.55 780.75 411.45L783.7 413.95L784.15 414.8L785.6 415.85L785.8 416.7L788.55 419.2L788.625 419.35L477.7 419.35Q477.2279 418.767 476.8 418.15Q475.25 416.9 473.5 416.1L473.1 414.5Q472.9 414.5 472.8 414.4Q470.6 412.5 468.2 411.6Q468.2 411.2 468.05 410.9Q467.6 410 466.15 409.95Q466.15 409.55 465.95 409.4Q465.05 408.7 464.1 408.35Q463.9789 407.5264 463.4 407.025L463.4 405L30 405L30 30L910 30L910 405L773.875 405Q774.0568 405.1564 774.3 405.25",
+    "internalPortraitClip": "M454.75 406.2L29.55 406.2L29.55 40.95L454.75 40.95L454.75 406.2"
+  },
+  "skipped": [
+    {
+      "symbol": "button/Symbol 1881",
+      "reason": "hitTestOnly"
+    },
+    {
+      "where": "shape/Symbol 482",
+      "reason": "allPaintsInvisible"
+    },
+    {
+      "symbol": "外部立绘层",
+      "reason": "portraitDep"
+    },
+    {
+      "symbol": "对话框肖像",
+      "reason": "portraitDep"
+    }
+  ],
+  "unsupported": [
+    {
+      "feature": "blendMode=multiply",
+      "where": "对话框界面:互动键扳机",
+      "effect": "已写 mix-blend-mode；CairoSVG 光栅化可能忽略"
+    },
+    {
+      "feature": "BevelFilter",
+      "where": "对话框界面:Layer 9",
+      "effect": "斜面高光/阴影未导出"
+    },
+    {
+      "feature": "BevelFilter",
+      "where": "对话框界面:对话框背景",
+      "effect": "斜面高光/阴影未导出"
+    }
+  ],
+  "warnings": [
+    "sprite/悬浮UI/Symbol 1883: 含 ActionScript，未执行"
+  ]
+}

@@ -1,0 +1,262 @@
+{
+  "schema": "cf7-dialogue-xfl-ui-candidate-evidence.v1",
+  "recordedAtUtc": "2026-09-13T02:56:58.654543+00:00",
+  "kind": "historical engineering snapshot, not a release gate",
+  "sourceCommit": "757ef93637e99cb1a41b1f5dfa8ec9c9e4d6a4d9",
+  "sourceIncludesUncommittedWorktree": true,
+  "candidate": {
+    "schema": "cf7-local-dev-runtime-selection.v1",
+    "candidateRelativePath": "tmp/runtime-candidates/v2/u2-dialogue-v3",
+    "artifactSourceHash": "CA7F44842E0E24F970C50AC976348BD51CCDD022ACD385A6AF84AA9A787F8B0C",
+    "producerRecipeHash": "0AED3CE28E95E2FD1D6D1F516424D977FC5411F7446380C1A70D3836D243D49F",
+    "toolchainLockHash": "7B83229BE93F8244810CDD23DAFD97875B23857E547DE520035FE23B453CB3CD",
+    "buildIdentityHash": "02B47DC72460850378C3E36608DFE95FF07E0510CE6414067BD1CA92A0FF388F",
+    "payloadClosureHash": "9A58D51DB8B0CE602F5F83D20E50A3AA4DCF8C76E02366FC059F7695E763F896",
+    "coreSha256": "DEE8F83A67B27E65BDB2A4A28B21FE29811FC51C85D81C3D6180E50582512AF4",
+    "activatedAtUtc": "2026-09-13T01:23:59.7941268Z",
+    "trust": "INDEX_ONLY_REVERIFY_BEFORE_EXECUTION",
+    "lifecycleState": "candidate_built",
+    "deploymentStatus": "NOT_DEPLOYED",
+    "humanStatus": "HUMAN_REVALIDATION_PENDING",
+    "gameExecuted": false,
+    "entry": "本地开发启动.cmd",
+    "selectionState": "ready"
+  },
+  "as2": {
+    "passed": 133,
+    "failed": 0,
+    "runId": "78bed417e1df4748a1bcddd84280ddf3",
+    "testLog": "tmp/u2-dialogue-20260913/as2-tests-7-trace.txt",
+    "swf": "scripts/asLoader.swf",
+    "swfBytes": 1349659,
+    "swfSha256": "AC116122BDA2C3C6A51CFCB8FA4E13937B7603C2EC1EE64EE4943195D5A30BF1",
+    "publishSeconds": 217,
+    "compilerErrors": 0,
+    "compilerWarnings": 0,
+    "publishOutput": "tmp/u2-dialogue-20260913/asLoader-publish-5-output.txt",
+    "publishErrors": "tmp/u2-dialogue-20260913/asLoader-publish-5-errors.txt",
+    "evidenceBoundary": "fresh SWF and IDE Output/Compiler logs; publish-only does not produce a new game trace",
+    "retention": "用户关闭旧候选并批准更新；新 SWF 留在 main，配套本地开发 Core；不恢复旧基线"
+  },
+  "csharp": {
+    "passed": 75,
+    "failed": 0,
+    "log": "tmp/u2-dialogue-20260913/dialogue-tests-6.log",
+    "scope": "NativeDialogue and NativeHudInputRoutingTests; includes markup and monotonic-clock regression"
+  },
+  "svg": {
+    "sourceXmlCount": 15,
+    "outputFileCountIncludingManifest": 9,
+    "manifest": "launcher/web/assets/dialogue-ui/manifest.json",
+    "manifestSha256": "56B450B0FA761298721460F71C661CCC1A1E5B60535F4A9BC6C15962A60B0C94",
+    "verifyLog": "tmp/u2-dialogue-20260913/svg-verify-final.log"
+  },
+  "fixture": {
+    "result": "tmp/u2-dialogue-20260913/webview-smoke-5/result.json",
+    "resultSha256": "78AC4E5C176F45F922A65FF6E45A2C50D081E86FB351872E447ACE3C250C895B",
+    "assemblySha256": "DEE8F83A67B27E65BDB2A4A28B21FE29811FC51C85D81C3D6180E50582512AF4",
+    "browserVersion": "152.0.4191.66",
+    "nativePaintCount": 14,
+    "viewports": [
+      "1024x576",
+      "1920x1080"
+    ],
+    "scope": "Hidden WebView2 fixture, production portrait decoding and NativeHud bitmap paint; not a player dialogue, physical-input or save journey",
+    "pixelPaintResults": [
+      {
+        "name": "male-normal-native",
+        "width": 1024,
+        "height": 576,
+        "meanBitmapPaintMs": 3.473708333333333,
+        "idleRequestsAnimation": false,
+        "sha256": "19239C10B22B9264DB14522C10574C26481582974C7DD399E04174D41175D0B5"
+      },
+      {
+        "name": "male-normal-native",
+        "width": 1920,
+        "height": 1080,
+        "meanBitmapPaintMs": 9.192783333333333,
+        "idleRequestsAnimation": false,
+        "sha256": "737939DC185A9FB3305492BA0ED4BBA85BD50C7FBBEFDE24C133D09B16569B35"
+      },
+      {
+        "name": "blue-native",
+        "width": 1024,
+        "height": 576,
+        "meanBitmapPaintMs": 4.740383333333333,
+        "idleRequestsAnimation": false,
+        "sha256": "0B77832A64724F7BF0A3CDB5FFE75F29FA251E34712AC70A91A6A52B71D7E82A"
+      },
+      {
+        "name": "blue-native",
+        "width": 1920,
+        "height": 1080,
+        "meanBitmapPaintMs": 15.013158333333335,
+        "idleRequestsAnimation": false,
+        "sha256": "6960B81571E8DA4FD7FC2AE8C1019359844A2DBAE405F92FA79D6AC0DBAC4B4D"
+      },
+      {
+        "name": "weapon-master-native",
+        "width": 1024,
+        "height": 576,
+        "meanBitmapPaintMs": 2.7381083333333334,
+        "idleRequestsAnimation": false,
+        "sha256": "204F0FFDF878814FB80FB7E321F455C184B7B345564E9CA434D8E28083D34A4F"
+      },
+      {
+        "name": "weapon-master-native",
+        "width": 1920,
+        "height": 1080,
+        "meanBitmapPaintMs": 11.528799999999999,
+        "idleRequestsAnimation": false,
+        "sha256": "FE36F06C7CC9338CC031CBDFA04F56051036A1E6F14AF75D9139956DF6352C61"
+      },
+      {
+        "name": "roommate-male-native",
+        "width": 1024,
+        "height": 576,
+        "meanBitmapPaintMs": 4.478825,
+        "idleRequestsAnimation": false,
+        "sha256": "3D488AAE95F36E1C95ADE976833DA49A518338D754D5CCBC1952F212F69E4165"
+      },
+      {
+        "name": "roommate-male-native",
+        "width": 1920,
+        "height": 1080,
+        "meanBitmapPaintMs": 13.342266666666667,
+        "idleRequestsAnimation": false,
+        "sha256": "633A1BA51D210640F1B6A800D6B1A0FBC42E68FB3209B8A47AF62E6004363566"
+      },
+      {
+        "name": "roommate-female-native",
+        "width": 1024,
+        "height": 576,
+        "meanBitmapPaintMs": 5.063225,
+        "idleRequestsAnimation": false,
+        "sha256": "7FD2C92441F30ED395CA620FD72FD5E3CC58BC22DF09A690F6CA5532C50AD980"
+      },
+      {
+        "name": "roommate-female-native",
+        "width": 1920,
+        "height": 1080,
+        "meanBitmapPaintMs": 13.216941666666665,
+        "idleRequestsAnimation": false,
+        "sha256": "E686F24DFA1D9FE1AF6E50228E6E0F29600DC77A39E297752291AA318E3424ED"
+      },
+      {
+        "name": "artist-angry-native",
+        "width": 1024,
+        "height": 576,
+        "meanBitmapPaintMs": 4.128041666666666,
+        "idleRequestsAnimation": false,
+        "sha256": "F704B509D3DD24E9D87BDF7E6596F13F033C96ADA5B2E26BAAB5A9A759D46C1E"
+      },
+      {
+        "name": "artist-angry-native",
+        "width": 1920,
+        "height": 1080,
+        "meanBitmapPaintMs": 11.408966666666666,
+        "idleRequestsAnimation": false,
+        "sha256": "92CC10D16F9A06B279DA07BF8DE631691F34FE141ABFBD3B975E9129050213F5"
+      },
+      {
+        "name": "andy-type2-native",
+        "width": 1024,
+        "height": 576,
+        "meanBitmapPaintMs": 5.0767750000000005,
+        "idleRequestsAnimation": false,
+        "sha256": "52FFFD289603E21FBC8A8909DCCBB06020E2F4C4A4FBC854BCD841012E2B36F7"
+      },
+      {
+        "name": "andy-type2-native",
+        "width": 1920,
+        "height": 1080,
+        "meanBitmapPaintMs": 15.344791666666666,
+        "idleRequestsAnimation": false,
+        "sha256": "2DBB22E18231FD77FA06711CECA47D9F3CDDDEC827EFD24DF973493A994170DB"
+      }
+    ]
+  },
+  "fixesPendingHumanRevalidation": [
+    {
+      "symptom": "称号显示原始 FONT 标签",
+      "change": "正文和称号共用 NativeTooltipMarkup，保留颜色、实体和换行"
+    },
+    {
+      "symptom": "低帧率下正文空白后迟到",
+      "change": "单调时钟计算已显示字数，Paint 也补进度，压隐时间不计入"
+    },
+    {
+      "symptom": "关卡入场外观快照全空而显示默认裸装女性",
+      "change": "识别主角身份，空壳字段从主角基础身份和装备栏取值；佣兵独立；未知身份转空静态立绘保留正文"
+    }
+  ],
+  "humanObservation": {
+    "candidate": "u2-dialogue-v2",
+    "corePid": 34564,
+    "startedAtLocal": "2026-09-13T08:50:53+08:00",
+    "scope": "用户观察到 NPC、佣兵和关卡对白，并报告上述三项缺陷；不等于全部人验通过",
+    "latestFixesReverified": false,
+    "furtherGameValidationOwner": "human"
+  },
+  "limitations": [
+    "native SVG filters/Bevel 未还原",
+    "multiply/tween 不保证等价",
+    "portrait mask 为矩形近似，人物底锚和取景待校准",
+    "有限 HTML 不表示完整 HTML/CSS 样式支持",
+    "未测 1440p/4K 真实显示和整窗游戏负载"
+  ],
+  "protectedState": {
+    "baseline": "tmp/u2-dialogue-20260913/formal-before-journey.json",
+    "rootExeSha256": "55EABB5C3280FDFEE8302843D969C6B6354808F1AF4DC24DB5E2397AA80499D8",
+    "comparedFileCount": 25,
+    "changes": [
+      {
+        "path": "saves/.launcher-version-marker.json",
+        "beforeSha256": "DF51FB1BDFBC89064A79EFA75062C12EB1D8557970C1B77AF4DAA7BD7A30F9C2",
+        "afterSha256": "7B76B10A0FDCBBE96E1A0F603C63CA97C892C70E8B47BD30210D88A99612E89B"
+      },
+      {
+        "path": "saves/cf7_agent_task_detail_callid_v1.json",
+        "beforeSha256": "BDCE64B0A8B51CC2040C2618EF03BAD31D806B092F04930FE7880F3A35B2CA49",
+        "afterSha256": "FCE80DB9E62F11CF64BAA375C1F6BD22940C8D5CFC972340049DAA64466ACCA0"
+      },
+      {
+        "path": "scripts/asLoader.swf",
+        "beforeSha256": "322087BFE010F5A6A4EFC9492B7DEE5D515FB9CAAA13FABD47D67F3A62807C59",
+        "afterSha256": "AC116122BDA2C3C6A51CFCB8FA4E13937B7603C2EC1EE64EE4943195D5A30BF1"
+      }
+    ],
+    "selectedSaveChange": "用户游戏操作结果保留，未回滚",
+    "launcherMarkerChange": "启动时刷新版本标记，当前 version=1，writtenAt=2026-09-13T00:51:00Z；不属于角色存档",
+    "selectedSaveBackup": "tmp/u2-dialogue-20260913/main-test-slot-before.json",
+    "oldSwfBackup": "tmp/u2-dialogue-20260913/asLoader-before.swf",
+    "nativeDeploymentClosureChanged": false
+  },
+  "cleanup": {
+    "extraGitWorktree": "C:/cf7-u2-dev-20260913/resources",
+    "extraGitWorktreeRemoved": true,
+    "oldLab": "C:/cf7-u2-lab-20260913",
+    "oldLabRetained": true,
+    "reason": "Automatic approval review blocked cleanup by policy; not a test entry; no lab processes observed"
+  },
+  "sourceInputs": {
+    "launcher/src/Guardian/Hud/Dialogue/DialogueUiSkin.cs": "8971FF51986BE9299D4DA5A4435F2BCB3FFFDAC70FA518501AC7B2B18FD6FE3B",
+    "launcher/src/Guardian/Hud/Dialogue/NativeDialogueFrame.cs": "3C9EFB3ABCE54A3FD70869998945C631B44A0B04E5452A0910ED3A52F0C52D2F",
+    "launcher/src/Guardian/Hud/Dialogue/NativeDialogueTextLayout.cs": "355A61F8C7454C48B08FA7B9CFB4AE1D5FB2591072ADD8BC79471B6A8D420614",
+    "launcher/src/Guardian/Hud/Dialogue/NativeDialogueWidget.cs": "7AD5D6FB4F3B25862CF5423E959D64B31CA9868BFF1DB26639B90D4B97FB3BCC",
+    "scripts/类定义/org/flashNight/arki/dialogue/NativeDialogueAppearance.as": "DF9D68D2826BF1FB9CA7315EC8375B5C6770E41D49349CE5945120B129589978",
+    "scripts/类定义/org/flashNight/arki/dialogue/NativeDialogueService.as": "F0A4AD5863827848D003D9E02932AC29CB00DD76BADB7F89F04E9F302C177ED5",
+    "scripts/类定义/org/flashNight/arki/dialogue/NativeDialogueServiceTest.as": "14C60205A6D6F38CCA814A046B02C3B332E15A2ECCF8C3D9778796CE21197B7D",
+    "tools/xfl-ui-svg/xfl_to_svg.py": "7C20FD1AD214B0DBA1DE76D431894EA3CA9FEA64044599A04C1309CB89AB90FA",
+    "fonts/fonts.xml": "3BC20D0A08EAB2B249DAF8287C8EAE69C72B9491C620F1EA14AEBC3F62647358",
+    "launcher/web/assets/dialogue-ui/manifest.json": "56B450B0FA761298721460F71C661CCC1A1E5B60535F4A9BC6C15962A60B0C94",
+    "launcher/web/assets/dialogue-portraits/manifest.json": "14D39A70DFDD262D9ED002230417319509B9E61134B1FE99D8C3E9ED03AB8FB7",
+    "launcher/web/assets/dressup/manifest.json": "E8E89E657A274D6F33CD29B0290C09A605CB6FA89FD67C0A185BC0BD5026235E"
+  },
+  "publication": {
+    "implementationCommitted": false,
+    "pushed": false,
+    "promoted": false
+  }
+}

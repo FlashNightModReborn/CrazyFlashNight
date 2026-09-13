@@ -1,0 +1,15 @@
+<!doctype html><meta charset="utf-8"><base href="https://u2.local/launcher/web/">
+<script>
+var handlers = {};
+var Bridge = {
+  on: function(name, fn) { handlers[name] = fn; },
+  task: function(task, payload) { chrome.webview.postMessage({ task: task, payload: payload }); }
+};
+chrome.webview.addEventListener('message', function(event) {
+  var message = event.data;
+  if (handlers[message.type]) handlers[message.type](message);
+});
+</script>
+<script src="modules/lazy-loader.js"></script>
+<script src="modules/dialogue/live-portrait-bake.js"></script>
+<script src="modules/doll-bake.js"></script>

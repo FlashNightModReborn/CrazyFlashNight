@@ -1557,6 +1557,7 @@ class Program
         CF7Launcher.Guardian.Hud.MapHudDataCatalog mapCatalog = CF7Launcher.Guardian.Hud.MapHudDataCatalog.FromPayload(null);
         CF7Launcher.Guardian.Hud.Loot.LootFeedWidget lootFeedWidget = null;
         CF7Launcher.Guardian.Hud.NpcMenuWidget npcMenuWidget = null;
+        CF7Launcher.Guardian.Hud.Dialogue.NativeDialogueWidget dialogueWidget = null;
         CF7Launcher.Guardian.Hud.Tooltip.NativeTooltipWidget nativeTooltipWidget = null;
         CF7Launcher.Guardian.Hud.PlayerInfo.PlayerInfoSplitSurface
             playerInfoSurface = null;
@@ -1725,6 +1726,8 @@ class Program
             npcMenuWidget =
                 new CF7Launcher.Guardian.Hud.NpcMenuWidget(form.FlashHostPanel);
             nativeHud.AddWidget(npcMenuWidget);
+            dialogueWidget = new CF7Launcher.Guardian.Hud.Dialogue.NativeDialogueWidget(form.FlashHostPanel);
+            nativeHud.AddWidget(dialogueWidget);
             // webOverlay 的 toast/notch 出口固定指向 nativeHud：WebOverlayForm.AddMessage/AddNotice
             // 直接转发 _toastFallback / _notchFallback（= nativeHud），无需 ExecScript。
             webOverlay.SetFallback(nativeHud, nativeHud);
@@ -2216,9 +2219,24 @@ class Program
             nativeInteractionTask.IsInteractionEscapable,
             nativeInteractionTask.NotifyInteractionEscape);
 
+        var dialoguePortraits = new CF7Launcher.Guardian.Dialogue.DialoguePortraitService(
+            projectRoot, webOverlay.TryPostToWeb);
+        var nativeDialogueTask = new NativeDialogueTask(socketServer, dialogueWidget,
+            action => {
+                if (form.IsDisposed) throw new ObjectDisposedException("GuardianForm");
+                if (form.InvokeRequired) form.BeginInvoke(action);
+                else action(); // 内存命中与当前句一起采用，不再排一次消息后闪出人物。
+            },
+            () => nativeHud != null && !nativeHud.IsSuspended && !panelHost.IsPanelOpen);
+        nativeDialogueTask.LoadPortraitWithRect = dialoguePortraits.LoadPortrait;
+        nativeDialogueTask.LoadSceneImage = dialoguePortraits.LoadSceneImage;
+        nativeDialogueTask.ReceivePortraitResult = dialoguePortraits.HandleResult;
+        socketServer.OnClientDisconnected += nativeDialogueTask.HandleTransportDisconnected;
+        form.SetDialogueKeyboardSurface(nativeDialogueTask.CaptureKeyboardAction);
+
         using (PerfTrace.Scope("task.registry_register_all"))
         {
-            TaskRegistry.RegisterAll(router, gomokuTask, toastTask, frameTask, stageOutcomeTask, warlordStageTask, warlordBattleTask, dataQueryTask, audioTask, dollBakeTask, shopTask, inventoryTask, lootTask, lootFeedTask, lootPanelCoordinator, npcShopTask, craftingTask, materialShopAccessTask, hairdresserTask, plasticSurgeryTask, settingsTask, equipmentTuningTask, characterBuildTask, itemUseTask, skillTask, mapTask, stageSelectTask, arenaTask, arenaCalibrationTask, agentControlTask, petTask, mercTask, taskTask, intelligenceTask, blackMarketTask, archiveTask, benchTask, fontPackTask, webOverlay, commandRouter, mapDomainTask, nativeInteractionTask);
+            TaskRegistry.RegisterAll(router, gomokuTask, toastTask, frameTask, stageOutcomeTask, warlordStageTask, warlordBattleTask, dataQueryTask, audioTask, dollBakeTask, shopTask, inventoryTask, lootTask, lootFeedTask, lootPanelCoordinator, npcShopTask, craftingTask, materialShopAccessTask, hairdresserTask, plasticSurgeryTask, settingsTask, equipmentTuningTask, characterBuildTask, itemUseTask, skillTask, mapTask, stageSelectTask, arenaTask, arenaCalibrationTask, agentControlTask, petTask, mercTask, taskTask, intelligenceTask, blackMarketTask, archiveTask, benchTask, fontPackTask, webOverlay, commandRouter, mapDomainTask, nativeInteractionTask, nativeDialogueTask);
         }
         StartupDiagnostics.Mark("task.registry_register_all_ok");
 
@@ -3333,6 +3351,7 @@ class Program
         try { musicCatalog.Dispose(); } catch { }
         try { processManager.Dispose(); } catch { }
         try { gomokuTask.Dispose(); } catch { }
+        try { dialoguePortraits.Dispose(); } catch { }
         try { shopTask.Dispose(); } catch { }
         try { lootTask.Dispose(); } catch { }
         try { materialShopNavigationCoordinator.Dispose(); } catch { }

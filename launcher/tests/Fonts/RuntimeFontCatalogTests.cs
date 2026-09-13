@@ -43,7 +43,8 @@ namespace CF7Launcher.Tests.Fonts
                 File.ReadAllText(Path.Combine(root, "launcher", "web", "generated", "font-catalog.json")),
                 RuntimeFontCatalog.ProjectionJsonForTest);
             string[] roles = RuntimeFontCatalog.RoleIdsForTest;
-            Assert.Equal(28, roles.Length);
+            Assert.Equal(29, roles.Length);
+            Assert.Contains("native.dialogue.body", roles);
             Assert.Contains("native.hud.body", roles);
             Assert.Contains("native.hud.mono", roles);
             Assert.Contains("native.hud.symbol", roles);

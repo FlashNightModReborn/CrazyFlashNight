@@ -2,6 +2,8 @@
 
 `fonts/` 是 C# / Web 运行时字体的唯一人类维护入口。Gate E 已完成：`fonts.xml` 是 runtime authority，Web 与 Native HUD 都只消费语义 role，打包层只收常驻资产并排除整个临时目录；Flash / AS2 / FLA / XFL 不在本合同内。
 
+原版对话框复刻使用 `native.dialogue.body`，从原 XFL 的 Microsoft YaHei 系统字体匹配姓名、称号和正文。保留字段位置、占用宽度与字高，字形改为等比绘制，消除旧字段非等比矩阵带来的姓名横向拉宽和正文压窄；这项可读性调整不声称与 Flash 字形逐像素一致。其他 HUD 继续使用各自既有角色。没有新增字体文件，生成兼容投影仍由 `fontctl generate` 维护。
+
 ## 最省事的试用流程
 
 1. 把 TTF / OTF / WOFF 放进 `temporary/custom/`。文件名要与 `fonts.xml` 中目标 asset 的 `file` 相同；整个 `temporary/` 都不会进入 Git。当前 local custom WOFF2 因 Launcher 解析器不支持而没有覆盖权，但 cache/permanent 中 hash 固定的 WOFF2 仍受支持。
