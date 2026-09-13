@@ -1,5 +1,5 @@
-// 独立进程编译：csc /target:winexe /out:hotkey_guard.exe HotkeyGuard.cs
-// Guardian 启动时作为子进程运行，传入 Guardian PID 参数。
+// 编入 Core，通过同一 apphost 的 --hotkey-guard 子模式运行独立进程。
+// 父 PID、可执行路径和 Core MVID 必须一致；不再加载根目录历史 EXE。
 // 本进程只做一件事：低级键盘钩子 + 消息泵。
 // 不做 GUI、不做 IO、不做网络，钩子回调微秒级返回，永不超时。
 
@@ -71,8 +71,42 @@ namespace CF7Launcher.Guardian
 
         static IntPtr _hookId = IntPtr.Zero;
         static LowLevelKeyboardProc _proc;
-        static volatile bool _ctrlHeld;
+        [DllImport("user32.dll")] static extern short GetAsyncKeyState(int vk);
+        static bool _leftCtrlHeld, _rightCtrlHeld;
+        static bool _ctrlHeld { get { return _leftCtrlHeld || _rightCtrlHeld; } }
         static uint _guardianPid;
+        static bool _diagnostic;
+        static readonly Queue<string> _trace = new Queue<string>();
+        static readonly HashSet<uint> _consumed = new HashSet<uint>();
+        static int _traceLost;
+        static Timer _traceTimer;
+
+        static void TraceKey(uint vk, int message, IntPtr data, bool blocked, IntPtr foreground)
+        {
+            if (!_diagnostic || !(vk == 0x57 || vk == 0x41 || vk == 0x53 || vk == 0x44
+                || vk == 0x52 || vk == VK_LCONTROL || vk == VK_RCONTROL)) return;
+            lock (_trace)
+            {
+                if (_trace.Count == 128) { _trace.Dequeue(); _traceLost++; }
+                _trace.Enqueue("vk=" + vk + " message=" + message + " blocked=" + blocked
+                    + " leftCtrl=" + _leftCtrlHeld + " rightCtrl=" + _rightCtrlHeld
+                    + " hookTime=" + unchecked((uint)Marshal.ReadInt32(data, 12))
+                    + " flags=" + Marshal.ReadInt32(data, 8) + " foreground=" + foreground.ToInt64());
+            }
+        }
+
+        static void FlushTrace(object ignored)
+        {
+            string[] lines;
+            int lost;
+            lock (_trace) { lines = _trace.ToArray(); _trace.Clear(); lost = _traceLost; _traceLost = 0; }
+            try
+            {
+                if (lost > 0) Console.WriteLine("[HotkeyGuardInput] dropped=" + lost);
+                foreach (string line in lines) Console.WriteLine("[HotkeyGuardInput] " + line);
+            }
+            catch { /* 宿主退出或管道失败不干扰输入。 */ }
+        }
 
         // 要拦截的 VK 码（Ctrl+这些键在 Flash SA 前台时被吞掉）
         static readonly HashSet<uint> BlockedVks = new HashSet<uint> {
@@ -86,20 +120,40 @@ namespace CF7Launcher.Guardian
 
         // ── 入口 ──
 
-        static int Main(string[] args)
+        internal static bool IsInvocation(string[] args)
         {
-            if (args.Length < 1)
+            return args != null && args.Length > 0 && args[0] == "--hotkey-guard";
+        }
+
+        internal static bool IsMatchingParent(string parentPath, string ownPath, string expectedMvid)
+        {
+            return !string.IsNullOrEmpty(parentPath) && string.Equals(parentPath, ownPath, StringComparison.OrdinalIgnoreCase)
+                && string.Equals(expectedMvid, typeof(HotkeyGuard).Assembly.ManifestModule.ModuleVersionId.ToString("D"), StringComparison.Ordinal);
+        }
+
+        internal static int Run(string[] args)
+        {
+            if (args == null || args.Length < 2 || args.Length > 3 || (args.Length == 3 && args[2] != "--diag-input"))
                 return 1;
 
             // 参数：Guardian 进程 PID
             if (!uint.TryParse(args[0], out _guardianPid))
                 return 1;
 
+            _diagnostic = args.Length == 3;
+            if (_diagnostic) _traceTimer = new Timer(FlushTrace, null, 500, 500);
+
             // 监控 Guardian 进程——Guardian 退出时本进程也退出
             Process guardian;
             try
             {
                 guardian = Process.GetProcessById((int)_guardianPid);
+                if (guardian.Id == Environment.ProcessId
+                    || !IsMatchingParent(guardian.MainModule.FileName, Environment.ProcessPath, args[1]))
+                {
+                    guardian.Dispose();
+                    return 1;
+                }
             }
             catch
             {
@@ -147,27 +201,26 @@ namespace CF7Launcher.Guardian
             {
                 int msg = wParam.ToInt32();
                 uint vk = (uint)Marshal.ReadInt32(lParam);
+                if (vk == VK_CONTROL) vk = (Marshal.ReadInt32(lParam, 8) & 1) != 0 ? VK_RCONTROL : VK_LCONTROL;
 
-                // 追踪 Ctrl
-                if (vk == VK_CONTROL || vk == VK_LCONTROL || vk == VK_RCONTROL)
-                {
-                    _ctrlHeld = (msg == WM_KEYDOWN || msg == WM_SYSKEYDOWN);
-                }
+                // 当前边沿以回调为准；另一侧及非 Ctrl 事件校准漏掉的释放。
+                bool down = msg == WM_KEYDOWN || msg == WM_SYSKEYDOWN;
+                _leftCtrlHeld = vk == VK_LCONTROL ? down : (GetAsyncKeyState((int)VK_LCONTROL) & 0x8000) != 0;
+                _rightCtrlHeld = vk == VK_RCONTROL ? down : (GetAsyncKeyState((int)VK_RCONTROL) & 0x8000) != 0;
 
-                // Ctrl + 被保护键 + Guardian 在前台 → 拦截
-                if ((msg == WM_KEYDOWN || msg == WM_SYSKEYDOWN)
-                    && _ctrlHeld
-                    && BlockedVks.Contains(vk))
-                {
-                    IntPtr fg = GetForegroundWindow();
-                    if (fg != IntPtr.Zero)
-                    {
-                        uint pid;
-                        GetWindowThreadProcessId(fg, out pid);
-                        if (pid == _guardianPid)
-                            return new IntPtr(1);
-                    }
-                }
+                IntPtr fg = GetForegroundWindow();
+                uint pid = 0;
+                if (fg != IntPtr.Zero) GetWindowThreadProcessId(fg, out pid);
+                bool up = msg == WM_KEYUP || msg == 0x0105;
+                if (pid != _guardianPid && fg != IntPtr.Zero)
+                    _consumed.RemoveWhere(key => (key != vk || down) && (GetAsyncKeyState((int)key) & 0x8000) == 0);
+                bool consumed = _consumed.Contains(vk);
+                if (up) _consumed.Remove(vk);
+                bool blocked = pid == _guardianPid && ((consumed && (down || up))
+                    || (down && _ctrlHeld && BlockedVks.Contains(vk)));
+                if (blocked && down) _consumed.Add(vk);
+                TraceKey(vk, msg, lParam, blocked, fg);
+                if (blocked) return new IntPtr(1);
             }
 
             return CallNextHookEx(_hookId, nCode, wParam, lParam);

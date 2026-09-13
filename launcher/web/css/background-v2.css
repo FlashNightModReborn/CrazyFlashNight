@@ -107,3 +107,17 @@
   .welcome-controls { gap:8px; }
   .btn-go { padding:8px 14px; }
 }
+
+/* PM19 V3 lore: loading 相限定的双音区事件流；容器非 visible 不显示。 */
+#bg-gl-log{display:none;position:fixed;left:50%;transform:translateX(-50%);bottom:44px;z-index:3;
+  max-width:min(44vw,720px);pointer-events:none;user-select:none;
+  font:11px/1.7 "JetBrains Mono",Consolas,monospace;letter-spacing:.08em;color:rgba(178,200,205,.62);
+  text-shadow:0 0 6px rgba(61,213,255,.22)}
+#bg-gl-log.visible{display:block}
+#bg-gl-log .ln{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;animation:bgGlLogIn var(--ln-in,.24s) ease-out}
+#bg-gl-log .ln .ts{color:rgba(106,98,88,.85);margin-right:8px}
+#bg-gl-log .ln .dim{opacity:.55;margin-left:10px}
+#bg-gl-log .ln.ok{color:rgba(200,178,138,.85)}
+#bg-gl-log .ln.err{color:rgba(224,120,100,.85)}
+@keyframes bgGlLogIn{from{opacity:0;transform:translateX(-8px)}to{opacity:1;transform:none}}
+@media (prefers-reduced-motion: reduce){#bg-gl-log .ln{animation:none;transition:none !important}}

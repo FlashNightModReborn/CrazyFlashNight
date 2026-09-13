@@ -1,0 +1,71 @@
+{
+  "schema": "cf7-pm19-lore-chain-runtime-release-evidence.v1",
+  "status": "promoted / FIELD_REVALIDATION_PENDING",
+  "sourceCommit": "0b7d8007f78c09e5f1da71ba762bd4b4785ad01a",
+  "sourceTag": "runtime-build-v2/20260913-pm19-lore-chain-v3",
+  "requestId": "B474CF434BE4585AA9921CEB214BDD9CADDFFB64AEAF11B0FC2F300A68467E9D",
+  "releaseTreeOid": "6237194c63fd89bdf440c5419c2662a8e14f8d71",
+  "artifactSourceHash": "3896DDA4B3331566E20467BCAA980567F9A6C334B424ECF9EEA5690F07632EC4",
+  "producerRecipeHash": "0AED3CE28E95E2FD1D6D1F516424D977FC5411F7446380C1A70D3836D243D49F",
+  "toolchainLockHash": "7B83229BE93F8244810CDD23DAFD97875B23857E547DE520035FE23B453CB3CD",
+  "policyHash": "6CBC12F17AEEACB23AEF3BA921C45B36DC0E5DDD3E0764F7CEB3E0C42D2E3A85",
+  "buildIdentityHash": "BC32738D1EDFF455C902B560C3F7B1FC9B94AFC1902C4278DDBF51D97B81D0D7",
+  "payloadClosureHash": "5E7653A98FB6F44BAD459027C00ABFD84ACB815BA4B9154B68BC4B28546EC3C5",
+  "manifestSha256": "26D8430F94967F930D27A33856B9A194F3F1D7D6AE95893EA7B0FB6B734073AD",
+  "policyReceiptSha256": "778638936B3558AF90D0E7150A55BFE5BB60E7BA6E8962905F485678D2AC9A43",
+  "promotedAtUtc": "2026-09-13T15:43:26.2007470Z",
+  "consensusSha256": "7D0B1A616DEC40BB46076F5CA6AB429F21FE6B82256A4AFF7A0ABA830162DC06",
+  "coreSha256": "E3D721EA1366B428508545F0FCCB96E4049B516278E33548CDE9D29D46D7190D",
+  "payloadFileCount": 33,
+  "signers": [
+    {
+      "identity": "7145542ADC8B800BB97AD73D4C4CB5F2D85CD7AFE7F52D4A34FD6212BE81ED96",
+      "faultDomain": "github-hosted-windows"
+    },
+    {
+      "identity": "EB5D32E04B6EE8697850314E19698DE1A3FACFFCCC6418A12CF7FEDE6033CDA5",
+      "faultDomain": "physical-host-b"
+    }
+  ],
+  "cloudRunId": 34765337465,
+  "cloudRunUrl": "https://github.com/FlashNightModReborn/CrazyFlashNight/actions/runs/34765337465",
+  "policy": {
+    "passed": 40,
+    "failed": 0
+  },
+  "tests": {
+    "launcherPassed": 5424,
+    "launcherExplicitSkipped": 4,
+    "bootstrapHarness": "27/27",
+    "characterCreateHarness": "23/23",
+    "agentEntryContract": true,
+    "docGovernance": true,
+    "dotnetBuildErrors": 0
+  },
+  "formalStartup": {
+    "runtimeMode": "formal_runtime",
+    "guardianPid": 21664,
+    "identityClosureConfirmed": true,
+    "normalShutdownObserved": true,
+    "remainingCoreProcesses": 0,
+    "businessJourneyExecuted": false,
+    "playerSaveJsonUnchanged": true
+  },
+  "releaseNotes": {
+    "prepareDictRegenerated": "launcher/data/save_repair_dict.json 按规则重派生并先提交（发布链 32c0a8aaeb → bf9a7f1934 → 0b7d8007f7）",
+    "fontctlPythonOverride": "本机 harness job 下 python3 存根会使子进程分配失败，经 CF7_FONTCTL_PYTHON=python 走既有解释器；纯环境缝不削弱门",
+    "sourceTagScars": "runtime-build-v2/20260913-pm19-lore-chain-v1/v2 因标签指针未纳入发布源而弃用，保留 NOT_DEPLOYED；v3 起按正典顺序（标签指针先入发布源）",
+    "supersededRequest": "98B03AC92D53A9EF770B89BCC93F61A1791BDAE65D27E4468F24BDDA07B3F3EE"
+  },
+  "deploymentCommit": "744fb2a97512b6c4f31d35f7f67c856af6b95b78",
+  "postPromotionAudit": {
+    "runId": 34766552747,
+    "url": "https://github.com/FlashNightModReborn/CrazyFlashNight/actions/runs/34766552747",
+    "headSha": "744fb2a97512b6c4f31d35f7f67c856af6b95b78",
+    "conclusion": "success",
+    "state": "promoted",
+    "deploymentChanged": true,
+    "payloadFileCount": 33,
+    "payloadClosureHash": "5E7653A98FB6F44BAD459027C00ABFD84ACB815BA4B9154B68BC4B28546EC3C5"
+  }
+}

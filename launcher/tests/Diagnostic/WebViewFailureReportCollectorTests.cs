@@ -104,9 +104,14 @@ namespace CF7Launcher.Tests.Diagnostic
             byte[] placed = File.ReadAllBytes(Path.Combine(_dest, "wvf-r00-a.dmp"));
             Assert.Equal(Convert.ToHexString(SHA256.HashData(placed)), (string)dmp["sha256"]);
             Assert.Equal("log", (string)dmp["origin"]);
-            Assert.Equal("session-1", (string)dmp["session"]);
-            Assert.Equal("browser_process_exited", (string)dmp["kind"]);
-            Assert.Equal("STATUS_BREAKPOINT", (string)dmp["failureReason"]);
+            Assert.Equal(2, (int)manifest["version"]);
+            Assert.Null(dmp["session"]);
+            Assert.Equal(JTokenType.Null, dmp["crashEvent"].Type);
+            JToken referrer = Assert.Single(dmp["directoryReferrers"]);
+            Assert.Equal("session-1", (string)referrer["session"]);
+            Assert.Equal("browser_process_exited", (string)referrer["kind"]);
+            Assert.Equal("STATUS_BREAKPOINT", (string)referrer["failureReason"]);
+            Assert.NotNull(referrer["recordedAtUtc"]);
             Assert.Equal("launcher/webview2_overlay_userdata/EBWebView/Crashpad/reports/abc-123/a.dmp",
                 (string)dmp["sourcePath"]);
             Assert.True(HasReason(manifest, "unsupported_extension"));
@@ -312,7 +317,7 @@ namespace CF7Launcher.Tests.Diagnostic
             Assert.True(File.Exists(Path.Combine(_dest, "webview-failures.jsonl.1")));
             Assert.True((bool)manifest["failuresLog"]["rotated"]["included"]);
             JObject inc = (JObject)Assert.Single(manifest["included"]);
-            Assert.Equal("s-rot", (string)inc["session"]);
+            Assert.Equal("s-rot", (string)Assert.Single(inc["directoryReferrers"])["session"]);
         }
 
         [Fact]
@@ -377,6 +382,55 @@ namespace CF7Launcher.Tests.Diagnostic
         {
             using (var reader = new StreamReader(zip.GetEntry(name).Open()))
                 return reader.ReadToEnd();
+        }
+
+        [Fact]
+        public void SharedDirectoryPreservesAllReferrersWithoutAttributingOldOrNewFiles()
+        {
+            string folder = WriteReportFolder(Path.Combine(OverlayCrashpad(), "reports"), "old.dmp", "new.dmp");
+            File.SetLastWriteTimeUtc(Path.Combine(folder, "old.dmp"), DateTime.UtcNow.AddDays(-2));
+            WriteJsonl(FailureLine(folder, "old-session"), FailureLine(folder, "new-session"),
+                FailureLine(folder, "new-session"), "{bad-json}");
+            Collect();
+            JObject manifest = ReadManifest();
+            Assert.Equal(2, manifest["included"].Count());
+            foreach (JObject item in manifest["included"])
+            {
+                Assert.Null(item["session"]);
+                Assert.Equal("unknown", (string)item["eventAttribution"]);
+                Assert.Equal(JTokenType.Null, item["crashEvent"].Type);
+                Assert.Equal(3, item["directoryReferrers"].Count());
+                Assert.Equal("old-session", (string)item["directoryReferrers"][2]["session"]);
+                Assert.All(item["directoryReferrers"], r =>
+                    Assert.NotEqual(JTokenType.Null, r["recordedAtUtc"].Type));
+            }
+        }
+
+        [Fact]
+        public void TimestampAcceptsDateAndStringAndNormalizesOffsets()
+        {
+            const string expected = "2026-09-12T01:21:04.0000000Z";
+            Assert.Equal(expected, WebViewFailureReportCollector.TimestampProp(
+                new JObject { ["atUtc"] = "2026-09-12T09:21:04+08:00" }));
+            Assert.Equal(expected, WebViewFailureReportCollector.TimestampProp(
+                JObject.Parse("{\"atUtc\":\"2026-09-12T01:21:04Z\"}")));
+            Assert.Equal(expected, WebViewFailureReportCollector.TimestampProp(
+                new JObject { ["atUtc"] = new DateTimeOffset(2026, 9, 12, 9, 21, 4, TimeSpan.FromHours(8)) }));
+            foreach (JToken value in new JToken[] { JValue.CreateNull(), new JValue("bad"),
+                new JValue("2026-09-12T01:21:04"), new JValue(42), new JObject() })
+                Assert.Null(WebViewFailureReportCollector.TimestampProp(new JObject { ["atUtc"] = value }));
+            Assert.Null(WebViewFailureReportCollector.TimestampProp(new JObject()));
+        }
+
+        [Fact]
+        public void OutOfRangeOptionalNumbersCannotAbortCollection()
+        {
+            string folder = WriteReportFolder(Path.Combine(OverlayCrashpad(), "reports"), "data.dmp");
+            string line = FailureLine(folder, "session-1").Replace("-2147483645", "9999999999999999999999999999999");
+            WriteJsonl(line);
+            Collect();
+            JToken item = Assert.Single(ReadManifest()["included"]);
+            Assert.Equal(JTokenType.Null, item["directoryReferrers"][0]["exitCode"].Type);
         }
     }
 }

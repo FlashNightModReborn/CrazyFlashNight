@@ -569,8 +569,8 @@ def build_pack(
         "generatedAt": T.utc_now(),
         "consumerContract": {
             "identityKey": "portraitRef + variantKey",
-            "primaryFormat": "per-variant subject.preferredFormat; PNG is primary for every SVG containing embedded raster images",
-            "fallbackFormat": "the alternate signed subject format, then caller legacy asset",
+            "primaryFormat": "per-variant subject.preferredFormat; PNG is primary for embedded raster images or convolution filters; convolution SVG runtime loading is prohibited",
+            "fallbackFormat": "only runtime-allowed alternate subject format, then caller legacy asset",
             "presentationOwnedBy": "launcher/web/modules/portrait-resolver.js and consumer CSS",
             "unresolvedPolicy": "pending/excluded identities expose no unsigned modern subject",
             "teamCompatible": True,
@@ -666,6 +666,8 @@ def accepted_subject_files(
                     subject.get("preferredFormat") != representation["preferredFormat"]
                     or subject["svg"].get("embeddedRasterCount") != representation["embeddedRasterCount"]
                     or subject["svg"].get("isRasterHeavy") != representation["isRasterHeavy"]
+                    or subject["svg"].get("runtimeAllowed") != representation["svgRuntimeAllowed"]
+                    or subject["svg"].get("convolutionFilterCount") != representation["convolutionFilterCount"]
                 ):
                     raise T.PromotionError(f"通用头像 SVG/PNG representation 证据漂移：{portrait_ref}::{variant_key}")
                 expected_alpha = {key: subject["pngFallback"][key] for key in ("size", "alphaExtrema", "visibleBounds")}
@@ -1323,6 +1325,64 @@ def check(args: argparse.Namespace) -> None:
     }, ensure_ascii=False))
 
 
+def refresh_representation(args: argparse.Namespace) -> None:
+    """只从已验证的内容寻址字节重派生表示政策，不重烘焙已接受的 PNG。"""
+    output = T.resolve_output(Path(args.output))
+    manifest = T.load_json(output / "manifest.json", "现役头像 manifest")
+    T.verify_object_digest(manifest, "manifestDigest", "现役头像 manifest")
+    receipt = T.load_json(output / "promotion-receipt.json", "现役头像 receipt")
+    T.verify_object_digest(receipt, "receiptDigest", "现役头像 receipt")
+    if receipt.get("manifestDigest") != manifest["manifestDigest"]:
+        raise T.PromotionError("现役 manifest/receipt 不匹配")
+    for entry in manifest["entries"].values():
+        for variant in entry.get("variants", {}).values():
+            if variant.get("status") != "human_accepted":
+                continue
+            subject = variant["subject"]
+            blobs = {}
+            for kind in ("svg", "pngFallback"):
+                record = subject[kind]
+                blob = T.subject_asset_path(output, record["url"]).read_bytes()
+                if len(blob) != record["bytes"] or T.sha256_bytes(blob) != record["sha256"]:
+                    raise T.PromotionError(f"表示更新拒绝资产漂移：{record['url']}")
+                blobs[kind] = blob
+            evidence = T.svg_representation_evidence(blobs["svg"], blobs["pngFallback"])
+            subject["preferredFormat"] = evidence["preferredFormat"]
+            subject["svg"].update({
+                "embeddedRasterCount": evidence["embeddedRasterCount"],
+                "isRasterHeavy": evidence["isRasterHeavy"],
+                "runtimeAllowed": evidence["svgRuntimeAllowed"],
+                "convolutionFilterCount": evidence["convolutionFilterCount"],
+            })
+    manifest["consumerContract"]["primaryFormat"] = "per-variant subject.preferredFormat; PNG is primary for embedded raster images or convolution filters; convolution SVG runtime loading is prohibited"
+    manifest["consumerContract"]["fallbackFormat"] = "only runtime-allowed alternate subject format, then caller legacy asset"
+    controllers = {T.repo_rel(path): T.artifact(path) for path in (TEAM_CONTROLLER, Path(__file__))}
+    manifest["sourceEnvelope"]["inputs"] = [controllers.get(record["path"], record)
+        for record in manifest["sourceEnvelope"]["inputs"]]
+    manifest["generatedAt"] = T.utc_now()
+    manifest["manifestDigest"] = T.manifest_digest(manifest)
+    staging = T.ROOT / "tmp" / f"portrait-representation-{os.getpid()}"
+    if staging.exists():
+        raise T.PromotionError(f"staging 已存在：{staging}")
+    shutil.copytree(output, staging)
+    manifest_path = staging / "manifest.json"
+    manifest_path.write_text(json.dumps(manifest, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+    receipt["generatedAt"] = manifest["generatedAt"]
+    receipt["manifestDigest"] = manifest["manifestDigest"]
+    receipt["manifest"] = {"path": T.repo_rel(output / "manifest.json"),
+        "bytes": manifest_path.stat().st_size, "sha256": T.sha256_file(manifest_path)}
+    receipt.pop("receiptDigest", None)
+    receipt["receiptDigest"] = T.sha256_bytes(T.stable_bytes(receipt))
+    (staging / "promotion-receipt.json").write_text(
+        json.dumps(receipt, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+    # 完整的既有身份/来源/几何/人审/文件集合门先于原子发布，不为表示更新绕过。
+    check_manifest(manifest_path, logical_output=output)
+    backup = T.ROOT / "tmp" / f"portrait-representation-backup-{os.getpid()}"
+    checked = publish_staged_pack(staging, output, backup)
+    print(json.dumps({"status": "representation_refreshed", "manifestDigest": checked["manifestDigest"],
+        "backup": str(backup)}, ensure_ascii=False))
+
+
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser()
     sub = parser.add_subparsers(dest="command", required=True)
@@ -1337,6 +1397,9 @@ def build_parser() -> argparse.ArgumentParser:
     check_parser = sub.add_parser("check")
     check_parser.add_argument("--manifest", default=str(T.DEFAULT_OUTPUT / "manifest.json"))
     check_parser.set_defaults(handler=check)
+    refresh_parser = sub.add_parser("refresh-representation")
+    refresh_parser.add_argument("--output", default=str(T.DEFAULT_OUTPUT))
+    refresh_parser.set_defaults(handler=refresh_representation)
     return parser
 
 

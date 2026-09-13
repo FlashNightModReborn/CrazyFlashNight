@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>net10.0-windows</TargetFramework>
@@ -18,8 +18,8 @@
     <!-- AssemblyInfo.cs 仍保留 InternalsVisibleTo, 关闭自动生成避免双重定义 -->
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
     <!-- SDK-style 默认从项目目录递归收 **/*.cs；
-         需排除 tests/native/packages/scripts 子树 + 独立子进程源码 HotkeyGuard.cs（csc 单独编译为 hotkey_guard.exe） -->
-    <DefaultItemExcludes>$(DefaultItemExcludes);bin/**;obj/**;tests/**;perf/**;native/**;packages/**;scripts/**;src/Guardian/HotkeyGuard.cs</DefaultItemExcludes>
+         需排除 tests/native/packages/scripts 子树；HotkeyGuard 与 Core 共用构建身份，运行时仍为独立子进程 -->
+    <DefaultItemExcludes>$(DefaultItemExcludes);bin/**;obj/**;tests/**;perf/**;native/**;packages/**;scripts/**</DefaultItemExcludes>
     <!-- CA1416: 项目 TFM=net10.0-windows 已显式 Windows-only，不再 emit 平台兼容警告 -->
     <NoWarn>$(NoWarn);CA1416</NoWarn>
     <!-- LatestMajor: runtime/Core.runtimeconfig.json 容忍未来 .NET 11.x；

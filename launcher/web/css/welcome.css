@@ -697,3 +697,10 @@ body.character-create-preparing #view-character-create{visibility:hidden !import
   }
   .view.view-enter, .view.view-leave{animation:none !important;transform:none}
 }
+
+/* PM19 V3: loading 相动效在 reduced-motion 下静态化（spinner / 省略号 / 就绪脉冲）。 */
+@media (prefers-reduced-motion: reduce){
+  .loading-indicator .spinner{animation:none}
+  .loading-indicator .loading-text::after{animation:none;content:"…";width:auto}
+  .intro-skip.flash-ready{animation:none}
+}

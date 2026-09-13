@@ -125,7 +125,7 @@ namespace CF7Launcher.Diagnostic
             }
         }
 
-        // 引用日志行的携带元数据，落进 included 条目便于 dump ↔ 故障事件对照。
+        // 目录引用事件不是逐文件崩溃身份；同一目录可被多个会话重复引用。
         private sealed class Referrer
         {
             internal string Session;
@@ -143,7 +143,7 @@ namespace CF7Launcher.Diagnostic
             internal string Raw;          // 日志原始值 / null=根扫描
             internal string FullPath;     // 规范化后
             internal string Origin;       // log | reports_scan
-            internal Referrer Ref;
+            internal readonly List<Referrer> Referrers = new List<Referrer>();
         }
 
         internal static Result Collect(string projectRoot, IWebViewFailureSink sink)
@@ -256,12 +256,19 @@ namespace CF7Launcher.Diagnostic
                         });
                         continue;
                     }
-                    if (!seenDirs.Add(normalized)) continue;
-                    if (folders.Count >= MaxReferencedFolders) { folderCapDropped++; continue; }
-                    folders.Add(new FolderCandidate
+                    if (!seenDirs.Add(normalized))
                     {
-                        Raw = candidate, FullPath = normalized, Origin = "log", Ref = referrer
-                    });
+                        folders.FirstOrDefault(f => string.Equals(f.FullPath, normalized,
+                            StringComparison.OrdinalIgnoreCase))?.Referrers.Add(referrer);
+                        continue;
+                    }
+                    if (folders.Count >= MaxReferencedFolders) { folderCapDropped++; continue; }
+                    var folder = new FolderCandidate
+                    {
+                        Raw = candidate, FullPath = normalized, Origin = "log"
+                    };
+                    folder.Referrers.Add(referrer);
+                    folders.Add(folder);
                 }
             }
             // Crashpad 待上报目录直接扫描：日志缺失或条目未携带路径时仍能拿到本轮崩溃文件。
@@ -402,17 +409,19 @@ namespace CF7Launcher.Diagnostic
                         ["sha256"] = sha,
                         ["bytes"] = content.LongLength,
                         ["lastWriteUtc"] = file.LastWriteTimeUtc.ToString("O"),
+                        ["creationTimeUtc"] = file.CreationTimeUtc.ToString("O"),
                         ["origin"] = folder.Origin,
                         ["sourcePath"] = RelativeOrLeaf(rootFull, file.FullName),
-                        ["session"] = folder.Ref != null ? folder.Ref.Session : null,
-                        ["kind"] = folder.Ref != null ? folder.Ref.Kind : null,
-                        ["failureReason"] = folder.Ref != null ? folder.Ref.Reason : null,
-                        ["classification"] = folder.Ref != null ? folder.Ref.Classification : null,
-                        ["exitCode"] = NumOrNull(folder.Ref != null ? folder.Ref.ExitCode : null),
-                        ["documentGeneration"] = NumOrNull(
-                            folder.Ref != null ? folder.Ref.DocumentGeneration : null),
-                        ["browserVersion"] = folder.Ref != null ? folder.Ref.BrowserVersion : null,
-                        ["recordedAtUtc"] = folder.Ref != null ? folder.Ref.AtUtc : null
+                        ["crashEvent"] = JValue.CreateNull(),
+                        ["eventAttribution"] = "unknown",
+                        ["directoryReferrers"] = new JArray(folder.Referrers.Select(r => new JObject
+                        {
+                            ["session"] = r.Session, ["kind"] = r.Kind,
+                            ["failureReason"] = r.Reason, ["classification"] = r.Classification,
+                            ["exitCode"] = NumOrNull(r.ExitCode),
+                            ["documentGeneration"] = NumOrNull(r.DocumentGeneration),
+                            ["browserVersion"] = r.BrowserVersion, ["recordedAtUtc"] = r.AtUtc
+                        }))
                     });
                 }
             }
@@ -424,7 +433,7 @@ namespace CF7Launcher.Diagnostic
             // ---- 4) manifest：省略原因显式，哈希口径与 file-hashes.json 一致 ----
             JObject manifest = new JObject
             {
-                ["version"] = 1,
+                ["version"] = 2,
                 ["generatedAtUtc"] = utcNow.ToString("O"),
                 ["sourceLog"] = "logs/webview-failures.jsonl",
                 ["reportPathFields"] = new JArray(ReportPathFields),
@@ -669,7 +678,9 @@ namespace CF7Launcher.Diagnostic
         private static long? IntProp(JObject entry, string name)
         {
             JToken v = entry[name];
-            return v != null && v.Type == JTokenType.Integer ? (long?)v.Value<long>() : null;
+            return v != null && v.Type == JTokenType.Integer
+                && long.TryParse(v.ToString(), NumberStyles.Integer, CultureInfo.InvariantCulture, out long parsed)
+                ? parsed : (long?)null;
         }
 
         private static JToken NumOrNull(long? v)
@@ -677,12 +688,29 @@ namespace CF7Launcher.Diagnostic
             return v.HasValue ? (JToken)new JValue(v.Value) : JValue.CreateNull();
         }
 
-        private static string TimestampProp(JObject entry)
+        internal static string TimestampProp(JObject entry)
         {
             foreach (string field in TimestampFields)
             {
-                string v = StringProp(entry, field);
-                if (v != null) return v;
+                JToken value = entry[field];
+                if (value == null) continue;
+                if (value.Type == JTokenType.Date)
+                {
+                    object raw = ((JValue)value).Value;
+                    if (raw is DateTimeOffset offset) return offset.UtcDateTime.ToString("O");
+                    if (raw is DateTime date && date.Kind != DateTimeKind.Unspecified)
+                        return date.ToUniversalTime().ToString("O");
+                }
+                if (value.Type == JTokenType.String)
+                {
+                    string text = (string)value;
+                    // 无时区的值不猜成本机时间；坏字段可继续查下一兼容字段。
+                    if (System.Text.RegularExpressions.Regex.IsMatch(text ?? "",
+                            @"(Z|[+-]\d{2}:\d{2})$", System.Text.RegularExpressions.RegexOptions.IgnoreCase)
+                        && DateTimeOffset.TryParse(text, CultureInfo.InvariantCulture,
+                            DateTimeStyles.None, out DateTimeOffset parsed))
+                        return parsed.UtcDateTime.ToString("O");
+                }
             }
             return null;
         }

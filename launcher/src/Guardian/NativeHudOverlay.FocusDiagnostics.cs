@@ -131,6 +131,20 @@ namespace CF7Launcher.Guardian
             return message == 0x0201 || message == 0x0202 || message == 0x0203;
         }
 
+        [StructLayout(LayoutKind.Sequential)]
+        private struct InputMessageSource { public uint DeviceType; public uint OriginId; }
+        [DllImport("user32.dll")]
+        private static extern bool GetCurrentInputMessageSource(out InputMessageSource source);
+
+        protected virtual bool HasQueuedPointerTimestamp()
+        {
+            // 同线程 SendMessage 的 InSendMessage 也为 false，需同时核设备来源。
+            return !InSendMessage() && GetCurrentInputMessageSource(out InputMessageSource source)
+                && source.DeviceType != 0;
+        }
+
+        protected virtual uint QueuedPointerMessageTime() { return unchecked((uint)GetMessageTime()); }
+
         private void TraceFocusNativeMouse(Message message, string phase, long started)
         {
             try

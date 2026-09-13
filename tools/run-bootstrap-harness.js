@@ -215,6 +215,9 @@ async function main() {
                             cmd:'config_set_resp', requestId:message.requestId, key:message.key,
                             ok:true, currentValue:message.value
                         }), 0);
+                    } else if (message.cmd === 'log') {
+                        // 列车 C 场景：模拟不识 'log' 的老宿主回执，供 web 侧能力探测停用水槽。
+                        setTimeout(() => emit({ cmd:'log_resp', ok:false, error:'unknown_cmd' }), 0);
                     }
                 }
             };
@@ -247,21 +250,24 @@ async function main() {
             }, null, { timeout: 10000 });
             const state = await backgroundState(page);
             if (state.version !== 2 || state.hostState !== 'Ready' || state.cues !== 1
-                    || state.retired || state.userIntent || state.scheduled || state.commits !== 1) {
+                    || state.retired || state.userIntent || state.scheduled || state.commits !== 1
+                    || state.pendingSync) {
                 throw new Error('late replay must initialize once without treating prewarm Ready as confirmation: '
                     + JSON.stringify({ ...state, board:state.board && state.board.length }));
             }
             assertMagicBoard(state.board);
+            // prewarm Ready 无 userIntent 不过 syncGate：不触发 sync/confirm，cues 不增。
             await page.evaluate(() => {
                 window.__bootstrapHarnessEmit({ cmd:'list_resp', slots:[], introEnabled:false });
                 window.__bootstrapHarnessEmit({ cmd:'state', state:'Ready' });
                 window.__bootstrapHarnessEmit({ cmd:'flash_ready' });
             });
             const repeated = await backgroundState(page);
-            if (repeated.cues !== state.cues || repeated.commits !== state.commits || repeated.retired) {
-                throw new Error('duplicate host replay restarted or retired the background');
+            if (repeated.cues !== state.cues || repeated.commits !== state.commits || repeated.retired
+                    || repeated.pendingSync) {
+                throw new Error('duplicate host replay restarted, retired or sync-armed the background');
             }
-            return 'delayed module replays host state once; prewarm never confirms or retires';
+            return 'delayed module replays host state once; prewarm Ready triggers no sync/confirm and never retires';
         });
 
         await check('pm19-static-resize-and-session-pause', async () => {
@@ -359,13 +365,24 @@ async function main() {
             }
             await page.waitForTimeout(1800);
             const waiting = await backgroundState(page);
+            // loading <12s 无换盘；>12s 的 unfreeze 换盘属预期提交（harness 时长内不触发）。
             if (waiting.callbacks <= state.callbacks || waiting.time <= state.time
                     || waiting.visualKind !== 'loading' || waiting.commits !== state.commits) {
                 throw new Error('transparent loading must animate the committed board without hidden swaps');
             }
             const indicator = await page.locator('#intro-ov .loading-indicator').boundingBox();
-            if (waiting.canvas.masks.some(mask => mask.w > indicator.width + 8 || mask.h > indicator.height + 8)) {
-                throw new Error('loading retained the hidden welcome-card or side-column mask');
+            // V3: lore 事件流在 loading 相可见且必须自带遮罩（光不许从文字下过）——
+            // 把它的矩形排除在"隐藏前景遮罩未清"判定之外；其余超规格遮罩仍判失败。
+            const loreBox = await page.locator('#bg-gl-log.visible').boundingBox().catch(() => null);
+            const foreignMask = waiting.canvas.masks.some(mask => {
+                if (mask.w <= indicator.width + 8 && mask.h <= indicator.height + 8) return false;
+                if (loreBox && Math.abs(mask.x - loreBox.x) <= 12 && Math.abs(mask.y - loreBox.y) <= 12
+                        && Math.abs(mask.w - loreBox.width) <= 24 && Math.abs(mask.h - loreBox.height) <= 24) return false;
+                return true;
+            });
+            if (foreignMask) {
+                throw new Error('loading retained the hidden welcome-card or side-column mask: '
+                    + JSON.stringify({ masks: waiting.canvas.masks, indicator, loreBox }));
             }
             await page.evaluate(() => window.__bootstrapHarnessEmit({ cmd:'state', state:'Error', msg:'flash_exited_pre_reveal' }));
             await page.locator('#view-welcome .launch-feedback').waitFor({ state:'visible' });
@@ -1009,6 +1026,236 @@ async function main() {
             await page.waitForFunction(() => !document.getElementById('view-character-create').hidden
                 && document.getElementById('view-slots').hidden, null, { timeout: 3000 });
             return 'container ArrowRight + Enter opened the identity-free new-save entry';
+        });
+
+        // PM19 V3：以下断言共用 pm19-arrival-kind 内 reload 出的全新控制器实例；
+        // reducedMotion 静态态下 cue 只创建不播放，kind 驻留在 inspect()。
+        await check('pm19-arrival-kind', async () => {
+            // 主页面背景已被 host reveal retire；reload 复用同一 page 的
+            // init script/route/reducedMotion，得到未 retire 的新实例。
+            await page.reload({ waitUntil:'load' });
+            await page.evaluate(async () => { window.__pm19Harness = await import('./modules/bg-gl/main.mjs'); });
+            await page.waitForFunction(() => {
+                const state = window.__pm19Harness.inspect();
+                return state.cue && state.cues === 1;
+            }, null, { timeout:10000 });
+            const state = await backgroundState(page);
+            if (state.cue.kind !== 'arrival' || state.cue.duration !== 2000 || state.cues !== 1
+                    || state.visualKind !== 'arrival' || state.pendingSync || state.userIntent) {
+                throw new Error('first list_resp must park exactly one unplayed arrival cue: '
+                    + JSON.stringify({ cue:state.cue, visualKind:state.visualKind }));
+            }
+            return 'reduced motion keeps the arrival cue created-but-unplayed (kind arrival, 2000ms)';
+        });
+
+        await check('pm19-sync-gated-by-intent', async () => {
+            // confirm 监听绑在真实按钮上，DOM click() 绕过视图遮挡的 actionability；
+            // hostState 已是 prewarm Ready（state 去重 early-return），先离开再回来模拟真实启动序列。
+            await page.evaluate(() => {
+                window.__bootstrapHarnessEmit({ cmd:'list_resp', introEnabled:false,
+                    lastPlayedSlot:'pm19-fixture', slots:[{ slot:'pm19-fixture', characterName:'测试角色',
+                        displayName:'测试存档', size:4096, lastModified:'2026-09-13T00:00:00', corrupt:false }] });
+                // 生产顺序是确认在先、业务随即接管 loading 相（showLoadingOverlay 加 intro-playing），
+                // 叙事层在 loading 前的空档武装；兜底补 class 防业务路径变化。
+                document.getElementById('btn-confirm-start').click();
+                if (!document.body.classList.contains('intro-playing')) document.body.classList.add('intro-playing');
+                window.__bootstrapHarnessEmit({ cmd:'state', state:'Spawning', msg:'harness-spawn' });
+                window.__bootstrapHarnessEmit({ cmd:'state', state:'Ready', msg:'harness-ready' });
+            });
+            const state = await backgroundState(page);
+            const parked = state.pendingSync === true || (state.cue && state.cue.kind === 'sync');
+            if (!parked || state.visualKind !== 'sync' || !state.userIntent) {
+                throw new Error('Ready under intent+loading must park or start the sync cue: '
+                    + JSON.stringify({ cue:state.cue, pendingSync:state.pendingSync,
+                        visualKind:state.visualKind, userIntent:state.userIntent }));
+            }
+            return 'gated sync reaches the cue layer; prewarm stays covered by pm19-late-subscription-replay';
+        });
+
+        await check('pm19-stage-text', async () => {
+            await page.evaluate(() => {
+                document.body.classList.add('intro-playing');
+                window.__bootstrapHarnessEmit({ cmd:'state', state:'Embedding', msg:'harness-embed' });
+            });
+            await page.waitForFunction(() => {
+                const el = document.querySelector('#intro-ov .loading-text');
+                return el && el.textContent === '正在嵌入沙箱';
+            }, null, { timeout:3000 });
+            return 'loading stage text follows the real host state';
+        });
+
+        await check('pm19-lore-lifecycle', async () => {
+            await page.evaluate(() => document.body.classList.add('intro-playing'));
+            await page.waitForFunction(() => {
+                const log = document.getElementById('bg-gl-log');
+                return log && log.classList.contains('visible')
+                    && log.querySelectorAll('.ln').length >= 1;
+            }, null, { timeout:3000 });
+            const state = await backgroundState(page);
+            if (!Array.isArray(state.lore) || !state.lore.length) {
+                throw new Error('inspect().lore must expose a non-empty line snapshot during loading');
+            }
+            // FIFO 无 TTL：静默等待 1.3s 行数不减少；state 头行驻留计时随 tick 增长。
+            // tick 在 reduced-motion 下按纪律停摆，本段临时切回 no-preference 再恢复。
+            await page.emulateMedia({ reducedMotion:'no-preference' });
+            const before = await page.evaluate(() => ({
+                count: document.querySelectorAll('#bg-gl-log .ln').length,
+                head: (document.querySelector('#bg-gl-log .ln:last-child .dim') || { textContent: '' }).textContent,
+            }));
+            await page.waitForTimeout(1300);
+            const after = await page.evaluate(() => ({
+                count: document.querySelectorAll('#bg-gl-log .ln').length,
+                head: (document.querySelector('#bg-gl-log .ln:last-child .dim') || { textContent: '' }).textContent,
+            }));
+            await page.emulateMedia({ reducedMotion:'reduce' });
+            if (after.count < before.count) {
+                throw new Error('FIFO queue lost lines to a hidden TTL: '
+                    + JSON.stringify({ before, after }));
+            }
+            if (after.head === before.head && /^\w+ · \+\d+\.\d+s/.test(before.head)) {
+                throw new Error('head state line dwell did not tick: '
+                    + JSON.stringify({ before, after }));
+            }
+            // retire 后 #bg-gl-log 不存在的复验由 host-reveal-retires-gpu-background 既有断言覆盖。
+            return 'lore FIFO persists without TTL and head dwell ticks live';
+        });
+
+        await check('pm19-lore-masked', async () => {
+            await page.waitForFunction(() => {
+                const el = document.getElementById('bg-gl-log');
+                const canvas = window.__pm19Harness.inspect().canvas;
+                if (!el || !canvas) return false;
+                const rect = el.getBoundingClientRect();
+                return canvas.masks.some(mask => Math.abs(mask.x - rect.x) <= 8
+                    && Math.abs(mask.y - rect.y) <= 8
+                    && Math.abs(mask.w - rect.width) <= 8 && Math.abs(mask.h - rect.height) <= 8);
+            }, null, { timeout:3000 });
+            return 'the loading mask set covers the lore stream within 8px';
+        });
+
+        await check('pm19-boot-lines', async () => {
+            await page.evaluate(() => window.__bootstrapHarnessEmit({
+                cmd:'boot', frame:53,
+                messages:'[BootstrapAS] 合成表数据加载完毕|[BootstrapAS] S2_ENTER|其它噪声|[BootstrapAS] 读取存档数据……'
+            }));
+            await page.waitForFunction(() => {
+                const lines = window.__pm19Harness.inspect().lore || [];
+                return lines.some(line => line.text === '合成表数据加载完毕')
+                    && lines.some(line => line.text === '读取存档数据……');
+            }, null, { timeout:3000 });
+            const lines = (await backgroundState(page)).lore || [];
+            if (lines.some(line => /S2_ENTER|其它噪声/.test(line.text + ' ' + line.suffix))) {
+                throw new Error('boot stream leaked a signal token or prefix-less noise');
+            }
+            const bootLine = lines.find(line => line.text === '合成表数据加载完毕');
+            if (bootLine.suffix && bootLine.suffix !== 'boot · 批次 f53') {
+                throw new Error('boot line carried an unexpected suffix: ' + bootLine.suffix);
+            }
+            return 'two Chinese boot lines narrated; S2_ENTER token and prefix-less noise dropped';
+        });
+
+        await check('pm19-comm-suffix', async () => {
+            // 600ms 沉降让 lore 洪水窗口排空，socket 后缀断言不被省后缀机制吞掉。
+            await page.waitForTimeout(600);
+            await page.evaluate(() => window.__bootstrapHarnessEmit({
+                cmd:'state', state:'WaitingGameReady',
+                socketPort:1924, httpPort:1192, flashConnected:true
+            }));
+            await page.waitForFunction(() => {
+                const state = window.__pm19Harness.inspect();
+                const last = state.lore && state.lore[state.lore.length - 1];
+                return !!(state.comm && state.comm.socketPort === 1924
+                    && last && (last.text + ' ' + last.suffix).includes('socket=1924'));
+            }, null, { timeout:3000 });
+            const state = await backgroundState(page);
+            if (state.comm.httpPort !== 1192 || state.comm.flashConnected !== true) {
+                throw new Error('comm snapshot dropped httpPort/flashConnected: ' + JSON.stringify(state.comm));
+            }
+            return 'WaitingGameReady lore suffix carries socket=1924; inspect().comm snapshots all three fields';
+        });
+
+        await check('pm19-degraded-reveal', async () => {
+            await page.waitForTimeout(600);
+            await page.evaluate(() => window.__bootstrapHarnessEmit({ cmd:'flash_ready', degraded:true }));
+            await page.waitForFunction(() => {
+                const lines = window.__pm19Harness.inspect().lore || [];
+                return lines.some(line => line.text.includes('降级开门'));
+            }, null, { timeout:3000 });
+            const line = (await backgroundState(page)).lore.find(entry => entry.text.includes('降级开门'));
+            if (!line || line.suffix !== 'degraded:true') {
+                throw new Error('degraded reveal lost its dim suffix: ' + JSON.stringify(line));
+            }
+            return 'degraded flash_ready narrates 降级开门 with degraded:true dim suffix';
+        });
+
+        await check('pm19-weblog-sink', async () => {
+            // sink 的 2s 泵自 lore 挂载起就批量外发；mock 对每条 log 即回 log_resp unknown_cmd，
+            // 能力探测在首个回执后永久停用——运行到这里 dead 早已成立，只验证据链。
+            await page.waitForFunction(() => {
+                const sent = window.__bootstrapHarnessEvents
+                    .some(event => event.direction === 'out' && event.cmd === 'log');
+                return sent && window.__pm19Harness.inspect().logSinkDead === true;
+            }, null, { timeout:10000 });
+            const first = await page.evaluate(() => {
+                const event = window.__bootstrapHarnessEvents
+                    .find(entry => entry.direction === 'out' && entry.cmd === 'log');
+                return event ? String(event.payload.text || '') : '';
+            });
+            if (!first.includes('质数幻方种子库验讫')) {
+                throw new Error('first weblog batch did not carry lore text: ' + first.slice(0, 160));
+            }
+            const sentBefore = await page.evaluate(() => window.__bootstrapHarnessEvents
+                .filter(event => event.direction === 'out' && event.cmd === 'log').length);
+            // dead 后泵仍排水但不再出站；再产一行 lore 佐证。
+            await page.evaluate(() => window.__bootstrapHarnessEmit({ cmd:'state', state:'Spawning', msg:'sink-probe' }));
+            await page.waitForTimeout(2400);
+            const sentAfter = await page.evaluate(() => window.__bootstrapHarnessEvents
+                .filter(event => event.direction === 'out' && event.cmd === 'log').length);
+            if (sentAfter !== sentBefore) {
+                throw new Error('weblog sink kept sending after unknown_cmd: ' + sentBefore + ' -> ' + sentAfter);
+            }
+            return 'lore lines batched to host once; unknown_cmd receipt permanently disabled the sink';
+        });
+
+        await check('pm19-orbit-readout', async () => {
+            // 前序 check 经真实确认流程进过 loading 相：_introActive 是 bootstrap-main 内部旗标，
+            // 不移除它 ESC 会被 intro 层吃掉（发 cancel_launch）而非关 modal；Idle 广播走正规解除路径。
+            await page.evaluate(() => {
+                window.__bootstrapHarnessEmit({ cmd:'state', state:'Idle' });
+                document.body.classList.remove('intro-playing', 'intro-video');
+                document.getElementById('btn-about').click();
+            });
+            await page.waitForFunction(() => {
+                const el = document.getElementById('pm19-orbit');
+                return !!(el && /^轨道 #\d+ · 中心质数 \d+ · Σ=190,000,361 · 单轨 743,178,240 态$/.test(el.textContent));
+            }, null, { timeout:5000 });
+            const text = (await page.locator('#pm19-orbit').textContent()) || '';
+            const center = Number((/中心质数 (\d+)/.exec(text) || [])[1]);
+            const KNOWN_CENTERS = [9961981, 10037957, 10031191, 9973049, 10025497, 10008491, 10007293, 10011367];
+            if (!KNOWN_CENTERS.includes(center)) {
+                throw new Error('orbit center is not a packaged prime: ' + text);
+            }
+            await page.keyboard.press('Escape');
+            await page.locator('#modal-host').waitFor({ state:'hidden' });
+            return text;
+        });
+
+        await check('pm19-kinds-known', async () => {
+            const unknown = consoleLogs.filter(line => line.indexOf('unknown cue kind') !== -1);
+            if (unknown.length) {
+                throw new Error('renderer warned about unknown cue kinds: ' + unknown.join(' | '));
+            }
+            return 'no unknown-kind renderer warnings across the whole run';
+        });
+
+        await check('pm19-exchange-variants', async () => {
+            // 既有场景均为静态或 <8s 活动态，观察不到偶数拍；按规格退化为控制器源码存在性断言。
+            const source = await page.evaluate(async () =>
+                (await fetch('modules/bg-gl/main.mjs')).text());
+            if (source.indexOf("'exchange-pair'") === -1 || !/cycles\s*%\s*2/.test(source)) {
+                throw new Error('exchange-pair even-tick alternation is missing from the controller');
+            }
+            return 'skipped the live even-tick cue (no scene stays active >8s); exchange-pair parity verified in controller source';
         });
 
         const brokenImages = await page.evaluate(() => Array.from(document.images)

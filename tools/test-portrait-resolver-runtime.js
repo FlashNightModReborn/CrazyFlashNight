@@ -178,6 +178,39 @@ const manifest = {
     assert.strictEqual(lockedImg.onerror, null, 'sealed fallback must not retain a recursive error handler');
     cases++;
 
+    const safeManifest = JSON.parse(JSON.stringify(manifest));
+    safeManifest.entries.pngPreferred.variants.default.subject.svg.runtimeAllowed = false;
+    safeManifest.aliases.unsafeAlias = { targetPortraitRef: 'pngPreferred' };
+    api.__setManifestForTests(safeManifest);
+    for (const ref of ['pngPreferred', 'unsafeAlias']) {
+        const art = imageRecorder();
+        const node = container();
+        await api.mount(node, art, { portraitRef: ref });
+        assert(!api.resolve({ portraitRef: ref }).svgUrl, 'preview descriptor must exclude prohibited SVG');
+        const lateError = art.onerror;
+        art.onerror();
+        if (art.onerror) art.onerror();
+        assert(!art.writes.some(url => /\.svg$/.test(url)), 'PNG and legacy failure must never request prohibited SVG');
+        await api.mount(node, art, { portraitRef: 'svgPreferred' });
+        const count = art.writes.length;
+        lateError();
+        assert.strictEqual(art.writes.length, count, 'old PNG callback must not change the new request');
+        cases++;
+    }
+    delete safeManifest.entries.pngPreferred.variants.default.subject.pngFallback;
+    api.__setManifestForTests(safeManifest);
+    const missingPng = imageRecorder();
+    await api.mount(container(), missingPng, { portraitRef: 'unsafeAlias' });
+    assert(!missingPng.writes.some(url => /\.svg$/.test(url)), 'missing PNG must fall directly to safe legacy');
+    cases++;
+    const production = JSON.parse(fs.readFileSync(path.join(projectRoot,
+        'launcher/web/assets/enemy-portraits/manifest.json'), 'utf8'));
+    api.__setManifestForTests(production);
+    for (const ref of ['敌人-方舟妖姬', '敌人-拟态投影']) {
+        const value = api.resolve({ portraitRef: ref });
+        assert(value && value.pngUrl && !value.svgUrl, 'production dangerous portrait and alias must be PNG only');
+        cases++;
+    }
     process.stdout.write(JSON.stringify({ ok: true, cases }, null, 2) + '\n');
 })().catch(function(error) {
     console.error(error && error.stack || error);

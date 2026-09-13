@@ -1,5 +1,6 @@
 // BMH 拆分：logs / open_saves_dir / diagnostic / audio_preview。
 // diagnostic / audio_preview 为 Phase 5.8 新增（迁移期音频临时入口配套）。
+// log 为 pm19 C4 新增（web→host 日志回写，免回执）。
 
 using System;
 using System.Collections.Generic;
@@ -201,6 +202,55 @@ namespace CF7Launcher.Guardian.Handlers
                 LogManager.Log("[BMH] audio_preview failed: " + ex.Message);
             }
             bootForm.PostToWeb(outMsg.ToString(Formatting.None));
+        }
+
+        // ─────── log（pm19 C4）───────
+        // web 侧日志水槽回写入口。协议: { cmd: "log", text: "..." }
+        // 免回执；text 缺失 / 非字符串 / 空 → 忽略；不做任何解析执行；长度裁到 512。
+        // 简单节流：1s 窗口内最多写 20 条，超出丢弃累计，下个窗口首条到达时
+        // 补写一条 "[WebLog] throttled xN" 汇总（无计时器，洪水停止则不补）。
+
+        private const int WEB_LOG_MAX_LEN = 512;
+        private const int WEB_LOG_WINDOW_MS = 1000;
+        private const int WEB_LOG_MAX_PER_WINDOW = 20;
+        private static readonly object _webLogLock = new object();
+        private static DateTime _webLogWindowStart = DateTime.MinValue;
+        private static int _webLogCount;
+        private static int _webLogDropped;
+
+        internal static void HandleLog(JObject msg)
+        {
+            JToken token = msg["text"];
+            if (token == null || token.Type != JTokenType.String) return;
+            string text = token.Value<string>();
+            if (string.IsNullOrEmpty(text)) return;
+            if (text.Length > WEB_LOG_MAX_LEN)
+                text = text.Substring(0, WEB_LOG_MAX_LEN);
+
+            lock (_webLogLock)
+            {
+                DateTime now = DateTime.UtcNow;
+                if (_webLogWindowStart == DateTime.MinValue
+                    || (now - _webLogWindowStart).TotalMilliseconds >= WEB_LOG_WINDOW_MS)
+                {
+                    if (_webLogDropped > 0)
+                    {
+                        LogManager.Log("[WebLog] throttled x" + _webLogDropped);
+                        _webLogDropped = 0;
+                    }
+                    _webLogWindowStart = now;
+                    _webLogCount = 0;
+                }
+
+                if (_webLogCount >= WEB_LOG_MAX_PER_WINDOW)
+                {
+                    _webLogDropped++;
+                    return;
+                }
+                _webLogCount++;
+            }
+
+            LogManager.Log("[WebLog] " + text);
         }
     }
 }

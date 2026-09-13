@@ -1284,10 +1284,16 @@ namespace CF7Launcher.Guardian.Hud
             FireBounds();
         }
 
+        internal uint InputBoundaryTick { get; private set; } = unchecked((uint)Environment.TickCount);
+
         public void ApplyState(StageOutcomeState state)
         {
             if (state == null) return;
             if (MarshalToUi(delegate { ApplyState(state); })) return;
+
+            if (_stageOutcomeState == null || _stageOutcomeState.RunId != state.RunId
+                || _stageOutcomeState.Revision != state.Revision)
+                InputBoundaryTick = unchecked((uint)Environment.TickCount);
 
             string previousRun = _stageOutcomeState != null
                 ? _stageOutcomeState.RunId : null;
@@ -1309,6 +1315,7 @@ namespace CF7Launcher.Guardian.Hud
         public void ResetState()
         {
             if (MarshalToUi(ResetState)) return;
+            InputBoundaryTick = unchecked((uint)Environment.TickCount);
             _stageOutcomeState = null;
             AdoptReturnChoices();
             _stageActions.Clear();

@@ -461,7 +461,10 @@ _root.帧计时器.定期更新天气 = function()
 _root.帧计时器.键盘输入控制目标 = function()
 {
     var 控制对象 = TargetCacheManager.findHero()
-    if(!控制对象) return;
+    if(!控制对象) {
+        org.flashNight.arki.scene.StageRunSession.observeInputState(null, -1);
+        return;
+    }
 
     if(_root.暂停){
         // 清空所有状态
@@ -574,6 +577,8 @@ _root.帧计时器.键盘输入控制目标 = function()
         //     _root.发布消息(_root.帧计时器.当前帧数 + ":模组=" + 模组名 + " 搓招=" + 控制对象.当前搓招名 + " [Launcher DFA]");
         // }
     }
+
+    org.flashNight.arki.scene.StageRunSession.observeInputState(控制对象, _root.暂停 ? 0 : mask);
 
     // 武器技能键由 AS2 输入服务统一持有按住锁存与释放编排。
     // 即使暂停也必须采样松键，让已消费的本次按住能够重新武装；是否允许触发由服务内部判定。

@@ -451,8 +451,10 @@ _root.主角函数.行走_玩家 = function() {
     var isBackwardsShooting = false;
 
     // 飞行状态检查 - 如果在飞行状态则直接返回
-    if (isFlying)
+    if (isFlying) {
+        org.flashNight.arki.scene.StageRunSession.observeMovementDecision(self, false, "flying");
         return;
+    }
 
     // 重置旋转
     self._rotation = 0;
@@ -471,6 +473,8 @@ _root.主角函数.行走_玩家 = function() {
         }
     }
     isMoving = rightMove || leftMove || upMove || downMove;
+    org.flashNight.arki.scene.StageRunSession.observeMovementDecision(self, upMove,
+        shouldRestrictMovement && !self.上下移动射击 ? (isReloading ? "reloading" : "shooting_recovery") : "movement_gate_open");
 
     // 处理移动逻辑
     if (isMoving) {

@@ -1,7 +1,10 @@
-// PM19 V2 — cached, full-page Canvas2D environment. No business authority.
+// PM19 V3 — cached, full-page Canvas2D environment. No business authority.
 // The committed integer board is never interpolated. A sweep is light, not data.
 const N = 19;
 const TAU = Math.PI * 2;
+// PM19 V3 cue kind 全集；集合外非空 kind 落 default 行对扫光并各警告一次。
+const KNOWN_KINDS = new Set(['quiet', 'arrival', 'exchange', 'exchange-pair',
+  'confirm', 'slots-pick', 'loading', 'sync', 'return', 'error', 'unfreeze']);
 
 export class EnvironmentRenderer {
   constructor(canvas, { scale = 1, cache = true } = {}) {
@@ -18,6 +21,7 @@ export class EnvironmentRenderer {
     this.masks = [];
     this.disposed = false;
     this.renders = this.rebuilds = 0;
+    this.warnedKinds = new Set();
     this.surfaces = [];
     // A failed cache allocation falls back to direct drawing on the SAME live
     // 2D canvas. No GL acquisition, hence no GL-poisoned-canvas retry hazard.
@@ -41,7 +45,7 @@ export class EnvironmentRenderer {
     const w = Math.max(1, Math.round(width * ratio));
     const h = Math.max(1, Math.round(height * ratio));
     this.masks = masks.map(r => ({ x: r.x * ratio, y: r.y * ratio,
-      w: r.width * ratio, h: r.height * ratio, fade: r.fade * ratio }));
+      w: r.width * ratio, h: r.height * ratio, fade: r.fade * ratio, erase: r.erase }));
     // Build feather gradients only when the layout changes, never per frame.
     for (const r of this.masks) {
       const {x,y,w,h,fade:f} = r;
@@ -147,15 +151,18 @@ export class EnvironmentRenderer {
     // Geometry is sampled only on layout/view/font changes, not every frame.
     // Feathered silence under foreground; no scan can cross a button or copy.
     ctx.globalCompositeOperation = 'destination-out';
-    ctx.globalAlpha = 1;
     for (const r of this.masks) {
       const x = r.x, y = r.y, w = r.w, h = r.h, f = r.fade;
+      // erase<1 退化为"压暗玻璃"：数字以低浓度幽灵透出，不留生硬挖空黑洞。
+      const a = r.erase == null ? 1 : r.erase;
+      ctx.globalAlpha = a;
       ctx.fillStyle = '#000'; ctx.fillRect(x, y, w, h);
       if (!f) continue;
       for (const s of r.strips) {
         ctx.fillStyle = s.g; ctx.fillRect(s.x, s.y, s.w, s.h);
       }
     }
+    ctx.globalAlpha = 1;
     ctx.globalCompositeOperation = 'source-over';
   }
 
@@ -181,31 +188,24 @@ export class EnvironmentRenderer {
     const phase = error ? .5 : loading ? (time % 3) / 3 : bright ? p : (time % 8) / 8;
     const position = Math.min(9, phase * 10);
     const envelope = error ? (still ? .5 : .5 + .1 * Math.sin(time * TAU / 4))
-      : loading ? (still ? .2 : .8) : bright ? Math.sin(Math.PI * p) : still ? .12 : .10;
+      : loading ? (still ? .2 : .8)
+      : state.kind === 'sync' ? (still ? .2 : Math.min(1, p * 4))
+      : state.kind === 'unfreeze' ? Math.sin(Math.PI * p) * .5
+      : bright ? Math.sin(Math.PI * p) : still ? .12 : .10;
     if (envelope > .001) {
-      ctx.save(); ctx.beginPath();
-      if (state.kind === 'confirm' || loading) {
-        for (let r = 0; r < N; r++) {
-          // 沿真实双对角循环扫光，只表示仍在等待，不冒充启动百分比。
-          if (loading && !still && Math.abs(r - (phase * 24 - 3)) > 2) continue;
-          for (const c of [r, 18 - r]) {
-            const i = (r * N + c) * 2;
-            ctx.rect(this.points[i] - w / 40, this.points[i + 1] - this.font * 1.65, w / 20, this.font * 1.6);
-          }
-        }
-      } else {
-        const r = Math.min(9, Math.floor(position));
-        for (const row of r === 9 ? [9] : [r, 18 - r]) {
-          const y = this.points[row * N * 2 + 1];
-          ctx.rect(0, y - this.font * 1.75, w, this.font * 1.85);
-        }
+      // 每种 kind 产出若干 { rects, alphaScale } 组，统一 clip → 画亮缓存。
+      for (const g of this.cueGroups(state, p, phase, position, still)) {
+        if (!g.rects.length) continue;
+        ctx.save(); ctx.beginPath();
+        for (const rc of g.rects) ctx.rect(...rc);
+        ctx.clip(); ctx.globalAlpha = envelope * g.alphaScale * (error ? .4 : .72);
+        if (this.useCache) ctx.drawImage(this.surfaces[1].canvas, 0, 0);
+        else this.drawBoard(ctx, true);
+        ctx.restore();
       }
-      ctx.clip(); ctx.globalAlpha = envelope * (state.kind === 'error' ? .4 : .72);
-      if (this.useCache) ctx.drawImage(this.surfaces[1].canvas, 0, 0);
-      else this.drawBoard(ctx, true);
-      ctx.restore();
     }
     // Peripheral guide lights, symmetric about (9,9); they never enter the UI.
+    // sync/confirm/arrival/slots-pick 无对坐标语义，沿用共享 position 近似，不跳过。
     const r = Math.min(9, Math.floor(position));
     for (const row of r === 9 ? [9] : [r, 18 - r]) {
       const y = this.points[row * N * 2 + 1];
@@ -220,6 +220,102 @@ export class EnvironmentRenderer {
     this.eraseForeground(ctx);
     ctx.globalAlpha = 1;
     this.renders++;
+  }
+
+  // PM19 V3: 显式 kind → 一个或多个 { rects, alphaScale } 组。
+  // rects 为 [x, y, w, h] 四元组，render() 对每组独立 clip → 画亮缓存一遍。
+  cueGroups(state, p, phase, position, still) {
+    const w = this.width, h = this.height, pts = this.points, font = this.font;
+    // 三种 rect 规格：整宽行横条 / 对角线与方环格 / 锯齿列逐格（x 随行变）。
+    const bar = r => [0, pts[r * N * 2 + 1] - font * 1.75, w, font * 1.85];
+    const cell = (r, c) => {
+      const i = (r * N + c) * 2;
+      return [pts[i] - w / 40, pts[i + 1] - font * 1.65, w / 20, font * 1.6];
+    };
+    const colCell = (r, c) => {
+      const i = (r * N + c) * 2;
+      return [pts[i] - w / 80, pts[i + 1] - font * .82, w / 40, font * 1.65];
+    };
+    const column = c => {
+      const rects = [];
+      for (let r = 0; r < N; r++) rects.push(colCell(r, c));
+      return rects;
+    };
+    // 领头格 k 拖 k-1/k-2 两档尾迹，越界档整组略去。
+    const band = (k, make) => {
+      const groups = [];
+      for (const [d, a] of [[0, 1], [1, .45], [2, .18]]) {
+        const q = k - d;
+        if (q < 0 || q >= N) continue;
+        groups.push({ rects: make(q), alphaScale: a });
+      }
+      return groups;
+    };
+    const pair = r => (r === 9 ? [9] : [r, 18 - r]);
+    const ringD = (r, c) => Math.max(Math.abs(r - 9), Math.abs(c - 9));
+    switch (state.kind) {
+      case 'confirm': {
+        // 双对角全量点亮；p>.75 四个对角端点格再过一遍同规格亮层收尾。
+        const rects = [];
+        for (let r = 0; r < N; r++) for (const c of [r, 18 - r]) rects.push(cell(r, c));
+        const groups = [{ rects, alphaScale: 1 }];
+        if (p > .75) groups.push({ rects: [cell(0, 0), cell(0, 18), cell(18, 0), cell(18, 18)], alphaScale: 1 });
+        return groups;
+      }
+      case 'loading': {
+        // 沿真实双对角循环扫光，只表示仍在等待，不冒充启动百分比。
+        const rects = [];
+        for (let r = 0; r < N; r++) {
+          if (!still && Math.abs(r - (phase * 24 - 3)) > 2) continue;
+          for (const c of [r, 18 - r]) rects.push(cell(r, c));
+        }
+        return [{ rects, alphaScale: 1 }];
+      }
+      case 'arrival': {
+        // 前半程行扫、后半程列扫，扫带各分 3 组。
+        if (p < .5) return band(Math.min(18, Math.floor(p * 2 * N)), r => [bar(r)]);
+        return band(Math.min(18, Math.floor((p - .5) * 2 * N)), column);
+      }
+      case 'sync': {
+        // 方环同心收束：外环先亮逐环累积，p>=.82 整板（含中心格 (9,9)）。
+        if (p >= .82) return [{ rects: [[0, 0, w, h]], alphaScale: 1 }];
+        const rects = [];
+        for (let r = 0; r < N; r++) for (let c = 0; c < N; c++) {
+          const d = ringD(r, c);
+          if (d && p >= (10 - d) / 9 * .82) rects.push(cell(r, c));
+        }
+        return [{ rects, alphaScale: 1 }];
+      }
+      case 'return': {
+        // 方环外→内熄灭：只留 d<=lit 的内环，p=1 自然全灭。
+        const lit = Math.ceil(9 * (1 - p)), rects = [];
+        for (let r = 0; r < N; r++) for (let c = 0; c < N; c++) {
+          const d = ringD(r, c);
+          if (d >= 1 && d <= lit) rects.push(cell(r, c));
+        }
+        return [{ rects, alphaScale: 1 }];
+      }
+      case 'exchange-pair': {
+        // 同一对坐标上的整宽行对 + 逐格列对（r=9 去重同原行对逻辑）。
+        const r = Math.min(9, Math.floor(position)), rects = [];
+        for (const row of pair(r)) rects.push(bar(row));
+        for (const c of pair(r)) for (let row = 0; row < N; row++) rects.push(colCell(row, c));
+        return [{ rects, alphaScale: 1 }];
+      }
+      case 'slots-pick':
+        // 列扫带单次过，规格同 arrival 列扫。
+        return band(Math.min(18, Math.floor(p * N)), column);
+      default: {
+        // exchange/unfreeze/quiet/error 与未知 kind：原行对扫光。
+        if (state.kind && !KNOWN_KINDS.has(state.kind) && !this.warnedKinds.has(state.kind)) {
+          this.warnedKinds.add(state.kind);
+          console.warn('unknown cue kind:', state.kind);
+        }
+        const r = Math.min(9, Math.floor(position)), rects = [];
+        for (const row of pair(r)) rects.push(bar(row));
+        return [{ rects, alphaScale: 1 }];
+      }
+    }
   }
 
   drawFault(time, still) {

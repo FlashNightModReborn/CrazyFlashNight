@@ -55,6 +55,10 @@ class org.flashNight.arki.scene.StageRunSession {
     private static var _focusReturnIntent:String = "";
     private static var _focusReturnRun:String = "";
     private static var _focusSceneSeen:Boolean = false;
+    private static var _focusInputAt:Number = -1000;
+    private static var _focusInputKey:String = "";
+    private static var _focusInputSkipped:Number = 0;
+    private static var _focusMovementAt:Number = -1000;
     // 结算恢复生产诊断：单行有界字段、连续重复折叠、进程内总量封顶。
     private static var _settlementDiagSeq:Number = 0;
     private static var _settlementDiagLast:String = "";
@@ -1344,12 +1348,54 @@ class org.flashNight.arki.scene.StageRunSession {
         _focusUntil = getTimer() + 1800000;
         _focusCount = 0;
         _focusRolling = rolling;
+        _focusInputAt = _focusMovementAt = -1000;
+        _focusInputKey = "";
+        _focusInputSkipped = 0;
         _focusHandlingIntent = _focusReturnIntent = _focusReturnRun = "";
         observeFocus("observe_ready", "", rolling ? "rolling_host_retention" : "bounded_512_30min");
     }
 
     private static function focusObservationActive():Boolean {
         return _focusSession != "" && (_focusRolling || (_focusCount < 512 && getTimer() < _focusUntil));
+    }
+
+    // 移动执行层独立节流，不能把按键采样的上行意图冒充位移成功。
+    public static function observeMovementDecision(unit:Object, allowed:Boolean, reason:String):Void {
+        if (!focusObservationActive() || getTimer() - _focusMovementAt < 250) return;
+        if (unit != org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheManager.findHero()) return;
+        _focusMovementAt = getTimer();
+        observeFocus("movement_decision", "", "upIntent=" + (unit.上行 === true)
+            + " upAllowed=" + allowed + " reason=" + reason
+            + " frame=" + Number(_root.帧计时器.当前帧数)
+            + " hero=" + safeText(String(unit._name), 64, "unknown")
+            + " x=" + Number(unit._x) + " z=" + Number(unit.Z轴坐标));
+    }
+
+    // 最多 4Hz，状态不变时 1Hz 心跳；只观察游戏方向键和角色状态，不采聊天内容。
+    public static function observeInputState(unit:Object, mask:Number):Void {
+        if (!focusObservationActive()) return;
+        var now:Number = getTimer();
+        if (now - _focusInputAt < 250) { _focusInputSkipped++; return; }
+        var fields:String = "sampleEnabled=" + (_root.暂停 !== true)
+            + " heroPresent=" + (unit != null)
+            + " hero=" + (unit == null ? "none" : safeText(String(unit._name), 64, "unknown"))
+            + " upKey=" + (unit == null ? -1 : Number(unit.上键))
+            + " rawW=" + Key.isDown(87)
+            + " rawUp=" + (unit != null && Key.isDown(unit.上键))
+            + " directionMask=" + (isNaN(mask) || mask < 0 ? -1 : mask & 15)
+            + " upIntent=" + (unit != null && unit.上行 === true)
+            + " paused=" + (_root.暂停 === true)
+            + " downed=" + (unit != null && unit.倒地 === true)
+            + " killed=" + (unit != null && unit._killed === true)
+            + " hp=" + (unit == null ? -1 : Number(unit.hp))
+            + " x=" + (unit == null ? 0 : Number(unit._x))
+            + " z=" + (unit == null ? 0 : Number(unit.Z轴坐标));
+        if (fields == _focusInputKey && now - _focusInputAt < 1000) { _focusInputSkipped++; return; }
+        _focusInputKey = fields;
+        _focusInputAt = now;
+        observeFocus("input_sample", "", fields + " coalescedFrames=" + _focusInputSkipped
+            + " frame=" + Number(_root.帧计时器.当前帧数));
+        _focusInputSkipped = 0;
     }
 
     private static function observeFocus(eventName:String, intentId:String, detail:String):Void {

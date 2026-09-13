@@ -746,31 +746,31 @@
         <Alignment>true</Alignment>
         <Xmin>290</Xmin>
         <Xmax>1490</Xmax>
-        <Ymin>330</Ymin>
-        <Ymax>600</Ymax>
+        <Ymin>530</Ymin>
+        <Ymax>800</Ymax>
         <Width>1500</Width>
-        <Height>630</Height>
+        <Height>830</Height>
         <SpaceCondition>室内</SpaceCondition>
         <MaxIllumination>7</MaxIllumination>
         <MinIllumination>5</MinIllumination>
         <Collision>
-            <Point>280,325</Point>
-            <Point>380,325</Point>
-            <Point>280,410</Point>
-        </Collision>
-        <Collision>
-            <Point>280,415</Point>
-            <Point>700,415</Point>
-            <Point>700,540</Point>
-            <Point>890,540</Point>
-            <Point>890,610</Point>
+            <Point>280,525</Point>
+            <Point>380,525</Point>
             <Point>280,610</Point>
         </Collision>
         <Collision>
-            <Point>1020,540</Point>
-            <Point>1200,540</Point>
-            <Point>1200,610</Point>
-            <Point>1020,610</Point>
+            <Point>280,615</Point>
+            <Point>700,615</Point>
+            <Point>700,740</Point>
+            <Point>890,740</Point>
+            <Point>890,810</Point>
+            <Point>280,810</Point>
+        </Collision>
+        <Collision>
+            <Point>1020,740</Point>
+            <Point>1200,740</Point>
+            <Point>1200,810</Point>
+            <Point>1020,810</Point>
         </Collision>
         <BGM>Dialtone</BGM>
     </Environment>

@@ -1,6 +1,7 @@
 // P3b Phase 1g + Phase 2a: Bootstrap JS→C# 协议 handler
 // Phase 1 入站 cmd: ready / list / start_game / delete / retry / ping
 // Phase 2a 入站 cmd: load / load_raw / save / reset / export / import_start / import_commit / logs
+// pm19 C4 入站 cmd: log（web→host 日志回写，免回执、不解析执行）
 // Phase 1 出站 cmd: state / list_resp / delete_resp / error / pong
 // Phase 2a 出站 cmd: load_resp / load_raw_resp / save_resp / reset_resp / export_resp / import_target / import_resp / logs_resp
 // 详见 plan compressed-floating-nebula.md Phase 2a §4.3 协议表。
@@ -124,6 +125,9 @@ namespace CF7Launcher.Guardian
                     return;
                 case "audio_preview":
                     UiCommandHandler.HandleAudioPreview(msg, bootForm);
+                    return;
+                case "log":
+                    UiCommandHandler.HandleLog(msg);
                     return;
 
                 // ─────── Config ───────

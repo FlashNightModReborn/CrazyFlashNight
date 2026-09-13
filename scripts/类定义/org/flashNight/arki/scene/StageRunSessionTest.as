@@ -73,6 +73,7 @@ class org.flashNight.arki.scene.StageRunSessionTest {
         testRetiredDeliverableNeverStartsNavigation();
         testHostIntentRevisionAndIdempotency();
         testFocusObservationIsBoundedAndNonAuthoritative();
+        testFocusInputSamplingIsBounded();
         testLifecycleAdmissionAndReservation();
         testStageManagerReservationAuthority();
         testStageLoaderRootExactlyOnce();
@@ -3737,6 +3738,30 @@ class org.flashNight.arki.scene.StageRunSessionTest {
         };
         _root.gameCommands.stageOutcomeAction(stale);
         assertEquals(1, ItemUtil.getTotal(REVIVE), "new id with stale revision is also zero-write");
+    }
+
+    private static function testFocusInputSamplingIsBounded():Void {
+        resetWorld(0);
+        var lines:Array = [];
+        _root.server = {isSocketConnected:true, sendServerMessage:function(line:String):Void { lines.push(line); }};
+        _root.gameCommands.stageOutcomeObserve({task:"cmd", action:"stageOutcomeObserve", v:2,
+            session:"focus.input.fixture", mode:"rolling"});
+        var observer:Object = StageRunSession;
+        observer._focusInputAt = -1000;
+        var unit:Object = {_name:"input.fixture", 上键:87, 上行:true, hp:100, _x:3, Z轴坐标:4};
+        StageRunSession.observeInputState(unit, 4);
+        assertTrue(String(lines[lines.length - 1]).indexOf("directionMask=4 upIntent=true") >= 0,
+            "input observation binds sampled mask and movement intent");
+        var count:Number = lines.length;
+        StageRunSession.observeInputState(unit, 4);
+        assertEquals(count, lines.length, "input observations are rate bounded");
+        assertTrue(unit.上行 && unit.hp == 100, "input observations never mutate unit state");
+        observer._focusInputAt = -1000;
+        StageRunSession.observeInputState(null, -1);
+        assertTrue(String(lines[lines.length - 1]).indexOf("heroPresent=false") >= 0
+                && String(lines[lines.length - 1]).indexOf("directionMask=-1") >= 0,
+            "missing controller is explicit");
+        observer._focusSession = "";
     }
 
     private static function testFocusObservationIsBoundedAndNonAuthoritative():Void {
