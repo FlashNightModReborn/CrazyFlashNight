@@ -1,11 +1,11 @@
 {
   "schema": "cf7.enemy-portrait-manifest.v1",
   "status": "human_accepted_portraits_promoted",
-  "generatedAt": "2026-08-09T13:44:54Z",
+  "generatedAt": "2026-09-13T10:37:16Z",
   "consumerContract": {
     "identityKey": "portraitRef + variantKey",
-    "primaryFormat": "per-variant subject.preferredFormat; PNG is primary for every SVG containing embedded raster images",
-    "fallbackFormat": "the alternate signed subject format, then caller legacy asset",
+    "primaryFormat": "per-variant subject.preferredFormat; PNG is primary for embedded raster images or convolution filters; convolution SVG runtime loading is prohibited",
+    "fallbackFormat": "only runtime-allowed alternate subject format, then caller legacy asset",
     "presentationOwnedBy": "launcher/web/modules/portrait-resolver.js and consumer CSS",
     "unresolvedPolicy": "pending/excluded identities expose no unsigned modern subject",
     "teamCompatible": true,
@@ -138,13 +138,13 @@
       },
       {
         "path": "tools/portrait-pilot/promote-team-portraits-v1.py",
-        "bytes": 100162,
-        "sha256": "B73BC51CCD2A161433A28834DB0733C8D711C8D3137CE04A3C25860119F6D0B9"
+        "bytes": 103272,
+        "sha256": "0FF78AD6823DA1A15DD01E7EE4744163CE8CD5CF453CBBEABFB45A6C7D283EE1"
       },
       {
         "path": "tools/portrait-pilot/promote-enemy-portraits-v1.py",
-        "bytes": 69824,
-        "sha256": "101ECE3C52C2BF8674895EDBCE5E7801564D6C8251607075D3115BF9AFF241A4"
+        "bytes": 75524,
+        "sha256": "54EAD22327C25B08A5C55BC26135CE702CBCA945FB33A2881B6CC61DBA9A7636"
       },
       {
         "path": "tmp/portrait-pilot/arena-direct-gap-localization-r215-five-fast3-20260809T211500Z/candidate-manifest.json",
@@ -374,7 +374,9 @@
               ],
               "flipX": false,
               "embeddedRasterCount": 0,
-              "isRasterHeavy": false
+              "isRasterHeavy": false,
+              "runtimeAllowed": true,
+              "convolutionFilterCount": 0
             },
             "pngFallback": {
               "url": "assets/enemy-portraits/subjects/71c448ddf1d57bf7143efb4e.png",
@@ -468,7 +470,9 @@
               ],
               "flipX": false,
               "embeddedRasterCount": 0,
-              "isRasterHeavy": false
+              "isRasterHeavy": false,
+              "runtimeAllowed": true,
+              "convolutionFilterCount": 0
             },
             "pngFallback": {
               "url": "assets/enemy-portraits/subjects/ac9a62c1f39c0fd459231c8d.png",
@@ -562,7 +566,9 @@
               ],
               "flipX": false,
               "embeddedRasterCount": 0,
-              "isRasterHeavy": false
+              "isRasterHeavy": false,
+              "runtimeAllowed": true,
+              "convolutionFilterCount": 0
             },
             "pngFallback": {
               "url": "assets/enemy-portraits/subjects/1c85d3732567f8303a86f8d6.png",
@@ -656,7 +662,9 @@
               ],
               "flipX": false,
               "embeddedRasterCount": 0,
-              "isRasterHeavy": false
+              "isRasterHeavy": false,
+              "runtimeAllowed": true,
+              "convolutionFilterCount": 0
             },
             "pngFallback": {
               "url": "assets/enemy-portraits/subjects/42e716182c1f46a4037ddf47.png",
@@ -750,7 +758,9 @@
               ],
               "flipX": false,
               "embeddedRasterCount": 0,
-              "isRasterHeavy": false
+              "isRasterHeavy": false,
+              "runtimeAllowed": true,
+              "convolutionFilterCount": 0
             },
             "pngFallback": {
               "url": "assets/enemy-portraits/subjects/66e301a356ca2bfac95e0e9e.png",
@@ -844,7 +854,9 @@
               ],
               "flipX": false,
               "embeddedRasterCount": 0,
-              "isRasterHeavy": false
+              "isRasterHeavy": false,
+              "runtimeAllowed": true,
+              "convolutionFilterCount": 0
             },
             "pngFallback": {
               "url": "assets/enemy-portraits/subjects/87e1b95cc272e16ae365194f.png",
@@ -925,7 +937,7 @@
         "default": {
           "status": "human_accepted",
           "subject": {
-            "preferredFormat": "svg",
+            "preferredFormat": "png",
             "svg": {
               "url": "assets/enemy-portraits/subjects/580ff19fc1a233885ea21568.svg",
               "bytes": 292267,
@@ -938,7 +950,9 @@
               ],
               "flipX": false,
               "embeddedRasterCount": 0,
-              "isRasterHeavy": false
+              "isRasterHeavy": false,
+              "runtimeAllowed": false,
+              "convolutionFilterCount": 3
             },
             "pngFallback": {
               "url": "assets/enemy-portraits/subjects/d6145edb4d00967e53b3f7ad.png",
@@ -1032,7 +1046,9 @@
               ],
               "flipX": false,
               "embeddedRasterCount": 0,
-              "isRasterHeavy": false
+              "isRasterHeavy": false,
+              "runtimeAllowed": true,
+              "convolutionFilterCount": 0
             },
             "pngFallback": {
               "url": "assets/enemy-portraits/subjects/a1caedc47e6230af68986923.png",
@@ -1126,7 +1142,9 @@
               ],
               "flipX": false,
               "embeddedRasterCount": 0,
-              "isRasterHeavy": false
+              "isRasterHeavy": false,
+              "runtimeAllowed": true,
+              "convolutionFilterCount": 0
             },
             "pngFallback": {
               "url": "assets/enemy-portraits/subjects/a77bb5ffdb8fe69ab0bd3caa.png",
@@ -1220,7 +1238,9 @@
               ],
               "flipX": false,
               "embeddedRasterCount": 0,
-              "isRasterHeavy": false
+              "isRasterHeavy": false,
+              "runtimeAllowed": true,
+              "convolutionFilterCount": 0
             },
             "pngFallback": {
               "url": "assets/enemy-portraits/subjects/7d0137c6fe1131f598368cba.png",
@@ -1301,7 +1321,7 @@
         "default": {
           "status": "human_accepted",
           "subject": {
-            "preferredFormat": "svg",
+            "preferredFormat": "png",
             "svg": {
               "url": "assets/enemy-portraits/subjects/e939c7c90f70815246c75e65.svg",
               "bytes": 196901,
@@ -1314,7 +1334,9 @@
               ],
               "flipX": true,
               "embeddedRasterCount": 0,
-              "isRasterHeavy": false
+              "isRasterHeavy": false,
+              "runtimeAllowed": false,
+              "convolutionFilterCount": 1
             },
             "pngFallback": {
               "url": "assets/enemy-portraits/subjects/e3315fa9b11421742f1d372f.png",
@@ -1408,7 +1430,9 @@
               ],
               "flipX": false,
               "embeddedRasterCount": 0,
-              "isRasterHeavy": false
+              "isRasterHeavy": false,
+              "runtimeAllowed": true,
+              "convolutionFilterCount": 0
             },
             "pngFallback": {
               "url": "assets/enemy-portraits/subjects/42c0423db89fc1c0eca47dce.png",
@@ -1504,7 +1528,9 @@
               ],
               "flipX": false,
               "embeddedRasterCount": 0,
-              "isRasterHeavy": false
+              "isRasterHeavy": false,
+              "runtimeAllowed": true,
+              "convolutionFilterCount": 0
             },
             "pngFallback": {
               "url": "assets/enemy-portraits/subjects/0efa57dca380152c4fdbc141.png",
@@ -1601,7 +1627,7 @@
         "default": {
           "status": "human_accepted",
           "subject": {
-            "preferredFormat": "svg",
+            "preferredFormat": "png",
             "svg": {
               "url": "assets/enemy-portraits/subjects/6bdb3c637a2ccfcd979de568.svg",
               "bytes": 307429,
@@ -1614,7 +1640,9 @@
               ],
               "flipX": false,
               "embeddedRasterCount": 0,
-              "isRasterHeavy": false
+              "isRasterHeavy": false,
+              "runtimeAllowed": false,
+              "convolutionFilterCount": 19
             },
             "pngFallback": {
               "url": "assets/enemy-portraits/subjects/9661316acc89c8c1fd783088.png",
@@ -1710,7 +1738,9 @@
               ],
               "flipX": false,
               "embeddedRasterCount": 0,
-              "isRasterHeavy": false
+              "isRasterHeavy": false,
+              "runtimeAllowed": true,
+              "convolutionFilterCount": 0
             },
             "pngFallback": {
               "url": "assets/enemy-portraits/subjects/6031fcfd1203d58e6058a30e.png",
@@ -1805,7 +1835,9 @@
               ],
               "flipX": true,
               "embeddedRasterCount": 0,
-              "isRasterHeavy": false
+              "isRasterHeavy": false,
+              "runtimeAllowed": true,
+              "convolutionFilterCount": 0
             },
             "pngFallback": {
               "url": "assets/enemy-portraits/subjects/0f3e6481b57f1bc5b34258be.png",
@@ -1899,7 +1931,9 @@
               ],
               "flipX": false,
               "embeddedRasterCount": 0,
-              "isRasterHeavy": false
+              "isRasterHeavy": false,
+              "runtimeAllowed": true,
+              "convolutionFilterCount": 0
             },
             "pngFallback": {
               "url": "assets/enemy-portraits/subjects/02601b796e0dead437468882.png",
@@ -1995,7 +2029,9 @@
               ],
               "flipX": false,
               "embeddedRasterCount": 0,
-              "isRasterHeavy": false
+              "isRasterHeavy": false,
+              "runtimeAllowed": true,
+              "convolutionFilterCount": 0
             },
             "pngFallback": {
               "url": "assets/enemy-portraits/subjects/f01e14e5e5dd53f8e1fdb3a3.png",
@@ -2090,7 +2126,9 @@
               ],
               "flipX": false,
               "embeddedRasterCount": 0,
-              "isRasterHeavy": false
+              "isRasterHeavy": false,
+              "runtimeAllowed": true,
+              "convolutionFilterCount": 0
             },
             "pngFallback": {
               "url": "assets/enemy-portraits/subjects/fc0d5f2b90ec2e22589de75f.png",
@@ -2184,7 +2222,9 @@
               ],
               "flipX": false,
               "embeddedRasterCount": 0,
-              "isRasterHeavy": false
+              "isRasterHeavy": false,
+              "runtimeAllowed": true,
+              "convolutionFilterCount": 0
             },
             "pngFallback": {
               "url": "assets/enemy-portraits/subjects/a88d887fcdb11b8f687f5120.png",
@@ -2294,7 +2334,9 @@
               ],
               "flipX": false,
               "embeddedRasterCount": 0,
-              "isRasterHeavy": false
+              "isRasterHeavy": false,
+              "runtimeAllowed": true,
+              "convolutionFilterCount": 0
             },
             "pngFallback": {
               "url": "assets/enemy-portraits/subjects/587302397f4c70b48d79e048.png",
@@ -2375,7 +2417,7 @@
         "default": {
           "status": "human_accepted",
           "subject": {
-            "preferredFormat": "svg",
+            "preferredFormat": "png",
             "svg": {
               "url": "assets/enemy-portraits/subjects/a3e0ddfac0e2b738f4709c77.svg",
               "bytes": 322144,
@@ -2388,7 +2430,9 @@
               ],
               "flipX": false,
               "embeddedRasterCount": 0,
-              "isRasterHeavy": false
+              "isRasterHeavy": false,
+              "runtimeAllowed": false,
+              "convolutionFilterCount": 10
             },
             "pngFallback": {
               "url": "assets/enemy-portraits/subjects/35e157e74e526bbeb1ac22e8.png",
@@ -2482,7 +2526,9 @@
               ],
               "flipX": false,
               "embeddedRasterCount": 0,
-              "isRasterHeavy": false
+              "isRasterHeavy": false,
+              "runtimeAllowed": true,
+              "convolutionFilterCount": 0
             },
             "pngFallback": {
               "url": "assets/enemy-portraits/subjects/9ef61802192598a58d39f1c3.png",
@@ -2578,7 +2624,9 @@
               ],
               "flipX": false,
               "embeddedRasterCount": 0,
-              "isRasterHeavy": false
+              "isRasterHeavy": false,
+              "runtimeAllowed": true,
+              "convolutionFilterCount": 0
             },
             "pngFallback": {
               "url": "assets/enemy-portraits/subjects/e9ef97bd04d07990b0d66673.png",
@@ -2675,7 +2723,9 @@
               ],
               "flipX": false,
               "embeddedRasterCount": 0,
-              "isRasterHeavy": false
+              "isRasterHeavy": false,
+              "runtimeAllowed": true,
+              "convolutionFilterCount": 0
             },
             "pngFallback": {
               "url": "assets/enemy-portraits/subjects/75557352b78ec8f580845587.png",
@@ -2772,7 +2822,9 @@
               ],
               "flipX": false,
               "embeddedRasterCount": 0,
-              "isRasterHeavy": false
+              "isRasterHeavy": false,
+              "runtimeAllowed": true,
+              "convolutionFilterCount": 0
             },
             "pngFallback": {
               "url": "assets/enemy-portraits/subjects/65bdb5d8fbae670ee1fc4110.png",
@@ -2867,7 +2919,9 @@
               ],
               "flipX": false,
               "embeddedRasterCount": 0,
-              "isRasterHeavy": false
+              "isRasterHeavy": false,
+              "runtimeAllowed": true,
+              "convolutionFilterCount": 0
             },
             "pngFallback": {
               "url": "assets/enemy-portraits/subjects/50201694c1fffcb7142fa454.png",
@@ -2963,7 +3017,9 @@
               ],
               "flipX": false,
               "embeddedRasterCount": 0,
-              "isRasterHeavy": false
+              "isRasterHeavy": false,
+              "runtimeAllowed": true,
+              "convolutionFilterCount": 0
             },
             "pngFallback": {
               "url": "assets/enemy-portraits/subjects/9d8f0f89a1b7417d46b35500.png",
@@ -3060,7 +3116,9 @@
               ],
               "flipX": false,
               "embeddedRasterCount": 0,
-              "isRasterHeavy": false
+              "isRasterHeavy": false,
+              "runtimeAllowed": true,
+              "convolutionFilterCount": 0
             },
             "pngFallback": {
               "url": "assets/enemy-portraits/subjects/76d2535536dacb27c6f9fb9b.png",
@@ -3157,7 +3215,9 @@
               ],
               "flipX": false,
               "embeddedRasterCount": 0,
-              "isRasterHeavy": false
+              "isRasterHeavy": false,
+              "runtimeAllowed": true,
+              "convolutionFilterCount": 0
             },
             "pngFallback": {
               "url": "assets/enemy-portraits/subjects/fe0158bc607430d08b378e07.png",
@@ -3254,7 +3314,9 @@
               ],
               "flipX": false,
               "embeddedRasterCount": 0,
-              "isRasterHeavy": false
+              "isRasterHeavy": false,
+              "runtimeAllowed": true,
+              "convolutionFilterCount": 0
             },
             "pngFallback": {
               "url": "assets/enemy-portraits/subjects/8f18aa0a238fc47d48352171.png",
@@ -3349,7 +3411,9 @@
               ],
               "flipX": false,
               "embeddedRasterCount": 0,
-              "isRasterHeavy": false
+              "isRasterHeavy": false,
+              "runtimeAllowed": true,
+              "convolutionFilterCount": 0
             },
             "pngFallback": {
               "url": "assets/enemy-portraits/subjects/2d6805bde42afa0748909d1f.png",
@@ -3445,7 +3509,9 @@
               ],
               "flipX": false,
               "embeddedRasterCount": 0,
-              "isRasterHeavy": false
+              "isRasterHeavy": false,
+              "runtimeAllowed": true,
+              "convolutionFilterCount": 0
             },
             "pngFallback": {
               "url": "assets/enemy-portraits/subjects/5bfcd54dcbc7e18f3e9320d8.png",
@@ -3542,7 +3608,9 @@
               ],
               "flipX": false,
               "embeddedRasterCount": 0,
-              "isRasterHeavy": false
+              "isRasterHeavy": false,
+              "runtimeAllowed": true,
+              "convolutionFilterCount": 0
             },
             "pngFallback": {
               "url": "assets/enemy-portraits/subjects/da6c976cc72a6e07cabf0186.png",
@@ -3639,7 +3707,9 @@
               ],
               "flipX": false,
               "embeddedRasterCount": 0,
-              "isRasterHeavy": false
+              "isRasterHeavy": false,
+              "runtimeAllowed": true,
+              "convolutionFilterCount": 0
             },
             "pngFallback": {
               "url": "assets/enemy-portraits/subjects/a0df357b8a71290650b6d0b7.png",
@@ -3736,7 +3806,9 @@
               ],
               "flipX": false,
               "embeddedRasterCount": 0,
-              "isRasterHeavy": false
+              "isRasterHeavy": false,
+              "runtimeAllowed": true,
+              "convolutionFilterCount": 0
             },
             "pngFallback": {
               "url": "assets/enemy-portraits/subjects/bc11210ea7979e9da574cb5a.png",
@@ -3833,7 +3905,9 @@
               ],
               "flipX": false,
               "embeddedRasterCount": 0,
-              "isRasterHeavy": false
+              "isRasterHeavy": false,
+              "runtimeAllowed": true,
+              "convolutionFilterCount": 0
             },
             "pngFallback": {
               "url": "assets/enemy-portraits/subjects/4f7c935401944f9fd7a1e46b.png",
@@ -3930,7 +4004,9 @@
               ],
               "flipX": false,
               "embeddedRasterCount": 0,
-              "isRasterHeavy": false
+              "isRasterHeavy": false,
+              "runtimeAllowed": true,
+              "convolutionFilterCount": 0
             },
             "pngFallback": {
               "url": "assets/enemy-portraits/subjects/29194edbe835f7c7fd13a39a.png",
@@ -4027,7 +4103,9 @@
               ],
               "flipX": false,
               "embeddedRasterCount": 0,
-              "isRasterHeavy": false
+              "isRasterHeavy": false,
+              "runtimeAllowed": true,
+              "convolutionFilterCount": 0
             },
             "pngFallback": {
               "url": "assets/enemy-portraits/subjects/44000aac1ee898e73ec3dfa4.png",
@@ -4122,7 +4200,9 @@
               ],
               "flipX": false,
               "embeddedRasterCount": 0,
-              "isRasterHeavy": false
+              "isRasterHeavy": false,
+              "runtimeAllowed": true,
+              "convolutionFilterCount": 0
             },
             "pngFallback": {
               "url": "assets/enemy-portraits/subjects/f7386287f1937d2d4b48fe16.png",
@@ -4216,7 +4296,9 @@
               ],
               "flipX": false,
               "embeddedRasterCount": 0,
-              "isRasterHeavy": false
+              "isRasterHeavy": false,
+              "runtimeAllowed": true,
+              "convolutionFilterCount": 0
             },
             "pngFallback": {
               "url": "assets/enemy-portraits/subjects/f342368a6a58d4fae48d083f.png",
@@ -4310,7 +4392,9 @@
               ],
               "flipX": false,
               "embeddedRasterCount": 0,
-              "isRasterHeavy": false
+              "isRasterHeavy": false,
+              "runtimeAllowed": true,
+              "convolutionFilterCount": 0
             },
             "pngFallback": {
               "url": "assets/enemy-portraits/subjects/f06c8e0dd656e3165d1b3674.png",
@@ -4404,7 +4488,9 @@
               ],
               "flipX": true,
               "embeddedRasterCount": 0,
-              "isRasterHeavy": false
+              "isRasterHeavy": false,
+              "runtimeAllowed": true,
+              "convolutionFilterCount": 0
             },
             "pngFallback": {
               "url": "assets/enemy-portraits/subjects/66cb1da589432506a802b507.png",
@@ -4498,7 +4584,9 @@
               ],
               "flipX": false,
               "embeddedRasterCount": 0,
-              "isRasterHeavy": false
+              "isRasterHeavy": false,
+              "runtimeAllowed": true,
+              "convolutionFilterCount": 0
             },
             "pngFallback": {
               "url": "assets/enemy-portraits/subjects/b37d6051e3fefa39c0fb273c.png",
@@ -4592,7 +4680,9 @@
               ],
               "flipX": false,
               "embeddedRasterCount": 0,
-              "isRasterHeavy": false
+              "isRasterHeavy": false,
+              "runtimeAllowed": true,
+              "convolutionFilterCount": 0
             },
             "pngFallback": {
               "url": "assets/enemy-portraits/subjects/3dbfe8fa876b0fb957693afc.png",
@@ -4686,7 +4776,9 @@
               ],
               "flipX": false,
               "embeddedRasterCount": 0,
-              "isRasterHeavy": false
+              "isRasterHeavy": false,
+              "runtimeAllowed": true,
+              "convolutionFilterCount": 0
             },
             "pngFallback": {
               "url": "assets/enemy-portraits/subjects/59389522b015f51ea5e696d0.png",
@@ -4780,7 +4872,9 @@
               ],
               "flipX": true,
               "embeddedRasterCount": 0,
-              "isRasterHeavy": false
+              "isRasterHeavy": false,
+              "runtimeAllowed": true,
+              "convolutionFilterCount": 0
             },
             "pngFallback": {
               "url": "assets/enemy-portraits/subjects/762b3b5c01052c22f5530ed2.png",
@@ -4874,7 +4968,9 @@
               ],
               "flipX": false,
               "embeddedRasterCount": 0,
-              "isRasterHeavy": false
+              "isRasterHeavy": false,
+              "runtimeAllowed": true,
+              "convolutionFilterCount": 0
             },
             "pngFallback": {
               "url": "assets/enemy-portraits/subjects/8e2bf523a1dd098a74a735dc.png",
@@ -4968,7 +5064,9 @@
               ],
               "flipX": false,
               "embeddedRasterCount": 0,
-              "isRasterHeavy": false
+              "isRasterHeavy": false,
+              "runtimeAllowed": true,
+              "convolutionFilterCount": 0
             },
             "pngFallback": {
               "url": "assets/enemy-portraits/subjects/ce61a429bd2ca9cf2adcedf7.png",
@@ -5062,7 +5160,9 @@
               ],
               "flipX": false,
               "embeddedRasterCount": 0,
-              "isRasterHeavy": false
+              "isRasterHeavy": false,
+              "runtimeAllowed": true,
+              "convolutionFilterCount": 0
             },
             "pngFallback": {
               "url": "assets/enemy-portraits/subjects/1e4e8784429ae35a9e52f21f.png",
@@ -5156,7 +5256,9 @@
               ],
               "flipX": false,
               "embeddedRasterCount": 0,
-              "isRasterHeavy": false
+              "isRasterHeavy": false,
+              "runtimeAllowed": true,
+              "convolutionFilterCount": 0
             },
             "pngFallback": {
               "url": "assets/enemy-portraits/subjects/25e6f051e21a37147153a295.png",
@@ -5237,7 +5339,7 @@
         "default": {
           "status": "human_accepted",
           "subject": {
-            "preferredFormat": "svg",
+            "preferredFormat": "png",
             "svg": {
               "url": "assets/enemy-portraits/subjects/bd852e1d013b93db5281f77f.svg",
               "bytes": 87454,
@@ -5250,7 +5352,9 @@
               ],
               "flipX": false,
               "embeddedRasterCount": 0,
-              "isRasterHeavy": false
+              "isRasterHeavy": false,
+              "runtimeAllowed": false,
+              "convolutionFilterCount": 1
             },
             "pngFallback": {
               "url": "assets/enemy-portraits/subjects/5cad27c697e61bd8340f37f0.png",
@@ -5344,7 +5448,9 @@
               ],
               "flipX": false,
               "embeddedRasterCount": 0,
-              "isRasterHeavy": false
+              "isRasterHeavy": false,
+              "runtimeAllowed": true,
+              "convolutionFilterCount": 0
             },
             "pngFallback": {
               "url": "assets/enemy-portraits/subjects/b7423c5875748b2cde8f3532.png",
@@ -5438,7 +5544,9 @@
               ],
               "flipX": false,
               "embeddedRasterCount": 0,
-              "isRasterHeavy": false
+              "isRasterHeavy": false,
+              "runtimeAllowed": true,
+              "convolutionFilterCount": 0
             },
             "pngFallback": {
               "url": "assets/enemy-portraits/subjects/40931359adcab602d8c4fb5c.png",
@@ -5532,7 +5640,9 @@
               ],
               "flipX": true,
               "embeddedRasterCount": 0,
-              "isRasterHeavy": false
+              "isRasterHeavy": false,
+              "runtimeAllowed": true,
+              "convolutionFilterCount": 0
             },
             "pngFallback": {
               "url": "assets/enemy-portraits/subjects/22ac7145be9be2dc5691b435.png",
@@ -5626,7 +5736,9 @@
               ],
               "flipX": true,
               "embeddedRasterCount": 0,
-              "isRasterHeavy": false
+              "isRasterHeavy": false,
+              "runtimeAllowed": true,
+              "convolutionFilterCount": 0
             },
             "pngFallback": {
               "url": "assets/enemy-portraits/subjects/22ac7145be9be2dc5691b435.png",
@@ -5720,7 +5832,9 @@
               ],
               "flipX": false,
               "embeddedRasterCount": 0,
-              "isRasterHeavy": false
+              "isRasterHeavy": false,
+              "runtimeAllowed": true,
+              "convolutionFilterCount": 0
             },
             "pngFallback": {
               "url": "assets/enemy-portraits/subjects/ab7584e4b01af41197ad254c.png",
@@ -5814,7 +5928,9 @@
               ],
               "flipX": false,
               "embeddedRasterCount": 0,
-              "isRasterHeavy": false
+              "isRasterHeavy": false,
+              "runtimeAllowed": true,
+              "convolutionFilterCount": 0
             },
             "pngFallback": {
               "url": "assets/enemy-portraits/subjects/18cc7e5bf5d73be8b29e1552.png",
@@ -5895,7 +6011,7 @@
         "default": {
           "status": "human_accepted",
           "subject": {
-            "preferredFormat": "svg",
+            "preferredFormat": "png",
             "svg": {
               "url": "assets/enemy-portraits/subjects/59239d861a4750ba3023f034.svg",
               "bytes": 87454,
@@ -5908,7 +6024,9 @@
               ],
               "flipX": false,
               "embeddedRasterCount": 0,
-              "isRasterHeavy": false
+              "isRasterHeavy": false,
+              "runtimeAllowed": false,
+              "convolutionFilterCount": 1
             },
             "pngFallback": {
               "url": "assets/enemy-portraits/subjects/2c5c249fc621a199de1708a1.png",
@@ -6004,7 +6122,9 @@
               ],
               "flipX": false,
               "embeddedRasterCount": 0,
-              "isRasterHeavy": false
+              "isRasterHeavy": false,
+              "runtimeAllowed": true,
+              "convolutionFilterCount": 0
             },
             "pngFallback": {
               "url": "assets/enemy-portraits/subjects/9db630e5780285f628fcf5d8.png",
@@ -6099,7 +6219,9 @@
               ],
               "flipX": false,
               "embeddedRasterCount": 0,
-              "isRasterHeavy": false
+              "isRasterHeavy": false,
+              "runtimeAllowed": true,
+              "convolutionFilterCount": 0
             },
             "pngFallback": {
               "url": "assets/enemy-portraits/subjects/20dd74dec6f598171dfb451b.png",
@@ -6195,7 +6317,9 @@
               ],
               "flipX": false,
               "embeddedRasterCount": 0,
-              "isRasterHeavy": false
+              "isRasterHeavy": false,
+              "runtimeAllowed": true,
+              "convolutionFilterCount": 0
             },
             "pngFallback": {
               "url": "assets/enemy-portraits/subjects/524f914debfddca00e98b756.png",
@@ -6292,7 +6416,9 @@
               ],
               "flipX": false,
               "embeddedRasterCount": 0,
-              "isRasterHeavy": false
+              "isRasterHeavy": false,
+              "runtimeAllowed": true,
+              "convolutionFilterCount": 0
             },
             "pngFallback": {
               "url": "assets/enemy-portraits/subjects/7a5d7f20cebffda557382d42.png",
@@ -6387,7 +6513,9 @@
               ],
               "flipX": false,
               "embeddedRasterCount": 0,
-              "isRasterHeavy": false
+              "isRasterHeavy": false,
+              "runtimeAllowed": true,
+              "convolutionFilterCount": 0
             },
             "pngFallback": {
               "url": "assets/enemy-portraits/subjects/6730082a380086ec351c3787.png",
@@ -6483,7 +6611,9 @@
               ],
               "flipX": false,
               "embeddedRasterCount": 0,
-              "isRasterHeavy": false
+              "isRasterHeavy": false,
+              "runtimeAllowed": true,
+              "convolutionFilterCount": 0
             },
             "pngFallback": {
               "url": "assets/enemy-portraits/subjects/fbef680b8c345a0d28beb265.png",
@@ -6578,7 +6708,9 @@
               ],
               "flipX": false,
               "embeddedRasterCount": 0,
-              "isRasterHeavy": false
+              "isRasterHeavy": false,
+              "runtimeAllowed": true,
+              "convolutionFilterCount": 0
             },
             "pngFallback": {
               "url": "assets/enemy-portraits/subjects/ddcda4f193a58af00610ad0c.png",
@@ -6674,7 +6806,9 @@
               ],
               "flipX": false,
               "embeddedRasterCount": 0,
-              "isRasterHeavy": false
+              "isRasterHeavy": false,
+              "runtimeAllowed": true,
+              "convolutionFilterCount": 0
             },
             "pngFallback": {
               "url": "assets/enemy-portraits/subjects/7aeefa2a1d367e0d62967a3a.png",
@@ -6769,7 +6903,9 @@
               ],
               "flipX": false,
               "embeddedRasterCount": 0,
-              "isRasterHeavy": false
+              "isRasterHeavy": false,
+              "runtimeAllowed": true,
+              "convolutionFilterCount": 0
             },
             "pngFallback": {
               "url": "assets/enemy-portraits/subjects/e1c471a9c723cc7bc4e9dd15.png",
@@ -6856,7 +6992,9 @@
               ],
               "flipX": false,
               "embeddedRasterCount": 0,
-              "isRasterHeavy": false
+              "isRasterHeavy": false,
+              "runtimeAllowed": true,
+              "convolutionFilterCount": 0
             },
             "pngFallback": {
               "url": "assets/enemy-portraits/subjects/118535bfad94a7c996357fc9.png",
@@ -6953,7 +7091,9 @@
               ],
               "flipX": true,
               "embeddedRasterCount": 0,
-              "isRasterHeavy": false
+              "isRasterHeavy": false,
+              "runtimeAllowed": true,
+              "convolutionFilterCount": 0
             },
             "pngFallback": {
               "url": "assets/enemy-portraits/subjects/9fbe5ac1ec2aba4f2f4dbd1b.png",
@@ -7048,7 +7188,9 @@
               ],
               "flipX": false,
               "embeddedRasterCount": 0,
-              "isRasterHeavy": false
+              "isRasterHeavy": false,
+              "runtimeAllowed": true,
+              "convolutionFilterCount": 0
             },
             "pngFallback": {
               "url": "assets/enemy-portraits/subjects/ba9295200eaa9f6f8bac86b4.png",
@@ -7142,7 +7284,9 @@
               ],
               "flipX": false,
               "embeddedRasterCount": 0,
-              "isRasterHeavy": false
+              "isRasterHeavy": false,
+              "runtimeAllowed": true,
+              "convolutionFilterCount": 0
             },
             "pngFallback": {
               "url": "assets/enemy-portraits/subjects/e7fb9627b1635517971c2dd6.png",
@@ -7223,7 +7367,7 @@
         "default": {
           "status": "human_accepted",
           "subject": {
-            "preferredFormat": "svg",
+            "preferredFormat": "png",
             "svg": {
               "url": "assets/enemy-portraits/subjects/4bd133fc9c19a8a86eba60f7.svg",
               "bytes": 356407,
@@ -7245,7 +7389,9 @@
                     "filter3"
                   ]
                 }
-              ]
+              ],
+              "runtimeAllowed": false,
+              "convolutionFilterCount": 2
             },
             "pngFallback": {
               "url": "assets/enemy-portraits/subjects/0a09d192d3b2dc20785015d0.png",
@@ -7327,7 +7473,7 @@
         "default": {
           "status": "human_accepted",
           "subject": {
-            "preferredFormat": "svg",
+            "preferredFormat": "png",
             "svg": {
               "url": "assets/enemy-portraits/subjects/f7eeba7e9b50ea013da89f0d.svg",
               "bytes": 327679,
@@ -7340,7 +7486,9 @@
               ],
               "flipX": false,
               "embeddedRasterCount": 0,
-              "isRasterHeavy": false
+              "isRasterHeavy": false,
+              "runtimeAllowed": false,
+              "convolutionFilterCount": 1
             },
             "pngFallback": {
               "url": "assets/enemy-portraits/subjects/f86ed7846fd9631d270ad5d7.png",
@@ -7434,7 +7582,9 @@
               ],
               "flipX": false,
               "embeddedRasterCount": 0,
-              "isRasterHeavy": false
+              "isRasterHeavy": false,
+              "runtimeAllowed": true,
+              "convolutionFilterCount": 0
             },
             "pngFallback": {
               "url": "assets/enemy-portraits/subjects/b82ddb7623bcc555865b30b8.png",
@@ -7528,7 +7678,9 @@
               ],
               "flipX": false,
               "embeddedRasterCount": 0,
-              "isRasterHeavy": false
+              "isRasterHeavy": false,
+              "runtimeAllowed": true,
+              "convolutionFilterCount": 0
             },
             "pngFallback": {
               "url": "assets/enemy-portraits/subjects/1cc766b9c69abcb88be3b22b.png",
@@ -7624,7 +7776,9 @@
               ],
               "flipX": false,
               "embeddedRasterCount": 0,
-              "isRasterHeavy": false
+              "isRasterHeavy": false,
+              "runtimeAllowed": true,
+              "convolutionFilterCount": 0
             },
             "pngFallback": {
               "url": "assets/enemy-portraits/subjects/46febc51dd68e310f342fa5a.png",
@@ -7719,7 +7873,9 @@
               ],
               "flipX": false,
               "embeddedRasterCount": 0,
-              "isRasterHeavy": false
+              "isRasterHeavy": false,
+              "runtimeAllowed": true,
+              "convolutionFilterCount": 0
             },
             "pngFallback": {
               "url": "assets/enemy-portraits/subjects/ffff246534e54134c8b03c9c.png",
@@ -7813,7 +7969,9 @@
               ],
               "flipX": false,
               "embeddedRasterCount": 0,
-              "isRasterHeavy": false
+              "isRasterHeavy": false,
+              "runtimeAllowed": true,
+              "convolutionFilterCount": 0
             },
             "pngFallback": {
               "url": "assets/enemy-portraits/subjects/d38cf4b24c84c20b582572b6.png",
@@ -7907,7 +8065,9 @@
               ],
               "flipX": false,
               "embeddedRasterCount": 0,
-              "isRasterHeavy": false
+              "isRasterHeavy": false,
+              "runtimeAllowed": true,
+              "convolutionFilterCount": 0
             },
             "pngFallback": {
               "url": "assets/enemy-portraits/subjects/ba1cf50913f95c05735b8ba9.png",
@@ -8004,7 +8164,9 @@
               ],
               "flipX": false,
               "embeddedRasterCount": 0,
-              "isRasterHeavy": false
+              "isRasterHeavy": false,
+              "runtimeAllowed": true,
+              "convolutionFilterCount": 0
             },
             "pngFallback": {
               "url": "assets/enemy-portraits/subjects/49610db0d6c4cf4751d8620f.png",
@@ -8086,7 +8248,7 @@
         "default": {
           "status": "human_accepted",
           "subject": {
-            "preferredFormat": "svg",
+            "preferredFormat": "png",
             "svg": {
               "url": "assets/enemy-portraits/subjects/c71c8a32568530db76812e22.svg",
               "bytes": 40116,
@@ -8099,7 +8261,9 @@
               ],
               "flipX": false,
               "embeddedRasterCount": 0,
-              "isRasterHeavy": false
+              "isRasterHeavy": false,
+              "runtimeAllowed": false,
+              "convolutionFilterCount": 12
             },
             "pngFallback": {
               "url": "assets/enemy-portraits/subjects/3504a2ce535f7d13aff161e5.png",
@@ -8195,7 +8359,9 @@
               ],
               "flipX": false,
               "embeddedRasterCount": 0,
-              "isRasterHeavy": false
+              "isRasterHeavy": false,
+              "runtimeAllowed": true,
+              "convolutionFilterCount": 0
             },
             "pngFallback": {
               "url": "assets/enemy-portraits/subjects/01908189a80cca430da86ad1.png",
@@ -8293,7 +8459,9 @@
               ],
               "flipX": true,
               "embeddedRasterCount": 0,
-              "isRasterHeavy": false
+              "isRasterHeavy": false,
+              "runtimeAllowed": true,
+              "convolutionFilterCount": 0
             },
             "pngFallback": {
               "url": "assets/enemy-portraits/subjects/6d6de02adb93b8621a64566e.png",
@@ -8390,7 +8558,9 @@
               ],
               "flipX": true,
               "embeddedRasterCount": 0,
-              "isRasterHeavy": false
+              "isRasterHeavy": false,
+              "runtimeAllowed": true,
+              "convolutionFilterCount": 0
             },
             "pngFallback": {
               "url": "assets/enemy-portraits/subjects/5f930e36e458f4a14d2f5f41.png",
@@ -8485,7 +8655,9 @@
               ],
               "flipX": true,
               "embeddedRasterCount": 0,
-              "isRasterHeavy": false
+              "isRasterHeavy": false,
+              "runtimeAllowed": true,
+              "convolutionFilterCount": 0
             },
             "pngFallback": {
               "url": "assets/enemy-portraits/subjects/7b5084413f09c10efc8f984b.png",
@@ -8583,7 +8755,7 @@
         "default": {
           "status": "human_accepted",
           "subject": {
-            "preferredFormat": "svg",
+            "preferredFormat": "png",
             "svg": {
               "url": "assets/enemy-portraits/subjects/575aa5f6d619c1b3ce4e28dd.svg",
               "bytes": 357122,
@@ -8596,7 +8768,9 @@
               ],
               "flipX": false,
               "embeddedRasterCount": 0,
-              "isRasterHeavy": false
+              "isRasterHeavy": false,
+              "runtimeAllowed": false,
+              "convolutionFilterCount": 3
             },
             "pngFallback": {
               "url": "assets/enemy-portraits/subjects/cbc1e29ef03434dbf6b9bcb1.png",
@@ -8693,7 +8867,9 @@
               ],
               "flipX": false,
               "embeddedRasterCount": 0,
-              "isRasterHeavy": false
+              "isRasterHeavy": false,
+              "runtimeAllowed": true,
+              "convolutionFilterCount": 0
             },
             "pngFallback": {
               "url": "assets/enemy-portraits/subjects/5dce1e94d3c22b32e0be7681.png",
@@ -8791,7 +8967,9 @@
               ],
               "flipX": false,
               "embeddedRasterCount": 0,
-              "isRasterHeavy": false
+              "isRasterHeavy": false,
+              "runtimeAllowed": true,
+              "convolutionFilterCount": 0
             },
             "pngFallback": {
               "url": "assets/enemy-portraits/subjects/a476b84e1a7936fd311278c9.png",
@@ -8876,7 +9054,7 @@
         "default": {
           "status": "human_accepted",
           "subject": {
-            "preferredFormat": "svg",
+            "preferredFormat": "png",
             "svg": {
               "url": "assets/enemy-portraits/subjects/5ae83ab3418bff019b88cc32.svg",
               "bytes": 86706,
@@ -8889,7 +9067,9 @@
               ],
               "flipX": false,
               "embeddedRasterCount": 0,
-              "isRasterHeavy": false
+              "isRasterHeavy": false,
+              "runtimeAllowed": false,
+              "convolutionFilterCount": 1
             },
             "pngFallback": {
               "url": "assets/enemy-portraits/subjects/9a7343358dfa6fa0fe546b18.png",
@@ -8973,7 +9153,7 @@
         "default": {
           "status": "human_accepted",
           "subject": {
-            "preferredFormat": "svg",
+            "preferredFormat": "png",
             "svg": {
               "url": "assets/enemy-portraits/subjects/f2be7e9c71ef1001898a1286.svg",
               "bytes": 167720,
@@ -8986,7 +9166,9 @@
               ],
               "flipX": false,
               "embeddedRasterCount": 0,
-              "isRasterHeavy": false
+              "isRasterHeavy": false,
+              "runtimeAllowed": false,
+              "convolutionFilterCount": 3
             },
             "pngFallback": {
               "url": "assets/enemy-portraits/subjects/5160b44bc1860e44725489ea.png",
@@ -9083,7 +9265,9 @@
               ],
               "flipX": false,
               "embeddedRasterCount": 0,
-              "isRasterHeavy": false
+              "isRasterHeavy": false,
+              "runtimeAllowed": true,
+              "convolutionFilterCount": 0
             },
             "pngFallback": {
               "url": "assets/enemy-portraits/subjects/deb3d5351d245e77d12e9acc.png",
@@ -9182,7 +9366,9 @@
               ],
               "flipX": false,
               "embeddedRasterCount": 0,
-              "isRasterHeavy": false
+              "isRasterHeavy": false,
+              "runtimeAllowed": true,
+              "convolutionFilterCount": 0
             },
             "pngFallback": {
               "url": "assets/enemy-portraits/subjects/5573ec06b17cde9aa9bc74b6.png",
@@ -9277,7 +9463,9 @@
               ],
               "flipX": false,
               "embeddedRasterCount": 0,
-              "isRasterHeavy": false
+              "isRasterHeavy": false,
+              "runtimeAllowed": true,
+              "convolutionFilterCount": 0
             },
             "pngFallback": {
               "url": "assets/enemy-portraits/subjects/ae7e986711ab112017ff44d1.png",
@@ -9360,7 +9548,7 @@
         "default": {
           "status": "human_accepted",
           "subject": {
-            "preferredFormat": "svg",
+            "preferredFormat": "png",
             "svg": {
               "url": "assets/enemy-portraits/subjects/7ac26a6203185ac0be2d309f.svg",
               "bytes": 145685,
@@ -9373,7 +9561,9 @@
               ],
               "flipX": false,
               "embeddedRasterCount": 0,
-              "isRasterHeavy": false
+              "isRasterHeavy": false,
+              "runtimeAllowed": false,
+              "convolutionFilterCount": 1
             },
             "pngFallback": {
               "url": "assets/enemy-portraits/subjects/8a6ebb4b080a09ccc13e29cb.png",
@@ -9458,7 +9648,7 @@
         "default": {
           "status": "human_accepted",
           "subject": {
-            "preferredFormat": "svg",
+            "preferredFormat": "png",
             "svg": {
               "url": "assets/enemy-portraits/subjects/b101d424c2e7d64279cc4f89.svg",
               "bytes": 747089,
@@ -9471,7 +9661,9 @@
               ],
               "flipX": false,
               "embeddedRasterCount": 0,
-              "isRasterHeavy": false
+              "isRasterHeavy": false,
+              "runtimeAllowed": false,
+              "convolutionFilterCount": 85
             },
             "pngFallback": {
               "url": "assets/enemy-portraits/subjects/293051b4570d9cd7d38879c4.png",
@@ -9566,7 +9758,9 @@
               ],
               "flipX": false,
               "embeddedRasterCount": 0,
-              "isRasterHeavy": false
+              "isRasterHeavy": false,
+              "runtimeAllowed": true,
+              "convolutionFilterCount": 0
             },
             "pngFallback": {
               "url": "assets/enemy-portraits/subjects/67e349eb1735cf9025d01a29.png",
@@ -9660,7 +9854,9 @@
               ],
               "flipX": false,
               "embeddedRasterCount": 0,
-              "isRasterHeavy": false
+              "isRasterHeavy": false,
+              "runtimeAllowed": true,
+              "convolutionFilterCount": 0
             },
             "pngFallback": {
               "url": "assets/enemy-portraits/subjects/7123c8076d252308edd2a221.png",
@@ -9756,7 +9952,9 @@
               ],
               "flipX": false,
               "embeddedRasterCount": 0,
-              "isRasterHeavy": false
+              "isRasterHeavy": false,
+              "runtimeAllowed": true,
+              "convolutionFilterCount": 0
             },
             "pngFallback": {
               "url": "assets/enemy-portraits/subjects/c6f523ab97378f90c7512eda.png",
@@ -9838,7 +10036,7 @@
         "default": {
           "status": "human_accepted",
           "subject": {
-            "preferredFormat": "svg",
+            "preferredFormat": "png",
             "svg": {
               "url": "assets/enemy-portraits/subjects/f5054163d8e29503cc398011.svg",
               "bytes": 142173,
@@ -9851,7 +10049,9 @@
               ],
               "flipX": false,
               "embeddedRasterCount": 0,
-              "isRasterHeavy": false
+              "isRasterHeavy": false,
+              "runtimeAllowed": false,
+              "convolutionFilterCount": 2
             },
             "pngFallback": {
               "url": "assets/enemy-portraits/subjects/b7fbc4b82fa7f1b20c5d5067.png",
@@ -9947,7 +10147,9 @@
               ],
               "flipX": false,
               "embeddedRasterCount": 0,
-              "isRasterHeavy": false
+              "isRasterHeavy": false,
+              "runtimeAllowed": true,
+              "convolutionFilterCount": 0
             },
             "pngFallback": {
               "url": "assets/enemy-portraits/subjects/85181b4d4b901f4905eeb68c.png",
@@ -10044,7 +10246,9 @@
               ],
               "flipX": false,
               "embeddedRasterCount": 0,
-              "isRasterHeavy": false
+              "isRasterHeavy": false,
+              "runtimeAllowed": true,
+              "convolutionFilterCount": 0
             },
             "pngFallback": {
               "url": "assets/enemy-portraits/subjects/bee18757f5412d2f2a3d9bc7.png",
@@ -10141,7 +10345,9 @@
               ],
               "flipX": false,
               "embeddedRasterCount": 0,
-              "isRasterHeavy": false
+              "isRasterHeavy": false,
+              "runtimeAllowed": true,
+              "convolutionFilterCount": 0
             },
             "pngFallback": {
               "url": "assets/enemy-portraits/subjects/ca353f0bd030d2f31a00bfd0.png",
@@ -10236,7 +10442,9 @@
               ],
               "flipX": false,
               "embeddedRasterCount": 0,
-              "isRasterHeavy": false
+              "isRasterHeavy": false,
+              "runtimeAllowed": true,
+              "convolutionFilterCount": 0
             },
             "pngFallback": {
               "url": "assets/enemy-portraits/subjects/480aec7c9ed2f6b44cdbc574.png",
@@ -10330,7 +10538,9 @@
               ],
               "flipX": false,
               "embeddedRasterCount": 0,
-              "isRasterHeavy": false
+              "isRasterHeavy": false,
+              "runtimeAllowed": true,
+              "convolutionFilterCount": 0
             },
             "pngFallback": {
               "url": "assets/enemy-portraits/subjects/ed4fa71d909754a23e67b609.png",
@@ -10424,7 +10634,9 @@
               ],
               "flipX": false,
               "embeddedRasterCount": 0,
-              "isRasterHeavy": false
+              "isRasterHeavy": false,
+              "runtimeAllowed": true,
+              "convolutionFilterCount": 0
             },
             "pngFallback": {
               "url": "assets/enemy-portraits/subjects/b9d95bb6ba6bb5f17dbf4561.png",
@@ -10518,7 +10730,9 @@
               ],
               "flipX": false,
               "embeddedRasterCount": 0,
-              "isRasterHeavy": false
+              "isRasterHeavy": false,
+              "runtimeAllowed": true,
+              "convolutionFilterCount": 0
             },
             "pngFallback": {
               "url": "assets/enemy-portraits/subjects/3e76a50ef5f5a79d7a09348d.png",
@@ -10612,7 +10826,9 @@
               ],
               "flipX": false,
               "embeddedRasterCount": 0,
-              "isRasterHeavy": false
+              "isRasterHeavy": false,
+              "runtimeAllowed": true,
+              "convolutionFilterCount": 0
             },
             "pngFallback": {
               "url": "assets/enemy-portraits/subjects/90c17904526fe05159f2939c.png",
@@ -10708,7 +10924,9 @@
               ],
               "flipX": false,
               "embeddedRasterCount": 0,
-              "isRasterHeavy": false
+              "isRasterHeavy": false,
+              "runtimeAllowed": true,
+              "convolutionFilterCount": 0
             },
             "pngFallback": {
               "url": "assets/enemy-portraits/subjects/7ccb6a247a72b5ab8e988506.png",
@@ -10805,7 +11023,9 @@
               ],
               "flipX": false,
               "embeddedRasterCount": 0,
-              "isRasterHeavy": false
+              "isRasterHeavy": false,
+              "runtimeAllowed": true,
+              "convolutionFilterCount": 0
             },
             "pngFallback": {
               "url": "assets/enemy-portraits/subjects/1f0ebba1c5226dd4e18c87ff.png",
@@ -10902,7 +11122,9 @@
               ],
               "flipX": false,
               "embeddedRasterCount": 0,
-              "isRasterHeavy": false
+              "isRasterHeavy": false,
+              "runtimeAllowed": true,
+              "convolutionFilterCount": 0
             },
             "pngFallback": {
               "url": "assets/enemy-portraits/subjects/1c897278dc8acfee4c5f64d6.png",
@@ -10997,7 +11219,9 @@
               ],
               "flipX": false,
               "embeddedRasterCount": 0,
-              "isRasterHeavy": false
+              "isRasterHeavy": false,
+              "runtimeAllowed": true,
+              "convolutionFilterCount": 0
             },
             "pngFallback": {
               "url": "assets/enemy-portraits/subjects/2f398eda7ea4f683e4c84a8f.png",
@@ -11092,7 +11316,9 @@
               ],
               "flipX": false,
               "embeddedRasterCount": 0,
-              "isRasterHeavy": false
+              "isRasterHeavy": false,
+              "runtimeAllowed": true,
+              "convolutionFilterCount": 0
             },
             "pngFallback": {
               "url": "assets/enemy-portraits/subjects/9ee19ad6fa91207d1507618a.png",
@@ -11187,7 +11413,9 @@
               ],
               "flipX": false,
               "embeddedRasterCount": 0,
-              "isRasterHeavy": false
+              "isRasterHeavy": false,
+              "runtimeAllowed": true,
+              "convolutionFilterCount": 0
             },
             "pngFallback": {
               "url": "assets/enemy-portraits/subjects/da1d22ccf8cb75fcf627dcc4.png",
@@ -11282,7 +11510,9 @@
               ],
               "flipX": false,
               "embeddedRasterCount": 0,
-              "isRasterHeavy": false
+              "isRasterHeavy": false,
+              "runtimeAllowed": true,
+              "convolutionFilterCount": 0
             },
             "pngFallback": {
               "url": "assets/enemy-portraits/subjects/13504faf23a7ed0793ff3276.png",
@@ -11377,7 +11607,9 @@
               ],
               "flipX": true,
               "embeddedRasterCount": 0,
-              "isRasterHeavy": false
+              "isRasterHeavy": false,
+              "runtimeAllowed": true,
+              "convolutionFilterCount": 0
             },
             "pngFallback": {
               "url": "assets/enemy-portraits/subjects/378e8b19d90f9362912920a6.png",
@@ -11474,7 +11706,9 @@
               ],
               "flipX": false,
               "embeddedRasterCount": 0,
-              "isRasterHeavy": false
+              "isRasterHeavy": false,
+              "runtimeAllowed": true,
+              "convolutionFilterCount": 0
             },
             "pngFallback": {
               "url": "assets/enemy-portraits/subjects/62350ede13bf3f3b63750bdc.png",
@@ -11569,7 +11803,9 @@
               ],
               "flipX": true,
               "embeddedRasterCount": 0,
-              "isRasterHeavy": false
+              "isRasterHeavy": false,
+              "runtimeAllowed": true,
+              "convolutionFilterCount": 0
             },
             "pngFallback": {
               "url": "assets/enemy-portraits/subjects/bbd1f61a629f64e98ccd7d92.png",
@@ -11663,7 +11899,9 @@
               ],
               "flipX": false,
               "embeddedRasterCount": 0,
-              "isRasterHeavy": false
+              "isRasterHeavy": false,
+              "runtimeAllowed": true,
+              "convolutionFilterCount": 0
             },
             "pngFallback": {
               "url": "assets/enemy-portraits/subjects/788d98a7941c6a1eb18bf6ab.png",
@@ -11758,7 +11996,9 @@
               ],
               "flipX": true,
               "embeddedRasterCount": 0,
-              "isRasterHeavy": false
+              "isRasterHeavy": false,
+              "runtimeAllowed": true,
+              "convolutionFilterCount": 0
             },
             "pngFallback": {
               "url": "assets/enemy-portraits/subjects/d9e786761fd2a8a05fa9e5e4.png",
@@ -11855,7 +12095,9 @@
               ],
               "flipX": false,
               "embeddedRasterCount": 0,
-              "isRasterHeavy": false
+              "isRasterHeavy": false,
+              "runtimeAllowed": true,
+              "convolutionFilterCount": 0
             },
             "pngFallback": {
               "url": "assets/enemy-portraits/subjects/a18a93f39e7ce15ba9972d40.png",
@@ -11952,7 +12194,9 @@
               ],
               "flipX": false,
               "embeddedRasterCount": 0,
-              "isRasterHeavy": false
+              "isRasterHeavy": false,
+              "runtimeAllowed": true,
+              "convolutionFilterCount": 0
             },
             "pngFallback": {
               "url": "assets/enemy-portraits/subjects/0e94e923f14edde37ff18099.png",
@@ -12036,7 +12280,9 @@
               ],
               "flipX": false,
               "embeddedRasterCount": 0,
-              "isRasterHeavy": false
+              "isRasterHeavy": false,
+              "runtimeAllowed": true,
+              "convolutionFilterCount": 0
             },
             "pngFallback": {
               "url": "assets/enemy-portraits/subjects/01296094a01d3e054e8b6ff5.png",
@@ -12131,7 +12377,9 @@
               ],
               "flipX": false,
               "embeddedRasterCount": 0,
-              "isRasterHeavy": false
+              "isRasterHeavy": false,
+              "runtimeAllowed": true,
+              "convolutionFilterCount": 0
             },
             "pngFallback": {
               "url": "assets/enemy-portraits/subjects/a9ba412d41f86dc8015b85d6.png",
@@ -12225,7 +12473,9 @@
               ],
               "flipX": false,
               "embeddedRasterCount": 0,
-              "isRasterHeavy": false
+              "isRasterHeavy": false,
+              "runtimeAllowed": true,
+              "convolutionFilterCount": 0
             },
             "pngFallback": {
               "url": "assets/enemy-portraits/subjects/fad161e2747ed04574e8b1c1.png",
@@ -12319,7 +12569,9 @@
               ],
               "flipX": false,
               "embeddedRasterCount": 0,
-              "isRasterHeavy": false
+              "isRasterHeavy": false,
+              "runtimeAllowed": true,
+              "convolutionFilterCount": 0
             },
             "pngFallback": {
               "url": "assets/enemy-portraits/subjects/628cb517dd4e39a79d46ab5b.png",
@@ -12413,7 +12665,9 @@
               ],
               "flipX": false,
               "embeddedRasterCount": 0,
-              "isRasterHeavy": false
+              "isRasterHeavy": false,
+              "runtimeAllowed": true,
+              "convolutionFilterCount": 0
             },
             "pngFallback": {
               "url": "assets/enemy-portraits/subjects/e6ff478743e2abcacacefc26.png",
@@ -12509,7 +12763,9 @@
               ],
               "flipX": false,
               "embeddedRasterCount": 0,
-              "isRasterHeavy": false
+              "isRasterHeavy": false,
+              "runtimeAllowed": true,
+              "convolutionFilterCount": 0
             },
             "pngFallback": {
               "url": "assets/enemy-portraits/subjects/e052d4b6834d6779c74ce616.png",
@@ -12604,7 +12860,9 @@
               ],
               "flipX": false,
               "embeddedRasterCount": 0,
-              "isRasterHeavy": false
+              "isRasterHeavy": false,
+              "runtimeAllowed": true,
+              "convolutionFilterCount": 0
             },
             "pngFallback": {
               "url": "assets/enemy-portraits/subjects/7cfdb542168c7010c5dad51b.png",
@@ -12698,7 +12956,9 @@
               ],
               "flipX": true,
               "embeddedRasterCount": 0,
-              "isRasterHeavy": false
+              "isRasterHeavy": false,
+              "runtimeAllowed": true,
+              "convolutionFilterCount": 0
             },
             "pngFallback": {
               "url": "assets/enemy-portraits/subjects/a5e73c6a803305ad8dd6b3a8.png",
@@ -12792,7 +13052,9 @@
               ],
               "flipX": false,
               "embeddedRasterCount": 0,
-              "isRasterHeavy": false
+              "isRasterHeavy": false,
+              "runtimeAllowed": true,
+              "convolutionFilterCount": 0
             },
             "pngFallback": {
               "url": "assets/enemy-portraits/subjects/bcf103286d5454a5031b76e2.png",
@@ -12886,7 +13148,9 @@
               ],
               "flipX": false,
               "embeddedRasterCount": 0,
-              "isRasterHeavy": false
+              "isRasterHeavy": false,
+              "runtimeAllowed": true,
+              "convolutionFilterCount": 0
             },
             "pngFallback": {
               "url": "assets/enemy-portraits/subjects/869f4e21c5a0ae6a743297b4.png",
@@ -12982,7 +13246,9 @@
               ],
               "flipX": false,
               "embeddedRasterCount": 0,
-              "isRasterHeavy": false
+              "isRasterHeavy": false,
+              "runtimeAllowed": true,
+              "convolutionFilterCount": 0
             },
             "pngFallback": {
               "url": "assets/enemy-portraits/subjects/b5a62f995baf482568996d2f.png",
@@ -13077,7 +13343,9 @@
               ],
               "flipX": false,
               "embeddedRasterCount": 0,
-              "isRasterHeavy": false
+              "isRasterHeavy": false,
+              "runtimeAllowed": true,
+              "convolutionFilterCount": 0
             },
             "pngFallback": {
               "url": "assets/enemy-portraits/subjects/a9391ab277f4b230d7c2f44e.png",
@@ -13173,7 +13441,9 @@
               ],
               "flipX": false,
               "embeddedRasterCount": 0,
-              "isRasterHeavy": false
+              "isRasterHeavy": false,
+              "runtimeAllowed": true,
+              "convolutionFilterCount": 0
             },
             "pngFallback": {
               "url": "assets/enemy-portraits/subjects/0e2b467007828c80880314a0.png",
@@ -13270,7 +13540,9 @@
               ],
               "flipX": false,
               "embeddedRasterCount": 0,
-              "isRasterHeavy": false
+              "isRasterHeavy": false,
+              "runtimeAllowed": true,
+              "convolutionFilterCount": 0
             },
             "pngFallback": {
               "url": "assets/enemy-portraits/subjects/f89424cf00a93fe0af1a2ec2.png",
@@ -13367,7 +13639,9 @@
               ],
               "flipX": false,
               "embeddedRasterCount": 0,
-              "isRasterHeavy": false
+              "isRasterHeavy": false,
+              "runtimeAllowed": true,
+              "convolutionFilterCount": 0
             },
             "pngFallback": {
               "url": "assets/enemy-portraits/subjects/00ca1bf26b6c366fb20cb458.png",
@@ -13462,7 +13736,9 @@
               ],
               "flipX": true,
               "embeddedRasterCount": 0,
-              "isRasterHeavy": false
+              "isRasterHeavy": false,
+              "runtimeAllowed": true,
+              "convolutionFilterCount": 0
             },
             "pngFallback": {
               "url": "assets/enemy-portraits/subjects/70519a98425381382d87e1cf.png",
@@ -13556,7 +13832,9 @@
               ],
               "flipX": false,
               "embeddedRasterCount": 0,
-              "isRasterHeavy": false
+              "isRasterHeavy": false,
+              "runtimeAllowed": true,
+              "convolutionFilterCount": 0
             },
             "pngFallback": {
               "url": "assets/enemy-portraits/subjects/54e1fa6865623959b74f7d18.png",
@@ -13652,7 +13930,9 @@
               ],
               "flipX": false,
               "embeddedRasterCount": 0,
-              "isRasterHeavy": false
+              "isRasterHeavy": false,
+              "runtimeAllowed": true,
+              "convolutionFilterCount": 0
             },
             "pngFallback": {
               "url": "assets/enemy-portraits/subjects/cc425f1861aa834aa97ac837.png",
@@ -13747,7 +14027,9 @@
               ],
               "flipX": false,
               "embeddedRasterCount": 0,
-              "isRasterHeavy": false
+              "isRasterHeavy": false,
+              "runtimeAllowed": true,
+              "convolutionFilterCount": 0
             },
             "pngFallback": {
               "url": "assets/enemy-portraits/subjects/b66674a0ab9724eaa38e2d3e.png",
@@ -13841,7 +14123,9 @@
               ],
               "flipX": false,
               "embeddedRasterCount": 0,
-              "isRasterHeavy": false
+              "isRasterHeavy": false,
+              "runtimeAllowed": true,
+              "convolutionFilterCount": 0
             },
             "pngFallback": {
               "url": "assets/enemy-portraits/subjects/f90b309a7c8a87f2789856b0.png",
@@ -13937,7 +14221,9 @@
               ],
               "flipX": false,
               "embeddedRasterCount": 0,
-              "isRasterHeavy": false
+              "isRasterHeavy": false,
+              "runtimeAllowed": true,
+              "convolutionFilterCount": 0
             },
             "pngFallback": {
               "url": "assets/enemy-portraits/subjects/70116bc78a0d687000c55fda.png",
@@ -14034,7 +14320,9 @@
               ],
               "flipX": false,
               "embeddedRasterCount": 0,
-              "isRasterHeavy": false
+              "isRasterHeavy": false,
+              "runtimeAllowed": true,
+              "convolutionFilterCount": 0
             },
             "pngFallback": {
               "url": "assets/enemy-portraits/subjects/2d394fc950bca44fda0aaa61.png",
@@ -14129,7 +14417,9 @@
               ],
               "flipX": false,
               "embeddedRasterCount": 0,
-              "isRasterHeavy": false
+              "isRasterHeavy": false,
+              "runtimeAllowed": true,
+              "convolutionFilterCount": 0
             },
             "pngFallback": {
               "url": "assets/enemy-portraits/subjects/3ae78f9f1401e063690b4975.png",
@@ -14225,7 +14515,9 @@
               ],
               "flipX": false,
               "embeddedRasterCount": 0,
-              "isRasterHeavy": false
+              "isRasterHeavy": false,
+              "runtimeAllowed": true,
+              "convolutionFilterCount": 0
             },
             "pngFallback": {
               "url": "assets/enemy-portraits/subjects/2fd244ede018dcc9c8dd9b05.png",
@@ -14322,7 +14614,9 @@
               ],
               "flipX": false,
               "embeddedRasterCount": 0,
-              "isRasterHeavy": false
+              "isRasterHeavy": false,
+              "runtimeAllowed": true,
+              "convolutionFilterCount": 0
             },
             "pngFallback": {
               "url": "assets/enemy-portraits/subjects/caa56cef7d9272063e7f40c6.png",
@@ -14417,7 +14711,9 @@
               ],
               "flipX": false,
               "embeddedRasterCount": 1,
-              "isRasterHeavy": true
+              "isRasterHeavy": true,
+              "runtimeAllowed": true,
+              "convolutionFilterCount": 0
             },
             "pngFallback": {
               "url": "assets/enemy-portraits/subjects/01604be641ca86fa8ef88434.png",
@@ -14511,7 +14807,9 @@
               ],
               "flipX": false,
               "embeddedRasterCount": 0,
-              "isRasterHeavy": false
+              "isRasterHeavy": false,
+              "runtimeAllowed": true,
+              "convolutionFilterCount": 0
             },
             "pngFallback": {
               "url": "assets/enemy-portraits/subjects/0b857a3f2bfa94b16af56ab0.png",
@@ -14607,7 +14905,9 @@
               ],
               "flipX": false,
               "embeddedRasterCount": 0,
-              "isRasterHeavy": false
+              "isRasterHeavy": false,
+              "runtimeAllowed": true,
+              "convolutionFilterCount": 0
             },
             "pngFallback": {
               "url": "assets/enemy-portraits/subjects/cb4e401c049fd8c28b317036.png",
@@ -14691,7 +14991,7 @@
         "default": {
           "status": "human_accepted",
           "subject": {
-            "preferredFormat": "svg",
+            "preferredFormat": "png",
             "svg": {
               "url": "assets/enemy-portraits/subjects/da0185e21397e5c0ff822d24.svg",
               "bytes": 65120,
@@ -14704,7 +15004,9 @@
               ],
               "flipX": false,
               "embeddedRasterCount": 0,
-              "isRasterHeavy": false
+              "isRasterHeavy": false,
+              "runtimeAllowed": false,
+              "convolutionFilterCount": 1
             },
             "pngFallback": {
               "url": "assets/enemy-portraits/subjects/80bbd01682c9e480879c35e9.png",
@@ -14801,7 +15103,9 @@
               ],
               "flipX": false,
               "embeddedRasterCount": 0,
-              "isRasterHeavy": false
+              "isRasterHeavy": false,
+              "runtimeAllowed": true,
+              "convolutionFilterCount": 0
             },
             "pngFallback": {
               "url": "assets/enemy-portraits/subjects/587da640499accf42f56d9a5.png",
@@ -14900,7 +15204,9 @@
               ],
               "flipX": false,
               "embeddedRasterCount": 0,
-              "isRasterHeavy": false
+              "isRasterHeavy": false,
+              "runtimeAllowed": true,
+              "convolutionFilterCount": 0
             },
             "pngFallback": {
               "url": "assets/enemy-portraits/subjects/cd4112a256b084060ae9c306.png",
@@ -14997,7 +15303,9 @@
               ],
               "flipX": true,
               "embeddedRasterCount": 0,
-              "isRasterHeavy": false
+              "isRasterHeavy": false,
+              "runtimeAllowed": true,
+              "convolutionFilterCount": 0
             },
             "pngFallback": {
               "url": "assets/enemy-portraits/subjects/2d161814a7f141209977c91b.png",
@@ -15092,7 +15400,9 @@
               ],
               "flipX": false,
               "embeddedRasterCount": 0,
-              "isRasterHeavy": false
+              "isRasterHeavy": false,
+              "runtimeAllowed": true,
+              "convolutionFilterCount": 0
             },
             "pngFallback": {
               "url": "assets/enemy-portraits/subjects/7833274a62d28620ac8908e7.png",
@@ -15188,7 +15498,9 @@
               ],
               "flipX": false,
               "embeddedRasterCount": 0,
-              "isRasterHeavy": false
+              "isRasterHeavy": false,
+              "runtimeAllowed": true,
+              "convolutionFilterCount": 0
             },
             "pngFallback": {
               "url": "assets/enemy-portraits/subjects/c6ea825a976fc1780d18b401.png",
@@ -15285,7 +15597,9 @@
               ],
               "flipX": false,
               "embeddedRasterCount": 0,
-              "isRasterHeavy": false
+              "isRasterHeavy": false,
+              "runtimeAllowed": true,
+              "convolutionFilterCount": 0
             },
             "pngFallback": {
               "url": "assets/enemy-portraits/subjects/f174ace2a64f849f35923c3c.png",
@@ -15382,7 +15696,9 @@
               ],
               "flipX": false,
               "embeddedRasterCount": 0,
-              "isRasterHeavy": false
+              "isRasterHeavy": false,
+              "runtimeAllowed": true,
+              "convolutionFilterCount": 0
             },
             "pngFallback": {
               "url": "assets/enemy-portraits/subjects/8e52373a345174448c7381a0.png",
@@ -15479,7 +15795,9 @@
               ],
               "flipX": false,
               "embeddedRasterCount": 0,
-              "isRasterHeavy": false
+              "isRasterHeavy": false,
+              "runtimeAllowed": true,
+              "convolutionFilterCount": 0
             },
             "pngFallback": {
               "url": "assets/enemy-portraits/subjects/d341b35bc7f47f65e0806932.png",
@@ -15576,7 +15894,9 @@
               ],
               "flipX": false,
               "embeddedRasterCount": 0,
-              "isRasterHeavy": false
+              "isRasterHeavy": false,
+              "runtimeAllowed": true,
+              "convolutionFilterCount": 0
             },
             "pngFallback": {
               "url": "assets/enemy-portraits/subjects/43ffc8c69fad4f8853fe345a.png",
@@ -15671,7 +15991,9 @@
               ],
               "flipX": false,
               "embeddedRasterCount": 0,
-              "isRasterHeavy": false
+              "isRasterHeavy": false,
+              "runtimeAllowed": true,
+              "convolutionFilterCount": 0
             },
             "pngFallback": {
               "url": "assets/enemy-portraits/subjects/35ecfb5cd15c5cdfc2e9bf23.png",
@@ -15765,7 +16087,9 @@
               ],
               "flipX": false,
               "embeddedRasterCount": 0,
-              "isRasterHeavy": false
+              "isRasterHeavy": false,
+              "runtimeAllowed": true,
+              "convolutionFilterCount": 0
             },
             "pngFallback": {
               "url": "assets/enemy-portraits/subjects/250632cce1c7d0769cc1b113.png",
@@ -15861,7 +16185,9 @@
               ],
               "flipX": false,
               "embeddedRasterCount": 0,
-              "isRasterHeavy": false
+              "isRasterHeavy": false,
+              "runtimeAllowed": true,
+              "convolutionFilterCount": 0
             },
             "pngFallback": {
               "url": "assets/enemy-portraits/subjects/14c154f84d967d6fc07ad389.png",
@@ -15956,7 +16282,9 @@
               ],
               "flipX": false,
               "embeddedRasterCount": 0,
-              "isRasterHeavy": false
+              "isRasterHeavy": false,
+              "runtimeAllowed": true,
+              "convolutionFilterCount": 0
             },
             "pngFallback": {
               "url": "assets/enemy-portraits/subjects/95ea744dd32b6d1ad021487d.png",
@@ -16050,7 +16378,9 @@
               ],
               "flipX": false,
               "embeddedRasterCount": 0,
-              "isRasterHeavy": false
+              "isRasterHeavy": false,
+              "runtimeAllowed": true,
+              "convolutionFilterCount": 0
             },
             "pngFallback": {
               "url": "assets/enemy-portraits/subjects/9d1d241e69856117d4554d68.png",
@@ -16146,7 +16476,9 @@
               ],
               "flipX": false,
               "embeddedRasterCount": 0,
-              "isRasterHeavy": false
+              "isRasterHeavy": false,
+              "runtimeAllowed": true,
+              "convolutionFilterCount": 0
             },
             "pngFallback": {
               "url": "assets/enemy-portraits/subjects/969ef0672a5118f2b6310c25.png",
@@ -16241,7 +16573,9 @@
               ],
               "flipX": false,
               "embeddedRasterCount": 0,
-              "isRasterHeavy": false
+              "isRasterHeavy": false,
+              "runtimeAllowed": true,
+              "convolutionFilterCount": 0
             },
             "pngFallback": {
               "url": "assets/enemy-portraits/subjects/1abe363e1a33bfe479d58fcc.png",
@@ -16335,7 +16669,9 @@
               ],
               "flipX": false,
               "embeddedRasterCount": 0,
-              "isRasterHeavy": false
+              "isRasterHeavy": false,
+              "runtimeAllowed": true,
+              "convolutionFilterCount": 0
             },
             "pngFallback": {
               "url": "assets/enemy-portraits/subjects/a862bf410c65ed8f70b4e33d.png",
@@ -16416,7 +16752,7 @@
         "default": {
           "status": "human_accepted",
           "subject": {
-            "preferredFormat": "svg",
+            "preferredFormat": "png",
             "svg": {
               "url": "assets/enemy-portraits/subjects/8eab53c53e4c598ace95fada.svg",
               "bytes": 163768,
@@ -16429,7 +16765,9 @@
               ],
               "flipX": false,
               "embeddedRasterCount": 0,
-              "isRasterHeavy": false
+              "isRasterHeavy": false,
+              "runtimeAllowed": false,
+              "convolutionFilterCount": 3
             },
             "pngFallback": {
               "url": "assets/enemy-portraits/subjects/4a6e18d8860794a0fb30866d.png",
@@ -16525,7 +16863,9 @@
               ],
               "flipX": false,
               "embeddedRasterCount": 0,
-              "isRasterHeavy": false
+              "isRasterHeavy": false,
+              "runtimeAllowed": true,
+              "convolutionFilterCount": 0
             },
             "pngFallback": {
               "url": "assets/enemy-portraits/subjects/37f64e6ae91b413e1a88eb4b.png",
@@ -16607,7 +16947,7 @@
         "default": {
           "status": "human_accepted",
           "subject": {
-            "preferredFormat": "svg",
+            "preferredFormat": "png",
             "svg": {
               "url": "assets/enemy-portraits/subjects/f46bf621d78838bb61eb3194.svg",
               "bytes": 275174,
@@ -16620,7 +16960,9 @@
               ],
               "flipX": false,
               "embeddedRasterCount": 0,
-              "isRasterHeavy": false
+              "isRasterHeavy": false,
+              "runtimeAllowed": false,
+              "convolutionFilterCount": 3
             },
             "pngFallback": {
               "url": "assets/enemy-portraits/subjects/4ce1611fa5c4244e24515e93.png",
@@ -16701,7 +17043,7 @@
         "default": {
           "status": "human_accepted",
           "subject": {
-            "preferredFormat": "svg",
+            "preferredFormat": "png",
             "svg": {
               "url": "assets/enemy-portraits/subjects/2ab5e288bab389d3d79e3b67.svg",
               "bytes": 291864,
@@ -16714,7 +17056,9 @@
               ],
               "flipX": false,
               "embeddedRasterCount": 0,
-              "isRasterHeavy": false
+              "isRasterHeavy": false,
+              "runtimeAllowed": false,
+              "convolutionFilterCount": 3
             },
             "pngFallback": {
               "url": "assets/enemy-portraits/subjects/4d2bb7ee9a613e0b15a46dae.png",
@@ -16795,7 +17139,7 @@
         "default": {
           "status": "human_accepted",
           "subject": {
-            "preferredFormat": "svg",
+            "preferredFormat": "png",
             "svg": {
               "url": "assets/enemy-portraits/subjects/1a1049d500ef53e57a164ecd.svg",
               "bytes": 128593,
@@ -16808,7 +17152,9 @@
               ],
               "flipX": false,
               "embeddedRasterCount": 0,
-              "isRasterHeavy": false
+              "isRasterHeavy": false,
+              "runtimeAllowed": false,
+              "convolutionFilterCount": 2
             },
             "pngFallback": {
               "url": "assets/enemy-portraits/subjects/9587c9b8f8d3538f333a42c3.png",
@@ -16889,7 +17235,7 @@
         "default": {
           "status": "human_accepted",
           "subject": {
-            "preferredFormat": "svg",
+            "preferredFormat": "png",
             "svg": {
               "url": "assets/enemy-portraits/subjects/4eb90886dc09ea5215803a2b.svg",
               "bytes": 270324,
@@ -16902,7 +17248,9 @@
               ],
               "flipX": false,
               "embeddedRasterCount": 0,
-              "isRasterHeavy": false
+              "isRasterHeavy": false,
+              "runtimeAllowed": false,
+              "convolutionFilterCount": 3
             },
             "pngFallback": {
               "url": "assets/enemy-portraits/subjects/7d9046ecdb5bf7e2fcd7b70e.png",
@@ -16998,7 +17346,9 @@
               ],
               "flipX": true,
               "embeddedRasterCount": 0,
-              "isRasterHeavy": false
+              "isRasterHeavy": false,
+              "runtimeAllowed": true,
+              "convolutionFilterCount": 0
             },
             "pngFallback": {
               "url": "assets/enemy-portraits/subjects/48ddabba8fc7b6c804dc23ca.png",
@@ -17093,7 +17443,9 @@
               ],
               "flipX": false,
               "embeddedRasterCount": 0,
-              "isRasterHeavy": false
+              "isRasterHeavy": false,
+              "runtimeAllowed": true,
+              "convolutionFilterCount": 0
             },
             "pngFallback": {
               "url": "assets/enemy-portraits/subjects/2f9bee23b96df871c12ce4d0.png",
@@ -17189,7 +17541,9 @@
               ],
               "flipX": false,
               "embeddedRasterCount": 0,
-              "isRasterHeavy": false
+              "isRasterHeavy": false,
+              "runtimeAllowed": true,
+              "convolutionFilterCount": 0
             },
             "pngFallback": {
               "url": "assets/enemy-portraits/subjects/5acb204faef1d02dba8ad487.png",
@@ -17284,7 +17638,9 @@
               ],
               "flipX": false,
               "embeddedRasterCount": 1,
-              "isRasterHeavy": false
+              "isRasterHeavy": false,
+              "runtimeAllowed": true,
+              "convolutionFilterCount": 0
             },
             "pngFallback": {
               "url": "assets/enemy-portraits/subjects/c4e466b52e39991a6afe5184.png",
@@ -17378,7 +17734,9 @@
               ],
               "flipX": true,
               "embeddedRasterCount": 0,
-              "isRasterHeavy": false
+              "isRasterHeavy": false,
+              "runtimeAllowed": true,
+              "convolutionFilterCount": 0
             },
             "pngFallback": {
               "url": "assets/enemy-portraits/subjects/dae2e0a5ba3a5eddce66f8f4.png",
@@ -17472,7 +17830,9 @@
               ],
               "flipX": false,
               "embeddedRasterCount": 0,
-              "isRasterHeavy": false
+              "isRasterHeavy": false,
+              "runtimeAllowed": true,
+              "convolutionFilterCount": 0
             },
             "pngFallback": {
               "url": "assets/enemy-portraits/subjects/232ebe0e01cc69e2e6841871.png",
@@ -17568,7 +17928,9 @@
               ],
               "flipX": true,
               "embeddedRasterCount": 0,
-              "isRasterHeavy": false
+              "isRasterHeavy": false,
+              "runtimeAllowed": true,
+              "convolutionFilterCount": 0
             },
             "pngFallback": {
               "url": "assets/enemy-portraits/subjects/cc9d3f413da3684ee28a3a8d.png",
@@ -17663,7 +18025,9 @@
               ],
               "flipX": false,
               "embeddedRasterCount": 0,
-              "isRasterHeavy": false
+              "isRasterHeavy": false,
+              "runtimeAllowed": true,
+              "convolutionFilterCount": 0
             },
             "pngFallback": {
               "url": "assets/enemy-portraits/subjects/62d9e02a89c695e7d03bc1de.png",
@@ -17757,7 +18121,9 @@
               ],
               "flipX": false,
               "embeddedRasterCount": 0,
-              "isRasterHeavy": false
+              "isRasterHeavy": false,
+              "runtimeAllowed": true,
+              "convolutionFilterCount": 0
             },
             "pngFallback": {
               "url": "assets/enemy-portraits/subjects/01945919cb496252c9365a02.png",
@@ -17853,7 +18219,9 @@
               ],
               "flipX": false,
               "embeddedRasterCount": 0,
-              "isRasterHeavy": false
+              "isRasterHeavy": false,
+              "runtimeAllowed": true,
+              "convolutionFilterCount": 0
             },
             "pngFallback": {
               "url": "assets/enemy-portraits/subjects/63a44c88a164b9950fbf50fa.png",
@@ -17948,7 +18316,9 @@
               ],
               "flipX": false,
               "embeddedRasterCount": 0,
-              "isRasterHeavy": false
+              "isRasterHeavy": false,
+              "runtimeAllowed": true,
+              "convolutionFilterCount": 0
             },
             "pngFallback": {
               "url": "assets/enemy-portraits/subjects/1dcc1dca64f01817d96d5de3.png",
@@ -18042,7 +18412,9 @@
               ],
               "flipX": false,
               "embeddedRasterCount": 0,
-              "isRasterHeavy": false
+              "isRasterHeavy": false,
+              "runtimeAllowed": true,
+              "convolutionFilterCount": 0
             },
             "pngFallback": {
               "url": "assets/enemy-portraits/subjects/844dcbc14b3c0a4acdbe0767.png",
@@ -18123,7 +18495,7 @@
         "default": {
           "status": "human_accepted",
           "subject": {
-            "preferredFormat": "svg",
+            "preferredFormat": "png",
             "svg": {
               "url": "assets/enemy-portraits/subjects/600074be4dfb4b49f4e43d4f.svg",
               "bytes": 92171,
@@ -18136,7 +18508,9 @@
               ],
               "flipX": true,
               "embeddedRasterCount": 0,
-              "isRasterHeavy": false
+              "isRasterHeavy": false,
+              "runtimeAllowed": false,
+              "convolutionFilterCount": 1
             },
             "pngFallback": {
               "url": "assets/enemy-portraits/subjects/db0b5162b6c890a3e0b5cf4a.png",
@@ -18219,7 +18593,7 @@
         "default": {
           "status": "human_accepted",
           "subject": {
-            "preferredFormat": "svg",
+            "preferredFormat": "png",
             "svg": {
               "url": "assets/enemy-portraits/subjects/dac347abe7248851e617d7a1.svg",
               "bytes": 197746,
@@ -18232,7 +18606,9 @@
               ],
               "flipX": true,
               "embeddedRasterCount": 0,
-              "isRasterHeavy": false
+              "isRasterHeavy": false,
+              "runtimeAllowed": false,
+              "convolutionFilterCount": 1
             },
             "pngFallback": {
               "url": "assets/enemy-portraits/subjects/05d38816a7bf070bd47d5a09.png",
@@ -18314,7 +18690,7 @@
         "default": {
           "status": "human_accepted",
           "subject": {
-            "preferredFormat": "svg",
+            "preferredFormat": "png",
             "svg": {
               "url": "assets/enemy-portraits/subjects/d4e94d13e0b7087717c22a64.svg",
               "bytes": 296540,
@@ -18327,7 +18703,9 @@
               ],
               "flipX": true,
               "embeddedRasterCount": 0,
-              "isRasterHeavy": false
+              "isRasterHeavy": false,
+              "runtimeAllowed": false,
+              "convolutionFilterCount": 1
             },
             "pngFallback": {
               "url": "assets/enemy-portraits/subjects/f7673f59630f4ec7583bb1f2.png",
@@ -18408,7 +18786,7 @@
         "default": {
           "status": "human_accepted",
           "subject": {
-            "preferredFormat": "svg",
+            "preferredFormat": "png",
             "svg": {
               "url": "assets/enemy-portraits/subjects/cf87201c7ce6058a333e23ef.svg",
               "bytes": 146456,
@@ -18421,7 +18799,9 @@
               ],
               "flipX": false,
               "embeddedRasterCount": 0,
-              "isRasterHeavy": false
+              "isRasterHeavy": false,
+              "runtimeAllowed": false,
+              "convolutionFilterCount": 1
             },
             "pngFallback": {
               "url": "assets/enemy-portraits/subjects/0cdd4a2ca347363dd48e8107.png",
@@ -18515,7 +18895,9 @@
               ],
               "flipX": false,
               "embeddedRasterCount": 0,
-              "isRasterHeavy": false
+              "isRasterHeavy": false,
+              "runtimeAllowed": true,
+              "convolutionFilterCount": 0
             },
             "pngFallback": {
               "url": "assets/enemy-portraits/subjects/99174236c4a753989e6a4594.png",
@@ -18609,7 +18991,9 @@
               ],
               "flipX": false,
               "embeddedRasterCount": 1,
-              "isRasterHeavy": true
+              "isRasterHeavy": true,
+              "runtimeAllowed": true,
+              "convolutionFilterCount": 0
             },
             "pngFallback": {
               "url": "assets/enemy-portraits/subjects/8a278549f56a01c04c288faf.png",
@@ -18703,7 +19087,9 @@
               ],
               "flipX": false,
               "embeddedRasterCount": 0,
-              "isRasterHeavy": false
+              "isRasterHeavy": false,
+              "runtimeAllowed": true,
+              "convolutionFilterCount": 0
             },
             "pngFallback": {
               "url": "assets/enemy-portraits/subjects/2a74d6a0d4bab6cf8fe6bde9.png",
@@ -18800,7 +19186,9 @@
               ],
               "flipX": false,
               "embeddedRasterCount": 0,
-              "isRasterHeavy": false
+              "isRasterHeavy": false,
+              "runtimeAllowed": true,
+              "convolutionFilterCount": 0
             },
             "pngFallback": {
               "url": "assets/enemy-portraits/subjects/ff265e672b46f4bc2ccd9e51.png",
@@ -18923,7 +19311,9 @@
                     "filter9"
                   ]
                 }
-              ]
+              ],
+              "runtimeAllowed": true,
+              "convolutionFilterCount": 0
             },
             "pngFallback": {
               "url": "assets/enemy-portraits/subjects/2a18875096339c4b86a49c48.png",
@@ -19020,7 +19410,9 @@
               ],
               "flipX": false,
               "embeddedRasterCount": 0,
-              "isRasterHeavy": false
+              "isRasterHeavy": false,
+              "runtimeAllowed": true,
+              "convolutionFilterCount": 0
             },
             "pngFallback": {
               "url": "assets/enemy-portraits/subjects/2e8b3c2fe24e77cde5a41048.png",
@@ -19102,7 +19494,7 @@
         "default": {
           "status": "human_accepted",
           "subject": {
-            "preferredFormat": "svg",
+            "preferredFormat": "png",
             "svg": {
               "url": "assets/enemy-portraits/subjects/0fca7e4237540c977392250d.svg",
               "bytes": 540570,
@@ -19115,7 +19507,9 @@
               ],
               "flipX": false,
               "embeddedRasterCount": 0,
-              "isRasterHeavy": false
+              "isRasterHeavy": false,
+              "runtimeAllowed": false,
+              "convolutionFilterCount": 5
             },
             "pngFallback": {
               "url": "assets/enemy-portraits/subjects/1d2183ec3bfa6da7598e1d22.png",
@@ -19209,7 +19603,9 @@
               ],
               "flipX": false,
               "embeddedRasterCount": 1,
-              "isRasterHeavy": true
+              "isRasterHeavy": true,
+              "runtimeAllowed": true,
+              "convolutionFilterCount": 0
             },
             "pngFallback": {
               "url": "assets/enemy-portraits/subjects/d2b5dcb4bd47c07cb2113cda.png",
@@ -19290,7 +19686,7 @@
         "default": {
           "status": "human_accepted",
           "subject": {
-            "preferredFormat": "svg",
+            "preferredFormat": "png",
             "svg": {
               "url": "assets/enemy-portraits/subjects/6d5530b95f34b43bc08988ea.svg",
               "bytes": 62318,
@@ -19303,7 +19699,9 @@
               ],
               "flipX": false,
               "embeddedRasterCount": 0,
-              "isRasterHeavy": false
+              "isRasterHeavy": false,
+              "runtimeAllowed": false,
+              "convolutionFilterCount": 1
             },
             "pngFallback": {
               "url": "assets/enemy-portraits/subjects/9ef59a11db5a47414c3746b3.png",
@@ -19397,7 +19795,9 @@
               ],
               "flipX": false,
               "embeddedRasterCount": 0,
-              "isRasterHeavy": false
+              "isRasterHeavy": false,
+              "runtimeAllowed": true,
+              "convolutionFilterCount": 0
             },
             "pngFallback": {
               "url": "assets/enemy-portraits/subjects/4e4da8bb0f0eaa7244170fcc.png",
@@ -19491,7 +19891,9 @@
               ],
               "flipX": false,
               "embeddedRasterCount": 0,
-              "isRasterHeavy": false
+              "isRasterHeavy": false,
+              "runtimeAllowed": true,
+              "convolutionFilterCount": 0
             },
             "pngFallback": {
               "url": "assets/enemy-portraits/subjects/297c4f54460ae29a7e35dbc6.png",
@@ -19587,7 +19989,9 @@
               ],
               "flipX": false,
               "embeddedRasterCount": 0,
-              "isRasterHeavy": false
+              "isRasterHeavy": false,
+              "runtimeAllowed": true,
+              "convolutionFilterCount": 0
             },
             "pngFallback": {
               "url": "assets/enemy-portraits/subjects/60b94a0e54ddd888e966408c.png",
@@ -19697,7 +20101,9 @@
               ],
               "flipX": true,
               "embeddedRasterCount": 0,
-              "isRasterHeavy": false
+              "isRasterHeavy": false,
+              "runtimeAllowed": true,
+              "convolutionFilterCount": 0
             },
             "pngFallback": {
               "url": "assets/enemy-portraits/subjects/62b45494fbb5a8c5f706314a.png",
@@ -19793,7 +20199,9 @@
               ],
               "flipX": true,
               "embeddedRasterCount": 0,
-              "isRasterHeavy": false
+              "isRasterHeavy": false,
+              "runtimeAllowed": true,
+              "convolutionFilterCount": 0
             },
             "pngFallback": {
               "url": "assets/enemy-portraits/subjects/fd1865b9d85afd481cf5f4da.png",
@@ -19890,7 +20298,9 @@
               ],
               "flipX": false,
               "embeddedRasterCount": 0,
-              "isRasterHeavy": false
+              "isRasterHeavy": false,
+              "runtimeAllowed": true,
+              "convolutionFilterCount": 0
             },
             "pngFallback": {
               "url": "assets/enemy-portraits/subjects/df84e481bcd84e25b2dae83a.png",
@@ -19987,7 +20397,9 @@
               ],
               "flipX": false,
               "embeddedRasterCount": 0,
-              "isRasterHeavy": false
+              "isRasterHeavy": false,
+              "runtimeAllowed": true,
+              "convolutionFilterCount": 0
             },
             "pngFallback": {
               "url": "assets/enemy-portraits/subjects/69948e2ae22c40927226af58.png",
@@ -20084,7 +20496,9 @@
               ],
               "flipX": false,
               "embeddedRasterCount": 0,
-              "isRasterHeavy": false
+              "isRasterHeavy": false,
+              "runtimeAllowed": true,
+              "convolutionFilterCount": 0
             },
             "pngFallback": {
               "url": "assets/enemy-portraits/subjects/a4d6ffa5ccdf180085f83f5f.png",
@@ -20181,7 +20595,9 @@
               ],
               "flipX": true,
               "embeddedRasterCount": 0,
-              "isRasterHeavy": false
+              "isRasterHeavy": false,
+              "runtimeAllowed": true,
+              "convolutionFilterCount": 0
             },
             "pngFallback": {
               "url": "assets/enemy-portraits/subjects/013c82e8e36d658b87a8df06.png",
@@ -20278,7 +20694,9 @@
               ],
               "flipX": false,
               "embeddedRasterCount": 0,
-              "isRasterHeavy": false
+              "isRasterHeavy": false,
+              "runtimeAllowed": true,
+              "convolutionFilterCount": 0
             },
             "pngFallback": {
               "url": "assets/enemy-portraits/subjects/5669f70c4e1beb301c87badf.png",
@@ -20373,7 +20791,9 @@
               ],
               "flipX": false,
               "embeddedRasterCount": 0,
-              "isRasterHeavy": false
+              "isRasterHeavy": false,
+              "runtimeAllowed": true,
+              "convolutionFilterCount": 0
             },
             "pngFallback": {
               "url": "assets/enemy-portraits/subjects/4d2372f0d9c8df0ae7fd9844.png",
@@ -20469,7 +20889,9 @@
               ],
               "flipX": false,
               "embeddedRasterCount": 0,
-              "isRasterHeavy": false
+              "isRasterHeavy": false,
+              "runtimeAllowed": true,
+              "convolutionFilterCount": 0
             },
             "pngFallback": {
               "url": "assets/enemy-portraits/subjects/79ab4523023fe3f5a0eeafdd.png",
@@ -20566,7 +20988,9 @@
               ],
               "flipX": false,
               "embeddedRasterCount": 0,
-              "isRasterHeavy": false
+              "isRasterHeavy": false,
+              "runtimeAllowed": true,
+              "convolutionFilterCount": 0
             },
             "pngFallback": {
               "url": "assets/enemy-portraits/subjects/52ae24d7b4aa325ec8fd6fd4.png",
@@ -20663,7 +21087,9 @@
               ],
               "flipX": false,
               "embeddedRasterCount": 0,
-              "isRasterHeavy": false
+              "isRasterHeavy": false,
+              "runtimeAllowed": true,
+              "convolutionFilterCount": 0
             },
             "pngFallback": {
               "url": "assets/enemy-portraits/subjects/b9e2544046c4d479b12e49bd.png",
@@ -20758,7 +21184,9 @@
               ],
               "flipX": false,
               "embeddedRasterCount": 0,
-              "isRasterHeavy": false
+              "isRasterHeavy": false,
+              "runtimeAllowed": true,
+              "convolutionFilterCount": 0
             },
             "pngFallback": {
               "url": "assets/enemy-portraits/subjects/a851bca8e60f58e39bb7896a.png",
@@ -20854,7 +21282,9 @@
               ],
               "flipX": false,
               "embeddedRasterCount": 0,
-              "isRasterHeavy": false
+              "isRasterHeavy": false,
+              "runtimeAllowed": true,
+              "convolutionFilterCount": 0
             },
             "pngFallback": {
               "url": "assets/enemy-portraits/subjects/698e2dff02b309c442ed105f.png",
@@ -20951,7 +21381,9 @@
               ],
               "flipX": false,
               "embeddedRasterCount": 0,
-              "isRasterHeavy": false
+              "isRasterHeavy": false,
+              "runtimeAllowed": true,
+              "convolutionFilterCount": 0
             },
             "pngFallback": {
               "url": "assets/enemy-portraits/subjects/062797676d4edf803dbe909d.png",
@@ -21048,7 +21480,9 @@
               ],
               "flipX": false,
               "embeddedRasterCount": 0,
-              "isRasterHeavy": false
+              "isRasterHeavy": false,
+              "runtimeAllowed": true,
+              "convolutionFilterCount": 0
             },
             "pngFallback": {
               "url": "assets/enemy-portraits/subjects/8144443635bf08f752e8b047.png",
@@ -21145,7 +21579,9 @@
               ],
               "flipX": false,
               "embeddedRasterCount": 18,
-              "isRasterHeavy": true
+              "isRasterHeavy": true,
+              "runtimeAllowed": true,
+              "convolutionFilterCount": 0
             },
             "pngFallback": {
               "url": "assets/enemy-portraits/subjects/3f64e9c0666ecb64a8dc0eef.png",
@@ -21238,7 +21674,9 @@
               ],
               "flipX": true,
               "embeddedRasterCount": 0,
-              "isRasterHeavy": false
+              "isRasterHeavy": false,
+              "runtimeAllowed": true,
+              "convolutionFilterCount": 0
             },
             "pngFallback": {
               "url": "assets/enemy-portraits/subjects/f6cf4268cbf09fc50fb382cf.png",
@@ -21320,7 +21758,9 @@
               ],
               "flipX": false,
               "embeddedRasterCount": 0,
-              "isRasterHeavy": false
+              "isRasterHeavy": false,
+              "runtimeAllowed": true,
+              "convolutionFilterCount": 0
             },
             "pngFallback": {
               "url": "assets/enemy-portraits/subjects/2a958020810147bcf6806b58.png",
@@ -21402,7 +21842,9 @@
               ],
               "flipX": false,
               "embeddedRasterCount": 0,
-              "isRasterHeavy": false
+              "isRasterHeavy": false,
+              "runtimeAllowed": true,
+              "convolutionFilterCount": 0
             },
             "pngFallback": {
               "url": "assets/enemy-portraits/subjects/b38ef233f826470531cf28a6.png",
@@ -21471,7 +21913,7 @@
         "default": {
           "status": "human_accepted",
           "subject": {
-            "preferredFormat": "svg",
+            "preferredFormat": "png",
             "svg": {
               "url": "assets/enemy-portraits/subjects/af760ac24fb31fd0174d691a.svg",
               "bytes": 12240,
@@ -21484,7 +21926,9 @@
               ],
               "flipX": false,
               "embeddedRasterCount": 0,
-              "isRasterHeavy": false
+              "isRasterHeavy": false,
+              "runtimeAllowed": false,
+              "convolutionFilterCount": 2
             },
             "pngFallback": {
               "url": "assets/enemy-portraits/subjects/6a42b42bd3f7ea4097fdf339.png",
@@ -21667,5 +22111,5 @@
     },
     "closureDigest": "C70B03A8463DF1948F89B4ED1F7B3039846B67C58C03D80BE39B917C1DEE8AD3"
   },
-  "manifestDigest": "EFDBD928AD03F892A7A8236C333E8A4BEDF57425879854B5C8113448F7A306E5"
+  "manifestDigest": "53358DF44FB13346EBCBEEB41A5C10E2E61AA08CB623D85C9A9D1683D98B2041"
 }

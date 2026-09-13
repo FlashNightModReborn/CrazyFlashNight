@@ -212,7 +212,9 @@
             variantKey: variantKey,
             theme: inferTheme(resolvedRef),
             status: variant.status,
-            svgUrl: variant.subject.svg && remapAssetUrl(variant.subject.svg.url),
+            // 禁用表示在 descriptor 层即移除，预览复用及像素探测也拿不到该 URL。
+            svgUrl: variant.subject.svg && variant.subject.svg.runtimeAllowed !== false
+                && remapAssetUrl(variant.subject.svg.url),
             pngUrl: variant.subject.pngFallback && remapAssetUrl(variant.subject.pngFallback.url),
             preferPng: shouldPreferPng(variant.subject),
             legacyUrl: remapAssetUrl(context.legacyUrl || variant.legacyUrl || LOCKED_URL)

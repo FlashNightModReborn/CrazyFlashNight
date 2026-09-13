@@ -371,3 +371,15 @@ frames_extracted
 - `review_open_preflight_verified`：当前 shard 的 manifest/model/render/review 与浏览器入口可复核；仍停在真实人类艺术评价前。
 
 审阅状态固定为 `pass / adjustment / wrong_pose / wrong_subject / source / variant_mismatch`。`pass` 接受 Luna A proposal，Luna B 只作独立复核；非 `pass` 必须备注。本地进度按 `reviewDigest` 隔离，旧批或 partial 决定导入时 fail-closed。由 [`open-review.js`](open-review.js) 打开的页面优先走受验证的原生保存函数，同时写 canonical decisions 与版本化 `review-exports/`；保存期间按钮锁定，完成后按钮和 sticky 状态条显示精确 canonical/归档路径，重复点击不会并发写多份。普通浏览器环境才回退下载。
+
+
+## 2026-09-13：卷积 SVG 运行时禁用政策
+
+已证实 100×100 卷积在旧 Chromium 的着色程序规模检查中可致命退出。共享 `svg_representation_evidence` 按 XML 节点识别 `feConvolveMatrix`，为含卷积的表示生成 `subject.svg.runtimeAllowed=false`、`convolutionFilterCount` 与 `preferredFormat=png`。这是保守兼容政策，不是通用崩溃阈值；没有声称每个卷积或 20×20 都会崩溃。普通矢量仍优先 SVG，原画与既有 PNG 哈希、几何、方向、人审来源和别名保持不变。
+
+仅更新此类表示政策使用 `python tools/portrait-pilot/promote-enemy-portraits-v1.py refresh-representation`：先核现役 manifest/receipt digest 与每个 SVG/PNG 原字节，只重派生表示字段和当前 controller 绑定；staging 完整通过现役身份、来源、人审、几何、文件集合与 receipt 门后，复用原子发布入口，备份在 `tmp/portrait-representation-backup-*`。此命令不重编码 PNG；完整 `promote` 仍用于新增/更换接受资产。跨机器完整烘焙曾因 PNG 编码字节不一致触发 preserved exact-set 拒绝，不能绕过该门，亦不以此变更已接受图像。
+
+Web `EnemyPortraits.resolve` 在 descriptor 层移除禁用 SVG 地址，mount、可见像素探测及军阀预览纹理复用都只能拿到 PNG/安全 legacy；PNG 缺失、失败或旧挂载回调不得重新请求禁用 SVG。回归入口为 `python tools/portrait-pilot/test-svg-runtime-safety.py`、`node tools/test-portrait-resolver-runtime.js`，以及 Team / Enemy / Arena 三个 `check`（含 `CF7_PORTRAIT_EVIDENCE_ONLY=1`）。真实 WebView2 隔离资产夹具见 `PortraitWebViewRuntimeTests`，显式设置 `CF7_TEST_PORTRAIT_WEBVIEW=1` 后按 Launcher 测试入口运行，记录实际 Runtime 与进程路径；它不代签旧档 loot 恢复旅程或最低 Runtime 承诺。
+
+
+本次机器验证：结构策略 3 项、resolver 15 项通过；现役 28 个含卷积的已接受变体禁用 SVG，222 个已接受变体的身份/别名/几何/来源及图像字节逐项不变，Team / Enemy / Arena evidence-only 门通过。真实 WebView2 `152.0.4191.66`，进程来自系统 `Microsoft/EdgeWebView/Application/152.0.4191.66/msedgewebview2.exe`；隔离 testhost 中两个身份的 PNG 正常渲染及强制 404 回退共 4 个场景通过，SVG 请求 0。夹具通过受限本地资源处理器和不缓存的缺图 URL 注入 404，避免浏览器图像缓存让故障注入失效；像素验证使用显式跨源许可。以上不覆盖旧 WebView2 真机、loot 业务、输入事故或最低版本矩阵。

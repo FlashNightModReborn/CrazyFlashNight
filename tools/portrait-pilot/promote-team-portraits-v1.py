@@ -1192,8 +1192,17 @@ def svg_representation_evidence(svg_bytes: bytes, png_bytes: bytes) -> dict[str,
         or len(svg_bytes) >= SVG_RASTER_HEAVY_RATIO * len(png_bytes)
         or embedded_raster_count >= SVG_RASTER_HEAVY_IMAGE_COUNT
     )
+    # 兼容政策而非崩溃阈值：未经旧 WebView2 矩阵确认的卷积 SVG 一律只消费 PNG。
+    # 保留原始内容寻址 SVG 作为可编辑来源证据，不修改滤镜或像素。
+    try:
+        convolution_count = sum(1 for node in ET.fromstring(text).iter()
+                                if node.tag.rsplit("}", 1)[-1] == "feConvolveMatrix")
+    except ET.ParseError as error:
+        raise PromotionError(f"接受的 SVG XML 非法：{error}") from error
     return {
-        "preferredFormat": "png" if embedded_raster_count > 0 else "svg",
+        "svgRuntimeAllowed": convolution_count == 0,
+        "convolutionFilterCount": convolution_count,
+        "preferredFormat": "png" if embedded_raster_count > 0 or convolution_count else "svg",
         "embeddedRasterCount": embedded_raster_count,
         "isRasterHeavy": is_raster_heavy,
     }
@@ -1582,6 +1591,8 @@ def write_subject_assets(staging: Path, selection: dict[str, Any]) -> dict[str, 
         "flipX": bool(selection["flipX"]),
         "embeddedRasterCount": representation["embeddedRasterCount"],
         "isRasterHeavy": representation["isRasterHeavy"],
+        "runtimeAllowed": representation["svgRuntimeAllowed"],
+        "convolutionFilterCount": representation["convolutionFilterCount"],
     }
     if source_empty_filter_ids:
         svg_record["compatibilityTransforms"] = [
@@ -1727,8 +1738,8 @@ def build_pack(
         "generatedAt": utc_now(),
         "consumerContract": {
             "identityKey": "portraitRef + variantKey",
-            "primaryFormat": "per-variant subject.preferredFormat; PNG is primary for every SVG containing embedded raster images",
-            "fallbackFormat": "the alternate signed subject format, then caller legacy asset",
+            "primaryFormat": "per-variant subject.preferredFormat; PNG is primary for embedded raster images or convolution filters; convolution SVG runtime loading is prohibited",
+            "fallbackFormat": "only runtime-allowed alternate subject format, then caller legacy asset",
             "presentationOwnedBy": "launcher/web/modules/portrait-resolver.js and consumer CSS",
             "arenaCompatible": True,
         },
@@ -1902,6 +1913,8 @@ def check_manifest(manifest_path: Path) -> dict[str, Any]:
                     subject.get("preferredFormat") != representation["preferredFormat"]
                     or subject["svg"].get("embeddedRasterCount") != representation["embeddedRasterCount"]
                     or subject["svg"].get("isRasterHeavy") != representation["isRasterHeavy"]
+                    or subject["svg"].get("runtimeAllowed") != representation["svgRuntimeAllowed"]
+                    or subject["svg"].get("convolutionFilterCount") != representation["convolutionFilterCount"]
                 ):
                     raise PromotionError(f"战队头像 SVG/PNG representation 证据漂移：{portrait_ref}::{variant_key}")
                 if png_alpha_evidence(png_path) != {
