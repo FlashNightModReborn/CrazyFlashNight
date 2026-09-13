@@ -12,7 +12,9 @@
 - receipt SHA-256 `2F2CBAB863863776CF416C58901EE9435C8191C06905F6244A8564E07E4C6F83`，manifest SHA-256 `1A0190E12460309C836978E551AD15D6BEC4A20C34A7BBEE1187AFA659BE4227`；promotion `2026-09-13T12:04:19.3318418Z`。旧包保留于 `tmp/runtime-promotions/20260913T120350799Z-a8b099b221684223a9582e6e3e389725/previous`。
 - C# **5424 pass + 4 explicit skip**、合并后 AS2 **795/795**、fresh Compiler **0/0**；asLoader **1351221B** / `5008394E6C8D687DBDB83FFAC775288A90AA566BFA61308F6BEE851094395CDA`。两个独立冻结树构建以正式 closure 为准，前期开发目录候选的不同字节不充当正式 builder vote 或体验代签。
 
-无候选参数的正式入口已核实 runtime 路径/identity/closure、可见前门、同版 Core 守护子进程及正常关闭，父/子进程无残留。5 份玩家/测试存档 JSON 哈希未变，启动器 `.launcher-version-marker.json` 按正常流程刷新；没有点击前门确认进入存档，不称输入/复活/报告业务 `standard_entry_verified`。主线部署提交与首次远端 Audit 在后续收尾记录中补齐。
+无候选参数的正式入口已核实 runtime 路径/identity/closure、可见前门、同版 Core 守护子进程及正常关闭，父/子进程无残留。5 份玩家/测试存档 JSON 哈希未变，启动器 `.launcher-version-marker.json` 按正常流程刷新；没有点击前门确认进入存档，不称输入/复活/报告业务 `standard_entry_verified`。
+
+部署提交 `9198d1afb9c15090edbae86a00cf0d693e718380` 已快进推送 `main`；[首次事后 Audit 34756538318](https://github.com/FlashNightModReborn/CrazyFlashNight/actions/runs/34756538318) 成功，独立重放最终云端证明，在 Index 中核验 33 文件、2 signer / 2 faultDomain 与相同 payload closure，明确输出 `state=promoted / deploymentChanged=true`。本地暂存区 strict verifier 同样通过，专项现场复验边界保持不变。
 
 ## 2026-09-13 上一正式发布：现场对白、原版界面与高清立绘
 

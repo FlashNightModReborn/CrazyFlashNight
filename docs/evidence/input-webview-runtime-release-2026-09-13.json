@@ -62,5 +62,18 @@
     "playerSaveJsonUnchanged": 5,
     "launcherVersionMarkerUpdated": true
   },
-  "postPromotionAudit": null
+  "deploymentCommit": "9198d1afb9c15090edbae86a00cf0d693e718380",
+  "postPromotionAudit": {
+    "runId": 34756538318,
+    "url": "https://github.com/FlashNightModReborn/CrazyFlashNight/actions/runs/34756538318",
+    "headSha": "9198d1afb9c15090edbae86a00cf0d693e718380",
+    "baseSha": "90dc595c22d20521135566a09f662f889ed32fd4",
+    "conclusion": "success",
+    "state": "promoted",
+    "deploymentChanged": true,
+    "payloadFileCount": 33,
+    "signers": 2,
+    "faultDomains": 2,
+    "payloadClosureHash": "7CFF130DFBDAD5F4A25A2101E6C1C843D2060D7E5D92D73FC6BBB440C33E6C61"
+  }
 }
