@@ -617,6 +617,8 @@ native 源码前缀内的非二进制契约文档也必须显式绑定，不能�
 
 现场对白的隐藏 WebView2 组件工具位于 `tools/native-dialogue-webview2-smoke`：源码、项目、HTML 与运行入口绑定 policy 域，bin/obj 排除；它不进入正式 DLL 输入域。必需 Web 资源检查包含动态立绘两条脚本与 XFL 派生皮肤入口；组件测试仍不构成真实游戏对白验收。
 
+`tools/equipment-tuning/fixtures/item-identity-triple.json` 作为现役图标身份审计的输入，显式绑定 policy fixedFiles。该目录原先只纳入 `.js`，夹具更新会被 native 变更审计按未绑定输入拒绝；补齐精确 JSON 路径，不扩展其他文件或降低检查要求。
+
 ## producer 与政策闸门
 
 发布链分成三个职责，不能重新合并：

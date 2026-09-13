@@ -75,6 +75,7 @@
     },
     "policy": {
       "fixedFiles": [
+        "tools/equipment-tuning/fixtures/item-identity-triple.json",
         ".github/workflows/runtime-bundle-integrity.yml",
         ".github/workflows/runtime-cloud-builder.yml",
         "automation/dev.ps1",
