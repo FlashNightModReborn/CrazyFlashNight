@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/技能容器/技能容器-扭转乾坤" itemID="697a65ff-00004088" linkageExportForAS="true" linkageIdentifier="技能容器-扭转乾坤" lastModified="1789144440">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/技能容器/技能容器-扭转乾坤" itemID="697a65ff-00004088" linkageExportForAS="true" linkageIdentifier="技能容器-扭转乾坤" lastModified="1789397095">
   <timeline>
-    <DOMTimeline name="技能容器-扭转乾坤" currentFrame="3">
+    <DOMTimeline name="技能容器-扭转乾坤" currentFrame="13">
       <layers>
         <DOMLayer name="as" color="#4FFF4F" locked="true" autoNamed="false">
           <frames>
@@ -34,7 +34,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="as" color="#FF800A" locked="true" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="as" color="#FF800A" locked="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <Actionscript>
@@ -211,7 +211,7 @@ onClipEvent (unload) {
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="移动点2" color="#4F80FF" locked="true" autoNamed="false">
+        <DOMLayer name="移动点2" color="#4F80FF" locked="true" current="true" isSelected="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="28" keyMode="9728">
               <elements/>
@@ -650,7 +650,7 @@ onClipEvent (unload) {
             </DOMFrame>
             <DOMFrame index="21" motionTweenScale="false" keyMode="8192">
               <elements>
-                <DOMSymbolInstance libraryItemName="Graphic/shape 601" selected="true" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="Graphic/shape 601" symbolType="graphic" loop="loop">
                   <matrix>
                     <Matrix a="-1.49627685546875" b="-0.646072387695313" c="0.646072387695313" d="-1.49627685546875" tx="130.25" ty="-221.4"/>
                   </matrix>

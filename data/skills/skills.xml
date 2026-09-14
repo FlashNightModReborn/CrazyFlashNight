@@ -465,15 +465,18 @@
         <MP>100</MP>
     </Skill>
     <Skill id="38">
-        <Name></Name>
-        <Type></Type>
-        <Description></Description>
-        <UnlockLevel>1</UnlockLevel>
+        <Name>王之财宝</Name>
+        <Type>超能力</Type>
+        <Description>打开连通黄金宝库的门扉，从中随机抽取各类武器——冷兵器、枪械与拳套，逐件投向敌人。
+        单发威力由抽中的武器面板与对应的空手／冷兵器／枪械加成决定，并随技能等级提高。
+        技能结束后，十秒内仍会持续投出武器并追击敌人。
+        基础强度：中等，升级收益：中等。</Description>
+        <UnlockLevel>35</UnlockLevel>
         <MaxLevel>10</MaxLevel>
-        <UnlockSP>0</UnlockSP>
-        <UpgradeSP>0</UpgradeSP>
-        <CD>0</CD>
-        <MP>0</MP>
+        <UnlockSP>50</UnlockSP>
+        <UpgradeSP>50</UpgradeSP>
+        <CD>2000</CD>
+        <MP>120</MP>
     </Skill>
     <Skill id="39">
         <Name>扭转乾坤</Name>

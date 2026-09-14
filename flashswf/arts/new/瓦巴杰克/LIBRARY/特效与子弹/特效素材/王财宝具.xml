@@ -1,0 +1,91 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="特效与子弹/特效素材/王财宝具" itemID="6aa7febf-00002bc4" linkageExportForAS="true" linkageIdentifier="王财宝具" lastModified="1789403998" lastUniqueIdentifier="1">
+  <timeline>
+    <DOMTimeline name="王财宝具">
+      <layers>
+        <DOMLayer name="Script Layer" color="#D428BA" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[// ===== 王财宝具（素材元件）=====
+// 素材实况：刀=竖画(刀尖+y) 51×402 / 手枪=横画(枪口+x) 94×60 /
+//           长枪=横画(枪口+x) 274×107 / 拳套=手部素材(挂右手的)
+// ⇒ 枪比刀多转 90°；尺寸统一用一个倍率，不做同类归一。
+
+this.飞剑.基本款._visible = 0;
+
+var 装扮 = _parent.装扮;
+if (装扮 == undefined || 装扮 == "") 装扮 = "刀-中国战刀";   // 兜底，别空手
+
+var 新装扮 = this.飞剑.attachMovie(装扮, "装扮", this.getNextHighestDepth(), {_xscale: 100, _yscale: 100});
+
+if (新装扮 != undefined && 新装扮._height > 0)
+{
+	var 类型 = _parent.装备类型;
+	var 是枪 = (类型 == "手枪" || 类型 == "长枪");
+
+	// ---- 朝向 ----
+	// 飞剑 挂点自带 rot 163.86°，-164 正好抵消；枪素材是横画的，再多转 90°。
+	// ⚠ 枪的 _xscale 取了负值，镜像会把旋转手感反过来
+	//    ⇒ 屏幕上的顺时针 90° = _rotation - 90（不是 +90）。
+	//    ⚠ -254 与"负 _xscale"绑死，别只改一个。
+	var 旋转;
+	if (是枪) 旋转 = -164 - 90;   // = -254
+	else      旋转 = -164;
+
+	// ---- 尺寸：唯一总旋钮，所有类型共用（%） ----
+	var 基准缩放 = 100;
+
+	if (是枪)
+	{
+		新装扮._xscale = -基准缩放;    // 负值 = 屏幕水平镜像
+	}
+	else if (类型 == "手部装备")
+	{
+		基准缩放 = 150;
+		新装扮._xscale = 基准缩放;
+	}
+	else
+	{
+		新装扮._xscale = 基准缩放;
+	}
+	新装扮._yscale = 基准缩放;
+	新装扮._rotation = 旋转;
+
+	// ---- 挂点位置（飞剑 局部坐标）----
+	if (类型 == "拳套")
+	{
+		新装扮._x = 0;
+		新装扮._y = 0;
+	}
+	else
+	{
+		新装扮._x = -12;
+		新装扮._y = 91;
+	}
+}
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 2" color="#E3C645">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="各种图素材等/Symbol 5612" name="飞剑" centerPoint3DX="56.1" centerPoint3DY="90.1">
+                  <matrix>
+                    <Matrix a="-0.576995849609375" b="0.166778564453125" c="-0.166778564453125" d="-0.576995849609375" tx="0.35" ty="-90.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

@@ -167,7 +167,7 @@ class org.flashNight.neur.Server.SaveManager {
     //   REPAIR_DICT_SKILLS      → mydata[5][N][0] 技能名
     //   REPAIR_DICT_TASK_CHAINS → mydata.tasks.task_chains_progress 的 key
     //   REPAIR_DICT_STAGES      → mydata.others.物品来源缓存.discoveredStages[N]
-    // 与 data/skills/skills.xml <Name> 字段权威同步 (66 项).
+    // 与 data/skills/skills.xml <Name> 字段权威同步 (67 项).
     // 修这个数组时同步改 launcher/data/save_repair_dict.json 的 skills 字段.
     public static var REPAIR_DICT_SKILLS:Array = [
         // 空手 / 武术 / 内力
@@ -184,7 +184,7 @@ class org.flashNight.neur.Server.SaveManager {
         "枪械攻击", "移动射击", "枪械师", "轰炸专家", "冲击连携",
         "追猎射击", "翻滚换弹", "战术目镜", "死亡绽放",
         // 特殊 / 主动
-        "上帝之杖", "重力井", "重力场", "火力支援", "闪现", "时间停止",
+        "上帝之杖", "重力井", "重力场", "火力支援", "闪现", "时间停止", "王之财宝",
         "气动波", "六连", "扭转乾坤",
         // 通用 (生活技能)
         "独行者", "口才", "铁匠", "逆向", "炼金", "驾驶", "烹饪", "解密"

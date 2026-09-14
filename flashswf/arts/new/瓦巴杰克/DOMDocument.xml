@@ -2,7 +2,7 @@
      <folders>
           <DOMFolderItem name="Graphic" itemID="660e711f-00002492"/>
           <DOMFolderItem name="shape" itemID="65a6bb2a-00001374"/>
-          <DOMFolderItem name="sound" itemID="66684e26-0000087a"/>
+          <DOMFolderItem name="sound" itemID="66684e26-0000087a" isExpanded="true"/>
           <DOMFolderItem name="sprite" itemID="666743d5-00000959"/>
           <DOMFolderItem name="防具" itemID="68372e4d-000003a7"/>
           <DOMFolderItem name="防具/大型拳套" itemID="6839fd1c-0000264e"/>
@@ -27,13 +27,13 @@
           <DOMFolderItem name="防具/硬化巨拳/素材" itemID="6839f14d-00001b36"/>
           <DOMFolderItem name="各种图素材等" itemID="65e07117-00000783"/>
           <DOMFolderItem name="闪电特效素材" itemID="684dbdac-00004430"/>
-          <DOMFolderItem name="特效与子弹" itemID="659a5bab-00000abc"/>
+          <DOMFolderItem name="特效与子弹" itemID="659a5bab-00000abc" isExpanded="true"/>
           <DOMFolderItem name="特效与子弹/淬毒动画" itemID="658c7185-00001244"/>
           <DOMFolderItem name="特效与子弹/上帝之杖" itemID="66e7ebe3-000015fc"/>
           <DOMFolderItem name="特效与子弹/上帝之杖/3.位图相关" itemID="6690e84b-000017e9"/>
           <DOMFolderItem name="特效与子弹/上帝之杖/3.音效相关" itemID="6690f591-00003200"/>
           <DOMFolderItem name="特效与子弹/上帝之杖/无AS链接" itemID="6690f257-00002761"/>
-          <DOMFolderItem name="特效与子弹/特效素材" itemID="66e6ff89-00000d9e"/>
+          <DOMFolderItem name="特效与子弹/特效素材" itemID="66e6ff89-00000d9e" isExpanded="true"/>
           <DOMFolderItem name="特效与子弹/特效素材/01.白净色系" itemID="658030f8-00000834"/>
           <DOMFolderItem name="特效与子弹/特效素材/01.白净色系/回旋风刃" itemID="65899798-0000119b"/>
           <DOMFolderItem name="特效与子弹/特效素材/01.白净色系/回旋风刃/未命名文件夹 1" itemID="65507bbb-00005be7" isExpanded="true"/>
@@ -47,9 +47,9 @@
           <DOMFolderItem name="特效与子弹/特效素材/重力井素材" itemID="660e7010-00001bd7"/>
           <DOMFolderItem name="特效与子弹/一瞬千击多次" itemID="66e6ff40-00000d70"/>
           <DOMFolderItem name="特效与子弹/一瞬千击多次/素材" itemID="66e6ff53-00000d73"/>
-          <DOMFolderItem name="特效与子弹/自瞄准星特效" itemID="66e6ffdb-00000da8" isExpanded="true"/>
+          <DOMFolderItem name="特效与子弹/自瞄准星特效" itemID="66e6ffdb-00000da8"/>
           <DOMFolderItem name="无AS链接" itemID="6aa6ea12-00000d6c"/>
-          <DOMFolderItem name="武器" itemID="65df528e-00000447" isExpanded="true"/>
+          <DOMFolderItem name="武器" itemID="65df528e-00000447"/>
           <DOMFolderItem name="武器/3D打印：炎" itemID="66e6fe54-00000d6d"/>
           <DOMFolderItem name="武器/dominator" itemID="65e71ef4-00000627"/>
           <DOMFolderItem name="武器/dominator/素材" itemID="65e71f00-0000062f"/>
@@ -82,14 +82,14 @@
           <DOMSoundItem name="音效/sound4764.mp3" itemID="669c14d6-00000926" sourceExternalFilepath="./LIBRARY/音效/sound4764.wav" sourceLastImported="1721505041" externalFileCRC32="1657612231" externalFileSize="463096" href="音效/sound4764.wav" soundDataHRef="M 99 1709215542.dat" format="44kHz 16bit Stereo" sampleCount="115763" exportFormat="5" exportBits="17" dataLength="6247"/>
           <DOMSoundItem name="特效与子弹/淬毒动画/sound502.mp3" itemID="66a93cd4-000018f3" sourceExternalFilepath="./LIBRARY/特效与子弹/淬毒动画/sound502.wav" sourceLastImported="1722367280" externalFileCRC32="3018213729" externalFileSize="132590" href="特效与子弹/淬毒动画/sound502.wav" soundDataHRef="M 86 1703702920.dat" format="44kHz 16bit Mono" sampleCount="63753" exportFormat="5" exportBits="17" dataLength="2392"/>
           <DOMSoundItem name="音效/sound519.mp3" itemID="669c100d-00000915" sourceExternalFilepath="./LIBRARY/音效/sound519.wav" sourceLastImported="1721499455" externalFileCRC32="1761133546" externalFileSize="385920" href="音效/sound519.wav" soundDataHRef="M 86 1704623158.dat" format="44kHz 16bit Stereo" sampleCount="96469" exportFormat="5" exportBits="17" dataLength="5096"/>
-          <DOMSoundItem name="音效/sound5595.mp3" itemID="6577bc3f-000010cd" sourceExternalFilepath="./LIBRARY/音效/sound5595.mp3" sourceLastImported="1702345791" href="音效/sound5595.mp3" soundDataHRef="M 78 1702636348.dat" format="11kHz 16bit Mono" sampleCount="10368" exportFormat="5" exportBits="7" dataLength="1872" exportNative="true" cachedSampleCount="5184"/>
+          <DOMSoundItem name="音效/sound5595.mp3" itemID="6aa800f1-00002bd2" sourceExternalFilepath="./LIBRARY/音效/sound5595.mp3" sourceLastImported="1789395986" href="音效/sound5595.mp3" soundDataHRef="M 78 1702636348.dat" format="11kHz 16bit Mono" sampleCount="10368" exportFormat="5" exportBits="17" dataLength="1872" cachedSampleCount="5184"/>
           <DOMSoundItem name="特效与子弹/上帝之杖/3.音效相关/sound715.mp3" itemID="66951c54-00000e5f" sourceExternalFilepath="./LIBRARY/特效与子弹/上帝之杖/3.音效相关/sound715.wav" sourceLastImported="1721048299" href="特效与子弹/上帝之杖/3.音效相关/sound715.wav" soundDataHRef="M 125 1726475238.dat" format="44kHz 16bit Stereo" sampleCount="49170" exportFormat="5" exportBits="17" dataLength="1872"/>
           <DOMSoundItem name="音效/触电.wav" itemID="666998d9-00000425" sourceExternalFilepath="./LIBRARY/音效/触电.wav" sourceLastImported="1709299860" externalFileCRC32="1672822772" externalFileSize="125696" href="音效/触电.wav" soundDataHRef="M 115 1718196441.dat" format="44kHz 16bit Mono" sampleCount="62826" exportFormat="5" exportBits="17"/>
           <DOMSoundItem name="音效/大爆炸.wav" itemID="66e88a9c-00000499" sourceExternalFilepath="./LIBRARY/音效/大爆炸.wav" sourceLastImported="1726515845" externalFileCRC32="3551188052" externalFileSize="786014" href="音效/大爆炸.wav" soundDataHRef="M 140 1726515868.dat" format="44kHz 16bit Stereo" sampleCount="192000"/>
           <DOMSoundItem name="音效/火舞旋风.wav" itemID="66154ef7-000003b8" sourceExternalFilepath="./LIBRARY/音效/火舞旋风.wav" sourceLastImported="1712671981" externalFileCRC32="3217639232" externalFileSize="139376" href="音效/火舞旋风.wav" soundDataHRef="M 99 1712672503.dat" format="44kHz 16bit Mono" sampleCount="69666" exportFormat="5" exportBits="17"/>
           <DOMSoundItem name="特效与子弹/淬毒动画/净化.wav" itemID="66a93ecb-000018f7" sourceExternalFilepath="./LIBRARY/特效与子弹/淬毒动画/净化.wav" sourceLastImported="1722367668" externalFileCRC32="3523324674" externalFileSize="107088" href="特效与子弹/淬毒动画/净化.wav" soundDataHRef="M 124 1722367691.dat" format="44kHz 16bit Mono" sampleCount="51002" exportFormat="5" exportBits="17"/>
           <DOMSoundItem name="音效/世界结束.wav" itemID="658aafdd-00000128" sourceExternalFilepath="./LIBRARY/音效/世界结束.wav" sourceLastImported="1703587778" externalFileCRC32="1735965590" externalFileSize="142580" href="音效/世界结束.wav" soundDataHRef="M 86 1703587805.dat" format="44kHz 16bit Mono" sampleCount="64976" exportFormat="5" exportBits="17"/>
-          <DOMSoundItem name="音效/世界开始.wav" itemID="669c0fd9-0000090f" sourceExternalFilepath="./LIBRARY/音效/世界开始.wav" sourceLastImported="1721499632" externalFileCRC32="45122350" externalFileSize="593732" href="音效/世界开始.wav" soundDataHRef="M 85 1703587516.dat" format="44kHz 16bit Stereo" sampleCount="148422" exportFormat="5" exportBits="17"/>
+          <DOMSoundItem name="音效/世界开始.wav" itemID="669c0fd9-0000090f" sourceExternalFilepath="./LIBRARY/音效/世界开始.wav" sourceLastImported="1789401403" externalFileSize="593732" href="音效/世界开始.wav" soundDataHRef="M 85 1703587516.dat" format="44kHz 16bit Stereo" sampleCount="148422" exportFormat="5"/>
           <DOMBitmapItem name="各种图素材等/位图 88" itemID="659a8481-00001beb" sourceExternalFilepath="./LIBRARY/各种图素材等/位图 88.png" sourceLastImported="1704625281" originalCompressionType="lossless" quality="50" href="各种图素材等/位图 88.png" bitmapDataHRef="M 88 1704625281.dat" frameRight="7120" frameBottom="7120"/>
           <DOMBitmapItem name="各种图素材等/位图 89" itemID="659a857a-00001ce8" sourceExternalFilepath="./LIBRARY/各种图素材等/位图 89.png" sourceLastImported="1704625530" originalCompressionType="lossless" quality="50" href="各种图素材等/位图 89.png" bitmapDataHRef="M 89 1704625530.dat" frameRight="4180" frameBottom="4200"/>
           <DOMBitmapItem name="各种图素材等/位图 91.png" itemID="659a875c-00001d02" sourceExternalFilepath="./LIBRARY/各种图素材等/位图 91.png" sourceLastImported="1704626012" externalFileCRC32="1716276378" externalFileSize="763" useImportedJPEGData="false" compressionType="lossless" originalCompressionType="lossless" quality="50" href="各种图素材等/位图 91.png" bitmapDataHRef="M 91 1704625942.dat" frameRight="2660" frameBottom="2800"/>
@@ -396,7 +396,6 @@
           <Include href="各种图素材等/Symbol 1131.xml" itemIcon="1" loadImmediate="false" itemID="6577b699-00000c4f" lastModified="1702343951"/>
           <Include href="各种图素材等/Symbol 1133.xml" itemIcon="1" loadImmediate="false" itemID="6577b699-00000c50" lastModified="1702343951"/>
           <Include href="各种图素材等/Symbol 4270.xml" itemIcon="1" loadImmediate="false" itemID="657b39a0-000005bf" lastModified="1702574457"/>
-          <Include href="各种图素材等/Symbol 5594.xml" loadImmediate="false" itemID="657b39a0-000005c0" lastModified="1702574457"/>
           <Include href="各种图素材等/Symbol 5610.xml" loadImmediate="false" itemID="657b39a0-000005b9" lastModified="1702574457"/>
           <Include href="各种图素材等/Symbol 5611.xml" loadImmediate="false" itemID="657b39a0-000005ba" lastModified="1702574457"/>
           <Include href="各种图素材等/Symbol 5612.xml" loadImmediate="false" itemID="657b39a0-000005bb" lastModified="1702574457"/>
@@ -410,7 +409,6 @@
           <Include href="各种图素材等/补间 6.xml" itemIcon="1" loadImmediate="false" itemID="65e1c32d-00000384" lastModified="1709294875"/>
           <Include href="各种图素材等/补间 7.xml" itemIcon="1" loadImmediate="false" itemID="65e1c32f-00000386" lastModified="1709294383"/>
           <Include href="各种图素材等/技能背景.xml" loadImmediate="false" itemID="659a876f-00001d04" lastModified="1704626031"/>
-          <Include href="黑铁-落剑.xml" itemID="67bde3a3-000010b8" lastModified="1740497827"/>
           <Include href="闪电特效素材/shape 506.xml" itemIcon="1" loadImmediate="false" itemID="58132c1e-000001fb" lastModified="1477651486"/>
           <Include href="闪电特效素材/shape 507.xml" itemIcon="1" loadImmediate="false" itemID="58132c1e-000001fc" lastModified="1477651486"/>
           <Include href="闪电特效素材/shape 508.xml" itemIcon="1" loadImmediate="false" itemID="58132c1e-000001fd" lastModified="1477651486"/>
@@ -478,6 +476,7 @@
           <Include href="特效与子弹/核弹爆炸.xml" itemID="68937d80-000006ec" lastModified="1789297282"/>
           <Include href="特效与子弹/核弹爆炸特效.xml" itemID="6aa65c5b-000004d9" lastModified="1789297177"/>
           <Include href="特效与子弹/黑闪.xml" itemID="6667436e-00000955" lastModified="1721503894"/>
+          <Include href="特效与子弹/黑铁-落剑.xml" itemID="67bde3a3-000010b8" lastModified="1789395978"/>
           <Include href="特效与子弹/火箭重拳特效.xml" itemID="684dbd91-0000442e" lastModified="1766326615"/>
           <Include href="特效与子弹/火舞旋风.xml" itemID="660db2ac-00001964" lastModified="1722346056"/>
           <Include href="特效与子弹/径庭拳.xml" itemID="66674cd1-00001233" lastModified="1722367146"/>
@@ -586,6 +585,7 @@
           <Include href="特效与子弹/特效素材/03.赤橙色系/强震地(代码空缺)/未命名文件夹 1/Symbol 5110.xml" loadImmediate="false" itemID="65536bc5-000029bd" lastModified="1698481640"/>
           <Include href="特效与子弹/特效素材/03.赤橙色系/强震地(代码空缺)/未命名文件夹 1/Symbol 5112.xml" loadImmediate="false" itemID="65536bc5-000029be" lastModified="1698481640"/>
           <Include href="特效与子弹/特效素材/03.赤橙色系/强震地(代码空缺)/未命名文件夹 1/Symbol 5114.xml" loadImmediate="false" itemID="65536bc5-000029bf" lastModified="1698481640"/>
+          <Include href="特效与子弹/特效素材/5594黑铁落剑.xml" loadImmediate="false" itemID="6aa7fe65-00001075" lastModified="1789394533"/>
           <Include href="特效与子弹/特效素材/Graphic/shape 62.xml" itemIcon="1" loadImmediate="false" itemID="58132c35-0000003e" lastModified="1477651509"/>
           <Include href="特效与子弹/特效素材/Graphic/shape 1365.xml" itemIcon="1" loadImmediate="false" itemID="58132c3b-00000555" lastModified="1477651515"/>
           <Include href="特效与子弹/特效素材/Graphic/shape 1366.xml" itemIcon="1" loadImmediate="false" itemID="58132c3b-00000556" lastModified="1477651515"/>
@@ -609,6 +609,9 @@
           <Include href="特效与子弹/特效素材/电球圆球.xml" itemIcon="1" loadImmediate="false" itemID="65e0a9bb-000022b9" lastModified="1709222331"/>
           <Include href="特效与子弹/特效素材/烈焰炮弹素材.xml" loadImmediate="false" itemID="67321455-000011d1" lastModified="1740478205"/>
           <Include href="特效与子弹/特效素材/伸手及月粘液弹.xml" loadImmediate="false" itemID="694955b8-00000d8b" lastModified="1766416671"/>
+          <Include href="特效与子弹/特效素材/王财宝具.xml" itemID="6aa7febf-00002bc4" lastModified="1789403998"/>
+          <Include href="特效与子弹/特效素材/王之财宝光圈.xml" loadImmediate="false" itemID="6f5a0105-0000f005" lastModified="1789392685"/>
+          <Include href="特效与子弹/特效素材/王之财宝光圈底色.xml" loadImmediate="false" itemID="6aa7f5e9-0000103c" lastModified="1789392683"/>
           <Include href="特效与子弹/特效素材/烟雾等/Symbol 30.xml" loadImmediate="false" itemID="664cab29-0000063d" lastModified="1699960316"/>
           <Include href="特效与子弹/特效素材/烟雾等/Symbol 31.xml" itemIcon="1" loadImmediate="false" itemID="664cab29-0000063e" lastModified="1699960316"/>
           <Include href="特效与子弹/特效素材/烟雾等/Symbol 33.xml" loadImmediate="false" itemID="664cab29-0000063f" lastModified="1699960316"/>
@@ -638,6 +641,7 @@
           <Include href="特效与子弹/天启大封印.xml" itemID="6aa424c8-000012de" lastModified="1789297523"/>
           <Include href="特效与子弹/天启大封印地面效果.xml" itemID="6aa564b4-000009ea" lastModified="1789297284"/>
           <Include href="特效与子弹/天启大封印驱逐白瀑.xml" itemID="6aa44ea4-00000caa" lastModified="1789293038"/>
+          <Include href="特效与子弹/王之财宝.xml" itemID="6aa7efcc-00000d4c" lastModified="1789404026"/>
           <Include href="特效与子弹/新电球.xml" itemID="65e090d8-00002020" lastModified="1766486993"/>
           <Include href="特效与子弹/一瞬千击多次/素材/Symbol 5140.xml" loadImmediate="false" itemID="65536bc5-00002918" lastModified="1698481640"/>
           <Include href="特效与子弹/一瞬千击多次/素材/Symbol 5142.xml" loadImmediate="false" itemID="65536bc5-00002919" lastModified="1698481640"/>
@@ -1090,6 +1094,10 @@
                     <SolidSwatchItem color="#7D6FAB" hue="170" saturation="64" brightness="133"/>
                     <SolidSwatchItem color="#4980D0" hue="144" saturation="142" brightness="133"/>
                     <SolidSwatchItem color="#FAFDFF" hue="136" saturation="239" brightness="238"/>
+                    <SolidSwatchItem color="#F0DFA4" hue="31" saturation="173" brightness="190"/>
+                    <SolidSwatchItem color="#F7EDC5" hue="32" saturation="179" brightness="209"/>
+                    <SolidSwatchItem color="#F3E5B2" hue="32" saturation="176" brightness="199"/>
+                    <SolidSwatchItem color="#E8D189" hue="31" saturation="161" brightness="174"/>
                </swatches>
           </swatchList>
      </swatchLists>
@@ -1098,6 +1106,11 @@
      </persistentData>
      <PrinterSettings/>
      <publishHistory>
+          <PublishItem publishSize="3276532" publishTime="1789403867"/>
+          <PublishItem publishSize="3276618" publishTime="1789403091"/>
+          <PublishItem publishSize="3276610" publishTime="1789401715"/>
+          <PublishItem publishSize="3276545" publishTime="1789401553"/>
+          <PublishItem publishSize="3323058" publishTime="1789396581"/>
           <PublishItem publishSize="3200328" publishTime="1789325091"/>
           <PublishItem publishSize="3201649" publishTime="1789323839"/>
           <PublishItem publishSize="3197784" publishTime="1789323131"/>
@@ -1113,10 +1126,5 @@
           <PublishItem publishSize="3111287" publishTime="1789293028"/>
           <PublishItem publishSize="3106314" publishTime="1789292605"/>
           <PublishItem publishSize="3105743" publishTime="1789291535"/>
-          <PublishItem publishSize="3078274" publishTime="1789287701"/>
-          <PublishItem publishSize="3078605" publishTime="1789229875"/>
-          <PublishItem publishSize="3078604" publishTime="1789229258"/>
-          <PublishItem publishSize="3082145" publishTime="1789229007"/>
-          <PublishItem publishSize="3081074" publishTime="1789228021"/>
      </publishHistory>
 </DOMDocument>
