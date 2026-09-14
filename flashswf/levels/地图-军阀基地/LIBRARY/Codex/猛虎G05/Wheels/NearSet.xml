@@ -1,0 +1,85 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="Codex/猛虎G05/Wheels/NearSet" itemID="6a9f0000-6ce0890d" symbolType="graphic">
+  <timeline>
+    <DOMTimeline name="NearSet">
+      <layers>
+        <DOMLayer name="车壳固定遮挡" color="#74906A" locked="true" current="true" isSelected="true" visible="false" layerType="mask">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/猛虎G05/Wheels/NearBodyMask" symbolType="graphic" loop="single frame">
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="完整轮组 3" color="#74906A" parentLayerIndex="0" locked="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/猛虎G05/Wheels/CompleteWheel" symbolType="graphic" loop="single frame">
+                  <matrix>
+                    <Matrix a="-0.9945068359375" b="0.021728515625" d="0.978134155273438" tx="-480.6" ty="-33.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="完整轮组 2" color="#74906A" parentLayerIndex="0" locked="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/猛虎G05/Wheels/CompleteWheel" symbolType="graphic" loop="single frame">
+                  <matrix>
+                    <Matrix a="-0.9945068359375" b="0.021728515625" d="0.978134155273438" tx="-161.75" ty="-40.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="完整轮组 1" color="#74906A" parentLayerIndex="0" locked="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/猛虎G05/Wheels/CompleteWheel" symbolType="graphic" loop="single frame">
+                  <matrix>
+                    <Matrix a="-0.9945068359375" b="0.021728515625" d="0.978134155273438" tx="119.5" ty="-46.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="完整轮组 0" color="#74906A" parentLayerIndex="0" locked="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/猛虎G05/Wheels/CompleteWheel" symbolType="graphic" loop="single frame">
+                  <matrix>
+                    <Matrix a="-0.9945068359375" b="0.021728515625" d="0.978134155273438" tx="438.3" ty="-53.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

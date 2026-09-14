@@ -17,7 +17,15 @@
           <DOMFolderItem name="Codex/犀牛R09/Turret" itemID="6a9f0000-5a689f40"/>
           <DOMFolderItem name="战争配件库" itemID="678b6cd5-000001f1" isExpanded="true"/>
           <DOMFolderItem name="重要不可删除" itemID="6552e471-00000156" isExpanded="true"/>
-     </folders>
+     <DOMFolderItem name="Codex/猛虎G05" itemID="6a9f0000-2e605425"/>
+          <DOMFolderItem name="Codex/猛虎G05/AA" itemID="6a9f0000-765ebc69"/>
+          <DOMFolderItem name="Codex/猛虎G05/Central" itemID="6a9f0000-6021b69f"/>
+          <DOMFolderItem name="Codex/猛虎G05/Chassis" itemID="6a9f0000-2c1a52c5"/>
+          <DOMFolderItem name="Codex/猛虎G05/Parts" itemID="6a9f0000-08dcf13c"/>
+          <DOMFolderItem name="Codex/猛虎G05/Station" itemID="6a9f0000-164711f4"/>
+          <DOMFolderItem name="Codex/猛虎G05/Wheels" itemID="6a9f0000-650db907"/>
+          <DOMFolderItem name="Codex/猛虎G05/车号" itemID="6a9f0000-31efd180"/>
+          </folders>
      <media>
           <DOMBitmapItem name="重要不可删除/挡风玻璃.png" itemID="6552e42c-00000150" sourceExternalFilepath="./LIBRARY/重要不可删除/挡风玻璃.png" sourceLastImported="1699927188" allowSmoothing="true" useImportedJPEGData="false" compressionType="lossless" originalCompressionType="lossless" quality="50" href="重要不可删除/挡风玻璃.png" bitmapDataHRef="M 1 1737190615.dat" frameLeft="-115200" frameTop="-115200" frameRight="-115200" frameBottom="-115200"/>
      </media>
@@ -269,6 +277,206 @@
           <Include href="Codex/犀牛R09/右向抬炮15度29总成.xml" itemID="6a9f0000-412c28bf"/>
           <Include href="Codex/犀牛R09/右向抬炮15度29摆件.xml" itemID="6a9f0000-12918af1"/>
           <Include href="Codex/犀牛R09/接地阴影.xml" itemID="6a9f0000-77acf225"/>
+          <Include href="Codex/猛虎G05/AA/Cradle.xml" itemID="6a9f0000-046d77a6"/>
+          <Include href="Codex/猛虎G05/AA/FixedCap.xml" itemID="6a9f0000-50a0de6d"/>
+          <Include href="Codex/猛虎G05/AA/FixedMount.xml" itemID="6a9f0000-6ad831a2"/>
+          <Include href="Codex/猛虎G05/AA/LowerBarrel.xml" itemID="6a9f0000-469fd405"/>
+          <Include href="Codex/猛虎G05/AA/Moving.xml" itemID="6a9f0000-34dd5115"/>
+          <Include href="Codex/猛虎G05/AA/SharedAssembly.xml" itemID="6a9f0000-2a6bca38"/>
+          <Include href="Codex/猛虎G05/AA/UpperBarrel.xml" itemID="6a9f0000-0715419b"/>
+          <Include href="Codex/猛虎G05/Central/Assembly.xml" itemID="6a9f0000-58dd2a4b"/>
+          <Include href="Codex/猛虎G05/Central/Barrel.xml" itemID="6a9f0000-19f4841f"/>
+          <Include href="Codex/猛虎G05/Central/BarrelSet.xml" itemID="6a9f0000-36f0082a"/>
+          <Include href="Codex/猛虎G05/Central/FixedReceiver.xml" itemID="6a9f0000-3f85c9ac"/>
+          <Include href="Codex/猛虎G05/Central/Rotor.xml" itemID="6a9f0000-5f64860f"/>
+          <Include href="Codex/猛虎G05/Central/central-collar-0.xml" itemID="6a9f0000-0d559651"/>
+          <Include href="Codex/猛虎G05/Central/central-collar-1.xml" itemID="6a9f0000-6343421b"/>
+          <Include href="Codex/猛虎G05/Central/central-front-spacer.xml" itemID="6a9f0000-14482186"/>
+          <Include href="Codex/猛虎G05/Chassis/Assembly.xml" itemID="6a9f0000-6824d896"/>
+          <Include href="Codex/猛虎G05/Chassis/Body.xml" itemID="6a9f0000-4c0e73bf"/>
+          <Include href="Codex/猛虎G05/Chassis/Neck.xml" itemID="6a9f0000-42c81399"/>
+          <Include href="Codex/猛虎G05/Parts/axle-0.xml" itemID="6a9f0000-13b60775"/>
+          <Include href="Codex/猛虎G05/Parts/axle-1.xml" itemID="6a9f0000-1727f3e1"/>
+          <Include href="Codex/猛虎G05/Parts/axle-2.xml" itemID="6a9f0000-30519804"/>
+          <Include href="Codex/猛虎G05/Parts/axle-3.xml" itemID="6a9f0000-3e3efa6b"/>
+          <Include href="Codex/猛虎G05/Parts/cargo-hinge--1-0.xml" itemID="6a9f0000-272656d9"/>
+          <Include href="Codex/猛虎G05/Parts/cargo-hinge--1-1.xml" itemID="6a9f0000-5d6d4c10"/>
+          <Include href="Codex/猛虎G05/Parts/cargo-latch--1.xml" itemID="6a9f0000-3bd7e5fe"/>
+          <Include href="Codex/猛虎G05/Parts/cargo-latch-handle--1.xml" itemID="6a9f0000-7b0f6016"/>
+          <Include href="Codex/猛虎G05/Parts/cargo-lid-pressing.xml" itemID="6a9f0000-3dcd3e29"/>
+          <Include href="Codex/猛虎G05/Parts/central-carrier-cheek--1.xml" itemID="6a9f0000-498fa352"/>
+          <Include href="Codex/猛虎G05/Parts/central-fixed-bearing.xml" itemID="6a9f0000-7dc649b5"/>
+          <Include href="Codex/猛虎G05/Parts/central-receiver-shell.xml" itemID="6a9f0000-06c3307e"/>
+          <Include href="Codex/猛虎G05/Parts/central-receiver-shoulder.xml" itemID="6a9f0000-29cbc16a"/>
+          <Include href="Codex/猛虎G05/Parts/driver-cabin.xml" itemID="6a9f0000-6cede2ba"/>
+          <Include href="Codex/猛虎G05/Parts/driver-front-frame.xml" itemID="6a9f0000-2a81803f"/>
+          <Include href="Codex/猛虎G05/Parts/driver-front-slit.xml" itemID="6a9f0000-247a433c"/>
+          <Include href="Codex/猛虎G05/Parts/driver-glass-detail--1.xml" itemID="6a9f0000-4ca15f46"/>
+          <Include href="Codex/猛虎G05/Parts/driver-hatch.xml" itemID="6a9f0000-12f2574c"/>
+          <Include href="Codex/猛虎G05/Parts/driver-hatch-finish-top.xml" itemID="6a9f0000-0e919b3f"/>
+          <Include href="Codex/猛虎G05/Parts/driver-hatch-frame.xml" itemID="6a9f0000-5d94444f"/>
+          <Include href="Codex/猛虎G05/Parts/driver-hatch-hardware.xml" itemID="6a9f0000-2b133032"/>
+          <Include href="Codex/猛虎G05/Parts/driver-hatch-paired-lid-plane.xml" itemID="6a9f0000-2cbac0af"/>
+          <Include href="Codex/猛虎G05/Parts/driver-hatch-top-detail.xml" itemID="6a9f0000-1e9e287c"/>
+          <Include href="Codex/猛虎G05/Parts/driver-lid-hinges.xml" itemID="6a9f0000-0f7426ec"/>
+          <Include href="Codex/猛虎G05/Parts/driver-side-frame--1.xml" itemID="6a9f0000-6c896392"/>
+          <Include href="Codex/猛虎G05/Parts/driver-side-slit--1.xml" itemID="6a9f0000-29911a6b"/>
+          <Include href="Codex/猛虎G05/Parts/e-cable-clamp--11.8.xml" itemID="6a9f0000-62893fed"/>
+          <Include href="Codex/猛虎G05/Parts/e-cable-clamp--7.0.xml" itemID="6a9f0000-70bd319d"/>
+          <Include href="Codex/猛虎G05/Parts/e-driver-hatch-latches.xml" itemID="6a9f0000-5911331c"/>
+          <Include href="Codex/猛虎G05/Parts/e-driver-hatch-shared-lid-finish.xml" itemID="6a9f0000-1ceca98b"/>
+          <Include href="Codex/猛虎G05/Parts/e-fender-front--1-wear.xml" itemID="6a9f0000-254510d5"/>
+          <Include href="Codex/猛虎G05/Parts/e-fender-rear--1-wear.xml" itemID="6a9f0000-3c366330"/>
+          <Include href="Codex/猛虎G05/Parts/e-front-deck-service.xml" itemID="6a9f0000-06732d80"/>
+          <Include href="Codex/猛虎G05/Parts/e-hull-finish.xml" itemID="6a9f0000-7398f3b8"/>
+          <Include href="Codex/猛虎G05/Parts/e-lamp-case--1.xml" itemID="6a9f0000-0a73c0f7"/>
+          <Include href="Codex/猛虎G05/Parts/e-lamp-case--1-face-finish.xml" itemID="6a9f0000-0be48568"/>
+          <Include href="Codex/猛虎G05/Parts/e-lamp-case-1.xml" itemID="6a9f0000-5e584439"/>
+          <Include href="Codex/猛虎G05/Parts/e-lamp-case-1-face-finish.xml" itemID="6a9f0000-33ce6517"/>
+          <Include href="Codex/猛虎G05/Parts/e-lamp-fender-tab--1.xml" itemID="6a9f0000-7c6a5c8a"/>
+          <Include href="Codex/猛虎G05/Parts/e-lamp-fender-tab--1-face-finish.xml" itemID="6a9f0000-1cb7302d"/>
+          <Include href="Codex/猛虎G05/Parts/e-lamp-front-glass--1.xml" itemID="6a9f0000-37a96598"/>
+          <Include href="Codex/猛虎G05/Parts/e-lamp-front-glass--1-face-finish.xml" itemID="6a9f0000-705ef31d"/>
+          <Include href="Codex/猛虎G05/Parts/e-lamp-front-glass-1.xml" itemID="6a9f0000-597e0b77"/>
+          <Include href="Codex/猛虎G05/Parts/e-lamp-front-glass-1-face-finish.xml" itemID="6a9f0000-5bd73db4"/>
+          <Include href="Codex/猛虎G05/Parts/e-lamp-lens-frame--1.xml" itemID="6a9f0000-13da3f0e"/>
+          <Include href="Codex/猛虎G05/Parts/e-lamp-lens-frame--1-face-finish.xml" itemID="6a9f0000-3279cedc"/>
+          <Include href="Codex/猛虎G05/Parts/e-lamp-lens-frame-1.xml" itemID="6a9f0000-50588c34"/>
+          <Include href="Codex/猛虎G05/Parts/e-lamp-lens-frame-1-face-finish.xml" itemID="6a9f0000-30ddab6c"/>
+          <Include href="Codex/猛虎G05/Parts/e-lamp-mounted-assemblies.xml" itemID="6a9f0000-201c8115"/>
+          <Include href="Codex/猛虎G05/Parts/e-lamp-side-glass--1.xml" itemID="6a9f0000-549fb719"/>
+          <Include href="Codex/猛虎G05/Parts/e-lamp-side-glass--1-face-finish.xml" itemID="6a9f0000-682ec2d9"/>
+          <Include href="Codex/猛虎G05/Parts/e-lamp-side-glass-1.xml" itemID="6a9f0000-4728ee1a"/>
+          <Include href="Codex/猛虎G05/Parts/e-lamp-side-glass-1-face-finish.xml" itemID="6a9f0000-50671d3a"/>
+          <Include href="Codex/猛虎G05/Parts/e-lamp-wedge--1.xml" itemID="6a9f0000-04f8ecaf"/>
+          <Include href="Codex/猛虎G05/Parts/e-lamp-wedge--1-face-finish.xml" itemID="6a9f0000-71ed317b"/>
+          <Include href="Codex/猛虎G05/Parts/e-lamp-wedge-1.xml" itemID="6a9f0000-02360156"/>
+          <Include href="Codex/猛虎G05/Parts/e-lamp-wedge-1-face-finish.xml" itemID="6a9f0000-4d2f4318"/>
+          <Include href="Codex/猛虎G05/Parts/e-nonskid-plane.xml" itemID="6a9f0000-2bd6a7ae"/>
+          <Include href="Codex/猛虎G05/Parts/e-opposite-cable-clamp--11.8.xml" itemID="6a9f0000-62f300fb"/>
+          <Include href="Codex/猛虎G05/Parts/e-opposite-cable-clamp--7.0.xml" itemID="6a9f0000-72d83c21"/>
+          <Include href="Codex/猛虎G05/Parts/e-opposite-rear-roof-access-rail.xml" itemID="6a9f0000-7d470447"/>
+          <Include href="Codex/猛虎G05/Parts/e-opposite-roof-tool-with-clips.xml" itemID="6a9f0000-773293c6"/>
+          <Include href="Codex/猛虎G05/Parts/e-opposite-stowed-cable-and-clamps.xml" itemID="6a9f0000-63dc95e5"/>
+          <Include href="Codex/猛虎G05/Parts/e-opposite-tool-clip--2.0.xml" itemID="6a9f0000-2475b168"/>
+          <Include href="Codex/猛虎G05/Parts/e-opposite-tool-clip-3.8.xml" itemID="6a9f0000-2bd23413"/>
+          <Include href="Codex/猛虎G05/Parts/e-opposite-tool-clip-9.0.xml" itemID="6a9f0000-3a8cc867"/>
+          <Include href="Codex/猛虎G05/Parts/e-rear-deck-service.xml" itemID="6a9f0000-3f34f521"/>
+          <Include href="Codex/猛虎G05/Parts/e-rear-roof-hatch-latches.xml" itemID="6a9f0000-247e412a"/>
+          <Include href="Codex/猛虎G05/Parts/e-rear-roof-hatch-shared-lid-finish.xml" itemID="6a9f0000-7fd12962"/>
+          <Include href="Codex/猛虎G05/Parts/e-roof-anti-slip.xml" itemID="6a9f0000-5b66c90e"/>
+          <Include href="Codex/猛虎G05/Parts/e-side-cargo--1-finish.xml" itemID="6a9f0000-7b4da8d2"/>
+          <Include href="Codex/猛虎G05/Parts/e-side-shoulder--1-finish.xml" itemID="6a9f0000-0d605c3a"/>
+          <Include href="Codex/猛虎G05/Parts/e-station-lower-finish.xml" itemID="6a9f0000-77a92e04"/>
+          <Include href="Codex/猛虎G05/Parts/e-station-rail-inner-edge.xml" itemID="6a9f0000-4f39e088"/>
+          <Include href="Codex/猛虎G05/Parts/e-station-upper-finish.xml" itemID="6a9f0000-51d2b267"/>
+          <Include href="Codex/猛虎G05/Parts/e-stowed-cable-and-clamps.xml" itemID="6a9f0000-7d09dba6"/>
+          <Include href="Codex/猛虎G05/Parts/e-stowed-cable-plane.xml" itemID="6a9f0000-37b927d0"/>
+          <Include href="Codex/猛虎G05/Parts/e-vent-frame-finish.xml" itemID="6a9f0000-4f343056"/>
+          <Include href="Codex/猛虎G05/Parts/e-wheelwell-upper-return.xml" itemID="6a9f0000-66a5b25e"/>
+          <Include href="Codex/猛虎G05/Parts/fender-front--1.xml" itemID="6a9f0000-3e7df293"/>
+          <Include href="Codex/猛虎G05/Parts/fender-front-1.xml" itemID="6a9f0000-0fa324fc"/>
+          <Include href="Codex/猛虎G05/Parts/fender-rear--1.xml" itemID="6a9f0000-71acb876"/>
+          <Include href="Codex/猛虎G05/Parts/front-light-case--1.xml" itemID="6a9f0000-138204fc"/>
+          <Include href="Codex/猛虎G05/Parts/front-light-case-1.xml" itemID="6a9f0000-69fc2df1"/>
+          <Include href="Codex/猛虎G05/Parts/front-light-face--1.xml" itemID="6a9f0000-42e08d6c"/>
+          <Include href="Codex/猛虎G05/Parts/front-light-face-1.xml" itemID="6a9f0000-0b979345"/>
+          <Include href="Codex/猛虎G05/Parts/front-tow-mount--1.xml" itemID="6a9f0000-687be317"/>
+          <Include href="Codex/猛虎G05/Parts/front-tow-mount-1.xml" itemID="6a9f0000-4a097ff5"/>
+          <Include href="Codex/猛虎G05/Parts/front-tow-pad--1.xml" itemID="6a9f0000-203699f8"/>
+          <Include href="Codex/猛虎G05/Parts/front-tow-pad-1.xml" itemID="6a9f0000-596a2e46"/>
+          <Include href="Codex/猛虎G05/Parts/front-towing-eyes.xml" itemID="6a9f0000-4ba5ec9f"/>
+          <Include href="Codex/猛虎G05/Parts/g03-source-emblem-contours.xml" itemID="6a9f0000-0eed5039"/>
+          <Include href="Codex/猛虎G05/Parts/g03-warlord-roundel.xml" itemID="6a9f0000-7a7977df"/>
+          <Include href="Codex/猛虎G05/Parts/hull-fold-lines.xml" itemID="6a9f0000-65366380"/>
+          <Include href="Codex/猛虎G05/Parts/hull-shell.xml" itemID="6a9f0000-142858d4"/>
+          <Include href="Codex/猛虎G05/Parts/lamp-lens--1.xml" itemID="6a9f0000-51fda729"/>
+          <Include href="Codex/猛虎G05/Parts/lamp-lens-1.xml" itemID="6a9f0000-51c478cb"/>
+          <Include href="Codex/猛虎G05/Parts/lamp-plane--1.xml" itemID="6a9f0000-17dcb0b1"/>
+          <Include href="Codex/猛虎G05/Parts/lamp-plane-1.xml" itemID="6a9f0000-773dd101"/>
+          <Include href="Codex/猛虎G05/Parts/lower-frame.xml" itemID="6a9f0000-3d6ec3f6"/>
+          <Include href="Codex/猛虎G05/Parts/neck-top-face.xml" itemID="6a9f0000-5e425406"/>
+          <Include href="Codex/猛虎G05/Parts/opposite-e-nonskid-plane.xml" itemID="6a9f0000-346a7fa7"/>
+          <Include href="Codex/猛虎G05/Parts/opposite-e-roof-anti-slip.xml" itemID="6a9f0000-37ca8de5"/>
+          <Include href="Codex/猛虎G05/Parts/opposite-e-stowed-cable-plane.xml" itemID="6a9f0000-30cbdab6"/>
+          <Include href="Codex/猛虎G05/Parts/platform-top-face.xml" itemID="6a9f0000-56818c1b"/>
+          <Include href="Codex/猛虎G05/Parts/radar-matte-face-detail.xml" itemID="6a9f0000-1a6b46d9"/>
+          <Include href="Codex/猛虎G05/Parts/radar-mount-shoe.xml" itemID="6a9f0000-22d053e8"/>
+          <Include href="Codex/猛虎G05/Parts/radar-radome-body.xml" itemID="6a9f0000-3e45bfc2"/>
+          <Include href="Codex/猛虎G05/Parts/radar-real-edges-and-base-hardware.xml" itemID="6a9f0000-7046d181"/>
+          <Include href="Codex/猛虎G05/Parts/radar-shoe-fasteners.xml" itemID="6a9f0000-4f6e64f2"/>
+          <Include href="Codex/猛虎G05/Parts/rear-access-frame.xml" itemID="6a9f0000-7d5b50d7"/>
+          <Include href="Codex/猛虎G05/Parts/rear-access-hinge--5.1.xml" itemID="6a9f0000-3a16bb91"/>
+          <Include href="Codex/猛虎G05/Parts/rear-access-panel.xml" itemID="6a9f0000-6dee88f6"/>
+          <Include href="Codex/猛虎G05/Parts/rear-corner--1.xml" itemID="6a9f0000-06b54cbe"/>
+          <Include href="Codex/猛虎G05/Parts/rear-corner-1.xml" itemID="6a9f0000-5e93f81e"/>
+          <Include href="Codex/猛虎G05/Parts/rear-corner-cap--1.xml" itemID="6a9f0000-096b1727"/>
+          <Include href="Codex/猛虎G05/Parts/rear-corner-cap-1.xml" itemID="6a9f0000-1272c964"/>
+          <Include href="Codex/猛虎G05/Parts/rear-roof-access-rail.xml" itemID="6a9f0000-38044818"/>
+          <Include href="Codex/猛虎G05/Parts/rear-roof-hatch.xml" itemID="6a9f0000-50566b11"/>
+          <Include href="Codex/猛虎G05/Parts/rear-roof-hatch-finish-top.xml" itemID="6a9f0000-76f7fb20"/>
+          <Include href="Codex/猛虎G05/Parts/rear-roof-hatch-frame.xml" itemID="6a9f0000-61bdc253"/>
+          <Include href="Codex/猛虎G05/Parts/rear-roof-hatch-hardware.xml" itemID="6a9f0000-1cf4adf7"/>
+          <Include href="Codex/猛虎G05/Parts/rear-roof-hatch-paired-lid-plane.xml" itemID="6a9f0000-6cb5b637"/>
+          <Include href="Codex/猛虎G05/Parts/rear-roof-hatch-top-detail.xml" itemID="6a9f0000-2d84588d"/>
+          <Include href="Codex/猛虎G05/Parts/roof-hinge--6.4.xml" itemID="6a9f0000-4f8e78a1"/>
+          <Include href="Codex/猛虎G05/Parts/roof-hinge-6.4.xml" itemID="6a9f0000-1967cfa0"/>
+          <Include href="Codex/猛虎G05/Parts/roof-tool-with-clips.xml" itemID="6a9f0000-1d25fdb6"/>
+          <Include href="Codex/猛虎G05/Parts/service-fastener--1-0.xml" itemID="6a9f0000-6a2b88d3"/>
+          <Include href="Codex/猛虎G05/Parts/service-fastener--1-1.xml" itemID="6a9f0000-7f9ca101"/>
+          <Include href="Codex/猛虎G05/Parts/service-fastener--1-2.xml" itemID="6a9f0000-73b9fb88"/>
+          <Include href="Codex/猛虎G05/Parts/service-fastener--1-3.xml" itemID="6a9f0000-1bb8e1f7"/>
+          <Include href="Codex/猛虎G05/Parts/service-vent-insert.xml" itemID="6a9f0000-5d1f1128"/>
+          <Include href="Codex/猛虎G05/Parts/shoulder-fixing--1-0.xml" itemID="6a9f0000-7e13ed2c"/>
+          <Include href="Codex/猛虎G05/Parts/shoulder-fixing--1-1.xml" itemID="6a9f0000-052d5212"/>
+          <Include href="Codex/猛虎G05/Parts/side-armor-mounting.xml" itemID="6a9f0000-6e6b764c"/>
+          <Include href="Codex/猛虎G05/Parts/side-cargo--1.xml" itemID="6a9f0000-02d167ac"/>
+          <Include href="Codex/猛虎G05/Parts/side-service--1.xml" itemID="6a9f0000-036f5cf7"/>
+          <Include href="Codex/猛虎G05/Parts/side-shoulder--1.xml" itemID="6a9f0000-5f77c96d"/>
+          <Include href="Codex/猛虎G05/Parts/station-cowl-detail-plane.xml" itemID="6a9f0000-5f7d69cd"/>
+          <Include href="Codex/猛虎G05/Parts/station-cowl-service-details.xml" itemID="6a9f0000-4f5a51b5"/>
+          <Include href="Codex/猛虎G05/Parts/station-lower-casing.xml" itemID="6a9f0000-7cdfd4d8"/>
+          <Include href="Codex/猛虎G05/Parts/station-rail--1.xml" itemID="6a9f0000-06cced18"/>
+          <Include href="Codex/猛虎G05/Parts/station-side-shoulder--1.xml" itemID="6a9f0000-0ca7fec4"/>
+          <Include href="Codex/猛虎G05/Parts/station-socket-rim.xml" itemID="6a9f0000-0428d225"/>
+          <Include href="Codex/猛虎G05/Parts/station-upper-cowl.xml" itemID="6a9f0000-072090fb"/>
+          <Include href="Codex/猛虎G05/Parts/tool-clip--2.0.xml" itemID="6a9f0000-33fd2972"/>
+          <Include href="Codex/猛虎G05/Parts/tool-clip-3.8.xml" itemID="6a9f0000-465f838a"/>
+          <Include href="Codex/猛虎G05/Parts/tool-clip-9.0.xml" itemID="6a9f0000-192ec4d0"/>
+          <Include href="Codex/猛虎G05/Parts/tow-contact-plane--1.xml" itemID="6a9f0000-3f173856"/>
+          <Include href="Codex/猛虎G05/Parts/tow-contact-plane-1.xml" itemID="6a9f0000-523a91e7"/>
+          <Include href="Codex/猛虎G05/Parts/tow-eye-plane--1.xml" itemID="6a9f0000-17e34872"/>
+          <Include href="Codex/猛虎G05/Parts/tow-eye-plane-1.xml" itemID="6a9f0000-19bcb887"/>
+          <Include href="Codex/猛虎G05/Parts/wheel-support--1-0.xml" itemID="6a9f0000-7b3440b3"/>
+          <Include href="Codex/猛虎G05/Parts/wheel-support--1-1.xml" itemID="6a9f0000-717b4327"/>
+          <Include href="Codex/猛虎G05/Parts/wheel-support--1-2.xml" itemID="6a9f0000-07971db5"/>
+          <Include href="Codex/猛虎G05/Parts/wheel-support--1-3.xml" itemID="6a9f0000-7529f921"/>
+          <Include href="Codex/猛虎G05/Parts/wheel-support-cap-plane-0.xml" itemID="6a9f0000-3a5ca92e"/>
+          <Include href="Codex/猛虎G05/Parts/wheel-support-cap-plane-1.xml" itemID="6a9f0000-2bdd6fba"/>
+          <Include href="Codex/猛虎G05/Parts/wheel-support-cap-plane-2.xml" itemID="6a9f0000-0b11b3c1"/>
+          <Include href="Codex/猛虎G05/Parts/wheel-support-cap-plane-3.xml" itemID="6a9f0000-3040ca2f"/>
+          <Include href="Codex/猛虎G05/Parts/wheel-support-end-0.xml" itemID="6a9f0000-6e8492c3"/>
+          <Include href="Codex/猛虎G05/Parts/wheel-support-end-1.xml" itemID="6a9f0000-08d8eb43"/>
+          <Include href="Codex/猛虎G05/Parts/wheel-support-end-2.xml" itemID="6a9f0000-2fb31f5b"/>
+          <Include href="Codex/猛虎G05/Parts/wheel-support-end-3.xml" itemID="6a9f0000-650a7ca7"/>
+          <Include href="Codex/猛虎G05/Parts/wheelwell-fixed-shadows.xml" itemID="6a9f0000-7bdf4ecc"/>
+          <Include href="Codex/猛虎G05/Station/station-core.xml" itemID="6a9f0000-58b452ca"/>
+          <Include href="Codex/猛虎G05/Station/station-sensor-head.xml" itemID="6a9f0000-5447c45d"/>
+          <Include href="Codex/猛虎G05/Station/turret-rounded-platform.xml" itemID="6a9f0000-54ba3577"/>
+          <Include href="Codex/猛虎G05/Turret.xml" itemID="6a9f0000-2fafc528"/>
+          <Include href="Codex/猛虎G05/Vehicle.xml" itemID="6a9f0000-2df06c2f"/>
+          <Include href="Codex/猛虎G05/Wheels/Back.xml" itemID="6a9f0000-0cd8306a"/>
+          <Include href="Codex/猛虎G05/Wheels/CompleteWheel.xml" itemID="6a9f0000-0442ab1c"/>
+          <Include href="Codex/猛虎G05/Wheels/FarSet.xml" itemID="6a9f0000-66d634fc"/>
+          <Include href="Codex/猛虎G05/Wheels/FixedLight.xml" itemID="6a9f0000-57d974e8"/>
+          <Include href="Codex/猛虎G05/Wheels/NearBodyMask.xml" itemID="6a9f0000-25f1afd9"/>
+          <Include href="Codex/猛虎G05/Wheels/NearSet.xml" itemID="6a9f0000-6ce0890d"/>
+          <Include href="Codex/猛虎G05/Wheels/Rim.xml" itemID="6a9f0000-2a7d0473"/>
+          <Include href="Codex/猛虎G05/Wheels/Shoulder.xml" itemID="6a9f0000-38379a01"/>
+          <Include href="Codex/猛虎G05/Wheels/Sidewall.xml" itemID="6a9f0000-628af55c"/>
+          <Include href="Codex/猛虎G05/Wheels/Tread.xml" itemID="6a9f0000-661dfdc3"/>
+          <Include href="Codex/猛虎G05/右向42摆件.xml" itemID="6a9f0000-613ca3df"/>
+          <Include href="Codex/猛虎G05/车号/42.xml" itemID="6a9f0000-1532b016"/>
           </symbols>
      <timelines>
           <DOMTimeline name="场景 1">
@@ -284,13 +492,29 @@
                               </DOMFrame>
                          </frames>
                     </DOMLayer>
+                    <DOMLayer name="猛虎G05-静态摆件" color="#74906A" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/猛虎G05/右向42摆件" symbolType="graphic" loop="single frame" firstFrame="0">
+                  <matrix>
+                    <Matrix a="-0.449725872159" b="0.0157047735161" c="0.0157047735161" d="0.449725872159" tx="400" ty="340"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
                     <DOMLayer name="犀牛R09-静态摆件" color="#74906A" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="Codex/犀牛R09/右向抬炮15度29摆件" symbolType="graphic" loop="single frame" firstFrame="0">
                   <matrix>
-                    <Matrix a="-0.448903822617" b="0.0313904131849" c="0.0313904131849" d="0.448903822617" tx="850" ty="320"/>
+                    <Matrix a="-0.448903822617" b="0.0313904131849" c="0.0313904131849" d="0.448903822617" tx="990" ty="320"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
@@ -1005,15 +1229,7 @@
                                                   <Point x="5322.45" y="1026.65"/>
                                              </transformationPoint>
                                         </DOMSymbolInstance>
-                                        <DOMSymbolInstance libraryItemName="战争配件库/解放卡车" symbolType="graphic" loop="loop">
-                                             <matrix>
-                                                  <Matrix a="-0.542984008789063" d="0.542984008789063" tx="834.05" ty="-3.35"/>
-                                             </matrix>
-                                             <transformationPoint>
-                                                  <Point x="959.5" y="463.85"/>
-                                             </transformationPoint>
-                                        </DOMSymbolInstance>
-                                   </elements>
+                                        </elements>
                               </DOMFrame>
                          </frames>
                     </DOMLayer>

@@ -38,7 +38,9 @@ def write(path, root):
 
 
 def item_id(name):
-    return "6a9f0000-" + hashlib.sha256(name.encode("utf-8")).hexdigest()[:8]
+    # CS6 将第二段按有符号整数读取，超出范围会统一截为7fffffff并串库。
+    value = int(hashlib.sha256(name.encode("utf-8")).hexdigest()[:8], 16) & 0x7fffffff
+    return "6a9f0000-" + format(value, "08x")
 
 
 def instance(name, transform=None):

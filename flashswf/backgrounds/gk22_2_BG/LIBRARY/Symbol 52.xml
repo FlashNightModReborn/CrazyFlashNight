@@ -1,0 +1,51 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="Symbol 52" itemID="6aa7cf00-0000002a" lastModified="1771895799">
+  <timeline>
+    <DOMTimeline name="Symbol 52">
+      <layers>
+        <DOMLayer name="Layer 1" color="#5976C3" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMShape isFloating="true">
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#A5937B"/>
+                    </FillStyle>
+                    <FillStyle index="2">
+                      <SolidColor color="#E6DDD4"/>
+                    </FillStyle>
+                  </fills>
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke scaleMode="normal">
+                        <fill>
+                          <SolidColor/>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                    <StrokeStyle index="2">
+                      <SolidStroke scaleMode="normal">
+                        <fill>
+                          <SolidColor/>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
+                  <edges>
+                    <Edge fillStyle1="1" strokeStyle="2" edges="!156 20|224 0!224 0[227 51 220 106"/>
+                    <Edge fillStyle1="2" strokeStyle="2" edges="!220 106[208 188 173 278"/>
+                    <Edge fillStyle1="1" strokeStyle="2" edges="!173 278|133 366!133 366[45 384 0 367"/>
+                    <Edge fillStyle1="1" strokeStyle="1" edges="!0 367[44 311 79 241"/>
+                    <Edge fillStyle1="2" strokeStyle="1" edges="!79 241[112 173 137 92"/>
+                    <Edge fillStyle1="1" strokeStyle="1" edges="!137 92|156 20"/>
+                    <Edge fillStyle0="2" fillStyle1="1" edges="!220 106|158 92!158 92|137 92!79 241|144 268!144 268|173 278"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

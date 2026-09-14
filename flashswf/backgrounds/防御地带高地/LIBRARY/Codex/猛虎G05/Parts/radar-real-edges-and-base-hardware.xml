@@ -1,0 +1,76 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="Codex/猛虎G05/Parts/radar-real-edges-and-base-hardware" itemID="6a9f0000-7046d181" symbolType="graphic">
+  <timeline>
+    <DOMTimeline name="radar-real-edges-and-base-hardware">
+      <layers>
+        <DOMLayer name="radar-shoe-fasteners" color="#74906A" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/猛虎G05/Parts/radar-shoe-fasteners" symbolType="graphic" loop="single frame">
+                  <matrix>
+                    <Matrix a="-0.9945068359375" b="0.021728515625" d="0.978134155273438" tx="-67.45" ty="-313.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="radar-matte-face-detail" color="#74906A">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/猛虎G05/Parts/radar-matte-face-detail" symbolType="graphic" loop="single frame">
+                  <matrix>
+                    <Matrix a="-0.9945068359375" b="0.021728515625" d="0.978134155273438" tx="-67.65" ty="-314.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="色面 1" color="#74906A">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMGroup>
+                  <members>
+                    <DOMShape>
+                      <fills>
+                        <FillStyle index="1">
+                          <SolidColor color="#857763"/>
+                        </FillStyle>
+                      </fills>
+                      <edges>
+                        <Edge fillStyle0="1" edges="!2828 -13032[2824 -13036 2819 -13036!2819 -13036[2814 -13036 2811 -13032!2811 -13032[2807 -13029 2807 -13024!2807 -13024|2807 -11999!2807 -11999[2807 -11994 2811 -11990!2811 -11990[2814 -11987 2819 -11987!2819 -11987[2824 -11987 2828  -11990!2828 -11990[2831 -11994 2831 -11999!2831 -11999|2831 -13024!2831 -13024[2831 -13029 2828 -13032"/>
+                      </edges>
+                    </DOMShape>
+                  </members>
+                </DOMGroup>
+                <DOMGroup>
+                  <members>
+                    <DOMShape>
+                      <fills>
+                        <FillStyle index="1">
+                          <SolidColor color="#94836E"/>
+                        </FillStyle>
+                      </fills>
+                      <edges>
+                        <Edge fillStyle0="1" edges=" !4414 -13071|2823 -13036!2823 -13036[2818 -13036 2815 -13032!2815 -13032[2811 -13029 2811 -13024!2811 -13024[2812 -13019 2815 -13015!2815 -13015[2819 -13012 2824 -13012!2824 -13012|4410 -13047!4410 -13047|4804 -12668!4804 -12668[4808  -12664 4813 -12664!4813 -12664[4818 -12664 4821 -12668!4821 -12668[4825 -12671 4824 -12676!4824 -12676[4824 -12681 4821 -12685!4821 -12685|4423 -13067!4423 -13067[4419 -13071 4414 -13071"/>
+                      </edges>
+                    </DOMShape>
+                  </members>
+                </DOMGroup>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

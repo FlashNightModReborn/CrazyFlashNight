@@ -1,0 +1,30 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="Codex/猛虎G05/Parts/tow-contact-plane-1" itemID="6a9f0000-523a91e7" symbolType="graphic">
+  <timeline>
+    <DOMTimeline name="tow-contact-plane-1">
+      <layers>
+        <DOMLayer name="色面 1" color="#74906A" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMGroup>
+                  <members>
+                    <DOMShape>
+                      <fills>
+                        <FillStyle index="1">
+                          <SolidColor color="#36433B"/>
+                        </FillStyle>
+                      </fills>
+                      <edges>
+                        <Edge fillStyle0="1" edges="!2280 -4328|3000 -4328!3000 -4328|3000 -4920!3000 -4920|2280 -4920!2280 -4920|2280 -4328"/>
+                      </edges>
+                    </DOMShape>
+                  </members>
+                </DOMGroup>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

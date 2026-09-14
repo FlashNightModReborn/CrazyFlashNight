@@ -1,0 +1,56 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="Codex/猛虎G05/AA/SharedAssembly" itemID="6a9f0000-2a6bca38" symbolType="graphic">
+  <timeline>
+    <DOMTimeline name="SharedAssembly">
+      <layers>
+        <DOMLayer name="固定前耳轴盖" color="#74906A" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/猛虎G05/AA/FixedCap" symbolType="graphic" loop="single frame">
+                  <matrix>
+                    <Matrix a="-0.9945068359375" b="0.021728515625" d="0.978134155273438"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="共同俯仰与分管后座" color="#74906A">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/猛虎G05/AA/Moving" symbolType="graphic" loop="single frame">
+                  <matrix>
+                    <Matrix a="-0.979400634765625" b="-0.1484375" c="-0.172683715820313" d="0.967056274414063"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="固定安装座" color="#74906A">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/猛虎G05/AA/FixedMount" symbolType="graphic" loop="single frame">
+                  <matrix>
+                    <Matrix a="-0.9945068359375" b="0.021728515625" d="0.978134155273438"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

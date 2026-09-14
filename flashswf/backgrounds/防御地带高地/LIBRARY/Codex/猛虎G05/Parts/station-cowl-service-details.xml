@@ -1,0 +1,24 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="Codex/猛虎G05/Parts/station-cowl-service-details" itemID="6a9f0000-4f5a51b5" symbolType="graphic">
+  <timeline>
+    <DOMTimeline name="station-cowl-service-details">
+      <layers>
+        <DOMLayer name="station-cowl-detail-plane" color="#74906A" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/猛虎G05/Parts/station-cowl-detail-plane" symbolType="graphic" loop="single frame">
+                  <matrix>
+                    <Matrix a="-0.9945068359375" b="0.021728515625" d="0.978134155273438" tx="-61.35" ty="-301.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

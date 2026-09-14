@@ -1,0 +1,24 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="Codex/猛虎G05/Parts/lamp-lens--1" itemID="6a9f0000-51fda729" symbolType="graphic">
+  <timeline>
+    <DOMTimeline name="lamp-lens--1">
+      <layers>
+        <DOMLayer name="lamp-plane--1" color="#74906A" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/猛虎G05/Parts/lamp-plane--1" symbolType="graphic" loop="single frame">
+                  <matrix>
+                    <Matrix a="-0.104522705078125" b="-0.206771850585938" d="0.978134155273438" tx="-666.8" ty="14.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

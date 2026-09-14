@@ -1,0 +1,99 @@
+{
+  "schemaVersion": 1,
+  "scaleBasis": {
+    "rhinoBodyPx": 1293.8,
+    "tigrBodyPx": 1377.448108082561,
+    "bodyLengthRatio": 1.0646530438109145,
+    "authoringScale": 0.45,
+    "elevationDegrees": 10,
+    "groundAnchor": [
+      -36.924,
+      78
+    ]
+  },
+  "placements": [
+    {
+      "name": "外交军阀基地：猛虎替换26号犀牛",
+      "xfl": "flashswf/levels/地图-军阀基地",
+      "containerXml": "LIBRARY/sprite/新地图/Symbol 51879.xml",
+      "layersPath": "./x:timeline/x:DOMTimeline/x:layers",
+      "insertBeforeLayer": "犀牛R09-静态摆件",
+      "colorMultiplier": 0.86,
+      "vehicles": [
+        {
+          "vehicleNumber": 41,
+          "pose": "左向41",
+          "x": 1095,
+          "y": 265,
+          "scale": 0.23,
+          "worldGround": [
+            1070,
+            185
+          ]
+        }
+      ]
+    },
+    {
+      "containerXml": "DOMDocument.xml",
+      "layersPath": "./x:timelines/x:DOMTimeline/x:layers",
+      "name": "防御地带第一图：猛虎替换卡车",
+      "xfl": "flashswf/backgrounds/防御地带高地",
+      "layerIndex": 1,
+      "replaceSymbol": "战争配件库/解放卡车",
+      "vehicleNumber": 42,
+      "pose": "右向42",
+      "x": 400,
+      "y": 340,
+      "scale": 0.45,
+      "mirror": true,
+      "rotationDegrees": -2,
+      "worldGround": [
+        400,
+        340
+      ]
+    },
+    {
+      "containerXml": "DOMDocument.xml",
+      "layersPath": "./x:timelines/x:DOMTimeline/x:layers",
+      "name": "军阀前线基地第二图：帐篷后运输编队",
+      "xfl": "flashswf/backgrounds/gk22_2_BG",
+      "insertBeforeLayer": "Layer 398",
+      "colorMultiplier": 0.86,
+      "vehicles": [
+        {
+          "vehicleNumber": 43,
+          "pose": "左向43",
+          "x": -687.7,
+          "y": -45.099999999999994,
+          "scale": 0.24,
+          "worldGround": [
+            250,
+            200
+          ]
+        },
+        {
+          "vehicleNumber": 44,
+          "pose": "左向44",
+          "x": -77.70000000000005,
+          "y": -40.099999999999994,
+          "scale": 0.25,
+          "worldGround": [
+            860,
+            205
+          ]
+        },
+        {
+          "vehicleNumber": 45,
+          "pose": "左向45",
+          "x": 712.3,
+          "y": -40.099999999999994,
+          "scale": 0.24,
+          "worldGround": [
+            1650,
+            205
+          ]
+        }
+      ]
+    }
+  ]
+}

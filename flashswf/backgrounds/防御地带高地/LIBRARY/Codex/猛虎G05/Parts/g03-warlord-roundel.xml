@@ -1,0 +1,46 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="Codex/猛虎G05/Parts/g03-warlord-roundel" itemID="6a9f0000-7a7977df" symbolType="graphic">
+  <timeline>
+    <DOMTimeline name="g03-warlord-roundel">
+      <layers>
+        <DOMLayer name="色面 1" color="#74906A" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMGroup>
+                  <members>
+                    <DOMShape>
+                      <fills>
+                        <FillStyle index="1">
+                          <SolidColor color="#7B3B3B"/>
+                        </FillStyle>
+                      </fills>
+                      <edges>
+                        <Edge fillStyle0="1" edges="!-8506 -5814[-8514 -5807 -8514 -5796!-8514 -5796[-8514 -5785 -8506 -5778!-8506 -5778[-8499 -5770 -8488 -5770!-8488 -5770|-8072 -5770!-8072 -5770[-8061 -5770 -8054 -5778!-8054 -5778[-8046 -5785 -8046 -5796!-8046 -5796[-8046 -5807 -8054  -5814!-8054 -5814[-8061 -5822 -8072 -5822!-8072 -5822|-8488 -5822!-8488 -5822[-8499 -5822 -8506 -5814"/>
+                      </edges>
+                    </DOMShape>
+                  </members>
+                </DOMGroup>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="g03-source-emblem-contours" color="#74906A">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/猛虎G05/Parts/g03-source-emblem-contours" symbolType="graphic" loop="single frame">
+                  <matrix>
+                    <Matrix a="-0.0584869384765625" d="0.0584869384765625" tx="-393" ty="-337.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

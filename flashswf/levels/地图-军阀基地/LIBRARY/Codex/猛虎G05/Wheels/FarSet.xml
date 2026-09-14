@@ -1,0 +1,72 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="Codex/猛虎G05/Wheels/FarSet" itemID="6a9f0000-66d634fc" symbolType="graphic">
+  <timeline>
+    <DOMTimeline name="FarSet">
+      <layers>
+        <DOMLayer name="完整轮组 3" color="#74906A" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/猛虎G05/Wheels/CompleteWheel" symbolType="graphic" loop="single frame">
+                  <matrix>
+                    <Matrix a="-0.9945068359375" b="0.021728515625" d="0.978134155273438" tx="-539.75" ty="-150.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="完整轮组 2" color="#74906A">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/猛虎G05/Wheels/CompleteWheel" symbolType="graphic" loop="single frame">
+                  <matrix>
+                    <Matrix a="-0.9945068359375" b="0.021728515625" d="0.978134155273438" tx="-220.9" ty="-157.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="完整轮组 1" color="#74906A">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/猛虎G05/Wheels/CompleteWheel" symbolType="graphic" loop="single frame">
+                  <matrix>
+                    <Matrix a="-0.9945068359375" b="0.021728515625" d="0.978134155273438" tx="60.35" ty="-163.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="完整轮组 0" color="#74906A">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/猛虎G05/Wheels/CompleteWheel" symbolType="graphic" loop="single frame">
+                  <matrix>
+                    <Matrix a="-0.9945068359375" b="0.021728515625" d="0.978134155273438" tx="379.15" ty="-170.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

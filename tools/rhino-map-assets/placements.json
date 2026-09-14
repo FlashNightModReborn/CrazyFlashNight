@@ -26,23 +26,12 @@
         {
           "vehicleNumber": 25,
           "pose": "平射25",
-          "x": 640,
-          "y": 270,
-          "scale": 0.27,
+          "x": 665,
+          "y": 245,
+          "scale": 0.24,
           "worldGround": [
-            615,
-            190
-          ]
-        },
-        {
-          "vehicleNumber": 26,
-          "pose": "平射26",
-          "x": 1195,
-          "y": 255,
-          "scale": 0.25,
-          "worldGround": [
-            1170,
-            175
+            640,
+            165
           ]
         },
         {
@@ -114,13 +103,13 @@
       "pose": "右向抬炮15度29",
       "vehicleNumber": 29,
       "replaceSymbol": "战争配件库/单管炮筒",
-      "x": 850,
+      "x": 990,
       "y": 320,
       "scale": 0.45,
       "mirror": true,
       "rotationDegrees": -4,
       "worldGround": [
-        850,
+        990,
         320
       ],
       "parentWorldOffset": [

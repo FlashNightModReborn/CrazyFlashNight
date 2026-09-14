@@ -1,0 +1,1000 @@
+{
+  "package": "G05-猛虎运输车-Animate交接包-20260914.zip",
+  "artwork": "G04 Final",
+  "originalFlaSha256": "ffac8c612e6450d2eec310713b82bddfa9486cd63e83ff5a769a7a63f56e3629",
+  "authority": "flashswf/levels/地图-军阀基地",
+  "namespace": "Codex/猛虎G05/",
+  "scope": "零轮转/零转管/零后座、10度俯仰、全层单帧Graphic，保留原生遮罩与渐变；不导入AS3控制器",
+  "symbols": [
+    {
+      "sourceSymbol": "Tigr/AA/FixedCap",
+      "staticSymbol": "Codex/猛虎G05/AA/FixedCap",
+      "sourceSha256": "7bbd6576444912499b63c8e9b87ddc07fea1d8c90c7b116839c50e19a862eef6"
+    },
+    {
+      "sourceSymbol": "Tigr/AA/Cradle",
+      "staticSymbol": "Codex/猛虎G05/AA/Cradle",
+      "sourceSha256": "5e6d10106821f8bcde53e7944ef0739f2d9b009b42dd0cba9222e94bc4944fd0"
+    },
+    {
+      "sourceSymbol": "Tigr/AA/LowerBarrel",
+      "staticSymbol": "Codex/猛虎G05/AA/LowerBarrel",
+      "sourceSha256": "29d825443db66a8295e7a1b8ff165b93a494e06d75b8e62033bb06874feaf43c"
+    },
+    {
+      "sourceSymbol": "Tigr/AA/UpperBarrel",
+      "staticSymbol": "Codex/猛虎G05/AA/UpperBarrel",
+      "sourceSha256": "bc48ca1642bce3529b7cd44eecfcbc411403dc5c284909d40ba4e1ba8bcae865"
+    },
+    {
+      "sourceSymbol": "Tigr/AA/Moving",
+      "staticSymbol": "Codex/猛虎G05/AA/Moving",
+      "sourceSha256": "6d6e03bccf10d29a4039823654930f761b27bf468d287752a418feaf91cd5325"
+    },
+    {
+      "sourceSymbol": "Tigr/AA/FixedMount",
+      "staticSymbol": "Codex/猛虎G05/AA/FixedMount",
+      "sourceSha256": "157a5e734904160f156db23c538d0c9a67dd6a9b85f915b4b4288b2225d82ff9"
+    },
+    {
+      "sourceSymbol": "Tigr/AA/SharedAssembly",
+      "staticSymbol": "Codex/猛虎G05/AA/SharedAssembly",
+      "sourceSha256": "19c5dacf60112089fd4f4c15194ca5ce02c4015a7d8a1e190263eebd6fd7f867"
+    },
+    {
+      "sourceSymbol": "Tigr/Parts/central-carrier-cheek--1",
+      "staticSymbol": "Codex/猛虎G05/Parts/central-carrier-cheek--1",
+      "sourceSha256": "66a96c2dddd01b43e4d63a24671ceeb9af7e1b2a72adb99fe870f782fa2c9f4e"
+    },
+    {
+      "sourceSymbol": "Tigr/Parts/central-fixed-bearing",
+      "staticSymbol": "Codex/猛虎G05/Parts/central-fixed-bearing",
+      "sourceSha256": "9ee9634cfeafcbf408c8fdce0aed50a52aacd8c274e3a3859ed4641bcbf4e3d4"
+    },
+    {
+      "sourceSymbol": "Tigr/Parts/central-receiver-shoulder",
+      "staticSymbol": "Codex/猛虎G05/Parts/central-receiver-shoulder",
+      "sourceSha256": "4cf8a184b6c17b038acd2d936ddfde32908d3e5e13db010eaa4f4f0f28f26a05"
+    },
+    {
+      "sourceSymbol": "Tigr/Parts/central-receiver-shell",
+      "staticSymbol": "Codex/猛虎G05/Parts/central-receiver-shell",
+      "sourceSha256": "feb5897c2dc40e5f1e3113b4c512babdd1ace236400d37168ba61542ce6f8c26"
+    },
+    {
+      "sourceSymbol": "Tigr/Central/FixedReceiver",
+      "staticSymbol": "Codex/猛虎G05/Central/FixedReceiver",
+      "sourceSha256": "0d1afe95c549e0f5c19dc097b5295ba034852e45a2c4681868ed5bc172a7aef3"
+    },
+    {
+      "sourceSymbol": "Tigr/Central/central-front-spacer",
+      "staticSymbol": "Codex/猛虎G05/Central/central-front-spacer",
+      "sourceSha256": "cf6c96d27b8933bf0fa352d842f098676d0b5302db7eafc38b82b6ddf6812ca3"
+    },
+    {
+      "sourceSymbol": "Tigr/Central/central-collar-1",
+      "staticSymbol": "Codex/猛虎G05/Central/central-collar-1",
+      "sourceSha256": "ef5399e0bbac07dbfa24e146d2430b44eeff7a6ce736227de83a5ee87fe8ba2a"
+    },
+    {
+      "sourceSymbol": "Tigr/Central/central-collar-0",
+      "staticSymbol": "Codex/猛虎G05/Central/central-collar-0",
+      "sourceSha256": "4cf9e9e57640f87c5301ddb23980b8818efd1844047862fac182c915f73ccb17"
+    },
+    {
+      "sourceSymbol": "Tigr/Central/Barrel",
+      "staticSymbol": "Codex/猛虎G05/Central/Barrel",
+      "sourceSha256": "495e2ad4fb928d97579a0ae332f495e4bfd10da9e30c78aa1a07720726ec6687"
+    },
+    {
+      "sourceSymbol": "Tigr/Central/BarrelSet",
+      "staticSymbol": "Codex/猛虎G05/Central/BarrelSet",
+      "sourceSha256": "14458d788fab81b30865c4cf9f99a7487db59c00a5cf55cb13db59e194582a31"
+    },
+    {
+      "sourceSymbol": "Tigr/Central/Rotor",
+      "staticSymbol": "Codex/猛虎G05/Central/Rotor",
+      "sourceSha256": "1697bacad4efb246fdb00ce1e99994ee2507539f2f5d4253675bee8706d5461f"
+    },
+    {
+      "sourceSymbol": "Tigr/Central/Assembly",
+      "staticSymbol": "Codex/猛虎G05/Central/Assembly",
+      "sourceSha256": "cebd677cf4e15d2590dd21a3ae9e7d7cc7775baaabec7e31ce6f296794d26133"
+    },
+    {
+      "sourceSymbol": "Tigr/Parts/radar-shoe-fasteners",
+      "staticSymbol": "Codex/猛虎G05/Parts/radar-shoe-fasteners",
+      "sourceSha256": "09d0fb8b3b6e7ec0002c0a04890d76406839ec602fd735adcfd4bf06fb0d46d0"
+    },
+    {
+      "sourceSymbol": "Tigr/Parts/radar-matte-face-detail",
+      "staticSymbol": "Codex/猛虎G05/Parts/radar-matte-face-detail",
+      "sourceSha256": "05fbc53919cbd7f29685c6e9139b9231131413a4ec2646e1592a77bd496568f1"
+    },
+    {
+      "sourceSymbol": "Tigr/Parts/radar-real-edges-and-base-hardware",
+      "staticSymbol": "Codex/猛虎G05/Parts/radar-real-edges-and-base-hardware",
+      "sourceSha256": "019782153bef4575e37ce6ad2cbcaab5f31d26475efc9897be4fdafcb8766ae5"
+    },
+    {
+      "sourceSymbol": "Tigr/Parts/radar-mount-shoe",
+      "staticSymbol": "Codex/猛虎G05/Parts/radar-mount-shoe",
+      "sourceSha256": "f9b53b675f5c7c5182e79319f7b40509b770ba369b1b00ad9d8cc899cf1b1ab7"
+    },
+    {
+      "sourceSymbol": "Tigr/Parts/radar-radome-body",
+      "staticSymbol": "Codex/猛虎G05/Parts/radar-radome-body",
+      "sourceSha256": "b6cba90646ccabfa91f6ff38d31de7ab8600e18de57bc440c5e425987d1efbc8"
+    },
+    {
+      "sourceSymbol": "Tigr/Station/station-sensor-head",
+      "staticSymbol": "Codex/猛虎G05/Station/station-sensor-head",
+      "sourceSha256": "014985b7c13e47e37388d0d7081a859ce3853481e32a9e812ce35b4a2536263d"
+    },
+    {
+      "sourceSymbol": "Tigr/Parts/station-socket-rim",
+      "staticSymbol": "Codex/猛虎G05/Parts/station-socket-rim",
+      "sourceSha256": "952c7b96b080738f31d040d6fa43a587f2c716edf15c6c41a61efa4268932874"
+    },
+    {
+      "sourceSymbol": "Tigr/Parts/e-station-upper-finish",
+      "staticSymbol": "Codex/猛虎G05/Parts/e-station-upper-finish",
+      "sourceSha256": "2ff17a5b043661a5fab9112cee9ade7f1730aca0d63e27ddd1831ffab11c37be"
+    },
+    {
+      "sourceSymbol": "Tigr/Parts/station-cowl-detail-plane",
+      "staticSymbol": "Codex/猛虎G05/Parts/station-cowl-detail-plane",
+      "sourceSha256": "ce459c405fe0a10408b2da2511026b120cc5673be333c015bda34223e4494ca7"
+    },
+    {
+      "sourceSymbol": "Tigr/Parts/station-cowl-service-details",
+      "staticSymbol": "Codex/猛虎G05/Parts/station-cowl-service-details",
+      "sourceSha256": "e9368e28e549d80138cd6b71e8fea55b905d79b0818280fbf18bc3a3e1a04f31"
+    },
+    {
+      "sourceSymbol": "Tigr/Parts/station-upper-cowl",
+      "staticSymbol": "Codex/猛虎G05/Parts/station-upper-cowl",
+      "sourceSha256": "0e80b5eb1baf6df036092b1bee198a261a6bf54ceca67c3b795172a7a660a9c7"
+    },
+    {
+      "sourceSymbol": "Tigr/Parts/station-side-shoulder--1",
+      "staticSymbol": "Codex/猛虎G05/Parts/station-side-shoulder--1",
+      "sourceSha256": "76b3f7a47734959c4b539b9568e7e5b362bef7344272773a3a5b73030f3e04cf"
+    },
+    {
+      "sourceSymbol": "Tigr/Parts/e-station-lower-finish",
+      "staticSymbol": "Codex/猛虎G05/Parts/e-station-lower-finish",
+      "sourceSha256": "25531c11d401b95f24f485969002ff03cddfb5b9e445018e981d3f8634b30906"
+    },
+    {
+      "sourceSymbol": "Tigr/Parts/station-lower-casing",
+      "staticSymbol": "Codex/猛虎G05/Parts/station-lower-casing",
+      "sourceSha256": "1dc1ec2e7ba70b1ac9c1140771bb135a07e07cb6319a0c91d1407a2c78537d8e"
+    },
+    {
+      "sourceSymbol": "Tigr/Parts/e-station-rail-inner-edge",
+      "staticSymbol": "Codex/猛虎G05/Parts/e-station-rail-inner-edge",
+      "sourceSha256": "2267c6fce4ef716f3111a9b9501c3330e345f3fd2b5e0eb369c3ddf1172dbafb"
+    },
+    {
+      "sourceSymbol": "Tigr/Parts/station-rail--1",
+      "staticSymbol": "Codex/猛虎G05/Parts/station-rail--1",
+      "sourceSha256": "4f1b76672aead8ee46503d33cae60c179dad3d3ecb6f8d3f54a26068cac6f249"
+    },
+    {
+      "sourceSymbol": "Tigr/Station/station-core",
+      "staticSymbol": "Codex/猛虎G05/Station/station-core",
+      "sourceSha256": "5a02fbdd5b07d7a4329719f610e059319647802caeabf16f437d749f811bf0f9"
+    },
+    {
+      "sourceSymbol": "Tigr/Parts/platform-top-face",
+      "staticSymbol": "Codex/猛虎G05/Parts/platform-top-face",
+      "sourceSha256": "5e1361056e581739d68af67cfc704b6d48b6ce1dc04c5c0196b2e66b58c418c5"
+    },
+    {
+      "sourceSymbol": "Tigr/Station/turret-rounded-platform",
+      "staticSymbol": "Codex/猛虎G05/Station/turret-rounded-platform",
+      "sourceSha256": "c392882dbbc96ceb13b780c5a4e04f1dccc924640cb92d423d3ffad6ecfb49f6"
+    },
+    {
+      "sourceSymbol": "Tigr/Turret",
+      "staticSymbol": "Codex/猛虎G05/Turret",
+      "sourceSha256": "5731f834ae9bb67644d365f8bd6c71f08d4b8fceecacc3d5734ab8a050b2ed32"
+    },
+    {
+      "sourceSymbol": "Tigr/Wheels/NearBodyMask",
+      "staticSymbol": "Codex/猛虎G05/Wheels/NearBodyMask",
+      "sourceSha256": "630c11003335b541590d9d0baaf779e0d193f8674dd74648fe54e94f42e600e3"
+    },
+    {
+      "sourceSymbol": "Tigr/Wheels/FixedLight",
+      "staticSymbol": "Codex/猛虎G05/Wheels/FixedLight",
+      "sourceSha256": "8b8ca7f916cab623cb6709417c200e34c009df9fb8d87d5aefa6614055e757cd"
+    },
+    {
+      "sourceSymbol": "Tigr/Wheels/Shoulder",
+      "staticSymbol": "Codex/猛虎G05/Wheels/Shoulder",
+      "sourceSha256": "543f23d8aad5b14421f2510b3cd6f771b66204206affb68f9bde23d47f64ce49"
+    },
+    {
+      "sourceSymbol": "Tigr/Wheels/Rim",
+      "staticSymbol": "Codex/猛虎G05/Wheels/Rim",
+      "sourceSha256": "7e1fe5f87ac4ce7141504196d095f20d54f902ba4f09424694732ca455ea8556"
+    },
+    {
+      "sourceSymbol": "Tigr/Wheels/Sidewall",
+      "staticSymbol": "Codex/猛虎G05/Wheels/Sidewall",
+      "sourceSha256": "47d7c0e637f43af2752b241189aec8fb84beb0c9cd7272da9d60836a88eeeb61"
+    },
+    {
+      "sourceSymbol": "Tigr/Wheels/Tread",
+      "staticSymbol": "Codex/猛虎G05/Wheels/Tread",
+      "sourceSha256": "02be98a5d8451b91d06b21e833903ece53391f579e069e4ae2888f5a3d3f6ca9"
+    },
+    {
+      "sourceSymbol": "Tigr/Wheels/Back",
+      "staticSymbol": "Codex/猛虎G05/Wheels/Back",
+      "sourceSha256": "65ba7cd47548054c59b178a42f2cf9ef1d7464634514415df440ea05cf064719"
+    },
+    {
+      "sourceSymbol": "Tigr/Wheels/CompleteWheel",
+      "staticSymbol": "Codex/猛虎G05/Wheels/CompleteWheel",
+      "sourceSha256": "55f315231573a30334dbf96fe3c60cf932f69438944d6c388fe45ede11e83faa"
+    },
+    {
+      "sourceSymbol": "Tigr/Wheels/NearSet",
+      "staticSymbol": "Codex/猛虎G05/Wheels/NearSet",
+      "sourceSha256": "3c8f8b9189ef29d081430d0ed1c0a12a08f33f6ecc621d59c2a503d305b47657"
+    },
+    {
+      "sourceSymbol": "Tigr/Parts/neck-top-face",
+      "staticSymbol": "Codex/猛虎G05/Parts/neck-top-face",
+      "sourceSha256": "7855486c38826c3ee976b49ce24a480961163545236cdd95e4323b9d884ebbc5"
+    },
+    {
+      "sourceSymbol": "Tigr/Chassis/Neck",
+      "staticSymbol": "Codex/猛虎G05/Chassis/Neck",
+      "sourceSha256": "44e2e034b8aca8def1d8bf0ce847592a6c36f84841e014c1ae99c819f2f4aa24"
+    },
+    {
+      "sourceSymbol": "Tigr/Parts/e-opposite-rear-roof-access-rail",
+      "staticSymbol": "Codex/猛虎G05/Parts/e-opposite-rear-roof-access-rail",
+      "sourceSha256": "9dbed428bb4e2d80f285afa60d915d3f29462bd7824d615e8158e703cab52193"
+    },
+    {
+      "sourceSymbol": "Tigr/Parts/e-lamp-side-glass-1-face-finish",
+      "staticSymbol": "Codex/猛虎G05/Parts/e-lamp-side-glass-1-face-finish",
+      "sourceSha256": "c4565058029689e59a0af907be1a3176e337b367258ba39874d96dbd5e351849"
+    },
+    {
+      "sourceSymbol": "Tigr/Parts/e-lamp-side-glass-1",
+      "staticSymbol": "Codex/猛虎G05/Parts/e-lamp-side-glass-1",
+      "sourceSha256": "93ef1045b115cce084a0fe8c0803cef95672550f6bbc8cd736aea45310dddc22"
+    },
+    {
+      "sourceSymbol": "Tigr/Parts/e-lamp-front-glass-1-face-finish",
+      "staticSymbol": "Codex/猛虎G05/Parts/e-lamp-front-glass-1-face-finish",
+      "sourceSha256": "ef11b9820ad21e04332966a9c377f3b7f9f8a98c2ab18e77f077a6ede0e12cb0"
+    },
+    {
+      "sourceSymbol": "Tigr/Parts/e-lamp-front-glass-1",
+      "staticSymbol": "Codex/猛虎G05/Parts/e-lamp-front-glass-1",
+      "sourceSha256": "1777e93c67a6baf8ade90fc119eeb0ba48f07961bb74c44bf923ddd64de86ec1"
+    },
+    {
+      "sourceSymbol": "Tigr/Parts/e-lamp-lens-frame-1-face-finish",
+      "staticSymbol": "Codex/猛虎G05/Parts/e-lamp-lens-frame-1-face-finish",
+      "sourceSha256": "5f2d5a3d8ae4ed084a9b611d36b33e7b8a7cdf5bb7f8ff4c964f3981a596dfdb"
+    },
+    {
+      "sourceSymbol": "Tigr/Parts/e-lamp-lens-frame-1",
+      "staticSymbol": "Codex/猛虎G05/Parts/e-lamp-lens-frame-1",
+      "sourceSha256": "bedfd486a17c364955f09e536b7d9826e6d818f2d0f4c83c315ce90a1a19bec5"
+    },
+    {
+      "sourceSymbol": "Tigr/Parts/e-lamp-case-1-face-finish",
+      "staticSymbol": "Codex/猛虎G05/Parts/e-lamp-case-1-face-finish",
+      "sourceSha256": "bc6d2237a1c24ed46dad5a856bd3f753ccb72300f6abb3523cb7b4b960897a17"
+    },
+    {
+      "sourceSymbol": "Tigr/Parts/e-lamp-case-1",
+      "staticSymbol": "Codex/猛虎G05/Parts/e-lamp-case-1",
+      "sourceSha256": "75e71720fcb830ecc2aed42558bc300039b3a23e9daaa59cee2d5edaa6b9a525"
+    },
+    {
+      "sourceSymbol": "Tigr/Parts/e-lamp-wedge-1-face-finish",
+      "staticSymbol": "Codex/猛虎G05/Parts/e-lamp-wedge-1-face-finish",
+      "sourceSha256": "ccb0546174593ec67fdac47f342d64ccf07e3eb569f5734b0a705816d0f5477a"
+    },
+    {
+      "sourceSymbol": "Tigr/Parts/e-lamp-wedge-1",
+      "staticSymbol": "Codex/猛虎G05/Parts/e-lamp-wedge-1",
+      "sourceSha256": "c3a4bd0eda8bd16df212965ac382fa2ec4afe39def8796fcf70bea2aaa41fc20"
+    },
+    {
+      "sourceSymbol": "Tigr/Parts/e-lamp-side-glass--1-face-finish",
+      "staticSymbol": "Codex/猛虎G05/Parts/e-lamp-side-glass--1-face-finish",
+      "sourceSha256": "58e1c46d67f0f7963a40c34095619a7f17ed824502cefe3cb90cde6f5e3ac4ff"
+    },
+    {
+      "sourceSymbol": "Tigr/Parts/e-lamp-side-glass--1",
+      "staticSymbol": "Codex/猛虎G05/Parts/e-lamp-side-glass--1",
+      "sourceSha256": "a20dd3b4cda41e72e3afd5c239e7d734e76ad34c089c91a24438e8ea40775948"
+    },
+    {
+      "sourceSymbol": "Tigr/Parts/e-lamp-front-glass--1-face-finish",
+      "staticSymbol": "Codex/猛虎G05/Parts/e-lamp-front-glass--1-face-finish",
+      "sourceSha256": "b05f17082944953cde2f309cacb4161a649b37b1143883546e83b87b4708dcd3"
+    },
+    {
+      "sourceSymbol": "Tigr/Parts/e-lamp-front-glass--1",
+      "staticSymbol": "Codex/猛虎G05/Parts/e-lamp-front-glass--1",
+      "sourceSha256": "0930c8998551d29a0936f3819b013a17b04d31010a71b8d4e269279cb9f76a2a"
+    },
+    {
+      "sourceSymbol": "Tigr/Parts/e-lamp-lens-frame--1-face-finish",
+      "staticSymbol": "Codex/猛虎G05/Parts/e-lamp-lens-frame--1-face-finish",
+      "sourceSha256": "e0457a8b07a62e3588d9b85c41802e4d6bd468d10c5f13ed54769d4c56f4e8eb"
+    },
+    {
+      "sourceSymbol": "Tigr/Parts/e-lamp-lens-frame--1",
+      "staticSymbol": "Codex/猛虎G05/Parts/e-lamp-lens-frame--1",
+      "sourceSha256": "df9b90fc6a3d458432c7f278b241cd517e1b6d32f550b20690b3b2f01fcded97"
+    },
+    {
+      "sourceSymbol": "Tigr/Parts/e-lamp-case--1-face-finish",
+      "staticSymbol": "Codex/猛虎G05/Parts/e-lamp-case--1-face-finish",
+      "sourceSha256": "9628b5ac14172a251a086cc5b814f8c57b36c71253e42cd2e0511c7c954d18aa"
+    },
+    {
+      "sourceSymbol": "Tigr/Parts/e-lamp-case--1",
+      "staticSymbol": "Codex/猛虎G05/Parts/e-lamp-case--1",
+      "sourceSha256": "ea4de1e407614ad1b5b42ef4b517f78bf0aa898bafdd4458362350d6974f4ba9"
+    },
+    {
+      "sourceSymbol": "Tigr/Parts/e-lamp-fender-tab--1-face-finish",
+      "staticSymbol": "Codex/猛虎G05/Parts/e-lamp-fender-tab--1-face-finish",
+      "sourceSha256": "7b6629084b39b55e3b5112f2e485f332f14fdfc60f34a991cff3cdd398885d40"
+    },
+    {
+      "sourceSymbol": "Tigr/Parts/e-lamp-fender-tab--1",
+      "staticSymbol": "Codex/猛虎G05/Parts/e-lamp-fender-tab--1",
+      "sourceSha256": "ee45bb47e847cef146c285fc836c28278a06d39197eceeafe5212178b37736c2"
+    },
+    {
+      "sourceSymbol": "Tigr/Parts/e-lamp-wedge--1-face-finish",
+      "staticSymbol": "Codex/猛虎G05/Parts/e-lamp-wedge--1-face-finish",
+      "sourceSha256": "b96e91646bee501f305ee4a5383de6ada8aabf775a367c11d68de22e1f9ae498"
+    },
+    {
+      "sourceSymbol": "Tigr/Parts/e-lamp-wedge--1",
+      "staticSymbol": "Codex/猛虎G05/Parts/e-lamp-wedge--1",
+      "sourceSha256": "dd1a5fce78735aaa319770a59dbb9edc35becb1a8c0b9b897963b0c46f6524f8"
+    },
+    {
+      "sourceSymbol": "Tigr/Parts/e-lamp-mounted-assemblies",
+      "staticSymbol": "Codex/猛虎G05/Parts/e-lamp-mounted-assemblies",
+      "sourceSha256": "aaf14b281a580229e06a9a4ce4ea1b7216d088c16722ed68c8f550c06c4a35a6"
+    },
+    {
+      "sourceSymbol": "Tigr/Parts/e-opposite-cable-clamp--7.0",
+      "staticSymbol": "Codex/猛虎G05/Parts/e-opposite-cable-clamp--7.0",
+      "sourceSha256": "5f329c64a53bfa65010bfe702d5de12cb3040052548ba2d1fdbc724a1c4c3c7d"
+    },
+    {
+      "sourceSymbol": "Tigr/Parts/e-opposite-cable-clamp--11.8",
+      "staticSymbol": "Codex/猛虎G05/Parts/e-opposite-cable-clamp--11.8",
+      "sourceSha256": "3dc97626ff10b949924fc3df42c74c4fd80b2889d7479b944c623f5cd5ae1257"
+    },
+    {
+      "sourceSymbol": "Tigr/Parts/opposite-e-stowed-cable-plane",
+      "staticSymbol": "Codex/猛虎G05/Parts/opposite-e-stowed-cable-plane",
+      "sourceSha256": "953f0bf2a41881d04c5391eb5c18ad970b8f040ee2810bd16f4ef440548406e7"
+    },
+    {
+      "sourceSymbol": "Tigr/Parts/e-opposite-stowed-cable-and-clamps",
+      "staticSymbol": "Codex/猛虎G05/Parts/e-opposite-stowed-cable-and-clamps",
+      "sourceSha256": "d4b0fbfd421935fead072faea7665bf623d23ccd3d6211f33dd2e1126748659a"
+    },
+    {
+      "sourceSymbol": "Tigr/Parts/e-opposite-tool-clip-9.0",
+      "staticSymbol": "Codex/猛虎G05/Parts/e-opposite-tool-clip-9.0",
+      "sourceSha256": "0326b833172f516abb1fa9c7033fd1a9c21a162b316c7e734cc85e42377aa215"
+    },
+    {
+      "sourceSymbol": "Tigr/Parts/e-opposite-tool-clip-3.8",
+      "staticSymbol": "Codex/猛虎G05/Parts/e-opposite-tool-clip-3.8",
+      "sourceSha256": "cab2029f597786975e50f696f9031965354d6329b59140c3c1ca2c55f4a823a4"
+    },
+    {
+      "sourceSymbol": "Tigr/Parts/e-opposite-tool-clip--2.0",
+      "staticSymbol": "Codex/猛虎G05/Parts/e-opposite-tool-clip--2.0",
+      "sourceSha256": "fccfd801b58aff420ad8efb1b9d244205234abe992b0f1d496b96481858f0e14"
+    },
+    {
+      "sourceSymbol": "Tigr/Parts/e-opposite-roof-tool-with-clips",
+      "staticSymbol": "Codex/猛虎G05/Parts/e-opposite-roof-tool-with-clips",
+      "sourceSha256": "f433447c3dbefb2011f7b844c6f35521461ba061473cb650683e681164f9d85f"
+    },
+    {
+      "sourceSymbol": "Tigr/Parts/opposite-e-nonskid-plane",
+      "staticSymbol": "Codex/猛虎G05/Parts/opposite-e-nonskid-plane",
+      "sourceSha256": "46132c07c6e06d850b712e96d271e1f4da47698c2695d822fe2a745f79435bcc"
+    },
+    {
+      "sourceSymbol": "Tigr/Parts/opposite-e-roof-anti-slip",
+      "staticSymbol": "Codex/猛虎G05/Parts/opposite-e-roof-anti-slip",
+      "sourceSha256": "856850360389a3c89c3f4b9e37a067d8415072c8c56110ea4c9288ec235a4da3"
+    },
+    {
+      "sourceSymbol": "Tigr/Parts/e-cable-clamp--7.0",
+      "staticSymbol": "Codex/猛虎G05/Parts/e-cable-clamp--7.0",
+      "sourceSha256": "0dc94a7ccf7615ed7bba40f84c6fca08e1302c36c943c01b93c5abc35482bf5b"
+    },
+    {
+      "sourceSymbol": "Tigr/Parts/e-cable-clamp--11.8",
+      "staticSymbol": "Codex/猛虎G05/Parts/e-cable-clamp--11.8",
+      "sourceSha256": "b0ae644211bdaa256f0f80ee280cb7e597ad161bffbe5f9deff3b44ee3037b38"
+    },
+    {
+      "sourceSymbol": "Tigr/Parts/e-stowed-cable-plane",
+      "staticSymbol": "Codex/猛虎G05/Parts/e-stowed-cable-plane",
+      "sourceSha256": "228bc91f27caa1e7530e0ed82c20856dd543cfc4674541f8ef30285c139e1a0d"
+    },
+    {
+      "sourceSymbol": "Tigr/Parts/e-stowed-cable-and-clamps",
+      "staticSymbol": "Codex/猛虎G05/Parts/e-stowed-cable-and-clamps",
+      "sourceSha256": "58bc2b2ea8161e99ebc9d6d52428a236dbfc4075ae169d4445b53d97e3c601bd"
+    },
+    {
+      "sourceSymbol": "Tigr/Parts/e-nonskid-plane",
+      "staticSymbol": "Codex/猛虎G05/Parts/e-nonskid-plane",
+      "sourceSha256": "db54c7781f848ecffea64b15240bcf639ac04b57ef9d85774a57de46d8bece99"
+    },
+    {
+      "sourceSymbol": "Tigr/Parts/e-roof-anti-slip",
+      "staticSymbol": "Codex/猛虎G05/Parts/e-roof-anti-slip",
+      "sourceSha256": "b9851c50760f10d2286b65a4259984055c030725017ae2e0a58fd5c87dcf7fed"
+    },
+    {
+      "sourceSymbol": "Tigr/Parts/tow-eye-plane-1",
+      "staticSymbol": "Codex/猛虎G05/Parts/tow-eye-plane-1",
+      "sourceSha256": "ea963c26837ec0cdb26c067907a7450d166ad933b4a7fb3cb79763140a76cab0"
+    },
+    {
+      "sourceSymbol": "Tigr/Parts/front-tow-pad-1",
+      "staticSymbol": "Codex/猛虎G05/Parts/front-tow-pad-1",
+      "sourceSha256": "31513c98a581183722aeb73af60a604e7cf66bda0bf82b07eeacb7ed6a110221"
+    },
+    {
+      "sourceSymbol": "Tigr/Parts/tow-contact-plane-1",
+      "staticSymbol": "Codex/猛虎G05/Parts/tow-contact-plane-1",
+      "sourceSha256": "d75f7e7a1d1cdb7d8fa3101eb91bb70a450d2c431b452d37b0fd17501934e880"
+    },
+    {
+      "sourceSymbol": "Tigr/Parts/front-tow-mount-1",
+      "staticSymbol": "Codex/猛虎G05/Parts/front-tow-mount-1",
+      "sourceSha256": "c9534dbf558f5b30b1117dc790b529f8ee298b94a4a500235fb1c06e8c044e56"
+    },
+    {
+      "sourceSymbol": "Tigr/Parts/tow-eye-plane--1",
+      "staticSymbol": "Codex/猛虎G05/Parts/tow-eye-plane--1",
+      "sourceSha256": "214c472803b440f9a446bfca2ece170704df6e4b34c6709d0e22dcae8dfe1867"
+    },
+    {
+      "sourceSymbol": "Tigr/Parts/front-tow-pad--1",
+      "staticSymbol": "Codex/猛虎G05/Parts/front-tow-pad--1",
+      "sourceSha256": "2686551ba0270f35566ef637b8bd91c1ee93d70836ebccb3735f0cb1b3bbc8fd"
+    },
+    {
+      "sourceSymbol": "Tigr/Parts/tow-contact-plane--1",
+      "staticSymbol": "Codex/猛虎G05/Parts/tow-contact-plane--1",
+      "sourceSha256": "6c6ebc7eb6b7d2bf7e1272fb4771805afb65070f3854150a85bf6d59bc2f907a"
+    },
+    {
+      "sourceSymbol": "Tigr/Parts/front-tow-mount--1",
+      "staticSymbol": "Codex/猛虎G05/Parts/front-tow-mount--1",
+      "sourceSha256": "3b85facedccb72a962533977b8dce56d3dce343590dc040d8ec3978325dc7ce6"
+    },
+    {
+      "sourceSymbol": "Tigr/Parts/front-towing-eyes",
+      "staticSymbol": "Codex/猛虎G05/Parts/front-towing-eyes",
+      "sourceSha256": "019d69d6e64a17e56d4447253a1043b2f97f3efce77ce2e92eea025f29abcec1"
+    },
+    {
+      "sourceSymbol": "Tigr/Parts/tool-clip-9.0",
+      "staticSymbol": "Codex/猛虎G05/Parts/tool-clip-9.0",
+      "sourceSha256": "8471db1033d5bf67dfb39ded823b15d8ec600c95bcd6d91b805a43d5065f42ca"
+    },
+    {
+      "sourceSymbol": "Tigr/Parts/tool-clip-3.8",
+      "staticSymbol": "Codex/猛虎G05/Parts/tool-clip-3.8",
+      "sourceSha256": "ed261190b75143374f72d4b99c05bb4466c997982f156f57af802822844760c7"
+    },
+    {
+      "sourceSymbol": "Tigr/Parts/tool-clip--2.0",
+      "staticSymbol": "Codex/猛虎G05/Parts/tool-clip--2.0",
+      "sourceSha256": "97bcd04a6ca185898a0506b4afb14305c8e7df9f0375c6eb4bd7660042ec0882"
+    },
+    {
+      "sourceSymbol": "Tigr/Parts/roof-tool-with-clips",
+      "staticSymbol": "Codex/猛虎G05/Parts/roof-tool-with-clips",
+      "sourceSha256": "38441fe8f61ff9f7bf2b96fe27c4d7f5f08fc6ed11a7653b79f3166de9fcf27d"
+    },
+    {
+      "sourceSymbol": "Tigr/Parts/rear-roof-access-rail",
+      "staticSymbol": "Codex/猛虎G05/Parts/rear-roof-access-rail",
+      "sourceSha256": "4743666f21fd31523eafd28e2b59f1e56404e16fa54ab0374000da32420d13c2"
+    },
+    {
+      "sourceSymbol": "Tigr/Parts/hull-fold-lines",
+      "staticSymbol": "Codex/猛虎G05/Parts/hull-fold-lines",
+      "sourceSha256": "4df238ffcc11dfaf01eb0172a258b7e289097822e135f341b18612934f7d3da4"
+    },
+    {
+      "sourceSymbol": "Tigr/Parts/fender-front-1",
+      "staticSymbol": "Codex/猛虎G05/Parts/fender-front-1",
+      "sourceSha256": "cc725e2cc0087ef0db0adae791fa4ab335108b48487844d7ac55d666efb3bb60"
+    },
+    {
+      "sourceSymbol": "Tigr/Parts/shoulder-fixing--1-1",
+      "staticSymbol": "Codex/猛虎G05/Parts/shoulder-fixing--1-1",
+      "sourceSha256": "a6c48fdd650e79479ef1292014491d0b2c8f432e78a6c65fa5c4e23b0621d2f8"
+    },
+    {
+      "sourceSymbol": "Tigr/Parts/shoulder-fixing--1-0",
+      "staticSymbol": "Codex/猛虎G05/Parts/shoulder-fixing--1-0",
+      "sourceSha256": "c2efb0e9282f9e66538631d01665eb7edbd7202ff196daf6bf07bc917532c4e7"
+    },
+    {
+      "sourceSymbol": "Tigr/Parts/e-side-shoulder--1-finish",
+      "staticSymbol": "Codex/猛虎G05/Parts/e-side-shoulder--1-finish",
+      "sourceSha256": "93d52b77bb09c5680b80ac0eb24a18d8d13212b6cfe8e89ac3416fcc2cba9561"
+    },
+    {
+      "sourceSymbol": "Tigr/Parts/side-armor-mounting",
+      "staticSymbol": "Codex/猛虎G05/Parts/side-armor-mounting",
+      "sourceSha256": "8662522a12b6397a672207983f3ff45ecf16ac173a79ccbc7e8b954e4c5bea0c"
+    },
+    {
+      "sourceSymbol": "Tigr/Parts/side-shoulder--1",
+      "staticSymbol": "Codex/猛虎G05/Parts/side-shoulder--1",
+      "sourceSha256": "55269f3b0df93976e826896d093b231be95e5c301b0789338d31e5b572eabd95"
+    },
+    {
+      "sourceSymbol": "Tigr/Parts/service-fastener--1-3",
+      "staticSymbol": "Codex/猛虎G05/Parts/service-fastener--1-3",
+      "sourceSha256": "1f9f6538741337f7a9ba0c37da1ccf4ca9d170c62136ca9116555b5839a0ec8b"
+    },
+    {
+      "sourceSymbol": "Tigr/Parts/service-fastener--1-2",
+      "staticSymbol": "Codex/猛虎G05/Parts/service-fastener--1-2",
+      "sourceSha256": "f8771992def17f997fd05586a45fa2851e3dde23a325636d69f43d9941b30dd1"
+    },
+    {
+      "sourceSymbol": "Tigr/Parts/service-fastener--1-1",
+      "staticSymbol": "Codex/猛虎G05/Parts/service-fastener--1-1",
+      "sourceSha256": "fccbf841800577e24a6a878245372f4a0da003527d76eaab34ca596d7a67e52c"
+    },
+    {
+      "sourceSymbol": "Tigr/Parts/service-fastener--1-0",
+      "staticSymbol": "Codex/猛虎G05/Parts/service-fastener--1-0",
+      "sourceSha256": "86fb6243be8dafb142400fba436a2cbe45cae6cab7b1f8e708d8cbf55a3cc179"
+    },
+    {
+      "sourceSymbol": "Tigr/Parts/cargo-latch-handle--1",
+      "staticSymbol": "Codex/猛虎G05/Parts/cargo-latch-handle--1",
+      "sourceSha256": "8302b63e6c2de048cc703a7ed57466f81437ac80e1651ff27db1ec32f808450d"
+    },
+    {
+      "sourceSymbol": "Tigr/Parts/cargo-latch--1",
+      "staticSymbol": "Codex/猛虎G05/Parts/cargo-latch--1",
+      "sourceSha256": "06fe2a642c4865be86083ea498e75fa0e71f3c137c7d3c4b3ace333a0730f61b"
+    },
+    {
+      "sourceSymbol": "Tigr/Parts/cargo-hinge--1-1",
+      "staticSymbol": "Codex/猛虎G05/Parts/cargo-hinge--1-1",
+      "sourceSha256": "025ffc4132eaef136069d1d01e72bdf8b1fad6bd49ebc82f4016087cd87bc30c"
+    },
+    {
+      "sourceSymbol": "Tigr/Parts/cargo-hinge--1-0",
+      "staticSymbol": "Codex/猛虎G05/Parts/cargo-hinge--1-0",
+      "sourceSha256": "bb3f46d0f3fe0dce912ea48888bd562d56036e8ef72e794231a04e7a56efb0bb"
+    },
+    {
+      "sourceSymbol": "Tigr/Parts/e-fender-front--1-wear",
+      "staticSymbol": "Codex/猛虎G05/Parts/e-fender-front--1-wear",
+      "sourceSha256": "f82102abd1c47df82a2585b8e128d8b0bbbfb62a0727f329c97ca77977852bc3"
+    },
+    {
+      "sourceSymbol": "Tigr/Parts/fender-front--1",
+      "staticSymbol": "Codex/猛虎G05/Parts/fender-front--1",
+      "sourceSha256": "ffa4caf3c4c338f681c79ea3653676d5e48b5be79f9428b06839634eaa4cc800"
+    },
+    {
+      "sourceSymbol": "Tigr/Parts/e-fender-rear--1-wear",
+      "staticSymbol": "Codex/猛虎G05/Parts/e-fender-rear--1-wear",
+      "sourceSha256": "26ab53c82f4784c17ddfd60f0d738f4dafbcbe85c6b105589f2c4b7e3984d2c9"
+    },
+    {
+      "sourceSymbol": "Tigr/Parts/fender-rear--1",
+      "staticSymbol": "Codex/猛虎G05/Parts/fender-rear--1",
+      "sourceSha256": "009e4123e6cfe70d04faf499ff46735a8c4c27aeaddf6a44d148c23d1214083e"
+    },
+    {
+      "sourceSymbol": "Tigr/Parts/e-hull-finish",
+      "staticSymbol": "Codex/猛虎G05/Parts/e-hull-finish",
+      "sourceSha256": "b0b68dbb51e735a2a9720dd87575f1e52e9f07d05267febaf9da61fa53c46399"
+    },
+    {
+      "sourceSymbol": "Tigr/Parts/e-rear-deck-service",
+      "staticSymbol": "Codex/猛虎G05/Parts/e-rear-deck-service",
+      "sourceSha256": "744389c2ef3cb5c50a2e1acab6568f8dbba54342962d7514018a0f77ebb3ae90"
+    },
+    {
+      "sourceSymbol": "Tigr/Parts/e-front-deck-service",
+      "staticSymbol": "Codex/猛虎G05/Parts/e-front-deck-service",
+      "sourceSha256": "d3226fc2b1ee0ee35bcb3004ee9f54aacc5bd78397a2f12ba9809e38861804f1"
+    },
+    {
+      "sourceSymbol": "Tigr/Parts/e-wheelwell-upper-return",
+      "staticSymbol": "Codex/猛虎G05/Parts/e-wheelwell-upper-return",
+      "sourceSha256": "e83f1644092cfd8054446720d7c1cdb037ac1e3b699996a026080c4683b7e69a"
+    },
+    {
+      "sourceSymbol": "Tigr/Parts/wheelwell-fixed-shadows",
+      "staticSymbol": "Codex/猛虎G05/Parts/wheelwell-fixed-shadows",
+      "sourceSha256": "999e8197f1aaa20d820c182700f8a1120592ea550cdfb75627788f9a9b684c20"
+    },
+    {
+      "sourceSymbol": "Tigr/Parts/hull-shell",
+      "staticSymbol": "Codex/猛虎G05/Parts/hull-shell",
+      "sourceSha256": "64ccaaaf1565c695b15fa81fb2845f8bfb1b6a9fa3c2be60b8e8bbe678ecfb01"
+    },
+    {
+      "sourceSymbol": "Tigr/Parts/wheel-support-cap-plane-3",
+      "staticSymbol": "Codex/猛虎G05/Parts/wheel-support-cap-plane-3",
+      "sourceSha256": "4b0fdda228ef67340d83eb1db9e2cb326eec18ac53c863b6bfe9ff3a60e9e9f4"
+    },
+    {
+      "sourceSymbol": "Tigr/Parts/wheel-support-end-3",
+      "staticSymbol": "Codex/猛虎G05/Parts/wheel-support-end-3",
+      "sourceSha256": "f8ac09a0d5ac13974522f3037d4a28e6b99a078f7667e84c5282e80fda098a5b"
+    },
+    {
+      "sourceSymbol": "Tigr/Parts/wheel-support--1-3",
+      "staticSymbol": "Codex/猛虎G05/Parts/wheel-support--1-3",
+      "sourceSha256": "1440670e01344d8ba6ddba10e746c59995f39568fee5b4b4e438303110aa6d6f"
+    },
+    {
+      "sourceSymbol": "Tigr/Parts/axle-3",
+      "staticSymbol": "Codex/猛虎G05/Parts/axle-3",
+      "sourceSha256": "f43c725dc5d750413b0262ad435ec712fbe097a396617ba2c395b2db18cfa945"
+    },
+    {
+      "sourceSymbol": "Tigr/Parts/wheel-support-cap-plane-2",
+      "staticSymbol": "Codex/猛虎G05/Parts/wheel-support-cap-plane-2",
+      "sourceSha256": "b8274c8103695b4decb21f3fe0f421c377972d5324f35744746856b5fbeea460"
+    },
+    {
+      "sourceSymbol": "Tigr/Parts/wheel-support-end-2",
+      "staticSymbol": "Codex/猛虎G05/Parts/wheel-support-end-2",
+      "sourceSha256": "c0c305fdea8ed03f6249bd61c9c1f947539b1cf2db3aafe7795b4f076d9e2a9e"
+    },
+    {
+      "sourceSymbol": "Tigr/Parts/wheel-support--1-2",
+      "staticSymbol": "Codex/猛虎G05/Parts/wheel-support--1-2",
+      "sourceSha256": "d6753cf8e0adcd64eecd6380d7e07c090b28c6378b12e4cd98eea4008f0aaac3"
+    },
+    {
+      "sourceSymbol": "Tigr/Parts/axle-2",
+      "staticSymbol": "Codex/猛虎G05/Parts/axle-2",
+      "sourceSha256": "cd2a70dbba7bc5b6776cad32ee395aba4dced681d77528233952de0548244514"
+    },
+    {
+      "sourceSymbol": "Tigr/Parts/wheel-support-cap-plane-1",
+      "staticSymbol": "Codex/猛虎G05/Parts/wheel-support-cap-plane-1",
+      "sourceSha256": "daf838dd5f46d0ea2d1072865606ec509ba35c680cc3a7ef30514122cb828d2b"
+    },
+    {
+      "sourceSymbol": "Tigr/Parts/wheel-support-end-1",
+      "staticSymbol": "Codex/猛虎G05/Parts/wheel-support-end-1",
+      "sourceSha256": "473a7c7936d77eb1b54e6b46fe4b8e3a6c4a99144a32fc8285411d11e598628a"
+    },
+    {
+      "sourceSymbol": "Tigr/Parts/wheel-support--1-1",
+      "staticSymbol": "Codex/猛虎G05/Parts/wheel-support--1-1",
+      "sourceSha256": "6f8e88303e9917cb4e3e311288ec3938b1c5538927b89bb13d310e8ff04a87d7"
+    },
+    {
+      "sourceSymbol": "Tigr/Parts/axle-1",
+      "staticSymbol": "Codex/猛虎G05/Parts/axle-1",
+      "sourceSha256": "2e55fd5b1da67c147db1a9ec4ff24854e70299adf0334236bafb8642ad8e3741"
+    },
+    {
+      "sourceSymbol": "Tigr/Parts/wheel-support-cap-plane-0",
+      "staticSymbol": "Codex/猛虎G05/Parts/wheel-support-cap-plane-0",
+      "sourceSha256": "f9b36bdce55a2743434d737b0584de11788cd11a6d618c8d23d2ff5c86112863"
+    },
+    {
+      "sourceSymbol": "Tigr/Parts/wheel-support-end-0",
+      "staticSymbol": "Codex/猛虎G05/Parts/wheel-support-end-0",
+      "sourceSha256": "de3a230261341deb9e101d5f9bae481dc3f3dc38b16835551fed43b5c67395a2"
+    },
+    {
+      "sourceSymbol": "Tigr/Parts/wheel-support--1-0",
+      "staticSymbol": "Codex/猛虎G05/Parts/wheel-support--1-0",
+      "sourceSha256": "a063f3140db04a844ee4a2dc8c07885bab7c230170843aecec227effcda5e029"
+    },
+    {
+      "sourceSymbol": "Tigr/Parts/axle-0",
+      "staticSymbol": "Codex/猛虎G05/Parts/axle-0",
+      "sourceSha256": "0d9754c987e1e2c756fe1f678d35d05fbf63cd8b865adfb1a63965632104185c"
+    },
+    {
+      "sourceSymbol": "Tigr/Parts/lamp-plane-1",
+      "staticSymbol": "Codex/猛虎G05/Parts/lamp-plane-1",
+      "sourceSha256": "475b29a4eca533e96f47c10211d6c96631a7d64c0053605b3a8adb13fbfc34a7"
+    },
+    {
+      "sourceSymbol": "Tigr/Parts/lamp-lens-1",
+      "staticSymbol": "Codex/猛虎G05/Parts/lamp-lens-1",
+      "sourceSha256": "aa6f5c365f442d2ee112626130dbbb7ab622bdc3dc464b3ada0c33699f8ac3c8"
+    },
+    {
+      "sourceSymbol": "Tigr/Parts/front-light-face-1",
+      "staticSymbol": "Codex/猛虎G05/Parts/front-light-face-1",
+      "sourceSha256": "baf75069de1414a6c39eaf7e43a93d0add20557379fab5def743e4e73fbaa61b"
+    },
+    {
+      "sourceSymbol": "Tigr/Parts/front-light-case-1",
+      "staticSymbol": "Codex/猛虎G05/Parts/front-light-case-1",
+      "sourceSha256": "0fe846be54cb0f11c2d0fe3eb5943e70b9d0b99229dd02bbbf92013ebeb22c19"
+    },
+    {
+      "sourceSymbol": "Tigr/Parts/lamp-plane--1",
+      "staticSymbol": "Codex/猛虎G05/Parts/lamp-plane--1",
+      "sourceSha256": "37954ba1449e294de096249d8d3186319e741fa5fcf3057c46db002a56614e62"
+    },
+    {
+      "sourceSymbol": "Tigr/Parts/lamp-lens--1",
+      "staticSymbol": "Codex/猛虎G05/Parts/lamp-lens--1",
+      "sourceSha256": "02176e3f608f4db24f84e4a9d2d16066408ec3ce613b28c935ebf117c1af1c8a"
+    },
+    {
+      "sourceSymbol": "Tigr/Parts/front-light-face--1",
+      "staticSymbol": "Codex/猛虎G05/Parts/front-light-face--1",
+      "sourceSha256": "398fa582c6604f7d7f15a733a0112342dd7f874689045b4527542efabdfb9240"
+    },
+    {
+      "sourceSymbol": "Tigr/Parts/front-light-case--1",
+      "staticSymbol": "Codex/猛虎G05/Parts/front-light-case--1",
+      "sourceSha256": "25fb8dd78c0e711df96141b4d53a44b5b81de358381eccb6f146f7104b1d5d8b"
+    },
+    {
+      "sourceSymbol": "Tigr/Parts/rear-access-hinge--5.1",
+      "staticSymbol": "Codex/猛虎G05/Parts/rear-access-hinge--5.1",
+      "sourceSha256": "bfa495b14716588a8dddc31af3c158e49c5bd9e71eb51463d7babaac6a1de199"
+    },
+    {
+      "sourceSymbol": "Tigr/Parts/rear-access-panel",
+      "staticSymbol": "Codex/猛虎G05/Parts/rear-access-panel",
+      "sourceSha256": "d5d898785b564f60ea3754cd9de8704393fd51d2f2c7e2960c0cf9f11adead0d"
+    },
+    {
+      "sourceSymbol": "Tigr/Parts/rear-access-frame",
+      "staticSymbol": "Codex/猛虎G05/Parts/rear-access-frame",
+      "sourceSha256": "411584024663c13cad68b75269157e01ed883ff3cb38c57d6157807ef4642ca3"
+    },
+    {
+      "sourceSymbol": "Tigr/Parts/roof-hinge-6.4",
+      "staticSymbol": "Codex/猛虎G05/Parts/roof-hinge-6.4",
+      "sourceSha256": "ffac5743148041487e404b2cede13746ee9a614815b73af2a05d4294972ff451"
+    },
+    {
+      "sourceSymbol": "Tigr/Parts/roof-hinge--6.4",
+      "staticSymbol": "Codex/猛虎G05/Parts/roof-hinge--6.4",
+      "sourceSha256": "a949dfb8cac6a66d19f911dac07309eaac503b6eb8442531a0d19de402699efd"
+    },
+    {
+      "sourceSymbol": "Tigr/Parts/rear-roof-hatch-finish-top",
+      "staticSymbol": "Codex/猛虎G05/Parts/rear-roof-hatch-finish-top",
+      "sourceSha256": "bc865c9e13d0185f435c2d46e779f6e9f9b913f3448ac52f26a7480da2801c95"
+    },
+    {
+      "sourceSymbol": "Tigr/Parts/e-rear-roof-hatch-latches",
+      "staticSymbol": "Codex/猛虎G05/Parts/e-rear-roof-hatch-latches",
+      "sourceSha256": "09f5a6b72a52afecf26590f03c992d82dbf91e557faffa60e1ef67bf3b3d9040"
+    },
+    {
+      "sourceSymbol": "Tigr/Parts/rear-roof-hatch-top-detail",
+      "staticSymbol": "Codex/猛虎G05/Parts/rear-roof-hatch-top-detail",
+      "sourceSha256": "83904d6be635771fbfa6d122e4bb6a4ece553e2acf4e2976aa252f11361c26d8"
+    },
+    {
+      "sourceSymbol": "Tigr/Parts/rear-roof-hatch-hardware",
+      "staticSymbol": "Codex/猛虎G05/Parts/rear-roof-hatch-hardware",
+      "sourceSha256": "58cc55a3f04259d28246d274df5b618a88eb4b994e26bb9887a0cd530731570c"
+    },
+    {
+      "sourceSymbol": "Tigr/Parts/rear-roof-hatch-paired-lid-plane",
+      "staticSymbol": "Codex/猛虎G05/Parts/rear-roof-hatch-paired-lid-plane",
+      "sourceSha256": "7f4f760f8a0734a74acb795833df9141e66389dc905d152fb5540e39b834fd54"
+    },
+    {
+      "sourceSymbol": "Tigr/Parts/e-rear-roof-hatch-shared-lid-finish",
+      "staticSymbol": "Codex/猛虎G05/Parts/e-rear-roof-hatch-shared-lid-finish",
+      "sourceSha256": "d1d3ae5cd375c856e58727b7d09df1ab51483fdea1c1258ddad27c3196dea9a9"
+    },
+    {
+      "sourceSymbol": "Tigr/Parts/rear-roof-hatch",
+      "staticSymbol": "Codex/猛虎G05/Parts/rear-roof-hatch",
+      "sourceSha256": "f5827150270a58cc973f13053af02cce027163419dbbda20cf8234061a8432e3"
+    },
+    {
+      "sourceSymbol": "Tigr/Parts/rear-roof-hatch-frame",
+      "staticSymbol": "Codex/猛虎G05/Parts/rear-roof-hatch-frame",
+      "sourceSha256": "0e1ab6eb946b5c6b921eed5b4044d39194fd814afa42d89026745b42a5d3e39f"
+    },
+    {
+      "sourceSymbol": "Tigr/Parts/driver-front-slit",
+      "staticSymbol": "Codex/猛虎G05/Parts/driver-front-slit",
+      "sourceSha256": "6b274054dc27807695daba461c898099a060b5785a77f318faeb2eba958c9098"
+    },
+    {
+      "sourceSymbol": "Tigr/Parts/driver-front-frame",
+      "staticSymbol": "Codex/猛虎G05/Parts/driver-front-frame",
+      "sourceSha256": "aa1ead8646e30f69e04eb2d8fec49276c59650907f68dc9ef96d9a48d8ecd004"
+    },
+    {
+      "sourceSymbol": "Tigr/Parts/driver-glass-detail--1",
+      "staticSymbol": "Codex/猛虎G05/Parts/driver-glass-detail--1",
+      "sourceSha256": "a0d1835d45a2f25a3962c59ec84634f7685dcf7230b8fbd4114a694aefd42f4e"
+    },
+    {
+      "sourceSymbol": "Tigr/Parts/driver-side-slit--1",
+      "staticSymbol": "Codex/猛虎G05/Parts/driver-side-slit--1",
+      "sourceSha256": "6f00d9e1e0529fd9091c8a2c5677f7fcb4894ea43af3d976638286591ebbda83"
+    },
+    {
+      "sourceSymbol": "Tigr/Parts/driver-side-frame--1",
+      "staticSymbol": "Codex/猛虎G05/Parts/driver-side-frame--1",
+      "sourceSha256": "155482127f7c4a944e805e6fd67a8d3f0602c7af9a6e067da261a53b97df09c4"
+    },
+    {
+      "sourceSymbol": "Tigr/Parts/driver-hatch-finish-top",
+      "staticSymbol": "Codex/猛虎G05/Parts/driver-hatch-finish-top",
+      "sourceSha256": "a80a28d5bba9a818b8df8d507e14d71caa7ecc876259345ef524355a67299cac"
+    },
+    {
+      "sourceSymbol": "Tigr/Parts/e-driver-hatch-latches",
+      "staticSymbol": "Codex/猛虎G05/Parts/e-driver-hatch-latches",
+      "sourceSha256": "32b54dda24f0d4ebaa91b356ca001abfca0a8cb1db7fb6dbde9908e30f844432"
+    },
+    {
+      "sourceSymbol": "Tigr/Parts/driver-hatch-top-detail",
+      "staticSymbol": "Codex/猛虎G05/Parts/driver-hatch-top-detail",
+      "sourceSha256": "6ec36a4a72a121fcda244a4c54249485734d2d11380a787ac2dc810be6bb22f5"
+    },
+    {
+      "sourceSymbol": "Tigr/Parts/driver-hatch-hardware",
+      "staticSymbol": "Codex/猛虎G05/Parts/driver-hatch-hardware",
+      "sourceSha256": "7e2026b482ffe96d9effa7dff39fb83ea5ef3e4e07a12ac43e2c26ab106ef79d"
+    },
+    {
+      "sourceSymbol": "Tigr/Parts/driver-hatch-paired-lid-plane",
+      "staticSymbol": "Codex/猛虎G05/Parts/driver-hatch-paired-lid-plane",
+      "sourceSha256": "a7e15b45a7b5f138e81908f66253beca8da285d6620367aaa50b1ec44a94d549"
+    },
+    {
+      "sourceSymbol": "Tigr/Parts/e-driver-hatch-shared-lid-finish",
+      "staticSymbol": "Codex/猛虎G05/Parts/e-driver-hatch-shared-lid-finish",
+      "sourceSha256": "50f6e346f2c0751524e05d065de25146d1f85f9f3ed518827215c9e2ac85580c"
+    },
+    {
+      "sourceSymbol": "Tigr/Parts/driver-hatch",
+      "staticSymbol": "Codex/猛虎G05/Parts/driver-hatch",
+      "sourceSha256": "cfe4cf1905408ae24a6b420067adef998a61dd54c41a2185a702346714fa6567"
+    },
+    {
+      "sourceSymbol": "Tigr/Parts/driver-lid-hinges",
+      "staticSymbol": "Codex/猛虎G05/Parts/driver-lid-hinges",
+      "sourceSha256": "96cc4b901b5bc14a32fcd731bbb5a517ba9ef771608d646b3762969840418ea8"
+    },
+    {
+      "sourceSymbol": "Tigr/Parts/driver-hatch-frame",
+      "staticSymbol": "Codex/猛虎G05/Parts/driver-hatch-frame",
+      "sourceSha256": "3349f122429bd5a360101cb3771607e670fcfad925e829d03e760512239953eb"
+    },
+    {
+      "sourceSymbol": "Tigr/Parts/driver-cabin",
+      "staticSymbol": "Codex/猛虎G05/Parts/driver-cabin",
+      "sourceSha256": "3360ce3ff271a03d4cac496cb7de0ae8f1c097d058b4719204506f8c301a7238"
+    },
+    {
+      "sourceSymbol": "Tigr/Parts/rear-corner-cap-1",
+      "staticSymbol": "Codex/猛虎G05/Parts/rear-corner-cap-1",
+      "sourceSha256": "8e86b1e017707c8a2a9b04235fab560bb8f7419884a55dfa1468784e1d89ed64"
+    },
+    {
+      "sourceSymbol": "Tigr/Parts/rear-corner-1",
+      "staticSymbol": "Codex/猛虎G05/Parts/rear-corner-1",
+      "sourceSha256": "ae8824fc3b616fc3a813212c6d4de46741151507633b0d439ff7a79742f02638"
+    },
+    {
+      "sourceSymbol": "Tigr/Parts/rear-corner-cap--1",
+      "staticSymbol": "Codex/猛虎G05/Parts/rear-corner-cap--1",
+      "sourceSha256": "8f901ff6eb9eb08b1af524f2f81cbc96358179bf241a7297b25ffce3f3c34d7c"
+    },
+    {
+      "sourceSymbol": "Tigr/Parts/rear-corner--1",
+      "staticSymbol": "Codex/猛虎G05/Parts/rear-corner--1",
+      "sourceSha256": "9603c98f66ad62ab247b8cea1d14f2059c9176be5e126c173f8b1b79b5a233a4"
+    },
+    {
+      "sourceSymbol": "Tigr/Parts/e-vent-frame-finish",
+      "staticSymbol": "Codex/猛虎G05/Parts/e-vent-frame-finish",
+      "sourceSha256": "8af566354de291a177d643433df29ac8682b06a9c7560d2c27d88f355d1fcd58"
+    },
+    {
+      "sourceSymbol": "Tigr/Parts/service-vent-insert",
+      "staticSymbol": "Codex/猛虎G05/Parts/service-vent-insert",
+      "sourceSha256": "0422401390681d8fd2cd7d6332427a7edce5368c7abccfe0c885672853a21d73"
+    },
+    {
+      "sourceSymbol": "Tigr/Parts/side-service--1",
+      "staticSymbol": "Codex/猛虎G05/Parts/side-service--1",
+      "sourceSha256": "d7f8e87edc642b6eac206148cf9b1bcb0da85857e3aba97371b9037ccc2a5fca"
+    },
+    {
+      "sourceSymbol": "Tigr/Parts/g03-source-emblem-contours",
+      "staticSymbol": "Codex/猛虎G05/Parts/g03-source-emblem-contours",
+      "sourceSha256": "6dbaec0f963f72dd4f87f9653e64649b7d3060da3eea878fb4c1a5811d5dc8d9"
+    },
+    {
+      "sourceSymbol": "Tigr/Parts/g03-warlord-roundel",
+      "staticSymbol": "Codex/猛虎G05/Parts/g03-warlord-roundel",
+      "sourceSha256": "779eaac75e4cc0bfa68517a67ad5501b1b5f8fe298dc24cfb1de28bb67b47c21"
+    },
+    {
+      "sourceSymbol": "Tigr/Parts/e-side-cargo--1-finish",
+      "staticSymbol": "Codex/猛虎G05/Parts/e-side-cargo--1-finish",
+      "sourceSha256": "2e192b19cf82e3135163647eb807536a4d631b5f459802310f46596a2aee5ca9"
+    },
+    {
+      "sourceSymbol": "Tigr/Parts/cargo-lid-pressing",
+      "staticSymbol": "Codex/猛虎G05/Parts/cargo-lid-pressing",
+      "sourceSha256": "ebb3ed4b295b798daf4040f8c96b2163f01bcb155ce0450d45515913f79bd2ac"
+    },
+    {
+      "sourceSymbol": "Tigr/Parts/side-cargo--1",
+      "staticSymbol": "Codex/猛虎G05/Parts/side-cargo--1",
+      "sourceSha256": "e90cf5ea5ccf856b07debcde54cd1fb53976ca8d5ab62610c8c228615e34c2d8"
+    },
+    {
+      "sourceSymbol": "Tigr/Parts/lower-frame",
+      "staticSymbol": "Codex/猛虎G05/Parts/lower-frame",
+      "sourceSha256": "33095162ce10f0c394fecdde97932be62ad9fe00a1b1d0bac216b7e21b71abde"
+    },
+    {
+      "sourceSymbol": "Tigr/Chassis/Body",
+      "staticSymbol": "Codex/猛虎G05/Chassis/Body",
+      "sourceSha256": "c1e9ba2fb7f4fced65dcfd8fdf3f5d2f94f888f6b273a06eaff89a0bbcd21060"
+    },
+    {
+      "sourceSymbol": "Tigr/Wheels/FarSet",
+      "staticSymbol": "Codex/猛虎G05/Wheels/FarSet",
+      "sourceSha256": "6530d771ad99562c11df896f751783981c07f9b91e1ec00db13ddf5abed3c46b"
+    },
+    {
+      "sourceSymbol": "Tigr/Chassis/Assembly",
+      "staticSymbol": "Codex/猛虎G05/Chassis/Assembly",
+      "sourceSha256": "f7e608a74d3e94598aeb213051bcb4cf25201b77b4c7aebf613ce0c7938d9976"
+    },
+    {
+      "sourceSymbol": "Tigr/Vehicle",
+      "staticSymbol": "Codex/猛虎G05/Vehicle",
+      "sourceSha256": "e10ecf8140c47de5896306ea06fcef45046b3d735bf370e7b855aec682940906"
+    }
+  ]
+}
