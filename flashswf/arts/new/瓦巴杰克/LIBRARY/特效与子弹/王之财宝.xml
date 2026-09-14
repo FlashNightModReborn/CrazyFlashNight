@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="特效与子弹/王之财宝" itemID="6aa7efcc-00000d4c" linkageExportForAS="true" linkageIdentifier="王之财宝" lastModified="1789404026" lastUniqueIdentifier="4">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="特效与子弹/王之财宝" itemID="6aa7efcc-00000d4c" linkageExportForAS="true" linkageIdentifier="王之财宝" lastModified="1789406647" lastUniqueIdentifier="4">
   <timeline>
-    <DOMTimeline name="王之财宝" currentFrame="26">
+    <DOMTimeline name="王之财宝">
       <layers>
         <DOMLayer name="Labels Layer" color="#38E09F">
           <frames>
@@ -12,45 +12,29 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Script Layer" color="#B0DFF4">
+        <DOMLayer name="Script Layer" color="#B0DFF4" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <Actionscript>
-                <script><![CDATA[
-// ===== 王之财宝（子弹元件）=====
-// ① 从武器池抽一把 ② 按它重算自身子弹威力 ③ 把武器/类型交给子元件「王财宝具」
-// 本帧脚本能直接读到容器挂在子弹属性上的字段（initObject）。
+                <script><![CDATA[// ===== 王之财宝（子弹元件）=====
+// 武器由技能容器抽好签：「装扮」「装备类型」「子弹威力」等已在 initObject 里拷进来，
+// 这里只做 ① 整体大小浮动 ② 缺值兜底。抽签与威力计算都在容器里。
+
+// ---------- 整体大小 0.9 ~ 1.1 倍 ----------
+var 体量 = 90 + random(21);        // 90 ~ 110 (%)
+this._xscale = 体量;
 if (_root.gameworld[发射者名] != undefined && _root.gameworld[发射者名].方向 == "左")
 {
-	//this._xscale = -100;
-	this._yscale = -100;
-}
-
-// ---------- 抽武器 ----------
-var 武器;
-if (武器池 != undefined && 武器池.length > 0)
-{
-	武器 = 武器池[random(武器池.length)];
+	this._yscale = -体量;
 }
 else
 {
-	武器 = {装扮: "刀-中国战刀", 类型: "刀", 面板: 100};   // 池子没建好时的兜底
+	this._yscale = 体量;
 }
 
-// ---------- 取对应加成，重算威力 ----------
-var 对应加成;
-if (武器.类型 == "拳套")      对应加成 = 空手加成   ? 空手加成 * 2   : 0;
-else if (武器.类型 == "刀")   对应加成 = 冷兵器加成 ? 冷兵器加成 : 0;
-else                          对应加成 = 枪械加成   ? 枪械加成   : 0;
-
-var 本技能等级 = 技能等级 > 0 ? 技能等级 : 1;
-var 本伤害加成 = 伤害加成 ? 伤害加成 : 0;
-
-this.子弹威力 = (武器.面板 * 2 + 对应加成) * ( 1 + 本技能等级 * 0.5) + 本伤害加成;
-
-// ---------- 交给子元件（王财宝具 读 _parent 的这几个属性）----------
-this.装备类型 = 武器.类型;
-this.装扮     = 武器.装扮;
+// ---------- 兜底（容器没给值时别空手）----------
+if (this.装扮 == undefined || this.装扮 == "") this.装扮 = "刀-中国战刀";
+if (this.装备类型 == undefined || this.装备类型 == "") this.装备类型 = "刀";
 ]]></script>
               </Actionscript>
               <elements/>
@@ -83,7 +67,7 @@ this.removeMovieClip();]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 3" color="#B3AF88" outline="true" current="true" isSelected="true" useOutlineView="true">
+        <DOMLayer name="Layer 3" color="#B3AF88" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="24" keyMode="9728">
               <elements/>
@@ -105,7 +89,7 @@ this.removeMovieClip();]]></script>
             </DOMFrame>
             <DOMFrame index="26" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="各种图素材等/Symbol 13" name="area" selected="true" centerPoint3DX="-18.4" centerPoint3DY="-60.8">
+                <DOMSymbolInstance libraryItemName="各种图素材等/Symbol 13" name="area" centerPoint3DX="-18.4" centerPoint3DY="-60.8">
                   <matrix>
                     <Matrix a="-6.6298828125" b="-6.14701843261719" c="-2.21788024902344" d="2.39210510253906" tx="51.45" ty="-25.15"/>
                   </matrix>
@@ -353,7 +337,7 @@ this.removeMovieClip();]]></script>
           <frames>
             <DOMFrame index="0" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
-                <DOMSymbolInstance libraryItemName="特效与子弹/特效素材/王之财宝光圈" symbolType="graphic" firstFrame="32" loop="loop">
+                <DOMSymbolInstance libraryItemName="特效与子弹/特效素材/王之财宝光圈" symbolType="graphic" loop="loop">
                   <matrix>
                     <Matrix a="0.239349365234375" b="0.1494140625" c="-0.1494140625" d="0.239349365234375" tx="-373.7" ty="-317.8"/>
                   </matrix>
@@ -368,7 +352,7 @@ this.removeMovieClip();]]></script>
             </DOMFrame>
             <DOMFrame index="4" duration="22" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="特效与子弹/特效素材/王之财宝光圈" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="特效与子弹/特效素材/王之财宝光圈" symbolType="graphic" firstFrame="4" loop="loop">
                   <matrix>
                     <Matrix a="0.239349365234375" b="0.1494140625" c="-0.1494140625" d="0.239349365234375" tx="-373.7" ty="-317.8"/>
                   </matrix>
@@ -383,7 +367,7 @@ this.removeMovieClip();]]></script>
             </DOMFrame>
             <DOMFrame index="26" duration="7" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
-                <DOMSymbolInstance libraryItemName="特效与子弹/特效素材/王之财宝光圈" symbolType="graphic" firstFrame="27" loop="loop">
+                <DOMSymbolInstance libraryItemName="特效与子弹/特效素材/王之财宝光圈" symbolType="graphic" firstFrame="26" loop="loop">
                   <matrix>
                     <Matrix a="0.239349365234375" b="0.1494140625" c="-0.1494140625" d="0.239349365234375" tx="-373.7" ty="-317.8"/>
                   </matrix>
@@ -398,7 +382,7 @@ this.removeMovieClip();]]></script>
             </DOMFrame>
             <DOMFrame index="33" duration="10" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="特效与子弹/特效素材/王之财宝光圈" symbolType="graphic" firstFrame="32" loop="loop">
+                <DOMSymbolInstance libraryItemName="特效与子弹/特效素材/王之财宝光圈" symbolType="graphic" firstFrame="31" loop="loop">
                   <matrix>
                     <Matrix a="0.239349365234375" b="0.1494140625" c="-0.1494140625" d="0.239349365234375" tx="-373.7" ty="-317.8"/>
                   </matrix>
@@ -417,7 +401,7 @@ this.removeMovieClip();]]></script>
           <frames>
             <DOMFrame index="0" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
-                <DOMSymbolInstance libraryItemName="特效与子弹/特效素材/王之财宝光圈底色" symbolType="graphic" firstFrame="32" loop="loop">
+                <DOMSymbolInstance libraryItemName="特效与子弹/特效素材/王之财宝光圈底色" symbolType="graphic" loop="loop">
                   <matrix>
                     <Matrix a="0.239349365234375" b="0.1494140625" c="-0.1494140625" d="0.239349365234375" tx="-373.7" ty="-317.8"/>
                   </matrix>
@@ -432,7 +416,7 @@ this.removeMovieClip();]]></script>
             </DOMFrame>
             <DOMFrame index="4" duration="22" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="特效与子弹/特效素材/王之财宝光圈底色" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="特效与子弹/特效素材/王之财宝光圈底色" symbolType="graphic" firstFrame="4" loop="loop">
                   <matrix>
                     <Matrix a="0.239349365234375" b="0.1494140625" c="-0.1494140625" d="0.239349365234375" tx="-373.7" ty="-317.8"/>
                   </matrix>
@@ -447,7 +431,7 @@ this.removeMovieClip();]]></script>
             </DOMFrame>
             <DOMFrame index="26" duration="7" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
-                <DOMSymbolInstance libraryItemName="特效与子弹/特效素材/王之财宝光圈底色" symbolType="graphic" firstFrame="27" loop="loop">
+                <DOMSymbolInstance libraryItemName="特效与子弹/特效素材/王之财宝光圈底色" symbolType="graphic" firstFrame="26" loop="loop">
                   <matrix>
                     <Matrix a="0.239349365234375" b="0.1494140625" c="-0.1494140625" d="0.239349365234375" tx="-373.7" ty="-317.8"/>
                   </matrix>
@@ -462,7 +446,7 @@ this.removeMovieClip();]]></script>
             </DOMFrame>
             <DOMFrame index="33" duration="10" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="特效与子弹/特效素材/王之财宝光圈底色" symbolType="graphic" firstFrame="32" loop="loop">
+                <DOMSymbolInstance libraryItemName="特效与子弹/特效素材/王之财宝光圈底色" symbolType="graphic" firstFrame="31" loop="loop">
                   <matrix>
                     <Matrix a="0.239349365234375" b="0.1494140625" c="-0.1494140625" d="0.239349365234375" tx="-373.7" ty="-317.8"/>
                   </matrix>

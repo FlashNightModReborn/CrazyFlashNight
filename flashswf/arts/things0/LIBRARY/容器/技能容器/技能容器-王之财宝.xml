@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/技能容器/技能容器-王之财宝" itemID="6aa808e4-00001311" linkageExportForAS="true" linkageIdentifier="技能容器-王之财宝" lastModified="1789403949">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/技能容器/技能容器-王之财宝" itemID="6aa808e4-00001311" linkageExportForAS="true" linkageIdentifier="技能容器-王之财宝" lastModified="1789407241">
   <timeline>
     <DOMTimeline name="技能容器-王之财宝">
       <layers>
@@ -33,10 +33,27 @@
 
 // A-1 建武器池：金币商店 + K点商城 + 合成 → 去重后的数组
 //     元素形如 {装扮:"刀-中国战刀", 类型:"刀", 面板:120}
+// A-1 建武器池：金币商店 + K点商城 + 合成 → 去重后的数组
+//     元素形如 {装扮, 类型, 面板, 伤害类型, 魔法伤害属性, 毒, 击溃, 斩杀}
 var 建武器池 = function()
 {
 	var 池 = [];
 	var 已见 = {};
+
+	// 数字兜底：undefined / 空串 / 非数 → 0
+	var 取数 = function(v)
+	{
+		var n = Number(v);
+		return isNaN(n) ? 0 : n;
+	};
+	// 魔法属性兜底：空串 / "null" / "undefined" → null（口径同 单位函数_fs_装备生命周期配置）
+	var 取属 = function(v)
+	{
+		if (v == undefined) return null;
+		var s = String(v);
+		if (s == "" || s == "null" || s == "undefined") return null;
+		return s;
+	};
 
 	// 只有 刀/手枪/长枪(power>0) 和 拳套(punch>0) 且带 dressup 的才进池
 	var 收录 = function(物品名)
@@ -64,7 +81,19 @@ var 建武器池 = function()
 		if (已见[装扮键] == true) return;             // 同装扮只留一个（猫妖手套/真猫妖手套共皮）
 		已见[装扮键] = true;
 
-		池.push({装扮: 装扮, 类型: 类型, 面板: 面板});
+		var 伤型 = 数据.damagetype;
+		if (伤型 == undefined || 伤型 == "") 伤型 = "物理";   // 与原逻辑同：缺省物理
+
+		池.push({
+			装扮:         装扮,
+			类型:         类型,
+			面板:         面板,
+			伤害类型:     伤型,
+			魔法伤害属性: 取属(数据.magictype),
+			毒:           取数(数据.poison),
+			击溃:         取数(数据.rout),
+			斩杀:         取数(数据.slay)
+		});
 	};
 
 	// 来源1 金币商店：_root.shops[店id] → 目录，目录项可能是字符串或 {name:...}
@@ -176,6 +205,23 @@ var 发一发 = function(发射者名, 池, 空手, 冷兵, 枪械, 伤加, 等�
 	var 施术 = _root.gameworld[发射者名];
 	if (施术 == undefined) return null;
 
+	// ---- 抽签：这一发用哪把武器 ----
+	// 抽签必须放在容器里：五类附加属性和威力都依赖它，而它们必须在
+	// _root.子弹区域shoot传递 之前挂上（之后 Obj 会被 initObject 定型，改不动）
+	var 武器;
+	if (池 != undefined && 池.length > 0) 武器 = 池[random(池.length)];
+	if (武器 == undefined)
+	{
+		武器 = {装扮: "刀-中国战刀", 类型: "刀", 面板: 100, 伤害类型: "物理",
+		        魔法伤害属性: null, 毒: 0, 击溃: 0, 斩杀: 0};
+	}
+
+	// ---- 威力：面板×2 + 类型对应加成，再乘技能等级系数 ----
+	var 对应加成;
+	if (武器.类型 == "拳套")     对应加成 = 空手 ? 空手 * 2 : 0;
+	else if (武器.类型 == "刀")  对应加成 = 冷兵 ? 冷兵 : 0;
+	else                         对应加成 = 枪械 ? 枪械 : 0;
+
 	var 子弹属性 = _root.子弹属性初始化(施术, "王之财宝", 施术);
 
 	子弹属性.子弹速度 = 0;          // 靠元件自己的时间轴演出，不推进位置
@@ -186,27 +232,28 @@ var 发一发 = function(发射者名, 池, 空手, 冷兵, 枪械, 伤加, 等�
 	子弹属性.击中地图效果 = "";
 	子弹属性.击中后子弹的效果 = "";
 	子弹属性.Z轴攻击范围 = 90;
-	子弹属性.击倒率 = 10;
-	子弹属性.伤害类型 = "物理";
+	子弹属性.击倒率 = 0.5;
+
+	// ---- 武器外观 + 五类属性（必须在 shoot传递 之前）----
+	子弹属性.装扮         = 武器.装扮;
+	子弹属性.装备类型     = 武器.类型;                  // 子元件「王财宝具」读这个
+	子弹属性.伤害类型     = 武器.伤害类型;
+	子弹属性.魔法伤害属性 = 武器.魔法伤害属性;
+	子弹属性.毒           = 武器.毒;
+	子弹属性.血量上限击溃 = 武器.击溃;                  // 引擎会与施术者取 max 后写进 Obj.击溃
+	子弹属性.斩杀         = 武器.斩杀;
+
+	子弹属性.子弹威力 = (武器.面板 * 2 + 对应加成) * (1 + 等级 * 0.5) + 伤加;
 
 	// 落点：BulletInitializer 里 _x=shootX、_y=shootY、Z轴坐标=shootZ
 	子弹属性.shootX = 落点x;
 	子弹属性.shootY = 落点y;
 	子弹属性.shootZ = 落点y;        // 必须与 shootY 一致，否则会被地图碰撞判定当场销毁
 
-	子弹属性.子弹威力 = 1;          // 占位，真值由「王之财宝」元件按抽到的武器重算
-
-	// 重算威力要用的东西，全挂上去 → 元件里 this.xxx 直接读
-	子弹属性.武器池     = 池;
-	子弹属性.空手加成   = 空手;
-	子弹属性.冷兵器加成 = 冷兵;
-	子弹属性.枪械加成   = 枪械;
-	子弹属性.伤害加成   = 伤加;
-	子弹属性.技能等级   = 等级;
-
 	_root.子弹区域shoot传递(子弹属性);
 	return 子弹属性;
 };
+
 
 
 /* ═══════════ B. 首帧初始化（只执行一次的都在这里）═══════════ */
@@ -270,6 +317,8 @@ var 发射王之财宝 = function(模式, 指定目标)
 		落点x = 点.x; 落点y = 点.y;
 	}
 
+	落点x = 落点x + (random(61) - 30);
+	落点y = 落点y + (random(41) - 20);
 	return 发一发(施术者名, 武器池, 空手加成, 冷兵器加成, 枪械加成, 伤害加成, 技能等级, 落点x, 落点y);
 };
 

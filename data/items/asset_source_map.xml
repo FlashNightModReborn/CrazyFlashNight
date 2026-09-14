@@ -5,7 +5,7 @@
   <!-- orphan="true" = XML present in LIBRARY/ but not in DOMDocument <Include>; 
        Flash IDE library panel cannot see it but .swf compile may still expose linkage -->
 
-  <!-- 5656 unique assets -->
+  <!-- 5660 unique assets -->
   <asset id="(劣质)蓝色刀光" swf="flashswf/arts/new/雾人整合特效.swf" symbolName="尚未整理/(劣质)蓝色刀光/(劣质)蓝色刀光" />
   <asset id="0" swf="flashswf/arts/new/3XD的素材.swf" symbolName="1主武器/一部分武器/武器部分/mk23/MK23手枪" />
   <asset id="1" swf="flashswf/arts/new/3XD的素材.swf" symbolName="1主武器/一部分武器1/武器本体/PKM战术版/元件 16" />
@@ -1656,6 +1656,7 @@
   <asset id="图标-玄铁重剑" swf="flashswf/arts/new/雾人装备调整.swf" symbolName="1.冷兵器/锐器/玄铁重剑/图标-玄铁重剑" />
   <asset id="图标-玄鸦弩" swf="flashswf/arts/new/黑洞军工.swf" symbolName="长枪/追月弩/图标-玄鸦弩" />
   <asset id="图标-玉碧毒剑" swf="flashswf/arts/new/雾人装备调整.swf" symbolName="1.冷兵器/锐器/玉碧毒剑/图标-玉碧毒剑" />
+  <asset id="图标-王之财宝" swf="flashswf/arts/素材库-物品技能图标.swf" symbolName="技能相关/图标-王之财宝" />
   <asset id="图标-王水" swf="flashswf/arts/素材库-物品技能图标.swf" symbolName="材料相关/图标-王水" />
   <asset id="图标-环式棱栅折射阵列" swf="flashswf/arts/素材库-物品技能图标.swf" symbolName="材料相关/图标-环式棱栅折射阵列" />
   <asset id="图标-环格护手" swf="flashswf/arts/素材库-物品技能图标.swf" symbolName="材料相关/图标-环格护手" />
@@ -3413,6 +3414,7 @@
   <asset id="技能容器-火力支援" swf="flashswf/arts/things0.swf" symbolName="容器/技能容器/技能容器-火力支援" />
   <asset id="技能容器-火舞旋风" swf="flashswf/arts/things0.swf" symbolName="容器/技能容器/技能容器-火舞旋风" />
   <asset id="技能容器-王之宝库" swf="flashswf/arts/things0.swf" symbolName="容器/技能容器/（未实装）技能容器-王之宝库" />
+  <asset id="技能容器-王之财宝" swf="flashswf/arts/things0.swf" symbolName="容器/技能容器/技能容器-王之财宝" />
   <asset id="技能容器-瞬步斩" swf="flashswf/arts/things0.swf" symbolName="容器/技能容器/技能容器-瞬步斩" />
   <asset id="技能容器-移动射击" swf="flashswf/arts/things0.swf" symbolName="容器/技能容器/技能容器-移动射击" />
   <asset id="技能容器-空间斩" swf="flashswf/arts/things0.swf" symbolName="容器/技能容器/技能容器-空间斩" />
@@ -4197,6 +4199,8 @@
   <asset id="猩红攻势" swf="flashswf/arts/new/雾人整合特效.swf" symbolName="1.特效文件夹/04.猩红色系/猩红攻势/随机组合/猩红攻势" />
   <asset id="猩红突刺" swf="flashswf/arts/new/雾人整合特效.swf" symbolName="1.特效文件夹/04.猩红色系/猩红攻势/猩红突刺/猩红突刺" />
   <asset id="玉米炎爆手里糖" swf="flashswf/arts/new/蓝环章鱼烧.swf" symbolName="一些素材制作过程中的副产物/Symbol 634" />
+  <asset id="王之财宝" swf="flashswf/arts/new/瓦巴杰克.swf" symbolName="特效与子弹/王之财宝" />
+  <asset id="王财宝具" swf="flashswf/arts/new/瓦巴杰克.swf" symbolName="特效与子弹/特效素材/王财宝具" />
   <asset id="玩家信息界面" swf="flashswf/UI/玩家信息界面.swf" />
   <asset id="瓦巴杰克" swf="flashswf/arts/new/瓦巴杰克.swf" />
   <asset id="生存战-迷之盔甲君" swf="flashswf/arts/new/素材库-地图元件.swf" />
@@ -5642,7 +5646,7 @@
   <asset id="黑色斩2" swf="flashswf/arts/new/伊恩的素材.swf" symbolName="混沌系列素材包/disword/1.特效文件夹/01.白净色系/回旋风刃/黑色斩2" />
   <asset id="黑色斩3" swf="flashswf/arts/new/伊恩的素材.swf" symbolName="混沌系列素材包/disword/1.特效文件夹/01.白净色系/回旋风刃/黑色斩3" />
   <asset id="黑铁-剑气爆炸" swf="flashswf/arts/new/雾人整合特效.swf" symbolName="1.特效文件夹/10.力大砖飞/强烈震爆/黑铁-剑气爆炸" />
-  <asset id="黑铁-落剑" swf="flashswf/arts/new/瓦巴杰克.swf" />
+  <asset id="黑铁-落剑" swf="flashswf/arts/new/瓦巴杰克.swf" symbolName="特效与子弹/黑铁-落剑" />
   <asset id="黑铁-落剑素材" swf="flashswf/arts/原版素材库-子弹.swf" symbolName="未分类子弹或特效/黑铁-落剑素材" />
   <asset id="黑铁1段正斩" swf="flashswf/arts/new/雾人整合特效.swf" symbolName="1.特效文件夹/03.赤橙色系/黑铁攻势/黑铁1段正斩" />
   <asset id="黑铁2段斜斩" swf="flashswf/arts/new/雾人整合特效.swf" symbolName="1.特效文件夹/03.赤橙色系/黑铁攻势/黑铁2段斜斩" />
@@ -5975,18 +5979,22 @@
   </conflict>
   <conflict id="男变装-军阀侦察兵衣服上臂">
     <source swf="flashswf/arts/new/雾人装备调整.swf" symbolName="3.防具/10.军阀系列/男变装-军阀侦察兵衣服上臂" />
+    <source swf="flashswf/backgrounds/gk22_2_BG.swf" />
     <source swf="flashswf/backgrounds/gk22_3_BG.swf" />
   </conflict>
   <conflict id="男变装-军阀侦察兵衣服右下臂">
     <source swf="flashswf/arts/new/雾人装备调整.swf" symbolName="3.防具/10.军阀系列/男变装-军阀侦察兵衣服右下臂" />
+    <source swf="flashswf/backgrounds/gk22_2_BG.swf" />
     <source swf="flashswf/backgrounds/gk22_3_BG.swf" />
   </conflict>
   <conflict id="男变装-军阀侦察兵衣服左下臂">
     <source swf="flashswf/arts/new/雾人装备调整.swf" symbolName="3.防具/10.军阀系列/男变装-军阀侦察兵衣服左下臂" />
+    <source swf="flashswf/backgrounds/gk22_2_BG.swf" />
     <source swf="flashswf/backgrounds/gk22_3_BG.swf" />
   </conflict>
   <conflict id="男变装-军阀侦察兵衣服身体">
     <source swf="flashswf/arts/new/雾人装备调整.swf" symbolName="3.防具/10.军阀系列/男变装-军阀侦察兵衣服身体" />
+    <source swf="flashswf/backgrounds/gk22_2_BG.swf" />
     <source swf="flashswf/backgrounds/gk22_3_BG.swf" />
   </conflict>
   <conflict id="男变装-军阀兵头衣服右下臂">
@@ -6003,62 +6011,77 @@
   </conflict>
   <conflict id="男变装-军阀带弹药包裤子右大腿">
     <source swf="flashswf/arts/new/雾人装备调整.swf" symbolName="3.防具/10.军阀系列/男变装-军阀带弹药包裤子右大腿" />
+    <source swf="flashswf/backgrounds/gk22_2_BG.swf" />
     <source swf="flashswf/backgrounds/gk22_3_BG.swf" />
   </conflict>
   <conflict id="男变装-军阀带弹药包裤子小腿">
     <source swf="flashswf/arts/new/雾人装备调整.swf" symbolName="3.防具/10.军阀系列/男变装-军阀带弹药包裤子小腿" />
+    <source swf="flashswf/backgrounds/gk22_2_BG.swf" />
     <source swf="flashswf/backgrounds/gk22_3_BG.swf" />
   </conflict>
   <conflict id="男变装-军阀带弹药包裤子屁股">
     <source swf="flashswf/arts/new/雾人装备调整.swf" symbolName="3.防具/10.军阀系列/男变装-军阀带弹药包裤子屁股" />
+    <source swf="flashswf/backgrounds/gk22_2_BG.swf" />
     <source swf="flashswf/backgrounds/gk22_3_BG.swf" />
   </conflict>
   <conflict id="男变装-军阀带弹药包裤子左大腿">
     <source swf="flashswf/arts/new/雾人装备调整.swf" symbolName="3.防具/10.军阀系列/男变装-军阀带弹药包裤子左大腿" />
+    <source swf="flashswf/backgrounds/gk22_2_BG.swf" />
     <source swf="flashswf/backgrounds/gk22_3_BG.swf" />
   </conflict>
   <conflict id="男变装-军阀带腰包裤子右大腿">
     <source swf="flashswf/arts/new/雾人装备调整.swf" symbolName="3.防具/10.军阀系列/男变装-军阀带腰包裤子右大腿" />
+    <source swf="flashswf/backgrounds/gk22_2_BG.swf" />
     <source swf="flashswf/backgrounds/gk22_3_BG.swf" />
   </conflict>
   <conflict id="男变装-军阀带腰包裤子小腿">
     <source swf="flashswf/arts/new/雾人装备调整.swf" symbolName="3.防具/10.军阀系列/男变装-军阀带腰包裤子小腿" />
+    <source swf="flashswf/backgrounds/gk22_2_BG.swf" />
     <source swf="flashswf/backgrounds/gk22_3_BG.swf" />
   </conflict>
   <conflict id="男变装-军阀带腰包裤子屁股">
     <source swf="flashswf/arts/new/雾人装备调整.swf" symbolName="3.防具/10.军阀系列/男变装-军阀带腰包裤子屁股" />
+    <source swf="flashswf/backgrounds/gk22_2_BG.swf" />
     <source swf="flashswf/backgrounds/gk22_3_BG.swf" />
   </conflict>
   <conflict id="男变装-军阀带腰包裤子左大腿">
     <source swf="flashswf/arts/new/雾人装备调整.swf" symbolName="3.防具/10.军阀系列/男变装-军阀带腰包裤子左大腿" />
+    <source swf="flashswf/backgrounds/gk22_2_BG.swf" />
     <source swf="flashswf/backgrounds/gk22_3_BG.swf" />
   </conflict>
   <conflict id="男变装-军阀弹药兵衣服上臂">
     <source swf="flashswf/arts/new/雾人装备调整.swf" symbolName="3.防具/10.军阀系列/男变装-军阀弹药兵衣服上臂" />
+    <source swf="flashswf/backgrounds/gk22_2_BG.swf" />
     <source swf="flashswf/backgrounds/gk22_3_BG.swf" />
   </conflict>
   <conflict id="男变装-军阀弹药兵衣服右下臂">
     <source swf="flashswf/arts/new/雾人装备调整.swf" symbolName="3.防具/10.军阀系列/男变装-军阀弹药兵衣服右下臂" />
+    <source swf="flashswf/backgrounds/gk22_2_BG.swf" />
     <source swf="flashswf/backgrounds/gk22_3_BG.swf" />
   </conflict>
   <conflict id="男变装-军阀弹药兵衣服左下臂">
     <source swf="flashswf/arts/new/雾人装备调整.swf" symbolName="3.防具/10.军阀系列/男变装-军阀弹药兵衣服左下臂" />
+    <source swf="flashswf/backgrounds/gk22_2_BG.swf" />
     <source swf="flashswf/backgrounds/gk22_3_BG.swf" />
   </conflict>
   <conflict id="男变装-军阀弹药兵衣服身体">
     <source swf="flashswf/arts/new/雾人装备调整.swf" symbolName="3.防具/10.军阀系列/男变装-军阀弹药兵衣服身体" />
+    <source swf="flashswf/backgrounds/gk22_2_BG.swf" />
     <source swf="flashswf/backgrounds/gk22_3_BG.swf" />
   </conflict>
   <conflict id="男变装-军阀普通军裤右大腿">
     <source swf="flashswf/arts/new/雾人装备调整.swf" symbolName="3.防具/10.军阀系列/男变装-军阀普通军裤右大腿" />
+    <source swf="flashswf/backgrounds/gk22_2_BG.swf" />
     <source swf="flashswf/backgrounds/gk22_3_BG.swf" />
   </conflict>
   <conflict id="男变装-军阀普通军裤屁股">
     <source swf="flashswf/arts/new/雾人装备调整.swf" symbolName="3.防具/10.军阀系列/男变装-军阀普通军裤屁股" />
+    <source swf="flashswf/backgrounds/gk22_2_BG.swf" />
     <source swf="flashswf/backgrounds/gk22_3_BG.swf" />
   </conflict>
   <conflict id="男变装-军阀普通军裤左大腿">
     <source swf="flashswf/arts/new/雾人装备调整.swf" symbolName="3.防具/10.军阀系列/男变装-军阀普通军裤左大腿" />
+    <source swf="flashswf/backgrounds/gk22_2_BG.swf" />
     <source swf="flashswf/backgrounds/gk22_3_BG.swf" />
   </conflict>
   <conflict id="男变装-军阀普通带腿包军裤右大腿">
@@ -6075,36 +6098,44 @@
   </conflict>
   <conflict id="男变装-军阀棕色皮靴">
     <source swf="flashswf/arts/new/雾人装备调整.swf" symbolName="3.防具/10.军阀系列/男变装-军阀棕色皮靴" />
+    <source swf="flashswf/backgrounds/gk22_2_BG.swf" />
     <source swf="flashswf/backgrounds/gk22_3_BG.swf" />
   </conflict>
   <conflict id="男变装-军阀突击兵衣服上臂">
     <source swf="flashswf/arts/new/雾人装备调整.swf" symbolName="3.防具/10.军阀系列/男变装-军阀突击兵衣服上臂" />
+    <source swf="flashswf/backgrounds/gk22_2_BG.swf" />
     <source swf="flashswf/backgrounds/gk22_3_BG.swf" />
   </conflict>
   <conflict id="男变装-军阀突击兵衣服右下臂">
     <source swf="flashswf/arts/new/雾人装备调整.swf" symbolName="3.防具/10.军阀系列/男变装-军阀突击兵衣服右下臂" />
+    <source swf="flashswf/backgrounds/gk22_2_BG.swf" />
     <source swf="flashswf/backgrounds/gk22_3_BG.swf" />
   </conflict>
   <conflict id="男变装-军阀突击兵衣服左下臂">
     <source swf="flashswf/arts/new/雾人装备调整.swf" symbolName="3.防具/10.军阀系列/男变装-军阀突击兵衣服左下臂" />
+    <source swf="flashswf/backgrounds/gk22_2_BG.swf" />
     <source swf="flashswf/backgrounds/gk22_3_BG.swf" />
   </conflict>
   <conflict id="男变装-军阀突击兵衣服身体">
     <source swf="flashswf/arts/new/雾人装备调整.swf" symbolName="3.防具/10.军阀系列/男变装-军阀突击兵衣服身体" />
+    <source swf="flashswf/backgrounds/gk22_2_BG.swf" />
     <source swf="flashswf/backgrounds/gk22_3_BG.swf" />
   </conflict>
   <conflict id="男变装-军阀红色贝雷帽">
     <source swf="flashswf/arts/new/雾人装备调整.swf" symbolName="3.防具/10.军阀系列/男变装-军阀红色贝雷帽" />
+    <source swf="flashswf/backgrounds/gk22_2_BG.swf" />
     <source swf="flashswf/backgrounds/gk22_3_BG.swf" />
   </conflict>
   <conflict id="男变装-咖啡色条纹蒙面">
     <source swf="flashswf/arts/things.swf" symbolName="待整理防具相关汇总/男变装-咖啡色条纹蒙面" />
+    <source swf="flashswf/backgrounds/gk22_2_BG.swf" />
     <source swf="flashswf/backgrounds/gk22_3_BG.swf" />
   </conflict>
   <conflict id="男变装-基本脸型">
     <source swf="flashswf/UI/对话框界面.swf" symbolName="sprite/主角/男变装-基本脸型" />
     <source swf="flashswf/arts/new/新的动作.swf" symbolName="sprite/男变装-基本脸型" />
     <source swf="flashswf/arts/things0.swf" symbolName="sprite/男变装-基本脸型" />
+    <source swf="flashswf/backgrounds/gk22_2_BG.swf" />
     <source swf="flashswf/backgrounds/gk22_3_BG.swf" />
     <source swf="flashswf/levels/地图-第一防线防区.swf" symbolName="待整理防具相关汇总/Symbol 97" />
     <source swf="flashswf/portraits/artist.swf" symbolName="待整理防具相关汇总/Symbol 97" />
@@ -6171,6 +6202,7 @@
     <source swf="flashswf/arts/new/天网大家庭.swf" symbolName="sprite/男变装-裸体右手" />
     <source swf="flashswf/arts/new/新的动作.swf" symbolName="sprite/男变装-裸体右手" />
     <source swf="flashswf/arts/things0.swf" symbolName="sprite/男变装-裸体右手" />
+    <source swf="flashswf/backgrounds/gk22_2_BG.swf" />
     <source swf="flashswf/backgrounds/gk22_3_BG.swf" />
   </conflict>
   <conflict id="男变装-裸体小腿">
@@ -6199,6 +6231,7 @@
     <source swf="flashswf/arts/new/天网大家庭.swf" symbolName="sprite/男变装-裸体左手" />
     <source swf="flashswf/arts/new/新的动作.swf" symbolName="sprite/男变装-裸体左手" />
     <source swf="flashswf/arts/things0.swf" symbolName="sprite/男变装-裸体左手" />
+    <source swf="flashswf/backgrounds/gk22_2_BG.swf" />
     <source swf="flashswf/backgrounds/gk22_3_BG.swf" />
   </conflict>
   <conflict id="男变装-裸体脚">
