@@ -465,6 +465,12 @@ _root.敌人函数.尝试拾取 = function() {
     if (!拾取对象.area) {
         return;
     }
+    // 战场即时补给只对玩家本人生效：敌人不吞掉（不令实体消失），同伴也不代领。
+    // 帧脚本不走类引用（绕开 CS6 常驻会话新增类 L42 索引陷阱），直接查物品 use。
+    var 补给物品数据 = _root.getItemData(拾取对象.物品名);
+    if (补给物品数据 != null && 补给物品数据.use == "战场补给") {
+        return;
+    }
     if (this.是否为敌人 === false) {
         if (_root.物品栏.背包.getFirstVacancy() > -1) {
             _root.pickupItemManager.pickup(拾取对象, this, false);

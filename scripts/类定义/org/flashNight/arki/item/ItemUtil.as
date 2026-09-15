@@ -832,6 +832,16 @@ class org.flashNight.arki.item.ItemUtil{
      * 若背包空间不足，返回false
      */
     public static function acquire(itemArray:Array, context:Object):Boolean {
+        // 战场即时补给(use=战场补给)只经 PickupEffectService 现场消耗，拒绝一切入包
+        // （商店/任务奖励/礼包/Web 资源箱天然堵死）。singleAcquire 经本漏斗，无需另拦。
+        if(itemArray instanceof Array){
+            for(var supplyCheck:Number = 0; supplyCheck < itemArray.length; supplyCheck++){
+                var supplyEntry:Object = itemArray[supplyCheck];
+                if(supplyEntry == null || supplyEntry.name == undefined) continue;
+                var supplyRaw:Object = getRawItemData(String(supplyEntry.name));
+                if(supplyRaw != null && String(supplyRaw.use) == "战场补给") return false;
+            }
+        }
         var list = ItemUtil.require(itemArray);
         if(list == null) return false;
         // 物理写入量与所有权变化量不是同一概念。复合交易会把已出售装备中的

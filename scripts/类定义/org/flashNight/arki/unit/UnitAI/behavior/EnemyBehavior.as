@@ -7,6 +7,7 @@ import org.flashNight.arki.unit.UnitAI.behavior.CombatModule;
 import org.flashNight.arki.unit.UnitAI.behavior.PickupModule;
 import org.flashNight.arki.unit.UnitAI.core.AIEnvironment;
 import org.flashNight.arki.unit.UnitComponent.Targetcache.*;
+import org.flashNight.arki.unit.Action.PickUp.PickupEffectService;
 import org.flashNight.naki.Select.QuickSelect;
 
 /**
@@ -169,6 +170,8 @@ class org.flashNight.arki.unit.UnitAI.behavior.EnemyBehavior extends BaseUnitBeh
                 for (var i in pickupDict) {
                     var 可拾取物 = pickupDict[i];
                     if (可拾取物 != null && 可拾取物.area != null) {
+                        // 战场即时补给只对玩家本人生效，敌人/同伴 AI 一律不候选
+                        if (PickupEffectService.isInstantSupply(可拾取物.物品名)) continue;
                         可拾取物距离表.push({
                             物品: 可拾取物,
                             距离: Math.abs(可拾取物._x - data.x)

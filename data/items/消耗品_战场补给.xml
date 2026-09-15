@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 战场即时补给品配置（首批测试档） | 物品ID自动生成
+     说明：
+     - <use>战场补给</use> 是即时激活策略唯一标识：此类物品不进背包，
+       由 PickupEffectService 在拾取瞬间现场结算药效词条并消耗实体。
+     - 数值为易核对的测试档，非平衡终值；图标为占位，复用现有物品 icon，
+       正式图标后续按资产规范装配。
+     - supplyAmmo 词条属下一片施工范围，本片尚未注册到 DrugEffectRegistry，
+       配置含该词条的补给在领取时按"配置不支持"前置拒绝（实体保留），
+       属于预期行为。
+     效果词条格式与药效系统完全一致，详见: 消耗品_药剂.md -->
+<root>
+  <!-- ========== 战场即时补给品（测试配方） ========== -->
+  <item>
+    <name>战场医疗包</name>
+    <displayname>战场医疗包</displayname>
+    <icon>普通hp药剂</icon>
+    <type>消耗品</type>
+    <use>战场补给</use>
+    <price>0</price>
+    <description>即时补给测试品：拾取瞬间直接恢复固定生命值，不进入背包。</description>
+    <data>
+      <effects>
+        <effect type="heal" hp="300" mp="0" target="self" scaleWithAlchemy="false" />
+      </effects>
+    </data>
+  </item>
+  <item>
+    <name>战场复合急救包</name>
+    <displayname>战场复合急救包</displayname>
+    <icon>加强抗生素药剂</icon>
+    <type>消耗品</type>
+    <use>战场补给</use>
+    <price>0</price>
+    <description>即时补给测试品：按比例恢复生命与精力，并附加独立槽位的缓释恢复。</description>
+    <data>
+      <effects>
+        <effect type="heal" hp="25%" mp="50%" target="self" scaleWithAlchemy="false" />
+        <effect type="regen" hp="200" duration="300" interval="30" mode="total" id="战场_缓释" scaleWithAlchemy="false" />
+      </effects>
+    </data>
+  </item>
+  <item>
+    <name>战场长枪弹药包</name>
+    <displayname>战场长枪弹药包</displayname>
+    <icon>狙击步枪通用弹药</icon>
+    <type>消耗品</type>
+    <use>战场补给</use>
+    <price>0</price>
+    <description>即时补给测试品：补满已装备长枪的弹药（补弹词条本片尚未开放，领取会被前置拒绝）。</description>
+    <data>
+      <effects>
+        <effect type="supplyAmmo" scope="longgun" />
+      </effects>
+    </data>
+  </item>
+  <item>
+    <name>战场双枪弹药包</name>
+    <displayname>战场双枪弹药包</displayname>
+    <icon>手枪通用弹药</icon>
+    <type>消耗品</type>
+    <use>战场补给</use>
+    <price>0</price>
+    <description>即时补给测试品：补满双枪槽位的弹药（补弹词条本片尚未开放，领取会被前置拒绝）。</description>
+    <data>
+      <effects>
+        <effect type="supplyAmmo" scope="pistols" />
+      </effects>
+    </data>
+  </item>
+  <item>
+    <name>战场全量弹药包</name>
+    <displayname>战场全量弹药包</displayname>
+    <icon>机枪通用弹药</icon>
+    <type>消耗品</type>
+    <use>战场补给</use>
+    <price>0</price>
+    <description>即时补给测试品：补满全部持枪与随身背包枪械的弹药（补弹词条本片尚未开放，领取会被前置拒绝）。</description>
+    <data>
+      <effects>
+        <effect type="supplyAmmo" scope="all" />
+      </effects>
+    </data>
+  </item>
+  <item>
+    <name>战场突击强化包</name>
+    <displayname>战场突击强化包</displayname>
+    <icon>肾上腺素</icon>
+    <type>消耗品</type>
+    <use>战场补给</use>
+    <price>0</price>
+    <description>即时补给测试品：短时间内强化伤害；固定增益标识，重复领取只刷新时长不叠加强度。</description>
+    <data>
+      <effects>
+        <effect type="buff" property="伤害加成" calc="add" value="50" duration="1800" buffId="战场_突击" />
+      </effects>
+    </data>
+  </item>
+  <item>
+    <name>战场防护强化包</name>
+    <displayname>战场防护强化包</displayname>
+    <icon>全属性抗性药剂</icon>
+    <type>消耗品</type>
+    <use>战场补给</use>
+    <price>0</price>
+    <description>即时补给测试品：短时间内强化防御与全属性抗性；固定增益标识，重复领取只刷新时长。</description>
+    <data>
+      <effects>
+        <effect type="buff" property="防御力" calc="add" value="30" duration="1800" buffId="战场_防御" />
+        <effect type="resistanceBuff" value="10" duration="900" buffId="战场_抗性" />
+      </effects>
+    </data>
+  </item>
+  <item>
+    <name>战场战备补给包</name>
+    <displayname>战场战备补给包</displayname>
+    <icon>战队药箱</icon>
+    <type>消耗品</type>
+    <use>战场补给</use>
+    <price>0</price>
+    <description>即时补给测试品：恢复少量生命、强化伤害并补充三槽弹药（补弹词条本片尚未开放，领取会被前置拒绝）。</description>
+    <data>
+      <effects>
+        <effect type="supplyAmmo" scope="equipped" />
+        <effect type="heal" hp="150" mp="0" target="self" scaleWithAlchemy="false" />
+        <effect type="buff" property="伤害加成" calc="add" value="50" duration="1800" buffId="战场_突击" />
+      </effects>
+    </data>
+  </item>
+</root>

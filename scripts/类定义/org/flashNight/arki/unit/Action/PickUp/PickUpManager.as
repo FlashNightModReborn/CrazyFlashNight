@@ -8,6 +8,7 @@ import org.flashNight.aven.Coordinator.*;
 import org.flashNight.arki.item.*;
 import org.flashNight.arki.unit.UnitComponent.Targetcache.*;
 import org.flashNight.arki.unit.UnitComponent.Initializer.ElementComponent.ProgressValidator;
+import org.flashNight.arki.unit.Action.PickUp.PickupEffectService;
 import org.flashNight.naki.RandomNumberEngine.*;
 
 class org.flashNight.arki.unit.Action.PickUp.PickUpManager {
@@ -123,6 +124,12 @@ class org.flashNight.arki.unit.Action.PickUp.PickUpManager {
             }
             str += "。";
             lootKind = "intel";
+        } else if (PickupEffectService.isInstantSupply(itemName)) {
+            // 战场即时补给：不入包，由 service 现场结算并自己播报收益/拒绝原因。
+            // 仅 applied 复用下方实体收尾；通用获得播报与 loot feed 不适用（无资产变化）。
+            var outcome:String = PickupEffectService.tryClaim(target);
+            if (outcome != "applied") return;
+            lootKind = "supply";
         } else if (!拾取者 && Key.isDown(_root.组合键) && this.拾取并装备(itemName, value)) {
             str = "已拾取" + itemName;
             // 手雷虽然占用装备槽，领域上仍是可堆叠物品；按实际拾取数量播报。
