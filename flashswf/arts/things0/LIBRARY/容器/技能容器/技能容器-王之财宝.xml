@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/技能容器/技能容器-王之财宝" itemID="6aa808e4-00001311" linkageExportForAS="true" linkageIdentifier="技能容器-王之财宝" lastModified="1789407241">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/技能容器/技能容器-王之财宝" itemID="6aa808e4-00001311" linkageExportForAS="true" linkageIdentifier="技能容器-王之财宝" lastModified="1789474292">
   <timeline>
     <DOMTimeline name="技能容器-王之财宝">
       <layers>
@@ -243,7 +243,7 @@ var 发一发 = function(发射者名, 池, 空手, 冷兵, 枪械, 伤加, 等�
 	子弹属性.血量上限击溃 = 武器.击溃;                  // 引擎会与施术者取 max 后写进 Obj.击溃
 	子弹属性.斩杀         = 武器.斩杀;
 
-	子弹属性.子弹威力 = (武器.面板 * 2 + 对应加成) * (1 + 等级 * 0.5) + 伤加;
+	子弹属性.子弹威力 = (武器.面板 + 对应加成) * (1 + 等级 * 0.25) + 伤加;
 
 	// 落点：BulletInitializer 里 _x=shootX、_y=shootY、Z轴坐标=shootZ
 	子弹属性.shootX = 落点x;
@@ -262,8 +262,8 @@ var 施术者 = _parent;
 var 施术者名 = 施术者._name;
 
 // 加成快照：口径同 PlayerInfoProvider.getUnarmedBonus / getMeleeBonus / getFirearmBonus / getDamageBonus
-var 基础空手 = _root.根据等级计算值(施术者.空手攻击力_min, 施术者.空手攻击力_max, 施术者.等级);
-var 空手加成 = Math.floor(施术者.空手攻击力 - 基础空手);
+
+var 空手加成 = Math.floor(施术者.空手攻击力);
 if (isNaN(空手加成)) 空手加成 = 0;
 var 冷兵器加成 = 施术者.装备刀锋利度加成 ? 施术者.装备刀锋利度加成 : 0;
 var 枪械加成   = 施术者.装备枪械威力加成 ? 施术者.装备枪械威力加成 : 0;
