@@ -39,7 +39,7 @@
           <DOMFolderItem name="临时武器/1.枪械相关/长枪" itemID="68404178-00000bbf"/>
           <DOMFolderItem name="临时武器/无AS链接" itemID="6690f257-00002761"/>
           <DOMFolderItem name="容器" itemID="6957d32c-00000922" isExpanded="true"/>
-          <DOMFolderItem name="容器/兵器攻击容器" itemID="6958f35f-000035a3"/>
+          <DOMFolderItem name="容器/兵器攻击容器" itemID="6958f35f-000035a3" isExpanded="true"/>
           <DOMFolderItem name="容器/兵器攻击容器/平A" itemID="696462ce-00000acc" isExpanded="true"/>
           <DOMFolderItem name="容器/兵器攻击容器/平A/怪物通用模板" itemID="699e0c3e-00001e05"/>
           <DOMFolderItem name="容器/兵器攻击容器/平A/怪物通用模板/新近战子弹定位元件" itemID="699e0c3e-00001e06"/>
@@ -50,7 +50,7 @@
           <DOMFolderItem name="容器/空手攻击容器" itemID="69639e62-00004504"/>
           <DOMFolderItem name="容器/空手攻击容器/平A" itemID="6964d54f-00002798"/>
           <DOMFolderItem name="容器/武器变形容器" itemID="69cb66ff-00000ab7" isExpanded="true"/>
-          <DOMFolderItem name="容器/战技容器" itemID="6958ee41-00002e79"/>
+          <DOMFolderItem name="容器/战技容器" itemID="6958ee41-00002e79" isExpanded="true"/>
           <DOMFolderItem name="容器/战技容器/sprite" itemID="695e92dd-000012bc"/>
           <DOMFolderItem name="容器/战技容器/属性标签标志元件" itemID="695e8bfa-000070f2"/>
           <DOMFolderItem name="尚未整理" itemID="693ece28-00001dc3"/>
@@ -1447,12 +1447,12 @@
           <Include href="容器/兵器攻击容器/兵器攻击容器-飞跃砸击.xml" itemID="6a5cfc55-00002b28" lastModified="1785769411"/>
           <Include href="容器/兵器攻击容器/兵器攻击容器-粉碎切割.xml" itemID="695a23b9-00001043" lastModified="1788971581"/>
           <Include href="容器/兵器攻击容器/兵器攻击容器-贯穿突刺.xml" itemID="695a42b9-0000153e" lastModified="1788971611"/>
-          <Include href="容器/兵器攻击容器/兵器攻击容器-幻影剑舞.xml" itemID="6965fa98-00000ac4" lastModified="1789144390"/>
+          <Include href="容器/兵器攻击容器/兵器攻击容器-幻影剑舞.xml" itemID="6965fa98-00000ac4" lastModified="1789490907"/>
           <Include href="容器/兵器攻击容器/兵器攻击容器-回旋刃.xml" itemID="6a5cf955-00002a09" lastModified="1785821481"/>
           <Include href="容器/兵器攻击容器/兵器攻击容器-疾空旋风破.xml" itemID="6a5cf5df-00002904" lastModified="1785769335"/>
           <Include href="容器/兵器攻击容器/兵器攻击容器-疾影后撤.xml" itemID="6a6e6915-00000e89" lastModified="1785769222"/>
           <Include href="容器/兵器攻击容器/兵器攻击容器-疾影剑气.xml" itemID="6a6e6f31-00001208" lastModified="1785769300"/>
-          <Include href="容器/兵器攻击容器/兵器攻击容器-疾影剑舞.xml" itemID="6a6e724e-00001556" lastModified="1788971221"/>
+          <Include href="容器/兵器攻击容器/兵器攻击容器-疾影剑舞.xml" itemID="6a6e724e-00001556" lastModified="1789491209"/>
           <Include href="容器/兵器攻击容器/兵器攻击容器-疾影上挑.xml" itemID="6a6e6cd2-0000112e" lastModified="1788971605"/>
           <Include href="容器/兵器攻击容器/兵器攻击容器-疾影十字.xml" itemID="6a6e699e-00000eeb" lastModified="1785769199"/>
           <Include href="容器/兵器攻击容器/兵器攻击容器-疾影突进.xml" itemID="6a6e702d-000012b2" lastModified="1785769285"/>
@@ -1461,7 +1461,7 @@
           <Include href="容器/兵器攻击容器/兵器攻击容器-交叉斩.xml" itemID="6a661c6a-00000dc6" lastModified="1785769349"/>
           <Include href="容器/兵器攻击容器/兵器攻击容器-交叠.xml" itemID="6a661d8a-00000ef0" lastModified="1785769362"/>
           <Include href="容器/兵器攻击容器/兵器攻击容器-空坠强袭.xml" itemID="695b3df6-00002f39" lastModified="1785769597"/>
-          <Include href="容器/兵器攻击容器/兵器攻击容器-狂暴切割.xml" itemID="6a6e7c3d-00001992" lastModified="1788972041"/>
+          <Include href="容器/兵器攻击容器/兵器攻击容器-狂暴切割.xml" itemID="6a6e7c3d-00001992" lastModified="1789491106"/>
           <Include href="容器/兵器攻击容器/兵器攻击容器-狂乱龙卷.xml" itemID="6a36ef2e-000018a0" lastModified="1785769435"/>
           <Include href="容器/兵器攻击容器/兵器攻击容器-猎影十字.xml" itemID="6959f10a-00000b18" lastModified="1785769572"/>
           <Include href="容器/兵器攻击容器/兵器攻击容器-迷踪连刺.xml" itemID="6a5cee9f-000025c1" lastModified="1785769417"/>
@@ -1540,7 +1540,7 @@
           <Include href="容器/技能容器/技能容器-瞬步斩.xml" itemID="694ab8fd-0000419f" lastModified="1788970503"/>
           <Include href="容器/技能容器/技能容器-死亡绽放.xml" itemID="694a1cc3-000010b6" lastModified="1789397102"/>
           <Include href="容器/技能容器/技能容器-铁布衫.xml" itemID="694ac3d0-00004db0" lastModified="1789397050"/>
-          <Include href="容器/技能容器/技能容器-王之财宝.xml" itemID="6aa808e4-00001311" lastModified="1789477934"/>
+          <Include href="容器/技能容器/技能容器-王之财宝.xml" itemID="6aa808e4-00001311" lastModified="1789490570"/>
           <Include href="容器/技能容器/技能容器-小跳.xml" itemID="694ab970-0000421a" lastModified="1789397115"/>
           <Include href="容器/技能容器/技能容器-兴奋剂.xml" itemID="69563382-0000093b" lastModified="1789397117"/>
           <Include href="容器/技能容器/技能容器-凶斩.xml" itemID="694abde8-0000469b" lastModified="1789397119"/>
@@ -1601,7 +1601,7 @@
           <Include href="容器/战技容器/战技容器-Excalibur.xml" itemID="6959c499-000010d9" lastModified="1769694923"/>
           <Include href="容器/战技容器/战技容器-Overdrive.xml" itemID="6959e501-0000121b" lastModified="1769694923"/>
           <Include href="容器/战技容器/战技容器-暴走.xml" itemID="69591ecd-00000bad" lastModified="1770119887"/>
-          <Include href="容器/战技容器/战技容器-刀剑乱舞.xml" itemID="695cf5d7-00002a15" lastModified="1776007336"/>
+          <Include href="容器/战技容器/战技容器-刀剑乱舞.xml" itemID="695cf5d7-00002a15" lastModified="1789490594"/>
           <Include href="容器/战技容器/战技容器-地狱穿心剑.xml" itemID="696c6469-00000cd7" lastModified="1769711273"/>
           <Include href="容器/战技容器/战技容器-地狱斩绝.xml" itemID="696c5655-00000c2a" lastModified="1769694923"/>
           <Include href="容器/战技容器/战技容器-登上明星.xml" itemID="6967dae5-00000ac8" lastModified="1789139186"/>
@@ -3217,6 +3217,7 @@
      </persistentData>
      <PrinterSettings/>
      <publishHistory>
+          <PublishItem publishSize="4869425" publishTime="1789478047"/>
           <PublishItem publishSize="4869424" publishTime="1789474335"/>
           <PublishItem publishSize="4869432" publishTime="1789474278"/>
           <PublishItem publishSize="4869517" publishTime="1789406742"/>
@@ -3236,6 +3237,5 @@
           <PublishItem publishSize="4480744" publishTime="1782300076"/>
           <PublishItem publishSize="4480747" publishTime="1782299333"/>
           <PublishItem publishSize="4480726" publishTime="1782298278"/>
-          <PublishItem publishSize="4482144" publishTime="1782244522"/>
      </publishHistory>
 </DOMDocument>

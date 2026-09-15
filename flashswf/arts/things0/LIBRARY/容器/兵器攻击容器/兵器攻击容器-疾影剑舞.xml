@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/兵器攻击容器/兵器攻击容器-疾影剑舞" itemID="6a6e724e-00001556" linkageExportForAS="true" linkageIdentifier="兵器攻击容器-疾影剑舞" lastModified="1788971221" lastUniqueIdentifier="4">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/兵器攻击容器/兵器攻击容器-疾影剑舞" itemID="6a6e724e-00001556" linkageExportForAS="true" linkageIdentifier="兵器攻击容器-疾影剑舞" lastModified="1789491209" lastUniqueIdentifier="4">
   <timeline>
-    <DOMTimeline name="兵器攻击容器-疾影剑舞" currentFrame="34">
+    <DOMTimeline name="兵器攻击容器-疾影剑舞" currentFrame="10">
       <layers>
         <DOMLayer name="左手-2" color="#4FFF4F" locked="true" autoNamed="false">
           <frames>
@@ -762,7 +762,7 @@ function 消弹()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="虚空刀" color="#4FFF4F" parentLayerIndex="1" outline="true" current="true" isSelected="true" useOutlineView="true" autoNamed="false">
+        <DOMLayer name="虚空刀" color="#4FFF4F" parentLayerIndex="1" outline="true" useOutlineView="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="2" keyMode="9728">
               <elements/>
@@ -775,7 +775,7 @@ function 消弹()
             </DOMFrame>
             <DOMFrame index="32" duration="15" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="sprite/近战子弹 副本" selected="true" centerPoint3DX="159.3" centerPoint3DY="-104.6">
+                <DOMSymbolInstance libraryItemName="sprite/近战子弹 副本" centerPoint3DX="159.3" centerPoint3DY="-104.6">
                   <matrix>
                     <Matrix a="50.8218994140625" d="31.4078521728516" tx="423" ty="-71.35"/>
                   </matrix>
@@ -789,14 +789,14 @@ function 消弹()
 	var 耗蓝量 = 自机.mp * 0.01;
 	//以下部分只需要更改需要更改的属性,其余部分可注释掉
 	子弹属性.声音 = "";
-	子弹属性.霰弹值 = 3;
+	子弹属性.霰弹值 = 5;
 	子弹属性.子弹散射度 = 0;
 	子弹属性.子弹种类 = "近战联弹";
 	
 	子弹属性.子弹威力 = 自机.空手攻击力 / 5 + 自机.刀属性.power + 自机.内力 + 耗蓝量;
 	if(自机.被动技能.刀剑攻击 && 自机.被动技能.刀剑攻击.等级)
 	{
-		子弹属性.子弹威力 += 自机.刀属性.power * 自机.被动技能.刀剑攻击.等级/20;
+		子弹属性.子弹威力 += 自机.刀属性.power * 自机.被动技能.刀剑攻击.等级/10;
 	}
 	if(自机.被动技能.下劈 && 自机.被动技能.下劈.等级)
 	{
@@ -842,7 +842,7 @@ function 消弹()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="虚空子弹" color="#9933CC" parentLayerIndex="1" autoNamed="false">
+        <DOMLayer name="虚空子弹" color="#9933CC" parentLayerIndex="1" current="true" isSelected="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="2" keyMode="9728">
               <elements/>
@@ -870,7 +870,7 @@ function 消弹()
 	子弹属性.子弹威力 = 自机.空手攻击力 / 5 + 自机.刀属性.power + 自机.内力 + 耗蓝量;
 	if(自机.被动技能.刀剑攻击 && 自机.被动技能.刀剑攻击.等级)
 	{
-		子弹属性.子弹威力 += 自机.刀属性.power * 自机.被动技能.刀剑攻击.等级/20;
+		子弹属性.子弹威力 += 自机.刀属性.power * 自机.被动技能.刀剑攻击.等级/10;
 	}
 	if(自机.被动技能.下劈 && 自机.被动技能.下劈.等级)
 	{
@@ -940,7 +940,7 @@ function 消弹()
 	子弹属性.子弹威力 = 自机.空手攻击力 / 5 + 自机.刀属性.power + 自机.内力 + 耗蓝量;
 	if(自机.被动技能.刀剑攻击 && 自机.被动技能.刀剑攻击.等级)
 	{
-		子弹属性.子弹威力 += 自机.刀属性.power * 自机.被动技能.刀剑攻击.等级/20;
+		子弹属性.子弹威力 += 自机.刀属性.power * 自机.被动技能.刀剑攻击.等级/10;
 	}
 	if(自机.被动技能.下劈 && 自机.被动技能.下劈.等级)
 	{
@@ -989,7 +989,7 @@ function 消弹()
             </DOMFrame>
             <DOMFrame index="10" duration="2" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="sprite/近战子弹 副本" centerPoint3DX="159.3" centerPoint3DY="-104.6">
+                <DOMSymbolInstance libraryItemName="sprite/近战子弹 副本" selected="true" centerPoint3DX="159.3" centerPoint3DY="-104.6">
                   <matrix>
                     <Matrix a="50.8218994140625" d="31.4078521728516" tx="423" ty="-71.35"/>
                   </matrix>
@@ -1003,14 +1003,14 @@ function 消弹()
 	var 耗蓝量 = 自机.mp * 0.01;
 	//以下部分只需要更改需要更改的属性,其余部分可注释掉
 	子弹属性.声音 = "";
-	子弹属性.霰弹值 = 3;
+	子弹属性.霰弹值 = 5;
 	子弹属性.子弹散射度 = 0;
 	子弹属性.子弹种类 = "近战联弹";
 	
-	子弹属性.子弹威力 = 自机.空手攻击力 / 5 + 自机.刀属性.power + 自机.内力 + 耗蓝量;
+	子弹属性.子弹威力 = 自机.空手攻击力 / 3 + 自机.刀属性.power + 自机.内力 + 耗蓝量;
 	if(自机.被动技能.刀剑攻击 && 自机.被动技能.刀剑攻击.等级)
 	{
-		子弹属性.子弹威力 += 自机.刀属性.power * 自机.被动技能.刀剑攻击.等级/20;
+		子弹属性.子弹威力 += 自机.刀属性.power * 自机.被动技能.刀剑攻击.等级/10;
 	}
 	if(自机.被动技能.下劈 && 自机.被动技能.下劈.等级)
 	{
@@ -1080,7 +1080,7 @@ function 消弹()
 	子弹属性.子弹威力 = 自机.空手攻击力 / 5 + 自机.刀属性.power + 自机.内力 + 耗蓝量;
 	if(自机.被动技能.刀剑攻击 && 自机.被动技能.刀剑攻击.等级)
 	{
-		子弹属性.子弹威力 += 自机.刀属性.power * 自机.被动技能.刀剑攻击.等级/20;
+		子弹属性.子弹威力 += 自机.刀属性.power * 自机.被动技能.刀剑攻击.等级/10;
 	}
 	if(自机.被动技能.下劈 && 自机.被动技能.下劈.等级)
 	{
@@ -1150,7 +1150,7 @@ function 消弹()
 	子弹属性.子弹威力 = 自机.空手攻击力 / 5 + 自机.刀属性.power + 自机.内力 + 耗蓝量;
 	if(自机.被动技能.刀剑攻击 && 自机.被动技能.刀剑攻击.等级)
 	{
-		子弹属性.子弹威力 += 自机.刀属性.power * 自机.被动技能.刀剑攻击.等级/20;
+		子弹属性.子弹威力 += 自机.刀属性.power * 自机.被动技能.刀剑攻击.等级/10;
 	}
 	if(自机.被动技能.下劈 && 自机.被动技能.下劈.等级)
 	{
@@ -1220,7 +1220,7 @@ function 消弹()
 	子弹属性.子弹威力 = 自机.空手攻击力 / 5 + 自机.刀属性.power + 自机.内力 + 耗蓝量;
 	if(自机.被动技能.刀剑攻击 && 自机.被动技能.刀剑攻击.等级)
 	{
-		子弹属性.子弹威力 += 自机.刀属性.power * 自机.被动技能.刀剑攻击.等级/20;
+		子弹属性.子弹威力 += 自机.刀属性.power * 自机.被动技能.刀剑攻击.等级/10;
 	}
 	if(自机.被动技能.下劈 && 自机.被动技能.下劈.等级)
 	{
@@ -1290,7 +1290,7 @@ function 消弹()
 	子弹属性.子弹威力 = 自机.空手攻击力 / 5 + 自机.刀属性.power + 自机.内力 + 耗蓝量;
 	if(自机.被动技能.刀剑攻击 && 自机.被动技能.刀剑攻击.等级)
 	{
-		子弹属性.子弹威力 += 自机.刀属性.power * 自机.被动技能.刀剑攻击.等级/20;
+		子弹属性.子弹威力 += 自机.刀属性.power * 自机.被动技能.刀剑攻击.等级/10;
 	}
 	if(自机.被动技能.下劈 && 自机.被动技能.下劈.等级)
 	{
@@ -1360,7 +1360,7 @@ function 消弹()
 	子弹属性.子弹威力 = 自机.空手攻击力 / 5 + 自机.刀属性.power + 自机.内力 + 耗蓝量;
 	if(自机.被动技能.刀剑攻击 && 自机.被动技能.刀剑攻击.等级)
 	{
-		子弹属性.子弹威力 += 自机.刀属性.power * 自机.被动技能.刀剑攻击.等级/20;
+		子弹属性.子弹威力 += 自机.刀属性.power * 自机.被动技能.刀剑攻击.等级/10;
 	}
 	if(自机.被动技能.下劈 && 自机.被动技能.下劈.等级)
 	{

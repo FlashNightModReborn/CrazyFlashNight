@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/兵器攻击容器/兵器攻击容器-幻影剑舞" itemID="6965fa98-00000ac4" linkageExportForAS="true" linkageIdentifier="兵器攻击容器-幻影剑舞" lastModified="1789144390" lastUniqueIdentifier="4">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/兵器攻击容器/兵器攻击容器-幻影剑舞" itemID="6965fa98-00000ac4" linkageExportForAS="true" linkageIdentifier="兵器攻击容器-幻影剑舞" lastModified="1789490907" lastUniqueIdentifier="4">
   <timeline>
-    <DOMTimeline name="兵器攻击容器-幻影剑舞" currentFrame="34">
+    <DOMTimeline name="兵器攻击容器-幻影剑舞" currentFrame="31">
       <layers>
         <DOMLayer name="左手-2" color="#4FFF4F" locked="true" autoNamed="false">
           <frames>
@@ -1087,7 +1087,7 @@ function 消弹()
 	子弹属性.子弹散射度 = 0;
 	子弹属性.子弹种类 = "近战子弹";
 	
-	子弹属性.子弹威力 = 自机.空手攻击力 / 5 + 自机.刀属性.power * 2 + 自机.内力 + 耗蓝量;
+	子弹属性.子弹威力 = 自机.空手攻击力 / 5 + 自机.刀属性.power * 3 + 自机.内力 + 耗蓝量;
 	if(自机.被动技能.刀剑攻击 && 自机.被动技能.刀剑攻击.等级)
 	{
 		子弹属性.子弹威力 += 自机.刀属性.power  * 自机.被动技能.刀剑攻击.等级/10;
@@ -1636,7 +1636,7 @@ function 消弹()
             </DOMFrame>
             <DOMFrame index="31" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="sprite/近战子弹 副本" centerPoint3DX="-114.5" centerPoint3DY="-207.05">
+                <DOMSymbolInstance libraryItemName="sprite/近战子弹 副本" selected="true" centerPoint3DX="-114.5" centerPoint3DY="-207.05">
                   <matrix>
                     <Matrix a="58.5083160400391" d="17.1866607666016" tx="246.25" ty="-203.5"/>
                   </matrix>
@@ -1654,7 +1654,7 @@ function 消弹()
 	子弹属性.子弹散射度 = 0;
 	子弹属性.子弹种类 = "近战子弹";
 	
-	子弹属性.子弹威力 = 自机.空手攻击力 / 5 + 自机.刀属性.power + 自机.内力 + 耗蓝量;
+	子弹属性.子弹威力 = 自机.空手攻击力 / 5 + 自机.刀属性.power * 3 + 自机.内力 + 耗蓝量;
 	if(自机.被动技能.刀剑攻击 && 自机.被动技能.刀剑攻击.等级)
 	{
 		子弹属性.子弹威力 += 自机.刀属性.power  * 自机.被动技能.刀剑攻击.等级/10;
@@ -1706,7 +1706,7 @@ function 消弹()
             </DOMFrame>
             <DOMFrame index="34" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="sprite/近战子弹 副本" selected="true" centerPoint3DX="-275" centerPoint3DY="70.85">
+                <DOMSymbolInstance libraryItemName="sprite/近战子弹 副本" centerPoint3DX="-275" centerPoint3DY="70.85">
                   <matrix>
                     <Matrix a="58.5083160400391" d="17.1866607666016" tx="85.75" ty="74.4"/>
                   </matrix>
@@ -1724,7 +1724,7 @@ function 消弹()
 	子弹属性.子弹散射度 = 0;
 	子弹属性.子弹种类 = "近战子弹";
 	
-	子弹属性.子弹威力 = 自机.空手攻击力 / 5 + 自机.刀属性.power * 2 + 自机.内力 + 耗蓝量;
+	子弹属性.子弹威力 = 自机.空手攻击力 / 5 + 自机.刀属性.power * 3 + 自机.内力 + 耗蓝量;
 	if(自机.被动技能.刀剑攻击 && 自机.被动技能.刀剑攻击.等级)
 	{
 		子弹属性.子弹威力 += 自机.刀属性.power  * 自机.被动技能.刀剑攻击.等级/10;
