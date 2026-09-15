@@ -1,0 +1,62 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="Codex/雌鹿G04/G03/InheritedSurface/HullWear" itemID="6a9f0000-07d8366a" symbolType="graphic">
+  <timeline>
+    <DOMTimeline name="HullWear">
+      <layers>
+        <DOMLayer name="CannonAndScorch" color="#6A9B9A" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728" duration="1">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/雌鹿G04/G03/Surface/HullCombatWear" symbolType="graphic" loop="single frame" firstFrame="0"/>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="SkinFragmentScars" color="#6A9B9A">
+          <frames>
+            <DOMFrame index="0" keyMode="9728" duration="1">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/雌鹿G04/G03/InheritedSurface/SkinFragmentScars" symbolType="graphic" loop="single frame" firstFrame="0"/>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="SkinNoseAbrasion" color="#6A9B9A">
+          <frames>
+            <DOMFrame index="0" keyMode="9728" duration="1">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/雌鹿G04/G03/InheritedSurface/SkinNoseAbrasion" symbolType="graphic" loop="single frame" firstFrame="0"/>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="SkinBellyAbrasion" color="#6A9B9A">
+          <frames>
+            <DOMFrame index="0" keyMode="9728" duration="1">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/雌鹿G04/G03/InheritedSurface/SkinBellyAbrasion" symbolType="graphic" loop="single frame" firstFrame="0"/>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="SkinFairingCrease" color="#6A9B9A">
+          <frames>
+            <DOMFrame index="0" keyMode="9728" duration="1">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/雌鹿G04/G03/InheritedSurface/SkinFairingCrease" symbolType="graphic" loop="single frame" firstFrame="0"/>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="SkinBlastSoot" color="#6A9B9A">
+          <frames>
+            <DOMFrame index="0" keyMode="9728" duration="1">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/雌鹿G04/G03/InheritedSurface/SkinBlastSoot" symbolType="graphic" loop="single frame" firstFrame="0"/>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

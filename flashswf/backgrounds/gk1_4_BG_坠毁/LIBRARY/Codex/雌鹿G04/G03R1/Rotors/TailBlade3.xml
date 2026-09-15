@@ -1,0 +1,108 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="Codex/雌鹿G04/G03R1/Rotors/TailBlade3" itemID="6a9f0000-48091212" symbolType="graphic">
+  <timeline>
+    <DOMTimeline name="TailBlade3">
+      <layers>
+        <DOMLayer name="BladeContour" color="#6A9B9A" locked="true" current="true" isSelected="true" layerType="mask">
+          <frames>
+            <DOMFrame index="0" keyMode="9728" duration="1">
+              <elements>
+                <DOMShape isDrawingObject="true">
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#FFFFFF"/>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle1="1" edges="!19908 935[19962 996 20008 1057!20008 1057[20054 1118 20109 1178!20109 1178[20136 1208 20168 1238!20168 1238[20184 1253 20201 1267!20201 1267[20218 1282 20239 1296!20239 1296[20284 1325 20342 1352!20342 1352[20399 1379 20459 1406!20459  1406[20488 1419 20516 1433!20516 1433[20528 1440 20523 1449!20523 1449[20519 1458 20510 1469!20510 1469[20489 1490 20479 1516!20479 1516[20474 1528 20476 1541!20476 1541[20477 1553 20478 1565!20478 1565[20478 1663 20478 1762!20478 1762 [20478 1959 20478 2156!20478 2156|20037 2156!20037 2156[20037 1965 20037 1773!20037 1773[20037 1725 20037 1678!20037 1678[20036 1630 20039 1582!20039 1582[20041 1557 20017 1538!20017 1538[20004 1529 19988 1521!19988 1521[19971 1513 19956  1507!19956 1507[19940 1500 19935 1492!19935 1492[19931 1485 19927 1477!19927 1477[19920 1462 19913 1447!19913 1447[19899 1416 19879 1386!19879 1386[19859 1356 19828 1327!19828 1327[19761 1270 19685 1214!19685 1214[19609 1158 19534 1102 !19534 1102[19459 1045 19390 988!19390 988[19649 962 19908 935"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="BuckledFaces" color="#6A9B9A" parentLayerIndex="0" locked="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728" duration="1">
+              <elements>
+                <DOMShape isDrawingObject="true">
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#5D6159"/>
+                    </FillStyle>
+                  </fills>
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke scaleMode="normal" weight="0.45">
+                        <fill>
+                          <SolidColor color="#161B15"/>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
+                  <edges>
+                    <Edge fillStyle1="1" strokeStyle="1" edges=" !20078 1548|20030 1508!20030 1508|20390 1452!20390 1452|20388 1497!20388 1497|20078 1548"/>
+                  </edges>
+                </DOMShape>
+                <DOMShape isDrawingObject="true">
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke scaleMode="normal" weight="0.45">
+                        <fill>
+                          <SolidColor color="#ADB1A1"/>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
+                  <edges>
+                    <Edge strokeStyle="1" edges=" !20041 1512|20206 1486!20206 1486|20386 1482"/>
+                  </edges>
+                </DOMShape>
+                <DOMShape isDrawingObject="true">
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke scaleMode="normal" weight="0.45">
+                        <fill>
+                          <SolidColor color="#767D6E" alpha="0.8"/>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
+                  <edges>
+                    <Edge strokeStyle="1" edges=" !20306 2186|20284 1927"/>
+                  </edges>
+                </DOMShape>
+                <DOMShape isDrawingObject="true">
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke scaleMode="normal" weight="0.45">
+                        <fill>
+                          <SolidColor color="#767D6E" alpha="0.8"/>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
+                  <edges>
+                    <Edge strokeStyle="1" edges=" !20162 1440|19954 1287"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="OriginalBlade" color="#6A9B9A" parentLayerIndex="0" locked="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728" duration="1">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/雌鹿G04/G03R1/Rotors/art/TailBlade3" symbolType="graphic" loop="single frame" firstFrame="0">
+                  <matrix>
+                    <Matrix a="-0.145294189453125" b="-0.242752075195313" c="0.242767333984375" d="-0.145294189453125" tx="1012" ty="110.05"/>
+                  </matrix>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

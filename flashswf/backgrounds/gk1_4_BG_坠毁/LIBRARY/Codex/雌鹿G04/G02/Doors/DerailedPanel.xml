@@ -1,0 +1,61 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="Codex/雌鹿G04/G02/Doors/DerailedPanel" itemID="6a9f0000-17ce8fff" symbolType="graphic">
+  <timeline>
+    <DOMTimeline name="DerailedPanel">
+      <layers>
+        <DOMLayer name="DoorSkinMask" color="#6A9B9A" locked="true" current="true" isSelected="true" layerType="mask">
+          <frames>
+            <DOMFrame index="0" keyMode="9728" duration="1">
+              <elements>
+                <DOMShape isDrawingObject="true">
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#FFFFFF"/>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle1="1" edges="!20 3560|6800 3560!6800 3560|6800 6940!6800 6940|20 6940!20 6940|20 3560"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="SkinFragmentScars" color="#6A9B9A" parentLayerIndex="0" locked="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728" duration="1">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/雌鹿G04/G02/Surface/Art/SkinFragmentScars" symbolType="graphic" loop="single frame" firstFrame="0">
+                  <matrix>
+                    <Matrix a="3.58100650237691" d="3.58100650237691" tx="-1480.6" ty="-756.9"/>
+                  </matrix>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="SkinBlastSoot" color="#6A9B9A" parentLayerIndex="0" locked="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728" duration="1">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/雌鹿G04/G02/Surface/Art/SkinBlastSoot" symbolType="graphic" loop="single frame" firstFrame="0">
+                  <matrix>
+                    <Matrix a="3.58100650237691" d="3.58100650237691" tx="-1480.6" ty="-756.9"/>
+                  </matrix>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="OriginalDoorPanel" color="#6A9B9A">
+          <frames>
+            <DOMFrame index="0" keyMode="9728" duration="1">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/雌鹿G04/Source/DoorPanel" symbolType="graphic" loop="single frame" firstFrame="0"/>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

@@ -1,0 +1,95 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="Codex/雌鹿G04/G03R1/Assembly/A_Static" itemID="6a9f0000-5c05b4ac" symbolType="graphic">
+  <timeline>
+    <DOMTimeline name="A_Static">
+      <layers>
+        <DOMLayer name="FrontFuselage" color="#6A9B9A" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728" duration="1">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/雌鹿G04/G03R1/Parts/FrontFuselage" symbolType="graphic" loop="single frame" firstFrame="0">
+                  <matrix>
+                    <Matrix a="0.998970569790715" b="-0.0453629881292538" c="0.0453629881292538" d="0.998970569790715" tx="-14.95" ty="33.45"/>
+                  </matrix>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="LooseBladeA" color="#6A9B9A">
+          <frames>
+            <DOMFrame index="0" keyMode="9728" duration="1">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/雌鹿G04/G03R1/Rotors/LooseBladeA" symbolType="graphic" loop="single frame" firstFrame="0">
+                  <matrix>
+                    <Matrix a="0.981627183447664" b="0.190808995376545" c="-0.190808995376545" d="0.981627183447664" tx="182.9" ty="152.35"/>
+                  </matrix>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="LooseBladeB" color="#6A9B9A">
+          <frames>
+            <DOMFrame index="0" keyMode="9728" duration="1">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/雌鹿G04/G03R1/Rotors/LooseBladeB" symbolType="graphic" loop="single frame" firstFrame="0">
+                  <matrix>
+                    <Matrix a="0.978147600733806" b="-0.207911690817759" c="0.207911690817759" d="0.978147600733806" tx="-147.2" ty="379.65"/>
+                  </matrix>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="DoorDebris" color="#6A9B9A">
+          <frames>
+            <DOMFrame index="0" keyMode="9728" duration="1">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/雌鹿G04/G02/Doors/DerailedPanel" symbolType="graphic" loop="single frame" firstFrame="0">
+                  <matrix>
+                    <Matrix a="0.28" b="0.025" c="0.07" d="0.09" tx="417" ty="399"/>
+                  </matrix>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="NoseWheelDebris" color="#6A9B9A">
+          <frames>
+            <DOMFrame index="0" keyMode="9728" duration="1">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/雌鹿G04/G03/Parts/NoseWheelDebris" symbolType="graphic" loop="single frame" firstFrame="0">
+                  <matrix>
+                    <Matrix tx="35" ty="68"/>
+                  </matrix>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="SmallDebris" color="#6A9B9A">
+          <frames>
+            <DOMFrame index="0" keyMode="9728" duration="1">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/雌鹿G04/G03/Parts/SmallDebris" symbolType="graphic" loop="single frame" firstFrame="0"/>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="TailPiece" color="#6A9B9A">
+          <frames>
+            <DOMFrame index="0" keyMode="9728" duration="1">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/雌鹿G04/G03R1/Parts/TailPiece" symbolType="graphic" loop="single frame" firstFrame="0">
+                  <matrix>
+                    <Matrix a="0.939692620785908" b="0.342020143325669" c="-0.342020143325669" d="0.939692620785908" tx="144.8" ty="-149.9"/>
+                  </matrix>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

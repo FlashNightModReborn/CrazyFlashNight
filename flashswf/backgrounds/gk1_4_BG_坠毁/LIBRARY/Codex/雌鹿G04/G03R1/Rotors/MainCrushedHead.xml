@@ -1,0 +1,53 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="Codex/雌鹿G04/G03R1/Rotors/MainCrushedHead" itemID="6a9f0000-15fc250a" symbolType="graphic">
+  <timeline>
+    <DOMTimeline name="MainCrushedHead">
+      <layers>
+        <DOMLayer name="SW" color="#6A9B9A" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728" duration="1">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/雌鹿G04/G03R1/Rotors/MainBladeSW" symbolType="graphic" loop="single frame" firstFrame="0"/>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="SE" color="#6A9B9A">
+          <frames>
+            <DOMFrame index="0" keyMode="9728" duration="1">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/雌鹿G04/G03R1/Rotors/MainBladeSE" symbolType="graphic" loop="single frame" firstFrame="0"/>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="NW" color="#6A9B9A">
+          <frames>
+            <DOMFrame index="0" keyMode="9728" duration="1">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/雌鹿G04/G03R1/Rotors/MainBladeNW" symbolType="graphic" loop="single frame" firstFrame="0"/>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="NE" color="#6A9B9A">
+          <frames>
+            <DOMFrame index="0" keyMode="9728" duration="1">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/雌鹿G04/G03R1/Rotors/MainBladeNE" symbolType="graphic" loop="single frame" firstFrame="0"/>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Hub" color="#6A9B9A">
+          <frames>
+            <DOMFrame index="0" keyMode="9728" duration="1">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/雌鹿G04/G03R1/Rotors/MainHub" symbolType="graphic" loop="single frame" firstFrame="0"/>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

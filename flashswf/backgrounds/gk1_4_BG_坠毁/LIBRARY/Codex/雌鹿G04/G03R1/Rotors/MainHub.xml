@@ -1,0 +1,39 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="Codex/雌鹿G04/G03R1/Rotors/MainHub" itemID="6a9f0000-161f438d" symbolType="graphic">
+  <timeline>
+    <DOMTimeline name="MainHub">
+      <layers>
+        <DOMLayer name="HubMask" color="#6A9B9A" locked="true" current="true" isSelected="true" layerType="mask">
+          <frames>
+            <DOMFrame index="0" keyMode="9728" duration="1">
+              <elements>
+                <DOMShape isDrawingObject="true">
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#FFFFFF"/>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle1="1" edges="!10841 2085|10829 2213!10829 2213|10791 2337!10791 2337|10730 2451!10730 2451|10648 2551!10648 2551|10548 2633!10548 2633|10434 2694!10434 2694|10310 2732!10310 2732|10181 2745!10181 2745|10053 2732!10053 2732|9929 2694!9929 2694|9815  2633!9815 2633|9715 2551!9715 2551|9633 2451!9633 2451|9572 2337!9572 2337|9534 2213!9534 2213|9521 2085!9521 2085|9534 1956!9534 1956|9572 1832!9572 1832|9633 1718!9633 1718|9715 1618!9715 1618|9815 1536!9815 1536|9929 1475!9929 1475 |10053 1437!10053 1437|10181 1425!10181 1425|10310 1437!10310 1437|10434 1475!10434 1475|10548 1536!10548 1536|10648 1618!10648 1618|10730 1718!10730 1718|10791 1832!10791 1832|10829 1956!10829 1956|10841 2085"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="OriginalHub" color="#6A9B9A" parentLayerIndex="0" locked="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728" duration="1">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/雌鹿G04/Source/MainRotorOriginal" symbolType="graphic" loop="single frame" firstFrame="0">
+                  <matrix>
+                    <Matrix a="0.283401489257812" d="0.283401489257812" tx="117.3" ty="-170.4"/>
+                  </matrix>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

@@ -1,0 +1,123 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="Codex/雌鹿G04/G03/Parts/GearFar" itemID="6a9f0000-0d67997a" symbolType="graphic">
+  <timeline>
+    <DOMTimeline name="GearFar">
+      <layers>
+        <DOMLayer name="Wheel" color="#6A9B9A" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728" duration="1">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/雌鹿G04/Source/MainWheel" symbolType="graphic" loop="single frame" firstFrame="0">
+                  <matrix>
+                    <Matrix a="0.280643445445818" b="-0.0394418640767104" c="0.0394418640767104" d="0.280643445445818" tx="563.8" ty="280.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Strut" color="#6A9B9A">
+          <frames>
+            <DOMFrame index="0" keyMode="9728" duration="1">
+              <elements>
+                <DOMShape isFloating="true">
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#444444"/>
+                    </FillStyle>
+                  </fills>
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke scaleMode="normal">
+                        <fill>
+                          <SolidColor/>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                    <StrokeStyle index="2">
+                      <SolidStroke scaleMode="normal">
+                        <fill>
+                          <SolidColor/>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
+                  <edges>
+                    <Edge fillStyle1="1" strokeStyle="1" edges="!11571 5525|11635 5494!11635 5494[11651 5546 11667 5599!11667 5599[11675 5625 11683 5651!11683 5651[11687 5664 11691 5677!11691 5677[11694 5683 11699 5686!11699 5686[11704 5690 11708 5694!11708 5694[11777 5755 11847 5816!11774 5820[11709  5763 11645 5705!11645 5705[11637 5698 11629 5690!11629 5690[11625 5687 11620 5683!11620 5683[11616 5680 11615 5673!11615 5673[11608 5648 11600 5624!11600 5624[11586 5574 11571 5525!11546 5810[11496 5769 11447 5728!11447 5728[11422 5708  11398 5688!11398 5688[11395 5685 11392 5682!11392 5682[11388 5681 11387 5676!11387 5676[11384 5667 11381 5658!11381 5658[11375 5641 11369 5623!11369 5623|11501 5559!11501 5559[11513 5600 11524 5642!11524 5642[11527 5652 11530 5662!11530  5662[11532 5668 11533 5673!11533 5673[11534 5679 11537 5682!11537 5682[11550 5694 11563 5706!11563 5706[11616 5754 11669 5803"/>
+                    <Edge fillStyle0="1" strokeStyle="2" edges=" !11250 5863[11273 5868 11296 5873!11296 5873[11320 5877 11339 5887!11339 5887[11380 5903 11420 5920!11420 5920[11441 5908 11462 5896!11462 5896[11472 5890 11482 5884!11482 5884[11493 5877 11501 5874!11501 5874[11406 5862 11311 5849"/>
+                    <Edge fillStyle1="1" strokeStyle="1" edges=" !11669 5803[11717 5833 11766 5863!11766 5863[11699 5863 11633 5863!11633 5863[11589 5837 11546 5810"/>
+                    <Edge fillStyle0="1" fillStyle1="1" strokeStyle="1" edges=" !11546 5810[11566 5783 11669 5803"/>
+                    <Edge strokeStyle="1" edges=" !11571 5525|11501 5559"/>
+                    <Edge fillStyle1="1" strokeStyle="1" edges=" !11847 5816[11885 5839 11924 5862!11924 5862[11882 5862 11840 5862!11840 5862[11807 5841 11774 5820"/>
+                    <Edge fillStyle0="1" fillStyle1="1" strokeStyle="1" edges=" !11847 5816[11793 5802 11774 5820"/>
+                    <Edge fillStyle0="1" fillStyle1="1" strokeStyle="2" edges=" !11250 5863[11222 5842 11311 5849"/>
+                    <Edge fillStyle0="1" strokeStyle="2" edges=" !11311 5849[11089 5786 10867 5722!10867 5722[10855 5736 10843 5750!10843 5750[11046 5806 11250 5863"/>
+                  </edges>
+                </DOMShape>
+                <DOMShape isDrawingObject="true">
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#585858"/>
+                    </FillStyle>
+                  </fills>
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke scaleMode="normal">
+                        <fill>
+                          <SolidColor/>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
+                  <edges>
+                    <Edge fillStyle1="1" strokeStyle="1" edges=" !11425 5848[11467 5819 11509 5790!11509 5790[11593 5813 11678 5837!11678 5837[11673 5854 11669 5872!11669 5872[11669 5875 11665 5883!11665 5883[11661 5891 11657 5898!11657 5898[11650 5913 11642 5928!11642 5928[11592 5903 11542 5878!11542  5878[11484 5863 11425 5848"/>
+                  </edges>
+                </DOMShape>
+                <DOMShape isDrawingObject="true">
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#3C3C3C"/>
+                    </FillStyle>
+                  </fills>
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke scaleMode="normal">
+                        <fill>
+                          <SolidColor/>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
+                  <edges>
+                    <Edge fillStyle1="1" strokeStyle="1" edges=" !11642 5928[11650 5913 11657 5898!11657 5898[11661 5891 11665 5883!11665 5883[11669 5875 11669 5872!11669 5872[11673 5854 11678 5837!11678 5837[11706 5851 11735 5866!11735 5866[11743 5869 11750 5873!11750 5873[11758 5875 11762 5883!11762  5883[11772 5896 11782 5908!11782 5908[11712 5918 11642 5928"/>
+                  </edges>
+                </DOMShape>
+                <DOMShape isDrawingObject="true">
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#262626"/>
+                    </FillStyle>
+                  </fills>
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke scaleMode="normal" weight="0.8">
+                        <fill>
+                          <SolidColor/>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
+                  <edges>
+                    <Edge fillStyle1="1" strokeStyle="1" edges=" !11603 5872[11604 5875 11599 5883!11599 5883[11596 5891 11593 5899!11593 5899[11578 5906 11562 5912!11562 5912[11547 5906 11531 5899!11531 5899[11528 5891 11524 5883!11524 5883[11522 5875 11515 5872!11515 5872[11516 5863 11517 5853!11517  5853[11530 5850 11543 5846!11543 5846[11561 5850 11579 5853!11579 5853[11591 5863 11603 5872"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

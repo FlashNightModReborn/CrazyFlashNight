@@ -1,0 +1,24 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="Codex/雌鹿G04/Identity/FactionSlot" itemID="6a9f0000-4c83f245" symbolType="graphic">
+  <timeline>
+    <DOMTimeline name="FactionSlot">
+      <layers>
+        <DOMLayer name="Faction" color="#6A9B9A" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" name="A" labelType="name" keyMode="9728" duration="1">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/雌鹿G04/Identity/AOriginal" symbolType="graphic" loop="single frame" firstFrame="0">
+                  <matrix>
+                    <Matrix a="2.2672119140625" d="2.2672119140625" tx="331.7" ty="273.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

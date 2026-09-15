@@ -1,0 +1,21 @@
+<DOMSymbolItem xmlns="http://ns.adobe.com/xfl/2008/" name="Codex/雌鹿G04/坠毁摆件" itemID="6a9f0000-343670fe" symbolType="graphic">
+  <timeline>
+    <DOMTimeline name="坠毁摆件">
+      <layers>
+        <DOMLayer name="坠毁总成" color="#74906A" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/雌鹿G04/G03R1/Assembly/A_Static" symbolType="graphic" loop="single frame" firstFrame="0">
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

@@ -1,0 +1,152 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="Codex/雌鹿G04/G03R1/Parts/TailPiece" itemID="6a9f0000-0f1919fb" symbolType="graphic">
+  <timeline>
+    <DOMTimeline name="TailPiece">
+      <layers>
+        <DOMLayer name="TailCutFace" color="#6A9B9A" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728" duration="1">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/雌鹿G04/G03/Parts/TailCutInterior" symbolType="graphic" loop="single frame" firstFrame="0"/>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="CutMask" color="#6A9B9A" locked="true" layerType="mask">
+          <frames>
+            <DOMFrame index="0" keyMode="9728" duration="1">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#FFFFFF"/>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle1="1" edges="!13480 -3200|26000 -3200!26000 -3200|26000 12200!26000 12200|13440 12200!13440 12200|13440 6540!13440 6540|13340 6220!13340 6220|13160 6100!13160 6100|13280 5840!13280 5840|13120 5520!13120 5520|13340 5400!13340 5400|13200 4880!13200  4880|13360 4780!13360 4780|13440 4420!13440 4420|13100 4260!13100 4260|13020 4140!13020 4140|13320 3960!13320 3960|13200 3680!13200 3680|13420 3600!13420 3600|13480 3480!13480 3480|13480 -3200"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="TailDetail" color="#6A9B9A" parentLayerIndex="1" locked="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728" duration="1">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/雌鹿G04/Parts/TailDetail" symbolType="graphic" loop="single frame" firstFrame="0">
+                  <matrix>
+                    <Matrix ty="18"/>
+                  </matrix>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="TailRotor" color="#6A9B9A" parentLayerIndex="1" locked="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728" duration="1">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/雌鹿G04/G03R1/Rotors/TailCrushed" symbolType="graphic" loop="single frame" firstFrame="0">
+                  <matrix>
+                    <Matrix ty="18"/>
+                  </matrix>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="DetailLines" color="#6A9B9A" parentLayerIndex="1" locked="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728" duration="1">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/雌鹿G04/Parts/DetailLines" symbolType="graphic" loop="single frame" firstFrame="0">
+                  <matrix>
+                    <Matrix ty="18"/>
+                  </matrix>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="TailRegion" color="#6A9B9A" parentLayerIndex="1" locked="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728" duration="1">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/雌鹿G04/G03/Body/TailRegion" symbolType="graphic" loop="single frame" firstFrame="0">
+                  <matrix>
+                    <Matrix ty="18"/>
+                  </matrix>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="BellyRegion" color="#6A9B9A" parentLayerIndex="1" locked="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728" duration="1">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/雌鹿G04/G03/Body/BellyRegion" symbolType="graphic" loop="single frame" firstFrame="0">
+                  <matrix>
+                    <Matrix ty="18"/>
+                  </matrix>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="CabinRegion" color="#6A9B9A" parentLayerIndex="1" locked="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728" duration="1">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/雌鹿G04/G03/Body/CabinRegion" symbolType="graphic" loop="single frame" firstFrame="0">
+                  <matrix>
+                    <Matrix ty="18"/>
+                  </matrix>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="UpperMiddleRegion" color="#6A9B9A" parentLayerIndex="1" locked="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728" duration="1">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/雌鹿G04/G03/Body/UpperMiddleRegion" symbolType="graphic" loop="single frame" firstFrame="0">
+                  <matrix>
+                    <Matrix ty="18"/>
+                  </matrix>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="FrontRegion" color="#6A9B9A" parentLayerIndex="1" locked="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728" duration="1">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/雌鹿G04/G03/Body/FrontRegion" symbolType="graphic" loop="single frame" firstFrame="0">
+                  <matrix>
+                    <Matrix ty="18"/>
+                  </matrix>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="CanopyInnerShell" color="#6A9B9A" parentLayerIndex="1" locked="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728" duration="1">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/雌鹿G04/G03/Parts/CanopyInnerShell" symbolType="graphic" loop="single frame" firstFrame="0">
+                  <matrix>
+                    <Matrix ty="18"/>
+                  </matrix>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

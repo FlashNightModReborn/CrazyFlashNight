@@ -8,9 +8,435 @@
     "G03R1-Complete": "0bf3cf39ab73ea7aefb7b35eabfdc027bee221226c57afcfa293b956ad3fd61e"
   },
   "hashesVerifiedOnReceive": "2026-09-15 本机从 zip 流独立复算 G03R1 FLA，与登记值一致",
-  "authority": "待定（接入时按静态载具进入地图先例登记到目标背景 XFL）",
-  "namespace": "待定（预计 Codex/雌鹿G04/ 同级）",
-  "scope": "G01 完整母版（A/军阀徽记、主/尾旋翼 Static/Slow/Fast/Coast 四状态，Coast 97 帧末帧标签 park）；G02 军阀中损迫降；G03R1 A 兵团重损坠毁静态终态。全部纯矢量、零位图、零素材脚本，24fps；保存环境 Animate 24.0.6.54 AS3 发布配置。无完整中弹/下坠/触地连续演出；AS2 游戏实机接入未验证",
-  "symbols": [],
+  "authority": "flashswf/backgrounds/gk1_4_BG_坠毁",
+  "namespace": "Codex/雌鹿G04/",
+  "scope": "G01 完整母版（A/军阀徽记、主/尾旋翼 Static/Slow/Fast/Coast 四状态，Coast 97 帧末帧标签 park）；G02 军阀中损迫降；G03R1 A 兵团重损坠毁静态终态。全部纯矢量、零位图、零素材脚本，24fps；保存环境 Animate 24.0.6.54 AS3 发布配置。无完整中弹/下坠/触地连续演出；AS2 游戏实机接入未验证；接入侧只取 G03R1 A 兵团静态坠毁终态闭包，FactionSlot 冻结 A 帧，全单帧 Graphic，无脚本无位图无 linkage",
+  "symbols": [
+    {
+      "sourceSymbol": "Hind/G03R1/Rotors/art/MainBladeSW",
+      "staticSymbol": "Codex/雌鹿G04/G03R1/Rotors/art/MainBladeSW",
+      "sourceSha256": "3c8d66f98e2637e3d4702d451b3bb1651adba5be051c63f7b30f79229fc6e951"
+    },
+    {
+      "sourceSymbol": "Hind/G03R1/Rotors/MainBladeSW",
+      "staticSymbol": "Codex/雌鹿G04/G03R1/Rotors/MainBladeSW",
+      "sourceSha256": "c3fe440524f2f0f0ea15254f9d8cfdb994314aeab9153b18cd674415b8eb72c8"
+    },
+    {
+      "sourceSymbol": "Hind/G03R1/Rotors/art/MainBladeSE",
+      "staticSymbol": "Codex/雌鹿G04/G03R1/Rotors/art/MainBladeSE",
+      "sourceSha256": "4fc3dabc0d5b3f1fdc313fd3b6b98d6d2e9e7e7385aee8a63e126289688e8db8"
+    },
+    {
+      "sourceSymbol": "Hind/G03R1/Rotors/MainBladeSE",
+      "staticSymbol": "Codex/雌鹿G04/G03R1/Rotors/MainBladeSE",
+      "sourceSha256": "64401f5d879b341b82e8c7ffe3821853aad373fccfc7653c20340d46f00f59ab"
+    },
+    {
+      "sourceSymbol": "Hind/G03R1/Rotors/art/MainBladeNW",
+      "staticSymbol": "Codex/雌鹿G04/G03R1/Rotors/art/MainBladeNW",
+      "sourceSha256": "69c5eb2092f842045c8518d5df21cffe252d176ed3344b10dd10a38785933549"
+    },
+    {
+      "sourceSymbol": "Hind/G03R1/Rotors/MainBladeNW",
+      "staticSymbol": "Codex/雌鹿G04/G03R1/Rotors/MainBladeNW",
+      "sourceSha256": "64b59a65f85e94729a96543a38f7ba608fcdbbb242b55ad51747e5be919d80b7"
+    },
+    {
+      "sourceSymbol": "Hind/G03R1/Rotors/art/MainBladeNE",
+      "staticSymbol": "Codex/雌鹿G04/G03R1/Rotors/art/MainBladeNE",
+      "sourceSha256": "0f9e4b7c61129b0231cc569aa4326c505de0989eddc539ccf7a36edf7f50932c"
+    },
+    {
+      "sourceSymbol": "Hind/G03R1/Rotors/MainBladeNE",
+      "staticSymbol": "Codex/雌鹿G04/G03R1/Rotors/MainBladeNE",
+      "sourceSha256": "9f1113f35061c047b7afb2f731656ed8e1c941b90b84f1991055ef1b0551b0d1"
+    },
+    {
+      "sourceSymbol": "Hind/Source/MainRotorOriginal",
+      "staticSymbol": "Codex/雌鹿G04/Source/MainRotorOriginal",
+      "sourceSha256": "afaa8a3bbe2e8cf8171c8d14bd615a36240e2ca5aaf697a02195bfe4eae62ecb"
+    },
+    {
+      "sourceSymbol": "Hind/G03R1/Rotors/MainHub",
+      "staticSymbol": "Codex/雌鹿G04/G03R1/Rotors/MainHub",
+      "sourceSha256": "741d683abcb41d22837ab17a1eeac95eff0d6f4a796a6c58af7da6a8c5787602"
+    },
+    {
+      "sourceSymbol": "Hind/G03R1/Rotors/MainCrushedHead",
+      "staticSymbol": "Codex/雌鹿G04/G03R1/Rotors/MainCrushedHead",
+      "sourceSha256": "6825feea3a8423c3675b490f7a15206d310f78a54c628e7f2f0cb1235ffd386c"
+    },
+    {
+      "sourceSymbol": "Hind/Source/WeaponWing",
+      "staticSymbol": "Codex/雌鹿G04/Source/WeaponWing",
+      "sourceSha256": "68361c9c0a033335be0f3f55d1c1e1c02a7441c37d34987321657f61ab5ea265"
+    },
+    {
+      "sourceSymbol": "Hind/Parts/WeaponWing",
+      "staticSymbol": "Codex/雌鹿G04/Parts/WeaponWing",
+      "sourceSha256": "d5491d343249c9d5f47eed7a2454e52fe6942570850816104610254d61cab1f5"
+    },
+    {
+      "sourceSymbol": "Hind/Source/Missile",
+      "staticSymbol": "Codex/雌鹿G04/Source/Missile",
+      "sourceSha256": "45fd514fa6ca0adab9fba96ba0cda29ad0d8ea4c08b13c524a228eb1bc014092"
+    },
+    {
+      "sourceSymbol": "Hind/Parts/Missiles",
+      "staticSymbol": "Codex/雌鹿G04/Parts/Missiles",
+      "sourceSha256": "43d46b53cc4f5cabb92f84b062aa72556265c6f6a6dd05d780d6c23db3d80e91"
+    },
+    {
+      "sourceSymbol": "Hind/Source/RocketPod",
+      "staticSymbol": "Codex/雌鹿G04/Source/RocketPod",
+      "sourceSha256": "a01446642d18dde1967caa9bfbb53eabaebc3f2799bdab66f71a6f0f1aace6fe"
+    },
+    {
+      "sourceSymbol": "Hind/Parts/RocketPods",
+      "staticSymbol": "Codex/雌鹿G04/Parts/RocketPods",
+      "sourceSha256": "920b6350e397a5c45be8168595c25c04b875d3d0953a89f9c4e3deaeaeedd8e6"
+    },
+    {
+      "sourceSymbol": "Hind/G03/Parts/WeaponMountWreck",
+      "staticSymbol": "Codex/雌鹿G04/G03/Parts/WeaponMountWreck",
+      "sourceSha256": "2a1bc02e674992e8bafb24ec1596e90ae5d5a656f3a06ccd60fd059d36039b71"
+    },
+    {
+      "sourceSymbol": "Hind/G03/Parts/FractureRimsAndMast",
+      "staticSymbol": "Codex/雌鹿G04/G03/Parts/FractureRimsAndMast",
+      "sourceSha256": "dc0ff96f714799867caccf02eb1b2a10955b4c28406dda1f3e568b0701120f9f"
+    },
+    {
+      "sourceSymbol": "Hind/Identity/AOriginal",
+      "staticSymbol": "Codex/雌鹿G04/Identity/AOriginal",
+      "sourceSha256": "eb0c4ff12de3dbbfdfdd8cfd920465bcb4d29ec56b0bfb56ffd37cd7047b444c"
+    },
+    {
+      "sourceSymbol": "Hind/Identity/FactionSlot",
+      "staticSymbol": "Codex/雌鹿G04/Identity/FactionSlot",
+      "sourceSha256": "da1845b65b5e7c2d531ca0a5581e7b52ee0b190936fcfae2a06b88028c3dc0cb"
+    },
+    {
+      "sourceSymbol": "Hind/G03/Surface/SkinCannonStrikes",
+      "staticSymbol": "Codex/雌鹿G04/G03/Surface/SkinCannonStrikes",
+      "sourceSha256": "ada04ceb96d48ecf600bd3a9ecefffa9f0ab1bbe44694f4a644dc37c7a5b3247"
+    },
+    {
+      "sourceSymbol": "Hind/G03/Surface/DoorUpperStrikes",
+      "staticSymbol": "Codex/雌鹿G04/G03/Surface/DoorUpperStrikes",
+      "sourceSha256": "de444b44d96f8c4d110d8166a3692a42e5feed5338a8357e584f2f1a1a809893"
+    },
+    {
+      "sourceSymbol": "Hind/Source/DoorPanel",
+      "staticSymbol": "Codex/雌鹿G04/Source/DoorPanel",
+      "sourceSha256": "05404d84eaf690b26431098f9ebffbe3071bced95807f4f981313cc89c7e66c7"
+    },
+    {
+      "sourceSymbol": "Hind/G03/Parts/DoorUpper",
+      "staticSymbol": "Codex/雌鹿G04/G03/Parts/DoorUpper",
+      "sourceSha256": "a363cf8f261e1a2741003b4217f3fbd4c9a013831bd197cd61755e838decfb72"
+    },
+    {
+      "sourceSymbol": "Hind/Source/Seat",
+      "staticSymbol": "Codex/雌鹿G04/Source/Seat",
+      "sourceSha256": "791c9336b04493ef6de853e3a7626e6d0a3125f9662418706c55ef4138b9f563"
+    },
+    {
+      "sourceSymbol": "Hind/Parts/CabinFittings",
+      "staticSymbol": "Codex/雌鹿G04/Parts/CabinFittings",
+      "sourceSha256": "40fa55936edc78bdbd20abadbcb0f7ec7aaaaca81a00aa1229a7d0cb73bbbb96"
+    },
+    {
+      "sourceSymbol": "Hind/Source/AntennaLines",
+      "staticSymbol": "Codex/雌鹿G04/Source/AntennaLines",
+      "sourceSha256": "3adf1ac58f125730ba992e5fb49e3bf79bd77fcd066ccaedd51c182e22d04ebe"
+    },
+    {
+      "sourceSymbol": "Hind/Parts/DetailLines",
+      "staticSymbol": "Codex/雌鹿G04/Parts/DetailLines",
+      "sourceSha256": "76c419250639616c36c5c940582fa5aced1157f79fb88c72cf2a8e139eeef76c"
+    },
+    {
+      "sourceSymbol": "Hind/G03/Parts/art/NoseGun",
+      "staticSymbol": "Codex/雌鹿G04/G03/Parts/art/NoseGun",
+      "sourceSha256": "594ecb3f74288bcf5efd24c7f27abf08ec68c9133b7932ac2511aa2f3e26fd8c"
+    },
+    {
+      "sourceSymbol": "Hind/G03/Parts/NoseGun",
+      "staticSymbol": "Codex/雌鹿G04/G03/Parts/NoseGun",
+      "sourceSha256": "8ce44ad4a9d6283234b4ecb466b930f8a4d287b1e31aa2043bce93eda40c1814"
+    },
+    {
+      "sourceSymbol": "Hind/G03/Surface/SkinEngineScorch",
+      "staticSymbol": "Codex/雌鹿G04/G03/Surface/SkinEngineScorch",
+      "sourceSha256": "4892a01aba94f2a32a65731fb5055980f842c9a6db372a0c67fd70c35156a7d3"
+    },
+    {
+      "sourceSymbol": "Hind/G03/Surface/HullCombatWear",
+      "staticSymbol": "Codex/雌鹿G04/G03/Surface/HullCombatWear",
+      "sourceSha256": "c87fb6aee2664b9bda99d7bf912972bc33f7a81eb2d3ea6e3f780f134928210d"
+    },
+    {
+      "sourceSymbol": "Hind/G03/InheritedSurface/Art/SkinFragmentScars",
+      "staticSymbol": "Codex/雌鹿G04/G03/InheritedSurface/Art/SkinFragmentScars",
+      "sourceSha256": "c01c96f35d0cab83ba296a9f1cbb1aeb9a78d4fba7b803852c77aa78971a8d13"
+    },
+    {
+      "sourceSymbol": "Hind/G03/InheritedSurface/SkinFragmentScars",
+      "staticSymbol": "Codex/雌鹿G04/G03/InheritedSurface/SkinFragmentScars",
+      "sourceSha256": "c6537b7b1879c6e9e90aa877614f53442fd539ccbc602c306e7fa7c2acca462c"
+    },
+    {
+      "sourceSymbol": "Hind/G03/InheritedSurface/Art/SkinNoseAbrasion",
+      "staticSymbol": "Codex/雌鹿G04/G03/InheritedSurface/Art/SkinNoseAbrasion",
+      "sourceSha256": "58d31127a4582f0a3b257e4b59908f3ff0a512e709a2618538cf32b65e309fcc"
+    },
+    {
+      "sourceSymbol": "Hind/G03/InheritedSurface/SkinNoseAbrasion",
+      "staticSymbol": "Codex/雌鹿G04/G03/InheritedSurface/SkinNoseAbrasion",
+      "sourceSha256": "20c02c762b1a1211638b3a00a72714b1af06691f43b057b4e7160d3dcbda6e59"
+    },
+    {
+      "sourceSymbol": "Hind/G03/InheritedSurface/Art/SkinBellyAbrasion",
+      "staticSymbol": "Codex/雌鹿G04/G03/InheritedSurface/Art/SkinBellyAbrasion",
+      "sourceSha256": "3e79579ecec772a84381ffb31fe41c0b77fcef13e59af00e233e7b1cb30086b1"
+    },
+    {
+      "sourceSymbol": "Hind/G03/InheritedSurface/SkinBellyAbrasion",
+      "staticSymbol": "Codex/雌鹿G04/G03/InheritedSurface/SkinBellyAbrasion",
+      "sourceSha256": "98d6d9511ad7da67635d572304215937a6efa959825c54abdb1c1d92540f141f"
+    },
+    {
+      "sourceSymbol": "Hind/G03/InheritedSurface/SkinFairingCrease",
+      "staticSymbol": "Codex/雌鹿G04/G03/InheritedSurface/SkinFairingCrease",
+      "sourceSha256": "04784f4962ab5021db2d4fb426a7d466ae332f05a2201094880bcc0ed59cc4a3"
+    },
+    {
+      "sourceSymbol": "Hind/G03/InheritedSurface/Art/SkinBlastSoot",
+      "staticSymbol": "Codex/雌鹿G04/G03/InheritedSurface/Art/SkinBlastSoot",
+      "sourceSha256": "2f49f9cfc2cfb511a3dc47d807bd757f2c6f0956941dc9b02c78bade68591d8e"
+    },
+    {
+      "sourceSymbol": "Hind/G03/InheritedSurface/SkinBlastSoot",
+      "staticSymbol": "Codex/雌鹿G04/G03/InheritedSurface/SkinBlastSoot",
+      "sourceSha256": "7d447f00c32b12175670a884af80d55d5f3b1f4fe45c1b1d8eef29bf853ab142"
+    },
+    {
+      "sourceSymbol": "Hind/G03/InheritedSurface/HullWear",
+      "staticSymbol": "Codex/雌鹿G04/G03/InheritedSurface/HullWear",
+      "sourceSha256": "581d5a1db649186f60b11a2f32886a2fbcf226b158ea53f6c371e786804533e3"
+    },
+    {
+      "sourceSymbol": "Hind/G03/Body/art/TailRegion",
+      "staticSymbol": "Codex/雌鹿G04/G03/Body/art/TailRegion",
+      "sourceSha256": "417d999355bea1710ceb10c41549a2cd7e1965f94e55847026b26f938e2a70a9"
+    },
+    {
+      "sourceSymbol": "Hind/G03/Body/TailRegion",
+      "staticSymbol": "Codex/雌鹿G04/G03/Body/TailRegion",
+      "sourceSha256": "4d08fc9792c5d8e378e05216ccff9c04138fe3b70dc2268625a21d372e09f948"
+    },
+    {
+      "sourceSymbol": "Hind/G03/Body/art/BellyRegion",
+      "staticSymbol": "Codex/雌鹿G04/G03/Body/art/BellyRegion",
+      "sourceSha256": "4dd7cb0448f58dc82572b5acf87a7583f982fb61e74fc223444d4694a589901a"
+    },
+    {
+      "sourceSymbol": "Hind/G03/Body/BellyRegion",
+      "staticSymbol": "Codex/雌鹿G04/G03/Body/BellyRegion",
+      "sourceSha256": "65f0f19f14c6962732b7a4fc3fa9ef834a12aff49ce0ac81ba58c620210c1e16"
+    },
+    {
+      "sourceSymbol": "Hind/G03/Body/art/CabinRegion",
+      "staticSymbol": "Codex/雌鹿G04/G03/Body/art/CabinRegion",
+      "sourceSha256": "3acfc737344677c10a761535e3143db7a42378737f2defc9743c6496ad480d7d"
+    },
+    {
+      "sourceSymbol": "Hind/G03/Body/CabinRegion",
+      "staticSymbol": "Codex/雌鹿G04/G03/Body/CabinRegion",
+      "sourceSha256": "5258c2136e16652ed5e5b6f1e37eab5e370bb1e1f06bf3312a9d4efa3093a03d"
+    },
+    {
+      "sourceSymbol": "Hind/G03/Body/art/UpperMiddleRegion",
+      "staticSymbol": "Codex/雌鹿G04/G03/Body/art/UpperMiddleRegion",
+      "sourceSha256": "103fc028b9a20a0feb6275b3a383ee91831373bcc5f57c707ceda2732d23bd6b"
+    },
+    {
+      "sourceSymbol": "Hind/G03/Body/UpperMiddleRegion",
+      "staticSymbol": "Codex/雌鹿G04/G03/Body/UpperMiddleRegion",
+      "sourceSha256": "bc5bc1bb652d201bca98135a4b46ecbbf6a88c9a0574d96b1d239568866bf564"
+    },
+    {
+      "sourceSymbol": "Hind/G03/Body/art/FrontRegion",
+      "staticSymbol": "Codex/雌鹿G04/G03/Body/art/FrontRegion",
+      "sourceSha256": "e909a25493df56583a981657fa76ce22015f7950a29c27c78640cf2e09d76d37"
+    },
+    {
+      "sourceSymbol": "Hind/G03/Body/FrontRegion",
+      "staticSymbol": "Codex/雌鹿G04/G03/Body/FrontRegion",
+      "sourceSha256": "0d6a47a153bb4366ae5efd02eb4b8ddc88b36a815b972805a9118cfb564a20b9"
+    },
+    {
+      "sourceSymbol": "Hind/G02/Parts/EmptyCabinBackdrop",
+      "staticSymbol": "Codex/雌鹿G04/G02/Parts/EmptyCabinBackdrop",
+      "sourceSha256": "100a7c7b47b60aa33e8f70e5e4a8cc86f5ebfe287bfa061a245e74b65c110638"
+    },
+    {
+      "sourceSymbol": "Hind/G03/Parts/art/CanopyInnerShell",
+      "staticSymbol": "Codex/雌鹿G04/G03/Parts/art/CanopyInnerShell",
+      "sourceSha256": "56d7159e76a99da0405ed82a8a90c9684914e4bc79b441063818c21b54083cd6"
+    },
+    {
+      "sourceSymbol": "Hind/G03/Parts/CanopyInnerShell",
+      "staticSymbol": "Codex/雌鹿G04/G03/Parts/CanopyInnerShell",
+      "sourceSha256": "c70d4717634da649cb893f52f642992c7d181bf43c98d68a6fe6b4ad6dbdef5d"
+    },
+    {
+      "sourceSymbol": "Hind/G03/Parts/FrontHull",
+      "staticSymbol": "Codex/雌鹿G04/G03/Parts/FrontHull",
+      "sourceSha256": "ba96de7cd00e7a3c1b3427624c8057497e794b0bed5a119e4999114613d6c7bd"
+    },
+    {
+      "sourceSymbol": "Hind/G03/Parts/RuptureInterior",
+      "staticSymbol": "Codex/雌鹿G04/G03/Parts/RuptureInterior",
+      "sourceSha256": "b3986cc4df0bf75d67cbec4624a9002834e42f9f0f6ed743bbe10cc734ed1d4e"
+    },
+    {
+      "sourceSymbol": "Hind/Source/MainWheel",
+      "staticSymbol": "Codex/雌鹿G04/Source/MainWheel",
+      "sourceSha256": "4e56f5e38b7a008494f82926706a49639e5542a3946580d68ad3aa1543496ae1"
+    },
+    {
+      "sourceSymbol": "Hind/G03/Parts/GearNear",
+      "staticSymbol": "Codex/雌鹿G04/G03/Parts/GearNear",
+      "sourceSha256": "357ac3a56a5baea127710da963d3220fc767f3e27184e71894dd8b3cc47f5d2b"
+    },
+    {
+      "sourceSymbol": "Hind/G03/Parts/NoseGearStub",
+      "staticSymbol": "Codex/雌鹿G04/G03/Parts/NoseGearStub",
+      "sourceSha256": "d014ff7bc0ce7f3c938f9ed7c25792631e8aabc390a3958bba3dda8875465dba"
+    },
+    {
+      "sourceSymbol": "Hind/G03/Parts/GearFar",
+      "staticSymbol": "Codex/雌鹿G04/G03/Parts/GearFar",
+      "sourceSha256": "876117e0804a98beca708a411bf9bc59610270558fe3be86c3c36380caa7f1b5"
+    },
+    {
+      "sourceSymbol": "Hind/G03R1/Parts/FrontFuselage",
+      "staticSymbol": "Codex/雌鹿G04/G03R1/Parts/FrontFuselage",
+      "sourceSha256": "ccba56dc91cecf1d61770dadac73bfa8dcb2ecdfd56613fec7ee83c684c18f56"
+    },
+    {
+      "sourceSymbol": "Hind/G03R1/Rotors/art/LooseBladeA",
+      "staticSymbol": "Codex/雌鹿G04/G03R1/Rotors/art/LooseBladeA",
+      "sourceSha256": "56f71823eb8264423dbff2918debd475f871fc7c25bf283ea53033de7f35e62c"
+    },
+    {
+      "sourceSymbol": "Hind/G03R1/Rotors/LooseBladeA",
+      "staticSymbol": "Codex/雌鹿G04/G03R1/Rotors/LooseBladeA",
+      "sourceSha256": "6e195ec9672b5c9af1fc04ec860dd59e789dc3a4184884c58c3ff686ef4e6a09"
+    },
+    {
+      "sourceSymbol": "Hind/G03R1/Rotors/art/LooseBladeB",
+      "staticSymbol": "Codex/雌鹿G04/G03R1/Rotors/art/LooseBladeB",
+      "sourceSha256": "719f3a55dbc4047e22bddf31fb3014ec2feb2ed9ad3285d68c975df7b6070f26"
+    },
+    {
+      "sourceSymbol": "Hind/G03R1/Rotors/LooseBladeB",
+      "staticSymbol": "Codex/雌鹿G04/G03R1/Rotors/LooseBladeB",
+      "sourceSha256": "931c3c4348363d1bbf2e5bce4c1b11ee30c98360b80929f2b10a57bad467d499"
+    },
+    {
+      "sourceSymbol": "Hind/G02/Surface/Art/SkinFragmentScars",
+      "staticSymbol": "Codex/雌鹿G04/G02/Surface/Art/SkinFragmentScars",
+      "sourceSha256": "2de244c16b47a0f3ed297fb1a395c2a7bd60e4cfb2097c45acc24737d2a7804d"
+    },
+    {
+      "sourceSymbol": "Hind/G02/Surface/Art/SkinBlastSoot",
+      "staticSymbol": "Codex/雌鹿G04/G02/Surface/Art/SkinBlastSoot",
+      "sourceSha256": "d7fb5a44bbd51bdf76442abbbef63acfbab9db1956284fd7be9e6910ad9979c5"
+    },
+    {
+      "sourceSymbol": "Hind/G02/Doors/DerailedPanel",
+      "staticSymbol": "Codex/雌鹿G04/G02/Doors/DerailedPanel",
+      "sourceSha256": "c7dc2f396a43f6e416b47dfb511a4ca83730cac9431a6fdf65f8d3df7e9190aa"
+    },
+    {
+      "sourceSymbol": "Hind/Source/NoseWheel",
+      "staticSymbol": "Codex/雌鹿G04/Source/NoseWheel",
+      "sourceSha256": "2bb97fb12fda0bef6f96d828f8d27ff65899f32f8115204251deb0aee22b6cd0"
+    },
+    {
+      "sourceSymbol": "Hind/G03/Parts/NoseWheelDebris",
+      "staticSymbol": "Codex/雌鹿G04/G03/Parts/NoseWheelDebris",
+      "sourceSha256": "3c4cb3b7c87e2a5d2317c7ee1cebdaed9bde8969c4252d2c6f0dbddae44bfdcc"
+    },
+    {
+      "sourceSymbol": "Hind/G03/Parts/SmallDebris",
+      "staticSymbol": "Codex/雌鹿G04/G03/Parts/SmallDebris",
+      "sourceSha256": "46b2d8637678a57dec73babbd2efde18bd91066d0bbcf1c33328608e9d6e8a40"
+    },
+    {
+      "sourceSymbol": "Hind/G03/Parts/TailCutInterior",
+      "staticSymbol": "Codex/雌鹿G04/G03/Parts/TailCutInterior",
+      "sourceSha256": "7a88c58cf8ef8346449d77dc3198628928d96882e2521694da3098fced1788ee"
+    },
+    {
+      "sourceSymbol": "Hind/Source/TailTip",
+      "staticSymbol": "Codex/雌鹿G04/Source/TailTip",
+      "sourceSha256": "27fcb7c18087eeb4dc68dd98ef9d30da2ab431e574959bcd9012399eb37c2f10"
+    },
+    {
+      "sourceSymbol": "Hind/Parts/TailDetail",
+      "staticSymbol": "Codex/雌鹿G04/Parts/TailDetail",
+      "sourceSha256": "5271484ab848c664e2bb4281dbc1b96a415a91307f534e4ac529b0d13309c505"
+    },
+    {
+      "sourceSymbol": "Hind/G03R1/Rotors/art/TailBlade1",
+      "staticSymbol": "Codex/雌鹿G04/G03R1/Rotors/art/TailBlade1",
+      "sourceSha256": "85b024f81538e9751a124cb58b90a9b7485b729628fe0efa2e89f568f83488c2"
+    },
+    {
+      "sourceSymbol": "Hind/G03R1/Rotors/TailBlade1",
+      "staticSymbol": "Codex/雌鹿G04/G03R1/Rotors/TailBlade1",
+      "sourceSha256": "3293755eaa2e118c40e6bec0d2cda2b8206a29f4106dd1c929595064dc27fbb3"
+    },
+    {
+      "sourceSymbol": "Hind/G03R1/Rotors/art/TailBlade2",
+      "staticSymbol": "Codex/雌鹿G04/G03R1/Rotors/art/TailBlade2",
+      "sourceSha256": "1855ee7c4ba60628f0b71e6a73010132953120fc3c62264e8bda6a1526eca025"
+    },
+    {
+      "sourceSymbol": "Hind/G03R1/Rotors/TailBlade2",
+      "staticSymbol": "Codex/雌鹿G04/G03R1/Rotors/TailBlade2",
+      "sourceSha256": "5207b0c5f0638584f7af06eb0dd46cc9ed117a1e706fd909bcad503bb9e7d81a"
+    },
+    {
+      "sourceSymbol": "Hind/G03R1/Rotors/art/TailBlade3",
+      "staticSymbol": "Codex/雌鹿G04/G03R1/Rotors/art/TailBlade3",
+      "sourceSha256": "95a49b2ca7a9827e05dfbe453f1741b19161ff477909cf689cf40bc3cdd979a7"
+    },
+    {
+      "sourceSymbol": "Hind/G03R1/Rotors/TailBlade3",
+      "staticSymbol": "Codex/雌鹿G04/G03R1/Rotors/TailBlade3",
+      "sourceSha256": "6320f7236298a85ae16d8c1a67feb47c723c51f027e3311ad58deecd11dca321"
+    },
+    {
+      "sourceSymbol": "Hind/G03R1/Rotors/TailCrushed",
+      "staticSymbol": "Codex/雌鹿G04/G03R1/Rotors/TailCrushed",
+      "sourceSha256": "6b148f1b7ba1d140975ad30905cc6246f8d471eb93e10d7a56ffe12f37e6d5c5"
+    },
+    {
+      "sourceSymbol": "Hind/G03R1/Parts/TailPiece",
+      "staticSymbol": "Codex/雌鹿G04/G03R1/Parts/TailPiece",
+      "sourceSha256": "39db1af8d221937c97ca5a1a2d5a0877adae083389d3d6ae5b939f4c628f1b5e"
+    },
+    {
+      "sourceSymbol": "Hind/G03R1/Assembly/A_Static",
+      "staticSymbol": "Codex/雌鹿G04/G03R1/Assembly/A_Static",
+      "sourceSha256": "0cf8655e69e09c9f9827fbb814b409cfd9b963cbb51c04b171918bf5e5be9338"
+    }
+  ],
   "note": "symbols 映射在正式接入时补登；沉淀文档见 docs/雌鹿直升机G04交接-绘制经验与接入要点-2026-09-15.md"
 }
