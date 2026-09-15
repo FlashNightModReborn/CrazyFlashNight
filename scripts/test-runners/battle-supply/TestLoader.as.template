@@ -1,4 +1,5 @@
 ﻿// 战场即时补给 focused runner；BOM 必须保留。
 trace("FocusedTestRunId battle-supply Start: __FOCUSED_RUN_ID__");
 org.flashNight.arki.unit.Action.PickUp.PickupEffectServiceTest.runAllTests();
+org.flashNight.arki.unit.Action.Shoot.AmmoSupplyServiceTest.runAllTests();
 trace("FocusedTestRunId battle-supply Complete: __FOCUSED_RUN_ID__");

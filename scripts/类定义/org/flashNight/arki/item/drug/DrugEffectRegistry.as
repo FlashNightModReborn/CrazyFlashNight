@@ -43,6 +43,8 @@ class org.flashNight.arki.item.drug.DrugEffectRegistry {
         register(new GrantItemEffect());
         register(new PlayEffectEffect());
         register(new MessageEffect());
+        // FQN 直写：effects.* 通配对 CS6 常驻会话内新增类可能命中 L42 陈旧索引（同包 FQN 先例见 :782）
+        register(new org.flashNight.arki.item.drug.effects.SupplyAmmoEffect());
 
         _initialized = true;
     }

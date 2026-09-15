@@ -10,12 +10,11 @@
  * 结果四态：
  *   "applied"   任一词条产生真实收益，整包消耗（调用方继续实体收尾）
  *   "noBenefit" 配置有效但零收益（如满血），实体保留，可重试
- *   "rejected"  前置拒绝（占用中/目标死亡/配置不支持），零写入，实体保留
+ *   "rejected"  前置拒绝（占用中/目标死亡/配置不支持/换弹在途），零写入，实体保留
  *   "tooFar"    距离不满足近距规则，静默，实体保留
  *
  * 键盘/鼠标拾取的距离规则收拢在本类，调用方不再各自判定。
- * supplyAmmo 词条本片仅识别不执行（下一片注册进 DrugEffectRegistry 前，
- * 含该词条的配置在配置校验按"配置不支持"前置拒绝，属预期行为）。
+ * supplyAmmo 词条经 AmmoSupplyService 执行；含补弹效果的整包在换弹期间前置拒绝。
  */
 
 import org.flashNight.arki.item.drug.DrugContext;
@@ -23,13 +22,14 @@ import org.flashNight.arki.item.drug.DrugEffectNormalizer;
 import org.flashNight.arki.item.drug.DrugEffectRegistry;
 import org.flashNight.arki.item.drug.IDrugEffect;
 import org.flashNight.arki.unit.UnitComponent.Targetcache.*;
+import org.flashNight.arki.unit.Action.Shoot.AmmoSupplyService;
 
 class org.flashNight.arki.unit.Action.PickUp.PickupEffectService {
 
     /** 即时激活策略标识：物品 use 字段等于该值即视为战场补给 */
     public static var SUPPLY_USE:String = "战场补给";
 
-    /** 允许出现在补给配置中的效果词条白名单（supplyAmmo 下一片注册，本片仅识别后拦截） */
+    /** 允许出现在补给配置中的效果词条白名单 */
     private static var ALLOWED_TYPES:Array =
         ["heal", "regen", "buff", "resistanceBuff", "supplyAmmo", "playEffect", "message"];
 
@@ -88,12 +88,21 @@ class org.flashNight.arki.unit.Action.PickUp.PickupEffectService {
             }
         }
 
+        // 含补弹效果的整包在换弹期间拒领（零写、实体保留、可重试）；
+        // 判据与 AmmoSupplyService 共用同一入口，避免两份判据漂移
+        for (i = 0; i < effects.length; i++) {
+            if (effects[i] != null && effects[i].type == "supplyAmmo"
+                    && AmmoSupplyService.isReloadInProgress(hero)) {
+                _root.发布消息("换弹中，无法领取补给");
+                return "rejected";
+            }
+        }
+
         // 中性上下文：战场补给不吃炼金加成，强制 alchemyLevel=0
         var ctx:DrugContext = DrugContext.createWithData(itemName, hero, itemData);
         ctx.alchemyLevel = 0;
 
-        // 逐条执行并统计真实收益；playEffect/message 执行但不计收益，
-        // supplyAmmo 本片在配置校验即拦截，不会走到这里
+        // 逐条执行并统计真实收益；playEffect/message 执行但不计收益
         var benefits:Array = [];
         for (i = 0; i < effects.length; i++) {
             var effectData:Object = effects[i];
@@ -117,6 +126,11 @@ class org.flashNight.arki.unit.Action.PickUp.PickupEffectService {
                     break;
                 case "regen":
                     benefits.push({kind: "regen"});
+                    break;
+                case "supplyAmmo":
+                    if (ctx._ammoSupplyChanged > 0) {
+                        benefits.push({kind: "ammo", value: ctx._ammoSupplyChanged});
+                    }
                     break;
             }
         }
@@ -145,7 +159,7 @@ class org.flashNight.arki.unit.Action.PickUp.PickupEffectService {
     }
 
     /**
-     * 领取收益文案的唯一收口。下一片 supplyAmmo 的弹药反馈在此扩展 "ammo" 分支。
+     * 领取收益文案的唯一收口。supplyAmmo 的弹药反馈即 "ammo" 分支。
      */
     private static function buildAppliedMessage(itemName:String, benefits:Array):String {
         var parts:Array = [];
@@ -168,7 +182,7 @@ class org.flashNight.arki.unit.Action.PickUp.PickupEffectService {
                     parts.push("已获得持续恢复");
                     break;
                 case "ammo":
-                    parts.push("弹药已补充");
+                    parts.push("已补满 " + benefit.value + " 把枪械");
                     break;
             }
         }

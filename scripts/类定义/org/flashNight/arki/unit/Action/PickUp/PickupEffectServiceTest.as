@@ -11,11 +11,12 @@ import org.flashNight.arki.item.drug.DrugValueParser;
  *
  * 覆盖（设计契约 docs/战场即时补给品-技术调研与首批施工准备-2026-09-12.md §13）：
  *   - isInstantSupply 识别 use=战场补给
- *   - 白名单拒绝未知词条 / 未注册词条（supplyAmmo 本片未开放），零写入
+ *   - 白名单拒绝未知词条，零写入
  *   - 满血无收益保留实体（noBenefit），缺血收益消耗（applied）
  *   - 死亡目标拒绝、距离过远 tooFar 静默、重复领取占用
  *   - 炼金中性化（高炼金等级不改变恢复量与封顶）
  *   - Buff 固定 id 刷新不叠强度；regen 独立槽不清默认药剂缓释槽
+ *   - supplyAmmo：换弹在途前置拒绝、真实补弹收益与弹药播报
  *
  * 物品数据经 mock _root.getItemData 注入；hero/target 用真实 MovieClip 与
  * 真实 BuffManager，药效词条走真实 DrugEffectRegistry 注册实例。
@@ -65,14 +66,14 @@ class org.flashNight.arki.unit.Action.PickUp.PickupEffectServiceTest {
         _root.gameworld = _root;
         _root.发布消息 = function(message):Void { PickupEffectServiceTest.messages.push(message); };
         _root.存档系统 = {dirtyMark: false};
-        _root.玩家信息界面 = {刷新hp显示: function():Void {}, 刷新mp显示: function():Void {}};
+        _root.玩家信息界面 = {玩家必要信息界面: {}, 刷新hp显示: function():Void {}, 刷新mp显示: function():Void {}};
         _root.getItemData = function(name):Object { return PickupEffectServiceTest.itemDict[name]; };
         installItemDict();
 
         try {
             testIsInstantSupply();
             testUnknownTypeRejectedZeroWrite();
-            testUnregisteredSupplyAmmoRejected();
+            testSupplyAmmoRegisteredNoGunNoBenefit();
             testFullHpNoBenefit();
             testWoundedApplied();
             testDeadHeroRejected();
@@ -81,6 +82,8 @@ class org.flashNight.arki.unit.Action.PickUp.PickupEffectServiceTest {
             testAlchemyNeutralized();
             testBuffRefreshNoStack();
             testRegenIndependentSlot();
+            testReloadBlocksSupplyClaim();
+            testSupplyAmmoAppliedMessage();
         } catch (error) {
             check(false, "unexpected exception: " + error);
         }
@@ -105,6 +108,7 @@ class org.flashNight.arki.unit.Action.PickUp.PickupEffectServiceTest {
         itemDict["战场未知词条包"] = {use: "战场补给", data: {effects: {effect: [
             {type: "grantItem", item: "砖", count: 1}
         ]}}};
+        itemDict["测试长枪"] = {use: "长枪", data: {bullet: "普通子弹", clipname: "测试弹匣"}};
         itemDict["普通hp药剂"] = {use: "药剂", data: {effects: {effect: [
             {type: "heal", hp: "150", mp: "0", target: "self", scaleWithAlchemy: true}
         ]}}};
@@ -160,14 +164,14 @@ class org.flashNight.arki.unit.Action.PickUp.PickupEffectServiceTest {
         check(_root.存档系统.dirtyMark == false, "前置拒绝不落脏");
     }
 
-    private static function testUnregisteredSupplyAmmoRejected():Void {
+    private static function testSupplyAmmoRegisteredNoGunNoBenefit():Void {
         resetState();
         var hero:MovieClip = makeHero(500, 1000, 0, 1000);
         var target:MovieClip = makeTarget("战场弹药包", 0);
-        check(PickupEffectService.tryClaim(target) == "rejected", "supplyAmmo 本片未注册按配置不支持拒绝");
-        check(hero.hp == 500, "supplyAmmo 拒绝零写入");
-        check(messages.length == 1 && messages[0] == "补给配置无效", "supplyAmmo 拒绝播报配置无效");
-        check(target._supplyClaimed === false, "supplyAmmo 拒绝后占用复位");
+        check(PickupEffectService.tryClaim(target) == "noBenefit", "supplyAmmo 已注册：无枪可补返回 noBenefit");
+        check(hero.hp == 500, "无枪可补零写入");
+        check(messages.length == 1 && messages[0] == "状态良好，无需补给", "无枪可补播报无需补给");
+        check(target._supplyClaimed === false, "noBenefit 占用复位");
     }
 
     private static function testFullHpNoBenefit():Void {
@@ -267,6 +271,35 @@ class org.flashNight.arki.unit.Action.PickUp.PickupEffectServiceTest {
         check(hero.buffManager.getBuffById("战场_缓释_HP") != null, "战场缓释独立槽已建立");
         assertEq("战场复合急救包：HP +250，MP +500，已获得持续恢复", messages[0], "复合收益播报");
         check(hero.buffManager.getBuffById("战场_缓释_HP") !== hero.buffManager.getBuffById("药剂_缓释_HP"), "两槽为不同实例");
+    }
+
+    private static function testReloadBlocksSupplyClaim():Void {
+        resetState();
+        var hero:MovieClip = makeHero(500, 1000, 0, 1000);
+        hero.man = {换弹标签: true};
+        hero.长枪 = {name: "测试长枪", value: {level: 1, shot: 5}};
+        hero.长枪属性 = {bullet: "普通子弹"};
+        hero.长枪弹匣容量 = 30;
+        var target:MovieClip = makeTarget("战场弹药包", 0);
+        check(PickupEffectService.tryClaim(target) == "rejected", "换弹在途补给前置拒绝");
+        check(messages.length == 1 && messages[0] == "换弹中，无法领取补给", "换弹拒绝播报");
+        check(hero.长枪.value.shot == 5 && _root.存档系统.dirtyMark == false, "换弹拒绝零写零落脏");
+        check(target._supplyClaimed === false, "换弹拒绝占用复位可重试");
+    }
+
+    private static function testSupplyAmmoAppliedMessage():Void {
+        resetState();
+        var hero:MovieClip = makeHero(500, 1000, 0, 1000);
+        hero.man = {换弹标签: false};
+        hero.攻击模式 = "长枪";
+        hero.长枪 = {name: "测试长枪", value: {level: 1, shot: 5}};
+        hero.长枪属性 = {bullet: "普通子弹"};
+        hero.长枪弹匣容量 = 30;
+        var target:MovieClip = makeTarget("战场弹药包", 0);
+        check(PickupEffectService.tryClaim(target) == "applied", "弹药包领取生效");
+        assertEq(0, hero.长枪.value.shot, "长枪已被补满");
+        assertEq("战场弹药包：已补满 1 把枪械", messages[0], "弹药收益播报");
+        check(_root.存档系统.dirtyMark == true, "弹药收益落脏");
     }
 
     private static function finish():Void {

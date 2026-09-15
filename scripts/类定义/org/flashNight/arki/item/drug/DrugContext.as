@@ -27,6 +27,15 @@ class org.flashNight.arki.item.drug.DrugContext {
     /** 当前使用声明的持续效果域；空值表示本次使用不参与域互斥 */
     public var activeBuffDomain:String;
 
+    /** 弹药补给反馈通道：AmmoSupplyService 的拒绝原因（undefined/null=未拒绝），由 SupplyAmmoEffect 挂载 */
+    public var _ammoRejected:String;
+
+    /** 弹药补给实际补弹实例数（>0 即收益），由 SupplyAmmoEffect 挂载 */
+    public var _ammoSupplyChanged:Number;
+
+    /** 弹药补给明细（{name, slot, beforeShot} 数组），由 SupplyAmmoEffect 挂载 */
+    public var _ammoSupplyDetails:Array;
+
     /**
      * 构造函数
      */
