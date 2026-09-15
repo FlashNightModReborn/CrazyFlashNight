@@ -3,6 +3,7 @@
 import org.flashNight.arki.unit.Action.Skill.ManualCooldownService;
 import org.flashNight.arki.item.PlayerAssetTransaction;
 import org.flashNight.arki.item.DrugSlotAffinityService;
+import org.flashNight.arki.item.drug.DrugProhibitionService;
 
 /**
  * @class DrugInputService
@@ -172,6 +173,14 @@ class org.flashNight.arki.unit.Action.Skill.DrugInputService {
             return result;
         }
 
+        // 关卡禁药：限制系统条目生效时，在药效/冷却/affinity/扣药任一权威写之前
+        // 统一拒绝并提示（判据唯一事实源 DrugProhibitionService）。
+        if (DrugProhibitionService.isDrugUseBlocked(itemName)) {
+            if (root && root.发布消息) root.发布消息(DrugProhibitionService.BLOCKED_MESSAGE);
+            result.prohibited = true;
+            return result;
+        }
+
         // future schema 必须在药效/冷却/扣药任一权威写前 fail closed。
         // preview 纯读；最后一剂的 affinity 与扣药在同一 dirty frame 提交。
         var affinityPreflight:Object =
@@ -302,6 +311,14 @@ class org.flashNight.arki.unit.Action.Skill.DrugInputService {
         if (current == null || current !== item || Number(current.value) <= 0) {
             return {used:false, error:"stale_source"};
         }
+
+        // 关卡禁药：与快捷用药同一判据，在冷却选 lane 与药剂事务发生前拒绝。
+        // ItemUseService.executeConsume 委托本方法，背包直服入口因此一并覆盖。
+        if (DrugProhibitionService.isDrugUseBlocked(String(current.name))) {
+            if (root.发布消息) root.发布消息(DrugProhibitionService.BLOCKED_MESSAGE);
+            return {used:false, error:"prohibited"};
+        }
+
         var selected:Object = selectDirectUseLane(String(current.name),
             root.物品栏 == null ? null : root.物品栏.药剂栏);
         if (selected == null || selected.success !== true

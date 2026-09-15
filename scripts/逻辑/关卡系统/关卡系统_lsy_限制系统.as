@@ -43,3 +43,4 @@ _root.限制系统 = 限制系统;
 限制系统.addEntry("DisableCompanion", "无法携带同伴"); //禁用同伴
 限制系统.addEntry("DisableKnockdownProtection", "被击飞和击倒状态下无法免疫攻击"); //禁用落地保护
 限制系统.addEntry("DisableResurrection", "无法使用复活币"); //禁用复活
+限制系统.addEntry("DisableDrug", "无法使用药剂"); //禁药（快捷/背包用药在权威使用点统一拒绝；战场补给拾取路径不受限）

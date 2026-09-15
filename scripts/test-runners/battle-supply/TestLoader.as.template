@@ -2,4 +2,5 @@
 trace("FocusedTestRunId battle-supply Start: __FOCUSED_RUN_ID__");
 org.flashNight.arki.unit.Action.PickUp.PickupEffectServiceTest.runAllTests();
 org.flashNight.arki.unit.Action.Shoot.AmmoSupplyServiceTest.runAllTests();
+org.flashNight.arki.item.drug.DrugProhibitionTest.runAllTests();
 trace("FocusedTestRunId battle-supply Complete: __FOCUSED_RUN_ID__");
