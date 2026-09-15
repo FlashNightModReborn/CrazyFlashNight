@@ -34,7 +34,9 @@ class org.flashNight.arki.item.drug.DrugValueParser {
         var strValue:String = String(raw);
         if (strValue.indexOf("%") >= 0) {
             // 百分比恢复
-            var percent:Number = parseFloat(strValue.replace("%", ""));
+            // 注意：不能用 strValue.replace("%", "")——RegExp.as 重写的
+            // String.prototype.replace 对非 RegExp 参数返回 null，会静默把百分比解析成 0
+            var percent:Number = parseFloat(strValue.substring(0, strValue.indexOf("%")));
             if (isNaN(percent)) return 0;
             return Math.floor(maxValue * percent / 100);
         } else {
@@ -60,7 +62,7 @@ class org.flashNight.arki.item.drug.DrugValueParser {
 
         var strValue:String = String(raw);
         if (strValue.indexOf("%") >= 0) {
-            var percent:Number = parseFloat(strValue.replace("%", ""));
+            var percent:Number = parseFloat(strValue.substring(0, strValue.indexOf("%")));
             if (isNaN(percent)) return 0;
             return percent / 100;
         } else {
