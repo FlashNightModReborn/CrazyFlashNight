@@ -1,0 +1,16 @@
+{
+  "package": "G04-雌鹿直升机-素材与经验交接包-20260915.zip",
+  "packageSha256": "95d612dcd9a462c7591dd5535c6231f1454acc9bc1a1370a41af92c9599a35ab",
+  "packageLocation": "本机仓外存档（用户 Downloads 接收，体积约 350MB / 9807 文件；按 AGENTS.md 二进制约束不入 git）",
+  "artwork": "WORK-20260914-005 雌鹿直升机损伤改造，当前成品 G03R1",
+  "stageFlaSha256": {
+    "G01-Complete": "65b0a66bcd991c9ab32ea85bca40272a369e13cb1f9c44c82d8495650f3e2751",
+    "G03R1-Complete": "0bf3cf39ab73ea7aefb7b35eabfdc027bee221226c57afcfa293b956ad3fd61e"
+  },
+  "hashesVerifiedOnReceive": "2026-09-15 本机从 zip 流独立复算 G03R1 FLA，与登记值一致",
+  "authority": "待定（接入时按静态载具进入地图先例登记到目标背景 XFL）",
+  "namespace": "待定（预计 Codex/雌鹿G04/ 同级）",
+  "scope": "G01 完整母版（A/军阀徽记、主/尾旋翼 Static/Slow/Fast/Coast 四状态，Coast 97 帧末帧标签 park）；G02 军阀中损迫降；G03R1 A 兵团重损坠毁静态终态。全部纯矢量、零位图、零素材脚本，24fps；保存环境 Animate 24.0.6.54 AS3 发布配置。无完整中弹/下坠/触地连续演出；AS2 游戏实机接入未验证",
+  "symbols": [],
+  "note": "symbols 映射在正式接入时补登；沉淀文档见 docs/雌鹿直升机G04交接-绘制经验与接入要点-2026-09-15.md"
+}
