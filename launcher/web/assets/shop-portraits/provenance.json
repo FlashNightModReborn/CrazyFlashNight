@@ -11,7 +11,7 @@
   "toolchain": {
     "generator": {
       "path": "tools/bake-shop-portraits.py",
-      "sha256": "f4ec675e419778cc570a6adb9e48a380a1cc0824083ba4dd3b81094ed8586afd",
+      "sha256": "cee73a5225e421552ea1c728b40c8b6137717c7ade1cf86ef9bfcaabd6fca1bc",
       "bytes": 36280
     },
     "dialogueBaker": {
@@ -19,13 +19,13 @@
       "sha256": "c1d365beac69e8461b0c9430103978c3197dc8717c6cb6dbc43ce917f1bf748e",
       "bytes": 53694
     },
-    "python": "3.13.7",
-    "pillow": "12.1.0",
+    "python": "3.12.10",
+    "pillow": "12.2.0",
     "ffdecVersion": "21.1.1",
     "ffdecCli": {
-      "path": "tools/ffdec/ffdec-cli.exe",
-      "sha256": "c03ad5d22008246b9f2523a70830502ed0d01610f4054912b43ae70f58dddd86",
-      "bytes": 35854
+      "path": "tmp/ffdec-cli-java.cmd",
+      "sha256": "a537db55eed9e1fbf62e6353369fad64b8c473a7c1a15c545d11dd60d653ec01",
+      "bytes": 277
     },
     "ffdecJar": {
       "path": "tools/ffdec/ffdec.jar",
@@ -41,11 +41,11 @@
   "activeShopSource": {
     "list": {
       "path": "data/shops/list.xml",
-      "sha256": "c1a48d926c4955fd977f82806c684cd38527854587060710c56f41bb02891976",
-      "bytes": 1394
+      "sha256": "f202705028d5938406577f97d0516513679839ad73e1326ccc431c082e4931a2",
+      "bytes": 1428
     },
-    "listedCount": 36,
-    "activeCount": 35,
+    "listedCount": 37,
+    "activeCount": 36,
     "excludedShopIds": [
       "幸存老兵-暂时停用"
     ],
@@ -212,8 +212,8 @@
       },
       {
         "path": "data/shops/npcs/体育老师.json",
-        "sha256": "17465c06110f4152cd644c6320ace66c458405ea7326d96d90511b25ac008cb6",
-        "bytes": 511
+        "sha256": "d9c26d11a4291855e50311ae512c0b706035f2676c976dbf12e421f68bba5404",
+        "bytes": 537
       },
       {
         "path": "data/shops/npcs/吸特乐.json",
@@ -229,6 +229,11 @@
         "path": "data/shops/npcs/虎妙.json",
         "sha256": "aab423c69bf63e2ad49c904a85402bd0ef72f45acb0d6ad129a771ca54efef35",
         "bytes": 125
+      },
+      {
+        "path": "data/shops/npcs/阿卡.json",
+        "sha256": "656f00f91c7daafed130439bbd9eecf1b0ae359c9d6103e920f4c1fb8263d6ad",
+        "bytes": 119
       }
     ]
   },
@@ -238,7 +243,7 @@
     "bytes": 105113
   },
   "sourcePartition": {
-    "externalDialogue": 32,
+    "externalDialogue": 33,
     "internalDialogue": 2,
     "exactXflSwfPilot": 1
   },
@@ -367,9 +372,9 @@
       },
       "expression": "普通",
       "frame1Based": 1,
-      "extractedPngSha256": "c0b5db668bc043de5be0645deb665f271aafdee9bffadbd0efdb8b66af44e427",
+      "extractedPngSha256": "68bc870c58ba853e952ad976194a9802cbcc206d0845518b7ef23d12e2c2036c",
       "output": {
-        "uri": "subjects/6544cfd94eee4f398c800a29a35dbd0a866ecc97deecbc6b9798e1a84afa6c01.png",
+        "uri": "subjects/7f0d36b5310d8d8d2440b1bc3687c1ffd30455cb026095334b715ce030b50ad8.png",
         "width": 256,
         "height": 256,
         "bounds": {
@@ -378,7 +383,7 @@
           "width": 162,
           "height": 224
         },
-        "sha256": "6544cfd94eee4f398c800a29a35dbd0a866ecc97deecbc6b9798e1a84afa6c01"
+        "sha256": "7f0d36b5310d8d8d2440b1bc3687c1ffd30455cb026095334b715ce030b50ad8"
       }
     },
     "Shop Girl": {
@@ -817,9 +822,9 @@
         "NPC/NPC-heeho君/零件/墨镜"
       ],
       "ordinaryJackAlias": false,
-      "extractedPngSha256": "87ecf5743b272d5762dc9e20dc0394ece0e4663cbff85e0d5e08e0d11bf5c906",
+      "extractedPngSha256": "31671527a1df7494041289847911216aac15c328c6f52c13ebe992bd807b8e91",
       "output": {
-        "uri": "subjects/dcba5cb8fa7fb3c8f2e183a477a2093901cf9fc385c0bb8be19abb8262459e48.png",
+        "uri": "subjects/b6c88eab1582dd62e076d8530420d9f1a3a447905903f2d402a3ccf90e58a336.png",
         "width": 256,
         "height": 256,
         "bounds": {
@@ -828,7 +833,7 @@
           "width": 141,
           "height": 224
         },
-        "sha256": "dcba5cb8fa7fb3c8f2e183a477a2093901cf9fc385c0bb8be19abb8262459e48"
+        "sha256": "b6c88eab1582dd62e076d8530420d9f1a3a447905903f2d402a3ccf90e58a336"
       }
     },
     "格格巫": {
@@ -886,9 +891,9 @@
       },
       "expression": "普通",
       "frame1Based": 1,
-      "extractedPngSha256": "c13fc46b99efdd13017f1d889850e2bae71f2f7dd559957d1c6223c41c3d73c1",
+      "extractedPngSha256": "665faf5df6024f32585ae51ad6eef4b492bcdcfa2fb5a18aa2c2384e70b5d7c6",
       "output": {
-        "uri": "subjects/758a1c3f25d13df09c3a267e15ea5d39b47490dc739862d64cbd8e8bba11a821.png",
+        "uri": "subjects/7689be2e7509aa58a38e7655c9c5a4e5bd06af1344a331e20e9302e45a3a51ed.png",
         "width": 256,
         "height": 256,
         "bounds": {
@@ -897,7 +902,7 @@
           "width": 224,
           "height": 153
         },
-        "sha256": "758a1c3f25d13df09c3a267e15ea5d39b47490dc739862d64cbd8e8bba11a821"
+        "sha256": "7689be2e7509aa58a38e7655c9c5a4e5bd06af1344a331e20e9302e45a3a51ed"
       }
     },
     "soldier": {
@@ -909,9 +914,9 @@
       },
       "expression": "普通",
       "frame1Based": 1,
-      "extractedPngSha256": "a755802909b8116c0b67e74ae5ae7ef6b6fb2b38bab5869140e2ecb7cd40aa3f",
+      "extractedPngSha256": "c826f112a069e608b0bbda01c66349f53d0f0450e4f80d187d1a7683f6033dd3",
       "output": {
-        "uri": "subjects/669c73ec0cb933319f27de4e985ee7652402c32022ed3c3544a97facbf444138.png",
+        "uri": "subjects/3859e439d6c2152ca8e110990078efd771ec3b7822acfae2f595918c1438e8f5.png",
         "width": 256,
         "height": 256,
         "bounds": {
@@ -920,7 +925,7 @@
           "width": 224,
           "height": 210
         },
-        "sha256": "669c73ec0cb933319f27de4e985ee7652402c32022ed3c3544a97facbf444138"
+        "sha256": "3859e439d6c2152ca8e110990078efd771ec3b7822acfae2f595918c1438e8f5"
       }
     },
     "武器订购系统": {
@@ -932,9 +937,9 @@
       },
       "expression": "普通",
       "frame1Based": 1,
-      "extractedPngSha256": "f7feea40b8a9fd415b2ba323327cb64ad2b7786a9b200a23a7803d6d0db0bf5b",
+      "extractedPngSha256": "90f3f5f725050698263db0a5cc6ed3b6c2b9b719af08941f375d7cab8472852b",
       "output": {
-        "uri": "subjects/4f50f5effa4d03310c6d4d0ba4a919143f6ddb585c23c3451ef52ee1cab73f5e.png",
+        "uri": "subjects/e9110341b9154d35842f5fa800528728d8c2c7b6c7d6c18f45e3f3023b8fc885.png",
         "width": 256,
         "height": 256,
         "bounds": {
@@ -943,7 +948,7 @@
           "width": 198,
           "height": 224
         },
-        "sha256": "4f50f5effa4d03310c6d4d0ba4a919143f6ddb585c23c3451ef52ee1cab73f5e"
+        "sha256": "e9110341b9154d35842f5fa800528728d8c2c7b6c7d6c18f45e3f3023b8fc885"
       }
     },
     "Vanshuther": {
@@ -955,9 +960,9 @@
       },
       "expression": "普通",
       "frame1Based": 1,
-      "extractedPngSha256": "517db57ccbec9db6e83fec4d8681455ff17978ed4d021b70861b4b89802dd6e7",
+      "extractedPngSha256": "074b09d73a9cd6ed98a87b6bc4a9a78da0d5a0a6e90baa0fbac8c0a1392f8529",
       "output": {
-        "uri": "subjects/1380b38cb4ff2b2e196e35ed5f6f0f8f4c982d734a614cc1ce2ca97df9e54ef6.png",
+        "uri": "subjects/86d7cb07945c92d6ca600c3002b40b99d5d2929668aab00c0337c4bc51d420e4.png",
         "width": 256,
         "height": 256,
         "bounds": {
@@ -966,7 +971,7 @@
           "width": 114,
           "height": 224
         },
-        "sha256": "1380b38cb4ff2b2e196e35ed5f6f0f8f4c982d734a614cc1ce2ca97df9e54ef6"
+        "sha256": "86d7cb07945c92d6ca600c3002b40b99d5d2929668aab00c0337c4bc51d420e4"
       }
     },
     "翅虎": {
@@ -1024,9 +1029,9 @@
       },
       "expression": "普通",
       "frame1Based": 1,
-      "extractedPngSha256": "a6da1cd522fd24a2d8b7d65ed3a043d323cebc1fdd9a89e54a5ca8d81991849e",
+      "extractedPngSha256": "7f929b7fdc48e637b822a2c7193d8ed1c41c5ee584a27901c1449d1ccb3042c4",
       "output": {
-        "uri": "subjects/c468ea60264a219aa2f44978a6b9a5ae0a06858b431240dda5933cbd636375a2.png",
+        "uri": "subjects/1da467a4d2d0038058ad041911bfd9d8235b1c51c71dd6801a0eb4ae800e5ffd.png",
         "width": 256,
         "height": 256,
         "bounds": {
@@ -1035,7 +1040,7 @@
           "width": 127,
           "height": 224
         },
-        "sha256": "c468ea60264a219aa2f44978a6b9a5ae0a06858b431240dda5933cbd636375a2"
+        "sha256": "1da467a4d2d0038058ad041911bfd9d8235b1c51c71dd6801a0eb4ae800e5ffd"
       }
     },
     "吸特乐": {
@@ -1079,9 +1084,9 @@
       "xflFrameIndex": 256,
       "frame1Based": 257,
       "duration": 6,
-      "extractedPngSha256": "64fd985bed4038fade81b031fbdc4593059cf12b6dec9967370645c6c3c84f2c",
+      "extractedPngSha256": "85bf5b71ca8428ed1783a7b9ddd30a4f80dde23c6633b2844872ece19cf06c99",
       "output": {
-        "uri": "subjects/f53b2855c1b6cea3c15dfbc8f0b3d7cf5e724c6787563ec4efaaf2c0c6c334ab.png",
+        "uri": "subjects/419da93730a9b25bd3ff2d9329fbbe232d951e8ee35a6d89259da76598a67f24.png",
         "width": 256,
         "height": 256,
         "bounds": {
@@ -1090,7 +1095,7 @@
           "width": 224,
           "height": 204
         },
-        "sha256": "f53b2855c1b6cea3c15dfbc8f0b3d7cf5e724c6787563ec4efaaf2c0c6c334ab"
+        "sha256": "419da93730a9b25bd3ff2d9329fbbe232d951e8ee35a6d89259da76598a67f24"
       }
     },
     "虎妙": {
@@ -1114,6 +1119,29 @@
           "height": 224
         },
         "sha256": "49d9fd649466225d6c1ada3c08ed1179a2d03870996899faa0869e587fa9ad48"
+      }
+    },
+    "阿卡": {
+      "kind": "external-dialogue-swf",
+      "sourceSwf": {
+        "path": "flashswf/portraits/阿卡.swf",
+        "sha256": "79abb6198de1f26196f1ff54e40d3a25fd5cb36e5a5340570d6aa1c55c393f70",
+        "bytes": 148685
+      },
+      "expression": "普通",
+      "frame1Based": 1,
+      "extractedPngSha256": "ca0b925e69709058ddeeff8c2b3d09bc0d96e2e301ef93254bdf673973b26a6b",
+      "output": {
+        "uri": "subjects/a874393fff7c81f38717eb5df9e03c0ac50d74fc311a428bd3e38ac4cf50d32f.png",
+        "width": 256,
+        "height": 256,
+        "bounds": {
+          "x": 16,
+          "y": 37,
+          "width": 224,
+          "height": 182
+        },
+        "sha256": "a874393fff7c81f38717eb5df9e03c0ac50d74fc311a428bd3e38ac4cf50d32f"
       }
     }
   }
