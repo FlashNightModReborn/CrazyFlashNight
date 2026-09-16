@@ -33,6 +33,9 @@ namespace CF7Launcher.Tasks
         /// 作者取景的舞台逻辑矩形（可为 null）。与位图同属一次 revision 投递。</summary>
         internal Action<NativeDialogueFrame, JObject, Action<Bitmap, RectangleF?>> LoadPortraitWithRect;
         internal Action<string, Action<Bitmap>> LoadSceneImage;
+        /// <summary>下一句立绘预取（warm-only）：(key, expression, 归一化 appearance 或 null)。
+        /// null appearance = 静态立绘。只暖缓存，绝不投递 widget、不发事件。</summary>
+        internal Action<string, string, JObject> PrefetchPortrait;
         internal Func<JObject, string> ReceivePortraitResult;
 
         public string HandlePortraitResult(JObject message)
@@ -101,8 +104,10 @@ namespace CF7Launcher.Tasks
             }
             else
             {
+                // 不再先 Reset：ShowFrame 的 newSession 分支已覆盖清场（含跨会话
+                // carry/hold-last-frame），先 Reset 会把 bounds 打空、触发覆层
+                // hide→show 周期，连续对话整面板闪烁。
                 _sceneImagePath = null;
-                _widget.Reset();
             }
             _maxSequence = sequence;
             _current = frame;
@@ -123,6 +128,54 @@ namespace CF7Launcher.Tasks
             // keep 行同样订阅当前图片，防止前一行的异步加载在换行后被 revision 门丢掉。
             if (!string.IsNullOrEmpty(_sceneImagePath))
                 LoadSceneImage?.Invoke(_sceneImagePath, bitmap => CompleteBitmap(frame, bitmap, null, true));
+            AdoptPrefetch(payload);
+        }
+
+        /// <summary>第 N+1 句立绘/配图预取：软解析，任何子字段畸形即整体丢弃；
+        /// 只暖缓存，异常只记一行日志，绝不影响已采用的 frame。</summary>
+        private void AdoptPrefetch(JObject payload)
+        {
+            try
+            {
+                var prefetch = payload["prefetch"] as JObject;
+                if (prefetch == null) return;
+                if (prefetch["portrait"] != null && !TryPrefetchPortrait(prefetch["portrait"] as JObject)) return;
+                PrefetchImage(prefetch);
+            }
+            catch (Exception ex) { LogManager.Log("[NativeDialogue] prefetch dropped: " + ex.Message); }
+        }
+
+        /// <summary>prefetch.portrait 与 frame 的 portrait 同构软解析。返回 false = 畸形，
+        /// 调用方丢弃整个 prefetch；key=="" 是合法的「下一句无立绘」，返回 true 但不暖。</summary>
+        private bool TryPrefetchPortrait(JObject portrait)
+        {
+            string kind, key;
+            if (portrait == null
+                || !Text(portrait, "kind", 8, out kind) || (kind != "static" && kind != "doll")
+                || !Text(portrait, "key", 256, out key)) return false;
+            if (key.Length == 0) return true;
+            string expression = "普通";
+            if (portrait["expression"] != null)
+            {
+                if (!Text(portrait, "expression", 80, out expression)) return false;
+                if (expression.Length == 0) expression = "普通";
+            }
+            if (kind == "static") { PrefetchPortrait?.Invoke(key, expression, null); return true; }
+            var normalized = CF7Launcher.Guardian.Dialogue.DialoguePortraitService
+                .NormalizeAppearance(portrait["appearance"] as JObject);
+            if (normalized == null) return false;
+            PrefetchPortrait?.Invoke(key, expression, normalized);
+            return true;
+        }
+
+        /// <summary>prefetch 配图：仅显式 "show" 才暖；位图只进缓存，回调拿到即释放。</summary>
+        private void PrefetchImage(JObject prefetch)
+        {
+            if (prefetch["imageAction"]?.Type != JTokenType.String
+                || prefetch.Value<string>("imageAction") != "show") return;
+            string path;
+            if (!Text(prefetch, "imagePath", 512, out path) || path.Length == 0) return;
+            LoadSceneImage?.Invoke(path, bmp => { if (bmp != null) bmp.Dispose(); });
         }
 
         /// <summary>位图 + 作者取景矩形（stageRect）同属一次 revision 的原子投递：

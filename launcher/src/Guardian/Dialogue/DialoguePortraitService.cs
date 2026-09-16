@@ -20,7 +20,10 @@ namespace CF7Launcher.Guardian.Dialogue
     internal sealed class DialoguePortraitService : IDisposable
     {
         internal const int RenderSize = 768;
-        private const int CacheLimit = 24 * 1024 * 1024;
+        // fit 后位图典型 944×704×4 ≈ 2.7MB、最大 1536px ≈ 4MB，纸娃娃 768² ≈ 2.25MB；
+        // 静态表情/配图/纸娃娃共享同一 LRU。24MB 只容 6-8 张，对话中换表情即驱逐、
+        // 回切旧表情被迫重解码；64MB 容约 16-24 张，覆盖一段对话的多角色多表情工作集。
+        private const int CacheLimit = 64 * 1024 * 1024;
         private readonly string _root;
         private readonly string _portraitRoot;
         private readonly JObject _manifest;
@@ -30,7 +33,9 @@ namespace CF7Launcher.Guardian.Dialogue
         private readonly Dictionary<string, Bitmap> _cache = new Dictionary<string, Bitmap>();
         private readonly LinkedList<string> _lru = new LinkedList<string>();
         private readonly Dictionary<string, Pending> _pending = new Dictionary<string, Pending>();
-        private readonly SemaphoreSlim _decodeQueue = new SemaphoreSlim(1, 1);
+        // 解码并发上限 3：每次 decode 走独立的 SKData/SKCodec 实例（Skia 每实例线程安全），
+        // ReadAndFit 的 GDI+ 操作都作用在各自新建的 Bitmap 上，_cache/_pending 均有 _gate 保护。
+        private readonly SemaphoreSlim _decodeQueue = new SemaphoreSlim(3, 3);
         private readonly DialoguePortraitDiskCache _disk;
         private long _cacheBytes;
         private bool _disposed;
@@ -257,7 +262,33 @@ namespace CF7Launcher.Guardian.Dialogue
         {
             JObject normalized = NormalizeAppearance(appearance);
             if (normalized == null) return;
-            string key = DollKey(normalized, frame.Expression, _assetVersion);
+            RequestDollCore(normalized, frame.Expression, ready);
+        }
+
+        /// <summary>
+        /// 预取下一句立绘（warm-only）：只暖内存/磁盘缓存，绝不投递 widget、不发事件、
+        /// 失败静默。normalizedAppearance==null 走静态链（key 即 manifest 立绘名）；
+        /// 否则按纸娃娃处理（调用方已归一化）。doll 预取让位前景加载：pending 已占
+        /// ≥2 槽时静默跳过（pending 上限 4，预取最多占 2 槽）。回调克隆立即释放，
+        /// 缓存本体留 LRU。
+        /// </summary>
+        internal void PrefetchPortrait(string key, string expression, JObject normalizedAppearance)
+        {
+            if (normalizedAppearance == null)
+            {
+                LoadCached("static:" + key + ":" + expression, () => LoadStatic(key, expression),
+                    bmp => { if (bmp != null) bmp.Dispose(); });
+                return;
+            }
+            lock (_gate) { if (_pending.Count >= 2) return; }
+            RequestDollCore(normalizedAppearance, expression, bmp => { if (bmp != null) bmp.Dispose(); });
+        }
+
+        /// <summary>纸娃娃磁盘→Web 链核心：normalized 必须已归一化。内存命中同步回调、
+        /// 同 key pending 合并、4 槽上限与 15s 过期语义对前景加载与预取一致。</summary>
+        private void RequestDollCore(JObject normalized, string expression, Action<Bitmap> ready)
+        {
+            string key = DollKey(normalized, expression, _assetVersion);
             Bitmap cached = GetCached(key);
             if (cached != null) { ready(cached); return; }
             Pending pending;
@@ -287,7 +318,7 @@ namespace CF7Launcher.Guardian.Dialogue
                 var message = new JObject
                 {
                     ["type"] = "dialoguePortraitBake", ["requestId"] = pending.RequestId, ["key"] = key,
-                    ["appearance"] = normalized, ["expression"] = frame.Expression,
+                    ["appearance"] = normalized, ["expression"] = expression,
                     ["size"] = RenderSize, ["rig"] = "dialogue", ["assetVersion"] = _assetVersion
                 };
                 bool posted = false;
@@ -354,40 +385,65 @@ namespace CF7Launcher.Guardian.Dialogue
                 + normalized.ToString(Formatting.None)));
         }
 
+        /// <summary>
+        /// Web 合成结果回送。调用方是 WebView2 同步桥（UI 线程），web 侧对返回值
+        /// fire-and-forget，因此这里只做轻量受理校验：base64 解码、GDI+ 全量校验、
+        /// 回调交付与磁盘落盘全部移到后台线程，受理即返回。
+        /// 同步返回 false 的拒绝面与旧版一致：无此 pending / requestId 不符 /
+        /// pngBase64 缺失·非字符串·超 8MB 上限；受理后 decode 失败只记日志、
+        /// 不触发回调（与旧同步路径的可观测结果一致）。
+        /// 注意：回调现在在线程池线程触发，不再保证是调用线程——消费方
+        /// NativeDialogueTask.CompleteBitmap 自己会 dispatch 回 UI 线程。
+        /// </summary>
         internal string HandleResult(JObject message)
         {
             var payload = message?["payload"] as JObject;
             string key = payload?["key"]?.Type == JTokenType.String ? payload.Value<string>("key") : null;
             string request = payload?["requestId"]?.Type == JTokenType.String ? payload.Value<string>("requestId") : null;
-            Pending pending;
+            Action<Bitmap>[] callbacks;
             lock (_gate)
             {
+                Pending pending;
                 if (_disposed || key == null || !_pending.TryGetValue(key, out pending)
                     || request != pending.RequestId) return "{\"success\":false}";
                 _pending.Remove(key);
                 pending.Timer.Dispose();
+                callbacks = pending.Callbacks.ToArray();
             }
+            // 结构拒绝保持同步可观测：缺失 / 非字符串 / 空 / 超 8MB 上限。
+            if (payload["pngBase64"]?.Type != JTokenType.String) return "{\"success\":false}";
+            string base64 = payload.Value<string>("pngBase64");
+            if (string.IsNullOrEmpty(base64) || base64.Length > 8 * 1024 * 1024)
+                return "{\"success\":false}";
+            Task.Run(() => DeliverResult(key, base64, callbacks));
+            return "{\"success\":true}";
+        }
+
+        /// <summary>后台交付：base64 解码 → GDI+ 校验 → 内存缓存 + 逐个回调（各持
+        /// Clone）→ 同一任务内落盘。解码失败只记日志不回调；落盘失败不影响已完成的
+        /// 交付。动共享状态前先在 _gate 下复核 _disposed（对齐 LoadCached 模式）。</summary>
+        private void DeliverResult(string key, string base64, Action<Bitmap>[] callbacks)
+        {
             try
             {
-                string base64 = payload.Value<string>("pngBase64");
                 byte[] pngBytes = Convert.FromBase64String(base64);
                 using (Bitmap image = DecodeResult(pngBytes))
                 {
-                    if (image == null) return "{\"success\":false}";
-                    PutCached(key, image);
-                    foreach (Action<Bitmap> callback in pending.Callbacks) callback((Bitmap)image.Clone());
-                }
-                // 先完成内存/回调交付，再后台落盘——存盘失败不影响本次结果。
-                string storeKey = key;
-                Task.Run(() =>
-                {
+                    if (image == null)
+                    {
+                        LogManager.Log("[NativeDialogue] rejected portrait: decode failed");
+                        return;
+                    }
                     lock (_gate) { if (_disposed) return; }
-                    try { _disk.Store(storeKey, pngBytes, RenderSize); }
-                    catch (Exception ex) { LogManager.Log("[NativeDialogue] disk cache write: " + ex.Message); }
-                });
-                return "{\"success\":true}";
+                    PutCached(key, image);
+                    foreach (Action<Bitmap> callback in callbacks) callback((Bitmap)image.Clone());
+                }
+                // 先完成内存/回调交付，再落盘——存盘失败不影响本次结果。
+                lock (_gate) { if (_disposed) return; }
+                try { _disk.Store(key, pngBytes, RenderSize); }
+                catch (Exception ex) { LogManager.Log("[NativeDialogue] disk cache write: " + ex.Message); }
             }
-            catch (Exception ex) { LogManager.Log("[NativeDialogue] rejected portrait: " + ex.Message); return "{\"success\":false}"; }
+            catch (Exception ex) { LogManager.Log("[NativeDialogue] rejected portrait: " + ex.Message); }
         }
 
         internal static Bitmap DecodeResult(string base64)

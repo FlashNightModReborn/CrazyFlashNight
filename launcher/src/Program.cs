@@ -2312,6 +2312,7 @@ class Program
             },
             () => nativeHud != null && !nativeHud.IsSuspended && !panelHost.IsPanelOpen);
         nativeDialogueTask.LoadPortraitWithRect = dialoguePortraits.LoadPortrait;
+        nativeDialogueTask.PrefetchPortrait = dialoguePortraits.PrefetchPortrait;
         nativeDialogueTask.LoadSceneImage = dialoguePortraits.LoadSceneImage;
         nativeDialogueTask.ReceivePortraitResult = dialoguePortraits.HandleResult;
         socketServer.OnClientDisconnected += nativeDialogueTask.HandleTransportDisconnected;

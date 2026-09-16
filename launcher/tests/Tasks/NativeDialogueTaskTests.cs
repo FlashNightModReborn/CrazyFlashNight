@@ -181,5 +181,197 @@ namespace CF7Launcher.Tests.Tasks
         {
             Assert.Null(DialoguePortraitService.SafeChild(Path.GetTempPath(), path));
         }
+
+        [Fact]
+        public void PrefetchStaticPortraitForwardsKeyExpressionAndNullAppearance()
+        {
+            using var anchor = new Control { Size = new Size(1024, 576) };
+            using var widget = new NativeDialogueWidget(anchor);
+            var calls = new List<(string Key, string Expression, JObject Appearance)>();
+            var task = new NativeDialogueTask(widget, a => a(), _ => true);
+            task.PrefetchPortrait = (k, e, app) => calls.Add((k, e, app));
+            JObject frame = Frame();
+            frame["prefetch"] = new JObject
+            {
+                ["portrait"] = new JObject
+                {
+                    ["kind"] = "static", ["key"] = "The Girl", ["expression"] = "微笑"
+                }
+            };
+            task.Adopt(frame);
+            var call = Assert.Single(calls);
+            Assert.Equal("The Girl", call.Key);
+            Assert.Equal("微笑", call.Expression);
+            Assert.Null(call.Appearance);
+        }
+
+        [Fact]
+        public void PrefetchDollPortraitForwardsNormalizedAppearance()
+        {
+            using var anchor = new Control { Size = new Size(1024, 576) };
+            using var widget = new NativeDialogueWidget(anchor);
+            var calls = new List<(string Key, string Expression, JObject Appearance)>();
+            var task = new NativeDialogueTask(widget, a => a(), _ => true);
+            task.PrefetchPortrait = (k, e, app) => calls.Add((k, e, app));
+            var appearance = new JObject
+            {
+                ["gender"] = "男", ["face"] = "1", ["hair"] = "短发",
+                ["extraJunk"] = new JObject() // 未归一化输入里的未知字段不入转发副本
+            };
+            JObject frame = Frame();
+            frame["prefetch"] = new JObject
+            {
+                ["portrait"] = new JObject
+                {
+                    ["kind"] = "doll", ["key"] = "hero", ["expression"] = "普通",
+                    ["appearance"] = appearance
+                }
+            };
+            task.Adopt(frame);
+            var call = Assert.Single(calls);
+            Assert.Equal("hero", call.Key);
+            Assert.Equal("普通", call.Expression);
+            Assert.NotNull(call.Appearance);
+            Assert.True(JToken.DeepEquals(
+                DialoguePortraitService.NormalizeAppearance(appearance), call.Appearance));
+        }
+
+        [Fact]
+        public void MissingPrefetchFieldInvokesNoDelegates()
+        {
+            using var anchor = new Control { Size = new Size(1024, 576) };
+            using var widget = new NativeDialogueWidget(anchor);
+            int portraitCalls = 0, sceneCalls = 0;
+            var task = new NativeDialogueTask(widget, a => a(), _ => true);
+            task.PrefetchPortrait = (k, e, app) => portraitCalls++;
+            task.LoadSceneImage = (p, cb) => sceneCalls++;
+            task.Adopt(Frame());
+            Assert.Equal(0, portraitCalls);
+            Assert.Equal(0, sceneCalls);
+        }
+
+        [Fact]
+        public void MalformedPrefetchIsDroppedWithoutAffectingFrame()
+        {
+            using var anchor = new Control { Size = new Size(1024, 576) };
+            using var widget = new NativeDialogueWidget(anchor);
+            int portraitCalls = 0, sceneCalls = 0;
+            var task = new NativeDialogueTask(widget, a => a(), _ => true);
+            task.PrefetchPortrait = (k, e, app) => portraitCalls++;
+            task.LoadSceneImage = (p, cb) => sceneCalls++;
+
+            // kind 非法 → 整个 prefetch 丢弃（连同合法的 imageAction/imagePath）。
+            JObject badKind = Frame(1);
+            badKind["prefetch"] = new JObject
+            {
+                ["portrait"] = new JObject
+                {
+                    ["kind"] = "bogus", ["key"] = "hero", ["expression"] = "普通"
+                },
+                ["imageAction"] = "show", ["imagePath"] = "flashswf/images/a.png"
+            };
+            task.Adopt(badKind);
+            Assert.NotNull(widget.CurrentFrame);
+            Assert.Equal(0, portraitCalls);
+            Assert.Equal(0, sceneCalls);
+
+            // doll 但 appearance 归一化失败 → 丢弃。
+            JObject badAppearance = Frame(2);
+            badAppearance["prefetch"] = new JObject
+            {
+                ["portrait"] = new JObject
+                {
+                    ["kind"] = "doll", ["key"] = "hero", ["expression"] = "普通",
+                    ["appearance"] = new JObject { ["gender"] = new JObject() }
+                }
+            };
+            task.Adopt(badAppearance);
+            Assert.Equal(0, portraitCalls);
+
+            // key=="" 是合法的「下一句无立绘」：跳过但不视为畸形。
+            JObject emptyKey = Frame(3);
+            emptyKey["prefetch"] = new JObject
+            {
+                ["portrait"] = new JObject
+                {
+                    ["kind"] = "static", ["key"] = "", ["expression"] = "普通"
+                },
+                ["imageAction"] = "show", ["imagePath"] = "flashswf/images/a.png"
+            };
+            task.Adopt(emptyKey);
+            Assert.Equal(0, portraitCalls);
+            Assert.Equal(1, sceneCalls); // 合法 prefetch 的配图部分仍应执行
+
+            // imagePath 含 NUL → 不调 LoadSceneImage。
+            JObject nulPath = Frame(4);
+            nulPath["prefetch"] = new JObject
+            {
+                ["imageAction"] = "show", ["imagePath"] = "flashswf/images/a\0.png"
+            };
+            task.Adopt(nulPath);
+            Assert.Equal(1, sceneCalls);
+            Assert.Equal("nd:4", widget.CurrentFrame.RequestId);
+        }
+
+        [Fact]
+        public void PrefetchSceneImageLoadsPathAndDisposesCallbackBitmap()
+        {
+            using var anchor = new Control { Size = new Size(1024, 576) };
+            using var widget = new NativeDialogueWidget(anchor);
+            string gotPath = null;
+            Action<Bitmap> gotCallback = null;
+            var task = new NativeDialogueTask(widget, a => a(), _ => true);
+            task.LoadSceneImage = (p, cb) => { gotPath = p; gotCallback = cb; };
+            JObject frame = Frame();
+            frame["prefetch"] = new JObject
+            {
+                ["imageAction"] = "show",
+                ["imagePath"] = "flashswf/images/task_images/next.png"
+            };
+            task.Adopt(frame);
+            Assert.Equal("flashswf/images/task_images/next.png", gotPath);
+            Assert.NotNull(gotCallback);
+            var bitmap = new Bitmap(4, 4);
+            gotCallback(bitmap);
+            // warm-only：回调位图由调用方（task）释放，widget/缓存不持有。
+            Assert.ThrowsAny<Exception>(() => bitmap.GetPixel(0, 0));
+            gotCallback(null); // null 位图安全无操作
+        }
+
+        [Fact]
+        public void HideAndStaleShowNeverTriggerPrefetch()
+        {
+            using var anchor = new Control { Size = new Size(1024, 576) };
+            using var widget = new NativeDialogueWidget(anchor);
+            int portraitCalls = 0, sceneCalls = 0;
+            var task = new NativeDialogueTask(widget, a => a(), _ => true);
+            task.PrefetchPortrait = (k, e, app) => portraitCalls++;
+            task.LoadSceneImage = (p, cb) => sceneCalls++;
+            task.Adopt(Frame(2));
+            Assert.Equal(0, portraitCalls);
+
+            var prefetch = new JObject
+            {
+                ["portrait"] = new JObject
+                {
+                    ["kind"] = "static", ["key"] = "hero", ["expression"] = "普通"
+                },
+                ["imageAction"] = "show", ["imagePath"] = "flashswf/images/a.png"
+            };
+
+            // hide 即使带 prefetch 字段也不触发。
+            task.Adopt(new JObject
+            {
+                ["version"] = 1, ["op"] = "hide", ["requestId"] = "nd:2",
+                ["sceneId"] = "scene.1", ["prefetch"] = prefetch
+            });
+            // 序列回退的 show 被门槛丢弃，同样不得触发。
+            JObject stale = Frame(1);
+            stale["prefetch"] = prefetch;
+            task.Adopt(stale);
+            Assert.Equal(0, portraitCalls);
+            Assert.Equal(0, sceneCalls);
+            Assert.Null(widget.CurrentFrame);
+        }
     }
 }

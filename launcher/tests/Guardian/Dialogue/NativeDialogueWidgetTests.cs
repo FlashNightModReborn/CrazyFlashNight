@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Threading;
 using System.Windows.Forms;
 using CF7Launcher.Guardian;
 using CF7Launcher.Guardian.Hud;
@@ -90,6 +91,18 @@ namespace CF7Launcher.Tests.Guardian
         {
             return new Point(L.Next.X + L.Next.Width / 2,
                 L.Next.Y + L.Next.Height / 2);
+        }
+
+        /// <summary>轮询等待条件成立（后台预缩等池线程路径用）。</summary>
+        private static bool WaitFor(Func<bool> cond, int ms = 5000)
+        {
+            DateTime deadline = DateTime.UtcNow.AddMilliseconds(ms);
+            while (DateTime.UtcNow < deadline)
+            {
+                if (cond()) return true;
+                Thread.Sleep(10);
+            }
+            return cond();
         }
 
         // ──────────────── 帧生命周期 ────────────────
@@ -337,28 +350,34 @@ namespace CF7Launcher.Tests.Guardian
         }
 
         [Fact]
-        public void Portrait_DifferentKeyOrExpression_DropsOtherActorWhilePending()
+        public void Portrait_DifferentKeyOrExpression_HoldsOldBitmapUntilReplacement()
         {
             Vp vp = new Vp(1024, 576);
             using (NativeDialogueWidget w = MakeWidget(vp))
             {
                 w.ShowFrame(Frame(rev: 1));
                 using (Bitmap p = Bmp(200, 400)) w.SetPortrait("nd:1", 1, p);
-                // 换人后不能在新名字下继续显示上一位角色。
+                Bitmap first = w.PortraitBitmapForTest;
+                // 换人：hold-last-frame——旧图续画到新图到达，pending 置位但位图不离场
+                // （刻意取舍：换人瞬间最多显示旧图几十 ms，消除空白帧）。
                 Assert.True(w.ShowFrame(Frame(rev: 2, portrait: "小F")));
-                Assert.False(w.HasPortraitForTest);
+                Assert.True(w.HasPortraitForTest);
+                Assert.Same(first, w.PortraitBitmapForTest);
                 Assert.True(w.PortraitPendingForTest);
                 using (Bitmap q = Bmp(180, 360))
                     Assert.True(w.SetPortrait("nd:1", 2, q));
                 Assert.False(w.PortraitPendingForTest);
-                // 换表情也算换人（key|expr|doll 三元组）
+                Assert.NotSame(first, w.PortraitBitmapForTest);   // 原子换入
+                // 换表情同样 hold（key|expr|doll|appearance 四元组身份变化）
+                Bitmap second = w.PortraitBitmapForTest;
                 Assert.True(w.ShowFrame(Frame(rev: 3, portrait: "小F", expr: "微笑")));
                 Assert.True(w.PortraitPendingForTest);
+                Assert.Same(second, w.PortraitBitmapForTest);
             }
         }
 
         [Fact]
-        public void Portrait_DollExpressionRefresh_KeepsSameAppearanceButNeverOldEquipment()
+        public void Portrait_DollExpressionRefresh_KeepsSameAppearance_HoldsOldUntilSwap()
         {
             using var w = MakeWidget(new Vp(1024, 576));
             var first = Frame(portrait: "hero");
@@ -375,12 +394,21 @@ namespace CF7Launcher.Tests.Guardian
             Assert.True(w.PortraitPendingForTest);
             Assert.False(w.SetPortrait("nd:1", 1, bitmap));
             Assert.True(w.SetPortrait("nd:1", 2, bitmap));
+            Bitmap held = w.PortraitBitmapForTest;
             next = next.Snapshot();
             next.Revision = 3;
             next.AppearanceIdentity = "female-leather";
             w.ShowFrame(next);
-            Assert.False(w.HasPortraitForTest);
+            // 换装备：旧外观续画到新图到达（hold），不再立即清出空帧；
+            // 但旧修订的迟到图仍必须被拒，不能借 hold 复活旧外观。
+            Assert.True(w.HasPortraitForTest);
+            Assert.Same(held, w.PortraitBitmapForTest);
             Assert.True(w.PortraitPendingForTest);
+            Assert.False(w.SetPortrait("nd:1", 2, bitmap));
+            using var swapped = Bmp(768, 768);
+            Assert.True(w.SetPortrait("nd:1", 3, swapped));
+            Assert.NotSame(held, w.PortraitBitmapForTest);
+            Assert.False(w.PortraitPendingForTest);
         }
 
         [Fact]
@@ -420,15 +448,19 @@ namespace CF7Launcher.Tests.Guardian
                 Assert.True(w.HasSceneImageForTest);
                 Assert.False(w.ScenePendingForTest);
 
-                // show 不同 path：清旧等新
+                // show 不同 path：hold——旧配图续画到新图到达，不再先清出空帧
+                Bitmap heldA = w.SceneBitmapForTest;
                 Assert.True(w.ShowFrame(Frame(rev: 3,
                     imageAction: "show", imagePath: "img/b.png")));
-                Assert.False(w.HasSceneImageForTest);
+                Assert.True(w.HasSceneImageForTest);
+                Assert.Same(heldA, w.SceneBitmapForTest);
                 Assert.True(w.ScenePendingForTest);
-
-                // clear：清除
                 using (Bitmap img2 = Bmp(10, 10))
                     Assert.True(w.SetSceneImage("nd:1", 3, img2));
+                Assert.False(w.ScenePendingForTest);
+                Assert.NotSame(heldA, w.SceneBitmapForTest);
+
+                // clear：清除
                 Assert.True(w.ShowFrame(Frame(rev: 4, imageAction: "clear")));
                 Assert.False(w.HasSceneImageForTest);
                 Assert.False(w.ScenePendingForTest);
@@ -1219,6 +1251,323 @@ namespace CF7Launcher.Tests.Guardian
             finally
             {
                 try { System.IO.Directory.Delete(dir, true); } catch { }
+            }
+        }
+
+        // ──────────────── 呈现层提速：同图跳过 / bounds 实际变化才发 ────────────────
+
+        [Fact]
+        public void Portrait_SameIdentityRedelivery_SkippedNoCloneNoEvents()
+        {
+            Vp vp = new Vp(1024, 576);
+            using (NativeDialogueWidget w = MakeWidget(vp))
+            {
+                w.ShowFrame(Frame(rev: 1));
+                using (Bitmap p = Bmp(200, 400))
+                    Assert.True(w.SetPortrait("nd:1", 1, p));
+                Bitmap held = w.PortraitBitmapForTest;
+                Assert.NotNull(held);
+
+                int bounds = 0, repaints = 0;
+                w.BoundsOrVisibilityChanged += delegate { bounds++; };
+                w.RepaintRequested += delegate { repaints++; };
+
+                // 换人/换表情都没发生：同身份下一句，几何未动 → 不发 bounds
+                Assert.True(w.ShowFrame(Frame(rev: 2, text: "下一句")));
+                Assert.Equal(0, bounds);
+                Assert.Equal(1, repaints);              // repaint 仍照常（33ms 合并，便宜）
+
+                // Host 对同身份重投同图：整包跳过，不克隆不替换不 fire
+                using (Bitmap p2 = Bmp(200, 400))
+                    Assert.True(w.SetPortrait("nd:1", 2, p2));
+                Assert.Same(held, w.PortraitBitmapForTest);
+                Assert.Equal(0, bounds);
+                Assert.Equal(1, repaints);
+                Assert.False(w.PortraitPendingForTest);
+            }
+        }
+
+        [Fact]
+        public void Portrait_PendingAfterIdentityChange_StillReplacesAndFires()
+        {
+            Vp vp = new Vp(1024, 576);
+            using (NativeDialogueWidget w = MakeWidget(vp))
+            {
+                w.ShowFrame(Frame(rev: 1));
+                using (Bitmap p = Bmp(200, 400))
+                    w.SetPortrait("nd:1", 1, p);
+                Bitmap first = w.PortraitBitmapForTest;
+                Assert.NotNull(first);
+
+                // 换人 → pending 重等 + 旧图续画（hold）；跳过路径不得拦截新身份的图
+                Assert.True(w.ShowFrame(Frame(rev: 2, portrait: "小F")));
+                Assert.True(w.PortraitPendingForTest);
+                Assert.True(w.HasPortraitForTest);
+                Assert.Same(first, w.PortraitBitmapForTest);
+
+                int bounds = 0, repaints = 0;
+                w.BoundsOrVisibilityChanged += delegate { bounds++; };
+                w.RepaintRequested += delegate { repaints++; };
+                // 静态 fit 立绘的外接 union 已被旧图占住（底锚 405 区域内互换不出界），
+                // 换图不改 bounds 是对的；要验证「几何真变才发」需落到 union 外的
+                // 作者取景（stageRect 左缘 0 < union 左缘 26）。
+                using (Bitmap q = Bmp(200, 400))
+                    Assert.True(w.SetPortrait("nd:1", 2, q,
+                        new RectangleF(0f, 0f, 200f, 405f)));
+                Assert.NotSame(first, w.PortraitBitmapForTest);   // 已替换为新克隆
+                Assert.False(w.PortraitPendingForTest);
+                Assert.Equal(1, bounds);                          // 立绘外接 union 真变 → bounds 发
+                Assert.Equal(1, repaints);
+            }
+        }
+
+        [Fact]
+        public void SceneImage_KeepLineRedelivery_Skipped()
+        {
+            Vp vp = new Vp(1024, 576);
+            using (NativeDialogueWidget w = MakeWidget(vp))
+            {
+                w.ShowFrame(Frame(rev: 1, imageAction: "show", imagePath: "a.png"));
+                using (Bitmap s = Bmp(200, 100))
+                    Assert.True(w.SetSceneImage("nd:1", 1, s));
+                Bitmap held = w.SceneBitmapForTest;
+                Assert.NotNull(held);
+
+                int bounds = 0, repaints = 0;
+                w.BoundsOrVisibilityChanged += delegate { bounds++; };
+                w.RepaintRequested += delegate { repaints++; };
+
+                // keep 行：path 沿用、图已在手 → Host 重投同图应被整体跳过
+                Assert.True(w.ShowFrame(Frame(rev: 2, imageAction: "keep")));
+                using (Bitmap s2 = Bmp(200, 100))
+                    Assert.True(w.SetSceneImage("nd:1", 2, s2));
+                Assert.Same(held, w.SceneBitmapForTest);
+                Assert.False(w.ScenePendingForTest);
+                Assert.Equal(0, bounds);
+                Assert.Equal(1, repaints);                        // 仅 ShowFrame 那一次
+            }
+        }
+
+        [Fact]
+        public void PortraitAndScene_LateRevisionDelivery_StillRejected()
+        {
+            // 同图跳过快速路径不得吞掉迟到投递的拒绝语义。
+            Vp vp = new Vp(1024, 576);
+            using (NativeDialogueWidget w = MakeWidget(vp))
+            {
+                w.ShowFrame(Frame(rev: 2, imageAction: "show", imagePath: "a.png"));
+                using (Bitmap p = Bmp(200, 400)) w.SetPortrait("nd:1", 2, p);
+                using (Bitmap s = Bmp(200, 100)) w.SetSceneImage("nd:1", 2, s);
+                Bitmap heldP = w.PortraitBitmapForTest;
+                Bitmap heldS = w.SceneBitmapForTest;
+
+                using (Bitmap lateP = Bmp(50, 50))
+                    Assert.False(w.SetPortrait("nd:1", 1, lateP));      // 旧修订
+                using (Bitmap lateS = Bmp(50, 50))
+                    Assert.False(w.SetSceneImage("nd:1", 1, lateS));
+                using (Bitmap wrongReq = Bmp(50, 50))
+                    Assert.False(w.SetPortrait("nd:9", 2, wrongReq));   // 错会话
+                using (Bitmap future = Bmp(50, 50))
+                    Assert.False(w.SetPortrait("nd:1", 3, future));     // 未来修订
+                Assert.Same(heldP, w.PortraitBitmapForTest);
+                Assert.Same(heldS, w.SceneBitmapForTest);
+            }
+        }
+
+        // ──────────────── 消闪：hold-last-frame / 跨会话 carry / 后台预缩 ────────────────
+
+        [Fact]
+        public void Portrait_SameSessionExpressionChange_HoldsLastFrameUntilSwap()
+        {
+            Vp vp = new Vp(1024, 576);
+            using (NativeDialogueWidget w = MakeWidget(vp))
+            {
+                w.ShowFrame(Frame(rev: 1));
+                using (Bitmap p = Bmp(200, 400)) w.SetPortrait("nd:1", 1, p);
+                Bitmap held = w.PortraitBitmapForTest;
+
+                // 换表情：pending 期间旧图引用必须原样保留（无空帧窗口）
+                Assert.True(w.ShowFrame(Frame(rev: 2, expr: "微笑")));
+                Assert.True(w.PortraitPendingForTest);
+                Assert.Same(held, w.PortraitBitmapForTest);
+
+                // 新图到达：原子换入、pending 清除
+                using (Bitmap q = Bmp(200, 400))
+                    Assert.True(w.SetPortrait("nd:1", 2, q));
+                Assert.NotSame(held, w.PortraitBitmapForTest);
+                Assert.False(w.PortraitPendingForTest);
+                Assert.True(w.HasPortraitForTest);
+            }
+        }
+
+        [Fact]
+        public void Portrait_CrossSessionSameIdentity_CarriesBitmapNoEvents()
+        {
+            Vp vp = new Vp(1024, 576);
+            using (NativeDialogueWidget w = MakeWidget(vp))
+            {
+                w.ShowFrame(Frame(rev: 1));
+                using (Bitmap p = Bmp(200, 400)) w.SetPortrait("nd:1", 1, p);
+                Bitmap held = w.PortraitBitmapForTest;
+                Assert.NotNull(held);
+
+                int bounds = 0;
+                w.BoundsOrVisibilityChanged += delegate { bounds++; };
+
+                // 新 RequestId 但立绘身份不变：位图不离场、不重等、几何未动不发 bounds
+                Assert.True(w.ShowFrame(Frame(req: "nd:2", rev: 0, text: "新会话同一人")));
+                Assert.Same(held, w.PortraitBitmapForTest);
+                Assert.False(w.PortraitPendingForTest);
+                Assert.Equal(0, bounds);
+
+                // Host 对新会话重投同图：命中同图跳过，仍不替换
+                using (Bitmap p2 = Bmp(200, 400))
+                    Assert.True(w.SetPortrait("nd:2", 0, p2));
+                Assert.Same(held, w.PortraitBitmapForTest);
+                Assert.False(w.PortraitPendingForTest);
+            }
+        }
+
+        [Fact]
+        public void Portrait_CrossSessionDifferentIdentity_HoldsThenSwaps()
+        {
+            Vp vp = new Vp(1024, 576);
+            using (NativeDialogueWidget w = MakeWidget(vp))
+            {
+                w.ShowFrame(Frame(rev: 1));
+                using (Bitmap p = Bmp(200, 400)) w.SetPortrait("nd:1", 1, p);
+                Bitmap held = w.PortraitBitmapForTest;
+
+                // 跨会话异身份：旧图续画到新会话的图到达
+                Assert.True(w.ShowFrame(Frame(req: "nd:2", rev: 0, portrait: "小F")));
+                Assert.True(w.PortraitPendingForTest);
+                Assert.True(w.HasPortraitForTest);
+                Assert.Same(held, w.PortraitBitmapForTest);
+
+                using (Bitmap q = Bmp(180, 360))
+                    Assert.True(w.SetPortrait("nd:2", 0, q));
+                Assert.NotSame(held, w.PortraitBitmapForTest);
+                Assert.False(w.PortraitPendingForTest);
+            }
+        }
+
+        [Fact]
+        public void SceneImage_CrossSession_CarrySamePathHoldsDifferentPath()
+        {
+            Vp vp = new Vp(1024, 576);
+            using (NativeDialogueWidget w = MakeWidget(vp))
+            {
+                w.ShowFrame(Frame(rev: 1, imageAction: "show", imagePath: "a.png"));
+                using (Bitmap s = Bmp(200, 100)) w.SetSceneImage("nd:1", 1, s);
+                Bitmap held = w.SceneBitmapForTest;
+                Assert.NotNull(held);
+
+                // 同 path 新会话：carry——位图不离场、不重等
+                Assert.True(w.ShowFrame(Frame(req: "nd:2", rev: 0,
+                    imageAction: "show", imagePath: "a.png")));
+                Assert.Same(held, w.SceneBitmapForTest);
+                Assert.False(w.ScenePendingForTest);
+
+                // 异 path 新会话：hold——旧图续画到新图到达
+                Assert.True(w.ShowFrame(Frame(req: "nd:3", rev: 0,
+                    imageAction: "show", imagePath: "b.png")));
+                Assert.Same(held, w.SceneBitmapForTest);
+                Assert.True(w.ScenePendingForTest);
+                using (Bitmap nb = Bmp(300, 200))
+                    Assert.True(w.SetSceneImage("nd:3", 0, nb));
+                Assert.NotSame(held, w.SceneBitmapForTest);
+                Assert.False(w.ScenePendingForTest);
+
+                // 无配图新会话（keep 即未声明 show）：立即清
+                Assert.True(w.ShowFrame(Frame(req: "nd:4", rev: 0, imageAction: "keep")));
+                Assert.False(w.HasSceneImageForTest);
+                Assert.False(w.ScenePendingForTest);
+            }
+        }
+
+        [Fact]
+        public void Portrait_NoPortraitLine_ClearsImmediatelyBothSessionKinds()
+        {
+            Vp vp = new Vp(1024, 576);
+            using (NativeDialogueWidget w = MakeWidget(vp))
+            {
+                w.ShowFrame(Frame(rev: 1));
+                using (Bitmap p = Bmp(200, 400)) w.SetPortrait("nd:1", 1, p);
+
+                // 同会话无立绘句：立即清（真隐藏，不走 hold）
+                Assert.True(w.ShowFrame(Frame(rev: 2, portrait: "")));
+                Assert.False(w.HasPortraitForTest);
+                Assert.False(w.PortraitPendingForTest);
+
+                // 恢复立绘后，跨会话无立绘同样立即清
+                Assert.True(w.ShowFrame(Frame(rev: 3)));
+                using (Bitmap p2 = Bmp(200, 400)) w.SetPortrait("nd:1", 3, p2);
+                Assert.True(w.HasPortraitForTest);
+                Assert.True(w.ShowFrame(Frame(req: "nd:2", rev: 0, portrait: "")));
+                Assert.False(w.HasPortraitForTest);
+                Assert.False(w.PortraitPendingForTest);
+            }
+        }
+
+        [Fact]
+        public void Portrait_BackgroundPrescale_PopulatesCacheBeforePaint()
+        {
+            Vp vp = new Vp(1024, 576);
+            using (NativeDialogueWidget w = MakeWidget(vp))
+            {
+                w.ShowFrame(Frame(rev: 1));
+                using (Bitmap p = Bmp(200, 400))
+                    Assert.True(w.SetPortrait("nd:1", 1, p));
+                NativeDialogueWidget.Layout L = w.ComputeLayoutForTest(vp.R);
+                Assert.False(L.Portrait.IsEmpty);
+
+                // 不经 Paint：后台预缩应自行把缩放缓存填到当前布局尺寸
+                Assert.True(WaitFor(delegate
+                {
+                    return w.PortraitScaledSizeForTest == L.Portrait.Size;
+                }), "background prescale did not populate scaled cache");
+
+                // viewport 变化 → Paint 懒缩放兜底仍按新目标尺寸重算
+                vp.R = new Rectangle(0, 0, 1920, 1080);
+                NativeDialogueWidget.Layout L2 = w.ComputeLayoutForTest(vp.R);
+                Assert.NotEqual(L.Portrait.Size, L2.Portrait.Size);
+                using (Bitmap bmp = new Bitmap(1920, 1080))
+                using (Graphics g = Graphics.FromImage(bmp))
+                    w.Paint(g, 1f, new Point(0, 0));
+                Assert.Equal(L2.Portrait.Size, w.PortraitScaledSizeForTest);
+            }
+        }
+
+        [Fact]
+        public void Portrait_HeldDollImage_KeepsOwnFramingDuringPending()
+        {
+            Vp vp = new Vp(1024, 576);
+            using (NativeDialogueWidget w = MakeWidget(vp))
+            {
+                NativeDialogueFrame doll = Frame(rev: 1, portrait: "self");
+                doll.IsDoll = true;
+                w.ShowFrame(doll);
+                using (Bitmap p = Bmp(768, 768))
+                    Assert.True(w.SetPortrait("nd:1", 1, p));
+                NativeDialogueWidget.Layout dollL = w.ComputeLayoutForTest(vp.R);
+                Assert.InRange(dollL.PortraitClip.Right, 454, 456);   // 纸娃娃内部窗
+
+                // 换成静态立绘身份：hold 期间旧纸娃娃图仍按自己的窗取景，
+                // 不被新帧（非 doll）的窗规则套用
+                Assert.True(w.ShowFrame(Frame(rev: 2, portrait: "小F")));
+                Assert.True(w.PortraitPendingForTest);
+                Assert.True(w.PortraitHeldIsDollForTest);
+                NativeDialogueWidget.Layout held = w.ComputeLayoutForTest(vp.R);
+                Assert.Equal(dollL.PortraitClip, held.PortraitClip);
+                Assert.Equal(dollL.Portrait, held.Portrait);
+
+                // 静态新图到达：取景切换到该图自己的规则（外部 mask clip + 统一 fit）
+                using (Bitmap q = Bmp(200, 400))
+                    Assert.True(w.SetPortrait("nd:1", 2, q));
+                Assert.False(w.PortraitHeldIsDollForTest);
+                NativeDialogueWidget.Layout staticL = w.ComputeLayoutForTest(vp.R);
+                Assert.Equal(Rectangle.FromLTRB(30, 30, 910, 419), staticL.PortraitClip);
+                Assert.NotEqual(dollL.Portrait, staticL.Portrait);
             }
         }
     }

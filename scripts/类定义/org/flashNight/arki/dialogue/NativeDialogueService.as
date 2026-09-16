@@ -12,7 +12,11 @@ import org.flashNight.arki.dialogue.NativeDialogueAppearance;
  *                revision:Number(同请求严格递增), lineIndex(0 起), lineCount,
  *                name, title, text,
  *                portrait:{kind:"static"|"doll", key, expression, appearance},
- *                imageAction:"keep"|"show"|"clear", imagePath, advanceKey?}
+ *                imageAction:"keep"|"show"|"clear", imagePath, advanceKey?,
+ *                prefetch?:{portrait:同上结构, imageAction:"show", imagePath}}
+ *      prefetch 可选，仅下一句存在时附加；下一句无立绘（key==""）不挂
+ *      portrait，下一句配图非显式换新（keep/clear）不挂 imageAction/
+ *      imagePath，两者皆无则 prefetch 不挂。Host 软解析，畸形整体丢弃。
  *      hide 只需 requestId+sceneId 匹配；hide 后同一 requestId 不得再 show。
  *    入向：_root.gameCommands["nativeDialogueAction"]({task:"cmd",
  *          action:"nativeDialogueAction", requestId, sceneId, revision,
@@ -365,6 +369,24 @@ class org.flashNight.arki.dialogue.NativeDialogueService {
         };
         var keyCode:Number = org.flashNight.arki.key.KeyManager.getKeySetting("互动键");
         if (!isNaN(keyCode)) payload.advanceKey = keyCode;
+        // 下一句存在时捎带预取描述：立绘直接引用冻结快照（sendTaskToNode 即时
+        // 序列化，无需克隆）；仅显式换新配图才带 imageAction/imagePath。
+        var nextIndex:Number = index + 1;
+        if (nextIndex < s.lines.length && s.lines[nextIndex] != null) {
+            var pf:Object = null;
+            var np:Object = s.portraits[nextIndex];
+            if (np != null && np.key != undefined && String(np.key) != "") {
+                pf = {};
+                pf.portrait = np;
+            }
+            var nImg = s.lines[nextIndex][6];
+            if (typeof nImg == "string" && nImg != "" && nImg != "close") {
+                if (pf == null) pf = {};
+                pf.imageAction = "show";
+                pf.imagePath = nImg;
+            }
+            if (pf != null) payload.prefetch = pf;
+        }
         syncCompat();
         return send(payload);
     }

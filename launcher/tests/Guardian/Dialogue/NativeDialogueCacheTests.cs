@@ -4,6 +4,7 @@ using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading;
@@ -26,6 +27,8 @@ namespace CF7Launcher.Tests.Guardian
     /// - 损坏缓存（垃圾字节/非 768 PNG）一律按 miss 处理，不吐坏图。
     /// - 边界回收只动 64hex.png；非缓存文件（txt、非 hex png）原样保留。
     /// - DollKey 静态签名与 LoadPortrait 双回调签名不变。
+    /// - HandleResult 受理即返回：结构拒绝仍同步 false，解码/回调/落盘改在
+    ///   后台线程完成；内存 LRU 64MB 下 >8 张 ~3MB 位图同时存活。
     /// </summary>
     public sealed class NativeDialogueCacheTests
     {
@@ -271,6 +274,306 @@ namespace CF7Launcher.Tests.Guardian
                     small.Save(ms, ImageFormat.Png);
                     string k = new string('a', 64);
                     Assert.False(cache.Store(k, ms.ToArray(), 768), "non-768 png must be rejected");
+                }
+            }
+            finally { try { Directory.Delete(root, true); } catch { } }
+        }
+
+        [Fact]
+        public void HandleResult_SyncRejectPaths_StayFalse()
+        {
+            string root = MakeRoot();
+            try
+            {
+                var posted = new List<string>();
+                using (var svc = new DialoguePortraitService(root,
+                    m => { lock (posted) posted.Add(m); return true; }))
+                {
+                    // key 无对应 pending → 同步 false
+                    Assert.Equal("{\"success\":false}", svc.HandleResult(new JObject
+                    {
+                        ["payload"] = new JObject
+                        {
+                            ["key"] = "no-such-key", ["requestId"] = "x",
+                            ["pngBase64"] = Convert.ToBase64String(Png768())
+                        }
+                    }));
+
+                    // requestId 不匹配 → 同步 false，且 pending 不被消费：
+                    // 改回正确 requestId 仍可受理并交付回调。
+                    var done = new ManualResetEventSlim();
+                    svc.LoadPortrait(DollFrame(), Appearance(), _ => done.Set());
+                    Assert.True(WaitFor(() => posted.Count > 0), "expected a web bake request");
+                    JObject msg = JObject.Parse(posted[0]);
+                    Assert.Equal("{\"success\":false}", svc.HandleResult(new JObject
+                    {
+                        ["payload"] = new JObject
+                        {
+                            ["key"] = msg["key"], ["requestId"] = "wrong-request",
+                            ["pngBase64"] = Convert.ToBase64String(Png768())
+                        }
+                    }));
+                    Assert.False(done.Wait(300), "mismatched requestId must not deliver");
+                    Assert.Equal("{\"success\":true}", svc.HandleResult(new JObject
+                    {
+                        ["payload"] = new JObject
+                        {
+                            ["key"] = msg["key"], ["requestId"] = msg["requestId"],
+                            ["pngBase64"] = Convert.ToBase64String(Png768())
+                        }
+                    }));
+                    Assert.True(done.Wait(5000), "accepted result should deliver callback");
+
+                    // pngBase64 缺失 / 非字符串 / 超 8MB → 同步 false，不触发回调。
+                    // 结构拒绝同样消耗 pending（与旧版一致），每轮用新表情造新 key。
+                    string[] expressions = { "生气", "悲伤", "微笑" };
+                    for (int i = 0; i < expressions.Length; i++)
+                    {
+                        posted.Clear();
+                        var rejected = new ManualResetEventSlim();
+                        svc.LoadPortrait(DollFrame(expressions[i]), Appearance(), _ => rejected.Set());
+                        Assert.True(WaitFor(() => posted.Count > 0), "expected a web bake request");
+                        JObject m = JObject.Parse(posted[0]);
+                        var payload = new JObject
+                        {
+                            ["key"] = m["key"], ["requestId"] = m["requestId"]
+                        };
+                        if (i == 1) payload["pngBase64"] = 123;
+                        if (i == 2) payload["pngBase64"] = new string('A', 8 * 1024 * 1024 + 1);
+                        Assert.Equal("{\"success\":false}",
+                            svc.HandleResult(new JObject { ["payload"] = payload }));
+                        Assert.False(rejected.Wait(300), "rejected payload must not deliver");
+                    }
+                }
+            }
+            finally { try { Directory.Delete(root, true); } catch { } }
+        }
+
+        [Fact]
+        public void HandleResult_Accepted_DeliversOnBackgroundThread()
+        {
+            string root = MakeRoot();
+            try
+            {
+                var posted = new List<string>();
+                using (var svc = new DialoguePortraitService(root,
+                    m => { lock (posted) posted.Add(m); return true; }))
+                {
+                    var done = new ManualResetEventSlim();
+                    Bitmap got = null;
+                    svc.LoadPortrait(DollFrame(), Appearance(), bmp => { got = bmp; done.Set(); });
+                    Assert.True(WaitFor(() => posted.Count > 0), "expected a web bake request");
+                    JObject msg = JObject.Parse(posted[0]);
+                    // 受理即返回；解码/交付在后台完成，回调不再同步发生。
+                    Assert.Equal("{\"success\":true}", svc.HandleResult(new JObject
+                    {
+                        ["payload"] = new JObject
+                        {
+                            ["key"] = msg["key"], ["requestId"] = msg["requestId"],
+                            ["pngBase64"] = Convert.ToBase64String(Png768())
+                        }
+                    }));
+                    Assert.True(done.Wait(5000), "async delivery callback not fired");
+                    Assert.NotNull(got);
+                    Assert.Equal(768, got.Width);
+                    got.Dispose();
+                    string path = Path.Combine(DiskDir(root), msg.Value<string>("key") + ".png");
+                    Assert.True(WaitFor(() => File.Exists(path)), "disk file not written");
+                }
+            }
+            finally { try { Directory.Delete(root, true); } catch { } }
+        }
+
+        [Fact]
+        public void HandleResult_UndecodablePayload_SkipsCallback()
+        {
+            string root = MakeRoot();
+            try
+            {
+                var posted = new List<string>();
+                using (var svc = new DialoguePortraitService(root,
+                    m => { lock (posted) posted.Add(m); return true; }))
+                {
+                    var done = new ManualResetEventSlim();
+                    svc.LoadPortrait(DollFrame(), Appearance(), _ => done.Set());
+                    Assert.True(WaitFor(() => posted.Count > 0), "expected a web bake request");
+                    JObject msg = JObject.Parse(posted[0]);
+                    // 受理成功但 PNG 不可解码：只记日志，回调不触发（同旧版可观测结果）。
+                    Assert.Equal("{\"success\":true}", svc.HandleResult(new JObject
+                    {
+                        ["payload"] = new JObject
+                        {
+                            ["key"] = msg["key"], ["requestId"] = msg["requestId"],
+                            ["pngBase64"] = Convert.ToBase64String(new byte[] { 1, 2, 3, 4 })
+                        }
+                    }));
+                    Assert.False(done.Wait(500), "undecodable payload must not deliver");
+                }
+            }
+            finally { try { Directory.Delete(root, true); } catch { } }
+        }
+
+        [Fact]
+        public void MemoryCache_64MB_KeepsMoreThanEightLargeBitmaps()
+        {
+            string root = MakeRoot();
+            try
+            {
+                using (var svc = new DialoguePortraitService(root, _ => true))
+                {
+                    var put = typeof(DialoguePortraitService).GetMethod("PutCached",
+                        BindingFlags.NonPublic | BindingFlags.Instance);
+                    var get = typeof(DialoguePortraitService).GetMethod("GetCached",
+                        BindingFlags.NonPublic | BindingFlags.Instance);
+                    Assert.NotNull(put);
+                    Assert.NotNull(get);
+                    // 每张 1024×768×4 = 3MB；12 张共 36MB——超旧 24MB 上限、低于 64MB，
+                    // 旧容量下最早条目必被逐出，新容量下应全部存活。
+                    for (int i = 0; i < 12; i++)
+                    {
+                        using (var bmp = new Bitmap(1024, 768, PixelFormat.Format32bppPArgb))
+                            put.Invoke(svc, new object[] { "k" + i, bmp });
+                    }
+                    for (int i = 0; i < 12; i++)
+                    {
+                        var hit = (Bitmap)get.Invoke(svc, new object[] { "k" + i });
+                        Assert.NotNull(hit);
+                        hit.Dispose();
+                    }
+                }
+            }
+            finally { try { Directory.Delete(root, true); } catch { } }
+        }
+
+        /// <summary>MakeRoot + 一张可解码的静态立绘（manifest entries + PNG）。</summary>
+        private static string MakeRootWithStaticPortrait()
+        {
+            string root = MakeRoot();
+            string dir = Path.Combine(root, "launcher", "web", "assets", "dialogue-portraits");
+            File.WriteAllText(Path.Combine(dir, "manifest.json"), new JObject
+            {
+                ["entries"] = new JObject
+                {
+                    ["hero"] = new JObject
+                    {
+                        ["expressions"] = new JObject
+                        {
+                            ["普通"] = new JObject { ["uri"] = "hero-normal.png" }
+                        }
+                    }
+                }
+            }.ToString());
+            File.WriteAllBytes(Path.Combine(dir, "hero-normal.png"), Png768());
+            return root;
+        }
+
+        private static Bitmap PeekCached(DialoguePortraitService svc, string key)
+        {
+            var get = typeof(DialoguePortraitService).GetMethod("GetCached",
+                BindingFlags.NonPublic | BindingFlags.Instance);
+            return (Bitmap)get.Invoke(svc, new object[] { key });
+        }
+
+        [Fact]
+        public void StaticPrefetchWarmsMemoryCacheForNextLoadPortrait()
+        {
+            string root = MakeRootWithStaticPortrait();
+            try
+            {
+                using (var svc = new DialoguePortraitService(root, _ => true))
+                {
+                    svc.PrefetchPortrait("hero", "普通", null);
+                    // 暖完的标志：同 key 进入内存 LRU（对齐 MemoryCache 测试的反射观察手法）。
+                    Assert.True(WaitFor(() =>
+                    {
+                        Bitmap hit = PeekCached(svc, "static:hero:普通");
+                        if (hit == null) return false;
+                        hit.Dispose();
+                        return true;
+                    }), "static prefetch should warm memory cache");
+                    // 预取后同 key LoadPortrait 内存命中并交付位图。
+                    var done = new ManualResetEventSlim();
+                    Bitmap got = null;
+                    svc.LoadPortrait(new NativeDialogueFrame
+                    {
+                        RequestId = "nd:1", SceneId = "sceneA", Revision = 1,
+                        Name = "n", Text = "t", PortraitKey = "hero",
+                        Expression = "普通", IsDoll = false, ImageAction = "keep"
+                    }, null, bmp => { got = bmp; done.Set(); });
+                    Assert.True(done.Wait(5000), "memory-hit callback not delivered");
+                    Assert.NotNull(got);
+                    got.Dispose();
+                }
+            }
+            finally { try { Directory.Delete(root, true); } catch { } }
+        }
+
+        [Fact]
+        public void DollPrefetchYieldsWhenPendingSlotsOccupied()
+        {
+            string root = MakeRoot();
+            try
+            {
+                var posted = new List<string>();
+                using (var svc = new DialoguePortraitService(root,
+                    m => { lock (posted) posted.Add(m); return true; }))
+                {
+                    // 占满 2 个 pending 槽（两笔在途 bake 永不回包）。
+                    svc.LoadPortrait(DollFrame(), Appearance(), _ => { });
+                    svc.LoadPortrait(DollFrame(), Appearance(face: "乙号脸"), _ => { });
+                    Assert.True(WaitFor(() => { lock (posted) return posted.Count >= 2; }),
+                        "expected two in-flight web bake requests");
+                    // 预取让位：不同外观（不合并入既有 pending）也不得新增 Web 消息。
+                    svc.PrefetchPortrait("hero", "普通",
+                        DialoguePortraitService.NormalizeAppearance(Appearance(body: "布甲")));
+                    Thread.Sleep(300);
+                    lock (posted) Assert.Equal(2, posted.Count);
+                }
+            }
+            finally { try { Directory.Delete(root, true); } catch { } }
+        }
+
+        [Fact]
+        public void DollPrefetchFullChainWarmsMemoryCache()
+        {
+            string root = MakeRoot();
+            try
+            {
+                var posted = new List<string>();
+                using (var svc = new DialoguePortraitService(root,
+                    m => { lock (posted) posted.Add(m); return true; }))
+                {
+                    svc.PrefetchPortrait("hero", "普通",
+                        DialoguePortraitService.NormalizeAppearance(Appearance()));
+                    Assert.True(WaitFor(() => { lock (posted) return posted.Count > 0; }),
+                        "doll prefetch should post a web bake request");
+                    JObject msg;
+                    lock (posted) msg = JObject.Parse(posted[0]);
+                    Assert.Equal("{\"success\":true}", svc.HandleResult(new JObject
+                    {
+                        ["payload"] = new JObject
+                        {
+                            ["key"] = msg["key"], ["requestId"] = msg["requestId"],
+                            ["pngBase64"] = Convert.ToBase64String(Png768())
+                        }
+                    }));
+                    string key = msg.Value<string>("key");
+                    Assert.True(WaitFor(() =>
+                    {
+                        Bitmap hit = PeekCached(svc, key);
+                        if (hit == null) return false;
+                        hit.Dispose();
+                        return true;
+                    }), "baked prefetch should land in memory cache");
+                    // 前景同 key 内存命中：回调交付位图，且不再发第二次 Web 请求。
+                    var done = new ManualResetEventSlim();
+                    Bitmap got = null;
+                    svc.LoadPortrait(DollFrame(), Appearance(), bmp => { got = bmp; done.Set(); });
+                    Assert.True(done.Wait(5000), "memory-hit callback not delivered");
+                    Assert.NotNull(got);
+                    Assert.Equal(768, got.Width);
+                    got.Dispose();
+                    lock (posted) Assert.Single(posted);
                 }
             }
             finally { try { Directory.Delete(root, true); } catch { } }

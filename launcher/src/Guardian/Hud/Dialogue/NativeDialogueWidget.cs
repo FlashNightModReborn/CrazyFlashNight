@@ -4,6 +4,7 @@ using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Drawing.Imaging;
 using System.Drawing.Text;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 using CF7Launcher.Guardian;
 
@@ -41,6 +42,13 @@ namespace CF7Launcher.Guardian.Hud.Dialogue
     /// 性能：排版在字段局部空间进行（与 viewport 无关，换字号/文本才重排），
     /// 位图缩放按（源图/目标尺寸）缓存，SVG 装饰按 scale 光栅化一次缓存；
     /// 打字期间每 tick 仅重绘，打完立即停 tick。
+    /// 每句一卡治理：同身份立绘/配图的重投递整体跳过（不克隆、不 flush 缩放
+    /// 缓存）；BoundsOrVisibilityChanged 按（Visible, ScreenBounds）快照对比，
+    /// 几何未动不触发覆层的立即全量提交；正文画刷按 ARGB 缓存不逐 run 新建。
+    /// 消闪治理：立绘/配图换身份默认 hold-last-frame（旧图续画到新图到达原子
+    /// 换入，消除「先 Dispose 再异步重载」的空白帧），跨会话同身份 carry
+    /// （位图不离场、Host 重投递命中同图跳过），替换路径后台预缩把
+    /// HighQualityBicubic 从首次 Paint 的 UI 线程挪到池线程。
     ///
     /// 线程模型：同 NpcMenuWidget——Show/Hide/Set* 可从 socket worker 线程调用
     /// （_gate 保护），Paint/Tick/OnMouseEvent 在 UI 线程；事件回调锁外 fire。
@@ -105,6 +113,9 @@ namespace CF7Launcher.Guardian.Hud.Dialogue
         private Bitmap _portraitBmp;
         private string _portraitIdentity;
         private bool _portraitPending;
+        /// <summary>当前持有立绘自己的取景类别（投递接受帧的 IsDoll）。hold-last-frame
+        /// 续画期间旧图仍按自己的纸娃娃/静态窗规则取景，不被新帧的身份套用。</summary>
+        private bool _portraitHeldIsDoll;
         /// <summary>外部 SWF 立绘的作者取景（舞台逻辑坐标），随接受的位图原子投递；
         /// null = 无元数据（纸娃娃/静态/旧调用方走统一 fit 或内部窗规则）。</summary>
         private RectangleF? _portraitStageRect;
@@ -126,6 +137,10 @@ namespace CF7Launcher.Guardian.Hud.Dialogue
         private StringFormat _fieldFormat;
         private readonly Dictionary<char, float> _charW =
             new Dictionary<char, float>();
+        // 文本画刷按 ARGB 缓存（UI 线程懒建，Dispose 统一释放）：
+        // 打字期 ~30fps × 每 run 新建 SolidBrush 是 GC 压力源。
+        private readonly Dictionary<int, SolidBrush> _brushCache =
+            new Dictionary<int, SolidBrush>();
 
         /// <summary>
         /// widget → Host Task 的输入出口：(frame 快照, verb)。verb ∈ "advance" | "close"。
@@ -168,15 +183,22 @@ namespace CF7Launcher.Guardian.Hud.Dialogue
         }
 
         /// <summary>
-        /// 展示一句。新 RequestId = 新会话（清空立绘/配图重等）；同会话要求 Revision
-        /// 不后退；同一纸娃娃外观仅换表情时保留旧图，换角色或装备则清空。
+        /// 展示一句。新 RequestId = 新会话；同会话要求 Revision 不后退（迟到帧拒绝）。
+        /// 消闪取舍（hold-last-frame）：换人/换表情/跨会话换立绘或配图时旧图
+        /// <b>不立即清</b>，续画到新图到达原子换入（异步缓存命中典型 10-30ms），
+        /// 消除空白帧——代价是换人瞬间最多显示旧图几十 ms，与纸娃娃换表情
+        /// 原有的保留旧图语义统一。跨会话同身份位图不离场（carry）：Host 重投递
+        /// 命中同图跳过天然 no-op。本句无立绘（WantsPortrait=false）与
+        /// imageAction="clear" 仍是立即清的真隐藏，不走 hold。
         /// </summary>
         public bool ShowFrame(NativeDialogueFrame frame)
         {
             if (frame == null || string.IsNullOrEmpty(frame.RequestId)) return false;
+            bool boundsChanged;
             lock (_gate)
             {
                 if (_disposed) return false;
+                BoundsSnapshot before = SnapshotBoundsLocked();
                 NativeDialogueFrame cur = _frame;
                 bool newSession = cur == null
                     || !string.Equals(cur.RequestId, frame.RequestId, StringComparison.Ordinal);
@@ -184,29 +206,50 @@ namespace CF7Launcher.Guardian.Hud.Dialogue
 
                 if (newSession)
                 {
-                    DisposePortraitLocked();
-                    DisposeSceneLocked();
-                    _portraitIdentity = frame.WantsPortrait ? frame.PortraitIdentity : null;
-                    _portraitPending = frame.WantsPortrait;
-                    _scenePath = frame.WantsSceneImage ? frame.ImagePath : null;
-                    _scenePending = frame.WantsSceneImage;
+                    if (!frame.WantsPortrait)
+                    {
+                        DisposePortraitLocked();            // 无立绘会话 = 真隐藏
+                        _portraitIdentity = null;
+                        _portraitPending = false;
+                    }
+                    else
+                    {
+                        // carry 要求持有图确实是该身份（bmp 非空且非 pending——
+                        // hold 态 bmp 非空+pending 时旧图身份并不等于
+                        // _portraitIdentity，不能误判离场豁免）。
+                        bool carry = _portraitBmp != null && !_portraitPending
+                            && string.Equals(_portraitIdentity, frame.PortraitIdentity,
+                                StringComparison.Ordinal);
+                        _portraitIdentity = frame.PortraitIdentity;
+                        _portraitPending = !carry;          // 否则 hold：旧图续画等新图
+                    }
+
+                    if (!frame.WantsSceneImage)
+                    {
+                        DisposeSceneLocked();               // 新会话未声明配图 = 真隐藏
+                        _scenePath = null;
+                        _scenePending = false;
+                    }
+                    else
+                    {
+                        bool carryScene = _sceneBmp != null && !_scenePending
+                            && string.Equals(_scenePath, frame.ImagePath,
+                                StringComparison.Ordinal);
+                        _scenePath = frame.ImagePath;
+                        _scenePending = !carryScene;
+                    }
                 }
                 else
                 {
                     if (!frame.WantsPortrait)
                     {
-                        DisposePortraitLocked();
+                        DisposePortraitLocked();            // 本句无立绘 = 真隐藏
                         _portraitIdentity = null;
                         _portraitPending = false;
                     }
                     else if (!string.Equals(_portraitIdentity, frame.PortraitIdentity, StringComparison.Ordinal))
                     {
-                        // 仅表情变化可以沿用同一外观的已知图；不能把别人的装备带过来。
-                        bool sameDoll = cur != null && cur.IsDoll && frame.IsDoll
-                            && !string.IsNullOrEmpty(frame.AppearanceIdentity)
-                            && cur.PortraitKey == frame.PortraitKey
-                            && cur.AppearanceIdentity == frame.AppearanceIdentity;
-                        if (!sameDoll) DisposePortraitLocked();
+                        // hold-last-frame：不清旧图，续画到新图到达原子换入。
                         _portraitPending = true;
                         _portraitIdentity = frame.PortraitIdentity;
                     }
@@ -223,7 +266,7 @@ namespace CF7Launcher.Guardian.Hud.Dialogue
                     {
                         if (!string.Equals(_scenePath, frame.ImagePath, StringComparison.Ordinal))
                         {
-                            DisposeSceneLocked();   // 身份变了：旧图身份不明，不残留
+                            // 配图同规则 hold：path 变了旧图续画到新图到达。
                             _scenePath = frame.ImagePath;
                             _scenePending = true;
                         }
@@ -245,8 +288,9 @@ namespace CF7Launcher.Guardian.Hud.Dialogue
                 DisarmGestureLocked();
                 _closeHover = false;
                 _dragHover = false;
+                boundsChanged = BoundsChanged(before, SnapshotBoundsLocked());
             }
-            FireBounds();
+            if (boundsChanged) FireBounds();
             FireRepaint();
             UpdateAnim();
             return true;
@@ -256,8 +300,10 @@ namespace CF7Launcher.Guardian.Hud.Dialogue
         public bool HideFrame(string requestId, string sceneId)
         {
             bool cleared = false;
+            bool boundsChanged = false;
             lock (_gate)
             {
+                BoundsSnapshot before = SnapshotBoundsLocked();
                 NativeDialogueFrame cur = _frame;
                 if (cur != null
                     && string.Equals(cur.RequestId, requestId, StringComparison.Ordinal)
@@ -266,10 +312,11 @@ namespace CF7Launcher.Guardian.Hud.Dialogue
                     ClearSessionLocked();
                     cleared = true;
                 }
+                boundsChanged = BoundsChanged(before, SnapshotBoundsLocked());
             }
             if (cleared)
             {
-                FireBounds();
+                if (boundsChanged) FireBounds();
                 FireRepaint();
                 UpdateAnim();
             }
@@ -280,14 +327,17 @@ namespace CF7Launcher.Guardian.Hud.Dialogue
         public void Reset()
         {
             bool had;
+            bool boundsChanged = false;
             lock (_gate)
             {
+                BoundsSnapshot before = SnapshotBoundsLocked();
                 had = _frame != null;
                 ClearSessionLocked();
+                boundsChanged = BoundsChanged(before, SnapshotBoundsLocked());
             }
             if (had)
             {
-                FireBounds();
+                if (boundsChanged) FireBounds();
                 FireRepaint();
                 UpdateAnim();
             }
@@ -300,9 +350,11 @@ namespace CF7Launcher.Guardian.Hud.Dialogue
         public void SetHostSuppressed(bool suppressed)
         {
             bool changed;
+            bool boundsChanged = false;
             lock (_gate)
             {
                 if (_suppressed == suppressed) return;
+                BoundsSnapshot before = SnapshotBoundsLocked();
                 if (suppressed)
                     _typingWallElapsedMs += Math.Max(0, TypingClock() - _typingWallStartMs);
                 else
@@ -315,10 +367,11 @@ namespace CF7Launcher.Guardian.Hud.Dialogue
                     _closeHover = false;
                     _dragHover = false;
                 }
+                boundsChanged = BoundsChanged(before, SnapshotBoundsLocked());
             }
             if (changed)
             {
-                FireBounds();
+                if (boundsChanged) FireBounds();
                 FireRepaint();
             }
             UpdateAnim();
@@ -397,12 +450,21 @@ namespace CF7Launcher.Guardian.Hud.Dialogue
         /// （外部 SWF 的 union∩window crop 经 manifest.zoom 还原；null/退化 = 走 fit 规则）。
         /// 元数据与位图同属一次 request/revision 接受：过期者一并拒绝，
         /// 迟到图不能改变当前句取景。
+        /// 同图跳过：当前帧立绘身份对应的图已在手（_portraitBmp 非空且非 pending）
+        /// 时，同一身份 ⇒ 服务端缓存 key 相同 ⇒ 位图内容必然相同，直接返回 true——
+        /// 不克隆、不替换、不 dispose 缩放缓存、不 fire 任何事件（省一次克隆 +
+        /// HighQualityBicubic 重缩 + bounds 立即全量提交）。身份变化/新会话换身份时
+        /// _portraitPending 为 true，仍走原替换路径（hold 的旧图此刻原子换入）；
+        /// 跨会话同身份 carry 时 pending=false 且图已在手，重投递命中本跳过路径。
         /// </summary>
         public bool SetPortrait(string requestId, int revision, Bitmap bitmap,
             RectangleF? stageRect)
         {
             if (bitmap == null) return false;
             Bitmap clone;
+            Bitmap prescaleSrc = null;
+            int prescaleW = 0, prescaleH = 0;
+            bool boundsChanged;
             lock (_gate)
             {
                 NativeDialogueFrame f = _frame;
@@ -410,27 +472,47 @@ namespace CF7Launcher.Guardian.Hud.Dialogue
                     || !string.Equals(f.RequestId, requestId, StringComparison.Ordinal)
                     || f.Revision != revision)
                     return false;
+                if (_portraitBmp != null && !_portraitPending)
+                    return true;    // 同图已在手：整包跳过（含取景元数据）
+                BoundsSnapshot before = SnapshotBoundsLocked();
                 clone = CloneArgb(bitmap);
                 if (clone == null) return false;
                 Bitmap old = _portraitBmp;
                 _portraitBmp = clone;
                 _portraitPending = false;
+                _portraitHeldIsDoll = f.IsDoll;   // 本图自己的取景类别（revision 门保证 f 即目标帧）
                 _portraitStageRect = (stageRect.HasValue
                     && stageRect.Value.Width > 0 && stageRect.Value.Height > 0)
                     ? stageRect : (RectangleF?)null;
                 DisposeBitmap(ref _portraitScaled);
                 if (old != null) old.Dispose();
+                // 后台预缩：锁内取当前布局目标尺寸并克隆私有源——GDI+ 只对不同
+                // Bitmap 实例并发安全，UI 线程可能同时在画 _portraitBmp，池线程
+                // 渲染须用独立实例且不持 _gate。
+                Layout L = ComputeLayoutLocked();
+                prescaleW = L.Portrait.Width;
+                prescaleH = L.Portrait.Height;
+                if (prescaleW > 0 && prescaleH > 0)
+                    prescaleSrc = CloneArgb(clone);
+                boundsChanged = BoundsChanged(before, SnapshotBoundsLocked());
             }
-            FireBounds();   // 立绘出现/尺寸变化 → 参与 bounds union
+            if (boundsChanged) FireBounds();   // 立绘出现/尺寸变化 → 参与 bounds union
             FireRepaint();
+            if (prescaleSrc != null)
+                StartPortraitPrescale(clone, prescaleSrc, prescaleW, prescaleH);
             return true;
         }
 
-        /// <summary>配图投递；keep 行仍可采用同一路径的迟到加载，clear 后拒绝。</summary>
+        /// <summary>配图投递；keep 行仍可采用同一路径的迟到加载，clear 后拒绝。
+        /// 同图跳过：_sceneBmp 非空且非 pending 时内容必然相同，直接返回 true，
+        /// 不克隆、不替换、不动缩放缓存、不 fire 事件。</summary>
         public bool SetSceneImage(string requestId, int revision, Bitmap bitmap)
         {
             if (bitmap == null) return false;
             Bitmap clone;
+            Bitmap prescaleSrc = null;
+            int prescaleW = 0, prescaleH = 0;
+            bool boundsChanged;
             lock (_gate)
             {
                 NativeDialogueFrame f = _frame;
@@ -438,6 +520,9 @@ namespace CF7Launcher.Guardian.Hud.Dialogue
                     || !string.Equals(f.RequestId, requestId, StringComparison.Ordinal)
                     || f.Revision != revision)
                     return false;
+                if (_sceneBmp != null && !_scenePending)
+                    return true;    // 同图已在手：整包跳过
+                BoundsSnapshot before = SnapshotBoundsLocked();
                 clone = CloneArgb(bitmap);
                 if (clone == null) return false;
                 Bitmap old = _sceneBmp;
@@ -445,9 +530,18 @@ namespace CF7Launcher.Guardian.Hud.Dialogue
                 _scenePending = false;
                 DisposeBitmap(ref _sceneScaled);
                 if (old != null) old.Dispose();
+                // 后台预缩：与立绘同规则（私有源克隆 + 锁外池线程渲染）。
+                Layout L = ComputeLayoutLocked();
+                prescaleW = L.Scene.Width;
+                prescaleH = L.Scene.Height;
+                if (prescaleW > 0 && prescaleH > 0)
+                    prescaleSrc = CloneArgb(clone);
+                boundsChanged = BoundsChanged(before, SnapshotBoundsLocked());
             }
-            FireBounds();
+            if (boundsChanged) FireBounds();
             FireRepaint();
+            if (prescaleSrc != null)
+                StartScenePrescale(clone, prescaleSrc, prescaleW, prescaleH);
             return true;
         }
 
@@ -516,6 +610,7 @@ namespace CF7Launcher.Guardian.Hud.Dialogue
                 {
                     int zone;
                     bool dragMoved = false;
+                    bool boundsChanged = false;
                     lock (_gate)
                     {
                         if (_frame == null || _suppressed || _disposed) return;
@@ -530,9 +625,11 @@ namespace CF7Launcher.Guardian.Hud.Dialogue
                                 ClampDragLocked(ref ndx, ref ndy);
                                 if (ndx != _dragDX || ndy != _dragDY)
                                 {
+                                    BoundsSnapshot before = SnapshotBoundsLocked();
                                     _dragDX = ndx;
                                     _dragDY = ndy;
                                     dragMoved = true;
+                                    boundsChanged = BoundsChanged(before, SnapshotBoundsLocked());
                                 }
                             }
                             zone = ZONE_DRAG;
@@ -544,7 +641,7 @@ namespace CF7Launcher.Guardian.Hud.Dialogue
                     }
                     if (dragMoved)
                     {
-                        FireBounds();
+                        if (boundsChanged) FireBounds();
                         FireRepaint();
                     }
                     SetHovers(zone == ZONE_CLOSE, zone == ZONE_DRAG);
@@ -790,6 +887,19 @@ namespace CF7Launcher.Guardian.Hud.Dialogue
             DrawFieldText(g, L, _skin.Title, _fontTitle, f.Title);
         }
 
+        /// <summary>按 ARGB 取共享画刷（懒建缓存，Dispose 统一释放）；
+        /// 返回实例归 widget 所有，调用方不得 Dispose。</summary>
+        private SolidBrush BrushFor(Color c)
+        {
+            SolidBrush b;
+            if (!_brushCache.TryGetValue(c.ToArgb(), out b))
+            {
+                b = new SolidBrush(c);
+                _brushCache[c.ToArgb()] = b;
+            }
+            return b;
+        }
+
         private void DrawFieldText(Graphics g, Layout L, DialogueUiSkin.FieldSpec fs,
             Font font, string text)
         {
@@ -818,10 +928,9 @@ namespace CF7Launcher.Guardian.Hud.Dialogue
                 {
                     var line = plan.Lines[0];
                     foreach (var run in line.Runs)
-                        using (var brush = new SolidBrush(run.Color))
-                            g.DrawString(run.Text, font, brush,
-                                TEXT_INSET_LOCAL + line.Indent + line.PrefixW[run.LineOffset],
-                                1f, _typoFormat);
+                        g.DrawString(run.Text, font, BrushFor(run.Color),
+                            TEXT_INSET_LOCAL + line.Indent + line.PrefixW[run.LineOffset],
+                            1f, _typoFormat);
                 }
             }
             finally { g.Restore(st); }
@@ -864,9 +973,9 @@ namespace CF7Launcher.Guardian.Hud.Dialogue
                         string text = run.Text;
                         if (remain < text.Length) text = text.Substring(0, remain);
                         if (text.Length == 0) continue;
-                        using (SolidBrush b = new SolidBrush(
-                            run.Color.A == 0 ? fs.Color : run.Color))
-                            g.DrawString(text, _fontBody, b, x, y, _typoFormat);
+                        g.DrawString(text, _fontBody,
+                            BrushFor(run.Color.A == 0 ? fs.Color : run.Color),
+                            x, y, _typoFormat);
                         // run 覆盖 glyph 区间 [GlyphStart, +Text.Length)，x 按实际绘长推进
                         int off = run.LineOffset;
                         int drawn = Math.Min(text.Length, line.GlyphCount - off);
@@ -1186,13 +1295,23 @@ namespace CF7Launcher.Guardian.Hud.Dialogue
             }
         }
 
-        /// <summary>缩放缓存：源/目标尺寸未变不重缩。源图所有权不动。</summary>
+        /// <summary>缩放缓存：源/目标尺寸未变不重缩。源图所有权不动。
+        /// Paint 懒路径保留为兜底：布局变化或后台预缩未完成时仍是正确性来源。</summary>
         private Bitmap EnsureScaled(ref Bitmap cache, ref int cw, ref int ch,
             Bitmap src, int w, int h)
         {
             if (w <= 0 || h <= 0 || src == null) return null;
             if (cache != null && cw == w && ch == h) return cache;
             DisposeBitmap(ref cache);
+            cache = RenderScaled(src, w, h);
+            cw = w; ch = h;
+            return cache;
+        }
+
+        /// <summary>HighQualityBicubic 缩放到 w×h（32bppPArgb）：Paint 懒缩放与
+        /// 后台预缩共用同一组参数，两处产物可互换（预缩完成无需 repaint）。</summary>
+        private static Bitmap RenderScaled(Bitmap src, int w, int h)
+        {
             Bitmap next = new Bitmap(w, h, PixelFormat.Format32bppPArgb);
             using (Graphics g = Graphics.FromImage(next))
             {
@@ -1202,9 +1321,66 @@ namespace CF7Launcher.Guardian.Hud.Dialogue
                 g.DrawImage(src, new Rectangle(0, 0, w, h),
                     0, 0, src.Width, src.Height, GraphicsUnit.Pixel);
             }
-            cache = next;
-            cw = w; ch = h;
-            return cache;
+            return next;
+        }
+
+        /// <summary>
+        /// 后台预缩（立绘）：替换路径换入新图后在池线程预生成缩放图，把
+        /// HighQualityBicubic（实测 ~18ms）从首次 Paint 的 UI 线程挪走。
+        /// held = widget 持有的源图（锁内校验用），src = 私有克隆（渲染源；
+        /// GDI+ 只对不同 Bitmap 实例并发安全，池线程渲染全程不持 _gate）。
+        /// 完成后锁内校验：未 _disposed、held 仍是当前 _portraitBmp、
+        /// _portraitScaled 仍为空（懒缩放未先跑）——任一不满足即丢弃。
+        /// </summary>
+        private void StartPortraitPrescale(Bitmap held, Bitmap src, int w, int h)
+        {
+            Task.Run(delegate
+            {
+                Bitmap scaled = null;
+                try { scaled = RenderScaled(src, w, h); }
+                catch { /* 预缩失败不致命：Paint 懒缩放兜底 */ }
+                src.Dispose();
+                if (scaled == null) return;
+                bool adopt;
+                lock (_gate)
+                {
+                    adopt = !_disposed && ReferenceEquals(_portraitBmp, held)
+                        && _portraitScaled == null;
+                    if (adopt)
+                    {
+                        _portraitScaled = scaled;
+                        _portraitScaledW = w;
+                        _portraitScaledH = h;
+                    }
+                }
+                if (!adopt) scaled.Dispose();
+            });
+        }
+
+        /// <summary>后台预缩（配图）：与 <see cref="StartPortraitPrescale"/> 同规则。</summary>
+        private void StartScenePrescale(Bitmap held, Bitmap src, int w, int h)
+        {
+            Task.Run(delegate
+            {
+                Bitmap scaled = null;
+                try { scaled = RenderScaled(src, w, h); }
+                catch { /* 预缩失败不致命：Paint 懒缩放兜底 */ }
+                src.Dispose();
+                if (scaled == null) return;
+                bool adopt;
+                lock (_gate)
+                {
+                    adopt = !_disposed && ReferenceEquals(_sceneBmp, held)
+                        && _sceneScaled == null;
+                    if (adopt)
+                    {
+                        _sceneScaled = scaled;
+                        _sceneScaledW = w;
+                        _sceneScaledH = h;
+                    }
+                }
+                if (!adopt) scaled.Dispose();
+            });
         }
 
         private static void DisposeBitmap(ref Bitmap b)
@@ -1217,6 +1393,7 @@ namespace CF7Launcher.Guardian.Hud.Dialogue
             DisposeBitmap(ref _portraitBmp);
             DisposeBitmap(ref _portraitScaled);
             _portraitPending = false;
+            _portraitHeldIsDoll = false;
             _portraitStageRect = null;
         }
 
@@ -1308,6 +1485,29 @@ namespace CF7Launcher.Guardian.Hud.Dialogue
             }
         }
 
+        /// <summary>
+        /// Visible + ScreenBounds 快照：BoundsOrVisibilityChanged 改为「实际变化才发」。
+        /// 覆层收到该事件会绕过 33ms 合并定时器立即全量重绘 + UpdateLayeredWindow；
+        /// 换句但可见性/几何未动（同立绘同配图）时这次提交是纯浪费，故按快照对比过滤。
+        /// RepaintRequested 不动——repaint 走 33ms 合并，便宜。
+        /// </summary>
+        private struct BoundsSnapshot
+        {
+            internal bool Visible;
+            internal Rectangle Bounds;
+        }
+
+        /// <summary>锁内调用：Visible/ScreenBounds 的 getter 自取 _gate，lock 可重入。</summary>
+        private BoundsSnapshot SnapshotBoundsLocked()
+        {
+            return new BoundsSnapshot { Visible = Visible, Bounds = ScreenBounds };
+        }
+
+        private static bool BoundsChanged(BoundsSnapshot before, BoundsSnapshot after)
+        {
+            return before.Visible != after.Visible || before.Bounds != after.Bounds;
+        }
+
         private void FireBounds()
         {
             EventHandler h = BoundsOrVisibilityChanged;
@@ -1329,9 +1529,11 @@ namespace CF7Launcher.Guardian.Hud.Dialogue
 
         public void Dispose()
         {
+            bool boundsChanged;
             lock (_gate)
             {
                 if (_disposed) return;
+                BoundsSnapshot before = SnapshotBoundsLocked();
                 _disposed = true;
                 ClearSessionLocked();
                 DisposeFontsLocked();
@@ -1341,9 +1543,13 @@ namespace CF7Launcher.Guardian.Hud.Dialogue
                 if (_measureBmp != null) { _measureBmp.Dispose(); _measureBmp = null; }
                 if (_typoFormat != null) { _typoFormat.Dispose(); _typoFormat = null; }
                 if (_fieldFormat != null) { _fieldFormat.Dispose(); _fieldFormat = null; }
+                foreach (SolidBrush b in _brushCache.Values) b.Dispose();
+                _brushCache.Clear();
                 if (_ownsSkin && _skin != null) _skin.Dispose();
+                boundsChanged = BoundsChanged(before, SnapshotBoundsLocked());
             }
             try { _anchor.Resize -= _anchorResizeHandler; } catch { }
+            if (boundsChanged) FireBounds();   // 曾可见 → 通知覆层撤掉这片区域
             UpdateAnim();
         }
 
@@ -1376,14 +1582,44 @@ namespace CF7Launcher.Guardian.Hud.Dialogue
             get { lock (_gate) { return _portraitBmp != null; } }
         }
 
+        /// <summary>测试：当前自持立绘位图引用（同图跳过路径下必须保持不变）。</summary>
+        internal Bitmap PortraitBitmapForTest
+        {
+            get { lock (_gate) { return _portraitBmp; } }
+        }
+
         internal bool PortraitPendingForTest
         {
             get { lock (_gate) { return _portraitPending; } }
         }
 
+        /// <summary>测试：持有立绘自己的取景类别（hold 期间应仍是旧图的值）。</summary>
+        internal bool PortraitHeldIsDollForTest
+        {
+            get { lock (_gate) { return _portraitHeldIsDoll; } }
+        }
+
+        /// <summary>测试：立绘缩放缓存尺寸（Empty = 未生成；后台预缩/懒缩放共用）。</summary>
+        internal Size PortraitScaledSizeForTest
+        {
+            get { lock (_gate) { return _portraitScaled != null ? _portraitScaled.Size : Size.Empty; } }
+        }
+
+        /// <summary>测试：配图缩放缓存尺寸（Empty = 未生成）。</summary>
+        internal Size SceneScaledSizeForTest
+        {
+            get { lock (_gate) { return _sceneScaled != null ? _sceneScaled.Size : Size.Empty; } }
+        }
+
         internal bool HasSceneImageForTest
         {
             get { lock (_gate) { return _sceneBmp != null; } }
+        }
+
+        /// <summary>测试：当前自持配图位图引用（同图跳过路径下必须保持不变）。</summary>
+        internal Bitmap SceneBitmapForTest
+        {
+            get { lock (_gate) { return _sceneBmp; } }
         }
 
         internal bool ScenePendingForTest
@@ -1443,7 +1679,11 @@ namespace CF7Launcher.Guardian.Hud.Dialogue
             L.Next = MapRect(L, skin.NextHit, true);
             L.Close = MapRect(L, skin.Close.Hit, true);
             L.Drag = MapRect(L, skin.Drag.Hit, true);
-            bool doll = _frame != null && _frame.IsDoll;
+            // 续画期用旧图自己的取景类别（hold-last-frame：新帧身份不得套用到旧图）；
+            // 无图时按当前帧预估（决定 clip 形态，不影响绘制）。
+            bool doll = _portraitBmp != null
+                ? _portraitHeldIsDoll
+                : (_frame != null && _frame.IsDoll);
             L.PortraitClip = MapRect(L, doll ? skin.DollClip : skin.PortraitClip, true);
             L.Strip = Rectangle.FromLTRB(L.Panel.Left, L.Panel.Top,
                 L.Panel.Right, Math.Max(L.Panel.Top, L.Next.Top));

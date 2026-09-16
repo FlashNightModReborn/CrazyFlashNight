@@ -242,6 +242,7 @@ class org.flashNight.arki.dialogue.NativeDialogueServiceTest {
         test_custom_attrobj_keeps_own();
         test_same_name_not_hero();
         test_frozen_no_root_drift();
+        test_prefetch_piggyback();
 
         teardownMock();
         trace("NativeDialogueServiceTest Tests Passed: " + testsPassed);
@@ -768,6 +769,73 @@ class org.flashNight.arki.dialogue.NativeDialogueServiceTest {
         assertEq("玩家脸甲", ap.face, "frozen: second line keeps entry face");
         assertEq("女", ap.gender, "frozen: second line keeps entry gender");
         assertEq("钛合金装甲", ap.body, "frozen: second line keeps entry equipment");
+        NativeDialogueService.cancelActive("test");
+    }
+
+    private static function test_prefetch_piggyback():Void {
+        resetCalls();
+        // 下一句有立绘、无新配图：prefetch 仅含 portrait
+        NativeDialogueService.handleAssign([
+            ["NPC0", "称号", "卫兵", "第0句", "普通", null, ""],
+            ["NPC1", "称号", "军需官", "第1句", "微笑", null, ""]], false);
+        var p:Object = lastPayload();
+        assert(p.prefetch != null, "prefetch: present when next line exists");
+        assertEq("static", p.prefetch.portrait.kind, "prefetch: next portrait kind");
+        assertEq("军需官", p.prefetch.portrait.key, "prefetch: next portrait key");
+        assertEq("微笑", p.prefetch.portrait.expression, "prefetch: next portrait expression");
+        assert(p.prefetch.imageAction == undefined,
+            "prefetch: keep next image carries no imageAction");
+        assert(p.prefetch.imagePath == undefined,
+            "prefetch: keep next image carries no imagePath");
+        // 末句：prefetch 不挂
+        NativeDialogueService.advance();
+        p = lastPayload();
+        assertEq(1, p.lineIndex, "prefetch: advanced to last line");
+        assert(p.prefetch == undefined, "prefetch: absent on last line");
+
+        // 下一句显式换新配图：prefetch 带 imageAction=show + imagePath
+        resetCalls();
+        NativeDialogueService.handleAssign([
+            ["NPC0", "称号", "卫兵", "第0句", "普通", null, ""],
+            ["NPC1", "称号", "军需官", "第1句", "普通", null, "img/cg_01.png"]], false);
+        p = lastPayload();
+        assertEq("军需官", p.prefetch.portrait.key,
+            "prefetch: portrait carried alongside image");
+        assertEq("show", p.prefetch.imageAction, "prefetch: imageAction show for new image");
+        assertEq("img/cg_01.png", p.prefetch.imagePath, "prefetch: imagePath carried");
+
+        // 下一句配图 close（clear）：不带 image 字段，立绘仍捎带
+        resetCalls();
+        NativeDialogueService.handleAssign([
+            ["NPC0", "称号", "卫兵", "第0句", "普通", null, ""],
+            ["NPC1", "称号", "军需官", "第1句", "普通", null, "close"]], false);
+        p = lastPayload();
+        assert(p.prefetch != null, "prefetch: portrait-only when next clears image");
+        assertEq("军需官", p.prefetch.portrait.key, "prefetch: portrait kept over close image");
+        assert(p.prefetch.imageAction == undefined,
+            "prefetch: close next image carries no imageAction");
+        assert(p.prefetch.imagePath == undefined,
+            "prefetch: close next image carries no imagePath");
+
+        // 下一句无立绘（key 为空）但有新配图：prefetch 仅含 image 字段
+        resetCalls();
+        NativeDialogueService.handleAssign([
+            ["NPC0", "称号", "卫兵", "第0句", "普通", null, ""],
+            ["旁白", "", "", "旁白句", "普通", null, "img/cg_02.png"]], false);
+        p = lastPayload();
+        assert(p.prefetch != null, "prefetch: image-only when next has no portrait");
+        assert(p.prefetch.portrait == undefined, "prefetch: empty-key next portrait omitted");
+        assertEq("show", p.prefetch.imageAction, "prefetch: image-only imageAction show");
+        assertEq("img/cg_02.png", p.prefetch.imagePath, "prefetch: image-only imagePath");
+
+        // 下一句既无立绘又无新配图：prefetch 整体不挂
+        resetCalls();
+        NativeDialogueService.handleAssign([
+            ["NPC0", "称号", "卫兵", "第0句", "普通", null, ""],
+            ["旁白", "", "", "旁白句", "普通", null, ""]], false);
+        p = lastPayload();
+        assert(p.prefetch == undefined,
+            "prefetch: absent when next has neither portrait nor image");
         NativeDialogueService.cancelActive("test");
     }
 
