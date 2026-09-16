@@ -25,7 +25,7 @@ Guardian Launcher 是 C# WinForms 长跑宿主，负责：
 
 它不负责：
 
-- 替代 AS2 业务裁决；Web 只能展示 Host/AS2 授权的数据和意图；现场对白台词顺序/完成/取消仍归 AS2，`nativeDialogueAction` 仅回传 advance/close 意图（`native_dialogue` v1，promoted / FIELD_REVALIDATION_PENDING，见[对话框迁移与立绘治理](../docs/对话框迁移与高清立绘治理-调研与施工准备-2026-09-12.md)）；
+- 替代 AS2 业务裁决；Web 只能展示 Host/AS2 授权的数据和意图；现场对白 v2 由 C# 本地换句，AS2 保留会话发号、完成/取消、暂停与剧情权威，`nativeDialogueAction` 的 finish 仍是待裁决的请求；v1 快照回退继续保留（见[对白 wire v2 契约](../docs/对白权威迁移-wire-v2协议与分期立项-2026-09-16.md)）；
 - 用浏览器 harness 代签真实 WebView2 → Flash、物理输入或游戏内 E2E；
 - 通过 `launcher/build.ps1` 直接部署正式 runtime；
 - 把 Audio H2、截图或听感证据塞进通用 runtime promotion 门。

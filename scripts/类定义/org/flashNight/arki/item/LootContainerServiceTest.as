@@ -2026,7 +2026,7 @@ class org.flashNight.arki.item.LootContainerServiceTest {
             _root.server = {
                 isSocketConnected:false,
                 sendTaskWithCallback:function(task:String, payload:Object, extra:Object,
-                                              callback:Function, timeoutFrames:Number):Void {
+                                              callback:Function, timeoutMs:Number):Void {
                     callback({success:false, error:"socket not connected"});
                 }
             };
@@ -2731,7 +2731,7 @@ class org.flashNight.arki.item.LootContainerServiceTest {
             _root.server = {
                 sendTaskWithCallback:function(task:String, payload:Object, extra:Object,
                                               callback:Function,
-                                              timeoutFrames:Number):Void {
+                                              timeoutMs:Number):Void {
                     callback({success:false, error:"socket not connected"});
                 }
             };
@@ -2988,7 +2988,7 @@ class org.flashNight.arki.item.LootContainerServiceTest {
             resetWorld();
             _root.server = {
                 sendTaskWithCallback:function(task:String, payload:Object, extra:Object,
-                                              callback:Function, timeoutFrames:Number):Void {
+                                              callback:Function, timeoutMs:Number):Void {
                     callback({success:false, error:"socket not connected"});
                 }
             };
@@ -3069,7 +3069,7 @@ class org.flashNight.arki.item.LootContainerServiceTest {
             var initKeyCount:Number = ownKeyCount(body.initData);
             check(requested && sent.length == 1 && callbacks.length == 1
                     && sent[0].task == "panel_request" && sent[0].extra == null
-                    && sent[0].timeoutFrames == 600 && bodyKeyCount == 3
+                    && sent[0].timeoutMs == 20000 && bodyKeyCount == 3
                     && body.panel == "loot" && body.source == "map_chest"
                     && initKeyCount == 8
                     && body.initData.chestSessionId == rejectedFlow.active.chestSessionId
@@ -3459,9 +3459,9 @@ class org.flashNight.arki.item.LootContainerServiceTest {
         _root.server = {
             forcedReasons:forcedReasons,
             sendTaskWithCallback:function(task:String, payload:Object, extra:Object,
-                                          callback:Function, timeoutFrames:Number):Void {
+                                          callback:Function, timeoutMs:Number):Void {
                 sent.push({task:task, payload:payload, extra:extra,
-                    timeoutFrames:timeoutFrames});
+                    timeoutMs:timeoutMs});
                 callbacks.push(callback);
             },
             forceSocketRecovery:function(reason:String):Boolean {
@@ -3667,10 +3667,10 @@ class org.flashNight.arki.item.LootContainerServiceTest {
             _root.server = {
                 sendTaskWithCallback:function(task:String, payload:Object,
                                               extra:Object, callback:Function,
-                                              timeoutFrames:Number):Void {
+                                              timeoutMs:Number):Void {
                     captured.task = task;
                     captured.payload = payload;
-                    captured.timeoutFrames = timeoutFrames;
+                    captured.timeoutMs = timeoutMs;
                     callback({success:true, accepted:true, bound:false,
                         panel:"loot"});
                 }
@@ -3680,7 +3680,7 @@ class org.flashNight.arki.item.LootContainerServiceTest {
                 ? null : captured.payload.initData;
             check(delivered.success && requested
                     && captured.task == "panel_request"
-                    && captured.timeoutFrames == 600
+                    && captured.timeoutMs == 20000
                     && captured.payload.panel == "loot"
                     && captured.payload.source == "reward_inbox"
                     && authority != null
@@ -3694,7 +3694,7 @@ class org.flashNight.arki.item.LootContainerServiceTest {
                                                           payload:Object,
                                                           extra:Object,
                                                           callback:Function,
-                                                          timeoutFrames:Number):Void {
+                                                          timeoutMs:Number):Void {
                 callback({success:false, accepted:false,
                     error:"panel_unavailable"});
             };

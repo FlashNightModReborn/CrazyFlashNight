@@ -120,7 +120,7 @@ class org.flashNight.arki.item.RewardInboxService {
                             "在线补给已保存，可从角色构筑的待领取入口领取");
                     }
                 },
-                600
+                20000
             );
         } catch (panelOpenError) {
             return false;

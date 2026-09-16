@@ -373,9 +373,13 @@ class org.flashNight.arki.dialogue.NativeDialogueServiceTest {
         test_v2_terminal_finish_resends_hide();
         test_v2_mutation_ack_paths();
         test_v2_status_query_three_way();
+        test_v2_status_query_scope();
+        test_v2_status_coalesced_timeouts();
         test_v2_stale_callback_ignored();
         test_v2_advance_noop();
         test_v2_failure_classification();
+        test_v2_snapshot_fallback_content();
+        test_v2_snapshot_fallback_capacity();
         test_v2_business_gate();
         test_v2_cross_direction_fifo();
 
@@ -1278,7 +1282,7 @@ class org.flashNight.arki.dialogue.NativeDialogueServiceTest {
         assertEq("v1", curSession().wire, "ack: book rejected downgrades v1");
         assertEq("show", lastPayload().op, "ack: downgrade emits v1 show");
         assertEq(1, lastPayload().version, "ack: v1 show shape");
-        assertEq(rid, lastPayload().requestId, "ack: downgrade keeps requestId");
+        assert(rid != lastPayload().requestId, "ack: downgrade retires old requestId");
         NativeDialogueService.advance();
         assertEq(1, lastPayload().lineIndex,
             "ack: downgraded session continues v1 flow");
@@ -1377,6 +1381,133 @@ class org.flashNight.arki.dialogue.NativeDialogueServiceTest {
         assert(curSession() != null && curRid() != rid1,
             "status: dead-session query answer ignored");
         NativeDialogueService.cancelActive("t");
+    }
+
+    private static function test_v2_status_query_scope():Void {
+        v2Setup();
+        NativeDialogueService.beginStage(
+            [{name:"a", char:"卫兵", text:"0"}, {name:"a", char:"卫兵", text:"1"}],
+            {name:"ScopedDone", args:null});
+        var rid:String = curRid();
+        advanceClock(3100); // book ACK 丢失，status 已发送
+        var query:Object = lastSentOp();
+        NativeDialogueService.handleAssign(rows(1), false); // 查询之后才发送 epoch 2
+        var append:Object = lastSentOp();
+        query.fired = true;
+        query.callback({requestId:rid, sceneId:ctxScene,
+            state:"active", appliedEpoch:1, rowCount:2});
+        assertEq(rid, curRid(), "scope: old status does not replace a later append");
+        assertEq("v2", curSession().wire, "scope: later append stays v2");
+        assertEq(2, curSession().epoch, "scope: later epoch preserved");
+        assertEq(3, curSession().rowCount, "scope: old rowCount cannot roll back new content");
+        assertEq(1, curSession().pendingCount, "scope: later append keeps its own ACK");
+        assertEq(0, countOp("hide"), "scope: no premature hide");
+        assertEq(0, published.length, "scope: no premature following event");
+        assert(_root.暂停 === true, "scope: stage claim retained");
+        ackApplied(append); // 与生产 inline append 一致，不携带 rowCount
+        v2Finish(rid, ctxScene, 2, 2, "advance_past_end");
+        assert(curSession() == null, "scope: correct finalIndex finishes new epoch");
+        assertEq(1, published.length, "scope: event only follows player finish");
+
+        // 即使是更早的 book ACK 携带行数，也不能覆盖发送后的追加行数。
+        v2Setup();
+        NativeDialogueService.handleAssign(rows(2), false);
+        var book:Object = lastSentOp();
+        NativeDialogueService.handleAssign(rows(1), false);
+        ackApplied(book, 2);
+        assertEq(3, curSession().rowCount, "scope: stale book ACK rowCount ignored");
+        NativeDialogueService.cancelActive("t");
+    }
+
+    private static function test_v2_status_coalesced_timeouts():Void {
+        v2Setup();
+        NativeDialogueService.beginStage(
+            [{name:"a", char:"卫兵", text:"0"}], {name:"RecoveredDone", args:null});
+        NativeDialogueService.handleAssign(rows(1), false);
+        var oldRid:String = curRid();
+        advanceClock(3100); // 两个操作同时超时，只能有一个在途查询
+        var query:Object = lastSentOp();
+        assertEq("status", query.payload.op, "coalesce: one status query issued");
+        assertEq(3, sentOps.length, "coalesce: no duplicate concurrent query");
+        assertEq(2, curSession().pendingCount, "coalesce: both unknown operations retained");
+        query.fired = true;
+        // Host 只采用了 book，追加的拒包 ACK 也丢了：必须恢复那次追加。
+        query.callback({requestId:oldRid, sceneId:ctxScene,
+            state:"active", appliedEpoch:1, rowCount:1});
+        assert(curSession() != null && curRid() != oldRid,
+            "coalesce: unapplied append gets explicit recovery");
+        assertEq("v1", curSession().wire, "coalesce: recovery uses v1");
+        assertEq(2, curSession().lineCount, "coalesce: unknown append content retained");
+        assertEq(0, published.length, "coalesce: recovery never publishes");
+        NativeDialogueService.cancelActive("t");
+
+        // null 不是 epoch 0，仍未知的查询不能启动回退或结束剧情。
+        v2Setup();
+        NativeDialogueService.handleAssign(rows(1), false);
+        advanceClock(3100);
+        query = lastSentOp();
+        query.fired = true;
+        query.callback({requestId:curRid(), sceneId:ctxScene,
+            state:"unknown", appliedEpoch:null, rowCount:0});
+        assertEq("v2", curSession().wire, "coalesce: null epoch preserves custody");
+        assertEq(1, curSession().pendingCount, "coalesce: unresolved operation not discarded");
+        assertEq(0, countOp("hide"), "coalesce: indeterminate status never hides");
+        NativeDialogueService.cancelActive("t");
+    }
+
+    private static function test_v2_snapshot_fallback_content():Void {
+        v2Setup();
+        var original:Array = rows(1);
+        original.unshift(null);
+        NativeDialogueService.handleAssign(original, false);
+        var book:Object = lastSentOp();
+        var frozen:Object = book.payload.lines[0].portrait;
+        ackApplied(book, 1);
+        NativeDialogueService.handleAssign(rows(1), false);
+        var append:Object = lastSentOp();
+        var oldRid:String = curRid();
+        ackRejected(append, "oversize");
+        assert(curRid() != oldRid, "fallback: new request identity");
+        assertEq(2, curSession().lineCount, "fallback: null row skipped without losing real rows");
+        assertEq(0, lastPayload().lineIndex, "fallback: replay starts at first real row");
+        assert(lastPayload().portrait === frozen, "fallback: original frozen portrait reused");
+        assertEq(0, curSession().pendingCount, "fallback: old callbacks retired");
+        var fallbackRid:String = curRid();
+        ackRejected(append, "wrong_session");
+        ackApplied(book, 1);
+        assertEq(fallbackRid, curRid(), "fallback: late old ACKs cannot replace recovery");
+        NativeDialogueService.advance();
+        assertEq(1, lastPayload().lineIndex, "fallback: appended content remains playable");
+        NativeDialogueService.cancelActive("t");
+        NativeDialogueService.handleAssign(rows(1), false);
+        assertEq("v2", curSession().wire, "fallback: next ordinary session still uses v2 caps");
+        NativeDialogueService.cancelActive("t");
+    }
+
+    private static function test_v2_snapshot_fallback_capacity():Void {
+        v2Setup();
+        NativeDialogueService.beginStage(
+            [{name:"a", char:"卫兵", text:"开头", imageurl:"img/long_story.png"}],
+            {name:"LongDone", args:null});
+        ackApplied(lastSentOp(), 1);
+        NativeDialogueService.handleAssign(rows(4096), false);
+        ackRejected(lastSentOp(), "oversize");
+        assertEq(4097, curSession().lineCount, "capacity: all merged rows retained");
+        assertEq(4096, lastPayload().lineCount, "capacity: v1 first window fits host limit");
+        var firstRid:String = curRid();
+        for (var i:Number = 0; i < 4096; i++) NativeDialogueService.advance();
+        assert(curRid() != firstRid, "capacity: tail window uses new request identity");
+        assertEq(1, lastPayload().lineCount, "capacity: final window has one row");
+        assertEq(0, lastPayload().lineIndex, "capacity: tail starts at valid local index");
+        assertEq("第4095句", lastPayload().text, "capacity: final appended row not lost");
+        assertEq("show", lastPayload().imageAction, "capacity: keep image survives window transfer");
+        assertEq("img/long_story.png", lastPayload().imagePath, "capacity: previous image restored");
+        assertEq(0, published.length, "capacity: window transfer never publishes");
+        assert(_root.暂停 === true, "capacity: claim spans all windows");
+        NativeDialogueService.advance();
+        assertEq(1, published.length, "capacity: final player advance publishes once");
+        assertEq("LongDone", published[0].name, "capacity: event transferred through windows");
+        assert(_root.暂停 === false, "capacity: last window releases claim");
     }
 
     private static function test_v2_stale_callback_ignored():Void {
@@ -1491,22 +1622,28 @@ class org.flashNight.arki.dialogue.NativeDialogueServiceTest {
             "fail: later rebind still sends set");
         NativeDialogueService.cancelActive("t");
 
-        // append 被拒 → 保住已接受内容与 stage 义务：finishSession 收尾
+        // append 被拒 → 新 rid 保住合并内容与 stage 义务，只有玩家结束才发布
         v2Setup();
         NativeDialogueService.beginStage(
             [{name:"a", char:"卫兵", text:"0"}], {name:"Kept", args:null});
         ackApplied(lastSentOp(), 1);
         NativeDialogueService.handleAssign(rows(1), false);
         assertEq("append", lastSentOp().payload.op, "fail: append sent");
-        ackRejected(lastSentOp(), "overflow");
-        assert(curSession() == null, "fail: append rejection finishes session");
-        assertEq(1, countOp("hide"), "fail: append rejection emits hide");
-        assertEq(2, lastPayload().version, "fail: rejection hide is v2");
-        assertEq(1, published.length,
-            "fail: stage following event consumed once");
-        assertEq("Kept", published[0].name,
-            "fail: stage obligation preserved");
-        assert(_root.暂停 === false, "fail: claim released on finish");
+        var rejectedRid:String = curRid();
+        ackRejected(lastSentOp(), "oversize");
+        assert(curSession() != null && curRid() != rejectedRid,
+            "fail: append rejection transfers to a new session");
+        assertEq("v1", curSession().wire, "fail: replacement uses v1");
+        assertEq(2, curSession().lineCount, "fail: both old and appended content retained");
+        assertEq(1, countOp("hide"), "fail: old display gets a tombstone");
+        assertEq(0, published.length, "fail: fallback never publishes early");
+        assert(_root.暂停 === true, "fail: fallback preserves dialogue claim");
+        NativeDialogueService.advance();
+        assertEq(0, published.length, "fail: appended row is displayed before completion");
+        NativeDialogueService.advance();
+        assertEq(1, published.length, "fail: player completion publishes once");
+        assertEq("Kept", published[0].name, "fail: transferred event preserved");
+        assert(_root.暂停 === false, "fail: claim released on player completion");
 
         // book 首拒降级 v1 后，后续 wire 全走 v1 形状
         v2Setup();
@@ -1583,34 +1720,30 @@ class org.flashNight.arki.dialogue.NativeDialogueServiceTest {
             }
         };
 
-        // 一：append 被拒遭门禁 → 等待业务提交；解除后重验提交一次
+        // 一：pending 中的追加回退只移交责任，解除 pending 也不能自动结束对白。
         v2Setup();
         rewardPending = true;
         NativeDialogueService.beginStage(
             [{name:"a", char:"卫兵", text:"0"}], {name:"Kept", args:null});
         ackApplied(lastSentOp(), 1);
         PauseManager.setRewardCommitPending(true);
-        NativeDialogueService.handleAssign(rows(1), false);   // append epoch2 在途
-        ackRejected(lastSentOp(), "overflow");
-        var s:Object = curSession();
-        assert(s != null, "gate: append rejection deferred while pending");
-        assert(s != null && s.awaitingCommit === true,
-            "gate: awaiting-commit flag latched");
-        assertEq(0, countOp("hide"), "gate: deferred finish emits no hide");
-        assertEq(0, published.length,
-            "gate: deferred finish emits no publish");
-        assert(_root.暂停 === true, "gate: claim still held during defer");
+        NativeDialogueService.handleAssign(rows(1), false);
+        ackRejected(lastSentOp(), "oversize");
+        assertEq("v1", curSession().wire, "gate: pending fallback transfers to v1");
+        assertEq(0, published.length, "gate: pending fallback never publishes");
+        assert(_root.暂停 === true, "gate: claim remains held during fallback");
         rewardPending = false;
         PauseManager.setRewardCommitPending(false);
-        NativeDialogueService.tryAwaitingCommit();   // 代行帧泵冲刷
-        assert(curSession() == null,
-            "gate: pending release commits deferred finish");
-        assertEq(1, countOp("hide"), "gate: commit emits hide");
-        assertEq(1, published.length, "gate: commit publishes once");
-        assertEq("Kept", published[0].name, "gate: event preserved");
-        assert(_root.暂停 === false, "gate: claim released on commit");
+        NativeDialogueService.tryAwaitingCommit();
+        assert(curSession() != null, "gate: pending release does not complete healthy recovery");
+        assertEq(0, published.length, "gate: pending release has no story side effect");
+        assert(_root.暂停 === true, "gate: dialogue still owns pause after reward release");
+        act("close", curRid(), ctxScene, curRev());
+        assertEq(1, published.length, "gate: later player close publishes once");
+        assertEq("Kept", published[0].name, "gate: transferred event preserved");
+        assert(_root.暂停 === false, "gate: player close releases dialogue claim");
 
-        // 二：cancel 撤销义务——pending 中取消会话，解除后不得补发
+        // 二：pending 中取消回退会话，解除后不得补发事件。
         v2Setup();
         rewardPending = true;
         NativeDialogueService.beginStage(
@@ -1618,38 +1751,48 @@ class org.flashNight.arki.dialogue.NativeDialogueServiceTest {
         ackApplied(lastSentOp(), 1);
         PauseManager.setRewardCommitPending(true);
         NativeDialogueService.handleAssign(rows(1), false);
-        ackRejected(lastSentOp(), "overflow");
-        s = curSession();
-        assert(s != null && s.awaitingCommit === true,
-            "gate: second defer latched");
+        ackRejected(lastSentOp(), "oversize");
         NativeDialogueService.cancelActive("t");
-        assert(curSession() == null, "gate: cancel kills session");
+        assert(curSession() == null, "gate: cancel kills recovery session");
         assertEq(0, published.length, "gate: cancel never publishes");
         rewardPending = false;
         PauseManager.setRewardCommitPending(false);
         NativeDialogueService.tryAwaitingCommit();
-        assertEq(0, published.length,
-            "gate: release after cancel republishes nothing");
+        assertEq(0, published.length, "gate: release after cancel publishes nothing");
 
-        // 三：epoch 已推进 → 待提交义务丢弃（旧代终态裁决不压新代内容）
+        // 三：回退的 v1 通道也不可达时，新增失败兜底仍须等待奖励提交。
         v2Setup();
         rewardPending = true;
-        NativeDialogueService.handleAssign(rows(1), false);
+        NativeDialogueService.beginStage(
+            [{name:"a", char:"卫兵", text:"0"}], {name:"TransportDone", args:null});
         ackApplied(lastSentOp(), 1);
         PauseManager.setRewardCommitPending(true);
-        NativeDialogueService.handleAssign(rows(1), false);   // append epoch2
-        ackRejected(lastSentOp(), "overflow");
-        s = curSession();
-        assert(s != null && s.awaitingCommit === true,
-            "gate: defer latched for epoch-2 rejection");
-        NativeDialogueService.handleAssign(rows(1), false);   // append epoch3 推进
+        NativeDialogueService.handleAssign(rows(1), false);
+        sendResult = false;
+        ackRejected(lastSentOp(), "oversize");
+        sendResult = true;
+        assert(curSession().awaitingCommit === true, "gate: failed recovery defers completion");
+        assertEq(0, published.length, "gate: failed recovery cannot bypass pending");
         rewardPending = false;
         PauseManager.setRewardCommitPending(false);
         NativeDialogueService.tryAwaitingCommit();
-        assert(curSession() != null,
-            "gate: epoch-moved obligation dropped, session survives");
-        assertEq(0, countOp("hide"), "gate: dropped obligation emits no hide");
-        NativeDialogueService.cancelActive("t");
+        assert(curSession() == null, "gate: failed recovery completes after pending release");
+        assertEq(1, published.length, "gate: deferred recovery publishes once");
+        assertEq("TransportDone", published[0].name, "gate: deferred event retained");
+        assert(_root.暂停 === false, "gate: deferred completion releases claim");
+
+        // 四：空 book 的终态义务仍可由 teardown 撤销。
+        v2Setup();
+        rewardPending = true;
+        PauseManager.setRewardCommitPending(true);
+        NativeDialogueService.handleAssign([null], false);
+        assert(curSession().awaitingCommit === true, "gate: empty book defers completion");
+        fireTeardown();
+        rewardPending = false;
+        PauseManager.setRewardCommitPending(false);
+        NativeDialogueService.tryAwaitingCommit();
+        assert(curSession() == null, "gate: teardown cancels empty-book obligation");
+        assertEq(0, published.length, "gate: cancelled empty book never publishes");
 
         // 恢复桩与真值源
         smNs.SaveManager = savedSM;

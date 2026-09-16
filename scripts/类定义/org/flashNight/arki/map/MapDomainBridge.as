@@ -143,7 +143,7 @@ class org.flashNight.arki.map.MapDomainBridge {
         }
         ServerManager.getInstance().sendTaskWithCallback("map_domain", request, null, function(response:Object):Void {
             org.flashNight.arki.map.MapDomainBridge.onProjection(ctx, response);
-        }, 90);
+        }, 3000);
     }
     private static function installResult(ctx:Object, response:Object):Boolean {
         var result:Object = response.result;
@@ -267,7 +267,7 @@ class org.flashNight.arki.map.MapDomainBridge {
         var request:Object = payload(ctx); request.intent = intent;
         ServerManager.getInstance().sendTaskWithCallback("map_domain", request, null, function(response:Object):Void {
             org.flashNight.arki.map.MapDomainBridge.onNavigate(ctx, response);
-        }, 90);
+        }, 3000);
     }
     /** 胜利返回只解析正式目的地，绝不绕过关卡返回事务执行地图导航。 */
     public static function resolveReturnPlan(intent:Object, callback:Function, guard:Function):Void {

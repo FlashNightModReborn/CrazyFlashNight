@@ -632,7 +632,7 @@ class org.flashNight.arki.item.LootContainerService {
                     org.flashNight.arki.item.LootContainerService.handlePanelOpenResponse(
                         identity, response, callbackDisposition);
                 },
-                600
+                20000
             );
         } catch (sendError) {
             var uncertainReason:String = callbackError == ""

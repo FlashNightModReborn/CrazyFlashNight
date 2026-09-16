@@ -43,9 +43,10 @@ import org.flashNight.arki.dialogue.NativeDialogueAppearance;
  *    （pending seq / epoch），任一不符即忽略（旧 callback 不得撞新会话）。
  *    status:"applied" → 清该代际 pending 并补采用效果；"rejected" → 失败
  *    分类：set 恢复上一个有效 advanceKey 且不结束剧情，book 首次采用前
- *    降级回 v1 快照序列（wireMode 闩允许），append 按 finishSession 收尾
- *    保住已接受内容与 stage 义务。callback 超时 → 发 status 查询：
- *    appliedEpoch≥请求代际视为已采用补确认；明确低于/未采用 → 失败分类；
+ *    降级到新 rid 的 v1 会话；append 同样移交全部内容与冻结立绘，
+ *    保留 stage 义务且移交期间不发布事件。callback 超时 → 发 status 查询：
+ *    查询冻结 maxOpSeq，只裁决此前发送的操作；超时操作保留至确认，
+ *    旧代 rowCount 不覆盖后发追加。appliedEpoch 足够 → 补确认，否则回退；
  *    仍未知（无应答/会话已变/查询自身超时）→ 保留托管，绝不
  *    finishSession 伪装玩家已结束——连接故障由既有断线兜底收口。
  *
@@ -60,7 +61,7 @@ import org.flashNight.arki.dialogue.NativeDialogueAppearance;
  *  业务门禁（§4.6）：wire finish 走 ServerManager.handleGameCommand 既有
  *    rewardPending 门（未决奖励候选吞命令，C# closing 按冻结请求重试），
  *    到达 handleV2Action 的合法 finish 已过门禁、直接提交。**新增内部收口
- *    路径不得绕门禁**：空集 book、mutation 发送失败/被拒分类等触发终态时，
+ *    路径不得绕门禁**：空集 book、v1 回退通道也不可达等触发终态时，
  *    若 SaveManager.hasRewardCommitPending() 为真，落会话内 awaitingCommit
  *    标志（kind+epoch），待 pending 解除（ServerManager 帧泵逐帧调用
  *    tryAwaitingCommit）重新核验会话身份与 epoch 后再提交；epoch 已推进
@@ -268,8 +269,7 @@ class org.flashNight.arki.dialogue.NativeDialogueService {
                         lines: appended, restartIndex: 0
                     };
                     if (!sendMutation(s, "append", frame, s.epoch, undefined)) {
-                        // 传输层不可用：与发送失败兜底同形收尾（经门禁）
-                        gatedFinishSession(s, "append_send_failed");
+                        replaceWithSnapshot(s, "append_send_failed", 0);
                     }
                 } else {
                     // 旧入口追加数组后回到第 0 句；保持其行为，并递增 revision 拒绝旧行输入。
@@ -500,7 +500,9 @@ class org.flashNight.arki.dialogue.NativeDialogueService {
 
     // ── 内部：会话生命周期 ──────────────────────────────────────
 
-    private static function beginSession(rows:Array, mode:String, followingEvent:Object, inheritedLease:String):Void {
+    private static function beginSession(rows:Array, mode:String, followingEvent:Object,
+                                         inheritedLease:String, frozenPortraits:Array,
+                                         snapshotOnly:Boolean):Void {
         _reqSeq++;
         var s:Object = {
             requestId: "nd:" + _reqSeq,
@@ -508,14 +510,14 @@ class org.flashNight.arki.dialogue.NativeDialogueService {
             revision: 0,
             // NPC 会传持久对白数组；会话追加不能改写作者数据。
             lines: rows.concat(),
-            portraits: capturePortraits(rows),
+            portraits: frozenPortraits == undefined ? capturePortraits(rows) : frozenPortraits.concat(),
             index: 0,
             mode: mode,
             leaseId: inheritedLease == undefined ? null : inheritedLease,
             followingEvent: followingEvent,
             terminal: false,
             // wireMode 闩定于会话起点：v1 起头终身 v1
-            wire: (capsAllowsBook() && forceSnapshot !== true) ? "v2" : "v1",
+            wire: (snapshotOnly !== true && capsAllowsBook() && forceSnapshot !== true) ? "v2" : "v1",
             epoch: 0,
             rowCount: countNormalized(rows),
             opSeq: 0,
@@ -535,8 +537,44 @@ class org.flashNight.arki.dialogue.NativeDialogueService {
         if (s.wire == "v2") {
             sendBook(s);
         } else if (!sendLine(0)) {
-            finishSession(); // Host 不可达：按显式结束兜底，防剧情软锁
+            if (snapshotOnly === true) gatedFinishSession(s, "snapshot_fallback_send_failed");
+            else finishSession(); // 既有 v1 不可达兜底
         }
+    }
+
+    /**
+     * 回退只移交内容与责任，不提交剧情终态。旧 rid 墓碑先落，新 rid 强制 v1；
+     * 沿用入口冻结的立绘，跳过 book 本就不发送的 null 行，取消旧 pending 回调。
+     * start>0 只用于 v1 的 4096 行窗口续播，继续持有同一 claim/followingEvent。
+     */
+    private static function replaceWithSnapshot(s:Object, reason:String, start:Number):Void {
+        if (s == null || s.terminal || _session !== s) return;
+        var rows:Array = [];
+        var portraits:Array = [];
+        var carriedImage:String = "";
+        for (var prior:Number = 0; prior < start; prior++) {
+            var priorRow:Array = s.lines[prior];
+            if (priorRow != null && typeof priorRow[6] == "string" && priorRow[6] != "") {
+                carriedImage = priorRow[6];
+            }
+        }
+        for (var i:Number = start; i < s.lines.length; i++) {
+            if (s.lines[i] == null) continue;
+            rows.push(s.lines[i]);
+            portraits.push(s.portraits[i]);
+        }
+        if (rows.length > 0 && carriedImage != ""
+                && (typeof rows[0][6] != "string" || rows[0][6] == "")) {
+            rows[0] = rows[0].concat();
+            rows[0][6] = carriedImage; // 新窗口恢复 keep 配图，不改作者行数组
+        }
+        var follow:Object = s.followingEvent != null ? s.followingEvent
+            : (_compat != null ? _compat.followingEvent : null);
+        var leaseId:String = s.leaseId;
+        s.leaseId = null; // cancel 不释放：避免移交期间出现未暂停的一帧
+        cancelSession("snapshot_fallback");
+        trace("[NativeDialogueService] snapshot fallback: " + reason);
+        beginSession(rows, s.mode, follow, leaseId, portraits, true);
     }
 
     /**
@@ -551,6 +589,9 @@ class org.flashNight.arki.dialogue.NativeDialogueService {
         var next:Number = s.index + 1;
         if (next >= s.lines.length) {
             finishSession();
+        } else if (next >= 4096) {
+            // v1 也限制 lineCount<=4096；累计追加超限时分窗口续播，不丢尾部。
+            replaceWithSnapshot(s, "snapshot_next_window", next);
         } else if (!sendLine(next)) {
             finishSession();
         }
@@ -639,10 +680,10 @@ class org.flashNight.arki.dialogue.NativeDialogueService {
         if (conn !== rec.conn) return;                                 // 连接代
         if (resp == null) return;
         if (resp.success === false) {
-            delete s.pendingOps[rec.seq];
             if (resp.error == "callback timeout") {
                 queryMutationStatus(s, rec);
             } else {
+                delete s.pendingOps[rec.seq];
                 classifyMutationFailure(s, rec, String(resp.error));
             }
             return;
@@ -652,10 +693,11 @@ class org.flashNight.arki.dialogue.NativeDialogueService {
         if (resp.op != undefined && resp.op !== rec.op) return;
         if (rec.epoch != undefined && resp.requestedEpoch != undefined
                 && resp.requestedEpoch !== rec.epoch) return;
-        delete s.pendingOps[rec.seq];
         if (resp.status == "applied") {
+            delete s.pendingOps[rec.seq];
             onMutationApplied(s, rec, resp);
         } else if (resp.status == "rejected") {
+            delete s.pendingOps[rec.seq];
             classifyMutationFailure(s, rec,
                 resp.reason == undefined ? "rejected" : String(resp.reason));
         } else {
@@ -665,9 +707,10 @@ class org.flashNight.arki.dialogue.NativeDialogueService {
     }
 
     private static function onMutationApplied(s:Object, rec:Object, resp:Object):Void {
-        // Host 回报的规范化行数为 finalIndex 校验基准的最终裁决
-        if (resp != null && typeof resp.rowCount == "number"
-                && !isNaN(resp.rowCount)) {
+        // 旧代回包不能覆盖已在 AS2 追加的新代行数。
+        if (resp != null && resp.appliedEpoch === s.epoch
+                && typeof resp.rowCount == "number" && resp.rowCount >= 0
+                && resp.rowCount == Math.floor(resp.rowCount)) {
             s.rowCount = resp.rowCount;
         }
         if (rec.op == "book") {
@@ -680,8 +723,8 @@ class org.flashNight.arki.dialogue.NativeDialogueService {
 
     /**
      * 失败分类：set → 恢复上一个有效值不结束剧情；book 首次采用前 →
-     * 降级回 v1 快照序列；append → 保住已接受内容与 stage 义务按
-     * finishSession 收尾（事件/claim 语义不变）。
+     * 降级回 v1 快照序列；append → 新 rid 的 v1 会话保留合并内容、冻结立绘
+     * 与 stage 义务，移交期间不发布事件。
      */
     private static function classifyMutationFailure(s:Object, rec:Object,
                                                     reason:String):Void {
@@ -693,13 +736,7 @@ class org.flashNight.arki.dialogue.NativeDialogueService {
             s.setPending = false;
             return;
         }
-        if (rec.op == "book" && s.bookSettled !== true) {
-            s.wire = "v1";
-            if (!sendLine(0)) gatedFinishSession(s, "book_reject_send_failed");
-            return;
-        }
-        // append 被拒（或采用后异常）：保住已接受内容与 stage 义务收尾（经门禁）
-        gatedFinishSession(s, rec.op + "_rejected");
+        replaceWithSnapshot(s, rec.op + ":" + reason, 0);
     }
 
     /**
@@ -707,12 +744,14 @@ class org.flashNight.arki.dialogue.NativeDialogueService {
      * 沿同一采用队列串行裁决；查询不可发/已有在途 → 保留托管。
      */
     private static function queryMutationStatus(s:Object, rec:Object):Void {
+        // 超时仍未知，不能先删操作；另一查询在途时保留它，供后续查询确认。
+        rec.awaitingStatus = true;
         if (s.statusQuery != undefined) return;
         var sm:Object = _root.server;
         if (sm == undefined || !sm.isSocketConnected
                 || typeof sm.sendTaskWithCallback != "function") return;
         var q:Object = {
-            sess: s, conn: sm.xmlSocket, forRec: rec
+            sess: s, conn: sm.xmlSocket, maxOpSeq: s.opSeq, queryEpoch: s.epoch
         };
         s.statusQuery = q;
         var svc = org.flashNight.arki.dialogue.NativeDialogueService;
@@ -720,7 +759,7 @@ class org.flashNight.arki.dialogue.NativeDialogueService {
             {
                 version: 2, op: "status",
                 requestId: s.requestId, sceneId: s.sceneId,
-                queryEpoch: (rec.epoch != undefined) ? rec.epoch : s.epoch
+                queryEpoch: q.queryEpoch
             },
             null,
             function(resp:Object):Void { svc.onStatusAck(q, resp); },
@@ -729,7 +768,7 @@ class org.flashNight.arki.dialogue.NativeDialogueService {
 
     /**
      * status 应答：appliedEpoch 对带代际操作给出确定裁决（采用队列串行语义），
-     * 顺带清决其余在途 mutation；无代际的 set 无法由 appliedEpoch 裁决 →
+     * 只确认查询发送前的 mutation；无代际的 set 无法由 appliedEpoch 裁决 →
      * 解除等待、保留托管；查询自身超时/缺 appliedEpoch → 仍未知，托管不 finish。
      */
     private static function onStatusAck(q:Object, resp:Object):Void {
@@ -745,21 +784,29 @@ class org.flashNight.arki.dialogue.NativeDialogueService {
             return;
         }
         if (resp.requestId !== s.requestId || resp.sceneId !== s.sceneId) return;
-        if (typeof resp.rowCount == "number" && !isNaN(resp.rowCount)) {
-            s.rowCount = resp.rowCount;
-        }
-        var applied:Number = Number(resp.appliedEpoch);
-        if (isNaN(applied)) {
+        var applied = resp.appliedEpoch;
+        if (typeof applied != "number" || isNaN(applied) || applied < 0
+                || applied != Math.floor(applied) || applied > q.queryEpoch) {
             trace("[NativeDialogueService] v2 status query indeterminate; custody retained");
             return;
         }
-        resolveByEpoch(s, q.forRec, applied, resp);
-        if (s == null || s.terminal || _session !== s) return;
         var pending:Array = [];
-        for (var k:String in s.pendingOps) pending.push(s.pendingOps[k]);
+        for (var k:String in s.pendingOps) {
+            var rec:Object = s.pendingOps[k];
+            if (rec.seq <= q.maxOpSeq) pending.push(rec);
+        }
         for (var i:Number = 0; i < pending.length; i++) {
             resolveByEpoch(s, pending[i], applied, resp);
             if (s == null || s.terminal || _session !== s) return;
+        }
+        flushAdvanceKey(s);
+        // 查询后发出的操作若也超时，另发一次查询；绝不用旧结果猜它未采用。
+        for (var nextKey:String in s.pendingOps) {
+            var nextRec:Object = s.pendingOps[nextKey];
+            if (nextRec.awaitingStatus === true) {
+                queryMutationStatus(s, nextRec);
+                return;
+            }
         }
     }
 
@@ -809,9 +856,7 @@ class org.flashNight.arki.dialogue.NativeDialogueService {
             s.desiredAdvanceKey = keyCode;
         }
         if (!sendMutation(s, "book", payload, 1, undefined)) {
-            // 传输层不具备确认通道：回 v1 快照路径（wireMode 闩允许降级）
-            s.wire = "v1";
-            if (!sendLine(0)) gatedFinishSession(s, "book_fallback_send_failed");
+            replaceWithSnapshot(s, "book_transport_unavailable", 0);
         }
     }
 
@@ -978,7 +1023,7 @@ class org.flashNight.arki.dialogue.NativeDialogueService {
             sceneId: s.sceneId,
             revision: s.revision,
             lineIndex: index,
-            lineCount: s.lines.length,
+            lineCount: Math.min(4096, s.lines.length),
             name: row[0] == "角色名" ? String(_root.角色名) : ((row[0] != undefined) ? String(row[0]) : ""),
             title: (row[1] != undefined) ? String(row[1]) : "",
             text: (row[3] != undefined) ? String(row[3]) : "",
