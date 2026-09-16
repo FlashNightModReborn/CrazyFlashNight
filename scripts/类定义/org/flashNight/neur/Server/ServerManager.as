@@ -79,7 +79,7 @@ class org.flashNight.neur.Server.ServerManager {
     // ==================== Callback 路由 ====================
     private var _callIdCounter:Number;
     private var _pendingCallbacks:Object;
-    private static var CALLBACK_TIMEOUT_FRAMES:Number = 600; // 20s @30fps
+    private static var CALLBACK_TIMEOUT_MS:Number = 20000;
 
     // Audio Platform v2 exact envelopes. BGM result intentionally has no task field.
     private static var AUDIO_BGM_RESULT_KEYS:Array = [
@@ -358,18 +358,28 @@ class org.flashNight.neur.Server.ServerManager {
         }
 
         // ---- Callback 超时扫描（所有状态都执行，确保断线后也能清理）----
+        // 期限按 getTimer 墙钟毫秒判定：帧率漂移不再改变真实超时；
+        // 60 帧扫描节拍只影响探测粒度（最坏延迟 ~2s@30fps），不改变期限本身。
         if (currentFrame % 60 === 0) {
+            var now:Number = getTimer();
             for (var k:String in _pendingCallbacks) {
                 var e:Object = _pendingCallbacks[k];
-                var timeoutFrames:Number = (e.timeoutFrames != undefined && !isNaN(e.timeoutFrames) && e.timeoutFrames > 0)
-                    ? e.timeoutFrames
-                    : CALLBACK_TIMEOUT_FRAMES;
-                if (currentFrame - e.frame > timeoutFrames) {
+                var timeoutMs:Number = (e.timeoutMs != undefined && !isNaN(e.timeoutMs) && e.timeoutMs > 0)
+                    ? e.timeoutMs
+                    : CALLBACK_TIMEOUT_MS;
+                if (now - e.sentAt > timeoutMs) {
                     delete _pendingCallbacks[k];
                     e.cb({success: false, error: "callback timeout"});
                 }
             }
         }
+
+        // native_dialogue §4.6 等待业务提交冲刷：rewardPending 解除后重验
+        // 会话身份与 epoch 再提交终态。早期返回廉价（无会话/无义务即退）；
+        // 逐帧驱动使 pending 解除后下一帧即提交，不依赖 Host 重试节拍。
+        // 必须在帧泵而非暂停 watch 分发内执行——claim 释放嵌套在 watch
+        // 分发中会被外层折叠回 true。
+        org.flashNight.arki.dialogue.NativeDialogueService.tryAwaitingCommit();
     }
 
     // ==================== HTTP 端口探测 ====================
@@ -615,6 +625,14 @@ class org.flashNight.neur.Server.ServerManager {
         // (或 forced 路径用原坏档) + 清 _repairPending → asLoader 帧循环放行 sendReady.
         if (response.task == "repair_resolved") {
             org.flashNight.neur.Server.SaveManager.getInstance().applyRepairResolved(response);
+            return;
+        }
+
+        // native_dialogue wire v2 能力推送（每连接代重发）：
+        // {task:"dialogue_caps", modes:["snapshot","book"]}；
+        // 闩的 socket generation 作用域与清闩收口由服务侧管理。
+        if (response.task == "dialogue_caps") {
+            org.flashNight.arki.dialogue.NativeDialogueService.applyCaps(response.modes);
             return;
         }
 
@@ -995,8 +1013,16 @@ class org.flashNight.neur.Server.ServerManager {
         return isExactJukeboxPlayCommand(value);
     }
 
+    /**
+     * 带 callId 应答路由的 task 发送。
+     * @param callbackTimeoutMs 回调墙钟期限，单位毫秒：超时扫描比较
+     *        getTimer() 实际时间差（非帧计数，帧率漂移不改变真实期限）；
+     *        缺省/非法回退 CALLBACK_TIMEOUT_MS。
+     * 底层 send 失败时立即移除 pending 并同步回调
+     * {success:false,error:"send failed"}，不留幽灵回调。
+     */
     public function sendTaskWithCallback(taskType:String, payload:Object, extra:Object,
-                                          callback:Function, callbackTimeoutFrames:Number):Void {
+                                          callback:Function, callbackTimeoutMs:Number):Void {
         var callId:Number = _callIdCounter++;
         var message:Object = new Object();
         message.task = taskType;
@@ -1016,11 +1042,15 @@ class org.flashNight.neur.Server.ServerManager {
             return;
         }
 
-        var timeoutFrames:Number = (callbackTimeoutFrames != undefined && !isNaN(callbackTimeoutFrames) && callbackTimeoutFrames > 0)
-            ? callbackTimeoutFrames
-            : CALLBACK_TIMEOUT_FRAMES;
-        _pendingCallbacks[String(callId)] = {cb: callback, frame: currentFrame, timeoutFrames: timeoutFrames};
-        sendSocketMessage(messageString);
+        var timeoutMs:Number = (callbackTimeoutMs != undefined && !isNaN(callbackTimeoutMs) && callbackTimeoutMs > 0)
+            ? callbackTimeoutMs
+            : CALLBACK_TIMEOUT_MS;
+        var cbKey:String = String(callId);
+        _pendingCallbacks[cbKey] = {cb: callback, sentAt: getTimer(), timeoutMs: timeoutMs};
+        if (!sendSocketMessage(messageString)) {
+            delete _pendingCallbacks[cbKey];
+            callback({success: false, error: "send failed"});
+        }
     }
 
 }

@@ -52,7 +52,7 @@ class org.flashNight.arki.map.MapDomainBridge {
         _helloFlight = true; _helloAttempt = getTimer();
         ServerManager.getInstance().sendTaskWithCallback("map_domain", {version:2, op:"hello"}, null, function(response:Object):Void {
             org.flashNight.arki.map.MapDomainBridge.onHello(response);
-        }, 120);
+        }, 4000);
     }
     private static function onHello(response:Object):Void {
         _helloFlight = false;
@@ -279,7 +279,7 @@ class org.flashNight.arki.map.MapDomainBridge {
         if (!ctx.ready || guard() !== true) { callback(false, "return_selection_stale"); return; }
         ctx.callback = callback; ctx.guard = guard;
         var request:Object = payload(ctx); request.intent = intent;
-        ServerManager.getInstance().sendTaskWithCallback("map_domain", request, null, returnPlanCallback(ctx), 90);
+        ServerManager.getInstance().sendTaskWithCallback("map_domain", request, null, returnPlanCallback(ctx), 3000);
     }
     private static function returnPlanCallback(ctx:Object):Function {
         return function(response:Object):Void {

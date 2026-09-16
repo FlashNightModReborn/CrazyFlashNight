@@ -7,6 +7,7 @@ using System.Net.Sockets;
 using System.Text;
 using System.Threading;
 using CF7Launcher.Guardian;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
 namespace CF7Launcher.Bus
@@ -57,6 +58,10 @@ namespace CF7Launcher.Bus
         private int _frameUiLogCount;
         private int _frameUiLastLogTick;
         private const int FRAME_UI_LOG_INTERVAL_MS = 5000;
+
+        // maxMessageChars（UTF-16 char 口径）：超过此长度的 JSON 报文在 DOM 解析前
+        // 经 task 前缀嗅探门拦截 native_dialogue（v2 book/append 的容量保护）。
+        private const int MaxJsonMessageChars = 262144;
 
         /// <summary>业务就绪事件：Flash policy 握手完成后、首条业务消息到达时触发。</summary>
         public event Action OnClientReady;
@@ -714,6 +719,25 @@ namespace CF7Launcher.Bus
                 return;
             }
 
+            // maxMessageChars 嗅探门：超限报文在 DOM 解析前流式只读根级 task/callId
+            // 与 payload 标量；task=="native_dialogue" 即拒（其他 task 放行，走原路由）。
+            // 只拦截本 task，不改变其他任何消息路径。
+            if (message.Length > MaxJsonMessageChars)
+            {
+                JObject reject;
+                if (TrySniffNativeDialogue(message, out reject))
+                {
+                    PerfTrace.Counter("socket.json.oversize_native_dialogue");
+                    LogManager.Log("[XmlSocket:JSON] oversize native_dialogue rejected len="
+                        + message.Length);
+                    // 带 callId：回 mutation ack 同构的 reject（reason=oversize）；
+                    // appliedEpoch 在传输层不可得，与无会话 reject 口径一致填 0。
+                    if (reject != null)
+                        TrySendIfGen(reject.ToString(Formatting.None) + "\0", connectionGen);
+                    return;
+                }
+            }
+
             // 路由到 MessageRouter
             // Phase D Step D2: 响应走 gen-bound TrySendIfGen, 原连接已被替换时自动 drop.
             // 捕获 ReadLoop 形参 connectionGen 进闭包, 保持 "本消息的响应只发回发起它的 connection" 语义.
@@ -834,6 +858,110 @@ namespace CF7Launcher.Bus
             {
                 _frameUiLastLogTick = now;
                 LogManager.Log("[Frame:UI] sample count=" + count + " " + uiState);
+            }
+        }
+
+        /// <summary>
+        /// 流式嗅探：JsonTextReader 顺序读根对象一层（payload 仅取其标量回显字段，
+        /// lines 等大值经 reader.Skip() 流式跳过，不逐 token 走 DOM、不子串匹配）。
+        /// 返回 true = task=="native_dialogue"；此时若带 callId，reject 为
+        /// mutation ack 同构的拒包（status:rejected / reason:oversize），无 callId 为 null。
+        /// 只用于超限报文（>maxMessageChars）的前缀判定，限内报文不进此路径。
+        /// </summary>
+        private static bool TrySniffNativeDialogue(string message, out JObject reject)
+        {
+            reject = null;
+            string task = null;
+            JToken callId = null;
+            JToken requestId = null, sceneId = null, op = null, epoch = null;
+            try
+            {
+                using (var reader = new JsonTextReader(new StringReader(message)))
+                {
+                    while (reader.Read())
+                    {
+                        if (reader.TokenType != JsonToken.PropertyName || reader.Depth != 1)
+                            continue;
+                        string name = reader.Value as string;
+                        if (name == "task")
+                        {
+                            if (!reader.Read()) break;
+                            task = reader.TokenType == JsonToken.String
+                                ? reader.Value as string : null;
+                            if (task != CF7Launcher.Tasks.NativeDialogueTask.TaskKey)
+                                return false;   // 已可定结论：非本 task 放行
+                            continue;
+                        }
+                        if (name == "callId")
+                        {
+                            if (!reader.Read()) break;
+                            callId = JToken.ReadFrom(reader);
+                            continue;
+                        }
+                        if (name == "payload")
+                        {
+                            SniffPayloadEcho(reader, ref requestId, ref sceneId,
+                                ref op, ref epoch);
+                            continue;
+                        }
+                        reader.Skip();
+                    }
+                }
+            }
+            catch (Exception)
+            {
+                // 嗅探失败一律放行到原路由，由既有 JSON 解析错误路径兜底。
+                return false;
+            }
+            if (task != CF7Launcher.Tasks.NativeDialogueTask.TaskKey) return false;
+            if (callId == null) return true;
+            reject = new JObject
+            {
+                ["requestId"] = requestId ?? JValue.CreateNull(),
+                ["sceneId"] = sceneId ?? JValue.CreateNull(),
+                ["op"] = op ?? JValue.CreateNull(),
+                ["requestedEpoch"] = epoch ?? JValue.CreateNull(),
+                ["appliedEpoch"] = 0,
+                ["status"] = "rejected",
+                ["reason"] = "oversize",
+                ["callId"] = callId
+            };
+            return true;
+        }
+
+        /// <summary>嗅探 payload 内 mutation ack 回显所需的浅层标量
+        /// （requestId/sceneId/op/epoch）；其余属性（含巨型 lines）整体 Skip。</summary>
+        private static void SniffPayloadEcho(JsonTextReader reader,
+            ref JToken requestId, ref JToken sceneId, ref JToken op, ref JToken epoch)
+        {
+            if (!reader.Read() || reader.TokenType != JsonToken.StartObject) return;
+            while (reader.Read() && reader.TokenType != JsonToken.EndObject)
+            {
+                if (reader.TokenType != JsonToken.PropertyName) continue;
+                string name = reader.Value as string;
+                if (name != "requestId" && name != "sceneId"
+                    && name != "op" && name != "epoch")
+                {
+                    reader.Skip();
+                    continue;
+                }
+                if (!reader.Read()) return;
+                if (reader.TokenType == JsonToken.StartObject
+                    || reader.TokenType == JsonToken.StartArray)
+                {
+                    // 非标量值（如嵌套对象）：跳过，不回显。
+                    reader.Skip();
+                    continue;
+                }
+                if (reader.TokenType != JsonToken.String
+                    && reader.TokenType != JsonToken.Integer
+                    && reader.TokenType != JsonToken.Null)
+                    continue;
+                JToken value = JToken.ReadFrom(reader);
+                if (name == "requestId") requestId = value;
+                else if (name == "sceneId") sceneId = value;
+                else if (name == "op") op = value;
+                else epoch = value;
             }
         }
 

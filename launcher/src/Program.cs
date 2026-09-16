@@ -2316,6 +2316,11 @@ class Program
         nativeDialogueTask.LoadSceneImage = dialoguePortraits.LoadSceneImage;
         nativeDialogueTask.ReceivePortraitResult = dialoguePortraits.HandleResult;
         socketServer.OnClientDisconnected += nativeDialogueTask.HandleTransportDisconnected;
+        // wire v2 source book 装配器（kind:"source" 挂点；接口由并行任务定义）。
+        nativeDialogueTask.SourceAssembler =
+            new CF7Launcher.Guardian.Dialogue.NativeDialogueSourceAssembler(dataCache);
+        // wire v2 能力握手：每代客户端 ready 时经代际绑定发送下发一次 dialogue_caps。
+        socketServer.OnClientReadyForGeneration += nativeDialogueTask.PushCapsForGeneration;
         form.SetDialogueKeyboardSurface(nativeDialogueTask.CaptureKeyboardAction);
 
         using (PerfTrace.Scope("task.registry_register_all"))

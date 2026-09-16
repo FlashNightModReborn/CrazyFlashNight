@@ -13,7 +13,10 @@ import org.flashNight.neur.Event.EventDispatcher;
  *   - D/W/R（对白 claim × web claim × reward pending）交叠真值流程；
  *   - facade 成员面、_visible 惰性影子、AVM1 重绑后 ensureCompat 自愈；
  *   - 佣兵 target 外观快照不回落当前玩家；
- *   - Host 不可达（发送失败）时按显式结束兜底、防剧情软锁。
+ *   - Host 不可达（发送失败）时按显式结束兜底、防剧情软锁；
+ *   - wire v2：caps 闩/socket generation、book 物化与 epoch、mutation 确认
+ *     五元校验与 status 三态、线性化终态（stale/未来/缺失 epoch 拒绝、
+ *     旧 finish 只补 hide）、advance no-op、set/book/append 失败分类。
  *
  * 隔离方式：_global 路径桩替换 NativeInteractionContext（同 NativeMenuBridgeTest
  *   约定），_root.server / gameworld.dispatcher / 组装单次对话 / 对话框界面
@@ -32,8 +35,24 @@ class org.flashNight.arki.dialogue.NativeDialogueServiceTest {
     public static var teardowns:Array = null;
     public static var ctxScene:String = "sc.dlg.1";
 
+    // ── v2 装夹 ──
+    // sendTaskWithCallback 出站捕获：{type,payload,callback,timeoutMs,sentAt,fired}；
+    // callback 由测试手动触发 applied/rejected/超时/迟到。出向帧（sentOps）与
+    // 入向动作各自 FIFO，跨方向交叉由测试顺序显式编排（无随机洗牌）。
+    public static var sentOps:Array = null;
+    // sendTaskWithCallback 底层发送闸门（false → 桩同步回调 send failed）
+    public static var cbSendResult:Boolean = true;
+    // 可手动推进的墙钟（毫秒）；advanceClock 驱动 callback 超时
+    public static var clockMs:Number = 0;
+    // 连接代令牌序号（bumpConn 每次生成新 xmlSocket 身份）
+    public static var connGen:Number = 0;
+    // §4.6 门禁装夹真值源：test_v2_business_gate 内经 _global 桩替换
+    // SaveManager.getInstance().hasRewardCommitPending() 的返回值
+    public static var rewardPending:Boolean = false;
+
     private static var _saved:Object = null;
     private static var _savedCtx = undefined;
+    private static var _savedSaveMgr = undefined;
     private static var _fakeMc:MovieClip = null;
     private static var _savedPause = undefined;
 
@@ -63,8 +82,12 @@ class org.flashNight.arki.dialogue.NativeDialogueServiceTest {
             NativeDialogueService.cancelActive("test_reset");
         }
         recorded = [];
+        sentOps = [];
+        cbSendResult = true;
+        clockMs = 0;
         published = [];
         sendResult = true;
+        NativeDialogueService.forceSnapshot = false;
         if (_root.暂停 !== false) _root.暂停 = false;
         if (_root.暂停 === true) {
             // 上个用例可能遗留 claim：不在这里强拆（会污染真值表），由用例自管
@@ -105,10 +128,24 @@ class org.flashNight.arki.dialogue.NativeDialogueServiceTest {
 
         _root.server = {
             isSocketConnected: true,
+            xmlSocket: {gen: 0},
             sendTaskToNode: function(type, payload, cb):Boolean {
                 org.flashNight.arki.dialogue.NativeDialogueServiceTest.recorded.push(
                     {type:type, payload:payload});
                 return org.flashNight.arki.dialogue.NativeDialogueServiceTest.sendResult;
+            },
+            sendTaskWithCallback: function(type, payload, extra, cb, timeoutMs):Void {
+                var T = org.flashNight.arki.dialogue.NativeDialogueServiceTest;
+                if (!this.isSocketConnected) {
+                    cb({success:false, error:"socket not connected"});
+                    return;
+                }
+                if (T.cbSendResult === false) {
+                    cb({success:false, error:"send failed"});
+                    return;
+                }
+                T.sentOps.push({type:type, payload:payload, callback:cb,
+                    timeoutMs:timeoutMs, sentAt:T.clockMs, fired:false});
             }
         };
         _root.服务器 = {发布服务器消息: function():Void {}};
@@ -152,6 +189,16 @@ class org.flashNight.arki.dialogue.NativeDialogueServiceTest {
             else delete ns.NativeInteractionContext;
         }
         _savedCtx = undefined;
+
+        // §4.6 门禁桩兜底恢复（正常路径在用例末尾已还原）
+        var nsS:Object = (g.org != null && g.org.flashNight != null
+            && g.org.flashNight.neur != null && g.org.flashNight.neur.Server != null)
+            ? g.org.flashNight.neur.Server : null;
+        if (nsS != null && _savedSaveMgr !== undefined) {
+            nsS.SaveManager = _savedSaveMgr;
+        }
+        _savedSaveMgr = undefined;
+        rewardPending = false;
 
         if (_saved != null) {
             for (var i:Number = 0; i < ROOT_KEYS.length; i++) {
@@ -212,6 +259,80 @@ class org.flashNight.arki.dialogue.NativeDialogueServiceTest {
         for (var i:Number = 0; i < teardowns.length; i++) teardowns[i].call(null);
     }
 
+    // ── v2 装夹辅助 ─────────────────────────────────────────────
+
+    /** 换连接代：生成新的 xmlSocket 身份令牌（不重发 caps → 旧代闩失效）。 */
+    private static function bumpConn():Void {
+        connGen++;
+        _root.server.xmlSocket = {gen: connGen};
+    }
+
+    /** v2 会话前置：新连接代 + 下发含 book 的 caps。 */
+    private static function v2Setup():Void {
+        resetCalls();
+        bumpConn();
+        NativeDialogueService.applyCaps(["snapshot", "book"]);
+    }
+
+    /** 断连清闩（生产清闩路径 = socket close → onTransportDisconnected）。 */
+    private static function clearCaps():Void {
+        NativeDialogueService.onTransportDisconnected();
+        bumpConn();
+    }
+
+    private static function lastSentOp():Object {
+        return sentOps[sentOps.length - 1];
+    }
+
+    /** 触发确认帧 applied 应答（按文档 §4.3 ack 形状回填回显字段）。 */
+    private static function ackApplied(entry:Object, rowCount:Number):Void {
+        entry.fired = true;
+        var ep:Object = entry.payload;
+        var resp:Object = {
+            success:true, requestId:ep.requestId, sceneId:ep.sceneId,
+            op:ep.op, status:"applied"
+        };
+        if (ep.epoch != undefined) {
+            resp.requestedEpoch = ep.epoch;
+            resp.appliedEpoch = ep.epoch;
+        }
+        if (rowCount != undefined && !isNaN(rowCount)) resp.rowCount = rowCount;
+        entry.callback(resp);
+    }
+
+    /** 触发确认帧 rejected 应答。 */
+    private static function ackRejected(entry:Object, reason:String):Void {
+        entry.fired = true;
+        var ep:Object = entry.payload;
+        entry.callback({
+            success:true, requestId:ep.requestId, sceneId:ep.sceneId,
+            op:ep.op, status:"rejected", reason:reason
+        });
+    }
+
+    /** 推进装夹墙钟；越过期限的未决回调收到 callback timeout。 */
+    private static function advanceClock(ms:Number):Void {
+        clockMs += ms;
+        var n:Number = sentOps.length;
+        for (var i:Number = 0; i < n; i++) {
+            var e:Object = sentOps[i];
+            if (!e.fired && e.timeoutMs != undefined && e.timeoutMs > 0
+                    && clockMs - e.sentAt >= e.timeoutMs) {
+                e.fired = true;
+                e.callback({success:false, error:"callback timeout"});
+            }
+        }
+    }
+
+    /** v2 合法终态刺激：{verb:"finish", epoch, finalIndex, reason}。 */
+    private static function v2Finish(rid:String, sid:String, epoch, finalIndex,
+                                     reason:String):Void {
+        NativeDialogueService.handleAction({
+            task:"cmd", action:"nativeDialogueAction",
+            requestId:rid, sceneId:sid, verb:"finish",
+            epoch:epoch, finalIndex:finalIndex, reason:reason});
+    }
+
     // ── 用例 ────────────────────────────────────────────────────
 
     public static function runAllTests():Void {
@@ -243,6 +364,20 @@ class org.flashNight.arki.dialogue.NativeDialogueServiceTest {
         test_same_name_not_hero();
         test_frozen_no_root_drift();
         test_prefetch_piggyback();
+
+        // ── wire v2（以上 v1 套件原样保留）──
+        test_v2_caps_latch();
+        test_v2_book_materialize();
+        test_v2_epoch_append_set();
+        test_v2_finish_linearization();
+        test_v2_terminal_finish_resends_hide();
+        test_v2_mutation_ack_paths();
+        test_v2_status_query_three_way();
+        test_v2_stale_callback_ignored();
+        test_v2_advance_noop();
+        test_v2_failure_classification();
+        test_v2_business_gate();
+        test_v2_cross_direction_fifo();
 
         teardownMock();
         trace("NativeDialogueServiceTest Tests Passed: " + testsPassed);
@@ -860,5 +995,665 @@ class org.flashNight.arki.dialogue.NativeDialogueServiceTest {
         NativeDialogueService.onTransportDisconnected();
         assertEq(1, published.length, "disconnect: repeat is idempotent");
         _root.server.isSocketConnected = true;
+    }
+
+    // ── wire v2 用例 ────────────────────────────────────────────
+
+    private static function test_v2_caps_latch():Void {
+        // 未见本代 caps → v1（默认态，不试探 book）
+        resetCalls();
+        NativeDialogueService.handleAssign(rows(1), false);
+        assertEq("v1", curSession().wire, "caps: no caps -> v1 wire");
+        assertEq(0, sentOps.length, "caps: v1 uses sendTaskToNode only");
+        assertEq("show", lastPayload().op, "caps: v1 show emitted");
+        NativeDialogueService.cancelActive("t");
+
+        // 本代 caps 含 book → v2 book
+        v2Setup();
+        NativeDialogueService.handleAssign(rows(2), false);
+        var s:Object = curSession();
+        assertEq("v2", s.wire, "caps: book caps -> v2 wire");
+        assertEq(1, sentOps.length, "caps: book sent via callback channel");
+        var p:Object = lastSentOp().payload;
+        assertEq(2, p.version, "book: version 2");
+        assertEq("book", p.op, "book: op");
+        assertEq("inline", p.kind, "book: kind inline");
+        assertEq(1, p.epoch, "book: epoch starts at 1");
+        assertEq(0, p.startIndex, "book: startIndex 0");
+        assertEq(s.requestId, p.requestId, "book: requestId bound");
+        assertEq(s.sceneId, p.sceneId, "book: sceneId bound");
+        assertEq("ordinary", p.mode, "book: mode carried");
+        assertEq(2, p.lines.length, "book: lines materialized");
+        assertEq("NPC0", p.lines[0].name, "book: line name");
+        assertEq("卫兵", p.lines[0].portrait.key, "book: line portrait key");
+        assertEq(0, countOp("show"), "caps: v2 sends no v1 show");
+        NativeDialogueService.cancelActive("t");
+
+        // v1 起头终身 v1：会话中补发 caps 不改既有会话 wire
+        resetCalls();
+        clearCaps();
+        NativeDialogueService.handleAssign(rows(2), false);
+        assertEq("v1", curSession().wire, "caps: session started v1");
+        NativeDialogueService.applyCaps(["snapshot", "book"]);
+        NativeDialogueService.advance();
+        assertEq("v1", curSession().wire, "caps: mid-session caps keeps v1");
+        assertEq("show", lastPayload().op, "caps: v1 advance still emits show");
+        assertEq(0, sentOps.length, "caps: v1 session never uses callback channel");
+        NativeDialogueService.cancelActive("t");
+
+        // 换连接代未重发 caps → 旧代闩不生效 → v1；重发 → v2
+        resetCalls();
+        bumpConn();
+        NativeDialogueService.handleAssign(rows(1), false);
+        assertEq("v1", curSession().wire,
+            "caps: new generation without caps -> v1");
+        NativeDialogueService.cancelActive("t");
+        resetCalls();
+        NativeDialogueService.applyCaps(["snapshot", "book"]);
+        NativeDialogueService.handleAssign(rows(1), false);
+        assertEq("v2", curSession().wire, "caps: re-pushed caps -> v2");
+        NativeDialogueService.cancelActive("t");
+
+        // 断连清闩 → v1
+        resetCalls();
+        clearCaps();
+        NativeDialogueService.handleAssign(rows(1), false);
+        assertEq("v1", curSession().wire,
+            "caps: latch cleared on disconnect -> v1");
+        NativeDialogueService.cancelActive("t");
+
+        // forceSnapshot：caps 在但配置强制 → v1
+        resetCalls();
+        NativeDialogueService.applyCaps(["snapshot", "book"]);
+        NativeDialogueService.forceSnapshot = true;
+        NativeDialogueService.handleAssign(rows(1), false);
+        assertEq("v1", curSession().wire, "caps: forceSnapshot -> v1");
+        NativeDialogueService.forceSnapshot = false;
+        NativeDialogueService.cancelActive("t");
+    }
+
+    private static function test_v2_book_materialize():Void {
+        v2Setup();
+        var prevName = _root.角色名;
+        _root.角色名 = "测试玩家";
+        NativeDialogueService.handleAssign([
+            null,
+            ["角色名", "称号", undefined, "第一句", "普通", null, ""],
+            ["旁白", "", "", "第二句", "普通", null, "close"],
+            null,
+            ["NPC2", "称号", "军需官", "第三句", "微笑", null, "img/cg_03.png"]
+        ], false);
+        _root.角色名 = prevName;
+        var s:Object = curSession();
+        assertEq("v2", s.wire, "mat: v2 wire");
+        assertEq(3, s.rowCount, "mat: normalized rowCount skips null rows");
+        var p:Object = lastSentOp().payload;
+        assertEq(3, p.lines.length, "mat: book lines skip null rows");
+        assertEq("测试玩家", p.lines[0].name,
+            "mat: 角色名 placeholder resolved at materialize time");
+        assertEq("static", p.lines[0].portrait.kind,
+            "mat: missing char -> static slot");
+        assertEq("", p.lines[0].portrait.key,
+            "mat: missing char -> empty key");
+        assertEq("clear", p.lines[1].imageAction,
+            "mat: close image -> clear");
+        assertEq("show", p.lines[2].imageAction, "mat: new image -> show");
+        assertEq("img/cg_03.png", p.lines[2].imagePath,
+            "mat: imagePath carried");
+        assertEq("军需官", p.lines[2].portrait.key, "mat: portrait key");
+        assertEq("微笑", p.lines[2].portrait.expression,
+            "mat: expression kept");
+        assertEq("第三句", p.lines[2].text, "mat: text carried");
+        NativeDialogueService.cancelActive("t");
+
+        // 规范化后空集 → 不发 book，直接 finishSession（孤儿 hide 同兜底形）
+        v2Setup();
+        NativeDialogueService.handleAssign([null, null], false);
+        assert(curSession() == null, "mat: empty normalized set finishes");
+        assertEq(0, sentOps.length, "mat: empty set sends no book");
+        assertEq(1, countOp("hide"), "mat: empty set emits orphan hide");
+        assertEq(2, lastPayload().version, "mat: orphan hide carries v2 tag");
+        assertEq(0, published.length, "mat: empty set publishes nothing");
+    }
+
+    private static function test_v2_epoch_append_set():Void {
+        v2Setup();
+        org.flashNight.arki.key.KeyManager.refreshKeySettings(
+            [["互动键", "互动键", 69]], null, null);
+        NativeDialogueService.handleAssign(rows(2), false);
+        var book:Object = lastSentOp();
+        assertEq(69, book.payload.advanceKey, "epoch: book carries advanceKey");
+        ackApplied(book, 2);
+        assert(curSession().bookSettled === true,
+            "epoch: applied settles book");
+        assertEq(0, curSession().pendingCount, "epoch: applied clears pending");
+
+        // append：发送前 epoch 递增，baseEpoch=递增前值，restartIndex 回第 0 句
+        NativeDialogueService.handleAssign(rows(2), false);
+        var ap:Object = lastSentOp();
+        assertEq("append", ap.payload.op, "append: op");
+        assertEq(1, ap.payload.baseEpoch, "append: baseEpoch = previous epoch");
+        assertEq(2, ap.payload.epoch, "append: epoch bumped before send");
+        assertEq(0, ap.payload.restartIndex, "append: restartIndex 0");
+        assertEq(2, ap.payload.lines.length, "append: only appended rows");
+        assertEq("第0句", ap.payload.lines[0].text, "append: appended text");
+        assertEq(2, curSession().epoch,
+            "append: session epoch advanced without ack");
+        assertEq(4, curSession().rowCount,
+            "append: normalized count accumulates");
+        assertEq(0, curSession().index, "append: index back to line 0");
+        ackApplied(ap, 4);
+
+        // set：白名单字段变更不动行集、不 bump epoch
+        NativeDialogueService.notifyAdvanceKeyChanged(88);
+        var setOp:Object = lastSentOp();
+        assertEq("set", setOp.payload.op, "set: op");
+        assertEq(88, setOp.payload.advanceKey, "set: advanceKey carried");
+        assert(setOp.payload.epoch == undefined, "set: no epoch field");
+        assert(setOp.payload.baseEpoch == undefined, "set: no baseEpoch field");
+        assertEq(2, curSession().epoch, "set: epoch not bumped");
+        assertEq(88, curSession().advanceKey, "set: sent value latched");
+        ackApplied(setOp);
+        assert(curSession().setPending === false,
+            "set: applied clears setPending");
+        var n:Number = sentOps.length;
+        NativeDialogueService.notifyAdvanceKeyChanged(88);
+        assertEq(n, sentOps.length, "set: same value not resent");
+        NativeDialogueService.cancelActive("t");
+    }
+
+    private static function test_v2_finish_linearization():Void {
+        v2Setup();
+        NativeDialogueService.handleAssign(rows(3), false);
+        ackApplied(lastSentOp(), 3);
+        var rid:String = curRid();
+
+        // 缺失/非整数/过去/未来 epoch 全部拒绝，会话续存且零副作用
+        v2Finish(rid, ctxScene, undefined, 2, "advance_past_end");
+        assert(curSession() != null, "lin: missing epoch rejected");
+        v2Finish(rid, ctxScene, 1.5, 2, "advance_past_end");
+        assert(curSession() != null, "lin: non-integer epoch rejected");
+        v2Finish(rid, ctxScene, 0, 2, "advance_past_end");
+        assert(curSession() != null, "lin: stale epoch rejected");
+        v2Finish(rid, ctxScene, 7, 2, "advance_past_end");
+        assert(curSession() != null, "lin: future epoch rejected");
+        v2Finish(rid, ctxScene, 1, 1, "advance_past_end");
+        assert(curSession() != null,
+            "lin: finalIndex != rowCount-1 rejected");
+        v2Finish(rid, ctxScene, 1, 5, "close");
+        assert(curSession() != null, "lin: close out-of-range rejected");
+        v2Finish(rid, ctxScene, 1, 2, "bogus");
+        assert(curSession() != null, "lin: unknown reason rejected");
+        assertEq(0, countOp("hide"), "lin: rejects never emit hide");
+        assertEq(0, published.length, "lin: rejects never publish");
+
+        // v2 只收 finish 动词：v1 的 advance/close 一律无效
+        act("advance", rid, ctxScene, 1);
+        assert(curSession() != null && curSession().index == 0,
+            "lin: v1 advance verb rejected on v2");
+        act("close", rid, ctxScene, 1);
+        assert(curSession() != null, "lin: v1 close verb rejected on v2");
+        assertEq(0, countOp("hide"), "lin: wrong-verb rejects emit nothing");
+
+        // 合法 close → 走既有 finishSession 顺序
+        v2Finish(rid, ctxScene, 1, 1, "close");
+        assert(curSession() == null, "lin: legal close commits finish");
+        assertEq(1, countOp("hide"), "lin: finish emits hide");
+        assertEq(2, lastPayload().version, "lin: v2 hide carries version 2");
+
+        // stage 会话：stale finish 不放 claim/不发事件，当代 epoch finish 成立
+        v2Setup();
+        NativeDialogueService.beginStage(
+            [{name:"a", char:"卫兵", text:"0"}, {name:"a", char:"卫兵", text:"1"}],
+            {name:"NextStage", args:null});
+        ackApplied(lastSentOp(), 2);
+        rid = curRid();
+        assert(_root.暂停 === true, "lin: stage claim held");
+        NativeDialogueService.handleAssign(rows(2), false);   // append epoch2 在途
+        v2Finish(rid, ctxScene, 1, 3, "advance_past_end");    // 旧代终态
+        assert(curSession() != null, "lin: stale finish cannot end new epoch");
+        assert(_root.暂停 === true, "lin: stale finish keeps claim");
+        assertEq(0, published.length, "lin: stale finish never publishes");
+        assertEq(0, countOp("hide"), "lin: stale finish emits nothing");
+        v2Finish(rid, ctxScene, 2, 3, "advance_past_end");    // 当代合法终态
+        assert(curSession() == null, "lin: current-epoch finish commits");
+        assertEq(1, published.length, "lin: finish publishes once");
+        assertEq("NextStage", published[0].name, "lin: published event");
+        assert(_root.暂停 === false, "lin: finish releases claim");
+    }
+
+    private static function test_v2_terminal_finish_resends_hide():Void {
+        v2Setup();
+        NativeDialogueService.beginStage(
+            [{name:"a", char:"卫兵", text:"0"}], {name:"NextStage", args:null});
+        var rid:String = curRid();
+        ackApplied(lastSentOp(), 1);
+        v2Finish(rid, ctxScene, 1, 0, "advance_past_end");
+        assertEq(1, published.length, "dup: event published once");
+        assertEq(1, countOp("hide"), "dup: first hide");
+
+        // 已提交会话的重复 finish（Host closing 重试同一份冻结请求）→ 只补 hide
+        v2Finish(rid, ctxScene, 1, 0, "advance_past_end");
+        assertEq(2, countOp("hide"), "dup: terminal finish resends matching hide");
+        assertEq(1, published.length, "dup: never republishes event");
+        v2Finish(rid, ctxScene, 1, 0, "advance_past_end");
+        assertEq(3, countOp("hide"), "dup: each retry resends hide once");
+        assertEq(1, published.length, "dup: still single publish");
+        // sceneId 不符的旧 finish → 不补发
+        v2Finish(rid, "sc.other", 1, 0, "advance_past_end");
+        assertEq(3, countOp("hide"), "dup: mismatched sceneId not resent");
+
+        // 新会话已开后旧 rid 的 finish 仍只补旧 hide，不动新会话
+        resetCalls();
+        NativeDialogueService.applyCaps(["snapshot", "book"]);
+        NativeDialogueService.handleAssign(rows(1), false);
+        var rid2:String = curRid();
+        assert(rid2 != rid, "dup: new session new rid");
+        v2Finish(rid, ctxScene, 1, 0, "advance_past_end");
+        assertEq(1, countOp("hide"), "dup: old-rid finish resends old hide only");
+        assertEq(rid, lastPayload().requestId,
+            "dup: resent hide tombstones old rid");
+        assert(curSession() != null && curRid() == rid2,
+            "dup: new session untouched");
+        assertEq(0, published.length, "dup: no publish on resend");
+        NativeDialogueService.cancelActive("t");
+    }
+
+    private static function test_v2_mutation_ack_paths():Void {
+        // applied：清 pending、置采用标记
+        v2Setup();
+        NativeDialogueService.handleAssign(rows(2), false);
+        var book:Object = lastSentOp();
+        assert(curSession().bookSettled === false, "ack: book pending pre-ack");
+        assertEq(1, curSession().pendingCount, "ack: pending registered");
+        ackApplied(book, 2);
+        assert(curSession().bookSettled === true, "ack: applied settles book");
+        assertEq(0, curSession().pendingCount, "ack: applied clears pending");
+
+        // rejected：book 首次采用前 → 降级 v1 快照序列
+        v2Setup();
+        NativeDialogueService.handleAssign(rows(2), false);
+        var rid:String = curRid();
+        ackRejected(lastSentOp(), "malformed");
+        assertEq("v1", curSession().wire, "ack: book rejected downgrades v1");
+        assertEq("show", lastPayload().op, "ack: downgrade emits v1 show");
+        assertEq(1, lastPayload().version, "ack: v1 show shape");
+        assertEq(rid, lastPayload().requestId, "ack: downgrade keeps requestId");
+        NativeDialogueService.advance();
+        assertEq(1, lastPayload().lineIndex,
+            "ack: downgraded session continues v1 flow");
+        NativeDialogueService.cancelActive("t");
+
+        // 底层发送失败（同步 send failed）→ 同一降级路径
+        v2Setup();
+        cbSendResult = false;
+        NativeDialogueService.handleAssign(rows(2), false);
+        cbSendResult = true;
+        assertEq("v1", curSession().wire, "ack: send-failed book falls back v1");
+        assertEq("show", lastPayload().op, "ack: fallback emits v1 show");
+        assertEq(0, curSession().pendingCount,
+            "ack: send-failed leaves no ghost pending");
+        NativeDialogueService.cancelActive("t");
+
+        // 回执缺 status → 结果未知：转 status 查询而非直接分类
+        v2Setup();
+        NativeDialogueService.handleAssign(rows(2), false);
+        var b2:Object = lastSentOp();
+        b2.callback({success:true, requestId:b2.payload.requestId,
+            sceneId:b2.payload.sceneId, op:"book"});
+        assertEq("status", lastSentOp().payload.op,
+            "ack: indeterminate ack escalates to status query");
+        NativeDialogueService.cancelActive("t");
+
+        // socket 断开：book 无路 → v1 兜底同样失败 → finishSession 防软锁
+        v2Setup();
+        _root.server.isSocketConnected = false;
+        NativeDialogueService.beginStage(
+            [{name:"a", char:"卫兵", text:"0"}], {name:"Down", args:null});
+        _root.server.isSocketConnected = true;
+        assert(curSession() == null, "ack: unreachable host finishes session");
+        assertEq(1, published.length,
+            "ack: send-failure fallback consumes event once");
+        assert(_root.暂停 === false, "ack: send-failure releases claim");
+    }
+
+    private static function test_v2_status_query_three_way():Void {
+        // 超时 → status 查询；appliedEpoch≥请求代际 → 视为已采用补确认
+        v2Setup();
+        NativeDialogueService.handleAssign(rows(2), false);
+        advanceClock(3100);
+        var st:Object = lastSentOp();
+        assertEq("status", st.payload.op, "status: timeout issues query");
+        assertEq(1, st.payload.queryEpoch, "status: queryEpoch = book epoch");
+        st.callback({success:true, requestId:st.payload.requestId,
+            sceneId:st.payload.sceneId, state:"active",
+            appliedEpoch:1, rowCount:2});
+        assert(curSession().bookSettled === true,
+            "status: appliedEpoch>=epoch confirms adoption");
+        assertEq("v2", curSession().wire, "status: confirmed stays v2");
+        NativeDialogueService.cancelActive("t");
+
+        // 明确未采用（appliedEpoch 低于请求代际）→ 失败分类（book → 降级 v1）
+        v2Setup();
+        NativeDialogueService.handleAssign(rows(2), false);
+        advanceClock(3100);
+        st = lastSentOp();
+        st.callback({success:true, requestId:st.payload.requestId,
+            sceneId:st.payload.sceneId, state:"active",
+            appliedEpoch:0, rowCount:0});
+        assertEq("v1", curSession().wire,
+            "status: not-adopted book downgrades v1");
+        assertEq("show", lastPayload().op, "status: downgrade emits v1 show");
+        NativeDialogueService.cancelActive("t");
+
+        // 仍未知（应答缺 appliedEpoch）→ 保留托管、不 finishSession
+        v2Setup();
+        NativeDialogueService.handleAssign(rows(2), false);
+        advanceClock(3100);
+        st = lastSentOp();
+        st.callback({success:true, requestId:st.payload.requestId,
+            sceneId:st.payload.sceneId, state:"unknown"});
+        assert(curSession() != null, "status: indeterminate keeps custody");
+        assertEq("v2", curSession().wire, "status: custody stays v2");
+        assertEq(0, countOp("hide"), "status: custody never finishes");
+
+        // 查询自身也超时 → 仍托管，绝不伪装玩家已结束
+        advanceClock(3100);
+        assert(curSession() != null, "status: query timeout keeps custody");
+        assertEq(0, countOp("hide"), "status: still no hide after query timeout");
+        assertEq(0, published.length, "status: custody never publishes");
+        NativeDialogueService.cancelActive("t");
+
+        // 会话已变：旧会话查询应答落在 dead 会话 → 忽略
+        v2Setup();
+        NativeDialogueService.handleAssign(rows(1), false);
+        advanceClock(3100);
+        st = lastSentOp();
+        var rid1:String = curRid();
+        NativeDialogueService.cancelActive("t");
+        NativeDialogueService.handleAssign(rows(1), false);
+        st.callback({success:true, requestId:rid1,
+            sceneId:ctxScene, state:"active", appliedEpoch:1});
+        assert(curSession() != null && curRid() != rid1,
+            "status: dead-session query answer ignored");
+        NativeDialogueService.cancelActive("t");
+    }
+
+    private static function test_v2_stale_callback_ignored():Void {
+        v2Setup();
+        NativeDialogueService.handleAssign(rows(1), false);
+        var oldBook:Object = lastSentOp();
+        var rid1:String = curRid();
+        // 会话终结后旧回调抵达 → 不得撞新会话（会话对象身份校验）
+        v2Finish(rid1, ctxScene, 1, 0, "advance_past_end");
+        NativeDialogueService.handleAssign(rows(1), false);
+        var rid2:String = curRid();
+        assert(rid2 != rid1, "stale: new session new rid");
+        var newBook:Object = lastSentOp();
+        oldBook.callback({success:true, requestId:rid1, sceneId:ctxScene,
+            op:"book", requestedEpoch:1, appliedEpoch:1, status:"applied"});
+        assert(curSession() != null && curRid() == rid2,
+            "stale: dead-session ack cannot touch new session");
+        assert(curSession().bookSettled === false,
+            "stale: dead-session ack does not settle new book");
+
+        // 连接代不符的应答 → 忽略（生产上换代伴随断线收口；
+        // 此处仅验证身份校验不放行，pending 等待自身超时/断线兜底）
+        ackApplied(newBook, 1);
+        NativeDialogueService.notifyAdvanceKeyChanged(88);
+        var setOp:Object = lastSentOp();
+        assert(curSession().setPending === true, "stale: set wait registered");
+        bumpConn();
+        setOp.callback({success:true, requestId:rid2, sceneId:ctxScene,
+            op:"set", status:"applied"});
+        assert(curSession().setPending === true,
+            "stale: conn-mismatched ack ignored");
+        NativeDialogueService.cancelActive("t");
+
+        // requestId/sceneId/操作代际不符 → 忽略；全对上才清 pending
+        v2Setup();
+        NativeDialogueService.handleAssign(rows(1), false);
+        var rid3:String = curRid();
+        ackApplied(lastSentOp(), 1);
+        NativeDialogueService.notifyAdvanceKeyChanged(77);
+        var set2:Object = lastSentOp();
+        set2.callback({success:true, requestId:"nd:9999", sceneId:ctxScene,
+            op:"set", status:"applied"});
+        assert(curSession().setPending === true,
+            "stale: wrong-requestId ack ignored");
+        set2.callback({success:true, requestId:rid3, sceneId:"sc.other",
+            op:"set", status:"applied"});
+        assert(curSession().setPending === true,
+            "stale: wrong-sceneId ack ignored");
+        set2.callback({success:true, requestId:rid3, sceneId:ctxScene,
+            op:"set", status:"applied"});
+        assert(curSession().setPending === false,
+            "stale: matching ack resolves set wait");
+        NativeDialogueService.handleAssign(rows(1), false);   // append epoch2
+        var ap:Object = lastSentOp();
+        ap.callback({success:true, requestId:rid3, sceneId:ctxScene,
+            op:"append", requestedEpoch:99, appliedEpoch:99,
+            status:"applied", rowCount:2});
+        assertEq(1, curSession().pendingCount,
+            "stale: epoch-mismatched ack leaves append pending");
+        ap.callback({success:true, requestId:rid3, sceneId:ctxScene,
+            op:"append", requestedEpoch:2, appliedEpoch:2,
+            status:"applied", rowCount:2});
+        assertEq(0, curSession().pendingCount,
+            "stale: matching epoch ack resolves pending");
+        NativeDialogueService.cancelActive("t");
+    }
+
+    private static function test_v2_advance_noop():Void {
+        v2Setup();
+        NativeDialogueService.handleAssign(rows(3), false);
+        ackApplied(lastSentOp(), 3);
+        var nOut:Number = sentOps.length;
+        var nIn:Number = recorded.length;
+        NativeDialogueService.advance();
+        assertEq(nOut, sentOps.length, "v2 advance: no callback-channel wire");
+        assertEq(nIn, recorded.length, "v2 advance: no v1 wire");
+        assertEq(0, curSession().index, "v2 advance: index untouched");
+        assert(curSession() != null, "v2 advance: session survives");
+        _root.对话框界面.下一句();
+        assertEq(nOut, sentOps.length, "v2 facade 下一句: no wire out");
+        assertEq(nIn, recorded.length, "v2 facade 下一句: no v1 wire");
+        assert(curSession() != null, "v2 facade 下一句: session survives");
+        NativeDialogueService.cancelActive("t");
+
+        // 对照：v1 会话的 advance/facade 保持旧行为
+        resetCalls();
+        NativeDialogueService.onTransportDisconnected();
+        bumpConn();
+        NativeDialogueService.handleAssign(rows(2), false);
+        NativeDialogueService.advance();
+        assertEq(1, lastPayload().lineIndex, "v1 contrast: advance sends line 1");
+        NativeDialogueService.cancelActive("t");
+    }
+
+    private static function test_v2_failure_classification():Void {
+        // set 被拒 → 恢复上一个有效值，不结束剧情
+        v2Setup();
+        org.flashNight.arki.key.KeyManager.refreshKeySettings(
+            [["互动键", "互动键", 69]], null, null);
+        NativeDialogueService.handleAssign(rows(2), false);
+        ackApplied(lastSentOp(), 2);
+        NativeDialogueService.notifyAdvanceKeyChanged(88);
+        var setOp:Object = lastSentOp();
+        assertEq(88, curSession().advanceKey, "fail: sent value latched");
+        ackRejected(setOp, "bad_key");
+        assert(curSession() != null, "fail: set rejection keeps session");
+        assertEq(69, curSession().advanceKey,
+            "fail: set rejection restores previous valid key");
+        assertEq(0, countOp("hide"), "fail: set rejection emits nothing");
+        NativeDialogueService.notifyAdvanceKeyChanged(90);
+        assertEq("set", lastSentOp().payload.op,
+            "fail: later rebind still sends set");
+        NativeDialogueService.cancelActive("t");
+
+        // append 被拒 → 保住已接受内容与 stage 义务：finishSession 收尾
+        v2Setup();
+        NativeDialogueService.beginStage(
+            [{name:"a", char:"卫兵", text:"0"}], {name:"Kept", args:null});
+        ackApplied(lastSentOp(), 1);
+        NativeDialogueService.handleAssign(rows(1), false);
+        assertEq("append", lastSentOp().payload.op, "fail: append sent");
+        ackRejected(lastSentOp(), "overflow");
+        assert(curSession() == null, "fail: append rejection finishes session");
+        assertEq(1, countOp("hide"), "fail: append rejection emits hide");
+        assertEq(2, lastPayload().version, "fail: rejection hide is v2");
+        assertEq(1, published.length,
+            "fail: stage following event consumed once");
+        assertEq("Kept", published[0].name,
+            "fail: stage obligation preserved");
+        assert(_root.暂停 === false, "fail: claim released on finish");
+
+        // book 首拒降级 v1 后，后续 wire 全走 v1 形状
+        v2Setup();
+        NativeDialogueService.handleAssign(rows(2), false);
+        ackRejected(lastSentOp(), "unsupported");
+        assertEq("v1", curSession().wire, "fail: book reject latches v1");
+        assertEq("show", lastPayload().op, "fail: downgrade emits v1 show");
+        assertEq(1, lastPayload().version, "fail: v1 show version");
+        NativeDialogueService.handleAssign(rows(1), false);   // v1 追加路径
+        assertEq("show", lastPayload().op,
+            "fail: post-downgrade append uses v1 show");
+        assertEq(0, lastPayload().lineIndex,
+            "fail: v1 append restarts at line 0");
+        // sentOps 为累计日志：原始 book 记录保留，降级后不得新增回调帧
+        assertEq(1, sentOps.length,
+            "fail: post-downgrade never touches callback channel");
+        NativeDialogueService.cancelActive("t");
+    }
+
+    private static function test_v2_cross_direction_fifo():Void {
+        // 出向帧与入向动作各自 FIFO；交叉点由测试顺序显式编排。
+        // 交叉一：finish(epoch1) 在 append 前抵达 → 终态成立；同 rid 后续
+        //         追加意图落到新会话（旧 rid 永不复活）
+        v2Setup();
+        NativeDialogueService.handleAssign(rows(2), false);
+        ackApplied(lastSentOp(), 2);
+        var rid:String = curRid();
+        v2Finish(rid, ctxScene, 1, 1, "advance_past_end");
+        assert(curSession() == null, "xdir: finish before append commits");
+        NativeDialogueService.handleAssign(rows(2), false);
+        var rid2:String = curRid();
+        assert(rid2 != rid, "xdir: post-finish assign opens new session");
+        assertEq("book", lastSentOp().payload.op,
+            "xdir: new session sends book not append");
+
+        // 交叉二：append 先到（epoch 已推进）→ 旧 epoch finish 被拒，
+        //         当代 epoch finish 成立；在途 append 的迟到 ack 落终态被忽略
+        ackApplied(lastSentOp(), 2);
+        NativeDialogueService.handleAssign(rows(1), false);   // append epoch2 在途
+        var ap:Object = lastSentOp();
+        v2Finish(rid2, ctxScene, 1, 2, "advance_past_end");
+        assert(curSession() != null,
+            "xdir: pre-append finish stale after epoch bump");
+        v2Finish(rid2, ctxScene, 2, 2, "advance_past_end");
+        assert(curSession() == null,
+            "xdir: current-epoch finish commits over in-flight append");
+        ap.callback({success:true, requestId:rid2, sceneId:ctxScene,
+            op:"append", requestedEpoch:2, appliedEpoch:2,
+            status:"applied", rowCount:3});
+        assert(curSession() == null,
+            "xdir: late append ack on terminal session ignored");
+        assertEq(2, countOp("hide"), "xdir: one hide per committed finish");
+        assertEq(0, published.length, "xdir: ordinary sessions publish none");
+    }
+
+    private static function test_v2_business_gate():Void {
+        // §4.6：新增收口路径不得绕 rewardPending 门禁——defer +
+        // 解除后重新核验身份与 epoch 再提交；cancel/teardown 撤销义务。
+        // _global 桩 SaveManager 单例（同 NativeInteractionContext 桩约定）；
+        // PauseManager.setRewardCommitPending 建真实暂停域；pending 解除后的
+        // 冲刷由 tryAwaitingCommit 直调代行（生产唤醒点 = ServerManager 帧泵）。
+        var g:Object = _global;
+        if (g.org.flashNight.neur == null) g.org.flashNight.neur = {};
+        if (g.org.flashNight.neur.Server == null) g.org.flashNight.neur.Server = {};
+        var smNs:Object = g.org.flashNight.neur.Server;
+        var savedSM = smNs.SaveManager;
+        _savedSaveMgr = savedSM;
+        smNs.SaveManager = {
+            getInstance: function():Object {
+                return {hasRewardCommitPending: function():Boolean {
+                    return org.flashNight.arki.dialogue.NativeDialogueServiceTest
+                        .rewardPending === true;
+                }};
+            }
+        };
+
+        // 一：append 被拒遭门禁 → 等待业务提交；解除后重验提交一次
+        v2Setup();
+        rewardPending = true;
+        NativeDialogueService.beginStage(
+            [{name:"a", char:"卫兵", text:"0"}], {name:"Kept", args:null});
+        ackApplied(lastSentOp(), 1);
+        PauseManager.setRewardCommitPending(true);
+        NativeDialogueService.handleAssign(rows(1), false);   // append epoch2 在途
+        ackRejected(lastSentOp(), "overflow");
+        var s:Object = curSession();
+        assert(s != null, "gate: append rejection deferred while pending");
+        assert(s != null && s.awaitingCommit === true,
+            "gate: awaiting-commit flag latched");
+        assertEq(0, countOp("hide"), "gate: deferred finish emits no hide");
+        assertEq(0, published.length,
+            "gate: deferred finish emits no publish");
+        assert(_root.暂停 === true, "gate: claim still held during defer");
+        rewardPending = false;
+        PauseManager.setRewardCommitPending(false);
+        NativeDialogueService.tryAwaitingCommit();   // 代行帧泵冲刷
+        assert(curSession() == null,
+            "gate: pending release commits deferred finish");
+        assertEq(1, countOp("hide"), "gate: commit emits hide");
+        assertEq(1, published.length, "gate: commit publishes once");
+        assertEq("Kept", published[0].name, "gate: event preserved");
+        assert(_root.暂停 === false, "gate: claim released on commit");
+
+        // 二：cancel 撤销义务——pending 中取消会话，解除后不得补发
+        v2Setup();
+        rewardPending = true;
+        NativeDialogueService.beginStage(
+            [{name:"a", char:"卫兵", text:"0"}], {name:"Revoked", args:null});
+        ackApplied(lastSentOp(), 1);
+        PauseManager.setRewardCommitPending(true);
+        NativeDialogueService.handleAssign(rows(1), false);
+        ackRejected(lastSentOp(), "overflow");
+        s = curSession();
+        assert(s != null && s.awaitingCommit === true,
+            "gate: second defer latched");
+        NativeDialogueService.cancelActive("t");
+        assert(curSession() == null, "gate: cancel kills session");
+        assertEq(0, published.length, "gate: cancel never publishes");
+        rewardPending = false;
+        PauseManager.setRewardCommitPending(false);
+        NativeDialogueService.tryAwaitingCommit();
+        assertEq(0, published.length,
+            "gate: release after cancel republishes nothing");
+
+        // 三：epoch 已推进 → 待提交义务丢弃（旧代终态裁决不压新代内容）
+        v2Setup();
+        rewardPending = true;
+        NativeDialogueService.handleAssign(rows(1), false);
+        ackApplied(lastSentOp(), 1);
+        PauseManager.setRewardCommitPending(true);
+        NativeDialogueService.handleAssign(rows(1), false);   // append epoch2
+        ackRejected(lastSentOp(), "overflow");
+        s = curSession();
+        assert(s != null && s.awaitingCommit === true,
+            "gate: defer latched for epoch-2 rejection");
+        NativeDialogueService.handleAssign(rows(1), false);   // append epoch3 推进
+        rewardPending = false;
+        PauseManager.setRewardCommitPending(false);
+        NativeDialogueService.tryAwaitingCommit();
+        assert(curSession() != null,
+            "gate: epoch-moved obligation dropped, session survives");
+        assertEq(0, countOp("hide"), "gate: dropped obligation emits no hide");
+        NativeDialogueService.cancelActive("t");
+
+        // 恢复桩与真值源
+        smNs.SaveManager = savedSM;
+        _savedSaveMgr = undefined;
+        rewardPending = false;
     }
 }

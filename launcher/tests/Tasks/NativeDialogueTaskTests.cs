@@ -3,7 +3,12 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
+using System.Net;
+using System.Net.Sockets;
+using System.Text;
+using System.Threading;
 using System.Windows.Forms;
+using CF7Launcher.Bus;
 using CF7Launcher.Guardian;
 using CF7Launcher.Guardian.Dialogue;
 using CF7Launcher.Guardian.Hud.Dialogue;
@@ -372,6 +377,269 @@ namespace CF7Launcher.Tests.Tasks
             Assert.Equal(0, portraitCalls);
             Assert.Equal(0, sceneCalls);
             Assert.Null(widget.CurrentFrame);
+        }
+
+        // ════════════════ wire v2：异步 ack / caps / wireMode / 嗅探门 ════════════════
+
+        private static JObject BookMessage(int sequence, int lineCount)
+        {
+            var lines = new JArray();
+            for (int i = 0; i < lineCount; i++)
+                lines.Add(new JObject
+                {
+                    ["name"] = "Andy Law", ["title"] = "雇佣兵", ["text"] = "第" + i + "行",
+                    ["portrait"] = new JObject
+                    {
+                        ["kind"] = "static", ["key"] = "Andy Law", ["expression"] = "普通"
+                    },
+                    ["imageAction"] = "keep"
+                });
+            return new JObject
+            {
+                ["task"] = "native_dialogue", ["callId"] = "cb-" + sequence,
+                ["payload"] = new JObject
+                {
+                    ["version"] = 2, ["op"] = "book", ["kind"] = "inline",
+                    ["requestId"] = "nd:" + sequence, ["sceneId"] = "scene.1",
+                    ["mode"] = "ordinary", ["epoch"] = 1, ["startIndex"] = 0,
+                    ["advanceKey"] = 13, ["lines"] = lines
+                }
+            };
+        }
+
+        [Fact]
+        public void V2AckArrivesOnlyAfterUiAdoption()
+        {
+            // 延迟 dispatch（手动泵）：ack 必须发生在采用之后，证明 ack=已采用而非已投递。
+            using var anchor = new Control { Size = new Size(1024, 576) };
+            using var widget = new NativeDialogueWidget(anchor);
+            var queue = new Queue<Action>();
+            var task = new NativeDialogueTask(widget, queue.Enqueue, _ => true);
+            string responded = null;
+            task.HandleAsync(BookMessage(7, 2), wire => responded = wire);
+            Assert.Null(responded);                 // 采用前绝不应答
+            Assert.Null(widget.CurrentFrame);
+            while (queue.Count > 0) queue.Dequeue()();
+            Assert.NotNull(widget.CurrentFrame);    // 已采用
+            JObject ack = JObject.Parse(responded);
+            Assert.Equal("applied", ack.Value<string>("status"));
+            Assert.Equal("nd:7", ack.Value<string>("requestId"));
+            Assert.Equal(1, ack.Value<int>("appliedEpoch"));
+        }
+
+        [Fact]
+        public void V2RejectedAckEchoesRequestAndKeepsAppliedEpoch()
+        {
+            using var anchor = new Control { Size = new Size(1024, 576) };
+            using var widget = new NativeDialogueWidget(anchor);
+            var task = new NativeDialogueTask(widget, a => a(), _ => true);
+            string responded = null;
+            task.HandleAsync(BookMessage(7, 1), wire => responded = wire);
+            Assert.Equal("applied", JObject.Parse(responded).Value<string>("status"));
+
+            responded = null;
+            var badAppend = new JObject
+            {
+                ["task"] = "native_dialogue",
+                ["payload"] = new JObject
+                {
+                    ["version"] = 2, ["op"] = "append", ["requestId"] = "nd:7",
+                    ["sceneId"] = "scene.1", ["baseEpoch"] = 9, ["epoch"] = 10,
+                    ["lines"] = new JArray()
+                }
+            };
+            task.HandleAsync(badAppend, wire => responded = wire);
+            JObject ack = JObject.Parse(responded);
+            Assert.Equal("rejected", ack.Value<string>("status"));
+            Assert.Equal("epoch_gap", ack.Value<string>("reason"));
+            Assert.Equal(10, ack.Value<int>("requestedEpoch"));
+            Assert.Equal(1, ack.Value<int>("appliedEpoch"));   // 拒绝不改变已应用代际
+        }
+
+        [Fact]
+        public void RouterWrapsMutationAckWithCallId()
+        {
+            using var anchor = new Control { Size = new Size(1024, 576) };
+            using var widget = new NativeDialogueWidget(anchor);
+            var task = new NativeDialogueTask(widget, a => a(), _ => true);
+            var router = new MessageRouter();
+            router.RegisterAsync("native_dialogue", task.HandleAsync);
+            string responded = null;
+            router.ProcessMessage(BookMessage(7, 1).ToString(Newtonsoft.Json.Formatting.None),
+                wire => responded = wire);
+            JObject ack = JObject.Parse(responded);
+            Assert.Equal("cb-7", ack.Value<string>("callId"));
+            Assert.Equal("applied", ack.Value<string>("status"));
+            Assert.Equal("book", ack.Value<string>("op"));
+        }
+
+        [Fact]
+        public void CapsPushSendsVerbatimOnce()
+        {
+            using var anchor = new Control { Size = new Size(1024, 576) };
+            using var widget = new NativeDialogueWidget(anchor);
+            var task = new NativeDialogueTask(widget, a => a(), _ => true);
+            var pushed = new List<Tuple<string, int>>();
+            task.SendForGeneration = (wire, gen) => { pushed.Add(Tuple.Create(wire, gen)); return true; };
+            task.PushCapsForGeneration(3);
+            var push = Assert.Single(pushed);
+            Assert.Equal(3, push.Item2);
+            Assert.Equal("{\"task\":\"dialogue_caps\",\"modes\":[\"snapshot\",\"book\"]}\0",
+                push.Item1);
+        }
+
+        [Fact]
+        public void V1SessionStillSendsInputVerbsAndIgnoresFinish()
+        {
+            using var anchor = new Control { Size = new Size(1024, 576) };
+            using var widget = new NativeDialogueWidget(anchor);
+            var sent = new List<string>();
+            var task = new NativeDialogueTask(widget, a => a(),
+                wire => { sent.Add(wire); return true; });
+            task.Adopt(Frame());
+            widget.InputRequested(widget.CurrentFrame, "finish");   // v1 会话不误用 finish
+            Assert.Empty(sent);
+            widget.InputRequested(widget.CurrentFrame, "advance");  // v1 仍走旧 _send 路径
+            JObject command = JObject.Parse(Assert.Single(sent).TrimEnd('\0'));
+            Assert.Equal("advance", command.Value<string>("verb"));
+            Assert.Equal(1, command.Value<int>("revision"));
+        }
+
+        [Fact]
+        public void V2HideActsAsSameTombstoneAsV1Hide()
+        {
+            using var anchor = new Control { Size = new Size(1024, 576) };
+            using var widget = new NativeDialogueWidget(anchor);
+            var task = new NativeDialogueTask(widget, a => a(), _ => true);
+            task.AdoptV2((JObject)BookMessage(5, 2)["payload"].DeepClone());
+            Assert.NotNull(widget.CurrentFrame);
+            task.AdoptV2(new JObject
+            {
+                ["version"] = 2, ["op"] = "hide",
+                ["requestId"] = "nd:5", ["sceneId"] = "scene.1"
+            });
+            Assert.Null(widget.CurrentFrame);
+            task.Adopt(Frame(5));            // 同序迟到 show 不得复活会话
+            Assert.Null(widget.CurrentFrame);
+            task.Adopt(Frame(6));            // 更高序正常采用
+            Assert.Equal("nd:6", widget.CurrentFrame.RequestId);
+        }
+
+        // ── 嗅探门（maxMessageChars）：真实 socket 接线 ──
+
+        [Fact]
+        public void OversizeNativeDialogueRejectedBeforeDomParse()
+        {
+            using (var fx = new SniffFixture())
+            {
+                // 超限 native_dialogue + callId → 拒包为 mutation ack 同构
+                // （reason=oversize，回显 requestId/op/requestedEpoch），不进 handler
+                string big = "{\"task\":\"native_dialogue\",\"callId\":\"cb-big\",\"payload\":{"
+                    + "\"version\":2,\"op\":\"book\",\"requestId\":\"nd:9\","
+                    + "\"sceneId\":\"s9\",\"epoch\":1,\"pad\":\""
+                    + new string('x', 262200) + "\"}}";
+                string reply = fx.RoundTrip(big);
+                Assert.False(fx.DialogueHandled);
+                JObject ack = JObject.Parse(reply);
+                Assert.Equal("rejected", ack.Value<string>("status"));
+                Assert.Equal("oversize", ack.Value<string>("reason"));
+                Assert.Equal("cb-big", ack.Value<string>("callId"));
+                Assert.Equal("nd:9", ack.Value<string>("requestId"));
+                Assert.Equal("book", ack.Value<string>("op"));
+                Assert.Equal(1, ack.Value<int>("requestedEpoch"));
+            }
+        }
+
+        [Fact]
+        public void OversizeOtherTaskAndUnderLimitDialoguePassThrough()
+        {
+            using (var fx = new SniffFixture())
+            {
+                // 超限但非 native_dialogue → 放行到路由
+                string other = "{\"task\":\"sniff_passthrough\",\"pad\":\""
+                    + new string('x', 262200) + "\"}";
+                string reply = fx.RoundTrip(other);
+                Assert.True(fx.PassthroughHandled);
+                Assert.Equal("{\"ok\":true}", reply);
+
+                // 限内 native_dialogue → 正常路由（不触发嗅探）
+                string small = "{\"task\":\"native_dialogue\",\"callId\":\"cb-s\","
+                    + "\"payload\":{\"version\":1,\"op\":\"hide\",\"requestId\":\"nd:1\","
+                    + "\"sceneId\":\"s\"}}";
+                string reply2 = fx.RoundTrip(small);
+                Assert.True(fx.DialogueHandled);
+                Assert.Contains("cb-s", reply2);
+            }
+        }
+
+        /// <summary>真实 XmlSocketServer + loopback TcpClient 夹具：native_dialogue
+        /// 与 sniff_passthrough 均注册 sync handler（只观测是否到达路由层）。</summary>
+        private sealed class SniffFixture : IDisposable
+        {
+            private readonly XmlSocketServer _server;
+            private readonly TcpClient _client;
+            internal bool DialogueHandled;
+            internal bool PassthroughHandled;
+
+            internal SniffFixture()
+            {
+                var router = new MessageRouter();
+                router.RegisterSync("native_dialogue", msg =>
+                {
+                    DialogueHandled = true;
+                    return "{\"ok\":true}";
+                });
+                router.RegisterSync("sniff_passthrough", msg =>
+                {
+                    PassthroughHandled = true;
+                    return "{\"ok\":true}";
+                });
+                _server = new XmlSocketServer(router,
+                    AllowLoopbackXmlSocketPeerAuthority.Instance);
+                int port = ProbeFreePort();
+                Assert.True(_server.Start(port));
+                _client = new TcpClient();
+                _client.Connect(IPAddress.Loopback, port);
+                _client.NoDelay = true;
+                Assert.True(SpinWait.SpinUntil(() => _server.HasClient,
+                    TimeSpan.FromSeconds(2)));
+            }
+
+            internal string RoundTrip(string json)
+            {
+                var stream = _client.GetStream();
+                byte[] bytes = Encoding.UTF8.GetBytes(json + "\0");
+                stream.Write(bytes, 0, bytes.Length);
+                stream.ReadTimeout = 5000;
+                var buffer = new List<byte>();
+                var one = new byte[4096];
+                while (true)
+                {
+                    int n = stream.Read(one, 0, one.Length);
+                    if (n <= 0) break;
+                    for (int i = 0; i < n; i++)
+                    {
+                        if (one[i] == 0) return Encoding.UTF8.GetString(buffer.ToArray());
+                        buffer.Add(one[i]);
+                    }
+                }
+                return Encoding.UTF8.GetString(buffer.ToArray());
+            }
+
+            private static int ProbeFreePort()
+            {
+                var listener = new TcpListener(IPAddress.Loopback, 0);
+                listener.Start();
+                int port = ((IPEndPoint)listener.LocalEndpoint).Port;
+                listener.Stop();
+                return port;
+            }
+
+            public void Dispose()
+            {
+                try { _client?.Close(); } catch { }
+                try { _server?.Dispose(); } catch { }
+            }
         }
     }
 }

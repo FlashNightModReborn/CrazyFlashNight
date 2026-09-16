@@ -596,7 +596,9 @@ namespace CF7Launcher.Bus
                 router.RegisterSync("native_interaction", nativeInteractionTask.Handle);
             if (nativeDialogueTask != null)
             {
-                router.RegisterSync("native_dialogue", nativeDialogueTask.Handle);
+                // wire v2：book/append/set 需"采用后 ack"，走异步 handler（UI 线程采用后
+                // 才经 callId 应答）；v1 show/hide 在 HandleAsync 内原样走同步路径。
+                router.RegisterAsync("native_dialogue", nativeDialogueTask.HandleAsync);
                 router.RegisterSync("dialogue_portrait_result", nativeDialogueTask.HandlePortraitResult);
             }
 
@@ -880,7 +882,7 @@ namespace CF7Launcher.Bus
             first = AppendTask(sb, "task_delivery",        "json_sync","AS2->C#",false, first);
             first = AppendTask(sb, "intelligence_response","json_async","AS2<->C#",false, first);
             first = AppendTask(sb, "native_interaction","json_sync", "AS2->C#", false, first);
-            first = AppendTask(sb, "native_dialogue","json_sync", "AS2->C#", false, first);
+            first = AppendTask(sb, "native_dialogue","json_async", "AS2->C#", false, first);
             first = AppendTask(sb, "dialogue_portrait_result","json_sync", "Web->C#", false, first);
             first = AppendTask(sb, "cursor_control", "json_sync", "AS2->C#", false, first);
             first = AppendTask(sb, "panel_request",  "json_sync", "AS2->C#", false, first);
