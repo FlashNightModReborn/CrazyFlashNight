@@ -56,26 +56,6 @@ onClipEvent(load){
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="sprite/场景门 废弃" centerPoint3DX="1035.45" centerPoint3DY="172.35">
-                  <matrix>
-                    <Matrix a="3.107421875" d="1.13021850585938" tx="1024.95" ty="152.4"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point/>
-                  </transformationPoint>
-                  <Actionscript>
-                    <script><![CDATA[onClipEvent(enterFrame){
-   自动情节("对话",true,false,"");
-}
-onClipEvent(load){
-   本段对话 = [];
-   本段对话[0] = ["Andy Law","东区最强战士","Andy Law","33大家好，测试一下。"];
-   本段对话[1] = [_root.角色名,"菜鸟","玩家","44测试一下。大家好，"];
-   消息 = "老子感到一阵蛋痛……";
-}
-]]></script>
-                  </Actionscript>
-                </DOMSymbolInstance>
                 <DOMSymbolInstance libraryItemName="sprite/场景门 废弃" centerPoint3DX="1024.45" centerPoint3DY="218.4">
                   <matrix>
                     <Matrix a="3.107421875" d="1.13021850585938" tx="1013.95" ty="198.45"/>
