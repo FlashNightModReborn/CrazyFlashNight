@@ -7,9 +7,9 @@
 
 | 层级 | 文件 | 角色 |
 |------|------|------|
-| 顶层路由 | `AGENTS.md` | 任务路由、硬约束、Context Packs、文档地图 |
+| 顶层路由 | `AGENTS.md` | 硬约束、按任务读取路由、文档地图 |
 | 人类总览 | `README.md` | onboarding、项目总览、快速开始 |
-| 主题深文档 | `agentsDoc/*` | 架构、测试、规范、治理等 canonical doc |
+| 主题深文档 | `agentsDoc/*` | 架构、规范、治理等 canonical doc；验证类按 matrix/details 分工：`testing-guide.md` 是验证选择矩阵，`testing-details.md` 是按需验证正文（规范层） |
 | 子系统 source of truth | `launcher/README.md` 等 | 稳定架构、入口、职责地图、机器注册表与专题文档索引 |
 | 评估 / 路线图 / ADR | `docs/*` | 技术栈评估、审计、决策沉淀 |
 
@@ -17,7 +17,7 @@
 
 - `AGENTS.md` 不重复堆叠 Launcher / Flash / minigame 的深度实现
 - `README.md` 不充当 Agent 规则手册
-- `agentsDoc/*` 不负责顶层路由
+- `agentsDoc/*` 不负责顶层路由；验证类文档的 matrix/details 分工：矩阵只决定「验什么、何时扩展」，完整 runner、前置与恢复条件进 `testing-details.md`
 - 子系统 README 不负责项目级总览
 - 同一事实只能有一个 canonical doc；其他文档只做链接和摘要
 - `.workbuddy-ai/` 等工具私有会话目录与 `tmp/` 只存本机记忆、临时日志和可重建中间物；持久决策归 `docs/`（原始裁决可归 `docs/裁决存档/`）、复用检查器归 `tools/`、正式素材归所属运行时资产目录。忽略私有目录前，先把唯一一份必要知识迁出并更新引用，不把本机工作量估计变成发布门。
@@ -30,10 +30,11 @@
 
 以下文档或章节必须显式标注“最后核对代码基线：commit ...”：
 
-- `AGENTS.md` 的项目概述与 Context Packs
+- `AGENTS.md`（文档角色行）
 - `launcher/README.md` 的源码职责地图、构建/候选/发布、测试入口、Panel / minigame 章节
 - `agentsDoc/architecture.md`
 - `agentsDoc/testing-guide.md`
+- `agentsDoc/testing-details.md`
 - `agentsDoc/as2-web-panel-migration.md`
 - `agentsDoc/workbench-ui-system.md`
 - `agentsDoc/agent-harness.md`
@@ -59,7 +60,7 @@
 - 正式 runtime consensus/manifest 或发布列车变化 → 更新机器清单与 `docs/runtime-build-reproducibility.md`；`launcher/README.md` 只保留真源链接，不复制 request/identity/closure、文件数或产物大小
 - 稳定玩家包或玩家可见功能列车收口 → 同批更新 `docs/version-archaeology/versions/<version>.md`、`series-index.md`、玩家页 `launcher/web/content/version-history.md` 与可录制的视频提纲；稳定包另补 `release-boundaries.md` 的 Release URL/tag/时间/资产。多次 WIP 允许在收口提交批量登记，不要求逐提交填表；完整证据与措辞契约见 [版本考古维护规范](../docs/version-archaeology/README.md)
 - 装备生命周期脚本增删（`scripts/逻辑/装备函数/*.as`）→ 同步 `asLoaderManifest/frame37.as` 接线 + 该目录 `README.md` 索引；依次运行 `node tools/assemble-collapsed-frame.js`、`node tools/assemble-collapsed-frame.js --check`、`node tools/check-bom.js` 与 `node tools/validate-equip-fn-coverage.js`，再由 CS6 重编。`BOOT_SOURCES` 是 live 顶层输入的唯一清单，不得另建平行 frame / stage manifest
-- 武器 / 技能数值平衡参数变更（武器 XML `<balance>`、完整审计台账、业务判据或 `tools/cf7-balance-tool` 公式系数）→ 同步 `tools/cf7-balance-tool/docs/agent-balance-record-design.md`；判据变化同时同步 `tools/cf7-balance-tool/docs/weapon-balance-rulebook.md`，并执行设计契约的当前验证矩阵。武器 `balance-sync --check` 与 `balance-check` 是 strict v1 必跑门，但不能单独替代工作簿核对、规则证据审计或 AS2/Web 展示测试；入口路由见 `AGENTS.md` Context Packs「XML / 数据与游戏设计」
+- 武器 / 技能数值平衡参数变更（武器 XML `<balance>`、完整审计台账、业务判据或 `tools/cf7-balance-tool` 公式系数）→ 同步 `tools/cf7-balance-tool/docs/agent-balance-record-design.md`；判据变化同时同步 `tools/cf7-balance-tool/docs/weapon-balance-rulebook.md`，并执行设计契约的当前验证矩阵。武器 `balance-sync --check` 与 `balance-check` 是 strict v1 必跑门，但不能单独替代工作簿核对、规则证据审计或 AS2/Web 展示测试；入口路由见 `AGENTS.md` 按任务读取「数据、数值与派生物」
 
 ## 5. 回流保护
 
@@ -100,28 +101,23 @@ runtime 身份/闭包/文件大小、源码注册表和测试分区等可机械�
 - 证据 JSON 是绑定输入摘要的历史调查快照，不是实时注册表；新事实追加必要证据并更新正文来源，不为记账重跑全游戏扫描、重编或覆盖旧快照。原始 Agent 报告与会话日志留在临时目录。
 - 接续任务先核工作区和在途专项；共享文件由当前施工方维护。其他任务先做互不重叠的整理，提交和推送只纳入已授权范围，不把并发改动一并收走。
 
+<a id="reading-budgets"></a>
 ## 7. 文档体量预算
 
-入口文档承担的是「让读者快速决策去哪里」,行数失控会直接吞 agent 上下文与人类注意力。  
-本仓的预算如下,巡检脚本会硬校验:
+入口文档承担的是「让读者快速决策去哪里」，体量失控会直接吞 agent 上下文与人类注意力。预算数值的唯一真源是下面这个机器可解析标记块，巡检器从这里读取，JS 内不再手填第二份常量：
 
-| 文档 | 角色 | 行数预算 | 超限处理 |
-|------|------|----------|----------|
-| `AGENTS.md` | 顶层路由 | ≤ 80 | 路由项太多 → 拆 Context Pack 类别;深内容 → 下沉到 canonical doc |
-| `CLAUDE.md` | Claude 入口卡 | ≤ 20 | 几乎只剩链接;新规则进 AGENTS.md 或 canonical doc |
-| `README.md` | 人类总览 | ≤ 120 | 教程 / 历史 / 营销话术全部下沉 |
-| `launcher/README.md` | Launcher 高频深文档 | ≤ 430，单行 ≤ 320 字符 | 发布收据 / 动态计数下沉；长协议拆专题文档 |
-| `agentsDoc/testing-guide.md` | 验证矩阵 | ≤ 114 | 命令表格化;细节下沉到子系统 README |
-| `agentsDoc/agent-harness.md` | 协作 / harness | ≤ 90 | 只写项目特定;模型通识(prompt 写法、subagent 概念)不进 |
-| `agentsDoc/human-care.md` | 注意力 / 效率宪法 | ≤ 90 | 只写负面约束与无人值守默认；案例下沉复盘 |
-| `agentsDoc/documentation-governance.md` | 文档治理 | ≤ 150 | 案例下沉到 shared-notes |
-| `agentsDoc/self-optimization.md` | 自优化 | ≤ 135 | — |
+<!-- doc-read-budgets:start -->
+{"byteBudgets":{"AGENTS.md":12288,"agentsDoc/testing-guide.md":20480},"lineBudgets":{"CLAUDE.md":20,"README.md":120,"launcher/README.md":430,"agentsDoc/agent-harness.md":90,"agentsDoc/human-care.md":90,"agentsDoc/documentation-governance.md":150,"agentsDoc/self-optimization.md":135},"readability":{"maxLineChars":320,"maxParagraphBytes":2048,"appliesTo":["AGENTS.md","agentsDoc/testing-guide.md"]}}
+<!-- doc-read-budgets:end -->
 
-**预算原则**:Opus 4.7+ 等新一代模型已具备大量协作通识,canonical doc 应只承载**项目特定**约束。模型已知道的(prompt 自包含、subagent 边界、不要 outsource thinking 等),不在本仓重复。
+- **字节预算（硬门）**：`AGENTS.md` ≤ 12288 UTF-8 字节、`agentsDoc/testing-guide.md` ≤ 20480 UTF-8 字节。两者取消行数硬门；行数门不得被用作压行激励，新增锚点/章节不受行数门逼迫。
+- **行数预算（提示级 warn，不阻断）**：`CLAUDE.md` ≤ 20、`README.md` ≤ 120、`launcher/README.md` ≤ 430、`agentsDoc/agent-harness.md` ≤ 90、`agentsDoc/human-care.md` ≤ 90、本文 ≤ 150、`agentsDoc/self-optimization.md` ≤ 135。超限只提示并解释：新增锚点/章节不受行数门逼迫，应删重复/缩小范围而非压行。
+- **可读性规则（硬门）**：散文/表格单行建议 ≤ 320 字符、连续段落建议 ≤ 2 KiB，超限时报告精确位置。默认约束新改入口文件（标记块 `appliesTo` 所列），深层既有债务只报告不阻断。`launcher/README.md` 另有单行 ≤ 320 字符专项硬门。三档中只有字节预算、可读性规则与该 320 字符专项是硬门（error）；其余 7 份文档的行数预算一律提示级（warn）。
 
-**深文档**（架构、`as2-*`、`game-*`、`docs/*`）一般不设硬上限，但应显式标注「文档角色」与基线 commit；高频 `launcher/README.md` 采用上表专项预算。
+**预算原则**：canonical doc 只承载**项目特定**约束；模型已具备的协作通识（prompt 写法、subagent 边界等）不在本仓重复。
+**深文档**（架构、`as2-*`、`game-*`、`docs/*`）一般不设硬上限，但应显式标注「文档角色」与基线 commit。
 
-预算超限不是禁止 commit,但应在同一改动里完成「下沉 / 拆分」动作,而不是默默放任增长。
+预算超限不是禁止 commit，但应在同一改动里完成「下沉 / 拆分」动作，而不是默默放任增长。
 
 ## 8. 巡检脚本
 
@@ -130,6 +126,7 @@ runtime 身份/闭包/文件大小、源码注册表和测试分区等可机械�
 ```powershell
 chcp.com 65001 | Out-Null
 node tools/validate-doc-governance.js
+node tools/test-doc-governance.js   # 巡检器纯文本 fixture 单测；改巡检器时必跑
 ```
 
 当前脚本负责轻量静态巡检：
@@ -139,7 +136,9 @@ node tools/validate-doc-governance.js
 - 已知回流模式没有重新进入高频入口文档
 - 关键文档包含基线标记或维护约束
 - 高变动文档的基线 commit 真实存在于 `git log` 中
-- 入口文档行数没有突破本文 §7 的预算
+- 入口文档体量符合本文 §7 标记块：字节预算与单行/段落可读性为硬门，其余文档行数预算为提示级 warn
+- 治理范围内本地 Markdown 链接与 fragment 锚点可解析：含同文件锚点、中文标题 slug、重复标题 `-1`/`-2` 后缀、显式 `<a id>`、引用式链接与 URL 解码；代码围栏内假链接豁免，相对路径不得逃出仓库根；治理闭包名单内文件一律阻断，名单外的新增/改动行（git diff 识别，未跟踪文件全部行算新增）同样阻断，未改动行的既有债务逐条 warn（不静默豁免）
+- 四个入口文件（`AGENTS.md`、`CLAUDE.md`、`README.md`、`agentsDoc/testing-guide.md`）的必读边（先读/必读类强指令子句，同行弱词子句不吞）无循环；详见/参考类背景互链不计入
 - Launcher 分节基线齐全，本地 Markdown 链接与源码职责路径可解析
 - runtime consensus 与 manifest 身份一致，README 不复制可变发布收据和产物数字
 - Launcher 配置、用户偏好、CLI、Bootstrap cmd、测试分区、Panel id/最终模块与代码 exact-set 一致

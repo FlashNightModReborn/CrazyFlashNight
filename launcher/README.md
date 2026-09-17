@@ -5,12 +5,12 @@
 
 ## 当前真值与阅读顺序
 
-选关双栏聚焦：废城使用独立 Three r180 建筑特写，其余页提供二维定位；共用简报/通关情报与出战区，开发取景仅存本机预设。单模型按需绘制，废城故障只重试/关闭。协议、资源及验证见[选关施工范围](../docs/选关界面-webview迁移路线图.md#2026-09-09-废城固定镜头首版当前施工范围)。正式发布身份只读下列真源：
+选关双栏聚焦：废城使用独立 Three r180 建筑特写，其余页提供二维定位；共用简报/通关情报与出战区，开发取景仅存本机预设。单模型按需绘制，废城故障只重试/关闭。协议、资源及验证见[选关施工范围](../docs/选关界面-webview迁移路线图.md#2026-09-09-废城固定镜头首版当前发布范围)。正式发布身份只读下列真源：
 
 - [runtime release consensus](../config/build/runtime-release-consensus.json)：request、release tree、build identity、payload closure、签名共识与 promotion 时间。
 - [runtime manifest](../runtime/cf7-runtime-manifest.tsv)：正式入口与 `runtime/` 的逐文件大小、SHA-256 和构建身份。
-- [runtime build reproducibility](../docs/runtime-build-reproducibility.md)：当前发布列车、状态边界、双 signer/双 faultDomain 流程和历史列车。
-- [testing guide](../agentsDoc/testing-guide.md)：当前验证矩阵及专项 E2E 边界；C#/Web 字体改动另读 [字体 Gate E ADR](../docs/字体资产目录与语义角色解析-ADR-2026-08-20.md)、[字体目录](../fonts/README.md) 与 [fontctl](../tools/fontctl/README.md)。Web/Native 消费者、打包层和生产闭包已切换，维护者人工观感已接受；正式部署状态仍只读 runtime consensus 与标准入口证据。
+- [runtime build reproducibility](../docs/runtime-build-reproducibility.md)：[当前发布协议流程](../docs/runtime-build-reproducibility.md#release-protocol)、[证据状态术语](../docs/runtime-build-reproducibility.md#evidence-states)与历史发布记录；现役身份只读机器真源。
+- [testing guide](../agentsDoc/testing-guide.md#select)：当前验证矩阵及专项 E2E 边界；C#/Web 字体改动另读 [字体 Gate E ADR](../docs/字体资产目录与语义角色解析-ADR-2026-08-20.md)、[字体目录](../fonts/README.md) 与 [fontctl](../tools/fontctl/README.md)。Web/Native 消费者、打包层和生产闭包已切换，维护者人工观感已接受；正式部署状态仍只读 runtime consensus 与标准入口证据。
 新接手建议依次阅读：本文的“系统边界” → “运行架构” → “源码职责地图” → “构建、候选与发布” → “测试入口与证据边界”。改 AS2/Web Panel 再读 [AS2 → Web Panel 迁移护栏](../agentsDoc/as2-web-panel-migration.md)；改双栏工作台交互或样式再读 [Workbench UI System](../agentsDoc/workbench-ui-system.md)。
 
 ## 系统边界
@@ -47,7 +47,7 @@ compiled → candidate_built → candidate_executed → e2e_verified → promote
 | NuGet | WebView2、ClearScript、Vortice、SkiaSharp、Svg.Skia、Newtonsoft.Json | [Directory.Packages.props](Directory.Packages.props) |
 | Web | HTML/CSS/JavaScript、WebView2、V8 模块 | [web](web/) |
 | Native | C++ bootstrap、miniaudio side-car | [native](native/) |
-| Tests | xUnit、Node browser/harness、专项 PowerShell/Python gate | [tests](tests/) 与 [testing guide](../agentsDoc/testing-guide.md) |
+| Tests | xUnit、Node browser/harness、专项 PowerShell/Python gate | [tests](tests/) 与 [testing guide](../agentsDoc/testing-guide.md#select) |
 
 ## 运行架构
 
@@ -112,14 +112,14 @@ bootstrap preflight
   调度器首次复用历史缓存时执行同一完整校验，旧尺寸或损坏文件不再短路请求而会触发重烘焙；目录读取端也拒绝非 256×256 文件。匹配请求的失败终态只释放该请求以允许重试；成功终态再触发 `PortraitReady`，让仍存活的占位卡重探图标。Web 不拥有任意文件名、缓存路径或跨 key 写权限。对白立绘复用该链：Host 发 `dialoguePortraitBake`，只收 `dialogue_portrait_result` 的 768 PNG；静态为 2x supersampled 无损 WebP，图像结果不构成剧情指令。
 ### 原生音频平台 v2
 
-原生音频 bridge、格式能力和可观测性以 [Audio Platform v2 ADR](../docs/原生音频平台-v2-格式能力桥接契约与可观测性-ADR-2026-08-09.md)为准。通用 runtime promotion 只证明供应链与部署完整性；Audio H2 仍是独立产品验收，不从通用 promotion 或其他 Panel smoke 外推。
+原生音频 bridge、格式能力和可观测性以 [Audio Platform v2 ADR](../docs/原生音频平台-v2-格式能力桥接契约与可观测性-ADR-2026-08-09.md)为准。通用 runtime promotion 只证明供应链与部署完整性；Audio H2 仍是独立产品验收，不从通用 promotion 或其他 Panel smoke 外推；状态术语见 [runtime 证据状态](../docs/runtime-build-reproducibility.md#evidence-states)。
 前门 BGM 仅走 Native Audio v2，固定循环 `sounds/PTXOA馆长/主菜单.mp3`、gain `0.4`，不读槽位音量偏好。lease 只在 `Ready` 且 source 为空时获取，不重播自身也不抢异源。无 OP 的读档/建角/提交后加载保持到 actual reveal；OP 与 legacy 在 admission 让出。`SceneReady` 不交接音频，reveal 前 reset/error 可恢复；actual reveal 以 requestId-CAS 让出并由 AS2 接权，已 supersede 时不 stop，recovery 不复活已 revoke intent。
 ### Agent Runtime
 
 Agent Runtime 的 wire、受信 runner、credential bootstrap、30 秒预算和 structured-first/visual-fallback 边界见 [Contracts README](src/AgentRuntime/Contracts/README.md)与[一期范围冻结 ADR](../docs/CF7-Agent-Runtime与Wings-Network一期-范围冻结-ADR-2026-07-30.md)。历史 F7/F8 发布证据留在 ADR 和 `docs/evidence/`，不回流到本文件。
 
+<a id="source-map"></a>
 ## 源码职责地图
-
 **最后核对代码基线**：commit `757ef93637` 加 2026-09-13 对白候选工作区；其他子系统职责保持原有边界。
 
 本节是职责地图，不是手写文件 inventory。C# 主项目采用 SDK 默认递归 `**/*.cs`，实际排除项以 [主 csproj 的 `DefaultItemExcludes`](CRAZYFLASHER7MercenaryEmpire.csproj)为准；测试项目同样使用 SDK 隐式项。
@@ -177,12 +177,11 @@ powershell -File launcher/build.ps1 -BuilderId local-dev
 
 ### 正式发布
 
-正式发布必须遵守 [runtime build reproducibility](../docs/runtime-build-reproducibility.md)：冻结 immutable request，由注册本地 X509 worker 与另一真实 faultDomain 对同一 identity/closure 生成证明，经 production policy 与 strict v2 verifier 后，才允许 `tools/promote-runtime-bundle.ps1` 原子写入正式闭包。
+正式发布必须遵守 [runtime build reproducibility](../docs/runtime-build-reproducibility.md#release-protocol)：冻结 immutable request，由注册本地 X509 worker 与另一真实 faultDomain 对同一 identity/closure 生成证明，经 production policy 与 strict v2 verifier 后，才允许 `tools/promote-runtime-bundle.ps1` 原子写入正式闭包。
 
 正式产物的文件数、大小与 SHA-256 只读 [runtime manifest](../runtime/cf7-runtime-manifest.tsv)；当前共识只读 [runtime release consensus](../config/build/runtime-release-consensus.json)。普通 docs/Web/AS2 修改不因此自动触发 runtime promotion。
 
 ## 测试入口与证据边界
-
 **最后核对代码基线**：commit `04718fa57afb64836e95893f0c4ff821d25ca043`（2026-08-16）。
 
 ### Launcher xUnit
@@ -193,7 +192,7 @@ powershell -File launcher/tests/run_tests.ps1
 ```
 
 Runner 验证 exact SDK resolver 与串行 xUnit 策略，再从仓库根执行 Release `dotnet test`；SDK 锁定见 [global.json](../global.json)。真实头像 WebView2 夹具只在 `CF7_TEST_PORTRAIT_WEBVIEW=1` 时运行，证据和边界见[头像工具说明](../tools/portrait-pilot/README.md)。
-
+分区判据与 runner 边界另见 [testing guide #host](../agentsDoc/testing-guide.md#host) 与 [details #host](../agentsDoc/testing-details.md#host)。
 ### 测试覆盖
 
 以下只描述静态测试分区，不保存会随代码增长而失效的 passed/total 数字。`bin/`、`obj/` 和 `dotnet test --logger` 默认的 `TestResults/` 是生成目录，不计入测试源码分类；治理检查仍拒绝在 `TestResults/` 放入测试源码。专项证据优先通过 `--results-directory` 输出到仓库外或 `tmp/`。
@@ -218,7 +217,8 @@ Runner 验证 exact SDK resolver 与串行 xUnit 策略，再从仓库根执行 
 
 ### Web、Panel 与专项验证
 
-Web/Node、真实 Edge harness、AS2 runner、Flash CS6 publish-only smoke、candidate 和正式入口旅程必须按 [testing guide](../agentsDoc/testing-guide.md)选择。模块 README 可以给出本领域命令，但不能把 mock/browser harness 写成真实游戏 E2E。
+Web/Node 与真实 Edge harness 按 [testing guide #web](../agentsDoc/testing-guide.md#web) 与 [details #web](../agentsDoc/testing-details.md#web)；AS2 runner 与 Flash CS6 publish-only smoke 按 [#as2](../agentsDoc/testing-guide.md#as2) 与 [details #flash-core](../agentsDoc/testing-details.md#flash-core)。
+candidate 与正式入口旅程按 [#runtime](../agentsDoc/testing-guide.md#runtime) 与 [发布协议](../docs/runtime-build-reproducibility.md#release-protocol) 选择。模块 README 可以给出本领域命令，但不能把 mock/browser harness 写成真实游戏 E2E。
 
 最小证据分层：
 
@@ -336,8 +336,8 @@ Bootstrap Web 发出的命令必须由 `BootstrapMessageHandler` exact dispatch�
 `config_set` 只写白名单。启动前门的 attempt/slot/displayName/backup/reveal、durable/SceneReady、catalog 与 exact retry 边界见 [AS2 → Web 迁移护栏](../agentsDoc/as2-web-panel-migration.md)；`bootstrap_reveal_ready` 不代签 `s:1|ga:<attemptId>`，重建不预删 SOL。FontPack 的真实探针、exact HTTPS allow-list 与字节/ETag/WOFF2 边界见[字体目录](../fonts/README.md)。
 Bootstrap 建角遮罩按 `openRequestId` 关联，snapshot 与有效首帧（≥501 非透明像素）后再等双 rAF 开放；失败/12 秒只降级，迟到不可揭新页。PM19 V3 在建角/Modal/视频中暂停；loading 相（建角除外）叠加 lore 事件流与阶段文字，`Ready+确认意图` 门控方环收束，>12s 允许安静换盘，cue 按优先级抢占/挂起；Error 反馈持续到宿主退出错误态，绘制失败不影响重试。双缓存、12/24Hz 和本次暂停不参与启动判定。几何避让与验收见 [PM19 背景](../docs/启动引导-PM19质数幻方背景-设计与施工-2026-08-05.md)。
 角色名为主，存档显示名在高级选项中默认跟随；确认页仅在自定义名不同时另列。建角固定 `1024×576` + `PanelScale`，窗口/全屏只等比缩放。外观保留三装备槽、单发型槽和左侧唯一身高；紧凑/完整均挂载 77 项，完整卡片使用可辨识短名与候选池内部滚动，三步零页面滚屏；脸型只走 exact wire，注释统一用 `PanelTooltip`。作者/版本正文来自 `web/content/*.md`；版本记录为近全屏单节点浏览器，运行版本只读 `web/config/version.js`，历史证据与视频提纲按[版本考古规范](../docs/version-archaeology/README.md)收口。
+<a id="panel-registry"></a>
 ## Panel 与 minigame 注册表
-
 **最后核对代码基线**：commit `630d7def1e78e48021334b67d32486c61ad4c051`（2026-08-17）。`Panels.open(id)` 首次命中 lazy entry 时，`lazy-loader.js` 按声明顺序加载依赖；成功 URL 按 promise 去重，失败 URL 驱逐缓存并允许重试。精确依赖顺序和注册集合以 [panels-lazy-registry.js](web/modules/panels-lazy-registry.js)为代码权威。
 <!-- launcher-panel-registry:start -->
 | id | 类别 | 最终注册模块 |
@@ -384,7 +384,7 @@ Bootstrap 建角遮罩按 `openRequestId` 关联，snapshot 与有效首帧（�
   关卡奖励退场前写 `_saveExt.stageSettlement.v=1` 并 strict flush；单领、批领和终态依 durable remaining/receipt journal 对账。SaveManager 读档重建 pending，Loot 恢复已落盘 operation/revision。flush 未确认时保持 `LOOT_COMMIT_PENDING`，不得回成功或释放场景；详见[关卡结果与基地结算 ADR](../docs/关卡结果与基地结算-CSharp-Web-ADR-2026-08-27.md)。
   地图普通导航受 AS2 lifecycle lock 保护；独立撤退由 AS2 冻结/落盘，Host 校验当前实例，未知结果只查询，见[地图主动撤退](../docs/关卡结果与基地结算-CSharp-Web-ADR-2026-08-27.md#0c-2026-09-08-地图主动撤退入口)。loader staging 按 drop→reward 提交；跨淡出保持正整数 `callId`。Stage Select 先投递再关闭，transport false/throw 保留重试；NativeHud down 冻结 action/revision，suspend/hide/capture loss/外放取消。
   有效 `stage_settlement` 报告可在 `remaining=0` 时 suspend/reopen，`map_chest` 不继承。Panel close 仅在 close 起点与恢复前两次 live foreground 都属于 CF7 时恢复 Flash，切到 QQ/浏览器后不得抢焦。完整权威与生命周期详见[关卡结果与基地结算 ADR](../docs/关卡结果与基地结算-CSharp-Web-ADR-2026-08-27.md)。
-- `settings` 在 `1024×576` anchor 内全屏复用 Launcher bootstrap Web 壳的品牌铭牌、终端状态、DLS 青/锈红/骨白令牌与切角，不挂 `workbench-shell`。两页手工复刻的铭牌/kicker/分隔线/状态点/角标/扫描线/按钮/终端卡片已收敛为共享 [terminal.css](web/css/terminal.css)，bootstrap.html 与 overlay.html 均直接 link。
+- `settings` 在 `1024×576` anchor 内全屏复用 Launcher bootstrap Web 壳的品牌铭牌、终端状态、DLS 青/锈红/骨白令牌与切角，不挂 `workbench-shell`。两页手工复刻的铭牌/kicker/分隔线/状态点/角标/扫描线/按钮/终端卡片已收敛为共享 [terminal.css](web/css/terminal.css)，bootstrap.html 与 overlay.html 均直接 link。新增公开 Web 可写设置字段须经 `config_set` 白名单并同步上方用户偏好注册表（见「运行时配置」节）；Host-only 字段不得因前端同名而获得写权限。
   新表面层级/灰阶只取 [tokens.css](web/css/workbench/tokens.css) 的 `--term-*` 派生 token；顶栏直接承载“游戏 / 键位 / 本机与 Web”三页，不保留重复“作弊码”页，玩家解释统一走共享 `PanelTooltip` `simple-tooltip`，不使用原生 `title`。
   默认游戏页把单击“尝试复活/立即返回基地”、声音、画面/性能和紧凑作弊码输入聚合在首屏；完整作弊指令由 [cheat-codes.md](web/help/cheat-codes.md)维护，并通过只复制、不自动执行的模态帮助展示，一键命令包装仍留给修改器迁移。高级表达式与 raw 命令一律按 save 处理；AS2 调用前置脏，部分写后异常返回 `command_ambiguous + requiresReconcile`。音量 preview 在首个 setter 前挂恢复租约，半应用或半恢复保留首次基线并允许重试。
   非 preview 写的 timeout、`DeliveryUnknown` 或 malformed success 均建立 reconcile latch；它跨 owner close、同名 rebind 与 pending cleanup 保留，只由锁存后发出、格式有效且成功的 Flash snapshot 清除，早期迟到 snapshot 不得解锁。
@@ -397,7 +397,7 @@ Bootstrap 建角遮罩按 `openRequestId` 关联，snapshot 与有效首帧（�
 - 合成配方的默认完整密度、10 列紧凑网格、跨容器持有量、0–99 件存档标记、任务物资高亮、等高材料卡与 exact NPC 头像/摩托车或越野车商店路由以 [P1–P4 ADR](../docs/合成工作台-持有量标记采购联动-P1-P4-ADR-2026-08-17.md)为准。采购 demand 由 AS2 分别投影装备栏/战备箱计数及来源强化上限，材料行以“合成前需要从战备箱取出”或“合成前需要卸下装备”明确表达前置条件，项目浮层说明不会自动移动装备，Web 不猜位置也不把指引伪装成执行按钮。配方直达消费最新权威 preview 并由 Host/AS2 复证，不依赖材料档案 session；装备前置物同样合法。
 - 嵌套合成来源使用 28px 扳手方块：同分类在当前 snapshot 原地精确定位；跨分类复用只读 snapshot，并校验 exact producer tuple 后在同一 panel instance 内切换。多来源不得静默选首项。
 Minigame 专项说明分别位于 [lockbox](web/modules/minigames/lockbox/README.md)、[pinalign](web/modules/minigames/pinalign/README.md)、[gobang](web/modules/minigames/gobang/README.md)、[黑市全目录影子版](web/modules/minigames/blackmarket/README.md)和[军阀战术演习](web/modules/minigames/warlord/README.md)。
-`blackmarket` 保持 `dev + shadowOnly`、匿名表面与 `productionWrites=false`；close 绑定 exact instance。临时 O1 仅在 `CF7_BLACKMARKET_SOFTLOCK_OBSERVATION=1` 时由 Web/Host 双重放行：立即一次后每 10 秒发 heartbeat，每生命周期最多记录 64 条脱敏 tuple 并发送只读 AS2 probe；无 timeout、retry、watchdog、自动 close 或修复，默认关闭。测试见 [testing guide](../agentsDoc/testing-guide.md)。
+`blackmarket` 保持 `dev + shadowOnly`、匿名表面与 `productionWrites=false`；close 绑定 exact instance。临时 O1 仅在 `CF7_BLACKMARKET_SOFTLOCK_OBSERVATION=1` 时由 Web/Host 双重放行：立即一次后每 10 秒发 heartbeat，每生命周期最多记录 64 条脱敏 tuple 并发送只读 AS2 probe；无 timeout、retry、watchdog、自动 close 或修复，默认关闭。测试见 [testing guide](../agentsDoc/testing-guide.md#web)。
 `warlord` vNext 已贯通 `stage-v1`、通用九节点、编组、五阵型和三档距离，并将规则泛化为 opaque N 阵营；Demo 2 是 80 节点“厚 ×”、四阵营、三个胜利组和四名指挥官。两关只由 `其他 → 测试 → 军阀演习测试` 暴露，默认生产目录不含军阀条目。
 Slice 6.1 已按 `APPROVE_COLLAPSE / PREFER_B` 收敛：`StageManager` 物化临时普通 `StageInfo` 并与标准 `wuxianguotu_1` / frame 209 独占场景生命周期；`SceneManager` 仅物理 init/remove，`StageRunSession` 仅父 GameStage，runner 仅 outer binding/result，service 仅战斗事实。
 Action 使用有界 handoff；Host 在捕获的同一 socket generation、同一 binding 上有限重发，AS2 duplicate 不重建场景，terminal 优先重投。玩家操控侧仅从实际参战的可信主角投影推导；普通部队交战使用 `none` 旁观，不按战略阵营授予操控权。

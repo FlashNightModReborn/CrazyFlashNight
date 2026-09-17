@@ -1,80 +1,106 @@
 # AGENTS.md
 
-## 项目概述
+**文档角色**：顶层路由与硬约束入口。**最后核对代码基线**：commit `2e5e32321506fa1fb2693f3928205f8c45b4235e`（2026-09-17）。
 
-闪客快打7佣兵帝国（CF7:ME）单机 MOD。游戏核心仍在 **AS2 / Flash CS6**，但当前工程已经是多栈本地系统：**C# Guardian Launcher + WebView2 / Web + TypeScript / V8 + Rust `sol_parser` + PowerShell / CLI 自动化** 都是现役组成部分。
+## 硬约束
 
-**本文件角色**：顶层任务路由器 + 硬约束入口。只负责“先看什么、别做错什么”，不重复承载子系统深度实现。  
-**最后核对代码基线**：release source commit `0b7d8007f78c09e5f1da71ba762bd4b4785ad01a`（2026-09-13；tag `runtime-build-v2/20260913-pm19-lore-chain-v3`）。PM19 启动加载叙事链（lore 事件流、阶段文字、Ready 门控方环收束、压暗遮罩、FIFO 队列）与列车 C（boot 转发、通信捎带、端口占用实名、log 回写、降级开门标志、轨道读数）已完成 40/40 production policy、双 signer / 双 faultDomain 和原子 promotion；正式入口已核启动身份与正常关闭、存档 JSON 未变，启动加载业务旅程与观感仍待测试员真机复验，状态 `promoted / FIELD_REVALIDATION_PENDING`，不称 `standard_entry_verified`。范围见[设计文档 V3 节与列车 C 节](docs/启动引导-PM19质数幻方背景-设计与施工-2026-08-05.md)，完整身份见 [runtime-build-reproducibility.md](docs/runtime-build-reproducibility.md)。<br>**上一正式发布**：release source commit `fbbc47a8c0829019bec7b53b3cf173d948f9bba5`（2026-09-13；tag `runtime-build-v2/20260913-input-webview-fix-v1`）。危险头像回退、崩溃文件归属、修饰键/迟到点击防护与分层诊断已完成 40/40 production policy、双 signer / 双 faultDomain 和原子 promotion；正式入口已核启动身份、同版守护子进程及正常关闭，实际输入与复活/旧档报告旅程仍为 `FIELD_REVALIDATION_PENDING`，不称专项 `standard_entry_verified`。范围见[事故交接 §9](docs/测试员输入与WebView故障-调查结论与跨机施工清单-2026-09-13.md#9-上游合并与正式发布列车2026-09-13)，完整身份见 [runtime-build-reproducibility.md](docs/runtime-build-reproducibility.md)。<br>**上一正式发布**：release source commit `e04f86be7b258d1eb4995c03a9216ea3ba0fc155`（2026-09-13；tag `runtime-build-v2/20260913-native-dialogue-hd-v3`）。现场对白与高清立绘迁移、原版 XFL 壳体和按钮、字形比例与纸娃娃缓存已完成 40/40 production policy、双 signer / 双 faultDomain 和原子 promotion；状态 `promoted / FIELD_REVALIDATION_PENDING`。v4 有限人验为“大体能用”，v5 改善有组件证据，实际游戏复验仍交给人类；不称业务 `standard_entry_verified`。范围见[对白专项](docs/对话框迁移与高清立绘治理-调研与施工准备-2026-09-12.md#14-正式发布列车2026-09-13)，完整身份见 [runtime-build-reproducibility.md](docs/runtime-build-reproducibility.md)。<br>**上一正式发布**：release source commit `c78cf257ff8e216c89c670c654202275391ddc47`（2026-09-13；tag `runtime-build-v2/20260912-stash-shared-workbench-v2`）。暂存与战备箱共享双栏收纳、入口直达、就地数量及切源注释修复已完成人验、40/40 production policy、双 signer / 双 faultDomain 与原子 promotion，状态为 `HUMAN_ACCEPTANCE_PASSED / promoted`。正式入口只核对启动身份和正常关闭，未重跑领取保存业务，不称专项 `standard_entry_verified`；存档基线中的既有测试槽差异保留原状。范围见[共享收纳专档](docs/暂存物资并入共享收纳工作台-调研与施工方案-2026-09-12.md#109-正式部署与收尾证据)，完整身份见 [runtime-build-reproducibility.md](docs/runtime-build-reproducibility.md)。<br>**上一正式发布**：release source commit `a64d00d93e59bce5178bbfe02155dc24ac459ca3`（2026-09-12；tag `runtime-build-v2/20260912-native-menus-tooltip-v3`）。NPC 菜单与共享物品注释迁移、滚动/避让/闪烁修复已完成人验、40/40 production policy、双 signer / 双 faultDomain 与原子 promotion，状态为 `HUMAN_ACCEPTANCE_PASSED / promoted`。正式入口核对启动身份和正常关闭，22 项存档 JSON 不变；未重跑部署后的菜单/注释业务，不称专项 `standard_entry_verified`。范围见[迁移 ADR](docs/NPC菜单与原生注释迁移-ADR-2026-09-12.md)，完整身份见 [runtime-build-reproducibility.md](docs/runtime-build-reproducibility.md)。<br>**上一正式发布**：release source commit `c59f751adce6adba61b2b37550cdcf80f229e71f`（2026-09-12；tag `runtime-build-v2/20260912-focus-report-recovery-v2`）。报告首次打开有限重试、WebView 崩溃分级恢复、结算实话提示与焦点/诊断包证据增强已通过 40/40 production policy、双 signer / 双 faultDomain 和原子 promotion，状态为 `promoted / FIELD_REVALIDATION_PENDING`。真实存档候选旅程在 Flash 启动握手前超时，测试槽已恢复；原黑屏、走门/传送与焦点手感待测试员正式入口复验，不称本轮人验通过或 `standard_entry_verified`。完整身份见 [runtime-build-reproducibility.md](docs/runtime-build-reproducibility.md)，功能与边界见[焦点诊断 §9.15](docs/焦点管理-诊断与卡顿排查-2026-05-24.md#915-2026-09-12结算报告打开竞态的有界重试与-webview-进程失败证据链)。<br>**上一正式发布**：release source commit `0a95722dd5a213272f86b4caea2b0a89fca1de9b`（2026-09-12；tag `runtime-build-v2/20260911-reward-stash-v2`）。统一奖励暂存、非阻塞交付/结算/开箱、战备箱组件复用与纯读角标已完成人验、双 signer / 双 faultDomain、40/40 production policy 和原子 promotion，状态为 `HUMAN_ACCEPTANCE_PASSED / promoted`。正式入口只核对进程身份与正常退出，业务旅程未重跑；4096 件极端库存完整保存仍有秒级停顿。完整身份见 [runtime-build-reproducibility.md](docs/runtime-build-reproducibility.md)，功能和限制见[暂存 ADR](docs/统一奖励暂存与非阻塞领取-ADR-2026-09-11.md)。<br>**上一正式发布**：release source commit `85b168e35222f1e2a750ce89481f3aa416a73467`（2026-09-11；tag `runtime-build-v2/20260911-task-delivery-single-return-v1`）。任务交付原生选择、单次返回与到达确认、奖励恢复、彩蛋隔离、小头像补齐及结算后走门黑屏修复已完成有效项目人验、双 signer / 双 faultDomain、40/40 production policy 和原子 promotion，当前为 `HUMAN_ACCEPTANCE_PASSED / promoted`。部署后正式入口仅完成完整性检查，不称业务 `standard_entry_verified`；撤销用例和可恢复日志观察保留原边界。完整身份见 [runtime-build-reproducibility.md](docs/runtime-build-reproducibility.md)，功能见[关卡结果 ADR §0E](docs/关卡结果与基地结算-CSharp-Web-ADR-2026-08-27.md#0e-2026-09-11-明确任务选择单次返回与到达确认隔离候选)。<br>**上一正式发布**：release source commit `e7ebac32c27060210fd9331336c89800e1ff0030`（2026-09-10；tag `runtime-build-v2/20260910-quest-progress-stage-return-v2`）。任务经验/技能点左下播报与大学选关返回已完成双 signer / 双故障域共识、40/40 production policy 和原子 promotion。任务播报为 `HUMAN_ACCEPTANCE_PASSED / promoted`；正式入口交付、存档重启与大学/车库返回旅程待复验，不称 `standard_entry_verified`。完整身份见 [runtime-build-reproducibility.md](docs/runtime-build-reproducibility.md)，功能边界见[问题 4/5 记录](docs/已知问题登记-2026-09-09.md)。<br>**上一正式发布**：release source commit `95a41aca97fd77fd173113a4c23e25db2f376b07`（2026-09-10；tag `runtime-build-v2/20260910-alt-menu-guard-v1`）。裸 Alt 菜单防护与 Flash 嵌入菜单清理已完成双 signer / 双故障域共识、40/40 production policy 和原子 promotion，当前为 `promoted / FIELD_REVALIDATION_PENDING`。正式入口裸 Alt / F10、系统组合键与全屏往返仍待真机复验，不称原事故已唯一根治或本专项 `standard_entry_verified`。完整身份见 [runtime-build-reproducibility.md](docs/runtime-build-reproducibility.md)，功能与回归边界见[焦点诊断 §9.14](docs/焦点管理-诊断与卡顿排查-2026-05-24.md#914-2026-09-10裸-alt-菜单防护与嵌入菜单清理)。 **上一正式发布**：release source commit `b05a84ee7633779edd42baa93089006557624149`（2026-09-10；tag `runtime-build-v2/20260910-stage-select-diorama-v2`）。废城三维试点、全地图双栏详情、通关后图标情报、玩家游览与开发取景已完成双 signer / 双故障域共识、40/40 production policy 和原子 promotion，当前为 `promoted / FIELD_REVALIDATION_PENDING`；快捷出战、镜头手感、二维页详情及真实通关后保存/重启回读待玩家正式入口复验，不称业务 `standard_entry_verified`。完整身份见 [runtime-build-reproducibility.md](docs/runtime-build-reproducibility.md)，功能、验证和反馈清单见[选关迁移说明](docs/选关界面-webview迁移路线图.md)。上一理发店网格与共享外观服务的验收范围保持原记录，见[理发店网格说明](docs/理发店目录图标网格与共享外观服务动效-2026-09-08.md)。选关前台交接、返回重试与地图中途撤退的既有结论保持原范围，见[焦点诊断 §9.13](docs/焦点管理-诊断与卡顿排查-2026-05-24.md#913-2026-09-08选关关闭前的前台交接)、[关卡结果 ADR §0C/§0D](docs/关卡结果与基地结算-CSharp-Web-ADR-2026-08-27.md)；地图工作台第二阶段见[两阶段记录](docs/地图工作台与CSharp收束-两阶段施工-2026-09-06.md)。
+**授权先于计划。** 仅执行用户已授权的范围；接班包、历史回执、lease 都不授予新权限。
+保留他人修改与真实存档。不擅自 commit/push、发布、清理工作树、安装/消费外部服务或操作凭据。
+已授权、可逆且边界清楚的工作继续推进；只因新权限、不可逆动作、产品取舍或必要的人类感官验收中断，
+不为形式上的重新确认打断用户。详见 [人类注意力约束](agentsDoc/human-care.md)。
 
-焦点诊断默认关闭；测试员设置根 `config.toml` 的 `diagFocusTrace = true` 后重启即可持续录制并在正常退出时自动打包，专用 CMD 保留为临时启动/途中采集入口。边界见 [焦点诊断 §9.12](docs/焦点管理-诊断与卡顿排查-2026-05-24.md#912-2026-09-07配置化持续录制与固定容量保留)。启停录制复验不证明原焦点故障已根治，真实关卡失灵仍为 `FIELD_REVALIDATION_PENDING`。前一 R1 列车仍待合并后的正式入口业务复验，边界见 [R1 收尾记录](docs/R1存盘API迁移收尾-2026-09-05.md)，不称 R1 专项 `standard_entry_verified`。
+**证据不升级。** 源码成立、候选构建、实际运行、专项体验和正式部署是不同结论。
+保留 `compiled → candidate_built → candidate_executed → e2e_verified → promoted → standard_entry_verified`
+的术语边界；箭头不是可跳过证明的自动状态机。候选运行要绑定实际路径、identity 与 closure；
+`build.ps1` 至多说明候选已构建。发布不证明某业务已在标准入口复验；旧回执不证明新工作树或现役 runtime。
+[发布状态与证据](docs/runtime-build-reproducibility.md#evidence-states) 是说明入口，机器身份仍读对应 manifest/consensus。
 
-**状态边界**：W/B0 窗口生命周期根治与 A/A1 Reward 根事务 + S/O1 观测均保持 `HUMAN_ACCEPTANCE_PASSED / promoted`，部署后未从正式入口重跑各自业务旅程，不称对应专项 `standard_entry_verified`。loot 车道观测列车（堕落城深处奖励数据修复与主线 39 解锁、开箱拒开 toast、O1 tuple 扩展 `lootLane` / `rewardInboxActive`）已完成自动门、双故障域共识、原子 promotion、部署推送与 post-promotion Audit，当前准确状态为 `promoted / FIELD_REVALIDATION_PENDING`。Reward 存盘风暴止血列车（durable-cut 桥接 2N+1→N+1、pending 混合投影三层封死、语义 fault-cut、F5 清理、K 店 durable finality、材料字典 provenance 重绑定）已完成自动门、双故障域共识、原子 promotion、部署推送与 post-promotion Audit，当前准确状态为 `HUMAN_ACCEPTANCE_PASSED / promoted`：测试员已于正式入口复验收件箱连领、连续开箱与 K 店 checkout/claim 并确认无异常（限定旅程业务复验通过，不外推完整产品 `standard_entry_verified`）；该列车自动门证据与后续路线（R1 分层 19 步 / R3a / R3b）见 [存盘风暴止血 ADR](docs/存盘风暴止血-Reward相邻durable-cut桥接与存盘次数回归门-ADR-2026-09-03.md)。SafeExit Arm 门控真序列（EXIT_CONFIRM 只认本轮 sv:1→sv:2）与 ArchiveTask shadow 有序化（单 FIFO、墓碑同门、基线只在成功写后更新，R3a）列车已完成自动门、双故障域共识、原子 promotion、部署推送与 post-promotion Audit，当前准确状态为 `HUMAN_ACCEPTANCE_PASSED / promoted`：测试员已于正式入口回归安全退出保存流程与高频存盘下读档核对并确认有效（限定旅程业务复验通过，不外推完整产品 `standard_entry_verified`）。K 店 legacy 待领取原子批收尾 shopClaimBatch 全链（Host Fresh/ReplayOnly、wire v1 行指纹、全或无 {0,K}）与 itemUseOpenMany 多包原子开礼包全链（K roll/K append/一次扣 K/一个 receipt/一次 fence）列车已完成自动门、双故障域共识、原子 promotion、部署推送与 post-promotion Audit，当前准确状态为 `HUMAN_ACCEPTANCE_PASSED / promoted`：测试员已于正式入口回归 K 店列表/单领/批量与礼包单开多开并确认有效（限定旅程业务复验通过，不外推完整产品 `standard_entry_verified`）。完整状态见 [止血治理 ADR](docs/AS2-WebPanel止血治理-窗口生命周期与Reward根事务-ADR-2026-09-01.md) 与 [runtime-build-reproducibility.md](docs/runtime-build-reproducibility.md)。
+**持久写与未知结果。** 改存档、库存、奖励、交易或退出链前，读取对应权威与恢复合同。
+超时/畸形成功/DeliveryUnknown 不等于未执行，不得盲重放；不得用 UI 投影、关窗或换会话解除未知写锁。
+不拿真实玩家槽位做试写，不以旧备份覆盖已有差异。
+[持久化验证](agentsDoc/testing-guide.md#save)；[跨层权威](agentsDoc/as2-web-panel-migration.md#authority-core)。
 
----
+**AS2 / Flash。** 写 AS2 前读 [反幻觉约束](agentsDoc/as2-anti-hallucination.md)。`.as` 保持 UTF-8 BOM，
+新建优先复制现有文件再改名；不混入 AS3/JavaScript 假定。只用真实 Flash CS6 GUI 编译，不手工改 SWF。
+目标按归属选择：逻辑注入 `-Target publish`；测试 `-Target test`；确属主 XFL 才 `-Target main`；
+独立资源指定 `-Target <xfl> -PublishOnly -VerifySwf <对应.swf>`，不能让活动文档或 main 兜底。
+marker 只结束等待，不证明编译成功；要求本轮新鲜 Compiler `0/0` 和目标对应证据。
+publish 模式不出 trace 属正常；TestLoader 必须有本轮 suite 行为证据，Output Panel 副本不能称 trace。
+编译锁、scratch 恢复、异常 marker 不得靠删除锁或备份绕过。
+执行前读 [编译验证](agentsDoc/testing-guide.md#as2) 和 [CS6 操作](scripts/FlashCS6自动化编译.md)。
 
-## 硬约束（最高优先级）
+**正式 runtime 是独立授权路径。** 文档/数据/Flash/XFL/Web-only 改动不自动触发 runtime 发布；native source-ahead 也不等于必须部署。
+只有部署闭包变更且获得发布授权才走 immutable request、受控源码 tag、local X509 与真实独立故障域 builder、
+同 identity/closure 双 signer 共识、strict v2 policy receipt 和唯一 promotion writer。
+禁止复制密钥/伪造独立 builder、v2 失败退回 v1、候选目录直拷正式 runtime 或绕过 tag/ruleset。
+通用 supply-chain promotion 不借 Audio H1/H2/E3、截图/听感或 emergency-release 解锁；实际影响 DLL 的输入仍进入闭包。
+操作从 [发布协议](docs/runtime-build-reproducibility.md#release-protocol) 开始。
 
-- **人类注意力与工程效率宪法**：在授权、安全与真实性不退让的前提下，以减少人类同步负担、缩短真实交付关键路径为第一原则；已授权、范围内且可恢复的机器工作默认无人值守继续。只有新权限、不可逆外部动作、实质产品取舍或不可替代的人类感知才可打断；不得把 human-care 变成状态机、receipt、逐字 acceptance 或发布门。完整边界见 [human-care.md](agentsDoc/human-care.md)
-- **编译限制**：AS2 的实际编译仍只能由 Flash CS6 GUI 完成；在已运行 `scripts/setup_compile_env.bat`、已打开 TestLoader 的前提下，可通过 `scripts/compile_test.ps1` / `scripts/compile_test.sh` 做**有限自动化 smoke 验证**并读取 trace / Output Panel 副本。**当前链路仍在迭代期**，不要把 `publish_done.marker` 单独当作成功依据；没有新鲜 trace、输出日志或 IDE 复核时，不要笼统声称“已编译通过”
-- **Flash 目标归属**：不要把“改了 `.as`”或“改了 Flash 资产 XML”直接等价为编主文件。默认频率 / 优先级是 `asLoader`（业务逻辑注入，最高频）→ `TestLoader`（闭环调试 / 测试）→ `main`（只代表 `CRAZYFLASHER7MercenaryEmpire` 主 XFL）。独立 UI / 关卡 / 素材库 XFL（如 `flashswf/UI/*/*.xfl`）必须直接 `-Target <xfl> -PublishOnly -VerifySwf <对应.swf>`；选择 `-Target main` 必须能说明触及主文件层
-- **`.as` 编码**：必须 **UTF-8 with BOM**；新增 / 重建用“复制现有 `.as` → 改名”保留 BOM（见 [as2-anti-hallucination.md](agentsDoc/as2-anti-hallucination.md) §0）
-- **SWF**：禁止手动编辑；`scripts/asLoader.swf` 达到可用节点时可提交，其他 SWF 完成功能后封档上传
-- **Launcher 二进制发布**：`launcher/build.ps1` 只是 prepare → pure producer → policy 的本地兼容编排器，不具备发布权。正式发布须冻结 immutable Git-tree request，由通过 `tools/check-runtime-build-env.ps1` 的注册本地 X509 worker 与另一真实 faultDomain（推荐 GitHub hosted OIDC/Sigstore）分别生成同一 build identity / payload closure；GitHub hosted source tag 必须由 API、workflow `GITHUB_SHA` 与 run `headSha` 三重绑定到 requested commit，并由无 bypass 的 tag update/deletion ruleset 冻结。至少两个不同 signer + faultDomain、production policy receipt 与 v2 strict verifier 全通过后，才准用 `tools/promote-runtime-bundle.ps1 -RequestId ...` 原子写 bootstrap、`runtime/`、manifest 与 signed consensus。正式部署现已进入 v2；v1 与一次性 migration marker 只保留为历史审计输入，任何 v2 → v1 降级都必须失败。禁止自由文本 ID 冒充 builder、复制私钥、伪造证明或把单机 candidate 复制到 runtime；完整流程见 [runtime-build-reproducibility.md](docs/runtime-build-reproducibility.md)
-- **发布门分层**：通用 runtime promotion 只承载 supply-chain/部署完整性，不得读取 Audio H1/H2/E3、截图、听感或其他产品体验证据，也不得为体验 `pending` 创建 emergency 旁路状态机。功能专项证据只决定对应功能能否声称 `e2e_verified` / `standard_entry_verified`；真正影响 DLL 的 source/recipe/toolchain 仍必须进入 immutable request 与双构建闭包。
-- **Launcher 验收术语**：统一使用 `compiled → candidate_built → candidate_executed → e2e_verified → promoted → standard_entry_verified`；`launcher/build.ps1` 最多到 `candidate_built`，候选执行 / E2E 必须绑定实际进程路径、build identity 与 payload closure。F8 正式 release tag `runtime-build-v2/20260731-agent-runtime-wings-f8-v1` / request `A9B33601805709DBB5EAE6DAF312C2B7B0B502096FDD3BDCEA9CBE26D8B1299C` 已由本地 X509 `physical-host-a` 与 GitHub OIDC/Sigstore `github-hosted-windows` 对 identity `0F4C92F237ABD7785C957F3CD135ABF2EFB1EB5D9AB5671B869F39D00970675C` / closure `54FBCCBA7C90ACF407B09E38FFB874C13DE3CDFB80CF62D0F8D4E239A42962F0` 达成共识并 promotion；随后无 candidate id 的正式入口以纯 Agent Runtime MCP 完成可见帮助面板、可信 shutdown 与无新增残留差量复验，严格达到 `standard_entry_verified`。该结论仍只覆盖单屏、Flash metadata-only、Launcher/NativeHud/WebOverlay WGC 与 `panel.open`，不外推为物理双屏、“13/13”、Flash pixels/input、Hair 或 Wings 完整产品验收。F8 早期隔离 candidate 的 `e2e_verified / NOT_DEPLOYED` 与 F7 C1 的 `candidate_built / NOT_DEPLOYED` 继续作为历史节点；完整证据契约见 [testing-guide.md](agentsDoc/testing-guide.md)
-- **主线准入**：所有 write collaborator（含 `Crazyfs`、`Flash-Night`）保留现有客户端 fast-forward 直推，不要求 PR、CODEOWNER 或 required Actions check。普通 docs/data/Flash/XFL/Web-only 不触发 runtime workflow；native 源码 push 后 Audit 可成功报告 `source-ahead`，只有根 EXE、`runtime/**`、manifest/consensus 等部署闭包变化却缺少完整 v2 promotion 时才事后失败报警。远端只保留无 bypass 的 `main` 删除/non-fast-forward 禁令、授权发布者 source-tag creation 与无 bypass tag immutability 三条零 Actions ruleset；GitHub Free 公开仓库没有本方案可用的服务端 path push restriction，Actions 不能撤销已进入 `main` 的提交。正式 release 仍必须本地 X509 + GitHub Hosted OIDC/Sigstore 双 signer、双 faultDomain，无第二人在线前置；完整边界见 [contribution-workflow.md](docs/contribution-workflow.md)
-- **XFL / FLA 治理**：FLA 施工后跑 [scripts/tools/xfl/](scripts/tools/xfl/) 三件套（audit / rename_a_class / fix_includes）+ 重扫 [tools/linkage_scanner/scan_linkage.py](tools/linkage_scanner/scan_linkage.py)；linkageId 撞车类冲突一律人工 CS6 修，工具不动；FLA 出现「轴歪 + 编辑闪退 + 无法另存 XFL」三件套查 [FLA-rigPropagationMatrix-溢出导致元件不可编辑.md](scripts/优化随笔/FLA-rigPropagationMatrix-溢出导致元件不可编辑.md)；确定性 XFL / JSFL 装配按 [art-asset-assembly.md](agentsDoc/art-asset-assembly.md) 的已验证操作执行；通用工具投资见 [XFL 长期路线](docs/xfl-agent-工具栈-长期路线-2026-05-24.md)，不以工具层级或等待月份限制已授权任务；新增素材库 XFL 需通过 `flashswf/arts/things-new.fla` 作为挂载入口注入，完成功能后重新发布 `things-new.swf`
-- **终端编码**（PowerShell）：运行命令前先执行 `chcp.com 65001 | Out-Null`，避免 GBK 乱码
-- **Unicode 直写**：代码字符串字面量、注释中直接使用 UTF-8 中文字符；除非目标语境明确要求转义（如协议样例、规范文本或必须 escape 的格式），不要写 `\uXXXX` Unicode 转义
-- **可直接修改**：`data/`、`config/` 下 XML（重启生效）
-- **验证矩阵**：不要在本文件背命令清单；统一看 [testing-guide.md](agentsDoc/testing-guide.md)
-- **协作约束**：commit 标题必须全中文（允许保留 `docs:` 等类型前缀），写清改了什么、测试员需要回归什么；`git worktree` 非必要不新建、用后必清理、残留必报告。细则见 [contribution-workflow.md](docs/contribution-workflow.md) 的"提交信息约定"与"worktree 使用纪律"两节
-- **不提交**：`node_modules`，以及未受版本化生成器、manifest 逐文件引用、完整性验证与体积审计共同约束的大型二进制/临时证据。确属游戏运行时且进入上述可复验闭包的正式素材（例如 dressup、portrait 发布资产）是显式例外；`tmp/` 候选、联系表、模型缓存和可由闭包重建的中间产物仍不得借此入库
-- **文档同步规则**：凡是路径迁移、协议变更、测试入口变更、构建门槛变更、新子栈引入 / 淘汰，同轮同步更新对应 canonical doc，并运行 `node tools/validate-doc-governance.js`
-- **协作元约束**：任务粒度、subagent 边界、无人值守执行与验证成本统一看 [agent-harness.md](agentsDoc/agent-harness.md)；人类注意力、同步打断与流程防腐统一看 [human-care.md](agentsDoc/human-care.md)
+**资产与工程边界。** XFL 改名/引用先用审核、rename_a_class、fix_includes 和 linkage 扫描工具；碰撞按专题要求由真人 CS6 处理。
+坐标歪斜、编辑崩溃、无法保存 XFL 先查 [rigPropagationMatrix 故障](scripts/优化随笔/FLA-rigPropagationMatrix-溢出导致元件不可编辑.md)。
+资源唯一编辑源与确定性装配见 [美术装配](agentsDoc/art-asset-assembly.md)；新增库资源走其 things-new 源链。
+asLoader 可在获授权的可用节点交付；其他 SWF 按最终归档/上传边界交付，均不自动授予提交权限。
 
----
+PowerShell 先 `chcp.com 65001`；文本直接用 UTF-8 中文，不无故改成 Unicode 转义。
+仅改数据/配置 XML 通常重启，不据此重编 SWF；修改生成输入后先执行对应生成器及 `--check`。
+不提交 node_modules、临时文件或无治理的大型派生物；运行资源例外必须有生成、manifest、完整性和体积审计。
+提交说明用中文并给回归提示；获授权的合作者直推规则以 [贡献流程](docs/contribution-workflow.md) 为准，不额外强制 PR。
+规范随相关施工同批修正，运行文档巡检；不把历史收据追加到本入口。
 
-## Context Packs（按任务最小加载，最后核对 commit `c1e51dd1e8dba6bf72452cfef3af8b6f09b36acf`）
+## 按任务读取
 
-先判定**主责子栈**，再只读对应文档；跨栈任务先跟主责子栈走，再按依赖补读。
+本仓是 AS2/Flash CS6 核心与 C# Host、WebView2、TypeScript/V8、Rust、PowerShell 共存工程。
+**只读命中的路线和条件扩展；找到改动归属、权威入口、验证办法与失败恢复后停止扩读。**
+已有明确源文件的局部修复直接进入其路线；跨界才升级，不按链接递归遍历全仓。
 
-- **美术资产 / XFL 装配**：现实原型导入、装备尺度、注册点、分件换皮或素材库装配先读 [art-asset-assembly.md](agentsDoc/art-asset-assembly.md)，再按其中路由调用度量衡、换皮预览与 XFL 治理工具
-- **AS2 / Flash CS6**：先读 [as2-anti-hallucination.md](agentsDoc/as2-anti-hallucination.md) + [testing-guide.md](agentsDoc/testing-guide.md)；按需补 [FlashCS6自动化编译.md](scripts/FlashCS6自动化编译.md)（有编译 / smoke 验证 SWF 需求时即补读）、[coding-standards.md](agentsDoc/coding-standards.md)、[as2-performance.md](agentsDoc/as2-performance.md)、[game-systems.md](agentsDoc/game-systems.md)、[asLoader-README.md](docs/asLoader-README.md)（asLoader 启动序列 / 单帧塌缩 + BootSequencer 任务）；装备生命周期脚本（新增 / 改装备）见 [装备函数 README](scripts/逻辑/装备函数/README.md)
-- **AS2 UI → Web / NativeHud 迁移**：盘点、估算、排期或接续施工先查[剩余迁移台账](docs/AS2-UI迁移剩余清单与难度评估-2026-09-12.md)的包 ID、在途项与专项来源；技术边界读 [as2-web-panel-migration.md](agentsDoc/as2-web-panel-migration.md) + [launcher/README.md](launcher/README.md) + [testing-guide.md](agentsDoc/testing-guide.md)，记账规则见 [documentation-governance.md](agentsDoc/documentation-governance.md) §6；按需补主责子栈文档
-- **XML / 数据与游戏设计**：先读 [data-schemas.md](agentsDoc/data-schemas.md)；按需补 [game-design.md](agentsDoc/game-design.md)、[testing-guide.md](agentsDoc/testing-guide.md)、`0.说明文件与教程/`；**武器 / 技能数值平衡**以 [balance 落盘与复现契约](tools/cf7-balance-tool/docs/agent-balance-record-design.md) 为入口，具体取值查 [武器平衡规则表](tools/cf7-balance-tool/docs/weapon-balance-rulebook.md)；公式最高权威仍是注明的 XLSX，仓库工具只作派生计算与辅助验证
-- **Launcher Host（C# / WinForms / WebView2 / Bus）**：先读 [launcher/README.md](launcher/README.md) + [architecture.md](agentsDoc/architecture.md)；原生音频引擎、格式能力、桥接或真实端点验证施工/评审另读 [Audio Platform v2 ADR](docs/原生音频平台-v2-格式能力桥接契约与可观测性-ADR-2026-08-09.md)；玩家信息 NativeHud 的 SVG 真源/渲染基座施工另读 [PlayerInfo B0 专项 ADR](docs/玩家信息界面-NativeHud-SVG真源与程序化动效-B0-ADR与分片施工计划-2026-07-28.md)；CF7 Agent Runtime / Wings Network 有施工、协议评审或范围变更时必读 [一期范围冻结 ADR](docs/CF7-Agent-Runtime与Wings-Network一期-范围冻结-ADR-2026-07-30.md)；按需补 [coding-standards.md](agentsDoc/coding-standards.md)、[testing-guide.md](agentsDoc/testing-guide.md)、[tech-stack-rationalization.md](docs/tech-stack-rationalization.md)、[cfn-cli.sh](tools/cfn-cli.sh)
-- **Launcher Web / Minigames**：先读 [launcher/README.md](launcher/README.md) + [testing-guide.md](agentsDoc/testing-guide.md)；按需补 [architecture.md](agentsDoc/architecture.md)、[launcher/perf/README.md](launcher/perf/README.md)（Web overlay 性能优化：消融测试 harness，含施工记录 [docs/web-overlay-perf-A-tier-施工-2026-04-25.md](docs/web-overlay-perf-A-tier-施工-2026-04-25.md)）、`launcher/web/modules/minigames/*/README.md`、`launcher/web/modules/minigames/*/dev/harness.html`
-- **Automation / Build / Verification**：先读 [automation/README.md](automation/README.md) + [testing-guide.md](agentsDoc/testing-guide.md)；远程 H3 视频生成 / 回收另读 [H3 Remote Video Pipeline](tools/h3-remote-video-pipeline/README.md)；发布 Launcher runtime 时必读 [runtime-build-reproducibility.md](docs/runtime-build-reproducibility.md)；按需补 [FlashCS6自动化编译.md](scripts/FlashCS6自动化编译.md)（有编译 / smoke 验证 SWF 需求时即补读）、[launcher/README.md](launcher/README.md)、[cfn-cli.sh](tools/cfn-cli.sh)
-- **协作 / 任务粒度 / harness**：先读 [agent-harness.md](agentsDoc/agent-harness.md) + [human-care.md](agentsDoc/human-care.md)；按需补 [self-optimization.md](agentsDoc/self-optimization.md)
-- **文档治理 / 会话归档**：先读 [documentation-governance.md](agentsDoc/documentation-governance.md) + [self-optimization.md](agentsDoc/self-optimization.md)；按需补 [tech-stack-rationalization.md](docs/tech-stack-rationalization.md)、[shared-notes.md](agentsDoc/shared-notes.md)、[README.md](README.md)
+### AS2 逻辑、战斗与输入
 
----
+先 [反幻觉约束](agentsDoc/as2-anti-hallucination.md) → [AS2 验证](agentsDoc/testing-guide.md#as2)。
+热路径再读 [性能](agentsDoc/as2-performance.md)，初始化/跨 SWF 再读 [加载时序](agentsDoc/as2-load-timing.md)；
+涉及游戏系统/代码约定才读对应 [系统](agentsDoc/game-systems.md) / [编码](agentsDoc/coding-standards.md) 章节。
+进入持久写或 Host/Web 命令时追加跨层路线。
 
-## 文档边界
+### 数据、数值与派生物
 
-- [AGENTS.md](AGENTS.md)：只写路由、硬约束、触发器
-- [README.md](README.md)：人类维护者总览
-- [agentsDoc/architecture.md](agentsDoc/architecture.md)：系统拓扑 canonical doc
-- [agentsDoc/art-asset-assembly.md](agentsDoc/art-asset-assembly.md)：美术导入、尺度与注册点、装配工具路由 canonical doc
-- [agentsDoc/testing-guide.md](agentsDoc/testing-guide.md)：验证矩阵 canonical doc
-- [agentsDoc/as2-web-panel-migration.md](agentsDoc/as2-web-panel-migration.md)：AS2 UI → Web Panel 迁移护栏 canonical doc
-- [agentsDoc/agent-harness.md](agentsDoc/agent-harness.md)：Agent 协作与任务粒度 canonical doc
-- [agentsDoc/human-care.md](agentsDoc/human-care.md)：人类注意力与工程效率宪法 canonical doc
-- [launcher/README.md](launcher/README.md)：Launcher 子系统 source of truth
-- [docs/tech-stack-rationalization.md](docs/tech-stack-rationalization.md)：技术栈保留 / 收敛决策
+先 [数据格式与归属](agentsDoc/data-schemas.md#data-entry) → [数据验证](agentsDoc/testing-guide.md#data)。
+数值/配方/成长调整追加 [游戏设计](agentsDoc/game-design.md) 对应规则与其工作簿来源；不把派生 XML 覆盖公式权威。
+生成器/sidecar/闭包改动追加 [派生物验证](agentsDoc/testing-guide.md#derived)。
 
----
+### Web 局部界面与跨层面板
 
-## 维护触发器
+已有面板的布局/样式/交互：先 [Panel 注册与脚本归属](launcher/README.md#panel-registry) → [Web 验证](agentsDoc/testing-guide.md#web)；
+布局合同、焦点、CSS 治理、状态与动效归 [工作台对应合同](agentsDoc/workbench-ui-system.md#ui-core) 命中节（纯 CSS 修复也在其范围），不读整份迁移 backlog。
+新增命令、改身份/数据权威/打开关闭/未知写恢复：先 [跨层核心](agentsDoc/as2-web-panel-migration.md#authority-core)
+→ [跨层验证](agentsDoc/testing-guide.md#cross-layer)，再读该命令域；变更迁移范围时读取并在自然收口更新
+[迁移剩余清单](docs/AS2-UI迁移剩余清单与难度评估-2026-09-12.md)，不把整份清单当每次 CSS 修复的前置。
 
-以下变化发生时，不允许只改代码不改文档：
+### Host、启动、通信与自动化
 
-- 目录迁移或入口文件移动
-- C# / Web / AS2 / CLI 协议变更
-- 测试或验证入口变更
-- 构建链路、依赖版本门槛、运行前置条件变更
-- 新子栈引入，或旧子栈停止扩张 / 废弃
+先 [源码职责](launcher/README.md#source-map) / [自动化入口](automation/README.md)
+→ [Host 验证](agentsDoc/testing-guide.md#host)。进程、通信或存档所有权不明确时再读
+[架构职责链](agentsDoc/architecture.md#runtime-chains)。仅显式部署任务进入发布路线。
 
-触发后按 [documentation-governance.md](agentsDoc/documentation-governance.md) 更新 canonical doc，并运行 `node tools/validate-doc-governance.js`。
+### 美术 / XFL / 图标 / 头像
+
+先 [美术装配](agentsDoc/art-asset-assembly.md) → [美术验证](agentsDoc/testing-guide.md#art)。
+仅实际编译时追加 CS6；仅头像生产/推广时追加其 campaign、真人回执和消费者闭包，不套给普通载具绘制。
+
+### 存档、现场故障与专项资格
+
+存档/奖励/退出先 [持久化验证](agentsDoc/testing-guide.md#save)；现场焦点/卡顿先
+[诊断边界](agentsDoc/testing-guide.md#diagnostics)。不因本机不能复现而删除现场证据，也不让探针自动修复故障。
+音频、NativeHUD、PlayerInfo B0、F8、长时斗兽或头像 campaign 只在命中该专项时读
+[专项资格](agentsDoc/testing-guide.md#specialized)，其旧阈值不泛化成全项目流程。
+
+### 文档、协作与接班
+
+文档整顿先 [文档治理](agentsDoc/documentation-governance.md) → [文档验证](agentsDoc/testing-guide.md#docs)。
+协作/任务拆分读 [Agent harness](agentsDoc/agent-harness.md) 和 [human-care](agentsDoc/human-care.md)；
+自然收口时按 [经验沉淀](agentsDoc/self-optimization.md) 更新唯一真源，不建立额外日常打卡/回执制度。
+
+## 文档地图
+
+`AGENTS.md` 负责路由和短硬约束；`agentsDoc/` 保留专题当前合同；工具 README 负责准确命令；
+`docs/` 保存 ADR、调查与历史证据。`testing-guide.md` 是选择矩阵，`testing-details.md` 是按需验证正文。
+同一正文可以有多个任务入口；调用方写触发条件、目标章节和停止条件，不再要求无条件读回入口。
+机器可给出的身份、注册表、枚举、产物计数不在此复制维护；规则冲突回到源码/机器真源与具体授权，显式报告范围。

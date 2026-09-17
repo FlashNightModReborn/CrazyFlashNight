@@ -11,7 +11,31 @@
 
 2026-07-29 的 B7 施工从 commit `c96f4c3d750561022b706c72a4d53050431e627d` 起步；2026-07-30 的历史 cut 又删除仓库、装备、NPC 商店、合成与技能教师的 legacy renderer/fallback，并收口 main XFL 可达闭包。该 cut 与 2026-08-06 A1–A6 release 的 immutable tag、双故障域 quorum、promotion、成功与失败标准入口证据全部保留，但均已被上方 2026-08-08 release supersede；旧纵切没有执行 Character、Materials、Intelligence、PlayerInfo、业务 preview/commit、普通 panel close 或持久化专项旅程，本次 Help smoke 也不补齐这些业务范围。
 
-本文用于所有“旧 Flash / AS2 UI 迁移到 Launcher WebView2 panel”的任务。它不是普通前端开发指南，而是跨 AS2、C# 总线、Web panel、Flash CS6 编译链的稳定性护栏。凡迁移旧 UI、替换运行态入口、扩展 panel 协议、把 dev harness 推向生产，都必须先读本文。
+本文用于所有“旧 Flash / AS2 UI 迁移到 Launcher WebView2 panel”的任务。它不是普通前端开发指南，而是跨 AS2、C# 总线、Web panel、Flash CS6 编译链的稳定性护栏。是否必须先读本文按任务命中条件判定，见下节权威核心；“凡迁移旧 UI、替换运行态入口、扩展 panel 协议、把 dev harness 推向生产都必须整份通读本文”的无条件口径不再成立。
+
+<a id="authority-core"></a>
+## 权威核心：何时必读本文
+
+命中下列任一条件时，必须先读本文对应章节再动手：
+
+- 新增或修改跨层命令：Web cmd、C# action、AS2 handler 或 response task 任一环节，包括命令的 schema、身份字段与协议版本。
+- 改变面板打开 / 关闭 / rebind 生命周期、暂停租约、exact owner 与 `panelInstanceId` 边界。
+- 改变数据所有权、写锁、lease / token / revision 语义，或未知写（`needs_reconcile`）的判定与恢复路径。
+- 迁移旧 UI、替换运行态入口、把 dev harness 推向生产，或退休原有入口 / renderer / fallback。
+
+不命中上述条件的纯 CSS / 布局 / 文案修复不强制通读本文，走 [workbench-ui-system.md 核心入口](workbench-ui-system.md#ui-core) 与 [launcher/README.md 的 Panel 注册表](../launcher/README.md#panel-与-minigame-注册表)即可。
+
+命中后按下表精确下沉到既有章节；本表只是导航，不是第二份平行规范，规则正文仍以各章节为准：
+
+| 主题 | 既有章节 |
+|------|----------|
+| 命令闭环表与回包链 | [§2 迁移闭环表](#2-迁移闭环表)；契约唯一登记表见 [§2.4](#24-跨层契约与交互生命周期2026-07-22) |
+| owner、exact 实例与响应证明 | [§2 Inventory 通用 owner、未知写与响应证明](#inventory-通用-owner未知写与响应证明) |
+| 未知写三态写门与恢复 | 同上节；transport 生命周期 helper 见 [§2.4](#24-跨层契约与交互生命周期2026-07-22) |
+| 关闭语义与旧 Flash UI 副作用 | [§6 Close 与旧 Flash UI 副作用](#6-close-与旧-flash-ui-副作用) |
+| 数据权威与转录禁令 | [§7 数据权威与转录](#7-数据权威与转录) |
+| 新增 panel 的 C# / AS2 / Web 接入 | [§3 C# 接入清单](#3-c-接入清单)、[§4 AS2 接入清单](#4-as2-接入清单)、[§5 Web Panel 接入清单](#5-web-panel-接入清单) |
+| 验证门槛与 Launcher 状态术语 | [§8 验证门槛](#8-验证门槛) |
 
 **XFL 维护归属复核（2026-09-05；commit `4ae00a176265b7d00ea38364d545d29cbe601efa` 加 R1 工作树，整形于 2026-09-08 更新）**：改到历史库源码不等于需要刷新其 SWF。先核对 Host 派发、AS2 opener、主时间轴实例及共享导入，再选择编译目标；`pairRole=live`、linkage 登记和孤立命令定义不能证明正式入口可达。商城/战宠/任务/设置与物品工作台已走 Web；TABLET 仍派发 Flash `toggleTablet`，医务室整形已保留 AS2 入口并部署独立 Web 付费域（见下节），奖励物品共享库仍被 main 实例导入；玩家信息 NativeHud B0 不代表整座 Flash HUD 已退役。R1 的逐产物证据与收窄范围见 [收尾记录](../docs/R1存盘API迁移收尾-2026-09-05.md)。已由 Web 接管的旧按钮不应重新成为必须寻找的人工旅程；其他保留的源码 parity 与 shim 不因此删除。
 
@@ -649,9 +673,10 @@ Reward root 的 `pending/in_progress`、空 `error/stopReason` 表示健康 dura
 
 Host 收到经 sanitizer 验证、属于同一 binding/未知 root、且 revision 不低于 freshness watermark 的 `pending` query 时，须转发原始进度和真实 error；不能用通用 `reconcile_required` 覆盖健康进度，否则 Web 第二轮后会停止。允许转发不等于已消除未知状态：写栅栏、资产投影限制与关闭证明继续保留到 terminal；错误 root、过期回包、pending 混合资产投影及 detached 路径不能借此通过。`LootTaskTests.RewardInbox_Pending*` 覆盖多轮前缀、terminal、错误与拒绝分支；Host 的 request/reply 日志以 callId 关联，并记录 rootStatus/applied/error/forwarded，避免仅凭旧界面推断资产没写入。
 
-## 暂存物资的共享收纳适配（2026-09-12 工作树）
+## 暂存物资的共享收纳适配
 
-最后核对代码基线：commit `c1e51dd1e8dba6bf72452cfef3af8b6f09b36acf` 加本轮增量；尚未发布。
+本节冻结对象已完成正式部署：release source commit `c78cf257ff8e216c89c670c654202275391ddc47` / tag `runtime-build-v2/20260912-stash-shared-workbench-v2`，当前 `HUMAN_ACCEPTANCE_PASSED / promoted`，双 signer 共识、40/40 production policy 与原子 promotion 明细见[暂存 ADR §10.9](../docs/暂存物资并入共享收纳工作台-调研与施工方案-2026-09-12.md#109-正式部署与收尾证据)。
+正式入口只核对启动身份与正常关闭，部署后未重跑领取、保存重启等完整业务旅程，不称该业务 `standard_entry_verified`；该状态仅覆盖上述冻结对象，上游 HEAD 前移不自动升级本节暂存业务的验证状态。
 
 `stashPage` v2 可选对象 `filterSpec` 使用全局 facets 与 32 项窗口；省略保持旧响应，显式空值拒绝。`stashTake` v2 仅单项可带顶层背包 `target`，失败不自动换格，无目标旧请求指纹不变。库存 v1 的 `move/merge/autoTransfer/autoTransferBatch` 来源可选 `quantity`，不扩张目标、交换或丢弃权限。协议字段及验证边界以[本轮施工接口](../docs/暂存物资并入共享收纳工作台-调研与施工方案-2026-09-12.md#101-本轮授权与接口范围)为准。
 

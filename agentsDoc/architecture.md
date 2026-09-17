@@ -14,15 +14,15 @@
 **文档角色**：系统拓扑 canonical doc。  
 **最后核对代码基线**：release source commit `cda82e6e4128faf8664235e48b3ed0d84c14a553`（2026-08-29，装备调制最终态、不可用反馈与交换误报修复；deployment `43c8ad6ea23f677bcb2dd7d406e8024b831d93dc`）。
 
-当前正式 runtime 的身份、发布状态和专项验收只读 [runtime release consensus](../config/build/runtime-release-consensus.json)、[runtime manifest](../runtime/cf7-runtime-manifest.tsv)、[runtime build reproducibility](../docs/runtime-build-reproducibility.md)与[测试矩阵](testing-guide.md)。本架构文档不复制发布收据或历史测试数字；Audio H2 继续作为独立专项，不由通用 promotion 代签。
+当前正式 runtime 的身份、发布状态和专项验收只读 [runtime release consensus](../config/build/runtime-release-consensus.json)、[runtime manifest](../runtime/cf7-runtime-manifest.tsv)、[runtime 构建契约](../docs/runtime-build-reproducibility.md)与[测试选择矩阵](testing-guide.md#select)。本架构文档不复制发布收据或历史测试数字；Audio H2 继续作为独立专项，不由通用 promotion 代签。
 
 本项目当前应被理解为：**Flash 核心游戏 + Guardian Launcher Host + WebView2 UI + native / build tooling** 的本地多栈系统。
 
-选关聚焦使用共享 `stage-focus` 双栏：废城为建筑高亮/镜头特写，其余二维页提供同等简报/情报与出战区；真实胜利的可选 `clearHistory` 随现有 snapshot 透传，开发取景仅写本机视觉预设。当前协议、资产和验证入口见[选关施工范围](../docs/选关界面-webview迁移路线图.md#2026-09-09-废城固定镜头首版当前施工范围)。
+选关聚焦使用共享 `stage-focus` 双栏：废城为建筑高亮/镜头特写，其余二维页提供同等简报/情报与出战区；真实胜利的可选 `clearHistory` 随现有 snapshot 透传，开发取景仅写本机视觉预设。当前协议、资产和验证入口见[选关施工范围](../docs/选关界面-webview迁移路线图.md#2026-09-09-废城固定镜头首版当前发布范围)。
 
 ## 1. 总体分层
 
-2026-09-09 废城选关首版在既有 Web `stage-select` renderer 内增加固定镜头三维背景与稳定 ID 投影，DOM/现有 ViewModel 继续负责名称、状态和操作，AS2/Host 权威不变。Three r180 与基础 C GLB 从本地 Web 资源按需加载，和军阀三维依赖隔离；仅缓存一座城市、静止不持续绘制、本页不提供 2D 回退。具体当前范围与资源再现入口见[选关路线图](../docs/选关界面-webview迁移路线图.md#2026-09-09-废城固定镜头首版当前施工范围)。
+2026-09-09 废城选关首版在既有 Web `stage-select` renderer 内增加固定镜头三维背景与稳定 ID 投影，DOM/现有 ViewModel 继续负责名称、状态和操作，AS2/Host 权威不变。Three r180 与基础 C GLB 从本地 Web 资源按需加载，和军阀三维依赖隔离；仅缓存一座城市、静止不持续绘制、本页不提供 2D 回退。具体当前范围与资源再现入口见[选关路线图](../docs/选关界面-webview迁移路线图.md#2026-09-09-废城固定镜头首版当前发布范围)。
 
 ```
 ┌──────────────────────────────────────────────────────┐
@@ -52,6 +52,8 @@
 │ Guardian Launcher Host                               │
 └──────────────────────────────────────────────────────┘
 ```
+
+<a id="runtime-chains"></a>
 
 ## 2. 五条核心链路
 
@@ -188,7 +190,7 @@
 - 主 XFL 作者帧 82–125 的可见封面 / 存档 / 创角已归 Bootstrap 第三个顶级 Web view；作者帧 126–135 只保留无可见 UI 的 AS2 读盘网关。`bootstrap_reveal_ready` 只解锁资源 / OP 栅栏，Host 还必须取得当前 attempt 的精确 `s:1|ga:<attemptId>` SceneReady 证明才可显示 Flash。title、snapshot response 与 entry 后 scene 三个 deadline 分相，玩家编辑草稿期间三者都不运行；冷启动时角色名输入与 AS2 live catalog 载入并行。每次 Web open 的窄 `openRequestId` 只隔离 cancel/reopen 迟到消息，不进入 AS2 或游戏权威；durable 后故障只允许普通读档重入或返回列表，绝不重放 create。准备遮罩不新增专用图形，现役 PM19 幻方在整个建角生命周期保持 ambient，退出后才恢复 Ready 同步；它不是 readiness 证明。Web 不持有入场、存档或目录权威
 - 旧“关于作者 / 版本信息”也由 Bootstrap 首页近全屏表面承载，正文真源为 `launcher/web/content/about-authors.md` 与 `launcher/web/content/version-history.md`；版本史一次只展示一个可选节点，GitHub Release/视频/源码证据由 `docs/version-archaeology` 维护并向玩家页投影。当前运行版本仍由 `launcher/web/config/version.js` 单点派生；Markdown 只作本地展示内容，不进入 Host/AS2 协议或持久状态权威
 - 运行态：Bridge / Panel / UiData / Notch / overlay 消息桥
-- 整备 rollout 与 opener 边界：`PreparationNavigationV1` 的代码默认和随仓配置均为 `true`；缺 key 使用代码默认，显式 `false` 或非法值会成套恢复旧 Native/legacy HUD、Build header 与 `returnFocusAction:"skills"` 的 presentation。该 gate 只切换导航呈现，不参与 route authorization，也不恢复任何已退役 AS2 全屏 UI。Equipment Tuning、Character、Materials、Intelligence 与 Skills 的 opener 仍分别受 exact source/instance/generation、Host nonce/admission、AS2 echo、revision/lease 和 lifecycle fence 约束；业务旅程的当前覆盖只读 [测试矩阵](testing-guide.md)，不能从通用 runtime 状态外推。
+- 整备 rollout 与 opener 边界：`PreparationNavigationV1` 的代码默认和随仓配置均为 `true`；缺 key 使用代码默认，显式 `false` 或非法值会成套恢复旧 Native/legacy HUD、Build header 与 `returnFocusAction:"skills"` 的 presentation。该 gate 只切换导航呈现，不参与 route authorization，也不恢复任何已退役 AS2 全屏 UI。Equipment Tuning、Character、Materials、Intelligence 与 Skills 的 opener 仍分别受 exact source/instance/generation、Host nonce/admission、AS2 echo、revision/lease 和 lifecycle fence 约束；业务旅程的当前覆盖只读 [测试选择矩阵](testing-guide.md#select)，不能从通用 runtime 状态外推。
 - Panel domain 路由：通用 `close` 始终最优先；其余携 `domain` 的请求先做领域分流。`domain=inventory` 独占 `InventoryTask → inventory_response → panel_resp(domain/cmd/callId)`，覆盖 range snapshot、move/merge/swap/discard、autoTransfer 与 `sortAndMerge`，并以容器写版本维护跨只读请求稳定的 OCC slot lease；`domain=npcshop` 只拥有目录、价格、材料/情报与交易计划，不再嵌套背包 snapshot；`domain=crafting` 由 `CraftingTask → crafting_response` 独占，Web preview 只传分类/配方索引/`craftCount`，commit 只传一次性 token，Flash 重算最终写入；`domain=hairdresser` 由 `HairdresserTask → hairdresser_response` 独占，只允许 snapshot 与 commit，77 行权威目录保持源顺序和重复项，Web 只做本地预览（默认脸型/发型胸像；snapshot 携带可选 `portrait` 装备投影时可切战斗 rig 全身，旧 asLoader 缺省则静默停留胸像），AS2 重新校验免费目录后写 root/live actor 并置 dirty mark；未知写只由后发 fresh snapshot 判定 applied / not-applied，绝不重放；`world_hairdresser` NPC 已冻结为 Web-only，命令缺失或发送失败 fail-closed，不保留 legacy Flash renderer/fallback；`domain=skills` 由 `SkillTask → skill_response` 独占，严格使用带 `panelInstanceId` 的七键 envelope，active/candidate/return 实例门、write epoch 与 reconcile watermark 隔离迟到响应，关闭时由 Host 把 scoped cleanup 收敛为 `skillPanelClose`。Skill 的 `switch_manage/switch_trainer` 是独立 panel-control：只接受当前相应 view 实例和嵌套 `{v,focusSkillKey}`；trainer session 在往返 manage 期间只存 Host，manage Web 仅见 `canReturnTrainer`，不进入 AS2 业务路由。金币商店由 Web 组合 inventory 背包与 NPC collections；合成面板切入 workbench 时只共享 UI 意图，不共享 token 或写 authority；Host `HairdresserTask` 组合既有 `PanelPendingCallTracker`，Web `HairdresserRuntime` 组合现役 `PanelRuntime.PanelRequestMux`，不新建 pending/timer/mux、价格/token 或通用外观状态机；技能展示可复用共享密度、树导航/面包屑、pointer drag 和 AS2 HTML 白名单注释 primitive，但技能浏览、教师学习、快捷槽和被动开关不进入 inventory/equipment domain。这五个专属域都不得回落 legacy 全局 cmd/MapTask catch-all。无 domain 请求继续走既有 panel/cmd 路由。
 - 材料商店往返是 domain mux 外的两条窄 flat transition command：Crafting Web 只发送 exact `open_npc_shop` hint，NPCShop Web 只发送 exact `return_crafting_materials` intent；两者都不能自开 Host-owned panel。`MaterialShopNavigationCoordinator` 独占 deadline、settlement witness 与三 Task lease，`MaterialShopAccessTask` 只承接 Host→AS2 fid/response correlation；AS2 以 current material snapshot、exact source occurrence 与 live NPC catalog 重新授权。成功 transition 只由 `PreparedPanelReplace/TryReplacePanelExact` 提交 admission、source retire 与 capability transfer；pre-commit failure 保留 source，post-commit mount/lazy failure exact close target且不回滚。Web 的 shopId/index/name、价格与 portrait 都只是 presentation hint，preferred navigation 与购买选择分离，购买继续进入 NPC/Inventory authority。
 - 物品使用仍属于 AS2 背包/存档权威：Character Build 只投影背包总览的显式“打开/服用”意图，Host `ItemUseTask` 负责 strict wire、unknown-write 查询与四条共享药剂冷却的只读帧快照，Web 只显示采样结果而不以现实时间续算。持久 `RewardInbox` 保存不可变待领取批次；尚未进入 Loot 的缓存 authority 会在新批次追加后按 durable revision 重建，已经打开的 authority 保持 identity 稳定。`reward_inbox` 单领/批领在 v1 feature 内至多维护一个 durable `activeClaimRoot` 与一个 terminal tombstone；root intent、可重绑定 child descriptor 和 cursor 必须在首个 destination/source effect 前 strict flush，重启后由 exact discovery/query 恢复。Host/Web 不拥有终态，也不得从 grid/revision/remaining/freshness 推断未知写；terminal 消费确认仅幂等标记 discovery，不删除 tombstone。领取复用顶层 Loot renderer，但 `reward_inbox` 与地图/关卡 Loot authority 分离；Character → Loot 只能经 exact close reason 和 Host 在源实例完全释放后的 one-shot handoff，Web 不能自行开面板。Reward Inbox 领取完或主动关闭后也不复用旧 Character/return stack：严格终态/挂起证明先触发同一 AS2 nonce preflight，成功时 `PanelHost` 将 exact tracked Loot 原位替换为全新构筑 session、原 pause lease 不释放，避免暴露 AS2；preflight、投递或 Host admission 失败才回落到 exact close + pause release，并在 `BindingSettled` 后从 idle 基线单次重试。
@@ -210,9 +212,9 @@
 ### 文档边界
 
 - 本文只讲系统拓扑与链路分层
-- 协议明细、构建细节、测试矩阵、治理规则分别由：
+- 协议明细、构建细节、测试与治理规则分别由：
   - `launcher/README.md`
-  - `agentsDoc/testing-guide.md`
+  - `agentsDoc/testing-guide.md`（测试选择矩阵）与 `agentsDoc/testing-details.md`（具体验证方法）
   - `agentsDoc/documentation-governance.md`
   - `docs/tech-stack-rationalization.md`
 

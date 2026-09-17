@@ -1,20 +1,40 @@
 # 双栏工作台 UI 系统约束
 
-**文档角色**：双栏工作台范围的布局、交互、美学与前端工程 canonical doc。跨 AS2 / Host 的协议与权威闭环仍以 [as2-web-panel-migration.md](as2-web-panel-migration.md) 为准，验证入口以 [testing-guide.md](testing-guide.md) 为准。
-**当前正式增量（2026-08-28，双药剂组与八槽共享冷却）**：implementation `9a85f95e748a986faca8f9a846ab360e2c7900d2`、release source `b2bc05775c621616fe64be55354aebe21c63a2af` 与 deployment `6902b2b6ed067c4882e9a67267d055ce0db90b34` 已完成双故障域共识、39/39 production policy、strict v2 promotion 与 post-promotion audit。Character Build 的现役固定槽为 `11+8`，药剂区以两组各四槽呈现为 `2 rowgroup / 2 row / 8 gridcell`；上下同列共享四条 lane 冷却，活动组与 `drug:switch` 独立冷却由严格 `drugLayout.v=2` 投影。维护者已确认功能、切换手感与 `○ / × + 1 / 2` 图标有效，状态为 `HUMAN_ACCEPTANCE_PASSED / promoted`。部署后正式 identity/lifecycle 窄纵切达到 `standard_entry_verified`，但没有执行 Character Build 写、八槽切换、旧档迁移或重启读回，不称这些业务旅程 `standard_entry_verified`。
-**上一正式增量（2026-08-27，库存批量转移）**：业务 commit `96ee67c58d88ce202ee41e6ffc32037911349426` 把显式库存批量从 N 次串行 `autoTransfer` 收敛为一次 `autoTransferBatch`；审计 commit `e979c2e8ba64aa2d9ec24aa579d8654c365540a8` 又把该命令加入封闭安全日志映射。最终 release source `5f5cfce7c162ba616bfc51f3c03f3134e937d36a`、deployment `4d5fd254752a149ce07006f8f48391ab26485f61` 已完成双故障域共识与 strict v2 promotion。最多 50 项仍按玩家选择顺序、逐项 lease、`mergeThenEmpty` 与部分前缀语义执行。fresh 自动证据为 inventory runtime `87/87`、workbench modules `36/36`、KShop 生产浏览器 harness `153/153`、Host Inventory `271/271`、Shared TestLoader `28/28 + 170/170`，50 件同进程 AS2 对照约 `673 ms → 20 ms`。维护者已在 exact isolated candidate 中确认大量物资转移即时完成；真实 Host 日志分别以一次 call 完成 10 件（约 423 ms）与 31 件（约 277 ms），没有库存失败/对账/重放，退出 shadow save/confirm 成功且 Flash code 0。该状态为 `HUMAN_ACCEPTANCE_PASSED / promoted`；正式入口只完成身份/生命周期窄纵切，没有重跑库存写或写后重启读回。
-**更早正式发布（2026-08-08，历史）**：runtime 绑定 commit `bf9be8c43b223b84f487464a7e6aa9eb8211630b`、tag `runtime-build-v2/20260808-p4-p5-source-complete-v1`、release tree `44de7f66421a908723f196718e42867dce601f30` 与 request `424D9CC1975CF099A705C828E354215EF3F568B7198B6B19C13DB019CB25163C`；identity `D6AC04EB7EBE290819B41E2FE17DA7583F154FCB4D46BA258D17EF9866B74350`、closure `91C8AC7469EBF2788C9BDAF8AB13D8F3C02B59588D6B770F0DA6CAD1604DDF5B`、Core DLL `D5EDBA1277BB65D6741E9446415F2555D3D94BFD78723852E621F7366FB8616D`。P4 canonical atlas 固定为 48 个 shared synthetic + 18 个 Arena 生产闭包两阶段场景；P5 同身份另以真实 WebView2→AS2 旅程证明竞技场 session-card 权威链。无 candidate id 的正式入口已达 `standard_entry_verified`，但该 smoke 只验证 Launcher 与 allow-listed Help WebOverlay WGC、可信退出、测试存档不变和无新增残留进程；商城/竞技场业务结论由各自同身份 E2E 持有，不外推为所有业务写、物理设备输入、玩家目视签收、剩余旧 CSS / G6+ 或整体整治均完成专项实机验收。
-**更早正式发布（历史明细）**：下行 `730c6be781…` / A1–A6 口径只保留为历史分层证据。
+**文档角色**：双栏工作台范围的布局、交互、美学与前端工程 canonical doc。跨 AS2 / Host 的协议与权威闭环改动以 [as2-web-panel-migration.md 的权威核心](as2-web-panel-migration.md#authority-core) 为入口，不要求为本文范围的视觉改动回读整份迁移文档；验证入口以 [testing-guide.md 的 Web 段](testing-guide.md#web) 为准，叠加跨层权威闭环改动时另按其 [跨层段](testing-guide.md#cross-layer)。
+**正式增量与历史发布**：正式 runtime 身份、签名共识与审计只读 [runtime manifest](../runtime/cf7-runtime-manifest.tsv)、[runtime release consensus](../config/build/runtime-release-consensus.json) 与 [runtime 发布记录](../docs/runtime-build-reproducibility.md)；本文不手填 current release 哈希，历史 identity/closure 明细均归档于发布记录。
+**2026-08-28 双药剂组与八槽共享冷却**：`HUMAN_ACCEPTANCE_PASSED / promoted`；正式入口 identity/lifecycle 窄纵切达 `standard_entry_verified`，但未执行 Character Build 写、八槽切换、旧档迁移与重启读回，不称这些业务旅程 `standard_entry_verified`；完整边界见 [双药剂组 ADR](../docs/双药剂组-八槽共享冷却-ADR-2026-08-27.md)。
+**2026-08-27 库存批量转移**：`HUMAN_ACCEPTANCE_PASSED / promoted`；正式入口只完成身份/生命周期窄纵切，未重跑库存写或写后重启读回，逐命令证据见发布记录。更早 2026-08-08 P4/P5 与 A1–A6 口径只保留为发布记录中的历史分层证据。
 
 **当前工作树增量（未发布）**：共享 `PanelTooltip` 已按本节收敛为 `simple-tooltip / dense-inspect / pinned-inspector` 三种宿主 profile，并新增真实 AS2 语料、DOM 排版矩阵与轨迹交互门。该状态只表示源码和自动门已闭合，不外推为 Launcher runtime promotion、标准入口或玩家目视签收。
-**2026-08-28 双药剂组正式增量（已人类验收/发布）**：完整兼容、输入、布局、视觉与验收边界见[双药剂组与八槽共享冷却 ADR](../docs/双药剂组-八槽共享冷却-ADR-2026-08-27.md)。本段绑定最终冻结 source、当前 promotion 与部署审计；旧 Character Build 的业务 E2E 仍不得代签本轮未执行的正式入口药剂写/读回。
-**最后核对代码基线**：release source commit `b2bc05775c621616fe64be55354aebe21c63a2af`（2026-08-27；deployment `6902b2b6ed067c4882e9a67267d055ce0db90b34`）。**更早 A1–A6 正式发布（历史明细）**：正式 runtime 绑定 commit `730c6be781ddd22bfd7a59a2e7773acce892f105`、tag `runtime-build-v2/20260806-workbench-authority-a1-a6-v2`、release tree `1434e71d44fe41ad0fa426bc857085f1aff940dd` 与 request `D45D0DEF50E159B8A875DCA922D856BEC69D64A6B779B6B7B7082D68AC6B92CF`；生产 consumer/count 的历史 7-set 已由该 source 的 9 个直接构造 exact-set 覆盖。正式 runtime identity 为 `E203E4F06F6701F8B583768145AE64F93D2599238C290DD71FD50A9FBAA7B422`，closure 为 `F606DF4D2B11579121C7122ECB80734053B0BDF39948921C65B0FDC6CB66800F`，Core DLL 为 `75F35C025BDE29D4D713671763511B425D1AFA5758DD154931AC0FC5C59C4977`。无 candidate id 的正式入口已达 `standard_entry_verified`，但只验证 Launcher 与 allow-listed Help WebOverlay WGC、可信退出、测试存档不变和无新增残留进程；A1–A6 的业务正确性由 current-tree Gate、isolated candidate 与独立审阅承担，不表示所有业务写、物理拖拽、玩家目视签收、剩余旧 CSS / G6+ 或整体整治都完成专项实机验收。
+**最后核对代码基线**：release source commit `b2bc05775c621616fe64be55354aebe21c63a2af`（2026-08-27；deployment `6902b2b6ed067c4882e9a67267d055ce0db90b34`）。
+
+<a id="ui-core"></a>
+## 核心入口
+
+本文约束双栏工作台的壳与前端合同。命中共享壳、布局 profile、密度、排版、颜色 token、状态语言、动效、命中区 / 焦点、tooltip profile、生命周期 / 资源所有权或 visual atlas 的改动，必须先读本文对应章节；跨层命令、数据权威、写锁与面板关闭生命周期不在本文范围，命中时先读 [迁移护栏权威核心](as2-web-panel-migration.md#authority-core)。
+
+按主题直达既有章节；本表只是导航，不复制合同正文：
+
+| 主题 | 既有章节 |
+|------|----------|
+| 布局 profile 与生产 consumer 映射 | [§2.1 布局 profile](#21-布局-profile) |
+| 状态语言与权威交互阶段 | [§5 状态语言与权威阶段](#5-状态语言与权威阶段) |
+| 关闭语义分层（Esc / × / 返回） | §5.5，隶属 [§5](#5-状态语言与权威阶段) |
+| 命中区、键盘与焦点 | [§6 命中区、键盘与焦点](#6-命中区键盘与焦点) |
+| 生命周期与资源所有权 | [§8 生命周期与资源所有权](#8-生命周期与资源所有权) |
+| visual atlas 与验证矩阵 | [§11 Visual atlas 与验证矩阵](#11-visual-atlas-与验证矩阵) |
+| 例外与变更流程 | [§12 例外与变更流程](#12-例外与变更流程) |
+
+验证方法按 [testing-guide.md 的 Web 段](testing-guide.md#web) 选择 runner；叠加 Host / AS2 权威闭环改动时按其 [跨层段](testing-guide.md#cross-layer)。不要求为纯视觉修复回读整份迁移文档。
 
 本文适用于 `kshop`、`npcshop`、`crafting`、`loot`、独立 `workbench`、角色构筑、嵌入式装备调制、`skills` 以及 Team 战宠/佣兵中采用双栏工作台语言的视图。它约束玩家态 UI，不把 dev harness、诊断面板或协议调试页误当成生产视觉标准。
 
 本文未带状态标签的规范句只描述已经落地并由现役门保护的稳定规则；仍属前向目标的规则必须逐条标为“目标态（未实装；见 ADR 对应批次）”。实现与验证没有同轮闭合前，不得仅凭 ADR 接受状态把未来 API、参数或 fail-closed 门写成现役事实。
 
-**暂存收纳收敛（2026-09-12 工作树，未发布）**：最后核对代码基线为 commit `c1e51dd1e8dba6bf72452cfef3af8b6f09b36acf` 加本轮增量。暂存作为 `InventoryStorageWorkbench` 的内部来源，与战备箱、仓库直接共用 OwnedView、格子、CSS、筛选、分页、数量、拖拽和快速转移控制器；旧独立暂存模板与 CSS 退役。共享底栏直接提供数量滑条/输入与“领取 / 存入 / 取出”，数量不再另开弹窗；构筑“暂存”入口在首次同步后直接进入暂存来源。物理库存保持 50 项前缀批量，暂存保持 32 项非前缀领取与真实条目身份。来源适配占用同一库存写锁，暂存页与背包均采用新快照后才解除；从构筑进入借用同一会话，直接收纳入口用无人物视图的会话。接口、验证层级与待验收候选见[施工方案](../docs/暂存物资并入共享收纳工作台-调研与施工方案-2026-09-12.md#10-共享收纳施工记录)。
+**暂存收纳收敛（已随 2026-09-13 正式部署发布）**：冻结对象 release source commit `c78cf257ff8e216c89c670c654202275391ddc47` / tag `runtime-build-v2/20260912-stash-shared-workbench-v2` 为 `HUMAN_ACCEPTANCE_PASSED / promoted`，证据范围见[施工方案 §10.9](../docs/暂存物资并入共享收纳工作台-调研与施工方案-2026-09-12.md#109-正式部署与收尾证据)。
+部署后正式入口只核对启动身份与正常关闭，领取、保存重启等完整业务旅程未重跑，不称该业务 `standard_entry_verified`。暂存作为 `InventoryStorageWorkbench` 的内部来源，与战备箱、仓库直接共用 OwnedView、格子、CSS、筛选、分页、数量、拖拽和快速转移控制器；旧独立暂存模板与 CSS 退役。共享底栏直接提供数量滑条/输入与“领取 / 存入 / 取出”，数量不再另开弹窗；构筑“暂存”入口在首次同步后直接进入暂存来源。
+物理库存保持 50 项前缀批量，暂存保持 32 项非前缀领取与真实条目身份。来源适配占用同一库存写锁，暂存页与背包均采用新快照后才解除；从构筑进入借用同一会话，直接收纳入口用无人物视图的会话。
+接口与验证层级见[施工方案](../docs/暂存物资并入共享收纳工作台-调研与施工方案-2026-09-12.md#10-共享收纳施工记录)。
 
 美术维护入口 `asset-workbench` 复用 `archive-reference` 双栏 profile、全 anchor 容器和 `.panel-scale-shell + PanelScale.attach()`，并已登记 direct shell 调用清单；它以显式命令驱动候选预览和素材应用。物品图标局部预览使用 `Icons.createPreview()`，销毁时释放自身动画，不替换全局清单；操作契约见 [物品素材工作台](../tools/asset-workbench/README.md)。
 
@@ -397,7 +417,7 @@ B6 在该固定 enum 内启用 Intelligence，但不把它放入机械 `FixedPan
 
 B5 只在这三个固定目标中启用 Materials。Native HUD direct 与 Character settled 都使用独立 material wait，并由 Host 生成 opaque `openRequestId`；AS2 `CraftingPanelService` 只对合法 token 原样回显，Host 只消费 exact `panel=crafting / source=nativehud_materials / initData={view:"materials"}` 封闭请求，再构造固定 runtime initData。合法的无 nonce ordinary Web materials open 仅在没有 armed material intent 且没有 target wait 时保留；pending 时 missing nonce 拒绝但不消费 wait，显式畸形 token 在 AS2 零发送，携带 nonce 的 wrong/near-match 则终止当前目标。send-false/throw、target timeout、admission、competition、navigation/热重载、socket、shutdown、迟到与重复均有一次性 fence；Build 关闭后失败至多一次原生回滚。该实现仍是材料专用路径，不扩展为 registry、bus 或通用 return stack，也不存在 Flash UI fallback。
 
-只有 Character 来源且已绑定 exact Skills instance 的 manage 页可显示“← 返回构筑”；`canReturnCharacterBuild` 只是 Host 投影的展示位，不是 Web capability。点击该按钮发送 strict `reason:"navigate_character_build"`，Host 再复验当前实例与 Skill idle/cleanup 状态；右上 `×`、物理 Esc、native backdrop 和 same-entry toggle 始终普通关闭到游戏。Host 在同一 `panel_esc` transport 中分别发送 `escape/backdrop/toggle`，缺失 reason 只作 legacy `escape`；该差异只允许物理 Esc 先消费帮助/确认模态与展开搜索，不得改变普通关闭或取得返回能力。返回按钮在写入、对账或清理未定局时显示 disabled，而不是吞点击。跨面板返回会销毁原 Skills DOM，焦点恢复不得保存旧元素引用；新 Character Build 只消费 Host 给出的封闭 presentation focus key：`PreparationNavigationV1` on 时首屏聚焦“整备”菜单触发器，显式 off 时才聚焦旧“技能配置”。前向自动回滚使用同一 gate 配对落点，反向打开失败则停在游戏并明确提示从“装备”入口重试。跨层完整契约见 [迁移护栏 §2.5](as2-web-panel-migration.md#25-角色构筑会话默认入口与双向导航屏障2026-07-28-工作树)。
+只有 Character 来源且已绑定 exact Skills instance 的 manage 页可显示“← 返回构筑”；`canReturnCharacterBuild` 只是 Host 投影的展示位，不是 Web capability。点击该按钮发送 strict `reason:"navigate_character_build"`，Host 再复验当前实例与 Skill idle/cleanup 状态；右上 `×`、物理 Esc、native backdrop 和 same-entry toggle 始终普通关闭到游戏。Host 在同一 `panel_esc` transport 中分别发送 `escape/backdrop/toggle`，缺失 reason 只作 legacy `escape`；该差异只允许物理 Esc 先消费帮助/确认模态与展开搜索，不得改变普通关闭或取得返回能力。返回按钮在写入、对账或清理未定局时显示 disabled，而不是吞点击。跨面板返回会销毁原 Skills DOM，焦点恢复不得保存旧元素引用；新 Character Build 只消费 Host 给出的封闭 presentation focus key：`PreparationNavigationV1` on 时首屏聚焦“整备”菜单触发器，显式 off 时才聚焦旧“技能配置”。前向自动回滚使用同一 gate 配对落点，反向打开失败则停在游戏并明确提示从“装备”入口重试。跨层完整契约见 [迁移护栏 §2.5](as2-web-panel-migration.md#25-角色构筑会话默认入口与双向导航屏障复核至-2026-07-29-工作树)。
 
 > **当前 `f01f4b121a4c…` 正式源码所含实现（ADR H1 已接通；专项旅程未验）**：只有 Character Build 发起并由 Host 绑定到 exact 子实例的 Materials / Intelligence 才可显示“← 返回装备”。`navigationOrigin:"character_build"` 与 `canReturnCharacterBuild:true` 都只是展示提示；真正的一次性 capability 只存在于 Host。Host-only 能力处于 `PendingInstanceBind` 时仍未授权任何同名实例；后续 ordinary crafting/intelligence same-name open 必须在 admission / initData enrichment 前原子撤销它，forward open 丢失、取消或迟到都不能授权后来普通打开的实例。Web 仅发送 exact 五键 envelope `{type:"panel",panel:"crafting"|"intelligence",cmd:"close",panelInstanceId,reason:"navigate_character_build"}`；Native HUD 直开、普通 `×` / Esc / backdrop、stale/rebound/foreign instance 均无返回能力并关闭到游戏。Intelligence 的返回动作只在 authoritative `state / bundle / snapshot / glossary_snapshot` 请求在途时禁用；tooltip 与后台 glossary catalog 不构成返回屏障，相关请求 settle 后恢复。Host 先完成当前子面板 visual 与领域 owner 的 exact retire，再走 fresh workbench nonce 打开新 Character session/snapshot，并按现役 gate 聚焦 `preparation-menu`；navigation/热重载、socket、shutdown、competition 或 lifecycle epoch 变化都撤销 one-shot。该实现没有建立通用 `returnTo`、跨 panel stack 或 destination registry；它虽已随 `f01f4b121a4c…` 冻结源码与配对 runtime 发布，本次 formal smoke 未执行 Materials / Intelligence 或 Character Build，不能外推 H1 游戏 E2E。
 
@@ -463,7 +483,7 @@ runner 的 error 表示几何、溢出、焦点、命中区、二级页覆盖或
 | KShop / NPC / Crafting / Inventory / Skills / Tuning feature | 上述共享门 + 对应 feature harness |
 | focus/modal/secondary page | atlas focus/secondary 场景 + 键盘人工走查 |
 | reduced-motion/keyframes | atlas reduced 场景 + computed animation/transition 断言 |
-| Host / AS2 authority | 本文门之外叠加 migration 闭环、xUnit、Flash fresh trace 与真机手测 |
+| Host / AS2 authority | 本文门之外叠加 [跨层验证](testing-guide.md#cross-layer) 与迁移护栏 [§8 验证门槛](as2-web-panel-migration.md#8-验证门槛)、xUnit、Flash fresh trace 与真机手测 |
 
 截图用于人眼比较，不单独构成像素级通过证据；字体、Edge/WebView2 版本和资源闭包稳定前不启用脆弱的全图像素 golden。atlas 证明共享合同，不能替代各领域真实数据、滚动极值、中文长文案和游戏内动效验收。
 

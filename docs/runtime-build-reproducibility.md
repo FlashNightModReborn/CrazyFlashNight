@@ -2,6 +2,320 @@
 
 **文档角色**：Launcher Windows runtime 的身份、构建、证明、排队、promotion 与 CI 策略 canonical deep doc。
 
+## 如何读取本文件
+
+本文件当前协议在前、历史证据在后：
+
+- 发布、审计或查询现役 runtime：先读 [当前发布协议流程](#release-protocol) 与 [证据状态术语](#evidence-states)，再按「当前机器真值读取说明」到机器真源查询现役部署身份。
+- 回溯某次发布的身份与验收边界：读文末「历史发布记录」，各节按对象 / 日期 / 范围留存当时证据。
+- 本文件前部不再手填「当前发布版本」或其哈希：commit / tag 存在性只证明对象存在，不证明现役部署，当前身份一律以机器真源为准。
+
+<a id="release-protocol"></a>
+
+## 当前发布协议流程
+
+本节为现行发布合同正文（由原文件后部协议内容前置重排，不改既有约束）。正式发布只走这一条链：
+
+1. 冻结 immutable source commit / tag / request：`releaseTreeOid` 冻结完整 Git tree，`requestId` 绑定四域身份与 `policyHash`。
+2. 两个不同 signer、两个真实 faultDomain（注册本地 X509 worker 与另一真实故障域，推荐 GitHub hosted OIDC/Sigstore）对同一冻结树独立生产，达成同一 build identity / payload closure 共识。
+3. strict v2 production policy receipt 全项通过。
+4. 唯一 promotion writer `tools/promote-runtime-bundle.ps1` 全链重验后原子写入根 bootstrap、`runtime/`、runtime manifest 与 signed consensus，四者保持一致。
+5. 部署提交快进推送 `main` 后，由 CI 事后 Audit 独立重放证明与部署闭包。
+
+硬禁令（各小节正文逐条有效）：禁止 v2 → v1 降级；禁止把单机 candidate 直拷进正式 `runtime/`；禁止伪造第二 builder 或虚构独立故障域；禁止绕过远端 ruleset 移动或删除已出具证明的 tag；禁止自由文本 ID 冒充 builder、复制私钥、手改 hash / receipt / attestation。
+
+Audio 边界：通用 supply-chain promotion 不以 Audio H1/H2/E3、截图、听感或其他产品体验证据为前置，也不借 emergency-release 旁路（本文历史段落中的 Audio 绑定 / pending 表述均为当时记录，现役通用口径以本节及「producer 与政策闸门」「政策 receipt 与 promotion」小节为准）；实际影响 DLL 的音频源码 / 配方 / toolchain 输入仍照常进入构建闭包，Audio 专项自身的验收义务保留。
+
+### v2 四域身份
+
+`config/build/runtime-inputs.v2.json` 是输入域清单。四域互斥，发现同一路径同时属于两个域会失败。`launcher/native/audio-v2-build-inputs.v1.json.materializedInputs` 中每一项还必须进入这四域的并集；`tools/test-runtime-build-v2.ps1` 对该包含关系 fail-close，防止本地完整工作树可构建、正式 sparse request 却漏掉第三方生成输入。
+
+| 身份 | 内容 | 变化后的动作 |
+|------|------|--------------|
+| `artifactSourceHash` | C#、C/C++、Rust 与项目/包输入等真正影响 payload 的源码；PlayerInfo 另以窄树只纳入 `Assets/**/*.svg` + runtime manifest，并固定纳入第三方 notice | 必须重新构建 |
+| `producerRecipeHash` | 纯 producer、native build、环境门与确定性参数（含 `sol_parser/.cargo/config.toml` 的 `/Brepro` 链接参数） | 必须重新构建 |
+| `toolchainLockHash` | runtime toolchain lock、`global.json`、Rust toolchain | 必须重新构建并重新取得环境资格 |
+| `policyHash` | 生成器、审计器、队列/证明/promotion/CI 规则及已派生发布资产 | 新 request + 新政策 receipt；前三域未变时可复用同一 build identity/CAS payload |
+
+`buildIdentityHash = SHA256(artifactSourceHash + producerRecipeHash + toolchainLockHash)`，故意不含 `policyHash`。`releaseTreeOid` 冻结完整 Git tree，`requestId = SHA256(releaseTreeOid + policyHash)`；两者分别回答“发布哪棵树”和“用哪套政策批准”。
+
+四域哈希的 Git object identity 以批量方式解析：Worktree 域由单个 `git hash-object --stdin-paths` 进程消费全部仓库相对路径（stdin 以无 BOM UTF-8 字节直写进程管道，规避 Windows PowerShell 5.1 在 UTF-8 代码页下向原生 stdin 注入 BOM 的行为）；Index 域由一次 `git ls-files -s` 全量解析成 stage-0 查找表。失败语义不变：进程非零退出、输出行数与输入数不等、任一行不匹配 OID 形状、路径含 LF/CR/绝对/越界形态、或 stage-0 记录不唯一，全部 fail-closed。逐文件单进程实现保留为 `Get-Cf7RuntimeV2GitObjectId` 语义基准，`tools/test-runtime-build-v2.ps1` 的批量/单文件等价性回归逐字节钉死两种模式；2026-08-23 起该回归还写入真实物理 CRLF，确认 `eol=lf` 下 Git-clean 且 batch/single/index 返回同一 clean-filter OID。域内固定文件的存在性检查仍逐文件走 Git 查询；这残存的少量 spawn 不影响量级。
+
+native 源码前缀内的非二进制契约文档也必须显式绑定，不能因为扩展名不是 `.cs` 就落在 release descriptor 之外。当前 [`launcher/src/AgentRuntime/Contracts/README.md`](../launcher/src/AgentRuntime/Contracts/README.md) 作为 C# 对照实现的发布约束固定归入 `policyHash`；它会改变 request/receipt，但不进入 `artifactSourceHash`，也不会冒充 DLL 字节变化。这里采用单文件绑定，不把整个 `launcher/src/**/*.md` 扩成构建输入。
+
+`policyHash` 与日常审计触发集合不是同一个集合。`config/build/native-change-gate.v1.json` 联合前三域、payload、全局 native 扩展/入口名和 release 信任链路径，回答“这次 push/PR 是否值得启动 native/runtime 事后审计”；广义内容 policy 不因此变成 native。命中源码边界但未改部署字节时，Audit 成功报告 `source-ahead`，不要求即时 promotion。生成器、审计器和派生发布资产仍留在 `policyHash`，下一次正式 release 再用当时完整 release tree 建 request 与 receipt。
+
+`policy` 树只绑定受版本控制的审计实现与契约；执行门恢复出的 `node_modules/`、`bin/`、`obj/` 等机器依赖必须由各树显式排除。否则同一干净 Git tree 会因本机已安装依赖而产生不同的 Worktree `policyHash`，并在 promotion 前失败关闭。`tools/arena-calibration/node_modules/` 因此不进入政策身份，其锁文件与受跟踪脚本仍照常绑定。斗兽计划中的两份 `source-provenance.json` 是仓库侧取证材料，不是 producer 或 policy 执行输入，也必须由 `excludePaths` 精确排除；计划、Schema、runner 与受跟踪校验脚本继续留在闭包内。
+
+`payloadClosureHash` 对根 `CRAZYFLASHER7MercenaryEmpire.exe` 与 `runtime/**` 的实际 payload 文件有序计算，明确排除 `runtime/cf7-runtime-manifest.tsv`、证明与 release record。这样 manifest/policy 元数据变化不会被误判成二进制失衡；manifest v2 再记录四个构建字段中的前三个、`buildIdentityHash`、`payloadClosureHash`、工具链可读名和逐文件大小/SHA-256。
+
+离屏注释对比工具位于 launcher/perf/tooltip-parity，其 C# 项目和源码、JS/JSON/HTML 参照输入归入 policy 域；native-fixture 的 bin/obj 必须排除。它已被生产 csproj 的 perf 排除项隔离，不进入 artifactSourceHash；新增测试 C# 文件仍须被 descriptor 绑定，不能因为位于 perf 就绕过广义 native 文件准入检查。
+
+现场对白的隐藏 WebView2 组件工具位于 `tools/native-dialogue-webview2-smoke`：源码、项目、HTML 与运行入口绑定 policy 域，bin/obj 排除；它不进入正式 DLL 输入域。必需 Web 资源检查包含动态立绘两条脚本与 XFL 派生皮肤入口；组件测试仍不构成真实游戏对白验收。
+
+`tools/equipment-tuning/fixtures/item-identity-triple.json` 作为现役图标身份审计的输入，显式绑定 policy fixedFiles。该目录原先只纳入 `.js`，夹具更新会被 native 变更审计按未绑定输入拒绝；补齐精确 JSON 路径，不扩展其他文件或降低检查要求。
+
+### producer 与政策闸门
+
+发布链分成三个职责，不能重新合并：
+
+1. `tools/prepare-launcher-release-assets.ps1` 只恢复锁定的 TypeScript/字典依赖并派生受跟踪发布资产。`save_schema.json` 默认保留；只有显式 `-SaveSchemaSource` 才从指定 canonical save 重建，避免私有存档和时间戳偷偷进入发布。
+2. `launcher/build-runtime-candidate.ps1` 是纯 payload producer：先执行精确环境门，再在 job 独占的 native/Cargo/MSBuild/temp 目录构建 miniaudio、Rust parser、bootstrap 与 FDD Core，生成不可覆盖的 v2 candidate。Audio Platform v2 不再只复制 `miniaudio_bridge.c + miniaudio.h`：producer 按 canonical [`audio-v2-build-inputs.v1.json`](../launcher/native/audio-v2-build-inputs.v1.json) 的固定排序清单 materialize 多 translation-unit bridge/backend/decoder、pinned miniaudio/Xiph 源码和 Media Foundation adapter，以 lock 中的精确 flags 静态闭合为唯一 `miniaudio.dll`；codec LICENSE、dependency lock、notice、runner/config/fixture 分别显式落入 artifact source 或 policy 域，禁止 wildcard、loose codec DLL 与宿主 codec pack 漂移。candidate 尚无正式 consensus，因此这里只同步、有界等待 bootstrap `--verify-runtime-only` 并检查真实 exit code；失败会保留/输出受限日志，成功必须删除 `logs/`。它不跑 Web/数据产品审计，也不签名。candidate 根部的 `runtime-build-metadata.v2.json` 在 payload closure 之外（payload 配置只含根 EXE + `runtime/**` 减排除项），除既有四域 identity/closure 字段外还记录 `policyHash` 与 per-stage `stageSeconds`/`totalSeconds`（环境门、identity 前/后、miniaudio、sol_parser、bootstrap、dotnet publish、组装、bootstrap verify），schema 只加不减，供 worker 构建后比对与耗时诊断使用。
+3. `tools/validate-launcher-release-policy.ps1` 是只读政策门：绑定 `releaseTreeOid` 与四域身份，验证 tracked tree 在审计前后未变化，按需严格验证 candidate，并把每项结果写成 `cf7-runtime-policy-validation.v2` production receipt。它既支持 clean commit 的 `Worktree` 身份，也支持工作树逐字节 materialize 同一 staged tree 的 `Index` 身份；candidate 始终按磁盘 payload 复核。候选优化检查会丢弃调用者注入的 `CF7_DOTNET_EXE`，重新运行锁定工具链门禁并只接受其选出的 host；门禁不产出精确 host 就禁止签发。`candidate-player-info-svg-contract` 同样丢弃调用者 dotnet 注入，使用锁定 SDK 做 locked restore，并对 exact candidate 核对 full canonical manifest、9 项 embedded resource/source bytes、strict 最小 raster、notice exact bytes 与禁用依赖；runtime 根或任意后代若是 reparse/junction，会在递归枚举前 fail-closed。随后实际 renderer-family DLL/native 相对路径集合须 exact=11、每项非空并记录 actual size/hash；这些实际字节再由 candidate payload closure/build identity 绑定。deps libraries 与唯一 renderer-bearing runtime target 也须精确相等；额外顶层 DLL、嵌套 native 文件或 deps library/runtime-target 都 fail-closed。只有 candidate 模式可 `policyEligible=true`，直接 Core 只作诊断。`required-web-runtime-assets` 必须覆盖生产懒加载闭包；地图资源箱必须逐项包含 `modules/loot/loot-runtime.js`、`loot-state.js`、`loot-view.js`、`loot-organizer.js` 与 `loot-panel.js`，任一缺失都 fail-closed 并在 receipt 点名。`panel-cross-layer-contracts` 使用的契约 JSON、validator 与变异测试脚本全部进入 `policyHash`，同时由 native change gate 和 GitHub workflow paths 触发事后审计，避免 sparse materialize 缺少门禁输入或未来只改契约却漏审。子审计 stdout/stderr 只进入人类/CI 日志，不能混入结构化 `checks[]`。receipt 只能写未跟踪路径。
+
+`launcher/build.ps1` 只是人工兼容编排器：prepare → pure producer → policy。它只写隔离 candidate，最多把状态推进到 `candidate_built`，不写根 bootstrap 或正式 `runtime/`；它适合已准备好的本地 tree 做完整候选检查，但不是多机发布协议，也不会替代签名 worker、immutable request 或 quorum。
+
+Audio Platform v2 的 H1/H2 是独立的产品验收证据，不是通用 runtime supply-chain 门。H1 继续约束 A1–A6 实现与 isolated candidate；最终 Audio 验收仍须让自动报告、真实 endpoint capture 与人工听感绑定同一 exact candidate，只有有效 H2 才能声称 Audio 专项 `e2e_verified` 或 `standard_entry_verified`。通用 source tag/request、双 fault-domain 构建与 promotion 只执行 immutable request、双 signer/faultDomain、production policy、strict verifier、原子替换与 rollback，不读取、生成或旁路 H1/H2/E3。现役 `cf7-runtime-build-request.v2` 保持严格原 schema，产品体验证据可诚实保持 `pending`，不得由部署事实反向补签。
+
+未提交工作树的可见功能检查统一走 `automation/dev.ps1`（或根 `本地开发启动.cmd`）。它重算当前 Worktree build identity，只复用同身份且闭包唯一的 candidate；无命中时以 `-SkipPrepare -SkipPolicy -BuilderId local-dev` 新建隔离 candidate。`-Status` 只读报告匹配/过期/同身份闭包分叉，`-ReuseOnly` 禁止构建，`-ForceBuild` 强制新建但仍拒绝分叉闭包，`-BuildOnly` 只选择/构建并验证而不启动。忽略的 `tmp/runtime-dev/active.v1.json` 只是 repository-relative 选择索引，不授予信任，每次执行前仍重验字节身份。
+
+`dev.ps1` 最终把精确 candidate 交给 `automation/start.ps1 -CandidateRoot`。该低层入口只接受当前仓库 `tmp/runtime-candidates/v2/` 下的 canonical 非 reparse producer 输出，严格核对完整安装哨兵、candidate metadata、runtime manifest、`buildIdentityHash`、`payloadClosureHash` 与 Core SHA-256，再调用 candidate 自身 bootstrap `--verify-runtime-only`；Core 启动后仍按同一身份反向自检，并显式使用当前完整安装根加载工作树 Web。只有报告/日志中的 `runtimeMode=isolated_candidate`、`processPath`、`coreSha256`、`buildIdentity`、`payloadClosure` 全部与预选 candidate 一致，才能报告 `candidate_executed`。目录 walk-up、候选树外搬运、reparse 别名或 marker/身份漂移一律 fail-closed；该模式始终 `NOT_DEPLOYED`，不产生签名、receipt 或 promotion 权限，也不得把 candidate 手工复制进正式 `runtime/`。
+
+prepare 中的派生器必须字节幂等；例如 save-repair dictionary 仅在结构内容变化时刷新 `generated.at`。重复 prepare 因时间戳制造 diff 属于构建门故障，不能要求维护者提交无语义的时间漂移。
+
+#### 独立输入进程的构建归属（2026-09-13）
+
+`launcher/src/Guardian/HotkeyGuard.cs` 已取消 artifact source 与 csproj 排除，随 Core 编译。宿主通过同一 apphost 的 `--hotkey-guard <parentPid> <coreMvid>` 启动独立进程；本次正式 promotion 后，候选与正式 Core 均使用自身版本的拦截器，不再读取根目录历史 `hotkey_guard.exe`。这不新增 payload side-car 或工具链；模块身份与父路径验证发生在 hook 安装前。source descriptor、队列夹具与 Core CLI 注册表同步更新；此处只记录源码归属变化，不改变本文当前正式 promotion 身份。
+
+### 精确环境与隔离输出
+
+- 新机器先运行 `tools/bootstrap-runtime-build-env.ps1`；已有环境用 `-VerifyOnly`。若已有实例的精确 MSVC 字节不匹配，bootstrap 不会用旧实例的同名 component ID 冒充锁定 payload，而会走锁定 bootstrapper 的专用 side-by-side 目录；只有工具字节已匹配、仅缺 SDK 时才对该实例执行 `modify`。Windows PowerShell 5.1 下必须逐个输出 `vswhere` 解析到的实例，禁止把顶层 JSON 数组作为单个 `Object[]` 返回后拼接安装路径。正式 producer 每次仍会重跑 `tools/check-runtime-build-env.ps1`。断网复用已有精确匹配 candidate 不需要云端；断网重建则必须预先安装通过锁定门的工具链，并已缓存 NuGet/Cargo 依赖。
+- `config/build/runtime-toolchain.lock.json` 锁定 .NET SDK/host、Roslyn/MSBuild、MSVC `cl/link`、Windows SDK `rc`、Rust `rustc/cargo` 及 bootstrapper 入口字节；NuGet 图由 `launcher/packages.lock.json` 固定，其中 PlayerInfo 生产直接引用为 `Svg.Skia 5.1.1`，既有 `SkiaSharp` 保持 `3.119.4`，分发 notice 以 LF canonical byte 同时进入 artifact source 与 candidate payload。Visual Studio 安装器只是尽力补齐组件，不能把会移动的在线 channel 伪装成已固定 payload；最终资格始终以 `cl/link/rc` 的版本与 SHA-256 精确门为准。`.NET` provisioning 脚本也必须使用 `dotnet/install-scripts` 官方仓库的完整 commit URL 并固定 SHA-256，禁止重新使用会因 Authenticode 重签而变字节的 `https://dot.net/v1/dotnet-install.ps1`。
+- 当前基线 `cf7-win-x64-2026-07-22` 为 .NET SDK `10.0.300`、Visual Studio Build Tools `17.14.36` / installer `17.14.37502.11` / MSVC toolset `14.44.35207`（cl `19.44.35228.0`、link `14.44.35228.0`）、Windows SDK `10.0.22621.0`、Rust `1.96.0`；精确 SHA 只以 lock JSON 为准。2026-07-22 已核验 `dot.net` 当前脚本的 Microsoft Authenticode 签名有效，去除签名块后与官方 `dotnet/install-scripts@4a37a9f9d1a061fc389d6515100336db4e51710e` 源码逐行相同，因此 provisioning 改用该不可变源码字节。2026-07-19 本机 BT1736 的 bootstrap `-VerifyOnly` 与独立环境门均为 exit `0`。
+- producer 清除外部编译/链接/Rust 注入变量；Audio v2 的全部 C/C++/header/adapter 输入按 manifest 固定顺序与 SHA materialize 为 LF，使用固定 response file、SDK library、codec flags、`/pathmap`、`/experimental:deterministic`、`/Brepro`，并在候选中只产生一个静态闭合的 `miniaudio.dll`；Rust 每次 clean + locked；managed publish 不带 PDB/SourceLink。
+- promotion preflight 的隐私回归对本地路径做全文排除，对 Windows 用户名和机器名按完整 JSON 字符串值排除；不能用两字符用户名之类的短标识做任意子串匹配，否则会把无关字段误报为机器身份泄漏。
+- candidate 默认位于 `tmp/runtime-candidates/v2/c-<identity-prefix>-<builder-hash>-<run-token>/`，完整 build identity / builder label 只存 metadata 与证明，避免目录名把 legacy `MAX_PATH` 撑爆；producer 在编译前后都做 259 字符预算门，已存在目录不覆盖。native / Cargo / MSBuild / `TMP` / `TEMP` 的 job 工作根默认位于环境门规范化后的 machine-local `[IO.Path]::GetTempPath()/cf7-runtime-build-work/job-<token>/`，避免仓库位于 `Program Files (x86)` 等含括号路径时把 CMD 元字符传给 VsDevCmd；`CF7_RUNTIME_WORK_ROOT` 只能覆盖为短的本机绝对目录，卷根、UNC/映射网络盘、reparse point、仓库内/祖先、CMD 元字符或 projected MAX_PATH 超限均 fail-closed。队列 worker 从 request Git bundle 创建隔离 clone；输出按 job 分离，不再共享 `launcher/bin/Release`、Cargo target、MSBuild obj/bin 或临时目录。
+
+### 本地 builder enrollment 与证明
+
+每台本地发布机一次性执行：
+
+```powershell
+chcp.com 65001 | Out-Null
+$entry = .\tools\register-runtime-builder.ps1 `
+  -BuilderId <builder-id> -FaultDomain <physical-fault-domain>
+```
+
+脚本在 `Cert:\CurrentUser\My` 创建 3072-bit、不可导出的 RSA 私钥，只把 public certificate/`keyId`/epoch/faultDomain 写到 `tmp/runtime-builder-enrollment/`，**不会自动改 registry**。维护者核对机器与故障域后，才把 entry 合入 `config/build/runtime-builders.v2.json`。私钥不得导出或跨机复制；轮换/撤销通过新 epoch/key 或 `enabled=false` 完成。两台 VM 若共享同一宿主、磁盘或管理员边界，不得宣称两个 faultDomain。
+
+tracked registry 继续保留 `builder-local-a` / `physical-host-a` 与 `builder-local-b` / `physical-host-b` 两张历史公钥；既有 consensus 曾实际采用 `builder-local-a` 的 keyId `28DBEAF3761CCF3177FE396596A2557D8A6C9393371CD41DC893FF75A02723B3` / `physical-host-a` 和 GitHub Actions run `30364763726` 的 OIDC builder identity `1BDD1B0F419E0CA384E59986DBC1C9C9195A01CFEAF0838E116A8AD13B9BCEC3` / `github-hosted-windows`。任一单独本地票都仍不构成 quorum，也不授权单机 promotion。
+
+本次 local proof 使用已注册的 `builder-local-a` 3072-bit CurrentUser 不可导出 RSA key：keyId `28DBEAF3761CCF3177FE396596A2557D8A6C9393371CD41DC893FF75A02723B3`、thumbprint `647AFE92BD801518AF25F2A2EE1845E6847C2118`、epoch `1`；未复制或导出私钥。不同故障域的第二票由 GitHub hosted OIDC/Sigstore 提供，双 faultDomain quorum 已满足；dirty staged/unstaged/untracked 工作树仍不能冒充 source commit。
+
+2026-09-02，本机因不存在 `builder-local-a` / `builder-local-b` 对应的不可导出私钥，按一次性 enrollment 新增 `builder-local-c` / `physical-host-c`：keyId `CFB70E2D339ACB25E9B6C2873DF4F1AEEBA8EA75AD23B825724B27FCA70C0B86`、thumbprint `892236D1AE9EB9EFE0624E7C70B739F94A8DA6EF`、epoch `1`。旧私钥没有导出或复制；该登记只有在 tracked registry、immutable request、实际 local proof 与不同 faultDomain 的 GitHub OIDC proof 全部通过后才计入新 quorum，登记本身不构成票或部署。
+
+worker 使用该 CurrentUser certificate 对 canonical payload inventory 做 RS256 签名。验证端只信 tracked registry 中启用且 epoch/faultDomain/certificate 全匹配的 key；旧式自由文本 builder ID 不再计入 v2 quorum。
+
+### immutable request、队列与 CAS
+
+需要跨机器时，所有 worker 指向同一具备原子目录 rename 语义且仅受信维护者可写的 `-QueueRoot`（例如 ACL 收紧且共享名前缀足够短的 SMB 共享）；默认 `tmp/runtime-build-queue` 只适合路径预算允许的单仓本地演练。目录包含 `requests/`、`leases/`、`results/` 与 `cas/candidates/`，不进 Git。QueueRoot 本身也受传统文件 259 字符、目录 247 字符预算约束，因为 CAS final path 保留完整 build identity 与 payload closure，失败记录还允许 128 字符 diagnostic 文件名；request 与 worker（包括 DryRun）都必须在建目录、取证书或编译前 fail-fast，复制时再按实际 payload 路径复核。Windows 本机正式队列应给每趟列车分配经预算检查的专用短根（例如本列车使用 `C:\qf8`），不要在 `%LOCALAPPDATA%` 后继续拼 release-id 深目录；worker 没有 RequestId 过滤，含未 `ready` / `superseded` request 的根不得直接混跑下一列车。队列可以共享，但 worker 的隔离 checkout 默认放在本机短路径 `%LOCALAPPDATA%\CF7\runtime-build-checkouts`；worker 会清除外部 `GIT_INDEX_FILE/GIT_DIR/GIT_WORK_TREE/object/config-count` 上下文，并在 materialize 前固定 local Git `core.autocrlf=false`、`core.longpaths=true`，避免 worker 账户的全局换行策略改变 Worktree identity。checkout/candidate 目录只使用 request、worker 的短哈希并预检 MAX_PATH；包含 legacy 深路径的本机 checkout 通过扩展路径形式安全清理。只用 `-CheckoutRoot` 或 `CF7_RUNTIME_CHECKOUT_ROOT` 覆盖，不要把 checkout 放进共享队列、网络盘或层级很深的项目目录。
+
+最终 tree 已提交时使用 `Treeish`；只有纯本地双 builder 才可用 `Index` snapshot。需要 GitHub cloud builder 时必须先提交，并让 request 与 cloud workflow 使用同一 full commit：
+
+```powershell
+$request = .\tools\new-runtime-build-request.ps1 `
+  -QueueRoot <queue-root> -SourceKind Treeish -Treeish <full-commit>
+$requestId = $request.requestId
+```
+
+request 内含完整 frozen `releaseTreeOid`、四域 hash、build identity、source/request commit，以及只覆盖四个 v2 identity domain 精确 Git blob 子树的 `source.bundle`、`bundleTreeOid` 与 bundle SHA；大型无关 tracked asset 仍由 `releaseTreeOid` 绑定，但不会塞进 worker bundle。冻结 stage-0 条目时固定 `core.quotepath=false`，路径字段必须按仓库中的 UTF-8 字面值比对，不能让机器级 Git 配置把中文路径转成 C 风格转义文本。worker clone 后复核 `bundleTreeOid`，相同 tree+policy 幂等复用；tree 已过时就创建新 request 并用 `-SupersedeRequestId <old-id>` 标记旧列车，不删除历史。request 创建还会在同目录写只增不减的 `request.phases.json` 时间戳 sidecar（strict `request.json` schema 不变）；worker 成功发布与 promotion 完成也分别写 `results/_phases/<requestId>/` 下的 `worker-*` / `promotion-*` 阶段计时 sidecar，写失败只告警、从不当构建结果权威。worker 启动时扫描 checkout 根的孤儿 job 目录（有残留但无对应 result/failure 且无存活 lease），只报告、永不删除，供人工清理被强杀的 worker 现场。
+
+Audio Platform v2 仍复用现役 `cf7-runtime-build-request.v2`，不得注入 H1/H2 字段。E2/H2 与 evidence-only E3 `docs/evidence/audio-v2/h2-request-link.json` 只属于 Audio 专项验收包：需要形成 Audio acceptance 时，可由 E3 旁路绑定 request raw SHA/requestId、source tag→S commit/tree、E1 manifest 与 E2 receipt；通用 builder、proof/quorum、`VerifyOnly`、promotion 与 deployment write 均不消费该 link。任何具体 Audio 列车若另有 owner 明示的产品发布取舍，按该次授权记录；不要把它复制成通用构建状态机。
+
+每台已 enrollment 的本地机器运行：
+
+```powershell
+.\tools\invoke-runtime-build-worker.ps1 `
+  -QueueRoot <queue-root> -WorkerId <builder-id> `
+  -CertificateThumbprint <thumbprint> -Once
+# 常驻机器可改用 -Watch；状态查询：
+.\tools\get-runtime-build-request-status.ps1 `
+  -QueueRoot <queue-root> -RequestId $requestId
+```
+
+worker 具有单机 mutex、request lease、heartbeat/TTL 与失败记录；抢到 lease 后从 Git bundle 隔离 clone、复核 frozen tree/identity、调用纯 producer、签名并发布结果。构建后 worker 不再对工作树重算四域 identity：纯 producer 已在自身收尾重查输入漂移并把四域 identity 写进 candidate 根部的 `runtime-build-metadata.v2.json`，worker 读取该 metadata 并逐字段与 immutable request 比对（不等即 fail-closed，绝不盲信），签名时经 `New-Cf7RuntimeBuildAttestationV2 -ExpectedIdentity` 传入 request 锚定值——该参数会校验字段形状并重推 `buildIdentityHash` 一致性，只在一致时跳过进程内重算；自定义 `-BuildCommand` 不产出 v2 metadata 时仍回退完整重算。失败时会在删除短 checkout 前把非 reparse、单文件 ≤1 MiB、总计 ≤2 MiB 的 bootstrap diagnostics 写到该 request 的 `_failures` 记录；若 queue I/O 已不可用、失败记录本身无法落盘，worker 只追加固定告警并保留原始构建错误，不能让二次诊断写失败覆盖首因或转成成功。CAS 地址是 `buildIdentityHash/payloadClosureHash`；发布前后都严格复核 candidate，key 对同一 build identity 出现分叉 closure 会作为 equivocation 拒绝。状态退出码固定为 `0=active 全 ready`、`10=pending/empty`、`20=failed/invalid`、`30=只有 superseded`。status 只统计 queue 内本地 X509 result；采用 local + GitHub 时显示 `1/2` 是正常的，最终 combined quorum 由 promotion 把该本地 proof 与外部 verified GitHub proof 一起计算。
+
+推荐把便宜、可离线完成的失败门前移：先取得本地 X509 candidate/proof，再对**该本地 candidate** 跑一次 production policy preflight；这份 preflight receipt 只用于提前暴露 source、CSS、inventory 等政策问题，因为 receipt 绑定具体 `candidateRoot`，不能拿去批准稍后选中的 cloud candidate。preflight 通过后再消耗 GitHub hosted build；cloud proof 到手并选定最终 cloud candidate 后，仍须针对该 cloud candidate 重新签正式 production policy receipt，promotion 只接受后者。这样不削弱双故障域和最终 receipt 约束，同时避免本地即可发现的政策失败拖到云构建之后。
+
+### GitHub hosted 独立故障域
+
+`.github/workflows/runtime-cloud-builder.yml` 提供第二种 producer：只接受人工 `workflow_dispatch`，并在分配 hosted runner 前要求 `github.run_attempt == 1`，且 `github.actor_id` 必须是 `Crazyfs` 的 `91271520` 或 `Flash-Night` 的 `138298913`；失败后重新 dispatch，不能用 rerun 按钮绕过首次运行约束。授权只限制正式发布能力和 Actions 消耗，不构成第二人审批：两名授权发布者中的任一人都可以独立触发。从一次性 source tag dispatch full source commit 后，workflow 在明确的 `windows-2022` / VS 2022 runner family 精确 checkout、配置锁定工具链、运行纯 producer 并验证 v2 candidate；运行时还复核 `RUNNER_ENVIRONMENT`、`RUNNER_OS` 与 `ImageOS=win22`。`windows-2025` 自 2026-06 起已被 GitHub 迁到 VS 2026，不能再承载当前 17.14/v143 锁。checkout 先只取 config/materializer seed，再由 `runtime-inputs.v2.json` 展开四域精确文件集合；禁止为约 9 MiB 的 producer 输入铺开约 4.5 GiB 工作树并挤占 hosted runner 的安装/构建空间。Index 固定文件的存在性必须用 Git object 查询，不能比较受 `core.quotepath` 影响的展示文本；sparse-checkout 的标准输入固定为 UTF-8，因此根目录中文入口在无用户级 Git/终端配置的干净 hosted runner 上也必须可复现 materialize。producer 失败时上传独立 bootstrap/Visual Studio setup diagnostics。独立 `attest` job 仅对 deterministic envelope 调用 `actions/attest`；权限限定为 `id-token: write` / `attestations: write`，使用 GitHub OIDC + Sigstore/SLSA keyless provenance，不保存长期私钥。
+
+`config/build/runtime-github-builder.v2.json` 固定 repository、signer workflow、release source ref、`github-hosted-windows-2022` runner class 与 `github-hosted-windows` faultDomain。日常 release train 使用一次性、单路径段的 `refs/tags/runtime-build-v2/<release-id>`：cloud config、dispatch helper、envelope/attestation verifier 与 admission audit 都拒绝其他命名空间及嵌套 tag，保证 `sourceRef` 必定受 creation + immutability ruleset 保护。tag 必须精确指向 source commit，helper 在 dispatch 前经 GitHub API 解析并 peel annotated tag、拒绝目标不等；workflow 再断言 `GITHUB_REF` 与 `GITHUB_SHA` 分别等于该 tag 和 requested full commit，helper 定位/等待 run 时也要求 `headSha` 相等。由此 GitHub 实际执行的 workflow 字节与被四域政策 hash 绑定的 workflow 字节来自同一 commit，证明同时绑定 tag、full commit 与 tree。远端 creation ruleset 只允许两个授权发布账号创建新 tag，再由无 bypass 的 update/deletion ruleset 冻结已创建 tag；不要删除或移动已经出具证明的 tag。runner 镜像的小版本仍由 GitHub 滚动维护；任何工具字节变化都会被 toolchain lock fail-closed，必须显式轮换基线，不能自动放宽。最短触发、等待、取回与验真命令是：
+
+```powershell
+$cloud = .\tools\invoke-runtime-github-build.ps1 -SourceCommitOid <full-commit>
+# promotion 使用：-ExternalAttestationPath $cloud.proofPath（candidate 来自本地 X509 CAS）；
+# 默认只下载小的 attestation artifact（envelope + Sigstore bundle），本地不落 cloud candidate。
+
+# 需要把云端 candidate 字节也取回本地时显式下载 24MB 级大包（与旧默认行为一致）：
+$cloud = .\tools\invoke-runtime-github-build.ps1 `
+  -SourceCommitOid <full-commit> -IncludeCandidateArchive
+# 此时 promotion 可继续用：-CandidateRoot $cloud.candidateRoot -ExternalAttestationPath $cloud.proofPath
+
+# 进程或网络中断后，复用同一已完成 run；helper 会重验 run / artifact metadata 后续传 .partial：
+$cloud = .\tools\invoke-runtime-github-build.ps1 `
+  -SourceCommitOid <full-commit> -ResumeRunId <run-id>
+
+# 只用于受控恢复/离线 transport fixture；不会绕过 metadata、双层解压或 Sigstore 验真：
+$cloud = .\tools\invoke-runtime-github-build.ps1 `
+  -SourceCommitOid <full-commit> -ResumeRunId <run-id> `
+  -PreDownloadedArtifactArchive <outer-artifact.zip>
+```
+
+helper 只触发固定 workflow，用精确 `run-name`、`headSha` 与 dispatch 前 run ID 集定位本次同 commit run；`-ResumeRunId` 不重新 dispatch，但仍以同一套 identity 门重验指定 run。run 成功后，helper 查询该 run 的官方 Actions artifact metadata，要求唯一精确名称、artifact/run ID、`workflow_run.head_sha`、大小、未过期状态与 `sha256:<64hex>` digest 全部成立；随后用 GitHub CLI token 只向官方 API 换取短期 HTTPS redirect，不记录 token 或 signed URL。外层 ZIP 默认经 HTTPS 流式传输；redirect 探测与数据流永远共用同一条路由：`-GitHubArtifactTransport` / `CF7_GITHUB_ARTIFACT_TRANSPORT` 取 `auto|proxy|direct`（默认 `auto`），显式模式下两者都只用该路由，`auto` 先按 queue 根 `github-artifact-route.v1.json` 的 last-known-good 粘性路由、再 proxy、再 direct 的顺序用 redirect 小请求做 canary，胜者交给数据流并持久化，数据流连续失败即失效重探。连接/首包阶段由独立的短超时看门狗（`-ArtifactConnectTimeoutSeconds`，默认 15s）封顶，数据阶段另有停滞看门狗（`-ArtifactStallTimeoutSeconds`，默认 30s 无任何字节即中断本次尝试），整体 `-ArtifactDownloadTimeoutSeconds` 仍是总上限；失败只保留 `artifact-download/artifact-<id>.zip.partial`，重试发送 `Range`，严格要求 `206`、起止字节、总长和 `Content-Length` 与 metadata 一致，每约 5 MiB 只报告 received/expected 字节数。完整大小和 SHA-256 都通过后才把 partial 改名。
+
+attest job 同时上传两个 signed artifact：大包 `runtime-cloud-builder-<commit>` 保持原有恰好三文件契约（`runtime-candidate.v2.zip`、`runtime-build-envelope.v2.json`、`runtime-build-envelope.v2.sigstore.json`），小包 `runtime-cloud-attestation-<commit>` 恰好两文件（envelope + Sigstore bundle）。helper 默认只取小包：attestation-only 外层 ZIP 走同样的 entry count、路径、大小、link/reparse 与 case-collision 门，然后以 `verify-runtime-github-attestation.ps1 -WithoutCandidateArchive` 验真——该模式信任根为“Sigstore provenance 签的是内嵌逐文件 SHA-256 清单的 deterministic envelope，且云端 attest job 在签名前已逐字节核过 zip==envelope”，本地不再重复 archive 字节断言；其余校验（canonical envelope、config/source/tree 绑定、本地源四域 identity 重算、`gh attestation verify`）全部不变，且该模式显式拒绝 CandidateRoot、Index 源与 release-record replay。candidate 字节与 proof 的最终绑定仍在 promotion 完成：promote 会把同一 proof 对真实本地 candidate root 全量 replay。`-IncludeCandidateArchive` 恢复旧行为：大包必须恰好三文件，内层 candidate 再走原有 safe extractor，最后完整调用 verifier。`-PreDownloadedArtifactArchive` 只是 transport 测试/恢复 seam：仍查询所选 run 的 exact metadata、校验外层大小/digest，并走相同的外层/内层解压和 Sigstore verifier，不能成为离线信任旁路。验证器通过 `gh attestation verify` 同时钉住 repository、workflow、source-ref、commit/tree、envelope/candidate inventory 与全部身份字段，并输出可直接交给 promotion 的 normalized proof。下载 artifact 本身不可信；只有该验证通过后才算 GitHub producer。推荐 quorum 是“一个注册本地 X509 builder + GitHub OIDC builder”；两个注册本地 builder 也可，但必须拥有不同 key 和真实不同 faultDomain。
+
+`test-invoke-runtime-github-build.ps1` 的确定性默认套件通过预下载 seam 覆盖 exact metadata、outer/inner 恶意 ZIP、digest/run/head 负例、恢复选 run 与最终 verifier，并静态钉住 Range/长度/文件模式/进度契约；它不伪造 TLS 或把本地 HTTP 冒充 GitHub/Azure 网络行为。修改下载器后，除离线套件外还要用一个未过期的真实 Actions artifact 执行默认 helper，或受控构造 partial 后跑真实 HTTPS `206` 续传，确认最终 outer SHA-256 与 GitHub metadata 相等。
+
+Actions artifact 只是短期交接介质：unsigned candidate/envelope 保留 1 天；失败 bootstrap diagnostics 保留 7 天；signed candidate/envelope/Sigstore bundle 大包与 attestation-only 小包均保留 7 天。超过 signed 窗口仍未 promotion 时重新 dispatch，不能把 artifact retention 当长期证据仓。promotion 后 tracked v2 consensus 内嵌的验证材料才是仓库审计记录。
+
+### 政策 receipt 与 promotion
+
+在与 request tree 完全一致、tracked 内容干净的工作树中运行。正式 receipt / X509 proof / promotion 链固定由 Windows PowerShell 5.1（`$env:SystemRoot\System32\WindowsPowerShell\v1.0\powershell.exe`）承载：当前 `pwsh` 7 的 `ConvertFrom-Json` 会把 attestation 的 ISO `createdAtUtc` 字符串自动解析成 `DateTime`，若在该宿主内直接调用 promotion，会改变 canonical payload 复算字节并按预期 fail closed。新机经 winget 安装 GitHub CLI 后，先用同一 5.1 进程确认 `Get-Command gh`；若旧父进程尚未继承新的用户级 `PATH`，重启父进程或只给本次发布进程显式补入已核验的安装目录，不复制 token、证明或私钥来绕过环境门。
+
+```powershell
+.\tools\prepare-launcher-release-assets.ps1 -ReleaseTreeOid <full-commit>
+# 若生成物变化：审阅、提交，再用新 commit 建 request；不得对旧 request 继续发布。
+.\tools\validate-launcher-release-policy.ps1 `
+  -ReleaseTreeOid $request.releaseTreeOid `
+  -CandidateRoot <verified-candidate> `
+  -ReceiptPath tmp\runtime-policy-receipts\release.v2.json
+```
+
+promotion 自动读取 queue 中匹配 build identity 的本地签名结果，并可追加已 normalized 的 GitHub proof：
+
+```powershell
+.\tools\promote-runtime-bundle.ps1 `
+  -QueueRoot <queue-root> -RequestId $requestId `
+  -CandidateRoot <verified-candidate> `
+  -PolicyReceiptPath tmp\runtime-policy-receipts\release.v2.json `
+  -ExternalAttestationPath tmp\runtime-cloud-result\verified-github-proof.v2.json
+```
+
+若某个验收门只要求证明“同一冻结源已有两张真实 builder 票且闭包一致”，但明确**不授权部署**，必须复用同一 promotion 验证链的 `-VerifyOnly` 出口，不能另写第二套 quorum 解析器：
+
+```powershell
+$reportDir = [IO.Path]::GetFullPath('tmp\runtime-promotion-preflight')
+New-Item -ItemType Directory -Path $reportDir -Force | Out-Null
+.\tools\promote-runtime-bundle.ps1 `
+  -QueueRoot <queue-root> -RequestId $requestId `
+  -CandidateRoot <verified-candidate> `
+  -PolicyReceiptPath tmp\runtime-policy-receipts\release.v2.json `
+  -ExternalAttestationPath tmp\runtime-cloud-result\verified-github-proof.v2.json `
+  -VerifyOnly `
+  -ReportPath (Join-Path $reportDir 'preflight.v2.json')
+```
+
+`ReportPath` 必须是项目根内、父目录已存在、目标尚不存在的绝对 long path；其祖先不得是 reparse point/8.3 alias，并且不得落入 `.git`、`config/build`、queue、candidate、live deployment、任一四域输入树或 payload 输入。脚本声明的唯一仓内输出是以 CreateNew 写一份 canonical UTF-8/LF 的 `cf7-runtime-promotion-preflight.v2`：`status=preflight-passed`、`reportCreated=true`，同时明确 `runtimeMutationPerformed=false`、`releaseStateMutationPerformed=false`、`promotionPerformed=false`、`deploymentPerformed=false`、`reusableAsPromotionInput=false`；这不对 Git/gh 自身在仓外的实现缓存作无范围断言。报告绑定 request 五域、candidate manifest/逐文件 payload closure、policy receipt hash、去重后的 signer/faultDomain/proof 摘要；不含时间戳、本机绝对路径、用户名或机器名。写前和写后都会重验 request/bundle、registry、receipt、proof、worktree/tree、candidate closure/manifest 与 live deployment cleanliness；窗口漂移会删除本轮新报告并失败。该报告只能作验收证据，正式 promotion 必须不带 `-VerifyOnly/-ReportPath` 重新执行全链和事务检查。
+
+`-VerifyOnly` 是按需生成验收报告的诊断入口，不是正式 promotion 的前置步骤，且其报告明确不可复用为 promotion 输入。没有独立报告需求时直接执行正式 promotion，避免把同一完整验证无收益地串行跑两遍。
+
+promotion 重新验证 request、精确 `request.releaseTreeOid` worktree、receipt、candidate 与所有证明，要求至少两个不同 signer identity + faultDomain 且五项共同产物字段（前三域、build identity、payload closure）全等。候选 bundle 的首验把逐文件字节核对结果交给 closure 复用，不再对同一 candidate 做第二轮全量哈希；`tmp/runtime-promotions/` 内的 staged 复验与部署后 live 复验以 `-IntegrityOnly` 跳过四域 identity 重算（identity 已由 request 比对与 release-tree diff 钉死，最终 consensus 仍全量重算），逐文件 payload 哈希始终执行。promote 进程内已完成 `gh attestation verify` 的 GitHub wrapper 会写成 `github-preverified-proofs.v1` 伴随文件传给最终 `verify-runtime-consensus.ps1 -PreVerifiedGitHubProofPath`；consensus 对该部分只做记录内嵌字节与已验 wrapper 的结构/绑定比对（不相等或不覆盖即 fail-closed），跳过重复的哈希重算与 Sigstore 调用，独立运行与 post-promotion audit 不带该参数、仍是全量 replay。产品专项的听感、截图、H1/H2/E3 或其他人工验收证据不进入这个通用事务，也不能由 promotion 反向推导。随后脚本才可在 `tmp/runtime-promotions/` 组装 next/previous，事务替换正式 runtime、bootstrap 与 `config/build/runtime-release-consensus.json`。v2 consensus 内嵌 policy receipt 与全部签名/Provenance proof；正式安装完成后同步、有界等待 full-install bootstrap `--verify-only` 并检查真实 exit code，两个 verify 模式同时出现会按 CLI 误用拒绝。任何失败或 120 秒超时都进入自动回滚，previous 保留供人工恢复。
+
+历史 `-AudioV2EmergencyOwnerAuthorizationPath` / `-AcknowledgeAudioV2NonH2Compliant` 参数及三次 H2/E3 复核已从通用 `promote-runtime-bundle.ps1` 退役；对应 validator 与 2026-08-15 receipt 仅作不可变历史审计。现在不需要为“体验证据 pending”建旁路状态机：promotion 始终精确 materialize `request.releaseTreeOid` 并执行同一组 supply-chain 硬门，Audio H2 状态由 Audio 专项验收记录单独表达。
+
+同一分层也适用于变更触发：`config/audio-v2/**`、`docs/contracts/audio-v2/**` 与 `tools/audio-v2/**` 是 qualification/验收闭包，不再进入通用 runtime `policyHash` 或 Windows runtime Audit path filter。真正影响 DLL 的 `launcher/native/**`、`launcher/src/**`、`launcher/native/audio-v2-build-inputs.v1.json`、decoder lock、producer 与第三方源码仍由 artifact/producer 域、native change gate 和 cloud build 全量绑定；因此这项收敛不缩小 binary byte closure。
+
+### CI 事后 Audit 状态机
+
+`.github/workflows/runtime-bundle-integrity.yml` 是事后审计器，不是 required status context。它监听 `main` push、目标为 `main` 的可选 PR，以及获授权发布者的 `workflow_dispatch`；不再监听 `merge_group`，也不申请 Actions/Checks API 权限。静态 `paths` 只覆盖 native gate 的扩展名、基名、固定路径和前缀，再联合 artifact source、producer recipe、toolchain lock 与 payload roots/trees；PlayerInfo 的 assets/notice 由 artifact-source 路径触发，production validator 与 qualification corpus 是少数显式追加的 policy trigger。纯 docs/data/Flash/XFL/Web-only 变化不启动 Windows runner。修改 native gate 或 runtime input descriptor 时必须同步 workflow paths 与回归，避免“配置认为需要审计、GitHub 却未触发”的裂缝。
+
+该 `paths` 过滤只用于常规成本控制。GitHub.com 对 path filter 的生成 diff 只检查前 3,000 个文件；匹配文件落在窗口之外时 workflow 可能不启动，而超过 1,000 个 commit 或 diff 生成超时会让 workflow 总是启动。故超大提交下既可能漏审，也可能让纯内容提交占用 runner；这不会改变正式 release 的 immutable tag / quorum / receipt / promotion 安全边界。官方行为见 [Git diff comparisons](https://docs.github.com/en/actions/reference/workflows-and-actions/workflow-syntax#git-diff-comparisons)。
+
+job 名为 `audit-native-runtime`。所有事件都以 job-level `github.run_attempt == 1` 在 runner 分配前拒绝 rerun；`workflow_dispatch` 再限制为 `Crazyfs` / `Flash-Night` 的固定 actor ID，并传入 `-ForceDeploymentVerification`，强制当前 HEAD 走 integrity、source identity 与 strict consensus 全链，作为明确的 release-readiness 检查。push/PR 则用于对真实 diff 做低成本被动审计。它不解析外部成功绿灯锚，也不把某次 Actions success 变成服务端准入权。
+
+`tools/classify-runtime-release-state.ps1 -Mode Audit` 先完成 Git path safety 与 native binding 检查，再计算 `deploymentChanged`。路径门拒绝控制字符、Windows 保留/歧义路径、非 NFC、未配对 surrogate 与所有 Unicode plane 的 noncharacter；历史树中的不安全路径仅可按 base 的 mode + object identity 原样存活，任何触碰、重命名或新引入都必须重新通过严格门：
+
+| 状态 | 条件 | 行为 |
+|------|------|------|
+| `source-ahead` | native/release 输入发生变化，但根 EXE、`runtime/**`、runtime release consensus 与 builder registry 等部署闭包未变 | exit 0；输出 `state=source-ahead mode=Audit deploymentChanged=false`；不运行 verifier，不下载或重哈希 payload。这是正常开发态，不要求即时 promotion |
+| deployment unchanged 但路径/绑定非法 | 危险 Git path、symlink/gitlink/mode/case collision，或新增/修改 native 对象未被 descriptor/payload/canonical release control 绑定 | 失败报警；修复边界，不用 descriptor 漏列绕过审计 |
+| deployment changed | 根 bootstrap、`runtime/**`、manifest/consensus、builder registry 等正式部署闭包变化 | 运行逐文件 v2 integrity + strict signed consensus；缺少匹配 promotion、证明不足、闭包分叉或 v2 → v1 时失败 |
+
+push 红灯发生时提交已经进入 `main`；workflow 只能报警，不能回滚。PR 事件可以提供提前反馈，但仓库不要求 PR，也不会把该检查设为 merge gate。正式 release 的可靠边界仍是 immutable source tag、local X509 + GitHub OIDC 双生产者、production receipt 与 promotion，而不是一次普通 CI success。
+
+`config/build/main-branch-admission.v2.json` 描述远端仅有的三条不依赖 Actions 的 ruleset：`main-global-ref-integrity-v1` 无 bypass 地禁止删除与 non-fast-forward；`runtime-source-tag-creation-v1` 只允许两个授权发布账号创建 `runtime-build-v2/*`；`runtime-source-tag-immutability-v1` 无 bypass 地禁止已有 source tag update/deletion。没有身份 gate、Require PR、CODEOWNER 或 required status check。所有 write collaborator 都能 fast-forward 直推，包括 native 路径；GitHub Free 公开仓库没有本方案可用的服务端 path push restriction，完整残余风险见 [contribution-workflow.md](contribution-workflow.md)。
+
+### 验证矩阵与诊断
+
+```powershell
+.\tools\test-runtime-dev-entry.ps1
+.\tools\test-runtime-entry-guardrails.ps1
+.\tools\test-runtime-build-v2.ps1
+.\tools\test-runtime-release-policy.ps1
+.\tools\test-runtime-build-queue.ps1
+.\tools\test-runtime-github-attestation.ps1
+.\tools\test-invoke-runtime-github-build.ps1
+.\tools\test-main-branch-admission.ps1
+.\tools\test-runtime-release-state.ps1
+.\tools\test-runtime-build-consensus.ps1   # v1 migration guard
+.\tools\test-runtime-release-consensus-v2.ps1
+
+# Supplemental；不计入下述 Runtime Lane C 11/11 与 scalar 566
+.\tools\test-resolve-runtime-trusted-base.ps1
+.\tools\test-submit-contribution.ps1
+.\launcher\tests\run_tests.ps1
+```
+
+在 historical v1 detached clean source-freeze F `cb38600aae51f5019d09f87c33bd9e67d2b1f511`、Windows PowerShell 5.1 上，当时最近一次完整 Runtime Lane C 复跑为 **11/11 个入口 exit 0**：其中十个会输出 scalar 计数的套件合计 **566** 项，`test-runtime-entry-guardrails.ps1` 另报告 `scripts=3 / unsafeCandidateCases=3`，总耗时 **831.271 秒**。完整 stdout 为 18,488 B / SHA-256 `9BFBDDD521BE54D70E0158CE595C37C54820EE4C66C73C5681AFC56636A524AC`，stderr 为 3,280 B / SHA-256 `F7FA16D6B9927C3B36D6A61FCBC49C00874EAAC41EBFC662F863793E442479C6`。`test-resolve-runtime-trusted-base.ps1` 是单列 supplemental，当时最近独立历史基线为 **9/9**，未在该次 11 项执行中复跑，也不计入 11 个入口或 566。Lane 自身不含环境 bootstrap，也不能单独替代真实双 builder；该 historical v1 轮另由 F request `839C74FD1DF61ACC1DA580041F6FA71CA13A84DF1F43A55237BF9BEEF8648FB2` 的 X509 + GitHub OIDC proof 与 promotion `-VerifyOnly` preflight 闭合非部署 quorum。该结论仍不产生 promotion、正式 runtime 变更或标准入口验收，也不批准当前 v2。
+
+- candidate：`tools/verify-runtime-bundle-v2.ps1 -DeploymentRoot <candidate>`；只审字节闭包才加 `-IntegrityOnly`。
+- 提交态由 classifier 按 manifest header 分流；手工 v2 复核用 `tools/verify-runtime-bundle-v2.ps1 -Staged` + `tools/verify-runtime-consensus.ps1 -Staged`。
+- `artifactSourceHash` / `producerRecipeHash` / `toolchainLockHash` 不等：构建身份不同，不比较闭包。
+- build identity 相同而 `payloadClosureHash` 不同：真实可复现性失败或 signer equivocation，停止 promotion 并逐文件定位，不任选其一。
+- `policyHash` 不同但 build identity/closure 相同：建立新 request、重新跑政策 receipt；允许复用已验证 CAS，不重编 payload。
+- native 源码变化且部署闭包未变：Audit 应以 `source-ahead` 成功；不要为了“追平源码”在每次 push 后抢构建锁、改 manifest 或立即 promotion。
+- 部署闭包变化但无匹配 v2 consensus：事后 Audit 必须失败；不要靠重跑 Actions、手改 hash 或补文档把红灯洗绿。
+
+升级 SDK/编译器是显式维护事件：人工核对官方来源，更新 lock 与 bootstrapper hash，在不同故障域重建并取得新 quorum，同轮更新本文与 Launcher 文档。不得关闭 hash 校验来迁就某台机器的自动 servicing。
+
+<a id="evidence-states"></a>
+
+## 证据状态术语
+
+验收状态按 `compiled → candidate_built → candidate_executed → e2e_verified → promoted → standard_entry_verified` 逐级报告；允许因任务范围停在中间，但不得跨级命名、不得由旧证据升级新对象、不得互相代签。以下为不变量与状态机正文（由原文件中部内容前置，合同不变）。
+
+### 不变量
+
+- 单个进程、机器名或自由填写的 `BuilderId` 都不构成独立 builder；正式 quorum 至少需要两个不同签名身份和两个不同 `faultDomain`。
+- producer 只生产二进制 payload，不运行生成器或产品政策审计；政策变化不能污染 payload 身份。
+- request JSON 没有自由命令字段，只冻结 Git tree 与政策身份；但 Git bundle 本身含 producer/MSBuild/Cargo 源码，worker 会在 builder 账户下执行该冻结 commit 的构建代码。因此共享 queue 是受控写入信任边界，必须限制写权限；四域复算与 promotion 能阻止错误产物晋级，不能判断源码业务意图，也不能把恶意 queue writer 沙箱成无 RCE 能力。
+- candidate、CAS 与 attestation 都不能直接覆盖正式部署；只有 promotion 能事务写入根 bootstrap、`runtime/`、manifest 与 release consensus。
+- strict/promotion 状态逐文件验证字节闭包；日常 native 源码可以处于 `source-ahead` 而不立刻 promotion。事后 Audit 在部署字节未变时不读取 payload blob，也不声称验证源码内容语义；只有正式部署闭包变化才必须携带完整新共识。
+- 工具链不匹配、证明不足、相同故障域、分叉 payload、脏部署或无效政策 receipt 都 fail-closed；禁止伪造第二 builder、手改 hash/receipt/attestation 或复制单机 candidate 到正式 runtime。
+
+### 开发到正式验收状态机
+
+| 状态 | 最小证据 | 明确不代表 |
+|------|----------|------------|
+| `compiled` | 编译命令成功，输出仍可位于 `bin/obj` 或其他临时目录 | candidate 已生成、运行时已加载新字节 |
+| `candidate_built` | producer 返回唯一 immutable `candidateRoot`，metadata/manifest 的 build identity 与 payload closure 自洽 | 已执行、已部署 |
+| `candidate_executed` | 推荐由 `automation/dev.ps1` 按当前 Worktree build identity 精确选择后启动；低层诊断也可用 `automation/start.ps1 -CandidateRoot <absolute candidateRoot>`。两者都须确认 `runtimeMode=isolated_candidate`，且实际 process path、Core SHA-256、build identity、payload closure 全部匹配 | 领域 E2E 已通过、正式入口已更新 |
+| `e2e_verified` | 在上述已绑定 candidate 进程中完成受影响领域的真实 Web→Host→AS2→回包 / 写后回读门 | promotion 或正式验收 |
+| `promoted` | 唯一 promotion 入口完成事务替换、v2 consensus 与 full-install `--verify-only` | 标准玩家入口已实际加载该身份 |
+| `standard_entry_verified` | promotion 后无参数运行 `automation/start.ps1` / 根 bootstrap，确认 `runtimeMode=formal_runtime`、正式 Core 路径/SHA-256/build identity/payload closure 与被提升身份一致，并完成受影响领域 smoke | — |
+
+状态只能按 `compiled → candidate_built → candidate_executed → e2e_verified → promoted → standard_entry_verified` 报告；允许因任务范围停在中间，但不得跨级命名。只有同一身份已达到 `promoted` 且随后达到 `standard_entry_verified`，才可称“已部署 / 正式验收”。日常开发显式走 `automation/dev.ps1`：它按当前 Worktree 身份精确复用/生成隔离 candidate，但始终为 `NOT_DEPLOYED`。`automation/start.ps1` 无参数只消费正式根部署，不得猜测或自动选择 `launcher/bin`、`tmp/runtime-candidates/` 中的“最新”输出；`start.ps1 -CandidateRoot` 仅保留为指定精确候选的低层诊断兼容入口，不再推荐手工直启 Core。
+
+## 当前机器真值读取说明
+
+查询现役正式部署的身份与状态只读机器真源，不以本文或任何入口文档手填的「当前」声明为准。以下路径均已在本仓库实际核对存在：
+
+- `runtime/cf7-runtime-manifest.tsv`：现役正式 runtime 的逐文件清单，记录四个构建域中的前三域、`buildIdentityHash`、`payloadClosureHash`、工具链可读名与逐文件大小 / SHA-256。
+- `config/build/runtime-release-consensus.json`：promotion 原子写入的 signed consensus，内嵌 policy receipt 与全部签名 / Provenance proof；`requestId`、`releaseTreeOid`、`buildIdentityHash`、`payloadClosureHash`、`promotedAtUtc` 等字段即当前部署身份。
+- `config/build/runtime-builders.v2.json`：tracked builder registry，本地 X509 signer 的 keyId / epoch / faultDomain 以此为准。
+- 仓库根 `CRAZYFLASHER7MercenaryEmpire.exe --verify-only`：正式根 bootstrap 的完整安装完整性自检。
+- `tools/verify-runtime-bundle-v2.ps1`（candidate / `-Staged` 复核）与 `tools/verify-runtime-consensus.ps1`：手工 strict 复核入口；部署闭包是否变化由 `tools/classify-runtime-release-state.ps1 -Mode Audit` 判定。
+- 云端证明与事后 Audit run 记录以 GitHub 仓库 Actions 为准；历次 promotion 的 previous bundle 保留在本机 `tmp/runtime-promotions/`，供人工恢复。
+
+`launcher/bin/` 只是本地构建输出目录，不是正式部署真源；正式入口只消费仓库根 EXE 与 `runtime/`。以上 manifest / consensus 只能由 promotion 事务写入，手工编辑即破坏一致性；本说明只是只读查询指针，不构成第二份 current registry。
+
+## 历史发布记录
+
+**阅读口径**：以下各节是按对象 / 日期 / 范围留存的历史证据快照，记录各列车当时的身份、证明与验收边界。节标题与正文中的「当前正式发布」「上一正式发布」「顶部当前段」等字样均为该次发布当时的相对称呼，不代表当前部署状态；查询当前部署身份与状态一律以上文「当前机器真值读取说明」列出的机器真源为准。本节内容由原文件前部整体迁移至此，历史记录未删改。
+
 ## 2026-09-13 当前正式发布：PM19 启动加载叙事链
 
 完成启动背景 V3 等待叙事链（lore 双音区事件流、前景阶段文字、Ready 门控方环同心收束、cue 优先级与 pendingSync、压暗玻璃遮罩、FIFO 队列渲染与自适应过渡）与列车 C（[BootstrapAS] logBatch 转发、state 捎带 socketPort/httpPort/flashConnected、启动 FATAL 端口占用者实名、web→host log 回写 cmd、reveal watchdog 降级开门标志、about 面板轨道读数）。真机业务复验仍待测试员，准确状态 **promoted / FIELD_REVALIDATION_PENDING**。范围见[设计文档 V3 节与列车 C 节](启动引导-PM19质数幻方背景-设计与施工-2026-08-05.md)，机器身份见[发布证据](evidence/pm19-lore-chain-runtime-release-2026-09-13.json)。
@@ -613,270 +927,3 @@ Windows EOL materialization 是 historical v1 F 当时接受的非阻断 tooling
 2026-07-19 本机构建阻塞已经解除：锁定 bootstrapper FileVersion `17.14.37502.11` 已把 side-by-side Build Tools 安装到 `C:\Program Files (x86)\CF7VS\BT1736`，cl `19.44.35228.0`、link `14.44.35228.0` 与 Windows SDK `rc` 均通过 lock 中的精确版本和 SHA-256 门；`bootstrap-runtime-build-env.ps1 -VerifyOnly` 与 `check-runtime-build-env.ps1` 均 exit `0`。安装后还修复了 Windows PowerShell 5.1 对 `vswhere` 顶层 JSON 数组的函数返回包装：现在逐实例输出，旧 VS 与 BT1736 不会被拼成一个虚假 `installationPath`，同一进程即可重新发现 side-by-side 实例。
 
 2026-07-19 的 `AE1FC1EF… / 172A85C6…` 23-file diagnostic candidate 曾在临时开发目录完成基础启动、map/tasks/NPC 与早期 loot claim/close/unpause/存盘诊断，并暴露 `TransparencyKey` 点击穿透、claim-all 收束与 terminal late-ack 问题；它不含后续修复，也不代表以 `b072f97841ccb30e167c14495241ae64d9054e22` 为 upstream base 的本轮发布。该 candidate 及其后的 FCA19/B2AF/231388 等合并前 loot diagnostic candidate 均已退役。本轮人类 E2E 最初使用的隔离 candidate 位于 `tmp/runtime-candidates/v2/c-2a0cddb077b7-08846e81b3-20260721t100014612z-f32a40a3`，绑定 build identity `2A0CDDB077B760328B3141EFFFEEE3996841FA1CE49AD09E5D7339417F60A107`、payload closure `3B837DCDBC69AA47074E635DACACAE3B80263023E6032AC1FDF209768B1C150C` 与 Core SHA-256 `0F58BF864B8DE9C7FCEA098D7E1EEA1996BDE38D85D87E844B047B53F5247232`；corrected Agent entry、正常 NativeHud、同实例 organizer、普通 suspend/same-anchor 内容不变 reopen/final claim 已在该候选完成，因此它在当时达到 `e2e_verified / NOT_DEPLOYED`。随后同一 build identity / payload closure 经 source commit `c60aab2386aee4516608397373ae4c59148c5f77` 的 immutable request、production receipt、`builder-local-b` + GitHub OIDC quorum 与 strict verifier 完成 promotion；prewarm-held 正式入口 attempt `4eae1360cedd413fa3175db6a8997158` 又取得 fresh title marker、exact attempt receipt，完成真实 loot 两次 claim、terminal close/unpause 与存盘，故唯一 canary 达到 `standard_entry_verified`。此前一次正式入口 attempt 因 reveal watchdog 先于真实 title receipt 而以 `title_frame_not_observed` 失败，保留为换机/冷启动 portability 历史观察，不覆盖后续成功结论。隔离 candidate 的 25-file native payload 不含 `launcher/web`，外部 Web 字节仍由源码哈希与 WebView2 实机日志独立绑定，不能由 native identity/closure 代证。
-
-## 不变量
-
-- 单个进程、机器名或自由填写的 `BuilderId` 都不构成独立 builder；正式 quorum 至少需要两个不同签名身份和两个不同 `faultDomain`。
-- producer 只生产二进制 payload，不运行生成器或产品政策审计；政策变化不能污染 payload 身份。
-- request JSON 没有自由命令字段，只冻结 Git tree 与政策身份；但 Git bundle 本身含 producer/MSBuild/Cargo 源码，worker 会在 builder 账户下执行该冻结 commit 的构建代码。因此共享 queue 是受控写入信任边界，必须限制写权限；四域复算与 promotion 能阻止错误产物晋级，不能判断源码业务意图，也不能把恶意 queue writer 沙箱成无 RCE 能力。
-- candidate、CAS 与 attestation 都不能直接覆盖正式部署；只有 promotion 能事务写入根 bootstrap、`runtime/`、manifest 与 release consensus。
-- strict/promotion 状态逐文件验证字节闭包；日常 native 源码可以处于 `source-ahead` 而不立刻 promotion。事后 Audit 在部署字节未变时不读取 payload blob，也不声称验证源码内容语义；只有正式部署闭包变化才必须携带完整新共识。
-- 工具链不匹配、证明不足、相同故障域、分叉 payload、脏部署或无效政策 receipt 都 fail-closed；禁止伪造第二 builder、手改 hash/receipt/attestation 或复制单机 candidate 到正式 runtime。
-
-## 开发到正式验收状态机
-
-| 状态 | 最小证据 | 明确不代表 |
-|------|----------|------------|
-| `compiled` | 编译命令成功，输出仍可位于 `bin/obj` 或其他临时目录 | candidate 已生成、运行时已加载新字节 |
-| `candidate_built` | producer 返回唯一 immutable `candidateRoot`，metadata/manifest 的 build identity 与 payload closure 自洽 | 已执行、已部署 |
-| `candidate_executed` | 推荐由 `automation/dev.ps1` 按当前 Worktree build identity 精确选择后启动；低层诊断也可用 `automation/start.ps1 -CandidateRoot <absolute candidateRoot>`。两者都须确认 `runtimeMode=isolated_candidate`，且实际 process path、Core SHA-256、build identity、payload closure 全部匹配 | 领域 E2E 已通过、正式入口已更新 |
-| `e2e_verified` | 在上述已绑定 candidate 进程中完成受影响领域的真实 Web→Host→AS2→回包 / 写后回读门 | promotion 或正式验收 |
-| `promoted` | 唯一 promotion 入口完成事务替换、v2 consensus 与 full-install `--verify-only` | 标准玩家入口已实际加载该身份 |
-| `standard_entry_verified` | promotion 后无参数运行 `automation/start.ps1` / 根 bootstrap，确认 `runtimeMode=formal_runtime`、正式 Core 路径/SHA-256/build identity/payload closure 与被提升身份一致，并完成受影响领域 smoke | — |
-
-状态只能按 `compiled → candidate_built → candidate_executed → e2e_verified → promoted → standard_entry_verified` 报告；允许因任务范围停在中间，但不得跨级命名。只有同一身份已达到 `promoted` 且随后达到 `standard_entry_verified`，才可称“已部署 / 正式验收”。日常开发显式走 `automation/dev.ps1`：它按当前 Worktree 身份精确复用/生成隔离 candidate，但始终为 `NOT_DEPLOYED`。`automation/start.ps1` 无参数只消费正式根部署，不得猜测或自动选择 `launcher/bin`、`tmp/runtime-candidates/` 中的“最新”输出；`start.ps1 -CandidateRoot` 仅保留为指定精确候选的低层诊断兼容入口，不再推荐手工直启 Core。
-
-## v2 四域身份
-
-`config/build/runtime-inputs.v2.json` 是输入域清单。四域互斥，发现同一路径同时属于两个域会失败。`launcher/native/audio-v2-build-inputs.v1.json.materializedInputs` 中每一项还必须进入这四域的并集；`tools/test-runtime-build-v2.ps1` 对该包含关系 fail-close，防止本地完整工作树可构建、正式 sparse request 却漏掉第三方生成输入。
-
-| 身份 | 内容 | 变化后的动作 |
-|------|------|--------------|
-| `artifactSourceHash` | C#、C/C++、Rust 与项目/包输入等真正影响 payload 的源码；PlayerInfo 另以窄树只纳入 `Assets/**/*.svg` + runtime manifest，并固定纳入第三方 notice | 必须重新构建 |
-| `producerRecipeHash` | 纯 producer、native build、环境门与确定性参数（含 `sol_parser/.cargo/config.toml` 的 `/Brepro` 链接参数） | 必须重新构建 |
-| `toolchainLockHash` | runtime toolchain lock、`global.json`、Rust toolchain | 必须重新构建并重新取得环境资格 |
-| `policyHash` | 生成器、审计器、队列/证明/promotion/CI 规则及已派生发布资产 | 新 request + 新政策 receipt；前三域未变时可复用同一 build identity/CAS payload |
-
-`buildIdentityHash = SHA256(artifactSourceHash + producerRecipeHash + toolchainLockHash)`，故意不含 `policyHash`。`releaseTreeOid` 冻结完整 Git tree，`requestId = SHA256(releaseTreeOid + policyHash)`；两者分别回答“发布哪棵树”和“用哪套政策批准”。
-
-四域哈希的 Git object identity 以批量方式解析：Worktree 域由单个 `git hash-object --stdin-paths` 进程消费全部仓库相对路径（stdin 以无 BOM UTF-8 字节直写进程管道，规避 Windows PowerShell 5.1 在 UTF-8 代码页下向原生 stdin 注入 BOM 的行为）；Index 域由一次 `git ls-files -s` 全量解析成 stage-0 查找表。失败语义不变：进程非零退出、输出行数与输入数不等、任一行不匹配 OID 形状、路径含 LF/CR/绝对/越界形态、或 stage-0 记录不唯一，全部 fail-closed。逐文件单进程实现保留为 `Get-Cf7RuntimeV2GitObjectId` 语义基准，`tools/test-runtime-build-v2.ps1` 的批量/单文件等价性回归逐字节钉死两种模式；2026-08-23 起该回归还写入真实物理 CRLF，确认 `eol=lf` 下 Git-clean 且 batch/single/index 返回同一 clean-filter OID。域内固定文件的存在性检查仍逐文件走 Git 查询；这残存的少量 spawn 不影响量级。
-
-native 源码前缀内的非二进制契约文档也必须显式绑定，不能因为扩展名不是 `.cs` 就落在 release descriptor 之外。当前 [`launcher/src/AgentRuntime/Contracts/README.md`](../launcher/src/AgentRuntime/Contracts/README.md) 作为 C# 对照实现的发布约束固定归入 `policyHash`；它会改变 request/receipt，但不进入 `artifactSourceHash`，也不会冒充 DLL 字节变化。这里采用单文件绑定，不把整个 `launcher/src/**/*.md` 扩成构建输入。
-
-`policyHash` 与日常审计触发集合不是同一个集合。`config/build/native-change-gate.v1.json` 联合前三域、payload、全局 native 扩展/入口名和 release 信任链路径，回答“这次 push/PR 是否值得启动 native/runtime 事后审计”；广义内容 policy 不因此变成 native。命中源码边界但未改部署字节时，Audit 成功报告 `source-ahead`，不要求即时 promotion。生成器、审计器和派生发布资产仍留在 `policyHash`，下一次正式 release 再用当时完整 release tree 建 request 与 receipt。
-
-`policy` 树只绑定受版本控制的审计实现与契约；执行门恢复出的 `node_modules/`、`bin/`、`obj/` 等机器依赖必须由各树显式排除。否则同一干净 Git tree 会因本机已安装依赖而产生不同的 Worktree `policyHash`，并在 promotion 前失败关闭。`tools/arena-calibration/node_modules/` 因此不进入政策身份，其锁文件与受跟踪脚本仍照常绑定。斗兽计划中的两份 `source-provenance.json` 是仓库侧取证材料，不是 producer 或 policy 执行输入，也必须由 `excludePaths` 精确排除；计划、Schema、runner 与受跟踪校验脚本继续留在闭包内。
-
-`payloadClosureHash` 对根 `CRAZYFLASHER7MercenaryEmpire.exe` 与 `runtime/**` 的实际 payload 文件有序计算，明确排除 `runtime/cf7-runtime-manifest.tsv`、证明与 release record。这样 manifest/policy 元数据变化不会被误判成二进制失衡；manifest v2 再记录四个构建字段中的前三个、`buildIdentityHash`、`payloadClosureHash`、工具链可读名和逐文件大小/SHA-256。
-
-离屏注释对比工具位于 launcher/perf/tooltip-parity，其 C# 项目和源码、JS/JSON/HTML 参照输入归入 policy 域；native-fixture 的 bin/obj 必须排除。它已被生产 csproj 的 perf 排除项隔离，不进入 artifactSourceHash；新增测试 C# 文件仍须被 descriptor 绑定，不能因为位于 perf 就绕过广义 native 文件准入检查。
-
-现场对白的隐藏 WebView2 组件工具位于 `tools/native-dialogue-webview2-smoke`：源码、项目、HTML 与运行入口绑定 policy 域，bin/obj 排除；它不进入正式 DLL 输入域。必需 Web 资源检查包含动态立绘两条脚本与 XFL 派生皮肤入口；组件测试仍不构成真实游戏对白验收。
-
-`tools/equipment-tuning/fixtures/item-identity-triple.json` 作为现役图标身份审计的输入，显式绑定 policy fixedFiles。该目录原先只纳入 `.js`，夹具更新会被 native 变更审计按未绑定输入拒绝；补齐精确 JSON 路径，不扩展其他文件或降低检查要求。
-
-## producer 与政策闸门
-
-发布链分成三个职责，不能重新合并：
-
-1. `tools/prepare-launcher-release-assets.ps1` 只恢复锁定的 TypeScript/字典依赖并派生受跟踪发布资产。`save_schema.json` 默认保留；只有显式 `-SaveSchemaSource` 才从指定 canonical save 重建，避免私有存档和时间戳偷偷进入发布。
-2. `launcher/build-runtime-candidate.ps1` 是纯 payload producer：先执行精确环境门，再在 job 独占的 native/Cargo/MSBuild/temp 目录构建 miniaudio、Rust parser、bootstrap 与 FDD Core，生成不可覆盖的 v2 candidate。Audio Platform v2 不再只复制 `miniaudio_bridge.c + miniaudio.h`：producer 按 canonical [`audio-v2-build-inputs.v1.json`](../launcher/native/audio-v2-build-inputs.v1.json) 的固定排序清单 materialize 多 translation-unit bridge/backend/decoder、pinned miniaudio/Xiph 源码和 Media Foundation adapter，以 lock 中的精确 flags 静态闭合为唯一 `miniaudio.dll`；codec LICENSE、dependency lock、notice、runner/config/fixture 分别显式落入 artifact source 或 policy 域，禁止 wildcard、loose codec DLL 与宿主 codec pack 漂移。candidate 尚无正式 consensus，因此这里只同步、有界等待 bootstrap `--verify-runtime-only` 并检查真实 exit code；失败会保留/输出受限日志，成功必须删除 `logs/`。它不跑 Web/数据产品审计，也不签名。candidate 根部的 `runtime-build-metadata.v2.json` 在 payload closure 之外（payload 配置只含根 EXE + `runtime/**` 减排除项），除既有四域 identity/closure 字段外还记录 `policyHash` 与 per-stage `stageSeconds`/`totalSeconds`（环境门、identity 前/后、miniaudio、sol_parser、bootstrap、dotnet publish、组装、bootstrap verify），schema 只加不减，供 worker 构建后比对与耗时诊断使用。
-3. `tools/validate-launcher-release-policy.ps1` 是只读政策门：绑定 `releaseTreeOid` 与四域身份，验证 tracked tree 在审计前后未变化，按需严格验证 candidate，并把每项结果写成 `cf7-runtime-policy-validation.v2` production receipt。它既支持 clean commit 的 `Worktree` 身份，也支持工作树逐字节 materialize 同一 staged tree 的 `Index` 身份；candidate 始终按磁盘 payload 复核。候选优化检查会丢弃调用者注入的 `CF7_DOTNET_EXE`，重新运行锁定工具链门禁并只接受其选出的 host；门禁不产出精确 host 就禁止签发。`candidate-player-info-svg-contract` 同样丢弃调用者 dotnet 注入，使用锁定 SDK 做 locked restore，并对 exact candidate 核对 full canonical manifest、9 项 embedded resource/source bytes、strict 最小 raster、notice exact bytes 与禁用依赖；runtime 根或任意后代若是 reparse/junction，会在递归枚举前 fail-closed。随后实际 renderer-family DLL/native 相对路径集合须 exact=11、每项非空并记录 actual size/hash；这些实际字节再由 candidate payload closure/build identity 绑定。deps libraries 与唯一 renderer-bearing runtime target 也须精确相等；额外顶层 DLL、嵌套 native 文件或 deps library/runtime-target 都 fail-closed。只有 candidate 模式可 `policyEligible=true`，直接 Core 只作诊断。`required-web-runtime-assets` 必须覆盖生产懒加载闭包；地图资源箱必须逐项包含 `modules/loot/loot-runtime.js`、`loot-state.js`、`loot-view.js`、`loot-organizer.js` 与 `loot-panel.js`，任一缺失都 fail-closed 并在 receipt 点名。`panel-cross-layer-contracts` 使用的契约 JSON、validator 与变异测试脚本全部进入 `policyHash`，同时由 native change gate 和 GitHub workflow paths 触发事后审计，避免 sparse materialize 缺少门禁输入或未来只改契约却漏审。子审计 stdout/stderr 只进入人类/CI 日志，不能混入结构化 `checks[]`。receipt 只能写未跟踪路径。
-
-`launcher/build.ps1` 只是人工兼容编排器：prepare → pure producer → policy。它只写隔离 candidate，最多把状态推进到 `candidate_built`，不写根 bootstrap 或正式 `runtime/`；它适合已准备好的本地 tree 做完整候选检查，但不是多机发布协议，也不会替代签名 worker、immutable request 或 quorum。
-
-Audio Platform v2 的 H1/H2 是独立的产品验收证据，不是通用 runtime supply-chain 门。H1 继续约束 A1–A6 实现与 isolated candidate；最终 Audio 验收仍须让自动报告、真实 endpoint capture 与人工听感绑定同一 exact candidate，只有有效 H2 才能声称 Audio 专项 `e2e_verified` 或 `standard_entry_verified`。通用 source tag/request、双 fault-domain 构建与 promotion 只执行 immutable request、双 signer/faultDomain、production policy、strict verifier、原子替换与 rollback，不读取、生成或旁路 H1/H2/E3。现役 `cf7-runtime-build-request.v2` 保持严格原 schema，产品体验证据可诚实保持 `pending`，不得由部署事实反向补签。
-
-未提交工作树的可见功能检查统一走 `automation/dev.ps1`（或根 `本地开发启动.cmd`）。它重算当前 Worktree build identity，只复用同身份且闭包唯一的 candidate；无命中时以 `-SkipPrepare -SkipPolicy -BuilderId local-dev` 新建隔离 candidate。`-Status` 只读报告匹配/过期/同身份闭包分叉，`-ReuseOnly` 禁止构建，`-ForceBuild` 强制新建但仍拒绝分叉闭包，`-BuildOnly` 只选择/构建并验证而不启动。忽略的 `tmp/runtime-dev/active.v1.json` 只是 repository-relative 选择索引，不授予信任，每次执行前仍重验字节身份。
-
-`dev.ps1` 最终把精确 candidate 交给 `automation/start.ps1 -CandidateRoot`。该低层入口只接受当前仓库 `tmp/runtime-candidates/v2/` 下的 canonical 非 reparse producer 输出，严格核对完整安装哨兵、candidate metadata、runtime manifest、`buildIdentityHash`、`payloadClosureHash` 与 Core SHA-256，再调用 candidate 自身 bootstrap `--verify-runtime-only`；Core 启动后仍按同一身份反向自检，并显式使用当前完整安装根加载工作树 Web。只有报告/日志中的 `runtimeMode=isolated_candidate`、`processPath`、`coreSha256`、`buildIdentity`、`payloadClosure` 全部与预选 candidate 一致，才能报告 `candidate_executed`。目录 walk-up、候选树外搬运、reparse 别名或 marker/身份漂移一律 fail-closed；该模式始终 `NOT_DEPLOYED`，不产生签名、receipt 或 promotion 权限，也不得把 candidate 手工复制进正式 `runtime/`。
-
-prepare 中的派生器必须字节幂等；例如 save-repair dictionary 仅在结构内容变化时刷新 `generated.at`。重复 prepare 因时间戳制造 diff 属于构建门故障，不能要求维护者提交无语义的时间漂移。
-
-### 独立输入进程的构建归属（2026-09-13）
-
-`launcher/src/Guardian/HotkeyGuard.cs` 已取消 artifact source 与 csproj 排除，随 Core 编译。宿主通过同一 apphost 的 `--hotkey-guard <parentPid> <coreMvid>` 启动独立进程；本次正式 promotion 后，候选与正式 Core 均使用自身版本的拦截器，不再读取根目录历史 `hotkey_guard.exe`。这不新增 payload side-car 或工具链；模块身份与父路径验证发生在 hook 安装前。source descriptor、队列夹具与 Core CLI 注册表同步更新；此处只记录源码归属变化，不改变本文当前正式 promotion 身份。
-
-## 精确环境与隔离输出
-
-- 新机器先运行 `tools/bootstrap-runtime-build-env.ps1`；已有环境用 `-VerifyOnly`。若已有实例的精确 MSVC 字节不匹配，bootstrap 不会用旧实例的同名 component ID 冒充锁定 payload，而会走锁定 bootstrapper 的专用 side-by-side 目录；只有工具字节已匹配、仅缺 SDK 时才对该实例执行 `modify`。Windows PowerShell 5.1 下必须逐个输出 `vswhere` 解析到的实例，禁止把顶层 JSON 数组作为单个 `Object[]` 返回后拼接安装路径。正式 producer 每次仍会重跑 `tools/check-runtime-build-env.ps1`。断网复用已有精确匹配 candidate 不需要云端；断网重建则必须预先安装通过锁定门的工具链，并已缓存 NuGet/Cargo 依赖。
-- `config/build/runtime-toolchain.lock.json` 锁定 .NET SDK/host、Roslyn/MSBuild、MSVC `cl/link`、Windows SDK `rc`、Rust `rustc/cargo` 及 bootstrapper 入口字节；NuGet 图由 `launcher/packages.lock.json` 固定，其中 PlayerInfo 生产直接引用为 `Svg.Skia 5.1.1`，既有 `SkiaSharp` 保持 `3.119.4`，分发 notice 以 LF canonical byte 同时进入 artifact source 与 candidate payload。Visual Studio 安装器只是尽力补齐组件，不能把会移动的在线 channel 伪装成已固定 payload；最终资格始终以 `cl/link/rc` 的版本与 SHA-256 精确门为准。`.NET` provisioning 脚本也必须使用 `dotnet/install-scripts` 官方仓库的完整 commit URL 并固定 SHA-256，禁止重新使用会因 Authenticode 重签而变字节的 `https://dot.net/v1/dotnet-install.ps1`。
-- 当前基线 `cf7-win-x64-2026-07-22` 为 .NET SDK `10.0.300`、Visual Studio Build Tools `17.14.36` / installer `17.14.37502.11` / MSVC toolset `14.44.35207`（cl `19.44.35228.0`、link `14.44.35228.0`）、Windows SDK `10.0.22621.0`、Rust `1.96.0`；精确 SHA 只以 lock JSON 为准。2026-07-22 已核验 `dot.net` 当前脚本的 Microsoft Authenticode 签名有效，去除签名块后与官方 `dotnet/install-scripts@4a37a9f9d1a061fc389d6515100336db4e51710e` 源码逐行相同，因此 provisioning 改用该不可变源码字节。2026-07-19 本机 BT1736 的 bootstrap `-VerifyOnly` 与独立环境门均为 exit `0`。
-- producer 清除外部编译/链接/Rust 注入变量；Audio v2 的全部 C/C++/header/adapter 输入按 manifest 固定顺序与 SHA materialize 为 LF，使用固定 response file、SDK library、codec flags、`/pathmap`、`/experimental:deterministic`、`/Brepro`，并在候选中只产生一个静态闭合的 `miniaudio.dll`；Rust 每次 clean + locked；managed publish 不带 PDB/SourceLink。
-- promotion preflight 的隐私回归对本地路径做全文排除，对 Windows 用户名和机器名按完整 JSON 字符串值排除；不能用两字符用户名之类的短标识做任意子串匹配，否则会把无关字段误报为机器身份泄漏。
-- candidate 默认位于 `tmp/runtime-candidates/v2/c-<identity-prefix>-<builder-hash>-<run-token>/`，完整 build identity / builder label 只存 metadata 与证明，避免目录名把 legacy `MAX_PATH` 撑爆；producer 在编译前后都做 259 字符预算门，已存在目录不覆盖。native / Cargo / MSBuild / `TMP` / `TEMP` 的 job 工作根默认位于环境门规范化后的 machine-local `[IO.Path]::GetTempPath()/cf7-runtime-build-work/job-<token>/`，避免仓库位于 `Program Files (x86)` 等含括号路径时把 CMD 元字符传给 VsDevCmd；`CF7_RUNTIME_WORK_ROOT` 只能覆盖为短的本机绝对目录，卷根、UNC/映射网络盘、reparse point、仓库内/祖先、CMD 元字符或 projected MAX_PATH 超限均 fail-closed。队列 worker 从 request Git bundle 创建隔离 clone；输出按 job 分离，不再共享 `launcher/bin/Release`、Cargo target、MSBuild obj/bin 或临时目录。
-
-## 本地 builder enrollment 与证明
-
-每台本地发布机一次性执行：
-
-```powershell
-chcp.com 65001 | Out-Null
-$entry = .\tools\register-runtime-builder.ps1 `
-  -BuilderId <builder-id> -FaultDomain <physical-fault-domain>
-```
-
-脚本在 `Cert:\CurrentUser\My` 创建 3072-bit、不可导出的 RSA 私钥，只把 public certificate/`keyId`/epoch/faultDomain 写到 `tmp/runtime-builder-enrollment/`，**不会自动改 registry**。维护者核对机器与故障域后，才把 entry 合入 `config/build/runtime-builders.v2.json`。私钥不得导出或跨机复制；轮换/撤销通过新 epoch/key 或 `enabled=false` 完成。两台 VM 若共享同一宿主、磁盘或管理员边界，不得宣称两个 faultDomain。
-
-tracked registry 继续保留 `builder-local-a` / `physical-host-a` 与 `builder-local-b` / `physical-host-b` 两张历史公钥；既有 consensus 曾实际采用 `builder-local-a` 的 keyId `28DBEAF3761CCF3177FE396596A2557D8A6C9393371CD41DC893FF75A02723B3` / `physical-host-a` 和 GitHub Actions run `30364763726` 的 OIDC builder identity `1BDD1B0F419E0CA384E59986DBC1C9C9195A01CFEAF0838E116A8AD13B9BCEC3` / `github-hosted-windows`。任一单独本地票都仍不构成 quorum，也不授权单机 promotion。
-
-本次 local proof 使用已注册的 `builder-local-a` 3072-bit CurrentUser 不可导出 RSA key：keyId `28DBEAF3761CCF3177FE396596A2557D8A6C9393371CD41DC893FF75A02723B3`、thumbprint `647AFE92BD801518AF25F2A2EE1845E6847C2118`、epoch `1`；未复制或导出私钥。不同故障域的第二票由 GitHub hosted OIDC/Sigstore 提供，双 faultDomain quorum 已满足；dirty staged/unstaged/untracked 工作树仍不能冒充 source commit。
-
-2026-09-02，本机因不存在 `builder-local-a` / `builder-local-b` 对应的不可导出私钥，按一次性 enrollment 新增 `builder-local-c` / `physical-host-c`：keyId `CFB70E2D339ACB25E9B6C2873DF4F1AEEBA8EA75AD23B825724B27FCA70C0B86`、thumbprint `892236D1AE9EB9EFE0624E7C70B739F94A8DA6EF`、epoch `1`。旧私钥没有导出或复制；该登记只有在 tracked registry、immutable request、实际 local proof 与不同 faultDomain 的 GitHub OIDC proof 全部通过后才计入新 quorum，登记本身不构成票或部署。
-
-worker 使用该 CurrentUser certificate 对 canonical payload inventory 做 RS256 签名。验证端只信 tracked registry 中启用且 epoch/faultDomain/certificate 全匹配的 key；旧式自由文本 builder ID 不再计入 v2 quorum。
-
-## immutable request、队列与 CAS
-
-需要跨机器时，所有 worker 指向同一具备原子目录 rename 语义且仅受信维护者可写的 `-QueueRoot`（例如 ACL 收紧且共享名前缀足够短的 SMB 共享）；默认 `tmp/runtime-build-queue` 只适合路径预算允许的单仓本地演练。目录包含 `requests/`、`leases/`、`results/` 与 `cas/candidates/`，不进 Git。QueueRoot 本身也受传统文件 259 字符、目录 247 字符预算约束，因为 CAS final path 保留完整 build identity 与 payload closure，失败记录还允许 128 字符 diagnostic 文件名；request 与 worker（包括 DryRun）都必须在建目录、取证书或编译前 fail-fast，复制时再按实际 payload 路径复核。Windows 本机正式队列应给每趟列车分配经预算检查的专用短根（例如本列车使用 `C:\qf8`），不要在 `%LOCALAPPDATA%` 后继续拼 release-id 深目录；worker 没有 RequestId 过滤，含未 `ready` / `superseded` request 的根不得直接混跑下一列车。队列可以共享，但 worker 的隔离 checkout 默认放在本机短路径 `%LOCALAPPDATA%\CF7\runtime-build-checkouts`；worker 会清除外部 `GIT_INDEX_FILE/GIT_DIR/GIT_WORK_TREE/object/config-count` 上下文，并在 materialize 前固定 local Git `core.autocrlf=false`、`core.longpaths=true`，避免 worker 账户的全局换行策略改变 Worktree identity。checkout/candidate 目录只使用 request、worker 的短哈希并预检 MAX_PATH；包含 legacy 深路径的本机 checkout 通过扩展路径形式安全清理。只用 `-CheckoutRoot` 或 `CF7_RUNTIME_CHECKOUT_ROOT` 覆盖，不要把 checkout 放进共享队列、网络盘或层级很深的项目目录。
-
-最终 tree 已提交时使用 `Treeish`；只有纯本地双 builder 才可用 `Index` snapshot。需要 GitHub cloud builder 时必须先提交，并让 request 与 cloud workflow 使用同一 full commit：
-
-```powershell
-$request = .\tools\new-runtime-build-request.ps1 `
-  -QueueRoot <queue-root> -SourceKind Treeish -Treeish <full-commit>
-$requestId = $request.requestId
-```
-
-request 内含完整 frozen `releaseTreeOid`、四域 hash、build identity、source/request commit，以及只覆盖四个 v2 identity domain 精确 Git blob 子树的 `source.bundle`、`bundleTreeOid` 与 bundle SHA；大型无关 tracked asset 仍由 `releaseTreeOid` 绑定，但不会塞进 worker bundle。冻结 stage-0 条目时固定 `core.quotepath=false`，路径字段必须按仓库中的 UTF-8 字面值比对，不能让机器级 Git 配置把中文路径转成 C 风格转义文本。worker clone 后复核 `bundleTreeOid`，相同 tree+policy 幂等复用；tree 已过时就创建新 request 并用 `-SupersedeRequestId <old-id>` 标记旧列车，不删除历史。request 创建还会在同目录写只增不减的 `request.phases.json` 时间戳 sidecar（strict `request.json` schema 不变）；worker 成功发布与 promotion 完成也分别写 `results/_phases/<requestId>/` 下的 `worker-*` / `promotion-*` 阶段计时 sidecar，写失败只告警、从不当构建结果权威。worker 启动时扫描 checkout 根的孤儿 job 目录（有残留但无对应 result/failure 且无存活 lease），只报告、永不删除，供人工清理被强杀的 worker 现场。
-
-Audio Platform v2 仍复用现役 `cf7-runtime-build-request.v2`，不得注入 H1/H2 字段。E2/H2 与 evidence-only E3 `docs/evidence/audio-v2/h2-request-link.json` 只属于 Audio 专项验收包：需要形成 Audio acceptance 时，可由 E3 旁路绑定 request raw SHA/requestId、source tag→S commit/tree、E1 manifest 与 E2 receipt；通用 builder、proof/quorum、`VerifyOnly`、promotion 与 deployment write 均不消费该 link。任何具体 Audio 列车若另有 owner 明示的产品发布取舍，按该次授权记录；不要把它复制成通用构建状态机。
-
-每台已 enrollment 的本地机器运行：
-
-```powershell
-.\tools\invoke-runtime-build-worker.ps1 `
-  -QueueRoot <queue-root> -WorkerId <builder-id> `
-  -CertificateThumbprint <thumbprint> -Once
-# 常驻机器可改用 -Watch；状态查询：
-.\tools\get-runtime-build-request-status.ps1 `
-  -QueueRoot <queue-root> -RequestId $requestId
-```
-
-worker 具有单机 mutex、request lease、heartbeat/TTL 与失败记录；抢到 lease 后从 Git bundle 隔离 clone、复核 frozen tree/identity、调用纯 producer、签名并发布结果。构建后 worker 不再对工作树重算四域 identity：纯 producer 已在自身收尾重查输入漂移并把四域 identity 写进 candidate 根部的 `runtime-build-metadata.v2.json`，worker 读取该 metadata 并逐字段与 immutable request 比对（不等即 fail-closed，绝不盲信），签名时经 `New-Cf7RuntimeBuildAttestationV2 -ExpectedIdentity` 传入 request 锚定值——该参数会校验字段形状并重推 `buildIdentityHash` 一致性，只在一致时跳过进程内重算；自定义 `-BuildCommand` 不产出 v2 metadata 时仍回退完整重算。失败时会在删除短 checkout 前把非 reparse、单文件 ≤1 MiB、总计 ≤2 MiB 的 bootstrap diagnostics 写到该 request 的 `_failures` 记录；若 queue I/O 已不可用、失败记录本身无法落盘，worker 只追加固定告警并保留原始构建错误，不能让二次诊断写失败覆盖首因或转成成功。CAS 地址是 `buildIdentityHash/payloadClosureHash`；发布前后都严格复核 candidate，key 对同一 build identity 出现分叉 closure 会作为 equivocation 拒绝。状态退出码固定为 `0=active 全 ready`、`10=pending/empty`、`20=failed/invalid`、`30=只有 superseded`。status 只统计 queue 内本地 X509 result；采用 local + GitHub 时显示 `1/2` 是正常的，最终 combined quorum 由 promotion 把该本地 proof 与外部 verified GitHub proof 一起计算。
-
-推荐把便宜、可离线完成的失败门前移：先取得本地 X509 candidate/proof，再对**该本地 candidate** 跑一次 production policy preflight；这份 preflight receipt 只用于提前暴露 source、CSS、inventory 等政策问题，因为 receipt 绑定具体 `candidateRoot`，不能拿去批准稍后选中的 cloud candidate。preflight 通过后再消耗 GitHub hosted build；cloud proof 到手并选定最终 cloud candidate 后，仍须针对该 cloud candidate 重新签正式 production policy receipt，promotion 只接受后者。这样不削弱双故障域和最终 receipt 约束，同时避免本地即可发现的政策失败拖到云构建之后。
-
-## GitHub hosted 独立故障域
-
-`.github/workflows/runtime-cloud-builder.yml` 提供第二种 producer：只接受人工 `workflow_dispatch`，并在分配 hosted runner 前要求 `github.run_attempt == 1`，且 `github.actor_id` 必须是 `Crazyfs` 的 `91271520` 或 `Flash-Night` 的 `138298913`；失败后重新 dispatch，不能用 rerun 按钮绕过首次运行约束。授权只限制正式发布能力和 Actions 消耗，不构成第二人审批：两名授权发布者中的任一人都可以独立触发。从一次性 source tag dispatch full source commit 后，workflow 在明确的 `windows-2022` / VS 2022 runner family 精确 checkout、配置锁定工具链、运行纯 producer 并验证 v2 candidate；运行时还复核 `RUNNER_ENVIRONMENT`、`RUNNER_OS` 与 `ImageOS=win22`。`windows-2025` 自 2026-06 起已被 GitHub 迁到 VS 2026，不能再承载当前 17.14/v143 锁。checkout 先只取 config/materializer seed，再由 `runtime-inputs.v2.json` 展开四域精确文件集合；禁止为约 9 MiB 的 producer 输入铺开约 4.5 GiB 工作树并挤占 hosted runner 的安装/构建空间。Index 固定文件的存在性必须用 Git object 查询，不能比较受 `core.quotepath` 影响的展示文本；sparse-checkout 的标准输入固定为 UTF-8，因此根目录中文入口在无用户级 Git/终端配置的干净 hosted runner 上也必须可复现 materialize。producer 失败时上传独立 bootstrap/Visual Studio setup diagnostics。独立 `attest` job 仅对 deterministic envelope 调用 `actions/attest`；权限限定为 `id-token: write` / `attestations: write`，使用 GitHub OIDC + Sigstore/SLSA keyless provenance，不保存长期私钥。
-
-`config/build/runtime-github-builder.v2.json` 固定 repository、signer workflow、release source ref、`github-hosted-windows-2022` runner class 与 `github-hosted-windows` faultDomain。日常 release train 使用一次性、单路径段的 `refs/tags/runtime-build-v2/<release-id>`：cloud config、dispatch helper、envelope/attestation verifier 与 admission audit 都拒绝其他命名空间及嵌套 tag，保证 `sourceRef` 必定受 creation + immutability ruleset 保护。tag 必须精确指向 source commit，helper 在 dispatch 前经 GitHub API 解析并 peel annotated tag、拒绝目标不等；workflow 再断言 `GITHUB_REF` 与 `GITHUB_SHA` 分别等于该 tag 和 requested full commit，helper 定位/等待 run 时也要求 `headSha` 相等。由此 GitHub 实际执行的 workflow 字节与被四域政策 hash 绑定的 workflow 字节来自同一 commit，证明同时绑定 tag、full commit 与 tree。远端 creation ruleset 只允许两个授权发布账号创建新 tag，再由无 bypass 的 update/deletion ruleset 冻结已创建 tag；不要删除或移动已经出具证明的 tag。runner 镜像的小版本仍由 GitHub 滚动维护；任何工具字节变化都会被 toolchain lock fail-closed，必须显式轮换基线，不能自动放宽。最短触发、等待、取回与验真命令是：
-
-```powershell
-$cloud = .\tools\invoke-runtime-github-build.ps1 -SourceCommitOid <full-commit>
-# promotion 使用：-ExternalAttestationPath $cloud.proofPath（candidate 来自本地 X509 CAS）；
-# 默认只下载小的 attestation artifact（envelope + Sigstore bundle），本地不落 cloud candidate。
-
-# 需要把云端 candidate 字节也取回本地时显式下载 24MB 级大包（与旧默认行为一致）：
-$cloud = .\tools\invoke-runtime-github-build.ps1 `
-  -SourceCommitOid <full-commit> -IncludeCandidateArchive
-# 此时 promotion 可继续用：-CandidateRoot $cloud.candidateRoot -ExternalAttestationPath $cloud.proofPath
-
-# 进程或网络中断后，复用同一已完成 run；helper 会重验 run / artifact metadata 后续传 .partial：
-$cloud = .\tools\invoke-runtime-github-build.ps1 `
-  -SourceCommitOid <full-commit> -ResumeRunId <run-id>
-
-# 只用于受控恢复/离线 transport fixture；不会绕过 metadata、双层解压或 Sigstore 验真：
-$cloud = .\tools\invoke-runtime-github-build.ps1 `
-  -SourceCommitOid <full-commit> -ResumeRunId <run-id> `
-  -PreDownloadedArtifactArchive <outer-artifact.zip>
-```
-
-helper 只触发固定 workflow，用精确 `run-name`、`headSha` 与 dispatch 前 run ID 集定位本次同 commit run；`-ResumeRunId` 不重新 dispatch，但仍以同一套 identity 门重验指定 run。run 成功后，helper 查询该 run 的官方 Actions artifact metadata，要求唯一精确名称、artifact/run ID、`workflow_run.head_sha`、大小、未过期状态与 `sha256:<64hex>` digest 全部成立；随后用 GitHub CLI token 只向官方 API 换取短期 HTTPS redirect，不记录 token 或 signed URL。外层 ZIP 默认经 HTTPS 流式传输；redirect 探测与数据流永远共用同一条路由：`-GitHubArtifactTransport` / `CF7_GITHUB_ARTIFACT_TRANSPORT` 取 `auto|proxy|direct`（默认 `auto`），显式模式下两者都只用该路由，`auto` 先按 queue 根 `github-artifact-route.v1.json` 的 last-known-good 粘性路由、再 proxy、再 direct 的顺序用 redirect 小请求做 canary，胜者交给数据流并持久化，数据流连续失败即失效重探。连接/首包阶段由独立的短超时看门狗（`-ArtifactConnectTimeoutSeconds`，默认 15s）封顶，数据阶段另有停滞看门狗（`-ArtifactStallTimeoutSeconds`，默认 30s 无任何字节即中断本次尝试），整体 `-ArtifactDownloadTimeoutSeconds` 仍是总上限；失败只保留 `artifact-download/artifact-<id>.zip.partial`，重试发送 `Range`，严格要求 `206`、起止字节、总长和 `Content-Length` 与 metadata 一致，每约 5 MiB 只报告 received/expected 字节数。完整大小和 SHA-256 都通过后才把 partial 改名。
-
-attest job 同时上传两个 signed artifact：大包 `runtime-cloud-builder-<commit>` 保持原有恰好三文件契约（`runtime-candidate.v2.zip`、`runtime-build-envelope.v2.json`、`runtime-build-envelope.v2.sigstore.json`），小包 `runtime-cloud-attestation-<commit>` 恰好两文件（envelope + Sigstore bundle）。helper 默认只取小包：attestation-only 外层 ZIP 走同样的 entry count、路径、大小、link/reparse 与 case-collision 门，然后以 `verify-runtime-github-attestation.ps1 -WithoutCandidateArchive` 验真——该模式信任根为“Sigstore provenance 签的是内嵌逐文件 SHA-256 清单的 deterministic envelope，且云端 attest job 在签名前已逐字节核过 zip==envelope”，本地不再重复 archive 字节断言；其余校验（canonical envelope、config/source/tree 绑定、本地源四域 identity 重算、`gh attestation verify`）全部不变，且该模式显式拒绝 CandidateRoot、Index 源与 release-record replay。candidate 字节与 proof 的最终绑定仍在 promotion 完成：promote 会把同一 proof 对真实本地 candidate root 全量 replay。`-IncludeCandidateArchive` 恢复旧行为：大包必须恰好三文件，内层 candidate 再走原有 safe extractor，最后完整调用 verifier。`-PreDownloadedArtifactArchive` 只是 transport 测试/恢复 seam：仍查询所选 run 的 exact metadata、校验外层大小/digest，并走相同的外层/内层解压和 Sigstore verifier，不能成为离线信任旁路。验证器通过 `gh attestation verify` 同时钉住 repository、workflow、source-ref、commit/tree、envelope/candidate inventory 与全部身份字段，并输出可直接交给 promotion 的 normalized proof。下载 artifact 本身不可信；只有该验证通过后才算 GitHub producer。推荐 quorum 是“一个注册本地 X509 builder + GitHub OIDC builder”；两个注册本地 builder 也可，但必须拥有不同 key 和真实不同 faultDomain。
-
-`test-invoke-runtime-github-build.ps1` 的确定性默认套件通过预下载 seam 覆盖 exact metadata、outer/inner 恶意 ZIP、digest/run/head 负例、恢复选 run 与最终 verifier，并静态钉住 Range/长度/文件模式/进度契约；它不伪造 TLS 或把本地 HTTP 冒充 GitHub/Azure 网络行为。修改下载器后，除离线套件外还要用一个未过期的真实 Actions artifact 执行默认 helper，或受控构造 partial 后跑真实 HTTPS `206` 续传，确认最终 outer SHA-256 与 GitHub metadata 相等。
-
-Actions artifact 只是短期交接介质：unsigned candidate/envelope 保留 1 天；失败 bootstrap diagnostics 保留 7 天；signed candidate/envelope/Sigstore bundle 大包与 attestation-only 小包均保留 7 天。超过 signed 窗口仍未 promotion 时重新 dispatch，不能把 artifact retention 当长期证据仓。promotion 后 tracked v2 consensus 内嵌的验证材料才是仓库审计记录。
-
-## 政策 receipt 与 promotion
-
-在与 request tree 完全一致、tracked 内容干净的工作树中运行。正式 receipt / X509 proof / promotion 链固定由 Windows PowerShell 5.1（`$env:SystemRoot\System32\WindowsPowerShell\v1.0\powershell.exe`）承载：当前 `pwsh` 7 的 `ConvertFrom-Json` 会把 attestation 的 ISO `createdAtUtc` 字符串自动解析成 `DateTime`，若在该宿主内直接调用 promotion，会改变 canonical payload 复算字节并按预期 fail closed。新机经 winget 安装 GitHub CLI 后，先用同一 5.1 进程确认 `Get-Command gh`；若旧父进程尚未继承新的用户级 `PATH`，重启父进程或只给本次发布进程显式补入已核验的安装目录，不复制 token、证明或私钥来绕过环境门。
-
-```powershell
-.\tools\prepare-launcher-release-assets.ps1 -ReleaseTreeOid <full-commit>
-# 若生成物变化：审阅、提交，再用新 commit 建 request；不得对旧 request 继续发布。
-.\tools\validate-launcher-release-policy.ps1 `
-  -ReleaseTreeOid $request.releaseTreeOid `
-  -CandidateRoot <verified-candidate> `
-  -ReceiptPath tmp\runtime-policy-receipts\release.v2.json
-```
-
-promotion 自动读取 queue 中匹配 build identity 的本地签名结果，并可追加已 normalized 的 GitHub proof：
-
-```powershell
-.\tools\promote-runtime-bundle.ps1 `
-  -QueueRoot <queue-root> -RequestId $requestId `
-  -CandidateRoot <verified-candidate> `
-  -PolicyReceiptPath tmp\runtime-policy-receipts\release.v2.json `
-  -ExternalAttestationPath tmp\runtime-cloud-result\verified-github-proof.v2.json
-```
-
-若某个验收门只要求证明“同一冻结源已有两张真实 builder 票且闭包一致”，但明确**不授权部署**，必须复用同一 promotion 验证链的 `-VerifyOnly` 出口，不能另写第二套 quorum 解析器：
-
-```powershell
-$reportDir = [IO.Path]::GetFullPath('tmp\runtime-promotion-preflight')
-New-Item -ItemType Directory -Path $reportDir -Force | Out-Null
-.\tools\promote-runtime-bundle.ps1 `
-  -QueueRoot <queue-root> -RequestId $requestId `
-  -CandidateRoot <verified-candidate> `
-  -PolicyReceiptPath tmp\runtime-policy-receipts\release.v2.json `
-  -ExternalAttestationPath tmp\runtime-cloud-result\verified-github-proof.v2.json `
-  -VerifyOnly `
-  -ReportPath (Join-Path $reportDir 'preflight.v2.json')
-```
-
-`ReportPath` 必须是项目根内、父目录已存在、目标尚不存在的绝对 long path；其祖先不得是 reparse point/8.3 alias，并且不得落入 `.git`、`config/build`、queue、candidate、live deployment、任一四域输入树或 payload 输入。脚本声明的唯一仓内输出是以 CreateNew 写一份 canonical UTF-8/LF 的 `cf7-runtime-promotion-preflight.v2`：`status=preflight-passed`、`reportCreated=true`，同时明确 `runtimeMutationPerformed=false`、`releaseStateMutationPerformed=false`、`promotionPerformed=false`、`deploymentPerformed=false`、`reusableAsPromotionInput=false`；这不对 Git/gh 自身在仓外的实现缓存作无范围断言。报告绑定 request 五域、candidate manifest/逐文件 payload closure、policy receipt hash、去重后的 signer/faultDomain/proof 摘要；不含时间戳、本机绝对路径、用户名或机器名。写前和写后都会重验 request/bundle、registry、receipt、proof、worktree/tree、candidate closure/manifest 与 live deployment cleanliness；窗口漂移会删除本轮新报告并失败。该报告只能作验收证据，正式 promotion 必须不带 `-VerifyOnly/-ReportPath` 重新执行全链和事务检查。
-
-`-VerifyOnly` 是按需生成验收报告的诊断入口，不是正式 promotion 的前置步骤，且其报告明确不可复用为 promotion 输入。没有独立报告需求时直接执行正式 promotion，避免把同一完整验证无收益地串行跑两遍。
-
-promotion 重新验证 request、精确 `request.releaseTreeOid` worktree、receipt、candidate 与所有证明，要求至少两个不同 signer identity + faultDomain 且五项共同产物字段（前三域、build identity、payload closure）全等。候选 bundle 的首验把逐文件字节核对结果交给 closure 复用，不再对同一 candidate 做第二轮全量哈希；`tmp/runtime-promotions/` 内的 staged 复验与部署后 live 复验以 `-IntegrityOnly` 跳过四域 identity 重算（identity 已由 request 比对与 release-tree diff 钉死，最终 consensus 仍全量重算），逐文件 payload 哈希始终执行。promote 进程内已完成 `gh attestation verify` 的 GitHub wrapper 会写成 `github-preverified-proofs.v1` 伴随文件传给最终 `verify-runtime-consensus.ps1 -PreVerifiedGitHubProofPath`；consensus 对该部分只做记录内嵌字节与已验 wrapper 的结构/绑定比对（不相等或不覆盖即 fail-closed），跳过重复的哈希重算与 Sigstore 调用，独立运行与 post-promotion audit 不带该参数、仍是全量 replay。产品专项的听感、截图、H1/H2/E3 或其他人工验收证据不进入这个通用事务，也不能由 promotion 反向推导。随后脚本才可在 `tmp/runtime-promotions/` 组装 next/previous，事务替换正式 runtime、bootstrap 与 `config/build/runtime-release-consensus.json`。v2 consensus 内嵌 policy receipt 与全部签名/Provenance proof；正式安装完成后同步、有界等待 full-install bootstrap `--verify-only` 并检查真实 exit code，两个 verify 模式同时出现会按 CLI 误用拒绝。任何失败或 120 秒超时都进入自动回滚，previous 保留供人工恢复。
-
-历史 `-AudioV2EmergencyOwnerAuthorizationPath` / `-AcknowledgeAudioV2NonH2Compliant` 参数及三次 H2/E3 复核已从通用 `promote-runtime-bundle.ps1` 退役；对应 validator 与 2026-08-15 receipt 仅作不可变历史审计。现在不需要为“体验证据 pending”建旁路状态机：promotion 始终精确 materialize `request.releaseTreeOid` 并执行同一组 supply-chain 硬门，Audio H2 状态由 Audio 专项验收记录单独表达。
-
-同一分层也适用于变更触发：`config/audio-v2/**`、`docs/contracts/audio-v2/**` 与 `tools/audio-v2/**` 是 qualification/验收闭包，不再进入通用 runtime `policyHash` 或 Windows runtime Audit path filter。真正影响 DLL 的 `launcher/native/**`、`launcher/src/**`、`launcher/native/audio-v2-build-inputs.v1.json`、decoder lock、producer 与第三方源码仍由 artifact/producer 域、native change gate 和 cloud build 全量绑定；因此这项收敛不缩小 binary byte closure。
-
-## CI 事后 Audit 状态机
-
-`.github/workflows/runtime-bundle-integrity.yml` 是事后审计器，不是 required status context。它监听 `main` push、目标为 `main` 的可选 PR，以及获授权发布者的 `workflow_dispatch`；不再监听 `merge_group`，也不申请 Actions/Checks API 权限。静态 `paths` 只覆盖 native gate 的扩展名、基名、固定路径和前缀，再联合 artifact source、producer recipe、toolchain lock 与 payload roots/trees；PlayerInfo 的 assets/notice 由 artifact-source 路径触发，production validator 与 qualification corpus 是少数显式追加的 policy trigger。纯 docs/data/Flash/XFL/Web-only 变化不启动 Windows runner。修改 native gate 或 runtime input descriptor 时必须同步 workflow paths 与回归，避免“配置认为需要审计、GitHub 却未触发”的裂缝。
-
-该 `paths` 过滤只用于常规成本控制。GitHub.com 对 path filter 的生成 diff 只检查前 3,000 个文件；匹配文件落在窗口之外时 workflow 可能不启动，而超过 1,000 个 commit 或 diff 生成超时会让 workflow 总是启动。故超大提交下既可能漏审，也可能让纯内容提交占用 runner；这不会改变正式 release 的 immutable tag / quorum / receipt / promotion 安全边界。官方行为见 [Git diff comparisons](https://docs.github.com/en/actions/reference/workflows-and-actions/workflow-syntax#git-diff-comparisons)。
-
-job 名为 `audit-native-runtime`。所有事件都以 job-level `github.run_attempt == 1` 在 runner 分配前拒绝 rerun；`workflow_dispatch` 再限制为 `Crazyfs` / `Flash-Night` 的固定 actor ID，并传入 `-ForceDeploymentVerification`，强制当前 HEAD 走 integrity、source identity 与 strict consensus 全链，作为明确的 release-readiness 检查。push/PR 则用于对真实 diff 做低成本被动审计。它不解析外部成功绿灯锚，也不把某次 Actions success 变成服务端准入权。
-
-`tools/classify-runtime-release-state.ps1 -Mode Audit` 先完成 Git path safety 与 native binding 检查，再计算 `deploymentChanged`。路径门拒绝控制字符、Windows 保留/歧义路径、非 NFC、未配对 surrogate 与所有 Unicode plane 的 noncharacter；历史树中的不安全路径仅可按 base 的 mode + object identity 原样存活，任何触碰、重命名或新引入都必须重新通过严格门：
-
-| 状态 | 条件 | 行为 |
-|------|------|------|
-| `source-ahead` | native/release 输入发生变化，但根 EXE、`runtime/**`、runtime release consensus 与 builder registry 等部署闭包未变 | exit 0；输出 `state=source-ahead mode=Audit deploymentChanged=false`；不运行 verifier，不下载或重哈希 payload。这是正常开发态，不要求即时 promotion |
-| deployment unchanged 但路径/绑定非法 | 危险 Git path、symlink/gitlink/mode/case collision，或新增/修改 native 对象未被 descriptor/payload/canonical release control 绑定 | 失败报警；修复边界，不用 descriptor 漏列绕过审计 |
-| deployment changed | 根 bootstrap、`runtime/**`、manifest/consensus、builder registry 等正式部署闭包变化 | 运行逐文件 v2 integrity + strict signed consensus；缺少匹配 promotion、证明不足、闭包分叉或 v2 → v1 时失败 |
-
-push 红灯发生时提交已经进入 `main`；workflow 只能报警，不能回滚。PR 事件可以提供提前反馈，但仓库不要求 PR，也不会把该检查设为 merge gate。正式 release 的可靠边界仍是 immutable source tag、local X509 + GitHub OIDC 双生产者、production receipt 与 promotion，而不是一次普通 CI success。
-
-`config/build/main-branch-admission.v2.json` 描述远端仅有的三条不依赖 Actions 的 ruleset：`main-global-ref-integrity-v1` 无 bypass 地禁止删除与 non-fast-forward；`runtime-source-tag-creation-v1` 只允许两个授权发布账号创建 `runtime-build-v2/*`；`runtime-source-tag-immutability-v1` 无 bypass 地禁止已有 source tag update/deletion。没有身份 gate、Require PR、CODEOWNER 或 required status check。所有 write collaborator 都能 fast-forward 直推，包括 native 路径；GitHub Free 公开仓库没有本方案可用的服务端 path push restriction，完整残余风险见 [contribution-workflow.md](contribution-workflow.md)。
-
-## 验证矩阵与诊断
-
-```powershell
-.\tools\test-runtime-dev-entry.ps1
-.\tools\test-runtime-entry-guardrails.ps1
-.\tools\test-runtime-build-v2.ps1
-.\tools\test-runtime-release-policy.ps1
-.\tools\test-runtime-build-queue.ps1
-.\tools\test-runtime-github-attestation.ps1
-.\tools\test-invoke-runtime-github-build.ps1
-.\tools\test-main-branch-admission.ps1
-.\tools\test-runtime-release-state.ps1
-.\tools\test-runtime-build-consensus.ps1   # v1 migration guard
-.\tools\test-runtime-release-consensus-v2.ps1
-
-# Supplemental；不计入下述 Runtime Lane C 11/11 与 scalar 566
-.\tools\test-resolve-runtime-trusted-base.ps1
-.\tools\test-submit-contribution.ps1
-.\launcher\tests\run_tests.ps1
-```
-
-在 historical v1 detached clean source-freeze F `cb38600aae51f5019d09f87c33bd9e67d2b1f511`、Windows PowerShell 5.1 上，当时最近一次完整 Runtime Lane C 复跑为 **11/11 个入口 exit 0**：其中十个会输出 scalar 计数的套件合计 **566** 项，`test-runtime-entry-guardrails.ps1` 另报告 `scripts=3 / unsafeCandidateCases=3`，总耗时 **831.271 秒**。完整 stdout 为 18,488 B / SHA-256 `9BFBDDD521BE54D70E0158CE595C37C54820EE4C66C73C5681AFC56636A524AC`，stderr 为 3,280 B / SHA-256 `F7FA16D6B9927C3B36D6A61FCBC49C00874EAAC41EBFC662F863793E442479C6`。`test-resolve-runtime-trusted-base.ps1` 是单列 supplemental，当时最近独立历史基线为 **9/9**，未在该次 11 项执行中复跑，也不计入 11 个入口或 566。Lane 自身不含环境 bootstrap，也不能单独替代真实双 builder；该 historical v1 轮另由 F request `839C74FD1DF61ACC1DA580041F6FA71CA13A84DF1F43A55237BF9BEEF8648FB2` 的 X509 + GitHub OIDC proof 与 promotion `-VerifyOnly` preflight 闭合非部署 quorum。该结论仍不产生 promotion、正式 runtime 变更或标准入口验收，也不批准当前 v2。
-
-- candidate：`tools/verify-runtime-bundle-v2.ps1 -DeploymentRoot <candidate>`；只审字节闭包才加 `-IntegrityOnly`。
-- 提交态由 classifier 按 manifest header 分流；手工 v2 复核用 `tools/verify-runtime-bundle-v2.ps1 -Staged` + `tools/verify-runtime-consensus.ps1 -Staged`。
-- `artifactSourceHash` / `producerRecipeHash` / `toolchainLockHash` 不等：构建身份不同，不比较闭包。
-- build identity 相同而 `payloadClosureHash` 不同：真实可复现性失败或 signer equivocation，停止 promotion 并逐文件定位，不任选其一。
-- `policyHash` 不同但 build identity/closure 相同：建立新 request、重新跑政策 receipt；允许复用已验证 CAS，不重编 payload。
-- native 源码变化且部署闭包未变：Audit 应以 `source-ahead` 成功；不要为了“追平源码”在每次 push 后抢构建锁、改 manifest 或立即 promotion。
-- 部署闭包变化但无匹配 v2 consensus：事后 Audit 必须失败；不要靠重跑 Actions、手改 hash 或补文档把红灯洗绿。
-
-升级 SDK/编译器是显式维护事件：人工核对官方来源，更新 lock 与 bootstrapper hash，在不同故障域重建并取得新 quorum，同轮更新本文与 Launcher 文档。不得关闭 hash 校验来迁就某台机器的自动 servicing。

@@ -1,7 +1,7 @@
 # Automation 自动化脚本使用指南
 
 **文档角色**：启动与运行自动化入口。  
-**当前正式版本与发布验收状态**统一见 [runtime 发布记录](../docs/runtime-build-reproducibility.md)；开发验收继续使用本节统一入口。
+**当前正式版本与发布验收状态**统一见 [runtime 发布记录](../docs/runtime-build-reproducibility.md#release-protocol)；开发验收继续使用本节统一入口。
 
 **历史正式列车（2026-09-02，斗兽标定生产目录上线）**：release source `8b71d81f3777157d924f7023c55219c75d695238`、tag `runtime-build-v2/20260902-arena-calibration-production-v1`、release tree `0b2172f023c7e192d003e47d432a278063870b59` 与 request `45C86C4FA3AB947C4CE0E9249F8BC5A5BE52AA4CE81F3BE5BECF3FA05732108B` 已由本地 X509 `builder-local-b` / `physical-host-b` 与 GitHub OIDC/Sigstore `github-hosted-windows`（cloud run `33578482626`）对 identity `491CF53B1D6447335D7798EBE4018C575B4BFC25277FCD5FA0138A550370007B`、closure `73040C84F9ACCAAA6E1A9DF5D89F87AC3E30D3ABEE0DE85031D8BE69C4E2260D` 达成双 signer / 双 faultDomain 共识。39/39 final receipt SHA-256 为 `E21067C501DCD21C410F89809F2A9028C6EC71D0F262009619265BF99DD76DB7`；deployment commit `59212346e3b43d75924babcde4d1ee1cfaa9c860` 与 post-promotion audit run `33579694615` 均已推送/通过，审计明确输出 `state=promoted`、`deploymentChanged=true`。
 正式根 bootstrap `--verify-only`、33-file bundle 与 signed consensus 已通过；Core DLL SHA-256 为 `A5F84FDA978839869FD5B47170D652E40DDB534357E483AA71D2C0CE3D58E476`。部署后尚未从无 candidate selector 的正式入口重跑 Arena 业务旅程或新一轮真人 PVE，因此只称 `promoted`，不称业务 `standard_entry_verified`。
@@ -349,12 +349,9 @@ powershell -File ..\launcher\build.ps1 -BuilderId local-dev
 
 `launcher/build.ps1` 现在只是 prepare → pure producer → read-only policy 的 candidate-only 兼容编排器；它生成隔离 candidate，不覆盖根 bootstrap / 正式 `runtime/`，也不构成本地签名或正式发布。只有在脚本返回的精确 candidate 上继续执行并保留身份证据，状态才会从 `candidate_built` 前进到 `candidate_executed` / `e2e_verified`。新机器先运行 `powershell -ExecutionPolicy Bypass -File ..\tools\bootstrap-runtime-build-env.ps1`，已有环境加 `-VerifyOnly`；若已有实例的精确 MSVC 字节不匹配，bootstrap 必须使用锁定 bootstrapper 的专用 side-by-side 目录，只有工具字节已匹配而仅缺 SDK 时才允许 `modify`，Windows PowerShell 5.1 下 `vswhere` 顶层数组必须逐实例输出。普通 Web/AS2/数据改动不要求取得 runtime 发布权，也不要为消除 `source-ahead` 自动重建二进制。
 
-正式发布必须把最终提交冻结成 immutable request，由已 enrollment 的本地 worker 和另一个真实故障域（推荐 GitHub hosted Windows + OIDC/Sigstore）分别生产相同 payload，再凭 production policy receipt 进入 promotion：
+正式发布必须把最终提交冻结成 immutable request，由已 enrollment 的本地 worker 和另一个真实故障域（推荐 GitHub hosted Windows + OIDC/Sigstore）分别生产相同 payload，再凭 production policy receipt 进入 promotion；完整协议流程、四域身份与晋升门以 [runtime 发布协议](../docs/runtime-build-reproducibility.md#release-protocol) 为准。
 
-正式 v2 consensus 当前绑定 tag `runtime-build-v2/20260825-stage-time-pools-v3`、request `ADDBA21EF66AA9429D00D349E0ACD33F27BE55641CB3B9F541ACB6BEAC47D043`、source commit `a4a85dbdcb266f66677eef28875e0862892e48ad`、release tree `0b4778aa346a6acce276052debf79a93af7a39a1`。
-build identity 为 `50ED16457B8C82787A495F957259A9544AD96C819E8D1EF11087D5AF06E0BFB0`，payload closure 为 `60981913A1D18682C06B6ABF2CC6DB7EC0F57345BAF8B1D372E67D7EC3ADE5EB`。local signer 位于 `physical-host-a`，不可导出 keyId 为 `28DBEAF3761CCF3177FE396596A2557D8A6C9393371CD41DC893FF75A02723B3`；GitHub Actions run `32837546069` 的 OIDC identity `B4A625D76B6E132856557C169BA3C9FA63C2B3147ABCF8AB0B905FF354C8DF40` 提供 `github-hosted-windows` 第二票。
-production policy `F30603FF717C9C4B4426161451C119DCC3A0982DBF7C1A270DDEED26F371C7C8` 的 39/39 final receipt SHA-256 为 `F69E8A0569838920B86A42F3B704EABFEEF5AE4E6193A6389FB97055DDDAD9B4`；deployment commit `9f68a3ee5fbd6db9447118da12fa0fa0a00d1829` 已由首次 post-promotion audit run `32838658629` 确认为 `state=promoted`、`deploymentChanged=true`，严格 manifest/consensus 为 33 files、2 signers、2 faultDomains。
-无 candidate selector 的正式入口取得 fresh reveal、前后两次 `session.status=verified`、同 lifecycle、strict shutdown receipt、Flash/Guardian exit 0、玩家调制档哈希不变与零残留。该 smoke 只证明正式身份和生命周期，不代签 JK、核电站、断壁残垣或其他业务专项 `standard_entry_verified`。cloud workflow 仍只允许 `Crazyfs` / `Flash-Night` 的固定 actor ID 首次 dispatch。
+现役部署身份只读 [runtime consensus](../config/build/runtime-release-consensus.json) 与 [runtime manifest](../runtime/cf7-runtime-manifest.tsv)，本文件不再手填第二套「当前绑定」。2026-08-25 stage-time-pools-v3 列车的完整收据、标准入口 smoke 范围与 v1/v2 失败历史保留在 [runtime 文档历史发布记录](../docs/runtime-build-reproducibility.md)。
 
 PlayerInfo B0 的 historical v1 与 F2/r2 source freeze/tag/request、双 builder、policy 和 `-VerifyOnly` 报告继续按各自历史作用域审计；F2/r2 列车自身没有 promotion。其实现字节随后被当前 `6f3d50a52413…` release 包含并进入 formal runtime，但本轮标准入口只跑 Agent Runtime 的 Launcher/NativeHud/Help WebOverlay 只读观察、结构化 opener 与 trusted shutdown，没有启用 PlayerInfo fixture 或观察真实 `pi_*`，不能把总体 runtime 发布状态写成 PlayerInfo-specific E2E。精确 source/request/identity/receipt/quorum 与启动证据以 [runtime v2 深层文档](../docs/runtime-build-reproducibility.md) 为准。
 
@@ -375,7 +372,7 @@ $request = ..\tools\new-runtime-build-request.ps1 `
 $cloud = ..\tools\invoke-runtime-github-build.ps1 -SourceCommitOid <full-commit>
 ```
 
-最后一条命令会从受保护的单路径段 `runtime-build-v2/<release-id>` source tag 触发固定 cloud workflow，并验证 API-resolved tag、`GITHUB_REF/GITHUB_SHA` 与 run `headSha` 都精确绑定请求的 full commit；随后等待精确 run、安全解包并产出 `$cloud.proofPath`（默认只下载 attestation 小包；需把云端 candidate 字节取回本地时加 `-IncludeCandidateArchive`，才会产出 `$cloud.candidateRoot`）。unsigned job 交接 artifact 保留 1 天，失败诊断、signed 大包与 attestation 小包保留 7 天；超期未 promotion 就重新 dispatch，不把 Actions artifact 当长期档案。request、队列/CAS、双故障域 quorum、receipt 与 `promote-runtime-bundle.ps1` 的完整步骤以 [runtime v2 发布列车](../docs/runtime-build-reproducibility.md) 为准。本轮 F8 在 release source `6f3d50a52413c747b05b74be88d6ee46650f4597` 上 fresh 跑通 Runtime Lane C 11/11、scalar 572，随后完成 tag/request、本地 X509 + GitHub OIDC 双 builder、两侧同一 33-file payload、26/26 cloud-bound final policy、不可复用 `-VerifyOnly` preflight、正式 promotion 与同身份无 candidate id 的 pure-MCP Help-panel 标准入口 smoke，严格状态为 `standard_entry_verified`。该 smoke 只覆盖单屏 Launcher/NativeHud/Help WebOverlay、Flash metadata fail-closed 和 trusted shutdown；功能回归证据统一维护在 [测试指南](../agentsDoc/testing-guide.md)，本轮边界见 [F8 人工验收与正式发布记录](../docs/evidence/cf7-agent-runtime-f8-manual-acceptance-2026-07-31.md)。任何时候都禁止手工换 manifest、伪造证明，或把单机 candidate 复制进根 runtime。
+最后一条命令会从受保护的单路径段 `runtime-build-v2/<release-id>` source tag 触发固定 cloud workflow，并验证 API-resolved tag、`GITHUB_REF/GITHUB_SHA` 与 run `headSha` 都精确绑定请求的 full commit；随后等待精确 run、安全解包并产出 `$cloud.proofPath`（默认只下载 attestation 小包；需把云端 candidate 字节取回本地时加 `-IncludeCandidateArchive`，才会产出 `$cloud.candidateRoot`）。unsigned job 交接 artifact 保留 1 天，失败诊断、signed 大包与 attestation 小包保留 7 天；超期未 promotion 就重新 dispatch，不把 Actions artifact 当长期档案。request、队列/CAS、双故障域 quorum、receipt 与 `promote-runtime-bundle.ps1` 的完整步骤以 [runtime v2 发布列车](../docs/runtime-build-reproducibility.md) 为准。本轮 F8 在 release source `6f3d50a52413c747b05b74be88d6ee46650f4597` 上 fresh 跑通 Runtime Lane C 11/11、scalar 572，随后完成 tag/request、本地 X509 + GitHub OIDC 双 builder、两侧同一 33-file payload、26/26 cloud-bound final policy、不可复用 `-VerifyOnly` preflight、正式 promotion 与同身份无 candidate id 的 pure-MCP Help-panel 标准入口 smoke，严格状态为 `standard_entry_verified`。该 smoke 只覆盖单屏 Launcher/NativeHud/Help WebOverlay、Flash metadata fail-closed 和 trusted shutdown；功能回归证据统一维护在 [测试指南](../agentsDoc/testing-guide.md#select)，本轮边界见 [F8 人工验收与正式发布记录](../docs/evidence/cf7-agent-runtime-f8-manual-acceptance-2026-07-31.md)。任何时候都禁止手工换 manifest、伪造证明，或把单机 candidate 复制进根 runtime。
 
 ### 改 Flash / AS2
 
@@ -439,7 +436,7 @@ python ..\tools\missile-tuning-sim\run_sim.py scan --base-config cruise --object
 ## 7. 相关文档
 
 - 启动 / 运行与子系统细节：[`launcher/README.md`](../launcher/README.md)
-- 测试矩阵：[`agentsDoc/testing-guide.md`](../agentsDoc/testing-guide.md)
+- 测试矩阵：[`agentsDoc/testing-guide.md`](../agentsDoc/testing-guide.md#select)
 - Flash 编译 smoke：[`scripts/FlashCS6自动化编译.md`](../scripts/FlashCS6自动化编译.md)
 - 离线导弹调优：[`tools/missile-tuning-sim/README.md`](../tools/missile-tuning-sim/README.md)
 - 协作者直推与 native/runtime 发布边界：[`docs/contribution-workflow.md`](../docs/contribution-workflow.md)

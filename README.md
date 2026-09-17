@@ -1,9 +1,8 @@
 # 闪客快打7佣兵帝国 单机版 MOD
 
 **《闪客快打7佣兵帝国》（Crazy Flasher 7: Mercenary Empire）单机版 MOD 开发工程**  
-**最后核对代码基线**：release source commit `85b168e35222f1e2a750ce89481f3aa416a73467`（2026-09-11，任务交付选择、单次返回与走门保护），当前正式 runtime 为 `HUMAN_ACCEPTANCE_PASSED / promoted`。发布身份、共识与验收边界只读 [runtime 构建复现文档](docs/runtime-build-reproducibility.md)。
-
-**斗兽专项历史快照**：斗兽星期级全量标定 Gate F release source commit `c64a5440e5506a3f1567143711f984d063e56505`（2026-08-28；deployment `693baf7051d9e67be8930b309dc14eea65c0eab6`）；正式 runtime 已 `promoted`。`gate-f-week-full-v4` 三份 fresh soak 为 30/30 finished；全量累计 16 个 completed shard + 1 个 F2 timeout-anomaly shard、280 条 durable row，0 error，runtime/save/shutdown 均正常。F2 的 20 行中原向 10/10 finished、换边 5 finished + 5 timeout，旧 driver 把有效候选异常误作基础设施失败而暂停；v5 草案已拆分 execution health 与 candidate quality，纯 timeout-rate 进入 deferred anomaly 后继续，error/runtime/save/disk/时长漂移仍 fail closed。v4 事实原样保留但不跨 plan hash 混计，v5 重新冻结与 fresh soak 前不称 Gate F 完成；身份、共识与证据边界见 [runtime 构建复现文档](docs/runtime-build-reproducibility.md)。
+**最后核对代码基线**：commit `2e5e32321506fa1fb2693f3928205f8c45b4235e`（2026-09-17）。
+**当前正式 runtime 身份与验收状态**：以机器真源 `config/build/runtime-release-consensus.json` 与 `runtime/cf7-runtime-manifest.tsv` 为准；发布协议与证据状态术语见 [runtime 构建复现文档](docs/runtime-build-reproducibility.md#release-protocol)。历史发布与专项验收证据（斗兽 Gate F 等）按对象留存在该文档的 [历史发布记录](docs/runtime-build-reproducibility.md#历史发布记录) 与对应 ADR，本 README 不复制收据。
 
 CF7:ME 是一个 **Flash 起源、当前已演化为多栈运行时** 的单机 MOD 工程。  
 游戏核心仍运行在 **ActionScript 2.0 + Flash CS6** 上，但外围运行、启动、UI、验证和存档链路已经扩展为：
@@ -46,7 +45,7 @@ CrazyFlashNight/
 
 ### 普通合作者提交文档 / 美术 / 策划改动
 
-普通账号继续在现有 Git 客户端中 `Pull → Commit → Push`，无需额外 Git 流程，也不参与 Launcher runtime 双故障域共识。`Crazyfs`、`Flash-Night` 与未知新 collaborator 属受限账号，使用 PR 或根目录 `一键提交到主线.cmd`，并以 merge commit 合入。完整账号、可信绿灯锚与 native 黑名单边界见 [协作者直推与 native 账号隔离](docs/contribution-workflow.md)。
+所有 write 协作者（含 `Crazyfs`、`Flash-Night`）在现有 Git 客户端 `Pull → Commit → Push` 直推主线，服务端不要求 PR、CODEOWNER 或另一人在线；PR 仅作自愿讨论或代码审阅。正式 runtime 发布才走双 signer / 双故障域共识，普通改动不参与。账号、tag 创建授权与 native 准入边界以 [协作者直推与 native 账号隔离](docs/contribution-workflow.md) 为唯一权威。
 
 ### 运行游戏
 
@@ -59,8 +58,13 @@ cd "<项目根目录>"
 
 ```powershell
 chcp.com 65001 | Out-Null
-powershell -ExecutionPolicy Bypass -File scripts/compile_test.ps1
+# 编译目标按改动归属显式选择，不依赖 Flash 当前活动文档：
+#   逻辑注入（多数 .as 改动）→ -Target publish；测试构建 → -Target test
+#   主 XFL → -Target main；独立 XFL/SWF → -Target <xfl路径> -PublishOnly -VerifySwf <对应.swf>
+powershell -ExecutionPolicy Bypass -File scripts/compile_test.ps1 -Target publish
 ```
+
+目标归属、成功判据（marker 不等于编译成功）与恢复协议见 [验证矩阵 AS2 行](agentsDoc/testing-guide.md#as2) 和 [CS6 操作说明](scripts/FlashCS6自动化编译.md)。
 
 ### 修改 Launcher 后验证
 
@@ -71,7 +75,7 @@ powershell -File launcher/tests/run_tests.ps1
 powershell -File launcher/build.ps1 -BuilderId local-dev
 ```
 
-Launcher 状态统一为 `compiled → candidate_built → candidate_executed → e2e_verified → promoted → standard_entry_verified`。`build.ps1` 只生成 candidate；只有 promotion 后再从 `automation/start.ps1` / 根 bootstrap 验证同一正式身份，才可称“已部署 / 正式验收”。候选启动与身份记录见 [Launcher 深文档](launcher/README.md)，正式发布见 [runtime v2 发布列车](docs/runtime-build-reproducibility.md)。
+Launcher 状态统一为 `compiled → candidate_built → candidate_executed → e2e_verified → promoted → standard_entry_verified`。`build.ps1` 只生成 candidate；只有 promotion 后再从 `automation/start.ps1` / 根 bootstrap 验证同一正式身份，才可称“已部署 / 正式验收”。候选启动与身份记录见 [Launcher 深文档](launcher/README.md)，正式发布见 [runtime 发布协议](docs/runtime-build-reproducibility.md#release-protocol)。
 
 ### 修改 Web / Minigame 后验证
 
@@ -94,7 +98,8 @@ node tools/validate-doc-governance.js
 |------|----------|
 | Agent 路由、硬约束、任务入口 | [AGENTS.md](AGENTS.md) |
 | 系统拓扑与子栈关系 | [agentsDoc/architecture.md](agentsDoc/architecture.md) |
-| 验证矩阵与测试入口 | [agentsDoc/testing-guide.md](agentsDoc/testing-guide.md) |
+| 验证选择矩阵（先选门） | [agentsDoc/testing-guide.md](agentsDoc/testing-guide.md) |
+| 验证正文（命中主题的完整 runner 与恢复） | [agentsDoc/testing-details.md](agentsDoc/testing-details.md) |
 | 编码规范与多栈边界 | [agentsDoc/coding-standards.md](agentsDoc/coding-standards.md) |
 | Agent 协作粒度与 harness 实践 | [agentsDoc/agent-harness.md](agentsDoc/agent-harness.md) |
 | 人类注意力与工程效率宪法 | [agentsDoc/human-care.md](agentsDoc/human-care.md) |

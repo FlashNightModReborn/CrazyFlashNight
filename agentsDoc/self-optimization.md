@@ -41,7 +41,9 @@
 | AS2 性能发现 | `as2-performance.md` |
 | 系统拓扑与链路理解 | `architecture.md` |
 | 编码规范 | `coding-standards.md` |
-| 测试方法与验证矩阵 | `testing-guide.md` |
+| 测试选择（本次该跑哪些门） | `testing-guide.md` 选择矩阵 |
+| 具体测试方法、runner 与恢复 | `testing-details.md` |
+| 旧测试计数与历史证据 | 既有 ADR 与一次性归档 `docs/testing-guide-history-2026-09-17.md` |
 | 游戏系统 | `game-systems.md` |
 | 游戏设计决策 | `game-design.md` |
 | 数据结构与 XML 约束 | `data-schemas.md` |
@@ -107,9 +109,9 @@ node tools/validate-doc-governance.js
 
 - 是否有过时或不准确的信息
 - 是否有新系统、新子栈、新验证入口需要补充索引
-- `AGENTS.md` 的 Context Packs 是否覆盖当前工作场景
+- `AGENTS.md` 的任务路由是否覆盖当前工作场景
 - 技术栈描述是否仍符合 `docs/tech-stack-rationalization.md`
-- 入口文档是否突破 [documentation-governance.md §7](documentation-governance.md) 的体量预算
+- 入口文档是否突破 [documentation-governance.md 的阅读预算](documentation-governance.md#reading-budgets)
 
 ## 8. 长任务交接
 
