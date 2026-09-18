@@ -96,6 +96,7 @@ PowerShell 先 `chcp.com 65001`；文本直接用 UTF-8 中文，不无故改成
 
 文档整顿先 [文档治理](agentsDoc/documentation-governance.md) → [文档验证](agentsDoc/testing-guide.md#docs)。
 协作/任务拆分读 [Agent harness](agentsDoc/agent-harness.md) 和 [human-care](agentsDoc/human-care.md)；
+看板派工、卡片施工与 Epic 边界先读 [看板合同](agentsDoc/issue-board.md)，卡内状态以 GitHub 投影为准；
 自然收口时按 [经验沉淀](agentsDoc/self-optimization.md) 更新唯一真源，不建立额外日常打卡/回执制度。
 
 ## 文档地图
