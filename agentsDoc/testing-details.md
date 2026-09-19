@@ -820,7 +820,7 @@ A4/A5/A3 三 wrapper（ItemUse `flushSave`、Loot `flushSaveVerified(reason)`、
 
 奖励/任务跑 `scripts/run-map-loot-tests.ps1`（机器钉值见 [Loot / 关卡结算 runner](#suite-loot)）；存档/药剂与 PAT 用各自 focused runner（机器钉值见上）。
 合同固定 durable settlement/receipt restore（资产 manifest/count 精确递减，suspend/resume 只允许 revision 单调跳号）、Loot v2 `targetContainerId="自动"` + loot/背包/药剂栏三快照、`drugLoadout.v3` 最近耗尽原槽、dynamic `modSlotCapacity` 与外部前台零抢焦；同名多 generation 歧义必须 `stale_stage_rejected`。
-现场复验项（直播+QQ 抢焦、战斗空调制关闭、通关后立刻前往交付、领取后重启继续、槽位血瓶三来源回原槽）仍为 `FIELD_REVALIDATION_PENDING`，不得写成 `e2e_verified`、`HUMAN_ACCEPTANCE_PASSED` 或业务 `standard_entry_verified`。
+2026-09-19 维护者通过 #72 收口了直播+QQ 抢焦、战斗空调制关闭、通关后立刻前往交付、领取后重启继续；槽位血瓶三来源回原槽由 #71 同日收口。上述结果仅证明 08-30 测试反馈增量的限定现场旅程，不能代签原始焦点事故的根因、输入/WebView 专项或完整产品 `standard_entry_verified`；后者仍按各自契约维护。
 
 ### 装备调制 live Gate（PG-TUNE-PREVIEW / PG-TUNE-E2E）
 
