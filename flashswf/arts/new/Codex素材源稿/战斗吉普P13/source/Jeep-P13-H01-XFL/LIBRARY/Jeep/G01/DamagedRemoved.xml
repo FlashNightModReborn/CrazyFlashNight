@@ -1,0 +1,35 @@
+<?xml version='1.0' encoding='utf-8'?>
+<DOMSymbolItem xmlns="http://ns.adobe.com/xfl/2008/" name="Jeep/G01/DamagedRemoved" itemID="52de3535-596f2ac1" symbolType="graphic"><timeline><DOMTimeline name="DamagedRemoved"><layers><DOMLayer name="RigidLean" color="#997E40"><frames><DOMFrame index="0" duration="1" keyMode="9728"><elements><DOMSymbolInstance libraryItemName="Jeep/G01/RemovedRigidBody" symbolType="graphic" loop="single frame" firstFrame="0"><matrix><Matrix a="0.997915618272179" b="-0.06453230825295798" c="0.06453230825295798" d="0.997915618272179" tx="-13.857602669540599" ty="24.9696188650382" /></matrix></DOMSymbolInstance></elements></DOMFrame></frames></DOMLayer><DOMLayer name="FarSupportWheels" color="#997E40"><frames><DOMFrame index="0" duration="1" keyMode="9728"><elements><DOMSymbolInstance libraryItemName="Jeep/Source/Wheel" centerPoint3DX="407.65" centerPoint3DY="169.9" symbolType="graphic" loop="single frame" firstFrame="0">
+                  <matrix>
+                    <Matrix tx="365.5" ty="127.7" />
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="42.15" y="42.2" />
+                  </transformationPoint>
+                  <color>
+                    <Color brightness="-0.68" />
+                  </color>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="Jeep/Source/Wheel" centerPoint3DX="335.3" centerPoint3DY="134.8" symbolType="graphic" loop="single frame" firstFrame="0">
+                  <matrix>
+                    <Matrix tx="293.15" ty="92.6" />
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="42.15" y="42.2" />
+                  </transformationPoint>
+                  <color>
+                    <Color brightness="-0.68" />
+                  </color>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="Jeep/Source/Wheel" centerPoint3DX="123" centerPoint3DY="169.9" symbolType="graphic" loop="single frame" firstFrame="0">
+                  <matrix>
+                    <Matrix tx="80.85" ty="127.7" />
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="42.15" y="42.2" />
+                  </transformationPoint>
+                  <color>
+                    <Color brightness="-0.68" />
+                  </color>
+                </DOMSymbolInstance>
+                </elements></DOMFrame></frames></DOMLayer></layers></DOMTimeline></timeline></DOMSymbolItem>

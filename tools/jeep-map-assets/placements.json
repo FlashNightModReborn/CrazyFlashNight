@@ -1,0 +1,22 @@
+{
+  "schemaVersion": 1,
+  "source": "flashswf/arts/new/Codex素材源稿/战斗吉普P13/source/Jeep-P13-H01-XFL",
+  "sourceSymbol": "Jeep/G01/DamagedRetained",
+  "target": "flashswf/backgrounds/废城环线地图3",
+  "containerXml": "DOMDocument.xml",
+  "insertBeforeLayer": "图层 3",
+  "placement": {
+    "x": 1720,
+    "y": 300,
+    "scale": 0.85,
+    "mirror": false,
+    "rotationDegrees": 0,
+    "note": "第三段被保护仪器在(1700,650)；吉普停在右上路肩，车尾朝左、车头朝右指向破损围栏，约占x=1720—2148、y=300—494"
+  },
+  "collision": [
+    [1710, 360],
+    [2150, 360],
+    [2150, 525],
+    [1710, 525]
+  ]
+}
