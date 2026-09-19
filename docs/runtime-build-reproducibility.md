@@ -318,7 +318,7 @@ push 红灯发生时提交已经进入 `main`；workflow 只能报警，不能�
 
 ## 2026-09-13 当前正式发布：PM19 启动加载叙事链
 
-完成启动背景 V3 等待叙事链（lore 双音区事件流、前景阶段文字、Ready 门控方环同心收束、cue 优先级与 pendingSync、压暗玻璃遮罩、FIFO 队列渲染与自适应过渡）与列车 C（[BootstrapAS] logBatch 转发、state 捎带 socketPort/httpPort/flashConnected、启动 FATAL 端口占用者实名、web→host log 回写 cmd、reveal watchdog 降级开门标志、about 面板轨道读数）。真机业务复验仍待测试员，准确状态 **promoted / FIELD_REVALIDATION_PENDING**。范围见[设计文档 V3 节与列车 C 节](启动引导-PM19质数幻方背景-设计与施工-2026-08-05.md)，机器身份见[发布证据](evidence/pm19-lore-chain-runtime-release-2026-09-13.json)。
+完成启动背景 V3 等待叙事链（lore 双音区事件流、前景阶段文字、Ready 门控方环同心收束、cue 优先级与 pendingSync、压暗玻璃遮罩、FIFO 队列渲染与自适应过渡）与列车 C（[BootstrapAS] logBatch 转发、state 捎带 socketPort/httpPort/flashConnected、启动 FATAL 端口占用者实名、web→host log 回写 cmd、reveal watchdog 降级开门标志、about 面板轨道读数）。发布时真机业务复验仍待测试员；2026-09-19 的限定收口见下文。范围见[设计文档 V3 节与列车 C 节](启动引导-PM19质数幻方背景-设计与施工-2026-08-05.md)，机器身份见[发布证据](evidence/pm19-lore-chain-runtime-release-2026-09-13.json)。
 
 - release source `0b7d8007f78c09e5f1da71ba762bd4b4785ad01a`，tag `runtime-build-v2/20260913-pm19-lore-chain-v3`，release tree `6237194c63fd89bdf440c5419c2662a8e14f8d71`；request `B474CF434BE4585AA9921CEB214BDD9CADDFFB64AEAF11B0FC2F300A68467E9D`（supersede `98B03AC92D53A9EF770B89BCC93F61A1791BDAE65D27E4468F24BDDA07B3F3EE`）。
 - build identity `BC32738D1EDFF455C902B560C3F7B1FC9B94AFC1902C4278DDBF51D97B81D0D7`，33-file payload closure `5E7653A98FB6F44BAD459027C00ABFD84ACB815BA4B9154B68BC4B28546EC3C5`；正式 Core DLL SHA-256 `E3D721EA1366B428508545F0FCCB96E4049B516278E33548CDE9D29D46D7190D`。
@@ -330,6 +330,14 @@ push 红灯发生时提交已经进入 `main`；workflow 只能报警，不能�
 正式入口无候选参数启动核验 `runtimeMode=formal_runtime`、Core SHA-256 / build identity / payload closure 与被提升身份一致，Guardian 正常启动并正常关闭、无残留；存档 JSON 未变。未执行启动加载业务旅程，不称 `standard_entry_verified`。
 
 部署提交 `744fb2a975` 已快进推送 `main`；[事后 Audit 34766552747](https://github.com/FlashNightModReborn/CrazyFlashNight/actions/runs/34766552747) 结论见发布证据 JSON。
+
+## 2026-09-19 PM19 #70 业务复验收口
+
+PM19 V3 + 列车 C 的限定启动加载旅程已由维护者收口。2026-09-13 正式部署后，测试员未反馈该旅程的负面问题；据此关闭 [#70](https://github.com/FlashNightModReborn/CrazyFlashNight/issues/70)，当前限定状态为 **HUMAN_ACCEPTANCE_PASSED / promoted**。
+
+- 收口范围：PM19 叙事链、列车 C 的 boot 行转发、WaitingGameReady 通信信息、降级开门标志、压暗遮罩、端口占用者文案与 about 轨道读数。
+- 该记录是维护者基于部署后无负反馈的限定人工验收结论，不新增构建、promotion 或运行时身份；上一节的 source/tag/identity/closure 继续有效。
+- 9 月 13 日发布证据 JSON 中 `formalStartup.businessJourneyExecuted: false` 是发布时正式入口核验的历史事实，保留不改写；本次收口不外推为所有硬件组合或完整游戏的 `standard_entry_verified`。
 
 ## 2026-09-13 上一正式发布：输入防御与 WebView 头像兼容
 
