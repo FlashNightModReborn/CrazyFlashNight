@@ -1160,6 +1160,8 @@ Arena 还必须覆盖全模式头像分流、完整态 2 列且每卡最多 4 �
 **焦点观察**：Host FocusTrace/RollingFocusLog/FocusExitCollector/AppConfig/NativeHud/RightContext/StageOutcome/LayeredWindowCommit 与现役 focus gate 定向测试；AS2 `run-map-loot-tests.ps1` 的 StageRunSessionTest 覆盖撤退后迟到波次/判胜不能修改真实任务条件与正常胜利恰好一次回归（现役钉值见 [Loot / 关卡结算 runner](#suite-loot)）；
 持续录制、退出自动 ZIP、真实隐藏采集器及人工边界见 [焦点管理 §9.12](../docs/焦点管理-诊断与卡顿排查-2026-05-24.md#912-2026-09-07配置化持续录制与固定容量保留)。焦点诊断默认关闭；测试员设置根 `config.toml` 的 `diagFocusTrace = true` 后重启即可持续录制并在正常退出时自动打包。
 
+跨层端到端输入交接必须同时遵守 [焦点管理 §9.10a](../docs/焦点管理-诊断与卡顿排查-2026-05-24.md#field-input-chain-v1) 与长期卡 [#103](https://github.com/FlashNightModReborn/CrazyFlashNight/issues/103)：缺失 hook/dequeue、Native HUD、intent、AS2 accept/local result、durable/transition 或 scene-ready 任一层时，只记该层未知/不完整，不以正常样本、焦点恢复或 promotion 代签现场根因。
+
 **输入事故交接（发布源 `fbbc47a8c0`）**：输入/诊断 focused、显式 `CF7_TEST_PORTRAIT_WEBVIEW=1`、runtime source/queue 门与新鲜 asLoader 证据见 [焦点诊断 §9.18](../docs/焦点管理-诊断与卡顿排查-2026-05-24.md#918-2026-09-13输入边沿防御与分层观察) 和 [头像工具说明](../tools/portrait-pilot/README.md#2026-09-13卷积-svg-运行时禁用政策)。
 
 **建连/总线诊断**：Flash↔Launcher 建连类问题只用真 launcher 定病（读 `logs/launcher.log` 的 `WaitingConnect -> WaitingHandshake`），不用 compile_test/testMovie 或裸 socket 桩，详见 [Host、总线与自动化](#host)。
