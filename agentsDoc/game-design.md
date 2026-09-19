@@ -7,6 +7,8 @@
 - **核心公式最高权威**：`0.说明文件与教程/武器-技能数值-价格-合成表填写的参考公式（修改后请勿上传git）.xlsx`
 - **武器 balance 落盘与复现契约**：`tools/cf7-balance-tool/docs/agent-balance-record-design.md`
 - **武器平衡业务判据与条款 ID**：`tools/cf7-balance-tool/docs/weapon-balance-rulebook.md`
+- **防具 balance 业务判据与条款 ID**：`tools/cf7-balance-tool/docs/armor-balance-rulebook.md`
+- **数值平衡覆盖契约（全装备药剂标定目标态）**：`tools/cf7-balance-tool/docs/balance-coverage-contract.md`
 - **材料统计**：`0.说明文件与教程/材料的单位、关卡统计.xlsx`
 - **机制属性记录**：`0.说明文件与教程/武器装备与敌人的机制属性伤害类型魔抗的实装记录.txt`
 - **标签与属性**：`0.说明文件与教程/Label与魔法种类与装备属性加成的类型汇总.txt`
