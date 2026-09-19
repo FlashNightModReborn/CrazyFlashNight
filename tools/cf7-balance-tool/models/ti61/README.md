@@ -49,3 +49,16 @@ python -X utf8 -B tools/cf7-balance-tool/models/ti61/jk_followup.py --check
 - `test_jk_followup.py` / `test_jk_sampler.js`：离线契约验证。包含真伤门、斩杀先于扣盾、低强化机会成本、技能无效调用、F 不补主仓、换弹不刷副射间隔及既有 M134 控制。
 
 新导出的发布 SWF 只对端点和四组关键伤害帧做了抽查，不代表 FLA/SWF 全语义一致。复查可使用仓库 `tools/ffdec/ffdec.bat -export script <临时目录> flashswf/arts/new/武装JK.swf`。无真实命中录像时，任何条件 DPS、两招结果和反制种子分位数都不能标记为实测或通关概率。
+
+## 2026-09-19：防具加权标定复算
+
+`armor_balance.py` 是五件钛合金61式防具对工作簿「防具」/「装备价格」页的离线复算入口：数值标定 M=3（K点购买1+高价1+40级浮动1），价格标定 E=1（高价1），金币沿用公式值 187200 的取整 200000，K点 6000。审计背景见 issue #62 与套装 ADR §1.1。
+
+```powershell
+chcp.com 65001 | Out-Null
+python -X utf8 -B tools/cf7-balance-tool/models/ti61/armor_balance.py --selftest
+python -X utf8 -B tools/cf7-balance-tool/models/ti61/armor_balance.py
+python -X utf8 -B tools/cf7-balance-tool/models/ti61/armor_balance.py --check
+```
+
+默认输出 `tmp/ti61-armor-balance/report.md`；`--check` 只复算比对不写文件，五件数值、price 或 K点售价漂移即失败，提示标定过期须重新审计。防具公式族尚未注册进 balance v1，本脚本不生成、也不允许手工向物品写入 runtime `<balance>` profile。

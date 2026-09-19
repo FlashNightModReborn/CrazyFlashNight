@@ -1,3 +1,4 @@
+export * from "./armor-balance/index.js";
 export * from "./contracts.js";
 export * from "./default-field-registry.js";
 export * from "./field-registry.js";

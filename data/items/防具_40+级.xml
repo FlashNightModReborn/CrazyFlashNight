@@ -485,7 +485,7 @@
     <type>防具</type>
     <use>脚部装备</use>
     <setId>titanium_type_61_armor</setId>
-    <price>1000</price>
+    <price>200000</price>
     <description>&lt;font color="#66ccff"&gt;【五件套组件：负重伺服】&lt;/font&gt;穿齐五件且专属护盾在线时，抵消超重惩罚；携带血色光剑天秤再额外减重16kg。破盾时这两项补偿停止。
 
     Astra设计局为联盟61式特装整合的足部组件，源自舰群在低重力环境中的抓附、离面与姿态控制需求。
@@ -514,6 +514,26 @@
         <cycle><cycleRoutines>钛合金61组件周期</cycleRoutines></cycle>
       </attr_0>
     </lifecycle>
+    <balance>
+      <formulaFamily>armor</formulaFamily>
+      <schemaVersion>1</schemaVersion>
+      <formulaVersion>1</formulaVersion>
+      <workbookVersion>1</workbookVersion>
+      <weightLayers>3</weightLayers>
+      <priceLayers>1</priceLayers>
+      <category>1</category>
+      <damageTypeFactor>1</damageTypeFactor>
+      <currentScore>1905</currentScore>
+      <balanceScore>960</balanceScore>
+      <weightedScore>1875</weightedScore>
+      <recommendedGoldPrice>187200</recommendedGoldPrice>
+      <recommendedKPointPrice>6075</recommendedKPointPrice>
+      <marketPrice>200000</marketPrice>
+      <status>confirmed</status>
+      <inputDigest>fnv1a32:fa15770f</inputDigest>
+      <sourceDigest>sha256:cd0c3aaa6757eb4feb16de5797f5391c3cd12a1a17cb754e22d99eba1d11ab14</sourceDigest>
+      <auditRef>armor:钛合金61式装甲鞋</auditRef>
+    </balance>
   </item>
   <item>
     <name>方舟武士鞋</name>
@@ -650,6 +670,26 @@
         <cycle><cycleRoutines>钛合金61组件周期</cycleRoutines></cycle>
       </attr_0>
     </lifecycle>
+    <balance>
+      <formulaFamily>armor</formulaFamily>
+      <schemaVersion>1</schemaVersion>
+      <formulaVersion>1</formulaVersion>
+      <workbookVersion>1</workbookVersion>
+      <weightLayers>3</weightLayers>
+      <priceLayers>1</priceLayers>
+      <category>1</category>
+      <damageTypeFactor>1</damageTypeFactor>
+      <currentScore>1970</currentScore>
+      <balanceScore>1020</balanceScore>
+      <weightedScore>1992.1875</weightedScore>
+      <recommendedGoldPrice>187200</recommendedGoldPrice>
+      <recommendedKPointPrice>6075</recommendedKPointPrice>
+      <marketPrice>200000</marketPrice>
+      <status>confirmed</status>
+      <inputDigest>fnv1a32:5aaa475c</inputDigest>
+      <sourceDigest>sha256:a6966f8e9a8c137fc8b8dd2ef3fdff6b360c6fb3ecb3ee058ba01921471b3749</sourceDigest>
+      <auditRef>armor:钛合金61式腿甲</auditRef>
+    </balance>
   </item>
   <item>
     <name>钛合金61式手甲</name>
@@ -687,6 +727,26 @@
         <cycle><cycleRoutines>钛合金61组件周期</cycleRoutines></cycle>
       </attr_0>
     </lifecycle>
+    <balance>
+      <formulaFamily>armor</formulaFamily>
+      <schemaVersion>1</schemaVersion>
+      <formulaVersion>1</formulaVersion>
+      <workbookVersion>1</workbookVersion>
+      <weightLayers>3</weightLayers>
+      <priceLayers>1</priceLayers>
+      <category>1</category>
+      <damageTypeFactor>1</damageTypeFactor>
+      <currentScore>1905</currentScore>
+      <balanceScore>960</balanceScore>
+      <weightedScore>1875</weightedScore>
+      <recommendedGoldPrice>187200</recommendedGoldPrice>
+      <recommendedKPointPrice>6075</recommendedKPointPrice>
+      <marketPrice>200000</marketPrice>
+      <status>confirmed</status>
+      <inputDigest>fnv1a32:2279a848</inputDigest>
+      <sourceDigest>sha256:299c81d1e4402eab13fd94b767c7ca6b7744cbd7ed776889a069071afb5b9e04</sourceDigest>
+      <auditRef>armor:钛合金61式手甲</auditRef>
+    </balance>
   </item>
   <item>
     <name>钛合金61式胸甲</name>
@@ -767,6 +827,26 @@
         <cycle><cycleRoutines>钛合金61组件周期</cycleRoutines></cycle>
       </attr_0>
     </lifecycle>
+    <balance>
+      <formulaFamily>armor</formulaFamily>
+      <schemaVersion>1</schemaVersion>
+      <formulaVersion>1</formulaVersion>
+      <workbookVersion>1</workbookVersion>
+      <weightLayers>3</weightLayers>
+      <priceLayers>1</priceLayers>
+      <category>1</category>
+      <damageTypeFactor>1</damageTypeFactor>
+      <currentScore>1970</currentScore>
+      <balanceScore>1020</balanceScore>
+      <weightedScore>1992.1875</weightedScore>
+      <recommendedGoldPrice>187200</recommendedGoldPrice>
+      <recommendedKPointPrice>6075</recommendedKPointPrice>
+      <marketPrice>200000</marketPrice>
+      <status>confirmed</status>
+      <inputDigest>fnv1a32:2d32b831</inputDigest>
+      <sourceDigest>sha256:3b80f0c57a31759e15c88182860d586821916e056212d98be4acb75a0808b6e1</sourceDigest>
+      <auditRef>armor:钛合金61式胸甲</auditRef>
+    </balance>
   </item>
   <item>
     <name>钛合金61式头部装甲</name>
@@ -804,6 +884,26 @@
         <cycle><cycleRoutines>钛合金61组件周期</cycleRoutines></cycle>
       </attr_0>
     </lifecycle>
+    <balance>
+      <formulaFamily>armor</formulaFamily>
+      <schemaVersion>1</schemaVersion>
+      <formulaVersion>1</formulaVersion>
+      <workbookVersion>1</workbookVersion>
+      <weightLayers>3</weightLayers>
+      <priceLayers>1</priceLayers>
+      <category>1</category>
+      <damageTypeFactor>1</damageTypeFactor>
+      <currentScore>1920</currentScore>
+      <balanceScore>980</balanceScore>
+      <weightedScore>1914.0625</weightedScore>
+      <recommendedGoldPrice>187200</recommendedGoldPrice>
+      <recommendedKPointPrice>6075</recommendedKPointPrice>
+      <marketPrice>200000</marketPrice>
+      <status>confirmed</status>
+      <inputDigest>fnv1a32:017ded45</inputDigest>
+      <sourceDigest>sha256:a7a2a99a7c68df49b05a3c1cc08b98bf0da888aee5d507d7a2cb720b5d1731af</sourceDigest>
+      <auditRef>armor:钛合金61式头部装甲</auditRef>
+    </balance>
   </item>
   <item>
     <name>异形女王鞋</name>

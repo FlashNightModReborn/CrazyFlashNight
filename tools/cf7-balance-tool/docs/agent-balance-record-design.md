@@ -254,7 +254,7 @@ git diff --check
 | AS2 定向测试 | base/tier 选择、缓存剥离、错误输入隐藏和最小消息边界 |
 | Web/harness | 徽标、Tooltip、紧凑态、ARIA 与敏感审计字段隔离 |
 
-`balance-check` 只要求已经存在 `<balance>` 的 item 覆盖自身全部 profile；不会强迫本轮范围外的所有武器立刻补记录。首次上线前仍须另行定义全量覆盖门。
+`balance-check` 只要求已经存在 `<balance>` 的 item 覆盖自身全部 profile；不会强迫本轮范围外的所有武器立刻补记录。全量覆盖的目标态与开启顺序已由 [balance-coverage-contract.md](balance-coverage-contract.md) 冻结（2026-09-19，issue #102）。
 
 ## 9. 相关入口
 
@@ -289,3 +289,20 @@ git diff --check
 AS2获取引用复核按完整引号内物品名匹配，避免将钛合金变体归到同名原枪。仅排除`scripts/类定义/`内专用`test/*Test.as`夹具；其他脚本中的单双引号精确物品名仍进入高价购买限定复核，不能靠普通脚本取名Test.as跳过。
 
 2026-09-10 的 JK 反馈推演增加 `models/ti61/jk_followup.py` 入口，命令与证据边界仍集中在该目录 README；[推演结论](../../../docs/钛合金61与171-JK反馈后数值推演-2026-09-10.md)明确区分源码发射、假设接触、完整两招和候选技能。副射、真伤盾及血剑换算尚未实装，未修改武器公式/工作簿/生产 XML/台账状态。60 发不扩容是本轮主配装，不覆盖历史模型的扩容样本。
+## 12. 防具公式族的并行投影
+
+防具不复用 weapon v1 profile，也不进入武器 `balanceSummary`，与药剂同样遵循“只维护一个人工源、其余机械生成”的原则，但使用独立入口：
+
+| 层 | 防具入口 |
+|---|---|
+| 业务规则 | `docs/armor-balance-rulebook.md` |
+| 人工方案 | `records/armor-balance-plan.xml` |
+| 机械审计 | `records/armor-balance-audit.xml` |
+| 公式 | `packages/core/src/formulas/armor.ts::computeArmorRow()` |
+| 同步 / 反查 | `npm run armor-balance-sync` / `npm run armor-balance-check` |
+
+同步器必须从实际物品 `<data>` 派生等级、防御、HP/MP、伤害、刀/枪加成、重量、空手与法抗合计输入；不得在计划表再抄一套战斗数值。item 根 `<balance>` 为平铺结构，保存层数/系数、三种总分、推荐价与市场价、状态、两种 digest 与审计引用，字段序固定。
+
+防具公式已登记在权威工作簿「防具」「装备价格」页，因此没有药剂那样的 `authorityStatus` 保留态，记录可直接按证据分流为 `confirmed` / `unresolved` / `invalid`。plan 用 `workbookVersion` + `workbookSha256` pin 现役只读工作簿的实算快照（与 potion 家族 pin 的同一文件）；weapon 家族注册的 v1 映射是 2026-07-23 基线，armor 不复用该映射。
+
+数值加权（M 层，`weightLayers`）与价格加权（E 层，`priceLayers`）分离：M 层闭等于 `budgetBreakdown` 全部条目 delta 之和，E 层只计 `acquisition.high-price` 条目，两者都是硬闭合。item 标签无 AS2 投影属设计如此——当前没有任何 AS2 消费者读取防具 `<balance>`，加载链不需要剥离逻辑。plan 不强制整文件 coverage：未登记的防具物品没有 `<balance>` 不算漂移，armor 家族也只允许登记 `data/items/防具_*.xml`。

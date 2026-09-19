@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<armorBalanceAudit>
+  <formulaFamily>armor</formulaFamily>
+  <schemaVersion>1</schemaVersion>
+  <formulaVersion>1</formulaVersion>
+  <workbookVersion>1</workbookVersion>
+  <workbookSha256>357E07955281D4CB3884902B58165E19E97852216AE5A76965D3EBD04FB4E107</workbookSha256>
+  <records>
+    <record>
+      <auditRef>armor:钛合金61式头部装甲</auditRef>
+      <itemName>钛合金61式头部装甲</itemName>
+      <sourceFile>data/items/防具_40+级.xml</sourceFile>
+      <weightLayers>3</weightLayers>
+      <priceLayers>1</priceLayers>
+      <category>1</category>
+      <damageTypeFactor>1</damageTypeFactor>
+      <adoptedGoldPrice>200000</adoptedGoldPrice>
+      <expectedKPointPrice>6000</expectedKPointPrice>
+      <kpointEvidenceRef>data/kshop/A兵团官方周边直营店.json</kpointEvidenceRef>
+      <status>confirmed</status>
+      <marketPrice>200000</marketPrice>
+      <currentScore>1920</currentScore>
+      <balanceScore>980</balanceScore>
+      <weightedScore>1914.0625</weightedScore>
+      <magicDefAvgCap>19</magicDefAvgCap>
+      <magicDefMaxCap>34</magicDefMaxCap>
+      <recommendedGoldPrice>187200</recommendedGoldPrice>
+      <recommendedKPointPrice>6075</recommendedKPointPrice>
+      <inputs level="45" defence="500" hp="500" mp="150" damage="80" weaponBonus="0" weight="8" punch="0" magicDefence="30" />
+      <budgetBreakdown>
+        <entry code="acquisition.kshop" delta="1" ruleRef="ABR-LAYER-001" evidenceRef="data/kshop/A兵团官方周边直营店.json" />
+        <entry code="acquisition.high-price" delta="1" ruleRef="ABR-LAYER-001" evidenceRef="data/kshop/A兵团官方周边直营店.json" />
+        <entry code="level-band.40plus-float" delta="1" ruleRef="ABR-LAYER-004" />
+      </budgetBreakdown>
+      <inputDigest>fnv1a32:017ded45</inputDigest>
+      <sourceDigest>sha256:a7a2a99a7c68df49b05a3c1cc08b98bf0da888aee5d507d7a2cb720b5d1731af</sourceDigest>
+      <note>金币公式值187200整十万取整+6.8%，2026-09-19经济权威确认（issue #62）；M=3=K点购买1+高价1+40级浮动1</note>
+    </record>
+    <record>
+      <auditRef>armor:钛合金61式胸甲</auditRef>
+      <itemName>钛合金61式胸甲</itemName>
+      <sourceFile>data/items/防具_40+级.xml</sourceFile>
+      <weightLayers>3</weightLayers>
+      <priceLayers>1</priceLayers>
+      <category>1</category>
+      <damageTypeFactor>1</damageTypeFactor>
+      <adoptedGoldPrice>200000</adoptedGoldPrice>
+      <expectedKPointPrice>6000</expectedKPointPrice>
+      <kpointEvidenceRef>data/kshop/A兵团官方周边直营店.json</kpointEvidenceRef>
+      <status>confirmed</status>
+      <marketPrice>200000</marketPrice>
+      <currentScore>1970</currentScore>
+      <balanceScore>1020</balanceScore>
+      <weightedScore>1992.1875</weightedScore>
+      <magicDefAvgCap>19</magicDefAvgCap>
+      <magicDefMaxCap>34</magicDefMaxCap>
+      <recommendedGoldPrice>187200</recommendedGoldPrice>
+      <recommendedKPointPrice>6075</recommendedKPointPrice>
+      <inputs level="45" defence="500" hp="500" mp="150" damage="100" weaponBonus="0" weight="12" punch="0" magicDefence="20" />
+      <budgetBreakdown>
+        <entry code="acquisition.kshop" delta="1" ruleRef="ABR-LAYER-001" evidenceRef="data/kshop/A兵团官方周边直营店.json" />
+        <entry code="acquisition.high-price" delta="1" ruleRef="ABR-LAYER-001" evidenceRef="data/kshop/A兵团官方周边直营店.json" />
+        <entry code="level-band.40plus-float" delta="1" ruleRef="ABR-LAYER-004" />
+      </budgetBreakdown>
+      <inputDigest>fnv1a32:2d32b831</inputDigest>
+      <sourceDigest>sha256:3b80f0c57a31759e15c88182860d586821916e056212d98be4acb75a0808b6e1</sourceDigest>
+      <note>金币公式值187200整十万取整+6.8%，2026-09-19经济权威确认（issue #62）；M=3=K点购买1+高价1+40级浮动1</note>
+    </record>
+    <record>
+      <auditRef>armor:钛合金61式手甲</auditRef>
+      <itemName>钛合金61式手甲</itemName>
+      <sourceFile>data/items/防具_40+级.xml</sourceFile>
+      <weightLayers>3</weightLayers>
+      <priceLayers>1</priceLayers>
+      <category>1</category>
+      <damageTypeFactor>1</damageTypeFactor>
+      <adoptedGoldPrice>200000</adoptedGoldPrice>
+      <expectedKPointPrice>6000</expectedKPointPrice>
+      <kpointEvidenceRef>data/kshop/A兵团官方周边直营店.json</kpointEvidenceRef>
+      <status>confirmed</status>
+      <marketPrice>200000</marketPrice>
+      <currentScore>1905</currentScore>
+      <balanceScore>960</balanceScore>
+      <weightedScore>1875</weightedScore>
+      <magicDefAvgCap>19</magicDefAvgCap>
+      <magicDefMaxCap>34</magicDefMaxCap>
+      <recommendedGoldPrice>187200</recommendedGoldPrice>
+      <recommendedKPointPrice>6075</recommendedKPointPrice>
+      <inputs level="45" defence="500" hp="500" mp="150" damage="80" weaponBonus="0" weight="6" punch="0" magicDefence="15" />
+      <budgetBreakdown>
+        <entry code="acquisition.kshop" delta="1" ruleRef="ABR-LAYER-001" evidenceRef="data/kshop/A兵团官方周边直营店.json" />
+        <entry code="acquisition.high-price" delta="1" ruleRef="ABR-LAYER-001" evidenceRef="data/kshop/A兵团官方周边直营店.json" />
+        <entry code="level-band.40plus-float" delta="1" ruleRef="ABR-LAYER-004" />
+      </budgetBreakdown>
+      <inputDigest>fnv1a32:2279a848</inputDigest>
+      <sourceDigest>sha256:299c81d1e4402eab13fd94b767c7ca6b7744cbd7ed776889a069071afb5b9e04</sourceDigest>
+      <note>金币公式值187200整十万取整+6.8%，2026-09-19经济权威确认（issue #62）；M=3=K点购买1+高价1+40级浮动1</note>
+    </record>
+    <record>
+      <auditRef>armor:钛合金61式腿甲</auditRef>
+      <itemName>钛合金61式腿甲</itemName>
+      <sourceFile>data/items/防具_40+级.xml</sourceFile>
+      <weightLayers>3</weightLayers>
+      <priceLayers>1</priceLayers>
+      <category>1</category>
+      <damageTypeFactor>1</damageTypeFactor>
+      <adoptedGoldPrice>200000</adoptedGoldPrice>
+      <expectedKPointPrice>6000</expectedKPointPrice>
+      <kpointEvidenceRef>data/kshop/A兵团官方周边直营店.json</kpointEvidenceRef>
+      <status>confirmed</status>
+      <marketPrice>200000</marketPrice>
+      <currentScore>1970</currentScore>
+      <balanceScore>1020</balanceScore>
+      <weightedScore>1992.1875</weightedScore>
+      <magicDefAvgCap>19</magicDefAvgCap>
+      <magicDefMaxCap>34</magicDefMaxCap>
+      <recommendedGoldPrice>187200</recommendedGoldPrice>
+      <recommendedKPointPrice>6075</recommendedKPointPrice>
+      <inputs level="45" defence="500" hp="500" mp="150" damage="100" weaponBonus="0" weight="12" punch="0" magicDefence="20" />
+      <budgetBreakdown>
+        <entry code="acquisition.kshop" delta="1" ruleRef="ABR-LAYER-001" evidenceRef="data/kshop/A兵团官方周边直营店.json" />
+        <entry code="acquisition.high-price" delta="1" ruleRef="ABR-LAYER-001" evidenceRef="data/kshop/A兵团官方周边直营店.json" />
+        <entry code="level-band.40plus-float" delta="1" ruleRef="ABR-LAYER-004" />
+      </budgetBreakdown>
+      <inputDigest>fnv1a32:5aaa475c</inputDigest>
+      <sourceDigest>sha256:a6966f8e9a8c137fc8b8dd2ef3fdff6b360c6fb3ecb3ee058ba01921471b3749</sourceDigest>
+      <note>金币公式值187200整十万取整+6.8%，2026-09-19经济权威确认（issue #62）；M=3=K点购买1+高价1+40级浮动1</note>
+    </record>
+    <record>
+      <auditRef>armor:钛合金61式装甲鞋</auditRef>
+      <itemName>钛合金61式装甲鞋</itemName>
+      <sourceFile>data/items/防具_40+级.xml</sourceFile>
+      <weightLayers>3</weightLayers>
+      <priceLayers>1</priceLayers>
+      <category>1</category>
+      <damageTypeFactor>1</damageTypeFactor>
+      <adoptedGoldPrice>200000</adoptedGoldPrice>
+      <expectedKPointPrice>6000</expectedKPointPrice>
+      <kpointEvidenceRef>data/kshop/A兵团官方周边直营店.json</kpointEvidenceRef>
+      <status>confirmed</status>
+      <marketPrice>200000</marketPrice>
+      <currentScore>1905</currentScore>
+      <balanceScore>960</balanceScore>
+      <weightedScore>1875</weightedScore>
+      <magicDefAvgCap>19</magicDefAvgCap>
+      <magicDefMaxCap>34</magicDefMaxCap>
+      <recommendedGoldPrice>187200</recommendedGoldPrice>
+      <recommendedKPointPrice>6075</recommendedKPointPrice>
+      <inputs level="45" defence="500" hp="500" mp="150" damage="80" weaponBonus="0" weight="6" punch="0" magicDefence="15" />
+      <budgetBreakdown>
+        <entry code="acquisition.kshop" delta="1" ruleRef="ABR-LAYER-001" evidenceRef="data/kshop/A兵团官方周边直营店.json" />
+        <entry code="acquisition.high-price" delta="1" ruleRef="ABR-LAYER-001" evidenceRef="data/kshop/A兵团官方周边直营店.json" />
+        <entry code="level-band.40plus-float" delta="1" ruleRef="ABR-LAYER-004" />
+      </budgetBreakdown>
+      <inputDigest>fnv1a32:fa15770f</inputDigest>
+      <sourceDigest>sha256:cd0c3aaa6757eb4feb16de5797f5391c3cd12a1a17cb754e22d99eba1d11ab14</sourceDigest>
+      <note>金币公式值187200整十万取整+6.8%，2026-09-19经济权威确认（issue #62）；M=3=K点购买1+高价1+40级浮动1</note>
+    </record>
+  </records>
+</armorBalanceAudit>
