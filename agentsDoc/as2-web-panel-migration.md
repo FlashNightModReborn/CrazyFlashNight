@@ -132,6 +132,8 @@ Skill 页切换把 `Bridge.send` 严格定义为本地 transport 投递结果：
 
 ## 2. 迁移闭环表
 
+睡眠 `sleep` 的 `snapshot / commit / query` 已完成接线，AS2 保留时刻与一次性会话权威；用户明确接受普通 Panel 暂停。原 XFL 日月矢量用于可拨针表盘，晨昏配色仅作草稿预览。候选视觉、取消与入睡旅程已获用户通过；完整闭环、验收范围与独立发布状态见 [U3 睡眠闹钟](../docs/U3睡眠面板-Web闹钟迁移-2026-09-19.md)。
+
 每个功能命令必须维护一张闭环表。没有闭环表，不允许说协议完成。
 
 | Web cmd | C# action | AS2 handler | AS2 response task | C# panel_resp | JS handler | 写状态 |

@@ -182,6 +182,43 @@
       ]
     },
     {
+      "id": "sleep",
+      "wireDomain": "sleep",
+      "hostTask": "launcher/src/Tasks/SleepTask.cs",
+      "flashResponseTask": "sleep_response",
+      "hostResponseHandler": "sleepTask.HandleFlashResponse",
+      "hostPayloadMode": "normalized",
+      "flashCommandHandler": "org.flashNight.arki.ui.SleepPanelService",
+      "flashSources": [
+        "scripts/类定义/org/flashNight/arki/ui/SleepPanelService.as"
+      ],
+      "commands": [
+        {
+          "cmd": "snapshot",
+          "action": "sleepSnapshot",
+          "capability": "query",
+          "access": "read",
+          "businessDecisionOwner": "as2"
+        },
+        {
+          "cmd": "commit",
+          "action": "sleepCommit",
+          "capability": "transaction",
+          "access": "write",
+          "businessDecisionOwner": "as2"
+        },
+        {
+          "cmd": "query",
+          "action": "sleepQuery",
+          "capability": "query",
+          "access": "read",
+          "businessDecisionOwner": "as2"
+        }
+      ],
+      "numericFields": [],
+      "sourceChecks": []
+    },
+    {
       "id": "surgery",
       "wireDomain": "surgery",
       "hostTask": "launcher/src/Tasks/PlasticSurgeryTask.cs",

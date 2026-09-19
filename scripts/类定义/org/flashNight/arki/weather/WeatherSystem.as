@@ -252,6 +252,19 @@ class org.flashNight.arki.weather.WeatherSystem {
      * 获取当前游戏内时间（0-24 小时制）。
      * @return 当前时间（浮点数）
      */
+    /** 睡眠只设定运行态时刻；同步帧基准，避免刷新时补上旧时间差。 */
+    public function setSleepTime(targetMinutes:Number):Boolean {
+        var frameCount:Number = _root.帧计时器.当前帧数;
+        if (!this.enableDayNightCycle || typeof targetMinutes != "number"
+                || isNaN(targetMinutes) || targetMinutes < 0 || targetMinutes >= 1440
+                || Math.floor(targetMinutes) != targetMinutes
+                || typeof frameCount != "number" || isNaN(frameCount) || !isFinite(frameCount)) return false;
+        this.currentTime = targetMinutes / 60;
+        this.currentFrame = frameCount;
+        this.requestRefresh();
+        return true;
+    }
+
     public function getCurrentTime():Number {
         if (!this.enableDayNightCycle) return 7;
         if (this.pauseDayNightCycle) return this.currentTime;

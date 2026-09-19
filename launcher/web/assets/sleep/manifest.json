@@ -1,0 +1,84 @@
+{
+  "version": 1,
+  "authority": "flashswf/UI/睡觉界面/LIBRARY",
+  "generator": "tools/export-sleep-art.py",
+  "sourceHashEncoding": "utf8-lf",
+  "sources": {
+    "flashswf/UI/睡觉界面/LIBRARY/夜晚选项.xml": "6dc4bd09b04327dc4fd248fcacb7549d11dd048e7c6f749b349fa2bfce205d0b",
+    "flashswf/UI/睡觉界面/LIBRARY/沙漏-夜.xml": "379f5d6d490d185fa5e2a3634eab6de2f55750b606247d0942ed7d80adecab85",
+    "flashswf/UI/睡觉界面/LIBRARY/沙漏-昼.xml": "8ad2116e296ea00090638e1c0ed7da7ec4963ed61acca4285d15161d9207e5dc",
+    "flashswf/UI/睡觉界面/LIBRARY/清晨选项.xml": "a291e58489a3a25ae7c1770de1b982d028009dafc5122e5687a1aa13e76b465b",
+    "flashswf/UI/睡觉界面/LIBRARY/金色太阳.xml": "f48d792840080fa646a33cd86fc2f6e010b12a5d8dd30f1057a72afa51e1ae88",
+    "launcher/web/css/sleep/tokens.css": "8176b8b0385e6fce1e729360cec76b87acc5c5a96965202ccead5f304e712ac0",
+    "tools/export-sleep-art.py": "7363c210a61d95feaa69ee38082e2c97bdc98ce9efd7f6dfd17863dbed227533",
+    "tools/xfl-ui-svg/xfl_to_svg.py": "c8b6dda4483f7625af5b413919ad0440100636b9213c372830c1432c42576ecb"
+  },
+  "recipes": {
+    "day-face.svg": {
+      "symbol": "金色太阳",
+      "frame": 0,
+      "viewBox": [
+        0.0,
+        0.0,
+        617.5000000000001,
+        618.3000000000001
+      ],
+      "textFieldsExcluded": 0
+    },
+    "night-face.svg": {
+      "symbol": "夜晚选项",
+      "frame": 0,
+      "viewBox": [
+        210,
+        135,
+        640,
+        640
+      ],
+      "textFieldsExcluded": 2
+    },
+    "day-card.svg": {
+      "symbol": "清晨选项",
+      "frame": 0,
+      "viewBox": [
+        0.0,
+        0.0,
+        1055.9499999999998,
+        1508.3500000000001
+      ],
+      "textFieldsExcluded": 2
+    },
+    "night-card.svg": {
+      "symbol": "夜晚选项",
+      "frame": 0,
+      "viewBox": [
+        0.0,
+        0.0,
+        1056.4,
+        1509.0
+      ],
+      "textFieldsExcluded": 2
+    }
+  },
+  "files": {
+    "day-face.svg": {
+      "sha256": "c496e34a484e4f314d459e86cb70371fc100b4e763fe33b3485489d5ed9fd0a6",
+      "bytes": 167916
+    },
+    "night-face.svg": {
+      "sha256": "d536947b5f8fc7a54c94d7476b938a799708fe5772a158af40703d2696d8e166",
+      "bytes": 168528
+    },
+    "day-card.svg": {
+      "sha256": "2f02d68ea2478f1f77cd4e553e287035e4333747d614618a5a8d91b2527d8a84",
+      "bytes": 240627
+    },
+    "night-card.svg": {
+      "sha256": "bbb18d6c920f7b6860b039c1abe9a08c63edae6007c17afacb8b8bca4e6d24f0",
+      "bytes": 168532
+    },
+    "palette.js": {
+      "sha256": "4aaf80a442e4c2c40be480418924f7013add45db3fdb5123544ebdfacdbb85ea",
+      "bytes": 1361
+    }
+  }
+}

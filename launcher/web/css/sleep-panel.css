@@ -1,0 +1,105 @@
+/* 睡眠为独立拟物面板；金属、皮革和珐琅色属于表体美术，不承载 DLS 语义。 */
+#panel-container[data-panel="sleep"] #panel-content { inset:0; }
+.sleep-scale-shell { color:var(--sleep-ink); }
+.sleep-panel {
+    width:1024px; height:576px; box-sizing:border-box; position:relative; isolation:isolate; overflow:hidden;
+    display:grid; grid-template-rows:82px 1fr 88px;
+    background:var(--sleep-bg); color:var(--sleep-ink); font-family:var(--font-ui,"Microsoft YaHei",sans-serif);
+    border:1px solid var(--sleep-line);
+}
+
+.sleep-panel::before, .sleep-panel::after { content:""; position:absolute; inset:8px; z-index:0; border:24px solid transparent;
+    border-image:url("../assets/sleep/day-card.svg") 100 / 16px / 0 stretch; pointer-events:none; }
+.sleep-panel::after { opacity:var(--sleep-day-weight); }
+.sleep-panel::before { border-image-source:url("../assets/sleep/night-card.svg"); opacity:var(--sleep-night-weight); }
+.sleep-header, .sleep-body, .sleep-footer { position:relative; z-index:1; }
+.sleep-panel *, .sleep-panel *::before, .sleep-panel *::after { box-sizing:border-box; }
+.sleep-panel button, .sleep-panel input { font:inherit; color:inherit; }
+.sleep-panel button {
+    color:var(--sleep-control-ink,var(--sleep-ink));
+    cursor:pointer; background:var(--sleep-surface); border:1px solid var(--sleep-line);
+    border-radius:5px; min-height:36px;
+    transition:border-color var(--wb-motion-micro) var(--wb-ease-standard), color var(--sleep-ink-duration) var(--wb-ease-standard);
+}
+.sleep-panel button:hover:not(:disabled) { border-color:var(--sleep-brass); background:var(--sleep-surface); }
+.sleep-panel :focus-visible { outline:2px solid var(--sleep-brass); outline-offset:3px; box-shadow:var(--wb-ring-focus); }
+.sleep-panel button:disabled { cursor:default; opacity:.48; }
+.sleep-header { display:flex; align-items:center; gap:28px; padding:0 40px; border-bottom:1px solid var(--sleep-line); }
+.sleep-header h1 { font-family:var(--cf7-font-web-workbench-title,serif); font-size:27px; font-weight:900; letter-spacing:3px; margin:0; }
+.sleep-now { margin-left:auto; display:flex; align-items:center; gap:12px; color:var(--sleep-muted); font-size:13px; }
+.sleep-now strong { color:var(--sleep-ink); font:24px/1.2 Consolas,monospace; font-variant-numeric:tabular-nums; }
+.sleep-now span { border-left:1px solid var(--sleep-line); padding-left:12px; font-size:12px; }
+.sleep-panel .sleep-close { width:38px; height:38px; min-height:0; font-size:24px; background:transparent; border-color:transparent; }
+.sleep-body { display:grid; grid-template-columns:52% 48%; min-height:0; }
+.sleep-watch-space { position:relative; display:flex; align-items:center; justify-content:center; overflow:hidden; border-right:1px solid var(--sleep-line); }
+.sleep-dial { width:440px; height:412px; flex:none; touch-action:none; user-select:none; overflow:visible; cursor:grab; }
+.is-dragging .sleep-dial { cursor:grabbing; }
+.sleep-watch-help { position:absolute; bottom:8px; margin:0; padding:5px 12px; background:var(--sleep-bg); color:var(--sleep-muted); font-size:12px; pointer-events:none; }
+.sleep-dial-numbers { fill:var(--sleep-dial-ink); font:28px Georgia,"Times New Roman",serif; text-anchor:middle; dominant-baseline:middle; pointer-events:none; }
+.sleep-tick { stroke:var(--sleep-tick); stroke-width:1; pointer-events:none; }
+.sleep-tick.major { stroke:var(--sleep-major-tick); stroke-width:2; }
+.sleep-face-art { pointer-events:none; }
+.sleep-starwork { fill:none; stroke:var(--sleep-dial-color); stroke-width:.6; opacity:.2; pointer-events:none; }
+.sleep-sun { opacity:var(--sleep-sun-opacity); }
+.sleep-moon { opacity:var(--sleep-moon-opacity); }
+#sleep-enamel stop:first-child { stop-color:var(--sleep-enamel-upper); }
+#sleep-enamel stop:last-child { stop-color:var(--sleep-enamel-lower); }
+.sleep-dial-numbers { fill:var(--sleep-dial-color); }
+.sleep-tick, .sleep-tick.major { stroke:var(--sleep-dial-color); }
+#sleep-hand-metal stop:first-child, #sleep-hand-metal stop:last-child { stop-color:var(--sleep-needle-color); }
+#sleep-hand-metal stop:nth-child(2) { stop-color:var(--sleep-needle-glint); }
+.sleep-panel, .sleep-controls, .sleep-panel input, .sleep-header, .sleep-now strong, .sleep-eyebrow, .sleep-now,
+.sleep-footer, .sleep-footer p, .sleep-time-label, .sleep-hand-choice span, .sleep-status, .sleep-watch-help {
+    transition:color var(--sleep-ink-duration) var(--wb-ease-standard);
+}
+/* 底色、珐琅和日月共用一条逐帧曲线，避免独立 CSS 动画互相追赶、叠脸；仅墨色保留柔和换向。 */
+#sleep-hand-metal stop, .sleep-dial-numbers, .sleep-tick {
+    transition:stop-color var(--sleep-ink-duration) var(--wb-ease-standard), fill var(--sleep-ink-duration) var(--wb-ease-standard), stroke var(--sleep-ink-duration) var(--wb-ease-standard);
+}
+.sleep-face-label { fill:var(--sleep-face-label); text-anchor:middle; font-size:11px; letter-spacing:2px; pointer-events:none; }
+.sleep-face-small { fill:var(--sleep-face-caption); text-anchor:middle; font:10px Georgia,serif; letter-spacing:4px; pointer-events:none; }
+.sleep-hand { cursor:grab; outline:none; }
+.sleep-hand-hit { stroke:transparent; stroke-width:24; fill:none; pointer-events:stroke; }
+.sleep-hand.selected > path:not(.sleep-hand-hit) { stroke:var(--sleep-needle-selected); }
+.sleep-hand:focus-visible .sleep-hand-hit { stroke:var(--sleep-needle-focus); stroke-opacity:.16; }
+.sleep-controls { padding:14px 32px 10px; display:flex; flex-direction:column; min-width:0; }
+.sleep-eyebrow { color:var(--sleep-brass); font-size:13px; letter-spacing:2px; margin:0 0 10px; }
+.sleep-time-label { color:var(--sleep-muted); font-size:12px; }
+.sleep-readout { display:flex; align-items:center; gap:18px; margin:0 0 8px; }
+.sleep-readout input {
+    width:224px; height:58px; padding:0 3px; background:transparent; border:0; border-bottom:1px solid var(--sleep-line);
+    font:54px/1 Consolas,monospace; letter-spacing:1px; font-variant-numeric:tabular-nums;
+}
+.sleep-readout input:disabled { opacity:1; }
+.sleep-readout button { width:65px; border-radius:20px; color:var(--sleep-control-brass,var(--sleep-brass)); font-size:13px; }
+.sleep-hand-choice { display:flex; align-items:center; gap:7px; margin-bottom:4px; }
+.sleep-hand-choice button { min-height:30px; width:55px; font-size:12px; background:transparent; }
+.sleep-hand-choice button[aria-pressed="true"] { color:var(--sleep-brass); border-color:var(--sleep-brass); }
+.sleep-hand-choice span { margin-left:auto; font-size:11px; color:var(--sleep-muted); }
+.sleep-adjust { display:grid; grid-template-columns:repeat(4,1fr); gap:7px; margin-bottom:8px; }
+.sleep-adjust button { padding:5px; font-size:12px; }
+.sleep-presets { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+.sleep-presets button { display:flex; align-items:center; gap:12px; height:67px; padding:8px 14px; text-align:left;
+    position:relative; border-radius:0; border:8px solid transparent; border-image:url("../assets/sleep/day-card.svg") 100 / 8px / 0 stretch; }
+.sleep-presets button[data-preset="360"] { background:var(--sleep-day-paper); color:color-mix(in srgb,var(--sleep-day-gold) 80%,var(--sleep-needle-dark)); }
+.sleep-presets button[data-preset="1140"] { background:var(--sleep-night-paper); color:var(--sleep-night-gold); border-image-source:url("../assets/sleep/night-card.svg"); }
+.sleep-presets button[aria-pressed="true"] { border-color:var(--sleep-brass); }
+.sleep-presets button[aria-pressed="true"]::after { content:"✓"; position:absolute; right:3px; top:0; font-size:12px; }
+.sleep-panel .sleep-presets button[data-preset="360"]:hover:not(:disabled) { background:var(--sleep-day-hover); }
+.sleep-panel .sleep-presets button[data-preset="1140"]:hover:not(:disabled) { background:var(--sleep-night-hover); }
+.sleep-preset-symbol { width:40px; height:40px; object-fit:contain; }
+.sleep-presets button > span:last-child { font:900 17px var(--cf7-font-web-workbench-title,serif); color:inherit; }
+.sleep-presets strong { display:block; margin-top:2px; font:15px Consolas,monospace; color:inherit; }
+.sleep-status { color:var(--sleep-muted); font-size:12px; line-height:1.5; margin:10px 0 0; }
+.sleep-error { color:var(--sleep-ink); border-left:2px solid var(--wb-semantic-danger); padding-left:8px; font-size:12px; line-height:1.5; margin:5px 0 0; }
+.sleep-footer { display:flex; align-items:center; padding:0 34px; gap:12px; border-top:1px solid var(--sleep-line); }
+.sleep-footer p { margin:0 auto 0 0; font-size:13px; color:var(--sleep-muted); }
+.sleep-footer p span { display:block; font-size:11px; margin-top:5px; }
+.sleep-footer button { height:43px; padding:0 24px; font-size:14px; }
+.sleep-panel .sleep-confirm { background:var(--sleep-primary-bg,var(--sleep-night-brass)); border-color:var(--sleep-primary-bg,var(--sleep-night-brass)); color:var(--sleep-primary-ink,var(--sleep-needle-dark)); min-width:190px; font-weight:600; }
+.sleep-panel .sleep-confirm:hover:not(:disabled) { background:var(--sleep-primary-bg,var(--sleep-night-brass)); box-shadow:var(--wb-inner-highlight); }
+.sleep-curtain { position:absolute; inset:0; z-index:5; background:var(--sleep-curtain); opacity:0; pointer-events:none; transition:opacity var(--wb-motion-structural) var(--wb-ease-standard); }
+.is-asleep .sleep-curtain { opacity:1; pointer-events:auto; }
+@media (prefers-reduced-motion:reduce) {
+    .sleep-panel, .sleep-panel *, .sleep-panel::before, .sleep-panel::after { transition:none; }
+}

@@ -149,6 +149,10 @@
          'modules/crafting.js'],
         noop);
 
+    // ── 床铺睡眠：原画拨针闹钟，AS2 权威一次性跳时 ──
+    Panels.registerLazy('sleep',
+        ['modules/panel-runtime.js', 'assets/sleep/palette.js', 'modules/sleep-runtime.js', 'modules/sleep-panel.js'], noop);
+
     // ── 医务室整形（共享身份控件与稳定取景，AS2 权威提交）──
     Panels.registerLazy('surgery',
         ['modules/panel-runtime.js', 'modules/asset-timeline.js', 'modules/dressup-doll-renderer.js',
