@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/兵器攻击容器/平A/兵器攻击容器-迅捷1连招" itemID="69875871-00000a1a" linkageExportForAS="true" linkageIdentifier="兵器攻击容器-迅捷1连招" lastModified="1781976655" lastUniqueIdentifier="193">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/兵器攻击容器/平A/兵器攻击容器-迅捷1连招" itemID="69875871-00000a1a" linkageExportForAS="true" linkageIdentifier="兵器攻击容器-迅捷1连招" lastModified="1789830245" lastUniqueIdentifier="193">
   <timeline>
-    <DOMTimeline name="兵器攻击容器-迅捷1连招" currentFrame="14">
+    <DOMTimeline name="兵器攻击容器-迅捷1连招" currentFrame="48">
       <layers>
         <DOMLayer name="左手-2" color="#4FFF4F" locked="true" autoNamed="false">
           <frames>
@@ -22,7 +22,7 @@
           </frames>
         </DOMLayer>
         <DOMLayer name="代码相关" color="#9933CC" locked="true" autoNamed="false" layerType="folder"/>
-        <DOMLayer name="攻击as" color="#FF800A" parentLayerIndex="1" locked="true" autoNamed="false">
+        <DOMLayer name="攻击as" color="#FF800A" parentLayerIndex="1" locked="true" current="true" isSelected="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="6" keyMode="9728">
               <Actionscript>
@@ -427,7 +427,7 @@ Z轴攻击范围 = 50;
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="攻击时移动" color="#4F80FF" parentLayerIndex="1" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="攻击时移动" color="#4F80FF" parentLayerIndex="1" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
