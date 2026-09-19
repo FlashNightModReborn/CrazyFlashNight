@@ -5,7 +5,9 @@
 **2026-09-12 工作区增量**：NPC 场景菜单迁入 NativeHud，两个开发占位保留兼容接口，AS2 注释语义由 C#/Web 分别渲染，注释样式和交互以旧 Web 为权威。当前仍在实现与候选验证，未人验或部署；协议、兼容与验收边界见 [专项 ADR](../docs/NPC菜单与原生注释迁移-ADR-2026-09-12.md)。
 
 **文档角色**：AS2 UI 迁移到 Launcher Web Panel 的专题 canonical doc。
-**最后核对代码基线**：release source commit `c59b9b4cdb9319c04503a703019a9dff30bc04a1`（2026-09-08，医务室整形与共享外观；tag `runtime-build-v2/20260908-plastic-surgery-v1`；限定 `HUMAN_ACCEPTANCE_PASSED / promoted`）。动态 identity/closure、签名共识与审计只读 [runtime manifest](../runtime/cf7-runtime-manifest.tsv)、[runtime release consensus](../config/build/runtime-release-consensus.json)和 [runtime build reproducibility](../docs/runtime-build-reproducibility.md)；整形的人类证据范围见下节，合并上游后的正式产物未重跑游戏业务，不称业务 `standard_entry_verified`。2026-08-30 稳定性修复列车的既有 `promoted / FIELD_REVALIDATION_PENDING` 边界不因此扩大。
+**最后核对代码基线**：release source commit `c59b9b4cdb9319c04503a703019a9dff30bc04a1`（2026-09-08，医务室整形与共享外观；tag `runtime-build-v2/20260908-plastic-surgery-v1`；限定 `HUMAN_ACCEPTANCE_PASSED / promoted`）。动态 identity/closure、签名共识与审计只读 [runtime manifest](../runtime/cf7-runtime-manifest.tsv)、[runtime release consensus](../config/build/runtime-release-consensus.json)和 [runtime build reproducibility](../docs/runtime-build-reproducibility.md)；整形的人类证据范围见下节，合并上游后的正式产物未重跑游戏业务，不称业务 `standard_entry_verified`。2026-08-30 稳定性修复各业务的现场状态以对应专项最新回执为准，总体部署记录不代签这些业务。
+
+**2026-09-19 药剂 HUD 局部复核**：commit `29567cb6c2f330410ac28250cabaa34ffc3eef60`；同步下文现役点阵、#71 现场收口与玩家资源区规划引用，不改变其他专项的代码或验收基线。
 **上一正式发布**：commit `732898b8aa1308cf820976324f47bba97f654e41`（2026-08-27，关卡结果原生状态槽与基地结算工作台；deployment `339b15694d631d483736880c0dfd44429f6926a3`）完成双故障域共识、39/39 production policy 与正式入口身份/总线/正常退出窄验证；未选存档且没有 fresh reveal，不称业务或完整入口 `standard_entry_verified`。
 **更早正式发布**：commit `5f5cfce7c162ba616bfc51f3c03f3134e937d36a`（2026-08-27，库存显式批量转移；deployment `4d5fd254752a149ce07006f8f48391ab26485f61`）把 Web N 次 `autoTransfer` 收敛为一次最多 50 项的 `autoTransferBatch`，并完成双故障域共识、39/39 production policy 与正式入口身份/生命周期窄纵切；正式入口没有重跑库存业务写或写后重启读回，因此不称业务或持久化 `standard_entry_verified`。
 
@@ -71,7 +73,11 @@
 
 ### 2026-08-28 双药剂组与八槽共享冷却
 
-本列车不把怪物输出所依据的四条药剂冷却通道扩成八条，而是把物理容器扩为两组各四槽：AS2 `DrugInputService` 独占活动组、切换上升沿、同列共享冷却、同帧抑制与持键锁存；Settings 只新增逻辑键 `药剂组切换键` 并把键表升为 36 行 / `keySchemaVersion=2`；Character Build 顶层协议仍为 v1，但严格投影 `drugLayout.v=2`、八个 `{slot,bank,lane,active}` 行和两排四列 UI。PlayerInfo 的第五列只是 `drug:switch` 控件，不是第九药剂槽，专用无 linkage MovieClip 以两帧 `○ / × + 1 / 2` 显示活动组。维护者已确认功能、切换手感及最终图标有效；完整迁移、旧档、冷却、键位和发布边界见[双药剂组与八槽共享冷却 ADR](../docs/双药剂组-八槽共享冷却-ADR-2026-08-27.md)。正式 runtime 已 promotion，部署后 identity/lifecycle 窄纵切已通过；该纵切 `businessJourneyExecuted=false`，不能代签 Character Build 写、八槽使用、旧档迁移或重启读回。
+物理容器为两组各四槽，共用四条药剂冷却通道。AS2 `DrugInputService` 独占活动组、切换上升沿、同列共享冷却、同帧抑制与持键锁存；Settings 键表为 36 行 / `keySchemaVersion=2`；Character Build 顶层协议 v1 投影 `drugLayout.v=2`、八个 `{slot,bank,lane,active}` 行和两排四列 UI。
+
+PlayerInfo 五列中的**首列**是 `drug:switch`，后四列显示活动组；首列不是第九药剂槽。无 linkage 的两帧切组 MovieClip 已由 `defa9530f3` 更新为 2×4 大小实心点阵。图标真源、输入/存档契约与 #71 affinity 现场收口统一见[双药剂组 ADR](../docs/双药剂组-八槽共享冷却-ADR-2026-08-27.md#hud-drug-bank-marker)，不在本入口维护颜色和像素参数。
+
+正式 runtime 的历史 identity/lifecycle 窄纵切 `businessJourneyExecuted=false`；后续药剂现场回执按 ADR 自身范围成立，两者都不证明完整 C# 玩家 HUD 已接入。血/盾/蓝/韧性/经验的有限重设计已纳入[玩家 HUD 规划](../docs/玩家信息界面-NativeHud迁移-架构设计-2026-06-21.md#resource-hud-redesign)，尚未实施，不由点阵图标验收代签。
 
 ### 2026-09-08 地图主动撤退
 

@@ -2,7 +2,7 @@
 
 **文档角色**：把 `flashswf/UI/玩家信息界面` 从「Flash MovieClip 承载显示 + 输入 + 冷却逻辑」迁移到「C# 启动器常驻 HUD + AS2 服务持有状态权威」的**纲领设计 / ADR**。输入、手动冷却与 Skill 管理已服务化，C# 目前仍只有 HP/MP fixture。完整范围、当前差异与接续步骤见[2026-09-12 复工调研与施工路线](玩家信息界面完整迁移-复工调研与施工路线-2026-09-12.md)；SVG 真源、渲染器与历史 B0 验收仍归 [B0 专项 ADR](玩家信息界面-NativeHud-SVG真源与程序化动效-B0-ADR与分片施工计划-2026-07-28.md)。
 
-**最后核对代码基线**：`cde09af93526dbe894aac90709d51ef978ac4c05`（2026-09-12）。本轮只调研和更新文档；同期工作区有 NPC/原生注释施工，未借其未完成状态宣称 PlayerInfo 接入。当前为 18 路手动冷却、2 组 × 4 列药剂、独立切组控件和 8 种模式视图；具体药剂契约见[双药剂组 ADR](双药剂组-八槽共享冷却-ADR-2026-08-27.md)。§5.1/§5.2 保留当日历史计数。
+**最后核对代码基线**：commit `29567cb6c2f330410ac28250cabaa34ffc3eef60`（2026-09-19，限定切组图标、资源区设计范围与 C# fixture 接入状态）。完整业务盘点仍对应 `cde09af93526dbe894aac90709d51ef978ac4c05`（2026-09-12）；18 路手动冷却、2 组 × 4 列药剂和 8 种模式视图的来源见[复工路线](玩家信息界面完整迁移-复工调研与施工路线-2026-09-12.md)。§5.1/§5.2 与 B0 证据保留各自历史基线，不因本次文档修订升级。
 
 **B0 历史验收与发布边界**：main-space v2 实现由 merge commit `40853287e7ed04714d68935c0002f8ad6d8aea05` 纳入主线，qualification 闭包修复后的 F2 为 `891d9b08dbd826d8b2624c6bdc59082b3db57ecd`；F2/r2 自身仍是历史的 `candidate_executed / source-ahead / NOT_DEPLOYED` build train。PlayerInfo 实现字节随后被较新的正式 source `9118eb5097ab073d26a9806138f9fabf28e3ca79` 与配对 runtime 包含；该 release 已 promotion 并达到总体 `standard_entry_verified`，但正式入口只执行 production Equipment Tuning opener 与同实例首个权威 snapshot，没有启用 PlayerInfo fixture、观察真实 `pi_*` 或做 PlayerInfo-specific E2E。B0 因而仍为 `b0_accepted`，oracle 仍为 `oracle_frozen_for_b0`；不能从总体部署外推真实 UiData、跨 renderer pixel parity 或 PlayerInfo 专项验收。B0 当时旧 Flash HUD 保持同屏且未修改；视觉门以[专项 ADR](玩家信息界面-NativeHud-SVG真源与程序化动效-B0-ADR与分片施工计划-2026-07-28.md) §12 为准。
 
@@ -25,8 +25,8 @@
 - 2026-07-30 的视觉基座 B0（自动报告 UTC 日期为 2026-07-29）保持两条正交状态。Oracle 轨已有 11-case、1024×576 main-stage、exported-symbol extraction、wrapper=false 的真实 Flash v2 candidate，且 tooling strict identity 通过；capture-time manifest 的四个 human check 与独立来源身份字段仍保持为空、报告局部状态仍为 `candidate_captured; awaiting_human_review`，冻结证据不回写。其后 exact `p50` isolated candidate 的维护者 receipt 已在真实游戏 composite 接受旧 Flash HUD 同屏未改、z-order/occlusion、球体可见、HP glow 强度与颜色、MP 文字横向/基线及蓝条纵向对齐、crop/透明、鼠标透传、动效与整体审美，观测环境为 144 DPI / dpr 1.5；结合 source-bound main-RSL-equivalent capture，oracle 现为 `oracle_frozen_for_b0`，B0 为 `b0_accepted`。工程轨在 clean `40853287…` 已取得 B0-05 32/32、B0-06 48/48、full 1747+3/1750 和确定的 C#/Web/direct A/B；B0-05 继续是 8 logical layer / 10 owned PArgb payload、16 MiB whole-batch cache、8-field key 与 `split_required`，B0-06 继续是 allowlist fixture-only split surface，不注册现有 NativeHud union、不接真实 `pi_*`、不隐藏或修改旧 Flash HUD。HP 使用两次 `sigma=1` source-over blur（alpha 255 + 128）加白色 core，横线 active，只有 hp light-overlay 延后；MP current 右锚为 `74.55`，maximum runtime effective 左锚为 `80.95`，四字段自动横向配准均为 `bestDx=0 / anchorEdgeDx=0`。v1 结果只作历史；v2 的最终 Kimi `k3/high` 与 F2/r2 双 builder、23/23 policy、不可复用 preflight 均已 PASS。人签不声称额外物理显示器切换、跨 renderer pixel parity、真实 `pi_*`、业务 E2E、promotion、标准入口或部署；fixture-only 复刻不推翻 §4 的 state-first 运行态接入顺序。
 - **核心裁决（颠覆早期"纯展示层"判断）**：`玩家信息界面` SWF 在阶段0 时确实承载输入、冷却和装备写，不可直接搬空。现状是 `WeaponSkillInputService` / `QuickSkillInputService` / `DrugInputService` 承接三条手动输入，`ManualCooldownService` 持有 18 路逻辑冷却，`SkillLoadoutService` / `SkillPanelService` 持有技能描述符、学习、装备、排序和被动写；旧控制器与进度条已退化为可选显示投影。快捷药剂 `DrugIcon.Press()` 点击卸药、战技时长优先读取旧槽及其他显示列表调用仍需按 §2.2 单独处置。（早期把 `frameEnd` 性能心跳列入本 SWF 是误报，详见 §3.1。）
 - **直接后果**：迁移仍须沿“显示 vs 逻辑”切线推进，但目标已从“保活承载输入/冷却的隐形逻辑壳”收敛为“C# 只读 HUD + AS2 服务 + 窄 HUD renderer/input target”。只有剩余 MovieClip 能力逐项替代并通过 NativeHud 自身观察门后，才可停止实例化整个玩家信息 symbol；这与已经退役的全屏工作台 fallback 是两条不同边界。
-- 已确认可安全只读迁移的显示层：HP / MP / 韧性 / 经验 / 等级 / 弹药数 / 攻击模式视图 / 角色名 / SP / buff 图标条（见 §2.1）。
-- hover 注释明确为**第一阶段放弃项**（计划既定）。
+- 已确认可安全只读迁移的显示层：HP / MP / 韧性 / 经验 / 等级 / 弹药数 / 攻击模式视图 / 角色名 / SP / buff 图标条（见 §2.1）；资源区规划增加护盾只读投影，范围与未实施边界见 [§3.4](#resource-hud-redesign)。
+- 首个接数候选可暂缓说明样式精修；完整迁移仍须提供现役说明与鼠标操作入口。资源区详细读数属于 §3.4 的显示设计，不因早期“第一阶段放弃 hover”被永久遗漏。
 - 排序原则：state-first（AS2 先重构、全功能壳作"贬值中的视觉 oracle"），含两条排序无关硬约束（缓动入 `cur/target` 契约、frameEnd 批量发布）。详见 §4，已记入 agent 记忆。
 
 ---
@@ -147,15 +147,16 @@ C# 层只负责**常驻只读 HUD 显示**；AS2 端保留**游戏状态权威 +
 
 **写语义关键点**：弹药四字段写点（~60）在美术帧脚本里靠 `variableName` 绑定文本生效——facade 化后**必须以 `addProperty`/动态字段兜底**，否则弹药显示静默失效（无法靠类 setter 拦截，因写点不在 `scripts/`）。
 
-### 2.4 一致性验收表（迁移后必须一致）
+### 2.4 一致性验收表（领域事实与显示设计分别核验）
 
-C# 镜像与 AS2 原壳**双轨同屏对比**时逐项核验（计划阶段6）：
+C# 与 AS2 原壳双轨对比时，逐项核验数值、输入、冷却与生命周期；未重设计区域继续按现役显示核对。资源区按 [§3.4](#resource-hud-redesign) 的新设计验收，旧百分比、补零、布局和装饰作为对照，不要求先完整复刻后再删除。B0 冻结 case 与历史人验不回写，也不能代签新布局。
 
 | 场景 | 验收判据 | 阶段0 已锁定的易错细节 |
 |---|---|---|
-| 受伤 / 回血 | HP 条平滑过渡到目标、文本/百分比同步 | §2.1 精确 `step` 式及完整序列；HP 百分比无 % |
-| 耗蓝 / 回蓝 | MP 条 + `NNNNN/NNNNN` 5 位补零 | MP 百分比带 %（与 HP 相反） |
-| 韧性变化 | 破韧/恢复，sqrt 非线性 | `.poise` 变量绑定；多阶段动画可降级为比例 |
+| 受伤 / 回血 | HP 原值、上限与溢出正确；图形过渡和读数按 §3.4 | 旧 `step` 序列与不带 % 的百分比作为对照；取消重复读数不能截掉真实溢出 |
+| 耗蓝 / 回蓝 | MP 原值、上限与超充正确；保留右侧 MP 主读数 | 旧 `NNNNN/NNNNN` 补零及百分比不是新布局的强制常驻项 |
+| 护盾变化（新增） | 容量与上限来自 AS2；无盾、耗尽、恢复、主体切换均可区分 | 盾量不并入 HP；部分伤害可穿盾，不能显示成“有盾就不掉血” |
+| 韧性变化 | 非线性比例、破韧/恢复事实保持一致；强调方式按 §3.4 | 旧多阶段形态用于核对状态覆盖；改成细条属于明确设计差异，不称原动画等价 |
 | 升级 / 经验变化 | 经验条按钳制后的 `remain` 无缓动直跳 | `.frame=100` 影子字段写入当前疑似不可见；B2 真机若证明存在独立闪满效果，再以专项状态补入，不让 B0/B2 预造死行为 |
 | 攻击模式切换 | 视图切到对应的 8 种模式之一 | 同一主体的未知模式保留上一有效视图；新主体先清空旧视图，不能跨主体继承 |
 | 弹药变化 | 子弹数/弹夹数实时 | 四字段全可写；双枪用 `_2` 后缀 |
@@ -203,7 +204,7 @@ C# 镜像与 AS2 原壳**双轨同屏对比**时逐项核验（计划阶段6）�
 
 ### 3.3 当前快捷药剂五列：切组控件 + 活动组四槽
 
-2026-08-27 起，原保留位已接入独立切组控件，不能继续按“用途未定的空白第五格”迁移。现役默认键位为 `6 | 7 | 8 | 9 | 0`：首列显示两帧药剂组切换图标（2026-09-19 起为 2×4 点阵亮行指示，此前为 `○ / × + 1 / 2`），后四列投影活动组。
+2026-08-27 起，原保留位已接入独立切组控件，不能继续按“用途未定的空白第五格”迁移。现役默认键位为 `6 | 7 | 8 | 9 | 0`：首列采用 `defa9530f33acc126dafb2d254f1e3e38488558c` 已落地的两帧 2×4 点阵，激活行大实心块、另一行小实心块，后四列投影活动组。图标样式及现场回执以[双药剂组 ADR §6](双药剂组-八槽共享冷却-ADR-2026-08-27.md#hud-drug-bank-marker)为准，迁移不恢复旧圆叉或空心候选。
 
 - 领域容量为 2 组 × 4 lane = 8 个物理槽，四列分别共用 `drug:0..3` 冷却；切换单独使用 `drug:switch`。
 - 显示槽身份必须包含当前 bank 对应的 physical slot；异步点击不能仅携带视觉列号。
@@ -211,6 +212,30 @@ C# 镜像与 AS2 原壳**双轨同屏对比**时逐项核验（计划阶段6）�
 
 完整规则与历史验收引用[双药剂组 ADR](双药剂组-八槽共享冷却-ADR-2026-08-27.md)。视觉列数、物理槽数和冷却路数是三件事，应分别投影。
 
+
+---
+
+<a id="resource-hud-redesign"></a>
+### 3.4 资源区有限重设计（2026-09-19）
+
+**状态：已纳入迁移规划，尚未实施或完成新布局人验。** 本节是血、盾、蓝、韧性、经验/等级区域的设计范围真源；实施顺序归[复工路线 §6](玩家信息界面完整迁移-复工调研与施工路线-2026-09-12.md#6-施工顺序与具体首步)。会话中的交互草图只说明层级，不是生产 SVG、实际尺寸验收或已冻结的颜色/字号/阈值。
+
+| 范围 | 当前事实 | 后续迁移处理 |
+|---|---|---|
+| 药剂组切换图标 | `defa9530f3` 已修改 XFL/SWF；[维护者回执 #71](https://github.com/FlashNightModReborn/CrazyFlashNight/issues/71)记录 affinity 与图标辨识度收口 | 作为现役基线复用；其现场通过不外推到 C# 完整 HUD |
+| 血/盾/蓝/韧性/经验资源区 | 当前左弧仍与右侧条共用 MP；这次讨论形成有限改版方向 | 设计前置，真实数据接通后在 C# 落地，完整迁移验收前收束 |
+| C# PlayerInfo | 仍为 HP/MP fixture-only surface，尚未接完整生产状态 | 保留 B0 渲染、缓存与窗口基础，先建立全区域真实候选 |
+
+设计方向与边界：
+
+1. **按决策分组。** 血球与外侧护盾弧组成生存区；右侧 MP 与韧性组成行动区；经验和等级退到低强调的边缘。复用弯弧时分离 MP 与护盾的状态、遮罩和动画控制，保留贴近血球的视觉关系。
+2. **减少重复常驻读数。** 图形表达比例，HP/MP 以当前值为主要精确读数；护盾存在时提供可读的余量。上限、百分比等完整数据保留在投影与可访问的详细显示中，常驻项目在候选中收敛；不因隐藏文字删除权威数据或合法溢出。韧性常态降低字号/颜色强调，经验不用大号长数列。
+3. **位置稳定、按状态强调。** 低血、破盾、低蓝、破韧风险可以提高对应区域强调，避免显隐后挤动其他读数；无护盾与耗尽但可恢复需要区分。关键状态同时有形状或文字线索。告警条件根据领域规则确定，韧性非线性显示比例不能直接当作失衡阈值；草图示例不冻结统一的百分比门槛。
+4. **护盾仍由 AS2 裁决。** 从现有 [IShield](../scripts/类定义/org/flashNight/arki/component/Shield/IShield.as) / [AdaptiveShield](../scripts/类定义/org/flashNight/arki/component/Shield/AdaptiveShield.as) 读取容量与上限；采集时明确多层汇总、有效性和未就绪语义，不能仅凭容量为零判为无盾。显示不修改容量/恢复/强度，也不把盾量加进 HP 或承诺伤害必先耗尽护盾。
+5. **装饰服务于读数。** 保留血球与既有工业风的辨识，降低箭头、网格、边框与常态大字的竞争。具体几何、配色、字号、保留/取消的装饰和过渡在真实候选中明确；无必要先对旧 Flash 资源区做一遍大重排。
+6. **验收分开。** 数值、冷却、领域写和生命周期继续按等价迁移验证；本节明确调整的读数/布局/装饰按新方案检查。新布局用实际游戏尺寸、低资源/破盾、复杂战斗背景和遮挡恢复验证扫读与详细信息可达性；更大面积或新动效重新测成本，不继承 B0 的性能数字。
+
+本次有限改版不扩成技能/药剂槽整体重排、Buff 图鉴、Character Build 重做或战斗权威迁往 C#。药剂首列的现役小改已经完成，不必等待整套迁移，也不因此证明其他资源区已改。上述规则不新增独立审批/发布步骤；实现仍在同一完整迁移目标内推进。
 
 ---
 
@@ -283,11 +308,11 @@ C# 镜像与 AS2 原壳**双轨同屏对比**时逐项核验（计划阶段6）�
 | 0 | 行为基线盘点 | ✅ 本文完成；停止线触发 |
 | ~~0.5~~ | — | **作废（误报）**：frameEnd 心跳已迁出主 FLA（见 §3.1），无需新增阶段 |
 | 1 | AS2 外部脚本化（仅 bootstrap） | 输入、18 路冷却与 Skill 装备写已进入 AS2 服务；剩余为药剂点击卸下、战技时长旧槽优先读取和其他 MC 能力 |
-| 2 | 建立 PlayerInfoState | 统一覆盖生命/进度、模式弹药、技能、药剂、冷却、Buff 和主体身份；显示侧分原值/目标/当前帧，首个候选应覆盖完整布局 |
+| 2 | 建立 PlayerInfoState | 统一覆盖生命/护盾/进度、模式弹药、技能、药剂、冷却、Buff 和主体身份；显示侧分原值/目标/当前帧，首个候选应覆盖完整布局 |
 | 3 | UiData 发布 | frameEnd 合批、epoch/sequence、全量重同步、无 world 清除和自由文本编码；`pi_*` 仍是未接入草案 |
 | 4 | 资源管线 | 由 [SVG/B0 专项 ADR](玩家信息界面-NativeHud-SVG真源与程序化动效-B0-ADR与分片施工计划-2026-07-28.md) 细化：HUD 静态矢量转 canonical SVG，按真实物理尺寸启动后烘焙；禁止逐帧 PNG/SVG；原生图标仍走各自管线 |
 | 5 | C# PlayerInfoWidget 只读 | B0-05 已完成 raster/cache 并因近全屏 union 接受独立 split surface；B0-06 已实现不接业务权威的 HP/MP fixture 纵切与独立 click-through surface，surface 独占 animation model，widget 只读消费接口，Resume 仅在有效布局与 raster request 建立后完成。历史 F2/r2 列车停在 `candidate_executed / source-ahead / NOT_DEPLOYED`；其实现字节已由较新的 9118 formal runtime 包含，但本次标准入口没有启用 PlayerInfo fixture 或观察真实 `pi_*`。B0 仍为 `b0_accepted`、oracle 仍为 `oracle_frozen_for_b0`；下一步按阶段2→3的 state-first 链路接真实 UiData，程序化复刻虚拟帧缓动 |
-| 6 | 双轨对比 | 不变；按 §2.4 验收表 |
+| 6 | 双轨对比与视觉收束 | 按 §2.4 核验领域等价；资源区按 §3.4 在 C# 中完成有限重设计，未改区域核对现役显示 |
 | 7 | facade 化 | 按活跃调用将剩余能力转交 C# 显示/输入或 AS2 领域；兼容面可为窄普通对象，不实现通用 MovieClip 模拟器 |
 | 8 | 隐藏 AS2 可见 UI | 隐藏旧层只作过渡；完整目标要求显示和输入替代后停止实例化底部及 Buff 旧元件 |
 | 9 | 清理旧依赖 | 退订旧 renderer、移除 placement，按当前活跃调用闭包验证；历史 161/157 不作现状计数或退出门 |
