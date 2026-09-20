@@ -5,7 +5,7 @@
 
 ## 当前真值与阅读顺序
 
-选关双栏聚焦：废城使用独立 Three r180 建筑特写，其余页提供二维定位；共用简报/通关情报与出战区，开发取景仅存本机预设。单模型按需绘制，废城故障只重试/关闭。协议、资源及验证见[选关施工范围](../docs/选关界面-webview迁移路线图.md#2026-09-09-废城固定镜头首版当前发布范围)。正式发布身份只读下列真源：
+选关双栏聚焦：废城沿用 Three r180；黑铁会总部E4已获用户整体认可，按选关页切换场景、隔离取景预设，共用简报/通关情报与出战区。总部失败回退二维，其余页面保持既有行为；实际游戏逐项复验范围见[选关施工范围](../docs/选关界面-webview迁移路线图.md#2026-09-20-黑铁会总部集成人类验收候选)。正式发布身份只读下列真源：
 
 - [runtime release consensus](../config/build/runtime-release-consensus.json)：request、release tree、build identity、payload closure、签名共识与 promotion 时间。
 - [runtime manifest](../runtime/cf7-runtime-manifest.tsv)：正式入口与 `runtime/` 的逐文件大小、SHA-256 和构建身份。

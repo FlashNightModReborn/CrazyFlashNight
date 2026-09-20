@@ -582,7 +582,7 @@
         (frame.decorations || []).forEach(function(item) {
             S._buttonLayerEl.appendChild(createDecoration(item));
         });
-        (frame.stageButtons || []).forEach(function(button) {
+        StageSelectDiorama.orderButtons(frame).forEach(function(button) {
             var parts = createStageButton(button);
             S._buttonLayerEl.appendChild(parts.node);
             if (parts.anchor && S._cardLayerEl) S._cardLayerEl.appendChild(parts.anchor);
@@ -721,10 +721,12 @@
             applyRovingTabIndex();
             // 打磨批二轮：焦点环只随键盘模态挂 .is-kb-focus（指针路径持焦不出蓝环）
             node.classList.toggle('is-kb-focus', !!S._lastInputKeyboard);
+            if(S._lastInputKeyboard)StageSelectDiorama.hover(button.id);
             updateCardVisibility();
         });
         node.addEventListener('focusout', function() {
             if (S._focusStageId === button.id) S._focusStageId = '';
+            if(!S._hoverStageId)StageSelectDiorama.hover('');
             node.classList.remove('is-kb-focus');
             updateCardVisibility();
         });

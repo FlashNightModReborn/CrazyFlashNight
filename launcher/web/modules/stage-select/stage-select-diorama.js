@@ -1,160 +1,160 @@
-/* 单座废城：总览/特写/取景共用一个缓存，仅在交互和过渡时出帧。 */
+/* Per-frame visual scenes share the existing authoritative selection/entry flow. */
 var StageSelectDiorama = (function() {
     'use strict';
-    var moduleUrl = new URL('./stage-select-diorama-scene.js', document.currentScript.src).href;
-    var S = StageSelectCore.state;
-    var cache = null, pending = null, mount = null, active = false, failed = false;
-    var generation = 0;
-    var focused = '', focusHost = null;
-    var presets = {};
-    try { presets = JSON.parse(localStorage.getItem('cf7.stage-camera.base-gate.v1') || '{}'); } catch (_) {}
-
-    if (!presets || typeof presets !== 'object' || Array.isArray(presets)) presets={};
-
-    function changed() {
-        if (!active || !cache || focused) return;
-        S._visualStagePoints = cache.view.pins();
-        S._buttonLayerEl.querySelectorAll('.stage-select-stage-button').forEach(function(node) {
-            var pin=S._visualStagePoints[node.dataset.stageId];
-            if (pin) {
-                var anchor=S._cardLayerEl.querySelector('[data-stage-id="'+node.dataset.stageId+'"]');
-                place({id:node.dataset.stageId},node,anchor,parseFloat(node.style.getPropertyValue('--stage-card-height')) || 240);
-            }
+    var baseUrl=new URL('./',document.currentScript.src),S=StageSelectCore.state;
+    var config=null,cache=null,pending=null,mount=null,active=false,failed=false,generation=0,loadAbort=null;
+    var focused='',focusHost=null,presets={},fallbackImage=null,presentationId='',environmentEnabled=true,comparison=null;
+    function forFrame(frame){
+        if(StageSelectData.getManifest().testOnly)return null;
+        if(frame.frameLabel===StageSelectDioramaData.frameLabel)return StageSelectDioramaData;
+        if(typeof StageSelectBlackironData!=='undefined'&&frame.frameLabel===StageSelectBlackironData.frameLabel)return StageSelectBlackironData;
+        return null;
+    }
+    function presetKey(){var key=config && config.presetKey || 'cf7.stage-camera.base-gate.v1';return config&&config.presentationViews?key+'.'+presentationId:key;}
+    function loadSaved(){
+        try{presets=JSON.parse(localStorage.getItem(presetKey())||'{}');}catch(_){presets={};}
+        if(!presets||Array.isArray(presets)||typeof presets!=='object')presets={};
+    }
+    function discard(){
+        generation++;if(loadAbort)loadAbort.abort();loadAbort=null;pending=null;
+        if(cache)cache.dispose();cache=null;focused='';focusHost=null;
+        if(fallbackImage)fallbackImage.remove();fallbackImage=null;
+    }
+    function changed(){
+        if(!active||!cache||focused)return;
+        S._visualStagePoints=cache.view.pins();
+        S._buttonLayerEl.querySelectorAll('.stage-select-stage-button').forEach(function(node){
+            var anchor=S._cardLayerEl.querySelector('[data-stage-id="'+node.dataset.stageId+'"]');
+            place({id:node.dataset.stageId},node,anchor,parseFloat(node.style.getPropertyValue('--stage-card-height'))||240);
         });
     }
-    function preset(key) { return cache && cache.view.valid(presets[key]) ? presets[key] : null; }
-
-    function supports(frame) {
-        return !StageSelectData.getManifest().testOnly && frame.frameLabel === StageSelectDioramaData.frameLabel;
+    function preset(key){return cache&&cache.view.valid(presets[key])?presets[key]:null;}
+    function status(message,retry,fallback){
+        if(!mount)return;
+        var el=mount.querySelector('.stage-select-diorama-status');el.hidden=!message;
+        el.querySelector('span').textContent=message||'';el.querySelector('button').hidden=!retry;
+        mount.dataset.state=fallback?'fallback':message?(retry?'error':'loading'):'ready';
+        var touring=window.StageSelectCameraEditor&&StageSelectCameraEditor.isOpen();
+        var blocked=!!message&&!fallback||!!touring||StageSelectInspector.isInspectorOpen();
+        S._buttonLayerEl.inert=blocked;if(S._cardLayerEl)S._cardLayerEl.inert=blocked;
+        if(window.StageSelectCameraEditor)StageSelectCameraEditor.refreshButtons();
+        updateComparison();
     }
-    function status(message, retry) {
-        if (!mount) return;
-        var el = mount.querySelector('.stage-select-diorama-status');
-        el.hidden = !message;
-        el.querySelector('span').textContent = message || '';
-        el.querySelector('button').hidden = !retry;
-        mount.dataset.state = message ? (retry ? 'error' : 'loading') : 'ready';
-        // 模型未准备好时保留关闭/区域菜单，入口层不接收误操作。
-        var touring=window.StageSelectCameraEditor && StageSelectCameraEditor.isOpen();
-        S._buttonLayerEl.inert = !!message || !!touring;
-        if (S._cardLayerEl) S._cardLayerEl.inert = !!message || !!touring;
-        if (window.StageSelectCameraEditor) StageSelectCameraEditor.refreshButtons();
+    function useFallback(message){
+        if(cache)cache.dispose();cache=null;focused='';focusHost=null;failed=true;
+        if(config.fallback){
+            if(!fallbackImage){fallbackImage=document.createElement('img');fallbackImage.className='stage-select-diorama-fallback';fallbackImage.alt=config.frameLabel+'二维总览';fallbackImage.src=StageSelectCore.resolveAssetUrl(config.fallback);mount.prepend(fallbackImage);}
+            S._visualStagePoints=config.fallbackPins||config.pins;status(message+' 已切换二维，可继续选关。',true,true);
+            S._buttonLayerEl.querySelectorAll('.stage-select-stage-button').forEach(function(node){var anchor=S._cardLayerEl.querySelector('[data-stage-id="'+node.dataset.stageId+'"]');place({id:node.dataset.stageId},node,anchor,parseFloat(node.style.getPropertyValue('--stage-card-height'))||240);});
+            if(S._selectedStageId)StageSelectInspector.renderInspector();
+        }else status(message+' 请重试。',true);
     }
-    function contextLost() {
-        failed = true;
-        if (cache) cache.view.stop();
-        if (window.StageSelectCameraEditor) StageSelectCameraEditor.hide();
-        if (active && focused) StageSelectInspector.clearSelection();
-        if (active) status('废城画面暂时中断，请重试。', true);
+    function contextLost(){
+        if(!active)return;
+        failed=true;if(cache)cache.view.stop();StageSelectCameraEditor.hide();
+        if(!config.fallback){
+            if(focused)StageSelectInspector.clearSelection();
+            status((config.name||config.frameLabel)+'画面暂时中断，请重试。',true);return;
+        }
+        useFallback((config.name||config.frameLabel)+'画面暂时中断。');
     }
-    function ensure() {
-        if (pending) return pending;
-        var token = generation;
-        pending = import(moduleUrl).then(function(module) {
-            return module.createScene(StageSelectDioramaData, contextLost, changed);
-        }).then(function(scene) {
-            if (token !== generation) { scene.dispose(); return null; }
-            cache = scene;
-            return scene;
-        }).finally(function() { if (token === generation) pending = null; });
+    function ensure(){
+        if(pending)return pending;
+        var token=generation,wanted=config,controller=new AbortController();loadAbort=controller;
+        var url=new URL(config.scene==='blackiron'?'stage-select-blackiron-scene.js':'stage-select-diorama-scene.js',baseUrl).href;
+        pending=import(url).then(function(module){
+            if(token!==generation)return null;
+            return module.createScene(wanted,function(){if(token===generation)contextLost();},function(){if(token===generation)changed();},function(id){
+                if(!active||token!==generation||focused)return;
+                var node=StageSelectRenderer.findNodeById(id);if(node)node.click();
+            },controller.signal);
+        }).then(function(scene){
+            if(token!==generation){if(scene)scene.dispose();return null;}
+            if(scene&&scene.setPresentation){scene.setPresentation(presentationId);scene.setEnvironment(environmentEnabled);}
+            cache=scene;return scene;
+        }).finally(function(){if(token===generation){pending=null;loadAbort=null;}});
         return pending;
     }
-    function show() {
-        if (cache && !failed) {
-            if (!focused) {
-                mount.prepend(cache.canvas);
-                cache.view.resize(1024,576);
-                if (!StageSelectCameraEditor.isOpen()) cache.view.overview(preset('overview'),false);
-                else cache.render();
-            } else cache.render();
-            status('', false);
-            return;
+    function show(){
+        if(cache&&!failed){
+            if(!focused){mount.prepend(cache.canvas);cache.view.resize(1024,576);if(!StageSelectCameraEditor.isOpen())cache.view.overview(preset('overview'),false);else cache.render();}
+            else cache.render();status('',false);return;
         }
-        status('正在载入废城…', false);
-        ensure().then(function(scene) {
-            if (!active || !scene) return;
-            mount.prepend(scene.canvas);
-            scene.view.overview(preset('overview'),false);
-            status('', false);
-            if (S._selectedStageId) StageSelectInspector.renderInspector();
-        }).catch(function(error) {
-            if (!active) return;
-            failed = true;
-            status('废城画面未能载入，请重试。', true);
-            StageSelectCore.logDev('diorama: ' + error.message);
+        var token=generation;
+        status('正在载入'+(config.name||config.frameLabel)+'…',false);
+        ensure().then(function(scene){
+            if(!active||token!==generation||!scene)return;
+            if(fallbackImage)fallbackImage.remove();fallbackImage=null;
+            mount.prepend(scene.canvas);scene.view.resize(1024,576);scene.view.overview(preset('overview'),false);changed();status('',false);
+            if(S._selectedStageId)StageSelectInspector.renderInspector();
+        }).catch(function(error){
+            if(!active||token!==generation)return;
+            useFallback((config.name||config.frameLabel)+'画面未能载入。');StageSelectCore.logDev('diorama: '+error.message);
         });
     }
-    function retry() {
-        if (pending) return;
-        if (cache) cache.dispose();
-        cache = null;
-        failed = false;
-        generation++;
-        show();
-    }
-    function bind(frame) {
-        active = supports(frame);
-        S._visualStagePoints = active ? (cache && !focused ? cache.view.pins() : StageSelectDioramaData.pins) : null;
-        S._el.classList.toggle('is-diorama', active);
-        if (!active) { hide(); return; }
-        if (!mount) {
-            mount = document.createElement('div');
-            mount.className = 'stage-select-diorama';
-            mount.innerHTML = '<div class="stage-select-diorama-status" role="status"><span></span><button type="button" data-audio-cue="confirm">重试</button></div>';
-            mount.querySelector('button').addEventListener('click', retry);
+    function retry(){if(!active||pending)return;discard();failed=false;show();}
+    function bind(frame){
+        var next=forFrame(frame);
+        if(next!==config){StageSelectCameraEditor.hide();discard();failed=false;config=next;presentationId=config&&config.defaultPresentation||'';environmentEnabled=true;loadSaved();}
+        active=!!next;S._visualStagePoints=active?(cache&&!focused?cache.view.pins():config.pins):null;
+        S._el.classList.toggle('is-diorama',active);
+        if(!active){hide();return;}
+        if(!mount){
+            mount=document.createElement('div');mount.className='stage-select-diorama';
+            mount.innerHTML='<div class="stage-select-diorama-status" role="status"><span></span><button type="button" data-audio-cue="confirm">重试</button></div>';
+            mount.querySelector('button').addEventListener('click',retry);
         }
-        S._stageEl.prepend(mount);
-        mount.hidden = false;
-        if (failed && cache) { status('废城画面暂时中断，请重试。', true); return; }
-        show();
+        S._stageEl.prepend(mount);mount.hidden=false;updateComparison();
+        if(failed){useFallback((config.name||config.frameLabel)+'画面暂时不可用。');return;}show();
     }
-    function hide() {
-        active = false;
-        focused = ''; focusHost = null;
-        if (cache) { cache.view.stop(); cache.view.edit(false); }
-        if (window.StageSelectCameraEditor) StageSelectCameraEditor.hide();
-        if (mount) mount.hidden = true;
-        if (S._buttonLayerEl) S._buttonLayerEl.inert = false;
-        if (S._cardLayerEl) S._cardLayerEl.inert = false;
-    }
-    function focus(id, host) {
-        if (!active || !cache || failed) return;
-        var changedFocus=focused !== id;
-        focused=id; focusHost=host;
-        host.appendChild(cache.canvas);
-        cache.view.resize(host.clientWidth,host.clientHeight);
-        if (changedFocus) cache.view.focus(id,preset(id),!S._el.classList.contains('is-camera-editing'));
-        else cache.render();
-    }
-    function overview() {
-        if (!focused) return;
-        focused=''; focusHost=null;
-        if (!cache) return;
-        mount.prepend(cache.canvas); cache.view.resize(1024,576);
-        if (active && !failed) cache.view.overview(preset('overview'));
-        else cache.view.stop();
-    }
-    function edit(enabled) { return cache ? cache.view.edit(enabled) : Promise.resolve(); }
-    function exportPresets() {
-        if (!cache) return;
-        var value=cache.view.snapshot();
-        if (!cache.view.valid(value)) throw new Error('当前取景超出可保存范围，请恢复默认取景后调整。');
-        var result=Object.assign({},presets);result[focused || 'overview']=value;
-        return result;
-    }
-    function savePreset() {
-        if (!cache) return;
-        presets=exportPresets();
-        localStorage.setItem('cf7.stage-camera.base-gate.v1',JSON.stringify(presets));
-        return presets;
-    }
-    function loadPresets(value) {
-        if (!value || Array.isArray(value) || typeof value !== 'object' || !cache) throw new Error('预设内容无效');
-        Object.keys(value).forEach(function(key) {
-            if ((key !== 'overview' && !Object.prototype.hasOwnProperty.call(StageSelectDioramaData.pins,key)) || !cache.view.valid(value[key])) throw new Error('预设内容无效：'+key);
+    function updateComparison(){
+        if(comparison)comparison.remove();comparison=null;
+        if(!config||!config.presentationViews||failed)return;
+        comparison=document.createElement('div');comparison.className='stage-select-diorama-comparison';
+        comparison.setAttribute('role','group');comparison.setAttribute('aria-label','总部取景对比');
+        Object.keys(config.presentationViews).forEach(function(id){
+            var button=document.createElement('button');button.type='button';button.textContent=config.presentationViews[id].label;
+            button.setAttribute('aria-pressed',String(presentationId===id));
+            button.addEventListener('click',function(e){
+                e.stopPropagation();if(!cache||failed||focused)return;StageSelectCameraEditor.hide();
+                presentationId=id;loadSaved();cache.setPresentation(id);cache.view.overview(preset('overview'),false);changed();updateComparison();
+                comparison.querySelector('[aria-pressed="true"]').focus({preventScroll:true});
+            });comparison.appendChild(button);
         });
-        presets=value; localStorage.setItem('cf7.stage-camera.base-gate.v1',JSON.stringify(presets));
-        if (focused) cache.view.focus(focused,preset(focused),false); else cache.view.overview(preset('overview'),false);
+        var label=document.createElement('label'),input=document.createElement('input');input.type='checkbox';input.checked=environmentEnabled;
+        input.addEventListener('change',function(){if(cache&&!failed){environmentEnabled=input.checked;cache.setEnvironment(environmentEnabled);updateComparison();}});
+        label.append(input,document.createTextNode('周边环境'));comparison.appendChild(label);
+        comparison.addEventListener('click',function(e){e.stopPropagation();});mount.appendChild(comparison);
+        comparison.querySelectorAll('button,input').forEach(function(el){el.disabled=!cache||failed;});
+    }
+    function hide(){
+        active=false;focused='';focusHost=null;
+        if(cache){cache.view.stop();cache.view.edit(false);}
+        if(window.StageSelectCameraEditor)StageSelectCameraEditor.hide();
+        if(pending || config&&config.releaseOnHide){discard();failed=false;}
+        if(mount)mount.hidden=true;
+        if(S._buttonLayerEl)S._buttonLayerEl.inert=false;if(S._cardLayerEl)S._cardLayerEl.inert=false;
+    }
+    function focus(id,host){
+        if(!active||!cache||failed)return;var changedFocus=focused!==id;focused=id;focusHost=host;
+        host.appendChild(cache.canvas);cache.view.resize(host.clientWidth,host.clientHeight);
+        if(changedFocus)cache.view.focus(id,preset(id),!S._el.classList.contains('is-camera-editing'));else cache.render();
+    }
+    function overview(){
+        if(!focused)return;focused='';focusHost=null;if(!cache)return;
+        mount.prepend(cache.canvas);cache.view.resize(1024,576);
+        if(active&&!failed)cache.view.overview(preset('overview'));else cache.view.stop();
+    }
+    function edit(enabled){return cache?cache.view.edit(enabled):Promise.resolve();}
+    function exportPresets(){
+        if(!cache)return;var value=cache.view.snapshot();if(!cache.view.valid(value))throw new Error('当前取景超出可保存范围，请恢复默认取景后调整。');
+        var result=Object.assign({},presets);result[focused||'overview']=value;return result;
+    }
+    function savePreset(){if(!cache)return;presets=exportPresets();localStorage.setItem(presetKey(),JSON.stringify(presets));return presets;}
+    function loadPresets(value){
+        if(!value||Array.isArray(value)||typeof value!=='object'||!cache)throw new Error('预设内容无效');
+        Object.keys(value).forEach(function(key){if((key!=='overview'&&!Object.prototype.hasOwnProperty.call(config.pins,key))||!cache.view.valid(value[key]))throw new Error('预设内容无效：'+key);});
+        presets=value;localStorage.setItem(presetKey(),JSON.stringify(presets));if(focused)cache.view.focus(focused,preset(focused),false);else cache.view.overview(preset('overview'),false);
     }
     function place(button, node, anchor, cardHeight) {
         var pin = S._visualStagePoints && S._visualStagePoints[button.id];
@@ -165,6 +165,23 @@ var StageSelectDiorama = (function() {
         node.style.minHeight = '40px';
         node.style.setProperty('--diorama-label-x', pin.labelX + 'px');
         node.style.setProperty('--diorama-label-y', pin.labelY + 'px');
+        var label=node.querySelector('.stage-select-stage-name');
+        if(pin.shortLabel && label){
+            // Only the map caption is abbreviated; accessible names and all gameplay data stay full.
+            if(!node.hasAttribute('aria-label'))node.setAttribute('aria-label',label.textContent);
+            label.textContent=pin.shortLabel;node.dataset.compactLabel='true';
+            node.style.setProperty('--diorama-label-width',pin.labelWidth+'px');
+        }
+        var leader=node.querySelector('.stage-select-location-leader'),ns='http://www.w3.org/2000/svg';
+        if(!leader){
+            leader=document.createElementNS(ns,'svg');leader.setAttribute('class','stage-select-location-leader');leader.setAttribute('aria-hidden','true');leader.setAttribute('width','1');leader.setAttribute('height','1');
+            ['stage-select-leader-edge','stage-select-leader-ink'].forEach(function(cls){var path=document.createElementNS(ns,'path');path.setAttribute('class',cls);leader.appendChild(path);});
+            node.prepend(leader);
+        }
+        var dx=pin.labelX,dy=pin.labelY,len=Math.hypot(dx,dy),halfW=((label&&label.offsetWidth)||pin.labelWidth||140)/2+3,halfH=((label&&label.offsetHeight)||pin.labelHeight||30)/2+3;
+        var trim=Math.min(dx?halfW/Math.abs(dx):Infinity,dy?halfH/Math.abs(dy):Infinity),end=1-trim,start=15/len;
+        var pathData=len>0&&end>start?'M '+(dx*start)+' '+(dy*start)+' L '+(dx*end)+' '+(dy*end):'';
+        leader.querySelectorAll('path').forEach(function(path){path.setAttribute('d',pathData);});
         if (anchor) {
             // 独立卡片在固定舞台内钳制，不沿用旧 Flash 元件的 133.7px 偏移。
             var width = parseFloat(anchor.style.getPropertyValue('--stage-card-width')) || 167;
@@ -183,21 +200,16 @@ var StageSelectDiorama = (function() {
             anchor.style.top = Math.max(54, Math.min(576-cardHeight-8, top)) + 'px';
         }
     }
-    window.addEventListener('pagehide', function() {
-        active = false;
-        generation++;
-        if (cache) cache.dispose();
-        cache = null;
-    });
-    return { bind: bind, hide: hide, place: place, retry: retry,focus:focus,overview:overview,edit:edit,
+    window.addEventListener('pagehide',function(){active=false;discard();});
+    return {bind:bind,hide:hide,place:place,retry:retry,focus:focus,overview:overview,edit:edit,
+        canFocus:function(){return !!(active&&cache&&!failed);},
+        fallbackMap:function(){return active&&failed&&config.fallback?{src:StageSelectCore.resolveAssetUrl(config.fallback),x:0,y:0,w:1024,h:576}:null;},
+        orderButtons:function(frame){var c=forFrame(frame),list=(frame.stageButtons||[]).slice();return c&&c.displayOrder?list.sort(function(a,b){return c.displayOrder.indexOf(a.id)-c.displayOrder.indexOf(b.id);}):list;},
         savePreset:savePreset,loadPresets:loadPresets,exportPresets:exportPresets,
-        snapshotCamera:function() { return cache ? cache.view.snapshot() : null; },
-        restoreCamera:function(value) {
-            if(!active || !cache || failed || !cache.view.valid(value))return;
-            if(focused)cache.view.focus(focused,value,false);else cache.view.overview(value,false);
-        },
-        hover:function(id) { if(active&&cache&&!failed)cache.view.hover(id); },
-        resetCamera:function() { if(cache) { if(focused)cache.view.focus(focused,null,false);else cache.view.overview(null,false); } },
-        stats: function() { return Object.assign({ active: active, pending: !!pending, failed: failed,
-            state: mount && mount.dataset.state || 'empty' }, cache ? cache.stats() : {}); } };
+        snapshotCamera:function(){return cache?cache.view.snapshot():null;},
+        restoreCamera:function(value){if(!active||!cache||failed||!cache.view.valid(value))return;if(focused)cache.view.focus(focused,value,false);else cache.view.overview(value,false);},
+        hover:function(id){if(active&&cache&&!failed)cache.view.hover(id);},
+        resetCamera:function(){if(cache){if(focused)cache.view.focus(focused,null,false);else cache.view.overview(null,false);}},
+        stats:function(){return Object.assign({active:active,pending:!!pending,failed:failed,frameLabel:config&&config.frameLabel||'',state:mount&&mount.dataset.state||'empty'},cache?cache.stats():{});}
+    };
 })();

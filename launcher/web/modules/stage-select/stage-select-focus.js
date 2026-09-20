@@ -165,7 +165,7 @@ var StageSelectFocus = (function() {
         var scroll=changed ? 0 : content.scrollTop;
         pickDifficulty(mode); renderContent(); content.scrollTop=scroll;
         S._buttonLayerEl.inert=true; S._cardLayerEl.inert=true; S._navLayerEl.inert=true;
-        if (S._el.classList.contains('is-diorama')) {
+        if (S._el.classList.contains('is-diorama') && StageSelectDiorama.canFocus()) {
             viewport.querySelector('.stage-focus-location').hidden=true;
             StageSelectDiorama.focus(buttonData.id,viewport);
         } else {
@@ -173,7 +173,9 @@ var StageSelectFocus = (function() {
             var map=viewport.querySelector('.stage-focus-location'), point=StageSelectViewModel.getStageNavPoint(buttonData,StageSelectRenderer.computeDirectSizing);
             map.hidden=false;
             var bg=S._backgroundEl.style, rect={x:parseFloat(bg.left)||0,y:parseFloat(bg.top)||0,w:parseFloat(bg.width)||1024,h:parseFloat(bg.height)||576};
-            map.innerHTML='<svg viewBox="0 0 1024 576" role="img" aria-label="当前地点位置"><image href="'+escape(S._backgroundEl.src)+'" x="'+rect.x+'" y="'+rect.y+'" width="'+rect.w+'" height="'+rect.h+'" preserveAspectRatio="none" opacity=".65"/><circle cx="'+point.x+'" cy="'+point.y+'" r="22" class="stage-focus-map-ring"/><circle cx="'+point.x+'" cy="'+point.y+'" r="5" class="stage-focus-map-dot"/></svg><div class="stage-focus-map-caption">'+escape(buttonData.stageName)+'</div>';
+            var fallback=StageSelectDiorama.fallbackMap(),src=S._backgroundEl.src;
+            if(fallback){rect=fallback;src=fallback.src;}
+            map.innerHTML='<svg viewBox="0 0 1024 576" role="img" aria-label="当前地点位置"><image href="'+escape(src)+'" x="'+rect.x+'" y="'+rect.y+'" width="'+rect.w+'" height="'+rect.h+'" preserveAspectRatio="none" opacity=".65"/><circle cx="'+point.x+'" cy="'+point.y+'" r="22" class="stage-focus-map-ring"/><circle cx="'+point.x+'" cy="'+point.y+'" r="5" class="stage-focus-map-dot"/></svg><div class="stage-focus-map-caption">'+escape(buttonData.stageName)+'</div>';
         }
     }
     function hide() {

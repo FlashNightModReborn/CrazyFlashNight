@@ -256,6 +256,7 @@
          'modules/panel-scale.js',
           'modules/stage-select/stage-select-core.js',
           'modules/stage-select/stage-select-diorama-data.js',
+          'modules/stage-select/stage-select-blackiron-data.js',
           'modules/stage-select/stage-select-diorama.js',
          'modules/stage-select/stage-select-view-model.js',
          'modules/stage-select/stage-select-renderer.js',

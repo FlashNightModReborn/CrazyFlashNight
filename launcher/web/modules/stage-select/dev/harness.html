@@ -47,6 +47,9 @@
     body.stage-select-qa #debug-log {
         pointer-events: none;
     }
+    body.stage-select-player-preview #harness-toolbar,
+    body.stage-select-player-preview #debug-log,
+    body.stage-select-player-preview #qa-panel { display: none; }
 </style>
 </head>
 <body>
@@ -131,6 +134,7 @@ window.CF7_PORTRAIT_LEGACY_ROOT='../../../assets/pets/';
 <script src="./stage-select-golden.js"></script>
 <script src="../stage-select-core.js"></script>
 <script src="../stage-select-diorama-data.js"></script>
+<script src="../stage-select-blackiron-data.js"></script>
 <script src="../stage-select-diorama.js"></script>
 <script src="../stage-select-view-model.js"></script>
 <script src="../stage-select-renderer.js"></script>
@@ -146,6 +150,7 @@ window.CF7_PORTRAIT_LEGACY_ROOT='../../../assets/pets/';
     'use strict';
 
     var query = MinigameHarness.parseQuery(location.search);
+    if (query.player) document.body.classList.add('stage-select-qa','stage-select-player-preview');
     var shell = document.getElementById('viewport-shell');
     var statusEl = document.getElementById('harness-status');
     var frameSelect = document.getElementById('stage-frame-select');
@@ -369,7 +374,7 @@ window.CF7_PORTRAIT_LEGACY_ROOT='../../../assets/pets/';
             host.setViewport(query.viewport || '1366x768');
             frameSelect.value = query.frame || manifest.frameOrder[0];
             fixtureSelect.value = query.fixture || 'mixed';
-            host.open();
+            host.open({mode: query.player ? 'runtime' : 'dev'});
         },
         runSuite: function(api, onlyCase) {
             return StageSelectHarnessQA.runSuite(api, host, onlyCase);

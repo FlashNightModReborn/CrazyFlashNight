@@ -1,0 +1,36 @@
+{
+  "revision": "R8",
+  "palette": {
+    "wall": "805137",
+    "facade": "382719",
+    "roof": "68422A",
+    "eave": "251C16",
+    "ridge": "A47745",
+    "stone": "665044",
+    "road": "634735",
+    "metal": "52534E",
+    "brass": "AB793C",
+    "shrine": "272017",
+    "plinth": "2B201D",
+    "terrace": "48362D",
+    "court": "58402F",
+    "step": "795B41",
+    "retaining": "4B3529",
+    "edgeStone": "7E6145"
+  },
+  "ambient": 0.44,
+  "sunStrength": 0.5,
+  "aoStrength": 0.5,
+  "windowStrength": 1.35,
+  "signStrength": 1.2,
+  "windowSpill": 0.3,
+  "storyHeight": 2.35,
+  "subdivisionArea": 14,
+  "windowTextureSize": [
+    512,
+    1024
+  ],
+  "background": "#211E21",
+  "surfaceRevision": "R8-G1",
+  "groundDesign": "Warm charcoal stone terraces, umber paving, restrained old-bronze step edges; no geometry changes."
+}

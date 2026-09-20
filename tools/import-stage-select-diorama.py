@@ -89,6 +89,9 @@ def main():
         total = 0
         for row in manifest['files']:
             data = (ROOT / row['path']).read_bytes()
+            # Git may check out attributes with CRLF; the frozen producer wrote LF.
+            if row['path'].endswith('/.gitattributes'):
+                data = data.replace(b'\r\n', b'\n')
             assert len(data) == row['bytes'] and digest(data) == row['sha256'], row['path']
             total += len(data)
         assert total < 12_000_000, 'Single-scene runtime asset budget exceeded'

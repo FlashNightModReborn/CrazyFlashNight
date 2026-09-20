@@ -1,13 +1,13 @@
 import * as THREE from '../../assets/stage-diorama/base-gate/vendor/three.module.js';
 
 // 相机与高亮只在输入/过渡时出帧；总览、特写、开发取景共用同一个相机和 Canvas。
-export function createCameraView(config, root, camera, renderer, render, onChange) {
+export function createCameraView(config, root, camera, renderer, render, onChange, hooks = {}) {
     let width=1024, height=576, span=config.camera.horizontalSpan;
     let target=new THREE.Vector3(...config.camera.gltfTarget), motion=0, controls=null, disposed=false;
     let highlighted='', materials=[], focusId='', editGeneration=0, controlsPromise=null;
     const heldKeys=new Set(), walkKeys={KeyW:[0,1],ArrowUp:[0,1],KeyS:[0,-1],ArrowDown:[0,-1],KeyA:[-1,0],ArrowLeft:[-1,0],KeyD:[1,0],ArrowRight:[1,0]};
     let walkFrame=0, walkTime=0, fastWalk=false;
-    const home={position:config.camera.gltfPosition, target:config.camera.gltfTarget, span};
+    let home={position:config.camera.gltfPosition, target:config.camera.gltfTarget, span};
     function stopWalk() { heldKeys.clear(); fastWalk=false; if(walkFrame)cancelAnimationFrame(walkFrame);walkFrame=0; }
     function stop() { if (motion) cancelAnimationFrame(motion); motion=0; stopWalk(); }
     function isTextInput(el) { return el && (el.isContentEditable || /^(INPUT|TEXTAREA|SELECT)$/.test(el.tagName)); }
@@ -52,12 +52,12 @@ export function createCameraView(config, root, camera, renderer, render, onChang
     function draw() { project(); render(); if (onChange) onChange(); }
     function resize(w,h) {
         width=Math.max(1,Math.round(w)); height=Math.max(1,Math.round(h));
-        renderer.setSize(width,height,false); project();
+        renderer.setSize(width,height,false); if(hooks.resize)hooks.resize(width,height); project();
     }
     function snapshot() { return {position:camera.position.toArray(),target:target.toArray(),span:span/camera.zoom}; }
     function valid(value) {
         return value && ['position','target'].every(key=>Array.isArray(value[key]) && value[key].length===3 && value[key].every(n=>Number.isFinite(n) && Math.abs(n)<10000))
-            && Number.isFinite(value.span) && value.span>=5 && value.span<=240
+            && Number.isFinite(value.span) && value.span>=5 && value.span<=(config.camera.maxSpan || 240)
             && new THREE.Vector3(...value.position).distanceTo(new THREE.Vector3(...value.target))>1;
     }
     function move(value, animate) {
@@ -79,6 +79,7 @@ export function createCameraView(config, root, camera, renderer, render, onChang
         tick(started);
     }
     function highlight(id) {
+        if(hooks.highlight) { highlighted=id || ''; hooks.highlight(highlighted); return; }
         if (id===highlighted) return;
         materials.forEach(row=>{row.mesh.material=row.original; row.clones.forEach(m=>m.dispose());}); materials=[];
         highlighted=id || '';
@@ -101,6 +102,7 @@ export function createCameraView(config, root, camera, renderer, render, onChang
         });
     }
     function defaultFocus(id) {
+        if(config.focusCameras && config.focusCameras[id])return config.focusCameras[id];
         const pin=config.pins[id], building=pin && root.getObjectByName(pin.building);
         if (!building) return home;
         const box=new THREE.Box3().setFromObject(building);
@@ -131,18 +133,19 @@ export function createCameraView(config, root, camera, renderer, render, onChang
                 target.copy(controls.target); camera.updateMatrixWorld(true); render(); if(onChange)onChange();
             });
         }
-        controls.minZoom=span/240; controls.maxZoom=span/5;
+        controls.minZoom=span/(config.camera.maxSpan || 240); controls.maxZoom=span/5;
         controls.target.copy(target); controls.enabled=true; controls.update();
     }
     function pins() {
         const result={};
         Object.entries(config.pins).forEach(([id,pin])=>{
             const anchor=root.getObjectByName(pin.labelAnchor), p=anchor.getWorldPosition(new THREE.Vector3()).project(camera);
-            result[id]=Object.assign({},pin,{x:(p.x*.5+.5)*width,y:(-.5*p.y+.5)*height,visible:p.z>=-1 && p.z<=1});
+            result[id]=Object.assign({},pin,{x:(p.x*.5+.5)*width+(pin.screenOffset?.[0]||0),y:(-.5*p.y+.5)*height+(pin.screenOffset?.[1]||0),visible:p.z>=-1 && p.z<=1});
         });
         return result;
     }
     return {resize,focus,overview,edit,snapshot,valid,pins,stop,
+        setOverview(value) { if(!valid(value))throw new Error('镜头预设无效');home=value; },
         hover(id) { if (!focusId && !motion && !(controls && controls.enabled)) {highlight(id);draw();} },
         dispose() {
             disposed=true;stop();if(controls)controls.dispose();highlight('');

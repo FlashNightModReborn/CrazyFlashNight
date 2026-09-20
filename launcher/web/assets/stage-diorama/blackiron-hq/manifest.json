@@ -1,0 +1,98 @@
+{
+  "schema": 1,
+  "sourceZipSha256": "5f6096e4807a35d37e96a80a81e3ba60598bf9f507a38efa24e0f18116afaee9",
+  "revision": "R8-I1-H1",
+  "changes": "GLBs unchanged; native display order follows mainline; r180 postprocessing imports share existing core. Demo gameplay state excluded.",
+  "files": [
+    {
+      "path": "launcher/web/assets/stage-diorama/blackiron-hq/headquarters.glb",
+      "bytes": 7065112,
+      "sha256": "17e23f7caffdec14a8391c10bc050c6901246772c3905e14d37b7506c440957d"
+    },
+    {
+      "path": "launcher/web/assets/stage-diorama/blackiron-hq/selection.glb",
+      "bytes": 1150588,
+      "sha256": "25050d41cddb4dc3c0641d62405257322f6a97ee0e682d022081327b0359f7ac"
+    },
+    {
+      "path": "launcher/web/assets/stage-diorama/blackiron-hq/fallback.jpg",
+      "bytes": 65238,
+      "sha256": "e75e14555817d7c7d3db56b04754d1f649056d1b5d12d8e7c7324ea49cfeb47d"
+    },
+    {
+      "path": "launcher/web/assets/stage-diorama/blackiron-hq/interaction.json",
+      "bytes": 44163,
+      "sha256": "d5862cec1ebb0bd883115556a45dcb755848c9ec68617dedc8dea5ff8dd5619b"
+    },
+    {
+      "path": "launcher/web/assets/stage-diorama/blackiron-hq/style.json",
+      "bytes": 824,
+      "sha256": "7cf7844f97ebccb0a8169e8043950d4dcbdb041b75efabc4dd6db3d02025bdfd"
+    },
+    {
+      "path": "launcher/web/assets/stage-diorama/blackiron-hq/views.json",
+      "bytes": 1233,
+      "sha256": "ce6aacc749bd3593e356da5698b6a70c1cbb934a8627eb9583cf4cfbfa991d11"
+    },
+    {
+      "path": "launcher/web/assets/stage-diorama/blackiron-hq/vendor/postprocessing/EffectComposer.js",
+      "bytes": 8513,
+      "sha256": "5aeb9b6e906200ee17cad645be0324bc4d5f4522664a810887800bdba889c2a2"
+    },
+    {
+      "path": "launcher/web/assets/stage-diorama/blackiron-hq/vendor/postprocessing/MaskPass.js",
+      "bytes": 4694,
+      "sha256": "7cd08eee9d5d6f5578beaddbdcbe9c384f6873810af27f22ab7db3ceeb127aa3"
+    },
+    {
+      "path": "launcher/web/assets/stage-diorama/blackiron-hq/vendor/postprocessing/OutputPass.js",
+      "bytes": 4065,
+      "sha256": "f894014a9b440dec6778565f396a7d2d0899f95b1663ba22369d924469ebc6da"
+    },
+    {
+      "path": "launcher/web/assets/stage-diorama/blackiron-hq/vendor/postprocessing/Pass.js",
+      "bytes": 4254,
+      "sha256": "5bb6e068f0454b591a7d261a5eb2575d9a4e426f18110a820eac7072697e5ee4"
+    },
+    {
+      "path": "launcher/web/assets/stage-diorama/blackiron-hq/vendor/postprocessing/RenderPass.js",
+      "bytes": 4148,
+      "sha256": "db218f290dcd415784a9cf6debc849fa5e08ca3fb41080116a278d22835d08c2"
+    },
+    {
+      "path": "launcher/web/assets/stage-diorama/blackiron-hq/vendor/postprocessing/ShaderPass.js",
+      "bytes": 3264,
+      "sha256": "f670f1c626e1b8946d7bc76e7069e4a6b0076162ecb5248a8fc449b324bdffaa"
+    },
+    {
+      "path": "launcher/web/assets/stage-diorama/blackiron-hq/vendor/postprocessing/UnrealBloomPass.js",
+      "bytes": 14424,
+      "sha256": "2882663d5e0b37ce1d1e08968bc4fa350b37069409b19e71f557977dccc05873"
+    },
+    {
+      "path": "launcher/web/assets/stage-diorama/blackiron-hq/vendor/shaders/CopyShader.js",
+      "bytes": 729,
+      "sha256": "a33057d5ac91c43304c186ac0e8816e62bb2ed471d3a00ff3018dfd5c0389718"
+    },
+    {
+      "path": "launcher/web/assets/stage-diorama/blackiron-hq/vendor/shaders/LuminosityHighPassShader.js",
+      "bytes": 1327,
+      "sha256": "c926ebd4cbcb86c50b6acbe9546c6585da6fb1c86f0aff8961cd647dac290be4"
+    },
+    {
+      "path": "launcher/web/assets/stage-diorama/blackiron-hq/vendor/shaders/OutputShader.js",
+      "bytes": 1876,
+      "sha256": "353479f77a8d7e2629d49ccac9fc2f5dbfdda5442e0adf867b00377a2fcb0cb2"
+    },
+    {
+      "path": "launcher/web/assets/stage-diorama/blackiron-hq/vendor/LICENSE",
+      "bytes": 1081,
+      "sha256": "bfe119ea4fd413f5f7ca3fcd63adb0c4a073ed39daa2fe7d3e6b769e21272601"
+    },
+    {
+      "path": "launcher/web/modules/stage-select/stage-select-blackiron-data.js",
+      "bytes": 28879,
+      "sha256": "b4a311c5f7de7a6119e4249eac76386b00106ca53f61b27b889578400da8eac4"
+    }
+  ]
+}
