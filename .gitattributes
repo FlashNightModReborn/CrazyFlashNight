@@ -49,6 +49,10 @@ launcher/THIRD-PARTY-NOTICES.txt text eol=lf whitespace=-blank-at-eol
 /launcher/web/assets/shop-portraits/manifest.json text eol=lf
 /data/shops/npcs/Pig.json text eol=lf
 
+# Tesla G08 source and reviewed converter are bound by raw SHA-256 provenance.
+/flashswf/arts/new/Codex素材源稿/磁暴坦克G08/source/P22-neutral.svg text eol=lf whitespace=-blank-at-eol
+/tools/tesla-map-assets/native_vector/*.py text eol=lf
+
 # NPC profile provenance hashes exact generator, recipe and manifest bytes.
 /tools/bake-npc-profiles.py text eol=lf
 /tools/npc-profiles/sources.json text eol=lf

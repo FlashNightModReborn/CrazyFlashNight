@@ -1,0 +1,25 @@
+{
+  "package": "G08-磁暴坦克-当前资产与后续经验-20260919.zip",
+  "packageSha256": "2ef20dd45206516f120caa4ac51335f2224c418ed5c56867b9e90adfc53ad1b1",
+  "manifestEntries": 6316,
+  "manifestVerified": true,
+  "selectedVariant": "E3-occlusion / neutral",
+  "svgSha256": "3a65f61e95703af1716afed0b36d3860b400d53426c203f5f414b417d9abc257",
+  "pngSha256": "f430d3660c6ac5e7d5a9c94b8145ac008507bd789e63278fe2ed338263150d2a",
+  "canvasPx": [1440, 960],
+  "alphaBoundsPx": [189, 115, 1252, 903],
+  "sourceAnchorPx": [720.5, 903],
+  "mapConsumer": "flashswf/levels/地图-军阀基地",
+  "vectorConverter": {
+    "svgToXflLegacySha256": "b356afef8b5b423ae758516ba6fd247bfe1418e149fce6b163c94fbaf7a59655",
+    "vectorShapesSha256": "46acb5185ac58cf52a4822cd7e73e5b861c29a39fcd713ee3890c1cf826e43be",
+    "dependencies": [
+      "lxml==6.0.2",
+      "numpy==2.4.2",
+      "shapely==2.1.2",
+      "skia-pathops==0.9.2"
+    ]
+  },
+  "mapVectorSha256": "1233770faef9367e372d840686cef42de0144f0e301f77252dbab375448ce039",
+  "scope": "E3水平姿态归档；外交地图派生单帧原生矢量Graphic。完整P22动态原生、俯仰、履带运动和AS3控制器不进入地图。"
+}

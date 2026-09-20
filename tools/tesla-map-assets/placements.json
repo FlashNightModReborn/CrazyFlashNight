@@ -1,0 +1,32 @@
+{
+  "schemaVersion": 1,
+  "scaleBasis": {
+    "rhinoBodyWidthPx": 1293.8,
+    "rhinoScale": 0.24,
+    "rhinoDisplayedWidthPx": 310.512,
+    "targetLengthRatio": [1.1, 1.15],
+    "teslaAlphaBoundsPx": [189, 115, 1252, 903],
+    "teslaVisibleWidthPx": 1063,
+    "selectedScale": 0.329,
+    "selectedDisplayedWidthPx": 349.727,
+    "actualLengthRatio": 1.1262904502898448,
+    "tigrBodyWidthPx": 1377.448108082561,
+    "tigrScale": 0.23,
+    "tigrDisplayedWidthPx": 316.813064859,
+    "teslaToTigrRatio": 1.103889133277941
+  },
+  "placement": {
+    "name": "外交军阀基地：磁暴坦克替换27号犀牛",
+    "xfl": "flashswf/levels/地图-军阀基地",
+    "containerXml": "LIBRARY/sprite/新地图/Symbol 51879.xml",
+    "worldGround": [1420, 165],
+    "parentWorldOffset": [-25, -80],
+    "x": 1445,
+    "y": 245,
+    "scale": 0.329,
+    "colorMultiplier": 0.86,
+    "sourceAnchorPx": [720.5, 903],
+    "replaceSymbol": "Codex/犀牛R09/平射摆件",
+    "insertBeforeLayer": "猛虎G05-静态摆件"
+  }
+}

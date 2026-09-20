@@ -5140,13 +5140,26 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
+        <DOMLayer name="磁暴坦克G08-静态摆件" color="#74906A" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/磁暴坦克G08/水平摆件" symbolType="graphic" loop="single frame" firstFrame="0">
+                  <matrix><Matrix a="0.329" b="0" c="0" d="0.329" tx="1445" ty="245"/></matrix>
+                  <transformationPoint><Point/></transformationPoint>
+                  <color><Color redMultiplier="0.86" greenMultiplier="0.86" blueMultiplier="0.86"/></color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
         <DOMLayer name="猛虎G05-静态摆件" color="#74906A" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="Codex/猛虎G05/左向41摆件" symbolType="graphic" loop="single frame" firstFrame="0">
                   <matrix>
-                    <Matrix a="0.23" b="0" c="-0" d="0.23" tx="1095" ty="265"/>
+                    <Matrix a="0.23" b="0" c="-0" d="0.23" tx="1035" ty="265"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
@@ -5165,18 +5178,7 @@
               <elements>
                 <DOMSymbolInstance libraryItemName="Codex/犀牛R09/平射25摆件" symbolType="graphic" loop="single frame" firstFrame="0">
                   <matrix>
-                    <Matrix a="0.24" b="0" c="-0" d="0.24" tx="665" ty="245"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point/>
-                  </transformationPoint>
-                  <color>
-                    <Color redMultiplier="0.86" greenMultiplier="0.86" blueMultiplier="0.86"/>
-                  </color>
-                </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="Codex/犀牛R09/平射摆件" symbolType="graphic" loop="single frame" firstFrame="0">
-                  <matrix>
-                    <Matrix a="0.26" b="0" c="-0" d="0.26" tx="1805" ty="265"/>
+                    <Matrix a="0.24" b="0" c="-0" d="0.24" tx="625" ty="245"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
