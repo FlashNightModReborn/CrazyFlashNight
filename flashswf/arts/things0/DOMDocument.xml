@@ -15,7 +15,7 @@
           <DOMFolderItem name="MovieClip" itemID="68404178-00000b93"/>
           <DOMFolderItem name="shape" itemID="65a6bb2a-00001374"/>
           <DOMFolderItem name="sound" itemID="65a6bb4b-0000137a"/>
-          <DOMFolderItem name="sprite" itemID="66530518-00000d78"/>
+          <DOMFolderItem name="sprite" itemID="66530518-00000d78" isExpanded="true"/>
           <DOMFolderItem name="参考武器" itemID="6aace968-00001e5f"/>
           <DOMFolderItem name="个人编辑单位" itemID="695d3442-00003dd6"/>
           <DOMFolderItem name="个人编辑单位/浮士德的一堆相关或是不相关" itemID="695d3442-00003dd7"/>
@@ -469,6 +469,11 @@
           <Include href="Graphic/shape 742.xml" itemIcon="1" loadImmediate="false" itemID="58132beb-000002e6" lastModified="1477651435"/>
           <Include href="Graphic/shape 743.xml" itemIcon="1" loadImmediate="false" itemID="58132beb-000002e7" lastModified="1477651435"/>
           <Include href="Graphic/shape 744.xml" itemIcon="1" loadImmediate="false" itemID="58132beb-000002e8" lastModified="1477651435"/>
+          <Include href="Graphic/shape 789.xml" itemIcon="1" loadImmediate="false" itemID="58132c59-00000315" lastModified="1477651545"/>
+          <Include href="Graphic/shape 790.xml" itemIcon="1" loadImmediate="false" itemID="58132c59-00000316" lastModified="1477651545"/>
+          <Include href="Graphic/shape 791.xml" itemIcon="1" loadImmediate="false" itemID="58132c59-00000317" lastModified="1477651545"/>
+          <Include href="Graphic/shape 792.xml" itemIcon="1" loadImmediate="false" itemID="58132c59-00000318" lastModified="1477651545"/>
+          <Include href="Graphic/shape 793.xml" itemIcon="1" loadImmediate="false" itemID="58132c59-00000319" lastModified="1477651545"/>
           <Include href="Graphic/shape 856.xml" itemIcon="1" loadImmediate="false" itemID="58132c70-00000358" lastModified="1477651568"/>
           <Include href="Graphic/shape 857.xml" itemIcon="1" loadImmediate="false" itemID="58132c70-00000359" lastModified="1477651568"/>
           <Include href="Graphic/shape 858.xml" itemIcon="1" loadImmediate="false" itemID="58132c70-0000035a" lastModified="1477651568"/>
@@ -1510,7 +1515,7 @@
           <Include href="容器/兵器攻击容器/平A/兵器攻击容器-短兵1连招.xml" itemID="697b6555-00003229" lastModified="1785147087"/>
           <Include href="容器/兵器攻击容器/平A/兵器攻击容器-短柄1连招.xml" itemID="699e0c20-00001dff" lastModified="1777470439"/>
           <Include href="容器/兵器攻击容器/平A/兵器攻击容器-棍棒1连招.xml" itemID="698642fe-00000b06" lastModified="1777471697"/>
-          <Include href="容器/兵器攻击容器/平A/兵器攻击容器-疾影1连招.xml" itemID="69eff1b8-00000ac4" lastModified="1789826721"/>
+          <Include href="容器/兵器攻击容器/平A/兵器攻击容器-疾影1连招.xml" itemID="69eff1b8-00000ac4" lastModified="1789892967"/>
           <Include href="容器/兵器攻击容器/平A/兵器攻击容器-狂野1连招.xml" itemID="696464e8-00000b46" lastModified="1782004691"/>
           <Include href="容器/兵器攻击容器/平A/兵器攻击容器-镰刀1连招.xml" itemID="696493ce-00000e0e" lastModified="1770225044"/>
           <Include href="容器/兵器攻击容器/平A/兵器攻击容器-双刀1连招.xml" itemID="6974a6b3-00001f9d" lastModified="1785626163"/>
@@ -1518,9 +1523,9 @@
           <Include href="容器/兵器攻击容器/平A/兵器攻击容器-长柄1连招.xml" itemID="6964628b-00000a7b" lastModified="1782004683"/>
           <Include href="容器/兵器攻击容器/平A/兵器攻击容器-长刀1连招.xml" itemID="696c6d20-0000139b" lastModified="1785147368"/>
           <Include href="容器/兵器攻击容器/平A/兵器攻击容器-长棍1连招.xml" itemID="69647138-00000e5c" lastModified="1785147370"/>
-          <Include href="容器/兵器攻击容器/平A/兵器攻击容器-长枪1连招.xml" itemID="69646d02-00000da3" lastModified="1789831519"/>
+          <Include href="容器/兵器攻击容器/平A/兵器攻击容器-长枪1连招.xml" itemID="69646d02-00000da3" lastModified="1789890548"/>
           <Include href="容器/兵器攻击容器/平A/兵器攻击容器-直剑1连招.xml" itemID="696a8b8f-00001638" lastModified="1789832012"/>
-          <Include href="容器/兵器攻击容器/平A/兵器攻击容器-重斩1连招.xml" itemID="696a8950-00001434" lastModified="1789834036"/>
+          <Include href="容器/兵器攻击容器/平A/兵器攻击容器-重斩1连招.xml" itemID="696a8950-00001434" lastModified="1789892280"/>
           <Include href="容器/兵器攻击容器/平A/怪物通用模板/新近战子弹定位元件/近战子弹定位用 副本.xml" loadImmediate="false" itemID="69949a8d-00003587" lastModified="1706272572"/>
           <Include href="容器/兵器攻击容器/平A/怪物通用模板/新近战子弹定位元件/子弹素材/Symbol 13 副本.xml" itemIcon="1" loadImmediate="false" itemID="69949a8d-00003589" lastModified="1706271675"/>
           <Include href="容器/兵器攻击容器/平A/怪物通用模板/新近战子弹定位元件/子弹素材/Symbol 14 副本.xml" loadImmediate="false" itemID="69949a8d-00003588" lastModified="1706271749"/>
@@ -2613,6 +2618,12 @@
           <Include href="重复项目文件夹/shape 492.xml" itemIcon="1" loadImmediate="false" itemID="581336d7-00001aea" lastModified="1477651340"/>
           <Include href="重复项目文件夹/shape 493.xml" itemIcon="1" loadImmediate="false" itemID="581336d7-00001aeb" lastModified="1477651340"/>
           <Include href="重复项目文件夹/shape 496.xml" itemIcon="1" loadImmediate="false" itemID="581336d7-00001aee" lastModified="1477651340"/>
+          <Include href="重复项目文件夹/shape 694.xml" itemIcon="1" loadImmediate="false" itemID="6aaf8789-0000255f" lastModified="1477651544"/>
+          <Include href="重复项目文件夹/shape 696.xml" itemIcon="1" loadImmediate="false" itemID="6aaf8789-00002561" lastModified="1789888576"/>
+          <Include href="重复项目文件夹/shape 697.xml" itemIcon="1" loadImmediate="false" itemID="6aaf8789-00002562" lastModified="1477651544"/>
+          <Include href="重复项目文件夹/shape 698.xml" itemIcon="1" loadImmediate="false" itemID="6aaf8789-00002563" lastModified="1477651544"/>
+          <Include href="重复项目文件夹/shape 699.xml" itemIcon="1" loadImmediate="false" itemID="6aaf8789-00002564" lastModified="1477651544"/>
+          <Include href="重复项目文件夹/shape 700.xml" itemIcon="1" loadImmediate="false" itemID="6aaf8789-00002565" lastModified="1477651544"/>
           <Include href="重复项目文件夹/shape 713.xml" itemIcon="1" loadImmediate="false" itemID="681a23ee-00000e23" lastModified="1477651455"/>
           <Include href="重复项目文件夹/shape 714.xml" itemIcon="1" loadImmediate="false" itemID="681a23ee-00000e24" lastModified="1477651455"/>
           <Include href="重复项目文件夹/shape 715.xml" itemIcon="1" loadImmediate="false" itemID="681a23ee-00000e25" lastModified="1477651455"/>
@@ -2715,7 +2726,7 @@
           <Include href="主角肢体素材/Symbol 3.xml" loadImmediate="false" itemID="697b650f-00003223" lastModified="1731931497"/>
           <Include href="主角肢体素材/Symbol 6.xml" loadImmediate="false" itemID="697b6503-00001ff2" lastModified="1758557137"/>
           <Include href="主角肢体素材/刀.xml" loadImmediate="false" itemID="697b650e-000030c9" lastModified="1727752227"/>
-          <Include href="主角肢体素材/刀-刀鞘.xml" loadImmediate="false" itemID="69fa2b6f-00000aaf" lastModified="1778003973"/>
+          <Include href="主角肢体素材/刀-刀鞘.xml" loadImmediate="false" itemID="69fa2b6f-00000aaf" lastModified="1789893055"/>
           <Include href="主角肢体素材/刀-副手.xml" loadImmediate="false" itemID="68ee4b77-0000073e" lastModified="1778003982"/>
           <Include href="主角肢体素材/刀-主手.xml" loadImmediate="false" itemID="6974ae9b-00003b7d" lastModified="1778003496"/>
           <Include href="主角肢体素材/脚.xml" loadImmediate="false" itemID="697b650b-00002c94" lastModified="1757948596"/>
@@ -2747,7 +2758,7 @@
                                         <script><![CDATA[stop();]]></script>
                                    </Actionscript>
                                    <elements>
-                                        <DOMSymbolInstance libraryItemName="加载MC库-00" selected="true" centerPoint3DX="1277" centerPoint3DY="546.05">
+                                        <DOMSymbolInstance libraryItemName="加载MC库-00" centerPoint3DX="1277" centerPoint3DY="546.05">
                                              <matrix>
                                                   <Matrix tx="356.3" ty="-65.75"/>
                                              </matrix>
@@ -3242,6 +3253,8 @@
      </persistentData>
      <PrinterSettings/>
      <publishHistory>
+          <PublishItem publishSize="5052542" publishTime="1789892853"/>
+          <PublishItem publishSize="5052551" publishTime="1789892353"/>
           <PublishItem publishSize="5010875" publishTime="1789833111"/>
           <PublishItem publishSize="5010879" publishTime="1789832501"/>
           <PublishItem publishSize="5010882" publishTime="1789832210"/>
@@ -3260,7 +3273,5 @@
           <PublishItem publishSize="4683786" publishTime="1788971308"/>
           <PublishItem publishSize="4683883" publishTime="1788968801"/>
           <PublishItem publishSize="4683877" publishTime="1788966746"/>
-          <PublishItem publishSize="4683850" publishTime="1788965819"/>
-          <PublishItem publishSize="4683201" publishTime="1788801134"/>
      </publishHistory>
 </DOMDocument>

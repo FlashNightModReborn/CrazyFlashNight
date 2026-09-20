@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/兵器攻击容器/平A/兵器攻击容器-重斩1连招" itemID="696a8950-00001434" linkageExportForAS="true" linkageIdentifier="兵器攻击容器-重斩1连招" lastModified="1789834036" lastUniqueIdentifier="4190">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/兵器攻击容器/平A/兵器攻击容器-重斩1连招" itemID="696a8950-00001434" linkageExportForAS="true" linkageIdentifier="兵器攻击容器-重斩1连招" lastModified="1789892280" lastUniqueIdentifier="4190">
   <timeline>
-    <DOMTimeline name="兵器攻击容器-重斩1连招" currentFrame="202">
+    <DOMTimeline name="兵器攻击容器-重斩1连招" currentFrame="214">
       <layers>
         <DOMLayer name="左手-2" color="#AFE9DD" locked="true" autoNamed="false">
           <frames>
@@ -1478,7 +1478,7 @@ onClipEvent (enterFrame) {
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="虚空刀" color="#FF800A" parentLayerIndex="1" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="虚空刀" color="#FF800A" parentLayerIndex="1" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="20" keyMode="9728">
               <elements/>
@@ -3787,7 +3787,7 @@ onClipEvent (enterFrame) {
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="音效" color="#9933CC" locked="true" autoNamed="false">
+        <DOMLayer name="音效" color="#9933CC" locked="true" current="true" isSelected="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="119" keyMode="9728">
               <elements/>
@@ -3848,9 +3848,6 @@ _root.播放音效("地震3.wav");]]></script>
               <elements/>
             </DOMFrame>
             <DOMFrame index="213" duration="5" keyMode="9728">
-              <Actionscript>
-                <script><![CDATA[_root.播放音效("枪花1.wav");]]></script>
-              </Actionscript>
               <elements/>
             </DOMFrame>
             <DOMFrame index="218" duration="4" keyMode="9728">
@@ -4888,7 +4885,7 @@ _root.播放音效("地震3.wav");]]></script>
                     </FillStyle>
                   </fills>
                   <edges>
-                    <Edge fillStyle1="1" edges="!-2737 -9205[-91 -11664 4705 -9781!4705 -9781[9505 -7887 13645 -2764!13645 -2764[17311 1778 18559 6507!18559 6507|-2601 3707!-2601 3707[-3817 1187 -4325 -1384!-4325 -1384[-5378 -6742 -2737 -9205"/>
+                    <Edge fillStyle1="1" edges="!18559 6507|-2601 3707!-2601 3707[-3817 1187 -4325 -1384!-4325 -1384[-5378 -6742 -2737 -9205!-2737 -9205[-91 -11664 4705 -9781!4705 -9781[9505 -7887 13645 -2764!13645 -2764[17311 1778 18559 6507"/>
                   </edges>
                 </DOMShape>
               </elements>
@@ -5740,8 +5737,8 @@ _root.播放音效("地震3.wav");]]></script>
                   </fills>
                   <edges>
                     <Edge fillStyle1="1" edges="
-!14470 909[9686 3814 2330 5670!2330 5670[-5025 7522 -10642 7237!-10642 7237[-16257 6953 -16850 4698!-16850 4698[-17435 2440 -12653 -465!-12653 -465[-7869 -3373 -514 -5226!-514 -5226[6844 -7082 12459 -6795!12459 -6795[18075 -6510 18664
- -4254!18664 -4254[19255 -1998 14470 909"/>
+!-514 -5226[6844 -7082 12459 -6795!12459 -6795[18075 -6510 18664 -4254!18664 -4254[19255 -1998 14470 909!14470 909[9686 3814 2330 5670!2330 5670[-5025 7522 -10642 7237!-10642 7237[-16257 6953 -16850 4698!-16850 4698[-17435 2440 -12653
+ -465!-12653 -465[-7869 -3373 -514 -5226"/>
                   </edges>
                 </DOMShape>
               </elements>
