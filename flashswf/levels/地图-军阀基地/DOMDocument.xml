@@ -32,7 +32,8 @@
           <DOMFolderItem name="Codex/猛虎G05/Station" itemID="6a9f0000-164711f4"/>
           <DOMFolderItem name="Codex/猛虎G05/Wheels" itemID="6a9f0000-650db907"/>
           <DOMFolderItem name="Codex/猛虎G05/车号" itemID="6a9f0000-31efd180"/>
-          </folders>
+               <DOMFolderItem name="Codex/磁暴坦克G08" itemID="6a9f0000-5e363838"/>
+     </folders>
      <media>
           <DOMBitmapItem name="image/bitmap51850.png" itemID="6597607c-000004b6" sourceExternalFilepath="./LIBRARY/image/bitmap51850.png" sourceLastImported="1704419453" allowSmoothing="true" useImportedJPEGData="false" compressionType="lossless" originalCompressionType="lossless" quality="50" href="image/bitmap51850.png" bitmapDataHRef="M 1 1707579072.dat" frameRight="44400" frameBottom="20900"/>
      </media>
@@ -656,7 +657,8 @@
           <Include href="Codex/猛虎G05/车号/43.xml" itemID="6a9f0000-300e2cc2"/>
           <Include href="Codex/猛虎G05/车号/44.xml" itemID="6a9f0000-0d0f5e8f"/>
           <Include href="Codex/猛虎G05/车号/45.xml" itemID="6a9f0000-7f62f65b"/>
-          </symbols>
+               <Include href="Codex/磁暴坦克G08/水平摆件.xml" loadImmediate="false" itemID="6a9f0000-71f9cd9f"/>
+     </symbols>
      <timelines>
           <DOMTimeline name="场景 1">
                <layers>

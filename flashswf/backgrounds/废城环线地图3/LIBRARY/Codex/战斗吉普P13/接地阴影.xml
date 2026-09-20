@@ -1,0 +1,42 @@
+<DOMSymbolItem xmlns="http://ns.adobe.com/xfl/2008/" name="Codex/战斗吉普P13/接地阴影" itemID="6b010000-45639d66" symbolType="graphic">
+  <timeline>
+    <DOMTimeline name="接地阴影">
+      <layers>
+        <DOMLayer name="柔和接地" color="#74906A" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <matrix>
+                    <Matrix tx="251.5" ty="222"/>
+                  </matrix>
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#000000" alpha="0.12"/>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle1="1" edges="! -4600 0 [ -4600 -360 0 -360 [ 4600 -360 4600 0 [ 4600 360 0 360 [ -4600 360 -4600 0"/>
+                  </edges>
+                </DOMShape>
+                <DOMShape>
+                  <matrix>
+                    <Matrix tx="251.5" ty="222"/>
+                  </matrix>
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#000000" alpha="0.18"/>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle1="1" edges="! -3900 0 [ -3900 -240 0 -240 [ 3900 -240 3900 0 [ 3900 240 0 240 [ -3900 240 -3900 0"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

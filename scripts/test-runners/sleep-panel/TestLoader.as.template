@@ -1,0 +1,3 @@
+﻿trace("FocusedTestRunId sleep-panel Start: __FOCUSED_RUN_ID__");
+org.flashNight.arki.ui.SleepPanelServiceTest.runAllTests();
+trace("FocusedTestRunId sleep-panel Complete: __FOCUSED_RUN_ID__");

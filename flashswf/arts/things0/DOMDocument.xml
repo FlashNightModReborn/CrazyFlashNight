@@ -15,7 +15,8 @@
           <DOMFolderItem name="MovieClip" itemID="68404178-00000b93"/>
           <DOMFolderItem name="shape" itemID="65a6bb2a-00001374"/>
           <DOMFolderItem name="sound" itemID="65a6bb4b-0000137a"/>
-          <DOMFolderItem name="sprite" itemID="66530518-00000d78"/>
+          <DOMFolderItem name="sprite" itemID="66530518-00000d78" isExpanded="true"/>
+          <DOMFolderItem name="参考武器" itemID="6aace968-00001e5f"/>
           <DOMFolderItem name="个人编辑单位" itemID="695d3442-00003dd6"/>
           <DOMFolderItem name="个人编辑单位/浮士德的一堆相关或是不相关" itemID="695d3442-00003dd7"/>
           <DOMFolderItem name="各种图素材等" itemID="65e07117-00000783"/>
@@ -47,7 +48,7 @@
           <DOMFolderItem name="容器/兵器攻击容器/平A/属性标签标志元件" itemID="699e0c3e-00001e09"/>
           <DOMFolderItem name="容器/兵器攻击容器/平A/主角肢体素材" itemID="699e0c3e-00001e0c"/>
           <DOMFolderItem name="容器/技能容器" itemID="6949543d-00003b09" isExpanded="true"/>
-          <DOMFolderItem name="容器/空手攻击容器" itemID="69639e62-00004504"/>
+          <DOMFolderItem name="容器/空手攻击容器" itemID="69639e62-00004504" isExpanded="true"/>
           <DOMFolderItem name="容器/空手攻击容器/平A" itemID="6964d54f-00002798"/>
           <DOMFolderItem name="容器/武器变形容器" itemID="69cb66ff-00000ab7" isExpanded="true"/>
           <DOMFolderItem name="容器/战技容器" itemID="6958ee41-00002e79" isExpanded="true"/>
@@ -264,9 +265,9 @@
           <Include href="Codex/Ti61-血剑战技/雾人血浪素材/3a3bee8ef042.xml" itemIcon="1" loadImmediate="false" itemID="61b10000-0dec8676" lastModified="1455454146"/>
           <Include href="Codex/Ti61-血剑战技/雾人血浪素材/3cdf28a9954c.xml" itemIcon="1" loadImmediate="false" itemID="61b10000-2badcb04" lastModified="1455454148"/>
           <Include href="Codex/Ti61-血剑战技/雾人血浪素材/3e49f1b5b7c3.xml" itemIcon="1" loadImmediate="false" itemID="6aa415d4-00000c7f" lastModified="1690083265"/>
+          <Include href="Codex/Ti61-血剑战技/雾人血浪素材/04a958137b13.xml" itemIcon="1" loadImmediate="false" itemID="61b10000-7d1f41fa" lastModified="1690083265"/>
           <Include href="Codex/Ti61-血剑战技/雾人血浪素材/4e4af321a69b.xml" itemIcon="1" loadImmediate="false" itemID="61b10000-5d14e772" lastModified="1455454146"/>
           <Include href="Codex/Ti61-血剑战技/雾人血浪素材/4eeb65d68205.xml" itemIcon="1" loadImmediate="false" itemID="61b10000-0d0307ea" lastModified="1455454146"/>
-          <Include href="Codex/Ti61-血剑战技/雾人血浪素材/04a958137b13.xml" itemIcon="1" loadImmediate="false" itemID="61b10000-7d1f41fa" lastModified="1690083265"/>
           <Include href="Codex/Ti61-血剑战技/雾人血浪素材/5b7ddac6cad5.xml" itemIcon="1" loadImmediate="false" itemID="6aa415d4-00000ca4" lastModified="1455454148"/>
           <Include href="Codex/Ti61-血剑战技/雾人血浪素材/5ce4a7a3eb0e.xml" itemIcon="1" loadImmediate="false" itemID="61b10000-464ae6f5" lastModified="1455454146"/>
           <Include href="Codex/Ti61-血剑战技/雾人血浪素材/5ebc0c9c10f5.xml" itemIcon="1" loadImmediate="false" itemID="6aa415d4-00000c78" lastModified="1698481640"/>
@@ -462,10 +463,39 @@
           <Include href="Graphic/shape 699.xml" itemIcon="1" loadImmediate="false" itemID="58132beb-000002bb" lastModified="1477651435"/>
           <Include href="Graphic/shape 700.xml" itemIcon="1" loadImmediate="false" itemID="58132beb-000002bc" lastModified="1477651435"/>
           <Include href="Graphic/shape 723.xml" itemIcon="1" loadImmediate="false" itemID="58132bff-000002d3" lastModified="1477651455"/>
+          <Include href="Graphic/shape 739.xml" itemIcon="1" loadImmediate="false" itemID="58132beb-000002e3" lastModified="1477651435"/>
+          <Include href="Graphic/shape 740.xml" itemIcon="1" loadImmediate="false" itemID="58132beb-000002e4" lastModified="1477651435"/>
+          <Include href="Graphic/shape 741.xml" itemIcon="1" loadImmediate="false" itemID="58132beb-000002e5" lastModified="1477651435"/>
+          <Include href="Graphic/shape 742.xml" itemIcon="1" loadImmediate="false" itemID="58132beb-000002e6" lastModified="1477651435"/>
+          <Include href="Graphic/shape 743.xml" itemIcon="1" loadImmediate="false" itemID="58132beb-000002e7" lastModified="1477651435"/>
+          <Include href="Graphic/shape 744.xml" itemIcon="1" loadImmediate="false" itemID="58132beb-000002e8" lastModified="1477651435"/>
+          <Include href="Graphic/shape 789.xml" itemIcon="1" loadImmediate="false" itemID="58132c59-00000315" lastModified="1477651545"/>
+          <Include href="Graphic/shape 790.xml" itemIcon="1" loadImmediate="false" itemID="58132c59-00000316" lastModified="1477651545"/>
+          <Include href="Graphic/shape 791.xml" itemIcon="1" loadImmediate="false" itemID="58132c59-00000317" lastModified="1477651545"/>
+          <Include href="Graphic/shape 792.xml" itemIcon="1" loadImmediate="false" itemID="58132c59-00000318" lastModified="1477651545"/>
+          <Include href="Graphic/shape 793.xml" itemIcon="1" loadImmediate="false" itemID="58132c59-00000319" lastModified="1477651545"/>
+          <Include href="Graphic/shape 856.xml" itemIcon="1" loadImmediate="false" itemID="58132c70-00000358" lastModified="1477651568"/>
+          <Include href="Graphic/shape 857.xml" itemIcon="1" loadImmediate="false" itemID="58132c70-00000359" lastModified="1477651568"/>
+          <Include href="Graphic/shape 858.xml" itemIcon="1" loadImmediate="false" itemID="58132c70-0000035a" lastModified="1477651568"/>
+          <Include href="Graphic/shape 859.xml" itemIcon="1" loadImmediate="false" itemID="58132c70-0000035b" lastModified="1477651568"/>
+          <Include href="Graphic/shape 860.xml" itemIcon="1" loadImmediate="false" itemID="58132c70-0000035c" lastModified="1477651568"/>
+          <Include href="Graphic/shape 861.xml" itemIcon="1" loadImmediate="false" itemID="58132c70-0000035d" lastModified="1477651568"/>
+          <Include href="Graphic/shape 862.xml" itemIcon="1" loadImmediate="false" itemID="58132c70-0000035e" lastModified="1477651568"/>
+          <Include href="Graphic/shape 954.xml" itemIcon="1" loadImmediate="false" itemID="58132c3b-000003ba" lastModified="1477651515"/>
+          <Include href="Graphic/shape 955.xml" itemIcon="1" loadImmediate="false" itemID="58132c3b-000003bb" lastModified="1477651515"/>
+          <Include href="Graphic/shape 957.xml" itemIcon="1" loadImmediate="false" itemID="58132c3b-000003bd" lastModified="1477651515"/>
+          <Include href="Graphic/shape 958.xml" itemIcon="1" loadImmediate="false" itemID="58132c3b-000003be" lastModified="1477651515"/>
+          <Include href="Graphic/shape 960.xml" itemIcon="1" loadImmediate="false" itemID="58132c3b-000003c0" lastModified="1477651515"/>
+          <Include href="Graphic/shape 962.xml" itemIcon="1" loadImmediate="false" itemID="58132c3b-000003c2" lastModified="1477651515"/>
           <Include href="Graphic/shape 1129.xml" itemIcon="1" loadImmediate="false" itemID="58132bed-0000046a" lastModified="1477651437"/>
           <Include href="Graphic/shape 1130.xml" itemIcon="1" loadImmediate="false" itemID="58132bed-0000046b" lastModified="1477651437"/>
           <Include href="Graphic/shape 1131.xml" itemIcon="1" loadImmediate="false" itemID="58132bed-0000046c" lastModified="1477651437"/>
           <Include href="Graphic/shape 1132.xml" itemIcon="1" loadImmediate="false" itemID="58132bed-0000046d" lastModified="1477651437"/>
+          <Include href="Graphic/shape 1178.xml" itemIcon="1" loadImmediate="false" itemID="58132b8f-0000049a" lastModified="1477651343"/>
+          <Include href="Graphic/shape 1179.xml" itemIcon="1" loadImmediate="false" itemID="58132b8f-0000049b" lastModified="1477651343"/>
+          <Include href="Graphic/shape 1180.xml" itemIcon="1" loadImmediate="false" itemID="58132b8f-0000049c" lastModified="1477651343"/>
+          <Include href="Graphic/shape 1181.xml" itemIcon="1" loadImmediate="false" itemID="58132b8f-0000049d" lastModified="1477651343"/>
+          <Include href="Graphic/shape 1182.xml" itemIcon="1" loadImmediate="false" itemID="58132b8f-0000049e" lastModified="1477651343"/>
           <Include href="Graphic/shape 1198.xml" itemIcon="1" loadImmediate="false" itemID="58132b8f-000004ae" lastModified="1477651343"/>
           <Include href="Graphic/shape 1199.xml" itemIcon="1" loadImmediate="false" itemID="58132b8f-000004af" lastModified="1477651343"/>
           <Include href="Graphic/shape 1200.xml" itemIcon="1" loadImmediate="false" itemID="58132b8f-000004b0" lastModified="1477651343"/>
@@ -1295,7 +1325,7 @@
           <Include href="sprite/兵器待机.xml" loadImmediate="false" itemID="690df7b1-00000ba7" lastModified="1780960837"/>
           <Include href="sprite/兵器攻击标志.xml" loadImmediate="false" itemID="697b1094-00002018" lastModified="1719241660"/>
           <Include href="sprite/兵器跑.xml" loadImmediate="false" itemID="690ce8f2-00000725" lastModified="1779390244"/>
-          <Include href="sprite/兵器跑攻.xml" loadImmediate="false" itemID="690cd8bb-0000117d" lastModified="1786899844"/>
+          <Include href="sprite/兵器跑攻.xml" loadImmediate="false" itemID="690cd8bb-0000117d" lastModified="1789824107"/>
           <Include href="sprite/兵器使用标签.xml" loadImmediate="false" itemID="697b1094-00002017" lastModified="1719241655"/>
           <Include href="sprite/兵器跳跃.xml" loadImmediate="false" itemID="690cd8ce-0000117e" lastModified="1786899752"/>
           <Include href="sprite/兵器跳跃旧动作备份.xml" loadImmediate="false" itemID="690cd8d3-0000117f" lastModified="1769694922"/>
@@ -1315,10 +1345,10 @@
           <Include href="sprite/黑红色爆炸.xml" itemID="668be72d-0000065f" lastModified="1769694913"/>
           <Include href="sprite/红色刀光.xml" loadImmediate="false" itemID="65b795a7-00000ba0" lastModified="1706530238"/>
           <Include href="sprite/脚.xml" loadImmediate="false" itemID="695e911c-00000795" lastModified="1767805212"/>
-          <Include href="sprite/近战子弹 副本.xml" loadImmediate="false" itemID="697b6503-00001ff1" lastModified="1711945124"/>
-          <Include href="sprite/近战子弹 已obj化.xml" loadImmediate="false" itemID="68ac3fb5-00000753" lastModified="1769694701"/>
           <Include href="sprite/觉醒霸体特效.xml" itemID="668be723-0000065d" lastModified="1756118920"/>
           <Include href="sprite/觉醒霸体特效原先.xml" itemID="66c19f0e-000017fb" lastModified="1723965222"/>
+          <Include href="sprite/近战子弹 副本.xml" loadImmediate="false" itemID="697b6503-00001ff1" lastModified="1711945124"/>
+          <Include href="sprite/近战子弹 已obj化.xml" loadImmediate="false" itemID="68ac3fb5-00000753" lastModified="1769694701"/>
           <Include href="sprite/空手待机.xml" loadImmediate="false" itemID="6693d4ba-00000af2" lastModified="1778012391"/>
           <Include href="sprite/空手跑.xml" loadImmediate="false" itemID="6925bd91-0000345e" lastModified="1778012441"/>
           <Include href="sprite/空手跑攻.xml" loadImmediate="false" itemID="6919e2a5-00001141" lastModified="1788969193"/>
@@ -1363,10 +1393,10 @@
           <Include href="sprite/手雷-普通手雷（模型）.xml" loadImmediate="false" itemID="68ac3f66-00000752" lastModified="1756118915"/>
           <Include href="sprite/手雷攻击.xml" loadImmediate="false" itemID="66a5d6cd-00000693" lastModified="1770554254"/>
           <Include href="sprite/手雷攻击 暗器.xml" loadImmediate="false" itemID="68e55333-00000d86" lastModified="1769694922"/>
-          <Include href="sprite/手雷跑.xml" loadImmediate="false" itemID="66a5d6b7-0000068f" lastModified="1778013392"/>
-          <Include href="sprite/手雷跑 暗器.xml" loadImmediate="false" itemID="68efd416-00001539" lastModified="1769694922"/>
           <Include href="sprite/手雷行走.xml" loadImmediate="false" itemID="66a5d6a9-0000068e" lastModified="1769694922"/>
           <Include href="sprite/手雷行走 暗器2.xml" loadImmediate="false" itemID="68e54aec-0000093b" lastModified="1769694922"/>
+          <Include href="sprite/手雷跑.xml" loadImmediate="false" itemID="66a5d6b7-0000068f" lastModified="1778013392"/>
+          <Include href="sprite/手雷跑 暗器.xml" loadImmediate="false" itemID="68efd416-00001539" lastModified="1769694922"/>
           <Include href="sprite/手雷站立.xml" loadImmediate="false" itemID="66a5d699-0000068d" lastModified="1769694922"/>
           <Include href="sprite/手雷站立 暗器.xml" loadImmediate="false" itemID="68efd8ec-00000ccc" lastModified="1769694922"/>
           <Include href="sprite/手枪.xml" loadImmediate="false" itemID="695e911c-00000793" lastModified="1767805212"/>
@@ -1448,7 +1478,7 @@
           <Include href="容器/兵器攻击容器/兵器攻击容器-粉碎切割.xml" itemID="695a23b9-00001043" lastModified="1788971581"/>
           <Include href="容器/兵器攻击容器/兵器攻击容器-贯穿突刺.xml" itemID="695a42b9-0000153e" lastModified="1788971611"/>
           <Include href="容器/兵器攻击容器/兵器攻击容器-幻影剑舞.xml" itemID="6965fa98-00000ac4" lastModified="1789490907"/>
-          <Include href="容器/兵器攻击容器/兵器攻击容器-回旋刃.xml" itemID="6a5cf955-00002a09" lastModified="1785821481"/>
+          <Include href="容器/兵器攻击容器/兵器攻击容器-回旋刃.xml" itemID="6a5cf955-00002a09" lastModified="1789830154"/>
           <Include href="容器/兵器攻击容器/兵器攻击容器-疾空旋风破.xml" itemID="6a5cf5df-00002904" lastModified="1785769335"/>
           <Include href="容器/兵器攻击容器/兵器攻击容器-疾影后撤.xml" itemID="6a6e6915-00000e89" lastModified="1785769222"/>
           <Include href="容器/兵器攻击容器/兵器攻击容器-疾影剑气.xml" itemID="6a6e6f31-00001208" lastModified="1785769300"/>
@@ -1485,17 +1515,17 @@
           <Include href="容器/兵器攻击容器/平A/兵器攻击容器-短兵1连招.xml" itemID="697b6555-00003229" lastModified="1785147087"/>
           <Include href="容器/兵器攻击容器/平A/兵器攻击容器-短柄1连招.xml" itemID="699e0c20-00001dff" lastModified="1777470439"/>
           <Include href="容器/兵器攻击容器/平A/兵器攻击容器-棍棒1连招.xml" itemID="698642fe-00000b06" lastModified="1777471697"/>
-          <Include href="容器/兵器攻击容器/平A/兵器攻击容器-疾影1连招.xml" itemID="69eff1b8-00000ac4" lastModified="1785621373"/>
+          <Include href="容器/兵器攻击容器/平A/兵器攻击容器-疾影1连招.xml" itemID="69eff1b8-00000ac4" lastModified="1789892967"/>
           <Include href="容器/兵器攻击容器/平A/兵器攻击容器-狂野1连招.xml" itemID="696464e8-00000b46" lastModified="1782004691"/>
           <Include href="容器/兵器攻击容器/平A/兵器攻击容器-镰刀1连招.xml" itemID="696493ce-00000e0e" lastModified="1770225044"/>
           <Include href="容器/兵器攻击容器/平A/兵器攻击容器-双刀1连招.xml" itemID="6974a6b3-00001f9d" lastModified="1785626163"/>
-          <Include href="容器/兵器攻击容器/平A/兵器攻击容器-迅捷1连招.xml" itemID="69875871-00000a1a" lastModified="1781976655"/>
+          <Include href="容器/兵器攻击容器/平A/兵器攻击容器-迅捷1连招.xml" itemID="69875871-00000a1a" lastModified="1789830245"/>
           <Include href="容器/兵器攻击容器/平A/兵器攻击容器-长柄1连招.xml" itemID="6964628b-00000a7b" lastModified="1782004683"/>
           <Include href="容器/兵器攻击容器/平A/兵器攻击容器-长刀1连招.xml" itemID="696c6d20-0000139b" lastModified="1785147368"/>
           <Include href="容器/兵器攻击容器/平A/兵器攻击容器-长棍1连招.xml" itemID="69647138-00000e5c" lastModified="1785147370"/>
-          <Include href="容器/兵器攻击容器/平A/兵器攻击容器-长枪1连招.xml" itemID="69646d02-00000da3" lastModified="1785146890"/>
-          <Include href="容器/兵器攻击容器/平A/兵器攻击容器-直剑1连招.xml" itemID="696a8b8f-00001638" lastModified="1785245424"/>
-          <Include href="容器/兵器攻击容器/平A/兵器攻击容器-重斩1连招.xml" itemID="696a8950-00001434" lastModified="1785146877"/>
+          <Include href="容器/兵器攻击容器/平A/兵器攻击容器-长枪1连招.xml" itemID="69646d02-00000da3" lastModified="1789890548"/>
+          <Include href="容器/兵器攻击容器/平A/兵器攻击容器-直剑1连招.xml" itemID="696a8b8f-00001638" lastModified="1789832012"/>
+          <Include href="容器/兵器攻击容器/平A/兵器攻击容器-重斩1连招.xml" itemID="696a8950-00001434" lastModified="1789892280"/>
           <Include href="容器/兵器攻击容器/平A/怪物通用模板/新近战子弹定位元件/近战子弹定位用 副本.xml" loadImmediate="false" itemID="69949a8d-00003587" lastModified="1706272572"/>
           <Include href="容器/兵器攻击容器/平A/怪物通用模板/新近战子弹定位元件/子弹素材/Symbol 13 副本.xml" itemIcon="1" loadImmediate="false" itemID="69949a8d-00003589" lastModified="1706271675"/>
           <Include href="容器/兵器攻击容器/平A/怪物通用模板/新近战子弹定位元件/子弹素材/Symbol 14 副本.xml" loadImmediate="false" itemID="69949a8d-00003588" lastModified="1706271749"/>
@@ -1518,11 +1548,11 @@
           <Include href="容器/技能容器/技能容器-虎拳.xml" itemID="695637a0-0000095b" lastModified="1785626339"/>
           <Include href="容器/技能容器/技能容器-火力支援.xml" itemID="69563793-0000095a" lastModified="1789397020"/>
           <Include href="容器/技能容器/技能容器-火舞旋风.xml" itemID="69563774-00000959" lastModified="1771729285"/>
-          <Include href="容器/技能容器/技能容器-径庭拳-黑闪.xml" itemID="694a29bf-00001917" lastModified="1770027172"/>
-          <Include href="容器/技能容器/技能容器-聚气.xml" itemID="694a270a-0000167d" lastModified="1788894519"/>
           <Include href="容器/技能容器/技能容器-觉醒霸体.xml" itemID="694a75cf-00002eb2" lastModified="1769694923"/>
           <Include href="容器/技能容器/技能容器-觉醒不坏金身.xml" itemID="694a73c7-00002d22" lastModified="1769694923"/>
           <Include href="容器/技能容器/技能容器-觉醒震地.xml" itemID="6956370b-00000956" lastModified="1769694923"/>
+          <Include href="容器/技能容器/技能容器-径庭拳-黑闪.xml" itemID="694a29bf-00001917" lastModified="1770027172"/>
+          <Include href="容器/技能容器/技能容器-聚气.xml" itemID="694a270a-0000167d" lastModified="1788894519"/>
           <Include href="容器/技能容器/技能容器-空间斩.xml" itemID="694a377d-000011b1" lastModified="1769694923"/>
           <Include href="容器/技能容器/技能容器-六连.xml" itemID="694a7837-0000313c" lastModified="1769694923"/>
           <Include href="容器/技能容器/技能容器-龙斩.xml" itemID="6956326f-00000936" lastModified="1769694923"/>
@@ -1557,7 +1587,7 @@
           <Include href="容器/空手攻击容器/空手攻击容器-波动拳.xml" itemID="6963b380-0000111d" lastModified="1788804252"/>
           <Include href="容器/空手攻击容器/空手攻击容器-后撤步.xml" itemID="6964d656-00002843" lastModified="1785769029"/>
           <Include href="容器/空手攻击容器/空手攻击容器-回旋踢.xml" itemID="699df8c4-00000bc2" lastModified="1785769021"/>
-          <Include href="容器/空手攻击容器/空手攻击容器-连环踢.xml" itemID="699a5324-00000a8e" lastModified="1789144141"/>
+          <Include href="容器/空手攻击容器/空手攻击容器-连环踢.xml" itemID="699a5324-00000a8e" lastModified="1789824295"/>
           <Include href="容器/空手攻击容器/空手攻击容器-能量喷泉.xml" itemID="6964d683-000028c1" lastModified="1788967208"/>
           <Include href="容器/空手攻击容器/空手攻击容器-燃烧指节.xml" itemID="6964d6d2-0000293c" lastModified="1788892218"/>
           <Include href="容器/空手攻击容器/空手攻击容器-诛杀步.xml" itemID="6964d583-0000279b" lastModified="1788804255"/>
@@ -1602,9 +1632,9 @@
           <Include href="容器/战技容器/战技容器-Overdrive.xml" itemID="6959e501-0000121b" lastModified="1769694923"/>
           <Include href="容器/战技容器/战技容器-暴走.xml" itemID="69591ecd-00000bad" lastModified="1770119887"/>
           <Include href="容器/战技容器/战技容器-刀剑乱舞.xml" itemID="695cf5d7-00002a15" lastModified="1789490594"/>
+          <Include href="容器/战技容器/战技容器-登上明星.xml" itemID="6967dae5-00000ac8" lastModified="1789139186"/>
           <Include href="容器/战技容器/战技容器-地狱穿心剑.xml" itemID="696c6469-00000cd7" lastModified="1769711273"/>
           <Include href="容器/战技容器/战技容器-地狱斩绝.xml" itemID="696c5655-00000c2a" lastModified="1769694923"/>
-          <Include href="容器/战技容器/战技容器-登上明星.xml" itemID="6967dae5-00000ac8" lastModified="1789139186"/>
           <Include href="容器/战技容器/战技容器-飞身踢.xml" itemID="695924d0-00000f1f" lastModified="1771683075"/>
           <Include href="容器/战技容器/战技容器-撼地烈狱.xml" itemID="69591474-000009da" lastModified="1769694922"/>
           <Include href="容器/战技容器/战技容器-黑刀斩术.xml" itemID="6959ed33-00000a35" lastModified="1769694922"/>
@@ -2588,6 +2618,12 @@
           <Include href="重复项目文件夹/shape 492.xml" itemIcon="1" loadImmediate="false" itemID="581336d7-00001aea" lastModified="1477651340"/>
           <Include href="重复项目文件夹/shape 493.xml" itemIcon="1" loadImmediate="false" itemID="581336d7-00001aeb" lastModified="1477651340"/>
           <Include href="重复项目文件夹/shape 496.xml" itemIcon="1" loadImmediate="false" itemID="581336d7-00001aee" lastModified="1477651340"/>
+          <Include href="重复项目文件夹/shape 694.xml" itemIcon="1" loadImmediate="false" itemID="6aaf8789-0000255f" lastModified="1477651544"/>
+          <Include href="重复项目文件夹/shape 696.xml" itemIcon="1" loadImmediate="false" itemID="6aaf8789-00002561" lastModified="1789888576"/>
+          <Include href="重复项目文件夹/shape 697.xml" itemIcon="1" loadImmediate="false" itemID="6aaf8789-00002562" lastModified="1477651544"/>
+          <Include href="重复项目文件夹/shape 698.xml" itemIcon="1" loadImmediate="false" itemID="6aaf8789-00002563" lastModified="1477651544"/>
+          <Include href="重复项目文件夹/shape 699.xml" itemIcon="1" loadImmediate="false" itemID="6aaf8789-00002564" lastModified="1477651544"/>
+          <Include href="重复项目文件夹/shape 700.xml" itemIcon="1" loadImmediate="false" itemID="6aaf8789-00002565" lastModified="1477651544"/>
           <Include href="重复项目文件夹/shape 713.xml" itemIcon="1" loadImmediate="false" itemID="681a23ee-00000e23" lastModified="1477651455"/>
           <Include href="重复项目文件夹/shape 714.xml" itemIcon="1" loadImmediate="false" itemID="681a23ee-00000e24" lastModified="1477651455"/>
           <Include href="重复项目文件夹/shape 715.xml" itemIcon="1" loadImmediate="false" itemID="681a23ee-00000e25" lastModified="1477651455"/>
@@ -2680,9 +2716,9 @@
           <Include href="主角动画层/手枪攻击.xml" loadImmediate="false" itemID="6657384b-0000061d" lastModified="1769694922"/>
           <Include href="主角动画层/手枪行走.xml" loadImmediate="false" itemID="66573878-00000631" lastModified="1769694922"/>
           <Include href="主角动画层/双枪攻击.xml" loadImmediate="false" itemID="66577cf3-00002e53" lastModified="1769694922"/>
+          <Include href="主角动画层/双枪行走.xml" loadImmediate="false" itemID="66577cfa-00002e54" lastModified="1769694922"/>
           <Include href="主角动画层/双枪跑.xml" loadImmediate="false" itemID="66577d03-00002e56" lastModified="1778013424"/>
           <Include href="主角动画层/双枪跳.xml" loadImmediate="false" itemID="66577d06-00002e57" lastModified="1769694922"/>
-          <Include href="主角动画层/双枪行走.xml" loadImmediate="false" itemID="66577cfa-00002e54" lastModified="1769694922"/>
           <Include href="主角动画层/双枪站立.xml" loadImmediate="false" itemID="66577cfd-00002e55" lastModified="1769694922"/>
           <Include href="主角动画层/长枪攻击.xml" loadImmediate="false" itemID="66560654-000014f8" lastModified="1769694922"/>
           <Include href="主角动画层/长枪行走.xml" loadImmediate="false" itemID="665602cc-0000109b" lastModified="1769694922"/>
@@ -2690,7 +2726,7 @@
           <Include href="主角肢体素材/Symbol 3.xml" loadImmediate="false" itemID="697b650f-00003223" lastModified="1731931497"/>
           <Include href="主角肢体素材/Symbol 6.xml" loadImmediate="false" itemID="697b6503-00001ff2" lastModified="1758557137"/>
           <Include href="主角肢体素材/刀.xml" loadImmediate="false" itemID="697b650e-000030c9" lastModified="1727752227"/>
-          <Include href="主角肢体素材/刀-刀鞘.xml" loadImmediate="false" itemID="69fa2b6f-00000aaf" lastModified="1778003973"/>
+          <Include href="主角肢体素材/刀-刀鞘.xml" loadImmediate="false" itemID="69fa2b6f-00000aaf" lastModified="1789893055"/>
           <Include href="主角肢体素材/刀-副手.xml" loadImmediate="false" itemID="68ee4b77-0000073e" lastModified="1778003982"/>
           <Include href="主角肢体素材/刀-主手.xml" loadImmediate="false" itemID="6974ae9b-00003b7d" lastModified="1778003496"/>
           <Include href="主角肢体素材/脚.xml" loadImmediate="false" itemID="697b650b-00002c94" lastModified="1757948596"/>
@@ -2722,7 +2758,7 @@
                                         <script><![CDATA[stop();]]></script>
                                    </Actionscript>
                                    <elements>
-                                        <DOMSymbolInstance libraryItemName="加载MC库-00" selected="true" centerPoint3DX="1277" centerPoint3DY="546.05">
+                                        <DOMSymbolInstance libraryItemName="加载MC库-00" centerPoint3DX="1277" centerPoint3DY="546.05">
                                              <matrix>
                                                   <Matrix tx="356.3" ty="-65.75"/>
                                              </matrix>
@@ -3217,6 +3253,16 @@
      </persistentData>
      <PrinterSettings/>
      <publishHistory>
+          <PublishItem publishSize="5052542" publishTime="1789892853"/>
+          <PublishItem publishSize="5052551" publishTime="1789892353"/>
+          <PublishItem publishSize="5010875" publishTime="1789833111"/>
+          <PublishItem publishSize="5010879" publishTime="1789832501"/>
+          <PublishItem publishSize="5010882" publishTime="1789832210"/>
+          <PublishItem publishSize="5010931" publishTime="1789831897"/>
+          <PublishItem publishSize="4913467" publishTime="1789826962"/>
+          <PublishItem publishSize="4913347" publishTime="1789826443"/>
+          <PublishItem publishSize="4913370" publishTime="1789825825"/>
+          <PublishItem publishSize="4915353" publishTime="1789824386"/>
           <PublishItem publishSize="4869425" publishTime="1789478047"/>
           <PublishItem publishSize="4869424" publishTime="1789474335"/>
           <PublishItem publishSize="4869432" publishTime="1789474278"/>
@@ -3227,15 +3273,5 @@
           <PublishItem publishSize="4683786" publishTime="1788971308"/>
           <PublishItem publishSize="4683883" publishTime="1788968801"/>
           <PublishItem publishSize="4683877" publishTime="1788966746"/>
-          <PublishItem publishSize="4683850" publishTime="1788965819"/>
-          <PublishItem publishSize="4683201" publishTime="1788801134"/>
-          <PublishItem publishSize="4683178" publishTime="1788800687"/>
-          <PublishItem publishSize="4683551" publishTime="1785632450"/>
-          <PublishItem publishSize="4616499" publishTime="1785090696"/>
-          <PublishItem publishSize="4616977" publishTime="1785084277"/>
-          <PublishItem publishSize="4616994" publishTime="1785083206"/>
-          <PublishItem publishSize="4480744" publishTime="1782300076"/>
-          <PublishItem publishSize="4480747" publishTime="1782299333"/>
-          <PublishItem publishSize="4480726" publishTime="1782298278"/>
      </publishHistory>
 </DOMDocument>

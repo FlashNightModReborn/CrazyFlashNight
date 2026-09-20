@@ -230,7 +230,7 @@ function Get-Cf7ProductionChecks {
         'css\workbench\components.css', 'css\workbench\character-build.css',
         'css\workbench\character-build-stats.css',
         'css\workbench\states.css', 'css\workbench\motion.css',
-        'css\appearance-service.css', 'css\hairdresser.css', 'css\plastic-surgery.css',
+        'css\appearance-service.css', 'css\hairdresser.css', 'css\plastic-surgery.css', 'css\sleep-panel.css',
         'css\task_panel.css', 'css\workbench\team.css',
         'lib\marked.min.js', 'help\controls.md', 'help\worldview.md', 'help\easter-eggs.md',
         'icons\manifest.json', 'data\lockbox-variants.json', 'assets\bg\manifest.json',
@@ -312,7 +312,7 @@ function Get-Cf7ProductionChecks {
         'modules\npcshop.js', 'modules\crafting-runtime.js',
         'modules\crafting-detail-presenter.js', 'modules\crafting.js',
         'modules\hairdresser-runtime.js', 'modules\hairdresser.js',
-        'modules\plastic-surgery-runtime.js', 'modules\plastic-surgery.js',
+        'modules\plastic-surgery-runtime.js', 'modules\plastic-surgery.js', 'modules\sleep-runtime.js', 'modules\sleep-panel.js',
         'modules\character-identity-controls.js', 'modules\character-appearance-preview.js',
         'modules\skills-runtime.js', 'modules\skills-library.js',
         'modules\skills-trainer.js', 'modules\skills-loadout.js', 'modules\skills-interactions.js',
@@ -366,12 +366,16 @@ function Get-Cf7ProductionChecks {
         'assets\dialogue-ui\buttons\close-down.svg', 'assets\dialogue-ui\buttons\drag-up.svg',
         'assets\dialogue-ui\buttons\drag-over.svg', 'assets\dialogue-ui\buttons\drag-down.svg',
         'generated\font-catalog.json', 'generated\font-catalog.css', 'generated\font-catalog.js',
-        'assets\fonts\font-pack-manifest.json'
+        'assets\fonts\font-pack-manifest.json',
+        'assets\sleep\manifest.json', 'assets\sleep\day-face.svg', 'assets\sleep\night-face.svg',
+        'assets\sleep\day-card.svg', 'assets\sleep\night-card.svg', 'assets\sleep\palette.js', 'css\sleep\tokens.css'
     )
     $checks += New-Cf7RequiredPathsCheck -Name 'required-web-runtime-assets' `
         -Root (Join-Path $ProjectRoot 'launcher\web') -Paths $requiredWebPaths
     $checks += New-Cf7CommandCheck -Name 'workbench-css-closure' -FilePath $node `
         -Arguments @((Join-Path $ProjectRoot 'tools\check-workbench-css-bundle.js')) -WorkingDirectory $ProjectRoot
+    $checks += New-Cf7CommandCheck -Name 'sleep-ui-art-and-runtime' -FilePath $node `
+        -Arguments @((Join-Path $ProjectRoot 'tools\test-sleep-runtime.js')) -WorkingDirectory $ProjectRoot
     $checks += New-Cf7CommandCheck -Name 'workbench-ui-ratchet-regression' -FilePath $node `
         -Arguments @((Join-Path $ProjectRoot 'tools\test-workbench-ui-ratchet.js')) -WorkingDirectory $ProjectRoot
     $checks += New-Cf7CommandCheck -Name 'workbench-ui-release-tree-audit' -FilePath $node `

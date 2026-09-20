@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="zh-CN"><head><meta charset="utf-8"><base href="/launcher/web/">
+<title>睡眠闹钟交互验证</title><link rel="stylesheet" href="css/game-ui-behavior.css"><link rel="stylesheet" href="css/overlay.css"><link rel="stylesheet" href="css/panels.css">
+<style>html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#171916}</style></head><body>
+<div id="panel-container" style="display:none"><div id="panel-backdrop"></div><div id="panel-content"></div></div><div id="panel-tooltip"></div>
+<script>
+window.__sent=[];window.__handlers={};window.__records={};window.__sequence=0;window.__time=583;window.__commits=0;window.__queries=0;window.__fault=null;window.__closeFails=false;window.__cycleEnabled=true;window.__cyclePaused=false;
+window.__emit=function(value){(__handlers[value.type]||[]).slice().forEach(function(callback){callback(value)})};
+function clone(value){return JSON.parse(JSON.stringify(value))}
+window.Bridge={on:function(type,callback){(__handlers[type]||(__handlers[type]=[])).push(callback)},off:function(type,callback){var a=__handlers[type]||[],i=a.indexOf(callback);if(i>=0)a.splice(i,1)},send:function(message){
+    __sent.push(clone(message));if(message.cmd==='close')return !__closeFails;if(message.domain!=='sleep')return true;
+    var fault=__fault;__fault=null;if(fault==='send_false')return false;
+    var record=__records[message.payload.token];
+    if(message.cmd==='commit'&&record.phase==='editing'){record.phase='applied';record.targetMinutes=message.payload.targetMinutes;record.currentMinutes=message.payload.targetMinutes;__time=message.payload.targetMinutes;__commits++}
+    if(message.cmd==='query')__queries++;
+    var response=Object.assign(clone(record),{type:'panel_resp',panel:'sleep',domain:'sleep',cmd:message.cmd,operation:message.cmd,callId:message.callId,panelInstanceId:message.panelInstanceId,
+        success:record.phase!=='expired',changed:record.phase==='applied',canSleep:record.phase==='editing'&&record.cycleEnabled,reason:record.phase==='expired'?'context_changed':record.cycleEnabled?'':'cycle_disabled'});
+    if(fault==='unknown_applied')response={type:'panel_resp',panel:'sleep',domain:'sleep',cmd:message.cmd,callId:message.callId,panelInstanceId:message.panelInstanceId,success:false,error:'timeout',requiresReconcile:true,recoveryToken:record.token};
+    if(fault==='wrong_owner')response.panelInstanceId='old.panel';
+    if(fault==='wrong_target')response.currentMinutes=response.targetMinutes=(response.targetMinutes+60)%1440;
+    __lastResponse=clone(response);setTimeout(function(){__emit(response)},fault==='late'?180:5);return true;
+}};
+</script>
+<script src="modules/asset-timeline.js"></script><script src="modules/icons.js"></script><script src="modules/lazy-loader.js"></script>
+<script src="modules/panels.js"></script><script src="modules/panel-scale.js"></script><script src="modules/panels-lazy-registry.js"></script><script src="modules/game-ui-behavior.js"></script>
+<script>Panels.init();window.__open=function(){Object.keys(__records).forEach(function(key){if(__records[key].phase==='editing')__records[key].phase='expired'});var token='sleep.test.'+(++__sequence);__records[token]={v:1,token:token,phase:'editing',currentMinutes:__time,targetMinutes:__time,cycleEnabled:__cycleEnabled,cyclePaused:__cyclePaused};return Panels.open('sleep',{panelInstanceId:'sleep.panel.'+__sequence,source:'world_sleep',mode:'runtime',token:token})};__open();</script>
+<script src="modules/sleep/dev/qa.js"></script>
+</body></html>

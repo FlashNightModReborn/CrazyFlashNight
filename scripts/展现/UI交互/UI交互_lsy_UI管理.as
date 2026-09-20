@@ -1,4 +1,10 @@
 ﻿_root.加载外部UI = function(url){
+    // 三处床铺共用的生产入口；连接失败不回流旧睡眠 SWF。
+    if (url == "flashswf/UI/睡觉界面.swf") {
+        if (!org.flashNight.arki.ui.SleepPanelService.openPanel())
+            _root.最上层发布文字提示("睡眠面板暂时无法打开，请稍后重试。");
+        return;
+    }
     _root.通用UI层.外部导入UI界面._visible = true;
     if(url != _root.通用UI层.外部UIURL){
         _root.通用UI层.外部UIURL = url;
@@ -63,6 +69,7 @@ _root.加载引导界面 = function(filename){
 if (_root.gameCommands == undefined) _root.gameCommands = {};
 org.flashNight.arki.ui.HairdresserPanelService.install();
 org.flashNight.arki.ui.PlasticSurgeryPanelService.install();
+org.flashNight.arki.ui.SleepPanelService.install();
 org.flashNight.arki.ui.GameSettingsPanelService.install();
 
 _root.gameCommands["togglePause"] = function() {

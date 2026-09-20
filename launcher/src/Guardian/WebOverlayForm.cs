@@ -454,6 +454,7 @@ namespace CF7Launcher.Guardian
             Crafting,
             Hairdresser,
             PlasticSurgery,
+            Sleep,
             Settings,
             EquipmentTuning,
             ItemUse,
@@ -473,6 +474,7 @@ namespace CF7Launcher.Guardian
             if (domain == "crafting") return PanelDomainRoute.Crafting;
             if (domain == "hairdresser") return PanelDomainRoute.Hairdresser;
             if (domain == "surgery") return PanelDomainRoute.PlasticSurgery;
+            if (domain == "sleep") return PanelDomainRoute.Sleep;
             if (domain == "settings") return PanelDomainRoute.Settings;
             if (domain == "equipment_tuning") return PanelDomainRoute.EquipmentTuning;
             if (domain == "item_use") return PanelDomainRoute.ItemUse;
@@ -1348,6 +1350,7 @@ namespace CF7Launcher.Guardian
             _materialShopNavigationCoordinator;
         private HairdresserTask _hairdresserTask;
         private PlasticSurgeryTask _plasticSurgeryTask;
+        private SleepTask _sleepTask;
         private SettingsTask _settingsTask;
         private EquipmentTuningTask _equipmentTuningTask;
         private ItemUseTask _itemUseTask;
@@ -4660,6 +4663,13 @@ namespace CF7Launcher.Guardian
             }
         }
 
+        public void SetSleepTask(SleepTask task)
+        {
+            _sleepTask = task;
+            task.SetPostToWeb(PostToWeb);
+            task.SetInvoker(delegate(Action a) { try { this.BeginInvoke(a); } catch {} });
+        }
+
         public void SetPlasticSurgeryTask(PlasticSurgeryTask task)
         {
             _plasticSurgeryTask = task;
@@ -7213,6 +7223,17 @@ namespace CF7Launcher.Guardian
                 else RespondPanelDomainError(parsed, "crafting_unavailable");
                 return;
             }
+            if (domainRoute == PanelDomainRoute.Sleep)
+            {
+                if (!HasExactActivePanelOwnerBinding(parsed, "sleep"))
+                {
+                    RespondPanelDomainError(parsed, "panel_instance_expired");
+                    return;
+                }
+                if (_sleepTask != null) _sleepTask.HandleWebRequest(cmd, parsed);
+                else RespondPanelDomainError(parsed, "sleep_unavailable");
+                return;
+            }
             if (domainRoute == PanelDomainRoute.PlasticSurgery)
             {
                 if (!HasExactActivePanelOwnerBinding(parsed, "surgery"))
@@ -9094,6 +9115,7 @@ namespace CF7Launcher.Guardian
             if (_craftingTask != null) _craftingTask.ClearPending();
             if (_hairdresserTask != null) _hairdresserTask.ClearPending();
             if (_plasticSurgeryTask != null) _plasticSurgeryTask.ClearPending();
+            if (_sleepTask != null) _sleepTask.ClearPending();
             if (_settingsTask != null) _settingsTask.ClearPending();
             if (_equipmentTuningTask != null) _equipmentTuningTask.ClearPending();
             if (_skillTask != null) _skillTask.ClearPending();

@@ -3296,6 +3296,13 @@ namespace CF7Launcher.Guardian
                     openRequestId);
                 return;
             }
+            if (string.Equals(panelName, "sleep", StringComparison.Ordinal))
+            {
+                JObject sleepData = SleepTask.BuildOpenData(safeSource, initDataExtrasJson);
+                if (sleepData != null) OpenPanel("sleep", sleepData.ToString(Formatting.None));
+                else LogManager.Log("[Router] sleep rejected invalid bed session");
+                return;
+            }
             if (string.Equals(panelName, "surgery", StringComparison.Ordinal))
             {
                 if (safeSource == "world_plastic_surgery")
