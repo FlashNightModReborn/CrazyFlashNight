@@ -15,7 +15,7 @@
           <DOMFolderItem name="MovieClip" itemID="68404178-00000b93"/>
           <DOMFolderItem name="shape" itemID="65a6bb2a-00001374"/>
           <DOMFolderItem name="sound" itemID="65a6bb4b-0000137a"/>
-          <DOMFolderItem name="sprite" itemID="66530518-00000d78" isExpanded="true"/>
+          <DOMFolderItem name="sprite" itemID="66530518-00000d78"/>
           <DOMFolderItem name="参考武器" itemID="6aace968-00001e5f"/>
           <DOMFolderItem name="个人编辑单位" itemID="695d3442-00003dd6"/>
           <DOMFolderItem name="个人编辑单位/浮士德的一堆相关或是不相关" itemID="695d3442-00003dd7"/>
@@ -1522,10 +1522,10 @@
           <Include href="容器/兵器攻击容器/平A/兵器攻击容器-迅捷1连招.xml" itemID="69875871-00000a1a" lastModified="1789830245"/>
           <Include href="容器/兵器攻击容器/平A/兵器攻击容器-长柄1连招.xml" itemID="6964628b-00000a7b" lastModified="1782004683"/>
           <Include href="容器/兵器攻击容器/平A/兵器攻击容器-长刀1连招.xml" itemID="696c6d20-0000139b" lastModified="1785147368"/>
-          <Include href="容器/兵器攻击容器/平A/兵器攻击容器-长棍1连招.xml" itemID="69647138-00000e5c" lastModified="1785147370"/>
+          <Include href="容器/兵器攻击容器/平A/兵器攻击容器-长棍1连招.xml" itemID="69647138-00000e5c" lastModified="1789926670"/>
           <Include href="容器/兵器攻击容器/平A/兵器攻击容器-长枪1连招.xml" itemID="69646d02-00000da3" lastModified="1789890548"/>
           <Include href="容器/兵器攻击容器/平A/兵器攻击容器-直剑1连招.xml" itemID="696a8b8f-00001638" lastModified="1789832012"/>
-          <Include href="容器/兵器攻击容器/平A/兵器攻击容器-重斩1连招.xml" itemID="696a8950-00001434" lastModified="1789892280"/>
+          <Include href="容器/兵器攻击容器/平A/兵器攻击容器-重斩1连招.xml" itemID="696a8950-00001434" lastModified="1789926562"/>
           <Include href="容器/兵器攻击容器/平A/怪物通用模板/新近战子弹定位元件/近战子弹定位用 副本.xml" loadImmediate="false" itemID="69949a8d-00003587" lastModified="1706272572"/>
           <Include href="容器/兵器攻击容器/平A/怪物通用模板/新近战子弹定位元件/子弹素材/Symbol 13 副本.xml" itemIcon="1" loadImmediate="false" itemID="69949a8d-00003589" lastModified="1706271675"/>
           <Include href="容器/兵器攻击容器/平A/怪物通用模板/新近战子弹定位元件/子弹素材/Symbol 14 副本.xml" loadImmediate="false" itemID="69949a8d-00003588" lastModified="1706271749"/>
@@ -3253,6 +3253,8 @@
      </persistentData>
      <PrinterSettings/>
      <publishHistory>
+          <PublishItem publishSize="5080322" publishTime="1789926779"/>
+          <PublishItem publishSize="5080057" publishTime="1789925740"/>
           <PublishItem publishSize="5052542" publishTime="1789892853"/>
           <PublishItem publishSize="5052551" publishTime="1789892353"/>
           <PublishItem publishSize="5010875" publishTime="1789833111"/>
@@ -3271,7 +3273,5 @@
           <PublishItem publishSize="4869065" publishTime="1789398203"/>
           <PublishItem publishSize="4865879" publishTime="1789202737"/>
           <PublishItem publishSize="4683786" publishTime="1788971308"/>
-          <PublishItem publishSize="4683883" publishTime="1788968801"/>
-          <PublishItem publishSize="4683877" publishTime="1788966746"/>
      </publishHistory>
 </DOMDocument>
