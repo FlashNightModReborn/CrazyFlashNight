@@ -57,7 +57,11 @@ internal sealed class PlayerInfoSplitSurface :
     internal const string FixtureCaseEnvironment =
         "CF7_PLAYER_INFO_FIXTURE_CASE";
     private const int AnimationPollMilliseconds = 16;
+    internal Action<double, double, int, int>? RenderTimingObserver;
 
+    private PlayerHudState? _liveState;
+    private PlayerHudVitals? _liveVitals;
+    private long _liveEpoch;
     private PlayerInfoSvgAssetSet? _assetSet;
     private PlayerInfoAnimationModel? _animation;
     private PlayerInfoWidget? _widget;
@@ -96,6 +100,34 @@ internal sealed class PlayerInfoSplitSurface :
         Control anchor)
         : base(owner, anchor, 1024f, 576f)
     {
+    }
+
+    internal static PlayerInfoSplitSurface CreateLive(Form owner, Control anchor, PlayerHudState state)
+    {
+        var surface = CreateFixture(owner, anchor, "p50");
+        surface._liveState = state;
+        surface.Animation.ResetProduction();
+        state.Changed += surface.OnLiveStateChanged;
+        surface.OnLiveStateChanged();
+        return surface;
+    }
+
+    private void OnLiveStateChanged()
+    {
+        if (_disposed || _shutdown) return;
+        var snapshot = _liveState?.Snapshot;
+        if (snapshot == null)
+        {
+            _liveEpoch = 0; _liveVitals = null; Widget.LiveVitals = null; Widget.ResetLiveClock(); Animation.ResetProduction();
+            _animationTimer?.Stop(); DismissOverlay(); return;
+        }
+        if (_liveEpoch == snapshot.Epoch && _liveVitals == snapshot.Vitals) return;
+        if (_liveEpoch != snapshot.Epoch) { Animation.ResetProduction(); Widget.ResetLiveClock(); }
+        _liveEpoch = snapshot.Epoch; _liveVitals = snapshot.Vitals;
+        Widget.LiveVitals = snapshot.Vitals;
+        Animation.ApplyProduction(snapshot.Vitals);
+        if (_desiredBatchKey == null) OnPositionChanged(); else ScheduleRender();
+        UpdateAnimationTimer();
     }
 
     internal static PlayerInfoSplitSurface CreateFixture(
@@ -430,6 +462,7 @@ internal sealed class PlayerInfoSplitSurface :
 
     protected override void OnPositionChanged()
     {
+        if (_liveState != null && _liveState.Snapshot == null) { DismissOverlay(); return; }
         if (!_ready ||
             !_ownerVisible ||
             _suspended ||
@@ -530,6 +563,7 @@ internal sealed class PlayerInfoSplitSurface :
 
     protected override void Dispose(bool disposing)
     {
+        if (disposing && _liveState != null) { _liveState.Changed -= OnLiveStateChanged; _liveState = null; }
         if (disposing && !_disposed)
         {
             _disposed = true;
@@ -611,6 +645,7 @@ internal sealed class PlayerInfoSplitSurface :
 
     private void RenderCurrentOnUiThread()
     {
+        if (_liveState != null && _liveState.Snapshot == null) { DismissOverlay(); return; }
         if (_disposed ||
             _shutdown ||
             !_ready ||
@@ -666,7 +701,7 @@ internal sealed class PlayerInfoSplitSurface :
         lock (_metricsGate)
         {
             _paintCount++;
-            _paintMilliseconds.Add(paintMs);
+            RecordTiming(_paintMilliseconds, paintMs);
         }
 
         var preparedSurface = _composedSurface;
@@ -686,7 +721,7 @@ internal sealed class PlayerInfoSplitSurface :
         lock (_metricsGate)
         {
             _commitCount++;
-            _commitMilliseconds.Add(commit.ElapsedMilliseconds);
+            RecordTiming(_commitMilliseconds, commit.ElapsedMilliseconds);
             if (commit.Succeeded)
             {
                 _commitSuccessCount++;
@@ -695,6 +730,11 @@ internal sealed class PlayerInfoSplitSurface :
             {
                 _commitFailureCount++;
             }
+        }
+        if (RenderTimingObserver is { } observer)
+        {
+            try { observer(paintMs, commit.ElapsedMilliseconds, preparedSurface.Width, preparedSurface.Height); }
+            catch (Exception ex) { RenderTimingObserver = null; LogBestEffort("[PlayerInfoSplitSurface] timing observer disabled: " + ex.Message); }
         }
         if (!commit.Succeeded)
         {
@@ -730,6 +770,7 @@ internal sealed class PlayerInfoSplitSurface :
                 _committedZOrderInsertAfter = insertAfter;
                 _zOrderDirty = false;
                 _shown = true;
+                NotifyPresentationChanged();
             }
             else
             {
@@ -788,7 +829,9 @@ internal sealed class PlayerInfoSplitSurface :
             0,
             int.MaxValue);
         _lastAnimationTimestamp = now;
-        if (Animation.Tick((int)elapsed))
+        var changed = Animation.Tick((int)elapsed);
+        changed |= Widget.AdvanceLiveDecoration((int)elapsed);
+        if (changed)
         {
             ScheduleRender();
         }
@@ -803,7 +846,7 @@ internal sealed class PlayerInfoSplitSurface :
             !_ready ||
             !_ownerVisible ||
             _qualificationClockOwned ||
-            !Animation.WantsAnimationTick)
+            (!Animation.WantsAnimationTick && !Widget.WantsLiveDecoration))
         {
             _animationTimer?.Stop();
             return;
@@ -824,8 +867,14 @@ internal sealed class PlayerInfoSplitSurface :
     {
         lock (_metricsGate)
         {
-            _surfaceMilliseconds.Add(ElapsedMilliseconds(startTimestamp));
+            RecordTiming(_surfaceMilliseconds, ElapsedMilliseconds(startTimestamp));
         }
+    }
+    private void RecordTiming(List<double> samples, double value)
+    {
+        // Historical fixture qualification retains its full sample list; live sessions are bounded.
+        if (_liveState != null && samples.Count >= 4096) samples.RemoveRange(0, 2048);
+        samples.Add(value);
     }
 
     private void ThrowIfDisposed()

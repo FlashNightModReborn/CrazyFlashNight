@@ -9,7 +9,7 @@ import org.flashNight.arki.unit.Action.Skill.ManualCooldownService;
  * @description 武器技能键输入语义服务
  *
  * 帧计时器负责把 F 键当前状态交给本服务；本服务持有按住锁存、触发门控与释放编排。
- * 共享冷却状态由 ManualCooldownService 持有；旧玩家信息界面只提供时长与可选渲染器。
+ * 共享冷却状态由 ManualCooldownService 持有；时长取战技描述符，旧界面只作可选渲染器。
  * 副武器快装不是普通主动战技，因此可绕过共享战技冷却，并且成功后不启动共享冷却。
  */
 class org.flashNight.arki.unit.Action.Skill.WeaponSkillInputService {
@@ -30,11 +30,6 @@ class org.flashNight.arki.unit.Action.Skill.WeaponSkillInputService {
             if (bar) ManualCooldownService.bindRenderer(ManualCooldownService.WEAPON_SKILL_KEY, bar);
         };
         cooldownPort.getCooldownTime = function(skill:Object):Number {
-            var info:Object = rootRef.玩家信息界面 ? rootRef.玩家信息界面.玩家必要信息界面 : null;
-            var slot:Object = info ? info.战技栏 : null;
-            if (slot && Number(slot.冷却时间) > 0) {
-                return Number(slot.冷却时间);
-            }
             return skill && Number(skill.冷却时间) > 0 ? Number(skill.冷却时间) : 0;
         };
 

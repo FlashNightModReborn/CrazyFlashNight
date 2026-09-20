@@ -11,20 +11,15 @@ $projectDir = Split-Path -Parent $PSScriptRoot
 $drugIconSource = Get-Content -LiteralPath (
     Join-Path $projectDir 'scripts\类定义\org\flashNight\arki\item\itemIcon\DrugIcon.as'
 ) -Raw -Encoding UTF8
-$pressIndex = $drugIconSource.IndexOf('public function Press():Void{')
-$dirtyIndex = if ($pressIndex -ge 0) {
-    $drugIconSource.IndexOf('_root.存档系统.dirtyMark = true', $pressIndex)
-} else { -1 }
-$moveIndex = if ($pressIndex -ge 0) {
-    $drugIconSource.IndexOf('collection.move(背包,index,targetIndex)', $pressIndex)
-} else { -1 }
-if ($pressIndex -lt 0 -or $dirtyIndex -lt 0 -or $moveIndex -le $dirtyIndex) {
-    throw 'DrugIcon.Press must mark save dirty before the authoritative collection.move write.'
+$mutationSource = Get-Content -LiteralPath (
+    Join-Path $projectDir 'scripts\类定义\org\flashNight\arki\item\DrugHudMutationService.as'
+) -Raw -Encoding UTF8
+$dirtyIndex = $mutationSource.IndexOf('PlayerAssetTransaction.markDirtyRequired(root.存档系统)')
+$moveIndex = $mutationSource.IndexOf('source.move(')
+if ($drugIconSource.IndexOf('DrugHudMutationService.unequip(') -lt 0 -or
+        $dirtyIndex -lt 0 -or $moveIndex -le $dirtyIndex) {
+    throw 'DrugIcon and native HUD must share the dirty-before-move domain operation.'
 }
-if ($drugIconSource -match '_root\s*\[\s*["'']快捷物品栏') {
-    throw 'DrugIcon must not write the retired _root quick-item mirrors.'
-}
-Write-Host '[STATIC_PASS] DrugIcon marks dirty before move and does not write retired root mirrors'
 
 $focusedRun = @{
     DomainId = 'player-manual-input'

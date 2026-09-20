@@ -26,6 +26,11 @@ manifest 记录的配方一致（当前仅 `separateButtons`）——生成时�
 `--button-ids 层名:id,...`、`--separate-buttons`、
 `--svg-name/--layout-name/--manifest-name`。
 
+描边的颜色、透明度和渐变从 `SolidStroke/fill` 容器解析；不能把该容器的
+`SolidColor` 子节点当作容器再次解析，否则会误回退成黑色。`--selftest` 覆盖
+实际 SVG 的描边颜色/透明度、渐变描边及缺失填充时的黑色默认值。修复生成器后，
+仅对当前授权的产物链再生成并校验，不据此改写其他已归档产物的历史 manifest。
+
 **注意**：`--portrait-symbols` 与 `--button-ids` 的默认值（`对话框肖像,外部立绘层`、
 `关闭:close,移动:drag,按钮控制:next`）是对话框界面专用。迁移其它 UI 时必须按
 对应真源显式给出这两个参数，否则巨型依赖不会被跳过、按钮 id 会退化为符号名 slug。

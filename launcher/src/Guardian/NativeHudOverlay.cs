@@ -24,6 +24,7 @@ namespace CF7Launcher.Guardian
     /// </summary>
     public partial class NativeHudOverlay : OverlayBase, INotchSink, IToastSink
     {
+        internal Action<double, double, int, int> RenderTimingObserver;
         protected override bool IsClickThrough { get { return false; } }
 
         protected override bool CanShowOverlayNow
@@ -502,6 +503,8 @@ namespace CF7Launcher.Guardian
         {
             if (!_ready || _suspendedForPanel) return;
             if (_composedBitmap == null) return;
+            var observer = RenderTimingObserver;
+            var renderStart = observer == null ? 0 : System.Diagnostics.Stopwatch.GetTimestamp();
 
             INativeHudWidget[] snapshot;
             lock (_widgetsLock) { snapshot = _widgets.ToArray(); }
@@ -528,7 +531,14 @@ namespace CF7Launcher.Guardian
             }
 
             // 焦点观察只读取原有提交的结果，不切换 DC/提交实现。
+            var commitStart = observer == null ? 0 : System.Diagnostics.Stopwatch.GetTimestamp();
             CommitBitmap(_composedBitmap, _hudOrigin.X, _hudOrigin.Y, 255);
+            if (observer != null)
+            {
+                try { observer(System.Diagnostics.Stopwatch.GetElapsedTime(renderStart, commitStart).TotalMilliseconds,
+                    System.Diagnostics.Stopwatch.GetElapsedTime(commitStart).TotalMilliseconds, _composedBitmap.Width, _composedBitmap.Height); }
+                catch (Exception ex) { RenderTimingObserver = null; LogManager.Log("[NativeHud] timing observer disabled: " + ex.Message); }
+            }
             _lastCommitTick = Environment.TickCount;
             PerfTrace.Counter("nativeHud.commit");
             if (painted > 0)

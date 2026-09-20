@@ -15,6 +15,9 @@ class org.flashNight.arki.skill.SkillLoadoutService {
     private static var _testRejectNextCommit:Boolean = false;
     private static var _testRejectedState:Object = null;
     private static var _rendererDiagnostics:Array = [];
+    private static var _hudInputs:Array;
+    private static var _hudDescriptors:Object;
+    private static var _hudMetadataKeys:Array = ["MaxLevel", "UnlockLevel", "UnlockSP", "UpgradeSP", "Type", "Passive", "Equippable", "MP", "CD"];
 
     public static function root():Object {
         return _testRoot == null ? _root : _testRoot;
@@ -99,6 +102,67 @@ class org.flashNight.arki.skill.SkillLoadoutService {
             trainer:trainerWire,
             diagnostics:diagnostics
         };
+    }
+
+    /** One domain scan for all twelve live HUD slots; no management-page snapshot. */
+    public static function getHudDescriptors():Object {
+        // Display-only memoization. Writes and release gates still synchronize()
+        // independently; legacy in-place edits are observed by copied scalar inputs.
+        var inputs:Array = hudInputs();
+        if (inputs != null && _hudInputs != null && inputs.length == _hudInputs.length) {
+            var same:Boolean = true;
+            for (var index:Number = 0; index < inputs.length; index++) {
+                if (inputs[index] !== _hudInputs[index]) { same = false; break; }
+            }
+            if (same) return _hudDescriptors;
+        }
+        var sync:Object = synchronize();
+        var slots:Array = [];
+        for (var slot:Number = 1; slot < 13; slot++) {
+            slots.push(sync.success ? descriptorFromScan(slot, sync.scan) :
+                {slot:slot, equipped:false, skillKey:null, keyLabel:keyLabel(slot), stateHealth:"unknown", writeBlocked:true});
+        }
+        _hudInputs = inputs;
+        _hudDescriptors = {revision:_revision, slots:slots};
+        return _hudDescriptors;
+    }
+
+    /** Bounded raw inputs to scanState/descriptorFromScan; never a gameplay authority. */
+    private static function hudInputs():Array {
+        if (!isReady()) return null;
+        var r:Object = root();
+        var table:Array = r.主角技能表;
+        // Corrupt/tail data keeps the existing full scan and fail-closed diagnostics.
+        if (table.length > SKILL_ROW_COUNT) return null;
+        var inputs:Array = [r, _revision, table, table.length, r.技能表对象, r.等级, r.技能点数];
+        for (var i:Number = 0; i < SKILL_ROW_COUNT; i++) {
+            var exists:Boolean = table.hasOwnProperty(String(i));
+            var row = table[i];
+            inputs.push(exists, row);
+            if (!exists) continue;
+            if (!(row instanceof Array) || row.length < 5) return null;
+            inputs.push(row.length);
+            for (var j:Number = 0; j < 5; j++) {
+                var value = row[j];
+                if ((typeof value == "object" && value != null) || typeof value == "function") return null;
+                inputs.push(value);
+            }
+            var metadata:Object = r.技能表对象[normalizeRowName(row[0])];
+            inputs.push(metadata);
+            if (metadata != null) {
+                for (j = 0; j < _hudMetadataKeys.length; j++) {
+                    value = metadata[_hudMetadataKeys[j]];
+                    if ((typeof value == "object" && value != null) || typeof value == "function") return null;
+                    inputs.push(value);
+                }
+            }
+        }
+        for (i = 1; i <= QUICK_SLOT_COUNT; i++) {
+            var slotValue = r["快捷技能栏" + i];
+            if ((typeof slotValue == "object" && slotValue != null) || typeof slotValue == "function") return null;
+            inputs.push(slotValue, keyLabel(i));
+        }
+        return inputs;
     }
 
     public static function getSlotDescriptor(slot:Number):Object {

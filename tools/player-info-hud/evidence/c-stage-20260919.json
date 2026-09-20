@@ -1,0 +1,1818 @@
+{
+  "schema": "cf7-player-hud-c-stage-review.v1",
+  "baselineCommit": "d0c3abd4eb96a3f0cff62b4b71f448fcf83fd288",
+  "workspace": "E:\\cf7-pi-0919\\resources",
+  "state": "candidate_executed",
+  "executionScope": "user entered gameplay; visual review reported missing chassis, rectangle above HP, MP misalignment; normal UserClosing at 21:22:36",
+  "deploymentStatus": "NOT_DEPLOYED",
+  "committed": false,
+  "pushed": false,
+  "mergedIntoMain": false,
+  "candidate": {
+    "root": "E:\\cf7-pi-0919\\resources\\tmp\\runtime-candidates\\v2\\pi03",
+    "processId": 7512,
+    "processPath": "E:\\cf7-pi-0919\\resources\\tmp\\runtime-candidates\\v2\\pi03\\runtime\\CRAZYFLASHER7MercenaryEmpire.Core.exe",
+    "artifactSourceHash": "97898F029832655F7CE25D972F2EBDB83AE46EF918677687A5379BBD043075D2",
+    "buildIdentityHash": "33E5DF324F02512BBC3EF76D14A8769A2B4D411608EC969EB8EA43BF3E285BDD",
+    "payloadClosureHash": "DE46D2DFAC5553D4D36414C1C9BCE6AB491300F8E1157293D95B66C922A6F4CF",
+    "core": {
+      "path": "tmp/runtime-candidates/v2/pi03/runtime/CRAZYFLASHER7MercenaryEmpire.Core.dll",
+      "sha256": "10E29D5F440E37BEA47B1C9A78F0C8370D22D44C78861677E3AFF8983EE99049",
+      "bytes": 4822016
+    },
+    "metadata": {
+      "path": "tmp/runtime-candidates/v2/pi03/runtime-build-metadata.v2.json",
+      "sha256": "1B5EDBFD9990A273E4978B850D62787B1D9731E76689E5399ACA3393DA9C7922",
+      "bytes": 1239
+    },
+    "start": {
+      "path": "tmp/player-info-full/candidate-pi03-start.log",
+      "sha256": "B20C605E3BD9D379D7CD3E4DF513726866535E743F6848CDD9B6BE5A6EA0D5F7",
+      "bytes": 1385
+    }
+  },
+  "flashArtifacts": [
+    {
+      "path": "scripts/asLoader.swf",
+      "sha256": "672613F3CDCDA24F865A7778EA11B3B15DEF5D5B8F6BB7A751A9FFD0C161AB18",
+      "bytes": 1367502
+    },
+    {
+      "path": "CRAZYFLASHER7MercenaryEmpire.swf",
+      "sha256": "ED5719ACCCE7934A152ECAE28C6E6A6D814CD85E4F0D06E1948672F6BAD1E0FB",
+      "bytes": 214239
+    }
+  ],
+  "validation": {
+    "as2": {
+      "hudPassed": 47,
+      "manualInputPassed": 615,
+      "nativeInteractionPassed": 356,
+      "failed": 0,
+      "compilerErrors": 0,
+      "compilerWarnings": 0
+    },
+    "host": {
+      "passed": 5545,
+      "skipped": 4,
+      "failed": 0,
+      "runner": "launcher/tests/run_tests.ps1",
+      "evidence": {
+        "path": "tmp/player-info-full/c-stage-full-final.log",
+        "sha256": "7DEFA9B3C57E5944D54232032F7238660395FA533FA93C4F75B112958B85972E",
+        "bytes": 800552
+      }
+    },
+    "authoredAssets": 27,
+    "singleOwnership": true,
+    "gameplayVerified": false,
+    "saveRestartVerified": false,
+    "performanceMeasured": true,
+    "performanceAccepted": false
+  },
+  "sourceAssets": [
+    {
+      "path": "tools/player-info-hud/live-art.manifest.json",
+      "sha256": "7E78BEFC4DDD915998E74030B607FA7D1CB8401644EDA0B5A5C6105103970DAB",
+      "bytes": 21150
+    },
+    {
+      "path": "tools/player-info-hud/live-symbols.provenance.json",
+      "sha256": "8F392DA095BEA5ABF05CC3314A7345FA0968EEA114C1D1C9A0D3DFE94810F96F",
+      "bytes": 2376
+    }
+  ],
+  "testSave": {
+    "source": "E:\\cf7-pi-0919\\resources\\saves\\cf7_hud_0919_bf521230.json",
+    "sourceSha256": "840D69BFF41C7976C775B1C4B93D22F74F43E597687C406A6A5388FC21156456",
+    "cloneSlotKey": "cf7_hud_c_21e43560",
+    "clonePath": "E:\\cf7-pi-0919\\resources\\saves\\cf7_hud_c_21e43560.json",
+    "cloneInitialSha256": "840D69BFF41C7976C775B1C4B93D22F74F43E597687C406A6A5388FC21156456",
+    "actualPi03Slot": "cf7_hud_0919_bf521230",
+    "preparedCCloneWasNotTheObservedPi03Slot": true
+  },
+  "humanAcceptance": {
+    "status": "CHANGES_REQUIRED",
+    "previousPi01FeedbackDoesNotAcceptThisCandidate": true,
+    "feedback": "底部背景缺失造成空洞；血条上方较大半透明矩形；MP 文字错位及其他未对齐。"
+  },
+  "windowAutomation": {
+    "error": "failed to activate captured window",
+    "refreshedBindingBeforeRetry": true,
+    "currentObservation": "capture appears to show prior compiler content, not a reliable candidate view",
+    "userQuestionPending": false
+  },
+  "remaining": [
+    "correct human visual findings and recheck on a fresh candidate",
+    "confirm the source of the rectangle in a real game window",
+    "save and restart on the isolated C-stage slot",
+    "measure fresh performance after idle serialization fix",
+    "human visual and gameplay acceptance"
+  ],
+  "pi03ObservedPerformance": {
+    "as2IdleMeanMs": "9.3-10.25",
+    "as2IdleP95Ms": "18-24",
+    "accepted": false,
+    "hostBottomActiveP95PaintMs": 6.5334,
+    "hostBottomPixels": 493824,
+    "actualViewport": "2560x1440",
+    "evidence": {
+      "path": "tmp/player-info-full/pi03-feedback-runtime.log",
+      "sha256": "237860E3D4D108BF5604D6B8A18210D5E31A7965C831B620A4081859F22340D3"
+    }
+  },
+  "revisionAfterFeedback": {
+    "candidate": "pi04",
+    "state": "candidate_executed",
+    "deploymentStatus": "NOT_DEPLOYED",
+    "processId": 22344,
+    "buildIdentityHash": "3D31C9BCDFDD67B07FF03EE831D1814DAB9D17603C65FBD684BB06AFE1DE9193",
+    "payloadClosureHash": "FFDF1583A90DD500581A17AED821312B16C0987890849D2BAFA2F12C7ECD9BFB",
+    "core": {
+      "path": "tmp/runtime-candidates/v2/pi04/runtime/CRAZYFLASHER7MercenaryEmpire.Core.dll",
+      "sha256": "F5DFE4F131C2C5F225A52D9174FB3316768A959F3A0E6F781BA065EC68AAF4FC",
+      "bytes": 4823552
+    },
+    "asLoaderAtExecution": {
+      "path": "scripts/asLoader.swf",
+      "sha256": "64D386B686C4471E31E5AA82EF5BD072490FF4453AD5BBE1086A01D412D676D6",
+      "bytes": 1367723
+    },
+    "sourceAssets": {
+      "path": "tools/player-info-hud/live-art.manifest.json",
+      "sha256": "33458779E08D189AFA8B7B562318023459F66E7F379C676BC78046DFA4E5D045",
+      "bytes": 21758
+    },
+    "start": {
+      "path": "tmp/player-info-full/candidate-pi04-start.log",
+      "sha256": "0189758BD2F2F89E390E3E3A36D74FBDE7AB7471B4E48ED6163F38C7EB71E215",
+      "bytes": 1387
+    },
+    "fixes": [
+      "original full-width chassis from XP symbol 大背景; gauges above chassis",
+      "MP current-value anchor restored; entire old arc and slash removed from live rendering",
+      "authored name/key text ink corrected",
+      "unchanged DTOs compared before JSON serialization"
+    ],
+    "validation": {
+      "hudPassed": 53,
+      "hostPassed": 5547,
+      "hostSkipped": 4,
+      "failed": 0,
+      "authoredAssets": 28,
+      "hostLog": {
+        "path": "tmp/player-info-full/c-fix-full.log",
+        "sha256": "467B5315FF2FE30CD41087B1E92ADE08BDE05877C16EE74BEAB9F588B585F9E0",
+        "bytes": 801518
+      },
+      "viewports": [
+        "1024x576",
+        "1920x1080",
+        "2560x1440"
+      ],
+      "brightBackgroundChecks": true,
+      "actualSave": "cf7_hud_0919_bf521230",
+      "saveRestartVerified": false
+    },
+    "performance": {
+      "as2IdleMeanMs": "4.6-6.5",
+      "accepted": false,
+      "note": "partial user run, window size differs from pi03; further skill-projection memoization is source/test only"
+    },
+    "humanAcceptance": "PENDING; rectangle above HP still needs human confirmation",
+    "automationPolicy": "User requested no further Computer Use because repeated use may hang this machine. All window manipulation and live visual checks are now human-owned.",
+    "pendingSourceOnly": {
+      "change": "SkillLoadoutService display-only memoization with raw scalar drift checks",
+      "freshCS6": {
+        "loadoutPassed": 58,
+        "panelPassed": 48,
+        "failed": 0,
+        "compiler": "0/0"
+      },
+      "notInCurrentRunningCandidate": true,
+      "asLoaderPublishPending": false,
+      "publishedForNextLaunchOnly": true
+    }
+  },
+  "previousHumanReviewPi05": {
+    "candidate": "pi05",
+    "state": "candidate_built",
+    "deploymentStatus": "NOT_DEPLOYED",
+    "executed": false,
+    "buildIdentityHash": "D33BE8DFCF90D9BF78ADE0160802B2454CD5839E75A44154A22BD2FA953FBF9C",
+    "payloadClosureHash": "7A8FC161FE4F872864896A50B73D12C54A51F94F29D774170F8EE236476124B2",
+    "core": {
+      "path": "tmp/runtime-candidates/v2/pi05/runtime/CRAZYFLASHER7MercenaryEmpire.Core.dll",
+      "sha256": "262A808B8ABE8B8D8E4977C2D766E9071650DBE86DE72BA182C429EEF5E82293",
+      "bytes": 4824064
+    },
+    "asLoader": {
+      "path": "scripts/asLoader.swf",
+      "sha256": "3D4CC6F76CB5C4A9790E5D90B3BB0D31112B59811D9FED9A445EA0305D2818B4",
+      "bytes": 1368122
+    },
+    "main": {
+      "path": "CRAZYFLASHER7MercenaryEmpire.swf",
+      "sha256": "ED5719ACCCE7934A152ECAE28C6E6A6D814CD85E4F0D06E1948672F6BAD1E0FB",
+      "bytes": 214239
+    },
+    "maximumReadings": "User explicitly chose current / maximum always visible; HP uses two lines and MP retains authored anchors.",
+    "validation": {
+      "hostPassed": 5547,
+      "hostSkipped": 4,
+      "failed": 0,
+      "hostLog": {
+        "path": "tmp/player-info-full/c-max-full.log",
+        "sha256": "7642750AE58D4A53BBA6C71B6BB99CA1A49326560A1587AF6124E7CE350334A7",
+        "bytes": 796966
+      },
+      "skillLoadoutPassed": 58,
+      "skillPanelPassed": 48,
+      "hudPassed": 53,
+      "compiler": "0/0",
+      "singleOwnership": true,
+      "preview": {
+        "path": "tmp/player-info-full/hud-bright-1920.png",
+        "sha256": "BA782CD97215507101FA95A9F0516ADE1503475D587F52F7B24FAFB5942808E1",
+        "bytes": 275499
+      }
+    },
+    "originalReferences": [
+      {
+        "path": "flashswf/UI/玩家信息界面.swf",
+        "sha256": "892779F0C202302F69F22E39D0B9AEF3DB5E74B19FD4CC8FAFC950DD3DB3BA9B",
+        "bytes": 105051
+      },
+      {
+        "path": "flashswf/UI/玩家信息界面/LIBRARY/玩家信息界面.xml",
+        "sha256": "0C47AB7A8F82AA5C7EA891627AA12505B56190EBE2B9513C2177A810F9B709AE",
+        "bytes": 8174
+      }
+    ],
+    "humanOnly": [
+      "launch after closing current candidate",
+      "compare original chassis, MP alignment and HP rectangle",
+      "read current / maximum at actual size",
+      "save/restart/lifecycle and fresh performance validation"
+    ],
+    "noComputerUse": true,
+    "currentWindowPreserved": true,
+    "manualLauncher": "tmp/player-info-full/review-pi05.cmd",
+    "historicalPreviewNote": "The shared scratch preview pathname was regenerated in pi06; its prior digest remains historical, not a current file assertion."
+  },
+  "previousHumanReviewPi06": {
+    "candidate": "pi06",
+    "state": "candidate_built",
+    "deploymentStatus": "NOT_DEPLOYED",
+    "executed": false,
+    "buildIdentityHash": "159F6BAF7B4EA5CB6346C0402438D2AF6B2B04695D1FB71EB8D0325B5714902A",
+    "payloadClosureHash": "8DBC55EB37665CDF9DF448101BE1A0E2E0599DED2195B3DA3C467080AAAA792A",
+    "core": {
+      "path": "tmp/runtime-candidates/v2/pi06/runtime/CRAZYFLASHER7MercenaryEmpire.Core.dll",
+      "sha256": "EF5E7F95B5D6944E83C6C4A2EC09F9DA1AB6A797013E78E3C90C17274F5C8792",
+      "bytes": 4824576
+    },
+    "asLoader": {
+      "path": "scripts/asLoader.swf",
+      "sha256": "3D4CC6F76CB5C4A9790E5D90B3BB0D31112B59811D9FED9A445EA0305D2818B4",
+      "bytes": 1368122
+    },
+    "main": {
+      "path": "CRAZYFLASHER7MercenaryEmpire.swf",
+      "sha256": "ED5719ACCCE7934A152ECAE28C6E6A6D814CD85E4F0D06E1948672F6BAD1E0FB",
+      "bytes": 214239
+    },
+    "change": "HP/MP current, maximum and unbounded integer percentage always visible; shield capacity percentage; lavender shield and muted gold poise.",
+    "authority": "HP/MP percentage uses base maximum; shield percentage uses aggregate capacity/max, not an independent duration clock.",
+    "validation": {
+      "hostPassed": 5559,
+      "hostSkipped": 4,
+      "failed": 0,
+      "hostLog": {
+        "path": "tmp/player-info-full/c-percent-full.log",
+        "sha256": "1A20CFD7DE40343526C21B14239F8E721C40197A13CA8506C291DA2A1B841FAE",
+        "bytes": 817705
+      },
+      "focusedPassed": 59,
+      "viewports": [
+        "1024x576",
+        "1920x1080",
+        "2560x1440"
+      ],
+      "overflowCases": [
+        "140% HP",
+        "175% MP",
+        "25% shield"
+      ],
+      "previews": [
+        {
+          "path": "tmp/player-info-full/pi06/hud-resources-1920.png",
+          "sha256": "F6149B5E54F3CF7415A43011E60462333C45D54472DAAF7F805674D807CEFECF",
+          "bytes": 48336
+        },
+        {
+          "path": "tmp/player-info-full/pi06/hud-resources-overflow-1920.png",
+          "sha256": "109A8D8DDF0A4CC0091304A9756753BF1B50855F177B340E400CBBFB3DD10306",
+          "bytes": 48157
+        }
+      ]
+    },
+    "noComputerUse": true,
+    "humanOnly": [
+      "launch and inspect layout/colors",
+      "check fading shield and overfill percentage in actual play",
+      "save/restart/lifecycle and fresh performance validation"
+    ],
+    "manualLauncher": "tmp/player-info-full/review-pi06.cmd"
+  },
+  "previousHumanReviewPi07": {
+    "candidate": "pi07",
+    "state": "candidate_executed",
+    "executed": true,
+    "deploymentStatus": "NOT_DEPLOYED",
+    "buildIdentityHash": "D672270FEA61BAE935122182D97BFAFB56FF25A2F4BC09AC5974A79DE08BD769",
+    "payloadClosureHash": "D4F9FDAD99418A921DBBDBD5D33BA15670FF21F5770D23CE2DE07A290F5E3290",
+    "core": {
+      "path": "tmp/runtime-candidates/v2/pi07/runtime/CRAZYFLASHER7MercenaryEmpire.Core.dll",
+      "sha256": "1414B4608436B2132A6C182051617213FD65FA6FFBF21B4140CCEC192ECC0D0E",
+      "bytes": 4829184
+    },
+    "asLoader": {
+      "path": "scripts/asLoader.swf",
+      "sha256": "BDBAF91E532ED46BC8709A2CA86063D23598ED87BD2125F0F1D1695D4E4D68B9",
+      "bytes": 1368565
+    },
+    "main": {
+      "path": "CRAZYFLASHER7MercenaryEmpire.swf",
+      "sha256": "ED5719ACCCE7934A152ECAE28C6E6A6D814CD85E4F0D06E1948672F6BAD1E0FB",
+      "bytes": 214239
+    },
+    "change": "User-designated cyan shield/yellow poise palette; AS2-authoritative dynamic stagger marker, hatched risk band and phase caption. HP/MP/shield percentages retained.",
+    "wire": "Optional atomic vitals.poiseDetail negotiated by playerHudSync.poiseDetails=true once per adopted connection; older candidates retain the old field set.",
+    "validation": {
+      "hudPassed": 68,
+      "compiler": "0/0",
+      "focusedPassed": 66,
+      "hostPassed": 5566,
+      "hostSkipped": 4,
+      "failed": 0,
+      "hostLog": {
+        "path": "tmp/player-info-full/c-poise-full.log",
+        "sha256": "50A2F0512C04C090340F15EC98352F428B77236A436D9DC2285B74DE3642FAFE",
+        "bytes": 800026
+      },
+      "as2Log": {
+        "path": "tmp/player-info-full/c-poise-as2-evidence/player-hud-flashlog.txt",
+        "sha256": "120EC27AA84842142344B73E704E1BF4AE7FF289F2024930195C8A474977017C",
+        "bytes": 6239
+      },
+      "wireFixture": {
+        "path": "launcher/tests/Fixtures/PlayerHud/as2-poise-wire.json",
+        "sha256": "19201BC12B86021165FF263062723128A624053164D62E00F9DD8690001B4B84",
+        "bytes": 2141
+      },
+      "previews": [
+        {
+          "path": "tmp/player-info-full/pi07/hud-resources-1920.png",
+          "sha256": "785A9C168EE8D41B68F070FCCCFE9DE6B9748E879A40271C80E49854C9A6B79E",
+          "bytes": 49070
+        },
+        {
+          "path": "tmp/player-info-full/pi07/hud-resources-overflow-1920.png",
+          "sha256": "41B2A4A1F8C6FA7B3FD7C5422145E1792C032E02D791CCE2172D98FEFD4F62D8",
+          "bytes": 49187
+        }
+      ]
+    },
+    "sources": [
+      {
+        "path": "flashswf/arts/新版人物文字信息/LIBRARY/素材-新版人物文字信息/盾槽条.xml",
+        "sha256": "88FA51DA9CD2D32BDB643CA4A7F8D54F3CDF74C08A82531061C771DA2AD9586F",
+        "bytes": 991
+      },
+      {
+        "path": "flashswf/arts/新版人物文字信息/LIBRARY/素材-新版人物文字信息/韧性条.xml",
+        "sha256": "37FD6DBE7D3762025F52430A4F7C239575CA69E8DA9836102801D75E13CC5C57",
+        "bytes": 993
+      },
+      {
+        "path": "scripts/类定义/org/flashNight/arki/component/StatHandler/ImpactHandler.as",
+        "sha256": "32C8E8ED8FF6097C76BBB5E2EBB9CBAEACDE7A75C23618B7CB70719C58FEF173",
+        "bytes": 12043
+      },
+      {
+        "path": "scripts/类定义/org/flashNight/arki/unit/UnitComponent/Status/ImpactStateHandler.as",
+        "sha256": "9F2FD1285DCC2F1E3C08DE78B20D67DCDD9A3B84F5A2CC0161F4D1E29ADA89A0",
+        "bytes": 12980
+      }
+    ],
+    "humanOnly": [
+      "launch and assess source palette/threshold readability",
+      "actual stagger/rigid/air/down behavior and resource readouts",
+      "prior HP rectangle, save/restart/lifecycle and runtime performance"
+    ],
+    "noComputerUse": true,
+    "manualLauncher": "tmp/player-info-full/review-pi07.cmd",
+    "humanAcceptance": "CHANGES_REQUIRED",
+    "humanFeedback": "Initial chassis over gauges corrected after click; cooldown ready flash remains white while paused; name scroll tied to pause; missing decorations, shield style and typography mismatch; consolidate poise label.",
+    "actualRunPathEvidence": {
+      "path": "tmp/player-info-full/pi07-human-20260920/launcher.log",
+      "sha256": "AAE76F46DAA01144A2BDDF3F56E6BCDC42B930EBE1ED0F5A1DD1F9B8BD361AF3",
+      "bytes": 361479
+    },
+    "runScope": "Launcher log identifies pi07 Core.exe at 08:57:40 and normal user close at 09:29:47; screenshots supplied by maintainer, no agent GUI control.",
+    "screenshots": [
+      {
+        "path": "tmp/player-info-full/pi07-human-20260920/feedback-1.png",
+        "sha256": "17B0AA98CABEDC938C25E6EE495FA3DB63EF155DB2FD68C95CD9D250354279C5",
+        "bytes": 415596
+      },
+      {
+        "path": "tmp/player-info-full/pi07-human-20260920/feedback-2.png",
+        "sha256": "AE9D416D15D06A76DF2F7519A12CCC8D03F83A56AA9ECFFB009E6A29C2912A8B",
+        "bytes": 13170
+      },
+      {
+        "path": "tmp/player-info-full/pi07-human-20260920/feedback-3.png",
+        "sha256": "30306D7D999B7F8C3BB3589AC3F11FE11F4AD7D14BD4188E29E4E588102405EF",
+        "bytes": 38848
+      },
+      {
+        "path": "tmp/player-info-full/pi07-human-20260920/feedback-4.png",
+        "sha256": "8A812AB021C1C8AA3FDBDF93373ADAB94E80534CCCD64803478170EB16DD11FF",
+        "bytes": 7058
+      }
+    ]
+  },
+  "readyForHumanReview": {
+    "candidate": "pi17",
+    "state": "candidate_built",
+    "executed": false,
+    "deploymentStatus": "NOT_DEPLOYED",
+    "humanAcceptance": "ACCEPTED_FOR_RELEASE",
+    "buildIdentityHash": "CB53A949130410FD356C33C9B7442C46B04C3BAEDEDD760F69EB4D748893CF82",
+    "payloadClosureHash": "182AD2D70F7F8B1870E7262990BA0F8AF6FDEA65BD8223EEDE215F2D3A6D6A1D",
+    "core": {
+      "path": "tmp/runtime-candidates/v2/pi17/runtime/CRAZYFLASHER7MercenaryEmpire.Core.dll",
+      "sha256": "E54198F4A4EFE4DFFDD0FABAF03EFB9196935187120F5649B1EBE96EB630AF80",
+      "bytes": 5297664
+    },
+    "asLoader": {
+      "path": "scripts/asLoader.swf",
+      "sha256": "BDBAF91E532ED46BC8709A2CA86063D23598ED87BD2125F0F1D1695D4E4D68B9",
+      "bytes": 1368565
+    },
+    "main": {
+      "path": "CRAZYFLASHER7MercenaryEmpire.swf",
+      "sha256": "ED5719ACCCE7934A152ECAE28C6E6A6D814CD85E4F0D06E1948672F6BAD1E0FB",
+      "bytes": 214239
+    },
+    "changes": [
+      "resource details from adopted C# vitals: HP/MP/shield current/max, percent, nonnegative overflow; authoritative poise phase and approximate boundary; level-relative XP and nonnegative XP to next level",
+      "resource-only local NativeTooltipWidget on existing bottom overlay, content-sized plain layout; live updates while hovered, no new AS2 request or window; other tooltip routes unchanged",
+      "cooldown captions replace keys for all18 lanes, using source-bound33.33333ms step conversion and authoritative ready bit; no independent UI clock; per-lane bounded glyph cache",
+      "weapon/switch progress strips moved above captions so long countdown labels cannot cover them",
+      "Buff style only: top-aligned32-unit rows, NativeHudTheme dark plates/device-pixel frames, neutral placeholders and26-step remaining bars; original order/32-column wrapping retained; empty lists hidden"
+    ],
+    "validation": {
+      "hostPassed": 5605,
+      "hostSkipped": 4,
+      "failed": 0,
+      "hostLog": {
+        "path": "tmp/player-info-full/pi17-full.log",
+        "sha256": "DC84413261A0F7CE0A3A9E9C84387F7C4DD37212FE058025B9003BB62240D6AC",
+        "bytes": 807129
+      },
+      "focusedPassed": 105,
+      "focusedLog": {
+        "path": "tmp/player-info-full/pi17-focused.log",
+        "sha256": "881910C5D8C9B7E042365EB01197EEFE6596C716238BAAB55D9D09CFF33FBF08",
+        "bytes": 33197
+      },
+      "authoredAssets": 33,
+      "sharedBarCells": 10,
+      "assetManifest": {
+        "path": "tmp/player-info-full/pi17/live-art.manifest.json",
+        "sha256": "6FA15C18736DC8CD7276D2B45929564E5EC17FFDAE9488001B3B258DA13E0870",
+        "bytes": 28071
+      },
+      "assetScope": "Generator and manifest unchanged from pi16. Buffs now use shared native theme primitives without replacing source assets.",
+      "detailsEvidence": "Overflow/XP/poise edge cases checked. Details refresh within the same local request, skip cooldown-only changes, and cannot revive after host suppression, actor epoch change or disconnection.",
+      "inputEvidence": "Details hover/click produces no socket action; hit bounds remain disjoint from skills and unequip. Existing non-resource tooltip and write paths retained.",
+      "cooldownEvidence": "Formatting follows AS2 frame unit; zero-but-unready shows0.1s. Production pixels do not change on UI ticks while paused, do change with authoritative step advances, and return to key after ready. Weapon/switch bars remain visible and do not intersect captions.",
+      "buffEvidence": "Shared top-bar height verified at1920; empty snapshot hides frame; no hit target or invented metadata.",
+      "previews": [
+        {
+          "path": "tmp/player-info-full/pi17/hud-resources-1920.png",
+          "sha256": "86AB6F2FEAF50E20C22384F97D0B5E3D99BC8CA246B95F5A458A8C873E93165C",
+          "bytes": 61260
+        },
+        {
+          "path": "tmp/player-info-full/pi17/hud-resources-no-shield-1920.png",
+          "sha256": "6A27941C7B0E83570CFC9B88AC6F87B45C7DA55DD5E9886E490BFF71A1850FD6",
+          "bytes": 54661
+        },
+        {
+          "path": "tmp/player-info-full/pi17/hud-resources-overflow-1920.png",
+          "sha256": "43662A771A70F14C3DD2CB03AFD3A248010CCBFB2933DCFA00B92EE91B1ED06D",
+          "bytes": 62214
+        },
+        {
+          "path": "tmp/player-info-full/pi17/hud-resources-long-1024.png",
+          "sha256": "4C83EF35F434DEBABCE68D9B8B6DE217C4F83181886DD0988778EB67070B5B85",
+          "bytes": 24636
+        },
+        {
+          "path": "tmp/player-info-full/pi17/hud-resources-long-1920.png",
+          "sha256": "37B4AB2A669276DC47B58AAACCF614E093B4E5EF67979288A10652CDFCE7C187",
+          "bytes": 63392
+        },
+        {
+          "path": "tmp/player-info-full/pi17/hud-resources-empty-1024.png",
+          "sha256": "CA506B9A039E8972CBB4C0BEA9B0D15260478D89AA5E65DFB105EE296DB6D7BA",
+          "bytes": 22351
+        },
+        {
+          "path": "tmp/player-info-full/pi17/hud-resources-empty-1920.png",
+          "sha256": "673E3B0A0B19CF2354037E0FE48B33BB7BB727E8AA252087E775F9F912D911BF",
+          "bytes": 57076
+        },
+        {
+          "path": "tmp/player-info-full/pi17/hud-resource-strip-long-1920.png",
+          "sha256": "2F4EDA320381297788D92A5C4B32C4BC252EB985510C1A596B887D87285269BC",
+          "bytes": 180365
+        },
+        {
+          "path": "tmp/player-info-full/pi17/hud-resource-strip-no-shield-1920.png",
+          "sha256": "E4A7DB110E02F8F0B7FE4EAF5C6A18FD54D22F6FB6AF228E329BE203873C957C",
+          "bytes": 170347
+        },
+        {
+          "path": "tmp/player-info-full/pi17/hud-skill-header-1024.png",
+          "sha256": "194A9F1A2A506DF71699D0B61571A557B361BCF0505A63EEB5F4E3CAE28B433A",
+          "bytes": 4883
+        },
+        {
+          "path": "tmp/player-info-full/pi17/hud-skill-header-1920.png",
+          "sha256": "9E263AEC83C9DBA1B9DB6F030D8224B4150481B0DBCFB49F62AFCD53CD0CFC18",
+          "bytes": 10196
+        },
+        {
+          "path": "tmp/player-info-full/pi17/hud-skill-strip-1024.png",
+          "sha256": "DD00C7C9D647E440803E243F1A1C7E26B0F4504E8E4EBEB606DCB10D0EE0A09B",
+          "bytes": 30845
+        },
+        {
+          "path": "tmp/player-info-full/pi17/hud-skill-strip-1920.png",
+          "sha256": "0578735DCDCC1D5F98694D203C2F8F92EE444A1ACE6C44F21573418F8C97DC4A",
+          "bytes": 71985
+        },
+        {
+          "path": "tmp/player-info-full/pi17/hud-bright-1024.png",
+          "sha256": "9F43A0B19C47C8CFA145BD59EB6AE514F723F1C2AFE670AA0766FD4C1BB0E6EE",
+          "bytes": 104153
+        },
+        {
+          "path": "tmp/player-info-full/pi17/hud-bright-1920.png",
+          "sha256": "E8F4ADEFE390CBE670098264F79CD56121C08F5F25521CBF41C5C1F96AA963B3",
+          "bytes": 288589
+        },
+        {
+          "path": "tmp/player-info-full/pi17/hud-bright-2560.png",
+          "sha256": "4AB15AD2333106CD3C05990ADC43EC36BD34409BB9E45F60CDBF6052122F9F6F",
+          "bytes": 458121
+        },
+        {
+          "path": "tmp/player-info-full/pi17/hud-resource-details-1024.png",
+          "sha256": "F416836F2BE12C703C2B0A7DCB86761C9CA3E37B1F50CF0714BB439EC4260BDD",
+          "bytes": 15297
+        },
+        {
+          "path": "tmp/player-info-full/pi17/hud-resource-details-1920.png",
+          "sha256": "C268E2F585ADDDE722D7E5325EF465F979A13AB771587269428AD95619960146",
+          "bytes": 35543
+        },
+        {
+          "path": "tmp/player-info-full/pi17/hud-buffs-1024.png",
+          "sha256": "D74D7654D6E8B70DFE869EA6D63074CEEB920A6E4609B6C10EFB7BF33DFB2822",
+          "bytes": 856
+        },
+        {
+          "path": "tmp/player-info-full/pi17/hud-buffs-1920.png",
+          "sha256": "2676574AEE603CDFBF79B66C43801A23A7AC42731B7BF8BED148182C2FF5722B",
+          "bytes": 2056
+        },
+        {
+          "path": "tmp/player-info-full/pi17/hud-with-details-1024.png",
+          "sha256": "036FA5E7786580E4D65A216CF369B962218B01E3EEF245D766427B213EC5EF38",
+          "bytes": 120257
+        },
+        {
+          "path": "tmp/player-info-full/pi17/hud-with-details-1920.png",
+          "sha256": "517D6871A30FA2C2C44F5BFD28A8B37A13FB1CDD084D1E1D4DC59B4F3BEE10EF",
+          "bytes": 320553
+        }
+      ]
+    },
+    "noComputerUse": true,
+    "as2AndGameRulesChanged": false,
+    "deferred": [
+      "Buff names, real icons, sources, polarity, stacks and full interaction redesign"
+    ],
+    "humanOnly": [
+      "resource hover stability and readability in the real game",
+      "Buff alignment and cooldown captions during pause/use/bank switching",
+      "previous first-entry layering/save/restart/lifecycle and runtime performance"
+    ],
+    "manualLauncher": "tmp/player-info-full/review-pi17.cmd"
+  },
+  "previousHumanReviewPi08": {
+    "candidate": "pi08",
+    "state": "candidate_executed",
+    "executed": true,
+    "deploymentStatus": "NOT_DEPLOYED",
+    "buildIdentityHash": "02DC3B4C230408F3AF0ACF80DFA6D3B56A9B0237876CB08D7D526EE3D2F62DC3",
+    "payloadClosureHash": "2A0A1D36568B038F241D462BF497885C3A221CD0AA760B310C1DF3F905CD0D99",
+    "core": {
+      "path": "tmp/runtime-candidates/v2/pi08/runtime/CRAZYFLASHER7MercenaryEmpire.Core.dll",
+      "sha256": "95D3E1806587F0952CDE6881F14015A6E17B0E2AE59E6A16CE4D69BDBE156DFE",
+      "bytes": 4851712
+    },
+    "asLoader": {
+      "path": "scripts/asLoader.swf",
+      "sha256": "BDBAF91E532ED46BC8709A2CA86063D23598ED87BD2125F0F1D1695D4E4D68B9",
+      "bytes": 1368565
+    },
+    "main": {
+      "path": "CRAZYFLASHER7MercenaryEmpire.swf",
+      "sha256": "ED5719ACCCE7934A152ECAE28C6E6A6D814CD85E4F0D06E1948672F6BAD1E0FB",
+      "bytes": 214239
+    },
+    "changes": [
+      "reconcile owned surface order after presentation/activation/resume without showing or activating hidden windows",
+      "ready flash and authored name animation finish/advance during gameplay pause; existing visibility/performance gates remain",
+      "restore XP separators, slot foreground corners and under-icon plus, empty weapon mark and original LV paths",
+      "replace smooth ring with source segmented side arc driven solely by shield capacity",
+      "Aero/LCD readouts, shared serif Chinese resource labels and compact poise status in original label position"
+    ],
+    "validation": {
+      "hostPassed": 5572,
+      "hostSkipped": 4,
+      "failed": 0,
+      "hostLog": {
+        "path": "tmp/player-info-full/c-review-full.log",
+        "sha256": "C8F875F7CAF192D2553A3BFD6F150DCB857952F4D143BF9D68784DEB869D658A",
+        "bytes": 824662
+      },
+      "focusedPassed": 72,
+      "authoredAssets": 31,
+      "assetManifest": {
+        "path": "tools/player-info-hud/live-art.manifest.json",
+        "sha256": "1B16FCE205467DD858E7FE64ECD222E6F5BCEC6D17A6D66B4F3E1BDE84C293BC",
+        "bytes": 23878
+      },
+      "orderEvidence": "six modeled surface-arrival orders; actual first-entry window compositing still needs human validation",
+      "previews": [
+        {
+          "path": "tmp/player-info-full/pi08/hud-resources-overflow-1920.png",
+          "sha256": "6CA31B6B54E2438EF0ACF937295E5CC4B492299AFA3C0D5C8ABA569BD8C97873",
+          "bytes": 55259
+        },
+        {
+          "path": "tmp/player-info-full/pi08/hud-resource-strip-overflow-1920.png",
+          "sha256": "421A6BEE1532D5D7B469A32F7C59DFB1423F14999B5D51BB47C2138249AD977D",
+          "bytes": 171544
+        }
+      ]
+    },
+    "noComputerUse": true,
+    "as2AndGameRulesChanged": false,
+    "humanOnly": [
+      "first entry without click and hide/restore layering",
+      "ready flash ending while paused and name scrolling",
+      "restored ornaments, shield style/font/readability",
+      "save/restart/lifecycle/performance"
+    ],
+    "manualLauncher": "tmp/player-info-full/review-pi08.cmd",
+    "humanAcceptance": "CHANGES_REQUIRED",
+    "humanFeedback": "Restore approved shield color, improve common no-shield layout, recover missing HP animation and original reading hierarchy, swap poise percentage and label for quick scanning.",
+    "actualRunPathEvidence": {
+      "path": "tmp/player-info-full/pi08-human-20260920/launcher.log",
+      "sha256": "C44DA6C08E1324C8436181BF01AE46CE153C9160BEAB104F2D64496618C94F28",
+      "bytes": 617509
+    },
+    "runScope": "Launcher log identifies pi08 Core.exe at 10:05:20; closing sequence at 10:20:01. No agent window operation. This does not prove previous layering/pause or complete lifecycle acceptance.",
+    "screenshots": [
+      {
+        "path": "tmp/player-info-full/pi08-human-20260920/feedback-1.png",
+        "sha256": "EC89FD36FC38745D596BCDBB0CD8FCC1DCC2C86C620DA38D74192CDBD4746A17",
+        "bytes": 125776
+      }
+    ]
+  },
+  "previousHumanReviewPi09": {
+    "candidate": "pi09",
+    "state": "candidate_executed",
+    "executed": true,
+    "deploymentStatus": "NOT_DEPLOYED",
+    "buildIdentityHash": "350EFE7FE287F0C6A3B70856F3FD18062FEA08FA789439EF52870ECEDCB02202",
+    "payloadClosureHash": "84FC5A0F16FC88E552118610D575BB06A6C60C0625059A70B17E2BEE6DD8E8C1",
+    "core": {
+      "path": "tmp/runtime-candidates/v2/pi09/runtime/CRAZYFLASHER7MercenaryEmpire.Core.dll",
+      "sha256": "575F747CB7C5BBB23FD020AECABEC65181831BB9B40D7715D3C6D64A80D26A5D",
+      "bytes": 5281792
+    },
+    "asLoader": {
+      "path": "scripts/asLoader.swf",
+      "sha256": "BDBAF91E532ED46BC8709A2CA86063D23598ED87BD2125F0F1D1695D4E4D68B9",
+      "bytes": 1368565
+    },
+    "main": {
+      "path": "CRAZYFLASHER7MercenaryEmpire.swf",
+      "sha256": "ED5719ACCCE7934A152ECAE28C6E6A6D814CD85E4F0D06E1948672F6BAD1E0FB",
+      "bytes": 214239
+    },
+    "changes": [
+      "shield side arc uses approved cyan hue with authored shading",
+      "no shield collapses arc/readouts and places level under HP; depleted shield retains dark arc and zero; combat percentages stay fixed",
+      "HP dominant percentage and staggered current/maximum readouts with original separator glow; explicit percent and overflow retained",
+      "HP motifs/grid/light restored from authored 100/11/216 frame source loops; live clock independent of pause and gated by decorations/visibility",
+      "poise percent aligned below MP percent; compact state label at right"
+    ],
+    "validation": {
+      "hostPassed": 5581,
+      "hostSkipped": 4,
+      "failed": 0,
+      "hostLog": {
+        "path": "tmp/player-info-full/pi09-full.log",
+        "sha256": "75C7BA39CA70E130B2D5C70096B7F7D768BE1C01DCFE0558F26073B852EB1C87",
+        "bytes": 802644
+      },
+      "focusedPassed": 81,
+      "focusedLog": {
+        "path": "tmp/player-info-full/pi09-focused.log",
+        "sha256": "76249066D6613AB5EA009A3A7955610EBA61ADE132D0E045065F31DFAD3628C2",
+        "bytes": 27688
+      },
+      "authoredAssets": 33,
+      "assetManifest": {
+        "path": "tools/player-info-hud/live-art.manifest.json",
+        "sha256": "58DBFAAF9ECC8AEE1EA849137A800BA2FC186FA28BA739025825E1917DDC1D51",
+        "bytes": 25635
+      },
+      "motionEvidence": "each source clip changes and loops; constant HP animates while paused; decoration-off and zero HP stop clock; reset clears phase",
+      "layoutEvidence": "shield independent of MP; cyan source palette; no-shield/depleted distinct with fixed poise column; normal/no-shield/overflow physical renders",
+      "previews": [
+        {
+          "path": "tmp/player-info-full/pi09/hud-resources-1920.png",
+          "sha256": "1381709ADBA69F02AD4CD6C522921F7944E3E87B7C6A33786237855FEA9EB777",
+          "bytes": 56496
+        },
+        {
+          "path": "tmp/player-info-full/pi09/hud-resources-no-shield-1920.png",
+          "sha256": "8F831724A0C27744B86D1AE2FEDA588E764A6F4F691339F9E11310C304FA82F2",
+          "bytes": 52135
+        },
+        {
+          "path": "tmp/player-info-full/pi09/hud-resources-overflow-1920.png",
+          "sha256": "2BAD756E91B27871E3D2A892D9875D2E5D54523B784CD1E911C6062CD5EE982B",
+          "bytes": 56682
+        },
+        {
+          "path": "tmp/player-info-full/pi09/hud-resource-strip-1920.png",
+          "sha256": "F355E79BF930B15FCCBE436A566F5BEBD19CA31F4E5440E8460A54A7C38A1DA5",
+          "bytes": 172483
+        },
+        {
+          "path": "tmp/player-info-full/pi09/hud-resource-strip-no-shield-1920.png",
+          "sha256": "714FDF048C15C141C1B8280E0E2AE4D5C73C08144FBC02D491A4FB841F07E904",
+          "bytes": 167918
+        },
+        {
+          "path": "tmp/player-info-full/pi09/hud-resource-strip-overflow-1920.png",
+          "sha256": "4BC50A3C8AFF2EE7658B1051B925474442A3152AA53F6A382B7D1ACB317A7A1B",
+          "bytes": 172989
+        },
+        {
+          "path": "tmp/player-info-full/pi09/hud-bright-1024.png",
+          "sha256": "BE95CAE291B3DA3CEACB21DBD8B3A653868F877429D5E6DFDAB372D3D9D0C2E9",
+          "bytes": 100230
+        },
+        {
+          "path": "tmp/player-info-full/pi09/hud-bright-1920.png",
+          "sha256": "1E1DA0F5954467E603DF1EBDB6C6740C7E6E756127773173B64A4BA3E7B48639",
+          "bytes": 286251
+        },
+        {
+          "path": "tmp/player-info-full/pi09/hud-bright-2560.png",
+          "sha256": "8A3B92CE62C3E4151B1B2AABC4410554A66DABD0138BA2F8B05E101F68F2AD12",
+          "bytes": 460447
+        },
+        {
+          "path": "tmp/player-info-full/pi09/hud-bright-no-shield-1024.png",
+          "sha256": "B1FCF9579B0E3A7AE324B921FB5E9B1D3F48D85682171BB77B3A927B8F2D749F",
+          "bytes": 98808
+        },
+        {
+          "path": "tmp/player-info-full/pi09/hud-hp-motion-frame-000.png",
+          "sha256": "F0D533F659BA43A0EE92E34058FF7CD1D2972EB1E8288DDBFAE76929B6E1E459",
+          "bytes": 42804
+        },
+        {
+          "path": "tmp/player-info-full/pi09/hud-hp-motion-frame-063.png",
+          "sha256": "B721AE0AE13B2F1D062F796B92AD0ABF9DD5C586AEA631A33CD7074EDD45DB54",
+          "bytes": 42852
+        }
+      ]
+    },
+    "noComputerUse": true,
+    "as2AndGameRulesChanged": false,
+    "humanOnly": [
+      "HP animation and restored layout in actual play",
+      "shield/no-shield/poise quick scanning",
+      "previous first-entry layering and pause/ready flash",
+      "save/restart/lifecycle and new animation performance"
+    ],
+    "manualLauncher": "tmp/player-info-full/review-pi09.cmd",
+    "humanAcceptance": "CHANGES_REQUIRED",
+    "humanFeedback": "A small percent sign overlaps the HP percent; move shield quantity/percent around the ball and reserve the bottom for level and experience; make poise more like MP with shape-based stagger distinction.",
+    "actualRunPathEvidence": {
+      "path": "tmp/player-info-full/pi09-human-20260920/launcher.log",
+      "sha256": "7217ABA771F71D21AE369152D3014B470095B04849F39A3F0D3CDDE1978BF2A9",
+      "bytes": 964520
+    },
+    "runScope": "Launcher log identifies pi09 Core.exe at 10:51:01. Screenshot/log evidence only; no agent window operation and no inferred acceptance of prior layering/pause/lifecycle items.",
+    "screenshots": [
+      {
+        "path": "tmp/player-info-full/pi09-human-20260920/feedback-1.png",
+        "sha256": "D453865E2A5910133143AE9E2E82334A4C7A9D45C3EDFE5E7AF7CC22095C0FE7",
+        "bytes": 55621
+      },
+      {
+        "path": "tmp/player-info-full/pi09-human-20260920/feedback-2.png",
+        "sha256": "4BBC2F08C856FE842F43D3372C9375CEC995CCD9FC6D43AFE92943FD578CD470",
+        "bytes": 23460
+      }
+    ]
+  },
+  "previousHumanReviewPi11": {
+    "intermediateBuild": {
+      "candidate": "pi10",
+      "state": "candidate_built",
+      "executed": false,
+      "reason": "superseded after offscreen feedback on XP color and shield readability",
+      "metadata": {
+        "path": "tmp/runtime-candidates/v2/pi10/runtime-build-metadata.v2.json",
+        "sha256": "D28A7D06B48C780496AB0C60A1C475D04559F26E5B71D29C9BB59C286538C9F6",
+        "bytes": 1238
+      }
+    },
+    "candidate": "pi11",
+    "state": "candidate_executed",
+    "executed": true,
+    "deploymentStatus": "NOT_DEPLOYED",
+    "buildIdentityHash": "EC0A2C5F3D7BAA04768897486C277FAF1FB70D701FFD4115F0618671D0ADFC04",
+    "payloadClosureHash": "DEDB4AF1FED972DB1651594EA8B409F8B1BAAE76203A6B81EBDAF645B720BC26",
+    "core": {
+      "path": "tmp/runtime-candidates/v2/pi11/runtime/CRAZYFLASHER7MercenaryEmpire.Core.dll",
+      "sha256": "4537C559B5BB7D0858E66A3A236C3562B2B82645C3501E818FEF06AB42063D42",
+      "bytes": 5287424
+    },
+    "asLoader": {
+      "path": "scripts/asLoader.swf",
+      "sha256": "BDBAF91E532ED46BC8709A2CA86063D23598ED87BD2125F0F1D1695D4E4D68B9",
+      "bytes": 1368565
+    },
+    "main": {
+      "path": "CRAZYFLASHER7MercenaryEmpire.swf",
+      "sha256": "ED5719ACCCE7934A152ECAE28C6E6A6D814CD85E4F0D06E1948672F6BAD1E0FB",
+      "bytes": 214239
+    },
+    "changes": [
+      "extract only original separator rule edges; omit the static small percent bundled in the source symbol for live rendering",
+      "shield quantity and percent move to lower left/right wings of the HP ball using wider/heavier Aero numerals; absent/depleted/not-ready remain distinct",
+      "XP bar restores original silver-white gradient 999999/E5E5E5 and neutral readouts",
+      "fixed LV / level-relative XP percentage / earned-required XP row; invalid interval gives unknown percent and total XP",
+      "poise uses MP-like slanted cells, notched/cut risk cells, and a physical break/pointer at the AS2 threshold"
+    ],
+    "validation": {
+      "hostPassed": 5586,
+      "hostSkipped": 4,
+      "failed": 0,
+      "hostLog": {
+        "path": "tmp/player-info-full/pi11-full.log",
+        "sha256": "4BD93BE1788AD8DB04329A0E77B43EA8ECC4778F3768CC755D55DD655FD2A281",
+        "bytes": 803650
+      },
+      "focusedPassed": 86,
+      "focusedLog": {
+        "path": "tmp/player-info-full/pi11-focused.log",
+        "sha256": "6417015FA92E78DF7D500DC02ADE25DC8C4776F5BFE55A936953F9D779298A9C",
+        "bytes": 27688
+      },
+      "authoredAssets": 33,
+      "assetManifest": {
+        "path": "tools/player-info-hud/live-art.manifest.json",
+        "sha256": "7F9FFA9D1C86FB4803D9A64F8DF079F42B3BBEE4805769BDEA5294FD4F10D6B2",
+        "bytes": 26029
+      },
+      "paletteEvidence": "XP gradient checked against original Symbol 1859; shield uses approved cyan",
+      "geometryEvidence": "live separator has only the rule; risk and buffer filled-cell shapes differ after discarding hue; XP row remains fixed across shield visibility",
+      "experienceEvidence": "level interval 1000000..1400000 with total1200000 -> 200000/400000 and50%; invalid interval -> unknown percentage and raw total",
+      "previews": [
+        {
+          "path": "tmp/player-info-full/pi11/hud-resources-1920.png",
+          "sha256": "0EC75239CC3CD0914953EAC075AEEA3AC417004D3CD64E81158BD2071E299D2A",
+          "bytes": 58959
+        },
+        {
+          "path": "tmp/player-info-full/pi11/hud-resources-no-shield-1920.png",
+          "sha256": "DC0127EC935601E693836C78F4957794FCDFA6AB38DCD5E9BC3B4A9FF81582A3",
+          "bytes": 54353
+        },
+        {
+          "path": "tmp/player-info-full/pi11/hud-resources-overflow-1920.png",
+          "sha256": "5860B87BBC06365029E7B1C749396BFAE564EEF4629CCC7DA334570DFFD4FA44",
+          "bytes": 59347
+        },
+        {
+          "path": "tmp/player-info-full/pi11/hud-resources-long-1024.png",
+          "sha256": "A47553EDE56D2855E95C55CA29C96C0EA37537B499B02CE29B7459E96F2B71D3",
+          "bytes": 22657
+        },
+        {
+          "path": "tmp/player-info-full/pi11/hud-resources-long-1920.png",
+          "sha256": "3998B53B8D2597D87D6F0EDBF7E0800FC06379601D29EAC8A029FEF99C842EEC",
+          "bytes": 59840
+        },
+        {
+          "path": "tmp/player-info-full/pi11/hud-resource-strip-1920.png",
+          "sha256": "E8BCD2BCBFE211219F038C48CF86F2117F86AFFD22622439C529A1664886A8C8",
+          "bytes": 175266
+        },
+        {
+          "path": "tmp/player-info-full/pi11/hud-resource-strip-no-shield-1920.png",
+          "sha256": "F2B40488A221C054A999D8900B12B4EC62F90EF1CC5425097B4EDC02C99F4236",
+          "bytes": 170471
+        },
+        {
+          "path": "tmp/player-info-full/pi11/hud-resource-strip-overflow-1920.png",
+          "sha256": "B9974655F9D0D46AD66C4CA65E467ABCFA8D408E04E621FB49798EA09475ED66",
+          "bytes": 175936
+        },
+        {
+          "path": "tmp/player-info-full/pi11/hud-resource-strip-long-1920.png",
+          "sha256": "0CD67708968BD69DFFD1818A09789943A9F15767C5C6E973E619136CB86081AE",
+          "bytes": 175882
+        },
+        {
+          "path": "tmp/player-info-full/pi11/hud-bright-1024.png",
+          "sha256": "94761FB79D4FD049FA121FD30238A7EA8AAC1A30804A690A506889CCBB6EB021",
+          "bytes": 101367
+        },
+        {
+          "path": "tmp/player-info-full/pi11/hud-bright-1920.png",
+          "sha256": "A40FB2DD533AA12D69D42627FEFC369F0E3563199B4888105EE9D7264D205583",
+          "bytes": 288739
+        },
+        {
+          "path": "tmp/player-info-full/pi11/hud-bright-2560.png",
+          "sha256": "B0A5BFF27DC0660DC389B7AC31359CA8CF09472917A6913CA5023CA4209032A9",
+          "bytes": 463299
+        }
+      ]
+    },
+    "noComputerUse": true,
+    "as2AndGameRulesChanged": false,
+    "humanOnly": [
+      "single HP percent and shield-wing readability",
+      "XP row and poise risk split at actual game sizes",
+      "previous first-entry layering/pause animation, save/restart/lifecycle and runtime performance"
+    ],
+    "manualLauncher": "tmp/player-info-full/review-pi11.cmd",
+    "humanAcceptance": "CHANGES_REQUIRED",
+    "humanFeedback": "Poise width/grid alignment still mismatches MP; resource details icon disrupts the resource area; enlarge LV with a smaller level number; shield corner placement exposes a structural layout problem. Maintainer selected direction A after the layout comparison.",
+    "actualRunPathEvidence": {
+      "path": "tmp/player-info-full/pi11-human-20260920/launcher.log",
+      "sha256": "E150A34B3F41449B36FC460D5D6801FF3A182149C2B210CC44DAA726E59A012D",
+      "bytes": 5434719
+    },
+    "runScope": "Launcher log identifies pi11 Core.exe at 11:39:49. No agent window operation; no inference that other pending acceptance items passed.",
+    "screenshots": [
+      {
+        "path": "tmp/player-info-full/pi11-human-20260920/feedback-1.png",
+        "sha256": "0076A6467081AAF9A99486CDF4A431950B5052246174FD878E8AC3B20385E8C4",
+        "bytes": 6446
+      },
+      {
+        "path": "tmp/player-info-full/pi11-human-20260920/feedback-2.png",
+        "sha256": "ABAED7E669096E69DBBAC029F1AD66B4F678AAD975B4E10E35466E3077A9E0EE",
+        "bytes": 164887
+      },
+      {
+        "path": "tmp/player-info-full/pi11-human-20260920/feedback-3.png",
+        "sha256": "0CD841426DBC2C34711697925B492C097453B77A144F67962B8F4AE2E336D84A",
+        "bytes": 12537
+      }
+    ]
+  },
+  "previousHumanReviewPi12": {
+    "candidate": "pi12",
+    "direction": "A",
+    "state": "candidate_executed",
+    "executed": true,
+    "deploymentStatus": "NOT_DEPLOYED",
+    "buildIdentityHash": "9176A6555AB2FE983F8BF00C1938460BF1A35CC4D7B21A864DD9B57089FCC459",
+    "payloadClosureHash": "6DCB8F9ADCC348CA4A12FC73C0DEBEFF2B314071A1D552A5A149ACD136311E09",
+    "core": {
+      "path": "tmp/runtime-candidates/v2/pi12/runtime/CRAZYFLASHER7MercenaryEmpire.Core.dll",
+      "sha256": "0C575591DBF5A51D1C39903F4E747BB6CF4E7E48C3038113EF5F670F27867D6B",
+      "bytes": 5290496
+    },
+    "asLoader": {
+      "path": "scripts/asLoader.swf",
+      "sha256": "BDBAF91E532ED46BC8709A2CA86063D23598ED87BD2125F0F1D1695D4E4D68B9",
+      "bytes": 1368565
+    },
+    "main": {
+      "path": "CRAZYFLASHER7MercenaryEmpire.swf",
+      "sha256": "ED5719ACCCE7934A152ECAE28C6E6A6D814CD85E4F0D06E1948672F6BAD1E0FB",
+      "bytes": 214239
+    },
+    "changes": [
+      "group shield label/percent/capacity in the right-shoulder plaque; draw inside the existing gauge surface",
+      "derive ten poise cells from canonical MP fill paths/transforms; same left/right edges, pitch and tilt, with lower risk notches and dynamic division",
+      "move live MP up6 logical pixels with raised backing; keep HP and shield side arc unchanged",
+      "move read-only resource details to the skill header with disjoint hit bounds",
+      "enlarge source LV mark on a stable base, slightly reduce the level reading, and extend silver-white XP to the right"
+    ],
+    "validation": {
+      "hostPassed": 5588,
+      "hostSkipped": 4,
+      "failed": 0,
+      "hostLog": {
+        "path": "tmp/player-info-full/pi12-full.log",
+        "sha256": "A64954F4243C0FB85EDA7623025489F60AD4CED22E00E6959627A8A30C00CF93",
+        "bytes": 803956
+      },
+      "focusedPassed": 88,
+      "focusedLog": {
+        "path": "tmp/player-info-full/pi12-focused.log",
+        "sha256": "208F8D8F819CB302F30F9D9C6A7E6091C52755F899C0D98853308CE93036B970",
+        "bytes": 32674
+      },
+      "authoredAssets": 33,
+      "sharedBarCells": 10,
+      "assetManifest": {
+        "path": "tools/player-info-hud/live-art.manifest.json",
+        "sha256": "6CF7AB1540185FB8CCF83DC3F4CC2899593D4D41CC0E8F1804A97A6A48CEEEE0",
+        "bytes": 26589
+      },
+      "geometryEvidence": "production MP and poise each paint ten matching cell runs at actual physical size; risk lower-edge shape changes do not change the buffer grid",
+      "inputEvidence": "resource header rect does not intersect skill/unequip rects; hover/click sends only playerHudTooltip resources; old details location is no longer a hit target",
+      "surfaceEvidence": "same existing window and bottom union bounds; shield absent/depleted/unready distinct; other bottom resource positions/pixels stable",
+      "previews": [
+        {
+          "path": "tmp/player-info-full/pi12/hud-resources-1920.png",
+          "sha256": "06675E0635250FD03A28617FDC1C71D961F089BCA6F71BDCD7DD9F3B1121AA2C",
+          "bytes": 57766
+        },
+        {
+          "path": "tmp/player-info-full/pi12/hud-resources-no-shield-1920.png",
+          "sha256": "7D67EF49CC1C242DC69472C821ACA1E72BE45A564B88B3DB86A1DD8E97017125",
+          "bytes": 52649
+        },
+        {
+          "path": "tmp/player-info-full/pi12/hud-resources-overflow-1920.png",
+          "sha256": "8A208D0F3A7B74599D6244A3D15005E5156AD5844D342AE5E35FAD4008F2A630",
+          "bytes": 58171
+        },
+        {
+          "path": "tmp/player-info-full/pi12/hud-resources-long-1024.png",
+          "sha256": "8A177E40822C6813393141043A19589CE30525C8754495FC6EB0046813653653",
+          "bytes": 23126
+        },
+        {
+          "path": "tmp/player-info-full/pi12/hud-resources-long-1920.png",
+          "sha256": "042AB667526E55CC8B0BB3FBB77EEA9114737E420F9BF62451E26577577D34F2",
+          "bytes": 58966
+        },
+        {
+          "path": "tmp/player-info-full/pi12/hud-resource-strip-long-1920.png",
+          "sha256": "E3F988038241EB738B91D5E5F5EB04943886EFB8A2A7BFD0BCA0BBAE7DAC2ED5",
+          "bytes": 176492
+        },
+        {
+          "path": "tmp/player-info-full/pi12/hud-resource-strip-no-shield-1920.png",
+          "sha256": "58CE372130529DDF6502422C82566B4991511D9375CDAC4E6403856ECB570138",
+          "bytes": 169057
+        },
+        {
+          "path": "tmp/player-info-full/pi12/hud-bright-1024.png",
+          "sha256": "BDF5B1AA81961BEFE3223322E28D71660FB670AFDF66BF21005C5FCAB2CF810E",
+          "bytes": 101699
+        },
+        {
+          "path": "tmp/player-info-full/pi12/hud-bright-1920.png",
+          "sha256": "9A3CC6BE8424820E5EFA136CC0B62F66310F8B3833E96D6F48734D0009669A18",
+          "bytes": 289050
+        },
+        {
+          "path": "tmp/player-info-full/pi12/hud-bright-2560.png",
+          "sha256": "18F1B25EF0EA752D4314F012BE33CC216E6DA097A65BAAECF34BBE23F18FF16A",
+          "bytes": 463059
+        }
+      ]
+    },
+    "noComputerUse": true,
+    "as2AndGameRulesChanged": false,
+    "humanOnly": [
+      "direction A artwork and readout hierarchy at real play size",
+      "resource tooltip placement and shield states",
+      "previous first-entry layering/pause animation, save/restart/lifecycle and runtime performance"
+    ],
+    "manualLauncher": "tmp/player-info-full/review-pi12.cmd",
+    "humanAcceptance": "CHANGES_REQUIRED",
+    "acceptedScope": "Maintainer likes the overall direction A layout; this is not full C/E acceptance.",
+    "humanFeedback": "Enlarge level numerals and XP; add shield maximum; inset details into white skill band; tighten poise against MP; restore light arc. Later layout refinements require single-line XP and removal of awkward standing XP/poise labels.",
+    "actualRunPathEvidence": {
+      "path": "tmp/player-info-full/pi12-human-20260920/launcher.log",
+      "sha256": "60F52A280426B5284104667968B1F20B8D851DA6ACB3244445DBE2763B01AF85",
+      "bytes": 1289210
+    },
+    "runScope": "Launcher log identifies pi12 Core.exe at 14:42:31.469; immutable candidate Core hash checked. No agent game/window operation. Later pi13 offscreen refinements do not prove candidate execution.",
+    "screenshots": [
+      {
+        "path": "tmp/player-info-full/pi12-human-20260920/feedback-1.png",
+        "sha256": "5AD9FC91848AAAFA0F2AE4386957FAB968BAAFE7FE0E27048D8BBF533A7E56DE",
+        "bytes": 16100
+      },
+      {
+        "path": "tmp/player-info-full/pi12-human-20260920/feedback-2.png",
+        "sha256": "DB61628454A27FC229B22852DD2AC311A9EAA3BC96BC9928228B572E77B0BA37",
+        "bytes": 5540
+      }
+    ]
+  },
+  "previousHumanReviewPi13": {
+    "candidate": "pi13",
+    "direction": "A",
+    "state": "candidate_executed",
+    "executed": true,
+    "deploymentStatus": "NOT_DEPLOYED",
+    "humanAcceptance": "CHANGES_REQUIRED",
+    "buildIdentityHash": "C831F36A731E55988032369481C392958AEA00B593B29FA71C251A2D5E475D09",
+    "payloadClosureHash": "E70B8584CCF5CC2D4DAF02710B84952984C25DC72CF5DE52BA233421AEC5B520",
+    "core": {
+      "path": "tmp/runtime-candidates/v2/pi13/runtime/CRAZYFLASHER7MercenaryEmpire.Core.dll",
+      "sha256": "33FC9DC6F5AB4F67B395103584381D1C77C7A33D71C41860C937D9D20E1F521A",
+      "bytes": 5290496
+    },
+    "asLoader": {
+      "path": "scripts/asLoader.swf",
+      "sha256": "BDBAF91E532ED46BC8709A2CA86063D23598ED87BD2125F0F1D1695D4E4D68B9",
+      "bytes": 1368565
+    },
+    "main": {
+      "path": "CRAZYFLASHER7MercenaryEmpire.swf",
+      "sha256": "ED5719ACCCE7934A152ECAE28C6E6A6D814CD85E4F0D06E1948672F6BAD1E0FB",
+      "bytes": 214239
+    },
+    "changes": [
+      "enlarge level numeral to18 logical pixels; retain enlarged source LV mark",
+      "XP percent and full earned/required numbers share one baseline at14.5 logical pixels; silver-white bar extends to x298 and is3 pixels high",
+      "remove standing XP/poise labels; existing resource tooltip keeps full names; active poise states appear horizontally after the bar",
+      "poise top538 keeps the shared MP grid with an approximately3 pixel gap",
+      "shield plaque displays current/maximum capacity alongside percentage; absent/depleted/unready handling unchanged",
+      "resource details is a dark angled inset fully inside the original white skill band, retaining a larger disjoint read-only hit area",
+      "fix shared XFL stroke fill-container parsing; regenerate only the33 live HUD assets, restoring source CCCCCC foreground over333333 arc shadow"
+    ],
+    "validation": {
+      "hostPassed": 5588,
+      "hostSkipped": 4,
+      "failed": 0,
+      "hostLog": {
+        "path": "tmp/player-info-full/pi13-full.log",
+        "sha256": "EFFBD4A0F80B7D0484DC4558296062D2BD7762702FF9B2F30E45A3C649FC991B",
+        "bytes": 803919
+      },
+      "focusedPassed": 88,
+      "focusedLog": {
+        "path": "tmp/player-info-full/pi13-focused.log",
+        "sha256": "0708C45F3B26A75734CD0E1E3FCDAB53ADFCF848F5711A338EFA29DC037AAF8B",
+        "bytes": 32674
+      },
+      "assetChecks": {
+        "path": "tmp/player-info-full/pi13-assets.log",
+        "sha256": "87511F8723F9C96F769B6203EB1FD8D8976E5D99ACBF2711123749548831AB15",
+        "bytes": 55
+      },
+      "authoredAssets": 33,
+      "sharedBarCells": 10,
+      "assetManifest": {
+        "path": "tmp/player-info-full/pi13/live-art.manifest.json",
+        "sha256": "8E2A709B47051912160AB6E7B684E9268F4D2297EA6C803FEBAF0FCAFAF9C16F",
+        "bytes": 26589
+      },
+      "geometryEvidence": "Matching MP/poise cell runs; readable same-line eight-digit/eight-digit XP sample at1024; normal labels absent and overflow sample retains stagger hint without overlap.",
+      "inputEvidence": "Details face fits authored white band; hit bounds contain face and do not intersect skill/unequip targets; hover/click only requests resource tooltip.",
+      "shieldEvidence": "Empty shields with equal0percent and different maximum produce different readout pixels; visibility does not move other readings.",
+      "previews": [
+        {
+          "path": "tmp/player-info-full/pi13/hud-resources-1920.png",
+          "sha256": "64B1F537107E791E215DE18F0255A9EA466584A52D6DCB0D23856CC8C08A1BCA",
+          "bytes": 61156
+        },
+        {
+          "path": "tmp/player-info-full/pi13/hud-resources-no-shield-1920.png",
+          "sha256": "A3E3D4A00873CD58FF4719A0831E7A43550BBAEBF7D05001EDA33567F1A24CF0",
+          "bytes": 54503
+        },
+        {
+          "path": "tmp/player-info-full/pi13/hud-resources-overflow-1920.png",
+          "sha256": "EF649DBCEB0583173EAB6920970E6AC850413F2EA14E3ECD98DA95341A8A2791",
+          "bytes": 62084
+        },
+        {
+          "path": "tmp/player-info-full/pi13/hud-resources-long-1024.png",
+          "sha256": "FFF1142F93D1F16C0BE18EC293F5FB7AECB64E2CADB6FABD8A0055107A56C1EB",
+          "bytes": 24546
+        },
+        {
+          "path": "tmp/player-info-full/pi13/hud-resources-long-1920.png",
+          "sha256": "9C9921B716A37E105D5E5CEBE97D477DB7ECE1F1C5A249DA8C17160EC18A38CD",
+          "bytes": 63551
+        },
+        {
+          "path": "tmp/player-info-full/pi13/hud-resource-strip-long-1920.png",
+          "sha256": "57A6649D12ED7AF14BEAE51657BC60F20525A023F47210019513612BC704EED8",
+          "bytes": 182052
+        },
+        {
+          "path": "tmp/player-info-full/pi13/hud-resource-strip-no-shield-1920.png",
+          "sha256": "575F249B202469A9E3C3A8B802FFAC2A51FCF8BF28D1AAB195889DD86827A25B",
+          "bytes": 171987
+        },
+        {
+          "path": "tmp/player-info-full/pi13/hud-skill-header-1024.png",
+          "sha256": "D80A6716064A60CE2F4EF0F573543265812E750D138B955080B5D489831562A9",
+          "bytes": 4884
+        },
+        {
+          "path": "tmp/player-info-full/pi13/hud-skill-header-1920.png",
+          "sha256": "21B439373433F2BB498C400D569F398867C26CB2A870D0E36CB18BC888C77513",
+          "bytes": 10163
+        },
+        {
+          "path": "tmp/player-info-full/pi13/hud-bright-1024.png",
+          "sha256": "DAA056A28F87F9CEE70F3E847FC72117B0EFE5C90E599B88CE0A221C1211C956",
+          "bytes": 104680
+        },
+        {
+          "path": "tmp/player-info-full/pi13/hud-bright-1920.png",
+          "sha256": "48ACCCE1CC5F0BAC3A8811C81F77AF37E07374BF30F2DF4BD89C3BBE9FB399FF",
+          "bytes": 293126
+        },
+        {
+          "path": "tmp/player-info-full/pi13/hud-bright-2560.png",
+          "sha256": "B9C18D239E0704179881FDAA9B593F20124258C2ED928D0BDEEB79F7DD3A3F16",
+          "bytes": 464084
+        }
+      ]
+    },
+    "noComputerUse": true,
+    "as2AndGameRulesChanged": false,
+    "humanOnly": [
+      "final visual balance and small-resolution readability in the actual game",
+      "resource tooltip, shield state and poise phase readability",
+      "previous first-entry layering/pause animation, save/restart/lifecycle and runtime performance"
+    ],
+    "manualLauncher": "tmp/player-info-full/review-pi13.cmd",
+    "humanFeedback": "Move poise down to the LV/XP top and align slanted rows; improve the Spacebar caption, resource details entry and thin frame/ornament lines. Maintainer explicitly selected diagonal continuity with the lower row and percentage shifted left.",
+    "actualRunPathEvidence": {
+      "path": "tmp/player-info-full/pi13-human-20260920/launcher.log",
+      "sha256": "AA2D53513836D7729C751CEC2FD110196684183EBB26E596589645388E922C5A",
+      "bytes": 2578962
+    },
+    "runScope": "Log identifies pi13 Core.exe at15:50:56.700; candidate Core hash checked. First3 feedback crops show current HUD; feedback4 is the original Flash reference. No inference that pending C/E acceptance passed.",
+    "screenshots": [
+      {
+        "path": "tmp/player-info-full/pi13-human-20260920/feedback-1.png",
+        "sha256": "6D0E6E6826A6FC4F6471CBC2D88E00DA0A159E04935F3A28C731CD16ED1224C8",
+        "bytes": 136076
+      },
+      {
+        "path": "tmp/player-info-full/pi13-human-20260920/feedback-2.png",
+        "sha256": "94F85CE285FC6A9BB2DA706EEEF3CBEB3EEE584F637BAB64C87D4E0D8017C4DC",
+        "bytes": 20997
+      },
+      {
+        "path": "tmp/player-info-full/pi13-human-20260920/feedback-3.png",
+        "sha256": "4B342445780A20C4B17BD32F644FE5D4C5DCA939A0C5F50C159DDCCC8286DB8F",
+        "bytes": 163121
+      }
+    ],
+    "originalReference": {
+      "path": "tmp/player-info-full/pi13-human-20260920/feedback-4.png",
+      "sha256": "B653A4F00436899D928CA60CDD826F18EF65E5BA2462B951A7FA41C4E29C6ABE",
+      "bytes": 824014
+    }
+  },
+  "previousIntermediatePi14": {
+    "candidate": "pi14",
+    "direction": "A with diagonal continuity",
+    "state": "candidate_built",
+    "executed": false,
+    "deploymentStatus": "NOT_DEPLOYED",
+    "humanAcceptance": "SUPERSEDED_BEFORE_RUN",
+    "buildIdentityHash": "BDAA49B9A9984A47C0FBEAF98E9F5A5D283DABA75152A5877877ED57CE01593D",
+    "payloadClosureHash": "DB149EB78A8D28275B04880A4DAA21BD3240177DD6134D52EC1802EB83AFD7DC",
+    "core": {
+      "path": "tmp/runtime-candidates/v2/pi14/runtime/CRAZYFLASHER7MercenaryEmpire.Core.dll",
+      "sha256": "B05499FE5BB973741E4C8642D329D8A3A1A259CB09A1FDD3E12B818264E5E33B",
+      "bytes": 5292032
+    },
+    "asLoader": {
+      "path": "scripts/asLoader.swf",
+      "sha256": "BDBAF91E532ED46BC8709A2CA86063D23598ED87BD2125F0F1D1695D4E4D68B9",
+      "bytes": 1368565
+    },
+    "main": {
+      "path": "CRAZYFLASHER7MercenaryEmpire.swf",
+      "sha256": "ED5719ACCCE7934A152ECAE28C6E6A6D814CD85E4F0D06E1948672F6BAD1E0FB",
+      "bytes": 214239
+    },
+    "changes": [
+      "poise ends at level/XP base top y553; lower row offset comes from source slanted edge dx/dy, approximately-6.79; percentage moves with it",
+      "Spacebar/Space labels display as 空格 without modifying raw bindings; actual glyph bounds, caption clipping and dark backing keep all keys inside slots",
+      "resource details moves to right end of skill header, cutting through full white-band height with bold slanted player-info glyphs",
+      "live-only decorative0.1-unit strokes compensated to0.6 in six named frame recipes, recorded per recipe; source paths/colors and frozen B0 unchanged"
+    ],
+    "validation": {
+      "hostPassed": 5591,
+      "hostSkipped": 4,
+      "failed": 0,
+      "hostLog": {
+        "path": "tmp/player-info-full/pi14-full.log",
+        "sha256": "05EB78005F7B97F1E8710C7CD19AE45F580BE91DF4AED4280B2D73C71949D06C",
+        "bytes": 804701
+      },
+      "focusedPassed": 91,
+      "focusedLog": {
+        "path": "tmp/player-info-full/pi14-focused.log",
+        "sha256": "560E6D861900C49FEE94A961DCF1349CF9288205FF044E481515FE940173E2DA",
+        "bytes": 32674
+      },
+      "assetChecks": {
+        "path": "tmp/player-info-full/pi14-assets.log",
+        "sha256": "6A352F13799963D269A696DA8BFC891D1D1D65F9C25767CC20F161FA0AF95DD0",
+        "bytes": 466
+      },
+      "authoredAssets": 33,
+      "sharedBarCells": 10,
+      "assetManifest": {
+        "path": "tmp/player-info-full/pi14/live-art.manifest.json",
+        "sha256": "6FA15C18736DC8CD7276D2B45929564E5EC17FFDAE9488001B3B258DA13E0870",
+        "bytes": 28071
+      },
+      "geometryEvidence": "Production pixels preserve ten MP/poise cells; corresponding edges agree after slope-projected row displacement; poise bottom equals LV/XP top.",
+      "captionEvidence": "Spacebar and 空格 produce identical captions; raw bindings stay unchanged; Spacebar and Ctrl+Shift+F12 change no pixels outside the caption region.",
+      "inputEvidence": "Details face fits original white band and expanded hit area remains disjoint from skills and unequip; only resources tooltip sent.",
+      "previews": [
+        {
+          "path": "tmp/player-info-full/pi14/hud-resources-1920.png",
+          "sha256": "86AB6F2FEAF50E20C22384F97D0B5E3D99BC8CA246B95F5A458A8C873E93165C",
+          "bytes": 61260
+        },
+        {
+          "path": "tmp/player-info-full/pi14/hud-resources-no-shield-1920.png",
+          "sha256": "6A27941C7B0E83570CFC9B88AC6F87B45C7DA55DD5E9886E490BFF71A1850FD6",
+          "bytes": 54661
+        },
+        {
+          "path": "tmp/player-info-full/pi14/hud-resources-overflow-1920.png",
+          "sha256": "43662A771A70F14C3DD2CB03AFD3A248010CCBFB2933DCFA00B92EE91B1ED06D",
+          "bytes": 62214
+        },
+        {
+          "path": "tmp/player-info-full/pi14/hud-resources-long-1024.png",
+          "sha256": "4C83EF35F434DEBABCE68D9B8B6DE217C4F83181886DD0988778EB67070B5B85",
+          "bytes": 24636
+        },
+        {
+          "path": "tmp/player-info-full/pi14/hud-resources-long-1920.png",
+          "sha256": "37B4AB2A669276DC47B58AAACCF614E093B4E5EF67979288A10652CDFCE7C187",
+          "bytes": 63392
+        },
+        {
+          "path": "tmp/player-info-full/pi14/hud-resources-empty-1024.png",
+          "sha256": "CA506B9A039E8972CBB4C0BEA9B0D15260478D89AA5E65DFB105EE296DB6D7BA",
+          "bytes": 22351
+        },
+        {
+          "path": "tmp/player-info-full/pi14/hud-resources-empty-1920.png",
+          "sha256": "673E3B0A0B19CF2354037E0FE48B33BB7BB727E8AA252087E775F9F912D911BF",
+          "bytes": 57076
+        },
+        {
+          "path": "tmp/player-info-full/pi14/hud-resource-strip-long-1920.png",
+          "sha256": "1D559A4869C02D45ED35A1CA4BDE6AF0C51D2993E984A0DE0B38B4642AEC9420",
+          "bytes": 180811
+        },
+        {
+          "path": "tmp/player-info-full/pi14/hud-resource-strip-no-shield-1920.png",
+          "sha256": "CA9853411D1BF428A8518C7AE04BC2B44B16769D7729326E2FB86F826CEEA42B",
+          "bytes": 170858
+        },
+        {
+          "path": "tmp/player-info-full/pi14/hud-skill-header-1024.png",
+          "sha256": "F413A1B5C64D01AC1EDBD13EB9E664A69E2599AA40BF9A185144F06D79397B11",
+          "bytes": 5406
+        },
+        {
+          "path": "tmp/player-info-full/pi14/hud-skill-header-1920.png",
+          "sha256": "22EDCB331EC30D52178FBE61DCEEA4121710A5463301CACA962EFED15E178BAA",
+          "bytes": 11226
+        },
+        {
+          "path": "tmp/player-info-full/pi14/hud-skill-strip-1024.png",
+          "sha256": "4995C644137F06EEF66F5A330671D31E6FAFA6BE6EB5E0707958055058AE9C1B",
+          "bytes": 31309
+        },
+        {
+          "path": "tmp/player-info-full/pi14/hud-skill-strip-1920.png",
+          "sha256": "E17DCA916B77394537D3A71669D538B44130E3021AC075DCDB073ACCF59F52FE",
+          "bytes": 73165
+        },
+        {
+          "path": "tmp/player-info-full/pi14/hud-bright-1024.png",
+          "sha256": "4DEC6107ACD79DA12ABFA5B069BCEE82D5478049127AB114288C0F4C595EE685",
+          "bytes": 105421
+        },
+        {
+          "path": "tmp/player-info-full/pi14/hud-bright-1920.png",
+          "sha256": "48B2E91B54BE620E651A7C039E65F38B856BD2D0DD737A55C375BBCEF25B996E",
+          "bytes": 292079
+        },
+        {
+          "path": "tmp/player-info-full/pi14/hud-bright-2560.png",
+          "sha256": "2AA5D250CE9755A368A6ADEB30D042ECAC88E56B888F09EB8EB184F2DC0907EC",
+          "bytes": 462263
+        }
+      ]
+    },
+    "noComputerUse": true,
+    "as2AndGameRulesChanged": false,
+    "humanOnly": [
+      "diagonal continuity, details styling, caption readability and compensated strokes in actual gameplay",
+      "previous first-entry layering/pause animation, save/restart/lifecycle and runtime performance"
+    ],
+    "manualLauncher": "tmp/player-info-full/review-pi14.cmd",
+    "offscreenFeedback": "Maintainer requested alignment of the details entry with adjacent authored stripes; this feedback is on the offscreen preview, not a candidate game execution.",
+    "offscreenFeedbackImage": {
+      "path": "tmp/player-info-full/pi14/details-alignment-feedback.png",
+      "sha256": "23F855E05FDFAA2D1F1500E8AB5407B8FA310C968158FD3717C558A6F01A3963",
+      "bytes": 13559
+    }
+  },
+  "previousIntermediatePi15": {
+    "candidate": "pi15",
+    "direction": "A with diagonal continuity",
+    "state": "candidate_built",
+    "executed": false,
+    "deploymentStatus": "NOT_DEPLOYED",
+    "humanAcceptance": "SUPERSEDED_AFTER_OFFSCREEN_REVIEW",
+    "buildIdentityHash": "BD06111FE7DB9A495A9BA412F54C880F624170A93F5A0D8DA0E23F885869E2EB",
+    "payloadClosureHash": "3CCFAB58E0865BB3DECF2B348D9BFCFFE032F124D800E3C699EFB6B4C98677B7",
+    "core": {
+      "path": "tmp/runtime-candidates/v2/pi15/runtime/CRAZYFLASHER7MercenaryEmpire.Core.dll",
+      "sha256": "18521890ABD985328FD01ACBC0E28ED9BA0CD0CF0CBA2ADDC4A40B0F6E235023",
+      "bytes": 5292032
+    },
+    "asLoader": {
+      "path": "scripts/asLoader.swf",
+      "sha256": "BDBAF91E532ED46BC8709A2CA86063D23598ED87BD2125F0F1D1695D4E4D68B9",
+      "bytes": 1368565
+    },
+    "main": {
+      "path": "CRAZYFLASHER7MercenaryEmpire.swf",
+      "sha256": "ED5719ACCCE7934A152ECAE28C6E6A6D814CD85E4F0D06E1948672F6BAD1E0FB",
+      "bytes": 214239
+    },
+    "changes": [
+      "poise ends at level/XP base top y553; lower row offset comes from source slanted edge dx/dy, approximately-6.79; percentage moves with it",
+      "Spacebar/Space labels display as 空格 without modifying raw bindings; actual glyph bounds, caption clipping and dark backing keep all keys inside slots",
+      "resource details aligns with authored right-side stripes: same top/bottom518.05/525.75, down-right lean9.2 across7.7, and constant1.9 gap; bold slanted player-info caption remains inside",
+      "live-only decorative0.1-unit strokes compensated to0.6 in six named frame recipes, recorded per recipe; source paths/colors and frozen B0 unchanged"
+    ],
+    "validation": {
+      "hostPassed": 5591,
+      "hostSkipped": 4,
+      "failed": 0,
+      "hostLog": {
+        "path": "tmp/player-info-full/pi15-full.log",
+        "sha256": "CB99FDCCB9A91E05B58E830AD286AA9B21FCA5922379F74E63CB6703C6177E9D",
+        "bytes": 804691
+      },
+      "focusedPassed": 91,
+      "focusedLog": {
+        "path": "tmp/player-info-full/pi15-focused.log",
+        "sha256": "23FAC535AC8D16C38FE6FF813C5DEEA0B057FC28330D8065964668E1C4D43A86",
+        "bytes": 32674
+      },
+      "assetChecks": {
+        "path": "tmp/player-info-full/pi14-assets.log",
+        "sha256": "6A352F13799963D269A696DA8BFC891D1D1D65F9C25767CC20F161FA0AF95DD0",
+        "bytes": 466
+      },
+      "authoredAssets": 33,
+      "sharedBarCells": 10,
+      "assetManifest": {
+        "path": "tmp/player-info-full/pi15/live-art.manifest.json",
+        "sha256": "6FA15C18736DC8CD7276D2B45929564E5EC17FFDAE9488001B3B258DA13E0870",
+        "bytes": 28071
+      },
+      "geometryEvidence": "Production pixels preserve ten MP/poise cells; corresponding edges agree after slope-projected row displacement; poise bottom equals LV/XP top.",
+      "captionEvidence": "Spacebar and 空格 produce identical captions; raw bindings stay unchanged; Spacebar and Ctrl+Shift+F12 change no pixels outside the caption region.",
+      "inputEvidence": "Details top/bottom/lean/parallel gap checked against the actual generated source stripe; caption face remains inside expanded hit area, which is disjoint from skills/unequip and only sends resources tooltip.",
+      "previews": [
+        {
+          "path": "tmp/player-info-full/pi15/hud-resources-1920.png",
+          "sha256": "86AB6F2FEAF50E20C22384F97D0B5E3D99BC8CA246B95F5A458A8C873E93165C",
+          "bytes": 61260
+        },
+        {
+          "path": "tmp/player-info-full/pi15/hud-resources-no-shield-1920.png",
+          "sha256": "6A27941C7B0E83570CFC9B88AC6F87B45C7DA55DD5E9886E490BFF71A1850FD6",
+          "bytes": 54661
+        },
+        {
+          "path": "tmp/player-info-full/pi15/hud-resources-overflow-1920.png",
+          "sha256": "43662A771A70F14C3DD2CB03AFD3A248010CCBFB2933DCFA00B92EE91B1ED06D",
+          "bytes": 62214
+        },
+        {
+          "path": "tmp/player-info-full/pi15/hud-resources-long-1024.png",
+          "sha256": "4C83EF35F434DEBABCE68D9B8B6DE217C4F83181886DD0988778EB67070B5B85",
+          "bytes": 24636
+        },
+        {
+          "path": "tmp/player-info-full/pi15/hud-resources-long-1920.png",
+          "sha256": "37B4AB2A669276DC47B58AAACCF614E093B4E5EF67979288A10652CDFCE7C187",
+          "bytes": 63392
+        },
+        {
+          "path": "tmp/player-info-full/pi15/hud-resources-empty-1024.png",
+          "sha256": "CA506B9A039E8972CBB4C0BEA9B0D15260478D89AA5E65DFB105EE296DB6D7BA",
+          "bytes": 22351
+        },
+        {
+          "path": "tmp/player-info-full/pi15/hud-resources-empty-1920.png",
+          "sha256": "673E3B0A0B19CF2354037E0FE48B33BB7BB727E8AA252087E775F9F912D911BF",
+          "bytes": 57076
+        },
+        {
+          "path": "tmp/player-info-full/pi15/hud-resource-strip-long-1920.png",
+          "sha256": "7456D466BD7F6766D457BC3544C58F3421A2F38DAEA7708521EA727492B7D4AF",
+          "bytes": 180600
+        },
+        {
+          "path": "tmp/player-info-full/pi15/hud-resource-strip-no-shield-1920.png",
+          "sha256": "4D2C4EDAC58C44DF875BDDA999F36AEA6732039BB76D5F7BD9594C6990227480",
+          "bytes": 170627
+        },
+        {
+          "path": "tmp/player-info-full/pi15/hud-skill-header-1024.png",
+          "sha256": "C0FBA6185D00D892CE148E1E5E9CDA405FB6A2000735A50C59CF7B78765D0CB8",
+          "bytes": 5265
+        },
+        {
+          "path": "tmp/player-info-full/pi15/hud-skill-header-1920.png",
+          "sha256": "7643C5E868EF5971FD5E9250D92F64DE65A58AD4E5ED6BC117AAB4E4FD6028BB",
+          "bytes": 11027
+        },
+        {
+          "path": "tmp/player-info-full/pi15/hud-skill-strip-1024.png",
+          "sha256": "11D1027F29BFAFEF61E8881E70396924A8B995AD6DE047A5A296426957D83CBB",
+          "bytes": 31155
+        },
+        {
+          "path": "tmp/player-info-full/pi15/hud-skill-strip-1920.png",
+          "sha256": "0A6406CE8A34A4F2B732A010E851C477BC2A6D65DCD38121B91B26FC1772F70D",
+          "bytes": 72930
+        },
+        {
+          "path": "tmp/player-info-full/pi15/hud-bright-1024.png",
+          "sha256": "DDDFC63B2B674C345BF1C8E21D77A6E36CBD5D4259058ED8DFC76E0AB86FCA94",
+          "bytes": 105260
+        },
+        {
+          "path": "tmp/player-info-full/pi15/hud-bright-1920.png",
+          "sha256": "AA07A4F49B74B2B78B9C4FFA975B95AE99656B60A9ACBA2CF514378D0F12923F",
+          "bytes": 291860
+        },
+        {
+          "path": "tmp/player-info-full/pi15/hud-bright-2560.png",
+          "sha256": "21F18A1CA19EBF09ED4F98608E76A589262E5A6BE296303F9EB680D275A31D37",
+          "bytes": 461969
+        }
+      ],
+      "assetScope": "pi14 asset verification remains applicable: generator and generated asset manifest unchanged in pi15."
+    },
+    "noComputerUse": true,
+    "as2AndGameRulesChanged": false,
+    "humanOnly": [
+      "diagonal continuity, details styling, caption readability and compensated strokes in actual gameplay",
+      "previous first-entry layering/pause animation, save/restart/lifecycle and runtime performance"
+    ],
+    "manualLauncher": "tmp/player-info-full/review-pi15.cmd",
+    "offscreenFeedback": "The aligned Chinese label still felt visually inconsistent. Maintainer approved replacing the permanent label with a circled information icon inside the first original stripe; full Chinese explanation remains in the resource tooltip. No candidate execution is inferred."
+  },
+  "previousHumanReviewPi16": {
+    "candidate": "pi16",
+    "direction": "A with diagonal continuity",
+    "state": "candidate_executed",
+    "executed": true,
+    "deploymentStatus": "NOT_DEPLOYED",
+    "humanAcceptance": "CHANGES_REQUIRED",
+    "buildIdentityHash": "681BA61E287BA6CE786310F0F7771D16CB4FF3D910360FF7E6838464DEEB300F",
+    "payloadClosureHash": "D900EC4E2FC68745B782EFDE3B6EE2197F0BC1F268C958E9D75FD0A196389DB2",
+    "core": {
+      "path": "tmp/runtime-candidates/v2/pi16/runtime/CRAZYFLASHER7MercenaryEmpire.Core.dll",
+      "sha256": "94A8A2436CA8E145A5691ADE331095ED252D23A3583E81DB3AED237666862612",
+      "bytes": 5291520
+    },
+    "asLoader": {
+      "path": "scripts/asLoader.swf",
+      "sha256": "BDBAF91E532ED46BC8709A2CA86063D23598ED87BD2125F0F1D1695D4E4D68B9",
+      "bytes": 1368565
+    },
+    "main": {
+      "path": "CRAZYFLASHER7MercenaryEmpire.swf",
+      "sha256": "ED5719ACCCE7934A152ECAE28C6E6A6D814CD85E4F0D06E1948672F6BAD1E0FB",
+      "bytes": 214239
+    },
+    "changes": [
+      "poise ends at level/XP base top y553; lower row offset comes from source slanted edge dx/dy, approximately-6.79; percentage moves with it",
+      "Spacebar/Space labels display as 空格 without modifying raw bindings; actual glyph bounds, caption clipping and dark backing keep all keys inside slots",
+      "resource details is a geometric circled i inside the first authored right-hand stripe; remove standing Chinese label and separate cutout; brighten stripe on hover and keep expanded read-only hit bounds",
+      "live-only decorative0.1-unit strokes compensated to0.6 in six named frame recipes, recorded per recipe; source paths/colors and frozen B0 unchanged"
+    ],
+    "validation": {
+      "hostPassed": 5591,
+      "hostSkipped": 4,
+      "failed": 0,
+      "hostLog": {
+        "path": "tmp/player-info-full/pi16-full.log",
+        "sha256": "C88E26212F645D2F2C549A04915C6CC45DBFB818B344929089AD7273B8951FD7",
+        "bytes": 804782
+      },
+      "focusedPassed": 91,
+      "focusedLog": {
+        "path": "tmp/player-info-full/pi16-focused.log",
+        "sha256": "843F5419BF4B608B18C5B268FA96E38E2B50080C01707F806E1835A97C3A7B05",
+        "bytes": 32674
+      },
+      "assetChecks": {
+        "path": "tmp/player-info-full/pi14-assets.log",
+        "sha256": "6A352F13799963D269A696DA8BFC891D1D1D65F9C25767CC20F161FA0AF95DD0",
+        "bytes": 466
+      },
+      "authoredAssets": 33,
+      "sharedBarCells": 10,
+      "assetManifest": {
+        "path": "tmp/player-info-full/pi16/live-art.manifest.json",
+        "sha256": "6FA15C18736DC8CD7276D2B45929564E5EC17FFDAE9488001B3B258DA13E0870",
+        "bytes": 28071
+      },
+      "geometryEvidence": "Production pixels preserve ten MP/poise cells; corresponding edges agree after slope-projected row displacement; poise bottom equals LV/XP top.",
+      "captionEvidence": "Spacebar and 空格 produce identical captions; raw bindings stay unchanged; Spacebar and Ctrl+Shift+F12 change no pixels outside the caption region.",
+      "inputEvidence": "All four details stripe vertices match generated original art. Expanded hit area remains disjoint from skills/unequip and only sends resources tooltip; former label location no longer hits.",
+      "previews": [
+        {
+          "path": "tmp/player-info-full/pi16/hud-resources-1920.png",
+          "sha256": "86AB6F2FEAF50E20C22384F97D0B5E3D99BC8CA246B95F5A458A8C873E93165C",
+          "bytes": 61260
+        },
+        {
+          "path": "tmp/player-info-full/pi16/hud-resources-no-shield-1920.png",
+          "sha256": "6A27941C7B0E83570CFC9B88AC6F87B45C7DA55DD5E9886E490BFF71A1850FD6",
+          "bytes": 54661
+        },
+        {
+          "path": "tmp/player-info-full/pi16/hud-resources-overflow-1920.png",
+          "sha256": "43662A771A70F14C3DD2CB03AFD3A248010CCBFB2933DCFA00B92EE91B1ED06D",
+          "bytes": 62214
+        },
+        {
+          "path": "tmp/player-info-full/pi16/hud-resources-long-1024.png",
+          "sha256": "4C83EF35F434DEBABCE68D9B8B6DE217C4F83181886DD0988778EB67070B5B85",
+          "bytes": 24636
+        },
+        {
+          "path": "tmp/player-info-full/pi16/hud-resources-long-1920.png",
+          "sha256": "37B4AB2A669276DC47B58AAACCF614E093B4E5EF67979288A10652CDFCE7C187",
+          "bytes": 63392
+        },
+        {
+          "path": "tmp/player-info-full/pi16/hud-resources-empty-1024.png",
+          "sha256": "CA506B9A039E8972CBB4C0BEA9B0D15260478D89AA5E65DFB105EE296DB6D7BA",
+          "bytes": 22351
+        },
+        {
+          "path": "tmp/player-info-full/pi16/hud-resources-empty-1920.png",
+          "sha256": "673E3B0A0B19CF2354037E0FE48B33BB7BB727E8AA252087E775F9F912D911BF",
+          "bytes": 57076
+        },
+        {
+          "path": "tmp/player-info-full/pi16/hud-resource-strip-long-1920.png",
+          "sha256": "17E0BF85F7C1F158E14E3D02F0A39C152704EA0D3FD2B67B318FF2E0255D9599",
+          "bytes": 179755
+        },
+        {
+          "path": "tmp/player-info-full/pi16/hud-resource-strip-no-shield-1920.png",
+          "sha256": "A2426ED2EE36E6AC90D6B55AF238BDAD495AEAED0F6AA8211599949CDE65E65F",
+          "bytes": 169733
+        },
+        {
+          "path": "tmp/player-info-full/pi16/hud-skill-header-1024.png",
+          "sha256": "194A9F1A2A506DF71699D0B61571A557B361BCF0505A63EEB5F4E3CAE28B433A",
+          "bytes": 4883
+        },
+        {
+          "path": "tmp/player-info-full/pi16/hud-skill-header-1920.png",
+          "sha256": "9E263AEC83C9DBA1B9DB6F030D8224B4150481B0DBCFB49F62AFCD53CD0CFC18",
+          "bytes": 10196
+        },
+        {
+          "path": "tmp/player-info-full/pi16/hud-skill-strip-1024.png",
+          "sha256": "4ABBBFB9393ABAE55BEFF0A3B694BCE461663014E071AB23B576A726A4397453",
+          "bytes": 30762
+        },
+        {
+          "path": "tmp/player-info-full/pi16/hud-skill-strip-1920.png",
+          "sha256": "61BB68C75A4A3AA27987DA8978EC8DDD5C6E79497A9525270BC9419595A2D7A0",
+          "bytes": 72068
+        },
+        {
+          "path": "tmp/player-info-full/pi16/hud-bright-1024.png",
+          "sha256": "A8C17AF405B1BB57D0662FB5F0FC21079CE12CA7BCAF63F96853F1C5E78FAD11",
+          "bytes": 104854
+        },
+        {
+          "path": "tmp/player-info-full/pi16/hud-bright-1920.png",
+          "sha256": "09F2A535241654B65DBF3A9027C9F877011F60F978A1FC30DCAB84F705499737",
+          "bytes": 290893
+        },
+        {
+          "path": "tmp/player-info-full/pi16/hud-bright-2560.png",
+          "sha256": "D3AA8213B99E2E9F0261D653B7838BFD69F31B609939F1C6F61D72DD7201CE10",
+          "bytes": 460662
+        }
+      ],
+      "assetScope": "pi14 asset verification remains applicable: generator and generated asset manifest unchanged in pi16."
+    },
+    "noComputerUse": true,
+    "as2AndGameRulesChanged": false,
+    "humanOnly": [
+      "diagonal continuity, details styling, caption readability and compensated strokes in actual gameplay",
+      "previous first-entry layering/pause animation, save/restart/lifecycle and runtime performance"
+    ],
+    "manualLauncher": "tmp/player-info-full/review-pi16.cmd",
+    "humanFeedback": "User requested HP/MP/shield values, percentages and overflow; poise stage/boundary; level-relative experience and XP to next level; Buff style alignment only with missing metadata deferred; cooldown countdowns in key captions.",
+    "actualRunPathEvidence": {
+      "path": "tmp/player-info-full/pi16-human-20260920/launcher.log",
+      "sha256": "0005C8C2E29534D7580CEAC4622C6AEDFC7BD711C6338C839AFDE98D4E239E95",
+      "bytes": 427421
+    },
+    "runScope": "Launcher log identifies pi16 Core.exe at16:56:40.446. User supplied resource-details and top-Buff screenshots. This confirms execution, not remaining C/E acceptance.",
+    "screenshots": [
+      {
+        "path": "tmp/player-info-full/pi16-human-20260920/feedback-1.png",
+        "sha256": "56DD22B98EF2D431F3DC731A309DAFE8C42A17A3801322EC6217CBC39BEC0108",
+        "bytes": 130330
+      },
+      {
+        "path": "tmp/player-info-full/pi16-human-20260920/feedback-2.png",
+        "sha256": "F49E96C75F335BD0B07E7DFF5794D3C10D42890F5DF6196CC7A85C410763ED61",
+        "bytes": 170292
+      }
+    ]
+  },
+  "releaseAuthorization": {
+    "date": "2026-09-20",
+    "candidate": "pi17",
+    "ownerStatement": "可行，可以合并上游，取得云端共识，构建部署推送，归档卡片",
+    "scope": [
+      "accepted current player HUD presentation and requested resource details/Buff style/cooldown readouts",
+      "merge upstream, independent cloud consensus, formal build and deployment, push and archive issue 29"
+    ],
+    "notImplied": [
+      "full lifecycle/performance qualification",
+      "standard-entry revalidation after promotion"
+    ],
+    "deferred": [
+      "Buff names/icons/source/polarity/stacks and expanded interactions remain later work"
+    ]
+  }
+}

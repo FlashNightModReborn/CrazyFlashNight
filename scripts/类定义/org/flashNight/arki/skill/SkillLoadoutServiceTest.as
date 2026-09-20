@@ -11,6 +11,7 @@ class org.flashNight.arki.skill.SkillLoadoutServiceTest {
         testSnapshotShortTableIsReadOnly();
         testExternalDriftAdvancesRevision();
         testDescriptorDoesNotNeedHud();
+        testHudMemoObservesLegacyDrift();
         testDuplicateProjectionIsUnique();
         testDuplicateReleaseFailsClosed();
         testInvalidBooleanDiagnostic();
@@ -65,6 +66,32 @@ class org.flashNight.arki.skill.SkillLoadoutServiceTest {
         var before:Number = SkillLoadoutService.getRevision();
         var result:Object = SkillLoadoutService.synchronize();
         check(!result.success && result.error == "service_not_ready" && before == 0, "service_not_ready creates no revision");
+    }
+    private static function testHudMemoObservesLegacyDrift():Void {
+        var r:Object = fixture(80); learn(r, 0, "闪现", 3); r.快捷技能栏1 = "闪现";
+        var first:Object = SkillLoadoutService.getHudDescriptors();
+        check(SkillLoadoutService.getHudDescriptors() === first, "unchanged HUD reuses detached descriptors without rebuilding the domain scan");
+        r.主角技能表[0][1] = 4;
+        var changed:Object = SkillLoadoutService.getHudDescriptors();
+        check(changed.slots[0].level == 4 && changed.revision > first.revision && first.slots[0].level == 3,
+            "in-place legacy level edit invalidates HUD memo without mutating the old projection");
+        r.技能表对象.闪现.MP = 27;
+        check(SkillLoadoutService.getHudDescriptors().slots[0].mp == 27, "in-place metadata changes invalidate HUD memo");
+        r.快捷技能栏键1 = 80;
+        check(SkillLoadoutService.getHudDescriptors().slots[0].keyLabel == "K80", "live key rebinding invalidates HUD memo");
+        r.主角技能表[1] = ["闪现", 4, false, "武术-内力", false];
+        check(SkillLoadoutService.getHudDescriptors().slots[0].stateHealth == "duplicate", "new duplicate row keeps HUD fail-closed");
+        r.主角技能表[1] = emptyRow(); r.快捷技能栏1 = "";
+        check(!SkillLoadoutService.getHudDescriptors().slots[0].equipped, "slot clear publishes explicit empty state");
+        r.快捷技能栏1 = "闪现";
+        first = SkillLoadoutService.getHudDescriptors();
+        delete r.存档系统;
+        check(SkillLoadoutService.getHudDescriptors().slots[0].writeBlocked, "loss of readiness cannot reuse a previously ready HUD memo");
+        r.存档系统 = {dirtyMark:false};
+        check(SkillLoadoutService.getHudDescriptors().slots[0].equipped, "restored readiness rebuilds display state");
+        var start:Number = getTimer();
+        for (var i:Number = 0; i < 300; i++) SkillLoadoutService.getHudDescriptors();
+        trace("[PlayerHudMemoPerf] unchanged300Ms=" + (getTimer() - start));
     }
 
     private static function testSnapshotShortTableIsReadOnly():Void {

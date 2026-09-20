@@ -1835,6 +1835,8 @@ _root.主角函数.装载主动战技 = function(战技信息, 攻击模式) {
     }
     var 当前战技 = {};
     当前战技.名字 = 战技信息.skillname;
+    当前战技.描述 = 战技信息.description;
+    当前战技.信息 = 战技信息.information;
     当前战技.冷却时间 = 战技信息.cd > 100 ? Number(战技信息.cd) : 100; //冷却时间的下限为0.1秒
     var hp消耗信息 = 战技信息.hp == undefined ? "0" : String(战技信息.hp);
     var mp消耗信息 = 战技信息.mp == undefined ? "0" : String(战技信息.mp);

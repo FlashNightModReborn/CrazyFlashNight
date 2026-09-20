@@ -93,7 +93,7 @@ class org.flashNight.gesh.tooltip.NativeTooltipBridge {
      * 缺省回退 patched ItemIcon.RollOver 捕获的 _scopedOwner；两者皆无则旧 payload。
      * placement 可选：left/right/top/bottom，非法值不下发。
      */
-    public static function show(document:Object, ownerClip:MovieClip, placement:String):String {
+    public static function show(document:Object, ownerClip:MovieClip, placement:String, hudAnchor:Object):String {
         if (document == null || document == undefined) return null;
         var ctx:Object = context();
         if (ctx == null) return null;
@@ -125,6 +125,12 @@ class org.flashNight.gesh.tooltip.NativeTooltipBridge {
             document: document
         };
         var anchor:Object = anchorRectFor(typeof ownerClip == "movieclip" ? ownerClip : _scopedOwner);
+        if (hudAnchor != null) {
+            anchor = hudAnchor;
+            payload.x = anchor.x + anchor.width / 2;
+            payload.y = anchor.y;
+            placement = "top";
+        }
         if (anchor !== null && anchor !== undefined) payload.anchorRect = anchor;
         if (placement == "left" || placement == "right"
                 || placement == "top" || placement == "bottom") {

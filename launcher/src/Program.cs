@@ -1,4 +1,4 @@
-﻿// CF7:ME Guardian Process — 入口
+// CF7:ME Guardian Process — 入口
 // C# 5 语法
 
 using System;
@@ -1644,6 +1644,8 @@ class Program
         CF7Launcher.Guardian.Hud.Tooltip.NativeTooltipWidget nativeTooltipWidget = null;
         CF7Launcher.Guardian.Hud.PlayerInfo.PlayerInfoSplitSurface
             playerInfoSurface = null;
+        CF7Launcher.Guardian.Hud.PlayerInfo.PlayerHudController playerHudController = null;
+        CF7Launcher.Guardian.Hud.PlayerInfo.PlayerHudRuntime playerHudRuntime = null;
         string playerInfoFixtureRaw = Environment.GetEnvironmentVariable(
             CF7Launcher.Guardian.Hud.PlayerInfo.PlayerInfoSplitSurface
                 .FixtureCaseEnvironment);
@@ -1719,7 +1721,21 @@ class Program
             }
             // flashHwndProvider 在 WebOverlay 构造前已声明（snapshot 路径用），此处复用给 PanelHostController；
             // WebOverlay 自身的焦点回推不走 provider 而走 flashFocusRestorer 统一 primitive。
-            IPanelHudCompanion panelHudCompanion = playerInfoSurface;
+            playerHudController = new CF7Launcher.Guardian.Hud.PlayerInfo.PlayerHudController(
+                payload => socketServer.TrySend(payload), () => socketServer.IsClientReady,
+                callback =>
+                {
+                    if (form.IsDisposed || form.Disposing) return;
+                    if (form.InvokeRequired) form.BeginInvoke(callback); else callback();
+                });
+            socketServer.OnClientDisconnected += playerHudController.Disconnected;
+            if (playerInfoSurface == null)
+                playerInfoSurface = CF7Launcher.Guardian.Hud.PlayerInfo.PlayerInfoSplitSurface.CreateLive(
+                    form, form.FlashHostPanel, playerHudController.State);
+            playerHudRuntime = new CF7Launcher.Guardian.Hud.PlayerInfo.PlayerHudRuntime(
+                form, form.FlashHostPanel, playerInfoSurface, playerHudController,
+                Path.Combine(projectRoot, "launcher", "web", "icons"), nativeHud.Handle);
+            IPanelHudCompanion panelHudCompanion = playerHudRuntime;
             panelHost = new PanelHostController(form, webOverlay, nativeHud, backdrop,
                 inputShield, hnOverlay, cursorOverlay, form.GetPanelEscapeSource(), flashHwndProvider,
                 panelHudCompanion);
@@ -1828,6 +1844,7 @@ class Program
             NativeHudOverlay capturedHud2 = nativeHud;
             Action<string> uiDataTee = delegate(string raw)
             {
+                if (playerHudController != null) raw = playerHudController.TakeUiData(raw);
                 if (string.IsNullOrEmpty(raw)) return;
                 CF7Launcher.Guardian.Hud.UiDataPacket pkt = new CF7Launcher.Guardian.Hud.UiDataPacket(raw);
                 try { capturedWeb.HandleUiData(pkt); }
@@ -1850,7 +1867,7 @@ class Program
             // P2-3 perf：ULW 首帧预提交（1×1 透明）。让 DWM 把 NativeHud / HitNumber / Cursor
             // 加入合成树 + per-pixel α 路径建立；玩家可见的第一次 commit 不再触发"新 layered window 合成"冷路径。
             try { nativeHud.PreCommitTransparent(); } catch (Exception ex) { LogManager.Log("[NativeHud] PreCommit failed: " + ex.Message); }
-            try { if (playerInfoSurface != null) playerInfoSurface.PreCommitTransparent(); } catch (Exception ex) { LogManager.Log("[PlayerInfoSplitSurface] PreCommit failed: " + ex.Message); }
+            try { playerHudRuntime?.PreCommitTransparent(); if (playerInfoSurface != null) playerInfoSurface.PreCommitTransparent(); } catch (Exception ex) { LogManager.Log("[PlayerInfoSplitSurface] PreCommit failed: " + ex.Message); }
             try { if (hnOverlay != null) hnOverlay.PreCommitTransparent(); } catch (Exception ex) { LogManager.Log("[HitNumber] PreCommit failed: " + ex.Message); }
             try { if (cursorOverlay != null) cursorOverlay.PreCommitTransparent(); } catch (Exception ex) { LogManager.Log("[Cursor] PreCommit failed: " + ex.Message); }
 
@@ -2454,7 +2471,7 @@ class Program
             //    后面的 _webView.Dispose() 才不会卡住 200-800ms 销毁 Chromium。
             try { if (inputShield != null) inputShield.ExitTelemetryMode(); } catch (Exception ex) { LogManager.Log("[Guardian] ExitTelemetryMode early failed: " + ex.Message); }
             try { if (webOverlay != null) webOverlay.SuspendAfterPanel("shutdown"); } catch (Exception ex) { LogManager.Log("[Guardian] SuspendAfterPanel early failed: " + ex.Message); }
-            try { if (playerInfoSurface != null) playerInfoSurface.BeginShutdown(); } catch (Exception ex) { LogManager.Log("[Guardian] PlayerInfo split shutdown start failed: " + ex.Message); }
+            try { playerHudRuntime?.Suspend(); if (playerInfoSurface != null) playerInfoSurface.BeginShutdown(); } catch (Exception ex) { LogManager.Log("[Guardian] PlayerInfo split shutdown start failed: " + ex.Message); }
             try { lootTask.OnTransportDetached(); lootPanelCoordinator.ForceDetach("host_shutdown"); } catch (Exception ex) { LogManager.Log("[Guardian] loot detach early failed: " + ex.GetType().Name); }
             try { lootPanelCoordinator.Dispose(); } catch { }
 
@@ -2573,7 +2590,8 @@ class Program
             try { socketServer.Dispose(); } catch { }
             try { httpServer.Dispose(); } catch { }
             try { if (panelHost != null) panelHost.Dispose(); } catch { }
-            DrainAndDisposePlayerInfoSurface(playerInfoSurface);
+            playerHudRuntime?.Dispose();
+        DrainAndDisposePlayerInfoSurface(playerInfoSurface);
             try { if (inputShield != null) inputShield.Dispose(); } catch { }
             try { if (webOverlay != null) webOverlay.Dispose(); } catch { }
             try { if (backdrop != null) backdrop.Dispose(); } catch { }
@@ -2736,7 +2754,8 @@ class Program
                     using (CF7Launcher.Guardian.PerfTrace.Scope(
                         "reveal.setready.player_info_split"))
                     {
-                        playerInfoSurface.SetReady();
+                        if (playerHudRuntime != null) playerHudRuntime.SetReady();
+                        else playerInfoSurface.SetReady();
                     }
                     LogManager.Log(
                         "[RevealProbe] setready.player_info_split " +
@@ -3485,6 +3504,7 @@ class Program
         try { socketServer.Dispose(); } catch { }
         try { httpServer.Dispose(); } catch { }
         try { if (panelHost != null) panelHost.Dispose(); } catch { }
+        playerHudRuntime?.Dispose();
         DrainAndDisposePlayerInfoSurface(playerInfoSurface);
         try { if (inputShield != null) inputShield.Dispose(); } catch { }
         try { if (webOverlay != null) webOverlay.Dispose(); } catch { }

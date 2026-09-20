@@ -3,7 +3,7 @@
   "catalogVersion": "1",
   "gate": "E",
   "runtimeAuthority": true,
-  "sourceSha256": "3bc20d0a08eab2b249daf8287c8eae69c72b9491c620f1ea14aebc3f62647358",
+  "sourceSha256": "ad7c3fcb9921c5fa3823d4553bce175d972e4c40efc6d4be8fa5c11cfdebc156",
   "virtualFontOrigin": "https://cfn-fonts.local/",
   "allowedHosts": [
     "github.com",
@@ -1070,6 +1070,25 @@
     "native.dialogue.body": {
       "id": "native.dialogue.body",
       "label": "原版对话框文字",
+      "status": "accepted",
+      "allowPresetOverride": false,
+      "faces": [],
+      "system": [
+        {
+          "family": "Microsoft YaHei",
+          "classification": "system-owned"
+        }
+      ],
+      "generic": [
+        {
+          "family": "sans-serif",
+          "classification": "system-owned"
+        }
+      ]
+    },
+    "native.player-info.body": {
+      "id": "native.player-info.body",
+      "label": "玩家常驻界面文字",
       "status": "accepted",
       "allowPresetOverride": false,
       "faces": [],

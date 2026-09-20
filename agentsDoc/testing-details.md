@@ -364,7 +364,7 @@ candidate、facet 与 mutation 三处共用实例有效事实，禁止基础 cat
 
 必跑：
 
-- `powershell -ExecutionPolicy Bypass -File scripts/run-skill-migration-tests.ps1 -TimeoutSeconds 240`（机器钉死 `SkillLoadoutServiceTest 50/50`、`SkillPanelServiceTest 48/48`、Compiler Errors `0/0`；该入口不再包含 LongGun / ManualCooldown / DrugInput，三者改由玩家手动输入 runner 独立守门；Loadout 覆盖旧 HUD 图标壳重建、快捷槽空目标移动/占用目标交换/no-op/坏源拒绝；
+- `powershell -ExecutionPolicy Bypass -File scripts/run-skill-migration-tests.ps1 -TimeoutSeconds 240`（精确计数以 runner 为准，当前 `SkillLoadoutServiceTest 58/58`、`SkillPanelServiceTest 48/48`、Compiler Errors `0/0`；该入口不再包含 LongGun / ManualCooldown / DrugInput，三者改由玩家手动输入 runner 独立守门；Loadout 覆盖旧 HUD 图标壳重建、快捷槽空目标移动/占用目标交换/no-op/坏源拒绝；
   Panel 另覆盖 `skillPanelOpen` exact `openRequestId` 回显、缺失或畸形 `openRequestId` 均零发送；新 Host 缺 nonce 拒绝、`moveSlot` 路由、成功教师读续租与连续 120 秒空闲过期）。
 - `node tools/test-skills-ui-modules.js`（文本现役 `65/65`，待核：阈值来源为历史文本，未找到当前机器真源）。
 - `node tools/run-skills-harness.js`（文本现役 3 视口 `150/150`，待核）。

@@ -33,6 +33,13 @@ class org.flashNight.arki.render.FrameBroadcaster {
 
     /** UI 状态数据槽（由 watch 回调写入，send() 消费后清空）*/
     private static var _uiPayload:String = null;
+    // Bounded latest HUD state, independent of the append-only legacy UI slot.
+    private static var _playerHudPayload:String = null;
+    private static var _playerHudCapture:Function;
+    public static function setPlayerHudPayload(value:String):Void { _playerHudPayload = value; }
+    public static function hasPlayerHudPending():Boolean { return _playerHudPayload != null; }
+    public static function setPlayerHudCapture(callback:Function):Void { _playerHudCapture = callback; }
+
 
     /** 输入数据槽（由 键盘输入控制目标 写入，send() 消费后清空）*/
     private static var _inputPayload:String = null;
@@ -95,6 +102,7 @@ class org.flashNight.arki.render.FrameBroadcaster {
         var sm:Object = _root.server;
         if (!sm.isSocketConnected) {
             _hnPayload = null;
+            _playerHudPayload = null;
             return;
         }
 
@@ -103,9 +111,13 @@ class org.flashNight.arki.render.FrameBroadcaster {
         if (!gw) {
             // gameworld 不存在 → 无法构造有效 frame 消息
             _hnPayload = null;
+            _playerHudPayload = null;
             return;
         }
 
+        // Capture after this frame's domain updates, immediately before consuming the bounded slot.
+        // Installed from BootSequencer to avoid a class-registration dependency cycle.
+        if (_playerHudCapture != undefined) _playerHudCapture();
         var cam:String = gw._x + "|" + gw._y + "|" + (gw._xscale * 0.01);
 
         // 快车道前缀协议：F{cam}\x01{hn}[\x02{fps}]，绕过 C# 端 JObject.Parse
@@ -117,9 +129,12 @@ class org.flashNight.arki.render.FrameBroadcaster {
         }
         // UI 状态数据：pushUiState 可能在 send() 之后执行（watch 时序），
         // 因此只在读到数据时才清空，最迟延迟 1 帧到达
-        if (_uiPayload != null) {
-            msg += "\x03" + _uiPayload;
+        if (_uiPayload != null || _playerHudPayload != null) {
+            msg += "\x03";
+            if (_uiPayload != null) msg += _uiPayload;
+            if (_playerHudPayload != null) msg += (_uiPayload != null ? "|" : "") + _playerHudPayload;
             _uiPayload = null;
+            _playerHudPayload = null;
         }
         if (_inputPayload != null) {
             msg += "\x04" + _inputPayload;
@@ -212,6 +227,7 @@ class org.flashNight.arki.render.FrameBroadcaster {
      */
     public static function reset():Void {
         _hnPayload = null;
+        _playerHudPayload = null;
         _fpsPayload = null;
         _inputPayload = null;
         // 注意：不清空 _uiPayload，场景切换时 UI 快照需要保留到下一帧 send()

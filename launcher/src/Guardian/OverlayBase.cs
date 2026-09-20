@@ -71,6 +71,7 @@ namespace CF7Launcher.Guardian
         protected const uint SWP_NOSIZE = 0x0001;
         protected const uint SWP_NOACTIVATE = 0x0010;
         protected const uint SWP_SHOWWINDOW = 0x0040;
+        private const uint SWP_NOOWNERZORDER = 0x0200;
         private const byte AC_SRC_OVER = 0x00;
         private const byte AC_SRC_ALPHA = 0x01;
         private const uint ULW_ALPHA = 0x02;
@@ -90,6 +91,19 @@ namespace CF7Launcher.Guardian
         protected readonly FlashCoordinateMapper _mapper;
         protected bool _shown;
         protected bool _ownerVisible;
+        internal event Action PresentationChanged;
+
+        protected void NotifyPresentationChanged() { PresentationChanged?.Invoke(); }
+
+        // Only reorder an already-presented owned surface. Never show, activate,
+        // move or resize it, and retain the existing foreground/owner gate.
+        internal bool RestoreRelativeOrder(IntPtr predecessor)
+        {
+            IntPtr handle;
+            if (!_shown || !CanShowOverlayNow || !TryGetExistingHandle(out handle)) return false;
+            return SetWindowPos(handle, predecessor, 0, 0, 0, 0,
+                SWP_NOMOVE | SWP_NOSIZE | SWP_NOACTIVATE | SWP_NOOWNERZORDER);
+        }
         private EventHandler _ownerMoveHandler;
         private EventHandler _ownerResizeHandler;
         private EventHandler _ownerActivatedHandler;
@@ -225,6 +239,7 @@ namespace CF7Launcher.Guardian
                 if (!TryGetExistingHandle(out handle)) return;
                 ShowWindow(handle, SW_SHOWNOACTIVATE);
                 OnOwnerBecameVisible();
+                NotifyPresentationChanged();
             }
             TraceFocusLifecycle("owner_activate");
         }
@@ -326,6 +341,7 @@ namespace CF7Launcher.Guardian
                     SWP_NOMOVE | SWP_NOSIZE | SWP_NOACTIVATE);
             }
             TraceFocusLifecycle("show_below");
+            NotifyPresentationChanged();
         }
 
         /// <summary>

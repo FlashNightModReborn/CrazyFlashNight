@@ -1,0 +1,1018 @@
+{
+  "version": 1,
+  "recipes": [
+    {
+      "id": "bottom-panel",
+      "library": "flashswf/UI/玩家信息界面/LIBRARY",
+      "symbol": "sprite/Symbol 1859",
+      "frame": 0,
+      "layers": [
+        "大背景"
+      ],
+      "viewBox": [
+        -60.1,
+        -70.55,
+        1212.6999999999998,
+        81.0
+      ],
+      "svgSha256": "b7466afb2afac7408e7015ca096b0f2f8fb5f35845c702ef098e3120da5d86ef",
+      "bytes": 604,
+      "textFields": [],
+      "hairlineCompensation": null
+    },
+    {
+      "id": "bottom-ornaments",
+      "library": "flashswf/UI/玩家信息界面/LIBRARY",
+      "symbol": "sprite/Symbol 1859",
+      "frame": 0,
+      "layers": [
+        "装饰性"
+      ],
+      "viewBox": [
+        -12.65,
+        -42.449999999999996,
+        283.9786003112795,
+        42.8
+      ],
+      "svgSha256": "187890b035906811cd354ac45fbb80a46c1634c337fd856ee450ddbe13c0cff5",
+      "bytes": 6483,
+      "textFields": [],
+      "hairlineCompensation": {
+        "count": 8,
+        "maximumSourceWidth": 0.1,
+        "liveWidth": 0.6
+      }
+    },
+    {
+      "id": "level-label",
+      "library": "flashswf/UI/玩家信息界面/LIBRARY",
+      "symbol": "sprite/Symbol 1859",
+      "frame": 0,
+      "layers": [
+        "LV 矢量图"
+      ],
+      "viewBox": [
+        221.6,
+        -21.2,
+        14.5,
+        12.5
+      ],
+      "svgSha256": "b0d72e73431291dca318130c416dc7f4ab25516f805bf28a81b74702139ba2d3",
+      "bytes": 444,
+      "textFields": [],
+      "hairlineCompensation": null
+    },
+    {
+      "id": "slot",
+      "library": "flashswf/UI/玩家信息界面/LIBRARY",
+      "symbol": "UI重构/快捷道具格子",
+      "frame": 0,
+      "layers": null,
+      "viewBox": [
+        -17.0,
+        -16.849999999999998,
+        34.4,
+        33.8
+      ],
+      "svgSha256": "a046815ff8b173fc2a90e6900daf136c1eec7d757fd8e7893ce4daca0fb02604",
+      "bytes": 1441,
+      "textFields": [
+        {
+          "id": "",
+          "variableName": null,
+          "kind": "staticText",
+          "matrix": [
+            1.0,
+            0.0,
+            0.0,
+            1.0,
+            -72.0,
+            -8.8
+          ],
+          "rect": {
+            "w": 8.6,
+            "h": 15.55
+          },
+          "stageRect": [
+            -72.0,
+            -8.8,
+            -63.4,
+            6.75
+          ],
+          "font": {
+            "face": "MicrosoftYaHeiLight",
+            "size": 12.0,
+            "color": "#E5E5E5",
+            "lineSpacing": 0.0,
+            "indent": 0.0,
+            "letterSpacing": 0.0
+          },
+          "multiline": false,
+          "html": false,
+          "selectable": false,
+          "sampleText": "+",
+          "layer": "图层 2"
+        }
+      ],
+      "hairlineCompensation": {
+        "count": 3,
+        "maximumSourceWidth": 0.1,
+        "liveWidth": 0.6
+      }
+    },
+    {
+      "id": "slot-detail",
+      "library": "flashswf/UI/玩家信息界面/LIBRARY",
+      "symbol": "UI重构/快捷道具格子",
+      "frame": 0,
+      "layers": [
+        "图层 2"
+      ],
+      "viewBox": [
+        -17.0,
+        -16.849999999999998,
+        34.4,
+        33.8
+      ],
+      "svgSha256": "aed3644f2f52649b23440a7107fca65405b862fae7b837fe288bbfc7714fdca3",
+      "bytes": 779,
+      "textFields": [
+        {
+          "id": "",
+          "variableName": null,
+          "kind": "staticText",
+          "matrix": [
+            1.0,
+            0.0,
+            0.0,
+            1.0,
+            -72.0,
+            -8.8
+          ],
+          "rect": {
+            "w": 8.6,
+            "h": 15.55
+          },
+          "stageRect": [
+            -72.0,
+            -8.8,
+            -63.4,
+            6.75
+          ],
+          "font": {
+            "face": "MicrosoftYaHeiLight",
+            "size": 12.0,
+            "color": "#E5E5E5",
+            "lineSpacing": 0.0,
+            "indent": 0.0,
+            "letterSpacing": 0.0
+          },
+          "multiline": false,
+          "html": false,
+          "selectable": false,
+          "sampleText": "+",
+          "layer": "图层 2"
+        }
+      ],
+      "hairlineCompensation": {
+        "count": 3,
+        "maximumSourceWidth": 0.1,
+        "liveWidth": 0.6
+      }
+    },
+    {
+      "id": "drug-hover",
+      "library": "flashswf/UI/玩家信息界面/LIBRARY",
+      "symbol": "sprite/物品栏/物品满级框",
+      "frame": 0,
+      "layers": null,
+      "viewBox": [
+        -26.8,
+        -26.8,
+        53.6,
+        53.6
+      ],
+      "svgSha256": "5e1147a0f29d620929e6d42d9078c6ae92dd1b2d425fba6e6c69b66640c070e7",
+      "bytes": 332,
+      "textFields": [],
+      "hairlineCompensation": null
+    },
+    {
+      "id": "weapon",
+      "library": "flashswf/UI/玩家信息界面/LIBRARY",
+      "symbol": "sprite/战技图标",
+      "frame": 0,
+      "layers": null,
+      "viewBox": [
+        -15.0,
+        -16.05,
+        30.05,
+        30.05
+      ],
+      "svgSha256": "3a6cb39e76acc9dad30b43f17996c44c948cc117bf8c021a46b56c4d8000a50e",
+      "bytes": 2265,
+      "textFields": [],
+      "hairlineCompensation": null
+    },
+    {
+      "id": "buff",
+      "library": "flashswf/arts/新版人物文字信息/LIBRARY",
+      "symbol": "素材-buff详细图标/buff边框",
+      "frame": 0,
+      "layers": null,
+      "viewBox": [
+        -13.5,
+        -13.5,
+        27.0,
+        27.0
+      ],
+      "svgSha256": "89bea01e45a3bce04e618ab20eb454fa632ed16e1c4890604b45847dca3ade07",
+      "bytes": 392,
+      "textFields": [],
+      "hairlineCompensation": null
+    },
+    {
+      "id": "buff-panel",
+      "library": "CRAZYFLASHER7MercenaryEmpire/LIBRARY",
+      "symbol": "玩家buff界面素材/玩家buff界面边框",
+      "frame": 0,
+      "layers": null,
+      "viewBox": [
+        -4.0,
+        -4.0,
+        136.84877929687502,
+        47.98180541992193
+      ],
+      "svgSha256": "e85de4159fa90db1f39e9812a4b966f2d64c102c0f8eb324ab3fb4aed6481e64",
+      "bytes": 2107,
+      "textFields": [],
+      "hairlineCompensation": null
+    },
+    {
+      "id": "skill-panel",
+      "library": "flashswf/UI/玩家信息界面/LIBRARY",
+      "symbol": "sprite/快捷技能界面",
+      "frame": 0,
+      "layers": [
+        "边框"
+      ],
+      "viewBox": [
+        -1.5,
+        -19.7,
+        431.7,
+        64.0
+      ],
+      "svgSha256": "77aee179f67c10fa5fc33779bd8eccbd44758c73cb2e6389eb547979df18e1c1",
+      "bytes": 3061,
+      "textFields": [],
+      "hairlineCompensation": {
+        "count": 1,
+        "maximumSourceWidth": 0.1,
+        "liveWidth": 0.6
+      }
+    },
+    {
+      "id": "drug-panel",
+      "library": "flashswf/UI/玩家信息界面/LIBRARY",
+      "symbol": "sprite/快捷药剂界面",
+      "frame": 1,
+      "layers": [
+        "装饰"
+      ],
+      "viewBox": [
+        -3.55,
+        -27.85,
+        39.05,
+        51.400000000000006
+      ],
+      "svgSha256": "364e3646641a156f086c65b4f90e5e3aa89f586f2cb152370d2111ab4f3751d0",
+      "bytes": 3419,
+      "textFields": [],
+      "hairlineCompensation": {
+        "count": 1,
+        "maximumSourceWidth": 0.1,
+        "liveWidth": 0.6
+      }
+    },
+    {
+      "id": "name-background",
+      "library": "flashswf/UI/玩家信息界面/LIBRARY",
+      "symbol": "UI重构/姓名动画",
+      "frame": 0,
+      "layers": [
+        "边框",
+        "遮罩",
+        "背景"
+      ],
+      "viewBox": [
+        -1.0,
+        -0.8,
+        135.26509399414064,
+        18.01882095336915
+      ],
+      "svgSha256": "fe9287233471f501f531f3bb69e7ca18583dd24609c252e52db3bac3472f0bd1",
+      "bytes": 1039,
+      "textFields": [],
+      "hairlineCompensation": null
+    },
+    {
+      "id": "name-grid",
+      "library": "flashswf/UI/玩家信息界面/LIBRARY",
+      "symbol": "UI重构/血槽相关/姓名动画-网格背景",
+      "frame": 0,
+      "layers": null,
+      "viewBox": [
+        -49.35,
+        -13.4,
+        100.9,
+        18.0
+      ],
+      "svgSha256": "8bee80e530039205975670ffb87fe77ae9d3718b757f650dfa7c1dc842176b46",
+      "bytes": 6587,
+      "textFields": [],
+      "hairlineCompensation": null
+    },
+    {
+      "id": "bank-0",
+      "library": "flashswf/UI/玩家信息界面/LIBRARY",
+      "symbol": "sprite/药剂组切换图标",
+      "frame": 0,
+      "layers": null,
+      "viewBox": [
+        -12.0,
+        -6.5,
+        24.0,
+        12.0
+      ],
+      "svgSha256": "881410444fd3434bed2bf13534a48a57f020a55b65903395e577af73f36f5259",
+      "bytes": 545,
+      "textFields": [],
+      "hairlineCompensation": null
+    },
+    {
+      "id": "bank-1",
+      "library": "flashswf/UI/玩家信息界面/LIBRARY",
+      "symbol": "sprite/药剂组切换图标",
+      "frame": 1,
+      "layers": null,
+      "viewBox": [
+        -12.0,
+        -5.5,
+        24.0,
+        12.0
+      ],
+      "svgSha256": "8bef5a405324316f351217fa5879c25a6358052aad835788a03987eeefa896d8",
+      "bytes": 559,
+      "textFields": [],
+      "hairlineCompensation": null
+    },
+    {
+      "id": "weapon-panel",
+      "library": "flashswf/UI/玩家信息界面/LIBRARY",
+      "symbol": "sprite/玩家必要信息界面",
+      "frame": 1,
+      "layers": [
+        "战技文字 矢量化",
+        "战技背景",
+        "空战技"
+      ],
+      "viewBox": [
+        48.85,
+        -6.8,
+        35.550000000000004,
+        48.699999999999996
+      ],
+      "svgSha256": "532286219626007ad9bd21b2ae3c77363585d7f841d2cff49a8bfcf90ef5680f",
+      "bytes": 5291,
+      "textFields": [
+        {
+          "id": "",
+          "variableName": null,
+          "kind": "staticText",
+          "matrix": [
+            1.0,
+            0.0,
+            0.0,
+            1.0,
+            -5.4,
+            15.3
+          ],
+          "rect": {
+            "w": 8.6,
+            "h": 15.55
+          },
+          "stageRect": [
+            -5.4,
+            15.3,
+            3.1999999999999993,
+            30.85
+          ],
+          "font": {
+            "face": "MicrosoftYaHeiLight",
+            "size": 12.0,
+            "color": "#E5E5E5",
+            "lineSpacing": 0.0,
+            "indent": 0.0,
+            "letterSpacing": 0.0
+          },
+          "multiline": false,
+          "html": false,
+          "selectable": false,
+          "sampleText": "+",
+          "layer": "空战技"
+        }
+      ],
+      "hairlineCompensation": {
+        "count": 5,
+        "maximumSourceWidth": 0.1,
+        "liveWidth": 0.6
+      }
+    },
+    {
+      "id": "unequip",
+      "library": "flashswf/UI/玩家信息界面/LIBRARY",
+      "symbol": "sprite/Symbol 1792",
+      "frame": 0,
+      "layers": null,
+      "viewBox": [
+        -6.1,
+        -6.1,
+        12.2,
+        12.2
+      ],
+      "svgSha256": "75df6cbe511e22dfff037255acd301a9e83c1c54660e37a4c5e9bb471eba9643",
+      "bytes": 322,
+      "textFields": [],
+      "hairlineCompensation": null
+    },
+    {
+      "id": "cooldown-cover",
+      "library": "flashswf/UI/玩家信息界面/LIBRARY",
+      "symbol": "shape/Symbol 861",
+      "frame": 0,
+      "layers": null,
+      "viewBox": [
+        -35.35,
+        -70.35,
+        70.7,
+        71.35
+      ],
+      "svgSha256": "0064d9cea388b6e21efadd55deb35a1d9c0be2c4e6c7f00333bd1aff6078e25f",
+      "bytes": 285,
+      "textFields": [],
+      "hairlineCompensation": null
+    },
+    {
+      "id": "buff-opening",
+      "library": "flashswf/arts/新版人物文字信息/LIBRARY",
+      "symbol": "素材-buff详细图标/buff开启动画",
+      "frame": 1,
+      "layers": [
+        "图层 1"
+      ],
+      "viewBox": [
+        -5.0,
+        -5.0,
+        10.0,
+        10.0
+      ],
+      "svgSha256": "c3cdb155ade63167e156a55ceadaa5688f59144723c229efcc55e713e87afd25",
+      "bytes": 214,
+      "textFields": [],
+      "hairlineCompensation": null
+    },
+    {
+      "id": "mode-0",
+      "library": "flashswf/UI/玩家信息界面/LIBRARY",
+      "symbol": "sprite/玩家必要信息界面",
+      "frame": 1,
+      "layers": [
+        "战斗模式文字 矢量化",
+        "图标",
+        "背景"
+      ],
+      "viewBox": [
+        -5.1387023925781605,
+        -4.80006103515625,
+        50.864507293701244,
+        45.98672943115234
+      ],
+      "svgSha256": "9db15f9f8fd5838cfb3811a44854ad3ddf05f1ba314c0351479e3ee754f95e52",
+      "bytes": 1353,
+      "textFields": [],
+      "hairlineCompensation": null
+    },
+    {
+      "id": "mode-1",
+      "library": "flashswf/UI/玩家信息界面/LIBRARY",
+      "symbol": "sprite/玩家必要信息界面",
+      "frame": 6,
+      "layers": [
+        "战斗模式文字 矢量化",
+        "图标",
+        "背景"
+      ],
+      "viewBox": [
+        -5.1387023925781605,
+        -4.80006103515625,
+        50.864507293701244,
+        45.98672943115234
+      ],
+      "svgSha256": "9db15f9f8fd5838cfb3811a44854ad3ddf05f1ba314c0351479e3ee754f95e52",
+      "bytes": 1353,
+      "textFields": [],
+      "hairlineCompensation": null
+    },
+    {
+      "id": "mode-2",
+      "library": "flashswf/UI/玩家信息界面/LIBRARY",
+      "symbol": "sprite/玩家必要信息界面",
+      "frame": 12,
+      "layers": [
+        "战斗模式文字 矢量化",
+        "图标",
+        "背景"
+      ],
+      "viewBox": [
+        -5.1387023925781605,
+        -4.80006103515625,
+        50.864507293701244,
+        45.98672943115234
+      ],
+      "svgSha256": "9db15f9f8fd5838cfb3811a44854ad3ddf05f1ba314c0351479e3ee754f95e52",
+      "bytes": 1353,
+      "textFields": [],
+      "hairlineCompensation": null
+    },
+    {
+      "id": "mode-3",
+      "library": "flashswf/UI/玩家信息界面/LIBRARY",
+      "symbol": "sprite/玩家必要信息界面",
+      "frame": 17,
+      "layers": [
+        "战斗模式文字 矢量化",
+        "图标",
+        "背景"
+      ],
+      "viewBox": [
+        -10.65,
+        -5.9,
+        48.8,
+        44.64350585937518
+      ],
+      "svgSha256": "4f2cdb19f82c0aa95c84eb509814574245bc24a312fbf7349be764f406d075cc",
+      "bytes": 8295,
+      "textFields": [
+        {
+          "id": "",
+          "variableName": null,
+          "kind": "staticText",
+          "matrix": [
+            1.0,
+            0.0,
+            0.0,
+            1.0,
+            -1.55,
+            5.6
+          ],
+          "rect": {
+            "w": 49.5,
+            "h": 5.2
+          },
+          "stageRect": [
+            -1.55,
+            5.6,
+            47.95,
+            10.8
+          ],
+          "font": {
+            "face": "MicrosoftYaHeiLight",
+            "size": 4.0,
+            "color": "#E5E5E5",
+            "lineSpacing": 0.0,
+            "indent": 0.0,
+            "letterSpacing": 0.1
+          },
+          "multiline": false,
+          "html": false,
+          "selectable": false,
+          "sampleText": "+++++++++++++++++",
+          "layer": "背景"
+        }
+      ],
+      "hairlineCompensation": null
+    },
+    {
+      "id": "mode-4",
+      "library": "flashswf/UI/玩家信息界面/LIBRARY",
+      "symbol": "sprite/玩家必要信息界面",
+      "frame": 22,
+      "layers": [
+        "战斗模式文字 矢量化",
+        "图标",
+        "背景"
+      ],
+      "viewBox": [
+        -14.66976165771485,
+        -5.9,
+        60.59157485961918,
+        42.73666839599609
+      ],
+      "svgSha256": "a69d91a2a9fd67e9d4834f04503f79ed76e5bc04aaacbfa1b63bac7556cc493d",
+      "bytes": 13217,
+      "textFields": [
+        {
+          "id": "",
+          "variableName": null,
+          "kind": "staticText",
+          "matrix": [
+            1.0,
+            0.0,
+            0.0,
+            1.0,
+            9.2,
+            5.6
+          ],
+          "rect": {
+            "w": 49.5,
+            "h": 5.2
+          },
+          "stageRect": [
+            9.2,
+            5.6,
+            58.7,
+            10.8
+          ],
+          "font": {
+            "face": "MicrosoftYaHeiLight",
+            "size": 4.0,
+            "color": "#E5E5E5",
+            "lineSpacing": 0.0,
+            "indent": 0.0,
+            "letterSpacing": 0.1
+          },
+          "multiline": false,
+          "html": false,
+          "selectable": false,
+          "sampleText": "+++++++++++++++++",
+          "layer": "背景"
+        }
+      ],
+      "hairlineCompensation": null
+    },
+    {
+      "id": "mode-5",
+      "library": "flashswf/UI/玩家信息界面/LIBRARY",
+      "symbol": "sprite/玩家必要信息界面",
+      "frame": 27,
+      "layers": [
+        "战斗模式文字 矢量化",
+        "图标",
+        "背景"
+      ],
+      "viewBox": [
+        -10.65,
+        -5.9,
+        48.8,
+        44.85
+      ],
+      "svgSha256": "0b8346fa367ad674fd03f29fc36047f89bd051b6e2204d67a1122b75f215ba9b",
+      "bytes": 8268,
+      "textFields": [
+        {
+          "id": "",
+          "variableName": null,
+          "kind": "staticText",
+          "matrix": [
+            1.0,
+            0.0,
+            0.0,
+            1.0,
+            -1.45,
+            5.6
+          ],
+          "rect": {
+            "w": 49.5,
+            "h": 5.2
+          },
+          "stageRect": [
+            -1.45,
+            5.6,
+            48.05,
+            10.8
+          ],
+          "font": {
+            "face": "MicrosoftYaHeiLight",
+            "size": 4.0,
+            "color": "#E5E5E5",
+            "lineSpacing": 0.0,
+            "indent": 0.0,
+            "letterSpacing": 0.1
+          },
+          "multiline": false,
+          "html": false,
+          "selectable": false,
+          "sampleText": "+++++++++++++++++",
+          "layer": "背景"
+        }
+      ],
+      "hairlineCompensation": null
+    },
+    {
+      "id": "mode-6",
+      "library": "flashswf/UI/玩家信息界面/LIBRARY",
+      "symbol": "sprite/玩家必要信息界面",
+      "frame": 32,
+      "layers": [
+        "战斗模式文字 矢量化",
+        "图标",
+        "背景"
+      ],
+      "viewBox": [
+        -11.742822265625001,
+        -6.50006103515625,
+        85.43436889648439,
+        47.08672943115234
+      ],
+      "svgSha256": "d97e461ab4cf04edc0a6723c85c2e89d7a768316ab6f9833083861f2ec0ff4cc",
+      "bytes": 1446,
+      "textFields": [],
+      "hairlineCompensation": null
+    },
+    {
+      "id": "mode-7",
+      "library": "flashswf/UI/玩家信息界面/LIBRARY",
+      "symbol": "sprite/玩家必要信息界面",
+      "frame": 37,
+      "layers": [
+        "战斗模式文字 矢量化",
+        "图标",
+        "背景"
+      ],
+      "viewBox": [
+        -11.742822265625001,
+        -6.50006103515625,
+        85.43436889648439,
+        47.08672943115234
+      ],
+      "svgSha256": "d97e461ab4cf04edc0a6723c85c2e89d7a768316ab6f9833083861f2ec0ff4cc",
+      "bytes": 1446,
+      "textFields": [],
+      "hairlineCompensation": null
+    },
+    {
+      "id": "hp-motion-base",
+      "canonicalSvg": "launcher/src/Guardian/Hud/PlayerInfo/Assets/hp/rim.svg",
+      "retainedGroups": [
+        "hp-rim-layer-0001",
+        "hp-rim-static-bevel-expanded"
+      ],
+      "viewBox": [
+        -47.0,
+        -47.0,
+        94.0,
+        94.0
+      ],
+      "svgSha256": "90dd86eaa998d146ae8450879780a61fbdc8b2d0ce191a6b4616a0981fe701c2",
+      "bytes": 3691
+    },
+    {
+      "id": "hp-motion-center",
+      "canonicalSvg": "launcher/src/Guardian/Hud/PlayerInfo/Assets/hp/rim.svg",
+      "retainedGroups": [
+        "hp-rim-layer-0017"
+      ],
+      "viewBox": [
+        -47.0,
+        -47.0,
+        94.0,
+        94.0
+      ],
+      "svgSha256": "738494c8bc422c55bd3ebb05cfadfaac5d5ece5eda3fe058f9ab32290b40b4ab",
+      "bytes": 2020
+    },
+    {
+      "id": "skill-label",
+      "canonicalSvg": "launcher/src/Guardian/Hud/PlayerInfo/Assets/live/skill-label.svg",
+      "viewBox": [
+        0.0,
+        0.0,
+        2259.0,
+        1024.0
+      ],
+      "svgSha256": "aa536e3c775be8017959ddf1906c9737d0248abc2904856440683f166e3df657",
+      "bytes": 925
+    },
+    {
+      "id": "sp-label",
+      "canonicalSvg": "launcher/src/Guardian/Hud/PlayerInfo/Assets/live/sp-label.svg",
+      "viewBox": [
+        0.0,
+        0.0,
+        1679.0,
+        1024.0
+      ],
+      "svgSha256": "ad139afd1b7d98224a9bf4c04bbb5267279579b3f6afb9f022de925a5389aa3f",
+      "bytes": 768
+    },
+    {
+      "id": "ammo-round",
+      "canonicalSvg": "launcher/src/Guardian/Hud/PlayerInfo/Assets/live/ammo-round.svg",
+      "viewBox": [
+        0.0,
+        0.0,
+        6.0,
+        9.0
+      ],
+      "svgSha256": "13922a76347bafad045db0f130c2bb74648d03c411b463421e2497104d6864a9",
+      "bytes": 581
+    },
+    {
+      "id": "ammo-magazine",
+      "canonicalSvg": "launcher/src/Guardian/Hud/PlayerInfo/Assets/live/ammo-magazine.svg",
+      "viewBox": [
+        0.0,
+        0.0,
+        7.0,
+        9.0
+      ],
+      "svgSha256": "0f1853ab9ddbd4044395468ebce7d6369d19fd1bf76f3f33fd8c9397f8c2afdc",
+      "bytes": 1021
+    }
+  ],
+  "liveBarGeometry": {
+    "source": "mp-fill-path-0003",
+    "cells": 10,
+    "nativeBounds": [
+      119.56701606959143,
+      531.427170920372,
+      158.05044109672366,
+      9.547539281845161
+    ]
+  },
+  "hpMotion": {
+    "motifFrames": 100,
+    "gridFrames": 11,
+    "lightLoopFrames": 216,
+    "lightActiveFrames": [
+      49,
+      149
+    ],
+    "pathsAreSourceKeyframesNotBakedImages": true,
+    "liveSeparatorExcludesFixedPercent": true
+  },
+  "sources": [
+    {
+      "path": "CRAZYFLASHER7MercenaryEmpire/LIBRARY/玩家buff界面素材/玩家buff界面边框.xml",
+      "sha256": "a6388e554bd16d6e0eeecd78a0313d03827a19268a706965a619d1cee9b4b7db"
+    },
+    {
+      "path": "flashswf/UI/玩家信息界面/LIBRARY/UI重构/姓名动画.xml",
+      "sha256": "0aad2d1d893b1a315a83c40eacf48e2bdb461e7d424abec5a0d6ce844f049b58"
+    },
+    {
+      "path": "flashswf/UI/玩家信息界面/LIBRARY/UI重构/快捷道具格子.xml",
+      "sha256": "371dc30f9c845a9e49d8daefe8db192e358cca048f39cd1f39f7269363cf6b47"
+    },
+    {
+      "path": "flashswf/UI/玩家信息界面/LIBRARY/UI重构/血槽相关/姓名动画-网格背景.xml",
+      "sha256": "071d73a25e25475961bf234d940791745c46c6346f33cdf3549d54446ab759a1"
+    },
+    {
+      "path": "flashswf/UI/玩家信息界面/LIBRARY/UI重构/血槽相关/血槽光效.xml",
+      "sha256": "67f0c7065eee17aea9847c8483433660c13df9ea2613315c09eb883098832281"
+    },
+    {
+      "path": "flashswf/UI/玩家信息界面/LIBRARY/UI重构/血槽相关/血槽内动画-网格背景.xml",
+      "sha256": "da177b844cb174c6296c5b0b46f5ad9d860dc76d52a205c8e834e35c2f9071bb"
+    },
+    {
+      "path": "flashswf/UI/玩家信息界面/LIBRARY/UI重构/血槽相关/血槽内动画.xml",
+      "sha256": "6557e5eb6e49ecfb94e733a539daaaeea87b956dea3d191a16d94f14860be2cd"
+    },
+    {
+      "path": "flashswf/UI/玩家信息界面/LIBRARY/shape/Symbol 1788.xml",
+      "sha256": "059a3ca4efa25d05a3cd551dd3a2897810d7a238eafe3e3e5f9d4672195a6a11"
+    },
+    {
+      "path": "flashswf/UI/玩家信息界面/LIBRARY/shape/Symbol 1814.xml",
+      "sha256": "c5ec83ef09d8f3be77f45aab1e28199aa952cd6a636ba3b1d8006a09597ad678"
+    },
+    {
+      "path": "flashswf/UI/玩家信息界面/LIBRARY/shape/Symbol 482.xml",
+      "sha256": "57d909766402c3d5a7426fe92f68b33d1580112a9c4df86cc4eb4426f55bcb8f"
+    },
+    {
+      "path": "flashswf/UI/玩家信息界面/LIBRARY/shape/Symbol 537.xml",
+      "sha256": "64ceffd196621e4a110608d00ac4f010b43dc420367d89c28396e40479732913"
+    },
+    {
+      "path": "flashswf/UI/玩家信息界面/LIBRARY/shape/Symbol 861.xml",
+      "sha256": "7cef1565113d64cc7950761f8a11ab3f6ce20dbdb728328595bae2c1debb2eed"
+    },
+    {
+      "path": "flashswf/UI/玩家信息界面/LIBRARY/sprite/Symbol 1792.xml",
+      "sha256": "694cf00a2a7db929a5077220dd5ef369bbaf765d089d1022886b4ef1250d7468"
+    },
+    {
+      "path": "flashswf/UI/玩家信息界面/LIBRARY/sprite/Symbol 1817.xml",
+      "sha256": "408b5c782197601b9d8f120076a4de3e2e5a4bbfd5edf5e9dbef380158fd55c4"
+    },
+    {
+      "path": "flashswf/UI/玩家信息界面/LIBRARY/sprite/Symbol 1859.xml",
+      "sha256": "faeed2e8665389d1dc711693127d936946d0c59dd9f6d5e1a8375e5404621cfc"
+    },
+    {
+      "path": "flashswf/UI/玩家信息界面/LIBRARY/sprite/主角hp显示界面.xml",
+      "sha256": "c5f7b53595be1e511be18d1f06fe29abe017b95db766e0ca60b1588920e1d74b"
+    },
+    {
+      "path": "flashswf/UI/玩家信息界面/LIBRARY/sprite/快捷技能界面.xml",
+      "sha256": "a1c4190968f507cb0c385d74c9ae639ed6e5f32819c1aa46020b9426ecc5bb4c"
+    },
+    {
+      "path": "flashswf/UI/玩家信息界面/LIBRARY/sprite/快捷药剂界面.xml",
+      "sha256": "eb4fda9c9b5d18413e6c85adc2419a1ab965cccc7a950132ff32422e447cf142"
+    },
+    {
+      "path": "flashswf/UI/玩家信息界面/LIBRARY/sprite/战技图标.xml",
+      "sha256": "94287d87dbe4ffad91681be1e581974b74814a3bd3b155d4888ed51a303461cb"
+    },
+    {
+      "path": "flashswf/UI/玩家信息界面/LIBRARY/sprite/物品栏/物品互动提示.xml",
+      "sha256": "270547d2ee2f6e505f02ff2c0f7a888d5ca78f0939f29ae8adff11127ead2660"
+    },
+    {
+      "path": "flashswf/UI/玩家信息界面/LIBRARY/sprite/物品栏/物品满级框.xml",
+      "sha256": "86f9dc1e8a661a482a165b5ad6fe19cea9ec993ab8c553b70bb3632490c29629"
+    },
+    {
+      "path": "flashswf/UI/玩家信息界面/LIBRARY/sprite/玩家必要信息界面.xml",
+      "sha256": "04971f81c00871cdbdeec806241bb8f4c96ad965d392b1868db2486ae4750ca5"
+    },
+    {
+      "path": "flashswf/UI/玩家信息界面/LIBRARY/sprite/药剂组切换图标.xml",
+      "sha256": "e087d45465e908af198b41c494e1d8558df9516fe000cf0d8547ade39ea42e73"
+    },
+    {
+      "path": "flashswf/UI/玩家信息界面/LIBRARY/sprite/透明控件.xml",
+      "sha256": "0f288094243cee1c8a9b99dc1a7a0f2fc3b1be884ff744b033b0d1a67a776d8c"
+    },
+    {
+      "path": "flashswf/UI/玩家信息界面/LIBRARY/横线.xml",
+      "sha256": "c99f17d7050d2f976475a00480b8a0e8af34c67c5148af584d466457aa4f023f"
+    },
+    {
+      "path": "flashswf/arts/新版人物文字信息/LIBRARY/素材-buff详细图标/buff开启动画.xml",
+      "sha256": "8562aeb159a500d1cd664d19d91da137db7d20036e049854f51d87b0edeccb07"
+    },
+    {
+      "path": "flashswf/arts/新版人物文字信息/LIBRARY/素材-buff详细图标/buff边框.xml",
+      "sha256": "e2e97d2f35b8cc9704c143712ae7e20d246db2f507dc22509b7c72d13712bb3a"
+    },
+    {
+      "path": "launcher/src/Guardian/Hud/PlayerInfo/Assets/hp/rim.svg",
+      "sha256": "e2737e1b1dd616b58193b811dceedbdf598891a4b06931daa1eec2c54269205b"
+    },
+    {
+      "path": "launcher/src/Guardian/Hud/PlayerInfo/Assets/live/ammo-magazine.svg",
+      "sha256": "0f1853ab9ddbd4044395468ebce7d6369d19fd1bf76f3f33fd8c9397f8c2afdc"
+    },
+    {
+      "path": "launcher/src/Guardian/Hud/PlayerInfo/Assets/live/ammo-round.svg",
+      "sha256": "13922a76347bafad045db0f130c2bb74648d03c411b463421e2497104d6864a9"
+    },
+    {
+      "path": "launcher/src/Guardian/Hud/PlayerInfo/Assets/live/skill-label.svg",
+      "sha256": "aa536e3c775be8017959ddf1906c9737d0248abc2904856440683f166e3df657"
+    },
+    {
+      "path": "launcher/src/Guardian/Hud/PlayerInfo/Assets/live/sp-label.svg",
+      "sha256": "ad139afd1b7d98224a9bf4c04bbb5267279579b3f6afb9f022de925a5389aa3f"
+    },
+    {
+      "path": "launcher/src/Guardian/Hud/PlayerInfo/Assets/mp/fill.svg",
+      "sha256": "0043d70033de3ce322d71098dc52d69ad4295eea2a8eb272f71bb9c2b3893603"
+    },
+    {
+      "path": "launcher/src/Guardian/Hud/PlayerInfo/Assets/player-info.manifest.json",
+      "sha256": "6f0aaa452343319f861eba8ed678ade24e8b2b87ccd7cd01795d3d6b45fef826"
+    },
+    {
+      "path": "tools/player-info-hud/generate-live-art.py",
+      "sha256": "823a194950ece50ef7b67b9e0da86b94725a51c547f62dd92c244fafe0b53cae"
+    },
+    {
+      "path": "tools/player-info-hud/live-symbols.provenance.json",
+      "sha256": "8f392da095bea5abf05cc3314a7345fa0968eea114c1d1c9a0d3dfe94810f96f"
+    },
+    {
+      "path": "tools/xfl-ui-svg/xfl_to_svg.py",
+      "sha256": "eb788354cc1bdc2788d66fbb67736d25cde5392d86ebfc393b193523d3969d73"
+    }
+  ],
+  "output": {
+    "path": "launcher/src/Guardian/Hud/PlayerInfo/PlayerHudArt.Generated.cs",
+    "sha256": "25d468ba57622be7490ba60ac47204bf0d24f2f3727d03c37ae9e3196cbdcbbf"
+  }
+}

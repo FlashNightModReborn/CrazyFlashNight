@@ -26,27 +26,11 @@ class org.flashNight.arki.item.itemIcon.DrugIcon extends CollectionIcon{
         _root.注释结束();
         if (this.locked || !isCoolDown()) return;
 
-        var 背包 = _root.物品栏.背包;
-        var targetIndex = 背包.getFirstVacancy();
-        if(targetIndex == -1) {
-            _root.发布消息("背包空间不足！");
-            return;
-        }
-        var affinityPreview:Object = DrugSlotAffinityService.previewNormalized(
-            _root, collection);
-        if (affinityPreview == null || affinityPreview.ok !== true) {
-            _root.发布消息("药剂槽状态尚未就绪，请稍后重试！");
-            return;
-        }
-        // 物理药剂槽是唯一权威；旧 _root.快捷物品栏* 镜像已退役。
-        // dirty 必须先于集合首写，确保 move 的同步监听器即使抛错也不会漏存。
-        if (_root.存档系统) _root.存档系统.dirtyMark = true;
-        var result = collection.move(背包,index,targetIndex);
-        if(!result) return;
-        var affinityCommit:Object = DrugSlotAffinityService.recordManualSlots(
-            _root, collection, [Number(index)], true);
-        if (affinityCommit == null || affinityCommit.success !== true) {
-            trace("[DrugIcon] manual unequip affinity reconcile pending");
-        }
+        var current:Object = collection.getItem(String(index));
+        var result:Object = org.flashNight.arki.item.DrugHudMutationService.unequip(
+            _root, Number(index), current, Number(current.value), this.locked);
+        if (result.error == "bag_full") _root.发布消息("背包空间不足！");
+        else if (result.error == "not_ready") _root.发布消息("药剂槽状态尚未就绪，请稍后重试！");
+
     }
 }

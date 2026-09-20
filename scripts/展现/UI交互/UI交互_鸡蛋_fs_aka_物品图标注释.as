@@ -44,30 +44,9 @@ _root.物品图标注释 = function(name, value, baseItem, ownerClip) {
  * - 根据内容长度自动选择单栏或双栏布局
  */
 _root.技能栏技能图标注释 = function(对应数组号) {
-    var 主角技能信息 = _root.主角技能表[对应数组号];
-    var 技能名 = 主角技能信息[0];
-    var 技能信息 = _root.技能表对象[技能名];
-
-    var 是否装备或启用:String;
-    if (技能信息.Equippable)
-        是否装备或启用 = 主角技能信息[2] == true ? "<FONT COLOR='" + TooltipConstants.COL_HP + "'>已装备</FONT>" : "<FONT COLOR='#FFDDDD'>未装备</FONT>";
-    else
-        是否装备或启用 = 主角技能信息[4] == true ? "<FONT COLOR='" + TooltipConstants.COL_HP + "'>已启用</FONT>" : "<FONT COLOR='#FFDDDD'>未启用</FONT>";
-
-    // 简介面板文本（基础信息）
-    var 简介文本 = "<B>" + 技能信息.Name + "</B>";
-    简介文本 += "<BR>" + 技能信息.Type + "   " + 是否装备或启用;
-    简介文本 += "<BR>冷却秒数：" + Math.floor(技能信息.CD / 100) / 10;
-    简介文本 += "<BR>MP消耗：" + 技能信息.MP;
-    简介文本 += "<BR>技能等级：" + 主角技能信息[1];
-
-    // 描述文本（独立出来，用于智能分栏）
-    var 描述文本 = 技能信息.Description ? String(技能信息.Description) : "";
-
-    // 原生注释出口：document 经 native_interaction 下发；通道不可用时回退旧 Flash 渲染
-    var 技能文档:Object = NativeTooltipDocument.buildSkill(技能名, 简介文本, 描述文本);
-    if (NativeTooltipBridge.show(技能文档) == null) {
-        SkillTooltipComposer.renderSkillTooltipSmart(技能名, 简介文本, 描述文本);
+    var parts:Object = SkillTooltipComposer.describeLoadout(对应数组号);
+    if (NativeTooltipBridge.show(parts.document) == null) {
+        SkillTooltipComposer.renderSkillTooltipSmart(parts.name, parts.intro, parts.description);
     }
 };
 

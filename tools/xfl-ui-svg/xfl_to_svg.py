@@ -218,7 +218,7 @@ def parse_stroke_style(ss):
         if tag != 'SolidStroke':
             raise Unsupported('stroke:' + tag)
         fill_el = child.find('./x:fill', NS)
-        fill = parse_fill_style(fill_el[0]) if (fill_el is not None and len(fill_el)) else None
+        fill = parse_fill_style(fill_el) if (fill_el is not None and len(fill_el)) else None
         return {'kind': 'solid', 'weight': float(child.get('weight', '1')),
                 'caps': child.get('caps', 'round'), 'joints': child.get('joints', 'round'),
                 'miter': child.get('miterLimit'), 'scaleMode': child.get('scaleMode', 'normal'),
@@ -939,6 +939,21 @@ def selftest():
     # -> bbox 必须相交为 mask 区；outer 帧 3 仅含该实例 -> bbox=mask+偏移。
     import tempfile
     X = 'xmlns="http://ns.adobe.com/xfl/2008/"'
+    # Stroke paint is inside <fill>; passing its SolidColor child would discard
+    # the color/alpha and silently turn every authored stroke black.
+    stroke_shape = ET.fromstring(('<DOMShape %s><strokes><StrokeStyle index="1">'
+        '<SolidStroke weight="2.4"><fill><SolidColor color="#CCCCCC" alpha="0.6"/>'
+        '</fill></SolidStroke></StrokeStyle></strokes><edges>'
+        '<Edge strokeStyle="1" edges="!0 0|200 0"/></edges></DOMShape>') % X)
+    rendered_stroke = r.shape_to_svg(stroke_shape, '', 'selftest stroke')
+    assert 'stroke="#CCCCCC"' in rendered_stroke and 'stroke-opacity="0.6000"' in rendered_stroke
+    gradient_stroke = ET.fromstring(('<StrokeStyle %s><SolidStroke><fill>'
+        '<LinearGradient><matrix><Matrix/></matrix><GradientEntry color="#333333" ratio="0"/>'
+        '<GradientEntry color="#EEEEEE" ratio="1"/></LinearGradient></fill></SolidStroke></StrokeStyle>') % X)
+    gradient_paint = parse_stroke_style(gradient_stroke)['fill']
+    assert gradient_paint['kind'] == 'linear' and gradient_paint['entries'][1]['color'] == '#EEEEEE'
+    empty_stroke = ET.fromstring(('<StrokeStyle %s><SolidStroke/></StrokeStyle>') % X)
+    assert parse_stroke_style(empty_stroke)['fill']['color'] == '#000000'
     holder = ('<DOMSymbolItem %s><timeline><DOMTimeline><layers>'
               '<DOMLayer name="m" layerType="mask"><frames><DOMFrame index="0">'
               '<elements><DOMShape><edges><Edge fillStyle1="1" edges="'

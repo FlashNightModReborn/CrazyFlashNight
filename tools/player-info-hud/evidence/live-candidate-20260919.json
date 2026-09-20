@@ -1,0 +1,452 @@
+{
+  "schema": "cf7-player-hud-candidate-review.v1",
+  "recordedAtUtc": "2026-09-19T11:47:08.867300+00:00",
+  "baselineCommit": "d0c3abd4eb96a3f0cff62b4b71f448fcf83fd288",
+  "workspace": "E:\\cf7-pi-0919\\resources",
+  "state": "candidate_executed",
+  "deploymentStatus": "NOT_DEPLOYED",
+  "committed": false,
+  "pushed": false,
+  "candidate": {
+    "root": "E:\\cf7-pi-0919\\resources\\tmp\\runtime-candidates\\v2\\pi01",
+    "processIdObserved": 24268,
+    "processPathObserved": "E:\\cf7-pi-0919\\resources\\tmp\\runtime-candidates\\v2\\pi01\\runtime\\CRAZYFLASHER7MercenaryEmpire.Core.exe",
+    "metadata": {
+      "path": "tmp/runtime-candidates/v2/pi01/runtime-build-metadata.v2.json",
+      "bytes": 1242,
+      "sha256": "61A2D4643855404D9B5B3A07B28C04C652BA29D44D11B146B40FF9E6A76132B6"
+    },
+    "artifactSourceHash": "EC57151D7CE5199E9DCAB807776344541D65C08B954949CD0652F47758B8F977",
+    "buildIdentityHash": "A97A1A538D3546197245CAA54B902A391EF2E3C0248C64BFEE0C0F9D29C1DD57",
+    "payloadClosureHash": "91B61AFBBC337E4CA792700429DCE16759821D92C3980A6F20598A447E7F9D3E",
+    "core": {
+      "path": "tmp/runtime-candidates/v2/pi01/runtime/CRAZYFLASHER7MercenaryEmpire.Core.dll",
+      "bytes": 4645888,
+      "sha256": "C287AD0D965B9FFB1F93C7757B592D02A19A278629BF6F8709B4A263FD14801C"
+    },
+    "startEvidence": {
+      "path": "tmp/player-info-full/candidate-start.log",
+      "bytes": 1387,
+      "sha256": "E1EB47A8E4F3420F9B151A0B8ACA504BDEAAB70C11ECC940053B45D8A41DCCBB"
+    },
+    "statusEvidence": {
+      "path": "tmp/player-info-full/candidate-status.log",
+      "bytes": 1408,
+      "sha256": "3D1AF9C79ACD9052B9D820617E67DAB1A10B99497A98049A25A2E15ED236A11E"
+    }
+  },
+  "flashArtifacts": [
+    {
+      "path": "scripts/asLoader.swf",
+      "bytes": 1366255,
+      "sha256": "6ED58A163158A45E7E8C7D049EF7875928EA627291A07787424ED3DD79951063"
+    },
+    {
+      "path": "CRAZYFLASHER7MercenaryEmpire.swf",
+      "bytes": 214239,
+      "sha256": "ED5719ACCCE7934A152ECAE28C6E6A6D814CD85E4F0D06E1948672F6BAD1E0FB"
+    }
+  ],
+  "validation": {
+    "dotnetFocused": {
+      "path": "tmp/player-info-full/test-results/player-hud-final.trx",
+      "bytes": 80452,
+      "sha256": "D199EE78BB00729E3C82176AB7F1C7D769ABF648E1399DE1422B8BD8BDAE7FE7",
+      "passed": 54,
+      "failed": 0,
+      "skipped": 0
+    },
+    "freshAvm1Suites": [
+      {
+        "path": "tmp/player-info-full/as2-evidence/player-hud-flashlog.txt",
+        "bytes": 3361,
+        "sha256": "B3E7158E65F77CFA68F29B54FD5D86A7EC06333E0448D7AA0CA6888EF7CC8AE0",
+        "passedAssertions": 28,
+        "failedAssertions": 0
+      },
+      {
+        "path": "tmp/player-info-full/as2-evidence/manual-input-flashlog.txt",
+        "bytes": 43409,
+        "sha256": "75A35B36F20050A4075108870BF490A4C2C4AA280B1B349169BB8513DD2686EA",
+        "passedAssertions": 615,
+        "failedAssertions": 0
+      },
+      {
+        "path": "tmp/player-info-full/as2-evidence/native-interaction-flashlog.txt",
+        "bytes": 14327,
+        "sha256": "C305C0E26FCAC2D246A02EB1F21AD63BFD4D1BEFB99DCDC62A469304C5DD0F05",
+        "passedAssertions": 356,
+        "failedAssertions": 0
+      }
+    ],
+    "freshCompilerReports": [
+      {
+        "path": "tmp/player-info-full/as2-evidence/player-hud-compiler_errors.txt",
+        "bytes": 27,
+        "sha256": "6D64657E843CFA06C243B6B51F8732C1B5910EBD29940AA7F6F9342B38034FD3",
+        "errors": 0,
+        "warnings": 0,
+        "mode": "test"
+      },
+      {
+        "path": "tmp/player-info-full/as2-evidence/manual-input-compiler_errors.txt",
+        "bytes": 27,
+        "sha256": "6D64657E843CFA06C243B6B51F8732C1B5910EBD29940AA7F6F9342B38034FD3",
+        "errors": 0,
+        "warnings": 0,
+        "mode": "test"
+      },
+      {
+        "path": "tmp/player-info-full/as2-evidence/native-interaction-compiler_errors.txt",
+        "bytes": 27,
+        "sha256": "6D64657E843CFA06C243B6B51F8732C1B5910EBD29940AA7F6F9342B38034FD3",
+        "errors": 0,
+        "warnings": 0,
+        "mode": "test"
+      },
+      {
+        "path": "tmp/player-info-full/as2-evidence/asloader-compiler_errors.txt",
+        "bytes": 27,
+        "sha256": "6D64657E843CFA06C243B6B51F8732C1B5910EBD29940AA7F6F9342B38034FD3",
+        "errors": 0,
+        "warnings": 0,
+        "mode": "publish"
+      },
+      {
+        "path": "tmp/player-info-full/as2-evidence/main-compiler_errors.txt",
+        "bytes": 27,
+        "sha256": "6D64657E843CFA06C243B6B51F8732C1B5910EBD29940AA7F6F9342B38034FD3",
+        "errors": 0,
+        "warnings": 0,
+        "mode": "publish"
+      }
+    ],
+    "publishTraceClaimed": false,
+    "offscreenSizes": [
+      "1024x576",
+      "1920x1080"
+    ],
+    "fullHostSuiteExecuted": true,
+    "performanceQualificationExecuted": false,
+    "fullHostSuite": {
+      "path": "tmp/player-info-full/full-launcher-tests.log",
+      "sha256": "35F3DD137FBC05E0242F439EF20B05EF5FB88E7C729B02B1065C367FA95EBE19",
+      "passed": 5519,
+      "skipped": 4,
+      "failed": 0,
+      "runner": "launcher/tests/run_tests.ps1",
+      "serialPolicyConfirmed": true,
+      "sourceContext": "pi02 cooldown display follow-up"
+    }
+  },
+  "saveIsolation": {
+    "cloneSlotKey": "cf7_hud_0919_bf521230",
+    "donor": "E:\\steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\saves\\cf7_agent_character_build_final.json",
+    "donorSha256Before": "110CEAB2D3D870E165D07238EA373707B8AD3907FD4A21C469028BD1B3A88DB6",
+    "donorSha256After": "110CEAB2D3D870E165D07238EA373707B8AD3907FD4A21C469028BD1B3A88DB6",
+    "saveRestartJourneyVerified": false
+  },
+  "humanFeedback": {
+    "source": "current task user message",
+    "quote": "看起来功能都能跑通，不过6号切换位没有对应的冷却条，但考虑到后面还有画面施工的需求应该不是问题",
+    "scope": "informal functional playtest feedback; visual follow-up accepted",
+    "exhaustiveJourneyAcceptance": false,
+    "finalVisualAcceptance": false,
+    "windowInstruction": "我正在试玩，先保留窗口",
+    "additionalQuote": "战技冷却条似乎也没观测到",
+    "cooldownFixActualPlaytestVerified": false
+  },
+  "remaining": [
+    "pi02 中 6号与战技冷却显示的实际复验及整体画面收束",
+    "帧末采样、弹药桥原值/模式归属、未知模式及异常UTF16反例；战技键位文字需改读行为侧武器技能键",
+    "保存重启及代表性窗口/战斗旅程",
+    "完整HUD性能资格与最终体验验收",
+    "独立发布授权后才进入正式runtime发布"
+  ],
+  "reviewedChangedFiles": [
+    {
+      "path": "CRAZYFLASHER7MercenaryEmpire/DOMDocument.xml",
+      "bytes": 302723,
+      "sha256": "F24FB9D7304C9F841BB3D267197F7E89595A2CB9A9F22D7699B3383B43CABEB1"
+    },
+    {
+      "path": "fonts/fonts.xml",
+      "bytes": 28674,
+      "sha256": "AD7C3FCB9921C5FA3823D4553BCE175D972E4C40EFC6D4BE8FA5C11CFDEBC156"
+    },
+    {
+      "path": "launcher/src/Guardian/Hud/PlayerInfo/PlayerHudArt.Generated.cs",
+      "bytes": 5931,
+      "sha256": "ED59AB46FB0AD676F8792D4315470D5E93697483BCB9D1B458E9376F550A2D4A"
+    },
+    {
+      "path": "launcher/src/Guardian/Hud/PlayerInfo/PlayerHudArtCache.cs",
+      "bytes": 958,
+      "sha256": "41F90839FEE4C6DDDB81440233201B708283016C6C12D9F44475D6110B0FA130"
+    },
+    {
+      "path": "launcher/src/Guardian/Hud/PlayerInfo/PlayerHudController.cs",
+      "bytes": 7493,
+      "sha256": "EB8A4FCAE3BC577E90C284CC4998B6A4480226C987365F4B66FCB4FAEB82CA8B"
+    },
+    {
+      "path": "launcher/src/Guardian/Hud/PlayerInfo/PlayerHudIconCache.cs",
+      "bytes": 2573,
+      "sha256": "7AF3734AE84B54D744F209C91E01E00FC49949315EAD769B488CA28BF44DDD92"
+    },
+    {
+      "path": "launcher/src/Guardian/Hud/PlayerInfo/PlayerHudRuntime.cs",
+      "bytes": 2358,
+      "sha256": "EE8D1BDD176E4D820FA47BBBEC4B1F47A6FF3756F4F47CD429C60DBB24670B6F"
+    },
+    {
+      "path": "launcher/src/Guardian/Hud/PlayerInfo/PlayerHudState.cs",
+      "bytes": 13234,
+      "sha256": "9D6D54FD40960283B6353AA787634139CE3ED39D6CCE13F72D6FA8BACB3B95BE"
+    },
+    {
+      "path": "launcher/src/Guardian/Hud/PlayerInfo/PlayerHudWidgets.cs",
+      "bytes": 18046,
+      "sha256": "1736B727A0E8E2DFB93962E9EEA3BED686DBE44D7DF2C87926EA89960CF3F145"
+    },
+    {
+      "path": "launcher/src/Guardian/Hud/PlayerInfo/PlayerInfoAnimationModel.cs",
+      "bytes": 8896,
+      "sha256": "C7F8006974A660DC8783485F66D060E5E4D883C5C1753F0C76E9192EBC139881"
+    },
+    {
+      "path": "launcher/src/Guardian/Hud/PlayerInfo/PlayerInfoFrameCompositor.cs",
+      "bytes": 50115,
+      "sha256": "D5E843E4C1A6997DA2857E3DA35FB9B6F1867A64A5BD5765978F86F5EB53C368"
+    },
+    {
+      "path": "launcher/src/Guardian/Hud/PlayerInfo/PlayerInfoSplitSurface.cs",
+      "bytes": 26530,
+      "sha256": "07EDAC5F7C7D63FA8E67EE3FD20B539F9DADA271BAD41DF7BC83E2E56B0BD51B"
+    },
+    {
+      "path": "launcher/src/Guardian/Hud/PlayerInfo/PlayerInfoWidget.cs",
+      "bytes": 1591,
+      "sha256": "99C9F66DB44731CE7FD1B418ED7DE00EE9B6947D9795C0C2748C18F2F37F9439"
+    },
+    {
+      "path": "launcher/src/Program.cs",
+      "bytes": 168631,
+      "sha256": "617EBD9A1ED7F6154B53CB0756B0389C1935ED7A6E1C7C9B2096D30F4FEBF9FB"
+    },
+    {
+      "path": "launcher/tests/Fixtures/PlayerHud/as2-wire.json",
+      "bytes": 4968,
+      "sha256": "51677552D17FB8C8F797991AB5D85BFD5CBD6E827EA9E7A2C0764E16A87EA344"
+    },
+    {
+      "path": "launcher/tests/Fonts/RuntimeFontCatalogTests.cs",
+      "bytes": 28579,
+      "sha256": "0ADC2CCD46673B0593ED05C405CDF7D5338307133D8B9D24BD968B042A4D5B59"
+    },
+    {
+      "path": "launcher/tests/Guardian/Hud/PlayerInfo/PlayerHudStateTests.cs",
+      "bytes": 9382,
+      "sha256": "324DC19EE3B90E01EBF946EC8657C04ADE27BEA05D67B47ECB0DAB456B96F000"
+    },
+    {
+      "path": "launcher/tests/Guardian/Hud/PlayerInfo/PlayerHudVisualTests.cs",
+      "bytes": 6016,
+      "sha256": "B31B9183B01E776088464B01309FE1B351397866EC422450CD8F9035507CD854"
+    },
+    {
+      "path": "launcher/tests/Launcher.Tests.csproj",
+      "bytes": 1823,
+      "sha256": "18B1F41880E506EA5A46F4B9B83FBF6269F4DDA63E98ECAB51B023CBE943F2EE"
+    },
+    {
+      "path": "launcher/web/assets/fonts/font-pack-manifest.json",
+      "bytes": 9370,
+      "sha256": "623DB02815C4DB3A3BA998CE03F402A67AC6A99BE8E7FAB33D53D8B0231B01C3"
+    },
+    {
+      "path": "launcher/web/generated/font-catalog.js",
+      "bytes": 31222,
+      "sha256": "1BC6AD5438DCBE28C7F0063D640636472AFBB368735A37906EF2C925388E5602"
+    },
+    {
+      "path": "launcher/web/generated/font-catalog.json",
+      "bytes": 38420,
+      "sha256": "AB8AE60CAC4351112101E67825A656DB09B3FA29224586BFC0EBE702914DAFFC"
+    },
+    {
+      "path": "scripts/run-player-hud-tests.ps1",
+      "bytes": 1033,
+      "sha256": "C18CB699522AF8538D9F09C3EFD981927F148FB04D8D72C99714EC343BFAC185"
+    },
+    {
+      "path": "scripts/run-player-manual-input-tests.ps1",
+      "bytes": 2315,
+      "sha256": "6AD542502E9A3E9A64F730DEF9B1FB7CDC8B99FB277696AC4E6780863C40D672"
+    },
+    {
+      "path": "scripts/test-runners/player-hud/TestLoader.as.template",
+      "bytes": 194,
+      "sha256": "F7F43048D2BDAA10C20AB43E466A3AF902F48A764D5600C29D42A6FA39171235"
+    },
+    {
+      "path": "scripts/展现/UI交互/UI交互_鸡蛋_fs_aka_物品图标注释.as",
+      "bytes": 6875,
+      "sha256": "9FB36242A9C58E3DD985DF1427170ADBEC30AEF4EAD9B56BB5F6221C2B0471B2"
+    },
+    {
+      "path": "scripts/展现/视觉系统/视觉系统_fs_显示列表引擎.as",
+      "bytes": 2401,
+      "sha256": "200D982956F2EAFF9461D7142CAB5D72E346BDDA9FC4FC20D2A3E8E2F19170E7"
+    },
+    {
+      "path": "scripts/类定义/org/flashNight/arki/hud/PlayerHudBuffProjection.as",
+      "bytes": 2285,
+      "sha256": "E761A59F4B14E66344763448EB1F7FDCB687286ACF9B7F51A222CFAC1A32B334"
+    },
+    {
+      "path": "scripts/类定义/org/flashNight/arki/hud/PlayerHudService.as",
+      "bytes": 21720,
+      "sha256": "819F2D8FB9465C06A888D94A849A72E81DCDC12A6DCD15058CC88ECC9D3E32C6"
+    },
+    {
+      "path": "scripts/类定义/org/flashNight/arki/hud/PlayerHudServiceTest.as",
+      "bytes": 9001,
+      "sha256": "22E8655DA5297BD1F61C6964C84A59576649854F8B40FF654A293E3DDDBF2B11"
+    },
+    {
+      "path": "scripts/类定义/org/flashNight/arki/item/DrugHudMutationService.as",
+      "bytes": 1897,
+      "sha256": "2BAA004D98952098FD560DBF823211C04036F5814DECC9CA05A74A0D7874E5A0"
+    },
+    {
+      "path": "scripts/类定义/org/flashNight/arki/item/itemIcon/DrugIcon.as",
+      "bytes": 1296,
+      "sha256": "91D344A6C2128AE5EA68AD36901BEC40E2B0C7CDE7DD7A9E63002D65D70003B6"
+    },
+    {
+      "path": "scripts/类定义/org/flashNight/arki/render/FrameBroadcaster.as",
+      "bytes": 9000,
+      "sha256": "7A0F6B72A46DD5605DDA435E4F54F170B312D7A782EB263AF1F0367A9F27A65F"
+    },
+    {
+      "path": "scripts/类定义/org/flashNight/arki/skill/SkillLoadoutService.as",
+      "bytes": 54876,
+      "sha256": "E7E4E7184B06ADFF85886D2B7F15ED2CE710AF10A98EEB61D51740BCAAC783DA"
+    },
+    {
+      "path": "scripts/类定义/org/flashNight/arki/unit/Action/Skill/DrugInputService.as",
+      "bytes": 25411,
+      "sha256": "30C2631E4E822F7D967302A5B7E34D7140A0B81441E8AD474DC83234CCCA04EB"
+    },
+    {
+      "path": "scripts/类定义/org/flashNight/arki/unit/Action/Skill/WeaponSkillInputService.as",
+      "bytes": 9522,
+      "sha256": "0C165CA3E66EEF8DEDED74D826650DD31081B6DEFBC9D913D08AA21F9A065449"
+    },
+    {
+      "path": "scripts/类定义/org/flashNight/boot/BootSequencer.as",
+      "bytes": 23454,
+      "sha256": "476A60F4E4C4D9D6B386CCC7BFC01ADA4A33ACA3FD921066BCDFF564B8159826"
+    },
+    {
+      "path": "scripts/类定义/org/flashNight/gesh/tooltip/NativeTooltipBridge.as",
+      "bytes": 11820,
+      "sha256": "BA58D260D0ABA2621A627C1D75D888A9AD9FC7E5C15A3B65A09968DA9F554FFE"
+    },
+    {
+      "path": "scripts/类定义/org/flashNight/gesh/tooltip/SkillTooltipComposer.as",
+      "bytes": 5603,
+      "sha256": "94F9BBAE3F2998241AB3F160408023463486E0747A7A68E2264860C9395D5CB3"
+    },
+    {
+      "path": "scripts/类定义/org/flashNight/neur/PerformanceOptimizer/PerformanceActuator.as",
+      "bytes": 7005,
+      "sha256": "08F7E388AF52F4459E00773138B83551B2B74DCC344E1C8445953592B2A625E1"
+    },
+    {
+      "path": "scripts/逻辑/单位函数/单位函数_fs_aka_玩家模板迁移.as",
+      "bytes": 124507,
+      "sha256": "042EBB1A68340546F2FDF0000665338267D2027F1A20863958845A7F71D8563D"
+    },
+    {
+      "path": "tools/player-info-hud/generate-live-art.py",
+      "bytes": 5419,
+      "sha256": "DA9A6FCEB545D2FC6EF85EA053684D2B824401C7601CBC90CE3F6A4B51C2E7FA"
+    },
+    {
+      "path": "tools/player-info-hud/live-art.manifest.json",
+      "bytes": 2265,
+      "sha256": "9545654BA65500805C94DA3291DA76C954BEB6431440D056F3E8881BA128EF4A"
+    }
+  ],
+  "followUpCandidates": [
+    {
+      "name": "pi02",
+      "state": "candidate_built",
+      "executed": false,
+      "root": "E:\\cf7-pi-0919\\resources\\tmp\\runtime-candidates\\v2\\pi02",
+      "change": "Switch and weapon foreground now paint before cooldown shade; add readable progress strips.",
+      "metadata": {
+        "path": "tmp/runtime-candidates/v2/pi02/runtime-build-metadata.v2.json",
+        "sha256": "4D3BF1385020BB5B31B167F6E727CBBFF843A2BF6A6518AB5DCC75E140578D7A",
+        "bytes": 1238
+      },
+      "artifactSourceHash": "016CF5D4E0075E27AA226AEB43AF0960549DA732A240D7DF7C58BC141789B202",
+      "buildIdentityHash": "AF9B5EC1EB9373117B7D09303002C98721081A80843B7ADE5806E7CCA95A48A6",
+      "payloadClosureHash": "D228777BA627404DC0845BF25B877CBB8873B22A5FACE743E898519D744CFD2C",
+      "core": {
+        "path": "tmp/runtime-candidates/v2/pi02/runtime/CRAZYFLASHER7MercenaryEmpire.Core.dll",
+        "sha256": "FB33661F3121D98B37F47572C656D32AC084EB56FDB4B4320A20ED7C4202F723",
+        "bytes": 4646400
+      },
+      "buildEvidence": {
+        "path": "tmp/player-info-full/candidate-pi02-build.log",
+        "sha256": "79963E32CE3F279DA371965BD24CB8554F6C9BA303502D6A55184504503A2E4D",
+        "bytes": 4768
+      },
+      "statusEvidence": {
+        "path": "tmp/player-info-full/candidate-pi02-status.log",
+        "sha256": "C0A5D70D250CFEB984E87A5225B61358E8A38BBC0D7EAFF2695C1714A79B5015",
+        "bytes": 1408
+      },
+      "changedFiles": [
+        {
+          "path": "launcher/src/Guardian/Hud/PlayerInfo/PlayerHudWidgets.cs",
+          "sha256": "7E8B92BF77DC82814BB103D0A267C69CAD270017486BD4F303BF8725D529E94E",
+          "bytes": 18642
+        },
+        {
+          "path": "launcher/tests/Guardian/Hud/PlayerInfo/PlayerHudVisualTests.cs",
+          "sha256": "CE36292CDCEC0736560578FC02478B0796FB939602A5A6888B1F177D10494BC9",
+          "bytes": 9763
+        }
+      ],
+      "regressionBefore": {
+        "path": "tmp/player-info-full/cooldown-regression-before.log",
+        "sha256": "7AA760AE75D3AD2E0FE6EFBF2AD12D15D6F963E555EBCB09493C86D33861A4C0",
+        "bytes": 32716,
+        "failed": 4,
+        "passed": 0,
+        "expectedFailure": true
+      },
+      "regressionAfter": {
+        "path": "tmp/player-info-full/test-results/player-hud-cooldown.trx",
+        "sha256": "884BAC887F1E48518C08F51F34A9FE2CB9C5160A67833883C54F4683B5D3C73D",
+        "bytes": 86368,
+        "passed": 58,
+        "failed": 0,
+        "skipped": 0
+      },
+      "flashChangedAfterPi01": false
+    }
+  ],
+  "playtestExit": {
+    "source": "logs/launcher.log",
+    "windowClose": "19:45:56.437 [Guardian] OnFormClosing state=Ready reason=UserClosing",
+    "flashExit": "19:45:57.468 [Guardian] Flash Player exited, code=0, uptime=1334.4s",
+    "launcherShutdown": "19:45:57.553 [HTTP] Stopped",
+    "agentClosedWindow": false,
+    "saveRestartJourneyVerified": false
+  }
+}

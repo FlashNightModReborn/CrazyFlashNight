@@ -65,17 +65,10 @@ _root.显示列表.播放列表 = function() {
         }
     }
 };
-_root.显示列表
-.预设列表初始化 = function() {
-    var 默认播放动画 = _root.显示列表.默认播放动画;
-    this.预设任务ID = this.添加影片剪辑(_root, function()
-    {
-        默认播放动画(_root.玩家信息界面.快捷药剂界面.姓名框);
-        默认播放动画(_root.玩家信息界面.快捷药剂界面.姓名框.网格动画);
-        默认播放动画(_root.玩家信息界面.主角hp显示界面.血槽内动画);
-        默认播放动画(_root.玩家信息界面.主角hp显示界面.网格动画);
-        默认播放动画(_root.玩家信息界面.主角hp显示界面.血槽光效);
-    });
-}
+_root.显示列表.预设列表初始化 = function() {
+    // Player HUD no longer has MovieClip animation owners. PerformanceActuator
+    // publishes its existing decoration policy to the native projection.
+    this.预设任务ID = undefined;
+};
 
 _root.显示列表.预设列表初始化();

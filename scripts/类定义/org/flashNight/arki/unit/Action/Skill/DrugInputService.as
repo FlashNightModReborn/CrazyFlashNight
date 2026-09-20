@@ -458,6 +458,19 @@ class org.flashNight.arki.unit.Action.Skill.DrugInputService {
         updateSwitchIcon(view);
     }
 
+    /** Mouse group switch shares the domain gate without altering held-key latches. */
+    public static function switchFromHud(unit:Object, expectedBank:Number):Object {
+        if (expectedBank != activeBank) return {success:false, error:"stale_state"};
+        if (!unit || _root.暂停 || _root.当前玩家总数 != 1 || unit.hp < 1) return {success:false, error:"not_ready"};
+        if (!ManualCooldownService.isReady(ManualCooldownService.drugSwitchKey())) return {success:false, error:"cooldown"};
+        var durationMs:Number = Number(_root.药剂组切换冷却时间);
+        if (isNaN(durationMs) || durationMs < 0) durationMs = 3000;
+        if (!ManualCooldownService.start(ManualCooldownService.drugSwitchKey(), durationMs)) return {success:false, error:"not_ready"};
+        activeBank = (activeBank + 1) % BANK_COUNT;
+        latchHeldLanesUntilRelease(unit);
+        return {success:true, changed:true};
+    }
+
     public static function getActiveBank():Number {
         return activeBank;
     }

@@ -730,3 +730,198 @@ instance. It did not enable the PlayerInfo fixture, observe real `pi_*`, or
 establish PlayerInfo-specific E2E. The observed 144 DPI / dpr 1.5 acceptance
 also does not claim cross-renderer pixel parity or a switch to another physical
 monitor.
+
+<a id="live-hud-candidate"></a>
+## Full live HUD candidate
+
+The 2026-09-19 candidate connects the complete HUD to AS2 authority. The B0
+evidence above remains historical and is not overwritten. Current wire and
+ownership are defined by [architecture §4.3](../../docs/玩家信息界面-NativeHud迁移-架构设计-2026-06-21.md#live-player-hud-wire);
+scope, human feedback and remaining acceptance are in [the route §10](../../docs/玩家信息界面完整迁移-复工调研与施工路线-2026-09-12.md#live-candidate-checkpoint).
+
+`generate-live-art.py` uses the existing XFL exporter for 33 semantic assets,
+including the full-width chassis owned by the XP symbol, authored skill/name chrome, eight combat views, bank markers and Buff borders. `live-art.manifest.json` binds source and output
+hashes. The generated C# embeds bounded strict SVG; it does not introduce a
+general runtime XFL interpreter. Run from the repository root:
+
+```powershell
+python -X utf8 tools/player-info-hud/generate-live-art.py --check
+node tools/fontctl/cli.js generate --check
+node tools/assemble-collapsed-frame.js --check
+node tools/check-bom.js
+```
+
+AS2 behavior uses `scripts/run-player-hud-tests.ps1` plus the existing manual
+input and native interaction runners, all through real CS6. The focused
+C# set is `PlayerHudStateTests`, `PlayerHudVisualTests`,
+`PlayerInfoAnimationModelTests` and `RuntimeFontCatalogTests`, using the exact
+SDK from `launcher/resolve-dotnet.ps1`. An actual AVM1-produced JSON fixture
+under `launcher/tests/Fixtures/PlayerHud/` is consumed by the production parser.
+Offscreen rendering at 1024×576, 1920×1080 and 2560×1440 is diagnostic only.
+
+Build/start through `automation/dev.ps1` / `automation/start.ps1` with an
+explicit isolated candidate. Preserve a tester's active window and test-save
+clone. [The current evidence snapshot](evidence/c-stage-20260919.json)
+binds this review to the exact candidate; it is not an approval for promotion.
+
+### Authored C-stage source and optional measurements
+
+`derive-live-symbols.py` is a source-bound extraction tool for the four canonical
+SVG labels/tiny bitmap icons under `PlayerInfo/Assets/live/`. Font programs and
+FFDec output stay in ignored scratch storage. The current child SWF no longer
+exports Aero; the accepted B0 SWF and matching original glyph closure are used
+for Aero outlines, as recorded in `live-symbols.provenance.json`. Existing B0
+glyph data and historical evidence are unchanged. Normal art `--check` verifies
+the canonical SVGs and rerenders the XFL recipes; it does not need font binaries.
+
+Set process environment `CF7_PLAYER_HUD_PROFILE=1` before the standard isolated
+launch to collect `[PlayerHudPerf]` aggregate log records. It adds no gameplay
+writes. AS2 windows cover 300 captures; Host windows cover ten seconds and have
+bounded samples. Report startup/cold behavior, active gameplay and quiet idle
+separately; collector availability does not prove a run occurred. The current
+[C-stage record](evidence/c-stage-20260919.json) records the actual boundary.
+
+The pi03 visual review requested changes (missing chassis, a rectangle above HP,
+MP text placement). pi04 fixes the chassis and resource text; full live visual
+acceptance remains pending. The maintainer has prohibited further Computer Use
+on this machine due to hangs. Window actions and live acceptance are human-owned;
+use source/offscreen checks and serial, necessary build/test work only.
+
+The pi07 resource palette uses `新版人物文字信息`'s shield/poise XFL colors.
+The stagger marker comes from the AS2 impact boundary mapped into its nonlinear
+display coordinate; C# never substitutes a fixed 50% threshold. `playerHudSync`
+opts in with `poiseDetails:true` once per adopted connection, preserving the
+older v1 field set for older candidates. Fresh AS2 wire fixtures cover both
+forms. Rigid/air/down states suppress the ordinary risk marker. Visual tests
+compare the colors to those exact XFL assets and inspect marker suppression.
+
+pi08 responds to the 2026-09-20 screenshot review. Owned surfaces reconcile their
+relative order after presentation (including asynchronous gauges) and owner
+activation/resume; the ordering helper never shows/activates/repositions a
+hidden window. This has modeled arrival-order coverage, not a new live HWND
+acceptance claim. UI name/ready-flash clocks are independent of gameplay pause.
+Source XP ornaments, slot foreground details/plus and LV paths are restored;
+the authored MP side arc is now driven by shield capacity independently of MP.
+Resource numerals use the existing Aero/LCD outlines and poise status replaces
+its label instead of adding a second row. No source XFL or B0 fixture was changed.
+
+pi09 restores the live HP motifs, grid and light from the authored 100/11/216
+frame loops. The generator binds the original tween poses and explicit grid/light
+paths; the runtime owns those paths and only two additional static rasters for the
+current physical plan. It does not bake animation images or change B0's frozen
+SVGs/effect qualification. Live decoration advances at 30 fps independently of
+gameplay pause; hidden/suspended surfaces and the decoration setting still gate it.
+Actual live cost remains a human-run acceptance item.
+
+HP readouts return to the source hierarchy and staggered current/maximum anchors,
+including the separator glow, while explicitly retaining `%` and overflow values.
+The shield side fill keeps source shading but uses the approved cyan hue. With no
+shield, its arc/readouts collapse and LV uses the freed row; depleted shields stay
+distinct. MP and poise percentages form a fixed scan column, with poise status on
+the right. Source, offscreen and human acceptance remain separate.
+
+pi10 separates the authored HP rule from the fixed small percent mark bundled in
+the same `横线` symbol. Live text owns the single percent sign; the generator binds
+the source rule edges and parent transform, leaving the B0 asset/fixture intact.
+Shield quantity and percent occupy the lower left/right wings of the ball. A
+stable bottom row shows LV, level-relative experience percent and earned/required
+experience. Invalid level intervals retain total XP and show an unknown percent.
+Poise follows the MP slanted-cell language; risk cells have notches and cuts,
+buffer cells are parallelograms, and a gap/pointer marks the actual AS2 threshold.
+Tests check the shape difference after discarding hue, plus long resource values.
+
+The follow-up pi11 keeps XP in the original silver/white gradient (`#999999` to
+`#E5E5E5`, checked against `Symbol 1859`), with matching neutral readouts. Shield
+numbers use the established heavier Aero glyphs, 11.5 logical pixels and wider
+wings, after the thin LCD preview was judged insufficiently readable. pi10 was
+an intermediate build only; current human-review identity comes from the evidence
+JSON, and no automatic game launch is performed.
+
+pi12 implements the maintainer's direction A. The generator maps the canonical
+`mp-fill-path-0003` and its parent/gauge transforms into ten shared cell polygons;
+the poise bar uses exactly those x coordinates and dimensions. MP moves up six
+logical pixels with a raised backing, while HP and the shield side arc retain
+their original positions. Risk notches occupy the lower edge, with the division
+still supplied by AS2. The shield plaque is drawn inside the existing gauge
+surface, so no new window or larger bottom union is needed. LV forms a larger
+base below HP, and the resource details target moves to the skill header with
+disjoint hit bounds and the original read-only tooltip route. B0 remains frozen.
+
+pi13 keeps the approved direction A and refines readability. The level number
+uses 18 logical pixels, and the shield plaque retains percentage alongside full
+current/maximum capacity. Poise moves to y=538, about three pixels below MP.
+Standing XP/poise labels are removed; names remain in the existing resource
+tooltip. Only active poise states (stagger, break, rigid, air, down) add a compact
+horizontal hint after the bar. Resource details is an angled dark
+inset fully inside the original white skill band, with a larger disjoint hit area.
+XP percent and full numbers share one baseline at 14.5 logical pixels; the band
+extends to x=298, and the silver fill is three pixels
+high. Eight-digit current/maximum XP is checked at 1024x576 without shrinking.
+The original light curve uses #CCCCCC over #333333. Its black appearance came
+from the shared exporter's incorrect SolidStroke/fill traversal. That parser is
+fixed and self-tested for solid color/alpha and gradient strokes; only this HUD's
+33 assets are regenerated. Frozen B0 and other archived exports remain intact.
+
+
+pi14 follows the maintainer's diagonal-continuity choice. Poise ends at the
+LV/XP base top (y=553); its horizontal offset is the source MP edge slope times
+the row separation, about -6.79 logical pixels. Caption and status anchors follow
+it, with the same ten cells and authoritative risk boundary. The production
+pixel test now checks projected diagonal edges rather than equal x coordinates.
+
+Spacebar/Space display as 空格; raw bindings stay untouched. Cached glyph paths
+fit the actual caption bounds, use a dark backing and brighter type, and clip
+inside each slot. The cache is bounded and disposed with the widget. Resource
+details moves to the right end of the skill band as a full-height angled inset
+with bold, slightly slanted player-info type; the disjoint read-only hit route
+is unchanged. Captures include depleted bars and the complete skill strip.
+
+The source corner marks use 0.1-unit strokes, which lose coverage in native
+rasterization. The live generator compensates these to 0.6 only for the six
+HAIRLINE_RECIPES (frames and ornaments), retaining all paths, colors and other
+widths. Each generated manifest recipe records its compensation count. This is
+a readability adaptation, not a claim of exact Flash raster parity. Frozen B0,
+source XFL, animated grids and unrelated exports stay unchanged.
+
+
+Before pi14 delivery, offscreen review requested alignment with the adjacent
+source header stripes. pi15 therefore uses the source stripe's top/bottom
+(518.05/525.75) and down-right lean (9.2 across7.7 units). The details cutout ends
+1.9 units before the first stripe at both parallel edges. Its caption stays
+inside and the expanded tooltip hit area remains disjoint from skill actions.
+The existing details test binds these geometry checks to the generated source
+stripe path. pi14 remains an unexecuted intermediate; pi15 is the review target.
+
+
+pi16 follows the approved icon-only direction. The first original right-hand
+header stripe now contains a geometric circled i; the four-character permanent
+label and its separate cutout are removed. The stripe's original fill remains
+visible and brightens on hover. Its larger23.65x13.7 logical hit area stays clear
+of skill/unequip targets, uses the existing Chinese resources tooltip, and never
+emits a gameplay write. The old label location no longer hits. The icon requires
+no font/path cache, and the stripe geometry is checked against the embedded art.
+
+
+pi17 implements the explicitly bounded follow-up: richer resource details,
+Buff style alignment only, and cooldown captions. PlayerHudResourceTooltip
+projects the adopted vitals into an owned NativeTooltipWidget on the existing
+bottom overlay; only resource hovers stay local, with no AS2 show request or
+new wire fields. Numeric overflow is nonnegative, XP is level-relative, and the
+poise phase remains authoritative while the boundary is marked approximate.
+The document updates in place, ignores cooldown-only changes, and ends on
+hide/suppression/disconnection/actor epoch changes. The bottom overlay expands
+only while the details are visible; no extra window or full top/bottom union.
+
+Cooldown captions use the v1 step unit (33.33333 ms), bound by a source contract
+test to ManualCooldownService.FRAME_MS. They never advance on UI ticks; ready
+alone restores the key. Fractional seconds, integer seconds, minutes and hours
+fit the existing caption region; locked zero progress remains at least0.1s.
+Weapon/switch progress strips sit above captions. Eighteen lane-owned glyph
+entries replace the shared string cache to bound countdown churn.
+
+Buffs retain their order,32-column wrapping and26-step timer ratio. Only the
+presentation changes to NativeHudTheme: top-aligned32-unit rows, dark plates,
+device-pixel frames, neutral placeholders and a small remaining-time bar.
+Empty lists hide their frame. Missing names/icons/sources/polarity/stacks and
+full Buff interaction remain deferred; untimed is not labeled permanent.
+No AS2, SWF, game rules or save data changes are required for this increment.

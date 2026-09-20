@@ -51,6 +51,12 @@ class Base64
         
         return output.join("");
     }
+
+    /** Display projections replace isolated UTF-16 surrogates; strict encode callers keep their contract. */
+    public static function encodeDisplay(input:String):String
+    {
+        return encodeBytes(stringToUTF8Bytes(input, true));
+    }
     
     /**
      * Base64 解码
@@ -134,13 +140,20 @@ class Base64
 	 * @param str 要转换的字符串
 	 * @return UTF-8 字节数组
 	 */
-	private static function stringToUTF8Bytes(str:String):Array
+	private static function stringToUTF8Bytes(str:String, replaceInvalid:Boolean):Array
 	{
 		var bytes:Array = [];
 		var i:Number = 0;
 		while (i < str.length)
 		{
 			var c:Number = str.charCodeAt(i++);
+			if (replaceInvalid && c >= 0xD800 && c <= 0xDFFF) {
+				var next:Number = str.charCodeAt(i);
+				if (c > 0xDBFF || i >= str.length || next < 0xDC00 || next > 0xDFFF) {
+					bytes.push(0xEF, 0xBF, 0xBD);
+					continue;
+				}
+			}
 			// 检查是否是高代理项
 			if (c >= 0xD800 && c <= 0xDBFF && i < str.length)
 			{

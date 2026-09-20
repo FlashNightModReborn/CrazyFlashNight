@@ -1,0 +1,66 @@
+{
+  "version": 1,
+  "generator": {
+    "path": "tools/player-info-hud/derive-live-symbols.py",
+    "sha256": "A312465936B16915146A8C09F90EDC5A7151581954AC4FF72F2BCFE7BCD30857"
+  },
+  "fontSource": {
+    "repositoryCommit": "891d9b08dbd826d8b2624c6bdc59082b3db57ecd",
+    "swf": "flashswf/UI/玩家信息界面.swf",
+    "swfSha256": "450B1F9A8B445EE3E28C63682EA00124A191F56D05D759B8590210FC0066A615",
+    "fontSha256": "673B4896FDAFCC49E377200D287ABDF55BB2D61928CBBB28902BAE05B7141404",
+    "font": "Aero",
+    "distribution": "derived paths only"
+  },
+  "bitmapSources": [
+    {
+      "path": "flashswf/UI/玩家信息界面/bin/M 1 1716646761.dat",
+      "sha256": "362FD55864189026B9C14909731CCD1D47FF7574388EF1C7DC1AD666475ED554"
+    },
+    {
+      "path": "flashswf/UI/玩家信息界面/bin/M 2 1716646761.dat",
+      "sha256": "C3DB5B6441C801B5399D4AF088E170F1EF890C2840D95B7A2BDCED1FE4B272B0"
+    }
+  ],
+  "bitmapSwfSha256": "892779F0C202302F69F22E39D0B9AEF3DB5E74B19FD4CC8FAFC950DD3DB3BA9B",
+  "assets": [
+    {
+      "id": "skill-label",
+      "path": "launcher/src/Guardian/Hud/PlayerInfo/Assets/live/skill-label.svg",
+      "sha256": "AA536E3C775BE8017959DDF1906C9737D0248ABC2904856440683F166E3DF657",
+      "label": "Skill",
+      "unitsPerEm": 1024,
+      "advance": 2259,
+      "ascent": 765
+    },
+    {
+      "id": "sp-label",
+      "path": "launcher/src/Guardian/Hud/PlayerInfo/Assets/live/sp-label.svg",
+      "sha256": "AD139AFD1B7D98224A9BF4C04BBB5267279579B3F6AFB9F022DE925A5389AA3F",
+      "label": "SP.",
+      "unitsPerEm": 1024,
+      "advance": 1679,
+      "ascent": 765
+    },
+    {
+      "id": "ammo-round",
+      "path": "launcher/src/Guardian/Hud/PlayerInfo/Assets/live/ammo-round.svg",
+      "sha256": "13922A76347BAFAD045DB0F130C2BB74648D03C411B463421E2497104D6864A9",
+      "sourcePngSha256": "07F2C5A26255FCC06C8DECBC25F330CF92C39D4D48880A5B1CE525A57C4A4BC0",
+      "pixelSize": [
+        6,
+        9
+      ]
+    },
+    {
+      "id": "ammo-magazine",
+      "path": "launcher/src/Guardian/Hud/PlayerInfo/Assets/live/ammo-magazine.svg",
+      "sha256": "0F1853AB9DDBD4044395468EBCE7D6369D19FD1BF76F3F33FD8C9397F8C2AFDC",
+      "sourcePngSha256": "F352BCA4FD10CB4C00F81FE23D46B6EAC7B69CDFFAB8B3182169EFCB0E3FB9FD",
+      "pixelSize": [
+        7,
+        9
+      ]
+    }
+  ]
+}

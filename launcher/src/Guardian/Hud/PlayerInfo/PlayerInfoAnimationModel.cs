@@ -29,6 +29,20 @@ internal sealed class PlayerInfoAnimationModel : IPlayerInfoVisualStateSource
         _logicalFrameRemainderNumerator;
     internal bool WantsAnimationTick => VisualState.WantsAnimationTick;
 
+    internal void ResetProduction()
+    {
+        _hp.Reset(); _mp.Reset(); _logicalFrameRemainderNumerator = 0;
+        LastFixtureCaseId = null; VisualState = CreateVisualState();
+    }
+
+    internal bool ApplyProduction(PlayerHudVitals values)
+    {
+        LastFixtureCaseId = null;
+        var changed = _hp.Apply(new(values.Hp, values.HpMax), true) |
+            _mp.Apply(new(values.Mp, values.MpMax), true);
+        VisualState = CreateVisualState(); return changed;
+    }
+
     internal bool ApplyFixture(PlayerInfoFixtureInput fixture)
     {
         ArgumentNullException.ThrowIfNull(fixture);
@@ -108,12 +122,19 @@ internal sealed class PlayerInfoAnimationModel : IPlayerInfoVisualStateSource
         internal PlayerInfoGaugeVisualState State { get; private set; }
         internal bool WantsAnimationTick => State.WantsAnimationTick;
 
-        internal bool Apply(PlayerInfoGaugeInput? input)
+        internal void Reset() => State = PlayerInfoGaugeVisualState.Unrenderable(_gaugeId);
+
+        internal bool Apply(PlayerInfoGaugeInput? input, bool preserveRaw = false)
         {
             var before = State;
             PlayerInfoInputDiagnostic? invalid = Validate(input);
             if (invalid.HasValue)
             {
+                if (preserveRaw)
+                {
+                    State = PlayerInfoGaugeVisualState.Unrenderable(_gaugeId).WithInputStatus(false, invalid);
+                    return before.HasRenderableState;
+                }
                 State = State.WithInputStatus(
                     isInputValid: false,
                     invalid);
@@ -127,11 +148,12 @@ internal sealed class PlayerInfoAnimationModel : IPlayerInfoVisualStateSource
                 valid.Maximum);
             var ratio = clampedCurrent / valid.Maximum;
             var targetFrame = MapVirtualFrame(ratio, _ratioSteps);
+            var displayCurrent = preserveRaw ? valid.Current : clampedCurrent;
             var currentText =
-                PlayerInfoGaugeVisualState.FormatFlooredValue(clampedCurrent);
+                PlayerInfoGaugeVisualState.FormatFlooredValue(displayCurrent);
             var maximumText =
                 PlayerInfoGaugeVisualState.FormatFlooredValue(valid.Maximum);
-            var percentValue = Math.Floor(ratio * 100d)
+            var percentValue = Math.Floor((preserveRaw ? valid.Current / valid.Maximum : ratio) * 100d)
                 .ToString("0", System.Globalization.CultureInfo.InvariantCulture);
             var percentText = _appendPercentSign
                 ? percentValue + "%"
@@ -147,7 +169,7 @@ internal sealed class PlayerInfoAnimationModel : IPlayerInfoVisualStateSource
                 _gaugeId,
                 hasRenderableState: true,
                 isInputValid: true,
-                clampedCurrent,
+                displayCurrent,
                 valid.Maximum,
                 ratio,
                 currentFrame,

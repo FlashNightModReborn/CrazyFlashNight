@@ -76,6 +76,7 @@ class org.flashNight.neur.PerformanceOptimizer.PerformanceActuator {
      * @param softU:Number  软旋钮插值 [0,1]（0=全质量, 1=最大降载）
      */
     public function apply(tier:Number, softU:Number):Void {
+        _root.__nativeHudDecorations = tier === 0;
         var root:Object = this._env.root;
         var es:Object = this._env.EffectSystem;
         var dr:Object = this._env.DeathEffectRenderer;
