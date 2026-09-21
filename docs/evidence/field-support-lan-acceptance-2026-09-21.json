@@ -1,0 +1,64 @@
+{
+  "schema": "cf7-field-support-acceptance-slice.v1",
+  "date": "2026-09-21",
+  "tester": "维护者操作开发机 A/B，Agent 执行和核对",
+  "verdict": "partial_acceptance_not_issue_closure",
+  "scope": "maintainer_two_machine_same_lan",
+  "tool": {
+    "version": "0.1.1",
+    "buildId": "20260921-092323",
+    "zipSha256": "82545EF88DBD8981B87154FA37D3278185F49712CB124B5478DEEBC6C4500A13",
+    "runtimeDllSha256": "4D628588344683420AD66214F40BEF075EDB160D5F4EE144E27619F4A204049A",
+    "sourceSnapshotSha256": "7F688601FE39A5438457EC4779392E01621784BC2822A253A6648565D948B5EA",
+    "sourceCommitted": false
+  },
+  "network": {
+    "topology": "same_lan_wifi_confirmed_by_tester",
+    "observedTransport": "tailscale_direct_ipv6",
+    "embeddedTargetEnrollment": "completed_by_maintainer",
+    "crossNetworkQualified": false,
+    "relayQualified": false
+  },
+  "checks": {
+    "pairingFingerprintConfirmedAtTarget": true,
+    "questionBodyOptionsAndInputConfirmed": true,
+    "freeTextReplyReceived": true,
+    "replacementBackupAndRestore": "passed_on_new_tmp_fixture",
+    "restoreConflict": "later_bytes_preserved_and_download_verified",
+    "fixtureFinallyRestored": true,
+    "runtimeCandidateImport": "passed",
+    "runtimeCandidateStartupIdentity": "passed",
+    "startupScreenAndNormalClose": "confirmed_by_tester",
+    "relatedGameProcessesAfterClose": 0,
+    "developerFinishAcknowledged": true,
+    "controllerEndedAndExited": true,
+    "localStatusAfterFinish": "no_active_controller"
+  },
+  "gameCandidate": {
+    "fixtureSource": "existing_u3_sleep_candidate_20260919",
+    "state": "candidate_executed",
+    "journey": "startup_screen_then_normal_close_without_entering_character",
+    "buildIdentity": "502648379E195B64C6BDD0DCADEF60DBBE1A036EA91E8B39EAE20392DC2D9EC5",
+    "payloadClosure": "9DB5B739E444556AA5D4472110CFE0ED5601BF773C21C012FC53E15431028118",
+    "coreSha256": "18BF0F0CDA3A4628C1B30404CFE64250D43709BD07DFCC7AB80AA50E75B05DE4",
+    "promotionPerformed": false
+  },
+  "preservation": {
+    "protectedSaveFilesCompared": 29,
+    "protectedSaveFilesUnchanged": true,
+    "saveLifecycleMetadataExcluded": ["saves/.launcher-version-marker.json"],
+    "formalRuntimeFilesCompared": 34,
+    "formalRuntimeFilesUnchanged": true,
+    "originalSaveBytesBackedUpOnTarget": true
+  },
+  "remaining": [
+    "different_network_route_and_transfer_acceptance",
+    "new_question_sound_or_prominent_attention_reminder_implementation_and_acceptance",
+    "target_active_revoke_during_long_command",
+    "physical_network_loss_and_bounded_expiry",
+    "assistant_crash_restart_and_remaining_abnormal_matrix",
+    "real_tester_field_use_and_issue_106_investigation"
+  ],
+  "localEvidence": "tmp/field-support-acceptance/54f6536a/",
+  "privacy": "Raw machine paths, tickets, save bytes and field output remain local; this record contains only the bounded acceptance summary."
+}

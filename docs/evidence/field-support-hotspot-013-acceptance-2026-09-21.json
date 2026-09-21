@@ -1,0 +1,63 @@
+{
+  "schema": "cf7-field-support-acceptance-slice.v1",
+  "date": "2026-09-21",
+  "toolVersion": "0.1.3",
+  "buildId": "20260921-111032",
+  "sourceSnapshotSha256": "8EB6CB48FBF580192BA678C062B8191AB2569BDD42EE9A4B5768F0122407D6AB",
+  "bBinaryIdentity": "C# and Go SHA-256 matched delivered package",
+  "network": {
+    "a": "Wi-Fi",
+    "b": "phone hotspot; cellular upstream confirmed in previous round, no topology change reported",
+    "observedRoute": "direct",
+    "pingSampleMs": [
+      61,
+      4,
+      11
+    ],
+    "continuousConnectionSeconds": 310.7614689,
+    "continuityPassed": true,
+    "relayQualified": false,
+    "crossContinentQualified": false
+  },
+  "transfer": {
+    "bytes": 1048576,
+    "roundtripHashMatch": true,
+    "uploadWallMs": 792,
+    "downloadWallMs": 972
+  },
+  "backgroundReminder": {
+    "state": "answered",
+    "answer": "声音和弹窗正常，未抢焦点，点开回到本题",
+    "preparation": "Tester confirmed readiness, followed by at least 22 seconds before sending question"
+  },
+  "ending": {
+    "humanAction": "Tester clicked End diagnosis",
+    "humanUiReceipt": "已结束，三处显示都正常",
+    "uiChecks": [
+      "你已结束本次诊断",
+      "重新准备诊断",
+      "No stale waiting-for-maintainer feedback"
+    ],
+    "controllerState": "ended",
+    "controllerExitObserved": true,
+    "postRevokeCliRejected": true,
+    "controllerReceiveFailure": "SocketException 10054 after target-side revocation",
+    "developerFinishSent": false,
+    "oldTicketReuseAttempted": false
+  },
+  "scope": {
+    "gameLaunched": false,
+    "gameFilesReplaced": false,
+    "saveWrites": false,
+    "remoteActions": "Read-only running-tool identity probe, isolated transfer fixture and GUI questions"
+  },
+  "remaining": [
+    "Prior 0.1.2 disconnect root cause not established",
+    "DERP relay and cross-continent experience",
+    "Longer soak and real network interruption",
+    "Mute preferences and question cancel/expiry behavior on real B machine",
+    "Full issue #105 acceptance and real tester bug diagnosis"
+  ],
+  "qualification": "Passed this bounded hotspot connectivity, background reminder and tester revocation slice; not complete issue or long-term stability qualification",
+  "rawEvidence": "Private local acceptance directory; no tickets, addresses, full paths or stack traces in this summary"
+}

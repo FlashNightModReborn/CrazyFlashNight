@@ -1,0 +1,32 @@
+{
+  "schema": "cf7-field-support-acceptance-slice.v1",
+  "date": "2026-09-21",
+  "toolVersion": "0.1.2",
+  "buildId": "20260921-104842",
+  "sourceSnapshotSha256": "F55392B4B10E9928C99681BF7A61221BCC8433E19C5B9D16409EE53CAC302E23",
+  "bBinaryIdentity": "C# and Go binary SHA-256 values matched the delivered package",
+  "network": {
+    "a": "Wi-Fi",
+    "b": "phone hotspot; tester explicitly answered cellular data",
+    "observedRoute": "direct",
+    "pingSampleMs": [9, 5, 9],
+    "relayQualified": false,
+    "crossContinentQualified": false
+  },
+  "transfer": {"bytes": 1048576, "roundtripHashMatch": true, "uploadWallMs": 1231, "downloadWallMs": 1192},
+  "foregroundAnswer": "引导清楚，听到提示音",
+  "backgroundReminder": "Not completed; initial answer was not ready, connection ended after the preparation answer",
+  "ending": {
+    "targetReason": "connection_closed",
+    "targetError": "EndOfStreamException: Unable to read beyond the end of the stream.",
+    "controllerState": "ended",
+    "controllerExitObserved": true,
+    "developerFinishSent": false,
+    "targetReasonWasExplicitRevocationOrExpiry": false,
+    "rootCause": "unknown; old controller did not persist underlying transport or heartbeat failure"
+  },
+  "uiDefects": ["Ended session retained waiting-for-maintainer feedback", "Ended screenshot showed a large empty scrolled area and no visible restart controls"],
+  "scope": {"gameLaunched": false, "gameFilesReplaced": false, "saveWrites": false},
+  "qualification": "partial cross-network connectivity and foreground UX evidence; not full acceptance, root-cause resolution or new-package qualification",
+  "rawEvidence": "Private local acceptance directory; tickets, addresses and full machine paths are not published"
+}
