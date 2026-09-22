@@ -48,6 +48,7 @@
 | 动作、子元件、局部原点与换皮后拼装 | [monster-reskin-pipeline](../tools/monster-reskin-pipeline/README.md) |
 | 重名、linkage 冲突、Include / 引用一致性 | [scripts/tools/xfl](../scripts/tools/xfl/README.md) |
 | 迁移 UI 时复用原作者路径、按钮状态与布局 | [xfl-ui-svg](../tools/xfl-ui-svg/README.md)；只读 XFL 导出 SVG/布局，未覆盖的滤镜与时间轴能力写入 manifest，不以导出成功声称完全还原 |
+| 战斗素材派生与原生表现白名单 | [战斗表现迁移契约](combat-presentation-migration.md#5-flash-真源与导出)；Flash 编辑真源不分叉，派生格式与行为接管分别验证 |
 | 装备运行时逻辑、特效或生命周期接线 | [装备函数 README](../scripts/逻辑/装备函数/README.md) |
 | Flash 编译目标、静态与实际运行验证边界 | [testing-guide.md](testing-guide.md) |
 
