@@ -70,6 +70,9 @@
     --ss-panel-grad-top-rgb: 17,25,35;
     --ss-panel-grad-bottom-rgb: 8,12,18;
     --ss-line-rgb: 148,163,184;
+    --ss-leader-edge-rgb: 12,14,15;
+    --ss-leader-ink-rgb: 224,201,158;
+    --ss-leader-active-rgb: 255,240,201;
     --ss-black-rgb: 0,0,0;
     --ss-white-rgb: 255,255,255;
     --ss-header-rgb: 8,13,20;
@@ -578,9 +581,9 @@
 .stage-select-diorama-comparison label { display: inline-flex; align-items: center; gap: 4px; padding: 0 4px; }
 .stage-select-location-leader { position: absolute; left: 20px; top: 20px; width: 1px; height: 1px; overflow: visible; pointer-events: none; }
 .stage-select-location-leader path { fill: none; stroke-linecap: round; pointer-events: none; }
-.stage-select-leader-edge { stroke: rgba(12, 14, 15, .9); stroke-width: 5; }
-.stage-select-leader-ink { stroke: #e0c99e; stroke-width: 2.5; }
-.stage-select-stage-button:is(:hover, .is-kb-focus, .is-selected) .stage-select-leader-ink { stroke: #fff0c9; stroke-width: 3.5; }
+.stage-select-leader-edge { stroke: rgba(var(--ss-leader-edge-rgb), .9); stroke-width: 5; }
+.stage-select-leader-ink { stroke: rgb(var(--ss-leader-ink-rgb)); stroke-width: 2.5; }
+.stage-select-stage-button:is(:hover, .is-kb-focus, .is-selected) .stage-select-leader-ink { stroke: rgb(var(--ss-leader-active-rgb)); stroke-width: 3.5; }
 .stage-select-stage-button:is(:hover, .is-kb-focus, .is-selected) .stage-select-leader-edge { stroke-width: 6; }
 .stage-select-panel.is-stage-focused .stage-select-diorama-comparison,
 .stage-select-panel.is-camera-editing .stage-select-diorama-comparison { display: none; }
