@@ -536,14 +536,15 @@ class org.flashNight.neur.Server.ServerManager {
         // 性能调度快车道：P{tier}|{softU_x100}（绕过 JSON 解析）
         if (prefix == "P") {
             var payload:String = data.substring(1);
-            var sep:Number = payload.indexOf("|");
-            if (sep >= 0) {
-                var tier:Number = Number(payload.substring(0, sep));
-                var softU100:Number = Number(payload.substring(sep + 1));
+            var perfParts:Array = payload.split("|");
+            if (perfParts.length == 2 || perfParts.length == 5) {
+                var tier:Number = Number(perfParts[0]);
+                var softU100:Number = Number(perfParts[1]);
                 if (!isNaN(tier) && !isNaN(softU100)) {
                     var sched:Object = _root.帧计时器.scheduler;
                     if (sched != null) {
-                        sched.applyFromLauncher(tier, softU100 / 100);
+                        if (perfParts.length == 5) sched.applyFromLauncher(tier, softU100 / 100, String(perfParts[2]), Number(perfParts[3]), Number(perfParts[4]));
+                        else sched.applyFromLauncher(tier, softU100 / 100);
                     }
                 }
             }

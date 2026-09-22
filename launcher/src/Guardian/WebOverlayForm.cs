@@ -3548,6 +3548,10 @@ namespace CF7Launcher.Guardian
             _interactionWheelProbe = wheelProbe;
         }
 
+        // Route world pointer events through the existing hook. Moves keep updating
+        // the OS cursor; owned button/wheel edges go only to the mapped Flash bridge.
+        internal Func<int,int,int,uint,bool> WorldDragInputRouter;
+
         private void EnsureCursorHook()
         {
             if (_cursorHook != IntPtr.Zero || _disposed)
@@ -3632,6 +3636,8 @@ namespace CF7Launcher.Guardian
                         if (consumed)
                             return new IntPtr(1);
                     }
+                    var worldDrag=WorldDragInputRouter;
+                    if (worldDrag!=null && worldDrag(info.pt.X,info.pt.Y,message,info.mouseData)) return new IntPtr(1);
                 }
             }
 

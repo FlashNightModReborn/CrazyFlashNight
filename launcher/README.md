@@ -120,7 +120,7 @@ Agent Runtime 的 wire、受信 runner、credential bootstrap、30 秒预算和 
 
 <a id="source-map"></a>
 ## 源码职责地图
-**最后核对代码基线**：commit `757ef93637` 加 2026-09-13 对白候选工作区；其他子系统职责保持原有边界。
+**最后核对代码基线**：commit `c32d71ffd9a3ab8b307aee386cab88822450ba0b` 加 2026-09-21 合成实验工作区（本轮仅核对实验入口）；其他子系统保留原有核对范围。
 
 本节是职责地图，不是手写文件 inventory。C# 主项目采用 SDK 默认递归 `**/*.cs`，实际排除项以 [主 csproj 的 `DefaultItemExcludes`](CRAZYFLASHER7MercenaryEmpire.csproj)为准；测试项目同样使用 SDK 隐式项。
 
@@ -146,6 +146,9 @@ Agent Runtime 的 wire、受信 runner、credential bootstrap、30 秒预算和 
 <!-- launcher-source-map:end -->
 
 新增一级职责目录、移动入口或改变 SDK include/exclude 规则时，必须同步本节和文档治理检查。
+
+世界光照由 `src/Guardian/WorldCompositor/`、`src/Tasks/WorldLightingTask.cs` 和 `native/world-compositor/` 接管，配套构建默认启用；AS2 视觉状态约 2 Hz 投影，玩法权威不迁移。`RenderSchedule` / `PerfDecisionEngine.Render` 统一调度实际 Flash 视口、quality 与 softU，x64 输入桥处理缩放后的鼠标事件。
+启动命令、预设、配置与人验边界见 [世界光照捕获合成](perf/flash-compositor/README.md)；原生模块由正式 producer 独立构建，部署事实以 runtime manifest/consensus 为准。
 
 ## 构建、候选与发布
 

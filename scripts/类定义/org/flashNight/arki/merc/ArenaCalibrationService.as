@@ -1809,6 +1809,10 @@ class org.flashNight.arki.merc.ArenaCalibrationService {
             clearCalibrationGlobals();
             return false;
         }
+        // This no-player stage intentionally has no ordinary arrival/SceneReady
+        // receipt. Only admit the prepared visual world; do not publish that gameplay event.
+        org.flashNight.arki.weather.WorldLightingBridge.sceneReady();
+        org.flashNight.arki.weather.WorldLightingBridge.publish(org.flashNight.arki.weather.WeatherSystem.getInstance(), true);
         return true;
     }
 

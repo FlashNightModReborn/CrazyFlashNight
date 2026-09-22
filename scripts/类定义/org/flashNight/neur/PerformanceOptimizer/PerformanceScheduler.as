@@ -50,6 +50,9 @@ class org.flashNight.neur.PerformanceOptimizer.PerformanceScheduler {
     // --- 本地后备（断连时使用）---
     private var _fallbackUpgradeCount:Number;
     private var _panicFPS:Number;
+    private var _sampleSequence:Number;
+    private var _appliedCommand:Number;
+    private var _renderQuality:String;
 
     /**
      * 构造函数
@@ -84,6 +87,9 @@ class org.flashNight.neur.PerformanceOptimizer.PerformanceScheduler {
         this._sceneEpoch = 0;
         this._fallbackUpgradeCount = 0;
         this._panicFPS = 5;
+        this._sampleSequence = 0;
+        this._appliedCommand = 0;
+        this._renderQuality = this._presetQuality;
     }
 
     /**
@@ -91,20 +97,20 @@ class org.flashNight.neur.PerformanceOptimizer.PerformanceScheduler {
      */
     public function evaluate(currentTime:Number):Void {
         var sampler:Object = this._sampler;
-        if (--sampler._framesLeft !== 0) {
-            return;
-        }
-
         if (currentTime == undefined) {
             currentTime = getTimer();
         }
+        if (!sampler.observe(currentTime)) return;
 
         var root:Object = this._env.root;
         var currentLevel:Number = this._performanceLevel;
 
         // 测量：区间平均 FPS
-        var actualFPS:Number = sampler.measure(currentTime, currentLevel);
+        var actualFPS:Number = sampler.sampleFrames * 1000 / sampler.sampleDurationMs;
         this._actualFPS = actualFPS;
+        // Build the measured payload before resetting the sampler. No synthetic FPS
+        // is admitted into the dynamic-resolution controller.
+        var measuredPayload:String = this.buildMeasuredPayload(actualFPS, currentLevel);
 
         // ── hold 窗口到期检查（前馈 setPerformanceLevel 挂起了远程模式）──
         if (this._holdUntilMs > 0 && currentTime >= this._holdUntilMs) {
@@ -119,10 +125,7 @@ class org.flashNight.neur.PerformanceOptimizer.PerformanceScheduler {
         // ── hold 窗口期间: 只采样+广播，不决策（远程和本地都不干预）──
         if (this._holdUntilMs > 0) {
             sampler.resetInterval(currentTime, currentLevel);
-            var fpsStrH:String = String(Math.round(actualFPS * 10) / 10);
-            var hourStrH:String = (root.天气系统 != undefined) ? String(root.天气系统.getCurrentTime()) : "6";
-            fpsStrH += "|" + hourStrH + "|" + String(currentLevel) + "|" + String(this._sceneEpoch);
-            FrameBroadcaster.setFpsPayload(fpsStrH);
+            FrameBroadcaster.setFpsPayload(measuredPayload);
             return;
         }
 
@@ -133,10 +136,7 @@ class org.flashNight.neur.PerformanceOptimizer.PerformanceScheduler {
                 // 落入本地后备
             } else {
                 sampler.resetInterval(currentTime, currentLevel);
-                var fpsStrR:String = String(Math.round(actualFPS * 10) / 10);
-                var hourStrR:String = (root.天气系统 != undefined) ? String(root.天气系统.getCurrentTime()) : "6";
-                fpsStrR += "|" + hourStrR + "|" + String(currentLevel) + "|" + String(this._sceneEpoch);
-                FrameBroadcaster.setFpsPayload(fpsStrR);
+                FrameBroadcaster.setFpsPayload(measuredPayload);
                 return;
             }
         }
@@ -181,10 +181,17 @@ class org.flashNight.neur.PerformanceOptimizer.PerformanceScheduler {
 
         // 重置采样窗口 + 广播
         sampler.resetInterval(currentTime, currentLevel);
-        var fpsStr:String = String(Math.round(actualFPS * 10) / 10);
-        var hourStr:String = (root.天气系统 != undefined) ? String(root.天气系统.getCurrentTime()) : "6";
-        fpsStr += "|" + hourStr + "|" + String(currentLevel) + "|" + String(this._sceneEpoch);
-        FrameBroadcaster.setFpsPayload(fpsStr);
+        FrameBroadcaster.setFpsPayload(measuredPayload);
+    }
+
+    private function buildMeasuredPayload(fps:Number, tier:Number):String {
+        var root:Object = this._env.root;
+        var sampler:Object = this._sampler;
+        var hour:Number = (root.天气系统 != undefined) ? root.天气系统.getCurrentTime() : 6;
+        return String(Math.round(fps * 10) / 10) + "|" + hour + "|" + tier + "|" + this._sceneEpoch
+            + "|v2|" + sampler.sampleFrames + "|" + sampler.sampleDurationMs + "|" + sampler.longFrames + "|" + sampler.maxFrameMs
+            + "|" + this._presetQuality + "|" + root._quality + "|" + (this._holdUntilMs > 0 ? "1" : "0")
+            + "|" + (root.暂停 ? "1" : "0") + "|" + (++this._sampleSequence) + "|" + this._appliedCommand;
     }
 
     // ------------------------------------------------------------------
@@ -259,10 +266,10 @@ class org.flashNight.neur.PerformanceOptimizer.PerformanceScheduler {
 
         var host:Object = this._host;
         var cap:Number = (host && !isNaN(host.性能等级上限)) ? host.性能等级上限 : 0;
-        var resetLevel:Number = Math.max(cap, 0);
-        var resetSoftU:Number = (resetLevel > 0) ? 1.0 : 0.0;
+        var resetLevel:Number = Math.max(cap, this._performanceLevel);
+        var resetSoftU:Number = this._lastAppliedSoftU;
         this._actuator.setPresetQuality(this._presetQuality);
-        this._actuator.apply(resetLevel, resetSoftU);
+        this._actuator.apply(resetLevel, resetSoftU, this._renderQuality);
         this._performanceLevel = resetLevel;
         this._lastAppliedSoftU = resetSoftU;
         this._fallbackUpgradeCount = 0;
@@ -294,7 +301,13 @@ class org.flashNight.neur.PerformanceOptimizer.PerformanceScheduler {
         return this._remoteControlled;
     }
 
-    public function applyFromLauncher(tier:Number, softU:Number):Void {
+    public function applyFromLauncher(tier:Number, softU:Number, quality:String, command:Number, scene:Number):Void {
+        if (tier != 0 && tier != 1) return;
+        if ((softU - softU) != 0 || softU < 0 || softU > 1) return;
+        if (quality != undefined) {
+            if (quality != "LOW" && quality != "MEDIUM" && quality != "HIGH" && quality != "BEST") return;
+            if ((command - command) != 0 || command < 1 || command < this._appliedCommand || scene != this._sceneEpoch) return;
+        }
         var now:Number = getTimer();
         this._lastRemoteMs = now;
 
@@ -306,8 +319,10 @@ class org.flashNight.neur.PerformanceOptimizer.PerformanceScheduler {
         }
 
         this._remoteControlled = true;
+        if (quality == undefined) quality = this._presetQuality;
+        if (command != undefined) this._appliedCommand = command;
 
-        if (tier == this._performanceLevel && softU == this._lastAppliedSoftU) {
+        if (tier == this._performanceLevel && softU == this._lastAppliedSoftU && quality == this._renderQuality) {
             return;
         }
 
@@ -316,7 +331,8 @@ class org.flashNight.neur.PerformanceOptimizer.PerformanceScheduler {
         }
 
         this._actuator.setPresetQuality(this._presetQuality);
-        this._actuator.apply(tier, softU);
+        this._actuator.apply(tier, softU, quality);
+        this._renderQuality = quality;
         this._performanceLevel = tier;
         this._lastAppliedSoftU = softU;
     }

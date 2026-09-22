@@ -12,7 +12,7 @@
  */
 import org.flashNight.arki.weather.NightVisionManager;
 import org.flashNight.arki.weather.EnvironmentConfig;
-import org.flashNight.arki.component.Effect.LightingEngine;
+import org.flashNight.arki.weather.WorldLightingBridge;
 import org.flashNight.neur.Event.EventBus;
 import org.flashNight.gesh.xml.LoadXml.WeatherSystemConfigLoader;
 import org.flashNight.naki.Interpolation.Interpolatior;
@@ -173,6 +173,7 @@ class org.flashNight.arki.weather.WeatherSystem {
             bus.subscribe("WeatherTimeRateUpdated", this._onTimeRateUpdated, this);
             bus.subscribe("SceneChanged", this._onSceneChanged, this);
             bus.subscribe("SceneReady", this._onSceneReady, this);
+            bus.subscribe("frameEnd", this._onVisualFrame, this);
 
             // 初始化天气渲染器（订阅 frameEnd 实现逐帧更新）
             WeatherParticleRenderer.initialize();
@@ -259,6 +260,7 @@ class org.flashNight.arki.weather.WeatherSystem {
                 || isNaN(targetMinutes) || targetMinutes < 0 || targetMinutes >= 1440
                 || Math.floor(targetMinutes) != targetMinutes
                 || typeof frameCount != "number" || isNaN(frameCount) || !isFinite(frameCount)) return false;
+        WorldLightingBridge.snapNext();
         this.currentTime = targetMinutes / 60;
         this.currentFrame = frameCount;
         this.requestRefresh();
@@ -332,8 +334,8 @@ class org.flashNight.arki.weather.WeatherSystem {
         }
 
         // 应用光照渲染
-        LightingEngine.applyLighting(_root.gameworld, lightLevel, vc, this.useFilterRendering);
-        LightingEngine.applyLighting(_root.天空盒, lightLevel, vc, false);
+        WorldLightingBridge.setMode(vc);
+        WorldLightingBridge.publish(this, true);
 
         // 更新天空盒目标色（低频驱动，逐帧 lerp 由渲染器自行完成）
         SkyboxRenderer.setTimeAndWeather(this.currentTime, this.weatherCondition);
@@ -516,7 +518,11 @@ class org.flashNight.arki.weather.WeatherSystem {
      * SceneReady 事件回调。
      * 碰撞箱和场景元素就绪后，将地图边界传入粒子渲染器并激活。
      */
+    public function _onVisualFrame():Void { WorldLightingBridge.publish(this, false); }
+
     public function _onSceneReady():Void {
+        WorldLightingBridge.sceneReady();
+        WorldLightingBridge.publish(this, true);
         var xmin:Number = _root.Xmin;
         var xmax:Number = _root.Xmax;
         var ymin:Number = _root.Ymin;
@@ -531,6 +537,8 @@ class org.flashNight.arki.weather.WeatherSystem {
      * 场景切换时清理夜视仪注册、重新计算光照、同步单位状态。
      */
     public function _onSceneChanged():Void {
+        WorldLightingBridge.sceneChanged();
+        WorldLightingBridge.publish(this, true);
         // 场景切换时清除夜视仪注册，防止跨场景残留
         this._nightVisionMgr.clear();
 

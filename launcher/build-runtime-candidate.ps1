@@ -390,6 +390,17 @@ try {
     Invoke-Cf7Batch -Path (Join-Path $launcherDir 'native\bootstrap\build.bat')
     Mark-Cf7ProducerStage 'bootstrap'
 
+    Write-Host 'Build deterministic world compositor and Flash input bridge...' -ForegroundColor Yellow
+    $canonicalWorldSource = Join-Path $jobTemp 'world-compositor-source'
+    foreach ($worldInput in @('Compositor.cpp','Compositor.h','InputBridge.cpp','InputBridge.h','InputBroker.cpp')) {
+        Copy-Cf7CanonicalLfFile `
+            -Source (Join-Path $launcherDir ('native\world-compositor\' + $worldInput)) `
+            -Destination (Join-Path $canonicalWorldSource $worldInput)
+    }
+    $env:CF7_WORLD_COMPOSITOR_SOURCE_DIR = $canonicalWorldSource
+    Invoke-Cf7Batch -Path (Join-Path $launcherDir 'native\world-compositor\build.bat')
+    Mark-Cf7ProducerStage 'worldCompositor'
+
     Write-Host '[4/5] Publish managed Core into isolated output...' -ForegroundColor Yellow
     $dotnet = $env:CF7_DOTNET_EXE
     $csproj = Join-Path $launcherDir 'CRAZYFLASHER7MercenaryEmpire.csproj'
@@ -427,7 +438,7 @@ try {
         Copy-Item -LiteralPath $_.FullName -Destination (Join-Path $runtimeDir $_.Name) -Force
     }
 
-    foreach ($nativeName in @('miniaudio.dll','sol_parser.dll')) {
+    foreach ($nativeName in @('miniaudio.dll','sol_parser.dll','FlashCompositorNative.dll','FlashInputBridge.dll','FlashInputBroker.exe')) {
         $nativePath = Join-Path $nativeOut $nativeName
         if (-not (Test-Path -LiteralPath $nativePath -PathType Leaf)) { throw "Native output missing: $nativePath" }
         Copy-Item -LiteralPath $nativePath -Destination (Join-Path $runtimeDir $nativeName) -Force
@@ -442,7 +453,10 @@ try {
         (Join-Path $runtimeDir 'CRAZYFLASHER7MercenaryEmpire.Core.exe'),
         (Join-Path $runtimeDir 'CRAZYFLASHER7MercenaryEmpire.Core.dll'),
         (Join-Path $runtimeDir 'miniaudio.dll'),
-        (Join-Path $runtimeDir 'sol_parser.dll')
+        (Join-Path $runtimeDir 'sol_parser.dll'),
+        (Join-Path $runtimeDir 'FlashCompositorNative.dll'),
+        (Join-Path $runtimeDir 'FlashInputBridge.dll'),
+        (Join-Path $runtimeDir 'FlashInputBroker.exe')
     )) {
         if (-not (Test-Path -LiteralPath $required -PathType Leaf)) { throw "Required candidate payload missing: $required" }
     }
@@ -532,7 +546,7 @@ try {
     Mark-Cf7ProducerStage 'bootstrapVerify'
 
     $stageOrder = @(
-        'environmentGate','identityBefore','miniaudio','solParser','bootstrap',
+        'environmentGate','identityBefore','miniaudio','solParser','bootstrap','worldCompositor',
         'dotnetPublish','assemble','identityAfter','bootstrapVerify'
     )
     $stageSeconds = [ordered]@{}

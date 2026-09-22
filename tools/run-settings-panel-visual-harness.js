@@ -116,8 +116,8 @@ async function runViewport(browser, baseUrl, viewport, screenshotDir) {
   assert(layout.cameraEntry.y >= layout.common.bottom,
     'camera simulator entry must follow the common-control surface');
   // 打击数字已经迁为 Launcher 本机偏好，不再占用 AS2 游戏常用设置行：
-  // 2 个音量字段 + 7 个画面字段 = 9。
-  assert.strictEqual(await page.locator('.settings-game-common .settings-field').count(), 9);
+  // 世界光照改由原生合成；2 个音量字段 + 6 个画面字段 = 8。
+  assert.strictEqual(await page.locator('.settings-game-common .settings-field').count(), 8);
   assert.strictEqual(await page.getByRole('button', {name:'试听界面音效'}).count(), 1);
   assert.strictEqual(await page.locator('#settings-home-cheat-input').count(), 1);
   assert.strictEqual(await page.locator('.settings-home-cheat .settings-cheat-help-open').count(), 1);

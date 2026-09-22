@@ -1,0 +1,3 @@
+﻿trace("FocusedTestRunId world-lighting Start: __FOCUSED_RUN_ID__");
+org.flashNight.arki.weather.WorldLightingBridgeTest.runAllTests();
+trace("FocusedTestRunId world-lighting Complete: __FOCUSED_RUN_ID__");

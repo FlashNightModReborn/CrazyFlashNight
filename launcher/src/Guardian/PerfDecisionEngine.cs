@@ -18,7 +18,7 @@ namespace CF7Launcher.Guardian
     ///     → XmlSocketServer.PushToClient("P{tier}|{softU100}")
     ///     → AS2 applyFromLauncher()
     /// </summary>
-    public class PerfDecisionEngine
+    public partial class PerfDecisionEngine
     {
         // --- 依赖 ---
         private readonly FpsRingBuffer _buffer;
@@ -256,6 +256,7 @@ namespace CF7Launcher.Guardian
         /// <summary>场景重置回调。</summary>
         public void OnSceneReset()
         {
+            ResetRenderObservations();
             _confirmCount = 0;
             _pendingDirection = 0;
             _focusCooldownMs = 0;

@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using System.Text;
@@ -484,7 +484,8 @@ namespace CF7Launcher.Bus
             LauncherCommandRouter commandRouter,
             MapDomainTask mapDomainTask = null,
             NativeInteractionTask nativeInteractionTask = null,
-            NativeDialogueTask nativeDialogueTask = null)
+            NativeDialogueTask nativeDialogueTask = null,
+            WorldLightingTask worldLightingTask = null)
         {
             // JSON 路由 task（经 MessageRouter 分发）
             router.RegisterAsync("gomoku_eval", gomoku.HandleAsync);
@@ -597,6 +598,7 @@ namespace CF7Launcher.Bus
             // 回包经 nativeInteractionAction/Cancel。仅 native HUD 路径构造 task。
             if (nativeInteractionTask != null)
                 router.RegisterSync("native_interaction", nativeInteractionTask.Handle);
+            if (worldLightingTask != null) router.RegisterSync("world_lighting", worldLightingTask.Handle);
             if (nativeDialogueTask != null)
             {
                 // wire v2：book/append/set 需"采用后 ack"，走异步 handler（UI 线程采用后
@@ -886,6 +888,7 @@ namespace CF7Launcher.Bus
             first = AppendTask(sb, "task_delivery",        "json_sync","AS2->C#",false, first);
             first = AppendTask(sb, "intelligence_response","json_async","AS2<->C#",false, first);
             first = AppendTask(sb, "native_interaction","json_sync", "AS2->C#", false, first);
+            first = AppendTask(sb, "world_lighting","json_sync", "AS2->C#", false, first);
             first = AppendTask(sb, "native_dialogue","json_async", "AS2->C#", false, first);
             first = AppendTask(sb, "dialogue_portrait_result","json_sync", "Web->C#", false, first);
             first = AppendTask(sb, "cursor_control", "json_sync", "AS2->C#", false, first);

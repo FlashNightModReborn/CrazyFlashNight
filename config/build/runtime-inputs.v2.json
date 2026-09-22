@@ -58,6 +58,7 @@
         "launcher/native/build-audio-v2.ps1",
         "launcher/native/build.bat",
         "launcher/native/bootstrap/build.bat",
+        "launcher/native/world-compositor/build.bat",
         "launcher/native/sol_parser/.cargo/config.toml",
         "launcher/native/sol_parser/build.bat",
         "tools/check-runtime-build-env.ps1",
@@ -272,6 +273,18 @@
             "launcher/perf/tooltip-parity/native-fixture/bin/",
             "launcher/perf/tooltip-parity/native-fixture/obj/"
           ]
+        },
+        {
+          "path": "launcher/perf/flash-compositor",
+          "includeExtensions": [".cs", ".csproj", ".cjs", ".json", ".ps1"],
+          "excludePaths": [],
+          "excludePrefixes": ["launcher/perf/flash-compositor/bin/", "launcher/perf/flash-compositor/obj/"]
+        },
+        {
+          "path": "launcher/data/world-lighting",
+          "includeExtensions": [".json"],
+          "excludePaths": [],
+          "excludePrefixes": []
         },
         {
           "path": "tools/native-dialogue-webview2-smoke",

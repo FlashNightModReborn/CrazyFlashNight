@@ -16,11 +16,29 @@ class org.flashNight.neur.PerformanceOptimizer.IntervalSampler {
     /** 距下次测量剩余帧数（public 允许 evaluate() 内联）*/
     public var _framesLeft:Number;
     private var _frameStartTime:Number;
+    private var _previousTime:Number;
+    public var sampleFrames:Number;
+    public var sampleDurationMs:Number;
+    public var longFrames:Number;
+    public var maxFrameMs:Number;
 
     public function IntervalSampler(frameRate:Number) {
         this._frameRate = (isNaN(frameRate) || frameRate <= 0) ? 30 : frameRate;
         this._framesLeft = this._frameRate;
         this._frameStartTime = getTimer();
+        this.resetInterval(this._frameStartTime, 0);
+    }
+
+    /** 500ms 实际时间窗口；每帧只累加，低帧率不会再等待固定60帧。 */
+    public function observe(currentTime:Number):Boolean {
+        var dt:Number = currentTime - this._previousTime;
+        this._previousTime = currentTime;
+        if (dt < 0) { this.resetInterval(currentTime, 0); return false; }
+        this.sampleFrames++;
+        this.sampleDurationMs = currentTime - this._frameStartTime;
+        if (dt > 100) this.longFrames++;
+        if (dt > this.maxFrameMs) this.maxFrameMs = dt;
+        return this.sampleDurationMs >= 500;
     }
 
     /**
@@ -54,6 +72,11 @@ class org.flashNight.neur.PerformanceOptimizer.IntervalSampler {
     public function resetInterval(currentTime:Number, level:Number):Void {
         this._frameStartTime = currentTime;
         this._framesLeft = this._frameRate * (1 + level);
+        this._previousTime = currentTime;
+        this.sampleFrames = 0;
+        this.sampleDurationMs = 0;
+        this.longFrames = 0;
+        this.maxFrameMs = 0;
     }
 
     // --- Accessors ---

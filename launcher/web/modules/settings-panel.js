@@ -373,7 +373,7 @@
         fields.appendChild(field('立绘类型', selectControl('立绘类型', [[1,'类型 1'],[2,'类型 2']])));
         fields.appendChild(checkbox('是否阴影', '角色阴影'));
         fields.appendChild(checkbox('是否视觉元素', '视觉元素'));
-        fields.appendChild(checkbox('使用滤镜渲染', '滤镜渲染'));
+        // World lighting now uses the native compositor; legacy filter preference is retained only in stored settings.
         fields.appendChild(checkbox('开启昼夜系统', '昼夜循环'));
         fields.appendChild(checkbox('暂停昼夜系统', '暂停昼夜变化'));
         common.appendChild(gameBand('画面与性能', 'DISPLAY CORE', fields));

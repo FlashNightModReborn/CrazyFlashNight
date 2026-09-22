@@ -218,7 +218,7 @@ namespace CF7Launcher.Tasks
                     }
 
                     // 决策引擎：影子模式记录对比，主控模式发送 P 指令
-                    if (_decisionEngine != null)
+                    if (_decisionEngine != null && !_decisionEngine.EvaluateRenderSample(parts))
                     {
                         PerfDecision? decision = _decisionEngine.Evaluate();
                         if (decision.HasValue)

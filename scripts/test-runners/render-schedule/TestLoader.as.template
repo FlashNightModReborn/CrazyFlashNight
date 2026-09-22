@@ -1,0 +1,3 @@
+﻿trace("FocusedTestRunId render-schedule Start: __FOCUSED_RUN_ID__");
+org.flashNight.neur.PerformanceOptimizer.test.RenderScheduleBridgeTest.runAllTests();
+trace("FocusedTestRunId render-schedule Complete: __FOCUSED_RUN_ID__");

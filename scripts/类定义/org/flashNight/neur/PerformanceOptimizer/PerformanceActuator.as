@@ -75,7 +75,7 @@ class org.flashNight.neur.PerformanceOptimizer.PerformanceActuator {
      * @param tier:Number   硬切换档位（0=用户预设画质, 1=LOW）
      * @param softU:Number  软旋钮插值 [0,1]（0=全质量, 1=最大降载）
      */
-    public function apply(tier:Number, softU:Number):Void {
+    public function apply(tier:Number, softU:Number, renderQuality:String):Void {
         _root.__nativeHudDecorations = tier === 0;
         var root:Object = this._env.root;
         var es:Object = this._env.EffectSystem;
@@ -85,7 +85,8 @@ class org.flashNight.neur.PerformanceOptimizer.PerformanceActuator {
 
         // ── 硬切换: _quality（唯一决定性降载手段，贡献 56-86% ΔFPS）──
         if (tier === 0) {
-            root._quality = this._presetQuality;
+            // Host may step HIGH/BEST down to MEDIUM, never above the user's preset.
+            root._quality = (renderQuality == "MEDIUM" && this._presetQuality != "LOW") ? "MEDIUM" : this._presetQuality;
             root.显示列表.继续播放(root.显示列表.预设任务ID);
         } else {
             root._quality = "LOW";

@@ -85,6 +85,16 @@ try {
         -not $repositoryRuntimeInputSet.Contains(('launcher/native/' + ([string]$_).Replace('\', '/')))
     })
     Assert-Equal 'every Audio v2 materialized native input enters the immutable runtime request bundle' 0 $missingAudioMaterializedInputs.Count
+    foreach ($worldInput in @('Compositor.cpp','Compositor.h','InputBridge.cpp','InputBridge.h','InputBroker.cpp','build.bat')) {
+        Assert-Equal "world compositor input is bound to the immutable request: $worldInput" $true `
+            $repositoryRuntimeInputSet.Contains('launcher/native/world-compositor/' + $worldInput)
+    }
+    Assert-Equal 'world compositor build belongs to the producer recipe' $true `
+        ('launcher/native/world-compositor/build.bat' -cin $repositoryProducerFiles)
+    foreach ($worldConfig in @('preset.json','render-schedule.json')) {
+        Assert-Equal "world compositor configuration is policy-bound: $worldConfig" $true `
+            $repositoryRuntimeInputSet.Contains('launcher/data/world-lighting/' + $worldConfig)
+    }
     $audioQualificationPolicyTrees = @($repositoryPolicyTrees | Where-Object {
         [string]$_.path -cin @('config/audio-v2', 'docs/contracts/audio-v2', 'tools/audio-v2')
     })

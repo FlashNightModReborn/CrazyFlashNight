@@ -57,6 +57,8 @@ native 源码前缀内的非二进制契约文档也必须显式绑定，不能�
 
 ### producer 与政策闸门
 
+世界光照捕获模块随正式 producer 构建：`launcher/native/world-compositor/build.bat` 仅接受环境门选出的 MSVC/SDK，三个产物 `FlashCompositorNative.dll`、`FlashInputBridge.dll`、`FlashInputBroker.exe` 使用静态 CRT、确定性链接与固定相对源文件名。producer 先将五个源码/头文件 materialize 为 canonical LF，再编译并把三项纳入 candidate inventory/manifest/closure；不能从 `tmp/flash-compositor` 拷贝开发产物充当独立 builder 输出。源码归 artifact，构建脚本归 recipe，光照/调度 JSON 与探针归 policy；仍执行既有双故障域与 promotion。开发探针输出不构成正式票。
+
 发布链分成三个职责，不能重新合并：
 
 1. `tools/prepare-launcher-release-assets.ps1` 只恢复锁定的 TypeScript/字典依赖并派生受跟踪发布资产。`save_schema.json` 默认保留；只有显式 `-SaveSchemaSource` 才从指定 canonical save 重建，避免私有存档和时间戳偷偷进入发布。

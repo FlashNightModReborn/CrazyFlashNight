@@ -116,8 +116,8 @@ class org.flashNight.neur.PerformanceOptimizer.test.PerformanceSchedulerTest {
         // 先设到 tier=1
         s.applyFromLauncher(1, 1.0);
         s.onSceneChanged();
-        out += line(s.getPerformanceLevel() == 0, "场景切换后 tier 重置为 0");
-        out += line(s.getLastAppliedSoftU() == 0, "场景切换后 softU 重置为 0");
+        out += line(s.getPerformanceLevel() == 1, "场景切换后保留 tier=1");
+        out += line(s.getLastAppliedSoftU() == 1, "场景切换后保留 softU=1");
 
         // 尊重 性能等级上限=1
         host.性能等级上限 = 1;

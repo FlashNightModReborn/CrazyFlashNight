@@ -1,4 +1,4 @@
-// CF7:ME Guardian Process — 入口
+﻿// CF7:ME Guardian Process — 入口
 // C# 5 语法
 
 using System;
@@ -1898,6 +1898,25 @@ class Program
         // loot feed（左下双向物资/击杀播报）：widget 常驻 NativeHud，task 始终注册。
         // 纸娃娃运行时烘焙：service 常驻（overlay WebView2 常驻，native HUD 下仅隐藏），
         // C#→Web 走 TryPostToWeb；桥不可用时 service 内部静默降级。
+        var worldCompositor = new CF7Launcher.Guardian.WorldCompositor.WorldCompositorController(
+            form, form.FlashHostPanel, form.GetFlashHwnd,
+            () => !form.IsShutdownAdmissionClosed && launchFlow != null && launchFlow.CurrentState == "Ready"
+                && (panelHost == null || !panelHost.IsPanelOpen),
+            message => toastSink.AddMessage(message), projectRoot,
+            () => launchFlow != null && (launchFlow.CurrentState == "Embedding"
+                || launchFlow.CurrentState == "WaitingGameReady" || launchFlow.CurrentState == "Ready"),
+            windowManager.SetFlashRenderScale, () => windowManager.RestoreFlashInputFocus("world_pointer"));
+        var renderSettings=RenderScheduleSettings.Load(Path.Combine(projectRoot,"launcher","data","world-lighting","render-schedule.json"));
+        webOverlay.WorldDragInputRouter=worldCompositor.RouteCapturedPointer;
+        perfEngine.ConfigureRenderSchedule(renderSettings,
+            selection => { if (!form.IsDisposed) form.BeginInvoke(new Action(() => worldCompositor.ApplyRenderSelection(selection,renderSettings.Sharpness))); },
+            () => worldCompositor.SchedulingAllowed);
+        socketServer.OnClientDisconnected += perfEngine.ResetRenderSource;
+        var worldLightingTask = new WorldLightingTask(
+            action => { if (!form.IsDisposed) { if (form.InvokeRequired) form.BeginInvoke(action); else action(); } },
+            worldCompositor.Adopt, worldCompositor.ResetSource);
+        socketServer.OnClientDisconnected += worldLightingTask.Disconnected;
+
         CF7Launcher.Guardian.Hud.Loot.DollPortraitBakeService dollBakeService =
             new CF7Launcher.Guardian.Hud.Loot.DollPortraitBakeService(
                 Path.Combine(projectRoot, "launcher", "data", "doll-portraits"),
@@ -2344,7 +2363,7 @@ class Program
 
         using (PerfTrace.Scope("task.registry_register_all"))
         {
-            TaskRegistry.RegisterAll(router, gomokuTask, toastTask, frameTask, stageOutcomeTask, warlordStageTask, warlordBattleTask, dataQueryTask, audioTask, dollBakeTask, shopTask, inventoryTask, lootTask, lootFeedTask, lootPanelCoordinator, npcShopTask, craftingTask, materialShopAccessTask, hairdresserTask, plasticSurgeryTask, sleepTask, settingsTask, equipmentTuningTask, characterBuildTask, itemUseTask, skillTask, mapTask, stageSelectTask, arenaTask, arenaCalibrationTask, agentControlTask, petTask, mercTask, taskTask, intelligenceTask, blackMarketTask, archiveTask, benchTask, fontPackTask, webOverlay, commandRouter, mapDomainTask, nativeInteractionTask, nativeDialogueTask);
+            TaskRegistry.RegisterAll(router, gomokuTask, toastTask, frameTask, stageOutcomeTask, warlordStageTask, warlordBattleTask, dataQueryTask, audioTask, dollBakeTask, shopTask, inventoryTask, lootTask, lootFeedTask, lootPanelCoordinator, npcShopTask, craftingTask, materialShopAccessTask, hairdresserTask, plasticSurgeryTask, sleepTask, settingsTask, equipmentTuningTask, characterBuildTask, itemUseTask, skillTask, mapTask, stageSelectTask, arenaTask, arenaCalibrationTask, agentControlTask, petTask, mercTask, taskTask, intelligenceTask, blackMarketTask, archiveTask, benchTask, fontPackTask, webOverlay, commandRouter, mapDomainTask, nativeInteractionTask, nativeDialogueTask, worldLightingTask);
         }
         StartupDiagnostics.Mark("task.registry_register_all_ok");
 
@@ -3491,6 +3510,7 @@ class Program
         try { npcShopTask.Dispose(); } catch { }
         try { craftingTask.Dispose(); } catch { }
         try { hairdresserTask.Dispose(); plasticSurgeryTask.Dispose(); sleepTask.Dispose(); } catch { }
+        try { worldCompositor.Dispose(); } catch { }
         try { settingsTask.Dispose(); } catch { }
         try { stageOutcomeTask.Dispose(); } catch { }
         try { petTask.Dispose(); } catch { }

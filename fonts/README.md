@@ -21,6 +21,8 @@
 
 文案可以直接维护 XML/JSON，不需要 Electron 工具、编译 C# 或理解物理 family。普通映射变化只改 XML并重生成投影。
 
+`fonts.xml` 按仓库 `.gitattributes` 固定为 LF 换行。投影的 `sourceSha256` 校验原始 XML 字节，换行变化也会使旧投影失效；须用 `fontctl generate` 再生并通过 `generate --check`，不要手改生成物哈希。目录加载失败会使 Native 角色进入应急字体回退，伤害数字也会因此偏离 `native.combat.number` 指定的 Arial Black。捕获合成开发入口的构建与启动均检查投影一致性；修复投影后重启 Launcher 才会重新选择字体。
+
 ## 目录
 
 ```text
