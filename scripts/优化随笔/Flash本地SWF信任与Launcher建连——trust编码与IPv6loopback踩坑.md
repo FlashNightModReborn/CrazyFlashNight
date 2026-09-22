@@ -64,7 +64,7 @@ Adobe 的配置文件处理规则：**`.cfg` 没有 BOM 时按系统默认代码
 
 `cf7me.cfg` 改为**带 BOM 的 UTF-8** 写入（`new UTF8Encoding(true)`），让 Flash 在任何默认代码页下都按 UTF-8 正确解析路径。`CRAZYFLASHER7MercenaryEmpire.bat` 里那条 `echo`（chcp 65001 下同样是无 BOM）改用 PowerShell 带 BOM 幂等写入。另加"安装路径含非 ASCII → 启动告警"，万一某些 Flash 构建不认 BOM，至少不让用户卡 10s 循环里干瞪眼。
 
-> **遗留**：BOM 对 FlashPlayerTrust 文件是否 100% 生效，只能在中文路径真机确认——本机是 ASCII 路径，天然测不出这一步。用户侧永远有兜底：**装到纯英文路径**。
+> **遗留 → 已确认（2026-09-22，#96 收口）**：BOM 对 FlashPlayerTrust 文件**生效**。真机确认就在本开发机完成——"本机测不出"只缺中文路径这个变量，ACP=936(GBK) 本机本来就满足。方法：同一最小闭包（runtime + 捆绑播放器 + 主 SWF + `scripts/asLoader.swf` 等）分别放到纯 ASCII 路径与中文深层路径（`C:\cfn中文路径测试\项目专用文件夹\...`，git worktree 过 SteamCheck），标准入口真 launcher 启动。结果：ASCII 组 `WaitingConnect → WaitingHandshake` 1.3s；中文组同样 1.3s；运行期 cfg 实测 `EF BB BF` BOM + UTF-8 中文路径行；退出租约正常回收。播放器是随包捆绑的 `Adobe Flash Player 20.exe`，对所有用户是同一构建，故此确认≈全用户定论。用户侧兜底仍然有效：**装到纯英文路径**。
 
 ---
 
@@ -128,6 +128,8 @@ WaitingConnect -> WaitingHandshake     ← socket 3 秒内连上
 
 - 两端点**被命中** → trust 已生效（SWF 能联网）→ 病因在 socket 层（查 #B / IPv6；尤其"HTTP 走 IPv6 而 socket 失败"就是 #B 现场签名）。
 - 两端点**从没命中** → SWF 未受信（#A，多为中文路径 trust 编码）。
+
+> **2026-09-22 修正**：现役 `ServerManager` 读到 `launcher_ports.json`（含双端口）会**直接跳 socket 连接，不走 HTTP 探测**——健康启动日志里零 `/testConnection` 命中是正常的，别再按上文把"零命中"读成未受信。现役判别看 LaunchFlow：`Spawning → WaitingConnect → WaitingHandshake` 约 1~3s 完成 = 受信且连通；`WaitingConnect` 卡 10s 出 `socket_connect_timeout` 且服务端零连接 = 未受信（或 SWF 根本没启动到 ServerManager，排障时先排除闭包缺文件——本次最小闭包缺的最后一块是 `scripts/asLoader.swf`）。
 
 ---
 
