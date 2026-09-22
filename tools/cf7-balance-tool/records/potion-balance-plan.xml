@@ -29,6 +29,17 @@
     <record itemName="高纯度合成毒" sourceFile="消耗品_药剂.xml" sourceLevel="70" domain="weapon-agent" balanceMode="formula" status="proposed" />
     <record itemName="丽丽丝的毒" sourceFile="消耗品_药剂.xml" sourceLevel="60" domain="weapon-agent" balanceMode="exception" status="proposed" exceptionCode="story-apex-toxin" />
 
+    <!-- 抗性药剂家族：人修罗支线奖励 + 格格巫商店常驻，物品侧 balance 块已声明豁免口径 -->
+    <record itemName="全属性抗性药剂" sourceFile="消耗品_药剂.xml" sourceLevel="60" domain="enhancer" balanceMode="exception" status="runtime-test-pending" exceptionCode="quest-reward-manual-balance" />
+    <record itemName="电抗性药剂" sourceFile="消耗品_药剂.xml" sourceLevel="60" domain="enhancer" balanceMode="exception" status="runtime-test-pending" exceptionCode="shop-manual-balance" />
+    <record itemName="热抗性药剂" sourceFile="消耗品_药剂.xml" sourceLevel="60" domain="enhancer" balanceMode="exception" status="runtime-test-pending" exceptionCode="shop-manual-balance" />
+    <record itemName="冷抗性药剂" sourceFile="消耗品_药剂.xml" sourceLevel="60" domain="enhancer" balanceMode="exception" status="runtime-test-pending" exceptionCode="shop-manual-balance" />
+    <record itemName="波抗性药剂" sourceFile="消耗品_药剂.xml" sourceLevel="60" domain="enhancer" balanceMode="exception" status="runtime-test-pending" exceptionCode="shop-manual-balance" />
+    <record itemName="蚀抗性药剂" sourceFile="消耗品_药剂.xml" sourceLevel="60" domain="enhancer" balanceMode="exception" status="runtime-test-pending" exceptionCode="shop-manual-balance" />
+    <record itemName="毒抗性药剂" sourceFile="消耗品_药剂.xml" sourceLevel="60" domain="enhancer" balanceMode="exception" status="runtime-test-pending" exceptionCode="shop-manual-balance" />
+    <record itemName="冲抗性药剂" sourceFile="消耗品_药剂.xml" sourceLevel="60" domain="enhancer" balanceMode="exception" status="runtime-test-pending" exceptionCode="shop-manual-balance" />
+    <record itemName="能量抗性药剂" sourceFile="消耗品_药剂.xml" sourceLevel="60" domain="enhancer" balanceMode="exception" status="runtime-test-pending" exceptionCode="shop-manual-balance" />
+
     <!-- 既有食品：全量登记；本批数值改动集中在八道家常菜 -->
     <record itemName="饮用水易拉罐" sourceFile="消耗品_药剂_食品.xml" sourceLevel="1" domain="meal" balanceMode="formula" status="proposed" />
     <record itemName="牛肉罐头" sourceFile="消耗品_药剂_食品.xml" sourceLevel="5" domain="meal" balanceMode="formula" status="proposed" />

@@ -600,10 +600,12 @@
       <domain>enhancer</domain>
       <balanceMode>exception</balanceMode>
       <status>runtime-test-pending</status>
-      <currentValue>0</currentValue>
+      <currentValue>850</currentValue>
       <valueCap>6100</valueCap>
-      <formulaPrice>0</formulaPrice>
-      <marketPrice>8000</marketPrice>
+      <formulaPrice>1000</formulaPrice>
+      <marketPrice>10000</marketPrice>
+      <inputDigest>fnv1a32:6064e25d</inputDigest>
+      <sourceDigest>sha256:d82bcc9421a766b2bbc38d9ab9507b2a18b4156a437f0e60d519f1d85737282f</sourceDigest>
       <auditRef>potion:全属性抗性药剂</auditRef>
       <exceptionCode>quest-reward-manual-balance</exceptionCode>
     </balance>
@@ -637,10 +639,12 @@
       <domain>enhancer</domain>
       <balanceMode>exception</balanceMode>
       <status>runtime-test-pending</status>
-      <currentValue>0</currentValue>
+      <currentValue>1400</currentValue>
       <valueCap>6100</valueCap>
-      <formulaPrice>0</formulaPrice>
+      <formulaPrice>1950</formulaPrice>
       <marketPrice>5000</marketPrice>
+      <inputDigest>fnv1a32:0621ef32</inputDigest>
+      <sourceDigest>sha256:a5d86e41ab39550eaef744f8c4a3862cfc8fde9d8deec8d7e824bd522a1a2726</sourceDigest>
       <auditRef>potion:电抗性药剂</auditRef>
       <exceptionCode>shop-manual-balance</exceptionCode>
     </balance>
@@ -670,10 +674,12 @@
       <domain>enhancer</domain>
       <balanceMode>exception</balanceMode>
       <status>runtime-test-pending</status>
-      <currentValue>0</currentValue>
+      <currentValue>1400</currentValue>
       <valueCap>6100</valueCap>
-      <formulaPrice>0</formulaPrice>
+      <formulaPrice>1950</formulaPrice>
       <marketPrice>5000</marketPrice>
+      <inputDigest>fnv1a32:c59ce49a</inputDigest>
+      <sourceDigest>sha256:2d8ff90f37e93b907fc241bbb28b05fed5e62209b00960338f125c57a96a8e44</sourceDigest>
       <auditRef>potion:热抗性药剂</auditRef>
       <exceptionCode>shop-manual-balance</exceptionCode>
     </balance>
@@ -703,10 +709,12 @@
       <domain>enhancer</domain>
       <balanceMode>exception</balanceMode>
       <status>runtime-test-pending</status>
-      <currentValue>0</currentValue>
+      <currentValue>1400</currentValue>
       <valueCap>6100</valueCap>
-      <formulaPrice>0</formulaPrice>
+      <formulaPrice>1950</formulaPrice>
       <marketPrice>5000</marketPrice>
+      <inputDigest>fnv1a32:2f7e24e4</inputDigest>
+      <sourceDigest>sha256:01ef1e467423f76551b0f0636a5710976a342f53b948c97d2f762b0f780c5165</sourceDigest>
       <auditRef>potion:冷抗性药剂</auditRef>
       <exceptionCode>shop-manual-balance</exceptionCode>
     </balance>
@@ -736,10 +744,12 @@
       <domain>enhancer</domain>
       <balanceMode>exception</balanceMode>
       <status>runtime-test-pending</status>
-      <currentValue>0</currentValue>
+      <currentValue>1400</currentValue>
       <valueCap>6100</valueCap>
-      <formulaPrice>0</formulaPrice>
+      <formulaPrice>1950</formulaPrice>
       <marketPrice>5000</marketPrice>
+      <inputDigest>fnv1a32:abddfd59</inputDigest>
+      <sourceDigest>sha256:2abaaecc2d8ed1ace8e81d3d383b17da4741b97008bfa12451d069de5fe114c6</sourceDigest>
       <auditRef>potion:波抗性药剂</auditRef>
       <exceptionCode>shop-manual-balance</exceptionCode>
     </balance>
@@ -769,10 +779,12 @@
       <domain>enhancer</domain>
       <balanceMode>exception</balanceMode>
       <status>runtime-test-pending</status>
-      <currentValue>0</currentValue>
+      <currentValue>1400</currentValue>
       <valueCap>6100</valueCap>
-      <formulaPrice>0</formulaPrice>
+      <formulaPrice>1950</formulaPrice>
       <marketPrice>5000</marketPrice>
+      <inputDigest>fnv1a32:77cc5f3f</inputDigest>
+      <sourceDigest>sha256:b83cf78a9b9cb99ccca486baba260ad0cf402259f1bcfefa746e8207d876d635</sourceDigest>
       <auditRef>potion:蚀抗性药剂</auditRef>
       <exceptionCode>shop-manual-balance</exceptionCode>
     </balance>
@@ -802,10 +814,12 @@
       <domain>enhancer</domain>
       <balanceMode>exception</balanceMode>
       <status>runtime-test-pending</status>
-      <currentValue>0</currentValue>
+      <currentValue>1400</currentValue>
       <valueCap>6100</valueCap>
-      <formulaPrice>0</formulaPrice>
+      <formulaPrice>1950</formulaPrice>
       <marketPrice>5000</marketPrice>
+      <inputDigest>fnv1a32:850dc429</inputDigest>
+      <sourceDigest>sha256:3b1dcde6a85eed2b834f6edb819f6aed044b384d702152655750c635b4fe439a</sourceDigest>
       <auditRef>potion:毒抗性药剂</auditRef>
       <exceptionCode>shop-manual-balance</exceptionCode>
     </balance>
@@ -835,10 +849,12 @@
       <domain>enhancer</domain>
       <balanceMode>exception</balanceMode>
       <status>runtime-test-pending</status>
-      <currentValue>0</currentValue>
+      <currentValue>1400</currentValue>
       <valueCap>6100</valueCap>
-      <formulaPrice>0</formulaPrice>
+      <formulaPrice>1950</formulaPrice>
       <marketPrice>5000</marketPrice>
+      <inputDigest>fnv1a32:0424e409</inputDigest>
+      <sourceDigest>sha256:8efa449965a7fa9ad27799d3300784cd5106447eb3071265113ba003b5f12825</sourceDigest>
       <auditRef>potion:冲抗性药剂</auditRef>
       <exceptionCode>shop-manual-balance</exceptionCode>
     </balance>
@@ -868,10 +884,12 @@
       <domain>enhancer</domain>
       <balanceMode>exception</balanceMode>
       <status>runtime-test-pending</status>
-      <currentValue>0</currentValue>
+      <currentValue>1400</currentValue>
       <valueCap>6100</valueCap>
-      <formulaPrice>0</formulaPrice>
+      <formulaPrice>1950</formulaPrice>
       <marketPrice>6000</marketPrice>
+      <inputDigest>fnv1a32:e16abf62</inputDigest>
+      <sourceDigest>sha256:f237914a3f23fbc2a97a2efe8db3e2557643cf26e066610faf34da186eb07abf</sourceDigest>
       <auditRef>potion:能量抗性药剂</auditRef>
       <exceptionCode>shop-manual-balance</exceptionCode>
     </balance>

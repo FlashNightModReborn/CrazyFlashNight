@@ -248,6 +248,141 @@
       <exceptionCode>story-apex-toxin</exceptionCode>
     </record>
     <record>
+      <auditRef>potion:全属性抗性药剂</auditRef>
+      <itemName>全属性抗性药剂</itemName>
+      <sourceFile>消耗品_药剂.xml</sourceFile>
+      <sourceLevel>60</sourceLevel>
+      <domain>enhancer</domain>
+      <balanceMode>exception</balanceMode>
+      <status>runtime-test-pending</status>
+      <marketPrice>10000</marketPrice>
+      <inputDigest>fnv1a32:6064e25d</inputDigest>
+      <sourceDigest>sha256:d82bcc9421a766b2bbc38d9ab9507b2a18b4156a437f0e60d519f1d85737282f</sourceDigest>
+      <inputs instantHp="0" instantMp="0" regenHp="600" regenMp="0" regenFrames="300" playerLevel="60" isGroup="0" purifyValue="0" toxicity="0" buffHp="0" buffMp="0" buffDefence="0" buffMagicResist="10" buffDamage="0" buffPunch="0" buffSpeed="0" buffToughness="0" buffDuration="300" />
+      <outputs recoveryStrength="600" purifyStrength="0" toxicStrength="0" buffStrength="550" toughnessStrength="0" currentValue="850" valueCap="6100" rawPrice="988.342458" recommendedPrice="1000" />
+      <exceptionCode>quest-reward-manual-balance</exceptionCode>
+    </record>
+    <record>
+      <auditRef>potion:电抗性药剂</auditRef>
+      <itemName>电抗性药剂</itemName>
+      <sourceFile>消耗品_药剂.xml</sourceFile>
+      <sourceLevel>60</sourceLevel>
+      <domain>enhancer</domain>
+      <balanceMode>exception</balanceMode>
+      <status>runtime-test-pending</status>
+      <marketPrice>5000</marketPrice>
+      <inputDigest>fnv1a32:0621ef32</inputDigest>
+      <sourceDigest>sha256:a5d86e41ab39550eaef744f8c4a3862cfc8fde9d8deec8d7e824bd522a1a2726</sourceDigest>
+      <inputs instantHp="0" instantMp="0" regenHp="600" regenMp="0" regenFrames="300" playerLevel="60" isGroup="0" purifyValue="0" toxicity="0" buffHp="0" buffMp="0" buffDefence="0" buffMagicResist="20" buffDamage="0" buffPunch="0" buffSpeed="0" buffToughness="0" buffDuration="300" />
+      <outputs recoveryStrength="600" purifyStrength="0" toxicStrength="0" buffStrength="1100" toughnessStrength="0" currentValue="1400" valueCap="6100" rawPrice="1933.339975" recommendedPrice="1950" />
+      <exceptionCode>shop-manual-balance</exceptionCode>
+    </record>
+    <record>
+      <auditRef>potion:热抗性药剂</auditRef>
+      <itemName>热抗性药剂</itemName>
+      <sourceFile>消耗品_药剂.xml</sourceFile>
+      <sourceLevel>60</sourceLevel>
+      <domain>enhancer</domain>
+      <balanceMode>exception</balanceMode>
+      <status>runtime-test-pending</status>
+      <marketPrice>5000</marketPrice>
+      <inputDigest>fnv1a32:c59ce49a</inputDigest>
+      <sourceDigest>sha256:2d8ff90f37e93b907fc241bbb28b05fed5e62209b00960338f125c57a96a8e44</sourceDigest>
+      <inputs instantHp="0" instantMp="0" regenHp="600" regenMp="0" regenFrames="300" playerLevel="60" isGroup="0" purifyValue="0" toxicity="0" buffHp="0" buffMp="0" buffDefence="0" buffMagicResist="20" buffDamage="0" buffPunch="0" buffSpeed="0" buffToughness="0" buffDuration="300" />
+      <outputs recoveryStrength="600" purifyStrength="0" toxicStrength="0" buffStrength="1100" toughnessStrength="0" currentValue="1400" valueCap="6100" rawPrice="1933.339975" recommendedPrice="1950" />
+      <exceptionCode>shop-manual-balance</exceptionCode>
+    </record>
+    <record>
+      <auditRef>potion:冷抗性药剂</auditRef>
+      <itemName>冷抗性药剂</itemName>
+      <sourceFile>消耗品_药剂.xml</sourceFile>
+      <sourceLevel>60</sourceLevel>
+      <domain>enhancer</domain>
+      <balanceMode>exception</balanceMode>
+      <status>runtime-test-pending</status>
+      <marketPrice>5000</marketPrice>
+      <inputDigest>fnv1a32:2f7e24e4</inputDigest>
+      <sourceDigest>sha256:01ef1e467423f76551b0f0636a5710976a342f53b948c97d2f762b0f780c5165</sourceDigest>
+      <inputs instantHp="0" instantMp="0" regenHp="600" regenMp="0" regenFrames="300" playerLevel="60" isGroup="0" purifyValue="0" toxicity="0" buffHp="0" buffMp="0" buffDefence="0" buffMagicResist="20" buffDamage="0" buffPunch="0" buffSpeed="0" buffToughness="0" buffDuration="300" />
+      <outputs recoveryStrength="600" purifyStrength="0" toxicStrength="0" buffStrength="1100" toughnessStrength="0" currentValue="1400" valueCap="6100" rawPrice="1933.339975" recommendedPrice="1950" />
+      <exceptionCode>shop-manual-balance</exceptionCode>
+    </record>
+    <record>
+      <auditRef>potion:波抗性药剂</auditRef>
+      <itemName>波抗性药剂</itemName>
+      <sourceFile>消耗品_药剂.xml</sourceFile>
+      <sourceLevel>60</sourceLevel>
+      <domain>enhancer</domain>
+      <balanceMode>exception</balanceMode>
+      <status>runtime-test-pending</status>
+      <marketPrice>5000</marketPrice>
+      <inputDigest>fnv1a32:abddfd59</inputDigest>
+      <sourceDigest>sha256:2abaaecc2d8ed1ace8e81d3d383b17da4741b97008bfa12451d069de5fe114c6</sourceDigest>
+      <inputs instantHp="0" instantMp="0" regenHp="600" regenMp="0" regenFrames="300" playerLevel="60" isGroup="0" purifyValue="0" toxicity="0" buffHp="0" buffMp="0" buffDefence="0" buffMagicResist="20" buffDamage="0" buffPunch="0" buffSpeed="0" buffToughness="0" buffDuration="300" />
+      <outputs recoveryStrength="600" purifyStrength="0" toxicStrength="0" buffStrength="1100" toughnessStrength="0" currentValue="1400" valueCap="6100" rawPrice="1933.339975" recommendedPrice="1950" />
+      <exceptionCode>shop-manual-balance</exceptionCode>
+    </record>
+    <record>
+      <auditRef>potion:蚀抗性药剂</auditRef>
+      <itemName>蚀抗性药剂</itemName>
+      <sourceFile>消耗品_药剂.xml</sourceFile>
+      <sourceLevel>60</sourceLevel>
+      <domain>enhancer</domain>
+      <balanceMode>exception</balanceMode>
+      <status>runtime-test-pending</status>
+      <marketPrice>5000</marketPrice>
+      <inputDigest>fnv1a32:77cc5f3f</inputDigest>
+      <sourceDigest>sha256:b83cf78a9b9cb99ccca486baba260ad0cf402259f1bcfefa746e8207d876d635</sourceDigest>
+      <inputs instantHp="0" instantMp="0" regenHp="600" regenMp="0" regenFrames="300" playerLevel="60" isGroup="0" purifyValue="0" toxicity="0" buffHp="0" buffMp="0" buffDefence="0" buffMagicResist="20" buffDamage="0" buffPunch="0" buffSpeed="0" buffToughness="0" buffDuration="300" />
+      <outputs recoveryStrength="600" purifyStrength="0" toxicStrength="0" buffStrength="1100" toughnessStrength="0" currentValue="1400" valueCap="6100" rawPrice="1933.339975" recommendedPrice="1950" />
+      <exceptionCode>shop-manual-balance</exceptionCode>
+    </record>
+    <record>
+      <auditRef>potion:毒抗性药剂</auditRef>
+      <itemName>毒抗性药剂</itemName>
+      <sourceFile>消耗品_药剂.xml</sourceFile>
+      <sourceLevel>60</sourceLevel>
+      <domain>enhancer</domain>
+      <balanceMode>exception</balanceMode>
+      <status>runtime-test-pending</status>
+      <marketPrice>5000</marketPrice>
+      <inputDigest>fnv1a32:850dc429</inputDigest>
+      <sourceDigest>sha256:3b1dcde6a85eed2b834f6edb819f6aed044b384d702152655750c635b4fe439a</sourceDigest>
+      <inputs instantHp="0" instantMp="0" regenHp="600" regenMp="0" regenFrames="300" playerLevel="60" isGroup="0" purifyValue="0" toxicity="0" buffHp="0" buffMp="0" buffDefence="0" buffMagicResist="20" buffDamage="0" buffPunch="0" buffSpeed="0" buffToughness="0" buffDuration="300" />
+      <outputs recoveryStrength="600" purifyStrength="0" toxicStrength="0" buffStrength="1100" toughnessStrength="0" currentValue="1400" valueCap="6100" rawPrice="1933.339975" recommendedPrice="1950" />
+      <exceptionCode>shop-manual-balance</exceptionCode>
+    </record>
+    <record>
+      <auditRef>potion:冲抗性药剂</auditRef>
+      <itemName>冲抗性药剂</itemName>
+      <sourceFile>消耗品_药剂.xml</sourceFile>
+      <sourceLevel>60</sourceLevel>
+      <domain>enhancer</domain>
+      <balanceMode>exception</balanceMode>
+      <status>runtime-test-pending</status>
+      <marketPrice>5000</marketPrice>
+      <inputDigest>fnv1a32:0424e409</inputDigest>
+      <sourceDigest>sha256:8efa449965a7fa9ad27799d3300784cd5106447eb3071265113ba003b5f12825</sourceDigest>
+      <inputs instantHp="0" instantMp="0" regenHp="600" regenMp="0" regenFrames="300" playerLevel="60" isGroup="0" purifyValue="0" toxicity="0" buffHp="0" buffMp="0" buffDefence="0" buffMagicResist="20" buffDamage="0" buffPunch="0" buffSpeed="0" buffToughness="0" buffDuration="300" />
+      <outputs recoveryStrength="600" purifyStrength="0" toxicStrength="0" buffStrength="1100" toughnessStrength="0" currentValue="1400" valueCap="6100" rawPrice="1933.339975" recommendedPrice="1950" />
+      <exceptionCode>shop-manual-balance</exceptionCode>
+    </record>
+    <record>
+      <auditRef>potion:能量抗性药剂</auditRef>
+      <itemName>能量抗性药剂</itemName>
+      <sourceFile>消耗品_药剂.xml</sourceFile>
+      <sourceLevel>60</sourceLevel>
+      <domain>enhancer</domain>
+      <balanceMode>exception</balanceMode>
+      <status>runtime-test-pending</status>
+      <marketPrice>6000</marketPrice>
+      <inputDigest>fnv1a32:e16abf62</inputDigest>
+      <sourceDigest>sha256:f237914a3f23fbc2a97a2efe8db3e2557643cf26e066610faf34da186eb07abf</sourceDigest>
+      <inputs instantHp="0" instantMp="0" regenHp="600" regenMp="0" regenFrames="300" playerLevel="60" isGroup="0" purifyValue="0" toxicity="0" buffHp="0" buffMp="0" buffDefence="0" buffMagicResist="20" buffDamage="0" buffPunch="0" buffSpeed="0" buffToughness="0" buffDuration="300" />
+      <outputs recoveryStrength="600" purifyStrength="0" toxicStrength="0" buffStrength="1100" toughnessStrength="0" currentValue="1400" valueCap="6100" rawPrice="1933.339975" recommendedPrice="1950" />
+      <exceptionCode>shop-manual-balance</exceptionCode>
+    </record>
+    <record>
       <auditRef>potion:饮用水易拉罐</auditRef>
       <itemName>饮用水易拉罐</itemName>
       <sourceFile>消耗品_药剂_食品.xml</sourceFile>
@@ -664,7 +799,7 @@
       <status>proposed</status>
       <marketPrice>1700</marketPrice>
       <inputDigest>fnv1a32:25c93f5a</inputDigest>
-      <sourceDigest>sha256:0d0b1d6f5dc3766d1d46a24a7439b66e4a58d0942c1b523b390087b9964610b1</sourceDigest>
+      <sourceDigest>sha256:689e02246dd3c775785bd97faeb548834d60df760c436247ae656cfbe972e020</sourceDigest>
       <inputs instantHp="0" instantMp="0" regenHp="0" regenMp="1500" regenFrames="300" playerLevel="20" isGroup="0" purifyValue="0" toxicity="0" buffHp="0" buffMp="0" buffDefence="0" buffMagicResist="0" buffDamage="0" buffPunch="0" buffSpeed="0" buffToughness="0" buffDuration="0" />
       <outputs recoveryStrength="1500" purifyStrength="0" toxicStrength="0" buffStrength="0" toughnessStrength="0" currentValue="750" valueCap="2100" rawPrice="1681.406299" recommendedPrice="1700" />
     </record>
@@ -678,7 +813,7 @@
       <status>proposed</status>
       <marketPrice>2950</marketPrice>
       <inputDigest>fnv1a32:b91bb7e7</inputDigest>
-      <sourceDigest>sha256:e31df5570ec311a359b1c5755a48910ba6b0fed2201d06fb71be639bcb0fa585</sourceDigest>
+      <sourceDigest>sha256:1ff8006df64081af507137a22933eaf761455081aec15bd70064f704a00b9d29</sourceDigest>
       <inputs instantHp="0" instantMp="0" regenHp="0" regenMp="3000" regenFrames="450" playerLevel="40" isGroup="0" purifyValue="0" toxicity="0" buffHp="0" buffMp="0" buffDefence="0" buffMagicResist="0" buffDamage="0" buffPunch="0" buffSpeed="0" buffToughness="0" buffDuration="0" />
       <outputs recoveryStrength="3000" purifyStrength="0" toxicStrength="0" buffStrength="0" toughnessStrength="0" currentValue="1500" valueCap="4100" rawPrice="2927.498402" recommendedPrice="2950" />
     </record>
@@ -692,7 +827,7 @@
       <status>proposed</status>
       <marketPrice>3800</marketPrice>
       <inputDigest>fnv1a32:e4cc45cc</inputDigest>
-      <sourceDigest>sha256:9a95186ba962ee542a9570a3d584ded9b32f09a7441ed6b651b318518602a10a</sourceDigest>
+      <sourceDigest>sha256:57771163449f5778548e648c0959f932e519960a43fb96f5f788936013232dc8</sourceDigest>
       <inputs instantHp="0" instantMp="0" regenHp="0" regenMp="4500" regenFrames="600" playerLevel="60" isGroup="0" purifyValue="0" toxicity="0" buffHp="0" buffMp="0" buffDefence="0" buffMagicResist="0" buffDamage="0" buffPunch="0" buffSpeed="0" buffToughness="0" buffDuration="0" />
       <outputs recoveryStrength="4500" purifyStrength="0" toxicStrength="0" buffStrength="0" toughnessStrength="0" currentValue="2250" valueCap="6100" rawPrice="3822.803074" recommendedPrice="3800" />
     </record>
