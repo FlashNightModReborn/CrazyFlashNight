@@ -153,6 +153,20 @@
     Panels.registerLazy('sleep',
         ['modules/panel-runtime.js', 'assets/sleep/palette.js', 'modules/sleep-runtime.js', 'modules/sleep-panel.js'], noop);
 
+    // ── 健身房全程训练：AS2 提供目录并裁决完成结算 ──
+    Panels.registerLazy('gym',
+        ['modules/workbench-lifecycle.js',
+         'modules/workbench-focus.js',
+         'modules/workbench-primitives.js',
+         'modules/workbench-profile.js',
+         'modules/workbench.js',
+         'modules/workbench-components.js',
+         'modules/asset-timeline.js',
+         'modules/dressup-doll-renderer.js',
+         'modules/character-appearance-preview.js',
+         'modules/gym/gym-motion-renderer.js',
+         'modules/gym/gym-panel.js'], noop);
+
     // ── 医务室整形（共享身份控件与稳定取景，AS2 权威提交）──
     Panels.registerLazy('surgery',
         ['modules/panel-runtime.js', 'modules/asset-timeline.js', 'modules/dressup-doll-renderer.js',

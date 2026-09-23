@@ -28,7 +28,7 @@ const ARCHIVE_SCHEMA = "workbench-live-e2e.archive-save-evidence.v1";
 const RESIDUE_SCHEMA = "workbench-live-e2e.runtime-residue.v1";
 const AGENT_ENTER_COMMAND = "#func:_root.agentEnterResolvedSave()";
 const AGENT_ACTIONS = new Set([
-  "status", "start", "revealOk", "cancel", "shutdown", "openArena",
+  "status", "start", "revealOk", "cancel", "shutdown", "openArena", "openGym",
 ]);
 const HANDOFF_MARKER = "[BootstrapAS] event=handoff";
 const TITLE_FRAME_MARKER = "[LaunchFlow] bootstrap_reveal_ready: Flash reveal cleared";
@@ -97,7 +97,7 @@ function validateAgentFields(action, fields) {
   }
   const allowed = action === "start"
     ? new Set(["slot", "fresh", "deferReveal", "requireFlashReveal", "rememberSlot"])
-    : action === "openArena"
+    : action === "openArena" || action === "openGym"
       ? new Set(["expectedSlot", "expectedAttemptId"])
       : new Set();
   const extras = Object.keys(value).filter((key) => !allowed.has(key));
@@ -110,11 +110,12 @@ function validateAgentFields(action, fields) {
     contractFail("agent_control_start_invalid", "launcher_http",
       "agent start requires one dedicated snapshot slot and fresh=false");
   }
-  if (action === "openArena" && (typeof value.expectedSlot !== "string"
+  if ((action === "openArena" || action === "openGym") && (typeof value.expectedSlot !== "string"
       || !/^cf7_agent_[A-Za-z0-9_-]+$/.test(value.expectedSlot)
       || typeof value.expectedAttemptId !== "string" || !value.expectedAttemptId)) {
-    contractFail("agent_control_arena_open_invalid", "launcher_http",
-      "arena open requires the exact dedicated slot and current attempt watermark");
+    contractFail(action === "openGym"
+      ? "agent_control_gym_open_invalid" : "agent_control_arena_open_invalid", "launcher_http",
+    action + " requires the exact dedicated slot and current attempt watermark");
   }
   return value;
 }
@@ -208,7 +209,7 @@ function openAuthenticatedLegacyHttpSession(options) {
   async function agentControl(action, fields, timeoutMs) {
     if (!AGENT_ACTIONS.has(action)) {
       contractFail("agent_control_action_forbidden", "launcher_http",
-        "shared Launcher session exposes only lifecycle and the fixed arena AS2 opener", { action });
+        "shared Launcher session exposes only lifecycle and fixed arena/gym AS2 openers", { action });
     }
     const safeFields = validateAgentFields(action, fields);
     return request("POST", "/task", Object.assign({ task: "agent_control", action }, safeFields),
@@ -579,7 +580,7 @@ function queryLauncherCoreProcesses() {
     "$ErrorActionPreference='Stop'",
     "[Console]::OutputEncoding=[System.Text.UTF8Encoding]::new($false)",
     "$records=@(Get-CimInstance Win32_Process -Filter \"Name='CRAZYFLASHER7MercenaryEmpire.Core.exe'\" | ForEach-Object {",
-    " [pscustomobject]@{pid=[int]$_.ProcessId;parentPid=[int]$_.ParentProcessId;processPath=$_.ExecutablePath;commandLineSha256=$null}",
+    " [pscustomobject]@{pid=[int]$_.ProcessId;parentPid=[int]$_.ParentProcessId;processPath=$_.ExecutablePath;commandLine=$_.CommandLine}",
     "})",
     "$records | ConvertTo-Json -Compress",
   ].join("\n");
@@ -597,10 +598,55 @@ function queryLauncherCoreProcesses() {
   if (records.some((entry) => !Number.isInteger(entry.pid) || entry.pid < 1)) {
     contractFail("launcher_process_inventory_invalid", "launcher_process", "process inventory is malformed");
   }
-  return records;
+  return records.map((entry) => {
+    const commandLine = String(entry.commandLine || "");
+    if (!Number.isInteger(entry.parentPid) || entry.parentPid < 0
+        || typeof entry.processPath !== "string" || !path.isAbsolute(entry.processPath)
+        || !commandLine) {
+      contractFail("launcher_process_inventory_invalid", "launcher_process",
+        "Core process lacks exact path, parent, or command line");
+    }
+    const argv = RuntimeGuard.parseWindowsCommandLine(commandLine);
+    if (!Array.isArray(argv) || argv.length < 1) {
+      contractFail("launcher_process_inventory_invalid", "launcher_process",
+        "Core process command line is malformed");
+    }
+    return { pid: entry.pid, parentPid: entry.parentPid,
+      processPath: path.resolve(entry.processPath), argv,
+      commandLineSha256: sha256Text(commandLine) };
+  });
 }
 
-function assertExclusiveLauncherProcess(processes, authenticatedPid) {
+function readCoreMvid(coreExePath) {
+  const exe = path.resolve(coreExePath || "");
+  if (path.basename(exe).toLowerCase() !== "crazyflasher7mercenaryempire.core.exe") {
+    contractFail("launcher_guard_core_path_invalid", "launcher_process",
+      "authenticated Core path is not the expected executable");
+  }
+  const dll = path.join(path.dirname(exe), "CRAZYFLASHER7MercenaryEmpire.Core.dll");
+  readExactRegularFile(dll, { phase: "launcher_process", maximumBytes: 128 * 1024 * 1024 });
+  const script = [
+    "$ErrorActionPreference='Stop'",
+    "$dll=$env:CF7_GUARD_MVID_DLL",
+    "$assembly=[Reflection.Assembly]::ReflectionOnlyLoadFrom($dll)",
+    "[Console]::Out.Write($assembly.ManifestModule.ModuleVersionId.ToString('D'))",
+  ].join("\n");
+  const result = childProcess.spawnSync("powershell.exe",
+    ["-NoLogo", "-NoProfile", "-NonInteractive", "-Command", script],
+    { encoding: "utf8", windowsHide: true, timeout: 15000,
+      env: Object.assign({}, process.env, { CF7_GUARD_MVID_DLL: dll }) });
+  const mvid = String(result && result.stdout || "").trim();
+  if (!result || result.status !== 0 || !/^[a-f0-9]{8}(?:-[a-f0-9]{4}){3}-[a-f0-9]{12}$/.test(mvid)) {
+    contractFail("launcher_guard_mvid_unavailable", "launcher_process",
+      "could not read the exact Core DLL module version ID", {
+        status: result && result.status,
+        stderr: String(result && result.stderr || "").slice(-1000),
+      });
+  }
+  return mvid;
+}
+
+function assertExclusiveLauncherProcess(processes, authenticatedPid, options) {
   const records = Array.isArray(processes) ? processes : [];
   if (authenticatedPid == null) {
     if (records.length !== 0) {
@@ -609,11 +655,34 @@ function assertExclusiveLauncherProcess(processes, authenticatedPid) {
     }
     return true;
   }
-  if (records.length !== 1 || records[0].pid !== authenticatedPid) {
+  const guardian = records.find((entry) => entry && entry.pid === authenticatedPid);
+  if (!guardian || records.filter((entry) => entry && entry.pid === authenticatedPid).length !== 1
+      || records.length > 2 || guardian.argv && guardian.argv.includes("--hotkey-guard")) {
     contractFail("launcher_process_not_exclusive", "launcher_process",
-      "authenticated Launcher is not the only Launcher Core process", {
+      "authenticated Guardian and at most one fixed guard child are required", {
         authenticatedPid, observedPids: records.map((entry) => entry.pid),
       });
+  }
+  if (records.length === 2) {
+    const child = records.find((entry) => entry !== guardian);
+    const readMvid = options && options.readCoreMvid || readCoreMvid;
+    const expectedMvid = readMvid(guardian.processPath);
+    const argv = child && child.argv;
+    if (!Number.isInteger(child && child.pid) || child.pid < 1
+        || child.pid === authenticatedPid || child.parentPid !== authenticatedPid
+        || !samePath(child.processPath || "", guardian.processPath || "")
+        || !Array.isArray(argv)
+        || (argv.length !== 4 && argv.length !== 5)
+        || !samePath(argv[0] || "", guardian.processPath || "")
+        || argv[1] !== "--hotkey-guard"
+        || argv[2] !== String(authenticatedPid)
+        || argv[3] !== expectedMvid
+        || (argv.length === 5 && argv[4] !== "--diag-input")) {
+      contractFail("launcher_process_not_exclusive", "launcher_process",
+        "extra Core process is not the exact Guardian HotkeyGuard child", {
+          authenticatedPid, observedPids: records.map((entry) => entry.pid),
+        });
+    }
   }
   return true;
 }
@@ -900,6 +969,7 @@ module.exports = {
   openAuthenticatedLegacyHttpSession,
   parseExactArchiveRecord,
   queryLauncherCoreProcesses,
+  readCoreMvid,
   recordsAfterTerminalBoundary,
   responseSucceeded,
   startLauncherCandidate,

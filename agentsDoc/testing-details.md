@@ -803,7 +803,7 @@ recovery ledger 的确定性回归固定验证：8 条稳定 proof 仍允许一�
 ### SaveManager API 分层（R1）门
 
 **调用点扫描门**：改 SaveManager 存盘入口（`_root.强制存盘` / `_root.自动存盘` / `_root.本地存盘` / 直调 `flushNow()` / XFL 帧脚本对应调用）时必跑 `node tools/save-api-migration/check-callsites.js`；R1 步骤 10–14 起另有 `node tools/save-api-migration/test-callsites.js`（文本记录 17/17，待核：阈值来源为历史文本，未找到当前机器真源）。
-manifest 为 `tools/save-api-migration/callsites.v1.json`（当前机器真值：38 物理点 / 32 逻辑点 = strict 18 + debounce 14；scripts 旧入口 forceSave/directFlushNow/autoSave/localSave 已全部归零，XFL 旧入口亦归零；文本中「36 物理点 / 17 strict + 15 debounce」「37 物理点 / 32 逻辑点」与「步骤 10/11/12/13 另轮施工」为历史口径，见归档）。发布前后对照追加 `--verify-swf-hashes`；
+manifest 为 `tools/save-api-migration/callsites.v1.json`（当前机器真值：40 物理点 / 33 逻辑点 = strict 19 + debounce 14；U4 健身结算新增一个 strict 逻辑点及 markDirty/flushDurableNow 两个物理点；scripts 旧入口 forceSave/directFlushNow/autoSave/localSave 已全部归零，XFL 旧入口亦归零；文本中「36 物理点 / 17 strict + 15 debounce」「37 物理点 / 32 逻辑点」「38 物理点 / 32 逻辑点」与「步骤 10/11/12/13 另轮施工」为历史口径，见归档）。发布前后对照追加 `--verify-swf-hashes`；
 口径、paired 副本与 liveState 取信规则见 [tools/save-api-migration/README.md](../tools/save-api-migration/README.md)；Slice 2+ 迁移改旧入口文本必须同轮更新 manifest，否则本门以未命中/数量不足拒绝。所选 XFL 经 CS6 fresh publish 后以 `python -X utf8 tools/save-api-migration/check-published-scripts.py <swf> <export-dir>` 对 FFDec 输出核对可达 API/reason。
 
 **四层语义合同（Slice 1–4 起，未迁调用点部分仍有效）**：改 `SaveManager.as` / `通信_lsy_原版存档系统.as` / `SaveManagerTest.as` 后必跑 `scripts/run-character-build-tests.ps1` 与 `node tools/save-api-migration/check-callsites.js`。

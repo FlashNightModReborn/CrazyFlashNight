@@ -1,0 +1,852 @@
+{
+  "schema": "cf7-gym-motion-manifest-v1",
+  "motionUri": "wood-dummy-loop.json",
+  "frameRate": 30.0,
+  "loop": {
+    "label": "木人桩",
+    "timelineStart": 155,
+    "timelineEndExclusive": 282,
+    "frameCount": 127,
+    "loopbackFrameIndex": 282,
+    "frameRate": 30.0,
+    "labelSourceLine": 19,
+    "durationSourceLine": 49,
+    "loopbackSourceLine": 54,
+    "boundaryPolicy": "Play source frame order; no synthetic seam frames."
+  },
+  "stations": {
+    "dummy": {
+      "label": "木人桩",
+      "motionUri": "wood-dummy-loop.json",
+      "timelineStart": 155,
+      "timelineEndExclusive": 282,
+      "frameCount": 127,
+      "frameRate": 30.0,
+      "layerCount": 26,
+      "keyframeExposureCount": 588,
+      "directInstanceKeyCount": 583,
+      "loopbackFrameIndex": 282
+    },
+    "dumbbell": {
+      "label": "哑铃",
+      "motionUri": "dumbbell-loop.json",
+      "timelineStart": 1,
+      "timelineEndExclusive": 78,
+      "frameCount": 77,
+      "frameRate": 30.0,
+      "layerCount": 26,
+      "keyframeExposureCount": 103,
+      "directInstanceKeyCount": 99,
+      "loopbackFrameIndex": 78,
+      "labelSourceLine": null,
+      "loopbackSourceLine": 34,
+      "emptyAdjustColorFilterCount": 83,
+      "otherSourceFilters": {},
+      "tweenSegments": []
+    },
+    "squat": {
+      "label": "深蹲",
+      "motionUri": "squat-loop.json",
+      "timelineStart": 79,
+      "timelineEndExclusive": 154,
+      "frameCount": 75,
+      "frameRate": 30.0,
+      "layerCount": 26,
+      "keyframeExposureCount": 159,
+      "directInstanceKeyCount": 153,
+      "loopbackFrameIndex": 154,
+      "labelSourceLine": 13,
+      "loopbackSourceLine": 44,
+      "emptyAdjustColorFilterCount": 145,
+      "otherSourceFilters": {},
+      "tweenSegments": []
+    }
+  },
+  "sourceDigests": {
+    "timeline": {
+      "repoRelativePath": "flashswf/arts/things0/LIBRARY/sprite/Symbol 624.xml",
+      "sha256": "4135b8e3b424e65bf36c01dfc94e40352a609e479c984e8530149ca158967946"
+    },
+    "document": {
+      "repoRelativePath": "flashswf/arts/things0/DOMDocument.xml",
+      "sha256": "2d69bb46597abc40df8aa097058eb4c3528f8320ec3cb1f52602886d75d6f364",
+      "frameRate": 30.0,
+      "frameRateLine": 1
+    },
+    "dressupManifest": {
+      "repoRelativePath": "launcher/web/assets/dressup/manifest.json",
+      "sha256": "e8e89e657a274d6f33cd29b0290c09a605cb6fa89fd67c0a185bc0bd5026235e"
+    },
+    "xflSvgExporter": {
+      "repoRelativePath": "tools/xfl-ui-svg/xfl_to_svg.py",
+      "sha256": "62ecbcf8db66f5cfab25d0c1f16da92758458ed62a9180eae77f44b2b58b900c"
+    },
+    "compiledSwf": {
+      "repoRelativePath": "flashswf/arts/things0.swf",
+      "sha256": "1f2d0126c3c84b7f817bf1f6e9f40db4bfa69a1f57476f6ce8645a25d35b88f7"
+    },
+    "ffdecCli": {
+      "repoRelativePath": "tools/ffdec/ffdec-cli.exe",
+      "sha256": "c03ad5d22008246b9f2523a70830502ed0d01610f4054912b43ae70f58dddd86"
+    },
+    "equipmentXflShapes": {
+      "shape/Symbol 621": {
+        "repoRelativePath": "flashswf/arts/things0/LIBRARY/shape/Symbol 621.xml",
+        "sha256": "0b8f0bbd054d599a28673b5f3a037d41996d4b665e34bc36019141c8dd9be299"
+      },
+      "shape/Symbol 622": {
+        "repoRelativePath": "flashswf/arts/things0/LIBRARY/shape/Symbol 622.xml",
+        "sha256": "f6de9d9c24a9d714f383dd9c870a556208bb7380225380a3a99da9ba45d9c375"
+      },
+      "shape/Symbol 623": {
+        "repoRelativePath": "flashswf/arts/things0/LIBRARY/shape/Symbol 623.xml",
+        "sha256": "05965f8278cc97211e8700bbc100fb6a575c3b486bbcddaad3646e713ea058cb"
+      }
+    }
+  },
+  "layerCount": 26,
+  "keyframeExposureCount": 588,
+  "directInstanceKeyCount": 583,
+  "emptyAdjustColorFilterCount": 582,
+  "otherSourceFilters": {},
+  "tweenSegments": [],
+  "componentBindings": {
+    "Symbol 6": {
+      "sourceSha256": "e7bb79d3c680df0134b323a34804016635821f5d4e3838d3e4fb6ec2cea3b62a",
+      "hostSymbol": "shape/Symbol 5",
+      "wrapperMatrix": {
+        "a": 1,
+        "b": 0,
+        "c": 0,
+        "d": 1,
+        "tx": 0,
+        "ty": 0
+      },
+      "fields": [],
+      "bindings": [],
+      "basicHiddenAtLoad": false,
+      "attachConditional": false,
+      "repoRelativePath": "flashswf/arts/things0/LIBRARY/主角肢体素材/Symbol 6.xml"
+    },
+    "上臂": {
+      "sourceSha256": "7d53da1547fb2b85b66f2c4b7c29d0482b139fcf825518c1111fbe0b80539e4d",
+      "hostSymbol": "sprite/Symbol 16",
+      "wrapperMatrix": {
+        "a": 1,
+        "b": 0,
+        "c": 0,
+        "d": 1,
+        "tx": -0.15,
+        "ty": 46.2
+      },
+      "fields": [
+        "上臂"
+      ],
+      "bindings": [
+        {
+          "field": "上臂",
+          "attachName": "装扮",
+          "referenceName": "上臂_引用"
+        }
+      ],
+      "basicHiddenAtLoad": true,
+      "attachConditional": false,
+      "repoRelativePath": "flashswf/arts/things0/LIBRARY/主角肢体素材/上臂.xml"
+    },
+    "主角碎片刀": {
+      "sourceSha256": "b3a9682b842570ddbb8c6af56a224c2c7976cbd2e871e114aeee58c83bd2a491",
+      "hostSymbol": "sprite/Symbol 12",
+      "wrapperMatrix": {
+        "a": 1,
+        "b": 0,
+        "c": 0,
+        "d": 1,
+        "tx": 1.8,
+        "ty": -112.2
+      },
+      "fields": [
+        "刀_装扮"
+      ],
+      "bindings": [
+        {
+          "field": "刀_装扮",
+          "attachName": "装扮",
+          "referenceName": "刀_引用"
+        }
+      ],
+      "basicHiddenAtLoad": true,
+      "attachConditional": true,
+      "repoRelativePath": "flashswf/arts/things0/LIBRARY/主角肢体素材/主角碎片刀.xml"
+    },
+    "主角碎片手枪": {
+      "sourceSha256": "811fadcc0aa530920e7b2a352931848ff86513ee285f829aa6d080ff5dcc21da",
+      "hostSymbol": "sprite/Symbol 28",
+      "wrapperMatrix": {
+        "a": 1,
+        "b": 0,
+        "c": 0,
+        "d": 1,
+        "tx": -21.65,
+        "ty": 11.2
+      },
+      "fields": [
+        "手枪_装扮"
+      ],
+      "bindings": [
+        {
+          "field": "手枪_装扮",
+          "attachName": "装扮",
+          "referenceName": "手枪_引用"
+        }
+      ],
+      "basicHiddenAtLoad": true,
+      "attachConditional": true,
+      "repoRelativePath": "flashswf/arts/things0/LIBRARY/主角肢体素材/主角碎片手枪.xml"
+    },
+    "主角碎片长枪": {
+      "sourceSha256": "f727c67aebd6fa670bb487c1327c5e6d95991d15f5942c14355fc58498185a4e",
+      "hostSymbol": "sprite/Symbol 8",
+      "wrapperMatrix": {
+        "a": 1,
+        "b": 0,
+        "c": 0,
+        "d": 1,
+        "tx": -21.3,
+        "ty": 33.15
+      },
+      "fields": [
+        "长枪_装扮"
+      ],
+      "bindings": [
+        {
+          "field": "长枪_装扮",
+          "attachName": "装扮",
+          "referenceName": "长枪_引用"
+        }
+      ],
+      "basicHiddenAtLoad": true,
+      "attachConditional": true,
+      "repoRelativePath": "flashswf/arts/things0/LIBRARY/主角肢体素材/主角碎片长枪.xml"
+    },
+    "刀-主手": {
+      "sourceSha256": "e35ff9a317c2edd9d804b2e7d4767531bd9711b781b3981611d2c6af2c1eb108",
+      "hostSymbol": "sprite/Symbol 12主手刀元件",
+      "wrapperMatrix": {
+        "a": 1,
+        "b": 0,
+        "c": 0,
+        "d": 1,
+        "tx": 1.8,
+        "ty": 97.45
+      },
+      "fields": [
+        "刀_装扮"
+      ],
+      "bindings": [
+        {
+          "field": "刀_装扮",
+          "attachName": "装扮",
+          "referenceName": "刀_引用"
+        }
+      ],
+      "basicHiddenAtLoad": true,
+      "attachConditional": true,
+      "repoRelativePath": "flashswf/arts/things0/LIBRARY/主角肢体素材/刀-主手.xml"
+    },
+    "刀-刀鞘": {
+      "sourceSha256": "9d55dd57cd80f28492e21b888247a5b2c0cadf4ffa6348937dead3f3cd62d07e",
+      "hostSymbol": "sprite/Symbol 12刀鞘元件",
+      "wrapperMatrix": {
+        "a": 1,
+        "b": 0,
+        "c": 0,
+        "d": 1,
+        "tx": 1.55,
+        "ty": 97.45
+      },
+      "fields": [
+        "刀3_装扮"
+      ],
+      "bindings": [
+        {
+          "field": "刀3_装扮",
+          "attachName": "装扮",
+          "referenceName": "刀3_引用"
+        }
+      ],
+      "basicHiddenAtLoad": true,
+      "attachConditional": true,
+      "repoRelativePath": "flashswf/arts/things0/LIBRARY/主角肢体素材/刀-刀鞘.xml"
+    },
+    "刀-副手": {
+      "sourceSha256": "f21578e598ffa5dce639f8c5289efce90bbc0e79d2758db4ad0548701c858372",
+      "hostSymbol": "sprite/Symbol 12副手刀元件",
+      "wrapperMatrix": {
+        "a": 1,
+        "b": 0,
+        "c": 0,
+        "d": 1,
+        "tx": 1.8,
+        "ty": 97.45
+      },
+      "fields": [
+        "刀2_装扮"
+      ],
+      "bindings": [
+        {
+          "field": "刀2_装扮",
+          "attachName": "装扮",
+          "referenceName": "刀2_引用"
+        }
+      ],
+      "basicHiddenAtLoad": true,
+      "attachConditional": true,
+      "repoRelativePath": "flashswf/arts/things0/LIBRARY/主角肢体素材/刀-副手.xml"
+    },
+    "刀": {
+      "sourceSha256": "d75dce1cb2ce588c35ade772d2bb039bd294b55e93a5e06cfc723aec3ffef2a6",
+      "hostSymbol": "sprite/Symbol 12",
+      "wrapperMatrix": {
+        "a": 1,
+        "b": 0,
+        "c": 0,
+        "d": 1,
+        "tx": 1.8,
+        "ty": 97.45
+      },
+      "fields": [
+        "刀_装扮"
+      ],
+      "bindings": [
+        {
+          "field": "刀_装扮",
+          "attachName": "装扮",
+          "referenceName": "刀_引用"
+        }
+      ],
+      "basicHiddenAtLoad": true,
+      "attachConditional": true,
+      "repoRelativePath": "flashswf/arts/things0/LIBRARY/主角肢体素材/刀.xml"
+    },
+    "右大腿": {
+      "sourceSha256": "426773c0442ff6e83b5199ba78ab44225e8e6f647cd4dedcad9f1bcb253c7017",
+      "hostSymbol": "sprite/Symbol 61",
+      "wrapperMatrix": {
+        "a": 1,
+        "b": 0,
+        "c": 0,
+        "d": 1,
+        "tx": 1.95,
+        "ty": 50.75
+      },
+      "fields": [
+        "右大腿"
+      ],
+      "bindings": [
+        {
+          "field": "右大腿",
+          "attachName": "装扮",
+          "referenceName": "右大腿_引用"
+        }
+      ],
+      "basicHiddenAtLoad": true,
+      "attachConditional": false,
+      "repoRelativePath": "flashswf/arts/things0/LIBRARY/主角肢体素材/右大腿.xml"
+    },
+    "右手": {
+      "sourceSha256": "25bcb78ff2038e11b0d707bb7ec9e890a333ca66fc786aac6bf8b60c0aefcc03",
+      "hostSymbol": "sprite/Symbol 70",
+      "wrapperMatrix": {
+        "a": 1,
+        "b": 0,
+        "c": 0,
+        "d": 1,
+        "tx": 20.0,
+        "ty": 0.45
+      },
+      "fields": [
+        "右手"
+      ],
+      "bindings": [
+        {
+          "field": "右手",
+          "attachName": "装扮",
+          "referenceName": "右手_引用"
+        }
+      ],
+      "basicHiddenAtLoad": true,
+      "attachConditional": false,
+      "repoRelativePath": "flashswf/arts/things0/LIBRARY/主角肢体素材/右手.xml"
+    },
+    "头": {
+      "sourceSha256": "9e8a375327e30eaa71ebb8a4433b870bdd42c1e4ee53a15d6ecbfc58cef03401",
+      "hostSymbol": "sprite/Symbol 45",
+      "wrapperMatrix": {
+        "a": 1,
+        "b": 0,
+        "c": 0,
+        "d": 1,
+        "tx": 9.65,
+        "ty": -24.25
+      },
+      "fields": [
+        "脸型",
+        "发型",
+        "面具"
+      ],
+      "bindings": [
+        {
+          "field": "脸型",
+          "attachName": "装扮",
+          "referenceName": "脸型_引用"
+        },
+        {
+          "field": "发型",
+          "attachName": "装扮2",
+          "referenceName": "发型_引用"
+        },
+        {
+          "field": "面具",
+          "attachName": "装扮3",
+          "referenceName": "面具_引用"
+        },
+        {
+          "field": "脸型",
+          "attachName": "装扮",
+          "referenceName": "脸型_引用"
+        },
+        {
+          "field": "发型",
+          "attachName": "装扮2",
+          "referenceName": "发型_引用"
+        },
+        {
+          "field": "面具",
+          "attachName": "装扮3",
+          "referenceName": "面具_引用"
+        }
+      ],
+      "basicHiddenAtLoad": true,
+      "attachConditional": true,
+      "repoRelativePath": "flashswf/arts/things0/LIBRARY/主角肢体素材/头.xml"
+    },
+    "小腿": {
+      "sourceSha256": "3ff584837011b1c2a041d9606c2b7d3c1022fde47e0b19f387837824644cc77d",
+      "hostSymbol": "sprite/Symbol 57",
+      "wrapperMatrix": {
+        "a": 1,
+        "b": 0,
+        "c": 0,
+        "d": 1,
+        "tx": 1.5,
+        "ty": 55.35
+      },
+      "fields": [
+        "小腿"
+      ],
+      "bindings": [
+        {
+          "field": "小腿",
+          "attachName": "装扮",
+          "referenceName": "小腿_引用"
+        }
+      ],
+      "basicHiddenAtLoad": true,
+      "attachConditional": false,
+      "repoRelativePath": "flashswf/arts/things0/LIBRARY/主角肢体素材/小腿.xml"
+    },
+    "屁股": {
+      "sourceSha256": "243993c036746b7d6b879c32dcd7567c9e4cffd833fd2eee5bb1421da7aff664",
+      "hostSymbol": "sprite/Symbol 49",
+      "wrapperMatrix": {
+        "a": 1,
+        "b": 0,
+        "c": 0,
+        "d": 1,
+        "tx": 0.6,
+        "ty": -0.75
+      },
+      "fields": [
+        "屁股"
+      ],
+      "bindings": [
+        {
+          "field": "屁股",
+          "attachName": "装扮",
+          "referenceName": "屁股_引用"
+        }
+      ],
+      "basicHiddenAtLoad": true,
+      "attachConditional": false,
+      "repoRelativePath": "flashswf/arts/things0/LIBRARY/主角肢体素材/屁股.xml"
+    },
+    "左下臂": {
+      "sourceSha256": "759d91adc1f4f2117a503077b9e6b12fb810a6be2551acd6995ef737c8e48274",
+      "hostSymbol": "sprite/Symbol 66",
+      "wrapperMatrix": {
+        "a": 1,
+        "b": 0,
+        "c": 0,
+        "d": 1,
+        "tx": 1.05,
+        "ty": 39.95
+      },
+      "fields": [
+        "右下臂"
+      ],
+      "bindings": [
+        {
+          "field": "右下臂",
+          "attachName": "装扮",
+          "referenceName": "右下臂_引用"
+        }
+      ],
+      "basicHiddenAtLoad": true,
+      "attachConditional": false,
+      "repoRelativePath": "flashswf/arts/things0/LIBRARY/主角肢体素材/左下臂.xml"
+    },
+    "左大腿": {
+      "sourceSha256": "8729c04399f85212e7e7444a76a3542ae6db0b87234ec6d564d86f58dbc0de84",
+      "hostSymbol": "sprite/Symbol 32",
+      "wrapperMatrix": {
+        "a": 1,
+        "b": 0,
+        "c": 0,
+        "d": 1,
+        "tx": 1.95,
+        "ty": 50.75
+      },
+      "fields": [
+        "左大腿"
+      ],
+      "bindings": [
+        {
+          "field": "左大腿",
+          "attachName": "装扮",
+          "referenceName": "左大腿_引用"
+        }
+      ],
+      "basicHiddenAtLoad": true,
+      "attachConditional": false,
+      "repoRelativePath": "flashswf/arts/things0/LIBRARY/主角肢体素材/左大腿.xml"
+    },
+    "左手": {
+      "sourceSha256": "d3d105b7940b7b5626ced0b14eea6d5c70ac93cd17ddd2813337d6aaaa1afbdb",
+      "hostSymbol": "sprite/Symbol 24",
+      "wrapperMatrix": {
+        "a": 1,
+        "b": 0,
+        "c": 0,
+        "d": 1,
+        "tx": 20.0,
+        "ty": 0
+      },
+      "fields": [
+        "左手"
+      ],
+      "bindings": [
+        {
+          "field": "左手",
+          "attachName": "装扮",
+          "referenceName": "左手_引用"
+        }
+      ],
+      "basicHiddenAtLoad": true,
+      "attachConditional": false,
+      "repoRelativePath": "flashswf/arts/things0/LIBRARY/主角肢体素材/左手.xml"
+    },
+    "左手臂": {
+      "sourceSha256": "1c3d64c000debdfbaa97eb92e391279636b29287603abb298a8325e30fb1c727",
+      "hostSymbol": "sprite/Symbol 20",
+      "wrapperMatrix": {
+        "a": 0.995834350585938,
+        "b": -0.0911712646484375,
+        "c": 0.0911712646484375,
+        "d": 0.995834350585938,
+        "tx": 1.05,
+        "ty": 39.95
+      },
+      "fields": [
+        "左下臂"
+      ],
+      "bindings": [
+        {
+          "field": "左下臂",
+          "attachName": "装扮",
+          "referenceName": "左下臂_引用"
+        }
+      ],
+      "basicHiddenAtLoad": true,
+      "attachConditional": false,
+      "repoRelativePath": "flashswf/arts/things0/LIBRARY/主角肢体素材/左手臂.xml"
+    },
+    "手枪": {
+      "sourceSha256": "8089ef4b0164cbbffe714c31537e3de4f05f33d58f745810666a3793654dbd3c",
+      "hostSymbol": "sprite/Symbol 28",
+      "wrapperMatrix": {
+        "a": 1,
+        "b": 0,
+        "c": 0,
+        "d": 1,
+        "tx": 28.5,
+        "ty": -4.5
+      },
+      "fields": [
+        "手枪_装扮"
+      ],
+      "bindings": [
+        {
+          "field": "手枪_装扮",
+          "attachName": "装扮",
+          "referenceName": "手枪_引用"
+        }
+      ],
+      "basicHiddenAtLoad": true,
+      "attachConditional": true,
+      "repoRelativePath": "flashswf/arts/things0/LIBRARY/主角肢体素材/手枪.xml"
+    },
+    "手枪2": {
+      "sourceSha256": "322bd05e2a4887a020e1b1b0af8dbcab796dcd7cc47845ddb6a452fa6b416c76",
+      "hostSymbol": "sprite/Symbol 28",
+      "wrapperMatrix": {
+        "a": 1,
+        "b": 0,
+        "c": 0,
+        "d": 1,
+        "tx": 0,
+        "ty": 0
+      },
+      "fields": [
+        "手枪2_装扮"
+      ],
+      "bindings": [
+        {
+          "field": "手枪2_装扮",
+          "attachName": "装扮",
+          "referenceName": "手枪2_引用"
+        }
+      ],
+      "basicHiddenAtLoad": true,
+      "attachConditional": true,
+      "repoRelativePath": "flashswf/arts/things0/LIBRARY/主角肢体素材/手枪2.xml"
+    },
+    "脚": {
+      "sourceSha256": "69eacee0c0a8b5834d821a743b758c2f16f2674eead6e84e6019ad0784b10669",
+      "hostSymbol": "sprite/Symbol 53",
+      "wrapperMatrix": {
+        "a": 1,
+        "b": 0,
+        "c": 0,
+        "d": 1,
+        "tx": 15.85,
+        "ty": 24.8
+      },
+      "fields": [
+        "脚"
+      ],
+      "bindings": [
+        {
+          "field": "脚",
+          "attachName": "装扮",
+          "referenceName": "脚_引用"
+        }
+      ],
+      "basicHiddenAtLoad": true,
+      "attachConditional": false,
+      "repoRelativePath": "flashswf/arts/things0/LIBRARY/主角肢体素材/脚.xml"
+    },
+    "身体": {
+      "sourceSha256": "4c603844d7a8d85370c044dffde7f8ec542c2fefb19f2e3500f785674a06601b",
+      "hostSymbol": "sprite/Symbol 36",
+      "wrapperMatrix": {
+        "a": 1,
+        "b": 0,
+        "c": 0,
+        "d": 1,
+        "tx": -4.6,
+        "ty": -73.6
+      },
+      "fields": [
+        "身体"
+      ],
+      "bindings": [
+        {
+          "field": "身体",
+          "attachName": "装扮",
+          "referenceName": "身体_引用"
+        }
+      ],
+      "basicHiddenAtLoad": true,
+      "attachConditional": false,
+      "repoRelativePath": "flashswf/arts/things0/LIBRARY/主角肢体素材/身体.xml"
+    },
+    "长枪": {
+      "sourceSha256": "5e0321529521448e1f5d5cab4fc5d0d27fd4c4290dc327054df31733d8c8e228",
+      "hostSymbol": "sprite/Symbol 8",
+      "wrapperMatrix": {
+        "a": 1,
+        "b": 0,
+        "c": 0,
+        "d": 1,
+        "tx": 44.95,
+        "ty": -5.5
+      },
+      "fields": [
+        "长枪_装扮"
+      ],
+      "bindings": [
+        {
+          "field": "长枪_装扮",
+          "attachName": "装扮",
+          "referenceName": "长枪_引用"
+        }
+      ],
+      "basicHiddenAtLoad": true,
+      "attachConditional": true,
+      "repoRelativePath": "flashswf/arts/things0/LIBRARY/主角肢体素材/长枪.xml"
+    }
+  },
+  "vectors": {
+    "shape/Symbol 621": {
+      "uri": "symbols/effect-621.svg",
+      "sha256": "be1ffdabde7446fd67a14233b36c6ce2e80b9e65515dec6871491ba633b62a7c",
+      "repoRelativePath": "flashswf/arts/things0/LIBRARY/shape/Symbol 621.xml",
+      "sourceSha256": "0b8f0bbd054d599a28673b5f3a037d41996d4b665e34bc36019141c8dd9be299",
+      "bounds": [
+        -1.05,
+        -1.0,
+        123.9,
+        64.05
+      ],
+      "backend": "FFDec compiled SWF shape export",
+      "characterId": 3209,
+      "compiledSwf": {
+        "repoRelativePath": "flashswf/arts/things0.swf",
+        "sha256": "1f2d0126c3c84b7f817bf1f6e9f40db4bfa69a1f57476f6ce8645a25d35b88f7"
+      },
+      "ffdecCli": {
+        "repoRelativePath": "tools/ffdec/ffdec-cli.exe",
+        "sha256": "c03ad5d22008246b9f2523a70830502ed0d01610f4054912b43ae70f58dddd86"
+      },
+      "ffdecExportCommand": "ffdec-cli.exe -selectid 3209-3211 -format shape:svg -zoom 4 -export shape <scratch-output> flashswf/arts/things0.swf",
+      "referencePngCoverage": {
+        "size": [
+          504,
+          265
+        ],
+        "alphaAtLeast128": 81316
+      },
+      "fillColors": [
+        "#3F3F3F",
+        "#626262",
+        "#898989"
+      ],
+      "mappingEvidence": "XFL fill palette and local dimensions match this compiled DefineShape ID; Symbol 623 is also placed on the compiled 木人桩 frame. The SWF is a pinned compiled reference, not an editable source."
+    },
+    "shape/Symbol 622": {
+      "uri": "symbols/effect-622.svg",
+      "sha256": "6950ccb05d94b5bd986858428e941a9d0d479fc35aca6b5ed7a85e2eb1e3081e",
+      "repoRelativePath": "flashswf/arts/things0/LIBRARY/shape/Symbol 622.xml",
+      "sourceSha256": "f6de9d9c24a9d714f383dd9c870a556208bb7380225380a3a99da9ba45d9c375",
+      "bounds": [
+        0.0,
+        0.0,
+        318.2,
+        96.8
+      ],
+      "backend": "FFDec compiled SWF shape export",
+      "characterId": 3210,
+      "compiledSwf": {
+        "repoRelativePath": "flashswf/arts/things0.swf",
+        "sha256": "1f2d0126c3c84b7f817bf1f6e9f40db4bfa69a1f57476f6ce8645a25d35b88f7"
+      },
+      "ffdecCli": {
+        "repoRelativePath": "tools/ffdec/ffdec-cli.exe",
+        "sha256": "c03ad5d22008246b9f2523a70830502ed0d01610f4054912b43ae70f58dddd86"
+      },
+      "ffdecExportCommand": "ffdec-cli.exe -selectid 3209-3211 -format shape:svg -zoom 4 -export shape <scratch-output> flashswf/arts/things0.swf",
+      "referencePngCoverage": {
+        "size": [
+          1277,
+          392
+        ],
+        "alphaAtLeast128": 198147
+      },
+      "fillColors": [
+        "#3F3F3F",
+        "#626262",
+        "#898989"
+      ],
+      "mappingEvidence": "XFL fill palette and local dimensions match this compiled DefineShape ID; Symbol 623 is also placed on the compiled 木人桩 frame. The SWF is a pinned compiled reference, not an editable source."
+    },
+    "shape/Symbol 623": {
+      "uri": "symbols/wood-dummy-623.svg",
+      "sha256": "a6bc848e0c5809bf3b6a3c8c0fbd4ba88f029d26960116cfa3b5909e70ff4226",
+      "repoRelativePath": "flashswf/arts/things0/LIBRARY/shape/Symbol 623.xml",
+      "sourceSha256": "05965f8278cc97211e8700bbc100fb6a575c3b486bbcddaad3646e713ea058cb",
+      "bounds": [
+        0.05,
+        0.0,
+        83.85,
+        209.0
+      ],
+      "backend": "FFDec compiled SWF shape export",
+      "characterId": 3211,
+      "compiledSwf": {
+        "repoRelativePath": "flashswf/arts/things0.swf",
+        "sha256": "1f2d0126c3c84b7f817bf1f6e9f40db4bfa69a1f57476f6ce8645a25d35b88f7"
+      },
+      "ffdecCli": {
+        "repoRelativePath": "tools/ffdec/ffdec-cli.exe",
+        "sha256": "c03ad5d22008246b9f2523a70830502ed0d01610f4054912b43ae70f58dddd86"
+      },
+      "ffdecExportCommand": "ffdec-cli.exe -selectid 3209-3211 -format shape:svg -zoom 4 -export shape <scratch-output> flashswf/arts/things0.swf",
+      "referencePngCoverage": {
+        "size": [
+          340,
+          841
+        ],
+        "alphaAtLeast128": 176692
+      },
+      "fillColors": [
+        "#848484",
+        "#AEAEAE",
+        "#CCCCCC"
+      ],
+      "mappingEvidence": "XFL fill palette and local dimensions match this compiled DefineShape ID; Symbol 623 is also placed on the compiled 木人桩 frame. The SWF is a pinned compiled reference, not an editable source."
+    },
+    "主角肢体素材/Symbol 3": {
+      "uri": "symbols/fragment-symbol-3.svg",
+      "sha256": "f3f6dcdf7e0dc12b08a5863cf04bd95b7d6edd662db3f42205cf707d576eed23",
+      "repoRelativePath": "flashswf/arts/things0/LIBRARY/主角肢体素材/Symbol 3.xml",
+      "sourceSha256": "eac72e7b77d0a022606eed86d51ad4c48e942454cdd132c419849528ebb42e92",
+      "bounds": [
+        -86.7,
+        -86.7,
+        86.65,
+        86.65
+      ],
+      "backend": "XFL source SVG export",
+      "rendererUnsupported": [],
+      "rendererSkipped": [],
+      "motionCaveat": "Visible radial-gradient shadow; AS2 flight-time position changes are not executed by this offline renderer."
+    }
+  },
+  "dressupManifestUri": "../dressup/manifest.json",
+  "readinessContract": {
+    "api": "window.GymMotionRenderer.canRenderPortrait(portrait, stationId) -> boolean",
+    "rule": "Return true only after every required appearance field used by this station resolves to an existing, digest-valid image URI in the linked dressup manifest. This is tuple-specific; unknown or incomplete equipment returns false without fallback.",
+    "exactPreviewTupleReadiness": "Recorded separately in outfit-loop-preview.manifest.json",
+    "flashParityVerified": false,
+    "shadowPositionParityVerified": false
+  },
+  "outputs": {
+    "dumbbell-loop.json": "715e3e228949ef1f9b0cce787e74c8bbdd1e51bdd5b019f0cb0cca03024ff0a5",
+    "squat-loop.json": "c62eebad3378723250567dd587d9cf53e0d05ca58c00bf6a6aaa0a3512126577",
+    "symbols/effect-621.svg": "be1ffdabde7446fd67a14233b36c6ce2e80b9e65515dec6871491ba633b62a7c",
+    "symbols/effect-622.svg": "6950ccb05d94b5bd986858428e941a9d0d479fc35aca6b5ed7a85e2eb1e3081e",
+    "symbols/fragment-symbol-3.svg": "f3f6dcdf7e0dc12b08a5863cf04bd95b7d6edd662db3f42205cf707d576eed23",
+    "symbols/wood-dummy-623.svg": "a6bc848e0c5809bf3b6a3c8c0fbd4ba88f029d26960116cfa3b5909e70ff4226",
+    "wood-dummy-loop.json": "5e1c09f45e195e56eeec11efb1f7d18af59a8251f325121b3af2b46d4f25fffe"
+  }
+}

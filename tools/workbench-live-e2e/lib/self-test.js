@@ -1308,7 +1308,44 @@ async function runSelfTests() {
       CloneGuard.releaseCloneLock(ordinary);
     });
 
-    await test("authenticated legacy HTTP session exposes lifecycle plus fixed arena opener", async () => {
+    await test("one authenticated Guardian permits only its exact same-Core HotkeyGuard child", async () => {
+      const corePath = "C:\\candidate\\runtime\\CRAZYFLASHER7MercenaryEmpire.Core.exe";
+      const mvid = "fc915c76-c141-43b2-8b8b-326e6f3f90d4";
+      const guardian = { pid: 7001, parentPid: 6000, processPath: corePath,
+        argv: [corePath, "--project-root", "C:\\project", "--legacy-http-automation"] };
+      const guard = { pid: 7002, parentPid: 7001, processPath: corePath,
+        argv: [corePath, "--hotkey-guard", "7001", mvid] };
+      const expected = { readCoreMvid(value) {
+        assert.strictEqual(value, corePath);
+        return mvid;
+      } };
+      assert.strictEqual(LauncherObservation.assertExclusiveLauncherProcess([guardian], 7001), true);
+      assert.strictEqual(LauncherObservation.assertExclusiveLauncherProcess(
+        [guard, guardian], 7001, expected), true);
+      assert.strictEqual(LauncherObservation.assertExclusiveLauncherProcess(
+        [guardian, Object.assign({}, guard, {
+          argv: guard.argv.concat("--diag-input") })], 7001, expected), true);
+      const rejected = [
+        Object.assign({}, guard, { parentPid: 9999 }),
+        Object.assign({}, guard, { processPath: "C:\\other\\CRAZYFLASHER7MercenaryEmpire.Core.exe" }),
+        Object.assign({}, guard, { argv: [corePath, "--hotkey-guard", "7001",
+          "00000000-0000-0000-0000-000000000000"] }),
+        Object.assign({}, guard, { argv: [corePath, "--hotkey-guard", "7000", mvid] }),
+        Object.assign({}, guard, { argv: guard.argv.concat("--foreign-mode") }),
+        Object.assign({}, guard, { argv: [corePath, "--other", "7001", mvid] }),
+      ];
+      rejected.forEach((child) => assert.throws(() =>
+        LauncherObservation.assertExclusiveLauncherProcess([guardian, child], 7001, expected),
+      (error) => error && error.code === "launcher_process_not_exclusive"));
+      assert.throws(() => LauncherObservation.assertExclusiveLauncherProcess(
+        [guardian, guard, Object.assign({}, guard, { pid: 7003 })], 7001, expected),
+      (error) => error && error.code === "launcher_process_not_exclusive");
+      assert.throws(() => LauncherObservation.assertExclusiveLauncherProcess(
+        [guardian, guard], null, expected),
+      (error) => error && error.code === "unverified_launcher_process_present");
+    });
+
+    await test("authenticated legacy HTTP session exposes lifecycle plus fixed arena and gym openers", async () => {
       const portsFile = path.join(root, "launcher_ports.json");
       const credentialFile = path.join(root, "legacy-http-credential.json");
       fs.writeFileSync(portsFile, JSON.stringify({ pid: 7001, httpPort: 18080, socketPort: 18081 }), "utf8");
@@ -1333,6 +1370,19 @@ async function runSelfTests() {
         expectedSlot: "cf7_agent_fixture",
         expectedAttemptId: "attempt-fixture",
       });
+      await session.agentControl("openGym", {
+        expectedSlot: "cf7_agent_fixture",
+        expectedAttemptId: "attempt-fixture",
+      });
+      await assert.rejects(() => session.agentControl("openGym", {
+        expectedSlot: "crazyflasher7_saves",
+        expectedAttemptId: "attempt-fixture",
+      }), (error) => error && error.code === "agent_control_gym_open_invalid");
+      await assert.rejects(() => session.agentControl("openGym", {
+        expectedSlot: "cf7_agent_fixture",
+        expectedAttemptId: "attempt-fixture",
+        stationId: "squat",
+      }), (error) => error && error.code === "agent_control_fields_forbidden");
       await assert.rejects(() => session.agentControl("openArena", {
         expectedSlot: "cf7_agent_fixture",
         expectedAttemptId: "attempt-fixture",
@@ -1345,10 +1395,16 @@ async function runSelfTests() {
         (error) => error && error.code === "agent_control_action_forbidden");
       assert.strictEqual(JSON.stringify(session.evidence).includes("secret-token-not-public"), false);
       assert.deepStrictEqual(calls.map((entry) => entry.pathname),
-        ["/status", "/task", "/task", "/console", "/logs?lines=2000"]);
+        ["/status", "/task", "/task", "/task", "/console", "/logs?lines=2000"]);
       assert.deepStrictEqual(calls[2].body, {
         task: "agent_control",
         action: "openArena",
+        expectedSlot: "cf7_agent_fixture",
+        expectedAttemptId: "attempt-fixture",
+      });
+      assert.deepStrictEqual(calls[3].body, {
+        task: "agent_control",
+        action: "openGym",
         expectedSlot: "cf7_agent_fixture",
         expectedAttemptId: "attempt-fixture",
       });

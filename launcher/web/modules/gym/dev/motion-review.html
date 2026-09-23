@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<base href="/">
+<title>木人桩动作与外观样例审核</title>
+<style>
+    :root { color-scheme:dark; font-family:"Microsoft YaHei UI",sans-serif; background:#111923; color:#e8edf2; }
+    * { box-sizing:border-box; }
+    html, body { width:100%; height:100%; margin:0; overflow:hidden; }
+    .review { width:1024px; height:576px; margin:0 auto; display:grid; grid-template-rows:76px minmax(0,1fr) 34px; }
+    .review-header { display:flex; align-items:center; justify-content:space-between; gap:18px; padding:12px 18px; border-bottom:1px solid #344353; }
+    h1 { margin:0; font-size:18px; }
+    .review-header p { max-width:610px; margin:0; color:#aebdca; font-size:12px; line-height:1.5; }
+    .samples { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:12px; min-height:0; padding:12px; }
+    .sample { display:grid; grid-template-rows:auto minmax(0,1fr) auto; min-width:0; min-height:0; overflow:hidden; border:1px solid #344353; background:#19232e; }
+    .sample header { padding:10px 12px; border-bottom:1px solid #344353; }
+    h2 { margin:0; font-size:14px; }
+    .tuple { min-height:34px; margin:5px 0 0; color:#aebdca; font-size:11px; line-height:1.4; }
+    .motion-stage { position:relative; display:grid; place-items:center; min-width:0; min-height:0; margin:10px; overflow:hidden; background:#131d27; }
+    .motion-canvas-host { position:absolute; inset:0; }
+    .motion-canvas-host canvas { display:block; width:100%; height:100%; }
+    .motion-status { position:relative; z-index:1; padding:8px 12px; color:#aebdca; background:#111923dd; font-size:12px; text-align:center; }
+    .sample footer { min-height:40px; padding:7px 12px; border-top:1px solid #344353; color:#aebdca; font-size:11px; }
+    .review-status { padding:7px 18px; border-top:1px solid #344353; color:#e6c779; font-size:12px; }
+</style>
+</head>
+<body>
+<main class="review">
+    <header class="review-header">
+        <h1>木人桩运动与角色分层样例</h1>
+        <p>以下使用两套现有男角色装备组合与 AS2 木人桩动作时间轴；这是资源审核样例，不代表当前玩家外观。</p>
+    </header>
+    <section class="samples" aria-label="两套木人桩动作外观样例">
+        <article class="sample" data-motion-sample="gray-vest">
+            <header>
+                <h2>样例 A · 灰背心与破牛仔裤</h2>
+                <p class="tuple">浅灰背心 · 破牛仔裤 · 黑色条纹运动鞋</p>
+            </header>
+            <div class="motion-stage" aria-label="样例 A 木人桩动作">
+                <div class="motion-canvas-host"></div>
+                <div class="motion-status">正在准备样例动作…</div>
+            </div>
+            <footer>角色身体各部位按原木人桩时间轴逐帧运动。</footer>
+        </article>
+        <article class="sample" data-motion-sample="school-uniform">
+            <header>
+                <h2>样例 B · 黑色校服</h2>
+                <p class="tuple">黑色立领校服 · 黑色校服裤子 · 蓝白相间校鞋</p>
+            </header>
+            <div class="motion-stage" aria-label="样例 B 木人桩动作">
+                <div class="motion-canvas-host"></div>
+                <div class="motion-status">正在准备样例动作…</div>
+            </div>
+            <footer>装备资源来自现有纸娃娃 manifest，不映射为玩家当前外观。</footer>
+        </article>
+    </section>
+    <div class="review-status" id="gym-motion-review-state" role="status" aria-live="polite">正在核验动作包与角色资源…</div>
+</main>
+<script src="modules/asset-timeline.js"></script>
+<script src="modules/dressup-doll-renderer.js"></script>
+<script src="modules/character-appearance-preview.js"></script>
+<script src="modules/gym/gym-motion-renderer.js"></script>
+<script>
+(function() {
+    'use strict';
+    var samples = [
+        {
+            id:'gray-vest',
+            portrait:{ gender:'male', hair:'发型-男式-黑中分头', face:'男变装-基本脸型',
+                equipment:{ '上装装备':'浅灰背心', '下装装备':'破牛仔裤', '脚部装备':'黑色条纹运动鞋' } }
+        },
+        {
+            id:'school-uniform',
+            portrait:{ gender:'male', hair:'发型-男式-黑中分头', face:'男变装-基本脸型',
+                equipment:{ '上装装备':'黑色立领校服', '下装装备':'黑色校服裤子', '脚部装备':'蓝白相间校鞋' } }
+        }
+    ];
+    var handles = [];
+    var state = document.getElementById('gym-motion-review-state');
+    window.__gymMotionReviewHandles = handles;
+    window.__gymMotionReviewResult = { passed:false, prepared:[], error:'' };
+    function cleanup() {
+        handles.forEach(function(handle) { handle.destroy(); });
+        handles.length = 0;
+    }
+    window.addEventListener('pagehide', cleanup, { once:true });
+    GymMotionRenderer.ready().then(function() {
+        return Promise.all(samples.map(function(sample) {
+            return GymMotionRenderer.preparePortrait(sample.portrait);
+        }));
+    }).then(function(prepared) {
+        window.__gymMotionReviewResult.prepared = prepared.slice();
+        if (prepared.length !== samples.length || prepared.some(function(value) { return value !== true; })) {
+            throw new Error('样例角色资源不完整');
+        }
+        samples.forEach(function(sample) {
+            var article = document.querySelector('[data-motion-sample="' + sample.id + '"]');
+            var host = article.querySelector('.motion-canvas-host');
+            var status = article.querySelector('.motion-status');
+            var handle = GymMotionRenderer.create(host, {
+                stationId:'dummy',
+                portrait:sample.portrait,
+                onFailure:function() { status.textContent = '该样例播放失败，已清除画面。'; }
+            });
+            handles.push(handle);
+            if (!host.querySelector('.gym-motion-canvas')) throw new Error('动作画布未创建');
+            status.remove();
+        });
+        window.__gymMotionReviewResult.passed = true;
+        state.textContent = '两套现有穿搭均已载入 127 帧木人桩循环；仅供资源审核。';
+    }).catch(function(error) {
+        cleanup();
+        window.__gymMotionReviewResult.error = String(error && error.message || error);
+        state.textContent = '动作样例未能安全显示：' + window.__gymMotionReviewResult.error;
+        document.querySelectorAll('.motion-status').forEach(function(node) {
+            node.textContent = '外观或动作资源不完整，已停止显示角色模型。';
+        });
+    });
+})();
+</script>
+</body>
+</html>

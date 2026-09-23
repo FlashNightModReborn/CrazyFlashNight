@@ -95,13 +95,8 @@ _root.全部翻译(this);]]></script>
                     <script><![CDATA[on (release) {
 	if (_root.挂机中 == false)
 	{
-		_root.获取木人桩训练项();
-		var 挂机功能菜单 = _root.从库中加载外部UI("挂机功能菜单");
-		挂机功能菜单.挂机项目 = this._name;
-		挂机功能菜单._visible = 1;
-		挂机功能菜单._x = _root._xmouse;
-		挂机功能菜单._y = _root._ymouse;
-		挂机功能菜单.获得训练项目文本();
+		if (_root.gameCommands == undefined || _root.gameCommands["openGymPreview"] == undefined || !_root.gameCommands["openGymPreview"]("dummy"))
+			_root.发布消息("健身预览暂时无法打开，请稍后重试。");
 	}
 }
 on (rollOver) {

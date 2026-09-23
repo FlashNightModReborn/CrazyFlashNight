@@ -77,7 +77,17 @@ if (-not (Test-Path -LiteralPath $dotnetRuntimeHelper -PathType Leaf)) {
 function Get-Cf7Sha256 {
     param([Parameter(Mandatory=$true)][string]$Path)
     if (-not (Test-Path -LiteralPath $Path -PathType Leaf)) { return $null }
-    return (Get-FileHash -LiteralPath $Path -Algorithm SHA256).Hash.ToUpperInvariant()
+    # The launch script is also started by Node test runners. Their inherited
+    # PSModulePath can prepend an incomplete Utility module, so hash through the
+    # framework rather than PowerShell module auto-loading.
+    $stream = [IO.File]::OpenRead($Path)
+    $hasher = [Security.Cryptography.SHA256]::Create()
+    try {
+        return ([BitConverter]::ToString($hasher.ComputeHash($stream))).Replace('-', '')
+    } finally {
+        $hasher.Dispose()
+        $stream.Dispose()
+    }
 }
 
 function Assert-Cf7PlainPath {

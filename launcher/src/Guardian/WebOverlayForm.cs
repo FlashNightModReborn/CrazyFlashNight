@@ -455,6 +455,7 @@ namespace CF7Launcher.Guardian
             Hairdresser,
             PlasticSurgery,
             Sleep,
+            Gym,
             Settings,
             EquipmentTuning,
             ItemUse,
@@ -475,6 +476,7 @@ namespace CF7Launcher.Guardian
             if (domain == "hairdresser") return PanelDomainRoute.Hairdresser;
             if (domain == "surgery") return PanelDomainRoute.PlasticSurgery;
             if (domain == "sleep") return PanelDomainRoute.Sleep;
+            if (domain == "gym") return PanelDomainRoute.Gym;
             if (domain == "settings") return PanelDomainRoute.Settings;
             if (domain == "equipment_tuning") return PanelDomainRoute.EquipmentTuning;
             if (domain == "item_use") return PanelDomainRoute.ItemUse;
@@ -1351,6 +1353,7 @@ namespace CF7Launcher.Guardian
         private HairdresserTask _hairdresserTask;
         private PlasticSurgeryTask _plasticSurgeryTask;
         private SleepTask _sleepTask;
+        private GymTrainingTask _gymTrainingTask;
         private SettingsTask _settingsTask;
         private EquipmentTuningTask _equipmentTuningTask;
         private ItemUseTask _itemUseTask;
@@ -4676,6 +4679,13 @@ namespace CF7Launcher.Guardian
             task.SetInvoker(delegate(Action a) { try { this.BeginInvoke(a); } catch {} });
         }
 
+        public void SetGymTrainingTask(GymTrainingTask task)
+        {
+            _gymTrainingTask = task;
+            task.SetPostToWeb(PostToWeb);
+            task.SetInvoker(delegate(Action a) { try { this.BeginInvoke(a); } catch {} });
+        }
+
         public void SetPlasticSurgeryTask(PlasticSurgeryTask task)
         {
             _plasticSurgeryTask = task;
@@ -7240,6 +7250,17 @@ namespace CF7Launcher.Guardian
                 else RespondPanelDomainError(parsed, "sleep_unavailable");
                 return;
             }
+            if (domainRoute == PanelDomainRoute.Gym)
+            {
+                if (!HasExactActivePanelOwnerBinding(parsed, "gym"))
+                {
+                    RespondPanelDomainError(parsed, "panel_instance_expired");
+                    return;
+                }
+                if (_gymTrainingTask != null) _gymTrainingTask.HandleWebRequest(cmd, parsed);
+                else RespondPanelDomainError(parsed, "gym_unavailable");
+                return;
+            }
             if (domainRoute == PanelDomainRoute.PlasticSurgery)
             {
                 if (!HasExactActivePanelOwnerBinding(parsed, "surgery"))
@@ -7434,6 +7455,11 @@ namespace CF7Launcher.Guardian
                         if (panel == "team")
                         {
                             TryHandleExactPanelClose(parsed, "team", "Team");
+                            return;
+                        }
+                        if (panel == "gym")
+                        {
+                            TryHandleExactPanelClose(parsed, "gym", "Gym");
                             return;
                         }
                         bool characterBuildPauseReleaseHandled = false;
@@ -9122,6 +9148,7 @@ namespace CF7Launcher.Guardian
             if (_hairdresserTask != null) _hairdresserTask.ClearPending();
             if (_plasticSurgeryTask != null) _plasticSurgeryTask.ClearPending();
             if (_sleepTask != null) _sleepTask.ClearPending();
+            if (_gymTrainingTask != null) _gymTrainingTask.OnSocketDisconnected();
             if (_settingsTask != null) _settingsTask.ClearPending();
             if (_equipmentTuningTask != null) _equipmentTuningTask.ClearPending();
             if (_skillTask != null) _skillTask.ClearPending();

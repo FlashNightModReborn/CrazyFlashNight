@@ -1,0 +1,551 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<base href="/">
+<title>健身房 Web 面板验收 Harness</title>
+<link rel="stylesheet" href="css/panels.css">
+<style>
+    html, body { width:100%; height:100%; margin:0; overflow:hidden; }
+    body { background:var(--wb-bg); color:var(--wb-text); }
+    #panel-container { position:absolute; inset:0; display:block; }
+    #panel-backdrop { position:absolute; inset:0; background:var(--wb-bg); }
+    #harness-result { position:absolute; left:-10000px; top:0; }
+</style>
+</head>
+<body>
+<div id="panel-container">
+    <div id="panel-backdrop"></div>
+    <div id="panel-content"></div>
+</div>
+<pre id="harness-result"></pre>
+<script>
+(function() {
+    var listeners = [];
+    window.__gymPostedMessages = [];
+    var gymMockSessions = Object.create(null);
+    window.__gymMockSessions = gymMockSessions;
+    window.chrome = window.chrome || {};
+    window.chrome.webview = {
+        addEventListener:function(type, handler) {
+            if (type === 'message') listeners.push(handler);
+        },
+        postMessage:function(message) {
+            window.__gymPostedMessages.push(message);
+            if (!message || message.domain !== 'gym') return;
+            var state = gymMockSessions[message.panelInstanceId];
+            var base = {
+                type:'panel_resp', panel:'gym', domain:'gym', cmd:message.cmd,
+                callId:message.callId, panelInstanceId:message.panelInstanceId,
+                success:true
+            };
+            if (message.cmd === 'status') {
+                if (state) Object.assign(base, state);
+                else base.phase = 'preview';
+            } else if (message.cmd === 'start') {
+                var project = message.payload.projectId;
+                state = {phase:'running',sessionToken:'gym.session.' + message.panelInstanceId,
+                    projectId:project,durationMs:10000,elapsedMs:0,paused:false,
+                    award:{kind:'stat',amount:3,baseExperience:10000}};
+                gymMockSessions[message.panelInstanceId] = state;
+                Object.assign(base, state);
+            } else if (message.cmd === 'cancel') {
+                delete gymMockSessions[message.panelInstanceId];
+                base.phase = 'cancelled';
+            } else if (message.cmd === 'query') {
+                if (state) state.queryRequired = false;
+                Object.assign(base, state || {phase:'preview'});
+            } else if (message.cmd === 'retrySave') {
+                if (state) {
+                    state.phase = 'applied';
+                    state.saved = true;
+                    Object.assign(base, state);
+                } else { base.success = false; base.phase = 'preview'; base.error = 'stale_token'; }
+            }
+            var api = window.chrome.webview;
+            Promise.resolve().then(function() { api.dispatch(base); });
+        },
+        dispatch:function(message) {
+            listeners.slice().forEach(function(handler) { handler({ data:message }); });
+        }
+    };
+})();
+</script>
+<script src="modules/bridge.js"></script>
+<script src="modules/lazy-loader.js"></script>
+<script src="modules/panels.js"></script>
+<script src="modules/panel-scale.js"></script>
+<script src="modules/panels-lazy-registry.js"></script>
+<script>
+(function() {
+    'use strict';
+    var failures = [];
+    var checkCount = 0;
+    function check(condition, label, detail) {
+        checkCount++;
+        if (condition) return;
+        failures.push({ label:label, detail:detail || '' });
+    }
+    function fixture(instanceId) {
+        return {
+            mode:'preview',
+            source:'world_gym',
+            stationId:'dummy',
+            panelInstanceId:instanceId,
+            snapshot:{
+                v:2,
+                stationId:'dummy',
+                openToken:'gym.open.' + instanceId,
+                pendingSession:null,
+                balances:{ money:845000, kpoint:12450 },
+                portrait:{
+                    gender:'male',
+                    equipment:{ '上装装备':'浅灰背心', '下装装备':'破牛仔裤', '脚部装备':'黑色条纹运动鞋' },
+                    hair:'发型-男式-黑中分头',
+                    face:'男变装-基本脸型'
+                },
+                projects:[
+                    { id:'dummy.0', index:0, rewardLabel:'空手攻击力', rewardAmount:3, currency:'money', cost:60000, durationMs:10000, current:600, cap:500, baseExperience:10000, capExperience:50000 },
+                    { id:'dummy.1', index:1, rewardLabel:'空手攻击力', rewardAmount:9, currency:'kpoint', cost:6000, durationMs:10000, current:12, cap:500, baseExperience:10000, capExperience:50000 },
+                    { id:'dummy.2', index:2, rewardLabel:'内力', rewardAmount:20, currency:'money', cost:800000, durationMs:20000, current:0, cap:100, baseExperience:10000, capExperience:50000 }
+                ]
+            }
+        };
+    }
+    function waitFor(predicate, timeoutMs) {
+        var started = Date.now();
+        return new Promise(function(resolve, reject) {
+            function poll() {
+                if (predicate()) { resolve(); return; }
+                if (Date.now() - started > timeoutMs) { reject(new Error('harness condition timed out')); return; }
+                setTimeout(poll, 10);
+            }
+            poll();
+        });
+    }
+    function sameClose(message, instanceId) {
+        return !!message && message.type === 'panel' && message.cmd === 'close'
+            && message.panel === 'gym' && message.panelInstanceId === instanceId
+            && Object.keys(message).length === 4;
+    }
+    async function run() {
+        var valid = fixture('gym-visual-001');
+        Panels.init();
+        Panels.open('gym', valid);
+        await waitFor(function() { return Panels.getActive() === 'gym' && document.querySelector('.gym-workbench'); }, 10000);
+        await waitFor(function() {
+            var stage = document.querySelector('.gym-motion-stage');
+            var message = stage && stage.querySelector('.gym-motion-message');
+            return !!(stage && (stage.querySelector('.gym-motion-canvas')
+                || (message && message.textContent.indexOf('正在核验') < 0
+                    && message.textContent.indexOf('正在准备') < 0)));
+        }, 30000);
+        check(!!GymPanel.normalizeOpenData(valid), 'accepts the Host preview envelope');
+        var longPortraitValue = fixture('gym-long-identifier');
+        longPortraitValue.snapshot.portrait.face = new Array(98).join('脸');
+        check(longPortraitValue.snapshot.portrait.face.length === 97 && !!GymPanel.normalizeOpenData(longPortraitValue),
+            'accepts a legal 97-character portrait identifier');
+        var maxPortraitValue = fixture('gym-max-identifier');
+        maxPortraitValue.snapshot.portrait.hair = new Array(161).join('发');
+        maxPortraitValue.snapshot.portrait.equipment['上装装备'] = new Array(161).join('衣');
+        check(maxPortraitValue.snapshot.portrait.hair.length === 160
+            && maxPortraitValue.snapshot.portrait.equipment['上装装备'].length === 160
+            && !!GymPanel.normalizeOpenData(maxPortraitValue), 'accepts 160-character portrait and equipment values');
+        var overlongPortraitValue = fixture('gym-overlong-identifier');
+        overlongPortraitValue.snapshot.portrait.face = new Array(162).join('脸');
+        overlongPortraitValue.snapshot.portrait.equipment['上装装备'] = new Array(162).join('衣');
+        check(overlongPortraitValue.snapshot.portrait.face.length === 161
+            && !GymPanel.normalizeOpenData(overlongPortraitValue), 'rejects portrait identifiers longer than Host limit');
+        var unknownSlot = fixture('gym-unknown-slot');
+        unknownSlot.snapshot.portrait.equipment['未知装备槽'] = '素材';
+        check(!GymPanel.normalizeOpenData(unknownSlot), 'rejects equipment slots outside Host enum');
+        var bad = fixture('gym-invalid-001');
+        bad.snapshot.projects[0].current = 600;
+        bad.snapshot.projects[0].cap = 500;
+        check(!!GymPanel.normalizeOpenData(bad), 'keeps over-cap legacy values readable');
+        bad = fixture('gym-invalid-002');
+        bad.extra = true;
+        check(!GymPanel.normalizeOpenData(bad), 'rejects unknown outer envelope fields');
+        var host = document.querySelector('.gym-panel-host');
+        var header = document.querySelector('.gym-workbench .workbench-header');
+        var scene = document.querySelector('.gym-scene');
+        var catalog = document.querySelector('.gym-catalog');
+        var projectList = document.querySelector('.gym-project-list');
+        var projectDetail = document.querySelector('.gym-project-detail');
+        var previewActions = document.querySelector('.gym-preview-actions');
+        check(!!host && !!scene && !!catalog, 'mounts both workbench panes');
+        if (host) {
+            var rect = host.getBoundingClientRect();
+            var parentRect = document.getElementById('panel-content').getBoundingClientRect();
+            check(Math.abs(parentRect.left) < 1 && Math.abs(parentRect.top) < 1
+                    && Math.abs(parentRect.width - window.innerWidth) < 1
+                    && Math.abs(parentRect.height - window.innerHeight) < 1,
+                'gym panel content fills the actual viewport', JSON.stringify(rectSummary(document.getElementById('panel-content'))));
+            check(Math.abs(rect.left) < 1 && Math.abs(rect.top) < 1
+                    && Math.abs(rect.width - window.innerWidth) < 1
+                    && Math.abs(rect.height - window.innerHeight) < 1,
+                'scaled 1024x576 workbench fills the actual viewport', rect.width + 'x' + rect.height);
+        }
+        function insideCanvas(node) {
+            if (!node) return false;
+            var rect = node.getBoundingClientRect();
+            return rect.top >= -0.5 && rect.left >= -0.5
+                && rect.bottom <= window.innerHeight + 0.5
+                && rect.right <= window.innerWidth + 0.5
+                && rect.width > 0 && rect.height > 0;
+        }
+        function rectSummary(node) {
+            if (!node) return null;
+            var rect = node.getBoundingClientRect();
+            return { top:rect.top, right:rect.right, bottom:rect.bottom, left:rect.left, width:rect.width, height:rect.height };
+        }
+        var eyebrow = document.querySelector('.gym-workbench .workbench-eyebrow');
+        var subtitle = document.querySelector('.gym-workbench .workbench-subtitle');
+        var startButton = document.querySelector('.gym-start-button');
+        check(insideCanvas(header), 'workbench header remains inside the lowest canvas', JSON.stringify(rectSummary(header)));
+        check(!eyebrow || getComputedStyle(eyebrow).display === 'none' || insideCanvas(eyebrow),
+            'header eyebrow does not clip at the top', JSON.stringify(rectSummary(eyebrow)));
+        check(!subtitle || getComputedStyle(subtitle).display === 'none' || insideCanvas(subtitle),
+            'header subtitle does not clip at the top', JSON.stringify(rectSummary(subtitle)));
+        check(insideCanvas(previewActions), 'training action footer remains inside the lowest canvas', JSON.stringify(rectSummary(previewActions)));
+        check(insideCanvas(startButton), 'training action remains inside the lowest canvas', JSON.stringify(rectSummary(startButton)));
+        check(insideCanvas(catalog), 'right catalog pane remains inside the lowest canvas', JSON.stringify(rectSummary(catalog)));
+        var layoutMetrics = {
+            header:rectSummary(header),
+            eyebrow:rectSummary(eyebrow),
+            subtitle:rectSummary(subtitle),
+            footer:rectSummary(previewActions),
+            action:rectSummary(startButton),
+            catalog:rectSummary(catalog),
+            list:rectSummary(projectList),
+            detail:rectSummary(projectDetail)
+        };
+        if (projectList && projectDetail && previewActions) {
+            var listRect = projectList.getBoundingClientRect();
+            var detailRect = projectDetail.getBoundingClientRect();
+            var actionsRect = previewActions.getBoundingClientRect();
+            check(listRect.height > 48 && listRect.bottom <= detailRect.top + 0.5,
+                'project list stays visible above the detail card');
+            check(detailRect.height >= 68 && detailRect.bottom <= actionsRect.top + 0.5,
+                'project detail stays visible above the action footer');
+        }
+        if (scene && catalog) {
+            check(scene.scrollWidth <= scene.clientWidth, 'scene has no horizontal overflow');
+            check(catalog.scrollWidth <= catalog.clientWidth, 'catalog has no horizontal overflow');
+            check(!document.querySelector('.gym-scene-footer')
+                    && scene.textContent.indexOf('当前角色外观') < 0,
+                'player stage omits the raw appearance diagnostic footer');
+            var stageRect = document.querySelector('.gym-motion-stage').getBoundingClientRect();
+            check(stageRect.height >= 380, 'motion stage receives the freed display space',
+                JSON.stringify(rectSummary(document.querySelector('.gym-motion-stage'))));
+        }
+        var options = Array.from(document.querySelectorAll('.gym-project-option'));
+        check(options.length === 3, 'renders the AS2 project list', String(options.length));
+        check(options.length > 0 && options[0].dataset.projectId === 'dummy.0', 'selects the first project on open');
+        var initialCurrent = document.querySelector('.gym-detail-current');
+        check(!!initialCurrent && initialCurrent.textContent.indexOf('历史数值高于上限') >= 0,
+            'over-cap legacy value is shown with an explicit status');
+        var initialMotion = GymPanel.debugState().motion;
+        check(!!document.querySelector('.gym-motion-stage .gym-motion-canvas'),
+            'mounts the preloaded wood-dummy motion canvas');
+        check(!!initialMotion && initialMotion.frameCount === 127 && initialMotion.frameRate === 30,
+            'plays the extracted 127-frame loop at 30 fps', JSON.stringify(initialMotion));
+        check(!!initialMotion && initialMotion.focused === false && initialMotion.paused === true,
+            'starts paused when the host window has no focus', JSON.stringify(initialMotion));
+        var initiallyPausedFrameCount = initialMotion ? initialMotion.renderedFrameCount : 0;
+        window.dispatchEvent(new Event('focus'));
+        await waitFor(function() {
+            var state = GymPanel.debugState().motion;
+            return state && state.renderedFrameCount > initiallyPausedFrameCount;
+        }, 3000);
+        var focusedMotion = GymPanel.debugState().motion;
+        check(!!focusedMotion && focusedMotion.focused && !focusedMotion.paused,
+            'resumes motion when the host window receives focus', JSON.stringify(focusedMotion));
+        window.dispatchEvent(new Event('blur'));
+        var blurredMotion = GymPanel.debugState().motion;
+        check(!!blurredMotion && !blurredMotion.focused && blurredMotion.paused,
+            'pauses motion immediately on blur', JSON.stringify(blurredMotion));
+        await new Promise(function(resolve) { window.setTimeout(resolve, 160); });
+        var afterBlurMotion = GymPanel.debugState().motion;
+        check(!!afterBlurMotion && blurredMotion.renderedFrameCount === afterBlurMotion.renderedFrameCount,
+            'keeps the frame clock stopped while unfocused');
+        var beforeResumeFrameCount = afterBlurMotion ? afterBlurMotion.renderedFrameCount : 0;
+        window.dispatchEvent(new Event('focus'));
+        await waitFor(function() {
+            var state = GymPanel.debugState().motion;
+            return state && state.renderedFrameCount > beforeResumeFrameCount;
+        }, 3000);
+        check(!!GymPanel.debugState().motion && !GymPanel.debugState().motion.paused,
+            'restarts the motion frame clock after focus returns');
+        window.__gymPanelReviewReady = true;
+        await new Promise(function(resolve) {
+            var timer = window.setTimeout(function() {
+                window.__gymHarnessContinue = null;
+                resolve();
+            }, 5000);
+            window.__gymHarnessContinue = function() {
+                if (timer) window.clearTimeout(timer);
+                timer = null;
+                window.__gymHarnessContinue = null;
+                resolve();
+            };
+        });
+        var messageCountBeforeSelection = window.__gymPostedMessages.length;
+        if (options.length >= 3) {
+            options[1].click();
+            check(options[1].getAttribute('aria-checked') === 'true', 'click selection updates the checked row');
+            check(GymPanel.debugState().selectedProjectId === 'dummy.1', 'click selection updates detail state');
+            options[1].focus();
+            options[1].dispatchEvent(new KeyboardEvent('keydown', { key:'ArrowDown', bubbles:true, cancelable:true }));
+            check(GymPanel.debugState().selectedProjectId === 'dummy.2', 'arrow keys move selection and focus');
+            options[2].dispatchEvent(new KeyboardEvent('keydown', { key:'Home', bubbles:true, cancelable:true }));
+            check(GymPanel.debugState().selectedProjectId === 'dummy.0', 'Home returns to the first project');
+        }
+        check(window.__gymPostedMessages.length === messageCountBeforeSelection, 'selection sends no Host or business request');
+        check(!!startButton && !startButton.disabled, 'training action is available when balance suffices');
+        check(document.querySelector('.gym-detail-reward').textContent.indexOf('经验 +60,000') >= 0,
+            'at-cap training clearly converts the result to experience');
+        startButton.click();
+        await waitFor(function() { return GymPanel.debugState().phase === 'running'; }, 1000);
+        check(window.__gymPostedMessages.some(function(message) {
+            return message.domain === 'gym' && message.cmd === 'start'
+                && message.payload.projectId === 'dummy.0';
+        }), 'start sends only the selected project identity');
+        check(document.querySelector('.gym-progress-status').textContent.indexOf('已进行') >= 0,
+            'the active session displays elapsed, total, percent and remaining time');
+        check(document.querySelector('.gym-progress-amount').textContent.indexOf('本次收益待完成') >= 0,
+            'active progress marks expected reward as unsettled');
+        var sessionToken = GymPanel.debugState().sessionToken;
+        window.chrome.webview.dispatch({type:'panel_event',panel:'gym',domain:'gym',event:'progress',
+            panelInstanceId:'gym-stale-000',sessionToken:sessionToken,elapsedMs:9000,paused:false});
+        check(GymPanel.debugState().elapsedMs === 0, 'stale panel progress is rejected');
+        window.chrome.webview.dispatch({type:'panel_event',panel:'gym',domain:'gym',event:'progress',
+            panelInstanceId:'gym-visual-001',sessionToken:sessionToken,elapsedMs:3500,paused:true});
+        check(GymPanel.debugState().elapsedMs === 3500
+                && document.querySelector('.gym-progress-status').textContent.indexOf('已暂停计时') >= 0,
+            'exact Host progress and pause state are rendered');
+        options[1].click();
+        await waitFor(function() { return GymPanel.debugState().phase === 'preview'; }, 1000);
+        check(window.__gymPostedMessages.some(function(message) {
+            return message.domain === 'gym' && message.cmd === 'cancel';
+        }), 'switching an unfinished project cancels its session');
+        check(GymPanel.debugState().selectedProjectId === 'dummy.1'
+                && document.querySelector('.gym-progress-status').textContent.indexOf('尚未开始') >= 0,
+            'switch resets the progress and moves to the chosen project');
+        startButton.click();
+        await waitFor(function() { return GymPanel.debugState().phase === 'running'; }, 1000);
+        var secondToken = GymPanel.debugState().sessionToken;
+        window.chrome.webview.dispatch({type:'panel_event',panel:'gym',domain:'gym',event:'progress',
+            phase:'settling',panelInstanceId:'gym-visual-001',sessionToken:secondToken,
+            elapsedMs:10000,paused:false});
+        check(GymPanel.debugState().phase === 'settling'
+                && document.querySelector('.gym-progress-status').textContent.indexOf('等待结算') >= 0,
+            'elapsed time waits for the AS2 settlement result');
+        var beforeBlockedClose = window.__gymPostedMessages.length;
+        document.querySelector('.gym-close-button').click();
+        check(window.__gymPostedMessages.length === beforeBlockedClose,
+            'close cannot discard an in-flight paid settlement');
+        window.chrome.webview.dispatch({type:'panel_event',panel:'gym',domain:'gym',event:'settled',
+            panelInstanceId:'gym-visual-001',sessionToken:secondToken,projectId:'dummy.1',
+            success:true,phase:'applied',saved:true,balances:{money:845000,kpoint:6450},
+            current:21,cap:500,award:{kind:'stat',amount:9,baseExperience:10000,capExperience:0}});
+        check(GymPanel.debugState().phase === 'applied'
+                && document.querySelector('.gym-progress-amount').textContent.indexOf('永久加成 +9') >= 0,
+            'only an exact saved settlement displays gained attributes');
+        check(document.querySelectorAll('.gym-balances .gym-balance-value').length === 2
+                && document.querySelectorAll('.gym-balances .gym-balance-value')[1].textContent === '6,450',
+            'settlement refreshes the authoritative K-point balance');
+
+        var closeButton = document.querySelector('.gym-close-button');
+        if (closeButton) closeButton.click();
+        check(sameClose(window.__gymPostedMessages[window.__gymPostedMessages.length - 1], 'gym-visual-001'),
+            'close click sends an exact panel instance');
+        window.chrome.webview.dispatch({ type:'panel_cmd', cmd:'close', panel:'gym', panelInstanceId:'gym-stale-000' });
+        check(Panels.getActive() === 'gym', 'stale Host close cannot retire the active instance');
+        window.chrome.webview.dispatch({ type:'panel_cmd', cmd:'close', panel:'gym', panelInstanceId:'gym-visual-001' });
+        check(Panels.getActive() === null, 'exact Host close retires the active panel');
+        check(!document.querySelector('.gym-workbench'), 'close cleans the Workbench DOM');
+        var afterCloseStats = GymMotionRenderer.getDebugStats();
+        check(afterCloseStats.activeInstances === 0 && afterCloseStats.destroyedInstances >= 1,
+            'close destroys the motion canvas and its animation loop', JSON.stringify(afterCloseStats));
+
+        var stationCases = [
+            { id:'dumbbell', label:'哑铃', reward:'HP上限', cap:2000 },
+            { id:'squat', label:'深蹲杠铃', reward:'MP上限', cap:2000 }
+        ];
+        for (var stationCase of stationCases) {
+            var stationData = fixture('gym-' + stationCase.id);
+            stationData.stationId = stationCase.id;
+            stationData.snapshot.stationId = stationCase.id;
+            stationData.snapshot.projects = [{
+                id:stationCase.id + '.0', index:0, rewardLabel:stationCase.reward,
+                rewardAmount:10, currency:'money', cost:50000,
+                durationMs:10000, current:0, cap:stationCase.cap,
+                baseExperience:10000, capExperience:50000
+            }];
+            Panels.open('gym', stationData);
+            await waitFor(function() {
+                var label = document.querySelector('.gym-station-pill');
+                var canvas = document.querySelector('.gym-motion-stage .gym-motion-canvas');
+                return Panels.getActive() === 'gym' && label && canvas
+                    && label.textContent === stationCase.label;
+            }, 10000);
+            check(Panels.getActive() === 'gym' && !!document.querySelector('.gym-catalog'),
+                stationCase.label + ' mounts the catalog instead of closing immediately');
+            check(!!document.querySelector('.gym-motion-stage canvas'),
+                stationCase.label + ' renders the real animation');
+            window.chrome.webview.dispatch({
+                type:'panel_cmd', cmd:'close', panel:'gym', panelInstanceId:'gym-' + stationCase.id
+            });
+            check(Panels.getActive() === null, stationCase.label + ' closes by exact instance');
+        }
+
+        var pendingData = fixture('gym-pending-save');
+        pendingData.snapshot.pendingSession = {
+            sessionToken:'gym.session.pending',stationId:'dummy',projectId:'dummy.0',phase:'save_pending'
+        };
+        window.__gymMockSessions['gym-pending-save'] = {
+            sessionToken:'gym.session.pending',projectId:'dummy.0',phase:'save_pending',
+            durationMs:10000,elapsedMs:10000,paused:false,saved:false,queryRequired:true,
+            award:{kind:'experience',amount:50000,baseExperience:10000,capExperience:50000},
+            balances:{money:785000,kpoint:12450},current:600,cap:500
+        };
+        Panels.open('gym', pendingData);
+        await waitFor(function() { return GymPanel.debugState().phase === 'needs_reconcile'; }, 10000);
+        check(document.querySelector('.gym-start-button').textContent === '核实结算',
+            'same-slot pending result requires an exact query before save retry');
+        document.querySelector('.gym-start-button').click();
+        await waitFor(function() { return GymPanel.debugState().phase === 'save_pending'; }, 1000);
+        check(document.querySelector('.gym-start-button').textContent === '重试保存',
+            'a verified pending result only offers a save retry');
+        var beforeRetry = window.__gymPostedMessages.length;
+        document.querySelector('.gym-start-button').click();
+        await waitFor(function() { return GymPanel.debugState().phase === 'applied'; }, 1000);
+        check(window.__gymPostedMessages.slice(beforeRetry).some(function(message) {
+            return message.cmd === 'retrySave' && message.domain === 'gym'
+                && !message.payload.sessionToken && !message.payload.projectId;
+        }), 'save retry sends no new project or payment intent');
+        window.chrome.webview.dispatch({
+            type:'panel_cmd',cmd:'close',panel:'gym',panelInstanceId:'gym-pending-save'
+        });
+        check(Panels.getActive() === null, 'recovered session closes after saved result');
+
+        var equippedPortrait = fixture('gym-equipped-portrait');
+        equippedPortrait.snapshot.portrait = {
+            gender:'male', hair:'发型-男式-黑暴走头', face:'男变装-基本脸型',
+            equipment:{
+                '颈部装备':'新手军牌', '脚部装备':'新手皮鞋', '手部装备':'黑色皮手套',
+                '头部装备':'新手面具', '刀':'锤子',
+                '下装装备':'咖啡色多包裤', '上装装备':'新手衣服'
+            }
+        };
+        Panels.open('gym', equippedPortrait);
+        await waitFor(function() {
+            return Panels.getActive() === 'gym'
+                && !!document.querySelector('.gym-motion-stage .gym-motion-canvas');
+        }, 30000);
+        check(GymPanel.debugState().motionMounted === true,
+            'complete live outfit renders its clothing, hair, mask, gloves and shoes with a stowed hammer');
+        var equippedCanvas = document.querySelector('.gym-motion-stage .gym-motion-canvas');
+        var equippedPixels = equippedCanvas.getContext('2d').getImageData(
+            0, 0, equippedCanvas.width, equippedCanvas.height).data;
+        var equippedVisiblePixels = 0;
+        for (var pixelIndex = 3; pixelIndex < equippedPixels.length; pixelIndex += 4) {
+            if (equippedPixels[pixelIndex] > 0) equippedVisiblePixels++;
+        }
+        check(equippedVisiblePixels > 1000,
+            'live outfit canvas contains visible character and equipment pixels');
+        window.__gymEquippedCanvasDataUrl = equippedCanvas.toDataURL('image/png');
+        window.chrome.webview.dispatch({
+            type:'panel_cmd', cmd:'close', panel:'gym', panelInstanceId:'gym-equipped-portrait'
+        });
+        check(Panels.getActive() === null && GymMotionRenderer.getDebugStats().activeInstances === 0,
+            'equipped-portrait review closes without a motion instance leak');
+
+        var unknownClothing = fixture('gym-unknown-clothing');
+        unknownClothing.snapshot.portrait.equipment['上装装备'] = '未收录的训练上衣';
+        Panels.open('gym', unknownClothing);
+        await waitFor(function() {
+            var message = document.querySelector('.gym-motion-message');
+            return Panels.getActive() === 'gym' && message
+                && message.textContent.indexOf('外观资源不完整') >= 0;
+        }, 10000);
+        check(!document.querySelector('.gym-motion-stage .gym-motion-canvas'),
+            'unknown clothing still fails closed after stowing weapons');
+        window.chrome.webview.dispatch({
+            type:'panel_cmd', cmd:'close', panel:'gym', panelInstanceId:'gym-unknown-clothing'
+        });
+        check(Panels.getActive() === null, 'unknown-clothing fallback closes by exact instance');
+
+        longPortraitValue.snapshot.portrait.face = new Array(98).join('脸');
+        Panels.open('gym', longPortraitValue);
+        await waitFor(function() {
+            var message = document.querySelector('.gym-motion-message');
+            return Panels.getActive() === 'gym' && message
+                && message.textContent.indexOf('外观资源不完整') >= 0;
+        }, 10000);
+        check(Panels.getActive() === 'gym' && !!document.querySelector('.gym-workbench'),
+            'opens a Host-valid 97-character portrait identifier');
+        check(!document.querySelector('.gym-motion-stage canvas, .gym-motion-stage svg, .gym-motion-stage img'),
+            'missing exact portrait skin data keeps the long-identifier fallback closed');
+        window.chrome.webview.dispatch({ type:'panel_cmd', cmd:'close', panel:'gym', panelInstanceId:'gym-long-identifier' });
+        check(Panels.getActive() === null, 'long-identifier panel closes cleanly');
+
+        var missingAppearance = fixture('gym-visual-missing-appearance');
+        missingAppearance.snapshot.portrait.face = '';
+        Panels.open('gym', missingAppearance);
+        await waitFor(function() { return Panels.getActive() === 'gym' && document.querySelector('.gym-motion-message'); }, 10000);
+        var fallback = document.querySelector('.gym-motion-message');
+        check(!!fallback && fallback.textContent.indexOf('脸型资料缺失') >= 0,
+            'missing face data produces a Chinese visual fallback');
+        check(!document.querySelector('.gym-motion-stage canvas, .gym-motion-stage svg, .gym-motion-stage img'),
+            'missing face data does not show a default or nude model');
+        window.chrome.webview.dispatch({ type:'panel_cmd', cmd:'close', panel:'gym', panelInstanceId:'gym-visual-missing-appearance' });
+        check(Panels.getActive() === null, 'missing-appearance panel cleans up on exact close');
+
+        var renderer = GymMotionRenderer;
+        var originalPreparePortrait = renderer.preparePortrait;
+        renderer.preparePortrait = function() { return Promise.reject(new Error('harness_asset_failure')); };
+        Panels.open('gym', fixture('gym-visual-asset-failure'));
+        await waitFor(function() {
+            var message = document.querySelector('.gym-motion-message');
+            return Panels.getActive() === 'gym' && message
+                && message.textContent.indexOf('资源加载失败') >= 0;
+        }, 10000);
+        renderer.preparePortrait = originalPreparePortrait;
+        check(!document.querySelector('.gym-motion-stage canvas, .gym-motion-stage svg, .gym-motion-stage img'),
+            'async asset failure clears partial output and restores the Chinese fallback');
+        check(GymPanel.debugState().motionMounted === false,
+            'async asset failure remains observably fail-closed');
+        window.chrome.webview.dispatch({ type:'panel_cmd', cmd:'close', panel:'gym', panelInstanceId:'gym-visual-asset-failure' });
+        check(Panels.getActive() === null, 'asset-failure panel cleans up on exact close');
+
+        var beforeInvalid = window.__gymPostedMessages.length;
+        bad = fixture('gym-invalid-003');
+        bad.snapshot.projects[0].cost = -1;
+        bad.snapshot.projects[0].cost = -1;
+        Panels.open('gym', bad);
+        await waitFor(function() {
+            return window.__gymPostedMessages.slice(beforeInvalid).some(function(message) {
+                return sameClose(message, 'gym-invalid-003');
+            });
+        }, 10000);
+        check(Panels.getActive() === null, 'invalid snapshot fails closed before rendering');
+        var failureClose = window.__gymPostedMessages.slice(beforeInvalid).filter(function(message) {
+            return sameClose(message, 'gym-invalid-003');
+        })[0];
+        check(!!failureClose, 'invalid snapshot returns exact mount-failure close');
+
+        var result = { passed:failures.length === 0, checks:checkCount, layoutMetrics:layoutMetrics, failures:failures };
+        window.__gymHarnessResult = result;
+        document.getElementById('harness-result').textContent = JSON.stringify(result);
+    }
+    run().catch(function(error) {
+        window.__gymHarnessResult = { passed:false, failures:[{ label:'harness execution', detail:error.message }] };
+        document.getElementById('harness-result').textContent = JSON.stringify(window.__gymHarnessResult);
+    });
+})();
+</script>
+</body>
+</html>

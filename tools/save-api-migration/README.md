@@ -4,7 +4,7 @@ R1 路线（[原始裁决存档](../../docs/裁决存档/SaveManager-API分层�
 
 | 文件 | 作用 |
 |---|---|
-| `callsites.v1.json` | 机器可读调用点 manifest：38 条物理记录 / 32 个逻辑调用点（17 strict + 15 debounce；D2/E6 分别于步骤 6/12 拆为 markDirty+requestSave 两物理点）+ 3 处已接通 canonical `存档系统.markDirty()` + C6 关联子层 flush 基线 + 当前发布 SWF hash 基线 |
+| `callsites.v1.json` | 机器可读调用点 manifest：40 条物理记录 / 33 个逻辑调用点（19 strict + 14 debounce；U4 健身结算同时登记 markDirty 与 flushDurableNow）+ canonical `存档系统.markDirty()` + C6 关联子层 flush 基线 + 当前发布 SWF hash 基线 |
 | `check-callsites.js` | 回归门扫描器：全库独立扫描，精确数量断言（`==` 非 `<=`），扫描命中与 manifest 一一对应，任何漂移非零退出 |
 | `test-callsites.js` | 迁移合同负例与生产 SceneChanged 顺序回归 |
 | `check-published-scripts.py` | 按本地时间轴/linkage 可达图核对 FFDec 帧脚本，单列未引用和共享导入的源码副本 |
@@ -24,8 +24,8 @@ node tools/save-api-migration/check-callsites.js --verify-swf-hashes  # 额外�
 
 ### 什么算一个调用点
 
-- **逻辑调用点**：裁决 §3.1 分类的一个语义归属单位（A1-A6 / B1-B5 / C1-C6 / D1-D2 / E1-E13），共 17 strict（A/B/C 组）+ 15 debounce（D/E 组）= 32 个。
-- **物理调用点**：源码中一处实际的存盘 API 调用文本。C1/C2/C3/C5 因主 XFL 与 `flashswf/UI` 同源双份各含 2 个物理点；D2/E6 在步骤 6/12 分别由一个逻辑点拆为 `markDirty` + `requestSave` 两个物理点，故 32 逻辑点当前对应 38 物理点（scripts 11 strict + 2 debounce + 1 canonical markDirty；XFL 10 strict + 13 debounce + 1 canonical markDirty）。
+- **逻辑调用点**：一个语义归属单位，现为 19 strict + 14 debounce = 33 个；U4 健身付费结算占一个新的 strict 逻辑点。
+- **物理调用点**：源码中一处实际的存盘 API 调用文本。现为 40 条；U4 新增 `markDirty()` 与 `flushDurableNow("ui.gym_training_paid")` 两条物理点。精确分类与归属以 manifest `counts` 和 `callsites` 为准，R1 阶段的 38/32 仍见历史收尾记录。
 - manifest 每条记录 = 一个物理点，`callsiteId` 指向逻辑点，`physicalId` 全局唯一。
 
 ### 旧入口 family（扫描口径）
@@ -102,7 +102,7 @@ node tools/save-api-migration/check-callsites.js --verify-swf-hashes  # 额外�
 - E1/E9/E10 保留原 dirty guard；E6 canonical markDirty + request；其余 E 组保持无条件 request。E3/E11/E12 保留源码并在 `_root.__saveApiReasonProbeEnabled === true` 时输出 `[SaveApiReason] callsiteId|requestSave|reasonId`。`suspect_legacy` 不因迁移或未命中而改为 dead。
 - C6 两处 `_root.保存购物车()` 与关闭时 partial→full 顺序保持；没有合并失败窗口。legacy API 委托仍兼容旧 SWF。
 - `xflStrictPhysical=10` / `xflDebouncePhysical=13` 是分类数；新增 `xflForceSavePhysical=0` / `xflAutoSavePhysical=0` 单独表达旧入口扫描数，不能把两种计数混用。
-- 运行 `node tools/save-api-migration/test-callsites.js`（17 项）：错误 API/reason、dirty 守卫、返回消费、CDATA 外伪命中、重复调用、注册表、C6、legacy probe 与生产 SceneChanged 回调顺序。随后运行 `check-callsites.js`（38 物理点 / 32 逻辑点）。
+- 运行 `node tools/save-api-migration/test-callsites.js`：错误 API/reason、dirty 守卫、返回消费、CDATA 外伪命中、重复调用、注册表、C6、legacy probe 与生产 SceneChanged 回调顺序。随后运行 `check-callsites.js`（当前 40 物理点 / 33 逻辑点）。
 - 先沿正式入口与编译闭包选定实际需要刷新的目标，再经 CS6 publish 与 fresh Compiler `0/0`。对保留的新 SWF 运行 `python -X utf8 tools/save-api-migration/check-published-scripts.py <swf> <export-dir>`（导出必须来自该份实际 SWF）。该门按 XFL 时间轴引用及 linkage export 根求可达符号，精确核对实际生成的 API/reason 多重集合、C6 两处 partial 调用并拒绝旧入口。编译未引用或 `linkageImportForRS` 副本记录为 `sourceOnlyCallsites`，继续通过源码 parity。该工具不判断生产路由，也不要求为已由 Web 接管的旧 UI 人为恢复按钮再验收。
 - 2026-09-05 批次实际试编 11 项后收窄为 5 项交付：asLoader、main、平板、基地特殊 UI、奖励物品。其余 6 项保留旧 SWF 与新源码，旧 shim 因此仍必要；不得把源码扫描旧入口为 0 外推为全部历史 SWF 无旧入口。
 - `run-map-loot-tests.ps1` 保留原 675 项并增加真实 N=50 边界，现为 **676/676**；`run-character-build-tests.ps1` 中 SaveManager 增加 **18** 项，现为 **352/352**（七套合计 **824/824**），证明领域 wrapper 真委托后的 N+1 pack/doSaveAll/SOL flush 与 SceneChanged clean/pending 物理行为。PAT 的 open/openMany 分别检查首次写前的 canonical dirty，direct-authority 清单 **23**，原行为套件 **117/117**。

@@ -1994,6 +1994,13 @@ class Program
         HairdresserTask hairdresserTask = new HairdresserTask(socketServer);
         PlasticSurgeryTask plasticSurgeryTask = new PlasticSurgeryTask(socketServer);
         SleepTask sleepTask = new SleepTask(socketServer);
+        GymTrainingTask gymTrainingTask = new GymTrainingTask(socketServer);
+        gymTrainingTask.SetActivityProbe(delegate
+        {
+            return form.ActivationState.IsAppActive
+                && !form.ActivationState.IsMinimized
+                && form.Visible;
+        });
         SettingsTask settingsTask = new SettingsTask(socketServer, userPrefs);
         settingsTask.SetHitNumberLedgerProvider(frameTask.BuildHitNumberLedgerPage);
         settingsTask.SetHostPreferenceApplied(delegate(string key, JToken value)
@@ -2087,9 +2094,11 @@ class Program
             });
             panelHost.SetInitDataEnricher(delegate(string panelName, string initDataJson, string panelInstanceId)
             {
-                return panelName == "skills"
-                    ? skillTask.EnrichPanelInitData(initDataJson, panelInstanceId)
-                    : initDataJson;
+                if (panelName == "skills")
+                    return skillTask.EnrichPanelInitData(initDataJson, panelInstanceId);
+                if (panelName == "gym")
+                    return gymTrainingTask.BindPanelOpenData(initDataJson, panelInstanceId);
+                return initDataJson;
             });
             panelHost.SetPanelCloseObserver(delegate(string panelName, string panelInstanceId)
             {
@@ -2100,6 +2109,7 @@ class Program
                 if (panelName == "hairdresser") hairdresserTask.ClearPending();
                 if (panelName == "surgery") plasticSurgeryTask.ClearPending();
                 if (panelName == "sleep") sleepTask.ClearPending();
+                if (panelName == "gym") gymTrainingTask.HandlePanelClosed(panelInstanceId);
                 if (panelName == "settings") settingsTask.HandleAuthoritativePanelClosed(panelInstanceId);
             });
             panelHost.PanelClosed += delegate(
@@ -2247,6 +2257,13 @@ class Program
                 && socketServer != null && socketServer.IsClientReady
                 && socketServer.TrySend(payload);
         });
+        agentControlTask.SetGymOpenAction(delegate
+        {
+            const string payload = "{\"task\":\"cmd\",\"action\":\"openGymForAgent\"}\0";
+            return !form.IsShutdownAdmissionClosed
+                && socketServer != null && socketServer.IsClientReady
+                && socketServer.TrySend(payload);
+        });
         agentControlTask.SetActivePanelStatusProvider(delegate
         {
             string name = panelHost.ActivePanelName;
@@ -2363,7 +2380,7 @@ class Program
 
         using (PerfTrace.Scope("task.registry_register_all"))
         {
-            TaskRegistry.RegisterAll(router, gomokuTask, toastTask, frameTask, stageOutcomeTask, warlordStageTask, warlordBattleTask, dataQueryTask, audioTask, dollBakeTask, shopTask, inventoryTask, lootTask, lootFeedTask, lootPanelCoordinator, npcShopTask, craftingTask, materialShopAccessTask, hairdresserTask, plasticSurgeryTask, sleepTask, settingsTask, equipmentTuningTask, characterBuildTask, itemUseTask, skillTask, mapTask, stageSelectTask, arenaTask, arenaCalibrationTask, agentControlTask, petTask, mercTask, taskTask, intelligenceTask, blackMarketTask, archiveTask, benchTask, fontPackTask, webOverlay, commandRouter, mapDomainTask, nativeInteractionTask, nativeDialogueTask, worldLightingTask);
+            TaskRegistry.RegisterAll(router, gomokuTask, toastTask, frameTask, stageOutcomeTask, warlordStageTask, warlordBattleTask, dataQueryTask, audioTask, dollBakeTask, shopTask, inventoryTask, lootTask, lootFeedTask, lootPanelCoordinator, npcShopTask, craftingTask, materialShopAccessTask, hairdresserTask, plasticSurgeryTask, sleepTask, gymTrainingTask, settingsTask, equipmentTuningTask, characterBuildTask, itemUseTask, skillTask, mapTask, stageSelectTask, arenaTask, arenaCalibrationTask, agentControlTask, petTask, mercTask, taskTask, intelligenceTask, blackMarketTask, archiveTask, benchTask, fontPackTask, webOverlay, commandRouter, mapDomainTask, nativeInteractionTask, nativeDialogueTask, worldLightingTask);
         }
         StartupDiagnostics.Mark("task.registry_register_all_ok");
 
@@ -2382,6 +2399,7 @@ class Program
         webOverlay.SetHairdresserTask(hairdresserTask);
         webOverlay.SetPlasticSurgeryTask(plasticSurgeryTask);
         webOverlay.SetSleepTask(sleepTask);
+        webOverlay.SetGymTrainingTask(gymTrainingTask);
         webOverlay.SetSettingsTask(settingsTask);
         webOverlay.SetEquipmentTuningTask(equipmentTuningTask);
         webOverlay.SetCharacterBuildTask(characterBuildTask);
@@ -2524,7 +2542,7 @@ class Program
             materialShopAccessTask.Dispose();
             npcShopTask.Dispose();
             craftingTask.Dispose();
-            hairdresserTask.Dispose(); plasticSurgeryTask.Dispose(); sleepTask.Dispose();
+            hairdresserTask.Dispose(); plasticSurgeryTask.Dispose(); sleepTask.Dispose(); gymTrainingTask.Dispose();
             settingsTask.Dispose();
             stageOutcomeTask.Dispose();
             petTask.Dispose();
@@ -2596,7 +2614,7 @@ class Program
             try { materialShopAccessTask.Dispose(); } catch { }
             try { npcShopTask.Dispose(); } catch { }
             try { craftingTask.Dispose(); } catch { }
-            try { hairdresserTask.Dispose(); plasticSurgeryTask.Dispose(); sleepTask.Dispose(); } catch { }
+            try { hairdresserTask.Dispose(); plasticSurgeryTask.Dispose(); sleepTask.Dispose(); gymTrainingTask.Dispose(); } catch { }
             try { settingsTask.Dispose(); } catch { }
             try { stageOutcomeTask.Dispose(); } catch { }
             try { petTask.Dispose(); } catch { }
@@ -3509,7 +3527,7 @@ class Program
         try { materialShopAccessTask.Dispose(); } catch { }
         try { npcShopTask.Dispose(); } catch { }
         try { craftingTask.Dispose(); } catch { }
-        try { hairdresserTask.Dispose(); plasticSurgeryTask.Dispose(); sleepTask.Dispose(); } catch { }
+        try { hairdresserTask.Dispose(); plasticSurgeryTask.Dispose(); sleepTask.Dispose(); gymTrainingTask.Dispose(); } catch { }
         try { worldCompositor.Dispose(); } catch { }
         try { settingsTask.Dispose(); } catch { }
         try { stageOutcomeTask.Dispose(); } catch { }

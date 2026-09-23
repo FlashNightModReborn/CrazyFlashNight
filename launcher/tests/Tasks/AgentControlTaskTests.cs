@@ -452,6 +452,53 @@ namespace CF7Launcher.Tests.Tasks
             Assert.Equal(1, sendCount);
         }
 
+        [Fact]
+        public void OpenGym_UsesExactCloneSlotAndFixedOpenerOnly()
+        {
+            int sendCount = 0;
+            AgentControlTask task = CreateRuntimeReadyTask(
+                "cf7_agent_gym", "attempt-gym");
+            task.SetGymOpenAction(delegate { sendCount++; return true; });
+            JObject request = new JObject {
+                ["action"] = "openGym",
+                ["expectedSlot"] = "cf7_agent_gym",
+                ["expectedAttemptId"] = "attempt-gym"
+            };
+
+            JObject opened = JObject.Parse(task.Handle(request));
+            Assert.True((bool)opened["success"]);
+            Assert.Equal("gym_panel_open_requested", (string)opened["note"]);
+            Assert.Equal(1, sendCount);
+
+            request["stationId"] = "squat";
+            JObject arbitrary = JObject.Parse(task.Handle(request));
+            Assert.False((bool)arbitrary["success"]);
+            Assert.Equal("invalid_payload", (string)arbitrary["error"]);
+            Assert.Equal(1, sendCount);
+        }
+
+        [Fact]
+        public void OpenGym_RejectsWrongSlotOrAttemptBeforeSending()
+        {
+            int sendCount = 0;
+            AgentControlTask task = CreateRuntimeReadyTask(
+                "cf7_agent_gym", "attempt-gym");
+            task.SetGymOpenAction(delegate { sendCount++; return true; });
+            JObject request = new JObject {
+                ["action"] = "openGym",
+                ["expectedSlot"] = "crazyflasher7_saves",
+                ["expectedAttemptId"] = "attempt-gym"
+            };
+            JObject slot = JObject.Parse(task.Handle(request));
+            Assert.Equal("invalid_expected_slot", (string)slot["error"]);
+
+            request["expectedSlot"] = "cf7_agent_gym";
+            request["expectedAttemptId"] = "attempt-old";
+            JObject attempt = JObject.Parse(task.Handle(request));
+            Assert.Equal("agent_attempt_mismatch", (string)attempt["error"]);
+            Assert.Equal(0, sendCount);
+        }
+
         [Theory]
         [InlineData(null)]
         [InlineData("")]

@@ -1,0 +1,22 @@
+{
+  "schema": "cf7-gym-training-contract-v1",
+  "panel": "gym",
+  "wireDomain": "gym",
+  "businessAuthority": "as2",
+  "openSnapshotVersion": 2,
+  "webCommands": ["start", "cancel", "status", "query", "retrySave"],
+  "flashActions": {
+    "start": "gymStart",
+    "cancel": "gymCancel",
+    "finish": "gymFinish",
+    "query": "gymQuery",
+    "retrySave": "gymRetrySave"
+  },
+  "hostOnly": {
+    "status": "local clock projection",
+    "finish": "monotonic active-time endpoint"
+  },
+  "flashResponseTask": "gym_training_response",
+  "unknownFinishRecovery": "exact gymQuery, never blind gymFinish replay",
+  "pendingSaveRecovery": "exact gymQuery then gymRetrySave without business replay"
+}

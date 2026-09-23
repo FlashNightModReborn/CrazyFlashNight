@@ -3303,6 +3303,13 @@ namespace CF7Launcher.Guardian
                 else LogManager.Log("[Router] sleep rejected invalid bed session");
                 return;
             }
+            if (string.Equals(panelName, "gym", StringComparison.Ordinal))
+            {
+                JObject gymData = GymPreviewOpenData.Build(safeSource, initDataExtrasJson);
+                if (gymData != null) OpenPanel("gym", gymData.ToString(Formatting.None));
+                else LogManager.Log("[Router] gym rejected invalid preview snapshot");
+                return;
+            }
             if (string.Equals(panelName, "surgery", StringComparison.Ordinal))
             {
                 if (safeSource == "world_plastic_surgery")

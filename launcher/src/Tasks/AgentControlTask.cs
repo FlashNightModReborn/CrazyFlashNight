@@ -35,6 +35,7 @@ namespace CF7Launcher.Tasks
         private Func<bool> _openEquipmentTuning;
         private Func<bool> _openCharacterBuild;
         private Func<bool> _openArena;
+        private Func<bool> _openGym;
         private Func<JObject> _getActivePanelStatus;
         private JObject _runtimeSaveStatus;
         private bool _gameEnteredObserved;
@@ -143,6 +144,15 @@ namespace CF7Launcher.Tasks
             lock (_gate) { _openArena = openArena; }
         }
 
+        /// <summary>
+        /// Dedicated clone-slot opener. The delegate sends only the fixed
+        /// openGymForAgent command; HTTP cannot select a station or training.
+        /// </summary>
+        public void SetGymOpenAction(Func<bool> openGym)
+        {
+            lock (_gate) { _openGym = openGym; }
+        }
+
         /// <summary>Read-only panel observation for outer runners; never opens or mutates a panel.</summary>
         public void SetActivePanelStatusProvider(Func<JObject> getActivePanelStatus)
         {
@@ -172,6 +182,8 @@ namespace CF7Launcher.Tasks
                         return OpenCharacterBuild(msg).ToString(Newtonsoft.Json.Formatting.None);
                     case "openArena":
                         return OpenArena(msg).ToString(Newtonsoft.Json.Formatting.None);
+                    case "openGym":
+                        return OpenGym(msg).ToString(Newtonsoft.Json.Formatting.None);
                     default:
                         return BuildError("unsupported_action", "unsupported action: " + action).ToString(Newtonsoft.Json.Formatting.None);
                 }
@@ -353,6 +365,21 @@ namespace CF7Launcher.Tasks
             return OpenAgentPanel(msg, "arena");
         }
 
+        private JObject OpenGym(JObject msg)
+        {
+            // The automation surface is only a fixed opener, never a
+            // generalized command or payment transport.
+            foreach (JProperty field in msg.Properties())
+            {
+                if (field.Name != "task" && field.Name != "action"
+                    && field.Name != "expectedSlot"
+                    && field.Name != "expectedAttemptId")
+                    return BuildError("invalid_payload",
+                        "openGym accepts only the exact slot and attempt");
+            }
+            return OpenAgentPanel(msg, "gym");
+        }
+
         private JObject OpenAgentPanel(JObject msg, string panelKind)
         {
             JToken expectedSlotToken = msg["expectedSlot"];
@@ -420,6 +447,8 @@ namespace CF7Launcher.Tasks
                     ? _openCharacterBuild
                     : panelKind == "arena"
                         ? _openArena
+                        : panelKind == "gym"
+                            ? _openGym
                         : _openEquipmentTuning;
             }
             if (open == null)
@@ -445,6 +474,8 @@ namespace CF7Launcher.Tasks
                     panelKind + "_open_failed",
                     panelKind == "arena"
                         ? "AS2 openArenaForAgent command was not sent"
+                        : panelKind == "gym"
+                            ? "AS2 openGymForAgent command was not sent"
                         : "AS2 openInventoryWorkbench command was not sent");
             }
 

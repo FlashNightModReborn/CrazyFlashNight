@@ -106,8 +106,11 @@ Character Build 的默认浏览态是**无目标背包总览**，不再用“先
 | Team 伙伴/战宠/机械（pet-panel：roster / store / advance） | `catalog-decision` |
 | Team 佣兵（merc-panel：roster / hire / detail） | `catalog-decision` |
 | Arena 标准/堕落/爬升挑战浏览器（arena/arena-shell，P4 拆分后构造点所在） | `catalog-decision` |
+| 健身房训练与进度（gym/gym-panel） | `stage-focus` |
 
-当前生产源码共有 **10 个** `DualPaneShell` 直接构造点：`arena/arena-shell.js`、`crafting.js`、`crafting-inventory-organizer.js`、`inventory-workbench.js`、`kshop.js`、`loot/loot-view.js`、`merc-panel.js`、`npcshop.js`、`pet-panel.js`、`skills.js`；`tools/workbench-ui-ratchet-baseline.json` 冻结同一 exact-set。这个构造数只描述 direct Shell consumer，不等于 Host owner、authority domain、view 或 `SecondaryPage` surface 数。
+健身房工作台的 `stage-focus` 仍由共享 Shell 决定分栏；其 `#panel-content` 采用共享全屏 `inset:0`，`PanelScale` 将 1024×576 逻辑画布等比铺满 16:9 Web 内容区。不能在 gym feature CSS 或测试 fixture 中单独伪造全屏容器，真实 Launcher 窗口与最低画布都须测内容边界。
+
+当前生产源码共有 **14 个** `DualPaneShell` 直接构造点：`arena/arena-shell.js`、`asset-workbench.js`、`crafting-inventory-organizer.js`、`crafting.js`、`gym/gym-panel.js`、`inventory-workbench.js`、`kshop.js`、`loot/loot-view.js`、`map-workbench.js`、`merc-panel.js`、`npcshop.js`、`pet-panel.js`、`skills.js`、`stage-select/stage-select-focus.js`；`tools/workbench-ui-ratchet-baseline.json` 冻结同一 exact-set。这个构造数只描述 direct Shell consumer，不等于 Host owner、authority domain、view 或 `SecondaryPage` surface 数。
 
 KShop 与 Inventory Workbench 在同一 Shell 原位切 view 时，profile 也必须通过 Shell-owned 的封闭 `setProfile(profile)` 与 view attribute 在一次同步投影中更新；feature 不得直接写 `data-profile`。构造器与 setter 共用同一合法枚举校验，缺失或非法值 fail fast。Skills、Crafting 与 Team 当前会在切 view 时重建 Shell，仍必须按目标 view 在新构造调用中选择对应 profile；不得把“会重建”当成省略 profile 或追加同值 setter 的理由。
 

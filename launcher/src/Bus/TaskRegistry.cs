@@ -462,6 +462,7 @@ namespace CF7Launcher.Bus
             HairdresserTask hairdresserTask,
             PlasticSurgeryTask plasticSurgeryTask,
             SleepTask sleepTask,
+            GymTrainingTask gymTrainingTask,
             SettingsTask settingsTask,
             EquipmentTuningTask equipmentTuningTask,
             CharacterBuildTask characterBuildTask,
@@ -566,6 +567,8 @@ namespace CF7Launcher.Bus
                 router.RegisterAsync("plastic_surgery_response", plasticSurgeryTask.HandleFlashResponse);
             if (sleepTask != null)
                 router.RegisterAsync("sleep_response", sleepTask.HandleFlashResponse);
+            if (gymTrainingTask != null)
+                router.RegisterAsync("gym_training_response", gymTrainingTask.HandleFlashResponse);
 
             // 游戏设置 / 键位 / 调试救援 domain 回包路由
             if (settingsTask != null)
@@ -869,6 +872,7 @@ namespace CF7Launcher.Bus
             first = AppendTask(sb, "hairdresser_response","json_async","AS2<->C#",false, first);
             first = AppendTask(sb, "plastic_surgery_response","json_async","AS2<->C#",false, first);
             first = AppendTask(sb, "sleep_response", "json_async", "AS2<->C#", false, first);
+            first = AppendTask(sb, "gym_training_response", "json_async", "AS2<->C#", false, first);
             first = AppendTask(sb, "settings_response",  "json_async","AS2<->C#",false, first);
             first = AppendTask(sb, "equipment_tuning_response","json_async","AS2<->C#",false, first);
             first = AppendTask(sb, "loadout_response", "json_async","AS2<->C#",false, first);

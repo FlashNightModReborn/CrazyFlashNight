@@ -1,0 +1,130 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<base href="/">
+<title>健身房人物外观审核样例</title>
+<link rel="stylesheet" href="css/panels.css">
+<style>
+    html, body { width:100%; height:100%; margin:0; overflow:hidden; }
+    body { color:var(--wb-text); background:var(--wb-bg); font-family:var(--wb-font-body, "Microsoft YaHei UI", sans-serif); }
+    .gym-appearance-review { width:1024px; height:576px; margin:0 auto; display:grid; grid-template-rows:76px minmax(0,1fr); }
+    .gym-review-header { display:flex; flex-direction:column; justify-content:center; gap:4px; padding:10px 18px; border-bottom:1px solid var(--wb-line); }
+    .gym-review-header h1 { margin:0; font-size:18px; }
+    .gym-review-header p { margin:0; color:var(--wb-muted); font-size:12px; }
+    .gym-review-samples { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:12px; min-height:0; padding:12px; }
+    .gym-review-card { display:grid; grid-template-rows:auto minmax(0,1fr) auto; min-width:0; min-height:0; overflow:hidden; border:1px solid var(--wb-line); background:var(--wb-surface); }
+    .gym-review-card header { padding:10px 12px 6px; }
+    .gym-review-card h2 { margin:0; font-size:14px; }
+    .gym-review-card p { margin:4px 0 0; color:var(--wb-muted); font-size:11px; line-height:1.4; }
+    .gym-review-canvas-wrap { min-height:0; margin:0 10px; overflow:hidden; background:var(--wb-bg); }
+    .gym-review-canvas { display:block; width:100%; height:100%; }
+    .gym-review-caption { min-height:48px; padding:7px 12px; border-top:1px solid var(--wb-line-soft); color:var(--wb-muted); font-size:11px; line-height:1.45; }
+    .gym-review-state { position:absolute; right:14px; top:14px; color:var(--wb-semantic-warning); font-size:11px; }
+</style>
+</head>
+<body>
+<main class="gym-appearance-review">
+    <header class="gym-review-header">
+        <h1>角色装扮外观样例</h1>
+        <p>此页使用现役纸娃娃 manifest 与两个已有装备组合；它们是审核样例，不代表当前玩家角色。</p>
+    </header>
+    <section class="gym-review-samples" aria-label="两套既有外观样例">
+        <article class="gym-review-card" data-sample="long-gun-male">
+            <header>
+                <h2>样例 A · 男角色战术装扮</h2>
+                <p>既有 longGun 组合 · 男角色 · 长枪站立</p>
+            </header>
+            <div class="gym-review-canvas-wrap">
+                <canvas class="gym-review-canvas" id="gym-review-male" aria-label="男性战术装备纸娃娃样例"></canvas>
+            </div>
+            <div class="gym-review-caption">面具、护具、手套、战术裤、长枪与基础男角色外观均取自现有资源。</div>
+        </article>
+        <article class="gym-review-card" data-sample="female-arm-fallback">
+            <header>
+                <h2>样例 B · 女角色上装组合</h2>
+                <p>既有 femaleArmFallback 组合 · 女角色 · 空手站立</p>
+            </header>
+            <div class="gym-review-canvas-wrap">
+                <canvas class="gym-review-canvas" id="gym-review-female" aria-label="女性现有上装纸娃娃样例"></canvas>
+            </div>
+            <div class="gym-review-caption">使用现有“米色高腰背心”、女性基础脸型与银色清爽直发资源；不映射为玩家当前外观。</div>
+        </article>
+    </section>
+    <div class="gym-review-state" id="gym-review-state" role="status" aria-live="polite">正在读取现有外观资源…</div>
+</main>
+<script src="modules/asset-timeline.js"></script>
+<script src="modules/dressup-doll-renderer.js"></script>
+<script src="modules/character-appearance-preview.js"></script>
+<script src="modules/dressup/dev/character-build-combination-fixture.js"></script>
+<script>
+(function() {
+    'use strict';
+    var renderers = [];
+    var fixture = window.CharacterBuildDressupFixture;
+    var state = document.getElementById('gym-review-state');
+    function allEquipment() {
+        var result = {};
+        fixture.armorSlots.forEach(function(slot) { result[slot.id] = slot.item; });
+        result['长枪'] = fixture.equipment.longGun;
+        result['手枪'] = fixture.equipment.pistol;
+        result['手枪2'] = fixture.equipment.pistol;
+        result['刀'] = fixture.equipment.blade;
+        result['手雷'] = fixture.equipment.grenade;
+        return result;
+    }
+    function femaleFallbackEquipment() {
+        var result = allEquipment();
+        result.upper = fixture.equipment.femaleFallbackUpper;
+        result['长枪'] = '';
+        result['手枪'] = '';
+        result['手枪2'] = '';
+        result['刀'] = '';
+        return result;
+    }
+    function mount(canvas, manifest, sample) {
+        var renderer = CharacterAppearancePreview.create(canvas, {
+            manifest:manifest,
+            animate:false,
+            pixelRatio:1,
+            zoom:0.96,
+            margin:24,
+            onRender:function(meta) {
+                if (!window.__gymAppearanceMeta) window.__gymAppearanceMeta = {};
+                window.__gymAppearanceMeta[canvas.id] = meta;
+            }
+        });
+        var genderName = sample.gender === '女' ? 'female' : 'male';
+        renderer.renderProfile(
+            { gender:genderName },
+            sample.equipment,
+            fixture.appearanceByGender[sample.gender],
+            { stateLabel:sample.stateLabel, attackMode:sample.attackMode }
+        );
+        renderers.push(renderer);
+    }
+    function cleanup() {
+        renderers.forEach(function(renderer) { renderer.destroy(); });
+        renderers = [];
+    }
+    window.addEventListener('pagehide', cleanup, { once:true });
+    if (!fixture) {
+        state.textContent = '既有外观组合 fixture 不可用。';
+        return;
+    }
+    DressupDollRenderer.loadManifest('assets/dressup/manifest.json').then(function(manifest) {
+        mount(document.getElementById('gym-review-male'), manifest, {
+            gender:'男', equipment:allEquipment(), stateLabel:'长枪站立', attackMode:'长枪'
+        });
+        mount(document.getElementById('gym-review-female'), manifest, {
+            gender:'女', equipment:femaleFallbackEquipment(), stateLabel:'空手站立', attackMode:'空手'
+        });
+        state.textContent = '两套现有资源组合已加载；只供外观审核。';
+    }).catch(function(error) {
+        state.textContent = '外观资源加载失败：' + String(error && error.message || error);
+    });
+})();
+</script>
+</body>
+</html>
