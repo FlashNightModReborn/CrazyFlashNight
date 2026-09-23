@@ -43,6 +43,7 @@ const IMPORTS = [
     './plastic-surgery.css',
     './sleep/tokens.css',
     './sleep-panel.css',
+    './gym-panel.css',
     './workbench/utilities.css'
 ];
 
