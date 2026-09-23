@@ -29,9 +29,26 @@
     var pendingCall = null;
     var session = null;
     var progressNode = null;
+    var progressBar = null;
     var startButton = null;
     var noticeNode = null;
     var balanceNodes = null;
+    var balanceCards = null;
+    var commitBar = null;
+    var commitStatusNode = null;
+    var helpAction = null;
+    var roving = null;
+    var rovingGuard = false;
+    var tooltipScope = null;
+    var switchArm = null;
+    var confirmBar = null;
+    var stageNode = null;
+    var stageFlashNode = null;
+    var stagePauseNode = null;
+    var floatNode = null;
+    var milestoneBucket = -1;
+    var celebrateTimer = 0;
+    var floatTimer = 0;
     var responseHandler = null;
     var eventHandler = null;
     var debugState = { stationId:'', selectedProjectId:'', motionMounted:false };
@@ -215,10 +232,32 @@
         return (Number.isInteger(seconds) ? String(seconds) : seconds.toFixed(1)) + ' 秒';
     }
 
+    function escapeHtml(value) {
+        return String(value).replace(/[&<>"']/g, function(ch) {
+            return { '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' }[ch];
+        });
+    }
+
+    function projectState(project) {
+        if (!project) return null;
+        if (project.cap !== null && project.current >= project.cap)
+            return { kind:'capped', label:'已满 · 转经验' };
+        if (!canAfford(project)) return { kind:'unaffordable', label:'余额不足' };
+        return null;
+    }
+
+    function commitStatusFor(project) {
+        return currencyLabel(project.currency) + ' ' + formatCount(project.cost)
+            + ' · ' + durationLabel(project.durationMs);
+    }
+
     function projectAccessibleLabel(project) {
-        return project.rewardLabel + ' +' + formatCount(project.rewardAmount)
+        var label = project.rewardLabel + ' +' + formatCount(project.rewardAmount)
             + '，' + currencyLabel(project.currency) + ' ' + formatCount(project.cost)
             + '，' + durationLabel(project.durationMs);
+        var state = projectState(project);
+        if (state) label += '，' + state.label.replace(/\s/g, '');
+        return label;
     }
 
     function selectedProject() {
@@ -265,29 +304,56 @@
     }
 
     function updateStartButton() {
-        if (!startButton) return;
         var project = selectedProject();
         var state = session && session.phase;
+        var model;
         if (pendingCall || closePending) {
-            startButton.disabled = true;
-            startButton.textContent = '正在确认…';
+            model = { label:'正在确认…', status:'正在与游戏确认本次操作',
+                busy:true, state:'busy', canCommit:false, disabled:true };
         } else if (state === 'running' || state === 'settling') {
-            startButton.disabled = true;
-            startButton.textContent = '训练进行中';
+            model = { label:'训练进行中', status:'完成时一次结算 · 切换项目将取消',
+                state:'blocked', canCommit:false, disabled:true };
         } else if (state === 'needs_reconcile') {
-            startButton.disabled = false;
-            startButton.textContent = '核实结算';
+            model = { label:'核实结算', status:'核实后才会继续，不会重复扣费',
+                state:'ready', canCommit:true, disabled:false };
         } else if (state === 'save_pending') {
-            startButton.disabled = false;
-            startButton.textContent = '重试保存';
+            model = { label:'重试保存', status:'奖励已应用 · 重试保存不重复扣费',
+                state:'ready', canCommit:true, disabled:false };
         } else if (state === 'outcome_unavailable') {
-            startButton.disabled = true;
-            startButton.textContent = '请重新打开核对';
+            model = { label:'请重新打开核对', status:'无法核实旧训练结果',
+                state:'error', canCommit:false, disabled:true };
+        } else if (!project) {
+            model = { label:'开始训练', status:'暂无可训练项目',
+                state:'blocked', canCommit:false, disabled:true };
+        } else if (!canAfford(project)) {
+            model = { label:'余额不足', status:currencyLabel(project.currency) + ' ' + formatCount(project.cost)
+                    + ' · 还差 ' + formatCount(project.cost - snapshot.balances[project.currency]),
+                state:'blocked', canCommit:false, disabled:true };
         } else {
-            startButton.disabled = !canAfford(project);
-            startButton.textContent = canAfford(project) ? '开始训练' : '余额不足';
+            model = { label:'开始训练', status:commitStatusFor(project),
+                state:'ready', canCommit:true, disabled:false };
         }
+        if (commitBar) {
+            commitBar.update(model);
+        } else if (startButton) {
+            startButton.disabled = model.disabled === true || model.busy === true;
+            startButton.textContent = model.label;
+        }
+        updateBalanceAttention();
         updateShellStatus();
+    }
+
+    function updateBalanceAttention() {
+        if (!balanceCards || !snapshot) return;
+        var project = selectedProject();
+        var idle = !session || session.phase === 'preview' || session.phase === 'cancelled'
+            || session.phase === 'applied';
+        ['money', 'kpoint'].forEach(function(currency) {
+            var card = balanceCards[currency];
+            if (!card) return;
+            var attention = !!(idle && project && project.currency === currency && !canAfford(project));
+            card.classList.toggle('gym-balance-attention', attention);
+        });
     }
 
     function setNotice(message, kind) {
@@ -326,8 +392,31 @@
         if (!canAfford(project)) currentText += ' · 当前余额不足';
         var current = element('p', 'gym-detail-current', currentText);
         detail.append(heading, reward, cost, duration, current);
+        if (project.cap !== null) detail.appendChild(buildGauge(project));
         debugState.selectedProjectId = project.id;
         updateStartButton();
+    }
+
+    function buildGauge(project) {
+        var wrap = element('div', 'gym-gauge');
+        wrap.setAttribute('role', 'img');
+        var cap = Math.max(1, project.cap);
+        var currentRatio = Math.min(1, project.current / cap);
+        var remaining = Math.max(0, project.cap - project.current);
+        var expected = Math.min(project.rewardAmount, remaining);
+        var expectedRatio = Math.min(1 - currentRatio, expected / cap);
+        var fill = element('span', 'gym-gauge-fill');
+        fill.style.width = (currentRatio * 100).toFixed(1) + '%';
+        var expectedNode = element('span', 'gym-gauge-expected');
+        expectedNode.style.left = (currentRatio * 100).toFixed(1) + '%';
+        expectedNode.style.width = (expectedRatio * 100).toFixed(1) + '%';
+        wrap.append(fill, expectedNode);
+        if (project.current > project.cap) wrap.dataset.state = 'over';
+        else if (remaining === 0) wrap.dataset.state = 'capped';
+        wrap.setAttribute('aria-label', '已练得 ' + formatCount(project.current)
+            + '，上限 ' + formatCount(project.cap)
+            + (expected > 0 ? '，本次预计 +' + formatCount(expected) : '，本次完成转为经验'));
+        return wrap;
     }
 
     function formatSeconds(ms) {
@@ -338,9 +427,16 @@
         if (!progressNode) return;
         var status = progressNode.querySelector('.gym-progress-status');
         var amount = progressNode.querySelector('.gym-progress-amount');
-        var bar = progressNode.querySelector('.gym-progress-bar');
+        var bar = progressBar || progressNode.querySelector('.gym-progress-bar');
         var project = session && findProject(session.projectId) || selectedProject();
+        var phase = session ? session.phase : 'preview';
+        progressNode.dataset.phase = phase;
+        if (stageNode) stageNode.dataset.sessionPhase = phase;
+        if (stagePauseNode) {
+            stagePauseNode.hidden = !(session && session.phase === 'running' && session.paused);
+        }
         if (!session || session.phase === 'preview' || session.phase === 'cancelled') {
+            milestoneBucket = -1;
             status.textContent = '尚未开始训练';
             amount.textContent = project ? '选择项目后开始；完成时一次结算。' : '';
             bar.value = 0;
@@ -356,6 +452,13 @@
         bar.value = percent;
         bar.max = 100;
         if (session.phase === 'running') {
+            var bucket = Math.min(3, Math.floor(percent / 25));
+            if (milestoneBucket >= 0 && bucket > milestoneBucket) {
+                for (var boundary = milestoneBucket + 1; boundary <= bucket; boundary++) {
+                    flashMilestone(boundary * 25);
+                }
+            }
+            milestoneBucket = bucket;
             status.textContent = '已进行 ' + formatSeconds(elapsed) + ' / ' + formatSeconds(duration)
                 + ' 秒 · ' + percent + '% · 剩余 ' + formatSeconds(remaining) + ' 秒'
                 + (session.paused ? ' · 已暂停计时' : '');
@@ -390,6 +493,156 @@
         }
     }
 
+    function stageFlash(kind) {
+        if (!stageFlashNode) return;
+        stageFlashNode.classList.remove('gym-flash-run', 'gym-flash-accept');
+        void stageFlashNode.offsetWidth;
+        stageFlashNode.classList.add('gym-flash-run');
+        if (kind === 'accept') stageFlashNode.classList.add('gym-flash-accept');
+    }
+
+    function flashMilestone(percent) {
+        if (!progressNode) return;
+        var tick = progressNode.querySelector('.gym-progress-tick[data-milestone="' + percent + '"]');
+        if (!tick) return;
+        tick.classList.remove('gym-tick-flash');
+        void tick.offsetWidth;
+        tick.classList.add('gym-tick-flash');
+        stageFlash('standard');
+    }
+
+    function floatGainText() {
+        var award = session && session.award;
+        if (!award) return '训练完成';
+        if (award.kind === 'stat') {
+            var project = findProject(session.projectId);
+            return '+' + formatCount(award.amount) + ' ' + (project ? project.rewardLabel : '永久加成');
+        }
+        if (award.kind === 'experience') {
+            return '+' + formatCount((award.amount || 0) + (award.baseExperience || 0)) + ' 经验';
+        }
+        if (award.kind === 'skillPoints') return '+' + formatCount(award.amount) + ' 技能点';
+        return '训练完成';
+    }
+
+    function celebrateApplied() {
+        stageFlash('accept');
+        if (floatNode) {
+            floatNode.textContent = floatGainText();
+            floatNode.classList.remove('gym-float-run');
+            void floatNode.offsetWidth;
+            floatNode.classList.add('gym-float-run');
+            if (floatTimer) clearTimeout(floatTimer);
+            floatTimer = setTimeout(function() {
+                floatTimer = 0;
+                if (floatNode) floatNode.classList.remove('gym-float-run');
+            }, 2600);
+        }
+        if (motionHandle && typeof motionHandle.setPlaybackRate === 'function') {
+            motionHandle.setPlaybackRate(0.45);
+            if (celebrateTimer) clearTimeout(celebrateTimer);
+            celebrateTimer = setTimeout(function() {
+                celebrateTimer = 0;
+                if (motionHandle && typeof motionHandle.setPlaybackRate === 'function') {
+                    motionHandle.setPlaybackRate(1);
+                }
+            }, 1400);
+        }
+    }
+
+    function clearSwitchArm() {
+        switchArm = null;
+        if (confirmBar) confirmBar.hidden = true;
+    }
+
+    function armSwitchConfirm(targetIndex) {
+        var target = snapshot && snapshot.projects[targetIndex];
+        if (!target || !session || session.phase !== 'running' || pendingCall) return;
+        switchArm = { targetIndex:targetIndex, projectId:target.id };
+        if (!confirmBar) return;
+        var elapsed = Number.isSafeInteger(session.elapsedMs) ? session.elapsedMs : 0;
+        var text = confirmBar.querySelector('.gym-switch-confirm-text');
+        if (text) {
+            text.textContent = '切换到「' + target.rewardLabel + '」将取消当前训练（已进行 '
+                + formatSeconds(elapsed) + ' 秒），不扣费也不计收益。';
+        }
+        confirmBar.hidden = false;
+        setNotice('', 'info');
+        var confirmButton = confirmBar.querySelector('.gym-switch-confirm-yes');
+        if (confirmButton) confirmButton.focus();
+    }
+
+    function confirmSwitch() {
+        if (!switchArm || !session || session.phase !== 'running' || pendingCall) {
+            clearSwitchArm();
+            revertRoving(true);
+            return;
+        }
+        var targetIndex = switchArm.targetIndex;
+        clearSwitchArm();
+        requestGym('cancel', { v:1 }, targetIndex);
+    }
+
+    function dismissSwitchArm() {
+        clearSwitchArm();
+        revertRoving(true);
+    }
+
+    function indexOfProject(projectId) {
+        if (!snapshot) return -1;
+        for (var i = 0; i < snapshot.projects.length; i++) {
+            if (snapshot.projects[i].id === projectId) return i;
+        }
+        return -1;
+    }
+
+    function revertRoving(focus) {
+        var project = selectedProject();
+        if (!roving || !project) return;
+        rovingGuard = true;
+        try { roving.setActive(project.id, { focus:focus === true, reason:'revert' }); }
+        finally { rovingGuard = false; }
+    }
+
+    function renderProjectTooltip(project) {
+        if (!project) return '';
+        var lines = ['<div class="gym-tt">'];
+        lines.push('<strong class="gym-tt-name">' + escapeHtml(project.rewardLabel)
+            + ' +' + formatCount(project.rewardAmount) + '</strong>');
+        lines.push('<span class="gym-tt-line">' + currencyLabel(project.currency) + ' '
+            + formatCount(project.cost) + ' · ' + durationLabel(project.durationMs) + '</span>');
+        if (project.cap === null) {
+            lines.push('<span class="gym-tt-line">当前技能点 ' + formatCount(project.current)
+                + ' · 无上限</span>');
+        } else {
+            lines.push('<span class="gym-tt-line">已练得 ' + formatCount(project.current)
+                + ' / 上限 ' + formatCount(project.cap) + '</span>');
+        }
+        lines.push('<span class="gym-tt-line gym-tt-outcome">' + escapeHtml(expectedOutcome(project)) + '</span>');
+        var state = projectState(project);
+        if (state) lines.push('<span class="gym-tt-line gym-tt-state">' + state.label + '</span>');
+        lines.push('</div>');
+        return lines.join('');
+    }
+
+    function bindProjectTooltips(catalog) {
+        if (typeof PanelTooltip === 'undefined' || !PanelTooltip
+                || typeof PanelTooltip.createScope !== 'function') return;
+        tooltipScope = PanelTooltip.createScope('gym-projects', {
+            profile:PanelTooltip.profiles && PanelTooltip.profiles.dense || 'dense-inspect'
+        });
+        projectNodes.forEach(function(node, index) {
+            tooltipScope.bindAsync(node, {
+                key:'gym-project-' + snapshot.projects[index].id,
+                resolveItem:function() { return snapshot && snapshot.projects[index] || null; },
+                anchor:catalog,
+                placement:'left',
+                profile:'dense-inspect',
+                renderBasic:renderProjectTooltip
+            });
+        });
+    }
+
     function requestGym(cmd, payload, extra) {
         if (pendingCall || closePending || !panelInstanceId || !Bridge || !Bridge.send) return false;
         var callId = 'gym.web.' + Date.now().toString(36) + '.' + (++callSequence);
@@ -422,6 +675,7 @@
             balanceNodes.money.textContent = formatCount(money);
             balanceNodes.kpoint.textContent = formatCount(kpoint);
         }
+        updateRowStates();
         updateStartButton();
     }
 
@@ -462,6 +716,7 @@
             session.phase = 'outcome_unavailable';
             setNotice('无法核实旧训练，请关闭后重新打开核对余额与属性。', 'warning');
         } else if (data.phase === 'applied' && data.saved === true) {
+            var wasApplied = session.phase === 'applied';
             session.phase = 'applied';
             snapshot.pendingSession = null;
             session.award = data.award || null;
@@ -472,10 +727,13 @@
                 snapshot.projects.forEach(function(item) {
                     if (item.rewardLabel === project.rewardLabel) item.current = current;
                 });
+                updateRowStates();
                 renderDetails(root.querySelector('.gym-project-detail'));
             }
             setNotice('', 'success');
+            if (!wasApplied) celebrateApplied();
         } else if (data.phase === 'cancelled') {
+            clearSwitchArm();
             session = null;
             snapshot.pendingSession = null;
             setNotice('本次训练未结算：' + (data.error ? errorLabel(data.error)
@@ -515,12 +773,15 @@
         } else if (call.cmd === 'cancel') {
             if (data.success === true && data.phase === 'cancelled') {
                 session = null;
-                selectedIndex = call.extra;
-                projectNodes.forEach(function(node, index) {
-                    node.setAttribute('aria-checked', String(index === selectedIndex));
-                    node.tabIndex = index === selectedIndex ? 0 : -1;
-                });
-                renderDetails(root.querySelector('.gym-project-detail'));
+                applySelection(call.extra);
+                if (roving && snapshot.projects[call.extra]) {
+                    rovingGuard = true;
+                    try {
+                        roving.setActive(snapshot.projects[call.extra].id,
+                            { focus:false, reason:'programmatic' });
+                    } finally { rovingGuard = false; }
+                }
+                if (projectNodes[call.extra]) projectNodes[call.extra].focus();
                 setNotice('', 'info');
             } else {
                 setNotice('切换尚未确认：' + errorLabel(data.error), 'warning');
@@ -555,7 +816,10 @@
             if (elapsed === undefined) return;
             session.elapsedMs = elapsed;
             session.paused = data.paused === true;
-            if (data.phase === 'settling') session.phase = 'settling';
+            if (data.phase === 'settling') {
+                session.phase = 'settling';
+                clearSwitchArm();
+            }
             renderProgress();
             updateStartButton();
         } else if (data.event === 'settled') applySettled(data);
@@ -575,10 +839,14 @@
         requestGym('start', {v:1, projectId:project.id}, project.id);
     }
 
-    function selectProject(index, focus) {
+    function attemptSelectProject(index) {
         if (!snapshot || index < 0 || index >= snapshot.projects.length) return false;
-        if (pendingCall && pendingCall.cmd === 'start') {
-            setNotice('正在确认训练开始，请稍候切换。', 'info');
+        if (index === selectedIndex) {
+            if (switchArm) dismissSwitchArm();
+            return true;
+        }
+        if (pendingCall) {
+            setNotice('正在确认上一项操作，请稍候切换。', 'info');
             return false;
         }
         if (session && (session.phase === 'settling' || session.phase === 'needs_reconcile'
@@ -586,32 +854,32 @@
             setNotice('本次结算尚未确认，请先核实或保存。', 'warning');
             return false;
         }
-        if (session && session.phase === 'running' && index !== selectedIndex) {
-            return requestGym('cancel', {v:1}, index);
+        if (session && session.phase === 'running') {
+            armSwitchConfirm(index);
+            return switchArm ? 'armed' : false;
         }
-        selectedIndex = index;
-        projectNodes.forEach(function(node, itemIndex) {
-            var selected = itemIndex === selectedIndex;
-            node.setAttribute('aria-checked', String(selected));
-            node.tabIndex = selected ? 0 : -1;
-        });
-        renderDetails(root.querySelector('.gym-project-detail'));
-        renderProgress();
-        if (focus && projectNodes[selectedIndex]) projectNodes[selectedIndex].focus();
+        clearSwitchArm();
+        applySelection(index);
         return true;
     }
 
-    function moveSelection(event, index) {
-        if (!snapshot.projects.length) return;
-        var next = index;
-        if (event.key === 'ArrowDown' || event.key === 'ArrowRight') next = (index + 1) % snapshot.projects.length;
-        else if (event.key === 'ArrowUp' || event.key === 'ArrowLeft') next = (index + snapshot.projects.length - 1) % snapshot.projects.length;
-        else if (event.key === 'Home') next = 0;
-        else if (event.key === 'End') next = snapshot.projects.length - 1;
-        else return;
-        event.preventDefault();
-        event.stopPropagation();
-        selectProject(next, true);
+    function applySelection(index) {
+        if (!snapshot || index < 0 || index >= snapshot.projects.length) return;
+        selectedIndex = index;
+        projectNodes.forEach(function(node, itemIndex) {
+            node.setAttribute('aria-checked', String(itemIndex === selectedIndex));
+        });
+        renderDetails(root.querySelector('.gym-project-detail'));
+        renderProgress();
+    }
+
+    function onRovingActiveChange(key) {
+        if (rovingGuard) return;
+        var index = indexOfProject(key);
+        if (index < 0) return;
+        var result = attemptSelectProject(index);
+        if (result === 'armed') revertRoving(false);
+        else if (result === false) revertRoving(true);
     }
 
     function buildProjectList() {
@@ -626,18 +894,43 @@
             option.setAttribute('aria-checked', String(index === selectedIndex));
             option.setAttribute('aria-label', projectAccessibleLabel(project));
             option.dataset.projectId = project.id;
-            option.tabIndex = index === selectedIndex ? 0 : -1;
+            option.dataset.rovingKey = project.id;
 
             var name = element('span', 'gym-project-name', project.rewardLabel);
             var summary = element('span', 'gym-project-summary', '+' + formatCount(project.rewardAmount)
                 + ' · ' + currencyLabel(project.currency) + ' ' + formatCount(project.cost));
             option.append(name, summary);
-            option.addEventListener('click', function() { selectProject(index, false); });
-            option.addEventListener('keydown', function(event) { moveSelection(event, index); });
+            option.addEventListener('click', function() {
+                if (roving) roving.setActive(project.id, { focus:false, reason:'pointer' });
+                else attemptSelectProject(index);
+            });
             list.appendChild(option);
             projectNodes.push(option);
         });
+        updateRowStates();
         return list;
+    }
+
+    function updateRowStates() {
+        if (!snapshot) return;
+        projectNodes.forEach(function(node, index) {
+            var project = snapshot.projects[index];
+            if (!project) return;
+            var state = projectState(project);
+            node.dataset.gymState = state ? state.kind : '';
+            node.setAttribute('aria-label', projectAccessibleLabel(project));
+            var chip = node.querySelector('.gym-project-chip');
+            if (state) {
+                if (!chip) {
+                    chip = element('span', 'gym-project-chip');
+                    node.appendChild(chip);
+                }
+                chip.className = 'gym-project-chip gym-chip-' + state.kind;
+                chip.textContent = state.label;
+            } else if (chip && chip.parentNode) {
+                chip.parentNode.removeChild(chip);
+            }
+        });
     }
 
     function buildBalance(currency, amount) {
@@ -716,14 +1009,20 @@
 
     function clearMotionOutput(stage) {
         Array.prototype.slice.call(stage.children).forEach(function(child) {
-            if (child !== motionPlaceholder) stage.removeChild(child);
+            if (child === motionPlaceholder) return;
+            if (child.classList && child.classList.contains('gym-stage-keep')) return;
+            stage.removeChild(child);
         });
     }
 
     function setMotionFallback(message) {
         var stage = root && root.querySelector('.gym-motion-stage');
         if (stage && motionPlaceholder && !stage.contains(motionPlaceholder)) {
-            stage.replaceChildren(motionPlaceholder);
+            var keeps = [motionPlaceholder];
+            Array.prototype.slice.call(stage.children).forEach(function(child) {
+                if (child.classList && child.classList.contains('gym-stage-keep')) keeps.push(child);
+            });
+            stage.replaceChildren.apply(stage, keeps);
         }
         var copy = motionPlaceholder && motionPlaceholder.querySelector('.gym-motion-message');
         if (copy) copy.textContent = message;
@@ -759,6 +1058,40 @@
         eventHandler = null;
         if (keyHandler && root) root.removeEventListener('keydown', keyHandler);
         keyHandler = null;
+        if (roving) {
+            try { roving.destroy(); }
+            catch (error) { console.error('[GymPanel] roving cleanup failed:', error); }
+        }
+        roving = null;
+        rovingGuard = false;
+        if (tooltipScope) {
+            try { tooltipScope.dispose(); }
+            catch (error) { console.error('[GymPanel] tooltip cleanup failed:', error); }
+        }
+        tooltipScope = null;
+        if (typeof PanelTooltip !== 'undefined' && PanelTooltip
+                && typeof PanelTooltip.hide === 'function') {
+            try { PanelTooltip.hide(); }
+            catch (error) { console.error('[GymPanel] tooltip hide failed:', error); }
+        }
+        if (commitBar) commitBar.destroy();
+        commitBar = null;
+        commitStatusNode = null;
+        if (helpAction) helpAction.destroy();
+        helpAction = null;
+        if (celebrateTimer) clearTimeout(celebrateTimer);
+        celebrateTimer = 0;
+        if (floatTimer) clearTimeout(floatTimer);
+        floatTimer = 0;
+        switchArm = null;
+        confirmBar = null;
+        stageNode = null;
+        stageFlashNode = null;
+        stagePauseNode = null;
+        floatNode = null;
+        milestoneBucket = -1;
+        progressBar = null;
+        balanceCards = null;
         if (motionHandle) {
             try { motionHandle.destroy(); }
             catch (error) { console.error('[GymPanel] motion cleanup failed:', error); }
@@ -830,6 +1163,20 @@
         });
         var shellRoot = shell.getRoot();
         shellRoot.classList.add('gym-workbench');
+        if (typeof WorkbenchComponents !== 'undefined' && WorkbenchComponents
+                && WorkbenchComponents.HelpAction) {
+            helpAction = new WorkbenchComponents.HelpAction({
+                shell:shell,
+                spec:{
+                    kind:'gym-help',
+                    title:'健身训练规则',
+                    message:'完成才扣费 · 中途退出不计',
+                    detail:'开始训练只建立临时会话，不立即扣费；倒计时结束后由游戏统一核验、扣费并发放奖励。\n切换项目、关闭面板或退出游戏都会取消未完成的训练：不扣费、不发奖，已进行时间清零。\n窗口失焦或最小化时计时暂停，回到本面板自动继续。\n属性到达上限后仍可付费训练，完成时转为经验。\n保存失败时可原地重试保存，不会重复扣费或发奖。',
+                    ariaLabel:'健身训练规则说明',
+                    actions:[{ id:'close', label:'知道了', primary:true, audioCue:'back' }]
+                }
+            });
+        }
         var close = element('button', 'gym-close-button', '关闭');
         close.type = 'button';
         close.setAttribute('aria-label', '关闭健身训练面板');
@@ -840,27 +1187,46 @@
         scene.setAttribute('aria-label', normalized.station.label + '训练动作');
         var sceneToolbar = element('div', 'gym-scene-toolbar');
         sceneToolbar.appendChild(element('strong', 'gym-station-pill', normalized.station.label));
-        var motionStage = element('div', 'gym-motion-stage');
-        motionStage.setAttribute('role', 'img');
-        motionStage.setAttribute('aria-label', normalized.station.action + '画面');
+        stageNode = element('div', 'gym-motion-stage');
+        stageNode.setAttribute('role', 'img');
+        stageNode.setAttribute('aria-label', normalized.station.action + '画面');
         motionPlaceholder = element('div', 'gym-motion-placeholder');
         motionPlaceholder.append(
             element('strong', 'gym-motion-title', normalized.station.action),
             element('span', 'gym-motion-message', '正在准备动作样片…')
         );
-        motionStage.appendChild(motionPlaceholder);
+        stageFlashNode = element('div', 'gym-stage-flash gym-stage-keep');
+        stageFlashNode.setAttribute('aria-hidden', 'true');
+        floatNode = element('div', 'gym-float-gain gym-stage-keep');
+        floatNode.setAttribute('aria-hidden', 'true');
+        stagePauseNode = element('div', 'gym-stage-pause gym-stage-keep');
+        stagePauseNode.hidden = true;
+        stagePauseNode.append(
+            element('strong', 'gym-stage-pause-chip', '计时已暂停'),
+            element('span', 'gym-stage-pause-hint', '回到窗口后继续训练')
+        );
+        stageNode.append(motionPlaceholder, stageFlashNode, floatNode, stagePauseNode);
         progressNode = element('div', 'gym-progress');
         progressNode.setAttribute('aria-live', 'polite');
         progressNode.append(
             element('strong', 'gym-progress-status', '尚未开始训练'),
             element('span', 'gym-progress-amount', '完成后才会扣费与结算奖励。')
         );
-        var progressBar = element('progress', 'gym-progress-bar');
+        var progressTrack = element('div', 'gym-progress-track');
+        [25, 50, 75].forEach(function(percent) {
+            var tick = element('span', 'gym-progress-tick');
+            tick.style.left = percent + '%';
+            tick.dataset.milestone = String(percent);
+            tick.setAttribute('aria-hidden', 'true');
+            progressTrack.appendChild(tick);
+        });
+        progressBar = element('progress', 'gym-progress-bar');
         progressBar.max = 100;
         progressBar.value = 0;
         progressBar.setAttribute('aria-label', '训练进度');
-        progressNode.appendChild(progressBar);
-        scene.append(sceneToolbar, motionStage, progressNode);
+        progressTrack.appendChild(progressBar);
+        progressNode.appendChild(progressTrack);
+        scene.append(sceneToolbar, stageNode, progressNode);
 
         var catalog = element('section', 'gym-catalog');
         catalog.setAttribute('aria-label', normalized.station.label + '训练目录');
@@ -874,18 +1240,48 @@
             money:moneyCard.querySelector('.gym-balance-value'),
             kpoint:kpointCard.querySelector('.gym-balance-value')
         };
+        balanceCards = { money:moneyCard, kpoint:kpointCard };
         var list = buildProjectList();
+        confirmBar = element('div', 'gym-switch-confirm');
+        confirmBar.hidden = true;
+        var confirmYes = element('button', 'gym-switch-confirm-yes', '确认切换');
+        confirmYes.type = 'button';
+        confirmYes.addEventListener('click', confirmSwitch);
+        var confirmNo = element('button', 'gym-switch-confirm-no', '继续训练');
+        confirmNo.type = 'button';
+        confirmNo.addEventListener('click', dismissSwitchArm);
+        confirmBar.append(element('span', 'gym-switch-confirm-text'), confirmYes, confirmNo);
         var detail = element('section', 'gym-project-detail');
         detail.setAttribute('aria-live', 'polite');
         var actions = element('div', 'gym-preview-actions');
-        actions.appendChild(element('span', 'gym-rule-note', '完成才扣费 · 中途退出不计'));
+        commitStatusNode = element('span', 'gym-rule-note');
         startButton = element('button', 'gym-start-button', '开始训练');
         startButton.type = 'button';
-        startButton.addEventListener('click', onStartClick);
-        actions.appendChild(startButton);
-        catalog.append(noticeNode, balances, list, detail, actions);
+        actions.append(commitStatusNode, startButton);
+        catalog.append(noticeNode, balances, list, confirmBar, detail, actions);
 
         shell.mountInitial(slotView('gym-motion', scene), slotView('gym-catalog', catalog));
+        if (typeof WorkbenchComponents !== 'undefined' && WorkbenchComponents
+                && WorkbenchComponents.CommitBar) {
+            commitBar = new WorkbenchComponents.CommitBar({
+                document:document,
+                root:actions,
+                statusNode:commitStatusNode,
+                primaryButton:startButton,
+                className:'gym-commit-bar',
+                onCommit:onStartClick
+            });
+        }
+        if (typeof WorkbenchFocus !== 'undefined' && WorkbenchFocus
+                && WorkbenchFocus.RovingGridFocus) {
+            roving = new WorkbenchFocus.RovingGridFocus({
+                root:list,
+                columns:1,
+                activeKey:snapshot.projects[selectedIndex] ? snapshot.projects[selectedIndex].id : '',
+                onActiveChange:onRovingActiveChange
+            });
+        }
+        bindProjectTooltips(catalog);
         host.replaceChildren(shellRoot);
         panelScale = PanelScale.attach(host, 1024, 576);
         keyHandler = function(event) {
@@ -903,7 +1299,7 @@
         renderProgress();
         if (snapshot.pendingSession)
             setNotice('正在恢复上次训练的保存结果；请先核实，不会重复扣费。', 'warning');
-        mountMotion(motionStage);
+        mountMotion(stageNode);
         requestGym('status', {v:1});
         return true;
     }
@@ -928,6 +1324,7 @@
                 phase:session && session.phase || 'preview',
                 sessionToken:session && session.sessionToken || '',
                 elapsedMs:session && session.elapsedMs || 0,
+                switchArmed:!!switchArm,
                 motion:motionHandle && typeof motionHandle.debugState === 'function'
                     ? motionHandle.debugState() : null
             };

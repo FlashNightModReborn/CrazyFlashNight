@@ -14,6 +14,7 @@ const TARGETS = Object.freeze({
     start:'.gym-start-button',
     goldStat:'.gym-project-option[data-project-id="dummy.0"]',
     cancelTarget:'.gym-project-option[data-project-id="dummy.1"]',
+    switchConfirm:'.gym-switch-confirm-yes',
     kSkill:'.gym-project-option[data-project-id="dummy.7"]'
 });
 
@@ -50,6 +51,7 @@ async function openGymInputChannel(options) {
                 var buttons=Array.prototype.slice.call(document.querySelectorAll('.gym-project-option'));
                 var start=document.querySelector('.gym-start-button');
                 var progress=document.querySelector('.gym-progress-bar');
+                var confirmBar=document.querySelector('.gym-switch-confirm');
                 return {
                     url:String(location.href),
                     panel:panel?String(panel.getAttribute('data-panel')||''):'',
@@ -67,6 +69,10 @@ async function openGymInputChannel(options) {
                         value:progress?Number(progress.value):null,max:progress?Number(progress.max):null},
                     detail:String((document.querySelector('.gym-project-detail')||{}).textContent||'').trim(),
                     notice:String((document.querySelector('.gym-preview-note')||{}).textContent||'').trim(),
+                    switchConfirm:{
+                        visible:!!confirmBar&&confirmBar.hidden!==true,
+                        text:String((confirmBar&&confirmBar.querySelector('.gym-switch-confirm-text')||{}).textContent||'').trim()
+                    },
                     balances:Array.prototype.slice.call(document.querySelectorAll('.gym-balance-card'))
                         .map(function(card){return String(card.textContent||'').trim();})
                 };

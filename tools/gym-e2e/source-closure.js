@@ -61,7 +61,7 @@ const REQUIRED_SOURCE_MARKERS = Object.freeze({
         '存档系统.markDirty()', '"gym_training_response"'
     ],
     'launcher/web/modules/gym/gym-panel.js':[
-        "requestGym('start'", "requestGym('cancel'", "startButton.addEventListener('click'"
+        "requestGym('start'", "requestGym('cancel'", 'onCommit:onStartClick'
     ],
     'launcher/web/modules/panels-lazy-registry.js':[
         "Panels.registerLazy('gym'", 'modules/gym/gym-panel.js'

@@ -20,6 +20,6 @@ node tools/gym-e2e/run-candidate.js --candidate-root '<候选绝对路径>' --se
 node tools/gym-e2e/run-candidate.js --candidate-root '<候选绝对路径>' --seed-slot '<来源槽名>' --allow-read-only-live-seed --expected-build-identity '<64位SHA256>' --expected-payload-closure '<64位SHA256>' --execute-isolated-candidate --allow-clone-training-writes
 ```
 
-完整旅程固定为：开始木人桩金币项目并在完成前切换，核验健身业务字段零变化；重新开始并完成金币永久空攻加成，核验金币、加成、经验、SOL；完成 K 点技能点项目，核验 K 点、技能点、SOL；关闭候选并以新 PID 重启，核验读回。被动观察器检查当前候选进程身份、CDP 端口归属、实际加载 Web 脚本摘要、可信页面点击及 AS2 完成回执。所有截图、哈希链 transcript 与报告写在 `tmp/workbench-live-e2e/gym/<run>/`。成功收尾会保留独立测试槽，并清理其克隆锁和恢复记录；不会回写来源槽。
+完整旅程固定为：开始木人桩金币项目并在完成前选择切换，面板只预备显式确认且健身业务字段零变化；确认切换后核验会话取消与字段零变化；重新开始并完成金币永久空攻加成，核验金币、加成、经验、SOL；完成 K 点技能点项目，核验 K 点、技能点、SOL；关闭候选并以新 PID 重启，核验读回。被动观察器检查当前候选进程身份、CDP 端口归属、实际加载 Web 脚本摘要、可信页面点击及 AS2 完成回执。所有截图、哈希链 transcript 与报告写在 `tmp/workbench-live-e2e/gym/<run>/`。成功收尾会保留独立测试槽，并清理其克隆锁和恢复记录；不会回写来源槽。
 
 任何中断若留下 `tmp/workbench-live-e2e/locks/cf7_agent_gym.clone.lock` 或 `manual-recovery/cf7_agent_gym.json`，不得直接删除或再跑。先确认无 Launcher/Flash 进程、读取 exact 恢复记录及锁摘要，然后按 `clone-save-guard.restoreAbandonedCloneFromRecovery` 的离线恢复合同，把目标还原到记录中的 `targetBefore` 并证明来源槽摘要不变。不要以旧备份覆盖来源槽。

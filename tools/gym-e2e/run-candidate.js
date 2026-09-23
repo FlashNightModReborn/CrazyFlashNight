@@ -401,6 +401,15 @@ async function main(argv) {
         });
         expectSameLedger(before, Ledger.capture(ROOT, Preflight.TARGET_SLOT), 'before_cancel');
         await clickAndProve(writer, input, 'cancelTarget');
+        const armed = await until('switch_armed', 5000, 100, async () => {
+            const state = await input.readState();
+            return state.switchConfirm.visible
+                && state.switchConfirm.text.includes('取消当前训练')
+                && state.progress.status.startsWith('已进行')
+                ? state : null;
+        });
+        expectSameLedger(before, Ledger.capture(ROOT, Preflight.TARGET_SLOT), 'switch_armed');
+        await clickAndProve(writer, input, 'switchConfirm');
         const cancelled = await until('cancel', 10000, 150, async () => {
             const state = await input.readState();
             return state.progress.status === '尚未开始训练'
@@ -411,7 +420,7 @@ async function main(argv) {
         expectSameLedger(before, Ledger.capture(ROOT, Preflight.TARGET_SLOT), 'cancel');
         const close1 = await closeGym(first, input, writer, open1.instanceId);
         report.phases.push({ phase:'cancel_before_finish', openInstance:open1.instanceId,
-            preview, running, cancelled, close:close1, zeroGymLedgerDelta:true });
+            preview, running, switchArmed:armed, cancelled, close:close1, zeroGymLedgerDelta:true });
         persist();
 
         const open2 = await openGym(first, writer, input, open1.instanceId);

@@ -19,6 +19,7 @@
     <div id="panel-backdrop"></div>
     <div id="panel-content"></div>
 </div>
+<div id="panel-tooltip"></div>
 <pre id="harness-result"></pre>
 <script>
 (function() {
@@ -76,6 +77,7 @@
 <script src="modules/lazy-loader.js"></script>
 <script src="modules/panels.js"></script>
 <script src="modules/panel-scale.js"></script>
+<script src="modules/tooltip.js"></script>
 <script src="modules/panels-lazy-registry.js"></script>
 <script>
 (function() {
@@ -246,6 +248,55 @@
         var initialCurrent = document.querySelector('.gym-detail-current');
         check(!!initialCurrent && initialCurrent.textContent.indexOf('历史数值高于上限') >= 0,
             'over-cap legacy value is shown with an explicit status');
+        check(options.length === 3 && options[0].tabIndex === 0
+                && options[1].tabIndex === -1 && options[2].tabIndex === -1,
+            'shared roving focus owns the project list tab stops');
+        var cappedChip = options[0].querySelector('.gym-project-chip');
+        check(!!cappedChip && cappedChip.classList.contains('gym-chip-capped')
+                && cappedChip.textContent.indexOf('转经验') >= 0
+                && options[0].dataset.gymState === 'capped',
+            'at-cap project carries the capped conversion chip');
+        check(!options[1].querySelector('.gym-project-chip') && !options[2].querySelector('.gym-project-chip'),
+            'trainable projects carry no state chip');
+        var overGauge = document.querySelector('.gym-project-detail .gym-gauge');
+        check(!!overGauge && overGauge.dataset.state === 'over'
+                && parseFloat(overGauge.querySelector('.gym-gauge-fill').style.width) === 100
+                && parseFloat(overGauge.querySelector('.gym-gauge-expected').style.width) === 0,
+            'over-cap gauge renders full with no expected segment',
+            overGauge ? JSON.stringify({ state:overGauge.dataset.state,
+                fill:overGauge.querySelector('.gym-gauge-fill').style.width,
+                expected:overGauge.querySelector('.gym-gauge-expected').style.width }) : 'missing');
+        var commitRoot = document.querySelector('.gym-commit-bar');
+        var commitStatus = document.querySelector('.gym-commit-bar .workbench-commit-status');
+        check(!!commitRoot && commitRoot.classList.contains('is-ready')
+                && !!commitStatus && commitStatus.textContent === '金币 60,000 · 10 秒'
+                && commitStatus.getAttribute('data-state') === 'ready',
+            'commit bar shows the selected project price and duration',
+            commitStatus ? commitStatus.textContent : 'missing');
+        var helpButton = document.querySelector('.gym-workbench .workbench-help-btn');
+        check(!!helpButton, 'header exposes the shared rules help action');
+        if (helpButton) {
+            helpButton.click();
+            var helpModal = document.querySelector('.workbench-modal[data-modal-kind="gym-help"]');
+            check(!!helpModal && helpModal.querySelector('.workbench-modal-detail')
+                    .textContent.indexOf('临时会话') >= 0,
+                'help action opens the gym rules modal');
+            var helpClose = helpModal && helpModal.querySelector('.workbench-modal-action');
+            if (helpClose) helpClose.click();
+            check(!document.querySelector('.workbench-modal'), 'help modal closes back to the panel');
+        }
+        options[1].dispatchEvent(new PointerEvent('pointerenter', { bubbles:false, cancelable:true }));
+        var tooltipReady = false;
+        try {
+            await waitFor(function() {
+                var tip = document.getElementById('panel-tooltip');
+                return !!tip && tip.textContent.indexOf('空手攻击力') >= 0
+                    && tip.textContent.indexOf('已练得 12') >= 0;
+            }, 2500);
+            tooltipReady = true;
+        } catch (_) { tooltipReady = false; }
+        check(tooltipReady, 'project row hover shows the dense inspect tooltip');
+        options[1].dispatchEvent(new PointerEvent('pointerleave', { bubbles:false, cancelable:true }));
         var initialMotion = GymPanel.debugState().motion;
         check(!!document.querySelector('.gym-motion-stage .gym-motion-canvas'),
             'mounts the preloaded wood-dummy motion canvas');
@@ -296,6 +347,15 @@
             options[1].click();
             check(options[1].getAttribute('aria-checked') === 'true', 'click selection updates the checked row');
             check(GymPanel.debugState().selectedProjectId === 'dummy.1', 'click selection updates detail state');
+            var trainGauge = document.querySelector('.gym-project-detail .gym-gauge');
+            check(!!trainGauge && !trainGauge.dataset.state
+                    && parseFloat(trainGauge.querySelector('.gym-gauge-fill').style.width) === 2.4
+                    && parseFloat(trainGauge.querySelector('.gym-gauge-expected').style.left) === 2.4
+                    && parseFloat(trainGauge.querySelector('.gym-gauge-expected').style.width) === 1.8,
+                'trainable gauge renders current and expected segments',
+                trainGauge ? JSON.stringify({ fill:trainGauge.querySelector('.gym-gauge-fill').style.width,
+                    left:trainGauge.querySelector('.gym-gauge-expected').style.left,
+                    width:trainGauge.querySelector('.gym-gauge-expected').style.width }) : 'missing');
             options[1].focus();
             options[1].dispatchEvent(new KeyboardEvent('keydown', { key:'ArrowDown', bubbles:true, cancelable:true }));
             check(GymPanel.debugState().selectedProjectId === 'dummy.2', 'arrow keys move selection and focus');
@@ -316,6 +376,10 @@
             'the active session displays elapsed, total, percent and remaining time');
         check(document.querySelector('.gym-progress-amount').textContent.indexOf('本次收益待完成') >= 0,
             'active progress marks expected reward as unsettled');
+        check(document.querySelector('.gym-progress').dataset.phase === 'running'
+                && document.querySelector('.gym-motion-stage').dataset.sessionPhase === 'running'
+                && document.querySelector('.gym-commit-bar').classList.contains('is-blocked'),
+            'running phase paints the progress card, stage frame and blocked commit');
         var sessionToken = GymPanel.debugState().sessionToken;
         window.chrome.webview.dispatch({type:'panel_event',panel:'gym',domain:'gym',event:'progress',
             panelInstanceId:'gym-stale-000',sessionToken:sessionToken,elapsedMs:9000,paused:false});
@@ -325,14 +389,41 @@
         check(GymPanel.debugState().elapsedMs === 3500
                 && document.querySelector('.gym-progress-status').textContent.indexOf('已暂停计时') >= 0,
             'exact Host progress and pause state are rendered');
+        check(!document.querySelector('.gym-stage-pause').hidden,
+            'paused session shows the stage pause overlay');
+        check(document.querySelector('.gym-progress-tick[data-milestone="25"]').classList.contains('gym-tick-flash'),
+            'crossing 25 percent fires the milestone tick flash');
+        var cancelCountBeforeArm = window.__gymPostedMessages.filter(function(message) {
+            return message.domain === 'gym' && message.cmd === 'cancel';
+        }).length;
         options[1].click();
+        check(GymPanel.debugState().switchArmed === true
+                && !document.querySelector('.gym-switch-confirm').hidden
+                && GymPanel.debugState().phase === 'running'
+                && window.__gymPostedMessages.filter(function(message) {
+                    return message.domain === 'gym' && message.cmd === 'cancel';
+                }).length === cancelCountBeforeArm,
+            'switch during running only arms a confirmation, no cancel sent');
+        document.querySelector('.gym-switch-confirm-no').click();
+        check(GymPanel.debugState().switchArmed === false
+                && document.querySelector('.gym-switch-confirm').hidden
+                && GymPanel.debugState().phase === 'running'
+                && GymPanel.debugState().selectedProjectId === 'dummy.0',
+            'dismissing the switch keeps the current training');
+        options[1].click();
+        check(GymPanel.debugState().switchArmed === true, 're-selecting arms the confirmation again');
+        document.querySelector('.gym-switch-confirm-yes').click();
         await waitFor(function() { return GymPanel.debugState().phase === 'preview'; }, 1000);
         check(window.__gymPostedMessages.some(function(message) {
             return message.domain === 'gym' && message.cmd === 'cancel';
-        }), 'switching an unfinished project cancels its session');
+        }), 'confirmed switch cancels its session');
         check(GymPanel.debugState().selectedProjectId === 'dummy.1'
                 && document.querySelector('.gym-progress-status').textContent.indexOf('尚未开始') >= 0,
             'switch resets the progress and moves to the chosen project');
+        check(document.activeElement === options[1],
+            'confirmed switch returns focus to the newly selected row');
+        check(document.querySelector('.gym-stage-pause').hidden,
+            'pause overlay clears once the session is gone');
         startButton.click();
         await waitFor(function() { return GymPanel.debugState().phase === 'running'; }, 1000);
         var secondToken = GymPanel.debugState().sessionToken;
@@ -356,6 +447,21 @@
         check(document.querySelectorAll('.gym-balances .gym-balance-value').length === 2
                 && document.querySelectorAll('.gym-balances .gym-balance-value')[1].textContent === '6,450',
             'settlement refreshes the authoritative K-point balance');
+        var floatGain = document.querySelector('.gym-float-gain');
+        check(!!floatGain && floatGain.classList.contains('gym-float-run')
+                && floatGain.textContent === '+9 空手攻击力',
+            'completion celebration floats the exact stat gain',
+            floatGain ? floatGain.textContent : 'missing');
+        check(!!GymPanel.debugState().motion && GymPanel.debugState().motion.playbackRate === 0.45,
+            'completion slows the training loop for the celebration');
+        check(document.querySelector('.gym-progress').dataset.phase === 'applied',
+            'applied phase repaints the progress card');
+        await waitFor(function() {
+            var motion = GymPanel.debugState().motion;
+            return motion && motion.playbackRate === 1;
+        }, 2500);
+        check(GymPanel.debugState().motion.playbackRate === 1,
+            'celebration restores the normal playback rate');
 
         var closeButton = document.querySelector('.gym-close-button');
         if (closeButton) closeButton.click();
@@ -400,6 +506,42 @@
             });
             check(Panels.getActive() === null, stationCase.label + ' closes by exact instance');
         }
+
+        var brokeData = fixture('gym-broke-001');
+        brokeData.snapshot.balances = { money:1000, kpoint:5 };
+        Panels.open('gym', brokeData);
+        await waitFor(function() {
+            return Panels.getActive() === 'gym' && document.querySelector('.gym-project-option');
+        }, 10000);
+        var brokeOptions = Array.from(document.querySelectorAll('.gym-project-option'));
+        check(brokeOptions.length === 3
+                && brokeOptions[0].dataset.gymState === 'capped'
+                && !!brokeOptions[0].querySelector('.gym-chip-capped')
+                && brokeOptions[1].dataset.gymState === 'unaffordable'
+                && !!brokeOptions[1].querySelector('.gym-chip-unaffordable')
+                && brokeOptions[2].dataset.gymState === 'unaffordable'
+                && !!brokeOptions[2].querySelector('.gym-chip-unaffordable'),
+            'capped state wins the chip, shortfalls carry the warning chip');
+        var brokeCommit = document.querySelector('.gym-commit-bar');
+        var brokeStatus = document.querySelector('.gym-commit-bar .workbench-commit-status');
+        check(!!brokeCommit && brokeCommit.classList.contains('is-blocked')
+                && document.querySelector('.gym-start-button').disabled
+                && !!brokeStatus && brokeStatus.textContent.indexOf('还差') >= 0,
+            'unaffordable selection blocks the commit with the exact gap',
+            brokeStatus ? brokeStatus.textContent : 'missing');
+        var brokeCards = document.querySelectorAll('.gym-balances .gym-balance-card');
+        check(brokeCards.length === 2
+                && brokeCards[0].classList.contains('gym-balance-attention')
+                && !brokeCards[1].classList.contains('gym-balance-attention'),
+            'the short money card calls attention for a money project');
+        brokeOptions[1].click();
+        check(!brokeCards[0].classList.contains('gym-balance-attention')
+                && brokeCards[1].classList.contains('gym-balance-attention'),
+            'selecting a k-point project moves attention to the k-point card');
+        window.chrome.webview.dispatch({
+            type:'panel_cmd', cmd:'close', panel:'gym', panelInstanceId:'gym-broke-001'
+        });
+        check(Panels.getActive() === null, 'unaffordable review closes by exact instance');
 
         var pendingData = fixture('gym-pending-save');
         pendingData.snapshot.pendingSession = {

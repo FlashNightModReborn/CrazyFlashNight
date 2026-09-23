@@ -829,6 +829,7 @@
         var resizeObserver = null;
         var segmentStartedAt = 0;
         var elapsedBeforePause = 0;
+        var playbackRate = 1;
         var currentFrame = -1;
         var renderedFrameCount = 0;
         var lastWidth = 0;
@@ -882,7 +883,21 @@
         }
 
         function currentElapsed(timestamp) {
-            return elapsedBeforePause + Math.max(0, timestamp - segmentStartedAt);
+            return elapsedBeforePause + Math.max(0, timestamp - segmentStartedAt) * playbackRate;
+        }
+
+        function setPlaybackRate(rate) {
+            var next = Number(rate);
+            if (!Number.isFinite(next) || next <= 0) return false;
+            next = Math.min(3, Math.max(0.2, next));
+            if (destroyed) return false;
+            if (frameRequest !== null) {
+                var now = performance.now();
+                elapsedBeforePause = currentElapsed(now);
+                segmentStartedAt = now;
+            }
+            playbackRate = next;
+            return true;
         }
 
         function stopLoop(preserveTime) {
@@ -989,12 +1004,14 @@
 
         return {
             destroy:destroyInstance,
+            setPlaybackRate:setPlaybackRate,
             debugState:function() {
                 return {
                     frameIndex:currentFrame,
                     frameCount:stationPackage.frameCount,
                     frameRate:stationPackage.frameRate,
                     renderedFrameCount:renderedFrameCount,
+                    playbackRate:playbackRate,
                     paused:paused,
                     focused:windowFocused,
                     visible:documentVisible,

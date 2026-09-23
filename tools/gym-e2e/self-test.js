@@ -51,7 +51,7 @@ async function main() {
     });
     test('only fixed gym page targets are available', () => {
         assert.deepStrictEqual(Object.keys(Input.TARGETS),
-            ['close', 'start', 'goldStat', 'cancelTarget', 'kSkill']);
+            ['close', 'start', 'goldStat', 'cancelTarget', 'switchConfirm', 'kSkill']);
         assert.strictEqual(Input.OVERLAY_URL, 'https://overlay.local/overlay.html');
     });
     test('paid runner requires exact candidate pins and explicit clone write scope', () => {
