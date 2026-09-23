@@ -372,6 +372,8 @@ PM19 V3 + 列车 C 的限定启动加载旅程已由维护者收口。2026-09-13
 
 部署提交 `33d4276134d2cc5ecf63781848acdf3268f5c018` 已快进推送 `main`；[事后 Audit 34747462287](https://github.com/FlashNightModReborn/CrazyFlashNight/actions/runs/34747462287) 成功，远端独立重放最终云端证明、核验 33 文件与 2 signer / 2 faultDomain，明确输出 `state=promoted / deploymentChanged=true`。本地 Index strict verifier 同样通过；上一整包保留于 `tmp/runtime-promotions/20260913T081441012Z-f3deff9048b848328a005027b92e11b6/previous`。专项真实游戏复验仍为 pending。
 
+2026-09-24 按 [#42](https://github.com/FlashNightModReborn/CrazyFlashNight/issues/42) 点查结论回填复验去向：9-17 维护者人验（[对白 v2 审阅修复验收单](对白v2审阅修复-人力验收单-2026-09-16.md)）加 11 天正式入口使用、测试员对对话框本身无不良反馈，记限定旅程现场复验事实覆盖；低帧率/入口掉帧残余转 #36（wire v2 M4 真机复验清单），切场景与真实旅程残余转 Epic #19 迁移线复验尾巴，#42 以 not planned 归档。本条目 FIELD_REVALIDATION 尾巴随之收口，仍不宣称对白业务 `standard_entry_verified`。
+
 ## 2026-09-13 上一正式发布：暂存与战备箱共享收纳工作台
 
 暂存、战备箱和仓库共用双栏布局、物品视图、数量控件、转移与注释生命周期。从暂存入口直接进入，堆叠数量可在底栏输入或滑动；修复药剂领取引导、完整注释输出及切源后注释失效。批量选择限定当前页，受阻暂存物品保留，未加入跨页自动领取循环。测试员已确认最终体验；实现和人验范围见[共享收纳专档](暂存物资并入共享收纳工作台-调研与施工方案-2026-09-12.md#109-正式部署与收尾证据)。
