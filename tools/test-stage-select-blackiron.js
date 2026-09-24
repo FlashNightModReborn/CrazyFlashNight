@@ -89,8 +89,8 @@ async function main(){
   await open();await page.locator('[data-stage-id="stage_18_10"] > .stage-select-stage-name').click();await page.waitForFunction(()=>Panels.getActive()===null);
   const jump=await page.evaluate(()=>StageSelectHarnessHost.enterMessages.at(-1));report.diplomacy=jump;assert.equal(jump.stageName,'外交-黑铁会修炼场');assert.equal(jump.entryKind,'map');assert.ok(!jump.difficulty);
   report.checks.push('ordinary and diplomacy use original Host protocol/Chinese difficulty; no demo-state adapter');
-  await open();await page.evaluate(()=>StageSelectPanel._debugApplySnapshot({unlockedStages:['黑铁会总部边缘'],stageDetails:{'黑铁会总堂':{unlocked:false,lockReason:'接收端锁定检查'}}}));
-  await select('stage_18_8');assert.equal(await page.locator('#stage-focus-enter').isVisible(),false);assert.match(await page.locator('#stage-select-inspector-lock').textContent(),/接收端锁定检查/);
+  await open();await page.evaluate(()=>StageSelectPanel._debugApplySnapshot({unlockedStages:{'黑铁会总部边缘':true,'黑铁会总堂':false},stageDetails:{'黑铁会总堂':{unlocked:false,lockReason:'接收端锁定检查'}}}));
+  await page.locator('[data-stage-id="stage_18_8"].stage-select-stage-button').press('Enter');await ready();assert.equal(await page.locator('#stage-focus-enter').isVisible(),false);assert.match(await page.locator('#stage-select-inspector-lock').textContent(),/接收端锁定检查/);
   await page.getByRole('button',{name:'返回总览',exact:true}).click();
   await page.evaluate(()=>StageSelectRenderer.setFrame('基地门口','qa'));await ready();assert.equal(await page.evaluate(()=>StageSelectDiorama.stats().frameLabel),'基地门口');assert.ok((await page.evaluate(()=>StageSelectDiorama.stats().triangles))>150000);
   await page.evaluate(()=>StageSelectRenderer.setFrame('黑铁会总部','qa'));await ready();assert.equal(await page.locator('.stage-select-diorama-canvas').count(),1);
@@ -110,7 +110,10 @@ async function main(){
   report.checks.push('missing HQ model falls back without disabling the eleven entry actions; retry recovers');
   await page.evaluate(()=>StageSelectHarnessHost.close());
   await page.route('**/blackiron-hq/headquarters.glb',async r=>{await new Promise(done=>setTimeout(done,400));await r.continue().catch(()=>{});});
-  await page.evaluate(()=>{StageSelectHarnessHost.open({mode:'runtime',frameLabel:'黑铁会总部'});StageSelectRenderer.setFrame('基地门口','qa');});await ready();await page.waitForTimeout(600);
+  await page.evaluate(()=>StageSelectHarnessHost.open({mode:'runtime',frameLabel:'黑铁会总部'}));
+  // Settle the authoritative mock snapshot before testing a late visual load.
+  await page.waitForFunction(()=>StageSelectPanel._debugGetState().runtimeSnapshot?.currentFrameLabel==='黑铁会总部');
+  await page.evaluate(()=>StageSelectRenderer.setFrame('基地门口','qa'));await ready();await page.waitForTimeout(600);
   assert.equal(await page.evaluate(()=>StageSelectDiorama.stats().frameLabel),'基地门口');assert.equal(await page.locator('.stage-select-diorama-canvas').count(),1);await page.unroute('**/blackiron-hq/headquarters.glb');
   report.checks.push('late HQ load cannot replace the current city scene');
   assert.deepEqual(errors,[]);report.pass=true;

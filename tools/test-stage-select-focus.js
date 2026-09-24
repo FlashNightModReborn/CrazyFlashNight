@@ -78,7 +78,7 @@ async function main() {
         assert.equal(await page.locator('.stage-focus-surface').isVisible(),false);
         await page.locator('.stage-select-diorama-status button').click();await idle();
         report.checks.push('overview camera keeps marker projection aligned; graphics loss during focus exits to retry and recovers');
-        await page.evaluate(()=>{StageSelectRenderer.setFrame('基地车库','qa');});
+        await page.evaluate(()=>{StageSelectRenderer.setFrame('地下2层','qa');});
         const id=await page.locator('.stage-select-stage-button:not(.is-direct-entry)').first().getAttribute('data-stage-id');
         await page.locator('.stage-select-stage-button[data-stage-id="'+id+'"]').click();
         assert.equal(await page.locator('.stage-focus-location').isVisible(),true);

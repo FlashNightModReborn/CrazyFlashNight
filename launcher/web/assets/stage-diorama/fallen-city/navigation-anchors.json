@@ -1,0 +1,70 @@
+[
+  {
+    "id": "nav_10_0",
+    "frameLabel": "基地车库",
+    "label": "返回",
+    "x": 913.5,
+    "y": 297.05,
+    "centerX": 952.8,
+    "centerY": 309.55,
+    "sourceFrameIndex": 10,
+    "libraryItemName": "sprite/Symbol 1025",
+    "targetFrameLabel": "",
+    "actionKind": "flashJumpCurrent",
+    "worldAnchor": null,
+    "placement": "DOM/system navigation; no fake building"
+  },
+  {
+    "id": "nav_11_2",
+    "frameLabel": "基地车库",
+    "label": "基地车库",
+    "x": 906.9,
+    "y": 345.95,
+    "centerX": 946.2,
+    "centerY": 358.45,
+    "sourceFrameIndex": 11,
+    "libraryItemName": "sprite/返回车库按钮",
+    "targetFrameLabel": "基地车库",
+    "actionKind": "flashJumpFrameValue",
+    "worldAnchor": null,
+    "placement": "DOM/system navigation; no fake building"
+  },
+  {
+    "id": "nav_10_3",
+    "frameLabel": "基地车库",
+    "label": "黑铁会总部",
+    "x": 449.45,
+    "y": 217.55,
+    "centerX": 502.5,
+    "centerY": 236.55,
+    "sourceFrameIndex": 10,
+    "libraryItemName": "选关界面UI/Symbol 3308",
+    "targetFrameLabel": "黑铁会总部",
+    "actionKind": "localFrame",
+    "worldAnchor": [
+      -46.8,
+      28,
+      -34.8
+    ],
+    "placement": "world-anchor candidate"
+  },
+  {
+    "id": "nav_10_4",
+    "frameLabel": "基地车库",
+    "label": "试炼场深处",
+    "x": 713.8,
+    "y": 408.45,
+    "centerX": 772.9,
+    "centerY": 439.6,
+    "sourceFrameIndex": 10,
+    "libraryItemName": "试炼场深处按钮",
+    "targetFrameLabel": "试炼场深处",
+    "actionKind": "localFrame",
+    "worldAnchor": [
+      -87.6,
+      19,
+      92.39999999999999
+    ],
+    "placement": "world-anchor candidate"
+  }
+]

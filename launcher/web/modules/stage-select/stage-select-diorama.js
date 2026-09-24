@@ -8,6 +8,7 @@ var StageSelectDiorama = (function() {
         if(StageSelectData.getManifest().testOnly)return null;
         if(frame.frameLabel===StageSelectDioramaData.frameLabel)return StageSelectDioramaData;
         if(typeof StageSelectBlackironData!=='undefined'&&frame.frameLabel===StageSelectBlackironData.frameLabel)return StageSelectBlackironData;
+        if(typeof StageSelectFallenData!=='undefined'&&frame.frameLabel===StageSelectFallenData.frameLabel)return StageSelectFallenData;
         return null;
     }
     function presetKey(){var key=config && config.presetKey || 'cf7.stage-camera.base-gate.v1';return config&&config.presentationViews?key+'.'+presentationId:key;}
@@ -27,6 +28,7 @@ var StageSelectDiorama = (function() {
             var anchor=S._cardLayerEl.querySelector('[data-stage-id="'+node.dataset.stageId+'"]');
             place({id:node.dataset.stageId},node,anchor,parseFloat(node.style.getPropertyValue('--stage-card-height'))||240);
         });
+        if(S._navLayerEl)S._navLayerEl.querySelectorAll('[data-nav-id]').forEach(function(node){placeNav({id:node.dataset.navId},node);});
     }
     function preset(key){return cache&&cache.view.valid(presets[key])?presets[key]:null;}
     function status(message,retry,fallback){
@@ -61,7 +63,7 @@ var StageSelectDiorama = (function() {
     function ensure(){
         if(pending)return pending;
         var token=generation,wanted=config,controller=new AbortController();loadAbort=controller;
-        var url=new URL(config.scene==='blackiron'?'stage-select-blackiron-scene.js':'stage-select-diorama-scene.js',baseUrl).href;
+        var url=new URL(config.scene==='fallen'?'stage-select-fallen-scene.js':config.scene==='blackiron'?'stage-select-blackiron-scene.js':'stage-select-diorama-scene.js',baseUrl).href;
         pending=import(url).then(function(module){
             if(token!==generation)return null;
             return module.createScene(wanted,function(){if(token===generation)contextLost();},function(){if(token===generation)changed();},function(id){
@@ -181,6 +183,11 @@ var StageSelectDiorama = (function() {
         var dx=pin.labelX,dy=pin.labelY,len=Math.hypot(dx,dy),halfW=((label&&label.offsetWidth)||pin.labelWidth||140)/2+3,halfH=((label&&label.offsetHeight)||pin.labelHeight||30)/2+3;
         var trim=Math.min(dx?halfW/Math.abs(dx):Infinity,dy?halfH/Math.abs(dy):Infinity),end=1-trim,start=15/len;
         var pathData=len>0&&end>start?'M '+(dx*start)+' '+(dy*start)+' L '+(dx*end)+' '+(dy*end):'';
+        if(pin.leaderBend){
+            var bx=pin.leaderBend[0],by=pin.leaderBend[1],first=Math.hypot(bx,by),lx=dx-bx,ly=dy-by;
+            var lastTrim=Math.min(lx?halfW/Math.abs(lx):Infinity,ly?halfH/Math.abs(ly):Infinity);
+            pathData='M '+(bx*15/first)+' '+(by*15/first)+' L '+bx+' '+by+' L '+(dx-lx*lastTrim)+' '+(dy-ly*lastTrim);
+        }
         leader.querySelectorAll('path').forEach(function(path){path.setAttribute('d',pathData);});
         if (anchor) {
             // 独立卡片在固定舞台内钳制，不沿用旧 Flash 元件的 133.7px 偏移。
@@ -200,8 +207,14 @@ var StageSelectDiorama = (function() {
             anchor.style.top = Math.max(54, Math.min(576-cardHeight-8, top)) + 'px';
         }
     }
+    function placeNav(nav,node){
+        if(!active||config.scene!=='fallen')return;
+        var pin=S._visualStagePoints&&S._visualStagePoints[nav.id];
+        if(!pin){node.style.left='912px';node.style.top=nav.id==='nav_11_2'?'536px':'488px';return;}
+        node.classList.add('is-diorama-nav');node.style.left=(pin.x+pin.labelX)+'px';node.style.top=(pin.y+pin.labelY)+'px';node.style.width=pin.labelWidth+'px';
+    }
     window.addEventListener('pagehide',function(){active=false;discard();});
-    return {bind:bind,hide:hide,place:place,retry:retry,focus:focus,overview:overview,edit:edit,
+    return {bind:bind,hide:hide,place:place,placeNav:placeNav,retry:retry,focus:focus,overview:overview,edit:edit,
         canFocus:function(){return !!(active&&cache&&!failed);},
         fallbackMap:function(){return active&&failed&&config.fallback?{src:StageSelectCore.resolveAssetUrl(config.fallback),x:0,y:0,w:1024,h:576}:null;},
         orderButtons:function(frame){var c=forFrame(frame),list=(frame.stageButtons||[]).slice();return c&&c.displayOrder?list.sort(function(a,b){return c.displayOrder.indexOf(a.id)-c.displayOrder.indexOf(b.id);}):list;},

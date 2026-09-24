@@ -1,0 +1,13 @@
+<!doctype html><meta charset="utf-8"><title>堕落城 I1 集成检查</title>
+<style>body{background:#20252b;color:#eee;font:14px sans-serif}button{margin:4px;padding:8px}iframe{width:1024px;height:576px;border:0}pre{white-space:pre-wrap}</style>
+<p>使用正式面板代码与模拟 Host；不访问玩家存档。失败注入和统计仅用于此页。</p>
+<button id="lock">模拟压制战锁定</button><button id="stats">读取当前检查</button><button id="loss">模拟图形中断</button><button id="close">关闭面板</button><button id="open">重开堕落城</button>
+<iframe title="选关候选" src="harness.html?viewport=1024x576&frame=基地车库&fixture=allUnlocked&player=1&review=P8-I1"></iframe><pre id="report"></pre>
+<script>
+const frame=document.querySelector('iframe'),report=document.querySelector('#report');
+document.querySelector('#lock').onclick=()=>frame.contentWindow.StageSelectPanel._debugApplySnapshot({unlockedStages:{'压制摇滚公园':false},stageDetails:{'压制摇滚公园':{lockReason:'集成检查：权威锁定'}}});
+document.querySelector('#stats').onclick=()=>{const w=frame.contentWindow;report.textContent=JSON.stringify({graphics:w.StageSelectDiorama.stats(),enterMessages:w.StageSelectHarnessHost.enterMessages,jumpMessages:w.StageSelectHarnessHost.jumpMessages,canvases:w.document.querySelectorAll('.stage-select-diorama-canvas').length},null,2)};
+document.querySelector('#loss').onclick=()=>frame.contentWindow.document.querySelector('canvas')?.dispatchEvent(new Event('webglcontextlost',{cancelable:true}));
+document.querySelector('#close').onclick=()=>frame.contentWindow.StageSelectHarnessHost.close();
+document.querySelector('#open').onclick=()=>frame.contentWindow.StageSelectHarnessHost.open({frameLabel:'基地车库'});
+</script>

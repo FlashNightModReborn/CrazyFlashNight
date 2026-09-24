@@ -135,6 +135,7 @@ window.CF7_PORTRAIT_LEGACY_ROOT='../../../assets/pets/';
 <script src="../stage-select-core.js"></script>
 <script src="../stage-select-diorama-data.js"></script>
 <script src="../stage-select-blackiron-data.js"></script>
+<script src="../stage-select-fallen-data.js"></script>
 <script src="../stage-select-diorama.js"></script>
 <script src="../stage-select-view-model.js"></script>
 <script src="../stage-select-renderer.js"></script>
@@ -313,7 +314,7 @@ window.CF7_PORTRAIT_LEGACY_ROOT='../../../assets/pets/';
             stageDetails[name] = {
                 exists: true,
                 stageType: manifestButton && manifestButton.stageType || '无限过图',
-                detail: 'live detail: ' + name + '&amp;lt;BR&amp;gt;live second line',
+                detail: query.review && manifestButton ? manifestButton.detail : 'live detail: ' + name + '&amp;lt;BR&amp;gt;live second line',
                 materialDetail: 'live material: ' + name,
                 limitations: state.task ? ['DisableCompanion'] : [],   // 新形状：AS2 回原始键名，web 自算 limitDetail
                 limitLevel: '',

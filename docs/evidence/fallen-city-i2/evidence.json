@@ -1,0 +1,42 @@
+{
+  "issue": 122,
+  "reportDate": "2026-09-24",
+  "userReport": [
+    "一打开就有，重开仍在",
+    "只有游戏里有"
+  ],
+  "responseAfterCandidate": "可行，这个地方是不是应该挂一个issue，并且存文档备忘？然后可以把这次施工相关的内容提交推送上去；",
+  "acceptanceScope": "用户对本轮候选认可并授权归档提交；未提供具体宿主/WebView/GPU/驱动身份，不据此补造跨设备验收或确定根因",
+  "hypothesis": "游戏端大网格索引绘制兼容性，尚未确认",
+  "assets": {
+    "city.glb": "d59783a2c63007bbb236955bb0aa2f9d4236b953128d387a182101b47f9ccf81",
+    "selection.glb": "3c6639b949dfad274f7025f1190fec8b120dba8eea1103d45bdb00dec2d65c81"
+  },
+  "screenshots": [
+    {
+      "path": "reported-low-angle.png",
+      "sha256": "8ec863021c4326899a0a409ca97dd5629e7dc982816331245b4e766994fc236c",
+      "bytes": 759713
+    },
+    {
+      "path": "reported-overview.png",
+      "sha256": "1452cd54459c911595ee3484afdc9d59382d310fefd0dd6382bdf66a578eb3bc",
+      "bytes": 1311912
+    }
+  ],
+  "geometryCheck": {
+    "batch": "P4_RENDER_P4_Static_plain",
+    "originalVertices": 272907,
+    "triangles": 172371,
+    "chunks": 5,
+    "vertexLimit": 60000,
+    "comparedRawComponents": 6205356,
+    "triangleOrderAndAttributesEqual": true
+  },
+  "notVerified": [
+    "目标游戏环境根因",
+    "跨GPU复验",
+    "长期稳定性",
+    "正式runtime发布"
+  ]
+}

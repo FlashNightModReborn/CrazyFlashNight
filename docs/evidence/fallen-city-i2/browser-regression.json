@@ -1,0 +1,78 @@
+{
+  "scope": "Production panel and real GLBs with mock Host; no real save/game/WebView2 acceptance",
+  "checks": [
+    "AS01 event/residential partitions; campaign multi-area selection; deep-city and trial focus; one canvas",
+    "bar cutaway restores; diplomacy uses original entry command",
+    "headquarters and 2D trial routing preserve actions and retire fallen canvas",
+    "five close/open cycles have stable resource counts; actual context loss falls back and retry restores"
+  ],
+  "initial": {
+    "active": true,
+    "pending": false,
+    "failed": false,
+    "frameLabel": "基地车库",
+    "state": "ready",
+    "frames": 3,
+    "calls": 55,
+    "triangles": 361010,
+    "loadMs": 1084,
+    "cutaway": false,
+    "indexCompatibility": [
+      {
+        "asset": "city.glb",
+        "partitionedBatches": 1,
+        "inputTriangles": 172371,
+        "outputTriangles": 172371,
+        "outputChunks": 5
+      },
+      {
+        "asset": "selection.glb",
+        "partitionedBatches": 0,
+        "inputTriangles": 0,
+        "outputTriangles": 0,
+        "outputChunks": 0
+      }
+    ],
+    "loadedHashes": {
+      "city.glb": "d59783a2c63007bbb236955bb0aa2f9d4236b953128d387a182101b47f9ccf81",
+      "selection.glb": "3c6639b949dfad274f7025f1190fec8b120dba8eea1103d45bdb00dec2d65c81"
+    },
+    "selectedParts": [],
+    "geometries": 51,
+    "textures": 51,
+    "width": 1024,
+    "height": 576,
+    "moving": false,
+    "editing": false,
+    "focusId": "",
+    "highlighted": ""
+  },
+  "cycles": [
+    {
+      "geometries": 51,
+      "textures": 51,
+      "calls": 55
+    },
+    {
+      "geometries": 51,
+      "textures": 51,
+      "calls": 55
+    },
+    {
+      "geometries": 51,
+      "textures": 51,
+      "calls": 55
+    },
+    {
+      "geometries": 51,
+      "textures": 51,
+      "calls": 55
+    },
+    {
+      "geometries": 51,
+      "textures": 51,
+      "calls": 55
+    }
+  ],
+  "pass": true
+}

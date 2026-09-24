@@ -870,6 +870,7 @@
             node.setAttribute('data-action-kind', nav.actionKind || '');
             node.setAttribute('data-library-item', nav.libraryItemName || '');
             node.textContent = getNavDisplayLabel(nav, visualKind);
+            StageSelectDiorama.placeNav(nav,node);
             node.addEventListener('click', function(e) {
                 e.stopPropagation();
                 if (nav.actionKind === 'localFrame' && nav.targetFrameLabel) {

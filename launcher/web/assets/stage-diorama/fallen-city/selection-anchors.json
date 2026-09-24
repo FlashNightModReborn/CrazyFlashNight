@@ -1,0 +1,703 @@
+[
+  {
+    "id": "stage_10_0",
+    "name": "DEATH MATCH入门赛",
+    "entryKind": "difficulty",
+    "reviewId": "P02",
+    "rawAnchor": [
+      238,
+      783,
+      2
+    ],
+    "worldAnchor": [
+      -62.879999999999995,
+      2,
+      91.92
+    ],
+    "units": [
+      "DM01",
+      "DM04"
+    ],
+    "relations": {
+      "main": [
+        "DM01"
+      ],
+      "transit": [],
+      "service": [
+        "DM04"
+      ],
+      "anchor": [],
+      "adjacent": []
+    },
+    "status": "candidate visual anchor; stable game ID authoritative",
+    "meaning": "UI定位点，不代表全部关卡范围或唯一物理入口"
+  },
+  {
+    "id": "stage_10_1",
+    "name": "DEATH MATCH角斗场",
+    "entryKind": "difficulty",
+    "reviewId": "P03",
+    "rawAnchor": [
+      319,
+      783,
+      2
+    ],
+    "worldAnchor": [
+      -43.44,
+      2,
+      91.92
+    ],
+    "units": [
+      "DM02",
+      "DM04",
+      "DM03"
+    ],
+    "relations": {
+      "main": [
+        "DM02"
+      ],
+      "transit": [],
+      "service": [
+        "DM04",
+        "DM03"
+      ],
+      "anchor": [],
+      "adjacent": []
+    },
+    "status": "candidate visual anchor; stable game ID authoritative",
+    "meaning": "UI定位点，不代表全部关卡范围或唯一物理入口"
+  },
+  {
+    "id": "stage_10_2",
+    "name": "堕落城区",
+    "entryKind": "difficulty",
+    "reviewId": "P06",
+    "rawAnchor": [
+      665,
+      402,
+      14
+    ],
+    "worldAnchor": [
+      39.6,
+      14,
+      0.48
+    ],
+    "units": [
+      "OT01",
+      "OT02"
+    ],
+    "relations": {
+      "main": [
+        "OT01",
+        "OT02"
+      ],
+      "transit": [],
+      "service": [],
+      "anchor": [],
+      "adjacent": []
+    },
+    "status": "candidate visual anchor; stable game ID authoritative",
+    "meaning": "UI定位点，不代表全部关卡范围或唯一物理入口"
+  },
+  {
+    "id": "stage_10_3",
+    "name": "游寇基地",
+    "entryKind": "difficulty",
+    "reviewId": "P15",
+    "rawAnchor": [
+      679,
+      511,
+      14
+    ],
+    "worldAnchor": [
+      42.96,
+      14,
+      26.64
+    ],
+    "units": [
+      "BD01",
+      "BD02",
+      "BD03",
+      "S101"
+    ],
+    "relations": {
+      "main": [
+        "BD01",
+        "BD02",
+        "BD03"
+      ],
+      "transit": [],
+      "service": [
+        "S101"
+      ],
+      "anchor": [],
+      "adjacent": []
+    },
+    "status": "candidate visual anchor; stable game ID authoritative",
+    "meaning": "UI定位点，不代表全部关卡范围或唯一物理入口"
+  },
+  {
+    "id": "stage_10_4",
+    "name": "黑铁会",
+    "entryKind": "difficulty",
+    "reviewId": "P17",
+    "rawAnchor": [
+      525,
+      485,
+      14
+    ],
+    "worldAnchor": [
+      6.0,
+      14,
+      20.4
+    ],
+    "units": [
+      "CT01",
+      "CT02",
+      "CT03",
+      "S201"
+    ],
+    "relations": {
+      "main": [
+        "CT01",
+        "CT02",
+        "CT03",
+        "S201"
+      ],
+      "transit": [],
+      "service": [],
+      "anchor": [],
+      "adjacent": []
+    },
+    "status": "candidate visual anchor; stable game ID authoritative",
+    "meaning": "UI定位点，不代表全部关卡范围或唯一物理入口"
+  },
+  {
+    "id": "stage_10_5",
+    "name": "摇滚公园",
+    "entryKind": "difficulty",
+    "reviewId": "P13",
+    "rawAnchor": [
+      316,
+      590,
+      15.6
+    ],
+    "worldAnchor": [
+      -44.16,
+      15.6,
+      45.6
+    ],
+    "units": [
+      "RK01",
+      "RK03",
+      "RK04",
+      "RE01",
+      "RE02",
+      "AS01"
+    ],
+    "relations": {
+      "main": [
+        "RK01",
+        "RK03",
+        "RK04"
+      ],
+      "transit": [],
+      "service": [],
+      "anchor": [],
+      "adjacent": [
+        "RE01",
+        "RE02",
+        "AS01"
+      ]
+    },
+    "status": "candidate visual anchor; stable game ID authoritative",
+    "meaning": "UI定位点，不代表全部关卡范围或唯一物理入口",
+    "selectionPartitions": {
+      "AS01": [
+        "residential"
+      ]
+    }
+  },
+  {
+    "id": "stage_10_6",
+    "name": "革命军哨所",
+    "entryKind": "difficulty",
+    "reviewId": "P16",
+    "rawAnchor": [
+      922,
+      472,
+      -2
+    ],
+    "worldAnchor": [
+      101.28,
+      -2,
+      17.28
+    ],
+    "units": [
+      "WL01",
+      "WL02",
+      "WL03",
+      "WL04"
+    ],
+    "relations": {
+      "main": [
+        "WL01",
+        "WL02",
+        "WL03",
+        "WL04"
+      ],
+      "transit": [],
+      "service": [],
+      "anchor": [],
+      "adjacent": []
+    },
+    "status": "candidate visual anchor; stable game ID authoritative",
+    "meaning": "UI定位点，不代表全部关卡范围或唯一物理入口"
+  },
+  {
+    "id": "stage_10_7",
+    "name": "堕落城深处",
+    "entryKind": "difficulty",
+    "reviewId": "P07",
+    "rawAnchor": [
+      675,
+      220,
+      14
+    ],
+    "worldAnchor": [
+      42.0,
+      14,
+      -50.19999999999999
+    ],
+    "units": [
+      "DF01",
+      "DF02",
+      "OT01",
+      "HS03",
+      "HS02"
+    ],
+    "relations": {
+      "main": [
+        "DF01",
+        "DF02"
+      ],
+      "transit": [
+        "OT01"
+      ],
+      "service": [],
+      "anchor": [],
+      "adjacent": [
+        "HS03",
+        "HS02"
+      ]
+    },
+    "status": "candidate visual anchor; stable game ID authoritative",
+    "meaning": "UI定位点，不代表全部关卡范围或唯一物理入口"
+  },
+  {
+    "id": "stage_10_8",
+    "name": "A兵团试炼场",
+    "entryKind": "difficulty",
+    "reviewId": "P01",
+    "rawAnchor": [
+      140,
+      700,
+      2
+    ],
+    "worldAnchor": [
+      -86.39999999999999,
+      2,
+      72.0
+    ],
+    "units": [
+      "TR02",
+      "S601",
+      "TR01"
+    ],
+    "relations": {
+      "main": [
+        "TR02"
+      ],
+      "transit": [],
+      "service": [
+        "S601"
+      ],
+      "anchor": [
+        "TR01"
+      ],
+      "adjacent": []
+    },
+    "status": "candidate visual anchor; stable game ID authoritative",
+    "meaning": "UI定位点，不代表全部关卡范围或唯一物理入口"
+  },
+  {
+    "id": "stage_10_9",
+    "name": "压制摇滚公园",
+    "entryKind": "difficulty",
+    "reviewId": "P04",
+    "rawAnchor": [
+      388.75,
+      525.0,
+      14.2
+    ],
+    "worldAnchor": [
+      -26.7,
+      14.2,
+      30.0
+    ],
+    "units": [
+      "AS01",
+      "RK02",
+      "RK03"
+    ],
+    "relations": {
+      "main": [
+        "AS01"
+      ],
+      "transit": [],
+      "service": [],
+      "anchor": [],
+      "adjacent": [
+        "RK02",
+        "RK03"
+      ]
+    },
+    "status": "P8 visual candidate at public backstreet approach; stable stage ID unchanged",
+    "meaning": "园外临时集结街段定位；非舞台核心、非整片居民区",
+    "selectionPartitions": {
+      "AS01": [
+        "assembly"
+      ]
+    }
+  },
+  {
+    "id": "stage_10_10",
+    "name": "摇滚内战",
+    "entryKind": "difficulty",
+    "reviewId": "P14",
+    "rawAnchor": [
+      350,
+      621,
+      14
+    ],
+    "worldAnchor": [
+      -36.0,
+      14,
+      53.04
+    ],
+    "units": [
+      "RK01",
+      "RK03",
+      "RK04",
+      "RK02"
+    ],
+    "relations": {
+      "main": [
+        "RK01",
+        "RK03",
+        "RK04"
+      ],
+      "transit": [],
+      "service": [],
+      "anchor": [],
+      "adjacent": [
+        "RK02"
+      ]
+    },
+    "status": "candidate visual anchor; stable game ID authoritative",
+    "meaning": "UI定位点，不代表全部关卡范围或唯一物理入口"
+  },
+  {
+    "id": "stage_10_11",
+    "name": "外交-摇滚公园",
+    "entryKind": "map",
+    "reviewId": "P09",
+    "rawAnchor": [
+      317,
+      648,
+      14
+    ],
+    "worldAnchor": [
+      -43.92,
+      14,
+      59.519999999999996
+    ],
+    "units": [
+      "RK01",
+      "RK02",
+      "RK03",
+      "RK04"
+    ],
+    "relations": {
+      "main": [
+        "RK01",
+        "RK02",
+        "RK03",
+        "RK04"
+      ],
+      "transit": [],
+      "service": [],
+      "anchor": [],
+      "adjacent": []
+    },
+    "status": "candidate visual anchor; stable game ID authoritative",
+    "meaning": "UI定位点，不代表全部关卡范围或唯一物理入口"
+  },
+  {
+    "id": "stage_10_12",
+    "name": "外交-堕落城酒吧",
+    "entryKind": "map",
+    "reviewId": "P08",
+    "rawAnchor": [
+      545,
+      390,
+      14
+    ],
+    "worldAnchor": [
+      10.799999999999999,
+      14,
+      -2.4
+    ],
+    "units": [
+      "BA01",
+      "BA02"
+    ],
+    "relations": {
+      "main": [
+        "BA01",
+        "BA02"
+      ],
+      "transit": [],
+      "service": [],
+      "anchor": [],
+      "adjacent": []
+    },
+    "status": "candidate visual anchor; stable game ID authoritative",
+    "meaning": "UI定位点，不代表全部关卡范围或唯一物理入口"
+  },
+  {
+    "id": "stage_10_13",
+    "name": "外交-联合大学",
+    "entryKind": "map",
+    "reviewId": "P10",
+    "rawAnchor": [
+      335,
+      420,
+      14
+    ],
+    "worldAnchor": [
+      -39.6,
+      14,
+      4.8
+    ],
+    "units": [
+      "SC01",
+      "SC02",
+      "SC03",
+      "SC04"
+    ],
+    "relations": {
+      "main": [
+        "SC01",
+        "SC02",
+        "SC03",
+        "SC04"
+      ],
+      "transit": [],
+      "service": [],
+      "anchor": [],
+      "adjacent": []
+    },
+    "status": "candidate visual anchor; stable game ID authoritative",
+    "meaning": "UI定位点，不代表全部关卡范围或唯一物理入口"
+  },
+  {
+    "id": "stage_10_14",
+    "name": "大学城周边",
+    "entryKind": "difficulty",
+    "reviewId": "P12",
+    "rawAnchor": [
+      392,
+      420,
+      14
+    ],
+    "worldAnchor": [
+      -25.919999999999998,
+      14,
+      4.8
+    ],
+    "units": [
+      "SF01",
+      "SF02",
+      "SF03",
+      "S301"
+    ],
+    "relations": {
+      "main": [
+        "SF01",
+        "SF02",
+        "SF03",
+        "S301"
+      ],
+      "transit": [],
+      "service": [],
+      "anchor": [],
+      "adjacent": []
+    },
+    "status": "candidate visual anchor; stable game ID authoritative",
+    "meaning": "UI定位点，不代表全部关卡范围或唯一物理入口"
+  },
+  {
+    "id": "stage_10_15",
+    "name": "堕落城下水道入口",
+    "entryKind": "difficulty",
+    "reviewId": "P05",
+    "rawAnchor": [
+      390,
+      309,
+      8
+    ],
+    "worldAnchor": [
+      -26.4,
+      8,
+      -21.84
+    ],
+    "units": [
+      "SW01",
+      "SW02",
+      "SW03"
+    ],
+    "relations": {
+      "main": [],
+      "transit": [],
+      "service": [
+        "SW02",
+        "SW03"
+      ],
+      "anchor": [
+        "SW01"
+      ],
+      "adjacent": []
+    },
+    "status": "candidate visual anchor; stable game ID authoritative",
+    "meaning": "UI定位点，不代表全部关卡范围或唯一物理入口"
+  },
+  {
+    "id": "stage_10_16",
+    "name": "外交-堕落城商业街",
+    "entryKind": "map",
+    "reviewId": "P11",
+    "rawAnchor": [
+      525,
+      299,
+      14
+    ],
+    "worldAnchor": [
+      6.0,
+      14,
+      -24.24
+    ],
+    "units": [
+      "MK01",
+      "MK02",
+      "MK03",
+      "MK04"
+    ],
+    "relations": {
+      "main": [
+        "MK01",
+        "MK02",
+        "MK03",
+        "MK04"
+      ],
+      "transit": [],
+      "service": [],
+      "anchor": [],
+      "adjacent": []
+    },
+    "status": "candidate visual anchor; stable game ID authoritative",
+    "meaning": "UI定位点，不代表全部关卡范围或唯一物理入口"
+  },
+  {
+    "id": "stage_10_17",
+    "name": "堕落城保卫战",
+    "entryKind": "difficulty",
+    "reviewId": "P18",
+    "rawAnchor": [
+      559,
+      330,
+      14
+    ],
+    "worldAnchor": [
+      14.16,
+      14,
+      -16.8
+    ],
+    "units": [
+      "MK01",
+      "MK02",
+      "MK03",
+      "MK04",
+      "BA01",
+      "BA02",
+      "CT01",
+      "CT02",
+      "RK01",
+      "RK03",
+      "RK04"
+    ],
+    "relations": {
+      "main": [
+        "MK01",
+        "MK02",
+        "MK03",
+        "MK04",
+        "BA01",
+        "BA02",
+        "CT01",
+        "CT02",
+        "RK01",
+        "RK03",
+        "RK04"
+      ],
+      "transit": [],
+      "service": [],
+      "anchor": [],
+      "adjacent": []
+    },
+    "status": "candidate visual anchor; stable game ID authoritative",
+    "meaning": "UI定位点，不代表全部关卡范围或唯一物理入口"
+  },
+  {
+    "id": "stage_10_18",
+    "name": "据点M",
+    "entryKind": "difficulty",
+    "reviewId": "P19",
+    "rawAnchor": [
+      685,
+      403,
+      14
+    ],
+    "worldAnchor": [
+      44.4,
+      14,
+      0.72
+    ],
+    "units": [
+      "OT03",
+      "OT04"
+    ],
+    "relations": {
+      "main": [
+        "OT03",
+        "OT04"
+      ],
+      "transit": [],
+      "service": [],
+      "anchor": [],
+      "adjacent": []
+    },
+    "status": "candidate visual anchor; stable game ID authoritative",
+    "meaning": "UI定位点，不代表全部关卡范围或唯一物理入口"
+  }
+]

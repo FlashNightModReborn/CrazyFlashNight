@@ -1,0 +1,74 @@
+{
+  "schema": 1,
+  "revision": "P8-H1-I1",
+  "sourceZipSha256": "5ecd85d19cc5610be63cd1baae2adf94cde6cc0a6713e1118aea21a6abfce01e",
+  "source": "堕落城-P8-H1-完整工程与经验-20260924.zip",
+  "changes": "Frozen GLBs preserved; JSON line endings canonical LF; shared Three r180 and postprocessing; game label layout derived. Editable blend remains in source archive.",
+  "files": [
+    {
+      "path": "launcher/web/assets/stage-diorama/fallen-city/city.glb",
+      "bytes": 27887228,
+      "sha256": "d59783a2c63007bbb236955bb0aa2f9d4236b953128d387a182101b47f9ccf81"
+    },
+    {
+      "path": "launcher/web/assets/stage-diorama/fallen-city/selection.glb",
+      "bytes": 5668840,
+      "sha256": "3c6639b949dfad274f7025f1190fec8b120dba8eea1103d45bdb00dec2d65c81"
+    },
+    {
+      "path": "launcher/web/assets/stage-diorama/fallen-city/fallback.jpg",
+      "bytes": 101336,
+      "sha256": "6fdb18ec99047916291915c201c44d03eb15967657e16192ac7e5cfbd09098ff"
+    },
+    {
+      "path": "launcher/web/assets/stage-diorama/fallen-city/lighting.json",
+      "bytes": 102,
+      "sha256": "4416b317cdc183a5d16d2e04dc463f18ff42a075ea4ff8aaea16dede94229fd9"
+    },
+    {
+      "path": "launcher/web/assets/stage-diorama/fallen-city/source-map.json",
+      "bytes": 1957926,
+      "sha256": "f8fdc1f14aee8c5c6b898eb13cfe9c4d9b35e8790e7a063fc8ab27e05202eab0"
+    },
+    {
+      "path": "launcher/web/assets/stage-diorama/fallen-city/changes.json",
+      "bytes": 113610,
+      "sha256": "11e6d6e3e03891e3abc3d4cadbaad8ab44f433b91cf8a576e6076beb23aea0e8"
+    },
+    {
+      "path": "launcher/web/assets/stage-diorama/fallen-city/building-units.json",
+      "bytes": 24017,
+      "sha256": "569b2c67e6d0f9eae06f0b33ce179e1f111bd8cb7d4728248f0bc11be07ef195"
+    },
+    {
+      "path": "launcher/web/assets/stage-diorama/fallen-city/activity-scopes.json",
+      "bytes": 57795,
+      "sha256": "567c3564b8df5046aa157c9b4d1ae51abb05165c6852713c93cc82599aa8cf7e"
+    },
+    {
+      "path": "launcher/web/assets/stage-diorama/fallen-city/selection-anchors.json",
+      "bytes": 12876,
+      "sha256": "535ce5f3b8aa91e4f5f03f4683080e5c658a395d80a745250c242c7baa2eadca"
+    },
+    {
+      "path": "launcher/web/assets/stage-diorama/fallen-city/navigation-anchors.json",
+      "bytes": 1687,
+      "sha256": "6a0eb163a16c764bb4a93f4f0b325a9b1f5d0ef6109233ebc293a5661a1bb3f0"
+    },
+    {
+      "path": "launcher/web/assets/stage-diorama/fallen-city/game-frame.snapshot.json",
+      "bytes": 21431,
+      "sha256": "09b63d92d34f110fe419c26b31094e7240f38cb4e640e8aa920d7855e91fe9d0"
+    },
+    {
+      "path": "launcher/web/assets/stage-diorama/fallen-city/p8-route-plan.json",
+      "bytes": 15090,
+      "sha256": "b6b2a5bc7ae69a269a8c23fa3d32a7c1fe1493e94df5db8c5fc3e3912fd947da"
+    },
+    {
+      "path": "launcher/web/modules/stage-select/stage-select-fallen-data.js",
+      "bytes": 93654,
+      "sha256": "952e475b6b96ea6809ff8c09ac0e9fa4966788590e2362beaaf4eb5f422e033f"
+    }
+  ]
+}

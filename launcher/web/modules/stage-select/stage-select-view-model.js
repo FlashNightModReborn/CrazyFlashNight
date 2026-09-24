@@ -236,7 +236,9 @@ var StageSelectViewModel = (function() {
     // 打磨批二轮：选中过滤之外另有 DOM 级保险——锚点镜像 .is-selected + CSS display:none
     // （renderer.applySelectionClasses / stage-select.css ⑨），事件乱序残留 is-card-open 也画不出卡。
     function computeOpenCardId() {
-        var id = S._cardHoverStageId || S._hoverStageId || S._focusStageId || '';
+        // Mouse return restores the roving focus target, not a persistent card over nearby 3D labels.
+        var focusCard = !S._visualStagePoints || S._lastInputKeyboard ? S._focusStageId : '';
+        var id = S._cardHoverStageId || S._hoverStageId || focusCard || '';
         if (!id || id === S._selectedStageId) return '';
         var button = findStageButtonById(id);
         if (!button || isDirectEntry(button)) return '';
