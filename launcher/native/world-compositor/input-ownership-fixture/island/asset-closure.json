@@ -1,0 +1,39 @@
+{
+  "kind": "C1-I passive asset assembly; not runtime acceptance",
+  "sources": [
+    {
+      "path": "flashswf/levels/基地场景合集/LIBRARY/shape/Symbol 1137.xml",
+      "sha256": "6fe985fedbb880d8eff601bb24e2fb985ad8b18b79b948e35adddddfb43d6a76"
+    },
+    {
+      "path": "flashswf/levels/基地场景合集/LIBRARY/sprite/Symbol 2952.xml",
+      "sha256": "b41f92acb07bcfb16353e25d2a53d9826f23c941b1194f1731bda532c32fee5e"
+    },
+    {
+      "path": "flashswf/levels/基地场景合集/LIBRARY/sprite/主角/男变装-基本脸型.xml",
+      "sha256": "28b0014732c4f86fdb3fd718504bdba2c2316cc2a5638fcec7a1f81b793e1e5c"
+    },
+    {
+      "path": "flashswf/levels/基地场景合集/LIBRARY/sprite/主角/男变装-裸体身体.xml",
+      "sha256": "2c36001133fdd34e258b0eea34befbe2e141b2d62acbc3d79899aa2eeedc68f2"
+    }
+  ],
+  "symbols": {
+    "shape/Symbol 1137": "C1/0",
+    "sprite/Symbol 2952": "C1/1",
+    "sprite/主角/男变装-基本脸型": "C1/2",
+    "sprite/主角/男变装-裸体身体": "C1/3"
+  },
+  "allowedAssetActions": [
+    "stop();"
+  ],
+  "outputs": {
+    "C1Island.xfl": "29ac2e403620428ee4130686b456aefb0cc6d45e3be6e9c3191af906c1301f38",
+    "DOMDocument.xml": "23eb25825ef4c5d4b0812ff7b76b3563ce6165d9e1d2323a3abc81c6f4a4d60e",
+    "LIBRARY/C1/0.xml": "b7d9074c7540d77a376282e7eddcb66f38524646b24bf10ab2f601eb186bd342",
+    "LIBRARY/C1/1.xml": "7d5cce647c1b59dc565805c079a119112a3f05e0af9c01c98aa0b1bbde2d8793",
+    "LIBRARY/C1/2.xml": "6e0da4e943342bd05ab08bfbf196fb900fe8f71bdc3c43bdff1615af7805455a",
+    "LIBRARY/C1/3.xml": "09b7863678b7f6f89c1a71938cd7404035fcd72782213d6309ae6df076cf8b7e",
+    "PublishSettings.xml": "5b7f9df8fc54484a215f084a0d15f20686e74d3f36bd83150d57fea48f18dea7"
+  }
+}

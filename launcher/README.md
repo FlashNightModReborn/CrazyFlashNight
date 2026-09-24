@@ -150,6 +150,12 @@ Agent Runtime 的 wire、受信 runner、credential bootstrap、30 秒预算和 
 世界光照由 `src/Guardian/WorldCompositor/`、`src/Tasks/WorldLightingTask.cs` 和 `native/world-compositor/` 接管，配套构建默认启用；AS2 视觉状态约 2 Hz 投影，玩法权威不迁移。`RenderSchedule` / `PerfDecisionEngine.Render` 统一调度实际 Flash 视口、quality 与 softU，x64 输入桥处理缩放后的鼠标事件。
 启动命令、预设、配置与人验边界见 [世界光照捕获合成](perf/flash-compositor/README.md)；原生模块由正式 producer 独立构建，部署事实以 runtime manifest/consensus 为准。
 
+统一输入候选的共享宿主位于 [src/Guardian/UnifiedHost](src/Guardian/UnifiedHost/)，统一使用 `CompositionSceneHost`、Raw Input 账本与 handoff 协调器。
+C1 工程保留薄启动适配；Core 的显式 `--unified-input-candidate c1` 分支位于现有 runtime 校验之后，仅接受已验证隔离候选，并在构造旧 Guardian／Overlay／InputShield 之前独占返回。
+诊断注入默认关闭。真实基地 B1 profile 尚未开放；源码接入不能代替该场景的人验，进度见 [B1 检查点](../docs/reports/统一输入-B1共享底座与冷装配检查点-2026-09-24.md)。
+
+工作树基线 `e210db872d` 的正常游戏试点仅将帮助面板分流到 `CompositionHelpSurface`；由 `PanelHostController.CompositionHelp.cs` 复用暂停、实例与几何合同。帮助合成已经维护者人验通过并授权推广为正式默认；根目录 `本地开发启动.cmd` 继续作为唯一开发入口，不再需要候选开关或专项转发 CMD。其他面板和世界输入尚未切换，验收及回退见[真实游戏帮助面板试点](../docs/reports/统一输入-真实游戏帮助面板试点-2026-09-24.md)。
+
 ## 构建、候选与发布
 
 **最后核对代码基线**：commit `dff0c4390b5788151f75954cde397d54fba54257`（2026-08-31）；2026-09-01 vNext 施工仍在未提交工作树。

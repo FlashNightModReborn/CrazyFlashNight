@@ -7,6 +7,22 @@ using Newtonsoft.Json.Linq;
 using Xunit;
 namespace CF7Launcher.Tests.Guardian {
     public class WorldCompositorTests {
+        [Fact] public void CaptureFrameRejectsUnknownExtentRatherThanGuessingAnOrigin()
+        {
+            var visible=new Rectangle(0,0,1920,1020);
+            var outer=new Rectangle(-9,-9,1938,1038);
+            Assert.False(WorldCompositorController.TryResolveCaptureFrame(visible,outer,new Size(1922,1030),out _));
+            Assert.False(WorldCompositorController.TryResolveCaptureFrame(visible,outer,new Size(1602,939),out _));
+            Assert.False(WorldCompositorController.TryResolveCaptureFrame(visible,outer,Size.Empty,out _));
+        }
+        [Fact] public void NormalAndBorderlessCaptureFramesRetainTheirMeasuredOrigin()
+        {
+            var frame=new Rectangle(139,86,1602,939);var window=new Rectangle(131,86,1618,947);
+            Assert.True(WorldCompositorController.TryResolveCaptureFrame(frame,window,frame.Size,out var resolved));
+            Assert.Equal(frame,resolved);
+            Assert.True(WorldCompositorController.TryResolveCaptureFrame(frame,window,window.Size,out resolved));
+            Assert.Equal(window,resolved);
+        }
         [Fact] public void CropRejectsOutsideAndSupportsNegativeMonitorOrigin() {
             var root=new Rectangle(-1500,100,1100,750);
             Assert.Equal(new Rectangle(8,40,1084,610),WorldCompositorController.CalculateCrop(new Rectangle(-1492,140,1084,610),root));

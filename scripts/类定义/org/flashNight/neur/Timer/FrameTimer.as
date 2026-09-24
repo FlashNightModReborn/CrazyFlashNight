@@ -17,6 +17,10 @@ class org.flashNight.neur.Timer.FrameTimer {
      */
     private function FrameTimer() {
         this._tasks = new Array();
+        if (org.flashNight.arki.input.IsolatedInputPolicy.forbidsLegacyDrivers()) {
+            this.addTask = org.flashNight.arki.input.IsolatedInputPolicy.rejectLegacyTask;
+            return;
+        }
         var insName:String = "__FRAME_TIMER_INSTANCE__";
         // 直接在_root创建控制影片剪辑
         this._clip = _root.createEmptyMovieClip(

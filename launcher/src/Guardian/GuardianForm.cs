@@ -98,15 +98,16 @@ namespace CF7Launcher.Guardian
         // 应用激活状态的权威源：WM_ACTIVATEAPP/WM_SIZE 喂入，KeyboardHook 与
         // PerfDecisionEngine 据此判定前台/最小化，取代散落的 GetForegroundWindow() 轮询。
         private readonly AppActivationState _activationState = new AppActivationState();
-        // 前台看门狗：检测"焦点真空"并自动回收 Flash 前台（详见 SetupForegroundWatchdog）。
+        // 前台看门狗：观测"焦点真空"，并在恢复资格仍有效时回收 Flash 前台
+        // （资格语义与"执行前复核"详见 SetupForegroundWatchdog / ForegroundVacuumWatchdogPolicy）。
         private System.Windows.Forms.Timer _foregroundWatchdog;
-        private int _lastWatchdogActionTick;
         private volatile int _lastWatchdogTickTick;
         private long _guardianHwndForProbe;
         private UiFreezeProbe _uiFreezeProbe;
-        // 焦点真空连续命中的 tick 计数：要求 ≥2 次（≈800ms）才动作，规避用户焦点
-        // 交接瞬间穿过 GetForegroundWindow()==NULL 的竞态（详见 OnForegroundWatchdogTick）。
-        private int _vacuumStreak;
+        // A0.2：真空连续命中计数、恢复资格与输出节流收敛进纯状态机（可单测）；
+        // 资格授予/撤销依赖真实前台归属与 WM_ACTIVATEAPP，不由 NULL 持续时间创造。
+        private readonly ForegroundVacuumWatchdogPolicy _vacuumWatchdogPolicy =
+            new ForegroundVacuumWatchdogPolicy();
         // 工作站锁定 / 安全桌面 / 快速用户切换：此期间默认桌面侧前台恒为 NULL，看门狗须停。
         private volatile bool _sessionLocked;
         // [Activation] lost 日志时间戳，gained 时输出 gapMs 用于区分 toast 抢焦 vs 用户切走。
@@ -609,6 +610,8 @@ namespace CF7Launcher.Guardian
                         ? unchecked(nowTick - _lastDeactivateLogTick) : -1;
                     LogManager.Log("[Activation] gained gapMs=" + gapMs);
                     _lastDeactivateLogTick = 0;
+                    // A0.2：合法激活成立 = 仍有效的用户返回，重建看门狗恢复资格基线。
+                    _vacuumWatchdogPolicy.OnSessionActivated();
                 }
                 else
                 {
@@ -616,6 +619,9 @@ namespace CF7Launcher.Guardian
                         ? _windowManager.DescribeForeground() : "(no wm)";
                     LogManager.Log("[Activation] lost fg=" + fgDesc);
                     _lastDeactivateLogTick = nowTick;
+                    // A0.2 返修：失活即"当前这次用户返回"已结束，撤销看门狗恢复资格；
+                    // 历史激活不构成无限期夺焦许可。
+                    _vacuumWatchdogPolicy.OnSessionDeactivated();
                 }
                 _activationState.OnActivateApp(active);
                 if (active && _webOverlay != null)
@@ -667,18 +673,20 @@ namespace CF7Launcher.Guardian
         }
 
         // ============================================================
-        // 前台看门狗：业界标准的"兜底"层。
+        // 前台看门狗：观测 + 受限兜底。
         //
         // 后台程序（QQ/Telegram 的通知窗）抢走系统前台后，有时不会把前台归还给游戏
         // 窗口，留下"焦点真空"——GetForegroundWindow() 返回 NULL，没有任何窗口持有
         // 系统前台。此状态下：
         //   • KeyboardHook 的前台判定落空 → 快捷键失灵（玩家反馈"触发不了 UI"）；
         //   • Flash SA 因非前台自行降帧 → 帧数大降。
-        // 玩家原本的解法是"点窗口外面再点回来"手动制造一次激活。本看门狗把这个动作
-        // 自动化：检测到焦点真空就调 RestoreFlashInputFocus 把前台拉回 Flash。
         //
-        // 【保守】只在真空（fg==NULL）时动作——真空绝不会是用户的主动选择。若前台是
-        // 某个真实的其他程序（用户自己切过去的），一律不抢，避免与用户对抗。
+        // A0.2 收窄：真空本身不是用户意图——"连续 NULL"只证明没人持有前台，不证明
+        // 用户允许游戏夺回。恢复只在资格仍有效时执行：本会话最近一次合法激活
+        // （用户返回 / 会话内交接成立）之后没有观察到真实外部前台持有；判定、
+        // 连续确认与输出节流收敛在 ForegroundVacuumWatchdogPolicy（纯状态机，
+        // 单测覆盖）。无资格时仅记观察日志、零恢复调用。
+        // 前台属于真实外部窗口（用户自己切过去的）仍一律不抢。
         // ============================================================
 
         private void SetupForegroundWatchdog()
@@ -723,33 +731,45 @@ namespace CF7Launcher.Guardian
                 if (this.IsDisposed || !this.IsHandleCreated) return;
                 // 锁屏 / 安全桌面 / 快速用户切换期间，默认桌面侧前台恒为 NULL，看门狗须停
                 // ——否则整夜锁屏会刷上千条无效 [FgWatchdog] / [FocusRestore] 日志。
-                if (_sessionLocked) { _vacuumStreak = 0; return; }
+                if (_sessionLocked) { _vacuumWatchdogPolicy.OnSuppressedTick(); return; }
                 // 仅 Ready 态介入：bootstrap 期 Flash 未嵌入，谈不上前台回收。
-                if (!IsReadyForHotkey()) { _vacuumStreak = 0; return; }
+                if (!IsReadyForHotkey()) { _vacuumWatchdogPolicy.OnSuppressedTick(); return; }
                 // 最小化是用户的主动选择，不打扰。
-                if (_activationState.IsMinimized) { _vacuumStreak = 0; return; }
+                if (_activationState.IsMinimized) { _vacuumWatchdogPolicy.OnSuppressedTick(); return; }
                 // 面板打开时前台合法地属于 WebOverlay（同进程），不在此处理。
-                if (_webOverlay != null && _webOverlay.IsPanelMode) { _vacuumStreak = 0; return; }
-                if (_windowManager == null) { _vacuumStreak = 0; return; }
+                if (_webOverlay != null && _webOverlay.IsPanelMode) { _vacuumWatchdogPolicy.OnSuppressedTick(); return; }
+                if (_windowManager == null) { _vacuumWatchdogPolicy.OnSuppressedTick(); return; }
 
-                // 焦点真空须【连续】命中：GetForegroundWindow()==NULL 在正常的前台交接
-                // 过程中会瞬时出现（MSDN：a window is losing activation 时即为 NULL），
-                // 单帧采样会与用户主动切换竞态——误把交接瞬间当真空，把前台抢回 Flash。
-                // 要求连续 ≥2 次 tick（≈800ms）确认是【持续】真空，才视作"后台程序
-                // 抢焦未归还"，再动作。
-                if (!_windowManager.IsForegroundVacuum()) { _vacuumStreak = 0; return; }
-                _vacuumStreak++;
-                if (_vacuumStreak < 2) return;
+                // 单次前台采样同时承担真空检测与资格跟踪：NULL=真空（中性证据）、
+                // Session=本会话持有真实前台（重建资格）、External=真实外部窗口
+                // （用户去了别处，撤销资格）。连续命中、节流与"执行前复核"的资格
+                // 判定都在策略对象内以最新状态完成——NULL 持续时间本身不构成资格。
+                SessionForegroundOwnership foreground =
+                    _windowManager.GetForegroundOwnership();
+                ForegroundVacuumWatchdogPolicy.Decision decision =
+                    _vacuumWatchdogPolicy.OnForegroundTick(
+                        foreground, Environment.TickCount);
 
-                // 节流：真空若持续且回收失败，避免每 400ms 刷一条 [FocusRestore] 日志。
-                int now = Environment.TickCount;
-                if (_lastWatchdogActionTick != 0
-                    && unchecked(now - _lastWatchdogActionTick) < 2000)
-                    return;
-                _lastWatchdogActionTick = now;
-
-                LogManager.Log("[FgWatchdog] foreground vacuum detected, reclaiming Flash foreground");
-                _windowManager.RestoreFlashInputFocus("fg_watchdog:vacuum");
+                if (decision == ForegroundVacuumWatchdogPolicy.Decision.Restore)
+                {
+                    // 执行前复核：策略决策与真正夺焦之间前台可能已变（外部窗口先拿到
+                    // 前台），以最新采样为准；外部到达即放弃本次恢复（R1 RCE-3）。
+                    if (!_vacuumWatchdogPolicy.RecheckEligibility(
+                            _windowManager.GetForegroundOwnership()))
+                    {
+                        LogManager.Log("[FgWatchdog] restore skipped: eligibility lost before execution");
+                        return;
+                    }
+                    LogManager.Log("[FgWatchdog] foreground vacuum detected, reclaiming Flash foreground"
+                        + " claim=" + _vacuumWatchdogPolicy.LastClaimSource);
+                    _windowManager.RestoreFlashInputFocus("fg_watchdog:vacuum",
+                        ()=>_vacuumWatchdogPolicy.RecheckEligibility(_windowManager.GetForegroundOwnership()));
+                }
+                else if (decision == ForegroundVacuumWatchdogPolicy.Decision.Observe)
+                {
+                    LogManager.Log("[FgWatchdog] foreground vacuum observed, restore ineligible"
+                        + " (no live user-return/session claim) — observe only");
+                }
             }
             catch (Exception ex)
             {
@@ -975,10 +995,24 @@ namespace CF7Launcher.Guardian
 
         private void RefreshRuntimeViewport(string reason)
         {
+            if(IsDisposed || Disposing) return;
             if (_windowManager != null)
                 _windowManager.ResizeFlashToPanel();
             if (_webOverlay != null)
                 _webOverlay.RequestLayoutSync(reason);
+            // The WM_SIZE callback can precede final WinForms/non-client layout.
+            // Native owned surfaces need the same deferred/settled remeasure as
+            // WebOverlay; no focus or visibility is granted by this operation.
+            int refreshed=SyncNativeOwnedSurfaces(this);
+            if(FocusTrace.Enabled) LogManager.Log("event=native_viewport_sync reason="+reason+" client="+ClientRectangle+" anchor="+_flashPanel.RectangleToScreen(_flashPanel.ClientRectangle)+" surfaces="+refreshed);
+        }
+        internal static int SyncNativeOwnedSurfaces(Form owner)
+        {
+            if(owner.IsDisposed || owner.Disposing)return 0;
+            int refreshed=0;
+            foreach(Form owned in owner.OwnedForms)
+                if(owned is OverlayBase overlay && !overlay.IsDisposed) {overlay.RequestPositionSync();refreshed++;}
+            return refreshed;
         }
 
         private static Size CalculateInitialBootstrapClientSize()

@@ -1,4 +1,4 @@
-[CmdletBinding()]
+﻿[CmdletBinding()]
 param(
     [string]$ProjectRoot
 )
@@ -107,7 +107,7 @@ Assert-Cf7DevContains $cmdSource '%SystemRoot%\System32\WindowsPowerShell\v1.0\p
 Assert-Cf7DevContains $cmdSource 'set "PSModulePath=' `
     'root CMD must isolate inherited PowerShell module paths'
 foreach ($retiredEntry in @('地图撤退验收启动.cmd', '返回结算重试验收启动.cmd',
-        '地图工作台测试启动.cmd', '素材工作台测试启动.cmd', 'tools/asset-workbench/start-test.ps1')) {
+        '地图工作台测试启动.cmd', '素材工作台测试启动.cmd', '统一合成实机验收.cmd', 'C1统一输入验收.bat', 'tools/asset-workbench/start-test.ps1')) {
     Assert-Cf7DevEntry -Condition (-not (Test-Path -LiteralPath (Join-Path $ProjectRoot $retiredEntry))) `
         -Message "Feature-specific development forwarding entry must stay retired: $retiredEntry"
 }
@@ -134,7 +134,13 @@ try {
         -Message 'atomic replacement must preserve the prior pointer in its temporary backup'
 } finally {
     if (Test-Path -LiteralPath $replaceFixtureRoot -PathType Container) {
-        Remove-Item -LiteralPath $replaceFixtureRoot -Recurse -Force
+        $resolvedReplaceFixture = [IO.Path]::GetFullPath($replaceFixtureRoot)
+        $expectedReplaceParent = [IO.Path]::GetFullPath((Join-Path $ProjectRoot 'tmp')).TrimEnd('\')
+        if (-not [IO.Path]::GetDirectoryName($resolvedReplaceFixture).Equals($expectedReplaceParent, [StringComparison]::OrdinalIgnoreCase) -or
+                -not [IO.Path]::GetFileName($resolvedReplaceFixture).StartsWith('runtime-dev-replace-test-', [StringComparison]::Ordinal)) {
+            throw 'Replace fixture cleanup escaped its owned temporary directory.'
+        }
+        Remove-Item -LiteralPath $resolvedReplaceFixture -Recurse -Force
     }
 }
 

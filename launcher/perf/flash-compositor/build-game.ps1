@@ -1,19 +1,22 @@
-[CmdletBinding()]
-param([switch]$Run)
+﻿[CmdletBinding()]
+param([switch]$Run, [string]$OutputRoot, [string]$NativeRoot)
 $ErrorActionPreference='Stop'
 chcp.com 65001 | Out-Null
 $repo=[IO.Path]::GetFullPath((Join-Path $PSScriptRoot '..\..\..'))
 & node (Join-Path $repo 'tools\fontctl\cli.js') generate --check --project-root $repo
 if ($LASTEXITCODE -ne 0) { throw 'Font catalog is stale. Run node tools/fontctl/cli.js generate from the repository root, then retry.' }
-& (Join-Path $PSScriptRoot 'build.ps1')
+if (-not $NativeRoot) { & (Join-Path $PSScriptRoot 'build.ps1'); $NativeRoot=Join-Path $repo 'tmp\flash-compositor\bin' }
+$NativeRoot=[IO.Path]::GetFullPath($NativeRoot)
 . (Join-Path $repo 'launcher\resolve-dotnet.ps1')
 $sdk=Resolve-Cf7Dotnet -ProjectRoot $repo
-$output=Join-Path $repo 'tmp\flash-compositor\game'
+$output=if($OutputRoot){[IO.Path]::GetFullPath($OutputRoot)}else{Join-Path $repo 'tmp\flash-compositor\game'}
+$allowed=[IO.Path]::GetFullPath((Join-Path $repo 'tmp'))+[IO.Path]::DirectorySeparatorChar
+if(-not $output.StartsWith($allowed,[StringComparison]::OrdinalIgnoreCase)){throw 'Development output must stay inside repository tmp'}
 & $sdk build (Join-Path $repo 'launcher\CRAZYFLASHER7MercenaryEmpire.csproj') -c Release -o $output --nologo
 if ($LASTEXITCODE -ne 0) { throw 'Game development build failed' }
-Copy-Item -LiteralPath (Join-Path $repo 'tmp\flash-compositor\bin\FlashCompositorNative.dll') -Destination $output -Force
+Copy-Item -LiteralPath (Join-Path $NativeRoot 'FlashCompositorNative.dll') -Destination $output -Force
 foreach($inputModule in @('FlashInputBroker.exe','FlashInputBridge.dll')) {
-    Copy-Item -LiteralPath (Join-Path $repo ('tmp\flash-compositor\bin\'+$inputModule)) -Destination $output -Force
+    Copy-Item -LiteralPath (Join-Path $NativeRoot $inputModule) -Destination $output -Force
 }
 # Reuse the currently deployed audio native dependency; do not rebuild or replace it.
 Copy-Item -LiteralPath (Join-Path $repo 'runtime\miniaudio.dll') -Destination $output -Force
@@ -24,4 +27,4 @@ $identities+= [pscustomobject]@{path=(Join-Path $repo 'scripts\asLoader.swf');sh
 [pscustomobject]@{kind='local-development-pair';createdUtc=[DateTime]::UtcNow.ToString('o');files=@($identities)} |
     ConvertTo-Json -Depth 5 | Set-Content -LiteralPath (Join-Path $output 'development-pair.json') -Encoding UTF8
 Write-Output "Development build: $output"
-if ($Run) { & (Join-Path $PSScriptRoot 'run-game.ps1'); exit $LASTEXITCODE }
+if ($Run) { & (Join-Path $PSScriptRoot 'run-game.ps1') -CandidatePath $output; exit $LASTEXITCODE }

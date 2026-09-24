@@ -1,0 +1,75 @@
+--- a/InputBridge.cpp
++++ b/InputBridge.cpp
+@@ -86,23 +86,38 @@
+ }
+ SHORT WINAPI Async(int key) { return KeyValue(key,true); }
+ SHORT WINAPI Key(int key) { return KeyValue(key,false); }
++UINT captureCallId=0;
++volatile LONG captureOffThreadCalls=0;
++UINT BeginCaptureTrace() {
++    if(!traceState)return 0;
++    if(GetCurrentThreadId()!=targetThread) {InterlockedIncrement(&captureOffThreadCalls);return 0;}
++    return ++captureCallId;
++}
++void CaptureTrace(LONG stage,UINT call,HWND value) {
++    if(!call || !traceState)return;
++    UINT64 handle=reinterpret_cast<UINT64>(value);
++    TraceWrite(traceState,stage,static_cast<LONG>(call),lastEpoch,GetCurrentThreadId(),
++        POINT{static_cast<LONG>(handle),static_cast<LONG>(handle>>32)},buttons,
++        (enabled?1:0)|(captured?2:0),realGetCapture());
++}
+ HWND WINAPI Capture(HWND hwnd) {
+-    WrapperScope invocation;
+-    CaptureProc fallback;
+-    { WriteLock guard; fallback=realCapture; if(enabled && hwnd==target) { HWND previous=captured ? target : nullptr; captured=true; return previous; } }
+-    return fallback(hwnd);
++    WrapperScope invocation;CaptureProc fallback;
++    UINT call=BeginCaptureTrace();
++    { WriteLock guard; fallback=realCapture;CaptureTrace(14,call,hwnd);
++      if(enabled && hwnd==target) {HWND previous=captured?target:nullptr;captured=true;CaptureTrace(15,call,previous);return previous;} }
++    HWND result=fallback(hwnd);{ReadLock guard;CaptureTrace(15,call,result);}return result;
+ }
+ HWND WINAPI GetCapture() {
+-    WrapperScope invocation;
+-    GetCaptureProc fallback;
+-    { ReadLock guard; fallback=realGetCapture; if(enabled && captured)return target; }
+-    return fallback();
++    WrapperScope invocation;GetCaptureProc fallback;
++    UINT call=BeginCaptureTrace();
++    {ReadLock guard;fallback=realGetCapture;CaptureTrace(16,call,nullptr);if(enabled && captured){CaptureTrace(17,call,target);return target;}}
++    HWND result=fallback();{ReadLock guard;CaptureTrace(17,call,result);}return result;
+ }
+ BOOL WINAPI Release() {
+-    WrapperScope invocation;
+-    ReleaseProc fallback;
+-    { WriteLock guard; fallback=realRelease; if(enabled) {captured=false; return TRUE;} }
+-    return fallback();
++    WrapperScope invocation;ReleaseProc fallback;
++    UINT call=BeginCaptureTrace();
++    {WriteLock guard;fallback=realRelease;CaptureTrace(18,call,nullptr);if(enabled){captured=false;CaptureTrace(19,call,reinterpret_cast<HWND>(1));return TRUE;}}
++    BOOL result=fallback();{ReadLock guard;CaptureTrace(19,call,reinterpret_cast<HWND>(static_cast<INT_PTR>(result)));}return result;
+ }
+ 
+ bool PatchSlot(ULONG_PTR* slot,ULONG_PTR replacement) {
+@@ -154,6 +169,7 @@
+     if(!shared || dispatchDepth) return;
+     LONG ticket=ReadAtomic(&shared->cancelTicket);
+     if(ticket==ReadAtomic(&shared->cancelledTicket)) return;
++    Observe(20,0,lastEpoch,static_cast<UINT>(ReadAtomic(&captureOffThreadCalls)),POINT{enabled?1:0,captured?1:0});
+     { WriteLock guard; enabled=false; buttons=0; captured=false; activeGesture=0; }
+     InterlockedExchange(&shared->heldButtons,0);
+     if(reinterpret_cast<WNDPROC>(GetWindowLongPtrW(target,GWLP_WNDPROC))!=WindowProc) {
+--- a/InputBroker.cpp
++++ b/InputBroker.cpp
+@@ -27,6 +27,11 @@
+         LARGE_INTEGER frequency{};QueryPerformanceFrequency(&frequency);
+         for(;next<=end;next++) {
+             InputTraceSnapshot r{};if(!TraceRead(view,next,r))break;
++            if(r.stage>=14 && r.stage<=19) {
++                auto handle=static_cast<unsigned long long>(static_cast<uint32_t>(r.x)) | (static_cast<unsigned long long>(static_cast<uint32_t>(r.y))<<32);
++                std::printf("CAPTURE session=%llu ordinal=%lld qpc=%lld frequency=%lld stage=%ld call=%ld epoch=%ld tid=%ld handle=0x%llX realCapture=0x%llX mapped=%ld virtualHeld=%ld heldButtons=%ld\n",view->session,r.serial,r.ticks,frequency.QuadPart,r.stage,r.sequence,r.epoch,r.message,handle,r.focus,r.floor&1,(r.floor>>1)&1,r.buttons);
++                continue;
++            }
+             std::printf("TRACE session=%llu ordinal=%lld qpc=%lld frequency=%lld stage=%ld seq=%ld epoch=%ld msg=0x%lX x=%ld y=%ld buttons=%ld localFloor=%ld focus=0x%llX\n",
+                 view->session,r.serial,r.ticks,frequency.QuadPart,r.stage,r.sequence,r.epoch,r.message,r.x,r.y,r.buttons,r.floor,r.focus);
+         }

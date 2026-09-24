@@ -308,7 +308,7 @@ namespace CF7Launcher.Tests.Guardian
                 "private void DoClose()",
                 "public void Dispose()");
             int webClose = close.IndexOf(
-                "_web.TryPostToWeb(closePayload)",
+                "TryPostToPanelSurface(closePayload)",
                 StringComparison.Ordinal);
             int suspend = close.IndexOf(
                 "_web.SuspendAfterPanel(closingName)",

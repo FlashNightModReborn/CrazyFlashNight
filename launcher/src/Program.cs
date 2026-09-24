@@ -1,4 +1,4 @@
-﻿// CF7:ME Guardian Process — 入口
+// CF7:ME Guardian Process — 入口
 // C# 5 语法
 
 using System;
@@ -526,6 +526,22 @@ class Program
         {
             StartupDiagnostics.Exit("runtime_bundle_self_check_failed");
             return 2;
+        }
+        // Explicit, exclusive candidate path. Runtime verification above is
+        // retained; no production Guardian/overlay/legacy input graph is made.
+        if (CF7Launcher.Guardian.UnifiedHost.UnifiedCandidateInvocation.IsRequested(args))
+        {
+            try
+            {
+                var options = CF7Launcher.Guardian.UnifiedHost.UnifiedCandidateInvocation.Parse(args, isolatedRuntimeCandidate);
+                return CF7Launcher.Guardian.UnifiedHost.UnifiedInputHost.RunCandidate(options);
+            }
+            catch (Exception ex)
+            {
+                StartupDiagnostics.Exception("unified_input_candidate_rejected", ex);
+                StartupDiagnostics.Exit("unified_input_candidate_rejected");
+                return 2;
+            }
         }
         string audioQualificationRunId;
         try
@@ -1510,6 +1526,7 @@ class Program
         // WindowManager 早声明：WebOverlay 构造时需要它的 RestoreFlashInputFocus primitive；
         // 实际 form.BindWindowManager / perfEngine.SetActivationState / OnKillFlash 还在后面统一装配。
         WindowManager windowManager = new WindowManager();
+        Func<bool> compositionHelpOwnsInput = () => false;
         WebOverlayForm webOverlay;
         using (PerfTrace.Scope("web_overlay.construct"))
         {
@@ -1518,7 +1535,7 @@ class Program
             // 带 AttachThreadInput 兜底 + 前后 fg/pid 日志 + 校验，统一替代散落的裸 SetForegroundWindow。
             Func<string, bool> flashFocusRestorer = delegate(string reason)
             {
-                return windowManager.RestoreFlashInputFocus(reason);
+                return !compositionHelpOwnsInput() && windowManager.RestoreFlashInputFocus(reason);
             };
             webOverlay = new WebOverlayForm(form, form.FlashHostPanel, webDir, projectRoot,
                 config.WebOverlayLowEffects,
@@ -1734,11 +1751,17 @@ class Program
                     form, form.FlashHostPanel, playerHudController.State);
             playerHudRuntime = new CF7Launcher.Guardian.Hud.PlayerInfo.PlayerHudRuntime(
                 form, form.FlashHostPanel, playerInfoSurface, playerHudController,
-                Path.Combine(projectRoot, "launcher", "web", "icons"), nativeHud.Handle);
+                Path.Combine(projectRoot, "launcher", "web", "icons"), nativeHud);
             IPanelHudCompanion panelHudCompanion = playerHudRuntime;
             panelHost = new PanelHostController(form, webOverlay, nativeHud, backdrop,
                 inputShield, hnOverlay, cursorOverlay, form.GetPanelEscapeSource(), flashHwndProvider,
                 panelHudCompanion);
+            compositionHelpOwnsInput = () => panelHost.CompositionHelpOwnsInput;
+            // Accepted help endpoint is now the normal path in both formal and dev runtimes.
+            panelHost.ConfigureCompositionHelp(webDir,
+                Path.Combine(projectRoot, "tmp", "unified-live-entry", "web-profile"),
+                form.HandlePanelStateChanged,
+                reason => windowManager.RestoreFlashInputFocus(reason));
             webOverlay.SetPanelHost(panelHost);
             commandRouter.SetPanelHost(panelHost);
 

@@ -209,7 +209,7 @@ namespace CF7Launcher.Guardian
     /// - SetPanelEscapeEnabled 由 PanelHost 接管（_escSource）
     /// - InputShield 进 telemetry 模式（filter 为前台=Guardian + anchor 内 + panelRect 外）
     /// </summary>
-    public class PanelHostController : IDisposable
+    public partial class PanelHostController : IDisposable
     {
         private sealed class PanelGeometrySnapshot
         {
@@ -532,7 +532,7 @@ namespace CF7Launcher.Guardian
             // 不发 cmd:"request_close" —— panels.js 的 panel_cmd 仅 handle open/close/force_close
             try
             {
-                _web.PostToWeb(
+                PostToPanelSurface(
                     "{\"type\":\"panel_esc\",\"reason\":\"backdrop\"}");
             }
             catch (Exception ex) { LogManager.Log("[PanelHost] backdrop esc post failed: " + ex.Message); }
@@ -1588,7 +1588,7 @@ namespace CF7Launcher.Guardian
                     else if (_testPumpDispatcher != null)
                         delivered = true;
                     else if (_web != null)
-                        delivered = _web.TryPostToWeb(payload);
+                        delivered = TryPostToPanelSurface(payload);
                     else
                     {
                         outcome = ExactReplaceOutcome.HostUnavailable;
@@ -1624,18 +1624,18 @@ namespace CF7Launcher.Guardian
                 {
                     RepositionBackdrop(replaceGeometry.AnchorRect, false);
                     _backdrop.SetPanelRect(replaceGeometry.PanelRect);
-                    _web.RepositionForPanel(replaceGeometry.PanelRect, false);
+                    RepositionPanelSurface(replaceGeometry.PanelRect, false);
                     if (_shield != null)
                     {
                         _shield.EnterTelemetryMode(
                             replaceGeometry.PanelRect,
                             _ownerForm.Handle,
                             replaceGeometry.AnchorRect,
-                            _web.IsHandleCreated ? _web.Handle : IntPtr.Zero);
+                            PanelSurfaceHandle);
                     }
                     if (!CommitGeometry(
                             replaceGeometry,
-                            _web.PanelSessionGeneration))
+                            PanelSurfaceGeneration))
                     {
                         ClearCommittedGeometry(
                             "exact_replace_geometry_commit_rejected");
@@ -2198,7 +2198,7 @@ namespace CF7Launcher.Guardian
                     StringComparison.Ordinal)
                 || !string.Equals(provisional.PanelInstanceId,
                     _activePanelInstanceId, StringComparison.Ordinal)
-                || _web.PanelSessionGeneration != focusGeneration)
+                || PanelSurfaceGeneration != focusGeneration)
             {
                 return false;
             }
@@ -2216,7 +2216,7 @@ namespace CF7Launcher.Guardian
             }
             catch { return false; }
             provisional.FocusGeneration = focusGeneration;
-            if (!_web.CommitPanelGeometry(
+            if (!CommitPanelSurfaceGeometry(
                     provisional.PanelRect,
                     focusGeneration))
                 return false;
@@ -2241,7 +2241,7 @@ namespace CF7Launcher.Guardian
             _committedGeometry = null;
             _restoreRevalidation.Clear();
             if (_web != null)
-                _web.ClearCommittedPanelGeometry(reason);
+                ClearPanelSurfaceGeometry(reason);
         }
 
         /// <summary>
@@ -2571,6 +2571,16 @@ namespace CF7Launcher.Guardian
                 return false;
             }
 
+            // Candidate-only help uses the real game lifecycle and a separate
+            // composition endpoint. Never silently fall back during its acceptance.
+            bool compositionHelp = name == "help" && _compositionHelp != null;
+            if (compositionHelp && !_compositionHelp.Ready)
+            {
+                LogManager.Log("[CompositionHelp] open rejected: endpoint not ready");
+                PrepareCompositionHelp();
+                return false;
+            }
+
             bool pauseDelivered = false;
             try { pauseDelivered = _web.AssertWebPanelPause(); }
             catch (Exception ex)
@@ -2584,6 +2594,7 @@ namespace CF7Launcher.Guardian
                 return false;
             }
 
+            _compositionHelpSelected = compositionHelp;
             long perfStart = System.Diagnostics.Stopwatch.GetTimestamp();
             PerfTrace.Mark("panel.open_start", name);
             try
@@ -2617,17 +2628,17 @@ namespace CF7Launcher.Guardian
 
                 _backdrop.SetComposedAndShow(composed, anchor);
                 _backdrop.SetPanelRect(panelRect);
-                if (!_web.ResumeForPanel(panelRect))
+                if (!ResumePanelSurface(panelRect))
                     throw new InvalidOperationException(
                         "WebOverlay rejected panel presentation");
-                int focusGeneration = _web.PanelSessionGeneration;
+                int focusGeneration = PanelSurfaceGeneration;
                 if (_shield != null)
                 {
                     _shield.EnterTelemetryMode(
                         panelRect,
                         _ownerForm.Handle,
                         anchor,
-                        _web.IsHandleCreated ? _web.Handle : IntPtr.Zero);
+                        PanelSurfaceHandle);
                 }
                 EnsurePanelZOrder();
 
@@ -2646,7 +2657,7 @@ namespace CF7Launcher.Guardian
                     initDataJson,
                     instanceId);
                 bool delivered = false;
-                try { delivered = _web.TryPostToWeb(payload); }
+                try { delivered = TryPostToPanelSurface(payload); }
                 catch (Exception ex)
                 {
                     LogManager.Log("[PanelHost] TryPostToWeb open failed: "
@@ -2662,7 +2673,7 @@ namespace CF7Launcher.Guardian
                 ReTopOverlay(_hitNumber);
                 ReTopOverlay(_cursor as Form);
                 if (_escSource != null)
-                    _escSource.SetPanelEscapeEnabled(true);
+                    _escSource.SetPanelEscapeEnabled(!_compositionHelpSelected);
                 SubscribeOwnerLayout();
 
                 _activePanel = name;
@@ -2696,13 +2707,14 @@ namespace CF7Launcher.Guardian
 
         private void AbortOpenAttempt(bool pauseDelivered, string reason)
         {
+            bool compositionPauseOwned = _compositionHelpSelected;
             ClearCommittedGeometry(reason);
             string abortClosePayload = BuildPanelClosePayload(
                 _activePanel,
                 _activePanelInstanceId);
             if (abortClosePayload != null)
             {
-                try { _web.TryPostToWeb(abortClosePayload); }
+                try { TryPostToPanelSurface(abortClosePayload); }
                 catch (Exception ex)
                 {
                     LogManager.Log("[PanelHost] open abort exact close failed: "
@@ -2714,7 +2726,7 @@ namespace CF7Launcher.Guardian
             {
                 LogManager.Log("[PanelHost] open abort reset failed: " + ex.Message);
             }
-            if (!pauseDelivered) return;
+            if (!pauseDelivered || compositionPauseOwned) return;
             try
             {
                 if (!_web.ReleaseWebPanelPauseAfterFailedOpen())
@@ -2790,7 +2802,7 @@ namespace CF7Launcher.Guardian
                 _activeSettingsPreviewHeight);
             string payload = BuildPanelOpenPayload(name, initDataJson, instanceId);
             bool delivered = false;
-            try { delivered = _web.TryPostToWeb(payload); }
+            try { delivered = TryPostToPanelSurface(payload); }
             catch (Exception ex)
             {
                 LogManager.Log(
@@ -2809,17 +2821,17 @@ namespace CF7Launcher.Guardian
                 return;
             }
             _activePanelInstanceId = instanceId;
-            int focusGeneration = _web.PanelSessionGeneration;
+            int focusGeneration = PanelSurfaceGeneration;
             RepositionBackdrop(provisional.AnchorRect, false);
             _backdrop.SetPanelRect(provisional.PanelRect);
-            _web.RepositionForPanel(provisional.PanelRect, false);
+            RepositionPanelSurface(provisional.PanelRect, false);
             if (_shield != null)
             {
                 _shield.EnterTelemetryMode(
                     provisional.PanelRect,
                     _ownerForm.Handle,
                     provisional.AnchorRect,
-                    _web.IsHandleCreated ? _web.Handle : IntPtr.Zero);
+                    PanelSurfaceHandle);
             }
             if (!CommitGeometry(provisional, focusGeneration))
             {
@@ -3010,7 +3022,7 @@ namespace CF7Launcher.Guardian
 
         private void MarkRestoreRevalidation(string reason)
         {
-            int focusGeneration = _web.PanelSessionGeneration;
+            int focusGeneration = PanelSurfaceGeneration;
             if (_restoreRevalidation.Mark(
                     focusGeneration,
                     HasCurrentCommittedGeometry(focusGeneration)))
@@ -3068,7 +3080,7 @@ namespace CF7Launcher.Guardian
                     return;
                 }
 
-                int focusGeneration = _web.PanelSessionGeneration;
+                int focusGeneration = PanelSurfaceGeneration;
                 candidate.FocusGeneration = focusGeneration;
                 PanelGeometrySnapshot committed = _committedGeometry;
                 bool sameLifetime = HasCurrentCommittedGeometry(focusGeneration);
@@ -3105,14 +3117,14 @@ namespace CF7Launcher.Guardian
 
                 RepositionBackdrop(newAnchor, ensureVisible);
                 _backdrop.SetPanelRect(newPanelRect);
-                _web.RepositionForPanel(newPanelRect, ensureVisible);
+                RepositionPanelSurface(newPanelRect, ensureVisible);
 
                 // PostToWeb 让 CSS var(--panel-w/-h) 自适应（仅在尺寸真变化时；拖窗只动位置时跳过）
                 if (panelSizeChanged)
                 {
                     try
                     {
-                        _web.PostToWeb("{\"type\":\"panel_viewport_set\",\"w\":"
+                        PostToPanelSurface("{\"type\":\"panel_viewport_set\",\"w\":"
                             + newPanelRect.Width + ",\"h\":" + newPanelRect.Height + "}");
                     }
                     catch { }
@@ -3121,7 +3133,7 @@ namespace CF7Launcher.Guardian
                 if (_shield != null)
                 {
                     try { _shield.EnterTelemetryMode(newPanelRect, _ownerForm.Handle, newAnchor,
-                        _web.IsHandleCreated ? _web.Handle : IntPtr.Zero); }
+                        PanelSurfaceHandle); }
                     catch (Exception ex) { LogManager.Log("[PanelHost] shield reposition failed: " + ex.Message); }
                 }
                 if (ensureVisible) EnsurePanelZOrder();
@@ -3178,6 +3190,8 @@ namespace CF7Launcher.Guardian
             long perfStart = System.Diagnostics.Stopwatch.GetTimestamp();
             string closingName = _activePanel;
             string closingInstance = _activePanelInstanceId;
+            bool closingComposition = _compositionHelpSelected;
+            bool restoreCompositionFocus = false;
             PerfTrace.Mark("panel.close_start", closingName ?? "<null>");
             Action<string, string> closeObserver = _panelCloseObserver;
             if (closeObserver != null)
@@ -3198,7 +3212,7 @@ namespace CF7Launcher.Guardian
             {
                 try
                 {
-                    if (!_web.TryPostToWeb(closePayload))
+                    if (!TryPostToPanelSurface(closePayload))
                     {
                         LogManager.Log(
                             "[PanelHost] exact web close post not delivered: "
@@ -3216,8 +3230,12 @@ namespace CF7Launcher.Guardian
             // closingName 传给 SuspendAfterPanel 用于 [FocusRestore] 日志归因——
             // WebOverlay._activePanel 此时可能已被 HandlePanelMessage 置 null。
             if (FocusTrace.Enabled) FocusTrace.Record("panel.close_handoff", new {
-                panel = closingName, instance = closingInstance, generation = _web.PanelSessionGeneration });
-            try { _web.SuspendAfterPanel(closingName); }
+                panel = closingName, instance = closingInstance, generation = PanelSurfaceGeneration });
+            try
+            {
+                if (closingComposition) restoreCompositionFocus = RetireCompositionHelp();
+                else _web.SuspendAfterPanel(closingName);
+            }
             catch (Exception ex) { LogManager.Log("[PanelHost] SuspendAfterPanel failed: " + ex.Message); }
             // Step 3: Shield 退 telemetry
             if (_shield != null)
@@ -3251,10 +3269,18 @@ namespace CF7Launcher.Guardian
             // SuspendAfterPanel 中的首次归还早于 HUD/cursor 收尾。
             // 在所有 overlay 稳定后再确认一次 Flash 焦点，避免玩家看到
             // 面板已关闭却无法与游戏 UI 交互。
-            try { _web.RestoreFlashInputFocusAfterPanelClose(closingName); }
+            try
+            {
+                if (closingComposition)
+                {
+                    if (restoreCompositionFocus && _compositionHelp.CanRestoreGameFocus)
+                        _compositionRestoreFocus?.Invoke("composition_help_close");
+                }
+                else _web.RestoreFlashInputFocusAfterPanelClose(closingName);
+            }
             catch (Exception ex) { LogManager.Log("[PanelHost] settled focus restore failed: " + ex.Message); }
             if (FocusTrace.Enabled) FocusTrace.Record("panel.close_settled", new {
-                panel = closingName, instance = closingInstance, generation = _web.PanelSessionGeneration,
+                panel = closingName, instance = closingInstance, generation = PanelSurfaceGeneration,
                 windows = FocusWindowSnapshot.At(System.Windows.Forms.Cursor.Position) });
             LogManager.Log("[PanelHost] closed: " + (closingName ?? "<null>"));
             PerfTrace.Duration("panel.close", perfStart, closingName ?? "<null>");
@@ -3268,6 +3294,11 @@ namespace CF7Launcher.Guardian
         {
             if (_disposed) return;
             _disposed = true;
+            if (_compositionHelp != null)
+            {
+                try { if (_compositionHelpSelected) RetireCompositionHelp(); } catch { }
+                try { _compositionHelp.Dispose(); } catch { }
+            }
             ClearActiveSettingsPreview();
             try
             {
@@ -3446,7 +3477,7 @@ namespace CF7Launcher.Guardian
             {
                 RepositionBackdrop(committed.AnchorRect, true);
                 _backdrop.SetPanelRect(committed.PanelRect);
-                bool webReplayed = _web.ReplayCommittedPanelPresentation(
+                bool webReplayed = ReplayPanelSurface(
                     committed.PanelRect,
                     committed.FocusGeneration,
                     reason);
@@ -3456,7 +3487,7 @@ namespace CF7Launcher.Guardian
                         committed.PanelRect,
                         _ownerForm.Handle,
                         committed.AnchorRect,
-                        _web.IsHandleCreated ? _web.Handle : IntPtr.Zero);
+                        PanelSurfaceHandle);
                 }
                 EnsurePanelZOrder();
                 LogManager.Log("[PanelGeometry] panel-group replay"
@@ -3478,10 +3509,10 @@ namespace CF7Launcher.Guardian
             try
             {
                 if (_backdrop == null || _web == null) return;
-                if (!_backdrop.IsHandleCreated || !_web.IsHandleCreated) return;
-                SetWindowPos(_backdrop.Handle, _web.Handle, 0, 0, 0, 0,
+                if (!_backdrop.IsHandleCreated || PanelSurfaceHandle == IntPtr.Zero) return;
+                SetWindowPos(_backdrop.Handle, PanelSurfaceHandle, 0, 0, 0, 0,
                     SWP_NOMOVE | SWP_NOSIZE | SWP_NOACTIVATE);
-                SetWindowPos(_web.Handle, HWND_TOP, 0, 0, 0, 0,
+                SetWindowPos(PanelSurfaceHandle, HWND_TOP, 0, 0, 0, 0,
                     SWP_NOMOVE | SWP_NOSIZE | SWP_NOACTIVATE);
                 LogManager.Log("[PanelHost] z-order applied: backdrop below web");
             }
@@ -3514,7 +3545,11 @@ namespace CF7Launcher.Guardian
             // _activePanel 此时尚未置 null（line 613 才置），优先传它作为 closingPanelName；
             // ResetToClosedState 路径是异常恢复，reason 后缀 ":reset" 用于日志区分正常 close。
             string resetTag = (_activePanel != null) ? (_activePanel + ":reset") : "reset";
-            try { _web.ForceIdleState(resetTag); }
+            try
+            {
+                if (_compositionHelpSelected) RetireCompositionHelp();
+                else _web.ForceIdleState(resetTag);
+            }
             catch (Exception ex) { LogManager.Log("[PanelHost] Web ForceIdleState partial failure: " + ex.Message); }
             try { _backdrop.Hide(); } catch { }
             try { _hud.Resume(); } catch { }

@@ -6,6 +6,43 @@
 
 ## 启动
 
+### v4 输入会话开发候选
+
+当前输入桥工作区支持有界会话与配对续接；这是未发布施工，不能继承页首既有 runtime 发布结论。
+R4 配对 Host 另要求 native 的 `ProbeGetCaptureSize` 扩展（WGC 尺寸及 capture generation）；原 ABI 3 Stats 布局不变，但不能混用缺该导出的旧 DLL。非客户区状态变化只重建 WGC 会话，保留输出窗口和输入桥；`world_compositor_capture_generation` 包含初始创建/恢复/非客户区重建，不能当作输入会话续接次数。
+原生夹具及边界验证见 [G1 入口](../../native/world-compositor/g1-fixture/README.md)，状态见[施工计划](../../../docs/统一合成与输入归属-分阶段施工计划-2026-09-22.md#11-续接记录当前唯一状态)。
+
+带采集的普通上限验收入口：
+
+```powershell
+powershell -NoProfile -ExecutionPolicy Bypass -File launcher/perf/flash-compositor/collect-game.ps1 -CandidatePath <repo下tmp内的配对候选目录>
+node launcher/perf/flash-compositor/analyze-input-trace.cjs <launcher.log> <pointer-observed.json>
+node --test launcher/perf/flash-compositor/analyze-input-trace.test.cjs
+```
+
+采集入口启用 FocusTrace，等待实际游戏退出，按精确候选路径及新鲜进程时间核对 recording-context 后才复制日志；每轮写入独立 `tmp/world-input-run-*`。本入口使用普通输入上限，小 cap 续接压力测试继续单独运行。诊断分析按 session/sequence 连接 Host 投递与端点进入/返回/拒绝，保留独立的 panel_request 列表；没有 AS2 释放目标的因果身份时不自动关联为按钮成功。
+
+`build-game.ps1 -OutputRoot <仓库 tmp 内新目录> -NativeRoot <已构建的三模块目录>` 可保留旧候选并生成独立配对；省略参数保持原开发入口。
+`run-game.ps1 -CandidatePath <该目录> -FocusTrace -InputSessionTestCap 8` 核验配对后启动、启用本进程焦点采集并加速输入续接。
+`InputSessionTestCap` 默认 0（使用生产上限），非零须为 8…8388605；仅 `tmp/` 开发候选识别 `CF7_INPUT_SESSION_TEST_CAP`，正式 runtime 不采用此覆盖。
+它不改 config.toml 或存档；环境值在脚本结束时恢复。小 cap 是实验刺激，不能把该模式下的次数写成默认生产频率。
+
+### G2 内容证据补证入口
+
+`powershell -NoProfile -ExecutionPolicy Bypass -File launcher/perf/flash-compositor/test-g2.ps1`
+按已有默认 5 秒相位串行运行单适配器正例、F 冻结、全部源冻结、误捕获 P 和真实 Flash 素材；支持 `-Adapter intel|nvidia`、`-SkipBuild`。
+它保留原计数门槛；旧 `test.ps1` 矩阵仍可使用。未测/没有内容变化证据不能算通过。
+原生旧 ABI 3 结构保持不变，G2 开发探针额外要求配套的 `ProbeRequestContentProof` / `ProbeGetContentStats` 导出。
+
+- `run.ps1 -Topology embeddedF -Auto -StallF`：仅冻结本轮 fixture F，S 状态栏与 P 继续刷新，再恢复 F；停推阶段必须判败，恢复阶段必须有内容与输出对应证据。
+- `run.ps1 -Topology embeddedF -Auto -DebugHoldFrames`：冻结本轮 fixture F 与 S 标签更新；要求 captured=0、presented>0，识别重复呈现旧纹理。
+- 两种冻结开关只允许探针自建 fixture，互斥且不能与 `-CaptureOutput` 合用；不暂停真实玩家 Flash 进程。
+- covered 相位每轮最多 4 个显式内容 proof。原三像素 palette/marker oracle 保留；额外两次完整 ROI 回读计算所有 RGB 像素的 FNV-1a 摘要，逐像素核对 raw 1:1 输出，误差上限 2。
+  Native 正常游戏路径不请求该诊断，不新增每帧 CPU 回读。证明的是离散样本之间的 F 内容变化与 Present 前 GPU 输出，不是 Flash 逻辑、屏幕扫描、输入延迟或性能收益。
+
+单次运行含故意冻结时 exit 2 / success=false 是预期探针判败；套件还必须核对具体失败判据、刺激有效及恢复证据，不能只看到非零退出就宣称负控有效。
+本入口仍是 ProbeForm / 素材播放器；真实 Guardian 装配与人类验收的出口见[分阶段计划](../../../docs/统一合成与输入归属-分阶段施工计划-2026-09-22.md#11-续接记录当前唯一状态)。
+
 正式入口使用根游戏 EXE；下列脚本保留为开发/诊断入口，不作为玩家启动前置。正式 producer 从源码独立编译合成器和两个输入模块，经双故障域共识进入 runtime；不复用本节的临时二进制。
 
 已生成配套开发构建后，从仓库根运行：

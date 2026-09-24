@@ -60,8 +60,11 @@ internal sealed class PlayerHudResourceTooltip : IDisposable
         if(request!=null)Widget.Hide(request);
     }
     internal static JObject Build(PlayerHudSnapshot snapshot,PlayerHudTarget target,string requestId)
+        => Build(snapshot.Vitals, snapshot.Epoch, snapshot.Sequence, target, requestId);
+
+    internal static JObject Build(PlayerHudVitals v,long epoch,long sequence,PlayerHudTarget target,string requestId)
     {
-        var v=snapshot.Vitals;var runs=new JArray();
+        var runs=new JArray();
         void Line(string text,bool bold=false) => runs.Add(new JObject { ["text"]=text+"\n",["bold"]=bold,["fontSize"]=16 });
         void Resource(string name,double value,double maximum)
         {
@@ -90,8 +93,8 @@ internal sealed class PlayerHudResourceTooltip : IDisposable
         }
         else { Line("本级经验：区间未就绪");Line("累计经验："+Number(v.Experience)+"    距升级：--"); }
         // No title/icon selects the existing content-sized plain tooltip layout.
-        return new JObject { ["version"]=1,["requestId"]=requestId,["sceneId"]="player-hud:"+snapshot.Epoch,
-            ["owner"]="player-hud-resources",["revision"]=snapshot.Sequence,["placement"]="top",
+        return new JObject { ["version"]=1,["requestId"]=requestId,["sceneId"]="player-hud:"+epoch,
+            ["owner"]="player-hud-resources",["revision"]=sequence,["placement"]="top",
             ["x"]=target.Anchor.Left+target.Anchor.Width/2,["y"]=target.Anchor.Top,
             ["anchorRect"]=new JObject{["x"]=target.Anchor.X,["y"]=target.Anchor.Y,["width"]=target.Anchor.Width,["height"]=target.Anchor.Height},
             ["document"]=new JObject{["version"]=1,["profile"]="simple",["sections"]=new JArray(new JObject{["role"]="body",["runs"]=runs})} };

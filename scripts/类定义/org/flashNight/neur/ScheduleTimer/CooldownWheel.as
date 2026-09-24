@@ -152,6 +152,10 @@ class org.flashNight.neur.ScheduleTimer.CooldownWheel {
             slots[i] = [];
         }
 
+        if (org.flashNight.arki.input.IsolatedInputPolicy.forbidsLegacyDrivers()) {
+            this.add = org.flashNight.arki.input.IsolatedInputPolicy.rejectLegacyTask;
+            return;
+        }
         // 2. 创建一个空的 MovieClip 作为时间轮的“心脏”。
         //    它的 onEnterFrame 事件将成为驱动 tick() 函数的稳定时钟。
         var depth:Number = _root.getNextHighestDepth();

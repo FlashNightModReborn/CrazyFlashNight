@@ -208,7 +208,7 @@ namespace CF7Launcher.Tests.Guardian
                 validAdmissionComment,
                 StringComparison.Ordinal);
             int resumeWeb = open.IndexOf(
-                "if (!_web.ResumeForPanel(panelRect))",
+                "if (!ResumePanelSurface(panelRect))",
                 captureBackdrop,
                 StringComparison.Ordinal);
 

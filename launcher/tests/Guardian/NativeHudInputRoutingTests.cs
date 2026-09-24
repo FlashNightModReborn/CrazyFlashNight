@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Runtime.InteropServices;
+using System.Threading;
 using System.Windows.Forms;
 using CF7Launcher.Guardian;
 using CF7Launcher.Guardian.Hud;
@@ -201,14 +202,16 @@ namespace CF7Launcher.Tests.Guardian
             FocusTrace.Start(trace.Add, false);
             try
             {
+                IntPtr hudHwnd;
                 using (Form owner = CreateOwner())
                 using (TestNativeHudOverlay hud = CreateHud(owner, out RecordingWidget widget))
                 {
+                    hudHwnd = hud.Handle;
                     Point center = Center(widget.ScreenBounds);
                     FocusTrace.SetTarget(widget.ScreenBounds);
                     FocusTrace.PhysicalEdge(WM_LBUTTONDOWN, center, 1, 10, 7);
                     Assert.Equal(HTCLIENT, SendNcHitTest(hud, center));
-                    JObject surface = JObject.FromObject(FocusTrace.CaptureHudInput(center));
+                    JObject surface = JObject.FromObject(FocusTrace.CaptureHudInput(hud.Handle, center));
                     Assert.Equal(nameof(RecordingWidget), (string)surface["logicalWidget"]);
                     Assert.Equal(0, (int)surface["submittedSourceAlpha"]);
                     Assert.True((bool)surface["lastCommit"]["Succeeded"]);
@@ -218,7 +221,7 @@ namespace CF7Launcher.Tests.Guardian
 
                     widget.PaintColor = Color.FromArgb(120, 50, 100, 150);
                     widget.MoveTo(widget.ScreenBounds);
-                    JObject painted = JObject.FromObject(FocusTrace.CaptureHudInput(center));
+                    JObject painted = JObject.FromObject(FocusTrace.CaptureHudInput(hud.Handle, center));
                     Assert.Equal(120, (int)painted["submittedSourceAlpha"]);
                     Assert.Equal((long)surface["placementGeneration"], (long)painted["placementGeneration"]);
                     Assert.True((long)painted["paintGeneration"] > (long)surface["paintGeneration"]);
@@ -231,7 +234,7 @@ namespace CF7Launcher.Tests.Guardian
                     Assert.True((long)enter["seq"] < (long)down["seq"] && (long)down["seq"] < (long)exit["seq"]);
                     Assert.Contains(rows, x => (string)x["event"] == "hud.native_hit_test" && (int)x["data"]["result"] == HTCLIENT);
                 }
-                Assert.Null(FocusTrace.HudInputSnapshot);
+                Assert.False(FocusWindowSnapshot.IsHudRegistered(hudHwnd));
             }
             finally { FocusTrace.Stop(); }
         }
@@ -246,18 +249,207 @@ namespace CF7Launcher.Tests.Guardian
                 using (TestNativeHudOverlay hud = CreateHud(owner, out RecordingWidget widget))
                 {
                     Point center = Center(widget.ScreenBounds);
-                    JObject before = JObject.FromObject(FocusTrace.CaptureHudInput(center));
+                    JObject before = JObject.FromObject(FocusTrace.CaptureHudInput(hud.Handle, center));
                     // Win32 明确规定 SLA 之后的 ULW 会失败，直至重置 layered style。
                     Assert.True(SetLayeredWindowAttributes(hud.Handle, 0, 255, 2));
                     widget.PaintColor = Color.Red;
                     widget.MoveTo(widget.ScreenBounds);
-                    JObject after = JObject.FromObject(FocusTrace.CaptureHudInput(center));
+                    JObject after = JObject.FromObject(FocusTrace.CaptureHudInput(hud.Handle, center));
                     Assert.False((bool)after["lastCommit"]["Succeeded"]);
                     Assert.Equal("update_layered_window_failed", (string)after["lastCommit"]["ErrorValue"]);
                     Assert.Equal((long)before["submittedPaint"], (long)after["submittedPaint"]);
                     Assert.Equal(255, (int)after["paintedAlpha"]);
                     Assert.Equal(JTokenType.Null, after["submittedSourceAlpha"].Type);
                     Assert.Equal(HTCLIENT, SendNcHitTest(hud, center));
+                }
+            }
+            finally { FocusTrace.Stop(); }
+        }
+
+        [Fact]
+        public void MultipleHudInstancesAttributeToActualReceiver()
+        {
+            var trace = new List<string>();
+            FocusTrace.Start(trace.Add, false);
+            try
+            {
+                using (Form owner = CreateOwner())
+                using (TestNativeHudOverlay hudA = CreateHud(
+                    owner, new Rectangle(300, 220, 80, 40), out RecordingWidget widgetA))
+                using (TestNativeHudOverlay hudB = CreateHud(
+                    owner, new Rectangle(100, 500, 80, 40), out RecordingWidget widgetB))
+                using (TestNativeHudOverlay hudC = CreateHud(
+                    owner, new Rectangle(700, 150, 80, 40), out RecordingWidget widgetC))
+                {
+                    IntPtr aHwnd = hudA.Handle, bHwnd = hudB.Handle, cHwnd = hudC.Handle;
+                    Assert.True(FocusWindowSnapshot.IsHudRegistered(aHwnd));
+                    Assert.True(FocusWindowSnapshot.IsHudRegistered(bHwnd));
+                    Assert.True(FocusWindowSnapshot.IsHudRegistered(cHwnd));
+
+                    // WndProc/本地消费路径：消息实际送进 A，证据必须归 A，
+                    // 不得冒认最后注册的 C。
+                    Point aCenter = Center(widgetA.ScreenBounds);
+                    SendMouse(hudA, WM_LBUTTONDOWN, aCenter);
+                    SendMouse(hudA, WM_LBUTTONUP, aCenter);
+                    FocusTrace.Flush();
+                    JObject[] rows = ReadFocusRows(trace);
+                    JObject down = rows.Single(x => (string)x["event"] == "hud.down");
+                    Assert.Equal(aHwnd.ToInt64(), (long)down["data"]["receiver"]);
+                    Assert.Equal(FocusWindowSnapshot.HudInstance(aHwnd),
+                        (string)down["data"]["receiverInstance"]);
+                    Assert.Equal(aHwnd.ToInt64(), (long)down["data"]["windows"]["hud"]["hwnd"]);
+                    Assert.Equal("receiver",
+                        (string)down["data"]["windows"]["hudAttribution"]["via"]);
+                    Assert.Equal(nameof(RecordingWidget),
+                        (string)down["data"]["hudInput"]["logicalWidget"]);
+                    Assert.Equal(widgetA.ScreenBounds,
+                        down["data"]["hudInput"]["logicalBounds"].ToObject<Rectangle>());
+                    // 快照同时保留注册表视角：三个实例各自可区分。
+                    JObject[] huds = down["data"]["windows"]["huds"].ToObject<JObject[]>();
+                    Assert.Equal(3, huds.Length);
+                    Assert.Equal(3, huds.Select(x => (string)x["instance"]).Distinct().Count());
+                    Assert.Contains(huds, x => (long)x["hwnd"] == aHwnd.ToInt64());
+                    Assert.Contains(huds, x => (long)x["hwnd"] == bHwnd.ToInt64());
+                    Assert.Contains(huds, x => (long)x["hwnd"] == cHwnd.ToInt64());
+                    // 未改动的 hud.up 事件：按命中点归属同样能归到 A。
+                    JObject up = rows.Single(x => (string)x["event"] == "hud.up");
+                    Assert.Equal(aHwnd.ToInt64(), (long)up["data"]["windows"]["hud"]["hwnd"]);
+
+                    // hook 路径：down 落在 B 的区域，归属必须归 B 而不是先注册的 A。
+                    Point bCenter = Center(widgetB.ScreenBounds);
+                    FocusTrace.SetTarget(widgetB.ScreenBounds);
+                    FocusTrace.PhysicalEdge(WM_LBUTTONDOWN, bCenter, 1, 10, 7);
+                    FocusTrace.Flush();
+                    JObject mdown = ReadFocusRows(trace)
+                        .Single(x => (string)x["event"] == "mouse.down");
+                    Assert.Equal(bHwnd.ToInt64(),
+                        (long)mdown["data"]["windows"]["hud"]["hwnd"]);
+                    Assert.True((bool)mdown["data"]["windows"]["hudAttribution"]["registered"]);
+                    Assert.Equal(widgetB.ScreenBounds,
+                        mdown["data"]["hudInput"]["logicalBounds"].ToObject<Rectangle>());
+                }
+            }
+            finally { FocusTrace.Stop(); }
+        }
+
+        [Fact]
+        public void LastDestroyedHudLeavesNoDanglingRegistration()
+        {
+            var trace = new List<string>();
+            FocusTrace.Start(trace.Add, false);
+            try
+            {
+                using (Form owner = CreateOwner())
+                {
+                    IntPtr hudHwnd;
+                    Rectangle bounds;
+                    using (TestNativeHudOverlay hud = CreateHud(owner, out RecordingWidget widget))
+                    {
+                        hudHwnd = hud.Handle;
+                        bounds = widget.ScreenBounds;
+                        Assert.True(FocusWindowSnapshot.IsHudRegistered(hudHwnd));
+                    }
+                    // 最后实例销毁：注销后注册表回到空，不留悬垂 HWND。
+                    Assert.False(FocusWindowSnapshot.IsHudRegistered(hudHwnd));
+                    Assert.Equal(0, FocusWindowSnapshot.RegisteredHudCount);
+                    // 旧坐标上的新点击显式标 unattributed，不输出伪造快照。
+                    FocusTrace.SetTarget(bounds);
+                    FocusTrace.PhysicalEdge(WM_LBUTTONDOWN, Center(bounds), 1, 10, 7);
+                    FocusTrace.Flush();
+                    JObject down = ReadFocusRows(trace)
+                        .Single(x => (string)x["event"] == "mouse.down");
+                    Assert.Equal("unattributed",
+                        (string)down["data"]["hudInput"]["unavailable"]);
+                    Assert.Equal(0, (long)down["data"]["windows"]["hud"]["hwnd"]);
+                    Assert.Empty((JArray)down["data"]["windows"]["huds"]);
+                }
+            }
+            finally { FocusTrace.Stop(); }
+        }
+
+        [Fact]
+        public void InvalidRegisteredHandleIsPrunedInsteadOfFaked()
+        {
+            var fake = new IntPtr(0x1111);
+            FocusWindowSnapshot.RegisterHud(fake, IntPtr.Zero, _ => new { fake = true });
+            try
+            {
+                Assert.True(FocusWindowSnapshot.IsHudRegistered(fake));
+                // 失效句柄惰性剔除：归属查询触发 IsWindow 校验并移除残留，
+                // 不冒认为有效 HUD。
+                FocusWindowSnapshot.HudAttribution attribution =
+                    FocusWindowSnapshot.AttributeHudAt(new Point(10, 10));
+                Assert.False(FocusWindowSnapshot.IsHudRegistered(fake));
+                Assert.False(attribution.Registered);
+                Assert.Equal("unattributed", attribution.Via);
+            }
+            finally { FocusWindowSnapshot.UnregisterHud(fake); }
+        }
+
+        [Fact]
+        public void OverlappingHudsWithoutUniqueHitAreAmbiguousNotGuessed()
+        {
+            var trace = new List<string>();
+            FocusTrace.Start(trace.Add, false);
+            try
+            {
+                using (Form owner = CreateOwner())
+                using (TestNativeHudOverlay hudA = CreateHud(
+                    owner, new Rectangle(300, 220, 120, 80), out _))
+                using (TestNativeHudOverlay hudB = CreateHud(
+                    owner, new Rectangle(340, 240, 120, 80), out _))
+                using (Form cover = new Form())
+                {
+                    IntPtr aHwnd = hudA.Handle, bHwnd = hudB.Handle;
+                    var overlap = new Point(370, 270);
+                    cover.StartPosition = FormStartPosition.Manual;
+                    cover.FormBorderStyle = FormBorderStyle.None;
+                    cover.ShowInTaskbar = false;
+                    cover.Bounds = new Rectangle(overlap.X - 30, overlap.Y - 30, 120, 120);
+                    // WindowFromPoint 命中非注册的顶层窗口，几何上两个 HUD 都含该点：
+                    // 必须标 ambiguous/unattributed，不得猜其中一个。
+                    cover.Show();
+                    FocusTrace.SetTarget(new Rectangle(overlap.X - 10, overlap.Y - 10, 20, 20));
+                    FocusTrace.PhysicalEdge(WM_LBUTTONDOWN, overlap, 1, 10, 7);
+                    FocusTrace.Flush();
+                    JObject down = ReadFocusRows(trace)
+                        .Single(x => (string)x["event"] == "mouse.down");
+                    Assert.Equal("unattributed",
+                        (string)down["data"]["hudInput"]["unavailable"]);
+                    Assert.Equal("ambiguous",
+                        (string)down["data"]["hudInput"]["via"]);
+                    Assert.Equal(0, (long)down["data"]["windows"]["hud"]["hwnd"]);
+                    long[] candidates = down["data"]["windows"]["hudAttribution"]["candidates"]
+                        .ToObject<long[]>();
+                    Assert.Contains(aHwnd.ToInt64(), candidates);
+                    Assert.Contains(bHwnd.ToInt64(), candidates);
+                }
+            }
+            finally { FocusTrace.Stop(); }
+        }
+
+        [Fact]
+        public void ProbeOnWrongThreadReportsDifferentThread()
+        {
+            var trace = new List<string>();
+            FocusTrace.Start(trace.Add, false);
+            try
+            {
+                using (Form owner = CreateOwner())
+                using (TestNativeHudOverlay hud = CreateHud(owner, out RecordingWidget widget))
+                {
+                    Point center = Center(widget.ScreenBounds);
+                    object result = null;
+                    var thread = new Thread(
+                        () => { result = FocusTrace.CaptureHudInput(hud.Handle, center); });
+                    thread.Start();
+                    Assert.True(thread.Join(10000));
+                    Assert.Equal("different_thread",
+                        (string)JObject.FromObject(result)["unavailable"]);
+                    // 对照：本线程取本实例快照正常返回。
+                    JObject same = JObject.FromObject(
+                        FocusTrace.CaptureHudInput(hud.Handle, center));
+                    Assert.Equal(nameof(RecordingWidget), (string)same["logicalWidget"]);
                 }
             }
             finally { FocusTrace.Stop(); }
@@ -307,7 +499,7 @@ namespace CF7Launcher.Tests.Guardian
                     hud.ObserveFocusBitmapCommit(new LayeredWindowCommitResult(
                         true, hud.Left, hud.Top, hud.Width, hud.Height, 255, 0, 0,
                         LayeredWindowCommitError.None, 0, null, null), oldPaint, oldPlacement);
-                    JObject evidence = JObject.FromObject(FocusTrace.CaptureHudInput(Center(widget.ScreenBounds)));
+                    JObject evidence = JObject.FromObject(FocusTrace.CaptureHudInput(hud.Handle, Center(widget.ScreenBounds)));
                     Assert.Equal(oldPaint, (long)evidence["submittedPaint"]);
                     Assert.True((long)evidence["paintGeneration"] > oldPaint);
                     Assert.Equal(255, (int)evidence["paintedAlpha"]);
@@ -615,8 +807,16 @@ namespace CF7Launcher.Tests.Guardian
             Form owner,
             out RecordingWidget widget)
         {
+            return CreateHud(owner, new Rectangle(300, 220, 80, 40), out widget);
+        }
+
+        private static TestNativeHudOverlay CreateHud(
+            Form owner,
+            Rectangle widgetBounds,
+            out RecordingWidget widget)
+        {
             Control anchor = owner.Controls["anchor"];
-            widget = new RecordingWidget(new Rectangle(300, 220, 80, 40));
+            widget = new RecordingWidget(widgetBounds);
             TestNativeHudOverlay hud = new TestNativeHudOverlay(owner, anchor);
             hud.SessionForegroundForTest = true;
             hud.AddWidget(widget);

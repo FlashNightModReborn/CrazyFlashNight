@@ -1,11 +1,14 @@
 ﻿[CmdletBinding()]
-param([switch]$ArenaAutomation)
+param([switch]$ArenaAutomation,[string]$CandidatePath,[switch]$FocusTrace,[ValidateRange(0,8388605)][uint32]$InputSessionTestCap=0)
 $ErrorActionPreference='Stop'
 chcp.com 65001 | Out-Null
 $repo=[IO.Path]::GetFullPath((Join-Path $PSScriptRoot '..\..\..'))
 & node (Join-Path $repo 'tools\fontctl\cli.js') generate --check --project-root $repo
 if ($LASTEXITCODE -ne 0) { throw 'Font catalog is stale. Run node tools/fontctl/cli.js generate from the repository root, then retry.' }
-$output=Join-Path $repo 'tmp\flash-compositor\game'
+$output=if($CandidatePath){[IO.Path]::GetFullPath($CandidatePath)}else{Join-Path $repo 'tmp\flash-compositor\game'}
+$allowed=[IO.Path]::GetFullPath((Join-Path $repo 'tmp'))+[IO.Path]::DirectorySeparatorChar
+if(-not $output.StartsWith($allowed,[StringComparison]::OrdinalIgnoreCase)){throw 'CandidatePath must be inside repository tmp'}
+if($InputSessionTestCap -gt 0 -and $InputSessionTestCap -lt 8){throw 'Test cap must be zero (production default) or at least 8'}
 $manifestPath=Join-Path $output 'development-pair.json'
 if (-not (Test-Path -LiteralPath $manifestPath)) { throw '先运行 build-game.ps1 生成配套开发构建。' }
 $manifest=Get-Content -LiteralPath $manifestPath -Raw -Encoding UTF8 | ConvertFrom-Json
@@ -17,11 +20,16 @@ foreach ($entry in $manifest.files) {
 . (Join-Path $repo 'launcher\resolve-dotnet.ps1')
 $sdk=Resolve-Cf7Dotnet -ProjectRoot $repo
 $previousRoot=$env:DOTNET_ROOT_X64
+$previousTrace=$env:CF7_FOCUS_TRACE
+$previousCap=$env:CF7_INPUT_SESSION_TEST_CAP
 try {
     $env:DOTNET_ROOT_X64=Split-Path -Parent $sdk
-    $gameArgs=@('--project-root',$repo)
+    if($FocusTrace){$env:CF7_FOCUS_TRACE='1'}
+    $env:CF7_INPUT_SESSION_TEST_CAP=if($InputSessionTestCap){[string]$InputSessionTestCap}else{$null}
+    $gameArgs=@('--project-root',('"'+$repo+'"'))
     if ($ArenaAutomation) { $gameArgs+='--legacy-http-automation' }
-    & (Join-Path $output 'CRAZYFLASHER7MercenaryEmpire.Core.exe') @gameArgs
-    $result=$LASTEXITCODE
-} finally { $env:DOTNET_ROOT_X64=$previousRoot }
+    $gameProcess=Start-Process -FilePath (Join-Path $output 'CRAZYFLASHER7MercenaryEmpire.Core.exe') -ArgumentList $gameArgs -PassThru
+    $gameProcess.WaitForExit()
+    $result=$gameProcess.ExitCode
+} finally { $env:DOTNET_ROOT_X64=$previousRoot; $env:CF7_FOCUS_TRACE=$previousTrace; $env:CF7_INPUT_SESSION_TEST_CAP=$previousCap }
 exit $result

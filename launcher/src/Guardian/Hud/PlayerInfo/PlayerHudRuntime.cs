@@ -15,10 +15,10 @@ internal sealed class PlayerHudRuntime : IPanelHudCompanion, IDisposable
     private readonly PlayerHudResourceTooltip _resourceTooltip;
     private bool _disposed;
     private bool _suspended, _restoringOrder;
-    private readonly IntPtr _existingHud;
+    private readonly NativeHudOverlay _existingHud;
 
     internal PlayerHudRuntime(Form owner, Control anchor, PlayerInfoSplitSurface resources,
-        PlayerHudController controller, string iconsRoot, IntPtr existingHud)
+        PlayerHudController controller, string iconsRoot, NativeHudOverlay existingHud)
     {
         _resources = resources; _controller = controller; _existingHud = existingHud;
         _bottom = new NativeHudOverlay(owner, anchor);
@@ -35,10 +35,11 @@ internal sealed class PlayerHudRuntime : IPanelHudCompanion, IDisposable
             _bottom.AddWidget(new PlayerHudBottomWidget(anchor, controller, iconsRoot));
             _bottom.AddWidget(_resourceTooltip.Widget);
             _buffs.AddWidget(new PlayerHudBuffWidget(anchor, controller));
-            _buffs.SetZOrderInsertAfter(existingHud);
-            _resources.SetZOrderInsertAfter(_buffs.Handle);
+            _buffs.SetZOrderInsertAfter(existingHud.Handle);
+            _resources.SetZOrderInsertAfter(existingHud.Handle);
             // The authored chassis extends behind the resource gauges.
-            _bottom.SetZOrderInsertAfter(_resources.Handle);
+            _bottom.SetZOrderInsertAfter(existingHud.Handle);
+            _existingHud.PresentationChanged += RestoreStack;
             _bottom.PresentationChanged += RestoreStack;
             _buffs.PresentationChanged += RestoreStack;
             _resources.PresentationChanged += RestoreStack;
@@ -47,6 +48,7 @@ internal sealed class PlayerHudRuntime : IPanelHudCompanion, IDisposable
         }
         catch
         {
+            _existingHud.PresentationChanged -= RestoreStack;
             _bottom.PresentationChanged -= RestoreStack; _buffs.PresentationChanged -= RestoreStack; _resources.PresentationChanged -= RestoreStack;
             if(_resourceTooltip!=null){_bottom.RemoveWidget(_resourceTooltip.Widget);_resourceTooltip.Dispose();}
             _bottom.Dispose(); _buffs.Dispose(); throw;
@@ -59,7 +61,7 @@ internal sealed class PlayerHudRuntime : IPanelHudCompanion, IDisposable
         _restoringOrder = true;
         try
         {
-            RestoreStack(_existingHud, _buffs.Handle, _resources.Handle, _bottom.Handle,
+            RestoreStack(_existingHud.Handle, _buffs.Handle, _resources.Handle, _bottom.Handle,
                 (window, previous) => window == _buffs.Handle ? _buffs.RestoreRelativeOrder(previous)
                     : window == _resources.Handle ? _resources.RestoreRelativeOrder(previous)
                     : _bottom.RestoreRelativeOrder(previous));
@@ -69,7 +71,12 @@ internal sealed class PlayerHudRuntime : IPanelHudCompanion, IDisposable
     internal static void RestoreStack(IntPtr existing, IntPtr buffs, IntPtr resources, IntPtr bottom,
         Func<IntPtr, IntPtr, bool> restore)
     {
-        restore(buffs, existing); restore(resources, buffs); restore(bottom, resources);
+        // A hidden/skipped predecessor has arbitrary old Z position. Only a
+        // successfully restored visible surface may anchor the next one.
+        var previous=existing;
+        if(restore(buffs,previous)) previous=buffs;
+        if(restore(resources,previous)) previous=resources;
+        restore(bottom,previous);
     }
     internal void SetReady() { _resources.SetReady(); _bottom.SetReady(); _buffs.SetReady(); }
     internal void PreCommitTransparent() { _bottom.PreCommitTransparent(); _buffs.PreCommitTransparent(); }
@@ -88,6 +95,7 @@ internal sealed class PlayerHudRuntime : IPanelHudCompanion, IDisposable
     public void Dispose()
     {
         if (_disposed) return; _disposed = true;
+        _existingHud.PresentationChanged -= RestoreStack;
         _bottom.PresentationChanged -= RestoreStack; _buffs.PresentationChanged -= RestoreStack; _resources.PresentationChanged -= RestoreStack;
         _queryTimer.Stop(); _queryTimer.Tick -= OnTick; _queryTimer.Dispose();
         _resources.RenderTimingObserver = null; _bottom.RenderTimingObserver = null; _buffs.RenderTimingObserver = null;

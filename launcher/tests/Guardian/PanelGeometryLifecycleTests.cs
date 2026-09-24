@@ -145,7 +145,7 @@ namespace CF7Launcher.Tests.Guardian
                 geometry,
                 StringComparison.Ordinal);
             int resume = open.IndexOf(
-                "if (!_web.ResumeForPanel(panelRect))",
+                "if (!ResumePanelSurface(panelRect))",
                 geometry,
                 StringComparison.Ordinal);
             int commit = open.IndexOf(

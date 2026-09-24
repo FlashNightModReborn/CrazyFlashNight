@@ -1,0 +1,8 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net10.0-windows</TargetFramework><OutputType>WinExe</OutputType><UseWindowsForms>true</UseWindowsForms>
+    <PlatformTarget>x64</PlatformTarget><Nullable>enable</Nullable><ImplicitUsings>enable</ImplicitUsings>
+    <AssemblyName>C1IslandHost</AssemblyName><EnableDefaultCompileItems>false</EnableDefaultCompileItems>
+  </PropertyGroup>
+  <ItemGroup><Compile Include="C1IslandHost.cs" /><Compile Include="C1LiveInput.cs" /><Compile Include="C1WebLifetime.cs" /><Compile Include="C1Presentation.cs" /><ProjectReference Include="../../../CRAZYFLASHER7MercenaryEmpire.csproj" /></ItemGroup>
+</Project>

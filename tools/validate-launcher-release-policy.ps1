@@ -221,6 +221,7 @@ function Get-Cf7ProductionChecks {
 
     $requiredWebPaths = @(
         'bootstrap.html', 'bootstrap-main.js', 'overlay.html', 'config\version.js',
+        'composition-help.html', 'modules\composition-help.js',
         'css\bootstrap.css', 'css\game-ui-behavior.css', 'css\welcome.css', 'css\overlay.css',
         'css\panels.css', 'css\panels\foundation-top.css', 'css\workbench\tokens.css',
         'css\panels\foundation-rest.css', 'css\workbench\core.css', 'css\workbench\profiles.css',

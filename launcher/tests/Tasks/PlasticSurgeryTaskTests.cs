@@ -19,6 +19,32 @@ namespace Launcher.Tests.Tasks
                 ["callId"] = id, ["panelInstanceId"] = "panel.1", ["payload"] = payload };
         }
         private static JObject Sent(string text) => JObject.Parse(text.TrimEnd('\0'));
+        [Fact]
+        public void IsolatedDraftCapabilityRejectsCommitBeforeTransportAndRemembersDuplicate()
+        {
+            var sent = new List<JObject>(); var posted = new List<JObject>();
+            using var task = new PlasticSurgeryTask(() => true, text => { sent.Add(Sent(text)); return true; }, draftOnly: true);
+            task.SetPostToWeb(text => posted.Add(JObject.Parse(text)));
+            task.HandleWebRequest("commit", Request("commit", "write.1"));
+            task.HandleWebRequest("commit", Request("commit", "write.1"));
+            Assert.Empty(sent); Assert.Single(posted);
+            Assert.Equal("read_only_capability", posted[0].Value<string>("error"));
+            task.HandleWebRequest("snapshot", Request("snapshot", "read.1"));
+            Assert.Single(sent); Assert.Equal("plasticSurgerySnapshot", sent[0].Value<string>("action"));
+        }
+        [Fact]
+        public void AuthoritativeAs2ReadOnlyDenialIsDefinitiveWithoutUnknownWriteLock()
+        {
+            var sent = new List<JObject>(); var posted = new List<JObject>();
+            using var task = new PlasticSurgeryTask(() => true, text => { sent.Add(Sent(text)); return true; });
+            task.SetPostToWeb(text => posted.Add(JObject.Parse(text)));
+            task.HandleWebRequest("commit", Request("commit", "write.1"));
+            task.HandleFlashResponse(new JObject { ["v"] = 1, ["callId"] = sent[0]["callId"], ["success"] = false, ["error"] = "read_only_capability" }, _ => { });
+            Assert.False(posted[0].Value<bool>("requiresReconcile"));
+            Assert.Equal("read_only_capability", posted[0].Value<string>("error"));
+            task.HandleWebRequest("snapshot", Request("snapshot", "read.1"));
+            Assert.Equal(2, sent.Count);
+        }
         private static JObject Response(JObject sent, string phase = "applied")
         {
             var result = new JObject

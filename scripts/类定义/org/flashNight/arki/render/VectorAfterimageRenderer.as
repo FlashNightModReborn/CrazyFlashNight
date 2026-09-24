@@ -90,6 +90,8 @@ class org.flashNight.arki.render.VectorAfterimageRenderer {
      * 构造函数 - 初始化默认配置参数、对象池及渐隐画布集合
      */
     public function VectorAfterimageRenderer() {
+        // C1-I does not instantiate gameplay VFX pools or their scheduler.
+        if (org.flashNight.arki.input.IsolatedInputPolicy.forbidsLegacyDrivers()) return;
         _defaultShadowCount = DEFAULT_SHADOW_COUNT;
         _config = {};
         _fadeCallback = Delegate.create1(this, onFadeUpdate);

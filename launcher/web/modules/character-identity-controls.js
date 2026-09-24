@@ -48,12 +48,18 @@
         input.addEventListener('compositionend', end);
         input.addEventListener('input', change);
         input.addEventListener('keydown', key);
-        return function() {
+        function dispose() {
             input.removeEventListener('compositionstart', start);
             input.removeEventListener('compositionend', end);
             input.removeEventListener('input', change);
             input.removeEventListener('keydown', key);
+        }
+        dispose.cancelComposition = function(value) {
+            composing = false; input.value = value;
+            if (options.onComposition) options.onComposition(false);
+            change();
         };
+        return dispose;
     }
     function bindGender(inputs, onChange) {
         var listeners = Array.prototype.map.call(inputs, function(input) {

@@ -1,0 +1,237 @@
+[
+  {
+    "source": "scripts/macros/BitFlags.as",
+    "output": "macros/BitFlags.as",
+    "sha256": "2c35fe5fdee410dba97eea6e2c51d9bb80ee82f4f804cb1df5d574e31888f4ef"
+  },
+  {
+    "source": "scripts/macros/BUFF_BIT_ADD.as",
+    "output": "macros/BUFF_BIT_ADD.as",
+    "sha256": "81ab57c9b0bb5c2aa7197a1af1d26a0fa30320d3963752ab2206c116f537832c"
+  },
+  {
+    "source": "scripts/macros/BUFF_BIT_ADD_NEGATIVE.as",
+    "output": "macros/BUFF_BIT_ADD_NEGATIVE.as",
+    "sha256": "5a57f0809aa8e69638e60f60371b21d975ec037902d7892ae6736ded9ce37d81"
+  },
+  {
+    "source": "scripts/macros/BUFF_BIT_ADD_POSITIVE.as",
+    "output": "macros/BUFF_BIT_ADD_POSITIVE.as",
+    "sha256": "1fb544aa4a518c5b5d6771f7a5bfe0cd008659090b78293adc2ce77d33dfc65b"
+  },
+  {
+    "source": "scripts/macros/BUFF_BIT_MAX.as",
+    "output": "macros/BUFF_BIT_MAX.as",
+    "sha256": "68e5d73f5b0417f408c31fccc49d2285469bf338ed07ebc4639e80fd9abb5f5e"
+  },
+  {
+    "source": "scripts/macros/BUFF_BIT_MIN.as",
+    "output": "macros/BUFF_BIT_MIN.as",
+    "sha256": "2277281847b9eadad07f354cacbeab7d76fdd316e11bec902e79c6b75917b880"
+  },
+  {
+    "source": "scripts/macros/BUFF_BIT_MULT_NEGATIVE.as",
+    "output": "macros/BUFF_BIT_MULT_NEGATIVE.as",
+    "sha256": "7302bf03c37d2b33e19ab7bba3d38282dff9afc304ac88c4c1e2c8fd59b59c4f"
+  },
+  {
+    "source": "scripts/macros/BUFF_BIT_MULT_POSITIVE.as",
+    "output": "macros/BUFF_BIT_MULT_POSITIVE.as",
+    "sha256": "d0ce0fc03fd9919535832ac35fb21e173b10dad2d95aee58df71a2992d565f07"
+  },
+  {
+    "source": "scripts/macros/BUFF_BIT_MULTIPLY.as",
+    "output": "macros/BUFF_BIT_MULTIPLY.as",
+    "sha256": "8ce0864d2a6e33749bfed0e1e0db4e105fae5f5be697db5bee313a86420df7a0"
+  },
+  {
+    "source": "scripts/macros/BUFF_BIT_OVERRIDE.as",
+    "output": "macros/BUFF_BIT_OVERRIDE.as",
+    "sha256": "3278712362541ea12a8153ab34a60271e8204c699720b171a6674ebc31800ceb"
+  },
+  {
+    "source": "scripts/macros/BUFF_BIT_PERCENT.as",
+    "output": "macros/BUFF_BIT_PERCENT.as",
+    "sha256": "5a3b9f4c6d590a30720c884ffe6c6da5f0fdc9eac35743368eae0dec7dac7864"
+  },
+  {
+    "source": "scripts/macros/BUFF_MASK_BOUNDS.as",
+    "output": "macros/BUFF_MASK_BOUNDS.as",
+    "sha256": "4eebcaa9bdf2af332418a7ab6ada8ed6ea3eda4e5b944a211fb2e36a72987d72"
+  },
+  {
+    "source": "scripts/macros/BUFF_MASK_COMMON.as",
+    "output": "macros/BUFF_MASK_COMMON.as",
+    "sha256": "cff32c840d167bb7c8ec8cf9e7e7dc600966bcbe56090e49860d7af6c0cc4c9e"
+  },
+  {
+    "source": "scripts/macros/BUFF_MASK_CONSERVATIVE.as",
+    "output": "macros/BUFF_MASK_CONSERVATIVE.as",
+    "sha256": "2267b43fbb95a37ecb31d9025841ccb7d8ceab13e35b7df5d780d77aaf07ba1d"
+  },
+  {
+    "source": "scripts/macros/BUFF_TYPE_ADD.as",
+    "output": "macros/BUFF_TYPE_ADD.as",
+    "sha256": "1f58bbdcc032f546b6cd16cf180c1f9e31d9a20660fd2e740b6e93f637bc39a2"
+  },
+  {
+    "source": "scripts/macros/BUFF_TYPE_ADD_NEGATIVE.as",
+    "output": "macros/BUFF_TYPE_ADD_NEGATIVE.as",
+    "sha256": "624e8315912e8c908894e374953385526090dd04fb61233dc79f0cd118723688"
+  },
+  {
+    "source": "scripts/macros/BUFF_TYPE_ADD_POSITIVE.as",
+    "output": "macros/BUFF_TYPE_ADD_POSITIVE.as",
+    "sha256": "9159b88e521cb0e52973ad0e2d01a18f7d2ff1c8df5f48f1dfee5e465f56bb11"
+  },
+  {
+    "source": "scripts/macros/BUFF_TYPE_MAX.as",
+    "output": "macros/BUFF_TYPE_MAX.as",
+    "sha256": "eb009ffc842a79f4b292c65b3f2e7de2bb634fb26f94f1be0b6f26128a608763"
+  },
+  {
+    "source": "scripts/macros/BUFF_TYPE_MIN.as",
+    "output": "macros/BUFF_TYPE_MIN.as",
+    "sha256": "2cc3cd717d0b4c349380303c48969295eb6be24b92562a3051d0ab1cbb5ee4b0"
+  },
+  {
+    "source": "scripts/macros/BUFF_TYPE_MULT_NEGATIVE.as",
+    "output": "macros/BUFF_TYPE_MULT_NEGATIVE.as",
+    "sha256": "6d09b1f44b4cce28ac865b0a4d792efd54e612bca0ae2a465cb74c22208b2a58"
+  },
+  {
+    "source": "scripts/macros/BUFF_TYPE_MULT_POSITIVE.as",
+    "output": "macros/BUFF_TYPE_MULT_POSITIVE.as",
+    "sha256": "a1a28f9af2beb50fdf2b8347d78bfd1ce1e057dbb5622ea5db9b1cce5f16cb5c"
+  },
+  {
+    "source": "scripts/macros/BUFF_TYPE_MULTIPLY.as",
+    "output": "macros/BUFF_TYPE_MULTIPLY.as",
+    "sha256": "4bc9779cec1f5d254abf44be0d67ff2499ed48809fd8f58ff41297e5584dfc4e"
+  },
+  {
+    "source": "scripts/macros/BUFF_TYPE_OVERRIDE.as",
+    "output": "macros/BUFF_TYPE_OVERRIDE.as",
+    "sha256": "aaa1f80ce1efceeda72455bcdc741d507abe4b1302334faf080bc660c63296ea"
+  },
+  {
+    "source": "scripts/macros/BUFF_TYPE_PERCENT.as",
+    "output": "macros/BUFF_TYPE_PERCENT.as",
+    "sha256": "04d4e0c098d14af42827fb2b59965a9cb543efcbc1b62fcf14adbbd1922ffaa6"
+  },
+  {
+    "source": "scripts/macros/BUFF_TYPE_TO_BIT.as",
+    "output": "macros/BUFF_TYPE_TO_BIT.as",
+    "sha256": "a10c9b75e7c23728111e8a30ad1c70b4bddf5208eb476ef5b035f61765fda349"
+  },
+  {
+    "source": "scripts/macros/BuffBitFlags.as",
+    "output": "macros/BuffBitFlags.as",
+    "sha256": "c2e3cfa4ea841a3e662fddf249151b47a82ae43c49f033182576640a764a7862"
+  },
+  {
+    "source": "scripts/macros/FLAG_CHAIN.as",
+    "output": "macros/FLAG_CHAIN.as",
+    "sha256": "ef6e6d3996dfca79187d833829a8b31d3d4b49db1cdcc719cb156c590534679c"
+  },
+  {
+    "source": "scripts/macros/FLAG_EXPLOSIVE.as",
+    "output": "macros/FLAG_EXPLOSIVE.as",
+    "sha256": "f2005beb7e76d5699da617a06bcdd7bff0399a28756879bbdbb5e6eebf24f287"
+  },
+  {
+    "source": "scripts/macros/FLAG_GRENADE.as",
+    "output": "macros/FLAG_GRENADE.as",
+    "sha256": "a484909e399f790d68516ef28534be7c03a7b7d21f5f473158418ed3d53681ea"
+  },
+  {
+    "source": "scripts/macros/FLAG_MELEE.as",
+    "output": "macros/FLAG_MELEE.as",
+    "sha256": "57da1281e951492edd0469af7b9abedc16b603351be95eb45301a5e45f35ee88"
+  },
+  {
+    "source": "scripts/macros/FLAG_NORMAL.as",
+    "output": "macros/FLAG_NORMAL.as",
+    "sha256": "e2aabf6ddf154e9a3d667756aae208a6fe04d03bcf45adf379a400bde37d92ea"
+  },
+  {
+    "source": "scripts/macros/FLAG_PIERCE.as",
+    "output": "macros/FLAG_PIERCE.as",
+    "sha256": "cbfb4652124277276b69d5200d7b3345f890c2df6c8f9ecab1e573228f41013c"
+  },
+  {
+    "source": "scripts/macros/FLAG_RAY.as",
+    "output": "macros/FLAG_RAY.as",
+    "sha256": "f3f61b064696a7cf2fe206ac0701bb8e3229b13b401d1e36d1919b40185ef9d0"
+  },
+  {
+    "source": "scripts/macros/FLAG_TRANSPARENCY.as",
+    "output": "macros/FLAG_TRANSPARENCY.as",
+    "sha256": "2939f18873779b7d1d78aa5c850a62f53459bbe08a026a9b8e991bc9d2f03a0a"
+  },
+  {
+    "source": "scripts/macros/FLAG_UNIT_BULLET.as",
+    "output": "macros/FLAG_UNIT_BULLET.as",
+    "sha256": "29d7c53609f4c8885982895be9ea2f4dbf8faca69cb60299970addf9e9be5b8a"
+  },
+  {
+    "source": "scripts/macros/FLAG_VERTICAL.as",
+    "output": "macros/FLAG_VERTICAL.as",
+    "sha256": "90a8999ffdb068e598efe706cd942dfd3044a0d8456af447fe3dd5d8fa6b3a6b"
+  },
+  {
+    "source": "scripts/macros/STATE_FRIENDLY_FIRE.as",
+    "output": "macros/STATE_FRIENDLY_FIRE.as",
+    "sha256": "44b40c3c63bf0a6548ae9954968d34b18ec458e8db1e5233ade41c65af60521d"
+  },
+  {
+    "source": "scripts/macros/STATE_GRENADE_XML.as",
+    "output": "macros/STATE_GRENADE_XML.as",
+    "sha256": "2fc78ac6887990dde855d06ef76753c8f4cf32b0c9110efe5dabacb5c3751710"
+  },
+  {
+    "source": "scripts/macros/STATE_HIT_MAP.as",
+    "output": "macros/STATE_HIT_MAP.as",
+    "sha256": "6ad68b19a9ee13249e46aaa8a1fef7bd6b0bee4f592ec3802ac136bd9a488967"
+  },
+  {
+    "source": "scripts/macros/STATE_LONG_RANGE.as",
+    "output": "macros/STATE_LONG_RANGE.as",
+    "sha256": "1b4c4ef7b7235711b0096a0a7b2fab3ba1c62f1daf3b77e5ee77fce5038248de"
+  },
+  {
+    "source": "scripts/macros/STATE_NO_STUN.as",
+    "output": "macros/STATE_NO_STUN.as",
+    "sha256": "ed5eb16c2f0a5dd592309bf55305cda482701f7153c9fb4e66ceff3c4e508683"
+  },
+  {
+    "source": "scripts/macros/STATE_REVERSE_KNOCKBACK.as",
+    "output": "macros/STATE_REVERSE_KNOCKBACK.as",
+    "sha256": "031f97eddebc6c3b8a465fa06652eceb7025275d34c2e44afbed968c82ea01f1"
+  },
+  {
+    "source": "scripts/macros/StateFlags.as",
+    "output": "macros/StateFlags.as",
+    "sha256": "e5bd037cc351de0bb55bf0081b7929c559944ab42444a549f2ad88b0d6523dfe"
+  },
+  {
+    "source": "scripts/macros/TIMSORT_MERGE.as",
+    "output": "macros/TIMSORT_MERGE.as",
+    "sha256": "069a577c90afb7f96f5d69cfdb1630520c367cee04db26d25b4ae5e796c1f857"
+  },
+  {
+    "source": "scripts/macros/TIMSORT_MERGE_INDIRECT.as",
+    "output": "macros/TIMSORT_MERGE_INDIRECT.as",
+    "sha256": "59522b3d1b602f334895182998aff773d0769f643d0844fef5b9825119b7f295"
+  },
+  {
+    "source": "scripts/macros/WHEEL_MASK_MACRO.as",
+    "output": "macros/WHEEL_MASK_MACRO.as",
+    "sha256": "8cf646dc8205ac2354943ee52fa7965560406e2d03b903ab78f4bbfee2d9ec20"
+  },
+  {
+    "source": "scripts/macros/WHEEL_SIZE_MACRO.as",
+    "output": "macros/WHEEL_SIZE_MACRO.as",
+    "sha256": "3e0b93c97ae475d66a8ee0044bfc92357066a67ef69fc11eeabf2c2891b36ac7"
+  }
+]

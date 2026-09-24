@@ -5,6 +5,10 @@ param(
     [switch]$Auto,
     [ValidateRange(3,60)][int]$PhaseSeconds = 5,
     [ValidateRange(0,3600)][int]$Duration = 0,
+    [ValidateSet('embedded','toproot','embeddedF')][string]$Topology = 'embedded',
+    [switch]$CaptureOutput,
+    [switch]$StallF,
+    [switch]$DebugHoldFrames,
     [string]$Report,
     [switch]$Build
 )
@@ -19,10 +23,14 @@ $sdk = @((Join-Path $env:LOCALAPPDATA 'Microsoft\dotnet\dotnet.exe'), (Join-Path
     Where-Object { Test-Path -LiteralPath $_ } | Where-Object { (& $_ --list-sdks) -match '^10\.0\.300 ' } | Select-Object -First 1
 if (-not $sdk) { throw '.NET SDK 10.0.300 not found' }
 if (-not $Report) {
-    $Report = Join-Path $repo ('tmp\flash-compositor\' + $Source + '-' + $Adapter + '-' + (Get-Date -Format 'yyyyMMdd-HHmmss-fff') + '.json')
+    $name = $Source + '-' + $Adapter + $(if ($Topology -ne 'embedded') { '-' + $Topology } else { '' }) + $(if ($CaptureOutput) { '-capture-output' } else { '' }) + '-' + (Get-Date -Format 'yyyyMMdd-HHmmss-fff') + '.json'
+    $Report = Join-Path $repo ('tmp\flash-compositor\' + $name)
 }
-$arguments = @($dll, '--adapter', $Adapter, '--report', [IO.Path]::GetFullPath($Report), '--phase-seconds', [string]$PhaseSeconds, '--duration', [string]$Duration)
+$arguments = @($dll, '--adapter', $Adapter, '--report', [IO.Path]::GetFullPath($Report), '--phase-seconds', [string]$PhaseSeconds, '--duration', [string]$Duration, '--topology', $Topology)
 if ($Auto) { $arguments += '--auto' }
+if ($CaptureOutput) { $arguments += '--capture-output' }
+if ($StallF) { $arguments += '--stall-f' }
+if ($DebugHoldFrames) { $arguments += '--debug-hold-frames' }
 if ($Source -eq 'flash') {
     # Disposable legacy AS2 movie, not the main game and not a player save slot.
     $arguments += @('--flash-exe', (Join-Path $repo 'Adobe Flash Player 20.exe'), '--swf', (Join-Path $repo 'flashswf\movies\bigmovie1.swf'))

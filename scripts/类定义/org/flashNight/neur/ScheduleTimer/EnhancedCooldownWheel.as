@@ -93,6 +93,12 @@ class org.flashNight.neur.ScheduleTimer.EnhancedCooldownWheel {
     private function EnhancedCooldownWheel() {
         this.fastWheel = CooldownWheel.I();
         this.activeTasks = {};
+        if (org.flashNight.arki.input.IsolatedInputPolicy.forbidsLegacyDrivers()) {
+            this.addTask = org.flashNight.arki.input.IsolatedInputPolicy.rejectLegacyTask;
+            this.addDelayedTask = org.flashNight.arki.input.IsolatedInputPolicy.rejectLegacyTask;
+            this.add = org.flashNight.arki.input.IsolatedInputPolicy.rejectLegacyTask;
+            this.addOrUpdateTask = org.flashNight.arki.input.IsolatedInputPolicy.rejectLegacyTask;
+        }
     }
 
     /**

@@ -19,6 +19,8 @@
 #include <mutex>
 #include <thread>
 #include <condition_variable>
+#include <vector>
+#include <tuple>
 
 using namespace winrt;
 using namespace winrt::Windows::Graphics::Capture;
@@ -70,9 +72,10 @@ Settings ColorMode(int mode) {
 
 class Capture {
 public:
-    Capture(HWND source, DWORD pid, HWND output, uint32_t vendor, int fps = 0, bool borderless = false)
+    Capture(HWND source, DWORD pid, HWND output, uint32_t vendor, int fps = 0, bool borderless = false, IUnknown* target = nullptr)
         : source_(source), pid_(pid), output_(output), vendor_(vendor), fps_(fps), borderless_(borderless) {
         stats_.size = sizeof(ProbeStats);
+        if (target) check_hresult(target->QueryInterface(__uuidof(IDCompositionVisual), externalVisual_.put_void()));
         worker_ = std::thread([this] { Run(); });
     }
     ~Capture() { stop_ = true; Signal(); if (worker_.joinable()) worker_.join(); }
@@ -86,6 +89,8 @@ public:
         Signal(); return true;
     }
     void RequestProof() { proofRequested_ = true; }
+    void RequestContentProof() { contentRequested_=true; proofRequested_=true; }
+    void ContentStats(ProbeContentStats& result) { std::lock_guard guard(mutex_); result=contentStats_; }
     bool Crop(int x, int y, int width, int height) {
         if (x < 0 || y < 0 || width < 1 || height < 1 || width > 8192 || height > 8192) return false;
         std::lock_guard guard(mutex_); crop_ = {x,y,x+width,y+height}; return true;
@@ -108,6 +113,8 @@ public:
         sharpness_=value; Signal(); return true;
     }
     void Stats(ProbeStats& result) { std::lock_guard guard(mutex_); result = stats_; }
+    void CaptureSize(int32_t& width,int32_t& height,uint64_t& generation) { std::lock_guard guard(mutex_); width=captureWidth_;height=captureHeight_;generation=captureGeneration_; }
+    bool OutputSize(int32_t& width,int32_t& height) { std::lock_guard guard(mutex_); width=presentedOutputW_;height=presentedOutputH_;return stats_.state!=3 && width>0 && height>0; }
 
 private:
     void Signal() { ++wakeVersion_; wake_.notify_all(); }
@@ -169,16 +176,22 @@ private:
         GraphicsCaptureItem item{nullptr};
         check_hresult(interop->CreateForWindow(source_, guid_of<GraphicsCaptureItem>(), put_abi(item)));
         auto size = item.Size();
+        { std::lock_guard guard(mutex_); captureWidth_=size.Width;captureHeight_=size.Height; }
         ValidateSize(size.Width, size.Height);
         auto pool = Direct3D11CaptureFramePool::CreateFreeThreaded(runtimeDevice,
             DirectXPixelFormat::B8G8R8A8UIntNormalized, 2, size);
         GraphicsCaptureSession session{nullptr};
         auto arrived = pool.FrameArrived(auto_revoke, [this](auto const&, auto const&) { Signal(); });
+        auto frameSignature=[&] { return std::make_tuple(IsZoomed(source_)!=FALSE,
+            GetWindowLongW(source_,GWL_STYLE)&(WS_CAPTION|WS_THICKFRAME),GetDpiForWindow(source_)); };
+        auto sessionFrame=frameSignature();
         auto startSession = [&] {
+            sessionFrame=frameSignature();
             session = pool.CreateCaptureSession(item);
             if (auto cursor = session.try_as<IGraphicsCaptureSession2>()) cursor.IsCursorCaptureEnabled(false);
             if (borderless_) if (auto border = session.try_as<IGraphicsCaptureSession3>()) border.IsBorderRequired(false);
             session.StartCapture();
+            { std::lock_guard guard(mutex_); ++captureGeneration_; }
         };
 
         com_ptr<IDXGISwapChain1> swap;
@@ -191,7 +204,12 @@ private:
         com_ptr<IDCompositionDevice> composition;
         com_ptr<IDCompositionTarget> compositionTarget;
         com_ptr<IDCompositionVisual> visual;
-        if (GetWindowLongPtr(output_, GWL_EXSTYLE) & WS_EX_LAYERED) {
+        if (externalVisual_) {
+            swapDesc.SwapEffect = DXGI_SWAP_EFFECT_FLIP_SEQUENTIAL;
+            swapDesc.Scaling = DXGI_SCALING_STRETCH;
+            check_hresult(factory2->CreateSwapChainForComposition(device.get(), &swapDesc, nullptr, swap.put()));
+            check_hresult(externalVisual_->SetContent(swap.get()));
+        } else if (GetWindowLongPtr(output_, GWL_EXSTYLE) & WS_EX_LAYERED) {
             swapDesc.SwapEffect = DXGI_SWAP_EFFECT_FLIP_SEQUENTIAL;
             swapDesc.Scaling = DXGI_SCALING_STRETCH;
             check_hresult(factory2->CreateSwapChainForComposition(device.get(), &swapDesc, nullptr, swap.put()));
@@ -265,8 +283,24 @@ private:
             { std::lock_guard guard(mutex_); settingsVersion=settingsVersion_; custom=custom_; settings=customSettings_; }
             if (!ValidSource()) { State(2, S_OK, L"Source closed"); break; }
             if (!IsWindow(output_)) break;
+            if(!IsIconic(source_) && frameSignature()!=sessionFrame) {
+                // Recreate the WGC session, not just its buffers. On this path a
+                // pool-only resize can retain the old non-client capture origin
+                // even though ContentSize already reports the maximized size.
+                // Output swapchain/texture and input HWNDs remain intact.
+                session.Close();session=nullptr;arrived.revoke();pool.Close();
+                size=item.Size();ValidateSize(size.Width,size.Height);
+                pool=Direct3D11CaptureFramePool::CreateFreeThreaded(runtimeDevice,DirectXPixelFormat::B8G8R8A8UIntNormalized,2,size);
+                arrived=pool.FrameArrived(auto_revoke,[this](auto const&,auto const&) {Signal();});
+                startSession();continue;
+            }
             std::unique_lock presentation(presentationMutex_);
             if (viewportHeld_) {
+                // Geometry must remain observable while the host holds pixels
+                // for a resize. Waiting for a released frame here would deadlock
+                // the host's crop selection against Viewport() unholding us.
+                auto heldSize=item.Size();
+                { std::lock_guard guard(mutex_); captureWidth_=heldSize.Width;captureHeight_=heldSize.Height; }
                 presentation.unlock();
                 std::unique_lock lock(waitMutex_);
                 wake_.wait_for(lock,std::chrono::milliseconds(100),[this,observedWake] { return stop_.load() || wakeVersion_.load()!=observedWake; });
@@ -292,6 +326,7 @@ private:
                     frame.Close(); frame = newer; ++drained;
                 }
                 auto content = frame.ContentSize();
+                { std::lock_guard guard(mutex_); captureWidth_=content.Width;captureHeight_=content.Height; }
                 ValidateSize(content.Width, content.Height);
                 auto access = frame.Surface().as<::Windows::Graphics::DirectX::Direct3D11::IDirect3DDxgiInterfaceAccess>();
                 com_ptr<ID3D11Texture2D> sourceTexture;
@@ -376,7 +411,11 @@ private:
             ID3D11ShaderResourceView* empty = nullptr; context->PSSetShaderResources(0,1,&empty);
             double submit = QpcMs();
             bool proof = proofRequested_.exchange(false);
-            if (proof) VerifyPixels(device.get(), context.get(), swap.get(), texture.get(), viewport, textureW, textureH, mode);
+            if (proof) {
+                VerifyPixels(device.get(), context.get(), swap.get(), texture.get(), viewport, textureW, textureH, mode);
+                if (contentRequested_.exchange(false))
+                    VerifyContent(device.get(), context.get(), swap.get(), texture.get(), viewport, textureW, textureH, mode);
+            }
             double presentStart = QpcMs();
             HRESULT present = swap->Present(1, 0);
             check_hresult(present);
@@ -385,7 +424,7 @@ private:
             {
                 std::lock_guard guard(mutex_);
                 stats_.received += fresh ? 1 + drained : 0; stats_.superseded += drained;
-                if (present == S_OK) ++stats_.presented;
+                if (present == S_OK) { ++stats_.presented; presentedOutputW_=w; presentedOutputH_=h; }
                 stats_.width = textureW; stats_.height = textureH;
                 if (fresh) {
                     stats_.ageMs = start - frameQpcMs;
@@ -442,13 +481,56 @@ private:
         std::copy(std::begin(outs),std::end(outs),stats_.outputPixels);
         stats_.cpuReadbacks += 6;
     }
+    // Explicit G2 diagnostic only, raw 1:1 mode. Hash every RGB pixel in F and
+    // compare that exact ROI to the pre-Present output, not S's chrome/frame rate.
+    // Two full-ROI readbacks per request; never called by the game render loop
+    // unless this separate diagnostic export is explicitly requested.
+    void VerifyContent(ID3D11Device* device, ID3D11DeviceContext* context, IDXGISwapChain1* swap,
+            ID3D11Texture2D* input, D3D11_VIEWPORT vp, int width, int height, int mode) {
+        if(mode!=0 || static_cast<int>(vp.Width)!=width || static_cast<int>(vp.Height)!=height)
+            throw hresult_error(E_INVALIDARG,L"Content proof requires raw 1:1 viewport");
+        com_ptr<ID3D11Texture2D> output, staging;
+        check_hresult(swap->GetBuffer(0,__uuidof(ID3D11Texture2D),output.put_void()));
+        D3D11_TEXTURE2D_DESC td{}; td.Width=width; td.Height=height;
+        td.MipLevels=td.ArraySize=td.SampleDesc.Count=1; td.Format=DXGI_FORMAT_B8G8R8A8_UNORM;
+        td.Usage=D3D11_USAGE_STAGING; td.CPUAccessFlags=D3D11_CPU_ACCESS_READ;
+        check_hresult(device->CreateTexture2D(&td,nullptr,staging.put()));
+        auto read=[&](ID3D11Texture2D* tex,int x,int y) {
+            D3D11_BOX box{static_cast<UINT>(x),static_cast<UINT>(y),0,
+                static_cast<UINT>(x+width),static_cast<UINT>(y+height),1};
+            context->CopySubresourceRegion(staging.get(),0,0,0,0,tex,0,&box);
+            D3D11_MAPPED_SUBRESOURCE mapped{}; check_hresult(context->Map(staging.get(),0,D3D11_MAP_READ,0,&mapped));
+            std::vector<uint32_t> pixels(static_cast<size_t>(width)*height);
+            for(int row=0;row<height;++row)
+                std::memcpy(pixels.data()+static_cast<size_t>(row)*width,
+                    static_cast<const uint8_t*>(mapped.pData)+static_cast<size_t>(row)*mapped.RowPitch,static_cast<size_t>(width)*4);
+            context->Unmap(staging.get(),0); return pixels;
+        };
+        auto in=read(input,0,0), out=read(output.get(),static_cast<int>(vp.TopLeftX),static_cast<int>(vp.TopLeftY));
+        uint64_t ih=14695981039346656037ull, oh=ih; uint32_t error=0;
+        for(size_t i=0;i<in.size();++i) for(int shift=0;shift<24;shift+=8) {
+            uint32_t a=(in[i]>>shift)&255, b=(out[i]>>shift)&255;
+            ih=(ih^a)*1099511628211ull; oh=(oh^b)*1099511628211ull;
+            error=std::max(error,static_cast<uint32_t>(std::abs(static_cast<int>(a)-static_cast<int>(b))));
+        }
+        std::lock_guard guard(mutex_);
+        contentStats_={sizeof(ProbeContentStats),contentStats_.count+1,stats_.proofCount,
+            static_cast<uint32_t>(width),static_cast<uint32_t>(height),error,ih,oh};
+        stats_.cpuReadbacks+=2;
+    }
     static void ValidateSize(int width, int height) {
         if (width <= 0 || height <= 0 || width > 8192 || height > 8192)
             throw hresult_error(E_INVALIDARG, L"Capture/output dimensions outside prototype bounds");
     }
     HWND source_, output_; DWORD pid_; uint32_t vendor_;
+    com_ptr<IDCompositionVisual> externalVisual_;
     std::atomic<bool> stop_{false}; std::atomic<int> mode_{0};
     std::atomic<bool> proofRequested_{false};
+    std::atomic<bool> contentRequested_{false};
+    ProbeContentStats contentStats_{sizeof(ProbeContentStats)};
+    int32_t captureWidth_=0,captureHeight_=0;
+    int32_t presentedOutputW_=0,presentedOutputH_=0;
+    uint64_t captureGeneration_=0;
     std::thread worker_; std::mutex mutex_; ProbeStats stats_{};
     RECT crop_{};
     double cropNotBefore_=0;
@@ -464,6 +546,13 @@ private:
 }
 
 uint32_t __cdecl ProbeGetAbiVersion() { return 3; }
+int __cdecl ProbeGetOutputSize(void* handle, int32_t* width, int32_t* height) {
+    return handle && width && height && static_cast<Capture*>(handle)->OutputSize(*width,*height) ? 1 : 0;
+}
+void* __cdecl ProbeStartVisual(HWND source, DWORD sourcePid, HWND output, IUnknown* visual) {
+    if (!visual) return nullptr;
+    try { return new Capture(source, sourcePid, output, 0, 30, false, visual); } catch (...) { return nullptr; }
+}
 void* __cdecl ProbeStart(HWND source, DWORD sourcePid, HWND output, uint32_t vendor) {
     try { return new Capture(source, sourcePid, output, vendor); } catch (...) { return nullptr; }
 }
@@ -479,9 +568,18 @@ int __cdecl ProbeSetSharpness(void* handle, float value) {
 }
 void __cdecl ProbeSetMode(void* handle, int mode) { if (handle) static_cast<Capture*>(handle)->Mode(mode); }
 void __cdecl ProbeRequestProof(void* handle) { if (handle) static_cast<Capture*>(handle)->RequestProof(); }
+void __cdecl ProbeRequestContentProof(void* handle) { if (handle) static_cast<Capture*>(handle)->RequestContentProof(); }
+int __cdecl ProbeGetContentStats(void* handle, ProbeContentStats* stats) {
+    if(!handle || !stats || stats->size!=sizeof(ProbeContentStats)) return 0;
+    static_cast<Capture*>(handle)->ContentStats(*stats); return 1;
+}
 int __cdecl ProbeGetStats(void* handle, ProbeStats* stats) {
     if (!handle || !stats || stats->size != sizeof(ProbeStats)) return 0;
     static_cast<Capture*>(handle)->Stats(*stats); return 1;
+}
+int __cdecl ProbeGetCaptureSize(void* handle,int32_t* width,int32_t* height,uint64_t* generation) {
+    if(!handle || !width || !height || !generation)return 0;
+    static_cast<Capture*>(handle)->CaptureSize(*width,*height,*generation);return 1;
 }
 void __cdecl ProbeStop(void* handle) { delete static_cast<Capture*>(handle); }
 

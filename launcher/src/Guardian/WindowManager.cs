@@ -816,7 +816,22 @@ namespace CF7Launcher.Guardian
         /// </summary>
         public bool IsForegroundVacuum()
         {
-            return GetForegroundWindow() == IntPtr.Zero;
+            return GetForegroundOwnership() == SessionForegroundOwnership.Null;
+        }
+
+        /// <summary>
+        /// A0.2 看门狗资格采样：当前系统前台窗口的会话归属。
+        /// Null = 前台真空；Session = 前台属本会话（Flash/Guardian 进程窗口，
+        /// 含面板/宿主交接途经的自己窗口）；External = 真实外部进程窗口。
+        /// </summary>
+        internal SessionForegroundOwnership GetForegroundOwnership()
+        {
+            IntPtr foreground = GetForegroundWindow();
+            if (foreground == IntPtr.Zero)
+                return SessionForegroundOwnership.Null;
+            return IsWindowInFlashSession(foreground)
+                ? SessionForegroundOwnership.Session
+                : SessionForegroundOwnership.External;
         }
 
         /// <summary>
@@ -833,7 +848,7 @@ namespace CF7Launcher.Guardian
         /// 判断 hwnd 是否属于 Flash 进程或 Guardian 进程。
         /// 嵌入后 Flash 子窗口 pid 归 Guardian；独立运行时 pid 归 Flash。
         /// </summary>
-        private bool IsWindowInFlashSession(IntPtr hwnd)
+        internal bool IsWindowInFlashSession(IntPtr hwnd)
         {
             if (hwnd == IntPtr.Zero) return false;
             uint pid;
@@ -878,7 +893,9 @@ namespace CF7Launcher.Guardian
                     return false;
                 }
                 _focusApi.SetFocus(flash);
-                bool restored = IsExactFlashForeground(flash, _focusApi.GetForegroundWindow(), true);
+                IntPtr handoffForeground = _focusApi.GetForegroundWindow();
+                bool restored = IsFlashForegroundRoot(flash, handoffForeground)
+                    && IsFlashInnerFocusHeld(flash);
                 LogManager.Log("[FocusRestore] " + reason + " handoff=" + (restored ? "ok" : "failed")
                     + " root=0x" + root.ToString("X") + " flash=0x" + flash.ToString("X"));
                 return restored;
@@ -891,12 +908,13 @@ namespace CF7Launcher.Guardian
         }
 
         /// <summary>现役输入焦点恢复：直接设置并校验，失败时以严格配对的 AttachThreadInput 再试一次。</summary>
-        public bool RestoreFlashInputFocus(string reason)
+        public bool RestoreFlashInputFocus(string reason,Func<bool> stillEligible=null)
         {
             return RestoreFlashInputFocusCore(
                 reason,
                 _flashHwnd,
-                requireSetForegroundSuccess: false);
+                requireSetForegroundSuccess: false,
+                requireExactInnerFocus: true,stillEligible: stillEligible);
         }
 
         /// <summary>
@@ -911,13 +929,22 @@ namespace CF7Launcher.Guardian
             return RestoreFlashInputFocusCore(
                 reason,
                 expectedFlashHwnd,
-                requireSetForegroundSuccess: true);
+                requireSetForegroundSuccess: true,
+                requireExactInnerFocus: true);
         }
 
+        /// <summary>
+        /// 成功谓词的三个事实分开判定、分开入日志：
+        /// requireSetForegroundSuccess —— SetForegroundWindow API 返回值必须为真；
+        /// 前台根匹配 —— IsFlashForegroundRoot（前台为 Flash 或其顶层根）恒为必要条件；
+        /// requireExactInnerFocus —— IsFlashInnerFocusHeld（Flash 线程 hwndFocus 落在
+        /// flash 或其子窗口）必须为真，覆盖"根正确但内部焦点错误"这一反例。
+        /// </summary>
         private bool RestoreFlashInputFocusCore(
             string reason,
             IntPtr expectedFlashHwnd,
-            bool requireSetForegroundSuccess)
+            bool requireSetForegroundSuccess,
+            bool requireExactInnerFocus,Func<bool> stillEligible=null)
         {
             long totalStart = Stopwatch.GetTimestamp();
             PerfTrace.Mark("focus_restore.start", reason);
@@ -936,6 +963,7 @@ namespace CF7Launcher.Guardian
             double describeBeforeMs = ElapsedMs(describeStart);
             PerfTrace.Duration("focus_restore.describe_before", describeStart, reason);
 
+            if(stillEligible!=null && !stillEligible())return false;
             // Pass 1：直接 SetForegroundWindow
             long pass1Start = Stopwatch.GetTimestamp();
             PerfTrace.Mark("focus_restore.pass1.start", reason);
@@ -949,17 +977,21 @@ namespace CF7Launcher.Guardian
             {
                 LogManager.Log("[FocusRestore] " + reason + " pass1 SetForegroundWindow threw: " + ex.Message);
             }
+            if(stillEligible!=null && !stillEligible())return false;
             try { _focusApi.SetFocus(flashHwnd); } catch { }
 
             IntPtr fgAfter1 =
                 _focusApi.GetForegroundWindow();
+            // 三个事实分开判定：SFW 返回值 / 前台根匹配 / Flash 线程内部焦点。
+            bool rootMatch1 =
+                IsFlashForegroundRoot(flashHwnd, fgAfter1);
+            bool innerMatch1 =
+                IsFlashInnerFocusHeld(flashHwnd);
             double pass1Ms = ElapsedMs(pass1Start);
             PerfTrace.Duration("focus_restore.pass1", pass1Start, reason);
             if ((!requireSetForegroundSuccess || sfwOk1)
-                && IsExactFlashForeground(
-                    flashHwnd,
-                    fgAfter1,
-                    requireSetForegroundSuccess))
+                && rootMatch1
+                && (!requireExactInnerFocus || innerMatch1))
             {
                 describeStart = Stopwatch.GetTimestamp();
                 string fgAfter1Desc = DescribeWindow(fgAfter1);
@@ -967,6 +999,7 @@ namespace CF7Launcher.Guardian
                 double describeAfterMs = ElapsedMs(describeStart);
                 PerfTrace.Duration("focus_restore.describe_after", describeStart, reason + " path=pass1");
                 LogManager.Log("[FocusRestore] " + reason + " pass1=ok sfwReturn=" + sfwOk1
+                    + " fgMatch=" + rootMatch1
                     + " fgBefore=" + fgBeforeDesc
                     + " fgAfter=" + fgAfter1Desc
                     + " innerFocus=" + innerFocus1);
@@ -975,6 +1008,7 @@ namespace CF7Launcher.Guardian
                 return true;
             }
 
+            if(stillEligible!=null && !stillEligible())return false;
             // Pass 2：AttachThreadInput hack
             long attachStart = Stopwatch.GetTimestamp();
             PerfTrace.Mark("focus_restore.attach.start", reason);
@@ -1008,11 +1042,13 @@ namespace CF7Launcher.Guardian
             {
                 try
                 {
+                    if(stillEligible!=null && !stillEligible())return false;
                     sfwOk2 =
                         _focusApi.SetForegroundWindow(
                             flashHwnd);
                 }
                 catch { }
+                if(stillEligible!=null && !stillEligible())return false;
                 try { _focusApi.SetFocus(flashHwnd); } catch { }
             }
             finally
@@ -1039,12 +1075,14 @@ namespace CF7Launcher.Guardian
 
             IntPtr fgAfter2 =
                 _focusApi.GetForegroundWindow();
+            bool rootMatch2 =
+                IsFlashForegroundRoot(flashHwnd, fgAfter2);
+            bool innerMatch2 =
+                IsFlashInnerFocusHeld(flashHwnd);
             bool finalOk =
                 (!requireSetForegroundSuccess || sfwOk2)
-                && IsExactFlashForeground(
-                    flashHwnd,
-                    fgAfter2,
-                    requireSetForegroundSuccess);
+                && rootMatch2
+                && (!requireExactInnerFocus || innerMatch2);
             describeStart = Stopwatch.GetTimestamp();
             string fgAfter1Desc2 = DescribeWindow(fgAfter1);
             string fgAfter2Desc = DescribeWindow(fgAfter2);
@@ -1053,6 +1091,8 @@ namespace CF7Launcher.Guardian
             PerfTrace.Duration("focus_restore.describe_after", describeStart, reason + " path=pass2");
             LogManager.Log("[FocusRestore] " + reason + " pass1=fail pass2=" + (finalOk ? "ok" : "fail")
                 + " attached=" + attached
+                + " sfwReturn=" + sfwOk2
+                + " fgMatch=" + rootMatch2
                 + " fgBefore=" + fgBeforeDesc
                 + " fgAfter1=" + fgAfter1Desc2
                 + " fgAfter2=" + fgAfter2Desc
@@ -1075,10 +1115,13 @@ namespace CF7Launcher.Guardian
             }
         }
 
-        private bool IsExactFlashForeground(
+        /// <summary>
+        /// 前台根匹配：当前系统前台是 Flash 窗口本身或其顶层根窗口
+        /// （同时复核 tracked hwnd 仍是当前窗口）。
+        /// </summary>
+        private bool IsFlashForegroundRoot(
             IntPtr expectedFlashHwnd,
-            IntPtr foregroundHwnd,
-            bool requireExactInnerFocus)
+            IntPtr foregroundHwnd)
         {
             if (foregroundHwnd == IntPtr.Zero
                 || !IsCurrentFlashWindow(
@@ -1086,18 +1129,22 @@ namespace CF7Launcher.Guardian
             {
                 return false;
             }
-            bool exactForeground =
-                foregroundHwnd == expectedFlashHwnd;
-            if (!exactForeground)
-            {
-                IntPtr root = _focusApi.GetRootWindow(
-                    expectedFlashHwnd);
-                exactForeground = root != IntPtr.Zero
-                    && foregroundHwnd == root;
-            }
-            if (!exactForeground || !requireExactInnerFocus)
-                return exactForeground;
+            if (foregroundHwnd == expectedFlashHwnd)
+                return true;
+            IntPtr root = _focusApi.GetRootWindow(
+                expectedFlashHwnd);
+            return root != IntPtr.Zero
+                && foregroundHwnd == root;
+        }
 
+        /// <summary>
+        /// 内部 GUI 焦点：Flash 所属线程的 hwndFocus 落在 flashHwnd 自身
+        /// 或其子窗口上。前台根匹配正确但此项为假时，键盘输入不会落到
+        /// Flash——该反例不得报成功。
+        /// </summary>
+        private bool IsFlashInnerFocusHeld(
+            IntPtr expectedFlashHwnd)
+        {
             IntPtr focused =
                 _focusApi.GetFocusedWindow(
                     expectedFlashHwnd);

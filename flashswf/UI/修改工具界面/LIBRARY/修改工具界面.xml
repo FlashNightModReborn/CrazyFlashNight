@@ -291,6 +291,7 @@ stop();]]></script>
                   </transformationPoint>
                   <Actionscript>
                     <script><![CDATA[on(release){
+   _root.注释结束();
    _root.修改工具界面.缩略图.图.removeMovieClip();
    //org.flashNight.neur.Server.ServerManager.getInstance().sendServerMessage(_root.速度max表);
    _parent._visible = 0;
@@ -2214,6 +2215,7 @@ onClipEvent (mouseUp) {
                   </transformationPoint>
                   <Actionscript>
                     <script><![CDATA[on(release){
+   _root.注释结束();
    gotoAndStop("经济");
 }
 on(rollOver){
@@ -2238,6 +2240,7 @@ on(rollOut){
                   </transformationPoint>
                   <Actionscript>
                     <script><![CDATA[on(release){
+   _root.注释结束();
    gotoAndStop("经济");
 }
 on(rollOver){
@@ -2262,6 +2265,7 @@ on(rollOut){
                   </transformationPoint>
                   <Actionscript>
                     <script><![CDATA[on(release){
+   _root.注释结束();
    gotoAndStop("经济");
 }
 ]]></script>
@@ -2280,6 +2284,7 @@ on(rollOut){
                   </transformationPoint>
                   <Actionscript>
                     <script><![CDATA[on(release){
+   _root.注释结束();
    gotoAndStop("经济");
 }
 on(rollOver){
@@ -2308,6 +2313,7 @@ on(rollOut){
                   </transformationPoint>
                   <Actionscript>
                     <script><![CDATA[on(release){
+   _root.注释结束();
    gotoAndStop("物品");
 }
 on(rollOver){
@@ -2332,6 +2338,7 @@ on(rollOut){
                   </transformationPoint>
                   <Actionscript>
                     <script><![CDATA[on(release){
+   _root.注释结束();
    gotoAndStop("物品");
 }
 on(rollOver){
@@ -2356,6 +2363,7 @@ on(rollOut){
                   </transformationPoint>
                   <Actionscript>
                     <script><![CDATA[on(release){
+   _root.注释结束();
    gotoAndStop("物品");
 }
 ]]></script>
@@ -2374,6 +2382,7 @@ on(rollOut){
                   </transformationPoint>
                   <Actionscript>
                     <script><![CDATA[on(release){
+   _root.注释结束();
    gotoAndStop("物品");
 }
 on(rollOver){
@@ -2402,6 +2411,7 @@ on(rollOut){
                   </transformationPoint>
                   <Actionscript>
                     <script><![CDATA[on(release){
+   _root.注释结束();
    gotoAndStop("关卡");
 }
 on(rollOver){
@@ -2426,6 +2436,7 @@ on(rollOut){
                   </transformationPoint>
                   <Actionscript>
                     <script><![CDATA[on(release){
+   _root.注释结束();
    gotoAndStop("关卡");
 }
 on(rollOver){
@@ -2450,6 +2461,7 @@ on(rollOut){
                   </transformationPoint>
                   <Actionscript>
                     <script><![CDATA[on(release){
+   _root.注释结束();
    gotoAndStop("关卡");
 }
 ]]></script>
@@ -2468,6 +2480,7 @@ on(rollOut){
                   </transformationPoint>
                   <Actionscript>
                     <script><![CDATA[on(release){
+   _root.注释结束();
    gotoAndStop("关卡");
 }
 on(rollOver){
@@ -2496,6 +2509,7 @@ on(rollOut){
                   </transformationPoint>
                   <Actionscript>
                     <script><![CDATA[on(release){
+   _root.注释结束();
    gotoAndStop("阵营");
 }
 on(rollOver){
@@ -2520,6 +2534,7 @@ on(rollOut){
                   </transformationPoint>
                   <Actionscript>
                     <script><![CDATA[on(release){
+   _root.注释结束();
    gotoAndStop("阵营");
 }
 on(rollOver){
@@ -2544,6 +2559,7 @@ on(rollOut){
                   </transformationPoint>
                   <Actionscript>
                     <script><![CDATA[on(release){
+   _root.注释结束();
    gotoAndStop("阵营");
 }
 ]]></script>
@@ -2562,6 +2578,7 @@ on(rollOut){
                   </transformationPoint>
                   <Actionscript>
                     <script><![CDATA[on(release){
+   _root.注释结束();
    gotoAndStop("阵营");
 }
 on(rollOver){
