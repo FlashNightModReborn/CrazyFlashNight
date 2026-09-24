@@ -974,3 +974,5 @@ Windows EOL materialization 是 historical v1 F 当时接受的非阻断 tooling
 经维护者明确授权，源码 `d46d2219e147f663a5142c9c787cd027fa43d6aa` / `runtime-build-v2/20260924-unified-input-v1` 冻结 request `417A24A494788178150B2B17DEC8F509E2F2F125B1265960E8C6F0D0A3FA3B38`。本机注册 X509 builder-local-c 与 [GitHub run 35992145481](https://github.com/FlashNightModReborn/CrazyFlashNight/actions/runs/35992145481) 独立生产同一 identity `599D336D54638AA5D825E1EB5C79749B2CCB3946CD705171CF5DA2F9257A5D1E` / closure `94ECEBC3FDB7723E24B495947F694AD044A651C5A693D4E6DFE9DEF723B1A097`，strict v2 policy 与唯一 writer 全链通过后 promotion。工作区其他未跟踪文档保留，policy 使用受支持的 Index 模式核对与 immutable tree 完全一致的索引，并检查磁盘 tracked 内容未变。
 
 帮助合成正式默认启用；C1/B1 实验不因此获得普通游戏输入资格。产品边界与人验见[交接记录](reports/统一输入-真实游戏帮助面板试点-2026-09-24.md)。不新发稳定整包，不将已获准的候选人验代签全部正式入口业务。最终运行身份以 manifest/consensus 机器真源为准。
+
+远端收尾：部署提交 `2a5c32eb4a0c995a0c205567aa4b6b2ea438d632` 已推送；[CI Audit 35996103622](https://github.com/FlashNightModReborn/CrazyFlashNight/actions/runs/35996103622) 成功，输出 `state=promoted / deploymentChanged=true`。这是发布链审计，不追加全游戏业务验收结论。
