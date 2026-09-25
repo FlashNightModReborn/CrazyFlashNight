@@ -1,0 +1,458 @@
+/* LUT 实验室 v2（dev 面板）
+ * 模块本地样式，overlay.html 直链（与 minigame CSS 同口径，不进 panels.css bundle）。
+ * 色值只消费既有 token 并带裸色 fallback（harness 只加载 tokens.css 时可独立运行）。
+ * v2 布局：header / toolbar / 一行提示 / main(抽屉+舞台) / 胶片条 / 状态栏，1600×900 吃满、
+ * 响应式收窄不溢出（布局断言见 browser-qa.js layout-* 用例）。
+ */
+.lut-lab-panel {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    background: var(--launcher-bg-0, #05070a);
+    color: var(--launcher-copy, #d4d8dc);
+    font-family: "Microsoft YaHei UI", "Noto Sans SC", sans-serif;
+    --ll-bg: var(--launcher-bg-0, #05070a);
+    --ll-surface: var(--launcher-bg-1, #0c0e12);
+    --ll-copy: var(--launcher-copy, #d4d8dc);
+    --ll-muted: var(--launcher-dust, #6a6258);
+    --ll-sand: var(--launcher-bone, #c8b28a);
+    --ll-focus: var(--wb-role-focus, #8be0f1);
+    --ll-ok: var(--wb-semantic-success, #78bc73);
+    --ll-warning: var(--wb-semantic-warning, #e5a64d);
+    --ll-error: var(--wb-semantic-danger, #df665b);
+    --ll-line: color-mix(in srgb, var(--ll-sand) 22%, transparent);
+    --ll-line-soft: color-mix(in srgb, var(--ll-sand) 14%, transparent);
+}
+
+.lut-lab-panel *,
+.lut-lab-panel *::before,
+.lut-lab-panel *::after { box-sizing: border-box; }
+
+.lut-lab-panel button,
+.lut-lab-panel input,
+.lut-lab-panel select { font: inherit; }
+
+.lut-lab-panel button:focus-visible,
+.lut-lab-panel input:focus-visible,
+.lut-lab-panel select:focus-visible,
+.lut-lab-panel .lut-lab-film-cell:focus-visible,
+.lut-lab-panel .lut-lab-stage:focus-visible,
+.lut-lab-panel .lut-lab-inspect-viewport:focus-visible {
+    outline: 2px solid var(--ll-focus);
+    outline-offset: 1px;
+}
+
+/* ---------- header ---------- */
+.lut-lab-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 6px 12px;
+    border-bottom: 1px solid var(--ll-line);
+    background: var(--ll-surface);
+    flex: 0 0 auto;
+}
+
+.lut-lab-title { font-size: 15px; }
+.lut-lab-version { font-size: 11px; color: var(--ll-warning); margin-left: 6px; }
+
+.lut-lab-badges { display: flex; gap: 8px; flex: 1; }
+
+.lut-lab-badge {
+    font-size: 10px;
+    padding: 2px 8px;
+    border: 1px solid var(--ll-line);
+    border-radius: 9px;
+    color: var(--ll-muted);
+    white-space: nowrap;
+}
+.lut-lab-badge:empty { display: none; }
+.lut-lab-badge[data-tone="ok"] { color: var(--ll-ok); border-color: var(--ll-ok); }
+.lut-lab-badge[data-tone="warning"] { color: var(--ll-warning); border-color: var(--ll-warning); }
+.lut-lab-badge[data-tone="error"] { color: var(--ll-error); border-color: var(--ll-error); }
+
+.lut-lab-help-btn,
+.lut-lab-close {
+    border: 1px solid var(--ll-line);
+    background: transparent;
+    color: var(--ll-copy);
+    cursor: pointer;
+    border-radius: 4px;
+    width: 26px;
+    height: 26px;
+    font-size: 15px;
+    line-height: 1;
+}
+.lut-lab-help-btn:hover,
+.lut-lab-close:hover { border-color: var(--ll-sand); }
+
+/* ---------- 工具条 ---------- */
+.lut-lab-toolbar {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+    padding: 6px 10px;
+    border-bottom: 1px solid var(--ll-line-soft);
+    flex: 0 0 auto;
+    font-size: 11px;
+}
+
+.lut-lab-label { font-size: 11px; color: var(--ll-muted); }
+
+.lut-lab-source-info {
+    font-size: 11px;
+    color: var(--ll-muted);
+    max-width: 340px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.lut-lab-toolbar select {
+    background: var(--ll-surface);
+    color: var(--ll-copy);
+    border: 1px solid var(--ll-line);
+    border-radius: 4px;
+    font-size: 11px;
+    max-width: 220px;
+    padding: 2px 4px;
+}
+
+.lut-lab-btn {
+    border: 1px solid var(--ll-line);
+    background: var(--ll-surface);
+    color: var(--ll-copy);
+    border-radius: 4px;
+    padding: 3px 10px;
+    font-size: 11px;
+    cursor: pointer;
+    white-space: nowrap;
+}
+.lut-lab-btn:hover { border-color: var(--ll-sand); }
+.lut-lab-btn:disabled { opacity: 0.45; cursor: not-allowed; }
+.lut-lab-btn[aria-pressed="true"] { border-color: var(--ll-focus); color: var(--ll-focus); }
+.lut-lab-btn-mini { padding: 1px 6px; font-size: 10px; }
+
+.lut-lab-mode,
+.lut-lab-view { display: inline-flex; gap: 2px; }
+
+#lut-lab-level { width: 140px; }
+.lut-lab-level-value { font-size: 11px; color: var(--ll-sand); min-width: 30px; }
+
+.lut-lab-hint { font-size: 10px; color: var(--ll-warning); }
+.lut-lab-hint:empty { display: none; }
+
+.lut-lab-capture-note {
+    font-size: 10px;
+    color: var(--ll-muted);
+    padding: 2px 10px;
+    line-height: 1.4;
+    border-bottom: 1px solid var(--ll-line-soft);
+    flex: 0 0 auto;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* ---------- 主区：抽屉 + 舞台 ---------- */
+.lut-lab-main {
+    flex: 1 1 auto;
+    min-height: 0;
+    display: flex;
+    position: relative;
+}
+
+.lut-lab-drawer {
+    flex: 0 0 auto;
+    width: 0;
+    overflow: hidden;
+    border-right: 1px solid transparent;
+    transition: width 120ms ease;
+    background: var(--ll-surface);
+}
+.lut-lab-drawer[data-open="true"] {
+    width: 260px;
+    border-right-color: var(--ll-line);
+    overflow: hidden auto;
+}
+
+.lut-lab-drawer-title {
+    font-size: 10px;
+    color: var(--ll-muted);
+    padding: 8px 10px 4px;
+    width: 260px;
+    line-height: 1.5;
+}
+
+.lut-lab-drawer-list { width: 260px; padding-bottom: 8px; }
+
+.lut-lab-group-title {
+    font-size: 10px;
+    color: var(--ll-sand);
+    padding: 8px 10px 2px;
+}
+
+.lut-lab-sample {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 3px 10px;
+    font-size: 11px;
+}
+.lut-lab-sample-name {
+    flex: 1 1 auto;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+.lut-lab-sample-actions { flex: 0 0 auto; display: inline-flex; gap: 4px; }
+
+.lut-lab-stage {
+    flex: 1 1 auto;
+    min-width: 0;
+    min-height: 0;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #000;
+    cursor: crosshair;
+    overflow: hidden;
+}
+
+.lut-lab-view-canvas {
+    max-width: 100%;
+    max-height: 100%;
+    aspect-ratio: 16 / 9;
+    object-fit: contain;
+    display: block;
+}
+
+.lut-lab-split-bar {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 4px;
+    margin-left: -2px;
+    background: var(--ll-focus);
+    opacity: 0.8;
+    cursor: ew-resize;
+    z-index: 2;
+}
+
+.lut-lab-fatal {
+    padding: 24px;
+    color: var(--ll-error);
+    font-size: 12px;
+    line-height: 1.7;
+}
+
+/* ---------- 胶片条 ---------- */
+.lut-lab-filmstrip {
+    flex: 0 0 auto;
+    display: flex;
+    gap: 4px;
+    padding: 6px 10px;
+    border-top: 1px solid var(--ll-line-soft);
+    background: var(--ll-surface);
+    min-height: 88px;
+}
+
+.lut-lab-film-cell {
+    flex: 1 1 0;
+    min-width: 0;
+    border: 1px solid var(--ll-line-soft);
+    border-radius: 4px;
+    overflow: hidden;
+    cursor: pointer;
+    background: #000;
+    display: flex;
+    flex-direction: column;
+}
+.lut-lab-film-cell.current {
+    border-color: var(--ll-focus);
+    box-shadow: 0 0 0 1px var(--ll-focus);
+}
+
+.lut-lab-film-level {
+    font-size: 10px;
+    color: var(--ll-muted);
+    text-align: center;
+    padding: 1px 0;
+    background: var(--ll-surface);
+}
+.lut-lab-film-cell.current .lut-lab-film-level { color: var(--ll-focus); }
+
+.lut-lab-film-canvas {
+    flex: 1 1 auto;
+    min-height: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.lut-lab-film-canvas canvas {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    display: block;
+}
+
+.lut-lab-film-empty {
+    color: var(--ll-muted);
+    font-size: 11px;
+    padding: 18px 10px;
+}
+
+/* ---------- 状态栏 ---------- */
+.lut-lab-statusbar {
+    flex: 0 0 auto;
+    font-size: 10px;
+    color: var(--ll-muted);
+    padding: 4px 10px;
+    border-top: 1px solid var(--ll-line-soft);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.lut-lab-statusbar:empty::before { content: " "; }
+.lut-lab-statusbar[data-tone="ok"] { color: var(--ll-ok); }
+.lut-lab-statusbar[data-tone="warning"] { color: var(--ll-warning); }
+.lut-lab-statusbar[data-tone="error"] { color: var(--ll-error); }
+
+/* ---------- 覆盖层（帮助 / 联动检视共用骨架） ---------- */
+.lut-lab-help,
+.lut-lab-inspect {
+    position: absolute;
+    inset: 0;
+    background: rgba(5, 7, 10, 0.92);
+    z-index: 30;
+    display: flex;
+    flex-direction: column;
+}
+
+.lut-lab-overlay-bar {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 12px;
+    border-bottom: 1px solid var(--ll-line);
+    background: var(--ll-surface);
+    flex: 0 0 auto;
+}
+.lut-lab-overlay-title { font-size: 12px; flex: 0 0 auto; }
+.lut-lab-inspect-status { font-size: 10px; color: var(--ll-muted); flex: 1 1 auto; }
+.lut-lab-overlay-close {
+    margin-left: auto;
+    border: 1px solid var(--ll-line);
+    background: transparent;
+    color: var(--ll-copy);
+    cursor: pointer;
+    border-radius: 4px;
+    width: 26px;
+    height: 26px;
+    font-size: 15px;
+    line-height: 1;
+    flex: 0 0 auto;
+}
+.lut-lab-overlay-close:hover { border-color: var(--ll-sand); }
+
+.lut-lab-overlay-box {
+    flex: 1 1 auto;
+    min-height: 0;
+    overflow: auto;
+    padding: 12px 18px;
+    font-size: 12px;
+    line-height: 1.7;
+}
+.lut-lab-help-section { margin-bottom: 14px; }
+.lut-lab-help-section h3 {
+    font-size: 12px;
+    color: var(--ll-sand);
+    margin: 0 0 4px;
+}
+.lut-lab-help-section p { margin: 0; color: var(--ll-copy); }
+
+/* 联动检视：A|B 双视图共享同一 pan/zoom */
+.lut-lab-inspect-panes {
+    flex: 1 1 auto;
+    min-height: 0;
+    display: flex;
+    gap: 2px;
+}
+.lut-lab-inspect-pane {
+    flex: 1 1 0;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+}
+.lut-lab-inspect-side {
+    font-size: 11px;
+    color: var(--ll-sand);
+    text-align: center;
+    padding: 3px 0;
+    background: var(--ll-surface);
+    flex: 0 0 auto;
+}
+.lut-lab-inspect-viewport {
+    flex: 1 1 auto;
+    min-height: 0;
+    position: relative;
+    overflow: hidden;
+    background: #000;
+    cursor: grab;
+}
+.lut-lab-inspect-viewport:active { cursor: grabbing; }
+.lut-lab-inspect-target {
+    position: absolute;
+    left: 0;
+    top: 0;
+    transform-origin: 0 0;
+}
+.lut-lab-inspect-target canvas { display: block; }
+.lut-lab-inspect-target.pixelated canvas { image-rendering: pixelated; }
+
+/* 小视口适配：工具条允许换行、胶片条保持十格等分（格内容等比缩小） */
+@media (max-width: 1100px) {
+    .lut-lab-source-info { max-width: 200px; }
+    .lut-lab-toolbar { gap: 6px; }
+    #lut-lab-level { width: 100px; }
+}
+
+/* ---------- 预设工作流条与锚点标记 ---------- */
+.lut-lab-preset-bar {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex-wrap: wrap;
+    padding: 4px 10px;
+    border-bottom: 1px solid var(--ll-line-soft);
+    flex: 0 0 auto;
+    font-size: 10px;
+}
+
+.lut-lab-preset-current { color: var(--ll-muted); }
+.lut-lab-preset-bar[data-active="true"] .lut-lab-preset-current { color: var(--ll-sand); }
+
+#lut-lab-preset-name {
+    background: var(--ll-surface);
+    color: var(--ll-copy);
+    border: 1px solid var(--ll-line);
+    border-radius: 4px;
+    font-size: 10px;
+    padding: 2px 6px;
+    width: 140px;
+}
+
+.lut-lab-anchor-mark { color: var(--ll-focus); }
+.lut-lab-interp-mark { color: var(--ll-muted); font-size: 9px; }
+
+.lut-lab-film-cell[data-anchor="true"] { border-color: var(--ll-sand); }
+.lut-lab-film-ops { display: inline-flex; gap: 2px; margin-left: 4px; }
+.lut-lab-film-ops .lut-lab-btn-mini { padding: 0 4px; font-size: 9px; line-height: 1.4; }
+
+.lut-lab-view-canvas.pixelated { image-rendering: pixelated; }

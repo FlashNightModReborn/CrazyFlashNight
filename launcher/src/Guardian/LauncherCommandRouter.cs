@@ -182,6 +182,8 @@ namespace CF7Launcher.Guardian
         private CharacterBuildTask _characterBuildTask;
         private Func<string, bool> _gameCommandSenderOverride;
         private Func<bool> _panelAdmissionGate;
+        private Func<string> _lutLabEntryFrameProvider;
+        private Action<Action> _uiMarshal;
         private readonly object _panelNavigationLifecycleLock =
             new object();
         private int _panelNavigationLifecycleEpoch;
@@ -307,6 +309,16 @@ namespace CF7Launcher.Guardian
         internal void SetPanelAdmissionGate(Func<bool> gate)
         {
             _panelAdmissionGate = gate;
+        }
+
+        /// <summary>
+        /// LUT 实验室入场预抓帧接线（dev）：provider 在后台线程抓帧并返回 cf7-lutlab url
+        ///（失败 null）；uiMarshal 把开面板回送到 UI 线程（测试传 null = 同步直跑）。
+        /// </summary>
+        public void SetLutLabEntryFrameProvider(Func<string> provider, Action<Action> uiMarshal)
+        {
+            _lutLabEntryFrameProvider = provider;
+            _uiMarshal = uiMarshal;
         }
 
         internal bool TryOpenAgentPanel(string panelName)
@@ -3141,6 +3153,13 @@ namespace CF7Launcher.Guardian
                     // issue #7 bug2：动画测试面板（Ruffle 预览 flashswf/movies/ 过场）
                     OpenPanel("cutscene-test", "{\"mode\":\"dev\",\"source\":\"runtime\",\"debug\":true}");
                     break;
+                case "LUT_LAB_TEST":
+                    // LUT 实验室面板（tmp/lut-lab 样品预览 + 抓帧 + XML 烘焙），刘海「其他 ▸ 工具」入口。
+                    // 入场即抓帧：面板打开期间世界捕获按生产遮挡策略挂起（合成器 Active(false)，
+                    // 捕获会话关闭），故抓帧必须先于开面板；失败则不带 entryFrameUrl，
+                    // 面板保持内置测试图 + 手动抓帧说明 + fixture 降级。
+                    OpenLutLabPanel();
+                    break;
                 case "EXIT_CONFIRM":
                     if (ConsumeSafeExitConfirmCapability())
                         ForceExit();
@@ -4513,8 +4532,51 @@ namespace CF7Launcher.Guardian
             OpenPanel("arena", jo.ToString(Formatting.None), returnToPanel, returnToInitDataJson);
         }
 
+        // LUT 实验室开面板（dev）：已接线预抓帧时先异步抓一帧（不堵 UI 线程），成功则把
+        // cf7-lutlab url 拼进 initData.entryFrameUrl；失败/未接线按原样打开。
+        private void OpenLutLabPanel()
+        {
+            Func<string> provider = _lutLabEntryFrameProvider;
+            if (provider == null)
+            {
+                OpenPanel("lut-lab", BuildLutLabInitData(null));
+                return;
+            }
+            Action<Action> marshal = _uiMarshal;
+            if (marshal == null)
+            {
+                // 测试缝线：同步抓 + 同步开，保持单测的同步断言语义。
+                OpenPanel("lut-lab", BuildLutLabInitData(TryGrabLutLabEntryFrame(provider)));
+                return;
+            }
+            System.Threading.ThreadPool.QueueUserWorkItem(delegate
+            {
+                string initData = BuildLutLabInitData(TryGrabLutLabEntryFrame(provider));
+                marshal(delegate { OpenPanel("lut-lab", initData); });
+            });
+        }
+
+        private static string TryGrabLutLabEntryFrame(Func<string> provider)
+        {
+            try { return provider(); }
+            catch (Exception ex)
+            {
+                LogManager.Log("[Router] lut-lab entry frame grab threw: " + ex.Message);
+                return null;
+            }
+        }
+
+        private static string BuildLutLabInitData(string entryFrameUrl)
+        {
+            return "{\"mode\":\"dev\",\"source\":\"runtime\",\"debug\":true"
+                + (entryFrameUrl != null
+                    ? ",\"entryFrameUrl\":\"" + EscapeJsonString(entryFrameUrl) + "\""
+                    : "")
+                + "}";
+        }
+
         /// <summary>
-        /// 统一 panel 打开入口：_panelHost.OpenPanel（含 backdrop/EX_STYLE/HUD-suspend 序列）。
+        /// 统一 panel 打开入口：_panelHost.OpenPanel（含 backdrop/EX_STYLE/HUD-suspend 序列）；
         /// _panelHost 未注入时拒绝打开。
         /// </summary>
         private bool OpenPanel(string panelName, string initDataJson)

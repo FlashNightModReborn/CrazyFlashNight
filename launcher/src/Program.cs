@@ -1912,10 +1912,22 @@ class Program
             selection => { if (!form.IsDisposed) form.BeginInvoke(new Action(() => worldCompositor.ApplyRenderSelection(selection,renderSettings.Sharpness))); },
             () => worldCompositor.SchedulingAllowed);
         socketServer.OnClientDisconnected += perfEngine.ResetRenderSource;
+        Action<Action> dispatchToUi = action =>
+        {
+            if (!form.IsDisposed) { if (form.InvokeRequired) form.BeginInvoke(action); else action(); }
+        };
         var worldLightingTask = new WorldLightingTask(
-            action => { if (!form.IsDisposed) { if (form.InvokeRequired) form.BeginInvoke(action); else action(); } },
+            dispatchToUi,
             worldCompositor.Adopt, worldCompositor.ResetSource);
         socketServer.OnClientDisconnected += worldLightingTask.Disconnected;
+
+        // LUT 实验室（dev 面板）：桥命令 lutlab.grabFrame/bakeXml 与 cf7-lutlab vhost 无条件注册
+        //（刘海「其他 ▸ 工具」开发者领地，维护者裁决 2026-09-24 起无配置门控）。
+        LutLabTask lutLabTask = new LutLabTask(projectRoot, worldCompositor.GrabLatestFrameBgra, worldCompositor.LightingGamma);
+        // 入场即抓帧接线：router 分发 LUT_LAB_TEST 时先在后台线程预抓一帧（不堵 UI），
+        // 成功把 cf7-lutlab url 拼进 initData.entryFrameUrl，经 dispatchToUi 回 UI 线程开面板。
+        commandRouter.SetLutLabEntryFrameProvider(lutLabTask.TryGrabEntryFrameUrl, dispatchToUi);
+        LogManager.Log("[LutLab] dev bridge registered (lutlab.grabFrame/bakeXml, vhost cf7-lutlab, entry-frame pregrab)");
 
         CF7Launcher.Guardian.Hud.Loot.DollPortraitBakeService dollBakeService =
             new CF7Launcher.Guardian.Hud.Loot.DollPortraitBakeService(
@@ -2380,7 +2392,7 @@ class Program
 
         using (PerfTrace.Scope("task.registry_register_all"))
         {
-            TaskRegistry.RegisterAll(router, gomokuTask, toastTask, frameTask, stageOutcomeTask, warlordStageTask, warlordBattleTask, dataQueryTask, audioTask, dollBakeTask, shopTask, inventoryTask, lootTask, lootFeedTask, lootPanelCoordinator, npcShopTask, craftingTask, materialShopAccessTask, hairdresserTask, plasticSurgeryTask, sleepTask, gymTrainingTask, settingsTask, equipmentTuningTask, characterBuildTask, itemUseTask, skillTask, mapTask, stageSelectTask, arenaTask, arenaCalibrationTask, agentControlTask, petTask, mercTask, taskTask, intelligenceTask, blackMarketTask, archiveTask, benchTask, fontPackTask, webOverlay, commandRouter, mapDomainTask, nativeInteractionTask, nativeDialogueTask, worldLightingTask);
+            TaskRegistry.RegisterAll(router, gomokuTask, toastTask, frameTask, stageOutcomeTask, warlordStageTask, warlordBattleTask, dataQueryTask, audioTask, dollBakeTask, shopTask, inventoryTask, lootTask, lootFeedTask, lootPanelCoordinator, npcShopTask, craftingTask, materialShopAccessTask, hairdresserTask, plasticSurgeryTask, sleepTask, gymTrainingTask, settingsTask, equipmentTuningTask, characterBuildTask, itemUseTask, skillTask, mapTask, stageSelectTask, arenaTask, arenaCalibrationTask, agentControlTask, petTask, mercTask, taskTask, intelligenceTask, blackMarketTask, archiveTask, benchTask, fontPackTask, webOverlay, commandRouter, mapDomainTask, nativeInteractionTask, nativeDialogueTask, worldLightingTask, lutLabTask);
         }
         StartupDiagnostics.Mark("task.registry_register_all_ok");
 

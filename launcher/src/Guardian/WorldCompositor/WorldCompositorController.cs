@@ -19,7 +19,7 @@ namespace CF7Launcher.Guardian.WorldCompositor
         private readonly Action<string> _notify;
         private readonly Action<double> _setRenderScale;
         private readonly Action _focusFlash;
-        private readonly WorldColorMatrix _preset;
+        private readonly WorldLightingPreset _preset;
         private readonly Timer _timer = new Timer { Interval=33 };
         private NativeCompositorSession _native;
         private WorldCompositionSurface _surface;
@@ -34,6 +34,11 @@ namespace CF7Launcher.Guardian.WorldCompositor
         private double _waitingStateMs;
         private double _requiredFrameMs, _startedMs, _lastLogMs;
         private float[] _lastSettings;
+        // LUT 路径（lut-set-v1）：_lutActive=原生当前在 LUT 分支；_lastLut/_lastLutLight 是变更检测
+        // （变更才上传，不逐帧传）；会话重建（StopCapture/ResetSource）时随 _lastSettings 一并复位。
+        private bool _lutActive;
+        private byte[] _lastLut;
+        private double _lastLutLight;
         private double _targetScale=1, _appliedScale=1;
         private float _targetSharpness;
         private float _appliedSharpness=float.NaN;
@@ -51,13 +56,40 @@ namespace CF7Launcher.Guardian.WorldCompositor
             if (_targetScale!=_appliedScale) _schedulingAllowed=false;
         }
 
+        internal readonly struct LutLabGrabResult
+        {
+            internal LutLabGrabResult(int code,int width,int height) { Code=code; Width=width; Height=height; }
+            internal readonly int Code, Width, Height;
+        }
+        internal double LightingGamma => _preset.Gamma;
+        // dev-only LUT 实验室抓帧桥：返回最近捕获帧（未调色 BGRA）。_native 生命周期归 UI 线程，
+        // 跨线程调用经 owner.Invoke 排队；合成器未运行/导出缺失/无有效帧时透传原生错误码。
+        internal LutLabGrabResult GrabLatestFrameBgra(byte[] buffer)
+        {
+            if (_owner.IsDisposed) return new LutLabGrabResult(NativeCompositorSession.GrabNoFrame,0,0);
+            if (_owner.InvokeRequired)
+                return (LutLabGrabResult)_owner.Invoke(new Func<LutLabGrabResult>(() => GrabLatestFrameBgra(buffer)));
+            var session=_native;
+            if (_disposed || session==null) return new LutLabGrabResult(NativeCompositorSession.GrabNoFrame,0,0);
+            // 缺陷 X（2026-09-24）：合成器未呈现（含面板遮挡挂起）或世界视口裁剪尚未建立时，
+            // 原生侧 crop 为空会退化为整窗回读（含标题栏）。仅世界视口已建立才允许抓帧。
+            if (!CanGrabWorldViewport(_active,_crop)) return new LutLabGrabResult(NativeCompositorSession.GrabNoWorldViewport,0,0);
+            int width,height;
+            return new LutLabGrabResult(session.GrabLatestFrame(buffer,out width,out height),width,height);
+        }
+        internal static bool CanGrabWorldViewport(bool active, System.Drawing.Rectangle crop)
+        {
+            return active && crop.Width >= 1 && crop.Height >= 1;
+        }
+
         internal WorldCompositorController(Form owner, Control anchor, Func<IntPtr> getFlash,
             Func<bool> canPresent, Action<string> notify, string projectRoot, Func<bool> shouldPrepare,
             Action<double> setRenderScale,Action focusFlash)
         {
             _owner=owner; _anchor=anchor; _getFlash=getFlash; _canPresent=canPresent; _notify=notify; _shouldPrepare=shouldPrepare;
             _setRenderScale=setRenderScale; _focusFlash=focusFlash;
-            _preset=WorldColorMatrix.Load(Path.Combine(projectRoot,"launcher","data","world-lighting","preset.json"));
+            _preset=WorldLightingPreset.Load(Path.Combine(projectRoot,"launcher","data","world-lighting","preset.json"),
+                message => LogManager.Log(message));
             _timer.Tick+=OnTick;
             _owner.LocationChanged+=OnGeometryChanged; _owner.SizeChanged+=OnGeometryChanged;
             _owner.DpiChanged+=OnDpiChanged; _owner.FormClosed+=OnClosed;
@@ -114,6 +146,7 @@ namespace CF7Launcher.Guardian.WorldCompositor
                     _surface.CreateControl();
                     _native=new NativeCompositorSession(module,_owner.Handle,(uint)Environment.ProcessId,_surface.Handle,0,_borderless);
                     _crop=Rectangle.Empty; _startedMs=NowMs(); _lastSettings=null; _active=true; _appliedSharpness=float.NaN;
+                    _lastLut=null; _lutActive=false;
                     LogManager.Log("event=world_compositor_start flash=0x"+_flash.ToString("X")+" fpsLimit=30");
                 }
                 if (_getFlash()!=_flash || !IsWindow(_flash)) { ResetSource(); return; }
@@ -167,10 +200,23 @@ namespace CF7Launcher.Guardian.WorldCompositor
                 // timestamp freshness fence, not proof of the pixels' semantic scene identity.
                 if (ready && _lighting.ConfirmCapturedFrame(stats.LastFrameQpcMs,NowMs()))
                     LogManager.Log("event=world_lighting_frame_handoff scene="+_lighting.ReadyScene+" captureQpcMs="+stats.LastFrameQpcMs.ToString("F1",CultureInfo.InvariantCulture));
-                var settings=_preset.ShaderSettings(_lighting.Sample(NowMs()));
-                bool changed=_lastSettings==null;
-                for (int i=0;!changed && i<settings.Length;i++) if (Math.Abs(settings[i]-_lastSettings[i])>0.000001f) changed=true;
-                if (changed) { _native.Matrix(settings); _lastSettings=settings; }
+                if (_preset.UsesLut(_lighting.CurrentMode)) {
+                    // LUT 路径（lut-set-v1）：350ms 过渡状态机不变，采样语义由矩阵改为连续 light 等级，
+                    // 相邻整数档 CPU blend（32^3 逐字节）；变更才上传原生（过渡期间逐 tick、稳态零上传）。
+                    double lutLight=WorldLutSet.ClampLight(_lighting.SampleLight(NowMs()));
+                    if (_lastLut==null || Math.Abs(lutLight-_lastLutLight)>1e-6) {
+                        _lastLut=_preset.LutSet.BlendLevel(lutLight);
+                        _native.SetLut(_lastLut);
+                        _lastLutLight=lutLight;
+                    }
+                    _lutActive=true;
+                } else {
+                    if (_lutActive) { _native.ClearLut(); _lutActive=false; }
+                    var settings=_preset.ShaderSettings(_lighting.Sample(NowMs()));
+                    bool changed=_lastSettings==null;
+                    for (int i=0;!changed && i<settings.Length;i++) if (Math.Abs(settings[i]-_lastSettings[i])>0.000001f) changed=true;
+                    if (changed) { _native.Matrix(settings); _lastSettings=settings; }
+                }
                 if (ready && !_surface.Visible) { _surface.Show(); PlaceBelowHud(); _surface.RefreshPointer(); }
                 if (!ready && NowMs()-Math.Max(_startedMs,_requiredFrameMs)>10000) throw new TimeoutException("世界捕获没有恢复有效画面");
                 if (NowMs()-_lastLogMs>1000) {
@@ -197,10 +243,13 @@ namespace CF7Launcher.Guardian.WorldCompositor
             Rectangle screen=_anchor.RectangleToScreen(_anchor.ClientRectangle);
             if (DwmGetWindowAttribute(_owner.Handle,9,out Rect frame,Marshal.SizeOf<Rect>())!=0) throw new InvalidOperationException("Cannot resolve capture bounds");
             if (screen.Width<1 || screen.Height<1 || !frame.Rectangle.Contains(screen)) { _schedulingAllowed=false; _surface.Hide(); _requiredFrameMs=NowMs(); return false; }
-            if (!GetClientRect(_flash,out Rect client)) return false;
-            var sourceOrigin=new Point(0,0);
-            if (!ClientToScreen(_flash,ref sourceOrigin)) return false;
-            var source=new Rectangle(sourceOrigin,new Size(client.Right,client.Bottom));
+            // 世界视口 = anchor 客户区原点 + flash 实际尺寸（renderScale ≤1）。
+            // host 进程为 PerMonitorV2：anchor 坐标即物理像素；flash 子窗口虽 DPI Unaware，
+            // 其几何由 host 按物理坐标 MoveWindow 放置（WindowManager.ResizeFlashToPanel 以同一
+            // scale 值缩放填满 anchor，取整方式一致）。旧路径用 GetClientRect/ClientToScreen(_flash)
+            // 拿虚拟化逻辑坐标与物理 DWM frame 混算，最大化 + DPI 虚拟化下 crop 永不正确
+            // （2026-09-24 真机问题 1）。DPI 100%/scale=1 下与旧值逐像素一致。
+            Rectangle source=ComputeFlashViewport(screen,_appliedScale);
             if (!screen.Contains(source) || source.Width<1 || source.Height<1) { _schedulingAllowed=false; return false; }
             Rectangle crop=CalculateCrop(source,frame.Rectangle);
             if (crop!=_crop || _surface.Bounds!=screen || _viewportHeld) {
@@ -217,6 +266,17 @@ namespace CF7Launcher.Guardian.WorldCompositor
         {
             if (game.Width<1 || game.Height<1 || !capturedFrame.Contains(game)) throw new ArgumentException("Game viewport outside capture bounds");
             return new Rectangle(game.X-capturedFrame.X,game.Y-capturedFrame.Y,game.Width,game.Height);
+        }
+        /// <summary>
+        /// 世界视口 = anchor 客户区屏幕矩形 + flash 实际尺寸（renderScale ≤1）。
+        /// 取整与 WindowManager.ResizeFlashToPanel 完全一致（Math.Round 默认 ToEven），
+        /// 保证 crop 与 host 放置 flash 的几何逐像素同源；internal static 便于单测。
+        /// </summary>
+        internal static Rectangle ComputeFlashViewport(Rectangle anchorScreenRect, double renderScale)
+        {
+            int width=Math.Max(1,(int)Math.Round(anchorScreenRect.Width*renderScale));
+            int height=Math.Max(1,(int)Math.Round(anchorScreenRect.Height*renderScale));
+            return new Rectangle(anchorScreenRect.Location,new Size(width,height));
         }
         private void PlaceBelowHud()
         {
@@ -245,7 +305,5 @@ namespace CF7Launcher.Guardian.WorldCompositor
         [DllImport("user32.dll")] private static extern IntPtr GetWindow(IntPtr hwnd,uint command);
         [DllImport("user32.dll")] [return:MarshalAs(UnmanagedType.Bool)] private static extern bool IsWindow(IntPtr hwnd);
         [DllImport("user32.dll")] [return:MarshalAs(UnmanagedType.Bool)] private static extern bool SetWindowPos(IntPtr hwnd,IntPtr after,int x,int y,int w,int h,uint flags);
-        [DllImport("user32.dll")] private static extern bool GetClientRect(IntPtr hwnd,out Rect rect);
-        [DllImport("user32.dll")] private static extern bool ClientToScreen(IntPtr hwnd,ref Point point);
     }
 }

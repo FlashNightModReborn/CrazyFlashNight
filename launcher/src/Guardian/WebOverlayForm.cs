@@ -1621,6 +1621,24 @@ namespace CF7Launcher.Guardian
             }
         }
 
+        private void TryRegisterLutLabVirtualHost(string trigger)
+        {
+            try
+            {
+                if (_webView == null || _webView.CoreWebView2 == null) return;
+                string lutLabDir = Path.Combine(_projectRoot, "tmp", "lut-lab");
+                Directory.CreateDirectory(lutLabDir);
+                _webView.CoreWebView2.SetVirtualHostNameToFolderMapping(
+                    LutLabTask.VirtualHost, lutLabDir,
+                    CoreWebView2HostResourceAccessKind.Allow);
+                LogManager.Log("[WebOverlay] cf7-lutlab → " + lutLabDir + " (" + trigger + ")");
+            }
+            catch (Exception ex)
+            {
+                LogManager.Log("[WebOverlay] cf7-lutlab mapping failed (" + trigger + "): " + ex.Message);
+            }
+        }
+
         /// <summary>注入 InputShieldForm 引用。若 WebView2 已就绪，立即补调 SetTargetWebView。</summary>
         public void SetInputShield(InputShieldForm shield)
         {
@@ -1743,6 +1761,9 @@ namespace CF7Launcher.Guardian
                 Directory.CreateDirectory(assetJobs);
                 _webView.CoreWebView2.SetVirtualHostNameToFolderMapping(
                     "asset-workbench.local", assetJobs, CoreWebView2HostResourceAccessKind.Allow);
+
+                // LUT 实验室虚拟主机：https://cf7-lutlab/ → tmp/lut-lab/（无条件映射；失败只记日志）
+                TryRegisterLutLabVirtualHost("init_webview2");
 
                 // 字体只允许通过 catalog exact-set handler 暴露；不再映射可枚举目录。
                 RuntimeFontCatalog.RegisterWebResources(_webView.CoreWebView2, "WebOverlayForm");
@@ -5211,6 +5232,19 @@ namespace CF7Launcher.Guardian
                 panelRectScreen.Width, panelRectScreen.Height,
                 SWP_NOACTIVATE | SWP_SHOWWINDOW | SWP_FRAMECHANGED);
 
+            // panel 态坐标上下文同步：idle 冻结期 SyncPosition 按设计不跑（_frozenForIdle），
+            // OverlayCoordinateContext.OverlayPhysicalBounds 可能仍是旧几何；panel 态 CSS→physical
+            // 命中换算（interactiveRect/InputShield/原生光标）必须以本次 panelRect 为基准，
+            // 否则视口/DPI 变化后命中按比例错算（2026-09-24 真机问题 2）。
+            try
+            {
+                _coordinateContext.UpdateOverlay(
+                    panelRectScreen, 0, 0,
+                    panelRectScreen.Width, panelRectScreen.Height,
+                    this.Handle, 1.0, "panel_resume");
+            }
+            catch (Exception ex) { LogManager.Log("[Panel] ResumeForPanel coordinate context sync failed: " + ex.Message); }
+
             try
             {
                 if (_webView != null && _webView.IsHandleCreated)
@@ -6255,7 +6289,7 @@ namespace CF7Launcher.Guardian
                 LogManager.Log("[WebTask] missing task field");
                 return;
             }
-            if (!IsWebTaskRouterIngressAllowed(taskName))
+            if (!IsWebTaskRouterIngressAllowed(taskName) && !IsLutLabIngressAllowed(taskName))
             {
                 // Everything outside the positive Web-origin list belongs to another authority
                 // boundary (socket, HTTP or Host). Never pass it into the shared MessageRouter.
@@ -6314,6 +6348,13 @@ namespace CF7Launcher.Guardian
                     taskName,
                     "loot_request",
                     StringComparison.Ordinal);
+        }
+
+        // LUT 实验室（dev 面板）：lutlab 两条 task 按名放行进入 MessageRouter；
+        // 不进静态 Web-origin 白名单（该白名单语义不变）。
+        internal static bool IsLutLabIngressAllowed(string taskName)
+        {
+            return LutLabTask.IsLutLabTaskName(taskName);
         }
 
         private void PostTaskResultToWeb(string taskName, JToken callIdToken, string resultJson)

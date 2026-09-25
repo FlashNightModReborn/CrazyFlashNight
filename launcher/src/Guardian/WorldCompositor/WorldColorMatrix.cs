@@ -9,16 +9,19 @@ namespace CF7Launcher.Guardian.WorldCompositor
     internal sealed class WorldColorMatrix
     {
         internal float Gamma { get; private set; } = 1;
+        internal static WorldColorMatrix Create(double gamma)
+        {
+            if (!double.IsFinite(gamma) || gamma < 0.25 || gamma > 4) throw new InvalidDataException("Invalid gamma");
+            var result = new WorldColorMatrix();
+            result.Gamma = (float)gamma;
+            return result;
+        }
         internal static WorldColorMatrix Load(string path)
         {
-            var result = new WorldColorMatrix();
             var json = JObject.Parse(File.ReadAllText(path));
             if (json.Value<int?>("version") != 1 || json.Value<string>("algorithm") != "legacy-matrix-v1")
                 throw new InvalidDataException("Unsupported world lighting preset");
-            double gamma = json.Value<double?>("gamma") ?? 1;
-            if (!double.IsFinite(gamma) || gamma < 0.25 || gamma > 4) throw new InvalidDataException("Invalid gamma");
-            result.Gamma = (float)gamma;
-            return result;
+            return Create(json.Value<double?>("gamma") ?? 1);
         }
         internal static double[] Identity() => new double[] {1,0,0,0,0, 0,1,0,0,0, 0,0,1,0,0, 0,0,0,1,0};
         internal static double[] Compose(double[] basis, double[] overlay)

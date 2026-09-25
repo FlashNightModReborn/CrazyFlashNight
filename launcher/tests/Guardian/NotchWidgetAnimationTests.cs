@@ -91,7 +91,7 @@ namespace CF7Launcher.Tests.Guardian
                 widget.OpenOtherMenuForTest(1);
                 Assert.Equal(9, widget.OtherMenuItemCountForTest);
                 widget.OpenOtherMenuForTest(2);
-                Assert.Equal(3, widget.OtherMenuItemCountForTest);
+                Assert.Equal(4, widget.OtherMenuItemCountForTest); // 工具组：动画测试 + LUT 实验室 + 两个工作台
 
                 widget.BeginCollapseForTest();
                 Assert.False(widget.IsOtherMenuOpenForTest);

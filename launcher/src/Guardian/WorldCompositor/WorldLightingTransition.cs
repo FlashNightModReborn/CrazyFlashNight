@@ -9,11 +9,17 @@ namespace CF7Launcher.Guardian.WorldCompositor
         private long _sequence, _scene, _readyScene;
         private double _pendingSince, _blendStarted, _estimatedGapMs=160;
         private double[] _from=WorldColorMatrix.Identity(), _target=WorldColorMatrix.Identity();
+        // LUT 路径（lut-set-v1）：插值语义由矩阵改为 light 等级——同一过渡状态机/时序窗口，
+        // _fromLight/_targetLight 与 _from/_target 在同一 Commit/Hold 点同步采样，Sample 与
+        // SampleLight 共享同一 t。矩阵字段对 legacy 路径语义不变。
+        private double _fromLight=7, _targetLight=7;
         internal bool HasValidState { get; private set; }
         internal bool Pending { get; private set; }
         internal double BlendDurationMs { get; private set; }
         internal double LastReadyLight { get; private set; } = 7;
         private string _mode;
+        // 最近一次 Commit 的模式（hold/pending 期间保持）：LUT/legacy 分派只认它，不看在途报文。
+        internal string CurrentMode => _mode;
         private WorldLightingFrame _pendingReady;
         private double _captureNotBefore;
         internal bool WaitingForCapture => _pendingReady != null;
@@ -46,6 +52,7 @@ namespace CF7Launcher.Guardian.WorldCompositor
             if (!Pending || newScene) {
                 _pendingSince=now;
                 _from=_target=Sample(now);
+                _fromLight=_targetLight=SampleLight(now);
                 BlendDurationMs=0;
             }
             Pending=true;
@@ -64,7 +71,9 @@ namespace CF7Launcher.Guardian.WorldCompositor
             if (HasValidState && Pending)
                 _estimatedGapMs=0.75*_estimatedGapMs+0.25*Math.Clamp(now-_pendingSince,0,2000);
             _from=Sample(now);
+            _fromLight=SampleLight(now);
             _target=WorldColorMatrix.Generate(frame.Parameters);
+            _targetLight=frame.Light;
             BlendDurationMs=!HasValidState ? 0 : sceneHandoff ? Math.Clamp(_estimatedGapMs*0.5,80,180)
                 : frame.Mode!=_mode || frame.Immediate || frame.Paused ? 0 : 350;
             _blendStarted=now;
@@ -78,6 +87,12 @@ namespace CF7Launcher.Guardian.WorldCompositor
             var result=new double[20];
             for (int i=0;i<20;i++) result[i]=_from[i]+(_target[i]-_from[i])*t;
             return result;
+        }
+        // 与 Sample 共享同一过渡窗口/时序：输出当前连续 light 等级（LUT 路径再经相邻整数档混合）。
+        internal double SampleLight(double now)
+        {
+            double t=BlendDurationMs<=0 ? 1 : Math.Clamp((now-_blendStarted)/BlendDurationMs,0,1);
+            return _fromLight+(_targetLight-_fromLight)*t;
         }
         internal bool ShouldPresent(bool viewportAdmitted) => viewportAdmitted && HasValidState;
         internal bool IsOverdue(double now) => HasValidState && Pending && now-_pendingSince>10000;

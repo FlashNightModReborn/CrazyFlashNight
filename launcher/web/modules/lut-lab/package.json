@@ -1,0 +1,11 @@
+{
+  "name": "cf7-lut-lab",
+  "private": true,
+  "version": "0.1.0",
+  "description": "LUT 实验室 v1 dev 面板（零依赖；浏览器 QA 用系统 Edge + CDP）",
+  "type": "module",
+  "scripts": {
+    "serve": "node dev/server.mjs",
+    "test:browser": "node --experimental-websocket tools/run-lut-lab-qa.mjs"
+  }
+}

@@ -12,6 +12,30 @@ namespace CF7Launcher.Tests.Guardian {
             Assert.Equal(new Rectangle(8,40,1084,610),WorldCompositorController.CalculateCrop(new Rectangle(-1492,140,1084,610),root));
             Assert.Throws<ArgumentException>(()=>WorldCompositorController.CalculateCrop(new Rectangle(-1510,140,1084,610),root));
         }
+        // 缺陷 X（2026-09-24）：合成器未呈现或裁剪未建立时整窗回读会含标题栏——抓帧准入必须拒绝。
+        [Fact] public void GrabAdmissionRequiresActiveCaptureAndEstablishedWorldViewport() {
+            Assert.False(WorldCompositorController.CanGrabWorldViewport(false,new Rectangle(0,0,2560,1440)));
+            Assert.False(WorldCompositorController.CanGrabWorldViewport(true,Rectangle.Empty));
+            Assert.False(WorldCompositorController.CanGrabWorldViewport(true,new Rectangle(8,40,0,610)));
+            Assert.True(WorldCompositorController.CanGrabWorldViewport(true,new Rectangle(8,40,1084,610)));
+        }
+        // 问题 1（2026-09-24）：世界视口由 host 物理 anchor + renderScale 推导，不查 flash 子窗口
+        // 虚拟化坐标。事故几何（最大化 + DPI 144 虚拟化）：anchor (0,54,2560,1440) →
+        // crop 相对 2560×1494 物理帧 = (0,54,2560,1440)，即纯世界视口（不含 54px 标题栏）。
+        [Fact] public void FlashViewportComesFromAnchorAndRenderScaleWithIncidentGeometry() {
+            var anchor=new Rectangle(0,54,2560,1440);
+            var viewport=WorldCompositorController.ComputeFlashViewport(anchor,1.0);
+            Assert.Equal(anchor,viewport);
+            Assert.Equal(new Rectangle(0,54,2560,1440),
+                WorldCompositorController.CalculateCrop(viewport,new Rectangle(0,0,2560,1494)));
+        }
+        [Fact] public void FlashViewportHonorsRenderScaleBelowOne() {
+            // 与 WindowManager.ResizeFlashToPanel 同一取整语义（Math.Round 默认 ToEven）
+            Assert.Equal(new Rectangle(8,40,1200,675),
+                WorldCompositorController.ComputeFlashViewport(new Rectangle(8,40,1600,900),0.75));
+            Assert.Equal(new Rectangle(0,54,1,1),
+                WorldCompositorController.ComputeFlashViewport(new Rectangle(0,54,1,1),0.5));
+        }
         [Fact] public void LegacyNeutralMatrixIsIdentity() {
             Assert.Equal(WorldColorMatrix.Identity(),WorldColorMatrix.Generate(new double[]{1,1,1,1,0,0,0,0}));
         }

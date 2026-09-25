@@ -75,7 +75,7 @@ internal sealed class ProbeForm : Form
     private readonly Stopwatch clock = new();
     private readonly List<object> samples = [];
     private readonly List<PhaseResult> phases = [];
-    private readonly string[] plan = ["raw", "night", "nightvision", "occluded", "offscreen", "restored", "minimized", "restore-minimized", "hidden", "restore-hidden", "resized", "viewport-held", "viewport-resumed"];
+    private readonly string[] plan = ["raw", "night", "nightvision", "occluded", "offscreen", "restored", "grab-check", "minimized", "restore-minimized", "hidden", "restore-hidden", "resized", "viewport-held", "viewport-resumed"];
     private FixtureForm? fixture;
     private Form? occluder;
     private Process? ownedFlash;
@@ -89,6 +89,9 @@ internal sealed class ProbeForm : Form
     private bool requestedProof;
     private ulong heldPresented;
     private bool heldImageStable=true, resumedGeometry;
+    // grab-check 阶段（lut-set-v1 回归）：ProbeGrabLatestFrame 尺寸查询 + 实抓 + 非纯色校验。
+    private bool grabAttempted, grabPassed;
+    private uint grabWidth, grabHeight;
     private Native.Stats latest;
     private object? sourceIdentity;
     private string? failure;
@@ -207,9 +210,32 @@ internal sealed class ProbeForm : Form
         && phases.Take(3).Select((p,i) => (fixture == null || p.CapturedFrames >= 10) && p.ProofCount == i+1 && p.ProofMode == i
             && p.ProofMaxError <= 2 && (fixture == null || p.ProofDistinct == 1)).All(p => p)
         && phases.Where(p => p.Name.StartsWith("restore") || p.Name == "resized").All(p => p.CapturedFrames >= (fixture == null ? 1UL : 10UL))
-        && latest.CpuReadbacks == latest.ProofCount*6
+        && latest.CpuReadbacks == latest.ProofCount*6 + (grabAttempted ? 1UL : 0UL)
+        && grabPassed
         && heldImageStable && resumedGeometry
         && phases.Single(p => p.Name=="viewport-resumed").CapturedFrames>0;
+
+    // ProbeGrabLatestFrame 回归（加性 ABI 3 下抓帧路径不受影响）：尺寸查询 → 实抓 → 非纯色/非全黑。
+    private void PerformGrabCheck()
+    {
+        grabAttempted = true;
+        int query = Native.ProbeGrabLatestFrame(native, null, 0, out uint w, out uint h);
+        if (query != -2 || w < 1 || h < 1)
+            throw new InvalidOperationException($"grab size query failed: code={query} {w}x{h}");
+        var buffer = new byte[(ulong)w * h * 4];
+        int result = Native.ProbeGrabLatestFrame(native, buffer, (uint)buffer.Length, out uint gw, out uint gh);
+        if (result != 1 || gw != w || gh != h)
+            throw new InvalidOperationException($"grab failed: code={result} {gw}x{gh} != {w}x{h}");
+        byte b0 = buffer[0], b1 = buffer[1], b2 = buffer[2];
+        bool distinct = false, nonBlack = false;
+        for (int i = 0; i + 2 < buffer.Length; i += 4096 * 4)
+        {
+            if (buffer[i] != b0 || buffer[i + 1] != b1 || buffer[i + 2] != b2) distinct = true;
+            if (buffer[i] > 8 || buffer[i + 1] > 8 || buffer[i + 2] > 8) nonBlack = true;
+        }
+        if (!distinct || !nonBlack) throw new InvalidOperationException("grab returned uniform/blank frame");
+        grabWidth = w; grabHeight = h; grabPassed = true;
+    }
 
     private void Transition(string phase)
     {
@@ -226,6 +252,7 @@ internal sealed class ProbeForm : Form
                 occluder?.Close(); occluder = null;
                 Native.SetWindowPos(source, 0, -10000, -10000, 0, 0, 0x0015); break;
             case "restored": RestoreSource(); break;
+            case "grab-check": PerformGrabCheck(); break;
             case "minimized": Native.ShowWindow(source, 6); break;
             case "restore-minimized": Native.ShowWindow(source, 9); RestoreSource(); break;
             case "hidden": Native.ShowWindow(source, 0); break;
@@ -266,6 +293,7 @@ internal sealed class ProbeForm : Form
             success = ExitCode == 0 && failure == null, automatedCorePassed = options.Auto && CorePassed(),
             humanAcceptance = "NOT_PERFORMED", inputForwarding = "NOT_IMPLEMENTED", performanceBenefit = "NOT_ESTABLISHED",
             failure, source = sourceIdentity,
+            grabCheck = new { attempted = grabAttempted, passed = grabPassed, width = grabWidth, height = grabHeight },
             options = new { options.Adapter, options.Auto, options.PhaseSeconds, options.Duration }, os = Environment.OSVersion.ToString(),
             binarySha256 = Hash(Environment.ProcessPath!), nativeSha256 = Hash(Path.Combine(AppContext.BaseDirectory, "FlashCompositorNative.dll")),
             managedSha256 = Hash(typeof(Program).Assembly.Location),
@@ -332,6 +360,7 @@ internal static class Native
     [DllImport("FlashCompositorNative", CallingConvention = CallingConvention.Cdecl)] internal static extern void ProbeStop(nint handle);
     [DllImport("FlashCompositorNative", CallingConvention = CallingConvention.Cdecl)] internal static extern void ProbeHoldViewport(nint handle);
     [DllImport("FlashCompositorNative", CallingConvention = CallingConvention.Cdecl)] internal static extern int ProbeSetViewport(nint handle,int x,int y,int width,int height,double notBefore);
+    [DllImport("FlashCompositorNative", CallingConvention = CallingConvention.Cdecl)] internal static extern int ProbeGrabLatestFrame(nint handle, byte[]? buffer, uint bufferSize, out uint width, out uint height);
     [DllImport("user32.dll")] internal static extern uint GetWindowThreadProcessId(nint window, out uint pid);
     [DllImport("user32.dll")] [return:MarshalAs(UnmanagedType.Bool)] internal static extern bool GetWindowRect(nint window, out Rect rect);
     [DllImport("user32.dll")] [return:MarshalAs(UnmanagedType.Bool)] internal static extern bool SetWindowPos(nint window,nint after,int x,int y,int width,int height,uint flags);

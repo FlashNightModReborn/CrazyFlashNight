@@ -34,9 +34,11 @@ double QpcMs() {
 
 constexpr char Shader[] = R"hlsl(
 Texture2D image : register(t0);
+Texture3D lutTexture : register(t1);
 SamplerState pointSampler : register(s0);
+SamplerState lutSampler : register(s1);
 cbuffer Settings : register(b0) { float4 rowR; float4 rowG; float4 rowB; float4 offset; };
-cbuffer Sampling : register(b1) { float2 texel; float sharpness; float padding; };
+cbuffer Sampling : register(b1) { float2 texel; float sharpness; float lutMode; };
 struct Vertex { float4 pos : SV_POSITION; float2 uv : TEXCOORD0; };
 Vertex VS(uint id : SV_VertexID) {
     Vertex v;
@@ -55,6 +57,11 @@ float4 PS(Vertex v) : SV_TARGET {
         float3 hi = max(c.rgb,max(max(n,s),max(e,w)));
         // Bounded unsharp mask, not CAS: never extend beyond the local color range.
         c.rgb = clamp(c.rgb + sharpness * (c.rgb - (n+s+e+w)*.25),lo,hi);
+    }
+    if (lutMode > 0.5) {
+        // lut-set-v1：LUT 已含全部调色语义（矩阵/gamma 内嵌），三线性采样直出。
+        // UNORM 3D 纹理坐标映射：c*(N-1)/N + 0.5/N（texel 中心对齐）。
+        return float4(lutTexture.Sample(lutSampler, c.rgb * (31.0/32.0) + (0.5/32.0)).rgb, 1);
     }
     float3 graded = saturate(float3(dot(c,rowR), dot(c,rowG), dot(c,rowB)) + offset.rgb);
     return float4(pow(graded, 1.0 / max(offset.w, 1.0e-3)), 1);
@@ -85,7 +92,39 @@ public:
         { std::lock_guard guard(mutex_); std::memcpy(&customSettings_,values,sizeof(Settings)); ++settingsVersion_; custom_=true; }
         Signal(); return true;
     }
+    // lut-set-v1（加性 ABI 3）：整块 32^3 RGBA8 拷贝入库（调用方拥有输入缓冲）；上传即启用 LUT 分支，
+    // 工作线程按 lutVersion_ 惰性建/更 Texture3D。ClearLut 关断 LUT 分支（矩阵路径回退），缓冲保留。
+    bool SetLut(const uint8_t* rgba) {
+        if (!rgba) return false;
+        { std::lock_guard guard(mutex_); std::memcpy(lutData_, rgba, LutBytes); ++lutVersion_; lutEnabled_ = true; }
+        Signal(); return true;
+    }
+    void ClearLut() {
+        { std::lock_guard guard(mutex_); lutEnabled_ = false; ++lutVersion_; }
+        Signal();
+    }
     void RequestProof() { proofRequested_ = true; }
+    // Dev-only LUT lab grab. Blocks the caller until the capture worker services the
+    // request (or a bounded timeout); the GPU copy stays on the worker thread.
+    int GrabLatestFrame(uint8_t* buffer, uint32_t bufferSize, uint32_t* outWidth, uint32_t* outHeight) {
+        if (!outWidth || !outHeight) return 0;
+        if (!buffer && bufferSize != 0) return 0;
+        *outWidth = 0; *outHeight = 0;
+        std::unique_lock lock(grabMutex_);
+        if (grabPending_) return -3;
+        grabBuffer_ = buffer; grabBufferSize_ = bufferSize;
+        grabWidth_ = grabHeight_ = 0; grabResult_ = 0;
+        grabPending_ = true; grabRequested_ = true;
+        Signal();
+        grabDone_.wait_for(lock, std::chrono::seconds(2), [this] { return !grabPending_; });
+        if (grabPending_) {
+            // Worker gone or wedged: invalidate so a late service writes nothing.
+            grabPending_ = false; grabBuffer_ = nullptr; grabBufferSize_ = 0;
+            return -4;
+        }
+        *outWidth = grabWidth_; *outHeight = grabHeight_;
+        return grabResult_;
+    }
     bool Crop(int x, int y, int width, int height) {
         if (x < 0 || y < 0 || width < 1 || height < 1 || width > 8192 || height > 8192) return false;
         std::lock_guard guard(mutex_); crop_ = {x,y,x+width,y+height}; return true;
@@ -226,6 +265,13 @@ private:
         sd.AddressU = sd.AddressV = sd.AddressW = D3D11_TEXTURE_ADDRESS_CLAMP;
         sd.MaxLOD = D3D11_FLOAT32_MAX;
         check_hresult(device->CreateSamplerState(&sd, sampler.put()));
+        // LUT 采样器独立：3D LUT 必须逐像素线性插值（源图采样器在游戏路径是 POINT；
+        // 单 mip 链下 MIN_MAG_MIP_LINEAR 即三维线性采样，与既有枚举用法一致）。
+        com_ptr<ID3D11SamplerState> lutSampler;
+        D3D11_SAMPLER_DESC lsd{}; lsd.Filter = D3D11_FILTER_MIN_MAG_MIP_LINEAR;
+        lsd.AddressU = lsd.AddressV = lsd.AddressW = D3D11_TEXTURE_ADDRESS_CLAMP;
+        lsd.MaxLOD = 0;
+        check_hresult(device->CreateSamplerState(&lsd, lutSampler.put()));
         com_ptr<ID3D11RasterizerState> raster;
         D3D11_RASTERIZER_DESC rd{}; rd.FillMode = D3D11_FILL_SOLID; rd.CullMode = D3D11_CULL_NONE; rd.DepthClipEnable = TRUE;
         check_hresult(device->CreateRasterizerState(&rd, raster.put()));
@@ -239,6 +285,12 @@ private:
         double frameQpcMs = 0;
         startSession();
         uint64_t appliedSettings = 0;
+        // lut-set-v1 工作线程状态：纹理惰性创建，版本驱动的 UpdateSubresource（变更才上传）。
+        com_ptr<ID3D11Texture3D> lutTexture;
+        com_ptr<ID3D11ShaderResourceView> lutSrv;
+        uint64_t appliedLut = 0, lutCopiedVersion = 0;
+        bool lutActive = false;
+        auto lutWork = std::make_unique<uint8_t[]>(LutBytes);
         auto nextPresent = std::chrono::steady_clock::now();
         State(1, S_OK, L"GPU display path; optional diagnostic readback");
         while (!stop_) {
@@ -247,8 +299,9 @@ private:
                 arrived.revoke();
                 pool.Close();
                 std::unique_lock lock(waitMutex_);
-                wake_.wait(lock,[this] { return stop_.load() || active_.load(); });
+                wake_.wait(lock,[this] { return stop_.load() || active_.load() || grabRequested_.load(); });
                 if (stop_) break;
+                if (!active_) { ServiceGrab(nullptr,nullptr,nullptr,0,0); continue; }
                 size=item.Size(); ValidateSize(size.Width,size.Height);
                 pool=Direct3D11CaptureFramePool::CreateFreeThreaded(runtimeDevice,DirectXPixelFormat::B8G8R8A8UIntNormalized,2,size);
                 arrived=pool.FrameArrived(auto_revoke,[this](auto const&, auto const&) { Signal(); });
@@ -256,13 +309,19 @@ private:
             }
             if (fps_>0) {
                 std::unique_lock lock(waitMutex_);
-                wake_.wait_until(lock,nextPresent,[this] { return stop_.load() || !active_.load(); });
+                wake_.wait_until(lock,nextPresent,[this] { return stop_.load() || !active_.load() || grabRequested_.load(); });
                 if (stop_) break;
                 if (!active_) continue;
             }
+            if (grabRequested_.load()) { ServiceGrab(device.get(),context.get(),texture.get(),textureW,textureH); continue; }
             uint64_t observedWake=wakeVersion_.load();
             uint64_t settingsVersion; bool custom; Settings settings;
-            { std::lock_guard guard(mutex_); settingsVersion=settingsVersion_; custom=custom_; settings=customSettings_; }
+            uint64_t lutVersion; bool lutEnabled;
+            { std::lock_guard guard(mutex_); settingsVersion=settingsVersion_; custom=custom_; settings=customSettings_;
+                lutVersion=lutVersion_; lutEnabled=lutEnabled_;
+                if (lutEnabled && lutVersion!=lutCopiedVersion) {
+                    std::memcpy(lutWork.get(), lutData_, LutBytes); lutCopiedVersion=lutVersion;
+                } }
             if (!ValidSource()) { State(2, S_OK, L"Source closed"); break; }
             if (!IsWindow(output_)) break;
             std::unique_lock presentation(presentationMutex_);
@@ -276,7 +335,8 @@ private:
             RECT client{}; GetClientRect(output_, &client);
             bool fresh = static_cast<bool>(frame);
             if (!frame && (!texture || (appliedMode == mode_.load() && !proofRequested_
-                    && outputW == client.right && outputH == client.bottom && appliedSettings==settingsVersion && appliedSharpness==sharpness_.load()))) {
+                    && outputW == client.right && outputH == client.bottom && appliedSettings==settingsVersion
+                    && appliedSharpness==sharpness_.load() && appliedLut==lutVersion))) {
                 presentation.unlock();
                 std::unique_lock lock(waitMutex_);
                 wake_.wait_for(lock,std::chrono::milliseconds(100),[this,observedWake] { return stop_.load() || wakeVersion_.load()!=observedWake; });
@@ -359,6 +419,22 @@ private:
                 context->UpdateSubresource(constants.get(), 0, nullptr, &settings, 0, 0);
                 appliedMode = mode; appliedSettings=settingsVersion;
             }
+            // lut-set-v1：版本变化才触碰 GPU（建纹理一次性，之后 UpdateSubresource 整块覆盖）。
+            if (lutVersion != appliedLut) {
+                if (lutEnabled) {
+                    if (!lutTexture) {
+                        D3D11_TEXTURE3D_DESC ld{}; ld.Width=LutSize; ld.Height=LutSize; ld.Depth=LutSize;
+                        ld.MipLevels=1; ld.Format=DXGI_FORMAT_R8G8B8A8_UNORM;
+                        ld.Usage=D3D11_USAGE_DEFAULT; ld.BindFlags=D3D11_BIND_SHADER_RESOURCE;
+                        check_hresult(device->CreateTexture3D(&ld, nullptr, lutTexture.put()));
+                        check_hresult(device->CreateShaderResourceView(lutTexture.get(), nullptr, lutSrv.put()));
+                    }
+                    context->UpdateSubresource(lutTexture.get(), 0, nullptr, lutWork.get(),
+                        LutSize*4, LutSize*LutSize*4);
+                }
+                lutActive = lutEnabled && lutSrv != nullptr;
+                appliedLut = lutVersion;
+            }
             auto target = rtv.get(); context->OMSetRenderTargets(1, &target, nullptr);
             const float black[]{0,0,0,1}; context->ClearRenderTargetView(target, black);
             float scale = std::min(static_cast<float>(w)/textureW, static_cast<float>(h)/textureH);
@@ -368,12 +444,15 @@ private:
             context->VSSetShader(vs.get(), nullptr, 0); context->PSSetShader(ps.get(), nullptr, 0);
             auto resource = srv.get(); auto sampling = sampler.get(); auto buffer = constants.get();
             context->PSSetShaderResources(0,1,&resource); context->PSSetSamplers(0,1,&sampling); context->PSSetConstantBuffers(0,1,&buffer);
+            ID3D11ShaderResourceView* lutResource = lutActive ? lutSrv.get() : nullptr;
+            context->PSSetShaderResources(1,1,&lutResource);
+            auto lutSamp = lutSampler.get(); context->PSSetSamplers(1,1,&lutSamp);
             appliedSharpness=sharpness_.load();
-            float samplingValues[]{1.f/textureW,1.f/textureH,appliedSharpness,0};
+            float samplingValues[]{1.f/textureW,1.f/textureH,appliedSharpness,lutActive?1.f:0.f};
             context->UpdateSubresource(samplingConstants.get(),0,nullptr,samplingValues,0,0);
             auto samplingBuffer=samplingConstants.get(); context->PSSetConstantBuffers(1,1,&samplingBuffer);
             context->Draw(3,0);
-            ID3D11ShaderResourceView* empty = nullptr; context->PSSetShaderResources(0,1,&empty);
+            ID3D11ShaderResourceView* empty[2]{}; context->PSSetShaderResources(0,2,empty);
             double submit = QpcMs();
             bool proof = proofRequested_.exchange(false);
             if (proof) VerifyPixels(device.get(), context.get(), swap.get(), texture.get(), viewport, textureW, textureH, mode);
@@ -442,6 +521,46 @@ private:
         std::copy(std::begin(outs),std::end(outs),stats_.outputPixels);
         stats_.cpuReadbacks += 6;
     }
+    // Dev-only grab service, always on the worker thread. Answers the pending request once:
+    // copies the newest cropped capture (pre-grade, BGRA8) into the caller buffer.
+    void ServiceGrab(ID3D11Device* device, ID3D11DeviceContext* context, ID3D11Texture2D* texture, int width, int height) {
+        std::unique_lock lock(grabMutex_);
+        grabRequested_ = false;
+        if (!grabPending_) return;
+        int result = -1; uint32_t outW = 0, outH = 0;
+        uint32_t state;
+        { std::lock_guard guard(mutex_); state = stats_.state; }
+        if (texture && device && context && width > 0 && height > 0
+                && active_.load() && state == 1 && !IsIconic(output_)) {
+            outW = static_cast<uint32_t>(width); outH = static_cast<uint32_t>(height);
+            uint64_t needed = static_cast<uint64_t>(outW) * outH * 4;
+            if (!grabBuffer_ || grabBufferSize_ < needed) {
+                result = -2;
+            } else {
+                try {
+                    D3D11_TEXTURE2D_DESC td{}; td.Width = outW; td.Height = outH;
+                    td.MipLevels = 1; td.ArraySize = 1; td.Format = DXGI_FORMAT_B8G8R8A8_UNORM;
+                    td.SampleDesc.Count = 1; td.Usage = D3D11_USAGE_STAGING; td.CPUAccessFlags = D3D11_CPU_ACCESS_READ;
+                    com_ptr<ID3D11Texture2D> staging;
+                    check_hresult(device->CreateTexture2D(&td, nullptr, staging.put()));
+                    context->CopyResource(staging.get(), texture);
+                    D3D11_MAPPED_SUBRESOURCE mapped{};
+                    check_hresult(context->Map(staging.get(), 0, D3D11_MAP_READ, 0, &mapped));
+                    for (uint32_t row = 0; row < outH; ++row)
+                        std::memcpy(grabBuffer_ + static_cast<size_t>(row) * outW * 4,
+                            static_cast<const uint8_t*>(mapped.pData) + static_cast<size_t>(row) * mapped.RowPitch,
+                            static_cast<size_t>(outW) * 4);
+                    context->Unmap(staging.get(), 0);
+                    { std::lock_guard guard(mutex_); ++stats_.cpuReadbacks; }
+                    result = 1;
+                } catch (...) { result = -5; }
+            }
+        }
+        grabWidth_ = outW; grabHeight_ = outH; grabResult_ = result;
+        grabPending_ = false;
+        lock.unlock();
+        grabDone_.notify_all();
+    }
     static void ValidateSize(int width, int height) {
         if (width <= 0 || height <= 0 || width > 8192 || height > 8192)
             throw hresult_error(E_INVALIDARG, L"Capture/output dimensions outside prototype bounds");
@@ -459,10 +578,23 @@ private:
     std::atomic<bool> active_{true};
     std::atomic<uint64_t> wakeVersion_{0};
     std::mutex waitMutex_; std::condition_variable wake_;
+    // Dev-only LUT lab grab request state (grabMutex_ guards the whole struct).
+    std::mutex grabMutex_; std::condition_variable grabDone_;
+    std::atomic<bool> grabRequested_{false};
+    bool grabPending_=false;
+    uint8_t* grabBuffer_=nullptr; uint32_t grabBufferSize_=0;
+    uint32_t grabWidth_=0, grabHeight_=0; int grabResult_=0;
     Settings customSettings_{}; bool custom_=false; uint64_t settingsVersion_=0;
+    // lut-set-v1（加性 ABI 3）：宿主线程 SetLut/ClearLut 经 mutex_ 入库，工作线程按 lutVersion_
+    // 惰性建/更 Texture3D（变更才上传，不逐帧）；ClearLut 只关断分支，GPU 纹理保留复用。
+    static constexpr uint32_t LutSize = 32;
+    static constexpr size_t LutBytes = static_cast<size_t>(LutSize)*LutSize*LutSize*4;
+    uint8_t lutData_[LutBytes]{};
+    bool lutEnabled_=false; uint64_t lutVersion_=0;
 };
 }
 
+// 加性 ABI 3：新增 ProbeSetLut/ProbeClearLut（lut-set-v1 生产 LUT 路径），既有导出面不变。
 uint32_t __cdecl ProbeGetAbiVersion() { return 3; }
 void* __cdecl ProbeStart(HWND source, DWORD sourcePid, HWND output, uint32_t vendor) {
     try { return new Capture(source, sourcePid, output, vendor); } catch (...) { return nullptr; }
@@ -479,6 +611,9 @@ int __cdecl ProbeSetSharpness(void* handle, float value) {
 }
 void __cdecl ProbeSetMode(void* handle, int mode) { if (handle) static_cast<Capture*>(handle)->Mode(mode); }
 void __cdecl ProbeRequestProof(void* handle) { if (handle) static_cast<Capture*>(handle)->RequestProof(); }
+int __cdecl ProbeGrabLatestFrame(void* handle, uint8_t* buffer, uint32_t bufferSize, uint32_t* outWidth, uint32_t* outHeight) {
+    return handle ? static_cast<Capture*>(handle)->GrabLatestFrame(buffer, bufferSize, outWidth, outHeight) : 0;
+}
 int __cdecl ProbeGetStats(void* handle, ProbeStats* stats) {
     if (!handle || !stats || stats->size != sizeof(ProbeStats)) return 0;
     static_cast<Capture*>(handle)->Stats(*stats); return 1;
@@ -502,4 +637,8 @@ int __cdecl ProbeRequestBorderless() {
 int __cdecl ProbeSetMatrix(void* handle, const float* settings) {
     return handle && static_cast<Capture*>(handle)->Matrix(settings) ? 1 : 0;
 }
+int __cdecl ProbeSetLut(void* handle, const uint8_t* rgba) {
+    return handle && static_cast<Capture*>(handle)->SetLut(rgba) ? 1 : 0;
+}
+void __cdecl ProbeClearLut(void* handle) { if (handle) static_cast<Capture*>(handle)->ClearLut(); }
 void __cdecl ProbeSetActive(void* handle, int active) { if (handle) static_cast<Capture*>(handle)->Active(active!=0); }

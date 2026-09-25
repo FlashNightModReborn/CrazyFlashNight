@@ -33,7 +33,7 @@ powershell -NoProfile -ExecutionPolicy Bypass -File launcher/perf/flash-composit
 - 视觉光照按 AS2 已推进的游戏帧计算，绕开 0.1 视觉阈值，不修改权威 clock/light/reward 字段。当前八项参数为 RGB/alpha 乘数、亮度、对比度、饱和度、色相；不传库存、存档或装备写指令。
 - `launcher/src/Tasks/WorldLightingTask.cs`：校验协议与有限数字，连接断开使已排队快照失效。
 - `launcher/src/Guardian/WorldCompositor/`：采用递增快照；普通昼夜使用 350 ms 矩阵插值，模式/跳时及暂停昼夜在同场景内立即采用。转场 `Ready=false` 期间保留最后有效调色并继续捕获，不撤掉合成层、不采用过渡报文中的临时中性色；新场景 Ready 后还需等到捕获时间不早于该次 Ready 接收时间的有效帧，再按近期等待时长的平滑估计，在 80–180 ms 内适应新矩阵。首次启动直接采用正确矩阵，不从白天色淡入。不从现实时间推算游戏昼夜。
-- `launcher/native/world-compositor/`：WGC → GPU 区域复制 → 单次颜色矩阵/Gamma → DirectComposition 不透明输出，正常显示无 CPU 像素回读。游戏路径以 30 FPS 为节拍目标，取最新帧，空闲事件等待；面板/最小化时关闭捕获会话，恢复重建帧池并等待新帧。
+- `launcher/native/world-compositor/`：WGC → GPU 区域复制 → 单次颜色矩阵/Gamma（legacy）或 3D LUT 三线性采样（lut-set-v1，mode=="光照"）→ DirectComposition 不透明输出，正常显示无 CPU 像素回读。游戏路径以 30 FPS 为节拍目标，取最新帧，空闲事件等待；面板/最小化时关闭捕获会话，恢复重建帧池并等待新帧。LUT 仅在变更时整块上传（32³ RGBA8），ClearLut 即回退矩阵路径。
 
 输出仍是 Guardian 所有的 layered + noactivate tool window，在既有 HUD 下方。显示区保持原尺寸，Flash 子窗口可缩小；输出窗口按原生合成器的等比视口映射鼠标，键盘焦点仍归 Flash。复用 WebOverlay 已有鼠标钩子，物理移动不拦截，世界区域的按钮/滚轮由有序队列独占转交；鼠标移动按渲染节拍合并，按钮前先送最后位置，拖动期间暂缓改变源尺寸，失焦/隐藏取消未结束手势。它不代表 HUD/WebView2 已统一合成，也未证明桌面合成层数瓶颈彻底消失。
 
@@ -98,7 +98,9 @@ node launcher/perf/flash-compositor/arena-sample.cjs fixed-low75 2
 
 参数表仍来自现有 `data/environment/color_engine_preset.xml`。C# 保留 `ColorEngine.composeColorMatrix` 的组合顺序、色相系数和 0–255 偏移单位，最终转换到 shader 的 0–1 偏移。使用颜色矩阵滤镜的设计语义，不拟合旧基础颜色变换。
 
-`launcher/data/world-lighting/preset.json` 是版本化的宿主预设入口，当前 `version=1 / algorithm=legacy-matrix-v1 / gamma=1`，启动时读取。Gamma 范围 0.25–4；未知版本或非法值拒绝加载。曲线、阴影/中间调/高光、选择性饱和度和 LUT 尚未实现，未来工具编辑同一预设体系，不阻塞当前接管。
+`launcher/data/world-lighting/preset.json` 是版本化的宿主预设入口。`version=1 / algorithm=legacy-matrix-v1` 为既有矩阵路径；`version=2 / algorithm=lut-set-v1`（2026-09-25 起，默认 hardlight-dusk-v4）加载同目录 CF7LUTSET v1 二进制（32³×10 档 + 内嵌 SHA-256 完整性字段，格式权威注释见 `tools/lut-lab/lib/lutset.js`），v2 的任何加载失败（文件缺失/格式/哈希不符/字段非法）都回退 legacy 矩阵并打警告日志，回退方法即改回 version 1。Gamma 范围 0.25–4（LUT 模式 gamma 语义已内嵌于 LUT，该字段仅服务 legacy 回退路径）。曲线、选择性饱和度尚未实现，后续工具仍编辑同一预设体系。
+
+lut-set-v1 的宿主配对：原生按上游加性 ABI 3 惯例新增 `ProbeSetLut`/`ProbeClearLut` 导出（既有导出面与 ProbeStats 布局不变，ABI 号不升），配套 Host 以严格 Export 拒绝未配对旧 DLL（与 `ProbeGetCaptureSize` 同模式）；`ProbeGrabLatestFrame` 行为不变（合成套件 grab-check 阶段回归覆盖）。
 
 捕获已经把天空、地图和角色合成；RGB 算法可对应，容器滤镜与最终图像后处理不承诺逐像素一致。输出保持不透明，不能复原已经混合掉的独立图层透明度。AS2 天空的旧整体光照同样卸载，天空自身渐变保留，避免重复压暗。设置页旧“滤镜渲染”控件退役，历史保存字段继续兼容读取，不再选择两套渲染器。
 

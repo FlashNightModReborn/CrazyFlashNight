@@ -359,6 +359,7 @@ Bootstrap 建角遮罩按 `openRequestId` 关联，snapshot 与有效首帧（�
 | `help` | 工具 Panel | `modules/help-panel.js` |
 | `jukebox` | 工具 Panel | `modules/jukebox/jukebox-panel.js` |
 | `cutscene-test` | 开发 Panel | `modules/cutscene-test.js` |
+| `lut-lab` | 开发 Panel | `modules/lut-lab/lut-lab-panel.js` |
 | `dressup` | 工具 Panel | `modules/dressup/dressup-panel.js` |
 | `asset-workbench` | [美术维护工作台](../tools/asset-workbench/README.md) | `modules/asset-workbench.js` |
 | `map-workbench` | [地图维护工作台](../tools/map-workbench/README.md) | `modules/map-workbench.js` |

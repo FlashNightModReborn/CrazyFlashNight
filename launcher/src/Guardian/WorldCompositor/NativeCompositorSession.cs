@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.IO;
 using System.Runtime.InteropServices;
 
@@ -18,6 +18,13 @@ namespace CF7Launcher.Guardian.WorldCompositor
         private readonly ViewportDelegate _viewport;
         private readonly SharpnessDelegate _sharpness;
         private readonly StopDelegate _holdViewport;
+        // Dev-only LUT lab export; absent on older companion builds (grab reports unavailable).
+        private readonly GrabDelegate _grab;
+        // lut-set-v1 生产 LUT 路径（32^3 RGBA8 整块上传 + 清除回退矩阵）。
+        // 沿用上游加性 ABI 惯例（2026-09-25 统一输入底座）：导出集合增长不升 ABI 号，
+        // 严格 Export 拒绝未配套旧 DLL（与 ProbeGetCaptureSize 同模式）。
+        private readonly LutDelegate _lut;
+        private readonly StopDelegate _clearLut;
 
         internal NativeCompositorSession(string modulePath, IntPtr source, uint pid, IntPtr output, uint vendor = 0, bool borderless = false)
         {
@@ -30,12 +37,37 @@ namespace CF7Launcher.Guardian.WorldCompositor
                 _matrix=Export<MatrixDelegate>("ProbeSetMatrix"); _active=Export<ActiveDelegate>("ProbeSetActive");
                 _viewport=Export<ViewportDelegate>("ProbeSetViewport"); _sharpness=Export<SharpnessDelegate>("ProbeSetSharpness");
                 _holdViewport=Export<StopDelegate>("ProbeHoldViewport");
+                _grab=TryExport<GrabDelegate>("ProbeGrabLatestFrame");
+                _lut=Export<LutDelegate>("ProbeSetLut"); _clearLut=Export<StopDelegate>("ProbeClearLut");
                 _session = Export<StartDelegate>("ProbeStartWorld")(source,pid,output,vendor,borderless ? 1 : 0);
                 if (_session == IntPtr.Zero) throw new InvalidOperationException("Compositor initialization failed");
             }
             catch { Dispose(); throw; }
         }
         private T Export<T>(string name) where T : Delegate => Marshal.GetDelegateForFunctionPointer<T>(NativeLibrary.GetExport(_module,name));
+        private T TryExport<T>(string name) where T : Delegate
+        {
+            IntPtr address;
+            try { address = NativeLibrary.GetExport(_module, name); } catch { return null; }
+            return address == IntPtr.Zero ? null : Marshal.GetDelegateForFunctionPointer<T>(address);
+        }
+        internal const int GrabOk = 1, GrabInvalidArgument = 0, GrabNoFrame = -1, GrabBufferTooSmall = -2,
+            GrabBusy = -3, GrabTimeout = -4, GrabGpuError = -5, GrabExportUnavailable = -6,
+            // C# 侧合成码（不进原生 ABI）：合成器未呈现或世界视口裁剪未建立，
+            // 此时原生回读会退化为整窗内容（含标题栏），不允许当作世界帧抓出。
+            GrabNoWorldViewport = -7;
+        // Dev-only LUT lab：buffer=null 为尺寸查询（返回 GrabBufferTooSmall 并给出宽高）。
+        internal int GrabLatestFrame(byte[] buffer, out int width, out int height)
+        {
+            width = 0; height = 0;
+            if (_session == IntPtr.Zero) return GrabNoFrame;
+            var grab = _grab;
+            if (grab == null) return GrabExportUnavailable;
+            uint w, h;
+            int result = grab(_session, buffer, buffer == null ? 0u : (uint)buffer.Length, out w, out h);
+            if (result == GrabOk || result == GrabBufferTooSmall) { width = checked((int)w); height = checked((int)h); }
+            return result;
+        }
         internal Stats Read()
         {
             var value = new Stats { Size = (uint)Marshal.SizeOf<Stats>() };
@@ -60,6 +92,14 @@ namespace CF7Launcher.Guardian.WorldCompositor
         internal void HoldViewport() { _holdViewport(_session); }
         internal void Sharpness(float value) { if (_sharpness(_session,value)!=1) throw new InvalidOperationException("Invalid sharpness"); }
         internal void Matrix(float[] values) { if (_matrix(_session,values)!=1) throw new InvalidOperationException("Invalid lighting matrix"); }
+        // lut-set-v1：整块 32^3 RGBA8（131072 字节）上传并启用 LUT 路径；变更时才调用（勿逐帧）。
+        // 严格导出（加性 ABI 3 惯例）：未配套旧 DLL 在建会话时即拒绝。
+        internal void SetLut(byte[] rgba)
+        {
+            if (rgba==null || rgba.Length!=32768*4 || _lut(_session,rgba)!=1)
+                throw new InvalidOperationException("Invalid lighting LUT");
+        }
+        internal void ClearLut() { if (_session!=IntPtr.Zero) _clearLut(_session); }
         internal void Active(bool active) { if (_session!=IntPtr.Zero) _active(_session,active ? 1 : 0); }
         internal void Mode(int mode) { if (_session != IntPtr.Zero) _mode(_session,mode); }
         public void Dispose()
@@ -91,5 +131,7 @@ namespace CF7Launcher.Guardian.WorldCompositor
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)] private delegate int ReadDelegate(IntPtr handle,ref Stats stats);
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)] private delegate int CropDelegate(IntPtr handle,int x,int y,int width,int height);
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)] private delegate void ModeDelegate(IntPtr handle,int mode);
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)] private delegate int GrabDelegate(IntPtr handle,[In,Out] byte[] buffer,uint bufferSize,out uint width,out uint height);
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)] private delegate int LutDelegate(IntPtr handle,[In] byte[] rgba);
     }
 }

@@ -2348,6 +2348,73 @@ namespace CF7Launcher.Tests.Guardian
         }
 
         [Fact]
+        public void LUT_LAB_TEST_OpensDevPanel()
+        {
+            Capture c = new Capture();
+            LauncherCommandRouter r = MakeRouter(c);
+            using var harnessR = new HostHarness(r);
+            r.Dispatch("LUT_LAB_TEST");
+            Assert.True(harnessR.Host.IsPanelOpen);
+            Assert.Equal("lut-lab", harnessR.Host.ActivePanelName);
+            string open = harnessR.LastOpenPayload.ToString(Newtonsoft.Json.Formatting.None);
+            Assert.Contains("\"panel\":\"lut-lab\"", open);
+            Assert.Contains("\"mode\":\"dev\"", open);
+            Assert.Contains("\"source\":\"runtime\"", open);
+            Assert.Contains("\"debug\":true", open);
+            // 未接线预抓帧 provider 时不带 entryFrameUrl
+            Assert.DoesNotContain("entryFrameUrl", open);
+        }
+
+        [Fact]
+        public void LUT_LAB_TEST_EntryFrameSuccess_InjectsUrlIntoInitData()
+        {
+            Capture c = new Capture();
+            LauncherCommandRouter r = MakeRouter(c);
+            using var harnessR = new HostHarness(r);
+            // uiMarshal=null 为测试缝线：同步抓 + 同步开
+            r.SetLutLabEntryFrameProvider(
+                () => "https://cf7-lutlab/frames/frame-20260924-103856-123.png",
+                null);
+            r.Dispatch("LUT_LAB_TEST");
+            Assert.True(harnessR.Host.IsPanelOpen);
+            Assert.Equal("lut-lab", harnessR.Host.ActivePanelName);
+            string open = harnessR.LastOpenPayload.ToString(Newtonsoft.Json.Formatting.None);
+            Assert.Contains(
+                "\"entryFrameUrl\":\"https://cf7-lutlab/frames/frame-20260924-103856-123.png\"",
+                open);
+        }
+
+        [Fact]
+        public void LUT_LAB_TEST_EntryFrameNoFrame_OmitsUrlAndStillOpens()
+        {
+            Capture c = new Capture();
+            LauncherCommandRouter r = MakeRouter(c);
+            using var harnessR = new HostHarness(r);
+            r.SetLutLabEntryFrameProvider(() => null, null);
+            r.Dispatch("LUT_LAB_TEST");
+            Assert.True(harnessR.Host.IsPanelOpen);
+            string open = harnessR.LastOpenPayload.ToString(Newtonsoft.Json.Formatting.None);
+            Assert.Contains("\"panel\":\"lut-lab\"", open);
+            Assert.DoesNotContain("entryFrameUrl", open);
+        }
+
+        [Fact]
+        public void LUT_LAB_TEST_EntryFrameThrow_OmitsUrlAndStillOpens()
+        {
+            Capture c = new Capture();
+            LauncherCommandRouter r = MakeRouter(c);
+            using var harnessR = new HostHarness(r);
+            r.SetLutLabEntryFrameProvider(
+                () => throw new InvalidOperationException("boom"),
+                null);
+            r.Dispatch("LUT_LAB_TEST");
+            Assert.True(harnessR.Host.IsPanelOpen);
+            string open = harnessR.LastOpenPayload.ToString(Newtonsoft.Json.Formatting.None);
+            Assert.Contains("\"panel\":\"lut-lab\"", open);
+            Assert.DoesNotContain("entryFrameUrl", open);
+        }
+
+        [Fact]
         public void BLACKMARKET_TEST_OpenPanel_IsDevShadowOnly()
         {
             Capture c = new Capture();

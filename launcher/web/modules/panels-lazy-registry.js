@@ -223,6 +223,17 @@
         ['modules/cutscene-test.js'],
         noop);
 
+    // ── lut-lab（LUT 实验室 v2 · dev）──
+    // cube 解析器 → WebGL2 渲染器（双集合双档）→ 桥封装 → 内置 fixture → 面板壳；
+    // A|B 联动检视为面板内自写共享相机实现，不依赖 workbench-inspection-viewport。
+    Panels.registerLazy('lut-lab',
+        ['modules/lut-lab/lut-lab-cube.js',
+         'modules/lut-lab/lut-lab-renderer.js',
+         'modules/lut-lab/lut-lab-bridge.js',
+         'modules/lut-lab/lut-lab-fixtures.js',
+         'modules/lut-lab/lut-lab-panel.js'],
+        noop);
+
     // ── dressup ──
     // Dialogue portrait paper-doll preview. Runtime data comes from baked PNG
     // frame sequences and manifest metadata, so no Flash sampling is needed.
