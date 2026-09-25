@@ -117,12 +117,26 @@ function dedupeSorted(arr: string[]): string[] {
   return [...new Set(arr.filter((s) => s && !s.includes("�")))].sort((a, b) => a.localeCompare(b, "zh"));
 }
 
+function sortedValues(values: string[]): string[] {
+  // ICU's Chinese collation can vary between release machines. Dictionary
+  // consumers rank and sort matches themselves, so bucket order is not a
+  // semantic change. Keep the committed bytes when membership is unchanged.
+  return [...values].sort((a, b) => a < b ? -1 : a > b ? 1 : 0);
+}
+
 function stripVolatile(d: SaveRepairDict): Omit<SaveRepairDict, "generated"> & { generated: { tool: string; sourceFiles: string[] } } {
   return {
     ...d,
+    items: sortedValues(d.items),
+    mods: sortedValues(d.mods),
+    enemies: sortedValues(d.enemies),
+    hairstyles: sortedValues(d.hairstyles),
+    skills: sortedValues(d.skills),
+    taskChains: sortedValues(d.taskChains),
+    stages: sortedValues(d.stages),
     generated: {
       tool: d.generated.tool,
-      sourceFiles: d.generated.sourceFiles,
+      sourceFiles: sortedValues(d.generated.sourceFiles),
     },
   };
 }

@@ -71,6 +71,23 @@ describe("build (integration)", () => {
     rmSync(root, { recursive: true, force: true });
   });
 
+  it("accepts an equivalent committed order across ICU versions", () => {
+    const root = makeProject("icu-order");
+    writeFileSync(join(root, "data", "items", "weapons.xml"),
+      '<root><item><name>桔色电子吉他</name></item><item><name>金龙刃</name></item></root>');
+    const output = join(root, "launcher", "data", "save_repair_dict.json");
+    build({ projectRoot: root });
+    const existing = JSON.parse(readFileSync(output, "utf-8")) as { items: string[] };
+    expect(existing.items).toHaveLength(2);
+    existing.items.reverse();
+    const committedBytes = JSON.stringify(existing, null, 2) + "\n";
+    writeFileSync(output, committedBytes, "utf-8");
+    expect(build({ projectRoot: root, verify: true }).verified).toBe(true);
+    expect(build({ projectRoot: root }).written).toBe(false);
+    expect(readFileSync(output, "utf-8")).toBe(committedBytes);
+    rmSync(root, { recursive: true, force: true });
+  });
+
   it("verify mode passes when dict is up-to-date, fails when stale", () => {
     const root = makeProject("verify");
     build({ projectRoot: root });

@@ -52,6 +52,8 @@ npm run verify   # 通过返回 0；不一致返回 1 + 打印 diff
 - `0`：当前 `save_repair_dict.json` 与源头一致
 - `1`：源头有变化但 dict 未同步 regenerate
 
+比较时忽略 `generated.at` 与字典桶顺序；不同 Node/ICU 的中文排序差异不会重写已提交的同成员字典。Host 与 TS 修复器会按各自的候选评分重新排序；新增、删除或重复的条目仍会使验证失败。
+
 建议在以下位置接入：
 - **Git pre-commit hook**：检测 `data/**/*.xml` 或 `SaveManager.as` 改动后跑 `npm --prefix tools/cf7-save-repair-dict-build run verify`
 - **PR check**（如有 GitHub Actions）：在 launcher build 之前跑 verify；失败即阻止合入
