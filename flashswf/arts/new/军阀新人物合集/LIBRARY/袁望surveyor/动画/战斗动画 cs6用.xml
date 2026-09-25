@@ -86,7 +86,7 @@ function 射击()
 	子弹属性.霰弹值 = 2;
 	子弹属性.子弹散射度 = 4;
 	子弹属性.发射效果 = "枪火";
-	子弹属性.子弹种类 = "横向机枪联弹-加强普通子弹";
+	子弹属性.子弹种类 = "纵向机枪联弹-加强普通子弹";
 	子弹属性.子弹威力 = 0.5 * 性能倍率 * _parent.空手攻击力;
 	子弹属性.子弹速度 = 36;
 	子弹属性.击中地图效果 = "火花";
@@ -3212,7 +3212,7 @@ gotoAndPlay(_parent.近战招式);]]></script>
             </DOMFrame>
             <DOMFrame index="209" duration="8" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="袁望surveyor/其他/近战子弹" name="攻击点" centerPoint3DX="274.3" centerPoint3DY="146.4">
+                <DOMSymbolInstance libraryItemName="袁望surveyor/其他/近战子弹" name="攻击点2" centerPoint3DX="274.3" centerPoint3DY="146.4">
                   <matrix>
                     <Matrix a="0.526702880859375" d="0.516220092773438" tx="261.8" ty="133.9"/>
                   </matrix>

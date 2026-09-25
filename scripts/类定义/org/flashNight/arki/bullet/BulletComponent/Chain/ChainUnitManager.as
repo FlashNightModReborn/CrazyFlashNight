@@ -45,6 +45,9 @@ class org.flashNight.arki.bullet.BulletComponent.Chain.ChainUnitManager {
      */
     private static var dataPool:Array = [];
 
+    /** 无效对象联弹诊断限流：每个场景最多记录 8 次异常。 */
+    private static var invalidChainLogCount:Number = 0;
+
     /**
      * 获取（懒建）共享单元体层。
      * gameworld 重建后旧层随世界销毁，下次调用自动重建新层并重置组注册表。
@@ -83,6 +86,7 @@ class org.flashNight.arki.bullet.BulletComponent.Chain.ChainUnitManager {
      * 组标记 __removed，防任何残存引用经 removeGroup 二次回池污染自由表。
      */
     public static function resetAll():Void {
+        invalidChainLogCount = 0;
         var gs:Array = groups;
         var gn:Number = gs.length;
         var pool:Array = dataPool;
@@ -285,6 +289,20 @@ class org.flashNight.arki.bullet.BulletComponent.Chain.ChainUnitManager {
                 // 数据路径更新 AABB 后泵入碰撞队列
                 var aabb:AABBCollider = b.aabbCollider;
                 aabb.updateFromChainObject(b);
+                // BulletQueue 会拒收无效左右边界；任意边界无效时对象联弹可能不再移动或回收。
+                // 在同一边界将其完整销毁，避免错误发射点永久占住可见单元体。
+                if (((aabb.left - aabb.left) + (aabb.right - aabb.right)
+                    + (aabb.top - aabb.top) + (aabb.bottom - aabb.bottom)) != 0) {
+                    if (invalidChainLogCount < 8) {
+                        invalidChainLogCount++;
+                        org.flashNight.neur.Server.ServerManager.getInstance().sendServerMessage(
+                            "[ChainBulletInvalidAABB] frame=" + _root.帧计时器.当前帧数
+                            + " type=" + b.子弹种类 + " x=" + b._x + " y=" + b._y
+                            + " vx=" + b.xmov + " vy=" + b.ymov);
+                    }
+                    b.removeMovieClip();
+                    continue;
+                }
                 BulletQueueProcessor.add(b);
             } else {
                 // —— MC 壳联弹分支 ——
