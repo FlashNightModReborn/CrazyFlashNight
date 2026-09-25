@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.IO;
 using CF7Launcher.Guardian.WorldCompositor;
 using CF7Launcher.Tasks;
 using Newtonsoft.Json.Linq;
@@ -34,6 +35,15 @@ namespace CF7Launcher.Tests.Guardian {
             Assert.False(WorldCompositorController.CanGrabWorldViewport(true,Rectangle.Empty));
             Assert.False(WorldCompositorController.CanGrabWorldViewport(true,new Rectangle(8,40,0,610)));
             Assert.True(WorldCompositorController.CanGrabWorldViewport(true,new Rectangle(8,40,1084,610)));
+        }
+        [Fact] public void WindowMoveOnePixelCaptureDriftDoesNotFreezeTheScene() {
+            // Exact measured geometry from the 2026-09-25 weather candidate run.
+            var captured=new Rectangle(138,23,1602,939);
+            var flash=new Rectangle(139,63,1600,900);
+            Assert.True(WorldCompositorController.TryCalculateCrop(flash,captured,out var crop));
+            Assert.Equal(new Rectangle(1,40,1600,899),crop);
+            Assert.False(WorldCompositorController.TryCalculateCrop(
+                new Rectangle(139,66,1600,900),captured,out _));
         }
         [Fact] public void LegacyNeutralMatrixIsIdentity() {
             Assert.Equal(WorldColorMatrix.Identity(),WorldColorMatrix.Generate(new double[]{1,1,1,1,0,0,0,0}));
@@ -140,6 +150,98 @@ namespace CF7Launcher.Tests.Guardian {
             p["sourceNeutral"]=false; Assert.False(WorldLightingFrame.TryParse(p,out _));
             p=Payload(); p["parameters"][0]=double.NaN; Assert.False(WorldLightingFrame.TryParse(p,out _));
             p=Payload(); p["parameters"][0]="1"; Assert.False(WorldLightingFrame.TryParse(p,out _));
+        }
+        [Fact] public void WeatherRequiresExplicitNativeOwnershipAndBoundedVisualState() {
+            var p=Payload();
+            Assert.True(WorldLightingFrame.TryParse(p,out var legacy));
+            Assert.False(legacy.WeatherNative);
+            p["weatherNative"]=true; p["weatherType"]="snow";
+            p["weatherIntensity"]=0.7; p["weatherQuality"]=1;
+            Assert.True(WorldLightingFrame.TryParse(p,out var weather));
+            Assert.True(weather.WeatherNative); Assert.Equal(2,weather.WeatherType);
+            Assert.Equal(0.7f,weather.WeatherIntensity); Assert.Equal(1,weather.WeatherQuality);
+            p["weatherGroundMin"]=220; p["weatherGroundMax"]=500;
+            Assert.True(WorldLightingFrame.TryParse(p,out var grounded));
+            Assert.Equal(220f,grounded.WeatherGroundMin); Assert.Equal(500f,grounded.WeatherGroundMax);
+            p["weatherGroundMax"]=210; Assert.False(WorldLightingFrame.TryParse(p,out _));
+            p["weatherGroundMax"]=500;
+            p["weatherQuality"]=1.0;
+            Assert.True(WorldLightingFrame.TryParse(p,out var numericFloat));
+            Assert.Equal(1,numericFloat.WeatherQuality);
+            p["weatherIntensity"]=-0.1; Assert.False(WorldLightingFrame.TryParse(p,out _));
+            p["weatherIntensity"]=0.7; p["weatherType"]="unknown";
+            Assert.False(WorldLightingFrame.TryParse(p,out _));
+            p["weatherType"]="snow"; p["weatherQuality"]=1.5;
+            Assert.False(WorldLightingFrame.TryParse(p,out _));
+            p["weatherQuality"]="high"; Assert.False(WorldLightingFrame.TryParse(p,out _));
+            p["weatherQuality"]=1; p["weatherNative"]="true";
+            Assert.False(WorldLightingFrame.TryParse(p,out _));
+        }
+        [Theory]
+        [InlineData("警报",1)] [InlineData("医疗警报",2)] [InlineData("工业警报",3)]
+        [InlineData("毒气",4)] [InlineData("腐蚀",5)] [InlineData("寒铁",6)]
+        [InlineData("伏击",7)] [InlineData("鸿门宴",8)] [InlineData("血月",9)]
+        [InlineData("檀烟",10)] [InlineData("custom",11)]
+        public void EveryAtmospherePresetHasANativeLook(string name,int expected) {
+            var p=Payload();
+            p["atmosphere"]=new JObject {
+                ["preset"]=name,["r"]=218,["g"]=38,["b"]=57,["alpha"]=18,
+                ["mode"]="radial",["pulse"]=true,["pulseSpeed"]=0.12,
+                ["pulseMin"]=5,["pulseMax"]=20
+            };
+            Assert.True(WorldLightingFrame.TryParse(p,out var frame));
+            Assert.Equal(name,frame.Atmosphere.Name);
+            Assert.Equal(18f/100f,frame.Atmosphere.NativeParameters[3],5);
+            if(name!="custom") Assert.Equal(expected,WorldPresentationCatalog.Load(CatalogPath()).Atmosphere(name).Family);
+        }
+        [Fact] public void AtmosphereIsClosedAndMissingLegacyFieldMeansNoNativeOverlay() {
+            var p=Payload();
+            Assert.True(WorldLightingFrame.TryParse(p,out var old));
+            Assert.Equal("none",old.Atmosphere.Name);
+            p["atmosphere"]=new JObject {
+                ["preset"]="custom",["r"]=20,["g"]=40,["b"]=60,["alpha"]=12,
+                ["mode"]="flat",["pulse"]=false,["pulseSpeed"]=0.08,
+                ["pulseMin"]=5,["pulseMax"]=20
+            };
+            Assert.True(WorldLightingFrame.TryParse(p,out var custom));
+            Assert.Equal("custom",custom.Atmosphere.Name);
+            ((JObject)p["atmosphere"])["alpha"]=101;
+            Assert.False(WorldLightingFrame.TryParse(p,out _));
+            ((JObject)p["atmosphere"])["alpha"]=12;
+            ((JObject)p["atmosphere"])["preset"]="unregistered";
+            Assert.True(WorldLightingFrame.TryParse(p,out var unknown));
+            Assert.Equal("unregistered",unknown.Atmosphere.Name);
+            Assert.Throws<InvalidDataException>(()=>WorldPresentationCatalog.Load(CatalogPath()).Atmosphere(unknown.Atmosphere.Name));
+        }
+        [Fact] public void DataOnlyVisualTuningChangesNativeParametersWithoutChangingFamily() {
+            string source=CatalogPath(), copy=Path.GetTempFileName();
+            try {
+                var baseline=WorldPresentationCatalog.Load(source);
+                var json=JObject.Parse(File.ReadAllText(source));
+                var looks=(JArray)json["atmosphere"];
+                foreach(JObject look in looks) if((string)look["name"]=="医疗警报") look["base"]=0.20;
+                var added=(JObject)looks[0].DeepClone(); added["name"]="新预设"; looks.Add(added);
+                ((JObject)json["weather"])["rain"]["count"]=220;
+                File.WriteAllText(copy,json.ToString());
+                var changed=WorldPresentationCatalog.Load(copy);
+                Assert.Equal(baseline.Atmosphere("医疗警报").Family,changed.Atmosphere("医疗警报").Family);
+                Assert.NotEqual(baseline.Atmosphere("医疗警报").Tuning[3],changed.Atmosphere("医疗警报").Tuning[3]);
+                Assert.Equal(baseline.Atmosphere("警报").Family,changed.Atmosphere("新预设").Family);
+                Assert.Equal(220,changed.Weather(1).Count);
+                Assert.NotEqual(baseline.Sha256,changed.Sha256);
+                ((JObject)json["weather"])["rain"]["count"]=513;
+                File.WriteAllText(copy,json.ToString());
+                Assert.Throws<InvalidDataException>(()=>WorldPresentationCatalog.Load(copy));
+            } finally { File.Delete(copy); }
+        }
+        private static string CatalogPath() {
+            var directory=new DirectoryInfo(AppContext.BaseDirectory);
+            while(directory!=null) {
+                string path=Path.Combine(directory.FullName,WorldPresentationCatalog.RelativePath);
+                if(File.Exists(path)) return path;
+                directory=directory.Parent;
+            }
+            throw new FileNotFoundException(WorldPresentationCatalog.RelativePath);
         }
         [Fact] public void DisconnectInvalidatesAlreadyQueuedSnapshot() {
             var queue=new Queue<Action>(); int adopted=0,resets=0;

@@ -115,7 +115,6 @@ class org.flashNight.neur.PerformanceOptimizer.PerformanceActuator {
         this._env.BladeMotionTrailsRenderer.setPerformanceLevel(rl);
         this._env.WeatherParticleRenderer.setPerformanceLevel(rl);
         this._env.SkyboxRenderer.setPerformanceLevel(rl);
-        this._env.GameWorldOverlayRenderer.setPerformanceLevel(rl);
     }
 
     public function setHost(host:Object):Void { this._host = host; }

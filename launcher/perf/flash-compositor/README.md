@@ -4,6 +4,8 @@
 
 2026-09-22 下一阶段顺序评估：保留当前成果，优先把统一显示与统一输入归属一起设计，再接入粒子并研究天空/地图拆分。增量成本、接口边界和人验节点见 [渲染 ADR §7.2](../../../docs/launcher-渲染架构-长期决策-2026-05-21.md#72-2026-09-22统一合成与输入优先的顺序评估)。这是后续提案；本原型仍有独立输出/HUD/WebView2 窗口，未实现统一焦点权威。
 
+2026-09-25 本地天气候选：AS2 投影天气类型、强度与雨花地面带；旧质量档字段仍随快照发送，原生忽略并使用固定有界预算。AS2 天气 Drawing API 回退已移除，连接或原生能力失效时保留选择状态但不在 Flash 补画。原生 D3D 从现有逐帧 F 包接收镜头 x/y/scale，在同一输出上绘制跟随世界画面的雨雪沙尘雾、刀痕和雨花；命名氛围与直接叠加也在原生主 pass。天空盒仍由 AS2 绘制。本地 CS6 编译、隔离 GPU 预览和配对开发构建不等于真实游戏场景、弱机净收益、人类观感或正式部署通过；批次范围见 [BP8](../../../docs/战斗表现迁移-路线图与验收-2026-09-22.md#4-交付包清单)。
+
 ## 启动
 
 ### v4 输入会话开发候选
@@ -65,12 +67,12 @@ powershell -NoProfile -ExecutionPolicy Bypass -File launcher/perf/flash-composit
 
 ## 职责与协议
 
-- `scripts/类定义/org/flashNight/arki/weather/WorldLightingBridge.as`：`world_lighting` v1 单向视觉投影。普通快照约 2 Hz，天气更新/场景事件立即发送；独立 sequence、scene 标识，不把 MovieClip 引用当跨场景身份。
-- `WeatherSystem` 保留游戏时间、光照判定、夜视资格、奖励倍率、单位状态；原 `LightingEngine.applyLighting(gameworld/天空盒)` 已退出运行路径。桥只清除旧容器 ColorMatrixFilter 和 ColorTransform，每个场景/容器一次；天空渐变、粒子和环境叠层仍留 AS2。
+- `scripts/类定义/org/flashNight/arki/weather/WorldLightingBridge.as`：`world_lighting` v1 单向视觉投影。普通快照约 2 Hz，天气更新/场景事件立即发送；独立 sequence、scene 标识，不把 MovieClip 引用当跨场景身份。天气候选在同包追加可选 `weatherNative/weatherType/weatherIntensity/weatherQuality/weatherGroundMin/weatherGroundMax`；原生忽略 AS2 质量档，镜头位置/缩放从 F 包逐帧取得。AS2 不再绘制天气；未收到本连接代 `weather_caps` 时只保留天气选择，配对旧 Host 将缺少天气画面。
+- `WeatherSystem` 保留游戏时间、光照判定、夜视资格、奖励倍率、单位状态及天气选择；原 `LightingEngine.applyLighting(gameworld/天空盒)` 已退出运行路径。桥只清除旧容器 ColorMatrixFilter 和 ColorTransform，每个场景/容器一次；天空渐变仍留 AS2；天气粒子及环境叠层由原生绘制，能力失效时不回退 AS2。
 - 视觉光照按 AS2 已推进的游戏帧计算，绕开 0.1 视觉阈值，不修改权威 clock/light/reward 字段。当前八项参数为 RGB/alpha 乘数、亮度、对比度、饱和度、色相；不传库存、存档或装备写指令。
 - `launcher/src/Tasks/WorldLightingTask.cs`：校验协议与有限数字，连接断开使已排队快照失效。
 - `launcher/src/Guardian/WorldCompositor/`：采用递增快照；普通昼夜使用 350 ms 矩阵插值，模式/跳时及暂停昼夜在同场景内立即采用。转场 `Ready=false` 期间保留最后有效调色并继续捕获，不撤掉合成层、不采用过渡报文中的临时中性色；新场景 Ready 后还需等到捕获时间不早于该次 Ready 接收时间的有效帧，再按近期等待时长的平滑估计，在 80–180 ms 内适应新矩阵。首次启动直接采用正确矩阵，不从白天色淡入。不从现实时间推算游戏昼夜。
-- `launcher/native/world-compositor/`：WGC → GPU 区域复制 → 单次颜色矩阵/Gamma（legacy）或 3D LUT 三线性采样（lut-set-v1，mode=="光照"）→ DirectComposition 不透明输出，正常显示无 CPU 像素回读。游戏路径以 30 FPS 为节拍目标，取最新帧，空闲事件等待；面板/最小化时关闭捕获会话，恢复重建帧池并等待新帧。LUT 仅在变更时整块上传（32³ RGBA8），ClearLut 即回退矩阵路径。
+- `launcher/native/world-compositor/`：WGC → GPU 区域复制 → 单次颜色矩阵/Gamma（legacy）或 3D LUT 三线性采样（lut-set-v1，mode=="光照"）→ 主画面及氛围叠加 → 天气粒子批量绘制 → DirectComposition 输出。天气颜色复用当前矩阵或 LUT 调色路径；透明混合顺序须经真实场景判断。游戏路径以 30 FPS 为节拍目标，取最新帧；无新源帧而动态天气/氛围有效时继续呈现。面板/最小化时关闭捕获会话，恢复重建帧池并等待新帧。LUT 仅在变更时整块上传（32³ RGBA8），ClearLut 即回退矩阵路径。
 
 输出仍是 Guardian 所有的 layered + noactivate tool window，在既有 HUD 下方。显示区保持原尺寸，Flash 子窗口可缩小；输出窗口按原生合成器的等比视口映射鼠标，键盘焦点仍归 Flash。复用 WebOverlay 已有鼠标钩子，物理移动不拦截，世界区域的按钮/滚轮由有序队列独占转交；鼠标移动按渲染节拍合并，按钮前先送最后位置，拖动期间暂缓改变源尺寸，失焦/隐藏取消未结束手势。它不代表 HUD/WebView2 已统一合成，也未证明桌面合成层数瓶颈彻底消失。
 
@@ -152,6 +154,14 @@ lut-set-v1 的宿主配对：原生按上游加性 ABI 3 惯例新增 `ProbeSetL
 ## 验证与人验
 
 AS2 focused：`powershell -File scripts/run-world-lighting-tests.ps1`；Host focused：`WorldCompositorTests`；全量：`launcher/tests/run_tests.ps1`。独立 GPU 小样仍可用 `build.ps1 / run.ps1 / test.ps1` 排查捕获与设备，不是游戏的启动前置或玩家菜单。
+
+天气隔离预览可用 `powershell -File launcher/perf/flash-compositor/run.ps1 -Source fixture -Weather slash -WeatherIntensity 0.6 -WeatherScale 1.5 -WeatherPanX 85 -Duration 20 -Build`；`-Weather` 仅接受 `none/rain/snow/dust/fog/slash`，`-WeatherScale` 与 `-WeatherPanX/-WeatherPanY` 可检查镜头缩放、平移后世界锚点是否跟随，报告记录这些输入。雨花复用 AS2 的 Ymin/Ymax 纵深地面带，不复制地形碰撞。该夹具使用独立 WinForms/Flash 来源，不读玩家存档；其画面与帧率不代签游戏场景观感或性能。
+
+氛围隔离预览可用 `powershell -File launcher/perf/flash-compositor/run.ps1 -Source fixture -Atmosphere medical -Duration 8 -Build`。可选 `alert/medical/industrial/toxic/corrosion/cold-iron/ambush/banquet/blood-moon/incense/custom`；报告记下编号，旁边的 PNG 是 P 输出区域截图。命名预设使用各自的低强度动效，自定义项使用参数色。氛围在主场景 shader 中跟随光照调色一次绘制；天气粒子仍在其后绘制。截图只证明夹具当前画面，不能替代游戏内遮挡与可读性人验。
+
+视觉目录来自 `data/environment/presentation_presets.v1.json`。`-VisualPresets <另一个 JSON 路径>` 可以在**同一**夹具／原生 DLL 上预览纯数据调参；报告的 `visualCatalogSha` 与 DLL SHA 分别标识内容和程序。正式目录改动先跑 `node tools/validate-world-presentation-presets.js --check`，再对雨、雪、刀光、命名氛围的目标场景复查。改绘制算法或新增 shader family 仍需要配对二进制候选。
+
+LUT 与天气/氛围联调可运行 `powershell -File launcher/perf/flash-compositor/run.ps1 -Source fixture -Weather rain -Atmosphere medical -LutSet launcher/data/world-lighting/hardlight-dusk-v4.lutset -Auto -PhaseSeconds 3`。探针加载真实 lutset 并核对 SHA，自动像素证明按相同 3D LUT 的三线性采样计算期望值；报告同时记录 `lutSetSha`、视觉目录 SHA 和原生 DLL SHA。证明仅覆盖该隔离夹具，实际关卡观感仍需人验。
 
 机器已检查默认启动、真实 socket 光照快照、床铺 hover/click、休息面板取消与捕获恢复、最大化、最小化恢复。Computer Use 对 WebView2 子窗口的坐标点击存在目标进程限制，未以脚本绕过；休息确认、夜视装备切换和完整战斗手感不冒充已验收。
 

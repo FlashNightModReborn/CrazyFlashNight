@@ -22,6 +22,9 @@ foreach ($name in @(
     'DOTNET_ROLL_FORWARD_TO_PRERELEASE', 'DOTNET_MULTILEVEL_LOOKUP'
 )) {
     [Environment]::SetEnvironmentVariable($name, $null, 'Process')
+    # .NET 10/PowerShell can retain an empty Env: entry for a null assignment.
+    # Cargo treats an empty LINKER as an explicitly selected linker and fails.
+    Remove-Item -LiteralPath ('Env:' + $name) -ErrorAction SilentlyContinue
 }
 $buildTempParent = if ($env:LOCALAPPDATA) { $env:LOCALAPPDATA } else { [IO.Path]::GetTempPath() }
 $defaultBuildTempRoot = Join-Path $buildTempParent 'CF7\runtime-build-temp'
@@ -39,7 +42,10 @@ $env:TZ = 'UTC'
 $env:VSLANG = '1033'
 $env:DOTNET_CLI_UI_LANGUAGE = 'en-US'
 foreach ($entry in [Environment]::GetEnvironmentVariables('Process').Keys) {
-    if ([string]$entry -like 'CARGO_PROFILE_RELEASE_*') { [Environment]::SetEnvironmentVariable([string]$entry, $null, 'Process') }
+    if ([string]$entry -like 'CARGO_PROFILE_RELEASE_*') {
+        [Environment]::SetEnvironmentVariable([string]$entry, $null, 'Process')
+        Remove-Item -LiteralPath ('Env:' + [string]$entry) -ErrorAction SilentlyContinue
+    }
 }
 
 function Add-Mismatch([string]$message) { $script:Cf7RuntimeBuildErrors += $message }

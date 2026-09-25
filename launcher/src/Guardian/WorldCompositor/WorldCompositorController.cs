@@ -20,6 +20,7 @@ namespace CF7Launcher.Guardian.WorldCompositor
         private readonly Action<double> _setRenderScale;
         private readonly Action _focusFlash;
         private readonly WorldLightingPreset _preset;
+        private readonly WorldPresentationCatalog _presentationCatalog;
         private readonly Timer _timer = new Timer { Interval=33 };
         private NativeCompositorSession _native;
         private WorldCompositionSurface _surface;
@@ -46,6 +47,22 @@ namespace CF7Launcher.Guardian.WorldCompositor
         private bool _lutActive;
         private byte[] _lastLut;
         private double _lastLutLight;
+        private int _appliedWeatherType=-1, _appliedWeatherQuality=-1;
+        private float _appliedWeatherIntensity=float.NaN;
+        private uint _appliedWeatherSeed;
+        private int _appliedWeatherStyleType=-1;
+        private int _appliedAtmospherePreset=-1;
+        private string _appliedAtmosphereName;
+        private float[] _appliedAtmosphereParameters;
+        private readonly object _weatherCameraLock=new object();
+        private float _weatherCameraX, _weatherCameraY, _weatherCameraScale=1;
+        private float _weatherCameraGroundMin=360, _weatherCameraGroundMax=520;
+        private bool _weatherCameraDispatchAllowed;
+        private float _appliedWeatherCameraX=float.NaN, _appliedWeatherCameraY=float.NaN;
+        private float _appliedWeatherCameraScale=float.NaN, _appliedWeatherGroundMin=float.NaN, _appliedWeatherGroundMax=float.NaN;
+        private bool _weatherCapabilityAdvertised;
+        private double _lastWeatherCapAttemptMs;
+        internal Func<bool,bool> WeatherCapabilityChanged;
         private double _targetScale=1, _appliedScale=1;
         private float _targetSharpness;
         private float _appliedSharpness=float.NaN;
@@ -65,6 +82,18 @@ namespace CF7Launcher.Guardian.WorldCompositor
             _targetScale=selection.Scale;
             _targetSharpness=selection.Quality=="LOW" && selection.Scale<1 ? sharpness : 0;
             if (_targetScale!=_appliedScale) _schedulingAllowed=false;
+        }
+        // The F packet already drives hit numbers on the socket thread. Forward its
+        // camera to the native visual state on that path as well: waiting for the
+        // 33 ms UI timer adds a visible frame during running camera movement.
+        internal void ObserveWeatherCamera(float x,float y,float scale)
+        {
+            if (!float.IsFinite(x) || !float.IsFinite(y) || !float.IsFinite(scale)
+                || Math.Abs(x)>1000000 || Math.Abs(y)>1000000 || scale<=0 || scale>20) return;
+            lock (_weatherCameraLock) {
+                _weatherCameraX=x; _weatherCameraY=y; _weatherCameraScale=scale;
+                if (_weatherCameraDispatchAllowed && _native!=null) PushWeatherCameraLocked();
+            }
         }
 
         internal readonly struct LutLabGrabResult
@@ -110,6 +139,10 @@ namespace CF7Launcher.Guardian.WorldCompositor
             _setRenderScale=setRenderScale; _focusFlash=focusFlash;
             _preset=WorldLightingPreset.Load(Path.Combine(projectRoot,"launcher","data","world-lighting","preset.json"),
                 message => LogManager.Log(message));
+            string visualPath=Path.Combine(projectRoot,
+                WorldPresentationCatalog.RelativePath.Replace('/',Path.DirectorySeparatorChar));
+            _presentationCatalog=WorldPresentationCatalog.Load(visualPath);
+            LogManager.Log("event=world_presentation_catalog sha256="+_presentationCatalog.Sha256+" path="+visualPath);
             _timer.Tick+=OnTick;
             _owner.LocationChanged+=OnGeometryChanged; _owner.SizeChanged+=OnGeometryChanged;
             _owner.DpiChanged+=OnDpiChanged; _owner.FormClosed+=OnClosed; _owner.Deactivate+=OnOwnerDeactivated;
@@ -124,6 +157,7 @@ namespace CF7Launcher.Guardian.WorldCompositor
             if (_disposed || !_lighting.Adopt(frame,NowMs())) return;
             if (!frame.Ready || frame.Scene!=previousScene) _surface?.CancelPointer();
             _frame=frame;
+            if (!frame.Ready || frame.Scene!=previousScene) InvalidateWeather();
             if (_lighting.Pending && (!wasPending || frame.Scene!=previousScene))
                 LogManager.Log("event=world_lighting_hold scene="+frame.Scene+" hasGrade="+_lighting.HasValidState);
             if (_lighting.WaitingForCapture && (!wasWaiting || frame.Scene!=previousScene))
@@ -177,9 +211,16 @@ namespace CF7Launcher.Guardian.WorldCompositor
                         +" F=0x"+_flash.ToString("X")+" hostPid="+Environment.ProcessId+" inputSession="+_pointerBridge.SessionIdentity);
                     _crop=Rectangle.Empty; _startedMs=NowMs(); _lastSettings=null; _active=true; _appliedSharpness=float.NaN;
                     _lastLut=null; _lutActive=false;
+                    _appliedWeatherType=-1;
+                    _appliedWeatherStyleType=-1;
+                    _appliedAtmospherePreset=-1;
+                    _appliedAtmosphereName=null;
                     LogManager.Log("event=world_compositor_start flash=0x"+_flash.ToString("X")+" fpsLimit=30");
                 }
                 if (_getFlash()!=_flash || !IsWindow(_flash)) { ResetSource(); return; }
+                // Scene changes clear native weather before any geometry/ready early return.
+                if (_appliedWeatherType<0) ApplyWeather(false);
+                if (_appliedAtmospherePreset<0) ApplyAtmosphere(false);
                 if(!_pointerBridge.IsAlive && !_inputClosed && !_inputRenewRequested) {
                     _inputClosed=true;_surface.CancelPointer("bridge_closed");
                     LogManager.Log("event=world_pointer_closed_unconfirmed unexpected_exit");
@@ -264,7 +305,15 @@ namespace CF7Launcher.Guardian.WorldCompositor
                     for (int i=0;!changed && i<settings.Length;i++) if (Math.Abs(settings[i]-_lastSettings[i])>0.000001f) changed=true;
                     if (changed) { _native.Matrix(settings); _lastSettings=settings; }
                 }
+                ApplyWeatherCamera(ready);
+                ApplyWeather(ready);
+                ApplyAtmosphere(ready);
                 if (ready && !_surface.Visible) { _surface.Show(); PlaceBelowHud(); _surface.RefreshPointer(); }
+                if (ready && !_weatherCapabilityAdvertised && NowMs()-_lastWeatherCapAttemptMs>=500) {
+                    _lastWeatherCapAttemptMs=NowMs();
+                    try { _weatherCapabilityAdvertised=WeatherCapabilityChanged?.Invoke(true)==true; }
+                    catch (Exception error) { LogManager.Log("event=world_weather_cap_failed "+error.Message); }
+                }
                 if (!ready && NowMs()-Math.Max(_startedMs,_requiredFrameMs)>10000) throw new TimeoutException("世界捕获没有恢复有效画面");
                 if (NowMs()-_lastLogMs>1000) {
                     _lastLogMs=NowMs();
@@ -333,8 +382,10 @@ namespace CF7Launcher.Guardian.WorldCompositor
             // rounding can put F one pixel beyond P while still inside S. P is
             // not the capture boundary: refusing here left an old crop active
             // throughout restore/maximize until a later DRS resize happened.
-            if (source.Width<1 || source.Height<1 || !capture.Contains(source)) return RejectGeometry("source_outside_capture",screen,source,capture);
-            Rectangle crop=CalculateCrop(source,capture);
+            // DWM and the Flash child can round their bottom edges one pixel
+            // apart after a window move. Capture only the measured intersection;
+            // keep rejecting larger misses instead of inventing an origin.
+            if (!TryCalculateCrop(source,capture,out Rectangle crop)) return RejectGeometry("source_outside_capture",screen,source,capture);
             if(_lastGeometryRejection!=null) {
                 LogManager.Log("event=world_compositor_geometry_resumed FClient="+source+" captureFrame="+capture+" P="+screen);
                 _lastGeometryRejection=null;
@@ -349,6 +400,97 @@ namespace CF7Launcher.Guardian.WorldCompositor
             }
             return true;
         }
+        private void InvalidateWeather()
+        {
+            _appliedWeatherType=-1;
+            _appliedWeatherStyleType=-1;
+            _appliedAtmospherePreset=-1;
+            _appliedAtmosphereName=null;
+            lock (_weatherCameraLock) {
+                _weatherCameraDispatchAllowed=false;
+                _appliedWeatherCameraX=_appliedWeatherCameraY=_appliedWeatherCameraScale=float.NaN;
+            }
+        }
+        private void ApplyAtmosphere(bool captureReady)
+        {
+            if (_native==null) return;
+            WorldLightingFrame frame=_frame;
+            bool show=captureReady && frame?.Ready==true && frame.Atmosphere.Name!="none"
+                && _lighting.ReadyScene==frame.Scene && !_lighting.WaitingForCapture;
+            string name=show ? frame.Atmosphere.Name : "none";
+            int preset=name=="none" ? 0 : name=="custom" ? 11 : _presentationCatalog.Atmosphere(name).Family;
+            float[] parameters=show ? frame.Atmosphere.NativeParameters : AtmosphereFrame.None.NativeParameters;
+            if (show && preset!=11 && name!=_appliedAtmosphereName) {
+                AtmosphereLook look=_presentationCatalog.Atmosphere(name);
+                _native.AtmosphereStyle(look.Family,look.Tuning);
+            }
+            bool changed=preset!=_appliedAtmospherePreset || _appliedAtmosphereParameters==null;
+            for (int i=0;!changed && i<parameters.Length;i++)
+                changed=parameters[i]!=_appliedAtmosphereParameters[i];
+            if (changed) _native.Atmosphere(preset,parameters);
+            _appliedAtmospherePreset=preset;
+            _appliedAtmosphereParameters=parameters;
+            if (!changed && name==_appliedAtmosphereName) return;
+            _appliedAtmosphereName=name;
+            LogManager.Log("event=world_atmosphere_apply scene="+(frame?.Scene ?? 0)+" preset="+preset
+                +" captureReady="+captureReady);
+        }
+        private void ApplyWeather(bool captureReady)
+        {
+            if (_native==null) return;
+            WorldLightingFrame frame=_frame;
+            bool show=captureReady && frame!=null && frame.Ready && frame.WeatherNative
+                && _lighting.ReadyScene==frame.Scene && !_lighting.WaitingForCapture;
+            int type=show ? frame.WeatherType : 0;
+            float intensity=show ? frame.WeatherIntensity : 0;
+            // Flash's adaptive quality governs only its fallback drawing. Native
+            // weather has a separate fixed and bounded GPU budget.
+            int quality=show ? 0 : 3;
+            uint seed=show ? unchecked((uint)frame.Scene) : 0;
+            if (show && type!=0 && type!=_appliedWeatherStyleType) {
+                WeatherLook look=_presentationCatalog.Weather(type);
+                _native.WeatherStyle(look.Type,look.Count,look.Tuning);
+                _appliedWeatherStyleType=type;
+            }
+            if (type==_appliedWeatherType && intensity==_appliedWeatherIntensity
+                && quality==_appliedWeatherQuality && seed==_appliedWeatherSeed) return;
+            _native.Weather(type,intensity,quality,seed);
+            _appliedWeatherType=type; _appliedWeatherIntensity=intensity;
+            _appliedWeatherQuality=quality; _appliedWeatherSeed=seed;
+            LogManager.Log("event=world_weather_apply scene="+(frame?.Scene ?? 0)+" type="+type
+                +" intensity="+intensity.ToString("F2",CultureInfo.InvariantCulture)
+                +" quality="+quality+" captureReady="+captureReady
+                +" waitingForCapture="+_lighting.WaitingForCapture);
+        }
+        private void ApplyWeatherCamera(bool captureReady)
+        {
+            WorldLightingFrame frame=_frame;
+            bool allow=_native!=null && captureReady && frame?.Ready==true
+                && (frame.WeatherNative || frame.Atmosphere.Name!="none")
+                && _lighting.ReadyScene==frame.Scene && !_lighting.WaitingForCapture;
+            lock (_weatherCameraLock) {
+                _weatherCameraDispatchAllowed=allow;
+                if (!allow) return;
+                _weatherCameraGroundMin=frame.WeatherGroundMin;
+                _weatherCameraGroundMax=frame.WeatherGroundMax;
+                PushWeatherCameraLocked();
+            }
+        }
+        // Caller holds _weatherCameraLock. StopCapture takes the same lock before
+        // freeing the native session, so the socket callback cannot use a dead handle.
+        private void PushWeatherCameraLocked()
+        {
+            if (_weatherCameraX==_appliedWeatherCameraX && _weatherCameraY==_appliedWeatherCameraY
+                && _weatherCameraScale==_appliedWeatherCameraScale
+                && _weatherCameraGroundMin==_appliedWeatherGroundMin
+                && _weatherCameraGroundMax==_appliedWeatherGroundMax) return;
+            _native.WeatherCamera(_weatherCameraX,_weatherCameraY,_weatherCameraScale,
+                _weatherCameraGroundMin,_weatherCameraGroundMax);
+            _appliedWeatherCameraX=_weatherCameraX; _appliedWeatherCameraY=_weatherCameraY;
+            _appliedWeatherCameraScale=_weatherCameraScale;
+            _appliedWeatherGroundMin=_weatherCameraGroundMin;
+            _appliedWeatherGroundMax=_weatherCameraGroundMax;
+        }
         private bool RejectGeometry(string reason,Rectangle output,Rectangle source,Rectangle capture)
         {
             _schedulingAllowed=false;
@@ -361,8 +503,19 @@ namespace CF7Launcher.Guardian.WorldCompositor
         }
         internal static Rectangle CalculateCrop(Rectangle game,Rectangle capturedFrame)
         {
-            if (game.Width<1 || game.Height<1 || !capturedFrame.Contains(game)) throw new ArgumentException("Game viewport outside capture bounds");
-            return new Rectangle(game.X-capturedFrame.X,game.Y-capturedFrame.Y,game.Width,game.Height);
+            if (!TryCalculateCrop(game,capturedFrame,out Rectangle crop)) throw new ArgumentException("Game viewport outside capture bounds");
+            return crop;
+        }
+        internal static bool TryCalculateCrop(Rectangle game,Rectangle capturedFrame,out Rectangle crop)
+        {
+            crop=Rectangle.Empty;
+            if (game.Width<1 || game.Height<1 || capturedFrame.Width<1 || capturedFrame.Height<1) return false;
+            Rectangle visible=Rectangle.Intersect(game,capturedFrame);
+            if (visible.Width<1 || visible.Height<1
+                || visible.Left-game.Left>2 || visible.Top-game.Top>2
+                || game.Right-visible.Right>2 || game.Bottom-visible.Bottom>2) return false;
+            crop=new Rectangle(visible.X-capturedFrame.X,visible.Y-capturedFrame.Y,visible.Width,visible.Height);
+            return true;
         }
         private void PlaceBelowHud()
         {
@@ -399,13 +552,34 @@ namespace CF7Launcher.Guardian.WorldCompositor
         private static double NowMs() => Stopwatch.GetTimestamp()*1000.0/Stopwatch.Frequency;
         private void StopCapture()
         {
+            // Same-socket source loss must return visual ownership to Flash.
+            _surface?.Hide();
+            if (_weatherCapabilityAdvertised) {
+                _weatherCapabilityAdvertised=false;
+                try { WeatherCapabilityChanged?.Invoke(false); }
+                catch (Exception error) { LogManager.Log("event=world_weather_cap_revoke_failed "+error.Message); }
+            }
+            _lastWeatherCapAttemptMs=0;
             _lastGeometryRejection=null;
             _lastCaptureGeneration=0;
+            _appliedWeatherType=-1; _appliedWeatherIntensity=float.NaN;
+            _appliedWeatherQuality=-1; _appliedWeatherSeed=0;
+            _appliedWeatherStyleType=-1;
+            _appliedAtmospherePreset=-1; _appliedAtmosphereParameters=null;
+            _appliedAtmosphereName=null;
+            lock (_weatherCameraLock) {
+                _weatherCameraDispatchAllowed=false;
+                _appliedWeatherCameraX=_appliedWeatherCameraY=_appliedWeatherCameraScale=float.NaN;
+                _appliedWeatherGroundMin=_appliedWeatherGroundMax=float.NaN;
+                _weatherCameraX=0; _weatherCameraY=0; _weatherCameraScale=1;
+                _weatherCameraGroundMin=360; _weatherCameraGroundMax=520;
+            }
             _inputRenewRequested=false;_inputClosed=false;
             _viewportHeld=false; _paintFenceMs=0;
             _everReady=false; _frameAdvancing=false; _progressKnown=false;
             _surface?.Hide();
-            try { _native?.Dispose(); } finally { _native=null; _surface?.CancelPointer(); _surface?.Dispose(); _surface=null; if(_pointerBridge!=null)_retiringInput=_pointerBridge.CloseAsync(); _pointerBridge=null; _flash=IntPtr.Zero; }
+            try { lock (_weatherCameraLock) { _native?.Dispose(); _native=null; } }
+            finally { _native=null; _surface?.CancelPointer(); _surface?.Dispose(); _surface=null; if(_pointerBridge!=null)_retiringInput=_pointerBridge.CloseAsync(); _pointerBridge=null; _flash=IntPtr.Zero; }
         }
         public void Dispose()
         {

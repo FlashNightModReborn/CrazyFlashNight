@@ -41,6 +41,12 @@ SamplerState pointSampler : register(s0);
 SamplerState lutSampler : register(s1);
 cbuffer Settings : register(b0) { float4 rowR; float4 rowG; float4 rowB; float4 offset; };
 cbuffer Sampling : register(b1) { float2 texel; float sharpness; float lutMode; };
+// A=(authored RGB,alpha); B=(preset,time,radial,pulse);
+// C=(pulse speed,min,max,camera scale); D=(camera x,y,unused,unused).
+cbuffer Atmosphere : register(b2) { float4 aA; float4 aB; float4 aC; float4 aD; };
+// Authored look: primary+base, secondary+edge, motion/rate/frequency,
+// focus/falloff/mix. Names select a fixed shader family, never injected code.
+cbuffer AtmosphereStyle : register(b3) { float4 lA; float4 lB; float4 lC; float4 lD; };
 struct Vertex { float4 pos : SV_POSITION; float2 uv : TEXCOORD0; };
 Vertex VS(uint id : SV_VertexID) {
     Vertex v;
@@ -60,13 +66,74 @@ float4 PS(Vertex v) : SV_TARGET {
         // Bounded unsharp mask, not CAS: never extend beyond the local color range.
         c.rgb = clamp(c.rgb + sharpness * (c.rgb - (n+s+e+w)*.25),lo,hi);
     }
+    float3 scene;
     if (lutMode > 0.5) {
-        // lut-set-v1：LUT 已含全部调色语义（矩阵/gamma 内嵌），三线性采样直出。
-        // UNORM 3D 纹理坐标映射：c*(N-1)/N + 0.5/N（texel 中心对齐）。
-        return float4(lutTexture.Sample(lutSampler, c.rgb * (31.0/32.0) + (0.5/32.0)).rgb, 1);
+        // LUT already contains the complete world grade. Atmosphere still
+        // composes over that graded world in this same source pass.
+        scene = lutTexture.Sample(lutSampler, c.rgb * (31.0/32.0) + (0.5/32.0)).rgb;
+    } else {
+        float3 graded = saturate(float3(dot(c,rowR), dot(c,rowG), dot(c,rowB)) + offset.rgb);
+        scene = pow(graded, 1.0 / max(offset.w, 1.0e-3));
     }
-    float3 graded = saturate(float3(dot(c,rowR), dot(c,rowG), dot(c,rowB)) + offset.rgb);
-    return float4(pow(graded, 1.0 / max(offset.w, 1.0e-3)), 1);
+    int look = (int)(aB.x + 0.5);
+    if (look == 0) return float4(scene, 1);
+    float2 uv = v.uv;
+    float2 world = (uv * float2(1024.0,576.0) - aD.xy) / max(aC.w,0.01);
+    float edge = smoothstep(0.28,0.95,length((uv-0.5)*float2(1.65,1.0)));
+    float t = aB.y;
+    float flicker = 0.5 + 0.5 * sin(t * lC.y);
+    float3 tint = lA.rgb;
+    float amount = lA.w;
+    if (look == 1) {
+        // Alarm: a restrained rotating red beacon, strongest at the border.
+        amount=lA.w + (lB.w + lC.x*flicker)*edge;
+    } else if (look == 2) {
+        // Medical alarm: alternating sterile cyan and magenta emergency pools.
+        float side=smoothstep(lD.x,lD.y,uv.x);
+        tint=lerp(lA.rgb,lB.rgb,side);
+        float beat=sin(t*lC.y+uv.x*lC.z);
+        amount=lA.w + (lB.w + lC.x*beat*beat)*edge;
+    } else if (look == 3) {
+        // Industrial alarm: amber lamps and a slow diagonal hazard sweep.
+        float sweep=pow(saturate(sin(world.x*lC.z+world.y*lC.w-t*lC.y)*0.5+0.5),4.0);
+        amount=lA.w + lB.w*edge + lC.x*sweep;
+    } else if (look == 4) {
+        // Poison gas: low, drifting teal-green strata.
+        float haze=smoothstep(lD.y,lD.z,uv.y+0.07*sin(world.x*lC.z+t*lC.y));
+        amount=lA.w + lB.w*haze + lC.x*edge;
+    } else if (look == 5) {
+        // Corrosion: warmer, irregular acid glow near the floor.
+        float stain=sin(world.x*lC.z+t*lC.y)*sin(world.y*lC.w-world.x*lC.z*0.3333);
+        amount=lA.w + lB.w*smoothstep(lD.y,lD.z,uv.y)+lC.x*stain*stain;
+    } else if (look == 6) {
+        // Cold iron: steel-blue ambient with a narrow moving glint.
+        float glint=pow(saturate(1.0-abs(frac((world.x+world.y*0.55)*lC.z-t*lC.y)-0.5)*8.0),3.0);
+        amount=lA.w+lB.w*edge+lC.x*glint;
+    } else if (look == 7) {
+        // Ambush: a cold offset opening in a dim blue perimeter.
+        float cone=smoothstep(lD.z,0.10,length((uv-lD.xy)*float2(1.2,1.0)));
+        amount=lA.w+lB.w*edge-lC.x*cone;
+    } else if (look == 8) {
+        // Banquet: asymmetrical lantern warmth, with subdued red corners.
+        float left=1.0-smoothstep(0.0,lD.z,length((uv-lD.xy)*float2(0.85,1.3)));
+        float right=1.0-smoothstep(0.0,lD.z,length((uv-float2(1.0-lD.x,0.10))*float2(0.9,1.1)));
+        amount=lA.w+(lB.w+lC.x*flicker)*max(left,right)+lD.w*edge;
+    } else if (look == 9) {
+        // Blood moon: overhead crimson wash, keeping the playfield readable.
+        amount=lA.w+lB.w*(1.0-smoothstep(0.0,1.0,uv.y))+lC.x*edge;
+    } else if (look == 10) {
+        // Incense: copper glow and very slow drifting smoke bands.
+        float smoke=sin(world.x*lC.z+world.y*lC.w+t*lC.y);
+        amount=lA.w+lB.w*edge+lC.x*smoke*smoke;
+    } else {
+        // Direct <Overlay> entries retain their authored color/mode/pulse.
+        tint=aA.rgb;
+        amount=aA.w;
+        float radial=1.0-smoothstep(0.04,0.95,length((uv-0.5)*float2(1.65,1.0)));
+        float authored=aB.w>0.5 ? lerp(aC.y,aC.z,0.5+0.5*sin(t*aC.x)) : amount;
+        amount=min(0.5,authored*(aB.z>0.5 ? radial : 1.0));
+    }
+    return float4(saturate(lerp(scene,tint,saturate(amount))),1);
 }
 )hlsl";
 
@@ -76,6 +143,223 @@ Settings ColorMode(int mode) {
     if (mode == 2) return {{.04252f,.14304f,.01444f,0},{.2126f,.7152f,.0722f,0},{.02126f,.07152f,.00722f,0},{0,.035f,0,1}};
     return {{1,0,0,0},{0,1,0,0},{0,0,1,0},{0,0,0,1}};
 }
+
+// Visual-only weather overlay. Particles are procedural: the vertex shader
+// derives each quad from SV_VertexID, the weather clock and the seed, so a
+// state change (including "none") needs no buffer upload or particle cleanup.
+constexpr char WeatherShader[] = R"hlsl(
+Texture3D lutTexture : register(t1);
+SamplerState lutSampler : register(s1);
+cbuffer Grade : register(b0) { float4 rowR; float4 rowG; float4 rowB; float4 offset; };
+cbuffer WeatherParams : register(b1) { float4 wA; float4 wB; float4 wC; float4 wD; };
+// Primary RGB/size, secondary RGB/alpha, speed/wind/splash size/alpha,
+// splash start/edge fade. All authored in the external visual catalog.
+cbuffer WeatherStyle : register(b2) { float4 sA; float4 sB; float4 sC; float4 sD; };
+// wA=(time s,intensity,type,seed); wB=(viewport W,H,rain count,LUT enabled)
+// wC=(camera x,y,scale,ground min); wD=(ground max,Flash stage height,-,-)
+struct WVertex {
+    float4 pos : SV_POSITION;
+    float2 uv : TEXCOORD0;
+    float4 color : TEXCOORD1;
+    nointerpolation float shape : TEXCOORD2;
+};
+float whash(uint x) {
+    x = x * 1664525u + 1013904223u; x ^= x >> 16;
+    x = x * 2246822519u; x ^= x >> 13;
+    return float(x & 0xFFFFFFu) * (1.0 / 16777216.0);
+}
+// The AS2 F packet uses stage = cameraOffset + world * cameraScale.
+// A periodic world field keeps decorative weather populated across long maps;
+// wrapping happens at the viewport edge, while every visible particle follows
+// camera translation and zoom in the same direction as gameworld content.
+float2 projectWeatherWorld(float2 world, float2 view) {
+    float2 stage = (wC.xy + world * wC.z) / float2(1024.0, 576.0);
+    return frac(stage) * view;
+}
+WVertex WVS(uint id : SV_VertexID) {
+    WVertex o = (WVertex)0;
+    uint p = id / 6u;
+    uint c = id - p * 6u;
+    float2 corner = float2((c == 1u || c == 2u || c == 4u) ? 1.0 : 0.0, (c == 2u || c == 4u || c == 5u) ? 1.0 : 0.0);
+    uint seedU = (uint)wA.w;
+    float h1 = whash(p * 4u + 11u + seedU * 3u);
+    float h2 = whash(p * 5u + 23u + seedU * 5u);
+    float h3 = whash(p * 7u + 41u + seedU * 7u);
+    float h4 = whash(p * 9u + 67u + seedU * 11u);
+    float time = wA.x * sC.x;
+    float2 view = wB.xy;
+    float pxPerStage = view.y / max(wD.y, 1.0);
+    float worldPx = pxPerStage * wC.z * sA.w;
+    // Two discrete depth bands: far is smaller/dimmer/slower, near is the reverse.
+    float depth = lerp(0.15 + 0.30 * h3, 0.65 + 0.35 * h3, float(p & 1u));
+    float scale = 0.5 + 0.7 * depth;
+    // Density follows intensity through a stable per-particle threshold.
+    float vis = saturate((wA.y - h4) * 40.0);
+    float2 p0 = float2(0.0, 0.0), p1 = float2(0.0, 0.0), center = float2(0.0, 0.0);
+    float radius = 1.0, width = 1.0, alpha = 0.0, shape = 0.0;
+    float3 color = sA.rgb;
+    int wtype = (int)(wA.z + 0.5);
+    if (wtype == 1) {
+        // The legacy visual uses a depth band between Ymin and Ymax, not
+        // per-particle terrain collision. Draw rain and impact arcs in one batch.
+        float vx = -(20.0 + 55.0 * depth) * (0.7 + 0.6 * h2) * sC.y;
+        float ground = (wC.y + lerp(wC.w, wD.x, depth) * wC.z) * pxPerStage;
+        float splashRate = 0.55 + 0.45 * depth;
+        float splashCycle = floor(h1 + time * splashRate);
+        float phase = frac(h1 + time * splashRate);
+        if (p >= (uint)wB.z) {
+            float progress = saturate((phase - sD.x) / (1.0-sD.x));
+            // Freeze the impact's world X at its birth time. Using rainPos.x
+            // here made an already-landed arc keep drifting with the falling
+            // drop's wind velocity throughout its visible lifetime.
+            float impactTime = (splashCycle + sD.x - h1) / splashRate;
+            float impactWorldX = h2 * 4096.0 + impactTime * vx;
+            center = float2(projectWeatherWorld(float2(impactWorldX,0.0),view).x, ground);
+            radius = (4.0 + progress * 8.0) * scale * worldPx * sC.z;
+            color = sB.rgb;
+            alpha = (phase >= sD.x && ground >= 0.0 && ground <= view.y + 8.0)
+                ? (0.68 + 0.18 * depth) * (1.0 - progress) * sC.w : 0.0;
+            alpha *= saturate(min(center.x,view.x-center.x)/max(radius*sD.y,1.0));
+            shape = 3.0;
+        } else {
+            float vy = 260.0 + 280.0 * depth;
+            float2 rainPos = projectWeatherWorld(float2(h2 * 4096.0 + time * vx,
+                h1 * 2304.0 + time * vy), view);
+            p0 = rainPos;
+            p1 = p0 + normalize(float2(vx,vy)) * (10.0 + 8.0 * h3) * scale * worldPx;
+            if (p1.y > ground) p1 = lerp(p0,p1,saturate((ground-p0.y)/max(p1.y-p0.y,0.001)));
+            width = (0.85 + 1.05 * depth) * worldPx;
+            color = sA.rgb;
+            alpha = p0.y < ground ? 0.34 + 0.38 * depth : 0.0;
+            shape = 1.0;
+        }
+    } else if (wtype == 2) {
+        // Snow: soft flakes with a slow sine sway.
+        float sway = sin(time * (1.2 + 1.5 * h4) + h1 * 6.2832) * (6.0 + 8.0 * depth) * sC.y;
+        center = projectWeatherWorld(float2(h3 * 4096.0 + time * (h2 - 0.5) * 25.0 + sway,
+            h1 * 2304.0 + time * (35.0 + 90.0 * depth)), view);
+        radius = (1.5 + 2.3 * h2) * scale * worldPx;
+        alpha = 0.52 + 0.35 * depth;
+    } else if (wtype == 3) {
+        // Dust: small warm motes drifting slowly down-range.
+        float sway = sin(time * (0.8 + h4) + h2 * 6.2832) * (4.0 + 5.0 * depth);
+        center = projectWeatherWorld(float2(h3 * 4096.0 + time * (h2 - 0.5) * (35.0 + 65.0 * depth) * sC.y + sway,
+            h1 * 2304.0 + time * (12.0 + 35.0 * depth)), view);
+        radius = (0.9 + 1.4 * h2) * scale * worldPx;
+        color = sA.rgb;
+        alpha = 0.20 + 0.25 * depth;
+    } else if (wtype == 4) {
+        // Fog: a few large soft clouds that fade in, drift and fade out.
+        float period = 7.0 + 6.0 * h2;
+        float ph = frac(time / period + h4);
+        float fade = smoothstep(0.0, 0.20, ph) * smoothstep(0.0, 0.30, 1.0 - ph);
+        float2 sway = float2(sin(time * 0.35 + h3 * 6.2832), sin(time * 0.22 + h4 * 6.2832)) * (10.0 + 14.0 * depth);
+        center = projectWeatherWorld(float2(h1 * 4096.0 + time * (h3 - 0.5) * 30.0 + sway.x,
+            h2 * 2304.0 + time * (h1 - 0.5) * 20.0 + sway.y), view);
+        radius = min((60.0 + 95.0 * h3) * scale * worldPx, 180.0);
+        color = sA.rgb;
+        alpha = (0.08 + 0.12 * depth) * fade;
+        float fogEdge = min(min(center.x, view.x - center.x), min(center.y, view.y - center.y));
+        alpha *= saturate(fogEdge / max(radius, 1.0));
+        shape = 2.0;
+    } else {
+        // Slash: a cold-steel streak that tears open, slides, then heals.
+        float period = 0.9 + 0.7 * h2;
+        float u = time / period + h4 * 3.7;
+        float ph = frac(u);
+        uint cyc = (uint)floor(u);
+        float s1 = whash(p * 131u + cyc * 17u + seedU);
+        float s2 = whash(p * 137u + cyc * 29u + seedU * 3u);
+        float s3 = whash(p * 149u + cyc * 43u + seedU * 7u);
+        float ang = 0.35 + 1.05 * s3;
+        float2 dir = float2(cos(ang) * (s1 > 0.5 ? 1.0 : -1.0), sin(ang) * (s2 > 0.35 ? 1.0 : -1.0));
+        float2 anchor = projectWeatherWorld(float2(s1 * 4096.0, s2 * 2304.0), view);
+        float fullLen = (40.0 + 65.0 * h3) * scale * worldPx;
+        float headOff, tailOff;
+        if (ph < 0.25) { headOff = ph * 4.0 * fullLen; tailOff = 0.0; }
+        else if (ph < 0.55) { float sl = (ph - 0.25) / 0.3; headOff = fullLen + sl * fullLen * 0.5; tailOff = sl * fullLen * 0.5; }
+        else { float hl = (ph - 0.55) / 0.45; headOff = fullLen * 1.5; tailOff = fullLen * 0.5 + hl * fullLen; }
+        p0 = anchor + dir * tailOff;
+        p1 = anchor + dir * headOff;
+        float env = ph < 0.15 ? ph / 0.15 : (ph < 0.55 ? 1.0 : (1.0 - ph) / 0.45);
+        width = (3.0 + 3.2 * depth) * worldPx * (ph < 0.15 ? 1.5 : (ph < 0.25 ? 1.2 : 1.0));
+        color = lerp(sA.rgb,sB.rgb,depth);
+        alpha = (0.72 + 0.20 * depth) * env;
+        float slashEdge = min(min(anchor.x, view.x - anchor.x), min(anchor.y, view.y - anchor.y));
+        alpha *= saturate(slashEdge / max(fullLen * 1.5, 1.0));
+        shape = 1.0;
+    }
+    alpha *= vis * sB.w;
+    o.uv = corner;
+    o.color = float4(color, alpha);
+    o.shape = shape;
+    if (alpha <= 0.002) { o.pos = float4(-2.0, -2.0, -2.0, 1.0); return o; }
+    float2 posPx;
+    if (shape > 0.5 && shape < 1.5) {
+        float2 seg = p1 - p0;
+        float2 perp = float2(-seg.y, seg.x) / max(length(seg), 0.001);
+        posPx = p0 + seg * corner.y + perp * (corner.x - 0.5) * width;
+    } else if (shape > 2.5) {
+        posPx = center + float2((corner.x - 0.5) * 2.0 * radius, (corner.y - 1.0) * radius);
+    } else {
+        posPx = center + (corner - 0.5) * (2.0 * radius);
+    }
+    o.pos = float4(posPx.x / view.x * 2.0 - 1.0, 1.0 - posPx.y / view.y * 2.0, 0.5, 1.0);
+    return o;
+}
+float4 WPS(WVertex v) : SV_TARGET {
+    float a = v.color.a;
+    float2 d = v.uv - float2(0.5, 0.5);
+    float3 weatherColor = v.color.rgb;
+    if (v.shape < 0.5) {
+        float r = length(d) * 2.0;
+        a *= 1.0 - smoothstep(0.72, 1.0, r);
+        if (wA.z > 1.5 && wA.z < 2.5)
+            weatherColor = lerp(sA.rgb,sB.rgb,smoothstep(0.38,0.76,r));
+    }
+    else if (v.shape < 1.5) {
+        float edge = saturate(1.0 - abs(d.x) * 2.0);
+        float coverage = wA.z < 1.5 ? smoothstep(0.0, 0.5, edge) : smoothstep(0.05,0.65,edge);
+        a *= coverage * smoothstep(0.0, 0.2, v.uv.y) * smoothstep(0.0, 0.25, 1.0 - v.uv.y);
+    } else if (v.shape < 2.5) a *= 1.0 - smoothstep(0.25, 1.0, length(d) * 2.0);
+    else {
+        float u = v.uv.x * 2.0 - 1.0;
+        float arc = 1.0 - 0.55 * (1.0 - u*u);
+        float distance = abs(v.uv.y - arc);
+        a *= 1.0 - smoothstep(0.12,0.23,distance);
+        weatherColor = lerp(sB.rgb,sA.rgb,smoothstep(0.06,0.19,distance));
+    }
+    if (wA.z < 1.5) {
+        float core = 1.0 - smoothstep(0.0, 0.3, abs(d.x));
+        weatherColor = lerp(sA.rgb,sB.rgb,core);
+    }
+    if (wB.w > 0.5) {
+        // Apply the same LUT as the captured world before alpha blending.
+        // The slash core remains visible after the authored grade.
+        if (wA.z > 4.5) {
+            float core = 1.0 - smoothstep(0.0,0.25,abs(d.x));
+            weatherColor = lerp(weatherColor,sB.rgb,0.55 + 0.25 * core);
+        }
+        float3 lookup = weatherColor * (31.0/32.0) + (0.5/32.0);
+        return float4(lutTexture.Sample(lutSampler, lookup).rgb, a);
+    }
+    float4 c = float4(weatherColor, 1.0);
+    float3 graded = saturate(float3(dot(c, rowR), dot(c, rowG), dot(c, rowB)) + offset.rgb);
+    if (wA.z > 4.5) {
+        float core = 1.0 - smoothstep(0.0,0.25,abs(d.x));
+        graded = lerp(graded,sB.rgb,0.55 + 0.25 * core);
+    }
+    return float4(pow(abs(graded), 1.0 / max(offset.w, 1.0e-3)), a);
+}
+)hlsl";
+
+// This is a safety ceiling. Authored counts live in the external visual catalog.
+constexpr int WeatherSafetyCap = 512;
+struct WeatherState { int type = 0; float intensity = 0; int quality = 0; uint32_t seed = 0; };
+struct WeatherCameraState { float x = 0, y = 0, scale = 1, groundMin = 360, groundMax = 520; };
+struct AtmosphereState { int preset = 0; float params[12]{}; };
+struct WeatherStyleState { int type = 0, count = 0; float params[16]{}; };
+struct AtmosphereStyleState { int family = 0; float params[16]{}; };
 
 class Capture {
 public:
@@ -95,7 +379,7 @@ public:
         { std::lock_guard guard(mutex_); std::memcpy(&customSettings_,values,sizeof(Settings)); ++settingsVersion_; custom_=true; }
         Signal(); return true;
     }
-    // lut-set-v1（加性 ABI 3）：整块 32^3 RGBA8 拷贝入库（调用方拥有输入缓冲）；上传即启用 LUT 分支，
+    // lut-set-v1：整块 32^3 RGBA8 拷贝入库（调用方拥有输入缓冲）；上传即启用 LUT 分支，
     // 工作线程按 lutVersion_ 惰性建/更 Texture3D。ClearLut 关断 LUT 分支（矩阵路径回退），缓冲保留。
     bool SetLut(const uint8_t* rgba) {
         if (!rgba) return false;
@@ -150,6 +434,65 @@ public:
     bool Sharpness(float value) {
         if (!std::isfinite(value) || value<0 || value>.4f) return false;
         sharpness_=value; Signal(); return true;
+    }
+    // Publishes visual weather state only; all D3D work happens on the worker.
+    // Type 0 or intensity 0 clears the overlay; quality 3 suppresses drawing.
+    bool Weather(int type, float intensity, int quality, uint32_t seed) {
+        if (type < 0 || type > 5 || quality < 0 || quality > 3
+            || !std::isfinite(intensity) || intensity < 0.f || intensity > 1.f) return false;
+        { std::lock_guard guard(mutex_);
+            if (type!=0 && weatherStyle_.type!=type) return false;
+            weather_ = {type,intensity,quality,seed}; ++weatherVersion_; }
+        Signal(); return true;
+    }
+    bool WeatherStyle(int type,int count,const float* params) {
+        if (type<1 || type>5 || count<0 || count>WeatherSafetyCap || !params) return false;
+        for (int i=0;i<16;i++) if (!std::isfinite(params[i])) return false;
+        for (int i=0;i<3;i++) if (params[i]<0.f || params[i]>1.f || params[i+4]<0.f || params[i+4]>1.f) return false;
+        if (params[3]<0.25f || params[3]>4.f || params[7]<0.f || params[7]>2.f
+            || params[8]<0.1f || params[8]>4.f || params[9]<0.f || params[9]>4.f
+            || params[10]<0.25f || params[10]>4.f || params[11]<0.f || params[11]>2.f
+            || params[12]<0.5f || params[12]>0.95f || params[13]<0.1f || params[13]>4.f
+            || params[14]!=0.f || params[15]!=0.f) return false;
+        WeatherStyleState state{};state.type=type;state.count=count;
+        std::memcpy(state.params,params,sizeof(state.params));
+        { std::lock_guard guard(mutex_);weatherStyle_=state;++weatherVersion_; }
+        Signal();return true;
+    }
+    bool WeatherCamera(float x,float y,float scale,float groundMin,float groundMax) {
+        if (!std::isfinite(x) || !std::isfinite(y) || !std::isfinite(scale)
+            || !std::isfinite(groundMin) || !std::isfinite(groundMax)
+            || scale<=0.f || scale>20.f || std::abs(x)>1000000.f || std::abs(y)>1000000.f
+            || std::abs(groundMin)>1000000.f || std::abs(groundMax)>1000000.f || groundMax<=groundMin) return false;
+        { std::lock_guard guard(mutex_); weatherCamera_={x,y,scale,groundMin,groundMax}; ++weatherVersion_; }
+        Signal(); return true;
+    }
+    bool Atmosphere(int preset,const float* params) {
+        if (preset<0 || preset>11 || !params) return false;
+        for (int i=0;i<12;i++) if (!std::isfinite(params[i])) return false;
+        for (int i=0;i<6;i++) if (params[i]<0.f || params[i]>1.f) return false;
+        if (params[6]<0.f || params[6]>30.f || params[7]<0.f || params[7]>1.f
+            || params[8]<params[7] || params[8]>1.f) return false;
+        AtmosphereState state{}; state.preset=preset;
+        std::memcpy(state.params,params,sizeof(state.params));
+        { std::lock_guard guard(mutex_);
+            if (preset>0 && preset<11 && atmosphereStyle_.family!=preset) return false;
+            atmosphere_=state; ++atmosphereVersion_; }
+        Signal(); return true;
+    }
+    bool AtmosphereStyle(int family,const float* params) {
+        if (family<1 || family>10 || !params) return false;
+        for (int i=0;i<16;i++) if (!std::isfinite(params[i])) return false;
+        for (int i=0;i<3;i++) if (params[i]<0.f || params[i]>1.f || params[i+4]<0.f || params[i+4]>1.f) return false;
+        if (params[3]<0.f || params[3]>0.5f || params[7]<0.f || params[7]>0.5f
+            || params[8]<0.f || params[8]>0.5f || params[9]<0.f || params[9]>20.f
+            || params[10]<0.f || params[10]>16.f || params[11]<0.f || params[11]>16.f
+            || params[12]<0.f || params[12]>1.f || params[13]<0.f || params[13]>1.f
+            || params[14]<0.05f || params[14]>2.f || params[15]<0.f || params[15]>0.5f) return false;
+        AtmosphereStyleState state{};state.family=family;
+        std::memcpy(state.params,params,sizeof(state.params));
+        { std::lock_guard guard(mutex_);atmosphereStyle_=state;++atmosphereVersion_; }
+        Signal();return true;
     }
     void Stats(ProbeStats& result) { std::lock_guard guard(mutex_); result = stats_; }
     void CaptureSize(int32_t& width,int32_t& height,uint64_t& generation) { std::lock_guard guard(mutex_); width=captureWidth_;height=captureHeight_;generation=captureGeneration_; }
@@ -263,13 +606,23 @@ private:
         }
         check_hresult(factory->MakeWindowAssociation(output_, DXGI_MWA_NO_ALT_ENTER));
 
-        auto Compile = [](const char* entry, const char* profile) {
+        auto Compile = [](const char* source, const char* entry, const char* profile) {
             com_ptr<ID3DBlob> blob, error;
-            HRESULT hr = D3DCompile(Shader, sizeof(Shader) - 1, "compositor-probe", nullptr, nullptr,
+            HRESULT hr = D3DCompile(source, std::strlen(source), "compositor-probe", nullptr, nullptr,
                 entry, profile, D3DCOMPILE_OPTIMIZATION_LEVEL3 | D3DCOMPILE_WARNINGS_ARE_ERRORS, 0, blob.put(), error.put());
-            check_hresult(hr); return blob;
+            if (FAILED(hr)) {
+                std::wstring detail=L"HLSL compilation failed";
+                if (error) {
+                    const char* start=static_cast<const char*>(error->GetBufferPointer());
+                    detail.assign(start,start+error->GetBufferSize());
+                }
+                throw hresult_error(hr,detail.c_str());
+            }
+            return blob;
         };
-        auto vsCode = Compile("VS", "vs_4_0"); auto psCode = Compile("PS", "ps_4_0");
+        auto vsCode = Compile(Shader, "VS", "vs_4_0"); auto psCode = Compile(Shader, "PS", "ps_4_0");
+        auto weatherVsCode = Compile(WeatherShader, "WVS", "vs_4_0");
+        auto weatherPsCode = Compile(WeatherShader, "WPS", "ps_4_0");
         com_ptr<ID3D11VertexShader> vs; com_ptr<ID3D11PixelShader> ps;
         check_hresult(device->CreateVertexShader(vsCode->GetBufferPointer(), vsCode->GetBufferSize(), nullptr, vs.put()));
         check_hresult(device->CreatePixelShader(psCode->GetBufferPointer(), psCode->GetBufferSize(), nullptr, ps.put()));
@@ -278,6 +631,10 @@ private:
         check_hresult(device->CreateBuffer(&cb, nullptr, constants.put()));
         com_ptr<ID3D11Buffer> samplingConstants;
         cb.ByteWidth=16; check_hresult(device->CreateBuffer(&cb,nullptr,samplingConstants.put()));
+        com_ptr<ID3D11Buffer> atmosphereConstants;
+        cb.ByteWidth=64; check_hresult(device->CreateBuffer(&cb,nullptr,atmosphereConstants.put()));
+        com_ptr<ID3D11Buffer> atmosphereStyleConstants;
+        cb.ByteWidth=64; check_hresult(device->CreateBuffer(&cb,nullptr,atmosphereStyleConstants.put()));
         com_ptr<ID3D11SamplerState> sampler;
         D3D11_SAMPLER_DESC sd{}; sd.Filter = fps_>0 ? D3D11_FILTER_MIN_MAG_MIP_LINEAR : D3D11_FILTER_MIN_MAG_MIP_POINT;
         sd.AddressU = sd.AddressV = sd.AddressW = D3D11_TEXTURE_ADDRESS_CLAMP;
@@ -293,6 +650,24 @@ private:
         com_ptr<ID3D11RasterizerState> raster;
         D3D11_RASTERIZER_DESC rd{}; rd.FillMode = D3D11_FILL_SOLID; rd.CullMode = D3D11_CULL_NONE; rd.DepthClipEnable = TRUE;
         check_hresult(device->CreateRasterizerState(&rd, raster.put()));
+        com_ptr<ID3D11VertexShader> weatherVs; com_ptr<ID3D11PixelShader> weatherPs;
+        check_hresult(device->CreateVertexShader(weatherVsCode->GetBufferPointer(), weatherVsCode->GetBufferSize(), nullptr, weatherVs.put()));
+        check_hresult(device->CreatePixelShader(weatherPsCode->GetBufferPointer(), weatherPsCode->GetBufferSize(), nullptr, weatherPs.put()));
+        com_ptr<ID3D11Buffer> weatherParams;
+        cb.ByteWidth = 64; check_hresult(device->CreateBuffer(&cb, nullptr, weatherParams.put()));
+        com_ptr<ID3D11Buffer> weatherStyleParams;
+        cb.ByteWidth = 64; check_hresult(device->CreateBuffer(&cb, nullptr, weatherStyleParams.put()));
+        com_ptr<ID3D11BlendState> alphaBlend;
+        D3D11_BLEND_DESC bd{};
+        bd.RenderTarget[0].BlendEnable = TRUE;
+        bd.RenderTarget[0].SrcBlend = D3D11_BLEND_SRC_ALPHA;
+        bd.RenderTarget[0].DestBlend = D3D11_BLEND_INV_SRC_ALPHA;
+        bd.RenderTarget[0].BlendOp = D3D11_BLEND_OP_ADD;
+        bd.RenderTarget[0].SrcBlendAlpha = D3D11_BLEND_ONE;
+        bd.RenderTarget[0].DestBlendAlpha = D3D11_BLEND_INV_SRC_ALPHA;
+        bd.RenderTarget[0].BlendOpAlpha = D3D11_BLEND_OP_ADD;
+        bd.RenderTarget[0].RenderTargetWriteMask = D3D11_COLOR_WRITE_ENABLE_ALL;
+        check_hresult(device->CreateBlendState(&bd, alphaBlend.put()));
 
         com_ptr<ID3D11Texture2D> texture;
         com_ptr<ID3D11ShaderResourceView> srv;
@@ -309,6 +684,12 @@ private:
         uint64_t appliedLut = 0, lutCopiedVersion = 0;
         bool lutActive = false;
         auto lutWork = std::make_unique<uint8_t[]>(LutBytes);
+        uint64_t appliedWeather = 0;
+        uint64_t appliedAtmosphere = 0;
+        float weatherTime = 0;
+        double lastWeatherDrawMs = 0;
+        float atmosphereTime = 0;
+        double lastAtmosphereDrawMs = 0;
         auto nextPresent = std::chrono::steady_clock::now();
         State(1, S_OK, L"GPU display path; optional diagnostic readback");
         while (!stop_) {
@@ -325,17 +706,30 @@ private:
                 arrived=pool.FrameArrived(auto_revoke,[this](auto const&, auto const&) { Signal(); });
                 startSession();
             }
-            if (fps_>0) {
+            uint64_t observedWake=wakeVersion_.load();
+            uint64_t settingsVersion; bool custom; Settings settings; WeatherState weather; WeatherCameraState weatherCamera; uint64_t weatherVersion;
+            uint64_t lutVersion; bool lutEnabled;
+            AtmosphereState atmosphere; AtmosphereStyleState atmosphereStyle; uint64_t atmosphereVersion;
+            WeatherStyleState weatherStyle;
+            { std::lock_guard guard(mutex_); settingsVersion=settingsVersion_; custom=custom_; settings=customSettings_;
+                weather=weather_; weatherCamera=weatherCamera_; weatherVersion=weatherVersion_;
+                weatherStyle=weatherStyle_; atmosphere=atmosphere_;
+                atmosphereStyle=atmosphereStyle_; atmosphereVersion=atmosphereVersion_; }
+            bool weatherOn = weather.type!=0 && weather.intensity>0.f && weather.quality<3
+                && weatherStyle.type==weather.type && weatherStyle.count>0 && texture;
+            bool atmosphereOn = atmosphere.preset!=0 && (atmosphere.preset==11
+                || atmosphereStyle.family==atmosphere.preset) && texture;
+            // Weather animates per presented frame; keep a 30fps floor even on
+            // unpaced probe sessions so motion stays at the worker cadence.
+            int paceFps = fps_>0 ? fps_ : ((weatherOn || atmosphereOn) ? 30 : 0);
+            if (paceFps>0) {
                 std::unique_lock lock(waitMutex_);
                 wake_.wait_until(lock,nextPresent,[this] { return stop_.load() || !active_.load() || grabRequested_.load(); });
                 if (stop_) break;
                 if (!active_) continue;
             }
             if (grabRequested_.load()) { ServiceGrab(device.get(),context.get(),texture.get(),textureW,textureH); continue; }
-            uint64_t observedWake=wakeVersion_.load();
-            uint64_t settingsVersion; bool custom; Settings settings;
-            uint64_t lutVersion; bool lutEnabled;
-            { std::lock_guard guard(mutex_); settingsVersion=settingsVersion_; custom=custom_; settings=customSettings_;
+            { std::lock_guard guard(mutex_);
                 lutVersion=lutVersion_; lutEnabled=lutEnabled_;
                 if (lutEnabled && lutVersion!=lutCopiedVersion) {
                     std::memcpy(lutWork.get(), lutData_, LutBytes); lutCopiedVersion=lutVersion;
@@ -370,7 +764,9 @@ private:
             bool fresh = static_cast<bool>(frame);
             if (!frame && (!texture || (appliedMode == mode_.load() && !proofRequested_
                     && outputW == client.right && outputH == client.bottom && appliedSettings==settingsVersion
-                    && appliedSharpness==sharpness_.load() && appliedLut==lutVersion))) {
+                    && appliedSharpness==sharpness_.load() && appliedLut==lutVersion
+                    && appliedWeather==weatherVersion && !weatherOn
+                    && appliedAtmosphere==atmosphereVersion && !atmosphereOn))) {
                 presentation.unlock();
                 std::unique_lock lock(waitMutex_);
                 wake_.wait_for(lock,std::chrono::milliseconds(100),[this,observedWake] { return stop_.load() || wakeVersion_.load()!=observedWake; });
@@ -470,6 +866,11 @@ private:
                 lutActive = lutEnabled && lutSrv != nullptr;
                 appliedLut = lutVersion;
             }
+            // The pacing wait and WGC dequeue may span an AS2 F packet. Sample
+            // its camera immediately before drawing both atmosphere and weather;
+            // the loop-head copy could be one presented frame behind the scene.
+            { std::lock_guard guard(mutex_);
+                weatherCamera=weatherCamera_; weatherVersion=weatherVersion_; }
             auto target = rtv.get(); context->OMSetRenderTargets(1, &target, nullptr);
             const float black[]{0,0,0,1}; context->ClearRenderTargetView(target, black);
             float scale = std::min(static_cast<float>(w)/textureW, static_cast<float>(h)/textureH);
@@ -486,12 +887,66 @@ private:
             float samplingValues[]{1.f/textureW,1.f/textureH,appliedSharpness,lutActive?1.f:0.f};
             context->UpdateSubresource(samplingConstants.get(),0,nullptr,samplingValues,0,0);
             auto samplingBuffer=samplingConstants.get(); context->PSSetConstantBuffers(1,1,&samplingBuffer);
-            context->Draw(3,0);
-            ID3D11ShaderResourceView* empty[2]{}; context->PSSetShaderResources(0,2,empty);
-            double submit = QpcMs();
             bool proof = proofRequested_.exchange(false);
+            if (atmosphereOn && !proof) {
+                double nowAtmosphereMs=QpcMs();
+                float delta=lastAtmosphereDrawMs>0
+                    ? std::clamp(static_cast<float>((nowAtmosphereMs-lastAtmosphereDrawMs)/1000.0),0.f,0.10f)
+                    : 1.f/30.f;
+                lastAtmosphereDrawMs=nowAtmosphereMs;
+                atmosphereTime+=delta;
+                if (atmosphereTime>8192.f) atmosphereTime-=8192.f;
+            } else if (!atmosphereOn) lastAtmosphereDrawMs=0;
+            float ap[16]{
+                atmosphere.params[0],atmosphere.params[1],atmosphere.params[2],atmosphere.params[3],
+                proof ? 0.f : static_cast<float>(atmosphere.preset),atmosphereTime,
+                atmosphere.params[4],atmosphere.params[5],
+                atmosphere.params[6],atmosphere.params[7],atmosphere.params[8],weatherCamera.scale,
+                weatherCamera.x,weatherCamera.y,0,0
+            };
+            context->UpdateSubresource(atmosphereConstants.get(),0,nullptr,ap,0,0);
+            auto atmosphereBuffer=atmosphereConstants.get(); context->PSSetConstantBuffers(2,1,&atmosphereBuffer);
+            context->UpdateSubresource(atmosphereStyleConstants.get(),0,nullptr,atmosphereStyle.params,0,0);
+            auto lookBuffer=atmosphereStyleConstants.get(); context->PSSetConstantBuffers(3,1,&lookBuffer);
+            context->Draw(3,0);
+            ID3D11ShaderResourceView* empty = nullptr; context->PSSetShaderResources(0,1,&empty);
+            // Weather overlays the graded world inside the same content viewport,
+            // blended after the source pass (not pre-grade composited). The base
+            // grade cbuffer and LUT resource stay bound for the weather grade.
+            if (weatherOn && !proof) {
+                double nowWeatherMs = QpcMs();
+                float weatherDelta = lastWeatherDrawMs > 0
+                    ? std::clamp(static_cast<float>((nowWeatherMs-lastWeatherDrawMs)/1000.0),0.f,0.10f)
+                    : 1.f/30.f;
+                lastWeatherDrawMs = nowWeatherMs;
+                weatherTime += weatherDelta;
+                if (weatherTime > 8192.f) weatherTime -= 8192.f;
+                int rainCount=weatherStyle.count;
+                if (weather.quality==1) rainCount=rainCount*5/8;
+                else if (weather.quality==2) rainCount=rainCount*3/8;
+                float wp[16]{weatherTime,weather.intensity,static_cast<float>(weather.type),
+                    static_cast<float>(weather.seed & 0xFFFFFFu),viewport.Width,viewport.Height,static_cast<float>(rainCount),lutActive?1.f:0.f,
+                    weatherCamera.x,weatherCamera.y,weatherCamera.scale,weatherCamera.groundMin,
+                    weatherCamera.groundMax,576.f,0,0};
+                context->UpdateSubresource(weatherParams.get(),0,nullptr,wp,0,0);
+                context->UpdateSubresource(weatherStyleParams.get(),0,nullptr,weatherStyle.params,0,0);
+                context->VSSetShader(weatherVs.get(),nullptr,0); context->PSSetShader(weatherPs.get(),nullptr,0);
+                auto weatherBuffer = weatherParams.get();
+                context->VSSetConstantBuffers(1,1,&weatherBuffer); context->PSSetConstantBuffers(1,1,&weatherBuffer);
+                auto weatherLookBuffer=weatherStyleParams.get();
+                context->VSSetConstantBuffers(2,1,&weatherLookBuffer);context->PSSetConstantBuffers(2,1,&weatherLookBuffer);
+                context->OMSetBlendState(alphaBlend.get(),nullptr,0xffffffff);
+                int splashCount=weather.type==1 ? std::max(8,rainCount/2) : 0;
+                context->Draw((rainCount+splashCount)*6,0);
+                context->OMSetBlendState(nullptr,nullptr,0xffffffff);
+            } else if (!weatherOn) lastWeatherDrawMs = 0;
+            appliedWeather = weatherVersion;
+            appliedAtmosphere = atmosphereVersion;
+            context->PSSetShaderResources(1,1,&empty);
+            double submit = QpcMs();
             if (proof) {
-                VerifyPixels(device.get(), context.get(), swap.get(), texture.get(), viewport, textureW, textureH, mode);
+                VerifyPixels(device.get(), context.get(), swap.get(), texture.get(), viewport, textureW, textureH, mode,
+                    lutActive ? lutWork.get() : nullptr);
                 if (contentRequested_.exchange(false))
                     VerifyContent(device.get(), context.get(), swap.get(), texture.get(), viewport, textureW, textureH, mode);
             }
@@ -499,7 +954,7 @@ private:
             HRESULT present = swap->Present(1, 0);
             check_hresult(present);
             double end = QpcMs();
-            if (fps_>0) nextPresent=std::max(nextPresent+std::chrono::microseconds(1000000/fps_),std::chrono::steady_clock::now());
+            if (paceFps>0) nextPresent=std::max(nextPresent+std::chrono::microseconds(1000000/paceFps),std::chrono::steady_clock::now());
             {
                 std::lock_guard guard(mutex_);
                 stats_.received += fresh ? 1 + drained : 0; stats_.superseded += drained;
@@ -523,7 +978,7 @@ private:
     }
     // Explicit diagnostic only: six 1-pixel CPU readbacks per request, never a per-frame path.
     void VerifyPixels(ID3D11Device* device, ID3D11DeviceContext* context, IDXGISwapChain1* swap,
-            ID3D11Texture2D* input, D3D11_VIEWPORT vp, int width, int height, int mode) {
+            ID3D11Texture2D* input, D3D11_VIEWPORT vp, int width, int height, int mode, const uint8_t* lut) {
         com_ptr<ID3D11Texture2D> output, staging;
         check_hresult(swap->GetBuffer(0, __uuidof(ID3D11Texture2D), output.put_void()));
         D3D11_TEXTURE2D_DESC td{}; td.Width = td.Height = td.MipLevels = td.ArraySize = td.SampleDesc.Count = 1;
@@ -546,8 +1001,21 @@ private:
             float c[]{static_cast<float>((ins[i]>>16)&255)/255,static_cast<float>((ins[i]>>8)&255)/255,static_cast<float>(ins[i]&255)/255,1};
             const float* rows[]{settings.r,settings.g,settings.b};
             for (int channel = 0; channel < 3; ++channel) {
-                float result = settings.offset[channel];
-                for (int j = 0; j < 4; ++j) result += c[j]*rows[channel][j];
+                float result = 0;
+                if (lut) {
+                    float fx=c[0]*31.f, fy=c[1]*31.f, fz=c[2]*31.f;
+                    int x0=static_cast<int>(fx), y0=static_cast<int>(fy), z0=static_cast<int>(fz);
+                    int x1=std::min(x0+1,31), y1=std::min(y0+1,31), z1=std::min(z0+1,31);
+                    float wx=fx-x0, wy=fy-y0, wz=fz-z0;
+                    for (int bz=0;bz<2;bz++) for (int gy=0;gy<2;gy++) for (int rx=0;rx<2;rx++) {
+                        int r=rx?x1:x0, g=gy?y1:y0, b=bz?z1:z0;
+                        float weight=(rx?wx:1-wx)*(gy?wy:1-wy)*(bz?wz:1-wz);
+                        result += weight * (lut[((b*32+g)*32+r)*4+channel]/255.f);
+                    }
+                } else {
+                    result = settings.offset[channel];
+                    for (int j = 0; j < 4; ++j) result += c[j]*rows[channel][j];
+                }
                 int expected = static_cast<int>(std::round(std::clamp(result,0.f,1.f)*255));
                 int actual = (outs[i] >> (16-8*channel)) & 255;
                 error = std::max(error,static_cast<uint32_t>(std::abs(expected-actual)));
@@ -666,17 +1134,19 @@ private:
     uint8_t* grabBuffer_=nullptr; uint32_t grabBufferSize_=0;
     uint32_t grabWidth_=0, grabHeight_=0; int grabResult_=0;
     Settings customSettings_{}; bool custom_=false; uint64_t settingsVersion_=0;
-    // lut-set-v1（加性 ABI 3）：宿主线程 SetLut/ClearLut 经 mutex_ 入库，工作线程按 lutVersion_
+    // lut-set-v1：宿主线程 SetLut/ClearLut 经 mutex_ 入库，工作线程按 lutVersion_
     // 惰性建/更 Texture3D（变更才上传，不逐帧）；ClearLut 只关断分支，GPU 纹理保留复用。
     static constexpr uint32_t LutSize = 32;
     static constexpr size_t LutBytes = static_cast<size_t>(LutSize)*LutSize*LutSize*4;
     uint8_t lutData_[LutBytes]{};
     bool lutEnabled_=false; uint64_t lutVersion_=0;
+    WeatherState weather_{}; WeatherCameraState weatherCamera_{}; uint64_t weatherVersion_=0;
+    AtmosphereState atmosphere_{}; uint64_t atmosphereVersion_=0;
+    WeatherStyleState weatherStyle_{}; AtmosphereStyleState atmosphereStyle_{};
 };
 }
 
-// 加性 ABI 3：新增 ProbeSetLut/ProbeClearLut（lut-set-v1 生产 LUT 路径），既有导出面不变。
-uint32_t __cdecl ProbeGetAbiVersion() { return 3; }
+uint32_t __cdecl ProbeGetAbiVersion() { return 4; }
 int __cdecl ProbeGetOutputSize(void* handle, int32_t* width, int32_t* height) {
     return handle && width && height && static_cast<Capture*>(handle)->OutputSize(*width,*height) ? 1 : 0;
 }
@@ -739,3 +1209,18 @@ int __cdecl ProbeSetLut(void* handle, const uint8_t* rgba) {
 }
 void __cdecl ProbeClearLut(void* handle) { if (handle) static_cast<Capture*>(handle)->ClearLut(); }
 void __cdecl ProbeSetActive(void* handle, int active) { if (handle) static_cast<Capture*>(handle)->Active(active!=0); }
+int __cdecl ProbeSetWeather(void* handle, int type, float intensity, int quality, uint32_t seed) {
+    return handle && static_cast<Capture*>(handle)->Weather(type,intensity,quality,seed) ? 1 : 0;
+}
+int __cdecl ProbeSetWeatherCamera(void* handle,float x,float y,float scale,float groundMin,float groundMax) {
+    return handle && static_cast<Capture*>(handle)->WeatherCamera(x,y,scale,groundMin,groundMax) ? 1 : 0;
+}
+int __cdecl ProbeSetAtmosphere(void* handle,int preset,const float* params) {
+    return handle && static_cast<Capture*>(handle)->Atmosphere(preset,params) ? 1 : 0;
+}
+int __cdecl ProbeSetAtmosphereStyle(void* handle,int family,const float* params) {
+    return handle && static_cast<Capture*>(handle)->AtmosphereStyle(family,params) ? 1 : 0;
+}
+int __cdecl ProbeSetWeatherStyle(void* handle,int type,int count,const float* params) {
+    return handle && static_cast<Capture*>(handle)->WeatherStyle(type,count,params) ? 1 : 0;
+}

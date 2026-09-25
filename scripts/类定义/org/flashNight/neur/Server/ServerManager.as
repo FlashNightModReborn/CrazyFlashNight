@@ -636,6 +636,13 @@ class org.flashNight.neur.Server.ServerManager {
             org.flashNight.arki.dialogue.NativeDialogueService.applyCaps(response.modes);
             return;
         }
+        // 每连接代由配套 Host 确认原生天气绘制；未确认时仅保留天气选择状态。
+        if (response.task == "weather_caps") {
+            org.flashNight.arki.render.WeatherParticleRenderer.setNativeEnabled(response.native === true);
+            org.flashNight.arki.weather.WorldLightingBridge.publish(
+                org.flashNight.arki.weather.WeatherSystem.getInstance(), true);
+            return;
+        }
 
         // Callback 路由：有 callId 的响应分发到注册的回调
         if (response.callId !== undefined) {
@@ -738,6 +745,7 @@ class org.flashNight.neur.Server.ServerManager {
         trace("XMLSocket connection closed");
         isSocketConnected = false;
         org.flashNight.arki.component.Effect.HitNumberBatchProcessor.setHostEnabled(false);
+        org.flashNight.arki.render.WeatherParticleRenderer.setNativeEnabled(false);
         // 先 retire 当前 source；旧 XMLSocket 排队的 onData/onClose 即使在新连接建立后
         // 才抵达，也会被 initXMLSocket closure 的对象身份门拒绝。
         xmlSocket = null;

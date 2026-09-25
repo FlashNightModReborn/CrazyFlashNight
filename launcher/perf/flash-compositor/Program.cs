@@ -1,7 +1,9 @@
 using System.Diagnostics;
+using System.Globalization;
 using System.Runtime.InteropServices;
 using System.Security.Cryptography;
 using System.Text.Json;
+using CF7Launcher.Guardian.WorldCompositor;
 
 namespace FlashCompositorProbe;
 
@@ -35,7 +37,9 @@ internal static class Program
 }
 
 internal sealed record Options(string Adapter, string Report, bool Auto, int PhaseSeconds, int Duration,
-    string? FlashExe, string? Swf, nint Hwnd, int Pid, string Topology, bool CaptureOutput, bool StallF, bool HoldFrames)
+    string? FlashExe, string? Swf, nint Hwnd, int Pid, string Topology, bool CaptureOutput, bool StallF, bool HoldFrames,
+    int WeatherType, float WeatherIntensity, float WeatherScale, float WeatherPanX, float WeatherPanY,
+    int AtmospherePreset, string? VisualPresets, string? LutSet)
 {
     internal static Options Parse(string[] args)
     {
@@ -43,7 +47,7 @@ internal sealed record Options(string Adapter, string Report, bool Auto, int Pha
         for (int i = 0; i < args.Length; ++i)
         {
             if (args[i] is "--auto" or "--capture-output" or "--stall-f" or "--debug-hold-frames") { values.Add(args[i], "true"); continue; }
-            if (!new[] { "--adapter", "--report", "--phase-seconds", "--duration", "--flash-exe", "--swf", "--hwnd", "--pid", "--topology" }.Contains(args[i]))
+            if (!new[] { "--adapter", "--report", "--phase-seconds", "--duration", "--flash-exe", "--swf", "--hwnd", "--pid", "--topology", "--weather", "--weather-intensity", "--weather-scale", "--weather-pan-x", "--weather-pan-y", "--atmosphere", "--visual-presets", "--lut-set" }.Contains(args[i]))
                 throw new ArgumentException("Unknown option: " + args[i]);
             if (++i == args.Length) throw new ArgumentException("Missing option value");
             values.Add(args[i-1], args[i]);
@@ -69,15 +73,44 @@ internal sealed record Options(string Adapter, string Report, bool Auto, int Pha
         if (topology == "embeddedF" && hwnd != 0) throw new ArgumentException("embeddedF requires a probe-owned source (fixture or --flash-exe); attached windows cannot be embedded");
         if (hwnd != 0 && values.ContainsKey("--auto")) throw new ArgumentException("Automatic window transitions only apply to a source owned by this probe");
         if (exe != null && (!File.Exists(exe) || !File.Exists(swf))) throw new ArgumentException("Flash executable/SWF missing");
+        int weatherType = values.GetValueOrDefault("--weather", "none") switch {
+            "none" => 0, "rain" => 1, "snow" => 2, "dust" => 3, "fog" => 4, "slash" => 5,
+            _ => throw new ArgumentException("weather must be none/rain/snow/dust/fog/slash")
+        };
+        float weatherIntensity = float.Parse(values.GetValueOrDefault("--weather-intensity",weatherType==0 ? "0" : "0.7"),CultureInfo.InvariantCulture);
+        if (!float.IsFinite(weatherIntensity) || weatherIntensity<0 || weatherIntensity>1)
+            throw new ArgumentException("weather intensity must be finite in [0,1]");
+        float weatherScale = float.Parse(values.GetValueOrDefault("--weather-scale","1"),CultureInfo.InvariantCulture);
+        if (!float.IsFinite(weatherScale) || weatherScale<0.25f || weatherScale>4f)
+            throw new ArgumentException("weather scale must be finite in [0.25,4]");
+        float panX = float.Parse(values.GetValueOrDefault("--weather-pan-x","0"),CultureInfo.InvariantCulture);
+        float panY = float.Parse(values.GetValueOrDefault("--weather-pan-y","0"),CultureInfo.InvariantCulture);
+        if (!float.IsFinite(panX) || !float.IsFinite(panY) || Math.Abs(panX)>500 || Math.Abs(panY)>500)
+            throw new ArgumentException("weather pan speed must be finite in [-500,500]");
+        int atmospherePreset = values.GetValueOrDefault("--atmosphere","none") switch {
+            "none"=>0, "alert"=>1, "medical"=>2, "industrial"=>3, "toxic"=>4,
+            "corrosion"=>5, "cold-iron"=>6, "ambush"=>7, "banquet"=>8,
+            "blood-moon"=>9, "incense"=>10, "custom"=>11,
+            _=>throw new ArgumentException("Unknown atmosphere preset")
+        };
+        string? visualPresets=values.GetValueOrDefault("--visual-presets");
+        if ((weatherType!=0 || atmospherePreset!=0) && visualPresets==null)
+            throw new ArgumentException("Visual preview requires --visual-presets");
+        if (visualPresets!=null) visualPresets=Path.GetFullPath(visualPresets);
+        string? lutSet=values.GetValueOrDefault("--lut-set");
+        if (lutSet!=null) lutSet=Path.GetFullPath(lutSet);
         return new(adapter, Path.GetFullPath(values.GetValueOrDefault("--report", "flash-compositor-report.json")),
             values.ContainsKey("--auto"), seconds, duration, exe == null ? null : Path.GetFullPath(exe),
-            swf == null ? null : Path.GetFullPath(swf), hwnd, pid, topology, captureOutput, stallF, holdFrames);
+            swf == null ? null : Path.GetFullPath(swf), hwnd, pid, topology, captureOutput, stallF, holdFrames,
+            weatherType, weatherIntensity, weatherScale, panX, panY, atmospherePreset, visualPresets, lutSet);
     }
 }
 
 internal sealed class ProbeForm : Form
 {
     private readonly Options options;
+    private string? visualCatalogSha;
+    private string? lutSetSha;
     private readonly Panel surface = new() { Dock = DockStyle.Fill, BackColor = Color.Black };
     private readonly Label status = new() { AutoSize = true, ForeColor = Color.White, Padding = new Padding(6) };
     private readonly System.Windows.Forms.Timer poll = new() { Interval = 250 };
@@ -260,6 +293,38 @@ internal sealed class ProbeForm : Form
         outputHwnd = player != null ? player.OutputSurface.Handle : surface.Handle;
         native = Native.ProbeStart(source, actualPid, outputHwnd, vendor);
         if (native == 0) throw new InvalidOperationException("Native capture initialization failed");
+        if (Native.ProbeGetAbiVersion()!=4) throw new InvalidOperationException("Native visual catalog ABI mismatch");
+        if (options.LutSet!=null)
+        {
+            var lut=WorldLutSet.Load(options.LutSet);
+            lutSetSha=lut.DataSha256;
+            if (Native.ProbeSetLut(native,lut.BlendLevel(7))!=1)
+                throw new InvalidOperationException("Native LUT preview state rejected");
+        }
+        WorldPresentationCatalog? catalog=options.VisualPresets==null ? null
+            : WorldPresentationCatalog.Load(options.VisualPresets);
+        visualCatalogSha=catalog?.Sha256;
+        if (options.WeatherType!=0)
+        {
+            WeatherLook look=catalog!.Weather(options.WeatherType);
+            if (Native.ProbeSetWeatherStyle(native,look.Type,look.Count,look.Tuning)!=1)
+                throw new InvalidOperationException("Native weather style rejected");
+        }
+        if (options.WeatherType!=0 && Native.ProbeSetWeather(native,options.WeatherType,options.WeatherIntensity,0,17)!=1)
+            throw new InvalidOperationException("Native weather preview state rejected");
+        if ((options.WeatherType!=0 || options.AtmospherePreset!=0)
+            && Native.ProbeSetWeatherCamera(native,0,0,options.WeatherScale,360,520)!=1)
+            throw new InvalidOperationException("Native weather camera preview state rejected");
+        if (options.AtmospherePreset is >0 and <11)
+        {
+            string[] names={"","警报","医疗警报","工业警报","毒气","腐蚀","寒铁","伏击","鸿门宴","血月","檀烟"};
+            AtmosphereLook look=catalog!.Atmosphere(names[options.AtmospherePreset]);
+            if (Native.ProbeSetAtmosphereStyle(native,look.Family,look.Tuning)!=1)
+                throw new InvalidOperationException("Native atmosphere style rejected");
+        }
+        if (options.AtmospherePreset!=0 && Native.ProbeSetAtmosphere(native,options.AtmospherePreset,
+            [0.8f,0.35f,0.2f,0.25f,0f,0f,2.4f,0.05f,0.2f,0f,0f,0f])!=1)
+            throw new InvalidOperationException("Native atmosphere preview state rejected");
         if (embeddedF && !options.CaptureOutput)
         {
             // WGC window content maps to the DWM extended frame bounds, so F's offset inside S's frame is the crop origin.
@@ -321,6 +386,10 @@ internal sealed class ProbeForm : Form
             latest = Native.Read(native);
             if (options.Topology == "embeddedF") contentStats = Native.ReadContent(native);
             double elapsed = clock.Elapsed.TotalSeconds;
+            if ((options.WeatherType!=0 || options.AtmospherePreset!=0) && (options.WeatherPanX!=0 || options.WeatherPanY!=0)
+                && Native.ProbeSetWeatherCamera(native,(float)(elapsed*options.WeatherPanX),
+                    (float)(elapsed*options.WeatherPanY),options.WeatherScale,360,520)!=1)
+                throw new InvalidOperationException("Native weather pan preview rejected");
             string phase = options.Auto ? plan[phaseIndex] : "interactive";
             double frameAge = latest.LastFrameQpcMs > 0 ? Stopwatch.GetTimestamp()*1000.0/Stopwatch.Frequency-latest.LastFrameQpcMs : 0;
             samples.Add(new { seconds = elapsed, phase, mode, frameAgeMs = frameAge, stats = latest });
@@ -679,6 +748,25 @@ internal sealed class ProbeForm : Form
     protected override void OnFormClosing(FormClosingEventArgs e)
     {
         poll.Stop();
+        string? atmosphereScreenshot=null;
+        if (options.AtmospherePreset!=0 && latest.Presented>0)
+        {
+            try
+            {
+                Control target=player?.OutputSurface ?? surface;
+                Rectangle area=target.RectangleToScreen(target.ClientRectangle);
+                if (area.Width>0 && area.Height>0)
+                {
+                    using var bitmap=new Bitmap(area.Width,area.Height);
+                    using var graphics=Graphics.FromImage(bitmap);
+                    graphics.CopyFromScreen(area.Location,Point.Empty,area.Size);
+                    atmosphereScreenshot=Path.ChangeExtension(options.Report,".png");
+                    Directory.CreateDirectory(Path.GetDirectoryName(atmosphereScreenshot)!);
+                    bitmap.Save(atmosphereScreenshot,System.Drawing.Imaging.ImageFormat.Png);
+                }
+            }
+            catch (Exception) { atmosphereScreenshot=null; }
+        }
         if (native != 0) { latest = Native.Read(native); if (options.Topology == "embeddedF") contentStats=Native.ReadContent(native); Native.ProbeStop(native); native = 0; }
         pAliveAtEnd = player != null && Native.IsWindow(player.Handle);
         occluder?.Close(); fixture?.Close(); player?.Close();
@@ -698,11 +786,11 @@ internal sealed class ProbeForm : Form
                 humanAcceptance = "NOT_PERFORMED", inputForwarding = "NOT_IMPLEMENTED", performanceBenefit = "NOT_ESTABLISHED",
                 failure, source = sourceIdentity,
                 grabCheck = new { attempted = grabAttempted, passed = grabPassed, width = grabWidth, height = grabHeight },
-                options = new { options.Adapter, options.Auto, options.PhaseSeconds, options.Duration }, os = Environment.OSVersion.ToString(),
+                options = new { options.Adapter, options.Auto, options.PhaseSeconds, options.Duration, options.WeatherType, options.WeatherIntensity, options.WeatherScale, options.WeatherPanX, options.WeatherPanY, options.AtmospherePreset, options.VisualPresets, options.LutSet }, os = Environment.OSVersion.ToString(),
                 binarySha256 = Hash(Environment.ProcessPath!), nativeSha256 = Hash(Path.Combine(AppContext.BaseDirectory, "FlashCompositorNative.dll")),
                 managedSha256 = Hash(typeof(Program).Assembly.Location),
                 metricsNote = "AgeMs is WGC timestamp-to-dequeue age, not input-to-photon latency; SubmitMs is CPU submission, not GPU execution. Auto mode requests 3 diagnostic proofs, 6 one-pixel CPU readbacks each. Interactive mode performs none.",
-                ownedFlashExitedNormally = flashExited, finalStats = latest, phases, samples
+                ownedFlashExitedNormally = flashExited, finalStats = latest, phases, samples, atmosphereScreenshot, visualCatalogSha, lutSetSha
             }
             : new {
                 schemaVersion = 1, scope = "capture-postprocess-prototype", deployed = false,
@@ -710,11 +798,11 @@ internal sealed class ProbeForm : Form
                 humanAcceptance = "NOT_PERFORMED", inputForwarding = "NOT_IMPLEMENTED", performanceBenefit = "NOT_ESTABLISHED",
                 failure, source = sourceIdentity,
                 grabCheck = new { attempted = grabAttempted, passed = grabPassed, width = grabWidth, height = grabHeight },
-                options = new { options.Adapter, options.Auto, options.PhaseSeconds, options.Duration, options.Topology, options.CaptureOutput, options.StallF, options.HoldFrames }, os = Environment.OSVersion.ToString(),
+                options = new { options.Adapter, options.Auto, options.PhaseSeconds, options.Duration, options.Topology, options.CaptureOutput, options.StallF, options.HoldFrames, options.WeatherType, options.WeatherIntensity, options.WeatherScale, options.WeatherPanX, options.WeatherPanY, options.AtmospherePreset, options.VisualPresets, options.LutSet }, os = Environment.OSVersion.ToString(),
                 binarySha256 = Hash(Environment.ProcessPath!), nativeSha256 = Hash(Path.Combine(AppContext.BaseDirectory, "FlashCompositorNative.dll")),
                 managedSha256 = Hash(typeof(Program).Assembly.Location),
                 metricsNote = "AgeMs is WGC timestamp-to-dequeue age, not input-to-photon latency; SubmitMs is CPU submission, not GPU execution. Each proof uses 6 one-pixel readbacks; explicit covered content proofs add 2 full-ROI readbacks. Interactive mode performs none.",
-                ownedFlashExitedNormally = flashExited, finalStats = latest, phases, samples,
+                ownedFlashExitedNormally = flashExited, finalStats = latest, phases, samples, atmosphereScreenshot, visualCatalogSha, lutSetSha,
                 topologyExperiment = new {
                     topology = options.Topology, captureOutputRequested = options.CaptureOutput,
                     captureHwnd = source.ToInt64(), outputHwnd = outputHwnd.ToInt64(),
@@ -878,7 +966,14 @@ internal static class Native
         return stats;
     }
     [DllImport("FlashCompositorNative", CallingConvention = CallingConvention.Cdecl)] internal static extern nint ProbeStart(nint source, uint sourcePid, nint output, uint vendor);
+    [DllImport("FlashCompositorNative", CallingConvention = CallingConvention.Cdecl)] internal static extern uint ProbeGetAbiVersion();
     [DllImport("FlashCompositorNative", CallingConvention = CallingConvention.Cdecl)] internal static extern void ProbeSetMode(nint handle, int mode);
+    [DllImport("FlashCompositorNative", CallingConvention = CallingConvention.Cdecl)] internal static extern int ProbeSetLut(nint handle,[In] byte[] rgba);
+    [DllImport("FlashCompositorNative", CallingConvention = CallingConvention.Cdecl)] internal static extern int ProbeSetWeather(nint handle,int type,float intensity,int quality,uint seed);
+    [DllImport("FlashCompositorNative", CallingConvention = CallingConvention.Cdecl)] internal static extern int ProbeSetWeatherCamera(nint handle,float x,float y,float scale,float groundMin,float groundMax);
+    [DllImport("FlashCompositorNative", CallingConvention = CallingConvention.Cdecl)] internal static extern int ProbeSetAtmosphere(nint handle,int preset,[In] float[] parameters);
+    [DllImport("FlashCompositorNative", CallingConvention = CallingConvention.Cdecl)] internal static extern int ProbeSetWeatherStyle(nint handle,int type,int count,[In] float[] parameters);
+    [DllImport("FlashCompositorNative", CallingConvention = CallingConvention.Cdecl)] internal static extern int ProbeSetAtmosphereStyle(nint handle,int family,[In] float[] parameters);
     [DllImport("FlashCompositorNative", CallingConvention = CallingConvention.Cdecl)] internal static extern int ProbeSetCrop(nint handle, int x, int y, int width, int height);
     [DllImport("FlashCompositorNative", CallingConvention = CallingConvention.Cdecl)] internal static extern void ProbeRequestProof(nint handle);
     [DllImport("FlashCompositorNative", CallingConvention = CallingConvention.Cdecl)] private static extern int ProbeGetStats(nint handle, ref Stats stats);

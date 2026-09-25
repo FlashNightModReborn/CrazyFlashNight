@@ -22,17 +22,22 @@ namespace CF7Launcher.Guardian.WorldCompositor
         // Dev-only LUT lab export; absent on older companion builds (grab reports unavailable).
         private readonly GrabDelegate _grab;
         // lut-set-v1 生产 LUT 路径（32^3 RGBA8 整块上传 + 清除回退矩阵）。
-        // 沿用上游加性 ABI 惯例（2026-09-25 统一输入底座）：导出集合增长不升 ABI 号，
+        // Additive exports require the paired native DLL.
         // 严格 Export 拒绝未配套旧 DLL（与 ProbeGetCaptureSize 同模式）。
         private readonly LutDelegate _lut;
         private readonly StopDelegate _clearLut;
+        private readonly WeatherDelegate _weather;
+        private readonly WeatherCameraDelegate _weatherCamera;
+        private readonly AtmosphereDelegate _atmosphere;
+        private readonly WeatherStyleDelegate _weatherStyle;
+        private readonly AtmosphereStyleDelegate _atmosphereStyle;
 
         internal NativeCompositorSession(string modulePath, IntPtr source, uint pid, IntPtr output, uint vendor = 0, bool borderless = false)
         {
             try
             {
                 _module = NativeLibrary.Load(Path.GetFullPath(modulePath));
-                if (Export<VersionDelegate>("ProbeGetAbiVersion")() != 3) throw new InvalidOperationException("Compositor ABI version mismatch");
+                if (Export<VersionDelegate>("ProbeGetAbiVersion")() != 4) throw new InvalidOperationException("Compositor ABI version mismatch");
                 _stop = Export<StopDelegate>("ProbeStop"); _read = Export<ReadDelegate>("ProbeGetStats");
                 _captureSize=Export<CaptureSizeDelegate>("ProbeGetCaptureSize"); // reject an old unpaired DLL
                 _crop = Export<CropDelegate>("ProbeSetCrop"); _mode = Export<ModeDelegate>("ProbeSetMode");
@@ -41,6 +46,11 @@ namespace CF7Launcher.Guardian.WorldCompositor
                 _holdViewport=Export<StopDelegate>("ProbeHoldViewport");
                 _grab=TryExport<GrabDelegate>("ProbeGrabLatestFrame");
                 _lut=Export<LutDelegate>("ProbeSetLut"); _clearLut=Export<StopDelegate>("ProbeClearLut");
+                _weather=Export<WeatherDelegate>("ProbeSetWeather"); // paired native presentation capability
+                _weatherCamera=Export<WeatherCameraDelegate>("ProbeSetWeatherCamera");
+                _atmosphere=Export<AtmosphereDelegate>("ProbeSetAtmosphere");
+                _weatherStyle=Export<WeatherStyleDelegate>("ProbeSetWeatherStyle");
+                _atmosphereStyle=Export<AtmosphereStyleDelegate>("ProbeSetAtmosphereStyle");
                 _session = Export<StartDelegate>("ProbeStartWorld")(source,pid,output,vendor,borderless ? 1 : 0);
                 if (_session == IntPtr.Zero) throw new InvalidOperationException("Compositor initialization failed");
             }
@@ -103,7 +113,7 @@ namespace CF7Launcher.Guardian.WorldCompositor
         internal void Sharpness(float value) { if (_sharpness(_session,value)!=1) throw new InvalidOperationException("Invalid sharpness"); }
         internal void Matrix(float[] values) { if (_matrix(_session,values)!=1) throw new InvalidOperationException("Invalid lighting matrix"); }
         // lut-set-v1：整块 32^3 RGBA8（131072 字节）上传并启用 LUT 路径；变更时才调用（勿逐帧）。
-        // 严格导出（加性 ABI 3 惯例）：未配套旧 DLL 在建会话时即拒绝。
+        // 严格导出：未配套 ABI 4 DLL 在建会话时即拒绝。
         internal void SetLut(byte[] rgba)
         {
             if (rgba==null || rgba.Length!=32768*4 || _lut(_session,rgba)!=1)
@@ -112,6 +122,34 @@ namespace CF7Launcher.Guardian.WorldCompositor
         internal void ClearLut() { if (_session!=IntPtr.Zero) _clearLut(_session); }
         internal void Active(bool active) { if (_session!=IntPtr.Zero) _active(_session,active ? 1 : 0); }
         internal void Mode(int mode) { if (_session != IntPtr.Zero) _mode(_session,mode); }
+        internal void Weather(int type,float intensity,int quality,uint seed)
+        {
+            if (_session == IntPtr.Zero || _weather(_session,type,intensity,quality,seed)!=1)
+                throw new InvalidOperationException("Invalid native weather state");
+        }
+        internal void WeatherCamera(float x,float y,float scale,float groundMin,float groundMax)
+        {
+            if (_session == IntPtr.Zero || _weatherCamera(_session,x,y,scale,groundMin,groundMax)!=1)
+                throw new InvalidOperationException("Invalid native weather camera");
+        }
+        internal void Atmosphere(int preset,float[] parameters)
+        {
+            if (_session==IntPtr.Zero || parameters==null || parameters.Length!=12
+                || _atmosphere(_session,preset,parameters)!=1)
+                throw new InvalidOperationException("Invalid native atmosphere state");
+        }
+        internal void WeatherStyle(int type,int count,float[] parameters)
+        {
+            if (_session==IntPtr.Zero || parameters==null || parameters.Length!=16
+                || _weatherStyle(_session,type,count,parameters)!=1)
+                throw new InvalidOperationException("Invalid native weather style");
+        }
+        internal void AtmosphereStyle(int family,float[] parameters)
+        {
+            if (_session==IntPtr.Zero || parameters==null || parameters.Length!=16
+                || _atmosphereStyle(_session,family,parameters)!=1)
+                throw new InvalidOperationException("Invalid native atmosphere style");
+        }
         public void Dispose()
         {
             if (_session != IntPtr.Zero) { _stop(_session); _session=IntPtr.Zero; }
@@ -144,5 +182,10 @@ namespace CF7Launcher.Guardian.WorldCompositor
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)] private delegate void ModeDelegate(IntPtr handle,int mode);
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)] private delegate int GrabDelegate(IntPtr handle,[In,Out] byte[] buffer,uint bufferSize,out uint width,out uint height);
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)] private delegate int LutDelegate(IntPtr handle,[In] byte[] rgba);
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)] private delegate int WeatherDelegate(IntPtr handle,int type,float intensity,int quality,uint seed);
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)] private delegate int WeatherCameraDelegate(IntPtr handle,float x,float y,float scale,float groundMin,float groundMax);
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)] private delegate int AtmosphereDelegate(IntPtr handle,int preset,[In] float[] parameters);
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)] private delegate int WeatherStyleDelegate(IntPtr handle,int type,int count,[In] float[] parameters);
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)] private delegate int AtmosphereStyleDelegate(IntPtr handle,int family,[In] float[] parameters);
     }
 }

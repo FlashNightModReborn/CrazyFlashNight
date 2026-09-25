@@ -105,6 +105,7 @@ namespace CF7Launcher.Guardian.HitNumbers
         internal long LedgerDroppedSegmentCountForTests => _ledger.DroppedSegmentCountForTests;
         internal int TotalTargetCountForTests => _totals.ActiveTargetCountForTests;
         internal HitNumberCamera CameraForTests => _camera;
+        internal HitNumberCamera Camera => _camera;
 
         internal HitNumberRuntimeSnapshot Configure(HitNumberRuntimeOptions options)
         {

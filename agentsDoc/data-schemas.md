@@ -63,7 +63,7 @@ var list:Array = XMLParser.configureDataAsArray(parsed.items);
 | `data/items/` | 物品配置 |
 | `data/units/` | 单位数据 |
 | `data/dialogues/` | 对话脚本 |
-| `data/environment/` | 环境设置 |
+| `data/environment/` | 场景、关卡环境与世界表现预设 |
 | `data/config/` | 运行时配置 |
 | `data/map/` | WebView 地图面板配置（`map_panel.xml` 单文件） |
 | `data/intelligence/` | 情报详情 legacy txt 文本；保留为 AS2 旧界面和 H5 迁移来源 |
@@ -78,7 +78,7 @@ var list:Array = XMLParser.configureDataAsArray(parsed.items);
 data/items/list.xml          → 引用 54 个物品分类文件 + item_sets.xml 套装中心表
 data/enemy_properties/list.xml → 引用 14 个敌人定义文件
 data/dialogues/list.xml       → 引用 16 个对话文件
-data/environment/             → scene_environment.xml、stage_environment.xml、color_engine_preset.xml
+data/environment/             → scene_environment.xml、stage_environment.xml、color_engine_preset.xml、presentation_presets.v1.json
 data/stages/                  → 按地点组织的关卡数据
 data/dictionaries/            → 材料/情报字典
 data/intelligence/            → 按情报名称存放的 legacy txt 正文

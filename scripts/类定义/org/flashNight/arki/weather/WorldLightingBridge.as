@@ -1,4 +1,6 @@
 ﻿/** Visual-only projection. Gameplay time, night vision and rewards stay in WeatherSystem. */
+import org.flashNight.arki.render.WeatherParticleRenderer;
+import org.flashNight.arki.render.GameWorldOverlayRenderer;
 class org.flashNight.arki.weather.WorldLightingBridge {
     private static var _sequence:Number = 0;
     private static var _scene:Number = 1;
@@ -66,11 +68,32 @@ class org.flashNight.arki.weather.WorldLightingBridge {
         if (values == null) return;
         neutralize(_root.gameworld);
         neutralize(_root.天空盒);
+        var weatherType:String = WeatherParticleRenderer.getWeatherType();
+        if (weatherType != "rain" && weatherType != "snow" && weatherType != "dust"
+                && weatherType != "fog" && weatherType != "slash") weatherType = "none";
+        var weatherIntensity:Number = WeatherParticleRenderer.getWeatherIntensity();
+        if (isNaN(weatherIntensity) || !isFinite(weatherIntensity) || weatherIntensity < 0) weatherIntensity = 0;
+        if (weatherIntensity > 1) weatherIntensity = 1;
+        var weatherQuality:Number = WeatherParticleRenderer.getPerformanceLevel();
+        if (isNaN(weatherQuality) || weatherQuality < 0 || weatherQuality > 3) weatherQuality = 3;
+        weatherQuality = Math.floor(weatherQuality);
+        // 仅投影旧雨花使用的 2.5D 地面带；无需逐粒子碰撞或复制碰撞箱。
+        var groundMin:Number = Number(_root.Ymin);
+        var groundMax:Number = Number(_root.Ymax);
+        if (isNaN(groundMin) || !isFinite(groundMin) || isNaN(groundMax)
+                || !isFinite(groundMax) || groundMax <= groundMin) {
+            groundMin = 360; groundMax = 520;
+        }
         var sent:Boolean = server.sendTaskToNode("world_lighting", {
             version:1, sequence:++_sequence, scene:_scene, ready:_ready,
             light:light, mode:_mode, parameters:values,
             paused:ws.pauseDayNightCycle === true, immediate:_snap,
-            sourceNeutral:true
+            sourceNeutral:true,
+            weatherNative:WeatherParticleRenderer.isNativeEnabled(),
+            weatherType:weatherType, weatherIntensity:weatherIntensity,
+            weatherQuality:weatherQuality,
+            weatherGroundMin:groundMin, weatherGroundMax:groundMax,
+            atmosphere:GameWorldOverlayRenderer.getState()
         }, null) === true;
         if (sent) { _lastSend = now; _snap=false; }
     }

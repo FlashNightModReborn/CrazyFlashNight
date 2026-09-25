@@ -1,0 +1,22 @@
+{
+  "version": 1,
+  "atmosphere": [
+    {"name":"警报","family":"alert","primary":[0.92,0.09,0.07],"secondary":[0.92,0.09,0.07],"base":0.06,"edge":0.10,"motion":0.10,"rate":2.1,"frequency":[0,0],"focus":[0.5,0.5],"falloff":0.68,"mix":0},
+    {"name":"医疗警报","family":"medical","primary":[0.12,0.78,0.86],"secondary":[0.95,0.16,0.40],"base":0.07,"edge":0.10,"motion":0.08,"rate":1.8,"frequency":[5,0],"focus":[0.25,0.85],"falloff":0.68,"mix":0},
+    {"name":"工业警报","family":"industrial","primary":[1,0.47,0.08],"secondary":[1,0.47,0.08],"base":0.06,"edge":0.13,"motion":0.08,"rate":1.1,"frequency":[0.006,0.004],"focus":[0.5,0.5],"falloff":0.68,"mix":0},
+    {"name":"毒气","family":"toxic","primary":[0.12,0.64,0.40],"secondary":[0.12,0.64,0.40],"base":0.05,"edge":0.19,"motion":0.04,"rate":0.6,"frequency":[0.008,0],"focus":[0.5,0.25],"falloff":1,"mix":0},
+    {"name":"腐蚀","family":"corrosion","primary":[0.76,0.83,0.12],"secondary":[0.76,0.83,0.12],"base":0.06,"edge":0.15,"motion":0.05,"rate":0.35,"frequency":[0.012,0.019],"focus":[0.5,0.35],"falloff":0.95,"mix":0},
+    {"name":"寒铁","family":"cold-iron","primary":[0.32,0.59,0.82],"secondary":[0.32,0.59,0.82],"base":0.07,"edge":0.11,"motion":0.09,"rate":0.055,"frequency":[0.0014,0],"focus":[0.5,0.5],"falloff":0.68,"mix":0},
+    {"name":"伏击","family":"ambush","primary":[0.12,0.30,0.55],"secondary":[0.12,0.30,0.55],"base":0.08,"edge":0.17,"motion":0.05,"rate":0,"frequency":[0,0],"focus":[0.42,0.38],"falloff":0.68,"mix":0},
+    {"name":"鸿门宴","family":"banquet","primary":[0.82,0.21,0.12],"secondary":[0.82,0.21,0.12],"base":0.04,"edge":0.13,"motion":0.03,"rate":2.1,"frequency":[0,0],"focus":[0.08,0.03],"falloff":0.75,"mix":0.07},
+    {"name":"血月","family":"blood-moon","primary":[0.70,0.08,0.16],"secondary":[0.70,0.08,0.16],"base":0.07,"edge":0.15,"motion":0.06,"rate":0,"frequency":[0,0],"focus":[0.5,0.5],"falloff":0.68,"mix":0},
+    {"name":"檀烟","family":"incense","primary":[0.70,0.41,0.23],"secondary":[0.70,0.41,0.23],"base":0.07,"edge":0.09,"motion":0.07,"rate":0.3,"frequency":[0.005,0.009],"focus":[0.5,0.5],"falloff":0.68,"mix":0}
+  ],
+  "weather": {
+    "rain": {"count":160,"primary":[0.33,0.43,0.60],"secondary":[0.78,0.86,0.98],"size":1,"alpha":1,"speed":1,"wind":1,"splashSize":1,"splashAlpha":1,"splashStart":0.72,"edgeFade":1},
+    "snow": {"count":400,"primary":[0.95,0.98,1],"secondary":[0.20,0.32,0.43],"size":1,"alpha":1,"speed":1,"wind":1,"splashSize":1,"splashAlpha":1,"splashStart":0.72,"edgeFade":1},
+    "dust": {"count":60,"primary":[0.667,0.533,0.267],"secondary":[0.667,0.533,0.267],"size":1,"alpha":1,"speed":1,"wind":1,"splashSize":1,"splashAlpha":1,"splashStart":0.72,"edgeFade":1},
+    "fog": {"count":55,"primary":[0.667,0.867,0.667],"secondary":[0.667,0.867,0.667],"size":1,"alpha":1,"speed":1,"wind":1,"splashSize":1,"splashAlpha":1,"splashStart":0.72,"edgeFade":1},
+    "slash": {"count":88,"primary":[0.33,0.43,0.60],"secondary":[0.78,0.86,0.98],"size":1,"alpha":1,"speed":1,"wind":1,"splashSize":1,"splashAlpha":1,"splashStart":0.72,"edgeFade":1}
+  }
+}

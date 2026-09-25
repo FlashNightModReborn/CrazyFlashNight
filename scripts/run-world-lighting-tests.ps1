@@ -8,7 +8,7 @@ $run=@{
  SuiteRelativePaths=@('scripts/类定义/org/flashNight/arki/weather/WorldLightingBridgeTest.as')
  SuiteFqns=@('org.flashNight.arki.weather.WorldLightingBridgeTest')
  AdditionalAsRelativePaths=@('scripts/类定义/org/flashNight/arki/weather/WorldLightingBridge.as')
- ExpectedTracePatterns=@('(?m)^WorldLightingBridgeTest Tests Passed: 12\r?$','(?m)^WorldLightingBridgeTest Tests Failed: 0\r?$')
+ ExpectedTracePatterns=@('(?m)^WorldLightingBridgeTest Tests Passed: 25\r?$','(?m)^WorldLightingBridgeTest Tests Failed: 0\r?$')
  SuccessSummary='World lighting projection tests passed'
  TimeoutSeconds=$TimeoutSeconds
 }

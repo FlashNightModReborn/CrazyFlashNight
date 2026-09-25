@@ -31,6 +31,7 @@ namespace CF7Launcher.Tasks
         private PerfDecisionEngine _decisionEngine; // 可空，Phase 1 之前为 null
         private CF7Launcher.Bus.XmlSocketServer _socket; // 用于 K 前缀推送
         private Action<string> _uiDataHandler; // combo hints → WebView2
+        internal Action<float,float,float> WeatherCameraObserved;
         private volatile bool _stopped;
 
         public FpsRingBuffer FpsBuffer { get { return _fpsBuffer; } }
@@ -126,11 +127,16 @@ namespace CF7Launcher.Tasks
             try
             {
                 HitNumberRuntimeSnapshot hitSnapshot;
+                HitNumberCamera weatherCamera;
                 lock (_hitNumberLock)
+                {
                     hitSnapshot = _hitNumberRuntime.ProcessFrame(
                         cam,
                         hn);
+                    weatherCamera = _hitNumberRuntime.Camera;
+                }
                 _overlay.UpdateFrame(hitSnapshot);
+                WeatherCameraObserved?.Invoke(weatherCamera.OffsetX,weatherCamera.OffsetY,weatherCamera.Scale);
 
                 // 搓招输入处理：解析 \x04 payload -> V8 -> K 前缀推送
                 if (!string.IsNullOrEmpty(inputPayload) && _socket != null)

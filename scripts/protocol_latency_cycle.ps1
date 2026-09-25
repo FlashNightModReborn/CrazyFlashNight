@@ -939,7 +939,7 @@ try {
             $item = Get-Item $FlashLog
             if ($item.LastWriteTimeUtc -gt $beforeTime -or $item.Length -gt $beforeLength) {
                 $raw = Get-Content -Raw -Encoding UTF8 $FlashLog
-                $lines = Get-ClosedBenchLines -RawText $raw -RunId $runId
+                $lines = @(Get-ClosedBenchLines -RawText $raw -RunId $runId)
                 if ($lines.Length -gt 0) {
                     $behaviorClosed = $true
                     Copy-Item $FlashLog $LocalFlashLog -Force

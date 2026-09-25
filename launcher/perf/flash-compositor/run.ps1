@@ -9,6 +9,14 @@ param(
     [switch]$CaptureOutput,
     [switch]$StallF,
     [switch]$DebugHoldFrames,
+    [ValidateSet('none','rain','snow','dust','fog','slash')][string]$Weather = 'none',
+    [ValidateRange(0,1)][double]$WeatherIntensity = 0.7,
+    [ValidateRange(0.25,4)][double]$WeatherScale = 1,
+    [ValidateRange(-500,500)][double]$WeatherPanX = 0,
+    [ValidateRange(-500,500)][double]$WeatherPanY = 0,
+    [ValidateSet('none','alert','medical','industrial','toxic','corrosion','cold-iron','ambush','banquet','blood-moon','incense','custom')][string]$Atmosphere = 'none',
+    [string]$VisualPresets,
+    [string]$LutSet,
     [string]$Report,
     [switch]$Build
 )
@@ -28,9 +36,25 @@ if (-not $Report) {
 }
 $arguments = @($dll, '--adapter', $Adapter, '--report', [IO.Path]::GetFullPath($Report), '--phase-seconds', [string]$PhaseSeconds, '--duration', [string]$Duration, '--topology', $Topology)
 if ($Auto) { $arguments += '--auto' }
+if ($LutSet) { $arguments += @('--lut-set', [IO.Path]::GetFullPath($LutSet)) }
 if ($CaptureOutput) { $arguments += '--capture-output' }
 if ($StallF) { $arguments += '--stall-f' }
 if ($DebugHoldFrames) { $arguments += '--debug-hold-frames' }
+if ($Weather -ne 'none') {
+    $arguments += @('--weather', $Weather, '--weather-intensity',
+        $WeatherIntensity.ToString('R', [Globalization.CultureInfo]::InvariantCulture))
+}
+if ($Weather -ne 'none' -or $Atmosphere -ne 'none') {
+    $arguments += @('--weather-scale',
+        $WeatherScale.ToString('R', [Globalization.CultureInfo]::InvariantCulture), '--weather-pan-x',
+        $WeatherPanX.ToString('R', [Globalization.CultureInfo]::InvariantCulture), '--weather-pan-y',
+        $WeatherPanY.ToString('R', [Globalization.CultureInfo]::InvariantCulture))
+}
+if ($Atmosphere -ne 'none') { $arguments += @('--atmosphere', $Atmosphere) }
+if ($Weather -ne 'none' -or $Atmosphere -ne 'none') {
+    if (-not $VisualPresets) { $VisualPresets = Join-Path $repo 'data\environment\presentation_presets.v1.json' }
+    $arguments += @('--visual-presets', [IO.Path]::GetFullPath($VisualPresets))
+}
 if ($Source -eq 'flash') {
     # Disposable legacy AS2 movie, not the main game and not a player save slot.
     $arguments += @('--flash-exe', (Join-Path $repo 'Adobe Flash Player 20.exe'), '--swf', (Join-Path $repo 'flashswf\movies\bigmovie1.swf'))

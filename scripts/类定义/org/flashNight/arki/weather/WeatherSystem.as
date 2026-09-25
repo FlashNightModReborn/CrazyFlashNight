@@ -175,10 +175,7 @@ class org.flashNight.arki.weather.WeatherSystem {
             bus.subscribe("SceneReady", this._onSceneReady, this);
             bus.subscribe("frameEnd", this._onVisualFrame, this);
 
-            // 初始化天气渲染器（订阅 frameEnd 实现逐帧更新）
-            WeatherParticleRenderer.initialize();
             SkyboxRenderer.initialize();
-            GameWorldOverlayRenderer.initialize();
         }
 
         var configLoader:WeatherSystemConfigLoader = WeatherSystemConfigLoader.getInstance();
@@ -360,7 +357,7 @@ class org.flashNight.arki.weather.WeatherSystem {
         var skyDisabled:Boolean = (this.spaceCondition == "室内") || (envInfo.禁用天空 == true);
         SkyboxRenderer.setSkyEnabled(!skyDisabled);
 
-        // ---- 天气粒子渲染器（室内外均可用） ----
+        // ---- 天气视觉状态投影（室内外均可用；AS2 不绘制粒子） ----
         // 优先使用 envInfo.粒子类型（显式指定，室内外通用）
         // 未指定时，室外从 天气情况 推导，室内默认关闭
         var particleType:String = envInfo.粒子类型;
@@ -382,7 +379,7 @@ class org.flashNight.arki.weather.WeatherSystem {
                 }
             }
         }
-        // 分发到粒子渲染器（_randomizeWeather 路径已自行处理，跳过）
+        // 分发天气选择（_randomizeWeather 路径已自行处理，跳过）
         if (particleType != undefined) {
             WeatherParticleRenderer.setWeather(particleType, particleIntensity);
         } else if (particleType == undefined && envInfo.允许随机天气 != true) {
@@ -390,18 +387,8 @@ class org.flashNight.arki.weather.WeatherSystem {
         }
 
         // ---- gameworld 色调叠加（室内外均可用） ----
-        var overlay:Object = envInfo.色调叠加;
-        if (overlay != undefined && overlay != null) {
-            GameWorldOverlayRenderer.setOverlay(overlay.r, overlay.g, overlay.b, overlay.alpha);
-            if (overlay.mode != undefined) {
-                GameWorldOverlayRenderer.setMode(overlay.mode);
-            }
-            if (overlay.pulse) {
-                GameWorldOverlayRenderer.setPulse(true, overlay.pulseSpeed, overlay.pulseMin, overlay.pulseMax);
-            }
-        } else {
-            GameWorldOverlayRenderer.clearOverlay();
-        }
+        // Pure presentation descriptor. All atmosphere drawing belongs to Host.
+        GameWorldOverlayRenderer.configure(envInfo.色调叠加, envInfo.氛围预设);
 
         // ---- 天空盒色调：设置目标值，逐帧 lerp 平滑过渡 ----
         if (!skyDisabled) {
@@ -516,20 +503,13 @@ class org.flashNight.arki.weather.WeatherSystem {
 
     /**
      * SceneReady 事件回调。
-     * 碰撞箱和场景元素就绪后，将地图边界传入粒子渲染器并激活。
+     * 场景就绪后发布原生天气与光照状态。
      */
     public function _onVisualFrame():Void { WorldLightingBridge.publish(this, false); }
 
     public function _onSceneReady():Void {
         WorldLightingBridge.sceneReady();
         WorldLightingBridge.publish(this, true);
-        var xmin:Number = _root.Xmin;
-        var xmax:Number = _root.Xmax;
-        var ymin:Number = _root.Ymin;
-        var ymax:Number = _root.Ymax;
-        if (!isNaN(xmin) && !isNaN(xmax) && !isNaN(ymin) && !isNaN(ymax)) {
-            WeatherParticleRenderer.activateWithBounds(xmin, xmax, ymin, ymax);
-        }
     }
 
     /**
@@ -542,7 +522,7 @@ class org.flashNight.arki.weather.WeatherSystem {
         // 场景切换时清除夜视仪注册，防止跨场景残留
         this._nightVisionMgr.clear();
 
-        // 清理天气渲染器状态
+        // 清理天气视觉状态
         WeatherParticleRenderer.dispose();
         SkyboxRenderer.dispose();
         GameWorldOverlayRenderer.dispose();

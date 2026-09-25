@@ -9,5 +9,9 @@
     <RestorePackagesWithLockFile>true</RestorePackagesWithLockFile>
     <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
   </PropertyGroup>
-  <ItemGroup><Compile Include="Program.cs" /></ItemGroup>
+  <ItemGroup>
+    <Compile Include="Program.cs" />
+    <Compile Include="../../src/Guardian/WorldCompositor/WorldPresentationCatalog.cs" Link="WorldPresentationCatalog.cs" />
+    <Compile Include="../../src/Guardian/WorldCompositor/WorldLutSet.cs" Link="WorldLutSet.cs" />
+  </ItemGroup>
 </Project>

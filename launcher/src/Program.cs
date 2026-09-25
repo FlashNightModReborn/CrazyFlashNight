@@ -1942,7 +1942,19 @@ class Program
         var worldLightingTask = new WorldLightingTask(
             dispatchToUi,
             worldCompositor.Adopt, worldCompositor.ResetSource);
+        frameTask.WeatherCameraObserved=worldCompositor.ObserveWeatherCamera;
         socketServer.OnClientDisconnected += worldLightingTask.Disconnected;
+        int weatherCapsGeneration=0;
+        socketServer.OnClientReadyForGeneration += generation =>
+            Volatile.Write(ref weatherCapsGeneration,generation);
+        socketServer.OnClientDisconnectedForGeneration += generation =>
+            Interlocked.CompareExchange(ref weatherCapsGeneration,0,generation);
+        worldCompositor.WeatherCapabilityChanged = available => {
+            int generation=Volatile.Read(ref weatherCapsGeneration);
+            return generation>0 && socketServer.TrySendIfGen(
+                available ? "{\"task\":\"weather_caps\",\"native\":true}\0"
+                          : "{\"task\":\"weather_caps\",\"native\":false}\0",generation);
+        };
 
         // LUT 实验室（dev 面板）：桥命令 lutlab.grabFrame/bakeXml 与 cf7-lutlab vhost 无条件注册
         //（刘海「其他 ▸ 工具」开发者领地，维护者裁决 2026-09-24 起无配置门控）。
