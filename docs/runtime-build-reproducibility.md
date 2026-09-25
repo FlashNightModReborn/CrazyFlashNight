@@ -976,3 +976,11 @@ Windows EOL materialization 是 historical v1 F 当时接受的非阻断 tooling
 帮助合成正式默认启用；C1/B1 实验不因此获得普通游戏输入资格。产品边界与人验见[交接记录](reports/统一输入-真实游戏帮助面板试点-2026-09-24.md)。不新发稳定整包，不将已获准的候选人验代签全部正式入口业务。最终运行身份以 manifest/consensus 机器真源为准。
 
 远端收尾：部署提交 `2a5c32eb4a0c995a0c205567aa4b6b2ea438d632` 已推送；[CI Audit 35996103622](https://github.com/FlashNightModReborn/CrazyFlashNight/actions/runs/35996103622) 成功，输出 `state=promoted / deploymentChanged=true`。这是发布链审计，不追加全游戏业务验收结论。
+
+### 2026-09-25 世界光照 LUT 化默认预设与 LUT 实验室发布
+
+经维护者明确授权，源码 `926035e8699034fc295cb44f2cec29cdfedd7b61` / `runtime-build-v2/20260925-world-lighting-lut-v3` 冻结 request `BCD3AA6B474DE4870A7C82E2869D0D2DC71C775C4D3BD3586F562E332DB1C470`。本机注册 X509 `physical-host-a` 与 [GitHub run 36111924666](https://github.com/FlashNightModReborn/CrazyFlashNight/actions/runs/36111924666) 独立生产同一 identity `FEFAAD206F4B87C25A4DC46991E16A3582044947BE60A92F0F47B6527A517AA0` / closure `793104769A56E38D441E844CA91499471F16FD15B66CDE393CFC9CDF0E769688`，strict v2 policy（policyHash `B518B91B7389704EEEACBC1EFCC58E03955946AE561CDCEC6A43BD54C85BE597`，receipt SHA-256 `362A656F31060FF7E7FAFCA9D3099165B2BA8072651F4DE893CC870F121B972F`）与唯一 writer 全链通过后 promotion。
+
+世界光照默认预设切换为 hardlight-dusk-v4 LUT 集合（原生 ABI 4 `lut-set-v1` 路径；夜视模式保持 legacy 矩阵；LUT 加载失败自动回退 legacy，人工回退为 `launcher/data/world-lighting/preset.json` 改回 version 1）。新增开发者 LUT 实验室面板。本列车 tag 演进 v1（`b6cf894b36`）→ v2（`56134e0a56`）→ v3（`926035e869`）均为发布准备修正，v1/v2 保持不可变且未部署，v3 为唯一生产标签。最终运行身份以 manifest/consensus 机器真源为准。
+
+远端收尾：部署提交 `2ebbc43bfe5e73f4c441cac1eb6063c171091e2a` 已推送；[CI Audit 36114221409](https://github.com/FlashNightModReborn/CrazyFlashNight/actions/runs/36114221409) 成功，输出 `state=promoted / deploymentChanged=true` 并重放 `signers=2 / faultDomains=2`。这是发布链审计，不追加全游戏业务验收结论；视觉人验记录于 LUT 实验室证据包（scratch 区，不入库）。
