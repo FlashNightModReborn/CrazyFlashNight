@@ -8,8 +8,12 @@ bin-release/
 
 # Other files and folders
 .settings/
+# `> nul` 在非 cmd shell 下会落成真实文件；Windows 保留名，永远不是源码
+nul
 
 # Native build intermediates
+launcher/native/world-compositor/**/bin/
+launcher/native/world-compositor/**/obj/
 *.obj
 *.exp
 *.lib

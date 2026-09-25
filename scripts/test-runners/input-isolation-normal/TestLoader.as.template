@@ -1,0 +1,3 @@
+﻿trace("FocusedTestRunId input-isolation-normal Start: __FOCUSED_RUN_ID__");
+org.flashNight.arki.input.IsolatedInputPolicyNormalTest.runAllTests();
+trace("FocusedTestRunId input-isolation-normal Complete: __FOCUSED_RUN_ID__");

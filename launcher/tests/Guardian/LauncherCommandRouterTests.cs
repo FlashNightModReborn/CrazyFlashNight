@@ -1239,9 +1239,12 @@ namespace CF7Launcher.Tests.Guardian
         {
             Capture timeoutCapture =
                 new Capture();
+            var timeoutNotice = new System.Threading.Tasks.TaskCompletionSource<bool>(System.Threading.Tasks.TaskCreationOptions.RunContinuationsAsynchronously);
             LauncherCommandRouter timeoutRouter =
                 MakeRouter(
-                    timeoutCapture);
+                    timeoutCapture, postObserved: message => {
+                        if (message.Contains("材料服务未就绪")) timeoutNotice.TrySetResult(true);
+                    });
             using var harnessTimeoutRouter = new HostHarness(timeoutRouter);
             timeoutRouter.MaterialPanelOpenTimeoutMs =
                 25;
@@ -1281,6 +1284,9 @@ namespace CF7Launcher.Tests.Guardian
                 timedOutId);
             Assert.Null(
                 harnessTimeoutRouter.Host.ActivePanelName);
+            // Retirement of the request precedes notification publication. Wait
+            // for the real notification before reading the worker-written list.
+            Assert.True(timeoutNotice.Task.Wait(TimeSpan.FromSeconds(2)));
             Assert.Contains(
                 timeoutCapture.Posts,
                 value => value.Contains(

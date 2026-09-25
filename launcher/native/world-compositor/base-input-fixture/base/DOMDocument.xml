@@ -1,0 +1,24 @@
+<DOMDocument xmlns="http://ns.adobe.com/xfl/2008/" width="1024" height="576" frameRate="30" currentTimeline="1" xflVersion="2.2" creatorInfo="Adobe Flash Professional CS6" platform="Windows" versionInfo="Saved by Adobe Flash Windows 12.0 build 481" majorVersion="12" buildNumber="481" viewAngle3D="50.6510299754819" tabOrderMode="relative" nextSceneIdentifier="2" playOptionsPlayLoop="false" playOptionsPlayPages="false" playOptionsPlayFrameActions="false" autoSaveHasPrompted="true">
+     
+     <symbols><Include href="BaseLibrary.xml" /><Include href="ActorLibrary.xml" /></symbols><timelines>
+          <DOMTimeline name="场景 1">
+               <layers>
+                    <DOMLayer name="图层 1" color="#4FFF4F" current="true" isSelected="true">
+                         <frames>
+                              <DOMFrame index="0" keyMode="9728">
+                                   <Actionscript>
+                                        <script>#include "BaseWorld.as"</script>
+                                   </Actionscript>
+                                   <elements><DOMSymbolInstance libraryItemName="BaseLibrary" name="library0"><matrix><Matrix tx="-10000" ty="-10000" /></matrix></DOMSymbolInstance><DOMSymbolInstance libraryItemName="ActorLibrary" name="library1"><matrix><Matrix tx="-10000" ty="-10000" /></matrix></DOMSymbolInstance></elements>
+                              </DOMFrame>
+                         </frames>
+                    </DOMLayer>
+               </layers>
+          </DOMTimeline>
+     </timelines>
+     <persistentData>
+          <PD n="TestMovieChecked" v="FlashPro" />
+          <PD n="DebugMovieChecked" v="FlashPro" />
+     </persistentData>
+     <PrinterSettings />
+     </DOMDocument>

@@ -1885,3 +1885,9 @@
         animation: none;
     }
 }
+
+/* World navigation follows the fallen-city camera, preserving original actions. */
+.stage-select-panel.is-diorama .stage-select-nav-button.is-diorama-nav {
+    transform: translate(-50%, -50%);
+    min-width: 0; height: 32px; min-height: 32px; padding: 5px 4px; font-size: 13px; line-height: 20px;
+}

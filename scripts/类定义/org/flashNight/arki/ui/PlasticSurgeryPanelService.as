@@ -5,6 +5,8 @@ import org.flashNight.arki.unit.UnitComponent.Dressup.LiveAppearanceUpdater;
 /** 医务室整形领域。一个 AS2 token 只接受一次身份写与扣费；保存重试不重放业务写。 */
 class org.flashNight.arki.ui.PlasticSurgeryPanelService {
     private static var _installed:Boolean = false;
+    private static var _draftOnly:Boolean = false;
+    private static var _draftContextOwner:Object = {};
     private static var _sequence:Number = 0;
     private static var _session:Object = null;
     private static var _last:Object = null;
@@ -19,6 +21,14 @@ class org.flashNight.arki.ui.PlasticSurgeryPanelService {
         _root.gameCommands["plasticSurgerySnapshot"] = function(params) { org.flashNight.arki.ui.PlasticSurgeryPanelService.handle("snapshot", params); };
         _root.gameCommands["plasticSurgeryCommit"] = function(params) { org.flashNight.arki.ui.PlasticSurgeryPanelService.handle("commit", params); };
         _root.gameCommands["plasticSurgeryQuery"] = function(params) { org.flashNight.arki.ui.PlasticSurgeryPanelService.handle("query", params); };
+    }
+
+    /** 仅专用冷启动入口在安装前锁定。普通 install、重置编辑 session 均不能重新授予写能力。 */
+    public static function installDraftOnly():Boolean {
+        if (_installed) return _draftOnly;
+        _draftOnly = true;
+        install();
+        return true;
     }
 
     public static function openPanel():Boolean {
@@ -36,6 +46,8 @@ class org.flashNight.arki.ui.PlasticSurgeryPanelService {
 
     public static function execute(command:String, params:Object):Object {
         if (command != "snapshot" && command != "commit" && command != "query") return fail("unsupported_cmd");
+        // 在 token/session、缓存成功与任何持久写之前拒绝直接调用和命令旁路。
+        if (command == "commit" && _draftOnly) return fail("read_only_capability");
         if (params == null || params.v !== 1) return fail("unsupported_version");
         if (command == "snapshot") return snapshot();
         if (typeof params.token != "string") return fail("invalid_payload");
@@ -63,17 +75,21 @@ class org.flashNight.arki.ui.PlasticSurgeryPanelService {
         if (invalid != "") return invalid;
         if (typeof _root.虚拟币 != "number" || isNaN(_root.虚拟币)
                 || _root.虚拟币 < 0 || _root.虚拟币 > 9007199254740991 || Math.floor(_root.虚拟币) != _root.虚拟币) return "invalid_balance";
-        if (typeof _root.存档系统.markDirty != "function"
-                || typeof _root.存档系统.flushDurableNow != "function") return "save_unavailable";
-        if (typeof _root.记录玩家货币变化 != "function") return "currency_unavailable";
+        if (!_draftOnly && (typeof _root.存档系统.markDirty != "function"
+                || typeof _root.存档系统.flushDurableNow != "function")) return "save_unavailable";
+        if (!_draftOnly && typeof _root.记录玩家货币变化 != "function") return "currency_unavailable";
         return "";
     }
 
     private static function sameContext():Boolean {
-        if (_session == null || _session.saveOwner !== _root.存档系统
+        if (_session == null || _session.saveOwner !== contextOwner()
                 || _session.slotKey !== String(_root.savePath)) return false;
         if (_session.phase == "save_pending") return CharacterIdentityRules.same(profile(), _session.draft);
         return _session.actor === _root.gameworld[_root.控制目标] && _session.world === _root.gameworld;
+    }
+
+    private static function contextOwner():Object {
+        return _draftOnly ? _draftContextOwner : _root.存档系统;
     }
 
     private static function snapshot():Object {
@@ -85,7 +101,7 @@ class org.flashNight.arki.ui.PlasticSurgeryPanelService {
         }
         _session = {
             token:"surgery." + getTimer() + "." + (++_sequence),
-            actor:_root.gameworld[_root.控制目标], world:_root.gameworld, saveOwner:_root.存档系统,
+            actor:_root.gameworld[_root.控制目标], world:_root.gameworld, saveOwner:contextOwner(),
             baseline:profile(), draft:profile(), phase:"editing", slotKey:String(_root.savePath)
         };
         return resultForSession("snapshot");

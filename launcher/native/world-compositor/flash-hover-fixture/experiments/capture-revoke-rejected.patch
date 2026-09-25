@@ -1,0 +1,119 @@
+--- a/InputBridge.cpp
++++ b/InputBridge.cpp
+@@ -19,7 +19,7 @@
+ UINT packetMessage=0;
+ POINT virtualPoint{};
+ UINT buttons=0, activeGesture=0;
+-bool enabled=false, captured=false;
++bool enabled=false, captured=false, revoking=false;
+ LONGLONG lastPaintTicks=0;
+ RECT lastPaintBounds{};
+ UINT lastEpoch=0, localFloor=0, controlMessage=0;
+@@ -59,7 +59,7 @@
+     WrapperScope invocation;
+     CursorProc fallback;
+     { ReadLock guard; fallback=realCursor;
+-      if(enabled && target) { if(!point)return FALSE; *point=virtualPoint; ClientToScreen(target,point);
++      if((enabled || revoking) && target) { if(!point)return FALSE; *point=virtualPoint; ClientToScreen(target,point);
+         if(traceState && GetCurrentThreadId()==targetThread && (lastCursorKind!=TraceCursorVirtual || GetTickCount()-lastCursorTrace>=250)) {
+             lastCursorKind=TraceCursorVirtual;lastCursorTrace=GetTickCount();Observe(TraceCursorVirtual,0,lastEpoch,0,virtualPoint);
+         }
+@@ -74,14 +74,14 @@
+ DWORD WINAPI Position() {
+     WrapperScope invocation;
+     PositionProc fallback;
+-    { ReadLock guard; fallback=realPosition; if(enabled && target) { POINT p=virtualPoint; ClientToScreen(target,&p); return MAKELONG(static_cast<WORD>(p.x),static_cast<WORD>(p.y)); } }
++    { ReadLock guard; fallback=realPosition; if((enabled || revoking) && target) { POINT p=virtualPoint; ClientToScreen(target,&p); return MAKELONG(static_cast<WORD>(p.x),static_cast<WORD>(p.y)); } }
+     return fallback();
+ }
+ SHORT KeyValue(int key,bool asynchronous) {
+     WrapperScope invocation;
+     KeyProc fallback;
+     { ReadLock guard; fallback=asynchronous ? realAsync : realKey;
+-      int mask=ButtonMask(key); if(enabled && mask) { if(shared)InterlockedIncrement(&shared->keyReads); return (buttons&mask) ? static_cast<SHORT>(0x8000) : 0; } }
++      int mask=ButtonMask(key); if((enabled || revoking) && mask) { if(shared)InterlockedIncrement(&shared->keyReads); return (buttons&mask) ? static_cast<SHORT>(0x8000) : 0; } }
+     return fallback(key);
+ }
+ SHORT WINAPI Async(int key) { return KeyValue(key,true); }
+@@ -98,25 +98,26 @@
+     UINT64 handle=reinterpret_cast<UINT64>(value);
+     TraceWrite(traceState,stage,static_cast<LONG>(call),lastEpoch,GetCurrentThreadId(),
+         POINT{static_cast<LONG>(handle),static_cast<LONG>(handle>>32)},buttons,
+-        (enabled?1:0)|(captured?2:0),realGetCapture());
++        (enabled?1:0)|(captured?2:0)|(revoking?4:0),realGetCapture());
+ }
+ HWND WINAPI Capture(HWND hwnd) {
+     WrapperScope invocation;CaptureProc fallback;
+     UINT call=BeginCaptureTrace();
+     { WriteLock guard; fallback=realCapture;CaptureTrace(14,call,hwnd);
++      if(revoking){CaptureTrace(15,call,nullptr);return nullptr;}
+       if(enabled && hwnd==target) {HWND previous=captured?target:nullptr;captured=true;CaptureTrace(15,call,previous);return previous;} }
+     HWND result=fallback(hwnd);{ReadLock guard;CaptureTrace(15,call,result);}return result;
+ }
+ HWND WINAPI GetCapture() {
+     WrapperScope invocation;GetCaptureProc fallback;
+     UINT call=BeginCaptureTrace();
+-    {ReadLock guard;fallback=realGetCapture;CaptureTrace(16,call,nullptr);if(enabled && captured){CaptureTrace(17,call,target);return target;}}
++    {ReadLock guard;fallback=realGetCapture;CaptureTrace(16,call,nullptr);if(revoking){CaptureTrace(17,call,nullptr);return nullptr;}if(enabled && captured){CaptureTrace(17,call,target);return target;}}
+     HWND result=fallback();{ReadLock guard;CaptureTrace(17,call,result);}return result;
+ }
+ BOOL WINAPI Release() {
+     WrapperScope invocation;ReleaseProc fallback;
+     UINT call=BeginCaptureTrace();
+-    {WriteLock guard;fallback=realRelease;CaptureTrace(18,call,nullptr);if(enabled){captured=false;CaptureTrace(19,call,reinterpret_cast<HWND>(1));return TRUE;}}
++    {WriteLock guard;fallback=realRelease;CaptureTrace(18,call,nullptr);if(enabled || revoking){captured=false;CaptureTrace(19,call,reinterpret_cast<HWND>(1));return TRUE;}}
+     BOOL result=fallback();{ReadLock guard;CaptureTrace(19,call,reinterpret_cast<HWND>(static_cast<INT_PTR>(result)));}return result;
+ }
+ 
+@@ -170,12 +171,14 @@
+     LONG ticket=ReadAtomic(&shared->cancelTicket);
+     if(ticket==ReadAtomic(&shared->cancelledTicket)) return;
+     Observe(20,0,lastEpoch,static_cast<UINT>(ReadAtomic(&captureOffThreadCalls)),POINT{enabled?1:0,captured?1:0});
+-    { WriteLock guard; enabled=false; buttons=0; captured=false; activeGesture=0; }
++    bool lostVirtual=false;
++    { WriteLock guard; lostVirtual=captured;revoking=true;virtualPoint={-1,-1};enabled=false; buttons=0; captured=false; activeGesture=0; }
+     InterlockedExchange(&shared->heldButtons,0);
+     if(reinterpret_cast<WNDPROC>(GetWindowLongPtrW(target,GWLP_WNDPROC))!=WindowProc) {
+         InterlockedExchange(&shared->restoreError,1);return; // original cancellation ownership is unconfirmed
+     }
+     Original(target,WM_CANCELMODE,0,0);
++    if(lostVirtual){Observe(21,0,lastEpoch,WM_CAPTURECHANGED);Original(target,WM_CAPTURECHANGED,0,0);Observe(22,0,lastEpoch,WM_CAPTURECHANGED);}
+     if(realGetCapture()==target)realRelease();
+     InterlockedExchange(&shared->cancelledTicket,ticket);
+     Observe(TraceCancel,0,ReadAtomic(&shared->issuedEpoch),WM_CANCELMODE);
+@@ -216,7 +219,7 @@
+     if(mapping)CloseHandle(mapping); mapping=nullptr;
+     if(traceState)UnmapViewOfFile(traceState);traceState=nullptr;
+     if(traceMapping)CloseHandle(traceMapping);traceMapping=nullptr;
+-    target=nullptr; originalProc=nullptr;
++    target=nullptr; originalProc=nullptr;revoking=false;
+     return true;
+ }
+ UINT PacketButtonBit(UINT type,UINT extra) {
+@@ -285,7 +288,7 @@
+         if(down) { if(bit && (buttons&bit)) InterlockedIncrement(&shared->duplicateDowns); activeGesture=1; SetFocus(hwnd); }
+         if((up && (!activeGesture || !(buttons&bit))) || (type==WM_CANCELMODE && !activeGesture && !buttons))
+             InterlockedIncrement(&shared->unownedReleases);
+-        { WriteLock guard; enabled=true; virtualPoint=point; buttons=flags&0x73; }
++        { WriteLock guard; revoking=false;enabled=true; virtualPoint=point; buttons=flags&0x73; }
+         InterlockedExchange(&shared->heldButtons,static_cast<LONG>(buttons));
+         WPARAM nativeFlags=flags;
+         LPARAM nativePosition=MAKELPARAM(static_cast<SHORT>(point.x),static_cast<SHORT>(point.y));
+@@ -356,7 +359,8 @@
+         Observe(TraceNativePointer,0,lastEpoch,message,virtualPoint);
+     }
+     if(message==WM_ENTERMENULOOP || message==WM_KILLFOCUS) {
+-        { WriteLock guard; enabled=false; buttons=0; captured=false; activeGesture=0; }
++        bool lostVirtual=false;
++        { WriteLock guard; lostVirtual=captured;revoking=true;virtualPoint={-1,-1};enabled=false; buttons=0; captured=false; activeGesture=0; }
+         if(shared) {
+             InterlockedExchange(&shared->heldButtons,0);
+             UINT issued=static_cast<UINT>(ReadAtomic(&shared->issuedEpoch));
+@@ -365,6 +369,7 @@
+             localFloor=std::max(localFloor,std::min(top+1,static_cast<UINT>(InputEpochLimit+2)));
+             Observe(TraceFocusLost,0,issued,message);
+         }
++        if(lostVirtual){Observe(21,0,lastEpoch,WM_CAPTURECHANGED);Original(hwnd,WM_CAPTURECHANGED,0,0);Observe(22,0,lastEpoch,WM_CAPTURECHANGED);}
+     }
+     if(enabled && message==WM_MOUSEMOVE)return 0;
+     LRESULT result=Original(hwnd,message,wp,lp);

@@ -73,6 +73,95 @@ namespace CF7Launcher.Tests.Guardian
         }
 
         [Fact]
+        public void PublicRestoreReportsFailureWhenRootMatchesButInnerFocusIsWrong()
+        {
+            // A0.2 反例：前台根已匹配（fg=FlashRoot）但 Flash 线程的 hwndFocus
+            // 落在非 Flash 子窗口——旧谓词（普通路径不查内部焦点）会误报成功。
+            var api = new FakeFocusApi
+            {
+                Foreground = GuardianIndicator,
+                Root = FlashRoot,
+                Focused = GuardianIndicator,
+                SetForegroundResult = true,
+                ForegroundAfterSet = FlashRoot
+            };
+            var manager = new WindowManager(api, Flash);
+
+            bool restored = manager.RestoreFlashInputFocus(
+                "test_public_root_ok_inner_wrong");
+
+            Assert.False(restored);
+            Assert.Equal(2, api.SetForegroundCallCount);
+        }
+
+        [Fact]
+        public void PublicRestoreReportsFailureWhenInnerFocusIsNone()
+        {
+            var api = new FakeFocusApi
+            {
+                Foreground = GuardianIndicator,
+                Root = FlashRoot,
+                Focused = IntPtr.Zero,
+                SetForegroundResult = true,
+                ForegroundAfterSet = FlashRoot
+            };
+            var manager = new WindowManager(api, Flash);
+
+            Assert.False(manager.RestoreFlashInputFocus("test_public_inner_none"));
+        }
+
+        [Fact]
+        public void PublicRestoreSucceedsWhenRootAndInnerFocusBothHeld()
+        {
+            var api = new FakeFocusApi
+            {
+                Foreground = GuardianIndicator,
+                Root = FlashRoot,
+                Focused = Flash,
+                SetForegroundResult = true,
+                ForegroundAfterSet = FlashRoot
+            };
+            var manager = new WindowManager(api, Flash);
+
+            Assert.True(manager.RestoreFlashInputFocus("test_public_inner_ok"));
+            Assert.Equal(1, api.SetForegroundCallCount);
+        }
+
+        [Fact]
+        public void InnerFocusOnFlashChildCountsAsHeld()
+        {
+            var flashChild = new IntPtr(0x1002);
+            var api = new FakeFocusApi
+            {
+                Foreground = GuardianIndicator,
+                Root = FlashRoot,
+                Focused = flashChild,
+                SetForegroundResult = true,
+                ForegroundAfterSet = FlashRoot
+            };
+            var manager = new WindowManager(api, Flash);
+
+            Assert.True(manager.RestoreFlashInputFocus("test_inner_flash_child"));
+        }
+
+        [Fact]
+        public void PublicRestoreToleratesSpuriousSetForegroundReturnFalse()
+        {
+            // 既有语义防回归：SFW 返回 false 但根匹配与内部焦点均成立时仍算成功。
+            var api = new FakeFocusApi
+            {
+                Foreground = GuardianIndicator,
+                Root = FlashRoot,
+                Focused = Flash,
+                SetForegroundResult = false,
+                ForegroundAfterSet = FlashRoot
+            };
+            var manager = new WindowManager(api, Flash);
+
+            Assert.True(manager.RestoreFlashInputFocus("test_sfw_false_but_held"));
+        }
+
+        [Fact]
         public void OtherGuardianChildInSharedRootIsNotAccepted()
         {
             var otherGuardianChild = new IntPtr(0x2002);
@@ -173,6 +262,21 @@ namespace CF7Launcher.Tests.Guardian
             Assert.Equal(0, api.AttachCallCount);
         }
 
+        [Fact] public void ExecutionClaimRevokedDuringFirstAttemptPreventsFocusAndFallback()
+        {
+            bool eligible=true;
+            var api=new FakeFocusApi { Root=FlashRoot,ForegroundAfterSet=GuardianIndicator,AfterSetForeground=()=>eligible=false };
+            var manager=new WindowManager(api,Flash);
+            Assert.False(manager.RestoreFlashInputFocus("late_claim",()=>eligible));
+            Assert.Equal(1,api.SetForegroundCallCount);
+            Assert.Equal(IntPtr.Zero,api.LastFocusTarget);Assert.Equal(0,api.AttachCallCount);
+        }
+        [Fact] public void MissingExecutionClaimMakesNoFocusCalls()
+        {
+            var api=new FakeFocusApi { Root=FlashRoot };var manager=new WindowManager(api,Flash);
+            Assert.False(manager.RestoreFlashInputFocus("no_claim",()=>false));
+            Assert.Equal(0,api.SetForegroundCallCount);Assert.Equal(IntPtr.Zero,api.LastFocusTarget);
+        }
         private sealed class FakeFocusApi
             : IFlashFocusWindowApi
         {

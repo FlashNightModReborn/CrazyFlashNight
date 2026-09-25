@@ -57,6 +57,7 @@ internal sealed class PlayerInfoSplitSurface :
     internal const string FixtureCaseEnvironment =
         "CF7_PLAYER_INFO_FIXTURE_CASE";
     private const int AnimationPollMilliseconds = 16;
+    private const uint SwpNoZOrder=0x0004, SwpNoOwnerZOrder=0x0200;
     internal Action<double, double, int, int>? RenderTimingObserver;
 
     private PlayerHudState? _liveState;
@@ -499,7 +500,7 @@ internal sealed class PlayerInfoSplitSurface :
         if (_tightPhysicalBounds != plan.TightPhysicalBounds)
         {
             _tightPhysicalBounds = plan.TightPhysicalBounds;
-            DismissOverlay();
+            FollowWithCommittedFrame(plan.TightPhysicalBounds);
         }
         try
         {
@@ -523,6 +524,24 @@ internal sealed class PlayerInfoSplitSurface :
                 ex.Message);
             DismissOverlay();
         }
+    }
+
+    private void FollowWithCommittedFrame(Rectangle desired)
+    {
+        if (!_shown || _committedSize.Width<=0 || _committedSize.Height<=0) return;
+        // Pure translation retains exactly the submitted DIB. During a size/DPI
+        // change retain that frame at the new bottom anchor until the new raster
+        // is committed. Invalid layout/suspend/teardown still dismiss normally.
+        var origin=new Point(desired.Left,desired.Bottom-_committedSize.Height);
+        if (origin==_committedOrigin) return;
+        if (SetWindowPos(Handle,IntPtr.Zero,origin.X,origin.Y,0,0,
+            SWP_NOSIZE|SwpNoZOrder|SWP_NOACTIVATE|SwpNoOwnerZOrder))
+        {
+            _committedOrigin=origin;
+            if(FocusTrace.Enabled) FocusTrace.Record("player_info.follow",
+                new { hwnd=Handle.ToInt64(), origin, retainedSize=_committedSize, desired });
+        }
+        else LogBestEffort("[PlayerInfoSplitSurface] retained-frame move failed nativeError="+Marshal.GetLastWin32Error());
     }
 
     protected override void OnOwnerVisibilityChanged(bool ownerVisible)

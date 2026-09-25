@@ -12,6 +12,7 @@ namespace CF7Launcher.Guardian
     public partial class NativeHudOverlay
     {
         private Func<Point, object> _focusInputProbe;
+        private IntPtr _focusHwnd;
         private int _focusInputThread;
         private long _focusPlacementGeneration, _focusPaintGeneration;
         private long _focusSubmittedPaint, _focusSubmittedPlacement, _focusLoggedPlacement = -1;
@@ -24,13 +25,20 @@ namespace CF7Launcher.Guardian
         {
             _focusInputThread = Thread.CurrentThread.ManagedThreadId;
             _focusInputProbe = CaptureFocusInput;
-            FocusTrace.HudInputSnapshot = _focusInputProbe;
+            // 以本实例 HWND 为键注册：多 HUD 共存时按归属取 probe，而不是抢占全局槽。
+            _focusHwnd = Handle;
+            FocusWindowSnapshot.RegisterHud(_focusHwnd,
+                _owner != null && _owner.IsHandleCreated ? _owner.Handle : IntPtr.Zero,
+                _focusInputProbe);
         }
 
         private void DisposeFocusInputProbe()
         {
-            if (ReferenceEquals(FocusTrace.HudInputSnapshot, _focusInputProbe))
-                FocusTrace.HudInputSnapshot = null;
+            if (_focusHwnd != IntPtr.Zero)
+            {
+                FocusWindowSnapshot.UnregisterHud(_focusHwnd);
+                _focusHwnd = IntPtr.Zero;
+            }
         }
 
         // 接收原提交的返回值；失败不重试、不改窗口或输入策略。
@@ -96,7 +104,7 @@ namespace CF7Launcher.Guardian
                 FocusTrace.Record("hud.native_hit_test", new {
                     receiver = Handle.ToInt64(), point, mouseId = corr.MouseId, correlation = corr,
                     widget = hit?.GetType().Name, result = result.ToInt64(),
-                    hudInput = FocusTrace.CaptureHudInput(point) });
+                    hudInput = FocusTrace.CaptureHudInput(Handle, point) });
             }
             catch { /* 不改变原始命中结果。 */ }
         }
@@ -120,8 +128,8 @@ namespace CF7Launcher.Guardian
                     hitTest = (short)(message.LParam.ToInt64() & 0xffff), point, pointSource = "GetMessagePos",
                     messageTime, inSendMessage = inSend,
                     mouseId = corr.MouseId, correlation = corr, result = message.Result.ToInt64(),
-                    windows = FocusWindowSnapshot.At(point),
-                    hudInput = FocusTrace.CaptureHudInput(point) });
+                    windows = FocusWindowSnapshot.At(point, message.HWnd),
+                    hudInput = FocusTrace.CaptureHudInput(message.HWnd, point) });
             }
             catch { /* 观察不能改变 MA_NOACTIVATE。 */ }
         }
@@ -168,8 +176,8 @@ namespace CF7Launcher.Guardian
                     inSendMessage = inSend,
                     mouseId = corr.MouseId, correlation = corr, result = message.Result.ToInt64(),
                     elapsedMs = (Stopwatch.GetTimestamp() - started) * 1000.0 / Stopwatch.Frequency,
-                    windows = phase == "enter" ? FocusWindowSnapshot.At(point) : null,
-                    hudInput = phase == "enter" ? FocusTrace.CaptureHudInput(point) : null
+                    windows = phase == "enter" ? FocusWindowSnapshot.At(point, message.HWnd) : null,
+                    hudInput = phase == "enter" ? FocusTrace.CaptureHudInput(message.HWnd, point) : null
                 });
             }
             catch { /* 观察不能吞掉或补发鼠标消息。 */ }

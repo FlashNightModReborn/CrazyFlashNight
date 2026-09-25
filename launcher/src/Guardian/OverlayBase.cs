@@ -180,6 +180,7 @@ namespace CF7Launcher.Guardian
             owner.Move += _ownerMoveHandler;
             owner.Resize += _ownerResizeHandler;
             anchor.Resize += _anchorResizeHandler;
+            anchor.LocationChanged += _anchorResizeHandler;
 
             // Owner 可见性跟踪
             _ownerActivatedHandler = delegate { OnOwnerActivated(); };
@@ -723,6 +724,7 @@ namespace CF7Launcher.Guardian
                 try { if (_owner != null && _ownerActivatedHandler != null) _owner.Activated -= _ownerActivatedHandler; } catch { }
                 try { if (_owner != null && _ownerDeactivateHandler != null) _owner.Deactivate -= _ownerDeactivateHandler; } catch { }
                 try { if (_anchor != null && _anchorResizeHandler != null) _anchor.Resize -= _anchorResizeHandler; } catch { }
+                try { if (_anchor != null && _anchorResizeHandler != null) _anchor.LocationChanged -= _anchorResizeHandler; } catch { }
             }
             base.Dispose(disposing);
         }

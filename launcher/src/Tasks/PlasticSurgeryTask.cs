@@ -28,7 +28,7 @@ namespace CF7Launcher.Tasks
             "unsupported_cmd", "unsupported_version", "invalid_payload", "invalid_character_name",
             "invalid_gender", "invalid_height", "invalid_balance", "actor_unavailable",
             "save_unavailable", "currency_unavailable", "stale_state", "no_change",
-            "insufficient_funds", "refresh_failed"
+            "insufficient_funds", "refresh_failed", "read_only_capability"
         };
         private static readonly HashSet<string> Slots = new HashSet<string>(StringComparer.Ordinal)
         {
@@ -43,13 +43,15 @@ namespace CF7Launcher.Tasks
         private JObject _frozenDraft;
         private bool _writePending;
         private bool _requiresQuery;
+        private readonly bool _draftOnly;
 
         public PlasticSurgeryTask(XmlSocketServer socket) : this(
             () => socket != null && socket.IsClientReady,
             payload => socket != null && socket.TrySend(payload)) { }
 
-        public PlasticSurgeryTask(Func<bool> isReady, Func<string, bool> trySend, int timeoutMs = 10000)
+        public PlasticSurgeryTask(Func<bool> isReady, Func<string, bool> trySend, int timeoutMs = 10000, bool draftOnly = false)
         {
+            _draftOnly = draftOnly;
             _pendingCalls = new PanelPendingCallTracker<PendingRequest>(isReady, payload =>
             {
                 try { return trySend != null && trySend(payload); }
@@ -73,6 +75,9 @@ namespace CF7Launcher.Tasks
             string action;
             bool isWrite;
             if (!TryResolveCommand(cmd, out action, out isWrite)) { RejectAndRemember(callId, cmd, "unsupported_cmd"); return; }
+            // Immutable per-task capability. C1-I cannot dispatch a paid write,
+            // even when a page sends commit directly or the button is visible.
+            if (isWrite && _draftOnly) { RejectAndRemember(callId, cmd, "read_only_capability"); return; }
             JObject normalized;
             if (!TryNormalizePayload(cmd, parsed["payload"] as JObject, out normalized)) { RejectAndRemember(callId, cmd, "invalid_payload"); return; }
             if (!_pendingCalls.IsReady()) { RejectAndRemember(callId, cmd, "disconnected"); return; }

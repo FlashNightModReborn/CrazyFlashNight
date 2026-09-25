@@ -42,7 +42,6 @@ namespace CF7Launcher.Diagnostic
         private static string _hitTestCandidateId;
         private static int _nativeHitTests;
         [ThreadStatic] private static int _snapshotDepth;
-        internal static Func<Point, object> HudInputSnapshot;
         // 测试时钟注入点：默认 null 时走真实 Environment.TickCount64；测试替换后必须还原。
         internal static Func<long> TickCount64Provider;
         [ThreadStatic] private static string _gesture;
@@ -292,7 +291,16 @@ namespace CF7Launcher.Diagnostic
             long foreground = 0;
             if (message == 0x0201)
             {
-                if (inTargetDown) { windows = FocusWindowSnapshot.At(point); hudInput = CaptureHudInput(point); }
+                if (inTargetDown)
+                {
+                    // hook 线程没有已证明的接收者：按命中点归属到注册表中的 HUD 实例；
+                    // 无法唯一归属时显式 unattributed，绝不退回"最后注册的 HUD"。
+                    FocusWindowSnapshot.HudAttribution attribution = FocusWindowSnapshot.AttributeHudAt(point);
+                    windows = FocusWindowSnapshot.At(point, attribution);
+                    hudInput = attribution.Registered
+                        ? CaptureHudInput(attribution.Hwnd, point)
+                        : (object)new { unavailable = "unattributed", via = attribution.Via };
+                }
                 else foreground = FocusWindowSnapshot.ForegroundHandle().ToInt64();
             }
             else
@@ -501,10 +509,12 @@ namespace CF7Launcher.Diagnostic
             return true;
         }
 
-        internal static object CaptureHudInput(Point point)
+        // 快照按 hwnd 归属到具体 HUD 实例：probe 只查注册表中该实例，
+        // 未注册/归属失败返回显式标记，不冒认其它 HUD。
+        internal static object CaptureHudInput(IntPtr hwnd, Point point)
         {
             if (!Enabled) return null;
-            try { return HudInputSnapshot?.Invoke(point); }
+            try { return FocusWindowSnapshot.CaptureHudInput(hwnd, point); }
             catch { return new { unavailable = "snapshot_failed" }; }
         }
 
@@ -523,9 +533,13 @@ namespace CF7Launcher.Diagnostic
         {
             string id = "hud." + Interlocked.Increment(ref _hudSequence);
             var corr = MatchGesture(point, PhaseDown, 0, false, AxisHud, true);
-            Record("hud.down", new { receiver = receiver.ToInt64(), widget, point,
+            // 本地消费归属：receiver 是实际收到 OnMouseDown 的表面，实例标识查注册表；
+            // 未注册时记 unknown，windows/hudInput 也只描述本实例，不读全局槽冒认。
+            string receiverInstance = FocusWindowSnapshot.HudInstance(receiver) ?? "unknown";
+            Record("hud.down", new { receiver = receiver.ToInt64(), receiverInstance, widget, point,
                 mouseId = corr.MouseId, correlation = corr.Kind, detail = corr,
-                windows = FocusWindowSnapshot.At(point) }, id);
+                windows = FocusWindowSnapshot.At(point, receiver),
+                hudInput = CaptureHudInput(receiver, point) }, id);
             return id;
         }
     }

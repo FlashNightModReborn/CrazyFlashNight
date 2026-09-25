@@ -11,6 +11,7 @@ namespace CF7Launcher.Guardian.WorldCompositor
         private IntPtr _module, _session;
         private readonly StopDelegate _stop;
         private readonly ReadDelegate _read;
+        private readonly CaptureSizeDelegate _captureSize;
         private readonly CropDelegate _crop;
         private readonly ModeDelegate _mode;
         private readonly MatrixDelegate _matrix;
@@ -33,6 +34,7 @@ namespace CF7Launcher.Guardian.WorldCompositor
                 _module = NativeLibrary.Load(Path.GetFullPath(modulePath));
                 if (Export<VersionDelegate>("ProbeGetAbiVersion")() != 3) throw new InvalidOperationException("Compositor ABI version mismatch");
                 _stop = Export<StopDelegate>("ProbeStop"); _read = Export<ReadDelegate>("ProbeGetStats");
+                _captureSize=Export<CaptureSizeDelegate>("ProbeGetCaptureSize"); // reject an old unpaired DLL
                 _crop = Export<CropDelegate>("ProbeSetCrop"); _mode = Export<ModeDelegate>("ProbeSetMode");
                 _matrix=Export<MatrixDelegate>("ProbeSetMatrix"); _active=Export<ActiveDelegate>("ProbeSetActive");
                 _viewport=Export<ViewportDelegate>("ProbeSetViewport"); _sharpness=Export<SharpnessDelegate>("ProbeSetSharpness");
@@ -74,6 +76,14 @@ namespace CF7Launcher.Guardian.WorldCompositor
             if (_session == IntPtr.Zero || _read(_session,ref value) != 1) throw new InvalidOperationException("Compositor stats unavailable");
             return value;
         }
+        internal System.Drawing.Size ReadCaptureSize()
+        {
+            if(_session==IntPtr.Zero || _captureSize(_session,out int width,out int height,out ulong generation)!=1)
+                throw new InvalidOperationException("Capture geometry unavailable");
+            CaptureGeneration=generation;
+            return new System.Drawing.Size(width,height);
+        }
+        internal ulong CaptureGeneration {get;private set;}
         internal void Crop(System.Drawing.Rectangle rect)
         {
             if (_session == IntPtr.Zero || _crop(_session,rect.X,rect.Y,rect.Width,rect.Height) != 1)
@@ -129,6 +139,7 @@ namespace CF7Launcher.Guardian.WorldCompositor
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)] private delegate IntPtr StartDelegate(IntPtr source,uint pid,IntPtr output,uint vendor,int borderless);
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)] private delegate void StopDelegate(IntPtr handle);
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)] private delegate int ReadDelegate(IntPtr handle,ref Stats stats);
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)] private delegate int CaptureSizeDelegate(IntPtr handle,out int width,out int height,out ulong generation);
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)] private delegate int CropDelegate(IntPtr handle,int x,int y,int width,int height);
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)] private delegate void ModeDelegate(IntPtr handle,int mode);
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)] private delegate int GrabDelegate(IntPtr handle,[In,Out] byte[] buffer,uint bufferSize,out uint width,out uint height);

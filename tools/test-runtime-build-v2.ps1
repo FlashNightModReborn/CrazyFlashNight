@@ -85,7 +85,7 @@ try {
         -not $repositoryRuntimeInputSet.Contains(('launcher/native/' + ([string]$_).Replace('\', '/')))
     })
     Assert-Equal 'every Audio v2 materialized native input enters the immutable runtime request bundle' 0 $missingAudioMaterializedInputs.Count
-    foreach ($worldInput in @('Compositor.cpp','Compositor.h','InputBridge.cpp','InputBridge.h','InputBroker.cpp','build.bat')) {
+    foreach ($worldInput in @('Compositor.cpp','Compositor.h','CompositionScene.cpp','CompositionScene.h','InputBridge.cpp','InputBridge.h','InputBroker.cpp','build.bat')) {
         Assert-Equal "world compositor input is bound to the immutable request: $worldInput" $true `
             $repositoryRuntimeInputSet.Contains('launcher/native/world-compositor/' + $worldInput)
     }

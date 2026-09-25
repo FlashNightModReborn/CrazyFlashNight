@@ -4,6 +4,9 @@ using System.Drawing.Imaging;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Reflection;
+using System.Runtime.InteropServices;
+using System.Diagnostics;
 using System.Threading;
 using System.Windows.Forms;
 using System.Xml.Linq;
@@ -11,6 +14,7 @@ using CF7Launcher.Fonts;
 using CF7Launcher.Guardian;
 using CF7Launcher.Guardian.Hud;
 using CF7Launcher.Guardian.Hud.PlayerInfo;
+using CF7Launcher.Guardian.Hud.Dialogue;
 using Newtonsoft.Json.Linq;
 using SkiaSharp;
 using Xunit;
@@ -178,6 +182,87 @@ public sealed class PlayerHudVisualTests
             controller.TakeUiData("pi:" + PlayerHudStateTests.Encode(packet));
             Assert.False(bottom.WantsAnimationTick);
         });
+    }
+
+    [Fact]
+    public void NativeDialogueReappearanceRestoresActualWindowOrderWithNoBuffs()
+    {
+        RunOnSta(()=>
+        {
+            RuntimeFontCatalog.Configure(FindRoot());
+            using var owner=new Form {ClientSize=new Size(1024,576),Location=new Point(-20000,-20000),StartPosition=FormStartPosition.Manual};
+            using var anchor=new Panel {Dock=DockStyle.Fill};owner.Controls.Add(anchor);owner.Show();
+            using var main=new NativeHudOverlay(owner,anchor);
+            var dialogue=new NativeDialogueWidget(anchor);main.AddWidget(dialogue);
+            var controller=new PlayerHudController(_=>true,()=>true,a=>a());
+            var packet=PlayerHudStateTests.Full();packet["groups"]["buffs"]=new JArray();
+            controller.TakeUiData("pi:"+PlayerHudStateTests.Encode(packet));
+            using var resources=PlayerInfoSplitSurface.CreateLive(owner,anchor,controller.State);
+            using var runtime=new PlayerHudRuntime(owner,anchor,resources,controller,Path.Combine(FindRoot(),"launcher","web","icons"),main);
+            var bottom=(NativeHudOverlay)typeof(PlayerHudRuntime).GetField("_bottom",BindingFlags.Instance|BindingFlags.NonPublic).GetValue(runtime);
+            var buffs=(NativeHudOverlay)typeof(PlayerHudRuntime).GetField("_buffs",BindingFlags.Instance|BindingFlags.NonPublic).GetValue(runtime);
+            main.SetReady();runtime.SetReady();
+            ShowDialogue("nd:stack1");
+            PumpUntil(()=>resources.Counters.CommitSuccessCount>0 && IsWindowVisible(main.Handle) && IsWindowVisible(bottom.Handle));
+            Assert.False(IsWindowVisible(buffs.Handle));
+            AssertAbove(main.Handle,resources.Handle);AssertAbove(resources.Handle,bottom.Handle);
+            // Deliberately disturb the relative stack while retaining foreground.
+            var foreground=GetForegroundWindow();
+            Assert.True(SetWindowPos(resources.Handle,IntPtr.Zero,0,0,0,0,0x0013|0x0200));
+            AssertAbove(resources.Handle,main.Handle);
+            main.Suspend();main.Resume();
+            PumpUntil(()=>IsWindowVisible(main.Handle));
+            AssertAbove(main.Handle,resources.Handle);AssertAbove(resources.Handle,bottom.Handle);
+            Assert.Equal(foreground,GetForegroundWindow());
+            owner.Location=new Point(-19700,-19800);
+            Assert.True(resources.Counters.Shown);AssertAbove(main.Handle,resources.Handle);
+            runtime.Suspend();Assert.False(resources.Counters.Shown);
+            runtime.Resume();PumpUntil(()=>resources.Counters.Shown);
+            AssertAbove(main.Handle,resources.Handle);AssertAbove(resources.Handle,bottom.Handle);
+            owner.ClientSize=new Size(1280,720);
+            Assert.True(resources.Counters.Shown);
+            PumpUntil(()=>resources.Size==resources.Counters.TightPhysicalBounds.Size);
+            AssertAbove(main.Handle,resources.Handle);AssertAbove(resources.Handle,bottom.Handle);
+            owner.WindowState=FormWindowState.Minimized;
+            Application.DoEvents();Assert.False(resources.Counters.Shown);
+            owner.WindowState=FormWindowState.Normal;owner.Activate();
+            PumpUntil(()=>resources.Counters.Shown && IsWindowVisible(main.Handle));
+            AssertAbove(main.Handle,resources.Handle);AssertAbove(resources.Handle,bottom.Handle);
+
+            void ShowDialogue(string id)=>dialogue.ShowFrame(new NativeDialogueFrame {RequestId=id,SceneId="stack-scene",Revision=1,LineCount=1,Name="测试",Title="",Text="对话层级测试",PortraitKey="",Expression="",ImageAction="keep",ImagePath=""});
+        });
+    }
+    private static void PumpUntil(Func<bool> done)
+    {
+        var wait=Stopwatch.StartNew();
+        while(!done() && wait.ElapsedMilliseconds<15000){Application.DoEvents();Thread.Sleep(10);}
+        Assert.True(done(),"native HUD presentation timed out");
+    }
+    private static void AssertAbove(IntPtr higher,IntPtr lower)
+    {
+        for(var h=GetWindow(lower,3);h!=IntPtr.Zero;h=GetWindow(h,3))if(h==higher)return;
+        Assert.Fail("Expected HWND "+higher+" above "+lower);
+    }
+    [DllImport("user32.dll")] private static extern IntPtr GetWindow(IntPtr hwnd,uint cmd);
+    [DllImport("user32.dll")] private static extern IntPtr GetForegroundWindow();
+    [DllImport("user32.dll")] private static extern bool IsWindowVisible(IntPtr hwnd);
+    [DllImport("user32.dll")] private static extern bool SetWindowPos(IntPtr hwnd,IntPtr after,int x,int y,int w,int h,uint flags);
+
+    [Fact]
+    public void HiddenBuffAndResourceWindowsNeverBecomeOrderingAnchors()
+    {
+        foreach(var hidden in new[]{new[]{2},new[]{3},new[]{2,3}})
+        {
+            var z=new List<int>{4,3,2,1}; // hidden HWNDs start ABOVE the dialogue HUD
+            var visible=new HashSet<int>(new[]{1,2,3,4}.Except(hidden));
+            PlayerHudRuntime.RestoreStack((IntPtr)1,(IntPtr)2,(IntPtr)3,(IntPtr)4,(window,previous)=>
+            {
+                int w=window.ToInt32();if(!visible.Contains(w))return false;
+                Assert.Contains(previous.ToInt32(),visible);
+                z.Remove(w);z.Insert(z.IndexOf(previous.ToInt32())+1,w);return true;
+            });
+            Assert.Equal(new[]{1,2,3,4}.Where(visible.Contains),z.Where(visible.Contains));
+        }
     }
 
     [Fact]

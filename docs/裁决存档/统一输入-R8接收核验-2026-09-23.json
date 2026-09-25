@@ -1,0 +1,193 @@
+{
+  "inputSha256": "2b0873601adb5754b4cf7d13cca68f929d5b6f8079fecf7156ac98224d4be13f",
+  "replySha256": "7cc206c141b69aa48150cb2e20a8ee0e6d67559aaab8a213f94d746635bbeda0",
+  "runtimeTestsExecuted": false,
+  "replyManifestMatched": [
+    "R8-证据核对.json",
+    "R8-路线审定-2026-09-23.md",
+    "R8-逐行证据摘录.md",
+    "README.md",
+    "audit_evidence.py"
+  ],
+  "inputManifestMatched": 85,
+  "currentCodeChecks": [
+    {
+      "path": "flashswf/levels/基地场景合集/LIBRARY/sprite/理发师/理发师-NPC.xml",
+      "matches": true
+    },
+    {
+      "path": "flashswf/levels/基地场景合集/LIBRARY/地图/医务室.xml",
+      "matches": true
+    },
+    {
+      "path": "launcher/native/world-compositor/Compositor.cpp",
+      "matches": true
+    },
+    {
+      "path": "launcher/native/world-compositor/Compositor.h",
+      "matches": true
+    },
+    {
+      "path": "launcher/native/world-compositor/InputBridge.cpp",
+      "matches": true
+    },
+    {
+      "path": "launcher/native/world-compositor/InputBridge.h",
+      "matches": true
+    },
+    {
+      "path": "launcher/native/world-compositor/InputBroker.cpp",
+      "matches": true
+    },
+    {
+      "path": "launcher/native/world-compositor/InputTrace.h",
+      "matches": true
+    },
+    {
+      "path": "launcher/native/world-compositor/flash-hover-fixture/.gitignore",
+      "matches": true
+    },
+    {
+      "path": "launcher/native/world-compositor/flash-hover-fixture/CooperativeHost.cs",
+      "matches": true
+    },
+    {
+      "path": "launcher/native/world-compositor/flash-hover-fixture/FlashHoverHost.csproj",
+      "matches": true
+    },
+    {
+      "path": "launcher/native/world-compositor/flash-hover-fixture/Program.cs",
+      "matches": true
+    },
+    {
+      "path": "launcher/native/world-compositor/flash-hover-fixture/README.md",
+      "matches": true
+    },
+    {
+      "path": "launcher/native/world-compositor/flash-hover-fixture/cooperative-child/CooperativeChild.as",
+      "matches": true
+    },
+    {
+      "path": "launcher/native/world-compositor/flash-hover-fixture/cooperative-child/CooperativeChild.xfl",
+      "matches": true
+    },
+    {
+      "path": "launcher/native/world-compositor/flash-hover-fixture/cooperative-child/DOMDocument.xml",
+      "matches": true
+    },
+    {
+      "path": "launcher/native/world-compositor/flash-hover-fixture/cooperative-child/PublishSettings.xml",
+      "matches": true
+    },
+    {
+      "path": "launcher/native/world-compositor/flash-hover-fixture/cooperative/CooperativeProbe.as",
+      "matches": true
+    },
+    {
+      "path": "launcher/native/world-compositor/flash-hover-fixture/cooperative/CooperativeProbe.xfl",
+      "matches": true
+    },
+    {
+      "path": "launcher/native/world-compositor/flash-hover-fixture/cooperative/DOMDocument.xml",
+      "matches": true
+    },
+    {
+      "path": "launcher/native/world-compositor/flash-hover-fixture/cooperative/PublishSettings.xml",
+      "matches": true
+    },
+    {
+      "path": "launcher/native/world-compositor/flash-hover-fixture/experiments/README.md",
+      "matches": true
+    },
+    {
+      "path": "launcher/native/world-compositor/flash-hover-fixture/experiments/capture-observation.patch",
+      "matches": true
+    },
+    {
+      "path": "launcher/native/world-compositor/flash-hover-fixture/experiments/capture-revoke-rejected.patch",
+      "matches": true
+    },
+    {
+      "path": "launcher/native/world-compositor/flash-hover-fixture/experiments/capture-sources.json",
+      "matches": true
+    },
+    {
+      "path": "launcher/native/world-compositor/flash-hover-fixture/movie/DOMDocument.xml",
+      "matches": true
+    },
+    {
+      "path": "launcher/native/world-compositor/flash-hover-fixture/movie/HoverProbe.as",
+      "matches": true
+    },
+    {
+      "path": "launcher/native/world-compositor/flash-hover-fixture/movie/HoverProbe.xfl",
+      "matches": true
+    },
+    {
+      "path": "launcher/native/world-compositor/flash-hover-fixture/movie/PublishSettings.xml",
+      "matches": true
+    },
+    {
+      "path": "launcher/native/world-compositor/flash-hover-fixture/run.ps1",
+      "matches": true
+    },
+    {
+      "path": "launcher/src/Guardian/LauncherCommandRouter.cs",
+      "matches": true
+    },
+    {
+      "path": "launcher/src/Guardian/PanelHostController.cs",
+      "matches": true
+    },
+    {
+      "path": "launcher/src/Guardian/WorldCompositor/NativePointerBridge.cs",
+      "matches": true
+    },
+    {
+      "path": "launcher/src/Guardian/WorldCompositor/WorldCompositionSurface.cs",
+      "matches": true
+    },
+    {
+      "path": "launcher/src/Guardian/WorldCompositor/WorldCompositorController.cs",
+      "matches": true
+    },
+    {
+      "path": "launcher/src/Guardian/WorldCompositor/WorldPointerMapper.cs",
+      "matches": true
+    },
+    {
+      "path": "scripts/展现/UI交互/UI交互_lsy_UI管理.as",
+      "matches": true
+    },
+    {
+      "path": "scripts/类定义/org/flashNight/arki/ui/PlasticSurgeryPanelService.as",
+      "matches": true
+    }
+  ],
+  "codeDrift": [],
+  "archiveFiles": [
+    {
+      "name": "R8-路线审定回包-2026-09-23.zip",
+      "sha256": "7cc206c141b69aa48150cb2e20a8ee0e6d67559aaab8a213f94d746635bbeda0"
+    },
+    {
+      "name": "R8-证据核对.json",
+      "sha256": "88323a5543ec04f293162059fcac5c7a3c4015ca703318ed42f341c6a3def027"
+    },
+    {
+      "name": "R8-路线审定-2026-09-23.md",
+      "sha256": "c8b3b4458856b46e4a35a95b69fea3262bc2245f59da8095fed54a197de34e45"
+    }
+  ],
+  "staticAuditRecomputed": true,
+  "auditJsonDifferences": {
+    "archive_name": {
+      "local": "统一输入-R8协作域与C1隔离裁决包.zip",
+      "reply": "统一输入-R8协作域与C1隔离裁决包(1).zip"
+    }
+  },
+  "sourceExcerptsEqualAfterNewlineNormalization": true,
+  "reviewedScript": "audit_evidence.py: standard-library ZIP/hash/log-only inspection; no network or execution/import of archive source; writes two named outputs in isolated tmp directory",
+  "sharedPage": "https://chatgpt.com/s/t_6ab3ce8100908191a582f6f4be0f2a4b",
+  "sharedPageContentAvailable": false
+}

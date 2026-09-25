@@ -967,3 +967,12 @@ Windows EOL materialization 是 historical v1 F 当时接受的非阻断 tooling
 本地签名 worker 首次构建因本机 Windows SDK 22621 的 `Windows.Devices.Sensors.h` 三处损坏字节而 fail closed，失败记录留在队列；将原件 SHA-256 备份后，用经 Microsoft 作者与 NuGet 仓库签名验证的官方 22621 同名头文件核对周边字节，只修复三个损坏位置，保留其余安装版本内容。随后同一冻结请求由真实本地 worker 重新编译并签名，正式 Core 字节与隔离验收候选完全一致；没有放宽 `/WX`、工具链锁或冒用失败尝试为证明。发布准备另同步修档字典排序、材料来源侧车与新增健身 CSS 导入的闭包清单，均以派生器和严格政策门复验，未扩张健身业务规则。
 
 [U4 卡片 #31](https://github.com/FlashNightModReborn/CrazyFlashNight/issues/31) 已按 `COMPLETED` 关闭；[关闭凭证](https://github.com/FlashNightModReborn/CrazyFlashNight/issues/31#issuecomment-5794930851) 记录验收范围与正式入口业务未复验边界。CFN 施工调度项目项已设为“完成”并归档，未关闭其父 Epic #19。
+
+
+### 2026-09-24 统一输入底座与帮助合成发布
+
+经维护者明确授权，源码 `d46d2219e147f663a5142c9c787cd027fa43d6aa` / `runtime-build-v2/20260924-unified-input-v1` 冻结 request `417A24A494788178150B2B17DEC8F509E2F2F125B1265960E8C6F0D0A3FA3B38`。本机注册 X509 builder-local-c 与 [GitHub run 35992145481](https://github.com/FlashNightModReborn/CrazyFlashNight/actions/runs/35992145481) 独立生产同一 identity `599D336D54638AA5D825E1EB5C79749B2CCB3946CD705171CF5DA2F9257A5D1E` / closure `94ECEBC3FDB7723E24B495947F694AD044A651C5A693D4E6DFE9DEF723B1A097`，strict v2 policy 与唯一 writer 全链通过后 promotion。工作区其他未跟踪文档保留，policy 使用受支持的 Index 模式核对与 immutable tree 完全一致的索引，并检查磁盘 tracked 内容未变。
+
+帮助合成正式默认启用；C1/B1 实验不因此获得普通游戏输入资格。产品边界与人验见[交接记录](reports/统一输入-真实游戏帮助面板试点-2026-09-24.md)。不新发稳定整包，不将已获准的候选人验代签全部正式入口业务。最终运行身份以 manifest/consensus 机器真源为准。
+
+远端收尾：部署提交 `2a5c32eb4a0c995a0c205567aa4b6b2ea438d632` 已推送；[CI Audit 35996103622](https://github.com/FlashNightModReborn/CrazyFlashNight/actions/runs/35996103622) 成功，输出 `state=promoted / deploymentChanged=true`。这是发布链审计，不追加全游戏业务验收结论。

@@ -134,7 +134,7 @@ async function main() {
         assert.equal(report.after30.textures, beforeIdle.textures);
         assert.equal(await page.locator('.stage-select-diorama-canvas').count(), 1);
         report.checks.push('30 opens keep one canvas and bounded geometry/texture cache');
-        await page.evaluate(() => StageSelectRenderer.setFrame('基地车库', 'qa'));
+        await page.evaluate(() => StageSelectRenderer.setFrame('地下2层', 'qa'));
         assert.equal(await page.evaluate(() => StageSelectDiorama.stats().active), false);
         assert.equal(await page.locator('.stage-select-diorama').isVisible(), false);
         await page.evaluate(() => StageSelectRenderer.setFrame('基地门口', 'qa'));

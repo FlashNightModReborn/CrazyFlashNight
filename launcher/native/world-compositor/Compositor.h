@@ -1,5 +1,6 @@
 #pragma once
 #include <windows.h>
+#include <unknwn.h>
 #include <cstdint>
 
 // Shared world-renderer / diagnostic harness C ABI. D3D/WinRT objects belong to the worker thread.
@@ -17,8 +18,17 @@ struct ProbeStats {
     wchar_t adapter[128];
     wchar_t message[256];
 };
+// Optional diagnostic extension; existing ABI 3 stats/layout are unchanged.
+struct ProbeContentStats {
+    uint32_t size, count, proofCount, width, height, maxRgbError;
+    uint64_t inputHash, outputHash;
+};
+static_assert(sizeof(ProbeContentStats)==40, "Diagnostic content layout");
 extern "C" {
 __declspec(dllexport) void* __cdecl ProbeStartWorld(HWND source, DWORD sourcePid, HWND output, uint32_t vendor, int borderless);
+// Candidate-only unified scene. Caller owns the visual's device/Commit and must
+// stop this capture before retiring its scene. Existing ABI 3 entry is unchanged.
+__declspec(dllexport) void* __cdecl ProbeStartVisual(HWND source, DWORD sourcePid, HWND output, IUnknown* visual);
 __declspec(dllexport) int __cdecl ProbeRequestBorderless();
 __declspec(dllexport) int __cdecl ProbeSetMatrix(void* handle, const float* settings);
 // lut-set-v1（加性 ABI 3，同上游 2026-09-25 统一输入底座惯例）：上传 32^3 RGBA8
@@ -39,6 +49,12 @@ __declspec(dllexport) void __cdecl ProbeRequestProof(void* handle);
 // 1 ok; 0 invalid argument; -1 no valid frame (inactive/occluded/minimized/pool not ready);
 // -2 buffer too small or size query (buffer=null), out dims filled; -3 busy; -4 worker timeout; -5 GPU readback failed.
 __declspec(dllexport) int __cdecl ProbeGrabLatestFrame(void* handle, uint8_t* buffer, uint32_t bufferSize, uint32_t* outWidth, uint32_t* outHeight);
+__declspec(dllexport) void __cdecl ProbeRequestContentProof(void* handle);
+__declspec(dllexport) int __cdecl ProbeGetContentStats(void* handle, ProbeContentStats* stats);
 __declspec(dllexport) int __cdecl ProbeGetStats(void* handle, ProbeStats* stats);
+// Additive ABI 3 capability. New paired hosts require actual WGC content size.
+__declspec(dllexport) int __cdecl ProbeGetCaptureSize(void* handle, int32_t* width, int32_t* height, uint64_t* generation);
+// Diagnostic scene geometry: dimensions of the last successfully presented output.
+__declspec(dllexport) int __cdecl ProbeGetOutputSize(void* handle, int32_t* width, int32_t* height);
 __declspec(dllexport) void __cdecl ProbeStop(void* handle);
 }

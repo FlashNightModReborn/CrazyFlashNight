@@ -113,7 +113,7 @@ internal sealed class PlayerHudState
         }
     }
 
-    private static PlayerHudVitals ReadVitals(JToken token)
+    internal static PlayerHudVitals ReadVitals(JToken token)
     {
         var o = Object(token);
         Keys(o, "hp", "mp", "shield", "shieldPresent", "shieldReady", "poise", "poiseDetail", "experience", "level", "name", "sp", "paused", "decorations");

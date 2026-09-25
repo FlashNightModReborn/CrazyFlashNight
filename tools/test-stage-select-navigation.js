@@ -71,7 +71,7 @@ async function main(){
         await page.getByRole('button',{name:'游览地点',exact:true}).click();await movingMode();await page.keyboard.press('Escape');
         assert.equal(await page.locator('.stage-focus-surface').isVisible(),true);
         await page.getByRole('button',{name:'返回总览',exact:true}).click();await idle();
-        await page.evaluate(()=>StageSelectRenderer.setFrame('基地车库','qa'));
+        await page.evaluate(()=>StageSelectRenderer.setFrame('地下2层','qa'));
         assert.equal(await page.locator('.stage-camera-toggle:visible').count(),0);
         assert.equal(await page.evaluate(()=>StageSelectHarnessHost.enterMessages.length),0);
         assert.deepEqual(errors,[]);report.checks.push('graphics loss/close retire movement; reopen remains idle; focused tour returns to detail; 2D hides unsupported tour; all navigation sends no stage-enter intent');report.pass=true;

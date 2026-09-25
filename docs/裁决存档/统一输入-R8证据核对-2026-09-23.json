@@ -1,0 +1,916 @@
+{
+  "audit_kind": "static_archive_hash_and_log_recount_not_runtime_test",
+  "archive_name": "统一输入-R8协作域与C1隔离裁决包(1).zip",
+  "archive_sha256": "2b0873601adb5754b4cf7d13cca68f929d5b6f8079fecf7156ac98224d4be13f",
+  "runtime_tests_executed_here": false,
+  "identity": {
+    "createdUtc": "2026-09-23T12:13:08.281786+00:00",
+    "head": "5c02a103603ca60ccadd62348fe83753838fb0ca",
+    "scope": "R8 experimental cancellation and C1 isolation review; dirty working tree; not deployment"
+  },
+  "manifest": {
+    "checked": 85,
+    "matched": 85,
+    "extra_entries": [],
+    "files": [
+      {
+        "path": "docs/reports/统一输入-R6悬停与取消边界-2026-09-23.md",
+        "bytes": 13517,
+        "sha256": "b5ccf6f384456dc9a4ae969dbbd6eb8bacaf4be358bc09c74b7ef6bfcf79cf7f",
+        "matches": true
+      },
+      {
+        "path": "docs/reports/统一输入-R8取消机制判定与协作域-2026-09-23.md",
+        "bytes": 11083,
+        "sha256": "c606113e1ef8cb4f14276c2b495233cdc441db2890a539a846291fc287714a3e",
+        "matches": true
+      },
+      {
+        "path": "docs/统一合成与输入归属-分阶段施工计划-2026-09-22.md",
+        "bytes": 42337,
+        "sha256": "7c884919be577bd3e64907a70e7f4fd9335590787f285a0c89de744786ef7c97",
+        "matches": true
+      },
+      {
+        "path": "docs/裁决存档/统一输入-R6取消边界-完整裁决-2026-09-23.md",
+        "bytes": 34322,
+        "sha256": "703badcd04954dc51aeb279f9b661e78698a185f633dc1e58d838cad2986562e",
+        "matches": true
+      },
+      {
+        "path": "flashswf/levels/基地场景合集/LIBRARY/sprite/理发师/理发师-NPC.xml",
+        "bytes": 2223,
+        "sha256": "2d3240f317a31f2bcb5ca6b75624f74b30e81bb37a63920f5f916fbf718169f8",
+        "matches": true
+      },
+      {
+        "path": "flashswf/levels/基地场景合集/LIBRARY/地图/医务室.xml",
+        "bytes": 7936,
+        "sha256": "8a23e2566bd9847baa4819942ae7ae9690209ae403f3ea8155d31048125bbf25",
+        "matches": true
+      },
+      {
+        "path": "launcher/native/world-compositor/Compositor.cpp",
+        "bytes": 36000,
+        "sha256": "c23f848ea6978bfe492fa47761294209952a39c8241b184be55f7bcbae7e42ca",
+        "matches": true
+      },
+      {
+        "path": "launcher/native/world-compositor/Compositor.h",
+        "bytes": 2449,
+        "sha256": "accaa2f3ac507f0ab532f4a3bbd9465659115002e66dbf291310c75c69eeab04",
+        "matches": true
+      },
+      {
+        "path": "launcher/native/world-compositor/InputBridge.cpp",
+        "bytes": 27843,
+        "sha256": "77a862c86fc107ed3d1f5873cd5da05cc45f26efa26a1c88448eb86d4da2d7c4",
+        "matches": true
+      },
+      {
+        "path": "launcher/native/world-compositor/InputBridge.h",
+        "bytes": 4844,
+        "sha256": "ee316069859db00bcb24d9a405e3ae5c03d602311e8c56eeae7d4a6db8c11e15",
+        "matches": true
+      },
+      {
+        "path": "launcher/native/world-compositor/InputBroker.cpp",
+        "bytes": 9660,
+        "sha256": "4e4469408c5b689ed365d7add1a7944094069fc7abad6a3d8d8acea4779e6a14",
+        "matches": true
+      },
+      {
+        "path": "launcher/native/world-compositor/InputTrace.h",
+        "bytes": 2689,
+        "sha256": "35f6a54277809e62341017e88e0af2860b1e042f4364854f7172940f324d87c8",
+        "matches": true
+      },
+      {
+        "path": "launcher/native/world-compositor/flash-hover-fixture/.gitignore",
+        "bytes": 107,
+        "sha256": "a554895e08e634ec169c24aec3653951e9610581a36bb933c1d29703cddc1932",
+        "matches": true
+      },
+      {
+        "path": "launcher/native/world-compositor/flash-hover-fixture/CooperativeHost.cs",
+        "bytes": 17069,
+        "sha256": "ad4f8495cc77f86dda4e3dc58271ff80459ec419b84da5bbedad5c1388500065",
+        "matches": true
+      },
+      {
+        "path": "launcher/native/world-compositor/flash-hover-fixture/FlashHoverHost.csproj",
+        "bytes": 2217,
+        "sha256": "18d67fbe43505e53ef5b57e16ab1d67c389c89397b77586e4821c6f4c7c5fc55",
+        "matches": true
+      },
+      {
+        "path": "launcher/native/world-compositor/flash-hover-fixture/Program.cs",
+        "bytes": 24506,
+        "sha256": "5cfe57917bad09809bf437bb2fa8d7b873b20062b916074eda6fc303113bb12f",
+        "matches": true
+      },
+      {
+        "path": "launcher/native/world-compositor/flash-hover-fixture/README.md",
+        "bytes": 6947,
+        "sha256": "7aecc2c4a62ae1dfd9903e0c14953e08a440a4f30f44c27f4a9f40d1edbacef7",
+        "matches": true
+      },
+      {
+        "path": "launcher/native/world-compositor/flash-hover-fixture/cooperative-child/CooperativeChild.as",
+        "bytes": 45,
+        "sha256": "cc2305101a5bee6bbbe6accb271eb21923323d0569648647c5af7f9237258ce8",
+        "matches": true
+      },
+      {
+        "path": "launcher/native/world-compositor/flash-hover-fixture/cooperative-child/CooperativeChild.xfl",
+        "bytes": 9,
+        "sha256": "29ac2e403620428ee4130686b456aefb0cc6d45e3be6e9c3191af906c1301f38",
+        "matches": true
+      },
+      {
+        "path": "launcher/native/world-compositor/flash-hover-fixture/cooperative-child/DOMDocument.xml",
+        "bytes": 2918,
+        "sha256": "67e7f3ee5eb7730c6e393e9807cefa5ad22de9f83f61095c1b05fc81c4da4f4a",
+        "matches": true
+      },
+      {
+        "path": "launcher/native/world-compositor/flash-hover-fixture/cooperative-child/PublishSettings.xml",
+        "bytes": 8318,
+        "sha256": "51881c9a15dc066128e3d6d802aa8aeafc64276cb71ff5b4198a07e8a047e93b",
+        "matches": true
+      },
+      {
+        "path": "launcher/native/world-compositor/flash-hover-fixture/cooperative/CooperativeProbe.as",
+        "bytes": 8455,
+        "sha256": "69b7bcfc33a4b9fba206048800023a55205b09cc83a1e4459cad910d8221d43c",
+        "matches": true
+      },
+      {
+        "path": "launcher/native/world-compositor/flash-hover-fixture/cooperative/CooperativeProbe.xfl",
+        "bytes": 9,
+        "sha256": "29ac2e403620428ee4130686b456aefb0cc6d45e3be6e9c3191af906c1301f38",
+        "matches": true
+      },
+      {
+        "path": "launcher/native/world-compositor/flash-hover-fixture/cooperative/DOMDocument.xml",
+        "bytes": 2918,
+        "sha256": "94025bd9aa8d1ca38a598d694479ceead8d3845f82fea038c30530bb0c8e1bf2",
+        "matches": true
+      },
+      {
+        "path": "launcher/native/world-compositor/flash-hover-fixture/cooperative/PublishSettings.xml",
+        "bytes": 8318,
+        "sha256": "c563a9d34f67fefa84fe55d3cb98d783b5ec6644b1c92026c535c8c51ad8dd24",
+        "matches": true
+      },
+      {
+        "path": "launcher/native/world-compositor/flash-hover-fixture/experiments/README.md",
+        "bytes": 2173,
+        "sha256": "a151c4c98f3f79a696c06b6bfd6193dad379a5be2d7eef8ef3cc7bd713ac1ffa",
+        "matches": true
+      },
+      {
+        "path": "launcher/native/world-compositor/flash-hover-fixture/experiments/capture-observation.patch",
+        "bytes": 4326,
+        "sha256": "99f5c91f6551020be898fa9099c37890584f6744a70606d152ddd7e0cb88ef46",
+        "matches": true
+      },
+      {
+        "path": "launcher/native/world-compositor/flash-hover-fixture/experiments/capture-revoke-rejected.patch",
+        "bytes": 7365,
+        "sha256": "5fbfd3e30303a40dc46a9a027e7bfafe773bb091d7bed47457fef13f3b5ddca0",
+        "matches": true
+      },
+      {
+        "path": "launcher/native/world-compositor/flash-hover-fixture/experiments/capture-sources.json",
+        "bytes": 1718,
+        "sha256": "f544979530d9e1c5f6b186e0ca111aa23f4cb240d9384c6f6b314a8dce2e0991",
+        "matches": true
+      },
+      {
+        "path": "launcher/native/world-compositor/flash-hover-fixture/movie/DOMDocument.xml",
+        "bytes": 2912,
+        "sha256": "992548793f90299e72d593cec04226e00a4864ee9c86901d6ec538a9707aad27",
+        "matches": true
+      },
+      {
+        "path": "launcher/native/world-compositor/flash-hover-fixture/movie/HoverProbe.as",
+        "bytes": 3825,
+        "sha256": "a54c73cdc8ab5c893460d8409e5f350ee55ae59f3a179c32733e119d001326c6",
+        "matches": true
+      },
+      {
+        "path": "launcher/native/world-compositor/flash-hover-fixture/movie/HoverProbe.xfl",
+        "bytes": 9,
+        "sha256": "29ac2e403620428ee4130686b456aefb0cc6d45e3be6e9c3191af906c1301f38",
+        "matches": true
+      },
+      {
+        "path": "launcher/native/world-compositor/flash-hover-fixture/movie/PublishSettings.xml",
+        "bytes": 8246,
+        "sha256": "bfd68e8f97c4dad7da77a89498b2e620072892064bfa778e52935eac482da45b",
+        "matches": true
+      },
+      {
+        "path": "launcher/native/world-compositor/flash-hover-fixture/run.ps1",
+        "bytes": 2424,
+        "sha256": "8d973fda7101380394748fdf18dba3dceafdaa7b5b984dc9311d9afe3e3334b9",
+        "matches": true
+      },
+      {
+        "path": "launcher/src/Guardian/LauncherCommandRouter.cs",
+        "bytes": 285610,
+        "sha256": "d92c9a61a3217a9170644ca049208946ed3108b7a356b24f9dab7f479741fd6c",
+        "matches": true
+      },
+      {
+        "path": "launcher/src/Guardian/PanelHostController.cs",
+        "bytes": 148309,
+        "sha256": "87b98d715befd79f3519a86f45b7d5eb2b3a0cd81bd3fbc7f4ce858fc99a2d63",
+        "matches": true
+      },
+      {
+        "path": "launcher/src/Guardian/WorldCompositor/NativePointerBridge.cs",
+        "bytes": 12908,
+        "sha256": "8accfc9d3215165c97463a8d20e74a750d5eca7767b440d08fbccde768f38ae9",
+        "matches": true
+      },
+      {
+        "path": "launcher/src/Guardian/WorldCompositor/WorldCompositionSurface.cs",
+        "bytes": 18706,
+        "sha256": "6a2c3aa5853f3dba35f675566891d38271eb7b05f9752b191cfdc9b37481e469",
+        "matches": true
+      },
+      {
+        "path": "launcher/src/Guardian/WorldCompositor/WorldCompositorController.cs",
+        "bytes": 27186,
+        "sha256": "24b20318e9aa70f156a3dce16aa682708da6de31350c06ce59271c3493d1e5ca",
+        "matches": true
+      },
+      {
+        "path": "launcher/src/Guardian/WorldCompositor/WorldPointerMapper.cs",
+        "bytes": 4685,
+        "sha256": "0ce9bb74b7ae5953febd6aae81fa4358baee0f141dbad77d33307c7429c175d9",
+        "matches": true
+      },
+      {
+        "path": "scripts/展现/UI交互/UI交互_lsy_UI管理.as",
+        "bytes": 15779,
+        "sha256": "7b86bebc095228124c776e471fe176a74fc329e7a0f6ea4b6c0c4899af6843f3",
+        "matches": true
+      },
+      {
+        "path": "scripts/类定义/org/flashNight/arki/ui/PlasticSurgeryPanelService.as",
+        "bytes": 11350,
+        "sha256": "a9fbf27bdc9bf639e97521a36f11ab4d9ac9546f863f204b2c6bd5ac4fd2f3e4",
+        "matches": true
+      },
+      {
+        "path": "tmp/r8-capture-baseline/evidence/as2.jsonl",
+        "bytes": 224941,
+        "sha256": "788a09e5eac6b9d0b567c3572e85b7322bcb70530dfb68c5b3d00251be6ff6f3",
+        "matches": true
+      },
+      {
+        "path": "tmp/r8-capture-baseline/evidence/host.log",
+        "bytes": 85589,
+        "sha256": "a0917806fe8132ef188a3bd32c839842b98e457f3e8369515b91a289f4f98d50",
+        "matches": true
+      },
+      {
+        "path": "tmp/r8-capture-baseline/evidence/identity.json",
+        "bytes": 341,
+        "sha256": "2dd6254cb2b8fc17fdf4334809e223fc8d8e84c1b426bccef042ecb60537936a",
+        "matches": true
+      },
+      {
+        "path": "tmp/r8-capture-baseline/evidence/summary.json",
+        "bytes": 5411,
+        "sha256": "2bfd90d504d52b413f4778a1f8f70b05f883e0364a109eb5c183284e5ca78bdd",
+        "matches": true
+      },
+      {
+        "path": "tmp/r8-capture-baseline/source/Compositor.cpp",
+        "bytes": 36000,
+        "sha256": "c23f848ea6978bfe492fa47761294209952a39c8241b184be55f7bcbae7e42ca",
+        "matches": true
+      },
+      {
+        "path": "tmp/r8-capture-baseline/source/Compositor.h",
+        "bytes": 2449,
+        "sha256": "accaa2f3ac507f0ab532f4a3bbd9465659115002e66dbf291310c75c69eeab04",
+        "matches": true
+      },
+      {
+        "path": "tmp/r8-capture-baseline/source/InputBridge.cpp",
+        "bytes": 29194,
+        "sha256": "1b299f91d1cb05ebbfa7c3317eeb299733e82b9c14acdd7894b2f20a16c88ec1",
+        "matches": true
+      },
+      {
+        "path": "tmp/r8-capture-baseline/source/InputBridge.h",
+        "bytes": 4844,
+        "sha256": "ee316069859db00bcb24d9a405e3ae5c03d602311e8c56eeae7d4a6db8c11e15",
+        "matches": true
+      },
+      {
+        "path": "tmp/r8-capture-baseline/source/InputBroker.cpp",
+        "bytes": 10289,
+        "sha256": "78c760efc0b0e52f10aefe44e215d3d483ea253f5da5757ae953ddf5ed69498a",
+        "matches": true
+      },
+      {
+        "path": "tmp/r8-capture-baseline/source/InputTrace.h",
+        "bytes": 2689,
+        "sha256": "35f6a54277809e62341017e88e0af2860b1e042f4364854f7172940f324d87c8",
+        "matches": true
+      },
+      {
+        "path": "tmp/r8-capture-candidate/evidence-foreground/as2.jsonl",
+        "bytes": 332926,
+        "sha256": "866233c3765006799effca8f2816d5301c84ce7283610942514d2e412edbdb65",
+        "matches": true
+      },
+      {
+        "path": "tmp/r8-capture-candidate/evidence-foreground/host.log",
+        "bytes": 112578,
+        "sha256": "e82cd81fd6cbb33593bde452f326665fcd87d7cc7e71eb7a04352e1b921580f1",
+        "matches": true
+      },
+      {
+        "path": "tmp/r8-capture-candidate/evidence-foreground/identity.json",
+        "bytes": 403,
+        "sha256": "9ab2ccfd8f610eb0fb1e52fb19fcce7b2e5d5e2906bff707ae07964078a94236",
+        "matches": true
+      },
+      {
+        "path": "tmp/r8-capture-candidate/evidence-foreground/summary.json",
+        "bytes": 12546,
+        "sha256": "c08b04510c5a1e352a6af0d712a7f59de5f186640d79a54db3d8b24b60c14d5b",
+        "matches": true
+      },
+      {
+        "path": "tmp/r8-capture-candidate/source/Compositor.cpp",
+        "bytes": 36000,
+        "sha256": "c23f848ea6978bfe492fa47761294209952a39c8241b184be55f7bcbae7e42ca",
+        "matches": true
+      },
+      {
+        "path": "tmp/r8-capture-candidate/source/Compositor.h",
+        "bytes": 2449,
+        "sha256": "accaa2f3ac507f0ab532f4a3bbd9465659115002e66dbf291310c75c69eeab04",
+        "matches": true
+      },
+      {
+        "path": "tmp/r8-capture-candidate/source/InputBridge.cpp",
+        "bytes": 29903,
+        "sha256": "e8568b802f8f7ca2445c90bb93e3a322ba6cfb222b8af1264535736cfaf3e530",
+        "matches": true
+      },
+      {
+        "path": "tmp/r8-capture-candidate/source/InputBridge.h",
+        "bytes": 4844,
+        "sha256": "ee316069859db00bcb24d9a405e3ae5c03d602311e8c56eeae7d4a6db8c11e15",
+        "matches": true
+      },
+      {
+        "path": "tmp/r8-capture-candidate/source/InputBroker.cpp",
+        "bytes": 10289,
+        "sha256": "78c760efc0b0e52f10aefe44e215d3d483ea253f5da5757ae953ddf5ed69498a",
+        "matches": true
+      },
+      {
+        "path": "tmp/r8-capture-candidate/source/InputTrace.h",
+        "bytes": 2689,
+        "sha256": "35f6a54277809e62341017e88e0af2860b1e042f4364854f7172940f324d87c8",
+        "matches": true
+      },
+      {
+        "path": "tmp/r8-cooperative-child-compile.log",
+        "bytes": 1285,
+        "sha256": "7a454ab53e2aa291279f64236738c2e09ed34d4c713e2029b48ca50eee37744a",
+        "matches": true
+      },
+      {
+        "path": "tmp/r8-cooperative-child-compiler.txt",
+        "bytes": 27,
+        "sha256": "6d64657e843cfa06c243b6b51f8732c1b5910ebd29940aa7f6f9342b38034fd3",
+        "matches": true
+      },
+      {
+        "path": "tmp/r8-cooperative-final-build.log",
+        "bytes": 332,
+        "sha256": "fd1f3187f64831856b6dda0963339f23f5002fce785ef91bae3dfee18fdf1acb",
+        "matches": true
+      },
+      {
+        "path": "tmp/r8-cooperative-final-compile.log",
+        "bytes": 1263,
+        "sha256": "9c84b6527cdec9bc0c53ca3a3ec26480503ca4b8c7b7ac82f18a857683cb91e0",
+        "matches": true
+      },
+      {
+        "path": "tmp/r8-cooperative-final-compiler.txt",
+        "bytes": 27,
+        "sha256": "6d64657e843cfa06c243b6b51f8732c1b5910ebd29940aa7f6f9342b38034fd3",
+        "matches": true
+      },
+      {
+        "path": "tmp/r8-cooperative-final/evidence/as2.jsonl",
+        "bytes": 778301,
+        "sha256": "0fdb8d1b2c11cc4b550c8704ad06a8bb1022bac8d5e56713acfc3f3288b74988",
+        "matches": true
+      },
+      {
+        "path": "tmp/r8-cooperative-final/evidence/host.log",
+        "bytes": 95184,
+        "sha256": "00eb555faabf5fb661b0cadbea904133f5401ab6db8133f2ff1e6c49560609fa",
+        "matches": true
+      },
+      {
+        "path": "tmp/r8-cooperative-final/evidence/identity.json",
+        "bytes": 2021,
+        "sha256": "2fe38c853dced70bad06a6291dec1a262eb7d1185ce41f0c9f41797d5f9c82f7",
+        "matches": true
+      },
+      {
+        "path": "tmp/r8-cooperative-final/evidence/summary.json",
+        "bytes": 10691,
+        "sha256": "cd0f5f0bda1f1bdaf9bf6ab167fb380ab9a3bf78fc08383bb88c150fed2072b3",
+        "matches": true
+      },
+      {
+        "path": "tmp/r8-direct-control/evidence/as2.jsonl",
+        "bytes": 396933,
+        "sha256": "2fe38e7d5bb3aea4b0979b75a9216397ff3835c26352145fe0d81f0bf97adb01",
+        "matches": true
+      },
+      {
+        "path": "tmp/r8-direct-control/evidence/host.log",
+        "bytes": 32088,
+        "sha256": "0d384bd0093362f44276ff590fd59edb45cd6aa2e6d239a1e9b263db2821ecf8",
+        "matches": true
+      },
+      {
+        "path": "tmp/r8-direct-control/evidence/identity.json",
+        "bytes": 403,
+        "sha256": "66b9e2c6192ff2f641d59e75e9023be1847af233825f8de8121b3670a51ec546",
+        "matches": true
+      },
+      {
+        "path": "tmp/r8-direct-control/evidence/summary.json",
+        "bytes": 6527,
+        "sha256": "f4208c31d0a86b91437d9ec57265a9ef254971d3c81fe046d47be80c855960de",
+        "matches": true
+      },
+      {
+        "path": "tmp/r8-host-regression.log",
+        "bytes": 821998,
+        "sha256": "e5f665b99c74e3e3725f829ab1e25e24694b85cf9701f56764b8f25f45ed2b4d",
+        "matches": true
+      },
+      {
+        "path": "tmp/r8-oracle-baseline/evidence/as2.jsonl",
+        "bytes": 282957,
+        "sha256": "dcd88a9dc57a650cc26afcb3d586901df8b5034cd21dcc0f55cd8d906de3afbc",
+        "matches": true
+      },
+      {
+        "path": "tmp/r8-oracle-baseline/evidence/host.log",
+        "bytes": 117516,
+        "sha256": "8ddc7426ac8aa6a8dd042ea8b2442cce4912f505fb2ab38b8e7fc24226f996df",
+        "matches": true
+      },
+      {
+        "path": "tmp/r8-oracle-baseline/evidence/identity.json",
+        "bytes": 405,
+        "sha256": "513f0180408d07ec2645503bca6ab3d6cfd4d5ad3b054bd1216014d8dc37bedd",
+        "matches": true
+      },
+      {
+        "path": "tmp/r8-oracle-baseline/evidence/summary.json",
+        "bytes": 12541,
+        "sha256": "eff2994753ba1f8d100ee8d90f9f26f1e784fb68a7b9f17c0d89d6473e7c64e9",
+        "matches": true
+      },
+      {
+        "path": "tmp/r8-raw-full/evidence/as2.jsonl",
+        "bytes": 713214,
+        "sha256": "2db5943640102560ab48673d5e745827e87979481f081a070c104e6aaef39f7b",
+        "matches": true
+      },
+      {
+        "path": "tmp/r8-raw-full/evidence/host.log",
+        "bytes": 614,
+        "sha256": "d812c86db6d4d09b4ffc863a381737312ff48ebcbf82bc79a67c2f22b3d4fe5a",
+        "matches": true
+      },
+      {
+        "path": "tmp/r8-raw-full/evidence/identity.json",
+        "bytes": 1762,
+        "sha256": "24d3f2ee7de4a09a360689617717ac1c2d6e6ead688519e4413869d86487e78f",
+        "matches": true
+      },
+      {
+        "path": "tmp/r8-raw-full/evidence/summary.json",
+        "bytes": 58,
+        "sha256": "4dd4e9cfd3ff1f2a5fd931d72a74ed7d6484a05e849b783f5bf7ef696081d44d",
+        "matches": true
+      },
+      {
+        "path": "启动提示词与证据索引.md",
+        "bytes": 2829,
+        "sha256": "ac49d7dbebf45400c0e2c5966cb6a79623bae15fb1ec5d9599b8e7cfcaca053c",
+        "matches": true
+      }
+    ]
+  },
+  "runs": [
+    {
+      "path": "tmp/r8-capture-baseline/evidence",
+      "recorded_result": 1,
+      "assertions": 20,
+      "passed": 19,
+      "failed": 1,
+      "unique_assertion_names": 20,
+      "failure_details": [
+        {
+          "name": "fresh_click_after_focus_return",
+          "okay": false,
+          "detail": [
+            "sample",
+            "release",
+            "sample",
+            "sample",
+            "sample"
+          ]
+        }
+      ],
+      "host_assert_pass_lines": 19,
+      "host_assert_fail_lines": 1,
+      "as2_records": 631,
+      "as2_recorded_sequence_gaps": [],
+      "as2_events": {
+        "ready": 1,
+        "sample": 611,
+        "over": 6,
+        "press": 4,
+        "release": 3,
+        "out": 4,
+        "dragOut": 1,
+        "releaseOutside": 1
+      },
+      "runtime_identity_record": {
+        "pid": 568,
+        "source": 28250006,
+        "movie": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\launcher/native/world-compositor/flash-hover-fixture/HoverProbe.swf",
+        "movieSha256": "D7BE1C6CA1685B13D8EB143C73C324F76352E3D194838E7BE928E1ABD7F3D6FD",
+        "stimulus": "injected SendInput; production LL route"
+      }
+    },
+    {
+      "path": "tmp/r8-direct-control/evidence",
+      "recorded_result": 1,
+      "assertions": 27,
+      "passed": 23,
+      "failed": 4,
+      "unique_assertion_names": 27,
+      "failure_details": [
+        {
+          "name": "leave_presentation_has_outside_coordinates",
+          "okay": false,
+          "detail": {
+            "Tick": 4794220897777,
+            "Phase": "presentation-leave",
+            "Event": "sample",
+            "Target": "",
+            "X": 160,
+            "Y": 150.85,
+            "HoverA": false,
+            "HoverB": false,
+            "Raw": "{\"seq\":926,\"timer\":89004,\"frame\":2637,\"event\":\"sample\",\"target\":\"\",\"x\":160,\"y\":150.85,\"hoverA\":false,\"hoverB\":false}"
+          }
+        },
+        {
+          "name": "presentation_reenter",
+          "okay": false,
+          "detail": {
+            "Tick": 4794222926041,
+            "Phase": "presentation-leave",
+            "Event": "sample",
+            "Target": "",
+            "X": 160,
+            "Y": 150.85,
+            "HoverA": false,
+            "HoverB": false,
+            "Raw": "{\"seq\":928,\"timer\":89207,\"frame\":2643,\"event\":\"sample\",\"target\":\"\",\"x\":160,\"y\":150.85,\"hoverA\":false,\"hoverB\":false}"
+          }
+        },
+        {
+          "name": "drag_outside_does_not_click",
+          "okay": false,
+          "detail": [
+            "sample",
+            "sample",
+            "sample",
+            "sample",
+            "sample",
+            "sample"
+          ]
+        },
+        {
+          "name": "focus_loss_no_button_commit",
+          "okay": false,
+          "detail": [
+            "press",
+            "sample",
+            "sample",
+            "sample",
+            "sample",
+            "sample",
+            "sample",
+            "sample",
+            "sample",
+            "release",
+            "sample",
+            "sample",
+            "sample"
+          ]
+        }
+      ],
+      "host_assert_pass_lines": 23,
+      "host_assert_fail_lines": 4,
+      "as2_records": 1101,
+      "as2_recorded_sequence_gaps": [],
+      "as2_events": {
+        "ready": 1,
+        "sample": 1041,
+        "over": 16,
+        "press": 14,
+        "release": 14,
+        "out": 15
+      },
+      "runtime_identity_record": {
+        "pid": 14580,
+        "source": 3412226,
+        "movie": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\launcher/native/world-compositor/flash-hover-fixture/HoverProbe.swf",
+        "movieSha256": "D7BE1C6CA1685B13D8EB143C73C324F76352E3D194838E7BE928E1ABD7F3D6FD",
+        "directNativeControl": true,
+        "stimulus": "injected SendInput; production LL route or explicit direct-native control"
+      }
+    },
+    {
+      "path": "tmp/r8-oracle-baseline/evidence",
+      "recorded_result": 1,
+      "assertions": 33,
+      "passed": 31,
+      "failed": 2,
+      "unique_assertion_names": 33,
+      "failure_details": [
+        {
+          "name": "fresh_click_after_focus_return",
+          "okay": false,
+          "detail": [
+            "release"
+          ],
+          "phase": "return-fresh",
+          "startQpc": 4800497207843,
+          "endQpc": 4800509547546,
+          "lastAs2Seq": 345
+        },
+        {
+          "name": "fresh_click_has_new_press_identity",
+          "okay": false,
+          "detail": [
+            {
+              "Event": "release",
+              "Target": "A",
+              "press": 3
+            }
+          ],
+          "phase": "return-fresh",
+          "startQpc": 4800497207843,
+          "endQpc": 4800509554698,
+          "lastAs2Seq": 345
+        }
+      ],
+      "host_assert_pass_lines": 31,
+      "host_assert_fail_lines": 2,
+      "as2_records": 476,
+      "as2_recorded_sequence_gaps": [],
+      "as2_events": {
+        "ready": 1,
+        "sample": 443,
+        "over": 6,
+        "globalDown": 5,
+        "press": 4,
+        "globalUp": 4,
+        "release": 3,
+        "deferredCommit": 4,
+        "out": 4,
+        "dragOut": 1,
+        "releaseOutside": 1
+      },
+      "runtime_identity_record": {
+        "pid": 11880,
+        "source": 82906976,
+        "movie": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\launcher/native/world-compositor/flash-hover-fixture/HoverProbe.swf",
+        "movieSha256": "5DED8ECE1D38B46CC97B4D731A827A9C238C5AC28A575EA6BCDB9CE28FDF924A",
+        "directNativeControl": false,
+        "stimulus": "injected SendInput; production LL route or explicit direct-native control"
+      }
+    },
+    {
+      "path": "tmp/r8-capture-candidate/evidence-foreground",
+      "recorded_result": 1,
+      "assertions": 33,
+      "passed": 31,
+      "failed": 2,
+      "unique_assertion_names": 33,
+      "failure_details": [
+        {
+          "name": "fresh_click_after_focus_return",
+          "okay": false,
+          "detail": [
+            "release"
+          ],
+          "phase": "return-fresh",
+          "startQpc": 4804249147126,
+          "endQpc": 4804261221040,
+          "lastAs2Seq": 426
+        },
+        {
+          "name": "fresh_click_has_new_press_identity",
+          "okay": false,
+          "detail": [
+            {
+              "Event": "release",
+              "Target": "A",
+              "press": 3
+            }
+          ],
+          "phase": "return-fresh",
+          "startQpc": 4804249147126,
+          "endQpc": 4804261229642,
+          "lastAs2Seq": 426
+        }
+      ],
+      "host_assert_pass_lines": 31,
+      "host_assert_fail_lines": 2,
+      "as2_records": 562,
+      "as2_recorded_sequence_gaps": [],
+      "as2_events": {
+        "ready": 1,
+        "sample": 529,
+        "over": 6,
+        "globalDown": 5,
+        "press": 4,
+        "globalUp": 4,
+        "release": 3,
+        "deferredCommit": 4,
+        "out": 4,
+        "dragOut": 1,
+        "releaseOutside": 1
+      },
+      "runtime_identity_record": {
+        "pid": 8344,
+        "source": 8786214,
+        "movie": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\launcher/native/world-compositor/flash-hover-fixture/HoverProbe.swf",
+        "movieSha256": "5DED8ECE1D38B46CC97B4D731A827A9C238C5AC28A575EA6BCDB9CE28FDF924A",
+        "directNativeControl": false,
+        "stimulus": "injected SendInput; production LL route or explicit direct-native control"
+      }
+    },
+    {
+      "path": "tmp/r8-cooperative-final/evidence",
+      "recorded_result": 0,
+      "assertions": 26,
+      "passed": 26,
+      "failed": 0,
+      "unique_assertion_names": 20,
+      "failure_details": [],
+      "host_assert_pass_lines": 26,
+      "host_assert_fail_lines": 0,
+      "as2_records": 868,
+      "as2_recorded_sequence_gaps": [],
+      "as2_events": {
+        "raw-over": 9,
+        "ready": 313,
+        "sample": 430,
+        "raw-out": 7,
+        "REGISTER": 4,
+        "CANCELLED": 22,
+        "READY": 16,
+        "mBegin": 14,
+        "raw-press": 13,
+        "mEnd": 10,
+        "raw-release": 12,
+        "mCommit": 8,
+        "raw-dragOut": 1,
+        "mEndOutside": 1,
+        "raw-releaseOutside": 1,
+        "MISS": 1,
+        "REJECT": 5,
+        "raw-key": 1
+      },
+      "runtime_identity_record": {
+        "pid": 29972,
+        "source": 121900538,
+        "movie": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\launcher/native/world-compositor/flash-hover-fixture/CooperativeProbe.swf",
+        "cooperative": true,
+        "artifacts": {
+          "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\launcher/native/world-compositor/flash-hover-fixture/CooperativeProbe.swf": "1AC27D5E19A72A3B4A16ED7770F1723DF006B460774209DE308F681EEDEAFF7F",
+          "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\Adobe Flash Player 20.exe": "30BA7CF81D10556BB123506693C72F62BA27DB1F37A7A2D546E96AC3A8D31B91",
+          "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\r8-cooperative-final\\bin\\FlashHoverHost.dll": "67879BCF71F868927D53BBF15D286C61D7D8DEF6A803F767F06705F8DA9009A0",
+          "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\r8-cooperative-final\\bin\\FlashInputBridge.dll": "EE39E6EEAC3EA8657D4AA3C94289804AC42A877D71854C1644DB759846ED1CC2",
+          "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\r8-cooperative-final\\bin\\FlashInputBroker.exe": "BA006ADA5905C52BA53729CB763065ADD8B2093A169BC2487E3A6288E82E0402",
+          "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\r8-cooperative-final\\bin\\FlashCompositorNative.dll": "AF396626B2861256AA6DC3B702876280ED95E47F749A321D3C97ADB4B5396976",
+          "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\launcher\\native\\world-compositor\\flash-hover-fixture\\CooperativeChild.swf": "57CFD180E4B917AA73FD25023F48987BEBE139576B1FE5A0509C93CB8D677251"
+        },
+        "movieSha256": "1AC27D5E19A72A3B4A16ED7770F1723DF006B460774209DE308F681EEDEAFF7F",
+        "directNativeControl": false,
+        "stimulus": "injected SendInput; production LL route or explicit direct-native control"
+      }
+    },
+    {
+      "path": "tmp/r8-raw-full/evidence",
+      "recorded_result": 2,
+      "assertions": 0,
+      "passed": 0,
+      "failed": 0,
+      "unique_assertion_names": 0,
+      "failure_details": [],
+      "host_assert_pass_lines": 0,
+      "host_assert_fail_lines": 0,
+      "as2_records": 1203,
+      "as2_recorded_sequence_gaps": [],
+      "as2_events": {
+        "ready": 1,
+        "sample": 1202
+      },
+      "runtime_identity_record": {
+        "pid": 20328,
+        "source": 14618970,
+        "movie": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\launcher/native/world-compositor/flash-hover-fixture/HoverProbe.swf",
+        "cooperative": false,
+        "artifacts": {
+          "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\launcher/native/world-compositor/flash-hover-fixture/HoverProbe.swf": "5DED8ECE1D38B46CC97B4D731A827A9C238C5AC28A575EA6BCDB9CE28FDF924A",
+          "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\Adobe Flash Player 20.exe": "30BA7CF81D10556BB123506693C72F62BA27DB1F37A7A2D546E96AC3A8D31B91",
+          "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\r8-cooperative-final\\bin\\FlashHoverHost.dll": "67879BCF71F868927D53BBF15D286C61D7D8DEF6A803F767F06705F8DA9009A0",
+          "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\r8-cooperative-final\\bin\\FlashInputBridge.dll": "EE39E6EEAC3EA8657D4AA3C94289804AC42A877D71854C1644DB759846ED1CC2",
+          "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\r8-cooperative-final\\bin\\FlashInputBroker.exe": "BA006ADA5905C52BA53729CB763065ADD8B2093A169BC2487E3A6288E82E0402",
+          "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\r8-cooperative-final\\bin\\FlashCompositorNative.dll": "AF396626B2861256AA6DC3B702876280ED95E47F749A321D3C97ADB4B5396976"
+        },
+        "movieSha256": "5DED8ECE1D38B46CC97B4D731A827A9C238C5AC28A575EA6BCDB9CE28FDF924A",
+        "directNativeControl": false,
+        "stimulus": "injected SendInput; production LL route or explicit direct-native control"
+      }
+    }
+  ],
+  "native_source_identity_checks": {
+    "production": {
+      "Compositor.cpp": true,
+      "Compositor.h": true,
+      "InputBridge.cpp": true,
+      "InputBridge.h": true,
+      "InputBroker.cpp": true,
+      "InputTrace.h": true
+    },
+    "observation": {
+      "Compositor.cpp": true,
+      "Compositor.h": true,
+      "InputBridge.cpp": true,
+      "InputBridge.h": true,
+      "InputBroker.cpp": true,
+      "InputTrace.h": true
+    },
+    "rejectedCaptureRevoke": {
+      "Compositor.cpp": true,
+      "Compositor.h": true,
+      "InputBridge.cpp": true,
+      "InputBridge.h": true,
+      "InputBroker.cpp": true,
+      "InputTrace.h": true
+    }
+  },
+  "recorded_host_regression_tail": [
+    "  已通过 CF7Launcher.Tests.AgentRuntime.Contracts.CanonicalJsonV1Tests.ActionVector_ExcludesDisplayAndRequestIdentityFields [< 1 ms]",
+    "  已通过 CF7Launcher.Tests.AgentRuntime.Contracts.CanonicalJsonV1Tests.DirectUnicode_RemainsUtf8AndIsNotNormalized [< 1 ms]",
+    "  已通过 CF7Launcher.Tests.AgentRuntime.Contracts.CanonicalJsonV1Tests.InvalidVectors_FailClosed [< 1 ms]",
+    "",
+    "测试运行成功。",
+    "测试总数: 5718",
+    "     通过数: 5714",
+    "    跳过数: 4",
+    "总时间: 2.2014 分钟",
+    "[xunit-policy] testhost confirmed parallel test collections = off",
+    "",
+    "=== Tests Passed ==="
+  ],
+  "limitations": [
+    "No Windows, CS6, projector, browser, Native, IME, runtime or production tests executed in this audit.",
+    "No executable SWF/Host/projector/native binaries are included; their actual runtime hashes cannot be independently recomputed here.",
+    "A contiguous recorded AS2 sequence is not proof that an OS hook never missed input.",
+    "Manifest equality is integrity of the supplied package, not provenance, a clean checkout, or deployment authorization."
+  ]
+}

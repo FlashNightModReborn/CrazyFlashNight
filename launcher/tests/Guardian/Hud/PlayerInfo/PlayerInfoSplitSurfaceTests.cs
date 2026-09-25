@@ -698,6 +698,32 @@ public sealed class PlayerInfoSplitSurfaceTests
         }, TimeSpan.FromSeconds(35));
     }
 
+    [Fact]
+    public void TranslationAndPendingResizeRetainSubmittedPixelsWithoutPumpingUi()
+    {
+        RunOnSta(()=>
+        {
+            using Form owner=CreateHost(out Panel anchor);
+            using var surface=PlayerInfoSplitSurface.CreateFixture(owner,anchor,"full");
+            surface.SetReady();
+            PumpUntil(()=>surface.Counters.CommitSuccessCount>0,TimeSpan.FromSeconds(10),"initial commit");
+            var before=surface.Counters;
+            var priorBounds=surface.Bounds;
+            owner.Location=new Point(owner.Left+137,owner.Top+61);
+            // No BeginInvoke/render pump has run. The old path dismissed here.
+            Assert.True(surface.Counters.Shown);
+            Assert.Equal(before.CommitCount,surface.Counters.CommitCount);
+            Assert.Equal(new Point(priorBounds.Left+137,priorBounds.Top+61),surface.Location);
+            Assert.Equal(priorBounds.Size,surface.Size);
+            anchor.Size=new Size(1280,720);
+            Assert.True(surface.Counters.Shown);
+            Assert.Equal(priorBounds.Size,surface.Size); // retained until fresh raster commits
+            PumpUntil(()=>surface.Counters.CommitSuccessCount>before.CommitSuccessCount && surface.Size==surface.Counters.TightPhysicalBounds.Size,
+                TimeSpan.FromSeconds(15),"resized raster did not replace retained frame");
+            surface.Suspend();Assert.False(surface.Counters.Shown);
+        });
+    }
+
     private static Form CreateHost(
         out Panel anchor,
         Size? clientSize = null)

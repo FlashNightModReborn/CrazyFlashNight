@@ -99,12 +99,9 @@ namespace CF7Launcher.Guardian
         public NativeHudOverlay(Form owner, Control anchor)
             : base(owner, anchor, 1024f, 576f)
         {
-            if (FocusTrace.Enabled)
-            {
-                FocusWindowSnapshot.Hud = Handle;
-                FocusWindowSnapshot.Owner = owner.Handle;
-                InitializeFocusInputProbe();
-            }
+            // 注册与 FocusTrace 开关解耦：注册表反映存活的 HUD 实例，
+            // 诊断关闭时只是多一条注册项，probe 采集仍由 FocusTrace.Enabled 门控。
+            InitializeFocusInputProbe();
             _animTick = new Timer();
             _animTick.Interval = 16;
             _animTick.Tick += OnAnimTick;

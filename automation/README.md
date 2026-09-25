@@ -80,6 +80,8 @@ cd "<项目根目录>"
 .\automation\dev.ps1 -ForceBuild -BuildOnly -CandidateLeaf a5
 ```
 
+帮助合成路径经人验及维护者明确推广授权后作为正常默认，原 `-CompositionHelp` 候选开关已退役；日常仍直接使用同一开发入口，不新增转发脚本。
+
 `-Status` 只读报告当前身份、精确匹配和同身份闭包分叉；`-ReuseOnly` 禁止缓存未命中时构建；`-ForceBuild` 强制新建 candidate，但新旧同身份闭包不一致仍 fail-closed；`-BuildOnly` 只选择/构建并验证 candidate，不启动进程。`-CandidateLeaf` 只允许与 exact `-ForceBuild -BuildOnly` 组合使用，值必须是 1–32 个小写 ASCII 字母、数字或连字符组成的单一路径段；入口在 `tmp/runtime-candidates/v2` 下构造 direct child、复用既有 canonical/reparse 护栏并预检 bootstrap `<260` 路径预算，再把绝对 `CandidateRoot` 交给 producer。已存在的叶节点一律按 immutable candidate 拒绝，绝不启用 `ForceReplace`。该参数用于长路径隔离 Worktree，不改变 build identity、payload closure 或正式发布协议。忽略路径 `tmp/runtime-dev/active.v1.json` 只是便于精确复用的索引，每次执行前都会重算 Worktree 身份并重验 candidate，不是信任或部署证据。
 
 完整游戏 E2E 还受 Flash 既有资源定位约束：当前项目根的 canonical 路径必须保留 `...\resources` 这一层级语义。现有 main 仓库已满足该条件，可直接从根 `本地开发启动.cmd` 测试；开发隔离由 candidate 提供，不要求额外 Worktree 或 Steam 所有权验证。仅在确需独立源码/存档环境时，才把额外 Worktree 建成 `<隔离目录>\resources` 并从该根运行 `automation/dev.ps1`；不要把普通目录副本当成 Git 开发仓库，也不要覆盖其他施工物料。仅构建、静态门和 Host/Web 单测不需要这一完整游戏路径形态。

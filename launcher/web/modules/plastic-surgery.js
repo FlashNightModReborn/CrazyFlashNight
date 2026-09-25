@@ -4,6 +4,7 @@
     var Controls = CharacterIdentityControls;
     var Runtime = PlasticSurgeryRuntime;
     var shell, element, mux, scale, renderer, manifest;
+    var nameBinding, committedName = '';
     var snapshot, draft, submitted, phase = 'closed', busy = false, composing = false, generation = 0, instance = '', errorText = '';
     var disposers = [], needsSnapshot = false, recoveryToken = '';
     var errors = {
@@ -68,10 +69,11 @@
         byId('cancel').addEventListener('click', requestClose);
         byId('confirm').addEventListener('click', submit);
         byId('form').addEventListener('submit', function(event) { event.preventDefault(); if (!composing) submit(); });
-        disposers.push(Controls.bindNameInput(byId('character-name'), {
-            onComposition:function(value) { composing = value; },
+        nameBinding = Controls.bindNameInput(byId('character-name'), {
+            onComposition:function(value) { if (value && draft) committedName = draft.characterName; composing = value; },
             onChange:function(value) { if (editable()) { errorText = ''; draft.characterName = value; refresh(); } }, onEnter:submit
-        }));
+        });
+        disposers.push(nameBinding);
         disposers.push(Controls.bindGender(element.querySelectorAll('input[name="surgery-gender"]'), function(value) {
             if (editable()) { errorText = ''; draft.gender = value; refresh(); render(); flashPreviewSwap(); cue('select'); }
         }));
@@ -223,7 +225,7 @@
         return true;
     }
     function cleanup() {
-        generation++; phase = 'closed'; busy = false; composing = false;
+        generation++; phase = 'closed'; busy = false; composing = false; nameBinding = null; committedName = '';
         disposers.forEach(function(dispose) { dispose(); }); disposers = [];
         if (mux) mux.destroy(); if (renderer) renderer.destroy(); if (scale) scale.detach();
         mux = renderer = scale = manifest = snapshot = draft = submitted = null;
@@ -232,5 +234,17 @@
         element = null;
     }
     Panels.register('surgery', {create:create, onOpen:onOpen, onClose:cleanup, onRequestClose:requestClose, onForceClose:cleanup});
-    window.PlasticSurgeryPanel = {debugState:function() { return {phase:phase, busy:busy, draft:draft && copy(draft), token:snapshot && snapshot.token}; }};
+    window.PlasticSurgeryPanel = {
+        requestClose:requestClose,
+        restoreInputDraft:function(value) {
+            if (!editable() || !value || typeof value.characterName !== 'string' || value.characterName.length > 128
+                || (value.gender !== 'male' && value.gender !== 'female') || !Number.isInteger(value.height) || value.height < 150 || value.height > 200) return false;
+            draft = copy(value); refresh(); render(); return true;
+        },
+        cancelInputComposition:function() {
+            if (composing && nameBinding && draft) nameBinding.cancelComposition(committedName);
+            return !composing;
+        },
+        debugState:function() { return {phase:phase, busy:busy, draft:draft && copy(draft), token:snapshot && snapshot.token}; }
+    };
 })();

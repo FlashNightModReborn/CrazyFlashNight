@@ -1,0 +1,18 @@
+{
+  "scope": "local dependency attachment probe only; not executable game readiness",
+  "absoluteRslUrls": true,
+  "dependencies": [
+    {
+      "source": "flashswf/levels/基地场景合集.swf",
+      "sha256": "d8c816469b8c6e34b66c942a1d2d127f6c88987fab4b9c6679af6e12c85c7b72",
+      "topLevelDoInitAction": 0,
+      "topLevelImports": 1
+    },
+    {
+      "source": "flashswf/arts/things0.swf",
+      "sha256": "1f2d0126c3c84b7f817bf1f6e9f40db4bfa69a1f57476f6ce8645a25d35b88f7",
+      "topLevelDoInitAction": 0,
+      "topLevelImports": 1
+    }
+  ]
+}

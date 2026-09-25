@@ -4,3 +4,4 @@ using System.Runtime.CompilerServices;
 // 主程序用 dynamic-code-free，正常运行时不受影响。
 [assembly: InternalsVisibleTo("Launcher.Tests")]
 [assembly: InternalsVisibleTo("HitNumberVisualHarness")]
+[assembly: InternalsVisibleTo("C1IslandHost")]

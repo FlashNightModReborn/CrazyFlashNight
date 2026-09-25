@@ -6,5 +6,5 @@ $ErrorActionPreference = 'Stop'
     -TemplateRelativePath 'scripts/test-runners/plastic-surgery/TestLoader.as.template' `
     -SuiteRelativePaths @('scripts/类定义/org/flashNight/arki/ui/PlasticSurgeryPanelServiceTest.as') `
     -SuiteFqns @('org.flashNight.arki.ui.PlasticSurgeryPanelServiceTest') `
-    -ExpectedTracePatterns @('(?m)^PlasticSurgeryPanelServiceTest Tests Passed: 44\r?$', '(?m)^PlasticSurgeryPanelServiceTest Tests Failed: 0\r?$') `
-    -SuccessSummary '44/44 assertions' -TimeoutSeconds $TimeoutSeconds -SkipCompile:$SkipCompile
+    -ExpectedTracePatterns @('(?m)^PlasticSurgeryPanelServiceTest Tests Passed: 50\r?$', '(?m)^PlasticSurgeryPanelServiceTest Tests Failed: 0\r?$') `
+    -SuccessSummary '50/50 assertions' -TimeoutSeconds $TimeoutSeconds -SkipCompile:$SkipCompile

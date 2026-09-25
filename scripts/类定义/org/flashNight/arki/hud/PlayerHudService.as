@@ -221,6 +221,8 @@ class org.flashNight.arki.hud.PlayerHudService {
     }
     private static function finiteValue(value):Number { var n:Number = Number(value); return (n - n) == 0 ? n : 0; }
     private static function text(value):String { return value == undefined || value == null ? "" : String(value); }
+    /** 资源展示的纯读入口；不安装 HUD 动作、帧监听或持久写服务。 */
+    public static function readVitalsSnapshot(unit:Object):Object { return readVitals(unit); }
     private static function readVitals(unit:Object):Object {
         var shield:Object = unit.shield;
         var shieldReady:Boolean = shield != null && typeof shield.getMaxCapacity == "function";

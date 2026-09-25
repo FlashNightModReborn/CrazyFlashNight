@@ -339,6 +339,12 @@ class org.flashNight.arki.key.KeyManager {
         keyMap[221] = "]}";
         keyMap[222] = "‘”";
 
+        // The isolated bootstrap has already established this capability before
+        // this class's static initializer runs. Keep labels, omit legacy polling.
+        if (org.flashNight.arki.input.IsolatedInputPolicy.forbidsLegacyDrivers()) {
+            KeyManager.pollKeys = org.flashNight.arki.input.IsolatedInputPolicy.rejectLegacyTask;
+            return keyMap;
+        }
         // 在 _root 中创建 keyPollMC 以便每帧调用 pollKeys() 进行轮询
         if (_root.keyPollMC == undefined) {
             _root.createEmptyMovieClip("keyPollMC", _root.getNextHighestDepth());

@@ -36,8 +36,8 @@
         {
           "path": "launcher/native",
           "includeExtensions": [".am", ".build", ".c", ".cpp", ".h", ".in", ".mk", ".pl", ".rc", ".s", ".txt"],
-          "excludePaths": [],
-          "excludePrefixes": ["launcher/native/tests/"]
+          "excludePaths": ["launcher/native/world-compositor/InputBridgeSelfTest.cpp"],
+          "excludePrefixes": ["launcher/native/tests/", "launcher/native/world-compositor/base-input-fixture/", "launcher/native/world-compositor/flash-hover-fixture/", "launcher/native/world-compositor/g1-fixture/", "launcher/native/world-compositor/input-ownership-fixture/", "launcher/native/world-compositor/physical-input-fixture/"]
         },
         {
           "path": "launcher/native/sol_parser",
@@ -142,6 +142,11 @@
         "tools/test-runtime-build-queue.ps1",
         "tools/test-runtime-build-v2.ps1",
         "tools/test-runtime-dev-entry.ps1",
+        "tools/qa-composition-help.js",
+        "tools/run-c1-input-acceptance.ps1",
+        "launcher/native/world-compositor/flash-hover-fixture/.gitignore",
+        "launcher/native/world-compositor/input-ownership-fixture/.gitignore",
+        "launcher/native/world-compositor/physical-input-fixture/.gitignore",
         "tools/test-runtime-entry-guardrails.ps1",
         "tools/test-runtime-github-attestation.ps1",
         "tools/test-runtime-player-info-svg-production-contract.ps1",
@@ -219,6 +224,12 @@
             "tools/map-workbench/bin/", "tools/map-workbench/obj/",
             "tools/map-workbench/webview-smoke/bin/", "tools/map-workbench/webview-smoke/obj/"
           ]
+        },
+        {
+          "path": "launcher/native/world-compositor",
+          "includeExtensions": [".cpp", ".h", ".cs", ".csproj", ".cjs", ".json", ".py", ".ps1", ".as", ".xfl", ".xml", ".swf", ".md", ".patch"],
+          "excludePaths": ["launcher/native/world-compositor/Compositor.cpp", "launcher/native/world-compositor/Compositor.h", "launcher/native/world-compositor/CompositionScene.cpp", "launcher/native/world-compositor/CompositionScene.h", "launcher/native/world-compositor/InputBridge.cpp", "launcher/native/world-compositor/InputBridge.h", "launcher/native/world-compositor/InputBroker.cpp", "launcher/native/world-compositor/InputTrace.h"],
+          "excludePrefixes": ["launcher/native/world-compositor/base-input-fixture/bin/", "launcher/native/world-compositor/base-input-fixture/obj/", "launcher/native/world-compositor/flash-hover-fixture/bin/", "launcher/native/world-compositor/flash-hover-fixture/obj/", "launcher/native/world-compositor/g1-fixture/bin/", "launcher/native/world-compositor/g1-fixture/obj/", "launcher/native/world-compositor/input-ownership-fixture/bin/", "launcher/native/world-compositor/input-ownership-fixture/obj/", "launcher/native/world-compositor/physical-input-fixture/bin/", "launcher/native/world-compositor/physical-input-fixture/obj/"]
         },
         {
           "path": "launcher/native/tests",

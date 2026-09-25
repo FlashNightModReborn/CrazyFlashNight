@@ -1,0 +1,5237 @@
+{
+  "revision": "P8",
+  "authorization": "User accepted the combined proposal: 可行，一并完成",
+  "sourceP7Sha256": "f787dae26d72f3ed4840a1eb0e8cf9948f5d688515cf15ee44988a3cf84db8e9",
+  "materialChanges": [
+    {
+      "object": "M_0250_MK01",
+      "unit": "MK01",
+      "oldMaterials": [
+        "P4_Static_stucco"
+      ],
+      "tile": 2,
+      "sample": "market-resident"
+    },
+    {
+      "object": "M_0251_MK01",
+      "unit": "MK01",
+      "oldMaterials": [
+        "P4_Static_roofing"
+      ],
+      "tile": 0,
+      "sample": "market-resident"
+    },
+    {
+      "object": "M_0271_MK01",
+      "unit": "MK01",
+      "oldMaterials": [
+        "P4_Static_stucco"
+      ],
+      "tile": 2,
+      "sample": "market-resident"
+    },
+    {
+      "object": "M_0274_MK01",
+      "unit": "MK01",
+      "oldMaterials": [
+        "P4_Static_stucco"
+      ],
+      "tile": 2,
+      "sample": "market-resident"
+    },
+    {
+      "object": "M_0257_MK02",
+      "unit": "MK02",
+      "oldMaterials": [
+        "P4_Static_stucco"
+      ],
+      "tile": 2,
+      "sample": "market-resident"
+    },
+    {
+      "object": "M_0258_MK02",
+      "unit": "MK02",
+      "oldMaterials": [
+        "P4_Static_roofing"
+      ],
+      "tile": 0,
+      "sample": "market-resident"
+    },
+    {
+      "object": "M_0272_MK02",
+      "unit": "MK02",
+      "oldMaterials": [
+        "P4_Static_roofing"
+      ],
+      "tile": 0,
+      "sample": "market-resident"
+    },
+    {
+      "object": "MK02_原景条纹雨棚_00_顶面",
+      "unit": "MK02",
+      "oldMaterials": [
+        "P4_Static_brick"
+      ],
+      "tile": 2,
+      "sample": "market-resident"
+    },
+    {
+      "object": "MK02_原景条纹雨棚_00_垂边",
+      "unit": "MK02",
+      "oldMaterials": [
+        "P4_Static_brick"
+      ],
+      "tile": 2,
+      "sample": "market-resident"
+    },
+    {
+      "object": "MK02_原景条纹雨棚_02_顶面",
+      "unit": "MK02",
+      "oldMaterials": [
+        "P4_Static_brick"
+      ],
+      "tile": 2,
+      "sample": "market-resident"
+    },
+    {
+      "object": "MK02_原景条纹雨棚_02_垂边",
+      "unit": "MK02",
+      "oldMaterials": [
+        "P4_Static_brick"
+      ],
+      "tile": 2,
+      "sample": "market-resident"
+    },
+    {
+      "object": "MK02_原景条纹雨棚_04_顶面",
+      "unit": "MK02",
+      "oldMaterials": [
+        "P4_Static_brick"
+      ],
+      "tile": 2,
+      "sample": "market-resident"
+    },
+    {
+      "object": "MK02_原景条纹雨棚_04_垂边",
+      "unit": "MK02",
+      "oldMaterials": [
+        "P4_Static_brick"
+      ],
+      "tile": 2,
+      "sample": "market-resident"
+    },
+    {
+      "object": "MK02_原景条纹雨棚_06_顶面",
+      "unit": "MK02",
+      "oldMaterials": [
+        "P4_Static_brick"
+      ],
+      "tile": 2,
+      "sample": "market-resident"
+    },
+    {
+      "object": "MK02_原景条纹雨棚_06_垂边",
+      "unit": "MK02",
+      "oldMaterials": [
+        "P4_Static_brick"
+      ],
+      "tile": 2,
+      "sample": "market-resident"
+    },
+    {
+      "object": "M_0264_MK03",
+      "unit": "MK03",
+      "oldMaterials": [
+        "P4_Static_stucco"
+      ],
+      "tile": 2,
+      "sample": "market-resident"
+    },
+    {
+      "object": "M_0265_MK03",
+      "unit": "MK03",
+      "oldMaterials": [
+        "P4_Static_roofing"
+      ],
+      "tile": 0,
+      "sample": "market-resident"
+    },
+    {
+      "object": "M_0273_MK03",
+      "unit": "MK03",
+      "oldMaterials": [
+        "P4_Static_stucco"
+      ],
+      "tile": 2,
+      "sample": "market-resident"
+    },
+    {
+      "object": "M_0275_MK03",
+      "unit": "MK03",
+      "oldMaterials": [
+        "P4_Static_stucco"
+      ],
+      "tile": 2,
+      "sample": "market-resident"
+    },
+    {
+      "object": "M_0007_TR03",
+      "unit": "TR03",
+      "oldMaterials": [
+        "P4_Static_stucco"
+      ],
+      "tile": 1,
+      "sample": "west-industrial"
+    },
+    {
+      "object": "M_0008_TR03",
+      "unit": "TR03",
+      "oldMaterials": [
+        "P4_Static_roofing"
+      ],
+      "tile": 0,
+      "sample": "west-industrial"
+    },
+    {
+      "object": "M_0009_TR03",
+      "unit": "TR03",
+      "oldMaterials": [
+        "P4_Static_roofing"
+      ],
+      "tile": 0,
+      "sample": "west-industrial"
+    },
+    {
+      "object": "M_0010_TR03",
+      "unit": "TR03",
+      "oldMaterials": [
+        "P4_Static_roofing"
+      ],
+      "tile": 0,
+      "sample": "west-industrial"
+    },
+    {
+      "object": "M_0011_TR03",
+      "unit": "TR03",
+      "oldMaterials": [
+        "P4_Static_stucco"
+      ],
+      "tile": 1,
+      "sample": "west-industrial"
+    },
+    {
+      "object": "M_0016_TR03",
+      "unit": "TR03",
+      "oldMaterials": [
+        "P4_Static_stucco"
+      ],
+      "tile": 1,
+      "sample": "west-industrial"
+    },
+    {
+      "object": "M_0022_TR03",
+      "unit": "TR03",
+      "oldMaterials": [
+        "P4_Static_stucco"
+      ],
+      "tile": 1,
+      "sample": "west-industrial"
+    },
+    {
+      "object": "M_0027_TR03",
+      "unit": "TR03",
+      "oldMaterials": [
+        "P4_Static_stucco"
+      ],
+      "tile": 1,
+      "sample": "west-industrial"
+    },
+    {
+      "object": "M_0032_TR03",
+      "unit": "TR03",
+      "oldMaterials": [
+        "P4_Static_stucco"
+      ],
+      "tile": 1,
+      "sample": "west-industrial"
+    },
+    {
+      "object": "M_0033_TR03",
+      "unit": "TR03",
+      "oldMaterials": [
+        "P4_Static_stucco"
+      ],
+      "tile": 1,
+      "sample": "west-industrial"
+    },
+    {
+      "object": "M_0034_TR03",
+      "unit": "TR03",
+      "oldMaterials": [
+        "P4_Static_roofing"
+      ],
+      "tile": 0,
+      "sample": "west-industrial"
+    },
+    {
+      "object": "M_0035_TR03",
+      "unit": "TR03",
+      "oldMaterials": [
+        "P4_Static_roofing"
+      ],
+      "tile": 0,
+      "sample": "west-industrial"
+    },
+    {
+      "object": "M_0036_TR03",
+      "unit": "TR03",
+      "oldMaterials": [
+        "P4_Static_roofing"
+      ],
+      "tile": 0,
+      "sample": "west-industrial"
+    },
+    {
+      "object": "M_0037_TR03",
+      "unit": "TR03",
+      "oldMaterials": [
+        "P4_Static_stucco"
+      ],
+      "tile": 1,
+      "sample": "west-industrial"
+    },
+    {
+      "object": "M_0042_TR03",
+      "unit": "TR03",
+      "oldMaterials": [
+        "P4_Static_stucco"
+      ],
+      "tile": 1,
+      "sample": "west-industrial"
+    },
+    {
+      "object": "M_0302_HS02",
+      "unit": "HS02",
+      "oldMaterials": [
+        "P4_Static_stucco"
+      ],
+      "tile": 2,
+      "sample": "market-resident"
+    },
+    {
+      "object": "M_0303_HS02",
+      "unit": "HS02",
+      "oldMaterials": [
+        "P4_Static_roofing"
+      ],
+      "tile": 0,
+      "sample": "market-resident"
+    },
+    {
+      "object": "M_0310_HS02",
+      "unit": "HS02",
+      "oldMaterials": [
+        "P4_Static_stucco"
+      ],
+      "tile": 2,
+      "sample": "market-resident"
+    },
+    {
+      "object": "M_0311_HS02",
+      "unit": "HS02",
+      "oldMaterials": [
+        "P4_Static_roofing"
+      ],
+      "tile": 0,
+      "sample": "market-resident"
+    },
+    {
+      "object": "M_0330_HS02",
+      "unit": "HS02",
+      "oldMaterials": [
+        "P4_Static_roofing"
+      ],
+      "tile": 0,
+      "sample": "market-resident"
+    },
+    {
+      "object": "M_0928_GT01",
+      "unit": "GT01",
+      "oldMaterials": [
+        "P4_Static_stucco"
+      ],
+      "tile": 2,
+      "sample": "gate"
+    },
+    {
+      "object": "M_0929_GT01",
+      "unit": "GT01",
+      "oldMaterials": [
+        "P4_Static_roofing"
+      ],
+      "tile": 0,
+      "sample": "gate"
+    },
+    {
+      "object": "M_0930_GT01",
+      "unit": "GT01",
+      "oldMaterials": [
+        "P4_Static_stucco"
+      ],
+      "tile": 2,
+      "sample": "gate"
+    },
+    {
+      "object": "M_0931_GT01",
+      "unit": "GT01",
+      "oldMaterials": [
+        "P4_Static_roofing"
+      ],
+      "tile": 0,
+      "sample": "gate"
+    },
+    {
+      "object": "M_0932_GT01",
+      "unit": "GT01",
+      "oldMaterials": [
+        "P4_Static_roofing"
+      ],
+      "tile": 0,
+      "sample": "gate"
+    },
+    {
+      "object": "M_0933_GT01",
+      "unit": "GT01",
+      "oldMaterials": [
+        "P4_Static_stucco"
+      ],
+      "tile": 2,
+      "sample": "gate"
+    },
+    {
+      "object": "M_0934_GT01",
+      "unit": "GT01",
+      "oldMaterials": [
+        "P4_Static_stucco"
+      ],
+      "tile": 2,
+      "sample": "gate"
+    },
+    {
+      "object": "M_0935_GT01",
+      "unit": "GT01",
+      "oldMaterials": [
+        "P4_Static_roofing"
+      ],
+      "tile": 0,
+      "sample": "gate"
+    },
+    {
+      "object": "M_0936_GT01",
+      "unit": "GT01",
+      "oldMaterials": [
+        "P4_Static_roofing"
+      ],
+      "tile": 0,
+      "sample": "gate"
+    },
+    {
+      "object": "P4_屋面排风座_0754",
+      "unit": "HS02",
+      "oldMaterials": [
+        "P4_Static_metal"
+      ],
+      "tile": 3,
+      "sample": "market-resident"
+    },
+    {
+      "object": "P4_屋面排风座_0795",
+      "unit": "HS02",
+      "oldMaterials": [
+        "P4_Static_metal"
+      ],
+      "tile": 3,
+      "sample": "market-resident"
+    },
+    {
+      "object": "P4_通风百叶箱_2096",
+      "unit": "TR03",
+      "oldMaterials": [
+        "P4_Static_metal"
+      ],
+      "tile": 3,
+      "sample": "west-industrial"
+    },
+    {
+      "object": "P4_厂房维护卷帘_2101",
+      "unit": "TR03",
+      "oldMaterials": [
+        "P4_Static_metal"
+      ],
+      "tile": 3,
+      "sample": "west-industrial"
+    },
+    {
+      "object": "P4_通风百叶箱_2534",
+      "unit": "TR03",
+      "oldMaterials": [
+        "P4_Static_metal"
+      ],
+      "tile": 3,
+      "sample": "west-industrial"
+    },
+    {
+      "object": "P4_厂房维护卷帘_2539",
+      "unit": "TR03",
+      "oldMaterials": [
+        "P4_Static_metal"
+      ],
+      "tile": 3,
+      "sample": "west-industrial"
+    },
+    {
+      "object": "P4_烧烤操作柜_5406",
+      "unit": "MK01",
+      "oldMaterials": [
+        "P4_Static_metal"
+      ],
+      "tile": 3,
+      "sample": "market-resident"
+    },
+    {
+      "object": "P7_west-upper-low-hall_low-repair-hall_body_0092",
+      "unit": "TR03",
+      "oldMaterials": [
+        "P4_Static_stucco"
+      ],
+      "tile": 1,
+      "sample": "west-industrial"
+    },
+    {
+      "object": "P7_west-upper-low-hall_low-repair-hall_door_0093",
+      "unit": "TR03",
+      "oldMaterials": [
+        "P4_Static_metal"
+      ],
+      "tile": 3,
+      "sample": "west-industrial"
+    },
+    {
+      "object": "P7_west-upper-low-hall_low-repair-hall_roof_0109",
+      "unit": "TR03",
+      "oldMaterials": [
+        "P4_Static_roofing"
+      ],
+      "tile": 0,
+      "sample": "west-industrial"
+    },
+    {
+      "object": "P7_west-long-ridge_long-hall-body_0110",
+      "unit": "TR03",
+      "oldMaterials": [
+        "P4_Static_stucco"
+      ],
+      "tile": 1,
+      "sample": "west-industrial"
+    },
+    {
+      "object": "P7_west-long-ridge_long-hall_door_0111",
+      "unit": "TR03",
+      "oldMaterials": [
+        "P4_Static_metal"
+      ],
+      "tile": 3,
+      "sample": "west-industrial"
+    },
+    {
+      "object": "P7_west-long-ridge_long-hall-body_0127",
+      "unit": "TR03",
+      "oldMaterials": [
+        "P4_Static_stucco"
+      ],
+      "tile": 1,
+      "sample": "west-industrial"
+    },
+    {
+      "object": "P7_west-long-ridge_long-hall_door_0128",
+      "unit": "TR03",
+      "oldMaterials": [
+        "P4_Static_metal"
+      ],
+      "tile": 3,
+      "sample": "west-industrial"
+    },
+    {
+      "object": "P7_west-long-ridge_shared-long-ridge_0144",
+      "unit": "TR03",
+      "oldMaterials": [
+        "P4_Static_roofing"
+      ],
+      "tile": 0,
+      "sample": "west-industrial"
+    },
+    {
+      "object": "P7_west-repair-yard_west-repair-yard_back-wall_0146",
+      "unit": "TR03",
+      "oldMaterials": [
+        "P4_Static_brick"
+      ],
+      "tile": 1,
+      "sample": "west-industrial"
+    },
+    {
+      "object": "P7_west-weathered-shell_west-weathered-shell_broken-back_0163",
+      "unit": "TR03",
+      "oldMaterials": [
+        "P4_Static_brick"
+      ],
+      "tile": 1,
+      "sample": "west-industrial"
+    },
+    {
+      "object": "P7_west-weathered-shell_west-weathered-shell_broken-back_0164",
+      "unit": "TR03",
+      "oldMaterials": [
+        "P4_Static_brick"
+      ],
+      "tile": 1,
+      "sample": "west-industrial"
+    },
+    {
+      "object": "P7_west-weathered-shell_west-weathered-shell_broken-back_0165",
+      "unit": "TR03",
+      "oldMaterials": [
+        "P4_Static_brick"
+      ],
+      "tile": 1,
+      "sample": "west-industrial"
+    },
+    {
+      "object": "P7_west-weathered-shell_west-weathered-shell_broken-back_0166",
+      "unit": "TR03",
+      "oldMaterials": [
+        "P4_Static_brick"
+      ],
+      "tile": 1,
+      "sample": "west-industrial"
+    },
+    {
+      "object": "P7_west-weathered-shell_west-weathered-shell_surviving-roof_0177",
+      "unit": "TR03",
+      "oldMaterials": [
+        "P4_Static_roofing"
+      ],
+      "tile": 0,
+      "sample": "west-industrial"
+    },
+    {
+      "object": "P7_west-weathered-shell_west-weathered-shell_fallen-sheet_0178",
+      "unit": "TR03",
+      "oldMaterials": [
+        "P4_Static_roofing"
+      ],
+      "tile": 0,
+      "sample": "west-industrial"
+    },
+    {
+      "object": "P7_market-shared-back-gallery_market-rear-workroom_body_0347",
+      "unit": "MK01",
+      "oldMaterials": [
+        "P4_Static_stucco"
+      ],
+      "tile": 2,
+      "sample": "market-resident"
+    },
+    {
+      "object": "P7_market-shared-back-gallery_market-rear-workroom_door_0348",
+      "unit": "MK01",
+      "oldMaterials": [
+        "P4_Static_metal"
+      ],
+      "tile": 3,
+      "sample": "market-resident"
+    },
+    {
+      "object": "P7_market-shared-back-gallery_market-rear-workroom_roof_0352",
+      "unit": "MK01",
+      "oldMaterials": [
+        "P4_Static_roofing"
+      ],
+      "tile": 0,
+      "sample": "market-resident"
+    },
+    {
+      "object": "P7_market-shared-back-gallery_market-rear-workroom_body_0355",
+      "unit": "MK02",
+      "oldMaterials": [
+        "P4_Static_stucco"
+      ],
+      "tile": 2,
+      "sample": "market-resident"
+    },
+    {
+      "object": "P7_market-shared-back-gallery_market-rear-workroom_door_0356",
+      "unit": "MK02",
+      "oldMaterials": [
+        "P4_Static_metal"
+      ],
+      "tile": 3,
+      "sample": "market-resident"
+    },
+    {
+      "object": "P7_market-shared-back-gallery_market-rear-workroom_roof_0362",
+      "unit": "MK02",
+      "oldMaterials": [
+        "P4_Static_roofing"
+      ],
+      "tile": 0,
+      "sample": "market-resident"
+    },
+    {
+      "object": "P7_market-shared-back-gallery_market-rear-workroom_body_0365",
+      "unit": "MK03",
+      "oldMaterials": [
+        "P4_Static_stucco"
+      ],
+      "tile": 2,
+      "sample": "market-resident"
+    },
+    {
+      "object": "P7_market-shared-back-gallery_market-rear-workroom_door_0366",
+      "unit": "MK03",
+      "oldMaterials": [
+        "P4_Static_metal"
+      ],
+      "tile": 3,
+      "sample": "market-resident"
+    },
+    {
+      "object": "P7_market-shared-back-gallery_market-rear-workroom_roof_0372",
+      "unit": "MK03",
+      "oldMaterials": [
+        "P4_Static_roofing"
+      ],
+      "tile": 0,
+      "sample": "market-resident"
+    },
+    {
+      "object": "P7_middle-resident-court-block_mid-court-workhouse_body_0402",
+      "unit": "HS02",
+      "oldMaterials": [
+        "P4_Static_stucco"
+      ],
+      "tile": 2,
+      "sample": "market-resident"
+    },
+    {
+      "object": "P7_middle-resident-court-block_mid-court-workhouse_door_0403",
+      "unit": "HS02",
+      "oldMaterials": [
+        "P4_Static_metal"
+      ],
+      "tile": 3,
+      "sample": "market-resident"
+    },
+    {
+      "object": "P7_middle-resident-court-block_mid-court-workhouse_roof_0409",
+      "unit": "HS02",
+      "oldMaterials": [
+        "P4_Static_roofing"
+      ],
+      "tile": 0,
+      "sample": "market-resident"
+    },
+    {
+      "object": "P7_middle-resident-court-block_mid-court-return_body_0410",
+      "unit": "HS02",
+      "oldMaterials": [
+        "P4_Static_stucco"
+      ],
+      "tile": 2,
+      "sample": "market-resident"
+    },
+    {
+      "object": "P7_middle-resident-court-block_mid-court-return_roof_0415",
+      "unit": "HS02",
+      "oldMaterials": [
+        "P4_Static_roofing"
+      ],
+      "tile": 0,
+      "sample": "market-resident"
+    },
+    {
+      "object": "P7_middle-resident-court-block_mid-court-upper_body_0416",
+      "unit": "HS02",
+      "oldMaterials": [
+        "P4_Static_stucco"
+      ],
+      "tile": 2,
+      "sample": "market-resident"
+    },
+    {
+      "object": "P7_middle-resident-court-block_mid-court-upper_door_0417",
+      "unit": "HS02",
+      "oldMaterials": [
+        "P4_Static_metal"
+      ],
+      "tile": 3,
+      "sample": "market-resident"
+    },
+    {
+      "object": "P7_middle-resident-court-block_mid-court-upper_roof_0421",
+      "unit": "HS02",
+      "oldMaterials": [
+        "P4_Static_roofing"
+      ],
+      "tile": 0,
+      "sample": "market-resident"
+    },
+    {
+      "object": "P7_middle-resident-court-block_mid-loft-bearing_0422",
+      "unit": "HS02",
+      "oldMaterials": [
+        "P4_Static_metal"
+      ],
+      "tile": 3,
+      "sample": "market-resident"
+    },
+    {
+      "object": "P7_middle-resident-court-block_patched-roof-sheet_0860",
+      "unit": "HS02",
+      "oldMaterials": [
+        "P4_Static_metal"
+      ],
+      "tile": 3,
+      "sample": "market-resident"
+    },
+    {
+      "object": "P7_exposed-equipment-casings_pedestal-front-skin_0971",
+      "unit": "TR03",
+      "oldMaterials": [
+        "P4_Static_metal"
+      ],
+      "tile": 3,
+      "sample": "west-industrial"
+    },
+    {
+      "object": "P7_exposed-equipment-casings_pedestal-west-skin_0972",
+      "unit": "TR03",
+      "oldMaterials": [
+        "P4_Static_metal"
+      ],
+      "tile": 3,
+      "sample": "west-industrial"
+    },
+    {
+      "object": "P7_exposed-equipment-casings_pedestal-service-hatch_0977",
+      "unit": "TR03",
+      "oldMaterials": [
+        "P4_Static_metal"
+      ],
+      "tile": 3,
+      "sample": "west-industrial"
+    },
+    {
+      "object": "P7_exposed-equipment-casings_pedestal-front-skin_0978",
+      "unit": "TR03",
+      "oldMaterials": [
+        "P4_Static_metal"
+      ],
+      "tile": 3,
+      "sample": "west-industrial"
+    },
+    {
+      "object": "P7_exposed-equipment-casings_pedestal-west-skin_0979",
+      "unit": "TR03",
+      "oldMaterials": [
+        "P4_Static_metal"
+      ],
+      "tile": 3,
+      "sample": "west-industrial"
+    },
+    {
+      "object": "P7_exposed-equipment-casings_pedestal-service-hatch_0984",
+      "unit": "TR03",
+      "oldMaterials": [
+        "P4_Static_metal"
+      ],
+      "tile": 3,
+      "sample": "west-industrial"
+    },
+    {
+      "object": "M_0017_shared",
+      "unit": "shared",
+      "oldMaterials": [
+        "P4_Static_retaining",
+        "P4_Static_asphalt"
+      ],
+      "tile": 7,
+      "sample": "west-industrial"
+    },
+    {
+      "object": "M_1077_BR01",
+      "unit": "BR01",
+      "oldMaterials": [
+        "P4_Static_roofing"
+      ],
+      "tile": 4,
+      "sample": "bridge"
+    },
+    {
+      "object": "M_1299_road",
+      "unit": "shared",
+      "oldMaterials": [
+        "P4_Static_asphalt"
+      ],
+      "tile": 6,
+      "sample": "road-hierarchy"
+    },
+    {
+      "object": "M_1300_road",
+      "unit": "shared",
+      "oldMaterials": [
+        "P4_Static_retaining"
+      ],
+      "sample": "quieter-road-edges",
+      "tile": null
+    },
+    {
+      "object": "M_1301_road",
+      "unit": "shared",
+      "oldMaterials": [
+        "P4_Static_asphalt"
+      ],
+      "tile": 5,
+      "sample": "road-hierarchy"
+    },
+    {
+      "object": "M_1302_road",
+      "unit": "shared",
+      "oldMaterials": [
+        "P4_Static_retaining"
+      ],
+      "sample": "quieter-road-edges",
+      "tile": null
+    },
+    {
+      "object": "M_1303_road",
+      "unit": "shared",
+      "oldMaterials": [
+        "P4_Static_asphalt"
+      ],
+      "tile": 5,
+      "sample": "road-hierarchy"
+    },
+    {
+      "object": "M_1304_road",
+      "unit": "shared",
+      "oldMaterials": [
+        "P4_Static_retaining"
+      ],
+      "sample": "quieter-road-edges",
+      "tile": null
+    },
+    {
+      "object": "M_1305_road",
+      "unit": "shared",
+      "oldMaterials": [
+        "P4_Static_asphalt"
+      ],
+      "tile": 5,
+      "sample": "road-hierarchy"
+    },
+    {
+      "object": "M_1306_road",
+      "unit": "shared",
+      "oldMaterials": [
+        "P4_Static_retaining"
+      ],
+      "sample": "quieter-road-edges",
+      "tile": null
+    },
+    {
+      "object": "M_1307_road",
+      "unit": "shared",
+      "oldMaterials": [
+        "P4_Static_asphalt"
+      ],
+      "tile": 5,
+      "sample": "road-hierarchy"
+    },
+    {
+      "object": "M_1308_road",
+      "unit": "shared",
+      "oldMaterials": [
+        "P4_Static_retaining"
+      ],
+      "sample": "quieter-road-edges",
+      "tile": null
+    },
+    {
+      "object": "M_1309_road",
+      "unit": "shared",
+      "oldMaterials": [
+        "P4_Static_asphalt"
+      ],
+      "tile": 5,
+      "sample": "road-hierarchy"
+    },
+    {
+      "object": "M_1310_road",
+      "unit": "shared",
+      "oldMaterials": [
+        "P4_Static_retaining"
+      ],
+      "sample": "quieter-road-edges",
+      "tile": null
+    },
+    {
+      "object": "M_1311_road",
+      "unit": "shared",
+      "oldMaterials": [
+        "P4_Static_asphalt"
+      ],
+      "tile": 5,
+      "sample": "road-hierarchy"
+    },
+    {
+      "object": "M_1312_road",
+      "unit": "shared",
+      "oldMaterials": [
+        "P4_Static_retaining"
+      ],
+      "sample": "quieter-road-edges",
+      "tile": null
+    },
+    {
+      "object": "M_1313_road",
+      "unit": "shared",
+      "oldMaterials": [
+        "P4_Static_asphalt"
+      ],
+      "tile": 5,
+      "sample": "road-hierarchy"
+    },
+    {
+      "object": "M_1314_road",
+      "unit": "shared",
+      "oldMaterials": [
+        "P4_Static_retaining"
+      ],
+      "sample": "quieter-road-edges",
+      "tile": null
+    },
+    {
+      "object": "M_1315_road",
+      "unit": "shared",
+      "oldMaterials": [
+        "P4_Static_asphalt"
+      ],
+      "tile": 5,
+      "sample": "road-hierarchy"
+    },
+    {
+      "object": "M_1316_road",
+      "unit": "shared",
+      "oldMaterials": [
+        "P4_Static_retaining"
+      ],
+      "sample": "quieter-road-edges",
+      "tile": null
+    },
+    {
+      "object": "M_1317_road",
+      "unit": "shared",
+      "oldMaterials": [
+        "P4_Static_asphalt"
+      ],
+      "tile": 5,
+      "sample": "road-hierarchy"
+    },
+    {
+      "object": "M_1318_road",
+      "unit": "shared",
+      "oldMaterials": [
+        "P4_Static_retaining"
+      ],
+      "sample": "quieter-road-edges",
+      "tile": null
+    },
+    {
+      "object": "M_1319_road",
+      "unit": "shared",
+      "oldMaterials": [
+        "P4_Static_asphalt"
+      ],
+      "tile": 5,
+      "sample": "road-hierarchy"
+    },
+    {
+      "object": "M_1320_road",
+      "unit": "shared",
+      "oldMaterials": [
+        "P4_Static_retaining"
+      ],
+      "sample": "quieter-road-edges",
+      "tile": null
+    },
+    {
+      "object": "M_1321_road",
+      "unit": "shared",
+      "oldMaterials": [
+        "P4_Static_asphalt"
+      ],
+      "tile": 5,
+      "sample": "road-hierarchy"
+    },
+    {
+      "object": "M_1322_road",
+      "unit": "shared",
+      "oldMaterials": [
+        "P4_Static_retaining"
+      ],
+      "sample": "quieter-road-edges",
+      "tile": null
+    },
+    {
+      "object": "M_1323_road",
+      "unit": "shared",
+      "oldMaterials": [
+        "P4_Static_asphalt"
+      ],
+      "tile": 5,
+      "sample": "road-hierarchy"
+    },
+    {
+      "object": "M_1324_road",
+      "unit": "shared",
+      "oldMaterials": [
+        "P4_Static_retaining"
+      ],
+      "sample": "quieter-road-edges",
+      "tile": null
+    },
+    {
+      "object": "M_1325_road",
+      "unit": "shared",
+      "oldMaterials": [
+        "P4_Static_asphalt"
+      ],
+      "tile": 5,
+      "sample": "road-hierarchy"
+    },
+    {
+      "object": "M_1326_road",
+      "unit": "shared",
+      "oldMaterials": [
+        "P4_Static_retaining"
+      ],
+      "sample": "quieter-road-edges",
+      "tile": null
+    },
+    {
+      "object": "M_1327_road",
+      "unit": "shared",
+      "oldMaterials": [
+        "P4_Static_asphalt"
+      ],
+      "tile": 5,
+      "sample": "road-hierarchy"
+    },
+    {
+      "object": "M_1328_road",
+      "unit": "shared",
+      "oldMaterials": [
+        "P4_Static_retaining"
+      ],
+      "sample": "quieter-road-edges",
+      "tile": null
+    },
+    {
+      "object": "M_1329_road",
+      "unit": "shared",
+      "oldMaterials": [
+        "P4_Static_asphalt"
+      ],
+      "tile": 5,
+      "sample": "road-hierarchy"
+    },
+    {
+      "object": "M_1330_road",
+      "unit": "shared",
+      "oldMaterials": [
+        "P4_Static_retaining"
+      ],
+      "sample": "quieter-road-edges",
+      "tile": null
+    },
+    {
+      "object": "M_1331_road",
+      "unit": "shared",
+      "oldMaterials": [
+        "P4_Static_asphalt"
+      ],
+      "tile": 5,
+      "sample": "road-hierarchy"
+    },
+    {
+      "object": "M_1332_road",
+      "unit": "shared",
+      "oldMaterials": [
+        "P4_Static_retaining"
+      ],
+      "sample": "quieter-road-edges",
+      "tile": null
+    },
+    {
+      "object": "M_1333_road",
+      "unit": "shared",
+      "oldMaterials": [
+        "P4_Static_asphalt"
+      ],
+      "tile": 5,
+      "sample": "road-hierarchy"
+    },
+    {
+      "object": "M_1334_road",
+      "unit": "shared",
+      "oldMaterials": [
+        "P4_Static_retaining"
+      ],
+      "sample": "quieter-road-edges",
+      "tile": null
+    },
+    {
+      "object": "M_1335_road",
+      "unit": "shared",
+      "oldMaterials": [
+        "P4_Static_asphalt"
+      ],
+      "tile": 5,
+      "sample": "road-hierarchy"
+    },
+    {
+      "object": "M_1336_road",
+      "unit": "shared",
+      "oldMaterials": [
+        "P4_Static_retaining"
+      ],
+      "sample": "quieter-road-edges",
+      "tile": null
+    },
+    {
+      "object": "M_1337_road",
+      "unit": "shared",
+      "oldMaterials": [
+        "P4_Static_asphalt"
+      ],
+      "tile": 5,
+      "sample": "road-hierarchy"
+    },
+    {
+      "object": "M_1338_road",
+      "unit": "shared",
+      "oldMaterials": [
+        "P4_Static_retaining"
+      ],
+      "sample": "quieter-road-edges",
+      "tile": null
+    },
+    {
+      "object": "M_1339_road",
+      "unit": "shared",
+      "oldMaterials": [
+        "P4_Static_asphalt"
+      ],
+      "tile": 5,
+      "sample": "road-hierarchy"
+    },
+    {
+      "object": "M_1340_road",
+      "unit": "shared",
+      "oldMaterials": [
+        "P4_Static_retaining"
+      ],
+      "sample": "quieter-road-edges",
+      "tile": null
+    },
+    {
+      "object": "M_1341_road",
+      "unit": "shared",
+      "oldMaterials": [
+        "P4_Static_asphalt"
+      ],
+      "tile": 5,
+      "sample": "road-hierarchy"
+    },
+    {
+      "object": "M_1342_road",
+      "unit": "shared",
+      "oldMaterials": [
+        "P4_Static_retaining"
+      ],
+      "sample": "quieter-road-edges",
+      "tile": null
+    },
+    {
+      "object": "M_1343_road",
+      "unit": "shared",
+      "oldMaterials": [
+        "P4_Static_asphalt"
+      ],
+      "tile": 5,
+      "sample": "road-hierarchy"
+    },
+    {
+      "object": "M_1344_road",
+      "unit": "shared",
+      "oldMaterials": [
+        "P4_Static_retaining"
+      ],
+      "sample": "quieter-road-edges",
+      "tile": null
+    },
+    {
+      "object": "M_1345_road",
+      "unit": "shared",
+      "oldMaterials": [
+        "P4_Static_asphalt"
+      ],
+      "tile": 5,
+      "sample": "road-hierarchy"
+    },
+    {
+      "object": "M_1346_road",
+      "unit": "shared",
+      "oldMaterials": [
+        "P4_Static_retaining"
+      ],
+      "sample": "quieter-road-edges",
+      "tile": null
+    },
+    {
+      "object": "M_1347_road",
+      "unit": "shared",
+      "oldMaterials": [
+        "P4_Static_asphalt"
+      ],
+      "tile": 5,
+      "sample": "road-hierarchy"
+    },
+    {
+      "object": "M_1348_road",
+      "unit": "shared",
+      "oldMaterials": [
+        "P4_Static_retaining"
+      ],
+      "sample": "quieter-road-edges",
+      "tile": null
+    },
+    {
+      "object": "M_1349_road",
+      "unit": "shared",
+      "oldMaterials": [
+        "P4_Static_asphalt"
+      ],
+      "tile": 5,
+      "sample": "road-hierarchy"
+    },
+    {
+      "object": "M_1350_road",
+      "unit": "shared",
+      "oldMaterials": [
+        "P4_Static_retaining"
+      ],
+      "sample": "quieter-road-edges",
+      "tile": null
+    },
+    {
+      "object": "M_1351_road",
+      "unit": "shared",
+      "oldMaterials": [
+        "P4_Static_asphalt"
+      ],
+      "tile": 5,
+      "sample": "road-hierarchy"
+    },
+    {
+      "object": "M_1352_road",
+      "unit": "shared",
+      "oldMaterials": [
+        "P4_Static_retaining"
+      ],
+      "sample": "quieter-road-edges",
+      "tile": null
+    },
+    {
+      "object": "M_1353_road",
+      "unit": "shared",
+      "oldMaterials": [
+        "P4_Static_asphalt"
+      ],
+      "tile": 5,
+      "sample": "road-hierarchy"
+    },
+    {
+      "object": "M_1354_road",
+      "unit": "shared",
+      "oldMaterials": [
+        "P4_Static_retaining"
+      ],
+      "sample": "quieter-road-edges",
+      "tile": null
+    },
+    {
+      "object": "M_1355_road",
+      "unit": "shared",
+      "oldMaterials": [
+        "P4_Static_asphalt"
+      ],
+      "tile": 5,
+      "sample": "road-hierarchy"
+    },
+    {
+      "object": "M_1356_road",
+      "unit": "shared",
+      "oldMaterials": [
+        "P4_Static_retaining"
+      ],
+      "sample": "quieter-road-edges",
+      "tile": null
+    },
+    {
+      "object": "M_1357_road",
+      "unit": "shared",
+      "oldMaterials": [
+        "P4_Static_asphalt"
+      ],
+      "tile": 5,
+      "sample": "road-hierarchy"
+    },
+    {
+      "object": "M_1358_road",
+      "unit": "shared",
+      "oldMaterials": [
+        "P4_Static_retaining"
+      ],
+      "sample": "quieter-road-edges",
+      "tile": null
+    },
+    {
+      "object": "M_1359_road",
+      "unit": "shared",
+      "oldMaterials": [
+        "P4_Static_asphalt"
+      ],
+      "tile": 5,
+      "sample": "road-hierarchy"
+    },
+    {
+      "object": "M_1360_road",
+      "unit": "shared",
+      "oldMaterials": [
+        "P4_Static_retaining"
+      ],
+      "sample": "quieter-road-edges",
+      "tile": null
+    },
+    {
+      "object": "M_1361_road",
+      "unit": "shared",
+      "oldMaterials": [
+        "P4_Static_asphalt"
+      ],
+      "tile": 5,
+      "sample": "road-hierarchy"
+    },
+    {
+      "object": "M_1362_road",
+      "unit": "shared",
+      "oldMaterials": [
+        "P4_Static_retaining"
+      ],
+      "sample": "quieter-road-edges",
+      "tile": null
+    },
+    {
+      "object": "M_1363_road",
+      "unit": "shared",
+      "oldMaterials": [
+        "P4_Static_asphalt"
+      ],
+      "tile": 5,
+      "sample": "road-hierarchy"
+    },
+    {
+      "object": "M_1364_road",
+      "unit": "shared",
+      "oldMaterials": [
+        "P4_Static_retaining"
+      ],
+      "sample": "quieter-road-edges",
+      "tile": null
+    },
+    {
+      "object": "M_1365_road",
+      "unit": "shared",
+      "oldMaterials": [
+        "P4_Static_asphalt"
+      ],
+      "tile": 5,
+      "sample": "road-hierarchy"
+    },
+    {
+      "object": "M_1366_road",
+      "unit": "shared",
+      "oldMaterials": [
+        "P4_Static_retaining"
+      ],
+      "sample": "quieter-road-edges",
+      "tile": null
+    },
+    {
+      "object": "M_1367_road",
+      "unit": "shared",
+      "oldMaterials": [
+        "P4_Static_asphalt"
+      ],
+      "tile": 5,
+      "sample": "road-hierarchy"
+    },
+    {
+      "object": "M_1368_road",
+      "unit": "shared",
+      "oldMaterials": [
+        "P4_Static_retaining"
+      ],
+      "sample": "quieter-road-edges",
+      "tile": null
+    },
+    {
+      "object": "M_1369_road",
+      "unit": "shared",
+      "oldMaterials": [
+        "P4_Static_asphalt"
+      ],
+      "tile": 5,
+      "sample": "road-hierarchy"
+    },
+    {
+      "object": "M_1370_road",
+      "unit": "shared",
+      "oldMaterials": [
+        "P4_Static_retaining"
+      ],
+      "sample": "quieter-road-edges",
+      "tile": null
+    },
+    {
+      "object": "M_1371_road",
+      "unit": "shared",
+      "oldMaterials": [
+        "P4_Static_asphalt"
+      ],
+      "tile": 5,
+      "sample": "road-hierarchy"
+    },
+    {
+      "object": "M_1372_road",
+      "unit": "shared",
+      "oldMaterials": [
+        "P4_Static_retaining"
+      ],
+      "sample": "quieter-road-edges",
+      "tile": null
+    },
+    {
+      "object": "M_1373_road",
+      "unit": "shared",
+      "oldMaterials": [
+        "P4_Static_asphalt"
+      ],
+      "tile": 5,
+      "sample": "road-hierarchy"
+    },
+    {
+      "object": "M_1374_road",
+      "unit": "shared",
+      "oldMaterials": [
+        "P4_Static_retaining"
+      ],
+      "sample": "quieter-road-edges",
+      "tile": null
+    },
+    {
+      "object": "M_1375_road",
+      "unit": "shared",
+      "oldMaterials": [
+        "P4_Static_asphalt"
+      ],
+      "tile": 5,
+      "sample": "road-hierarchy"
+    },
+    {
+      "object": "M_1376_road",
+      "unit": "shared",
+      "oldMaterials": [
+        "P4_Static_retaining"
+      ],
+      "sample": "quieter-road-edges",
+      "tile": null
+    },
+    {
+      "object": "M_1377_road",
+      "unit": "shared",
+      "oldMaterials": [
+        "P4_Static_asphalt"
+      ],
+      "tile": 5,
+      "sample": "road-hierarchy"
+    },
+    {
+      "object": "M_1378_road",
+      "unit": "shared",
+      "oldMaterials": [
+        "P4_Static_retaining"
+      ],
+      "sample": "quieter-road-edges",
+      "tile": null
+    },
+    {
+      "object": "M_1379_road",
+      "unit": "shared",
+      "oldMaterials": [
+        "P4_Static_asphalt"
+      ],
+      "tile": 5,
+      "sample": "road-hierarchy"
+    },
+    {
+      "object": "M_1380_road",
+      "unit": "shared",
+      "oldMaterials": [
+        "P4_Static_retaining"
+      ],
+      "sample": "quieter-road-edges",
+      "tile": null
+    },
+    {
+      "object": "M_1381_road",
+      "unit": "shared",
+      "oldMaterials": [
+        "P4_Static_asphalt"
+      ],
+      "tile": 5,
+      "sample": "road-hierarchy"
+    },
+    {
+      "object": "M_1382_road",
+      "unit": "shared",
+      "oldMaterials": [
+        "P4_Static_retaining"
+      ],
+      "sample": "quieter-road-edges",
+      "tile": null
+    },
+    {
+      "object": "M_1383_road",
+      "unit": "shared",
+      "oldMaterials": [
+        "P4_Static_asphalt"
+      ],
+      "tile": 5,
+      "sample": "road-hierarchy"
+    },
+    {
+      "object": "M_1384_road",
+      "unit": "shared",
+      "oldMaterials": [
+        "P4_Static_retaining"
+      ],
+      "sample": "quieter-road-edges",
+      "tile": null
+    },
+    {
+      "object": "M_1385_road",
+      "unit": "shared",
+      "oldMaterials": [
+        "P4_Static_asphalt"
+      ],
+      "tile": 5,
+      "sample": "road-hierarchy"
+    },
+    {
+      "object": "M_1386_road",
+      "unit": "shared",
+      "oldMaterials": [
+        "P4_Static_retaining"
+      ],
+      "sample": "quieter-road-edges",
+      "tile": null
+    },
+    {
+      "object": "M_1387_road",
+      "unit": "shared",
+      "oldMaterials": [
+        "P4_Static_asphalt"
+      ],
+      "tile": 5,
+      "sample": "road-hierarchy"
+    },
+    {
+      "object": "M_1388_road",
+      "unit": "shared",
+      "oldMaterials": [
+        "P4_Static_retaining"
+      ],
+      "sample": "quieter-road-edges",
+      "tile": null
+    },
+    {
+      "object": "M_1389_road",
+      "unit": "shared",
+      "oldMaterials": [
+        "P4_Static_asphalt"
+      ],
+      "tile": 5,
+      "sample": "road-hierarchy"
+    },
+    {
+      "object": "M_1390_road",
+      "unit": "shared",
+      "oldMaterials": [
+        "P4_Static_retaining"
+      ],
+      "sample": "quieter-road-edges",
+      "tile": null
+    },
+    {
+      "object": "M_1391_road",
+      "unit": "shared",
+      "oldMaterials": [
+        "P4_Static_asphalt"
+      ],
+      "tile": 5,
+      "sample": "road-hierarchy"
+    },
+    {
+      "object": "M_1392_road",
+      "unit": "shared",
+      "oldMaterials": [
+        "P4_Static_retaining"
+      ],
+      "sample": "quieter-road-edges",
+      "tile": null
+    },
+    {
+      "object": "M_1393_road",
+      "unit": "shared",
+      "oldMaterials": [
+        "P4_Static_asphalt"
+      ],
+      "tile": 5,
+      "sample": "road-hierarchy"
+    },
+    {
+      "object": "M_1394_road",
+      "unit": "shared",
+      "oldMaterials": [
+        "P4_Static_retaining"
+      ],
+      "sample": "quieter-road-edges",
+      "tile": null
+    },
+    {
+      "object": "M_1395_road",
+      "unit": "shared",
+      "oldMaterials": [
+        "P4_Static_asphalt"
+      ],
+      "tile": 5,
+      "sample": "road-hierarchy"
+    },
+    {
+      "object": "M_1396_road",
+      "unit": "shared",
+      "oldMaterials": [
+        "P4_Static_retaining"
+      ],
+      "sample": "quieter-road-edges",
+      "tile": null
+    },
+    {
+      "object": "M_1397_road",
+      "unit": "shared",
+      "oldMaterials": [
+        "P4_Static_asphalt"
+      ],
+      "tile": 5,
+      "sample": "road-hierarchy"
+    },
+    {
+      "object": "M_1398_road",
+      "unit": "shared",
+      "oldMaterials": [
+        "P4_Static_retaining"
+      ],
+      "sample": "quieter-road-edges",
+      "tile": null
+    },
+    {
+      "object": "M_1399_road",
+      "unit": "shared",
+      "oldMaterials": [
+        "P4_Static_asphalt"
+      ],
+      "tile": 5,
+      "sample": "road-hierarchy"
+    },
+    {
+      "object": "M_1400_road",
+      "unit": "shared",
+      "oldMaterials": [
+        "P4_Static_retaining"
+      ],
+      "sample": "quieter-road-edges",
+      "tile": null
+    },
+    {
+      "object": "M_1401_road",
+      "unit": "shared",
+      "oldMaterials": [
+        "P4_Static_asphalt"
+      ],
+      "tile": 5,
+      "sample": "road-hierarchy"
+    },
+    {
+      "object": "M_1402_road",
+      "unit": "shared",
+      "oldMaterials": [
+        "P4_Static_retaining"
+      ],
+      "sample": "quieter-road-edges",
+      "tile": null
+    },
+    {
+      "object": "M_1403_road",
+      "unit": "shared",
+      "oldMaterials": [
+        "P4_Static_asphalt"
+      ],
+      "tile": 5,
+      "sample": "road-hierarchy"
+    },
+    {
+      "object": "M_1404_road",
+      "unit": "shared",
+      "oldMaterials": [
+        "P4_Static_retaining"
+      ],
+      "sample": "quieter-road-edges",
+      "tile": null
+    },
+    {
+      "object": "M_1405_road",
+      "unit": "shared",
+      "oldMaterials": [
+        "P4_Static_asphalt"
+      ],
+      "tile": 5,
+      "sample": "road-hierarchy"
+    },
+    {
+      "object": "M_1406_road",
+      "unit": "shared",
+      "oldMaterials": [
+        "P4_Static_retaining"
+      ],
+      "sample": "quieter-road-edges",
+      "tile": null
+    },
+    {
+      "object": "M_1407_road",
+      "unit": "shared",
+      "oldMaterials": [
+        "P4_Static_asphalt"
+      ],
+      "tile": 5,
+      "sample": "road-hierarchy"
+    },
+    {
+      "object": "M_1408_road",
+      "unit": "shared",
+      "oldMaterials": [
+        "P4_Static_retaining"
+      ],
+      "sample": "quieter-road-edges",
+      "tile": null
+    },
+    {
+      "object": "M_1409_road",
+      "unit": "shared",
+      "oldMaterials": [
+        "P4_Static_asphalt"
+      ],
+      "tile": 5,
+      "sample": "road-hierarchy"
+    },
+    {
+      "object": "M_1410_road",
+      "unit": "shared",
+      "oldMaterials": [
+        "P4_Static_retaining"
+      ],
+      "sample": "quieter-road-edges",
+      "tile": null
+    },
+    {
+      "object": "M_1411_road",
+      "unit": "shared",
+      "oldMaterials": [
+        "P4_Static_asphalt"
+      ],
+      "tile": 5,
+      "sample": "road-hierarchy"
+    },
+    {
+      "object": "M_1412_road",
+      "unit": "shared",
+      "oldMaterials": [
+        "P4_Static_retaining"
+      ],
+      "sample": "quieter-road-edges",
+      "tile": null
+    },
+    {
+      "object": "M_1413_road",
+      "unit": "shared",
+      "oldMaterials": [
+        "P4_Static_asphalt"
+      ],
+      "tile": 5,
+      "sample": "road-hierarchy"
+    },
+    {
+      "object": "M_1414_road",
+      "unit": "shared",
+      "oldMaterials": [
+        "P4_Static_retaining"
+      ],
+      "sample": "quieter-road-edges",
+      "tile": null
+    },
+    {
+      "object": "M_1415_road",
+      "unit": "shared",
+      "oldMaterials": [
+        "P4_Static_asphalt"
+      ],
+      "tile": 5,
+      "sample": "road-hierarchy"
+    },
+    {
+      "object": "M_1416_road",
+      "unit": "shared",
+      "oldMaterials": [
+        "P4_Static_retaining"
+      ],
+      "sample": "quieter-road-edges",
+      "tile": null
+    },
+    {
+      "object": "M_1417_road",
+      "unit": "shared",
+      "oldMaterials": [
+        "P4_Static_asphalt"
+      ],
+      "tile": 5,
+      "sample": "road-hierarchy"
+    },
+    {
+      "object": "M_1418_road",
+      "unit": "shared",
+      "oldMaterials": [
+        "P4_Static_retaining"
+      ],
+      "sample": "quieter-road-edges",
+      "tile": null
+    },
+    {
+      "object": "M_1419_road",
+      "unit": "shared",
+      "oldMaterials": [
+        "P4_Static_asphalt"
+      ],
+      "tile": 5,
+      "sample": "road-hierarchy"
+    },
+    {
+      "object": "M_1420_road",
+      "unit": "shared",
+      "oldMaterials": [
+        "P4_Static_retaining"
+      ],
+      "sample": "quieter-road-edges",
+      "tile": null
+    },
+    {
+      "object": "M_1421_road",
+      "unit": "shared",
+      "oldMaterials": [
+        "P4_Static_asphalt"
+      ],
+      "tile": 5,
+      "sample": "road-hierarchy"
+    },
+    {
+      "object": "M_1422_road",
+      "unit": "shared",
+      "oldMaterials": [
+        "P4_Static_retaining"
+      ],
+      "sample": "quieter-road-edges",
+      "tile": null
+    },
+    {
+      "object": "M_1423_road",
+      "unit": "shared",
+      "oldMaterials": [
+        "P4_Static_asphalt"
+      ],
+      "tile": 5,
+      "sample": "road-hierarchy"
+    },
+    {
+      "object": "M_1424_road",
+      "unit": "shared",
+      "oldMaterials": [
+        "P4_Static_retaining"
+      ],
+      "sample": "quieter-road-edges",
+      "tile": null
+    },
+    {
+      "object": "M_1425_road",
+      "unit": "shared",
+      "oldMaterials": [
+        "P4_Static_asphalt"
+      ],
+      "tile": 5,
+      "sample": "road-hierarchy"
+    },
+    {
+      "object": "M_1426_road",
+      "unit": "shared",
+      "oldMaterials": [
+        "P4_Static_retaining"
+      ],
+      "sample": "quieter-road-edges",
+      "tile": null
+    },
+    {
+      "object": "M_1427_road",
+      "unit": "shared",
+      "oldMaterials": [
+        "P4_Static_asphalt"
+      ],
+      "tile": 5,
+      "sample": "road-hierarchy"
+    },
+    {
+      "object": "M_1428_road",
+      "unit": "shared",
+      "oldMaterials": [
+        "P4_Static_retaining"
+      ],
+      "sample": "quieter-road-edges",
+      "tile": null
+    },
+    {
+      "object": "M_1429_road",
+      "unit": "shared",
+      "oldMaterials": [
+        "P4_Static_asphalt"
+      ],
+      "tile": 5,
+      "sample": "road-hierarchy"
+    },
+    {
+      "object": "M_1430_road",
+      "unit": "shared",
+      "oldMaterials": [
+        "P4_Static_retaining"
+      ],
+      "sample": "quieter-road-edges",
+      "tile": null
+    },
+    {
+      "object": "M_1431_road",
+      "unit": "shared",
+      "oldMaterials": [
+        "P4_Static_asphalt"
+      ],
+      "tile": 5,
+      "sample": "road-hierarchy"
+    },
+    {
+      "object": "M_1432_road",
+      "unit": "shared",
+      "oldMaterials": [
+        "P4_Static_retaining"
+      ],
+      "sample": "quieter-road-edges",
+      "tile": null
+    },
+    {
+      "object": "M_1433_road",
+      "unit": "shared",
+      "oldMaterials": [
+        "P4_Static_asphalt"
+      ],
+      "tile": 5,
+      "sample": "road-hierarchy"
+    },
+    {
+      "object": "M_1434_road",
+      "unit": "shared",
+      "oldMaterials": [
+        "P4_Static_retaining"
+      ],
+      "sample": "quieter-road-edges",
+      "tile": null
+    },
+    {
+      "object": "M_1435_road",
+      "unit": "shared",
+      "oldMaterials": [
+        "P4_Static_asphalt"
+      ],
+      "tile": 6,
+      "sample": "road-hierarchy"
+    },
+    {
+      "object": "M_1436_road",
+      "unit": "shared",
+      "oldMaterials": [
+        "P4_Static_retaining"
+      ],
+      "sample": "quieter-road-edges",
+      "tile": null
+    },
+    {
+      "object": "M_1437_road",
+      "unit": "shared",
+      "oldMaterials": [
+        "P4_Static_asphalt"
+      ],
+      "tile": 5,
+      "sample": "road-hierarchy"
+    },
+    {
+      "object": "M_1438_road",
+      "unit": "shared",
+      "oldMaterials": [
+        "P4_Static_retaining"
+      ],
+      "sample": "quieter-road-edges",
+      "tile": null
+    },
+    {
+      "object": "M_1439_road",
+      "unit": "shared",
+      "oldMaterials": [
+        "P4_Static_asphalt"
+      ],
+      "tile": 5,
+      "sample": "road-hierarchy"
+    },
+    {
+      "object": "M_1440_road",
+      "unit": "shared",
+      "oldMaterials": [
+        "P4_Static_retaining"
+      ],
+      "sample": "quieter-road-edges",
+      "tile": null
+    },
+    {
+      "object": "M_1441_road",
+      "unit": "shared",
+      "oldMaterials": [
+        "P4_Static_asphalt"
+      ],
+      "tile": 5,
+      "sample": "road-hierarchy"
+    },
+    {
+      "object": "M_1442_road",
+      "unit": "shared",
+      "oldMaterials": [
+        "P4_Static_retaining"
+      ],
+      "sample": "quieter-road-edges",
+      "tile": null
+    },
+    {
+      "object": "M_1443_road",
+      "unit": "shared",
+      "oldMaterials": [
+        "P4_Static_asphalt"
+      ],
+      "tile": 6,
+      "sample": "road-hierarchy"
+    },
+    {
+      "object": "M_1444_road",
+      "unit": "shared",
+      "oldMaterials": [
+        "P4_Static_retaining"
+      ],
+      "sample": "quieter-road-edges",
+      "tile": null
+    },
+    {
+      "object": "M_1445_road",
+      "unit": "shared",
+      "oldMaterials": [
+        "P4_Static_asphalt"
+      ],
+      "tile": 5,
+      "sample": "road-hierarchy"
+    },
+    {
+      "object": "M_1446_road",
+      "unit": "shared",
+      "oldMaterials": [
+        "P4_Static_retaining"
+      ],
+      "sample": "quieter-road-edges",
+      "tile": null
+    },
+    {
+      "object": "M_1447_road",
+      "unit": "shared",
+      "oldMaterials": [
+        "P4_Static_asphalt"
+      ],
+      "tile": 5,
+      "sample": "road-hierarchy"
+    },
+    {
+      "object": "M_1448_road",
+      "unit": "shared",
+      "oldMaterials": [
+        "P4_Static_retaining"
+      ],
+      "sample": "quieter-road-edges",
+      "tile": null
+    },
+    {
+      "object": "M_1449_road",
+      "unit": "shared",
+      "oldMaterials": [
+        "P4_Static_asphalt"
+      ],
+      "tile": 5,
+      "sample": "road-hierarchy"
+    },
+    {
+      "object": "M_1450_road",
+      "unit": "shared",
+      "oldMaterials": [
+        "P4_Static_retaining"
+      ],
+      "sample": "quieter-road-edges",
+      "tile": null
+    },
+    {
+      "object": "M_1451_road",
+      "unit": "shared",
+      "oldMaterials": [
+        "P4_Static_asphalt"
+      ],
+      "tile": 4,
+      "sample": "road-hierarchy"
+    },
+    {
+      "object": "M_1452_road",
+      "unit": "shared",
+      "oldMaterials": [
+        "P4_Static_retaining"
+      ],
+      "sample": "quieter-road-edges",
+      "tile": null
+    },
+    {
+      "object": "M_1453_road",
+      "unit": "shared",
+      "oldMaterials": [
+        "P4_Static_asphalt"
+      ],
+      "tile": 4,
+      "sample": "road-hierarchy"
+    },
+    {
+      "object": "M_1454_road",
+      "unit": "shared",
+      "oldMaterials": [
+        "P4_Static_retaining"
+      ],
+      "sample": "quieter-road-edges",
+      "tile": null
+    },
+    {
+      "object": "M_1455_road",
+      "unit": "shared",
+      "oldMaterials": [
+        "P4_Static_asphalt"
+      ],
+      "tile": 4,
+      "sample": "road-hierarchy"
+    },
+    {
+      "object": "M_1456_road",
+      "unit": "shared",
+      "oldMaterials": [
+        "P4_Static_retaining"
+      ],
+      "sample": "quieter-road-edges",
+      "tile": null
+    },
+    {
+      "object": "M_1457_road",
+      "unit": "shared",
+      "oldMaterials": [
+        "P4_Static_asphalt"
+      ],
+      "tile": 4,
+      "sample": "road-hierarchy"
+    },
+    {
+      "object": "M_1458_road",
+      "unit": "shared",
+      "oldMaterials": [
+        "P4_Static_retaining"
+      ],
+      "sample": "quieter-road-edges",
+      "tile": null
+    },
+    {
+      "object": "M_1459_road",
+      "unit": "shared",
+      "oldMaterials": [
+        "P4_Static_asphalt"
+      ],
+      "tile": 4,
+      "sample": "road-hierarchy"
+    },
+    {
+      "object": "M_1460_road",
+      "unit": "shared",
+      "oldMaterials": [
+        "P4_Static_retaining"
+      ],
+      "sample": "quieter-road-edges",
+      "tile": null
+    },
+    {
+      "object": "M_1461_road",
+      "unit": "shared",
+      "oldMaterials": [
+        "P4_Static_asphalt"
+      ],
+      "tile": 4,
+      "sample": "road-hierarchy"
+    },
+    {
+      "object": "M_1462_road",
+      "unit": "shared",
+      "oldMaterials": [
+        "P4_Static_retaining"
+      ],
+      "sample": "quieter-road-edges",
+      "tile": null
+    },
+    {
+      "object": "M_1463_road",
+      "unit": "shared",
+      "oldMaterials": [
+        "P4_Static_asphalt"
+      ],
+      "tile": 4,
+      "sample": "road-hierarchy"
+    },
+    {
+      "object": "M_1464_road",
+      "unit": "shared",
+      "oldMaterials": [
+        "P4_Static_retaining"
+      ],
+      "sample": "quieter-road-edges",
+      "tile": null
+    },
+    {
+      "object": "M_1465_road",
+      "unit": "shared",
+      "oldMaterials": [
+        "P4_Static_asphalt"
+      ],
+      "tile": 4,
+      "sample": "road-hierarchy"
+    },
+    {
+      "object": "M_1466_road",
+      "unit": "shared",
+      "oldMaterials": [
+        "P4_Static_retaining"
+      ],
+      "sample": "quieter-road-edges",
+      "tile": null
+    },
+    {
+      "object": "M_1467_road",
+      "unit": "shared",
+      "oldMaterials": [
+        "P4_Static_asphalt"
+      ],
+      "tile": 4,
+      "sample": "road-hierarchy"
+    },
+    {
+      "object": "M_1468_road",
+      "unit": "shared",
+      "oldMaterials": [
+        "P4_Static_retaining"
+      ],
+      "sample": "quieter-road-edges",
+      "tile": null
+    },
+    {
+      "object": "M_1469_road",
+      "unit": "shared",
+      "oldMaterials": [
+        "P4_Static_asphalt"
+      ],
+      "tile": 5,
+      "sample": "road-hierarchy"
+    },
+    {
+      "object": "M_1470_road",
+      "unit": "shared",
+      "oldMaterials": [
+        "P4_Static_retaining"
+      ],
+      "sample": "quieter-road-edges",
+      "tile": null
+    },
+    {
+      "object": "M_1471_road",
+      "unit": "shared",
+      "oldMaterials": [
+        "P4_Static_asphalt"
+      ],
+      "tile": 5,
+      "sample": "road-hierarchy"
+    },
+    {
+      "object": "M_1472_road",
+      "unit": "shared",
+      "oldMaterials": [
+        "P4_Static_retaining"
+      ],
+      "sample": "quieter-road-edges",
+      "tile": null
+    },
+    {
+      "object": "M_1473_road",
+      "unit": "shared",
+      "oldMaterials": [
+        "P4_Static_asphalt"
+      ],
+      "tile": 5,
+      "sample": "road-hierarchy"
+    },
+    {
+      "object": "M_1474_road",
+      "unit": "shared",
+      "oldMaterials": [
+        "P4_Static_retaining"
+      ],
+      "sample": "quieter-road-edges",
+      "tile": null
+    },
+    {
+      "object": "M_1475_road",
+      "unit": "shared",
+      "oldMaterials": [
+        "P4_Static_asphalt"
+      ],
+      "tile": 5,
+      "sample": "road-hierarchy"
+    },
+    {
+      "object": "M_1476_road",
+      "unit": "shared",
+      "oldMaterials": [
+        "P4_Static_retaining"
+      ],
+      "sample": "quieter-road-edges",
+      "tile": null
+    },
+    {
+      "object": "M_1477_road",
+      "unit": "shared",
+      "oldMaterials": [
+        "P4_Static_asphalt"
+      ],
+      "tile": 6,
+      "sample": "road-hierarchy"
+    },
+    {
+      "object": "M_1478_road",
+      "unit": "shared",
+      "oldMaterials": [
+        "P4_Static_retaining"
+      ],
+      "sample": "quieter-road-edges",
+      "tile": null
+    },
+    {
+      "object": "M_1479_road",
+      "unit": "shared",
+      "oldMaterials": [
+        "P4_Static_asphalt"
+      ],
+      "tile": 6,
+      "sample": "road-hierarchy"
+    },
+    {
+      "object": "M_1480_road",
+      "unit": "shared",
+      "oldMaterials": [
+        "P4_Static_retaining"
+      ],
+      "sample": "quieter-road-edges",
+      "tile": null
+    },
+    {
+      "object": "M_1481_road",
+      "unit": "shared",
+      "oldMaterials": [
+        "P4_Static_asphalt"
+      ],
+      "tile": 6,
+      "sample": "road-hierarchy"
+    },
+    {
+      "object": "M_1482_road",
+      "unit": "shared",
+      "oldMaterials": [
+        "P4_Static_retaining"
+      ],
+      "sample": "quieter-road-edges",
+      "tile": null
+    },
+    {
+      "object": "M_1483_road",
+      "unit": "shared",
+      "oldMaterials": [
+        "P4_Static_asphalt"
+      ],
+      "tile": 6,
+      "sample": "road-hierarchy"
+    },
+    {
+      "object": "M_1484_road",
+      "unit": "shared",
+      "oldMaterials": [
+        "P4_Static_retaining"
+      ],
+      "sample": "quieter-road-edges",
+      "tile": null
+    },
+    {
+      "object": "M_1485_road",
+      "unit": "shared",
+      "oldMaterials": [
+        "P4_Static_asphalt"
+      ],
+      "tile": 6,
+      "sample": "road-hierarchy"
+    },
+    {
+      "object": "M_1486_road",
+      "unit": "shared",
+      "oldMaterials": [
+        "P4_Static_retaining"
+      ],
+      "sample": "quieter-road-edges",
+      "tile": null
+    },
+    {
+      "object": "M_1487_road",
+      "unit": "shared",
+      "oldMaterials": [
+        "P4_Static_asphalt"
+      ],
+      "tile": 6,
+      "sample": "road-hierarchy"
+    },
+    {
+      "object": "M_1488_road",
+      "unit": "shared",
+      "oldMaterials": [
+        "P4_Static_retaining"
+      ],
+      "sample": "quieter-road-edges",
+      "tile": null
+    },
+    {
+      "object": "M_1489_road",
+      "unit": "shared",
+      "oldMaterials": [
+        "P4_Static_asphalt"
+      ],
+      "tile": 6,
+      "sample": "road-hierarchy"
+    },
+    {
+      "object": "M_1490_road",
+      "unit": "shared",
+      "oldMaterials": [
+        "P4_Static_retaining"
+      ],
+      "sample": "quieter-road-edges",
+      "tile": null
+    },
+    {
+      "object": "M_1491_road",
+      "unit": "shared",
+      "oldMaterials": [
+        "P4_Static_asphalt"
+      ],
+      "tile": 6,
+      "sample": "road-hierarchy"
+    },
+    {
+      "object": "M_1492_road",
+      "unit": "shared",
+      "oldMaterials": [
+        "P4_Static_retaining"
+      ],
+      "sample": "quieter-road-edges",
+      "tile": null
+    },
+    {
+      "object": "M_1493_road",
+      "unit": "shared",
+      "oldMaterials": [
+        "P4_Static_asphalt"
+      ],
+      "tile": 6,
+      "sample": "road-hierarchy"
+    },
+    {
+      "object": "M_1494_road",
+      "unit": "shared",
+      "oldMaterials": [
+        "P4_Static_retaining"
+      ],
+      "sample": "quieter-road-edges",
+      "tile": null
+    },
+    {
+      "object": "M_1495_road",
+      "unit": "shared",
+      "oldMaterials": [
+        "P4_Static_asphalt"
+      ],
+      "tile": 6,
+      "sample": "road-hierarchy"
+    },
+    {
+      "object": "M_1496_road",
+      "unit": "shared",
+      "oldMaterials": [
+        "P4_Static_retaining"
+      ],
+      "sample": "quieter-road-edges",
+      "tile": null
+    },
+    {
+      "object": "M_1497_road",
+      "unit": "shared",
+      "oldMaterials": [
+        "P4_Static_asphalt"
+      ],
+      "tile": 6,
+      "sample": "road-hierarchy"
+    },
+    {
+      "object": "M_1498_road",
+      "unit": "shared",
+      "oldMaterials": [
+        "P4_Static_retaining"
+      ],
+      "sample": "quieter-road-edges",
+      "tile": null
+    },
+    {
+      "object": "M_1499_road",
+      "unit": "shared",
+      "oldMaterials": [
+        "P4_Static_asphalt"
+      ],
+      "tile": 6,
+      "sample": "road-hierarchy"
+    },
+    {
+      "object": "M_1500_road",
+      "unit": "shared",
+      "oldMaterials": [
+        "P4_Static_retaining"
+      ],
+      "sample": "quieter-road-edges",
+      "tile": null
+    },
+    {
+      "object": "M_1501_road",
+      "unit": "shared",
+      "oldMaterials": [
+        "P4_Static_asphalt"
+      ],
+      "tile": 4,
+      "sample": "road-hierarchy"
+    },
+    {
+      "object": "M_1502_road",
+      "unit": "shared",
+      "oldMaterials": [
+        "P4_Static_retaining"
+      ],
+      "sample": "quieter-road-edges",
+      "tile": null
+    },
+    {
+      "object": "M_1503_road",
+      "unit": "shared",
+      "oldMaterials": [
+        "P4_Static_asphalt"
+      ],
+      "tile": 4,
+      "sample": "road-hierarchy"
+    },
+    {
+      "object": "M_1504_road",
+      "unit": "shared",
+      "oldMaterials": [
+        "P4_Static_retaining"
+      ],
+      "sample": "quieter-road-edges",
+      "tile": null
+    },
+    {
+      "object": "M_1505_road",
+      "unit": "shared",
+      "oldMaterials": [
+        "P4_Static_asphalt"
+      ],
+      "tile": 4,
+      "sample": "road-hierarchy"
+    },
+    {
+      "object": "M_1506_road",
+      "unit": "shared",
+      "oldMaterials": [
+        "P4_Static_retaining"
+      ],
+      "sample": "quieter-road-edges",
+      "tile": null
+    },
+    {
+      "object": "M_1507_road",
+      "unit": "shared",
+      "oldMaterials": [
+        "P4_Static_asphalt"
+      ],
+      "tile": 5,
+      "sample": "road-hierarchy"
+    },
+    {
+      "object": "M_1508_road",
+      "unit": "shared",
+      "oldMaterials": [
+        "P4_Static_retaining"
+      ],
+      "sample": "quieter-road-edges",
+      "tile": null
+    },
+    {
+      "object": "M_1509_road",
+      "unit": "shared",
+      "oldMaterials": [
+        "P4_Static_asphalt"
+      ],
+      "tile": 5,
+      "sample": "road-hierarchy"
+    },
+    {
+      "object": "M_1510_road",
+      "unit": "shared",
+      "oldMaterials": [
+        "P4_Static_retaining"
+      ],
+      "sample": "quieter-road-edges",
+      "tile": null
+    },
+    {
+      "object": "M_1511_road",
+      "unit": "shared",
+      "oldMaterials": [
+        "P4_Static_asphalt"
+      ],
+      "tile": 5,
+      "sample": "road-hierarchy"
+    },
+    {
+      "object": "M_1512_road",
+      "unit": "shared",
+      "oldMaterials": [
+        "P4_Static_retaining"
+      ],
+      "sample": "quieter-road-edges",
+      "tile": null
+    },
+    {
+      "object": "M_1513_road",
+      "unit": "shared",
+      "oldMaterials": [
+        "P4_Static_asphalt"
+      ],
+      "tile": 6,
+      "sample": "road-hierarchy"
+    },
+    {
+      "object": "M_1514_road",
+      "unit": "shared",
+      "oldMaterials": [
+        "P4_Static_retaining"
+      ],
+      "sample": "quieter-road-edges",
+      "tile": null
+    },
+    {
+      "object": "M_1515_road",
+      "unit": "shared",
+      "oldMaterials": [
+        "P4_Static_asphalt"
+      ],
+      "tile": 5,
+      "sample": "road-hierarchy"
+    },
+    {
+      "object": "M_1516_road",
+      "unit": "shared",
+      "oldMaterials": [
+        "P4_Static_retaining"
+      ],
+      "sample": "quieter-road-edges",
+      "tile": null
+    },
+    {
+      "object": "M_1517_road",
+      "unit": "shared",
+      "oldMaterials": [
+        "P4_Static_asphalt"
+      ],
+      "tile": 5,
+      "sample": "road-hierarchy"
+    },
+    {
+      "object": "M_1518_road",
+      "unit": "shared",
+      "oldMaterials": [
+        "P4_Static_retaining"
+      ],
+      "sample": "quieter-road-edges",
+      "tile": null
+    },
+    {
+      "object": "M_1519_road",
+      "unit": "shared",
+      "oldMaterials": [
+        "P4_Static_asphalt"
+      ],
+      "tile": 5,
+      "sample": "road-hierarchy"
+    },
+    {
+      "object": "M_1520_road",
+      "unit": "shared",
+      "oldMaterials": [
+        "P4_Static_retaining"
+      ],
+      "sample": "quieter-road-edges",
+      "tile": null
+    },
+    {
+      "object": "M_1521_road",
+      "unit": "shared",
+      "oldMaterials": [
+        "P4_Static_asphalt"
+      ],
+      "tile": 5,
+      "sample": "road-hierarchy"
+    },
+    {
+      "object": "M_1522_road",
+      "unit": "shared",
+      "oldMaterials": [
+        "P4_Static_retaining"
+      ],
+      "sample": "quieter-road-edges",
+      "tile": null
+    },
+    {
+      "object": "M_1523_road",
+      "unit": "shared",
+      "oldMaterials": [
+        "P4_Static_asphalt"
+      ],
+      "tile": 6,
+      "sample": "road-hierarchy"
+    },
+    {
+      "object": "M_1524_road",
+      "unit": "shared",
+      "oldMaterials": [
+        "P4_Static_retaining"
+      ],
+      "sample": "quieter-road-edges",
+      "tile": null
+    },
+    {
+      "object": "M_1525_road",
+      "unit": "shared",
+      "oldMaterials": [
+        "P4_Static_asphalt"
+      ],
+      "tile": 6,
+      "sample": "road-hierarchy"
+    },
+    {
+      "object": "M_1526_road",
+      "unit": "shared",
+      "oldMaterials": [
+        "P4_Static_retaining"
+      ],
+      "sample": "quieter-road-edges",
+      "tile": null
+    },
+    {
+      "object": "M_1527_road",
+      "unit": "shared",
+      "oldMaterials": [
+        "P4_Static_asphalt"
+      ],
+      "tile": 6,
+      "sample": "road-hierarchy"
+    },
+    {
+      "object": "M_1528_road",
+      "unit": "shared",
+      "oldMaterials": [
+        "P4_Static_retaining"
+      ],
+      "sample": "quieter-road-edges",
+      "tile": null
+    },
+    {
+      "object": "M_1529_road",
+      "unit": "shared",
+      "oldMaterials": [
+        "P4_Static_asphalt"
+      ],
+      "tile": 6,
+      "sample": "road-hierarchy"
+    },
+    {
+      "object": "M_1530_road",
+      "unit": "shared",
+      "oldMaterials": [
+        "P4_Static_retaining"
+      ],
+      "sample": "quieter-road-edges",
+      "tile": null
+    },
+    {
+      "object": "M_1531_road",
+      "unit": "shared",
+      "oldMaterials": [
+        "P4_Static_asphalt"
+      ],
+      "tile": 5,
+      "sample": "road-hierarchy"
+    },
+    {
+      "object": "M_1532_road",
+      "unit": "shared",
+      "oldMaterials": [
+        "P4_Static_retaining"
+      ],
+      "sample": "quieter-road-edges",
+      "tile": null
+    },
+    {
+      "object": "M_1533_road",
+      "unit": "shared",
+      "oldMaterials": [
+        "P4_Static_asphalt"
+      ],
+      "tile": 5,
+      "sample": "road-hierarchy"
+    },
+    {
+      "object": "M_1534_road",
+      "unit": "shared",
+      "oldMaterials": [
+        "P4_Static_retaining"
+      ],
+      "sample": "quieter-road-edges",
+      "tile": null
+    },
+    {
+      "object": "M_1535_road",
+      "unit": "shared",
+      "oldMaterials": [
+        "P4_Static_asphalt"
+      ],
+      "tile": 6,
+      "sample": "road-hierarchy"
+    },
+    {
+      "object": "M_1536_road",
+      "unit": "shared",
+      "oldMaterials": [
+        "P4_Static_retaining"
+      ],
+      "sample": "quieter-road-edges",
+      "tile": null
+    },
+    {
+      "object": "M_1537_road",
+      "unit": "shared",
+      "oldMaterials": [
+        "P4_Static_asphalt"
+      ],
+      "tile": 5,
+      "sample": "road-hierarchy"
+    },
+    {
+      "object": "M_1538_road",
+      "unit": "shared",
+      "oldMaterials": [
+        "P4_Static_retaining"
+      ],
+      "sample": "quieter-road-edges",
+      "tile": null
+    },
+    {
+      "object": "M_1539_road",
+      "unit": "shared",
+      "oldMaterials": [
+        "P4_Static_asphalt"
+      ],
+      "tile": 5,
+      "sample": "road-hierarchy"
+    },
+    {
+      "object": "M_1540_road",
+      "unit": "shared",
+      "oldMaterials": [
+        "P4_Static_retaining"
+      ],
+      "sample": "quieter-road-edges",
+      "tile": null
+    },
+    {
+      "object": "M_1541_road",
+      "unit": "shared",
+      "oldMaterials": [
+        "P4_Static_asphalt"
+      ],
+      "tile": 5,
+      "sample": "road-hierarchy"
+    },
+    {
+      "object": "M_1542_road",
+      "unit": "shared",
+      "oldMaterials": [
+        "P4_Static_retaining"
+      ],
+      "sample": "quieter-road-edges",
+      "tile": null
+    },
+    {
+      "object": "M_1543_road",
+      "unit": "shared",
+      "oldMaterials": [
+        "P4_Static_asphalt"
+      ],
+      "tile": 5,
+      "sample": "road-hierarchy"
+    },
+    {
+      "object": "M_1544_road",
+      "unit": "shared",
+      "oldMaterials": [
+        "P4_Static_retaining"
+      ],
+      "sample": "quieter-road-edges",
+      "tile": null
+    },
+    {
+      "object": "M_1545_road",
+      "unit": "shared",
+      "oldMaterials": [
+        "P4_Static_asphalt"
+      ],
+      "tile": 5,
+      "sample": "road-hierarchy"
+    },
+    {
+      "object": "M_1546_road",
+      "unit": "shared",
+      "oldMaterials": [
+        "P4_Static_retaining"
+      ],
+      "sample": "quieter-road-edges",
+      "tile": null
+    },
+    {
+      "object": "M_1547_road",
+      "unit": "shared",
+      "oldMaterials": [
+        "P4_Static_asphalt"
+      ],
+      "tile": 5,
+      "sample": "road-hierarchy"
+    },
+    {
+      "object": "M_1548_road",
+      "unit": "shared",
+      "oldMaterials": [
+        "P4_Static_retaining"
+      ],
+      "sample": "quieter-road-edges",
+      "tile": null
+    },
+    {
+      "object": "M_1549_road",
+      "unit": "shared",
+      "oldMaterials": [
+        "P4_Static_asphalt"
+      ],
+      "tile": 6,
+      "sample": "road-hierarchy"
+    },
+    {
+      "object": "M_1550_road",
+      "unit": "shared",
+      "oldMaterials": [
+        "P4_Static_retaining"
+      ],
+      "sample": "quieter-road-edges",
+      "tile": null
+    },
+    {
+      "object": "M_1551_road",
+      "unit": "shared",
+      "oldMaterials": [
+        "P4_Static_asphalt"
+      ],
+      "tile": 5,
+      "sample": "road-hierarchy"
+    },
+    {
+      "object": "M_1552_road",
+      "unit": "shared",
+      "oldMaterials": [
+        "P4_Static_retaining"
+      ],
+      "sample": "quieter-road-edges",
+      "tile": null
+    },
+    {
+      "object": "M_1553_road",
+      "unit": "shared",
+      "oldMaterials": [
+        "P4_Static_asphalt"
+      ],
+      "tile": 5,
+      "sample": "road-hierarchy"
+    },
+    {
+      "object": "M_1554_road",
+      "unit": "shared",
+      "oldMaterials": [
+        "P4_Static_retaining"
+      ],
+      "sample": "quieter-road-edges",
+      "tile": null
+    },
+    {
+      "object": "M_1555_road",
+      "unit": "shared",
+      "oldMaterials": [
+        "P4_Static_asphalt"
+      ],
+      "tile": 5,
+      "sample": "road-hierarchy"
+    },
+    {
+      "object": "M_1556_road",
+      "unit": "shared",
+      "oldMaterials": [
+        "P4_Static_retaining"
+      ],
+      "sample": "quieter-road-edges",
+      "tile": null
+    },
+    {
+      "object": "M_1557_road",
+      "unit": "shared",
+      "oldMaterials": [
+        "P4_Static_asphalt"
+      ],
+      "tile": 5,
+      "sample": "road-hierarchy"
+    },
+    {
+      "object": "M_1558_road",
+      "unit": "shared",
+      "oldMaterials": [
+        "P4_Static_retaining"
+      ],
+      "sample": "quieter-road-edges",
+      "tile": null
+    },
+    {
+      "object": "M_1559_road",
+      "unit": "shared",
+      "oldMaterials": [
+        "P4_Static_asphalt"
+      ],
+      "tile": 5,
+      "sample": "road-hierarchy"
+    },
+    {
+      "object": "M_1560_road",
+      "unit": "shared",
+      "oldMaterials": [
+        "P4_Static_retaining"
+      ],
+      "sample": "quieter-road-edges",
+      "tile": null
+    },
+    {
+      "object": "M_1561_road",
+      "unit": "shared",
+      "oldMaterials": [
+        "P4_Static_asphalt"
+      ],
+      "tile": 5,
+      "sample": "road-hierarchy"
+    },
+    {
+      "object": "M_1562_road",
+      "unit": "shared",
+      "oldMaterials": [
+        "P4_Static_retaining"
+      ],
+      "sample": "quieter-road-edges",
+      "tile": null
+    },
+    {
+      "object": "M_1563_road",
+      "unit": "shared",
+      "oldMaterials": [
+        "P4_Static_asphalt"
+      ],
+      "tile": 5,
+      "sample": "road-hierarchy"
+    },
+    {
+      "object": "M_1564_road",
+      "unit": "shared",
+      "oldMaterials": [
+        "P4_Static_retaining"
+      ],
+      "sample": "quieter-road-edges",
+      "tile": null
+    },
+    {
+      "object": "M_1565_road",
+      "unit": "shared",
+      "oldMaterials": [
+        "P4_Static_asphalt"
+      ],
+      "tile": 5,
+      "sample": "road-hierarchy"
+    },
+    {
+      "object": "M_1566_road",
+      "unit": "shared",
+      "oldMaterials": [
+        "P4_Static_retaining"
+      ],
+      "sample": "quieter-road-edges",
+      "tile": null
+    },
+    {
+      "object": "M_1567_road",
+      "unit": "shared",
+      "oldMaterials": [
+        "P4_Static_asphalt"
+      ],
+      "tile": 5,
+      "sample": "road-hierarchy"
+    },
+    {
+      "object": "M_1568_road",
+      "unit": "shared",
+      "oldMaterials": [
+        "P4_Static_retaining"
+      ],
+      "sample": "quieter-road-edges",
+      "tile": null
+    },
+    {
+      "object": "M_1569_road",
+      "unit": "shared",
+      "oldMaterials": [
+        "P4_Static_asphalt"
+      ],
+      "tile": 5,
+      "sample": "road-hierarchy"
+    },
+    {
+      "object": "M_1570_road",
+      "unit": "shared",
+      "oldMaterials": [
+        "P4_Static_retaining"
+      ],
+      "sample": "quieter-road-edges",
+      "tile": null
+    },
+    {
+      "object": "M_1571_road",
+      "unit": "shared",
+      "oldMaterials": [
+        "P4_Static_asphalt"
+      ],
+      "tile": 5,
+      "sample": "road-hierarchy"
+    },
+    {
+      "object": "M_1572_road",
+      "unit": "shared",
+      "oldMaterials": [
+        "P4_Static_retaining"
+      ],
+      "sample": "quieter-road-edges",
+      "tile": null
+    },
+    {
+      "object": "M_1573_road",
+      "unit": "shared",
+      "oldMaterials": [
+        "P4_Static_asphalt"
+      ],
+      "tile": 5,
+      "sample": "road-hierarchy"
+    },
+    {
+      "object": "M_1574_road",
+      "unit": "shared",
+      "oldMaterials": [
+        "P4_Static_retaining"
+      ],
+      "sample": "quieter-road-edges",
+      "tile": null
+    },
+    {
+      "object": "M_1575_road",
+      "unit": "shared",
+      "oldMaterials": [
+        "P4_Static_asphalt"
+      ],
+      "tile": 6,
+      "sample": "road-hierarchy"
+    },
+    {
+      "object": "M_1576_road",
+      "unit": "shared",
+      "oldMaterials": [
+        "P4_Static_retaining"
+      ],
+      "sample": "quieter-road-edges",
+      "tile": null
+    },
+    {
+      "object": "M_1577_road",
+      "unit": "shared",
+      "oldMaterials": [
+        "P4_Static_asphalt"
+      ],
+      "tile": 5,
+      "sample": "road-hierarchy"
+    },
+    {
+      "object": "M_1578_road",
+      "unit": "shared",
+      "oldMaterials": [
+        "P4_Static_retaining"
+      ],
+      "sample": "quieter-road-edges",
+      "tile": null
+    },
+    {
+      "object": "M_1579_road",
+      "unit": "shared",
+      "oldMaterials": [
+        "P4_Static_asphalt"
+      ],
+      "tile": 5,
+      "sample": "road-hierarchy"
+    },
+    {
+      "object": "M_1580_road",
+      "unit": "shared",
+      "oldMaterials": [
+        "P4_Static_retaining"
+      ],
+      "sample": "quieter-road-edges",
+      "tile": null
+    },
+    {
+      "object": "M_1581_road",
+      "unit": "shared",
+      "oldMaterials": [
+        "P4_Static_asphalt"
+      ],
+      "tile": 5,
+      "sample": "road-hierarchy"
+    },
+    {
+      "object": "M_1582_road",
+      "unit": "shared",
+      "oldMaterials": [
+        "P4_Static_retaining"
+      ],
+      "sample": "quieter-road-edges",
+      "tile": null
+    },
+    {
+      "object": "M_1583_road",
+      "unit": "shared",
+      "oldMaterials": [
+        "P4_Static_asphalt"
+      ],
+      "tile": 6,
+      "sample": "road-hierarchy"
+    },
+    {
+      "object": "M_1584_road",
+      "unit": "shared",
+      "oldMaterials": [
+        "P4_Static_retaining"
+      ],
+      "sample": "quieter-road-edges",
+      "tile": null
+    },
+    {
+      "object": "M_1585_road",
+      "unit": "shared",
+      "oldMaterials": [
+        "P4_Static_asphalt"
+      ],
+      "tile": 5,
+      "sample": "road-hierarchy"
+    },
+    {
+      "object": "M_1586_road",
+      "unit": "shared",
+      "oldMaterials": [
+        "P4_Static_retaining"
+      ],
+      "sample": "quieter-road-edges",
+      "tile": null
+    },
+    {
+      "object": "M_1587_road",
+      "unit": "shared",
+      "oldMaterials": [
+        "P4_Static_asphalt"
+      ],
+      "tile": 5,
+      "sample": "road-hierarchy"
+    },
+    {
+      "object": "M_1588_road",
+      "unit": "shared",
+      "oldMaterials": [
+        "P4_Static_retaining"
+      ],
+      "sample": "quieter-road-edges",
+      "tile": null
+    },
+    {
+      "object": "M_1589_road",
+      "unit": "shared",
+      "oldMaterials": [
+        "P4_Static_asphalt"
+      ],
+      "tile": 5,
+      "sample": "road-hierarchy"
+    },
+    {
+      "object": "M_1590_road",
+      "unit": "shared",
+      "oldMaterials": [
+        "P4_Static_retaining"
+      ],
+      "sample": "quieter-road-edges",
+      "tile": null
+    },
+    {
+      "object": "M_1591_road",
+      "unit": "shared",
+      "oldMaterials": [
+        "P4_Static_asphalt"
+      ],
+      "tile": 5,
+      "sample": "road-hierarchy"
+    },
+    {
+      "object": "M_1592_road",
+      "unit": "shared",
+      "oldMaterials": [
+        "P4_Static_retaining"
+      ],
+      "sample": "quieter-road-edges",
+      "tile": null
+    },
+    {
+      "object": "M_1593_road",
+      "unit": "shared",
+      "oldMaterials": [
+        "P4_Static_asphalt"
+      ],
+      "tile": 5,
+      "sample": "road-hierarchy"
+    },
+    {
+      "object": "M_1594_road",
+      "unit": "shared",
+      "oldMaterials": [
+        "P4_Static_retaining"
+      ],
+      "sample": "quieter-road-edges",
+      "tile": null
+    },
+    {
+      "object": "M_1595_road",
+      "unit": "shared",
+      "oldMaterials": [
+        "P4_Static_asphalt"
+      ],
+      "tile": 5,
+      "sample": "road-hierarchy"
+    },
+    {
+      "object": "M_1596_road",
+      "unit": "shared",
+      "oldMaterials": [
+        "P4_Static_retaining"
+      ],
+      "sample": "quieter-road-edges",
+      "tile": null
+    },
+    {
+      "object": "M_1597_road",
+      "unit": "shared",
+      "oldMaterials": [
+        "P4_Static_asphalt"
+      ],
+      "tile": 5,
+      "sample": "road-hierarchy"
+    },
+    {
+      "object": "M_1598_road",
+      "unit": "shared",
+      "oldMaterials": [
+        "P4_Static_retaining"
+      ],
+      "sample": "quieter-road-edges",
+      "tile": null
+    },
+    {
+      "object": "M_1599_road",
+      "unit": "shared",
+      "oldMaterials": [
+        "P4_Static_asphalt"
+      ],
+      "tile": 5,
+      "sample": "road-hierarchy"
+    },
+    {
+      "object": "M_1600_road",
+      "unit": "shared",
+      "oldMaterials": [
+        "P4_Static_retaining"
+      ],
+      "sample": "quieter-road-edges",
+      "tile": null
+    },
+    {
+      "object": "M_1601_road",
+      "unit": "shared",
+      "oldMaterials": [
+        "P4_Static_asphalt"
+      ],
+      "tile": 5,
+      "sample": "road-hierarchy"
+    },
+    {
+      "object": "M_1602_road",
+      "unit": "shared",
+      "oldMaterials": [
+        "P4_Static_retaining"
+      ],
+      "sample": "quieter-road-edges",
+      "tile": null
+    },
+    {
+      "object": "M_1603_road",
+      "unit": "shared",
+      "oldMaterials": [
+        "P4_Static_asphalt"
+      ],
+      "tile": 5,
+      "sample": "road-hierarchy"
+    },
+    {
+      "object": "M_1604_road",
+      "unit": "shared",
+      "oldMaterials": [
+        "P4_Static_retaining"
+      ],
+      "sample": "quieter-road-edges",
+      "tile": null
+    }
+  ],
+  "ownershipChanges": [
+    {
+      "object": "M_0365_AS01",
+      "oldUnit": "AS01",
+      "newUnit": "HS03",
+      "reason": "Old assembly candidate retained physically as daily city service court"
+    },
+    {
+      "object": "M_0366_AS01",
+      "oldUnit": "AS01",
+      "newUnit": "HS03",
+      "reason": "Old assembly candidate retained physically as daily city service court"
+    },
+    {
+      "object": "M_0367_AS01",
+      "oldUnit": "AS01",
+      "newUnit": "HS03",
+      "reason": "Old assembly candidate retained physically as daily city service court"
+    },
+    {
+      "object": "M_0368_AS01",
+      "oldUnit": "AS01",
+      "newUnit": "HS03",
+      "reason": "Old assembly candidate retained physically as daily city service court"
+    },
+    {
+      "object": "M_0369_AS01",
+      "oldUnit": "AS01",
+      "newUnit": "HS03",
+      "reason": "Old assembly candidate retained physically as daily city service court"
+    },
+    {
+      "object": "M_0370_AS01",
+      "oldUnit": "AS01",
+      "newUnit": "HS03",
+      "reason": "Old assembly candidate retained physically as daily city service court"
+    },
+    {
+      "object": "M_0371_AS01",
+      "oldUnit": "AS01",
+      "newUnit": "HS03",
+      "reason": "Old assembly candidate retained physically as daily city service court"
+    },
+    {
+      "object": "M_0372_AS01",
+      "oldUnit": "AS01",
+      "newUnit": "HS03",
+      "reason": "Old assembly candidate retained physically as daily city service court"
+    },
+    {
+      "object": "P4_立面基座_0001",
+      "oldUnit": "AS01",
+      "newUnit": "HS03",
+      "reason": "Old assembly candidate retained physically as daily city service court"
+    },
+    {
+      "object": "P4_立面檐口_0002",
+      "oldUnit": "AS01",
+      "newUnit": "HS03",
+      "reason": "Old assembly candidate retained physically as daily city service court"
+    },
+    {
+      "object": "P4_立面边框_0003",
+      "oldUnit": "AS01",
+      "newUnit": "HS03",
+      "reason": "Old assembly candidate retained physically as daily city service court"
+    },
+    {
+      "object": "P4_立面边框_0004",
+      "oldUnit": "AS01",
+      "newUnit": "HS03",
+      "reason": "Old assembly candidate retained physically as daily city service court"
+    },
+    {
+      "object": "P4_既有窗台_0005",
+      "oldUnit": "AS01",
+      "newUnit": "HS03",
+      "reason": "Old assembly candidate retained physically as daily city service court"
+    },
+    {
+      "object": "P4_街屋落水管_0006",
+      "oldUnit": "AS01",
+      "newUnit": "HS03",
+      "reason": "Old assembly candidate retained physically as daily city service court"
+    },
+    {
+      "object": "P4_通风百叶箱_0007",
+      "oldUnit": "AS01",
+      "newUnit": "HS03",
+      "reason": "Old assembly candidate retained physically as daily city service court"
+    },
+    {
+      "object": "P4_百叶横格_0008",
+      "oldUnit": "AS01",
+      "newUnit": "HS03",
+      "reason": "Old assembly candidate retained physically as daily city service court"
+    },
+    {
+      "object": "P4_百叶横格_0009",
+      "oldUnit": "AS01",
+      "newUnit": "HS03",
+      "reason": "Old assembly candidate retained physically as daily city service court"
+    },
+    {
+      "object": "P4_百叶横格_0010",
+      "oldUnit": "AS01",
+      "newUnit": "HS03",
+      "reason": "Old assembly candidate retained physically as daily city service court"
+    },
+    {
+      "object": "P4_百叶横格_0011",
+      "oldUnit": "AS01",
+      "newUnit": "HS03",
+      "reason": "Old assembly candidate retained physically as daily city service court"
+    },
+    {
+      "object": "P4_结构暗边_0012",
+      "oldUnit": "AS01",
+      "newUnit": "HS03",
+      "reason": "Old assembly candidate retained physically as daily city service court"
+    },
+    {
+      "object": "P4_结构暗边_0013",
+      "oldUnit": "AS01",
+      "newUnit": "HS03",
+      "reason": "Old assembly candidate retained physically as daily city service court"
+    },
+    {
+      "object": "P4_结构暗边_0014",
+      "oldUnit": "AS01",
+      "newUnit": "HS03",
+      "reason": "Old assembly candidate retained physically as daily city service court"
+    },
+    {
+      "object": "P4_结构暗边_0015",
+      "oldUnit": "AS01",
+      "newUnit": "HS03",
+      "reason": "Old assembly candidate retained physically as daily city service court"
+    },
+    {
+      "object": "P4_结构暗边_0016",
+      "oldUnit": "AS01",
+      "newUnit": "HS03",
+      "reason": "Old assembly candidate retained physically as daily city service court"
+    },
+    {
+      "object": "P4_结构暗边_0017",
+      "oldUnit": "AS01",
+      "newUnit": "HS03",
+      "reason": "Old assembly candidate retained physically as daily city service court"
+    },
+    {
+      "object": "P4_结构暗边_0018",
+      "oldUnit": "AS01",
+      "newUnit": "HS03",
+      "reason": "Old assembly candidate retained physically as daily city service court"
+    },
+    {
+      "object": "P4_结构暗边_0019",
+      "oldUnit": "AS01",
+      "newUnit": "HS03",
+      "reason": "Old assembly candidate retained physically as daily city service court"
+    },
+    {
+      "object": "P4_结构暗边_0020",
+      "oldUnit": "AS01",
+      "newUnit": "HS03",
+      "reason": "Old assembly candidate retained physically as daily city service court"
+    },
+    {
+      "object": "P4_结构暗边_0021",
+      "oldUnit": "AS01",
+      "newUnit": "HS03",
+      "reason": "Old assembly candidate retained physically as daily city service court"
+    },
+    {
+      "object": "P4_结构暗边_0022",
+      "oldUnit": "AS01",
+      "newUnit": "HS03",
+      "reason": "Old assembly candidate retained physically as daily city service court"
+    },
+    {
+      "object": "P4_结构暗边_0023",
+      "oldUnit": "AS01",
+      "newUnit": "HS03",
+      "reason": "Old assembly candidate retained physically as daily city service court"
+    },
+    {
+      "object": "P4_平屋顶前压边_0024",
+      "oldUnit": "AS01",
+      "newUnit": "HS03",
+      "reason": "Old assembly candidate retained physically as daily city service court"
+    },
+    {
+      "object": "P4_街坊壁灯底_0025",
+      "oldUnit": "AS01",
+      "newUnit": "HS03",
+      "reason": "Old assembly candidate retained physically as daily city service court"
+    },
+    {
+      "object": "P4_街坊壁灯_0026",
+      "oldUnit": "AS01",
+      "newUnit": "HS03",
+      "reason": "Old assembly candidate retained physically as daily city service court"
+    }
+  ],
+  "newMasses": [
+    {
+      "name": "west-workhouse",
+      "unit": "AS01",
+      "rect": [
+        -68.4,
+        -60.0,
+        -33.0,
+        -27.1
+      ],
+      "base": 14.08,
+      "height": 6.2,
+      "roofRise": 0.72,
+      "role": "inhabited",
+      "body": "P8_rock-rear-living_west-workhouse_body_0055",
+      "roof": "P8_rock-rear-living_west-workhouse_roof_0062",
+      "group": "rock-rear-living",
+      "selectionPart": "residential"
+    },
+    {
+      "name": "middle-residence",
+      "unit": "AS01",
+      "rect": [
+        -53.6,
+        -46.2,
+        -32.1,
+        -26.8
+      ],
+      "base": 14.08,
+      "height": 8.1,
+      "roofRise": 0.72,
+      "role": "inhabited",
+      "body": "P8_rock-rear-living_middle-residence_body_0070",
+      "roof": "P8_rock-rear-living_middle-residence_roof_0077",
+      "group": "rock-rear-living",
+      "selectionPart": "residential"
+    },
+    {
+      "name": "east-residence",
+      "unit": "AS01",
+      "rect": [
+        -38.4,
+        -31.4,
+        -33.0,
+        -27.0
+      ],
+      "base": 14.08,
+      "height": 5.7,
+      "roofRise": 0.72,
+      "role": "inhabited",
+      "body": "P8_rock-rear-living_east-residence_body_0085",
+      "roof": "P8_rock-rear-living_east-residence_roof_0090",
+      "group": "rock-rear-living",
+      "selectionPart": "residential"
+    },
+    {
+      "name": "resident-repair-wing",
+      "unit": "AS01",
+      "rect": [
+        -59.4,
+        -55.3,
+        -30.9,
+        -27.1
+      ],
+      "base": 14.08,
+      "height": 3.05,
+      "roofRise": 0.35,
+      "role": "inhabited",
+      "body": "P8_rock-rear-living_resident-repair-wing_body_0098",
+      "roof": "P8_rock-rear-living_resident-repair-wing_roof_0103",
+      "group": "rock-rear-living"
+    }
+  ],
+  "newAssemblySurfaces": [
+    {
+      "object": "P8_rock-edge-assembly_shared-rear-street_0110",
+      "bounds": [
+        -72.0,
+        -27.0,
+        -37.3,
+        -34.3
+      ],
+      "top": 14.13,
+      "selectionPart": "assembly"
+    },
+    {
+      "object": "P8_rock-edge-assembly_west-public-entry_0111",
+      "bounds": [
+        -58.8,
+        -55.6,
+        -34.3,
+        -24.75
+      ],
+      "top": 14.13,
+      "selectionPart": "assembly"
+    },
+    {
+      "object": "P8_rock-edge-assembly_east-public-entry_0112",
+      "bounds": [
+        -29.0,
+        -25.2,
+        -34.3,
+        -24.75
+      ],
+      "top": 14.13,
+      "selectionPart": "assembly"
+    },
+    {
+      "object": "P8_rock-edge-assembly_assembly-court_0113",
+      "bounds": [
+        -44.8,
+        -39.5,
+        -34.3,
+        -27.1
+      ],
+      "top": 14.13,
+      "selectionPart": "assembly"
+    }
+  ],
+  "roadRoles": [
+    {
+      "object": "M_1299_road",
+      "role": "pedestrian-steps",
+      "tile": 6
+    },
+    {
+      "object": "M_1301_road",
+      "role": "local-lane",
+      "tile": 5
+    },
+    {
+      "object": "M_1303_road",
+      "role": "local-lane",
+      "tile": 5
+    },
+    {
+      "object": "M_1305_road",
+      "role": "local-lane",
+      "tile": 5
+    },
+    {
+      "object": "M_1307_road",
+      "role": "local-lane",
+      "tile": 5
+    },
+    {
+      "object": "M_1309_road",
+      "role": "local-lane",
+      "tile": 5
+    },
+    {
+      "object": "M_1311_road",
+      "role": "local-lane",
+      "tile": 5
+    },
+    {
+      "object": "M_1313_road",
+      "role": "local-lane",
+      "tile": 5
+    },
+    {
+      "object": "M_1315_road",
+      "role": "local-lane",
+      "tile": 5
+    },
+    {
+      "object": "M_1317_road",
+      "role": "local-lane",
+      "tile": 5
+    },
+    {
+      "object": "M_1319_road",
+      "role": "local-lane",
+      "tile": 5
+    },
+    {
+      "object": "M_1321_road",
+      "role": "local-lane",
+      "tile": 5
+    },
+    {
+      "object": "M_1323_road",
+      "role": "local-lane",
+      "tile": 5
+    },
+    {
+      "object": "M_1325_road",
+      "role": "local-lane",
+      "tile": 5
+    },
+    {
+      "object": "M_1327_road",
+      "role": "local-lane",
+      "tile": 5
+    },
+    {
+      "object": "M_1329_road",
+      "role": "local-lane",
+      "tile": 5
+    },
+    {
+      "object": "M_1331_road",
+      "role": "local-lane",
+      "tile": 5
+    },
+    {
+      "object": "M_1333_road",
+      "role": "local-lane",
+      "tile": 5
+    },
+    {
+      "object": "M_1335_road",
+      "role": "local-lane",
+      "tile": 5
+    },
+    {
+      "object": "M_1337_road",
+      "role": "local-lane",
+      "tile": 5
+    },
+    {
+      "object": "M_1339_road",
+      "role": "local-lane",
+      "tile": 5
+    },
+    {
+      "object": "M_1341_road",
+      "role": "local-lane",
+      "tile": 5
+    },
+    {
+      "object": "M_1343_road",
+      "role": "local-lane",
+      "tile": 5
+    },
+    {
+      "object": "M_1345_road",
+      "role": "local-lane",
+      "tile": 5
+    },
+    {
+      "object": "M_1347_road",
+      "role": "local-lane",
+      "tile": 5
+    },
+    {
+      "object": "M_1349_road",
+      "role": "local-lane",
+      "tile": 5
+    },
+    {
+      "object": "M_1351_road",
+      "role": "local-lane",
+      "tile": 5
+    },
+    {
+      "object": "M_1353_road",
+      "role": "local-lane",
+      "tile": 5
+    },
+    {
+      "object": "M_1355_road",
+      "role": "local-lane",
+      "tile": 5
+    },
+    {
+      "object": "M_1357_road",
+      "role": "public-branch",
+      "tile": 5
+    },
+    {
+      "object": "M_1359_road",
+      "role": "local-lane",
+      "tile": 5
+    },
+    {
+      "object": "M_1361_road",
+      "role": "local-lane",
+      "tile": 5
+    },
+    {
+      "object": "M_1363_road",
+      "role": "public-branch",
+      "tile": 5
+    },
+    {
+      "object": "M_1365_road",
+      "role": "local-lane",
+      "tile": 5
+    },
+    {
+      "object": "M_1367_road",
+      "role": "local-lane",
+      "tile": 5
+    },
+    {
+      "object": "M_1369_road",
+      "role": "local-lane",
+      "tile": 5
+    },
+    {
+      "object": "M_1371_road",
+      "role": "local-lane",
+      "tile": 5
+    },
+    {
+      "object": "M_1373_road",
+      "role": "public-branch",
+      "tile": 5
+    },
+    {
+      "object": "M_1375_road",
+      "role": "public-branch",
+      "tile": 5
+    },
+    {
+      "object": "M_1377_road",
+      "role": "public-branch",
+      "tile": 5
+    },
+    {
+      "object": "M_1379_road",
+      "role": "public-branch",
+      "tile": 5
+    },
+    {
+      "object": "M_1381_road",
+      "role": "public-branch",
+      "tile": 5
+    },
+    {
+      "object": "M_1383_road",
+      "role": "local-lane",
+      "tile": 5
+    },
+    {
+      "object": "M_1385_road",
+      "role": "local-lane",
+      "tile": 5
+    },
+    {
+      "object": "M_1387_road",
+      "role": "local-lane",
+      "tile": 5
+    },
+    {
+      "object": "M_1389_road",
+      "role": "local-lane",
+      "tile": 5
+    },
+    {
+      "object": "M_1391_road",
+      "role": "local-lane",
+      "tile": 5
+    },
+    {
+      "object": "M_1393_road",
+      "role": "local-lane",
+      "tile": 5
+    },
+    {
+      "object": "M_1395_road",
+      "role": "local-lane",
+      "tile": 5
+    },
+    {
+      "object": "M_1397_road",
+      "role": "local-lane",
+      "tile": 5
+    },
+    {
+      "object": "M_1399_road",
+      "role": "local-lane",
+      "tile": 5
+    },
+    {
+      "object": "M_1401_road",
+      "role": "local-lane",
+      "tile": 5
+    },
+    {
+      "object": "M_1403_road",
+      "role": "local-lane",
+      "tile": 5
+    },
+    {
+      "object": "M_1405_road",
+      "role": "local-lane",
+      "tile": 5
+    },
+    {
+      "object": "M_1407_road",
+      "role": "local-lane",
+      "tile": 5
+    },
+    {
+      "object": "M_1409_road",
+      "role": "local-lane",
+      "tile": 5
+    },
+    {
+      "object": "M_1411_road",
+      "role": "local-lane",
+      "tile": 5
+    },
+    {
+      "object": "M_1413_road",
+      "role": "local-lane",
+      "tile": 5
+    },
+    {
+      "object": "M_1415_road",
+      "role": "local-lane",
+      "tile": 5
+    },
+    {
+      "object": "M_1417_road",
+      "role": "local-lane",
+      "tile": 5
+    },
+    {
+      "object": "M_1419_road",
+      "role": "local-lane",
+      "tile": 5
+    },
+    {
+      "object": "M_1421_road",
+      "role": "local-lane",
+      "tile": 5
+    },
+    {
+      "object": "M_1423_road",
+      "role": "local-lane",
+      "tile": 5
+    },
+    {
+      "object": "M_1425_road",
+      "role": "local-lane",
+      "tile": 5
+    },
+    {
+      "object": "M_1427_road",
+      "role": "local-lane",
+      "tile": 5
+    },
+    {
+      "object": "M_1429_road",
+      "role": "local-lane",
+      "tile": 5
+    },
+    {
+      "object": "M_1431_road",
+      "role": "local-lane",
+      "tile": 5
+    },
+    {
+      "object": "M_1433_road",
+      "role": "local-lane",
+      "tile": 5
+    },
+    {
+      "object": "M_1435_road",
+      "role": "pedestrian-steps",
+      "tile": 6
+    },
+    {
+      "object": "M_1437_road",
+      "role": "local-lane",
+      "tile": 5
+    },
+    {
+      "object": "M_1439_road",
+      "role": "local-lane",
+      "tile": 5
+    },
+    {
+      "object": "M_1441_road",
+      "role": "local-lane",
+      "tile": 5
+    },
+    {
+      "object": "M_1443_road",
+      "role": "pedestrian-steps",
+      "tile": 6
+    },
+    {
+      "object": "M_1445_road",
+      "role": "local-lane",
+      "tile": 5
+    },
+    {
+      "object": "M_1447_road",
+      "role": "local-lane",
+      "tile": 5
+    },
+    {
+      "object": "M_1449_road",
+      "role": "local-lane",
+      "tile": 5
+    },
+    {
+      "object": "M_1451_road",
+      "role": "main-transport",
+      "tile": 4
+    },
+    {
+      "object": "M_1453_road",
+      "role": "main-transport",
+      "tile": 4
+    },
+    {
+      "object": "M_1455_road",
+      "role": "main-transport",
+      "tile": 4
+    },
+    {
+      "object": "M_1457_road",
+      "role": "main-transport",
+      "tile": 4
+    },
+    {
+      "object": "M_1459_road",
+      "role": "main-transport",
+      "tile": 4
+    },
+    {
+      "object": "M_1461_road",
+      "role": "main-transport",
+      "tile": 4
+    },
+    {
+      "object": "M_1463_road",
+      "role": "main-transport",
+      "tile": 4
+    },
+    {
+      "object": "M_1465_road",
+      "role": "main-transport",
+      "tile": 4
+    },
+    {
+      "object": "M_1467_road",
+      "role": "main-transport",
+      "tile": 4
+    },
+    {
+      "object": "M_1469_road",
+      "role": "local-lane",
+      "tile": 5
+    },
+    {
+      "object": "M_1471_road",
+      "role": "local-lane",
+      "tile": 5
+    },
+    {
+      "object": "M_1473_road",
+      "role": "local-lane",
+      "tile": 5
+    },
+    {
+      "object": "M_1475_road",
+      "role": "local-lane",
+      "tile": 5
+    },
+    {
+      "object": "M_1477_road",
+      "role": "industrial-service",
+      "tile": 6
+    },
+    {
+      "object": "M_1479_road",
+      "role": "industrial-service",
+      "tile": 6
+    },
+    {
+      "object": "M_1481_road",
+      "role": "industrial-service",
+      "tile": 6
+    },
+    {
+      "object": "M_1483_road",
+      "role": "industrial-service",
+      "tile": 6
+    },
+    {
+      "object": "M_1485_road",
+      "role": "industrial-service",
+      "tile": 6
+    },
+    {
+      "object": "M_1487_road",
+      "role": "industrial-service",
+      "tile": 6
+    },
+    {
+      "object": "M_1489_road",
+      "role": "industrial-service",
+      "tile": 6
+    },
+    {
+      "object": "M_1491_road",
+      "role": "industrial-service",
+      "tile": 6
+    },
+    {
+      "object": "M_1493_road",
+      "role": "industrial-service",
+      "tile": 6
+    },
+    {
+      "object": "M_1495_road",
+      "role": "industrial-service",
+      "tile": 6
+    },
+    {
+      "object": "M_1497_road",
+      "role": "industrial-service",
+      "tile": 6
+    },
+    {
+      "object": "M_1499_road",
+      "role": "industrial-service",
+      "tile": 6
+    },
+    {
+      "object": "M_1501_road",
+      "role": "main-transport",
+      "tile": 4
+    },
+    {
+      "object": "M_1503_road",
+      "role": "main-transport",
+      "tile": 4
+    },
+    {
+      "object": "M_1505_road",
+      "role": "main-transport",
+      "tile": 4
+    },
+    {
+      "object": "M_1507_road",
+      "role": "public-branch",
+      "tile": 5
+    },
+    {
+      "object": "M_1509_road",
+      "role": "public-branch",
+      "tile": 5
+    },
+    {
+      "object": "M_1511_road",
+      "role": "public-branch",
+      "tile": 5
+    },
+    {
+      "object": "M_1513_road",
+      "role": "pedestrian-steps",
+      "tile": 6
+    },
+    {
+      "object": "M_1515_road",
+      "role": "public-branch",
+      "tile": 5
+    },
+    {
+      "object": "M_1517_road",
+      "role": "public-branch",
+      "tile": 5
+    },
+    {
+      "object": "M_1519_road",
+      "role": "public-branch",
+      "tile": 5
+    },
+    {
+      "object": "M_1521_road",
+      "role": "public-branch",
+      "tile": 5
+    },
+    {
+      "object": "M_1523_road",
+      "role": "industrial-service",
+      "tile": 6
+    },
+    {
+      "object": "M_1525_road",
+      "role": "industrial-service",
+      "tile": 6
+    },
+    {
+      "object": "M_1527_road",
+      "role": "industrial-service",
+      "tile": 6
+    },
+    {
+      "object": "M_1529_road",
+      "role": "industrial-service",
+      "tile": 6
+    },
+    {
+      "object": "M_1531_road",
+      "role": "local-lane",
+      "tile": 5
+    },
+    {
+      "object": "M_1533_road",
+      "role": "local-lane",
+      "tile": 5
+    },
+    {
+      "object": "M_1535_road",
+      "role": "pedestrian-steps",
+      "tile": 6
+    },
+    {
+      "object": "M_1537_road",
+      "role": "public-branch",
+      "tile": 5
+    },
+    {
+      "object": "M_1539_road",
+      "role": "public-branch",
+      "tile": 5
+    },
+    {
+      "object": "M_1541_road",
+      "role": "public-branch",
+      "tile": 5
+    },
+    {
+      "object": "M_1543_road",
+      "role": "public-branch",
+      "tile": 5
+    },
+    {
+      "object": "M_1545_road",
+      "role": "public-branch",
+      "tile": 5
+    },
+    {
+      "object": "M_1547_road",
+      "role": "public-branch",
+      "tile": 5
+    },
+    {
+      "object": "M_1549_road",
+      "role": "pedestrian-steps",
+      "tile": 6
+    },
+    {
+      "object": "M_1551_road",
+      "role": "public-branch",
+      "tile": 5
+    },
+    {
+      "object": "M_1553_road",
+      "role": "public-branch",
+      "tile": 5
+    },
+    {
+      "object": "M_1555_road",
+      "role": "public-branch",
+      "tile": 5
+    },
+    {
+      "object": "M_1557_road",
+      "role": "public-branch",
+      "tile": 5
+    },
+    {
+      "object": "M_1559_road",
+      "role": "public-branch",
+      "tile": 5
+    },
+    {
+      "object": "M_1561_road",
+      "role": "local-lane",
+      "tile": 5
+    },
+    {
+      "object": "M_1563_road",
+      "role": "local-lane",
+      "tile": 5
+    },
+    {
+      "object": "M_1565_road",
+      "role": "local-lane",
+      "tile": 5
+    },
+    {
+      "object": "M_1567_road",
+      "role": "local-lane",
+      "tile": 5
+    },
+    {
+      "object": "M_1569_road",
+      "role": "local-lane",
+      "tile": 5
+    },
+    {
+      "object": "M_1571_road",
+      "role": "local-lane",
+      "tile": 5
+    },
+    {
+      "object": "M_1573_road",
+      "role": "local-lane",
+      "tile": 5
+    },
+    {
+      "object": "M_1575_road",
+      "role": "pedestrian-steps",
+      "tile": 6
+    },
+    {
+      "object": "M_1577_road",
+      "role": "local-lane",
+      "tile": 5
+    },
+    {
+      "object": "M_1579_road",
+      "role": "local-lane",
+      "tile": 5
+    },
+    {
+      "object": "M_1581_road",
+      "role": "local-lane",
+      "tile": 5
+    },
+    {
+      "object": "M_1583_road",
+      "role": "pedestrian-steps",
+      "tile": 6
+    },
+    {
+      "object": "M_1585_road",
+      "role": "local-lane",
+      "tile": 5
+    },
+    {
+      "object": "M_1587_road",
+      "role": "local-lane",
+      "tile": 5
+    },
+    {
+      "object": "M_1589_road",
+      "role": "local-lane",
+      "tile": 5
+    },
+    {
+      "object": "M_1591_road",
+      "role": "public-branch",
+      "tile": 5
+    },
+    {
+      "object": "M_1593_road",
+      "role": "public-branch",
+      "tile": 5
+    },
+    {
+      "object": "M_1595_road",
+      "role": "public-branch",
+      "tile": 5
+    },
+    {
+      "object": "M_1597_road",
+      "role": "public-branch",
+      "tile": 5
+    },
+    {
+      "object": "M_1599_road",
+      "role": "public-branch",
+      "tile": 5
+    },
+    {
+      "object": "M_1601_road",
+      "role": "public-branch",
+      "tile": 5
+    },
+    {
+      "object": "M_1603_road",
+      "role": "public-branch",
+      "tile": 5
+    }
+  ],
+  "semantics": {
+    "oldP04": {
+      "id": "P04",
+      "name": "压制摇滚公园",
+      "scope": "主地图",
+      "buildings": [
+        "AS01",
+        "OT01",
+        "HS03",
+        "S501"
+      ],
+      "description": "摇滚公园集结部队意图袭击我们，必须予以压制。",
+      "sources": [
+        {
+          "source": "flashswf/backgrounds/gk15_2_BG.swf",
+          "image": "g10-references/eb240c37058d.png",
+          "limit": "舞台首帧裁切，只支持局部特征；非整幅构图"
+        },
+        {
+          "source": "flashswf/backgrounds/gk16_2_BG.swf",
+          "image": "g10-references/f9a30af8958c.png",
+          "limit": "舞台首帧裁切，只支持局部特征；非整幅构图"
+        },
+        {
+          "source": "flashswf/backgrounds/gk16_3_BG.swf",
+          "image": "g10-references/79c1b94929c4.png",
+          "limit": "舞台首帧裁切，只支持局部特征；非整幅构图"
+        },
+        {
+          "source": "flashswf/backgrounds/gk15_1_BG.swf",
+          "image": "g10-references/abd75edd0047.png",
+          "limit": "舞台首帧裁切，只支持局部特征；非整幅构图"
+        },
+        {
+          "source": "flashswf/backgrounds/gk13_1_BG.swf",
+          "image": "g10-references/5d6e62d34212.png",
+          "limit": "舞台首帧裁切，只支持局部特征；非整幅构图"
+        }
+      ],
+      "checks": [
+        "原场景的主要建筑特征是否可辨认？",
+        "建筑职能、归属与出入口是否合理？",
+        "与相邻地点的道路、高差是否自然？"
+      ],
+      "state": "整组细化候选，待人类验收",
+      "uncertainty": "明确在市区集结；本处服务院与街段的具体位置为候选。",
+      "relations": {
+        "main": [
+          "AS01"
+        ],
+        "transit": [
+          "OT01"
+        ],
+        "service": [],
+        "anchor": [],
+        "adjacent": [
+          "HS03",
+          "S501"
+        ]
+      },
+      "routeIds": [
+        "assembly-entry",
+        "maintenance-lane"
+      ],
+      "areaNotes": [
+        "主线54：部队集结在市区，不是摇滚大本营。",
+        "临时集结地点不等于摇滚永久基地；舞台不作为默认终屏。"
+      ],
+      "activityAreas": [
+        {
+          "name": "市区集结街段",
+          "kind": "main",
+          "box": [
+            594,
+            315,
+            140,
+            24
+          ],
+          "level": 14
+        },
+        {
+          "name": "服务院集结点",
+          "kind": "main",
+          "box": [
+            609,
+            302,
+            38,
+            23
+          ],
+          "level": 14
+        }
+      ],
+      "anchors": [],
+      "activityPath": [
+        [
+          651,
+          415,
+          14
+        ],
+        [
+          651,
+          330,
+          14
+        ],
+        [
+          630,
+          330,
+          14
+        ],
+        [
+          630,
+          316,
+          14
+        ]
+      ]
+    },
+    "newP04": {
+      "id": "P04",
+      "name": "压制摇滚公园",
+      "scope": "主地图",
+      "buildings": [
+        "AS01",
+        "RK02",
+        "RK03"
+      ],
+      "description": "摇滚公园集结部队意图袭击我们，必须予以压制。",
+      "sources": [
+        {
+          "source": "flashswf/backgrounds/gk15_2_BG.swf",
+          "image": "g10-references/eb240c37058d.png",
+          "limit": "舞台首帧裁切，只支持局部特征；非整幅构图"
+        },
+        {
+          "source": "flashswf/backgrounds/gk16_2_BG.swf",
+          "image": "g10-references/f9a30af8958c.png",
+          "limit": "舞台首帧裁切，只支持局部特征；非整幅构图"
+        },
+        {
+          "source": "flashswf/backgrounds/gk16_3_BG.swf",
+          "image": "g10-references/79c1b94929c4.png",
+          "limit": "舞台首帧裁切，只支持局部特征；非整幅构图"
+        },
+        {
+          "source": "flashswf/backgrounds/gk15_1_BG.swf",
+          "image": "g10-references/abd75edd0047.png",
+          "limit": "舞台首帧裁切，只支持局部特征；非整幅构图"
+        },
+        {
+          "source": "flashswf/backgrounds/gk13_1_BG.swf",
+          "image": "g10-references/5d6e62d34212.png",
+          "limit": "舞台首帧裁切，只支持局部特征；非整幅构图"
+        }
+      ],
+      "checks": [
+        "原场景的主要建筑特征是否可辨认？",
+        "建筑职能、归属与出入口是否合理？",
+        "与相邻地点的道路、高差是否自然？"
+      ],
+      "state": "整组细化候选，待人类验收",
+      "uncertainty": "主线54为园外市区集结；本轮后街位置仍是授权布局候选，不等于舞台内或全部居民楼参战。",
+      "relations": {
+        "main": [
+          "AS01"
+        ],
+        "transit": [],
+        "service": [],
+        "anchor": [],
+        "adjacent": [
+          "RK02",
+          "RK03"
+        ]
+      },
+      "routeIds": [
+        "rock-edge-public-entry",
+        "rock-edge-assembly-street"
+      ],
+      "areaNotes": [
+        "居民生活、后台排练与临时集结分层；P04只高亮集结街段和服务院。",
+        "原AS01服务院实物保持，日常功能并入相邻HS03。"
+      ],
+      "activityAreas": [
+        {
+          "name": "园外集结后街",
+          "kind": "main",
+          "box": [
+            200,
+            542.917,
+            187.5,
+            12.5
+          ],
+          "level": 14
+        },
+        {
+          "name": "公共服务集结院",
+          "kind": "main",
+          "box": [
+            313.333,
+            512.917,
+            22.083,
+            30.0
+          ],
+          "level": 14
+        }
+      ],
+      "anchors": [],
+      "activityPath": [
+        [
+          388.333333,
+          495.833333,
+          14
+        ],
+        [
+          388.333333,
+          525.0,
+          14
+        ],
+        [
+          388.333333,
+          549.166667,
+          14
+        ],
+        [
+          326.666667,
+          549.166667,
+          14
+        ],
+        [
+          326.666667,
+          525.833333,
+          14
+        ]
+      ],
+      "selectionPartitions": {
+        "AS01": [
+          "assembly"
+        ]
+      }
+    },
+    "oldAnchor": {
+      "id": "stage_10_9",
+      "name": "压制摇滚公园",
+      "entryKind": "difficulty",
+      "reviewId": "P04",
+      "rawAnchor": [
+        630,
+        316,
+        14
+      ],
+      "worldAnchor": [
+        31.2,
+        14,
+        -20.16
+      ],
+      "units": [
+        "AS01",
+        "OT01",
+        "HS03",
+        "S501"
+      ],
+      "relations": {
+        "main": [
+          "AS01"
+        ],
+        "transit": [
+          "OT01"
+        ],
+        "service": [],
+        "anchor": [],
+        "adjacent": [
+          "HS03",
+          "S501"
+        ]
+      },
+      "status": "candidate visual anchor; stable game ID authoritative",
+      "meaning": "UI定位点，不代表全部关卡范围或唯一物理入口"
+    },
+    "newAnchor": {
+      "id": "stage_10_9",
+      "name": "压制摇滚公园",
+      "entryKind": "difficulty",
+      "reviewId": "P04",
+      "rawAnchor": [
+        388.75,
+        525.0,
+        14.2
+      ],
+      "worldAnchor": [
+        -26.7,
+        14.2,
+        30.0
+      ],
+      "units": [
+        "AS01",
+        "RK02",
+        "RK03"
+      ],
+      "relations": {
+        "main": [
+          "AS01"
+        ],
+        "transit": [],
+        "service": [],
+        "anchor": [],
+        "adjacent": [
+          "RK02",
+          "RK03"
+        ]
+      },
+      "status": "P8 visual candidate at public backstreet approach; stable stage ID unchanged",
+      "meaning": "园外临时集结街段定位；非舞台核心、非整片居民区",
+      "selectionPartitions": {
+        "AS01": [
+          "assembly"
+        ]
+      }
+    },
+    "oldSiteReassignedTo": "HS03",
+    "stableStageIdsChanged": [],
+    "stableUnitIdsChanged": [],
+    "oldP13": {
+      "id": "P13",
+      "name": "摇滚公园",
+      "scope": "主地图",
+      "buildings": [
+        "RK01",
+        "RK03",
+        "RK04",
+        "RE01",
+        "RE02"
+      ],
+      "description": "盗贼组织“狂野玫瑰”的大本营，这个组织的成员基本都是女性，但其实力并不逊于其他盗贼组织，甚至可以和黑铁会抗衡&lt;BR&gt;这里可以获得一些高级材料",
+      "sources": [
+        {
+          "source": "flashswf/backgrounds/gk15_1_BG.swf",
+          "image": "g10-references/abd75edd0047.png",
+          "limit": "舞台首帧裁切，只支持局部特征；非整幅构图"
+        },
+        {
+          "source": "flashswf/backgrounds/gk15_2_BG.swf",
+          "image": "g10-references/eb240c37058d.png",
+          "limit": "舞台首帧裁切，只支持局部特征；非整幅构图"
+        },
+        {
+          "source": "flashswf/backgrounds/gk15_3_BG.swf",
+          "image": "g10-references/ee14c257024b.png",
+          "limit": "舞台首帧裁切，只支持局部特征；非整幅构图"
+        },
+        {
+          "source": "flashswf/backgrounds/gk15_4_BG.swf",
+          "image": "g10-references/150f271658ae.png",
+          "limit": "舞台首帧裁切，只支持局部特征；非整幅构图"
+        },
+        {
+          "source": "flashswf/backgrounds/gk15_5_BG.swf",
+          "image": "g10-references/815be3c16723.png",
+          "limit": "舞台首帧裁切，只支持局部特征；非整幅构图"
+        }
+      ],
+      "checks": [
+        "原场景的主要建筑特征是否可辨认？",
+        "建筑职能、归属与出入口是否合理？",
+        "与相邻地点的道路、高差是否自然？"
+      ],
+      "state": "整组细化候选，待人类验收",
+      "uncertainty": "建筑群尺度与城市相对位置为候选；原场景和关卡事实优先。",
+      "relations": {
+        "main": [
+          "RK01",
+          "RK03",
+          "RK04"
+        ],
+        "transit": [],
+        "service": [],
+        "anchor": [],
+        "adjacent": [
+          "RE01",
+          "RE02"
+        ]
+      },
+      "routeIds": [],
+      "areaNotes": [],
+      "activityAreas": [],
+      "anchors": []
+    },
+    "newP13": {
+      "id": "P13",
+      "name": "摇滚公园",
+      "scope": "主地图",
+      "buildings": [
+        "RK01",
+        "RK03",
+        "RK04",
+        "RE01",
+        "RE02",
+        "AS01"
+      ],
+      "description": "盗贼组织“狂野玫瑰”的大本营，这个组织的成员基本都是女性，但其实力并不逊于其他盗贼组织，甚至可以和黑铁会抗衡&lt;BR&gt;这里可以获得一些高级材料",
+      "sources": [
+        {
+          "source": "flashswf/backgrounds/gk15_1_BG.swf",
+          "image": "g10-references/abd75edd0047.png",
+          "limit": "舞台首帧裁切，只支持局部特征；非整幅构图"
+        },
+        {
+          "source": "flashswf/backgrounds/gk15_2_BG.swf",
+          "image": "g10-references/eb240c37058d.png",
+          "limit": "舞台首帧裁切，只支持局部特征；非整幅构图"
+        },
+        {
+          "source": "flashswf/backgrounds/gk15_3_BG.swf",
+          "image": "g10-references/ee14c257024b.png",
+          "limit": "舞台首帧裁切，只支持局部特征；非整幅构图"
+        },
+        {
+          "source": "flashswf/backgrounds/gk15_4_BG.swf",
+          "image": "g10-references/150f271658ae.png",
+          "limit": "舞台首帧裁切，只支持局部特征；非整幅构图"
+        },
+        {
+          "source": "flashswf/backgrounds/gk15_5_BG.swf",
+          "image": "g10-references/815be3c16723.png",
+          "limit": "舞台首帧裁切，只支持局部特征；非整幅构图"
+        }
+      ],
+      "checks": [
+        "原场景的主要建筑特征是否可辨认？",
+        "建筑职能、归属与出入口是否合理？",
+        "与相邻地点的道路、高差是否自然？"
+      ],
+      "state": "整组细化候选，待人类验收",
+      "uncertainty": "建筑群尺度与城市相对位置为候选；原场景和关卡事实优先。",
+      "relations": {
+        "main": [
+          "RK01",
+          "RK03",
+          "RK04"
+        ],
+        "transit": [],
+        "service": [],
+        "anchor": [],
+        "adjacent": [
+          "RE01",
+          "RE02",
+          "AS01"
+        ]
+      },
+      "routeIds": [],
+      "areaNotes": [
+        "外围生活后街作为邻接环境显示；公共集结街段按P04单独查看。"
+      ],
+      "activityAreas": [],
+      "anchors": [],
+      "selectionPartitions": {
+        "AS01": [
+          "residential"
+        ]
+      }
+    },
+    "oldAssemblyUnit": {
+      "id": "AS01",
+      "zone": "homes",
+      "name": "市区服务院与集结街段",
+      "box": [
+        609,
+        294,
+        38,
+        29
+      ],
+      "level": 14,
+      "role": "日常服务小院；P04临时部队集结范围",
+      "owner": "城市经营者；集结事件不改变常驻所有权",
+      "basis": "新增布局候选；原文支持深入过程/市区集结，不锁死这处门牌。"
+    },
+    "newAssemblyUnit": {
+      "id": "AS01",
+      "zone": "rock",
+      "name": "摇滚外缘生活后街与公共集结院",
+      "box": [
+        200,
+        503.125,
+        195,
+        52.292
+      ],
+      "level": 14,
+      "role": "公共生活后街/收货服务；P04临时集结只覆盖街段与服务院",
+      "owner": "城市居民与服务经营者；临时集结不改变常驻归属",
+      "basis": "P8按用户授权调整候选位置；主线54规定市区而非大本营，没有指定原坐标",
+      "selectionParts": {
+        "assembly": "园外公共街段、服务院及接近联系",
+        "residential": "断续住楼、生活附房与设施；P04不作为主要活动高亮"
+      },
+      "subZone": "public-fringe"
+    }
+  },
+  "removedOriginalGeometry": [],
+  "originalBuildingTransformsChanged": [],
+  "humanAcceptance": "pending",
+  "glbSha256": "d59783a2c63007bbb236955bb0aa2f9d4236b953128d387a182101b47f9ccf81",
+  "selectionSha256": "3c6639b949dfad274f7025f1190fec8b120dba8eea1103d45bdb00dec2d65c81",
+  "dataSha256": {
+    "activity-scopes.json": "567c3564b8df5046aa157c9b4d1ae51abb05165c6852713c93cc82599aa8cf7e",
+    "building-units.json": "569b2c67e6d0f9eae06f0b33ce179e1f111bd8cb7d4728248f0bc11be07ef195",
+    "camera-candidates.json": "390e9d1eb2802e783b8e75ebb1e0122c79ca26ec858596bd628778a92868ede9",
+    "game-frame.snapshot.json": "a95b9332346540072e2359135eb839fb0bc6f13449cb1c1412e75089a790d579",
+    "layout-g11.json": "227dc0f57643a93c79006b171aff57f048cbd8bf3d97850e922ce588d5dedf8c",
+    "navigation-anchors.json": "4ca207b276c1ae411dcbfdbcf0490aafc9b42ac50b0eeee47ac8452915bb8222",
+    "p8-route-plan.json": "b6b2a5bc7ae69a269a8c23fa3d32a7c1fe1493e94df5db8c5fc3e3912fd947da",
+    "selection-anchors.json": "535ce5f3b8aa91e4f5f03f4683080e5c658a395d80a745250c242c7baa2eadca",
+    "source-index.json": "7eedf3a69f36e834812d7a8708825a451a102e0646846b15e04e0870e538107a"
+  }
+}

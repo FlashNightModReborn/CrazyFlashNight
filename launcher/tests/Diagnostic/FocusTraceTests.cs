@@ -119,22 +119,30 @@ namespace CF7Launcher.Tests.Diagnostic
         {
             var point = new Point(150, 150);
             FocusTrace.SetTarget(new Rectangle(100, 100, 100, 100));
-            FocusTrace.HudInputSnapshot = _ => throw new InvalidOperationException("fixture");
+            var fakeHud = new IntPtr(123);
+            FocusWindowSnapshot.RegisterHud(fakeHud, IntPtr.Zero,
+                _ => throw new InvalidOperationException("fixture"));
             try
             {
+                // 直接按 hwnd 取该实例 probe：抛错路径明确标 snapshot_failed。
+                Assert.Equal("snapshot_failed",
+                    (string)JObject.FromObject(FocusTrace.CaptureHudInput(fakeHud, point))["unavailable"]);
                 string mouse = FocusTrace.PhysicalEdge(0x0201, point, 0, 10, 7);
                 FocusTrace.HookChainResult(mouse, 0x0201, new IntPtr(1), Stopwatch.GetTimestamp());
                 FocusTrace.HookChainResult(mouse, 0x0202, IntPtr.Zero, Stopwatch.GetTimestamp());
                 JObject[] rows = Read();
-                Assert.Equal("snapshot_failed", (string)rows.Single(x => (string)x["event"] == "mouse.down")["data"]["hudInput"]["unavailable"]);
+                // 假 hwnd 通不过 IsWindow 校验被剔除：hook 路径标 unattributed，
+                // 不冒认最后注册的 probe。
+                Assert.Equal("unattributed",
+                    (string)rows.Single(x => (string)x["event"] == "mouse.down")["data"]["hudInput"]["unavailable"]);
                 JObject[] results = rows.Where(x => (string)x["event"] == "mouse.hook_chain_result").ToArray();
                 Assert.True((bool)results[0]["data"]["suppressed"]);
                 Assert.False((bool)results[1]["data"]["suppressed"]);
                 Assert.DoesNotContain(rows, x => (string)x["event"] == "hud.down");
                 FocusTrace.Stop();
-                Assert.Null(FocusTrace.CaptureHudInput(point));
+                Assert.Null(FocusTrace.CaptureHudInput(fakeHud, point));
             }
-            finally { FocusTrace.HudInputSnapshot = null; }
+            finally { FocusWindowSnapshot.UnregisterHud(fakeHud); }
         }
 
         [Fact]

@@ -133,6 +133,16 @@ class org.flashNight.arki.ui.PlasticSurgeryPanelServiceTest {
         check(actor().hp == 37 && actor().mp == 12, "refresh failure preserves current resources");
         setup(); initial = snapshot(); var html:Object = draft(); html.characterName = "<甲&乙>";
         check(submit(initial.token, html).success && actor().displayName.indexOf("&lt;甲&amp;乙&gt;") >= 0, "player name is literal in Flash rich text");
+        setup();
+        check(PlasticSurgeryPanelService.installDraftOnly(), "cold isolated capability installed");
+        delete _root.存档系统; delete _root.记录玩家货币变化;
+        initial = snapshot();
+        check(initial.success && initial.phase == "editing", "draft snapshot needs no fake persistence service");
+        check(submit(initial.token, draft()).error == "read_only_capability", "direct commit denied before mutation");
+        check(_root.角色名 == "原名字" && _root.虚拟币 == 20 && _root.__surgeryRefreshes == 0, "denied commit preserves identity balance and appearance");
+        PlasticSurgeryPanelService.install(); PlasticSurgeryPanelService._resetForTests();
+        check(submit(initial.token, draft()).error == "read_only_capability", "install and session reset cannot restore write capability");
+        check(PlasticSurgeryPanelService.execute("query", {v:1, token:snapshot().token}).success, "read-only query uses isolated context owner");
         trace("PlasticSurgeryPanelServiceTest Tests Passed: " + passed);
         trace("PlasticSurgeryPanelServiceTest Tests Failed: " + failed);
     }
