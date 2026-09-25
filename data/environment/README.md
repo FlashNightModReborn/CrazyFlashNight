@@ -22,3 +22,5 @@ node tools/validate-world-presentation-presets.js --check
 该工具检查字段、范围、天气类型和场景 XML 的名称引用；Host 在启动时用同一版本合同重新严格解析并拒绝缺项、重复键和非法数值。原生接口也验证范围。预设文件缺失或无效时明确失败；天气和氛围均不恢复 AS2 绘制。
 
 改动数值后重启开发候选即可生效，`event=world_presentation_catalog` 日志记录文件 SHA-256；可用 `launcher/perf/flash-compositor/run.ps1 -VisualPresets <路径>` 在隔离夹具预览候选文件。数据改动仍需内容交付和实际画面验收，但不改变 Core/原生 DLL。新增画法类型、改着色器公式或修雨花等算法错误仍须构建配对二进制候选并遵循独立的正式 runtime 发布流程。
+
+本目录的 `.gitattributes` 将预设 JSON 固定为 LF 检出，因为 Host 记录的是文件原始字节 SHA-256。已有 Windows 工作树在拉取属性文件后，可重新检出该 JSON 以得到与新克隆一致的字节；无需改变视觉数值。
