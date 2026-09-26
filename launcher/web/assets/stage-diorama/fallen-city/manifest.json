@@ -67,8 +67,13 @@
     },
     {
       "path": "launcher/web/modules/stage-select/stage-select-fallen-data.js",
-      "bytes": 93654,
-      "sha256": "952e475b6b96ea6809ff8c09ac0e9fa4966788590e2362beaaf4eb5f422e033f"
+      "bytes": 93691,
+      "sha256": "16112bc2e60f903f4cc0ca7fae47dc8afbb8f6f074f2f4ee42c3bfeacdc3fed1"
     }
-  ]
+  ],
+  "cameraPreset": {
+    "source": "config/stage-select-camera-presets.json",
+    "sha256": "4bc349fd606e776fd2182f2c0e21dded7887061e712a7136ad67dfa1dacc40ea",
+    "candidateId": "city-landmark-main"
+  }
 }

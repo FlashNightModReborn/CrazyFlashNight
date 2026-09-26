@@ -21,8 +21,8 @@
     },
     {
       "path": "launcher/web/modules/stage-select/stage-select-diorama-data.js",
-      "bytes": 5223,
-      "sha256": "501876e12debd19bf2c4cb49598ce60126f1699e9c915980fb0454eb076be78c"
+      "bytes": 5544,
+      "sha256": "893ae694a456c17839bc411456166f1662d404671d8fa9b72eaccdd64934b5c6"
     },
     {
       "path": "launcher/web/assets/stage-diorama/base-gate/vendor/three.core.js",
@@ -54,5 +54,10 @@
       "bytes": 1081,
       "sha256": "bfe119ea4fd413f5f7ca3fcd63adb0c4a073ed39daa2fe7d3e6b769e21272601"
     }
-  ]
+  ],
+  "cameraPreset": {
+    "source": "config/stage-select-camera-presets.json",
+    "sha256": "4bc349fd606e776fd2182f2c0e21dded7887061e712a7136ad67dfa1dacc40ea",
+    "candidateId": "base-overview-context"
+  }
 }

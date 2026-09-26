@@ -21,24 +21,24 @@ var StageSelectBlackironData = {
   ],
   "camera": {
     "gltfPosition": [
-      71.38726864387804,
-      163.32559823409957,
-      169.53625287148645
+      95.94218800682832,
+      193.01431212764464,
+      124.37890453071849
     ],
     "gltfTarget": [
-      0,
-      26.5,
-      -1
+      5.971204545590052,
+      24.802960755235414,
+      -4.112976164076692
     ],
-    "horizontalSpan": 277.64215972548,
+    "horizontalSpan": 289.60525896468255,
     "maxSpan": 600
   },
   "pins": {
     "stage_18_0": {
-      "x": 347.2727665551656,
-      "y": 406.4806486330219,
-      "labelX": -88,
-      "labelY": 0,
+      "x": 312.264299036,
+      "y": 374.964298298,
+      "labelX": 0.0,
+      "labelY": 46.0,
       "labelAnchor": "ANCHOR_stage_18_0",
       "building": "SELECT_stage_18_0",
       "name": "黑铁会翅虎堂外围",
@@ -51,10 +51,10 @@ var StageSelectBlackironData = {
       "labelHeight": 32
     },
     "stage_18_1": {
-      "x": 426.55071463956716,
-      "y": 476.13831213393246,
-      "labelX": 88,
-      "labelY": 0,
+      "x": 366.706937694,
+      "y": 463.0,
+      "labelX": 0.0,
+      "labelY": 39.0,
       "labelAnchor": "ANCHOR_stage_18_1",
       "building": "SELECT_stage_18_1",
       "name": "黑铁会总部边缘",
@@ -67,10 +67,10 @@ var StageSelectBlackironData = {
       "labelHeight": 32
     },
     "stage_18_2": {
-      "x": 375.75586167530986,
-      "y": 342.28558226983006,
-      "labelX": -88,
-      "labelY": 0,
+      "x": 352.825873982,
+      "y": 313.306953513,
+      "labelX": -82.0,
+      "labelY": 0.0,
       "labelAnchor": "ANCHOR_stage_18_2",
       "building": "SELECT_stage_18_2",
       "name": "黑铁会翅虎堂内部",
@@ -83,10 +83,10 @@ var StageSelectBlackironData = {
       "labelHeight": 32
     },
     "stage_18_3": {
-      "x": 402.1027246614433,
-      "y": 297.73689544300214,
-      "labelX": -88,
-      "labelY": 0,
+      "x": 390.345330808,
+      "y": 265.352907673,
+      "labelX": -82.0,
+      "labelY": 0.0,
       "labelAnchor": "ANCHOR_stage_18_3",
       "building": "SELECT_stage_18_3",
       "name": "黑铁会火凤堂外围",
@@ -99,10 +99,10 @@ var StageSelectBlackironData = {
       "labelHeight": 32
     },
     "stage_18_4": {
-      "x": 432.7220519155984,
-      "y": 237.61217997354223,
-      "labelX": -96,
-      "labelY": 0,
+      "x": 433.949023876,
+      "y": 209.283800932,
+      "labelX": 0.0,
+      "labelY": -46.0,
       "labelAnchor": "ANCHOR_stage_18_4",
       "building": "SELECT_stage_18_4",
       "name": "黑铁会火凤堂内部",
@@ -115,10 +115,10 @@ var StageSelectBlackironData = {
       "labelHeight": 32
     },
     "stage_18_5": {
-      "x": 554.2499244282141,
-      "y": 321.3417611010763,
-      "labelX": 96,
-      "labelY": 24,
+      "x": 525.176500728,
+      "y": 317.823011281,
+      "labelX": 0.0,
+      "labelY": 46.0,
       "labelAnchor": "ANCHOR_stage_18_5",
       "building": "SELECT_stage_18_5",
       "name": "黑铁会黑龙堂外围",
@@ -131,10 +131,10 @@ var StageSelectBlackironData = {
       "labelHeight": 32
     },
     "stage_18_6": {
-      "x": 646.8199835686829,
-      "y": 262.4196562606825,
-      "labelX": 96,
-      "labelY": 16,
+      "x": 621.929372339,
+      "y": 273.804573651,
+      "labelX": 0.0,
+      "labelY": 46.0,
       "labelAnchor": "ANCHOR_stage_18_6",
       "building": "SELECT_stage_18_6",
       "name": "黑铁会黑龙堂内部",
@@ -147,10 +147,10 @@ var StageSelectBlackironData = {
       "labelHeight": 32
     },
     "stage_18_7": {
-      "x": 549.0280236561875,
-      "y": 248.71882415390402,
-      "labelX": -24,
-      "labelY": -72,
+      "x": 541.121709965,
+      "y": 237.421068253,
+      "labelX": 0.0,
+      "labelY": 38.0,
       "labelAnchor": "ANCHOR_stage_18_7",
       "building": "SELECT_stage_18_7",
       "name": "黑铁会总堂外围",
@@ -163,10 +163,10 @@ var StageSelectBlackironData = {
       "labelHeight": 32
     },
     "stage_18_8": {
-      "x": 588.9043568243895,
-      "y": 112.00518864599636,
-      "labelX": -88,
-      "labelY": -8,
+      "x": 597.907914891,
+      "y": 113.0,
+      "labelX": 0.0,
+      "labelY": -43.0,
       "labelAnchor": "ANCHOR_stage_18_8",
       "building": "SELECT_stage_18_8",
       "name": "黑铁会总堂",
@@ -179,10 +179,10 @@ var StageSelectBlackironData = {
       "labelHeight": 32
     },
     "stage_18_9": {
-      "x": 602.3237905898416,
-      "y": 226.45846796070006,
-      "labelX": 32,
-      "labelY": -56,
+      "x": 593.980128873,
+      "y": 225.239506057,
+      "labelX": 0.0,
+      "labelY": -46.0,
       "labelAnchor": "ANCHOR_stage_18_9",
       "building": "SELECT_stage_18_9",
       "name": "被攻击的黑铁会",
@@ -195,10 +195,10 @@ var StageSelectBlackironData = {
       "labelHeight": 32
     },
     "stage_18_10": {
-      "x": 723.5661009757383,
-      "y": 227.96191003007223,
-      "labelX": 96,
-      "labelY": -32,
+      "x": 711.735700964,
+      "y": 239.556943691,
+      "labelX": 0.0,
+      "labelY": -46.0,
       "labelAnchor": "ANCHOR_stage_18_10",
       "building": "SELECT_stage_18_10",
       "name": "外交-黑铁会修炼场",
@@ -212,6 +212,201 @@ var StageSelectBlackironData = {
     }
   },
   "presentationViews": {
+    "refined": {
+      "label": "精修总览",
+      "camera": {
+        "gltfPosition": [
+          95.94218800682832,
+          193.01431212764464,
+          124.37890453071849
+        ],
+        "gltfTarget": [
+          5.971204545590052,
+          24.802960755235414,
+          -4.112976164076692
+        ],
+        "horizontalSpan": 289.60525896468255,
+        "maxSpan": 600
+      },
+      "pins": {
+        "stage_18_0": {
+          "x": 312.264299036,
+          "y": 374.964298298,
+          "labelX": 0.0,
+          "labelY": 46.0,
+          "labelAnchor": "ANCHOR_stage_18_0",
+          "building": "SELECT_stage_18_0",
+          "name": "黑铁会翅虎堂外围",
+          "screenOffset": [
+            0,
+            0
+          ],
+          "shortLabel": "翅虎堂·外围",
+          "labelWidth": 104,
+          "labelHeight": 32
+        },
+        "stage_18_1": {
+          "x": 366.706937694,
+          "y": 463.0,
+          "labelX": 0.0,
+          "labelY": 39.0,
+          "labelAnchor": "ANCHOR_stage_18_1",
+          "building": "SELECT_stage_18_1",
+          "name": "黑铁会总部边缘",
+          "screenOffset": [
+            0,
+            0
+          ],
+          "shortLabel": "总部边缘",
+          "labelWidth": 104,
+          "labelHeight": 32
+        },
+        "stage_18_2": {
+          "x": 352.825873982,
+          "y": 313.306953513,
+          "labelX": -82.0,
+          "labelY": 0.0,
+          "labelAnchor": "ANCHOR_stage_18_2",
+          "building": "SELECT_stage_18_2",
+          "name": "黑铁会翅虎堂内部",
+          "screenOffset": [
+            0,
+            0
+          ],
+          "shortLabel": "翅虎堂·内部",
+          "labelWidth": 104,
+          "labelHeight": 32
+        },
+        "stage_18_3": {
+          "x": 390.345330808,
+          "y": 265.352907673,
+          "labelX": -82.0,
+          "labelY": 0.0,
+          "labelAnchor": "ANCHOR_stage_18_3",
+          "building": "SELECT_stage_18_3",
+          "name": "黑铁会火凤堂外围",
+          "screenOffset": [
+            0,
+            -16
+          ],
+          "shortLabel": "火凤堂·外围",
+          "labelWidth": 104,
+          "labelHeight": 32
+        },
+        "stage_18_4": {
+          "x": 433.949023876,
+          "y": 209.283800932,
+          "labelX": 0.0,
+          "labelY": -46.0,
+          "labelAnchor": "ANCHOR_stage_18_4",
+          "building": "SELECT_stage_18_4",
+          "name": "黑铁会火凤堂内部",
+          "screenOffset": [
+            0,
+            0
+          ],
+          "shortLabel": "火凤堂·内部",
+          "labelWidth": 104,
+          "labelHeight": 32
+        },
+        "stage_18_5": {
+          "x": 525.176500728,
+          "y": 317.823011281,
+          "labelX": 0.0,
+          "labelY": 46.0,
+          "labelAnchor": "ANCHOR_stage_18_5",
+          "building": "SELECT_stage_18_5",
+          "name": "黑铁会黑龙堂外围",
+          "screenOffset": [
+            0,
+            0
+          ],
+          "shortLabel": "黑龙堂·外围",
+          "labelWidth": 104,
+          "labelHeight": 32
+        },
+        "stage_18_6": {
+          "x": 621.929372339,
+          "y": 273.804573651,
+          "labelX": 0.0,
+          "labelY": 46.0,
+          "labelAnchor": "ANCHOR_stage_18_6",
+          "building": "SELECT_stage_18_6",
+          "name": "黑铁会黑龙堂内部",
+          "screenOffset": [
+            0,
+            0
+          ],
+          "shortLabel": "黑龙堂·内部",
+          "labelWidth": 104,
+          "labelHeight": 32
+        },
+        "stage_18_7": {
+          "x": 541.121709965,
+          "y": 237.421068253,
+          "labelX": 0.0,
+          "labelY": 38.0,
+          "labelAnchor": "ANCHOR_stage_18_7",
+          "building": "SELECT_stage_18_7",
+          "name": "黑铁会总堂外围",
+          "screenOffset": [
+            0,
+            0
+          ],
+          "shortLabel": "总堂·外围",
+          "labelWidth": 104,
+          "labelHeight": 32
+        },
+        "stage_18_8": {
+          "x": 597.907914891,
+          "y": 113.0,
+          "labelX": 0.0,
+          "labelY": -43.0,
+          "labelAnchor": "ANCHOR_stage_18_8",
+          "building": "SELECT_stage_18_8",
+          "name": "黑铁会总堂",
+          "screenOffset": [
+            0,
+            0
+          ],
+          "shortLabel": "总堂·内部",
+          "labelWidth": 104,
+          "labelHeight": 32
+        },
+        "stage_18_9": {
+          "x": 593.980128873,
+          "y": 225.239506057,
+          "labelX": 0.0,
+          "labelY": -46.0,
+          "labelAnchor": "ANCHOR_stage_18_9",
+          "building": "SELECT_stage_18_9",
+          "name": "被攻击的黑铁会",
+          "screenOffset": [
+            -10,
+            0
+          ],
+          "shortLabel": "总部遇袭",
+          "labelWidth": 104,
+          "labelHeight": 32
+        },
+        "stage_18_10": {
+          "x": 711.735700964,
+          "y": 239.556943691,
+          "labelX": 0.0,
+          "labelY": -46.0,
+          "labelAnchor": "ANCHOR_stage_18_10",
+          "building": "SELECT_stage_18_10",
+          "name": "外交-黑铁会修炼场",
+          "screenOffset": [
+            0,
+            0
+          ],
+          "shortLabel": "修炼场·外交",
+          "labelWidth": 104,
+          "labelHeight": 32
+        }
+      }
+    },
     "closer": {
       "label": "原镜头·放大",
       "camera": {
@@ -798,7 +993,7 @@ var StageSelectBlackironData = {
       }
     }
   },
-  "defaultPresentation": "closer",
+  "defaultPresentation": "refined",
   "fallbackPins": {
     "stage_18_0": {
       "x": 364.92211299568356,

@@ -91,8 +91,13 @@
     },
     {
       "path": "launcher/web/modules/stage-select/stage-select-blackiron-data.js",
-      "bytes": 28879,
-      "sha256": "b4a311c5f7de7a6119e4249eac76386b00106ca53f61b27b889578400da8eac4"
+      "bytes": 34219,
+      "sha256": "0981c98c42ea5f7238438002e332f4313f719bb9f276c7df872e0a3ba39283bc"
     }
-  ]
+  ],
+  "cameraPreset": {
+    "source": "config/stage-select-camera-presets.json",
+    "sha256": "4bc349fd606e776fd2182f2c0e21dded7887061e712a7136ad67dfa1dacc40ea",
+    "candidateId": "hq-overview-main"
+  }
 }

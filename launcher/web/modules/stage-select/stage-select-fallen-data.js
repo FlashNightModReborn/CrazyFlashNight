@@ -7,334 +7,342 @@ var StageSelectFallenData = {
     "city.glb": "d59783a2c63007bbb236955bb0aa2f9d4236b953128d387a182101b47f9ccf81",
     "selection.glb": "3c6639b949dfad274f7025f1190fec8b120dba8eea1103d45bdb00dec2d65c81"
   },
-  "presetKey": "cf7.stage-camera.fallen-city.p8-v1",
+  "presetKey": "cf7.stage-camera.fallen-city.refined-v1",
   "releaseOnHide": true,
   "fallback": "assets/stage-diorama/fallen-city/fallback.jpg",
   "camera": {
     "gltfPosition": [
-      -20.52314647300354,
-      189.9752172455775,
-      399.0858186660858
+      155.28565617252227,
+      248.58921655754318,
+      334.02567504865084
     ],
     "gltfTarget": [
-      -11.240657892625123,
-      22.526175937178454,
-      14.021338389531051
+      -10.08177634974267,
+      19.840821851231773,
+      23.01476819765341
     ],
-    "horizontalSpan": 262.9185290941067,
+    "horizontalSpan": 290,
     "maxSpan": 600
   },
   "pins": {
     "stage_10_0": {
-      "x": 318.2480849280919,
-      "y": 484.1730956448197,
+      "x": 233.164406568,
+      "y": 410.167223061,
       "labelAnchor": "ANCHOR_stage_10_0",
       "building": "FOCUS_stage_10_0",
       "shortLabel": "竞赛·入门",
       "labelWidth": 90,
       "labelHeight": 32,
-      "labelX": -72,
-      "labelY": 12,
+      "labelX": -10.0,
+      "labelY": 46.0,
       "screenOffset": [
         0,
         0
       ]
     },
     "stage_10_1": {
-      "x": 393.93989177798346,
-      "y": 483.44562878843715,
+      "x": 293.772859815,
+      "y": 427.718807567,
       "labelAnchor": "ANCHOR_stage_10_1",
       "building": "FOCUS_stage_10_1",
       "shortLabel": "竞赛·角斗",
       "labelWidth": 90,
       "labelHeight": 32,
-      "labelX": 72,
-      "labelY": 0,
+      "labelX": 75.0,
+      "labelY": 0.0,
       "screenOffset": [
         0,
         0
       ]
     },
     "stage_10_2": {
-      "x": 708.6827695040656,
-      "y": 295.53069729409157,
+      "x": 704.25012555,
+      "y": 311.887769975,
       "labelAnchor": "ANCHOR_stage_10_2",
       "building": "FOCUS_stage_10_2",
       "shortLabel": "堕落城区",
       "labelWidth": 90,
       "labelHeight": 32,
-      "labelX": 108,
-      "labelY": -120,
+      "labelX": 75.0,
+      "labelY": 46.0,
       "screenOffset": [
         0,
         0
       ]
     },
     "stage_10_3": {
-      "x": 724.2206987296433,
-      "y": 340.01409613310364,
+      "x": 671.359699818,
+      "y": 363.341870925,
       "labelAnchor": "ANCHOR_stage_10_3",
       "building": "FOCUS_stage_10_3",
       "shortLabel": "游寇基地",
       "labelWidth": 90,
       "labelHeight": 32,
-      "labelX": 0,
-      "labelY": 48,
+      "labelX": 0.0,
+      "labelY": 46.0,
       "screenOffset": [
         0,
         4
       ]
     },
     "stage_10_4": {
-      "x": 579.727128558844,
-      "y": 347.7105988809295,
+      "x": 566.473004873,
+      "y": 335.376482838,
       "labelAnchor": "ANCHOR_stage_10_4",
       "building": "FOCUS_stage_10_4",
       "shortLabel": "黑铁会",
       "labelWidth": 90,
       "labelHeight": 32,
-      "labelX": 0,
-      "labelY": 48,
+      "labelX": 0.0,
+      "labelY": 46.0,
       "screenOffset": [
         0,
         20
       ]
     },
     "stage_10_5": {
-      "x": 386.7888660315836,
-      "y": 362.9916277417323,
+      "x": 368.313701482,
+      "y": 308.141249033,
       "labelAnchor": "ANCHOR_stage_10_5",
       "building": "FOCUS_stage_10_5",
       "shortLabel": "摇滚公园",
       "labelWidth": 90,
       "labelHeight": 32,
-      "labelX": -180,
-      "labelY": 0,
+      "labelX": 0.0,
+      "labelY": -46.0,
       "screenOffset": [
         0,
         0
       ]
     },
     "stage_10_6": {
-      "x": 950.4175835579954,
-      "y": 376.4508785567075,
+      "x": 868.701295412,
+      "y": 443.485043418,
       "labelAnchor": "ANCHOR_stage_10_6",
       "building": "FOCUS_stage_10_6",
       "shortLabel": "革命军哨所",
       "labelWidth": 90,
       "labelHeight": 32,
-      "labelX": 0,
-      "labelY": -48,
+      "labelX": 0.0,
+      "labelY": -46.0,
       "screenOffset": [
         0,
         0
       ]
     },
     "stage_10_7": {
-      "x": 713.2705790723122,
-      "y": 216.76845141893494,
+      "x": 795.745919339,
+      "y": 227.998413958,
       "labelAnchor": "ANCHOR_stage_10_7",
       "building": "FOCUS_stage_10_7",
       "shortLabel": "堕落城深处",
       "labelWidth": 90,
       "labelHeight": 32,
-      "labelX": 0,
-      "labelY": -48,
+      "labelX": 0.0,
+      "labelY": -46.0,
       "screenOffset": [
         0,
         0
       ]
     },
     "stage_10_8": {
-      "x": 224.80063907980468,
-      "y": 454.13068926562426,
+      "x": 192.857453327,
+      "y": 355.107197742,
       "labelAnchor": "ANCHOR_stage_10_8",
       "building": "FOCUS_stage_10_8",
       "shortLabel": "A兵团试炼场",
       "labelWidth": 104,
       "labelHeight": 32,
-      "labelX": 0,
-      "labelY": -48,
+      "labelX": -82.0,
+      "labelY": 46.0,
       "screenOffset": [
         0,
         0
       ]
     },
     "stage_10_9": {
-      "x": 453.3070959815963,
-      "y": 375.1223412156035,
+      "x": 448.609495627,
+      "y": 333.561812436,
       "labelAnchor": "ANCHOR_stage_10_9",
       "building": "FOCUS_stage_10_9",
       "shortLabel": "压制摇滚",
       "labelWidth": 90,
       "labelHeight": 32,
-      "labelX": 24,
-      "labelY": 48,
+      "labelX": 0.0,
+      "labelY": 46.0,
       "screenOffset": [
         0,
         32
       ]
     },
     "stage_10_10": {
-      "x": 407.2590588391803,
-      "y": 407.95056363238564,
+      "x": 369.420840218,
+      "y": 360.8801362,
       "labelAnchor": "ANCHOR_stage_10_10",
       "building": "FOCUS_stage_10_10",
       "shortLabel": "摇滚内战",
       "labelWidth": 90,
       "labelHeight": 32,
-      "labelX": 156,
-      "labelY": 60,
+      "labelX": 95.0,
+      "labelY": 66.0,
       "screenOffset": [
         -12,
         28
       ],
       "leaderBend": [
-        0,
-        42
+        39.51219073969496,
+        44.49760423831786
       ]
     },
     "stage_10_11": {
-      "x": 361.02987308632254,
-      "y": 406.3060822658707,
+      "x": 317.986489588,
+      "y": 352.732734216,
       "labelAnchor": "ANCHOR_stage_10_11",
       "building": "FOCUS_stage_10_11",
       "shortLabel": "摇滚·外交",
       "labelWidth": 90,
       "labelHeight": 32,
-      "labelX": 0,
-      "labelY": 120,
+      "labelX": 0.0,
+      "labelY": 149.267265784,
       "screenOffset": [
         -28,
         16
+      ],
+      "leaderBend": [
+        -14,
+        74.63363289201263
       ]
     },
     "stage_10_12": {
-      "x": 576.276440672594,
-      "y": 304.13769563796876,
+      "x": 599.234075611,
+      "y": 292.995097549,
       "labelAnchor": "ANCHOR_stage_10_12",
       "building": "FOCUS_stage_10_12",
       "shortLabel": "酒吧·外交",
       "labelWidth": 90,
       "labelHeight": 32,
-      "labelX": -108,
-      "labelY": -72,
+      "labelX": 0.0,
+      "labelY": 162.0,
       "screenOffset": [
         -20,
         12
+      ],
+      "leaderBend": [
+        26,
+        81
       ]
     },
     "stage_10_13": {
-      "x": 400.7142196223257,
-      "y": 305.2005466517955,
+      "x": 450.165486104,
+      "y": 247.716821178,
       "labelAnchor": "ANCHOR_stage_10_13",
       "building": "FOCUS_stage_10_13",
       "shortLabel": "大学·外交",
       "labelWidth": 90,
       "labelHeight": 32,
-      "labelX": -132,
-      "labelY": -12,
+      "labelX": -75.0,
+      "labelY": -46.0,
       "screenOffset": [
         0,
         0
       ]
     },
     "stage_10_14": {
-      "x": 453.9788244426198,
-      "y": 328.6886255306374,
+      "x": 492.815868778,
+      "y": 284.067933203,
       "labelAnchor": "ANCHOR_stage_10_14",
       "building": "FOCUS_stage_10_14",
       "shortLabel": "大学城周边",
       "labelWidth": 90,
       "labelHeight": 32,
-      "labelX": -144,
-      "labelY": 12,
+      "labelX": 40.0,
+      "labelY": 0.0,
       "screenOffset": [
         0,
         24
       ]
     },
     "stage_10_15": {
-      "x": 449.6094431179268,
-      "y": 284.78322831667776,
+      "x": 535.48103412,
+      "y": 232.167259255,
       "labelAnchor": "ANCHOR_stage_10_15",
       "building": "FOCUS_stage_10_15",
       "shortLabel": "下水道入口",
       "labelWidth": 90,
       "labelHeight": 32,
-      "labelX": -84,
-      "labelY": -24,
+      "labelX": 0.0,
+      "labelY": -46.0,
       "screenOffset": [
         0,
         0
       ]
     },
     "stage_10_16": {
-      "x": 575.5371889648428,
-      "y": 258.4142787311304,
+      "x": 640.47363702,
+      "y": 239.576373824,
       "labelAnchor": "ANCHOR_stage_10_16",
       "building": "FOCUS_stage_10_16",
       "shortLabel": "商业街·外交",
       "labelWidth": 104,
       "labelHeight": 32,
-      "labelX": 0,
-      "labelY": -48,
+      "labelX": 0.0,
+      "labelY": -46.0,
       "screenOffset": [
         0,
         0
       ]
     },
     "stage_10_17": {
-      "x": 620.0073817724395,
-      "y": 269.658308964529,
+      "x": 685.580778918,
+      "y": 259.577057111,
       "labelAnchor": "ANCHOR_stage_10_17",
       "building": "FOCUS_stage_10_17",
       "shortLabel": "堕落城保卫战",
       "labelWidth": 104,
       "labelHeight": 32,
-      "labelX": 48,
-      "labelY": -144,
+      "labelX": 82.0,
+      "labelY": 8.0,
       "screenOffset": [
-        12,
+        32,
         0
       ]
     },
     "stage_10_18": {
-      "x": 755.3946310856871,
-      "y": 295.72363670909164,
+      "x": 746.817330438,
+      "y": 316.629024296,
       "labelAnchor": "ANCHOR_stage_10_18",
       "building": "FOCUS_stage_10_18",
       "shortLabel": "据点M",
       "labelWidth": 90,
       "labelHeight": 32,
-      "labelX": 48,
-      "labelY": 48,
+      "labelX": 75.0,
+      "labelY": 0.0,
       "screenOffset": [
         28,
         0
       ]
     },
     "nav_10_3": {
-      "x": 368.9633351874245,
-      "y": 193.9920122514764,
+      "x": 493.363633284,
+      "y": 132.514956582,
       "labelAnchor": "ANCHOR_nav_10_3",
       "building": "FOCUS_nav_10_3",
       "shortLabel": "黑铁会总部",
       "labelWidth": 116,
       "labelHeight": 32,
-      "labelX": 0,
-      "labelY": 0
+      "labelX": 0.0,
+      "labelY": -46.0
     },
     "nav_10_4": {
-      "x": 222.04306266498315,
-      "y": 425.12239520553317,
+      "x": 155.298704588,
+      "y": 338.320237503,
       "labelAnchor": "ANCHOR_nav_10_4",
       "building": "FOCUS_nav_10_4",
       "shortLabel": "试炼场深处",
       "labelWidth": 116,
       "labelHeight": 32,
-      "labelX": -84,
-      "labelY": 24
+      "labelX": 0.0,
+      "labelY": -46.0
     }
   },
   "fallbackPins": {

@@ -5,6 +5,7 @@ import json
 import math
 from pathlib import Path
 import zipfile
+from lib.stage_camera_presets import apply_preset, check_preset, preset_manifest, refresh_preset
 
 ROOT = Path(__file__).resolve().parents[1]
 DEST = ROOT / 'launcher/web/assets/stage-diorama/base-gate'
@@ -50,6 +51,7 @@ def generate(archive):
                              building=node['glbNode'])
         config = dict(frameLabel=mapping['frameLabel'], camera=camera, environment=environment,
                       gridYawRadians=mapping['gridYawRadians'], pins=pins)
+        apply_preset(config, 'base')
         outputs = {
             DEST / '.gitattributes': b'* -text\n',
             DATA.parent / '.gitattributes': b'stage-select-diorama-data.js text eol=lf\nstage-select-intel-data.js text eol=lf\n',
@@ -73,6 +75,7 @@ def generate(archive):
             outputs[DEST / 'vendor' / name] = raw
         manifest = dict(schema=1, sourceZipSha256=PACKAGE_HASH, threeRevision='180',
                         transforms='Only loader relative import paths and fixed camera projection; GLB unchanged.',
+                        cameraPreset=preset_manifest('base'),
                         files=[dict(path=p.relative_to(ROOT).as_posix(), bytes=len(b), sha256=digest(b))
                                for p, b in outputs.items()])
         outputs[DEST / 'manifest.json'] = (json.dumps(manifest, ensure_ascii=False, indent=2)+'\n').encode()
@@ -83,9 +86,13 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('archive', nargs='?', type=Path)
     parser.add_argument('--check', action='store_true')
+    parser.add_argument('--refresh-camera', action='store_true', help='Regenerate camera/labels on the verified imported assets')
     args = parser.parse_args()
+    if args.refresh_camera:
+        refresh_preset(DATA, DEST, 'base')
     if args.check:
         manifest = json.loads((DEST / 'manifest.json').read_text(encoding='utf-8'))
+        check_preset(DATA, manifest, 'base')
         total = 0
         for row in manifest['files']:
             data = (ROOT / row['path']).read_bytes()
@@ -96,6 +103,8 @@ def main():
             total += len(data)
         assert total < 12_000_000, 'Single-scene runtime asset budget exceeded'
         print(json.dumps(dict(ok=True, files=len(manifest['files']), bytes=total)))
+        return
+    if args.refresh_camera:
         return
     if not args.archive:
         parser.error('archive is required unless --check is used')
