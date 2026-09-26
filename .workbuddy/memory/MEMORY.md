@@ -28,12 +28,27 @@
 - 被 `#include` 的 `.as` 丢 BOM → CS6 静默跳过（报 0/0、marker 正常但帧脚本 0 字节）；新增/重建必须保 BOM
 - `[TIMEOUT]` 留 `compile_state_uncertain.marker` 卡后续编译；确认 Flash/任务静止后再删
 
+## 立绘 / 头像的渲染落点（2026-09-26 定论，别再混）
+
+- **游戏内「对话框」= 原生 C# `NativeDialogueWidget`**（自述「替代 Flash 内『对话框界面』MovieClip」），立绘位图来自 `Guardian/Dialogue/DialoguePortraitService.cs`（`ComputeStaticCrop` 定取景）。**需要 `dotnet build` 才生效**；静态立绘不进磁盘缓存（磁盘缓存只收 64-hex 纸娃娃键），重建重启即可。
+- **`web/modules/dialogue/dialogue-view.js` 只服务任务面板的「对话回放」**（唯一调用方 `task-panel.js`，随 `tasks` 懒加载包注册；没有独立 web dialogue 面板）。它同样的取景逻辑是**另一份** ⇒ 两边消费同一 manifest 但**改一处不等于改另一处**。
+- 随性别换图的 NPC（室友）：立绘 key 裁决在 AS2 `NativeDialogueAppearance.as:83`；`室友.png` 已退役删除，`男室友.png`/`女室友.png` 保留但**消费端未做性别迁移**（web 404→`无头像.png`；C# 缺图→名字首字；AS2 任务栏→留空）。
+- 本机**只有 .NET SDK 7.0.403**，项目 `global.json` 锁 `10.0.300` + `rollForward: disable` ⇒ **C# 无法在本机编译**（`launcher/setup-check.ps1` fail closed）。含 C# 的改动一律标「待编译」。
+- **`flashswf/portraits/profiles/<名字>.png` 全仓只有两个运行期消费者**（2026-09-26 审计）：① web `task-panel.js:2266` `ASSETS_BASE='https://cfn-assets.local/portraits/profiles/'`（该虚拟主机映射到 `{projectRoot}/flashswf/`，见 `WebOverlayForm.cs:1771`）；② AS2 `UI交互_lsy_对话框UI.as:394` `刷新NPC头像` 的 `loadMovie("flashswf/portraits/profiles/"+名字+".png")`。**两者都按名字拼路径** ⇒ 删某张图只会回落，不抛异常。
+  - ⚠ 细节更正：web 三处 `onerror` 会**先把自己的 `visibility` 设成 hidden** 再换 `无头像.png` ⇒ 该占位图**实际显示不出来**，最终就是**纯空白**（`.task-npc-avatar` 是 `background:transparent;border:none`，故视觉上只剩空位）。别再写「web 回落到 `无头像.png`」。
+  - C# 原生交付菜单（`RightContextWidget.StageReturn.cs:299-343`）是唯一真正友好的兜底：`File.Exists` 假 → 灰底 + 名字首字（室友 →「室」）。**因此放一张"全透明 png"反而会让这条兜底失效**（`File.Exists` 为真 → 走画图分支 → 画一张全透明图 → 空洞）。
+- **`室友.png` 放"空图"而非删除**（2026-09-26 实测可行性）：全透明 400×400 **700 字节**；覆盖门**仍然绿**（`GENDER_VARIANT_NAMES` 把 `室友` 短路到 `男室友/女室友`，压根不看 `室友.png`）——**实测对照**：临时摘掉 `GENDER_VARIANT_NAMES['室友']`，同一张空图立刻被判 `blank:["室友"]` ⇒ 空图与那条变体登记**必须配套存在**。web/AS2 与"删除"等价（都空白），只有 C# 那个「首字」占位会退化。
+- **地图/室友头像不读 `profiles/`**：动态头像槽 `kind==="roommateGender"` 走 `assets/map/roommate-male.webp` / `roommate-female.webp`（C# `MapAssetCandidates.cs:115`、web `map-panel.js:1954`、`_snapshotVersion>=4` 走 `_avatarAssetUrls[slot.id]`）；Flash 地图 UI 用 `flashswf/UI/地图界面/LIBRARY/头像合集/男室友.png`（元件内嵌）。**「室友.png」不在这些链路上。**
+- **`flashswf/portraits/profiles/generated-manifest.json` 零消费者**（全仓无引用，不参与运行期/测试），纯审计记录；`bake-npc-profiles.py --check` 在 HEAD 就已失败（首条 `A兵团士兵` 的 crop 源 `e_7cda072d452b.png` 已 WebP 化 → 第 39 行 `resolve_source` 直接抛错，**走不到**后续任何逻辑）⇒ 生成链路是既有坏点，不是新引入。
+- 跑覆盖门/生成器需**系统 Python 3.10**（`C:/Users/Akatosh/AppData/Local/Programs/Python/Python310/python.exe`，带 PIL 12.1.1）；managed 3.13.12 venv 没装 PIL。
+
 ## 用户约定
 
 - 不擅自改 `flashswf/` 下 XFL/XML；NPC 帧脚本这类资产先在 `scripts/`（AS2 注入层）找绕开办法，改资产前先问
 - 不往 `_root` 一级塞新属性，新状态放二级容器（如 `_root.cheatFlags.*`）；作弊码不进存档
 - 不乱改 `tools/` 已有脚本、不加参数；一次性/补跑写 `tmp/` 一次性脚本，用完删
 - 提方案给最小可用实现，可选增强另列让用户选；不顺手扩大改动范围
+- **用户说「暂存」= `git add` 进暂存区，不是 `git stash`**（2026-09-26 踩过）。要收起改动到一边时才说「存/stash」，别自作主张 stash
 - **`.workbuddy/memory/`、`flashswf/`、`scripts/` 都在 git 跟踪内** ⇒ 一次整树回滚（`git restore/checkout .`）会把「源码改动 + 记忆」一起抹掉，只有 `tmp/`（`.gitignore`）不受影响。**⇒ 接活先读盘确认现状，别假设「上一轮已经改完了」。**
 
 ## XFL / 深度的坑

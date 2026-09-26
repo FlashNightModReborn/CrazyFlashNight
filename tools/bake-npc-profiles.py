@@ -1,5 +1,9 @@
 #!/usr/bin/env python3
-"""从已核对的共享肖像生成缺失 NPC 小头像；不重写既有手工头像。"""
+"""从已核对的共享肖像生成缺失 NPC 小头像；不重写既有手工头像。
+
+随玩家性别换图的角色（见 GENDER_VARIANT_NAMES）不在此派生——它们没有单一同名头像，
+只由覆盖门按「变体两图齐」判定。
+"""
 from __future__ import annotations
 
 import argparse
@@ -14,6 +18,15 @@ from PIL import Image, __version__ as PILLOW_VERSION
 ROOT = Path(__file__).resolve().parent.parent
 SPEC = ROOT / 'tools/npc-profiles/sources.json'
 OUTPUT = ROOT / 'flashswf/portraits/profiles'
+
+# 随玩家性别换图的角色：没有单一同名头像文件，只有两个性别变体（变体图由美术另行
+# 提供，本工具不生成、只登记覆盖口径）。消费端本轮不做性别路由，认不出同名图时走
+# 各自既有兜底（web → 无头像.png / C# → 名字首字 / AS2 任务栏 → 留空）。
+# 覆盖门（任务/地图登记人物都必须有头像）对这些名字按「变体两图齐」判定，而不是
+# 找 室友.png —— 该合成图已退役（两人叠在一张头像上，2026-09-26 删除）。
+GENDER_VARIANT_NAMES = {
+    '室友': ('男室友', '女室友'),
+}
 
 
 def digest(data: bytes) -> str:
@@ -74,13 +87,24 @@ def coverage(directory: Path) -> dict:
     files.update({p.stem.casefold(): p for p in directory.glob('*.png')})
     missing, blank = [], []
     for name in sorted(task_names | map_names):
-        path = files.get(name.casefold())
-        if path is None:
-            missing.append(name)
+        variants = GENDER_VARIANT_NAMES.get(name)
+        if variants:
+            # 性别变体角色：两个变体文件齐 = 覆盖（缺任一张按缺图报，报出变体名便于定位）。
+            paths = [files.get(variant.casefold()) for variant in variants]
+            absent = [variant for variant, path in zip(variants, paths) if path is None]
+            if absent:
+                missing.append(name + '（缺 ' + '/'.join(absent) + '）')
+                continue
         else:
+            path = files.get(name.casefold())
+            if path is None:
+                missing.append(name)
+                continue
+            paths = [path]
+        for path in paths:
             with Image.open(path) as raw:
                 if raw.convert('RGBA').getbbox() is None:
-                    blank.append(name)
+                    blank.append(path.stem)
     return {'taskDefinitions': len(tasks), 'taskNpcNames': len(task_names),
             'mapNpcNames': len(map_names), 'missing': missing, 'blank': blank,
             'scope': '静态注册人物覆盖，不代表当前剧情可达或头像人验通过'}

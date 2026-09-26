@@ -54,21 +54,6 @@
       "note": "从既有肖像按头部/主体构图派生。"
     },
     {
-      "name": "室友",
-      "mode": "paired-role",
-      "sources": [
-        {
-          "path": "flashswf/portraits/profiles/男室友.png",
-          "sha256": "DA7BB969E4460B7E48A032034A51FFBFFB6C8E1975C2E5B30F1FD9A3C53FC127"
-        },
-        {
-          "path": "flashswf/portraits/profiles/女室友.png",
-          "sha256": "CD595082F75ED94C8D08DB18A1C283C93127904CC3555ECFCA7036865EDF4541"
-        }
-      ],
-      "note": "室友随剧情/玩家性别变化；通用角色头像组合既有男女图，不固定冒充某一性别。具体男女源继续保留。"
-    },
-    {
       "name": "排骨",
       "mode": "crop",
       "sources": [
