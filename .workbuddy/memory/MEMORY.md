@@ -34,6 +34,7 @@
 - 不往 `_root` 一级塞新属性，新状态放二级容器（如 `_root.cheatFlags.*`）；作弊码不进存档
 - 不乱改 `tools/` 已有脚本、不加参数；一次性/补跑写 `tmp/` 一次性脚本，用完删
 - 提方案给最小可用实现，可选增强另列让用户选；不顺手扩大改动范围
+- **`.workbuddy/memory/`、`flashswf/`、`scripts/` 都在 git 跟踪内** ⇒ 一次整树回滚（`git restore/checkout .`）会把「源码改动 + 记忆」一起抹掉，只有 `tmp/`（`.gitignore`）不受影响。**⇒ 接活先读盘确认现状，别假设「上一轮已经改完了」。**
 
 ## XFL / 深度的坑
 
@@ -54,4 +55,5 @@
 - `_root.难度等级`：简单 1 / 冒险 1.5 / 修罗 2 / 地狱 2.5（`通信_鸡蛋_任务系统.as` 的 `_root.计算难度等级`；`StageSelectPanelService.difficultyRank` 的 fallback 4 不一致但走不到）
 - 敌人等级 = 关卡兵种配置的 `Level`（`WaveSpawner.spawn` 里 `enemyPara.等级`），缺省 1；不是玩家等级
 - 敌人数值表在 `data/enemy_properties/*.xml`；`units.json` 的 `level` 是兵种表基础值
+- **物品 `<data>` 字段口径**（数据在 `data/items/*.xml`）：刀/手枪/长枪的威力在 `power`，拳套在 `punch`；另有 **`defence`(防御) / `damage`(通用伤害)**，`damage` **常缺项**（读之前要兜 0）。★ 用户口中的「防御力 / 伤害加成」在**物品语境**下 = `data.defence` / `data.damage`，不是施术者身上的 `防御力` / `全身伤害加成`——**别混**。
 - 无精英/BOSS 血量倍率；`韧性系数` 只影响受击硬直，不进任何额度公式

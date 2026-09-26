@@ -67,13 +67,10 @@ var 建武器池 = function()
 		var 数据 = 物品.data;
 		if (数据 == undefined) return;
 
-		var 用途 = 物品.use, 类型 = "", 面板 = NaN;
-		if (用途 == "刀")                                       { 类型 = "刀";   面板 = Number(数据.power); }
-		else if (用途 == "手枪")                                { 类型 = "手枪"; 面板 = Number(数据.power); }
-		else if (用途 == "长枪")                                { 类型 = "长枪"; 面板 = Number(数据.power); }
-		else if (用途 == "手部装备" && Number(数据.punch) > 0)  { 类型 = "拳套"; 面板 = Number(数据.punch); }
-		else return;
-		if (!(面板 > 0)) return;                     // 图纸 / 装饰 / 零威力不进池
+		// 装备面板计算：公式在 _root.技能函数.王之财宝取面板
+		var 面板信息 = _root.技能函数.王之财宝取面板(物品.use, 数据);
+		if (面板信息 == null) return;                // 不是武器 / 零威力 → 不进池
+		var 类型 = 面板信息.类型, 面板 = 面板信息.面板;
 
 		var 装扮 = 数据.dressup;
 		if (装扮 == undefined || 装扮 == "") return;
@@ -216,11 +213,9 @@ var 发一发 = function(发射者名, 池, 空手, 冷兵, 枪械, 伤加, 等�
 		        魔法伤害属性: null, 毒: 0, 击溃: 0, 斩杀: 0};
 	}
 
-	// ---- 威力：面板×2 + 类型对应加成，再乘技能等级系数 ----
-	var 对应加成;
-	if (武器.类型 == "拳套")     对应加成 = 空手 ? 空手 * 2 : 0;
-	else if (武器.类型 == "刀")  对应加成 = 冷兵 ? 冷兵 : 0;
-	else                         对应加成 = 枪械 ? 枪械 : 0;
+	// ---- 威力：面板倍率 + 类型对应加成，再乘类型整体倍率，再乘技能等级系数 ----
+	//      公式在 _root.技能函数.王之财宝算威力
+	//      拳套的面板 = data.punch + data.defence + data.damage（在 取面板 里算）----
 
 	var 子弹属性 = _root.子弹属性初始化(施术, "王之财宝", 施术);
 
@@ -243,7 +238,7 @@ var 发一发 = function(发射者名, 池, 空手, 冷兵, 枪械, 伤加, 等�
 	子弹属性.血量上限击溃 = 武器.击溃;                  // 引擎会与施术者取 max 后写进 Obj.击溃
 	子弹属性.斩杀         = 武器.斩杀;
 
-	子弹属性.子弹威力 = (武器.面板 + 对应加成) * (1 + 等级 * 0.5) + 伤加;
+	子弹属性.子弹威力 = _root.技能函数.王之财宝算威力(武器.面板, 武器.类型, 空手, 冷兵, 枪械, 等级, 伤加);
 
 	// 落点：BulletInitializer 里 _x=shootX、_y=shootY、Z轴坐标=shootZ
 	子弹属性.shootX = 落点x;
@@ -261,15 +256,14 @@ var 发一发 = function(发射者名, 池, 空手, 冷兵, 枪械, 伤加, 等�
 var 施术者 = _parent;
 var 施术者名 = 施术者._name;
 
-// 加成快照：口径同 PlayerInfoProvider.getUnarmedBonus / getMeleeBonus / getFirearmBonus / getDamageBonus
-
-var 空手加成 = Math.floor(施术者.空手攻击力);
-if (isNaN(空手加成)) 空手加成 = 0;
-var 冷兵器加成 = 施术者.装备刀锋利度加成 ? 施术者.装备刀锋利度加成 : 0;
-var 枪械加成   = 施术者.装备枪械威力加成 ? 施术者.装备枪械威力加成 : 0;
-var 伤害加成   = Math.floor(施术者.伤害加成 ? 施术者.伤害加成 : 0);
-if (isNaN(伤害加成)) 伤害加成 = 0;
-var 技能等级   = (施术者.技能等级 > 0) ? 施术者.技能等级 : 1;
+// 各流派加成快照：公式与兜底口径在 _root.技能函数.王之财宝取加成
+//   （口径同 PlayerInfoProvider.getUnarmedBonus / getMeleeBonus / getFirearmBonus / getDamageBonus）
+var 加成       = _root.技能函数.王之财宝取加成(施术者);
+var 空手加成   = 加成.空手;
+var 冷兵器加成 = 加成.冷兵;
+var 枪械加成   = 加成.枪械;
+var 伤害加成   = 加成.伤加;
+var 技能等级   = 加成.等级;
 
 // 武器池：整个存档期只建一次，缓存到单位二级属性上（不碰 _root 一级）
 if (施术者.王之财宝武器池 == undefined) 施术者.王之财宝武器池 = 建武器池();
