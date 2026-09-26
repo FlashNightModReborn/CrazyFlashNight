@@ -188,11 +188,39 @@ namespace CF7Launcher.Guardian.Dialogue
             return entry;
         }
 
-        /// <summary>LoadStatic 的稳定取景：全表情 bounds 并集；external-swf（非
-        /// sprite-natural）再∩作者遮罩窗。返回烘焙像素坐标矩形；无 bounds → null
-        /// （ReadAndFit 用整图）。</summary>
+        /// <summary>LoadStatic 的稳定取景：全表情 bounds 并集（sprite-natural 用同 sprite
+        /// 共享窗口）；external-swf（非 sprite-natural）再∩作者遮罩窗。返回烘焙像素坐标矩形；
+        /// 无 bounds → null（ReadAndFit 用整图）。</summary>
         private RectangleF? ComputeStaticCrop(JObject entry, JObject expressions)
         {
+            string source = entry.Value<string>("source");
+            string coordinateSpace = entry.Value<string>("coordinateSpace");
+            // 同一人物全部表情共用取景，移除无内容的舞台留白，不随单句缩放跳动。
+            RectangleF? union = UnionOfExpressions(expressions);
+            if (source == "external-swf" && coordinateSpace == "sprite-natural")
+            {
+                // 嵌套时间轴变体（男女/多表情）由同一次 sprite 导出烘焙，共用一张
+                // sprite-local 画布 ⇒ 取景窗口必须整组共享。否则各变体按自身包围盒
+                // 缩放：画布大的那支（室友-男）会缩成小图浮在框顶，与女变体不一致。
+                RectangleF? shared = SharedSpriteWindow(entry);
+                if (shared.HasValue) return shared;
+                return union;
+            }
+            // 外部 SWF 再与作者遮罩相交，遮罩下未完成的底座不能重新露出。
+            if (source == "external-swf")
+            {
+                JObject window = _manifest["portraitWindow"]?["external-swf"] as JObject;
+                // manifest 窗口已经包含导出倍率，不能再次乘 zoom。
+                if (window != null)
+                    return union.HasValue ? RectangleF.Intersect(union.Value, Rect(window, 1)) : Rect(window, 1);
+            }
+            return union;
+        }
+
+        /// <summary>单条目全表情 bounds 并集（烘焙像素坐标）；无有效 bounds → null。</summary>
+        private static RectangleF? UnionOfExpressions(JObject expressions)
+        {
+            if (expressions == null) return null;
             RectangleF union = RectangleF.Empty;
             foreach (JProperty property in expressions.Properties())
             {
@@ -202,17 +230,34 @@ namespace CF7Launcher.Guardian.Dialogue
                 if (box.Width > 0 && box.Height > 0)
                     union = union.IsEmpty ? box : RectangleF.Union(union, box);
             }
-            // 同一人物全部表情共用取景，移除无内容的舞台留白，不随单句缩放跳动。
-            // 外部 SWF 再与作者遮罩相交，遮罩下未完成的底座不能重新露出。
-            if (entry.Value<string>("source") == "external-swf"
-                && entry.Value<string>("coordinateSpace") != "sprite-natural")
-            {
-                JObject window = _manifest["portraitWindow"]?["external-swf"] as JObject;
-                // manifest 窗口已经包含导出倍率，不能再次乘 zoom。
-                if (window != null)
-                    return union.IsEmpty ? Rect(window, 1) : RectangleF.Intersect(union, Rect(window, 1));
-            }
             return union.IsEmpty ? (RectangleF?)null : union;
+        }
+
+        /// <summary>同 sprite（sourcePath + sourceSpriteId）全部 sprite-natural 条目的公共取景
+        /// 窗口 = 各自并集的交集。单变体 sprite（artist 五表情）交集 = 自身 ⇒ 行为不变；
+        /// 找不到同组或交集退化 → null，回落本条目自身并集（保持旧行为）。</summary>
+        private RectangleF? SharedSpriteWindow(JObject entry)
+        {
+            var entries = _manifest["entries"] as JObject;
+            if (entries == null) return null;
+            string sourcePath = entry.Value<string>("sourcePath");
+            int? spriteId = entry.Value<int?>("sourceSpriteId");
+            RectangleF window = RectangleF.Empty;
+            int count = 0;
+            foreach (JProperty property in entries.Properties())
+            {
+                JObject other = property.Value as JObject;
+                if (other == null
+                    || other.Value<string>("source") != "external-swf"
+                    || other.Value<string>("coordinateSpace") != "sprite-natural"
+                    || !string.Equals(other.Value<string>("sourcePath"), sourcePath, StringComparison.Ordinal)
+                    || other.Value<int?>("sourceSpriteId") != spriteId) continue;
+                RectangleF? box = UnionOfExpressions(other["expressions"] as JObject);
+                if (!box.HasValue) continue;
+                window = count == 0 ? box.Value : RectangleF.Intersect(window, box.Value);
+                count++;
+            }
+            return count > 0 && window.Width > 0 && window.Height > 0 ? (RectangleF?)window : null;
         }
 
         private Bitmap LoadStatic(string key, string expression)
