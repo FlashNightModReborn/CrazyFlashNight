@@ -171,8 +171,12 @@ function attachMercLoadout(m){
   var eff=[];
   for(var s2=6;s2<=16;s2++){ if(bySlot[s2]) eff.push(bySlot[s2]); }
   m.equips=eff;
+  // mercenaries.json equiplocked 的 mock 等价物：AS2 里由 MercLoadoutService.isEquipLocked
+  // 决定 canOperate 与写门，投影多一个 equipLocked 供 Web 复算可读原因
+  var equipLocked=!!(MockHost.mercEquipLocked||{})[m.slotIndex];
   m.loadout={version:1,loadoutRevision:MockHost.mercLoadoutRevision[m.slotIndex]||0,
-    canOperate:deployState===0,combatLocked:false,deployState:deployState,
+    canOperate:deployState===0&&!equipLocked,equipLocked:equipLocked,
+    combatLocked:false,deployState:deployState,
     writableSlots:[6,7,8,9,10,11,12,13,14,15],slots:slots};
 }
 
@@ -193,6 +197,9 @@ var MockHost = {
   // 流年（slot 1）：slot 13 托管中 / slot 15 损坏占位；revision 随写递增（初始 7）
   mercLoadoutCustody:{1:{'13':{name:'测试托管UZI',displayname:'测试托管UZI',icon:'测试UZI',level:7},'15':'corrupt'}},
   mercLoadoutRevision:{1:7},
+  // 佣兵丙（slot 2，初始阵亡）：mercenaries.json equiplocked=true 的等价 fixture，
+  // 用于验证数据侧装备锁先于阵亡/出战门生效
+  mercEquipLocked:{2:true},
   // 候选 fixture（两种 scope 均携逐候选 eligibleSlots 数字槽号白名单；
   // 背包总览的空数组候选仍携带以支持置灰；与 slot scope 共用 source/lease）
   mercLoadoutBackpack:[
@@ -437,7 +444,9 @@ var MockHost = {
       var cust=this.mercLoadoutCustody[msg.mercIndex]||(this.mercLoadoutCustody[msg.mercIndex]={});
       var curRev=this.mercLoadoutRevision[msg.mercIndex]||0;
       var writeErr='';
-      if(msg.expectedLoadoutRevision!==curRev) writeErr='stale_state';
+      // 与 AS2 validateWriteContext 同序：装备锁先于 revision 乐观锁
+      if((MockHost.mercEquipLocked||{})[msg.mercIndex]) writeErr='equip_locked';
+      else if(msg.expectedLoadoutRevision!==curRev) writeErr='stale_state';
       else if(msg.cmd==='loadout_deliver' && cust[msg.slotKey]) writeErr='custody_exists';
       else if(msg.cmd!=='loadout_deliver' && !cust[msg.slotKey]) writeErr='no_custody';
       else if(msg.cmd==='loadout_withdraw' && cust[msg.slotKey]==='corrupt') writeErr='custody_corrupt';
@@ -1825,6 +1834,50 @@ var MockHost = {
       'rightInset='+mLdRightInset.toFixed(1)+', paddingRight='+mLdHeaderPad.toFixed(1)
         +', scale='+mLdHeaderScale.toFixed(3));
     mLdPage.querySelector('.team-merc-detail-back').click(); await wait(20);
+    // ── 数据侧装备锁（mercenaries.json equiplocked）：佣兵丙 slot 2 整区 locked，
+    //    锁的原因先于阵亡门给出；动词文案保持「确认交付」，只禁用不新增样式 ──
+    // 断言体是无 catch 的 IIFE，本块一律走空值容错取值，避免选择器漂移把整串用例打成超时。
+    var mLkCard=mercCards()[2];
+    mLkCard && mLkCard.click(); await wait(10);
+    var mLdTrain=document.querySelector('.team-merc-child .team-merc-detail .team-merc-act-train');
+    mLdTrain && mLdTrain.click();
+    await wait(30);
+    var mLkPage=document.querySelector('.team-merc-child .workbench-secondary-page.team-merc-detail-page');
+    var mLkNode=function(sel){ return mLkPage?mLkPage.querySelector(sel):null; };
+    var mLkAttr=function(sel,attr){ var n=mLkNode(sel); return n?String(n.getAttribute(attr)||''):''; };
+    var mLkText=function(sel){ var n=mLkNode(sel); return n?String(n.textContent||''):''; };
+    var mLkDisabled=function(sel){ var n=mLkNode(sel); return !!n&&n.disabled===true; };
+    var mLkCandsBefore=MockHost.mercRequestCounts.loadout_candidates||0;
+    var mLkWritesBefore=(MockHost.mercRequestCounts.loadout_deliver||0)
+      +(MockHost.mercRequestCounts.loadout_replace||0)
+      +(MockHost.mercRequestCounts.loadout_withdraw||0);
+    var mLkSlot6=mLkNode('.merc-loadout-slot[data-slot-id="6"]');
+    mLkSlot6 && mLkSlot6.click(); await wait(20);
+    var mLkCommitBtn=mLkNode('[data-build-action="commit"]');
+    var mLkUnequipBtn=mLkNode('[data-build-action="unequip"]');
+    mLkCommitBtn && mLkCommitBtn.click();
+    mLkUnequipBtn && mLkUnequipBtn.click();
+    await wait(20);
+    var mLkDebug=MercTeamController.loadoutPickerDebug()||{};
+    var mLkCandsAfter=MockHost.mercRequestCounts.loadout_candidates||0;
+    var mLkWritesAfter=(MockHost.mercRequestCounts.loadout_deliver||0)
+      +(MockHost.mercRequestCounts.loadout_replace||0)
+      +(MockHost.mercRequestCounts.loadout_withdraw||0);
+    assert('team-merc-loadout-equip-locked','数据侧装备锁 equiplocked：装备锁先于阵亡门给可读原因 + picker 整区 locked + 点槽零候选 + 「确认交付」文案不变但禁用零写',
+      !!mLkPage && mLkPage.getAttribute('aria-hidden')!=='true' && !!mLkSlot6 &&
+      mLkAttr('[data-merc-loadout-notice]','data-notice-kind')==='blocked' &&
+      mLkText('[data-merc-loadout-notice]').indexOf('该佣兵装备已锁定')>=0 &&
+      mLkAttr('.merc-loadout-picker','data-interaction-state')==='locked' &&
+      mLkText('[data-build-action="commit"]')==='确认交付' &&
+      mLkDisabled('[data-build-action="commit"]') &&
+      mLkDisabled('[data-build-action="unequip"]') &&
+      mLkDebug.selectedSlotKey==='' &&
+      String(mLkDebug.operateReason||'').indexOf('该佣兵装备已锁定')>=0 &&
+      mLkCandsAfter===mLkCandsBefore && mLkWritesAfter===mLkWritesBefore,
+      'notice='+mLkText('[data-merc-loadout-notice]')+', verb='+mLkText('[data-build-action="commit"]')
+        +', cands='+mLkCandsBefore+'→'+mLkCandsAfter+', writes='+mLkWritesBefore+'→'+mLkWritesAfter);
+    var mLkBack=mLkNode('.team-merc-detail-back');
+    mLkBack && mLkBack.click(); await wait(20);
     // ── busy 守卫：hire 加载中禁止切 tab 与关闭 ──
     document.querySelector('.team-merc-child .team-goto-hire').click();
     click('partner');

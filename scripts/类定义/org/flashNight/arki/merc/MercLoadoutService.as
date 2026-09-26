@@ -22,6 +22,7 @@ import org.flashNight.neur.Event.EventBus;
  */
 class org.flashNight.arki.merc.MercLoadoutService {
     private static var CUSTODY_KEY:String = "装备托管";
+    private static var EQUIP_LOCK_KEY:String = "装备锁定";
     private static var SLOT_MIN:Number = 6;
     private static var SLOT_MAX:Number = 15;
     // merc[6..15] → 槽名（use 匹配规则与 CharacterBuildService.equipmentUseMatchesSlot 同口径）
@@ -69,6 +70,18 @@ class org.flashNight.arki.merc.MercLoadoutService {
     }
 
     /**
+     * 数据侧装备锁：mercenaries.json 顶层 equiplocked 经 MercLibrary.buildMercData
+     * 写入 merc[19].装备锁定。为 true 时该佣兵交付/替换/取回全部 fail-closed
+     * （equip_locked），面板据此整区锁定。缺键即不锁，不追溯改动前已雇佣的旧档。
+     */
+    public static function isEquipLocked(merc:Array):Boolean {
+        if (merc == undefined || merc.length < 20) return false;
+        var meta:Object = merc[19];
+        if (meta == undefined || typeof meta != "object") return false;
+        return meta[EQUIP_LOCK_KEY] == true;
+    }
+
+    /**
      * §2 资格 policy：装备实例 + use 匹配槽名（手枪2 接受手枪）+ type 武器/防具
      * + 需求等级 <= 佣兵自身等级（merc[0]）。无性别/兵种门（代码库不存在该维度）。
      */
@@ -103,12 +116,13 @@ class org.flashNight.arki.merc.MercLoadoutService {
 
     /**
      * 面板投影：逐槽三态（preset/custody/custody_corrupt）+ 预设/托管双向概览。
-     * canOperate = !combatLocked && deployState==0；slotIndex<0 的池佣兵仅 preset，
-     * canOperate=false。预设槽应用 getEquipmentDefaultLevel 默认强化，与
+     * canOperate = !equipLocked && !combatLocked && deployState==0；slotIndex<0 的池佣兵
+     * 仅 preset，canOperate=false。预设槽应用 getEquipmentDefaultLevel 默认强化，与
      * MercPanelService.buildMercSummary 口径一致。
      */
     public static function buildLoadoutProjection(merc:Array, slotIndex:Number):Object {
         var combatLocked:Boolean = _root.当前为战斗地图 == true;
+        var equipLocked:Boolean = isEquipLocked(merc);
         var hasDeploySlot:Boolean = !isNaN(slotIndex) && slotIndex >= 0;
         var deployState = !hasDeploySlot ? null
             : (_root.佣兵是否出战信息 == undefined
@@ -116,7 +130,8 @@ class org.flashNight.arki.merc.MercLoadoutService {
         var projection:Object = {
             version:1,
             loadoutRevision:getLoadoutRevision(merc),
-            canOperate:hasDeploySlot && !combatLocked && deployState == 0,
+            canOperate:hasDeploySlot && !equipLocked && !combatLocked && deployState == 0,
+            equipLocked:equipLocked,
             combatLocked:combatLocked,
             deployState:deployState,
             writableSlots:[6, 7, 8, 9, 10, 11, 12, 13, 14, 15],
@@ -503,7 +518,7 @@ class org.flashNight.arki.merc.MercLoadoutService {
 
     /**
      * 写操作公共门（顺序即断言顺序）：mercIndex 合法 → 同伴数据存在 → mercId 匹配
-     * → 槽位可写 → 非战斗地图 → 出战（1=merc_deployed）/阵亡（-1=merc_dead）
+     * → 数据侧装备锁 → 槽位可写 → 非战斗地图 → 出战（1=merc_deployed）/阵亡（-1=merc_dead）
      * → loadoutRevision 乐观锁。lease 复证在各 Internal 内 policy 之前完成。
      */
     private static function validateWriteContext(mercIndex, mercId, slotKey,
@@ -513,6 +528,7 @@ class org.flashNight.arki.merc.MercLoadoutService {
         var merc:Array = _root.同伴数据 == undefined ? undefined : _root.同伴数据[index];
         if (merc == undefined || merc[0] == undefined) return fail("merc_not_found");
         if (String(merc[2]) != String(mercId)) return fail("merc_id_mismatch");
+        if (isEquipLocked(merc)) return fail("equip_locked");
         if (!isWritableSlot(slotKey)) return fail("slot_locked");
         if (_root.当前为战斗地图 == true) return fail("combat_locked");
         var deployState:Number = _root.佣兵是否出战信息 == undefined

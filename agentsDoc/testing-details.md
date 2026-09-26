@@ -520,7 +520,7 @@ chainProgress 按「任一 seq≥target 候选可完成」析取处理，基线�
 
 必跑：`powershell -ExecutionPolicy Bypass -File tools/audit-pet-roster-types.ps1` + `node tools/run-team-harness.js` + `launcher/build.ps1` + `launcher/tests/run_tests.ps1`。
 T800 托管长枪追加 `powershell -ExecutionPolicy Bypass -File scripts/run-managed-longgun-tests.ps1 -TimeoutSeconds 240`（机器钉死 ManagedLongGun 126/126）+ `scripts/compile_test.ps1 -Target publish` + 独立发布 `flashswf/arts/things1/things1.xfl`；仅当实际改动 legacy 删除兼容脚本时再发布 `flashswf/UI/战宠相关界面/战宠相关界面.xfl`；
-佣兵装备托管追加 `powershell -ExecutionPolicy Bypass -File scripts/run-merc-loadout-tests.ps1 -TimeoutSeconds 360`（机器钉死 113/113，固定含 scope=backpack / eligibleSlots 跨槽白名单用例）。
+佣兵装备托管追加 `powershell -ExecutionPolicy Bypass -File scripts/run-merc-loadout-tests.ps1 -TimeoutSeconds 360`（机器钉死 125/125，静态 check 调用点 117，固定含 scope=backpack / eligibleSlots 跨槽白名单、`merc[19].装备锁定` 数据侧装备锁 fail-closed 与断言序用例）。
 
 **run-team-harness 覆盖**（文本阈值 218/218 或 222/222×3，待核：阈值来源为历史文本，未找到当前机器真源）：佣兵卡片纸娃娃快照与培养页 canvas 非空；改佣兵纸娃娃时补看头像只绘制 `脸型/发型/面具`、培养页造型预览与性格左右分栏、manifest `appearance.faceById/hairById` 原始编号归一化；游戏内手测 Native/Web fallback 的唯一战队入口、四标签、领养/雇佣/出战/关闭重开；改 `MercPanelService` face/hair 或 merc snapshot 字段时追加 Flash smoke。
 统一战队 Web 面板是现役标准入口，旧 `战宠相关界面.swf` 只属兼容面。Team 三视口还须覆盖托管长枪右栏、「兼容 / 背包」筛选、锁定原因、12 秒超时解锁回拉、交付/取回、候选独立滚动与完整/紧凑密度；名册卡片不得因武器行改变排版，当前武器只在右侧详情显示，详情/培养当前武器/候选格都必须使用项目 `PanelTooltip` 完整属性注释且零原生 `title`。Host 回归必须证明两个写命令及 `weapon_tooltip` 同时进入总允许表与 `PetTask`，候选注释保留 exact lease-bound source。

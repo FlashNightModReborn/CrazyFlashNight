@@ -407,6 +407,13 @@ function(LoadoutPickerModule, WorkbenchComponents, WorkbenchFocus, DropPolicyMod
             unequipBtn.disabled = true;
             commitBtn.removeAttribute('title');
             commitBtn.removeAttribute('data-blocked-reason');
+            // 装备锁定：沿用共享 sync 的禁用与灰石牌样式，只把无选中槽时降级的
+            // 「先选择槽位」钉回主动词，避免文案变化顶坏排版。
+            var lockedMerc = this._merc;
+            if (lockedMerc && lockedMerc.loadout && lockedMerc.loadout.equipLocked) {
+                commitBtn.textContent = ACTION_TEXTS.commitEquip;
+                commitBtn.setAttribute('aria-label', this._operateReason);
+            }
             return;
         }
         var corrupt = state === 'custody_corrupt';

@@ -42,6 +42,9 @@
     var LEVEL_JUMPS = [20, 40, 60, 80];
     var HIRE_SCROLL_TRIGGER = 220;  // 距底部多少 px 触发无缝加载（与现役一致）
 
+    // mercenaries.json equiplocked → merc[19].装备锁定：AS2 权威拒绝写，Web 只投影同一原因
+    var EQUIP_LOCKED_REASON = '该佣兵不可更换装备';
+
     // 培养页 live canvas 复用共享 MercPortraits 状态构建；卡片/右栏快照也统一走该模块。
     var DRESSUP_BODY_FIT_FIELDS = MercPortraits.BODY_FIT_FIELDS;
     var DRESSUP_BATTLE_STATE = MercPortraits.BATTLE_STATE;
@@ -1976,6 +1979,7 @@
     function loadoutOperateReason(merc) {
         var loadout = merc && merc.loadout;
         if (!loadout) return '装备托管数据不可用，请重新同步';
+        if (loadout.equipLocked) return EQUIP_LOCKED_REASON;
         if (loadout.canOperate) return '';
         if (loadout.combatLocked) return '战斗地图中无法调整托管装备';
         if (loadout.deployState === 1) return '出战中的佣兵无法调整装备';
@@ -2213,6 +2217,7 @@
             invalid_index: '佣兵索引已失效，请重新选择',
             merc_not_found: '佣兵已不在名册中',
             merc_id_mismatch: '佣兵身份已变化，请重新选择',
+            equip_locked: EQUIP_LOCKED_REASON,
             slot_locked: '该槽位不支持托管',
             combat_locked: '战斗地图中无法调整装备',
             merc_deployed: '出战中的佣兵无法调整装备',

@@ -27,6 +27,7 @@ class org.flashNight.arki.merc.MercLoadoutServiceTest {
             testLegacyCompatibility();
             testDeliverSuccessAndProjection();
             testDeliverGateMatrix();
+            testEquipLockedFailsClosed();
             testDeliverCommitFailureAtomicity();
             testReplaceFlow();
             testReplaceFailuresAndRollback();
@@ -385,6 +386,57 @@ class org.flashNight.arki.merc.MercLoadoutServiceTest {
             var nullSource:Object = MercLoadoutService.deliver(0, "m1", "13", 1, null);
             check(nullSource.error == "invalid_payload",
                 "空 source 在 lease 复证处 invalid_payload（断言序：公共门先于 lease）");
+        } finally {
+            restoreRoot(s);
+        }
+    }
+
+    // mercenaries.json 顶层 equiplocked → MercLibrary.buildMercData 写 merc[19].装备锁定
+    private static function testEquipLockedFailsClosed():Void {
+        var s:Object = saveRoot();
+        try {
+            var scene:Object = setupMercScene(3);
+            var m:Array = scene.merc;
+            var bag:ArrayInventory = scene.bag;
+            var original:BaseItem = new BaseItem("测试长枪B", {level:6, shot:7}, 444);
+            bag.add(0, original);
+
+            check(MercLoadoutService.isEquipLocked(m) === false,
+                "无 equiplocked 键（merc[19] 缺装备锁定）判为不锁");
+            var legacy:Array = merc(10, "legacyLock");
+            legacy.length = 19;
+            check(MercLoadoutService.isEquipLocked(legacy) === false,
+                "长度不足 20 的旧档佣兵判为不锁");
+            var openProj:Object = MercLoadoutService.buildLoadoutProjection(m, 0);
+            check(openProj.equipLocked === false && openProj.canOperate === true,
+                "未锁佣兵投影 equipLocked false 且休息态可操作");
+
+            m[19].装备锁定 = true;
+            check(MercLoadoutService.isEquipLocked(m) === true, "装备锁定为 true 即锁");
+            var proj:Object = MercLoadoutService.buildLoadoutProjection(m, 0);
+            check(proj.equipLocked === true && proj.canOperate === false
+                    && proj.deployState == 0 && proj.combatLocked === false,
+                "锁定佣兵投影整区不可操作，且不改动战斗锁与出战判定口径");
+            check(MercLoadoutService.deliver(0, "m1", "12", 0, snapshotRef(bag, 0, 3)).error
+                    == "equip_locked" && bag.getItem("0") === original
+                    && !MercLoadoutService.hasAnyCustody(m),
+                "锁定佣兵交付 equip_locked 且零写入（不移背包物、不建托管域）");
+            check(MercLoadoutService.replace(0, "m1", "12", 0, snapshotRef(bag, 0, 3)).error
+                    == "equip_locked" && bag.getItem("0") === original,
+                "锁定佣兵替换 equip_locked 且不移背包物");
+            check(MercLoadoutService.withdraw(0, "m1", "12", 0).error == "equip_locked",
+                "锁定佣兵取回 equip_locked");
+            check(MercLoadoutService.deliver(0, "m1", "16", 0, null).error == "equip_locked",
+                "装备锁先于槽位门：非法槽 16 也报 equip_locked（断言序见 validateWriteContext 注释）");
+            check(MercLoadoutService.deliver(0, "别人", "12", 0, null).error == "merc_id_mismatch",
+                "身份门仍先于装备锁");
+            check(MercLoadoutService.buildCandidates(m, "12", "slot").success === true,
+                "候选为只读投影，不随装备锁 fail-closed（写门才是权威）");
+
+            m[19].装备锁定 = false;
+            var unlocked:Object = MercLoadoutService.deliver(0, "m1", "12", 0, snapshotRef(bag, 0, 3));
+            check(unlocked.success === true && MercLoadoutService.getLoadoutRevision(m) == 1,
+                "装备锁定非 true 后交付恢复正常（缺省/ false 均不锁）");
         } finally {
             restoreRoot(s);
         }

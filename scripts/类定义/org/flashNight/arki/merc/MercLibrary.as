@@ -140,6 +140,9 @@ class org.flashNight.arki.merc.MercLibrary {
         if (raw.passive) {
             merc[19].被动技能 = raw.passive;
         }
+        if (raw.equiplocked) {
+            merc[19].装备锁定 = true;
+        }
         return merc;
     }
 
