@@ -21,7 +21,7 @@ class org.flashNight.arki.merc.MercHybridizer {
 
     private static var DEVICE_EXCLUDE:Array = [
         "小熊", "诛神", "轶事奇人", "炎魔", "合金", "钛", "章鱼", "Andy",
-        "JK", "余烬", "军阀", "装甲头盔", "奇美拉", "牙狼", "K5", "兽王", "异形"
+        "JK", "余烬", "军阀", "装甲头盔", "奇美拉", "牙狼", "K5", "兽王", "异形", "猫妖"
     ];
 
     private static var EQUIP_TYPE_BY_SLOT:Array = [
