@@ -60,6 +60,7 @@
             _portraitManifestPromise = fetchJson(url).then(function(manifest) {
                 manifest.__baseUrl = baseUrl(url);
                 manifest.__index = buildIndex(manifest);
+                manifest.__spriteWindows = buildSpriteWindows(manifest);
                 return manifest;
             }).catch(function(err) {
                 _portraitManifestPromise = null; // 失败不毒化会话：瞬时 fetch 失败后下次渲染可重试
@@ -183,8 +184,62 @@
         };
     }
 
+    function intersectBounds(a, b) {
+        var x0 = Math.max(a.x, b.x);
+        var y0 = Math.max(a.y, b.y);
+        var x1 = Math.min(a.x + a.width, b.x + b.width);
+        var y1 = Math.min(a.y + a.height, b.y + b.height);
+        if (!(x1 > x0) || !(y1 > y0)) return null;
+        return { x: x0, y: y0, width: x1 - x0, height: y1 - y0 };
+    }
+
+    // sprite-natural 是「同一 sprite 内的运行时变体」（如 室友 按玩家性别选 男/女 帧）。变体烘焙器对
+    // 每个 sprite 只导出一次 sprite:svg，逐帧 PNG 共用同一画布 —— 即同一 sprite 的各个变体天然共享
+    // 一套画布坐标系，原版 Flash 里也共用同一个放置矩阵与同一个遮罩窗口。因此取景窗口必须按 sprite
+    // 共享，而不是各变体按自身 alpha 包围盒各 fit 一次：包围盒=整幅画布的那个变体（室友-男 是全身
+    // 坐姿，内容铺满画布）会被缩到「整幅画布高 = 槽高」，人物缩成一团浮在槽顶（原来报的「立绘在天上」）；
+    // 而内容只占画布上部的变体（室友-女 是胸像）则被放大到正常大小 —— 同一 sprite 两种倍率。
+    // 共享窗口取各变体包围盒的交集：任何变体都必然为空的区域一律排除，剩下的「公共内容区」是该 sprite
+    // 唯一可靠的最紧窗口。单变体 sprite 不适用（自身包围盒已是唯一参照），不建条目、走原兜底路径。
+    function buildSpriteWindows(manifest) {
+        var groups = {};
+        var entries = (manifest && manifest.entries) || {};
+        Object.keys(entries).forEach(function(entryKey) {
+            var entry = entries[entryKey];
+            if (!entry || entry.coordinateSpace !== 'sprite-natural') return;
+            var gid = String(entry.sourcePath || '') + '|' +
+                String(entry.sourceSpriteId == null ? '' : entry.sourceSpriteId);
+            var group = groups[gid] || (groups[gid] = { variants: 0, bounds: null, degenerate: false });
+            group.variants++;
+            var expressions = entry.expressions || {};
+            Object.keys(expressions).forEach(function(name) {
+                if (group.degenerate) return;
+                var b = assetBounds(expressions[name]);
+                if (!b) return;
+                if (!group.bounds) { group.bounds = b; return; }
+                var next = intersectBounds(group.bounds, b);
+                if (next) group.bounds = next;
+                else group.degenerate = true; // 交集退化：该 sprite 的变体无公共内容区，交回包围盒兜底
+            });
+        });
+        Object.keys(groups).forEach(function(gid) {
+            if (groups[gid].variants < 2 || !groups[gid].bounds) delete groups[gid];
+        });
+        return groups;
+    }
+
+    function spriteWindowFor(manifest, entry) {
+        var windows = manifest && manifest.__spriteWindows;
+        if (!windows || !entry) return null;
+        var gid = String(entry.sourcePath || '') + '|' +
+            String(entry.sourceSpriteId == null ? '' : entry.sourceSpriteId);
+        return windows[gid] ? windows[gid].bounds : null;
+    }
+
     function portraitWindowFor(manifest, entry) {
-        if (entry && entry.coordinateSpace === 'sprite-natural') return null;
+        if (entry && entry.coordinateSpace === 'sprite-natural') {
+            return spriteWindowFor(manifest, entry); // 多变体 sprite：返回共享窗口；单变体：null → 兜底
+        }
         var source = entry && entry.source;
         var fromManifest = manifest && manifest.portraitWindow;
         if (fromManifest && source && fromManifest[source]) return fromManifest[source];
@@ -212,11 +267,20 @@
                 // 不再让宽度驱动缩放）→ 群像与胸像等高，槽变宽变窄都不破。横向把人物包围盒
                 // 中心居中到槽内，溢出由 slot 的 overflow:hidden 裁切（cover 语义，复刻原版）。
                 var scale = (slotH / win.height) * PORTRAIT_ZOOM;
-                var anchorX = bounds.x + bounds.width * 0.5;
+                // 横向锚点：外部立绘按本帧包围盒中心居中（群像里偏一侧的人物仍能摆正）；
+                // sprite-natural 共享窗口则必须用窗口中心——各变体自身包围盒中心不同（室友-男 坐姿
+                // 双腿伸向右侧，包围盒中心比 室友-女 偏右约 117px），按各自中心居中会让男女两个变体
+                // 的头错位，用共享窗口中心才等价于原版的「同一放置矩阵 + 同一遮罩」。
+                var shared = entry && entry.coordinateSpace === 'sprite-natural';
+                var anchorX = shared ? win.x + win.width * 0.5 : bounds.x + bounds.width * 0.5;
+                // 纵向锚点：共享窗口取的是各变体包围盒交集（= 最紧的那个变体），室友-男 的头顶比交集
+                // 上沿高 24px，直接用 win.y 会削掉他的发顶；故取「窗口上沿」与「本帧内容上沿」较高者，
+                // 让每个变体都完整显示（原版两变体共用窗口，谁也不裁）。
+                var anchorY = shared ? Math.min(win.y, bounds.y) : win.y;
                 img.style.width = (imageW * scale).toFixed(2) + 'px';
                 img.style.height = (imageH * scale).toFixed(2) + 'px';
                 img.style.left = (slotW * 0.5 - anchorX * scale).toFixed(2) + 'px';
-                img.style.top = (-win.y * scale).toFixed(2) + 'px';
+                img.style.top = (-anchorY * scale).toFixed(2) + 'px';
                 return;
             }
             // 兜底（内置 sprite / 无窗口）：底部锚定的包围盒贴合，行为同迁移前。
