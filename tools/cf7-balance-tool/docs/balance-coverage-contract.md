@@ -31,16 +31,18 @@
 |---|---|---|---|---|
 | weapon v1 | `records/weapon-balance-audit.xml` | `balance-check` | 40 条记录 | 仅校验已有记录；**全量覆盖门待开启**（本契约收口 design §8 的 deferred 项） |
 | armor v1 | `records/armor-balance-plan.xml` | `armor-balance-check` | 钛合金61式五件 confirmed | 按 plan 登记项校验，不强制整文件 |
-| potion v2 | `records/potion-balance-plan.xml` | `potion-balance-check` | 三文件 77 项；缺口 issue #101 | 已有整文件 coverage 门（家族先例） |
+| potion v2 | `records/potion-balance-plan.xml` | `potion-balance-check` | 三文件 77 项；#101 缺口已于 2026-09-22 清零（`51e2ebb981`，77/77） | 已有整文件 coverage 门（家族先例） |
 | melee / explosives | — | — | 公式引擎在（`formulas/melee.ts`、`explosives.ts`），家族未注册 | 先注册家族再谈覆盖 |
 
 覆盖门演进顺序（每步落卡、机器门验收）：
 
-1. potion 缺口清零（#101），确认既有 coverage 门常绿；
+1. ~~potion 缺口清零（#101），确认既有 coverage 门常绿；~~ **已完成（2026-09-22，`51e2ebb981`，77/77）。**
 2. melee、explosives 家族注册（仿 armor 的 potion 式轻量路径）；
 3. armor 按部件/等级带分批补录，随后开启整文件 coverage 门；
 4. weapon 定义并开启全量覆盖门（design §8 预留），存量分批迁移；
 5. 全部家族覆盖门常绿后，本契约进入维持态：check 红即腐败，按治理流程处理。
+
+> #101 只清零 potion coverage 缺口；本批 9 条 exception 记录仍按各自 `runtime-test-pending` / 数值确认边界处理，不因 coverage 变绿而升级为全量数值确认。
 
 ## 4. 批次跟踪
 
