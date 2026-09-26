@@ -25,6 +25,8 @@ class org.flashNight.arki.bullet.BulletComponent.Chain.ChainGroup {
     public var render:Function;
     // removeGroup 幂等标记
     public var __removed:Boolean;
+    // 首批枪式联弹单元体在生成时选定的显示端；碰撞/衰减仍由本组维护。
+    public var nativeVisualOwned:Boolean;
 
     // ---------- 渲染矩阵/显示状态缓存（渲染组维护，碰撞器数据路径复用） ----------
     // 显示状态版本（差量下发 scale/alpha/visible 用）；⚠ 必须初始化为数值 0：
@@ -108,5 +110,6 @@ class org.flashNight.arki.bullet.BulletComponent.Chain.ChainGroup {
         render = renderFn;
         单元体列表 = [];
         rVer = 0;
+        nativeVisualOwned = false;
     }
 }

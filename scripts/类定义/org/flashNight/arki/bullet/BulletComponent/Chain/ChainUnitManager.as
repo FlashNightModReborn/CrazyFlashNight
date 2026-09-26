@@ -320,4 +320,86 @@ class org.flashNight.arki.bullet.BulletComponent.Chain.ChainUnitManager {
     public static function getActiveGroupCount():Number {
         return groups.length;
     }
+
+    /** 能力撤销时恢复仍存活的原 Flash 单元体，不重建联弹业务对象。 */
+    public static function restoreNativeVisuals():Void {
+        var gs:Array = groups;
+        for (var gi:Number = 0; gi < gs.length; gi++) {
+            var group:ChainGroup = gs[gi];
+            if (!group.nativeVisualOwned || group.__removed) continue;
+            var visible:Boolean = group.bullet._visible;
+            var alpha:Number = group.bullet._alpha;
+            var units:Array = group.单元体列表;
+            for (var ui:Number = 0; ui < units.length; ui++) {
+                var mc:MovieClip = units[ui].mc;
+                if (mc != null && mc._parent != undefined) {
+                    mc._visible = visible;
+                    mc._alpha = alpha;
+                }
+            }
+            group.nativeVisualOwned = false;
+        }
+    }
+
+    /** 影子采样只读当前可见单元体；联弹业务更新与显示所有权不受影响。 */
+    public static function appendVisualShadow(entries:Array, styleByUnit:Object,
+                                              prefixes:Object, limit:Number, nativeMode:Boolean):Object {
+        var count:Number = 0;
+        var overflow:Number = 0;
+        for (var gi:Number = 0; gi < groups.length; gi++) {
+            var group:ChainGroup = groups[gi];
+            if (!group.isObject || group.__removed) continue;
+            if (nativeMode && !group.nativeVisualOwned) continue;
+            var type:String = group.bullet.子弹种类;
+            var dash:Number = type.indexOf("-");
+            if (dash <= 0 || prefixes[type.substring(0, dash)] !== true) continue;
+            var style:Number = styleByUnit["单元体-" + group.子弹种类];
+            if (style === undefined) continue;
+            var units:Array = group.单元体列表;
+            if (nativeMode && group.nativeVisualOwned && group.bullet._visible
+                && group.bullet._alpha > 0) {
+                var needed:Number = 0;
+                for (var ni:Number = 0; ni < units.length; ni++) {
+                    var candidate:MovieClip = units[ni].mc;
+                    if (candidate != null && isFinite(candidate._x + candidate._y
+                        + candidate._rotation + candidate._xscale + candidate._yscale)) needed++;
+                }
+                if (entries.length + needed > limit) {
+                    group.nativeVisualOwned = false;
+                    overflow += needed;
+                    for (var ri:Number = 0; ri < units.length; ri++) {
+                        var restored:MovieClip = units[ri].mc;
+                        if (restored != null && restored._parent != undefined) {
+                            restored._visible = group.bullet._visible;
+                            restored._alpha = group.bullet._alpha;
+                        }
+                    }
+                    continue;
+                }
+            }
+            for (var ui:Number = 0; ui < units.length; ui++) {
+                var mc:MovieClip = units[ui].mc;
+                if (mc == null) continue;
+                var owned:Boolean = nativeMode && group.nativeVisualOwned;
+                var visible:Boolean = owned ? group.bullet._visible : mc._visible;
+                var alpha:Number = owned ? group.bullet._alpha : mc._alpha;
+                if (!visible || !(alpha > 0)
+                    || !isFinite(mc._x + mc._y + mc._rotation
+                        + mc._xscale + mc._yscale + alpha)) {
+                    if (owned) { mc._visible = visible; mc._alpha = alpha; }
+                    continue;
+                }
+                if (entries.length >= limit) {
+                    overflow++;
+                    if (owned) { mc._visible = visible; mc._alpha = alpha; }
+                    continue;
+                }
+                entries[entries.length] = style + "," + mc._x + "," + mc._y + ","
+                    + mc._rotation + "," + mc._xscale + "," + mc._yscale + "," + alpha;
+                count++;
+                if (owned) mc._visible = false;
+            }
+        }
+        return {count:count, overflow:overflow};
+    }
 }

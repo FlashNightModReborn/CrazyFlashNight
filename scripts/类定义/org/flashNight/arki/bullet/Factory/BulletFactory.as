@@ -298,6 +298,8 @@ class org.flashNight.arki.bullet.Factory.BulletFactory {
 
         // 绑定生命周期逻辑
         lifecycle.bindLifecycle(bulletInstance);
+        // 首批子弹原生表现影子采样；能力未协商时该调用直接返回。
+        org.flashNight.arki.render.BulletVisualProbe.registerNormal(bulletInstance);
 
         // === 向后兼容：安装 stateFlags 布尔属性访问器 ===
         // 必须在 bulletInstance 创建后安装，因为 Obj 的 addProperty 不会被浅拷贝

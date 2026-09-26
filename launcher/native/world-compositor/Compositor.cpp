@@ -353,6 +353,102 @@ float4 WPS(WVertex v) : SV_TARGET {
 }
 )hlsl";
 
+// ABI 5 bullet candidates: authored triangle styles instanced per frame item.
+// Same camera mapping as weather (stage = camera + world*scale) but without
+// the decorative wrap; real objects clip at the viewport edge.
+constexpr char BulletShader[] = R"hlsl(
+Texture3D lutTexture : register(t1);
+SamplerState lutSampler : register(s1);
+cbuffer Grade : register(b0) { float4 rowR; float4 rowG; float4 rowB; float4 offset; };
+// bB=(viewport W,H,LUT enabled,item count); bC=(camera x,y,scale,style count)
+cbuffer BulletParams : register(b1) { float4 bB; float4 bC; };
+// 16 styles x float4[4]: (v0.xy,v1.xy), (v2.xy,fill R,G), (fill B,glow RGB),
+// (blur X,Y in style units,hasGlow 0/1,reserved)
+cbuffer BulletStyles : register(b2) { float4 bS[64]; };
+// 256 items x float4[2]: (style index,x,y,rotation deg), (scaleX %,scaleY %,alpha %,-)
+cbuffer BulletItems : register(b3) { float4 bI[512]; };
+struct BVertex {
+    float4 pos : SV_POSITION;
+    float2 local : TEXCOORD0;
+    nointerpolation uint style : TEXCOORD1;
+    nointerpolation float alpha : TEXCOORD2;
+};
+float cross2(float2 a,float2 b) { return a.x*b.y-a.y*b.x; }
+float segmentDistance(float2 p,float2 a,float2 b) {
+    float2 ab=b-a;
+    float t=saturate(dot(p-a,ab)/max(dot(ab,ab),1.0e-6));
+    return length(p-(a+t*ab));
+}
+// One bounded quad per item. Its pixel shader evaluates the authored triangle
+// and a smooth halo around it, so blur does not become a larger hard triangle.
+BVertex BVS(uint id : SV_VertexID) {
+    BVertex o = (BVertex)0;
+    uint item = id / 6u;
+    uint corner = id - item * 6u;
+    if (item >= (uint)bB.w) { o.pos = float4(-2.0, -2.0, -2.0, 1.0); return o; }
+    float4 ia = bI[item * 2u];
+    float4 ib = bI[item * 2u + 1u];
+    uint si = (uint)(ia.x + 0.5);
+    if (si >= (uint)bC.w) { o.pos = float4(-2.0, -2.0, -2.0, 1.0); return o; }
+    float4 s0 = bS[si * 4u];
+    float4 s1 = bS[si * 4u + 1u];
+    float4 s3 = bS[si * 4u + 3u];
+    float alpha = saturate(ib.z * 0.01);
+    if (alpha <= 0.002) { o.pos = float4(-2.0, -2.0, -2.0, 1.0); return o; }
+    float2 p0=s0.xy, p1=s0.zw, p2=s1.xy;
+    float2 lo=min(p0,min(p1,p2)), hi=max(p0,max(p1,p2));
+    // The current XFL GlowFilter has blurX=blurY=8. Half that value is the
+    // candidate Gaussian sigma; a three-sigma bound fades to near zero.
+    float2 sigma=max(s3.xy*0.5,float2(0.25,0.25));
+    float2 margin=s3.z>0.5 ? sigma*3.0+1.0 : float2(1.0,1.0);
+    float2 quadCorner=float2((corner==1u || corner==2u || corner==4u) ? 1.0 : 0.0,
+        (corner==2u || corner==4u || corner==5u) ? 1.0 : 0.0);
+    float2 local=lerp(lo-margin,hi+margin,quadCorner);
+    float rad = ia.w * (3.14159265 / 180.0);
+    float cs = cos(rad), sn = sin(rad);
+    float2 sc = ib.xy * 0.01;
+    float2 scaled = local * sc;
+    // Positive degrees rotate clockwise, matching Flash in y-down stage space.
+    float2 rotated = float2(scaled.x * cs - scaled.y * sn, scaled.x * sn + scaled.y * cs);
+    float2 stage = (bC.xy + (ia.yz + rotated) * bC.z) / float2(1024.0, 576.0);
+    o.pos = float4(stage.x * 2.0 - 1.0, 1.0 - stage.y * 2.0, 0.5, 1.0);
+    o.local=local;
+    o.style=si;
+    o.alpha=alpha;
+    return o;
+}
+float4 BPS(BVertex v) : SV_TARGET {
+    float4 s0=bS[v.style*4u], s1=bS[v.style*4u+1u];
+    float4 s2=bS[v.style*4u+2u], s3=bS[v.style*4u+3u];
+    float2 p0=s0.xy, p1=s0.zw, p2=s1.xy, p=v.local;
+    float e0=cross2(p1-p0,p-p0), e1=cross2(p2-p1,p-p1), e2=cross2(p0-p2,p-p2);
+    bool inside=(e0>=0.0 && e1>=0.0 && e2>=0.0)
+        || (e0<=0.0 && e1<=0.0 && e2<=0.0);
+    float edgeDistance=min(segmentDistance(p,p0,p1),
+        min(segmentDistance(p,p1,p2),segmentDistance(p,p2,p0)));
+    float signedDistance=inside ? -edgeDistance : edgeDistance;
+    float aa=max(fwidth(edgeDistance),0.5);
+    float core=1.0-smoothstep(-aa,aa,signedDistance);
+    float halo=0.0;
+    if (s3.z>0.5) {
+        float2 sigma=max(s3.xy*0.5,float2(0.25,0.25));
+        float2 q=p/sigma, q0=p0/sigma, q1=p1/sigma, q2=p2/sigma;
+        float d=min(segmentDistance(q,q0,q1),
+            min(segmentDistance(q,q1,q2),segmentDistance(q,q2,q0)));
+        halo=0.35*exp(-0.5*d*d);
+    }
+    float opacity=v.alpha*saturate(core+(1.0-core)*halo);
+    clip(opacity-0.002);
+    float3 color=lerp(s2.yzw,float3(s1.z,s1.w,s2.x),core);
+    // Same grade/LUT contract as weather: authored colors are graded, not raw.
+    if (bB.z > 0.5)
+        return float4(lutTexture.Sample(lutSampler, color * (31.0 / 32.0) + (0.5 / 32.0)).rgb, opacity);
+    float4 c = float4(color, 1.0);
+    float3 graded = saturate(float3(dot(c, rowR), dot(c, rowG), dot(c, rowB)) + offset.rgb);
+    return float4(pow(abs(graded), 1.0 / max(offset.w, 1.0e-3)), opacity);
+}
+)hlsl";
+
 // This is a safety ceiling. Authored counts live in the external visual catalog.
 constexpr int WeatherSafetyCap = 512;
 struct WeatherState { int type = 0; float intensity = 0; int quality = 0; uint32_t seed = 0; };
@@ -360,6 +456,11 @@ struct WeatherCameraState { float x = 0, y = 0, scale = 1, groundMin = 360, grou
 struct AtmosphereState { int preset = 0; float params[12]{}; };
 struct WeatherStyleState { int type = 0, count = 0; float params[16]{}; };
 struct AtmosphereStyleState { int family = 0; float params[16]{}; };
+// Bullet caps are safety ceilings; each item uses one procedural quad.
+constexpr int BulletStyleCap = 16;
+constexpr int BulletItemCap = 256;
+struct BulletStylesState { int count = 0; float params[BulletStyleCap*16]{}; };
+struct BulletFrameState { int count = 0; float cameraX = 0, cameraY = 0, cameraScale = 1; float params[BulletItemCap*8]{}; };
 
 class Capture {
 public:
@@ -494,6 +595,46 @@ public:
         { std::lock_guard guard(mutex_);atmosphereStyle_=state;++atmosphereVersion_; }
         Signal();return true;
     }
+    // Publishes bullet draw state only; all D3D work happens on the worker.
+    // count==0 clears the respective snapshot (null params allowed then).
+    bool BulletStyles(const float* styles,int count) {
+        if (count<0 || count>BulletStyleCap || (count>0 && !styles)) return false;
+        BulletStylesState state{};
+        for (int s=0;s<count;s++) {
+            const float* p=styles+s*16;
+            for (int i=0;i<16;i++) if (!std::isfinite(p[i])) return false;
+            for (int i=0;i<6;i++) if (std::abs(p[i])>4096.f) return false;
+            for (int i=6;i<12;i++) if (p[i]<0.f || p[i]>1.f) return false;
+            if (p[12]<0.f || p[12]>255.f || p[13]<0.f || p[13]>255.f
+                || (p[14]!=0.f && p[14]!=1.f) || p[15]!=0.f) return false;
+            std::memcpy(state.params+s*16,p,64);
+        }
+        state.count=count;
+        { std::lock_guard guard(mutex_);bulletStyles_=state;++bulletVersion_; }
+        Signal();return true;
+    }
+    bool BulletFrame(const float* items,int count,float cameraX,float cameraY,float cameraScale) {
+        if (count<0 || count>BulletItemCap || (count>0 && !items)) return false;
+        if (!std::isfinite(cameraX) || !std::isfinite(cameraY) || !std::isfinite(cameraScale)
+            || cameraScale<=0.f || cameraScale>20.f
+            || std::abs(cameraX)>1000000.f || std::abs(cameraY)>1000000.f) return false;
+        BulletFrameState state{}; state.cameraX=cameraX; state.cameraY=cameraY; state.cameraScale=cameraScale;
+        for (int b=0;b<count;b++) {
+            const float* p=items+b*8;
+            for (int i=0;i<8;i++) if (!std::isfinite(p[i])) return false;
+            if (p[0]!=std::floor(p[0]) || p[0]<0.f || p[0]>=static_cast<float>(BulletStyleCap)
+                || std::abs(p[1])>1000000.f || std::abs(p[2])>1000000.f || std::abs(p[3])>1000000.f
+                || std::abs(p[4])>10000.f || std::abs(p[5])>10000.f
+                || p[6]<0.f || p[6]>100.f || p[7]!=0.f) return false;
+            std::memcpy(state.params+b*8,p,32);
+        }
+        state.count=count;
+        { std::lock_guard guard(mutex_);
+            for (int b=0;b<count;b++)
+                if (static_cast<int>(state.params[b*8])>=bulletStyles_.count) return false;
+            bulletFrame_=state; ++bulletVersion_; }
+        Signal();return true;
+    }
     void Stats(ProbeStats& result) { std::lock_guard guard(mutex_); result = stats_; }
     void CaptureSize(int32_t& width,int32_t& height,uint64_t& generation) { std::lock_guard guard(mutex_); width=captureWidth_;height=captureHeight_;generation=captureGeneration_; }
     bool OutputSize(int32_t& width,int32_t& height) { std::lock_guard guard(mutex_); width=presentedOutputW_;height=presentedOutputH_;return stats_.state!=3 && width>0 && height>0; }
@@ -623,6 +764,8 @@ private:
         auto vsCode = Compile(Shader, "VS", "vs_4_0"); auto psCode = Compile(Shader, "PS", "ps_4_0");
         auto weatherVsCode = Compile(WeatherShader, "WVS", "vs_4_0");
         auto weatherPsCode = Compile(WeatherShader, "WPS", "ps_4_0");
+        auto bulletVsCode = Compile(BulletShader, "BVS", "vs_4_0");
+        auto bulletPsCode = Compile(BulletShader, "BPS", "ps_4_0");
         com_ptr<ID3D11VertexShader> vs; com_ptr<ID3D11PixelShader> ps;
         check_hresult(device->CreateVertexShader(vsCode->GetBufferPointer(), vsCode->GetBufferSize(), nullptr, vs.put()));
         check_hresult(device->CreatePixelShader(psCode->GetBufferPointer(), psCode->GetBufferSize(), nullptr, ps.put()));
@@ -657,6 +800,15 @@ private:
         cb.ByteWidth = 64; check_hresult(device->CreateBuffer(&cb, nullptr, weatherParams.put()));
         com_ptr<ID3D11Buffer> weatherStyleParams;
         cb.ByteWidth = 64; check_hresult(device->CreateBuffer(&cb, nullptr, weatherStyleParams.put()));
+        com_ptr<ID3D11VertexShader> bulletVs; com_ptr<ID3D11PixelShader> bulletPs;
+        check_hresult(device->CreateVertexShader(bulletVsCode->GetBufferPointer(), bulletVsCode->GetBufferSize(), nullptr, bulletVs.put()));
+        check_hresult(device->CreatePixelShader(bulletPsCode->GetBufferPointer(), bulletPsCode->GetBufferSize(), nullptr, bulletPs.put()));
+        com_ptr<ID3D11Buffer> bulletParams;
+        cb.ByteWidth = 32; check_hresult(device->CreateBuffer(&cb, nullptr, bulletParams.put()));
+        com_ptr<ID3D11Buffer> bulletStyleParams;
+        cb.ByteWidth = BulletStyleCap*64; check_hresult(device->CreateBuffer(&cb, nullptr, bulletStyleParams.put()));
+        com_ptr<ID3D11Buffer> bulletItemParams;
+        cb.ByteWidth = BulletItemCap*32; check_hresult(device->CreateBuffer(&cb, nullptr, bulletItemParams.put()));
         com_ptr<ID3D11BlendState> alphaBlend;
         D3D11_BLEND_DESC bd{};
         bd.RenderTarget[0].BlendEnable = TRUE;
@@ -686,6 +838,8 @@ private:
         auto lutWork = std::make_unique<uint8_t[]>(LutBytes);
         uint64_t appliedWeather = 0;
         uint64_t appliedAtmosphere = 0;
+        uint64_t appliedBullet = 0;
+        BulletStylesState bulletStyles; BulletFrameState bulletFrame;
         float weatherTime = 0;
         double lastWeatherDrawMs = 0;
         float atmosphereTime = 0;
@@ -710,18 +864,20 @@ private:
             uint64_t settingsVersion; bool custom; Settings settings; WeatherState weather; WeatherCameraState weatherCamera; uint64_t weatherVersion;
             uint64_t lutVersion; bool lutEnabled;
             AtmosphereState atmosphere; AtmosphereStyleState atmosphereStyle; uint64_t atmosphereVersion;
-            WeatherStyleState weatherStyle;
+            WeatherStyleState weatherStyle; uint64_t bulletVersion;
             { std::lock_guard guard(mutex_); settingsVersion=settingsVersion_; custom=custom_; settings=customSettings_;
                 weather=weather_; weatherCamera=weatherCamera_; weatherVersion=weatherVersion_;
                 weatherStyle=weatherStyle_; atmosphere=atmosphere_;
-                atmosphereStyle=atmosphereStyle_; atmosphereVersion=atmosphereVersion_; }
+                atmosphereStyle=atmosphereStyle_; atmosphereVersion=atmosphereVersion_;
+                bulletVersion=bulletVersion_; }
             bool weatherOn = weather.type!=0 && weather.intensity>0.f && weather.quality<3
                 && weatherStyle.type==weather.type && weatherStyle.count>0 && texture;
             bool atmosphereOn = atmosphere.preset!=0 && (atmosphere.preset==11
                 || atmosphereStyle.family==atmosphere.preset) && texture;
+            bool bulletsOn = bulletFrame.count>0 && bulletStyles.count>0 && texture;
             // Weather animates per presented frame; keep a 30fps floor even on
             // unpaced probe sessions so motion stays at the worker cadence.
-            int paceFps = fps_>0 ? fps_ : ((weatherOn || atmosphereOn) ? 30 : 0);
+            int paceFps = fps_>0 ? fps_ : ((weatherOn || atmosphereOn || bulletsOn) ? 30 : 0);
             if (paceFps>0) {
                 std::unique_lock lock(waitMutex_);
                 wake_.wait_until(lock,nextPresent,[this] { return stop_.load() || !active_.load() || grabRequested_.load(); });
@@ -766,7 +922,8 @@ private:
                     && outputW == client.right && outputH == client.bottom && appliedSettings==settingsVersion
                     && appliedSharpness==sharpness_.load() && appliedLut==lutVersion
                     && appliedWeather==weatherVersion && !weatherOn
-                    && appliedAtmosphere==atmosphereVersion && !atmosphereOn))) {
+                    && appliedAtmosphere==atmosphereVersion && !atmosphereOn
+                    && appliedBullet==bulletVersion && !bulletsOn))) {
                 presentation.unlock();
                 std::unique_lock lock(waitMutex_);
                 wake_.wait_for(lock,std::chrono::milliseconds(100),[this,observedWake] { return stop_.load() || wakeVersion_.load()!=observedWake; });
@@ -867,10 +1024,12 @@ private:
                 appliedLut = lutVersion;
             }
             // The pacing wait and WGC dequeue may span an AS2 F packet. Sample
-            // its camera immediately before drawing both atmosphere and weather;
-            // the loop-head copy could be one presented frame behind the scene.
+            // its camera and the newest bullet snapshot immediately before
+            // drawing; the loop-head copy could be one presented frame behind.
             { std::lock_guard guard(mutex_);
-                weatherCamera=weatherCamera_; weatherVersion=weatherVersion_; }
+                weatherCamera=weatherCamera_; weatherVersion=weatherVersion_;
+                if (bulletVersion_!=appliedBullet) {
+                    bulletStyles=bulletStyles_; bulletFrame=bulletFrame_; appliedBullet=bulletVersion_; } }
             auto target = rtv.get(); context->OMSetRenderTargets(1, &target, nullptr);
             const float black[]{0,0,0,1}; context->ClearRenderTargetView(target, black);
             float scale = std::min(static_cast<float>(w)/textureW, static_cast<float>(h)/textureH);
@@ -940,6 +1099,25 @@ private:
                 context->Draw((rainCount+splashCount)*6,0);
                 context->OMSetBlendState(nullptr,nullptr,0xffffffff);
             } else if (!weatherOn) lastWeatherDrawMs = 0;
+            // Bullet candidates draw last inside the same graded viewport,
+            // alpha blended over world+weather+atmosphere. The base grade
+            // cbuffer and LUT resource stay bound for the bullet grade.
+            if (bulletFrame.count>0 && bulletStyles.count>0 && texture && !proof) {
+                float bp[8]{viewport.Width,viewport.Height,lutActive?1.f:0.f,static_cast<float>(bulletFrame.count),
+                    bulletFrame.cameraX,bulletFrame.cameraY,bulletFrame.cameraScale,static_cast<float>(bulletStyles.count)};
+                context->UpdateSubresource(bulletParams.get(),0,nullptr,bp,0,0);
+                context->UpdateSubresource(bulletStyleParams.get(),0,nullptr,bulletStyles.params,0,0);
+                context->UpdateSubresource(bulletItemParams.get(),0,nullptr,bulletFrame.params,0,0);
+                context->VSSetShader(bulletVs.get(),nullptr,0); context->PSSetShader(bulletPs.get(),nullptr,0);
+                auto bulletBuffer=bulletParams.get();
+                context->VSSetConstantBuffers(1,1,&bulletBuffer); context->PSSetConstantBuffers(1,1,&bulletBuffer);
+                auto bulletStyleBuffer=bulletStyleParams.get(); auto bulletItemBuffer=bulletItemParams.get();
+                context->VSSetConstantBuffers(2,1,&bulletStyleBuffer); context->PSSetConstantBuffers(2,1,&bulletStyleBuffer);
+                context->VSSetConstantBuffers(3,1,&bulletItemBuffer);
+                context->OMSetBlendState(alphaBlend.get(),nullptr,0xffffffff);
+                context->Draw(bulletFrame.count*6,0);
+                context->OMSetBlendState(nullptr,nullptr,0xffffffff);
+            }
             appliedWeather = weatherVersion;
             appliedAtmosphere = atmosphereVersion;
             context->PSSetShaderResources(1,1,&empty);
@@ -1143,10 +1321,11 @@ private:
     WeatherState weather_{}; WeatherCameraState weatherCamera_{}; uint64_t weatherVersion_=0;
     AtmosphereState atmosphere_{}; uint64_t atmosphereVersion_=0;
     WeatherStyleState weatherStyle_{}; AtmosphereStyleState atmosphereStyle_{};
+    BulletStylesState bulletStyles_{}; BulletFrameState bulletFrame_{}; uint64_t bulletVersion_=0;
 };
 }
 
-uint32_t __cdecl ProbeGetAbiVersion() { return 4; }
+uint32_t __cdecl ProbeGetAbiVersion() { return 5; }
 int __cdecl ProbeGetOutputSize(void* handle, int32_t* width, int32_t* height) {
     return handle && width && height && static_cast<Capture*>(handle)->OutputSize(*width,*height) ? 1 : 0;
 }
@@ -1223,4 +1402,10 @@ int __cdecl ProbeSetAtmosphereStyle(void* handle,int family,const float* params)
 }
 int __cdecl ProbeSetWeatherStyle(void* handle,int type,int count,const float* params) {
     return handle && static_cast<Capture*>(handle)->WeatherStyle(type,count,params) ? 1 : 0;
+}
+int __cdecl ProbeSetBulletStyles(void* handle,const float* styles,int count) {
+    return handle && static_cast<Capture*>(handle)->BulletStyles(styles,count) ? 1 : 0;
+}
+int __cdecl ProbeSetBulletFrame(void* handle,const float* items,int count,float cameraX,float cameraY,float cameraScale) {
+    return handle && static_cast<Capture*>(handle)->BulletFrame(items,count,cameraX,cameraY,cameraScale) ? 1 : 0;
 }

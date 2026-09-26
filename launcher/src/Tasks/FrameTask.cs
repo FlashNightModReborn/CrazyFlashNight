@@ -2,6 +2,7 @@ using System;
 using Newtonsoft.Json.Linq;
 using CF7Launcher.Guardian;
 using CF7Launcher.Guardian.HitNumbers;
+using CF7Launcher.Guardian.WorldCompositor;
 using CF7Launcher.V8;
 
 namespace CF7Launcher.Tasks
@@ -32,6 +33,10 @@ namespace CF7Launcher.Tasks
         private CF7Launcher.Bus.XmlSocketServer _socket; // 用于 K 前缀推送
         private Action<string> _uiDataHandler; // combo hints → WebView2
         internal Action<float,float,float> WeatherCameraObserved;
+        internal Action<BulletVisualFrame,float,float,float> BulletVisualObserved;
+        internal Action BulletVisualRejected;
+        internal Action BulletVisualCleared;
+        private BulletVisualShadow _bulletVisualShadow;
         private volatile bool _stopped;
 
         public FpsRingBuffer FpsBuffer { get { return _fpsBuffer; } }
@@ -66,9 +71,18 @@ namespace CF7Launcher.Tasks
         public void Stop()
         {
             _stopped = true;
+            _bulletVisualShadow?.Reset();
             if (_socket != null) _socket.OnClientReady -= PublishHitNumberSourceState;
             _socket = null;
         }
+
+        internal void ConfigureBulletVisualShadow(BulletVisualCatalog catalog)
+        {
+            _bulletVisualShadow = catalog == null ? null : new BulletVisualShadow(catalog);
+        }
+
+        internal void ResetBulletVisualShadowForGeneration(int generation) =>
+            _bulletVisualShadow?.ResetIfGeneration(generation);
 
         public void ConfigureHitNumbers(string mode, int worldRowLimit)
         {
@@ -119,9 +133,10 @@ namespace CF7Launcher.Tasks
 
         /// <summary>
         /// 快车道入口：由 XmlSocketServer 前缀检测直接调用，跳过 JObject 构造。
-        /// 格式为 F{cam}\x01{hn}\x02{fps}\x04{inputPayload}，后三段均可为空。
+        /// 格式为 F{cam}\x01{hn}[\x02{fps}][\x04{inputPayload}][\x05{bulletVisual}]。
         /// </summary>
-        public void HandleRaw(string cam, string hn, string fps, string inputPayload)
+        public void HandleRaw(string cam, string hn, string fps, string inputPayload,
+            string bulletVisualPayload = null, int connectionGeneration = 0)
         {
             if (_stopped) return;
             try
@@ -137,6 +152,15 @@ namespace CF7Launcher.Tasks
                 }
                 _overlay.UpdateFrame(hitSnapshot);
                 WeatherCameraObserved?.Invoke(weatherCamera.OffsetX,weatherCamera.OffsetY,weatherCamera.Scale);
+                if (bulletVisualPayload != null && _bulletVisualShadow != null)
+                {
+                    BulletVisualFrame visual = _bulletVisualShadow.Observe(bulletVisualPayload, connectionGeneration);
+                    if (visual != null)
+                        BulletVisualObserved?.Invoke(visual, weatherCamera.OffsetX,
+                            weatherCamera.OffsetY, weatherCamera.Scale);
+                    else
+                        BulletVisualRejected?.Invoke();
+                }
 
                 // 搓招输入处理：解析 \x04 payload -> V8 -> K 前缀推送
                 if (!string.IsNullOrEmpty(inputPayload) && _socket != null)
@@ -254,6 +278,8 @@ namespace CF7Launcher.Tasks
                 HitNumberRuntimeSnapshot snapshot;
                 lock (_hitNumberLock) snapshot = _hitNumberRuntime.Reset();
                 _overlay.UpdateFrame(snapshot);
+                _bulletVisualShadow?.Reset();
+                BulletVisualCleared?.Invoke();
                 if (_decisionEngine != null)
                     _decisionEngine.OnSceneReset();
                 _fpsBuffer.NotifySceneReset();

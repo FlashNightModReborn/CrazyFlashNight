@@ -215,6 +215,8 @@ _root.帧计时器.初始化任务栈 = function():Void {
         HitNumberBatchProcessor.flush();
         // 更新射线视觉效果管理器（支持 Tesla/Prism/Spectrum/Wave 多风格）
         RayVfxManager.update();
+        // 只读当前 Flash 子弹显示状态；未收到配套 Host 能力时零序列化。
+        org.flashNight.arki.render.BulletVisualProbe.flush();
         // 帧末统一广播（收集 cam + 消费各子系统数据槽 → 单消息发送到 C#）
         FrameBroadcaster.send();
     }, this);

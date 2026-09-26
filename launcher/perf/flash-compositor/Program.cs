@@ -293,7 +293,7 @@ internal sealed class ProbeForm : Form
         outputHwnd = player != null ? player.OutputSurface.Handle : surface.Handle;
         native = Native.ProbeStart(source, actualPid, outputHwnd, vendor);
         if (native == 0) throw new InvalidOperationException("Native capture initialization failed");
-        if (Native.ProbeGetAbiVersion()!=4) throw new InvalidOperationException("Native visual catalog ABI mismatch");
+        if (Native.ProbeGetAbiVersion()!=5) throw new InvalidOperationException("Native visual catalog ABI mismatch");
         if (options.LutSet!=null)
         {
             var lut=WorldLutSet.Load(options.LutSet);

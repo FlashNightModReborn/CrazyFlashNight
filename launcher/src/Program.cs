@@ -1493,6 +1493,53 @@ class Program
         }
         HitNumberOverlay hnOverlay = new HitNumberOverlay(form, form.FlashHostPanel);
         FrameTask frameTask = new FrameTask(v8Runtime, hnOverlay);
+        // XFL-derived first-batch registry. A stale/missing resource keeps all bullets
+        // in Flash; this stage only measures a bounded visual shadow packet.
+        CF7Launcher.Guardian.WorldCompositor.BulletVisualCatalog bulletVisualCatalog = null;
+        try
+        {
+            bulletVisualCatalog = CF7Launcher.Guardian.WorldCompositor.BulletVisualCatalog.Load(projectRoot);
+            LogManager.Log("event=bullet_visual_catalog_loaded sha256=" + bulletVisualCatalog.Sha256
+                + " styles=" + bulletVisualCatalog.Styles.Count);
+        }
+        catch (Exception error)
+        {
+            LogManager.Log("event=bullet_visual_catalog_unavailable reason=" + error.GetType().Name
+                + " message=" + error.Message);
+        }
+        frameTask.ConfigureBulletVisualShadow(bulletVisualCatalog);
+        socketServer.OnClientDisconnectedForGeneration += frameTask.ResetBulletVisualShadowForGeneration;
+        Func<bool,bool> publishBulletCapability = null;
+        if (bulletVisualCatalog != null)
+        {
+            var capStyles = new List<object>();
+            foreach (var style in bulletVisualCatalog.Styles)
+                capStyles.Add(new { id = style.Id, ordinaryLinkage = style.OrdinaryLinkage,
+                    gunChainUnitLinkage = style.GunChainUnitLinkage });
+            string MakeBulletCaps(string mode) => JsonSerializer.Serialize(new {
+                task = "bullet_visual_caps", version = 1, mode,
+                digest = bulletVisualCatalog.Sha256,
+                gunChainPrefixes = bulletVisualCatalog.GunChainPrefixes,
+                styles = capStyles
+            }) + "\0";
+            string shadowCaps = MakeBulletCaps("shadow");
+            string nativeCaps = MakeBulletCaps("native");
+            int bulletCapsGeneration=0;
+            Action<int> publishBulletCaps = generation => {
+                Volatile.Write(ref bulletCapsGeneration,generation);
+                if (!socketServer.TrySendIfGen(shadowCaps, generation))
+                    LogManager.Log("event=bullet_visual_caps_send_failed generation=" + generation);
+            };
+            socketServer.OnClientReadyForGeneration += publishBulletCaps;
+            socketServer.OnClientDisconnectedForGeneration += generation =>
+                Interlocked.CompareExchange(ref bulletCapsGeneration,0,generation);
+            publishBulletCapability = available => {
+                int generation=Volatile.Read(ref bulletCapsGeneration);
+                return generation>0 && socketServer.TrySendIfGen(available ? nativeCaps : shadowCaps,generation);
+            };
+            if (socketServer.TryGetReadyGeneration(out int readyBulletGeneration))
+                publishBulletCaps(readyBulletGeneration);
+        }
 
         // 性能决策引擎（主控模式：发送 P 指令到 AS2，AS2 端只采样+执行）
         var perfEngine = new PerfDecisionEngine(frameTask.FpsBuffer, socketServer);
@@ -1928,7 +1975,8 @@ class Program
             message => toastSink.AddMessage(message), projectRoot,
             () => launchFlow != null && (launchFlow.CurrentState == "Embedding"
                 || launchFlow.CurrentState == "WaitingGameReady" || launchFlow.CurrentState == "Ready"),
-            windowManager.SetFlashRenderScale, () => windowManager.RestoreFlashInputFocus("world_pointer"));
+            windowManager.SetFlashRenderScale, () => windowManager.RestoreFlashInputFocus("world_pointer"),
+            bulletCatalog:bulletVisualCatalog);
         var renderSettings=RenderScheduleSettings.Load(Path.Combine(projectRoot,"launcher","data","world-lighting","render-schedule.json"));
         webOverlay.WorldDragInputRouter=worldCompositor.RouteCapturedPointer;
         perfEngine.ConfigureRenderSchedule(renderSettings,
@@ -1943,6 +1991,11 @@ class Program
             dispatchToUi,
             worldCompositor.Adopt, worldCompositor.ResetSource);
         frameTask.WeatherCameraObserved=worldCompositor.ObserveWeatherCamera;
+        frameTask.BulletVisualObserved=worldCompositor.ObserveBulletFrame;
+        frameTask.BulletVisualRejected=worldCompositor.RejectBulletFrame;
+        frameTask.BulletVisualCleared=worldCompositor.ClearBulletFrame;
+        socketServer.OnClientDisconnectedForGeneration += generation => worldCompositor.BulletConnectionLost();
+        worldCompositor.BulletCapabilityChanged=publishBulletCapability;
         socketServer.OnClientDisconnected += worldLightingTask.Disconnected;
         int weatherCapsGeneration=0;
         socketServer.OnClientReadyForGeneration += generation =>

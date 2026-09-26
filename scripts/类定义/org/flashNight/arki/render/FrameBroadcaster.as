@@ -5,13 +5,14 @@
  * 在 frameEnd 管线中作为最后一步调用，确保每帧恰好发送一条 frame 消息。
  *
  * 传输协议（快车道）：
- *   send() 使用前缀协议 "F{cam}\x01{hn}" 直达 C# 端 FrameTask.HandleRaw()，
+ *   send() 使用前缀协议 "F{cam}\x01{hn}[\x05{bulletVisual}]" 直达 C# 端 FrameTask.HandleRaw()，
  *   绕过 MessageRouter 的 JObject.Parse，消除每帧 JSON 解析开销。
  *   - 前缀 "F" 标识 frame 快车道消息（C# 按首字节分发）
  *   - cam 格式: "gw._x|gw._y|scale"（管道符分隔）
  *   - \x01 (SOH) 分隔 cam 与 hn（cam/hn 内容只含 |;数字文本，不含 \x01）
  *   - hn 格式: "value|x|y|packed|efText|efEmoji|lifeSteal|shieldAbsorb|unitId|burstId|expectedHitCount;..."
  *     （分号分条目；C# 按严格 11 字段解析）
+ *   - bulletVisual 为配套 Host 协商后才发送的有界影子快照，旧 Host 无此段
  *
  * 架构：
  *   frameEnd pipeline:
@@ -43,6 +44,9 @@ class org.flashNight.arki.render.FrameBroadcaster {
 
     /** 输入数据槽（由 键盘输入控制目标 写入，send() 消费后清空）*/
     private static var _inputPayload:String = null;
+    /** 首批普通/枪式联弹影子视觉快照；仅在配套 Host 明确协商后填充。 */
+    private static var _bulletVisualPayload:String = null;
+    public static function setBulletVisualPayload(value:String):Void { _bulletVisualPayload = value; }
 
     // ========== K 前缀接收侧（Launcher -> Flash）==========
 
@@ -103,6 +107,7 @@ class org.flashNight.arki.render.FrameBroadcaster {
         if (!sm.isSocketConnected) {
             _hnPayload = null;
             _playerHudPayload = null;
+            _bulletVisualPayload = null;
             return;
         }
 
@@ -112,6 +117,7 @@ class org.flashNight.arki.render.FrameBroadcaster {
             // gameworld 不存在 → 无法构造有效 frame 消息
             _hnPayload = null;
             _playerHudPayload = null;
+            _bulletVisualPayload = null;
             return;
         }
 
@@ -139,6 +145,10 @@ class org.flashNight.arki.render.FrameBroadcaster {
         if (_inputPayload != null) {
             msg += "\x04" + _inputPayload;
             _inputPayload = null;
+        }
+        if (_bulletVisualPayload != null) {
+            msg += "\x05" + _bulletVisualPayload;
+            _bulletVisualPayload = null;
         }
         // SFX 优先发送：音效对延迟敏感，必须在 F 消息（含伤害 reducer/绘制）之前到达 C# 端。
         org.flashNight.arki.audio.AudioBridge.flush();
@@ -230,6 +240,8 @@ class org.flashNight.arki.render.FrameBroadcaster {
         _playerHudPayload = null;
         _fpsPayload = null;
         _inputPayload = null;
+        _bulletVisualPayload = null;
+        org.flashNight.arki.render.BulletVisualProbe.resetScene();
         // 注意：不清空 _uiPayload，场景切换时 UI 快照需要保留到下一帧 send()
         // 清空 K 前缀接收状态
         _cmdId = 0;

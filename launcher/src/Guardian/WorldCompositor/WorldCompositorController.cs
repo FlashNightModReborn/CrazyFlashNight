@@ -21,6 +21,8 @@ namespace CF7Launcher.Guardian.WorldCompositor
         private readonly Action _focusFlash;
         private readonly WorldLightingPreset _preset;
         private readonly WorldPresentationCatalog _presentationCatalog;
+        private readonly BulletVisualCatalog _bulletCatalog;
+        private readonly bool _bulletCandidateEnabled;
         private readonly Timer _timer = new Timer { Interval=33 };
         private NativeCompositorSession _native;
         private WorldCompositionSurface _surface;
@@ -63,6 +65,11 @@ namespace CF7Launcher.Guardian.WorldCompositor
         private bool _weatherCapabilityAdvertised;
         private double _lastWeatherCapAttemptMs;
         internal Func<bool,bool> WeatherCapabilityChanged;
+        internal Func<bool,bool> BulletCapabilityChanged;
+        private volatile bool _bulletStylesReady, _bulletCapabilityAdvertised;
+        private double _lastBulletCapAttemptMs;
+        private double _bulletCaptureNotReadyMs;
+        private long _lastBulletFrameLogTicks;
         private double _targetScale=1, _appliedScale=1;
         private float _targetSharpness;
         private float _appliedSharpness=float.NaN;
@@ -95,6 +102,71 @@ namespace CF7Launcher.Guardian.WorldCompositor
                 if (_weatherCameraDispatchAllowed && _native!=null) PushWeatherCameraLocked();
             }
         }
+        internal void ObserveBulletFrame(BulletVisualFrame frame,float cameraX,float cameraY,float cameraScale)
+        {
+            if (frame == null) return;
+            bool failed = false;
+            lock (_weatherCameraLock)
+            {
+                if (!_bulletCapabilityAdvertised || !_bulletStylesReady || _native == null) return;
+                try {
+                    _native.BulletFrame(frame,cameraX,cameraY,cameraScale);
+                    if (frame.NativeOwned && frame.Instances.Length > 0) {
+                        long now=Stopwatch.GetTimestamp();
+                        if (now-_lastBulletFrameLogTicks>=Stopwatch.Frequency*2) {
+                            _lastBulletFrameLogTicks=now;
+                            LogManager.Log("event=bullet_visual_native_frame epoch="+frame.Epoch
+                                +" frame="+frame.Frame+" normal="+frame.NormalCount
+                                +" chain="+frame.ChainCount+" overflow="+frame.Overflow);
+                        }
+                    }
+                }
+                catch (Exception error) {
+                    failed = true;
+                    LogManager.Log("event=bullet_visual_native_frame_failed " + error.Message);
+                }
+            }
+            if (failed) { _bulletStylesReady=false; RevokeBulletCapability("native_frame_failed"); }
+        }
+        internal void RejectBulletFrame()
+        {
+            _bulletStylesReady=false;
+            RevokeBulletCapability("invalid_or_stale_frame");
+        }
+        internal void BulletConnectionLost() => RevokeBulletCapability("socket_disconnected");
+        internal void ClearBulletFrame()
+        {
+            lock (_weatherCameraLock)
+            {
+                try { _native?.ClearBulletFrame(); }
+                catch (Exception error) { LogManager.Log("event=bullet_visual_clear_failed " + error.Message); }
+            }
+        }
+        private void RevokeBulletCapability(string reason)
+        {
+            bool advertised;
+            lock (_weatherCameraLock)
+            {
+                advertised = _bulletCapabilityAdvertised;
+                _bulletCapabilityAdvertised = false;
+                try { _native?.ClearBulletFrame(); }
+                catch (Exception error) { LogManager.Log("event=bullet_visual_clear_failed " + error.Message); }
+            }
+            if (!advertised) return;
+            bool sent = false;
+            try { sent = BulletCapabilityChanged?.Invoke(false) == true; }
+            catch (Exception error) { LogManager.Log("event=bullet_visual_cap_revoke_failed " + error.Message); }
+            LogManager.Log("event=bullet_visual_cap_revoke reason=" + reason + " sent=" + sent);
+        }
+        private void NoteBulletCaptureNotReady(string reason)
+        {
+            // A scheduled DRS resize can miss one capture tick. Keep ownership
+            // through that brief handoff; sustained loss returns it to Flash.
+            if (!_bulletCapabilityAdvertised) { _bulletCaptureNotReadyMs=0; return; }
+            double now=NowMs();
+            if (_bulletCaptureNotReadyMs==0) _bulletCaptureNotReadyMs=now;
+            else if (now-_bulletCaptureNotReadyMs>=250) RevokeBulletCapability(reason);
+        }
 
         internal readonly struct LutLabGrabResult
         {
@@ -124,7 +196,8 @@ namespace CF7Launcher.Guardian.WorldCompositor
 
         internal WorldCompositorController(Form owner, Control anchor, Func<IntPtr> getFlash,
             Func<bool> canPresent, Action<string> notify, string projectRoot, Func<bool> shouldPrepare,
-            Action<double> setRenderScale,Action focusFlash,uint inputEpochLimit=WorldPointerMapper.EpochLimit)
+            Action<double> setRenderScale,Action focusFlash,uint inputEpochLimit=WorldPointerMapper.EpochLimit,
+            BulletVisualCatalog bulletCatalog=null)
         {
             string tempRoot=Path.GetFullPath(Path.Combine(projectRoot,"tmp"))+Path.DirectorySeparatorChar;
             string testCap=Environment.GetEnvironmentVariable("CF7_INPUT_SESSION_TEST_CAP");
@@ -137,6 +210,10 @@ namespace CF7Launcher.Guardian.WorldCompositor
             _inputEpochLimit=inputEpochLimit;
             _owner=owner; _anchor=anchor; _getFlash=getFlash; _canPresent=canPresent; _notify=notify; _shouldPrepare=shouldPrepare;
             _setRenderScale=setRenderScale; _focusFlash=focusFlash;
+            _bulletCatalog=bulletCatalog;
+            _bulletCandidateEnabled=bulletCatalog!=null
+                && AppContext.BaseDirectory.StartsWith(tempRoot,StringComparison.OrdinalIgnoreCase)
+                && Environment.GetEnvironmentVariable("CF7_BULLET_NATIVE_DISABLE")!="1";
             _preset=WorldLightingPreset.Load(Path.Combine(projectRoot,"launcher","data","world-lighting","preset.json"),
                 message => LogManager.Log(message));
             string visualPath=Path.Combine(projectRoot,
@@ -155,7 +232,10 @@ namespace CF7Launcher.Guardian.WorldCompositor
             bool wasWaiting=_lighting.WaitingForCapture;
             long previousScene=_frame?.Scene ?? 0;
             if (_disposed || !_lighting.Adopt(frame,NowMs())) return;
-            if (!frame.Ready || frame.Scene!=previousScene) _surface?.CancelPointer();
+            if (!frame.Ready || frame.Scene!=previousScene) {
+                _surface?.CancelPointer();
+                RevokeBulletCapability("scene_change");
+            }
             _frame=frame;
             if (!frame.Ready || frame.Scene!=previousScene) InvalidateWeather();
             if (_lighting.Pending && (!wasPending || frame.Scene!=previousScene))
@@ -207,6 +287,11 @@ namespace CF7Launcher.Guardian.WorldCompositor
                     BindInput(_pointerBridge,_surface);
                     _surface.CreateControl();
                     _native=new NativeCompositorSession(module,_owner.Handle,(uint)Environment.ProcessId,_surface.Handle,0,_borderless);
+                    _bulletStylesReady=false;
+                    if (_bulletCandidateEnabled) {
+                        try { _native.BulletStyles(_bulletCatalog); _bulletStylesReady=true; }
+                        catch (Exception error) { LogManager.Log("event=bullet_visual_styles_unavailable " + error.Message); }
+                    }
                     LogManager.Log("event=world_compositor_identity S=0x"+_owner.Handle.ToString("X")+" P=0x"+_surface.Handle.ToString("X")
                         +" F=0x"+_flash.ToString("X")+" hostPid="+Environment.ProcessId+" inputSession="+_pointerBridge.SessionIdentity);
                     _crop=Rectangle.Empty; _startedMs=NowMs(); _lastSettings=null; _active=true; _appliedSharpness=float.NaN;
@@ -235,7 +320,7 @@ namespace CF7Launcher.Guardian.WorldCompositor
                 }
                 if (show!=_active) {
                     _active=show; _native.Active(show); _requiredFrameMs=NowMs();
-                    if (!show) _surface.Hide();
+                    if (!show) { _surface.Hide(); RevokeBulletCapability("surface_hidden"); }
                 }
                 if (!_active) {
                     _schedulingAllowed=false;
@@ -261,12 +346,14 @@ namespace CF7Launcher.Guardian.WorldCompositor
                         +" resizeMs="+(resizedAt-heldAt).ToString("F1",CultureInfo.InvariantCulture)
                         +" repaintMs="+(NowMs()-resizedAt).ToString("F1",CultureInfo.InvariantCulture)
                         +" handoffMs="+(NowMs()-resizeStarted).ToString("F1",CultureInfo.InvariantCulture));
-                    if (!CanShow()) { _native.Active(false); _active=false; _surface.Hide(); return; }
+                    if (!CanShow()) { _native.Active(false); _active=false; _surface.Hide(); RevokeBulletCapability("resize_hidden"); return; }
                 }
                 var stats=_native.Read();
                 if (stats.State==2 || stats.State==3) throw new InvalidOperationException(stats.Message+" HRESULT=0x"+stats.Error.ToString("X8"));
-                if (!Synchronize()) return; // an unknown extent must not mask native failure
+                if (!Synchronize()) { NoteBulletCaptureNotReady("geometry_unknown"); return; } // an unknown extent must not mask native failure
                 bool ready=stats.Received>0 && stats.Width==_crop.Width && stats.Height==_crop.Height && stats.LastFrameQpcMs>=_requiredFrameMs;
+                if (ready) _bulletCaptureNotReadyMs=0;
+                else NoteBulletCaptureNotReady("capture_not_ready");
                 // A0 观测：推进证据用有界窗口而非逐 tick 比较——30FPS 下逐 tick 比
                 // LastFrameQpcMs 会因两时钟错位交替 flap。age<250ms 视为推进中；
                 // 静态/暂停场景源不推进是合法的，不按固定帧龄判死，只分离事实：
@@ -313,6 +400,16 @@ namespace CF7Launcher.Guardian.WorldCompositor
                     _lastWeatherCapAttemptMs=NowMs();
                     try { _weatherCapabilityAdvertised=WeatherCapabilityChanged?.Invoke(true)==true; }
                     catch (Exception error) { LogManager.Log("event=world_weather_cap_failed "+error.Message); }
+                }
+                if (ready && _bulletStylesReady && !_bulletCapabilityAdvertised
+                    && NowMs()-_lastBulletCapAttemptMs>=500 && BulletCapabilityChanged!=null) {
+                    _lastBulletCapAttemptMs=NowMs();
+                    lock (_weatherCameraLock) _bulletCapabilityAdvertised=true;
+                    bool sent=false;
+                    try { sent=BulletCapabilityChanged(true); }
+                    catch (Exception error) { LogManager.Log("event=bullet_visual_cap_failed " + error.Message); }
+                    if (!sent) RevokeBulletCapability("cap_send_failed");
+                    else LogManager.Log("event=bullet_visual_cap_native");
                 }
                 if (!ready && NowMs()-Math.Max(_startedMs,_requiredFrameMs)>10000) throw new TimeoutException("世界捕获没有恢复有效画面");
                 if (NowMs()-_lastLogMs>1000) {
@@ -553,6 +650,10 @@ namespace CF7Launcher.Guardian.WorldCompositor
         private void StopCapture()
         {
             // Same-socket source loss must return visual ownership to Flash.
+            RevokeBulletCapability("capture_stopped");
+            _bulletStylesReady=false;
+            _lastBulletCapAttemptMs=0;
+            _lastBulletFrameLogTicks=0;
             _surface?.Hide();
             if (_weatherCapabilityAdvertised) {
                 _weatherCapabilityAdvertised=false;

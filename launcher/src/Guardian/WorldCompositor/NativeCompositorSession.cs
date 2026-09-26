@@ -1,5 +1,6 @@
 using System;
 using System.IO;
+using System.Buffers;
 using System.Runtime.InteropServices;
 
 namespace CF7Launcher.Guardian.WorldCompositor
@@ -31,13 +32,15 @@ namespace CF7Launcher.Guardian.WorldCompositor
         private readonly AtmosphereDelegate _atmosphere;
         private readonly WeatherStyleDelegate _weatherStyle;
         private readonly AtmosphereStyleDelegate _atmosphereStyle;
+        private readonly BulletStylesDelegate _bulletStyles;
+        private readonly BulletFrameDelegate _bulletFrame;
 
         internal NativeCompositorSession(string modulePath, IntPtr source, uint pid, IntPtr output, uint vendor = 0, bool borderless = false)
         {
             try
             {
                 _module = NativeLibrary.Load(Path.GetFullPath(modulePath));
-                if (Export<VersionDelegate>("ProbeGetAbiVersion")() != 4) throw new InvalidOperationException("Compositor ABI version mismatch");
+                if (Export<VersionDelegate>("ProbeGetAbiVersion")() != 5) throw new InvalidOperationException("Compositor ABI version mismatch");
                 _stop = Export<StopDelegate>("ProbeStop"); _read = Export<ReadDelegate>("ProbeGetStats");
                 _captureSize=Export<CaptureSizeDelegate>("ProbeGetCaptureSize"); // reject an old unpaired DLL
                 _crop = Export<CropDelegate>("ProbeSetCrop"); _mode = Export<ModeDelegate>("ProbeSetMode");
@@ -51,6 +54,8 @@ namespace CF7Launcher.Guardian.WorldCompositor
                 _atmosphere=Export<AtmosphereDelegate>("ProbeSetAtmosphere");
                 _weatherStyle=Export<WeatherStyleDelegate>("ProbeSetWeatherStyle");
                 _atmosphereStyle=Export<AtmosphereStyleDelegate>("ProbeSetAtmosphereStyle");
+                _bulletStyles=Export<BulletStylesDelegate>("ProbeSetBulletStyles");
+                _bulletFrame=Export<BulletFrameDelegate>("ProbeSetBulletFrame");
                 _session = Export<StartDelegate>("ProbeStartWorld")(source,pid,output,vendor,borderless ? 1 : 0);
                 if (_session == IntPtr.Zero) throw new InvalidOperationException("Compositor initialization failed");
             }
@@ -113,7 +118,7 @@ namespace CF7Launcher.Guardian.WorldCompositor
         internal void Sharpness(float value) { if (_sharpness(_session,value)!=1) throw new InvalidOperationException("Invalid sharpness"); }
         internal void Matrix(float[] values) { if (_matrix(_session,values)!=1) throw new InvalidOperationException("Invalid lighting matrix"); }
         // lut-set-v1：整块 32^3 RGBA8（131072 字节）上传并启用 LUT 路径；变更时才调用（勿逐帧）。
-        // 严格导出：未配套 ABI 4 DLL 在建会话时即拒绝。
+        // 严格导出：未配套 ABI 5 DLL 在建会话时即拒绝。
         internal void SetLut(byte[] rgba)
         {
             if (rgba==null || rgba.Length!=32768*4 || _lut(_session,rgba)!=1)
@@ -149,6 +154,56 @@ namespace CF7Launcher.Guardian.WorldCompositor
             if (_session==IntPtr.Zero || parameters==null || parameters.Length!=16
                 || _atmosphereStyle(_session,family,parameters)!=1)
                 throw new InvalidOperationException("Invalid native atmosphere style");
+        }
+        internal void BulletStyles(BulletVisualCatalog catalog)
+        {
+            if (_session == IntPtr.Zero || catalog == null) throw new InvalidOperationException("Bullet catalog unavailable");
+            float[] values = new float[catalog.Styles.Count * 16];
+            for (int i = 0; i < catalog.Styles.Count; i++)
+            {
+                BulletVisualStyle style = catalog.Styles[i];
+                int at = i * 16;
+                Array.Copy(style.VerticesPx, 0, values, at, 6);
+                values[at + 6] = ((style.FillRgb >> 16) & 255) / 255f;
+                values[at + 7] = ((style.FillRgb >> 8) & 255) / 255f;
+                values[at + 8] = (style.FillRgb & 255) / 255f;
+                values[at + 9] = ((style.GlowRgb >> 16) & 255) / 255f;
+                values[at + 10] = ((style.GlowRgb >> 8) & 255) / 255f;
+                values[at + 11] = (style.GlowRgb & 255) / 255f;
+                values[at + 12] = style.GlowX;
+                values[at + 13] = style.GlowY;
+                values[at + 14] = style.GlowX > 0 || style.GlowY > 0 ? 1 : 0;
+            }
+            if (_bulletStyles(_session, values, catalog.Styles.Count) != 1)
+                throw new InvalidOperationException("Native bullet styles rejected");
+        }
+        internal void BulletFrame(BulletVisualFrame frame, float cameraX, float cameraY, float cameraScale)
+        {
+            if (_session == IntPtr.Zero || frame == null) throw new InvalidOperationException("Bullet frame unavailable");
+            int count = frame.NativeOwned ? frame.Instances.Length : 0;
+            float[] values = ArrayPool<float>.Shared.Rent(Math.Max(1, count * 8));
+            try
+            {
+                for (int i = 0; i < count; i++)
+                {
+                    BulletVisualInstance item = frame.Instances[i];
+                    int at = i * 8;
+                    values[at] = item.Style;
+                    values[at + 1] = item.X; values[at + 2] = item.Y;
+                    values[at + 3] = item.Rotation;
+                    values[at + 4] = item.ScaleX; values[at + 5] = item.ScaleY;
+                    values[at + 6] = item.Alpha;
+                    values[at + 7] = 0;
+                }
+                if (_bulletFrame(_session, values, count, cameraX, cameraY, cameraScale) != 1)
+                    throw new InvalidOperationException("Native bullet frame rejected");
+            }
+            finally { ArrayPool<float>.Shared.Return(values); }
+        }
+        internal void ClearBulletFrame()
+        {
+            if (_session != IntPtr.Zero && _bulletFrame(_session, Array.Empty<float>(), 0, 0, 0, 1) != 1)
+                throw new InvalidOperationException("Native bullet clear rejected");
         }
         public void Dispose()
         {
@@ -187,5 +242,7 @@ namespace CF7Launcher.Guardian.WorldCompositor
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)] private delegate int AtmosphereDelegate(IntPtr handle,int preset,[In] float[] parameters);
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)] private delegate int WeatherStyleDelegate(IntPtr handle,int type,int count,[In] float[] parameters);
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)] private delegate int AtmosphereStyleDelegate(IntPtr handle,int family,[In] float[] parameters);
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)] private delegate int BulletStylesDelegate(IntPtr handle,[In] float[] styles,int count);
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)] private delegate int BulletFrameDelegate(IntPtr handle,[In] float[] items,int count,float cameraX,float cameraY,float cameraScale);
     }
 }

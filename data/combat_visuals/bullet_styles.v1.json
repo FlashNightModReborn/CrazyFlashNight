@@ -1,0 +1,103 @@
+{
+  "schema": "cf7-combat-bullet-styles.v1",
+  "generator": "tools/combat-bullet-visuals/build.py",
+  "generatorSha256": "a0ca9eeaf9992b4d540d7c9eed7903054957e723589a33e343662ec706972ac1",
+  "sourceSwf": "flashswf/arts/原版素材库-子弹.swf",
+  "sourceSwfSha256": "87053bbbdcba77104c782ade7be415b25fda84be50098c65823fcfcc529209d2",
+  "sources": [
+    {
+      "path": "flashswf/arts/原版素材库-子弹/LIBRARY/子弹-普通与穿刺组/加强普通子弹.xml",
+      "sha256": "2323ff87742b27a9dd7806e3589aaee6978dfa022e0fc0223a7daf3be6b24e73"
+    },
+    {
+      "path": "flashswf/arts/原版素材库-子弹/LIBRARY/子弹-炮弹与爆炸组/普通子弹.xml",
+      "sha256": "017c0efa6d74a093c17b81aaf824d69d93d69f633473b6159bc81d80be0d0386"
+    },
+    {
+      "path": "flashswf/arts/原版素材库-子弹/LIBRARY/无AS链接/Symbol 694.xml",
+      "sha256": "e74b56671d6659651ef7c82f1e99d809481d8830cef02b22e7c714da0eb2f1e2"
+    },
+    {
+      "path": "flashswf/arts/原版素材库-子弹/LIBRARY/联弹/加强子弹基底.xml",
+      "sha256": "13341a1e974cee6cb712e785330ccbd3957ffa81373baee45b4282141de89e2d"
+    },
+    {
+      "path": "flashswf/arts/原版素材库-子弹/LIBRARY/联弹/单元体-加强普通子弹.xml",
+      "sha256": "22295cc41ae663b4f48d6e1fb80c3cdc2646181a82d868a3cb54158d57398bb4"
+    },
+    {
+      "path": "flashswf/arts/原版素材库-子弹/LIBRARY/联弹/单元体-普通子弹.xml",
+      "sha256": "6c54fa6d875d0bb09fc29fad6a5004ba3d5fc4dd662ef2151ca44f733b9706b5"
+    }
+  ],
+  "gunChainPrefixes": [
+    "横向联弹",
+    "横向机枪联弹",
+    "横向手枪联弹",
+    "纵向联弹",
+    "纵向机枪联弹",
+    "纵向手枪联弹"
+  ],
+  "styles": [
+    {
+      "id": "plain",
+      "ordinaryLinkage": "普通子弹",
+      "gunChainUnitLinkage": "单元体-普通子弹",
+      "visual": {
+        "verticesPx": [
+          [
+            0.0,
+            0.0
+          ],
+          [
+            25.25,
+            -0.9
+          ],
+          [
+            25.25,
+            0.9
+          ]
+        ],
+        "fill": "#FFFFCC",
+        "glow": null,
+        "registrationPx": [
+          0,
+          0
+        ],
+        "frameIndex": 0
+      }
+    },
+    {
+      "id": "enhanced",
+      "ordinaryLinkage": "加强普通子弹",
+      "gunChainUnitLinkage": "单元体-加强普通子弹",
+      "visual": {
+        "verticesPx": [
+          [
+            -9.377878,
+            -0.45
+          ],
+          [
+            32.757597,
+            -1.951859
+          ],
+          [
+            32.757597,
+            1.051859
+          ]
+        ],
+        "fill": "#FEE99A",
+        "glow": {
+          "color": "#FFFF99",
+          "blurX": 8.0,
+          "blurY": 8.0
+        },
+        "registrationPx": [
+          0,
+          0
+        ],
+        "frameIndex": 0
+      }
+    }
+  ]
+}

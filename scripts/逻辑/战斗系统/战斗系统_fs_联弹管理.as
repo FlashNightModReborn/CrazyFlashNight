@@ -160,7 +160,7 @@ _root.联弹系统.渲染组 = function(group:ChainGroup):Void {
             m._xscale = bXs;
             m._yscale = bYs;
             m._alpha = bAlpha;
-            m._visible = bVisible;
+            m._visible = group.nativeVisualOwned ? false : bVisible;
         }
         if (mir) {
             // 镜像/负缩放兜底：矩阵复合求显示角（u.cos/u.sin 由生成时缓存、拖尾更新时跟写）

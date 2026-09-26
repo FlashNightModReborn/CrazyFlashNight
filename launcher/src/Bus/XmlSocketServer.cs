@@ -484,6 +484,13 @@ namespace CF7Launcher.Bus
             }
         }
 
+        internal static string SplitFrameVisualSection(string message, out string payload)
+        {
+            int separator = message.IndexOf('\x05', 1);
+            payload = separator < 0 ? null : message.Substring(separator + 1);
+            return separator < 0 ? message : message.Substring(0, separator);
+        }
+
         private void HandleCurrentMessage(string message, int connectionGen)
         {
 
@@ -495,20 +502,23 @@ namespace CF7Launcher.Bus
                 if (prefix == 'F')
                 {
                     PerfTrace.Counter("socket.fastlane.F");
-                    // Frame 快车道：F{cam}\x01{hn}[\x02{fps}][\x03{uiState}][\x04{inputPayload}]
+                    // Frame 快车道：F{cam}\x01{hn}[\x02{fps}][\x03{uiState}][\x04{inputPayload}][\x05{bulletVisual}]
                     if (_frameTask == null) return;
 
-                    // 1) 先提取 \x04 输入数据段（始终在消息最末尾）
+                    // 1) 首批子弹视觉影子数据固定在最末尾；旧 Host/AS2 无此段。
+                    string visualFree = SplitFrameVisualSection(message, out string bulletVisualPayload);
+
+                    // 2) 提取 \x04 输入数据段
                     string inputPayload = null;
-                    string fMsg = message;
-                    int sep4 = message.IndexOf('\x04', 1);
+                    string fMsg = visualFree;
+                    int sep4 = visualFree.IndexOf('\x04', 1);
                     if (sep4 >= 0)
                     {
-                        inputPayload = (sep4 < message.Length - 1) ? message.Substring(sep4 + 1) : "";
-                        fMsg = message.Substring(0, sep4);
+                        inputPayload = (sep4 < visualFree.Length - 1) ? visualFree.Substring(sep4 + 1) : "";
+                        fMsg = visualFree.Substring(0, sep4);
                     }
 
-                    // 2) 提取 \x03 UI 状态段
+                    // 3) 提取 \x03 UI 状态段
                     string uiState = null;
                     string body = fMsg;
                     int sep3 = fMsg.IndexOf('\x03', 1);
@@ -518,7 +528,7 @@ namespace CF7Launcher.Bus
                         body = fMsg.Substring(0, sep3);
                     }
 
-                    // 3) 解析 cam / hn / fps
+                    // 4) 解析 cam / hn / fps
                     int sep1 = body.IndexOf('\x01', 1);
                     string cam, hn, fps;
                     if (sep1 > 1)
@@ -542,7 +552,7 @@ namespace CF7Launcher.Bus
                         hn = "";
                         fps = "";
                     }
-                    _frameTask.HandleRaw(cam, hn, fps, inputPayload);
+                    _frameTask.HandleRaw(cam, hn, fps, inputPayload, bulletVisualPayload, connectionGen);
                     // UI 状态段透传到 WebView2（与帧渲染同步）
                     if (uiState != null && uiState.Length > 0)
                     {
