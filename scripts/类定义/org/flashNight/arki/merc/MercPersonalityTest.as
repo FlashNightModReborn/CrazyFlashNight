@@ -123,23 +123,33 @@ class org.flashNight.arki.merc.MercPersonalityTest {
     }
 
     private static function testPanelProjectsAuthoredPersonality():Void {
-        var base:Object = MercPanelService.buildPersonality(
-            mercTupleWithMeta({}), "测试佣兵", 10);
-        var merged:Object = MercPanelService.buildPersonality(
-            mercTupleWithMeta({性格:{勇气:0.95, 谋略:0.05}}), "测试佣兵", 10);
+        // focused TestLoader 不加载 boot 帧脚本；本例只验面板覆写与基准维度保留。
+        // 显式提供领域依赖并在结束时恢复，不依赖其他 suite 或 CS6 会话的残留状态。
+        var savedGenerator:Function = _root.生成随机人格;
+        try {
+            _root.生成随机人格 = function(seed:Number):Object {
+                return {勇气:0.2, 技术:0.3, 经验:0.4, 反应:0.5, 智力:0.6, 谋略:0.7};
+            };
+            var base:Object = MercPanelService.buildPersonality(
+                mercTupleWithMeta({}), "测试佣兵", 10);
+            var merged:Object = MercPanelService.buildPersonality(
+                mercTupleWithMeta({性格:{勇气:0.95, 谋略:0.05}}), "测试佣兵", 10);
 
-        check(merged.勇气 === 0.95 && merged.谋略 === 0.05,
-            "面板六维读数据侧性格覆写，与战斗侧 配置人形怪AI 同源");
-        check(merged.技术 === base.技术 && merged.经验 === base.经验 &&
-                merged.反应 === base.反应 && merged.智力 === base.智力,
-            "未覆写维度仍取同一种子的人格向量，配置不改变随机基准");
+            check(merged.勇气 === 0.95 && merged.谋略 === 0.05,
+                "面板六维读数据侧性格覆写，与战斗侧 配置人形怪AI 同源");
+            check(merged.技术 === base.技术 && merged.经验 === base.经验 &&
+                    merged.反应 === base.反应 && merged.智力 === base.智力,
+                "未覆写维度保持注入的人格基准，配置不改动其他维度");
 
-        var allNumeric:Boolean = true;
-        for (var i:Number = 0; i < DIMS.length; i++) {
-            if (isNaN(Number(merged[DIMS[i]])) || isNaN(Number(base[DIMS[i]]))) {
-                allNumeric = false;
+            var allNumeric:Boolean = true;
+            for (var i:Number = 0; i < DIMS.length; i++) {
+                if (isNaN(Number(merged[DIMS[i]])) || isNaN(Number(base[DIMS[i]]))) {
+                    allNumeric = false;
+                }
             }
+            check(allNumeric, "面板投影的六维在配置与未配置两条路径上都是数值");
+        } finally {
+            _root.生成随机人格 = savedGenerator;
         }
-        check(allNumeric, "面板投影的六维在配置与未配置两条路径上都是数值");
     }
 }
