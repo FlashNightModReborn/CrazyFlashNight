@@ -1,5 +1,6 @@
 ﻿trace("FocusedTestRunId merc-loadout Start: __FOCUSED_RUN_ID__");
 
 org.flashNight.arki.merc.MercLoadoutServiceTest.runAllTests();
+org.flashNight.arki.merc.MercPersonalityTest.runAllTests();
 
 trace("FocusedTestRunId merc-loadout Complete: __FOCUSED_RUN_ID__");

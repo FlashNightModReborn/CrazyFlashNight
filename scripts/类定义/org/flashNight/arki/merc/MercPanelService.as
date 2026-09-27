@@ -781,7 +781,7 @@ class org.flashNight.arki.merc.MercPanelService {
         var g:String = String(merc[17]);
         var gender:String = (g == "男" || g == "主角-男" || g == "1" || merc[17] == 1) ? "男" : "女";
 
-        var personality:Object = buildPersonality(mercName, mercLevel);
+        var personality:Object = buildPersonality(merc, mercName, mercLevel);
 
         return {
             slotIndex:   slotIndex,
@@ -814,15 +814,19 @@ class org.flashNight.arki.merc.MercPanelService {
     // 与 单位函数_fs_aka_玩家模板迁移.as 配置人形怪AI 的 aiSeed 算法严格同构：
     // seed = 等级 起步 → 名字逐字符 seed*31+charCode → &0x7FFFFFFF，
     // 再走 _root.生成随机人格（确定性 LCG）。不调 计算AI参数（派生参数面板用不到）。
+    // mercenaries.json personality 覆写（merc[19].性格）在此合并，与战斗侧 配置人形怪AI
+    // 的数据侧覆写读同一份 merc[19]，避免面板六维雷达与 AI 实际行为两套人格。
     // ═══════════════════════════════════════════════════════════
     // public：角斗场面板 (ArenaPanelService) 复用同一份人格重算，避免「两套种子」漂移
-    public static function buildPersonality(mercName:String, mercLevel:Number):Object {
+    public static function buildPersonality(merc:Array, mercName:String, mercLevel:Number):Object {
         var seed:Number = mercLevel;
         for (var i:Number = 0; i < mercName.length; i++) {
             seed = seed * 31 + mercName.charCodeAt(i);
         }
         seed = seed & 0x7FFFFFFF;
-        return _root.生成随机人格(seed);
+        var personality:Object = _root.生成随机人格(seed);
+        MercLibrary.mergePersonalityTraits(personality, merc[19].性格);
+        return personality;
     }
 
     // 序列化人格为有序数组（固定维度顺序，JSON 键保持 ASCII）

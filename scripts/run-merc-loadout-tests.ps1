@@ -112,16 +112,70 @@ if ($loadoutTestSource -notmatch 'class\s+org\.flashNight\.arki\.merc\.MercLoado
     throw 'MercLoadoutServiceTest must cover custody guard, spawn loadout resolution and busy reentry.'
 }
 
+# 数据侧性格配置（mercenaries.json personality → merc[19].性格 → 面板/战斗共用合并语义）。
+$personalityTestPath = Join-Path $repoRoot 'scripts\类定义\org\flashNight\arki\merc\MercPersonalityTest.as'
+$personalityTestSource = Get-Content -LiteralPath $personalityTestPath -Raw -Encoding UTF8
+$personalityCheckCallSites = [regex]::Matches(
+    $personalityTestSource, '(?m)^\s*check\s*\(').Count
+if ($personalityCheckCallSites -ne 24) {
+    throw "MercPersonalityTest check call-site count drifted: expected 24, actual $personalityCheckCallSites."
+}
+if ($personalityTestSource -notmatch 'class\s+org\.flashNight\.arki\.merc\.MercPersonalityTest\s*\{') {
+    throw 'MercPersonalityTest must keep the expected fully-qualified class declaration.'
+}
+
+$mercLibraryPath = Join-Path $repoRoot 'scripts\类定义\org\flashNight\arki\merc\MercLibrary.as'
+$mercLibrarySource = Get-Content -LiteralPath $mercLibraryPath -Raw -Encoding UTF8
+foreach ($requiredMethod in @('normalizePersonality', 'mergePersonalityTraits')) {
+    if ($mercLibrarySource -notmatch ('public\s+static\s+function\s+' + $requiredMethod + '\s*\(')) {
+        throw "MercLibrary is missing public static method: $requiredMethod"
+    }
+}
+if ($mercLibrarySource -notmatch 'merc\[19\]\.性格\s*=\s*性格配置') {
+    throw 'buildMercData must write the normalized personality override into merc[19].性格.'
+}
+
+# 战斗侧接线在 publish 注入的 逻辑 文件里，不在本 suite 的运行闭包内，故用源码门钉住
+# "合并同一人格引用 → 再重算派生参数" 的顺序，避免只改面板不改 AI。
+$unitTemplatePath = Join-Path $repoRoot 'scripts\逻辑\单位函数\单位函数_fs_aka_玩家模板迁移.as'
+$unitTemplateSource = Get-Content -LiteralPath $unitTemplatePath -Raw -Encoding UTF8
+$aiConfigStart = $unitTemplateSource.IndexOf('_root.配置人形怪AI = function(')
+$personalityMerge = $unitTemplateSource.IndexOf(
+    'MercLibrary.mergePersonalityTraits(target.personality, target.佣兵参数.性格)', $aiConfigStart)
+$personalityRecompute = $unitTemplateSource.IndexOf('_root.计算AI参数(target.personality);', $personalityMerge)
+if ($aiConfigStart -lt 0 -or $personalityMerge -lt 0 -or $personalityRecompute -le $personalityMerge) {
+    throw '配置人形怪AI must merge 佣兵参数.性格 then recompute 计算AI参数 on the same personality reference.'
+}
+if ($spawnerSource -notmatch 'MercLibrary\.mergePersonalityTraits\(mc\.personality, mercData\[19\]\.性格\)') {
+    throw '待雇 NPC must merge mercData[19].性格 so dialogue and post-hire personality share one source.'
+}
+
+# 角斗场对手卡走 MercPanelService.buildPersonality（合并 merc[19].性格），故标准/隐藏对战的
+# 敌人侧必须把同一份 性格 挂上 佣兵参数 通道；且只能挂 性格——整份透传 敌人信息[19] 会顺带
+# 激活 authored 被动技能，把这条展示同源改动偷渡成角斗场难度变更。
+$enemySpawnStart = $sceneSource.IndexOf('_root.加载敌方人物 = function(')
+$rosterSpawnStart = $sceneSource.IndexOf('_root.角斗场读取单位参数 = function(')
+if ($enemySpawnStart -lt 0 -or $rosterSpawnStart -le $enemySpawnStart) {
+    throw '场景转换 enemy-spawn section is missing or malformed.'
+}
+$enemySpawnSection = $sceneSource.Substring($enemySpawnStart, $rosterSpawnStart - $enemySpawnStart)
+if ($enemySpawnSection -notmatch '敌人\.佣兵参数\s*=\s*\{性格:敌人信息\[19\]\.性格\}') {
+    throw '加载敌方人物 must carry only merc[19].性格 into 佣兵参数, keeping arena passive skills inert.'
+}
+
 $focusedRun = @{
     DomainId = 'merc-loadout'
     TemplateRelativePath = 'scripts\test-runners\merc-loadout\TestLoader.as.template'
     SuiteRelativePaths = @(
         'scripts\类定义\org\flashNight\arki\merc\MercLoadoutServiceTest.as'
+        'scripts\类定义\org\flashNight\arki\merc\MercPersonalityTest.as'
     )
     SuiteFqns = @(
         'org.flashNight.arki.merc.MercLoadoutServiceTest'
+        'org.flashNight.arki.merc.MercPersonalityTest'
     )
     AdditionalAsRelativePaths = @(
+        'scripts\类定义\org\flashNight\arki\merc\MercLibrary.as'
         'scripts\类定义\org\flashNight\arki\merc\MercLoadoutService.as'
         'scripts\类定义\org\flashNight\arki\merc\MercPanelService.as'
         'scripts\类定义\org\flashNight\arki\merc\MercSpawner.as'
@@ -130,8 +184,10 @@ $focusedRun = @{
     ExpectedTracePatterns = @(
         '(?m)^MercLoadoutServiceTest Tests Passed: 125\r?$'
         '(?m)^MercLoadoutServiceTest Tests Failed: 0\r?$'
+        '(?m)^MercPersonalityTest Tests Passed: 24\r?$'
+        '(?m)^MercPersonalityTest Tests Failed: 0\r?$'
     )
-    SuccessSummary = 'MercLoadoutServiceTest 125/125 passed'
+    SuccessSummary = 'MercLoadoutServiceTest 125/125 + MercPersonalityTest 24/24 passed'
     TimeoutSeconds = $TimeoutSeconds
     SkipCompile = $SkipCompile
 }

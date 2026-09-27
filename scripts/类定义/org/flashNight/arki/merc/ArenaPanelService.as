@@ -243,7 +243,7 @@ class org.flashNight.arki.merc.ArenaPanelService {
         // 技能：复用佣兵面板同一份重算（人格 → 技能列表，含 _root.技能缓存 命中优先），
         // 与 MercPanelService 共用一处算法，避免「展示用技能」与战斗权威技能两套种子漂移。
         // skills 形状 [{name, level, type, trait, cooldown, cost, unlock}, ...]，web 端按佣兵卡同款图标流渲染。
-        var personality:Object = MercPanelService.buildPersonality(mercName, mercLevel);
+        var personality:Object = MercPanelService.buildPersonality(merc, mercName, mercLevel);
         var skills:Array = MercPanelService.buildSkills(mercName, mercLevel, merc, personality);
 
         // 竞技场右栏与战队面板共用 MercPortraits。这里只扩充只读投影，不改变抽签、缓存或入场协议；

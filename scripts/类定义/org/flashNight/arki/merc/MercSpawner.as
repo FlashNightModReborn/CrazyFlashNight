@@ -334,6 +334,11 @@ class org.flashNight.arki.merc.MercSpawner {
 
         // 提前生成人格向量（幂等，初始化玩家模板中的二次调用会跳过已生成的）
         _root.配置人形怪AI(mc);
+        // 数据侧性格覆写：NPC 身上只有 佣兵数据 没有 佣兵参数，故在此显式合并，
+        // 保证待雇 NPC 的对话主维度与雇佣后的面板/战斗人格同源。
+        if (MercLibrary.mergePersonalityTraits(mc.personality, mercData[19].性格)) {
+            _root.计算AI参数(mc.personality);
+        }
 
         // 按人格主维度抽对话（先人格 → 再按人格抽匹配对话）
         mc.默认对话 = [[]];
