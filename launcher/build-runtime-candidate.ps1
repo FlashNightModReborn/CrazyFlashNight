@@ -404,6 +404,12 @@ try {
     Write-Host '[4/5] Publish managed Core into isolated output...' -ForegroundColor Yellow
     $dotnet = $env:CF7_DOTNET_EXE
     $csproj = Join-Path $launcherDir 'CRAZYFLASHER7MercenaryEmpire.csproj'
+    # The compiler embeds this XML verbatim in both Core.dll and its apphost.
+    # Git identity normalizes EOL; use the same bytes even in an edited CRLF checkout.
+    $canonicalManagedManifest = Join-Path $jobTemp 'managed-inputs\app.manifest'
+    Copy-Cf7CanonicalLfFile `
+        -Source (Join-Path $launcherDir 'app.manifest') `
+        -Destination $canonicalManagedManifest
     Push-Location $projectRoot
     try {
         & $dotnet publish $csproj `
@@ -416,6 +422,7 @@ try {
             -p:DebugType=None `
             -p:DebugSymbols=false `
             -p:UseSharedCompilation=false `
+            "-p:ApplicationManifest=$canonicalManagedManifest" `
             "-p:BaseIntermediateOutputPath=$managedObj" `
             "-p:MSBuildProjectExtensionsPath=$managedObj" `
             "-p:OutputPath=$managedBin" `

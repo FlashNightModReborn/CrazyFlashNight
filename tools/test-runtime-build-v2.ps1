@@ -156,6 +156,7 @@ try {
     if ($LASTEXITCODE -ne 0) { throw 'Cannot locate EquipmentTuningService.as for the LF contract.' }
     Assert-Equal 'EquipmentTuningService LF contract has one tracked target' 1 $equipmentTuningServiceLfFiles.Count
     $canonicalLfFiles = @(
+        'launcher/app.manifest',
         'launcher/scripts/dist/hit-number-bundle.js',
         'launcher/web/modules/arena-custom-presets.js',
         'launcher/web/modules/arena-unit-catalog.js',
@@ -254,12 +255,27 @@ try {
     foreach ($functionName in @(
         'Resolve-Cf7RuntimeWorkBase',
         'New-Cf7RuntimeWorkJobLayout',
-        'Assert-Cf7RuntimeWorkCleanupTarget'
+        'Assert-Cf7RuntimeWorkCleanupTarget',
+        'Copy-Cf7CanonicalLfFile'
     )) {
         $functionAst = @($producerFunctions | Where-Object { $_.Name -eq $functionName })
         Assert-Equal "producer exports one $functionName helper" 1 $functionAst.Count
         Invoke-Expression $functionAst[0].Extent.Text
     }
+    $manifestLf = [IO.File]::ReadAllText((Join-Path $ProjectRoot 'launcher\app.manifest'), [Text.Encoding]::UTF8)
+    $manifestCrlf = $manifestLf.Replace("`n", "`r`n")
+    $manifestSource = Join-Path $testRoot 'manifest-source.xml'
+    $manifestOutput = Join-Path $testRoot 'canonical\app.manifest'
+    Write-TestText $manifestSource $manifestCrlf
+    Copy-Cf7CanonicalLfFile -Source $manifestSource -Destination $manifestOutput
+    Assert-Equal 'Win32 manifest materialization matches the LF source byte-for-byte' `
+        ([Convert]::ToBase64String($utf8NoBom.GetBytes($manifestLf))) `
+        ([Convert]::ToBase64String([IO.File]::ReadAllBytes($manifestOutput)))
+    Assert-Equal 'Win32 manifest materialization leaves the edited source untouched' $manifestCrlf `
+        ([IO.File]::ReadAllText($manifestSource, [Text.Encoding]::UTF8))
+    Assert-Equal 'managed publish uses the canonical Win32 manifest override' $true `
+        ($producerScript.Contains('"-p:ApplicationManifest=$canonicalManagedManifest"') -and
+         $producerScript.Contains("-Source (Join-Path `$launcherDir 'app.manifest')"))
     $machineTemp = [IO.Path]::GetFullPath([IO.Path]::GetTempPath()).TrimEnd('\')
     $defaultWorkBase = Resolve-Cf7RuntimeWorkBase `
         -SystemTempRoot $machineTemp -SourceProjectRoot $ProjectRoot

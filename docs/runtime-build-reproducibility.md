@@ -75,6 +75,10 @@ Audio Platform v2 的 H1/H2 是独立的产品验收证据，不是通用 runtim
 
 prepare 中的派生器必须字节幂等；例如 save-repair dictionary 仅在结构内容变化时刷新 `generated.at`。重复 prepare 因时间戳制造 diff 属于构建门故障，不能要求维护者提交无语义的时间漂移。
 
+Core 的 Windows 启动清单 `launcher/app.manifest` 会逐字节嵌入 DLL 与 apphost，属于 artifact source。
+它固定 LF 检出；producer 还将其复制到任务临时目录并规范换行，通过 `ApplicationManifest` 显式传给 managed publish，
+避免手工编辑成 CRLF 后出现 Git 身份相同、PE 资源字节不同的分叉。源文件不在构建中改写，不能用忽略 manifest 差异来放宽 closure 验证。
+
 #### 独立输入进程的构建归属（2026-09-13）
 
 `launcher/src/Guardian/HotkeyGuard.cs` 已取消 artifact source 与 csproj 排除，随 Core 编译。宿主通过同一 apphost 的 `--hotkey-guard <parentPid> <coreMvid>` 启动独立进程；本次正式 promotion 后，候选与正式 Core 均使用自身版本的拦截器，不再读取根目录历史 `hotkey_guard.exe`。这不新增 payload side-car 或工具链；模块身份与父路径验证发生在 hook 安装前。source descriptor、队列夹具与 Core CLI 注册表同步更新；此处只记录源码归属变化，不改变本文当前正式 promotion 身份。
