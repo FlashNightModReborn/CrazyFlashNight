@@ -93,51 +93,7 @@ class org.flashNight.arki.bullet.BulletComponent.Shell.ShellSystem {
         shellPools = {};
         游戏世界.可用弹壳池 = {}; // 兼容旧逻辑
 
-        // 对象池函数构造器
-        function createBulletPoolFuncs(bulletType:String):Object {
-            var createFunc:Function = function(parentClip:MovieClip):MovieClip {
-                var 游戏世界 = _root.gameworld;
-                var 世界效果 = 游戏世界.效果;
-                var prototypeBullet = 世界效果.attachMovie(bulletType, "prototype_" + bulletType, 世界效果.getNextHighestDepth());
-                prototypeBullet._visible = false;
-                return prototypeBullet;
-            };
-
-            var resetFunc:Function = function():Void {
-                this._visible = true;
-                this.__isDestroyed = false;
-                // ⚠️ 清零所有内部标志，防止对象池重用时状态污染
-                this.__isRecycled = false;
-                this.__scheduledRecycle = false;
-                this.__hitGround = false;
-            };
-
-            var releaseFunc:Function = function():Void {
-                this._visible = false;
-            };
-
-            return {createFunc: createFunc, resetFunc: resetFunc, releaseFunc: releaseFunc};
-        }
-
-        // 创建或更新对象池
-        for (var bulletName in shellMap) {
-            var 弹壳信息 = shellMap[bulletName];
-            var 弹壳种类:String = 弹壳信息.弹壳;
-            if (!弹壳种类)
-                continue;
-
-            // 按弹壳种类去重：多个子弹条目共享同一弹壳时只建一个池，
-            // 避免重复创建原型 MovieClip 后引用被覆盖造成隐藏泄漏
-            if (shellPools[弹壳种类] != undefined)
-                continue;
-
-            var funcs = createBulletPoolFuncs(弹壳种类);
-            var 世界效果 = 游戏世界.效果;
-            var pool = new org.flashNight.sara.util.ObjectPool(funcs.createFunc, funcs.resetFunc, funcs.releaseFunc, 世界效果, 30, 0, true, true, []);
-
-            shellPools[弹壳种类] = pool;
-            游戏世界.可用弹壳池[弹壳种类] = pool;
-        }
+        // 原生路径只保留配置；旧显示池在首次实际回退时按材质创建。
 
         _global.ASSetPropFlags(游戏世界, ["可用弹壳池"], 1, false);
         initialized = true;
@@ -145,11 +101,46 @@ class org.flashNight.arki.bullet.BulletComponent.Shell.ShellSystem {
         startUpdateLoop();
     }
 
+    private static function poolFor(shellType:String):ObjectPool {
+        var existing:ObjectPool = shellPools[shellType];
+        if (existing != undefined) return existing;
+        var parent:MovieClip = _root.gameworld.效果;
+        if (!parent) return undefined;
+        var create:Function = function(parentClip:MovieClip):MovieClip {
+            var prototype:MovieClip = parentClip.attachMovie(shellType, "prototype_" + shellType, parentClip.getNextHighestDepth());
+            prototype._visible = false;
+            return prototype;
+        };
+        var reset:Function = function():Void {
+            this._visible = true;
+            this.__isDestroyed = false;
+            this.__isRecycled = false;
+            this.__scheduledRecycle = false;
+            this.__hitGround = false;
+        };
+        var release:Function = function():Void { this._visible = false; };
+        existing = new ObjectPool(create, reset, release, parent, 30, 0, true, true, []);
+        shellPools[shellType] = existing;
+        _root.gameworld.可用弹壳池[shellType] = existing;
+        return existing;
+    }
+
     /**
      * 发射弹壳接口
      */
     public static function launchShell(bullet:MovieClip, myX:Number, myY:Number, xscale:Number, 必然触发:Boolean):Void {
         var 子弹类型:String = bullet.子弹种类;
+
+        #include "../macros/FLAG_VERTICAL.as"
+        var nativeInfo:Object = shellMap[子弹类型];
+        if (nativeInfo != undefined) {
+            var nativeScale:Number = xscale * 0.01;
+            var nativeX:Number = myX - nativeScale * nativeInfo.myX;
+            var nativeY:Number = myY + Math.abs(nativeScale) * nativeInfo.myY;
+            var nativeCount:Number = ((bullet.flags & FLAG_VERTICAL) != 0) ? bullet.霰弹值 : 1;
+            if (org.flashNight.arki.render.CombatFxBridge.tryShell(nativeInfo.弹壳, nativeX, nativeY,
+                xscale, nativeCount, nativeY + 100)) return;
+        }
 
         if (!initialized) {
             // 如果未初始化，则尝试初始化
@@ -159,7 +150,7 @@ class org.flashNight.arki.bullet.BulletComponent.Shell.ShellSystem {
             }
         }
         // 位掩码优化：使用宏展开避免属性索引开销
-        #include "../macros/FLAG_VERTICAL.as"    
+
         // 注入: var FLAG_VERTICAL:Number = 128;
         
         // 原始: bullet.纵向检测 ? bullet.霰弹值 : 1 - 需要属性哈希查找
@@ -169,7 +160,7 @@ class org.flashNight.arki.bullet.BulletComponent.Shell.ShellSystem {
         // 性能优化：使用线性随机数引擎的直接方法调用替代 _root.成功率
         // 原 _root.成功率 通过 Delegate.create 包装，增加了函数调用开销
         // 直接调用 engine.successRate 避免了 Delegate 包装的性能损耗
-        var engine:LinearCongruentialEngine = LinearCongruentialEngine.instance;
+        var engine:BaseRandomNumberEngine = org.flashNight.arki.render.VisualRandom.getEngine();
         
         // 视野渲染剔除：计算弹壳的屏幕坐标
         var gameWorld:MovieClip = _root.gameworld;
@@ -194,7 +185,7 @@ class org.flashNight.arki.bullet.BulletComponent.Shell.ShellSystem {
             if (!弹壳种类)
                 return;
 
-            var pool:ObjectPool = shellPools[弹壳种类];
+            var pool:ObjectPool = poolFor(弹壳种类);
             if (!pool) {
                 return; // 池不存在，避免重复初始化
             }
@@ -245,7 +236,7 @@ class org.flashNight.arki.bullet.BulletComponent.Shell.ShellSystem {
      * 初始化弹壳物理状态 (重构后版本，不创建独立任务)
      */
     private static function initializeShellPhysicsState(弹壳:MovieClip):Void {
-        var engine:LinearCongruentialEngine = LinearCongruentialEngine.instance;
+        var engine:BaseRandomNumberEngine = org.flashNight.arki.render.VisualRandom.getEngine();
         弹壳.Z轴坐标 = 弹壳._y + 100;   // 地面线（落点），位于出膛点下方 100px
         弹壳.swapDepths(弹壳.Z轴坐标);
         弹壳.存活帧 = 0;              // 记录已执行 tick 次数
@@ -293,7 +284,7 @@ class org.flashNight.arki.bullet.BulletComponent.Shell.ShellSystem {
      */
     private static function updateAllShells():Void {
         // 缓存常用对象引用以减少属性访问开销
-        var engine:LinearCongruentialEngine = LinearCongruentialEngine.instance;
+        var engine:BaseRandomNumberEngine = org.flashNight.arki.render.VisualRandom.getEngine();
         var cooldownWheel:EnhancedCooldownWheel = EnhancedCooldownWheel.I();
 
         // 使用向后循环遍历活动弹壳，确保在遍历时安全移除元素
@@ -382,7 +373,7 @@ class org.flashNight.arki.bullet.BulletComponent.Shell.ShellSystem {
      * 原版模式物理：低成本快回收，适配纵向联弹极端吞吐。
      * @return Boolean 是否应回收（已 add2map3 烘焙）
      */
-    private static function simulateLegacyShell(弹壳:MovieClip, engine:LinearCongruentialEngine):Boolean {
+    private static function simulateLegacyShell(弹壳:MovieClip, engine:BaseRandomNumberEngine):Boolean {
         if (弹壳._y - 弹壳.Z轴坐标 < -5) {
             弹壳.垂直速度 += 4;
             弹壳._x += 弹壳.水平速度;

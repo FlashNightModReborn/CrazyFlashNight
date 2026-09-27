@@ -6,8 +6,8 @@ using CF7Launcher.Guardian;
 
 namespace CF7Launcher.Guardian.WorldCompositor
 {
-    // F-packet section 5: complete, bounded visual snapshot. The first batch
-    // observes Flash only; parsing does not grant native display ownership.
+    // F-packet section 5: complete, bounded visual snapshot. Only a negotiated
+    // NativeOwned packet grants drawing; old shadow packets remain observation-only.
     internal sealed class BulletVisualFrame
     {
         internal readonly int Epoch, Frame, NormalCount, ChainCount, Overflow;

@@ -93,7 +93,7 @@ class org.flashNight.arki.unit.UnitComponent.Updater.HitUpdater {
 
         // ────────────── 血槽颜色与后续特效 ──────────────
         BloodBarEffectHandler.updateStatus(hitTarget);
-        EffectSystem.Effect(hitTarget.击中效果, ocx, ocy, sxc);
+        EffectSystem.Effect(hitTarget.击中效果, ocx, ocy, sxc, undefined, true);
 
         // 判断是否需要生成子弹击中后的后续效果
         bullet.shouldGeneratePostHitEffect = (hitTarget.击中效果 != bullet.击中后子弹的效果);

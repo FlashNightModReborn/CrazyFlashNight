@@ -1,0 +1,359 @@
+{
+  "role": "Light visibility correction after user feedback; real GPU fixture and startup are not in-game visual acceptance or promotion",
+  "observedAtUtc": "2026-09-27T04:00:11.623671+00:00",
+  "sourceBase": "f535ca5d4a448eb8e3d5d6c56db914c18705d686",
+  "feedback": {
+    "user": "其他看起来没问题，但光源说实在的完全看不清",
+    "screenshot": {
+      "path": "tmp/combat-fx-lights-validation/user-light-too-dim.png",
+      "bytes": 763581,
+      "sha256": "313F6FA94BCC76C2DCE5525EE421A61DC21E7C316017D96806AACD90F61A2C40"
+    },
+    "originalSession": {
+      "path": "tmp/combat-fx-lightfix-validation/user-session-original-light.log",
+      "bytes": 345177,
+      "sha256": "A6C2F6D9A5319CA5AE6ED26E890C3F658692230645A78BA9ECEE9C64EC461E29"
+    },
+    "recordedLightingModes": [
+      "光照 L0",
+      "高级夜视仪",
+      "光照 L5"
+    ],
+    "boundary": "General acceptance of other visuals; original light visibility rejected. Log modes do not pinpoint screenshot timing."
+  },
+  "changes": {
+    "shader": "Bounded exposure reveal from raw texture; ordinary ambient LUT no longer colours direct light; matrix night vision palette retained",
+    "pulse": "Two full game-tick peak frames, then linear decay",
+    "profiles": {
+      "schema": "cf7-combat-local-lights.v1",
+      "maximumResponse": 0.78,
+      "muzzles": {
+        "冲锋枪枪火": {
+          "radius": 128,
+          "energy": 1.4,
+          "ticks": 4,
+          "color": "#FFD39A"
+        },
+        "反器材枪火": {
+          "radius": 195,
+          "energy": 1.9,
+          "ticks": 6,
+          "color": "#FFD39A"
+        },
+        "发射器枪火": {
+          "radius": 175,
+          "energy": 1.65,
+          "ticks": 5,
+          "color": "#FFE0B0"
+        },
+        "巴雷特枪火": {
+          "radius": 205,
+          "energy": 2,
+          "ticks": 6,
+          "color": "#FFE0B0"
+        },
+        "战斗步枪枪火": {
+          "radius": 165,
+          "energy": 1.7,
+          "ticks": 5,
+          "color": "#FFD39A"
+        },
+        "枪火": {
+          "radius": 145,
+          "energy": 1.5,
+          "ticks": 4,
+          "color": "#FFD39A"
+        },
+        "突击步枪枪火": {
+          "radius": 155,
+          "energy": 1.6,
+          "ticks": 5,
+          "color": "#FFD39A"
+        },
+        "紧凑手枪枪火": {
+          "radius": 118,
+          "energy": 1.3,
+          "ticks": 4,
+          "color": "#FFD39A"
+        },
+        "霰弹枪枪火": {
+          "radius": 180,
+          "energy": 1.85,
+          "ticks": 6,
+          "color": "#FFCA83"
+        },
+        "马格南手枪枪火": {
+          "radius": 155,
+          "energy": 1.6,
+          "ticks": 5,
+          "color": "#FFD39A"
+        }
+      }
+    },
+    "lightPreset": {
+      "path": "data/combat_visuals/local_lights.v1.json",
+      "bytes": 987,
+      "sha256": "5402D4DB8B554E29CB77E339E29EA54A4A65B79D598891714A2091636A589B74"
+    },
+    "as2Unchanged": {
+      "path": "scripts/asLoader.swf",
+      "bytes": 1381144,
+      "sha256": "27FD5A517967554E6D05C8F08960A8F2C1DDC32DEBBD5D6FDE2EC14A5C91F828"
+    },
+    "gameplayAuthority": "AS2 remains authoritative; no combat simulation changes in this correction"
+  },
+  "machineValidation": {
+    "hostFocused": {
+      "passed": 20,
+      "failed": 0,
+      "log": {
+        "path": "tmp/combat-fx-lightfix-validation/host-focused.log",
+        "bytes": 38055,
+        "sha256": "40CF4559B57CDFC2753EFDF3A6664025FD5EFEC4DF498AE76EE90A1986595C83"
+      }
+    },
+    "hostAll": {
+      "passed": 5915,
+      "skipped": 5,
+      "failed": 0,
+      "log": {
+        "path": "tmp/combat-fx-lightfix-validation/host-all.log",
+        "bytes": 847682,
+        "sha256": "DBAB16009808E8F70BCABC73440E566131946E204F209B20134206786EAA9E7D"
+      }
+    },
+    "shaders": {
+      "entrypoints": 10,
+      "targets": [
+        "vs_4_0",
+        "ps_4_0"
+      ],
+      "warningsAsErrors": true
+    },
+    "gpu": {
+      "report": {
+        "path": "tmp/combat-fx-lightfix-validation/gpu-candidate/probe.json",
+        "bytes": 3619,
+        "sha256": "F4D7752CD00C0710B147D5932ABA4DBAA346D53EC86B93FBD4907032A89A6413"
+      },
+      "adapter": "Intel(R) UHD Graphics 630",
+      "proof": {
+        "casingUnderBullet": [
+          255,
+          255,
+          204
+        ],
+        "muzzleAboveBullet": [
+          0,
+          0,
+          255
+        ],
+        "worldGradedCasing": [
+          128,
+          0,
+          0
+        ],
+        "emissiveMuzzle": [
+          0,
+          0,
+          255
+        ],
+        "worldBefore": [
+          12,
+          13,
+          16
+        ],
+        "worldLit": [
+          81,
+          83,
+          81
+        ],
+        "overlap": [
+          100,
+          103,
+          100
+        ],
+        "cappedRed": 100.53650106229854,
+        "productionL0Before": [
+          2,
+          4,
+          5
+        ],
+        "productionL0Lit": [
+          77,
+          79,
+          77
+        ],
+        "pulse": [
+          {
+            "age": 0,
+            "energy": 1.5,
+            "center": [
+              77,
+              79,
+              77
+            ]
+          },
+          {
+            "age": 1,
+            "energy": 1.5,
+            "center": [
+              77,
+              79,
+              77
+            ]
+          },
+          {
+            "age": 2,
+            "energy": 1,
+            "center": [
+              63,
+              65,
+              64
+            ]
+          },
+          {
+            "age": 3,
+            "energy": 0.5,
+            "center": [
+              40,
+              42,
+              42
+            ]
+          },
+          {
+            "age": 4,
+            "energy": 0,
+            "center": [
+              2,
+              4,
+              5
+            ]
+          }
+        ],
+        "nightVision": [
+          24,
+          124,
+          12
+        ],
+        "productionL5Before": [
+          73,
+          85,
+          98
+        ],
+        "productionL5Lit": [
+          105,
+          111,
+          114
+        ],
+        "weatherBefore": 12137,
+        "weatherAfter": 49933,
+        "cameraTransform": true,
+        "cleared": true
+      },
+      "timings": {
+        "noLights": {
+          "samples": 90,
+          "submitMedianMs": 0.23029999434947968,
+          "submitP95Ms": 0.3176000118255615,
+          "presentMedianMs": 0.12350000441074371,
+          "boundary": "CPU submission/present timings, not GPU timestamps or game FPS"
+        },
+        "sixteenLights": {
+          "samples": 90,
+          "submitMedianMs": 0.2915000021457672,
+          "submitP95Ms": 0.4017999917268753,
+          "presentMedianMs": 0.1201000064611435,
+          "boundary": "CPU submission/present timings, not GPU timestamps or game FPS"
+        }
+      }
+    },
+    "oldShaderCounterexample": {
+      "result": "Expected failure: Muzzle light is still too faint under production L0",
+      "log": {
+        "path": "tmp/combat-fx-lightfix-validation/old-shader-counterexample.log",
+        "bytes": 739,
+        "sha256": "767C01480C13BDC08E19F881E6C10619667882C4648F80C62544AE33A83D240A"
+      },
+      "oldRgb": [
+        15,
+        42,
+        53
+      ],
+      "correctedRgb": [
+        77,
+        79,
+        77
+      ],
+      "boundary": "Same revised profile and controlled material, algorithm-only comparison; not original-candidate full-profile comparison"
+    },
+    "assetsCheck": "passed: 35 styles / 461 frames / 2048x1760 / 576417 bytes",
+    "as2Compilation": "Reused the unchanged previously compiled and tested asLoader; no new AS2 compile needed",
+    "selectionLog": {
+      "path": "tmp/combat-fx-lightfix-validation/dev-status.log",
+      "bytes": 1904,
+      "sha256": "3278D9A6B3CF91605928946C4C0137C8369E9D27684E2CE247DAEDD10C162004"
+    },
+    "docsLog": {
+      "path": "tmp/combat-fx-lightfix-validation/docs-final.log",
+      "bytes": 3591,
+      "sha256": "3D1C88759752611C1BB345C8EF3A2C09260227AE90701B96925F95B92051420A"
+    }
+  },
+  "candidate": {
+    "path": "tmp/runtime-candidates/v2/combat-fx-lightfix-0927",
+    "buildIdentityHash": "98833A977E1641F13A02C58BE0E23B27B107EC974EE92831B832EFD82E0A4188",
+    "payloadClosureHash": "49457314522550959F21DF3E67406EE3CF3D6D71E0EF54F564B161E8AC766D27",
+    "policyHash": "C8E9F3E820448DBBE8BEA6AF68333FB2B4B1315C10281E65DD78A9C1C58A80C8",
+    "core": {
+      "path": "tmp/runtime-candidates/v2/combat-fx-lightfix-0927/runtime/CRAZYFLASHER7MercenaryEmpire.Core.dll",
+      "bytes": 5701120,
+      "sha256": "108430EBF13C1B8DB7F48009E907B8D9189245F9BF55CB7A5FCC427384829876"
+    },
+    "native": {
+      "path": "tmp/runtime-candidates/v2/combat-fx-lightfix-0927/runtime/FlashCompositorNative.dll",
+      "bytes": 265728,
+      "sha256": "688539E358E96AF07CEE51B6ABB5CE7BA9E42D09A7366CFDE9E94E809FD457EF"
+    },
+    "executedPid": 2928,
+    "startupLog": {
+      "path": "tmp/combat-fx-lightfix-validation/candidate-start.log",
+      "bytes": 1574,
+      "sha256": "C26BF021709644E90CB0BD813869C4552DB065EB96991B040109BE346F78F801"
+    },
+    "launcherLog": {
+      "path": "tmp/combat-fx-lightfix-validation/candidate-launcher.log",
+      "bytes": 19068,
+      "sha256": "EFCFA97CB9ED10E7379734DB0D6F8BC8D29371813E3887D795D79073C95349C4"
+    },
+    "startup": "Catalog plus new light profile loaded, frontdoor and Flash bootstrap handshake; no character selected; normal window close",
+    "state": "candidate_executed",
+    "deployment": "NOT_DEPLOYED",
+    "correctedLightHumanAcceptance": "passed: maintainer reported 测试看起来没问题，发布列车吧 and authorized the combined release train",
+    "shutdown": "Normal CloseMainWindow; reason=no_binding, then Resetting -> Idle / close terminator state_Idle",
+    "developmentEntry": "本地开发启动.cmd",
+    "selectionState": "ready; exactly one matching candidate and payload closure",
+    "humanAcceptanceBoundary": "General in-game visual acceptance of the delivered corrected candidate; not exhaustive asset, weak-hardware performance or formal-entry verification",
+    "humanSessionLog": {
+      "path": "tmp/combat-fx-release-0927/accepted-candidate-session.log",
+      "sha256": "6C9E2166012F4BE9949D060EE356B2B2E73E033096FBF455D0B487D67A537CDB",
+      "sampledFrames": 61,
+      "observedMaxima": {
+        "casings": 72,
+        "muzzles": 1,
+        "impacts": 8,
+        "lights": 4,
+        "dropped": 0,
+        "impactDropped": 0,
+        "lightDropped": 0
+      },
+      "boundary": "Sampled log counts, not full coverage or FPS evidence"
+    }
+  },
+  "sourceFiles": {
+    "launcher/native/world-compositor/Compositor.cpp": "68B96F88735BFCACB35D6F6A431CE9683370E4D8AF956172B424C7726D943125",
+    "launcher/src/Guardian/WorldCompositor/CombatFxEngine.cs": "52BECB7BE8309E769C6C469BEF7AEC0DE914BD27BBC5639E079F8AF7F111753C",
+    "launcher/tests/Guardian/CombatFxTests.cs": "D3511A2EF925F8715DB99B7ECD302C112A81F362E1174DC7BA0757F5FF007348",
+    "launcher/perf/combat-fx/Program.cs": "29CB3FC9EB5177C695C4E1BF418552C45C10F2CBB2699B4C5CD74539EF3D51B5"
+  }
+}

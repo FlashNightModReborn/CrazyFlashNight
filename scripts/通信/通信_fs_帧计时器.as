@@ -217,6 +217,7 @@ _root.帧计时器.初始化任务栈 = function():Void {
         RayVfxManager.update();
         // 只读当前 Flash 子弹显示状态；未收到配套 Host 能力时零序列化。
         org.flashNight.arki.render.BulletVisualProbe.flush();
+        org.flashNight.arki.render.CombatFxBridge.flush();
         // 帧末统一广播（收集 cam + 消费各子系统数据槽 → 单消息发送到 C#）
         FrameBroadcaster.send();
     }, this);

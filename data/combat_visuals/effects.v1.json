@@ -1,0 +1,8283 @@
+{
+  "schema": "cf7-combat-fx.v1",
+  "pixelsPerUnit": 2,
+  "ticksPerSecond": 30,
+  "atlas": {
+    "path": "data/combat_visuals/effects-atlas.png",
+    "width": 2048,
+    "height": 1760,
+    "sha256": "011ddd8746ac39700570dde64d60e807e34b338aebef8c8d2dff0dcf79af390c"
+  },
+  "sources": [
+    {
+      "path": "flashswf/arts/原版素材库-子弹/LIBRARY/弹壳/全威力弹壳.xml",
+      "sha256": "11de67a3c6f648018a02bdac33e21d4cd21678a21e6cb3608d80aa5c9c7068c4"
+    },
+    {
+      "path": "flashswf/arts/原版素材库-子弹/LIBRARY/弹壳/加强全威力弹壳.xml",
+      "sha256": "a6fbfc7ad609d1cc80c412b333ceed2afda50ec09df3fc634b39037cdd67aa56"
+    },
+    {
+      "path": "flashswf/arts/原版素材库-子弹/LIBRARY/弹壳/加强弹壳.xml",
+      "sha256": "4b47bee8b0ec9467366dd4403152d5eac354302aa22bd78ed6400df4a58cd00c"
+    },
+    {
+      "path": "flashswf/arts/原版素材库-子弹/LIBRARY/弹壳/加强手枪弹壳.xml",
+      "sha256": "221970c8df4294cc875705d9a413f0e79a2cf443c216dcd3b25cdd2df0b1a8a1"
+    },
+    {
+      "path": "flashswf/arts/原版素材库-子弹/LIBRARY/弹壳/加强榴弹弹壳.xml",
+      "sha256": "d67dbea7cdf128c38bd0c2e6915440c8e2e490d8cf8ccdd1d88d6409d5c5d7f5"
+    },
+    {
+      "path": "flashswf/arts/原版素材库-子弹/LIBRARY/弹壳/加强重机枪弹壳.xml",
+      "sha256": "f07386d04cba15d5e13f0958c2a4aa3b720fcc5053245290af8ce9b7806a3bb7"
+    },
+    {
+      "path": "flashswf/arts/原版素材库-子弹/LIBRARY/弹壳/加强霰弹弹壳.xml",
+      "sha256": "52f0837acef6fb210c290865e6b479df24bdce3f09a6873d415c5c5e37e88beb"
+    },
+    {
+      "path": "flashswf/arts/原版素材库-子弹/LIBRARY/弹壳/手枪弹壳.xml",
+      "sha256": "abddb2382e57778eef3d09b193f0ad48a21a79f2aa39eedad758020868296cd6"
+    },
+    {
+      "path": "flashswf/arts/原版素材库-子弹/LIBRARY/弹壳/榴弹弹壳.xml",
+      "sha256": "78d07bd9707829596ccc4665f2196c4a3b7c7e34e6164dfb6de4e5c0b1e6d961"
+    },
+    {
+      "path": "flashswf/arts/原版素材库-子弹/LIBRARY/弹壳/步枪弹壳.xml",
+      "sha256": "d0d7157fb37bef7e4383b23ae8cedd70915ba0fdeee1a3f304c96cdfaeb287aa"
+    },
+    {
+      "path": "flashswf/arts/原版素材库-子弹/LIBRARY/弹壳/能量全威力弹壳.xml",
+      "sha256": "e3845ba4bac7100b3ac62ad9b2a541ba40c993b4f975f934a6041877f1cce683"
+    },
+    {
+      "path": "flashswf/arts/原版素材库-子弹/LIBRARY/弹壳/能量弹壳.xml",
+      "sha256": "2968e135d50f232c7049109cd649158a39f2c2342aea78bb70003c3b46d29f06"
+    },
+    {
+      "path": "flashswf/arts/原版素材库-子弹/LIBRARY/弹壳/能量手枪弹壳.xml",
+      "sha256": "700545ccc8ccf501e9e0ee9c76883eb25cbdfdc451bd4b735d11505da27917d8"
+    },
+    {
+      "path": "flashswf/arts/原版素材库-子弹/LIBRARY/弹壳/能量榴弹弹壳.xml",
+      "sha256": "45ce4a7e3f6a19131b463f0de49326ef4623c6d1c2521749d9ace90f3b2784f4"
+    },
+    {
+      "path": "flashswf/arts/原版素材库-子弹/LIBRARY/弹壳/能量重机枪弹壳.xml",
+      "sha256": "b9bd525745e4fb5bd4fadb04addcf0bc9477543a08473c7df84542cd55ae43f7"
+    },
+    {
+      "path": "flashswf/arts/原版素材库-子弹/LIBRARY/弹壳/能量霰弹弹壳.xml",
+      "sha256": "2a447271125b19e5c845ebe70cf2a8ff7dbffb772c449a41e8a23cc5f76c3ceb"
+    },
+    {
+      "path": "flashswf/arts/原版素材库-子弹/LIBRARY/弹壳/重机枪弹壳.xml",
+      "sha256": "488babf8feaebaa2996caa557272ae74914bcd67779d39f79dce25ba188d0131"
+    },
+    {
+      "path": "flashswf/arts/原版素材库-子弹/LIBRARY/弹壳/霰弹弹壳.xml",
+      "sha256": "0c6d332f3f78142543abf3cb813b4041f7ef48d24a806fb0467c2d0fd818b5da"
+    },
+    {
+      "path": "flashswf/arts/原版素材库-子弹/LIBRARY/无AS链接/Symbol 297.xml",
+      "sha256": "5c95dd248f61501aad6168bb5e15563307520c984114003667236f41a9da5420"
+    },
+    {
+      "path": "flashswf/arts/原版素材库-子弹/LIBRARY/无AS链接/Symbol 299.xml",
+      "sha256": "3f447a40e93a80268cb4e1695174c27b5a4cc76df0d8230c0d3d656b2b65adf7"
+    },
+    {
+      "path": "flashswf/arts/原版素材库-子弹/LIBRARY/无AS链接/Symbol 300.xml",
+      "sha256": "301c14c34fa8707f89ab3bdb2557fb9f12044804864b6e4a42b0f492b619c623"
+    },
+    {
+      "path": "flashswf/arts/原版素材库-子弹/LIBRARY/无AS链接/Symbol 301.xml",
+      "sha256": "948016c0477dd188f3d17ea63ff4f48680e250390cc3e8886b653a7951d426c5"
+    },
+    {
+      "path": "flashswf/arts/原版素材库-子弹/LIBRARY/无AS链接/Symbol 302.xml",
+      "sha256": "be987d6aa5002977690fe3717ed98368c69d5a7585f6fca216ba72838401cca2"
+    },
+    {
+      "path": "flashswf/arts/原版素材库-子弹/LIBRARY/无AS链接/Symbol 304.xml",
+      "sha256": "f91d5058ae64ee0f7b5a74026f6dde8c143ce0eb5535692e83d54d20c336fd38"
+    },
+    {
+      "path": "flashswf/arts/原版素材库-子弹/LIBRARY/无AS链接/Symbol 305.xml",
+      "sha256": "323b7f7c6d17867ac7c1177825926736b6482c797b7341444c7b2c385970a09d"
+    },
+    {
+      "path": "flashswf/arts/原版素材库-子弹/LIBRARY/无AS链接/Symbol 306.xml",
+      "sha256": "2bfb0a9f22ce6d8d447f5f2f491d12aaf63c27107574409cf93b45e35d4402f3"
+    },
+    {
+      "path": "flashswf/arts/原版素材库-子弹/LIBRARY/无AS链接/Symbol 307.xml",
+      "sha256": "079ca7d36f5975eac710bdd84afb7153877f3ba713309bc9b541b158b5d8c8b6"
+    },
+    {
+      "path": "flashswf/arts/原版素材库-子弹/LIBRARY/无AS链接/Symbol 308.xml",
+      "sha256": "ffc8de2280dc23e866a71732ea6fb99962a1feae5fe46d3e32940734db58a9e3"
+    },
+    {
+      "path": "flashswf/arts/原版素材库-子弹/LIBRARY/无AS链接/Symbol 310.xml",
+      "sha256": "4f8b577a6a4c86bb4098fd578f913bb11ac8630dc9d564a1d15eefa539f3e4a2"
+    },
+    {
+      "path": "flashswf/arts/原版素材库-子弹/LIBRARY/无AS链接/Symbol 311.xml",
+      "sha256": "17f43cd33f7580e6f82a9eb6e919ba7fc9064e6ef64f7a55cda39f63bbc93cf3"
+    },
+    {
+      "path": "flashswf/arts/原版素材库-子弹/LIBRARY/无AS链接/Symbol 312.xml",
+      "sha256": "19824ae55cc9e3239646c35f8526af2913c652a7a6a5a299cb6814723dc5519e"
+    },
+    {
+      "path": "flashswf/arts/原版素材库-子弹/LIBRARY/无AS链接/Symbol 313.xml",
+      "sha256": "5b75dbe1672ca56016a0dbe236ae183c932a1ada92082c08ccb0180997b61c1e"
+    },
+    {
+      "path": "flashswf/arts/原版素材库-子弹/LIBRARY/无AS链接/Symbol 314.xml",
+      "sha256": "bf084bd7264a65cc4772da3176d1915149b23893a2068f7394631c53bf62b61f"
+    },
+    {
+      "path": "flashswf/arts/原版素材库-子弹/LIBRARY/无AS链接/Symbol 316.xml",
+      "sha256": "467cbd624f93d37f48e1b962d68dc1eb35bbc6ffaa9a16426c75f55e99a5bfc7"
+    },
+    {
+      "path": "flashswf/arts/原版素材库-子弹/LIBRARY/无AS链接/Symbol 317.xml",
+      "sha256": "ea861a06459cf58753ab63e88a4aeb819914cb42c84f3ae4d73343a28dd6b22f"
+    },
+    {
+      "path": "flashswf/arts/原版素材库-子弹/LIBRARY/无AS链接/Symbol 318.xml",
+      "sha256": "4eec9f12bfd38e8aa9517ee471855bd133d4601711a7569ca42fb4dc9181edcd"
+    },
+    {
+      "path": "flashswf/arts/原版素材库-子弹/LIBRARY/无AS链接/Symbol 319.xml",
+      "sha256": "b243ee3b3a78e8d8c66fcb51137f8029487e8ffb78bc02a44ab3f641c1714ae5"
+    },
+    {
+      "path": "flashswf/arts/原版素材库-子弹/LIBRARY/无AS链接/Symbol 320.xml",
+      "sha256": "b4932bfbd00aa48b207bc1337c4a444c71463f616dcdee3503240bb0639392da"
+    },
+    {
+      "path": "flashswf/arts/原版素材库-子弹/LIBRARY/无AS链接/Symbol 727.xml",
+      "sha256": "e64af0c6278beba31728cc0153f970c0d8d9a54c4b022a863666c9be59b5526f"
+    },
+    {
+      "path": "flashswf/arts/原版素材库-子弹/LIBRARY/无AS链接/Symbol 730.xml",
+      "sha256": "8b436170e9b7d59eb808b798362f5c2ccc2c71f9fd3f774d6427a2558d46e591"
+    },
+    {
+      "path": "flashswf/arts/原版素材库-子弹/LIBRARY/无AS链接/Symbol 732.xml",
+      "sha256": "2398bbb08aaf2020d9f7b84d621529536472b7f78efc367a8a2b7719a9a4edc1"
+    },
+    {
+      "path": "flashswf/arts/原版素材库-子弹/LIBRARY/无AS链接/Symbol 734.xml",
+      "sha256": "88dfb3d04b8d8dece17bff51fdcf4696002e9dee4f73dd76485f7fbcff9ca8d1"
+    },
+    {
+      "path": "flashswf/arts/原版素材库-子弹/LIBRARY/无AS链接/Symbol 741.xml",
+      "sha256": "f0d226135c93ffba92f7bf23488ae66faf22face30f9f4c18058c42e58152ef3"
+    },
+    {
+      "path": "flashswf/arts/原版素材库-子弹/LIBRARY/无AS链接/Symbol 743.xml",
+      "sha256": "4190792df1c94be7e3aecc5011ed46d6ffd21080e0a03376535e3d070f659b1a"
+    },
+    {
+      "path": "flashswf/arts/原版素材库-子弹/LIBRARY/无AS链接/Symbol 745.xml",
+      "sha256": "ace323f589e18eb924e18837dc863a457a182ff831ca98d138e873290a82124b"
+    },
+    {
+      "path": "flashswf/arts/原版素材库-子弹/LIBRARY/无AS链接/Symbol 747.xml",
+      "sha256": "abbd762eb6e6b7fcfb6a7e5e12602a25fc707782726c7409833e07abbed5ebb4"
+    },
+    {
+      "path": "flashswf/arts/原版素材库-子弹/LIBRARY/无AS链接/Symbol 749.xml",
+      "sha256": "14da35ffa05dae0fc6a648d40896058cd6bf13016051de4ebb81b6c65d3d515c"
+    },
+    {
+      "path": "flashswf/arts/原版素材库-子弹/LIBRARY/无AS链接/Symbol 751.xml",
+      "sha256": "397a8e5105213f029f1208b9202d0fafc59bbba44f8e81b2e35224da9668d1d8"
+    },
+    {
+      "path": "flashswf/arts/原版素材库-子弹/LIBRARY/无AS链接/Symbol 753.xml",
+      "sha256": "00714190a785d62ae285eb056504376870e6c299a121ca680281d1287176b152"
+    },
+    {
+      "path": "flashswf/arts/原版素材库-子弹/LIBRARY/特效-击中效果组/击中金属.xml",
+      "sha256": "5d717f2b5afcdd087627bbeb17d260ebc1fab665ddcb38c92a82213e60b07c02"
+    },
+    {
+      "path": "flashswf/arts/原版素材库-子弹/LIBRARY/特效-击中效果组/屎花.xml",
+      "sha256": "604fe9f9fb14c839d5137e53ff1094d7f6b50f72f3cae1be9685b91503763779"
+    },
+    {
+      "path": "flashswf/arts/原版素材库-子弹/LIBRARY/特效-击中效果组/战术巴雷特击中特效.xml",
+      "sha256": "36a4aee6d0d7ede1a676d3a14c0732319442d306508a355db1883b331106240f"
+    },
+    {
+      "path": "flashswf/arts/原版素材库-子弹/LIBRARY/特效-击中效果组/拼刀火花.xml",
+      "sha256": "62767342d84bb80610c0dc8a7249bfae1ed95c9e4dc90123896dae320708a785"
+    },
+    {
+      "path": "flashswf/arts/原版素材库-子弹/LIBRARY/特效-击中效果组/无声火花.xml",
+      "sha256": "927dc6c9484c3419092425c7e183e7876c8bca32632daf2677a622f0ea5d6400"
+    },
+    {
+      "path": "flashswf/arts/原版素材库-子弹/LIBRARY/特效-击中效果组/火花.xml",
+      "sha256": "86e37fc5109f95d21119463f70988a0fb57f2203371a9374f9931e90b842415d"
+    },
+    {
+      "path": "flashswf/arts/原版素材库-子弹/LIBRARY/特效-击中效果组/铁枪能量弹火花.xml",
+      "sha256": "d3a3de04b68617dedf937a3d1e12fe1921b02e83a3019c12e8c4b59ef225d436"
+    },
+    {
+      "path": "flashswf/arts/原版素材库-子弹/LIBRARY/特效-枪火组/冲锋枪枪火.xml",
+      "sha256": "d0c14b7085f9cbea0b665ff9458adaf772a5878a89da697ceab5c76d5e892be0"
+    },
+    {
+      "path": "flashswf/arts/原版素材库-子弹/LIBRARY/特效-枪火组/反器材枪火.xml",
+      "sha256": "68b4ec74d4127e03994cae15c279cb6179caa4e5bda06d33683b5da58b364f36"
+    },
+    {
+      "path": "flashswf/arts/原版素材库-子弹/LIBRARY/特效-枪火组/发射器枪火.xml",
+      "sha256": "cc97aed36cffd3eec9e62d6a127999174bbaa268ec2d25d07850fd6c7026c472"
+    },
+    {
+      "path": "flashswf/arts/原版素材库-子弹/LIBRARY/特效-枪火组/巴雷特枪火.xml",
+      "sha256": "24084a11302032b68f2899aa60f3d81e163262f9fb6f4732d40b2e4af1665670"
+    },
+    {
+      "path": "flashswf/arts/原版素材库-子弹/LIBRARY/特效-枪火组/战斗步枪枪火.xml",
+      "sha256": "fef2d0807409c495989cf00263287e4f4de661074dfdf6fa016984075fde9904"
+    },
+    {
+      "path": "flashswf/arts/原版素材库-子弹/LIBRARY/特效-枪火组/枪火.xml",
+      "sha256": "fdd4dea980f6b6bfa899106c9b0ec4bf8f7ebdbc845f50b08a790225d4820b2e"
+    },
+    {
+      "path": "flashswf/arts/原版素材库-子弹/LIBRARY/特效-枪火组/突击步枪枪火.xml",
+      "sha256": "d65e05871b7827faddf6243db67b4293859d258809112642af36a8efe4e2e5f5"
+    },
+    {
+      "path": "flashswf/arts/原版素材库-子弹/LIBRARY/特效-枪火组/紧凑手枪枪火.xml",
+      "sha256": "0014c8b56c7d6d4d5a9d6ad7cf3c6ca14849d6a3787ebe00f11902a2f5778f33"
+    },
+    {
+      "path": "flashswf/arts/原版素材库-子弹/LIBRARY/特效-枪火组/霰弹枪枪火.xml",
+      "sha256": "471408f5b7c24cdc2ee1ee02bb94f6d030b465cdb5a5f4f10e6b274a9c4293c2"
+    },
+    {
+      "path": "flashswf/arts/原版素材库-子弹/LIBRARY/特效-枪火组/马格南手枪枪火.xml",
+      "sha256": "a452c38e6cdb9090efbd627cbda97e89296c415ffff4210a98598ee760571d7c"
+    },
+    {
+      "path": "flashswf/arts/原版素材库-子弹.swf",
+      "sha256": "87053bbbdcba77104c782ade7be415b25fda84be50098c65823fcfcc529209d2"
+    }
+  ],
+  "tools": [
+    {
+      "path": "tools/combat-fx-assets/build.py",
+      "sha256": "11e3dcb70a103437e769e3eee6a83e2f7c34f560d83ac12f461ccac88d2a9682"
+    },
+    {
+      "path": "tools/combat-fx-assets/CombatSpriteExporter.java",
+      "sha256": "4e41c8f18710530296c94d44111168c8caa410b5dd4082fcd4d77ab5b2e07860"
+    },
+    {
+      "path": "tools/ffdec/ffdec-cli.jar",
+      "sha256": "3fe309a320f9136a46f5ff84e21e96903b8dd8d94b829de4895baae9b486b6c7"
+    },
+    {
+      "path": "tools/ffdec/ffdec.jar",
+      "sha256": "7f75b47152d955be5ccc853eb259a1a7910ea9a0bd2b41cf9b9085bcfb003952"
+    },
+    {
+      "path": "tools/ffdec/lib/avi.jar",
+      "sha256": "7b8da48be20447ca3a840ae1136541841e1a44915a6edf924d83529362bd40ff"
+    },
+    {
+      "path": "tools/ffdec/lib/cmykjpeg.jar",
+      "sha256": "0ae56cee0cca3f2c54593b08dd2f450f6f8fea5dd9054b9949b9f08f34e98b5a"
+    },
+    {
+      "path": "tools/ffdec/lib/ddsreader.jar",
+      "sha256": "b64bd5bbb4bad9092c4f4109795c41ce513b24f1fad9f6886492d976482b1603"
+    },
+    {
+      "path": "tools/ffdec/lib/decimal.jar",
+      "sha256": "feeb9f89f44cd6a921a9a4701358c8c63e3e677424fb2953ddba6e15872c0e91"
+    },
+    {
+      "path": "tools/ffdec/lib/ffdec_lib.jar",
+      "sha256": "49e4da602a9000e3556c788a9653312a7b1e2ec0a7c6b8ff9e075c6b67b03630"
+    },
+    {
+      "path": "tools/ffdec/lib/flacomdoc.jar",
+      "sha256": "bc8e8812ce7ccb2d57778e57303813a102b6006957078d1c72efa86b085fce4c"
+    },
+    {
+      "path": "tools/ffdec/lib/flamingo-6.2.jar",
+      "sha256": "5baee0ef62342a53952116548aa3434db5b629af76c9a267d8c23b34db3a479c"
+    },
+    {
+      "path": "tools/ffdec/lib/flashdebugger.jar",
+      "sha256": "af5970aa5369df733993ccffa03c77665222648fb8f0074f877570be24ea482a"
+    },
+    {
+      "path": "tools/ffdec/lib/gif.jar",
+      "sha256": "e81c505f104689d4e8d4da2cba09db0a7a8c02c7f8d19de6ed194d8d2cff09bd"
+    },
+    {
+      "path": "tools/ffdec/lib/gifreader.jar",
+      "sha256": "2afdcb18d174476ef1e8550acb902ad0e998d6d6bbfb493bba4e7e6c5817f45b"
+    },
+    {
+      "path": "tools/ffdec/lib/gnujpdf.jar",
+      "sha256": "741cd74bebb53304afbff86ab45d317addea19a2208b03a32893a5062ffd736a"
+    },
+    {
+      "path": "tools/ffdec/lib/jansi-2.4.0.jar",
+      "sha256": "6cd91991323dd7b2fb28ca93d7ac12af5a86a2f53279e2b35827b30313fd0b9f"
+    },
+    {
+      "path": "tools/ffdec/lib/jargs.jar",
+      "sha256": "d488f6c10690597b93767af3b1c35018f02770790e5e3822871ac09f332386c7"
+    },
+    {
+      "path": "tools/ffdec/lib/JavactiveX.jar",
+      "sha256": "8c8d643077b93e1d792b32415703ae3800c4689bce05bb3700cae20c26f86631"
+    },
+    {
+      "path": "tools/ffdec/lib/jlayer-1.0.2.jar",
+      "sha256": "8631233f34ed2e2d2631e14e006b44401f4b1a17ef95a5647cd6d84b9e78f82b"
+    },
+    {
+      "path": "tools/ffdec/lib/jna-3.5.1.jar",
+      "sha256": "3f8889f51d570a26f3ac2c1323e6be828bb73eb5e66cf25e979eb5b109d92021"
+    },
+    {
+      "path": "tools/ffdec/lib/jna-platform-3.5.1.jar",
+      "sha256": "b0b30404f6a9e29d4d9a7b53fd47322e7137cab3846fd5f149d5589fc68c2126"
+    },
+    {
+      "path": "tools/ffdec/lib/jpacker.jar",
+      "sha256": "4eaba3e39d3e8d0eb242534d56bda72b1bbca6599aa949a7876ff6fc2cbfce52"
+    },
+    {
+      "path": "tools/ffdec/lib/jsyntaxpane-0.9.5.jar",
+      "sha256": "bb87a40f4a502171fe7dc9bb7d9482cdf06860248ae4478cf80d07f108eb8b3c"
+    },
+    {
+      "path": "tools/ffdec/lib/LZMA.jar",
+      "sha256": "2604dab00935023b183d82d9a5c5198ae34d40112c7524e75be20e4528798e95"
+    },
+    {
+      "path": "tools/ffdec/lib/minimal-json-0.9.5.jar",
+      "sha256": "69ff84463d1d7cc5cfdb8baf2b6e5f7af153d351bf0dbee3bbc8916247afac74"
+    },
+    {
+      "path": "tools/ffdec/lib/miterstroke.jar",
+      "sha256": "becca6da411463f872f69f48de2dc50d53974b888da09bae0b27096b9d4d1663"
+    },
+    {
+      "path": "tools/ffdec/lib/nellymoser.jar",
+      "sha256": "bf12eb3a4c793e66b4e0c917aaa4091a6bd2b9da446c357f600f2da36f3c36e0"
+    },
+    {
+      "path": "tools/ffdec/lib/sfntly.jar",
+      "sha256": "40c9a46afc02479096e68275eb9f40f72ca3e9944d687856b600684dc9acbef7"
+    },
+    {
+      "path": "tools/ffdec/lib/substance-6.2.jar",
+      "sha256": "376b6ccb53860a78934c92fc732d5c7dc7964aa5dbd8616dba1dead3493cb362"
+    },
+    {
+      "path": "tools/ffdec/lib/substance-flamingo-6.2.jar",
+      "sha256": "1c4b4427bef2943ac81ed35fd475736287bce53120274f6ac353f5c0e48c7549"
+    },
+    {
+      "path": "tools/ffdec/lib/tablelayout.jar",
+      "sha256": "133759470163a1abc3e0b6bbba6c5e6037eac785d313dd229c6adac3a5f013fe"
+    },
+    {
+      "path": "tools/ffdec/lib/tga.jar",
+      "sha256": "43d6c7b688953ddc8a7c513b31c63b1597154e917d4e8222581fb7952c5af463"
+    },
+    {
+      "path": "tools/ffdec/lib/treetable.jar",
+      "sha256": "bfdcb1e2c0947f947fa750780fbd8c137b0a2cdc1439632200f815bf44ea2d5a"
+    },
+    {
+      "path": "tools/ffdec/lib/trident-6.2.jar",
+      "sha256": "b4726f518ccdb40b8da1fac4d78a741b736afd433d903c76f62b7a01090a63f9"
+    },
+    {
+      "path": "tools/ffdec/lib/ttf.jar",
+      "sha256": "f106e70c0e20fe1dbb3964291f0ccbabe081872c4c2db45a624763fb82ea1c45"
+    },
+    {
+      "path": "tools/ffdec/lib/vlcj-4.7.3.jar",
+      "sha256": "3f8e3233809932e9a02e0f0de79a34e0544f8a3c4b779bdcca1e3ce13eee3cea"
+    },
+    {
+      "path": "tools/ffdec/lib/vlcj-natives-4.7.0.jar",
+      "sha256": "47c300792c248f8708095430136a3aeb7def4695e8d7527d21651973049ea36f"
+    }
+  ],
+  "rasterizer": {
+    "pillowVersion": "12.2.0",
+    "pixelsPerUnit": 2,
+    "duplicateFrames": "exact-rgba-sha256"
+  },
+  "recipe": [
+    {
+      "index": 0,
+      "linkage": "全威力弹壳",
+      "kind": "casing",
+      "variants": [
+        [
+          0
+        ]
+      ],
+      "skipOriginYZero": false,
+      "worldLit": true
+    },
+    {
+      "index": 1,
+      "linkage": "加强全威力弹壳",
+      "kind": "casing",
+      "variants": [
+        [
+          0
+        ]
+      ],
+      "skipOriginYZero": false,
+      "worldLit": true
+    },
+    {
+      "index": 2,
+      "linkage": "加强弹壳",
+      "kind": "casing",
+      "variants": [
+        [
+          0
+        ]
+      ],
+      "skipOriginYZero": false,
+      "worldLit": true
+    },
+    {
+      "index": 3,
+      "linkage": "加强手枪弹壳",
+      "kind": "casing",
+      "variants": [
+        [
+          0
+        ]
+      ],
+      "skipOriginYZero": false,
+      "worldLit": true
+    },
+    {
+      "index": 4,
+      "linkage": "加强榴弹弹壳",
+      "kind": "casing",
+      "variants": [
+        [
+          0
+        ]
+      ],
+      "skipOriginYZero": false,
+      "worldLit": true
+    },
+    {
+      "index": 5,
+      "linkage": "加强重机枪弹壳",
+      "kind": "casing",
+      "variants": [
+        [
+          0
+        ]
+      ],
+      "skipOriginYZero": false,
+      "worldLit": true
+    },
+    {
+      "index": 6,
+      "linkage": "加强霰弹弹壳",
+      "kind": "casing",
+      "variants": [
+        [
+          0
+        ]
+      ],
+      "skipOriginYZero": false,
+      "worldLit": true
+    },
+    {
+      "index": 7,
+      "linkage": "手枪弹壳",
+      "kind": "casing",
+      "variants": [
+        [
+          0
+        ]
+      ],
+      "skipOriginYZero": false,
+      "worldLit": true
+    },
+    {
+      "index": 8,
+      "linkage": "榴弹弹壳",
+      "kind": "casing",
+      "variants": [
+        [
+          0
+        ]
+      ],
+      "skipOriginYZero": false,
+      "worldLit": true
+    },
+    {
+      "index": 9,
+      "linkage": "步枪弹壳",
+      "kind": "casing",
+      "variants": [
+        [
+          0
+        ]
+      ],
+      "skipOriginYZero": false,
+      "worldLit": true
+    },
+    {
+      "index": 10,
+      "linkage": "能量全威力弹壳",
+      "kind": "casing",
+      "variants": [
+        [
+          0
+        ]
+      ],
+      "skipOriginYZero": false,
+      "worldLit": true
+    },
+    {
+      "index": 11,
+      "linkage": "能量弹壳",
+      "kind": "casing",
+      "variants": [
+        [
+          0
+        ]
+      ],
+      "skipOriginYZero": false,
+      "worldLit": true
+    },
+    {
+      "index": 12,
+      "linkage": "能量手枪弹壳",
+      "kind": "casing",
+      "variants": [
+        [
+          0
+        ]
+      ],
+      "skipOriginYZero": false,
+      "worldLit": true
+    },
+    {
+      "index": 13,
+      "linkage": "能量榴弹弹壳",
+      "kind": "casing",
+      "variants": [
+        [
+          0
+        ]
+      ],
+      "skipOriginYZero": false,
+      "worldLit": true
+    },
+    {
+      "index": 14,
+      "linkage": "能量重机枪弹壳",
+      "kind": "casing",
+      "variants": [
+        [
+          0
+        ]
+      ],
+      "skipOriginYZero": false,
+      "worldLit": true
+    },
+    {
+      "index": 15,
+      "linkage": "能量霰弹弹壳",
+      "kind": "casing",
+      "variants": [
+        [
+          0
+        ]
+      ],
+      "skipOriginYZero": false,
+      "worldLit": true
+    },
+    {
+      "index": 16,
+      "linkage": "重机枪弹壳",
+      "kind": "casing",
+      "variants": [
+        [
+          0
+        ]
+      ],
+      "skipOriginYZero": false,
+      "worldLit": true
+    },
+    {
+      "index": 17,
+      "linkage": "霰弹弹壳",
+      "kind": "casing",
+      "variants": [
+        [
+          0
+        ]
+      ],
+      "skipOriginYZero": false,
+      "worldLit": true
+    },
+    {
+      "index": 18,
+      "linkage": "冲锋枪枪火",
+      "kind": "muzzle",
+      "variants": [
+        [
+          0,
+          1,
+          2
+        ]
+      ],
+      "skipOriginYZero": false,
+      "worldLit": false
+    },
+    {
+      "index": 19,
+      "linkage": "反器材枪火",
+      "kind": "muzzle",
+      "variants": [
+        [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5
+        ]
+      ],
+      "skipOriginYZero": false,
+      "worldLit": false
+    },
+    {
+      "index": 20,
+      "linkage": "发射器枪火",
+      "kind": "muzzle",
+      "variants": [
+        [
+          0,
+          1,
+          2,
+          3
+        ]
+      ],
+      "skipOriginYZero": false,
+      "worldLit": false
+    },
+    {
+      "index": 21,
+      "linkage": "巴雷特枪火",
+      "kind": "muzzle",
+      "variants": [
+        [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11,
+          12,
+          13
+        ]
+      ],
+      "skipOriginYZero": false,
+      "worldLit": false
+    },
+    {
+      "index": 22,
+      "linkage": "战斗步枪枪火",
+      "kind": "muzzle",
+      "variants": [
+        [
+          0,
+          1,
+          2,
+          3,
+          4
+        ]
+      ],
+      "skipOriginYZero": false,
+      "worldLit": false
+    },
+    {
+      "index": 23,
+      "linkage": "枪火",
+      "kind": "muzzle",
+      "variants": [
+        [
+          1
+        ],
+        [
+          30
+        ],
+        [
+          43
+        ]
+      ],
+      "skipOriginYZero": true,
+      "worldLit": false
+    },
+    {
+      "index": 24,
+      "linkage": "突击步枪枪火",
+      "kind": "muzzle",
+      "variants": [
+        [
+          0,
+          1,
+          2
+        ]
+      ],
+      "skipOriginYZero": false,
+      "worldLit": false
+    },
+    {
+      "index": 25,
+      "linkage": "紧凑手枪枪火",
+      "kind": "muzzle",
+      "variants": [
+        [
+          0,
+          1,
+          2
+        ]
+      ],
+      "skipOriginYZero": false,
+      "worldLit": false
+    },
+    {
+      "index": 26,
+      "linkage": "霰弹枪枪火",
+      "kind": "muzzle",
+      "variants": [
+        [
+          0,
+          1,
+          2,
+          3
+        ]
+      ],
+      "skipOriginYZero": false,
+      "worldLit": false
+    },
+    {
+      "index": 27,
+      "linkage": "马格南手枪枪火",
+      "kind": "muzzle",
+      "variants": [
+        [
+          0,
+          1,
+          2
+        ]
+      ],
+      "skipOriginYZero": false,
+      "worldLit": false
+    },
+    {
+      "index": 28,
+      "linkage": "火花",
+      "kind": "impact",
+      "variants": [
+        [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11,
+          12
+        ],
+        [
+          30,
+          31,
+          32,
+          33,
+          34,
+          35,
+          36,
+          37,
+          38,
+          39,
+          40,
+          41
+        ],
+        [
+          43,
+          44,
+          45,
+          46,
+          47,
+          48,
+          49,
+          50,
+          51,
+          52,
+          53,
+          54,
+          55
+        ],
+        [
+          57,
+          58,
+          59,
+          60,
+          61,
+          62,
+          63,
+          64,
+          65,
+          66,
+          67,
+          68,
+          69,
+          70,
+          71,
+          72,
+          73,
+          74,
+          75,
+          76,
+          77,
+          78,
+          79,
+          80
+        ],
+        [
+          82,
+          83,
+          84,
+          85,
+          86,
+          87,
+          88,
+          89,
+          90,
+          91,
+          92,
+          93,
+          94,
+          95,
+          96,
+          97,
+          98
+        ]
+      ],
+      "skipOriginYZero": true,
+      "worldLit": false
+    },
+    {
+      "index": 29,
+      "linkage": "击中金属",
+      "kind": "impact",
+      "variants": [
+        [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11,
+          12
+        ],
+        [
+          30,
+          31,
+          32,
+          33,
+          34,
+          35,
+          36,
+          37,
+          38,
+          39,
+          40,
+          41
+        ],
+        [
+          43,
+          44,
+          45,
+          46,
+          47,
+          48,
+          49,
+          50,
+          51,
+          52,
+          53,
+          54,
+          55
+        ],
+        [
+          57,
+          58,
+          59,
+          60,
+          61,
+          62,
+          63,
+          64,
+          65,
+          66,
+          67,
+          68,
+          69,
+          70,
+          71,
+          72,
+          73,
+          74,
+          75,
+          76,
+          77,
+          78,
+          79,
+          80
+        ]
+      ],
+      "skipOriginYZero": true,
+      "worldLit": false
+    },
+    {
+      "index": 30,
+      "linkage": "无声火花",
+      "kind": "impact",
+      "variants": [
+        [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11,
+          12,
+          13,
+          14,
+          15,
+          16,
+          17,
+          18,
+          19,
+          20,
+          21
+        ],
+        [
+          30,
+          31,
+          32,
+          33,
+          34,
+          35,
+          36,
+          37,
+          38,
+          39,
+          40,
+          41
+        ],
+        [
+          43,
+          44,
+          45,
+          46,
+          47,
+          48,
+          49,
+          50,
+          51,
+          52,
+          53,
+          54,
+          55
+        ],
+        [
+          57,
+          58,
+          59,
+          60,
+          61,
+          62,
+          63,
+          64,
+          65,
+          66,
+          67,
+          68,
+          69,
+          70,
+          71,
+          72,
+          73,
+          74,
+          75,
+          76,
+          77,
+          78,
+          79,
+          80
+        ]
+      ],
+      "skipOriginYZero": true,
+      "worldLit": false
+    },
+    {
+      "index": 31,
+      "linkage": "拼刀火花",
+      "kind": "impact",
+      "variants": [
+        [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11,
+          12
+        ],
+        [
+          30,
+          31,
+          32,
+          33,
+          34,
+          35,
+          36,
+          37,
+          38,
+          39,
+          40,
+          41
+        ],
+        [
+          43,
+          44,
+          45,
+          46,
+          47,
+          48,
+          49,
+          50,
+          51,
+          52,
+          53,
+          54,
+          55
+        ],
+        [
+          57,
+          58,
+          59,
+          60,
+          61,
+          62,
+          63,
+          64,
+          65,
+          66,
+          67,
+          68,
+          69,
+          70,
+          71,
+          72,
+          73,
+          74,
+          75,
+          76,
+          77,
+          78,
+          79,
+          80
+        ],
+        [
+          82,
+          83,
+          84,
+          85,
+          86,
+          87,
+          88,
+          89,
+          90,
+          91,
+          92,
+          93,
+          94,
+          95,
+          96,
+          97,
+          98
+        ],
+        [
+          100,
+          101,
+          102,
+          103,
+          104,
+          105,
+          106,
+          107,
+          108,
+          109,
+          110,
+          111,
+          112,
+          113,
+          114
+        ]
+      ],
+      "skipOriginYZero": true,
+      "worldLit": false
+    },
+    {
+      "index": 32,
+      "linkage": "战术巴雷特击中特效",
+      "kind": "impact",
+      "variants": [
+        [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11,
+          12
+        ]
+      ],
+      "skipOriginYZero": false,
+      "worldLit": false
+    },
+    {
+      "index": 33,
+      "linkage": "铁枪能量弹火花",
+      "kind": "impact",
+      "variants": [
+        [
+          1,
+          2,
+          3
+        ],
+        [
+          5,
+          6,
+          7
+        ],
+        [
+          9,
+          10,
+          11,
+          12
+        ]
+      ],
+      "skipOriginYZero": true,
+      "worldLit": false
+    },
+    {
+      "index": 34,
+      "linkage": "屎花",
+      "kind": "impact",
+      "variants": [
+        [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11,
+          12,
+          13,
+          14,
+          15,
+          16,
+          17,
+          18,
+          19,
+          20,
+          21
+        ],
+        [
+          30,
+          31,
+          32,
+          33,
+          34,
+          35,
+          36,
+          37,
+          38,
+          39,
+          40,
+          41
+        ],
+        [
+          43,
+          44,
+          45,
+          46,
+          47,
+          48,
+          49,
+          50,
+          51,
+          52,
+          53,
+          54,
+          55
+        ],
+        [
+          57,
+          58,
+          59,
+          60,
+          61,
+          62,
+          63,
+          64,
+          65,
+          66,
+          67,
+          68,
+          69,
+          70,
+          71,
+          72,
+          73,
+          74,
+          75,
+          76,
+          77,
+          78,
+          79,
+          80
+        ]
+      ],
+      "skipOriginYZero": true,
+      "worldLit": true
+    }
+  ],
+  "styles": [
+    {
+      "index": 0,
+      "linkage": "全威力弹壳",
+      "kind": "casing",
+      "skipOriginYZero": false,
+      "worldLit": true,
+      "frames": [
+        {
+          "sourceFrame": 0,
+          "offset": [
+            1.05,
+            -0.05
+          ],
+          "rect": [
+            1441,
+            1703,
+            25,
+            4
+          ]
+        }
+      ],
+      "variants": [
+        [
+          0
+        ]
+      ]
+    },
+    {
+      "index": 1,
+      "linkage": "加强全威力弹壳",
+      "kind": "casing",
+      "skipOriginYZero": false,
+      "worldLit": true,
+      "frames": [
+        {
+          "sourceFrame": 0,
+          "offset": [
+            1.05,
+            -0.05
+          ],
+          "rect": [
+            1470,
+            1703,
+            25,
+            4
+          ]
+        }
+      ],
+      "variants": [
+        [
+          0
+        ]
+      ]
+    },
+    {
+      "index": 2,
+      "linkage": "加强弹壳",
+      "kind": "casing",
+      "skipOriginYZero": false,
+      "worldLit": true,
+      "frames": [
+        {
+          "sourceFrame": 0,
+          "offset": [
+            -0.05,
+            -0.05
+          ],
+          "rect": [
+            1528,
+            1703,
+            20,
+            4
+          ]
+        }
+      ],
+      "variants": [
+        [
+          0
+        ]
+      ]
+    },
+    {
+      "index": 3,
+      "linkage": "加强手枪弹壳",
+      "kind": "casing",
+      "skipOriginYZero": false,
+      "worldLit": true,
+      "frames": [
+        {
+          "sourceFrame": 0,
+          "offset": [
+            -0.05,
+            -0.05
+          ],
+          "rect": [
+            1600,
+            1703,
+            10,
+            3
+          ]
+        }
+      ],
+      "variants": [
+        [
+          0
+        ]
+      ]
+    },
+    {
+      "index": 4,
+      "linkage": "加强榴弹弹壳",
+      "kind": "casing",
+      "skipOriginYZero": false,
+      "worldLit": true,
+      "frames": [
+        {
+          "sourceFrame": 0,
+          "offset": [
+            -0.05,
+            -0.05
+          ],
+          "rect": [
+            955,
+            1703,
+            34,
+            14
+          ]
+        }
+      ],
+      "variants": [
+        [
+          0
+        ]
+      ]
+    },
+    {
+      "index": 5,
+      "linkage": "加强重机枪弹壳",
+      "kind": "casing",
+      "skipOriginYZero": false,
+      "worldLit": true,
+      "frames": [
+        {
+          "sourceFrame": 0,
+          "offset": [
+            4.85,
+            -0.05
+          ],
+          "rect": [
+            1342,
+            1703,
+            29,
+            6
+          ]
+        }
+      ],
+      "variants": [
+        [
+          0
+        ]
+      ]
+    },
+    {
+      "index": 6,
+      "linkage": "加强霰弹弹壳",
+      "kind": "casing",
+      "skipOriginYZero": false,
+      "worldLit": true,
+      "frames": [
+        {
+          "sourceFrame": 0,
+          "offset": [
+            2.75,
+            -0.05
+          ],
+          "rect": [
+            1216,
+            1703,
+            26,
+            7
+          ]
+        }
+      ],
+      "variants": [
+        [
+          0
+        ]
+      ]
+    },
+    {
+      "index": 7,
+      "linkage": "手枪弹壳",
+      "kind": "casing",
+      "skipOriginYZero": false,
+      "worldLit": true,
+      "frames": [
+        {
+          "sourceFrame": 0,
+          "offset": [
+            -0.05,
+            -0.05
+          ],
+          "rect": [
+            1614,
+            1703,
+            10,
+            3
+          ]
+        }
+      ],
+      "variants": [
+        [
+          0
+        ]
+      ]
+    },
+    {
+      "index": 8,
+      "linkage": "榴弹弹壳",
+      "kind": "casing",
+      "skipOriginYZero": false,
+      "worldLit": true,
+      "frames": [
+        {
+          "sourceFrame": 0,
+          "offset": [
+            -0.05,
+            -0.05
+          ],
+          "rect": [
+            993,
+            1703,
+            34,
+            14
+          ]
+        }
+      ],
+      "variants": [
+        [
+          0
+        ]
+      ]
+    },
+    {
+      "index": 9,
+      "linkage": "步枪弹壳",
+      "kind": "casing",
+      "skipOriginYZero": false,
+      "worldLit": true,
+      "frames": [
+        {
+          "sourceFrame": 0,
+          "offset": [
+            1.7,
+            4.05
+          ],
+          "rect": [
+            1552,
+            1703,
+            20,
+            4
+          ]
+        }
+      ],
+      "variants": [
+        [
+          0
+        ]
+      ]
+    },
+    {
+      "index": 10,
+      "linkage": "能量全威力弹壳",
+      "kind": "casing",
+      "skipOriginYZero": false,
+      "worldLit": true,
+      "frames": [
+        {
+          "sourceFrame": 0,
+          "offset": [
+            1.05,
+            -0.05
+          ],
+          "rect": [
+            1499,
+            1703,
+            25,
+            4
+          ]
+        }
+      ],
+      "variants": [
+        [
+          0
+        ]
+      ]
+    },
+    {
+      "index": 11,
+      "linkage": "能量弹壳",
+      "kind": "casing",
+      "skipOriginYZero": false,
+      "worldLit": true,
+      "frames": [
+        {
+          "sourceFrame": 0,
+          "offset": [
+            -0.05,
+            -0.05
+          ],
+          "rect": [
+            1576,
+            1703,
+            20,
+            4
+          ]
+        }
+      ],
+      "variants": [
+        [
+          0
+        ]
+      ]
+    },
+    {
+      "index": 12,
+      "linkage": "能量手枪弹壳",
+      "kind": "casing",
+      "skipOriginYZero": false,
+      "worldLit": true,
+      "frames": [
+        {
+          "sourceFrame": 0,
+          "offset": [
+            -0.05,
+            -0.05
+          ],
+          "rect": [
+            1628,
+            1703,
+            10,
+            3
+          ]
+        }
+      ],
+      "variants": [
+        [
+          0
+        ]
+      ]
+    },
+    {
+      "index": 13,
+      "linkage": "能量榴弹弹壳",
+      "kind": "casing",
+      "skipOriginYZero": false,
+      "worldLit": true,
+      "frames": [
+        {
+          "sourceFrame": 0,
+          "offset": [
+            -0.05,
+            -0.05
+          ],
+          "rect": [
+            1031,
+            1703,
+            33,
+            14
+          ]
+        }
+      ],
+      "variants": [
+        [
+          0
+        ]
+      ]
+    },
+    {
+      "index": 14,
+      "linkage": "能量重机枪弹壳",
+      "kind": "casing",
+      "skipOriginYZero": false,
+      "worldLit": true,
+      "frames": [
+        {
+          "sourceFrame": 0,
+          "offset": [
+            4.85,
+            -0.05
+          ],
+          "rect": [
+            1375,
+            1703,
+            29,
+            6
+          ]
+        }
+      ],
+      "variants": [
+        [
+          0
+        ]
+      ]
+    },
+    {
+      "index": 15,
+      "linkage": "能量霰弹弹壳",
+      "kind": "casing",
+      "skipOriginYZero": false,
+      "worldLit": true,
+      "frames": [
+        {
+          "sourceFrame": 0,
+          "offset": [
+            2.75,
+            -0.05
+          ],
+          "rect": [
+            1246,
+            1703,
+            26,
+            7
+          ]
+        }
+      ],
+      "variants": [
+        [
+          0
+        ]
+      ]
+    },
+    {
+      "index": 16,
+      "linkage": "重机枪弹壳",
+      "kind": "casing",
+      "skipOriginYZero": false,
+      "worldLit": true,
+      "frames": [
+        {
+          "sourceFrame": 0,
+          "offset": [
+            4.8,
+            -0.05
+          ],
+          "rect": [
+            1408,
+            1703,
+            29,
+            6
+          ]
+        }
+      ],
+      "variants": [
+        [
+          0
+        ]
+      ]
+    },
+    {
+      "index": 17,
+      "linkage": "霰弹弹壳",
+      "kind": "casing",
+      "skipOriginYZero": false,
+      "worldLit": true,
+      "frames": [
+        {
+          "sourceFrame": 0,
+          "offset": [
+            -14.1,
+            0.55
+          ],
+          "rect": [
+            1276,
+            1703,
+            22,
+            7
+          ]
+        }
+      ],
+      "variants": [
+        [
+          0
+        ]
+      ]
+    },
+    {
+      "index": 18,
+      "linkage": "冲锋枪枪火",
+      "kind": "muzzle",
+      "skipOriginYZero": false,
+      "worldLit": false,
+      "frames": [
+        {
+          "sourceFrame": 0,
+          "offset": [
+            -0.65,
+            -11.5
+          ],
+          "rect": [
+            546,
+            1703,
+            50,
+            45
+          ]
+        },
+        {
+          "sourceFrame": 1,
+          "offset": [
+            6.85,
+            -14.0
+          ],
+          "rect": [
+            1830,
+            1619,
+            65,
+            51
+          ]
+        },
+        {
+          "sourceFrame": 2,
+          "offset": [
+            8.85,
+            -1.5
+          ],
+          "rect": [
+            1302,
+            1703,
+            36,
+            6
+          ]
+        }
+      ],
+      "variants": [
+        [
+          0,
+          1,
+          2
+        ]
+      ]
+    },
+    {
+      "index": 19,
+      "linkage": "反器材枪火",
+      "kind": "muzzle",
+      "skipOriginYZero": false,
+      "worldLit": false,
+      "frames": [
+        {
+          "sourceFrame": 0,
+          "offset": [
+            -11.35,
+            -38.45
+          ],
+          "rect": [
+            705,
+            1206,
+            129,
+            156
+          ]
+        },
+        {
+          "sourceFrame": 1,
+          "offset": [
+            -7.35,
+            -37.45
+          ],
+          "rect": [
+            838,
+            1206,
+            147,
+            147
+          ]
+        },
+        {
+          "sourceFrame": 2,
+          "offset": [
+            -12.85,
+            -45.95
+          ],
+          "rect": [
+            987,
+            1003,
+            199,
+            183
+          ]
+        },
+        {
+          "sourceFrame": 3,
+          "offset": [
+            1.1500000000000004,
+            -31.450000000000003
+          ],
+          "rect": [
+            515,
+            1377,
+            137,
+            125
+          ]
+        },
+        {
+          "sourceFrame": 4,
+          "offset": [
+            2.6500000000000004,
+            -21.450000000000003
+          ],
+          "rect": [
+            964,
+            1516,
+            96,
+            89
+          ]
+        },
+        {
+          "sourceFrame": 5,
+          "offset": [
+            4.65,
+            -10.950000000000003
+          ],
+          "rect": [
+            454,
+            1703,
+            88,
+            45
+          ]
+        }
+      ],
+      "variants": [
+        [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5
+        ]
+      ]
+    },
+    {
+      "index": 20,
+      "linkage": "发射器枪火",
+      "kind": "muzzle",
+      "skipOriginYZero": false,
+      "worldLit": false,
+      "frames": [
+        {
+          "sourceFrame": 0,
+          "offset": [
+            -10.05,
+            -36.3
+          ],
+          "rect": [
+            1243,
+            1206,
+            87,
+            143
+          ]
+        },
+        {
+          "sourceFrame": 1,
+          "offset": [
+            -5.050000000000001,
+            -39.3
+          ],
+          "rect": [
+            1460,
+            1206,
+            116,
+            141
+          ]
+        },
+        {
+          "sourceFrame": 2,
+          "offset": [
+            2.9499999999999993,
+            -31.299999999999997
+          ],
+          "rect": [
+            842,
+            1377,
+            84,
+            122
+          ]
+        },
+        {
+          "sourceFrame": 3,
+          "offset": [
+            7.449999999999999,
+            -22.799999999999997
+          ],
+          "rect": [
+            1064,
+            1516,
+            111,
+            88
+          ]
+        }
+      ],
+      "variants": [
+        [
+          0,
+          1,
+          2,
+          3
+        ]
+      ]
+    },
+    {
+      "index": 21,
+      "linkage": "巴雷特枪火",
+      "kind": "muzzle",
+      "skipOriginYZero": false,
+      "worldLit": false,
+      "frames": [
+        {
+          "sourceFrame": 0,
+          "offset": [
+            -17.5,
+            -35.25
+          ],
+          "rect": [
+            1580,
+            1206,
+            69,
+            141
+          ]
+        },
+        {
+          "sourceFrame": 1,
+          "offset": [
+            -29.0,
+            -76.75
+          ],
+          "rect": [
+            589,
+            431,
+            116,
+            307
+          ]
+        },
+        {
+          "sourceFrame": 2,
+          "offset": [
+            -7.5,
+            -112.75
+          ],
+          "rect": [
+            2,
+            2,
+            349,
+            425
+          ]
+        },
+        {
+          "sourceFrame": 3,
+          "offset": [
+            -7.5,
+            -112.75
+          ],
+          "rect": [
+            2,
+            2,
+            349,
+            425
+          ]
+        },
+        {
+          "sourceFrame": 4,
+          "offset": [
+            -9.0,
+            -109.25
+          ],
+          "rect": [
+            355,
+            2,
+            353,
+            407
+          ]
+        },
+        {
+          "sourceFrame": 5,
+          "offset": [
+            -9.0,
+            -109.25
+          ],
+          "rect": [
+            355,
+            2,
+            353,
+            407
+          ]
+        },
+        {
+          "sourceFrame": 6,
+          "offset": [
+            -6.0,
+            -105.75
+          ],
+          "rect": [
+            712,
+            2,
+            344,
+            395
+          ]
+        },
+        {
+          "sourceFrame": 7,
+          "offset": [
+            -6.0,
+            -105.75
+          ],
+          "rect": [
+            712,
+            2,
+            344,
+            395
+          ]
+        },
+        {
+          "sourceFrame": 8,
+          "offset": [
+            -1.0,
+            -96.25
+          ],
+          "rect": [
+            1060,
+            2,
+            335,
+            356
+          ]
+        },
+        {
+          "sourceFrame": 9,
+          "offset": [
+            -1.0,
+            -96.25
+          ],
+          "rect": [
+            1060,
+            2,
+            335,
+            356
+          ]
+        },
+        {
+          "sourceFrame": 10,
+          "offset": [
+            7.0,
+            -85.25
+          ],
+          "rect": [
+            2,
+            431,
+            292,
+            313
+          ]
+        },
+        {
+          "sourceFrame": 11,
+          "offset": [
+            7.0,
+            -85.25
+          ],
+          "rect": [
+            2,
+            431,
+            292,
+            313
+          ]
+        },
+        {
+          "sourceFrame": 12,
+          "offset": [
+            -29.0,
+            -113.75
+          ],
+          "rect": [
+            1642,
+            1703,
+            1,
+            1
+          ]
+        },
+        {
+          "sourceFrame": 13,
+          "offset": [
+            -29.0,
+            -113.75
+          ],
+          "rect": [
+            1642,
+            1703,
+            1,
+            1
+          ]
+        }
+      ],
+      "variants": [
+        [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11,
+          12,
+          13
+        ]
+      ]
+    },
+    {
+      "index": 22,
+      "linkage": "战斗步枪枪火",
+      "kind": "muzzle",
+      "skipOriginYZero": false,
+      "worldLit": false,
+      "frames": [
+        {
+          "sourceFrame": 0,
+          "offset": [
+            -9.9,
+            -25.35
+          ],
+          "rect": [
+            1923,
+            1377,
+            104,
+            102
+          ]
+        },
+        {
+          "sourceFrame": 1,
+          "offset": [
+            -5.4,
+            -24.85
+          ],
+          "rect": [
+            194,
+            1516,
+            164,
+            97
+          ]
+        },
+        {
+          "sourceFrame": 2,
+          "offset": [
+            1.5999999999999996,
+            -18.35
+          ],
+          "rect": [
+            553,
+            1619,
+            196,
+            69
+          ]
+        },
+        {
+          "sourceFrame": 3,
+          "offset": [
+            10.6,
+            -11.850000000000001
+          ],
+          "rect": [
+            246,
+            1703,
+            204,
+            46
+          ]
+        },
+        {
+          "sourceFrame": 4,
+          "offset": [
+            25.6,
+            -1.8500000000000014
+          ],
+          "rect": [
+            1068,
+            1703,
+            144,
+            7
+          ]
+        }
+      ],
+      "variants": [
+        [
+          0,
+          1,
+          2,
+          3,
+          4
+        ]
+      ]
+    },
+    {
+      "index": 23,
+      "linkage": "枪火",
+      "kind": "muzzle",
+      "skipOriginYZero": true,
+      "worldLit": false,
+      "frames": [
+        {
+          "sourceFrame": 1,
+          "offset": [
+            -8.85,
+            -26.8
+          ],
+          "rect": [
+            1642,
+            1703,
+            1,
+            1
+          ]
+        },
+        {
+          "sourceFrame": 30,
+          "offset": [
+            -2.8499999999999996,
+            -19.3
+          ],
+          "rect": [
+            1645,
+            1516,
+            148,
+            81
+          ]
+        },
+        {
+          "sourceFrame": 43,
+          "offset": [
+            -8.85,
+            -26.8
+          ],
+          "rect": [
+            1642,
+            1703,
+            1,
+            1
+          ]
+        }
+      ],
+      "variants": [
+        [
+          0
+        ],
+        [
+          1
+        ],
+        [
+          2
+        ]
+      ]
+    },
+    {
+      "index": 24,
+      "linkage": "突击步枪枪火",
+      "kind": "muzzle",
+      "skipOriginYZero": false,
+      "worldLit": false,
+      "frames": [
+        {
+          "sourceFrame": 0,
+          "offset": [
+            -6.05,
+            -19.65
+          ],
+          "rect": [
+            156,
+            1619,
+            132,
+            77
+          ]
+        },
+        {
+          "sourceFrame": 1,
+          "offset": [
+            -0.5499999999999998,
+            -14.649999999999999
+          ],
+          "rect": [
+            1343,
+            1619,
+            158,
+            56
+          ]
+        },
+        {
+          "sourceFrame": 2,
+          "offset": [
+            6.45,
+            -6.649999999999999
+          ],
+          "rect": [
+            771,
+            1703,
+            163,
+            23
+          ]
+        }
+      ],
+      "variants": [
+        [
+          0,
+          1,
+          2
+        ]
+      ]
+    },
+    {
+      "index": 25,
+      "linkage": "紧凑手枪枪火",
+      "kind": "muzzle",
+      "skipOriginYZero": false,
+      "worldLit": false,
+      "frames": [
+        {
+          "sourceFrame": 0,
+          "offset": [
+            -5.4,
+            -5.0
+          ],
+          "rect": [
+            734,
+            1703,
+            33,
+            26
+          ]
+        },
+        {
+          "sourceFrame": 1,
+          "offset": [
+            -0.9000000000000004,
+            -11.5
+          ],
+          "rect": [
+            151,
+            1703,
+            52,
+            49
+          ]
+        },
+        {
+          "sourceFrame": 2,
+          "offset": [
+            -0.40000000000000036,
+            -6.5
+          ],
+          "rect": [
+            938,
+            1703,
+            13,
+            23
+          ]
+        }
+      ],
+      "variants": [
+        [
+          0,
+          1,
+          2
+        ]
+      ]
+    },
+    {
+      "index": 26,
+      "linkage": "霰弹枪枪火",
+      "kind": "muzzle",
+      "skipOriginYZero": false,
+      "worldLit": false,
+      "frames": [
+        {
+          "sourceFrame": 0,
+          "offset": [
+            -10.05,
+            -28.3
+          ],
+          "rect": [
+            1836,
+            1377,
+            83,
+            113
+          ]
+        },
+        {
+          "sourceFrame": 1,
+          "offset": [
+            -5.550000000000001,
+            -30.8
+          ],
+          "rect": [
+            1614,
+            1377,
+            111,
+            113
+          ]
+        },
+        {
+          "sourceFrame": 2,
+          "offset": [
+            1.4499999999999993,
+            -16.8
+          ],
+          "rect": [
+            753,
+            1619,
+            80,
+            66
+          ]
+        },
+        {
+          "sourceFrame": 3,
+          "offset": [
+            6.449999999999999,
+            -11.8
+          ],
+          "rect": [
+            2,
+            1703,
+            145,
+            50
+          ]
+        }
+      ],
+      "variants": [
+        [
+          0,
+          1,
+          2,
+          3
+        ]
+      ]
+    },
+    {
+      "index": 27,
+      "linkage": "马格南手枪枪火",
+      "kind": "muzzle",
+      "skipOriginYZero": false,
+      "worldLit": false,
+      "frames": [
+        {
+          "sourceFrame": 0,
+          "offset": [
+            -10.0,
+            -25.25
+          ],
+          "rect": [
+            523,
+            1516,
+            101,
+            94
+          ]
+        },
+        {
+          "sourceFrame": 1,
+          "offset": [
+            0.0,
+            -16.25
+          ],
+          "rect": [
+            1085,
+            1619,
+            97,
+            62
+          ]
+        },
+        {
+          "sourceFrame": 2,
+          "offset": [
+            4.0,
+            -15.25
+          ],
+          "rect": [
+            1239,
+            1619,
+            48,
+            58
+          ]
+        }
+      ],
+      "variants": [
+        [
+          0,
+          1,
+          2
+        ]
+      ]
+    },
+    {
+      "index": 28,
+      "linkage": "火花",
+      "kind": "impact",
+      "skipOriginYZero": true,
+      "worldLit": false,
+      "frames": [
+        {
+          "sourceFrame": 1,
+          "offset": [
+            -11.3,
+            -16.0
+          ],
+          "rect": [
+            837,
+            1619,
+            64,
+            66
+          ]
+        },
+        {
+          "sourceFrame": 2,
+          "offset": [
+            -11.3,
+            -16.0
+          ],
+          "rect": [
+            837,
+            1619,
+            64,
+            66
+          ]
+        },
+        {
+          "sourceFrame": 3,
+          "offset": [
+            -18.8,
+            -22.5
+          ],
+          "rect": [
+            437,
+            1516,
+            82,
+            95
+          ]
+        },
+        {
+          "sourceFrame": 4,
+          "offset": [
+            -18.8,
+            -22.5
+          ],
+          "rect": [
+            437,
+            1516,
+            82,
+            95
+          ]
+        },
+        {
+          "sourceFrame": 5,
+          "offset": [
+            -23.8,
+            -26.5
+          ],
+          "rect": [
+            1263,
+            1377,
+            80,
+            117
+          ]
+        },
+        {
+          "sourceFrame": 6,
+          "offset": [
+            -23.8,
+            -26.5
+          ],
+          "rect": [
+            1263,
+            1377,
+            80,
+            117
+          ]
+        },
+        {
+          "sourceFrame": 7,
+          "offset": [
+            -26.3,
+            -27.5
+          ],
+          "rect": [
+            423,
+            1377,
+            88,
+            129
+          ]
+        },
+        {
+          "sourceFrame": 8,
+          "offset": [
+            -26.3,
+            -27.5
+          ],
+          "rect": [
+            423,
+            1377,
+            88,
+            129
+          ]
+        },
+        {
+          "sourceFrame": 9,
+          "offset": [
+            -30.3,
+            -27.5
+          ],
+          "rect": [
+            1642,
+            1703,
+            1,
+            1
+          ]
+        },
+        {
+          "sourceFrame": 10,
+          "offset": [
+            -30.3,
+            -27.5
+          ],
+          "rect": [
+            1642,
+            1703,
+            1,
+            1
+          ]
+        },
+        {
+          "sourceFrame": 11,
+          "offset": [
+            -30.3,
+            -27.5
+          ],
+          "rect": [
+            1642,
+            1703,
+            1,
+            1
+          ]
+        },
+        {
+          "sourceFrame": 12,
+          "offset": [
+            -30.3,
+            -27.5
+          ],
+          "rect": [
+            1642,
+            1703,
+            1,
+            1
+          ]
+        },
+        {
+          "sourceFrame": 30,
+          "offset": [
+            -12.8,
+            -14.5
+          ],
+          "rect": [
+            1186,
+            1619,
+            49,
+            58
+          ]
+        },
+        {
+          "sourceFrame": 31,
+          "offset": [
+            -12.8,
+            -14.5
+          ],
+          "rect": [
+            1186,
+            1619,
+            49,
+            58
+          ]
+        },
+        {
+          "sourceFrame": 32,
+          "offset": [
+            -15.3,
+            -15.5
+          ],
+          "rect": [
+            905,
+            1619,
+            60,
+            66
+          ]
+        },
+        {
+          "sourceFrame": 33,
+          "offset": [
+            -15.3,
+            -15.5
+          ],
+          "rect": [
+            905,
+            1619,
+            60,
+            66
+          ]
+        },
+        {
+          "sourceFrame": 34,
+          "offset": [
+            -18.3,
+            -16.0
+          ],
+          "rect": [
+            351,
+            1619,
+            69,
+            76
+          ]
+        },
+        {
+          "sourceFrame": 35,
+          "offset": [
+            -18.3,
+            -16.0
+          ],
+          "rect": [
+            351,
+            1619,
+            69,
+            76
+          ]
+        },
+        {
+          "sourceFrame": 36,
+          "offset": [
+            -19.3,
+            -16.0
+          ],
+          "rect": [
+            2,
+            1619,
+            73,
+            80
+          ]
+        },
+        {
+          "sourceFrame": 37,
+          "offset": [
+            -19.3,
+            -16.0
+          ],
+          "rect": [
+            2,
+            1619,
+            73,
+            80
+          ]
+        },
+        {
+          "sourceFrame": 38,
+          "offset": [
+            -13.8,
+            -15.5
+          ],
+          "rect": [
+            1867,
+            1516,
+            65,
+            81
+          ]
+        },
+        {
+          "sourceFrame": 39,
+          "offset": [
+            -13.8,
+            -15.5
+          ],
+          "rect": [
+            1867,
+            1516,
+            65,
+            81
+          ]
+        },
+        {
+          "sourceFrame": 40,
+          "offset": [
+            -30.3,
+            -27.5
+          ],
+          "rect": [
+            1642,
+            1703,
+            1,
+            1
+          ]
+        },
+        {
+          "sourceFrame": 41,
+          "offset": [
+            -30.3,
+            -27.5
+          ],
+          "rect": [
+            1642,
+            1703,
+            1,
+            1
+          ]
+        },
+        {
+          "sourceFrame": 43,
+          "offset": [
+            -6.300000000000001,
+            -12.5
+          ],
+          "rect": [
+            207,
+            1703,
+            35,
+            49
+          ]
+        },
+        {
+          "sourceFrame": 44,
+          "offset": [
+            -6.300000000000001,
+            -12.5
+          ],
+          "rect": [
+            207,
+            1703,
+            35,
+            49
+          ]
+        },
+        {
+          "sourceFrame": 45,
+          "offset": [
+            -8.8,
+            -16.5
+          ],
+          "rect": [
+            1033,
+            1619,
+            48,
+            65
+          ]
+        },
+        {
+          "sourceFrame": 46,
+          "offset": [
+            -8.8,
+            -16.5
+          ],
+          "rect": [
+            1033,
+            1619,
+            48,
+            65
+          ]
+        },
+        {
+          "sourceFrame": 47,
+          "offset": [
+            -11.3,
+            -19.5
+          ],
+          "rect": [
+            292,
+            1619,
+            55,
+            77
+          ]
+        },
+        {
+          "sourceFrame": 48,
+          "offset": [
+            -11.3,
+            -19.5
+          ],
+          "rect": [
+            292,
+            1619,
+            55,
+            77
+          ]
+        },
+        {
+          "sourceFrame": 49,
+          "offset": [
+            -13.3,
+            -20.5
+          ],
+          "rect": [
+            1394,
+            1516,
+            60,
+            82
+          ]
+        },
+        {
+          "sourceFrame": 50,
+          "offset": [
+            -13.3,
+            -20.5
+          ],
+          "rect": [
+            1394,
+            1516,
+            60,
+            82
+          ]
+        },
+        {
+          "sourceFrame": 51,
+          "offset": [
+            -14.3,
+            -21.0
+          ],
+          "rect": [
+            1252,
+            1516,
+            62,
+            87
+          ]
+        },
+        {
+          "sourceFrame": 52,
+          "offset": [
+            -14.3,
+            -21.0
+          ],
+          "rect": [
+            1252,
+            1516,
+            62,
+            87
+          ]
+        },
+        {
+          "sourceFrame": 53,
+          "offset": [
+            -30.3,
+            -27.5
+          ],
+          "rect": [
+            1642,
+            1703,
+            1,
+            1
+          ]
+        },
+        {
+          "sourceFrame": 54,
+          "offset": [
+            -30.3,
+            -27.5
+          ],
+          "rect": [
+            1642,
+            1703,
+            1,
+            1
+          ]
+        },
+        {
+          "sourceFrame": 55,
+          "offset": [
+            -30.3,
+            -27.5
+          ],
+          "rect": [
+            1642,
+            1703,
+            1,
+            1
+          ]
+        },
+        {
+          "sourceFrame": 57,
+          "offset": [
+            -18.8,
+            -19.0
+          ],
+          "rect": [
+            1179,
+            1516,
+            69,
+            88
+          ]
+        },
+        {
+          "sourceFrame": 58,
+          "offset": [
+            -18.8,
+            -19.0
+          ],
+          "rect": [
+            1179,
+            1516,
+            69,
+            88
+          ]
+        },
+        {
+          "sourceFrame": 59,
+          "offset": [
+            -23.8,
+            -24.5
+          ],
+          "rect": [
+            1429,
+            1377,
+            95,
+            114
+          ]
+        },
+        {
+          "sourceFrame": 60,
+          "offset": [
+            -23.8,
+            -24.5
+          ],
+          "rect": [
+            1429,
+            1377,
+            95,
+            114
+          ]
+        },
+        {
+          "sourceFrame": 61,
+          "offset": [
+            -26.3,
+            -26.0
+          ],
+          "rect": [
+            930,
+            1377,
+            113,
+            121
+          ]
+        },
+        {
+          "sourceFrame": 62,
+          "offset": [
+            -26.3,
+            -26.0
+          ],
+          "rect": [
+            930,
+            1377,
+            113,
+            121
+          ]
+        },
+        {
+          "sourceFrame": 63,
+          "offset": [
+            -28.3,
+            -27.5
+          ],
+          "rect": [
+            2,
+            1377,
+            121,
+            135
+          ]
+        },
+        {
+          "sourceFrame": 64,
+          "offset": [
+            -28.3,
+            -27.5
+          ],
+          "rect": [
+            2,
+            1377,
+            121,
+            135
+          ]
+        },
+        {
+          "sourceFrame": 65,
+          "offset": [
+            -27.3,
+            -17.5
+          ],
+          "rect": [
+            1704,
+            1619,
+            122,
+            54
+          ]
+        },
+        {
+          "sourceFrame": 66,
+          "offset": [
+            -27.3,
+            -17.5
+          ],
+          "rect": [
+            1704,
+            1619,
+            122,
+            54
+          ]
+        },
+        {
+          "sourceFrame": 67,
+          "offset": [
+            -30.3,
+            -5.5
+          ],
+          "rect": [
+            600,
+            1703,
+            130,
+            37
+          ]
+        },
+        {
+          "sourceFrame": 68,
+          "offset": [
+            -30.3,
+            -5.5
+          ],
+          "rect": [
+            600,
+            1703,
+            130,
+            37
+          ]
+        },
+        {
+          "sourceFrame": 69,
+          "offset": [
+            -30.3,
+            -27.5
+          ],
+          "rect": [
+            1642,
+            1703,
+            1,
+            1
+          ]
+        },
+        {
+          "sourceFrame": 70,
+          "offset": [
+            -30.3,
+            -27.5
+          ],
+          "rect": [
+            1642,
+            1703,
+            1,
+            1
+          ]
+        },
+        {
+          "sourceFrame": 71,
+          "offset": [
+            -30.3,
+            -27.5
+          ],
+          "rect": [
+            1642,
+            1703,
+            1,
+            1
+          ]
+        },
+        {
+          "sourceFrame": 72,
+          "offset": [
+            -30.3,
+            -27.5
+          ],
+          "rect": [
+            1642,
+            1703,
+            1,
+            1
+          ]
+        },
+        {
+          "sourceFrame": 73,
+          "offset": [
+            -30.3,
+            -27.5
+          ],
+          "rect": [
+            1642,
+            1703,
+            1,
+            1
+          ]
+        },
+        {
+          "sourceFrame": 74,
+          "offset": [
+            -30.3,
+            -27.5
+          ],
+          "rect": [
+            1642,
+            1703,
+            1,
+            1
+          ]
+        },
+        {
+          "sourceFrame": 75,
+          "offset": [
+            -30.3,
+            -27.5
+          ],
+          "rect": [
+            1642,
+            1703,
+            1,
+            1
+          ]
+        },
+        {
+          "sourceFrame": 76,
+          "offset": [
+            -30.3,
+            -27.5
+          ],
+          "rect": [
+            1642,
+            1703,
+            1,
+            1
+          ]
+        },
+        {
+          "sourceFrame": 77,
+          "offset": [
+            -30.3,
+            -27.5
+          ],
+          "rect": [
+            1642,
+            1703,
+            1,
+            1
+          ]
+        },
+        {
+          "sourceFrame": 78,
+          "offset": [
+            -30.3,
+            -27.5
+          ],
+          "rect": [
+            1642,
+            1703,
+            1,
+            1
+          ]
+        },
+        {
+          "sourceFrame": 79,
+          "offset": [
+            -30.3,
+            -27.5
+          ],
+          "rect": [
+            1642,
+            1703,
+            1,
+            1
+          ]
+        },
+        {
+          "sourceFrame": 80,
+          "offset": [
+            -30.3,
+            -27.5
+          ],
+          "rect": [
+            1642,
+            1703,
+            1,
+            1
+          ]
+        },
+        {
+          "sourceFrame": 82,
+          "offset": [
+            -11.3,
+            -14.5
+          ],
+          "rect": [
+            1291,
+            1619,
+            48,
+            58
+          ]
+        },
+        {
+          "sourceFrame": 83,
+          "offset": [
+            -11.3,
+            -14.5
+          ],
+          "rect": [
+            1291,
+            1619,
+            48,
+            58
+          ]
+        },
+        {
+          "sourceFrame": 84,
+          "offset": [
+            -14.8,
+            -15.5
+          ],
+          "rect": [
+            969,
+            1619,
+            60,
+            66
+          ]
+        },
+        {
+          "sourceFrame": 85,
+          "offset": [
+            -14.8,
+            -15.5
+          ],
+          "rect": [
+            969,
+            1619,
+            60,
+            66
+          ]
+        },
+        {
+          "sourceFrame": 86,
+          "offset": [
+            -15.8,
+            -16.0
+          ],
+          "rect": [
+            424,
+            1619,
+            69,
+            76
+          ]
+        },
+        {
+          "sourceFrame": 87,
+          "offset": [
+            -15.8,
+            -16.0
+          ],
+          "rect": [
+            424,
+            1619,
+            69,
+            76
+          ]
+        },
+        {
+          "sourceFrame": 88,
+          "offset": [
+            -16.8,
+            -16.0
+          ],
+          "rect": [
+            79,
+            1619,
+            73,
+            80
+          ]
+        },
+        {
+          "sourceFrame": 89,
+          "offset": [
+            -16.8,
+            -16.0
+          ],
+          "rect": [
+            79,
+            1619,
+            73,
+            80
+          ]
+        },
+        {
+          "sourceFrame": 90,
+          "offset": [
+            -18.8,
+            -15.5
+          ],
+          "rect": [
+            1797,
+            1516,
+            66,
+            81
+          ]
+        },
+        {
+          "sourceFrame": 91,
+          "offset": [
+            -18.8,
+            -15.5
+          ],
+          "rect": [
+            1797,
+            1516,
+            66,
+            81
+          ]
+        },
+        {
+          "sourceFrame": 92,
+          "offset": [
+            -30.3,
+            -27.5
+          ],
+          "rect": [
+            1642,
+            1703,
+            1,
+            1
+          ]
+        },
+        {
+          "sourceFrame": 93,
+          "offset": [
+            -30.3,
+            -27.5
+          ],
+          "rect": [
+            1642,
+            1703,
+            1,
+            1
+          ]
+        },
+        {
+          "sourceFrame": 94,
+          "offset": [
+            -30.3,
+            -27.5
+          ],
+          "rect": [
+            1642,
+            1703,
+            1,
+            1
+          ]
+        },
+        {
+          "sourceFrame": 95,
+          "offset": [
+            -30.3,
+            -27.5
+          ],
+          "rect": [
+            1642,
+            1703,
+            1,
+            1
+          ]
+        },
+        {
+          "sourceFrame": 96,
+          "offset": [
+            -30.3,
+            -27.5
+          ],
+          "rect": [
+            1642,
+            1703,
+            1,
+            1
+          ]
+        },
+        {
+          "sourceFrame": 97,
+          "offset": [
+            -30.3,
+            -27.5
+          ],
+          "rect": [
+            1642,
+            1703,
+            1,
+            1
+          ]
+        },
+        {
+          "sourceFrame": 98,
+          "offset": [
+            -30.3,
+            -27.5
+          ],
+          "rect": [
+            1642,
+            1703,
+            1,
+            1
+          ]
+        }
+      ],
+      "variants": [
+        [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11
+        ],
+        [
+          12,
+          13,
+          14,
+          15,
+          16,
+          17,
+          18,
+          19,
+          20,
+          21,
+          22,
+          23
+        ],
+        [
+          24,
+          25,
+          26,
+          27,
+          28,
+          29,
+          30,
+          31,
+          32,
+          33,
+          34,
+          35,
+          36
+        ],
+        [
+          37,
+          38,
+          39,
+          40,
+          41,
+          42,
+          43,
+          44,
+          45,
+          46,
+          47,
+          48,
+          49,
+          50,
+          51,
+          52,
+          53,
+          54,
+          55,
+          56,
+          57,
+          58,
+          59,
+          60
+        ],
+        [
+          61,
+          62,
+          63,
+          64,
+          65,
+          66,
+          67,
+          68,
+          69,
+          70,
+          71,
+          72,
+          73,
+          74,
+          75,
+          76,
+          77
+        ]
+      ]
+    },
+    {
+      "index": 29,
+      "linkage": "击中金属",
+      "kind": "impact",
+      "skipOriginYZero": true,
+      "worldLit": false,
+      "frames": [
+        {
+          "sourceFrame": 1,
+          "offset": [
+            -11.3,
+            -16.0
+          ],
+          "rect": [
+            837,
+            1619,
+            64,
+            66
+          ]
+        },
+        {
+          "sourceFrame": 2,
+          "offset": [
+            -11.3,
+            -16.0
+          ],
+          "rect": [
+            837,
+            1619,
+            64,
+            66
+          ]
+        },
+        {
+          "sourceFrame": 3,
+          "offset": [
+            -18.8,
+            -22.5
+          ],
+          "rect": [
+            437,
+            1516,
+            82,
+            95
+          ]
+        },
+        {
+          "sourceFrame": 4,
+          "offset": [
+            -18.8,
+            -22.5
+          ],
+          "rect": [
+            437,
+            1516,
+            82,
+            95
+          ]
+        },
+        {
+          "sourceFrame": 5,
+          "offset": [
+            -23.8,
+            -26.5
+          ],
+          "rect": [
+            1263,
+            1377,
+            80,
+            117
+          ]
+        },
+        {
+          "sourceFrame": 6,
+          "offset": [
+            -23.8,
+            -26.5
+          ],
+          "rect": [
+            1263,
+            1377,
+            80,
+            117
+          ]
+        },
+        {
+          "sourceFrame": 7,
+          "offset": [
+            -26.3,
+            -27.5
+          ],
+          "rect": [
+            423,
+            1377,
+            88,
+            129
+          ]
+        },
+        {
+          "sourceFrame": 8,
+          "offset": [
+            -26.3,
+            -27.5
+          ],
+          "rect": [
+            423,
+            1377,
+            88,
+            129
+          ]
+        },
+        {
+          "sourceFrame": 9,
+          "offset": [
+            -30.3,
+            -27.5
+          ],
+          "rect": [
+            1642,
+            1703,
+            1,
+            1
+          ]
+        },
+        {
+          "sourceFrame": 10,
+          "offset": [
+            -30.3,
+            -27.5
+          ],
+          "rect": [
+            1642,
+            1703,
+            1,
+            1
+          ]
+        },
+        {
+          "sourceFrame": 11,
+          "offset": [
+            -30.3,
+            -27.5
+          ],
+          "rect": [
+            1642,
+            1703,
+            1,
+            1
+          ]
+        },
+        {
+          "sourceFrame": 12,
+          "offset": [
+            -30.3,
+            -27.5
+          ],
+          "rect": [
+            1642,
+            1703,
+            1,
+            1
+          ]
+        },
+        {
+          "sourceFrame": 30,
+          "offset": [
+            -12.8,
+            -14.5
+          ],
+          "rect": [
+            1186,
+            1619,
+            49,
+            58
+          ]
+        },
+        {
+          "sourceFrame": 31,
+          "offset": [
+            -12.8,
+            -14.5
+          ],
+          "rect": [
+            1186,
+            1619,
+            49,
+            58
+          ]
+        },
+        {
+          "sourceFrame": 32,
+          "offset": [
+            -15.3,
+            -15.5
+          ],
+          "rect": [
+            905,
+            1619,
+            60,
+            66
+          ]
+        },
+        {
+          "sourceFrame": 33,
+          "offset": [
+            -15.3,
+            -15.5
+          ],
+          "rect": [
+            905,
+            1619,
+            60,
+            66
+          ]
+        },
+        {
+          "sourceFrame": 34,
+          "offset": [
+            -18.3,
+            -16.0
+          ],
+          "rect": [
+            351,
+            1619,
+            69,
+            76
+          ]
+        },
+        {
+          "sourceFrame": 35,
+          "offset": [
+            -18.3,
+            -16.0
+          ],
+          "rect": [
+            351,
+            1619,
+            69,
+            76
+          ]
+        },
+        {
+          "sourceFrame": 36,
+          "offset": [
+            -19.3,
+            -16.0
+          ],
+          "rect": [
+            2,
+            1619,
+            73,
+            80
+          ]
+        },
+        {
+          "sourceFrame": 37,
+          "offset": [
+            -19.3,
+            -16.0
+          ],
+          "rect": [
+            2,
+            1619,
+            73,
+            80
+          ]
+        },
+        {
+          "sourceFrame": 38,
+          "offset": [
+            -13.8,
+            -15.5
+          ],
+          "rect": [
+            1867,
+            1516,
+            65,
+            81
+          ]
+        },
+        {
+          "sourceFrame": 39,
+          "offset": [
+            -13.8,
+            -15.5
+          ],
+          "rect": [
+            1867,
+            1516,
+            65,
+            81
+          ]
+        },
+        {
+          "sourceFrame": 40,
+          "offset": [
+            -30.3,
+            -27.5
+          ],
+          "rect": [
+            1642,
+            1703,
+            1,
+            1
+          ]
+        },
+        {
+          "sourceFrame": 41,
+          "offset": [
+            -30.3,
+            -27.5
+          ],
+          "rect": [
+            1642,
+            1703,
+            1,
+            1
+          ]
+        },
+        {
+          "sourceFrame": 43,
+          "offset": [
+            -6.300000000000001,
+            -12.5
+          ],
+          "rect": [
+            207,
+            1703,
+            35,
+            49
+          ]
+        },
+        {
+          "sourceFrame": 44,
+          "offset": [
+            -6.300000000000001,
+            -12.5
+          ],
+          "rect": [
+            207,
+            1703,
+            35,
+            49
+          ]
+        },
+        {
+          "sourceFrame": 45,
+          "offset": [
+            -8.8,
+            -16.5
+          ],
+          "rect": [
+            1033,
+            1619,
+            48,
+            65
+          ]
+        },
+        {
+          "sourceFrame": 46,
+          "offset": [
+            -8.8,
+            -16.5
+          ],
+          "rect": [
+            1033,
+            1619,
+            48,
+            65
+          ]
+        },
+        {
+          "sourceFrame": 47,
+          "offset": [
+            -11.3,
+            -19.5
+          ],
+          "rect": [
+            292,
+            1619,
+            55,
+            77
+          ]
+        },
+        {
+          "sourceFrame": 48,
+          "offset": [
+            -11.3,
+            -19.5
+          ],
+          "rect": [
+            292,
+            1619,
+            55,
+            77
+          ]
+        },
+        {
+          "sourceFrame": 49,
+          "offset": [
+            -13.3,
+            -20.5
+          ],
+          "rect": [
+            1394,
+            1516,
+            60,
+            82
+          ]
+        },
+        {
+          "sourceFrame": 50,
+          "offset": [
+            -13.3,
+            -20.5
+          ],
+          "rect": [
+            1394,
+            1516,
+            60,
+            82
+          ]
+        },
+        {
+          "sourceFrame": 51,
+          "offset": [
+            -14.3,
+            -21.0
+          ],
+          "rect": [
+            1252,
+            1516,
+            62,
+            87
+          ]
+        },
+        {
+          "sourceFrame": 52,
+          "offset": [
+            -14.3,
+            -21.0
+          ],
+          "rect": [
+            1252,
+            1516,
+            62,
+            87
+          ]
+        },
+        {
+          "sourceFrame": 53,
+          "offset": [
+            -30.3,
+            -27.5
+          ],
+          "rect": [
+            1642,
+            1703,
+            1,
+            1
+          ]
+        },
+        {
+          "sourceFrame": 54,
+          "offset": [
+            -30.3,
+            -27.5
+          ],
+          "rect": [
+            1642,
+            1703,
+            1,
+            1
+          ]
+        },
+        {
+          "sourceFrame": 55,
+          "offset": [
+            -30.3,
+            -27.5
+          ],
+          "rect": [
+            1642,
+            1703,
+            1,
+            1
+          ]
+        },
+        {
+          "sourceFrame": 57,
+          "offset": [
+            -18.8,
+            -19.0
+          ],
+          "rect": [
+            1179,
+            1516,
+            69,
+            88
+          ]
+        },
+        {
+          "sourceFrame": 58,
+          "offset": [
+            -18.8,
+            -19.0
+          ],
+          "rect": [
+            1179,
+            1516,
+            69,
+            88
+          ]
+        },
+        {
+          "sourceFrame": 59,
+          "offset": [
+            -23.8,
+            -24.5
+          ],
+          "rect": [
+            1429,
+            1377,
+            95,
+            114
+          ]
+        },
+        {
+          "sourceFrame": 60,
+          "offset": [
+            -23.8,
+            -24.5
+          ],
+          "rect": [
+            1429,
+            1377,
+            95,
+            114
+          ]
+        },
+        {
+          "sourceFrame": 61,
+          "offset": [
+            -26.3,
+            -26.0
+          ],
+          "rect": [
+            930,
+            1377,
+            113,
+            121
+          ]
+        },
+        {
+          "sourceFrame": 62,
+          "offset": [
+            -26.3,
+            -26.0
+          ],
+          "rect": [
+            930,
+            1377,
+            113,
+            121
+          ]
+        },
+        {
+          "sourceFrame": 63,
+          "offset": [
+            -28.3,
+            -27.5
+          ],
+          "rect": [
+            2,
+            1377,
+            121,
+            135
+          ]
+        },
+        {
+          "sourceFrame": 64,
+          "offset": [
+            -28.3,
+            -27.5
+          ],
+          "rect": [
+            2,
+            1377,
+            121,
+            135
+          ]
+        },
+        {
+          "sourceFrame": 65,
+          "offset": [
+            -27.3,
+            -17.5
+          ],
+          "rect": [
+            1704,
+            1619,
+            122,
+            54
+          ]
+        },
+        {
+          "sourceFrame": 66,
+          "offset": [
+            -27.3,
+            -17.5
+          ],
+          "rect": [
+            1704,
+            1619,
+            122,
+            54
+          ]
+        },
+        {
+          "sourceFrame": 67,
+          "offset": [
+            -30.3,
+            -5.5
+          ],
+          "rect": [
+            600,
+            1703,
+            130,
+            37
+          ]
+        },
+        {
+          "sourceFrame": 68,
+          "offset": [
+            -30.3,
+            -5.5
+          ],
+          "rect": [
+            600,
+            1703,
+            130,
+            37
+          ]
+        },
+        {
+          "sourceFrame": 69,
+          "offset": [
+            -30.3,
+            -27.5
+          ],
+          "rect": [
+            1642,
+            1703,
+            1,
+            1
+          ]
+        },
+        {
+          "sourceFrame": 70,
+          "offset": [
+            -30.3,
+            -27.5
+          ],
+          "rect": [
+            1642,
+            1703,
+            1,
+            1
+          ]
+        },
+        {
+          "sourceFrame": 71,
+          "offset": [
+            -30.3,
+            -27.5
+          ],
+          "rect": [
+            1642,
+            1703,
+            1,
+            1
+          ]
+        },
+        {
+          "sourceFrame": 72,
+          "offset": [
+            -30.3,
+            -27.5
+          ],
+          "rect": [
+            1642,
+            1703,
+            1,
+            1
+          ]
+        },
+        {
+          "sourceFrame": 73,
+          "offset": [
+            -30.3,
+            -27.5
+          ],
+          "rect": [
+            1642,
+            1703,
+            1,
+            1
+          ]
+        },
+        {
+          "sourceFrame": 74,
+          "offset": [
+            -30.3,
+            -27.5
+          ],
+          "rect": [
+            1642,
+            1703,
+            1,
+            1
+          ]
+        },
+        {
+          "sourceFrame": 75,
+          "offset": [
+            -30.3,
+            -27.5
+          ],
+          "rect": [
+            1642,
+            1703,
+            1,
+            1
+          ]
+        },
+        {
+          "sourceFrame": 76,
+          "offset": [
+            -30.3,
+            -27.5
+          ],
+          "rect": [
+            1642,
+            1703,
+            1,
+            1
+          ]
+        },
+        {
+          "sourceFrame": 77,
+          "offset": [
+            -30.3,
+            -27.5
+          ],
+          "rect": [
+            1642,
+            1703,
+            1,
+            1
+          ]
+        },
+        {
+          "sourceFrame": 78,
+          "offset": [
+            -30.3,
+            -27.5
+          ],
+          "rect": [
+            1642,
+            1703,
+            1,
+            1
+          ]
+        },
+        {
+          "sourceFrame": 79,
+          "offset": [
+            -30.3,
+            -27.5
+          ],
+          "rect": [
+            1642,
+            1703,
+            1,
+            1
+          ]
+        },
+        {
+          "sourceFrame": 80,
+          "offset": [
+            -30.3,
+            -27.5
+          ],
+          "rect": [
+            1642,
+            1703,
+            1,
+            1
+          ]
+        }
+      ],
+      "variants": [
+        [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11
+        ],
+        [
+          12,
+          13,
+          14,
+          15,
+          16,
+          17,
+          18,
+          19,
+          20,
+          21,
+          22,
+          23
+        ],
+        [
+          24,
+          25,
+          26,
+          27,
+          28,
+          29,
+          30,
+          31,
+          32,
+          33,
+          34,
+          35,
+          36
+        ],
+        [
+          37,
+          38,
+          39,
+          40,
+          41,
+          42,
+          43,
+          44,
+          45,
+          46,
+          47,
+          48,
+          49,
+          50,
+          51,
+          52,
+          53,
+          54,
+          55,
+          56,
+          57,
+          58,
+          59,
+          60
+        ]
+      ]
+    },
+    {
+      "index": 30,
+      "linkage": "无声火花",
+      "kind": "impact",
+      "skipOriginYZero": true,
+      "worldLit": false,
+      "frames": [
+        {
+          "sourceFrame": 1,
+          "offset": [
+            -11.3,
+            -16.0
+          ],
+          "rect": [
+            837,
+            1619,
+            64,
+            66
+          ]
+        },
+        {
+          "sourceFrame": 2,
+          "offset": [
+            -11.3,
+            -16.0
+          ],
+          "rect": [
+            837,
+            1619,
+            64,
+            66
+          ]
+        },
+        {
+          "sourceFrame": 3,
+          "offset": [
+            -18.8,
+            -22.5
+          ],
+          "rect": [
+            437,
+            1516,
+            82,
+            95
+          ]
+        },
+        {
+          "sourceFrame": 4,
+          "offset": [
+            -18.8,
+            -22.5
+          ],
+          "rect": [
+            437,
+            1516,
+            82,
+            95
+          ]
+        },
+        {
+          "sourceFrame": 5,
+          "offset": [
+            -23.8,
+            -26.5
+          ],
+          "rect": [
+            1263,
+            1377,
+            80,
+            117
+          ]
+        },
+        {
+          "sourceFrame": 6,
+          "offset": [
+            -23.8,
+            -26.5
+          ],
+          "rect": [
+            1263,
+            1377,
+            80,
+            117
+          ]
+        },
+        {
+          "sourceFrame": 7,
+          "offset": [
+            -26.3,
+            -27.5
+          ],
+          "rect": [
+            423,
+            1377,
+            88,
+            129
+          ]
+        },
+        {
+          "sourceFrame": 8,
+          "offset": [
+            -26.3,
+            -27.5
+          ],
+          "rect": [
+            423,
+            1377,
+            88,
+            129
+          ]
+        },
+        {
+          "sourceFrame": 9,
+          "offset": [
+            -30.3,
+            -27.5
+          ],
+          "rect": [
+            1642,
+            1703,
+            1,
+            1
+          ]
+        },
+        {
+          "sourceFrame": 10,
+          "offset": [
+            -30.3,
+            -27.5
+          ],
+          "rect": [
+            1642,
+            1703,
+            1,
+            1
+          ]
+        },
+        {
+          "sourceFrame": 11,
+          "offset": [
+            -30.3,
+            -27.5
+          ],
+          "rect": [
+            1642,
+            1703,
+            1,
+            1
+          ]
+        },
+        {
+          "sourceFrame": 12,
+          "offset": [
+            -30.3,
+            -27.5
+          ],
+          "rect": [
+            1642,
+            1703,
+            1,
+            1
+          ]
+        },
+        {
+          "sourceFrame": 13,
+          "offset": [
+            -30.3,
+            -27.5
+          ],
+          "rect": [
+            1642,
+            1703,
+            1,
+            1
+          ]
+        },
+        {
+          "sourceFrame": 14,
+          "offset": [
+            -30.3,
+            -27.5
+          ],
+          "rect": [
+            1642,
+            1703,
+            1,
+            1
+          ]
+        },
+        {
+          "sourceFrame": 15,
+          "offset": [
+            -30.3,
+            -27.5
+          ],
+          "rect": [
+            1642,
+            1703,
+            1,
+            1
+          ]
+        },
+        {
+          "sourceFrame": 16,
+          "offset": [
+            -30.3,
+            -27.5
+          ],
+          "rect": [
+            1642,
+            1703,
+            1,
+            1
+          ]
+        },
+        {
+          "sourceFrame": 17,
+          "offset": [
+            -30.3,
+            -27.5
+          ],
+          "rect": [
+            1642,
+            1703,
+            1,
+            1
+          ]
+        },
+        {
+          "sourceFrame": 18,
+          "offset": [
+            -30.3,
+            -27.5
+          ],
+          "rect": [
+            1642,
+            1703,
+            1,
+            1
+          ]
+        },
+        {
+          "sourceFrame": 19,
+          "offset": [
+            -30.3,
+            -27.5
+          ],
+          "rect": [
+            1642,
+            1703,
+            1,
+            1
+          ]
+        },
+        {
+          "sourceFrame": 20,
+          "offset": [
+            -30.3,
+            -27.5
+          ],
+          "rect": [
+            1642,
+            1703,
+            1,
+            1
+          ]
+        },
+        {
+          "sourceFrame": 21,
+          "offset": [
+            -30.3,
+            -27.5
+          ],
+          "rect": [
+            1642,
+            1703,
+            1,
+            1
+          ]
+        },
+        {
+          "sourceFrame": 30,
+          "offset": [
+            -12.8,
+            -14.5
+          ],
+          "rect": [
+            1186,
+            1619,
+            49,
+            58
+          ]
+        },
+        {
+          "sourceFrame": 31,
+          "offset": [
+            -12.8,
+            -14.5
+          ],
+          "rect": [
+            1186,
+            1619,
+            49,
+            58
+          ]
+        },
+        {
+          "sourceFrame": 32,
+          "offset": [
+            -15.3,
+            -15.5
+          ],
+          "rect": [
+            905,
+            1619,
+            60,
+            66
+          ]
+        },
+        {
+          "sourceFrame": 33,
+          "offset": [
+            -15.3,
+            -15.5
+          ],
+          "rect": [
+            905,
+            1619,
+            60,
+            66
+          ]
+        },
+        {
+          "sourceFrame": 34,
+          "offset": [
+            -18.3,
+            -16.0
+          ],
+          "rect": [
+            351,
+            1619,
+            69,
+            76
+          ]
+        },
+        {
+          "sourceFrame": 35,
+          "offset": [
+            -18.3,
+            -16.0
+          ],
+          "rect": [
+            351,
+            1619,
+            69,
+            76
+          ]
+        },
+        {
+          "sourceFrame": 36,
+          "offset": [
+            -19.3,
+            -16.0
+          ],
+          "rect": [
+            2,
+            1619,
+            73,
+            80
+          ]
+        },
+        {
+          "sourceFrame": 37,
+          "offset": [
+            -19.3,
+            -16.0
+          ],
+          "rect": [
+            2,
+            1619,
+            73,
+            80
+          ]
+        },
+        {
+          "sourceFrame": 38,
+          "offset": [
+            -13.8,
+            -15.5
+          ],
+          "rect": [
+            1867,
+            1516,
+            65,
+            81
+          ]
+        },
+        {
+          "sourceFrame": 39,
+          "offset": [
+            -13.8,
+            -15.5
+          ],
+          "rect": [
+            1867,
+            1516,
+            65,
+            81
+          ]
+        },
+        {
+          "sourceFrame": 40,
+          "offset": [
+            -30.3,
+            -27.5
+          ],
+          "rect": [
+            1642,
+            1703,
+            1,
+            1
+          ]
+        },
+        {
+          "sourceFrame": 41,
+          "offset": [
+            -30.3,
+            -27.5
+          ],
+          "rect": [
+            1642,
+            1703,
+            1,
+            1
+          ]
+        },
+        {
+          "sourceFrame": 43,
+          "offset": [
+            -6.300000000000001,
+            -12.5
+          ],
+          "rect": [
+            207,
+            1703,
+            35,
+            49
+          ]
+        },
+        {
+          "sourceFrame": 44,
+          "offset": [
+            -6.300000000000001,
+            -12.5
+          ],
+          "rect": [
+            207,
+            1703,
+            35,
+            49
+          ]
+        },
+        {
+          "sourceFrame": 45,
+          "offset": [
+            -8.8,
+            -16.5
+          ],
+          "rect": [
+            1033,
+            1619,
+            48,
+            65
+          ]
+        },
+        {
+          "sourceFrame": 46,
+          "offset": [
+            -8.8,
+            -16.5
+          ],
+          "rect": [
+            1033,
+            1619,
+            48,
+            65
+          ]
+        },
+        {
+          "sourceFrame": 47,
+          "offset": [
+            -11.3,
+            -19.5
+          ],
+          "rect": [
+            292,
+            1619,
+            55,
+            77
+          ]
+        },
+        {
+          "sourceFrame": 48,
+          "offset": [
+            -11.3,
+            -19.5
+          ],
+          "rect": [
+            292,
+            1619,
+            55,
+            77
+          ]
+        },
+        {
+          "sourceFrame": 49,
+          "offset": [
+            -13.3,
+            -20.5
+          ],
+          "rect": [
+            1394,
+            1516,
+            60,
+            82
+          ]
+        },
+        {
+          "sourceFrame": 50,
+          "offset": [
+            -13.3,
+            -20.5
+          ],
+          "rect": [
+            1394,
+            1516,
+            60,
+            82
+          ]
+        },
+        {
+          "sourceFrame": 51,
+          "offset": [
+            -14.3,
+            -21.0
+          ],
+          "rect": [
+            1252,
+            1516,
+            62,
+            87
+          ]
+        },
+        {
+          "sourceFrame": 52,
+          "offset": [
+            -14.3,
+            -21.0
+          ],
+          "rect": [
+            1252,
+            1516,
+            62,
+            87
+          ]
+        },
+        {
+          "sourceFrame": 53,
+          "offset": [
+            -30.3,
+            -27.5
+          ],
+          "rect": [
+            1642,
+            1703,
+            1,
+            1
+          ]
+        },
+        {
+          "sourceFrame": 54,
+          "offset": [
+            -30.3,
+            -27.5
+          ],
+          "rect": [
+            1642,
+            1703,
+            1,
+            1
+          ]
+        },
+        {
+          "sourceFrame": 55,
+          "offset": [
+            -30.3,
+            -27.5
+          ],
+          "rect": [
+            1642,
+            1703,
+            1,
+            1
+          ]
+        },
+        {
+          "sourceFrame": 57,
+          "offset": [
+            -18.8,
+            -19.0
+          ],
+          "rect": [
+            1179,
+            1516,
+            69,
+            88
+          ]
+        },
+        {
+          "sourceFrame": 58,
+          "offset": [
+            -18.8,
+            -19.0
+          ],
+          "rect": [
+            1179,
+            1516,
+            69,
+            88
+          ]
+        },
+        {
+          "sourceFrame": 59,
+          "offset": [
+            -23.8,
+            -24.5
+          ],
+          "rect": [
+            1429,
+            1377,
+            95,
+            114
+          ]
+        },
+        {
+          "sourceFrame": 60,
+          "offset": [
+            -23.8,
+            -24.5
+          ],
+          "rect": [
+            1429,
+            1377,
+            95,
+            114
+          ]
+        },
+        {
+          "sourceFrame": 61,
+          "offset": [
+            -26.3,
+            -26.0
+          ],
+          "rect": [
+            930,
+            1377,
+            113,
+            121
+          ]
+        },
+        {
+          "sourceFrame": 62,
+          "offset": [
+            -26.3,
+            -26.0
+          ],
+          "rect": [
+            930,
+            1377,
+            113,
+            121
+          ]
+        },
+        {
+          "sourceFrame": 63,
+          "offset": [
+            -28.3,
+            -27.5
+          ],
+          "rect": [
+            2,
+            1377,
+            121,
+            135
+          ]
+        },
+        {
+          "sourceFrame": 64,
+          "offset": [
+            -28.3,
+            -27.5
+          ],
+          "rect": [
+            2,
+            1377,
+            121,
+            135
+          ]
+        },
+        {
+          "sourceFrame": 65,
+          "offset": [
+            -27.3,
+            -17.5
+          ],
+          "rect": [
+            1704,
+            1619,
+            122,
+            54
+          ]
+        },
+        {
+          "sourceFrame": 66,
+          "offset": [
+            -27.3,
+            -17.5
+          ],
+          "rect": [
+            1704,
+            1619,
+            122,
+            54
+          ]
+        },
+        {
+          "sourceFrame": 67,
+          "offset": [
+            -30.3,
+            -5.5
+          ],
+          "rect": [
+            600,
+            1703,
+            130,
+            37
+          ]
+        },
+        {
+          "sourceFrame": 68,
+          "offset": [
+            -30.3,
+            -5.5
+          ],
+          "rect": [
+            600,
+            1703,
+            130,
+            37
+          ]
+        },
+        {
+          "sourceFrame": 69,
+          "offset": [
+            -30.3,
+            -27.5
+          ],
+          "rect": [
+            1642,
+            1703,
+            1,
+            1
+          ]
+        },
+        {
+          "sourceFrame": 70,
+          "offset": [
+            -30.3,
+            -27.5
+          ],
+          "rect": [
+            1642,
+            1703,
+            1,
+            1
+          ]
+        },
+        {
+          "sourceFrame": 71,
+          "offset": [
+            -30.3,
+            -27.5
+          ],
+          "rect": [
+            1642,
+            1703,
+            1,
+            1
+          ]
+        },
+        {
+          "sourceFrame": 72,
+          "offset": [
+            -30.3,
+            -27.5
+          ],
+          "rect": [
+            1642,
+            1703,
+            1,
+            1
+          ]
+        },
+        {
+          "sourceFrame": 73,
+          "offset": [
+            -30.3,
+            -27.5
+          ],
+          "rect": [
+            1642,
+            1703,
+            1,
+            1
+          ]
+        },
+        {
+          "sourceFrame": 74,
+          "offset": [
+            -30.3,
+            -27.5
+          ],
+          "rect": [
+            1642,
+            1703,
+            1,
+            1
+          ]
+        },
+        {
+          "sourceFrame": 75,
+          "offset": [
+            -30.3,
+            -27.5
+          ],
+          "rect": [
+            1642,
+            1703,
+            1,
+            1
+          ]
+        },
+        {
+          "sourceFrame": 76,
+          "offset": [
+            -30.3,
+            -27.5
+          ],
+          "rect": [
+            1642,
+            1703,
+            1,
+            1
+          ]
+        },
+        {
+          "sourceFrame": 77,
+          "offset": [
+            -30.3,
+            -27.5
+          ],
+          "rect": [
+            1642,
+            1703,
+            1,
+            1
+          ]
+        },
+        {
+          "sourceFrame": 78,
+          "offset": [
+            -30.3,
+            -27.5
+          ],
+          "rect": [
+            1642,
+            1703,
+            1,
+            1
+          ]
+        },
+        {
+          "sourceFrame": 79,
+          "offset": [
+            -30.3,
+            -27.5
+          ],
+          "rect": [
+            1642,
+            1703,
+            1,
+            1
+          ]
+        },
+        {
+          "sourceFrame": 80,
+          "offset": [
+            -30.3,
+            -27.5
+          ],
+          "rect": [
+            1642,
+            1703,
+            1,
+            1
+          ]
+        }
+      ],
+      "variants": [
+        [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11,
+          12,
+          13,
+          14,
+          15,
+          16,
+          17,
+          18,
+          19,
+          20
+        ],
+        [
+          21,
+          22,
+          23,
+          24,
+          25,
+          26,
+          27,
+          28,
+          29,
+          30,
+          31,
+          32
+        ],
+        [
+          33,
+          34,
+          35,
+          36,
+          37,
+          38,
+          39,
+          40,
+          41,
+          42,
+          43,
+          44,
+          45
+        ],
+        [
+          46,
+          47,
+          48,
+          49,
+          50,
+          51,
+          52,
+          53,
+          54,
+          55,
+          56,
+          57,
+          58,
+          59,
+          60,
+          61,
+          62,
+          63,
+          64,
+          65,
+          66,
+          67,
+          68,
+          69
+        ]
+      ]
+    },
+    {
+      "index": 31,
+      "linkage": "拼刀火花",
+      "kind": "impact",
+      "skipOriginYZero": true,
+      "worldLit": false,
+      "frames": [
+        {
+          "sourceFrame": 1,
+          "offset": [
+            -29.799999999999997,
+            -45.150000000000006
+          ],
+          "rect": [
+            2,
+            1206,
+            161,
+            167
+          ]
+        },
+        {
+          "sourceFrame": 2,
+          "offset": [
+            -29.799999999999997,
+            -45.150000000000006
+          ],
+          "rect": [
+            2,
+            1206,
+            161,
+            167
+          ]
+        },
+        {
+          "sourceFrame": 3,
+          "offset": [
+            -48.8,
+            -61.150000000000006
+          ],
+          "rect": [
+            150,
+            748,
+            207,
+            241
+          ]
+        },
+        {
+          "sourceFrame": 4,
+          "offset": [
+            -48.8,
+            -61.150000000000006
+          ],
+          "rect": [
+            150,
+            748,
+            207,
+            241
+          ]
+        },
+        {
+          "sourceFrame": 5,
+          "offset": [
+            -61.8,
+            -71.15
+          ],
+          "rect": [
+            709,
+            431,
+            203,
+            297
+          ]
+        },
+        {
+          "sourceFrame": 6,
+          "offset": [
+            -61.8,
+            -71.15
+          ],
+          "rect": [
+            709,
+            431,
+            203,
+            297
+          ]
+        },
+        {
+          "sourceFrame": 7,
+          "offset": [
+            -68.8,
+            -74.65
+          ],
+          "rect": [
+            1711,
+            2,
+            225,
+            330
+          ]
+        },
+        {
+          "sourceFrame": 8,
+          "offset": [
+            -68.8,
+            -74.65
+          ],
+          "rect": [
+            1711,
+            2,
+            225,
+            330
+          ]
+        },
+        {
+          "sourceFrame": 9,
+          "offset": [
+            -78.8,
+            -74.65
+          ],
+          "rect": [
+            1642,
+            1703,
+            1,
+            1
+          ]
+        },
+        {
+          "sourceFrame": 10,
+          "offset": [
+            -78.8,
+            -74.65
+          ],
+          "rect": [
+            1642,
+            1703,
+            1,
+            1
+          ]
+        },
+        {
+          "sourceFrame": 11,
+          "offset": [
+            -78.8,
+            -74.65
+          ],
+          "rect": [
+            1642,
+            1703,
+            1,
+            1
+          ]
+        },
+        {
+          "sourceFrame": 12,
+          "offset": [
+            -78.8,
+            -74.65
+          ],
+          "rect": [
+            1642,
+            1703,
+            1,
+            1
+          ]
+        },
+        {
+          "sourceFrame": 30,
+          "offset": [
+            -33.8,
+            -40.650000000000006
+          ],
+          "rect": [
+            989,
+            1206,
+            123,
+            145
+          ]
+        },
+        {
+          "sourceFrame": 31,
+          "offset": [
+            -33.8,
+            -40.650000000000006
+          ],
+          "rect": [
+            989,
+            1206,
+            123,
+            145
+          ]
+        },
+        {
+          "sourceFrame": 32,
+          "offset": [
+            -39.3,
+            -43.650000000000006
+          ],
+          "rect": [
+            1789,
+            1003,
+            151,
+            169
+          ]
+        },
+        {
+          "sourceFrame": 33,
+          "offset": [
+            -39.3,
+            -43.650000000000006
+          ],
+          "rect": [
+            1789,
+            1003,
+            151,
+            169
+          ]
+        },
+        {
+          "sourceFrame": 34,
+          "offset": [
+            -48.3,
+            -44.150000000000006
+          ],
+          "rect": [
+            628,
+            1003,
+            176,
+            192
+          ]
+        },
+        {
+          "sourceFrame": 35,
+          "offset": [
+            -48.3,
+            -44.150000000000006
+          ],
+          "rect": [
+            628,
+            1003,
+            176,
+            192
+          ]
+        },
+        {
+          "sourceFrame": 36,
+          "offset": [
+            -50.8,
+            -44.150000000000006
+          ],
+          "rect": [
+            1472,
+            748,
+            186,
+            202
+          ]
+        },
+        {
+          "sourceFrame": 37,
+          "offset": [
+            -50.8,
+            -44.150000000000006
+          ],
+          "rect": [
+            1472,
+            748,
+            186,
+            202
+          ]
+        },
+        {
+          "sourceFrame": 38,
+          "offset": [
+            -36.8,
+            -44.150000000000006
+          ],
+          "rect": [
+            1130,
+            748,
+            167,
+            207
+          ]
+        },
+        {
+          "sourceFrame": 39,
+          "offset": [
+            -36.8,
+            -44.150000000000006
+          ],
+          "rect": [
+            1130,
+            748,
+            167,
+            207
+          ]
+        },
+        {
+          "sourceFrame": 40,
+          "offset": [
+            -78.8,
+            -74.65
+          ],
+          "rect": [
+            1642,
+            1703,
+            1,
+            1
+          ]
+        },
+        {
+          "sourceFrame": 41,
+          "offset": [
+            -78.8,
+            -74.65
+          ],
+          "rect": [
+            1642,
+            1703,
+            1,
+            1
+          ]
+        },
+        {
+          "sourceFrame": 43,
+          "offset": [
+            -17.299999999999997,
+            -35.650000000000006
+          ],
+          "rect": [
+            656,
+            1377,
+            88,
+            124
+          ]
+        },
+        {
+          "sourceFrame": 44,
+          "offset": [
+            -17.299999999999997,
+            -35.650000000000006
+          ],
+          "rect": [
+            656,
+            1377,
+            88,
+            124
+          ]
+        },
+        {
+          "sourceFrame": 45,
+          "offset": [
+            -23.299999999999997,
+            -46.650000000000006
+          ],
+          "rect": [
+            167,
+            1206,
+            120,
+            165
+          ]
+        },
+        {
+          "sourceFrame": 46,
+          "offset": [
+            -23.299999999999997,
+            -46.650000000000006
+          ],
+          "rect": [
+            167,
+            1206,
+            120,
+            165
+          ]
+        },
+        {
+          "sourceFrame": 47,
+          "offset": [
+            -30.299999999999997,
+            -53.650000000000006
+          ],
+          "rect": [
+            348,
+            1003,
+            140,
+            194
+          ]
+        },
+        {
+          "sourceFrame": 48,
+          "offset": [
+            -30.299999999999997,
+            -53.650000000000006
+          ],
+          "rect": [
+            348,
+            1003,
+            140,
+            194
+          ]
+        },
+        {
+          "sourceFrame": 49,
+          "offset": [
+            -35.3,
+            -56.650000000000006
+          ],
+          "rect": [
+            972,
+            748,
+            154,
+            210
+          ]
+        },
+        {
+          "sourceFrame": 50,
+          "offset": [
+            -35.3,
+            -56.650000000000006
+          ],
+          "rect": [
+            972,
+            748,
+            154,
+            210
+          ]
+        },
+        {
+          "sourceFrame": 51,
+          "offset": [
+            -37.3,
+            -58.150000000000006
+          ],
+          "rect": [
+            811,
+            748,
+            157,
+            223
+          ]
+        },
+        {
+          "sourceFrame": 52,
+          "offset": [
+            -37.3,
+            -58.150000000000006
+          ],
+          "rect": [
+            811,
+            748,
+            157,
+            223
+          ]
+        },
+        {
+          "sourceFrame": 53,
+          "offset": [
+            -78.8,
+            -74.65
+          ],
+          "rect": [
+            1642,
+            1703,
+            1,
+            1
+          ]
+        },
+        {
+          "sourceFrame": 54,
+          "offset": [
+            -78.8,
+            -74.65
+          ],
+          "rect": [
+            1642,
+            1703,
+            1,
+            1
+          ]
+        },
+        {
+          "sourceFrame": 55,
+          "offset": [
+            -78.8,
+            -74.65
+          ],
+          "rect": [
+            1642,
+            1703,
+            1,
+            1
+          ]
+        },
+        {
+          "sourceFrame": 57,
+          "offset": [
+            -48.8,
+            -52.650000000000006
+          ],
+          "rect": [
+            632,
+            748,
+            175,
+            223
+          ]
+        },
+        {
+          "sourceFrame": 58,
+          "offset": [
+            -48.8,
+            -52.650000000000006
+          ],
+          "rect": [
+            632,
+            748,
+            175,
+            223
+          ]
+        },
+        {
+          "sourceFrame": 59,
+          "offset": [
+            -61.3,
+            -67.15
+          ],
+          "rect": [
+            916,
+            431,
+            241,
+            292
+          ]
+        },
+        {
+          "sourceFrame": 60,
+          "offset": [
+            -61.3,
+            -67.15
+          ],
+          "rect": [
+            916,
+            431,
+            241,
+            292
+          ]
+        },
+        {
+          "sourceFrame": 61,
+          "offset": [
+            -67.8,
+            -71.15
+          ],
+          "rect": [
+            298,
+            431,
+            287,
+            309
+          ]
+        },
+        {
+          "sourceFrame": 62,
+          "offset": [
+            -67.8,
+            -71.15
+          ],
+          "rect": [
+            298,
+            431,
+            287,
+            309
+          ]
+        },
+        {
+          "sourceFrame": 63,
+          "offset": [
+            -73.3,
+            -74.65
+          ],
+          "rect": [
+            1399,
+            2,
+            308,
+            345
+          ]
+        },
+        {
+          "sourceFrame": 64,
+          "offset": [
+            -73.3,
+            -74.65
+          ],
+          "rect": [
+            1399,
+            2,
+            308,
+            345
+          ]
+        },
+        {
+          "sourceFrame": 65,
+          "offset": [
+            -70.8,
+            -48.650000000000006
+          ],
+          "rect": [
+            1653,
+            1206,
+            311,
+            137
+          ]
+        },
+        {
+          "sourceFrame": 66,
+          "offset": [
+            -70.8,
+            -48.650000000000006
+          ],
+          "rect": [
+            1653,
+            1206,
+            311,
+            137
+          ]
+        },
+        {
+          "sourceFrame": 67,
+          "offset": [
+            -78.8,
+            -17.650000000000006
+          ],
+          "rect": [
+            628,
+            1516,
+            332,
+            93
+          ]
+        },
+        {
+          "sourceFrame": 68,
+          "offset": [
+            -78.8,
+            -17.650000000000006
+          ],
+          "rect": [
+            628,
+            1516,
+            332,
+            93
+          ]
+        },
+        {
+          "sourceFrame": 69,
+          "offset": [
+            -78.8,
+            -74.65
+          ],
+          "rect": [
+            1642,
+            1703,
+            1,
+            1
+          ]
+        },
+        {
+          "sourceFrame": 70,
+          "offset": [
+            -78.8,
+            -74.65
+          ],
+          "rect": [
+            1642,
+            1703,
+            1,
+            1
+          ]
+        },
+        {
+          "sourceFrame": 71,
+          "offset": [
+            -78.8,
+            -74.65
+          ],
+          "rect": [
+            1642,
+            1703,
+            1,
+            1
+          ]
+        },
+        {
+          "sourceFrame": 72,
+          "offset": [
+            -78.8,
+            -74.65
+          ],
+          "rect": [
+            1642,
+            1703,
+            1,
+            1
+          ]
+        },
+        {
+          "sourceFrame": 73,
+          "offset": [
+            -78.8,
+            -74.65
+          ],
+          "rect": [
+            1642,
+            1703,
+            1,
+            1
+          ]
+        },
+        {
+          "sourceFrame": 74,
+          "offset": [
+            -78.8,
+            -74.65
+          ],
+          "rect": [
+            1642,
+            1703,
+            1,
+            1
+          ]
+        },
+        {
+          "sourceFrame": 75,
+          "offset": [
+            -78.8,
+            -74.65
+          ],
+          "rect": [
+            1642,
+            1703,
+            1,
+            1
+          ]
+        },
+        {
+          "sourceFrame": 76,
+          "offset": [
+            -78.8,
+            -74.65
+          ],
+          "rect": [
+            1642,
+            1703,
+            1,
+            1
+          ]
+        },
+        {
+          "sourceFrame": 77,
+          "offset": [
+            -78.8,
+            -74.65
+          ],
+          "rect": [
+            1642,
+            1703,
+            1,
+            1
+          ]
+        },
+        {
+          "sourceFrame": 78,
+          "offset": [
+            -78.8,
+            -74.65
+          ],
+          "rect": [
+            1642,
+            1703,
+            1,
+            1
+          ]
+        },
+        {
+          "sourceFrame": 79,
+          "offset": [
+            -78.8,
+            -74.65
+          ],
+          "rect": [
+            1642,
+            1703,
+            1,
+            1
+          ]
+        },
+        {
+          "sourceFrame": 80,
+          "offset": [
+            -78.8,
+            -74.65
+          ],
+          "rect": [
+            1642,
+            1703,
+            1,
+            1
+          ]
+        },
+        {
+          "sourceFrame": 82,
+          "offset": [
+            -30.299999999999997,
+            -40.650000000000006
+          ],
+          "rect": [
+            1116,
+            1206,
+            123,
+            145
+          ]
+        },
+        {
+          "sourceFrame": 83,
+          "offset": [
+            -30.299999999999997,
+            -40.650000000000006
+          ],
+          "rect": [
+            1116,
+            1206,
+            123,
+            145
+          ]
+        },
+        {
+          "sourceFrame": 84,
+          "offset": [
+            -38.8,
+            -43.650000000000006
+          ],
+          "rect": [
+            1633,
+            1003,
+            152,
+            169
+          ]
+        },
+        {
+          "sourceFrame": 85,
+          "offset": [
+            -38.8,
+            -43.650000000000006
+          ],
+          "rect": [
+            1633,
+            1003,
+            152,
+            169
+          ]
+        },
+        {
+          "sourceFrame": 86,
+          "offset": [
+            -41.8,
+            -44.150000000000006
+          ],
+          "rect": [
+            808,
+            1003,
+            175,
+            192
+          ]
+        },
+        {
+          "sourceFrame": 87,
+          "offset": [
+            -41.8,
+            -44.150000000000006
+          ],
+          "rect": [
+            808,
+            1003,
+            175,
+            192
+          ]
+        },
+        {
+          "sourceFrame": 88,
+          "offset": [
+            -44.3,
+            -44.150000000000006
+          ],
+          "rect": [
+            1662,
+            748,
+            186,
+            202
+          ]
+        },
+        {
+          "sourceFrame": 89,
+          "offset": [
+            -44.3,
+            -44.150000000000006
+          ],
+          "rect": [
+            1662,
+            748,
+            186,
+            202
+          ]
+        },
+        {
+          "sourceFrame": 90,
+          "offset": [
+            -49.3,
+            -44.150000000000006
+          ],
+          "rect": [
+            1301,
+            748,
+            167,
+            207
+          ]
+        },
+        {
+          "sourceFrame": 91,
+          "offset": [
+            -49.3,
+            -44.150000000000006
+          ],
+          "rect": [
+            1301,
+            748,
+            167,
+            207
+          ]
+        },
+        {
+          "sourceFrame": 92,
+          "offset": [
+            -78.8,
+            -74.65
+          ],
+          "rect": [
+            1642,
+            1703,
+            1,
+            1
+          ]
+        },
+        {
+          "sourceFrame": 93,
+          "offset": [
+            -78.8,
+            -74.65
+          ],
+          "rect": [
+            1642,
+            1703,
+            1,
+            1
+          ]
+        },
+        {
+          "sourceFrame": 94,
+          "offset": [
+            -78.8,
+            -74.65
+          ],
+          "rect": [
+            1642,
+            1703,
+            1,
+            1
+          ]
+        },
+        {
+          "sourceFrame": 95,
+          "offset": [
+            -78.8,
+            -74.65
+          ],
+          "rect": [
+            1642,
+            1703,
+            1,
+            1
+          ]
+        },
+        {
+          "sourceFrame": 96,
+          "offset": [
+            -78.8,
+            -74.65
+          ],
+          "rect": [
+            1642,
+            1703,
+            1,
+            1
+          ]
+        },
+        {
+          "sourceFrame": 97,
+          "offset": [
+            -78.8,
+            -74.65
+          ],
+          "rect": [
+            1642,
+            1703,
+            1,
+            1
+          ]
+        },
+        {
+          "sourceFrame": 98,
+          "offset": [
+            -78.8,
+            -74.65
+          ],
+          "rect": [
+            1642,
+            1703,
+            1,
+            1
+          ]
+        },
+        {
+          "sourceFrame": 100,
+          "offset": [
+            -48.8,
+            -52.650000000000006
+          ],
+          "rect": [
+            632,
+            748,
+            175,
+            223
+          ]
+        },
+        {
+          "sourceFrame": 101,
+          "offset": [
+            -48.8,
+            -52.650000000000006
+          ],
+          "rect": [
+            632,
+            748,
+            175,
+            223
+          ]
+        },
+        {
+          "sourceFrame": 102,
+          "offset": [
+            -61.3,
+            -67.15
+          ],
+          "rect": [
+            916,
+            431,
+            241,
+            292
+          ]
+        },
+        {
+          "sourceFrame": 103,
+          "offset": [
+            -61.3,
+            -67.15
+          ],
+          "rect": [
+            916,
+            431,
+            241,
+            292
+          ]
+        },
+        {
+          "sourceFrame": 104,
+          "offset": [
+            -67.8,
+            -71.15
+          ],
+          "rect": [
+            298,
+            431,
+            287,
+            309
+          ]
+        },
+        {
+          "sourceFrame": 105,
+          "offset": [
+            -67.8,
+            -71.15
+          ],
+          "rect": [
+            298,
+            431,
+            287,
+            309
+          ]
+        },
+        {
+          "sourceFrame": 106,
+          "offset": [
+            -73.3,
+            -74.65
+          ],
+          "rect": [
+            1399,
+            2,
+            308,
+            345
+          ]
+        },
+        {
+          "sourceFrame": 107,
+          "offset": [
+            -73.3,
+            -74.65
+          ],
+          "rect": [
+            1399,
+            2,
+            308,
+            345
+          ]
+        },
+        {
+          "sourceFrame": 108,
+          "offset": [
+            -70.8,
+            -48.650000000000006
+          ],
+          "rect": [
+            1653,
+            1206,
+            311,
+            137
+          ]
+        },
+        {
+          "sourceFrame": 109,
+          "offset": [
+            -70.8,
+            -48.650000000000006
+          ],
+          "rect": [
+            1653,
+            1206,
+            311,
+            137
+          ]
+        },
+        {
+          "sourceFrame": 110,
+          "offset": [
+            -78.8,
+            -17.650000000000006
+          ],
+          "rect": [
+            628,
+            1516,
+            332,
+            93
+          ]
+        },
+        {
+          "sourceFrame": 111,
+          "offset": [
+            -78.8,
+            -17.650000000000006
+          ],
+          "rect": [
+            628,
+            1516,
+            332,
+            93
+          ]
+        },
+        {
+          "sourceFrame": 112,
+          "offset": [
+            -78.8,
+            -74.65
+          ],
+          "rect": [
+            1642,
+            1703,
+            1,
+            1
+          ]
+        },
+        {
+          "sourceFrame": 113,
+          "offset": [
+            -78.8,
+            -74.65
+          ],
+          "rect": [
+            1642,
+            1703,
+            1,
+            1
+          ]
+        },
+        {
+          "sourceFrame": 114,
+          "offset": [
+            -78.8,
+            -74.65
+          ],
+          "rect": [
+            1642,
+            1703,
+            1,
+            1
+          ]
+        }
+      ],
+      "variants": [
+        [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11
+        ],
+        [
+          12,
+          13,
+          14,
+          15,
+          16,
+          17,
+          18,
+          19,
+          20,
+          21,
+          22,
+          23
+        ],
+        [
+          24,
+          25,
+          26,
+          27,
+          28,
+          29,
+          30,
+          31,
+          32,
+          33,
+          34,
+          35,
+          36
+        ],
+        [
+          37,
+          38,
+          39,
+          40,
+          41,
+          42,
+          43,
+          44,
+          45,
+          46,
+          47,
+          48,
+          49,
+          50,
+          51,
+          52,
+          53,
+          54,
+          55,
+          56,
+          57,
+          58,
+          59,
+          60
+        ],
+        [
+          61,
+          62,
+          63,
+          64,
+          65,
+          66,
+          67,
+          68,
+          69,
+          70,
+          71,
+          72,
+          73,
+          74,
+          75,
+          76,
+          77
+        ],
+        [
+          78,
+          79,
+          80,
+          81,
+          82,
+          83,
+          84,
+          85,
+          86,
+          87,
+          88,
+          89,
+          90,
+          91,
+          92
+        ]
+      ]
+    },
+    {
+      "index": 32,
+      "linkage": "战术巴雷特击中特效",
+      "kind": "impact",
+      "skipOriginYZero": false,
+      "worldLit": false,
+      "frames": [
+        {
+          "sourceFrame": 0,
+          "offset": [
+            -47.0,
+            -49.0
+          ],
+          "rect": [
+            152,
+            1003,
+            192,
+            197
+          ]
+        },
+        {
+          "sourceFrame": 1,
+          "offset": [
+            -47.0,
+            -49.0
+          ],
+          "rect": [
+            152,
+            1003,
+            192,
+            197
+          ]
+        },
+        {
+          "sourceFrame": 2,
+          "offset": [
+            -66.0,
+            -58.0
+          ],
+          "rect": [
+            361,
+            748,
+            267,
+            235
+          ]
+        },
+        {
+          "sourceFrame": 3,
+          "offset": [
+            -66.0,
+            -58.0
+          ],
+          "rect": [
+            361,
+            748,
+            267,
+            235
+          ]
+        },
+        {
+          "sourceFrame": 4,
+          "offset": [
+            -79.0,
+            -68.0
+          ],
+          "rect": [
+            1531,
+            431,
+            319,
+            276
+          ]
+        },
+        {
+          "sourceFrame": 5,
+          "offset": [
+            -79.0,
+            -68.0
+          ],
+          "rect": [
+            1531,
+            431,
+            319,
+            276
+          ]
+        },
+        {
+          "sourceFrame": 6,
+          "offset": [
+            -91.0,
+            -72.0
+          ],
+          "rect": [
+            1161,
+            431,
+            366,
+            290
+          ]
+        },
+        {
+          "sourceFrame": 7,
+          "offset": [
+            -91.0,
+            -72.0
+          ],
+          "rect": [
+            1161,
+            431,
+            366,
+            290
+          ]
+        },
+        {
+          "sourceFrame": 8,
+          "offset": [
+            -91.0,
+            -73.0
+          ],
+          "rect": [
+            1642,
+            1703,
+            1,
+            1
+          ]
+        },
+        {
+          "sourceFrame": 9,
+          "offset": [
+            -91.0,
+            -73.0
+          ],
+          "rect": [
+            1642,
+            1703,
+            1,
+            1
+          ]
+        },
+        {
+          "sourceFrame": 10,
+          "offset": [
+            -91.0,
+            -73.0
+          ],
+          "rect": [
+            1642,
+            1703,
+            1,
+            1
+          ]
+        },
+        {
+          "sourceFrame": 11,
+          "offset": [
+            -47.0,
+            -49.0
+          ],
+          "rect": [
+            152,
+            1003,
+            192,
+            197
+          ]
+        },
+        {
+          "sourceFrame": 12,
+          "offset": [
+            -47.0,
+            -49.0
+          ],
+          "rect": [
+            152,
+            1003,
+            192,
+            197
+          ]
+        }
+      ],
+      "variants": [
+        [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11,
+          12
+        ]
+      ]
+    },
+    {
+      "index": 33,
+      "linkage": "铁枪能量弹火花",
+      "kind": "impact",
+      "skipOriginYZero": true,
+      "worldLit": false,
+      "frames": [
+        {
+          "sourceFrame": 1,
+          "offset": [
+            -14.5,
+            -22.049999999999997
+          ],
+          "rect": [
+            1936,
+            1516,
+            52,
+            81
+          ]
+        },
+        {
+          "sourceFrame": 2,
+          "offset": [
+            -32.5,
+            -40.05
+          ],
+          "rect": [
+            291,
+            1206,
+            120,
+            164
+          ]
+        },
+        {
+          "sourceFrame": 3,
+          "offset": [
+            -38.5,
+            -64.05
+          ],
+          "rect": [
+            1854,
+            431,
+            144,
+            251
+          ]
+        },
+        {
+          "sourceFrame": 5,
+          "offset": [
+            -21.5,
+            -31.049999999999997
+          ],
+          "rect": [
+            1347,
+            1377,
+            78,
+            116
+          ]
+        },
+        {
+          "sourceFrame": 6,
+          "offset": [
+            -27.5,
+            -42.05
+          ],
+          "rect": [
+            583,
+            1206,
+            118,
+            157
+          ]
+        },
+        {
+          "sourceFrame": 7,
+          "offset": [
+            -42.0,
+            -40.05
+          ],
+          "rect": [
+            415,
+            1206,
+            164,
+            158
+          ]
+        },
+        {
+          "sourceFrame": 9,
+          "offset": [
+            -8.0,
+            -12.049999999999997
+          ],
+          "rect": [
+            1899,
+            1619,
+            33,
+            51
+          ]
+        },
+        {
+          "sourceFrame": 10,
+          "offset": [
+            -22.5,
+            -32.55
+          ],
+          "rect": [
+            331,
+            1377,
+            88,
+            131
+          ]
+        },
+        {
+          "sourceFrame": 11,
+          "offset": [
+            -36.5,
+            -50.55
+          ],
+          "rect": [
+            2,
+            1003,
+            146,
+            199
+          ]
+        },
+        {
+          "sourceFrame": 12,
+          "offset": [
+            -36.5,
+            -63.05
+          ],
+          "rect": [
+            2,
+            748,
+            144,
+            251
+          ]
+        }
+      ],
+      "variants": [
+        [
+          0,
+          1,
+          2
+        ],
+        [
+          3,
+          4,
+          5
+        ],
+        [
+          6,
+          7,
+          8,
+          9
+        ]
+      ]
+    },
+    {
+      "index": 34,
+      "linkage": "屎花",
+      "kind": "impact",
+      "skipOriginYZero": true,
+      "worldLit": true,
+      "frames": [
+        {
+          "sourceFrame": 1,
+          "offset": [
+            -18.049999999999997,
+            -27.4
+          ],
+          "rect": [
+            2,
+            1516,
+            95,
+            99
+          ]
+        },
+        {
+          "sourceFrame": 2,
+          "offset": [
+            -18.049999999999997,
+            -27.4
+          ],
+          "rect": [
+            2,
+            1516,
+            95,
+            99
+          ]
+        },
+        {
+          "sourceFrame": 3,
+          "offset": [
+            -29.049999999999997,
+            -36.4
+          ],
+          "rect": [
+            1334,
+            1206,
+            122,
+            142
+          ]
+        },
+        {
+          "sourceFrame": 4,
+          "offset": [
+            -29.049999999999997,
+            -36.4
+          ],
+          "rect": [
+            1334,
+            1206,
+            122,
+            142
+          ]
+        },
+        {
+          "sourceFrame": 5,
+          "offset": [
+            -36.55,
+            -42.4
+          ],
+          "rect": [
+            1364,
+            1003,
+            119,
+            175
+          ]
+        },
+        {
+          "sourceFrame": 6,
+          "offset": [
+            -36.55,
+            -42.4
+          ],
+          "rect": [
+            1364,
+            1003,
+            119,
+            175
+          ]
+        },
+        {
+          "sourceFrame": 7,
+          "offset": [
+            -40.55,
+            -44.4
+          ],
+          "rect": [
+            492,
+            1003,
+            132,
+            194
+          ]
+        },
+        {
+          "sourceFrame": 8,
+          "offset": [
+            -40.55,
+            -44.4
+          ],
+          "rect": [
+            492,
+            1003,
+            132,
+            194
+          ]
+        },
+        {
+          "sourceFrame": 9,
+          "offset": [
+            -46.55,
+            -44.4
+          ],
+          "rect": [
+            1642,
+            1703,
+            1,
+            1
+          ]
+        },
+        {
+          "sourceFrame": 10,
+          "offset": [
+            -46.55,
+            -44.4
+          ],
+          "rect": [
+            1642,
+            1703,
+            1,
+            1
+          ]
+        },
+        {
+          "sourceFrame": 11,
+          "offset": [
+            -46.55,
+            -44.4
+          ],
+          "rect": [
+            1642,
+            1703,
+            1,
+            1
+          ]
+        },
+        {
+          "sourceFrame": 12,
+          "offset": [
+            -46.55,
+            -44.4
+          ],
+          "rect": [
+            1642,
+            1703,
+            1,
+            1
+          ]
+        },
+        {
+          "sourceFrame": 13,
+          "offset": [
+            -46.55,
+            -44.4
+          ],
+          "rect": [
+            1642,
+            1703,
+            1,
+            1
+          ]
+        },
+        {
+          "sourceFrame": 14,
+          "offset": [
+            -46.55,
+            -44.4
+          ],
+          "rect": [
+            1642,
+            1703,
+            1,
+            1
+          ]
+        },
+        {
+          "sourceFrame": 15,
+          "offset": [
+            -46.55,
+            -44.4
+          ],
+          "rect": [
+            1642,
+            1703,
+            1,
+            1
+          ]
+        },
+        {
+          "sourceFrame": 16,
+          "offset": [
+            -46.55,
+            -44.4
+          ],
+          "rect": [
+            1642,
+            1703,
+            1,
+            1
+          ]
+        },
+        {
+          "sourceFrame": 17,
+          "offset": [
+            -46.55,
+            -44.4
+          ],
+          "rect": [
+            1642,
+            1703,
+            1,
+            1
+          ]
+        },
+        {
+          "sourceFrame": 18,
+          "offset": [
+            -46.55,
+            -44.4
+          ],
+          "rect": [
+            1642,
+            1703,
+            1,
+            1
+          ]
+        },
+        {
+          "sourceFrame": 19,
+          "offset": [
+            -46.55,
+            -44.4
+          ],
+          "rect": [
+            1642,
+            1703,
+            1,
+            1
+          ]
+        },
+        {
+          "sourceFrame": 20,
+          "offset": [
+            -46.55,
+            -44.4
+          ],
+          "rect": [
+            1642,
+            1703,
+            1,
+            1
+          ]
+        },
+        {
+          "sourceFrame": 21,
+          "offset": [
+            -46.55,
+            -44.4
+          ],
+          "rect": [
+            1642,
+            1703,
+            1,
+            1
+          ]
+        },
+        {
+          "sourceFrame": 30,
+          "offset": [
+            -20.049999999999997,
+            -24.9
+          ],
+          "rect": [
+            1318,
+            1516,
+            72,
+            86
+          ]
+        },
+        {
+          "sourceFrame": 31,
+          "offset": [
+            -20.049999999999997,
+            -24.9
+          ],
+          "rect": [
+            1318,
+            1516,
+            72,
+            86
+          ]
+        },
+        {
+          "sourceFrame": 32,
+          "offset": [
+            -23.549999999999997,
+            -26.4
+          ],
+          "rect": [
+            101,
+            1516,
+            89,
+            99
+          ]
+        },
+        {
+          "sourceFrame": 33,
+          "offset": [
+            -23.549999999999997,
+            -26.4
+          ],
+          "rect": [
+            101,
+            1516,
+            89,
+            99
+          ]
+        },
+        {
+          "sourceFrame": 34,
+          "offset": [
+            -28.549999999999997,
+            -26.9
+          ],
+          "rect": [
+            1729,
+            1377,
+            103,
+            113
+          ]
+        },
+        {
+          "sourceFrame": 35,
+          "offset": [
+            -28.549999999999997,
+            -26.9
+          ],
+          "rect": [
+            1729,
+            1377,
+            103,
+            113
+          ]
+        },
+        {
+          "sourceFrame": 36,
+          "offset": [
+            -30.049999999999997,
+            -26.9
+          ],
+          "rect": [
+            1150,
+            1377,
+            109,
+            119
+          ]
+        },
+        {
+          "sourceFrame": 37,
+          "offset": [
+            -30.049999999999997,
+            -26.9
+          ],
+          "rect": [
+            1150,
+            1377,
+            109,
+            119
+          ]
+        },
+        {
+          "sourceFrame": 38,
+          "offset": [
+            -22.049999999999997,
+            -26.4
+          ],
+          "rect": [
+            1047,
+            1377,
+            99,
+            121
+          ]
+        },
+        {
+          "sourceFrame": 39,
+          "offset": [
+            -22.049999999999997,
+            -26.4
+          ],
+          "rect": [
+            1047,
+            1377,
+            99,
+            121
+          ]
+        },
+        {
+          "sourceFrame": 40,
+          "offset": [
+            -46.55,
+            -44.4
+          ],
+          "rect": [
+            1642,
+            1703,
+            1,
+            1
+          ]
+        },
+        {
+          "sourceFrame": 41,
+          "offset": [
+            -46.55,
+            -44.4
+          ],
+          "rect": [
+            1642,
+            1703,
+            1,
+            1
+          ]
+        },
+        {
+          "sourceFrame": 43,
+          "offset": [
+            -10.549999999999997,
+            -21.4
+          ],
+          "rect": [
+            497,
+            1619,
+            52,
+            73
+          ]
+        },
+        {
+          "sourceFrame": 44,
+          "offset": [
+            -10.549999999999997,
+            -21.4
+          ],
+          "rect": [
+            497,
+            1619,
+            52,
+            73
+          ]
+        },
+        {
+          "sourceFrame": 45,
+          "offset": [
+            -14.049999999999997,
+            -27.9
+          ],
+          "rect": [
+            362,
+            1516,
+            71,
+            97
+          ]
+        },
+        {
+          "sourceFrame": 46,
+          "offset": [
+            -14.049999999999997,
+            -27.9
+          ],
+          "rect": [
+            362,
+            1516,
+            71,
+            97
+          ]
+        },
+        {
+          "sourceFrame": 47,
+          "offset": [
+            -18.049999999999997,
+            -31.9
+          ],
+          "rect": [
+            1528,
+            1377,
+            82,
+            114
+          ]
+        },
+        {
+          "sourceFrame": 48,
+          "offset": [
+            -18.049999999999997,
+            -31.9
+          ],
+          "rect": [
+            1528,
+            1377,
+            82,
+            114
+          ]
+        },
+        {
+          "sourceFrame": 49,
+          "offset": [
+            -21.049999999999997,
+            -33.9
+          ],
+          "rect": [
+            748,
+            1377,
+            90,
+            123
+          ]
+        },
+        {
+          "sourceFrame": 50,
+          "offset": [
+            -21.049999999999997,
+            -33.9
+          ],
+          "rect": [
+            748,
+            1377,
+            90,
+            123
+          ]
+        },
+        {
+          "sourceFrame": 51,
+          "offset": [
+            -22.549999999999997,
+            -34.9
+          ],
+          "rect": [
+            234,
+            1377,
+            93,
+            131
+          ]
+        },
+        {
+          "sourceFrame": 52,
+          "offset": [
+            -22.549999999999997,
+            -34.9
+          ],
+          "rect": [
+            234,
+            1377,
+            93,
+            131
+          ]
+        },
+        {
+          "sourceFrame": 53,
+          "offset": [
+            -46.55,
+            -44.4
+          ],
+          "rect": [
+            1642,
+            1703,
+            1,
+            1
+          ]
+        },
+        {
+          "sourceFrame": 54,
+          "offset": [
+            -46.55,
+            -44.4
+          ],
+          "rect": [
+            1642,
+            1703,
+            1,
+            1
+          ]
+        },
+        {
+          "sourceFrame": 55,
+          "offset": [
+            -46.55,
+            -44.4
+          ],
+          "rect": [
+            1642,
+            1703,
+            1,
+            1
+          ]
+        },
+        {
+          "sourceFrame": 57,
+          "offset": [
+            -29.049999999999997,
+            -31.9
+          ],
+          "rect": [
+            127,
+            1377,
+            103,
+            132
+          ]
+        },
+        {
+          "sourceFrame": 58,
+          "offset": [
+            -29.049999999999997,
+            -31.9
+          ],
+          "rect": [
+            127,
+            1377,
+            103,
+            132
+          ]
+        },
+        {
+          "sourceFrame": 59,
+          "offset": [
+            -36.55,
+            -39.9
+          ],
+          "rect": [
+            1487,
+            1003,
+            142,
+            171
+          ]
+        },
+        {
+          "sourceFrame": 60,
+          "offset": [
+            -36.55,
+            -39.9
+          ],
+          "rect": [
+            1487,
+            1003,
+            142,
+            171
+          ]
+        },
+        {
+          "sourceFrame": 61,
+          "offset": [
+            -40.55,
+            -42.4
+          ],
+          "rect": [
+            1190,
+            1003,
+            170,
+            182
+          ]
+        },
+        {
+          "sourceFrame": 62,
+          "offset": [
+            -40.55,
+            -42.4
+          ],
+          "rect": [
+            1190,
+            1003,
+            170,
+            182
+          ]
+        },
+        {
+          "sourceFrame": 63,
+          "offset": [
+            -43.55,
+            -44.4
+          ],
+          "rect": [
+            1852,
+            748,
+            181,
+            202
+          ]
+        },
+        {
+          "sourceFrame": 64,
+          "offset": [
+            -43.55,
+            -44.4
+          ],
+          "rect": [
+            1852,
+            748,
+            181,
+            202
+          ]
+        },
+        {
+          "sourceFrame": 65,
+          "offset": [
+            -42.05,
+            -29.4
+          ],
+          "rect": [
+            1458,
+            1516,
+            183,
+            81
+          ]
+        },
+        {
+          "sourceFrame": 66,
+          "offset": [
+            -42.05,
+            -29.4
+          ],
+          "rect": [
+            1458,
+            1516,
+            183,
+            81
+          ]
+        },
+        {
+          "sourceFrame": 67,
+          "offset": [
+            -46.55,
+            -10.899999999999999
+          ],
+          "rect": [
+            1505,
+            1619,
+            195,
+            55
+          ]
+        },
+        {
+          "sourceFrame": 68,
+          "offset": [
+            -46.55,
+            -10.899999999999999
+          ],
+          "rect": [
+            1505,
+            1619,
+            195,
+            55
+          ]
+        },
+        {
+          "sourceFrame": 69,
+          "offset": [
+            -46.55,
+            -44.4
+          ],
+          "rect": [
+            1642,
+            1703,
+            1,
+            1
+          ]
+        },
+        {
+          "sourceFrame": 70,
+          "offset": [
+            -46.55,
+            -44.4
+          ],
+          "rect": [
+            1642,
+            1703,
+            1,
+            1
+          ]
+        },
+        {
+          "sourceFrame": 71,
+          "offset": [
+            -46.55,
+            -44.4
+          ],
+          "rect": [
+            1642,
+            1703,
+            1,
+            1
+          ]
+        },
+        {
+          "sourceFrame": 72,
+          "offset": [
+            -46.55,
+            -44.4
+          ],
+          "rect": [
+            1642,
+            1703,
+            1,
+            1
+          ]
+        },
+        {
+          "sourceFrame": 73,
+          "offset": [
+            -46.55,
+            -44.4
+          ],
+          "rect": [
+            1642,
+            1703,
+            1,
+            1
+          ]
+        },
+        {
+          "sourceFrame": 74,
+          "offset": [
+            -46.55,
+            -44.4
+          ],
+          "rect": [
+            1642,
+            1703,
+            1,
+            1
+          ]
+        },
+        {
+          "sourceFrame": 75,
+          "offset": [
+            -46.55,
+            -44.4
+          ],
+          "rect": [
+            1642,
+            1703,
+            1,
+            1
+          ]
+        },
+        {
+          "sourceFrame": 76,
+          "offset": [
+            -46.55,
+            -44.4
+          ],
+          "rect": [
+            1642,
+            1703,
+            1,
+            1
+          ]
+        },
+        {
+          "sourceFrame": 77,
+          "offset": [
+            -46.55,
+            -44.4
+          ],
+          "rect": [
+            1642,
+            1703,
+            1,
+            1
+          ]
+        },
+        {
+          "sourceFrame": 78,
+          "offset": [
+            -46.55,
+            -44.4
+          ],
+          "rect": [
+            1642,
+            1703,
+            1,
+            1
+          ]
+        },
+        {
+          "sourceFrame": 79,
+          "offset": [
+            -46.55,
+            -44.4
+          ],
+          "rect": [
+            1642,
+            1703,
+            1,
+            1
+          ]
+        },
+        {
+          "sourceFrame": 80,
+          "offset": [
+            -46.55,
+            -44.4
+          ],
+          "rect": [
+            1642,
+            1703,
+            1,
+            1
+          ]
+        }
+      ],
+      "variants": [
+        [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11,
+          12,
+          13,
+          14,
+          15,
+          16,
+          17,
+          18,
+          19,
+          20
+        ],
+        [
+          21,
+          22,
+          23,
+          24,
+          25,
+          26,
+          27,
+          28,
+          29,
+          30,
+          31,
+          32
+        ],
+        [
+          33,
+          34,
+          35,
+          36,
+          37,
+          38,
+          39,
+          40,
+          41,
+          42,
+          43,
+          44,
+          45
+        ],
+        [
+          46,
+          47,
+          48,
+          49,
+          50,
+          51,
+          52,
+          53,
+          54,
+          55,
+          56,
+          57,
+          58,
+          59,
+          60,
+          61,
+          62,
+          63,
+          64,
+          65,
+          66,
+          67,
+          68,
+          69
+        ]
+      ]
+    }
+  ]
+}

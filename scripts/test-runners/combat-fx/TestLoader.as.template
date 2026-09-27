@@ -1,0 +1,4 @@
+﻿trace("FocusedTestRunId combat-fx Start: __FOCUSED_RUN_ID__");
+org.flashNight.arki.render.CombatFxBridgeTest.runAllTests();
+org.flashNight.arki.bullet.BulletComponent.Queue.RayPipelineEquivalenceTest.runAllTests();
+trace("FocusedTestRunId combat-fx Complete: __FOCUSED_RUN_ID__");

@@ -21,6 +21,8 @@
 #include <condition_variable>
 #include <vector>
 #include <tuple>
+#include <memory>
+#include <string>
 
 using namespace winrt;
 using namespace winrt::Windows::Graphics::Capture;
@@ -33,6 +35,51 @@ double QpcMs() {
     QueryPerformanceCounter(&now); QueryPerformanceFrequency(&frequency);
     return 1000.0 * static_cast<double>(now.QuadPart) / frequency.QuadPart;
 }
+
+// Shared by world, weather, bullets and world-lit sprites. A 256x144 HDR field
+// accumulates bounded light quads once; consumers pay one sample, not a per-pixel light loop.
+constexpr char PointLightShared[] = R"hlsl(
+Texture2D pointField : register(t3);
+SamplerState pointSamplerLinear : register(s3);
+cbuffer PointLightParams : register(b4) {
+    float4 pointView; float4 pointCamera; float4 pointControl; float4 pointPalette;
+};
+float2 pointUv(float2 pixel) { return (pixel-pointView.xy)/pointView.zw; }
+float3 pointLit(float3 graded,float3 raw,float2 uv) {
+    float3 result=graded;
+    [branch] if(pointControl.x>=0.5) {
+        float4 field=pointField.SampleLevel(pointSamplerLinear,uv,0);
+        float weight=max(field.a,0.0);
+        [branch] if(weight>0.0001) {
+            float response=pointControl.y*(1.0-exp(-weight));
+            float3 tint=field.rgb/weight;
+            // A short shot supplies direct light independently of dark ambient grading.
+            // Exposure lifts texture detail with a soft highlight shoulder; black remains black.
+            float3 local=(1.0-exp(-raw*1.8*(0.3+0.7*saturate(tint))))*pointPalette.rgb;
+            result=lerp(graded,max(graded,local),response);
+        }
+    }
+    return result;
+}
+)hlsl";
+constexpr char PointLightShader[] = R"hlsl(
+cbuffer PointLightItems : register(b5) { float4 pointItems[32]; };
+struct LVertex { float4 pos:SV_POSITION;float2 local:TEXCOORD0;nointerpolation float4 color:TEXCOORD1; };
+LVertex LVS(uint id:SV_VertexID) {
+    uint item=id/6u,corner=id%6u;
+    float2 q=float2((corner==1u || corner==2u || corner==4u)?1.0:0.0,
+        (corner==2u || corner==4u || corner==5u)?1.0:0.0)*2.0-1.0;
+    float4 a=pointItems[item*2u],b=pointItems[item*2u+1u];
+    float2 stage=(pointCamera.xy+(a.xy+q*a.z)*pointCamera.z)/float2(1024.0,576.0);
+    LVertex v;v.pos=float4(stage.x*2.0-1.0,1.0-stage.y*2.0,0.5,1.0);
+    v.local=q;v.color=float4(b.rgb,a.w);return v;
+}
+float4 LPS(LVertex v):SV_TARGET {
+    float falloff=saturate(1.0-dot(v.local,v.local));
+    float energy=v.color.a*falloff*falloff;
+    return float4(v.color.rgb*energy,energy);
+}
+)hlsl";
 
 constexpr char Shader[] = R"hlsl(
 Texture2D image : register(t0);
@@ -76,7 +123,7 @@ float4 PS(Vertex v) : SV_TARGET {
         scene = pow(graded, 1.0 / max(offset.w, 1.0e-3));
     }
     int look = (int)(aB.x + 0.5);
-    if (look == 0) return float4(scene, 1);
+    if (look == 0) return float4(pointLit(scene,c.rgb,v.uv), 1);
     float2 uv = v.uv;
     float2 world = (uv * float2(1024.0,576.0) - aD.xy) / max(aC.w,0.01);
     float edge = smoothstep(0.28,0.95,length((uv-0.5)*float2(1.65,1.0)));
@@ -133,7 +180,46 @@ float4 PS(Vertex v) : SV_TARGET {
         float authored=aB.w>0.5 ? lerp(aC.y,aC.z,0.5+0.5*sin(t*aC.x)) : amount;
         amount=min(0.5,authored*(aB.z>0.5 ? radial : 1.0));
     }
-    return float4(saturate(lerp(scene,tint,saturate(amount))),1);
+    return float4(pointLit(saturate(lerp(scene,tint,saturate(amount))),c.rgb,v.uv),1);
+}
+)hlsl";
+
+// ABI 6: premultiplied atlas; casings use world grading, muzzle sprites emit light-colored pixels.
+constexpr char CombatFxShader[] = R"hlsl(
+Texture2D fxAtlas : register(t2);
+Texture3D lutTexture : register(t1);
+SamplerState fxSampler : register(s2);
+SamplerState lutSampler : register(s1);
+cbuffer Grade : register(b0) { float4 rowR; float4 rowG; float4 rowB; float4 offset; };
+cbuffer FxParams : register(b1) { float4 fCamera; float4 fRange; };
+cbuffer FxItems : register(b2) { float4 fI[2048]; };
+struct FVertex { float4 pos:SV_POSITION; float2 uv:TEXCOORD0; nointerpolation float3 look:TEXCOORD1; };
+FVertex FVS(uint id:SV_VertexID) {
+    uint item=id/6u+(uint)fRange.x, corner=id%6u;
+    float4 a=fI[item*4u], b=fI[item*4u+1u], c=fI[item*4u+2u], d=fI[item*4u+3u];
+    float2 q=float2((corner==1u || corner==2u || corner==4u)?1.0:0.0,
+        (corner==2u || corner==4u || corner==5u)?1.0:0.0);
+    float2 local=(c.xy+q*c.zw)*b.xy;
+    float r=a.z*(3.14159265/180.0), cs=cos(r), sn=sin(r);
+    float2 world=a.xy+float2(local.x*cs-local.y*sn,local.x*sn+local.y*cs);
+    float2 stage=(fCamera.xy+world*fCamera.z)/float2(1024.0,576.0);
+    FVertex v;v.pos=float4(stage.x*2.0-1.0,1.0-stage.y*2.0,0.5,1.0);
+    v.uv=lerp(d.xy,d.zw,q);v.look=float3(a.w,b.z,b.w);return v;
+}
+float4 FPS(FVertex v):SV_TARGET {
+    float4 tex=fxAtlas.Sample(fxSampler,v.uv);
+    if(tex.a<0.001) discard;
+    float3 color=saturate(tex.rgb/tex.a*v.look.y);
+    if(v.look.z>0.5) {
+        float3 raw=color;
+        if(fCamera.w>0.5) color=lutTexture.Sample(lutSampler,color*(31.0/32.0)+(0.5/32.0)).rgb;
+        else {
+            float4 c=float4(color,1.0);
+            color=pow(saturate(float3(dot(c,rowR),dot(c,rowG),dot(c,rowB))+offset.rgb),1.0/max(offset.w,1.0e-3));
+        }
+        color=pointLit(color,raw,pointUv(v.pos.xy));
+    }
+    float alpha=tex.a*v.look.x;return float4(color*alpha,alpha);
 }
 )hlsl";
 
@@ -341,7 +427,7 @@ float4 WPS(WVertex v) : SV_TARGET {
             weatherColor = lerp(weatherColor,sB.rgb,0.55 + 0.25 * core);
         }
         float3 lookup = weatherColor * (31.0/32.0) + (0.5/32.0);
-        return float4(lutTexture.Sample(lutSampler, lookup).rgb, a);
+        return float4(pointLit(lutTexture.Sample(lutSampler, lookup).rgb,weatherColor,pointUv(v.pos.xy)), a);
     }
     float4 c = float4(weatherColor, 1.0);
     float3 graded = saturate(float3(dot(c, rowR), dot(c, rowG), dot(c, rowB)) + offset.rgb);
@@ -349,7 +435,7 @@ float4 WPS(WVertex v) : SV_TARGET {
         float core = 1.0 - smoothstep(0.0,0.25,abs(d.x));
         graded = lerp(graded,sB.rgb,0.55 + 0.25 * core);
     }
-    return float4(pow(abs(graded), 1.0 / max(offset.w, 1.0e-3)), a);
+    return float4(pointLit(pow(abs(graded), 1.0 / max(offset.w, 1.0e-3)),weatherColor,pointUv(v.pos.xy)), a);
 }
 )hlsl";
 
@@ -442,10 +528,10 @@ float4 BPS(BVertex v) : SV_TARGET {
     float3 color=lerp(s2.yzw,float3(s1.z,s1.w,s2.x),core);
     // Same grade/LUT contract as weather: authored colors are graded, not raw.
     if (bB.z > 0.5)
-        return float4(lutTexture.Sample(lutSampler, color * (31.0 / 32.0) + (0.5 / 32.0)).rgb, opacity);
+        return float4(pointLit(lutTexture.Sample(lutSampler, color * (31.0 / 32.0) + (0.5 / 32.0)).rgb,color,pointUv(v.pos.xy)), opacity);
     float4 c = float4(color, 1.0);
     float3 graded = saturate(float3(dot(c, rowR), dot(c, rowG), dot(c, rowB)) + offset.rgb);
-    return float4(pow(abs(graded), 1.0 / max(offset.w, 1.0e-3)), opacity);
+    return float4(pointLit(pow(abs(graded), 1.0 / max(offset.w, 1.0e-3)),color,pointUv(v.pos.xy)), opacity);
 }
 )hlsl";
 
@@ -461,6 +547,12 @@ constexpr int BulletStyleCap = 16;
 constexpr int BulletItemCap = 256;
 struct BulletStylesState { int count = 0; float params[BulletStyleCap*16]{}; };
 struct BulletFrameState { int count = 0; float cameraX = 0, cameraY = 0, cameraScale = 1; float params[BulletItemCap*8]{}; };
+constexpr int CombatFxCap=512;
+constexpr int PointLightCap=16;
+struct CombatFxState {
+    int count=0,casings=0,lightCount=0;float maximumLightResponse=0;
+    float cameraX=0,cameraY=0,cameraScale=1;float params[CombatFxCap*16]{},lights[PointLightCap*8]{};
+};
 
 class Capture {
 public:
@@ -494,7 +586,7 @@ public:
     void RequestProof() { proofRequested_ = true; }
     // Dev-only LUT lab grab. Blocks the caller until the capture worker services the
     // request (or a bounded timeout); the GPU copy stays on the worker thread.
-    int GrabLatestFrame(uint8_t* buffer, uint32_t bufferSize, uint32_t* outWidth, uint32_t* outHeight) {
+    int GrabLatestFrame(uint8_t* buffer, uint32_t bufferSize, uint32_t* outWidth, uint32_t* outHeight, bool composite=false) {
         if (!outWidth || !outHeight) return 0;
         if (!buffer && bufferSize != 0) return 0;
         *outWidth = 0; *outHeight = 0;
@@ -502,7 +594,7 @@ public:
         if (grabPending_) return -3;
         grabBuffer_ = buffer; grabBufferSize_ = bufferSize;
         grabWidth_ = grabHeight_ = 0; grabResult_ = 0;
-        grabPending_ = true; grabRequested_ = true;
+        grabComposite_=composite;grabPending_ = true; grabRequested_ = true;
         Signal();
         grabDone_.wait_for(lock, std::chrono::seconds(2), [this] { return !grabPending_; });
         if (grabPending_) {
@@ -635,6 +727,45 @@ public:
             bulletFrame_=state; ++bulletVersion_; }
         Signal();return true;
     }
+    bool CombatFxAtlas(const uint8_t* pixels,int width,int height,int length) {
+        if(!pixels || width<1 || height<1 || width>4096 || height>4096 || length!=width*height*4) return false;
+        auto bytes=std::make_shared<std::vector<uint8_t>>(pixels,pixels+length);
+        { std::lock_guard guard(mutex_);fxAtlas_=bytes;fxAtlasW_=width;fxAtlasH_=height;++fxAtlasVersion_;fxReadyVersion_=0; }
+        Signal();return true;
+    }
+    bool CombatFxReady() {
+        std::lock_guard guard(mutex_);
+        return stats_.state==1 && fxAtlas_ && fxReadyVersion_.load()==fxAtlasVersion_;
+    }
+    bool CombatFxFrame(const float* items,int count,int casings,const float* lights,int lightCount,float maximumResponse,
+        float cameraX,float cameraY,float cameraScale) {
+        if(count<0 || count>CombatFxCap || casings<0 || casings>count || (count>0 && !items)
+            || !std::isfinite(cameraX) || !std::isfinite(cameraY) || !std::isfinite(cameraScale)
+            || std::abs(cameraX)>1000000.f || std::abs(cameraY)>1000000.f || cameraScale<=0 || cameraScale>20
+            || lightCount<0 || lightCount>PointLightCap || (lightCount>0 && !lights)
+            || !std::isfinite(maximumResponse) || maximumResponse<0 || maximumResponse>.8f) return false;
+        CombatFxState next{};next.count=count;next.casings=casings;next.cameraX=cameraX;next.cameraY=cameraY;next.cameraScale=cameraScale;
+        next.lightCount=lightCount;next.maximumLightResponse=maximumResponse;
+        for(int n=0;n<lightCount;n++) {
+            const float* p=lights+n*8;
+            for(int j=0;j<8;j++) if(!std::isfinite(p[j]))return false;
+            if(std::abs(p[0])>1000000 || std::abs(p[1])>1000000 || p[2]<1 || p[2]>1024
+                || p[3]<0 || p[3]>2 || p[4]<0 || p[4]>1 || p[5]<0 || p[5]>1 || p[6]<0 || p[6]>1 || p[7]!=0)return false;
+            std::memcpy(next.lights+n*8,p,32);
+        }
+        for(int n=0;n<count;n++) {
+            const float* p=items+n*16;
+            for(int i=0;i<16;i++) if(!std::isfinite(p[i])) return false;
+            if(std::abs(p[0])>1000000 || std::abs(p[1])>1000000 || std::abs(p[2])>1000000
+                || p[3]<0 || p[3]>1 || std::abs(p[4])>10 || std::abs(p[5])>10
+                || p[6]<0 || p[6]>1 || (p[7]!=0 && p[7]!=1)
+                || std::abs(p[8])>10000 || std::abs(p[9])>10000 || p[10]<=0 || p[11]<=0 || p[10]>10000 || p[11]>10000
+                || p[12]<0 || p[13]<0 || p[14]>1 || p[15]>1 || p[14]<=p[12] || p[15]<=p[13]) return false;
+            std::memcpy(next.params+n*16,p,64);
+        }
+        { std::lock_guard guard(mutex_);fxFrame_=next;++fxVersion_; }
+        Signal();return true;
+    }
     void Stats(ProbeStats& result) { std::lock_guard guard(mutex_); result = stats_; }
     void CaptureSize(int32_t& width,int32_t& height,uint64_t& generation) { std::lock_guard guard(mutex_); width=captureWidth_;height=captureHeight_;generation=captureGeneration_; }
     bool OutputSize(int32_t& width,int32_t& height) { std::lock_guard guard(mutex_); width=presentedOutputW_;height=presentedOutputH_;return stats_.state!=3 && width>0 && height>0; }
@@ -749,7 +880,8 @@ private:
 
         auto Compile = [](const char* source, const char* entry, const char* profile) {
             com_ptr<ID3DBlob> blob, error;
-            HRESULT hr = D3DCompile(source, std::strlen(source), "compositor-probe", nullptr, nullptr,
+            std::string combined=std::string(PointLightShared)+source;
+            HRESULT hr = D3DCompile(combined.data(), combined.size(), "compositor-probe", nullptr, nullptr,
                 entry, profile, D3DCOMPILE_OPTIMIZATION_LEVEL3 | D3DCOMPILE_WARNINGS_ARE_ERRORS, 0, blob.put(), error.put());
             if (FAILED(hr)) {
                 std::wstring detail=L"HLSL compilation failed";
@@ -809,6 +941,17 @@ private:
         cb.ByteWidth = BulletStyleCap*64; check_hresult(device->CreateBuffer(&cb, nullptr, bulletStyleParams.put()));
         com_ptr<ID3D11Buffer> bulletItemParams;
         cb.ByteWidth = BulletItemCap*32; check_hresult(device->CreateBuffer(&cb, nullptr, bulletItemParams.put()));
+        auto fxVsCode=Compile(CombatFxShader,"FVS","vs_4_0"),fxPsCode=Compile(CombatFxShader,"FPS","ps_4_0");
+        com_ptr<ID3D11VertexShader> fxVs;com_ptr<ID3D11PixelShader> fxPs;
+        check_hresult(device->CreateVertexShader(fxVsCode->GetBufferPointer(),fxVsCode->GetBufferSize(),nullptr,fxVs.put()));
+        check_hresult(device->CreatePixelShader(fxPsCode->GetBufferPointer(),fxPsCode->GetBufferSize(),nullptr,fxPs.put()));
+        com_ptr<ID3D11Buffer> fxParams,fxItems;
+        cb.ByteWidth=32;check_hresult(device->CreateBuffer(&cb,nullptr,fxParams.put()));
+        cb.ByteWidth=CombatFxCap*64;check_hresult(device->CreateBuffer(&cb,nullptr,fxItems.put()));
+        D3D11_SAMPLER_DESC fxSamplerDesc{};fxSamplerDesc.Filter=D3D11_FILTER_MIN_MAG_MIP_LINEAR;
+        fxSamplerDesc.AddressU=fxSamplerDesc.AddressV=fxSamplerDesc.AddressW=D3D11_TEXTURE_ADDRESS_CLAMP;
+        fxSamplerDesc.MaxLOD=D3D11_FLOAT32_MAX;
+        com_ptr<ID3D11SamplerState> fxSampler;check_hresult(device->CreateSamplerState(&fxSamplerDesc,fxSampler.put()));
         com_ptr<ID3D11BlendState> alphaBlend;
         D3D11_BLEND_DESC bd{};
         bd.RenderTarget[0].BlendEnable = TRUE;
@@ -820,6 +963,29 @@ private:
         bd.RenderTarget[0].BlendOpAlpha = D3D11_BLEND_OP_ADD;
         bd.RenderTarget[0].RenderTargetWriteMask = D3D11_COLOR_WRITE_ENABLE_ALL;
         check_hresult(device->CreateBlendState(&bd, alphaBlend.put()));
+        com_ptr<ID3D11BlendState> fxBlend;bd.RenderTarget[0].SrcBlend=D3D11_BLEND_ONE;
+        check_hresult(device->CreateBlendState(&bd,fxBlend.put()));
+        com_ptr<ID3D11Texture2D> fxTexture;com_ptr<ID3D11ShaderResourceView> fxSrv;
+        auto lightVsCode=Compile(PointLightShader,"LVS","vs_4_0"),lightPsCode=Compile(PointLightShader,"LPS","ps_4_0");
+        com_ptr<ID3D11VertexShader> lightVs;com_ptr<ID3D11PixelShader> lightPs;
+        check_hresult(device->CreateVertexShader(lightVsCode->GetBufferPointer(),lightVsCode->GetBufferSize(),nullptr,lightVs.put()));
+        check_hresult(device->CreatePixelShader(lightPsCode->GetBufferPointer(),lightPsCode->GetBufferSize(),nullptr,lightPs.put()));
+        com_ptr<ID3D11Buffer> lightParams,lightItems;
+        cb.ByteWidth=64;check_hresult(device->CreateBuffer(&cb,nullptr,lightParams.put()));
+        cb.ByteWidth=PointLightCap*32;check_hresult(device->CreateBuffer(&cb,nullptr,lightItems.put()));
+        com_ptr<ID3D11BlendState> lightBlend;
+        bd.RenderTarget[0].DestBlend=bd.RenderTarget[0].DestBlendAlpha=D3D11_BLEND_ONE;
+        check_hresult(device->CreateBlendState(&bd,lightBlend.put()));
+        constexpr int LightFieldW=256,LightFieldH=144;
+        D3D11_TEXTURE2D_DESC lightDesc{};lightDesc.Width=LightFieldW;lightDesc.Height=LightFieldH;
+        lightDesc.MipLevels=1;lightDesc.ArraySize=1;lightDesc.Format=DXGI_FORMAT_R16G16B16A16_FLOAT;
+        lightDesc.SampleDesc.Count=1;lightDesc.Usage=D3D11_USAGE_DEFAULT;
+        lightDesc.BindFlags=D3D11_BIND_RENDER_TARGET|D3D11_BIND_SHADER_RESOURCE;
+        com_ptr<ID3D11Texture2D> lightTexture;
+        com_ptr<ID3D11RenderTargetView> lightTarget;com_ptr<ID3D11ShaderResourceView> lightResource;
+        check_hresult(device->CreateTexture2D(&lightDesc,nullptr,lightTexture.put()));
+        check_hresult(device->CreateRenderTargetView(lightTexture.get(),nullptr,lightTarget.put()));
+        check_hresult(device->CreateShaderResourceView(lightTexture.get(),nullptr,lightResource.put()));
 
         com_ptr<ID3D11Texture2D> texture;
         com_ptr<ID3D11ShaderResourceView> srv;
@@ -840,6 +1006,7 @@ private:
         uint64_t appliedAtmosphere = 0;
         uint64_t appliedBullet = 0;
         BulletStylesState bulletStyles; BulletFrameState bulletFrame;
+        CombatFxState fxFrame;uint64_t appliedFx=0,appliedFxAtlas=0;
         float weatherTime = 0;
         double lastWeatherDrawMs = 0;
         float atmosphereTime = 0;
@@ -864,27 +1031,30 @@ private:
             uint64_t settingsVersion; bool custom; Settings settings; WeatherState weather; WeatherCameraState weatherCamera; uint64_t weatherVersion;
             uint64_t lutVersion; bool lutEnabled;
             AtmosphereState atmosphere; AtmosphereStyleState atmosphereStyle; uint64_t atmosphereVersion;
-            WeatherStyleState weatherStyle; uint64_t bulletVersion;
+            WeatherStyleState weatherStyle; uint64_t bulletVersion,fxVersion,fxAtlasVersion;
             { std::lock_guard guard(mutex_); settingsVersion=settingsVersion_; custom=custom_; settings=customSettings_;
                 weather=weather_; weatherCamera=weatherCamera_; weatherVersion=weatherVersion_;
                 weatherStyle=weatherStyle_; atmosphere=atmosphere_;
                 atmosphereStyle=atmosphereStyle_; atmosphereVersion=atmosphereVersion_;
-                bulletVersion=bulletVersion_; }
+                bulletVersion=bulletVersion_;fxVersion=fxVersion_;fxAtlasVersion=fxAtlasVersion_; }
             bool weatherOn = weather.type!=0 && weather.intensity>0.f && weather.quality<3
                 && weatherStyle.type==weather.type && weatherStyle.count>0 && texture;
             bool atmosphereOn = atmosphere.preset!=0 && (atmosphere.preset==11
                 || atmosphereStyle.family==atmosphere.preset) && texture;
             bool bulletsOn = bulletFrame.count>0 && bulletStyles.count>0 && texture;
+            bool fxOn=(fxFrame.count>0 || fxFrame.lightCount>0) && fxSrv && texture;
             // Weather animates per presented frame; keep a 30fps floor even on
             // unpaced probe sessions so motion stays at the worker cadence.
-            int paceFps = fps_>0 ? fps_ : ((weatherOn || atmosphereOn || bulletsOn) ? 30 : 0);
+            int paceFps = fps_>0 ? fps_ : ((weatherOn || atmosphereOn || bulletsOn || fxOn) ? 30 : 0);
             if (paceFps>0) {
                 std::unique_lock lock(waitMutex_);
                 wake_.wait_until(lock,nextPresent,[this] { return stop_.load() || !active_.load() || grabRequested_.load(); });
                 if (stop_) break;
                 if (!active_) continue;
             }
-            if (grabRequested_.load()) { ServiceGrab(device.get(),context.get(),texture.get(),textureW,textureH); continue; }
+            if (grabRequested_.load() && (!grabComposite_.load() || !texture)) {
+                ServiceGrab(device.get(),context.get(),texture.get(),textureW,textureH);continue;
+            }
             { std::lock_guard guard(mutex_);
                 lutVersion=lutVersion_; lutEnabled=lutEnabled_;
                 if (lutEnabled && lutVersion!=lutCopiedVersion) {
@@ -918,12 +1088,13 @@ private:
             auto frame = pool.TryGetNextFrame();
             RECT client{}; GetClientRect(output_, &client);
             bool fresh = static_cast<bool>(frame);
-            if (!frame && (!texture || (appliedMode == mode_.load() && !proofRequested_
+            if (!frame && (!texture || (appliedMode == mode_.load() && !proofRequested_ && !grabRequested_
                     && outputW == client.right && outputH == client.bottom && appliedSettings==settingsVersion
                     && appliedSharpness==sharpness_.load() && appliedLut==lutVersion
                     && appliedWeather==weatherVersion && !weatherOn
                     && appliedAtmosphere==atmosphereVersion && !atmosphereOn
-                    && appliedBullet==bulletVersion && !bulletsOn))) {
+                    && appliedBullet==bulletVersion && !bulletsOn
+                    && appliedFx==fxVersion && appliedFxAtlas==fxAtlasVersion && !fxOn))) {
                 presentation.unlock();
                 std::unique_lock lock(waitMutex_);
                 wake_.wait_for(lock,std::chrono::milliseconds(100),[this,observedWake] { return stop_.load() || wakeVersion_.load()!=observedWake; });
@@ -1026,16 +1197,63 @@ private:
             // The pacing wait and WGC dequeue may span an AS2 F packet. Sample
             // its camera and the newest bullet snapshot immediately before
             // drawing; the loop-head copy could be one presented frame behind.
+            std::shared_ptr<std::vector<uint8_t>> atlasPixels;int atlasW=0,atlasH=0;
             { std::lock_guard guard(mutex_);
                 weatherCamera=weatherCamera_; weatherVersion=weatherVersion_;
                 if (bulletVersion_!=appliedBullet) {
-                    bulletStyles=bulletStyles_; bulletFrame=bulletFrame_; appliedBullet=bulletVersion_; } }
-            auto target = rtv.get(); context->OMSetRenderTargets(1, &target, nullptr);
-            const float black[]{0,0,0,1}; context->ClearRenderTargetView(target, black);
+                    bulletStyles=bulletStyles_; bulletFrame=bulletFrame_; appliedBullet=bulletVersion_; }
+                if(fxVersion_!=appliedFx) { fxFrame=fxFrame_;appliedFx=fxVersion_; }
+                fxAtlasVersion=fxAtlasVersion_;
+                if(fxAtlasVersion!=appliedFxAtlas) { atlasPixels=fxAtlas_;atlasW=fxAtlasW_;atlasH=fxAtlasH_; }
+            }
+            if(atlasPixels) {
+                D3D11_TEXTURE2D_DESC desc{};desc.Width=atlasW;desc.Height=atlasH;desc.MipLevels=1;desc.ArraySize=1;
+                desc.Format=DXGI_FORMAT_B8G8R8A8_UNORM;desc.SampleDesc.Count=1;desc.Usage=D3D11_USAGE_IMMUTABLE;
+                desc.BindFlags=D3D11_BIND_SHADER_RESOURCE;
+                D3D11_SUBRESOURCE_DATA pixels{atlasPixels->data(),static_cast<UINT>(atlasW*4),0};
+                fxSrv=nullptr;fxTexture=nullptr;
+                check_hresult(device->CreateTexture2D(&desc,&pixels,fxTexture.put()));
+                check_hresult(device->CreateShaderResourceView(fxTexture.get(),nullptr,fxSrv.put()));
+                appliedFxAtlas=fxAtlasVersion;fxReadyVersion_=appliedFxAtlas;
+            }
             float scale = std::min(static_cast<float>(w)/textureW, static_cast<float>(h)/textureH);
             D3D11_VIEWPORT viewport{(w-textureW*scale)/2, (h-textureH*scale)/2, textureW*scale, textureH*scale, 0, 1};
-            context->RSSetViewports(1, &viewport); context->RSSetState(raster.get());
+            bool proof = proofRequested_.exchange(false);
+            bool lightsOn=!proof && fxFrame.lightCount>0 && fxFrame.maximumLightResponse>0;
+            float palette[3]{1,1,1};
+            // Production uses LUT only for ambient "光照". Direct gunfire must not
+            // inherit its blue darkness; night vision uses the separate matrix path.
+            if(lightsOn && !lutActive) {
+                Settings grade=custom?settings:ColorMode(mode);
+                const float* rows[]{grade.r,grade.g,grade.b};
+                for(int c=0;c<3;c++)palette[c]=std::pow(std::clamp(rows[c][0]+rows[c][1]+rows[c][2]+rows[c][3]+grade.offset[c],0.f,1.f),1.f/std::max(grade.offset[3],.001f));
+                float peak=std::max(.001f,std::max(palette[0],std::max(palette[1],palette[2])));
+                for(float& value:palette)value/=peak;
+            }
+            float lp[16]{viewport.TopLeftX,viewport.TopLeftY,viewport.Width,viewport.Height,
+                fxFrame.cameraX,fxFrame.cameraY,fxFrame.cameraScale,0,
+                lightsOn?1.f:0.f,fxFrame.maximumLightResponse,0,0,palette[0],palette[1],palette[2],0};
+            context->UpdateSubresource(lightParams.get(),0,nullptr,lp,0,0);
+            auto lightBuffer=lightParams.get();context->VSSetConstantBuffers(4,1,&lightBuffer);context->PSSetConstantBuffers(4,1,&lightBuffer);
+            ID3D11ShaderResourceView* noLight=nullptr;context->PSSetShaderResources(3,1,&noLight);
+            context->RSSetState(raster.get());
             context->IASetInputLayout(nullptr); context->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+            if(lightsOn) {
+                auto target=lightTarget.get();context->OMSetRenderTargets(1,&target,nullptr);
+                const float transparent[]{0,0,0,0};context->ClearRenderTargetView(target,transparent);
+                D3D11_VIEWPORT lv{0,0,static_cast<float>(LightFieldW),static_cast<float>(LightFieldH),0,1};
+                context->RSSetViewports(1,&lv);
+                context->UpdateSubresource(lightItems.get(),0,nullptr,fxFrame.lights,0,0);
+                auto items=lightItems.get();context->VSSetConstantBuffers(5,1,&items);
+                context->VSSetShader(lightVs.get(),nullptr,0);context->PSSetShader(lightPs.get(),nullptr,0);
+                context->OMSetBlendState(lightBlend.get(),nullptr,0xffffffff);
+                context->Draw(fxFrame.lightCount*6,0);context->OMSetBlendState(nullptr,nullptr,0xffffffff);
+            }
+            auto target=rtv.get();context->OMSetRenderTargets(1,&target,nullptr);
+            const float black[]{0,0,0,1};context->ClearRenderTargetView(target,black);
+            context->RSSetViewports(1,&viewport);
+            auto field=lightsOn?lightResource.get():nullptr;auto fieldSampler=fxSampler.get();
+            context->PSSetShaderResources(3,1,&field);context->PSSetSamplers(3,1,&fieldSampler);
             context->VSSetShader(vs.get(), nullptr, 0); context->PSSetShader(ps.get(), nullptr, 0);
             auto resource = srv.get(); auto sampling = sampler.get(); auto buffer = constants.get();
             context->PSSetShaderResources(0,1,&resource); context->PSSetSamplers(0,1,&sampling); context->PSSetConstantBuffers(0,1,&buffer);
@@ -1046,7 +1264,6 @@ private:
             float samplingValues[]{1.f/textureW,1.f/textureH,appliedSharpness,lutActive?1.f:0.f};
             context->UpdateSubresource(samplingConstants.get(),0,nullptr,samplingValues,0,0);
             auto samplingBuffer=samplingConstants.get(); context->PSSetConstantBuffers(1,1,&samplingBuffer);
-            bool proof = proofRequested_.exchange(false);
             if (atmosphereOn && !proof) {
                 double nowAtmosphereMs=QpcMs();
                 float delta=lastAtmosphereDrawMs>0
@@ -1099,7 +1316,20 @@ private:
                 context->Draw((rainCount+splashCount)*6,0);
                 context->OMSetBlendState(nullptr,nullptr,0xffffffff);
             } else if (!weatherOn) lastWeatherDrawMs = 0;
-            // Bullet candidates draw last inside the same graded viewport,
+            auto drawFx=[&](int first,int count) {
+                if(count<=0 || !fxSrv || proof) return;
+                float fp[8]{fxFrame.cameraX,fxFrame.cameraY,fxFrame.cameraScale,lutActive?1.f:0.f,static_cast<float>(first),0,0,0};
+                context->UpdateSubresource(fxParams.get(),0,nullptr,fp,0,0);
+                context->UpdateSubresource(fxItems.get(),0,nullptr,fxFrame.params,0,0);
+                context->VSSetShader(fxVs.get(),nullptr,0);context->PSSetShader(fxPs.get(),nullptr,0);
+                auto params=fxParams.get(),items=fxItems.get();auto sampler=fxSampler.get();auto resource=fxSrv.get();
+                context->VSSetConstantBuffers(1,1,&params);context->PSSetConstantBuffers(1,1,&params);
+                context->VSSetConstantBuffers(2,1,&items);context->PSSetShaderResources(2,1,&resource);
+                context->PSSetSamplers(2,1,&sampler);context->OMSetBlendState(fxBlend.get(),nullptr,0xffffffff);
+                context->Draw(count*6,0);context->OMSetBlendState(nullptr,nullptr,0xffffffff);
+            };
+            drawFx(0,fxFrame.casings);
+            // Bullets stay above casings and below short muzzle flashes,
             // alpha blended over world+weather+atmosphere. The base grade
             // cbuffer and LUT resource stay bound for the bullet grade.
             if (bulletFrame.count>0 && bulletStyles.count>0 && texture && !proof) {
@@ -1118,6 +1348,8 @@ private:
                 context->Draw(bulletFrame.count*6,0);
                 context->OMSetBlendState(nullptr,nullptr,0xffffffff);
             }
+            drawFx(fxFrame.casings,fxFrame.count-fxFrame.casings);
+            ID3D11ShaderResourceView* emptyFx=nullptr;context->PSSetShaderResources(2,1,&emptyFx);
             appliedWeather = weatherVersion;
             appliedAtmosphere = atmosphereVersion;
             context->PSSetShaderResources(1,1,&empty);
@@ -1127,6 +1359,13 @@ private:
                     lutActive ? lutWork.get() : nullptr);
                 if (contentRequested_.exchange(false))
                     VerifyContent(device.get(), context.get(), swap.get(), texture.get(), viewport, textureW, textureH, mode);
+            }
+            // Explicit diagnostic only: read the fully composed backbuffer before Present.
+            // Normal production frames never incur this GPU-to-CPU copy.
+            if(grabRequested_.load() && grabComposite_.load()) {
+                com_ptr<ID3D11Texture2D> composed;
+                check_hresult(swap->GetBuffer(0,__uuidof(ID3D11Texture2D),composed.put_void()));
+                ServiceGrab(device.get(),context.get(),composed.get(),w,h);
             }
             double presentStart = QpcMs();
             HRESULT present = swap->Present(1, 0);
@@ -1207,7 +1446,7 @@ private:
         stats_.cpuReadbacks += 6;
     }
     // Dev-only grab service, always on the worker thread. Answers the pending request once:
-    // copies the newest cropped capture (pre-grade, BGRA8) into the caller buffer.
+    // copies the requested source capture or composed output (BGRA8) into the caller buffer.
     void ServiceGrab(ID3D11Device* device, ID3D11DeviceContext* context, ID3D11Texture2D* texture, int width, int height) {
         std::unique_lock lock(grabMutex_);
         grabRequested_ = false;
@@ -1307,7 +1546,7 @@ private:
     std::mutex waitMutex_; std::condition_variable wake_;
     // Dev-only LUT lab grab request state (grabMutex_ guards the whole struct).
     std::mutex grabMutex_; std::condition_variable grabDone_;
-    std::atomic<bool> grabRequested_{false};
+    std::atomic<bool> grabRequested_{false},grabComposite_{false};
     bool grabPending_=false;
     uint8_t* grabBuffer_=nullptr; uint32_t grabBufferSize_=0;
     uint32_t grabWidth_=0, grabHeight_=0; int grabResult_=0;
@@ -1322,10 +1561,13 @@ private:
     AtmosphereState atmosphere_{}; uint64_t atmosphereVersion_=0;
     WeatherStyleState weatherStyle_{}; AtmosphereStyleState atmosphereStyle_{};
     BulletStylesState bulletStyles_{}; BulletFrameState bulletFrame_{}; uint64_t bulletVersion_=0;
+    CombatFxState fxFrame_{};uint64_t fxVersion_=0,fxAtlasVersion_=0;
+    int fxAtlasW_=0,fxAtlasH_=0;std::shared_ptr<std::vector<uint8_t>> fxAtlas_;
+    std::atomic<uint64_t> fxReadyVersion_{0};
 };
 }
 
-uint32_t __cdecl ProbeGetAbiVersion() { return 5; }
+uint32_t __cdecl ProbeGetAbiVersion() { return 7; }
 int __cdecl ProbeGetOutputSize(void* handle, int32_t* width, int32_t* height) {
     return handle && width && height && static_cast<Capture*>(handle)->OutputSize(*width,*height) ? 1 : 0;
 }
@@ -1350,6 +1592,9 @@ void __cdecl ProbeSetMode(void* handle, int mode) { if (handle) static_cast<Capt
 void __cdecl ProbeRequestProof(void* handle) { if (handle) static_cast<Capture*>(handle)->RequestProof(); }
 int __cdecl ProbeGrabLatestFrame(void* handle, uint8_t* buffer, uint32_t bufferSize, uint32_t* outWidth, uint32_t* outHeight) {
     return handle ? static_cast<Capture*>(handle)->GrabLatestFrame(buffer, bufferSize, outWidth, outHeight) : 0;
+}
+int __cdecl ProbeGrabCompositeFrame(void* handle, uint8_t* buffer, uint32_t bufferSize, uint32_t* outWidth, uint32_t* outHeight) {
+    return handle ? static_cast<Capture*>(handle)->GrabLatestFrame(buffer,bufferSize,outWidth,outHeight,true) : 0;
 }
 void __cdecl ProbeRequestContentProof(void* handle) { if (handle) static_cast<Capture*>(handle)->RequestContentProof(); }
 int __cdecl ProbeGetContentStats(void* handle, ProbeContentStats* stats) {
@@ -1408,4 +1653,12 @@ int __cdecl ProbeSetBulletStyles(void* handle,const float* styles,int count) {
 }
 int __cdecl ProbeSetBulletFrame(void* handle,const float* items,int count,float cameraX,float cameraY,float cameraScale) {
     return handle && static_cast<Capture*>(handle)->BulletFrame(items,count,cameraX,cameraY,cameraScale) ? 1 : 0;
+}
+int __cdecl ProbeSetCombatFxAtlas(void* handle,const uint8_t* pixels,int width,int height,int length) {
+    try { return handle && static_cast<Capture*>(handle)->CombatFxAtlas(pixels,width,height,length) ? 1 : 0; }
+    catch(...) { return 0; }
+}
+int __cdecl ProbeCombatFxReady(void* handle) { return handle && static_cast<Capture*>(handle)->CombatFxReady() ? 1 : 0; }
+int __cdecl ProbeSetCombatFxFrame(void* handle,const float* items,int count,int casings,const float* lights,int lightCount,float maximumResponse,float cameraX,float cameraY,float cameraScale) {
+    return handle && static_cast<Capture*>(handle)->CombatFxFrame(items,count,casings,lights,lightCount,maximumResponse,cameraX,cameraY,cameraScale) ? 1 : 0;
 }

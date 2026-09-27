@@ -563,7 +563,7 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
         // 否则同一穿透/持久射线后续的真实命中也会被错误静音。
         if ((ctx.actualHit || damageResult === DamageResult.NULL)
                 && bullet.shouldGeneratePostHitEffect) {
-            ctx.FX.Effect(bullet.击中后子弹的效果, hitX, hitY, shooter._xscale);
+            ctx.FX.Effect(bullet.击中后子弹的效果, hitX, hitY, shooter._xscale, undefined, true);
         }
 
         return damageResult;
@@ -1331,7 +1331,7 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
 
                     // 射线到达全长时播放地图命中效果
                     if (budget > 0) {
-                        FX.Effect(bullet.击中地图效果, rayEndX, rayEndY, shooter._xscale);
+                        FX.Effect(bullet.击中地图效果, rayEndX, rayEndY, shooter._xscale, undefined, true);
                     }
 
                 } else {
@@ -1342,7 +1342,7 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
                     var rayEndX:Number = rayOriginX + Math.cos(rayAngle) * rayLength;
                     var rayEndY:Number = rayOriginY + Math.sin(rayAngle) * rayLength;
 
-                    FX.Effect(bullet.击中地图效果, rayEndX, rayEndY, shooter._xscale);
+                    FX.Effect(bullet.击中地图效果, rayEndX, rayEndY, shooter._xscale, undefined, true);
                     var pnMissMeta:Object = {
                         segmentKind: "pierce",
                         hitIndex: 0,
@@ -1577,7 +1577,7 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
                     var rayEndX:Number = rayOriginX + Math.cos(rayAngle) * rayLength;
                     var rayEndY:Number = rayOriginY + Math.sin(rayAngle) * rayLength;
 
-                    FX.Effect(bullet.击中地图效果, rayEndX, rayEndY, shooter._xscale);
+                    FX.Effect(bullet.击中地图效果, rayEndX, rayEndY, shooter._xscale, undefined, true);
                     var comboMissMeta:Object = {
                         segmentKind: "main",
                         hitIndex: 0,
@@ -1730,7 +1730,7 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
                         // 敌人不足：射线延伸到 rayLength 全长，并播放击中地图效果
                         rayEndX = rayOriginX + Math.cos(rayAngle) * rayLength;
                         rayEndY = rayOriginY + Math.sin(rayAngle) * rayLength;
-                        FX.Effect(bullet.击中地图效果, rayEndX, rayEndY, shooter._xscale);
+                        FX.Effect(bullet.击中地图效果, rayEndX, rayEndY, shooter._xscale, undefined, true);
                     }
 
                     // 构建 SegmentMeta，包含所有命中点信息（用于 WaveRenderer 的命中点波纹）
@@ -1755,7 +1755,7 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
                     rayEndX = rayOriginX + Math.cos(rayAngle) * rayLength;
                     rayEndY = rayOriginY + Math.sin(rayAngle) * rayLength;
 
-                    FX.Effect(bullet.击中地图效果, rayEndX, rayEndY, shooter._xscale);
+                    FX.Effect(bullet.击中地图效果, rayEndX, rayEndY, shooter._xscale, undefined, true);
 
                     // 未命中的 pierce 射线 meta
                     var missedPierceMeta:Object = {
@@ -2043,7 +2043,7 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
                     rayEndY = rayOriginY + Math.sin(rayAngle) * rayLength;
 
                     // 未命中时无 HitUpdater 回调，直接播放击中地图效果
-                    FX.Effect(bullet.击中地图效果, rayEndX, rayEndY, shooter._xscale);
+                    FX.Effect(bullet.击中地图效果, rayEndX, rayEndY, shooter._xscale, undefined, true);
                     var missMeta:Object = {
                         segmentKind: "main",
                         hitIndex: 0,
@@ -2485,7 +2485,7 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
         if (hits == 0 && !bullet._rayFirstHitDone) {
             var ex:Number = bullet._rayEndX;
             var ey:Number = bullet._rayEndY;
-            ctx.FX.Effect(bullet.击中地图效果, ex, ey, shooter._xscale);
+            ctx.FX.Effect(bullet.击中地图效果, ex, ey, shooter._xscale, undefined, true);
             RayVfxManager.spawn(ctx.rayOriginX, ctx.rayOriginY, ex, ey, config,
                 {segmentKind: "main", hitIndex: 0, intensity: 1.0, isHit: false});
         } else if (hits == 0 && rayMode == "pierce" && bullet._rayBudget > 0) {
@@ -2504,7 +2504,7 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
         var config:TeslaRayConfig = TeslaRayConfig(ctx.config);
         var ex:Number = bullet._rayEndX;
         var ey:Number = bullet._rayEndY;
-        ctx.FX.Effect(bullet.击中地图效果, ex, ey, ctx.shooter._xscale);
+        ctx.FX.Effect(bullet.击中地图效果, ex, ey, ctx.shooter._xscale, undefined, true);
         RayVfxManager.spawn(ctx.rayOriginX, ctx.rayOriginY, ex, ey, config,
             {segmentKind: "pierce", hitIndex: 0, intensity: 1.0, isHit: true, hitPoints: bullet._rayHitPoints});
     }
@@ -3348,7 +3348,7 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
                     
                     // 命中后效果（一次性）
                     if (hasUnitHitFx && bullet.shouldGeneratePostHitEffect) {
-                        FX.Effect(bullet.击中后子弹的效果, bullet._x, bullet._y, shooter._xscale);
+                        FX.Effect(bullet.击中后子弹的效果, bullet._x, bullet._y, shooter._xscale, undefined, true);
                     }
                     // ---- 影子记账提交：仅对已初始化的联弹子弹 ----
                     if (needsDeferScatter) {
@@ -3477,7 +3477,7 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
                     // 注意：消弹token决策（tokenMode=1/2）优先级高于单位命中流程
                     // 已在前面设置击中地图标志的情况下，此处统一处理表现
                     if (hitMapFinal) {
-                        FX.Effect(bullet.击中地图效果, bullet._x, bullet._y);
+                        FX.Effect(bullet.击中地图效果, bullet._x, bullet._y, 100, undefined, true);
                         fireMapHitHook(bullet);
                     }
 

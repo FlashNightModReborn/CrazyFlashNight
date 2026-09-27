@@ -21,7 +21,7 @@ namespace CF7Launcher.Guardian.WorldCompositor
         private readonly SharpnessDelegate _sharpness;
         private readonly StopDelegate _holdViewport;
         // Dev-only LUT lab export; absent on older companion builds (grab reports unavailable).
-        private readonly GrabDelegate _grab;
+        private readonly GrabDelegate _grab,_grabComposite;
         // lut-set-v1 生产 LUT 路径（32^3 RGBA8 整块上传 + 清除回退矩阵）。
         // Additive exports require the paired native DLL.
         // 严格 Export 拒绝未配套旧 DLL（与 ProbeGetCaptureSize 同模式）。
@@ -34,13 +34,16 @@ namespace CF7Launcher.Guardian.WorldCompositor
         private readonly AtmosphereStyleDelegate _atmosphereStyle;
         private readonly BulletStylesDelegate _bulletStyles;
         private readonly BulletFrameDelegate _bulletFrame;
+        private readonly CombatFxAtlasDelegate _combatFxAtlas;
+        private readonly CombatFxReadyDelegate _combatFxReady;
+        private readonly CombatFxFrameDelegate _combatFxFrame;
 
         internal NativeCompositorSession(string modulePath, IntPtr source, uint pid, IntPtr output, uint vendor = 0, bool borderless = false)
         {
             try
             {
                 _module = NativeLibrary.Load(Path.GetFullPath(modulePath));
-                if (Export<VersionDelegate>("ProbeGetAbiVersion")() != 5) throw new InvalidOperationException("Compositor ABI version mismatch");
+                if (Export<VersionDelegate>("ProbeGetAbiVersion")() != 7) throw new InvalidOperationException("Compositor ABI version mismatch");
                 _stop = Export<StopDelegate>("ProbeStop"); _read = Export<ReadDelegate>("ProbeGetStats");
                 _captureSize=Export<CaptureSizeDelegate>("ProbeGetCaptureSize"); // reject an old unpaired DLL
                 _crop = Export<CropDelegate>("ProbeSetCrop"); _mode = Export<ModeDelegate>("ProbeSetMode");
@@ -48,6 +51,7 @@ namespace CF7Launcher.Guardian.WorldCompositor
                 _viewport=Export<ViewportDelegate>("ProbeSetViewport"); _sharpness=Export<SharpnessDelegate>("ProbeSetSharpness");
                 _holdViewport=Export<StopDelegate>("ProbeHoldViewport");
                 _grab=TryExport<GrabDelegate>("ProbeGrabLatestFrame");
+                _grabComposite=TryExport<GrabDelegate>("ProbeGrabCompositeFrame");
                 _lut=Export<LutDelegate>("ProbeSetLut"); _clearLut=Export<StopDelegate>("ProbeClearLut");
                 _weather=Export<WeatherDelegate>("ProbeSetWeather"); // paired native presentation capability
                 _weatherCamera=Export<WeatherCameraDelegate>("ProbeSetWeatherCamera");
@@ -56,6 +60,9 @@ namespace CF7Launcher.Guardian.WorldCompositor
                 _atmosphereStyle=Export<AtmosphereStyleDelegate>("ProbeSetAtmosphereStyle");
                 _bulletStyles=Export<BulletStylesDelegate>("ProbeSetBulletStyles");
                 _bulletFrame=Export<BulletFrameDelegate>("ProbeSetBulletFrame");
+                _combatFxAtlas=Export<CombatFxAtlasDelegate>("ProbeSetCombatFxAtlas");
+                _combatFxReady=Export<CombatFxReadyDelegate>("ProbeCombatFxReady");
+                _combatFxFrame=Export<CombatFxFrameDelegate>("ProbeSetCombatFxFrame");
                 _session = Export<StartDelegate>("ProbeStartWorld")(source,pid,output,vendor,borderless ? 1 : 0);
                 if (_session == IntPtr.Zero) throw new InvalidOperationException("Compositor initialization failed");
             }
@@ -75,10 +82,13 @@ namespace CF7Launcher.Guardian.WorldCompositor
             GrabNoWorldViewport = -7;
         // Dev-only LUT lab：buffer=null 为尺寸查询（返回 GrabBufferTooSmall 并给出宽高）。
         internal int GrabLatestFrame(byte[] buffer, out int width, out int height)
+            => GrabFrame(_grab,buffer,out width,out height);
+        internal int GrabCompositeFrame(byte[] buffer,out int width,out int height)
+            => GrabFrame(_grabComposite,buffer,out width,out height);
+        private int GrabFrame(GrabDelegate grab,byte[] buffer,out int width,out int height)
         {
             width = 0; height = 0;
             if (_session == IntPtr.Zero) return GrabNoFrame;
-            var grab = _grab;
             if (grab == null) return GrabExportUnavailable;
             uint w, h;
             int result = grab(_session, buffer, buffer == null ? 0u : (uint)buffer.Length, out w, out h);
@@ -205,6 +215,32 @@ namespace CF7Launcher.Guardian.WorldCompositor
             if (_session != IntPtr.Zero && _bulletFrame(_session, Array.Empty<float>(), 0, 0, 0, 1) != 1)
                 throw new InvalidOperationException("Native bullet clear rejected");
         }
+        internal void CombatFxAtlas(CombatFxCatalog catalog)
+        {
+            if(catalog==null) throw new ArgumentNullException(nameof(catalog));
+            CombatFxAtlas(catalog.PremultipliedBgra,catalog.Width,catalog.Height);
+        }
+        internal void CombatFxAtlas(byte[] pixels,int width,int height)
+        {
+            if (_session==IntPtr.Zero || pixels==null
+                || _combatFxAtlas(_session,pixels,width,height,pixels.Length)!=1)
+                throw new InvalidOperationException("Native effect atlas rejected");
+        }
+        internal bool CombatFxReady => _session!=IntPtr.Zero && _combatFxReady(_session)==1;
+        internal void CombatFxFrame(CombatFxDrawFrame frame,float x,float y,float scale)
+        {
+            if (_session==IntPtr.Zero || frame==null || frame.Count<0 || frame.Count>512
+                || frame.Data.Length<frame.Count*16 || frame.CasingCount<0 || frame.CasingCount>frame.Count
+                || frame.LightCount<0 || frame.LightCount>CombatFxEngine.LightLimit
+                || _combatFxFrame(_session,frame.Data,frame.Count,frame.CasingCount,frame.Lights,frame.LightCount,
+                    frame.MaximumLightResponse,x,y,scale)!=1)
+                throw new InvalidOperationException("Native decorative frame rejected");
+        }
+        internal void ClearCombatFxFrame()
+        {
+            if (_session!=IntPtr.Zero && _combatFxFrame(_session,Array.Empty<float>(),0,0,Array.Empty<float>(),0,0,0,0,1)!=1)
+                throw new InvalidOperationException("Native decorative frame clear rejected");
+        }
         public void Dispose()
         {
             if (_session != IntPtr.Zero) { _stop(_session); _session=IntPtr.Zero; }
@@ -244,5 +280,9 @@ namespace CF7Launcher.Guardian.WorldCompositor
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)] private delegate int AtmosphereStyleDelegate(IntPtr handle,int family,[In] float[] parameters);
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)] private delegate int BulletStylesDelegate(IntPtr handle,[In] float[] styles,int count);
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)] private delegate int BulletFrameDelegate(IntPtr handle,[In] float[] items,int count,float cameraX,float cameraY,float cameraScale);
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)] private delegate int CombatFxAtlasDelegate(IntPtr handle,[In] byte[] pixels,int width,int height,int length);
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)] private delegate int CombatFxReadyDelegate(IntPtr handle);
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)] private delegate int CombatFxFrameDelegate(IntPtr handle,[In] float[] items,int count,int casings,
+            [In] float[] lights,int lightCount,float maximumResponse,float cameraX,float cameraY,float cameraScale);
     }
 }

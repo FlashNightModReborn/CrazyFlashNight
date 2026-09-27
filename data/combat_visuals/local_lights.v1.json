@@ -1,0 +1,16 @@
+{
+  "schema": "cf7-combat-local-lights.v1",
+  "maximumResponse": 0.78,
+  "muzzles": {
+    "冲锋枪枪火": { "radius": 128, "energy": 1.4, "ticks": 4, "color": "#FFD39A" },
+    "反器材枪火": { "radius": 195, "energy": 1.9, "ticks": 6, "color": "#FFD39A" },
+    "发射器枪火": { "radius": 175, "energy": 1.65, "ticks": 5, "color": "#FFE0B0" },
+    "巴雷特枪火": { "radius": 205, "energy": 2, "ticks": 6, "color": "#FFE0B0" },
+    "战斗步枪枪火": { "radius": 165, "energy": 1.7, "ticks": 5, "color": "#FFD39A" },
+    "枪火": { "radius": 145, "energy": 1.5, "ticks": 4, "color": "#FFD39A" },
+    "突击步枪枪火": { "radius": 155, "energy": 1.6, "ticks": 5, "color": "#FFD39A" },
+    "紧凑手枪枪火": { "radius": 118, "energy": 1.3, "ticks": 4, "color": "#FFD39A" },
+    "霰弹枪枪火": { "radius": 180, "energy": 1.85, "ticks": 6, "color": "#FFCA83" },
+    "马格南手枪枪火": { "radius": 155, "energy": 1.6, "ticks": 5, "color": "#FFD39A" }
+  }
+}

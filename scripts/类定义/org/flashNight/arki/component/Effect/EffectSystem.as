@@ -36,7 +36,7 @@ class org.flashNight.arki.component.Effect.EffectSystem
     private static var initialized:Boolean = false;
 
     /** 随机数引擎（用于特效触发概率计算） */
-    private static var RandomNumberEngine:LinearCongruentialEngine = LinearCongruentialEngine.getInstance();
+    private static var RandomNumberEngine:BaseRandomNumberEngine = org.flashNight.arki.render.VisualRandom.getEngine();
 
     /** 是否启用特效对象池回收机制 */
     public static var isDeathEffect:Boolean = true;
@@ -76,11 +76,15 @@ class org.flashNight.arki.component.Effect.EffectSystem
      * @param y 特效的 Y 坐标
      * @param scaleX 特效的横向缩放（方向控制）
      * @param forceTrigger 是否强制触发（无视触发条件）
-     * @return 创建或复用的特效 MovieClip 对象
+     * @param nativeImpact 仅由不使用返回 MC 的命中入口传 true
+     * @return 创建或复用的特效 MovieClip 对象；显式原生命中接管返回 null
      */
-    public static function Effect(effectType:String, x:Number, y:Number, scaleX:Number, forceTrigger:Boolean):MovieClip
+    public static function Effect(effectType:String, x:Number, y:Number, scaleX:Number, forceTrigger:Boolean, nativeImpact:Boolean):MovieClip
     {
         if (!effectType) return null; // 提前过滤空特效
+        // Only callers that discard the MovieClip opt into the native hit channel.
+        if (nativeImpact === true && org.flashNight.arki.render.CombatFxBridge.tryImpact(
+            effectType, x, y, isFinite(scaleX) ? scaleX : 100, forceTrigger)) return null;
 
         // 2) 直接用 gameworld 的平移 + 缩放做闭式变换（无对象分配、无函数调用）
         var gameWorld:MovieClip = _root.gameworld;

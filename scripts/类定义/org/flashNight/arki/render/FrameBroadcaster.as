@@ -47,6 +47,8 @@ class org.flashNight.arki.render.FrameBroadcaster {
     /** 首批普通/枪式联弹影子视觉快照；仅在配套 Host 明确协商后填充。 */
     private static var _bulletVisualPayload:String = null;
     public static function setBulletVisualPayload(value:String):Void { _bulletVisualPayload = value; }
+    private static var _combatFxPayload:String = null;
+    public static function setCombatFxPayload(value:String):Void { _combatFxPayload = value; }
 
     // ========== K 前缀接收侧（Launcher -> Flash）==========
 
@@ -108,6 +110,7 @@ class org.flashNight.arki.render.FrameBroadcaster {
             _hnPayload = null;
             _playerHudPayload = null;
             _bulletVisualPayload = null;
+            _combatFxPayload = null;
             return;
         }
 
@@ -118,6 +121,7 @@ class org.flashNight.arki.render.FrameBroadcaster {
             _hnPayload = null;
             _playerHudPayload = null;
             _bulletVisualPayload = null;
+            _combatFxPayload = null;
             return;
         }
 
@@ -149,6 +153,10 @@ class org.flashNight.arki.render.FrameBroadcaster {
         if (_bulletVisualPayload != null) {
             msg += "\x05" + _bulletVisualPayload;
             _bulletVisualPayload = null;
+        }
+        if (_combatFxPayload != null) {
+            msg += "\x06" + _combatFxPayload;
+            _combatFxPayload = null;
         }
         // SFX 优先发送：音效对延迟敏感，必须在 F 消息（含伤害 reducer/绘制）之前到达 C# 端。
         org.flashNight.arki.audio.AudioBridge.flush();
@@ -236,11 +244,13 @@ class org.flashNight.arki.render.FrameBroadcaster {
      * 在 SceneChanged 回调中调用，位于 HitNumberBatchProcessor.clear() 之后。
      */
     public static function reset():Void {
+        org.flashNight.arki.render.CombatFxBridge.resetScene();
         _hnPayload = null;
         _playerHudPayload = null;
         _fpsPayload = null;
         _inputPayload = null;
         _bulletVisualPayload = null;
+        _combatFxPayload = null;
         org.flashNight.arki.render.BulletVisualProbe.resetScene();
         // 注意：不清空 _uiPayload，场景切换时 UI 快照需要保留到下一帧 send()
         // 清空 K 前缀接收状态

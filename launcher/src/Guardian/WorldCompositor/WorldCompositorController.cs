@@ -22,6 +22,10 @@ namespace CF7Launcher.Guardian.WorldCompositor
         private readonly WorldLightingPreset _preset;
         private readonly WorldPresentationCatalog _presentationCatalog;
         private readonly BulletVisualCatalog _bulletCatalog;
+        private readonly CombatFxCatalog _combatFxCatalog;
+        private volatile bool _combatFxResourcesReady,_combatFxCapabilityAdvertised;
+        private double _lastCombatFxCapAttemptMs;
+        internal Func<bool,bool> CombatFxCapabilityChanged;
         private readonly bool _bulletCandidateEnabled;
         private readonly Timer _timer = new Timer { Interval=33 };
         private NativeCompositorSession _native;
@@ -197,7 +201,7 @@ namespace CF7Launcher.Guardian.WorldCompositor
         internal WorldCompositorController(Form owner, Control anchor, Func<IntPtr> getFlash,
             Func<bool> canPresent, Action<string> notify, string projectRoot, Func<bool> shouldPrepare,
             Action<double> setRenderScale,Action focusFlash,uint inputEpochLimit=WorldPointerMapper.EpochLimit,
-            BulletVisualCatalog bulletCatalog=null)
+            BulletVisualCatalog bulletCatalog=null,CombatFxCatalog combatFxCatalog=null)
         {
             string tempRoot=Path.GetFullPath(Path.Combine(projectRoot,"tmp"))+Path.DirectorySeparatorChar;
             string testCap=Environment.GetEnvironmentVariable("CF7_INPUT_SESSION_TEST_CAP");
@@ -211,8 +215,8 @@ namespace CF7Launcher.Guardian.WorldCompositor
             _owner=owner; _anchor=anchor; _getFlash=getFlash; _canPresent=canPresent; _notify=notify; _shouldPrepare=shouldPrepare;
             _setRenderScale=setRenderScale; _focusFlash=focusFlash;
             _bulletCatalog=bulletCatalog;
+            _combatFxCatalog=combatFxCatalog;
             _bulletCandidateEnabled=bulletCatalog!=null
-                && AppContext.BaseDirectory.StartsWith(tempRoot,StringComparison.OrdinalIgnoreCase)
                 && Environment.GetEnvironmentVariable("CF7_BULLET_NATIVE_DISABLE")!="1";
             _preset=WorldLightingPreset.Load(Path.Combine(projectRoot,"launcher","data","world-lighting","preset.json"),
                 message => LogManager.Log(message));
@@ -288,6 +292,11 @@ namespace CF7Launcher.Guardian.WorldCompositor
                     _surface.CreateControl();
                     _native=new NativeCompositorSession(module,_owner.Handle,(uint)Environment.ProcessId,_surface.Handle,0,_borderless);
                     _bulletStylesReady=false;
+                    _combatFxResourcesReady=false;
+                    if (_combatFxCatalog!=null) {
+                        try { _native.CombatFxAtlas(_combatFxCatalog);_combatFxResourcesReady=true; }
+                        catch(Exception error) { LogManager.Log("event=combat_fx_atlas_unavailable "+error.Message); }
+                    }
                     if (_bulletCandidateEnabled) {
                         try { _native.BulletStyles(_bulletCatalog); _bulletStylesReady=true; }
                         catch (Exception error) { LogManager.Log("event=bullet_visual_styles_unavailable " + error.Message); }
@@ -410,6 +419,16 @@ namespace CF7Launcher.Guardian.WorldCompositor
                     catch (Exception error) { LogManager.Log("event=bullet_visual_cap_failed " + error.Message); }
                     if (!sent) RevokeBulletCapability("cap_send_failed");
                     else LogManager.Log("event=bullet_visual_cap_native");
+                }
+                if(ready && _combatFxResourcesReady && !_combatFxCapabilityAdvertised
+                    && _native.CombatFxReady && NowMs()-_lastCombatFxCapAttemptMs>=500 && CombatFxCapabilityChanged!=null) {
+                    _lastCombatFxCapAttemptMs=NowMs();
+                    lock(_weatherCameraLock) _combatFxCapabilityAdvertised=true;
+                    bool sent=false;
+                    try { sent=CombatFxCapabilityChanged(true); }
+                    catch(Exception error) { LogManager.Log("event=combat_fx_cap_failed "+error.Message); }
+                    if(!sent) RevokeCombatFx("cap_send_failed");
+                    else LogManager.Log("event=combat_fx_cap_native");
                 }
                 if (!ready && NowMs()-Math.Max(_startedMs,_requiredFrameMs)>10000) throw new TimeoutException("世界捕获没有恢复有效画面");
                 if (NowMs()-_lastLogMs>1000) {
@@ -647,10 +666,42 @@ namespace CF7Launcher.Guardian.WorldCompositor
         // 本地下界之外的第二道保险。
         private void OnOwnerDeactivated(object sender,EventArgs e) => _surface?.CancelPointer("owner_deactivate");
         private static double NowMs() => Stopwatch.GetTimestamp()*1000.0/Stopwatch.Frequency;
+        internal void ObserveCombatFx(CombatFxDrawFrame frame,float x,float y,float scale)
+        {
+            bool failed=false;
+            lock(_weatherCameraLock) {
+                if(!_combatFxCapabilityAdvertised || _native==null) return;
+                try { _native.CombatFxFrame(frame,x,y,scale); }
+                catch(Exception error) { failed=true;LogManager.Log("event=combat_fx_native_failed "+error.Message); }
+            }
+            if(failed) RejectCombatFx();
+        }
+        internal void ClearCombatFx()
+        {
+            lock(_weatherCameraLock) {
+                try { _native?.ClearCombatFxFrame(); }
+                catch(Exception error) { LogManager.Log("event=combat_fx_clear_failed "+error.Message); }
+            }
+        }
+        internal void RejectCombatFx() { _combatFxResourcesReady=false;RevokeCombatFx("invalid_or_failed_frame"); }
+        internal void CombatFxConnectionLost() => RevokeCombatFx("socket_disconnected");
+        private void RevokeCombatFx(string reason)
+        {
+            bool advertised;
+            lock(_weatherCameraLock) { advertised=_combatFxCapabilityAdvertised;_combatFxCapabilityAdvertised=false; }
+            ClearCombatFx();
+            if(!advertised) return;
+            bool sent=false;
+            try { sent=CombatFxCapabilityChanged?.Invoke(false)==true; }
+            catch(Exception error) { LogManager.Log("event=combat_fx_cap_revoke_failed "+error.Message); }
+            LogManager.Log("event=combat_fx_cap_revoke reason="+reason+" sent="+sent);
+        }
         private void StopCapture()
         {
             // Same-socket source loss must return visual ownership to Flash.
             RevokeBulletCapability("capture_stopped");
+            RevokeCombatFx("capture_stopped");
+            _combatFxResourcesReady=false;_lastCombatFxCapAttemptMs=0;
             _bulletStylesReady=false;
             _lastBulletCapAttemptMs=0;
             _lastBulletFrameLogTicks=0;

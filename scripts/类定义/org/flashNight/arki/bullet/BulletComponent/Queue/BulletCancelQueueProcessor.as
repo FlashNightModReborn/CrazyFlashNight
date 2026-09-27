@@ -443,7 +443,7 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletCancelQueueProcesso
 
         // 使用位运算直接写入 stateFlags
         bullet.stateFlags |= STATE_HIT_MAP;
-        EffectSystem.Effect(bullet.击中地图效果, bullet._x, bullet._y);
+        EffectSystem.Effect(bullet.击中地图效果, bullet._x, bullet._y, 100, undefined, true);
         bullet.gotoAndPlay("消失");
 
         if (isPowerful && (bullet.flags & FLAG_PIERCE)) {

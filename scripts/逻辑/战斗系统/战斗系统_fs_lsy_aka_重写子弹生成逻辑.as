@@ -107,8 +107,10 @@ _root.子弹区域shoot传递 = function(Obj){
     var shootX:Number = Obj.shootX;
     var shootY:Number = Obj.shootY;
     var xscale:Number = shooter._xscale;
-    var effect:MovieClip = EffectSystem.Effect(Obj.发射效果, shootX, shootY, xscale);
-    if(effect) effect._rotation = Obj.角度偏移;
+    if (!org.flashNight.arki.render.CombatFxBridge.tryMuzzle(Obj.发射效果, shootX, shootY, xscale, Obj.角度偏移)) {
+        var effect:MovieClip = EffectSystem.Effect(Obj.发射效果, shootX, shootY, xscale);
+        if(effect) effect._rotation = Obj.角度偏移;
+    }
     ShellSystem.launchShell(bulletInstance, shootX, shootY, xscale);
     _root.soundEffectManager.playSound(Obj.声音);
 

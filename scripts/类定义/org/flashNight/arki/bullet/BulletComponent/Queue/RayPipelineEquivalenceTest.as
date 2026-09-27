@@ -46,6 +46,8 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.RayPipelineEquivalenceTes
     private static var _fail:Number;
     private static var _checks:Number;
 
+    public static function runAllTests():Void { runTests(); }
+
     public static function runTests():Void {
         trace("=== RayPipelineEquivalenceTest start ===");
         _fail = 0;

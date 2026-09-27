@@ -61,3 +61,9 @@ launcher/THIRD-PARTY-NOTICES.txt text eol=lf whitespace=-blank-at-eol
 /tools/bake-npc-profiles.py text eol=lf
 /tools/npc-profiles/sources.json text eol=lf
 /flashswf/portraits/profiles/generated-manifest.json text eol=lf
+
+# Combat sprite manifests bind exact generator bytes on Windows and release checkouts.
+/tools/combat-fx-assets/*.py text eol=lf
+/tools/combat-fx-assets/*.java text eol=lf
+/tools/combat-bullet-visuals/*.py text eol=lf
+/data/combat_visuals/*.json text eol=lf

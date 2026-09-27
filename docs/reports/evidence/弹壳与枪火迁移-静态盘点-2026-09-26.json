@@ -1,0 +1,963 @@
+{
+  "role": "Historical static investigation snapshot, not a runtime catalog or rendered acceptance",
+  "observedAtUtc": "2026-09-26 00:54:12 UTC",
+  "baselineHead": "fa9f455e74f6673e99ca2cc1aafc8c9e12d08d59",
+  "concurrentWork": "评估子弹视觉迁移难度; active in the same checkout; ABI 5 bullet code was uncommitted",
+  "scope": {
+    "library": "flashswf/arts/原版素材库-子弹/LIBRARY",
+    "shellFolder": "弹壳",
+    "muzzleFolder": "特效-枪火组",
+    "itemDeclarationRoot": "data/items",
+    "declarationRules": "Count non-empty muzzle XML elements; literal null is a sentinel, not an effect; counts do not measure gameplay frequency"
+  },
+  "limitations": [
+    "XFL declarations and symbol dependencies only; does not execute ActionScript or prove current SWF linkage reachability",
+    "Symbol dependency scan does not resolve bitmap payloads; generic 枪火 declares a BitmapFill separately recorded below",
+    "No Flash/Host build, native rendering, candidate execution or visual/performance acceptance was performed in this task",
+    "Static SVG samples retain a stage-sized viewBox; tight bounds, clipping, registration, rasterization and native upload remain unverified"
+  ],
+  "casingConfiguration": {
+    "configured": [
+      "加强弹壳",
+      "加强手枪弹壳",
+      "加强步枪弹壳",
+      "加强重机枪弹壳",
+      "加强霰弹弹壳",
+      "手枪弹壳",
+      "步枪弹壳",
+      "能量弹壳",
+      "能量榴弹弹壳",
+      "能量重机枪弹壳",
+      "能量霰弹弹壳",
+      "重机枪弹壳",
+      "霰弹弹壳"
+    ],
+    "missingFromShellFolder": [
+      "加强步枪弹壳"
+    ],
+    "unusedInConfig": [
+      "全威力弹壳",
+      "加强全威力弹壳",
+      "加强榴弹弹壳",
+      "榴弹弹壳",
+      "能量全威力弹壳",
+      "能量手枪弹壳"
+    ]
+  },
+  "shells": [
+    {
+      "name": "弹壳/全威力弹壳",
+      "linkage": "全威力弹壳",
+      "path": "flashswf/arts/原版素材库-子弹/LIBRARY/弹壳/全威力弹壳.xml",
+      "sourceSha256": "11de67a3c6f648018a02bdac33e21d4cd21678a21e6cb3608d80aa5c9c7068c4",
+      "closureSize": 1,
+      "declaredFrames": 1,
+      "maxDependencyFrames": 1,
+      "features": [],
+      "blends": [],
+      "tweens": [],
+      "masks": 0,
+      "scripts": [],
+      "missing": []
+    },
+    {
+      "name": "弹壳/加强全威力弹壳",
+      "linkage": "加强全威力弹壳",
+      "path": "flashswf/arts/原版素材库-子弹/LIBRARY/弹壳/加强全威力弹壳.xml",
+      "sourceSha256": "a6fbfc7ad609d1cc80c412b333ceed2afda50ec09df3fc634b39037cdd67aa56",
+      "closureSize": 1,
+      "declaredFrames": 1,
+      "maxDependencyFrames": 1,
+      "features": [],
+      "blends": [],
+      "tweens": [],
+      "masks": 0,
+      "scripts": [],
+      "missing": []
+    },
+    {
+      "name": "弹壳/加强弹壳",
+      "linkage": "加强弹壳",
+      "path": "flashswf/arts/原版素材库-子弹/LIBRARY/弹壳/加强弹壳.xml",
+      "sourceSha256": "4b47bee8b0ec9467366dd4403152d5eac354302aa22bd78ed6400df4a58cd00c",
+      "closureSize": 1,
+      "declaredFrames": 1,
+      "maxDependencyFrames": 1,
+      "features": [],
+      "blends": [],
+      "tweens": [],
+      "masks": 0,
+      "scripts": [],
+      "missing": []
+    },
+    {
+      "name": "弹壳/加强手枪弹壳",
+      "linkage": "加强手枪弹壳",
+      "path": "flashswf/arts/原版素材库-子弹/LIBRARY/弹壳/加强手枪弹壳.xml",
+      "sourceSha256": "221970c8df4294cc875705d9a413f0e79a2cf443c216dcd3b25cdd2df0b1a8a1",
+      "closureSize": 1,
+      "declaredFrames": 1,
+      "maxDependencyFrames": 1,
+      "features": [],
+      "blends": [],
+      "tweens": [],
+      "masks": 0,
+      "scripts": [],
+      "missing": []
+    },
+    {
+      "name": "弹壳/加强榴弹弹壳",
+      "linkage": "加强榴弹弹壳",
+      "path": "flashswf/arts/原版素材库-子弹/LIBRARY/弹壳/加强榴弹弹壳.xml",
+      "sourceSha256": "d67dbea7cdf128c38bd0c2e6915440c8e2e490d8cf8ccdd1d88d6409d5c5d7f5",
+      "closureSize": 1,
+      "declaredFrames": 1,
+      "maxDependencyFrames": 1,
+      "features": [],
+      "blends": [],
+      "tweens": [],
+      "masks": 0,
+      "scripts": [],
+      "missing": []
+    },
+    {
+      "name": "弹壳/加强重机枪弹壳",
+      "linkage": "加强重机枪弹壳",
+      "path": "flashswf/arts/原版素材库-子弹/LIBRARY/弹壳/加强重机枪弹壳.xml",
+      "sourceSha256": "f07386d04cba15d5e13f0958c2a4aa3b720fcc5053245290af8ce9b7806a3bb7",
+      "closureSize": 1,
+      "declaredFrames": 1,
+      "maxDependencyFrames": 1,
+      "features": [],
+      "blends": [],
+      "tweens": [],
+      "masks": 0,
+      "scripts": [],
+      "missing": []
+    },
+    {
+      "name": "弹壳/加强霰弹弹壳",
+      "linkage": "加强霰弹弹壳",
+      "path": "flashswf/arts/原版素材库-子弹/LIBRARY/弹壳/加强霰弹弹壳.xml",
+      "sourceSha256": "52f0837acef6fb210c290865e6b479df24bdce3f09a6873d415c5c5e37e88beb",
+      "closureSize": 1,
+      "declaredFrames": 1,
+      "maxDependencyFrames": 1,
+      "features": [],
+      "blends": [],
+      "tweens": [],
+      "masks": 0,
+      "scripts": [],
+      "missing": []
+    },
+    {
+      "name": "弹壳/手枪弹壳",
+      "linkage": "手枪弹壳",
+      "path": "flashswf/arts/原版素材库-子弹/LIBRARY/弹壳/手枪弹壳.xml",
+      "sourceSha256": "abddb2382e57778eef3d09b193f0ad48a21a79f2aa39eedad758020868296cd6",
+      "closureSize": 1,
+      "declaredFrames": 1,
+      "maxDependencyFrames": 1,
+      "features": [],
+      "blends": [],
+      "tweens": [],
+      "masks": 0,
+      "scripts": [],
+      "missing": []
+    },
+    {
+      "name": "弹壳/榴弹弹壳",
+      "linkage": "榴弹弹壳",
+      "path": "flashswf/arts/原版素材库-子弹/LIBRARY/弹壳/榴弹弹壳.xml",
+      "sourceSha256": "78d07bd9707829596ccc4665f2196c4a3b7c7e34e6164dfb6de4e5c0b1e6d961",
+      "closureSize": 1,
+      "declaredFrames": 1,
+      "maxDependencyFrames": 1,
+      "features": [],
+      "blends": [],
+      "tweens": [],
+      "masks": 0,
+      "scripts": [],
+      "missing": []
+    },
+    {
+      "name": "弹壳/步枪弹壳",
+      "linkage": "步枪弹壳",
+      "path": "flashswf/arts/原版素材库-子弹/LIBRARY/弹壳/步枪弹壳.xml",
+      "sourceSha256": "d0d7157fb37bef7e4383b23ae8cedd70915ba0fdeee1a3f304c96cdfaeb287aa",
+      "closureSize": 1,
+      "declaredFrames": 1,
+      "maxDependencyFrames": 1,
+      "features": [],
+      "blends": [],
+      "tweens": [],
+      "masks": 0,
+      "scripts": [],
+      "missing": []
+    },
+    {
+      "name": "弹壳/能量全威力弹壳",
+      "linkage": "能量全威力弹壳",
+      "path": "flashswf/arts/原版素材库-子弹/LIBRARY/弹壳/能量全威力弹壳.xml",
+      "sourceSha256": "e3845ba4bac7100b3ac62ad9b2a541ba40c993b4f975f934a6041877f1cce683",
+      "closureSize": 1,
+      "declaredFrames": 1,
+      "maxDependencyFrames": 1,
+      "features": [],
+      "blends": [],
+      "tweens": [],
+      "masks": 0,
+      "scripts": [],
+      "missing": []
+    },
+    {
+      "name": "弹壳/能量弹壳",
+      "linkage": "能量弹壳",
+      "path": "flashswf/arts/原版素材库-子弹/LIBRARY/弹壳/能量弹壳.xml",
+      "sourceSha256": "2968e135d50f232c7049109cd649158a39f2c2342aea78bb70003c3b46d29f06",
+      "closureSize": 1,
+      "declaredFrames": 1,
+      "maxDependencyFrames": 1,
+      "features": [],
+      "blends": [],
+      "tweens": [],
+      "masks": 0,
+      "scripts": [],
+      "missing": []
+    },
+    {
+      "name": "弹壳/能量手枪弹壳",
+      "linkage": "能量手枪弹壳",
+      "path": "flashswf/arts/原版素材库-子弹/LIBRARY/弹壳/能量手枪弹壳.xml",
+      "sourceSha256": "700545ccc8ccf501e9e0ee9c76883eb25cbdfdc451bd4b735d11505da27917d8",
+      "closureSize": 1,
+      "declaredFrames": 1,
+      "maxDependencyFrames": 1,
+      "features": [],
+      "blends": [],
+      "tweens": [],
+      "masks": 0,
+      "scripts": [],
+      "missing": []
+    },
+    {
+      "name": "弹壳/能量榴弹弹壳",
+      "linkage": "能量榴弹弹壳",
+      "path": "flashswf/arts/原版素材库-子弹/LIBRARY/弹壳/能量榴弹弹壳.xml",
+      "sourceSha256": "45ce4a7e3f6a19131b463f0de49326ef4623c6d1c2521749d9ace90f3b2784f4",
+      "closureSize": 1,
+      "declaredFrames": 1,
+      "maxDependencyFrames": 1,
+      "features": [],
+      "blends": [],
+      "tweens": [],
+      "masks": 0,
+      "scripts": [],
+      "missing": []
+    },
+    {
+      "name": "弹壳/能量重机枪弹壳",
+      "linkage": "能量重机枪弹壳",
+      "path": "flashswf/arts/原版素材库-子弹/LIBRARY/弹壳/能量重机枪弹壳.xml",
+      "sourceSha256": "b9bd525745e4fb5bd4fadb04addcf0bc9477543a08473c7df84542cd55ae43f7",
+      "closureSize": 1,
+      "declaredFrames": 1,
+      "maxDependencyFrames": 1,
+      "features": [],
+      "blends": [],
+      "tweens": [],
+      "masks": 0,
+      "scripts": [],
+      "missing": []
+    },
+    {
+      "name": "弹壳/能量霰弹弹壳",
+      "linkage": "能量霰弹弹壳",
+      "path": "flashswf/arts/原版素材库-子弹/LIBRARY/弹壳/能量霰弹弹壳.xml",
+      "sourceSha256": "2a447271125b19e5c845ebe70cf2a8ff7dbffb772c449a41e8a23cc5f76c3ceb",
+      "closureSize": 1,
+      "declaredFrames": 1,
+      "maxDependencyFrames": 1,
+      "features": [],
+      "blends": [],
+      "tweens": [],
+      "masks": 0,
+      "scripts": [],
+      "missing": []
+    },
+    {
+      "name": "弹壳/重机枪弹壳",
+      "linkage": "重机枪弹壳",
+      "path": "flashswf/arts/原版素材库-子弹/LIBRARY/弹壳/重机枪弹壳.xml",
+      "sourceSha256": "488babf8feaebaa2996caa557272ae74914bcd67779d39f79dce25ba188d0131",
+      "closureSize": 1,
+      "declaredFrames": 1,
+      "maxDependencyFrames": 1,
+      "features": [],
+      "blends": [],
+      "tweens": [],
+      "masks": 0,
+      "scripts": [],
+      "missing": []
+    },
+    {
+      "name": "弹壳/霰弹弹壳",
+      "linkage": "霰弹弹壳",
+      "path": "flashswf/arts/原版素材库-子弹/LIBRARY/弹壳/霰弹弹壳.xml",
+      "sourceSha256": "0c6d332f3f78142543abf3cb813b4041f7ef48d24a806fb0467c2d0fd818b5da",
+      "closureSize": 1,
+      "declaredFrames": 1,
+      "maxDependencyFrames": 1,
+      "features": [],
+      "blends": [],
+      "tweens": [],
+      "masks": 0,
+      "scripts": [],
+      "missing": []
+    }
+  ],
+  "muzzles": [
+    {
+      "name": "特效-枪火组/冲锋枪枪火",
+      "linkage": "冲锋枪枪火",
+      "path": "flashswf/arts/原版素材库-子弹/LIBRARY/特效-枪火组/冲锋枪枪火.xml",
+      "sourceSha256": "d0c14b7085f9cbea0b665ff9458adaf772a5878a89da697ceab5c76d5e892be0",
+      "closureSize": 1,
+      "declaredFrames": 15,
+      "maxDependencyFrames": 15,
+      "features": [],
+      "blends": [],
+      "tweens": [],
+      "masks": 0,
+      "scripts": [
+        {
+          "source": "特效-枪火组/冲锋枪枪火",
+          "script": "this.removeMovieClip();"
+        }
+      ],
+      "missing": [],
+      "timeline": {
+        "name": "冲锋枪枪火",
+        "scriptframes": [
+          {
+            "index": 3,
+            "text": "this.removeMovieClip();"
+          }
+        ],
+        "labels": [],
+        "bitmapFills": []
+      }
+    },
+    {
+      "name": "特效-枪火组/反器材枪火",
+      "linkage": "反器材枪火",
+      "path": "flashswf/arts/原版素材库-子弹/LIBRARY/特效-枪火组/反器材枪火.xml",
+      "sourceSha256": "68b4ec74d4127e03994cae15c279cb6179caa4e5bda06d33683b5da58b364f36",
+      "closureSize": 1,
+      "declaredFrames": 15,
+      "maxDependencyFrames": 15,
+      "features": [],
+      "blends": [],
+      "tweens": [],
+      "masks": 0,
+      "scripts": [
+        {
+          "source": "特效-枪火组/反器材枪火",
+          "script": "this.removeMovieClip();"
+        }
+      ],
+      "missing": [],
+      "timeline": {
+        "name": "反器材枪火",
+        "scriptframes": [
+          {
+            "index": 6,
+            "text": "this.removeMovieClip();"
+          }
+        ],
+        "labels": [],
+        "bitmapFills": []
+      }
+    },
+    {
+      "name": "特效-枪火组/发射器枪火",
+      "linkage": "发射器枪火",
+      "path": "flashswf/arts/原版素材库-子弹/LIBRARY/特效-枪火组/发射器枪火.xml",
+      "sourceSha256": "cc97aed36cffd3eec9e62d6a127999174bbaa268ec2d25d07850fd6c7026c472",
+      "closureSize": 1,
+      "declaredFrames": 8,
+      "maxDependencyFrames": 8,
+      "features": [],
+      "blends": [],
+      "tweens": [],
+      "masks": 0,
+      "scripts": [
+        {
+          "source": "特效-枪火组/发射器枪火",
+          "script": "this.removeMovieClip();"
+        }
+      ],
+      "missing": [],
+      "timeline": {
+        "name": "发射器枪火",
+        "scriptframes": [
+          {
+            "index": 4,
+            "text": "this.removeMovieClip();"
+          }
+        ],
+        "labels": [],
+        "bitmapFills": []
+      }
+    },
+    {
+      "name": "特效-枪火组/巴雷特枪火",
+      "linkage": "巴雷特枪火",
+      "path": "flashswf/arts/原版素材库-子弹/LIBRARY/特效-枪火组/巴雷特枪火.xml",
+      "sourceSha256": "24084a11302032b68f2899aa60f3d81e163262f9fb6f4732d40b2e4af1665670",
+      "closureSize": 8,
+      "declaredFrames": 15,
+      "maxDependencyFrames": 15,
+      "features": [
+        "LinearGradient"
+      ],
+      "blends": [],
+      "tweens": [],
+      "masks": 0,
+      "scripts": [
+        {
+          "source": "特效-枪火组/巴雷特枪火",
+          "script": "this.removeMovieClip();"
+        }
+      ],
+      "missing": [],
+      "timeline": {
+        "name": "巴雷特枪火",
+        "scriptframes": [
+          {
+            "index": 14,
+            "text": "this.removeMovieClip();"
+          }
+        ],
+        "labels": [],
+        "bitmapFills": []
+      }
+    },
+    {
+      "name": "特效-枪火组/战斗步枪枪火",
+      "linkage": "战斗步枪枪火",
+      "path": "flashswf/arts/原版素材库-子弹/LIBRARY/特效-枪火组/战斗步枪枪火.xml",
+      "sourceSha256": "fef2d0807409c495989cf00263287e4f4de661074dfdf6fa016984075fde9904",
+      "closureSize": 1,
+      "declaredFrames": 15,
+      "maxDependencyFrames": 15,
+      "features": [],
+      "blends": [],
+      "tweens": [],
+      "masks": 0,
+      "scripts": [
+        {
+          "source": "特效-枪火组/战斗步枪枪火",
+          "script": "this.removeMovieClip();"
+        }
+      ],
+      "missing": [],
+      "timeline": {
+        "name": "战斗步枪枪火",
+        "scriptframes": [
+          {
+            "index": 5,
+            "text": "this.removeMovieClip();"
+          }
+        ],
+        "labels": [],
+        "bitmapFills": []
+      }
+    },
+    {
+      "name": "特效-枪火组/枪火",
+      "linkage": "枪火",
+      "path": "flashswf/arts/原版素材库-子弹/LIBRARY/特效-枪火组/枪火.xml",
+      "sourceSha256": "fdd4dea980f6b6bfa899106c9b0ec4bf8f7ebdbc845f50b08a790225d4820b2e",
+      "closureSize": 1,
+      "declaredFrames": 140,
+      "maxDependencyFrames": 140,
+      "features": [
+        "BitmapFill"
+      ],
+      "blends": [],
+      "tweens": [],
+      "masks": 0,
+      "scripts": [
+        {
+          "source": "特效-枪火组/枪火",
+          "script": "if(this._y == 0)\n{\n   this.removeMovieClip();\n}\ngotoAndPlay(\"a\" + random(3));"
+        },
+        {
+          "source": "特效-枪火组/枪火",
+          "script": "this.removeMovieClip();"
+        },
+        {
+          "source": "特效-枪火组/枪火",
+          "script": "this.removeMovieClip();"
+        },
+        {
+          "source": "特效-枪火组/枪火",
+          "script": "this.removeMovieClip();"
+        },
+        {
+          "source": "特效-枪火组/枪火",
+          "script": "this.removeMovieClip();"
+        },
+        {
+          "source": "特效-枪火组/枪火",
+          "script": "this.removeMovieClip();"
+        },
+        {
+          "source": "特效-枪火组/枪火",
+          "script": "this.removeMovieClip();"
+        }
+      ],
+      "missing": [],
+      "timeline": {
+        "name": "枪火",
+        "scriptframes": [
+          {
+            "index": 0,
+            "text": "if(this._y == 0)\n{\n   this.removeMovieClip();\n}\ngotoAndPlay(\"a\" + random(3));"
+          },
+          {
+            "index": 2,
+            "text": "this.removeMovieClip();"
+          },
+          {
+            "index": 31,
+            "text": "this.removeMovieClip();"
+          },
+          {
+            "index": 44,
+            "text": "this.removeMovieClip();"
+          },
+          {
+            "index": 81,
+            "text": "this.removeMovieClip();"
+          },
+          {
+            "index": 99,
+            "text": "this.removeMovieClip();"
+          },
+          {
+            "index": 139,
+            "text": "this.removeMovieClip();"
+          }
+        ],
+        "labels": [
+          [
+            "a0",
+            1
+          ],
+          [
+            "a1",
+            30
+          ],
+          [
+            "a2",
+            43
+          ],
+          [
+            "a3",
+            57
+          ],
+          [
+            "a4",
+            82
+          ],
+          [
+            "a5",
+            100
+          ]
+        ],
+        "bitmapFills": [
+          {
+            "bitmapPath": "3.位图相关/bitmap4731.png",
+            "bitmapIsClipped": "false"
+          }
+        ]
+      }
+    },
+    {
+      "name": "特效-枪火组/突击步枪枪火",
+      "linkage": "突击步枪枪火",
+      "path": "flashswf/arts/原版素材库-子弹/LIBRARY/特效-枪火组/突击步枪枪火.xml",
+      "sourceSha256": "d65e05871b7827faddf6243db67b4293859d258809112642af36a8efe4e2e5f5",
+      "closureSize": 1,
+      "declaredFrames": 15,
+      "maxDependencyFrames": 15,
+      "features": [],
+      "blends": [],
+      "tweens": [],
+      "masks": 0,
+      "scripts": [
+        {
+          "source": "特效-枪火组/突击步枪枪火",
+          "script": "this.removeMovieClip();"
+        }
+      ],
+      "missing": [],
+      "timeline": {
+        "name": "突击步枪枪火",
+        "scriptframes": [
+          {
+            "index": 3,
+            "text": "this.removeMovieClip();"
+          }
+        ],
+        "labels": [],
+        "bitmapFills": []
+      }
+    },
+    {
+      "name": "特效-枪火组/紧凑手枪枪火",
+      "linkage": "紧凑手枪枪火",
+      "path": "flashswf/arts/原版素材库-子弹/LIBRARY/特效-枪火组/紧凑手枪枪火.xml",
+      "sourceSha256": "0014c8b56c7d6d4d5a9d6ad7cf3c6ca14849d6a3787ebe00f11902a2f5778f33",
+      "closureSize": 1,
+      "declaredFrames": 15,
+      "maxDependencyFrames": 15,
+      "features": [],
+      "blends": [],
+      "tweens": [],
+      "masks": 0,
+      "scripts": [
+        {
+          "source": "特效-枪火组/紧凑手枪枪火",
+          "script": "this.removeMovieClip();"
+        }
+      ],
+      "missing": [],
+      "timeline": {
+        "name": "紧凑手枪枪火",
+        "scriptframes": [
+          {
+            "index": 3,
+            "text": "this.removeMovieClip();"
+          }
+        ],
+        "labels": [],
+        "bitmapFills": []
+      }
+    },
+    {
+      "name": "特效-枪火组/霰弹枪枪火",
+      "linkage": "霰弹枪枪火",
+      "path": "flashswf/arts/原版素材库-子弹/LIBRARY/特效-枪火组/霰弹枪枪火.xml",
+      "sourceSha256": "471408f5b7c24cdc2ee1ee02bb94f6d030b465cdb5a5f4f10e6b274a9c4293c2",
+      "closureSize": 1,
+      "declaredFrames": 15,
+      "maxDependencyFrames": 15,
+      "features": [],
+      "blends": [],
+      "tweens": [],
+      "masks": 0,
+      "scripts": [
+        {
+          "source": "特效-枪火组/霰弹枪枪火",
+          "script": "this.removeMovieClip();"
+        }
+      ],
+      "missing": [],
+      "timeline": {
+        "name": "霰弹枪枪火",
+        "scriptframes": [
+          {
+            "index": 4,
+            "text": "this.removeMovieClip();"
+          }
+        ],
+        "labels": [],
+        "bitmapFills": []
+      }
+    },
+    {
+      "name": "特效-枪火组/马格南手枪枪火",
+      "linkage": "马格南手枪枪火",
+      "path": "flashswf/arts/原版素材库-子弹/LIBRARY/特效-枪火组/马格南手枪枪火.xml",
+      "sourceSha256": "a452c38e6cdb9090efbd627cbda97e89296c415ffff4210a98598ee760571d7c",
+      "closureSize": 1,
+      "declaredFrames": 15,
+      "maxDependencyFrames": 15,
+      "features": [],
+      "blends": [],
+      "tweens": [],
+      "masks": 0,
+      "scripts": [
+        {
+          "source": "特效-枪火组/马格南手枪枪火",
+          "script": "this.removeMovieClip();"
+        }
+      ],
+      "missing": [],
+      "timeline": {
+        "name": "马格南手枪枪火",
+        "scriptframes": [
+          {
+            "index": 3,
+            "text": "this.removeMovieClip();"
+          }
+        ],
+        "labels": [],
+        "bitmapFills": []
+      }
+    }
+  ],
+  "muzzleDeclarations": {
+    "null": 31,
+    "冲锋枪枪火": 60,
+    "刺弹炮枪火": 2,
+    "加农炮枪火": 1,
+    "反器材枪火": 8,
+    "发射器枪火": 21,
+    "大喷气": 1,
+    "巴雷特枪火": 10,
+    "战斗步枪枪火": 53,
+    "枪火": 16,
+    "毒液枪火": 1,
+    "火花": 2,
+    "突击步枪枪火": 50,
+    "紧凑手枪枪火": 18,
+    "能量枪火": 2,
+    "铁枪能量弹枪火": 4,
+    "霰弹枪枪火": 33,
+    "马格南手枪枪火": 23,
+    "高爆枪火": 2
+  },
+  "itemParseErrors": [],
+  "staticSvgProbes": [
+    {
+      "name": "casing-rifle-frame0",
+      "directory": "C:\\Users\\fs\\AppData\\Local\\Temp\\cf7-casing-muzzle-preflight-01a0db0e-20260926\\casing-rifle-frame0",
+      "svgSha256": "cf45e1f770dabd09268cdbae500b33274237616de8179077d93a3de50c224b1e",
+      "svgBytes": 801,
+      "viewBox": "0 0 1024 576",
+      "pathCount": 5,
+      "source": {
+        "symbol": "弹壳/步枪弹壳",
+        "frameIndex": 0,
+        "frameLabel": null,
+        "stage": [
+          1024,
+          576
+        ],
+        "separateButtons": false
+      },
+      "unsupported": [],
+      "verification": "Existing exporter --verify passed; no unsupported items reported"
+    },
+    {
+      "name": "muzzle-rifle-frame0",
+      "directory": "C:\\Users\\fs\\AppData\\Local\\Temp\\cf7-casing-muzzle-preflight-01a0db0e-20260926\\muzzle-rifle-frame0",
+      "svgSha256": "8b4e2b0f262688d91c0aa22693245667d1a45bb3b31365d12eab97304b4a286e",
+      "svgBytes": 12288,
+      "viewBox": "0 0 1024 576",
+      "pathCount": 4,
+      "source": {
+        "symbol": "特效-枪火组/突击步枪枪火",
+        "frameIndex": 0,
+        "frameLabel": null,
+        "stage": [
+          1024,
+          576
+        ],
+        "separateButtons": false
+      },
+      "unsupported": [],
+      "verification": "Existing exporter --verify passed; no unsupported items reported"
+    },
+    {
+      "name": "muzzle-rifle-frame2",
+      "directory": "C:\\Users\\fs\\AppData\\Local\\Temp\\cf7-casing-muzzle-preflight-01a0db0e-20260926\\muzzle-rifle-frame2",
+      "svgSha256": "6c3f82886495d4d566d51f8643e7d76491efd952a0f5ea8c1ed95a31e04f5129",
+      "svgBytes": 8665,
+      "viewBox": "0 0 1024 576",
+      "pathCount": 3,
+      "source": {
+        "symbol": "特效-枪火组/突击步枪枪火",
+        "frameIndex": 2,
+        "frameLabel": null,
+        "stage": [
+          1024,
+          576
+        ],
+        "separateButtons": false
+      },
+      "unsupported": [],
+      "verification": "Existing exporter --verify passed; no unsupported items reported"
+    }
+  ],
+  "sourceDigests": [
+    {
+      "path": "flashswf/arts/原版素材库-子弹/LIBRARY/弹壳/全威力弹壳.xml",
+      "sha256": "11de67a3c6f648018a02bdac33e21d4cd21678a21e6cb3608d80aa5c9c7068c4"
+    },
+    {
+      "path": "flashswf/arts/原版素材库-子弹/LIBRARY/弹壳/加强全威力弹壳.xml",
+      "sha256": "a6fbfc7ad609d1cc80c412b333ceed2afda50ec09df3fc634b39037cdd67aa56"
+    },
+    {
+      "path": "flashswf/arts/原版素材库-子弹/LIBRARY/弹壳/加强弹壳.xml",
+      "sha256": "4b47bee8b0ec9467366dd4403152d5eac354302aa22bd78ed6400df4a58cd00c"
+    },
+    {
+      "path": "flashswf/arts/原版素材库-子弹/LIBRARY/弹壳/加强手枪弹壳.xml",
+      "sha256": "221970c8df4294cc875705d9a413f0e79a2cf443c216dcd3b25cdd2df0b1a8a1"
+    },
+    {
+      "path": "flashswf/arts/原版素材库-子弹/LIBRARY/弹壳/加强榴弹弹壳.xml",
+      "sha256": "d67dbea7cdf128c38bd0c2e6915440c8e2e490d8cf8ccdd1d88d6409d5c5d7f5"
+    },
+    {
+      "path": "flashswf/arts/原版素材库-子弹/LIBRARY/弹壳/加强重机枪弹壳.xml",
+      "sha256": "f07386d04cba15d5e13f0958c2a4aa3b720fcc5053245290af8ce9b7806a3bb7"
+    },
+    {
+      "path": "flashswf/arts/原版素材库-子弹/LIBRARY/弹壳/加强霰弹弹壳.xml",
+      "sha256": "52f0837acef6fb210c290865e6b479df24bdce3f09a6873d415c5c5e37e88beb"
+    },
+    {
+      "path": "flashswf/arts/原版素材库-子弹/LIBRARY/弹壳/手枪弹壳.xml",
+      "sha256": "abddb2382e57778eef3d09b193f0ad48a21a79f2aa39eedad758020868296cd6"
+    },
+    {
+      "path": "flashswf/arts/原版素材库-子弹/LIBRARY/弹壳/榴弹弹壳.xml",
+      "sha256": "78d07bd9707829596ccc4665f2196c4a3b7c7e34e6164dfb6de4e5c0b1e6d961"
+    },
+    {
+      "path": "flashswf/arts/原版素材库-子弹/LIBRARY/弹壳/步枪弹壳.xml",
+      "sha256": "d0d7157fb37bef7e4383b23ae8cedd70915ba0fdeee1a3f304c96cdfaeb287aa"
+    },
+    {
+      "path": "flashswf/arts/原版素材库-子弹/LIBRARY/弹壳/能量全威力弹壳.xml",
+      "sha256": "e3845ba4bac7100b3ac62ad9b2a541ba40c993b4f975f934a6041877f1cce683"
+    },
+    {
+      "path": "flashswf/arts/原版素材库-子弹/LIBRARY/弹壳/能量弹壳.xml",
+      "sha256": "2968e135d50f232c7049109cd649158a39f2c2342aea78bb70003c3b46d29f06"
+    },
+    {
+      "path": "flashswf/arts/原版素材库-子弹/LIBRARY/弹壳/能量手枪弹壳.xml",
+      "sha256": "700545ccc8ccf501e9e0ee9c76883eb25cbdfdc451bd4b735d11505da27917d8"
+    },
+    {
+      "path": "flashswf/arts/原版素材库-子弹/LIBRARY/弹壳/能量榴弹弹壳.xml",
+      "sha256": "45ce4a7e3f6a19131b463f0de49326ef4623c6d1c2521749d9ace90f3b2784f4"
+    },
+    {
+      "path": "flashswf/arts/原版素材库-子弹/LIBRARY/弹壳/能量重机枪弹壳.xml",
+      "sha256": "b9bd525745e4fb5bd4fadb04addcf0bc9477543a08473c7df84542cd55ae43f7"
+    },
+    {
+      "path": "flashswf/arts/原版素材库-子弹/LIBRARY/弹壳/能量霰弹弹壳.xml",
+      "sha256": "2a447271125b19e5c845ebe70cf2a8ff7dbffb772c449a41e8a23cc5f76c3ceb"
+    },
+    {
+      "path": "flashswf/arts/原版素材库-子弹/LIBRARY/弹壳/重机枪弹壳.xml",
+      "sha256": "488babf8feaebaa2996caa557272ae74914bcd67779d39f79dce25ba188d0131"
+    },
+    {
+      "path": "flashswf/arts/原版素材库-子弹/LIBRARY/弹壳/霰弹弹壳.xml",
+      "sha256": "0c6d332f3f78142543abf3cb813b4041f7ef48d24a806fb0467c2d0fd818b5da"
+    },
+    {
+      "path": "flashswf/arts/原版素材库-子弹/LIBRARY/无AS链接/Symbol 741.xml",
+      "sha256": "f0d226135c93ffba92f7bf23488ae66faf22face30f9f4c18058c42e58152ef3"
+    },
+    {
+      "path": "flashswf/arts/原版素材库-子弹/LIBRARY/无AS链接/Symbol 743.xml",
+      "sha256": "4190792df1c94be7e3aecc5011ed46d6ffd21080e0a03376535e3d070f659b1a"
+    },
+    {
+      "path": "flashswf/arts/原版素材库-子弹/LIBRARY/无AS链接/Symbol 745.xml",
+      "sha256": "ace323f589e18eb924e18837dc863a457a182ff831ca98d138e873290a82124b"
+    },
+    {
+      "path": "flashswf/arts/原版素材库-子弹/LIBRARY/无AS链接/Symbol 747.xml",
+      "sha256": "abbd762eb6e6b7fcfb6a7e5e12602a25fc707782726c7409833e07abbed5ebb4"
+    },
+    {
+      "path": "flashswf/arts/原版素材库-子弹/LIBRARY/无AS链接/Symbol 749.xml",
+      "sha256": "14da35ffa05dae0fc6a648d40896058cd6bf13016051de4ebb81b6c65d3d515c"
+    },
+    {
+      "path": "flashswf/arts/原版素材库-子弹/LIBRARY/无AS链接/Symbol 751.xml",
+      "sha256": "397a8e5105213f029f1208b9202d0fafc59bbba44f8e81b2e35224da9668d1d8"
+    },
+    {
+      "path": "flashswf/arts/原版素材库-子弹/LIBRARY/无AS链接/Symbol 753.xml",
+      "sha256": "00714190a785d62ae285eb056504376870e6c299a121ca680281d1287176b152"
+    },
+    {
+      "path": "flashswf/arts/原版素材库-子弹/LIBRARY/特效-枪火组/冲锋枪枪火.xml",
+      "sha256": "d0c14b7085f9cbea0b665ff9458adaf772a5878a89da697ceab5c76d5e892be0"
+    },
+    {
+      "path": "flashswf/arts/原版素材库-子弹/LIBRARY/特效-枪火组/反器材枪火.xml",
+      "sha256": "68b4ec74d4127e03994cae15c279cb6179caa4e5bda06d33683b5da58b364f36"
+    },
+    {
+      "path": "flashswf/arts/原版素材库-子弹/LIBRARY/特效-枪火组/发射器枪火.xml",
+      "sha256": "cc97aed36cffd3eec9e62d6a127999174bbaa268ec2d25d07850fd6c7026c472"
+    },
+    {
+      "path": "flashswf/arts/原版素材库-子弹/LIBRARY/特效-枪火组/巴雷特枪火.xml",
+      "sha256": "24084a11302032b68f2899aa60f3d81e163262f9fb6f4732d40b2e4af1665670"
+    },
+    {
+      "path": "flashswf/arts/原版素材库-子弹/LIBRARY/特效-枪火组/战斗步枪枪火.xml",
+      "sha256": "fef2d0807409c495989cf00263287e4f4de661074dfdf6fa016984075fde9904"
+    },
+    {
+      "path": "flashswf/arts/原版素材库-子弹/LIBRARY/特效-枪火组/枪火.xml",
+      "sha256": "fdd4dea980f6b6bfa899106c9b0ec4bf8f7ebdbc845f50b08a790225d4820b2e"
+    },
+    {
+      "path": "flashswf/arts/原版素材库-子弹/LIBRARY/特效-枪火组/突击步枪枪火.xml",
+      "sha256": "d65e05871b7827faddf6243db67b4293859d258809112642af36a8efe4e2e5f5"
+    },
+    {
+      "path": "flashswf/arts/原版素材库-子弹/LIBRARY/特效-枪火组/紧凑手枪枪火.xml",
+      "sha256": "0014c8b56c7d6d4d5a9d6ad7cf3c6ca14849d6a3787ebe00f11902a2f5778f33"
+    },
+    {
+      "path": "flashswf/arts/原版素材库-子弹/LIBRARY/特效-枪火组/霰弹枪枪火.xml",
+      "sha256": "471408f5b7c24cdc2ee1ee02bb94f6d030b465cdb5a5f4f10e6b274a9c4293c2"
+    },
+    {
+      "path": "flashswf/arts/原版素材库-子弹/LIBRARY/特效-枪火组/马格南手枪枪火.xml",
+      "sha256": "a452c38e6cdb9090efbd627cbda97e89296c415ffff4210a98598ee760571d7c"
+    },
+    {
+      "path": "scripts/类定义/org/flashNight/arki/bullet/BulletComponent/Shell/ShellSystem.as",
+      "sha256": "87dd410ad854e01c76369d14a6431c7908e63483d8b08eef19d278e2a833b6bf"
+    },
+    {
+      "path": "scripts/类定义/org/flashNight/arki/corpse/CorpseStampSystem.as",
+      "sha256": "eb3e90c84c25abeff1d943f4e871f176be59f869d3f3f8c120e424bbe268cd2a"
+    },
+    {
+      "path": "scripts/类定义/org/flashNight/arki/corpse/DeathEffectRenderer.as",
+      "sha256": "9e2a5549f6b8ac7d0269b8bb64ccfd72e675a5b7d317c8631bd63cfee9e54523"
+    },
+    {
+      "path": "data/items/bullets_cases.xml",
+      "sha256": "5e71a5023c039282ce29d5ec01a1014929660f6aa931338286b0979288f9cb20"
+    },
+    {
+      "path": "launcher/native/world-compositor/Compositor.h",
+      "sha256": "2f8356e04ff0d70dc6e28742bf4b7a59488e17d68c3fea91b61409d1f8b48f45"
+    },
+    {
+      "path": "tools/combat-bullet-visuals/build.py",
+      "sha256": "a0ca9eeaf9992b4d540d7c9eed7903054957e723589a33e343662ec706972ac1"
+    }
+  ]
+}

@@ -647,6 +647,14 @@ class org.flashNight.neur.Server.ServerManager {
             org.flashNight.arki.render.BulletVisualProbe.configure(response);
             return;
         }
+        if (response.task == "combat_fx_caps") {
+            org.flashNight.arki.render.CombatFxBridge.configure(response);
+            return;
+        }
+        if (response.task == "combat_fx_events") {
+            org.flashNight.arki.render.CombatFxBridge.receiveEvents(response);
+            return;
+        }
 
         // Callback 路由：有 callId 的响应分发到注册的回调
         if (response.callId !== undefined) {
@@ -751,6 +759,7 @@ class org.flashNight.neur.Server.ServerManager {
         org.flashNight.arki.component.Effect.HitNumberBatchProcessor.setHostEnabled(false);
         org.flashNight.arki.render.WeatherParticleRenderer.setNativeEnabled(false);
         org.flashNight.arki.render.BulletVisualProbe.disconnect();
+        org.flashNight.arki.render.CombatFxBridge.disconnect();
         // 先 retire 当前 source；旧 XMLSocket 排队的 onData/onClose 即使在新连接建立后
         // 才抵达，也会被 initXMLSocket closure 的对象身份门拒绝。
         xmlSocket = null;

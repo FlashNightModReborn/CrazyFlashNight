@@ -491,6 +491,13 @@ namespace CF7Launcher.Bus
             return separator < 0 ? message : message.Substring(0, separator);
         }
 
+        internal static string SplitFrameCombatFxSection(string message, out string payload)
+        {
+            int separator=message.IndexOf('\x06',1);
+            payload=separator<0?null:message.Substring(separator+1);
+            return separator<0?message:message.Substring(0,separator);
+        }
+
         private void HandleCurrentMessage(string message, int connectionGen)
         {
 
@@ -502,11 +509,12 @@ namespace CF7Launcher.Bus
                 if (prefix == 'F')
                 {
                     PerfTrace.Counter("socket.fastlane.F");
-                    // Frame 快车道：F{cam}\x01{hn}[\x02{fps}][\x03{uiState}][\x04{inputPayload}][\x05{bulletVisual}]
+                    // Frame 快车道：F{cam}\x01{hn}[\x02{fps}][\x03{uiState}][\x04{inputPayload}][\x05{bulletVisual}][\x06{combatFx}]
                     if (_frameTask == null) return;
 
-                    // 1) 首批子弹视觉影子数据固定在最末尾；旧 Host/AS2 无此段。
-                    string visualFree = SplitFrameVisualSection(message, out string bulletVisualPayload);
+                    // 1) 从尾到头拆开装饰事件与子弹快照，保持旧帧段不变。
+                    string fxFree=SplitFrameCombatFxSection(message,out string combatFxPayload);
+                    string visualFree = SplitFrameVisualSection(fxFree, out string bulletVisualPayload);
 
                     // 2) 提取 \x04 输入数据段
                     string inputPayload = null;
@@ -552,7 +560,7 @@ namespace CF7Launcher.Bus
                         hn = "";
                         fps = "";
                     }
-                    _frameTask.HandleRaw(cam, hn, fps, inputPayload, bulletVisualPayload, connectionGen);
+                    _frameTask.HandleRaw(cam, hn, fps, inputPayload, bulletVisualPayload, connectionGen,combatFxPayload);
                     // UI 状态段透传到 WebView2（与帧渲染同步）
                     if (uiState != null && uiState.Length > 0)
                     {

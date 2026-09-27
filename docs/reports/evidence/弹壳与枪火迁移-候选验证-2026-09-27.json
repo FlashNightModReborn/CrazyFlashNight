@@ -1,0 +1,202 @@
+{
+  "role": "Scoped source, Flash, Host, GPU and local candidate validation; not player acceptance or formal promotion",
+  "observedAtUtc": "2026-09-27T01:02:58.479659+00:00",
+  "baselineHead": "8b164183f76a5a21491cf9ee0b2e3c37b4a110c8",
+  "uncommittedSource": true,
+  "scope": {
+    "casings": 18,
+    "muzzleStyles": 10,
+    "frames": 66,
+    "localLighting": false,
+    "chainGroupedMotion": false
+  },
+  "assets": {
+    "catalog": {
+      "path": "data/combat_visuals/effects.v1.json",
+      "bytes": 34421,
+      "sha256": "64115995478C8AF5453E1E6C0CE51D754A40407574C6E948C8F1520ED10672FC"
+    },
+    "atlas": {
+      "path": "data/combat_visuals/effects-atlas.png",
+      "bytes": 364293,
+      "sha256": "861E71E483D1CB1AE963772BBE2F13981966740EE29D93FAB653ECAE3F5CA25A"
+    },
+    "width": 2048,
+    "height": 1072,
+    "textureBytes": 8781824,
+    "sources": 36,
+    "sourceSwf": {
+      "path": "flashswf/arts/原版素材库-子弹.swf",
+      "bytes": 4145667,
+      "sha256": "87053BBBDCBA77104C782ADE7BE415B25FDA84BE50098C65823FCFCC529209D2"
+    }
+  },
+  "as2": {
+    "asLoader": {
+      "path": "scripts/asLoader.swf",
+      "bytes": 1380342,
+      "sha256": "C0A11BF98011D3233099E58DDBD7581D2BCD47213AB8132DB7C2B83962D24DA0"
+    },
+    "compilerErrors": 0,
+    "compilerWarnings": 0,
+    "focusedPassed": 18,
+    "focusedFailed": 0,
+    "runId": "b7f10281190244f5a8cc51eaabc00249",
+    "retry32K": 0,
+    "classOwnership": {
+      "main": 0,
+      "loader": 673,
+      "intersection": 0
+    },
+    "productionSymbolsVerified": [
+      "CombatFxBridge",
+      "DecalStampQueue",
+      "VisualRandom",
+      "combat_fx_caps",
+      "combat_fx_events"
+    ]
+  },
+  "host": {
+    "fullPassed": 5911,
+    "fullSkipped": 5,
+    "fullFailed": 0,
+    "finalFocusedPassed": 16,
+    "finalFocusedFailed": 0
+  },
+  "gpu": {
+    "schema": "cf7-combat-fx-gpu-probe.v1",
+    "utc": "2026-09-27T00:59:11.6117715Z",
+    "process": 3164,
+    "module": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\runtime-candidates\\v2\\combat-fx-0927\\runtime\\FlashCompositorNative.dll",
+    "atlas": "64115995478C8AF5453E1E6C0CE51D754A40407574C6E948C8F1520ED10672FC",
+    "adapter": "Intel(R) UHD Graphics 630",
+    "proof": {
+      "casingUnderBullet": [
+        255,
+        255,
+        204
+      ],
+      "muzzleAboveBullet": [
+        0,
+        0,
+        255
+      ],
+      "worldGradedCasing": [
+        128,
+        0,
+        0
+      ],
+      "emissiveMuzzle": [
+        0,
+        0,
+        255
+      ]
+    },
+    "images": [
+      "casing-under-bullet.png",
+      "muzzle-over-bullet.png",
+      "world-grade-emissive.png",
+      "authored-gallery.png"
+    ],
+    "boundary": "Controlled WGC source and real compositor GPU output; no gameplay or human visual acceptance."
+  },
+  "candidate": {
+    "buildIdentityHash": "8433064A2E472B1362C6AFF39B51604D543C055CE4B1CAE79FCAEE3AF301CB4C",
+    "payloadClosureHash": "8046D2A30963840EB007BCA8B0D662484A232F6AB78204B5E6902F64FFF74A6A",
+    "artifactSourceHash": "E4B0751F65B2AEB622C9F7517DB9ED7FD348611010F805BB7E76700D0EA67089",
+    "producerRecipeHash": "63D86536002017C48F2C5369686896C8909CA1DBDA0E4F6C79A945A74A2B7E00",
+    "toolchainLockHash": "7B83229BE93F8244810CDD23DAFD97875B23857E547DE520035FE23B453CB3CD",
+    "core": {
+      "path": "tmp/runtime-candidates/v2/combat-fx-0927/runtime/CRAZYFLASHER7MercenaryEmpire.Core.dll",
+      "bytes": 5695488,
+      "sha256": "30B3635093E7A9D6FA126567BF368024FE6664CC627398413DA3273618B5FD37"
+    },
+    "compositor": {
+      "path": "tmp/runtime-candidates/v2/combat-fx-0927/runtime/FlashCompositorNative.dll",
+      "bytes": 252416,
+      "sha256": "173BCD94AB9DB2B9595E318AABB6522B1BD474D7C98828D8754A08E640126D6F"
+    }
+  },
+  "candidateExecution": {
+    "root": "tmp/runtime-candidates/v2/combat-fx-0927",
+    "pid": 13372,
+    "entry": "automation/start.ps1 -CandidateRoot <absolute candidate path>",
+    "scope": "Guardian title/slot selection, Web ready, real Flash bootstrap socket handshake, catalog load; no character selected",
+    "gracefulExit": "Idle; character_build_shutdown_fence reason=no_binding",
+    "devEntry": "本地开发启动.cmd",
+    "selectionState": "ready"
+  },
+  "evidenceStates": {
+    "compiled": true,
+    "candidate_built": true,
+    "candidate_executed": true,
+    "e2e_verified": false,
+    "promoted": false,
+    "standard_entry_verified": false
+  },
+  "remaining": [
+    "Game muzzle alignment and timing",
+    "Settled sprite to Flash stamp seam",
+    "Game panel/pause/scene/camera/DRS combinations",
+    "Same-load net performance and long-run cost",
+    "Human visual acceptance",
+    "Explicitly authorized commit/push and any later formal release"
+  ],
+  "localEvidence": [
+    {
+      "path": "tmp/combat-fx-validation/test-final-flashlog.txt",
+      "bytes": 570,
+      "sha256": "B505CEE25622D0BCE47D42E7B576BBA207C12FFB56A1ADDE0E97970F6FF88FC3"
+    },
+    {
+      "path": "tmp/combat-fx-validation/test-final-compile_output.txt",
+      "bytes": 589,
+      "sha256": "B62986C1387FC62AD09EFB93C6A68CB10802CCF4BE2446116692D7939989CBED"
+    },
+    {
+      "path": "tmp/combat-fx-validation/test-final-compiler_errors.txt",
+      "bytes": 27,
+      "sha256": "6D64657E843CFA06C243B6B51F8732C1B5910EBD29940AA7F6F9342B38034FD3"
+    },
+    {
+      "path": "tmp/combat-fx-validation/publish-final-compile_output.txt",
+      "bytes": 63,
+      "sha256": "89ABF2A02804799DF25CEB3BF810F66094AF348F73465277451E89E8C5B919B6"
+    },
+    {
+      "path": "tmp/combat-fx-validation/publish-final-compiler_errors.txt",
+      "bytes": 27,
+      "sha256": "6D64657E843CFA06C243B6B51F8732C1B5910EBD29940AA7F6F9342B38034FD3"
+    },
+    {
+      "path": "tmp/combat-fx-validation/host-tests.log",
+      "bytes": 874476,
+      "sha256": "F5F5765F2DA6067178776F1637D244FAA29D6DEC335191CA546A599080FDACA7"
+    },
+    {
+      "path": "tmp/combat-fx-validation/final-focused.log",
+      "bytes": 860,
+      "sha256": "01EFEC59F3CDC1AB462CDEE56D63030F7790010BBF2EDE44E6DD509721C0A422"
+    },
+    {
+      "path": "tmp/combat-fx-validation/candidate-build.log",
+      "bytes": 5697,
+      "sha256": "18AC18729D2F70C792AB332F75F01A1E23EF41D054EF364176148071101F70A8"
+    },
+    {
+      "path": "tmp/combat-fx-validation/candidate-start.log",
+      "bytes": 1558,
+      "sha256": "BA8D59DEC9ED6A6C24BDCE81930DCB3E2609CC2923945192130D38570B9B209B"
+    },
+    {
+      "path": "tmp/combat-fx-validation/candidate-launcher-closed.log",
+      "bytes": 22044,
+      "sha256": "B9C0D279D1F2C09CBC5E54E934A72648029AAD1EBFF74628B92334A7923BFD38"
+    },
+    {
+      "path": "tmp/combat-fx-validation/gpu-candidate/probe.json",
+      "bytes": 972,
+      "sha256": "9DA972C8B5939A70E4B67168169F66B8DC75A78846FE1F5F638C8CA3F364AB30"
+    }
+  ]
+}

@@ -8,7 +8,8 @@
 //（32^3 RGBA8 整块上传，PS 三线性采样；上传即启用，清除即回退矩阵/Gamma 路径）。
 // bullet-v1（2026-09-26）：新增 ProbeSetBulletStyles/ProbeSetBulletFrame——首批子弹候选
 // 的原生三角形叠加（世界视口内、天气/氛围之后、同一 grade/LUT；setter 只复制快照）。
-// 当前配对 ABI 5 同时要求 LUT、天气/氛围与子弹导出，Host 严格拒绝未配对 DLL。
+// combat-fx-v1：ABI 6 增加预乘 BGRA 图集与装饰粒子两层快照；原生不持有玩法状态。
+// 当前配对 ABI 7 将最多 16 个短时局部光与装饰快照原子提交；世界/天气共享低分辨率光场。
 struct ProbeStats {
     uint32_t size, state;
     int32_t error;
@@ -67,6 +68,14 @@ __declspec(dllexport) int __cdecl ProbeSetBulletStyles(void* handle, const float
 // items[8*count]: style index, world x/y, rotation deg, scale %, alpha %,
 // reserved 0. count<=256; count 0 clears. stage = camera + world*cameraScale.
 __declspec(dllexport) int __cdecl ProbeSetBulletFrame(void* handle, const float* items, int count, float cameraX, float cameraY, float cameraScale);
+// Atlas upload is one-time per resource generation; ready confirms GPU creation.
+__declspec(dllexport) int __cdecl ProbeSetCombatFxAtlas(void* handle,const uint8_t* pixels,int width,int height,int length);
+__declspec(dllexport) int __cdecl ProbeCombatFxReady(void* handle);
+// 16 floats/item: xy/rotation/alpha; scaleXY/brightness/worldLit; local offset/size; UV rect.
+// First casings items draw below bullets; remaining items draw above bullets. count<=512.
+// lights[8*lightCount]: world xy/radius/energy, RGB/reserved 0. lightCount<=16.
+__declspec(dllexport) int __cdecl ProbeSetCombatFxFrame(void* handle,const float* items,int count,int casings,
+    const float* lights,int lightCount,float maximumResponse,float cameraX,float cameraY,float cameraScale);
 __declspec(dllexport) uint32_t __cdecl ProbeGetAbiVersion();
 __declspec(dllexport) void* __cdecl ProbeStart(HWND source, DWORD sourcePid, HWND output, uint32_t vendor);
 __declspec(dllexport) int __cdecl ProbeSetCrop(void* handle, int x, int y, int width, int height);
@@ -79,6 +88,8 @@ __declspec(dllexport) void __cdecl ProbeRequestProof(void* handle);
 // 1 ok; 0 invalid argument; -1 no valid frame (inactive/occluded/minimized/pool not ready);
 // -2 buffer too small or size query (buffer=null), out dims filled; -3 busy; -4 worker timeout; -5 GPU readback failed.
 __declspec(dllexport) int __cdecl ProbeGrabLatestFrame(void* handle, uint8_t* buffer, uint32_t bufferSize, uint32_t* outWidth, uint32_t* outHeight);
+// Explicit test/lab readback after every compositor pass; same result codes as source grab.
+__declspec(dllexport) int __cdecl ProbeGrabCompositeFrame(void* handle, uint8_t* buffer, uint32_t bufferSize, uint32_t* outWidth, uint32_t* outHeight);
 __declspec(dllexport) void __cdecl ProbeRequestContentProof(void* handle);
 __declspec(dllexport) int __cdecl ProbeGetContentStats(void* handle, ProbeContentStats* stats);
 __declspec(dllexport) int __cdecl ProbeGetStats(void* handle, ProbeStats* stats);

@@ -1,0 +1,288 @@
+{
+  "role": "Combined candidate after upstream integration; machine checks do not substitute for in-game visual acceptance or formal promotion",
+  "observedAtUtc": "2026-09-27T03:26:44.863836+00:00",
+  "upstream": {
+    "before": "8b164183f7",
+    "merged": "f535ca5d4a448eb8e3d5d6c56db914c18705d686",
+    "commits": [
+      "2ed29efed1c3551303e03c23086307a989488e62",
+      "9f43cb6094a3980d7bac1f8d0f6b33a610732185",
+      "f65245e018c8cf8744ed3ef70a23405d496d4c88",
+      "53564ad155a2523a0333db39daca548614f0cdb9",
+      "97fc2dbb2cff853b460c1a1a3d4bf4cface3ff8a",
+      "f495419e3b77f042f20bd287ed1f9d83e8b0fe16",
+      "a0c852a07c2facf2df130d3d2879d7ad4dd606b4",
+      "f535ca5d4a448eb8e3d5d6c56db914c18705d686"
+    ],
+    "method": "fast-forward; only old generated asLoader saved in scoped stash; other local source edits verified byte-identical after merge",
+    "preservedSnapshot": "tmp/combat-fx-merge-before-0927/"
+  },
+  "scope": {
+    "casings": 18,
+    "muzzles": 10,
+    "impacts": 7,
+    "localLights": true,
+    "shadows": false,
+    "chainGroupedMotion": false
+  },
+  "assets": {
+    "catalog": {
+      "path": "data/combat_visuals/effects.v1.json",
+      "bytes": 149683,
+      "sha256": "07A439C4FF931494CDF4A1078799E2EB4FD8E3E3C9AA9C6F09D1882D58CD5C1E"
+    },
+    "atlas": {
+      "path": "data/combat_visuals/effects-atlas.png",
+      "bytes": 576417,
+      "sha256": "011DDD8746AC39700570DDE64D60E807E34B338AEBEF8C8D2DFF0DCF79AF390C"
+    },
+    "lightPresets": {
+      "path": "data/combat_visuals/local_lights.v1.json",
+      "bytes": 989,
+      "sha256": "DC823F32223DD7E18D13683F78B829B49FD370892F31D18BDE2E882BFC4C61CF"
+    },
+    "frames": 461,
+    "uniqueRasterFrames": 142,
+    "width": 2048,
+    "height": 1760,
+    "sources": 67,
+    "textureBytes": 14417920
+  },
+  "as2": {
+    "asLoader": {
+      "path": "scripts/asLoader.swf",
+      "bytes": 1381144,
+      "sha256": "27FD5A517967554E6D05C8F08960A8F2C1DDC32DEBBD5D6FDE2EC14A5C91F828"
+    },
+    "compilerErrors": 0,
+    "compilerWarnings": 0,
+    "retry32K": 0,
+    "combatFx": {
+      "passed": 24,
+      "failed": 0,
+      "rayEquivalenceChecks": 18,
+      "runId": "7a475ca91a094bfeb052d17010bc25c6"
+    },
+    "settlement": {
+      "passed": 159,
+      "failed": 0,
+      "runId": "9ad68ca3e6964234ac0f2ead5aab42ec"
+    },
+    "upstreamMercLoadout": {
+      "passed": 125,
+      "failed": 0,
+      "runId": "bcef86008ec249e697688d9471d609cb"
+    },
+    "classOwnership": {
+      "main": 0,
+      "loader": 673,
+      "intersection": 0
+    }
+  },
+  "host": {
+    "focusedPassed": 20,
+    "fullPassed": 5915,
+    "fullSkipped": 5,
+    "fullFailed": 0,
+    "policyRegressionChecks": 69
+  },
+  "gpu": {
+    "schema": "cf7-combat-fx-gpu-probe.v1",
+    "utc": "2026-09-27T03:21:10.8181261Z",
+    "process": 9352,
+    "module": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\runtime-candidates\\v2\\combat-fx-lights-0927\\runtime\\FlashCompositorNative.dll",
+    "atlas": "07A439C4FF931494CDF4A1078799E2EB4FD8E3E3C9AA9C6F09D1882D58CD5C1E",
+    "adapter": "Intel(R) UHD Graphics 630",
+    "proof": {
+      "casingUnderBullet": [
+        255,
+        255,
+        204
+      ],
+      "muzzleAboveBullet": [
+        0,
+        0,
+        255
+      ],
+      "worldGradedCasing": [
+        128,
+        0,
+        0
+      ],
+      "emissiveMuzzle": [
+        0,
+        0,
+        255
+      ],
+      "worldBefore": [
+        12,
+        13,
+        16
+      ],
+      "worldLit": [
+        42,
+        45,
+        47
+      ],
+      "overlap": [
+        70,
+        75,
+        77
+      ],
+      "lutPalette": [
+        18,
+        56,
+        32
+      ],
+      "weatherBefore": 12134,
+      "weatherAfter": 45867,
+      "cameraTransform": true,
+      "cleared": true
+    },
+    "timings": {
+      "noLights": {
+        "samples": 90,
+        "submitMedianMs": 0.17669999599456787,
+        "submitP95Ms": 0.23960000276565552,
+        "presentMedianMs": 0.10480000078678131,
+        "boundary": "CPU submission/present timings, not GPU timestamps or game FPS"
+      },
+      "sixteenLights": {
+        "samples": 90,
+        "submitMedianMs": 0.18569999933242798,
+        "submitP95Ms": 0.36730000376701355,
+        "presentMedianMs": 0.09749999642372131,
+        "boundary": "CPU submission/present timings, not GPU timestamps or game FPS"
+      }
+    },
+    "images": [
+      "authored-gallery.png",
+      "casing-under-bullet.png",
+      "impact-gallery.png",
+      "light-camera-transform.png",
+      "light-cleared.png",
+      "light-with-green-lut.png",
+      "muzzle-over-bullet.png",
+      "neutral-world.png",
+      "night-before-light.png",
+      "night-with-light.png",
+      "overlapping-lights.png",
+      "weather-before-light.png",
+      "weather-with-light.png",
+      "world-grade-emissive.png"
+    ],
+    "boundary": "Controlled WGC source and real compositor GPU output; no gameplay or human visual acceptance."
+  },
+  "candidate": {
+    "buildIdentityHash": "AF0A59252A810B7E9DB391E6790A1546D62AE00E3508777D82F129985A2FDD13",
+    "payloadClosureHash": "038AC7FF4659EFD94D5339017FF49503C291B34C32F917014114C743206F3A32",
+    "artifactSourceHash": "FB07295DCF5351E3F35D6AC3C9F6FC425E00AC946AE96BF44067D156C03AD35A",
+    "producerRecipeHash": "EF5420516FA5A677B5202BD6C35A3102C888102BE5446F1D123D439995C10FD2",
+    "toolchainLockHash": "7B83229BE93F8244810CDD23DAFD97875B23857E547DE520035FE23B453CB3CD",
+    "policyHash": "18832D59F1568E3869F7D9C8D480022A8D5BC6292D4F0BA1E7733AC09FE09E2B",
+    "core": {
+      "path": "tmp/runtime-candidates/v2/combat-fx-lights-0927/runtime/CRAZYFLASHER7MercenaryEmpire.Core.dll",
+      "bytes": 5701120,
+      "sha256": "AFDCA9958FF37BD159D5BA331007B45C6397828DEB8FF8B0678135FE165D348F"
+    },
+    "compositor": {
+      "path": "tmp/runtime-candidates/v2/combat-fx-lights-0927/runtime/FlashCompositorNative.dll",
+      "bytes": 265216,
+      "sha256": "68EF6E6B1F600FC6EFB45CE2F15A9CA47820313EC8C712995CFB3D263939935E"
+    }
+  },
+  "candidateExecution": {
+    "root": "tmp/runtime-candidates/v2/combat-fx-lights-0927",
+    "pid": 13216,
+    "scope": "Guardian selected exact candidate; loaded 35 styles and light presets; real Flash bootstrap handshake; no character selected; closed Idle/no_binding",
+    "entry": "本地开发启动.cmd"
+  },
+  "earlierHumanFeedback": {
+    "quote": "玩了一圈没感觉有什么大问题",
+    "candidate": "combat-fx-0927",
+    "scope": "First casing/muzzle candidate; not the new impact/light combination",
+    "logSample": {
+      "frames": 68,
+      "maxCasings": 103,
+      "maxMuzzles": 2,
+      "dropped": 0,
+      "fxErrors": 0
+    }
+  },
+  "evidenceStates": {
+    "compiled": true,
+    "candidate_built": true,
+    "candidate_executed": true,
+    "e2e_verified": false,
+    "promoted": false,
+    "standard_entry_verified": false
+  },
+  "next": "One combined in-game visual check, then the agreed single release train. Existing release authorization does not substitute for that visual result.",
+  "localEvidence": [
+    {
+      "path": "tmp/combat-fx-lights-validation/combat-final-flashlog.txt",
+      "bytes": 3454,
+      "sha256": "70C658B4BAE46FB94B1E5C3934A8609938132205BA4763C881CF79B1A13BCC75"
+    },
+    {
+      "path": "tmp/combat-fx-lights-validation/combat-final-compiler_errors.txt",
+      "bytes": 27,
+      "sha256": "6D64657E843CFA06C243B6B51F8732C1B5910EBD29940AA7F6F9342B38034FD3"
+    },
+    {
+      "path": "tmp/combat-fx-lights-validation/settlement-flashlog.txt",
+      "bytes": 12958,
+      "sha256": "195F1CCF398C513859248260836882B8D5B8CFFE1F54165E7D18DEB81D8E2CDB"
+    },
+    {
+      "path": "tmp/combat-fx-lights-validation/upstream-merc-flashlog.txt",
+      "bytes": 8918,
+      "sha256": "726CD7B31897CC50F35622BF4EC4A8C1F9C3901642BCD55789EF165A201217DD"
+    },
+    {
+      "path": "tmp/combat-fx-lights-validation/publish-compiler_errors.txt",
+      "bytes": 27,
+      "sha256": "6D64657E843CFA06C243B6B51F8732C1B5910EBD29940AA7F6F9342B38034FD3"
+    },
+    {
+      "path": "tmp/combat-fx-lights-validation/publish.log",
+      "bytes": 1102,
+      "sha256": "C6B39CB6B8CC46327D9B093A079CCA015517A1B9DB903DC5BC20E54CF6ACBE58"
+    },
+    {
+      "path": "tmp/combat-fx-lights-validation/focused-host.log",
+      "bytes": 38055,
+      "sha256": "1E2C6D4B35C8B0728A2E4430357E8E2513458FEFC65A2F3E06CE2FE93B9073FD"
+    },
+    {
+      "path": "tmp/combat-fx-lights-validation/host-all.log",
+      "bytes": 847688,
+      "sha256": "2A5CE1C5225DD03E703B068BB9A57BDA2897C133BEE43BABAD174E7712129BD5"
+    },
+    {
+      "path": "tmp/combat-fx-lights-validation/policy-regression.log",
+      "bytes": 34,
+      "sha256": "2BF46B05CB1234173223032D0FFADDD0945937FA7FADF634B40DC67A708D3EAC"
+    },
+    {
+      "path": "tmp/combat-fx-lights-validation/candidate-build.log",
+      "bytes": 5753,
+      "sha256": "D81C6B56B8718A739BE4156DF10BA0C23F309465DF9DB5930D020DBFE7B82D90"
+    },
+    {
+      "path": "tmp/combat-fx-lights-validation/candidate-start.log",
+      "bytes": 1572,
+      "sha256": "CE0DC5F9B838D6DE6508AEF7806C623C7636F750EAAAE43BD81A484F4185E1D4"
+    },
+    {
+      "path": "tmp/combat-fx-lights-validation/candidate-launcher.log",
+      "bytes": 19722,
+      "sha256": "B0AACD9CC27B912DAD8326483D9E71F752046511F521BEE8A4AB44B8B8840DC4"
+    },
+    {
+      "path": "tmp/combat-fx-lights-validation/gpu-candidate/probe.json",
+      "bytes": 2194,
+      "sha256": "14106E93BFB0817A69F8A562D8E8BCE35A609A6F2A82DC9F76EF65735D58112F"
+    }
+  ]
+}

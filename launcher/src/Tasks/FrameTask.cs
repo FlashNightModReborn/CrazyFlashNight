@@ -37,6 +37,13 @@ namespace CF7Launcher.Tasks
         internal Action BulletVisualRejected;
         internal Action BulletVisualCleared;
         private BulletVisualShadow _bulletVisualShadow;
+        private readonly object _combatFxLock=new object();
+        private CombatFxCatalog _combatFxCatalog;
+        private CombatFxEngine _combatFxEngine;
+        private int _combatFxGeneration=-1,_minimumCombatFxEpoch,_combatFxLogFrames;
+        internal Action<CombatFxDrawFrame,float,float,float> CombatFxObserved;
+        internal Action<CombatFxEvents,int> CombatFxEventsReady;
+        internal Action CombatFxRejected,CombatFxCleared;
         private volatile bool _stopped;
 
         public FpsRingBuffer FpsBuffer { get { return _fpsBuffer; } }
@@ -72,6 +79,7 @@ namespace CF7Launcher.Tasks
         {
             _stopped = true;
             _bulletVisualShadow?.Reset();
+            lock(_combatFxLock) { _combatFxEngine?.Reset();CombatFxCleared?.Invoke(); }
             if (_socket != null) _socket.OnClientReady -= PublishHitNumberSourceState;
             _socket = null;
         }
@@ -83,6 +91,44 @@ namespace CF7Launcher.Tasks
 
         internal void ResetBulletVisualShadowForGeneration(int generation) =>
             _bulletVisualShadow?.ResetIfGeneration(generation);
+
+        internal void ConfigureCombatFx(CombatFxCatalog catalog)
+        {
+            lock(_combatFxLock) { _combatFxCatalog=catalog;_combatFxEngine=catalog==null?null:new CombatFxEngine(catalog); }
+        }
+        internal void ResetCombatFxForGeneration(int generation)
+        {
+            lock(_combatFxLock) {
+                if(generation!=_combatFxGeneration) return;
+                _combatFxEngine?.Reset();_combatFxGeneration=generation+1;_minimumCombatFxEpoch=0;
+                CombatFxCleared?.Invoke();
+            }
+        }
+        private void ObserveCombatFx(string payload,int generation,HitNumberCamera camera)
+        {
+            lock(_combatFxLock) {
+                if(_combatFxEngine==null || generation<_combatFxGeneration) return;
+                if(!CombatFxFrame.TryParse(payload,_combatFxCatalog,out CombatFxFrame frame)) {
+                    CombatFxRejected?.Invoke();LogManager.Log("event=combat_fx_frame_rejected");return;
+                }
+                if(generation>_combatFxGeneration) _minimumCombatFxEpoch=0;
+                if(frame.Epoch<_minimumCombatFxEpoch) return;
+                _combatFxGeneration=generation;
+                if(!_combatFxEngine.Apply(frame,generation)) return;
+                CombatFxDrawFrame draw=_combatFxEngine.BuildDraw();
+                CombatFxObserved?.Invoke(draw,camera.OffsetX,camera.OffsetY,camera.Scale);
+                CombatFxEvents events=_combatFxEngine.TakeEvents();
+                if(events!=null) CombatFxEventsReady?.Invoke(events,generation);
+                if(++_combatFxLogFrames>=60) {
+                    _combatFxLogFrames=0;
+                    if(draw.Count>0) LogManager.Log("event=combat_fx_frame epoch="+frame.Epoch
+                        +" casings="+draw.CasingCount+" muzzles="+(draw.Count-draw.CasingCount-draw.ImpactCount)
+                        +" impacts="+draw.ImpactCount+" lights="+draw.LightCount
+                        +" dropped="+_combatFxEngine.Dropped+" impactDropped="+_combatFxEngine.ImpactDropped
+                        +" lightDropped="+_combatFxEngine.LightDropped);
+                }
+            }
+        }
 
         public void ConfigureHitNumbers(string mode, int worldRowLimit)
         {
@@ -133,10 +179,10 @@ namespace CF7Launcher.Tasks
 
         /// <summary>
         /// 快车道入口：由 XmlSocketServer 前缀检测直接调用，跳过 JObject 构造。
-        /// 格式为 F{cam}\x01{hn}[\x02{fps}][\x04{inputPayload}][\x05{bulletVisual}]。
+        /// 格式为 F{cam}\x01{hn}[\x02{fps}][\x04{inputPayload}][\x05{bulletVisual}][\x06{combatFx}]。
         /// </summary>
         public void HandleRaw(string cam, string hn, string fps, string inputPayload,
-            string bulletVisualPayload = null, int connectionGeneration = 0)
+            string bulletVisualPayload = null, int connectionGeneration = 0,string combatFxPayload=null)
         {
             if (_stopped) return;
             try
@@ -152,6 +198,7 @@ namespace CF7Launcher.Tasks
                 }
                 _overlay.UpdateFrame(hitSnapshot);
                 WeatherCameraObserved?.Invoke(weatherCamera.OffsetX,weatherCamera.OffsetY,weatherCamera.Scale);
+                if(combatFxPayload!=null) ObserveCombatFx(combatFxPayload,connectionGeneration,weatherCamera);
                 if (bulletVisualPayload != null && _bulletVisualShadow != null)
                 {
                     BulletVisualFrame visual = _bulletVisualShadow.Observe(bulletVisualPayload, connectionGeneration);
@@ -280,6 +327,10 @@ namespace CF7Launcher.Tasks
                 _overlay.UpdateFrame(snapshot);
                 _bulletVisualShadow?.Reset();
                 BulletVisualCleared?.Invoke();
+                lock(_combatFxLock) {
+                    _minimumCombatFxEpoch=Math.Max(_minimumCombatFxEpoch,(_combatFxEngine?.Epoch??-1)+1);
+                    _combatFxEngine?.Reset();CombatFxCleared?.Invoke();
+                }
                 if (_decisionEngine != null)
                     _decisionEngine.OnSceneReset();
                 _fpsBuffer.NotifySceneReset();
