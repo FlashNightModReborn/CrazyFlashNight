@@ -1,0 +1,111 @@
+{
+  "schema": "cf7-player-hud-visual-release-evidence.v1",
+  "scope": "Player HUD resource redesign, resource warnings, three-line seal and corner lights",
+  "releaseState": "promoted",
+  "humanVisualAcceptance": "pending",
+  "standardEntryGameplayVerified": false,
+  "source": {
+    "commit": "25aae3167b7392fba15a77a1594419b2602a6050",
+    "tag": "runtime-build-v2/20260927-player-hud-visual-v1",
+    "tree": "196381bf2ebcacbad5ee039194d3e8de56453a0b",
+    "mergedUpstream": "08c4ae100f4daa84bc2ea77991f4f59a016ddcc5"
+  },
+  "requestId": "2740905BC92A85A0CAFEE812F8A025924D894B8ADF8C3524542AA53A8502ACCE",
+  "buildIdentityHash": "B2DBC16DB8FD4B5EFA2617AF164FA216839D84F6254C7FCCFAA651E89E2CFA8C",
+  "payloadClosureHash": "C84CD5DBFDAB930539CAAE5A519E46A24BD3FB921A4BB38E7E62C7C9FDA05BA3",
+  "coreSha256": "98DFA98B2F487E07D2037A7AF4F0509A8081517A1A5286694EEF0B261403B7FD",
+  "asLoader": {
+    "sha256": "271ADBC80225EBA559EE374AA73C11D49F1B640725C38168D7C9389B1CE54C5C",
+    "bytes": 1385843,
+    "compilerErrors": 0,
+    "compilerWarnings": 0,
+    "mainClasses": 0,
+    "loaderClasses": 675,
+    "intersection": 0
+  },
+  "qualification": {
+    "focusedPassed": 338,
+    "focusedSpecializedSkipped": 3,
+    "launcherPassed": 6000,
+    "launcherSpecializedSkipped": 5,
+    "b005": {
+      "runId": "2b6b81b4918b4ec0be3a7479584a7cf7",
+      "gates": 32,
+      "status": "passed"
+    },
+    "b006": {
+      "runId": "72e464c5b3374c8db957e4e35bad6301",
+      "gates": 48,
+      "status": "passed",
+      "splitPaintP95Ms": 1.4143,
+      "splitCommitP95Ms": 0.0792,
+      "activeGdiDelta": 0,
+      "activeUserDelta": 0,
+      "lifecycleGdiDelta": 0,
+      "lifecycleUserDelta": 0
+    },
+    "firstB006FailureRetained": "2f60bd0d594b46008b227068c70ddcdc",
+    "as2HudPassed": 113,
+    "mercLoadoutPassed": 125,
+    "mercPersonalityPassed": 24,
+    "as2RunIds": {
+      "merc": "360143ab442e4edda1a7668053045c5a",
+      "hud": "17451e6290e64f1f84a920bc03068797"
+    },
+    "csharpAbFiles": 36,
+    "webAbFiles": 12,
+    "unchangedPriorFixturePngs": 35,
+    "artAssetsChecked": 33
+  },
+  "policy": {
+    "profile": "production",
+    "passed": true,
+    "checks": 42,
+    "sha256": "E32B5992A473F3691D712689B2AE9E29802A3FC58A1928DBF9B0A0A94EA27B94",
+    "policyHash": "21F38969D52A8FD5C84822EE6D3DA953C94A164F6A0308684ECC3DF17C924600",
+    "selectedCandidate": "tmp/runtime-candidates/v2/hud0927p6"
+  },
+  "consensus": {
+    "signers": 2,
+    "faultDomains": 2,
+    "localBuilder": "builder-local-c",
+    "cloudRunId": 36330827773,
+    "cloudRunUrl": "https://github.com/FlashNightModReborn/CrazyFlashNight/actions/runs/36330827773",
+    "cloudProofTransport": "attestation-only",
+    "cloudArtifactId": 10935707884,
+    "promotedAtUtc": "2026-09-27T15:57:18.4304791Z",
+    "manifestSha256": "5A8DFF578135DDBB8A93B5399A8B1AAA00C0FB732DB3270D94AEA593C7BD8DDB",
+    "receiptSha256": "E32B5992A473F3691D712689B2AE9E29802A3FC58A1928DBF9B0A0A94EA27B94"
+  },
+  "deployment": {
+    "commit": "9dcc1b37a805406ed9bf4b291451d5cb80af9bf8",
+    "auditRunId": 36331545585,
+    "auditUrl": "https://github.com/FlashNightModReborn/CrazyFlashNight/actions/runs/36331545585",
+    "auditConclusion": "success"
+  },
+  "formalEntrySmoke": {
+    "runtimeMode": "formal_runtime",
+    "corePath": "runtime/CRAZYFLASHER7MercenaryEmpire.Core.dll",
+    "pid": 19424,
+    "guardianExitCode": 0,
+    "flashExitCode": 0,
+    "shutdownFence": "no_binding",
+    "guardianExitReason": "state_Idle",
+    "gameplayEntered": false,
+    "saveSlotSelected": false,
+    "firstExitCodeCaptureUnavailable": true
+  },
+  "stableDevEntry": {
+    "path": "本地开发启动.cmd",
+    "sha256": "990EC2AA0879CE9AA96904D33DA33BBB7B08011574AA80382104D2DAF1253CE5",
+    "candidate": "tmp/runtime-candidates/v2/hud0927p6",
+    "matchingCandidates": 1,
+    "matchesFormalCore": true
+  },
+  "localEvidenceRoot": "tmp/player-hud-corner-seal-0927",
+  "limits": [
+    "New visual game review remains pending by maintainer instruction.",
+    "B0 timing qualifies its fixture, not dense combat or weak hardware.",
+    "Historical direct Flash reference gap remains."
+  ]
+}
