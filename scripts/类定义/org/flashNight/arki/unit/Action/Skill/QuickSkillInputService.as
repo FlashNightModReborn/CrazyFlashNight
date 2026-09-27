@@ -3,6 +3,7 @@
 import org.flashNight.arki.unit.Action.Skill.ManualCooldownService;
 import org.flashNight.arki.unit.Action.Skill.SkillReleaseGuard;
 import org.flashNight.arki.skill.SkillLoadoutService;
+import org.flashNight.arki.skill.SkillResourceService;
 
 /**
  * @class QuickSkillInputService
@@ -121,7 +122,9 @@ class org.flashNight.arki.unit.Action.Skill.QuickSkillInputService {
         );
         var cooldownTime:Number = Number(skillSlot.__domainDescriptor === true ? skillSlot.cooldownMs : skillSlot.冷却时间);
         var mpCost:Number = Number(skillSlot.__domainDescriptor === true ? skillSlot.mp : skillSlot.消耗mp);
+        SkillResourceService.begin(unit, "skill", slotIndex);
         var released:Boolean = unit.释放技能(skillName, mpCost, keyCode) ? true : false;
+        SkillResourceService.finish(unit);
         var cooldownStarted:Boolean = false;
 
         if (released) {

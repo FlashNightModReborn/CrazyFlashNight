@@ -147,6 +147,7 @@ public sealed class PlayerHudStateTests
         using var controller = new PlayerHudController(raw => { sent.Add(JObject.Parse(raw.TrimEnd('\0'))); return true; }, () => true, action => action());
         controller.TakeUiData("pi:" + Encode(Full())); controller.TakeUiData("pi:" + Encode(Full(1, 2)));
         Assert.Single(sent); Assert.True((bool)sent[0]["poiseDetails"]);
+        Assert.True((bool)sent[0]["poiseVisuals"]); Assert.True((bool)sent[0]["shieldDetails"]);
         controller.Disconnected(); controller.TakeUiData("pi:" + Encode(Full()));
         controller.TakeUiData("pi:" + Encode(Full(1, 2)));
         // Reconnection also requests the pre-existing ordinary full-state resync.

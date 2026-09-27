@@ -122,8 +122,9 @@ internal sealed class PlayerInfoSplitSurface :
             _liveEpoch = 0; _liveVitals = null; Widget.LiveVitals = null; Widget.ResetLiveClock(); Animation.ResetProduction();
             _animationTimer?.Stop(); DismissOverlay(); return;
         }
-        if (_liveEpoch == snapshot.Epoch && _liveVitals == snapshot.Vitals) return;
         if (_liveEpoch != snapshot.Epoch) { Animation.ResetProduction(); Widget.ResetLiveClock(); }
+        var denialChanged = Widget.Denial.Observe(snapshot, !_suspended && !_shutdown && !snapshot.Vitals.Paused);
+        if (_liveEpoch == snapshot.Epoch && _liveVitals == snapshot.Vitals && !denialChanged) return;
         _liveEpoch = snapshot.Epoch; _liveVitals = snapshot.Vitals;
         Widget.LiveVitals = snapshot.Vitals;
         Animation.ApplyProduction(snapshot.Vitals);
@@ -329,6 +330,7 @@ internal sealed class PlayerInfoSplitSurface :
         }
         _suspended = true;
         _resumePending = false;
+        Widget.ClearResourceFeedback();
         try
         {
             _animationTimer?.Stop();
@@ -359,6 +361,7 @@ internal sealed class PlayerInfoSplitSurface :
         }
         _suspended = false;
         _resumePending = true;
+        Widget.ClearResourceFeedback();
         if (_ready)
         {
             try
@@ -548,6 +551,7 @@ internal sealed class PlayerInfoSplitSurface :
     {
         if (!ownerVisible)
         {
+            _widget?.ClearResourceFeedback();
             try
             {
                 _animationTimer?.Stop();
@@ -576,6 +580,7 @@ internal sealed class PlayerInfoSplitSurface :
         }
         if (_ready && !_suspended && !_shutdown && !_disposed)
         {
+            Widget.ClearResourceFeedback();
             OnPositionChanged();
         }
     }
@@ -737,6 +742,8 @@ internal sealed class PlayerInfoSplitSurface :
             tight.Left,
             tight.Top,
             255);
+        if (_liveState != null && commit.Succeeded)
+            Widget.DecorationBudget.Observe(paintMs + commit.ElapsedMilliseconds);
         lock (_metricsGate)
         {
             _commitCount++;

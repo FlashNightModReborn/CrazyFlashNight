@@ -12,8 +12,12 @@ namespace CF7Launcher.Guardian.Hud.PlayerInfo;
 internal sealed record PlayerHudVitals(double Hp, double HpMax, double Mp, double MpMax,
     double Shield, double ShieldMax, bool ShieldPresent, double Poise,
     double Experience, double ExperienceStart, double ExperienceEnd, int Level,
-    string Name, double SkillPoints, bool Paused, bool Decorations, bool ShieldReady, PlayerHudPoise? PoiseDetail = null);
+    string Name, double SkillPoints, bool Paused, bool Decorations, bool ShieldReady, PlayerHudPoise? PoiseDetail = null,
+    PlayerHudPoiseVisual? PoiseVisual = null, PlayerHudShield? ShieldDetail = null);
 internal sealed record PlayerHudPoise(double Threshold, bool HasStaggerBand, string Phase);
+internal sealed record PlayerHudPoiseVisual(bool Airborne, bool Rigid, bool Down);
+internal sealed record PlayerHudShield(string StrengthKind, double Strength, bool ResistsBypass, PlayerHudShieldRecovery Recovery);
+internal sealed record PlayerHudShieldRecovery(string State, double Progress, double RemainingMs, double TotalMs);
 internal sealed record PlayerHudSkill(int Slot, string Key, string Icon, string Hotkey,
     int Level, bool Equipped, bool WriteBlocked);
 internal sealed record PlayerHudDrug(int Slot, string Name, string Icon, string Hotkey, double Count);
@@ -27,7 +31,7 @@ internal readonly record struct PlayerHudCooldown(bool Ready, double Step, doubl
 }
 internal sealed record PlayerHudBuff(string Id, bool Timed, double Total, double Remaining);
 internal sealed record PlayerHudSnapshot(long Epoch, long Sequence, PlayerHudVitals Vitals,
-    PlayerHudCombat Combat, PlayerHudLoadout Loadout, PlayerHudCooldown[] Cooldowns, PlayerHudBuff[] Buffs);
+    PlayerHudCombat Combat, PlayerHudLoadout Loadout, PlayerHudCooldown[] Cooldowns, PlayerHudBuff[] Buffs, PlayerHudResourceHints? Resources = null);
 internal sealed record PlayerHudActionResult(string ActionId, bool Success, string Error, bool Changed);
 
 /// <summary>One atomic adoption point. Missing groups retain data only inside an established epoch.</summary>
@@ -91,15 +95,16 @@ internal sealed class PlayerHudState
                 Changed?.Invoke(); return true;
             }
             var incoming = Object(packet["groups"]);
-            Keys(incoming, "vitals", "combat", "loadout", "cooldowns", "buffs");
+            Keys(incoming, "vitals", "combat", "loadout", "cooldowns", "buffs", "resources");
             var candidate = full ? new Dictionary<string, JToken>(StringComparer.Ordinal)
                 : new Dictionary<string, JToken>(_groups, StringComparer.Ordinal);
             foreach (var property in incoming.Properties()) candidate[property.Name] = property.Value;
-            if (candidate.Count != 5) throw new FormatException("incomplete_full_state");
+            if (new[] { "vitals", "combat", "loadout", "cooldowns", "buffs" }.Any(key => !candidate.ContainsKey(key))) throw new FormatException("incomplete_full_state");
             // Parse every group before changing any current field.
             var next = new PlayerHudSnapshot(epoch, sequence,
                 ReadVitals(candidate["vitals"]), ReadCombat(candidate["combat"]), ReadLoadout(candidate["loadout"]),
-                ReadCooldowns(candidate["cooldowns"]), ReadBuffs(candidate["buffs"]));
+                ReadCooldowns(candidate["cooldowns"]), ReadBuffs(candidate["buffs"]),
+                candidate.TryGetValue("resources", out var resources) ? ReadResources(resources) : null);
             var dirty = epoch != _epoch || Snapshot == null || candidate.Any(p => !_groups.TryGetValue(p.Key, out var old) || !JToken.DeepEquals(old, p.Value));
             _groups.Clear(); foreach (var pair in candidate) _groups.Add(pair.Key, pair.Value);
             Snapshot = next; _epoch = epoch; _sequence = sequence;
@@ -116,13 +121,15 @@ internal sealed class PlayerHudState
     internal static PlayerHudVitals ReadVitals(JToken token)
     {
         var o = Object(token);
-        Keys(o, "hp", "mp", "shield", "shieldPresent", "shieldReady", "poise", "poiseDetail", "experience", "level", "name", "sp", "paused", "decorations");
+        Keys(o, "hp", "mp", "shield", "shieldPresent", "shieldReady", "poise", "poiseDetail", "poiseVisual", "shieldDetail", "experience", "level", "name", "sp", "paused", "decorations");
         var hp = Numbers(o["hp"], 2); var mp = Numbers(o["mp"], 2);
         var shield = Numbers(o["shield"], 2); var xp = Numbers(o["experience"], 3);
         return new(hp[0], hp[1], mp[0], mp[1], shield[0], shield[1], Boolean(o["shieldPresent"]),
             Number(o["poise"]), xp[0], xp[1], xp[2], (int)Integer(o["level"], 0, 99999),
             Text(o["name"], 192), Number(o["sp"]), Boolean(o["paused"]), Boolean(o["decorations"]), Boolean(o["shieldReady"]),
-            o["poiseDetail"] == null ? null : ReadPoise(o["poiseDetail"]!));
+            o["poiseDetail"] == null ? null : ReadPoise(o["poiseDetail"]!),
+            o["poiseVisual"] == null ? null : ReadPoiseVisual(o["poiseVisual"]!),
+            o["shieldDetail"] == null ? null : ReadShield(o["shieldDetail"]!));
     }
     private static PlayerHudPoise ReadPoise(JToken token)
     {
@@ -132,6 +139,57 @@ internal sealed class PlayerHudState
             phase is not ("buffer" or "stagger" or "break" or "rigid" or "air" or "down" or "unavailable"))
             throw new FormatException("poise_detail");
         return new(threshold, hasBand, phase);
+    }
+
+    private static PlayerHudPoiseVisual ReadPoiseVisual(JToken token)
+    {
+        var o = Object(token); Keys(o, "airborne", "rigid", "down");
+        return new(Boolean(o["airborne"]), Boolean(o["rigid"]), Boolean(o["down"]));
+    }
+
+    private static PlayerHudShield ReadShield(JToken token)
+    {
+        var o = Object(token); Keys(o, "strengthKind", "strength", "resistsBypass", "recovery");
+        var kind = Text(o["strengthKind"], 16); var strength = Number(o["strength"]);
+        if (kind is not ("finite" or "unlimited" or "unavailable") || strength < 0 || (kind != "finite" && strength != 0))
+            throw new FormatException("shield_strength");
+        var r = Object(o["recovery"]); Keys(r, "state", "progress", "remainingMs", "totalMs");
+        var state = Text(r["state"], 16); var progress = Number(r["progress"]);
+        var remaining = Number(r["remainingMs"]); var total = Number(r["totalMs"]);
+        if (state is not ("none" or "full" or "waiting" or "charging" or "health" or "mp" or "conditions" or "manual" or "unavailable") ||
+            progress < 0 || progress > 1 || remaining < 0 || total < 0 || remaining > total ||
+            (state == "waiting" ? total <= 0 : remaining != 0 || total != 0 || progress != (state == "charging" ? 1 : 0)))
+            throw new FormatException("shield_recovery");
+        return new(kind, strength, Boolean(o["resistsBypass"]), new(state, progress, remaining, total));
+    }
+
+    internal static PlayerHudResourceHints ReadResources(JToken token)
+    {
+        var o = Object(token); Keys(o, "skills", "drugs", "weapon", "switchBlocked", "feedback");
+        PlayerHudResourceNotice? feedback = null;
+        if (o["feedback"]?.Type != JTokenType.Null)
+        {
+            var f = Object(o["feedback"]); Keys(f, "serial", "kind", "slot", "reason");
+            var kind = Text(f["kind"], 16); var reason = Text(f["reason"], 16);
+            if (kind is not ("skill" or "weapon" or "drug" or "switch") ||
+                reason is not ("mp" or "item" or "empty") ||
+                (kind == "switch") != (reason == "empty") || (kind == "drug" && reason != "item"))
+                throw new FormatException("resource_feedback");
+            var slot = (int)Integer(f["slot"], kind == "skill" ? 1 : 0, kind == "skill" ? 12 : kind == "drug" ? 3 : 0);
+            feedback = new(Integer(f["serial"], 1, 9007199254740991), kind, slot, reason);
+        }
+        return new(Array(o["skills"], 12).Select(ReadResourceHint).ToArray(),
+            Array(o["drugs"], 4).Select(ReadResourceHint).ToArray(), ReadResourceHint(o["weapon"]!),
+            Boolean(o["switchBlocked"]), feedback);
+    }
+    private static PlayerHudResourceHint ReadResourceHint(JToken token)
+    {
+        var o = Object(token); Keys(o, "state", "reason");
+        var state = Text(o["state"], 16); var reason = Text(o["reason"], 16);
+        if (state is not ("ready" or "last" or "blocked" or "unknown") ||
+            (state is "ready" or "unknown" ? reason != "" : reason is not ("mp" or "item")))
+            throw new FormatException("resource_hint");
+        return new(state, reason);
     }
 
     private static PlayerHudCombat ReadCombat(JToken token)

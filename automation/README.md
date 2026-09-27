@@ -66,6 +66,8 @@ cd "<项目根目录>\\automation"
 
 本地开发与各功能候选验收统一使用根 [本地开发启动.cmd](../本地开发启动.cmd)，或直接调用 `automation/dev.ps1`。该入口计算当前 Worktree build identity，只精确复用同身份 candidate；无命中时在本机生成隔离 candidate，但始终报告 `NOT_DEPLOYED`，不会写根 bootstrap 或正式 `runtime/`。CMD 使用 Windows PowerShell 5.1 绝对路径，并在子进程限定模块目录。地图撤退、返回重试、地图工作台和素材工作台均复用此入口，不再新增仅转发或固定临时候选的专项 CMD；确需重放历史候选时显式调用 `start.ps1 -CandidateRoot <绝对路径>`。功能操作分别见[关卡结果与基地结算](../docs/关卡结果与基地结算-CSharp-Web-ADR-2026-08-27.md)、[地图工作台](../tools/map-workbench/README.md)与[素材工作台](../tools/asset-workbench/README.md)。
 
+默认人工验收使用用户惯用的主工作目录中的同一个入口。隔离工作树是Agent的内部施工方式；交付已授权改动时，Agent应保留他人修改，按范围整合到主工作目录，并在那里准备与当前源码及配套Flash产物一致的开发候选。交付前核对该固定入口的 `-Status` 实际选中目标版本，不能要求用户每个会话改点另一份同名CMD、记住临时候选路径或新增专项快捷方式。确需独立源码/存档或多版本对照时再按明确需求安排；这不自动授予commit、push或正式runtime推广权限。
+
 ```powershell
 cd "<项目根目录>"
 .\automation\dev.ps1

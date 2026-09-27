@@ -3,6 +3,7 @@
 import org.flashNight.arki.unit.Action.Input.UnitActionIntentService;
 import org.flashNight.arki.unit.Action.Shoot.LongGunSubWeaponCore;
 import org.flashNight.arki.unit.Action.Skill.ManualCooldownService;
+import org.flashNight.arki.skill.SkillResourceService;
 
 /**
  * @class WeaponSkillInputService
@@ -153,7 +154,9 @@ class org.flashNight.arki.unit.Action.Skill.WeaponSkillInputService {
         );
         if (!intent) return result;
 
+        SkillResourceService.begin(unit, "weapon", 0);
         var released:Boolean = unit.释放主动战技();
+        SkillResourceService.finish(unit);
         if (!released) {
             return result;
         }

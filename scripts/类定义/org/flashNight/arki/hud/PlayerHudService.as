@@ -1,9 +1,11 @@
 ﻿import org.flashNight.arki.hud.PlayerHudBuffProjection;
+import org.flashNight.arki.hud.PlayerHudShieldProjection;
 import org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheManager;
 import org.flashNight.arki.unit.Action.Skill.ManualCooldownService;
 import org.flashNight.arki.unit.Action.Skill.DrugInputService;
 import org.flashNight.arki.unit.Action.Shoot.LongGunSubWeaponCore;
 import org.flashNight.arki.skill.SkillLoadoutService;
+import org.flashNight.arki.skill.SkillResourceService;
 import org.flashNight.arki.item.ItemUtil;
 import org.flashNight.arki.item.DrugHudMutationService;
 import org.flashNight.arki.render.FrameBroadcaster;
@@ -30,6 +32,9 @@ class org.flashNight.arki.hud.PlayerHudService {
     private static var forceFull:Boolean = true;
     private static var wasVisible:Boolean = false;
     private static var poiseDetailsEnabled:Boolean = false;
+    private static var shieldDetailsEnabled:Boolean = false;
+    private static var poiseVisualsEnabled:Boolean = false;
+    private static var resourceHintsEnabled:Boolean = false;
     private static var lastFull:Number = 0;
     private static var lastProjectionError:Number = -10000;
     private static var profileEnabled:Boolean = false;
@@ -156,11 +161,14 @@ class org.flashNight.arki.hud.PlayerHudService {
     private static function configureProjection(p:Object):Void {
         // Older isolated candidates keep their exact v1 field set until they opt in.
         if (p.poiseDetails === true) poiseDetailsEnabled = true;
+        if (p.shieldDetails === true) shieldDetailsEnabled = true;
+        if (p.poiseVisuals === true) poiseVisualsEnabled = true;
+        if (p.resourceHints === true) resourceHintsEnabled = true;
         forceFull = true;
     }
     public static function tick():Void {
         var online:Boolean = _root.server.isSocketConnected === true;
-        if (!online) { connected = false; poiseDetailsEnabled = false; forceFull = true; FrameBroadcaster.setPlayerHudPayload(null); return; }
+        if (!online) { connected = false; resourceHintsEnabled = false; poiseDetailsEnabled = false; shieldDetailsEnabled = false; poiseVisualsEnabled = false; forceFull = true; FrameBroadcaster.setPlayerHudPayload(null); return; }
         if (!connected) { connected = true; forceFull = true; }
         var unit:Object = hero();
         if (!ensureContext(unit) || typeof _root.gameworld != "movieclip") {
@@ -179,6 +187,7 @@ class org.flashNight.arki.hud.PlayerHudService {
         if (addGroup(groups, "loadout", loadout, full)) count++;
         if (addGroup(groups, "cooldowns", readCooldowns(), full)) count++;
         if (addGroup(groups, "buffs", buffProjection.snapshot(), full)) count++;
+        if (resourceHintsEnabled && addGroup(groups, "resources", SkillResourceService.snapshot(unit, loadout), full)) count++;
         compat._pendingHpDisplayRefresh = false;
         if (count == 0) return;
         var packet:Object = {v:1, epoch:epoch, seq:++sequence, full:full, visible:true, groups:groups};
@@ -237,6 +246,8 @@ class org.flashNight.arki.hud.PlayerHudService {
             level:finiteValue(_root.等级), name:text(_root.角色名), sp:finiteValue(_root.技能点数),
             paused:!!_root.暂停, decorations:_root.__nativeHudDecorations !== false};
         if (poiseDetailsEnabled) result.poiseDetail = readPoiseDetail(unit);
+        if (poiseVisualsEnabled) result.poiseVisual = {airborne:!!unit.浮空, rigid:!!(unit.刚体 || unit.man.刚体标签), down:!!unit.倒地};
+        if (shieldDetailsEnabled) result.shieldDetail = PlayerHudShieldProjection.read(unit);
         return result;
     }
     private static function readPoiseDetail(unit:Object):Object {
@@ -400,7 +411,9 @@ class org.flashNight.arki.hud.PlayerHudService {
             for (var i:Number = 0; i < rows.length; i++) {
                 if (rows[i][0] === p.key) {
                     var parts:Object = org.flashNight.gesh.tooltip.SkillTooltipComposer.describeLoadout(i);
-                    NativeTooltipBridge.show(parts.document, null, "top", anchor);
+                    var resourceHint:Object = SkillResourceService.quick(hero(), parts.name, Number(current.skills[slot-1].mp));
+                    NativeTooltipBridge.show(NativeTooltipDocument.buildSkill(parts.name,
+                        parts.intro + SkillResourceService.describe(resourceHint), parts.description), null, "top", anchor);
                     break;
                 }
             }
@@ -421,11 +434,13 @@ class org.flashNight.arki.hud.PlayerHudService {
                 if (finiteValue(skill.消耗sp) > 0) intro += "<BR>技能点消耗：" + finiteValue(skill.消耗sp);
                 if (text(skill.描述) != "") intro += "<BR>" + text(skill.描述);
                 if (text(skill.信息) != "") intro += "<BR>" + text(skill.信息);
+                intro += SkillResourceService.describe(SkillResourceService.weapon(unit, skill));
                 NativeTooltipBridge.show(NativeTooltipDocument.buildBody(intro, "dense"), null, "top", anchor);
             }
         } else if (p.kind == "switch") {
             var hint:String = "<B>药剂组 " + (current.bank == 0 ? "I" : "II") + "</B><BR>点击或按 " + current.switchKey + " 切换另一组药剂。";
             hint += "<BR>同一列共用冷却，换组不会重置冷却。";
+            if (!DrugInputService.hasBankStock(_root, 1 - current.bank)) hint += "<BR><FONT COLOR='#e87864'>另一组没有剩余药剂，暂时无法切换。</FONT>";
             NativeTooltipBridge.show(NativeTooltipDocument.buildBody(hint, "simple"), null, "top", anchor);
         } else if (p.kind == "resources") {
             var v:Object = readVitals(hero());
@@ -455,9 +470,11 @@ class org.flashNight.arki.hud.PlayerHudService {
     }
     public static function testOnlyWire(unit:Object):String {
         if (compat == null) compat = createCompatibility();
-        return Base64.encodeDisplay(json().stringifySafe({v:1, epoch:1, seq:1, full:true, visible:true,
-            groups:{vitals:readVitals(unit), combat:readCombat(unit), loadout:readLoadout(),
-                cooldowns:readCooldowns(), buffs:[]}}));
+        var currentLoadout:Object = readLoadout();
+        var groups:Object = {vitals:readVitals(unit), combat:readCombat(unit), loadout:currentLoadout,
+            cooldowns:readCooldowns(), buffs:[]};
+        if (resourceHintsEnabled) groups.resources = SkillResourceService.snapshot(unit, currentLoadout);
+        return Base64.encodeDisplay(json().stringifySafe({v:1, epoch:1, seq:1, full:true, visible:true, groups:groups}));
     }
 
     private static function setAmmo(index:Number, value):Void {

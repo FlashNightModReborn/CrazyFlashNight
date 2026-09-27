@@ -1523,6 +1523,11 @@ class org.flashNight.arki.component.Shield.AdaptiveShield implements IShield {
         return false;
     }
 
+    /** Read-only HUD traversal; never materializes a flattened layer. */
+    public function getHudRecoveryDelegate():Object {
+        return this._mode == MODE_SINGLE && !this._singleFlattened ? this._singleShield : null;
+    }
+
     /**
      * 获取所有护盾层。
      * 空壳模式和单盾模式返回空数组。

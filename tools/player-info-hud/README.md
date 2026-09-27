@@ -795,6 +795,19 @@ older v1 field set for older candidates. Fresh AS2 wire fixtures cover both
 forms. Rigid/air/down states suppress the ordinary risk marker. Visual tests
 compare the colors to those exact XFL assets and inspect marker suppression.
 
+The 2026-09-27 resource revision adds read-only `shieldDetails:true` and
+`poiseVisuals:true` capability requests. It separates shield strength from the
+capacity/recovery readout, moves HP right for a complete shield ring, layers
+airborne and rigid indications over the poise geometry, and bounds long resource
+and ammo values. The new protocol and visual contract are in
+[architecture §3.4.1](../../docs/玩家信息界面-NativeHud迁移-架构设计-2026-06-21.md#341-2026-09-27-资源区视觉修订).
+Use `PlayerHudResourceFactsTests`, `PlayerHudNumberFormatTests` and
+`PlayerHudResourceVisualTests` alongside the existing PlayerHud tests.
+[The implementation report](../../docs/reports/玩家信息界面-视觉优化施工-2026-09-27.md)
+records fresh CS6 tests, the paired asLoader/Host identity, actual AVM1 fixture
+consumption and the remaining historical Flash-reference gap. A paired build and
+offscreen output do not establish live-game or human visual acceptance.
+
 pi08 responds to the 2026-09-20 screenshot review. Owned surfaces reconcile their
 relative order after presentation (including asynchronous gauges) and owner
 activation/resume; the ordering helper never shows/activates/repositions a
@@ -925,3 +938,18 @@ device-pixel frames, neutral placeholders and a small remaining-time bar.
 Empty lists hide their frame. Missing names/icons/sources/polarity/stacks and
 full Buff interaction remain deferred; untimed is not labeled permanent.
 No AS2, SWF, game rules or save data changes are required for this increment.
+
+## Live resource warnings
+
+The optional `resourceHints` projection and denial feedback are covered by
+`scripts/run-player-hud-tests.ps1` and `scripts/run-player-manual-input-tests.ps1`.
+PlayerInfo focused tests include strict resource parsing, event lifetime and the
+resource-only update path into the live MP surface. Set `CF7_PLAYER_HUD_CAPTURE_DIR`
+to an ignored directory to capture the actual slot painter and 1024/1600 live-layout
+resource-warning cases at the trough and peak of the corner-light cycle. The native
+captures include red, blue and yellow icons, cooldown labels, multi-digit counts,
+and the same three-line seal on the bank-switch slot. `PlayerHudSlotFeedbackTests`
+binds the seal endpoints and lamp paths to the authored `slot-detail` SVG and
+checks text reserves, common seal geometry, animation contrast and paint bounds.
+These captures do not replace in-game visual/audio review.
+The behavior contract is [resource HUD design](../../docs/玩家信息界面-NativeHud迁移-架构设计-2026-06-21.md#341-2026-09-27-资源区视觉修订).

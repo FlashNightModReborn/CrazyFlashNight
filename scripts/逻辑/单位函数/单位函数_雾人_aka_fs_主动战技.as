@@ -118,6 +118,7 @@ _root.主动战技函数.空手.贯空天盖战技 = {初始化: null,
                     _root.战技路由.战技标签跳转_旧(自机, "回归枢机之光");
                 }else{
                     _root.发布消息("当前mp不足以释放[回归枢机之光]");
+                    org.flashNight.arki.skill.SkillResourceService.reject(自机, "mp");
                     自机.mp += 100;
                 }
             }else if(战技类型 == "登上明星"){
@@ -582,7 +583,7 @@ _root.主动战技函数.长枪.调用射击发射其他弹药 = {初始化: fun
                 }
             }
 
-            return false;
+            return org.flashNight.arki.skill.SkillResourceService.reject(自机, "item");
         },
         释放: function(自机) {
             // 1. 取消强制奔跑状态

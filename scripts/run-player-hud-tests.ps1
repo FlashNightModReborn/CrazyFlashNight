@@ -8,6 +8,8 @@ $focusedRun=@{
     SuiteFqns=@('org.flashNight.arki.hud.PlayerHudServiceTest')
     AdditionalAsRelativePaths=@(
         'scripts\类定义\org\flashNight\arki\hud\PlayerHudService.as'
+        'scripts\类定义\org\flashNight\arki\skill\SkillResourceService.as'
+        'scripts\类定义\org\flashNight\arki\hud\PlayerHudShieldProjection.as'
         'scripts\类定义\org\flashNight\arki\hud\PlayerHudBuffProjection.as'
         'scripts\类定义\org\flashNight\arki\item\DrugHudMutationService.as'
     )

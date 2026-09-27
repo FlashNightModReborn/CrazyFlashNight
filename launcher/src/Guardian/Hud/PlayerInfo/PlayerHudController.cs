@@ -97,7 +97,7 @@ internal sealed class PlayerHudController : IDisposable
                 _adoptedGeneration = packet.Generation;
         }
         if (CanInteract && _poiseRequestGeneration != Generation &&
-            Send(new JObject { ["action"] = "playerHudSync", ["poiseDetails"] = true }))
+            Send(new JObject { ["action"] = "playerHudSync", ["poiseDetails"] = true, ["poiseVisuals"] = true, ["shieldDetails"] = true, ["resourceHints"] = true }))
             _poiseRequestGeneration = Generation;
         if (Profiler != null && CanInteract && _profileGeneration != Generation &&
             Send(new JObject { ["action"] = "playerHudProfile", ["enabled"] = true, ["profileId"] = Profiler.Id }))
@@ -152,6 +152,7 @@ internal sealed class PlayerHudController : IDisposable
             {
                 "bag_full" => "背包空间不足，请先腾出一个空格",
                 "cooldown" => "冷却尚未结束，请稍后再试",
+                "empty_bank" => "另一组没有剩余药剂",
                 "locked" => "当前物品已锁定",
                 "stale_state" => "栏位已变化，请重新选择",
                 _ => "当前无法操作，请稍后再试"

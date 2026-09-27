@@ -678,6 +678,23 @@ class org.flashNight.arki.unit.UnitComponent.Initializer.TitaniumSetRuntime {
         return count;
     }
 
+    public function ownsHudShield(shield:Object):Boolean {
+        return shield === layer || (shield === container && container.getShieldCount() == 1);
+    }
+
+    /** HUD reads the same prerequisites as chargeFromMp; this method never ticks or pays. */
+    public function getHudRecoveryState():Object {
+        var state:String = "unavailable";
+        if (!disposed && initialized && !deathSuspended && bindingValid() && effect.group.status == "committed" && target.hp > 0 && layer != null) {
+            var capacity:Number = layer.getCapacity();
+            if (!(capacity < fullStrength)) state = "full";
+            else if (!(capacity > 0) && target.hp < target.hp满血值) state = "health";
+            else if (!(target.mp > 0) || (!(capacity > 0) && !startupPaid && !(target.mp > config.startupMp))) state = "mp";
+            else state = "charging";
+        }
+        return {state:state, progress:state == "charging" ? 1 : 0, remainingMs:0, totalMs:0};
+    }
+
     public function getState():String { return disposed ? "OFFLINE" : phase; }
     public function getShieldId():Number { return shieldId; }
     public function isOnline():Boolean { return !disposed && initialized && !deathSuspended && target.hp > 0 && layer.getCapacity() > 0; }

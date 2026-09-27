@@ -4,6 +4,7 @@ import org.flashNight.arki.unit.Action.Skill.ManualCooldownService;
 import org.flashNight.arki.item.PlayerAssetTransaction;
 import org.flashNight.arki.item.DrugSlotAffinityService;
 import org.flashNight.arki.item.drug.DrugProhibitionService;
+import org.flashNight.arki.skill.SkillResourceService;
 
 /**
  * @class DrugInputService
@@ -110,6 +111,11 @@ class org.flashNight.arki.unit.Action.Skill.DrugInputService {
             return result;
         }
 
+        if (!hasBankStock(root, 1 - activeBank)) {
+            result.error = "empty_bank";
+            SkillResourceService.notify(unit, "switch", 0, "empty");
+            return result;
+        }
         var durationMs:Number = root == null
             ? NaN : Number(root.药剂组切换冷却时间);
         if (isNaN(durationMs) || durationMs < 0) durationMs = 3000;
@@ -170,6 +176,7 @@ class org.flashNight.arki.unit.Action.Skill.DrugInputService {
         if (Number(item.value) <= 0) {
             publishExhausted(root, itemName);
             result.depleted = true;
+            SkillResourceService.notify(unit, "drug", lane, "item");
             return result;
         }
 
@@ -463,6 +470,10 @@ class org.flashNight.arki.unit.Action.Skill.DrugInputService {
         if (expectedBank != activeBank) return {success:false, error:"stale_state"};
         if (!unit || _root.暂停 || _root.当前玩家总数 != 1 || unit.hp < 1) return {success:false, error:"not_ready"};
         if (!ManualCooldownService.isReady(ManualCooldownService.drugSwitchKey())) return {success:false, error:"cooldown"};
+        if (!hasBankStock(_root, 1 - activeBank)) {
+            SkillResourceService.notify(unit, "switch", 0, "empty");
+            return {success:false, error:"empty_bank"};
+        }
         var durationMs:Number = Number(_root.药剂组切换冷却时间);
         if (isNaN(durationMs) || durationMs < 0) durationMs = 3000;
         if (!ManualCooldownService.start(ManualCooldownService.drugSwitchKey(), durationMs)) return {success:false, error:"not_ready"};
@@ -471,6 +482,16 @@ class org.flashNight.arki.unit.Action.Skill.DrugInputService {
         return {success:true, changed:true};
     }
 
+    /** 装备与数量定义空组；同列共享冷却、关卡禁药不改变组的库存状态。 */
+    public static function hasBankStock(root:Object, bank:Number):Boolean {
+        var inventory:Object = root.物品栏.药剂栏;
+        if (!inventory || typeof inventory.getItem != "function" || (bank != 0 && bank != 1)) return false;
+        for (var lane:Number = 0; lane < LANE_COUNT; lane++) {
+            var item:Object = inventory.getItem(String(physicalSlotFor(bank, lane)));
+            if (item != null && item.name != undefined && item.name != "" && Number(item.value) > 0) return true;
+        }
+        return false;
+    }
     public static function getActiveBank():Number {
         return activeBank;
     }

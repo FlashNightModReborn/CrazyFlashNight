@@ -31,7 +31,7 @@ _root.技能函数.释放条件.能量盾 = function():Boolean {
 	if (this.倒地) return false;
 	if (_root.singleContain("能量电池", 1) == null) {
 		_root.发布消息("缺少能量电池！");
-		return false;
+		return org.flashNight.arki.skill.SkillResourceService.reject(this, "item");
 	}
 	return true;
 };

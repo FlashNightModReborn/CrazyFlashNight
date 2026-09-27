@@ -136,7 +136,7 @@ public sealed class PlayerHudVisualTests
     }
 
     [Fact]
-    public void ReadyFlashFinishesDuringPauseAndStopsRedrawingWhenSettled()
+    public void ReadyFlashFinishesDuringPauseAndStopsWhenNoIdleDecorationRemains()
     {
         RunOnSta(() =>
         {
@@ -147,6 +147,7 @@ public sealed class PlayerHudVisualTests
             using var controller = new PlayerHudController(_ => true, () => true, action => action());
             using var bottom = new PlayerHudBottomWidget(anchor, controller, Path.Combine(root, "launcher", "web", "icons"));
             var data = PlayerHudStateTests.Full(); data["groups"]["vitals"]["decorations"] = false; data["groups"]["vitals"]["paused"] = true;
+            data["groups"]["vitals"]["hp"][0] = 0;
             data["groups"]["cooldowns"][17] = new JArray(0, 29, 30);
             controller.TakeUiData("pi:" + PlayerHudStateTests.Encode(data)); Assert.False(bottom.WantsAnimationTick);
             data["seq"] = 2; data["groups"]["cooldowns"][17] = new JArray(1, 0, 30);
@@ -180,7 +181,8 @@ public sealed class PlayerHudVisualTests
             bottom.Tick(34); Assert.True(repaints > 0);
             packet["seq"] = 2; packet["groups"]["vitals"]["decorations"] = false;
             controller.TakeUiData("pi:" + PlayerHudStateTests.Encode(packet));
-            Assert.False(bottom.WantsAnimationTick);
+            Assert.True(bottom.WantsAnimationTick);
+            repaints = 0; bottom.Tick(34); Assert.True(repaints > 0);
         });
     }
 
@@ -289,7 +291,7 @@ public sealed class PlayerHudVisualTests
     }
 
     [Fact]
-    public void AuthoredShieldArcTracksShieldIndependentlyOfMp()
+    public void SegmentedShieldRingTracksShieldIndependentlyOfMp()
     {
         RuntimeFontCatalog.Configure(FindRoot());
         var state = new PlayerHudState(); state.Receive(PlayerHudStateTests.Encode(PlayerHudStateTests.Full()), 1);
@@ -308,8 +310,11 @@ public sealed class PlayerHudVisualTests
         using var fullBoth = Draw(value with { Mp = value.MpMax });
         using var emptyShieldFullMp = Draw(value with { Mp = value.MpMax, Shield = 0 });
         var changed = 0; var cyan = 0;
-        for (var y = 508; y < 551; y++) for (var x = 60; x < 89; x++)
+        for (var y = 475; y < 554; y++) for (var x = 0; x < 84; x++)
         {
+            var dx=x-(37.75+PlayerHudResourceLayout.HpOffsetX);var dy=y-514.65;
+            var radius=Math.Sqrt(dx*dx+dy*dy);
+            if(radius<33.7 || radius>39)continue;
             var px = x - plan.TightPhysicalBounds.Left; var py = y - plan.TightPhysicalBounds.Top;
             Assert.Equal(fullShieldEmptyMp.GetPixel(px,py), fullBoth.GetPixel(px,py));
             var pixel = fullBoth.GetPixel(px,py);
@@ -324,12 +329,12 @@ public sealed class PlayerHudVisualTests
                 }
             }
         }
-        Assert.True(changed > 30, "Shield capacity must drive the authored side arc");
+        Assert.True(changed > 30, "Shield capacity must drive the segmented ring independently of MP");
         Assert.True(cyan > 30, "The shield fill must keep the approved cyan hue");
     }
 
     [Fact]
-    public void ConstantHealthAnimatesDuringPauseButStopsWhenDecorationsAreDisabled()
+    public void NativeDecorationSurvivesFlashTierDropAndKeepsExistingPauseSemantics()
     {
         RuntimeFontCatalog.Configure(FindRoot());
         var state = new PlayerHudState(); state.Receive(PlayerHudStateTests.Encode(PlayerHudStateTests.Full()), 1);
@@ -350,9 +355,9 @@ public sealed class PlayerHudVisualTests
         using var animated = Paint();
         Assert.True(DifferentPixels(before,animated,new Rectangle(0,0,before.Width,before.Height)) > 100);
         widget.LiveVitals = values with { Decorations = false };
-        Assert.False(widget.AdvanceLiveDecoration(10000));
+        Assert.True(widget.AdvanceLiveDecoration(10000));
         using var disabled = Paint();
-        Assert.Equal(0,DifferentPixels(animated,disabled,new Rectangle(0,0,before.Width,before.Height)));
+        Assert.True(DifferentPixels(animated,disabled,new Rectangle(0,0,before.Width,before.Height)) > 100);
         widget.LiveVitals = values with { Hp = 0 };
         Assert.False(widget.AdvanceLiveDecoration(1000));
         widget.LiveVitals = values; widget.ResetLiveClock();
@@ -360,7 +365,8 @@ public sealed class PlayerHudVisualTests
         Assert.Equal(0,DifferentPixels(before,reset,new Rectangle(0,0,before.Width,before.Height)));
         if (Environment.GetEnvironmentVariable("CF7_PLAYER_HUD_CAPTURE") == "1")
         {
-            var output = Path.Combine(FindRoot(),"tmp","player-info-full");
+            var output = Environment.GetEnvironmentVariable("CF7_PLAYER_HUD_CAPTURE_DIR") ?? Path.Combine(FindRoot(),"tmp","player-info-full");
+            Directory.CreateDirectory(output);
             before.Save(Path.Combine(output,"hud-hp-motion-frame-000.png"));
             animated.Save(Path.Combine(output,"hud-hp-motion-frame-063.png"));
         }
@@ -738,7 +744,38 @@ public sealed class PlayerHudVisualTests
         if (failure != null) System.Runtime.ExceptionServices.ExceptionDispatchInfo.Capture(failure).Throw();
     }
 
-    private static void Render(int width, int height, bool overflow, bool shield, bool longReadings, bool depleted)
+    [Theory]
+    [InlineData(1024,576,0)]
+    [InlineData(1024,576,750)]
+    [InlineData(1600,900,0)]
+    [InlineData(1600,900,750)]
+    public void ResourceWarningsComposeWithRealIconsAndCooldownAtSupportedSizes(int width,int height,int warningClock)
+        => RunOnSta(() => Render(width,height,false,true,false,false,true,warningClock));
+
+    [Fact]
+    public void ResourceOnlyDeltaReachesTheLiveMpSurfaceWithoutAVitalChange()
+    {
+        RunOnSta(() =>
+        {
+            RuntimeFontCatalog.Configure(FindRoot());
+            using var owner = new Form { ClientSize = new Size(1024, 576) };
+            using var anchor = new Panel { Dock = DockStyle.Fill };
+            owner.Controls.Add(anchor); owner.CreateControl(); anchor.CreateControl();
+            var state = new PlayerHudState(); var initial = PlayerHudStateTests.Full();
+            initial["groups"]["resources"] = PlayerHudResourceHintsTests.Hints();
+            Assert.True(state.Receive(PlayerHudStateTests.Encode(initial), 1));
+            using var surface = PlayerInfoSplitSurface.CreateLive(owner, anchor, state);
+            var widget = (PlayerInfoWidget)typeof(PlayerInfoSplitSurface).GetProperty("Widget", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(surface);
+            Assert.Equal(0, widget.Denial.MpAlpha);
+            initial["seq"] = 2;
+            initial["groups"]["resources"]["feedback"] = new JObject { ["serial"] = 1, ["kind"] = "skill", ["slot"] = 1, ["reason"] = "mp" };
+            Assert.True(state.Receive(PlayerHudStateTests.Encode(initial), 2));
+            Assert.True(widget.Denial.MpAlpha > 0);
+            surface.Suspend(); Assert.Equal(0, widget.Denial.MpAlpha);
+        });
+    }
+
+    private static void Render(int width, int height, bool overflow, bool shield, bool longReadings, bool depleted, bool warnings = false, int warningClock = 100)
     {
         var directory = new DirectoryInfo(AppContext.BaseDirectory);
         while (directory != null && !File.Exists(Path.Combine(directory.FullName, "fonts", "fonts.xml"))) directory = directory.Parent;
@@ -799,10 +836,38 @@ public sealed class PlayerHudVisualTests
             new JObject{["id"]="1:example-b",["timed"]=true,["total"]=300,["remaining"]=150},
             new JObject{["id"]="1:example-c",["timed"]=true,["total"]=300,["remaining"]=60},
             new JObject{["id"]="1:example-d",["timed"]=false,["total"]=0,["remaining"]=0});
+        groups["vitals"]["shieldDetail"] = PlayerHudResourceFactsTests.Shield(depleted?"health":"waiting");
+        groups["vitals"]["shieldDetail"]["strength"] = longReadings?99999999:8355;
+        groups["vitals"]["poiseVisual"] = new JObject{["airborne"]=false,["rigid"]=false,["down"]=false};
+        if (warnings)
+        {
+            groups["vitals"]["mp"] = new JArray(0,10000);
+            groups["combat"]["mode"] = "兵器";
+            groups["resources"] = PlayerHudResourceHintsTests.Hints("last", "mp");
+            groups["resources"]["switchBlocked"] = true;
+            for (var i=0;i<12;i++)
+            {
+                groups["resources"]["skills"][i] = new JObject{["state"]=i%3==0?"ready":i%3==1?"last":"blocked",["reason"]=i%3==0?"":"mp"};
+                var icon = new[] { "闪现", "铁布衫", "小跳" }[i/3%3];
+                groups["loadout"]["skills"][i]["iconKey"] = icon;
+                groups["loadout"]["skills"][i]["skillKey"] = icon;
+                groups["cooldowns"][i+1] = i>=9 ? new JArray(0,24,60) : new JArray(1,0,0);
+            }
+            groups["resources"]["drugs"][0] = new JObject{["state"]="blocked",["reason"]="item"};
+            groups["loadout"]["drugs"][0]["count"] = 250;
+            groups["resources"]["drugs"][1] = new JObject{["state"]="last",["reason"]="item"};
+            groups["resources"]["weapon"] = new JObject{["state"]="blocked",["reason"]="item"};
+        }
         controller.TakeUiData("pi:"+PlayerHudStateTests.Encode(data));
         Assert.NotNull(controller.State.Snapshot);
         using var bottom = new PlayerHudBottomWidget(anchor, controller, Path.Combine(root, "launcher", "web", "icons"));
         using var buffs = new PlayerHudBuffWidget(anchor, controller); buffs.Tick(400);
+        if (warnings)
+        {
+            data["seq"]=2;
+            groups["resources"]["feedback"] = new JObject{["serial"]=1,["kind"]="skill",["slot"]=3,["reason"]="mp"};
+            controller.TakeUiData("pi:"+PlayerHudStateTests.Encode(data)); bottom.Tick(warningClock);
+        }
         using var canvas = new Bitmap(width, height, PixelFormat.Format32bppPArgb);
         var origin = anchor.PointToScreen(Point.Empty);
         using (var graphics = Graphics.FromImage(canvas))
@@ -814,9 +879,29 @@ public sealed class PlayerHudVisualTests
             using var batch = new PlayerInfoSvgRasterizer().Bake(plan, CancellationToken.None);
             var animation = new PlayerInfoAnimationModel(); animation.ApplyProduction(controller.State.Snapshot.Vitals);
             using var resourceWidget = new PlayerInfoWidget(assets, animation) { LiveVitals = controller.State.Snapshot.Vitals };
+            if (warnings)
+            {
+                resourceWidget.Denial.Observe(controller.State.Snapshot with {Resources=null});
+                resourceWidget.Denial.Observe(controller.State.Snapshot); resourceWidget.AdvanceLiveDecoration(100);
+            }
             using var resources = new Bitmap(plan.TightPhysicalBounds.Width, plan.TightPhysicalBounds.Height, PixelFormat.Format32bppPArgb);
             resourceWidget.Paint(resources, batch, plan); graphics.DrawImageUnscaled(resources, plan.TightPhysicalBounds.Location);
             buffs.Paint(graphics, 1, origin);
+        }
+        if (warnings)
+        {
+            var folder=Environment.GetEnvironmentVariable("CF7_PLAYER_HUD_CAPTURE_DIR");
+            if (!string.IsNullOrEmpty(folder))
+            {
+                Directory.CreateDirectory(folder);
+                var name = "hud-resource-warnings-" + width + "-" + warningClock;
+                canvas.Save(Path.Combine(folder,name+".png"));
+                var warningScale = height / 576f;
+                using var strip = canvas.Clone(Rectangle.FromLTRB((int)(302 * warningScale), (int)(526 * warningScale), width, height), PixelFormat.Format32bppPArgb);
+                strip.Save(Path.Combine(folder,name+"-strip.png"));
+            }
+            Assert.Equal(0, canvas.GetPixel(width / 2, height / 2).A);
+            return;
         }
         Assert.Equal(0, canvas.GetPixel(width / 2, height / 2).A);
         var scale = height / 576f;
@@ -828,8 +913,8 @@ public sealed class PlayerHudVisualTests
         if(shield)Assert.True(canvas.GetPixel((int)(250*scale),(int)(500*scale)).A>230);
         else Assert.Equal(0,canvas.GetPixel((int)(250*scale),(int)(500*scale)).A);
         // Maximums and percentages are independently visible without opening details.
-        foreach (var region in new[] { new RectangleF(20, 522, 35, 10), new RectangleF(180, 508, 54, 13),
-            new RectangleF(18, 496, 40, 16), new RectangleF(90, 524, 29, 11) })
+        foreach (var region in new[] { new RectangleF(20+PlayerHudResourceLayout.HpOffsetX, 522, 35, 10), new RectangleF(180, 508, 54, 13),
+            new RectangleF(18+PlayerHudResourceLayout.HpOffsetX, 496, 40, 16), new RectangleF(90, 524, 29, 11) })
         {
             var ink = 0;
             for (var y = (int)(region.Top * scale); y < (int)(region.Bottom * scale); y++)
@@ -854,7 +939,7 @@ public sealed class PlayerHudVisualTests
         }
         if (Environment.GetEnvironmentVariable("CF7_PLAYER_HUD_CAPTURE") == "1")
         {
-            var output = Path.Combine(root, "tmp", "player-info-full"); Directory.CreateDirectory(output);
+            var output = Environment.GetEnvironmentVariable("CF7_PLAYER_HUD_CAPTURE_DIR") ?? Path.Combine(root, "tmp", "player-info-full"); Directory.CreateDirectory(output);
             var suffix = (depleted ? "empty-" : longReadings ? "long-" : overflow ? "overflow-" : !shield ? "no-shield-" : "") + width;
             canvas.Save(Path.Combine(output, "hud-preview-" + suffix + ".png"), ImageFormat.Png);
             using var bright = new Bitmap(width, height, PixelFormat.Format32bppPArgb);

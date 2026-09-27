@@ -507,6 +507,7 @@ class org.flashNight.arki.unit.Action.Skill.DrugInputServiceTest {
 
     private static function makeRoot():Object {
         var root:Object = {
+            物品栏:{药剂栏:makeInventory([{name:"测试药剂",value:2},null,null,null,{name:"测试药剂",value:2}])},
             吃药冷却时间:100,
             effectCalls:0,
             messages:[],

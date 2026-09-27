@@ -1739,8 +1739,9 @@ _root.主角函数.释放技能 = function(技能名, 消耗mp, 技能按键值)
 
     技能名 = 技能释放信息.skillName;
     消耗mp = 技能释放信息.mpCost;
-    if (this.hp <= 0 || this.mp < 消耗mp)
-        return false;
+    if (this.hp <= 0) return false;
+    if (this.mp < 消耗mp)
+        return org.flashNight.arki.skill.SkillResourceService.reject(this, "mp");
 
     var 技能等级:Number = 技能释放信息.skillLevel;
     //用函数托管技能的释放条件
@@ -1801,9 +1802,11 @@ _root.主角函数.释放主动战技 = function() {
     var 技能点数余额:Number = Number(_root.技能点数);
     if (isNaN(技能点数余额)) 技能点数余额 = 0;
 
-    if (战技函数.原子释放 !== true
-            && (this.hp <= 当前战技.消耗hp || this.mp < 当前战技.消耗mp || 技能点数余额 < 消耗sp))
-        return false;
+    if (战技函数.原子释放 !== true) {
+        if (this.hp <= 当前战技.消耗hp) return false;
+        if (this.mp < 当前战技.消耗mp) return org.flashNight.arki.skill.SkillResourceService.reject(this, "mp");
+        if (技能点数余额 < 消耗sp) return false;
+    }
     if (战技函数.释放许可判定(this)) {
         if (this.浮空) {
             this.temp_y = this._y;

@@ -113,6 +113,14 @@ internal static class PlayerHudResourceStyle
         : !value.ShieldPresent ? ""
         : "盾 " + Math.Floor(value.Shield).ToString("0", CultureInfo.InvariantCulture) + " · " + Percent(value.Shield, value.ShieldMax);
 
+    internal static string ShieldStrengthReadout(PlayerHudShield? detail) => detail?.StrengthKind switch
+    {
+        "unlimited" => "∞",
+        "finite" => detail.Strength > 0 && detail.Strength < 1
+            ? detail.Strength < 0.01 ? "<0.01" : detail.Strength.ToString("0.##",CultureInfo.InvariantCulture) : PlayerHudNumberFormat.Full(detail.Strength),
+        _ => "--"
+    };
+
     internal static (double Earned, double Required) LevelExperience(PlayerHudVitals value) =>
         (Math.Max(0, value.Experience - value.ExperienceStart), Math.Max(0, value.ExperienceEnd - value.ExperienceStart));
 
@@ -137,11 +145,13 @@ internal sealed class PlayerHudBottomWidget : PlayerHudWidgetBase
     private readonly Font _small = NativeHudFonts.CreateRoleFont("native.player-info.body", 9, FontStyle.Regular, GraphicsUnit.Pixel);
     private readonly Font _nameFont = NativeHudFonts.CreateRoleFont("native.player-info.body", 11, FontStyle.Regular, GraphicsUnit.Pixel);
     private readonly Font _hotkeyFont = NativeHudFonts.CreateRoleFont("native.player-info.body", 9, FontStyle.Bold, GraphicsUnit.Pixel);
-    private readonly Font _poiseLabel = NativeHudFonts.CreateRoleFont("native.hud.body", 8, FontStyle.Bold, GraphicsUnit.Pixel);
+    private readonly Font _poiseLabel = NativeHudFonts.CreateRoleFont("native.player-info.body", 10, FontStyle.Bold, GraphicsUnit.Pixel);
     private readonly Font _slotMark = NativeHudFonts.CreateRoleFont("native.player-info.body", 12, FontStyle.Regular, GraphicsUnit.Pixel);
     private PlayerHudTarget? _hover, _down;
     private bool _upMatches;
     private int _nameClock;
+    private int _resourceHintClock;
+    private readonly PlayerHudDenialMotion _denial = new();
     private readonly int[] _readyFlash = new int[18];
     private PlayerHudCooldown[]? _lastCooldowns;
     private static readonly float[] ReadyAlpha = [1, 0.828125f, 0.671875f, 0.5f, 0.328125f, 0.171875f, 0, 0];
@@ -160,7 +170,7 @@ internal sealed class PlayerHudBottomWidget : PlayerHudWidgetBase
     internal static readonly RectangleF WeaponRect = new(560.55f, 534.65f, 26, 26);
     protected override RectangleF LogicalBounds => new(0, 504, 1024, 72);
     public override bool WantsAnimationTick => Visible && Snapshot is { } s &&
-        (s.Vitals.Decorations || Array.Exists(_readyFlash, time => time >= 0 && time < 234));
+        (s.Vitals.Hp > 0 || Array.Exists(_readyFlash, time => time >= 0 && time < 234));
 
     internal PlayerHudBottomWidget(Control anchor, PlayerHudController controller, string iconsRoot) : base(anchor, controller)
     {
@@ -171,7 +181,8 @@ internal sealed class PlayerHudBottomWidget : PlayerHudWidgetBase
 
     protected override void OnStateChanged()
     {
-        if (Snapshot?.Epoch != _epoch) { _epoch = Snapshot?.Epoch ?? 0; _nameClock = 0; _lastCooldowns = null; Array.Fill(_readyFlash, -1); Cancel(); }
+        if (Snapshot?.Epoch != _epoch) { _epoch = Snapshot?.Epoch ?? 0; _nameClock = _resourceHintClock = 0; _lastCooldowns = null; Array.Fill(_readyFlash, -1); Cancel(); }
+        _denial.Observe(Snapshot, Visible);
         if (Snapshot is { } current)
         {
             if (_lastCooldowns != null)
@@ -192,8 +203,11 @@ internal sealed class PlayerHudBottomWidget : PlayerHudWidgetBase
     {
         if (!Visible || Snapshot == null) return;
         var oldFrame = _nameClock * 3 / 100;
-        if (Snapshot.Vitals.Decorations) _nameClock = (_nameClock + deltaMs) % 110000;
+        if (Snapshot.Vitals.Hp > 0) _nameClock = (_nameClock + deltaMs) % 110000;
+        if (Snapshot.Vitals.Hp > 0 && !Snapshot.Vitals.Paused)
+            _resourceHintClock = (int)((_resourceHintClock + (long)Math.Max(0, deltaMs)) % PlayerHudSlotFeedbackGeometry.BreathPeriodMilliseconds);
         var changed = _nameClock * 3 / 100 != oldFrame;
+        changed |= _denial.Advance(deltaMs);
         for (var i = 0; i < 18; i++)
         {
             if (_readyFlash[i] < 0 || _readyFlash[i] >= 234) continue;
@@ -221,25 +235,32 @@ internal sealed class PlayerHudBottomWidget : PlayerHudWidgetBase
         using var poise = new SolidBrush(PlayerHudResourceStyle.Poise);
         using var background = new SolidBrush(Color.FromArgb(200, 25, 30, 31));
         DrawArt(g, "bottom-panel", 49.7f, 568.45f, 0.8472137451f, 0.8472137451f);
+        var resourcePanel = g.Save();
+        g.TranslateTransform(PlayerHudResourceLayout.ResourceOffsetX,0);
         using (var raisedPanel=new LinearGradientBrush(new RectangleF(90,504,190,32),
             Color.FromArgb(44,47,48),Color.FromArgb(17,20,21),LinearGradientMode.Vertical))
             g.FillPolygon(raisedPanel,[new PointF(90,504),new PointF(271,504),new PointF(280,512),new PointF(280,537),new PointF(90,537)]);
+        g.Restore(resourcePanel);
         var ornaments = g.Save();
-        g.SetClip(new RectangleF(86,535,194,38),CombineMode.Exclude);
+        g.SetClip(new RectangleF(86+PlayerHudResourceLayout.ResourceOffsetX,535,194,38),CombineMode.Exclude);
         DrawArt(g, "bottom-ornaments", 49.7f, 568.45f, 0.8472137451f, 0.8472137451f);
         g.Restore(ornaments);
         var poiseState = PlayerHudResourceStyle.PoiseStateLabel(v.PoiseDetail);
         var poiseBar = PlayerHudResourceLayout.PoiseBar;
         if (poiseState.Length > 0)
-            g.DrawString(poiseState,_poiseLabel,poise,poiseBar.Right+3,poiseBar.Top,StringFormat.GenericTypographic);
-        _numbers.Draw(g, Math.Floor(v.Poise * 100).ToString(CultureInfo.InvariantCulture) + "%", 90+PlayerHudResourceLayout.PoiseOffsetX, poiseBar.Bottom, 11.5f, Scale, 26, PlayerHudResourceStyle.Poise);
+            g.DrawString(poiseState,_poiseLabel,poise,poiseBar.Right+4,poiseBar.Top-2,StringFormat.GenericTypographic);
+        var poiseFlags=PlayerHudPoisePainter.Flags(v);
+        var poiseInk=poiseFlags.Airborne || poiseFlags.Down || v.PoiseDetail?.Phase=="unavailable" ? Color.FromArgb(160,167,171) : PlayerHudResourceStyle.Poise;
+        _numbers.Draw(g, Math.Floor(v.Poise * 100).ToString(CultureInfo.InvariantCulture) + "%", PlayerHudResourceLayout.PoisePercentX, poiseBar.Bottom, 11.5f, Scale, PlayerHudResourceLayout.PoisePercentWidth, poiseInk);
         PaintPoise(g, v);
+        var levelTransform=g.Save();g.TranslateTransform(PlayerHudResourceLayout.LevelOffsetX,0);
         using (var levelBase = new SolidBrush(Color.FromArgb(21,24,25)))
             g.FillPolygon(levelBase,[new PointF(4,PlayerHudResourceLayout.LevelTop),new PointF(74,PlayerHudResourceLayout.LevelTop),new PointF(86,573),new PointF(4,573)]);
         using (var edge = new Pen(Color.FromArgb(75,79,80),0.6f))
             g.DrawLines(edge,[new PointF(6,554),new PointF(73,554),new PointF(79,560)]);
         DrawSizedArt(g, "level-label", new RectangleF(12, 554, 20.65f, 17.8f));
         _numbers.Draw(g, v.Level.ToString(CultureInfo.InvariantCulture), 41, 572, 18, Scale, 37, muted);
+        g.Restore(levelTransform);
         var (earned, required) = PlayerHudResourceStyle.LevelExperience(v);
         var xp = required > 0 ? Math.Clamp(earned / required, 0, 1) : 0;
         var xpColor = PlayerHudResourceStyle.ExperienceLight;
@@ -258,12 +279,11 @@ internal sealed class PlayerHudBottomWidget : PlayerHudWidgetBase
         PaintDetailsEntry(g);
         DrawArt(g, "drug-panel", 301.4f, 541.8f);
         DrawArt(g, "name-background", 342.35f, 514.65f);
-        // Authored name mask and 300-frame loop; glyphs retain the original x scale.
+        // Keep the authored mask and 300-frame loop; native device text uses natural glyph width.
         var saved = g.Save();
         g.SetClip(new RectangleF(342.35f, 514.85f, 134, 16), CombineMode.Intersect);
         DrawNameGrid(g);
         g.TranslateTransform(342.35f + NameOffset(_nameClock), 516.15f);
-        g.ScaleTransform(1.3433228f, 1);
         g.DrawString(v.Name, _nameFont, dim, PointF.Empty, StringFormat.GenericTypographic);
         g.Restore(saved);
 
@@ -331,39 +351,7 @@ internal sealed class PlayerHudBottomWidget : PlayerHudWidgetBase
         g.Restore(saved);
     }
 
-    private void PaintPoise(Graphics g, PlayerHudVitals value)
-    {
-        var detail = value.PoiseDetail;
-        var inactive = detail?.Phase is "air" or "down" or "rigid" or "unavailable";
-        var fraction = detail?.Phase is "air" or "down" ? 0 : (float)Math.Clamp(value.Poise, 0, 1);
-        var source=PlayerHudBarArtData.MpBounds;
-        var split = detail is { HasStaggerBand: true } && !inactive ? (float)detail.Threshold * source.Width : 0;
-        var saved=g.Save();
-        g.TranslateTransform(PlayerHudResourceLayout.PoiseOffsetX,PlayerHudResourceLayout.PoiseTop-source.Top);
-        using var track = new SolidBrush(Color.FromArgb(24, 28, 28));
-        using var fill = new SolidBrush(inactive ? Color.FromArgb(145,147,151) : PlayerHudResourceStyle.Poise);
-        using var border = new Pen(inactive ? Color.FromArgb(91,94,98) : Color.FromArgb(139,130,80),0.3f);
-        g.FillPath(track,_poiseCells);
-        var filled=g.Save();
-        g.SetClip(new RectangleF(source.Left,source.Top,source.Width*fraction,source.Height),CombineMode.Intersect);
-        g.FillPath(fill,_poiseCells);g.Restore(filled);
-        g.DrawPath(border,_poiseCells);
-        if (split > 0)
-        {
-            var risk=g.Save();
-            g.SetClip(_poiseCells,CombineMode.Intersect);
-            g.SetClip(new RectangleF(source.Left,source.Top,split,source.Height),CombineMode.Intersect);
-            using var cut = new SolidBrush(Color.FromArgb(20,24,24));
-            for(var x=source.Left+2;x<source.Left+split;x+=6)
-                g.FillPolygon(cut,[new PointF(x-1.8f,source.Bottom),new PointF(x,source.Bottom-2.4f),new PointF(x+1.8f,source.Bottom)]);
-            g.Restore(risk);
-            var boundary=source.Left+split;
-            g.FillRectangle(cut,boundary-1.1f,source.Top,2.2f,source.Height);
-            using var marker = new SolidBrush(Color.FromArgb(245,241,222));
-            g.FillPolygon(marker,[new PointF(boundary-2,source.Top-2),new PointF(boundary+2,source.Top-2),new PointF(boundary,source.Top+0.5f)]);
-        }
-        g.Restore(saved);
-    }
+    private void PaintPoise(Graphics g, PlayerHudVitals value) => PlayerHudPoisePainter.Paint(g,value,_poiseCells);
 
     private static bool HasWeaponSlot(PlayerHudCombat combat) => combat.WeaponVisible && combat.Mode is not ("" or "双枪" or "长枪副武器");
     private void DrawNameGrid(Graphics g)
@@ -389,6 +377,16 @@ internal sealed class PlayerHudBottomWidget : PlayerHudWidgetBase
         var b = PlayerHudArtData.Bounds(id);
         DrawSizedArt(g, id, new RectangleF(x + b.X * scaleX, y + b.Y * scaleY, b.Width * scaleX, b.Height * scaleY));
     }
+    private void DrawAmmo(Graphics g, string raw, Brush ink, RectangleF bounds, bool centered)
+    {
+        using var format=new StringFormat(StringFormat.GenericTypographic) { Alignment=centered?StringAlignment.Center:StringAlignment.Near,
+            FormatFlags=StringFormatFlags.NoWrap, Trimming=StringTrimming.EllipsisCharacter };
+        float Measure(string text)=>g.MeasureString(text,_nameFont,new SizeF(10000,1000),StringFormat.GenericTypographic).Width;
+        var text=PlayerHudNumberFormat.FitText(raw,Measure,bounds.Width-2);
+        var saved=g.Save();g.SetClip(bounds,CombineMode.Intersect);
+        g.DrawString(text,_nameFont,ink,bounds,format);g.Restore(saved);
+    }
+
     private void PaintCombat(Graphics g, PlayerHudCombat combat)
     {
         var mode = Array.IndexOf(new[] { "手枪", "手枪2", "长枪", "兵器", "手雷", "空手", "双枪", "长枪副武器" }, combat.Mode);
@@ -406,8 +404,8 @@ internal sealed class PlayerHudBottomWidget : PlayerHudWidgetBase
         {
             DrawArt(g, "ammo-round", x - 14.45f, y + 1.95f);
             DrawArt(g, "ammo-magazine", x - 14.3f, y + 25.35f);
-            g.DrawString(AmmoValue(combat.Ammo[0]), _nameFont, text, x - 1.45f, y - 1.45f);
-            g.DrawString(AmmoValue(combat.Ammo[1]), _nameFont, text, x - 1.6f, y + 22);
+            DrawAmmo(g,AmmoValue(combat.Ammo[0]),text,new RectangleF(x-1.45f,y-1.45f,49,14),false);
+            DrawAmmo(g,AmmoValue(combat.Ammo[1]),text,new RectangleF(x-1.6f,y+22,49,14),false);
         }
         else if (mode >= 6)
         {
@@ -416,11 +414,11 @@ internal sealed class PlayerHudBottomWidget : PlayerHudWidgetBase
             {
                 DrawArt(g, "ammo-round", x - 23.6f, y - 5.8f + row * 24.5f);
                 DrawArt(g, "ammo-magazine", x - 24.1f, y + 6.2f + row * 24.5f);
-                g.DrawString(Ammo(combat.Ammo[row * 2], combat.Ammo[row * 2 + 1]), _nameFont, text,
-                    new RectangleF(x - 10.1f, y - 3 + row * 24.55f, 81.25f, 15.55f), centered);
+                DrawAmmo(g,Ammo(combat.Ammo[row*2],combat.Ammo[row*2+1]),text,
+                    new RectangleF(x-10.1f,y-3+row*24.55f,81.25f,15.55f),true);
             }
         }
-        else if (mode == 4) g.DrawString(AmmoValue(combat.Ammo[1]), _nameFont, text, x + 1.2f, y + 17.65f);
+        else if (mode == 4) DrawAmmo(g,AmmoValue(combat.Ammo[1]),text,new RectangleF(x+1.2f,y+17.65f,46,14),false);
         if (mode is >= 3 and <= 5)
         {
             using var tiny = NativeHudFonts.CreateRoleFont("native.player-info.body", 4, FontStyle.Regular, GraphicsUnit.Pixel);
@@ -455,26 +453,36 @@ internal sealed class PlayerHudBottomWidget : PlayerHudWidgetBase
         {
             using var shade = new SolidBrush(Color.FromArgb(165, 5, 10, 15));
             g.FillRectangle(shade, r.X + 1, r.Y + 1, r.Width - 2, (float)((r.Height - 2) * (1 - cooldown.Fraction)));
-            if (kind is "switch" or "weapon")
-            {
-                using var track = new SolidBrush(Color.FromArgb(240, 15, 20, 25));
-                using var progress = new SolidBrush(Color.FromArgb(241, 201, 112));
-                var strip=CooldownTrackRect(r);
-                g.FillRectangle(track,strip);
-                g.FillRectangle(progress,strip.X,strip.Y,(float)(strip.Width*cooldown.Fraction),strip.Height);
-            }
         }
         var cooldownIndex = kind == "weapon" ? 0 : kind == "skill" ? slot : kind == "switch" ? 17 : 13 + slot % 4;
         var flashFrame = _readyFlash[cooldownIndex] < 0 ? 7 : _readyFlash[cooldownIndex] * 3 / 100;
-        if (cooldown.Ready && flashFrame < 7 && ReadyAlpha[flashFrame] > 0)
+        var resourceHint = PlayerHudResourceHintPainter.Hint(Snapshot, kind, slot);
+        if (resourceHint.State != "blocked" && cooldown.Ready && flashFrame < 7 && ReadyAlpha[flashFrame] > 0)
         {
             using var flash = new SolidBrush(Color.FromArgb((int)(255 * ReadyAlpha[flashFrame]), Color.White));
             g.FillRectangle(flash, r.X + 0.5f, r.Y + 0.5f, 25.5f, 25.5f);
+        }
+        PlayerHudResourceHintPainter.PaintSlot(g, r, resourceHint, cooldown.Ready && Snapshot?.Vitals.Paused != true,
+            _resourceHintClock, _denial.SlotAlpha(kind, kind == "drug" ? slot % 4 : slot));
+        if (!cooldown.Ready && kind is "switch" or "weapon")
+        {
+            // Only these two slots own a progress strip; it stays above the seal like the countdown text.
+            using var track = new SolidBrush(Color.FromArgb(240, 15, 20, 25));
+            using var progress = new SolidBrush(Color.FromArgb(241, 201, 112));
+            var strip = CooldownTrackRect(r);
+            g.FillRectangle(track, strip);
+            g.FillRectangle(progress, strip.X, strip.Y, (float)(strip.Width * cooldown.Fraction), strip.Height);
         }
         using var foreground = new SolidBrush(Color.FromArgb(248, 243, 222));
         using var shadow = new SolidBrush(Color.FromArgb(235, 15, 18, 19));
         if (badge.Length > 0)
         {
+            if (resourceHint.State == "blocked" && badge.Length > 2)
+            {
+                // Long item counts use one fixed wider band; skill levels keep the diagonal middle visible.
+                using var badgeBacking = new SolidBrush(Color.FromArgb(230, 8, 11, 12));
+                g.FillRectangle(badgeBacking, r.X + 2, r.Y, 22, 10);
+            }
             g.DrawString(badge, _small, shadow, r.X + 4, r.Y + 1);
             g.DrawString(badge, _small, foreground, r.X + 3, r.Y);
         }
@@ -552,7 +560,7 @@ internal sealed class PlayerHudBottomWidget : PlayerHudWidgetBase
         }
     }
     private void Cancel() { _down = null; _upMatches = false; _hover = null; Controller.HideTooltip(); Repaint(); }
-    public override void SetHostSuppressed(bool suppressed) { if (suppressed) Cancel(); base.SetHostSuppressed(suppressed); }
+    public override void SetHostSuppressed(bool suppressed) { if (suppressed) { _denial.Clear(); Cancel(); } base.SetHostSuppressed(suppressed); }
     public override void Dispose()
     {
         foreach(var caption in _captions)caption?.Path.Dispose();Array.Clear(_captions);

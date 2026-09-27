@@ -199,6 +199,11 @@ class org.flashNight.arki.unit.UnitComponent.Initializer.test.TitaniumSetRuntime
             check(shield.getRechargeRate()==0 && !shield.getResistBypass(),"禁止免费回盾与抗旁路");
             check(unit.shield.getShieldCount()==2,"与外部护盾并存");
             check(unit.shield.getCapacity()==100,"初始聚合只含外部盾");
+            check(runtime.ownsHudShield(shield) && !runtime.ownsHudShield(unit.externalShield),"HUD恢复条件仅归属专属盾层");
+            var hudMp:Number = unit.mp;
+            var hudStarts:Number = runtime.getDiagnostics().startups;
+            check(runtime.getHudRecoveryState().state=="charging","HUD满血有MP时投影可充能");
+            check(unit.mp==hudMp && runtime.getDiagnostics().startups==hudStarts && shield.getCapacity()==0,"读取HUD不启动扣费或回盾");
             var night:Object = WeatherSystem.getInstance().getNightVisionManager();
             check(night.validate(2,unit)=="高级夜视仪","主角低光夜视");
             check(night.validate(8,unit)==null,"白天停用");
@@ -217,6 +222,7 @@ class org.flashNight.arki.unit.UnitComponent.Initializer.test.TitaniumSetRuntime
             check(shield.getCapacity()==1250,"四秒充满五甲HP的一半");
             check(near(runtime.getDiagnostics().mpSpent,685),"每2盾1MP加启动60");
             check(runtime.getState()=="ONLINE_FULL","满盾状态");
+            check(runtime.getHudRecoveryState().state=="full","HUD满盾无恢复倒计时");
             check(unit.externalShield.getCapacity()==100,"不消费或修复外部盾");
             unit.hp=4980; before=unit.mp; advance(6);
             check(unit.hp>4980,"在线也进行生命维持");
@@ -231,15 +237,19 @@ class org.flashNight.arki.unit.UnitComponent.Initializer.test.TitaniumSetRuntime
             check(unit.重量==-21 && near(unit.行走X速度,5),"负重基值重写后实际轻装速度重算");
             unit.mp=0; shield.setCapacity(1); advance(1);
             check(shield.getStrength()==1250,"一点残盾仍固定盾强");
+            check(runtime.getHudRecoveryState().state=="mp","HUD残盾零MP显示供能受阻");
             check(near(shield.absorbDamage(100,false,1),99),"残盾实际只能吸收剩余一点");
             check(shield.getStrength()==0,"破盾立即撤销特殊防护");
             check(unit.重量==-5,"破盾立即撤销减重");
             check(unit.shield.getStrength()==7,"外部盾强不被清零");
             unit.hp=2500; before=unit.mp; advance(6);
             check(unit.hp==2500 && unit.mp==before,"零MP没有免费治疗");
+            check(runtime.getHudRecoveryState().state=="health","HUD破盾缺血先显示回满生命条件");
             check(unit.伤害加成>440,"破盾按当前缺血提高通用伤害");
             check(night.validate(2,unit)=="高级夜视仪","破盾零MP仍有夜视");
-            unit.hp=5000; unit.mp=60; advance(6);
+            unit.hp=5000; unit.mp=60;
+            check(runtime.getHudRecoveryState().state=="mp" && unit.mp==60 && !runtime.getDiagnostics().startupPaid,"HUD仅够启动费不假报正在恢复且不预付");
+            advance(6);
             check(runtime.getState()=="REBOOTING" && shield.getCapacity()==0,"仅够启动费时不赠一点盾");
             var startupCount:Number = runtime.getDiagnostics().startups;
             unit.hp=4999; advance(6);
@@ -255,6 +265,7 @@ class org.flashNight.arki.unit.UnitComponent.Initializer.test.TitaniumSetRuntime
             check(unit.伤害加成==440,"超血不产生负缺血增伤");
             unit.shield.removeShieldById(runtime.getShieldId()); advance(1);
             check(runtime.getState()=="OFFLINE" && setTaskCount(unit)==0,"专属层丢失失败关闭并停任务");
+            check(runtime.getHudRecoveryState().state=="unavailable","HUD失去领域绑定后不保留旧恢复状态");
             check(unit.externalShield.getCapacity()==100,"维护失败不删外部盾");
             check(unit.重量==-5 && unit.伤害加成==440,"维护失败清理全部套装Buff");
             check(night.validate(2,unit)==null,"维护失败注销夜视");

@@ -252,8 +252,8 @@ internal sealed class PlayerInfoFrameCompositor : IDisposable
     private PlayerInfoHpPaintSource? _hpPaint;
     private PlayerInfoHpHorizontalLineSource? _hpHorizontalLine;
     private PlayerHudHpMotion? _liveMotion;
-    private readonly SKColorFilter _shieldTint = SKColorFilter.CreateColorMatrix([
-        0,0,0,0,0, 0,1,0,0,0, 0,1,0,0,0, 0,0,0,1,0]);
+    private PlayerHudNumberGlyphs? _hudNumbers;
+    private PlayerHudNumberGlyphs HudNumbers => _hudNumbers ??= new PlayerHudNumberGlyphs();
     private bool _disposed;
 
     internal PlayerInfoFrameCompositor(PlayerInfoSvgAssetSet assetSet)
@@ -305,7 +305,8 @@ internal sealed class PlayerInfoFrameCompositor : IDisposable
         PlayerInfoRasterPlan plan,
         PlayerInfoVisualState visualState,
         PlayerHudVitals? live = null,
-        int liveFrame = 0)
+        int liveFrame = 0,
+        PlayerHudResourceMotion? resourceMotion = null)
     {
         ObjectDisposedException.ThrowIf(_disposed, this);
         ArgumentNullException.ThrowIfNull(destination);
@@ -377,9 +378,9 @@ internal sealed class PlayerInfoFrameCompositor : IDisposable
             if (live != null)
             {
                 canvas.Save();
-                var left = (float)(plan.FlashViewportPhysical.Left + _mp.StageMatrix.Tx * plan.PhysicalScale - plan.TightPhysicalBounds.Left);
+                var left = (float)(plan.FlashViewportPhysical.Left + (_mp.StageMatrix.Tx + PlayerHudResourceLayout.ResourceOffsetX) * plan.PhysicalScale - plan.TightPhysicalBounds.Left);
                 canvas.ClipRect(new SKRect(left, 0, destination.Width, destination.Height));
-                canvas.Translate(0,PlayerHudResourceLayout.MpOffsetY*(float)plan.PhysicalScale);
+                canvas.Translate(PlayerHudResourceLayout.ResourceOffsetX*(float)plan.PhysicalScale,PlayerHudResourceLayout.MpOffsetY*(float)plan.PhysicalScale);
             }
             DrawLayer(canvas, RequireLayer(layers, MpBackplate), plan);
             if (mpFrame != _mp.FrameMap.EmptyVirtualFrame)
@@ -393,7 +394,15 @@ internal sealed class PlayerInfoFrameCompositor : IDisposable
             }
             DrawLayer(canvas, RequireLayer(layers, rimAssetId), plan);
             if (live != null) canvas.Restore();
-            if (live is { ShieldPresent: true }) DrawShield(canvas, layers, plan, live);
+            if (live != null)
+            {
+                canvas.Save();
+                canvas.Translate(plan.FlashViewportPhysical.Left-plan.TightPhysicalBounds.Left,plan.FlashViewportPhysical.Top-plan.TightPhysicalBounds.Top);
+                canvas.Scale((float)plan.PhysicalScale);
+                PlayerHudResourceOverlay.MpOverflow(canvas,live,liveFrame);
+                canvas.Restore();
+                canvas.Save();canvas.Translate(PlayerHudResourceLayout.HpOffsetX*(float)plan.PhysicalScale,0);
+            }
 
             DrawLayer(canvas, RequireLayer(layers, HpBackplate), plan);
             DrawHpFill(canvas, plan, hpFrame);
@@ -402,12 +411,17 @@ internal sealed class PlayerInfoFrameCompositor : IDisposable
             {
                 _liveMotion ??= new PlayerHudHpMotion();
                 var rimPlan = FindLayerPlan(plan, HpRim);
+                // Extra vitality supplies only the color behind the original moving cutouts.
+                DrawHpOverflow(canvas,plan,live);
                 if (hpFrame != _hp.FrameMap.EmptyVirtualFrame)
                     DrawInGaugeCoordinates(canvas, plan, _hp, () => _liveMotion.DrawLight(canvas, liveFrame));
                 DrawBitmap(canvas, _liveMotion.Raster("hp-motion-base", plan, rimPlan), HpRim, plan);
                 DrawInGaugeCoordinates(canvas, plan, _hp, () => _liveMotion.DrawMotifs(canvas, liveFrame));
                 DrawBitmap(canvas, _liveMotion.Raster("hp-motion-center", plan, rimPlan), HpRim, plan);
                 DrawInGaugeCoordinates(canvas, plan, _hp, () => _liveMotion.DrawGrid(canvas, liveFrame));
+                DrawInGaugeCoordinates(canvas, plan, _hp, () => PlayerHudResourceOverlay.ShieldRing(canvas,live,liveFrame,resourceMotion?.Shield,
+                    (float)_hp.Clip!.StartAngleDegrees));
+                canvas.Restore();
             }
 
             if (live == null)
@@ -453,7 +467,7 @@ internal sealed class PlayerInfoFrameCompositor : IDisposable
         DisposeMpMaskCache(_mpLeftMaskCache);
         DisposeMpMaskCache(_mpRightMaskCache);
         _glyphs.Dispose();
-        _liveMotion?.Dispose(); _liveMotion = null; _shieldTint.Dispose();
+        _liveMotion?.Dispose(); _liveMotion = null; _hudNumbers?.Dispose(); _hudNumbers = null;
     }
 
     private void DrawHpFill(
@@ -513,6 +527,30 @@ internal sealed class PlayerInfoFrameCompositor : IDisposable
         {
             canvas.Restore();
         }
+    }
+
+    private void DrawHpOverflow(SKCanvas canvas, PlayerInfoRasterPlan plan, PlayerHudVitals value)
+    {
+        var fraction = PlayerHudResourceMotion.OverflowFraction(value);
+        if (fraction <= 0) return;
+        var hpPaint = _hpPaint ?? throw new ObjectDisposedException(nameof(PlayerInfoFrameCompositor));
+        var layer = FindLayerPlan(plan, HpFill);
+        var target = ToLocalRect(layer.PhysicalBounds, plan.TightPhysicalBounds);
+        var transform = layer.SourceToBitmap;
+        canvas.Save();
+        try
+        {
+            // Share both the original coverage and fractional raster phase, not an estimated circular band.
+            canvas.Translate(target.Left + (float)transform.TranslateX, target.Top + (float)transform.TranslateY);
+            canvas.Scale((float)transform.ScaleX, (float)transform.ScaleY);
+            if (fraction < 1)
+            {
+                using var sector = BuildHpSector(fraction);
+                canvas.ClipPath(sector, SKClipOperation.Intersect, antialias: true);
+            }
+            PlayerHudResourceOverlay.HpOverflow(canvas, hpPaint.CoveragePath);
+        }
+        finally { canvas.Restore(); }
     }
 
     private SKPath BuildHpSector(double fraction)
@@ -752,55 +790,42 @@ internal sealed class PlayerInfoFrameCompositor : IDisposable
 
     private void DrawLiveText(SKCanvas canvas, PlayerInfoRasterPlan plan, PlayerInfoVisualState state, PlayerInfoPaletteState palette, PlayerHudVitals live)
     {
-        DrawInGaugeCoordinates(canvas, plan, _mp, () =>
+        var mpAnchor = Math.Max(live.Mp,live.MpMax);
+        var mpCompact = PlayerHudNumberFormat.RequiresCompact(mpAnchor,
+            t=>HudNumbers.Measure(PlayerInfoPathGlyphAtlas.Aero,t,PlayerInfoCompositionRecipe.MpCurrent.FontPixels),43);
+        var hpAnchor = Math.Max(live.Hp,live.HpMax);
+        var hpCompact = PlayerHudNumberFormat.RequiresCompact(hpAnchor,
+            t=>HudNumbers.Measure(PlayerInfoPathGlyphAtlas.LcdStd,t,PlayerInfoCompositionRecipe.HpCurrent.FontPixels),45);
+        DrawInGaugeCoordinates(canvas,plan,_mp,()=>
         {
-            DrawPathText(canvas, PlayerInfoCompositionRecipe.MpLabel, "MP", ParseColor(palette.Label));
-            var size = FitFont(PlayerInfoPathGlyphAtlas.Aero, state.Mp.CurrentText, 13.0048f, 43);
-            size = FitFont(PlayerInfoPathGlyphAtlas.Aero, state.Mp.MaximumText, size, 88);
-            DrawPathText(canvas, PlayerInfoCompositionRecipe.MpCurrent with { FontPixels = size }, state.Mp.CurrentText, ParseColor(palette.Current));
-            DrawPathText(canvas, PlayerInfoCompositionRecipe.MpMaximum with { FontPixels = size }, state.Mp.MaximumText, ParseColor(palette.Max));
-            var percent = PlayerHudResourceStyle.Percent(live.Mp, live.MpMax);
-            DrawPathText(canvas, PlayerInfoCompositionRecipe.MpPercent with
-            {
-                AnchorX = 13.8f, Alignment = PlayerInfoPathTextAlignment.Center,
-                FontPixels = FitFont(PlayerInfoPathGlyphAtlas.Aero, percent, 11.9808f, 26)
-            }, percent, ParseColor(palette.Percent));
-        }, PlayerHudResourceLayout.MpOffsetY);
-        DrawInGaugeCoordinates(canvas, plan, _hp, () =>
+            DrawPathText(canvas,PlayerInfoCompositionRecipe.MpLabel,"MP",ParseColor(palette.Label));
+            DrawLiveNumber(canvas,PlayerInfoCompositionRecipe.MpCurrent,live.Mp,43,ParseColor(palette.Current),mpAnchor,mpCompact);
+            DrawLiveNumber(canvas,PlayerInfoCompositionRecipe.MpMaximum,live.MpMax,88,ParseColor(palette.Max),mpAnchor,mpCompact);
+            DrawLiveCaption(canvas,PlayerInfoCompositionRecipe.MpPercent with {AnchorX=13.8f,Alignment=PlayerInfoPathTextAlignment.Center,FontPixels=11.9808f},
+                PlayerHudResourceStyle.Percent(live.Mp,live.MpMax),26,ParseColor(palette.Percent));
+        },PlayerHudResourceLayout.MpOffsetY,PlayerHudResourceLayout.ResourceOffsetX);
+        canvas.Save();canvas.Translate(PlayerHudResourceLayout.HpOffsetX*(float)plan.PhysicalScale,0);
+        DrawInGaugeCoordinates(canvas,plan,_hp,()=>
         {
-            var percent = PlayerHudResourceStyle.Percent(live.Hp, live.HpMax);
-            var percentSize = FitFont(PlayerInfoPathGlyphAtlas.LcdStd, percent, 19.968f, 61);
-            DrawPathText(canvas, PlayerInfoCompositionRecipe.HpPercent with { AnchorX = 0, Alignment = PlayerInfoPathTextAlignment.Center, FontPixels = percentSize }, percent, SKColors.White);
-            var size = FitFont(PlayerInfoPathGlyphAtlas.LcdStd, state.Hp.CurrentText, 11.9808f, 45);
-            DrawPathText(canvas, PlayerInfoCompositionRecipe.HpCurrent with { FontPixels = size }, state.Hp.CurrentText, SKColors.White);
-            var maximumSize = FitFont(PlayerInfoPathGlyphAtlas.LcdStd, state.Hp.MaximumText, 11.9808f, 45);
-            DrawPathText(canvas, PlayerInfoCompositionRecipe.HpMaximum with { FontPixels = maximumSize }, state.Hp.MaximumText, SKColors.White);
+            DrawLiveCaption(canvas,PlayerInfoCompositionRecipe.HpPercent with {AnchorX=0,Alignment=PlayerInfoPathTextAlignment.Center,FontPixels=19.968f},
+                PlayerHudResourceStyle.Percent(live.Hp,live.HpMax),61,SKColors.White);
+            DrawLiveNumber(canvas,PlayerInfoCompositionRecipe.HpCurrent,live.Hp,45,SKColors.White,hpAnchor,hpCompact);
+            DrawLiveNumber(canvas,PlayerInfoCompositionRecipe.HpMaximum,live.HpMax,45,SKColors.White,hpAnchor,hpCompact);
         });
+        canvas.Restore();
     }
 
-    private float FitFont(string font, string value, float size, float maximumWidth)
+    private void DrawLiveNumber(SKCanvas canvas,PlayerInfoTextLayout layout,double value,float width,SKColor color,double reference,bool compact)
     {
-        var width = _glyphs.MeasureText(font, value, size);
-        return width > maximumWidth ? size * maximumWidth / width : size;
+        var formatted=PlayerHudNumberFormat.Format(value,t=>HudNumbers.Measure(layout.FontId,t,layout.FontPixels),width,reference,compact);
+        var size=formatted.ReservedWidth>width?layout.FontPixels*width/formatted.ReservedWidth:layout.FontPixels;
+        DrawLiveCaption(canvas,layout with {FontPixels=size},formatted.Text,width,color);
     }
-
-    private void DrawShield(SKCanvas canvas, IReadOnlyList<PlayerInfoRasterLayer> layers, PlayerInfoRasterPlan plan, PlayerHudVitals values)
+    private void DrawLiveCaption(SKCanvas canvas,PlayerInfoTextLayout layout,string text,float width,SKColor color)
     {
-        // Repurpose the authored segmented side arc. Its masks follow shield capacity,
-        // independently of the MP horizontal bar; the B0 fixture recipe is untouched.
-        canvas.Save();
-        try
-        {
-            var right = (float)(plan.FlashViewportPhysical.Left + _mp.StageMatrix.Tx * plan.PhysicalScale - plan.TightPhysicalBounds.Left);
-            canvas.ClipRect(new SKRect(0, 0, right, plan.TightPhysicalBounds.Height));
-            DrawLayer(canvas, RequireLayer(layers, MpBackplate), plan);
-            var fraction = values.ShieldMax > 0 ? Math.Clamp(values.Shield / values.ShieldMax, 0, 1) : 0;
-            if (fraction <= 0) return;
-            var frame = _mp.FrameMap.EmptyVirtualFrame - (int)Math.Floor(fraction * _mp.FrameMap.StepCount);
-            var layer = RequireLayer(layers, MpFill);
-            DrawClippedBitmap(canvas, layer.RequireFragment(MpLeftMask), layer.Key.LayerId, plan, GetMpMask(MpLeftMask, frame).Path, _shieldTint);
-        }
-        finally { canvas.Restore(); }
+        var measured=HudNumbers.Measure(layout.FontId,text,layout.FontPixels);
+        var size=measured>width?layout.FontPixels*width/measured:layout.FontPixels;
+        HudNumbers.Draw(canvas,layout.FontId,text,size,layout.AnchorX,layout.BaselineY,layout.Alignment,color,layout.GlowSigmaPixels,layout.GlowColor);
     }
 
     private void DrawText(
@@ -912,7 +937,7 @@ internal sealed class PlayerInfoFrameCompositor : IDisposable
             canvas,
             plan,
             _hp,
-            () => source.Draw(canvas, live));
+            () => source.Draw(canvas, live), horizontalOffset:live?PlayerHudResourceLayout.HpOffsetX:0);
     }
 
     private static void DrawInGaugeCoordinates(
@@ -920,7 +945,7 @@ internal sealed class PlayerInfoFrameCompositor : IDisposable
         PlayerInfoRasterPlan plan,
         PlayerInfoSvgGauge gauge,
         Action draw,
-        float verticalOffset = 0)
+        float verticalOffset = 0, float horizontalOffset = 0)
     {
         var scale = (float)(plan.PhysicalScale * gauge.StageMatrix.A);
         var translationX = (float)(
@@ -935,7 +960,7 @@ internal sealed class PlayerInfoFrameCompositor : IDisposable
         canvas.Save();
         try
         {
-            canvas.Translate(translationX, translationY+verticalOffset*(float)plan.PhysicalScale);
+            canvas.Translate(translationX+horizontalOffset*(float)plan.PhysicalScale, translationY+verticalOffset*(float)plan.PhysicalScale);
             canvas.Scale(scale, scale);
             draw();
         }

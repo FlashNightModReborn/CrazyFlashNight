@@ -1,4 +1,7 @@
 ﻿import org.flashNight.arki.hud.PlayerHudService;
+import org.flashNight.arki.skill.SkillResourceService;
+import org.flashNight.arki.unit.Action.Skill.DrugInputService;
+import org.flashNight.arki.item.ItemUtil;
 import org.flashNight.arki.hud.PlayerHudBuffProjection;
 import org.flashNight.arki.component.Shield.AdaptiveShield;
 import org.flashNight.arki.item.DrugHudMutationService;
@@ -22,9 +25,169 @@ class org.flashNight.arki.hud.PlayerHudServiceTest {
         testFrameEndCapture();
         testProjectionComparison();
         testPoiseProjection();
+        testResourceFacts();
+        testResourceHints();
         ManualCooldownService.resetForTests();
         trace("--- PlayerHudServiceTest: " + passed + "/" + total + " passed, " + (total-passed) + " failed ---");
     }
+    private static function resourceInventory(rows:Array):Object {
+        var bag:Object = {rows:rows};
+        bag.getItem = function(index:String):Object { return this.rows[Number(index)]; };
+        bag.getIndexes = function():Array {
+            var keys:Array = [];
+            for (var i:Number = 0; i < this.rows.length; i++) if (this.rows[i] != null) keys.push(String(i));
+            return keys;
+        };
+        return bag;
+    }
+    private static function testResourceHints():Void {
+        check(SkillResourceService.fixedCost(19,20,20,"mp").state == "blocked", "below exact MP cost is sealed");
+        check(SkillResourceService.fixedCost(20,20,20,"mp").state == "last", "exact MP cost is one remaining cast");
+        check(SkillResourceService.fixedCost(39.99,20,20,"mp").state == "last", "fractional boundary stays last cast");
+        check(SkillResourceService.fixedCost(40,20,20,"mp").state == "ready", "two exact costs need no warning");
+        check(SkillResourceService.fixedCost(0,0,0,"mp").state == "ready", "zero cost at zero MP is not sealed");
+        check(SkillResourceService.fixedCost(Number.NaN,20,20,"mp").state == "unknown", "unknown MP is not guessed");
+        check(SkillResourceService.fixedCost(399,400,300,"mp").state == "blocked", "dynamic admission threshold is distinct from payment");
+        check(SkillResourceService.fixedCost(699,400,300,"mp").state == "last", "dynamic last-use calculation follows actual next threshold");
+        check(SkillResourceService.fixedCost(700,400,300,"mp").state == "ready", "two dynamic releases do not use twice the admission threshold");
+        var oldItems:Object = _root.物品栏; var oldData:Object = ItemUtil.itemDataDict;
+        var oldHero = _root.控制目标; var oldPaused = _root.暂停; var oldCount = _root.当前玩家总数;
+        var oldSound = _root.播放音效; var oldWeapon = _root.主动战技函数;
+        var drugs:Object = resourceInventory([null,null,null,null,{name:"能量电池",value:1}]);
+        var bag:Object = resourceInventory([]);
+        var equip:Object = {grenade:null};
+        equip.getItem = function(key:String):Object { return key == "手雷" ? this.grenade : null; };
+        _root.物品栏 = {背包:bag,药剂栏:drugs,装备栏:equip};
+        ItemUtil.itemDataDict = {能量电池:{type:"消耗品",use:"药剂"}};
+        _root.控制目标 = "resourceHero"; _root.暂停 = false; _root.当前玩家总数 = 1;
+        var hero:Object = {_name:"resourceHero",hp:100,mp:100,攻击模式:"空手",主动战技:{}};
+        check(SkillResourceService.quick(hero,"能量盾",50).state == "last", "material in hidden drug bank supplies one cast");
+        bag.rows.push({name:"能量电池",value:1});
+        check(SkillResourceService.quick(hero,"能量盾",50).state == "ready", "bag and both banks share the real material authority");
+        check(drugs.rows[4].value == 1 && bag.rows[0].value == 1, "repeated resource projections do not spend inventory");
+        bag.rows=[];drugs.rows[4]=null;
+        check(SkillResourceService.quick(hero,"能量盾",50).state == "blocked", "missing required material seals a funded skill");
+        equip.grenade={name:"能量电池",value:1};
+        check(SkillResourceService.itemState("能量电池",true).state == "last", "explicit grenade fallback counts its last unit");
+        check(SkillResourceService.itemState("能量电池",false).state == "blocked", "ordinary skill cannot borrow grenade fallback");
+        hero.mp=0;
+        check(SkillResourceService.weapon(hero,{消耗mp:999,战技函数:{原子释放:true}}).state == "ready", "zero-MP atomic weapon skill is not falsely sealed");
+        hero.mp=100;
+        var functionCalls:Number=0;
+        _root.主动战技函数={空手:{},长枪:{调用射击发射其他弹药:{}}};
+        var alt:Object=_root.主动战技函数.长枪.调用射击发射其他弹药;
+        alt.释放许可判定=function():Boolean { functionCalls++; return false; };
+        hero.其他消耗物品="能量电池";
+        check(SkillResourceService.weapon(hero,{消耗mp:10,战技函数:alt}).state == "last" && functionCalls == 0,
+            "weapon projection never invokes a potentially destructive release predicate");
+        var sounds:Array=[];_root.播放音效=function(id:String):Void { sounds.push(id); };
+        SkillResourceService.begin(hero,"skill",1); SkillResourceService.finish(hero);
+        check(hero.__skillResourceNotice == undefined && sounds.length == 0, "successful or unspecified denial does not invent an MP alarm");
+        SkillResourceService.begin(hero,"skill",1); SkillResourceService.reject(hero,"mp"); SkillResourceService.finish(hero);
+        check(hero.__skillResourceNotice.reason == "mp" && sounds.length == 1, "actual MP rejection publishes one short sound");
+        var first:Number=hero.__skillResourceNotice.serial;
+        SkillResourceService.notify(hero,"weapon",0,"item");
+        check(hero.__skillResourceNotice.serial > first && sounds.length == 1, "different skills share the one-second sound budget");
+        SkillResourceService.notify(hero,"switch",0,"empty");
+        check(hero.__skillResourceNotice.reason == "empty" && sounds.length == 1, "empty-bank rejection has visual feedback without sound spam");
+        ManualCooldownService.resetForTests();DrugInputService.resetSession();
+        ManualCooldownService.setSchedulerForTests(function(callback:Function):Void {});
+        var rejected:Object=DrugInputService.updateSwitch(hero,true,true,_root,null);
+        check(!rejected.switched && rejected.error == "empty_bank" && ManualCooldownService.isReady(ManualCooldownService.drugSwitchKey()),
+            "empty target rejects before starting switch cooldown");
+        drugs.rows[4]={name:"能量电池",value:1};
+        check(DrugInputService.updateSwitch(hero,true,true,_root,null) == null, "stock refill cannot replay an already-held switch edge");
+        DrugInputService.updateSwitch(hero,false,true,_root,null);
+        var switched:Object=DrugInputService.updateSwitch(hero,true,true,_root,null);
+        check(switched.switched && DrugInputService.getActiveBank()==1, "empty current bank can leave for stocked target");
+        ManualCooldownService.resetForTests();
+        var mouseResult:Object=DrugInputService.switchFromHud(hero,1);
+        check(!mouseResult.success && mouseResult.error=="empty_bank" && DrugInputService.getActiveBank()==1,
+            "after switch the empty former bank is sealed for mouse input too");
+        drugs.rows[0]={name:"能量电池",value:1};
+        ManualCooldownService.setSchedulerForTests(function(callback:Function):Void {});
+        ManualCooldownService.start(ManualCooldownService.drugKey(0),1000);
+        check(DrugInputService.hasBankStock(_root,0), "drug cooldown is not mistaken for an empty group");
+        mouseResult=DrugInputService.switchFromHud(hero,1);
+        check(mouseResult.success && DrugInputService.getActiveBank()==0 && !ManualCooldownService.isReady(ManualCooldownService.drugKey(0)),
+            "refilling target unlocks switch without resetting shared drug cooldown");
+        drugs.rows[0].value=0;
+        check(!DrugInputService.hasBankStock(_root,0), "zero-dose affinity memory does not count as stock");
+        PlayerHudService.testOnlyConfigure({resourceHints:true});
+        var projected:Object=SkillResourceService.snapshot(hero,{skills:[],drugs:[],bank:0});
+        check(projected.skills.length==12 && projected.drugs.length==4 && !projected.switchBlocked,
+            "resource wire keeps fixed slot cardinalities and derives target stock");
+        SkillResourceService.notify(hero,"skill",1,"mp");
+        _root.暂停=true;
+        projected=SkillResourceService.snapshot(hero,{skills:[],drugs:[],bank:0});
+        check(projected.feedback == null && hero.__skillResourceNotice == undefined,
+            "pause retires even an undelivered denial rather than hiding it temporarily");
+        _root.暂停=false;
+        check(SkillResourceService.snapshot(hero,{skills:[],drugs:[],bank:0}).feedback == null,
+            "quick resume cannot revive a coalesced pre-pause denial");
+        SkillResourceService.notify(hero,"switch",0,"empty");
+        trace("[PLAYER_HUD_HINTS_WIRE] " + PlayerHudService.testOnlyWire(hero));
+        _root.物品栏=oldItems;ItemUtil.itemDataDict=oldData;_root.控制目标=oldHero;_root.暂停=oldPaused;
+        _root.当前玩家总数=oldCount;_root.播放音效=oldSound;_root.主动战技函数=oldWeapon;
+        ManualCooldownService.resetForTests();DrugInputService.resetSession();
+    }
+    private static function testResourceFacts():Void {
+        var oldClock:Object = _root.帧计时器;
+        _root.帧计时器 = {帧率:30};
+        var unit:Object = {hp:130, hp满血值:100, mp:150, mp满血值:100, 韧性上限:100,
+            impactStaggerBoundary:25, remainingImpactForce:0, nonlinearMappingResilience:1,
+            浮空:true, 刚体:true, man:{}, 攻击模式:"空手", 主动战技:{}};
+        var adaptive:AdaptiveShield = new AdaptiveShield(100, 40, 2, 60, "HUD", "rechargeable");
+        adaptive.consumeCapacity(25);
+        unit.shield = adaptive;
+        var dto:Object = PlayerHudService.testOnlyReadVitals(unit);
+        check(dto.shieldDetail == undefined && dto.poiseVisual == undefined, "new visual facts remain absent for old receivers");
+        PlayerHudService.testOnlyConfigure({poiseDetails:true, poiseVisuals:true, shieldDetails:true});
+        dto = PlayerHudService.testOnlyReadVitals(unit);
+        check(dto.poiseVisual.airborne && dto.poiseVisual.rigid && !dto.poiseVisual.down && dto.poiseDetail.phase == "air", "independent flags retain simultaneous airborne and rigid states");
+        check(dto.shieldDetail.strength == 40 && dto.shieldDetail.recovery.state == "waiting" && dto.shieldDetail.recovery.remainingMs == 2000, "delay projects remaining game time");
+        adaptive.update(15);
+        var delay:Number = adaptive.getDelayTimer();
+        var capacity:Number = adaptive.getCapacity();
+        dto = PlayerHudService.testOnlyReadVitals(unit);
+        check(dto.shieldDetail.recovery.progress == 0.25 && dto.shieldDetail.recovery.remainingMs == 1500, "waiting fill uses elapsed authoritative delay");
+        check(adaptive.getDelayTimer() == delay && adaptive.getCapacity() == capacity && adaptive.isFlattenedMode(), "HUD read neither advances recovery nor materializes a flat layer");
+        var external:Object = {shield:adaptive, state:"health"};
+        external.ownsHudShield = function(value:Object):Boolean { return value === this.shield; };
+        external.getHudRecoveryState = function():Object { return {state:this.state, progress:0, remainingMs:0, totalMs:0}; };
+        unit.__titaniumType61 = external;
+        check(PlayerHudService.testOnlyReadVitals(unit).shieldDetail.recovery.state == "health", "equipment recovery prerequisites override layer rate and delay");
+        external.state = "mp";
+        check(PlayerHudService.testOnlyReadVitals(unit).shieldDetail.recovery.state == "mp", "insufficient energy is not a fabricated timer");
+        delete unit.__titaniumType61;
+        var stack:org.flashNight.arki.component.Shield.ShieldStack = new org.flashNight.arki.component.Shield.ShieldStack();
+        var first:org.flashNight.arki.component.Shield.Shield = org.flashNight.arki.component.Shield.Shield.createRechargeable(100,40,1,30,"first");
+        var second:org.flashNight.arki.component.Shield.Shield = org.flashNight.arki.component.Shield.Shield.createRechargeable(100,80,1,120,"second");
+        first.consumeCapacity(20); second.consumeCapacity(20); stack.addShield(first); stack.addShield(second);
+        unit.shield = stack;
+        dto = PlayerHudService.testOnlyReadVitals(unit).shieldDetail;
+        check(dto.strength == stack.getStrength() && dto.recovery.remainingMs == 1000, "multi-layer summary uses gameplay strength and next eligible recovery");
+        external.shield = second; external.state = "unavailable"; unit.__titaniumType61 = external;
+        check(PlayerHudService.testOnlyReadVitals(unit).shieldDetail.recovery.state == "unavailable", "an unknown layer cannot certify the next aggregate recovery time");
+        delete unit.__titaniumType61;
+        first.update(30);
+        check(PlayerHudService.testOnlyReadVitals(unit).shieldDetail.recovery.state == "charging", "one recovering layer takes precedence over another waiting layer");
+        unit.shield = org.flashNight.arki.component.Shield.Shield.createResistant(100,99999999,-1,"large");
+        dto = PlayerHudService.testOnlyReadVitals(unit).shieldDetail;
+        check(dto.strengthKind == "finite" && dto.strength == 99999999 && dto.resistsBypass, "large finite strength is not infinity and resistance is independent");
+        trace("[PLAYER_HUD_RESOURCE_WIRE] " + PlayerHudService.testOnlyWire(unit));
+        unit.shield.setStrength(Number.POSITIVE_INFINITY);
+        dto = PlayerHudService.testOnlyReadVitals(unit).shieldDetail;
+        check(dto.strengthKind == "unlimited" && dto.strength == 0, "infinite strength uses an explicit JSON-safe representation");
+        unit.shield.consumeCapacity(25);
+        check(PlayerHudService.testOnlyReadVitals(unit).shieldDetail.recovery.state == "manual", "non-recharging shield is not given a countdown");
+        var server:Object = _root.server; _root.server = {isSocketConnected:false};
+        PlayerHudService.tick(); _root.server = server;
+        dto = PlayerHudService.testOnlyReadVitals(unit);
+        check(dto.shieldDetail == undefined && dto.poiseVisual == undefined, "disconnect drops both new capabilities");
+        _root.帧计时器 = oldClock;
+    }
+
     private static function testPoiseProjection():Void {
         var unit:Object = {hp:100, hp满血值:100, mp:50, mp满血值:100, 防御力:300,
             韧性系数:1, 躲闪率:1, remainingImpactForce:0, man:{}, 攻击模式:"空手", 主动战技:{}};
