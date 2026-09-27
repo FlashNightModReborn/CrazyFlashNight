@@ -287,6 +287,13 @@ _root.加载敌方人物 = function(地点X, 地点Y){
 		// 角斗场应用怪物安全覆盖强制清空掉落，不能共享这套规则。
 		敌人.掉落物 = org.flashNight.arki.merc.ArenaDropRuleCatalog.resolveDrops(
 			_root.竞技场掉落规则, "standard_merc", 敌人, null);
+		// 数据侧性格透传：标准/隐藏对战的对手卡复用 MercPanelService.buildPersonality
+		// （会合并 merc[19].性格），若此处不接上同一 佣兵参数 通道，卡片显示的六维就和
+		// 实际参战 AI 的六维两套。只挂 性格 而不整份透传 敌人信息[19]：整份挂上会顺带
+		// 激活 authored 被动技能（初始化可用技能读 佣兵参数.被动技能），那是未授权的难度变更。
+		if(敌人信息[19] && 敌人信息[19].性格){
+			敌人.佣兵参数 = {性格:敌人信息[19].性格};
+		}
 	}
 }
 

@@ -143,7 +143,53 @@ class org.flashNight.arki.merc.MercLibrary {
         if (raw.equiplocked) {
             merc[19].装备锁定 = true;
         }
+        var 性格配置:Object = normalizePersonality(raw.personality);
+        if (性格配置 != undefined) {
+            merc[19].性格 = 性格配置;
+        }
         return merc;
+    }
+
+    // 人格六维键。与 _root.生成随机人格 的维度名、MercPanelService 序列化顺序同源。
+    private static var PERSONALITY_DIMS:Array = ["勇气", "技术", "经验", "反应", "智力", "谋略"];
+
+    /**
+     * mercenaries.json 顶层 personality → merc[19].性格 的归一化：只认六维、只收数值，
+     * 并夹进 [0, 1]（下游 计算AI参数 的线性公式按该值域设计，越界值会放大成不可预期的 AI 行为）。
+     * 缺省与显式 null 都算未配置（装备列用 null 表示"不配"，Number(null) 却是 0）。
+     * 无有效维度时返回 undefined，让未配置的佣兵保持 生成随机人格 的结果。
+     */
+    public static function normalizePersonality(raw:Object):Object {
+        if (raw == undefined || typeof raw != "object") return undefined;
+        var out:Object = undefined;
+        for (var i:Number = 0; i < PERSONALITY_DIMS.length; i++) {
+            var dim:String = PERSONALITY_DIMS[i];
+            var authored = raw[dim];
+            if (authored == undefined) continue;
+            var value:Number = Number(authored);
+            if (isNaN(value)) continue;
+            if (out == undefined) out = {};
+            out[dim] = value < 0 ? 0 : (value > 1 ? 1 : value);
+        }
+        return out;
+    }
+
+    /**
+     * 把数据侧性格覆写合并进已有人格向量。必须 mutate 而非替换：UnitAIData.personality
+     * 与面板投影持同一引用，换对象会让战斗侧 AI 读到陈旧向量（配置人形怪AI 同一约定）。
+     * 返回是否合并过维度，调用方据此决定是否重算 计算AI参数 派生参数。
+     */
+    public static function mergePersonalityTraits(personality:Object, authored:Object):Boolean {
+        if (personality == undefined || authored == undefined) return false;
+        var merged:Boolean = false;
+        for (var i:Number = 0; i < PERSONALITY_DIMS.length; i++) {
+            var dim:String = PERSONALITY_DIMS[i];
+            if (authored[dim] != undefined) {
+                personality[dim] = authored[dim];
+                merged = true;
+            }
+        }
+        return merged;
     }
 
     /**

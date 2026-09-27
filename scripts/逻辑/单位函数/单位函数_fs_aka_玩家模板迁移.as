@@ -2326,6 +2326,16 @@ _root.配置人形怪AI = function(target:MovieClip):Void {
         }
     }
 
+    // ─── 5.1 数据侧性格覆写（mercenaries.json personality → merc[19].性格 → 佣兵参数）───
+    // 出战佣兵与标准/隐藏角斗场对手的 佣兵参数 都在 attachMovie 之后、load flush 阶段的
+    // 本函数之前写入，与 佣兵参数.被动技能 同一通道；玩家、兵种怪、roster 佣兵对手没有
+    // 佣兵参数，合并直接返回 false，保持随机人格。
+    // 本函数可重入（步骤 3 只在 personality 为 null 时生成），故 MercSpawner 对待雇 NPC
+    // 先合并后，初始化玩家模板的二次调用不会重算随机人格把覆写冲掉。
+    if (org.flashNight.arki.merc.MercLibrary.mergePersonalityTraits(target.personality, target.佣兵参数.性格)) {
+        _root.计算AI参数(target.personality);
+    }
+
     // ─── 6. 角色专属参数（hardcode → data-driven 过渡）───
     // personality.aiSpec 可选：覆盖 PipelineFactory 默认管线配置
     // 示例（纯近战角色可省略弹药相关修正器）：
