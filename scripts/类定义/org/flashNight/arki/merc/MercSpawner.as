@@ -334,8 +334,11 @@ class org.flashNight.arki.merc.MercSpawner {
 
         // 提前生成人格向量（幂等，初始化玩家模板中的二次调用会跳过已生成的）
         _root.配置人形怪AI(mc);
-        // 数据侧性格覆写：NPC 身上只有 佣兵数据 没有 佣兵参数，故在此显式合并，
-        // 保证待雇 NPC 的对话主维度与雇佣后的面板/战斗人格同源。
+        // 数据侧性格覆写：NPC 身上只有 佣兵数据 没有 佣兵参数，故在此显式合并。
+        // ⚠ 本函数的 mercData 一律出自 createMercData 的 _root.深拷贝数组，而那个工具只按
+        // 数字下标递归，[19] 这类具名键对象会被拷成空数组 → 世界内 spawn 上这条目前是空转。
+        // 保留它是为了让持有库记录（[19] 完整）的调用方与雇佣后的 佣兵参数 通道同语义；
+        // 待雇 NPC 的指定对话因此不读 [19]，改走 MercLibrary.dialoguesByName 的名字索引。
         if (MercLibrary.mergePersonalityTraits(mc.personality, mercData[19].性格)) {
             _root.计算AI参数(mc.personality);
         }
@@ -346,7 +349,12 @@ class org.flashNight.arki.merc.MercSpawner {
         var pool:Object = b == null ? null : b.pool;
         var dialogues:Array = b == null ? null : b.dialogues;
 
-        if (pool != null && mc.personality != null) {
+        // dialogues 配置整段替换随机台词；杂交体的名字是现场生成的，取不到配置，
+        // 因此杂交佣兵继续走随机台词，不会出现"挂着杂交名字念库内原文"的错位。
+        var authored:Array = MercLibrary.dialoguesByName(mercData[1]);
+        if (authored != undefined) {
+            mc.默认对话 = MercLibrary.buildDialogueGroups(authored, mercData[1], mc);
+        } else if (pool != null && mc.personality != null) {
             var personality:Object = mc.personality;
             // 维度名是 personality 的字段名（外部契约），保留中文
             var dims:Array = ["勇气", "技术", "经验", "反应", "智力", "谋略"];

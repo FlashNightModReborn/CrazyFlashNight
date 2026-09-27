@@ -34,6 +34,11 @@ class org.flashNight.arki.merc.MercLibrary {
     private static var _bundlePending:Array = [];
     private static var _bundle:Object;
 
+    // mercenaries.json dialogues 的名字索引。待雇 NPC 不能读实例自带的 [19]：
+    // createMercData 用 _root.深拷贝数组 复制库记录，而那个工具只按数字下标递归，
+    // merc[19] 这类具名键对象会被拷成空数组。见 buildDialogueGroups 的取用点。
+    private static var _dialoguesByName:Object = {};
+
     public static function get bundle():Object {
         return _bundle;
     }
@@ -79,6 +84,8 @@ class org.flashNight.arki.merc.MercLibrary {
     public static function loadFromList(rawList):Void {
         _root.可雇佣兵 = [];
         _root.隐藏的可雇佣兵 = [];
+        // 与池同步重建：JSON 里已删除的记录不能留下过期的指定对话
+        _dialoguesByName = {};
 
         var seen:Object = {};
         for (var i:Number = 0; i < _root.佣兵个数限制; i++) {
@@ -147,6 +154,11 @@ class org.flashNight.arki.merc.MercLibrary {
         if (性格配置 != undefined) {
             merc[19].性格 = 性格配置;
         }
+        var 对话配置:Array = normalizeDialogues(raw.dialogues);
+        if (对话配置 != undefined) {
+            merc[19].对话 = 对话配置;
+            _dialoguesByName[raw.name] = 对话配置;
+        }
         return merc;
     }
 
@@ -190,6 +202,56 @@ class org.flashNight.arki.merc.MercLibrary {
             }
         }
         return merged;
+    }
+
+    /**
+     * mercenaries.json 顶层 dialogues → merc[19].对话 的归一化。一条台词写成纯字符串，
+     * 或写成 {text, expression} 指定表情；expression 缺省为 "普通"，与 组装单次对话
+     * 对无表情台词的默认值一致。非法条目只丢弃自身；整表无有效台词时返回 undefined，
+     * 让该佣兵回落到"按人格主维度抽公共台词"。
+     *
+     * 文本约束：mercenaries.json 由 LiteJSON 解析，它按 indexOf('"') 扫字符串、不处理
+     * 转义，所以台词里出现半角双引号或反斜杠会让整份 JSON 解析失败（全佣兵池丢失）。
+     * 需要引用语气时用全角「」或“”。scripts/run-merc-loadout-tests.ps1 有静态门守这条。
+     */
+    public static function normalizeDialogues(raw:Object):Array {
+        if (raw == undefined || !(raw instanceof Array)) return undefined;
+        var out:Array = [];
+        for (var i:Number = 0; i < raw.length; i++) {
+            var entry = raw[i];
+            var text = entry;
+            var expression = undefined;
+            if (typeof entry == "object" && entry != null) {
+                text = entry.text;
+                expression = entry.expression;
+            }
+            if (typeof text != "string" || text == "") continue;
+            out.push({
+                文本: text,
+                表情: (typeof expression == "string" && expression != "") ? expression : "普通"
+            });
+        }
+        return out.length > 0 ? out : undefined;
+    }
+
+    /** 按库记录名取指定对话；未配置返回 undefined。见 _dialoguesByName 的深拷贝说明。 */
+    public static function dialoguesByName(mercName:String):Array {
+        return _dialoguesByName[mercName];
+    }
+
+    /**
+     * 指定对话 → 默认对话 的轮次数组。每条台词自成一组：对话按钮的语义是
+     * 「洗牌 + 按 对话index 整组播放」（NativeMenuBridge.runAction），所以一组一条
+     * 才是"每点一次换一句"；把全部台词塞进同一组会每次点按整段重放。
+     * 第 3 位 "主角模板" 与第 5 位 target 必须成对出现：立绘解析见到
+     * char=="主角模板" 且 target 为空时会去取主角外观（NativeDialogueAppearance）。
+     */
+    public static function buildDialogueGroups(lines:Array, mercName:String, target:MovieClip):Array {
+        var groups:Array = [];
+        for (var i:Number = 0; i < lines.length; i++) {
+            groups[i] = [[mercName, "佣兵", "主角模板", lines[i].文本, lines[i].表情, target]];
+        }
+        return groups;
     }
 
     /**

@@ -124,15 +124,62 @@ if ($personalityTestSource -notmatch 'class\s+org\.flashNight\.arki\.merc\.MercP
     throw 'MercPersonalityTest must keep the expected fully-qualified class declaration.'
 }
 
+# 数据侧指定对话（mercenaries.json dialogues → 归一化 → 名字索引 → 待雇 NPC 默认对话）。
+$dialogueTestPath = Join-Path $repoRoot 'scripts\类定义\org\flashNight\arki\merc\MercDialogueTest.as'
+$dialogueTestSource = Get-Content -LiteralPath $dialogueTestPath -Raw -Encoding UTF8
+$dialogueCheckCallSites = [regex]::Matches(
+    $dialogueTestSource, '(?m)^\s*check\s*\(').Count
+if ($dialogueCheckCallSites -ne 31) {
+    throw "MercDialogueTest check call-site count drifted: expected 31, actual $dialogueCheckCallSites."
+}
+if ($dialogueTestSource -notmatch 'class\s+org\.flashNight\.arki\.merc\.MercDialogueTest\s*\{') {
+    throw 'MercDialogueTest must keep the expected fully-qualified class declaration.'
+}
+if ($dialogueTestSource -notmatch 'first\[5\] === npc') {
+    throw 'MercDialogueTest must keep the 主角模板 + target pairing assertion: a null target renders the hero, not the NPC.'
+}
+
+# mercenaries.json 由 AS2 侧 LiteJSON 解析：它按 indexOf('"') 扫字符串、不解码转义，
+# 台词这类自由文本一旦写入 \" 或 \\ 会让整份佣兵池解析失败（不是丢一条记录）。
+# 反斜杠为零 + 严格 JSON 可解析，两条合起来才等价于"LiteJSON 也读得动"。
+$mercJsonPath = Join-Path $repoRoot 'data\merc\mercenaries.json'
+$mercJsonSource = Get-Content -LiteralPath $mercJsonPath -Raw -Encoding UTF8
+if ($mercJsonSource -match '\\') {
+    throw 'mercenaries.json must stay free of backslashes: LiteJSON does not decode escapes, so any \" or \\ breaks the whole merc pool.'
+}
+try {
+    $mercJsonRoot = $mercJsonSource | ConvertFrom-Json
+} catch {
+    throw "mercenaries.json is not strict JSON, so LiteJSON cannot parse it either: $($_.Exception.Message)"
+}
+if ($mercJsonRoot -isnot [Array] -or $mercJsonRoot.Count -eq 0) {
+    throw 'mercenaries.json must stay a non-empty array of merc records.'
+}
+
 $mercLibraryPath = Join-Path $repoRoot 'scripts\类定义\org\flashNight\arki\merc\MercLibrary.as'
 $mercLibrarySource = Get-Content -LiteralPath $mercLibraryPath -Raw -Encoding UTF8
-foreach ($requiredMethod in @('normalizePersonality', 'mergePersonalityTraits')) {
+foreach ($requiredMethod in @(
+        'normalizePersonality', 'mergePersonalityTraits', 'normalizeDialogues',
+        'dialoguesByName', 'buildDialogueGroups')) {
     if ($mercLibrarySource -notmatch ('public\s+static\s+function\s+' + $requiredMethod + '\s*\(')) {
         throw "MercLibrary is missing public static method: $requiredMethod"
     }
 }
 if ($mercLibrarySource -notmatch 'merc\[19\]\.性格\s*=\s*性格配置') {
     throw 'buildMercData must write the normalized personality override into merc[19].性格.'
+}
+if ($mercLibrarySource -notmatch '_dialoguesByName\[raw\.name\]\s*=\s*对话配置') {
+    throw 'buildMercData must index authored dialogues by merc name; 待雇 NPC 的 [19] 已被深拷贝抹平。'
+}
+
+# 指定对话在世界内 spawn 上只能靠名字索引取用：createMercData 的 _root.深拷贝数组
+# 只按数字下标递归，merc[19] 这类具名键对象会被拷成空数组。门住取用点，避免有人
+# "顺手统一"回 mercData[19].对话 后配置静默失效。
+$authoredLookup = $spawnerSource.IndexOf('MercLibrary.dialoguesByName(mercData[1])')
+$personalityDraw = $spawnerSource.IndexOf('if (pool != null && mc.personality != null)')
+if ($authoredLookup -lt 0 -or $personalityDraw -le $authoredLookup -or
+    $spawnerSource -notmatch 'mc\.默认对话 = MercLibrary\.buildDialogueGroups\(authored, mercData\[1\], mc\)') {
+    throw 'createMercEntity must resolve authored dialogues by name and take priority over the personality draw.'
 }
 
 # 战斗侧接线在 publish 注入的 逻辑 文件里，不在本 suite 的运行闭包内，故用源码门钉住
@@ -169,10 +216,12 @@ $focusedRun = @{
     SuiteRelativePaths = @(
         'scripts\类定义\org\flashNight\arki\merc\MercLoadoutServiceTest.as'
         'scripts\类定义\org\flashNight\arki\merc\MercPersonalityTest.as'
+        'scripts\类定义\org\flashNight\arki\merc\MercDialogueTest.as'
     )
     SuiteFqns = @(
         'org.flashNight.arki.merc.MercLoadoutServiceTest'
         'org.flashNight.arki.merc.MercPersonalityTest'
+        'org.flashNight.arki.merc.MercDialogueTest'
     )
     AdditionalAsRelativePaths = @(
         'scripts\类定义\org\flashNight\arki\merc\MercLibrary.as'
@@ -186,8 +235,10 @@ $focusedRun = @{
         '(?m)^MercLoadoutServiceTest Tests Failed: 0\r?$'
         '(?m)^MercPersonalityTest Tests Passed: 24\r?$'
         '(?m)^MercPersonalityTest Tests Failed: 0\r?$'
+        '(?m)^MercDialogueTest Tests Passed: 31\r?$'
+        '(?m)^MercDialogueTest Tests Failed: 0\r?$'
     )
-    SuccessSummary = 'MercLoadoutServiceTest 125/125 + MercPersonalityTest 24/24 passed'
+    SuccessSummary = 'MercLoadoutServiceTest 125/125 + MercPersonalityTest 24/24 + MercDialogueTest 31/31 passed'
     TimeoutSeconds = $TimeoutSeconds
     SkipCompile = $SkipCompile
 }
