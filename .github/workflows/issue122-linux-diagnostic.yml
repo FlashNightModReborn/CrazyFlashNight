@@ -48,11 +48,7 @@ jobs:
       - name: Browser A/B - default backend
         run: node tools/issue122/browser-diagnostic.js
       - name: Preserve default backend report
-        run: |
-          cp tmp/issue122-linux/browser.json tmp/issue122-linux/browser-default.json
-          cp tmp/issue122-linux/raw.png tmp/issue122-linux/raw-default.png
-          cp tmp/issue122-linux/chunked.png tmp/issue122-linux/chunked-default.png
-          cp tmp/issue122-linux/nonindexed.png tmp/issue122-linux/nonindexed-default.png
+        run: cp tmp/issue122-linux/browser.json tmp/issue122-linux/browser-default.json
       - name: Browser A/B - explicit SwiftShader
         env:
           CF7_ISSUE122_CHROMIUM_ARGS: --use-angle=swiftshader-webgl --enable-unsafe-swiftshader
