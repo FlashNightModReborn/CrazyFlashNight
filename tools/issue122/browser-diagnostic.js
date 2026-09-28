@@ -18,14 +18,18 @@ async function capture(browser, origin, mode) {
   const page = await browser.newPage({ viewport: { width: 1024, height: 576 } });
   const errors = [];
   const failed = [];
+  const httpErrors = [];
+  const consoleMessages = [];
   page.on('pageerror', e => errors.push(e.message));
   page.on('requestfailed', r => failed.push({ url: r.url(), error: r.failure()?.errorText || '' }));
+  page.on('response', r => { if (r.status() >= 400) httpErrors.push({ url: r.url(), status: r.status() }); });
+  page.on('console', m => { if (m.type() === 'error' || m.type() === 'warning') consoleMessages.push({ type:m.type(), text:m.text() }); });
   await page.route('https://cfn-fonts.local/**', r => r.fulfill({ status: 204, body: '' }));
   const url = origin + '/modules/stage-select/dev/issue122-index-fixture.html?issue122IndexMode=' + mode;
   await page.goto(url);
   await page.waitForFunction(() => window.Issue122Fixture && (Issue122Fixture.ready || Issue122Fixture.error));
   const fixtureError = await page.evaluate(() => Issue122Fixture.error);
-  if (fixtureError) throw new Error(fixtureError);
+  if (fixtureError) throw new Error(fixtureError + '\nHTTP=' + JSON.stringify(httpErrors) + '\nFAILED=' + JSON.stringify(failed) + '\nCONSOLE=' + JSON.stringify(consoleMessages));
   const stats = await page.evaluate(() => Issue122Fixture.stats());
   const gl = await page.evaluate(() => {
     const canvas = document.querySelector('.stage-select-diorama-canvas');
@@ -54,7 +58,7 @@ async function capture(browser, origin, mode) {
   assert.equal(stats.triangles, 361010, mode + ' triangle count');
   assert.equal(gl.webgl2, true, mode + ' WebGL2');
   assert.equal(gl.error, 0, mode + ' gl.getError');
-  return { mode, stats, gl, screenshot: { sha256: hash(png), bytes: png.length } };
+  return { mode, stats, gl, httpErrors, consoleMessages, screenshot: { sha256: hash(png), bytes: png.length } };
 }
 
 async function main() {
