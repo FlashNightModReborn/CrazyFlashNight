@@ -1,0 +1,51 @@
+name: Issue 122 Linux index diagnostic
+
+on:
+  push:
+    branches:
+      - diag/issue-122-linux-index-paths
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  issue122-linux:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+          cache-dependency-path: launcher/perf/package-lock.json
+      - name: Install Playwright package
+        run: npm --prefix launcher/perf ci --ignore-scripts
+      - name: Install Chromium
+        run: npx --prefix launcher/perf playwright install --with-deps chromium
+      - name: Inspect GLB/index structure
+        run: node tools/issue122/geometry-diagnostic.mjs
+      - name: Browser A/B - default backend
+        run: node tools/issue122/browser-diagnostic.js
+      - name: Preserve default backend report
+        run: |
+          cp tmp/issue122-linux/browser.json tmp/issue122-linux/browser-default.json
+          cp tmp/issue122-linux/raw.png tmp/issue122-linux/raw-default.png
+          cp tmp/issue122-linux/chunked.png tmp/issue122-linux/chunked-default.png
+          cp tmp/issue122-linux/nonindexed.png tmp/issue122-linux/nonindexed-default.png
+      - name: Browser A/B - explicit SwiftShader
+        env:
+          CF7_ISSUE122_CHROMIUM_ARGS: --use-angle=swiftshader-webgl --enable-unsafe-swiftshader
+        run: node tools/issue122/browser-diagnostic.js
+      - name: Preserve SwiftShader report
+        if: always()
+        run: |
+          if [ -f tmp/issue122-linux/browser.json ]; then cp tmp/issue122-linux/browser.json tmp/issue122-linux/browser-swiftshader.json; fi
+      - name: Upload diagnostics
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: issue122-linux-${{ github.sha }}
+          path: tmp/issue122-linux/
+          if-no-files-found: error
