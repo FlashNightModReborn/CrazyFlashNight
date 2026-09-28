@@ -122,8 +122,8 @@
       },
       {
         "path": "data/shops/npcs/迷之盔甲君.json",
-        "sha256": "3787374e8413b941dadc6906d35fad08d20027912df274cf9945fed03fd27eec",
-        "bytes": 1214
+        "sha256": "8236e239f01965ef26d3eb3b60b5217797d5f10d450dd015d71a3623a18454d5",
+        "bytes": 1241
       },
       {
         "path": "data/shops/npcs/诺艾尔.json",
@@ -1144,5 +1144,14 @@
         "sha256": "a874393fff7c81f38717eb5df9e03c0ac50d74fc311a428bd3e38ac4cf50d32f"
       }
     }
+  },
+  "shopSourceRefresh": {
+    "mode": "shop-id-metadata-only",
+    "tool": {
+      "path": "tools/refresh-shop-portrait-sources.py",
+      "sha256": "80fc8978eac19f93056c90a6c2272a1f37c101cb5f29fdd31453ae9fe8b18131",
+      "bytes": 3697
+    },
+    "previousActiveSourceSha256": "be18332ed6a75e40d8656256b549542b3c1f6b336bd304656ee9b321fd684450"
   }
 }
