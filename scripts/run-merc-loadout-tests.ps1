@@ -213,6 +213,28 @@ if ($mercPanelSource -notmatch 'merc\[19\] && merc\[19\]\.世界副本 !== true 
     throw 'handleWorldHire must keep world copies out of the recruitable pool removal.'
 }
 
+# ─── mercenaries.json nohybrid：杂交基底门 ───
+# 顶层 nohybrid → merc[19].不可杂交，命中时 createMercData 强制走非杂交分支；记录本身照常
+# 刷成普通待雇 NPC。掷骰必须在判锁之前无条件完成，否则带标记的佣兵会把一次 successRate 省掉，
+# 同种子下这条之后的随机序列（门点/坐标抖动/id 后缀）整体漂移。只关基底，不关供体。
+if ($mercLibrarySource -notmatch 'if \(raw\.nohybrid\) \{' -or
+    $mercLibrarySource -notmatch 'merc\[19\]\.不可杂交 = true;') {
+    throw 'buildMercData must write nohybrid into merc[19].不可杂交.'
+}
+if ($spawnerSource -notmatch 'public\s+static\s+function\s+isHybridBaseLocked\s*\(\s*record:Object\s*\)\s*:\s*Boolean') {
+    throw 'MercSpawner must expose isHybridBaseLocked as the single read point of 不可杂交.'
+}
+if ($spawnerSource -notmatch 'record != null && record\[19\] != null && record\[19\]\.不可杂交 === true') {
+    throw 'isHybridBaseLocked must keep the strict === true read (缺省/false/脏值 均不锁).'
+}
+if ($createSection -notmatch 'var hybridRollWins:Boolean = LinearCongruentialEngine\.instance\.successRate\(hybridChance\);' -or
+    $createSection -notmatch 'if \(hybridRollWins && !isHybridBaseLocked\(source\)\) \{') {
+    throw 'createMercData must draw the hybrid roll unconditionally, then gate only the base branch.'
+}
+if ($createSection -match 'if \(LinearCongruentialEngine\.instance\.successRate') {
+    throw 'createMercData must not inline the hybrid roll into the branch condition: 跳过掷骰会漂移同种子的后续随机序列。'
+}
+
 # 战斗侧接线在 publish 注入的 逻辑 文件里，不在本 suite 的运行闭包内，故用源码门钉住
 # "合并同一人格引用 → 再重算派生参数" 的顺序，避免只改面板不改 AI。
 $unitTemplatePath = Join-Path $repoRoot 'scripts\逻辑\单位函数\单位函数_fs_aka_玩家模板迁移.as'

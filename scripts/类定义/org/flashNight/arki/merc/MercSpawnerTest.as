@@ -4,7 +4,8 @@
  * MercSpawner.removeMerc 权威 mercId 删除回归（native-interaction cleanup 2026-09-12）。
  * 场景单位只按 用户ID == mercId 删除；旧 _root.菜单MC对应名 间接路径已退役。
  * 配套验证 custody 拒绝、同伴数据/出战标志同下标压缩、回池 InsertionSort 升序，
- * 以及世界副本元数据独立拷贝（copyMercMeta）与 世界副本 的池流转门控。
+ * 世界副本元数据独立拷贝（copyMercMeta）与 世界副本 的池流转门控，
+ * 以及 mercenaries.json nohybrid 的杂交基底门（isHybridBaseLocked）。
  */
 class org.flashNight.arki.merc.MercSpawnerTest {
     private static var passed:Number = 0;
@@ -21,6 +22,7 @@ class org.flashNight.arki.merc.MercSpawnerTest {
         testNotFoundIsNoop();
         testWorldCopyOwnsItsMetadata();
         testWorldCopyDoesNotFlowIntoPools();
+        testHybridBaseLock();
         trace("MercSpawnerTest Tests Passed: " + passed);
         trace("MercSpawnerTest Tests Failed: " + failed);
         trace("=== MercSpawnerTest end ===");
@@ -294,6 +296,33 @@ class org.flashNight.arki.merc.MercSpawnerTest {
         } finally {
             restoreRoot(s);
         }
+    }
+
+    /**
+     * mercenaries.json nohybrid → merc[19].不可杂交 的杂交基底门：只认显式 true。
+     * 真值在写入侧归一化（MercLibrary.buildMercData 写成字面量 true），读取侧用严格比较，
+     * 所以 "true"/1 这类没经过 buildMercData 的脏值不会意外关掉杂交。
+     */
+    private static function testHybridBaseLock():Void {
+        var legacy:Array = merc(30, "lib1", {是否杂交: false});
+        legacy.length = 19;
+        check(MercSpawner.isHybridBaseLocked(legacy) === false,
+            "长度不足 20（无 [19]）的记录不判为锁定");
+        check(MercSpawner.isHybridBaseLocked(merc(30, "lib2", {是否杂交: false})) === false,
+            "缺 不可杂交 键的库记录照旧可当杂交基底");
+        check(MercSpawner.isHybridBaseLocked(merc(30, "lib3", {不可杂交: false})) === false,
+            "不可杂交 显式 false 与缺省同义");
+        check(MercSpawner.isHybridBaseLocked(merc(30, "lib4", {不可杂交: true})) === true,
+            "不可杂交 为 true 即锁住基底");
+        check(MercSpawner.isHybridBaseLocked(merc(30, "lib5", {不可杂交: "true"})) === false
+                && MercSpawner.isHybridBaseLocked(merc(30, "lib6", {不可杂交: 1})) === false,
+            "脏值不锁：字符串 true 与数字 1 都不算显式 true");
+        check(MercSpawner.isHybridBaseLocked(null) === false
+                && MercSpawner.isHybridBaseLocked(undefined) === false,
+            "空记录判为不锁，越界索引仍走原来的返回 null 分支");
+        check(MercSpawner.isHybridBaseLocked(merc(52, "5652虎妙1234",
+                MercSpawner.copyMercMeta({是否杂交: false, 不可杂交: true}))) === true,
+            "标记随 copyMercMeta 的元数据深拷保留");
     }
 
     private static function check(condition:Boolean, message:String):Void {

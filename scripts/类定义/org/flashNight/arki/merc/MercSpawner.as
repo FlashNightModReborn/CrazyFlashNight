@@ -282,17 +282,21 @@ class org.flashNight.arki.merc.MercSpawner {
      * 杂交分支由 hybridize 返回新副本；非杂交分支必须 deep-clone，
      * 否则下面改写 instance[2] 会污染 _root.可雇佣兵 源记录的 id（重复 spawn 同索引会拼接膨胀）。
      * 非杂交分支另外要补 [19]，原因见 copyMercMeta。
+     * 带 mercenaries.json `nohybrid` 的记录只走非杂交分支，见 isHybridBaseLocked。
      */
     public static function createMercData(n:Number, hybridChance:Number) {
         if (_root.isEasyMode() != true) {
             // 在竞技场之后解锁，当达到 38 时杂交率达到 25
             hybridChance = Math.min(hybridChance, Math.max(0, _root.主线任务进度 - 13));
         }
+        var source = _root.可雇佣兵[n];
+        // 掷骰无条件先做：让开基底时会跳过一次 successRate，同种子下这条之后的随机序列
+        // （门点、坐标抖动、id 后缀…）会整体漂移，开关就不该影响别的抽样。
+        var hybridRollWins:Boolean = LinearCongruentialEngine.instance.successRate(hybridChance);
         var instance:Array;
-        if (LinearCongruentialEngine.instance.successRate(hybridChance)) {
+        if (hybridRollWins && !isHybridBaseLocked(source)) {
             instance = MercHybridizer.hybridize(n, hybridChance, true);
         } else {
-            var source = _root.可雇佣兵[n];
             instance = _root.深拷贝数组(source);
             // [19] 是具名键对象，深拷贝数组 只按数字下标递归，会把它拷成空数组 → authored
             // 被动/性格/装备锁定 在世界雇下的单位上整体丢失。显式补一份属于本副本的拷贝。
@@ -306,6 +310,18 @@ class org.flashNight.arki.merc.MercSpawner {
         }
         instance[2] = instance[2].toString() + instance[1] + instance[0].toString() + _root.随机整数(0, 9999).toString();
         return instance;
+    }
+
+    /**
+     * mercenaries.json 顶层 nohybrid → merc[19].不可杂交：点名这条库记录不当杂交基底。
+     * 只认显式 true（缺省/false 照旧可杂交），命中后本记录仍会正常刷成普通待雇 NPC，
+     * 只是不走 hybridize 分支——等级、外观与装备都不再被别的佣兵掺走。
+     *
+     * 只管基底，不管供体：hybridize 里 pickHybridIndex 从整池抽等级/外观/装备，
+     * 带标记的记录仍可能被别人的杂交体抽走属性（用户 2026-09-28 明确划在本轮之外）。
+     */
+    public static function isHybridBaseLocked(record:Object):Boolean {
+        return record != null && record[19] != null && record[19].不可杂交 === true;
     }
 
     /**

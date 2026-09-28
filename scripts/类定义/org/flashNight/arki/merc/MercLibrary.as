@@ -150,6 +150,10 @@ class org.flashNight.arki.merc.MercLibrary {
         if (raw.equiplocked) {
             merc[19].装备锁定 = true;
         }
+        // 杂交基底开关：只认显式 true，缺省/false 与不写同义（MercSpawner.createMercData 读它）。
+        if (raw.nohybrid) {
+            merc[19].不可杂交 = true;
+        }
         var 性格配置:Object = normalizePersonality(raw.personality);
         if (性格配置 != undefined) {
             merc[19].性格 = 性格配置;
