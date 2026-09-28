@@ -1,0 +1,81 @@
+{
+  "schema": "cf7-issue46-fixture-provenance/v1",
+  "sources": [
+    {
+      "id": "CF7-evidence",
+      "repository": "FlashNightModReborn/CrazyFlashNight",
+      "commit": "08c4ae100f4daa84bc2ea77991f4f59a016ddcc5",
+      "path": "docs/evidence/steamdeck-install-20260907.json",
+      "blob_sha1": "cb8116e428418a9c561c2432751ace55e97b2afd",
+      "scope": "historical filenameObservation excerpt, not full raw logs",
+      "url": "https://github.com/FlashNightModReborn/CrazyFlashNight/blob/08c4ae100f4daa84bc2ea77991f4f59a016ddcc5/docs/evidence/steamdeck-install-20260907.json"
+    },
+    {
+      "id": "Proton11",
+      "repository": "ValveSoftware/Proton",
+      "commit": "db9e6ffbf24a95b104fb699dd62532c70a2f9a51",
+      "tag": "proton-11.0-2",
+      "path": "proton",
+      "blob_sha1": "977dc4ea7e288b122723434d8b73e023ce57a05e",
+      "read_lines": [
+        1500,
+        1580
+      ],
+      "scope": "init_wine locale branch; not full runtime execution",
+      "url": "https://github.com/ValveSoftware/Proton/blob/db9e6ffbf24a95b104fb699dd62532c70a2f9a51/proton"
+    },
+    {
+      "id": "Proton10",
+      "repository": "ValveSoftware/Proton",
+      "commit": "e91ca2be0df2cef4c230cbbc0b86604d73a0bbf6",
+      "tag": "proton-10.0-4b",
+      "path": "proton",
+      "blob_sha1": "7b07730c8288e75f46480e3d79220865fdcb97ea",
+      "read_lines": [
+        1490,
+        1535
+      ],
+      "scope": "init_wine locale branch; not installed Deck artifact identity",
+      "url": "https://github.com/ValveSoftware/Proton/blob/e91ca2be0df2cef4c230cbbc0b86604d73a0bbf6/proton"
+    },
+    {
+      "id": "Wine-env",
+      "repository": "ValveSoftware/wine",
+      "commit": "dc26e61847081a1b5cb0733dc30feba6ee575482",
+      "path": "dlls/ntdll/unix/env.c",
+      "blob_sha1": "042daa27ac7a28a586b7d60ec803c27d714e07d3",
+      "relevant_read_lines": [
+        1,
+        440
+      ],
+      "scope": "unix_cp initialization, init_unix_codepage, conversion functions; frozen Wine submodule of Proton11",
+      "url": "https://github.com/ValveSoftware/wine/blob/dc26e61847081a1b5cb0733dc30feba6ee575482/dlls/ntdll/unix/env.c"
+    },
+    {
+      "id": "Wine-table-format",
+      "repository": "ValveSoftware/wine",
+      "commit": "dc26e61847081a1b5cb0733dc30feba6ee575482",
+      "path": "dlls/ntdll/locale_private.h",
+      "blob_sha1": "3f82129790a2e14e9713afbe5a9cec7756ac0348",
+      "read_lines": [
+        1,
+        230
+      ],
+      "scope": "NLS file format plus init_codepage_table",
+      "url": "https://github.com/ValveSoftware/wine/blob/dc26e61847081a1b5cb0733dc30feba6ee575482/dlls/ntdll/locale_private.h"
+    },
+    {
+      "id": "Wine-NLS-prefix",
+      "repository": "ValveSoftware/wine",
+      "commit": "dc26e61847081a1b5cb0733dc30feba6ee575482",
+      "path": "nls/c_20127.nls",
+      "blob_sha1": "1317a7187a4516f66c3e0efc38f363409bfe42c9",
+      "acquisition": "GitHub fetch_file encoding=base64 lines 1..12",
+      "decoded_bytes": 540,
+      "decoded_prefix_sha256": "543e11ac0d685983e53e97d3d7411f0d1d9912d0ab179099d85866b6f9ff426e",
+      "scope": "only first 540 bytes; complete SBCS 256-entry forward table, not full .nls nor installed runtime",
+      "url": "https://github.com/ValveSoftware/wine/blob/dc26e61847081a1b5cb0733dc30feba6ee575482/nls/c_20127.nls"
+    }
+  ],
+  "notice": "Wine project contributors; the included NLS prefix is an unchanged partial extract from the pinned Wine repository. LGPL-2.1-or-later notice and LGPL-2.1 text are supplied. No complete Wine runtime is bundled."
+}
