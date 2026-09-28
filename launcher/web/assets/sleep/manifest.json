@@ -10,7 +10,7 @@
     "flashswf/UI/睡觉界面/LIBRARY/清晨选项.xml": "a291e58489a3a25ae7c1770de1b982d028009dafc5122e5687a1aa13e76b465b",
     "flashswf/UI/睡觉界面/LIBRARY/金色太阳.xml": "f48d792840080fa646a33cd86fc2f6e010b12a5d8dd30f1057a72afa51e1ae88",
     "launcher/web/css/sleep/tokens.css": "8176b8b0385e6fce1e729360cec76b87acc5c5a96965202ccead5f304e712ac0",
-    "tools/export-sleep-art.py": "7363c210a61d95feaa69ee38082e2c97bdc98ce9efd7f6dfd17863dbed227533",
+    "tools/export-sleep-art.py": "1bc685ad072d8ebb480621145b64154965bb1329941e2240994f32f53215ed01",
     "tools/xfl-ui-svg/xfl_to_svg.py": "1bc28a922866881721f239e35a354bbd03b224b597f6c604f76af4eee5585c62"
   },
   "recipes": {
@@ -57,6 +57,28 @@
         1509.0
       ],
       "textFieldsExcluded": 2
+    },
+    "hourglass-day.svg": {
+      "symbol": "沙漏-昼",
+      "frame": 0,
+      "viewBox": [
+        0.019968414306902105,
+        0.018599700928348284,
+        90.74361648559585,
+        131.3333061218263
+      ],
+      "textFieldsExcluded": 0
+    },
+    "hourglass-night.svg": {
+      "symbol": "沙漏-夜",
+      "frame": 0,
+      "viewBox": [
+        0.0,
+        0.0,
+        90.75,
+        131.35
+      ],
+      "textFieldsExcluded": 0
     }
   },
   "files": {
@@ -75,6 +97,14 @@
     "night-card.svg": {
       "sha256": "af4b5a6e16b2c96f84a005ecdc8446a0e7978c9f5a1e82241f9ecac9c58519f9",
       "bytes": 168532
+    },
+    "hourglass-day.svg": {
+      "sha256": "f97a5edc30f3180952820c53ddb5ea66b393a67cc9e3edf1f3b735d92a1a2fbf",
+      "bytes": 7887
+    },
+    "hourglass-night.svg": {
+      "sha256": "91a75b9ce993ac1885a1bb1c0d1ecf4d4c7e0325313d49020f64a75dfafbcf1a",
+      "bytes": 6288
     },
     "palette.js": {
       "sha256": "4aaf80a442e4c2c40be480418924f7013add45db3fdb5123544ebdfacdbb85ea",

@@ -19,6 +19,9 @@ RECIPES = {
     "night-face.svg": ("夜晚选项", (210, 135, 640, 640)),
     "day-card.svg": ("清晨选项", None),
     "night-card.svg": ("夜晚选项", None),
+    # 双卡的沙漏立柱装饰，供面板点缀与入睡过渡使用。
+    "hourglass-day.svg": ("沙漏-昼", None),
+    "hourglass-night.svg": ("沙漏-夜", None),
 }
 
 
