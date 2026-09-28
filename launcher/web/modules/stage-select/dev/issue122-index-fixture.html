@@ -1,0 +1,24 @@
+<!doctype html>
+<meta charset="utf-8">
+<title>Issue 122 index-path fixture</title>
+<style>
+html,body{margin:0;background:#000;overflow:hidden}canvas{display:block;width:1024px;height:576px}
+</style>
+<script src="../stage-select-fallen-data.js"></script>
+<script type="module">
+const state={ready:false,error:null,stats:null};
+window.Issue122Fixture=state;
+try{
+  const {createScene}=await import('../stage-select-fallen-scene.js');
+  const scene=await createScene(StageSelectFallenData,()=>{},()=>{},()=>{},new AbortController().signal);
+  document.body.appendChild(scene.canvas);
+  scene.view.resize(1024,576);
+  scene.view.overview(null,false);
+  state.scene=scene;
+  state.stats=()=>scene.stats();
+  state.ready=true;
+}catch(error){
+  state.error=error&&error.stack||String(error);
+  console.error(error);
+}
+</script>
