@@ -32,6 +32,27 @@ export function partitionGeometry(geometry,limit=60000) {
     finish();return chunks;
 }
 
+export function expandUint32Indices(root) {
+    const meshes=[];root.traverse(o=>{if(o.isMesh)meshes.push(o);});
+    const report={expandedBatches:0,inputTriangles:0,outputTriangles:0};
+    const retired=new Set();
+    for(const mesh of meshes){
+        if(!mesh.geometry.index || !(mesh.geometry.index.array instanceof Uint32Array))continue;
+        if(mesh.isSkinnedMesh || mesh.isInstancedMesh || Array.isArray(mesh.material))throw new Error('Unsupported batched mesh');
+        const geometry=mesh.geometry.toNonIndexed();
+        const replacement=new THREE.Mesh(geometry,mesh.material);
+        replacement.name=mesh.name;replacement.userData={...mesh.userData,sourceBatch:mesh.name,indexCompatibility:'nonindexed'};
+        replacement.position.copy(mesh.position);replacement.quaternion.copy(mesh.quaternion);replacement.scale.copy(mesh.scale);
+        replacement.matrix.copy(mesh.matrix);replacement.matrixAutoUpdate=mesh.matrixAutoUpdate;replacement.visible=mesh.visible;
+        replacement.castShadow=mesh.castShadow;replacement.receiveShadow=mesh.receiveShadow;replacement.renderOrder=mesh.renderOrder;
+        replacement.frustumCulled=mesh.frustumCulled;replacement.layers.mask=mesh.layers.mask;
+        mesh.parent.add(replacement);for(const child of [...mesh.children])replacement.add(child);mesh.removeFromParent();
+        retired.add(mesh.geometry);report.expandedBatches++;report.inputTriangles+=mesh.geometry.index.count/3;
+        report.outputTriangles+=geometry.attributes.position.count/3;
+    }
+    retired.forEach(g=>g.dispose());return report;
+}
+
 export function usePortableIndices(root) {
     const meshes=[];root.traverse(o=>{if(o.isMesh)meshes.push(o);});
     const report={partitionedBatches:0,inputTriangles:0,outputTriangles:0,outputChunks:0};
