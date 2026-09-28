@@ -1,7 +1,7 @@
 # 装备常驻照明与独立插件生命周期
 
 **文档角色**：本轮实现、验证和交付边界记录。当前配置合同归[装备函数 README](../../scripts/逻辑/装备函数/README.md#skill-interaction)，传输与 GPU 预算归[战斗表现资源合同](../../data/combat_visuals/README.md)。
-**施工基线**：main `6189814fb52aa691e8b81ec4fcb11ac47f48325c`，接在紧急 bugfix 列车之后；本轮修改尚未提交、推送或正式部署。
+**施工基线**：main `6189814fb52aa691e8b81ec4fcb11ac47f48325c`，接在紧急 bugfix 列车之后；以下保留各施工轮次当时的交付状态；本批现已完成正式部署，见[发布记录](equipment-lighting-runtime-release-2026-09-28.md)。
 
 **最新交付入口**：第三轮手电/镭射形状继续沿用；后续发光防具与兵器、性能优化、亮度及自动照明注释的当前交付见[自发光扩展施工记录](equipment-emissive-expansion-implementation-2026-09-28.md)。下列各轮候选路径、哈希和验证结果属于对应历史轮次。
 

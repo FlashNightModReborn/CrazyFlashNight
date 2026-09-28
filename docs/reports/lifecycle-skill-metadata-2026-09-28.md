@@ -1,7 +1,7 @@
 # 装备生命周期战技关系打标与照明施工衔接
 
 **文档角色**：2026-09-28 隔离施工的审计快照与已对齐产品决策；当前字段合同归[装备函数 README](../../scripts/逻辑/装备函数/README.md#skill-interaction)，实时覆盖归[静态校验器](../../tools/lifecycle-skill-metadata/README.md)。
-**核对基线**：纯打标批次基于 commit `5f6ea4135319cecfb0da433ae09ecf34504a07a7`，在独立 worktree `codex/lifecycle-skill-metadata` 完成。紧急列车结束后，已将该批修改复核并应用到 main 的 `6189814fb52aa691e8b81ec4fcb11ac47f48325c` 基线上；尚未提交。下文数量和“本批”均指当时的纯打标快照，后续运行接线见[照明施工记录](equipment-lighting-implementation-2026-09-28.md)。
+**核对基线**：纯打标批次基于 commit `5f6ea4135319cecfb0da433ae09ecf34504a07a7`，在独立 worktree `codex/lifecycle-skill-metadata` 完成。紧急列车结束后，已将该批修改复核并应用到 main 的 `6189814fb52aa691e8b81ec4fcb11ac47f48325c` 基线上；该批随后随装备照明合入主线并完成[正式发布](equipment-lighting-runtime-release-2026-09-28.md)。下文数量和“本批”均指当时的纯打标快照，后续运行接线见[照明施工记录](equipment-lighting-implementation-2026-09-28.md)。
 
 ## 本批范围与结果
 
