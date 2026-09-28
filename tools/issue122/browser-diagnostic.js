@@ -9,12 +9,13 @@ const ROOT = path.resolve(__dirname, '../..');
 const OUT = path.join(ROOT, 'tmp', 'issue122-linux');
 const { chromium } = require(path.join(ROOT, 'launcher/perf/node_modules/playwright'));
 const MODES = ['raw', 'chunked', 'nonindexed'];
+const CAMERAS = ['issue-time', 'current'];
 
 function hash(buffer) {
   return crypto.createHash('sha256').update(buffer).digest('hex');
 }
 
-async function capture(browser, origin, mode) {
+async function capture(browser, origin, mode, camera) {
   const page = await browser.newPage({ viewport: { width: 1024, height: 576 } });
   const errors = [];
   const failed = [];
@@ -25,7 +26,7 @@ async function capture(browser, origin, mode) {
   page.on('response', r => { if (r.status() >= 400) httpErrors.push({ url: r.url(), status: r.status() }); });
   page.on('console', m => { if (m.type() === 'error' || m.type() === 'warning') consoleMessages.push({ type:m.type(), text:m.text() }); });
   await page.route('https://cfn-fonts.local/**', r => r.fulfill({ status: 204, body: '' }));
-  const url = origin + '/modules/stage-select/dev/issue122-index-fixture.html?issue122IndexMode=' + mode;
+  const url = origin + '/modules/stage-select/dev/issue122-index-fixture.html?issue122IndexMode=' + mode + '&issue122Camera=' + camera;
   await page.goto(url);
   await page.waitForFunction(() => window.Issue122Fixture && (Issue122Fixture.ready || Issue122Fixture.error));
   const fixtureError = await page.evaluate(() => Issue122Fixture.error);
@@ -50,7 +51,7 @@ async function capture(browser, origin, mode) {
     };
   });
   const canvas = page.locator('canvas.stage-select-diorama-canvas');
-  const png = await canvas.screenshot({ path: path.join(OUT, mode + '.png') });
+  const png = await canvas.screenshot({ path: path.join(OUT, camera + '-' + mode + '.png') });
   await page.close();
   assert.deepEqual(errors, [], mode + ' page errors');
   assert.deepEqual(failed, [], mode + ' request failures');
@@ -58,7 +59,7 @@ async function capture(browser, origin, mode) {
   assert.equal(stats.triangles, 361010, mode + ' triangle count');
   assert.equal(gl.webgl2, true, mode + ' WebGL2');
   assert.equal(gl.error, 0, mode + ' gl.getError');
-  return { mode, stats, gl, httpErrors, consoleMessages, screenshot: { sha256: hash(png), bytes: png.length } };
+  return { camera, mode, stats, gl, httpErrors, consoleMessages, screenshot: { sha256: hash(png), bytes: png.length } };
 }
 
 async function main() {
@@ -77,25 +78,32 @@ async function main() {
     modes: [],
   };
   try {
-    for (const mode of MODES) report.modes.push(await capture(browser, origin, mode));
-    const byMode = Object.fromEntries(report.modes.map(row => [row.mode, row]));
-    assert.equal(byMode.raw.stats.indexCompatibility[0].mode, 'raw');
-    assert.equal(byMode.raw.stats.calls, 51, 'raw draw calls');
-    assert.equal(byMode.chunked.stats.indexCompatibility[0].mode, 'chunked');
-    assert.equal(byMode.chunked.stats.indexCompatibility[0].outputChunks, 5);
-    assert.equal(byMode.chunked.stats.calls, 55, 'chunked draw calls');
-    assert.equal(byMode.nonindexed.stats.indexCompatibility[0].mode, 'nonindexed');
-    assert.equal(byMode.nonindexed.stats.indexCompatibility[0].expandedBatches, 1);
-    assert.equal(byMode.nonindexed.stats.calls, 51, 'non-indexed draw calls');
+    for (const camera of CAMERAS) for (const mode of MODES)
+      report.modes.push(await capture(browser, origin, mode, camera));
+    const byKey = Object.fromEntries(report.modes.map(row => [row.camera + '/' + row.mode, row]));
+    for (const camera of CAMERAS) {
+      const raw=byKey[camera + '/raw'], chunked=byKey[camera + '/chunked'], nonindexed=byKey[camera + '/nonindexed'];
+      assert.equal(raw.stats.indexCompatibility[0].mode, 'raw');
+      assert.equal(raw.stats.calls, 51, camera + ' raw draw calls');
+      assert.equal(chunked.stats.indexCompatibility[0].mode, 'chunked');
+      assert.equal(chunked.stats.indexCompatibility[0].outputChunks, 5);
+      assert.equal(chunked.stats.calls, 55, camera + ' chunked draw calls');
+      assert.equal(nonindexed.stats.indexCompatibility[0].mode, 'nonindexed');
+      assert.equal(nonindexed.stats.indexCompatibility[0].expandedBatches, 1);
+      assert.equal(nonindexed.stats.calls, 51, camera + ' non-indexed draw calls');
+    }
     const identity = row => JSON.stringify([
       row.gl.vendor, row.gl.renderer, row.gl.version, row.gl.unmaskedVendor, row.gl.unmaskedRenderer,
     ]);
     assert.equal(new Set(report.modes.map(identity)).size, 1, 'same WebGL backend for all modes');
-    report.pixelIdentity = {
-      rawVsChunkedPngExact: byMode.raw.screenshot.sha256 === byMode.chunked.screenshot.sha256,
-      rawVsNonindexedPngExact: byMode.raw.screenshot.sha256 === byMode.nonindexed.screenshot.sha256,
-      chunkedVsNonindexedPngExact: byMode.chunked.screenshot.sha256 === byMode.nonindexed.screenshot.sha256,
-    };
+    report.pixelIdentity = Object.fromEntries(CAMERAS.map(camera => {
+      const raw=byKey[camera + '/raw'], chunked=byKey[camera + '/chunked'], nonindexed=byKey[camera + '/nonindexed'];
+      return [camera, {
+        rawVsChunkedPngExact: raw.screenshot.sha256 === chunked.screenshot.sha256,
+        rawVsNonindexedPngExact: raw.screenshot.sha256 === nonindexed.screenshot.sha256,
+        chunkedVsNonindexedPngExact: chunked.screenshot.sha256 === nonindexed.screenshot.sha256,
+      }];
+    }));
     report.pass = true;
   } catch (error) {
     report.pass = false;
