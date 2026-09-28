@@ -5,7 +5,7 @@ import {EffectComposer} from '../../assets/stage-diorama/blackiron-hq/vendor/pos
 import {RenderPass} from '../../assets/stage-diorama/blackiron-hq/vendor/postprocessing/RenderPass.js';
 import {UnrealBloomPass} from '../../assets/stage-diorama/blackiron-hq/vendor/postprocessing/UnrealBloomPass.js';
 import {OutputPass} from '../../assets/stage-diorama/blackiron-hq/vendor/postprocessing/OutputPass.js';
-import {usePortableIndices} from './stage-select-geometry-chunks.js';
+import {usePortableIndices,expandUint32Indices} from './stage-select-geometry-chunks.js';
 import {createCameraView} from './stage-select-diorama-camera.js';
 
 export async function createScene(config,onLost,onChange,onSelect,signal) {
@@ -22,6 +22,13 @@ export async function createScene(config,onLost,onChange,onSelect,signal) {
     composer.addPass(pass);composer.addPass(bloom);composer.addPass(new OutputPass());
     let base,selection,view,disposed=false,frames=0,calls=0,triangles=0,current='',cutaway=false;
     const loadedHashes={},indexCompatibility=[];
+    const issue122Mode=new URL(location.href).searchParams.get('issue122IndexMode')||'chunked';
+    if(!['raw','chunked','nonindexed'].includes(issue122Mode))throw new Error('Invalid issue122IndexMode');
+    function adaptIndices(root,asset){
+        if(issue122Mode==='raw')return {asset,mode:'raw',partitionedBatches:0,inputTriangles:0,outputTriangles:0,outputChunks:0};
+        if(issue122Mode==='nonindexed')return {asset,mode:'nonindexed',...expandUint32Indices(root)};
+        return {asset,mode:'chunked',...usePortableIndices(root)};
+    }
     const materials=new Set(),masks=new Map(),entries=new Map(config.entries.map(e=>[e.id,e]));
     const nativeRender=pass.render.bind(pass);pass.render=(...args)=>{nativeRender(...args);calls=renderer.info.render.calls;triangles=renderer.info.render.triangles;};
     function listen(el,name,fn){el.addEventListener(name,fn);listeners.push(()=>el.removeEventListener(name,fn));}
@@ -64,8 +71,8 @@ export async function createScene(config,onLost,onChange,onSelect,signal) {
         }));
     }
     try {
-        base=await load('city.glb');scene.add(base);indexCompatibility.push({asset:'city.glb',...usePortableIndices(base)});
-        selection=await load('selection.glb');scene.add(selection);indexCompatibility.push({asset:'selection.glb',...usePortableIndices(selection)});clearTimeout(timer);
+        base=await load('city.glb');scene.add(base);indexCompatibility.push(adaptIndices(base,'city.glb'));
+        selection=await load('selection.glb');scene.add(selection);indexCompatibility.push(adaptIndices(selection,'selection.glb'));clearTimeout(timer);
         base.traverse(o=>{if(!o.isMesh)return;if(o.userData.effect==='stageBeam'){o.renderOrder=2;[].concat(o.material).forEach(m=>{m.depthWrite=false;m.forceSinglePass=true;m.blending=THREE.AdditiveBlending;});}});
         selection.traverse(o=>{
             if(!o.isMesh)return;const id=o.userData.buildingId;if(!id)throw Error('Selection without unit');
@@ -89,6 +96,6 @@ export async function createScene(config,onLost,onChange,onSelect,signal) {
         view=createCameraView(config,scene,camera,renderer,render,onChange,{resize:(w,h)=>composer.setSize(w,h),highlight});
         view.resize(1024,576);view.overview(null,false);
         const loadMs=Math.round(performance.now()-started);
-        return {canvas,view,render,dispose,stats:()=>Object.assign({frames,calls,triangles,loadMs,cutaway,indexCompatibility,loadedHashes,selectedParts:parts(entries.get(current)).map(m=>({unit:m.userData.buildingId,part:m.userData.selectionPart||''})),geometries:renderer.info.memory.geometries,textures:renderer.info.memory.textures,width:canvas.width,height:canvas.height},view.stats())};
+        return {canvas,view,render,dispose,stats:()=>Object.assign({frames,calls,triangles,loadMs,cutaway,indexCompatibility,loadedHashes,issue122Mode,selectedParts:parts(entries.get(current)).map(m=>({unit:m.userData.buildingId,part:m.userData.selectionPart||''})),geometries:renderer.info.memory.geometries,textures:renderer.info.memory.textures,width:canvas.width,height:canvas.height},view.stats())};
     }catch(e){dispose();throw e;}
 }
