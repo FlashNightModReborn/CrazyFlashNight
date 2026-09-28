@@ -55,6 +55,8 @@ native 源码前缀内的非二进制契约文档也必须显式绑定，不能�
 
 `tools/equipment-tuning/fixtures/item-identity-triple.json` 作为现役图标身份审计的输入，显式绑定 policy fixedFiles。该目录原先只纳入 `.js`，夹具更新会被 native 变更审计按未绑定输入拒绝；补齐精确 JSON 路径，不扩展其他文件或降低检查要求。
 
+`tools/steamdeck-locale`（#46 离线诊断候选）的 `.c` 探针源码以 policy tree 绑定（仅 `.c` 扩展名）：该目录不在 native gate 保护前缀内，只有 native 扩展名文件触发审计；2026-09-28 入库时两个 `.c` 文件因未绑定被 Audit 拒绝（run 36362568741），补齐绑定后属正常 `source-ahead`，不进入正式 DLL 输入域，不要求即时 promotion。目录内 Python/shell/文档/夹具不受 native gate 管辖，保持不绑定，与既有工具域口径一致。
+
 ### producer 与政策闸门
 
 世界光照捕获模块随正式 producer 构建：`launcher/native/world-compositor/build.bat` 仅接受环境门选出的 MSVC/SDK，三个产物 `FlashCompositorNative.dll`、`FlashInputBridge.dll`、`FlashInputBroker.exe` 使用静态 CRT、确定性链接与固定相对源文件名。producer 先将五个源码/头文件 materialize 为 canonical LF，再编译并把三项纳入 candidate inventory/manifest/closure；不能从 `tmp/flash-compositor` 拷贝开发产物充当独立 builder 输出。源码归 artifact，构建脚本归 recipe，光照/调度 JSON 与探针归 policy；仍执行既有双故障域与 promotion。开发探针输出不构成正式票。
