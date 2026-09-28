@@ -15,6 +15,24 @@ jobs:
     timeout-minutes: 30
     steps:
       - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7
+        with:
+          filter: blob:none
+          sparse-checkout-cone-mode: false
+          sparse-checkout: |
+            /.github/workflows/issue122-linux-diagnostic.yml
+            /launcher/perf/package.json
+            /launcher/perf/package-lock.json
+            /launcher/web/assets/stage-diorama/base-gate/vendor/
+            /launcher/web/assets/stage-diorama/blackiron-hq/vendor/postprocessing/
+            /launcher/web/assets/stage-diorama/fallen-city/city.glb
+            /launcher/web/assets/stage-diorama/fallen-city/selection.glb
+            /launcher/web/modules/stage-select/stage-select-fallen-data.js
+            /launcher/web/modules/stage-select/stage-select-fallen-scene.js
+            /launcher/web/modules/stage-select/stage-select-geometry-chunks.js
+            /launcher/web/modules/stage-select/stage-select-diorama-camera.js
+            /launcher/web/modules/stage-select/dev/issue122-index-fixture.html
+            /tools/issue122/
+            /tools/lib/stage-select-dev-server.js
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
