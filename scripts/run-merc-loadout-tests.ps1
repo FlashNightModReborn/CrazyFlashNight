@@ -169,17 +169,48 @@ if ($mercLibrarySource -notmatch 'merc\[19\]\.性格\s*=\s*性格配置') {
     throw 'buildMercData must write the normalized personality override into merc[19].性格.'
 }
 if ($mercLibrarySource -notmatch '_dialoguesByName\[raw\.name\]\s*=\s*对话配置') {
-    throw 'buildMercData must index authored dialogues by merc name; 待雇 NPC 的 [19] 已被深拷贝抹平。'
+    throw 'buildMercData must index authored dialogues by merc name.'
 }
 
-# 指定对话在世界内 spawn 上只能靠名字索引取用：createMercData 的 _root.深拷贝数组
-# 只按数字下标递归，merc[19] 这类具名键对象会被拷成空数组。门住取用点，避免有人
-# "顺手统一"回 mercData[19].对话 后配置静默失效。
+# 指定对话的取用点：仍走名字索引。它与副本上的 [19].对话 等价（createMercData 现在补独立拷贝），
+# 收口成一条通道要同时改 MercDialogueTest 的门数，属独立清理，不在本轮范围。
 $authoredLookup = $spawnerSource.IndexOf('MercLibrary.dialoguesByName(mercData[1])')
 $personalityDraw = $spawnerSource.IndexOf('if (pool != null && mc.personality != null)')
 if ($authoredLookup -lt 0 -or $personalityDraw -le $authoredLookup -or
     $spawnerSource -notmatch 'mc\.默认对话 = MercLibrary\.buildDialogueGroups\(authored, mercData\[1\], mc\)') {
     throw 'createMercEntity must resolve authored dialogues by name and take priority over the personality draw.'
+}
+
+# ─── 世界副本元数据（mercenaries_README.md「已知边界：世界副本的元数据与池流转」）───
+# _root.深拷贝数组 只按数字下标递归，merc[19] 这类具名键对象会被拷成空数组，authored
+# 被动/性格/装备锁定/对话 在世界雇下的单位上静默丢失。createMercData 必须显式补一份
+# 属于本副本的拷贝；且必须是新建对象——共享引用会让运行期写入的 装备托管 回染库记录，
+# 之后同一条库记录刷出的每个 NPC、雇下的每个佣兵都携带同一份托管物品。
+if ($spawnerSource -notmatch 'public\s+static\s+function\s+copyMercMeta\s*\(') {
+    throw 'MercSpawner must expose copyMercMeta for world-copy metadata.'
+}
+$createStart = $spawnerSource.IndexOf('public static function createMercData(')
+$createEnd = $spawnerSource.IndexOf('public static function createMercEntity(', $createStart)
+if ($createStart -lt 0 -or $createEnd -le $createStart) {
+    throw 'MercSpawner createMercData section is missing or malformed.'
+}
+$createSection = $spawnerSource.Substring($createStart, $createEnd - $createStart)
+if ($createSection -notmatch 'instance\[19\] = copyMercMeta\(source\[19\]\);' -or
+    $createSection -notmatch 'if \(source != null\)') {
+    throw 'createMercData must replace the flattened [19] with an independent copy on the non-hybrid branch.'
+}
+if ($createSection -match 'instance\[19\] = _root\.可雇佣兵|instance\[19\] = source\[19\]') {
+    throw 'World copies must not share the library 记录 的 [19]: 装备托管 会写回库记录并扩散给后续副本。'
+}
+# 补 [19] 会让 是否杂交 重新可读，进而"解雇回池 / 雇下移池"被顺带激活；回池塞的是 [2] 已被
+# createMercData 改写的副本，会造成池内 id 拼接膨胀与重复雇佣。两处池流转都必须被 世界副本 门挡住。
+if ($removeSection -notmatch 'var poolFlow:Boolean = \(meta != null && meta\.世界副本 !== true\);' -or
+    $removeSection -notmatch 'if \(poolFlow && meta\.是否杂交 == false\)' -or
+    $removeSection -notmatch 'if \(poolFlow && meta\.隐藏\)') {
+    throw 'removeMerc must gate both pool push-backs (可见池 与 隐藏池) on the 世界副本 marker.'
+}
+if ($mercPanelSource -notmatch 'merc\[19\] && merc\[19\]\.世界副本 !== true && merc\[19\]\.是否杂交 == false') {
+    throw 'handleWorldHire must keep world copies out of the recruitable pool removal.'
 }
 
 # 战斗侧接线在 publish 注入的 逻辑 文件里，不在本 suite 的运行闭包内，故用源码门钉住

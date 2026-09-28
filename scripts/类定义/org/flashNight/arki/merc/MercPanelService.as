@@ -1143,8 +1143,11 @@ class org.flashNight.arki.merc.MercPanelService {
             if (merc[11] == "角斗高手项链") merc[11] = "战斗专家军牌";
             else if (merc[11] == "角斗王者项链") merc[11] = "战斗狂人军牌";
 
-            // 从可雇佣兵池移除（复刻 雇佣佣兵:217-232）
-            if (merc[19] && merc[19].是否杂交 == false) {
+            // 从可雇佣兵池移除（复刻 雇佣佣兵:217-232）。门控理由与 MercSpawner.removeMerc
+            // 的 世界副本 判定一致：世界入口拿到的是 createMercData 的副本，其库记录本来还在池里，
+            // 且副本 [2] 已被改写，spliceFromPool 按 [2] 匹配也永不命中。只有直接持有库记录的
+            // 调用方（若未来出现）才需要真正移池。
+            if (merc[19] && merc[19].世界副本 !== true && merc[19].是否杂交 == false) {
                 spliceFromPool(_root.可雇佣兵, merc);
                 if (merc[19].隐藏) spliceFromPool(_root.隐藏的可雇佣兵, merc);
             }

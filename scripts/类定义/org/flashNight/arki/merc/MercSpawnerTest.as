@@ -3,7 +3,8 @@
 /**
  * MercSpawner.removeMerc 权威 mercId 删除回归（native-interaction cleanup 2026-09-12）。
  * 场景单位只按 用户ID == mercId 删除；旧 _root.菜单MC对应名 间接路径已退役。
- * 配套验证 custody 拒绝、同伴数据/出战标志同下标压缩、回池 InsertionSort 升序。
+ * 配套验证 custody 拒绝、同伴数据/出战标志同下标压缩、回池 InsertionSort 升序，
+ * 以及世界副本元数据独立拷贝（copyMercMeta）与 世界副本 的池流转门控。
  */
 class org.flashNight.arki.merc.MercSpawnerTest {
     private static var passed:Number = 0;
@@ -18,6 +19,8 @@ class org.flashNight.arki.merc.MercSpawnerTest {
         testPoolResortAndHiddenRouting();
         testCustodyRefusalZeroWrite();
         testNotFoundIsNoop();
+        testWorldCopyOwnsItsMetadata();
+        testWorldCopyDoesNotFlowIntoPools();
         trace("MercSpawnerTest Tests Passed: " + passed);
         trace("MercSpawnerTest Tests Failed: " + failed);
         trace("=== MercSpawnerTest end ===");
@@ -223,6 +226,71 @@ class org.flashNight.arki.merc.MercSpawnerTest {
             check(_root.同伴数 == 1 && _root.同伴数据.length == 1
                     && _root.可雇佣兵.length == 0 && unit.removeCount == 0,
                 "未命中零写入");
+        } finally {
+            restoreRoot(s);
+        }
+    }
+
+    /**
+     * 世界副本元数据：内容与库记录等值，但对象全部新建。共享引用会让运行期写入的
+     * merc[19].装备托管 回染库记录，之后同一条库记录刷出的每个 NPC、雇下的每个佣兵
+     * 都携带同一份托管物品。
+     */
+    private static function testWorldCopyOwnsItsMetadata():Void {
+        var src:Object = {
+            是否杂交: false,
+            价格倍率: 5,
+            被动技能: {升龙拳: {技能名: "升龙拳", 等级: 10, 启用: true}},
+            性格: {勇气: 0.61, 技术: 1},
+            对话: [{文本: "虎妙台词", 表情: "微笑"}]
+        };
+        var copy:Object = MercSpawner.copyMercMeta(src);
+
+        check(copy !== src && copy.世界副本 === true,
+            "世界副本 拿到独立元数据对象并带 世界副本 标记");
+        check(copy.是否杂交 === false && copy.价格倍率 == 5,
+            "标量键逐键保留");
+        check(copy.被动技能 !== src.被动技能 && copy.被动技能.升龙拳 !== src.被动技能.升龙拳
+                && copy.被动技能.升龙拳.技能名 == "升龙拳" && copy.被动技能.升龙拳.等级 == 10,
+            "嵌套被动技能是新建对象且内容等值");
+        check(copy.性格 !== src.性格 && copy.性格.勇气 == 0.61 && copy.性格.技术 == 1,
+            "性格 嵌套对象独立，六维值保留");
+        check(copy.对话 !== src.对话 && copy.对话.length == 1 && copy.对话[0] !== src.对话[0]
+                && copy.对话[0].文本 == "虎妙台词" && copy.对话[0].表情 == "微笑",
+            "对话数组与每条台词对象都是新建的（洗牌只作用于副本）");
+
+        copy.装备托管 = {version: 1, loadoutRevision: 1, slots: {}};
+        copy.对话[0].文本 = "改过的台词";
+        check(src.装备托管 == undefined && src.对话[0].文本 == "虎妙台词",
+            "副本写托管/改台词都不回染库记录");
+    }
+
+    /**
+     * 池流转门控：世界副本解雇后既不进可见池也不进隐藏池（它的库记录本来就在池里，
+     * 回池只会塞一份 [2] 已被 createMercData 改写的重复项）；无标记的库记录照旧回池。
+     */
+    private static function testWorldCopyDoesNotFlowIntoPools():Void {
+        var s:Object = saveRoot();
+        try {
+            var worldCopy:Array = merc(52, "5652虎妙1234",
+                MercSpawner.copyMercMeta({是否杂交: false, 隐藏: true, 价格倍率: 5}));
+            var libraryRecord:Array = merc(30, "lib1", {是否杂交: false});
+            _root.同伴数据 = [worldCopy, libraryRecord];
+            _root.佣兵是否出战信息 = [1, 1];
+            _root.佣兵个数限制 = 2;
+            _root.同伴数 = 2;
+            _root.可雇佣兵 = [];
+            _root.隐藏的可雇佣兵 = [];
+            _root.gameworld = {};
+            _root.菜单MC对应名 = undefined;
+
+            MercSpawner.removeMerc("5652虎妙1234");
+            check(_root.可雇佣兵.length == 0 && _root.隐藏的可雇佣兵.length == 0,
+                "世界副本解雇后不进任何池（含隐藏分支）");
+
+            MercSpawner.removeMerc("lib1");
+            check(_root.可雇佣兵.length == 1 && _root.可雇佣兵[0] === libraryRecord,
+                "无标记的库记录照旧回池，门控只挡世界副本");
         } finally {
             restoreRoot(s);
         }

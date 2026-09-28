@@ -39,12 +39,16 @@ class org.flashNight.arki.merc.MercSpawner {
             return {success:false, error:"custody_not_empty"};
         }
         var meta:Object = _root.同伴数据[idx][19];
+        // 池流转门控：世界副本（createMercData.copyMercMeta 打的标记）不回池——它的库记录本来
+        // 就还在 可雇佣兵 里，回池只会多塞一份 [2] 已被改写、可反复刷出的重复项。
+        // 面板雇下的记录是库记录本身，没有该标记，照旧回池。
+        var poolFlow:Boolean = (meta != null && meta.世界副本 !== true);
         var pushedBack:Boolean = false;
-        if (meta && meta.是否杂交 == false) {
+        if (poolFlow && meta.是否杂交 == false) {
             _root.可雇佣兵.push(_root.同伴数据[idx]);
             pushedBack = true;
         }
-        if (meta && meta.隐藏) {
+        if (poolFlow && meta.隐藏) {
             _root.隐藏的可雇佣兵.push(_root.同伴数据[idx]);
         }
         if (pushedBack) {
@@ -277,6 +281,7 @@ class org.flashNight.arki.merc.MercSpawner {
      * 创建佣兵数据（含杂交概率应用）。
      * 杂交分支由 hybridize 返回新副本；非杂交分支必须 deep-clone，
      * 否则下面改写 instance[2] 会污染 _root.可雇佣兵 源记录的 id（重复 spawn 同索引会拼接膨胀）。
+     * 非杂交分支另外要补 [19]，原因见 copyMercMeta。
      */
     public static function createMercData(n:Number, hybridChance:Number) {
         if (_root.isEasyMode() != true) {
@@ -287,13 +292,59 @@ class org.flashNight.arki.merc.MercSpawner {
         if (LinearCongruentialEngine.instance.successRate(hybridChance)) {
             instance = MercHybridizer.hybridize(n, hybridChance, true);
         } else {
-            instance = _root.深拷贝数组(_root.可雇佣兵[n]);
+            var source = _root.可雇佣兵[n];
+            instance = _root.深拷贝数组(source);
+            // [19] 是具名键对象，深拷贝数组 只按数字下标递归，会把它拷成空数组 → authored
+            // 被动/性格/装备锁定 在世界雇下的单位上整体丢失。显式补一份属于本副本的拷贝。
+            // 只在库记录真的存在时补：越界索引下 instance[1] 检查会让本函数返回 null。
+            if (source != null) {
+                instance[19] = copyMercMeta(source[19]);
+            }
         }
         if (instance == undefined || instance[1] + "" == "undefined") {
             return null;
         }
         instance[2] = instance[2].toString() + instance[1] + instance[0].toString() + _root.随机整数(0, 9999).toString();
         return instance;
+    }
+
+    /**
+     * 世界副本的元数据拷贝：逐键深拷源记录，并打上 世界副本 标记。
+     *
+     * 必须是新对象而不是 `instance[19] = 源[19]`：装备托管在运行期写 `merc[19].装备托管`
+     * （MercLoadoutService.CUSTODY_KEY），共享引用会把玩家交付给这个场景单位的物品写回库记录，
+     * 之后同一条库记录刷出的每个 NPC、雇下的每个佣兵都携带同一份托管。
+     *
+     * 标记供池流转门控用（本文件 removeMerc 与 MercPanelService.handleWorldHire）：世界副本的
+     * 库记录从未离开 可雇佣兵，回池只会塞进一份 [2] 已被上面改写的重复项。
+     *
+     * meta 恒非空（MercLibrary.buildMercData 无条件写 {是否杂交:false}），且值全部来自
+     * LiteJSON 解析出的纯数据、无循环引用，故这里不做 seen 追踪。
+     */
+    public static function copyMercMeta(meta:Object):Object {
+        var out:Object = copyPlainData(meta);
+        out.世界副本 = true;
+        return out;
+    }
+
+    private static function copyPlainData(v) {
+        if (v instanceof Array) {
+            var arr:Array = [];
+            for (var i:Number = 0; i < v.length; i++) {
+                arr[i] = copyPlainData(v[i]);
+            }
+            return arr;
+        }
+        if (typeof v == "object" && v != null) {
+            var obj:Object = {};
+            for (var key:String in v) {
+                if (v.hasOwnProperty(key)) {
+                    obj[key] = copyPlainData(v[key]);
+                }
+            }
+            return obj;
+        }
+        return v;
     }
 
     public static function createMercEntity(mercData:Array, X:Number, Y:Number):MovieClip {
@@ -335,10 +386,9 @@ class org.flashNight.arki.merc.MercSpawner {
         // 提前生成人格向量（幂等，初始化玩家模板中的二次调用会跳过已生成的）
         _root.配置人形怪AI(mc);
         // 数据侧性格覆写：NPC 身上只有 佣兵数据 没有 佣兵参数，故在此显式合并。
-        // ⚠ 本函数的 mercData 一律出自 createMercData 的 _root.深拷贝数组，而那个工具只按
-        // 数字下标递归，[19] 这类具名键对象会被拷成空数组 → 世界内 spawn 上这条目前是空转。
-        // 保留它是为了让持有库记录（[19] 完整）的调用方与雇佣后的 佣兵参数 通道同语义；
-        // 待雇 NPC 的指定对话因此不读 [19]，改走 MercLibrary.dialoguesByName 的名字索引。
+        // 待雇 NPC 虽然不是战斗单位（UnitAIInitializer 给它的 佣兵数据 分支挂 "Mecenary" 非战 AI），
+        // 但 性格 决定它没配指定对话时抽哪几句随机台词，所以这一条对木偶阶段就有可见效果。
+        // mercData[19] 由 createMercData 的 copyMercMeta 独立补拷，改动本副本不影响库记录。
         if (MercLibrary.mergePersonalityTraits(mc.personality, mercData[19].性格)) {
             _root.计算AI参数(mc.personality);
         }

@@ -34,9 +34,9 @@ class org.flashNight.arki.merc.MercLibrary {
     private static var _bundlePending:Array = [];
     private static var _bundle:Object;
 
-    // mercenaries.json dialogues 的名字索引。待雇 NPC 不能读实例自带的 [19]：
-    // createMercData 用 _root.深拷贝数组 复制库记录，而那个工具只按数字下标递归，
-    // merc[19] 这类具名键对象会被拷成空数组。见 buildDialogueGroups 的取用点。
+    // mercenaries.json dialogues 的名字索引。世界副本的 [19] 现在由 MercSpawner.copyMercMeta
+    // 补独立拷贝，副本上也读得到 对话，所以本索引与 [19].对话 等价；把两条通道收成一条要同步改
+    // MercDialogueTest 的门数，留作独立清理。见 buildDialogueGroups 的取用点。
     private static var _dialoguesByName:Object = {};
 
     public static function get bundle():Object {
@@ -234,7 +234,7 @@ class org.flashNight.arki.merc.MercLibrary {
         return out.length > 0 ? out : undefined;
     }
 
-    /** 按库记录名取指定对话；未配置返回 undefined。见 _dialoguesByName 的深拷贝说明。 */
+    /** 按库记录名取指定对话；未配置返回 undefined。与副本 [19].对话 的关系见 _dialoguesByName。 */
     public static function dialoguesByName(mercName:String):Array {
         return _dialoguesByName[mercName];
     }
