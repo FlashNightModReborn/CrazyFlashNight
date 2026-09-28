@@ -50,6 +50,52 @@
         var units = hand === 'hour' ? delta * 2 : delta / 6;
         return wrap(hand === 'hour' ? start + Math.round(units / step) * step : Math.round((start + units) / step) * step);
     }
+    // 宽容解析：6 / 630 / 6:3 / 18：30 / +8h / +90m / +1:30；无法解析返回 null。
+    function parseTimeText(text, now) {
+        var value = String(text == null ? '' : text).trim().replace(/[：．。]/g, ':').replace(/＋/g, '+').replace(/\./g, ':');
+        if (!value) return null;
+        var relative = /^\+(\d{1,3})(?:[:hH时](\d{1,2}))?\s*(h|H|小时|m|分钟)?$/.exec(value);
+        if (relative) {
+            var amount = Number(relative[1]), rest = Number(relative[2] || 0), unit = relative[3] || '';
+            if (rest > 59) return null;
+            if (unit === 'm' || unit === '分钟') return wrap(now + amount);
+            if (rest || /[:hH时]/.test(value) || unit === 'h' || unit === '小时') return wrap(now + amount * 60 + rest);
+            return wrap(now + amount * 60);
+        }
+        var clock = /^(\d{1,2}):(\d{1,2})$/.exec(value);
+        if (clock) {
+            if (Number(clock[1]) > 23 || Number(clock[2]) > 59) return null;
+            return Number(clock[1]) * 60 + Number(clock[2]);
+        }
+        if (/^\d{1,2}$/.test(value)) return Number(value) > 23 ? null : Number(value) * 60;
+        if (/^\d{3,4}$/.test(value)) {
+            var hour = Number(value.slice(0, -2)), minutePart = Number(value.slice(-2));
+            return hour > 23 || minutePart > 59 ? null : hour * 60 + minutePart;
+        }
+        return null;
+    }
+    // 默认草稿：优先上次设定，否则当前时刻之后的下一个清晨/黄昏。
+    function defaultDraft(now, last) {
+        if (minute(last)) return last;
+        var fixed = [360, 1140];
+        for (var i = 0; i < fixed.length; i++) if (fixed[i] > now) return fixed[i];
+        return 360;
+    }
+    function sleepDuration(now, target) { return wrap(target - now); }
+    function formatDuration(value) {
+        var hours = Math.floor(value / 60), rest = value % 60;
+        if (hours && rest) return hours + ' 小时 ' + rest + ' 分';
+        return hours ? hours + ' 小时' : rest + ' 分钟';
+    }
+    // 快捷筹码：固定清晨/黄昏、相对 +8 小时，以及去重后的上次设定。
+    function computeChips(now, last) {
+        var chips = [{id:'dawn', label:'清晨', minutes:360}, {id:'dusk', label:'黄昏', minutes:1140},
+            {id:'plus8', label:'+8 小时', minutes:wrap(now + 480)}];
+        if (minute(last) && chips.every(function(chip) { return chip.minutes !== last; }))
+            chips.push({id:'last', label:'上次', minutes:last});
+        chips.forEach(function(chip) { chip.time = format(chip.minutes); });
+        return chips;
+    }
     function normalizeState(value) {
         if (!value || value.v !== 1 || !/^sleep\.[A-Za-z0-9._~-]{1,122}$/.test(value.token || '')
                 || !/^(snapshot|commit|query)$/.test(value.operation || '')
@@ -94,5 +140,6 @@
     RequestMux.prototype.destroy = function() { this._mux.destroy(); };
     return {minute:minute, wrap:wrap, format:format, angles:angles, angleDelta:angleDelta, dragMinutes:dragMinutes, dragPreview:dragPreview,
         visualPhase:visualPhase, phaseAtDay:phaseAtDay, followMood:followMood, mix:mix, moodColor:moodColor, contrast:contrast, readable:readable,
+        parseTimeText:parseTimeText, defaultDraft:defaultDraft, sleepDuration:sleepDuration, formatDuration:formatDuration, computeChips:computeChips,
         normalizeState:normalizeState, RequestMux:RequestMux};
 });

@@ -35,62 +35,114 @@
 .sleep-dial { width:440px; height:412px; flex:none; touch-action:none; user-select:none; overflow:visible; cursor:grab; }
 .is-dragging .sleep-dial { cursor:grabbing; }
 .sleep-watch-help { position:absolute; bottom:8px; margin:0; padding:5px 12px; background:var(--sleep-bg); color:var(--sleep-muted); font-size:12px; pointer-events:none; }
-.sleep-dial-numbers { fill:var(--sleep-dial-ink); font:28px Georgia,"Times New Roman",serif; text-anchor:middle; dominant-baseline:middle; pointer-events:none; }
-.sleep-tick { stroke:var(--sleep-tick); stroke-width:1; pointer-events:none; }
-.sleep-tick.major { stroke:var(--sleep-major-tick); stroke-width:2; }
+.sleep-dial-numbers { fill:var(--sleep-dial-color); font:28px Georgia,"Times New Roman",serif; text-anchor:middle; dominant-baseline:middle; pointer-events:none; }
+.sleep-tick { stroke:var(--sleep-dial-color); stroke-width:1; pointer-events:none; }
+.sleep-tick.major { stroke:var(--sleep-dial-color); stroke-width:2; }
 .sleep-face-art { pointer-events:none; }
-.sleep-starwork { fill:none; stroke:var(--sleep-dial-color); stroke-width:.6; opacity:.2; pointer-events:none; }
-.sleep-sun { opacity:var(--sleep-sun-opacity); }
-.sleep-moon { opacity:var(--sleep-moon-opacity); }
+.sleep-skyring { pointer-events:none; }
+/* 天穹盘仅在草稿间迁移时平滑旋转；拖动与减少动态偏好下直接跟随。 */
+.sleep-panel.sky-ready:not(.is-dragging) .sleep-sky-disc { transition:transform var(--wb-motion-structural) var(--wb-ease-standard); }
+.sleep-sky-day { fill:var(--sleep-day-enamel-lower); }
+.sleep-sky-disc-day { fill:var(--sleep-day-enamel-lower); }
+.sleep-sky-disc-night { fill:var(--sleep-night-bg); }
+.sleep-disc-stars { fill:var(--sleep-needle-light); opacity:.9; }
+.sleep-arc-bed { stroke:var(--sleep-night-rim); stroke-width:19; stroke-linecap:round; opacity:.6; pointer-events:none; }
+.sleep-arc { stroke:var(--sleep-night-brass); stroke-width:13; stroke-linecap:round; opacity:.95; pointer-events:none; }
+.sleep-now-dot { fill:var(--sleep-needle-dark); stroke:var(--sleep-day-enamel-upper); stroke-width:1.5; pointer-events:none; }
+.sleep-face-small { fill:var(--sleep-face-caption); text-anchor:middle; font:10px Georgia,serif; letter-spacing:4px; pointer-events:none; }
 #sleep-enamel stop:first-child { stop-color:var(--sleep-enamel-upper); }
 #sleep-enamel stop:last-child { stop-color:var(--sleep-enamel-lower); }
-.sleep-dial-numbers { fill:var(--sleep-dial-color); }
-.sleep-tick, .sleep-tick.major { stroke:var(--sleep-dial-color); }
 #sleep-hand-metal stop:first-child, #sleep-hand-metal stop:last-child { stop-color:var(--sleep-needle-color); }
 #sleep-hand-metal stop:nth-child(2) { stop-color:var(--sleep-needle-glint); }
 .sleep-panel, .sleep-controls, .sleep-panel input, .sleep-header, .sleep-now strong, .sleep-eyebrow, .sleep-now,
-.sleep-footer, .sleep-footer p, .sleep-time-label, .sleep-hand-choice span, .sleep-status, .sleep-watch-help {
+.sleep-footer, .sleep-footer p, .sleep-typein, .sleep-status, .sleep-watch-help {
     transition:color var(--sleep-ink-duration) var(--wb-ease-standard);
 }
-/* 底色、珐琅和日月共用一条逐帧曲线，避免独立 CSS 动画互相追赶、叠脸；仅墨色保留柔和换向。 */
+/* 底色、珐琅和刻度共用一条逐帧曲线，避免独立 CSS 动画互相追赶；仅墨色保留柔和换向。 */
 #sleep-hand-metal stop, .sleep-dial-numbers, .sleep-tick {
     transition:stop-color var(--sleep-ink-duration) var(--wb-ease-standard), fill var(--sleep-ink-duration) var(--wb-ease-standard), stroke var(--sleep-ink-duration) var(--wb-ease-standard);
 }
-.sleep-face-label { fill:var(--sleep-face-label); text-anchor:middle; font-size:11px; letter-spacing:2px; pointer-events:none; }
-.sleep-face-small { fill:var(--sleep-face-caption); text-anchor:middle; font:10px Georgia,serif; letter-spacing:4px; pointer-events:none; }
-.sleep-hand { cursor:grab; outline:none; }
-.sleep-hand-hit { stroke:transparent; stroke-width:24; fill:none; pointer-events:stroke; }
-.sleep-hand.selected > path:not(.sleep-hand-hit) { stroke:var(--sleep-needle-selected); }
-.sleep-hand:focus-visible .sleep-hand-hit { stroke:var(--sleep-needle-focus); stroke-opacity:.16; }
-.sleep-controls { padding:14px 32px 10px; display:flex; flex-direction:column; min-width:0; }
-.sleep-eyebrow { color:var(--sleep-brass); font-size:13px; letter-spacing:2px; margin:0 0 10px; }
-.sleep-time-label { color:var(--sleep-muted); font-size:12px; }
-.sleep-readout { display:flex; align-items:center; gap:18px; margin:0 0 8px; }
-.sleep-readout input {
-    width:224px; height:58px; padding:0 3px; background:transparent; border:0; border-bottom:1px solid var(--sleep-line);
-    font:54px/1 Consolas,monospace; letter-spacing:1px; font-variant-numeric:tabular-nums;
+.sleep-hand { pointer-events:none; transform-box:view-box; transform-origin:240px 225px; }
+.sleep-sky-disc { transform-box:view-box; transform-origin:240px 225px; }
+/* 入睡旅程：指针与天穹沿入睡方向快进，沙漏浮现；幕布延迟合拢，先看时间流逝。 */
+.is-journey .sleep-hand, .is-journey .sleep-sky-disc { transition:transform var(--sleep-mood-duration) var(--wb-ease-standard); }
+.sleep-hg { position:absolute; bottom:30px; width:72px; opacity:0; transform:translateY(12px) rotate(0deg); pointer-events:none;
+    transition:opacity var(--wb-motion-structural) var(--wb-ease-standard), transform var(--sleep-mood-duration) var(--wb-ease-standard);
+    filter:drop-shadow(0 3px 6px var(--sleep-night-rim)); }
+.sleep-hg-day { left:16px; }
+.sleep-hg-night { right:16px; }
+.is-journey .sleep-hg { opacity:.94; }
+/* 入睡旅程中沙漏整体翻转：昼顺夜逆，与天空快进同程。 */
+.is-journey .sleep-hg-day { transform:translateY(0) rotate(180deg); }
+.is-journey .sleep-hg-night { transform:translateY(0) rotate(-180deg); }
+.sleep-controls { padding:10px 32px 6px; display:flex; flex-direction:column; min-width:0; }
+.sleep-eyebrow { display:flex; align-items:center; gap:12px; color:var(--sleep-brass); font-size:13px; letter-spacing:2px; margin:0 0 8px; }
+.sleep-eyebrow::after { content:""; flex:1; border-top:1px solid var(--sleep-line); opacity:.7; }
+/* 分段步进器：蚀刻铭牌包住 HH:MM，箭头退为纯黄铜刻痕，手柄走同一焦点模型。 */
+.sleep-stepper {
+    display:flex; align-items:center; justify-content:center; gap:14px; margin-bottom:10px; padding:6px 18px;
+    background:linear-gradient(color-mix(in srgb,var(--sleep-enamel-upper) 22%,transparent), color-mix(in srgb,var(--sleep-enamel-lower) 22%,transparent)),
+        color-mix(in srgb,var(--sleep-surface) 55%,transparent);
+    border:1px solid var(--sleep-line); border-radius:10px;
+    box-shadow:inset 0 0 0 3px var(--sleep-bg), inset 0 0 0 4px var(--sleep-line), inset 0 8px 18px -12px var(--sleep-night-rim);
 }
-.sleep-readout input:disabled { opacity:1; }
-.sleep-readout button { width:65px; border-radius:20px; color:var(--sleep-control-brass,var(--sleep-brass)); font-size:13px; }
-.sleep-hand-choice { display:flex; align-items:center; gap:7px; margin-bottom:4px; }
-.sleep-hand-choice button { min-height:30px; width:55px; font-size:12px; background:transparent; }
-.sleep-hand-choice button[aria-pressed="true"] { color:var(--sleep-brass); border-color:var(--sleep-brass); }
-.sleep-hand-choice span { margin-left:auto; font-size:11px; color:var(--sleep-muted); }
-.sleep-adjust { display:grid; grid-template-columns:repeat(4,1fr); gap:7px; margin-bottom:8px; }
-.sleep-adjust button { padding:5px; font-size:12px; }
-.sleep-presets { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
-.sleep-presets button { display:flex; align-items:center; gap:12px; height:67px; padding:8px 14px; text-align:left;
-    position:relative; border-radius:0; border:8px solid transparent; border-image:url("../assets/sleep/day-card.svg") 100 / 8px / 0 stretch; }
-.sleep-presets button[data-preset="360"] { background:var(--sleep-day-paper); color:color-mix(in srgb,var(--sleep-day-gold) 80%,var(--sleep-needle-dark)); }
-.sleep-presets button[data-preset="1140"] { background:var(--sleep-night-paper); color:var(--sleep-night-gold); border-image-source:url("../assets/sleep/night-card.svg"); }
-.sleep-presets button[aria-pressed="true"] { border-color:var(--sleep-brass); }
-.sleep-presets button[aria-pressed="true"]::after { content:"✓"; position:absolute; right:3px; top:0; font-size:12px; }
-.sleep-panel .sleep-presets button[data-preset="360"]:hover:not(:disabled) { background:var(--sleep-day-hover); }
-.sleep-panel .sleep-presets button[data-preset="1140"]:hover:not(:disabled) { background:var(--sleep-night-hover); }
-.sleep-preset-symbol { width:40px; height:40px; object-fit:contain; }
-.sleep-presets button > span:last-child { font:900 17px var(--cf7-font-web-workbench-title,serif); color:inherit; }
-.sleep-presets strong { display:block; margin-top:2px; font:15px Consolas,monospace; color:inherit; }
-.sleep-status { color:var(--sleep-muted); font-size:12px; line-height:1.5; margin:10px 0 0; }
+.sleep-seg-col { display:grid; grid-template-rows:22px 60px 22px; justify-items:center; }
+.sleep-seg {
+    display:inline-flex; align-items:center; justify-content:center; min-width:96px; height:60px; border-radius:8px;
+    font:54px/1 Consolas,monospace; font-variant-numeric:tabular-nums; letter-spacing:1px; color:var(--sleep-ink);
+    border:1px solid transparent; cursor:ns-resize;
+}
+.sleep-seg:hover { border-color:var(--sleep-line); }
+.sleep-seg:focus-visible { border-color:var(--sleep-brass); background:var(--sleep-bg); outline-offset:0; }
+.sleep-seg[aria-disabled="true"] { cursor:default; color:var(--sleep-muted); }
+.sleep-seg.is-invalid { color:var(--wb-semantic-danger); }
+.sleep-seg-colon { font:44px/1 Consolas,monospace; color:var(--sleep-brass); padding-bottom:4px; }
+.sleep-panel .sleep-step {
+    min-height:0; height:22px; width:64px; padding:0; font-size:12px; line-height:1;
+    color:var(--sleep-control-brass,var(--sleep-brass)); background:transparent; border-color:transparent; border-radius:6px;
+    transition:color var(--wb-motion-micro) var(--wb-ease-standard), text-shadow var(--wb-motion-micro) var(--wb-ease-standard);
+}
+.sleep-panel .sleep-step:hover:not(:disabled) { background:transparent; border-color:transparent; text-shadow:0 0 8px var(--sleep-brass); }
+#sleep-halfday {
+    align-self:center; width:38px; height:38px; min-height:0; border-radius:50%; padding:0;
+    font-size:11px; letter-spacing:.5px; color:var(--sleep-control-brass,var(--sleep-brass));
+    background:radial-gradient(circle at 35% 30%, var(--sleep-surface), var(--sleep-bg));
+    border:1px solid var(--sleep-line); box-shadow:inset 0 0 0 2px var(--sleep-bg), inset 0 0 0 3px var(--sleep-line);
+}
+#sleep-halfday:hover:not(:disabled) { border-color:var(--sleep-brass); box-shadow:inset 0 0 0 2px var(--sleep-bg), inset 0 0 0 3px var(--sleep-brass); background:radial-gradient(circle at 35% 30%, var(--sleep-surface), var(--sleep-bg)); }
+/* 快捷筹码：四枚同制式卡片，清晨/黄昏保留原画纸底。 */
+.sleep-chips { display:grid; grid-template-columns:repeat(4,1fr); gap:8px; margin-bottom:8px; }
+.sleep-chips button {
+    display:flex; flex-direction:column; align-items:center; justify-content:center; gap:2px; min-height:58px; padding:6px 8px;
+    border-radius:6px; background:var(--sleep-surface);
+}
+.sleep-chips button[data-chip="dawn"] { background:var(--sleep-day-paper); color:color-mix(in srgb,var(--sleep-day-gold) 80%,var(--sleep-needle-dark)); border-radius:0;
+    border:6px solid transparent; border-image:url("../assets/sleep/day-card.svg") 100 / 6px / 0 stretch; }
+.sleep-chips button[data-chip="dusk"] { background:var(--sleep-night-paper); color:var(--sleep-night-gold); border-radius:0;
+    border:6px solid transparent; border-image:url("../assets/sleep/night-card.svg") 100 / 6px / 0 stretch; }
+.sleep-panel .sleep-chips button[data-chip="dawn"]:hover:not(:disabled) { background:var(--sleep-day-hover); }
+.sleep-panel .sleep-chips button[data-chip="dusk"]:hover:not(:disabled) { background:var(--sleep-night-hover); }
+.sleep-chips button[aria-pressed="true"] { border-color:var(--sleep-brass); box-shadow:inset 0 0 0 1px var(--sleep-brass); }
+.sleep-chip-symbol { width:26px; height:26px; object-fit:contain; padding:2px; border-radius:50%; box-shadow:0 0 0 1px color-mix(in srgb,currentColor 35%,transparent); }
+.sleep-chips button > span:last-child { font:900 13px var(--cf7-font-web-workbench-title,serif); color:inherit; letter-spacing:1px; }
+.sleep-chips strong { display:block; font:12px Consolas,monospace; font-weight:400; color:inherit; opacity:.85; }
+/* 微调：一条分段铜条，内部发丝分隔。 */
+.sleep-adjust { display:grid; grid-template-columns:repeat(4,1fr); margin-bottom:8px; border:1px solid var(--sleep-line); border-radius:6px; background:color-mix(in srgb,var(--sleep-surface) 40%,transparent); }
+.sleep-adjust button { padding:5px; font-size:12px; min-height:32px; background:transparent; border:0; border-radius:0; }
+.sleep-adjust button + button { border-left:1px solid var(--sleep-line); }
+.sleep-adjust button:first-child { border-radius:5px 0 0 5px; }
+.sleep-adjust button:last-child { border-radius:0 5px 5px 0; }
+.sleep-adjust button:hover:not(:disabled) { background:transparent; color:var(--sleep-brass); }
+.sleep-typein { display:flex; align-items:baseline; gap:10px; font-size:12px; color:var(--sleep-muted); letter-spacing:1px; }
+.sleep-typein input {
+    width:190px; height:34px; padding:0 6px; background:transparent; border:0; border-bottom:1px solid var(--sleep-line);
+    font:20px/1 Consolas,monospace; letter-spacing:1px; font-variant-numeric:tabular-nums;
+}
+.sleep-typein input:focus-visible { outline:none; border-bottom-color:var(--sleep-brass); box-shadow:0 1px 0 var(--sleep-brass); }
+.sleep-typein input:disabled { opacity:1; }
+.sleep-time-hint { color:var(--sleep-brass); font-size:12px; }
+.sleep-status { color:var(--sleep-muted); font-size:12px; line-height:1.5; margin:10px 0 0; padding-top:8px; border-top:1px solid var(--sleep-line); letter-spacing:.5px; }
+.sleep-status::before { content:"✦"; color:var(--sleep-brass); margin-right:6px; font-size:10px; }
 .sleep-error { color:var(--sleep-ink); border-left:2px solid var(--wb-semantic-danger); padding-left:8px; font-size:12px; line-height:1.5; margin:5px 0 0; }
 .sleep-footer { display:flex; align-items:center; padding:0 34px; gap:12px; border-top:1px solid var(--sleep-line); }
 .sleep-footer p { margin:0 auto 0 0; font-size:13px; color:var(--sleep-muted); }
@@ -99,6 +151,7 @@
 .sleep-panel .sleep-confirm { background:var(--sleep-primary-bg,var(--sleep-night-brass)); border-color:var(--sleep-primary-bg,var(--sleep-night-brass)); color:var(--sleep-primary-ink,var(--sleep-needle-dark)); min-width:190px; font-weight:600; }
 .sleep-panel .sleep-confirm:hover:not(:disabled) { background:var(--sleep-primary-bg,var(--sleep-night-brass)); box-shadow:var(--wb-inner-highlight); }
 .sleep-curtain { position:absolute; inset:0; z-index:5; background:var(--sleep-curtain); opacity:0; pointer-events:none; transition:opacity var(--wb-motion-structural) var(--wb-ease-standard); }
+.is-journey .sleep-curtain { transition-delay:calc(var(--sleep-mood-duration) * .7); }
 .is-asleep .sleep-curtain { opacity:1; pointer-events:auto; }
 @media (prefers-reduced-motion:reduce) {
     .sleep-panel, .sleep-panel *, .sleep-panel::before, .sleep-panel::after { transition:none; }
