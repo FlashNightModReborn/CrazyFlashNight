@@ -195,22 +195,86 @@ if ($createStart -lt 0 -or $createEnd -le $createStart) {
     throw 'MercSpawner createMercData section is missing or malformed.'
 }
 $createSection = $spawnerSource.Substring($createStart, $createEnd - $createStart)
-if ($createSection -notmatch 'instance\[19\] = copyMercMeta\(source\[19\]\);' -or
+if ($createSection -notmatch 'instance\[19\] = copyMercMeta\(source\[19\], source\[2\]\);' -or
     $createSection -notmatch 'if \(source != null\)') {
     throw 'createMercData must replace the flattened [19] with an independent copy on the non-hybrid branch.'
 }
 if ($createSection -match 'instance\[19\] = _root\.可雇佣兵|instance\[19\] = source\[19\]') {
     throw 'World copies must not share the library 记录 的 [19]: 装备托管 会写回库记录并扩散给后续副本。'
 }
-# 补 [19] 会让 是否杂交 重新可读，进而"解雇回池 / 雇下移池"被顺带激活；回池塞的是 [2] 已被
-# createMercData 改写的副本，会造成池内 id 拼接膨胀与重复雇佣。两处池流转都必须被 世界副本 门挡住。
-if ($removeSection -notmatch 'var poolFlow:Boolean = \(meta != null && meta\.世界副本 !== true\);' -or
-    $removeSection -notmatch 'if \(poolFlow && meta\.是否杂交 == false\)' -or
-    $removeSection -notmatch 'if \(poolFlow && meta\.隐藏\)') {
-    throw 'removeMerc must gate both pool push-backs (可见池 与 隐藏池) on the 世界副本 marker.'
+# ─── 世界副本的池流转：雇佣移池 / 解雇回池 / 开机去重共用 库记录id 这一个身份锚点 ───
+# 世界 NPC 持有的是 createMercData 的副本，副本自己的 [2] 带随机后缀、对不上池里任何记录，所以
+# 三段都只能用"改写前的库记录 id"对身份：雇佣按它 splice（否则雇过的人留在池里、能被反复刷出来
+# 重复雇佣），解雇先把 [2] 复位成它再回池（否则塞进一条永远匹配不到移池口径的重复项），开机按它
+# 去重（否则重启后同一个人又回到池里）。
+if ($spawnerSource -notmatch 'out\.世界副本 = true;' -or
+    $spawnerSource -notmatch 'out\.库记录id = libraryId;') {
+    throw 'copyMercMeta must mark 世界副本 and register the pre-rewrite 库记录id on every world copy.'
 }
-if ($mercPanelSource -notmatch 'merc\[19\] && merc\[19\]\.世界副本 !== true && merc\[19\]\.是否杂交 == false') {
-    throw 'handleWorldHire must keep world copies out of the recruitable pool removal.'
+if ($spawnerSource -notmatch 'public\s+static\s+function\s+prepareForPool\s*\(\s*record:Array\s*\)\s*:\s*Boolean') {
+    throw 'MercSpawner must expose prepareForPool as the single identity-restore point before push-back.'
+}
+$prepareStart = $spawnerSource.IndexOf('public static function prepareForPool(')
+$prepareEnd = $spawnerSource.IndexOf('private static function poolHasRecord(', $prepareStart)
+if ($prepareStart -lt 0 -or $prepareEnd -le $prepareStart) {
+    throw 'MercSpawner prepareForPool section is missing or malformed.'
+}
+$prepareSection = $spawnerSource.Substring($prepareStart, $prepareEnd - $prepareStart)
+if ($prepareSection -notmatch 'if \(meta\.世界副本 !== true\) \{' -or
+    $prepareSection -notmatch 'if \(meta\.库记录id == undefined\) \{') {
+    throw 'prepareForPool must pass non-copies through untouched and refuse to pool a copy whose 库记录id is unknown.'
+}
+if ($prepareSection -notmatch 'record\[2\] = meta\.库记录id;' -or
+    $prepareSection -notmatch 'delete meta\.世界副本;' -or
+    $prepareSection -notmatch 'delete meta\.库记录id;') {
+    throw 'prepareForPool must restore [2] then drop both copy keys, otherwise the returned record never matches the removal 口径.'
+}
+if ($removeSection -notmatch 'var poolFlow:Boolean = \(meta\.是否杂交 == false && prepareForPool\(record\)\);') {
+    throw 'removeMerc must gate pool flow on 是否杂交 first (hybrid children never flow) and identity restore second.'
+}
+if ($removeSection -notmatch 'if \(poolFlow && !poolHasRecord\(_root\.可雇佣兵, record\)\) \{' -or
+    $removeSection -notmatch 'if \(poolFlow && meta\.隐藏 && !poolHasRecord\(_root\.隐藏的可雇佣兵, record\)\) \{') {
+    throw 'Both pool push-backs must be deduped: one library record can be spawned as two NPCs and hired twice.'
+}
+if ($removeSection -match 'meta\.世界副本 !== true') {
+    throw 'removeMerc must not skip world copies again: they now flow back, but only after identity restoration.'
+}
+if ($mercPanelSource -notmatch 'var libraryId = \(hireMeta\.世界副本 === true\) \? hireMeta\.库记录id : merc\[2\];') {
+    throw 'handleWorldHire must remove the 库记录 by the copy 的 库记录id, falling back to [2] only for direct 库记录 holders.'
+}
+if ($mercPanelSource -notmatch 'spliceFromPool\(_root\.可雇佣兵, merc, libraryId\);' -or
+    $mercPanelSource -notmatch 'if \(hireMeta\.隐藏\) spliceFromPool\(_root\.隐藏的可雇佣兵, merc, libraryId\);' -or
+    $mercPanelSource -notmatch 'if \(removedFromPool\) MercSpawner\.invalidateIndexCache\(\);') {
+    throw 'handleWorldHire must splice both pools by libraryId and invalidate the spawn weight cache when it really removed one.'
+}
+if ($mercPanelSource -notmatch 'private static function spliceFromPool\(pool:Array, merc:Array, libraryId\):Boolean' -or
+    $mercPanelSource -notmatch 'if \(pool == undefined \|\| libraryId == undefined\) return false;') {
+    throw 'spliceFromPool must take an explicit libraryId, refuse an undefined one, and report whether it removed a record.'
+}
+if ($mercPanelSource -match 'spliceFromPool\(_root\.(可雇佣兵|隐藏的可雇佣兵), merc\);') {
+    throw 'spliceFromPool must not be called with the two-arg form: matching a world copy by its own rewritten [2] never hits the 库记录.'
+}
+# 雇佣列表那侧的 splice 早就存在，却从来没失效过刷新权重缓存：池短一条后 佣兵编号缓存.weights
+# 仍按旧长度 ready，pickRandomMercIndex 能返回越界索引 → createMercData 静默不刷，且 splice 点
+# 之后的权重整体错位一格。世界移池与解雇回池都失效，这里补齐同一个口径。
+$poolRecordMarker = '_root.可雇佣兵.push('
+if ($removeSection.IndexOf($poolRecordMarker) -lt $removeSection.IndexOf('poolHasRecord')) {
+    throw 'removeMerc must not push into 可雇佣兵 before the dedupe check.'
+}
+$hireSpliceAt = $mercPanelSource.IndexOf('pool.splice(poolIndex, 1);')
+$hireInvalidateAt = $mercPanelSource.IndexOf('MercSpawner.invalidateIndexCache();', $hireSpliceAt)
+if ($hireSpliceAt -lt 0 -or $hireInvalidateAt -le $hireSpliceAt -or
+    $hireInvalidateAt - $hireSpliceAt -gt 400) {
+    throw 'handleHire must invalidate the spawn weight cache right after its pool splice (no other write sits between them).'
+}
+$loadStart = $mercLibrarySource.IndexOf('public static function loadFromList(')
+$loadEnd = $mercLibrarySource.IndexOf('public static function buildMercData(', $loadStart)
+if ($loadStart -lt 0 -or $loadEnd -le $loadStart) {
+    throw 'MercLibrary loadFromList section is missing or malformed.'
+}
+$loadSection = $mercLibrarySource.Substring($loadStart, $loadEnd - $loadStart)
+if ($loadSection -notmatch 'seen\[companion\[19\]\.库记录id\] = companion\[1\];') {
+    throw 'loadFromList must dedupe the 库记录 a world-hired copy occupies by 库记录id, or a restart hands the same merc back.'
 }
 
 # ─── mercenaries.json nohybrid：杂交基底门 ───

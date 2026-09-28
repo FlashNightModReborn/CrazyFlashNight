@@ -431,6 +431,9 @@ class org.flashNight.arki.merc.MercPanelService {
 
             // 从可雇佣兵池移除
             pool.splice(poolIndex, 1);
+            // 同 mercWorldHire 的移池分支：池短了一条，按旧长度缓存的刷新权重必须重算，
+            // 否则 pickRandomMercIndex 能返回越界索引（createMercData 拿到 undefined 静默不刷）。
+            MercSpawner.invalidateIndexCache();
 
             // 写入选定槽位（targetSlot 在 [0,佣兵个数限制) 内，保证落在快照/进场读窗口内）
             _root.同伴数据[targetSlot] = merc;
@@ -1143,13 +1146,18 @@ class org.flashNight.arki.merc.MercPanelService {
             if (merc[11] == "角斗高手项链") merc[11] = "战斗专家军牌";
             else if (merc[11] == "角斗王者项链") merc[11] = "战斗狂人军牌";
 
-            // 从可雇佣兵池移除（复刻 雇佣佣兵:217-232）。门控理由与 MercSpawner.removeMerc
-            // 的 世界副本 判定一致：世界入口拿到的是 createMercData 的副本，其库记录本来还在池里，
-            // 且副本 [2] 已被改写，spliceFromPool 按 [2] 匹配也永不命中。只有直接持有库记录的
-            // 调用方（若未来出现）才需要真正移池。
-            if (merc[19] && merc[19].世界副本 !== true && merc[19].是否杂交 == false) {
-                spliceFromPool(_root.可雇佣兵, merc);
-                if (merc[19].隐藏) spliceFromPool(_root.隐藏的可雇佣兵, merc);
+            // 从可雇佣兵池移除（复刻 雇佣佣兵:217-232）。世界入口拿到的是 createMercData 的副本，
+            // 它的 [2] 已被改写，必须按副本登记的 库记录id 去移池里那条库记录；否则雇过的人仍留在
+            // 池里、能被反复刷出来重复雇佣。杂交体不消耗基底记录（是否杂交 为 true 即整段跳过）。
+            // 旧档副本没有 库记录id，libraryId 为空 → spliceFromPool 直接返回 false，行为同修复前。
+            var hireMeta:Object = merc[19];
+            if (hireMeta && hireMeta.是否杂交 == false) {
+                var libraryId = (hireMeta.世界副本 === true) ? hireMeta.库记录id : merc[2];
+                var removedFromPool:Boolean = spliceFromPool(_root.可雇佣兵, merc, libraryId);
+                if (hireMeta.隐藏) spliceFromPool(_root.隐藏的可雇佣兵, merc, libraryId);
+                // 池长度变了：门口/进场刷新用的加权缓存是按旧长度算的，不失效就能抽到越界索引
+                // （createMercData 拿到 undefined 后静默不刷），且 splice 点之后权重整体错位一格。
+                if (removedFromPool) MercSpawner.invalidateIndexCache();
             }
 
         } catch (worldHireError) {
@@ -1252,12 +1260,16 @@ class org.flashNight.arki.merc.MercPanelService {
         return ItemUtil.restorePlayerAssetSnapshot(snapshot.assets);
     }
 
-    // 可雇佣兵池移除：按 名字[1]+用户ID[2] 匹配（复刻 雇佣佣兵:218-220 / 225-227）
-    private static function spliceFromPool(pool:Array, merc:Array):Void {
-        if (pool == undefined) return;
+    // 可雇佣兵池移除：按 名字[1]+用户ID 匹配（复刻 雇佣佣兵:218-220 / 225-227）。
+    // libraryId 由调用方给定：世界 NPC 持有的是 createMercData 的副本，自己的 [2] 已被改写，
+    // 只有副本登记的 库记录id 能对回池里那条库记录；直接持有库记录的调用方传 merc[2]。
+    // 返回是否真的移除了一条——只有真移走了才需要失效刷新权重缓存。
+    private static function spliceFromPool(pool:Array, merc:Array, libraryId):Boolean {
+        if (pool == undefined || libraryId == undefined) return false;
         for (var i:Number = 0; i < pool.length; i++) {
-            if (pool[i][1] == merc[1] && pool[i][2] == merc[2]) { pool.splice(i, 1); return; }
+            if (pool[i][1] == merc[1] && pool[i][2] == libraryId) { pool.splice(i, 1); return true; }
         }
+        return false;
     }
 
     // ═══════════════════════════════════════════════════════════

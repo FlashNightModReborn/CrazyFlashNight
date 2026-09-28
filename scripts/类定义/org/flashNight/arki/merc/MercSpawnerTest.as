@@ -4,7 +4,7 @@
  * MercSpawner.removeMerc 权威 mercId 删除回归（native-interaction cleanup 2026-09-12）。
  * 场景单位只按 用户ID == mercId 删除；旧 _root.菜单MC对应名 间接路径已退役。
  * 配套验证 custody 拒绝、同伴数据/出战标志同下标压缩、回池 InsertionSort 升序，
- * 世界副本元数据独立拷贝（copyMercMeta）与 世界副本 的池流转门控，
+ * 世界副本元数据独立拷贝（copyMercMeta 带 库记录id）与解雇回池前的身份复位（prepareForPool），
  * 以及 mercenaries.json nohybrid 的杂交基底门（isHybridBaseLocked）。
  */
 class org.flashNight.arki.merc.MercSpawnerTest {
@@ -21,7 +21,7 @@ class org.flashNight.arki.merc.MercSpawnerTest {
         testCustodyRefusalZeroWrite();
         testNotFoundIsNoop();
         testWorldCopyOwnsItsMetadata();
-        testWorldCopyDoesNotFlowIntoPools();
+        testWorldCopyFlowsBackWithRestoredIdentity();
         testHybridBaseLock();
         trace("MercSpawnerTest Tests Passed: " + passed);
         trace("MercSpawnerTest Tests Failed: " + failed);
@@ -246,10 +246,12 @@ class org.flashNight.arki.merc.MercSpawnerTest {
             性格: {勇气: 0.61, 技术: 1},
             对话: [{文本: "虎妙台词", 表情: "微笑"}]
         };
-        var copy:Object = MercSpawner.copyMercMeta(src);
+        var copy:Object = MercSpawner.copyMercMeta(src, "5652");
 
-        check(copy !== src && copy.世界副本 === true,
-            "世界副本 拿到独立元数据对象并带 世界副本 标记");
+        check(copy !== src && copy.世界副本 === true && copy.库记录id == "5652",
+            "世界副本 拿到独立元数据对象，并带 世界副本 标记与改写前的 库记录id");
+        check(src.世界副本 === undefined && src.库记录id === undefined,
+            "两个副本键只存在于副本上，不回染库记录");
         check(copy.是否杂交 === false && copy.价格倍率 == 5,
             "标量键逐键保留");
         check(copy.被动技能 !== src.被动技能 && copy.被动技能.升龙拳 !== src.被动技能.升龙拳
@@ -265,34 +267,82 @@ class org.flashNight.arki.merc.MercSpawnerTest {
         copy.对话[0].文本 = "改过的台词";
         check(src.装备托管 == undefined && src.对话[0].文本 == "虎妙台词",
             "副本写托管/改台词都不回染库记录");
+
+        var noId:Object = MercSpawner.copyMercMeta({是否杂交: false});
+        check(noId.世界副本 === true && noId.库记录id === undefined,
+            "不传 libraryId 时只打 世界副本 标记（旧形状副本无从复位身份）");
+    }
+
+    /** 池内按 用户ID[2] 计数，用于断言"一条库记录在池里恒为一份"。 */
+    private static function countWithId(pool:Array, id:String):Number {
+        var n:Number = 0;
+        for (var i:Number = 0; i < pool.length; i++) {
+            if (pool[i][2] == id) n++;
+        }
+        return n;
     }
 
     /**
-     * 池流转门控：世界副本解雇后既不进可见池也不进隐藏池（它的库记录本来就在池里，
-     * 回池只会塞一份 [2] 已被 createMercData 改写的重复项）；无标记的库记录照旧回池。
+     * 池流转：解雇必须回池（否则这个人在本次会话里再也刷不出来）。世界副本回池前先复位身份——
+     * [2] 还原成 库记录id、清掉 世界副本/库记录id 两个副本键，否则池里留下一条对不上移池口径、
+     * 又能被反复雇佣的重复项。复位不了的旧档副本（无 库记录id）照旧不回池；杂交体整段跳过；
+     * 同一条库记录被跨批次刷成两个 NPC 且都被雇下时，第二次回池必须被去重门挡住。
      */
-    private static function testWorldCopyDoesNotFlowIntoPools():Void {
+    private static function testWorldCopyFlowsBackWithRestoredIdentity():Void {
         var s:Object = saveRoot();
         try {
-            var worldCopy:Array = merc(52, "5652虎妙1234",
-                MercSpawner.copyMercMeta({是否杂交: false, 隐藏: true, 价格倍率: 5}));
-            var libraryRecord:Array = merc(30, "lib1", {是否杂交: false});
-            _root.同伴数据 = [worldCopy, libraryRecord];
-            _root.佣兵是否出战信息 = [1, 1];
-            _root.佣兵个数限制 = 2;
-            _root.同伴数 = 2;
-            _root.可雇佣兵 = [];
+            var copyA:Array = merc(52, "5652虎妙1234",
+                MercSpawner.copyMercMeta({是否杂交:false, 隐藏:true, 价格倍率:5}, "5652"));
+            var copyB:Array = merc(53, "5652虎妙9999",
+                MercSpawner.copyMercMeta({是否杂交:false, 隐藏:true, 价格倍率:5}, "5652"));
+            var legacyCopy:Array = merc(44, "8899旧档777",
+                MercSpawner.copyMercMeta({是否杂交:false}));
+            var hybridChild:Array = merc(60, "7700杂交体888", {是否杂交:true});
+            var pooled:Array = merc(30, "1200", {是否杂交:false});
+            var dismissedLibrary:Array = merc(31, "1234", {是否杂交:false});
+            _root.同伴数据 = [copyA, copyB, legacyCopy, hybridChild, dismissedLibrary];
+            _root.佣兵是否出战信息 = [1, 1, 1, 1, 1];
+            _root.佣兵个数限制 = 5;
+            _root.同伴数 = 5;
+            // 雇佣侧 handleWorldHire 已按 库记录id 把 5652 那条库记录移出池，这里从"池里没有它"起步。
+            _root.可雇佣兵 = [pooled];
             _root.隐藏的可雇佣兵 = [];
             _root.gameworld = {};
             _root.菜单MC对应名 = undefined;
 
             MercSpawner.removeMerc("5652虎妙1234");
-            check(_root.可雇佣兵.length == 0 && _root.隐藏的可雇佣兵.length == 0,
-                "世界副本解雇后不进任何池（含隐藏分支）");
+            check(countWithId(_root.可雇佣兵, "5652") == 1 && _root.可雇佣兵[1] === copyA,
+                "世界副本解雇后回可见池，且按复位后的 库记录id 排序落位");
+            check(copyA[2] == "5652" && copyA[19].世界副本 === undefined
+                    && copyA[19].库记录id === undefined,
+                "回池前身份复位：[2] 还原成 库记录id，两个副本键都清掉");
+            check(copyA[19].是否杂交 === false && copyA[19].隐藏 === true
+                    && copyA[19].价格倍率 == 5,
+                "复位只动身份，authored 元数据原样带回池里");
+            check(_root.隐藏的可雇佣兵.length == 1 && _root.隐藏的可雇佣兵[0] === copyA,
+                "隐藏副本同时进隐藏池");
 
-            MercSpawner.removeMerc("lib1");
-            check(_root.可雇佣兵.length == 1 && _root.可雇佣兵[0] === libraryRecord,
-                "无标记的库记录照旧回池，门控只挡世界副本");
+            MercSpawner.removeMerc("5652虎妙9999");
+            check(countWithId(_root.可雇佣兵, "5652") == 1
+                    && countWithId(_root.隐藏的可雇佣兵, "5652") == 1,
+                "同一条库记录的第二个副本不再回池（去重门），重复雇佣不会换个方向复发");
+
+            MercSpawner.removeMerc("8899旧档777");
+            check(_root.可雇佣兵.length == 2 && legacyCopy[2] == "8899旧档777"
+                    && legacyCopy[19].世界副本 === true,
+                "旧档副本没有 库记录id：身份无从复位，零写入地照旧不回池");
+
+            MercSpawner.removeMerc("7700杂交体888");
+            check(countWithId(_root.可雇佣兵, "7700杂交体888") == 0
+                    && _root.隐藏的可雇佣兵.length == 1,
+                "杂交体照旧不回池（基底记录不由它消耗）");
+
+            MercSpawner.removeMerc("1234");
+            check(_root.可雇佣兵.length == 3 && countWithId(_root.可雇佣兵, "1234") == 1
+                    && dismissedLibrary[2] == "1234",
+                "面板雇下的库记录本身回池，身份不被改写");
+            check(_root.同伴数据.length == 0 && _root.同伴数 == 0,
+                "全部解雇后同伴数据压实");
         } finally {
             restoreRoot(s);
         }

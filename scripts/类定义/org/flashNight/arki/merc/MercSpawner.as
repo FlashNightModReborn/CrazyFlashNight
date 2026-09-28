@@ -38,18 +38,21 @@ class org.flashNight.arki.merc.MercSpawner {
         if (MercLoadoutService.hasAnyCustody(_root.同伴数据[idx])) {
             return {success:false, error:"custody_not_empty"};
         }
-        var meta:Object = _root.同伴数据[idx][19];
-        // 池流转门控：世界副本（createMercData.copyMercMeta 打的标记）不回池——它的库记录本来
-        // 就还在 可雇佣兵 里，回池只会多塞一份 [2] 已被改写、可反复刷出的重复项。
-        // 面板雇下的记录是库记录本身，没有该标记，照旧回池。
-        var poolFlow:Boolean = (meta != null && meta.世界副本 !== true);
+        var record:Array = _root.同伴数据[idx];
+        var meta:Object = record[19];
+        // 解雇必须回池，否则这个人在本次会话里再也刷不出来、雇佣列表也看不到（与面板雇佣同语义）。
+        // 世界副本回池前必须先复位身份（prepareForPool）：createMercData 把 [2] 改写成了
+        // 库id+名字+等级+随机，直接塞回池会留下一条匹配不到移池口径、又能被反复雇佣的重复项。
+        // 杂交体的 是否杂交 为 true，照旧不回池；[19] 被抹平的旧记录 是否杂交 == false 不成立，
+        // 短路后连 prepareForPool 都不执行，行为同今天。
+        var poolFlow:Boolean = (meta.是否杂交 == false && prepareForPool(record));
         var pushedBack:Boolean = false;
-        if (poolFlow && meta.是否杂交 == false) {
-            _root.可雇佣兵.push(_root.同伴数据[idx]);
+        if (poolFlow && !poolHasRecord(_root.可雇佣兵, record)) {
+            _root.可雇佣兵.push(record);
             pushedBack = true;
         }
-        if (poolFlow && meta.隐藏) {
-            _root.隐藏的可雇佣兵.push(_root.同伴数据[idx]);
+        if (poolFlow && meta.隐藏 && !poolHasRecord(_root.隐藏的可雇佣兵, record)) {
+            _root.隐藏的可雇佣兵.push(record);
         }
         if (pushedBack) {
             // 雇佣面板（MercPanelService.handleHireList）的 minLevel 跳页与列表展示
@@ -281,7 +284,8 @@ class org.flashNight.arki.merc.MercSpawner {
      * 创建佣兵数据（含杂交概率应用）。
      * 杂交分支由 hybridize 返回新副本；非杂交分支必须 deep-clone，
      * 否则下面改写 instance[2] 会污染 _root.可雇佣兵 源记录的 id（重复 spawn 同索引会拼接膨胀）。
-     * 非杂交分支另外要补 [19]，原因见 copyMercMeta。
+     * 非杂交分支另外要补 [19]（被动/性格/装备锁定/对话），并在改写 [2] 之前把源记录的 [2]
+     * 登记成 库记录id，原因见 copyMercMeta。
      * 带 mercenaries.json `nohybrid` 的记录只走非杂交分支，见 isHybridBaseLocked。
      */
     public static function createMercData(n:Number, hybridChance:Number) {
@@ -299,10 +303,11 @@ class org.flashNight.arki.merc.MercSpawner {
         } else {
             instance = _root.深拷贝数组(source);
             // [19] 是具名键对象，深拷贝数组 只按数字下标递归，会把它拷成空数组 → authored
-            // 被动/性格/装备锁定 在世界雇下的单位上整体丢失。显式补一份属于本副本的拷贝。
+            // 被动/性格/装备锁定 在世界雇下的单位上整体丢失。显式补一份属于本副本的拷贝，
+            // 并把改写前的库记录 id 一起登记进去（雇佣移池/解雇回池都靠它对回池里那条记录）。
             // 只在库记录真的存在时补：越界索引下 instance[1] 检查会让本函数返回 null。
             if (source != null) {
-                instance[19] = copyMercMeta(source[19]);
+                instance[19] = copyMercMeta(source[19], source[2]);
             }
         }
         if (instance == undefined || instance[1] + "" == "undefined") {
@@ -325,22 +330,71 @@ class org.flashNight.arki.merc.MercSpawner {
     }
 
     /**
-     * 世界副本的元数据拷贝：逐键深拷源记录，并打上 世界副本 标记。
+     * 世界副本的元数据拷贝：逐键深拷源记录，并登记这条副本属于哪个库记录。
      *
      * 必须是新对象而不是 `instance[19] = 源[19]`：装备托管在运行期写 `merc[19].装备托管`
      * （MercLoadoutService.CUSTODY_KEY），共享引用会把玩家交付给这个场景单位的物品写回库记录，
      * 之后同一条库记录刷出的每个 NPC、雇下的每个佣兵都携带同一份托管。
      *
-     * 标记供池流转门控用（本文件 removeMerc 与 MercPanelService.handleWorldHire）：世界副本的
-     * 库记录从未离开 可雇佣兵，回池只会塞进一份 [2] 已被上面改写的重复项。
+     * 两个副本专属键（都只由本函数写、由 prepareForPool 清）：
+     *   世界副本  = 本记录是场景副本，不是 可雇佣兵 里的那条库记录本身。
+     *   库记录id  = 源记录的 [2]，即在下面被 createMercData 改写之前的 id。世界雇佣按它移池、
+     *               解雇按它复位身份、开机按它去重——副本自己的 [2] 已经带随机后缀，对不回池里任何记录。
      *
      * meta 恒非空（MercLibrary.buildMercData 无条件写 {是否杂交:false}），且值全部来自
      * LiteJSON 解析出的纯数据、无循环引用，故这里不做 seen 追踪。
      */
-    public static function copyMercMeta(meta:Object):Object {
+    public static function copyMercMeta(meta:Object, libraryId):Object {
         var out:Object = copyPlainData(meta);
         out.世界副本 = true;
+        if (libraryId != undefined) {
+            out.库记录id = libraryId;
+        }
         return out;
+    }
+
+    /**
+     * 回池前的身份复位：世界副本把 [2] 还原成 库记录id，并清掉 世界副本/库记录id 两个副本键，
+     * 复位后它就是一条普通池记录——下次从它刷 NPC 会以它的新 [2] 重新登记 库记录id，
+     * 移池/回池/开机去重三段口径始终对得上。
+     *
+     * 返回 false 表示不许回池：旧档里的世界副本没有 库记录id（本键是本轮才加的），身份无从复位，
+     * 塞回池只会留下匹配不到移池口径的重复项，故维持修复前的"不回池"。
+     * 非副本（面板雇下的就是库记录本身）原样放行，不做任何改写。
+     */
+    public static function prepareForPool(record:Array):Boolean {
+        if (record == null) {
+            return false;
+        }
+        var meta:Object = record[19];
+        if (meta.世界副本 !== true) {
+            return true;
+        }
+        if (meta.库记录id == undefined) {
+            return false;
+        }
+        record[2] = meta.库记录id;
+        delete meta.世界副本;
+        delete meta.库记录id;
+        return true;
+    }
+
+    /**
+     * 池内是否已有同一条记录（名字[1]+用户ID[2]）。
+     * 同一条库记录可以被跨批次/跨场景刷成两个 NPC（spawnInternal 的 taken 只防同一批次内重复），
+     * 两个都被雇下时第二次移池必然空转，两次解雇就会回池两次——这个去重门让"一条库记录"在池里
+     * 恒为一份，否则重复雇佣只是从"永不移除"换成"移除后又被塞回来"。
+     */
+    private static function poolHasRecord(pool:Array, record:Array):Boolean {
+        if (pool == undefined) {
+            return false;
+        }
+        for (var i:Number = 0; i < pool.length; i++) {
+            if (pool[i][1] == record[1] && pool[i][2] == record[2]) {
+                return true;
+            }
+        }
+        return false;
     }
 
     private static function copyPlainData(v) {

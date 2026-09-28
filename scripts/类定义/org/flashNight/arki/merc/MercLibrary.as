@@ -89,8 +89,14 @@ class org.flashNight.arki.merc.MercLibrary {
 
         var seen:Object = {};
         for (var i:Number = 0; i < _root.佣兵个数限制; i++) {
-            if (_root.同伴数据[i][1] && _root.同伴数据[i][2]) {
-                seen[_root.同伴数据[i][2]] = _root.同伴数据[i][1];
+            var companion:Array = _root.同伴数据[i];
+            if (companion[1] && companion[2]) {
+                seen[companion[2]] = companion[1];
+            }
+            // 世界雇下的单位是 createMercData 的副本，[2] 已被改写 → 只按 [2] 比对认不出它占用了
+            // 哪条库记录，重启后同一个人又回到池里、能被再雇一次。副本登记的 库记录id 才是这里的键。
+            if (companion[19].库记录id != undefined) {
+                seen[companion[19].库记录id] = companion[1];
             }
         }
 
