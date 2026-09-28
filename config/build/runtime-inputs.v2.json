@@ -436,6 +436,12 @@
             "tools/player-info-hud/renderer-qualification/bin/",
             "tools/player-info-hud/renderer-qualification/obj/"
           ]
+        },
+        {
+          "path": "tools/steamdeck-locale",
+          "includeExtensions": [".c"],
+          "excludePaths": [],
+          "excludePrefixes": []
         }
       ]
     }

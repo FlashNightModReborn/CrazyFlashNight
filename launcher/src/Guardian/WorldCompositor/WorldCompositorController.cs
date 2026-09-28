@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
 using System.Globalization;
@@ -30,6 +31,8 @@ namespace CF7Launcher.Guardian.WorldCompositor
         private readonly Timer _timer = new Timer { Interval=33 };
         private NativeCompositorSession _native;
         private WorldCompositionSurface _surface;
+        private WorldOverlayOrder _overlayOrder;
+        private readonly IEnumerable<OverlayBase> _overlays;
         private NativePointerBridge _pointerBridge;
         private IntPtr _flash;
         private Rectangle _crop;
@@ -201,7 +204,8 @@ namespace CF7Launcher.Guardian.WorldCompositor
         internal WorldCompositorController(Form owner, Control anchor, Func<IntPtr> getFlash,
             Func<bool> canPresent, Action<string> notify, string projectRoot, Func<bool> shouldPrepare,
             Action<double> setRenderScale,Action focusFlash,uint inputEpochLimit=WorldPointerMapper.EpochLimit,
-            BulletVisualCatalog bulletCatalog=null,CombatFxCatalog combatFxCatalog=null)
+            BulletVisualCatalog bulletCatalog=null,CombatFxCatalog combatFxCatalog=null,
+            IEnumerable<OverlayBase> overlays=null)
         {
             string tempRoot=Path.GetFullPath(Path.Combine(projectRoot,"tmp"))+Path.DirectorySeparatorChar;
             string testCap=Environment.GetEnvironmentVariable("CF7_INPUT_SESSION_TEST_CAP");
@@ -216,6 +220,7 @@ namespace CF7Launcher.Guardian.WorldCompositor
             _setRenderScale=setRenderScale; _focusFlash=focusFlash;
             _bulletCatalog=bulletCatalog;
             _combatFxCatalog=combatFxCatalog;
+            _overlays=overlays ?? Array.Empty<OverlayBase>();
             _bulletCandidateEnabled=bulletCatalog!=null
                 && Environment.GetEnvironmentVariable("CF7_BULLET_NATIVE_DISABLE")!="1";
             _preset=WorldLightingPreset.Load(Path.Combine(projectRoot,"launcher","data","world-lighting","preset.json"),
@@ -288,6 +293,7 @@ namespace CF7Launcher.Guardian.WorldCompositor
                     _flash=_getFlash(); _pointerBridge=await NativePointerBridge.Start(_flash,_owner.Handle);
                     if(_disposed || _flash!=_getFlash()) { _pointerBridge.Dispose(); return; }
                     _surface=new WorldCompositionSurface(_getFlash,_focusFlash,_pointerBridge,_inputEpochLimit) { Owner=_owner };
+                    _overlayOrder=new WorldOverlayOrder(_owner,_surface,_overlays,CanShow);
                     BindInput(_pointerBridge,_surface);
                     _surface.CreateControl();
                     _native=new NativeCompositorSession(module,_owner.Handle,(uint)Environment.ProcessId,_surface.Handle,0,_borderless);
@@ -635,8 +641,7 @@ namespace CF7Launcher.Guardian.WorldCompositor
         }
         private void PlaceBelowHud()
         {
-            IntPtr previous=GetWindow(_owner.Handle,3);
-            if (previous!=IntPtr.Zero && previous!=_surface.Handle) SetWindowPos(_surface.Handle,previous,0,0,0,0,0x0013);
+            _overlayOrder?.RestoreNow("world_show");
         }
         private void OnGeometryChanged(object sender,EventArgs e)
         {
@@ -731,7 +736,7 @@ namespace CF7Launcher.Guardian.WorldCompositor
             _everReady=false; _frameAdvancing=false; _progressKnown=false;
             _surface?.Hide();
             try { lock (_weatherCameraLock) { _native?.Dispose(); _native=null; } }
-            finally { _native=null; _surface?.CancelPointer(); _surface?.Dispose(); _surface=null; if(_pointerBridge!=null)_retiringInput=_pointerBridge.CloseAsync(); _pointerBridge=null; _flash=IntPtr.Zero; }
+            finally { _native=null; _overlayOrder?.Dispose(); _overlayOrder=null; _surface?.CancelPointer(); _surface?.Dispose(); _surface=null; if(_pointerBridge!=null)_retiringInput=_pointerBridge.CloseAsync(); _pointerBridge=null; _flash=IntPtr.Zero; }
         }
         public void Dispose()
         {

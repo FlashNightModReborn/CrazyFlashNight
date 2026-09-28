@@ -55,6 +55,8 @@ native 源码前缀内的非二进制契约文档也必须显式绑定，不能�
 
 `tools/equipment-tuning/fixtures/item-identity-triple.json` 作为现役图标身份审计的输入，显式绑定 policy fixedFiles。该目录原先只纳入 `.js`，夹具更新会被 native 变更审计按未绑定输入拒绝；补齐精确 JSON 路径，不扩展其他文件或降低检查要求。
 
+`tools/steamdeck-locale`（#46 离线诊断候选）的 `.c` 探针源码以 policy tree 绑定（仅 `.c` 扩展名）：该目录不在 native gate 保护前缀内，只有 native 扩展名文件触发审计；2026-09-28 入库时两个 `.c` 文件因未绑定被 Audit 拒绝（run 36362568741），补齐绑定后属正常 `source-ahead`，不进入正式 DLL 输入域，不要求即时 promotion。目录内 Python/shell/文档/夹具不受 native gate 管辖，保持不绑定，与既有工具域口径一致。
+
 ### producer 与政策闸门
 
 世界光照捕获模块随正式 producer 构建：`launcher/native/world-compositor/build.bat` 仅接受环境门选出的 MSVC/SDK，三个产物 `FlashCompositorNative.dll`、`FlashInputBridge.dll`、`FlashInputBroker.exe` 使用静态 CRT、确定性链接与固定相对源文件名。producer 先将五个源码/头文件 materialize 为 canonical LF，再编译并把三项纳入 candidate inventory/manifest/closure；不能从 `tmp/flash-compositor` 拷贝开发产物充当独立 builder 输出。源码归 artifact，构建脚本归 recipe，光照/调度 JSON 与探针归 policy；仍执行既有双故障域与 promotion。开发探针输出不构成正式票。
@@ -1013,3 +1015,13 @@ strict production policy `41/41`（policyHash `7B634AE4C7C5C9413E471D4A25CDBA891
 严格 production policy `42/42`（policyHash `83BCBBBC2F77C6EF22A0816A7CB24C0AA69D735614C6C7B606ED717440B72AAC`，receipt SHA-256 `424E6DCFE515013F5E6328D5EFB8E01299DE61B3E4F339F6503521EC12BC0DFE`）通过；唯一 writer 于 `2026-09-27T04:59:50Z` 原子 promotion，并重验 36 个文件及双 signer / 双 faultDomain。全部 payload 文件与已人验的 `combat-fx-lightfix-0927` 完全相同；构建身份变化来自启动清单换行确定性修复，详见[迁移发布记录](战斗表现迁移-路线图与验收-2026-09-22.md#23-弹壳枪火命中特效与局部光正式合批发布2026-09-27)。旧 v1 标签未移动、未部署，旧 request `D5A4E24AD6E0BA43852F05E3D3F16F8D83C71C86AF42B87A6B54727E7E0E8B77` 已 superseded。
 
 部署提交 `6ba925b46105c7d83c92449558fb4d49d0b051b5` 已快进推送；原 Steam 工作目录同步后根 `--verify-only` 为 0，正式入口已核对实际 Core 身份、目录加载和 Flash 前门握手，未选角色且正常退出。发布后 [CI Audit 36296013579](https://github.com/FlashNightModReborn/CrazyFlashNight/actions/runs/36296013579) 成功，独立重放 `state=promoted / deploymentChanged=true` 与 `signers=2 / faultDomains=2`。候选一般观感已通过；完整标准入口实战、DRS/弱机净性能和白名单之外的素材不由发布链代签。
+
+### 2026-09-28 世界合成面与 HUD 层级恢复发布
+
+维护者授权本机自动验收通过后直接发布，测试员环境在自然使用中再复验。源码 `f585ade56fa1b0a22f9c498bbcde305f5715a052`、不可变标签 `runtime-build-v2/20260928-world-hud-order-v1` 冻结 tree `259321a2e182b95364ac962f8e25cde902aa57db` 与 request `AB449588FB464879C37FF744D75DF177712FDD2428A1E0BBBFEF6012F1047689`。故障证据、修复边界与自动测试见[焦点诊断 §9.19](焦点管理-诊断与卡顿排查-2026-05-24.md#919-2026-09-28世界合成面遮挡-hud-的生命周期修复)。
+
+canonical Launcher 回归 6010 passed / 5 skipped；将实际候选 Core 放入隔离 testhost 后，10 项真实 HWND 强制错序/命中回归全部通过。未修改 AS2/SWF 或玩家存档。本地 X509 `builder-local-c / physical-host-c` 与 [GitHub run 36367930502](https://github.com/FlashNightModReborn/CrazyFlashNight/actions/runs/36367930502) 独立构建一致：identity `E59AF91257D72C9943C59FD7150AF1CEB65CFA1EA2D4A6F3B5B653656A9800BF`、closure `EC3DCB8519C7A7930DAEC505ED5C1E0FB7CE85B9124F157A73A24C6E41C74A82`，36 项 payload 与该验收候选一致。GitHub 查询 EOF 后使用同一 run 恢复，未重复派发。
+
+strict production policy 42/42，receipt SHA-256 `0C612DBA8C5CB91E481E2386A5E124E6D2FC2883B2F00E5C6898835BFB2016D8`。唯一 writer 于 `2026-09-28T02:07:25Z` 执行 promotion，重验双 signer / 双 faultDomain，根 bootstrap `--verify-only` 成功；正式 Core SHA-256 `3B400CCE2BA5165F645F125EFE9E19A31BB1088238CB3576CF1D19F492217C94` 与已测试候选一致。状态为 `promoted / FIELD_REVALIDATION_PENDING`，不将窗口夹具或启动器文件校验计为标准入口实际复活/返回业务复验。
+
+部署提交 `8d139c6f5cfb127e076ba3d2d2d1b21f457defaa` 已快进推送到 `main`；[CI Audit 36368812335](https://github.com/FlashNightModReborn/CrazyFlashNight/actions/runs/36368812335) 成功报告 `state=promoted / deploymentChanged=true`，独立重放 36 文件闭包与 `signers=2 / faultDomains=2`。测试员更新后正常使用观察；若再次出现遮挡，沿用原诊断包分析 `world.overlay_order` 与原始命中链，不要求开发机人工复现其环境。

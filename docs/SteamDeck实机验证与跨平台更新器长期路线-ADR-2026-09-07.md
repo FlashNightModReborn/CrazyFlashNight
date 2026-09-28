@@ -85,6 +85,14 @@ Wine 上游 `init_unix_codepage()` 使用 `setlocale(LC_CTYPE, "")` 和 `nl_lang
 
 窗口消息循环、SetParent、输入钩子、Win32 进程身份和音频端点属于后续兼容风险；目前不把它们写成已确认的故障。失败重试使用有界诊断，退出后按本次独立 prefix 清理进程，不用全局 `pkill wine`。
 
+### 2026-09-27 离线复核补充（非实机验收）
+
+#46 的离线重放将冻结 Wine CP20127 表与 9 月 7 日历史文件名枚举逐字对齐；真实表的 256 个单字节映射均与去除最高位一致。该证据强化编码机制候选，不确定历史环境注入层，也不证明完整宿主超时只有这一原因。
+
+补充两个边界：已核对 Proton 10.0-4b / 11.0-2 会用非空 `HOST_LC_ALL` 重写 `LC_ALL`，否则删除 `LC_ALL`；只设置外层 LC_ALL 或读取 Python 默认编码不能排除方向。冻结 Wine 在 `setlocale()` 失败时回退 UTF-8，因此不可把"locale 不可用"直接等同于成功选中 C/POSIX 后的 CP20127 路径。
+
+独立诊断候选、来源和执行边界见 [离线施工报告](reports/SteamDeck-中文文件名编码-离线施工与验证-2026-09-27.md)，用法见 [工具 README](../tools/steamdeck-locale/README.md)。本轮有原生 libc 测试和离线重放；Windows 文件探针已于 2026-09-28 在原生 Windows 主机完成首次执行（夹具与原名资源只读均通过，证据见工具目录 `evidence/windows-first-run-20260928/`），尚未在 Wine/SLR 内执行。下一次依次取得目标 SLR / Wine CODESET、英文/中文 W API 对照、原名资源读取、Flash 握手与 scene-ready；在此前保留本节的未闭环状态，不加入通用 promotion 门。
+
 ## 5. 当前安装链职责与复用边界
 
 现有 `安装更新.bat` 调用 7-Zip，再运行包内 `bootstrap.bat` / `install.ps1`。PowerShell 定位 Windows Steam 库并复制 `resources` / `_Data`，包含 Windows 版本检查。[当前安装脚本](../tools/cf7-packer/sfx/install.ps1)

@@ -1,10 +1,10 @@
 # Crafting 生产闭环工具
 
-状态：`AUTHOR OFFLINE_VERIFIED / AWAITING INDEPENDENT FINAL REVIEW / LIVE_BLOCKED / NOT_DEPLOYED`。
+状态（2026-09-28 治理回填，Refs #94）：旧口径 `AUTHOR OFFLINE_VERIFIED / AWAITING INDEPENDENT FINAL REVIEW / LIVE_BLOCKED / NOT_DEPLOYED` 所述的"四域逐轮换作者终审 + 每域额外 live mutation"验收要求已于 2026-08-05 被 [ADR §16.5](../../../docs/双栏工作台-权威数据与交互能力一致性治理-ADR-2026-08-01.md) 裁决撤销；A0–A6 已关闭并完成正式发布（ADR §17 硬停线、§18 闭环，正式入口达 `standard_entry_verified`，仅覆盖正式 Launcher / Help WebOverlay / 可信退出，不代签各域业务写旅程）。本目录工具保留为离线复验与取证用途；仅在出现新的玩家可复现缺陷、业务写入回归或直接消费者变化时按影响面重开。
 
-本目录只提供 Crafting 的生产取证、复验与 fail-closed Gate，不修改 Host、AS2、Web 业务实现，也不自行批准上线。共享 `runtime-module-journal` 的既有准入结论只覆盖共享 API；Crafting consumer 仍须取得独立 live receipt，并由不同作者完成终局审阅。
+本目录只提供 Crafting 的生产取证、复验与 fail-closed Gate，不修改 Host、AS2、Web 业务实现，也不自行批准上线。共享 `runtime-module-journal` 的既有准入结论只覆盖共享 API；Crafting consumer 仍须取得独立 live receipt，并由不同作者完成终局审阅（2026-09-28 注：该终审要求属 ADR §16.5 已撤销口径，见顶部状态行）。
 
-2026-08-24 合并后 current-tree 复核：`bootstrap.js --check` 为 `266/266`（21 个正例、245 个负例）；production closure v9 精确覆盖 260 个文件，browser child 闭合 377 项 module manifest、75 个实际资源与 1,509 次 occurrence。父 manifest 为 `747bb619406029fea707aaa65641953cd6758809e8ebf124839a89f3291c437c`，父 journal 为 `dd05c44cd4510a9a20d9676e92c2863ca18dfd050a4a3176c3cdc6615a6ece58`，父回执为 `ae8280e7256edb099f639d1d8db856cb8fb2aabd2d23f829db386410813f87dd`。闭包除既有字体、catalog、permanent 实体与 generated CSS/JS 外，现精确纳入 overlay terminal/settings 样式、共享 loadout picker，以及上游资产安全修订后的 24 个 AS2 算法锚；独立浏览器仍不把缺少 Host exact-set handler 的空响应冒充字体字节。该结论仍仅为 `OFFLINE_VERIFIED / LIVE_BLOCKED / NOT_DEPLOYED`。下文若仍以“当前”描述 2026-08-08 或更早的 243-file/旧资源数，只是历史合同解释，均由本段取代。
+2026-08-24 合并后 current-tree 复核：`bootstrap.js --check` 为 `266/266`（21 个正例、245 个负例）；production closure v9 精确覆盖 260 个文件，browser child 闭合 377 项 module manifest、75 个实际资源与 1,509 次 occurrence。父 manifest 为 `747bb619406029fea707aaa65641953cd6758809e8ebf124839a89f3291c437c`，父 journal 为 `dd05c44cd4510a9a20d9676e92c2863ca18dfd050a4a3176c3cdc6615a6ece58`，父回执为 `ae8280e7256edb099f639d1d8db856cb8fb2aabd2d23f829db386410813f87dd`。闭包除既有字体、catalog、permanent 实体与 generated CSS/JS 外，现精确纳入 overlay terminal/settings 样式、共享 loadout picker，以及上游资产安全修订后的 24 个 AS2 算法锚；独立浏览器仍不把缺少 Host exact-set handler 的空响应冒充字体字节。该结论仍仅为 `OFFLINE_VERIFIED / LIVE_BLOCKED / NOT_DEPLOYED`（2026-09-28 注：该 `LIVE_BLOCKED` 口径已被 ADR §16.5 裁决撤销，A0–A6 已关闭并正式发布，见顶部状态行；本段保留为当时离线复核的历史记录）。下文若仍以“当前”描述 2026-08-08 或更早的 243-file/旧资源数，只是历史合同解释，均由本段取代。
 
 历史审计结果保留如下，均不得替代当前 Gate：
 

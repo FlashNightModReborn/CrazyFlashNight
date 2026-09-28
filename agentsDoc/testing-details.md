@@ -1,6 +1,6 @@
 # 测试正文：按需验证细节
 
-**文档角色**：验证规范层正文（由选择矩阵 `agentsDoc/testing-guide.md` 路由进入）。**最后核对代码基线**：commit `2e5e32321506fa1fb2693f3928205f8c45b4235e`（2026-09-17）。
+**文档角色**：验证规范层正文（由选择矩阵 `agentsDoc/testing-guide.md` 路由进入）。**最后核对代码基线**：commit `5f6ea4135319cecfb0da433ae09ecf34504a07a7` 加 2026-09-28 世界面/HUD 层级验证增量；其他专题保留各节既有基线。
 
 本页是验证矩阵的规范层正文：按主题分节，读者只读命中章节即可，不要求回头全量读 AGENTS.md、`agentsDoc/testing-guide.md` 选择矩阵或迁移回包。任务到门的触发与选择规则在矩阵页；本页承接命中主题后的完整 runner、工作目录、参数、成功判据、失败恢复条件与证据边界。
 
@@ -1163,6 +1163,8 @@ Arena 还必须覆盖全模式头像分流、完整态 2 列且每卡最多 4 �
 跨层端到端输入交接必须同时遵守 [焦点管理 §9.10a](../docs/焦点管理-诊断与卡顿排查-2026-05-24.md#field-input-chain-v1) 与长期卡 [#103](https://github.com/FlashNightModReborn/CrazyFlashNight/issues/103)：缺失 hook/dequeue、Native HUD、intent、AS2 accept/local result、durable/transition 或 scene-ready 任一层时，只记该层未知/不完整，不以正常样本、焦点恢复或 promotion 代签现场根因。
 
 **输入事故交接（发布源 `fbbc47a8c0`）**：输入/诊断 focused、显式 `CF7_TEST_PORTRAIT_WEBVIEW=1`、runtime source/queue 门与新鲜 asLoader 证据见 [焦点诊断 §9.18](../docs/焦点管理-诊断与卡顿排查-2026-05-24.md#918-2026-09-13输入边沿防御与分层观察) 和 [头像工具说明](../tools/portrait-pilot/README.md#2026-09-13卷积-svg-运行时禁用政策)。
+
+**世界面/HUD 层级恢复**：改 `WorldOverlayOrder` 或其呈现接线时，运行 `WorldOverlayOrderTests` 与 canonical Launcher 全量 runner；真实 HWND 强制错序、实际 WindowFromPoint、前台/隐藏/panel/销毁门的证据边界见[焦点诊断 §9.19](../docs/焦点管理-诊断与卡顿排查-2026-05-24.md#919-2026-09-28世界合成面遮挡-hud-的生命周期修复)。本机自动回归不代签测试员环境；不把旧 Native HUD 视觉矩阵泛化成该层级修复的人力发布前置。
 
 **建连/总线诊断**：Flash↔Launcher 建连类问题只用真 launcher 定病（读 `logs/launcher.log` 的 `WaitingConnect -> WaitingHandshake`），不用 compile_test/testMovie 或裸 socket 桩，详见 [Host、总线与自动化](#host)。
 

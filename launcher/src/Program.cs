@@ -1976,6 +1976,10 @@ class Program
         // loot feed（左下双向物资/击杀播报）：widget 常驻 NativeHud，task 始终注册。
         // 纸娃娃运行时烘焙：service 常驻（overlay WebView2 常驻，native HUD 下仅隐藏），
         // C#→Web 走 TryPostToWeb；桥不可用时 service 内部静默降级。
+        var worldOverlays = new List<OverlayBase> { hnOverlay, nativeHud };
+        if (playerHudRuntime != null) worldOverlays.AddRange(playerHudRuntime.PresentationSurfaces);
+        else if (playerInfoSurface != null) worldOverlays.Add(playerInfoSurface);
+        if (cursorOverlay is OverlayBase legacyCursor) worldOverlays.Add(legacyCursor);
         var worldCompositor = new CF7Launcher.Guardian.WorldCompositor.WorldCompositorController(
             form, form.FlashHostPanel, form.GetFlashHwnd,
             () => !form.IsShutdownAdmissionClosed && launchFlow != null && launchFlow.CurrentState == "Ready"
@@ -1984,7 +1988,7 @@ class Program
             () => launchFlow != null && (launchFlow.CurrentState == "Embedding"
                 || launchFlow.CurrentState == "WaitingGameReady" || launchFlow.CurrentState == "Ready"),
             windowManager.SetFlashRenderScale, () => windowManager.RestoreFlashInputFocus("world_pointer"),
-            bulletCatalog:bulletVisualCatalog,combatFxCatalog:combatFxCatalog);
+            bulletCatalog:bulletVisualCatalog,combatFxCatalog:combatFxCatalog,overlays:worldOverlays);
         var renderSettings=RenderScheduleSettings.Load(Path.Combine(projectRoot,"launcher","data","world-lighting","render-schedule.json"));
         webOverlay.WorldDragInputRouter=worldCompositor.RouteCapturedPointer;
         perfEngine.ConfigureRenderSchedule(renderSettings,

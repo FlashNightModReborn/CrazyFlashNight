@@ -1,0 +1,18 @@
+{
+  "schema": "cf7-issue46-history-excerpt/v1",
+  "source_commit": "08c4ae100f4daa84bc2ea77991f4f59a016ddcc5",
+  "source_path": "docs/evidence/steamdeck-install-20260907.json",
+  "source_git_blob_sha1": "cb8116e428418a9c561c2432751ace55e97b2afd",
+  "archive_available_this_run": false,
+  "package_sha256": "18ce3ffeecfca8759ad84961824886ce2f05ba2829882ce4dda14c1b73c7f951",
+  "filenameObservation": {
+    "requestedFilename": "加载背景.swf",
+    "hostFilesystemObservation": {
+      "exists": true,
+      "bytes": 4458807,
+      "nameUtf8Hex": "e5 8a a0 e8 bd bd e8 83 8c e6 99 af 2e 73 77 66"
+    },
+    "wineDirectoryEnumerationLine": "2464.441:0158:015c:trace:file:append_entry long L\"e\\n h==h\\0003\\000cf\\0019/.swf\" short L\"E\\n_H~4ZX.SWF\" mask L\"\\52a0\\8f7d\\80cc\\666f.swf\"",
+    "utf8BytesWithHighBitsRemoved": "e\n h==h\u0003\ff\u0019/.swf"
+  }
+}

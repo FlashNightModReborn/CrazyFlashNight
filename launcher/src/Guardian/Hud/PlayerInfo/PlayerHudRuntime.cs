@@ -17,6 +17,8 @@ internal sealed class PlayerHudRuntime : IPanelHudCompanion, IDisposable
     private bool _suspended, _restoringOrder;
     private readonly NativeHudOverlay _existingHud;
 
+    internal OverlayBase[] PresentationSurfaces => new OverlayBase[] { _buffs, _resources, _bottom };
+
     internal PlayerHudRuntime(Form owner, Control anchor, PlayerInfoSplitSurface resources,
         PlayerHudController controller, string iconsRoot, NativeHudOverlay existingHud)
     {

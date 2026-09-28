@@ -1,0 +1,126 @@
+{
+  "baseCommit": "137ab0dba7e860817838d02dd535f4609acd1262",
+  "dotnetPath": "C:\\Users\\fs\\AppData\\Local\\Microsoft\\dotnet\\dotnet.exe",
+  "sdk": "10.0.300",
+  "recordedAtUtc": "2026-09-28T03:10:27.0451423Z",
+  "sourceInputs": [
+    {
+      "path": "tools/issue122/windows-webview2/Program.cs",
+      "sha256": "9B4C467CC01E6059EDEE24602D3B31E6E228AB5BDE22B3A061A093F1A489BBC8"
+    },
+    {
+      "path": "tools/issue122/windows-webview2/ProbeRules.cs",
+      "sha256": "282537F9DD25E11D20271D3BB4C15685546ECDD82D1ABAE890470F6FB0F6F957"
+    },
+    {
+      "path": "tools/issue122/windows-webview2/Issue122.WebView2.csproj",
+      "sha256": "39D7DF22D1FFB97F8363ADFE95D35AF73ACB086EC4E2121DF7595FB8B8DB41BD"
+    },
+    {
+      "path": "launcher/web/modules/stage-select/dev/issue122-index-fixture.html",
+      "sha256": "86F21A4004F02609AD3B9D661AB74D271E8A7EAA04E8519DDD884FA6E0F07E09"
+    },
+    {
+      "path": "launcher/web/modules/stage-select/stage-select-fallen-scene.js",
+      "sha256": "A544BAB717CAC09A764196D34D52A82397F766B6A2FF9A16A80A5F72E14EA3EA"
+    },
+    {
+      "path": "launcher/web/modules/stage-select/stage-select-geometry-chunks.js",
+      "sha256": "7FE3DF217E6C1D09DDE5F2507FF0AE2390C3131D14B0271E041368678318BE01"
+    },
+    {
+      "path": "launcher/web/modules/stage-select/stage-select-fallen-data.js",
+      "sha256": "16112BC2E60F903F4CC0CA7FAE47DC8AFBB8F6F074F2F4EE42C3BFEACDC3FED1"
+    }
+  ],
+  "binaryInventory": [
+    {
+      "path": "Issue122.WebView2.deps.json",
+      "bytes": 3423,
+      "sha256": "3CEABA818F1348BF83B55D19822FB80C81A0BBBCCD7A7E4DB9A4474740C5C575"
+    },
+    {
+      "path": "Issue122.WebView2.dll",
+      "bytes": 34304,
+      "sha256": "2BFEF369B36C26EA25E8BA617F366E19F1EF2117E6C3DAF77CBB06A3DBCA691F"
+    },
+    {
+      "path": "Issue122.WebView2.exe",
+      "bytes": 162304,
+      "sha256": "9073C69D7C300145BADAE74DE04C2F1C1DB30255857B8F1E5C4EA04653109A4B"
+    },
+    {
+      "path": "Issue122.WebView2.pdb",
+      "bytes": 17412,
+      "sha256": "7126A0322B24F6CFEFF21D1CBBBC4D0C6ECA4EC93E7AD60E504376550D51BA11"
+    },
+    {
+      "path": "Issue122.WebView2.runtimeconfig.json",
+      "bytes": 519,
+      "sha256": "96BC2946DFF8790400D652EC7F8DE7BB043E954980D59470C112788B68A1FBD3"
+    },
+    {
+      "path": "Microsoft.Web.WebView2.Core.dll",
+      "bytes": 649800,
+      "sha256": "8219A3135436C147F8EB02FB831E99596103EEBC18B6D7B794CA93F4C67018A2"
+    },
+    {
+      "path": "Microsoft.Web.WebView2.Core.xml",
+      "bytes": 579713,
+      "sha256": "D2E44139C2E8E30FECB99112516964143BE130C58960A2C65CABC6A2A7C35CA0"
+    },
+    {
+      "path": "Microsoft.Web.WebView2.WinForms.dll",
+      "bytes": 39496,
+      "sha256": "69D70EF3061A5A973942B56BA0472A71F52A26BA22D58E7CB1D6C25B48ED544B"
+    },
+    {
+      "path": "Microsoft.Web.WebView2.WinForms.xml",
+      "bytes": 41870,
+      "sha256": "96E468637EE3322DB9851E38C0A3D7C32F0D11F60566B47ACE2C91EC66179AC8"
+    },
+    {
+      "path": "Microsoft.Web.WebView2.Wpf.dll",
+      "bytes": 83016,
+      "sha256": "7C4E4BE02427F8B4C9BD0FABC285F02EA5FCF6256DB7CFE12DB479AE41E4667F"
+    },
+    {
+      "path": "Microsoft.Web.WebView2.Wpf.xml",
+      "bytes": 142442,
+      "sha256": "8932FE759BB7AFD1E0DE73682A9577D782048A68B252408E127CF767FC348BE4"
+    },
+    {
+      "path": "Newtonsoft.Json.dll",
+      "bytes": 712464,
+      "sha256": "22C649F75FCE5BE7C7CCDA8880473B634EF69ECF33F5D1AB8AD892CAF47D5A07"
+    },
+    {
+      "path": "runtimes\\win-arm64\\native\\WebView2Loader.dll",
+      "bytes": 147016,
+      "sha256": "0937030EFC718F3DA77C5E0978FB5046E381D0BB7B01ACAAD31A535A1B588A33"
+    },
+    {
+      "path": "runtimes\\win-x64\\native\\WebView2Loader.dll",
+      "bytes": 161864,
+      "sha256": "EB5335EDEAA6F2122C044E82AAB2351DC8C9B4E0FE5E578C71922FB61BE285E7"
+    },
+    {
+      "path": "runtimes\\win-x86\\native\\WebView2Loader.dll",
+      "bytes": 121928,
+      "sha256": "04814B2C59314C6452D61B821A4A3A5C5F8E8577B55B985F6A7A4B59F8907EC5"
+    }
+  ],
+  "gpus": [
+    {
+      "Name": "Intel(R) UHD Graphics 630",
+      "DriverVersion": "27.20.100.8729",
+      "DriverDate": "2020-10-12T08:00:00+08:00"
+    },
+    {
+      "Name": "NVIDIA GeForce GTX 1650",
+      "DriverVersion": "27.21.14.6230",
+      "DriverDate": "2021-04-05T08:00:00+08:00"
+    }
+  ],
+  "sourceRoot": "C:\\Users\\fs\\.codex\\worktrees\\issue122-webview2\\CrazyFlashNight"
+}

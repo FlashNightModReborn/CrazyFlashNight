@@ -1,0 +1,134 @@
+{
+  "schema": 1,
+  "algorithm": "SHA-256",
+  "fileCount": 24,
+  "totalBytes": 1257503,
+  "files": [
+    {
+      "path": "classification-tests.json",
+      "bytes": 43,
+      "sha256": "277866edace925e16aa67007c8269b7d0f9f4cbbae1887ec1e2e3760c4651a48"
+    },
+    {
+      "path": "final-source-inputs.json",
+      "bytes": 1789,
+      "sha256": "5439af6a918340e92845bc463cccba76fbc4ead230a02ab8877abb02af3f047e"
+    },
+    {
+      "path": "first-build-identity.json",
+      "bytes": 4494,
+      "sha256": "063ad752c5da3d8ed2b10432db3f7407694bfbfd7af86c40cd084dd79539e1ac"
+    },
+    {
+      "path": "geometry.json",
+      "bytes": 2977,
+      "sha256": "6e39d06549355dc28fe190e692c3d161da2691cf3e3d1c29da02e3613875871d"
+    },
+    {
+      "path": "intel-original-raw.png",
+      "bytes": 484241,
+      "sha256": "97358fc875fbd58356faec1aaaf5ad64804519dbe9d1769ba834060797894ed5"
+    },
+    {
+      "path": "nvidia-current-difference-x8.png",
+      "bytes": 4629,
+      "sha256": "9659d609b1b9b85958ddbd24c530056951b6f19c1ca93840942e094a86ef50d3"
+    },
+    {
+      "path": "nvidia-low-side-chunked.png",
+      "bytes": 285507,
+      "sha256": "a34291a5967cafcdf8676b94abf6dc798001bc33381cd262f5e017145cb10e52"
+    },
+    {
+      "path": "nvidia-low-side-raw.png",
+      "bytes": 285494,
+      "sha256": "e63d5234f62e9527cc11d6187810a2e74bafdda3164138d7d787508cf187581a"
+    },
+    {
+      "path": "run1-pixels.json",
+      "bytes": 6010,
+      "sha256": "6abedce0dea3c34cb97565935e5d0a03042a081c2c49eb824705e3e6d540702e"
+    },
+    {
+      "path": "run1-progress.log",
+      "bytes": 515,
+      "sha256": "f1604742e7872980768f38f24fec7803111fe3d1890528bcf18f46d2f2fb124b"
+    },
+    {
+      "path": "run1-result.json",
+      "bytes": 29468,
+      "sha256": "bf57f2f8818a365d379e5f901185bba0f0b8ec07a62b74eca8e6a5557fe29a28"
+    },
+    {
+      "path": "run2-execution.json",
+      "bytes": 1080,
+      "sha256": "69d07d1b660ae524c7165235567c8a0007f4e9a809c2af6d4b10630ddfcb49e6"
+    },
+    {
+      "path": "run2-pixels.json",
+      "bytes": 11966,
+      "sha256": "9b4616fbaa3adf77770e0e05ca83cadd5becdc0d35e9dfc306f68380cb47cf2e"
+    },
+    {
+      "path": "run2-progress.log",
+      "bytes": 515,
+      "sha256": "7a2f79d992b4b3ae2dd69db4bad148f37eb70a46d9846ae1a8333bbf054d5d28"
+    },
+    {
+      "path": "run2-result.json",
+      "bytes": 29703,
+      "sha256": "3730afddd603e95508697316198c5588af483bafde2f46028ba194a694697573"
+    },
+    {
+      "path": "run3-execution.json",
+      "bytes": 1031,
+      "sha256": "dc3085565e1480210393f5edef36c649be2513af2e1bc3979a002c343f426be7"
+    },
+    {
+      "path": "run3-pixels.json",
+      "bytes": 6240,
+      "sha256": "20b12d60dbf3e99ce41e33470d77dcc3345d6e1f2d95fc9d232109175f13140d"
+    },
+    {
+      "path": "run3-progress.log",
+      "bytes": 625,
+      "sha256": "945fe0fc4c51ccc387dc7e0f0267338097c5318163e7562af1009dd8f4cdfc7f"
+    },
+    {
+      "path": "run3-result.json",
+      "bytes": 29904,
+      "sha256": "8d26f05f9434bfd0327460a460fac945a2f1406050174f5db9c85a397480cf87"
+    },
+    {
+      "path": "run4-execution.json",
+      "bytes": 1075,
+      "sha256": "766f5b60dcba9a18a8100ec028ee67cdade2959d5b708eff970137aaed53d593"
+    },
+    {
+      "path": "run4-pixels.json",
+      "bytes": 4541,
+      "sha256": "13a36cf26f73a18d53fcf02cc843adcc79a81de732f395aaab468e49da4f0802"
+    },
+    {
+      "path": "run4-progress.log",
+      "bytes": 625,
+      "sha256": "f8772c4094696e140409cd1f82c0d17c444a8795014d677c20da0e7fd5049455"
+    },
+    {
+      "path": "run4-result.json",
+      "bytes": 30074,
+      "sha256": "bf3c9cc5f5f9408bb2342c2c74bdff9bc3ec0a6f0f4bd2d6e195f973eb854e79"
+    },
+    {
+      "path": "summary.json",
+      "bytes": 34957,
+      "sha256": "e470f46f06f10eb9b120c414b586386418679fd7e0ce23f3ec2418b590d5aa00"
+    }
+  ],
+  "excluded": [
+    "browser profiles",
+    "binary build outputs",
+    "redundant repeat captures",
+    "full original logs kept in tmp"
+  ]
+}
