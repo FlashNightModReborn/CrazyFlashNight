@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
 using System.Linq;
+using System.Drawing.Imaging;
+using System.Runtime.InteropServices;
 using System.Security.Cryptography;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -51,16 +53,20 @@ internal sealed class Issue122Form : Form
             await RunEnvironment("software", "--disable-gpu --disable-gpu-rasterization");
 
             var by = cells.ToDictionary(
-                x => x.Value<string>("backend") + "/" + x.Value<string>("mode"),
+                x => x.Value<string>("backend") + "/" + x.Value<string>("camera") + "/" + x.Value<string>("mode"),
                 x => x);
-            bool gpuRawChunked = SamePng(by["gpu/raw"], by["gpu/chunked"]);
-            bool gpuChunkedNonindexed = SamePng(by["gpu/chunked"], by["gpu/nonindexed"]);
-            bool softwareRawChunked = SamePng(by["software/raw"], by["software/chunked"]);
+            string[] cameras = { "issue-time", "current" };
+            bool gpuRawChunkedAll = cameras.All(camera =>
+                SamePixels(by["gpu/" + camera + "/raw"], by["gpu/" + camera + "/chunked"]));
+            bool gpuChunkedNonindexedAll = cameras.All(camera =>
+                SamePixels(by["gpu/" + camera + "/chunked"], by["gpu/" + camera + "/nonindexed"]));
+            bool softwareRawChunkedAll = cameras.All(camera =>
+                SamePixels(by["software/" + camera + "/raw"], by["software/" + camera + "/chunked"]));
 
             string classification =
-                !gpuRawChunked && gpuChunkedNonindexed && softwareRawChunked
+                !gpuRawChunkedAll && gpuChunkedNonindexedAll && softwareRawChunkedAll
                     ? "gpu_uint32_path_reproduced"
-                : gpuRawChunked && gpuChunkedNonindexed && softwareRawChunked
+                : gpuRawChunkedAll && gpuChunkedNonindexedAll && softwareRawChunkedAll
                     ? "not_reproduced_in_isolated_webview2"
                 : "mixed_result_manual_review_required";
 
@@ -72,9 +78,14 @@ internal sealed class Issue122Form : Form
                 ["os"] = Environment.OSVersion.ToString(),
                 ["processArch"] = System.Runtime.InteropServices.RuntimeInformation.ProcessArchitecture.ToString(),
                 ["comparisons"] = new JObject {
-                    ["gpuRawVsChunkedPngExact"] = gpuRawChunked,
-                    ["gpuChunkedVsNonindexedPngExact"] = gpuChunkedNonindexed,
-                    ["softwareRawVsChunkedPngExact"] = softwareRawChunked
+                    ["gpuRawVsChunkedPixelsExactAllCameras"] = gpuRawChunkedAll,
+                    ["gpuChunkedVsNonindexedPixelsExactAllCameras"] = gpuChunkedNonindexedAll,
+                    ["softwareRawVsChunkedPixelsExactAllCameras"] = softwareRawChunkedAll,
+                    ["byCamera"] = JObject.FromObject(cameras.ToDictionary(camera => camera, camera => new {
+                        gpuRawVsChunkedPixelsExact = SamePixels(by["gpu/" + camera + "/raw"], by["gpu/" + camera + "/chunked"]),
+                        gpuChunkedVsNonindexedPixelsExact = SamePixels(by["gpu/" + camera + "/chunked"], by["gpu/" + camera + "/nonindexed"]),
+                        softwareRawVsChunkedPixelsExact = SamePixels(by["software/" + camera + "/raw"], by["software/" + camera + "/chunked"])
+                    }))
                 },
                 ["cells"] = new JArray(cells)
             };
@@ -103,14 +114,16 @@ internal sealed class Issue122Form : Form
             ? new[] { "raw", "chunked", "nonindexed" }
             : new[] { "raw", "chunked" };
 
-        foreach (string mode in modes)
-            await CaptureCell(env, backend, browserArguments, mode);
+        foreach (string camera in new[] { "issue-time", "current" })
+            foreach (string mode in modes)
+                await CaptureCell(env, backend, browserArguments, camera, mode);
     }
 
     private async Task CaptureCell(
         CoreWebView2Environment env,
         string backend,
         string browserArguments,
+        string camera,
         string mode)
     {
         using var web = new WebView2 { Dock = DockStyle.Fill };
@@ -129,7 +142,8 @@ internal sealed class Issue122Form : Form
 
         string url =
             "https://issue122.local/modules/stage-select/dev/issue122-index-fixture.html" +
-            "?issue122IndexMode=" + Uri.EscapeDataString(mode);
+            "?issue122IndexMode=" + Uri.EscapeDataString(mode) +
+            "&issue122Camera=" + Uri.EscapeDataString(camera);
         web.CoreWebView2.Navigate(url);
         if (!await navigation.Task.WaitAsync(TimeSpan.FromSeconds(30)))
             throw new Exception("Navigation failed: " + backend + "/" + mode);
@@ -138,13 +152,14 @@ internal sealed class Issue122Form : Form
         JObject gl = await ReadGlIdentity(web);
 
         await Task.Delay(150);
-        string imagePath = Path.Combine(output, backend + "-" + mode + ".png");
+        string imagePath = Path.Combine(output, backend + "-" + camera + "-" + mode + ".png");
         using (var stream = File.Create(imagePath))
             await web.CoreWebView2.CapturePreviewAsync(
                 CoreWebView2CapturePreviewImageFormat.Png, stream);
 
         cells.Add(new JObject {
             ["backend"] = backend,
+            ["camera"] = camera,
             ["mode"] = mode,
             ["browserArguments"] = browserArguments,
             ["browserVersion"] = env.BrowserVersionString,
@@ -154,7 +169,8 @@ internal sealed class Issue122Form : Form
             ["png"] = new JObject {
                 ["path"] = Path.GetFileName(imagePath),
                 ["bytes"] = new FileInfo(imagePath).Length,
-                ["sha256"] = Hash(imagePath)
+                ["sha256"] = Hash(imagePath),
+                ["pixelSha256"] = PixelHash(imagePath)
             }
         });
     }
@@ -223,9 +239,32 @@ internal sealed class Issue122Form : Form
         return result;
     }
 
-    private static bool SamePng(JObject a, JObject b) =>
-        a["png"]?.Value<string>("sha256") ==
-        b["png"]?.Value<string>("sha256");
+    private static bool SamePixels(JObject a, JObject b) =>
+        a["png"]?.Value<string>("pixelSha256") ==
+        b["png"]?.Value<string>("pixelSha256");
+
+    private static string PixelHash(string path)
+    {
+        using var source = new Bitmap(path);
+        using var bitmap = new Bitmap(source.Width, source.Height, PixelFormat.Format32bppArgb);
+        using (Graphics g = Graphics.FromImage(bitmap)) g.DrawImageUnscaled(source, 0, 0);
+        var rect = new Rectangle(0, 0, bitmap.Width, bitmap.Height);
+        var data = bitmap.LockBits(rect, ImageLockMode.ReadOnly, PixelFormat.Format32bppArgb);
+        try
+        {
+            int rowBytes = bitmap.Width * 4;
+            byte[] normalized = new byte[rowBytes * bitmap.Height];
+            for (int y = 0; y < bitmap.Height; y++)
+            {
+                IntPtr sourceRow = data.Stride >= 0
+                    ? IntPtr.Add(data.Scan0, y * data.Stride)
+                    : IntPtr.Add(data.Scan0, (bitmap.Height - 1 - y) * -data.Stride);
+                Marshal.Copy(sourceRow, normalized, y * rowBytes, rowBytes);
+            }
+            return Convert.ToHexString(SHA256.HashData(normalized)).ToLowerInvariant();
+        }
+        finally { bitmap.UnlockBits(data); }
+    }
 
     private static string Hash(string path)
     {
