@@ -1,0 +1,45 @@
+{
+  "baseCommit": "137ab0dba7e860817838d02dd535f4609acd1262",
+  "inputs": [
+    {
+      "path": "tools/issue122/windows-webview2/Program.cs",
+      "sha256": "5d5387d51bd50d0c55ad1d0c00c7e27a09ad69f7d418f9358abc4ab8ca3d49b3"
+    },
+    {
+      "path": "tools/issue122/windows-webview2/ProbeRules.cs",
+      "sha256": "282537f9dd25e11d20271d3bb4c15685546ecdd82d1abae890470f6fb0f6f957"
+    },
+    {
+      "path": "tools/issue122/windows-webview2/Issue122.WebView2.csproj",
+      "sha256": "39d7df22d1ffb97f8363adfe95d35af73acb086ec4e2121df7595fb8b8db41bd"
+    },
+    {
+      "path": "tools/issue122/windows-webview2/run-local.ps1",
+      "sha256": "eeeb7b399c4d9af004d836af7fdce4541ef1ba5e7cca1da042d8d4dfaca74fd3"
+    },
+    {
+      "path": "tools/issue122/analyze-windows-pixels.py",
+      "sha256": "213b53113915fdb5e187bd71af7009fe71d97e68d826c13f9a48d054e929b671"
+    },
+    {
+      "path": "tools/issue122/collect-windows-evidence.py",
+      "sha256": "838d748ef6a7e9c9b8f47163c3dcf4d3018406cb3666cd57c3dbf25ab4ee5c07"
+    },
+    {
+      "path": "launcher/web/modules/stage-select/dev/issue122-index-fixture.html",
+      "sha256": "45b9cafaa6533ac6d8444fac05150593c510560e65c3387bb2fe428ad05e6833"
+    },
+    {
+      "path": "launcher/web/modules/stage-select/stage-select-fallen-scene.js",
+      "sha256": "a544bab717cac09a764196d34d52a82397f766b6a2ff9a16a80a5f72e14ea3ea"
+    },
+    {
+      "path": "launcher/web/modules/stage-select/stage-select-fallen-data.js",
+      "sha256": "16112bc2e60f903f4cc0ca7fae47dc8afbb8f6f074f2f4ee42c3bfeacdc3fed1"
+    },
+    {
+      "path": "launcher/web/modules/stage-select/stage-select-geometry-chunks.js",
+      "sha256": "7fe3df217e6c1d09dde5f2507ff0ae2390c3131d14b0271e041368678318be01"
+    }
+  ]
+}

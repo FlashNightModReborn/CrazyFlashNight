@@ -1,0 +1,113 @@
+{
+  "schema": 1,
+  "asset": {
+    "path": "launcher/web/assets/stage-diorama/fallen-city/city.glb",
+    "bytes": 27887228,
+    "sha256": "d59783a2c63007bbb236955bb0aa2f9d4236b953128d387a182101b47f9ccf81"
+  },
+  "gltf": {
+    "generator": "Khronos glTF Blender I/O v5.2.40",
+    "version": "2.0",
+    "extensionsUsed": [
+      "KHR_materials_unlit",
+      "KHR_materials_emissive_strength"
+    ],
+    "extensionsRequired": [],
+    "meshes": 46,
+    "nodes": 137,
+    "accessors": 205,
+    "bufferViews": 242,
+    "primitives": 46,
+    "indexComponentTypes": {
+      "5123": 45,
+      "5125": 1
+    }
+  },
+  "accessorProblems": [],
+  "suspect": {
+    "meshIndex": 21,
+    "meshName": "P4_RENDER_P4_Static_plain",
+    "primitiveIndex": 0,
+    "nodes": [
+      {
+        "index": 21,
+        "name": "P4_RENDER_P4_Static_plain"
+      }
+    ],
+    "material": 17,
+    "positionAccessor": 99,
+    "positionCount": 272907,
+    "index": {
+      "accessor": 103,
+      "componentType": 5125,
+      "count": 517113,
+      "min": 0,
+      "max": 272906,
+      "outOfRange": 0,
+      "above65535": 371236,
+      "trianglesTouchingAbove65535": 123752,
+      "byteOffset": 16849960,
+      "byteStride": 4
+    },
+    "bbox": {
+      "min": [
+        -114.00000762939453,
+        -6.000001907348633,
+        -108.72000885009766
+      ],
+      "max": [
+        114.74500274658203,
+        47.6832389831543,
+        266.4000244140625
+      ],
+      "diagonal": 442.6298786576862
+    },
+    "original": {
+      "count": 517113,
+      "p50": 0.7204351699565088,
+      "p95": 8.000078128194932,
+      "p99": 16.72120793249438,
+      "max": 190.80007878556216,
+      "maxOverBBoxDiagonal": 0.43106009780492016,
+      "over10pctBBox": 392,
+      "over25pctBBox": 48,
+      "over50pctBBox": 0,
+      "invalidTriangles": 0,
+      "degenerateTriangles": 0
+    },
+    "low16PerIndexCounterfactual": {
+      "count": 517113,
+      "p50": 1.9250436406354428,
+      "p95": 16.450000762939453,
+      "p99": 34.80001026051479,
+      "max": 288.2993631726393,
+      "maxOverBBoxDiagonal": 0.6513328111670461,
+      "over10pctBBox": 3437,
+      "over25pctBBox": 204,
+      "over50pctBBox": 16,
+      "invalidTriangles": 0,
+      "degenerateTriangles": 0
+    },
+    "uint32BufferReinterpretedAsUint16Counterfactual": {
+      "count": 517113,
+      "p50": 47.78453434610182,
+      "p95": 163.788133419204,
+      "p99": 238.99693932213896,
+      "max": 309.44919715825284,
+      "maxOverBBoxDiagonal": 0.6991150215540907,
+      "over10pctBBox": 270520,
+      "over25pctBBox": 85007,
+      "over50pctBBox": 9252,
+      "invalidTriangles": 0,
+      "degenerateTriangles": 86181
+    }
+  },
+  "conclusionInputs": {
+    "structuralIndexErrors": 0,
+    "referencesAbove65535": 371236,
+    "trianglesDependingOn32BitRange": 123752,
+    "originalMaxEdgeOverBBoxDiagonal": 0.43106009780492016,
+    "truncatedMaxEdgeOverBBoxDiagonal": 0.6513328111670461,
+    "reinterpretedMaxEdgeOverBBoxDiagonal": 0.6991150215540907
+  }
+}
