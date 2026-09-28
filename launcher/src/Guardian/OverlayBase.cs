@@ -315,6 +315,7 @@ namespace CF7Launcher.Guardian
                     SWP_NOMOVE | SWP_NOSIZE | SWP_NOACTIVATE);
             }
             TraceFocusLifecycle("show");
+            NotifyPresentationChanged();
         }
 
         /// <summary>
