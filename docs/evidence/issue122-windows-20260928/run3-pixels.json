@@ -1,0 +1,238 @@
+{
+  "schema": 1,
+  "comparisons": [
+    {
+      "name": "gpu-diagnostic-low-front-raw-vs-chunked",
+      "a": "gpu-diagnostic-low-front-raw.png",
+      "b": "gpu-diagnostic-low-front-chunked.png",
+      "pixels": 589824,
+      "changedPixels": 31,
+      "changedPercent": 0.005255805121527778,
+      "meanAbsoluteRgbaDifference": 0.0003314548068576389,
+      "maximumChannelDifference": 39,
+      "pixelsAtLeast2": 31,
+      "pixelsAtLeast8": 18,
+      "pixelsAtLeast16": 7,
+      "pixelsAtLeast64": 0,
+      "largestComponentsAtLeast16": [
+        {
+          "pixels": 3,
+          "bbox": [
+            528,
+            221,
+            529,
+            224
+          ]
+        },
+        {
+          "pixels": 2,
+          "bbox": [
+            531,
+            283,
+            533,
+            284
+          ]
+        },
+        {
+          "pixels": 1,
+          "bbox": [
+            543,
+            283,
+            544,
+            284
+          ]
+        },
+        {
+          "pixels": 1,
+          "bbox": [
+            554,
+            283,
+            555,
+            284
+          ]
+        }
+      ]
+    },
+    {
+      "name": "gpu-diagnostic-low-front-chunked-vs-nonindexed",
+      "a": "gpu-diagnostic-low-front-chunked.png",
+      "b": "gpu-diagnostic-low-front-nonindexed.png",
+      "pixels": 589824,
+      "changedPixels": 31,
+      "changedPercent": 0.005255805121527778,
+      "meanAbsoluteRgbaDifference": 0.0003314548068576389,
+      "maximumChannelDifference": 39,
+      "pixelsAtLeast2": 31,
+      "pixelsAtLeast8": 18,
+      "pixelsAtLeast16": 7,
+      "pixelsAtLeast64": 0,
+      "largestComponentsAtLeast16": [
+        {
+          "pixels": 3,
+          "bbox": [
+            528,
+            221,
+            529,
+            224
+          ]
+        },
+        {
+          "pixels": 2,
+          "bbox": [
+            531,
+            283,
+            533,
+            284
+          ]
+        },
+        {
+          "pixels": 1,
+          "bbox": [
+            543,
+            283,
+            544,
+            284
+          ]
+        },
+        {
+          "pixels": 1,
+          "bbox": [
+            554,
+            283,
+            555,
+            284
+          ]
+        }
+      ]
+    },
+    {
+      "name": "gpu-diagnostic-low-front-raw-vs-nonindexed",
+      "a": "gpu-diagnostic-low-front-raw.png",
+      "b": "gpu-diagnostic-low-front-nonindexed.png",
+      "pixels": 589824,
+      "changedPixels": 0,
+      "changedPercent": 0.0,
+      "meanAbsoluteRgbaDifference": 0.0,
+      "maximumChannelDifference": 0,
+      "pixelsAtLeast2": 0,
+      "pixelsAtLeast8": 0,
+      "pixelsAtLeast16": 0,
+      "pixelsAtLeast64": 0,
+      "largestComponentsAtLeast16": []
+    },
+    {
+      "name": "software-diagnostic-low-front-raw-vs-chunked",
+      "a": "software-diagnostic-low-front-raw.png",
+      "b": "software-diagnostic-low-front-chunked.png",
+      "pixels": 589824,
+      "changedPixels": 1,
+      "changedPercent": 0.00016954210069444444,
+      "meanAbsoluteRgbaDifference": 5.510118272569444e-06,
+      "maximumChannelDifference": 6,
+      "pixelsAtLeast2": 1,
+      "pixelsAtLeast8": 0,
+      "pixelsAtLeast16": 0,
+      "pixelsAtLeast64": 0,
+      "largestComponentsAtLeast16": []
+    },
+    {
+      "name": "gpu-diagnostic-low-side-raw-vs-chunked",
+      "a": "gpu-diagnostic-low-side-raw.png",
+      "b": "gpu-diagnostic-low-side-chunked.png",
+      "pixels": 589824,
+      "changedPixels": 12,
+      "changedPercent": 0.002034505208333333,
+      "meanAbsoluteRgbaDifference": 0.00022252400716145834,
+      "maximumChannelDifference": 42,
+      "pixelsAtLeast2": 12,
+      "pixelsAtLeast8": 9,
+      "pixelsAtLeast16": 7,
+      "pixelsAtLeast64": 0,
+      "largestComponentsAtLeast16": [
+        {
+          "pixels": 6,
+          "bbox": [
+            639,
+            337,
+            642,
+            339
+          ]
+        },
+        {
+          "pixels": 1,
+          "bbox": [
+            184,
+            285,
+            185,
+            286
+          ]
+        }
+      ]
+    },
+    {
+      "name": "gpu-diagnostic-low-side-chunked-vs-nonindexed",
+      "a": "gpu-diagnostic-low-side-chunked.png",
+      "b": "gpu-diagnostic-low-side-nonindexed.png",
+      "pixels": 589824,
+      "changedPixels": 21,
+      "changedPercent": 0.0035603841145833335,
+      "meanAbsoluteRgbaDifference": 0.00013139512803819444,
+      "maximumChannelDifference": 14,
+      "pixelsAtLeast2": 21,
+      "pixelsAtLeast8": 6,
+      "pixelsAtLeast16": 0,
+      "pixelsAtLeast64": 0,
+      "largestComponentsAtLeast16": []
+    },
+    {
+      "name": "gpu-diagnostic-low-side-raw-vs-nonindexed",
+      "a": "gpu-diagnostic-low-side-raw.png",
+      "b": "gpu-diagnostic-low-side-nonindexed.png",
+      "pixels": 589824,
+      "changedPixels": 33,
+      "changedPercent": 0.005594889322916666,
+      "meanAbsoluteRgbaDifference": 0.00035391913519965275,
+      "maximumChannelDifference": 42,
+      "pixelsAtLeast2": 33,
+      "pixelsAtLeast8": 15,
+      "pixelsAtLeast16": 7,
+      "pixelsAtLeast64": 0,
+      "largestComponentsAtLeast16": [
+        {
+          "pixels": 6,
+          "bbox": [
+            639,
+            337,
+            642,
+            339
+          ]
+        },
+        {
+          "pixels": 1,
+          "bbox": [
+            184,
+            285,
+            185,
+            286
+          ]
+        }
+      ]
+    },
+    {
+      "name": "software-diagnostic-low-side-raw-vs-chunked",
+      "a": "software-diagnostic-low-side-raw.png",
+      "b": "software-diagnostic-low-side-chunked.png",
+      "pixels": 589824,
+      "changedPixels": 1,
+      "changedPercent": 0.00016954210069444444,
+      "meanAbsoluteRgbaDifference": 3.3908420138888887e-06,
+      "maximumChannelDifference": 3,
+      "pixelsAtLeast2": 1,
+      "pixelsAtLeast8": 0,
+      "pixelsAtLeast16": 0,
+      "pixelsAtLeast64": 0,
+      "largestComponentsAtLeast16": []
+    }
+  ],
+  "boundary": "Numerical measurements only; no tolerance-based acceptance or driver attribution."
+}

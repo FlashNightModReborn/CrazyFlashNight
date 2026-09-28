@@ -1,0 +1,24 @@
+{
+    "baseCommit":  "137ab0dba7e860817838d02dd535f4609acd1262",
+    "sdk":  "10.0.300",
+    "dllSha256":  "25FCC3D43EA43586204139B42425F8A10BD8CA583E10EDA9B259B0DB0BBDCF2D",
+    "sourceFiles":  [
+                        {
+                            "path":  "Program.cs",
+                            "sha256":  "5D5387D51BD50D0C55AD1D0C00C7E27A09AD69F7D418F9358ABC4AB8CA3D49B3"
+                        },
+                        {
+                            "path":  "ProbeRules.cs",
+                            "sha256":  "282537F9DD25E11D20271D3BB4C15685546ECDD82D1ABAE890470F6FB0F6F957"
+                        },
+                        {
+                            "path":  "Issue122.WebView2.csproj",
+                            "sha256":  "39D7DF22D1FFB97F8363ADFE95D35AF73ACB086EC4E2121DF7595FB8B8DB41BD"
+                        }
+                    ],
+    "cameraSet":  "low",
+    "requestedAdapter":  "high-performance",
+    "gpuArguments":  "--force-high-performance-gpu",
+    "exitCode":  1,
+    "elapsedSeconds":  21.223789099999998
+}

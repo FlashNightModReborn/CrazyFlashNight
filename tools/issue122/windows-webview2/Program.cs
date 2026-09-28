@@ -14,13 +14,23 @@ using Newtonsoft.Json.Linq;
 
 internal sealed class Issue122Form : Form
 {
+    protected override bool ShowWithoutActivation => true;
     private readonly string root;
     private readonly string output;
     private readonly List<JObject> cells = new();
+    private readonly JObject assetHashes;
+    private readonly string[] cameras = Environment.GetEnvironmentVariable("CF7_ISSUE122_CAMERA_SET") == "low"
+        ? new[] { "diagnostic-low-front", "diagnostic-low-side" }
+        : new[] { "issue-time", "current" };
 
     [STAThread]
     private static void Main(string[] args)
     {
+        if (args.Length == 2 && args[0] == "--self-test")
+        {
+            ProbeRules.RunTests(args[1]);
+            return;
+        }
         if (args.Length != 2)
         {
             Console.Error.WriteLine("Usage: Issue122.WebView2.exe <repo-root> <output-dir>");
@@ -35,7 +45,14 @@ internal sealed class Issue122Form : Form
     {
         this.root = root;
         this.output = output;
+        if (Directory.Exists(output) && Directory.EnumerateFileSystemEntries(output).Any())
+            throw new InvalidOperationException("Output directory must be fresh; evidence is never overwritten.");
         Directory.CreateDirectory(output);
+        assetHashes = new JObject {
+            ["city.glb"] = Hash(Path.Combine(root, "launcher/web/assets/stage-diorama/fallen-city/city.glb")),
+            ["selection.glb"] = Hash(Path.Combine(root, "launcher/web/assets/stage-diorama/fallen-city/selection.glb"))
+        };
+        File.WriteAllText(Path.Combine(output, "asset-hashes.json"), assetHashes.ToString());
         Text = "CF7 Issue #122 WebView2 A/B";
         ShowInTaskbar = false;
         FormBorderStyle = FormBorderStyle.FixedToolWindow;
@@ -49,13 +66,12 @@ internal sealed class Issue122Form : Form
     {
         try
         {
-            await RunEnvironment("gpu", "");
+            await RunEnvironment("gpu", Environment.GetEnvironmentVariable("CF7_ISSUE122_GPU_ARGS") ?? "");
             await RunEnvironment("software", "--disable-gpu --disable-gpu-rasterization");
 
             var by = cells.ToDictionary(
                 x => x.Value<string>("backend") + "/" + x.Value<string>("camera") + "/" + x.Value<string>("mode"),
                 x => x);
-            string[] cameras = { "issue-time", "current" };
             bool gpuRawChunkedAll = cameras.All(camera =>
                 SamePixels(by["gpu/" + camera + "/raw"], by["gpu/" + camera + "/chunked"]));
             bool gpuChunkedNonindexedAll = cameras.All(camera =>
@@ -63,20 +79,23 @@ internal sealed class Issue122Form : Form
             bool softwareRawChunkedAll = cameras.All(camera =>
                 SamePixels(by["software/" + camera + "/raw"], by["software/" + camera + "/chunked"]));
 
-            string classification =
-                !gpuRawChunkedAll && gpuChunkedNonindexedAll && softwareRawChunkedAll
-                    ? "gpu_uint32_path_reproduced"
-                : gpuRawChunkedAll && gpuChunkedNonindexedAll && softwareRawChunkedAll
-                    ? "not_reproduced_in_isolated_webview2"
-                : "mixed_result_manual_review_required";
+            bool backendVerified = ProbeRules.VerifiedBackends(cells);
+            string classification = ProbeRules.Classify(
+                cameras.Select(c => SamePixels(by["gpu/" + c + "/raw"], by["gpu/" + c + "/chunked"])).ToArray(),
+                cameras.Select(c => SamePixels(by["gpu/" + c + "/chunked"], by["gpu/" + c + "/nonindexed"])).ToArray(),
+                cameras.Select(c => SamePixels(by["software/" + c + "/raw"], by["software/" + c + "/chunked"])).ToArray(),
+                backendVerified);
 
             var result = new JObject {
-                ["schema"] = 1,
+                ["schema"] = 2,
                 ["status"] = "completed",
                 ["classification"] = classification,
                 ["repoRoot"] = root,
                 ["os"] = Environment.OSVersion.ToString(),
                 ["processArch"] = System.Runtime.InteropServices.RuntimeInformation.ProcessArchitecture.ToString(),
+                ["assetHashes"] = assetHashes,
+                ["backendVerified"] = backendVerified,
+                ["cameraProfiles"] = new JArray(cameras),
                 ["comparisons"] = new JObject {
                     ["gpuRawVsChunkedPixelsExactAllCameras"] = gpuRawChunkedAll,
                     ["gpuChunkedVsNonindexedPixelsExactAllCameras"] = gpuChunkedNonindexedAll,
@@ -91,12 +110,17 @@ internal sealed class Issue122Form : Form
             };
             File.WriteAllText(Path.Combine(output, "result.json"), result.ToString());
 
-            if (classification == "mixed_result_manual_review_required")
+            if (classification == "mixed_result_manual_review_required" || !backendVerified)
                 Environment.ExitCode = 1;
         }
         catch (Exception error)
         {
             File.WriteAllText(Path.Combine(output, "failure.txt"), error.ToString());
+            File.WriteAllText(Path.Combine(output, "result.json"), new JObject {
+                ["schema"] = 2, ["status"] = "failed", ["repoRoot"] = root,
+                ["assetHashes"] = assetHashes, ["error"] = error.ToString(),
+                ["cells"] = new JArray(cells)
+            }.ToString());
             Environment.ExitCode = 1;
         }
         finally
@@ -114,7 +138,7 @@ internal sealed class Issue122Form : Form
             ? new[] { "raw", "chunked", "nonindexed" }
             : new[] { "raw", "chunked" };
 
-        foreach (string camera in new[] { "issue-time", "current" })
+        foreach (string camera in cameras)
             foreach (string mode in modes)
                 await CaptureCell(env, backend, browserArguments, camera, mode);
     }
@@ -126,6 +150,7 @@ internal sealed class Issue122Form : Form
         string camera,
         string mode)
     {
+        File.AppendAllText(Path.Combine(output, "progress.log"), DateTime.UtcNow.ToString("O") + " " + backend + "/" + camera + "/" + mode + "\n");
         using var web = new WebView2 { Dock = DockStyle.Fill };
         Controls.Clear();
         Controls.Add(web);
@@ -148,14 +173,24 @@ internal sealed class Issue122Form : Form
         if (!await navigation.Task.WaitAsync(TimeSpan.FromSeconds(30)))
             throw new Exception("Navigation failed: " + backend + "/" + mode);
 
-        JObject fixture = await WaitForFixture(web, backend, mode);
+        JObject fixture = await WaitForFixture(web, backend, camera, mode);
         JObject gl = await ReadGlIdentity(web);
+        foreach (var asset in assetHashes.Properties())
+            if (fixture["stats"]?["loadedHashes"]?.Value<string>(asset.Name) != asset.Value.Value<string>())
+                throw new Exception("Fixture asset identity mismatch: " + asset.Name);
 
         await Task.Delay(150);
         string imagePath = Path.Combine(output, backend + "-" + camera + "-" + mode + ".png");
         using (var stream = File.Create(imagePath))
             await web.CoreWebView2.CapturePreviewAsync(
                 CoreWebView2CapturePreviewImageFormat.Png, stream);
+        await Task.Delay(150);
+        string repeatPath = Path.Combine(output, backend + "-" + camera + "-" + mode + "-repeat.png");
+        using (var stream = File.Create(repeatPath))
+            await web.CoreWebView2.CapturePreviewAsync(CoreWebView2CapturePreviewImageFormat.Png, stream);
+        string pixelHash = PixelHash(imagePath);
+        bool stable = pixelHash == PixelHash(repeatPath);
+        using var bitmap = new Bitmap(imagePath);
 
         cells.Add(new JObject {
             ["backend"] = backend,
@@ -166,17 +201,26 @@ internal sealed class Issue122Form : Form
             ["source"] = url,
             ["stats"] = fixture["stats"],
             ["gl"] = gl,
+            ["observedBackendKind"] = ProbeRules.BackendKind(gl),
+            ["pixelsStable"] = stable,
             ["png"] = new JObject {
                 ["path"] = Path.GetFileName(imagePath),
                 ["bytes"] = new FileInfo(imagePath).Length,
                 ["sha256"] = Hash(imagePath),
-                ["pixelSha256"] = PixelHash(imagePath)
+                ["pixelSha256"] = pixelHash,
+                ["width"] = bitmap.Width,
+                ["height"] = bitmap.Height,
+                ["repeatPixelSha256"] = PixelHash(repeatPath)
             }
         });
+        File.WriteAllText(Path.Combine(output, "partial-result.json"), new JObject {
+            ["schema"] = 2, ["status"] = "in_progress", ["cells"] = new JArray(cells)
+        }.ToString());
+        if (!stable) throw new Exception("Non-deterministic pixels: " + backend + "/" + camera + "/" + mode);
     }
 
     private static async Task<JObject> WaitForFixture(
-        WebView2 web, string backend, string mode)
+        WebView2 web, string backend, string camera, string mode)
     {
         for (int i = 0; i < 300; i++)
         {
@@ -184,6 +228,7 @@ internal sealed class Issue122Form : Form
                 @"(() => JSON.stringify({
                     ready: !!window.Issue122Fixture?.ready,
                     error: window.Issue122Fixture?.error || null,
+                    camera: window.Issue122Fixture?.cameraProfile || null,
                     stats: window.Issue122Fixture?.ready
                         ? window.Issue122Fixture.stats()
                         : null
@@ -199,8 +244,17 @@ internal sealed class Issue122Form : Form
                 if (stats == null) throw new Exception("Missing fixture stats");
                 if (stats.Value<string>("issue122Mode") != mode)
                     throw new Exception("Mode propagation mismatch");
+                if (state.Value<string>("camera") != camera)
+                    throw new Exception("Camera propagation mismatch");
                 if (stats.Value<int>("triangles") != 361010)
                     throw new Exception("Triangle count mismatch");
+                if (stats.Value<int>("calls") != (mode == "chunked" ? 55 : 51))
+                    throw new Exception("Draw count mismatch");
+                var adaptation = stats["indexCompatibility"]?.First as JObject;
+                if (adaptation == null || adaptation.Value<string>("mode") != mode ||
+                    (mode == "chunked" && adaptation.Value<int>("outputChunks") != 5) ||
+                    (mode == "nonindexed" && adaptation.Value<int>("expandedBatches") != 1))
+                    throw new Exception("Index adaptation mismatch");
                 return state;
             }
             await Task.Delay(100);
@@ -228,6 +282,7 @@ internal sealed class Issue122Form : Form
                     maxElementsVertices:gl.getParameter(gl.MAX_ELEMENTS_VERTICES),
                     error:gl.getError(),
                     userAgent:navigator.userAgent
+                    ,viewport:{width:innerWidth,height:innerHeight,dpr:devicePixelRatio,canvasWidth:canvas.width,canvasHeight:canvas.height}
                 });
             })()");
         string json = JToken.Parse(raw).Value<string>();
@@ -239,9 +294,7 @@ internal sealed class Issue122Form : Form
         return result;
     }
 
-    private static bool SamePixels(JObject a, JObject b) =>
-        a["png"]?.Value<string>("pixelSha256") ==
-        b["png"]?.Value<string>("pixelSha256");
+    private static bool SamePixels(JObject a, JObject b) => ProbeRules.SamePixels(a, b);
 
     private static string PixelHash(string path)
     {

@@ -15,6 +15,14 @@ if(cameraProfile==='issue-time'){
     horizontalSpan:262.9185290941067,
     maxSpan:600
   };
+}else if(cameraProfile==='diagnostic-low-front'||cameraProfile==='diagnostic-low-side'){
+  // Supplemental diagnostic views, not recovered coordinates from the reported screenshot.
+  StageSelectFallenData.camera={
+    gltfPosition:cameraProfile==='diagnostic-low-front'?[-20.52314647300354,95,399.0858186660858]:[340,95,150],
+    gltfTarget:[-11.240657892625123,22.526175937178454,14.021338389531051],
+    horizontalSpan:300,
+    maxSpan:600
+  };
 }else if(cameraProfile!=='current'){
   throw new Error('Invalid issue122Camera');
 }

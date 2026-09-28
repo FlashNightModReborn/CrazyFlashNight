@@ -1,0 +1,238 @@
+{
+  "schema": 1,
+  "comparisons": [
+    {
+      "name": "gpu-issue-time-raw-vs-chunked",
+      "a": "gpu-issue-time-raw.png",
+      "b": "gpu-issue-time-chunked.png",
+      "pixels": 589824,
+      "changedPixels": 28,
+      "changedPercent": 0.004747178819444445,
+      "meanAbsoluteRgbaDifference": 0.00022761027018229166,
+      "maximumChannelDifference": 28,
+      "pixelsAtLeast2": 28,
+      "pixelsAtLeast8": 20,
+      "pixelsAtLeast16": 7,
+      "pixelsAtLeast64": 0,
+      "largestComponentsAtLeast16": [
+        {
+          "pixels": 3,
+          "bbox": [
+            534,
+            282,
+            536,
+            284
+          ]
+        },
+        {
+          "pixels": 2,
+          "bbox": [
+            560,
+            267,
+            561,
+            269
+          ]
+        },
+        {
+          "pixels": 1,
+          "bbox": [
+            547,
+            264,
+            548,
+            265
+          ]
+        },
+        {
+          "pixels": 1,
+          "bbox": [
+            560,
+            265,
+            561,
+            266
+          ]
+        }
+      ]
+    },
+    {
+      "name": "gpu-issue-time-chunked-vs-nonindexed",
+      "a": "gpu-issue-time-chunked.png",
+      "b": "gpu-issue-time-nonindexed.png",
+      "pixels": 589824,
+      "changedPixels": 20,
+      "changedPercent": 0.003390842013888889,
+      "meanAbsoluteRgbaDifference": 0.00018225775824652778,
+      "maximumChannelDifference": 17,
+      "pixelsAtLeast2": 19,
+      "pixelsAtLeast8": 13,
+      "pixelsAtLeast16": 1,
+      "pixelsAtLeast64": 0,
+      "largestComponentsAtLeast16": [
+        {
+          "pixels": 1,
+          "bbox": [
+            203,
+            531,
+            204,
+            532
+          ]
+        }
+      ]
+    },
+    {
+      "name": "gpu-issue-time-raw-vs-nonindexed",
+      "a": "gpu-issue-time-raw.png",
+      "b": "gpu-issue-time-nonindexed.png",
+      "pixels": 589824,
+      "changedPixels": 44,
+      "changedPercent": 0.007459852430555556,
+      "meanAbsoluteRgbaDifference": 0.000400543212890625,
+      "maximumChannelDifference": 28,
+      "pixelsAtLeast2": 43,
+      "pixelsAtLeast8": 33,
+      "pixelsAtLeast16": 8,
+      "pixelsAtLeast64": 0,
+      "largestComponentsAtLeast16": [
+        {
+          "pixels": 3,
+          "bbox": [
+            534,
+            282,
+            536,
+            284
+          ]
+        },
+        {
+          "pixels": 2,
+          "bbox": [
+            560,
+            267,
+            561,
+            269
+          ]
+        },
+        {
+          "pixels": 1,
+          "bbox": [
+            547,
+            264,
+            548,
+            265
+          ]
+        },
+        {
+          "pixels": 1,
+          "bbox": [
+            560,
+            265,
+            561,
+            266
+          ]
+        },
+        {
+          "pixels": 1,
+          "bbox": [
+            203,
+            531,
+            204,
+            532
+          ]
+        }
+      ]
+    },
+    {
+      "name": "software-issue-time-raw-vs-chunked",
+      "a": "software-issue-time-raw.png",
+      "b": "software-issue-time-chunked.png",
+      "pixels": 589824,
+      "changedPixels": 20,
+      "changedPercent": 0.003390842013888889,
+      "meanAbsoluteRgbaDifference": 0.00015470716688368056,
+      "maximumChannelDifference": 20,
+      "pixelsAtLeast2": 19,
+      "pixelsAtLeast8": 7,
+      "pixelsAtLeast16": 4,
+      "pixelsAtLeast64": 0,
+      "largestComponentsAtLeast16": [
+        {
+          "pixels": 3,
+          "bbox": [
+            530,
+            152,
+            531,
+            155
+          ]
+        },
+        {
+          "pixels": 1,
+          "bbox": [
+            203,
+            531,
+            204,
+            532
+          ]
+        }
+      ]
+    },
+    {
+      "name": "gpu-current-raw-vs-chunked",
+      "a": "gpu-current-raw.png",
+      "b": "gpu-current-chunked.png",
+      "pixels": 589824,
+      "changedPixels": 20,
+      "changedPercent": 0.003390842013888889,
+      "meanAbsoluteRgbaDifference": 0.00014580620659722222,
+      "maximumChannelDifference": 14,
+      "pixelsAtLeast2": 20,
+      "pixelsAtLeast8": 11,
+      "pixelsAtLeast16": 0,
+      "pixelsAtLeast64": 0,
+      "largestComponentsAtLeast16": []
+    },
+    {
+      "name": "gpu-current-chunked-vs-nonindexed",
+      "a": "gpu-current-chunked.png",
+      "b": "gpu-current-nonindexed.png",
+      "pixels": 589824,
+      "changedPixels": 13,
+      "changedPercent": 0.0022040473090277775,
+      "meanAbsoluteRgbaDifference": 8.900960286458333e-05,
+      "maximumChannelDifference": 14,
+      "pixelsAtLeast2": 13,
+      "pixelsAtLeast8": 5,
+      "pixelsAtLeast16": 0,
+      "pixelsAtLeast64": 0,
+      "largestComponentsAtLeast16": []
+    },
+    {
+      "name": "gpu-current-raw-vs-nonindexed",
+      "a": "gpu-current-raw.png",
+      "b": "gpu-current-nonindexed.png",
+      "pixels": 589824,
+      "changedPixels": 11,
+      "changedPercent": 0.001864963107638889,
+      "meanAbsoluteRgbaDifference": 6.273057725694444e-05,
+      "maximumChannelDifference": 13,
+      "pixelsAtLeast2": 11,
+      "pixelsAtLeast8": 6,
+      "pixelsAtLeast16": 0,
+      "pixelsAtLeast64": 0,
+      "largestComponentsAtLeast16": []
+    },
+    {
+      "name": "software-current-raw-vs-chunked",
+      "a": "software-current-raw.png",
+      "b": "software-current-chunked.png",
+      "pixels": 589824,
+      "changedPixels": 9,
+      "changedPercent": 0.00152587890625,
+      "meanAbsoluteRgbaDifference": 5.298190646701389e-05,
+      "maximumChannelDifference": 10,
+      "pixelsAtLeast2": 9,
+      "pixelsAtLeast8": 1,
+      "pixelsAtLeast16": 0,
+      "pixelsAtLeast64": 0,
+      "largestComponentsAtLeast16": []
+    }
+  ],
+  "boundary": "Numerical measurements only; no tolerance-based acceptance or driver attribution."
+}

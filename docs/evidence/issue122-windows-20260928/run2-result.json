@@ -1,0 +1,812 @@
+{
+  "schema": 2,
+  "status": "completed",
+  "classification": "mixed_result_manual_review_required",
+  "repoRoot": "C:\\Users\\fs\\.codex\\worktrees\\issue122-webview2\\CrazyFlashNight",
+  "os": "Microsoft Windows NT 10.0.26200.0",
+  "processArch": "X64",
+  "assetHashes": {
+    "city.glb": "d59783a2c63007bbb236955bb0aa2f9d4236b953128d387a182101b47f9ccf81",
+    "selection.glb": "3c6639b949dfad274f7025f1190fec8b120dba8eea1103d45bdb00dec2d65c81"
+  },
+  "backendVerified": true,
+  "cameraProfiles": [
+    "issue-time",
+    "current"
+  ],
+  "comparisons": {
+    "gpuRawVsChunkedPixelsExactAllCameras": false,
+    "gpuChunkedVsNonindexedPixelsExactAllCameras": false,
+    "softwareRawVsChunkedPixelsExactAllCameras": false,
+    "byCamera": {
+      "issue-time": {
+        "gpuRawVsChunkedPixelsExact": false,
+        "gpuChunkedVsNonindexedPixelsExact": false,
+        "softwareRawVsChunkedPixelsExact": false
+      },
+      "current": {
+        "gpuRawVsChunkedPixelsExact": false,
+        "gpuChunkedVsNonindexedPixelsExact": false,
+        "softwareRawVsChunkedPixelsExact": false
+      }
+    }
+  },
+  "cells": [
+    {
+      "backend": "gpu",
+      "camera": "issue-time",
+      "mode": "raw",
+      "browserArguments": "--force-high-performance-gpu",
+      "browserVersion": "153.0.4234.48",
+      "source": "https://issue122.local/modules/stage-select/dev/issue122-index-fixture.html?issue122IndexMode=raw&issue122Camera=issue-time",
+      "stats": {
+        "frames": 2,
+        "calls": 51,
+        "triangles": 361010,
+        "loadMs": 1377,
+        "cutaway": false,
+        "indexCompatibility": [
+          {
+            "asset": "city.glb",
+            "mode": "raw",
+            "partitionedBatches": 0,
+            "inputTriangles": 0,
+            "outputTriangles": 0,
+            "outputChunks": 0
+          },
+          {
+            "asset": "selection.glb",
+            "mode": "raw",
+            "partitionedBatches": 0,
+            "inputTriangles": 0,
+            "outputTriangles": 0,
+            "outputChunks": 0
+          }
+        ],
+        "loadedHashes": {
+          "city.glb": "d59783a2c63007bbb236955bb0aa2f9d4236b953128d387a182101b47f9ccf81",
+          "selection.glb": "3c6639b949dfad274f7025f1190fec8b120dba8eea1103d45bdb00dec2d65c81"
+        },
+        "issue122Mode": "raw",
+        "selectedParts": [],
+        "geometries": 47,
+        "textures": 51,
+        "width": 1024,
+        "height": 576,
+        "moving": false,
+        "editing": false,
+        "focusId": "",
+        "highlighted": ""
+      },
+      "gl": {
+        "webgl2": true,
+        "vendor": "WebKit",
+        "renderer": "WebKit WebGL",
+        "version": "WebGL 2.0 (OpenGL ES 3.0 Chromium)",
+        "shadingLanguageVersion": "WebGL GLSL ES 3.00 (OpenGL ES GLSL ES 3.0 Chromium)",
+        "unmaskedVendor": "Google Inc. (NVIDIA)",
+        "unmaskedRenderer": "ANGLE (NVIDIA, NVIDIA GeForce GTX 1650 (0x00001F91) Direct3D11 vs_5_0 ps_5_0, D3D11)",
+        "maxElementsIndices": 2147483647,
+        "maxElementsVertices": 2147483647,
+        "error": 0,
+        "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/153.0.0.0 Safari/537.36 Edg/153.0.0.0",
+        "viewport": {
+          "width": 1024,
+          "height": 576,
+          "dpr": 1,
+          "canvasWidth": 1024,
+          "canvasHeight": 576
+        }
+      },
+      "observedBackendKind": "hardware",
+      "pixelsStable": true,
+      "png": {
+        "path": "gpu-issue-time-raw.png",
+        "bytes": 473965,
+        "sha256": "96120522d437865a7c3d255b19f8e2528e972c9fe5c85c3201501cb31bfc0c47",
+        "pixelSha256": "8553424656813560e347b30f23431f1f6010057d9e1fa39f3c692aa8f3222b6e",
+        "width": 1024,
+        "height": 576,
+        "repeatPixelSha256": "8553424656813560e347b30f23431f1f6010057d9e1fa39f3c692aa8f3222b6e"
+      }
+    },
+    {
+      "backend": "gpu",
+      "camera": "issue-time",
+      "mode": "chunked",
+      "browserArguments": "--force-high-performance-gpu",
+      "browserVersion": "153.0.4234.48",
+      "source": "https://issue122.local/modules/stage-select/dev/issue122-index-fixture.html?issue122IndexMode=chunked&issue122Camera=issue-time",
+      "stats": {
+        "frames": 2,
+        "calls": 55,
+        "triangles": 361010,
+        "loadMs": 1161,
+        "cutaway": false,
+        "indexCompatibility": [
+          {
+            "asset": "city.glb",
+            "mode": "chunked",
+            "partitionedBatches": 1,
+            "inputTriangles": 172371,
+            "outputTriangles": 172371,
+            "outputChunks": 5
+          },
+          {
+            "asset": "selection.glb",
+            "mode": "chunked",
+            "partitionedBatches": 0,
+            "inputTriangles": 0,
+            "outputTriangles": 0,
+            "outputChunks": 0
+          }
+        ],
+        "loadedHashes": {
+          "city.glb": "d59783a2c63007bbb236955bb0aa2f9d4236b953128d387a182101b47f9ccf81",
+          "selection.glb": "3c6639b949dfad274f7025f1190fec8b120dba8eea1103d45bdb00dec2d65c81"
+        },
+        "issue122Mode": "chunked",
+        "selectedParts": [],
+        "geometries": 51,
+        "textures": 51,
+        "width": 1024,
+        "height": 576,
+        "moving": false,
+        "editing": false,
+        "focusId": "",
+        "highlighted": ""
+      },
+      "gl": {
+        "webgl2": true,
+        "vendor": "WebKit",
+        "renderer": "WebKit WebGL",
+        "version": "WebGL 2.0 (OpenGL ES 3.0 Chromium)",
+        "shadingLanguageVersion": "WebGL GLSL ES 3.00 (OpenGL ES GLSL ES 3.0 Chromium)",
+        "unmaskedVendor": "Google Inc. (NVIDIA)",
+        "unmaskedRenderer": "ANGLE (NVIDIA, NVIDIA GeForce GTX 1650 (0x00001F91) Direct3D11 vs_5_0 ps_5_0, D3D11)",
+        "maxElementsIndices": 2147483647,
+        "maxElementsVertices": 2147483647,
+        "error": 0,
+        "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/153.0.0.0 Safari/537.36 Edg/153.0.0.0",
+        "viewport": {
+          "width": 1024,
+          "height": 576,
+          "dpr": 1,
+          "canvasWidth": 1024,
+          "canvasHeight": 576
+        }
+      },
+      "observedBackendKind": "hardware",
+      "pixelsStable": true,
+      "png": {
+        "path": "gpu-issue-time-chunked.png",
+        "bytes": 473999,
+        "sha256": "29e9aed1480b7df766a91674cae08c53bdb958da2a4bcfb76039dc0c9ce8c740",
+        "pixelSha256": "3b9e81768c22a1f6d591e6e58b3e5177bfed8de75938c6e216ca5d5b077b9298",
+        "width": 1024,
+        "height": 576,
+        "repeatPixelSha256": "3b9e81768c22a1f6d591e6e58b3e5177bfed8de75938c6e216ca5d5b077b9298"
+      }
+    },
+    {
+      "backend": "gpu",
+      "camera": "issue-time",
+      "mode": "nonindexed",
+      "browserArguments": "--force-high-performance-gpu",
+      "browserVersion": "153.0.4234.48",
+      "source": "https://issue122.local/modules/stage-select/dev/issue122-index-fixture.html?issue122IndexMode=nonindexed&issue122Camera=issue-time",
+      "stats": {
+        "frames": 2,
+        "calls": 51,
+        "triangles": 361010,
+        "loadMs": 1101,
+        "cutaway": false,
+        "indexCompatibility": [
+          {
+            "asset": "city.glb",
+            "mode": "nonindexed",
+            "expandedBatches": 1,
+            "inputTriangles": 172371,
+            "outputTriangles": 172371
+          },
+          {
+            "asset": "selection.glb",
+            "mode": "nonindexed",
+            "expandedBatches": 0,
+            "inputTriangles": 0,
+            "outputTriangles": 0
+          }
+        ],
+        "loadedHashes": {
+          "city.glb": "d59783a2c63007bbb236955bb0aa2f9d4236b953128d387a182101b47f9ccf81",
+          "selection.glb": "3c6639b949dfad274f7025f1190fec8b120dba8eea1103d45bdb00dec2d65c81"
+        },
+        "issue122Mode": "nonindexed",
+        "selectedParts": [],
+        "geometries": 47,
+        "textures": 51,
+        "width": 1024,
+        "height": 576,
+        "moving": false,
+        "editing": false,
+        "focusId": "",
+        "highlighted": ""
+      },
+      "gl": {
+        "webgl2": true,
+        "vendor": "WebKit",
+        "renderer": "WebKit WebGL",
+        "version": "WebGL 2.0 (OpenGL ES 3.0 Chromium)",
+        "shadingLanguageVersion": "WebGL GLSL ES 3.00 (OpenGL ES GLSL ES 3.0 Chromium)",
+        "unmaskedVendor": "Google Inc. (NVIDIA)",
+        "unmaskedRenderer": "ANGLE (NVIDIA, NVIDIA GeForce GTX 1650 (0x00001F91) Direct3D11 vs_5_0 ps_5_0, D3D11)",
+        "maxElementsIndices": 2147483647,
+        "maxElementsVertices": 2147483647,
+        "error": 0,
+        "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/153.0.0.0 Safari/537.36 Edg/153.0.0.0",
+        "viewport": {
+          "width": 1024,
+          "height": 576,
+          "dpr": 1,
+          "canvasWidth": 1024,
+          "canvasHeight": 576
+        }
+      },
+      "observedBackendKind": "hardware",
+      "pixelsStable": true,
+      "png": {
+        "path": "gpu-issue-time-nonindexed.png",
+        "bytes": 474003,
+        "sha256": "3555af1a2a21cdf629e704546cd8ece04ead30521264cc1da0b804cfa0039f48",
+        "pixelSha256": "a2de59ce8f3ffca55eaef043a4db6bdd31df4a1875a2b75fe7b946a9d1b508aa",
+        "width": 1024,
+        "height": 576,
+        "repeatPixelSha256": "a2de59ce8f3ffca55eaef043a4db6bdd31df4a1875a2b75fe7b946a9d1b508aa"
+      }
+    },
+    {
+      "backend": "gpu",
+      "camera": "current",
+      "mode": "raw",
+      "browserArguments": "--force-high-performance-gpu",
+      "browserVersion": "153.0.4234.48",
+      "source": "https://issue122.local/modules/stage-select/dev/issue122-index-fixture.html?issue122IndexMode=raw&issue122Camera=current",
+      "stats": {
+        "frames": 2,
+        "calls": 51,
+        "triangles": 361010,
+        "loadMs": 895,
+        "cutaway": false,
+        "indexCompatibility": [
+          {
+            "asset": "city.glb",
+            "mode": "raw",
+            "partitionedBatches": 0,
+            "inputTriangles": 0,
+            "outputTriangles": 0,
+            "outputChunks": 0
+          },
+          {
+            "asset": "selection.glb",
+            "mode": "raw",
+            "partitionedBatches": 0,
+            "inputTriangles": 0,
+            "outputTriangles": 0,
+            "outputChunks": 0
+          }
+        ],
+        "loadedHashes": {
+          "city.glb": "d59783a2c63007bbb236955bb0aa2f9d4236b953128d387a182101b47f9ccf81",
+          "selection.glb": "3c6639b949dfad274f7025f1190fec8b120dba8eea1103d45bdb00dec2d65c81"
+        },
+        "issue122Mode": "raw",
+        "selectedParts": [],
+        "geometries": 47,
+        "textures": 51,
+        "width": 1024,
+        "height": 576,
+        "moving": false,
+        "editing": false,
+        "focusId": "",
+        "highlighted": ""
+      },
+      "gl": {
+        "webgl2": true,
+        "vendor": "WebKit",
+        "renderer": "WebKit WebGL",
+        "version": "WebGL 2.0 (OpenGL ES 3.0 Chromium)",
+        "shadingLanguageVersion": "WebGL GLSL ES 3.00 (OpenGL ES GLSL ES 3.0 Chromium)",
+        "unmaskedVendor": "Google Inc. (NVIDIA)",
+        "unmaskedRenderer": "ANGLE (NVIDIA, NVIDIA GeForce GTX 1650 (0x00001F91) Direct3D11 vs_5_0 ps_5_0, D3D11)",
+        "maxElementsIndices": 2147483647,
+        "maxElementsVertices": 2147483647,
+        "error": 0,
+        "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/153.0.0.0 Safari/537.36 Edg/153.0.0.0",
+        "viewport": {
+          "width": 1024,
+          "height": 576,
+          "dpr": 1,
+          "canvasWidth": 1024,
+          "canvasHeight": 576
+        }
+      },
+      "observedBackendKind": "hardware",
+      "pixelsStable": true,
+      "png": {
+        "path": "gpu-current-raw.png",
+        "bytes": 620809,
+        "sha256": "c8022abe4ea0aed41bac0d38994080cdbc28eae54290c49075cd2a826b531719",
+        "pixelSha256": "3b607e9665df131595d0ef45df549b61442013262eaa47441954252c2912f7b1",
+        "width": 1024,
+        "height": 576,
+        "repeatPixelSha256": "3b607e9665df131595d0ef45df549b61442013262eaa47441954252c2912f7b1"
+      }
+    },
+    {
+      "backend": "gpu",
+      "camera": "current",
+      "mode": "chunked",
+      "browserArguments": "--force-high-performance-gpu",
+      "browserVersion": "153.0.4234.48",
+      "source": "https://issue122.local/modules/stage-select/dev/issue122-index-fixture.html?issue122IndexMode=chunked&issue122Camera=current",
+      "stats": {
+        "frames": 2,
+        "calls": 55,
+        "triangles": 361010,
+        "loadMs": 1125,
+        "cutaway": false,
+        "indexCompatibility": [
+          {
+            "asset": "city.glb",
+            "mode": "chunked",
+            "partitionedBatches": 1,
+            "inputTriangles": 172371,
+            "outputTriangles": 172371,
+            "outputChunks": 5
+          },
+          {
+            "asset": "selection.glb",
+            "mode": "chunked",
+            "partitionedBatches": 0,
+            "inputTriangles": 0,
+            "outputTriangles": 0,
+            "outputChunks": 0
+          }
+        ],
+        "loadedHashes": {
+          "city.glb": "d59783a2c63007bbb236955bb0aa2f9d4236b953128d387a182101b47f9ccf81",
+          "selection.glb": "3c6639b949dfad274f7025f1190fec8b120dba8eea1103d45bdb00dec2d65c81"
+        },
+        "issue122Mode": "chunked",
+        "selectedParts": [],
+        "geometries": 51,
+        "textures": 51,
+        "width": 1024,
+        "height": 576,
+        "moving": false,
+        "editing": false,
+        "focusId": "",
+        "highlighted": ""
+      },
+      "gl": {
+        "webgl2": true,
+        "vendor": "WebKit",
+        "renderer": "WebKit WebGL",
+        "version": "WebGL 2.0 (OpenGL ES 3.0 Chromium)",
+        "shadingLanguageVersion": "WebGL GLSL ES 3.00 (OpenGL ES GLSL ES 3.0 Chromium)",
+        "unmaskedVendor": "Google Inc. (NVIDIA)",
+        "unmaskedRenderer": "ANGLE (NVIDIA, NVIDIA GeForce GTX 1650 (0x00001F91) Direct3D11 vs_5_0 ps_5_0, D3D11)",
+        "maxElementsIndices": 2147483647,
+        "maxElementsVertices": 2147483647,
+        "error": 0,
+        "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/153.0.0.0 Safari/537.36 Edg/153.0.0.0",
+        "viewport": {
+          "width": 1024,
+          "height": 576,
+          "dpr": 1,
+          "canvasWidth": 1024,
+          "canvasHeight": 576
+        }
+      },
+      "observedBackendKind": "hardware",
+      "pixelsStable": true,
+      "png": {
+        "path": "gpu-current-chunked.png",
+        "bytes": 620824,
+        "sha256": "37296b7f39ab7775318a91108a5b01cd24fe35e7cf6ff81fe9f6a382d6e0135e",
+        "pixelSha256": "7232902ff7922e890d3f5e4746b57c3fd95611445bc6dad09116610028312731",
+        "width": 1024,
+        "height": 576,
+        "repeatPixelSha256": "7232902ff7922e890d3f5e4746b57c3fd95611445bc6dad09116610028312731"
+      }
+    },
+    {
+      "backend": "gpu",
+      "camera": "current",
+      "mode": "nonindexed",
+      "browserArguments": "--force-high-performance-gpu",
+      "browserVersion": "153.0.4234.48",
+      "source": "https://issue122.local/modules/stage-select/dev/issue122-index-fixture.html?issue122IndexMode=nonindexed&issue122Camera=current",
+      "stats": {
+        "frames": 2,
+        "calls": 51,
+        "triangles": 361010,
+        "loadMs": 932,
+        "cutaway": false,
+        "indexCompatibility": [
+          {
+            "asset": "city.glb",
+            "mode": "nonindexed",
+            "expandedBatches": 1,
+            "inputTriangles": 172371,
+            "outputTriangles": 172371
+          },
+          {
+            "asset": "selection.glb",
+            "mode": "nonindexed",
+            "expandedBatches": 0,
+            "inputTriangles": 0,
+            "outputTriangles": 0
+          }
+        ],
+        "loadedHashes": {
+          "city.glb": "d59783a2c63007bbb236955bb0aa2f9d4236b953128d387a182101b47f9ccf81",
+          "selection.glb": "3c6639b949dfad274f7025f1190fec8b120dba8eea1103d45bdb00dec2d65c81"
+        },
+        "issue122Mode": "nonindexed",
+        "selectedParts": [],
+        "geometries": 47,
+        "textures": 51,
+        "width": 1024,
+        "height": 576,
+        "moving": false,
+        "editing": false,
+        "focusId": "",
+        "highlighted": ""
+      },
+      "gl": {
+        "webgl2": true,
+        "vendor": "WebKit",
+        "renderer": "WebKit WebGL",
+        "version": "WebGL 2.0 (OpenGL ES 3.0 Chromium)",
+        "shadingLanguageVersion": "WebGL GLSL ES 3.00 (OpenGL ES GLSL ES 3.0 Chromium)",
+        "unmaskedVendor": "Google Inc. (NVIDIA)",
+        "unmaskedRenderer": "ANGLE (NVIDIA, NVIDIA GeForce GTX 1650 (0x00001F91) Direct3D11 vs_5_0 ps_5_0, D3D11)",
+        "maxElementsIndices": 2147483647,
+        "maxElementsVertices": 2147483647,
+        "error": 0,
+        "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/153.0.0.0 Safari/537.36 Edg/153.0.0.0",
+        "viewport": {
+          "width": 1024,
+          "height": 576,
+          "dpr": 1,
+          "canvasWidth": 1024,
+          "canvasHeight": 576
+        }
+      },
+      "observedBackendKind": "hardware",
+      "pixelsStable": true,
+      "png": {
+        "path": "gpu-current-nonindexed.png",
+        "bytes": 620825,
+        "sha256": "3dd5880aa6e389dca5903283c651502e296214b59017533d1458c931158b524c",
+        "pixelSha256": "bfe62ba23526cbe0a1e513d61faa75c9b73c390a6e750257107ae0aad12a3d89",
+        "width": 1024,
+        "height": 576,
+        "repeatPixelSha256": "bfe62ba23526cbe0a1e513d61faa75c9b73c390a6e750257107ae0aad12a3d89"
+      }
+    },
+    {
+      "backend": "software",
+      "camera": "issue-time",
+      "mode": "raw",
+      "browserArguments": "--disable-gpu --disable-gpu-rasterization",
+      "browserVersion": "153.0.4234.48",
+      "source": "https://issue122.local/modules/stage-select/dev/issue122-index-fixture.html?issue122IndexMode=raw&issue122Camera=issue-time",
+      "stats": {
+        "frames": 2,
+        "calls": 51,
+        "triangles": 361010,
+        "loadMs": 1000,
+        "cutaway": false,
+        "indexCompatibility": [
+          {
+            "asset": "city.glb",
+            "mode": "raw",
+            "partitionedBatches": 0,
+            "inputTriangles": 0,
+            "outputTriangles": 0,
+            "outputChunks": 0
+          },
+          {
+            "asset": "selection.glb",
+            "mode": "raw",
+            "partitionedBatches": 0,
+            "inputTriangles": 0,
+            "outputTriangles": 0,
+            "outputChunks": 0
+          }
+        ],
+        "loadedHashes": {
+          "city.glb": "d59783a2c63007bbb236955bb0aa2f9d4236b953128d387a182101b47f9ccf81",
+          "selection.glb": "3c6639b949dfad274f7025f1190fec8b120dba8eea1103d45bdb00dec2d65c81"
+        },
+        "issue122Mode": "raw",
+        "selectedParts": [],
+        "geometries": 47,
+        "textures": 51,
+        "width": 1024,
+        "height": 576,
+        "moving": false,
+        "editing": false,
+        "focusId": "",
+        "highlighted": ""
+      },
+      "gl": {
+        "webgl2": true,
+        "vendor": "WebKit",
+        "renderer": "WebKit WebGL",
+        "version": "WebGL 2.0 (OpenGL ES 3.0 Chromium)",
+        "shadingLanguageVersion": "WebGL GLSL ES 3.00 (OpenGL ES GLSL ES 3.0 Chromium)",
+        "unmaskedVendor": "Google Inc. (Microsoft)",
+        "unmaskedRenderer": "ANGLE (Microsoft, Microsoft Basic Render Driver (0x0000008C) Direct3D11 vs_5_0 ps_5_0, D3D11)",
+        "maxElementsIndices": 2147483647,
+        "maxElementsVertices": 2147483647,
+        "error": 0,
+        "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/153.0.0.0 Safari/537.36 Edg/153.0.0.0",
+        "viewport": {
+          "width": 1024,
+          "height": 576,
+          "dpr": 1,
+          "canvasWidth": 1024,
+          "canvasHeight": 576
+        }
+      },
+      "observedBackendKind": "software",
+      "pixelsStable": true,
+      "png": {
+        "path": "software-issue-time-raw.png",
+        "bytes": 486133,
+        "sha256": "fecdc859a024615b5fafa1e10f27e6f0ee14369a06fec239fd63c87bb92adb28",
+        "pixelSha256": "8bfaf9cc8f512b3c272c4baa757b9d9d54fb6a70a9f05ef1c834e40da8d66429",
+        "width": 1024,
+        "height": 576,
+        "repeatPixelSha256": "8bfaf9cc8f512b3c272c4baa757b9d9d54fb6a70a9f05ef1c834e40da8d66429"
+      }
+    },
+    {
+      "backend": "software",
+      "camera": "issue-time",
+      "mode": "chunked",
+      "browserArguments": "--disable-gpu --disable-gpu-rasterization",
+      "browserVersion": "153.0.4234.48",
+      "source": "https://issue122.local/modules/stage-select/dev/issue122-index-fixture.html?issue122IndexMode=chunked&issue122Camera=issue-time",
+      "stats": {
+        "frames": 2,
+        "calls": 55,
+        "triangles": 361010,
+        "loadMs": 853,
+        "cutaway": false,
+        "indexCompatibility": [
+          {
+            "asset": "city.glb",
+            "mode": "chunked",
+            "partitionedBatches": 1,
+            "inputTriangles": 172371,
+            "outputTriangles": 172371,
+            "outputChunks": 5
+          },
+          {
+            "asset": "selection.glb",
+            "mode": "chunked",
+            "partitionedBatches": 0,
+            "inputTriangles": 0,
+            "outputTriangles": 0,
+            "outputChunks": 0
+          }
+        ],
+        "loadedHashes": {
+          "city.glb": "d59783a2c63007bbb236955bb0aa2f9d4236b953128d387a182101b47f9ccf81",
+          "selection.glb": "3c6639b949dfad274f7025f1190fec8b120dba8eea1103d45bdb00dec2d65c81"
+        },
+        "issue122Mode": "chunked",
+        "selectedParts": [],
+        "geometries": 51,
+        "textures": 51,
+        "width": 1024,
+        "height": 576,
+        "moving": false,
+        "editing": false,
+        "focusId": "",
+        "highlighted": ""
+      },
+      "gl": {
+        "webgl2": true,
+        "vendor": "WebKit",
+        "renderer": "WebKit WebGL",
+        "version": "WebGL 2.0 (OpenGL ES 3.0 Chromium)",
+        "shadingLanguageVersion": "WebGL GLSL ES 3.00 (OpenGL ES GLSL ES 3.0 Chromium)",
+        "unmaskedVendor": "Google Inc. (Microsoft)",
+        "unmaskedRenderer": "ANGLE (Microsoft, Microsoft Basic Render Driver (0x0000008C) Direct3D11 vs_5_0 ps_5_0, D3D11)",
+        "maxElementsIndices": 2147483647,
+        "maxElementsVertices": 2147483647,
+        "error": 0,
+        "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/153.0.0.0 Safari/537.36 Edg/153.0.0.0",
+        "viewport": {
+          "width": 1024,
+          "height": 576,
+          "dpr": 1,
+          "canvasWidth": 1024,
+          "canvasHeight": 576
+        }
+      },
+      "observedBackendKind": "software",
+      "pixelsStable": true,
+      "png": {
+        "path": "software-issue-time-chunked.png",
+        "bytes": 486116,
+        "sha256": "5f038806be43ae02d75366a0c8c514b15deda4b9232ee2a769c526380cbb1696",
+        "pixelSha256": "8f1a081e190f90e99bd2c921090ad4ed512326203c855e0630c0a07f5ccf2625",
+        "width": 1024,
+        "height": 576,
+        "repeatPixelSha256": "8f1a081e190f90e99bd2c921090ad4ed512326203c855e0630c0a07f5ccf2625"
+      }
+    },
+    {
+      "backend": "software",
+      "camera": "current",
+      "mode": "raw",
+      "browserArguments": "--disable-gpu --disable-gpu-rasterization",
+      "browserVersion": "153.0.4234.48",
+      "source": "https://issue122.local/modules/stage-select/dev/issue122-index-fixture.html?issue122IndexMode=raw&issue122Camera=current",
+      "stats": {
+        "frames": 2,
+        "calls": 51,
+        "triangles": 361010,
+        "loadMs": 679,
+        "cutaway": false,
+        "indexCompatibility": [
+          {
+            "asset": "city.glb",
+            "mode": "raw",
+            "partitionedBatches": 0,
+            "inputTriangles": 0,
+            "outputTriangles": 0,
+            "outputChunks": 0
+          },
+          {
+            "asset": "selection.glb",
+            "mode": "raw",
+            "partitionedBatches": 0,
+            "inputTriangles": 0,
+            "outputTriangles": 0,
+            "outputChunks": 0
+          }
+        ],
+        "loadedHashes": {
+          "city.glb": "d59783a2c63007bbb236955bb0aa2f9d4236b953128d387a182101b47f9ccf81",
+          "selection.glb": "3c6639b949dfad274f7025f1190fec8b120dba8eea1103d45bdb00dec2d65c81"
+        },
+        "issue122Mode": "raw",
+        "selectedParts": [],
+        "geometries": 47,
+        "textures": 51,
+        "width": 1024,
+        "height": 576,
+        "moving": false,
+        "editing": false,
+        "focusId": "",
+        "highlighted": ""
+      },
+      "gl": {
+        "webgl2": true,
+        "vendor": "WebKit",
+        "renderer": "WebKit WebGL",
+        "version": "WebGL 2.0 (OpenGL ES 3.0 Chromium)",
+        "shadingLanguageVersion": "WebGL GLSL ES 3.00 (OpenGL ES GLSL ES 3.0 Chromium)",
+        "unmaskedVendor": "Google Inc. (Microsoft)",
+        "unmaskedRenderer": "ANGLE (Microsoft, Microsoft Basic Render Driver (0x0000008C) Direct3D11 vs_5_0 ps_5_0, D3D11)",
+        "maxElementsIndices": 2147483647,
+        "maxElementsVertices": 2147483647,
+        "error": 0,
+        "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/153.0.0.0 Safari/537.36 Edg/153.0.0.0",
+        "viewport": {
+          "width": 1024,
+          "height": 576,
+          "dpr": 1,
+          "canvasWidth": 1024,
+          "canvasHeight": 576
+        }
+      },
+      "observedBackendKind": "software",
+      "pixelsStable": true,
+      "png": {
+        "path": "software-current-raw.png",
+        "bytes": 635650,
+        "sha256": "34d6ad72865e568b20016490b23b0773a8af3051b0edcc84cc7821ea5828b257",
+        "pixelSha256": "12471f24755f01327bb2b5f0e108a6c126ecb21805544d9840322b344ecd63d5",
+        "width": 1024,
+        "height": 576,
+        "repeatPixelSha256": "12471f24755f01327bb2b5f0e108a6c126ecb21805544d9840322b344ecd63d5"
+      }
+    },
+    {
+      "backend": "software",
+      "camera": "current",
+      "mode": "chunked",
+      "browserArguments": "--disable-gpu --disable-gpu-rasterization",
+      "browserVersion": "153.0.4234.48",
+      "source": "https://issue122.local/modules/stage-select/dev/issue122-index-fixture.html?issue122IndexMode=chunked&issue122Camera=current",
+      "stats": {
+        "frames": 2,
+        "calls": 55,
+        "triangles": 361010,
+        "loadMs": 830,
+        "cutaway": false,
+        "indexCompatibility": [
+          {
+            "asset": "city.glb",
+            "mode": "chunked",
+            "partitionedBatches": 1,
+            "inputTriangles": 172371,
+            "outputTriangles": 172371,
+            "outputChunks": 5
+          },
+          {
+            "asset": "selection.glb",
+            "mode": "chunked",
+            "partitionedBatches": 0,
+            "inputTriangles": 0,
+            "outputTriangles": 0,
+            "outputChunks": 0
+          }
+        ],
+        "loadedHashes": {
+          "city.glb": "d59783a2c63007bbb236955bb0aa2f9d4236b953128d387a182101b47f9ccf81",
+          "selection.glb": "3c6639b949dfad274f7025f1190fec8b120dba8eea1103d45bdb00dec2d65c81"
+        },
+        "issue122Mode": "chunked",
+        "selectedParts": [],
+        "geometries": 51,
+        "textures": 51,
+        "width": 1024,
+        "height": 576,
+        "moving": false,
+        "editing": false,
+        "focusId": "",
+        "highlighted": ""
+      },
+      "gl": {
+        "webgl2": true,
+        "vendor": "WebKit",
+        "renderer": "WebKit WebGL",
+        "version": "WebGL 2.0 (OpenGL ES 3.0 Chromium)",
+        "shadingLanguageVersion": "WebGL GLSL ES 3.00 (OpenGL ES GLSL ES 3.0 Chromium)",
+        "unmaskedVendor": "Google Inc. (Microsoft)",
+        "unmaskedRenderer": "ANGLE (Microsoft, Microsoft Basic Render Driver (0x0000008C) Direct3D11 vs_5_0 ps_5_0, D3D11)",
+        "maxElementsIndices": 2147483647,
+        "maxElementsVertices": 2147483647,
+        "error": 0,
+        "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/153.0.0.0 Safari/537.36 Edg/153.0.0.0",
+        "viewport": {
+          "width": 1024,
+          "height": 576,
+          "dpr": 1,
+          "canvasWidth": 1024,
+          "canvasHeight": 576
+        }
+      },
+      "observedBackendKind": "software",
+      "pixelsStable": true,
+      "png": {
+        "path": "software-current-chunked.png",
+        "bytes": 635623,
+        "sha256": "401bff54da830b9acdc98287d3ca3c3f9e0041d0876a87b45c8d5da95217c3d6",
+        "pixelSha256": "7fd7397293b6d2bf5a3f35767b70d9a6976cde0bf59fef99face7a188e627f2c",
+        "width": 1024,
+        "height": 576,
+        "repeatPixelSha256": "7fd7397293b6d2bf5a3f35767b70d9a6976cde0bf59fef99face7a188e627f2c"
+      }
+    }
+  ]
+}
