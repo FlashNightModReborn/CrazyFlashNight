@@ -7,11 +7,12 @@ namespace CF7Launcher.Guardian.WorldCompositor
     // no wall-clock extrapolation, collision, damage or gameplay RNG is used.
     internal sealed class CombatFxEngine
     {
-        internal const int CasingLimit=256, MuzzleLimit=64, ImpactLimit=128, LightLimit=16, StampBatchLimit=8;
+        internal const int CasingLimit=256, MuzzleLimit=64, ImpactLimit=128, LightLimit=16, StampBatchLimit=8, LightStride=16;
         private const int TotalLimit=CasingLimit+MuzzleLimit+ImpactLimit;
         private readonly CombatFxCatalog _catalog;
         private readonly Particle[] _particles=new Particle[TotalLimit];
         private readonly FlashLight[] _lights=new FlashLight[LightLimit];
+        private readonly CombatFxEquipmentLight[] _resident=new CombatFxEquipmentLight[LightLimit];
         private readonly CombatFxDrawFrame _draw=new CombatFxDrawFrame(TotalLimit);
         private int _generation=-1,_epoch=-1,_sequence=-1,_tick,_nextId,_eventSequence;
         private readonly List<CombatFxSettlement> _settled=new List<CombatFxSettlement>(StampBatchLimit);
@@ -40,7 +41,7 @@ namespace CF7Launcher.Guardian.WorldCompositor
 
         internal void Reset()
         {
-            Array.Clear(_particles);Array.Clear(_lights);_generation=-1;_epoch=-1;_sequence=-1;
+            Array.Clear(_particles);Array.Clear(_lights);Array.Clear(_resident);_generation=-1;_epoch=-1;_sequence=-1;
             _tick=0;_nextId=0;_eventSequence=0;_settled.Clear();_groundHits=0;
             _draw.Count=0;_draw.CasingCount=0;_draw.ImpactCount=0;_draw.LightCount=0;
         }
@@ -52,14 +53,14 @@ namespace CF7Launcher.Guardian.WorldCompositor
             if (!fresh && (frame.Epoch<_epoch || frame.Sequence<=_sequence || frame.GameTick<_tick)) return false;
             if (fresh)
             {
-                Array.Clear(_particles);Array.Clear(_lights);_epoch=frame.Epoch;_sequence=-1;_tick=frame.GameTick;
+                Array.Clear(_particles);Array.Clear(_lights);Array.Clear(_resident);_epoch=frame.Epoch;_sequence=-1;_tick=frame.GameTick;
                 _nextId=0;_eventSequence=0;_generation=generation;
             }
             _settled.Clear();_groundHits=0;
             int elapsed=frame.Paused?0:frame.GameTick-_tick;
             _tick=frame.GameTick;_sequence=frame.Sequence;
             // A disconnected/stalled visual stream must not replay a long burst on recovery.
-            if (elapsed>8) { Array.Clear(_particles);Array.Clear(_lights);elapsed=0; }
+            if (elapsed>8) { Array.Clear(_particles);Array.Clear(_lights);Array.Clear(_resident);elapsed=0; }
             foreach (CombatFxAck ack in frame.Acks)
                 for (int i=0;i<CasingLimit;i++)
                     if (_particles[i].Phase==3 && _particles[i].Id==ack.Id)
@@ -67,6 +68,7 @@ namespace CF7Launcher.Guardian.WorldCompositor
                         _particles[i].Phase=4;_particles[i].HoldTicks=ack.Drawn?2:0;
                         _particles[i].FadeTicks=3;break;
                     }
+            ApplyEquipmentLights(frame.EquipmentLights);
             for (int step=0;step<elapsed;step++) Advance();
             if (!frame.Paused)
                 foreach (CombatFxSpawn spawn in frame.Spawns) Spawn(spawn);
@@ -135,6 +137,34 @@ namespace CF7Launcher.Guardian.WorldCompositor
                 R=profile.R,G=profile.G,B=profile.B};
         }
 
+        // Equipment lights are a full per-frame snapshot owned by AS2: absent ids are
+        // evicted, surviving ids keep their slot, new ids fill free slots by ascending id.
+        private void ApplyEquipmentLights(CombatFxEquipmentLight[] lights)
+        {
+            for (int i=0;i<LightLimit;i++)
+            {
+                if (_resident[i].Id==0) continue;
+                bool keep=false;
+                for (int j=0;j<lights.Length;j++) if (lights[j].Id==_resident[i].Id) { keep=true;break; }
+                if (!keep) _resident[i]=default;
+            }
+            for (int j=0;j<lights.Length;j++)
+                for (int i=0;i<LightLimit;i++)
+                    if (_resident[i].Id==lights[j].Id) { _resident[i]=lights[j];break; }
+            for (int i=0;i<LightLimit;i++)
+            {
+                if (_resident[i].Id!=0) continue;
+                int best=-1;
+                for (int j=0;j<lights.Length;j++)
+                    if (ResidentIndex(lights[j].Id)<0 && (best<0 || lights[j].Id<lights[best].Id)) best=j;
+                if (best<0) break;
+                _resident[i]=lights[best];
+            }
+            for (int j=0;j<lights.Length;j++) if (ResidentIndex(lights[j].Id)<0) LightDropped++;
+        }
+        private int ResidentIndex(int id)
+        { for (int i=0;i<LightLimit;i++) if (_resident[i].Id==id) return i; return -1; }
+
         private void Advance()
         {
             for(int n=0;n<_lights.Length;n++)
@@ -196,12 +226,25 @@ namespace CF7Launcher.Guardian.WorldCompositor
                 count++;if(style.IsCasing)casings++;if(style.IsImpact)impacts++;
             }
             int lights=0;
-            for(int n=0;n<_lights.Length;n++)
+            for(int n=0;n<_resident.Length;n++)
+            {
+                ref CombatFxEquipmentLight p=ref _resident[n];if(p.Id==0)continue;
+                int at=lights++*LightStride;
+                _draw.Lights[at]=p.X;_draw.Lights[at+1]=p.Y;_draw.Lights[at+2]=p.Length;_draw.Lights[at+3]=p.Energy;
+                _draw.Lights[at+4]=p.R;_draw.Lights[at+5]=p.G;_draw.Lights[at+6]=p.B;_draw.Lights[at+7]=p.Kind;
+                _draw.Lights[at+8]=p.DirectionX;_draw.Lights[at+9]=p.DirectionY;_draw.Lights[at+10]=p.HalfWidth;
+                _draw.Lights[at+11]=0;
+                _draw.Lights[at+12]=p.NearX;_draw.Lights[at+13]=p.NearY;
+                _draw.Lights[at+14]=p.NearRadius;_draw.Lights[at+15]=p.NearEnergy;
+            }
+            for(int n=0;n<_lights.Length && lights<LightLimit;n++)
             {
                 ref FlashLight p=ref _lights[n];if(p.Ticks==0)continue;
-                int at=lights++*8;
+                int at=lights++*LightStride;
                 _draw.Lights[at]=p.X;_draw.Lights[at+1]=p.Y;_draw.Lights[at+2]=p.Radius;_draw.Lights[at+3]=p.Strength;
-                _draw.Lights[at+4]=p.R;_draw.Lights[at+5]=p.G;_draw.Lights[at+6]=p.B;_draw.Lights[at+7]=0;
+                _draw.Lights[at+4]=p.R;_draw.Lights[at+5]=p.G;_draw.Lights[at+6]=p.B;
+                _draw.Lights[at+7]=0;_draw.Lights[at+8]=0;_draw.Lights[at+9]=0;_draw.Lights[at+10]=0;_draw.Lights[at+11]=0;
+                _draw.Lights[at+12]=0;_draw.Lights[at+13]=0;_draw.Lights[at+14]=0;_draw.Lights[at+15]=0;
             }
             _draw.Count=count;_draw.CasingCount=casings;_draw.ImpactCount=impacts;
             _draw.LightCount=lights;_draw.MaximumLightResponse=_catalog.MaximumLightResponse;return _draw;
@@ -220,7 +263,7 @@ namespace CF7Launcher.Guardian.WorldCompositor
     internal sealed class CombatFxDrawFrame
     {
         internal readonly float[] Data;
-        internal readonly float[] Lights=new float[CombatFxEngine.LightLimit*8];
+        internal readonly float[] Lights=new float[CombatFxEngine.LightLimit*CombatFxEngine.LightStride];
         internal int Count,CasingCount,ImpactCount,LightCount;
         internal float MaximumLightResponse;
         internal CombatFxDrawFrame(int capacity) { Data=new float[capacity*16]; }

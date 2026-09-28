@@ -1,0 +1,4 @@
+﻿import org.flashNight.arki.render.*;
+trace("FocusedTestRunId equipment-light-defense Start: __FOCUSED_RUN_ID__");
+org.flashNight.arki.render.EquipmentLightDefenseTest.runAllTests();
+trace("FocusedTestRunId equipment-light-defense Complete: __FOCUSED_RUN_ID__");

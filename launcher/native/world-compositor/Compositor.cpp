@@ -63,20 +63,107 @@ float3 pointLit(float3 graded,float3 raw,float2 uv) {
 }
 )hlsl";
 constexpr char PointLightShader[] = R"hlsl(
-cbuffer PointLightItems : register(b5) { float4 pointItems[32]; };
-struct LVertex { float4 pos:SV_POSITION;float2 local:TEXCOORD0;nointerpolation float4 color:TEXCOORD1; };
+cbuffer PointLightItems : register(b5) { float4 pointItems[64]; };
+// ABI 9 light record (16 floats): a=(world x,y,length|radius,energy),
+// b=(R,G,B,kind 0 radial gunfire / 1 cone / 2 fixed-width beam),
+// c=(unit dir x,y,halfWidth,reserved 0), d=(near x,y,radius,energy).
+// Only kind 1 may carry a same-color near fill circle inside the same record
+// and budget; kind 0/2 keep d all zero. AS2 already projects rotation and
+// mirroring into the unit direction; nothing is flipped here.
+struct LVertex {
+    float4 pos:SV_POSITION;
+    float2 local:TEXCOORD0;
+    nointerpolation float4 color:TEXCOORD1;
+    nointerpolation float4 shape:TEXCOORD2;
+    nointerpolation float4 nearFill:TEXCOORD3;
+};
 LVertex LVS(uint id:SV_VertexID) {
     uint item=id/6u,corner=id%6u;
     float2 q=float2((corner==1u || corner==2u || corner==4u)?1.0:0.0,
-        (corner==2u || corner==4u || corner==5u)?1.0:0.0)*2.0-1.0;
-    float4 a=pointItems[item*2u],b=pointItems[item*2u+1u];
-    float2 stage=(pointCamera.xy+(a.xy+q*a.z)*pointCamera.z)/float2(1024.0,576.0);
-    LVertex v;v.pos=float4(stage.x*2.0-1.0,1.0-stage.y*2.0,0.5,1.0);
-    v.local=q;v.color=float4(b.rgb,a.w);return v;
+        (corner==2u || corner==4u || corner==5u)?1.0:0.0);
+    float4 a=pointItems[item*4u],b=pointItems[item*4u+1u],c=pointItems[item*4u+2u],e=pointItems[item*4u+3u];
+    LVertex v;v.color=float4(b.rgb,a.w);v.shape=float4(b.w,a.z,c.z,0);v.nearFill=float4(0,0,0,0);
+    float2 world;
+    if(b.w<0.5) {
+        v.local=q*2.0-1.0;
+        world=a.xy+v.local*a.z;
+    } else {
+        // Directional kinds share one affine frame so interpolation stays
+        // exact: local.x is world distance along the axis, local.y the signed
+        // distance across it. The pixel shader derives each real footprint.
+        float t=q.y,s=q.x*2.0-1.0;
+        float2 d=c.xy,n=float2(-c.y,c.x);
+        // Expand the raster quad by half a light-field texel; otherwise a thin
+        // rotated beam can miss all samples even with a smooth pixel falloff.
+        float margin=2.0/max(pointCamera.z,0.0001);
+        float lo=0.0,hi=a.z,latHalf=c.z+margin;
+        // A kind-1 near circle shares this one quad and budget: project its
+        // center into the light basis and union the along/lateral ranges.
+        // Records without a near field keep the legacy cone/beam footprint.
+        float radius=e.z;
+        if(radius>0.0) {
+            float2 rel=e.xy-a.xy;
+            float nearAlong=dot(rel,d),nearSide=dot(rel,n);
+            lo=min(0.0,nearAlong-radius-margin);
+            hi=max(a.z,nearAlong+radius+margin);
+            latHalf=max(c.z,abs(nearSide)+radius)+margin;
+            v.nearFill=float4(nearAlong,nearSide,radius,e.w);
+        }
+        float along=lerp(lo,hi,t);
+        v.local=float2(along,latHalf*s);
+        world=a.xy+d*along+n*(latHalf*s);
+    }
+    float2 stage=(pointCamera.xy+world*pointCamera.z)/float2(1024.0,576.0);
+    v.pos=float4(stage.x*2.0-1.0,1.0-stage.y*2.0,0.5,1.0);
+    return v;
 }
 float4 LPS(LVertex v):SV_TARGET {
-    float falloff=saturate(1.0-dot(v.local,v.local));
-    float energy=v.color.a*falloff*falloff;
+    float energy;
+    if(v.shape.x<0.5) {
+        float falloff=saturate(1.0-dot(v.local,v.local));
+        energy=v.color.a*falloff*falloff;
+    } else {
+        float t=v.local.x/max(v.shape.y,0.001),lateral;
+        float distance=abs(v.local.y);
+        float aa=max(fwidth(v.local.y),0.001);
+        if(v.shape.x<1.5) {
+            // A reflected-light base blends into the forward lobe. Both lobes
+            // roll off continuously; there is no constant-bright disk or cone.
+            float forwardT=t,width=max(t,0.02)*v.shape.z;
+            float centerSide=0,gate=step(0.0,t),disk=0;
+            if(v.nearFill.z>0) {
+                float fromBase=v.local.x-v.nearFill.x;
+                forwardT=saturate(fromBase/max(v.shape.y-v.nearFill.x,1.0));
+                width=lerp(v.nearFill.z*0.9,v.shape.z,sqrt(forwardT));
+                centerSide=v.nearFill.y*(1.0-smoothstep(0.0,v.nearFill.z*1.2,fromBase));
+                gate=smoothstep(-v.nearFill.z*0.35,v.nearFill.z*0.7,fromBase);
+                float nearD=length(v.local-v.nearFill.xy);
+                float radial=nearD/max(v.nearFill.z,0.001);
+                float rim=1.0-smoothstep(0.60,1.0+fwidth(nearD)/max(v.nearFill.z,0.001),radial);
+                disk=v.nearFill.w*exp(-2.0*radial*radial)*rim;
+            }
+            float lateralD=abs(v.local.y-centerSide);
+            float crossSection=lateralD/max(width,aa);
+            lateral=exp(-2.4*crossSection*crossSection)
+                *(1.0-smoothstep(width*0.70,width+aa,lateralD));
+            float cone=v.color.a*lateral*exp(-1.15*max(forwardT,0.0))
+                *(1.0-smoothstep(0.72,1.0,forwardT))*gate;
+            // Smooth bounded union: continuous derivatives without max()'s
+            // joining contour or the hotspot of an additive overlap.
+            float peak=max(max(v.color.a,v.nearFill.w),0.0001);
+            energy=disk+cone-disk*cone/peak;
+        } else {
+            // Flash owns the thin red beam. This narrower colored halo has a
+            // soft transverse core and long end fade, avoiding a bright panel.
+            float along=v.local.x;
+            float normalized=distance/max(v.shape.z,aa);
+            lateral=exp(-3.5*normalized*normalized)
+                *(1.0-smoothstep(v.shape.z*0.65,v.shape.z+aa,distance));
+            energy=v.color.a*lateral*(1.0-0.35*saturate(t))
+                *smoothstep(0.0,min(18.0,v.shape.y*0.1),along)
+                *(1.0-smoothstep(0.72,1.0,t));
+        }
+    }
     return float4(v.color.rgb*energy,energy);
 }
 )hlsl";
@@ -551,7 +638,7 @@ constexpr int CombatFxCap=512;
 constexpr int PointLightCap=16;
 struct CombatFxState {
     int count=0,casings=0,lightCount=0;float maximumLightResponse=0;
-    float cameraX=0,cameraY=0,cameraScale=1;float params[CombatFxCap*16]{},lights[PointLightCap*8]{};
+    float cameraX=0,cameraY=0,cameraScale=1;float params[CombatFxCap*16]{},lights[PointLightCap*16]{};
 };
 
 class Capture {
@@ -747,11 +834,23 @@ public:
         CombatFxState next{};next.count=count;next.casings=casings;next.cameraX=cameraX;next.cameraY=cameraY;next.cameraScale=cameraScale;
         next.lightCount=lightCount;next.maximumLightResponse=maximumResponse;
         for(int n=0;n<lightCount;n++) {
-            const float* p=lights+n*8;
-            for(int j=0;j<8;j++) if(!std::isfinite(p[j]))return false;
+            const float* p=lights+n*16;
+            for(int j=0;j<16;j++) if(!std::isfinite(p[j]))return false;
             if(std::abs(p[0])>1000000 || std::abs(p[1])>1000000 || p[2]<1 || p[2]>1024
-                || p[3]<0 || p[3]>2 || p[4]<0 || p[4]>1 || p[5]<0 || p[5]>1 || p[6]<0 || p[6]>1 || p[7]!=0)return false;
-            std::memcpy(next.lights+n*8,p,32);
+                || p[3]<0 || p[3]>2 || p[4]<0 || p[4]>1 || p[5]<0 || p[5]>1 || p[6]<0 || p[6]>1
+                || p[7]!=std::floor(p[7]) || p[7]<0 || p[7]>2 || p[11]!=0)return false;
+            if(p[7]>0.5f && (p[10]<0.5f || p[10]>512
+                || std::abs(p[8]*p[8]+p[9]*p[9]-1)>0.02))return false;
+            // ABI 9 near fill: world nearXY bounded like other coordinates,
+            // radius 0..320, energy 0..2; radius/energy are both zero or both
+            // positive, and only kind 1 may carry a nonzero near field.
+            if(std::abs(p[12])>1000000 || std::abs(p[13])>1000000
+                || p[14]<0 || p[14]>320 || p[15]<0 || p[15]>2
+                || (p[14]==0)!=(p[15]==0))return false;
+            if(p[14]==0 && (p[12]!=0 || p[13]!=0))return false;
+            if((p[7]<0.5f || p[7]>1.5f)
+                && (p[12]!=0 || p[13]!=0 || p[14]!=0 || p[15]!=0))return false;
+            std::memcpy(next.lights+n*16,p,64);
         }
         for(int n=0;n<count;n++) {
             const float* p=items+n*16;
@@ -972,7 +1071,7 @@ private:
         check_hresult(device->CreatePixelShader(lightPsCode->GetBufferPointer(),lightPsCode->GetBufferSize(),nullptr,lightPs.put()));
         com_ptr<ID3D11Buffer> lightParams,lightItems;
         cb.ByteWidth=64;check_hresult(device->CreateBuffer(&cb,nullptr,lightParams.put()));
-        cb.ByteWidth=PointLightCap*32;check_hresult(device->CreateBuffer(&cb,nullptr,lightItems.put()));
+        cb.ByteWidth=PointLightCap*64;check_hresult(device->CreateBuffer(&cb,nullptr,lightItems.put()));
         com_ptr<ID3D11BlendState> lightBlend;
         bd.RenderTarget[0].DestBlend=bd.RenderTarget[0].DestBlendAlpha=D3D11_BLEND_ONE;
         check_hresult(device->CreateBlendState(&bd,lightBlend.put()));
@@ -1567,7 +1666,7 @@ private:
 };
 }
 
-uint32_t __cdecl ProbeGetAbiVersion() { return 7; }
+uint32_t __cdecl ProbeGetAbiVersion() { return 9; }
 int __cdecl ProbeGetOutputSize(void* handle, int32_t* width, int32_t* height) {
     return handle && width && height && static_cast<Capture*>(handle)->OutputSize(*width,*height) ? 1 : 0;
 }

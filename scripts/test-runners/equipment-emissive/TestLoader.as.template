@@ -1,0 +1,3 @@
+﻿trace("FocusedTestRunId equipment-emissive Start: __FOCUSED_RUN_ID__");
+org.flashNight.arki.render.EquipmentEmissiveTest.runAllTests();
+trace("FocusedTestRunId equipment-emissive Complete: __FOCUSED_RUN_ID__");

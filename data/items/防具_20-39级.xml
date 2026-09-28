@@ -85,6 +85,7 @@
     </data_4>
     <lifecycle>
       <attr_0>
+        <skillInteraction>independent</skillInteraction>
         <setGate><effectId>combat_suite</effectId><componentId>head_scan</componentId></setGate>
         <init>
           <initRoutines>剑圣头部装甲初始化</initRoutines>
@@ -188,6 +189,7 @@
     </data_4>
     <lifecycle>
       <attr_0>
+        <skillInteraction>independent</skillInteraction>
         <setGate><effectId>combat_suite</effectId><componentId>head_scan</componentId></setGate>
         <init>
           <initRoutines>剑圣头部装甲初始化</initRoutines>
@@ -293,6 +295,7 @@
     </data_4>
     <lifecycle>
       <attr_0>
+        <skillInteraction>independent</skillInteraction>
         <setGate><effectId>combat_suite</effectId><componentId>head_scan</componentId></setGate>
         <init>
           <initRoutines>剑圣头部装甲初始化</initRoutines>
@@ -398,6 +401,7 @@
     </data_4>
     <lifecycle>
       <attr_0>
+        <skillInteraction>independent</skillInteraction>
         <setGate><effectId>combat_suite</effectId><componentId>chest_cannon</componentId></setGate>
         <init>
           <initRoutines>剑圣胸甲初始化</initRoutines>
@@ -546,6 +550,7 @@
     </data_4>
     <lifecycle>
       <attr_0>
+        <skillInteraction>managed</skillInteraction>
         <setGate><effectId>combat_suite</effectId><componentId>leg_sword_case</componentId></setGate>
         <init>
           <initRoutines>剑圣腿甲初始化</initRoutines>
@@ -640,6 +645,7 @@
     </data_4>
     <lifecycle>
       <attr_0>
+        <skillInteraction>bound</skillInteraction>
         <setGate><effectId>combat_suite</effectId><componentId>hand_wrist_blade</componentId></setGate>
         <init>
           <initRoutines>剑圣手甲初始化</initRoutines>
@@ -738,6 +744,7 @@
     </data_4>
     <lifecycle>
       <attr_0>
+        <skillInteraction>bound</skillInteraction>
         <setGate><effectId>combat_suite</effectId><componentId>foot_skill_boost</componentId></setGate>
         <init>
           <initRoutines>剑圣装甲鞋初始化</initRoutines>
@@ -1856,6 +1863,7 @@
     </data>
     <lifecycle>
       <attr_0>
+        <skillInteraction>independent</skillInteraction>
         <init>
           <initRoutines>红外夜视仪初始化</initRoutines>
           <initParam>
@@ -3500,6 +3508,20 @@
         <冷>10</冷>
       </magicdefence>
     </data>
+    <lifecycle>
+      <attr_环境光>
+        <skillInteraction>independent</skillInteraction>
+        <init>
+          <initRoutines>装备自发光初始化</initRoutines>
+          <initParam>
+            <group>body</group>
+            <radius>95</radius>
+            <energy>0.32</energy>
+            <color>7640816</color>
+          </initParam>
+        </init>
+      </attr_环境光>
+    </lifecycle>
   </item>
   <item>
     <name>次品蓝晶下装</name>
@@ -3522,6 +3544,20 @@
         <冷>10</冷>
       </magicdefence>
     </data>
+    <lifecycle>
+      <attr_环境光>
+        <skillInteraction>independent</skillInteraction>
+        <init>
+          <initRoutines>装备自发光初始化</initRoutines>
+          <initParam>
+            <group>body</group>
+            <radius>120</radius>
+            <energy>0.52</energy>
+            <color>7640816</color>
+          </initParam>
+        </init>
+      </attr_环境光>
+    </lifecycle>
   </item>
   <item>
     <name>次品蓝晶手套</name>
@@ -3544,6 +3580,20 @@
         <冷>10</冷>
       </magicdefence>
     </data>
+    <lifecycle>
+      <attr_环境光>
+        <skillInteraction>independent</skillInteraction>
+        <init>
+          <initRoutines>装备自发光初始化</initRoutines>
+          <initParam>
+            <group>body</group>
+            <radius>105</radius>
+            <energy>0.35</energy>
+            <color>7640816</color>
+          </initParam>
+        </init>
+      </attr_环境光>
+    </lifecycle>
   </item>
   <item>
     <name>次品蓝晶战斗服</name>
@@ -3566,6 +3616,20 @@
         <冷>10</冷>
       </magicdefence>
     </data>
+    <lifecycle>
+      <attr_环境光>
+        <skillInteraction>independent</skillInteraction>
+        <init>
+          <initRoutines>装备自发光初始化</initRoutines>
+          <initParam>
+            <group>body</group>
+            <radius>135</radius>
+            <energy>0.6</energy>
+            <color>7640816</color>
+          </initParam>
+        </init>
+      </attr_环境光>
+    </lifecycle>
   </item>
   <item>
     <name>次品蓝晶面具</name>
@@ -3588,6 +3652,20 @@
         <冷>10</冷>
       </magicdefence>
     </data>
+    <lifecycle>
+      <attr_环境光>
+        <skillInteraction>independent</skillInteraction>
+        <init>
+          <initRoutines>装备自发光初始化</initRoutines>
+          <initParam>
+            <group>body</group>
+            <radius>95</radius>
+            <energy>0.4</energy>
+            <color>7640816</color>
+          </initParam>
+        </init>
+      </attr_环境光>
+    </lifecycle>
   </item>
   <item>
     <name>拳击特制绷带</name>
@@ -3747,6 +3825,7 @@
     </data>
     <lifecycle>
       <attr_防具技能>
+        <skillInteraction>independent</skillInteraction>
         <init>
           <initRoutines>喷气背包初始化</initRoutines>
           <initParam>
@@ -3788,6 +3867,7 @@
     </data>
     <lifecycle>
       <attr_0>
+        <skillInteraction>independent</skillInteraction>
         <init>
           <initRoutines>红外夜视仪初始化</initRoutines>
           <initParam>
@@ -3915,6 +3995,7 @@
     </data>
     <lifecycle>
       <attr_防具技能>
+        <skillInteraction>independent</skillInteraction>
         <init>
           <initRoutines>喷气背包初始化</initRoutines>
           <initParam>
@@ -3980,6 +4061,20 @@
         <冷>15</冷>
       </magicdefence>
     </data>
+    <lifecycle>
+      <attr_环境光>
+        <skillInteraction>independent</skillInteraction>
+        <init>
+          <initRoutines>装备自发光初始化</initRoutines>
+          <initParam>
+            <group>body</group>
+            <radius>115</radius>
+            <energy>0.44</energy>
+            <color>7640816</color>
+          </initParam>
+        </init>
+      </attr_环境光>
+    </lifecycle>
   </item>
   <item>
     <name>蓝晶下装</name>
@@ -4002,6 +4097,20 @@
         <冷>20</冷>
       </magicdefence>
     </data>
+    <lifecycle>
+      <attr_环境光>
+        <skillInteraction>independent</skillInteraction>
+        <init>
+          <initRoutines>装备自发光初始化</initRoutines>
+          <initParam>
+            <group>body</group>
+            <radius>140</radius>
+            <energy>0.72</energy>
+            <color>7640816</color>
+          </initParam>
+        </init>
+      </attr_环境光>
+    </lifecycle>
   </item>
   <item>
     <name>蓝晶手套</name>
@@ -4024,6 +4133,20 @@
         <冷>15</冷>
       </magicdefence>
     </data>
+    <lifecycle>
+      <attr_环境光>
+        <skillInteraction>independent</skillInteraction>
+        <init>
+          <initRoutines>装备自发光初始化</initRoutines>
+          <initParam>
+            <group>body</group>
+            <radius>125</radius>
+            <energy>0.48</energy>
+            <color>7640816</color>
+          </initParam>
+        </init>
+      </attr_环境光>
+    </lifecycle>
   </item>
   <item>
     <name>蓝晶战斗服</name>
@@ -4046,6 +4169,20 @@
         <冷>20</冷>
       </magicdefence>
     </data>
+    <lifecycle>
+      <attr_环境光>
+        <skillInteraction>independent</skillInteraction>
+        <init>
+          <initRoutines>装备自发光初始化</initRoutines>
+          <initParam>
+            <group>body</group>
+            <radius>160</radius>
+            <energy>0.84</energy>
+            <color>7640816</color>
+          </initParam>
+        </init>
+      </attr_环境光>
+    </lifecycle>
   </item>
   <item>
     <name>蓝晶面具</name>
@@ -4068,6 +4205,20 @@
         <冷>20</冷>
       </magicdefence>
     </data>
+    <lifecycle>
+      <attr_环境光>
+        <skillInteraction>independent</skillInteraction>
+        <init>
+          <initRoutines>装备自发光初始化</initRoutines>
+          <initParam>
+            <group>body</group>
+            <radius>115</radius>
+            <energy>0.56</energy>
+            <color>7640816</color>
+          </initParam>
+        </init>
+      </attr_环境光>
+    </lifecycle>
   </item>
   <item>
     <name>合金鞋</name>
@@ -4432,6 +4583,7 @@
     </data>
     <lifecycle>
       <attr_防具技能>
+        <skillInteraction>independent</skillInteraction>
         <init>
           <initRoutines>喷气背包初始化</initRoutines>
           <initParam>
@@ -4576,6 +4728,7 @@
     </data>
     <lifecycle>
       <attr_0>
+        <skillInteraction>independent</skillInteraction>
         <init>
           <initRoutines>红外夜视仪初始化</initRoutines>
           <initParam>
@@ -5043,6 +5196,7 @@
     </data>
     <lifecycle>
       <attr_防具技能>
+        <skillInteraction>bound</skillInteraction>
         <init>
           <initRoutines>蜘蛛侠蛛丝初始化</initRoutines>
           <initParam>
@@ -5093,6 +5247,7 @@
     </data>
     <lifecycle>
       <attr_夜视仪>
+        <skillInteraction>independent</skillInteraction>
         <init>
           <initRoutines>红外夜视仪初始化</initRoutines>
           <initParam>

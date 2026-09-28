@@ -84,6 +84,7 @@
     </data>
     <lifecycle>
       <attr_0>
+        <skillInteraction>independent</skillInteraction>
         <init>
           <initRoutines>GM6_LYNX初始化</initRoutines>
           <initParam>
@@ -344,6 +345,7 @@
     </data>
     <lifecycle>
       <attr_0>
+        <skillInteraction>independent</skillInteraction>
         <init>
           <initRoutines>通用拖影初始化</initRoutines>
           <initParam>

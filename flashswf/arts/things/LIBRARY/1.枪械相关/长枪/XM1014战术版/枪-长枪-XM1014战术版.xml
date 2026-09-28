@@ -86,7 +86,7 @@
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="无AS链接/Symbol 4024" blendMode="add" centerPoint3DX="545.2" centerPoint3DY="131.1">
+                <DOMSymbolInstance name="装备光束" libraryItemName="无AS链接/Symbol 4024" blendMode="add" centerPoint3DX="545.2" centerPoint3DY="131.1">
                   <matrix>
                     <Matrix tx="276.2" ty="-10.5"/>
                   </matrix>
@@ -95,14 +95,7 @@
                   </transformationPoint>
                   <Actionscript>
                     <script><![CDATA[onClipEvent(load){
-   if(_parent._parent._parent._parent._parent.攻击模式 == "长枪")
-   {
-      this._visible = 1;
-   }
-   else
-   {
-      this._visible = 0;
-   }
+   this._visible = false;
 }
 ]]></script>
                   </Actionscript>

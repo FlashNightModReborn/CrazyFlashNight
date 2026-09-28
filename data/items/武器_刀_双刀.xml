@@ -245,6 +245,23 @@
         <vampirism>1</vampirism>
         <bladeCount>3</bladeCount>
       </data>
+      <lifecycle>
+        <attr_环境光>
+          <skillInteraction>independent</skillInteraction>
+          <init>
+            <initRoutines>装备自发光初始化</initRoutines>
+            <initParam>
+              <group>blade</group>
+              <radius>120</radius>
+              <energy>0.77</energy>
+              <color>9341183</color>
+            </initParam>
+          </init>
+          <cycle>
+            <cycleRoutines>装备自发光周期</cycleRoutines>
+          </cycle>
+        </attr_环境光>
+      </lifecycle>
     </item>
       <item>
       <name>烬灭裁决双刀</name>
@@ -278,6 +295,7 @@
       </data>
       <lifecycle>
         <attr_0>
+          <skillInteraction>managed</skillInteraction>
           <init>
             <initRoutines>烬灭裁决初始化</initRoutines>
             <initParam>

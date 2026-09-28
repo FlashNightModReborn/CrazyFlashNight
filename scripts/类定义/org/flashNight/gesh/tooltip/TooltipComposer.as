@@ -28,6 +28,7 @@ import org.flashNight.arki.item.BaseItem;
 import org.flashNight.arki.item.ItemUtil;
 import org.flashNight.gesh.tooltip.*;
 import org.flashNight.gesh.tooltip.builder.ModsBlockBuilder;
+import org.flashNight.gesh.tooltip.builder.EquipmentLightingInfoBuilder;
 import org.flashNight.gesh.string.StringUtils;
 
 /**
@@ -94,8 +95,10 @@ class org.flashNight.gesh.tooltip.TooltipComposer {
       // 获取最终的 skill（考虑插件可能替换战技）
       var skillToDisplay:Object = item.skill;
       var subweaponToDisplay:Object = item.subweapon;
+      var lightingItem:Object = item;
       if(baseItem && baseItem.getData != undefined) {
         var calculatedData:Object = baseItem.getData();
+        if(calculatedData) lightingItem = calculatedData;
         if(calculatedData && calculatedData.skill !== undefined) {
           skillToDisplay = calculatedData.skill;
         }
@@ -119,6 +122,7 @@ class org.flashNight.gesh.tooltip.TooltipComposer {
       }
 
       append(buffer, TooltipTextBuilder.buildLifecycleInfo(item.lifecyle));
+      append(buffer, EquipmentLightingInfoBuilder.build(lightingItem,baseItem.value.mods,false));
 
       // 升阶路线（装备专属，三段全空时不输出区块）
       append(buffer, TooltipTextBuilder.buildUpgradePath(item, baseItem));

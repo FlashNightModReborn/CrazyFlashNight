@@ -15,6 +15,7 @@ import org.flashNight.gesh.tooltip.TooltipTextBuilder;
 import org.flashNight.gesh.object.ObjectUtil;
 import org.flashNight.gesh.tooltip.builder.UseSwitchStatsBuilder;
 import org.flashNight.gesh.tooltip.builder.TagSwitchStatsBuilder;
+import org.flashNight.gesh.tooltip.builder.EquipmentLightingInfoBuilder;
 
 class org.flashNight.gesh.tooltip.builder.ModStatBuilder {
 
@@ -128,6 +129,8 @@ class org.flashNight.gesh.tooltip.builder.ModStatBuilder {
             result = result.concat(TooltipTextBuilder.buildSkillInfo(modData.skill));
         }
         appendSkillSwitchInfo(result, modData);
+        var lighting:Array = EquipmentLightingInfoBuilder.build(modData,null,true);
+        for (var li:Number = 0; li < lighting.length; li++) result.push(lighting[li]);
 
         if(typeof modData.description === "string"){
             result.push(TooltipFormatter.normalizeDescription(modData.description), TooltipFormatter.br());

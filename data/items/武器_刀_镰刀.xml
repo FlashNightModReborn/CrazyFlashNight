@@ -29,6 +29,7 @@
     </data>
     <lifecycle>
       <attr_0>
+        <skillInteraction>managed</skillInteraction>
         <init>
           <initRoutines>键盘镰刀初始化</initRoutines>
           <initParam>
@@ -358,6 +359,7 @@
     </data>
     <lifecycle>
       <attr_0>
+        <skillInteraction>independent</skillInteraction>
         <init>
           <initRoutines>杀戮风暴初始化</initRoutines>
           <initParam>

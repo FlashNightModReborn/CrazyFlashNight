@@ -42,6 +42,7 @@
     </data>
     <lifecycle>
       <attr_0>
+        <skillInteraction>independent</skillInteraction>
         <init>
           <initRoutines>僵尸割草机初始化</initRoutines>
           <initParam>
@@ -121,6 +122,7 @@
     </data>
     <lifecycle>
       <attr_0>
+        <skillInteraction>independent</skillInteraction>
         <init>
           <initRoutines>僵尸割草机初始化</initRoutines>
           <initParam>
@@ -198,6 +200,7 @@
       </skill>
       <lifecycle>
         <attr_0>
+          <skillInteraction>bound</skillInteraction>
           <init>
             <initRoutines>混凝土切割机初始化</initRoutines>
             <initParam>
@@ -228,6 +231,7 @@
     </skill>
     <lifecycle>
       <attr_0>
+        <skillInteraction>bound</skillInteraction>
         <init>
           <initRoutines>混凝土切割机初始化</initRoutines>
           <initParam>
@@ -347,6 +351,7 @@
       </skill>
       <lifecycle>
         <attr_0>
+          <skillInteraction>bound</skillInteraction>
           <init>
             <initRoutines>MACSIII初始化</initRoutines>
             <initParam>
@@ -400,6 +405,7 @@
     </skill>
     <lifecycle>
       <attr_0>
+        <skillInteraction>bound</skillInteraction>
         <init>
           <initRoutines>MACSIII初始化</initRoutines>
           <initParam>
@@ -473,6 +479,7 @@
     </data>
     <lifecycle>
       <attr_0>
+        <skillInteraction>independent</skillInteraction>
         <init>
           <initRoutines>火药燃气液压打桩机初始化</initRoutines>
           <initParam>

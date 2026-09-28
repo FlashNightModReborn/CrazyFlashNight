@@ -1,0 +1,3 @@
+﻿trace("FocusedTestRunId equipment-light Start: __FOCUSED_RUN_ID__");
+org.flashNight.arki.render.EquipmentLightTest.runAllTests();
+trace("FocusedTestRunId equipment-light Complete: __FOCUSED_RUN_ID__");

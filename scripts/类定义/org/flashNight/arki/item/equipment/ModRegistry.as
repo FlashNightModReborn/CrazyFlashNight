@@ -516,6 +516,7 @@ class org.flashNight.arki.item.equipment.ModRegistry {
         _modAvailabilityResults[-128] = "当前弹药与此配件不兼容";
         _modAvailabilityResults[-256] = "装备属性不满足安装条件";
         _modAvailabilityResults[-512] = "当前弹药类型不满足此配件的要求";
+        _modAvailabilityResults[-1024] = "配件功能配置不可用";
     }
 
     // ==================== 公共查询接口 ====================

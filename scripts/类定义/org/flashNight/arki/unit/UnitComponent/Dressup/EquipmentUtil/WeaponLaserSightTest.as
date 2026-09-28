@@ -16,6 +16,7 @@ class org.flashNight.arki.unit.UnitComponent.Dressup.EquipmentUtil.WeaponLaserSi
     private static var configs:Object;
     private static var cycles:Array;
     private static var unit:MovieClip;
+    private static var oldWorld:Object;
     private static var oldClock:Object;
     private static var oldCleanup:Function;
     private static var fixture:Object;
@@ -50,6 +51,7 @@ class org.flashNight.arki.unit.UnitComponent.Dressup.EquipmentUtil.WeaponLaserSi
     public static function runAllTests():Void {
         passed = 0; failed = 0; completed = 0; finished = false;
         configs = {}; cycles = [];
+        oldWorld = _root.gameworld;
         oldClock = _root.帧计时器;
         oldCleanup = _root.装备生命周期函数.移除异常周期函数;
         _root.帧计时器 = {当前帧数:0, taskManager:{addLifecycleTask:function(owner:Object, label:String, callback:Function, interval:Number, args:Array):Number {
@@ -120,6 +122,7 @@ class org.flashNight.arki.unit.UnitComponent.Dressup.EquipmentUtil.WeaponLaserSi
         for (var i:Number = 0; i < cycles.length; i++) cycles[i].callback.apply(cycles[i].owner, cycles[i].args);
     }
     private static function runLoaded(loaded:MovieClip):Void {
+        _root.gameworld = loaded;
         delete watchdog.onEnterFrame;
         try {
             runFixture(loaded, fixture.handgun.itemName, "手枪", fixture.handgun.linkage, 0);
@@ -137,7 +140,7 @@ class org.flashNight.arki.unit.UnitComponent.Dressup.EquipmentUtil.WeaponLaserSi
         check(gun != undefined && gun.激光发射器.出光位置 != undefined, slot + "真实发射器及出口");
         check(gun.激光模组 == undefined, slot + "原生枪体不携带长光束");
         unit = loaded.createEmptyMovieClip("laserFixtureActor" + index, loaded.getNextHighestDepth());
-        unit.version = 1; unit.攻击模式 = "空手"; unit.syncRefs = {}; unit.主动战技 = {};
+        unit.version = 1; unit.hp = 100; unit.攻击模式 = "空手"; unit.syncRefs = {}; unit.主动战技 = {};
         unit[slot] = new BaseItem(name, {level:1, shot:0, mods:[]}, 0);
         unit[slot + "数据"] = item; unit[slot + "属性"] = item.data;
         unit[slot + "_引用"] = gun;
@@ -252,6 +255,7 @@ class org.flashNight.arki.unit.UnitComponent.Dressup.EquipmentUtil.WeaponLaserSi
         if (unit) { DressupInitializer.teardownLifeCycles(unit); unit.dispatcher.destroy(); }
         if (loader) loader.removeListener(listener);
         container.removeMovieClip(); watchdog.removeMovieClip();
+        _root.gameworld = oldWorld;
         _root.帧计时器 = oldClock;
         _root.装备生命周期函数.移除异常周期函数 = oldCleanup;
         trace("WeaponLaserSightTest Fixtures Completed: " + completed);

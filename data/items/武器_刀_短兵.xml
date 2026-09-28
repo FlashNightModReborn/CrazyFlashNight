@@ -407,6 +407,7 @@
       </data>
       <lifecycle>
         <attr_0>
+          <skillInteraction>independent</skillInteraction>
           <init>
             <initRoutines>光刃摩羯初始化</initRoutines>
             <initParam>
@@ -417,6 +418,22 @@
             <cycleRoutines>光刃摩羯周期</cycleRoutines>
           </cycle>
         </attr_0>
+      <attr_环境光>
+        <skillInteraction>independent</skillInteraction>
+        <init>
+          <initRoutines>装备自发光初始化</initRoutines>
+          <initParam>
+            <group>blade</group>
+            <adapter>capricorn</adapter>
+            <radius>110</radius>
+            <energy>0.72</energy>
+            <color>10548603</color>
+          </initParam>
+        </init>
+        <cycle>
+          <cycleRoutines>装备自发光周期</cycleRoutines>
+        </cycle>
+      </attr_环境光>
       </lifecycle>
     </item>
   <item>

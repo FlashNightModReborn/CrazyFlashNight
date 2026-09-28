@@ -427,6 +427,7 @@
       </balance>
       <lifecycle>
         <attr_0>
+          <skillInteraction>independent</skillInteraction>
           <init>
             <initRoutines>P90初始化</initRoutines>
           </init>
@@ -788,6 +789,7 @@
       </data>
       <lifecycle>
         <attr_0>
+          <skillInteraction>independent</skillInteraction>
           <init>
             <initRoutines>P90初始化</initRoutines>
             <initParam>
@@ -1165,6 +1167,7 @@
       </data>
       <lifecycle>
         <attr_0>
+          <skillInteraction>independent</skillInteraction>
           <init>
             <initRoutines>P90初始化</initRoutines>
           </init>
@@ -1224,6 +1227,7 @@
       </balance>
       <lifecycle>
         <attr_0>
+          <skillInteraction>independent</skillInteraction>
           <init>
             <initRoutines>P90初始化</initRoutines>
           </init>
@@ -1267,6 +1271,7 @@
       </data>
       <lifecycle>
         <attr_0>
+          <skillInteraction>independent</skillInteraction>
           <init>
             <initRoutines>P90初始化</initRoutines>
             <initParam><extraMpPerShot>3</extraMpPerShot></initParam>
@@ -1276,6 +1281,7 @@
           </cycle>
         </attr_0>
         <attr_1>
+          <skillInteraction>independent</skillInteraction>
           <init>
             <initRoutines>枪械激光初始化</initRoutines>
             <initParam>

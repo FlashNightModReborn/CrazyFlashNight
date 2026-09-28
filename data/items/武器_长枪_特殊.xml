@@ -72,6 +72,7 @@
     </data>
     <lifecycle>
       <attr_0>
+        <skillInteraction>independent</skillInteraction>
         <init>
           <initRoutines>双面雷神初始化</initRoutines>
           <initParam>
@@ -157,6 +158,7 @@
     </data>
     <lifecycle>
       <attr_0>
+        <skillInteraction>managed</skillInteraction>
         <init>
           <initRoutines>吉他喷火初始化</initRoutines>
           <initParam>
@@ -380,6 +382,7 @@
     </data>
     <lifecycle>
       <attr_0>
+        <skillInteraction>independent</skillInteraction>
         <init>
           <initRoutines>铁枪初始化</initRoutines>
           <initParam>
@@ -457,6 +460,7 @@
     </data>
     <lifecycle>
       <attr_0>
+        <skillInteraction>independent</skillInteraction>
         <init>
           <initRoutines>wa90变形款初始化</initRoutines>
           <initParam>

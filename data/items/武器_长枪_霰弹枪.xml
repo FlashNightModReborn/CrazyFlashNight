@@ -407,6 +407,21 @@
       <reloadType>tube</reloadType>
       <reloadPenalty>0</reloadPenalty>
     </data>
+    <lifecycle>
+      <attr_equipmentLight>
+        <skillInteraction>independent</skillInteraction>
+        <init>
+          <initRoutines>装备光源初始化</initRoutines>
+          <initParam>
+            <kind>flashlight</kind>
+            <beamPath>装备光束</beamPath>
+            <fallbackVisual>false</fallbackVisual>
+            <color>16773584</color>
+          </initParam>
+        </init>
+        <cycle><cycleRoutines>装备光源周期</cycleRoutines></cycle>
+      </attr_equipmentLight>
+    </lifecycle>
   </item>
   <item weapontype="霰弹枪">
     <name>TTI Benelli M4</name>
@@ -476,6 +491,7 @@
     </data>
     <lifecycle>
       <attr_0>
+        <skillInteraction>independent</skillInteraction>
         <init>
           <initRoutines>Six12_Matryoshka初始化</initRoutines>
           <initParam>
@@ -607,6 +623,7 @@
     </data>
     <lifecycle>
       <attr_0>
+        <skillInteraction>managed</skillInteraction>
         <init>
           <initRoutines>Jackhammer初始化</initRoutines>
           <initParam>

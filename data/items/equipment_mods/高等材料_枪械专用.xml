@@ -138,6 +138,31 @@
     </mod>
 
     <mod>
+        <name>战术手电</name>
+        <use>长枪,手枪</use>
+        <requireTags>侧导轨挂点</requireTags>
+        <uiRole>stability</uiRole>
+        <stats><flat><weight>0.5</weight></flat></stats>
+        <description>用于枪械侧导轨的战术照明组件。
+        需要侧导轨挂点，与其他侧导轨插件互斥。</description>
+        <tag>侧导轨</tag>
+        <lifecycle>
+            <attr_equipmentLight>
+                <skillInteraction>independent</skillInteraction>
+                <init>
+                    <initRoutines>装备光源初始化</initRoutines>
+                    <initParam>
+                        <kind>flashlight</kind>
+                        <evasionBonus>20</evasionBonus>
+                        <electricEvasionBonus>5</electricEvasionBonus>
+                    </initParam>
+                </init>
+                <cycle><cycleRoutines>装备光源周期</cycleRoutines></cycle>
+            </attr_equipmentLight>
+        </lifecycle>
+    </mod>
+
+    <mod>
         <name>镭射瞄准具</name>
         <use>长枪,手枪</use>
         <requireTags>侧导轨挂点</requireTags>
@@ -174,6 +199,19 @@
         对霰弹枪更为有效。
         在电力结构支持下额外提升精准度与弹药尺寸。</description>
         <tag>侧导轨</tag>
+      <lifecycle>
+        <attr_equipmentLight>
+          <skillInteraction>independent</skillInteraction>
+          <init>
+            <initRoutines>装备光源初始化</initRoutines>
+            <initParam>
+              <kind>laser</kind>
+              <color>16719648</color>
+            </initParam>
+          </init>
+          <cycle><cycleRoutines>装备光源周期</cycleRoutines></cycle>
+        </attr_equipmentLight>
+      </lifecycle>
     </mod>
 
     <mod>

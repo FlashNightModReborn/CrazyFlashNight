@@ -34,6 +34,7 @@
       </data>
       <lifecycle>
         <attr_0>
+          <skillInteraction>independent</skillInteraction>
           <init>
             <initRoutines>XM556_OC_Overlord初始化</initRoutines>
           </init>
@@ -56,6 +57,7 @@
       该武器预留了一定的拓展升级空间，每级强化度可以提供3%的暴击率加成</description>
       <lifecycle>
         <attr_0>
+          <skillInteraction>independent</skillInteraction>
           <init>
             <initRoutines>XM556_H_Stinger初始化</initRoutines>
             <initParam>

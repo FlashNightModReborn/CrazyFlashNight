@@ -1,0 +1,7 @@
+﻿import org.flashNight.gesh.tooltip.test.*;
+trace("FocusedTestRunId equipment-lighting-tooltip Start: __FOCUSED_RUN_ID__");
+org.flashNight.gesh.tooltip.test.EquipmentLightingTooltipTest.runAllTests();
+org.flashNight.gesh.tooltip.test.TestDataBootstrap.runIsolated(function() {
+    org.flashNight.gesh.tooltip.test.NativeTooltipDocumentTest.runAllTests();
+});
+trace("FocusedTestRunId equipment-lighting-tooltip Complete: __FOCUSED_RUN_ID__");

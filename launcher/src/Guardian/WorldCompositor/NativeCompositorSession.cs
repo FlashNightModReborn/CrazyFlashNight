@@ -43,7 +43,7 @@ namespace CF7Launcher.Guardian.WorldCompositor
             try
             {
                 _module = NativeLibrary.Load(Path.GetFullPath(modulePath));
-                if (Export<VersionDelegate>("ProbeGetAbiVersion")() != 7) throw new InvalidOperationException("Compositor ABI version mismatch");
+                if (Export<VersionDelegate>("ProbeGetAbiVersion")() != 9) throw new InvalidOperationException("Compositor ABI version mismatch");
                 _stop = Export<StopDelegate>("ProbeStop"); _read = Export<ReadDelegate>("ProbeGetStats");
                 _captureSize=Export<CaptureSizeDelegate>("ProbeGetCaptureSize"); // reject an old unpaired DLL
                 _crop = Export<CropDelegate>("ProbeSetCrop"); _mode = Export<ModeDelegate>("ProbeSetMode");
@@ -232,6 +232,7 @@ namespace CF7Launcher.Guardian.WorldCompositor
             if (_session==IntPtr.Zero || frame==null || frame.Count<0 || frame.Count>512
                 || frame.Data.Length<frame.Count*16 || frame.CasingCount<0 || frame.CasingCount>frame.Count
                 || frame.LightCount<0 || frame.LightCount>CombatFxEngine.LightLimit
+                || (frame.Lights==null ? 0 : frame.Lights.Length)<frame.LightCount*CombatFxEngine.LightStride
                 || _combatFxFrame(_session,frame.Data,frame.Count,frame.CasingCount,frame.Lights,frame.LightCount,
                     frame.MaximumLightResponse,x,y,scale)!=1)
                 throw new InvalidOperationException("Native decorative frame rejected");

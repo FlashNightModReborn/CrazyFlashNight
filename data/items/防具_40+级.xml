@@ -507,6 +507,7 @@
     </data>
   <lifecycle>
       <attr_0>
+        <skillInteraction>independent</skillInteraction>
         <setGate><effectId>energy_core</effectId><componentId>boot_servo</componentId></setGate>
         <init>
           <initRoutines>钛合金61组件初始化</initRoutines>
@@ -663,6 +664,7 @@
     </data>
   <lifecycle>
       <attr_0>
+        <skillInteraction>independent</skillInteraction>
         <setGate><effectId>energy_core</effectId><componentId>leg_ammo_supply</componentId></setGate>
         <init>
           <initRoutines>钛合金61组件初始化</initRoutines>
@@ -720,6 +722,7 @@
     </data>
   <lifecycle>
       <attr_0>
+        <skillInteraction>independent</skillInteraction>
         <setGate><effectId>energy_core</effectId><componentId>glove_energy_bus</componentId></setGate>
         <init>
           <initRoutines>钛合金61组件初始化</initRoutines>
@@ -781,6 +784,7 @@
     </data>
     <lifecycle>
       <attr_防具技能>
+        <skillInteraction>independent</skillInteraction>
         <init>
           <initRoutines>喷气背包初始化</initRoutines>
           <initParam>
@@ -797,6 +801,7 @@
         </cycle>
       </attr_防具技能>
           <attr_0>
+            <skillInteraction>independent</skillInteraction>
         <setGate><effectId>energy_core</effectId><componentId>chest_life_support</componentId></setGate>
         <init>
           <initRoutines>钛合金61组件初始化</initRoutines>
@@ -877,6 +882,7 @@
     </data>
   <lifecycle>
       <attr_0>
+        <skillInteraction>independent</skillInteraction>
         <setGate><effectId>energy_core</effectId><componentId>helmet_night_vision</componentId></setGate>
         <init>
           <initRoutines>钛合金61组件初始化</initRoutines>
@@ -2042,6 +2048,7 @@
     </data>
     <lifecycle>
       <attr_防具技能>
+        <skillInteraction>independent</skillInteraction>
         <init>
           <initRoutines>喷气背包初始化</initRoutines>
           <initParam>
@@ -2441,6 +2448,7 @@
     </data>
     <lifecycle>
       <attr_0>
+        <skillInteraction>bound</skillInteraction>
         <init>
           <initRoutines>Mark3手甲初始化</initRoutines>
           <initParam>
@@ -2483,6 +2491,7 @@
     </data>
     <lifecycle>
       <attr_防具技能>
+        <skillInteraction>independent</skillInteraction>
         <init>
           <initRoutines>喷气背包初始化</initRoutines>
           <initParam>
@@ -2612,6 +2621,7 @@
     </data>
     <lifecycle>
       <attr_切换战技>
+        <skillInteraction>managed</skillInteraction>
         <init>
           <initRoutines>贯空天盖手套初始化</initRoutines>
           <initParam>
@@ -2681,6 +2691,7 @@
     </data>
     <lifecycle>
       <attr_披风>
+        <skillInteraction>independent</skillInteraction>
         <init>
           <initRoutines>挂载披风初始化</initRoutines>
           <initParam>
@@ -2692,6 +2703,7 @@
         </cycle>
       </attr_披风>
       <attr_防具技能>
+        <skillInteraction>independent</skillInteraction>
         <init>
           <initRoutines>喷气背包初始化</initRoutines>
           <initParam>
@@ -2738,6 +2750,7 @@
     </data>
     <lifecycle>
       <attr_夜视仪>
+        <skillInteraction>independent</skillInteraction>
         <init>
           <initRoutines>红外夜视仪初始化</initRoutines>
           <initParam>
@@ -2781,6 +2794,7 @@
     </data>
     <lifecycle>
       <attr_夜视仪>
+        <skillInteraction>independent</skillInteraction>
         <init>
           <initRoutines>红外夜视仪初始化</initRoutines>
           <initParam>
@@ -2926,6 +2940,7 @@
     </data>
     <lifecycle>
       <attr_夜视仪>
+        <skillInteraction>independent</skillInteraction>
         <init>
           <initRoutines>红外夜视仪初始化</initRoutines>
           <initParam>
@@ -2944,6 +2959,7 @@
         </cycle>
       </attr_夜视仪>
       <attr_九命猫妖>
+        <skillInteraction>managed</skillInteraction>
         <init>
           <initRoutines>九命猫妖初始化</initRoutines>
           <initParam>

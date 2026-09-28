@@ -3,6 +3,7 @@ import org.flashNight.arki.item.BaseItem;
 import org.flashNight.arki.item.ItemUtil;
 import org.flashNight.arki.item.equipment.ModRegistry;
 import org.flashNight.arki.item.equipment.EquipmentCalculator;
+import org.flashNight.arki.item.equipment.EquipmentLifecyclePolicy;
 import org.flashNight.arki.bullet.BulletComponent.Type.BulletTypeUtil;
 
 /**
@@ -244,6 +245,9 @@ class org.flashNight.arki.item.equipment.TagManager {
                 }
             }
         }
+
+        // Independent functional lifecycles do not claim the skill/subweapon slot.
+        if (modData.lifecycle != undefined && !EquipmentLifecyclePolicy.isIndependentLifecycle(modData.lifecycle)) return -1024;
 
         // 检查子弹类型排斥
         if (modData.excludeBulletTypeDict && itemData.data && itemData.data.bullet) {

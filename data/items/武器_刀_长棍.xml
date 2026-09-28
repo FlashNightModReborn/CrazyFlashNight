@@ -126,6 +126,23 @@
         <power>500</power>
         <bladeCount>3</bladeCount>
       </data>
+    <lifecycle>
+      <attr_环境光>
+        <skillInteraction>independent</skillInteraction>
+        <init>
+          <initRoutines>装备自发光初始化</initRoutines>
+          <initParam>
+            <group>blade</group>
+            <radius>115</radius>
+            <energy>0.58</energy>
+            <color>8451839</color>
+          </initParam>
+        </init>
+        <cycle>
+          <cycleRoutines>装备自发光周期</cycleRoutines>
+        </cycle>
+      </attr_环境光>
+    </lifecycle>
     </item>
   <item>
       <name>架海金梁</name>

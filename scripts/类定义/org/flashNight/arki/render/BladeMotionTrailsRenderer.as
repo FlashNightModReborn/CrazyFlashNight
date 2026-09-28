@@ -335,6 +335,7 @@ class org.flashNight.arki.render.BladeMotionTrailsRenderer {
 
         var key:String = target._name + target.version + bladeId;
         _rendererCache.addTrailData(key, trail, style);
+        if (mc.__equipmentEmissiveOwner) org.flashNight.arki.unit.UnitComponent.Dressup.EquipmentUtil.EquipmentEmissiveController.noteTrail(target,mc,trail,_mapCache);
     }
 
     /** 中性能：localToGlobal 精确采样，4个刀口位置 */
@@ -346,6 +347,7 @@ class org.flashNight.arki.render.BladeMotionTrailsRenderer {
 
         var key:String = target._name + target.version + bladeId;
         _rendererCache.addTrailData(key, trail, style);
+        if (mc.__equipmentEmissiveOwner) org.flashNight.arki.unit.UnitComponent.Dressup.EquipmentUtil.EquipmentEmissiveController.noteTrail(target,mc,trail,_mapCache);
     }
 
     /** 低性能：localToGlobal 精确采样，3个刀口位置
@@ -359,5 +361,6 @@ class org.flashNight.arki.render.BladeMotionTrailsRenderer {
 
         var key:String = target._name + target.version + bladeId;
         _rendererCache.addTrailData(key, trail, style);
+        if (mc.__equipmentEmissiveOwner) org.flashNight.arki.unit.UnitComponent.Dressup.EquipmentUtil.EquipmentEmissiveController.noteTrail(target,mc,trail,_mapCache);
     }
 }

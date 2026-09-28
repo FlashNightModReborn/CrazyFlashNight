@@ -36,6 +36,7 @@
     </data>
     <lifecycle>
       <attr_0>
+        <skillInteraction>independent</skillInteraction>
         <init>
           <initRoutines>XM556初始化</initRoutines>
         </init>
@@ -78,6 +79,7 @@
     </data>
     <lifecycle>
       <attr_0>
+        <skillInteraction>independent</skillInteraction>
         <init>
           <initRoutines>XM556初始化</initRoutines>
         </init>
@@ -158,6 +160,7 @@
     </data>
     <lifecycle>
       <attr_0>
+        <skillInteraction>independent</skillInteraction>
         <init>
           <initRoutines>XM214初始化</initRoutines>
           <initParam>
@@ -197,6 +200,7 @@
     </skill>
     <lifecycle>
       <attr_0>
+        <skillInteraction>independent</skillInteraction>
         <init>
           <initRoutines>M134初始化</initRoutines>
           <initParam>
@@ -253,6 +257,7 @@
     </skill>
     <lifecycle>
       <attr_0>
+        <skillInteraction>independent</skillInteraction>
         <init>
           <initRoutines>M134初始化</initRoutines>
           <initParam>
@@ -356,6 +361,7 @@
     </data>
     <lifecycle>
       <attr_0>
+        <skillInteraction>bound</skillInteraction>
         <init>
           <initRoutines>M134暴力版初始化</initRoutines>
           <initParam>
@@ -370,6 +376,7 @@
         </cycle>
       </attr_0>
       <attr_1>
+        <skillInteraction>independent</skillInteraction>
         <init>
           <initRoutines>M134初始化</initRoutines>
           <initParam>

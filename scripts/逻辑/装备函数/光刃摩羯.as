@@ -2,6 +2,7 @@
 {
     ref.basicStyle = param.basicStyle || "翠绿疾影";
     ref.draw = -9999;
+    EquipmentEmissionState.bind(ref, "capricorn");
 
     var target:MovieClip = ref.自机;
     target.dispatcher.subscribe("WeaponSkill", function(mode:String) {

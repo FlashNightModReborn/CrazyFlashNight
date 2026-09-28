@@ -23,6 +23,7 @@ _root.装备生命周期函数.枪械激光初始化 = function(ref:Object, para
     ref.laserModes = ref.装备类型 == "长枪"
         ? {长枪:true} : {双枪:true, 手枪:true, 手枪2:true};
     ref.laserActive = true;
+    org.flashNight.arki.render.EquipmentLightBridge.bind(ref, 2, param);
     ref.laserPlacementHandler = PlacementVisual.hookVisualUpdate(
         actor, ref.laserContainer, ref, _root.装备生命周期函数.枪械激光视觉更新, ref);
     if (!ref.生命周期函数列表) ref.生命周期函数列表 = [];
@@ -55,6 +56,7 @@ _root.装备生命周期函数.枪械激光视觉更新 = function(ref:Object):V
         _root.装备生命周期函数.枪械激光卸载(ref);
         return;
     }
+    org.flashNight.arki.render.EquipmentLightBridge.hide(ref);
     var actor:MovieClip = ref.自机;
     var gun:MovieClip = actor[ref.laserContainer];
     if (ref.laserGun !== gun) {
@@ -109,12 +111,13 @@ _root.装备生命周期函数.枪械激光视觉更新 = function(ref:Object):V
         progress = Math.max(0, Math.min(1, progress));
     }
     beam._alpha = ref.laserFireControl ? 18 + 82 * progress : 100;
-    beam._visible = true;
+    beam._visible = org.flashNight.arki.render.EquipmentLightBridge.sample(ref, outlet, beam._alpha / 100);
 };
 
 _root.装备生命周期函数.枪械激光卸载 = function(ref:Object):Void {
     if (!ref) return;
     ref.laserActive = false;
+    org.flashNight.arki.render.EquipmentLightBridge.release(ref);
     _root.装备生命周期函数.枪械激光移除光束(ref);
     var dispatcher:Object = ref.自机.dispatcher;
     if (dispatcher && ref.laserPlacementHandler) {

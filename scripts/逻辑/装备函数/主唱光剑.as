@@ -1,5 +1,6 @@
 ﻿_root.装备生命周期函数.主唱光剑初始化 = function(ref:Object, param:Object)
 {
+    EquipmentEmissionState.bind(ref, "vocalist");
    var target:MovieClip = ref.自机;
 
    // ===== 从XML参数对象读取配置 =====

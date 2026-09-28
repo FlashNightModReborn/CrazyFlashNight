@@ -2018,7 +2018,7 @@ class Program
                 fxStyles.Add(new { index=style.Index,linkage=style.Linkage,
                     kind=style.IsCasing?"casing":(style.IsImpact?"impact":"muzzle"),skipOriginYZero=style.SkipOriginYZero });
             bool PublishFxCaps(bool available,int generation) => socketServer.TrySendIfGen(JsonSerializer.Serialize(new {
-                task="combat_fx_caps",version=1,generation,native=available,digest=combatFxCatalog.Sha256,styles=fxStyles
+                task="combat_fx_caps",version=1,generation,native=available,equipmentLights=available?2:0,equipmentRadialLights=available?1:0,digest=combatFxCatalog.Sha256,styles=fxStyles
             })+"\0",generation);
             Action<int> readyFx=generation => {
                 Volatile.Write(ref fxCapsGeneration,generation);

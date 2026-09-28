@@ -85,6 +85,7 @@
     </data>
     <lifecycle>
       <attr_0>
+        <skillInteraction>independent</skillInteraction>
         <init>
           <initRoutines>M249初始化</initRoutines>
         </init>
@@ -192,6 +193,7 @@
     </data>
     <lifecycle>
       <attr_0>
+        <skillInteraction>independent</skillInteraction>
         <init>
           <initRoutines>M249初始化</initRoutines>
         </init>
@@ -266,6 +268,7 @@
     </data>
     <lifecycle>
       <attr_0>
+        <skillInteraction>independent</skillInteraction>
         <init>
           <initRoutines>NEGEV初始化</initRoutines>
         </init>
@@ -358,6 +361,7 @@
     <!-- 纯视觉：由成功主长枪射击触发，帧区间与 tools/weapon-animation/profiles/qjz171.json 对齐。 -->
     <lifecycle>
       <attr_0>
+        <skillInteraction>independent</skillInteraction>
         <init>
           <initRoutines>长枪射击动画初始化</initRoutines>
           <initParam>
@@ -460,6 +464,7 @@
     <!-- 纯视觉：由成功主长枪射击触发，帧区间与 tools/weapon-animation/profiles/qjz171-ti61.json 对齐。 -->
     <lifecycle>
       <attr_0>
+        <skillInteraction>independent</skillInteraction>
         <init>
           <initRoutines>长枪射击动画初始化</initRoutines>
           <initParam>
@@ -472,6 +477,7 @@
         </cycle>
       </attr_0>
       <attr_1>
+        <skillInteraction>independent</skillInteraction>
         <init>
           <initRoutines>枪械激光初始化</initRoutines>
           <initParam>
@@ -581,6 +587,7 @@
     </data>
     <lifecycle>
       <attr_0>
+        <skillInteraction>independent</skillInteraction>
         <init>
           <initRoutines>NEGEV初始化</initRoutines>
         </init>

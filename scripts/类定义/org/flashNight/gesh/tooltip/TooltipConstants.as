@@ -128,6 +128,7 @@ class org.flashNight.gesh.tooltip.TooltipConstants {
   public static var LBL_CLEAN:String = "净化度";
   public static var LBL_POISON:String = "剧毒性";
   public static var LBL_INSTALLED_MODS:String = "已安装";
+  public static var LBL_LIGHTING_INFO:String = "【照明效果】";
   public static var LBL_MOD_COUNT_SUFFIX:String = "个配件";
   public static var LBL_SLAY_SHORT:String = "斩杀";
 

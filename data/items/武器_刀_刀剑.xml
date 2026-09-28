@@ -165,6 +165,7 @@
       </data>
       <lifecycle>
         <attr_0>
+          <skillInteraction>independent</skillInteraction>
           <init>
             <initRoutines>电感切割刃初始化</initRoutines>
             <initParam>
@@ -205,6 +206,22 @@
             </bullet_1>
           </bullet>
         </attr_0>
+      <attr_环境光>
+        <skillInteraction>independent</skillInteraction>
+        <init>
+          <initRoutines>装备自发光初始化</initRoutines>
+          <initParam>
+            <group>blade</group>
+            <adapter>inductor</adapter>
+            <radius>115</radius>
+            <energy>0.8</energy>
+            <color>7328767</color>
+          </initParam>
+        </init>
+        <cycle>
+          <cycleRoutines>装备自发光周期</cycleRoutines>
+        </cycle>
+      </attr_环境光>
       </lifecycle>
     </item>
   <item>
@@ -344,6 +361,23 @@
         <defence>0</defence>
         <bladeCount>3</bladeCount>
       </data>
+    <lifecycle>
+      <attr_环境光>
+        <skillInteraction>independent</skillInteraction>
+        <init>
+          <initRoutines>装备自发光初始化</initRoutines>
+          <initParam>
+            <group>blade</group>
+            <radius>105</radius>
+            <energy>0.56</energy>
+            <color>14286709</color>
+          </initParam>
+        </init>
+        <cycle>
+          <cycleRoutines>装备自发光周期</cycleRoutines>
+        </cycle>
+      </attr_环境光>
+    </lifecycle>
     </item>
   <item>
       <name>剑刃加农</name>
@@ -384,6 +418,7 @@
       </data>
       <lifecycle>
         <attr_0>
+          <skillInteraction>independent</skillInteraction>
           <init>
             <initRoutines>通用刀光初始化</initRoutines>
             <initParam>
@@ -546,6 +581,7 @@
       </data>
       <lifecycle>
         <attr_0>
+          <skillInteraction>independent</skillInteraction>
           <init>
             <initRoutines>死者之手初始化</initRoutines>
             <initParam>
@@ -587,6 +623,7 @@
       </data>
       <lifecycle>
         <attr_0>
+          <skillInteraction>independent</skillInteraction>
           <init>
             <initRoutines>通用刀光初始化</initRoutines>
             <initParam>
@@ -597,6 +634,21 @@
             <cycleRoutines>通用刀光周期</cycleRoutines>
           </cycle>
         </attr_0>
+      <attr_环境光>
+        <skillInteraction>independent</skillInteraction>
+        <init>
+          <initRoutines>装备自发光初始化</initRoutines>
+          <initParam>
+            <group>blade</group>
+            <radius>115</radius>
+            <energy>0.7</energy>
+            <color>16749012</color>
+          </initParam>
+        </init>
+        <cycle>
+          <cycleRoutines>装备自发光周期</cycleRoutines>
+        </cycle>
+      </attr_环境光>
       </lifecycle>
     </item>
   <item>
@@ -623,6 +675,7 @@
       </data>
       <lifecycle>
         <attr_0>
+          <skillInteraction>independent</skillInteraction>
           <init>
             <initRoutines>通用刀光初始化</initRoutines>
             <initParam>
@@ -633,6 +686,21 @@
             <cycleRoutines>通用刀光周期</cycleRoutines>
           </cycle>
         </attr_0>
+      <attr_环境光>
+        <skillInteraction>independent</skillInteraction>
+        <init>
+          <initRoutines>装备自发光初始化</initRoutines>
+          <initParam>
+            <group>blade</group>
+            <radius>140</radius>
+            <energy>0.93</energy>
+            <color>16737199</color>
+          </initParam>
+        </init>
+        <cycle>
+          <cycleRoutines>装备自发光周期</cycleRoutines>
+        </cycle>
+      </attr_环境光>
       </lifecycle>
     </item>
   <item>
@@ -746,6 +814,7 @@
     </data>
     <lifecycle>
       <attr_0>
+        <skillInteraction>managed</skillInteraction>
         <init>
           <initRoutines>牙狼剑初始化</initRoutines>
           <initParam>

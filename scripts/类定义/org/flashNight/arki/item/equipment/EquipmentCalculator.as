@@ -5,6 +5,7 @@ import org.flashNight.arki.item.equipment.TierSystem;
 import org.flashNight.arki.item.equipment.TagManager;
 import org.flashNight.arki.item.equipment.SubweaponDataUtil;
 import org.flashNight.arki.item.equipment.EquipmentConfigManager;
+import org.flashNight.arki.item.equipment.EquipmentLifecyclePolicy;
 import org.flashNight.arki.item.ItemUtil;
 
 /** 
@@ -57,6 +58,12 @@ class org.flashNight.arki.item.equipment.EquipmentCalculator {
             // applyTierData 可能修改了 data 引用指向的对象，需要重新获取
             data = itemData.data;
         }
+
+        // Compose after tier replacement and before the no-mod fast path, so removal
+        // also retires old projected attrs. Skill/slot rules remain separate.
+        var lifecycle:Object = EquipmentLifecyclePolicy.merge(itemData.lifecycle, value.mods, modRegistry);
+        if (lifecycle != undefined) itemData.lifecycle = lifecycle;
+        else delete itemData.lifecycle;
 
         // 若装备自带副武器，先规范化根层数据，供 tooltip / 初始化读取。
         SubweaponDataUtil.normalizeItemSubweapon(itemData);

@@ -1,0 +1,9 @@
+﻿import org.flashNight.arki.render.*;
+if (!_root.主角函数) _root.主角函数 = {};
+#include "逻辑/单位函数/单位函数_fs_装备生命周期配置.as"
+#include "逻辑/装备函数/装备光源.as"
+_root.equipmentLightAssetComplete = function():Void {
+    trace("FocusedTestRunId equipment-light-assets Complete: __FOCUSED_RUN_ID__");
+};
+trace("FocusedTestRunId equipment-light-assets Start: __FOCUSED_RUN_ID__");
+org.flashNight.arki.render.EquipmentLightAssetTest.runAllTests();

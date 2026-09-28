@@ -101,13 +101,176 @@ internal static class Program
     private static void Require(bool condition,string message) { if(!condition)throw new InvalidOperationException(message); }
 
     private static float[] Grade(float r,float g,float b)=>new float[]{r,0,0,0, 0,g,0,0, 0,0,b,0, 0,0,0,1};
+    private static double Luma(int[] rgb)=>rgb[0]*.2126+rgb[1]*.7152+rgb[2]*.0722;
+
+    private static object CheckEquipmentVisibility(NativeCompositorSession session,CombatFxCatalog catalog,string output,
+        (byte[] bytes,int width,int height) night,(byte[] bytes,int width,int height) muzzle)
+    {
+        string input=Path.Combine(output,"equipment-lighting-wires.json");
+        if(!File.Exists(input))return null;
+        var wires=JsonSerializer.Deserialize<Dictionary<string,string>>(File.ReadAllText(input));
+        Require(wires.Count==3 && new[]{"blue-set","blue-same","blue-blood"}.All(wires.ContainsKey),"Incomplete AS2 lighting calibration wires");
+        var old=LightFrame(catalog,1,118);old.Lights[3]=.525f;
+        old.Lights[4]=116f/255;old.Lights[5]=150f/255;old.Lights[6]=240f/255;
+        session.CombatFxFrame(old,0,0,1);
+        var previous=Grab(session,Path.Combine(output,"equipment-previous-blue-set.png"));
+        double beforeCenter=Luma(Pixel(previous,512,288))-Luma(Pixel(night,512,288));
+        double beforeFeet=Luma(Pixel(previous,512,363))-Luma(Pixel(night,512,363));
+        double muzzleDelta=Luma(Pixel(muzzle,512,288))-Luma(Pixel(night,512,288));
+        var samples=new Dictionary<string,object>();
+        foreach(var pair in wires)
+        {
+            Require(CombatFxFrame.TryParse("91|1|1|0"+pair.Value,catalog,out var frame),"AS2 visibility wire rejected: "+pair.Key);
+            var engine=new CombatFxEngine(catalog);engine.Apply(frame,1);var draw=engine.BuildDraw();
+            Require(draw.LightCount==(pair.Key=="blue-blood"?2:1),"AS2 visibility light grouping: "+pair.Key);
+            int body=0;
+            for(int i=1;i<draw.LightCount;i++)if(draw.Lights[i*16+2]>draw.Lights[body*16+2])body=i;
+            float shiftX=512-draw.Lights[body*16],shiftY=288-draw.Lights[body*16+1];
+            for(int i=0;i<draw.LightCount;i++){draw.Lights[i*16]+=shiftX;draw.Lights[i*16+1]+=shiftY;}
+            double maxEnergy=0;
+            for(int y=126;y<=450;y+=2)for(int x=350;x<=714;x+=2)
+            {
+                double energy=0;
+                for(int i=0;i<draw.LightCount;i++)
+                {
+                    int at=i*16;double dx=x-draw.Lights[at],dy=y-draw.Lights[at+1],radius=draw.Lights[at+2];
+                    double falloff=Math.Max(0,1-(dx*dx+dy*dy)/(radius*radius));
+                    energy+=draw.Lights[at+3]*falloff*falloff;
+                }
+                maxEnergy=Math.Max(maxEnergy,energy);
+            }
+            Require(maxEnergy<=1.5003,"AS2 combined peak exceeded the ordinary muzzle reference: "+pair.Key);
+            session.CombatFxFrame(draw,0,0,1);
+            var rendered=Grab(session,Path.Combine(output,"equipment-visible-"+pair.Key+".png"));
+            int[] center=Pixel(rendered,512,288),feet=Pixel(rendered,512,363);
+            double centerDelta=Luma(center)-Luma(Pixel(night,512,288));
+            double feetDelta=Luma(feet)-Luma(Pixel(night,512,363));
+            if(pair.Key=="blue-set")
+            {
+                Require(centerDelta>beforeCenter*1.4,"Blue set center did not become meaningfully brighter");
+                Require(feetDelta>beforeFeet*1.8 && feetDelta>beforeFeet+8,"Blue set still leaves the feet unreadable");
+            }
+            else Require(centerDelta>=muzzleDelta*.8 && centerDelta<=muzzleDelta*1.12,"Equipment combination does not match the muzzle brightness band: "+pair.Key);
+            Require(Pixel(rendered,80,80).SequenceEqual(Pixel(night,80,80)),"Equipment visibility leaked outside its local footprint");
+            samples[pair.Key]=new{lights=draw.LightCount,center,feet,centerDelta,feetDelta,maxEnergy,muzzleRatio=centerDelta/muzzleDelta};
+        }
+        session.ClearCombatFxFrame();
+        return new{wireSha256=Convert.ToHexString(System.Security.Cryptography.SHA256.HashData(File.ReadAllBytes(input))),
+            beforeCenter,beforeFeet,muzzleDelta,samples,boundary="Actual AS2 XML/lifecycle snapshots on a controlled material; not game appearance or game FPS."};
+    }
     private static CombatFxDrawFrame LightFrame(CombatFxCatalog catalog,int count=1,float? radius=null)
     {
         var light=catalog.Styles.Single(s=>s.Linkage=="枪火").Light;
         var draw=new CombatFxDrawFrame(1) {LightCount=count,MaximumLightResponse=catalog.MaximumLightResponse};
         for(int i=0;i<count;i++)
-            Array.Copy(new float[]{512,288,radius??light.Radius,count==1?light.Energy:2,light.R,light.G,light.B,0},0,draw.Lights,i*8,8);
+            Array.Copy(new float[]{512,288,radius??light.Radius,count==1?light.Energy:2,light.R,light.G,light.B,0,1,0,1,0,0,0,0,0},0,
+                draw.Lights,i*CombatFxEngine.LightStride,CombatFxEngine.LightStride);
         return draw;
+    }
+    private static CombatFxDrawFrame DirectionalLight(CombatFxCatalog catalog,int kind,
+        float x,float y,float dx,float dy,float length,float width,
+        float nearX=0,float nearY=0,float nearRadius=0,float nearEnergy=0)
+    {
+        var draw=new CombatFxDrawFrame(1) {LightCount=1,MaximumLightResponse=catalog.MaximumLightResponse};
+        Array.Copy(new float[]{x,y,length,kind==1?1.45f:.85f,1,kind==1?241f/255:102f/255,kind==1?208f/255:80f/255,
+            kind,dx,dy,width,0,nearX,nearY,nearRadius,nearEnergy},draw.Lights,CombatFxEngine.LightStride);
+        return draw;
+    }
+    private static object CheckEquipmentLights(NativeCompositorSession session,CombatFxCatalog catalog,string output,
+        (byte[] bytes,int width,int height) dark)
+    {
+        session.CombatFxFrame(DirectionalLight(catalog,1,220,288,1,0,500,90),0,0,1);
+        var cone=Grab(session,Path.Combine(output,"equipment-flashlight-cone.png"));
+        Require(Pixel(cone,400,288)[0]>Pixel(dark,400,288)[0]+12,"Flashlight did not illuminate cone interior");
+        Require(Pixel(cone,400,410).SequenceEqual(Pixel(dark,400,410)),"Flashlight leaked outside cone");
+        Require(Pixel(cone,180,288).SequenceEqual(Pixel(dark,180,288)),"Flashlight illuminated behind its outlet");
+        session.CombatFxFrame(DirectionalLight(catalog,1,512,100,0,1,400,90),0,0,1);
+        var rotated=Grab(session,Path.Combine(output,"equipment-flashlight-rotated.png"));
+        Require(Pixel(rotated,512,300)[0]>Pixel(dark,512,300)[0]+12,"Rotated flashlight lost its direction");
+        session.CombatFxFrame(DirectionalLight(catalog,1,800,288,-1,0,500,90),0,0,1);
+        var mirrored=Grab(session,Path.Combine(output,"equipment-flashlight-mirrored.png"));
+        Require(Pixel(mirrored,600,288)[0]>Pixel(dark,600,288)[0]+12
+            && Pixel(mirrored,920,288).SequenceEqual(Pixel(dark,920,288)),"Mirrored flashlight points backwards");
+        session.CombatFxFrame(DirectionalLight(catalog,2,180,288,1,0,640,8),0,0,1);
+        var laser=Grab(session,Path.Combine(output,"equipment-laser-illumination.png"));
+        Require(Pixel(laser,500,288)[0]>Pixel(dark,500,288)[0]+12,"Laser failed to reveal covered material");
+        Require(Pixel(laser,500,315).SequenceEqual(Pixel(dark,500,315)),"Laser illumination is wider than its configured band");
+        float diagonal=(float)Math.Sqrt(.5);
+        session.CombatFxFrame(DirectionalLight(catalog,2,180,100,diagonal,diagonal,550,.5f),0,0,1);
+        var thin=Grab(session,Path.Combine(output,"equipment-laser-thin-diagonal.png"));
+        for(int offset=80;offset<=240;offset+=80)
+            Require(Pixel(thin,180+offset,100+offset)[0]>Pixel(dark,180+offset,100+offset)[0]+2,
+                "Subpixel diagonal laser has a sampling hole at "+offset);
+        session.CombatFxFrame(DirectionalLight(catalog,1,300,288,1,0,1000,260,210,330,140,1.15f),0,0,1);
+        var practical=Grab(session,Path.Combine(output,"equipment-flashlight-practical.png"));
+        Require(Pixel(practical,150,330)[0]>Pixel(dark,150,330)[0]+20,"Near fill failed to reveal the holder behind the muzzle");
+        Require(Pixel(practical,210,405)[0]>Pixel(dark,210,405)[0]+12,"Near fill failed to reveal the holder's feet");
+        Require(Pixel(practical,850,288)[0]>Pixel(dark,850,288)[0]+20,"Extended flashlight lost its useful midrange core");
+        Require(Pixel(practical,5,550).SequenceEqual(Pixel(dark,5,550)),"Composite flashlight leaked outside cone and near circle");
+        Require(Pixel(practical,40,330).SequenceEqual(Pixel(dark,40,330)),"Near fill retained its oversized rear footprint");
+        // Same checkerboard material every 128 pixels: intensity must fall continuously,
+        // rather than hiding a constant-bright section behind texture differences.
+        var forwardProfile=new[]{450,578,706,834}.Select(x=>Pixel(practical,x,288)[0]).ToArray();
+        Require(forwardProfile.Zip(forwardProfile.Skip(1),(a,b)=>a>b).All(v=>v),"Flashlight retained a flat forward plateau");
+        var radialProfile=new[]{330,354,378,402,426,450}.Select(y=>
+            Pixel(practical,180,y)[0]-Pixel(dark,180,y)[0]).ToArray();
+        Require(radialProfile[0]>radialProfile[1] && radialProfile[1]>radialProfile[2]
+            && radialProfile[2]>radialProfile[3] && radialProfile[3]>radialProfile[4]
+            && radialProfile[4]>radialProfile[5],"Near fill retained a flat disk or hard rim");
+        // A single lobe at its configured peak bounds the smooth union. Check the
+        // whole overlap against it to catch a double-exposure seam, not just one pixel.
+        var ceiling=DirectionalLight(catalog,1,300,288,1,0,1000,260,210,330,320,1.45f);
+        ceiling.Lights[7]=0;ceiling.Lights[0]=280;ceiling.Lights[1]=310;ceiling.Lights[2]=1024;
+        Array.Clear(ceiling.Lights,12,4);
+        session.CombatFxFrame(ceiling,0,0,1);
+        var maximum=Grab(session,Path.Combine(output,"equipment-flashlight-overlap-ceiling.png"));
+        for(int y=260;y<=360;y+=10)for(int x=210;x<=370;x+=10)
+            Require(Pixel(practical,x,y)[0]<=Pixel(maximum,x,y)[0]+1,"Near and forward lobes produced an overlap hotspot");
+        session.CombatFxFrame(DirectionalLight(catalog,1,512,100,0,1,400,90,450,80,100,1.15f),0,0,1);
+        var offsetNear=Grab(session,Path.Combine(output,"equipment-flashlight-offset-near.png"));
+        Require(Pixel(offsetNear,420,80)[0]>Pixel(dark,420,80)[0]+20,"Rotated composite quad clipped its offset near field");
+        Require(Pixel(offsetNear,700,80).SequenceEqual(Pixel(dark,700,80)),"Near field enabled an unbounded reverse cone");
+        session.CombatFxFrame(DirectionalLight(catalog,2,180,288,1,0,750,28),0,0,1);
+        var practicalLaser=Grab(session,Path.Combine(output,"equipment-laser-practical.png"));
+        var laserCore=Pixel(practicalLaser,500,288);var laserEdge=Pixel(practicalLaser,500,302);
+        Require(laserCore[0]>laserEdge[0]+8 && laserEdge[0]>Pixel(dark,500,302)[0]+4,
+            "Laser lost its narrow core and soft transverse falloff");
+        Require(laserCore[0]-Pixel(dark,500,288)[0]>laserCore[1]-Pixel(dark,500,288)[1]+8,
+            "Laser illumination lost its red emphasis");
+        Require(Pixel(practicalLaser,500,325).SequenceEqual(Pixel(dark,500,325)),"Laser retained an over-wide light panel");
+        Require(Pixel(practicalLaser,100,288).SequenceEqual(Pixel(dark,100,288)),"Laser gained an unauthorized near field");
+        // Route resident radials through the actual parser and engine, rather than
+        // injecting a muzzle pulse or hand-packing a second interpretation of kind 0.
+        Require(CombatFxFrame.TryParse("7|1|1|0;l,71,0,240,280,0,0,118,0,0.525,0.455,0.588,0.941,0,0,0,0;"
+            +"l,72,0,500,280,0,0,70,0,0.6,1,0.333,0.4,0,0,0,0",catalog,out var radialFrame),"Resident radial fixture rejected");
+        var radialEngine=new CombatFxEngine(catalog);radialEngine.Apply(radialFrame,1);
+        var radialDraw=radialEngine.BuildDraw();
+        Require(radialDraw.LightCount==2,"Independent body and blade radials did not retain two bounded records");
+        session.CombatFxFrame(radialDraw,0,0,1);
+        var radials=Grab(session,Path.Combine(output,"equipment-body-and-blade-radials.png"));
+        var bodyCenter=Pixel(radials,240,280);var swordCenter=Pixel(radials,500,280);
+        var darkBody=Pixel(dark,240,280);var darkSword=Pixel(dark,500,280);
+        Require(bodyCenter[2]>darkBody[2]+12 && bodyCenter[2]-darkBody[2]>bodyCenter[0]-darkBody[0]+6,
+            "Blue armor radial lost its visible blue material contribution");
+        Require(swordCenter[0]>darkSword[0]+12 && swordCenter[0]-darkSword[0]>swordCenter[2]-darkSword[2]+3,
+            "Red blade radial was averaged into the armor color");
+        // These two diagonal positions use the same checker material.
+        Require(bodyCenter[2]-darkBody[2]>Pixel(radials,272,344)[2]-Pixel(dark,272,344)[2]+8,
+            "Armor radial retained a flat disk instead of a soft falloff");
+        Require(Pixel(radials,368,408).SequenceEqual(Pixel(dark,368,408)),"Resident radial leaked beyond both radii");
+        session.CombatFxFrame(radialDraw,-320,0,1);
+        var movedRadials=Grab(session,Path.Combine(output,"equipment-radials-camera.png"));
+        Require(Pixel(movedRadials,180,280)[0]>Pixel(dark,180,280)[0]+12,
+            "Resident blade radial did not follow the world camera");
+        Require(Pixel(movedRadials,500,280).SequenceEqual(Pixel(dark,500,280)),"Resident radial left light at its old camera position");
+        session.ClearCombatFxFrame();
+        var clear=Grab(session,Path.Combine(output,"equipment-lights-cleared.png"));
+        Require(Pixel(clear,500,288).SequenceEqual(Pixel(dark,500,288)),"Equipment light survived explicit cleanup");
+        return new {cone=Pixel(cone,400,288),rotated=Pixel(rotated,512,300),mirrored=Pixel(mirrored,600,288),
+            laser=Pixel(laser,500,288),nearBody=Pixel(practical,150,330),nearFeet=Pixel(practical,210,405),
+            farCore=Pixel(practical,850,288),practicalLaser=laserCore,laserEdge,forwardProfile,radialProfile,
+            bodyCenter,swordCenter,residentRadialCamera=true,residentRadialSeparateColors=true,
+            compositeBudgetSlots=1,offsetNear=true,noOverlapHotspot=true,continuousFalloff=true,thinDiagonal=true,cleared=true};
     }
     private static long RegionRed((byte[] bytes,int width,int height) grab,int radius)
     {
@@ -210,6 +373,7 @@ internal static class Program
         session.ClearCombatFxFrame();
         var cleared=Grab(session,Path.Combine(output,"light-cleared.png"));
         Require(Pixel(cleared,512,288).SequenceEqual(Pixel(dark,512,288)),"Retired light left residual brightness");
+        var equipmentLights=CheckEquipmentLights(session,catalog,output,dark);
 
         // All-black source isolates weather illumination from world illumination.
         ulong beforeBlack=session.Read().Received;blackSource(true);
@@ -242,6 +406,7 @@ internal static class Program
             "Direct warm light inherited the ambient blue tint");
         Require(Pixel(nightLit,580,288)[0]>=Pixel(night,580,288)[0]+20,"Only the muzzle centre is illuminated");
         Require(Pixel(nightLit,80,80).SequenceEqual(Pixel(night,80,80)),"Production light leaked outside radius");
+        var equipmentVisibility=CheckEquipmentVisibility(session,catalog,output,night,nightLit);
 
         var engine=new CombatFxEngine(catalog);int muzzle=Array.FindIndex(catalog.Styles,s=>s.Linkage=="枪火");
         var pulse=new List<object>();int peakRed=0;
@@ -281,7 +446,7 @@ internal static class Program
                 worldBefore=Pixel(dark,512,288),worldLit=Pixel(lit,512,288),overlap=Pixel(bright,512,288),cappedRed,
                 productionL0Before=nightCenter,productionL0Lit=nightLitCenter,pulse,nightVision=green,
                 productionL5Before=Pixel(dusk,512,288),productionL5Lit=Pixel(duskLit,512,288),
-                weatherBefore,weatherAfter,cameraTransform=true,cleared=true},
+                weatherBefore,weatherAfter,equipmentLights,equipmentVisibility,cameraTransform=true,cleared=true},
             timings=new {noLights=noLightsTiming,sixteenLights=lightsTiming},
             images=Directory.GetFiles(output,"*.png").Select(Path.GetFileName).ToArray(),
             boundary="Controlled WGC source and real compositor GPU output; no gameplay or human visual acceptance."};

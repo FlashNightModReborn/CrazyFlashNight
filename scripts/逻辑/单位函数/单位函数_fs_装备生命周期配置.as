@@ -68,6 +68,7 @@
                            生命周期参数:cycle ? cycle.cycleParam : undefined,
                            装备类型:装备类型, 
                            装备名称:装备名称,
+                           来源插件:attributes.__modName,
                            装备种类:装备种类, 
                            是否为主角:是否为主角,
                            生命周期函数列表:this.生命周期函数列表,

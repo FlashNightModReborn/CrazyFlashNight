@@ -83,6 +83,7 @@ _root.装备生命周期函数.血色光剑初始化 = function(ref:Object, para
     ref.bloodEquipment = actor[ref.装备类型];
     ref.bloodVersion = actor.version;
     ref.bloodActive = true;
+    EquipmentEmissionState.bind(ref, "blood");
     ref.bloodRoll = _root.装备生命周期函数.血色光剑随机;
     ref.bloodGripFrame = 1;
     ref.bloodBreathFrame = 1;

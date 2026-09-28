@@ -34,6 +34,7 @@
 
 _root.装备生命周期函数.光剑天秤初始化 = function(ref:Object, param:Object):Void
 {
+    EquipmentEmissionState.bind(ref, "libra");
     var target:MovieClip = ref.自机;
 
     // 配置参数（帧数，30fps）

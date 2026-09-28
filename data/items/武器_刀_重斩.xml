@@ -87,6 +87,7 @@
       </data>
       <lifecycle>
         <attr_0>
+          <skillInteraction>fallback</skillInteraction>
           <init>
             <initRoutines>初期特效初始化</initRoutines>
             <initParam>
@@ -231,6 +232,7 @@
       </data>
       <lifecycle>
         <attr_0>
+          <skillInteraction>independent</skillInteraction>
           <init>
             <initRoutines>通用特效刀口初始化</initRoutines>
             <initParam>
@@ -246,6 +248,21 @@
             <cycleRoutines>通用特效刀口周期</cycleRoutines>
           </cycle>
         </attr_0>
+      <attr_环境光>
+        <skillInteraction>independent</skillInteraction>
+        <init>
+          <initRoutines>装备自发光初始化</initRoutines>
+          <initParam>
+            <group>blade</group>
+            <radius>130</radius>
+            <energy>0.8</energy>
+            <color>9341183</color>
+          </initParam>
+        </init>
+        <cycle>
+          <cycleRoutines>装备自发光周期</cycleRoutines>
+        </cycle>
+      </attr_环境光>
       </lifecycle>
     </item>
   <item>
@@ -286,6 +303,7 @@
       </data>
       <lifecycle>
         <attr_0>
+          <skillInteraction>independent</skillInteraction>
           <init>
             <initRoutines>斩马刀初始化</initRoutines>
           </init>
@@ -450,6 +468,7 @@
       </data>
       <lifecycle>
         <attr_0>
+          <skillInteraction>independent</skillInteraction>
           <init>
             <initRoutines>烈焰斩马刀初始化</initRoutines>
           </init>
@@ -593,6 +612,23 @@
         <damagetype>魔法</damagetype>
         <bladeCount>3</bladeCount>
       </data>
+    <lifecycle>
+      <attr_环境光>
+        <skillInteraction>independent</skillInteraction>
+        <init>
+          <initRoutines>装备自发光初始化</initRoutines>
+          <initParam>
+            <group>blade</group>
+            <radius>130</radius>
+            <energy>0.72</energy>
+            <color>8776447</color>
+          </initParam>
+        </init>
+        <cycle>
+          <cycleRoutines>装备自发光周期</cycleRoutines>
+        </cycle>
+      </attr_环境光>
+    </lifecycle>
     </item>
   <item>
       <name>玄铁重剑</name>
@@ -651,6 +687,7 @@
         链锯剑形态下可使用主动战技 弧光斩，mp消耗50，cd 8s，刀光可追踪。
         战技期间刀光出现的概率大幅增加</description>
         <attr_0>
+          <skillInteraction>managed</skillInteraction>
           <init>
             <initRoutines>炎魔斩new初始化</initRoutines>
             <initParam>
@@ -948,6 +985,7 @@
     </data_4>
     <lifecycle>
       <attr_0>
+        <skillInteraction>independent</skillInteraction>
         <init>
           <initRoutines>雷铁斩斧初始化</initRoutines>
           <initParam>

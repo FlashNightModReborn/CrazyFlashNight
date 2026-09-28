@@ -289,6 +289,7 @@
       </data>
       <lifecycle>
         <attr_0>
+          <skillInteraction>bound</skillInteraction>
           <init>
             <initRoutines>光斧金牛初始化</initRoutines>
             <initParam>
@@ -335,6 +336,7 @@
       </data>
       <lifecycle>
         <attr_0>
+          <skillInteraction>independent</skillInteraction>
           <init>
             <initRoutines>光刀狮子初始化</initRoutines>
             <initParam>
@@ -345,6 +347,22 @@
             <cycleRoutines>光刀狮子周期</cycleRoutines>
           </cycle>
         </attr_0>
+      <attr_环境光>
+        <skillInteraction>independent</skillInteraction>
+        <init>
+          <initRoutines>装备自发光初始化</initRoutines>
+          <initParam>
+            <group>blade</group>
+            <adapter>lion</adapter>
+            <radius>125</radius>
+            <energy>0.8</energy>
+            <color>16759925</color>
+          </initParam>
+        </init>
+        <cycle>
+          <cycleRoutines>装备自发光周期</cycleRoutines>
+        </cycle>
+      </attr_环境光>
       </lifecycle>
     </item>
   <item>

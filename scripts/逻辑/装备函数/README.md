@@ -46,17 +46,18 @@ asLoader.swf
    ```xml
    <lifecycle>
      <attr_0>
+       <skillInteraction>independent</skillInteraction>
        <init><initRoutines>XXX初始化</initRoutines></init>
        <cycle><cycleRoutines>XXX周期</cycleRoutines></cycle>
      </attr_0>
    </lifecycle>
    ```
-   （可选 `<initParam>`/`<cycleParam>`/`<bullet>`/`<data>`/`<skill>`，详见 §4。）
+   `skillInteraction` 按实际行为选择，示例仅表示独立行为；可选 `<initParam>`/`<cycleParam>`/`<bullet>`/`<data>`/`<skill>`，详见 §4。
 4. **接线 frame37**：在 `scripts/asLoaderManifest/frame37.as` 选一个未过载的 `f37_N` chunk 加
    `#include "../逻辑/装备函数/XXX.as"`（顺序不影响功能，只是注册顺序）。**这步最易忘**。
 5. **登记 README**：在 §6 脚本索引加一行（含 `XXX.as`）——校验门要求。
 6. **重生成并核对**：依次运行 `node tools/assemble-collapsed-frame.js`、`node tools/assemble-collapsed-frame.js --check` 与 `node tools/check-bom.js`；后两项分别守字节级可重建与所有 `.as` 的严格 BOM。
-7. **自检**：`node tools/validate-equip-fn-coverage.js` 应 `ok`。
+7. **自检**：`node tools/validate-equip-fn-coverage.js` 应 `ok`；新增或调整 lifecycle 绑定时另跑 `python -X utf8 tools/lifecycle-skill-metadata/validate.py`，包括进阶覆盖中的绑定。
 8. **重编**：仅改外置 `.as` 时直接运行 `powershell -File scripts/compile_test.ps1 -Target publish -TimeoutSeconds 180`，再重启游戏（物品 XML 在 boot 阶段加载）；只有改动 asLoader XFL 时间轴 / symbol 结构时才关闭并重开 FLA。没有新鲜 trace、Output Panel 副本或 IDE 复核时，不声称“编译通过”。
 
 游戏内表现异常时，先直接在生命周期初始化、周期和事件回调记录现场，再根据日志扩大排查范围。动画需同时看期望帧、实际帧、目标 MovieClip 引用和版本；下一周期开始时的读数能帮助发现写入后又被重置的情况。`枪械射击动画.as` 已提供默认关闭的 `initParam.debug`，具体用法见 [动画工具](../../../tools/weapon-animation/README.md#原生脚本与验证边界)。
@@ -94,6 +95,7 @@ _root.装备生命周期函数.XXX周期   = function(ref:Object, param:Object) 
 ```xml
 <lifecycle>
   <attr_0>
+    <skillInteraction>independent</skillInteraction> <!-- 必填审计元数据，按下节分类 -->
     <init>
       <initRoutines>函数名初始化</initRoutines>   <!-- init 存在时必填，精确匹配注册键 -->
       <initParam> … 任意键，原样传入 init 的 param … </initParam>
@@ -117,6 +119,60 @@ _root.装备生命周期函数.XXX周期   = function(ref:Object, param:Object) 
 </lifecycle>
 ```
 
+<a id="skill-interaction"></a>
+### 4.1 `skillInteraction`：与战技的关系
+
+这是每个 `lifecycle/attr_*` 的审计元数据。分类单位是**一次绑定及其参数、可达回调与清理链**，不是整件装备，也不是脚本文件名。基础绑定和进阶中完整替换的 lifecycle 都要填写；同一函数可能因参数或套装条件具有不同关系。
+
+| 值 | 判定依据 |
+|---|---|
+| `independent` | 不提供或管理主动战技，不参与某个指定战技的专用数据、许可或动作协议。动画、手电、激光、通用射击/状态反馈通常属于此类；伤害、耗蓝、改弹药本身不意味着战技槽竞争。 |
+| `fallback` | 仅由本 attr 的直接子节点 `<skill>`，通过 loader 在对应战技槽为空时提供默认战技；routine 不存在更强的依赖或管理行为。 |
+| `bound` | 参与指定战技的专用参数、许可、动作协议，或直接调用固定的专用技能/战技动作；包括协议的生产端与消费端，但不主动改写战技定义或选择列表。 |
+| `managed` | 可达路径注册、替换、清空、恢复主动战技槽，改写战技选择索引，或接管 NPC 战技列表/路由选择。只有部分进阶、套装或 NPC 分支生效，也需要标出。 |
+
+同一 attr 同时具有多种关系时取 `managed > bound > fallback > independent`。`managed` 不保证管理的是本装备对应槽，例如剑圣腿甲会装载空手战技；直接执行一个固定动作也不等于改写战技槽，应归入 `bound` 并记录动作协议。
+
+通用 `WeaponSkill(mode)` 由成功的普通主动战技统一发布。仅监听它、且不限定战技名称或读取专用参数，不足以标为 `bound`。例如斩马刀的通用激活窗口与剑圣胸甲的肩炮触发可标 `independent`；剑圣手甲限定“刀剑乱舞”、G111 的充能值供“突击者之怒”判定，则属于 `bound`。公共组件暴露可选 API 供其他战技调用，也不自动让该组件的全部绑定成为 `bound`。
+
+**本体标签不直接决定安装准入。** `independent` 只说明这一条生命周期与战技的关系，不解除根层 `item.skill`、`subweapon`、`skillLocked` 或插件槽位规则；`bound` 也不自动表示不能替换战技。它不证明不同生命周期之间的显隐、按键、资源或卸载行为完全兼容。
+
+插件的顶层 `lifecycle` 由 `EquipmentLifecyclePolicy` 校验和合成：所有 attr 必须明确为 `independent`，至少有一个非空 init/cycle 回调，且不能直接声明 `skill` 或 `setGate`。`TagManager` 对不支持的插件生命周期返回 `-1024`；无生命周期的旧插件沿用原准入。功能插件可与本体战技共存，提供战技或副武器的插件仍受原锁与槽位规则约束。
+
+`EquipmentCalculator` 先应用进阶覆盖，再深拷贝并合成插件生命周期。稳定命名包含插件名与 attr 名，`__modName` 标记来源；重算先剥除旧插件投影，卸下后不会残留，原物品与插件模板不被修改。loader 将来源映射为 `ref.来源插件`，仍通过原有生命周期卸载链执行。缺标或非法插件不能靠存档中的旧安装记录绕过这一执行门。
+
+静态覆盖与 XML 字节保留检查见 [lifecycle-skill-metadata 工具](../../../tools/lifecycle-skill-metadata/README.md)。分类需沿实际代码复核；检查器不能替代这一步，也不证明运行行为或视觉效果。
+
+### 4.2 装备光源参数与所有权
+
+`装备光源初始化` / `装备光源周期` 使用独立 lifecycle。`initParam.kind` 为 `flashlight` 或 `laser`；可配置 `anchor`（点分路径）、`beamPath`（现有光束实例）、`fallbackVisual`（缺素材时是否生成 Flash 光束）、`channel`（逻辑发射器，默认 `primary`），以及 `length`、`halfWidth`、`energy`、`color`、`lightColor`。默认手电长度/半宽/能量为 1000/260/1.45，激光为 750/28/0.85；单位为世界坐标与能量倍数。`color` 只控制生成束体的 RGB 整数，`lightColor` 控制 native 材质照明，默认手电 16773584、激光 16737872（#FF6650）；激光束体仍保持细红线。
+
+手电还可配置 `nearRadius` / `nearEnergy`，默认 140/1.15，二者须同为正数或同为 0。近身光中心由 AS2 按 `UnitUtil.calculateCenterOffset` 和持灯者真实位置计算；每单位只发送一份近身光，双持仍各自保留前照。近身光从中心连续衰减，前照从这片亮区平滑展开并逐渐回到枪口轴线；没有近身光时仍从枪口出光。两者放在同一条记录、共用一个预算名额，以有界平滑并集融合，避免等亮圆盘、接缝和重叠过曝。激光不携带近身光，横向柔光由窄核心快速衰减。
+
+手电优先取 `手电口`，激光优先取 `激光发射器.出光位置`，缺失时取 `枪口位置`；两者都缺失则熄灭。长枪只以 `攻击模式 == "长枪"` 判断持用，换弹仍保持；手枪槽沿用手枪/双枪模式。实例身份、存活、显示链、版本及插件集合仍须有效。完整两点变换处理旋转与镜像。
+
+已有光束保留形状、滤镜、颜色与透明度，由外部生命周期控制显隐；新插件没有素材时生成可用的 Flash 光束。AS2 始终拥有业务状态和束体，native 只叠加环境照明，能力撤销不移交玩法。相同单位/槽/种类/channel 内置优先于插件，独立发射器必须显式使用不同 channel。暂停保留，切场景/断连/死亡/卸载清理；光束整体在屏外时不占原生预算。传输与常驻预算见[战斗表现资源合同](../../../data/combat_visuals/README.md)。
+
+战术手电插件可声明 `evasionBonus` 与 `electricEvasionBonus`（现役为 20/5），电力资格经 `TagManager` 的真实结构标签计算。`EquipmentLightDefense` 只接受来源明确的手电插件；当前持用并开灯时，同单位取最高加成，经一个独立 BuffManager Pod 修正反向躲闪率，保留原装备基值与其他 Buff。收枪、死亡、换装、卸载均移除；native 能力、屏外裁剪和灯预算不改变该玩法加成。内置手电不因此获赠插件数值，仍使用 `independent` 分类。
+
+回归入口：`scripts/run-equipment-lifecycle-policy-tests.ps1`、`scripts/run-equipment-light-tests.ps1`、`scripts/run-equipment-light-defense-tests.ps1`；实际 XML、两把手电枪、M4A1 插件安装与生产接线跑 `scripts/run-equipment-light-asset-tests.ps1`，已接入的钛合金激光仍跑 `scripts/run-weapon-laser-tests.ps1`。
+
+### 4.3 防具与兵器自发光
+
+`装备自发光初始化` 使用独立 lifecycle；配置唯一真源为物品 XML 的 `initParam`。`group=body` 用于头部装备/上装装备/手部装备/下装装备/脚部装备，只需初始化及清理，不建立逐件逐帧任务；`group=blade` 用于刀，必须配套 `装备自发光周期`。参数为世界半径 `radius`（1–320）、`energy`（0–2）、RGB 整数 `color`，以及可选 `adapter`、`anchor`（单个刀口实例名，默认 `刀口位置1`）和 `channel`。缺刀口时使用实际兵器本体中心，不改动原素材显隐或战斗字段。
+
+同单位身体贡献归并一盏：半径取最大值，强度为最强来源加受限补充（补充至多为最强来源的 25%），主来源决定颜色。参数在贡献变化时重算；位置、存活、可见性、装备实例/版本/插件内容仍在快照中验证。身体与近处同色刀光可合并，异色兵器保留独立小灯；较强手电近身光完全覆盖身体时抑制重复弱光，保留手电颜色和第三轮复合形状。刀光只给既有兵器源一个至多 18%、4 tick 衰减的包络，不按刀口或残影段数建灯。
+
+常驻径向光以普通“枪火”的强度 1.5 为同角色装备组合峰值。同色近身合并直接补充能量并封顶；异色分灯时用两点光衰减的保守上界限制重叠峰值，不相交时恢复各自基础强度。刀光包络也包含在该限额内。配置 RGB 保持原色，输出色向白色混合 20%，以改善暗处材质辨认并保留色向；手电、镭射与原枪火色值不走该混合。点光软衰减、16 灯预算和逐帧状态更新保持。
+
+`EquipmentLightingInfoBuilder` 从物品最终 `lifecycle` 生成【照明效果】，共用现有 Flash/native/Web 注释出口。它识别自发光、通用手电/镭射及旧 `枪械激光初始化`，按兵器适配器说明真实发光条件；相同功能去重。安装后的装备读取进阶/插件合成结果，插件自身显示适配说明；闪避只来自插件来源，内置手电不借用插件的 20/25 加成。旧 `lifecyle.description` 展示入口保留。此生成过程不进入战斗逐帧路径。
+
+`adapter` 为 `static`、`blood`、`vocalist`、`libra`、`inductor`、`lion`、`capricorn`。后六种通过 `EquipmentEmissionState` 读取原初始化函数注册的生命周期 ref；新光效不写回形态、过载、计时、战技或存档。血剑读持用状态，主唱读光剑形态和展开程度，天秤读三态/CD，电感读展开和过载，狮子/摩羯读已有激活窗口。原生命周期的 `bound/managed` 等关系保持原义，新增光效自身为 `independent`。
+
+AS2 原始贡献安全上限为 256，角色/用途组使用稳定 id，输出前按玩家、功能光源、距离选择至多 16 灯；同级有 8 tick 最短驻留及距离迟滞。原始注册表满载时也优先保障后来进入的玩家。身体静态绑定保留到装备或身份失效，断连仅撤销投影，重连可恢复；武器采样保留 2 tick 心跳期限。暂停冻结强度与包络，可见性、死亡和卸载仍立即生效。注册/注销操作不修改正在遍历的共享清理队列。
+
+新能力 `equipmentRadialLights=1` 与既有 `equipmentLights=2` 分开协商，旧 Host 不会收到新点光记录。防具/兵器不获得战术手电的闪避加成。配置检查见 [equipment-emissive](../../../tools/equipment-emissive/README.md)，行为与实际素材分别运行 `scripts/run-equipment-emissive-tests.ps1`、`scripts/run-equipment-emissive-asset-tests.ps1`。
+
 ---
 
 ## 5. API 快查
@@ -131,6 +187,7 @@ _root.装备生命周期函数.XXX周期   = function(ref:Object, param:Object) 
 - `生命周期任务ID` / `生命周期函数列表` / `版本号` — 任务管理与异常卸载
 - `子弹配置` — `{bullet_0, bullet_1, …}`，由 `<bullet>` 节点初始化
 - `data` — `<data>` 节点内容
+- `来源插件` — 合成插件生命周期的来源名称；本体绑定为 `undefined`
 
 通用 helper 约定字段（按需）：
 - `成功率`(默认3，配 `_root.成功率`)、`身高修正比`、`获得刀口`(配 `解析刀口`)
@@ -190,6 +247,7 @@ _root.装备生命周期函数.XXX周期   = function(ref:Object, param:Object) 
 - `M134.as` — M134加特林 · 成功 `processShot`/旧射击事件产生主长枪旋转意图，旋转控制器驱动当前活动 `man` 的规范装扮引用，射击加速/停射衰减；副武器隔离
 - `枪械射击动画.as` — 可复用的主长枪有限射击动画；按游戏帧时钟推进、连发重新对齐、切姿态回位、placement 同步及换装精确退订，首个配置为 QJZ171
 - `枪械激光瞄准.as` — 以实体发射器的出光位置动态挂载独立光束；支持手枪双持和长枪、镜像与旋转、姿态显隐、换装精确退订，静态烘焙保留硬件外观
+- `装备光源.as` — 手电/激光与防具/兵器自发光入口；实际锚点、角色贡献归并、条件状态观察、稳定预算和清理由通用控制器管理
 - `M134暴力版.as` — M134加特林（NPC自动版） · 非玩家单位按时间间隔自动射击 + 距离判定
 - `XM214-CageFrame.as` — XM214 笼式框架加特林 · 霰弹值驱动转速，自动衰减 + 双环抖动反馈
 - `XM556_Microgun.as` — XM556 微型加特林 · 转盘连续旋转，射击加速/停射减速的视觉惯性

@@ -18,6 +18,7 @@
 
    反射对象.过载值 = 0;
    反射对象.过载阈值 = 参数对象.threshold ? 参数对象.threshold : 120;
+   EquipmentEmissionState.bind(反射对象, "inductor");
    反射对象.过载释放值 = 参数对象.output ? 参数对象.output : 20;
 
    // 视觉补触发：onPlacement 一发即够 ── 自机.刀_引用 已被 doConfig 同步换成 NEW skin，

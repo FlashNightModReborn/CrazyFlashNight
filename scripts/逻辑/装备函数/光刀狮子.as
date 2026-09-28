@@ -2,6 +2,7 @@
 {
     ref.basicStyle = param.basicStyle || "落日鎏金";
     ref.draw = false;
+    EquipmentEmissionState.bind(ref, "lion");
 
     var target:MovieClip = ref.自机;
     target.dispatcher.subscribe("WeaponSkill", function(mode:String) {

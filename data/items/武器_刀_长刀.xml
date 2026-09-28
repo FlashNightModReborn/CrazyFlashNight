@@ -47,6 +47,7 @@
       </data>
       <lifecycle>
         <attr_0>
+          <skillInteraction>independent</skillInteraction>
           <init>
             <initRoutines>初期特效初始化</initRoutines>
             <initParam>
@@ -73,6 +74,21 @@
             </bullet_0>
           </bullet>
         </attr_0>
+      <attr_环境光>
+        <skillInteraction>independent</skillInteraction>
+        <init>
+          <initRoutines>装备自发光初始化</initRoutines>
+          <initParam>
+            <group>blade</group>
+            <radius>120</radius>
+            <energy>0.72</energy>
+            <color>9367295</color>
+          </initParam>
+        </init>
+        <cycle>
+          <cycleRoutines>装备自发光周期</cycleRoutines>
+        </cycle>
+      </attr_环境光>
       </lifecycle>
     </item>
   <item>
@@ -162,6 +178,7 @@
       </data>
       <lifecycle>
         <attr_0>
+          <skillInteraction>independent</skillInteraction>
           <init>
             <initRoutines>镜之虎彻初始化</initRoutines>
             <initParam>
@@ -178,6 +195,21 @@
             <cycleRoutines>镜之虎彻周期</cycleRoutines>
           </cycle>
         </attr_0>
+      <attr_环境光>
+        <skillInteraction>independent</skillInteraction>
+        <init>
+          <initRoutines>装备自发光初始化</initRoutines>
+          <initParam>
+            <group>blade</group>
+            <radius>115</radius>
+            <energy>0.61</energy>
+            <color>14938111</color>
+          </initParam>
+        </init>
+        <cycle>
+          <cycleRoutines>装备自发光周期</cycleRoutines>
+        </cycle>
+      </attr_环境光>
       </lifecycle>
     </item>
   <item>
@@ -242,6 +274,23 @@
         <magictype>热</magictype>
         <bladeCount>3</bladeCount>
       </data>
+    <lifecycle>
+      <attr_环境光>
+        <skillInteraction>independent</skillInteraction>
+        <init>
+          <initRoutines>装备自发光初始化</initRoutines>
+          <initParam>
+            <group>blade</group>
+            <radius>110</radius>
+            <energy>0.69</energy>
+            <color>16746845</color>
+          </initParam>
+        </init>
+        <cycle>
+          <cycleRoutines>装备自发光周期</cycleRoutines>
+        </cycle>
+      </attr_环境光>
+    </lifecycle>
     </item>
   <item>
       <name>樱舞</name>

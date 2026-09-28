@@ -9,7 +9,12 @@
 // bullet-v1（2026-09-26）：新增 ProbeSetBulletStyles/ProbeSetBulletFrame——首批子弹候选
 // 的原生三角形叠加（世界视口内、天气/氛围之后、同一 grade/LUT；setter 只复制快照）。
 // combat-fx-v1：ABI 6 增加预乘 BGRA 图集与装饰粒子两层快照；原生不持有玩法状态。
-// 当前配对 ABI 7 将最多 16 个短时局部光与装饰快照原子提交；世界/天气共享低分辨率光场。
+// light-v1（2026-09-28）：ABI 8 灯记录扩为 12 floats——xy、length|radius、energy、RGB、
+// kind（0 径向枪火 / 1 锥光 / 2 定宽束）、单位方向 xy、halfWidth、reserved 0；kind 0 语义不变。
+// light-v2（2026-09-28）：ABI 9 灯记录扩为 16 floats——前 12 项同上，追加世界 nearXY、
+// nearRadius(0..320)、nearEnergy(0..2)；radius/energy 必须同零或同正，仅 kind 1 锥光可携带
+// 同色近身补光，kind 0/2 末 4 项必须全 0。
+// 当前配对 ABI 9 将最多 16 个局部光（含常驻锥光/定宽束）与装饰快照原子提交；世界/天气共享低分辨率光场。
 struct ProbeStats {
     uint32_t size, state;
     int32_t error;
@@ -73,7 +78,9 @@ __declspec(dllexport) int __cdecl ProbeSetCombatFxAtlas(void* handle,const uint8
 __declspec(dllexport) int __cdecl ProbeCombatFxReady(void* handle);
 // 16 floats/item: xy/rotation/alpha; scaleXY/brightness/worldLit; local offset/size; UV rect.
 // First casings items draw below bullets; remaining items draw above bullets. count<=512.
-// lights[8*lightCount]: world xy/radius/energy, RGB/reserved 0. lightCount<=16.
+// lights[16*lightCount]: world xy, length|radius, energy, RGB, kind 0/1/2,
+// unit dir xy, halfWidth (directional only), reserved 0, near x/y/radius/energy
+// (kind 1 only; radius/energy both zero or both positive). lightCount<=16.
 __declspec(dllexport) int __cdecl ProbeSetCombatFxFrame(void* handle,const float* items,int count,int casings,
     const float* lights,int lightCount,float maximumResponse,float cameraX,float cameraY,float cameraScale);
 __declspec(dllexport) uint32_t __cdecl ProbeGetAbiVersion();

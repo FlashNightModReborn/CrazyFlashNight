@@ -1313,6 +1313,7 @@
     </data>
     <lifecycle>
       <attr_0>
+        <skillInteraction>independent</skillInteraction>
         <init>
           <initRoutines>G11初始化</initRoutines>
         </init>
@@ -1961,6 +1962,7 @@
     </data>
     <lifecycle>
       <attr_0>
+        <skillInteraction>bound</skillInteraction>
         <init>
           <initRoutines>G111初始化</initRoutines>
         </init>
