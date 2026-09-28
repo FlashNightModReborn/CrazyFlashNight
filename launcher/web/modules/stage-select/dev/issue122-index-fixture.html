@@ -6,7 +6,19 @@ html,body{margin:0;background:#000;overflow:hidden}canvas{display:block;width:10
 </style>
 <script src="../stage-select-fallen-data.js"></script>
 <script type="module">
-const state={ready:false,error:null,stats:null};
+const query=new URLSearchParams(location.search);
+const cameraProfile=query.get('issue122Camera')||'current';
+if(cameraProfile==='issue-time'){
+  StageSelectFallenData.camera={
+    gltfPosition:[-20.52314647300354,189.9752172455775,399.0858186660858],
+    gltfTarget:[-11.240657892625123,22.526175937178454,14.021338389531051],
+    horizontalSpan:262.9185290941067,
+    maxSpan:600
+  };
+}else if(cameraProfile!=='current'){
+  throw new Error('Invalid issue122Camera');
+}
+const state={ready:false,error:null,stats:null,cameraProfile};
 window.Issue122Fixture=state;
 try{
   const {createScene}=await import('../stage-select-fallen-scene.js');
