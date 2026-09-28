@@ -21,14 +21,12 @@ async function capture(browser, origin, mode) {
   page.on('pageerror', e => errors.push(e.message));
   page.on('requestfailed', r => failed.push({ url: r.url(), error: r.failure()?.errorText || '' }));
   await page.route('https://cfn-fonts.local/**', r => r.fulfill({ status: 204, body: '' }));
-  const url = origin + '/modules/stage-select/dev/harness.html?viewport=1024x576&frame=' +
-    encodeURIComponent('基地车库') + '&fixture=allUnlocked&player=1&review=issue122-linux&issue122IndexMode=' + mode;
+  const url = origin + '/modules/stage-select/dev/issue122-index-fixture.html?issue122IndexMode=' + mode;
   await page.goto(url);
-  await page.waitForFunction(() => {
-    const s = StageSelectDiorama.stats();
-    return s.state === 'ready' && !s.pending && !s.moving;
-  });
-  const stats = await page.evaluate(() => StageSelectDiorama.stats());
+  await page.waitForFunction(() => window.Issue122Fixture && (Issue122Fixture.ready || Issue122Fixture.error));
+  const fixtureError = await page.evaluate(() => Issue122Fixture.error);
+  if (fixtureError) throw new Error(fixtureError);
+  const stats = await page.evaluate(() => Issue122Fixture.stats());
   const gl = await page.evaluate(() => {
     const canvas = document.querySelector('.stage-select-diorama-canvas');
     const ctx = canvas && canvas.getContext('webgl2');
@@ -47,7 +45,7 @@ async function capture(browser, origin, mode) {
       error: ctx.getError(),
     };
   });
-  const canvas = page.locator('.stage-select-diorama-canvas');
+  const canvas = page.locator('canvas.stage-select-diorama-canvas');
   const png = await canvas.screenshot({ path: path.join(OUT, mode + '.png') });
   await page.close();
   assert.deepEqual(errors, [], mode + ' page errors');
