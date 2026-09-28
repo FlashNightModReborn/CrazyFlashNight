@@ -1,0 +1,29 @@
+name: Issue 122 Windows probe build
+
+on:
+  push:
+    branches:
+      - diag/issue-122-linux-index-paths
+    paths:
+      - 'tools/issue122/windows-webview2/**'
+      - '.github/workflows/issue122-windows-probe-build.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: windows-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7
+        with:
+          sparse-checkout: |
+            tools/issue122/windows-webview2
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '10.0.x'
+      - name: Build probe only
+        shell: pwsh
+        run: dotnet build tools/issue122/windows-webview2/Issue122.WebView2.csproj -c Release
