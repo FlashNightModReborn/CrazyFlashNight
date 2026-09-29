@@ -1,0 +1,5 @@
+﻿trace("FocusedTestRunId ray-rate Start: __FOCUSED_RUN_ID__");
+_root.__rayRateRunId = "__FOCUSED_RUN_ID__";
+_root.__rayRateScanCompare = false;
+org.flashNight.arki.bullet.BulletComponent.Queue.RayRateTest.runAllTests();
+stop();

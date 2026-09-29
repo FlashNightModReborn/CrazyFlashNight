@@ -1,4 +1,5 @@
-﻿import org.flashNight.arki.render.RayVfxManager;
+﻿import org.flashNight.arki.render.VisualRandom;
+import org.flashNight.arki.render.RayVfxManager;
 
 /**
  * TeslaRenderer - 磁暴电弧渲染器
@@ -102,15 +103,15 @@ class org.flashNight.arki.render.renderer.TeslaRenderer {
         // ─────────────────────────────────────────────────────────────
         var forkCount:Number = branchCount - mainHitCount;
         for (var f:Number = 0; f < forkCount; f++) {
-            if (Math.random() <= branchProb) {
-                var parentPath:Array = mainPaths[Math.floor(Math.random() * mainPaths.length)];
+            if (VisualRandom.nextFloat() <= branchProb) {
+                var parentPath:Array = mainPaths[Math.floor(VisualRandom.nextFloat() * mainPaths.length)];
                 var maxIdx:Number = parentPath.length - 2;
                 if (maxIdx < 1) continue;
 
-                var nodeIdx:Number = 1 + Math.floor(Math.random() * maxIdx);
+                var nodeIdx:Number = 1 + Math.floor(VisualRandom.nextFloat() * maxIdx);
                 var startNode:Object = parentPath[nodeIdx];
 
-                var endT:Number = startNode.t + 0.15 + Math.random() * 0.15;
+                var endT:Number = startNode.t + 0.15 + VisualRandom.nextFloat() * 0.15;
                 if (endT > 0.95) endT = 0.95;
 
                 var forkPath:Array = generateSpindlePath(arc, startNode.t, endT, 1.5, startNode, segmentLength * 0.8, jitter);
@@ -143,7 +144,7 @@ class org.flashNight.arki.render.renderer.TeslaRenderer {
         // Layer 3: 顶层白热内核
         for (var p3:Number = 0; p3 < pathsToDraw.length; p3++) {
             var pathData3:Object = pathsToDraw[p3];
-            if (pathData3.isMain || (!pathData3.isFork && Math.random() > 0.3)) {
+            if (pathData3.isMain || (!pathData3.isFork && VisualRandom.nextFloat() > 0.3)) {
                 RayVfxManager.drawPath(mc, pathData3.path, secondaryColor, thickness * 0.8, 100);
             } else if (pathData3.isFork) {
                 RayVfxManager.drawPath(mc, pathData3.path, secondaryColor, thickness * 0.3, 70);
@@ -200,7 +201,7 @@ class org.flashNight.arki.render.renderer.TeslaRenderer {
 
             // 轴向抖动
             if (i < segments) {
-                localT += (Math.random() - 0.5) * (0.8 / segments);
+                localT += (VisualRandom.nextFloat() - 0.5) * (0.8 / segments);
             }
 
             // 映射到全局进度
@@ -224,7 +225,7 @@ class org.flashNight.arki.render.renderer.TeslaRenderer {
                 baseY = arc.endY;
                 globalT = 1.0;
             } else {
-                offset = (Math.random() - 0.5) * 2 * jitter * jitterMult * env;
+                offset = (VisualRandom.nextFloat() - 0.5) * 2 * jitter * jitterMult * env;
             }
 
             points.push(RayVfxManager.pt(baseX + perpX * offset, baseY + perpY * offset, globalT));

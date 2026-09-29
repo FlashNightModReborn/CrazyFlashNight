@@ -1,0 +1,5 @@
+﻿_root.pierceBulletFocusedComplete = function():Void {
+    trace("FocusedTestRunId pierce-bullet Complete: __FOCUSED_RUN_ID__");
+};
+trace("FocusedTestRunId pierce-bullet Start: __FOCUSED_RUN_ID__");
+org.flashNight.arki.bullet.BulletComponent.Lifecycle.PierceBulletLifecycleTest.runAllTests();

@@ -45,6 +45,7 @@
 - AS2 支持通配符导入：`import org.flashNight.arki.bullet.Factory.*;`
 - **通配符 import 已覆盖某包时，禁止再对该包的类加显式 import**：`import pkg.*` 已解析包内所有类（含**会话期新建的同包类**——2026-06-24 实测经 wildcard 即解析，未触发 stale-index）；若再叠加 `import pkg.SomeClass`，编译报 **"叶名称已解析为导入的类"**（重复导入）。显式具体 import 仅用于**无 wildcard 覆盖**该包的 class 文件（同包类之间本就无需 import，靠同包可见性）。
 - **非 class 的 .as 文件（帧脚本等）必须使用通配符导入**：这些文件通过 `#include` 拼接为巨型上下文，明确导入具体 class 可能与其他一起 `#include` 的 .as 文件产生导入冲突，只能使用 `.*` 通配符形式
+- **把类本身赋给 `Object` 时显式解析名称**：测试中 `var api:Object = BulletQueueProcessor` 这类裸类值引用，CS6 不一定按同包规则解析。使用完整限定名，或在没有对应 wildcard 的 class 文件中明确 import；不要把类型注解 / `new` 的解析规则外推到裸类值。
 
 ### 类型系统
 - AS2 类型注解使用冒号后置：`var x:Number = 0;`
@@ -120,6 +121,7 @@
 - `null == undefined` 为 true（与 JS 一致），`if (x != null)` 可同时排除 null 和 undefined
 - 无原生 `Array.forEach`/`map`/`filter`/`reduce`（需手写循环）。`gesh.array.ArrayUtil` 提供类似方法，**仅限测试套件使用**
 - 无原生 `JSON.parse`/`JSON.stringify`。本项目三套实现（`scripts/类定义/` 下）：`JSON.as`（通用）、`FastJSON.as`（带缓存）、**`LiteJSON.as`**（当前使用，最精简）、`IJSON.as`（接口）
+- `LiteJSON` 的 `parse` / `stringify` / `stringifySafe` 是实例方法。先 `var codec:LiteJSON = new LiteJSON()`，再 `codec.stringifySafe(value)`；不要把上面的类名说明写成静态调用。
 - **`LiteJSON.stringify` 不做任何转义**：字符串值含 `"` 会产出畸形 JSON 并被 Host 端静默丢弃（材料详情曾因描述含引号整单无响应）。凡把自由文本放上对 Host/Web 的 wire，必须在发送收口处用 `LiteJSON.stringifySafe()`（标准转义）；其输出不能用 `LiteJSON.parse` 本地回读（parse 保持纯 `indexOf('"')` 扫描契约）。固定枚举、数字和 opaque token 组成的结构性请求只有在封闭 validator 证明不含自由文本时才可继续用 `stringify()`。2026-08-15 起已迁移领域的 `split('"').join("'")` / `join("&quot;")` 变通均已移除，新增变通写法视为回归
 - 无原生 `Promise`/`async`/`await`。`aven.Promise.Promise` 尚未完工，暂勿使用
 - `try...catch...finally` 存在但**生产代码禁用**（性能损耗大）。测试中允许

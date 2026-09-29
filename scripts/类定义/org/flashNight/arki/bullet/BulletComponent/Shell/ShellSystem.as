@@ -97,8 +97,7 @@ class org.flashNight.arki.bullet.BulletComponent.Shell.ShellSystem {
 
         _global.ASSetPropFlags(游戏世界, ["可用弹壳池"], 1, false);
         initialized = true;
-        // _root.服务器.发布服务器消息("[ShellSystem] initializeBulletPools: 启动全局更新循环");
-        startUpdateLoop();
+        // 原生弹壳不需要 AS2 更新任务；首次实际创建旧显示弹壳时才启动。
     }
 
     private static function poolFor(shellType:String):ObjectPool {
@@ -225,6 +224,7 @@ class org.flashNight.arki.bullet.BulletComponent.Shell.ShellSystem {
                 // 初始化物理状态并添加到活动列表
                 initializeShellPhysicsState(弹壳);
                 activeShells.push(弹壳);
+                startUpdateLoop();
                 // _root.服务器.发布服务器消息("[ShellSystem] launchShell: 添加弹壳到活动列表, activeShells.length=" + activeShells.length + ", currentShellCount=" + currentShellCount);
 
                 ++currentShellCount;
@@ -314,6 +314,7 @@ class org.flashNight.arki.bullet.BulletComponent.Shell.ShellSystem {
                 cooldownWheel.addDelayedTask(33, recycleShell, 弹壳);
             }
         }
+        if (activeShells.length == 0) stopUpdateLoop();
     }
 
     /**

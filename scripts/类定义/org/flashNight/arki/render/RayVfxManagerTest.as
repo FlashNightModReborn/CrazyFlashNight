@@ -781,6 +781,7 @@ class org.flashNight.arki.render.RayVfxManagerTest {
     // ════════════════════════════════════════════════════════════════════
 
     public static function runAllTests():Void {
+        RayVfxManager.referenceRenderingForTests = true;
         testsRun = 0;
         testsPassed = 0;
         testsFailed = 0;
@@ -843,9 +844,11 @@ class org.flashNight.arki.render.RayVfxManagerTest {
         if (testsFailed > 0) {
             trace("!!! " + testsFailed + " 个测试失败 !!!");
         }
+        RayVfxManager.referenceRenderingForTests = false;
     }
 
     public static function runFlameReuseTests():Void {
+        RayVfxManager.referenceRenderingForTests = true;
         testsRun = 0;
         testsPassed = 0;
         testsFailed = 0;
@@ -857,6 +860,7 @@ class org.flashNight.arki.render.RayVfxManagerTest {
         if (testsFailed > 0) {
             trace("!!! " + testsFailed + " 个测试失败 !!!");
         }
+        RayVfxManager.referenceRenderingForTests = false;
     }
 
     public static function main():Void {

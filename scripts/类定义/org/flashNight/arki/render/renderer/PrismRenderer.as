@@ -1,4 +1,5 @@
-﻿import org.flashNight.arki.render.RayVfxManager;
+﻿import org.flashNight.arki.render.VisualRandom;
+import org.flashNight.arki.render.RayVfxManager;
 import org.flashNight.arki.render.renderer.RenderColorUtil;
 
 /**
@@ -89,7 +90,7 @@ class org.flashNight.arki.render.renderer.PrismRenderer {
         //   模拟高能光束的不稳定输出（"滋滋"感），而非路径弯曲
         var pulse:Number = 1.0;
         if (lod < 2) {
-            pulse = 1.0 + (Math.random() * 2 - 1) * shimmerAmp;
+            pulse = 1.0 + (VisualRandom.nextFloat() * 2 - 1) * shimmerAmp;
         }
 
         // 光束粗细随生命周期收束，主要靠 alpha 衰减
@@ -116,15 +117,15 @@ class org.flashNight.arki.render.renderer.PrismRenderer {
 
             // ★ 核心4：棱镜色散伴生光束（LOD 0 主射线专属）
             //   模拟高能光穿透棱镜时的细微光学溢出
-            if (lod == 0 && !isFork && Math.random() > 0.4) {
+            if (lod == 0 && !isFork && VisualRandom.nextFloat() > 0.4) {
                 var perpX:Number = -dy / dist;
                 var perpY:Number =  dx / dist;
-                var strandsNum:Number = (Math.random() > 0.5) ? 2 : 1;
+                var strandsNum:Number = (VisualRandom.nextFloat() > 0.5) ? 2 : 1;
 
                 for (var i:Number = 0; i < strandsNum; i++) {
                     var strandPath:Array = RayVfxManager.poolArr();
                     // 终端点微量横向偏移，伴生光从同一起点散射出去
-                    var offset:Number = (Math.random() * 2 - 1) * currentThick * 1.5;
+                    var offset:Number = (VisualRandom.nextFloat() * 2 - 1) * currentThick * 1.5;
 
                     strandPath.push(RayVfxManager.pt(arc.startX, arc.startY, 0.0));
                     strandPath.push(RayVfxManager.pt(

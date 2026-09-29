@@ -13,6 +13,18 @@ namespace CF7Launcher.Guardian.WorldCompositor
         internal readonly int Epoch, Frame, NormalCount, ChainCount, Overflow;
         internal readonly bool NativeOwned;
         internal readonly BulletVisualInstance[] Instances;
+        // Shared three-tier bullet budget: ordinary snapshot 1024 + chain
+        // reservation 15360 must fit the 16384 total native bullet budget.
+        internal const int OrdinaryLimit = 1024, ChainLimit = 15360, TotalLimit = 16384;
+        internal static BulletVisualFrame Compose(int epoch,int frame,BulletVisualInstance[] ordinary,
+            BulletVisualInstance[] chains) {
+            ordinary ??= Array.Empty<BulletVisualInstance>();
+            chains ??= Array.Empty<BulletVisualInstance>();
+            if(ordinary.Length+chains.Length>TotalLimit) throw new ArgumentOutOfRangeException(nameof(chains));
+            var all=new BulletVisualInstance[ordinary.Length+chains.Length];
+            Array.Copy(ordinary,all,ordinary.Length);Array.Copy(chains,0,all,ordinary.Length,chains.Length);
+            return new BulletVisualFrame(epoch,frame,ordinary.Length,chains.Length,0,true,all);
+        }
         private BulletVisualFrame(int epoch, int frame, int normal, int chain, int overflow, bool nativeOwned,
             BulletVisualInstance[] instances)
         {
@@ -23,7 +35,7 @@ namespace CF7Launcher.Guardian.WorldCompositor
         internal static bool TryParse(string payload, int styleCount, out BulletVisualFrame result)
         {
             result = null;
-            if (string.IsNullOrEmpty(payload) || payload.Length > 65536
+            if (string.IsNullOrEmpty(payload) || payload.Length > 4 * 1024 * 1024
                 || styleCount < 1 || styleCount > 16) return false;
             ReadOnlySpan<char> rest = payload.AsSpan();
             int firstEntry = rest.IndexOf(';');
@@ -41,8 +53,8 @@ namespace CF7Launcher.Guardian.WorldCompositor
             }
             else if (!FinalInt(header, out overflow)) return false;
             if (epoch < 0 || frame < 0 || normal < 0 || chain < 0
-                || normal > 256 || chain > 256
-                || normal + chain > 256 || overflow < 0 || overflow > 65535) return false;
+                || normal > OrdinaryLimit || chain > ChainLimit
+                || normal + chain > TotalLimit || overflow < 0 || overflow > 65535) return false;
             int count = normal + chain;
             if ((firstEntry < 0) != (count == 0)) return false;
             var instances = new BulletVisualInstance[count];

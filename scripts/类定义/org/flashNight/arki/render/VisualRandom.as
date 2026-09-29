@@ -9,6 +9,9 @@ class org.flashNight.arki.render.VisualRandom {
 
     public static function getEngine():BaseRandomNumberEngine { return engine; }
 
+    // 与战斗 Math.random / BaseRandomNumberEngine 单例分离；供遗留表现路径使用。
+    public static function nextFloat():Number { return engine.nextFloat(); }
+
     // 在实际发射路径先编号，再判显示预算；不随显示成功数量编号。
     public static function eventSeed(kind:Number):Number {
         serial = (serial + 1) % 1000000000;

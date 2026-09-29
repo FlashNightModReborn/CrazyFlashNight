@@ -8,6 +8,13 @@
 
 ## 启动
 
+原生着色器由 `native/world-compositor/ShaderBake.cpp` 在构建阶段编译并嵌入 DLL；
+`ShaderSources.h` 与 `Ray*Shader.h` 是源，`CompositorShaders.g.h` 仅写入构建输出目录。
+构建使用 toolchain lock 钉死的 Windows SDK `d3dcompiler_47.dll`，不会采用系统同名 DLL；
+游戏启动只创建 GPU shader，不执行 HLSL 优化编译。捕获首帧与恢复仍保留原 10 秒期限和新鲜帧 fence。
+窗口拓扑启动回归见 [CombatFxProbe --startup](../combat-fx/README.md)；日志的 `nativeState`、
+`captureGeneration` 与 `nativeStage` 区分初始化和实际捕获，WGC 尺寸可在捕获尚未启动时已知。
+
 ### v4 输入会话开发候选
 
 当前输入桥工作区支持有界会话与配对续接；这是未发布施工，不能继承页首既有 runtime 发布结论。

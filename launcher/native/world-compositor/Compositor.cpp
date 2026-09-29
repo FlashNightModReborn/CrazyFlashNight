@@ -1,9 +1,10 @@
 #define WIN32_LEAN_AND_MEAN
 #define NOMINMAX
 #include "Compositor.h"
+#include "RayPassBuckets.h"
 #include <d3d11.h>
 #include <dxgi1_2.h>
-#include <d3dcompiler.h>
+#include <CompositorShaders.g.h>
 #include <dcomp.h>
 #include <windows.graphics.capture.interop.h>
 #include <windows.graphics.directx.direct3d11.interop.h>
@@ -36,591 +37,12 @@ double QpcMs() {
     return 1000.0 * static_cast<double>(now.QuadPart) / frequency.QuadPart;
 }
 
-// Shared by world, weather, bullets and world-lit sprites. A 256x144 HDR field
-// accumulates bounded light quads once; consumers pay one sample, not a per-pixel light loop.
-constexpr char PointLightShared[] = R"hlsl(
-Texture2D pointField : register(t3);
-SamplerState pointSamplerLinear : register(s3);
-cbuffer PointLightParams : register(b4) {
-    float4 pointView; float4 pointCamera; float4 pointControl; float4 pointPalette;
-};
-float2 pointUv(float2 pixel) { return (pixel-pointView.xy)/pointView.zw; }
-float3 pointLit(float3 graded,float3 raw,float2 uv) {
-    float3 result=graded;
-    [branch] if(pointControl.x>=0.5) {
-        float4 field=pointField.SampleLevel(pointSamplerLinear,uv,0);
-        float weight=max(field.a,0.0);
-        [branch] if(weight>0.0001) {
-            float response=pointControl.y*(1.0-exp(-weight));
-            float3 tint=field.rgb/weight;
-            // A short shot supplies direct light independently of dark ambient grading.
-            // Exposure lifts texture detail with a soft highlight shoulder; black remains black.
-            float3 local=(1.0-exp(-raw*1.8*(0.3+0.7*saturate(tint))))*pointPalette.rgb;
-            result=lerp(graded,max(graded,local),response);
-        }
-    }
-    return result;
-}
-)hlsl";
-constexpr char PointLightShader[] = R"hlsl(
-cbuffer PointLightItems : register(b5) { float4 pointItems[64]; };
-// ABI 9 light record (16 floats): a=(world x,y,length|radius,energy),
-// b=(R,G,B,kind 0 radial gunfire / 1 cone / 2 fixed-width beam),
-// c=(unit dir x,y,halfWidth,reserved 0), d=(near x,y,radius,energy).
-// Only kind 1 may carry a same-color near fill circle inside the same record
-// and budget; kind 0/2 keep d all zero. AS2 already projects rotation and
-// mirroring into the unit direction; nothing is flipped here.
-struct LVertex {
-    float4 pos:SV_POSITION;
-    float2 local:TEXCOORD0;
-    nointerpolation float4 color:TEXCOORD1;
-    nointerpolation float4 shape:TEXCOORD2;
-    nointerpolation float4 nearFill:TEXCOORD3;
-};
-LVertex LVS(uint id:SV_VertexID) {
-    uint item=id/6u,corner=id%6u;
-    float2 q=float2((corner==1u || corner==2u || corner==4u)?1.0:0.0,
-        (corner==2u || corner==4u || corner==5u)?1.0:0.0);
-    float4 a=pointItems[item*4u],b=pointItems[item*4u+1u],c=pointItems[item*4u+2u],e=pointItems[item*4u+3u];
-    LVertex v;v.color=float4(b.rgb,a.w);v.shape=float4(b.w,a.z,c.z,0);v.nearFill=float4(0,0,0,0);
-    float2 world;
-    if(b.w<0.5) {
-        v.local=q*2.0-1.0;
-        world=a.xy+v.local*a.z;
-    } else {
-        // Directional kinds share one affine frame so interpolation stays
-        // exact: local.x is world distance along the axis, local.y the signed
-        // distance across it. The pixel shader derives each real footprint.
-        float t=q.y,s=q.x*2.0-1.0;
-        float2 d=c.xy,n=float2(-c.y,c.x);
-        // Expand the raster quad by half a light-field texel; otherwise a thin
-        // rotated beam can miss all samples even with a smooth pixel falloff.
-        float margin=2.0/max(pointCamera.z,0.0001);
-        float lo=0.0,hi=a.z,latHalf=c.z+margin;
-        // A kind-1 near circle shares this one quad and budget: project its
-        // center into the light basis and union the along/lateral ranges.
-        // Records without a near field keep the legacy cone/beam footprint.
-        float radius=e.z;
-        if(radius>0.0) {
-            float2 rel=e.xy-a.xy;
-            float nearAlong=dot(rel,d),nearSide=dot(rel,n);
-            lo=min(0.0,nearAlong-radius-margin);
-            hi=max(a.z,nearAlong+radius+margin);
-            latHalf=max(c.z,abs(nearSide)+radius)+margin;
-            v.nearFill=float4(nearAlong,nearSide,radius,e.w);
-        }
-        float along=lerp(lo,hi,t);
-        v.local=float2(along,latHalf*s);
-        world=a.xy+d*along+n*(latHalf*s);
-    }
-    float2 stage=(pointCamera.xy+world*pointCamera.z)/float2(1024.0,576.0);
-    v.pos=float4(stage.x*2.0-1.0,1.0-stage.y*2.0,0.5,1.0);
-    return v;
-}
-float4 LPS(LVertex v):SV_TARGET {
-    float energy;
-    if(v.shape.x<0.5) {
-        float falloff=saturate(1.0-dot(v.local,v.local));
-        energy=v.color.a*falloff*falloff;
-    } else {
-        float t=v.local.x/max(v.shape.y,0.001),lateral;
-        float distance=abs(v.local.y);
-        float aa=max(fwidth(v.local.y),0.001);
-        if(v.shape.x<1.5) {
-            // A reflected-light base blends into the forward lobe. Both lobes
-            // roll off continuously; there is no constant-bright disk or cone.
-            float forwardT=t,width=max(t,0.02)*v.shape.z;
-            float centerSide=0,gate=step(0.0,t),disk=0;
-            if(v.nearFill.z>0) {
-                float fromBase=v.local.x-v.nearFill.x;
-                forwardT=saturate(fromBase/max(v.shape.y-v.nearFill.x,1.0));
-                width=lerp(v.nearFill.z*0.9,v.shape.z,sqrt(forwardT));
-                centerSide=v.nearFill.y*(1.0-smoothstep(0.0,v.nearFill.z*1.2,fromBase));
-                gate=smoothstep(-v.nearFill.z*0.35,v.nearFill.z*0.7,fromBase);
-                float nearD=length(v.local-v.nearFill.xy);
-                float radial=nearD/max(v.nearFill.z,0.001);
-                float rim=1.0-smoothstep(0.60,1.0+fwidth(nearD)/max(v.nearFill.z,0.001),radial);
-                disk=v.nearFill.w*exp(-2.0*radial*radial)*rim;
-            }
-            float lateralD=abs(v.local.y-centerSide);
-            float crossSection=lateralD/max(width,aa);
-            lateral=exp(-2.4*crossSection*crossSection)
-                *(1.0-smoothstep(width*0.70,width+aa,lateralD));
-            float cone=v.color.a*lateral*exp(-1.15*max(forwardT,0.0))
-                *(1.0-smoothstep(0.72,1.0,forwardT))*gate;
-            // Smooth bounded union: continuous derivatives without max()'s
-            // joining contour or the hotspot of an additive overlap.
-            float peak=max(max(v.color.a,v.nearFill.w),0.0001);
-            energy=disk+cone-disk*cone/peak;
-        } else {
-            // Flash owns the thin red beam. This narrower colored halo has a
-            // soft transverse core and long end fade, avoiding a bright panel.
-            float along=v.local.x;
-            float normalized=distance/max(v.shape.z,aa);
-            lateral=exp(-3.5*normalized*normalized)
-                *(1.0-smoothstep(v.shape.z*0.65,v.shape.z+aa,distance));
-            energy=v.color.a*lateral*(1.0-0.35*saturate(t))
-                *smoothstep(0.0,min(18.0,v.shape.y*0.1),along)
-                *(1.0-smoothstep(0.72,1.0,t));
-        }
-    }
-    return float4(v.color.rgb*energy,energy);
-}
-)hlsl";
-
-constexpr char Shader[] = R"hlsl(
-Texture2D image : register(t0);
-Texture3D lutTexture : register(t1);
-SamplerState pointSampler : register(s0);
-SamplerState lutSampler : register(s1);
-cbuffer Settings : register(b0) { float4 rowR; float4 rowG; float4 rowB; float4 offset; };
-cbuffer Sampling : register(b1) { float2 texel; float sharpness; float lutMode; };
-// A=(authored RGB,alpha); B=(preset,time,radial,pulse);
-// C=(pulse speed,min,max,camera scale); D=(camera x,y,unused,unused).
-cbuffer Atmosphere : register(b2) { float4 aA; float4 aB; float4 aC; float4 aD; };
-// Authored look: primary+base, secondary+edge, motion/rate/frequency,
-// focus/falloff/mix. Names select a fixed shader family, never injected code.
-cbuffer AtmosphereStyle : register(b3) { float4 lA; float4 lB; float4 lC; float4 lD; };
-struct Vertex { float4 pos : SV_POSITION; float2 uv : TEXCOORD0; };
-Vertex VS(uint id : SV_VertexID) {
-    Vertex v;
-    v.uv = float2((id << 1) & 2, id & 2);
-    v.pos = float4(v.uv * float2(2, -2) + float2(-1, 1), 0, 1);
-    return v;
-}
-float4 PS(Vertex v) : SV_TARGET {
-    float4 c = float4(image.Sample(pointSampler, v.uv).rgb, 1);
-    if (sharpness > 0) {
-        float3 n = image.Sample(pointSampler, v.uv - float2(0,texel.y)).rgb;
-        float3 s = image.Sample(pointSampler, v.uv + float2(0,texel.y)).rgb;
-        float3 e = image.Sample(pointSampler, v.uv + float2(texel.x,0)).rgb;
-        float3 w = image.Sample(pointSampler, v.uv - float2(texel.x,0)).rgb;
-        float3 lo = min(c.rgb,min(min(n,s),min(e,w)));
-        float3 hi = max(c.rgb,max(max(n,s),max(e,w)));
-        // Bounded unsharp mask, not CAS: never extend beyond the local color range.
-        c.rgb = clamp(c.rgb + sharpness * (c.rgb - (n+s+e+w)*.25),lo,hi);
-    }
-    float3 scene;
-    if (lutMode > 0.5) {
-        // LUT already contains the complete world grade. Atmosphere still
-        // composes over that graded world in this same source pass.
-        scene = lutTexture.Sample(lutSampler, c.rgb * (31.0/32.0) + (0.5/32.0)).rgb;
-    } else {
-        float3 graded = saturate(float3(dot(c,rowR), dot(c,rowG), dot(c,rowB)) + offset.rgb);
-        scene = pow(graded, 1.0 / max(offset.w, 1.0e-3));
-    }
-    int look = (int)(aB.x + 0.5);
-    if (look == 0) return float4(pointLit(scene,c.rgb,v.uv), 1);
-    float2 uv = v.uv;
-    float2 world = (uv * float2(1024.0,576.0) - aD.xy) / max(aC.w,0.01);
-    float edge = smoothstep(0.28,0.95,length((uv-0.5)*float2(1.65,1.0)));
-    float t = aB.y;
-    float flicker = 0.5 + 0.5 * sin(t * lC.y);
-    float3 tint = lA.rgb;
-    float amount = lA.w;
-    if (look == 1) {
-        // Alarm: a restrained rotating red beacon, strongest at the border.
-        amount=lA.w + (lB.w + lC.x*flicker)*edge;
-    } else if (look == 2) {
-        // Medical alarm: alternating sterile cyan and magenta emergency pools.
-        float side=smoothstep(lD.x,lD.y,uv.x);
-        tint=lerp(lA.rgb,lB.rgb,side);
-        float beat=sin(t*lC.y+uv.x*lC.z);
-        amount=lA.w + (lB.w + lC.x*beat*beat)*edge;
-    } else if (look == 3) {
-        // Industrial alarm: amber lamps and a slow diagonal hazard sweep.
-        float sweep=pow(saturate(sin(world.x*lC.z+world.y*lC.w-t*lC.y)*0.5+0.5),4.0);
-        amount=lA.w + lB.w*edge + lC.x*sweep;
-    } else if (look == 4) {
-        // Poison gas: low, drifting teal-green strata.
-        float haze=smoothstep(lD.y,lD.z,uv.y+0.07*sin(world.x*lC.z+t*lC.y));
-        amount=lA.w + lB.w*haze + lC.x*edge;
-    } else if (look == 5) {
-        // Corrosion: warmer, irregular acid glow near the floor.
-        float stain=sin(world.x*lC.z+t*lC.y)*sin(world.y*lC.w-world.x*lC.z*0.3333);
-        amount=lA.w + lB.w*smoothstep(lD.y,lD.z,uv.y)+lC.x*stain*stain;
-    } else if (look == 6) {
-        // Cold iron: steel-blue ambient with a narrow moving glint.
-        float glint=pow(saturate(1.0-abs(frac((world.x+world.y*0.55)*lC.z-t*lC.y)-0.5)*8.0),3.0);
-        amount=lA.w+lB.w*edge+lC.x*glint;
-    } else if (look == 7) {
-        // Ambush: a cold offset opening in a dim blue perimeter.
-        float cone=smoothstep(lD.z,0.10,length((uv-lD.xy)*float2(1.2,1.0)));
-        amount=lA.w+lB.w*edge-lC.x*cone;
-    } else if (look == 8) {
-        // Banquet: asymmetrical lantern warmth, with subdued red corners.
-        float left=1.0-smoothstep(0.0,lD.z,length((uv-lD.xy)*float2(0.85,1.3)));
-        float right=1.0-smoothstep(0.0,lD.z,length((uv-float2(1.0-lD.x,0.10))*float2(0.9,1.1)));
-        amount=lA.w+(lB.w+lC.x*flicker)*max(left,right)+lD.w*edge;
-    } else if (look == 9) {
-        // Blood moon: overhead crimson wash, keeping the playfield readable.
-        amount=lA.w+lB.w*(1.0-smoothstep(0.0,1.0,uv.y))+lC.x*edge;
-    } else if (look == 10) {
-        // Incense: copper glow and very slow drifting smoke bands.
-        float smoke=sin(world.x*lC.z+world.y*lC.w+t*lC.y);
-        amount=lA.w+lB.w*edge+lC.x*smoke*smoke;
-    } else {
-        // Direct <Overlay> entries retain their authored color/mode/pulse.
-        tint=aA.rgb;
-        amount=aA.w;
-        float radial=1.0-smoothstep(0.04,0.95,length((uv-0.5)*float2(1.65,1.0)));
-        float authored=aB.w>0.5 ? lerp(aC.y,aC.z,0.5+0.5*sin(t*aC.x)) : amount;
-        amount=min(0.5,authored*(aB.z>0.5 ? radial : 1.0));
-    }
-    return float4(pointLit(saturate(lerp(scene,tint,saturate(amount))),c.rgb,v.uv),1);
-}
-)hlsl";
-
-// ABI 6: premultiplied atlas; casings use world grading, muzzle sprites emit light-colored pixels.
-constexpr char CombatFxShader[] = R"hlsl(
-Texture2D fxAtlas : register(t2);
-Texture3D lutTexture : register(t1);
-SamplerState fxSampler : register(s2);
-SamplerState lutSampler : register(s1);
-cbuffer Grade : register(b0) { float4 rowR; float4 rowG; float4 rowB; float4 offset; };
-cbuffer FxParams : register(b1) { float4 fCamera; float4 fRange; };
-cbuffer FxItems : register(b2) { float4 fI[2048]; };
-struct FVertex { float4 pos:SV_POSITION; float2 uv:TEXCOORD0; nointerpolation float3 look:TEXCOORD1; };
-FVertex FVS(uint id:SV_VertexID) {
-    uint item=id/6u+(uint)fRange.x, corner=id%6u;
-    float4 a=fI[item*4u], b=fI[item*4u+1u], c=fI[item*4u+2u], d=fI[item*4u+3u];
-    float2 q=float2((corner==1u || corner==2u || corner==4u)?1.0:0.0,
-        (corner==2u || corner==4u || corner==5u)?1.0:0.0);
-    float2 local=(c.xy+q*c.zw)*b.xy;
-    float r=a.z*(3.14159265/180.0), cs=cos(r), sn=sin(r);
-    float2 world=a.xy+float2(local.x*cs-local.y*sn,local.x*sn+local.y*cs);
-    float2 stage=(fCamera.xy+world*fCamera.z)/float2(1024.0,576.0);
-    FVertex v;v.pos=float4(stage.x*2.0-1.0,1.0-stage.y*2.0,0.5,1.0);
-    v.uv=lerp(d.xy,d.zw,q);v.look=float3(a.w,b.z,b.w);return v;
-}
-float4 FPS(FVertex v):SV_TARGET {
-    float4 tex=fxAtlas.Sample(fxSampler,v.uv);
-    if(tex.a<0.001) discard;
-    float3 color=saturate(tex.rgb/tex.a*v.look.y);
-    if(v.look.z>0.5) {
-        float3 raw=color;
-        if(fCamera.w>0.5) color=lutTexture.Sample(lutSampler,color*(31.0/32.0)+(0.5/32.0)).rgb;
-        else {
-            float4 c=float4(color,1.0);
-            color=pow(saturate(float3(dot(c,rowR),dot(c,rowG),dot(c,rowB))+offset.rgb),1.0/max(offset.w,1.0e-3));
-        }
-        color=pointLit(color,raw,pointUv(v.pos.xy));
-    }
-    float alpha=tex.a*v.look.x;return float4(color*alpha,alpha);
-}
-)hlsl";
-
 struct Settings { float r[4], g[4], b[4], offset[4]; };
 Settings ColorMode(int mode) {
     if (mode == 1) return {{.38f,0,0,0},{0,.48f,0,0},{0,0,.72f,0},{.015f,.025f,.06f,1}};
     if (mode == 2) return {{.04252f,.14304f,.01444f,0},{.2126f,.7152f,.0722f,0},{.02126f,.07152f,.00722f,0},{0,.035f,0,1}};
     return {{1,0,0,0},{0,1,0,0},{0,0,1,0},{0,0,0,1}};
 }
-
-// Visual-only weather overlay. Particles are procedural: the vertex shader
-// derives each quad from SV_VertexID, the weather clock and the seed, so a
-// state change (including "none") needs no buffer upload or particle cleanup.
-constexpr char WeatherShader[] = R"hlsl(
-Texture3D lutTexture : register(t1);
-SamplerState lutSampler : register(s1);
-cbuffer Grade : register(b0) { float4 rowR; float4 rowG; float4 rowB; float4 offset; };
-cbuffer WeatherParams : register(b1) { float4 wA; float4 wB; float4 wC; float4 wD; };
-// Primary RGB/size, secondary RGB/alpha, speed/wind/splash size/alpha,
-// splash start/edge fade. All authored in the external visual catalog.
-cbuffer WeatherStyle : register(b2) { float4 sA; float4 sB; float4 sC; float4 sD; };
-// wA=(time s,intensity,type,seed); wB=(viewport W,H,rain count,LUT enabled)
-// wC=(camera x,y,scale,ground min); wD=(ground max,Flash stage height,-,-)
-struct WVertex {
-    float4 pos : SV_POSITION;
-    float2 uv : TEXCOORD0;
-    float4 color : TEXCOORD1;
-    nointerpolation float shape : TEXCOORD2;
-};
-float whash(uint x) {
-    x = x * 1664525u + 1013904223u; x ^= x >> 16;
-    x = x * 2246822519u; x ^= x >> 13;
-    return float(x & 0xFFFFFFu) * (1.0 / 16777216.0);
-}
-// The AS2 F packet uses stage = cameraOffset + world * cameraScale.
-// A periodic world field keeps decorative weather populated across long maps;
-// wrapping happens at the viewport edge, while every visible particle follows
-// camera translation and zoom in the same direction as gameworld content.
-float2 projectWeatherWorld(float2 world, float2 view) {
-    float2 stage = (wC.xy + world * wC.z) / float2(1024.0, 576.0);
-    return frac(stage) * view;
-}
-WVertex WVS(uint id : SV_VertexID) {
-    WVertex o = (WVertex)0;
-    uint p = id / 6u;
-    uint c = id - p * 6u;
-    float2 corner = float2((c == 1u || c == 2u || c == 4u) ? 1.0 : 0.0, (c == 2u || c == 4u || c == 5u) ? 1.0 : 0.0);
-    uint seedU = (uint)wA.w;
-    float h1 = whash(p * 4u + 11u + seedU * 3u);
-    float h2 = whash(p * 5u + 23u + seedU * 5u);
-    float h3 = whash(p * 7u + 41u + seedU * 7u);
-    float h4 = whash(p * 9u + 67u + seedU * 11u);
-    float time = wA.x * sC.x;
-    float2 view = wB.xy;
-    float pxPerStage = view.y / max(wD.y, 1.0);
-    float worldPx = pxPerStage * wC.z * sA.w;
-    // Two discrete depth bands: far is smaller/dimmer/slower, near is the reverse.
-    float depth = lerp(0.15 + 0.30 * h3, 0.65 + 0.35 * h3, float(p & 1u));
-    float scale = 0.5 + 0.7 * depth;
-    // Density follows intensity through a stable per-particle threshold.
-    float vis = saturate((wA.y - h4) * 40.0);
-    float2 p0 = float2(0.0, 0.0), p1 = float2(0.0, 0.0), center = float2(0.0, 0.0);
-    float radius = 1.0, width = 1.0, alpha = 0.0, shape = 0.0;
-    float3 color = sA.rgb;
-    int wtype = (int)(wA.z + 0.5);
-    if (wtype == 1) {
-        // The legacy visual uses a depth band between Ymin and Ymax, not
-        // per-particle terrain collision. Draw rain and impact arcs in one batch.
-        float vx = -(20.0 + 55.0 * depth) * (0.7 + 0.6 * h2) * sC.y;
-        float ground = (wC.y + lerp(wC.w, wD.x, depth) * wC.z) * pxPerStage;
-        float splashRate = 0.55 + 0.45 * depth;
-        float splashCycle = floor(h1 + time * splashRate);
-        float phase = frac(h1 + time * splashRate);
-        if (p >= (uint)wB.z) {
-            float progress = saturate((phase - sD.x) / (1.0-sD.x));
-            // Freeze the impact's world X at its birth time. Using rainPos.x
-            // here made an already-landed arc keep drifting with the falling
-            // drop's wind velocity throughout its visible lifetime.
-            float impactTime = (splashCycle + sD.x - h1) / splashRate;
-            float impactWorldX = h2 * 4096.0 + impactTime * vx;
-            center = float2(projectWeatherWorld(float2(impactWorldX,0.0),view).x, ground);
-            radius = (4.0 + progress * 8.0) * scale * worldPx * sC.z;
-            color = sB.rgb;
-            alpha = (phase >= sD.x && ground >= 0.0 && ground <= view.y + 8.0)
-                ? (0.68 + 0.18 * depth) * (1.0 - progress) * sC.w : 0.0;
-            alpha *= saturate(min(center.x,view.x-center.x)/max(radius*sD.y,1.0));
-            shape = 3.0;
-        } else {
-            float vy = 260.0 + 280.0 * depth;
-            float2 rainPos = projectWeatherWorld(float2(h2 * 4096.0 + time * vx,
-                h1 * 2304.0 + time * vy), view);
-            p0 = rainPos;
-            p1 = p0 + normalize(float2(vx,vy)) * (10.0 + 8.0 * h3) * scale * worldPx;
-            if (p1.y > ground) p1 = lerp(p0,p1,saturate((ground-p0.y)/max(p1.y-p0.y,0.001)));
-            width = (0.85 + 1.05 * depth) * worldPx;
-            color = sA.rgb;
-            alpha = p0.y < ground ? 0.34 + 0.38 * depth : 0.0;
-            shape = 1.0;
-        }
-    } else if (wtype == 2) {
-        // Snow: soft flakes with a slow sine sway.
-        float sway = sin(time * (1.2 + 1.5 * h4) + h1 * 6.2832) * (6.0 + 8.0 * depth) * sC.y;
-        center = projectWeatherWorld(float2(h3 * 4096.0 + time * (h2 - 0.5) * 25.0 + sway,
-            h1 * 2304.0 + time * (35.0 + 90.0 * depth)), view);
-        radius = (1.5 + 2.3 * h2) * scale * worldPx;
-        alpha = 0.52 + 0.35 * depth;
-    } else if (wtype == 3) {
-        // Dust: small warm motes drifting slowly down-range.
-        float sway = sin(time * (0.8 + h4) + h2 * 6.2832) * (4.0 + 5.0 * depth);
-        center = projectWeatherWorld(float2(h3 * 4096.0 + time * (h2 - 0.5) * (35.0 + 65.0 * depth) * sC.y + sway,
-            h1 * 2304.0 + time * (12.0 + 35.0 * depth)), view);
-        radius = (0.9 + 1.4 * h2) * scale * worldPx;
-        color = sA.rgb;
-        alpha = 0.20 + 0.25 * depth;
-    } else if (wtype == 4) {
-        // Fog: a few large soft clouds that fade in, drift and fade out.
-        float period = 7.0 + 6.0 * h2;
-        float ph = frac(time / period + h4);
-        float fade = smoothstep(0.0, 0.20, ph) * smoothstep(0.0, 0.30, 1.0 - ph);
-        float2 sway = float2(sin(time * 0.35 + h3 * 6.2832), sin(time * 0.22 + h4 * 6.2832)) * (10.0 + 14.0 * depth);
-        center = projectWeatherWorld(float2(h1 * 4096.0 + time * (h3 - 0.5) * 30.0 + sway.x,
-            h2 * 2304.0 + time * (h1 - 0.5) * 20.0 + sway.y), view);
-        radius = min((60.0 + 95.0 * h3) * scale * worldPx, 180.0);
-        color = sA.rgb;
-        alpha = (0.08 + 0.12 * depth) * fade;
-        float fogEdge = min(min(center.x, view.x - center.x), min(center.y, view.y - center.y));
-        alpha *= saturate(fogEdge / max(radius, 1.0));
-        shape = 2.0;
-    } else {
-        // Slash: a cold-steel streak that tears open, slides, then heals.
-        float period = 0.9 + 0.7 * h2;
-        float u = time / period + h4 * 3.7;
-        float ph = frac(u);
-        uint cyc = (uint)floor(u);
-        float s1 = whash(p * 131u + cyc * 17u + seedU);
-        float s2 = whash(p * 137u + cyc * 29u + seedU * 3u);
-        float s3 = whash(p * 149u + cyc * 43u + seedU * 7u);
-        float ang = 0.35 + 1.05 * s3;
-        float2 dir = float2(cos(ang) * (s1 > 0.5 ? 1.0 : -1.0), sin(ang) * (s2 > 0.35 ? 1.0 : -1.0));
-        float2 anchor = projectWeatherWorld(float2(s1 * 4096.0, s2 * 2304.0), view);
-        float fullLen = (40.0 + 65.0 * h3) * scale * worldPx;
-        float headOff, tailOff;
-        if (ph < 0.25) { headOff = ph * 4.0 * fullLen; tailOff = 0.0; }
-        else if (ph < 0.55) { float sl = (ph - 0.25) / 0.3; headOff = fullLen + sl * fullLen * 0.5; tailOff = sl * fullLen * 0.5; }
-        else { float hl = (ph - 0.55) / 0.45; headOff = fullLen * 1.5; tailOff = fullLen * 0.5 + hl * fullLen; }
-        p0 = anchor + dir * tailOff;
-        p1 = anchor + dir * headOff;
-        float env = ph < 0.15 ? ph / 0.15 : (ph < 0.55 ? 1.0 : (1.0 - ph) / 0.45);
-        width = (3.0 + 3.2 * depth) * worldPx * (ph < 0.15 ? 1.5 : (ph < 0.25 ? 1.2 : 1.0));
-        color = lerp(sA.rgb,sB.rgb,depth);
-        alpha = (0.72 + 0.20 * depth) * env;
-        float slashEdge = min(min(anchor.x, view.x - anchor.x), min(anchor.y, view.y - anchor.y));
-        alpha *= saturate(slashEdge / max(fullLen * 1.5, 1.0));
-        shape = 1.0;
-    }
-    alpha *= vis * sB.w;
-    o.uv = corner;
-    o.color = float4(color, alpha);
-    o.shape = shape;
-    if (alpha <= 0.002) { o.pos = float4(-2.0, -2.0, -2.0, 1.0); return o; }
-    float2 posPx;
-    if (shape > 0.5 && shape < 1.5) {
-        float2 seg = p1 - p0;
-        float2 perp = float2(-seg.y, seg.x) / max(length(seg), 0.001);
-        posPx = p0 + seg * corner.y + perp * (corner.x - 0.5) * width;
-    } else if (shape > 2.5) {
-        posPx = center + float2((corner.x - 0.5) * 2.0 * radius, (corner.y - 1.0) * radius);
-    } else {
-        posPx = center + (corner - 0.5) * (2.0 * radius);
-    }
-    o.pos = float4(posPx.x / view.x * 2.0 - 1.0, 1.0 - posPx.y / view.y * 2.0, 0.5, 1.0);
-    return o;
-}
-float4 WPS(WVertex v) : SV_TARGET {
-    float a = v.color.a;
-    float2 d = v.uv - float2(0.5, 0.5);
-    float3 weatherColor = v.color.rgb;
-    if (v.shape < 0.5) {
-        float r = length(d) * 2.0;
-        a *= 1.0 - smoothstep(0.72, 1.0, r);
-        if (wA.z > 1.5 && wA.z < 2.5)
-            weatherColor = lerp(sA.rgb,sB.rgb,smoothstep(0.38,0.76,r));
-    }
-    else if (v.shape < 1.5) {
-        float edge = saturate(1.0 - abs(d.x) * 2.0);
-        float coverage = wA.z < 1.5 ? smoothstep(0.0, 0.5, edge) : smoothstep(0.05,0.65,edge);
-        a *= coverage * smoothstep(0.0, 0.2, v.uv.y) * smoothstep(0.0, 0.25, 1.0 - v.uv.y);
-    } else if (v.shape < 2.5) a *= 1.0 - smoothstep(0.25, 1.0, length(d) * 2.0);
-    else {
-        float u = v.uv.x * 2.0 - 1.0;
-        float arc = 1.0 - 0.55 * (1.0 - u*u);
-        float distance = abs(v.uv.y - arc);
-        a *= 1.0 - smoothstep(0.12,0.23,distance);
-        weatherColor = lerp(sB.rgb,sA.rgb,smoothstep(0.06,0.19,distance));
-    }
-    if (wA.z < 1.5) {
-        float core = 1.0 - smoothstep(0.0, 0.3, abs(d.x));
-        weatherColor = lerp(sA.rgb,sB.rgb,core);
-    }
-    if (wB.w > 0.5) {
-        // Apply the same LUT as the captured world before alpha blending.
-        // The slash core remains visible after the authored grade.
-        if (wA.z > 4.5) {
-            float core = 1.0 - smoothstep(0.0,0.25,abs(d.x));
-            weatherColor = lerp(weatherColor,sB.rgb,0.55 + 0.25 * core);
-        }
-        float3 lookup = weatherColor * (31.0/32.0) + (0.5/32.0);
-        return float4(pointLit(lutTexture.Sample(lutSampler, lookup).rgb,weatherColor,pointUv(v.pos.xy)), a);
-    }
-    float4 c = float4(weatherColor, 1.0);
-    float3 graded = saturate(float3(dot(c, rowR), dot(c, rowG), dot(c, rowB)) + offset.rgb);
-    if (wA.z > 4.5) {
-        float core = 1.0 - smoothstep(0.0,0.25,abs(d.x));
-        graded = lerp(graded,sB.rgb,0.55 + 0.25 * core);
-    }
-    return float4(pointLit(pow(abs(graded), 1.0 / max(offset.w, 1.0e-3)),weatherColor,pointUv(v.pos.xy)), a);
-}
-)hlsl";
-
-// ABI 5 bullet candidates: authored triangle styles instanced per frame item.
-// Same camera mapping as weather (stage = camera + world*scale) but without
-// the decorative wrap; real objects clip at the viewport edge.
-constexpr char BulletShader[] = R"hlsl(
-Texture3D lutTexture : register(t1);
-SamplerState lutSampler : register(s1);
-cbuffer Grade : register(b0) { float4 rowR; float4 rowG; float4 rowB; float4 offset; };
-// bB=(viewport W,H,LUT enabled,item count); bC=(camera x,y,scale,style count)
-cbuffer BulletParams : register(b1) { float4 bB; float4 bC; };
-// 16 styles x float4[4]: (v0.xy,v1.xy), (v2.xy,fill R,G), (fill B,glow RGB),
-// (blur X,Y in style units,hasGlow 0/1,reserved)
-cbuffer BulletStyles : register(b2) { float4 bS[64]; };
-// 256 items x float4[2]: (style index,x,y,rotation deg), (scaleX %,scaleY %,alpha %,-)
-cbuffer BulletItems : register(b3) { float4 bI[512]; };
-struct BVertex {
-    float4 pos : SV_POSITION;
-    float2 local : TEXCOORD0;
-    nointerpolation uint style : TEXCOORD1;
-    nointerpolation float alpha : TEXCOORD2;
-};
-float cross2(float2 a,float2 b) { return a.x*b.y-a.y*b.x; }
-float segmentDistance(float2 p,float2 a,float2 b) {
-    float2 ab=b-a;
-    float t=saturate(dot(p-a,ab)/max(dot(ab,ab),1.0e-6));
-    return length(p-(a+t*ab));
-}
-// One bounded quad per item. Its pixel shader evaluates the authored triangle
-// and a smooth halo around it, so blur does not become a larger hard triangle.
-BVertex BVS(uint id : SV_VertexID) {
-    BVertex o = (BVertex)0;
-    uint item = id / 6u;
-    uint corner = id - item * 6u;
-    if (item >= (uint)bB.w) { o.pos = float4(-2.0, -2.0, -2.0, 1.0); return o; }
-    float4 ia = bI[item * 2u];
-    float4 ib = bI[item * 2u + 1u];
-    uint si = (uint)(ia.x + 0.5);
-    if (si >= (uint)bC.w) { o.pos = float4(-2.0, -2.0, -2.0, 1.0); return o; }
-    float4 s0 = bS[si * 4u];
-    float4 s1 = bS[si * 4u + 1u];
-    float4 s3 = bS[si * 4u + 3u];
-    float alpha = saturate(ib.z * 0.01);
-    if (alpha <= 0.002) { o.pos = float4(-2.0, -2.0, -2.0, 1.0); return o; }
-    float2 p0=s0.xy, p1=s0.zw, p2=s1.xy;
-    float2 lo=min(p0,min(p1,p2)), hi=max(p0,max(p1,p2));
-    // The current XFL GlowFilter has blurX=blurY=8. Half that value is the
-    // candidate Gaussian sigma; a three-sigma bound fades to near zero.
-    float2 sigma=max(s3.xy*0.5,float2(0.25,0.25));
-    float2 margin=s3.z>0.5 ? sigma*3.0+1.0 : float2(1.0,1.0);
-    float2 quadCorner=float2((corner==1u || corner==2u || corner==4u) ? 1.0 : 0.0,
-        (corner==2u || corner==4u || corner==5u) ? 1.0 : 0.0);
-    float2 local=lerp(lo-margin,hi+margin,quadCorner);
-    float rad = ia.w * (3.14159265 / 180.0);
-    float cs = cos(rad), sn = sin(rad);
-    float2 sc = ib.xy * 0.01;
-    float2 scaled = local * sc;
-    // Positive degrees rotate clockwise, matching Flash in y-down stage space.
-    float2 rotated = float2(scaled.x * cs - scaled.y * sn, scaled.x * sn + scaled.y * cs);
-    float2 stage = (bC.xy + (ia.yz + rotated) * bC.z) / float2(1024.0, 576.0);
-    o.pos = float4(stage.x * 2.0 - 1.0, 1.0 - stage.y * 2.0, 0.5, 1.0);
-    o.local=local;
-    o.style=si;
-    o.alpha=alpha;
-    return o;
-}
-float4 BPS(BVertex v) : SV_TARGET {
-    float4 s0=bS[v.style*4u], s1=bS[v.style*4u+1u];
-    float4 s2=bS[v.style*4u+2u], s3=bS[v.style*4u+3u];
-    float2 p0=s0.xy, p1=s0.zw, p2=s1.xy, p=v.local;
-    float e0=cross2(p1-p0,p-p0), e1=cross2(p2-p1,p-p1), e2=cross2(p0-p2,p-p2);
-    bool inside=(e0>=0.0 && e1>=0.0 && e2>=0.0)
-        || (e0<=0.0 && e1<=0.0 && e2<=0.0);
-    float edgeDistance=min(segmentDistance(p,p0,p1),
-        min(segmentDistance(p,p1,p2),segmentDistance(p,p2,p0)));
-    float signedDistance=inside ? -edgeDistance : edgeDistance;
-    float aa=max(fwidth(edgeDistance),0.5);
-    float core=1.0-smoothstep(-aa,aa,signedDistance);
-    float halo=0.0;
-    if (s3.z>0.5) {
-        float2 sigma=max(s3.xy*0.5,float2(0.25,0.25));
-        float2 q=p/sigma, q0=p0/sigma, q1=p1/sigma, q2=p2/sigma;
-        float d=min(segmentDistance(q,q0,q1),
-            min(segmentDistance(q,q1,q2),segmentDistance(q,q2,q0)));
-        halo=0.35*exp(-0.5*d*d);
-    }
-    float opacity=v.alpha*saturate(core+(1.0-core)*halo);
-    clip(opacity-0.002);
-    float3 color=lerp(s2.yzw,float3(s1.z,s1.w,s2.x),core);
-    // Same grade/LUT contract as weather: authored colors are graded, not raw.
-    if (bB.z > 0.5)
-        return float4(pointLit(lutTexture.Sample(lutSampler, color * (31.0 / 32.0) + (0.5 / 32.0)).rgb,color,pointUv(v.pos.xy)), opacity);
-    float4 c = float4(color, 1.0);
-    float3 graded = saturate(float3(dot(c, rowR), dot(c, rowG), dot(c, rowB)) + offset.rgb);
-    return float4(pointLit(pow(abs(graded), 1.0 / max(offset.w, 1.0e-3)),color,pointUv(v.pos.xy)), opacity);
-}
-)hlsl";
 
 // This is a safety ceiling. Authored counts live in the external visual catalog.
 constexpr int WeatherSafetyCap = 512;
@@ -629,10 +51,13 @@ struct WeatherCameraState { float x = 0, y = 0, scale = 1, groundMin = 360, grou
 struct AtmosphereState { int preset = 0; float params[12]{}; };
 struct WeatherStyleState { int type = 0, count = 0; float params[16]{}; };
 struct AtmosphereStyleState { int family = 0; float params[16]{}; };
-// Bullet caps are safety ceilings; each item uses one procedural quad.
+constexpr int RayItemCap=4096,RayBatchCap=256;
+struct RayFrameState { int count=0;float cameraX=0,cameraY=0,cameraScale=1;float params[RayItemCap*32]{}; };
 constexpr int BulletStyleCap = 16;
-constexpr int BulletItemCap = 256;
-struct BulletStylesState { int count = 0; float params[BulletStyleCap*16]{}; };
+// Bullet caps are safety ceilings; each item uses one procedural quad.
+constexpr int BulletItemCap = 16384;
+constexpr int BulletBatchCap = 1024;
+struct BulletStylesState { int count = 0; float params[BulletStyleCap*32]{}; };
 struct BulletFrameState { int count = 0; float cameraX = 0, cameraY = 0, cameraScale = 1; float params[BulletItemCap*8]{}; };
 constexpr int CombatFxCap=512;
 constexpr int PointLightCap=16;
@@ -780,13 +205,17 @@ public:
         if (count<0 || count>BulletStyleCap || (count>0 && !styles)) return false;
         BulletStylesState state{};
         for (int s=0;s<count;s++) {
-            const float* p=styles+s*16;
-            for (int i=0;i<16;i++) if (!std::isfinite(p[i])) return false;
+            const float* p=styles+s*32;
+            for (int i=0;i<32;i++) if (!std::isfinite(p[i])) return false;
             for (int i=0;i<6;i++) if (std::abs(p[i])>4096.f) return false;
             for (int i=6;i<12;i++) if (p[i]<0.f || p[i]>1.f) return false;
             if (p[12]<0.f || p[12]>255.f || p[13]<0.f || p[13]>255.f
-                || (p[14]!=0.f && p[14]!=1.f) || p[15]!=0.f) return false;
-            std::memcpy(state.params+s*16,p,64);
+                || (p[14]!=0.f && p[14]!=1.f) || (p[15]!=0.f && p[15]!=1.f)) return false;
+            if(p[15]>0.5f && (std::abs(p[16])>4096 || std::abs(p[17])>4096 || p[18]<=0 || p[19]<=0 || p[18]>4096 || p[19]>4096)) return false;
+            for(int j=20;j<24;j++) if(p[j]<0 || p[j]>1)return false;
+            if(p[15]>0.5f && (p[20]>=p[22] || p[21]>=p[23]))return false;
+            for(int j=24;j<32;j++)if(p[j]!=0)return false;
+            std::memcpy(state.params+s*32,p,128);
         }
         state.count=count;
         { std::lock_guard guard(mutex_);bulletStyles_=state;++bulletVersion_; }
@@ -797,7 +226,8 @@ public:
         if (!std::isfinite(cameraX) || !std::isfinite(cameraY) || !std::isfinite(cameraScale)
             || cameraScale<=0.f || cameraScale>20.f
             || std::abs(cameraX)>1000000.f || std::abs(cameraY)>1000000.f) return false;
-        BulletFrameState state{}; state.cameraX=cameraX; state.cameraY=cameraY; state.cameraScale=cameraScale;
+        // The caller keeps items valid for this synchronous call: validate it in
+        // place so a rejected frame leaves the published snapshot untouched.
         for (int b=0;b<count;b++) {
             const float* p=items+b*8;
             for (int i=0;i<8;i++) if (!std::isfinite(p[i])) return false;
@@ -805,13 +235,13 @@ public:
                 || std::abs(p[1])>1000000.f || std::abs(p[2])>1000000.f || std::abs(p[3])>1000000.f
                 || std::abs(p[4])>10000.f || std::abs(p[5])>10000.f
                 || p[6]<0.f || p[6]>100.f || p[7]!=0.f) return false;
-            std::memcpy(state.params+b*8,p,32);
         }
-        state.count=count;
         { std::lock_guard guard(mutex_);
             for (int b=0;b<count;b++)
-                if (static_cast<int>(state.params[b*8])>=bulletStyles_.count) return false;
-            bulletFrame_=state; ++bulletVersion_; }
+                if (static_cast<int>(items[b*8])>=bulletStyles_.count) return false;
+            bulletFrame_.cameraX=cameraX; bulletFrame_.cameraY=cameraY; bulletFrame_.cameraScale=cameraScale;
+            if (count>0) std::memcpy(bulletFrame_.params,items,static_cast<size_t>(count)*32);
+            bulletFrame_.count=count; ++bulletVersion_; }
         Signal();return true;
     }
     bool CombatFxAtlas(const uint8_t* pixels,int width,int height,int length) {
@@ -819,6 +249,38 @@ public:
         auto bytes=std::make_shared<std::vector<uint8_t>>(pixels,pixels+length);
         { std::lock_guard guard(mutex_);fxAtlas_=bytes;fxAtlasW_=width;fxAtlasH_=height;++fxAtlasVersion_;fxReadyVersion_=0; }
         Signal();return true;
+    }
+    bool BulletAtlas(const uint8_t* pixels,int width,int height,int length) {
+        if(!pixels || width<1 || height<1 || width>4096 || height>4096 || length!=width*height*4) return false;
+        auto bytes=std::make_shared<std::vector<uint8_t>>(pixels,pixels+length);
+        { std::lock_guard guard(mutex_);bulletAtlas_=bytes;bulletAtlasW_=width;bulletAtlasH_=height;++bulletAtlasVersion_;bulletAtlasReady_=0; }
+        Signal();return true;
+    }
+    bool BulletReady() {
+        std::lock_guard guard(mutex_);
+        for(int i=0;i<bulletStyles_.count;i++)if(bulletStyles_.params[i*32+15]>0.5f)
+            return stats_.state==1 && bulletAtlas_ && bulletAtlasReady_.load()==bulletAtlasVersion_;
+        return stats_.state==1;
+    }
+    bool RayFrame(const float* items,int count,float x,float y,float scale) {
+        if(count<0 || count>RayItemCap || (count>0 && !items) || !std::isfinite(x) || !std::isfinite(y)
+            || !std::isfinite(scale) || std::abs(x)>1000000 || std::abs(y)>1000000 || scale<=0 || scale>20)return false;
+        // The caller keeps items valid for this synchronous call: validate it in
+        // place so a rejected frame leaves the published snapshot untouched.
+        for(int i=0;i<count;i++) {
+            const float* p=items+i*32;
+            for(int j=0;j<32;j++)if(!std::isfinite(p[j]))return false;
+            for(int j=0;j<4;j++)if(std::abs(p[j])>1000000)return false;
+            for(int j=4;j<11;j++)if(p[j]<0 || p[j]>1)return false;
+            if(p[11]<=0 || p[11]>512 || p[12]<0 || p[12]>1000000000 || p[13]<0 || p[13]>1200
+                || p[14]<0 || p[14]>2147483648.f || p[15]!=std::floor(p[15]))return false;
+            int style=static_cast<int>(p[15]);if(!((style>=0&&style<12)||(style>=16&&style<28)||style==42))return false;
+            for(int j=16;j<32;j++)if(std::abs(p[j])>16777216.f)return false;
+        }
+        {std::lock_guard guard(mutex_);
+            rayFrame_.cameraX=x;rayFrame_.cameraY=y;rayFrame_.cameraScale=scale;
+            if(count>0)std::memcpy(rayFrame_.params,items,static_cast<size_t>(count)*128);
+            rayFrame_.count=count;++rayVersion_;}Signal();return true;
     }
     bool CombatFxReady() {
         std::lock_guard guard(mutex_);
@@ -831,8 +293,8 @@ public:
             || std::abs(cameraX)>1000000.f || std::abs(cameraY)>1000000.f || cameraScale<=0 || cameraScale>20
             || lightCount<0 || lightCount>PointLightCap || (lightCount>0 && !lights)
             || !std::isfinite(maximumResponse) || maximumResponse<0 || maximumResponse>.8f) return false;
-        CombatFxState next{};next.count=count;next.casings=casings;next.cameraX=cameraX;next.cameraY=cameraY;next.cameraScale=cameraScale;
-        next.lightCount=lightCount;next.maximumLightResponse=maximumResponse;
+        // The caller keeps items/lights valid for this synchronous call: validate
+        // in place so a rejected frame leaves the published snapshot untouched.
         for(int n=0;n<lightCount;n++) {
             const float* p=lights+n*16;
             for(int j=0;j<16;j++) if(!std::isfinite(p[j]))return false;
@@ -850,7 +312,6 @@ public:
             if(p[14]==0 && (p[12]!=0 || p[13]!=0))return false;
             if((p[7]<0.5f || p[7]>1.5f)
                 && (p[12]!=0 || p[13]!=0 || p[14]!=0 || p[15]!=0))return false;
-            std::memcpy(next.lights+n*16,p,64);
         }
         for(int n=0;n<count;n++) {
             const float* p=items+n*16;
@@ -860,9 +321,13 @@ public:
                 || p[6]<0 || p[6]>1 || (p[7]!=0 && p[7]!=1)
                 || std::abs(p[8])>10000 || std::abs(p[9])>10000 || p[10]<=0 || p[11]<=0 || p[10]>10000 || p[11]>10000
                 || p[12]<0 || p[13]<0 || p[14]>1 || p[15]>1 || p[14]<=p[12] || p[15]<=p[13]) return false;
-            std::memcpy(next.params+n*16,p,64);
         }
-        { std::lock_guard guard(mutex_);fxFrame_=next;++fxVersion_; }
+        { std::lock_guard guard(mutex_);
+            fxFrame_.cameraX=cameraX;fxFrame_.cameraY=cameraY;fxFrame_.cameraScale=cameraScale;
+            if(lightCount>0)std::memcpy(fxFrame_.lights,lights,static_cast<size_t>(lightCount)*64);
+            if(count>0)std::memcpy(fxFrame_.params,items,static_cast<size_t>(count)*64);
+            fxFrame_.count=count;fxFrame_.casings=casings;fxFrame_.lightCount=lightCount;
+            fxFrame_.maximumLightResponse=maximumResponse;++fxVersion_; }
         Signal();return true;
     }
     void Stats(ProbeStats& result) { std::lock_guard guard(mutex_); result = stats_; }
@@ -893,6 +358,7 @@ private:
         } catch (...) { State(3, E_FAIL, L"WinRT apartment initialization failed"); }
     }
     void CaptureLoop() {
+        State(0,S_OK,L"Creating capture device");
         if (!ValidSource() || !IsWindow(output_)) throw hresult_error(E_INVALIDARG, L"Invalid source/output HWND or PID");
         if (!GraphicsCaptureSession::IsSupported()) throw hresult_error(E_NOTIMPL, L"WGC unsupported");
 
@@ -977,29 +443,15 @@ private:
         }
         check_hresult(factory->MakeWindowAssociation(output_, DXGI_MWA_NO_ALT_ENTER));
 
-        auto Compile = [](const char* source, const char* entry, const char* profile) {
-            com_ptr<ID3DBlob> blob, error;
-            std::string combined=std::string(PointLightShared)+source;
-            HRESULT hr = D3DCompile(combined.data(), combined.size(), "compositor-probe", nullptr, nullptr,
-                entry, profile, D3DCOMPILE_OPTIMIZATION_LEVEL3 | D3DCOMPILE_WARNINGS_ARE_ERRORS, 0, blob.put(), error.put());
-            if (FAILED(hr)) {
-                std::wstring detail=L"HLSL compilation failed";
-                if (error) {
-                    const char* start=static_cast<const char*>(error->GetBufferPointer());
-                    detail.assign(start,start+error->GetBufferSize());
-                }
-                throw hresult_error(hr,detail.c_str());
-            }
-            return blob;
-        };
-        auto vsCode = Compile(Shader, "VS", "vs_4_0"); auto psCode = Compile(Shader, "PS", "ps_4_0");
-        auto weatherVsCode = Compile(WeatherShader, "WVS", "vs_4_0");
-        auto weatherPsCode = Compile(WeatherShader, "WPS", "ps_4_0");
-        auto bulletVsCode = Compile(BulletShader, "BVS", "vs_4_0");
-        auto bulletPsCode = Compile(BulletShader, "BPS", "ps_4_0");
+        State(0,S_OK,L"Creating shaders from embedded bytecode");
+        auto vsCode = CompositorShaders::VS; auto psCode = CompositorShaders::PS;
+        auto weatherVsCode = CompositorShaders::WVS;
+        auto weatherPsCode = CompositorShaders::WPS;
+        auto bulletVsCode = CompositorShaders::BVS;
+        auto bulletPsCode = CompositorShaders::BPS;
         com_ptr<ID3D11VertexShader> vs; com_ptr<ID3D11PixelShader> ps;
-        check_hresult(device->CreateVertexShader(vsCode->GetBufferPointer(), vsCode->GetBufferSize(), nullptr, vs.put()));
-        check_hresult(device->CreatePixelShader(psCode->GetBufferPointer(), psCode->GetBufferSize(), nullptr, ps.put()));
+        check_hresult(device->CreateVertexShader(vsCode.data, vsCode.size, nullptr, vs.put()));
+        check_hresult(device->CreatePixelShader(psCode.data, psCode.size, nullptr, ps.put()));
         com_ptr<ID3D11Buffer> constants;
         D3D11_BUFFER_DESC cb{}; cb.ByteWidth = sizeof(Settings); cb.Usage = D3D11_USAGE_DEFAULT; cb.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
         check_hresult(device->CreateBuffer(&cb, nullptr, constants.put()));
@@ -1025,25 +477,25 @@ private:
         D3D11_RASTERIZER_DESC rd{}; rd.FillMode = D3D11_FILL_SOLID; rd.CullMode = D3D11_CULL_NONE; rd.DepthClipEnable = TRUE;
         check_hresult(device->CreateRasterizerState(&rd, raster.put()));
         com_ptr<ID3D11VertexShader> weatherVs; com_ptr<ID3D11PixelShader> weatherPs;
-        check_hresult(device->CreateVertexShader(weatherVsCode->GetBufferPointer(), weatherVsCode->GetBufferSize(), nullptr, weatherVs.put()));
-        check_hresult(device->CreatePixelShader(weatherPsCode->GetBufferPointer(), weatherPsCode->GetBufferSize(), nullptr, weatherPs.put()));
+        check_hresult(device->CreateVertexShader(weatherVsCode.data, weatherVsCode.size, nullptr, weatherVs.put()));
+        check_hresult(device->CreatePixelShader(weatherPsCode.data, weatherPsCode.size, nullptr, weatherPs.put()));
         com_ptr<ID3D11Buffer> weatherParams;
         cb.ByteWidth = 64; check_hresult(device->CreateBuffer(&cb, nullptr, weatherParams.put()));
         com_ptr<ID3D11Buffer> weatherStyleParams;
         cb.ByteWidth = 64; check_hresult(device->CreateBuffer(&cb, nullptr, weatherStyleParams.put()));
         com_ptr<ID3D11VertexShader> bulletVs; com_ptr<ID3D11PixelShader> bulletPs;
-        check_hresult(device->CreateVertexShader(bulletVsCode->GetBufferPointer(), bulletVsCode->GetBufferSize(), nullptr, bulletVs.put()));
-        check_hresult(device->CreatePixelShader(bulletPsCode->GetBufferPointer(), bulletPsCode->GetBufferSize(), nullptr, bulletPs.put()));
+        check_hresult(device->CreateVertexShader(bulletVsCode.data, bulletVsCode.size, nullptr, bulletVs.put()));
+        check_hresult(device->CreatePixelShader(bulletPsCode.data, bulletPsCode.size, nullptr, bulletPs.put()));
         com_ptr<ID3D11Buffer> bulletParams;
         cb.ByteWidth = 32; check_hresult(device->CreateBuffer(&cb, nullptr, bulletParams.put()));
         com_ptr<ID3D11Buffer> bulletStyleParams;
-        cb.ByteWidth = BulletStyleCap*64; check_hresult(device->CreateBuffer(&cb, nullptr, bulletStyleParams.put()));
+        cb.ByteWidth = BulletStyleCap*128; check_hresult(device->CreateBuffer(&cb, nullptr, bulletStyleParams.put()));
         com_ptr<ID3D11Buffer> bulletItemParams;
-        cb.ByteWidth = BulletItemCap*32; check_hresult(device->CreateBuffer(&cb, nullptr, bulletItemParams.put()));
-        auto fxVsCode=Compile(CombatFxShader,"FVS","vs_4_0"),fxPsCode=Compile(CombatFxShader,"FPS","ps_4_0");
+        cb.ByteWidth = BulletBatchCap*32; check_hresult(device->CreateBuffer(&cb, nullptr, bulletItemParams.put()));
+        auto fxVsCode=CompositorShaders::FVS,fxPsCode=CompositorShaders::FPS;
         com_ptr<ID3D11VertexShader> fxVs;com_ptr<ID3D11PixelShader> fxPs;
-        check_hresult(device->CreateVertexShader(fxVsCode->GetBufferPointer(),fxVsCode->GetBufferSize(),nullptr,fxVs.put()));
-        check_hresult(device->CreatePixelShader(fxPsCode->GetBufferPointer(),fxPsCode->GetBufferSize(),nullptr,fxPs.put()));
+        check_hresult(device->CreateVertexShader(fxVsCode.data,fxVsCode.size,nullptr,fxVs.put()));
+        check_hresult(device->CreatePixelShader(fxPsCode.data,fxPsCode.size,nullptr,fxPs.put()));
         com_ptr<ID3D11Buffer> fxParams,fxItems;
         cb.ByteWidth=32;check_hresult(device->CreateBuffer(&cb,nullptr,fxParams.put()));
         cb.ByteWidth=CombatFxCap*64;check_hresult(device->CreateBuffer(&cb,nullptr,fxItems.put()));
@@ -1065,10 +517,21 @@ private:
         com_ptr<ID3D11BlendState> fxBlend;bd.RenderTarget[0].SrcBlend=D3D11_BLEND_ONE;
         check_hresult(device->CreateBlendState(&bd,fxBlend.put()));
         com_ptr<ID3D11Texture2D> fxTexture;com_ptr<ID3D11ShaderResourceView> fxSrv;
-        auto lightVsCode=Compile(PointLightShader,"LVS","vs_4_0"),lightPsCode=Compile(PointLightShader,"LPS","ps_4_0");
+        com_ptr<ID3D11Texture2D> bulletTexture;com_ptr<ID3D11ShaderResourceView> bulletSrv;
+        auto rayVsCode=CompositorShaders::RVS,rayPsCode=CompositorShaders::RPS;
+        com_ptr<ID3D11VertexShader> rayVs;com_ptr<ID3D11PixelShader> rayPs;
+        check_hresult(device->CreateVertexShader(rayVsCode.data,rayVsCode.size,nullptr,rayVs.put()));
+        check_hresult(device->CreatePixelShader(rayPsCode.data,rayPsCode.size,nullptr,rayPs.put()));
+        com_ptr<ID3D11Buffer> rayParams,rayItems;
+        cb.ByteWidth=32;check_hresult(device->CreateBuffer(&cb,nullptr,rayParams.put()));
+        cb.ByteWidth=RayBatchCap*128;check_hresult(device->CreateBuffer(&cb,nullptr,rayItems.put()));
+        com_ptr<ID3D11BlendState> rayScreenBlend;
+        bd.RenderTarget[0].DestBlend=D3D11_BLEND_INV_SRC_COLOR;
+        check_hresult(device->CreateBlendState(&bd,rayScreenBlend.put()));
+        auto lightVsCode=CompositorShaders::LVS,lightPsCode=CompositorShaders::LPS;
         com_ptr<ID3D11VertexShader> lightVs;com_ptr<ID3D11PixelShader> lightPs;
-        check_hresult(device->CreateVertexShader(lightVsCode->GetBufferPointer(),lightVsCode->GetBufferSize(),nullptr,lightVs.put()));
-        check_hresult(device->CreatePixelShader(lightPsCode->GetBufferPointer(),lightPsCode->GetBufferSize(),nullptr,lightPs.put()));
+        check_hresult(device->CreateVertexShader(lightVsCode.data,lightVsCode.size,nullptr,lightVs.put()));
+        check_hresult(device->CreatePixelShader(lightPsCode.data,lightPsCode.size,nullptr,lightPs.put()));
         com_ptr<ID3D11Buffer> lightParams,lightItems;
         cb.ByteWidth=64;check_hresult(device->CreateBuffer(&cb,nullptr,lightParams.put()));
         cb.ByteWidth=PointLightCap*64;check_hresult(device->CreateBuffer(&cb,nullptr,lightItems.put()));
@@ -1093,6 +556,7 @@ private:
         int appliedMode = -1;
         float appliedSharpness=-1;
         double frameQpcMs = 0;
+        State(0,S_OK,L"Starting WGC capture");
         startSession();
         uint64_t appliedSettings = 0;
         // lut-set-v1 工作线程状态：纹理惰性创建，版本驱动的 UpdateSubresource（变更才上传）。
@@ -1104,8 +568,16 @@ private:
         uint64_t appliedWeather = 0;
         uint64_t appliedAtmosphere = 0;
         uint64_t appliedBullet = 0;
-        BulletStylesState bulletStyles; BulletFrameState bulletFrame;
+        uint64_t appliedBulletAtlas=0;
+        // The ~512KB frame snapshots would overflow the worker's 1MB default
+        // stack together; heap-allocate once and keep the draw code unchanged.
+        BulletStylesState bulletStyles;
+        auto bulletFrameStore=std::make_unique<BulletFrameState>();auto& bulletFrame=*bulletFrameStore;
         CombatFxState fxFrame;uint64_t appliedFx=0,appliedFxAtlas=0;
+        auto rayFrameStore=std::make_unique<RayFrameState>();auto& rayFrame=*rayFrameStore;uint64_t appliedRay=0;
+        // Per-frame pass buckets; capacity is reserved once and reused.
+        std::vector<int> rayFlame,rayScreen,rayOther;
+        rayFlame.reserve(RayItemCap);rayScreen.reserve(RayItemCap);rayOther.reserve(RayItemCap);
         float weatherTime = 0;
         double lastWeatherDrawMs = 0;
         float atmosphereTime = 0;
@@ -1130,12 +602,13 @@ private:
             uint64_t settingsVersion; bool custom; Settings settings; WeatherState weather; WeatherCameraState weatherCamera; uint64_t weatherVersion;
             uint64_t lutVersion; bool lutEnabled;
             AtmosphereState atmosphere; AtmosphereStyleState atmosphereStyle; uint64_t atmosphereVersion;
-            WeatherStyleState weatherStyle; uint64_t bulletVersion,fxVersion,fxAtlasVersion;
+            WeatherStyleState weatherStyle; uint64_t bulletVersion,bulletAtlasObserved,fxVersion,fxAtlasVersion,rayVersion;
             { std::lock_guard guard(mutex_); settingsVersion=settingsVersion_; custom=custom_; settings=customSettings_;
                 weather=weather_; weatherCamera=weatherCamera_; weatherVersion=weatherVersion_;
                 weatherStyle=weatherStyle_; atmosphere=atmosphere_;
                 atmosphereStyle=atmosphereStyle_; atmosphereVersion=atmosphereVersion_;
-                bulletVersion=bulletVersion_;fxVersion=fxVersion_;fxAtlasVersion=fxAtlasVersion_; }
+                bulletVersion=bulletVersion_;bulletAtlasObserved=bulletAtlasVersion_;
+                fxVersion=fxVersion_;fxAtlasVersion=fxAtlasVersion_;rayVersion=rayVersion_; }
             bool weatherOn = weather.type!=0 && weather.intensity>0.f && weather.quality<3
                 && weatherStyle.type==weather.type && weatherStyle.count>0 && texture;
             bool atmosphereOn = atmosphere.preset!=0 && (atmosphere.preset==11
@@ -1144,7 +617,7 @@ private:
             bool fxOn=(fxFrame.count>0 || fxFrame.lightCount>0) && fxSrv && texture;
             // Weather animates per presented frame; keep a 30fps floor even on
             // unpaced probe sessions so motion stays at the worker cadence.
-            int paceFps = fps_>0 ? fps_ : ((weatherOn || atmosphereOn || bulletsOn || fxOn) ? 30 : 0);
+            int paceFps = fps_>0 ? fps_ : ((weatherOn || atmosphereOn || bulletsOn || fxOn || rayFrame.count>0) ? 30 : 0);
             if (paceFps>0) {
                 std::unique_lock lock(waitMutex_);
                 wake_.wait_until(lock,nextPresent,[this] { return stop_.load() || !active_.load() || grabRequested_.load(); });
@@ -1192,7 +665,8 @@ private:
                     && appliedSharpness==sharpness_.load() && appliedLut==lutVersion
                     && appliedWeather==weatherVersion && !weatherOn
                     && appliedAtmosphere==atmosphereVersion && !atmosphereOn
-                    && appliedBullet==bulletVersion && !bulletsOn
+                    && appliedBullet==bulletVersion && appliedBulletAtlas==bulletAtlasObserved
+                    && !bulletsOn && appliedRay==rayVersion && rayFrame.count==0
                     && appliedFx==fxVersion && appliedFxAtlas==fxAtlasVersion && !fxOn))) {
                 presentation.unlock();
                 std::unique_lock lock(waitMutex_);
@@ -1297,13 +771,34 @@ private:
             // its camera and the newest bullet snapshot immediately before
             // drawing; the loop-head copy could be one presented frame behind.
             std::shared_ptr<std::vector<uint8_t>> atlasPixels;int atlasW=0,atlasH=0;
+            std::shared_ptr<std::vector<uint8_t>> bulletPixels;int bulletW=0,bulletH=0;uint64_t bulletAtlasVersion=0;
             { std::lock_guard guard(mutex_);
                 weatherCamera=weatherCamera_; weatherVersion=weatherVersion_;
+                // Snapshot copies move metadata + count live records only. Draws
+                // index params[0..count) and uploads zero-pad the last cbuffer
+                // batch, so stale tail bytes need no clearing.
                 if (bulletVersion_!=appliedBullet) {
-                    bulletStyles=bulletStyles_; bulletFrame=bulletFrame_; appliedBullet=bulletVersion_; }
-                if(fxVersion_!=appliedFx) { fxFrame=fxFrame_;appliedFx=fxVersion_; }
+                    bulletStyles=bulletStyles_;
+                    bulletFrame.cameraX=bulletFrame_.cameraX;bulletFrame.cameraY=bulletFrame_.cameraY;
+                    bulletFrame.cameraScale=bulletFrame_.cameraScale;bulletFrame.count=bulletFrame_.count;
+                    if(bulletFrame.count>0)std::memcpy(bulletFrame.params,bulletFrame_.params,static_cast<size_t>(bulletFrame.count)*32);
+                    appliedBullet=bulletVersion_; }
+                if(fxVersion_!=appliedFx) {
+                    fxFrame.cameraX=fxFrame_.cameraX;fxFrame.cameraY=fxFrame_.cameraY;fxFrame.cameraScale=fxFrame_.cameraScale;
+                    fxFrame.count=fxFrame_.count;fxFrame.casings=fxFrame_.casings;fxFrame.lightCount=fxFrame_.lightCount;
+                    fxFrame.maximumLightResponse=fxFrame_.maximumLightResponse;
+                    if(fxFrame.lightCount>0)std::memcpy(fxFrame.lights,fxFrame_.lights,static_cast<size_t>(fxFrame.lightCount)*64);
+                    if(fxFrame.count>0)std::memcpy(fxFrame.params,fxFrame_.params,static_cast<size_t>(fxFrame.count)*64);
+                    appliedFx=fxVersion_; }
+                if(rayVersion_!=appliedRay) {
+                    rayFrame.cameraX=rayFrame_.cameraX;rayFrame.cameraY=rayFrame_.cameraY;
+                    rayFrame.cameraScale=rayFrame_.cameraScale;rayFrame.count=rayFrame_.count;
+                    if(rayFrame.count>0)std::memcpy(rayFrame.params,rayFrame_.params,static_cast<size_t>(rayFrame.count)*128);
+                    appliedRay=rayVersion_; }
                 fxAtlasVersion=fxAtlasVersion_;
                 if(fxAtlasVersion!=appliedFxAtlas) { atlasPixels=fxAtlas_;atlasW=fxAtlasW_;atlasH=fxAtlasH_; }
+                bulletAtlasVersion=bulletAtlasVersion_;
+                if(bulletAtlasVersion!=appliedBulletAtlas) { bulletPixels=bulletAtlas_;bulletW=bulletAtlasW_;bulletH=bulletAtlasH_; }
             }
             if(atlasPixels) {
                 D3D11_TEXTURE2D_DESC desc{};desc.Width=atlasW;desc.Height=atlasH;desc.MipLevels=1;desc.ArraySize=1;
@@ -1314,6 +809,16 @@ private:
                 check_hresult(device->CreateTexture2D(&desc,&pixels,fxTexture.put()));
                 check_hresult(device->CreateShaderResourceView(fxTexture.get(),nullptr,fxSrv.put()));
                 appliedFxAtlas=fxAtlasVersion;fxReadyVersion_=appliedFxAtlas;
+            }
+            if(bulletPixels) {
+                D3D11_TEXTURE2D_DESC desc{};desc.Width=bulletW;desc.Height=bulletH;desc.MipLevels=1;desc.ArraySize=1;
+                desc.Format=DXGI_FORMAT_B8G8R8A8_UNORM;desc.SampleDesc.Count=1;desc.Usage=D3D11_USAGE_IMMUTABLE;
+                desc.BindFlags=D3D11_BIND_SHADER_RESOURCE;
+                D3D11_SUBRESOURCE_DATA pixels{bulletPixels->data(),static_cast<UINT>(bulletW*4),0};
+                bulletSrv=nullptr;bulletTexture=nullptr;
+                check_hresult(device->CreateTexture2D(&desc,&pixels,bulletTexture.put()));
+                check_hresult(device->CreateShaderResourceView(bulletTexture.get(),nullptr,bulletSrv.put()));
+                appliedBulletAtlas=bulletAtlasVersion;bulletAtlasReady_=appliedBulletAtlas;
             }
             float scale = std::min(static_cast<float>(w)/textureW, static_cast<float>(h)/textureH);
             D3D11_VIEWPORT viewport{(w-textureW*scale)/2, (h-textureH*scale)/2, textureW*scale, textureH*scale, 0, 1};
@@ -1434,9 +939,7 @@ private:
             if (bulletFrame.count>0 && bulletStyles.count>0 && texture && !proof) {
                 float bp[8]{viewport.Width,viewport.Height,lutActive?1.f:0.f,static_cast<float>(bulletFrame.count),
                     bulletFrame.cameraX,bulletFrame.cameraY,bulletFrame.cameraScale,static_cast<float>(bulletStyles.count)};
-                context->UpdateSubresource(bulletParams.get(),0,nullptr,bp,0,0);
                 context->UpdateSubresource(bulletStyleParams.get(),0,nullptr,bulletStyles.params,0,0);
-                context->UpdateSubresource(bulletItemParams.get(),0,nullptr,bulletFrame.params,0,0);
                 context->VSSetShader(bulletVs.get(),nullptr,0); context->PSSetShader(bulletPs.get(),nullptr,0);
                 auto bulletBuffer=bulletParams.get();
                 context->VSSetConstantBuffers(1,1,&bulletBuffer); context->PSSetConstantBuffers(1,1,&bulletBuffer);
@@ -1444,7 +947,57 @@ private:
                 context->VSSetConstantBuffers(2,1,&bulletStyleBuffer); context->PSSetConstantBuffers(2,1,&bulletStyleBuffer);
                 context->VSSetConstantBuffers(3,1,&bulletItemBuffer);
                 context->OMSetBlendState(alphaBlend.get(),nullptr,0xffffffff);
-                context->Draw(bulletFrame.count*6,0);
+                auto bulletResource=bulletSrv.get();auto bulletSampler=fxSampler.get();
+                context->PSSetShaderResources(2,1,&bulletResource);context->PSSetSamplers(2,1,&bulletSampler);
+                // The fixed cbuffer upload reads a full batch. The staging buffer is
+                // filled per batch and only the tail of a partial batch is zero padded.
+                float batch[BulletBatchCap*8];
+                for(int offset=0;offset<bulletFrame.count;offset+=BulletBatchCap) {
+                    int count=std::min(BulletBatchCap,bulletFrame.count-offset);bp[3]=static_cast<float>(count);
+                    context->UpdateSubresource(bulletParams.get(),0,nullptr,bp,0,0);
+                    std::memcpy(batch,bulletFrame.params+offset*8,static_cast<size_t>(count)*32);
+                    if(count<BulletBatchCap)std::memset(batch+count*8,0,static_cast<size_t>(BulletBatchCap-count)*32);
+                    context->UpdateSubresource(bulletItemParams.get(),0,nullptr,batch,0,0);
+                    context->Draw(count*6,0);
+                }
+                context->OMSetBlendState(nullptr,nullptr,0xffffffff);
+            }
+            if(rayFrame.count>0 && texture && !proof) {
+                context->VSSetShader(rayVs.get(),nullptr,0);context->PSSetShader(rayPs.get(),nullptr,0);
+                auto rp=rayParams.get(),ri=rayItems.get();
+                context->VSSetConstantBuffers(1,1,&rp);context->PSSetConstantBuffers(1,1,&rp);
+                context->VSSetConstantBuffers(2,1,&ri);context->PSSetConstantBuffers(2,1,&ri);
+                // Bucket source indices by the same style test RVS applies per
+                // pass (RayPassBuckets.h). Each pass uploads only the batches it
+                // actually draws; records keep their original order inside every
+                // pass and an empty pass emits no upload or draw.
+                rayFlame.clear();rayScreen.clear();rayOther.clear();
+                for(int i=0;i<rayFrame.count;i++) {
+                    int bucket=RayStyleBucket(static_cast<int>(rayFrame.params[i*32+15]));
+                    if(bucket==RayBucketFlame) rayFlame.push_back(i);
+                    else if(bucket==RayBucketScreen) rayScreen.push_back(i);
+                    else rayOther.push_back(i);
+                }
+                auto drawRayPass=[&](int pass,const std::vector<int>& bucket,ID3D11BlendState* blend) {
+                    if(bucket.empty()) return;
+                    context->OMSetBlendState(blend,nullptr,0xffffffff);
+                    // The fixed cbuffer upload always reads a full batch; the tail stays zeroed.
+                    float batch[RayBatchCap*32];
+                    for(size_t at=0;at<bucket.size();at+=RayBatchCap) {
+                        int count=static_cast<int>(std::min(bucket.size()-at,static_cast<size_t>(RayBatchCap)));
+                        float params[8]{viewport.Width,viewport.Height,lutActive?1.f:0.f,static_cast<float>(count),
+                            rayFrame.cameraX,rayFrame.cameraY,rayFrame.cameraScale,static_cast<float>(pass)};
+                        for(int k=0;k<count;k++) std::memcpy(batch+k*32,rayFrame.params+bucket[at+k]*32,128);
+                        if(count<RayBatchCap)std::memset(batch+count*32,0,static_cast<size_t>(RayBatchCap-count)*128);
+                        context->UpdateSubresource(rayParams.get(),0,nullptr,params,0,0);
+                        context->UpdateSubresource(rayItems.get(),0,nullptr,batch,0,0);context->Draw(count*6,0);
+                    }
+                };
+                // Pass/blend pairing is unchanged: 0 additive, 1 additive, 2 screen, 3 additive.
+                drawRayPass(0,rayFlame,fxBlend.get());
+                drawRayPass(1,rayOther,lightBlend.get());
+                drawRayPass(2,rayScreen,rayScreenBlend.get());
+                drawRayPass(3,rayFlame,lightBlend.get());
                 context->OMSetBlendState(nullptr,nullptr,0xffffffff);
             }
             drawFx(fxFrame.casings,fxFrame.count-fxFrame.casings);
@@ -1660,13 +1213,16 @@ private:
     AtmosphereState atmosphere_{}; uint64_t atmosphereVersion_=0;
     WeatherStyleState weatherStyle_{}; AtmosphereStyleState atmosphereStyle_{};
     BulletStylesState bulletStyles_{}; BulletFrameState bulletFrame_{}; uint64_t bulletVersion_=0;
+    std::shared_ptr<std::vector<uint8_t>> bulletAtlas_;int bulletAtlasW_=0,bulletAtlasH_=0;
+    uint64_t bulletAtlasVersion_=0;std::atomic<uint64_t> bulletAtlasReady_{0};
+    RayFrameState rayFrame_{};uint64_t rayVersion_=0;
     CombatFxState fxFrame_{};uint64_t fxVersion_=0,fxAtlasVersion_=0;
     int fxAtlasW_=0,fxAtlasH_=0;std::shared_ptr<std::vector<uint8_t>> fxAtlas_;
     std::atomic<uint64_t> fxReadyVersion_{0};
 };
 }
 
-uint32_t __cdecl ProbeGetAbiVersion() { return 9; }
+uint32_t __cdecl ProbeGetAbiVersion() { return 12; }
 int __cdecl ProbeGetOutputSize(void* handle, int32_t* width, int32_t* height) {
     return handle && width && height && static_cast<Capture*>(handle)->OutputSize(*width,*height) ? 1 : 0;
 }
@@ -1749,6 +1305,14 @@ int __cdecl ProbeSetWeatherStyle(void* handle,int type,int count,const float* pa
 }
 int __cdecl ProbeSetBulletStyles(void* handle,const float* styles,int count) {
     return handle && static_cast<Capture*>(handle)->BulletStyles(styles,count) ? 1 : 0;
+}
+int __cdecl ProbeSetBulletAtlas(void* handle,const uint8_t* pixels,int width,int height,int length) {
+    try { return handle && static_cast<Capture*>(handle)->BulletAtlas(pixels,width,height,length) ? 1 : 0; }
+    catch(...) { return 0; }
+}
+int __cdecl ProbeBulletReady(void* handle) { return handle && static_cast<Capture*>(handle)->BulletReady() ? 1 : 0; }
+int __cdecl ProbeSetRayFrame(void* handle,const float* items,int count,float x,float y,float scale) {
+    return handle && static_cast<Capture*>(handle)->RayFrame(items,count,x,y,scale) ? 1 : 0;
 }
 int __cdecl ProbeSetBulletFrame(void* handle,const float* items,int count,float cameraX,float cameraY,float cameraScale) {
     return handle && static_cast<Capture*>(handle)->BulletFrame(items,count,cameraX,cameraY,cameraScale) ? 1 : 0;

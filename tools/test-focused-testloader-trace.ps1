@@ -11,6 +11,7 @@ $productionBlock = $productionBlock.Replace('Join-Path $env:APPDATA', 'Join-Path
 $DomainId = 'blood-sword'
 $runId = 'trace-fixture-current'
 $TimeoutSeconds = 1
+$AsyncBehaviorTimeoutSeconds = 30
 $ExpectedTracePatterns = @('(?m)^BloodSwordLifecycleTest Tests Passed: 56\r?$', '(?m)^BloodSwordLifecycleTest Tests Failed: 0\r?$')
 $startLine = "FocusedTestRunId $DomainId Start: $runId"
 $endLine = "FocusedTestRunId $DomainId Complete: $runId"
@@ -40,6 +41,27 @@ $results += Test-Case 'late-failure' "$startLine`n" ($good.Replace('Passed: 56',
 $results += Test-Case 'foreign-history' "$startLine`n" ($foreign + $good) $true
 $results += Test-Case 'duplicate-local' ("$startLine`n" + $good) '' $false
 $results += Test-Case 'only-complete' "$startLine`n" "$endLine`n" $false
+# Parse and invoke only the production parameter declaration: no Flash, scratch
+# writer, compilation or test-player process is reached by these range checks.
+$parseTokens = $null
+$parseErrors = $null
+$runnerAst = [Management.Automation.Language.Parser]::ParseInput($runnerSource, [ref]$parseTokens, [ref]$parseErrors)
+if ($parseErrors.Count -gt 0) { throw 'Focused runner failed PowerShell parsing' }
+$asyncParameter = @($runnerAst.ParamBlock.Parameters | Where-Object { $_.Name.VariablePath.UserPath -eq 'AsyncBehaviorTimeoutSeconds' })
+if ($asyncParameter.Count -ne 1) { throw 'Async behavior timeout parameter must occur once' }
+$parameterProbe = [scriptblock]::Create('param(' + $asyncParameter[0].Extent.Text + ') $AsyncBehaviorTimeoutSeconds')
+if ((& $parameterProbe) -ne 30) { throw 'Default async behavior wait must remain 30 seconds' }
+$results += @{name='async-default-unchanged'; passed=$true}
+foreach ($value in @(1, 180, 3600)) {
+    if ((& $parameterProbe -AsyncBehaviorTimeoutSeconds $value) -ne $value) { throw "Rejected valid async wait $value" }
+    $results += @{name="async-valid-$value"; passed=$true}
+}
+foreach ($value in @(-1, 0, 3601)) {
+    $rejected = $false
+    try { $null = & $parameterProbe -AsyncBehaviorTimeoutSeconds $value } catch { $rejected = $true }
+    if (-not $rejected) { throw "Accepted out-of-range async wait $value" }
+    $results += @{name="async-invalid-$value"; passed=$true}
+}
 $report = @{passed=$true; cases=$results; count=$results.Count}
 $report | ConvertTo-Json -Depth 6 | Set-Content -LiteralPath (Join-Path $fixtureBase 'trace-wait-check.json') -Encoding UTF8
 Write-Host ('Focused trace wait: {0}/{0} fixtures passed' -f $results.Count)

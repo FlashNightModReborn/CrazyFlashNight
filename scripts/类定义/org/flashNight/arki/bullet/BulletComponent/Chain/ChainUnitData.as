@@ -11,6 +11,15 @@ class org.flashNight.arki.bullet.BulletComponent.Chain.ChainUnitData {
     // ---------- 通用（全部联弹类型） ----------
     // 池化的视觉 MC（共享层子剪辑）；回收时置 null 不持有已死引用
     public var mc:MovieClip;
+    public var nativeId:Number;
+    public var nativeSent:Boolean;
+    public var nativeLive:Boolean;
+    public var aggregateRun:Number;
+    public var aggregateOffset:Number;
+    public var aggregateRank:Number;
+    public var aggregateIndex:Number;
+    public var aggregatePrev:org.flashNight.arki.bullet.BulletComponent.Chain.ChainUnitData;
+    public var aggregateNext:org.flashNight.arki.bullet.BulletComponent.Chain.ChainUnitData;
     // 子弹本地坐标
     public var x:Number;
     public var y:Number;

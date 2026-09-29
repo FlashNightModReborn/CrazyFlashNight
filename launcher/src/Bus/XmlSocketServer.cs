@@ -498,6 +498,13 @@ namespace CF7Launcher.Bus
             return separator<0?message:message.Substring(0,separator);
         }
 
+        internal static string SplitFrameSection(string message, char separator, out string payload)
+        {
+            int at = message.IndexOf(separator, 1);
+            payload = at < 0 ? null : message.Substring(at + 1);
+            return at < 0 ? message : message.Substring(0, at);
+        }
+
         private void HandleCurrentMessage(string message, int connectionGen)
         {
 
@@ -513,7 +520,9 @@ namespace CF7Launcher.Bus
                     if (_frameTask == null) return;
 
                     // 1) 从尾到头拆开装饰事件与子弹快照，保持旧帧段不变。
-                    string fxFree=SplitFrameCombatFxSection(message,out string combatFxPayload);
+                    string chainFree=SplitFrameSection(message,'\x08',out string chainVisualPayload);
+                    string rayFree=SplitFrameSection(chainFree,'\x07',out string rayVisualPayload);
+                    string fxFree=SplitFrameCombatFxSection(rayFree,out string combatFxPayload);
                     string visualFree = SplitFrameVisualSection(fxFree, out string bulletVisualPayload);
 
                     // 2) 提取 \x04 输入数据段
@@ -560,7 +569,8 @@ namespace CF7Launcher.Bus
                         hn = "";
                         fps = "";
                     }
-                    _frameTask.HandleRaw(cam, hn, fps, inputPayload, bulletVisualPayload, connectionGen,combatFxPayload);
+                    _frameTask.HandleRaw(cam, hn, fps, inputPayload, bulletVisualPayload, connectionGen,combatFxPayload,
+                        rayVisualPayload,chainVisualPayload);
                     // UI 状态段透传到 WebView2（与帧渲染同步）
                     if (uiState != null && uiState.Length > 0)
                     {
@@ -704,6 +714,16 @@ namespace CF7Launcher.Bus
                     // 零解析，整条 payload 转发给 WebView2 层
                     if (_uiDataHandler != null)
                         _uiDataHandler(message.Substring(1));
+                    return;
+                }
+
+                if (prefix == 'V')
+                {
+                    PerfTrace.Counter("socket.fastlane.V");
+                    // 受控视觉故障上报：V{channel}|{reason}。消息本身已在 HandleMessage
+                    // 完成当前连接代校验；有界字段校验在 FrameTask.HandleVisualFault。
+                    if (_frameTask != null)
+                        _frameTask.HandleVisualFault(message.Substring(1));
                     return;
                 }
 

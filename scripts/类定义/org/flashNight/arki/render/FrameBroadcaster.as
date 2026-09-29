@@ -158,6 +158,11 @@ class org.flashNight.arki.render.FrameBroadcaster {
             msg += "\x06" + _combatFxPayload;
             _combatFxPayload = null;
         }
+        // Ordered visual events are consumed exactly once after all game updates.
+        var rayPayload:String = org.flashNight.arki.render.RayVisualBridge.flush();
+        if (rayPayload != null) msg += "\x07" + rayPayload;
+        var chainPayload:String = org.flashNight.arki.render.ChainVisualBridge.flush();
+        if (chainPayload != null) msg += "\x08" + chainPayload;
         // SFX 优先发送：音效对延迟敏感，必须在 F 消息（含伤害 reducer/绘制）之前到达 C# 端。
         org.flashNight.arki.audio.AudioBridge.flush();
 
@@ -252,6 +257,8 @@ class org.flashNight.arki.render.FrameBroadcaster {
         _bulletVisualPayload = null;
         _combatFxPayload = null;
         org.flashNight.arki.render.BulletVisualProbe.resetScene();
+        org.flashNight.arki.render.RayVisualBridge.resetScene();
+        org.flashNight.arki.render.ChainVisualBridge.resetScene();
         // 注意：不清空 _uiPayload，场景切换时 UI 快照需要保留到下一帧 send()
         // 清空 K 前缀接收状态
         _cmdId = 0;

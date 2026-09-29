@@ -6,6 +6,7 @@ if not defined CF7_WORLD_COMPOSITOR_SOURCE_DIR exit /b 1
 if not defined CF7_VCVARS64 exit /b 1
 if not defined CF7_MSVC_TOOLS_VERSION exit /b 1
 if not defined CF7_WINDOWS_SDK_VERSION exit /b 1
+if not defined CF7_D3DCOMPILER_DLL exit /b 1
 if defined CF7_VSWHERE_DIR set "PATH=%CF7_VSWHERE_DIR%;%PATH%"
 call "%CF7_VCVARS64%" %CF7_WINDOWS_SDK_VERSION% -vcvars_ver=%CF7_MSVC_TOOLS_VERSION% >nul
 if errorlevel 1 exit /b 1
@@ -14,10 +15,16 @@ if errorlevel 1 exit /b 1
 pushd "%CF7_WORLD_COMPOSITOR_SOURCE_DIR%"
 if errorlevel 1 exit /b 1
 set COMMON=/nologo /EHsc /O2 /W4 /WX /MT /utf-8 /DUNICODE /D_UNICODE /experimental:deterministic "/pathmap:%CF7_WORLD_COMPOSITOR_SOURCE_DIR%=C:\cf7-world-src" "/pathmap:%CF7_NATIVE_OUTPUT_DIR%=C:\cf7-world-out"
+rem Compile HLSL once while building. Runtime loads embedded bytecode and keeps
+rem the real 10-second fresh-frame deadline independent of shader optimization.
+cl.exe %COMMON% /std:c++17 ShaderBake.cpp /Fo"%CF7_NATIVE_OUTPUT_DIR%\ShaderBake.obj" /Fe"%CF7_NATIVE_OUTPUT_DIR%\ShaderBake.exe" /link /INCREMENTAL:NO /Brepro
+if errorlevel 1 goto :failed
+"%CF7_NATIVE_OUTPUT_DIR%\ShaderBake.exe" "%CF7_D3DCOMPILER_DLL%" "%CF7_NATIVE_OUTPUT_DIR%\CompositorShaders.g.h"
+if errorlevel 1 goto :failed
 rem Shared scene compiled separately: one /Fo cannot name multiple sources.
 cl.exe %COMMON% /std:c++20 /c CompositionScene.cpp /Fo"%CF7_NATIVE_OUTPUT_DIR%\CompositionScene.obj"
 if errorlevel 1 goto :failed
-cl.exe %COMMON% /std:c++20 /LD Compositor.cpp "%CF7_NATIVE_OUTPUT_DIR%\CompositionScene.obj" /Fo"%CF7_NATIVE_OUTPUT_DIR%\Compositor.obj" /Fe"%CF7_NATIVE_OUTPUT_DIR%\FlashCompositorNative.dll" /link /INCREMENTAL:NO /Brepro dcomp.lib d3d11.lib dxgi.lib d3dcompiler.lib windowsapp.lib user32.lib
+cl.exe %COMMON% /std:c++20 /I"%CF7_NATIVE_OUTPUT_DIR%" /LD Compositor.cpp "%CF7_NATIVE_OUTPUT_DIR%\CompositionScene.obj" /Fo"%CF7_NATIVE_OUTPUT_DIR%\Compositor.obj" /Fe"%CF7_NATIVE_OUTPUT_DIR%\FlashCompositorNative.dll" /link /INCREMENTAL:NO /Brepro dcomp.lib d3d11.lib dxgi.lib windowsapp.lib user32.lib
 if errorlevel 1 goto :failed
 cl.exe %COMMON% /std:c++17 /LD InputBridge.cpp /Fo"%CF7_NATIVE_OUTPUT_DIR%\InputBridge.obj" /Fe"%CF7_NATIVE_OUTPUT_DIR%\FlashInputBridge.dll" /link /INCREMENTAL:NO /Brepro user32.lib gdi32.lib dwmapi.lib
 if errorlevel 1 goto :failed

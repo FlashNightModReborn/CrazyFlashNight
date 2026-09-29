@@ -403,6 +403,14 @@ class org.flashNight.arki.bullet.BulletComponent.Config.TeslaRayConfig {
     /** 淡出帧数（alpha从100渐变到0的时间） */
     public var fadeOutDuration:Number;
 
+    // 仅环境照明覆盖；不参与射线命中、强度、预算或运动。
+    public var lightProfile:String;
+    public var lightEnergyScale:Number;
+    public var lightWidthScale:Number;
+    public var lightColor:Number;
+    public var lightFadeTicks:Number;
+
+
     // ========== 默认值常量 ==========
 
     // 基础物理参数默认值
@@ -523,6 +531,7 @@ class org.flashNight.arki.bullet.BulletComponent.Config.TeslaRayConfig {
     private static var P_BOOL:Number  = 2;  // String(v).toLowerCase() == "true"
     private static var P_PAL:Number   = 3;  // parsePalette()
     private static var P_STR:Number   = 4;  // String(v)
+    private static var P_LIGHT_COLOR:Number = 5; // 完整校验光色，拒绝部分十六进制解析
 
     /** 字段映射表：{k:字段名, p:解析器类型}。新增字段只需在此添加一行。 */
     private static var FIELD_MAP:Array = null;
@@ -613,7 +622,13 @@ class org.flashNight.arki.bullet.BulletComponent.Config.TeslaRayConfig {
             {k:"flameReuseMaxOriginDist", p:P_NUM},
             {k:"tongueCount",        p:P_NUM},
             {k:"tipBloomScale",      p:P_NUM},
-            {k:"smokeColor",         p:P_COLOR}
+            {k:"smokeColor",         p:P_COLOR},
+            // 独立照明配置，只由表现桥消费。
+            {k:"lightProfile",       p:P_STR},
+            {k:"lightEnergyScale",   p:P_NUM},
+            {k:"lightWidthScale",    p:P_NUM},
+            {k:"lightColor",         p:P_LIGHT_COLOR},
+            {k:"lightFadeTicks",     p:P_NUM}
         ];
     }
 
@@ -626,6 +641,7 @@ class org.flashNight.arki.bullet.BulletComponent.Config.TeslaRayConfig {
             case 2:  return (String(value).toLowerCase() == "true");        // P_BOOL
             case 3:  return parsePalette(value);                            // P_PAL
             case 4:  return String(value);                                   // P_STR
+            case 5:  return parseLightColor(value);                          // P_LIGHT_COLOR
             default: return Number(value);                                  // P_NUM
         }
     }
@@ -653,6 +669,11 @@ class org.flashNight.arki.bullet.BulletComponent.Config.TeslaRayConfig {
         thickness = DEFAULT_THICKNESS;
         visualDuration = DEFAULT_VISUAL_DURATION;
         fadeOutDuration = DEFAULT_FADE_OUT_DURATION;
+        lightProfile = "auto";
+        lightEnergyScale = 1;
+        lightWidthScale = 1;
+        lightColor = -1;
+        lightFadeTicks = -1;
 
         // Tesla 专用
         branchCount = DEFAULT_BRANCH_COUNT;
@@ -862,8 +883,15 @@ class org.flashNight.arki.bullet.BulletComponent.Config.TeslaRayConfig {
         for (var key:String in vfxParamsNode) {
             var value = vfxParamsNode[key];
 
+            // 照明覆盖不可静默吞掉非法值；保留 NaN 交给桥的准入检查拒绝。
+            if (key == "lightProfile") {
+                result[key] = String(value);
+            } else if (key == "lightColor") {
+                result[key] = parseLightColor(value);
+            } else if (key == "lightEnergyScale" || key == "lightWidthScale" || key == "lightFadeTicks") {
+                result[key] = Number(value);
             // 颜色参数
-            if (key == "palette") {
+            } else if (key == "palette") {
                 result[key] = parsePalette(value);
             } else if (key.indexOf("Color") >= 0) {
                 result[key] = parseColor(value);
@@ -887,6 +915,11 @@ class org.flashNight.arki.bullet.BulletComponent.Config.TeslaRayConfig {
      */
     private static function applyVfxParams(config:TeslaRayConfig, params:Object):Void {
         for (var key:String in params) {
+            if (key == "lightProfile" || key == "lightEnergyScale" || key == "lightWidthScale"
+                || key == "lightColor" || key == "lightFadeTicks") {
+                config[key] = params[key];
+                continue;
+            }
             if (config[key] != undefined) {
                 var currentValue = config[key];
                 var nextValue = params[key];
@@ -967,6 +1000,21 @@ class org.flashNight.arki.bullet.BulletComponent.Config.TeslaRayConfig {
             return parseInt("0x" + str.substr(1), 16);
         }
         return Number(value);
+    }
+
+    /** 灯光颜色允许 -1 自动取色，或完整 RGB 数值/十六进制文本。 */
+    private static function parseLightColor(value):Number {
+        if (typeof(value) == "number") return Number(value);
+        var text:String = normalizeToken(String(value));
+        var hexadecimal:Boolean = false;
+        if (text.substr(0, 2) == "0x") { text = text.substr(2);hexadecimal = true; }
+        else if (text.charAt(0) == "#") { text = text.substr(1);hexadecimal = true; }
+        if (!hexadecimal) return Number(text);
+        if (text.length < 1 || text.length > 6) return Number(undefined);
+        var digits:String = "0123456789abcdef";
+        for (var i:Number = 0; i < text.length; i++)
+            if (digits.indexOf(text.charAt(i)) < 0) return Number(undefined);
+        return parseInt(text, 16);
     }
 
     /**

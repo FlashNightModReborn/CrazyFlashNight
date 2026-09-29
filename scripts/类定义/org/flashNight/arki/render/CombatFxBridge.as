@@ -80,9 +80,10 @@ class org.flashNight.arki.render.CombatFxBridge {
 
     public static function tryShell(linkage:String, x:Number, y:Number, scale:Number, count:Number, ground:Number):Boolean {
         var seed:Number = VisualRandom.eventSeed(2);
-        if (!enabled) return false;
         var style:Object = byName[linkage];
         if (style == undefined || style.kind != "casing") return false;
+        // 已接管的纯装饰在暂停/断连时丢弃，不重新分配 AS2 MC。
+        if (!enabled) return true;
         if (_root.暂停 || !visible(x, y)) return true;
         if (!isFinite(x + y + scale + count + ground) || count < 1 || Math.abs(scale) > 1000 || scale == 0) return true;
         if (spawns.length >= 32) { dropped++; return true; }
@@ -94,9 +95,10 @@ class org.flashNight.arki.render.CombatFxBridge {
 
     public static function tryMuzzle(linkage:String, x:Number, y:Number, scale:Number, rotation:Number):Boolean {
         var seed:Number = VisualRandom.eventSeed(1);
-        if (!enabled) return false;
         var style:Object = byName[linkage];
         if (style == undefined || style.kind != "muzzle") return false;
+        // 已接管的纯装饰在暂停/断连时丢弃，不重新分配 AS2 MC。
+        if (!enabled) return true;
         if (_root.暂停 || !_root.是否视觉元素 || !visible(x, y)) return true;
         if (!isFinite(rotation)) rotation = 0;
         if (!isFinite(x + y + scale) || Math.abs(scale) > 1000 || scale == 0) return true;
@@ -111,9 +113,10 @@ class org.flashNight.arki.render.CombatFxBridge {
     // Only audited fire-and-forget hit callers opt in; legacy callers may still need a MovieClip.
     public static function tryImpact(linkage:String, x:Number, y:Number, scale:Number, forceTrigger:Boolean):Boolean {
         var seed:Number = VisualRandom.eventSeed(3);
-        if (!enabled) return false;
         var style:Object = byName[linkage];
         if (style == undefined || style.kind != "impact") return false;
+        // 已接管的纯装饰在暂停/断连时丢弃，不重新分配 AS2 MC。
+        if (!enabled) return true;
         if (_root.暂停 || (!_root.是否视觉元素 && !forceTrigger) || !visible(x, y)) return true;
         if (!isFinite(x + y + scale) || Math.abs(scale) > 1000 || scale == 0) return true;
         if (style.skipOriginYZero === true && y == 0) return true;

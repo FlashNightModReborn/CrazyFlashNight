@@ -14,7 +14,11 @@
 // light-v2（2026-09-28）：ABI 9 灯记录扩为 16 floats——前 12 项同上，追加世界 nearXY、
 // nearRadius(0..320)、nearEnergy(0..2)；radius/energy 必须同零或同正，仅 kind 1 锥光可携带
 // 同色近身补光，kind 0/2 末 4 项必须全 0。
-// 当前配对 ABI 9 将最多 16 个局部光（含常驻锥光/定宽束）与装饰快照原子提交；世界/天气共享低分辨率光场。
+// ABI 10 追加穿刺精灵图集与射线；保留 ABI 9 的局部光合同，世界/天气共享低分辨率光场。
+// ABI 12 保留记录尺寸，Tesla style 0 的槽 27 携带逐发年龄，持续通道相位独立延续。
+// ABI 11 的 Bagua style 10 用单条记录携带结构颜色/连杆和持有期；
+// [13]=visualDuration,[14]=spineRGB24,[17]=nDiagonals,[18]=linkerStride,[19]=mixedRGB24。
+// 旧 style 42 不再产生；此语义变化要求与 Host 配套，拒绝旧 ABI 10 混用。
 struct ProbeStats {
     uint32_t size, state;
     int32_t error;
@@ -66,12 +70,16 @@ __declspec(dllexport) int __cdecl ProbeSetAtmosphere(void* handle, int preset, c
 // Authored atmosphere catalog: primary RGB/base, secondary RGB/edge,
 // motion/rate/frequency XY, focus XY/falloff/mix. Flash has no draw fallback.
 __declspec(dllexport) int __cdecl ProbeSetAtmosphereStyle(void* handle, int family, const float* params);
-// ABI 5 bullet candidates. styles[16*count]: triangle v0.xy,v1.xy,v2.xy,
-// fill RGB, glow RGB, blur X/Y (style units), hasGlow 0/1, reserved 0.
+// ABI 10: styles[32*count]: triangle v0.xy,v1.xy,v2.xy, fill RGB, glow RGB,
+// blur XY, hasGlow, kind(0 triangle/1 sprite), offsetXY/sizeXY, UV rect, 8 reserved zeros.
 // count<=16; styles==null only with count 0, which clears.
 __declspec(dllexport) int __cdecl ProbeSetBulletStyles(void* handle, const float* styles, int count);
+__declspec(dllexport) int __cdecl ProbeSetBulletAtlas(void* handle,const uint8_t* pixels,int width,int height,int length);
+__declspec(dllexport) int __cdecl ProbeBulletReady(void* handle);
+__declspec(dllexport) int __cdecl ProbeSetRayFrame(void* handle,const float* items,int count,float cameraX,float cameraY,float cameraScale);
 // items[8*count]: style index, world x/y, rotation deg, scale %, alpha %,
-// reserved 0. count<=256; count 0 clears. stage = camera + world*cameraScale.
+// reserved 0. count<=16384; count 0 clears. GPU upload batches remain <=1024.
+// stage = camera + world*cameraScale. Ray frames use 32-float records, <=4096, batches <=256.
 __declspec(dllexport) int __cdecl ProbeSetBulletFrame(void* handle, const float* items, int count, float cameraX, float cameraY, float cameraScale);
 // Atlas upload is one-time per resource generation; ready confirms GPU creation.
 __declspec(dllexport) int __cdecl ProbeSetCombatFxAtlas(void* handle,const uint8_t* pixels,int width,int height,int length);

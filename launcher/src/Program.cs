@@ -1493,8 +1493,8 @@ class Program
         }
         HitNumberOverlay hnOverlay = new HitNumberOverlay(form, form.FlashHostPanel);
         FrameTask frameTask = new FrameTask(v8Runtime, hnOverlay);
-        // XFL-derived first-batch registry. A stale/missing resource keeps all bullets
-        // in Flash; this stage only measures a bounded visual shadow packet.
+        // Source-derived geometry/sprite registry. Stale or missing resources keep
+        // display ownership in Flash until the paired native resources are ready.
         CF7Launcher.Guardian.WorldCompositor.BulletVisualCatalog bulletVisualCatalog = null;
         try
         {
@@ -1508,6 +1508,8 @@ class Program
                 + " message=" + error.Message);
         }
         frameTask.ConfigureBulletVisualShadow(bulletVisualCatalog);
+        frameTask.ConfigureProjectileVisuals(bulletVisualCatalog);
+        socketServer.OnClientDisconnectedForGeneration += frameTask.ResetProjectileVisualsForGeneration;
         CF7Launcher.Guardian.WorldCompositor.CombatFxCatalog combatFxCatalog=null;
         try {
             combatFxCatalog=CF7Launcher.Guardian.WorldCompositor.CombatFxCatalog.Load(projectRoot);
@@ -1516,8 +1518,35 @@ class Program
         }
         catch(Exception error) { LogManager.Log("event=combat_fx_catalog_unavailable "+error.Message); }
         frameTask.ConfigureCombatFx(combatFxCatalog);
+        // The migrated ray channel requires its lighting catalog. Absence uses
+        // the existing visible startup-failure path, never a silent
+        // lightingVersion=0 downgrade.
+        CF7Launcher.Guardian.WorldCompositor.RayLightingCatalog rayLightingCatalog;
+        try {
+            rayLightingCatalog=CF7Launcher.Guardian.WorldCompositor.RayLightingCatalog.Load(projectRoot);
+            LogManager.Log("event=ray_lighting_catalog_loaded sha256="+rayLightingCatalog.Sha256);
+        }
+        catch(Exception error) {
+            LogManager.Log("event=ray_lighting_catalog_unavailable "+error.Message);
+            StartupFailureReporter.ReportTerminalFailure(
+                form,
+                projectRoot,
+                "ray_lighting_catalog_unavailable",
+                "CF7-LAUNCH-RAY-LIGHTING-MISSING",
+                "射线灯光目录不可用",
+                error.Message,
+                "请通过 Steam 验证游戏文件完整性，确认配套构建完整后重新启动游戏。",
+                null,
+                null,
+                null);
+            PerfTrace.Mark("guardian.exit", "ray_lighting_catalog_unavailable");
+            PerfTrace.Shutdown();
+            return 1;
+        }
+        frameTask.ConfigureRayLighting(rayLightingCatalog);
         socketServer.OnClientDisconnectedForGeneration += frameTask.ResetBulletVisualShadowForGeneration;
         Func<bool,bool> publishBulletCapability = null;
+        CF7Launcher.Guardian.WorldCompositor.BulletCapabilityPublisher bulletCapabilityPublisher = null;
         if (bulletVisualCatalog != null)
         {
             var capStyles = new List<object>();
@@ -1526,25 +1555,27 @@ class Program
                     gunChainUnitLinkage = style.GunChainUnitLinkage });
             string MakeBulletCaps(string mode) => JsonSerializer.Serialize(new {
                 task = "bullet_visual_caps", version = 1, mode,
+                maxOrdinary = CF7Launcher.Guardian.WorldCompositor.BulletVisualFrame.OrdinaryLimit,
+                maxTotal = CF7Launcher.Guardian.WorldCompositor.BulletVisualFrame.TotalLimit,
                 digest = bulletVisualCatalog.Sha256,
                 gunChainPrefixes = bulletVisualCatalog.GunChainPrefixes,
                 styles = capStyles
             }) + "\0";
             string shadowCaps = MakeBulletCaps("shadow");
             string nativeCaps = MakeBulletCaps("native");
-            int bulletCapsGeneration=0;
+            string MakeChainCaps(string mode) => JsonSerializer.Serialize(new {
+                task="chain_visual_caps",version=1,mode,maxUnits=CF7Launcher.Guardian.WorldCompositor.ChainVisualFrame.MaxUnits,
+                digest=bulletVisualCatalog.Sha256,gunChainPrefixes=bulletVisualCatalog.GunChainPrefixes,styles=capStyles
+            })+"\0";
+            string chainOffCaps=MakeChainCaps("shadow"),chainOnCaps=MakeChainCaps("native");
+            bulletCapabilityPublisher = new CF7Launcher.Guardian.WorldCompositor.BulletCapabilityPublisher(
+                nativeCaps, shadowCaps, chainOnCaps, chainOffCaps, socketServer.TrySendIfGen);
             Action<int> publishBulletCaps = generation => {
-                Volatile.Write(ref bulletCapsGeneration,generation);
-                if (!socketServer.TrySendIfGen(shadowCaps, generation))
+                if (!bulletCapabilityPublisher.Ready(generation))
                     LogManager.Log("event=bullet_visual_caps_send_failed generation=" + generation);
             };
             socketServer.OnClientReadyForGeneration += publishBulletCaps;
-            socketServer.OnClientDisconnectedForGeneration += generation =>
-                Interlocked.CompareExchange(ref bulletCapsGeneration,0,generation);
-            publishBulletCapability = available => {
-                int generation=Volatile.Read(ref bulletCapsGeneration);
-                return generation>0 && socketServer.TrySendIfGen(available ? nativeCaps : shadowCaps,generation);
-            };
+            publishBulletCapability = bulletCapabilityPublisher.Publish;
             if (socketServer.TryGetReadyGeneration(out int readyBulletGeneration))
                 publishBulletCaps(readyBulletGeneration);
         }
@@ -2005,9 +2036,40 @@ class Program
         frameTask.WeatherCameraObserved=worldCompositor.ObserveWeatherCamera;
         frameTask.BulletVisualObserved=worldCompositor.ObserveBulletFrame;
         frameTask.BulletVisualRejected=worldCompositor.RejectBulletFrame;
+        frameTask.ChainVisualRejected=worldCompositor.RejectBulletFrame;
         frameTask.BulletVisualCleared=worldCompositor.ClearBulletFrame;
-        socketServer.OnClientDisconnectedForGeneration += generation => worldCompositor.BulletConnectionLost();
+        socketServer.OnClientDisconnectedForGeneration += generation => {
+            if (bulletCapabilityPublisher?.Disconnected(generation) == true)
+                worldCompositor.BulletConnectionLost();
+        };
         worldCompositor.BulletCapabilityChanged=publishBulletCapability;
+        worldCompositor.BulletInvalidated=frameTask.InvalidateChainVisuals;
+        frameTask.RayVisualObserved=worldCompositor.ObserveRayFrame;
+        frameTask.RayVisualRejected=worldCompositor.RejectRayFrame;
+        frameTask.VisualFaultReported=worldCompositor.As2VisualFault;
+        frameTask.RayVisualCleared=worldCompositor.ClearRayFrame;
+        worldCompositor.RayInvalidated=frameTask.InvalidateRayVisuals;
+        int rayCapsGeneration=0;
+        var rayStyles=new List<object>();
+        string[] rayStyleNames=CF7Launcher.Guardian.WorldCompositor.RayVisualCatalog.Styles;
+        for(int i=0;i<rayStyleNames.Length;i++) rayStyles.Add(new { index=i,id=rayStyleNames[i] });
+        bool PublishRayCaps(bool available,int generation) => socketServer.TrySendIfGen(JsonSerializer.Serialize(new {
+            task="ray_visual_caps",version=1,generation,native=available,styles=rayStyles,
+            maxArcs=CF7Launcher.Guardian.WorldCompositor.RayVisualCatalog.ArcLimit,
+            drawLimit=CF7Launcher.Guardian.WorldCompositor.RayVisualCatalog.DrawLimit,
+            configLimit=CF7Launcher.Guardian.WorldCompositor.RayVisualCatalog.ConfigLimit,
+            channelVersion=CF7Launcher.Guardian.WorldCompositor.RayVisualCatalog.ChannelVersion,
+            lightingVersion=CF7Launcher.Guardian.WorldCompositor.RayVisualCatalog.LightingVersion
+        })+"\0",generation);
+        Action<int> readyRay=generation=> { Volatile.Write(ref rayCapsGeneration,generation);PublishRayCaps(false,generation); };
+        socketServer.OnClientReadyForGeneration+=readyRay;
+        socketServer.OnClientDisconnectedForGeneration+=generation=> {
+            if(Interlocked.CompareExchange(ref rayCapsGeneration,0,generation)==generation) worldCompositor.RayConnectionLost();
+        };
+        worldCompositor.RayCapabilityChanged=available=> {
+            int generation=Volatile.Read(ref rayCapsGeneration);return generation>0 && PublishRayCaps(available,generation);
+        };
+        if(socketServer.TryGetReadyGeneration(out int readyRayGeneration)) readyRay(readyRayGeneration);
         frameTask.CombatFxObserved=worldCompositor.ObserveCombatFx;
         frameTask.CombatFxRejected=worldCompositor.RejectCombatFx;
         frameTask.CombatFxCleared=worldCompositor.ClearCombatFx;

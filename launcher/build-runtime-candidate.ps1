@@ -1,4 +1,4 @@
-param(
+﻿param(
     [string]$BuilderId = $env:CF7_RUNTIME_BUILDER_ID,
     [string]$CandidateRoot,
     [switch]$ForceReplace
@@ -392,7 +392,7 @@ try {
 
     Write-Host 'Build deterministic world compositor and Flash input bridge...' -ForegroundColor Yellow
     $canonicalWorldSource = Join-Path $jobTemp 'world-compositor-source'
-    foreach ($worldInput in @('Compositor.cpp','Compositor.h','CompositionScene.cpp','CompositionScene.h','InputBridge.cpp','InputBridge.h','InputBroker.cpp','InputTrace.h')) {
+    foreach ($worldInput in @('Compositor.cpp','Compositor.h','CompositionScene.cpp','CompositionScene.h','InputBridge.cpp','InputBridge.h','InputBroker.cpp','InputTrace.h','ShaderSources.h','ShaderBake.cpp','RayShader.h','RayStyleShader.h','RayFlameShader.h','RayPassBuckets.h')) {
         Copy-Cf7CanonicalLfFile `
             -Source (Join-Path $launcherDir ('native\world-compositor\' + $worldInput)) `
             -Destination (Join-Path $canonicalWorldSource $worldInput)

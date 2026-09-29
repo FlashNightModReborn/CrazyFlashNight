@@ -34,6 +34,9 @@ namespace CF7Launcher.Guardian.WorldCompositor
         private readonly AtmosphereStyleDelegate _atmosphereStyle;
         private readonly BulletStylesDelegate _bulletStyles;
         private readonly BulletFrameDelegate _bulletFrame;
+        private readonly CombatFxAtlasDelegate _bulletAtlas;
+        private readonly CombatFxReadyDelegate _bulletReady;
+        private readonly BulletFrameDelegate _rayFrame;
         private readonly CombatFxAtlasDelegate _combatFxAtlas;
         private readonly CombatFxReadyDelegate _combatFxReady;
         private readonly CombatFxFrameDelegate _combatFxFrame;
@@ -43,7 +46,7 @@ namespace CF7Launcher.Guardian.WorldCompositor
             try
             {
                 _module = NativeLibrary.Load(Path.GetFullPath(modulePath));
-                if (Export<VersionDelegate>("ProbeGetAbiVersion")() != 9) throw new InvalidOperationException("Compositor ABI version mismatch");
+                if (Export<VersionDelegate>("ProbeGetAbiVersion")() != 12) throw new InvalidOperationException("Compositor ABI version mismatch");
                 _stop = Export<StopDelegate>("ProbeStop"); _read = Export<ReadDelegate>("ProbeGetStats");
                 _captureSize=Export<CaptureSizeDelegate>("ProbeGetCaptureSize"); // reject an old unpaired DLL
                 _crop = Export<CropDelegate>("ProbeSetCrop"); _mode = Export<ModeDelegate>("ProbeSetMode");
@@ -60,6 +63,9 @@ namespace CF7Launcher.Guardian.WorldCompositor
                 _atmosphereStyle=Export<AtmosphereStyleDelegate>("ProbeSetAtmosphereStyle");
                 _bulletStyles=Export<BulletStylesDelegate>("ProbeSetBulletStyles");
                 _bulletFrame=Export<BulletFrameDelegate>("ProbeSetBulletFrame");
+                _bulletAtlas=Export<CombatFxAtlasDelegate>("ProbeSetBulletAtlas");
+                _bulletReady=Export<CombatFxReadyDelegate>("ProbeBulletReady");
+                _rayFrame=Export<BulletFrameDelegate>("ProbeSetRayFrame");
                 _combatFxAtlas=Export<CombatFxAtlasDelegate>("ProbeSetCombatFxAtlas");
                 _combatFxReady=Export<CombatFxReadyDelegate>("ProbeCombatFxReady");
                 _combatFxFrame=Export<CombatFxFrameDelegate>("ProbeSetCombatFxFrame");
@@ -80,6 +86,8 @@ namespace CF7Launcher.Guardian.WorldCompositor
             // C# 侧合成码（不进原生 ABI）：合成器未呈现或世界视口裁剪未建立，
             // 此时原生回读会退化为整窗内容（含标题栏），不允许当作世界帧抓出。
             GrabNoWorldViewport = -7;
+        // 与 Compositor.cpp 的 BulletItemCap/RayItemCap 镜像的硬上限；配对能力合同另验。
+        internal const int NativeBulletItemLimit = 16384, NativeRayItemLimit = 4096;
         // Dev-only LUT lab：buffer=null 为尺寸查询（返回 GrabBufferTooSmall 并给出宽高）。
         internal int GrabLatestFrame(byte[] buffer, out int width, out int height)
             => GrabFrame(_grab,buffer,out width,out height);
@@ -168,12 +176,12 @@ namespace CF7Launcher.Guardian.WorldCompositor
         internal void BulletStyles(BulletVisualCatalog catalog)
         {
             if (_session == IntPtr.Zero || catalog == null) throw new InvalidOperationException("Bullet catalog unavailable");
-            float[] values = new float[catalog.Styles.Count * 16];
+            float[] values = new float[catalog.Styles.Count * 32];
             for (int i = 0; i < catalog.Styles.Count; i++)
             {
                 BulletVisualStyle style = catalog.Styles[i];
-                int at = i * 16;
-                Array.Copy(style.VerticesPx, 0, values, at, 6);
+                int at = i * 32;
+                if(!style.IsSprite) Array.Copy(style.VerticesPx, 0, values, at, 6);
                 values[at + 6] = ((style.FillRgb >> 16) & 255) / 255f;
                 values[at + 7] = ((style.FillRgb >> 8) & 255) / 255f;
                 values[at + 8] = (style.FillRgb & 255) / 255f;
@@ -183,14 +191,36 @@ namespace CF7Launcher.Guardian.WorldCompositor
                 values[at + 12] = style.GlowX;
                 values[at + 13] = style.GlowY;
                 values[at + 14] = style.GlowX > 0 || style.GlowY > 0 ? 1 : 0;
+                if(style.IsSprite) {
+                    CombatFxImage sprite=style.Sprite;values[at+15]=1;
+                    values[at+16]=sprite.OffsetX;values[at+17]=sprite.OffsetY;
+                    values[at+18]=sprite.Width;values[at+19]=sprite.Height;
+                    values[at+20]=sprite.U0;values[at+21]=sprite.V0;values[at+22]=sprite.U1;values[at+23]=sprite.V1;
+                }
             }
             if (_bulletStyles(_session, values, catalog.Styles.Count) != 1)
                 throw new InvalidOperationException("Native bullet styles rejected");
+            if(catalog.AtlasBgraPremultiplied!=null)
+                BulletAtlas(catalog.AtlasBgraPremultiplied,catalog.AtlasWidth,catalog.AtlasHeight);
         }
+        internal void BulletAtlas(byte[] pixels,int width,int height)
+        {
+            if(_session==IntPtr.Zero || pixels==null
+                || _bulletAtlas(_session,pixels,width,height,pixels.Length)!=1)
+                throw new InvalidOperationException("Native bullet atlas rejected");
+        }
+        internal bool BulletResourcesReady => _session!=IntPtr.Zero && _bulletReady(_session)==1;
+        internal void RayFrame(RayVisualDrawFrame frame,float x,float y,float scale) {
+            if(_session==IntPtr.Zero || frame==null || frame.Count<0 || frame.Count>NativeRayItemLimit
+                || frame.Data.Length<frame.Count*32 || _rayFrame(_session,frame.Data,frame.Count,x,y,scale)!=1)
+                throw new InvalidOperationException("Native ray frame rejected");
+        }
+        internal void ClearRayFrame() { if(_session!=IntPtr.Zero) _rayFrame(_session,null,0,0,0,1); }
         internal void BulletFrame(BulletVisualFrame frame, float cameraX, float cameraY, float cameraScale)
         {
             if (_session == IntPtr.Zero || frame == null) throw new InvalidOperationException("Bullet frame unavailable");
             int count = frame.NativeOwned ? frame.Instances.Length : 0;
+            if (count > NativeBulletItemLimit) throw new InvalidOperationException("Native bullet frame rejected");
             float[] values = ArrayPool<float>.Shared.Rent(Math.Max(1, count * 8));
             try
             {

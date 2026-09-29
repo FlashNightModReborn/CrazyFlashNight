@@ -8,6 +8,7 @@ import org.flashNight.arki.bullet.BulletComponent.Queue.*;
 import org.flashNight.arki.bullet.BulletComponent.Collider.*;
 import org.flashNight.arki.bullet.BulletComponent.Config.TeslaRayConfig;
 import org.flashNight.sara.util.*;
+import org.flashNight.arki.render.RayVisualBridge;
 
 /**
  * TeslaRayLifecycle - 磁暴射线子弹生命周期管理器
@@ -120,6 +121,7 @@ class org.flashNight.arki.bullet.BulletComponent.Lifecycle.TeslaRayLifecycle
      * @param target:MovieClip 要绑定的子弹对象
      */
     public function bindFrameHandler(target:MovieClip):Void {
+        RayVisualBridge.bindBulletIdentity(target);
         // 加入射线独立处理队列（不进入主碰撞循环）
         BulletQueueProcessor.preCheckRay(target);
     }

@@ -127,10 +127,20 @@ class org.flashNight.arki.render.CombatFxBridgeTest {
             "callers needing a MovieClip keep the legacy return contract");
         caps["native"] = false;
         CombatFxBridge.configure(caps);
-        check(CombatFxBridge.tryShell("测试弹壳", 50, 50, 100, 1, 150) === false,
-            "capability loss restores legacy admission for future spawns");
+        check(CombatFxBridge.tryShell("测试弹壳", 50, 50, 100, 1, 150)
+            && CombatFxBridge.tryMuzzle("测试枪火", 50, 50, 100, 0)
+            && CombatFxBridge.tryImpact("测试命中", 50, 50, 100, false)
+            && CombatFxBridge.getStats().queued == 0 && CombatFxBridge.getStats().queuedImpacts == 0,
+            "capability loss consumes owned decoration without MC fallback or queued replay");
 
         CombatFxBridge.disconnect();
+        beforeLegacy = made;
+        EffectSystem.Effect("测试命中", 40, 40, 100, false, true);
+        check(made == beforeLegacy
+            && CombatFxBridge.tryShell("测试弹壳", 50, 50, 100, 1, 150)
+            && CombatFxBridge.tryMuzzle("测试枪火", 50, 50, 100, 0)
+            && !CombatFxBridge.tryShell("未接管弹壳", 50, 50, 100, 1, 150),
+            "disconnect keeps known decoration native-only and leaves unknown linkages alone");
         DecalStampQueue.clearCache();
         pixels.dispose();
         _root.gameworld = oldWorld;_root.server = oldServer;

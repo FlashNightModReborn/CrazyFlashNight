@@ -203,9 +203,12 @@ function Find-Cf7MatchingMsvc {
 }
 
 function Test-Cf7WindowsSdk {
-    $rc = Join-Path ([Environment]::GetEnvironmentVariable('ProgramFiles(x86)')) `
-        ("Windows Kits\10\bin\" + [string]$lock.windowsSdk.version + '\x64\rc.exe')
-    return Test-Cf7Hash $rc ([string]$lock.windowsSdk.rcSha256)
+    $sdkRoot = Join-Path ([Environment]::GetEnvironmentVariable('ProgramFiles(x86)')) `
+        ("Windows Kits\10\bin\" + [string]$lock.windowsSdk.version + '\x64')
+    $rc = Join-Path $sdkRoot 'rc.exe'
+    $d3dCompiler = Join-Path $sdkRoot 'd3dcompiler_47.dll'
+    return (Test-Cf7Hash $rc ([string]$lock.windowsSdk.rcSha256)) -and
+        (Test-Cf7Hash $d3dCompiler ([string]$lock.windowsSdk.d3dcompilerSha256))
 }
 
 function Invoke-Cf7VisualStudioInstaller([string]$Bootstrapper, [string]$Arguments) {

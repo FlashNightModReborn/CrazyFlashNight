@@ -72,6 +72,9 @@ Assert-Cf7Test ($validatorSource.Contains("'tools\validate-player-info-svg-produ
 Assert-Cf7Test ($validatorSource.Contains("'-ProjectRoot', `$ProjectRoot") -and
     $validatorSource.Contains("'-CandidateRoot', `$resolvedCandidate")) `
     'candidate policy must bind the PlayerInfo contract to the exact project and candidate roots'
+Assert-Cf7Test ($validatorSource.Contains("New-Cf7CommandCheck -Name 'combat-bullet-assets-current'") -and
+    $validatorSource.Contains("'tools\combat-bullet-visuals\build.py'), '--check'")) `
+    'production policy must check the current bullet catalog and source-derived sprite atlas'
 Assert-Cf7Test ($playerInfoGateSource.Contains("[Environment]::SetEnvironmentVariable('CF7_DOTNET_EXE', `$null, 'Process')")) `
     'PlayerInfo contract gate must discard a caller-injected dotnet host'
 Assert-Cf7Test ($playerInfoGateSource.Contains(". `$buildEnvironmentGate -ProjectRoot `$ProjectRoot -Mode Validate")) `

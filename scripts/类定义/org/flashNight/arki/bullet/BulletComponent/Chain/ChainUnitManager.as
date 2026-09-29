@@ -86,6 +86,7 @@ class org.flashNight.arki.bullet.BulletComponent.Chain.ChainUnitManager {
      * 组标记 __removed，防任何残存引用经 removeGroup 二次回池污染自由表。
      */
     public static function resetAll():Void {
+        org.flashNight.arki.render.ChainVisualBridge.resetScene();
         invalidChainLogCount = 0;
         var gs:Array = groups;
         var gn:Number = gs.length;
@@ -159,6 +160,9 @@ class org.flashNight.arki.bullet.BulletComponent.Chain.ChainUnitManager {
      */
     public static function releaseUnitData(u:ChainUnitData):Void {
         u.mc = null;
+        u.nativeLive = false;
+        u.aggregatePrev = null;
+        u.aggregateNext = null;
         var p:Array = dataPool;
         p[p.length] = u;
     }
@@ -210,6 +214,7 @@ class org.flashNight.arki.bullet.BulletComponent.Chain.ChainUnitManager {
      */
     public static function removeGroup(group:ChainGroup):Void {
         if (group == null || group.__removed) return;
+        org.flashNight.arki.render.ChainVisualBridge.releaseGroup(group);
         group.__removed = true;
         var list:Array = group.单元体列表;
         var pool:Array = dataPool;
@@ -322,84 +327,309 @@ class org.flashNight.arki.bullet.BulletComponent.Chain.ChainUnitManager {
     }
 
     /** 能力撤销时恢复仍存活的原 Flash 单元体，不重建联弹业务对象。 */
-    public static function restoreNativeVisuals():Void {
-        var gs:Array = groups;
-        for (var gi:Number = 0; gi < gs.length; gi++) {
-            var group:ChainGroup = gs[gi];
-            if (!group.nativeVisualOwned || group.__removed) continue;
-            var visible:Boolean = group.bullet._visible;
-            var alpha:Number = group.bullet._alpha;
-            var units:Array = group.单元体列表;
-            for (var ui:Number = 0; ui < units.length; ui++) {
-                var mc:MovieClip = units[ui].mc;
-                if (mc != null && mc._parent != undefined) {
-                    mc._visible = visible;
-                    mc._alpha = alpha;
-                }
+
+    /** 影子采样只读当前可见单元体；联弹业务更新与显示所有权不受影响。 */
+    /** AS2 战斗边界用的精确懒推进成本计数；focused suite 读取，生产不分配。 */
+    public static var aggregateAddOperations:Number = 0;
+
+    /**
+     * 精确重复执行 value += delta。仅在同一个 IEEE-754 binade 内跳过等步长段：
+     * 两次实加先稳定 half-ULP tie 的偶数尾位；端点、下一步差量均核对。
+     * 跨零/跨 binade/极小极大值执行原加法，不把逐步舍入替换成 n*delta。
+     */
+    public static function repeatAdd(value:Number, delta:Number, count:Number):Number {
+        if (!isFinite(value) || !isFinite(delta)) return value + delta;
+        var next:Number, step:Number, magnitude:Number, low:Number, high:Number;
+        var skip:Number, candidate:Number, edge:Number, candidateMagnitude:Number;
+        while (count > 0) {
+            value += delta;
+            aggregateAddOperations++;
+            count--;
+            if (count < 2) continue;
+            next = value + delta;
+            aggregateAddOperations++;
+            step = next - value;
+            value = next;
+            count--;
+            if (step == 0) return value;
+            magnitude = value < 0 ? -value : value;
+            if (!(magnitude > 1e-280 && magnitude < 1e280)) continue;
+            low = Math.pow(2, Math.floor(Math.log(magnitude) / 0.6931471805599453));
+            while (low > magnitude) low *= 0.5;
+            while (!(magnitude < low * 2)) low *= 2;
+            high = low * 2;
+            skip = count;
+            candidate = value + step * skip;
+            candidateMagnitude = candidate < 0 ? -candidate : candidate;
+            if (!(candidateMagnitude > low && candidateMagnitude < high && ((candidate > 0) == (value > 0)))) {
+                edge = step > 0 ? (value > 0 ? high : -low) : (value > 0 ? low : -high);
+                skip = Math.floor((edge - value) / step) - 2;
+                if (skip > count) skip = count;
+                if (!(skip > 0)) continue;
+                candidate = value + step * skip;
+                candidateMagnitude = candidate < 0 ? -candidate : candidate;
             }
-            group.nativeVisualOwned = false;
+            if (candidateMagnitude > low && candidateMagnitude < high
+                && ((candidate > 0) == (value > 0))
+                && (value + delta) - value == step && (candidate + delta) - candidate == step) {
+                value = candidate;
+                count -= skip;
+            }
+        }
+        return value;
+    }
+
+    /** 每次实际游戏更新递增一次；暂停和 FrameBroadcaster 重发不推进。 */
+    public static function beginNativeStep(group:ChainGroup, advance:Number, advanceX:Boolean):Void {
+        if (!group.nativeGroupOwned) return;
+        if (group.aggregate) {
+            var existing:Array = group.aggregateRuns;
+            var previous:Object = existing[existing.length - 1];
+            if (advance < 0 || !isFinite(advance)) {
+                disableAggregate(group);
+            } else if (existing.length > 255
+                && (previous.advance != advance || previous.advanceX != advanceX)) {
+                // 历史段超限：全体物化到当前 tip 后压缩为单段新基准，
+                // 聚合继续服役而非永久退出——run 每次实际切换至多物化一轮。
+                var units:Array = group.单元体列表;
+                var un:Number = units.length;
+                for (var u:Number = 0; u < un; u++) {
+                    var ud:ChainUnitData = units[u];
+                    materializeUnit(group, ud);
+                    ud.aggregateRun = 0;
+                    ud.aggregateOffset = 0;
+                }
+                existing.length = 0;
+                existing[0] = {advance:advance, advanceX:advanceX, count:0};
+            }
+        }
+        group.nativeStep++;
+        group.nativeAdvance = advance;
+        group.nativeAdvanceX = advanceX;
+        if (!group.aggregate) return;
+        var runs:Array = group.aggregateRuns;
+        var n:Number = runs.length;
+        var run:Object = runs[n - 1];
+        if (n > 0 && run.advance == advance && run.advanceX == advanceX) {
+            run.count++;
+        } else {
+            runs[n] = {advance:advance, advanceX:advanceX, count:1};
         }
     }
 
-    /** 影子采样只读当前可见单元体；联弹业务更新与显示所有权不受影响。 */
-    public static function appendVisualShadow(entries:Array, styleByUnit:Object,
-                                              prefixes:Object, limit:Number, nativeMode:Boolean):Object {
-        var count:Number = 0;
-        var overflow:Number = 0;
-        for (var gi:Number = 0; gi < groups.length; gi++) {
-            var group:ChainGroup = groups[gi];
-            if (!group.isObject || group.__removed) continue;
-            if (nativeMode && !group.nativeVisualOwned) continue;
-            var type:String = group.bullet.子弹种类;
-            var dash:Number = type.indexOf("-");
-            if (dash <= 0 || prefixes[type.substring(0, dash)] !== true) continue;
-            var style:Number = styleByUnit["单元体-" + group.子弹种类];
-            if (style === undefined) continue;
-            var units:Array = group.单元体列表;
-            if (nativeMode && group.nativeVisualOwned && group.bullet._visible
-                && group.bullet._alpha > 0) {
-                var needed:Number = 0;
-                for (var ni:Number = 0; ni < units.length; ni++) {
-                    var candidate:MovieClip = units[ni].mc;
-                    if (candidate != null && isFinite(candidate._x + candidate._y
-                        + candidate._rotation + candidate._xscale + candidate._yscale)) needed++;
-                }
-                if (entries.length + needed > limit) {
-                    group.nativeVisualOwned = false;
-                    overflow += needed;
-                    for (var ri:Number = 0; ri < units.length; ri++) {
-                        var restored:MovieClip = units[ri].mc;
-                        if (restored != null && restored._parent != undefined) {
-                            restored._visible = group.bullet._visible;
-                            restored._alpha = group.bullet._alpha;
-                        }
-                    }
-                    continue;
-                }
-            }
-            for (var ui:Number = 0; ui < units.length; ui++) {
-                var mc:MovieClip = units[ui].mc;
-                if (mc == null) continue;
-                var owned:Boolean = nativeMode && group.nativeVisualOwned;
-                var visible:Boolean = owned ? group.bullet._visible : mc._visible;
-                var alpha:Number = owned ? group.bullet._alpha : mc._alpha;
-                if (!visible || !(alpha > 0)
-                    || !isFinite(mc._x + mc._y + mc._rotation
-                        + mc._xscale + mc._yscale + alpha)) {
-                    if (owned) { mc._visible = visible; mc._alpha = alpha; }
-                    continue;
-                }
-                if (entries.length >= limit) {
-                    overflow++;
-                    if (owned) { mc._visible = visible; mc._alpha = alpha; }
-                    continue;
-                }
-                entries[entries.length] = style + "," + mc._x + "," + mc._y + ","
-                    + mc._rotation + "," + mc._xscale + "," + mc._yscale + "," + alpha;
-                count++;
-                if (owned) mc._visible = false;
-            }
-        }
-        return {count:count, overflow:overflow};
+    public static function initializeAggregateUnit(group:ChainGroup, unit:ChainUnitData):Void {
+        var runs:Array = group.aggregateRuns;
+        var n:Number = runs.length;
+        unit.aggregateRun = n > 0 ? n - 1 : 0;
+        unit.aggregateOffset = n > 0 ? runs[n - 1].count : 0;
     }
+
+    /** 所有坐标读取前补齐跳过的恒速段，字段只在真实需要时写入。 */
+    public static function materializeUnit(group:ChainGroup, unit:ChainUnitData):Void {
+        var runs:Array = group.aggregateRuns;
+        var n:Number = runs.length;
+        if (n == 0) return;
+        var index:Number = unit.aggregateRun;
+        var offset:Number = unit.aggregateOffset;
+        var run:Object;
+        var count:Number;
+        var x:Number = unit.x;
+        var y:Number = unit.y;
+        while (index < n) {
+            run = runs[index];
+            count = run.count - offset;
+            if (count > 0) {
+                y = repeatAdd(y, run.advance * unit.sin, count);
+                if (run.advanceX) x = repeatAdd(x, run.advance * unit.cos, count);
+            }
+            index++;
+            offset = 0;
+        }
+        unit.x = x;
+        unit.y = y;
+        unit.aggregateRun = n - 1;
+        unit.aggregateOffset = runs[n - 1].count;
+        group.aggregateVisits++;
+    }
+
+    public static function disableAggregate(group:ChainGroup):Void {
+        if (!group.aggregate) return;
+        var units:Array = group.单元体列表;
+        for (var i:Number = 0; i < units.length; i++) materializeUnit(group, units[i]);
+        group.aggregate = false;
+        group.aggregateRuns.length = 0;
+        group.aggregateSorted.length = 0;
+        group.aggregateMin = null;
+        group.aggregateMax = null;
+    }
+
+    private static function compareSin(a:ChainUnitData, b:ChainUnitData):Number {
+        return a.sin - b.sin;
+    }
+
+    public static function prepareHorizontalAggregate(group:ChainGroup):Void {
+        if (!group.aggregate) return;
+        var list:Array = group.单元体列表;
+        var sorted:Array = list.slice();
+        var count:Number = sorted.length;
+        var unit:ChainUnitData;
+        for (var i:Number = 0; i < count; i++) list[i].aggregateIndex = i;
+        sorted.sort(compareSin);
+        for (i = 0; i < count; i++) {
+            unit = sorted[i];
+            unit.aggregatePrev = i > 0 ? sorted[i - 1] : null;
+            unit.aggregateNext = i + 1 < count ? sorted[i + 1] : null;
+        }
+        group.aggregateMin = sorted[0];
+        group.aggregateMax = sorted[count - 1];
+    }
+
+    private static function compareIndexDescending(a:ChainUnitData, b:ChainUnitData):Number {
+        return b.aggregateIndex - a.aggregateIndex;
+    }
+
+    /** 同时维护旧 swap-with-last 序与 sin 双链；不扫描其余存活单元。 */
+    private static function removeAggregateUnit(group:ChainGroup, unit:ChainUnitData):Void {
+        var before:ChainUnitData = unit.aggregatePrev;
+        var after:ChainUnitData = unit.aggregateNext;
+        if (before != null) before.aggregateNext = after;
+        else group.aggregateMin = after;
+        if (after != null) after.aggregatePrev = before;
+        else group.aggregateMax = before;
+        var list:Array = group.单元体列表;
+        var last:Number = list.length - 1;
+        var index:Number = unit.aggregateIndex;
+        if (index < last) {
+            var moved:ChainUnitData = list[last];
+            moved.aggregateIndex = index;
+            list[index] = moved;
+        }
+        list.length = last;
+        org.flashNight.arki.render.ChainVisualBridge.removeUnit(group, unit);
+        releaseUnitData(unit);
+    }
+
+    /**
+     * 同龄横向齐射：正推进下 sin 排序与逐次加法 y 排序相同。
+     * 衰竭删除是旧倒序循环的必删前缀；首次不满足后，减小霰弹只会进一步
+     * 抬高阈值，余下只需处理触地者。双链取触地区间，按旧 index 倒序删除。
+     * 稳态 O(1)，事件 O(k log k)，k 为真正删除数；不把衰竭帧退回全表扫描。
+     */
+    public static function updateHorizontalAggregate(group:ChainGroup, advance:Number):Boolean {
+        if (!group.aggregate) return false;
+        var b = group.bullet;
+        var list:Array = group.单元体列表;
+        if (list.length == 0) return false;
+        var sv:Number = b.霰弹值;
+        var originalSv:Number = sv;
+        var decay:Number = group.衰竭计数器 + (sv + b.子弹散射度) / 25;
+        group.衰竭计数器 = decay;
+        while (list.length > 1 && decay >= -sv) {
+            removeAggregateUnit(group, list[list.length - 1]);
+            sv--;
+        }
+        var minUnit:ChainUnitData = group.aggregateMin;
+        var maxUnit:ChainUnitData = group.aggregateMax;
+        materializeUnit(group, minUnit);
+        if (maxUnit != minUnit) materializeUnit(group, maxUnit);
+        var cosV:Number = group.余弦值;
+        var py:Number = b._y;
+        var hitZ:Number = b.Z轴坐标;
+        var unit:ChainUnitData = cosV < 0 ? minUnit : maxUnit;
+        if (list.length > 1 && unit.y * cosV + py > hitZ) {
+            // 重用 scratch；只枚举真正触地的成员与一个边界失败者。
+            var victims:Array = group.aggregateSorted;
+            victims.length = 0;
+            while (unit != null) {
+                materializeUnit(group, unit);
+                if (!(unit.y * cosV + py > hitZ)) break;
+                victims[victims.length] = unit;
+                unit = cosV < 0 ? unit.aggregateNext : unit.aggregatePrev;
+            }
+            victims.sort(compareIndexDescending);
+            for (var i:Number = 0; i < victims.length && list.length > 1; i++) {
+                removeAggregateUnit(group, victims[i]);
+                sv--;
+            }
+            victims.length = 0;
+            minUnit = group.aggregateMin;
+            maxUnit = group.aggregateMax;
+            materializeUnit(group, minUnit);
+            if (maxUnit != minUnit) materializeUnit(group, maxUnit);
+        }
+        if (sv != originalSv) b.霰弹值 = sv;
+        group.盒y = minUnit.y;
+        var height:Number = maxUnit.y - minUnit.y;
+        group.盒高 = height > group.最小盒高 ? height : group.最小盒高;
+        return true;
+    }
+
+    /**
+     * 纵向填满后 X 冻结。只在可证明不换边界的窗口内跳过内部单元；
+     * 追近者用每步 1e-7 的保守舍入界（坐标与未来64步限制在1e7内）缩短窗口。
+     * 角度/速度变化、交叉临界、补弹事件均重建；不扩大战斗包围盒。
+     */
+    public static function updateVerticalAggregate(group:ChainGroup):Void {
+        var advance:Number = group.nativeAdvance;
+        var list:Array = group.单元体列表;
+        var count:Number = list.length;
+        var minUnit:ChainUnitData = group.aggregateMin;
+        var maxUnit:ChainUnitData = group.aggregateMax;
+        var unit:ChainUnitData;
+        if (group.aggregateSafe > 0 && advance == group.aggregateAdvance) {
+            materializeUnit(group, minUnit);
+            if (maxUnit != minUnit) materializeUnit(group, maxUnit);
+            group.aggregateSafe--;
+        } else {
+            var minY:Number = Infinity;
+            var maxY:Number = -Infinity;
+            for (var i:Number = 0; i < count; i++) {
+                unit = list[i];
+                materializeUnit(group, unit);
+                if (unit.y < minY || (unit.y == minY && unit.sin < minUnit.sin)) {
+                    minY = unit.y; minUnit = unit;
+                }
+                if (unit.y > maxY || (unit.y == maxY && unit.sin > maxUnit.sin)) {
+                    maxY = unit.y; maxUnit = unit;
+                }
+            }
+            // 当前边界同时拥有极端 sin 时，IEEE 单调性保证永不被反超；
+            // 无须每64帧重扫。只有真实追近者才使用有限认证窗口。
+            var safe:Number = 2147483647;
+            var limit:Number;
+            var minDelta:Number = advance * minUnit.sin;
+            var maxDelta:Number = advance * maxUnit.sin;
+            var delta:Number;
+            var magnitude:Number = minY < 0 ? -minY : minY;
+            var maxMagnitude:Number = maxY < 0 ? -maxY : maxY;
+            if (maxMagnitude > magnitude) magnitude = maxMagnitude;
+            var bounded:Boolean = magnitude + advance * 66 < 10000000;
+            if (advance < 0 || !isFinite(advance)) safe = 0;
+            for (i = 0; i < count && safe > 0; i++) {
+                unit = list[i];
+                delta = advance * unit.sin;
+                if (unit.sin < minUnit.sin) {
+                    if (!bounded) { safe = 0; break; }
+                    if (safe > 64) safe = 64;
+                    limit = Math.floor((unit.y - minY) / (minDelta - delta + 0.0000001)) - 2;
+                    if (limit < safe) safe = limit;
+                }
+                if (unit.sin > maxUnit.sin) {
+                    if (!bounded) { safe = 0; break; }
+                    if (safe > 64) safe = 64;
+                    limit = Math.floor((maxY - unit.y) / (delta - maxDelta + 0.0000001)) - 2;
+                    if (limit < safe) safe = limit;
+                }
+            }
+            group.aggregateSafe = safe > 0 ? safe : 0;
+            group.aggregateAdvance = advance;
+            group.aggregateMin = minUnit;
+            group.aggregateMax = maxUnit;
+        }
+        group.盒y = minUnit.y;
+        var height:Number = maxUnit.y - minUnit.y;
+        group.盒高 = height > group.最小盒高 ? height : group.最小盒高;
+    }
+
+    /** 撤销能力的同一调用内创建可见 MC；不新增随机采样、不改玩法状态。 */
 }

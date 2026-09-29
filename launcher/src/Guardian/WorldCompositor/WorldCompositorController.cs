@@ -10,7 +10,7 @@ using System.Windows.Forms;
 
 namespace CF7Launcher.Guardian.WorldCompositor
 {
-    internal sealed class WorldCompositorController : IDisposable
+    internal sealed partial class WorldCompositorController : IDisposable
     {
         private readonly Form _owner;
         private readonly Control _anchor;
@@ -42,6 +42,7 @@ namespace CF7Launcher.Guardian.WorldCompositor
         private WorldLightingTransition _lighting = new WorldLightingTransition();
         private long _reportedPendingScene;
         private bool _disposed, _starting, _faulted, _active;
+        private double _faultedRevokeDeadlineMs;
         private bool _inputRenewRequested,_inputClosed;
         private Task<bool> _retiringInput;
         internal NativePointerBridge InputBridgeForDiagnostics => _pointerBridge;
@@ -73,7 +74,9 @@ namespace CF7Launcher.Guardian.WorldCompositor
         private double _lastWeatherCapAttemptMs;
         internal Func<bool,bool> WeatherCapabilityChanged;
         internal Func<bool,bool> BulletCapabilityChanged;
+        internal Action BulletInvalidated;
         private volatile bool _bulletStylesReady, _bulletCapabilityAdvertised;
+        private readonly VisualCapabilityRevocation _bulletRevocation = new();
         private double _lastBulletCapAttemptMs;
         private double _bulletCaptureNotReadyMs;
         private long _lastBulletFrameLogTicks;
@@ -112,7 +115,7 @@ namespace CF7Launcher.Guardian.WorldCompositor
         internal void ObserveBulletFrame(BulletVisualFrame frame,float cameraX,float cameraY,float cameraScale)
         {
             if (frame == null) return;
-            bool failed = false;
+            Exception failure = null;
             lock (_weatherCameraLock)
             {
                 if (!_bulletCapabilityAdvertised || !_bulletStylesReady || _native == null) return;
@@ -129,18 +132,62 @@ namespace CF7Launcher.Guardian.WorldCompositor
                     }
                 }
                 catch (Exception error) {
-                    failed = true;
+                    failure = error;
                     LogManager.Log("event=bullet_visual_native_frame_failed " + error.Message);
                 }
             }
-            if (failed) { _bulletStylesReady=false; RevokeBulletCapability("native_frame_failed"); }
+            if (failure != null) ProjectileRenderFault("native_frame_failed", failure);
         }
-        internal void RejectBulletFrame()
+        // Critical projectile-channel malformed/rejected/submission-failed packets
+        // share the existing session render-failure path instead of revoking into
+        // an AS2 fallback. Capability revocation survives only for real source
+        // loss: socket disconnect, capture stop, and owner teardown.
+        private void ProjectileRenderFault(string reason, Exception error)
         {
-            _bulletStylesReady=false;
-            RevokeBulletCapability("invalid_or_stale_frame");
+            EnterRenderFault("projectile_" + reason, error ?? new InvalidOperationException(reason));
         }
-        internal void BulletConnectionLost() => RevokeBulletCapability("socket_disconnected");
+        internal void RejectBulletFrame() => ProjectileRenderFault("frame_rejected", null);
+        /// <summary>
+        /// AS2 视觉桥主动上报的源端致命故障（容量/配对协议错误）。字段已被
+        /// FrameTask.HandleVisualFault 有界校验；消息天然绑定当前连接代。
+        /// </summary>
+        internal void As2VisualFault(string channel,string reason)
+            => ProjectileRenderFault("as2_" + channel + "_" + reason,null);
+        private void EnterRenderFault(string reason, Exception error)
+        {
+            // Socket callbacks arrive off the UI thread; the single failure
+            // transition (hide, stop capture, dialog, close) stays owner-bound.
+            if (_disposed) return;
+            if (_owner.IsDisposed) return;
+            if (_owner.InvokeRequired)
+            {
+                try { _owner.BeginInvoke(new Action(() => EnterRenderFault(reason, error))); }
+                catch (Exception invokeError) {
+                    LogManager.Log("event=world_compositor_fault_dispatch_failed " + invokeError.Message);
+                }
+                return;
+            }
+            if (_faulted) return;
+            _faulted=true;
+            // The failure dialog runs a nested UI loop. Keep only bounded
+            // ownership-revoke retries alive while it awaits closure.
+            _faultedRevokeDeadlineMs=NowMs()+10000;
+            _owner.Hide();
+            StopCapture();
+            if (!_bulletRevocation.Pending && !_rayRevocation.Pending) _timer.Stop();
+            LogManager.Log("event=world_compositor_failed reason=" + reason + " " + error);
+            // Rendering is a runtime requirement. Do not silently continue as a fully lit world.
+            if (!_owner.IsDisposed) {
+                MessageBox.Show(_owner,"世界画面渲染失败，本次游戏将关闭。请保留日志并使用配套构建重试。\n"
+                    + error.Message,"画面渲染失败",MessageBoxButtons.OK,MessageBoxIcon.Error);
+                _owner.Close();
+            }
+        }
+        internal void BulletConnectionLost()
+        {
+            RevokeBulletCapability("socket_disconnected");
+            _bulletRevocation.Reset();
+        }
         internal void ClearBulletFrame()
         {
             lock (_weatherCameraLock)
@@ -149,8 +196,9 @@ namespace CF7Launcher.Guardian.WorldCompositor
                 catch (Exception error) { LogManager.Log("event=bullet_visual_clear_failed " + error.Message); }
             }
         }
-        private void RevokeBulletCapability(string reason)
+        private void RevokeBulletCapability(string reason,bool worldUnavailable=false)
         {
+            if(worldUnavailable) RevokeRayCapability(reason);
             bool advertised;
             lock (_weatherCameraLock)
             {
@@ -160,19 +208,30 @@ namespace CF7Launcher.Guardian.WorldCompositor
                 catch (Exception error) { LogManager.Log("event=bullet_visual_clear_failed " + error.Message); }
             }
             if (!advertised) return;
-            bool sent = false;
-            try { sent = BulletCapabilityChanged?.Invoke(false) == true; }
-            catch (Exception error) { LogManager.Log("event=bullet_visual_cap_revoke_failed " + error.Message); }
-            LogManager.Log("event=bullet_visual_cap_revoke reason=" + reason + " sent=" + sent);
+            BulletInvalidated?.Invoke();
+            _bulletRevocation.Request();
+            RetryBulletRevocation();
+            LogManager.Log("event=bullet_visual_cap_revoke reason=" + reason + " sent=" + !_bulletRevocation.Pending);
         }
+        private void RetryBulletRevocation()
+        {
+            try { _bulletRevocation.TrySend(NowMs(), () => BulletCapabilityChanged?.Invoke(false) == true); }
+            catch (Exception error) { LogManager.Log("event=bullet_visual_cap_revoke_retry_failed " + error.Message); }
+        }
+        internal static bool CanGrantProjectileCapability(bool captureReady, bool sceneReady,
+            bool waitingForCapture, long scene, long capturedScene) =>
+            captureReady && sceneReady && !waitingForCapture && scene == capturedScene;
         private void NoteBulletCaptureNotReady(string reason)
         {
-            // A scheduled DRS resize can miss one capture tick. Keep ownership
-            // through that brief handoff; sustained loss returns it to Flash.
+            NoteRayCaptureNotReady(reason);
+            // Temporary capture unavailability suspends presentation only. Live
+            // AS2/Host state is retained and resumes on the next ready tick.
             if (!_bulletCapabilityAdvertised) { _bulletCaptureNotReadyMs=0; return; }
             double now=NowMs();
-            if (_bulletCaptureNotReadyMs==0) _bulletCaptureNotReadyMs=now;
-            else if (now-_bulletCaptureNotReadyMs>=250) RevokeBulletCapability(reason);
+            if (_bulletCaptureNotReadyMs==0) {
+                _bulletCaptureNotReadyMs=now;
+                LogManager.Log("event=bullet_visual_capture_wait reason=" + reason);
+            }
         }
 
         internal readonly struct LutLabGrabResult
@@ -220,6 +279,7 @@ namespace CF7Launcher.Guardian.WorldCompositor
             _setRenderScale=setRenderScale; _focusFlash=focusFlash;
             _bulletCatalog=bulletCatalog;
             _combatFxCatalog=combatFxCatalog;
+            _worldLights=new WorldLightComposer(combatFxCatalog?.MaximumLightResponse??0);
             _overlays=overlays ?? Array.Empty<OverlayBase>();
             _bulletCandidateEnabled=bulletCatalog!=null
                 && Environment.GetEnvironmentVariable("CF7_BULLET_NATIVE_DISABLE")!="1";
@@ -241,10 +301,8 @@ namespace CF7Launcher.Guardian.WorldCompositor
             bool wasWaiting=_lighting.WaitingForCapture;
             long previousScene=_frame?.Scene ?? 0;
             if (_disposed || !_lighting.Adopt(frame,NowMs())) return;
-            if (!frame.Ready || frame.Scene!=previousScene) {
+            if (!frame.Ready || frame.Scene!=previousScene)
                 _surface?.CancelPointer();
-                RevokeBulletCapability("scene_change");
-            }
             _frame=frame;
             if (!frame.Ready || frame.Scene!=previousScene) InvalidateWeather();
             if (_lighting.Pending && (!wasPending || frame.Scene!=previousScene))
@@ -261,7 +319,15 @@ namespace CF7Launcher.Guardian.WorldCompositor
         }
         private async void OnTick(object sender,EventArgs args)
         {
-            if (_disposed || _faulted || _starting) return;
+            if (_disposed) return;
+            RetryBulletRevocation();
+            RetryRayRevocation();
+            if (_faulted) {
+                if ((!_bulletRevocation.Pending && !_rayRevocation.Pending) || NowMs() >= _faultedRevokeDeadlineMs)
+                    _timer.Stop();
+                return;
+            }
+            if (_starting) return;
             try {
                 if(_inputRenewRequested && !_inputClosed) {await RenewInputAsync();if(_disposed)return;}
                 string module=Path.Combine(AppContext.BaseDirectory,NativeCompositorSession.ModuleName);
@@ -305,7 +371,11 @@ namespace CF7Launcher.Guardian.WorldCompositor
                     }
                     if (_bulletCandidateEnabled) {
                         try { _native.BulletStyles(_bulletCatalog); _bulletStylesReady=true; }
-                        catch (Exception error) { LogManager.Log("event=bullet_visual_styles_unavailable " + error.Message); }
+                        catch (Exception error) {
+                            LogManager.Log("event=bullet_visual_styles_unavailable " + error.Message);
+                            EnterRenderFault("bullet_styles_unavailable", error);
+                            return;
+                        }
                     }
                     LogManager.Log("event=world_compositor_identity S=0x"+_owner.Handle.ToString("X")+" P=0x"+_surface.Handle.ToString("X")
                         +" F=0x"+_flash.ToString("X")+" hostPid="+Environment.ProcessId+" inputSession="+_pointerBridge.SessionIdentity);
@@ -335,7 +405,7 @@ namespace CF7Launcher.Guardian.WorldCompositor
                 }
                 if (show!=_active) {
                     _active=show; _native.Active(show); _requiredFrameMs=NowMs();
-                    if (!show) { _surface.Hide(); RevokeBulletCapability("surface_hidden"); }
+                    if (!show) _surface.Hide();
                 }
                 if (!_active) {
                     _schedulingAllowed=false;
@@ -361,7 +431,7 @@ namespace CF7Launcher.Guardian.WorldCompositor
                         +" resizeMs="+(resizedAt-heldAt).ToString("F1",CultureInfo.InvariantCulture)
                         +" repaintMs="+(NowMs()-resizedAt).ToString("F1",CultureInfo.InvariantCulture)
                         +" handoffMs="+(NowMs()-resizeStarted).ToString("F1",CultureInfo.InvariantCulture));
-                    if (!CanShow()) { _native.Active(false); _active=false; _surface.Hide(); RevokeBulletCapability("resize_hidden"); return; }
+                    if (!CanShow()) { _native.Active(false); _active=false; _surface.Hide(); return; }
                 }
                 var stats=_native.Read();
                 if (stats.State==2 || stats.State==3) throw new InvalidOperationException(stats.Message+" HRESULT=0x"+stats.Error.ToString("X8"));
@@ -410,13 +480,16 @@ namespace CF7Launcher.Guardian.WorldCompositor
                 ApplyWeatherCamera(ready);
                 ApplyWeather(ready);
                 ApplyAtmosphere(ready);
+                bool projectileReady = CanGrantProjectileCapability(ready, _frame?.Ready == true,
+                    _lighting.WaitingForCapture, _frame?.Scene ?? 0, _lighting.ReadyScene);
+                PublishRayCapability(projectileReady);
                 if (ready && !_surface.Visible) { _surface.Show(); PlaceBelowHud(); _surface.RefreshPointer(); }
                 if (ready && !_weatherCapabilityAdvertised && NowMs()-_lastWeatherCapAttemptMs>=500) {
                     _lastWeatherCapAttemptMs=NowMs();
                     try { _weatherCapabilityAdvertised=WeatherCapabilityChanged?.Invoke(true)==true; }
                     catch (Exception error) { LogManager.Log("event=world_weather_cap_failed "+error.Message); }
                 }
-                if (ready && _bulletStylesReady && !_bulletCapabilityAdvertised
+                if (projectileReady && !_bulletRevocation.Pending && _bulletStylesReady && _native.BulletResourcesReady && !_bulletCapabilityAdvertised
                     && NowMs()-_lastBulletCapAttemptMs>=500 && BulletCapabilityChanged!=null) {
                     _lastBulletCapAttemptMs=NowMs();
                     lock (_weatherCameraLock) _bulletCapabilityAdvertised=true;
@@ -440,19 +513,11 @@ namespace CF7Launcher.Guardian.WorldCompositor
                 if (NowMs()-_lastLogMs>1000) {
                     _lastLogMs=NowMs();
                     LogManager.Log(string.Format(CultureInfo.InvariantCulture,
-                        "event=world_compositor_frame received={0} presented={1} size={2}x{3} ageMs={4:F1} submitMs={5:F3} presentMs={6:F3} cpuReadbacks={7} adapter={8} light={9:F3} scale={10:F2} output={11}x{12} everReady={13} advancing={14}",
-                        stats.Received,stats.Presented,stats.Width,stats.Height,stats.LastFrameQpcMs==0 ? -1 : NowMs()-stats.LastFrameQpcMs,stats.SubmitMs,stats.PresentMs,stats.CpuReadbacks,stats.Adapter,_lighting.LastReadyLight,_appliedScale,_surface.ClientSize.Width,_surface.ClientSize.Height,_everReady,_frameAdvancing));
+                        "event=world_compositor_frame received={0} presented={1} size={2}x{3} ageMs={4:F1} submitMs={5:F3} presentMs={6:F3} cpuReadbacks={7} adapter={8} light={9:F3} scale={10:F2} output={11}x{12} everReady={13} advancing={14} nativeState={15} captureGeneration={16} nativeStage={17}",
+                        stats.Received,stats.Presented,stats.Width,stats.Height,stats.LastFrameQpcMs==0 ? -1 : NowMs()-stats.LastFrameQpcMs,stats.SubmitMs,stats.PresentMs,stats.CpuReadbacks,stats.Adapter,_lighting.LastReadyLight,_appliedScale,_surface.ClientSize.Width,_surface.ClientSize.Height,_everReady,_frameAdvancing,stats.State,_native.CaptureGeneration,stats.Message));
                 }
             } catch (Exception error) {
-                _faulted=true; _timer.Stop();
-                if (!_owner.IsDisposed) _owner.Hide();
-                StopCapture();
-                LogManager.Log("event=world_compositor_failed "+error);
-                // Rendering is a runtime requirement. Do not silently continue as a fully lit world.
-                if (!_owner.IsDisposed) {
-                    MessageBox.Show(_owner,"世界画面渲染失败，本次游戏将关闭。请保留日志并使用配套构建重试。\n"+error.Message,"画面渲染失败",MessageBoxButtons.OK,MessageBoxIcon.Error);
-                    _owner.Close();
-                }
+                EnterRenderFault("tick", error);
             } finally { _starting=false; }
         }
         internal void BindInput(NativePointerBridge bridge,WorldCompositionSurface surface)
@@ -676,7 +741,10 @@ namespace CF7Launcher.Guardian.WorldCompositor
             bool failed=false;
             lock(_weatherCameraLock) {
                 if(!_combatFxCapabilityAdvertised || _native==null) return;
-                try { _native.CombatFxFrame(frame,x,y,scale); }
+                try {
+                    _worldLights.SetCombatFx(frame);
+                    SubmitWorldLightsLocked(x,y,scale);
+                }
                 catch(Exception error) { failed=true;LogManager.Log("event=combat_fx_native_failed "+error.Message); }
             }
             if(failed) RejectCombatFx();
@@ -684,7 +752,8 @@ namespace CF7Launcher.Guardian.WorldCompositor
         internal void ClearCombatFx()
         {
             lock(_weatherCameraLock) {
-                try { _native?.ClearCombatFxFrame(); }
+                _worldLights.ClearCombatFx();
+                try { SubmitWorldLightsLocked(_lightCameraX,_lightCameraY,_lightCameraScale); }
                 catch(Exception error) { LogManager.Log("event=combat_fx_clear_failed "+error.Message); }
             }
         }
@@ -704,7 +773,7 @@ namespace CF7Launcher.Guardian.WorldCompositor
         private void StopCapture()
         {
             // Same-socket source loss must return visual ownership to Flash.
-            RevokeBulletCapability("capture_stopped");
+            RevokeBulletCapability("capture_stopped",true);
             RevokeCombatFx("capture_stopped");
             _combatFxResourcesReady=false;_lastCombatFxCapAttemptMs=0;
             _bulletStylesReady=false;
@@ -740,6 +809,8 @@ namespace CF7Launcher.Guardian.WorldCompositor
         }
         public void Dispose()
         {
+            // Owner teardown ends the game/socket lifetime. Attempt one final
+            // synchronous revoke; do not create a detached retry worker.
             if (_disposed) return; _disposed=true; _timer.Stop(); StopCapture(); _timer.Dispose();
             _owner.LocationChanged-=OnGeometryChanged; _owner.SizeChanged-=OnGeometryChanged;
             _owner.DpiChanged-=OnDpiChanged; _owner.FormClosed-=OnClosed; _owner.Deactivate-=OnOwnerDeactivated;

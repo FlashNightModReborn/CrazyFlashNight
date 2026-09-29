@@ -188,6 +188,8 @@ function Get-Cf7ProductionChecks {
         -Arguments @((Join-Path $ProjectRoot 'tools\derive-material-catalog.py'), '--check') -WorkingDirectory $ProjectRoot
     $checks += New-Cf7CommandCheck -Name 'combat-fx-assets-current' -FilePath $python `
         -Arguments @((Join-Path $ProjectRoot 'tools\combat-fx-assets\build.py'), '--check') -WorkingDirectory $ProjectRoot
+    $checks += New-Cf7CommandCheck -Name 'combat-bullet-assets-current' -FilePath $python `
+        -Arguments @((Join-Path $ProjectRoot 'tools\combat-bullet-visuals\build.py'), '--check') -WorkingDirectory $ProjectRoot
     $checks += New-Cf7CommandCheck -Name 'material-enemy-portrait-coverage' -FilePath $python `
         -Arguments @((Join-Path $ProjectRoot 'tools\test-material-enemy-portrait-coverage.py')) -WorkingDirectory $ProjectRoot
     $checks += New-Cf7CommandCheck -Name 'shop-portrait-assets' -FilePath $python `

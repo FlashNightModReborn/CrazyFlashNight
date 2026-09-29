@@ -1,6 +1,7 @@
 using System;
 using System.IO;
 using System.Linq;
+using System.Text.Json.Nodes;
 using CF7Launcher.Guardian.WorldCompositor;
 using Xunit;
 
@@ -9,10 +10,10 @@ namespace CF7Launcher.Tests.Guardian
     public sealed class BulletVisualCatalogTests
     {
         [Fact]
-        public void OrdinaryAndGunChainFormsShareExactlyTwoAuthoredVisuals()
+        public void TwoSharedTrianglesAndSixPiercingSpritesRetainTheirAuthoredRegistration()
         {
             var catalog = BulletVisualCatalog.Load(ProjectRoot());
-            Assert.Equal(2, catalog.Styles.Count);
+            Assert.Equal(8, catalog.Styles.Count);
             Assert.Equal(6, catalog.GunChainPrefixes.Count);
             Assert.True(catalog.TryOrdinary("普通子弹", out var plain));
             Assert.True(catalog.TryOrdinary("加强普通子弹", out var enhanced));
@@ -29,8 +30,69 @@ namespace CF7Launcher.Tests.Guardian
                 Assert.True(catalog.TryGunChain(prefix + "-加强普通子弹", out var chainEnhanced));
                 Assert.Same(enhanced, chainEnhanced);
             }
-            Assert.False(catalog.TryOrdinary("穿刺子弹", out _));
+            string[] families = { "穿刺子弹", "次级穿刺子弹", "无壳穿刺子弹" };
+            for (int i = 0; i < families.Length; i++)
+            {
+                Assert.True(catalog.TryOrdinary(families[i], out var ordinary));
+                Assert.Same(catalog.Styles[i + 2], ordinary);
+                Assert.True(ordinary.IsSprite);
+                Assert.Null(ordinary.GunChainUnitLinkage);
+                foreach (string prefix in catalog.GunChainPrefixes)
+                {
+                    Assert.True(catalog.TryGunChain(prefix + "-" + families[i], out var chain));
+                    Assert.Same(catalog.Styles[i + 5], chain);
+                    Assert.True(chain.IsSprite);
+                    Assert.Null(chain.OrdinaryLinkage);
+                    Assert.NotSame(ordinary, chain);
+                }
+            }
+            Assert.Equal(6.75f, catalog.Styles[6].Sprite.OffsetX - catalog.Styles[3].Sprite.OffsetX, 4);
+            Assert.Equal(.95f, catalog.Styles[6].Sprite.OffsetY - catalog.Styles[3].Sprite.OffsetY, 4);
+            Assert.True(catalog.Styles[5].Sprite.Height > 8 && catalog.Styles[7].Sprite.Height > 8,
+                "The authored glows must survive rasterization beyond the thin chain-unit geometry bounds.");
+            Assert.Equal(catalog.AtlasWidth * catalog.AtlasHeight * 4, catalog.AtlasBgraPremultiplied.Length);
+            Assert.Contains(catalog.AtlasBgraPremultiplied, b => b != 0);
             Assert.False(catalog.TryGunChain("横向拖尾联弹-普通子弹", out _));
+        }
+
+        [Theory]
+        [InlineData("rect")]
+        [InlineData("scale")]
+        [InlineData("unmapped")]
+        [InlineData("duplicate")]
+        [InlineData("atlas-hash")]
+        public void SpriteCatalogRejectsBrokenGeometryIdentityAndAtlasIntegrity(string mutation)
+        {
+            string root = ProjectRoot();
+            string fixture = Path.Combine(Path.GetTempPath(), "cf7-bullet-catalog-" + Guid.NewGuid().ToString("N"));
+            try
+            {
+                foreach (string path in new[] { BulletVisualCatalog.RelativePath, BulletVisualCatalog.SourceSwf, BulletVisualCatalog.AtlasPath })
+                {
+                    string target = Path.Combine(fixture, path);
+                    Directory.CreateDirectory(Path.GetDirectoryName(target));
+                    File.Copy(Path.Combine(root, path), target);
+                }
+                string catalogPath = Path.Combine(fixture, BulletVisualCatalog.RelativePath);
+                JsonNode document = JsonNode.Parse(File.ReadAllText(catalogPath));
+                JsonNode style = document["styles"][2];
+                if (mutation == "rect") style["visual"]["atlasRectPx"][0] = 1024;
+                if (mutation == "scale") style["visual"]["sizePx"][0] = 1;
+                if (mutation == "unmapped") style["ordinaryLinkage"] = null;
+                if (mutation == "duplicate") style["ordinaryLinkage"] = "普通子弹";
+                if (mutation == "atlas-hash") document["atlas"]["sha256"] = new string('0', 64);
+                File.WriteAllText(catalogPath, document.ToJsonString());
+                Assert.Throws<InvalidDataException>(() => BulletVisualCatalog.Load(fixture));
+            }
+            finally
+            {
+                var directory = new DirectoryInfo(fixture);
+                string temporaryRoot = Path.GetFullPath(Path.GetTempPath()).TrimEnd(Path.DirectorySeparatorChar);
+                if (directory.Exists && directory.Parent != null
+                    && string.Equals(directory.Parent.FullName, temporaryRoot, StringComparison.OrdinalIgnoreCase)
+                    && directory.Name.StartsWith("cf7-bullet-catalog-", StringComparison.Ordinal))
+                    directory.Delete(true);
+            }
         }
 
         [Fact]
@@ -58,16 +120,21 @@ namespace CF7Launcher.Tests.Guardian
         }
 
         [Fact]
-        public void CombinedNormalAndChainVisualItemsStopAt256()
+        public void CombinedNormalAndChainVisualItemsRespectTheSharedBudget()
         {
-            string entries256 = string.Join(";", Enumerable.Repeat("0,10,20,0,100,100,100", 256));
-            Assert.True(BulletVisualFrame.TryParse("1|200|255|1|0|1;" + entries256, 2,
+            string entries = string.Join(";", Enumerable.Repeat("0,10,20,0,100,100,100", 1024));
+            Assert.True(BulletVisualFrame.TryParse("1|200|1024|0|0|1;" + entries, 2,
                 out var full));
-            Assert.Equal(256, full.Instances.Length);
-            Assert.Equal(255, full.NormalCount);
-            Assert.Equal(1, full.ChainCount);
+            Assert.Equal(1024, full.Instances.Length);
+            Assert.Equal(1024, full.NormalCount);
+            Assert.Equal(0, full.ChainCount);
+            // Ordinary snapshots stop at the shared 1024 budget instead of the old 256 cap.
             Assert.False(BulletVisualFrame.TryParse(
-                "1|201|256|1|0|1;" + entries256 + ";0,10,20,0,100,100,100", 2, out _));
+                "1|201|1025|0|0|1;" + entries + ";0,10,20,0,100,100,100", 2, out _));
+            // Packets without the ownership flag still parse but never authorize native drawing.
+            Assert.True(BulletVisualFrame.TryParse("1|202|1|0|0;0,10,20,0,100,100,100", 2,
+                out var shadow));
+            Assert.False(shadow.NativeOwned);
         }
 
         [Fact]
@@ -75,11 +142,11 @@ namespace CF7Launcher.Tests.Guardian
         {
             var shadow = new BulletVisualShadow(BulletVisualCatalog.Load(ProjectRoot()));
             Assert.NotNull(shadow.Observe("1|100|1|1|0;0,10,20,0,100,100,100;1,30,40,0,100,100,100", 7));
-            Assert.Equal("normal.plain=1/1,chain.plain=0/0,normal.enhanced=0/0,chain.enhanced=1/1",
-                shadow.CoverageForTests());
+            string firstCoverage = shadow.CoverageForTests();
+            Assert.StartsWith("normal.plain=1/1,chain.plain=0/0,normal.enhanced=0/0,chain.enhanced=1/1,", firstCoverage);
+            Assert.Contains("normal.secondary-pierce=0/0", firstCoverage);
             Assert.Null(shadow.Observe("1|100|1|1|0;0,10,20,0,100,100,100;1,30,40,0,100,100,100", 7));
-            Assert.Equal("normal.plain=1/1,chain.plain=0/0,normal.enhanced=0/0,chain.enhanced=1/1",
-                shadow.CoverageForTests());
+            Assert.Equal(firstCoverage, shadow.CoverageForTests());
             shadow.ResetIfGeneration(6);
             Assert.Contains("chain.enhanced=1/1", shadow.CoverageForTests());
             shadow.ResetIfGeneration(7);

@@ -1,0 +1,13 @@
+﻿import org.flashNight.arki.bullet.BulletComponent.Chain.*;
+import org.flashNight.gesh.depth.*;
+import org.flashNight.neur.ScheduleTimer.*;
+#include "逻辑/战斗系统/战斗系统_fs_联弹管理.as"
+trace("FocusedTestRunId combat-native-closeout Start: __FOCUSED_RUN_ID__");
+org.flashNight.arki.bullet.BulletComponent.Chain.ChainAggregateTest.runAllTests();
+org.flashNight.arki.bullet.BulletComponent.Chain.ChainLifecycleTest.runAllTests();
+org.flashNight.arki.render.BulletVisualProbeTest.runAllTests();
+org.flashNight.arki.render.RayVisualBridgeTest.runAllTests();
+org.flashNight.arki.render.RayVfxManagerTest.runAllTests();
+org.flashNight.arki.render.CombatFxBridgeTest.runAllTests();
+org.flashNight.arki.bullet.BulletComponent.Queue.RayPipelineEquivalenceTest.runAllTests();
+trace("FocusedTestRunId combat-native-closeout Complete: __FOCUSED_RUN_ID__");

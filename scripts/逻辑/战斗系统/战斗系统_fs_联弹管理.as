@@ -68,7 +68,7 @@ _root.联弹系统.创建组 = function(clip:MovieClip, updateFn:Function):Chain
 // 消除热循环里每单元体每帧的 Math.sin 调用（拖尾会逐帧改 rot，更新时自行跟写缓存）
 _root.联弹系统.生成单元体 = function(group:ChainGroup, 旋转:Number):ChainUnitData {
     var u:ChainUnitData = ChainUnitManager.acquireUnitData();
-    u.mc = ChainUnitManager.acquireUnit(group.子弹种类);
+    u.mc = group.nativeGroupOwned ? null : ChainUnitManager.acquireUnit(group.子弹种类);
     u.x = 0;
     u.y = 0;
     u.rot = 旋转;
@@ -80,6 +80,8 @@ _root.联弹系统.生成单元体 = function(group:ChainGroup, 旋转:Number):C
     u.wr = undefined;    // 已写显示角（有限数 != undefined 恒 true，必触发首帧写）
     var l:Array = group.单元体列表;
     l[l.length] = u;     // 索引直写（~135ns）替代 push()（~273ns）
+    ChainUnitManager.initializeAggregateUnit(group, u);
+    org.flashNight.arki.render.ChainVisualBridge.addUnit(group, u);
     return u;
 };
 
@@ -87,6 +89,7 @@ _root.联弹系统.生成单元体 = function(group:ChainGroup, 旋转:Number):C
 _root.联弹系统.回收单元体于 = function(group:ChainGroup, index:Number):Void {
     var list:Array = group.单元体列表;
     var u:ChainUnitData = list[index];
+    org.flashNight.arki.render.ChainVisualBridge.removeUnit(group, u);
     ChainUnitManager.releaseUnit(u.mc);
     ChainUnitManager.releaseUnitData(u);
     var last:Number = list.length - 1;
@@ -135,6 +138,8 @@ _root.联弹系统.渲染组 = function(group:ChainGroup):Void {
         group.rMir = !((sx > 0) && (sy > 0));
     }
 
+    // 碰撞器仍复用本组矩阵；native 组没有隐藏 MC、没有逐单元显示写入。
+    if (group.nativeGroupOwned) return;
     var ma:Number = group.ma;
     var mb:Number = group.mb;
     var mc2:Number = group.mc2;
@@ -160,7 +165,7 @@ _root.联弹系统.渲染组 = function(group:ChainGroup):Void {
             m._xscale = bXs;
             m._yscale = bYs;
             m._alpha = bAlpha;
-            m._visible = group.nativeVisualOwned ? false : bVisible;
+            m._visible = bVisible;
         }
         if (mir) {
             // 镜像/负缩放兜底：矩阵复合求显示角（u.cos/u.sin 由生成时缓存、拖尾更新时跟写）
@@ -300,6 +305,15 @@ _root.联弹系统.爆炸联弹消失 = function(clip:MovieClip):Void {
 
 _root.联弹系统.横向联弹更新 = function(group:ChainGroup):Void {
     var parentMC:MovieClip = group.bullet;
+    if (group.nativeGroupOwned) {
+        var nativeAdvance:Number = parentMC.xmov * group.运动方向系数;
+        ChainUnitManager.beginNativeStep(group, nativeAdvance, false);
+        if (group.aggregate && ChainUnitManager.updateHorizontalAggregate(group, nativeAdvance)) {
+            var nativeRender:Function = group.render;
+            nativeRender(group);
+            return;
+        }
+    }
     var list:Array = group.单元体列表;
 
     // 每帧不变量上提（H01/H02）；衰竭计数内联（原 _root.子弹衰竭计数，省每帧一次函数调用）
@@ -327,6 +341,7 @@ _root.联弹系统.横向联弹更新 = function(group:ChainGroup):Void {
         // 回收条件：衰竭计数到点 或 超出 Z 轴坐标限制；列表至少保留一个单元体
         // （thr 随 sv 递减实时抬升，保持旧实现"回收级联"语义，勿提为循环外常量）
         if ((衰竭 >= thr || uy * cosV + py > hitZ) && len > 1) {
+            org.flashNight.arki.render.ChainVisualBridge.removeUnit(group, u);
             ChainUnitManager.releaseUnit(u.mc);
             ChainUnitManager.releaseUnitData(u);
             len--;
@@ -376,6 +391,7 @@ _root.联弹系统.横向联弹组装 = function(group:ChainGroup):Void {
     for (var i:Number = 0; (i < b.霰弹值) && (b.flag == undefined); i++) {
         _root.联弹系统.生成单元体(group, _root.随机偏移(b.子弹散射度));
     }
+    ChainUnitManager.prepareHorizontalAggregate(group);
     _root.联弹系统.渲染组(group);
 };
 
@@ -641,6 +657,15 @@ _root.联弹系统.纵向联弹更新 = function(group:ChainGroup):Void {
     var parentMC:MovieClip = group.bullet;
     var countTotal:Number = parentMC.霰弹值;
     var A:Number = parentMC.xmov * group.运动方向系数;   // 带方向轴速（X/Y 推进共用；u.sin/u.cos 为生成时缓存）
+    if (group.nativeGroupOwned) {
+        ChainUnitManager.beginNativeStep(group, A, group.count < countTotal);
+        if (group.aggregate && !(group.count < countTotal)) {
+            ChainUnitManager.updateVerticalAggregate(group);
+            var nativeRender:Function = group.render;
+            nativeRender(group);
+            return;
+        }
+    }
     var list:Array = group.单元体列表;
     var u:ChainUnitData;
     var y_min:Number = Infinity, y_max:Number = -Infinity;
@@ -656,13 +681,42 @@ _root.联弹系统.纵向联弹更新 = function(group:ChainGroup):Void {
         var currentParentX:Number = parentMC._x;
         var currentParentY:Number = parentMC._y;
 
-        // 遍历所有单元体，更新Y、X坐标与范围
+        // 遍历所有单元体，更新Y、X坐标与范围。
+        // aggregate 快径：书签恰差当前 run tip 一步（含新 run 首步，本 tick 由
+        // beginNativeStep 恰好推进一步）时直接 +=，与 repeatAdd 单步逐式等价、
+        // 免去每单元 materializeUnit 的调用与段遍历；差 0/≥2 步（补弹重开、速度
+        // 或方向标志变更后首轮、聚合压缩复位）走 materializeUnit 一次性补齐——
+        // 转换期物化一次，既不双推进也不漏步。
+        var aggRuns:Array = group.aggregate ? group.aggregateRuns : null;
+        var aggN:Number = group.aggregate ? aggRuns.length : 0;
+        var aggLast:Object = aggN > 0 ? aggRuns[aggN - 1] : null;
+        var aggLastCount:Number = aggN > 0 ? aggLast.count : 0;
+        var aggPrevCount:Number = aggN > 1 ? aggRuns[aggN - 2].count : 0;
+        var uRun:Number;
         for (j = list.length - 1; j >= 0; j--) {
             u = list[j];
-            uy = u.y + A * u.sin;
-            ux = u.x + A * u.cos;
-            u.y = uy;
-            u.x = ux;
+            if (group.aggregate) {
+                uRun = u.aggregateRun;
+                if ((uRun == aggN - 1 && u.aggregateOffset == aggLastCount - 1)
+                    || (aggN > 1 && aggLastCount == 1 && uRun == aggN - 2
+                        && u.aggregateOffset == aggPrevCount)) {
+                    uy = u.y + A * u.sin;
+                    ux = u.x + A * u.cos;
+                    u.y = uy;
+                    u.x = ux;
+                    u.aggregateRun = aggN - 1;
+                    u.aggregateOffset = aggLastCount;
+                } else {
+                    ChainUnitManager.materializeUnit(group, u);
+                    uy = u.y;
+                    ux = u.x;
+                }
+            } else {
+                uy = u.y + A * u.sin;
+                ux = u.x + A * u.cos;
+                u.y = uy;
+                u.x = ux;
+            }
 
             if (uy > y_max) y_max = uy;
             if (uy < y_min) y_min = uy;
@@ -716,6 +770,7 @@ _root.联弹系统.纵向联弹更新 = function(group:ChainGroup):Void {
             }
         }
         group.补弹累计 = acc - n * D;
+        group.aggregateSafe = 0;
 
         // 更新X碰撞盒（含本帧新增单元体）；对象化联弹由碰撞器直接读取组字段
         group.盒x = x_min;
@@ -801,6 +856,15 @@ _root.联弹系统.纵向联弹组装 = function(group:ChainGroup):Void {
     group.补弹分子 = fillN;
     group.补弹分母 = fillD;
     group.补弹累计 = 0;
+
+    // 原生纵向组仅在出生时选路，不随补弹/霰弹增长动态切换。
+    // ChainLifecycleTest：实际加特林 5–12 单元及合成 64 单元全生命周期
+    // 中，直算均比聚合历史维护省；因此测量覆盖内直接计算，保留原生显示。
+    // 64 是已测上界，不是所有负载的最优分界；更大组沿用精确聚合，待 #123 测量。
+    if (group.nativeGroupOwned && group.aggregate
+        && isFinite(b.霰弹值) && b.霰弹值 <= 64) {
+        group.aggregate = false;
+    }
 
     // 创建第一个单元体
     _root.联弹系统.生成单元体(group, _root.随机偏移(b.子弹散射度));
@@ -994,6 +1058,7 @@ _root.联弹系统.对象联弹初始化 = function(bullet:Object):Void {
     group.盒固有半宽 = tpl.盒固有半宽;
     group.盒固有半高 = tpl.盒固有半高;
     ChainUnitManager.registerGroup(group);
+    org.flashNight.arki.render.ChainVisualBridge.reserveGroup(group);
     tpl.assemble(group);
 };
 

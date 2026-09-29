@@ -5,11 +5,13 @@ using System.Text.Json;
 using CF7Launcher.Guardian.WorldCompositor;
 
 // Own source/output windows only. Does not launch Flash, open saves or drive a game.
-internal static class Program
+internal static partial class Program
 {
     private sealed class ProbeWindow : Form
     {
-        internal bool Pattern,Black;
+        internal bool Pattern,Black,Materials;
+        internal Image FieldImage;
+        internal Rectangle FieldCrop;
         protected override bool ShowWithoutActivation=>true;
         internal ProbeWindow(string title,int x,int y)
         {
@@ -19,31 +21,73 @@ internal static class Program
         }
         protected override void OnPaint(PaintEventArgs e)
         {
-            base.OnPaint(e);if(!Pattern)return;
+            base.OnPaint(e);
+            if(FieldImage!=null) {
+                e.Graphics.Clear(Color.Black);
+                e.Graphics.DrawImage(FieldImage,new Rectangle(0,0,1024,576),FieldCrop,GraphicsUnit.Pixel);
+                return;
+            }
+            if(!Pattern)return;
             if(Black) {e.Graphics.Clear(Color.Black);return;}
             using var a=new SolidBrush(Color.FromArgb(96,112,130));
             using var b=new SolidBrush(Color.FromArgb(80,96,114));
             for(int y=0;y<576;y+=64)for(int x=0;x<1024;x+=64)
                 e.Graphics.FillRectangle(((x+y)/64)%2==0?a:b,x,y,64,64);
+            if(Materials) {
+                using var edge=new Pen(Color.FromArgb(152,162,174),1);
+                using var seam=new Pen(Color.FromArgb(40,49,60),3);
+                using var rivet=new SolidBrush(Color.FromArgb(170,174,180));
+                for(int y=0;y<576;y+=64)for(int x=0;x<1024;x+=64) {
+                    e.Graphics.DrawRectangle(seam,x+3,y+3,57,57);
+                    e.Graphics.DrawLine(edge,x+6,y+6,x+57,y+6);
+                    e.Graphics.DrawLine(edge,x+6,y+6,x+6,y+57);
+                    e.Graphics.FillEllipse(rivet,x+10,y+10,4,4);
+                    e.Graphics.FillEllipse(rivet,x+49,y+49,4,4);
+                }
+            }
         }
     }
 
     [STAThread]
     private static int Main(string[] args)
     {
-        if(args.Length!=3) { Console.Error.WriteLine("Usage: CombatFxProbe <project> <native-dll> <output-dir>");return 2; }
+        bool startup=args.Length==4 && args[3]=="--startup";
+        bool rays=args.Length==5 && args[3]=="--rays",field=args.Length==5 && args[3]=="--field";
+        bool reference=args.Length==5 && args[3]=="--reference";
+        bool channels=args.Length==5 && args[3]=="--channels";
+        bool chainScenes=args.Length==5 && args[3]=="--chain-scenes";
+        if(args.Length!=3 && !startup && !rays && !field && !reference && !channels && !chainScenes) { Console.Error.WriteLine("Usage: CombatFxProbe <project> <native-dll> <output-dir> [--rays <CS6-trace> | --field <CS6-trace> | --reference <CS6-trace> | --channels <CS6-trace> | --startup]");return 2; }
         string root=Path.GetFullPath(args[0]),native=Path.GetFullPath(args[1]),output=Path.GetFullPath(args[2]);
         Directory.CreateDirectory(output);
         Application.SetHighDpiMode(HighDpiMode.PerMonitorV2);
+        if(startup)return RunStartupProbe(root,native,output);
+        using var fieldImage=field?new Bitmap(Path.Combine(output,"source.png")):null;
+        if(field && (fieldImage.Width<1184 || fieldImage.Height<781)) {
+            Console.Error.WriteLine("Field source.png is smaller than crop (160,205,1024,576)");return 2;
+        }
         using var source=new ProbeWindow("Combat FX controlled source",20,20);
-        source.Pattern=true;
+        source.Pattern=true;source.Materials=rays||channels;source.Black=reference;
+        if(field) {source.FieldImage=fieldImage;source.FieldCrop=new Rectangle(160,205,1024,576);}
         using var target=new ProbeWindow("Combat FX composed output",80,80);
-        source.Show();target.Show();IntPtr sourceHwnd=source.Handle,targetHwnd=target.Handle;
+        source.Show();target.Show();
+        // The precompiled renderer can capture before the first WM_PAINT has
+        // finished. Complete this controlled source before starting WGC, so a
+        // partial initial material grid cannot masquerade as retained ray pixels.
+        source.Refresh();StartupNative.GdiFlush();
+        IntPtr sourceHwnd=source.Handle,targetHwnd=target.Handle;
         int result=1;
         Task.Run(async ()=>
         {
-            try { await Run(root,native,output,sourceHwnd,targetHwnd,
-                black=>source.Invoke(new Action(()=> {source.Black=black;source.Refresh();})));result=0; }
+            try {
+                Action<bool> black=on=>source.Invoke(new Action(()=> {source.Black=on;source.Refresh();}));
+                if(channels) await RunRayChannelGallery(root,native,output,sourceHwnd,targetHwnd,Path.GetFullPath(args[4]));
+                else if(reference) await RunRayReferenceGallery(root,native,output,sourceHwnd,targetHwnd,Path.GetFullPath(args[4]));
+                else if(field) await RunRayFieldGallery(root,native,output,sourceHwnd,targetHwnd,Path.GetFullPath(args[4]));
+                else if(chainScenes) await RunChainSceneGallery(root,native,output,sourceHwnd,targetHwnd,Path.GetFullPath(args[4]));
+                else if(rays) await RunRayGallery(root,native,output,sourceHwnd,targetHwnd,black,Path.GetFullPath(args[4]));
+                else await Run(root,native,output,sourceHwnd,targetHwnd,black);
+                result=0;
+            }
             catch(Exception error) { File.WriteAllText(Path.Combine(output,"failure.txt"),error.ToString());Console.Error.WriteLine(error); }
             finally { source.BeginInvoke(new Action(Application.ExitThread)); }
         });

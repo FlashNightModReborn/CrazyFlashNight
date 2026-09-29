@@ -16,6 +16,8 @@ param(
     [string]$SuccessSummary,
     [ValidateRange(1, 3600)]
     [int]$TimeoutSeconds = 240,
+    [ValidateRange(1, 3600)]
+    [int]$AsyncBehaviorTimeoutSeconds = 30,
     [switch]$SkipCompile
 )
 
@@ -206,7 +208,7 @@ try {
         if (-not [regex]::IsMatch($trace, $completePattern)) {
             $rawTracePath = Join-Path $env:APPDATA 'Macromedia\Flash Player\Logs\flashlog.txt'
             $markerPattern = "(?m)^FocusedTestRunId $escapedDomain (?:Start|Complete): $escapedRunId\r?$"
-            $traceDeadline = [DateTime]::UtcNow.AddSeconds([Math]::Min(30, $TimeoutSeconds))
+            $traceDeadline = [DateTime]::UtcNow.AddSeconds([Math]::Min($AsyncBehaviorTimeoutSeconds, $TimeoutSeconds))
             Write-Host '[INFO] Waiting for this focused run to finish its asynchronous checks.'
             do {
                 if (Test-Path -LiteralPath $rawTracePath) {

@@ -12,10 +12,10 @@ $run=@{
   'scripts/类定义/org/flashNight/arki/bullet/BulletComponent/Chain/ChainUnitManager.as'
  )
  ExpectedTracePatterns=@(
-  '(?m)^BulletVisualProbeTest Tests Passed: 11\r?$',
+  '(?m)^BulletVisualProbeTest Tests Passed: 13\r?$',
   '(?m)^BulletVisualProbeTest Tests Failed: 0\r?$'
  )
- SuccessSummary='Bullet visual 256/257 and ownership handback 11/11'
+ SuccessSummary='Bullet native-only ownership, 1024/1025 capacity, fault reporting and epoch retirement 13/13'
  TimeoutSeconds=$TimeoutSeconds
  SkipCompile=$SkipCompile
 }

@@ -19,7 +19,7 @@ foreach ($name in @(
     'RUSTC_WRAPPER', 'RUSTC_WORKSPACE_WRAPPER',
     'CARGO_TARGET_X86_64_PC_WINDOWS_MSVC_LINKER', 'CARGO_TARGET_X86_64_PC_WINDOWS_MSVC_RUSTFLAGS',
     'MSBuildSDKsPath', 'MSBUILD_EXE_PATH', 'DOTNET_HOST_PATH', 'DOTNET_ROLL_FORWARD',
-    'DOTNET_ROLL_FORWARD_TO_PRERELEASE', 'DOTNET_MULTILEVEL_LOOKUP'
+    'DOTNET_ROLL_FORWARD_TO_PRERELEASE', 'DOTNET_MULTILEVEL_LOOKUP', 'CF7_D3DCOMPILER_DLL'
 )) {
     [Environment]::SetEnvironmentVariable($name, $null, 'Process')
     # .NET 10/PowerShell can retain an empty Env: entry for a null assignment.
@@ -56,6 +56,22 @@ function Assert-Hash([string]$label, [string]$path, [string]$expected) {
     if (-not (Test-Path -LiteralPath $path -PathType Leaf)) { Add-Mismatch "$label missing=$path"; return }
     $actual = (Get-FileHash -Algorithm SHA256 -LiteralPath $path).Hash.ToUpperInvariant()
     Assert-Equal "$label SHA256" $expected.ToUpperInvariant() $actual
+}
+
+# HLSL 现在是构建输入；缺失或漂移时连 Validate 也不能退回系统 DLL。
+function Resolve-Cf7PinnedD3DCompiler([string]$SdkRoot, [string]$ExpectedSha256) {
+    if ($ExpectedSha256 -notmatch '^[0-9a-fA-F]{64}$') {
+        throw 'Pinned d3dcompiler_47.dll SHA256 is missing or malformed in the toolchain lock.'
+    }
+    $compiler = Join-Path $SdkRoot 'd3dcompiler_47.dll'
+    if (-not (Test-Path -LiteralPath $compiler -PathType Leaf)) {
+        throw "Pinned d3dcompiler_47.dll missing=$compiler"
+    }
+    $actual = (Get-FileHash -Algorithm SHA256 -LiteralPath $compiler).Hash.ToUpperInvariant()
+    if ($actual -ne $ExpectedSha256.ToUpperInvariant()) {
+        throw "Pinned d3dcompiler_47.dll SHA256 expected=$ExpectedSha256 actual=$actual path=$compiler"
+    }
+    return [IO.Path]::GetFullPath($compiler)
 }
 
 # .NET SDK：只选择同时具备精确 SDK 且 host 字节匹配的安装，不依赖机器 PATH 顺序。
@@ -138,6 +154,8 @@ $rc = Join-Path $sdkRoot 'rc.exe'
 Assert-Hash 'rc.exe' $rc ([string]$lock.windowsSdk.rcSha256)
 $env:CF7_WINDOWS_SDK_VERSION = ([string]$lock.windowsSdk.version).TrimEnd('\')
 $env:CF7_RC_EXE = $rc
+$env:CF7_D3DCOMPILER_DLL = Resolve-Cf7PinnedD3DCompiler -SdkRoot $sdkRoot `
+    -ExpectedSha256 ([string]$lock.windowsSdk.d3dcompilerSha256)
 
 # Rust：rust-toolchain.toml 固定 channel；发布时进一步检查真实 rustc/cargo，而不是 rustup proxy。
 $rustupHome = $env:RUSTUP_HOME

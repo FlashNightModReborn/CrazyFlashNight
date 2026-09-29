@@ -180,6 +180,9 @@ class org.flashNight.arki.bullet.Factory.BulletFactory {
         // 删除注册条目即整型回退 MC 壳路径，逐模板可灰度
         var isChainObject:Boolean = isChain && !isTransparent && !isRay && !isUnitBullet
             && _root.联弹系统.对象化模板[Obj.baseAsset] != undefined;
+        // 三种直接穿刺共享默认生命周期；联弹的组级结算不向视觉单元派发命中。
+        var pierceProfile:PierceBulletProfile = (!isChain && !isTransparent && !isRay && !isUnitBullet)
+            ? PierceBulletProfile.resolve(Obj.baseAsset) : null;
 
         // 设置旋转角度
 
@@ -214,7 +217,7 @@ class org.flashNight.arki.bullet.Factory.BulletFactory {
                 Obj.baseAsset,
                 Obj.发射者名 + Obj.子弹种类 + count + scatteringAngle,
                 count++,
-                Obj);
+                pierceProfile ? PierceBulletLifecycle.prepareInit(Obj, pierceProfile) : Obj);
         }
 
         // count = (++count) % 100;
@@ -279,7 +282,7 @@ class org.flashNight.arki.bullet.Factory.BulletFactory {
         }
         else {
             // 普通子弹（含自定义运动类型）
-            lifecycle = NormalBulletLifecycle.BASIC;
+            lifecycle = pierceProfile ? PierceBulletLifecycle.BASIC : NormalBulletLifecycle.BASIC;
 
             bulletInstance.xmov = velocity * Math.cos(angleRadians);
             bulletInstance.ymov = velocity * Math.sin(angleRadians);

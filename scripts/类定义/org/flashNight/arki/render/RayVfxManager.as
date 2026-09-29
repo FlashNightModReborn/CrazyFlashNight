@@ -1,4 +1,6 @@
-﻿import org.flashNight.arki.bullet.BulletComponent.Config.TeslaRayConfig;
+﻿import org.flashNight.arki.render.VisualRandom;
+import org.flashNight.arki.render.RayVisualBridge;
+import org.flashNight.arki.bullet.BulletComponent.Config.TeslaRayConfig;
 import org.flashNight.arki.spatial.transform.SceneCoordinateManager;
 import org.flashNight.arki.render.RayStyleRegistry;
 
@@ -41,6 +43,8 @@ import org.flashNight.arki.render.RayStyleRegistry;
  * @see WaveRenderer
  */
 class org.flashNight.arki.render.RayVfxManager {
+    // 仅离线原版参考/测试显式启用；生产不会自动回退到 Flash renderer。
+    public static var referenceRenderingForTests:Boolean = false;
 
     // ════════════════════════════════════════════════════════════════════════
     // 活跃列表与延迟队列
@@ -192,6 +196,12 @@ class org.flashNight.arki.render.RayVfxManager {
      * @param config 射线配置对象 (TeslaRayConfig)
      * @param meta   段上下文 (SegmentMeta)，可为 null 使用默认值
      */
+    /** BQP supplies only frozen presentation identity/topology; all hit work has its old owner. */
+    public static function spawnForBullet(bullet:Object, startX:Number, startY:Number,
+                                          endX:Number, endY:Number,
+                                          config:TeslaRayConfig, meta:Object):Void {
+        spawn(startX, startY, endX, endY, config, RayVisualBridge.channelMeta(bullet, meta));
+    }
     public static function spawn(startX:Number, startY:Number,
                                   endX:Number, endY:Number,
                                   config:TeslaRayConfig, meta:Object):Void {
@@ -199,8 +209,6 @@ class org.flashNight.arki.render.RayVfxManager {
             !isFiniteNumber(endX) || !isFiniteNumber(endY)) {
             return;
         }
-
-        ensureInitialized();
 
         // 构建默认 meta
         if (meta == null) {
@@ -214,6 +222,15 @@ class org.flashNight.arki.render.RayVfxManager {
                 hitPoints: null
             };
         }
+
+        // Native receives copied metadata before any MC/path allocation or renderer RNG.
+        if (!referenceRenderingForTests) {
+            if (!RayVisualBridge.trySpawn(startX, startY, endX, endY, config, meta))
+                RayVisualBridge.requireNative();
+            return;
+        }
+        ensureInitialized();
+        meta = RayVisualBridge.copyMeta(meta, 0, 0);
 
         // 延迟策略：按 segmentKind 区分
         var delay:Number = computeSegmentDelay(config, meta);
@@ -294,6 +311,7 @@ class org.flashNight.arki.render.RayVfxManager {
      * 重置渲染器，清理所有活跃电弧
      */
     public static function reset():Void {
+        RayVisualBridge.resetScene();
         if (!_initialized) return;
 
         // 清理活跃电弧
@@ -588,7 +606,7 @@ class org.flashNight.arki.render.RayVfxManager {
                 }
                 // 随机爆闪（使用 createArc 预缓存的参数，零函数调用开销）
                 if (arc.flickerEnabled) {
-                    arc.mc._alpha = arc.flickerMin + Math.random() * arc.flickerRange;
+                    arc.mc._alpha = arc.flickerMin + VisualRandom.nextFloat() * arc.flickerRange;
                 } else {
                     arc.mc._alpha = 100;
                 }

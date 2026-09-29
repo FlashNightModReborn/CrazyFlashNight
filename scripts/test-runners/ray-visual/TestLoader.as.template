@@ -1,0 +1,4 @@
+﻿trace("FocusedTestRunId ray-visual Start: __FOCUSED_RUN_ID__");
+org.flashNight.arki.render.RayVisualBridgeTest.runAllTests();
+org.flashNight.arki.render.RayVfxManagerTest.runAllTests();
+trace("FocusedTestRunId ray-visual Complete: __FOCUSED_RUN_ID__");

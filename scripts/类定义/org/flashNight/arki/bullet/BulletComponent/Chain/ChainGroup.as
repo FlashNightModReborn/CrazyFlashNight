@@ -26,7 +26,25 @@ class org.flashNight.arki.bullet.BulletComponent.Chain.ChainGroup {
     // removeGroup 幂等标记
     public var __removed:Boolean;
     // 首批枪式联弹单元体在生成时选定的显示端；碰撞/衰减仍由本组维护。
-    public var nativeVisualOwned:Boolean;
+    // 新组协议只在出生时选定；与旧逐 MC 采样所有权分开。
+    public var nativeGroupOwned:Boolean;
+    public var nativeStarved:Boolean;
+    public var nativeGroupId:Number;
+    public var nativeStyle:Number;
+    public var nativeReserved:Number;
+    public var nativeNextUnit:Number;
+    public var nativeStep:Number;
+    public var nativeAdvance:Number;
+    public var nativeAdvanceX:Boolean;
+    // 聚合不改变任何运动公式：非边界单元按恒增量段懒算，事件才物化。
+    public var aggregate:Boolean;
+    public var aggregateRuns:Array;
+    public var aggregateSorted:Array;
+    public var aggregateMin:org.flashNight.arki.bullet.BulletComponent.Chain.ChainUnitData;
+    public var aggregateMax:org.flashNight.arki.bullet.BulletComponent.Chain.ChainUnitData;
+    public var aggregateSafe:Number;
+    public var aggregateAdvance:Number;
+    public var aggregateVisits:Number;
 
     // ---------- 渲染矩阵/显示状态缓存（渲染组维护，碰撞器数据路径复用） ----------
     // 显示状态版本（差量下发 scale/alpha/visible 用）；⚠ 必须初始化为数值 0：
@@ -110,6 +128,16 @@ class org.flashNight.arki.bullet.BulletComponent.Chain.ChainGroup {
         render = renderFn;
         单元体列表 = [];
         rVer = 0;
-        nativeVisualOwned = false;
+        nativeGroupOwned = false;
+        nativeStarved = false;
+        nativeNextUnit = 0;
+        nativeStep = 0;
+        nativeAdvance = 0;
+        nativeAdvanceX = false;
+        aggregate = false;
+        aggregateRuns = [];
+        aggregateSorted = [];
+        aggregateSafe = 0;
+        aggregateVisits = 0;
     }
 }

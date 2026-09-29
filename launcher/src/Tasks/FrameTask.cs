@@ -22,7 +22,7 @@ namespace CF7Launcher.Tasks
     /// 伤害数字调用链：C# span parser → bounded-lifetime reducer → latest-wins overlay。
     /// V8 仅保留 GameInput DFA，不再参与伤害数字状态或渲染描述符。
     /// </summary>
-    public class FrameTask
+    public partial class FrameTask
     {
         private readonly V8Runtime _v8;
         private readonly HitNumberOverlay _overlay;
@@ -37,6 +37,7 @@ namespace CF7Launcher.Tasks
         internal Action BulletVisualRejected;
         internal Action BulletVisualCleared;
         private BulletVisualShadow _bulletVisualShadow;
+        private int _bulletVisualStyleCount;
         private readonly object _combatFxLock=new object();
         private CombatFxCatalog _combatFxCatalog;
         private CombatFxEngine _combatFxEngine;
@@ -79,6 +80,7 @@ namespace CF7Launcher.Tasks
         {
             _stopped = true;
             _bulletVisualShadow?.Reset();
+            ResetProjectileVisuals();
             lock(_combatFxLock) { _combatFxEngine?.Reset();CombatFxCleared?.Invoke(); }
             if (_socket != null) _socket.OnClientReady -= PublishHitNumberSourceState;
             _socket = null;
@@ -87,6 +89,7 @@ namespace CF7Launcher.Tasks
         internal void ConfigureBulletVisualShadow(BulletVisualCatalog catalog)
         {
             _bulletVisualShadow = catalog == null ? null : new BulletVisualShadow(catalog);
+            _bulletVisualStyleCount = catalog?.Styles.Count ?? 0;
         }
 
         internal void ResetBulletVisualShadowForGeneration(int generation) =>
@@ -139,7 +142,7 @@ namespace CF7Launcher.Tasks
                 snapshot = _hitNumberRuntime.Configure(
                     HitNumberRuntimeOptions.FromPreferences(mode, worldRowLimit));
             }
-            _overlay.UpdateFrame(snapshot);
+            _overlay?.UpdateFrame(snapshot);
             PublishHitNumberSourceState();
         }
 
@@ -179,10 +182,12 @@ namespace CF7Launcher.Tasks
 
         /// <summary>
         /// 快车道入口：由 XmlSocketServer 前缀检测直接调用，跳过 JObject 构造。
-        /// 格式为 F{cam}\x01{hn}[\x02{fps}][\x04{inputPayload}][\x05{bulletVisual}][\x06{combatFx}]。
+        /// 格式为 F{cam}\x01{hn}[\x02{fps}][\x04{inputPayload}][\x05{bulletVisual}]
+        /// [\x06{combatFx}][\x07{rayVisual}][\x08{chainVisual}]。
         /// </summary>
         public void HandleRaw(string cam, string hn, string fps, string inputPayload,
-            string bulletVisualPayload = null, int connectionGeneration = 0,string combatFxPayload=null)
+            string bulletVisualPayload = null, int connectionGeneration = 0,string combatFxPayload=null,
+            string rayVisualPayload=null,string chainVisualPayload=null)
         {
             if (_stopped) return;
             try
@@ -196,18 +201,12 @@ namespace CF7Launcher.Tasks
                         hn);
                     weatherCamera = _hitNumberRuntime.Camera;
                 }
-                _overlay.UpdateFrame(hitSnapshot);
+                _overlay?.UpdateFrame(hitSnapshot);
                 WeatherCameraObserved?.Invoke(weatherCamera.OffsetX,weatherCamera.OffsetY,weatherCamera.Scale);
                 if(combatFxPayload!=null) ObserveCombatFx(combatFxPayload,connectionGeneration,weatherCamera);
+                ObserveProjectileVisuals(rayVisualPayload,chainVisualPayload,connectionGeneration,weatherCamera);
                 if (bulletVisualPayload != null && _bulletVisualShadow != null)
-                {
-                    BulletVisualFrame visual = _bulletVisualShadow.Observe(bulletVisualPayload, connectionGeneration);
-                    if (visual != null)
-                        BulletVisualObserved?.Invoke(visual, weatherCamera.OffsetX,
-                            weatherCamera.OffsetY, weatherCamera.Scale);
-                    else
-                        BulletVisualRejected?.Invoke();
-                }
+                    ObserveOrdinaryBulletVisuals(bulletVisualPayload, connectionGeneration, weatherCamera);
 
                 // 搓招输入处理：解析 \x04 payload -> V8 -> K 前缀推送
                 if (!string.IsNullOrEmpty(inputPayload) && _socket != null)
@@ -324,8 +323,9 @@ namespace CF7Launcher.Tasks
             {
                 HitNumberRuntimeSnapshot snapshot;
                 lock (_hitNumberLock) snapshot = _hitNumberRuntime.Reset();
-                _overlay.UpdateFrame(snapshot);
+                _overlay?.UpdateFrame(snapshot);
                 _bulletVisualShadow?.Reset();
+                ResetProjectileScene();
                 BulletVisualCleared?.Invoke();
                 lock(_combatFxLock) {
                     _minimumCombatFxEpoch=Math.Max(_minimumCombatFxEpoch,(_combatFxEngine?.Epoch??-1)+1);
@@ -356,7 +356,7 @@ namespace CF7Launcher.Tasks
                     snapshot = _hitNumberRuntime.ProcessFrame(
                         cam,
                         hn);
-                _overlay.UpdateFrame(snapshot);
+                _overlay?.UpdateFrame(snapshot);
             }
             catch (Exception ex)
             {

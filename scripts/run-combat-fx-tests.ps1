@@ -13,11 +13,11 @@ $run=@{
   'scripts/类定义/org/flashNight/arki/render/VisualRandom.as'
  )
  ExpectedTracePatterns=@(
-  '(?m)^CombatFxBridgeTest Tests Passed: 24\r?$',
+  '(?m)^CombatFxBridgeTest Tests Passed: 25\r?$',
   '(?m)^CombatFxBridgeTest Tests Failed: 0\r?$',
   '(?m)^\[RayEq\] PASS: all [1-9][0-9]* checks equal\r?$'
  )
- SuccessSummary='Combat effect clocks, RNG, bounded queues and bitmap stamps 24/24 plus ray pipeline equivalence'
+ SuccessSummary='Combat effect clocks, RNG, bounded queues and bitmap stamps and native-only decoration 25/25 plus ray pipeline equivalence'
  TimeoutSeconds=$TimeoutSeconds
  SkipCompile=$SkipCompile
 }

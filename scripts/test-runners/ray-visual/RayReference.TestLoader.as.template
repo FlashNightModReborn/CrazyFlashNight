@@ -1,0 +1,10 @@
+﻿import org.flashNight.arki.render.*;
+import org.flashNight.arki.bullet.BulletComponent.Config.*;
+import org.flashNight.arki.spatial.transform.*;
+import org.flashNight.naki.RandomNumberEngine.*;
+
+trace("FocusedTestRunId ray-reference Start: __FOCUSED_RUN_ID__");
+org.flashNight.arki.render.RayVfxManagerTest.runAllTests();
+_root.__rayReferenceRunId = "__FOCUSED_RUN_ID__";
+#include "test-runners/ray-visual/RayReferenceBoard.as"
+stop();

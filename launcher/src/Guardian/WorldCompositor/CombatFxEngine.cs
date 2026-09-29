@@ -15,6 +15,7 @@ namespace CF7Launcher.Guardian.WorldCompositor
         private readonly CombatFxEquipmentLight[] _resident=new CombatFxEquipmentLight[LightLimit];
         private readonly CombatFxDrawFrame _draw=new CombatFxDrawFrame(TotalLimit);
         private int _generation=-1,_epoch=-1,_sequence=-1,_tick,_nextId,_eventSequence;
+        private long _nextLightId;
         private readonly List<CombatFxSettlement> _settled=new List<CombatFxSettlement>(StampBatchLimit);
         private int _groundHits;
         internal int Dropped { get; private set; }
@@ -32,6 +33,7 @@ namespace CF7Launcher.Guardian.WorldCompositor
         }
         private struct FlashLight
         {
+            internal long Id;
             internal int Age,Ticks;
             internal float X,Y,Radius,Energy,R,G,B;
             // Keep the first two game frames visible across capture/presentation cadence,
@@ -42,8 +44,9 @@ namespace CF7Launcher.Guardian.WorldCompositor
         internal void Reset()
         {
             Array.Clear(_particles);Array.Clear(_lights);Array.Clear(_resident);_generation=-1;_epoch=-1;_sequence=-1;
-            _tick=0;_nextId=0;_eventSequence=0;_settled.Clear();_groundHits=0;
+            _tick=0;_nextId=0;_nextLightId=0;_eventSequence=0;_settled.Clear();_groundHits=0;
             _draw.Count=0;_draw.CasingCount=0;_draw.ImpactCount=0;_draw.LightCount=0;
+            _draw.ResidentLightCount=0;_draw.CandidateLightCount=0;
         }
 
         internal bool Apply(CombatFxFrame frame,int generation)
@@ -54,7 +57,7 @@ namespace CF7Launcher.Guardian.WorldCompositor
             if (fresh)
             {
                 Array.Clear(_particles);Array.Clear(_lights);Array.Clear(_resident);_epoch=frame.Epoch;_sequence=-1;_tick=frame.GameTick;
-                _nextId=0;_eventSequence=0;_generation=generation;
+                _nextId=0;_nextLightId=0;_eventSequence=0;_generation=generation;
             }
             _settled.Clear();_groundHits=0;
             int elapsed=frame.Paused?0:frame.GameTick-_tick;
@@ -132,7 +135,8 @@ namespace CF7Launcher.Guardian.WorldCompositor
                 LightDropped++;
                 if(weakest>=profile.Energy)return;
             }
-            _lights[slot]=new FlashLight {X=spawn.X,Y=spawn.Y,Ticks=profile.Ticks,
+            _nextLightId=_nextLightId==long.MaxValue?1:_nextLightId+1;
+            _lights[slot]=new FlashLight {Id=-_nextLightId,X=spawn.X,Y=spawn.Y,Ticks=profile.Ticks,
                 Radius=Math.Clamp(profile.Radius*Math.Abs(spawn.ScaleX),16,320),Energy=profile.Energy,
                 R=profile.R,G=profile.G,B=profile.B};
         }
@@ -225,10 +229,14 @@ namespace CF7Launcher.Guardian.WorldCompositor
                 _draw.Data[at+12]=f.U0;_draw.Data[at+13]=f.V0;_draw.Data[at+14]=f.U1;_draw.Data[at+15]=f.V1;
                 count++;if(style.IsCasing)casings++;if(style.IsImpact)impacts++;
             }
-            int lights=0;
+            int lights=0,candidates=0;
             for(int n=0;n<_resident.Length;n++)
             {
                 ref CombatFxEquipmentLight p=ref _resident[n];if(p.Id==0)continue;
+                _draw.CandidateLights[candidates++]=new WorldLightCandidate(p.Id,p.Kind==0?70:100,
+                    p.X,p.Y,p.Length,p.Energy,p.R,p.G,p.B,p.Kind,p.DirectionX,p.DirectionY,p.HalfWidth,
+                    p.NearX,p.NearY,p.NearRadius,p.NearEnergy);
+                _draw.LightIds[lights]=p.Id;
                 int at=lights++*LightStride;
                 _draw.Lights[at]=p.X;_draw.Lights[at+1]=p.Y;_draw.Lights[at+2]=p.Length;_draw.Lights[at+3]=p.Energy;
                 _draw.Lights[at+4]=p.R;_draw.Lights[at+5]=p.G;_draw.Lights[at+6]=p.B;_draw.Lights[at+7]=p.Kind;
@@ -237,9 +245,14 @@ namespace CF7Launcher.Guardian.WorldCompositor
                 _draw.Lights[at+12]=p.NearX;_draw.Lights[at+13]=p.NearY;
                 _draw.Lights[at+14]=p.NearRadius;_draw.Lights[at+15]=p.NearEnergy;
             }
-            for(int n=0;n<_lights.Length && lights<LightLimit;n++)
+            _draw.ResidentLightCount=lights;
+            for(int n=0;n<_lights.Length;n++)
             {
                 ref FlashLight p=ref _lights[n];if(p.Ticks==0)continue;
+                _draw.CandidateLights[candidates++]=new WorldLightCandidate(p.Id,75,
+                    p.X,p.Y,p.Radius,p.Strength,p.R,p.G,p.B,0);
+                if(lights>=LightLimit)continue;
+                _draw.LightIds[lights]=p.Id;
                 int at=lights++*LightStride;
                 _draw.Lights[at]=p.X;_draw.Lights[at+1]=p.Y;_draw.Lights[at+2]=p.Radius;_draw.Lights[at+3]=p.Strength;
                 _draw.Lights[at+4]=p.R;_draw.Lights[at+5]=p.G;_draw.Lights[at+6]=p.B;
@@ -247,7 +260,8 @@ namespace CF7Launcher.Guardian.WorldCompositor
                 _draw.Lights[at+12]=0;_draw.Lights[at+13]=0;_draw.Lights[at+14]=0;_draw.Lights[at+15]=0;
             }
             _draw.Count=count;_draw.CasingCount=casings;_draw.ImpactCount=impacts;
-            _draw.LightCount=lights;_draw.MaximumLightResponse=_catalog.MaximumLightResponse;return _draw;
+            _draw.LightCount=lights;_draw.CandidateLightCount=candidates;
+            _draw.MaximumLightResponse=_catalog.MaximumLightResponse;return _draw;
         }
 
         internal CombatFxEvents TakeEvents()
@@ -264,7 +278,11 @@ namespace CF7Launcher.Guardian.WorldCompositor
     {
         internal readonly float[] Data;
         internal readonly float[] Lights=new float[CombatFxEngine.LightLimit*CombatFxEngine.LightStride];
-        internal int Count,CasingCount,ImpactCount,LightCount;
+        internal readonly long[] LightIds=new long[CombatFxEngine.LightLimit];
+        // The original Lights remain the exact legacy selection. The composer
+        // can additionally consider muzzle lights hidden by saturated residents.
+        internal readonly WorldLightCandidate[] CandidateLights=new WorldLightCandidate[CombatFxEngine.LightLimit*2];
+        internal int Count,CasingCount,ImpactCount,LightCount,ResidentLightCount,CandidateLightCount;
         internal float MaximumLightResponse;
         internal CombatFxDrawFrame(int capacity) { Data=new float[capacity*16]; }
     }

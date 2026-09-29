@@ -1,0 +1,51 @@
+{
+  "schema": "cf7-ray-lights.v1",
+  "ticksPerSecond": 30,
+  "profiles": {
+    "flame": {
+      "shape": "cone", "priority": 85, "energy": 1.9,
+      "widthScale": 16, "minWidth": 200, "maxWidth": 280, "maxLength": 1024,
+      "nearWidthRatio": 0.85, "maxNearRadius": 140, "nearEnergyRatio": 0.9,
+      "colorSource": "fixed", "color": "#FFB66B", "whiten": 0.08,
+      "holdTicks": -1, "fadeTicks": 3, "flicker": 0.07
+    },
+    "beam": {
+      "shape": "beam", "priority": 65, "energy": 1.25,
+      "widthScale": 16, "minWidth": 96, "maxWidth": 160, "maxLength": 1024,
+      "colorSource": "primary", "whiten": 0.5,
+      "holdTicks": -1, "fadeTicks": 2, "flicker": 0
+    },
+    "heavy": {
+      "shape": "beam", "priority": 80, "energy": 1.65,
+      "widthScale": 16, "minWidth": 112, "maxWidth": 192, "maxLength": 1024,
+      "colorSource": "primary", "whiten": 0.4,
+      "holdTicks": -1, "fadeTicks": 3, "flicker": 0.025
+    },
+    "arc": {
+      "shape": "beam", "priority": 55, "energy": 1.25,
+      "widthScale": 16, "minWidth": 96, "maxWidth": 160, "maxLength": 1024,
+      "colorSource": "fixed", "color": "#B6DCFF", "whiten": 0.2,
+      "holdTicks": 1, "fadeTicks": 2, "flicker": 0.08
+    },
+    "glyph": {
+      "shape": "beam", "priority": 35, "energy": 0.9,
+      "widthScale": 12, "minWidth": 96, "maxWidth": 144, "maxLength": 1024,
+      "colorSource": "primary", "whiten": 0.25,
+      "holdTicks": -1, "fadeTicks": 2, "flicker": 0
+    }
+  },
+  "styles": {
+    "tesla": "arc",
+    "prism": "beam",
+    "radiance": "heavy",
+    "spectrum": "beam",
+    "resonance": "beam",
+    "wave": "heavy",
+    "thermal": "heavy",
+    "vortex": "beam",
+    "plasma": "heavy",
+    "convergence": "heavy",
+    "bagua_rod": "glyph",
+    "flame_stream": "flame"
+  }
+}

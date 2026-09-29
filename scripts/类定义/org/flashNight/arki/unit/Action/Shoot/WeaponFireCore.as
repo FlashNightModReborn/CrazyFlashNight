@@ -2,6 +2,7 @@
 import org.flashNight.arki.unit.*;
 import org.flashNight.sara.util.*;
 import org.flashNight.neur.Event.*;
+import org.flashNight.arki.render.RayVisualBridge;
 
 /**
  * @class WeaponFireCore
@@ -96,6 +97,9 @@ class org.flashNight.arki.unit.Action.Shoot.WeaponFireCore {
         } else {
             bulletProps.发射间隔毫秒 = owner[weaponType + "属性"].interval;
         }
+
+        // 只冻结真实发射槽/枪口/物件的表现身份；不更改命中、弹药或随机数。
+        RayVisualBridge.captureShot(owner, weaponType, muzzlePosition, bulletProps, firedWeapon);
 
         // 发射子弹
         _root.子弹区域shoot传递(bulletProps);

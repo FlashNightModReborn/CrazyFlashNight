@@ -1,4 +1,4 @@
-param([string]$ProjectRoot)
+param([string]$ProjectRoot, [switch]$InputClassificationOnly)
 
 $ErrorActionPreference = 'Stop'
 if (-not $ProjectRoot) { $ProjectRoot = Split-Path -Parent (Split-Path -Parent $MyInvocation.MyCommand.Path) }
@@ -75,9 +75,14 @@ try {
     $repositoryPolicyFiles = @($repositoryConfig.domains.policy.fixedFiles)
     $repositoryPolicyTrees = @($repositoryConfig.domains.policy.trees)
     $repositoryRuntimeInputSet = New-Object 'System.Collections.Generic.HashSet[string]' ([StringComparer]::Ordinal)
+    $repositoryInputOwners = @{}
     foreach ($domain in @('artifactSource','producerRecipe','toolchainLock','policy')) {
         foreach ($relativePath in @(Get-Cf7RuntimeV2DomainFiles -ProjectRoot $ProjectRoot -Domain $domain -Mode Worktree)) {
             [void]$repositoryRuntimeInputSet.Add(([string]$relativePath).Replace('\', '/'))
+            if ($repositoryInputOwners.ContainsKey([string]$relativePath)) {
+                throw "Runtime input has multiple domains: $relativePath ($($repositoryInputOwners[[string]$relativePath]),$domain)"
+            }
+            $repositoryInputOwners[[string]$relativePath] = $domain
         }
     }
     $audioNativeBuildInputs = Get-Content -LiteralPath (Join-Path $ProjectRoot 'launcher\native\audio-v2-build-inputs.v1.json') -Raw -Encoding UTF8 | ConvertFrom-Json
@@ -94,6 +99,86 @@ try {
     foreach ($worldConfig in @('preset.json','render-schedule.json')) {
         Assert-Equal "world compositor configuration is policy-bound: $worldConfig" $true `
             $repositoryRuntimeInputSet.Contains('launcher/data/world-lighting/' + $worldConfig)
+    }
+    $candidateProducerSource = [IO.File]::ReadAllText(
+        (Join-Path $ProjectRoot 'launcher\build-runtime-candidate.ps1'), [Text.Encoding]::UTF8)
+    foreach ($shaderInput in @('ShaderSources.h','ShaderBake.cpp','RayShader.h','RayStyleShader.h','RayFlameShader.h')) {
+        Assert-Equal "shader build input enters only artifact source: $shaderInput" 'artifactSource' `
+            $repositoryInputOwners['launcher/native/world-compositor/' + $shaderInput]
+        Assert-Equal "canonical native build copies shader input: $shaderInput" $true `
+            $candidateProducerSource.Contains("'$shaderInput'")
+    }
+    $runtimeToolchainLock = Get-Content -LiteralPath (Join-Path $ProjectRoot 'config\build\runtime-toolchain.lock.json') `
+        -Raw -Encoding UTF8 | ConvertFrom-Json
+    Assert-Equal 'HLSL compiler has a SHA256 toolchain pin' $true `
+        ([string]$runtimeToolchainLock.windowsSdk.d3dcompilerSha256 -cmatch '^[0-9A-F]{64}$')
+    Assert-Equal 'HLSL compiler pin belongs to the toolchain domain' 'toolchainLock' `
+        $repositoryInputOwners['config/build/runtime-toolchain.lock.json']
+    $environmentCheckSource = [IO.File]::ReadAllText(
+        (Join-Path $ProjectRoot 'tools\check-runtime-build-env.ps1'), [Text.Encoding]::UTF8)
+    $environmentTokens = $null
+    $environmentParseErrors = $null
+    $environmentAst = [Management.Automation.Language.Parser]::ParseInput(
+        $environmentCheckSource, [ref]$environmentTokens, [ref]$environmentParseErrors)
+    Assert-Equal 'toolchain checker parses for shader compiler gate tests' 0 @($environmentParseErrors).Count
+    $shaderPinResolvers = @($environmentAst.FindAll({
+        param($node)
+        $node -is [Management.Automation.Language.FunctionDefinitionAst] -and
+            $node.Name -eq 'Resolve-Cf7PinnedD3DCompiler'
+    }, $true))
+    Assert-Equal 'toolchain checker has one strict shader compiler resolver' 1 $shaderPinResolvers.Count
+    Invoke-Expression $shaderPinResolvers[0].Extent.Text
+    Assert-Equal 'toolchain checker exports only the resolved pinned compiler path' $true `
+        $environmentCheckSource.Contains('$env:CF7_D3DCOMPILER_DLL = Resolve-Cf7PinnedD3DCompiler -SdkRoot $sdkRoot')
+    $bootstrapEnvironmentSource = [IO.File]::ReadAllText(
+        (Join-Path $ProjectRoot 'tools\bootstrap-runtime-build-env.ps1'), [Text.Encoding]::UTF8)
+    Assert-Equal 'SDK provisioning readiness includes the shader compiler hash' $true `
+        $bootstrapEnvironmentSource.Contains('(Test-Cf7Hash $d3dCompiler ([string]$lock.windowsSdk.d3dcompilerSha256))')
+    # Exercise the production resolver on inert fixture bytes; never load a DLL,
+    # invoke the compiler, install tools, or depend on this machine's SDK.
+    $shaderCompilerFixtureRoot = Join-Path $testRoot 'shader-compiler'
+    $shaderCompilerFixturePath = Join-Path $shaderCompilerFixtureRoot 'd3dcompiler_47.dll'
+    Write-TestText $shaderCompilerFixturePath 'inert shader compiler fixture'
+    $shaderCompilerFixtureHash = (Get-FileHash -LiteralPath $shaderCompilerFixturePath -Algorithm SHA256).Hash
+    Assert-Equal 'shader compiler resolver returns the exact checked absolute path' `
+        ([IO.Path]::GetFullPath($shaderCompilerFixturePath)) `
+        (Resolve-Cf7PinnedD3DCompiler $shaderCompilerFixtureRoot $shaderCompilerFixtureHash.ToLowerInvariant())
+    Expect-Failure 'shader compiler resolver rejects a malformed pin' {
+        Resolve-Cf7PinnedD3DCompiler $shaderCompilerFixtureRoot 'invalid' | Out-Null
+    }
+    Expect-Failure 'shader compiler resolver rejects a missing SDK compiler' {
+        Resolve-Cf7PinnedD3DCompiler (Join-Path $testRoot 'missing-sdk') $shaderCompilerFixtureHash | Out-Null
+    }
+    foreach ($shaderCheckMode in @('Validate','RuntimePublish')) {
+        & {
+            param([string]$Mode)
+            Expect-Failure "shader compiler mismatch cannot fall back in $Mode mode" {
+                Resolve-Cf7PinnedD3DCompiler $shaderCompilerFixtureRoot ('0' * 64) | Out-Null
+            }
+        } $shaderCheckMode
+    }
+    $nativeWorldBuildSource = [IO.File]::ReadAllText(
+        (Join-Path $ProjectRoot 'launcher\native\world-compositor\build.bat'), [Text.Encoding]::UTF8)
+    Assert-Equal 'native build requires the pinned compiler before shader generation' $true `
+        ($nativeWorldBuildSource.Contains('if not defined CF7_D3DCOMPILER_DLL exit /b 1') -and
+         $nativeWorldBuildSource.Contains('ShaderBake.exe" "%CF7_D3DCOMPILER_DLL%"'))
+    $nativeCompositorSource = [IO.File]::ReadAllText(
+        (Join-Path $ProjectRoot 'launcher\native\world-compositor\Compositor.cpp'), [Text.Encoding]::UTF8)
+    Assert-Equal 'runtime consumes embedded shaders without runtime HLSL compilation' $true `
+        ($nativeCompositorSource.Contains('#include <CompositorShaders.g.h>') -and
+         $nativeCompositorSource -notmatch '\bD3DCompile\s*\(')
+    $bulletCatalog = Get-Content -LiteralPath (Join-Path $ProjectRoot 'data\combat_visuals\bullet_styles.v1.json') `
+        -Raw -Encoding UTF8 | ConvertFrom-Json
+    $bulletPolicyInputs = @('data/combat_visuals/bullet_styles.v1.json', [string]$bulletCatalog.sourceSwf, [string]$bulletCatalog.atlas.path)
+    $bulletPolicyInputs += @($bulletCatalog.sources | ForEach-Object { [string]$_.path })
+    $bulletPolicyInputs += @($bulletCatalog.tools | ForEach-Object { [string]$_.path })
+    foreach ($bulletInput in @($bulletPolicyInputs | Sort-Object -Unique)) {
+        Assert-Equal "bullet source/tool/resource closure is policy-bound: $bulletInput" 'policy' `
+            $repositoryInputOwners[[string]$bulletInput]
+    }
+    if ($InputClassificationOnly) {
+        Write-Host "Runtime v2 input classification passed: $script:checks checks; no build, signatures or certificate writes." -ForegroundColor Green
+        return
     }
     $audioQualificationPolicyTrees = @($repositoryPolicyTrees | Where-Object {
         [string]$_.path -cin @('config/audio-v2', 'docs/contracts/audio-v2', 'tools/audio-v2')

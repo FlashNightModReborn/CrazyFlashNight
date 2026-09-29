@@ -482,6 +482,47 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
     // 射线子弹辅助函数
     // ========================================================================
 
+    /** 每次扫描只证明一次源类型/有限边界，并读取真实 Band 半宽；不保留跨帧缓存。 */
+    public static function prepareRayYWindow(ray:Object):Object {
+        if (ray == null) return null;
+        var proto:Object = ray.__proto__;
+        if (proto !== RayCollider.prototype && proto !== BandRayCollider.prototype) return null;
+        if (ray.getAABB !== RayCollider.prototype.getAABB) return null;
+        if (proto === BandRayCollider.prototype && ray.getHalfWidth !== BandRayCollider.prototype.getHalfWidth) return null;
+        var rayLeft:Number = ray.left, rayRight:Number = ray.right;
+        var rayTop:Number = ray.top, rayBottom:Number = ray.bottom;
+        var halfWidth:Number = proto === BandRayCollider.prototype ? BandRayCollider(ray).getHalfWidth() : 0;
+        if (typeof rayLeft != "number" || typeof rayRight != "number"
+            || typeof rayTop != "number" || typeof rayBottom != "number" || typeof halfWidth != "number"
+            || (rayLeft - rayLeft) != 0 || (rayRight - rayRight) != 0
+            || (rayTop - rayTop) != 0 || (rayBottom - rayBottom) != 0
+            || (halfWidth - halfWidth) != 0 || halfWidth < 0) return null;
+        return {top:rayTop, bottom:rayBottom, halfWidth:halfWidth};
+    }
+
+    /**
+     * 仅把 RayCollider 已有的 Y 宽相拒绝前移；原 checkCollision 仍是唯一窄相。
+     * window 只来自本次扫描的 prepareRayYWindow。每个候选只证明目标的 C2/C3 和 Y/Z。
+     * 未知类型/覆写 getAABB/非有限 Y 输入保守返回 false，不写共享 AABB/CollisionResult。
+     */
+    public static function rejectRayCandidateY(window:Object, target:Object, zOffset:Number):Boolean {
+        if (window == null || target == null) return false;
+        var proto:Object = target.__proto__;
+        if (proto === AABBCollider.prototype || proto === CoverageAABBCollider.prototype) {
+            if (target.getAABB !== AABBCollider.prototype.getAABB) return false;
+        } else if (proto === RayCollider.prototype || proto === BandRayCollider.prototype) {
+            if (target.getAABB !== RayCollider.prototype.getAABB) return false;
+        } else return false;
+        var otherTop:Number = target.top, otherBottom:Number = target.bottom;
+        if (typeof otherTop != "number" || typeof otherBottom != "number" || typeof zOffset != "number"
+            || (otherTop - otherTop) != 0 || (otherBottom - otherBottom) != 0 || (zOffset - zOffset) != 0) return false;
+        // Preserve getAABB(zOffset) then Band expansion order, including strict grazing boundaries.
+        var halfWidth:Number = window.halfWidth;
+        var expandedTop:Number = (otherTop + zOffset) - halfWidth;
+        var expandedBottom:Number = (otherBottom + zOffset) + halfWidth;
+        if ((expandedTop - expandedTop) != 0 || (expandedBottom - expandedBottom) != 0) return false;
+        return window.bottom <= expandedTop || window.top >= expandedBottom;
+    }
     /**
      * 在单调非降数组 rightMaxValues 上执行二分查找，
      * 返回第一个满足 rightMaxValues[i] >= targetLeft 的索引。
@@ -537,6 +578,7 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
         var bullet:Object = ctx.bullet;
         var shooter:MovieClip = ctx.shooter;
         var finalResult:CollisionResult = ctx.result;
+        RayVisualBridge.noteTarget(bullet, hitTarget); // 仅视觉拓扑，先于可能卸载目标的命中事件。
 
         // 更新复用命中几何（射线 caller 责任：成形 collisionResult 后透传给 settleHit）
         finalResult.overlapCenter.x = hitX;
@@ -921,7 +963,7 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
             var unitRightMax:Array = cache.rightMaxValues;
 
             // 二分查找起始索引：跳过右边界全部在射线左侧的目标
-            var lo:Number = bsearchScanStart(unitRightMax, unitLen, rayLeft);
+            var lo:Number; // 持久射线由其扫描函数独立定位，避免先做一次未使用的二分。
 
             // 复用静态命中结果（同步事件处理保证安全）
             var finalResult:CollisionResult = _rayHitResult;
@@ -962,6 +1004,8 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
                 }
                 continue;   // 跳过批量 lockon 块 + 模式分派 + 末尾 removeMovieClip
             }
+
+            lo = bsearchScanStart(unitRightMax, unitLen, rayLeft);
 
             // ---- Lockon 目标解析 ----
             // 【契约】lockonTarget 由武器层通过 TargetCacheManager 选靶，
@@ -1207,7 +1251,7 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
                                     parentEndX: ccPrevX,
                                     parentEndY: ccPrevY
                                 };
-                                RayVfxManager.spawn(ccPrevX, ccPrevY,
+                                RayVfxManager.spawnForBullet(bullet, ccPrevX, ccPrevY,
                                     ccBestX, ccBestY, config, ccMeta);
                                 pnChainIdx++;
 
@@ -1296,7 +1340,7 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
                                     parentEndX: nodeHit.hitX,
                                     parentEndY: nodeHit.hitY
                                 };
-                                RayVfxManager.spawn(nodeHit.hitX, nodeHit.hitY,
+                                RayVfxManager.spawnForBullet(bullet, nodeHit.hitX, nodeHit.hitY,
                                     cfh.centerX, cfh.centerY, config, cfMeta);
                                 pnForkIdx++;
 
@@ -1326,7 +1370,7 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
                         isHit: pnHitPoints.length > 0,
                         hitPoints: pnHitPoints.length > 0 ? pnHitPoints : null
                     };
-                    RayVfxManager.spawn(rayOriginX, rayOriginY,
+                    RayVfxManager.spawnForBullet(bullet, rayOriginX, rayOriginY,
                         rayEndX, rayEndY, config, pnPierceMeta);
 
                     // 射线到达全长时播放地图命中效果
@@ -1350,7 +1394,7 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
                         isHit: false,
                         hitPoints: null
                     };
-                    RayVfxManager.spawn(rayOriginX, rayOriginY,
+                    RayVfxManager.spawnForBullet(bullet, rayOriginX, rayOriginY,
                         rayEndX, rayEndY, config, pnMissMeta);
                 }
 
@@ -1408,7 +1452,7 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
                         intensity: 1.0,
                         isHit: true
                     };
-                    RayVfxManager.spawn(rayOriginX, rayOriginY,
+                    RayVfxManager.spawnForBullet(bullet, rayOriginX, rayOriginY,
                         comboNearestHitX, comboNearestHitY, config, comboMainMeta);
 
                     // ══════ chain 连锁（从 hit₁ 开始弹跳） ══════
@@ -1473,7 +1517,7 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
                                 parentEndX: ccPrevX,
                                 parentEndY: ccPrevY
                             };
-                            RayVfxManager.spawn(ccPrevX, ccPrevY,
+                            RayVfxManager.spawnForBullet(bullet, ccPrevX, ccPrevY,
                                 ccBestX, ccBestY, config, ccMeta);
 
                             ccPrevX = ccBestX;
@@ -1562,7 +1606,7 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
                                 parentEndX: comboNearestHitX,
                                 parentEndY: comboNearestHitY
                             };
-                            RayVfxManager.spawn(comboNearestHitX, comboNearestHitY,
+                            RayVfxManager.spawnForBullet(bullet, comboNearestHitX, comboNearestHitY,
                                 cfh.centerX, cfh.centerY, config, cfMeta);
 
                             if (budget <= 0) break;
@@ -1584,7 +1628,7 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
                         intensity: 1.0,
                         isHit: false
                     };
-                    RayVfxManager.spawn(rayOriginX, rayOriginY,
+                    RayVfxManager.spawnForBullet(bullet, rayOriginX, rayOriginY,
                         rayEndX, rayEndY, config, comboMissMeta);
                 }
             } // end per-phase
@@ -1746,7 +1790,7 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
                         hitPoints: pierceHitPoints
                     };
 
-                    RayVfxManager.spawn(rayOriginX, rayOriginY, rayEndX, rayEndY, config, pierceMeta);
+                    RayVfxManager.spawnForBullet(bullet, rayOriginX, rayOriginY, rayEndX, rayEndY, config, pierceMeta);
 
                 } else {
                     // 穿透射线未命中：电弧打到最远处
@@ -1765,7 +1809,7 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
                         isHit: false,
                         hitPoints: null
                     };
-                    RayVfxManager.spawn(rayOriginX, rayOriginY, rayEndX, rayEndY, config, missedPierceMeta);
+                    RayVfxManager.spawnForBullet(bullet, rayOriginX, rayOriginY, rayEndX, rayEndY, config, missedPierceMeta);
                 }
 
             // ================================================================
@@ -1827,7 +1871,7 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
                         intensity: lockonDmgMult,
                         isHit: true
                     };
-                    RayVfxManager.spawn(rayOriginX, rayOriginY, rayNearestHitX, rayNearestHitY, config, mainMeta);
+                    RayVfxManager.spawnForBullet(bullet, rayOriginX, rayOriginY, rayNearestHitX, rayNearestHitY, config, mainMeta);
 
                     if (debugMode) {
                         unitArea = hitTarget.aabbCollider;
@@ -1921,7 +1965,7 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
                                 parentEndX: prevChainX,
                                 parentEndY: prevChainY
                             };
-                            RayVfxManager.spawn(prevChainX, prevChainY, chainBestX, chainBestY, config, chainMeta);
+                            RayVfxManager.spawnForBullet(bullet, prevChainX, prevChainY, chainBestX, chainBestY, config, chainMeta);
 
                             // 更新链式起点（含 Z 轴传递）
                             prevChainX = chainBestX;
@@ -2029,7 +2073,7 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
                                 parentEndX: rayNearestHitX,
                                 parentEndY: rayNearestHitY
                             };
-                            RayVfxManager.spawn(rayNearestHitX, rayNearestHitY, fh.centerX, fh.centerY, config, forkMeta);
+                            RayVfxManager.spawnForBullet(bullet, rayNearestHitX, rayNearestHitY, fh.centerX, fh.centerY, config, forkMeta);
                         }
                     }
                     // single 模式无额外处理
@@ -2050,7 +2094,7 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
                         intensity: 1.0,
                         isHit: false
                     };
-                    RayVfxManager.spawn(rayOriginX, rayOriginY, rayEndX, rayEndY, config, missMeta);
+                    RayVfxManager.spawnForBullet(bullet, rayOriginX, rayOriginY, rayEndX, rayEndY, config, missMeta);
                 }
             }
 
@@ -2122,7 +2166,7 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
             bullet._flameBaseDamageType = bullet.伤害类型;
             bullet._flameBaseMagicType = bullet.魔法伤害属性;
             bullet._flameShotSeed = Math.random() * 6.283185307179586;
-            bullet._flameVfxKey = String(bullet.发射者名) + ":" + String(bullet.子弹种类);
+            bullet._flameVfxKey = RayVisualBridge.flameKey(bullet);
             bullet._flameVfxSerial = ++_flameVfxSerialCounter;
             bullet._flameInited = true;
         }
@@ -2246,7 +2290,7 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
 
         var endX:Number = ctx.rayOriginX + flameDirX * currentLength;
         var endY:Number = ctx.rayOriginY + flameDirY * currentLength;
-        RayVfxManager.spawn(ctx.rayOriginX, ctx.rayOriginY, endX, endY, config,
+        RayVfxManager.spawnForBullet(bullet, ctx.rayOriginX, ctx.rayOriginY, endX, endY, config,
             {
                 segmentKind: "flame",
                 hitIndex: 0,
@@ -2275,6 +2319,8 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
      */
     private static function collectFlameHits(ctx:Object, maxCount:Number):Array {
         var areaAABB:AABBCollider = ctx.areaAABB;
+        var rejectY:Function = rejectRayCandidateY;
+        var rayYWindow:Object = prepareRayYWindow(areaAABB);
         var unitMap:Array = ctx.unitMap;
         var unitLen:Number = ctx.unitLen;
         var unitLeftKeys:Array = ctx.unitLeftKeys;
@@ -2296,7 +2342,9 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
             var zoff:Number = bulletZOffset - t.Z轴坐标;
             if (zoff >= bulletZRange || zoff <= -bulletZRange) continue;
             if (t.hp > 0 && t.防止无限飞 != true) {
-                var cr:Object = areaAABB.checkCollision(t.aabbCollider, zoff);
+                var candidateCollider:AABBCollider = t.aabbCollider;
+                if (rejectY(rayYWindow, candidateCollider, zoff)) continue;
+                var cr:Object = areaAABB.checkCollision(candidateCollider, zoff);
                 if (cr.isColliding) {
                     var newTEntry:Number = cr.tEntry;
                     if (hLen < maxCount || newTEntry < hits[hLen - 1].tEntry) {
@@ -2404,6 +2452,7 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
                     bullet._rayEndX = ctx.rayOriginX + (ldx / lockonDist) * rayLength;
                     bullet._rayEndY = ctx.rayOriginY + (ldy / lockonDist) * rayLength;
                     // 首发直伤 = 锁定目标；几何游标与 actual-only 旧钩子资格分开推进。
+                    RayVisualBridge.noteTarget(bullet, lockonTarget); // 纯显示身份快照。
                     injectHit(
                         bullet, shooter, lockonTarget, lhx, lhy, lockonDmgMult,
                         !bullet._rayFirstActualHookDone);
@@ -2456,6 +2505,7 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
 
             // combo：dmgMult 由迭代器按 phase 算好放在 next.dmgMult；pierce/chain：统一累乘 _rayDmgMult。
             var dm:Number = (isCombo ? next.dmgMult : bullet._rayDmgMult) * lockonDmgMult;
+            RayVisualBridge.noteTarget(bullet, next.target); // 不改变迭代器、预算或结算。
             injectHit(
                 bullet, shooter, next.target, next.hitX, next.hitY, dm,
                 !bullet._rayFirstActualHookDone);
@@ -2486,7 +2536,7 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
             var ex:Number = bullet._rayEndX;
             var ey:Number = bullet._rayEndY;
             ctx.FX.Effect(bullet.击中地图效果, ex, ey, shooter._xscale, undefined, true);
-            RayVfxManager.spawn(ctx.rayOriginX, ctx.rayOriginY, ex, ey, config,
+            RayVfxManager.spawnForBullet(bullet, ctx.rayOriginX, ctx.rayOriginY, ex, ey, config,
                 {segmentKind: "main", hitIndex: 0, intensity: 1.0, isHit: false});
         } else if (hits == 0 && rayMode == "pierce" && bullet._rayBudget > 0) {
             finishPersistentPierceTail(ctx, bullet);
@@ -2505,7 +2555,7 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
         var ex:Number = bullet._rayEndX;
         var ey:Number = bullet._rayEndY;
         ctx.FX.Effect(bullet.击中地图效果, ex, ey, ctx.shooter._xscale, undefined, true);
-        RayVfxManager.spawn(ctx.rayOriginX, ctx.rayOriginY, ex, ey, config,
+        RayVfxManager.spawnForBullet(bullet, ctx.rayOriginX, ctx.rayOriginY, ex, ey, config,
             {segmentKind: "pierce", hitIndex: 0, intensity: 1.0, isHit: true, hitPoints: bullet._rayHitPoints});
     }
 
@@ -2516,6 +2566,8 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
      */
     public static function findAlongRay(ctx:Object, visited:Object, minTEntry:Number):Object {
         var areaAABB:AABBCollider = ctx.areaAABB;
+        var rejectY:Function = rejectRayCandidateY;
+        var rayYWindow:Object = prepareRayYWindow(areaAABB);
         var unitMap:Array = ctx.unitMap;
         var unitLen:Number = ctx.unitLen;
         var unitLeftKeys:Array = ctx.unitLeftKeys;
@@ -2532,7 +2584,9 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
             var zoff:Number = bulletZOffset - t.Z轴坐标;
             if (zoff >= bulletZRange || zoff <= -bulletZRange) continue;
             if (t.hp > 0 && t.防止无限飞 != true) {
-                var cr:Object = areaAABB.checkCollision(t.aabbCollider, zoff);
+                var candidateCollider:AABBCollider = t.aabbCollider;
+                if (rejectY(rayYWindow, candidateCollider, zoff)) continue;
+                var cr:Object = areaAABB.checkCollision(candidateCollider, zoff);
                 if (cr.isColliding && cr.tEntry > minTEntry && cr.tEntry < bestTE) {
                     bestTE = cr.tEntry;
                     if (best == null) best = {};
@@ -2665,7 +2719,7 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
      */
     private static function spawnPersistentRaySeg(ctx:Object, bullet:Object, hitX:Number, hitY:Number, intensity:Number, isBounce:Boolean):Void {
         var config:TeslaRayConfig = TeslaRayConfig(ctx.config);
-        RayVfxManager.spawn(bullet._rayPrevVfxX, bullet._rayPrevVfxY, hitX, hitY, config,
+        RayVfxManager.spawnForBullet(bullet, bullet._rayPrevVfxX, bullet._rayPrevVfxY, hitX, hitY, config,
             {segmentKind: (isBounce ? "chain" : "main"), hitIndex: 0, intensity: intensity, isHit: true});
         bullet._rayPrevVfxX = hitX;
         bullet._rayPrevVfxY = hitY;
