@@ -86,6 +86,13 @@
     --appearance-backdrop: #080a0d;
     --appearance-empty-fill: #0d1115;
 
+    /* 情报名词页的档案注记与解锁条件：沿用既有墨金/纸色及透明度。 */
+    --intel-archive-note-text: rgba(122,106,69,0.75);
+    --intel-archive-note-line: rgba(101,78,38,0.22);
+    --intel-archive-requirement-text: #7a6a45;
+    --intel-archive-requirement-fill: rgba(255,255,255,0.12);
+    --intel-archive-requirement-line: rgba(101,78,38,0.3);
+
     /* 动效语言：微交互、状态、结构、拒绝、等待、环境核心。 */
     --wb-motion-micro: 100ms;
     --wb-motion-standard: 160ms;

@@ -78,6 +78,8 @@
 | **库存 / 战备箱 / 仓库** | `archive-paper` | `#e5e5e5` | 档案、纸质、 tactile |
 | **情报面板** | `archive-gold` | `#d8b656` | 联合大学/档案馆的旧纸与烫金 |
 
+情报名词页的出处注记和解锁提示沿用档案墨金与纸色：`--intel-archive-note-*`、`--intel-archive-requirement-*` 统一归属 `css/workbench/tokens.css`，消费处只引用变量；颜色、透明度和已有布局保持一致。
+
 ---
 
 ## 6. UI 语义色（跨面板统一）
