@@ -8312,6 +8312,8 @@ namespace CF7Launcher.Guardian
                 case "catalog":
                 case "state":
                 case "bundle":
+                case "glossary_catalog":
+                case "glossary_snapshot":
                 case "preview":
                 case "equip_tooltip":
                 case "custom_start":

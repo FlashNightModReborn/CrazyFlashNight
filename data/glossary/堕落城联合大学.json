@@ -1,0 +1,61 @@
+{
+  "schemaVersion": 1,
+  "termName": "堕落城联合大学",
+  "displayName": "堕落城联合大学",
+  "skin": "dossier",
+  "pages": [
+    {
+      "pageKey": "1",
+      "requires": [],
+      "blocks": [
+        {
+          "type": "heading", "level": 2,
+          "content": [{ "type": "text", "text": "§1 定义" }]
+        },
+        {
+          "type": "paragraph",
+          "content": [{ "type": "text", "text": "堕落城联合大学，大体以尘都西区大学为主，包含各类中小学校的联合自治体。末世初期军阀夺走大量理工人才，黑铁会占据医学院，残余各校为自保而联合，构成今日这座「城中之城」。" }]
+        },
+        {
+          "type": "paragraph",
+          "content": [{ "type": "text", "text": "大学以珍藏的书面资料、延续的教育体系与改组的实验室车间维生：向黑铁会上贡换安全，与蓉都公社等据点贸易换粮，在各方夹缝中维持微妙平衡。" }]
+        }
+      ]
+    },
+    {
+      "pageKey": "2",
+      "requires": [{ "item": "下水道探索报告", "minValue": 1 }],
+      "blocks": [
+        {
+          "type": "heading", "level": 2,
+          "content": [{ "type": "text", "text": "§2 补录：安保力量" }]
+        },
+        {
+          "type": "paragraph",
+          "content": [{ "type": "text", "text": "据联合大学安保部内部文件：大学保留一支建制完整的安保队伍，可执行下水道渗透等涉外探索行动——这意味着联合大学并非纯学术堡垒，其情报与行动力是被低估的变量。" }]
+        }
+      ]
+    },
+    {
+      "pageKey": "3",
+      "requires": [
+        { "item": "学校与摇滚敌对的缘由？", "minValue": 1 },
+        { "item": "从宝石线人视角一窥新经济野望", "minValue": 1 }
+      ],
+      "blocks": [
+        {
+          "type": "heading", "level": 2,
+          "content": [{ "type": "text", "text": "§3 补录：派系与经济中枢" }]
+        },
+        {
+          "type": "paragraph",
+          "content": [{ "type": "text", "text": "校内派系林立：亲黑铁会的「另类保守派」充当白手套，亲军阀派伺机独立，摇滚公园同情派日渐壮大，另有不明势力派系蛰伏。决策效率低，冲突被外部力量的默契压制在可控范围。" }]
+        },
+        {
+          "type": "paragraph",
+          "content": [{ "type": "text", "text": "同时，集研究所—实验室—大学于一体的产学研体系，使联合大学事实上充当尘都黑市的算力与终端枢纽。这也是 A 兵团等势力乐见其存续的原因之一。" }]
+        }
+      ]
+    }
+  ]
+}

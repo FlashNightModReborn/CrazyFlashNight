@@ -1,0 +1,65 @@
+{
+  "schemaVersion": 1,
+  "termName": "审判日",
+  "displayName": "审判日",
+  "skin": "dossier",
+  "pages": [
+    {
+      "pageKey": "1",
+      "requires": [],
+      "blocks": [
+        {
+          "type": "heading", "level": 2,
+          "content": [{ "type": "text", "text": "§1 定义" }]
+        },
+        {
+          "type": "paragraph",
+          "content": [{ "type": "text", "text": "审判日，旧世终结的灾变日通称。面对各地的叛乱，统合政府仓促启用尚未成熟的天网系统与诺亚方舟计划研制的地层武器：卫星群失控、天网机器人倒戈、地层武器引发地震与洪水，统合与其敌人一并倒下。" }]
+        },
+        {
+          "type": "paragraph",
+          "content": [{ "type": "text", "text": "对尘都人而言，审判日是降在城市北方的光柱与震耳欲聋的轰鸣——卫星激光武器被干扰后偏移至此，北区化作荒漠。各地留存的记忆不尽相同，后世档案均按广义灾变统录。" }]
+        }
+      ]
+    },
+    {
+      "pageKey": "2",
+      "requires": [{ "item": "对前治安官的采访", "minValue": 1 }],
+      "blocks": [
+        {
+          "type": "heading", "level": 2,
+          "content": [{ "type": "text", "text": "§2 补录：尘都当日的秩序侧" }]
+        },
+        {
+          "type": "paragraph",
+          "content": [{ "type": "text", "text": "据尘都临时政府内部资料：灾变摧毁东区治安时，尚不清楚来源的生化病毒同时泄露。尘都特别治安部队（CSSF）残部与当地治安部队曾在第一防线抗击丧尸潮，最终放弃阵地，撤往他区。" }]
+        },
+        {
+          "type": "paragraph",
+          "content": [{ "type": "text", "text": "原统合政府在尘都的议会建制并未即刻消散，其残余人员以「临时政府」名义重整为军警宪政派，聚集于废城之旁，维持着旧秩序最后的合法外壳。" }]
+        }
+      ]
+    },
+    {
+      "pageKey": "3",
+      "requires": [
+        { "item": "地铁站通关证明", "minValue": 10 },
+        { "item": "堕落城净水材料供应告急", "minValue": 1 }
+      ],
+      "blocks": [
+        {
+          "type": "heading", "level": 2,
+          "content": [{ "type": "text", "text": "§3 补录：灾后权力真空" }]
+        },
+        {
+          "type": "paragraph",
+          "content": [{ "type": "text", "text": "审判日之后，尘都诸区迅速被瓜分：黑铁教夺西城建黑铁会，将军率残军入废城边缘僭组建军，Andylaw 占监狱成佣兵武装，学者与教师固守联合大学。东区废墟——今称废城——成为各方尚未瓜分的最后处女地。" }]
+        },
+        {
+          "type": "note",
+          "content": [{ "type": "text", "text": "交叉证引：废城资料集 §1.3／哨兵报供水危机专题。" }]
+        }
+      ]
+    }
+  ]
+}

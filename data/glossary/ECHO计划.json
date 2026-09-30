@@ -1,0 +1,65 @@
+{
+  "schemaVersion": 1,
+  "termName": "ECHO计划",
+  "displayName": "ECHO计划",
+  "skin": "dossier",
+  "pages": [
+    {
+      "pageKey": "1",
+      "requires": [],
+      "blocks": [
+        {
+          "type": "heading", "level": 2,
+          "content": [{ "type": "text", "text": "§1 定义" }]
+        },
+        {
+          "type": "paragraph",
+          "content": [{ "type": "text", "text": "ECHO 计划，WP 与统合秘密合作时代的生物工程遗留项目，其代码名散见于末世文件之中。已知其下存在 γ-ECHO 等株系产物，感染路径、分期与转化机制均有病理文档可查。" }]
+        },
+        {
+          "type": "paragraph",
+          "content": [{ "type": "text", "text": "该项目多经加密信道交付文档，公域中只余支零信息。要拼合其全貌，需更高等级的解密能力与足量的原始档案。" }]
+        }
+      ]
+    },
+    {
+      "pageKey": "2",
+      "requires": [{ "item": "ECHO-034的加密日志", "minValue": 1 }],
+      "blocks": [
+        {
+          "type": "heading", "level": 2,
+          "content": [{ "type": "text", "text": "§2 补录：ECHO-034 个案" }]
+        },
+        {
+          "type": "paragraph",
+          "content": [{ "type": "text", "text": "从医院地下三层终端恢复的加密日志属于编号 ECHO-034 的克隆人工人。日志记录了其发现自身身份真相的全过程——克隆编号、培养批次与后续去向，皆为 ECHO 计划组织结构的直接证据。" }]
+        },
+        {
+          "type": "note",
+          "content": [{ "type": "text", "text": "日志部分段落加密等级较高；需解密等级补足后方可载录全义。" }]
+        }
+      ]
+    },
+    {
+      "pageKey": "3",
+      "requires": [
+        { "item": "ECHO-034的加密日志", "minValue": 1 },
+        { "decryptLevel": 4 }
+      ],
+      "blocks": [
+        {
+          "type": "heading", "level": 2,
+          "content": [{ "type": "text", "text": "§3 补录：深层条目" }]
+        },
+        {
+          "type": "paragraph",
+          "content": [{ "type": "text", "text": "解密后的日志残段涉及 ECHO 计划的内部代号体系、转化终点与所谓「完全转化」的处置环节。记录零碎，多处仍属推测补读；但「编号—批次—转化」三段式管理可视为该项目人员与实验品管理的标准格式。" }]
+        },
+        {
+          "type": "note",
+          "content": [{ "type": "text", "text": "风险条目：本页内容基于未全解密档案的推断，留待更高权限的档案证实或推翻。" }]
+        }
+      ]
+    }
+  ]
+}

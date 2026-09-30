@@ -32,7 +32,10 @@ var IntelligencePanel = (function() {
     var _canReturnCharacterBuild = false;
     var _returnNavigationTimer = null;
     
-    var _glossaryCatalog = [];          // 名词列表
+    var _glossaryCatalog = [];          // 名词列表（已按 requires 过滤）
+    var _glossaryLockedCount = 0;       // 因条件未满足仍隐藏的名词数
+    var _glossaryPages = [];            // 当前名词已解锁页（{pageKey, blocks, unlocked:true}）
+    var _glossaryLockedPages = 0;       // 当前名词仍未解锁的页数
     var _currentViewMode = 'intel';    // 'intel' 或 'glossary'
     var _currentGlossaryTerm = '';
     var _glossarySnapshot = null;      // 当前名词的快照数据
@@ -208,7 +211,7 @@ var IntelligencePanel = (function() {
         });
         _refs.catalogList.hidden = tab !== 'items';
         _refs.glossaryList.hidden = tab !== 'glossary';
-        if (tab === 'glossary' && (!_glossaryCatalog || !_glossaryCatalog.length)) {
+        if (tab === 'glossary') {
             requestGlossaryCatalog();
         }
     }
@@ -271,20 +274,22 @@ var IntelligencePanel = (function() {
             requestState(function() {
                 populateCatalog(true);
                 requestSnapshot();
+                requestGlossaryCatalog();
             });
         } else {
             requestBundle(function() {
                 populateCatalog(false);
                 applyCurrentItemFromBundle();
+                requestGlossaryCatalog();
             });
         }
         bindKeyboardAndOutsideClick();
         scheduleScaleUpdate();
         
-        // 加载名词目录（如果未缓存）
-        if (!_glossaryCatalog || !_glossaryCatalog.length) {
-            requestGlossaryCatalog();
-        }
+        // 名词目录依赖当前收集进度（collectedItems 过滤），必须在 populateCatalog
+        // 之后请求；否则 collectItemValues() 返回空表，会把全部带门槛的词条误锁。
+        _glossaryCatalog = [];
+        _glossaryLockedCount = 0;
 
         // 字体包条幅：异步检测，不阻塞面板渲染。已 suppress / 全部已装时 noop。
         if (typeof FontPackBanner !== 'undefined' && FontPackBanner && FontPackBanner.checkAndShow) {
@@ -351,12 +356,16 @@ var IntelligencePanel = (function() {
     }
     
     function requestGlossaryCatalog() {
-        sendRequest('glossary_catalog', {}, function(resp) {
+        sendRequest('glossary_catalog', {
+            values: collectItemValues(),
+            decryptLevel: _decryptLevel
+        }, function(resp) {
             if (!resp.success) {
                 showError('名词目录加载失败');
                 return;
             }
             _glossaryCatalog = resp.items || [];
+            _glossaryLockedCount = Number(resp.lockedCount) || 0;
             renderGlossaryList();
         });
     }
@@ -410,10 +419,9 @@ var IntelligencePanel = (function() {
     
     function requestGlossarySnapshot(termName) {
         showLoading('正在读取名词释义…');
-        var collectedItems = countCollectedItems();
         sendRequest('glossary_snapshot', {
             termName: termName,
-            collectedItems: collectedItems,
+            values: collectItemValues(),
             decryptLevel: _decryptLevel
         }, function(resp) {
             if (!resp.success) {
@@ -421,6 +429,19 @@ var IntelligencePanel = (function() {
                 return;
             }
             _glossarySnapshot = resp;
+            _glossaryPages = [];
+            var respPages = resp.pages || [];
+            for (var i = 0; i < respPages.length; i++) {
+                var p = respPages[i] || {};
+                _glossaryPages.push({
+                    pageKey: p.pageKey || ('p' + (i + 1)),
+                    blocks: p.blocks || [],
+                    unlocked: p.unlocked === true,
+                    encryptLevel: 0,
+                    requires: p.requires || null
+                });
+            }
+            _glossaryLockedPages = Number(resp.lockedPageCount) || 0;
             renderGlossaryContent();
         });
     }
@@ -597,7 +618,7 @@ var IntelligencePanel = (function() {
         if (!_glossaryCatalog.length) {
             var empty = document.createElement('div');
             empty.className = 'intel-glossary-empty';
-            empty.textContent = '暂无可显示的名词';
+            empty.textContent = _glossaryLockedCount > 0 ? '收集更多情报物品以解锁名词' : '暂无可显示的名词';
             _refs.glossaryList.appendChild(empty);
             return;
         }
@@ -619,6 +640,13 @@ var IntelligencePanel = (function() {
             });
             _refs.glossaryList.appendChild(btn);
         }
+        // 收集进度不足的名词保持隐藏，但给出聚合提示，让"增加"可预期
+        if (_glossaryLockedCount > 0) {
+            var locked = document.createElement('div');
+            locked.className = 'intel-glossary-locked';
+            locked.textContent = '另有 ' + _glossaryLockedCount + ' 个名词，随情报收集逐步解锁';
+            _refs.glossaryList.appendChild(locked);
+        }
     }
     
     function renderGlossaryContent() {
@@ -626,31 +654,60 @@ var IntelligencePanel = (function() {
         _refs.icon.style.display = 'none';           // 隐藏情报图标
         _refs.iconPlaceholder.style.display = 'none';
         _refs.name.textContent = term.displayName || term.termName;
-        _refs.meta.textContent = '';                // 不显示页数
+        _refs.meta.textContent = '';                // 不显示发现页数
         _refs.progress.textContent = '';            // 不显示收集进度
         _refs.progressBox.style.display = 'none'; // metric 卡整体隐藏（避免只剩金边的空壳）
-        _refs.status.textContent = '';              // 清掉「正在读取名词释义…」加载态
-        _refs.content.innerHTML = '';
         _refs.content.setAttribute('data-content-mode', 'h5');
-        _refs.content.setAttribute('data-skin', term.skin || 'paper');
+        _refs.content.setAttribute('data-skin', term.skin || 'dossier');
         if (term.writerVoice) _refs.content.setAttribute('data-writer-voice', term.writerVoice);
         else _refs.content.removeAttribute('data-writer-voice');
         applyFontContext(_refs.content, term.skin, term.writerVoice);
-        if (typeof IntelligenceComponentRenderer !== 'undefined') {
-            IntelligenceComponentRenderer.render(_refs.content, term.blocks || [], {
+        if (_selectedPage >= _glossaryPages.length) _selectedPage = 0;
+        renderPageList();
+        renderGlossaryPage();
+    }
+
+    function renderGlossaryPage() {
+        var term = _glossarySnapshot;
+        var page = _glossaryPages[_selectedPage];
+        _refs.content.innerHTML = '';
+        if (!page) {
+            _refs.content.appendChild(emptyBlock('该名词暂无可显示的内容。'));
+        } else if (!page.unlocked) {
+            // 锁定页：就地写明解锁所需的情报物品与进度，不显示正文
+            _refs.content.appendChild(emptyBlock('本页内容尚未解锁。'));
+            var reqText = describeGlossaryRequires(page.requires);
+            if (reqText) {
+                var reqEl = document.createElement('div');
+                reqEl.className = 'intel-empty intel-glossary-req';
+                reqEl.textContent = reqText;
+                _refs.content.appendChild(reqEl);
+            }
+        } else if (typeof IntelligenceComponentRenderer !== 'undefined' && IntelligenceComponentRenderer) {
+            IntelligenceComponentRenderer.render(_refs.content, page.blocks || [], {
                 pcName: _pcName,
                 decryptLevel: _decryptLevel,
                 showPlain: true,
                 encryptedView: false
             });
         }
-        // 更新分页控件（名词仅单“页”）
-        _refs.pageIndicator.disabled = true;
-        _refs.pageCurrent.textContent = '1';
-        _refs.pageTotal.textContent = '1';
-        _refs.prevBtn.disabled = true;
-        _refs.nextBtn.disabled = true;
+        // 已解锁页页尾标注出处——方便玩家对照是哪件情报带来了这一页
+        if (page && page.unlocked && page.requires && page.requires.length) {
+            var srcEl = document.createElement('div');
+            srcEl.className = 'intel-glossary-src';
+            srcEl.textContent = describeGlossaryRequires(page.requires, '本页解锁依据：');
+            _refs.content.appendChild(srcEl);
+        }
+        _refs.status.textContent = '';              // 清掉「正在读取名词释义…」加载态
+        _refs.pageCurrent.textContent = String(_selectedPage + 1);
+        _refs.pageTotal.textContent = String(_glossaryPages.length);
+        _refs.pageIndicator.disabled = _glossaryPages.length <= 1;
+        _refs.prevBtn.disabled = _selectedPage <= 0;
+        _refs.nextBtn.disabled = _selectedPage >= _glossaryPages.length - 1;
         _refs.toggleBtn.disabled = true;
+        _refs.toggleBtn.textContent = '明文视图';
+        _refs.toggleBtn.classList.remove('is-cipher-view');
+        _refs.content.scrollTop = 0;
     }
 
     function resolveIconUrl(name) {
@@ -790,12 +847,43 @@ var IntelligencePanel = (function() {
         return count;
     }
     
-    function countCollectedItems() {
-        var count = 0;
+    // 名词 requires 求值需要逐物品进度：{"<物品名>": <value>}。value>0 即已发现。
+    function collectItemValues() {
+        var map = {};
         for (var i = 0; i < _catalog.length; i++) {
-            if ((Number(_catalog[i].value) || 0) > 0) count++;
+            if (_catalog[i] && _catalog[i].name) map[_catalog[i].name] = Number(_catalog[i].value) || 0;
         }
-        return count;
+        return map;
+    }
+
+    function collectedItemCount() {
+        var n = 0;
+        for (var i = 0; i < _catalog.length; i++) {
+            if ((Number(_catalog[i].value) || 0) > 0) n++;
+        }
+        return n;
+    }
+
+    // 把 requires 翻成玩家可读的条件说明（含当前进度/所需进度）。
+    // label 控制前缀：锁定页用"解锁条件"，已解锁页用"本页解锁依据"。
+    function describeGlossaryRequires(requires, label) {
+        if (!requires || !requires.length) return '';
+        var parts = [];
+        for (var i = 0; i < requires.length; i++) {
+            var cond = requires[i] || {};
+            if (cond.item) {
+                var item = _catalogByName[cond.item];
+                var label = (item && item.displayName) || cond.item;
+                var need = Number(cond.minValue) || 1;
+                var have = item ? (Number(item.value) || 0) : 0;
+                parts.push('「' + label + '」进度 ' + have + '/' + need);
+            } else if (cond.minCollectedItems != null) {
+                parts.push('已收集情报 ' + collectedItemCount() + '/' + cond.minCollectedItems);
+            } else if (cond.decryptLevel != null) {
+                parts.push('解密等级 ' + _decryptLevel + '/' + cond.decryptLevel);
+            }
+        }
+        return parts.length ? (label || '解锁条件（需全部满足）：') + parts.join('；') : '';
     }
 
     function getPageCountForItem(item) {
@@ -895,6 +983,10 @@ var IntelligencePanel = (function() {
     }
 
     function renderPage() {
+        if (_currentViewMode === 'glossary') {
+            renderGlossaryPage();
+            return;
+        }
         var pages = getPages();
         var page = pages[_selectedPage];
         _refs.content.innerHTML = '';
@@ -1004,6 +1096,7 @@ var IntelligencePanel = (function() {
     }
 
     function getPages() {
+        if (_currentViewMode === 'glossary') return _glossaryPages;
         return (_snapshot && _snapshot.pages) ? _snapshot.pages : [];
     }
 

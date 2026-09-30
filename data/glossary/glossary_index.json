@@ -1,3 +1,22 @@
 [
-  { "termName": "三战", "displayName": "三战", "iconName": null }
+  { "termName": "三战", "displayName": "三战", "requires": [] },
+  { "termName": "审判日", "displayName": "审判日", "requires": [] },
+  { "termName": "废城", "displayName": "废城", "requires": [{ "item": "地铁站通关证明", "minValue": 1 }] },
+  { "termName": "堕落城", "displayName": "堕落城", "requires": [{ "item": "堕落城净水材料供应告急", "minValue": 1 }] },
+  { "termName": "黑铁会", "displayName": "黑铁会", "requires": [{ "item": "酒保线报：黑铁会崛起于乡间", "minValue": 1 }] },
+  { "termName": "铁枪会", "displayName": "铁枪会", "requires": [{ "item": "酒保线报：黑铁会崛起于乡间", "minValue": 1 }] },
+  { "termName": "军阀", "displayName": "军阀（莱昂利亚自由革命军）", "requires": [{ "item": "酒保线报：军阀内部形势", "minValue": 1 }] },
+  { "termName": "摇滚公园", "displayName": "摇滚公园", "requires": [{ "item": "摇滚公园通关证明", "minValue": 1 }] },
+  { "termName": "堕落城联合大学", "displayName": "堕落城联合大学", "requires": [{ "item": "知识灯塔风雨飘摇", "minValue": 1 }] },
+  { "termName": "军警宪政派", "displayName": "军警宪政派", "requires": [{ "item": "对前治安官的采访", "minValue": 1 }] },
+  { "termName": "A兵团", "displayName": "A兵团", "requires": [{ "item": "Andy档案", "minValue": 1 }] },
+  { "termName": "BPK战队", "displayName": "BPK战队", "requires": [{ "item": "BPK档案", "minValue": 1 }] },
+  { "termName": "诺亚方舟计划", "displayName": "诺亚方舟计划", "requires": [{ "item": "关于诺亚方舟", "minValue": 1 }] },
+  { "termName": "天网", "displayName": "天网", "requires": [{ "item": "关于诺亚方舟", "minValue": 1 }] },
+  { "termName": "硬化僵尸", "displayName": "硬化僵尸", "requires": [{ "item": "硬化僵尸情报", "minValue": 1 }] },
+  { "termName": "ECHO计划", "displayName": "ECHO计划", "requires": [{ "item": "γ-ECHO病理摘要", "minValue": 1 }] },
+  { "termName": "浮士德", "displayName": "浮士德", "requires": [{ "item": "浮士德的情报书", "minValue": 1 }] },
+  { "termName": "符线", "displayName": "符线", "requires": [{ "item": "符线溯源笔记", "minValue": 1 }] },
+  { "termName": "死亡竞赛", "displayName": "死亡竞赛", "requires": [{ "item": "地铁站通关证明", "minValue": 5 }] },
+  { "termName": "纳米机器人", "displayName": "纳米机器人", "requires": [{ "item": "幻层残响", "minValue": 1 }] }
 ]

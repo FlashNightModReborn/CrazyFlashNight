@@ -1,0 +1,108 @@
+{
+  "schemaVersion": 1,
+  "termName": "黑铁会",
+  "displayName": "黑铁会",
+  "skin": "dossier",
+  "pages": [
+    {
+      "pageKey": "1",
+      "requires": [],
+      "blocks": [
+        {
+          "type": "heading", "level": 2,
+          "content": [{ "type": "text", "text": "§1 定义" }]
+        },
+        {
+          "type": "paragraph",
+          "content": [{ "type": "text", "text": "黑铁会，统治堕落城的政教合一组织，其宗教核心为黑铁教。黑铁教最早是 C 国西南兴起的农民自治团体，在政治压迫、经济倾吞、文化统治与环境恶化的叠加下日益激进化，最终演变为今日的黑铁会。" }]
+        },
+        {
+          "type": "paragraph",
+          "content": [{ "type": "text", "text": "现行体制为附庸军事组织加政教合一统治；组织掌握堕落城大部分医疗资源，并以此对外出口创收。控制武器以冷兵器为主，是其统治叙事的显著特征。" }]
+        }
+      ]
+    },
+    {
+      "pageKey": "2",
+      "requires": [{ "item": "《黑铁书》", "minValue": 2 }],
+      "blocks": [
+        {
+          "type": "heading", "level": 2,
+          "content": [{ "type": "text", "text": "§2 补录：领袖谱系与黑铁历" }]
+        },
+        {
+          "type": "paragraph",
+          "content": [{ "type": "text", "text": "组织先后经历四任领袖：神禧创教，倡导三教融合、以和平手段谋求自治；中兴激进扩张，终因内外交困在政变中下台；护法者沿用旧年号维持空位时代；其后，原名已佚的中层管理者再度政变，改名「黑铁」，确立个人崇拜与宗教组织的合一。" }]
+        },
+        {
+          "type": "paragraph",
+          "content": [{ "type": "text", "text": "黑铁会采用农历年号纪年，起始年远早于审判日。年号更迭频繁且同年可改，编纂校勘时需注明上标序号——《黑铁书》即以「黑铁」年号行世。" }]
+        }
+      ]
+    },
+    {
+      "pageKey": "3",
+      "requires": [
+        { "item": "黑铁会的秘密情报书", "minValue": 1 },
+        { "item": "《黑铁书》", "minValue": 5 }
+      ],
+      "blocks": [
+        {
+          "type": "heading", "level": 2,
+          "content": [{ "type": "text", "text": "§3 补录：组织结构" }]
+        },
+        {
+          "type": "paragraph",
+          "content": [{ "type": "text", "text": "黑铁会-黑铁教的政治设计是两套分封制并存：教主居顶，下设各堂主与坛主分级治理；总堂以护法、亲信与信物体系约束中层。因历史妥协，教主与各堂对各坛的实际控制力参差不一。" }]
+        },
+        {
+          "type": "paragraph",
+          "content": [{ "type": "text", "text": "黑铁掌权后，同时镇压了拒绝现代科技的极端保守派与自称「铁枪会」的极端改革派，把组织政策钉在中道保守主义上：对科技与制度灵活使用、灵活解释。" }]
+        }
+      ]
+    },
+    {
+      "pageKey": "4",
+      "requires": [
+        { "item": "翅虎堂徽章", "minValue": 2 },
+        { "item": "火凤堂徽章", "minValue": 2 },
+        { "item": "黑龙堂徽章", "minValue": 2 }
+      ],
+      "blocks": [
+        {
+          "type": "heading", "level": 2,
+          "content": [{ "type": "text", "text": "§4 补录：三堂" }]
+        },
+        {
+          "type": "paragraph",
+          "content": [{ "type": "text", "text": "黑铁嫡系的三位堂主各掌一堂：翅虎堂，以铜徽与微缩飞刀纹样为记，堂主精于暗器与隐秘调查；火凤堂，铁红色徽章触手微温，堂内纪律严明；黑龙堂，重铁徽章饰细槽纹，堂主主导工坊与战备，本人涉重度义体改造。" }]
+        },
+        {
+          "type": "paragraph",
+          "content": [{ "type": "text", "text": "三堂同侍黑铁，又彼此制衡。徽章背面的纹样细节，被外部观察者用作辨识堂口归属的可靠依据。" }]
+        }
+      ]
+    },
+    {
+      "pageKey": "5",
+      "requires": [
+        { "item": "黑龙令", "minValue": 3 },
+        { "item": "符线溯源笔记", "minValue": 1 }
+      ],
+      "blocks": [
+        {
+          "type": "heading", "level": 2,
+          "content": [{ "type": "text", "text": "§5 补录：防务与未决之事" }]
+        },
+        {
+          "type": "paragraph",
+          "content": [{ "type": "text", "text": "从黑龙堂主的军令与翅虎的私人附录可见：黑铁会正承担大范围的防务协调，同时经手某些超出教内技术能力的「异常信道」事务。翅虎措辞审慎，仅记「所见不寻常」。" }]
+        },
+        {
+          "type": "note",
+          "content": [{ "type": "text", "text": "归档者按：涉及符线的记述与黑铁会的技术宣称存在出入，建议对照「符线」词条。" }]
+        }
+      ]
+    }
+  ]
+}

@@ -231,7 +231,7 @@ namespace CF7Launcher.Tasks
                         RequestTooltip(webCallId, parsed);
                         break;
                     case "glossary_catalog":
-                        RespondGlossaryCatalog(webCallId);
+                        RespondGlossaryCatalog(webCallId, parsed);
                         break;
                     case "glossary_snapshot":
                         RespondGlossarySnapshot(webCallId, parsed);
@@ -301,7 +301,7 @@ namespace CF7Launcher.Tasks
             RequestFlash(webCallId, "tooltip", "intelligenceTooltip", parsed);
         }
         
-        private void RespondGlossaryCatalog(string webCallId)
+        private void RespondGlossaryCatalog(string webCallId, JObject parsed)
         {
             string indexPath = Path.Combine(_projectRoot, "data", "glossary", "glossary_index.json");
             if (!File.Exists(indexPath))
@@ -309,11 +309,26 @@ namespace CF7Launcher.Tasks
                 RespondError(webCallId, "glossary_catalog", "missing_index");
                 return;
             }
+            JObject values = GlossaryValues(parsed);
+            int collectedItems = CountGlossaryCollected(values);
+            int decryptLevel = ParseInt(parsed != null ? parsed["decryptLevel"] : null, 0);
             try
             {
-                JArray items = JArray.Parse(File.ReadAllText(indexPath, Encoding.UTF8));
+                JArray source = JArray.Parse(File.ReadAllText(indexPath, Encoding.UTF8));
+                var items = new JArray();
+                int lockedCount = 0;
+                foreach (JToken token in source)
+                {
+                    JObject entry = token as JObject;
+                    if (entry == null) continue;
+                    if (MeetsGlossaryRequires(entry["requires"], values, collectedItems, decryptLevel))
+                        items.Add(entry);
+                    else
+                        lockedCount++;
+                }
                 var resp = BaseResponse("glossary_catalog", webCallId, true);
                 resp["items"] = items;
+                resp["lockedCount"] = lockedCount;
                 PostToWeb(resp.ToString(Newtonsoft.Json.Formatting.None));
             }
             catch (Exception ex)
@@ -322,7 +337,7 @@ namespace CF7Launcher.Tasks
                 RespondError(webCallId, "glossary_catalog", "parse_error");
             }
         }
-        
+
         private void RespondGlossarySnapshot(string webCallId, JObject parsed)
         {
             string termName = parsed.Value<string>("termName") ?? "";
@@ -331,7 +346,8 @@ namespace CF7Launcher.Tasks
                 RespondError(webCallId, "glossary_snapshot", "missing_term");
                 return;
             }
-            int collectedItems = ParseInt(parsed["collectedItems"], 0);
+            JObject values = GlossaryValues(parsed);
+            int collectedItems = CountGlossaryCollected(values);
             int decryptLevel = ParseInt(parsed["decryptLevel"], 0);
             string termPath = Path.Combine(_projectRoot, "data", "glossary", termName + ".json");
             if (!File.Exists(termPath))
@@ -342,35 +358,45 @@ namespace CF7Launcher.Tasks
             try
             {
                 JObject root = JObject.Parse(File.ReadAllText(termPath, Encoding.UTF8));
-                // 验证 schemaVersion 等...
-                JArray levels = root["levels"] as JArray;
-                if (levels == null || levels.Count == 0)
+                // 词条内容由按序排列的 pages 组成；每页可带 requires 条件，
+                // 满足即解锁——不同情报物品的进度可以组合出交叉解锁。
+                JArray pages = root["pages"] as JArray;
+                if (pages == null || pages.Count == 0)
                 {
-                    RespondError(webCallId, "glossary_snapshot", "no_levels");
+                    RespondError(webCallId, "glossary_snapshot", "no_pages");
                     return;
                 }
-                // 选择最高满足条件的 level
-                JObject best = null;
-                int bestReq = -1;
-                foreach (JObject level in levels)
+                var unlocked = new JArray();
+                int lockedPages = 0;
+                foreach (JToken token in pages)
                 {
-                    int reqItems = ParseInt(level["requiredCollectedItems"], 0);
-                    int reqDecrypt = ParseInt(level["requiredDecryptLevel"], 0);
-                    if (collectedItems >= reqItems && decryptLevel >= reqDecrypt)
+                    JObject page = token as JObject;
+                    if (page == null) continue;
+                    bool meets = MeetsGlossaryRequires(page["requires"], values, collectedItems, decryptLevel);
+                    var pageObj = new JObject
                     {
-                        if (reqItems + reqDecrypt > bestReq)
-                        {
-                            best = level;
-                            bestReq = reqItems + reqDecrypt;
-                        }
+                        ["pageKey"] = page.Value<string>("pageKey"),
+                        ["unlocked"] = meets
+                    };
+                    if (meets)
+                    {
+                        pageObj["blocks"] = page["blocks"] as JArray ?? new JArray();
                     }
+                    else
+                    {
+                        lockedPages++;
+                    }
+                    // requires 始终回传：锁定页渲染"如何解锁"提示，解锁页标注解锁出处
+                    pageObj["requires"] = page["requires"] as JArray ?? new JArray();
+                    unlocked.Add(pageObj);
                 }
-                if (best == null) best = levels[0] as JObject; // 兜底
                 var resp = BaseResponse("glossary_snapshot", webCallId, true);
                 resp["termName"] = termName;
                 resp["displayName"] = root.Value<string>("displayName") ?? termName;
-                resp["skin"] = root.Value<string>("skin") ?? "paper";
-                resp["blocks"] = best["blocks"] as JArray ?? new JArray();
+                resp["skin"] = root.Value<string>("skin") ?? "dossier";
+                resp["writerVoice"] = root.Value<string>("writerVoice");
+                resp["pages"] = unlocked;
+                resp["lockedPageCount"] = lockedPages;
                 PostToWeb(resp.ToString(Newtonsoft.Json.Formatting.None));
             }
             catch (Exception ex)
@@ -378,6 +404,64 @@ namespace CF7Launcher.Tasks
                 LogManager.Log("[IntelligenceTask] glossary snapshot failed: " + ex.Message);
                 RespondError(webCallId, "glossary_snapshot", "parse_error");
             }
+        }
+
+        // values：{"<情报物品名>": <收集进度值>}，来自前端目录快照。
+        // 运行态下值即 information_dictionary.xml 中的收集进度（value>0 = 已发现）。
+        private static JObject GlossaryValues(JObject parsed)
+        {
+            return parsed != null ? parsed["values"] as JObject : null;
+        }
+
+        private static int CountGlossaryCollected(JObject values)
+        {
+            int count = 0;
+            if (values == null) return count;
+            foreach (var prop in values.Properties())
+            {
+                if (prop.Value != null && prop.Value.Type == JTokenType.Integer
+                        && prop.Value.Value<int>() > 0)
+                {
+                    count++;
+                }
+            }
+            return count;
+        }
+
+        // requires：条件数组，全部满足才算解锁（AND）。
+        //   {"item": "<物品名>", "minValue": n}      — 该情报物品进度 ≥ n（缺省 1，即已发现）
+        //   {"minCollectedItems": n}               — 已发现物品总数 ≥ n
+        //   {"decryptLevel": n}                    — 解密等级 ≥ n
+        // 形态不认识的条件一律视为未满足：宁藏不泄露。
+        private static bool MeetsGlossaryRequires(JToken requires, JObject values,
+                                                  int collectedItems, int decryptLevel)
+        {
+            var arr = requires as JArray;
+            if (arr == null || arr.Count == 0) return true;
+            foreach (JToken token in arr)
+            {
+                var cond = token as JObject;
+                if (cond == null) return false;
+                string item = cond.Value<string>("item");
+                if (!string.IsNullOrEmpty(item))
+                {
+                    int have = values != null ? ParseInt(values[item], 0) : 0;
+                    if (have < ParseInt(cond["minValue"], 1)) return false;
+                    continue;
+                }
+                if (cond["minCollectedItems"] != null)
+                {
+                    if (collectedItems < ParseInt(cond["minCollectedItems"], 0)) return false;
+                    continue;
+                }
+                if (cond["decryptLevel"] != null)
+                {
+                    if (decryptLevel < ParseInt(cond["decryptLevel"], 0)) return false;
+                    continue;
+                }
+                return false;
+            }
+            return true;
         }
 
         private void RequestFlash(string webCallId, string webCmd, string action, JObject parsed)
