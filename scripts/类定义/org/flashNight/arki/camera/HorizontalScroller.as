@@ -69,7 +69,7 @@ class org.flashNight.arki.camera.HorizontalScroller {
     /** 滚动缓动系数 */
     private var easeFactor:Number;
     
-    /** 偏移容差 */
+    /** 偏移容差（fallback 默认值；权威值每帧读自 _root.帧计时器.offsetTolerance，由性能系统动态维护 10~80） */
     private var offsetTolerance:Number;
     
     /** 是否启用后景视差效果 */
@@ -400,7 +400,12 @@ class org.flashNight.arki.camera.HorizontalScroller {
 
         // 获取有效的滚动参数（支持临时参数覆盖）
         var effectiveEase:Number = this.easeFactor;
+        // 死区容差每帧动态读取：PerformanceActuator 在帧计时器上持续维护 10~80 的动态值，
+        // 未写入时才回落到实例默认值（历史回归：249079c190 曾退化为场景初始化快照）
         var effectiveTolerance:Number = this.offsetTolerance;
+        if (this.frameTimer && this.frameTimer.offsetTolerance !== undefined) {
+            effectiveTolerance = this.frameTimer.offsetTolerance;
+        }
         var biasX:Number = 0;
         var biasY:Number = 0;
         
@@ -549,7 +554,7 @@ class org.flashNight.arki.camera.HorizontalScroller {
         this.stageWidth = Stage.width;
         this.stageHeight = Stage.height - 64; // 底部UI占64px
         
-        // 缓存帧计时器参数
+        // 同步帧计时器容差作为 fallback 初值（运行时仍由 processScrolling 每帧动态读取）
         if (this.frameTimer && this.frameTimer.offsetTolerance !== undefined) {
             this.offsetTolerance = this.frameTimer.offsetTolerance;
         }
