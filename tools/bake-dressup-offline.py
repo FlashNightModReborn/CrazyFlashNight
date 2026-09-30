@@ -104,11 +104,13 @@ ASSET_MAP_OVERRIDE: Path | None = None
 # registered in asset_source_map.xml. Keep this compatibility surface narrow:
 # unit 235 is male, so only the ten verified male skin keys are projected.
 ARENA_LEGACY_VIRTUAL_ITEMS: dict[str, dict[str, Any]] = {
+    # 全颅龙形盔：唯一穿戴者 unit 235 本身 hairstyle=null，打标复核（2026-09-30）
+    # 认定其属于遮发类而非面具类，直接按 helmet 处理，不参与 hairAbove 层级。
     "远古诛神头盔": {
         "use": "头部装备",
         "icon": "远古诛神头盔",
         "dressup": "男变装-远古诛神头盔",
-        "helmet": False,
+        "helmet": True,
         "fieldsByGender": {"男": {"面具": "男变装-远古诛神头盔"}},
     },
     "远古诛神胸甲": {
@@ -291,6 +293,109 @@ DRESSUP_CONFLICT_SOURCE_PREFERENCES = {
         ("flashswf/arts/new/乔恩.swf", "枪械/能量狙击枪/能量狙击枪"),
         ("flashswf/arts/new/我的素材7421.swf", "枪械/能量狙击枪/能量狙击枪"),
     ),
+    # 09-11 asset map 把下列素材从单源 asset 改为 conflict 后，偏好表长期未补，
+    # 导致重 bake 丢覆盖（merc 头像覆盖门暴露）。条目来源 = HEAD manifest 记录的
+    # 既有选中资产，与 conflict 的 sources 逐条核对一致。
+    "男变装-军阀侦察兵衣服上臂": (
+        ("flashswf/arts/new/雾人装备调整.swf", "3.防具/10.军阀系列/男变装-军阀侦察兵衣服上臂"),
+    ),
+    "男变装-军阀侦察兵衣服右下臂": (
+        ("flashswf/arts/new/雾人装备调整.swf", "3.防具/10.军阀系列/男变装-军阀侦察兵衣服右下臂"),
+    ),
+    "男变装-军阀侦察兵衣服左下臂": (
+        ("flashswf/arts/new/雾人装备调整.swf", "3.防具/10.军阀系列/男变装-军阀侦察兵衣服左下臂"),
+    ),
+    "男变装-军阀侦察兵衣服身体": (
+        ("flashswf/arts/new/雾人装备调整.swf", "3.防具/10.军阀系列/男变装-军阀侦察兵衣服身体"),
+    ),
+    "男变装-军阀兵头衣服右下臂": (
+        ("flashswf/arts/new/雾人装备调整.swf", "3.防具/10.军阀系列/男变装-军阀兵头衣服右下臂"),
+    ),
+    "男变装-军阀兵头衣服左下臂": (
+        ("flashswf/arts/new/雾人装备调整.swf", "3.防具/10.军阀系列/男变装-军阀兵头衣服左下臂"),
+    ),
+    "男变装-军阀兵头衣服身体": (
+        ("flashswf/arts/new/雾人装备调整.swf", "3.防具/10.军阀系列/男变装-军阀兵头衣服身体"),
+    ),
+    "男变装-军阀带弹药包裤子右大腿": (
+        ("flashswf/arts/new/雾人装备调整.swf", "3.防具/10.军阀系列/男变装-军阀带弹药包裤子右大腿"),
+    ),
+    "男变装-军阀带弹药包裤子小腿": (
+        ("flashswf/arts/new/雾人装备调整.swf", "3.防具/10.军阀系列/男变装-军阀带弹药包裤子小腿"),
+    ),
+    "男变装-军阀带弹药包裤子屁股": (
+        ("flashswf/arts/new/雾人装备调整.swf", "3.防具/10.军阀系列/男变装-军阀带弹药包裤子屁股"),
+    ),
+    "男变装-军阀带弹药包裤子左大腿": (
+        ("flashswf/arts/new/雾人装备调整.swf", "3.防具/10.军阀系列/男变装-军阀带弹药包裤子左大腿"),
+    ),
+    "男变装-军阀带腰包裤子右大腿": (
+        ("flashswf/arts/new/雾人装备调整.swf", "3.防具/10.军阀系列/男变装-军阀带腰包裤子右大腿"),
+    ),
+    "男变装-军阀带腰包裤子小腿": (
+        ("flashswf/arts/new/雾人装备调整.swf", "3.防具/10.军阀系列/男变装-军阀带腰包裤子小腿"),
+    ),
+    "男变装-军阀带腰包裤子屁股": (
+        ("flashswf/arts/new/雾人装备调整.swf", "3.防具/10.军阀系列/男变装-军阀带腰包裤子屁股"),
+    ),
+    "男变装-军阀带腰包裤子左大腿": (
+        ("flashswf/arts/new/雾人装备调整.swf", "3.防具/10.军阀系列/男变装-军阀带腰包裤子左大腿"),
+    ),
+    "男变装-军阀弹药兵衣服上臂": (
+        ("flashswf/arts/new/雾人装备调整.swf", "3.防具/10.军阀系列/男变装-军阀弹药兵衣服上臂"),
+    ),
+    "男变装-军阀弹药兵衣服右下臂": (
+        ("flashswf/arts/new/雾人装备调整.swf", "3.防具/10.军阀系列/男变装-军阀弹药兵衣服右下臂"),
+    ),
+    "男变装-军阀弹药兵衣服左下臂": (
+        ("flashswf/arts/new/雾人装备调整.swf", "3.防具/10.军阀系列/男变装-军阀弹药兵衣服左下臂"),
+    ),
+    "男变装-军阀弹药兵衣服身体": (
+        ("flashswf/arts/new/雾人装备调整.swf", "3.防具/10.军阀系列/男变装-军阀弹药兵衣服身体"),
+    ),
+    "男变装-军阀普通军裤右大腿": (
+        ("flashswf/arts/new/雾人装备调整.swf", "3.防具/10.军阀系列/男变装-军阀普通军裤右大腿"),
+    ),
+    "男变装-军阀普通军裤屁股": (
+        ("flashswf/arts/new/雾人装备调整.swf", "3.防具/10.军阀系列/男变装-军阀普通军裤屁股"),
+    ),
+    "男变装-军阀普通军裤左大腿": (
+        ("flashswf/arts/new/雾人装备调整.swf", "3.防具/10.军阀系列/男变装-军阀普通军裤左大腿"),
+    ),
+    "男变装-军阀普通带腿包军裤右大腿": (
+        ("flashswf/arts/new/雾人装备调整.swf", "3.防具/10.军阀系列/男变装-军阀普通带腿包军裤右大腿"),
+    ),
+    "男变装-军阀普通带腿包军裤屁股": (
+        ("flashswf/arts/new/雾人装备调整.swf", "3.防具/10.军阀系列/男变装-军阀普通带腿包军裤屁股"),
+    ),
+    "男变装-军阀普通带腿包军裤左大腿": (
+        ("flashswf/arts/new/雾人装备调整.swf", "3.防具/10.军阀系列/男变装-军阀普通带腿包军裤左大腿"),
+    ),
+    "男变装-军阀棕色皮靴": (
+        ("flashswf/arts/new/雾人装备调整.swf", "3.防具/10.军阀系列/男变装-军阀棕色皮靴"),
+    ),
+    "男变装-军阀突击兵衣服上臂": (
+        ("flashswf/arts/new/雾人装备调整.swf", "3.防具/10.军阀系列/男变装-军阀突击兵衣服上臂"),
+    ),
+    "男变装-军阀突击兵衣服右下臂": (
+        ("flashswf/arts/new/雾人装备调整.swf", "3.防具/10.军阀系列/男变装-军阀突击兵衣服右下臂"),
+    ),
+    "男变装-军阀突击兵衣服左下臂": (
+        ("flashswf/arts/new/雾人装备调整.swf", "3.防具/10.军阀系列/男变装-军阀突击兵衣服左下臂"),
+    ),
+    "男变装-军阀突击兵衣服身体": (
+        ("flashswf/arts/new/雾人装备调整.swf", "3.防具/10.军阀系列/男变装-军阀突击兵衣服身体"),
+    ),
+    "男变装-军阀红色贝雷帽": (
+        ("flashswf/arts/new/雾人装备调整.swf", "3.防具/10.军阀系列/男变装-军阀红色贝雷帽"),
+    ),
+    "男变装-咖啡色条纹蒙面": (
+        ("flashswf/arts/things.swf", "待整理防具相关汇总/男变装-咖啡色条纹蒙面"),
+    ),
+    "男变装-黑色太阳镜": (
+        ("flashswf/arts/things.swf", "待整理防具相关汇总/男变装-黑色太阳镜"),
+    ),
+
 }
 COMPAT_DRESSUP_ALIASES = {
     # Temporary Web compatibility aliases. These are intentionally not written
@@ -658,6 +763,10 @@ def load_items(project_root: Path, genders: tuple[str, ...]) -> tuple[dict[str, 
                 "fieldsByGender": fields_by_gender,
                 "sourceFile": path.name,
             }
+            # 逐件层级标记（可选，缺省即 false）：发型压面具。只透传真值，
+            # 避免 manifest 为 60+ 件装备携带冗余显式 false。
+            if child_text(item, "hairAbove").lower() == "true":
+                items[name]["hairAbove"] = True
     for name, virtual_item in ARENA_LEGACY_VIRTUAL_ITEMS.items():
         if name in items:
             raise ValueError(f"Arena legacy virtual item collides with canonical item: {name}")
@@ -1807,6 +1916,45 @@ def validate_tmp_dir(tmp_dir: Path, project_root: Path) -> None:
         raise SystemExit("--tmp-dir must name a dedicated subdirectory under tmp/.")
 
 
+def find_java_runtime() -> str:
+    """与 tools/audit-main-legacy-ui-reachability.js 同一套 java 探测：
+    JAVA_HOME → PATH → Adobe Flash CS6 捆绑 JRE。FFDec 需要 Java 8+。"""
+    candidates: list[str] = []
+    java_home = os.environ.get("JAVA_HOME")
+    if java_home:
+        candidates.append(os.path.join(java_home, "bin", "java.exe"))
+        candidates.append(os.path.join(java_home, "bin", "java"))
+    candidates.append("java")
+    candidates.append(os.path.join(
+        os.environ.get("ProgramFiles(x86)") or r"C:\Program Files (x86)",
+        "Common Files", "Adobe", "Adobe Flash CS6", "jre", "bin", "java.exe"))
+    for candidate in candidates:
+        try:
+            probe = subprocess.run(
+                [candidate, "-version"],
+                capture_output=True, text=True, timeout=15)
+        except (OSError, subprocess.SubprocessError):
+            continue
+        if probe.returncode != 0:
+            continue
+        text = (probe.stdout or "") + (probe.stderr or "")
+        match = re.search(r'version "(?:1\.)?(\d+)', text)
+        if match and int(match.group(1)) >= 8:
+            return candidate
+    return ""
+
+
+def ffdec_argv(ffdec: Path) -> list[str]:
+    """FFDec 命令前缀。ffdec-cli.exe 的 Launch4j 壳只认注册表 JRE；
+    指向 .jar 时改走 java -jar，可用 JAVA_HOME 或本仓 tmp/jre* 的运行时。"""
+    if str(ffdec).lower().endswith(".jar"):
+        java = find_java_runtime()
+        if not java:
+            raise SystemExit("FFDec jar 需要 Java 运行时（JAVA_HOME 或 PATH 可用 java）。")
+        return [java, "-jar", str(ffdec)]
+    return [str(ffdec)]
+
+
 def run_command(
     args: list[str],
     cwd: Path,
@@ -1866,7 +2014,7 @@ def load_symbol_class(
     if out_dir.exists():
         remove_tree(out_dir)
     out_dir.mkdir(parents=True, exist_ok=True)
-    result = run_command([str(ffdec), "-export", "symbolClass", str(out_dir), str(swf_path)], project_root, timeout_seconds)
+    result = run_command([*ffdec_argv(ffdec), "-export", "symbolClass", str(out_dir), str(swf_path)], project_root, timeout_seconds)
     if result.returncode != 0:
         return {}, {
             "swf": swf_rel,
@@ -1987,7 +2135,7 @@ def export_sprites_from_swf(
     select_id = ",".join(str(i) for i in unique_ids)
     result = run_command(
         [
-            str(ffdec),
+            *ffdec_argv(ffdec),
             "-zoom",
             str(zoom),
             "-format",
@@ -2010,7 +2158,7 @@ def export_sprites_from_swf(
     for character_id in unique_ids:
         retry = run_command(
             [
-                str(ffdec),
+                *ffdec_argv(ffdec),
                 "-zoom",
                 str(zoom),
                 "-format",
@@ -2071,7 +2219,7 @@ def export_swf_xml(
     xml_path.parent.mkdir(parents=True, exist_ok=True)
     if xml_path.exists():
         xml_path.unlink()
-    result = run_command([str(ffdec), "-swf2xml", str(swf_path), str(xml_path)], project_root, timeout_seconds)
+    result = run_command([*ffdec_argv(ffdec), "-swf2xml", str(swf_path), str(xml_path)], project_root, timeout_seconds)
     if result.returncode == 0 and xml_path.exists():
         return xml_path, None
     error = "swf_xml_timeout" if result.returncode == 124 else "swf_xml_export_failed"
@@ -2094,7 +2242,7 @@ def xml2swf(
     swf_path.parent.mkdir(parents=True, exist_ok=True)
     if swf_path.exists():
         swf_path.unlink()
-    result = run_command([str(ffdec), "-xml2swf", str(xml_path), str(swf_path)], project_root, timeout_seconds)
+    result = run_command([*ffdec_argv(ffdec), "-xml2swf", str(xml_path), str(swf_path)], project_root, timeout_seconds)
     if result.returncode == 0 and swf_path.exists():
         return None
     return {
@@ -2120,7 +2268,7 @@ def export_scripts(
 
     result = run_command(
         [
-            str(ffdec),
+            *ffdec_argv(ffdec),
             "-format",
             "script:as",
             "-export",
@@ -2182,7 +2330,7 @@ def export_sprite_svgs_from_swf(
     select_id = ",".join(str(i) for i in unique_ids)
     result = run_command(
         [
-            str(ffdec),
+            *ffdec_argv(ffdec),
             "-zoom",
             str(zoom),
             "-format",

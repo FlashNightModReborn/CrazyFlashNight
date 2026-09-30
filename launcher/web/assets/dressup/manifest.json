@@ -1,6 +1,6 @@
 {
   "schema": "cf7-dressup-manifest-v1",
-  "generatedAt": "2026-09-13T04:01:40+0800",
+  "generatedAt": "2026-09-30T11:33:16+0800",
   "genders": [
     "男",
     "女"
@@ -4532,6 +4532,23 @@
       },
       "sourceFile": "武器_手枪_冲锋枪.xml"
     },
+    "P90印花集": {
+      "use": "手枪",
+      "icon": "钛合金P90",
+      "dressup": "枪-手枪-钛合金P90",
+      "helmet": false,
+      "fieldsByGender": {
+        "男": {
+          "手枪_装扮": "枪-手枪-钛合金P90",
+          "手枪2_装扮": "枪-手枪-钛合金P90"
+        },
+        "女": {
+          "手枪_装扮": "枪-手枪-钛合金P90",
+          "手枪2_装扮": "枪-手枪-钛合金P90"
+        }
+      },
+      "sourceFile": "武器_手枪_冲锋枪.xml"
+    },
     "钛合金P90": {
       "use": "手枪",
       "icon": "Codex-钛合金P90",
@@ -7303,6 +7320,21 @@
       },
       "sourceFile": "武器_长枪_机枪.xml"
     },
+    "钛合金QJZ171": {
+      "use": "长枪",
+      "icon": "Codex-钛合金QJZ171",
+      "dressup": "枪-长枪-Codex-钛合金QJZ171",
+      "helmet": false,
+      "fieldsByGender": {
+        "男": {
+          "长枪_装扮": "枪-长枪-Codex-钛合金QJZ171"
+        },
+        "女": {
+          "长枪_装扮": "枪-长枪-Codex-钛合金QJZ171"
+        }
+      },
+      "sourceFile": "武器_长枪_机枪.xml"
+    },
     "ZB-26": {
       "use": "长枪",
       "icon": "ZB-26",
@@ -9073,6 +9105,70 @@
       },
       "sourceFile": "武器_长枪_霰弹枪.xml"
     },
+    "战场医疗包": {
+      "use": "战场补给",
+      "icon": "普通hp药剂",
+      "dressup": "",
+      "helmet": false,
+      "fieldsByGender": {},
+      "sourceFile": "消耗品_战场补给.xml"
+    },
+    "战场复合急救包": {
+      "use": "战场补给",
+      "icon": "加强抗生素药剂",
+      "dressup": "",
+      "helmet": false,
+      "fieldsByGender": {},
+      "sourceFile": "消耗品_战场补给.xml"
+    },
+    "战场长枪弹药包": {
+      "use": "战场补给",
+      "icon": "狙击步枪通用弹药",
+      "dressup": "",
+      "helmet": false,
+      "fieldsByGender": {},
+      "sourceFile": "消耗品_战场补给.xml"
+    },
+    "战场双枪弹药包": {
+      "use": "战场补给",
+      "icon": "手枪通用弹药",
+      "dressup": "",
+      "helmet": false,
+      "fieldsByGender": {},
+      "sourceFile": "消耗品_战场补给.xml"
+    },
+    "战场全量弹药包": {
+      "use": "战场补给",
+      "icon": "机枪通用弹药",
+      "dressup": "",
+      "helmet": false,
+      "fieldsByGender": {},
+      "sourceFile": "消耗品_战场补给.xml"
+    },
+    "战场突击强化包": {
+      "use": "战场补给",
+      "icon": "肾上腺素",
+      "dressup": "",
+      "helmet": false,
+      "fieldsByGender": {},
+      "sourceFile": "消耗品_战场补给.xml"
+    },
+    "战场防护强化包": {
+      "use": "战场补给",
+      "icon": "全属性抗性药剂",
+      "dressup": "",
+      "helmet": false,
+      "fieldsByGender": {},
+      "sourceFile": "消耗品_战场补给.xml"
+    },
+    "战场战备补给包": {
+      "use": "战场补给",
+      "icon": "战队药箱",
+      "dressup": "",
+      "helmet": false,
+      "fieldsByGender": {},
+      "sourceFile": "消耗品_战场补给.xml"
+    },
     "鞭炮": {
       "use": "手雷",
       "icon": "鞭炮",
@@ -9114,6 +9210,36 @@
         },
         "女": {
           "手雷_装扮": "手雷-砖"
+        }
+      },
+      "sourceFile": "消耗品_手雷.xml"
+    },
+    "足球": {
+      "use": "手雷",
+      "icon": "足球",
+      "dressup": "手雷-足球",
+      "helmet": false,
+      "fieldsByGender": {
+        "男": {
+          "手雷_装扮": "手雷-足球"
+        },
+        "女": {
+          "手雷_装扮": "手雷-足球"
+        }
+      },
+      "sourceFile": "消耗品_手雷.xml"
+    },
+    "普通足球": {
+      "use": "手雷",
+      "icon": "足球",
+      "dressup": "手雷-足球",
+      "helmet": false,
+      "fieldsByGender": {
+        "男": {
+          "手雷_装扮": "手雷-足球"
+        },
+        "女": {
+          "手雷_装扮": "手雷-足球"
         }
       },
       "sourceFile": "消耗品_手雷.xml"
@@ -9895,6 +10021,78 @@
     "丽丽丝的毒": {
       "use": "药剂",
       "icon": "丽丽丝的毒",
+      "dressup": "",
+      "helmet": false,
+      "fieldsByGender": {},
+      "sourceFile": "消耗品_药剂.xml"
+    },
+    "全属性抗性药剂": {
+      "use": "药剂",
+      "icon": "全属性抗性药剂",
+      "dressup": "",
+      "helmet": false,
+      "fieldsByGender": {},
+      "sourceFile": "消耗品_药剂.xml"
+    },
+    "电抗性药剂": {
+      "use": "药剂",
+      "icon": "电抗性药剂",
+      "dressup": "",
+      "helmet": false,
+      "fieldsByGender": {},
+      "sourceFile": "消耗品_药剂.xml"
+    },
+    "热抗性药剂": {
+      "use": "药剂",
+      "icon": "热抗性药剂",
+      "dressup": "",
+      "helmet": false,
+      "fieldsByGender": {},
+      "sourceFile": "消耗品_药剂.xml"
+    },
+    "冷抗性药剂": {
+      "use": "药剂",
+      "icon": "冷抗性药剂",
+      "dressup": "",
+      "helmet": false,
+      "fieldsByGender": {},
+      "sourceFile": "消耗品_药剂.xml"
+    },
+    "波抗性药剂": {
+      "use": "药剂",
+      "icon": "波抗性药剂",
+      "dressup": "",
+      "helmet": false,
+      "fieldsByGender": {},
+      "sourceFile": "消耗品_药剂.xml"
+    },
+    "蚀抗性药剂": {
+      "use": "药剂",
+      "icon": "蚀抗性药剂",
+      "dressup": "",
+      "helmet": false,
+      "fieldsByGender": {},
+      "sourceFile": "消耗品_药剂.xml"
+    },
+    "毒抗性药剂": {
+      "use": "药剂",
+      "icon": "毒抗性药剂",
+      "dressup": "",
+      "helmet": false,
+      "fieldsByGender": {},
+      "sourceFile": "消耗品_药剂.xml"
+    },
+    "冲抗性药剂": {
+      "use": "药剂",
+      "icon": "冲抗性药剂",
+      "dressup": "",
+      "helmet": false,
+      "fieldsByGender": {},
+      "sourceFile": "消耗品_药剂.xml"
+    },
+    "能量抗性药剂": {
+      "use": "药剂",
+      "icon": "能量抗性药剂",
       "dressup": "",
       "helmet": false,
       "fieldsByGender": {},
@@ -11526,7 +11724,8 @@
           "面具": "男变装-咖啡色条纹蒙面"
         }
       },
-      "sourceFile": "防具_0-19级.xml"
+      "sourceFile": "防具_0-19级.xml",
+      "hairAbove": true
     },
     "红色格子短裙": {
       "use": "下装装备",
@@ -11771,7 +11970,8 @@
           "面具": "男变装-浅灰蒙面"
         }
       },
-      "sourceFile": "防具_0-19级.xml"
+      "sourceFile": "防具_0-19级.xml",
+      "hairAbove": true
     },
     "黑短袖": {
       "use": "上装装备",
@@ -11807,7 +12007,8 @@
           "面具": "男变装-医用口罩"
         }
       },
-      "sourceFile": "防具_0-19级.xml"
+      "sourceFile": "防具_0-19级.xml",
+      "hairAbove": true
     },
     "牛皮手套": {
       "use": "手部装备",
@@ -12050,7 +12251,8 @@
           "面具": "男变装-黑框眼镜"
         }
       },
-      "sourceFile": "防具_0-19级.xml"
+      "sourceFile": "防具_0-19级.xml",
+      "hairAbove": true
     },
     "咖啡色学生皮鞋": {
       "use": "脚部装备",
@@ -12080,7 +12282,8 @@
           "面具": "男变装-黑色X蒙面"
         }
       },
-      "sourceFile": "防具_0-19级.xml"
+      "sourceFile": "防具_0-19级.xml",
+      "hairAbove": true
     },
     "黑色西装": {
       "use": "上装装备",
@@ -12146,7 +12349,8 @@
           "面具": "男变装-圆框墨镜"
         }
       },
-      "sourceFile": "防具_0-19级.xml"
+      "sourceFile": "防具_0-19级.xml",
+      "hairAbove": true
     },
     "新手皮鞋": {
       "use": "脚部装备",
@@ -12214,7 +12418,8 @@
           "面具": "男变装-新手面具"
         }
       },
-      "sourceFile": "防具_0-19级.xml"
+      "sourceFile": "防具_0-19级.xml",
+      "hairAbove": true
     },
     "红黑色功夫装": {
       "use": "上装装备",
@@ -12343,7 +12548,8 @@
           "面具": "男变装-红外线滤光镜"
         }
       },
-      "sourceFile": "防具_0-19级.xml"
+      "sourceFile": "防具_0-19级.xml",
+      "hairAbove": true
     },
     "盗贼猪鼻式防毒面具": {
       "use": "头部装备",
@@ -12358,7 +12564,8 @@
           "面具": "男变装-盗贼猪鼻式防毒面具"
         }
       },
-      "sourceFile": "防具_0-19级.xml"
+      "sourceFile": "防具_0-19级.xml",
+      "hairAbove": true
     },
     "棕色墨镜": {
       "use": "头部装备",
@@ -12373,7 +12580,8 @@
           "面具": "男变装-棕色墨镜"
         }
       },
-      "sourceFile": "防具_0-19级.xml"
+      "sourceFile": "防具_0-19级.xml",
+      "hairAbove": true
     },
     "盗贼牛仔裤带腿包": {
       "use": "下装装备",
@@ -12445,7 +12653,8 @@
           "面具": "男变装-红色风镜"
         }
       },
-      "sourceFile": "防具_0-19级.xml"
+      "sourceFile": "防具_0-19级.xml",
+      "hairAbove": true
     },
     "黑色礼帽": {
       "use": "头部装备",
@@ -12553,7 +12762,8 @@
           "面具": "男变装-白色盗贼猪鼻式防毒面具"
         }
       },
-      "sourceFile": "防具_0-19级.xml"
+      "sourceFile": "防具_0-19级.xml",
+      "hairAbove": true
     },
     "褐色皮带装": {
       "use": "上装装备",
@@ -12646,7 +12856,8 @@
           "面具": "男变装-防毒面具1号"
         }
       },
-      "sourceFile": "防具_0-19级.xml"
+      "sourceFile": "防具_0-19级.xml",
+      "hairAbove": true
     },
     "黑色摩托头盔": {
       "use": "头部装备",
@@ -12754,7 +12965,8 @@
           "面具": "男变装-黑色太阳镜"
         }
       },
-      "sourceFile": "防具_0-19级.xml"
+      "sourceFile": "防具_0-19级.xml",
+      "hairAbove": true
     },
     "白色手套": {
       "use": "手部装备",
@@ -13059,7 +13271,8 @@
           "面具": "男变装-目镜式简易夜视仪"
         }
       },
-      "sourceFile": "防具_0-19级.xml"
+      "sourceFile": "防具_0-19级.xml",
+      "hairAbove": true
     },
     "仿制A兵团战术猪鼻式防毒面具": {
       "use": "头部装备",
@@ -13074,7 +13287,8 @@
           "面具": "男变装-仿制A兵团战术猪鼻式防毒面具"
         }
       },
-      "sourceFile": "防具_0-19级.xml"
+      "sourceFile": "防具_0-19级.xml",
+      "hairAbove": true
     },
     "史密斯.1337墨镜": {
       "use": "头部装备",
@@ -13089,7 +13303,8 @@
           "面具": "男变装-史密斯.1337墨镜"
         }
       },
-      "sourceFile": "防具_0-19级.xml"
+      "sourceFile": "防具_0-19级.xml",
+      "hairAbove": true
     },
     "Boy手-NPC": {
       "use": "手部装备",
@@ -13258,7 +13473,7 @@
       "use": "头部装备",
       "icon": "小F头部",
       "dressup": "男变装-小F头部",
-      "helmet": false,
+      "helmet": true,
       "fieldsByGender": {
         "男": {
           "面具": "男变装-小F头部"
@@ -13371,7 +13586,8 @@
           "面具": "男变装-精致盗贼猪鼻猪鼻式面具"
         }
       },
-      "sourceFile": "防具_0-19级.xml"
+      "sourceFile": "防具_0-19级.xml",
+      "hairAbove": true
     },
     "A兵团制式战术皮鞋": {
       "use": "脚部装备",
@@ -13460,7 +13676,8 @@
           "面具": "男变装-战术猪鼻式防毒面具"
         }
       },
-      "sourceFile": "防具_0-19级.xml"
+      "sourceFile": "防具_0-19级.xml",
+      "hairAbove": true
     },
     "龅牙小丑面具": {
       "use": "头部装备",
@@ -13475,7 +13692,8 @@
           "面具": "男变装-龅牙小丑面具"
         }
       },
-      "sourceFile": "防具_0-19级.xml"
+      "sourceFile": "防具_0-19级.xml",
+      "hairAbove": true
     },
     "小型拳套": {
       "use": "手部装备",
@@ -13596,7 +13814,8 @@
           "面具": "男变装-骷髅面具"
         }
       },
-      "sourceFile": "防具_0-19级.xml"
+      "sourceFile": "防具_0-19级.xml",
+      "hairAbove": true
     },
     "弗莱迪毛衣": {
       "use": "上装装备",
@@ -13647,7 +13866,8 @@
           "面具": "男变装-杰森面具"
         }
       },
-      "sourceFile": "防具_0-19级.xml"
+      "sourceFile": "防具_0-19级.xml",
+      "hairAbove": true
     },
     "弗莱迪手套": {
       "use": "手部装备",
@@ -13696,7 +13916,8 @@
           "面具": "男变装-黑铁死士围巾"
         }
       },
-      "sourceFile": "防具_0-19级.xml"
+      "sourceFile": "防具_0-19级.xml",
+      "hairAbove": true
     },
     "JK校服": {
       "use": "上装装备",
@@ -14010,7 +14231,7 @@
       "use": "头部装备",
       "icon": "废城军装面具帽",
       "dressup": "男变装-废城军装面具帽",
-      "helmet": false,
+      "helmet": true,
       "fieldsByGender": {
         "男": {
           "面具": "男变装-废城军装面具帽"
@@ -14197,7 +14418,8 @@
           "面具": "男变装-A兵团三相猪鼻式防毒面具"
         }
       },
-      "sourceFile": "防具_0-19级.xml"
+      "sourceFile": "防具_0-19级.xml",
+      "hairAbove": true
     },
     "黑色板鞋": {
       "use": "脚部装备",
@@ -14301,7 +14523,8 @@
           "面具": "男变装-黑铁游侠围巾"
         }
       },
-      "sourceFile": "防具_0-19级.xml"
+      "sourceFile": "防具_0-19级.xml",
+      "hairAbove": true
     },
     "天山黑侠棕色皮鞋": {
       "use": "脚部装备",
@@ -14551,7 +14774,8 @@
           "面具": "男变装-黑铁刺客头装"
         }
       },
-      "sourceFile": "防具_0-19级.xml"
+      "sourceFile": "防具_0-19级.xml",
+      "hairAbove": true
     },
     "军阀棕色皮靴": {
       "use": "脚部装备",
@@ -14672,7 +14896,8 @@
           "面具": "男变装-觉醒者.L33T墨镜"
         }
       },
-      "sourceFile": "防具_0-19级.xml"
+      "sourceFile": "防具_0-19级.xml",
+      "hairAbove": true
     },
     "军阀红色贝雷帽": {
       "use": "头部装备",
@@ -14939,7 +15164,8 @@
           "面具": "男变装-般若影鬼半覆面"
         }
       },
-      "sourceFile": "防具_20-39级.xml"
+      "sourceFile": "防具_20-39级.xml",
+      "hairAbove": true
     },
     "般若赤鬼半覆面": {
       "use": "头部装备",
@@ -14954,7 +15180,8 @@
           "面具": "男变装-般若赤鬼半覆面"
         }
       },
-      "sourceFile": "防具_20-39级.xml"
+      "sourceFile": "防具_20-39级.xml",
+      "hairAbove": true
     },
     "剑圣头部装甲": {
       "use": "头部装备",
@@ -15132,7 +15359,8 @@
           "面具": "男变装-andy套领口"
         }
       },
-      "sourceFile": "防具_20-39级.xml"
+      "sourceFile": "防具_20-39级.xml",
+      "hairAbove": true
     },
     "强劲霜精鞋": {
       "use": "脚部装备",
@@ -15913,7 +16141,8 @@
           "面具": "男变装-黑铁大叔头装"
         }
       },
-      "sourceFile": "防具_20-39级.xml"
+      "sourceFile": "防具_20-39级.xml",
+      "hairAbove": true
     },
     "复镕望远热感仪": {
       "use": "头部装备",
@@ -15928,7 +16157,8 @@
           "面具": "男变装-复镕望远热感仪"
         }
       },
-      "sourceFile": "防具_20-39级.xml"
+      "sourceFile": "防具_20-39级.xml",
+      "hairAbove": true
     },
     "黑铁大叔目镜头装": {
       "use": "头部装备",
@@ -15943,7 +16173,8 @@
           "面具": "男变装-黑铁大叔目镜头装"
         }
       },
-      "sourceFile": "防具_20-39级.xml"
+      "sourceFile": "防具_20-39级.xml",
+      "hairAbove": true
     },
     "黑铁刺客目镜头装": {
       "use": "头部装备",
@@ -15958,7 +16189,8 @@
           "面具": "男变装-黑铁刺客目镜头装"
         }
       },
-      "sourceFile": "防具_20-39级.xml"
+      "sourceFile": "防具_20-39级.xml",
+      "hairAbove": true
     },
     "钢铁小熊鞋": {
       "use": "脚部装备",
@@ -16062,7 +16294,8 @@
           "面具": "男变装-精致战术猪鼻式防毒面具"
         }
       },
-      "sourceFile": "防具_20-39级.xml"
+      "sourceFile": "防具_20-39级.xml",
+      "hairAbove": true
     },
     "A兵团半遮脸猪鼻式防毒面具": {
       "use": "头部装备",
@@ -16077,7 +16310,8 @@
           "面具": "男变装-半遮脸猪鼻式防毒面具"
         }
       },
-      "sourceFile": "防具_20-39级.xml"
+      "sourceFile": "防具_20-39级.xml",
+      "hairAbove": true
     },
     "A兵团精致战术皮鞋": {
       "use": "脚部装备",
@@ -16240,7 +16474,8 @@
           "面具": "男变装-AS-闪动护目镜"
         }
       },
-      "sourceFile": "防具_20-39级.xml"
+      "sourceFile": "防具_20-39级.xml",
+      "hairAbove": true
     },
     "风衣战术服": {
       "use": "上装装备",
@@ -16621,7 +16856,8 @@
           "面具": "男变装-独眼龙防毒面具"
         }
       },
-      "sourceFile": "防具_20-39级.xml"
+      "sourceFile": "防具_20-39级.xml",
+      "hairAbove": true
     },
     "罪袋头套": {
       "use": "头部装备",
@@ -16651,7 +16887,8 @@
           "面具": "男变装-黑无常面具"
         }
       },
-      "sourceFile": "防具_20-39级.xml"
+      "sourceFile": "防具_20-39级.xml",
+      "hairAbove": true
     },
     "白无常鞋子": {
       "use": "脚部装备",
@@ -16740,7 +16977,8 @@
           "面具": "男变装-白无常面具"
         }
       },
-      "sourceFile": "防具_20-39级.xml"
+      "sourceFile": "防具_20-39级.xml",
+      "hairAbove": true
     },
     "黑无常鞋子": {
       "use": "脚部装备",
@@ -17170,7 +17408,8 @@
           "面具": "男变装-次品蓝晶面具"
         }
       },
-      "sourceFile": "防具_20-39级.xml"
+      "sourceFile": "防具_20-39级.xml",
+      "hairAbove": true
     },
     "拳击特制绷带": {
       "use": "手部装备",
@@ -17484,7 +17723,8 @@
           "面具": "男变装-蓝晶面具"
         }
       },
-      "sourceFile": "防具_20-39级.xml"
+      "sourceFile": "防具_20-39级.xml",
+      "hairAbove": true
     },
     "合金鞋": {
       "use": "脚部装备",
@@ -17564,7 +17804,7 @@
       "use": "头部装备",
       "icon": "合金盔",
       "dressup": "男变装-合金盔",
-      "helmet": false,
+      "helmet": true,
       "fieldsByGender": {
         "男": {
           "面具": "男变装-合金盔"
@@ -18246,7 +18486,7 @@
       "use": "头部装备",
       "icon": "炎魔盔",
       "dressup": "男变装-炎魔盔",
-      "helmet": false,
+      "helmet": true,
       "fieldsByGender": {
         "男": {
           "面具": "男变装-炎魔盔"
@@ -19047,7 +19287,7 @@
       "use": "头部装备",
       "icon": "诛神头盔",
       "dressup": "男变装-诛神头盔",
-      "helmet": false,
+      "helmet": true,
       "fieldsByGender": {
         "男": {
           "面具": "男变装-诛神头盔"
@@ -19768,7 +20008,8 @@
           "面具": "男变装-噤默面具"
         }
       },
-      "sourceFile": "防具_40+级.xml"
+      "sourceFile": "防具_40+级.xml",
+      "hairAbove": true
     },
     "末日铁拳": {
       "use": "手部装备",
@@ -20954,7 +21195,7 @@
       "use": "头部装备",
       "icon": "远古诛神头盔",
       "dressup": "男变装-远古诛神头盔",
-      "helmet": false,
+      "helmet": true,
       "fieldsByGender": {
         "男": {
           "面具": "男变装-远古诛神头盔"
@@ -21011,38 +21252,6 @@
       "sourceFile": "data/units/units.json#235",
       "virtual": true,
       "sourceUnitId": 235
-    },
-    "钛合金QJZ171": {
-      "use": "长枪",
-      "icon": "Codex-钛合金QJZ171",
-      "dressup": "枪-长枪-Codex-钛合金QJZ171",
-      "helmet": false,
-      "fieldsByGender": {
-        "男": {
-          "长枪_装扮": "枪-长枪-Codex-钛合金QJZ171"
-        },
-        "女": {
-          "长枪_装扮": "枪-长枪-Codex-钛合金QJZ171"
-        }
-      },
-      "sourceFile": "武器_长枪_机枪.xml"
-    },
-    "P90印花集": {
-      "use": "手枪",
-      "icon": "钛合金P90",
-      "dressup": "枪-手枪-钛合金P90",
-      "helmet": false,
-      "fieldsByGender": {
-        "男": {
-          "手枪_装扮": "枪-手枪-钛合金P90",
-          "手枪2_装扮": "枪-手枪-钛合金P90"
-        },
-        "女": {
-          "手枪_装扮": "枪-手枪-钛合金P90",
-          "手枪2_装扮": "枪-手枪-钛合金P90"
-        }
-      },
-      "sourceFile": "武器_手枪_冲锋枪.xml"
     }
   },
   "skinKeys": {
@@ -21339,6 +21548,46 @@
           "height": 576,
           "originX": 94,
           "originY": 142.2
+        }
+      ]
+    },
+    "刀-Codex-血色光剑天秤": {
+      "covered": true,
+      "asset": {
+        "swf": "flashswf/arts/new/Codex专用素材.swf",
+        "symbolName": "Codex/Ti61-血剑/刀-Codex-血色光剑天秤",
+        "conflict": false,
+        "matches": null
+      },
+      "uses": [
+        "刀"
+      ],
+      "items": [
+        "血色光剑天秤"
+      ],
+      "sourceFiles": [
+        "武器_刀_直剑.xml"
+      ],
+      "export": {
+        "format": "png",
+        "zoom": 2,
+        "fps": 24.0,
+        "frameCount": 1,
+        "uri": "skins/9857abdb_1.png",
+        "width": 198,
+        "height": 960,
+        "playback": "static",
+        "sourceFrameCount": 1
+      },
+      "frames": [
+        {
+          "uri": "skins/9857abdb_1.png",
+          "frame": 1,
+          "sourceFrame": 1,
+          "width": 198,
+          "height": 960,
+          "originX": 98.0,
+          "originY": 91.5
         }
       ]
     },
@@ -33590,47 +33839,6 @@
           "height": 737,
           "originX": 48.7,
           "originY": 58.5
-        }
-      ]
-    },
-    "刀-血色光剑天秤": {
-      "covered": true,
-      "asset": {
-        "swf": "flashswf/arts/things切割.swf",
-        "symbolName": "冷兵/锐器/血色光剑天秤/刀-血色光剑天秤",
-        "conflict": false,
-        "matches": null
-      },
-      "uses": [
-        "刀"
-      ],
-      "items": [
-        "血色光剑天秤"
-      ],
-      "sourceFiles": [
-        "武器_刀_直剑.xml"
-      ],
-      "export": {
-        "format": "png",
-        "zoom": 2,
-        "fps": 24,
-        "frameCount": 1,
-        "uri": "skins/6dbb496e_1.png",
-        "width": 158,
-        "height": 939,
-        "playback": "static",
-        "sourceFrameCount": 1,
-        "hasClipActions": true
-      },
-      "frames": [
-        {
-          "uri": "skins/6dbb496e_1.png",
-          "frame": 1,
-          "sourceFrame": 1,
-          "width": 158,
-          "height": 939,
-          "originX": 79.2,
-          "originY": 91.5
         }
       ]
     },
@@ -77827,6 +78035,47 @@
         }
       ]
     },
+    "手雷-足球": {
+      "covered": true,
+      "asset": {
+        "swf": "flashswf/arts/new/瓦巴杰克.swf",
+        "symbolName": "武器/足球/手雷-足球",
+        "conflict": false,
+        "matches": null
+      },
+      "uses": [
+        "手雷"
+      ],
+      "items": [
+        "普通足球",
+        "足球"
+      ],
+      "sourceFiles": [
+        "消耗品_手雷.xml"
+      ],
+      "export": {
+        "format": "png",
+        "zoom": 2,
+        "fps": 24.0,
+        "frameCount": 1,
+        "uri": "skins/9ac2e78c_1.png",
+        "width": 153,
+        "height": 156,
+        "playback": "static",
+        "sourceFrameCount": 1
+      },
+      "frames": [
+        {
+          "uri": "skins/9ac2e78c_1.png",
+          "frame": 1,
+          "sourceFrame": 1,
+          "width": 153,
+          "height": 156,
+          "originX": 74.3,
+          "originY": 3.7
+        }
+      ]
+    },
     "手雷-鎏金雀翎": {
       "covered": true,
       "asset": {
@@ -78349,6 +78598,46 @@
           "height": 122,
           "originX": 36.9,
           "originY": 82.1
+        }
+      ]
+    },
+    "枪-手枪-Codex-钛合金P90": {
+      "covered": true,
+      "asset": {
+        "swf": "flashswf/arts/new/Codex专用素材.swf",
+        "symbolName": "Codex/P90-Ti61/枪-手枪-Codex-钛合金P90",
+        "conflict": false,
+        "matches": null
+      },
+      "uses": [
+        "手枪"
+      ],
+      "items": [
+        "钛合金P90"
+      ],
+      "sourceFiles": [
+        "武器_手枪_冲锋枪.xml"
+      ],
+      "export": {
+        "format": "png",
+        "zoom": 2,
+        "fps": 24.0,
+        "frameCount": 1,
+        "uri": "skins/d6483b1c_1.png",
+        "width": 448,
+        "height": 169,
+        "playback": "static",
+        "sourceFrameCount": 1
+      },
+      "frames": [
+        {
+          "uri": "skins/d6483b1c_1.png",
+          "frame": 1,
+          "sourceFrame": 1,
+          "width": 448,
+          "height": 169,
+          "originX": 233.3,
+          "originY": 129.4
         }
       ]
     },
@@ -83402,6 +83691,50 @@
           "width": 1011,
           "height": 278,
           "originX": 163.8,
+          "originY": 158.4
+        }
+      ]
+    },
+    "枪-长枪-Codex-钛合金QJZ171": {
+      "covered": true,
+      "asset": {
+        "swf": "flashswf/arts/new/Codex专用素材.swf",
+        "symbolName": "Codex/QJZ171-Ti61/枪-长枪-Codex-钛合金QJZ171",
+        "conflict": false,
+        "matches": null
+      },
+      "uses": [
+        "长枪"
+      ],
+      "items": [
+        "钛合金QJZ171"
+      ],
+      "sourceFiles": [
+        "武器_长枪_机枪.xml"
+      ],
+      "export": {
+        "format": "png",
+        "zoom": 2,
+        "fps": 24.0,
+        "frameCount": 1,
+        "uri": "skins/900fa408_1.png",
+        "width": 1013,
+        "height": 278,
+        "playback": "static",
+        "sourceFrameCount": 1,
+        "timelineScriptFrames": [
+          1
+        ],
+        "hasFrame1Stop": true
+      },
+      "frames": [
+        {
+          "uri": "skins/900fa408_1.png",
+          "frame": 1,
+          "sourceFrame": 1,
+          "width": 1013,
+          "height": 278,
+          "originX": 165.7,
           "originY": 158.4
         }
       ]
@@ -104180,7 +104513,21 @@
         "swf": "flashswf/arts/new/雾人装备调整.swf",
         "symbolName": "3.防具/10.军阀系列/男变装-军阀侦察兵衣服上臂",
         "conflict": false,
-        "matches": null
+        "resolvedConflict": true,
+        "matches": [
+          {
+            "swf": "flashswf/arts/new/雾人装备调整.swf",
+            "symbolName": "3.防具/10.军阀系列/男变装-军阀侦察兵衣服上臂"
+          },
+          {
+            "swf": "flashswf/backgrounds/gk22_2_BG.swf",
+            "symbolName": ""
+          },
+          {
+            "swf": "flashswf/backgrounds/gk22_3_BG.swf",
+            "symbolName": ""
+          }
+        ]
       },
       "uses": [
         "上装装备"
@@ -104220,7 +104567,21 @@
         "swf": "flashswf/arts/new/雾人装备调整.swf",
         "symbolName": "3.防具/10.军阀系列/男变装-军阀侦察兵衣服右下臂",
         "conflict": false,
-        "matches": null
+        "resolvedConflict": true,
+        "matches": [
+          {
+            "swf": "flashswf/arts/new/雾人装备调整.swf",
+            "symbolName": "3.防具/10.军阀系列/男变装-军阀侦察兵衣服右下臂"
+          },
+          {
+            "swf": "flashswf/backgrounds/gk22_2_BG.swf",
+            "symbolName": ""
+          },
+          {
+            "swf": "flashswf/backgrounds/gk22_3_BG.swf",
+            "symbolName": ""
+          }
+        ]
       },
       "uses": [
         "上装装备"
@@ -104260,7 +104621,21 @@
         "swf": "flashswf/arts/new/雾人装备调整.swf",
         "symbolName": "3.防具/10.军阀系列/男变装-军阀侦察兵衣服左下臂",
         "conflict": false,
-        "matches": null
+        "resolvedConflict": true,
+        "matches": [
+          {
+            "swf": "flashswf/arts/new/雾人装备调整.swf",
+            "symbolName": "3.防具/10.军阀系列/男变装-军阀侦察兵衣服左下臂"
+          },
+          {
+            "swf": "flashswf/backgrounds/gk22_2_BG.swf",
+            "symbolName": ""
+          },
+          {
+            "swf": "flashswf/backgrounds/gk22_3_BG.swf",
+            "symbolName": ""
+          }
+        ]
       },
       "uses": [
         "上装装备"
@@ -104300,7 +104675,21 @@
         "swf": "flashswf/arts/new/雾人装备调整.swf",
         "symbolName": "3.防具/10.军阀系列/男变装-军阀侦察兵衣服身体",
         "conflict": false,
-        "matches": null
+        "resolvedConflict": true,
+        "matches": [
+          {
+            "swf": "flashswf/arts/new/雾人装备调整.swf",
+            "symbolName": "3.防具/10.军阀系列/男变装-军阀侦察兵衣服身体"
+          },
+          {
+            "swf": "flashswf/backgrounds/gk22_2_BG.swf",
+            "symbolName": ""
+          },
+          {
+            "swf": "flashswf/backgrounds/gk22_3_BG.swf",
+            "symbolName": ""
+          }
+        ]
       },
       "uses": [
         "上装装备"
@@ -104380,7 +104769,17 @@
         "swf": "flashswf/arts/new/雾人装备调整.swf",
         "symbolName": "3.防具/10.军阀系列/男变装-军阀兵头衣服右下臂",
         "conflict": false,
-        "matches": null
+        "resolvedConflict": true,
+        "matches": [
+          {
+            "swf": "flashswf/arts/new/雾人装备调整.swf",
+            "symbolName": "3.防具/10.军阀系列/男变装-军阀兵头衣服右下臂"
+          },
+          {
+            "swf": "flashswf/backgrounds/gk22_3_BG.swf",
+            "symbolName": ""
+          }
+        ]
       },
       "uses": [
         "上装装备"
@@ -104420,7 +104819,17 @@
         "swf": "flashswf/arts/new/雾人装备调整.swf",
         "symbolName": "3.防具/10.军阀系列/男变装-军阀兵头衣服左下臂",
         "conflict": false,
-        "matches": null
+        "resolvedConflict": true,
+        "matches": [
+          {
+            "swf": "flashswf/arts/new/雾人装备调整.swf",
+            "symbolName": "3.防具/10.军阀系列/男变装-军阀兵头衣服左下臂"
+          },
+          {
+            "swf": "flashswf/backgrounds/gk22_3_BG.swf",
+            "symbolName": ""
+          }
+        ]
       },
       "uses": [
         "上装装备"
@@ -104460,7 +104869,17 @@
         "swf": "flashswf/arts/new/雾人装备调整.swf",
         "symbolName": "3.防具/10.军阀系列/男变装-军阀兵头衣服身体",
         "conflict": false,
-        "matches": null
+        "resolvedConflict": true,
+        "matches": [
+          {
+            "swf": "flashswf/arts/new/雾人装备调整.swf",
+            "symbolName": "3.防具/10.军阀系列/男变装-军阀兵头衣服身体"
+          },
+          {
+            "swf": "flashswf/backgrounds/gk22_3_BG.swf",
+            "symbolName": ""
+          }
+        ]
       },
       "uses": [
         "上装装备"
@@ -104500,7 +104919,21 @@
         "swf": "flashswf/arts/new/雾人装备调整.swf",
         "symbolName": "3.防具/10.军阀系列/男变装-军阀带弹药包裤子右大腿",
         "conflict": false,
-        "matches": null
+        "resolvedConflict": true,
+        "matches": [
+          {
+            "swf": "flashswf/arts/new/雾人装备调整.swf",
+            "symbolName": "3.防具/10.军阀系列/男变装-军阀带弹药包裤子右大腿"
+          },
+          {
+            "swf": "flashswf/backgrounds/gk22_2_BG.swf",
+            "symbolName": ""
+          },
+          {
+            "swf": "flashswf/backgrounds/gk22_3_BG.swf",
+            "symbolName": ""
+          }
+        ]
       },
       "uses": [
         "下装装备"
@@ -104540,7 +104973,21 @@
         "swf": "flashswf/arts/new/雾人装备调整.swf",
         "symbolName": "3.防具/10.军阀系列/男变装-军阀带弹药包裤子小腿",
         "conflict": false,
-        "matches": null
+        "resolvedConflict": true,
+        "matches": [
+          {
+            "swf": "flashswf/arts/new/雾人装备调整.swf",
+            "symbolName": "3.防具/10.军阀系列/男变装-军阀带弹药包裤子小腿"
+          },
+          {
+            "swf": "flashswf/backgrounds/gk22_2_BG.swf",
+            "symbolName": ""
+          },
+          {
+            "swf": "flashswf/backgrounds/gk22_3_BG.swf",
+            "symbolName": ""
+          }
+        ]
       },
       "uses": [
         "下装装备"
@@ -104580,7 +105027,21 @@
         "swf": "flashswf/arts/new/雾人装备调整.swf",
         "symbolName": "3.防具/10.军阀系列/男变装-军阀带弹药包裤子屁股",
         "conflict": false,
-        "matches": null
+        "resolvedConflict": true,
+        "matches": [
+          {
+            "swf": "flashswf/arts/new/雾人装备调整.swf",
+            "symbolName": "3.防具/10.军阀系列/男变装-军阀带弹药包裤子屁股"
+          },
+          {
+            "swf": "flashswf/backgrounds/gk22_2_BG.swf",
+            "symbolName": ""
+          },
+          {
+            "swf": "flashswf/backgrounds/gk22_3_BG.swf",
+            "symbolName": ""
+          }
+        ]
       },
       "uses": [
         "下装装备"
@@ -104620,7 +105081,21 @@
         "swf": "flashswf/arts/new/雾人装备调整.swf",
         "symbolName": "3.防具/10.军阀系列/男变装-军阀带弹药包裤子左大腿",
         "conflict": false,
-        "matches": null
+        "resolvedConflict": true,
+        "matches": [
+          {
+            "swf": "flashswf/arts/new/雾人装备调整.swf",
+            "symbolName": "3.防具/10.军阀系列/男变装-军阀带弹药包裤子左大腿"
+          },
+          {
+            "swf": "flashswf/backgrounds/gk22_2_BG.swf",
+            "symbolName": ""
+          },
+          {
+            "swf": "flashswf/backgrounds/gk22_3_BG.swf",
+            "symbolName": ""
+          }
+        ]
       },
       "uses": [
         "下装装备"
@@ -104660,7 +105135,21 @@
         "swf": "flashswf/arts/new/雾人装备调整.swf",
         "symbolName": "3.防具/10.军阀系列/男变装-军阀带腰包裤子右大腿",
         "conflict": false,
-        "matches": null
+        "resolvedConflict": true,
+        "matches": [
+          {
+            "swf": "flashswf/arts/new/雾人装备调整.swf",
+            "symbolName": "3.防具/10.军阀系列/男变装-军阀带腰包裤子右大腿"
+          },
+          {
+            "swf": "flashswf/backgrounds/gk22_2_BG.swf",
+            "symbolName": ""
+          },
+          {
+            "swf": "flashswf/backgrounds/gk22_3_BG.swf",
+            "symbolName": ""
+          }
+        ]
       },
       "uses": [
         "下装装备"
@@ -104700,7 +105189,21 @@
         "swf": "flashswf/arts/new/雾人装备调整.swf",
         "symbolName": "3.防具/10.军阀系列/男变装-军阀带腰包裤子小腿",
         "conflict": false,
-        "matches": null
+        "resolvedConflict": true,
+        "matches": [
+          {
+            "swf": "flashswf/arts/new/雾人装备调整.swf",
+            "symbolName": "3.防具/10.军阀系列/男变装-军阀带腰包裤子小腿"
+          },
+          {
+            "swf": "flashswf/backgrounds/gk22_2_BG.swf",
+            "symbolName": ""
+          },
+          {
+            "swf": "flashswf/backgrounds/gk22_3_BG.swf",
+            "symbolName": ""
+          }
+        ]
       },
       "uses": [
         "下装装备"
@@ -104740,7 +105243,21 @@
         "swf": "flashswf/arts/new/雾人装备调整.swf",
         "symbolName": "3.防具/10.军阀系列/男变装-军阀带腰包裤子屁股",
         "conflict": false,
-        "matches": null
+        "resolvedConflict": true,
+        "matches": [
+          {
+            "swf": "flashswf/arts/new/雾人装备调整.swf",
+            "symbolName": "3.防具/10.军阀系列/男变装-军阀带腰包裤子屁股"
+          },
+          {
+            "swf": "flashswf/backgrounds/gk22_2_BG.swf",
+            "symbolName": ""
+          },
+          {
+            "swf": "flashswf/backgrounds/gk22_3_BG.swf",
+            "symbolName": ""
+          }
+        ]
       },
       "uses": [
         "下装装备"
@@ -104780,7 +105297,21 @@
         "swf": "flashswf/arts/new/雾人装备调整.swf",
         "symbolName": "3.防具/10.军阀系列/男变装-军阀带腰包裤子左大腿",
         "conflict": false,
-        "matches": null
+        "resolvedConflict": true,
+        "matches": [
+          {
+            "swf": "flashswf/arts/new/雾人装备调整.swf",
+            "symbolName": "3.防具/10.军阀系列/男变装-军阀带腰包裤子左大腿"
+          },
+          {
+            "swf": "flashswf/backgrounds/gk22_2_BG.swf",
+            "symbolName": ""
+          },
+          {
+            "swf": "flashswf/backgrounds/gk22_3_BG.swf",
+            "symbolName": ""
+          }
+        ]
       },
       "uses": [
         "下装装备"
@@ -104820,7 +105351,21 @@
         "swf": "flashswf/arts/new/雾人装备调整.swf",
         "symbolName": "3.防具/10.军阀系列/男变装-军阀弹药兵衣服上臂",
         "conflict": false,
-        "matches": null
+        "resolvedConflict": true,
+        "matches": [
+          {
+            "swf": "flashswf/arts/new/雾人装备调整.swf",
+            "symbolName": "3.防具/10.军阀系列/男变装-军阀弹药兵衣服上臂"
+          },
+          {
+            "swf": "flashswf/backgrounds/gk22_2_BG.swf",
+            "symbolName": ""
+          },
+          {
+            "swf": "flashswf/backgrounds/gk22_3_BG.swf",
+            "symbolName": ""
+          }
+        ]
       },
       "uses": [
         "上装装备"
@@ -104860,7 +105405,21 @@
         "swf": "flashswf/arts/new/雾人装备调整.swf",
         "symbolName": "3.防具/10.军阀系列/男变装-军阀弹药兵衣服右下臂",
         "conflict": false,
-        "matches": null
+        "resolvedConflict": true,
+        "matches": [
+          {
+            "swf": "flashswf/arts/new/雾人装备调整.swf",
+            "symbolName": "3.防具/10.军阀系列/男变装-军阀弹药兵衣服右下臂"
+          },
+          {
+            "swf": "flashswf/backgrounds/gk22_2_BG.swf",
+            "symbolName": ""
+          },
+          {
+            "swf": "flashswf/backgrounds/gk22_3_BG.swf",
+            "symbolName": ""
+          }
+        ]
       },
       "uses": [
         "上装装备"
@@ -104900,7 +105459,21 @@
         "swf": "flashswf/arts/new/雾人装备调整.swf",
         "symbolName": "3.防具/10.军阀系列/男变装-军阀弹药兵衣服左下臂",
         "conflict": false,
-        "matches": null
+        "resolvedConflict": true,
+        "matches": [
+          {
+            "swf": "flashswf/arts/new/雾人装备调整.swf",
+            "symbolName": "3.防具/10.军阀系列/男变装-军阀弹药兵衣服左下臂"
+          },
+          {
+            "swf": "flashswf/backgrounds/gk22_2_BG.swf",
+            "symbolName": ""
+          },
+          {
+            "swf": "flashswf/backgrounds/gk22_3_BG.swf",
+            "symbolName": ""
+          }
+        ]
       },
       "uses": [
         "上装装备"
@@ -104940,7 +105513,21 @@
         "swf": "flashswf/arts/new/雾人装备调整.swf",
         "symbolName": "3.防具/10.军阀系列/男变装-军阀弹药兵衣服身体",
         "conflict": false,
-        "matches": null
+        "resolvedConflict": true,
+        "matches": [
+          {
+            "swf": "flashswf/arts/new/雾人装备调整.swf",
+            "symbolName": "3.防具/10.军阀系列/男变装-军阀弹药兵衣服身体"
+          },
+          {
+            "swf": "flashswf/backgrounds/gk22_2_BG.swf",
+            "symbolName": ""
+          },
+          {
+            "swf": "flashswf/backgrounds/gk22_3_BG.swf",
+            "symbolName": ""
+          }
+        ]
       },
       "uses": [
         "上装装备"
@@ -104980,7 +105567,21 @@
         "swf": "flashswf/arts/new/雾人装备调整.swf",
         "symbolName": "3.防具/10.军阀系列/男变装-军阀普通军裤右大腿",
         "conflict": false,
-        "matches": null
+        "resolvedConflict": true,
+        "matches": [
+          {
+            "swf": "flashswf/arts/new/雾人装备调整.swf",
+            "symbolName": "3.防具/10.军阀系列/男变装-军阀普通军裤右大腿"
+          },
+          {
+            "swf": "flashswf/backgrounds/gk22_2_BG.swf",
+            "symbolName": ""
+          },
+          {
+            "swf": "flashswf/backgrounds/gk22_3_BG.swf",
+            "symbolName": ""
+          }
+        ]
       },
       "uses": [
         "下装装备"
@@ -105060,7 +105661,21 @@
         "swf": "flashswf/arts/new/雾人装备调整.swf",
         "symbolName": "3.防具/10.军阀系列/男变装-军阀普通军裤屁股",
         "conflict": false,
-        "matches": null
+        "resolvedConflict": true,
+        "matches": [
+          {
+            "swf": "flashswf/arts/new/雾人装备调整.swf",
+            "symbolName": "3.防具/10.军阀系列/男变装-军阀普通军裤屁股"
+          },
+          {
+            "swf": "flashswf/backgrounds/gk22_2_BG.swf",
+            "symbolName": ""
+          },
+          {
+            "swf": "flashswf/backgrounds/gk22_3_BG.swf",
+            "symbolName": ""
+          }
+        ]
       },
       "uses": [
         "下装装备"
@@ -105100,7 +105715,21 @@
         "swf": "flashswf/arts/new/雾人装备调整.swf",
         "symbolName": "3.防具/10.军阀系列/男变装-军阀普通军裤左大腿",
         "conflict": false,
-        "matches": null
+        "resolvedConflict": true,
+        "matches": [
+          {
+            "swf": "flashswf/arts/new/雾人装备调整.swf",
+            "symbolName": "3.防具/10.军阀系列/男变装-军阀普通军裤左大腿"
+          },
+          {
+            "swf": "flashswf/backgrounds/gk22_2_BG.swf",
+            "symbolName": ""
+          },
+          {
+            "swf": "flashswf/backgrounds/gk22_3_BG.swf",
+            "symbolName": ""
+          }
+        ]
       },
       "uses": [
         "下装装备"
@@ -105140,7 +105769,17 @@
         "swf": "flashswf/arts/new/雾人装备调整.swf",
         "symbolName": "3.防具/10.军阀系列/男变装-军阀普通带腿包军裤右大腿",
         "conflict": false,
-        "matches": null
+        "resolvedConflict": true,
+        "matches": [
+          {
+            "swf": "flashswf/arts/new/雾人装备调整.swf",
+            "symbolName": "3.防具/10.军阀系列/男变装-军阀普通带腿包军裤右大腿"
+          },
+          {
+            "swf": "flashswf/backgrounds/gk22_3_BG.swf",
+            "symbolName": ""
+          }
+        ]
       },
       "uses": [
         "下装装备"
@@ -105220,7 +105859,17 @@
         "swf": "flashswf/arts/new/雾人装备调整.swf",
         "symbolName": "3.防具/10.军阀系列/男变装-军阀普通带腿包军裤屁股",
         "conflict": false,
-        "matches": null
+        "resolvedConflict": true,
+        "matches": [
+          {
+            "swf": "flashswf/arts/new/雾人装备调整.swf",
+            "symbolName": "3.防具/10.军阀系列/男变装-军阀普通带腿包军裤屁股"
+          },
+          {
+            "swf": "flashswf/backgrounds/gk22_3_BG.swf",
+            "symbolName": ""
+          }
+        ]
       },
       "uses": [
         "下装装备"
@@ -105260,7 +105909,17 @@
         "swf": "flashswf/arts/new/雾人装备调整.swf",
         "symbolName": "3.防具/10.军阀系列/男变装-军阀普通带腿包军裤左大腿",
         "conflict": false,
-        "matches": null
+        "resolvedConflict": true,
+        "matches": [
+          {
+            "swf": "flashswf/arts/new/雾人装备调整.swf",
+            "symbolName": "3.防具/10.军阀系列/男变装-军阀普通带腿包军裤左大腿"
+          },
+          {
+            "swf": "flashswf/backgrounds/gk22_3_BG.swf",
+            "symbolName": ""
+          }
+        ]
       },
       "uses": [
         "下装装备"
@@ -105300,7 +105959,21 @@
         "swf": "flashswf/arts/new/雾人装备调整.swf",
         "symbolName": "3.防具/10.军阀系列/男变装-军阀棕色皮靴",
         "conflict": false,
-        "matches": null
+        "resolvedConflict": true,
+        "matches": [
+          {
+            "swf": "flashswf/arts/new/雾人装备调整.swf",
+            "symbolName": "3.防具/10.军阀系列/男变装-军阀棕色皮靴"
+          },
+          {
+            "swf": "flashswf/backgrounds/gk22_2_BG.swf",
+            "symbolName": ""
+          },
+          {
+            "swf": "flashswf/backgrounds/gk22_3_BG.swf",
+            "symbolName": ""
+          }
+        ]
       },
       "uses": [
         "脚部装备"
@@ -105340,7 +106013,21 @@
         "swf": "flashswf/arts/new/雾人装备调整.swf",
         "symbolName": "3.防具/10.军阀系列/男变装-军阀突击兵衣服上臂",
         "conflict": false,
-        "matches": null
+        "resolvedConflict": true,
+        "matches": [
+          {
+            "swf": "flashswf/arts/new/雾人装备调整.swf",
+            "symbolName": "3.防具/10.军阀系列/男变装-军阀突击兵衣服上臂"
+          },
+          {
+            "swf": "flashswf/backgrounds/gk22_2_BG.swf",
+            "symbolName": ""
+          },
+          {
+            "swf": "flashswf/backgrounds/gk22_3_BG.swf",
+            "symbolName": ""
+          }
+        ]
       },
       "uses": [
         "上装装备"
@@ -105380,7 +106067,21 @@
         "swf": "flashswf/arts/new/雾人装备调整.swf",
         "symbolName": "3.防具/10.军阀系列/男变装-军阀突击兵衣服右下臂",
         "conflict": false,
-        "matches": null
+        "resolvedConflict": true,
+        "matches": [
+          {
+            "swf": "flashswf/arts/new/雾人装备调整.swf",
+            "symbolName": "3.防具/10.军阀系列/男变装-军阀突击兵衣服右下臂"
+          },
+          {
+            "swf": "flashswf/backgrounds/gk22_2_BG.swf",
+            "symbolName": ""
+          },
+          {
+            "swf": "flashswf/backgrounds/gk22_3_BG.swf",
+            "symbolName": ""
+          }
+        ]
       },
       "uses": [
         "上装装备"
@@ -105420,7 +106121,21 @@
         "swf": "flashswf/arts/new/雾人装备调整.swf",
         "symbolName": "3.防具/10.军阀系列/男变装-军阀突击兵衣服左下臂",
         "conflict": false,
-        "matches": null
+        "resolvedConflict": true,
+        "matches": [
+          {
+            "swf": "flashswf/arts/new/雾人装备调整.swf",
+            "symbolName": "3.防具/10.军阀系列/男变装-军阀突击兵衣服左下臂"
+          },
+          {
+            "swf": "flashswf/backgrounds/gk22_2_BG.swf",
+            "symbolName": ""
+          },
+          {
+            "swf": "flashswf/backgrounds/gk22_3_BG.swf",
+            "symbolName": ""
+          }
+        ]
       },
       "uses": [
         "上装装备"
@@ -105460,7 +106175,21 @@
         "swf": "flashswf/arts/new/雾人装备调整.swf",
         "symbolName": "3.防具/10.军阀系列/男变装-军阀突击兵衣服身体",
         "conflict": false,
-        "matches": null
+        "resolvedConflict": true,
+        "matches": [
+          {
+            "swf": "flashswf/arts/new/雾人装备调整.swf",
+            "symbolName": "3.防具/10.军阀系列/男变装-军阀突击兵衣服身体"
+          },
+          {
+            "swf": "flashswf/backgrounds/gk22_2_BG.swf",
+            "symbolName": ""
+          },
+          {
+            "swf": "flashswf/backgrounds/gk22_3_BG.swf",
+            "symbolName": ""
+          }
+        ]
       },
       "uses": [
         "上装装备"
@@ -105500,7 +106229,21 @@
         "swf": "flashswf/arts/new/雾人装备调整.swf",
         "symbolName": "3.防具/10.军阀系列/男变装-军阀红色贝雷帽",
         "conflict": false,
-        "matches": null
+        "resolvedConflict": true,
+        "matches": [
+          {
+            "swf": "flashswf/arts/new/雾人装备调整.swf",
+            "symbolName": "3.防具/10.军阀系列/男变装-军阀红色贝雷帽"
+          },
+          {
+            "swf": "flashswf/backgrounds/gk22_2_BG.swf",
+            "symbolName": ""
+          },
+          {
+            "swf": "flashswf/backgrounds/gk22_3_BG.swf",
+            "symbolName": ""
+          }
+        ]
       },
       "uses": [
         "头部装备"
@@ -108380,7 +109123,21 @@
         "swf": "flashswf/arts/things.swf",
         "symbolName": "待整理防具相关汇总/男变装-咖啡色条纹蒙面",
         "conflict": false,
-        "matches": null
+        "resolvedConflict": true,
+        "matches": [
+          {
+            "swf": "flashswf/arts/things.swf",
+            "symbolName": "待整理防具相关汇总/男变装-咖啡色条纹蒙面"
+          },
+          {
+            "swf": "flashswf/backgrounds/gk22_2_BG.swf",
+            "symbolName": ""
+          },
+          {
+            "swf": "flashswf/backgrounds/gk22_3_BG.swf",
+            "symbolName": ""
+          }
+        ]
       },
       "uses": [
         "头部装备"
@@ -108993,6 +109750,14 @@
           {
             "swf": "flashswf/arts/things0.swf",
             "symbolName": "sprite/男变装-基本脸型"
+          },
+          {
+            "swf": "flashswf/backgrounds/gk22_2_BG.swf",
+            "symbolName": ""
+          },
+          {
+            "swf": "flashswf/backgrounds/gk22_3_BG.swf",
+            "symbolName": ""
           },
           {
             "swf": "flashswf/levels/地图-第一防线防区.swf",
@@ -141458,7 +142223,17 @@
         "swf": "flashswf/arts/things.swf",
         "symbolName": "待整理防具相关汇总/男变装-黑色太阳镜",
         "conflict": false,
-        "matches": null
+        "resolvedConflict": true,
+        "matches": [
+          {
+            "swf": "flashswf/arts/things.swf",
+            "symbolName": "待整理防具相关汇总/男变装-黑色太阳镜"
+          },
+          {
+            "swf": "flashswf/backgrounds/gk22_3_BG.swf",
+            "symbolName": ""
+          }
+        ]
       },
       "uses": [
         "头部装备"
@@ -146453,130 +147228,6 @@
           "height": 156,
           "originX": 50.4,
           "originY": 67.2
-        }
-      ]
-    },
-    "枪-长枪-Codex-钛合金QJZ171": {
-      "covered": true,
-      "asset": {
-        "swf": "flashswf/arts/new/Codex专用素材.swf",
-        "symbolName": "Codex/QJZ171-Ti61/枪-长枪-Codex-钛合金QJZ171",
-        "conflict": false,
-        "matches": null
-      },
-      "uses": [
-        "长枪"
-      ],
-      "items": [
-        "钛合金QJZ171"
-      ],
-      "sourceFiles": [
-        "武器_长枪_机枪.xml"
-      ],
-      "export": {
-        "format": "png",
-        "zoom": 2,
-        "fps": 24.0,
-        "frameCount": 1,
-        "uri": "skins/900fa408_1.png",
-        "width": 1013,
-        "height": 278,
-        "playback": "static",
-        "sourceFrameCount": 1,
-        "timelineScriptFrames": [
-          1
-        ],
-        "hasFrame1Stop": true
-      },
-      "frames": [
-        {
-          "uri": "skins/900fa408_1.png",
-          "frame": 1,
-          "sourceFrame": 1,
-          "width": 1013,
-          "height": 278,
-          "originX": 165.7,
-          "originY": 158.4
-        }
-      ]
-    },
-    "枪-手枪-Codex-钛合金P90": {
-      "covered": true,
-      "asset": {
-        "swf": "flashswf/arts/new/Codex专用素材.swf",
-        "symbolName": "Codex/P90-Ti61/枪-手枪-Codex-钛合金P90",
-        "conflict": false,
-        "matches": null
-      },
-      "uses": [
-        "手枪"
-      ],
-      "items": [
-        "钛合金P90"
-      ],
-      "sourceFiles": [
-        "武器_手枪_冲锋枪.xml"
-      ],
-      "export": {
-        "format": "png",
-        "zoom": 2,
-        "fps": 24.0,
-        "frameCount": 1,
-        "uri": "skins/d6483b1c_1.png",
-        "width": 448,
-        "height": 169,
-        "playback": "static",
-        "sourceFrameCount": 1
-      },
-      "frames": [
-        {
-          "uri": "skins/d6483b1c_1.png",
-          "frame": 1,
-          "sourceFrame": 1,
-          "width": 448,
-          "height": 169,
-          "originX": 233.3,
-          "originY": 129.4
-        }
-      ]
-    },
-    "刀-Codex-血色光剑天秤": {
-      "covered": true,
-      "asset": {
-        "swf": "flashswf/arts/new/Codex专用素材.swf",
-        "symbolName": "Codex/Ti61-血剑/刀-Codex-血色光剑天秤",
-        "conflict": false,
-        "matches": null
-      },
-      "uses": [
-        "刀"
-      ],
-      "items": [
-        "血色光剑天秤"
-      ],
-      "sourceFiles": [
-        "武器_刀_直剑.xml"
-      ],
-      "export": {
-        "format": "png",
-        "zoom": 2,
-        "fps": 24.0,
-        "frameCount": 1,
-        "uri": "skins/9857abdb_1.png",
-        "width": 198,
-        "height": 960,
-        "playback": "static",
-        "sourceFrameCount": 1
-      },
-      "frames": [
-        {
-          "uri": "skins/9857abdb_1.png",
-          "frame": 1,
-          "sourceFrame": 1,
-          "width": 198,
-          "height": 960,
-          "originX": 98.0,
-          "originY": 91.5
         }
       ]
     }

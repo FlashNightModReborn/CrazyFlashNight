@@ -121,6 +121,12 @@ var DressupDollRenderer = (function() {
             gender: gender,
             keyMap: keyMap
         };
+        // 逐件层级标记：当前头部装备在 manifest 声明 hairAbove=true 时
+        // 钉住 脸型<面具<发型（发型压面具），否则 脸型<发型<面具（历史顺序）。
+        // render() 只在 state 显式携带布尔值时重排，raw state 保持 rig 烘焙顺序。
+        var headItem = manifest.items
+            && manifest.items[equipment['头部装备'] || equipment.head];
+        state.headHairAbove = !!(headItem && headItem.hairAbove === true);
         if (options.fitFields && options.fitFields.length) {
             state.fitFields = options.fitFields.slice ? options.fitFields.slice(0) : options.fitFields;
         }
@@ -429,6 +435,29 @@ var DressupDollRenderer = (function() {
             return holder && selected[holder.field];
         });
         return result.length || strictFields ? result : holders;
+    }
+
+    // 头部三件套的逐件层叠：仅在 state 显式携带 headHairAbove 布尔时重排，
+    // 其余 holder 原位不动；与 AS2 refDepths 互换及 bake 的重排同一真源。
+    var HEAD_LAYER_FIELDS = { '脸型': true, '发型': true, '面具': true };
+    function orderHeadLayers(holders, hairAbove) {
+        var orderMap = hairAbove
+            ? { '脸型': 0, '面具': 1, '发型': 2 }
+            : { '脸型': 0, '发型': 1, '面具': 2 };
+        var positions = [];
+        for (var i = 0; i < holders.length; i++) {
+            if (holders[i] && HEAD_LAYER_FIELDS[holders[i].field] === true) {
+                positions.push(i);
+            }
+        }
+        if (positions.length <= 1) return holders;
+        var sorted = positions.map(function(index) { return holders[index]; })
+            .sort(function(a, b) {
+                return orderMap[a.field] - orderMap[b.field];
+            });
+        var out = holders.slice();
+        positions.forEach(function(pos, k) { out[pos] = sorted[k]; });
+        return out;
     }
 
     function resolveRigState(manifest, gender, state, options) {
@@ -819,6 +848,9 @@ var DressupDollRenderer = (function() {
             var holders = measured.holders;
             var strictFields = measured.strictFields;
             var drawHolders = holdersForDraw(holders, lastState.drawFields || options.drawFields, strictFields);
+            if (lastState.headHairAbove === true || lastState.headHairAbove === false) {
+                drawHolders = orderHeadLayers(drawHolders, lastState.headHairAbove);
+            }
             var contentBounds = measured.bounds;
             var fitEnvelope = normalizeBounds(lastState.fitEnvelope)
                 || normalizeBounds(options.fitEnvelope);

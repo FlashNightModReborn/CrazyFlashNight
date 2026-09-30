@@ -1,11 +1,11 @@
 {
   "schema": "cf7-dressup-report-v1",
   "counts": {
-    "items": 1324,
-    "skinKeys": 2857,
-    "coveredSkinKeys": 2716,
+    "items": 1345,
+    "skinKeys": 2860,
+    "coveredSkinKeys": 2719,
     "aliasCoveredSkinKeys": 9,
-    "coveredExcludingAliasSkinKeys": 2707,
+    "coveredExcludingAliasSkinKeys": 2710,
     "missingSkinKeys": 141,
     "holdersMale": 21,
     "holdersFemale": 21,
@@ -14,37 +14,18 @@
     "compatAliasSkinKeys": 9,
     "manualCompatAliasSkinKeys": 9,
     "autoOppositeGenderCompatAliasSkinKeys": 0,
-    "exportedSkinKeys": 2,
-    "exportedFrames": 2992,
-    "exportedBasicKeys": 0,
-    "exportedBasicFrames": 0,
-    "metadataErrors": 0,
-    "timelineScriptErrors": 0,
-    "spriteGraphErrors": 0,
-    "staticStopSkinKeys": 2,
-    "staticStopCollapsedFrames": 18,
-    "purgedStaleFrames": 0,
+    "preservedSkinKeyExports": 2719,
+    "preservedBasicHolderExports": 231,
+    "animatedSkinKeys": 17,
+    "staticCollapsedSkinKeys": 22,
     "nestedAnimationSkinKeys": 24,
-    "nestedLayerUnsupportedDescendants": 0,
-    "nestedLayerCompositedDescendants": 0,
-    "exportedNestedLayerKeys": 0,
-    "exportedNestedLayerFrames": 0,
     "uniqueFrameImages": 2829,
     "duplicateFrameRefs": 217,
     "timelineLogicalFrames": 3046,
     "timelineFrameEntries": 2831,
     "timelineCompressedFrameRefs": 215,
-    "conditionalVariantSkinKeys": 0,
-    "conditionalVariantFrames": 0,
-    "conditionalVariantRemovedPlaceObjects": 0,
-    "animatedSkinKeys": 17,
-    "staticCollapsedSkinKeys": 22,
-    "preservedSkinKeyExports": 2717,
-    "preservedBasicHolderExports": 259,
-    "expressionSkinKeys": 2,
-    "expressionFrames": 10,
-    "expressionFrameImages": 8,
-    "missingExpressionFrame": 0
+    "exportedFrames": 2992,
+    "orphanAssetsPurged": 1
   },
   "missingSummary": {
     "byUse": {
@@ -6528,65 +6509,12 @@
     }
   },
   "assetExport": {
-    "selectedSkinKeys": 2,
-    "resolvedSkinKeys": 2,
-    "exportedSkinKeys": 2,
-    "exportedFrames": 2,
-    "resolvedBasicKeys": 0,
-    "exportedBasicKeys": 0,
-    "exportedBasicFrames": 0,
-    "missingSymbol": [],
-    "missingBasicSymbol": [],
-    "symbolErrors": [],
-    "exportErrors": [],
-    "metadataErrors": [],
-    "exportFallbacks": [],
-    "missingFrame": [],
-    "missingBasicFrame": [],
-    "timelineScriptErrors": [],
-    "spriteGraphErrors": [],
-    "staticStopSkinKeys": 2,
-    "staticStopCollapsedFrames": 18,
-    "purgedStaleFrames": 0,
-    "staticStopSamples": [
-      {
-        "skinKey": "女变装-基本脸型",
-        "characterId": 2783,
-        "sourceFrameCount": 10,
-        "playback": "static-first-frame",
-        "reason": "frame1_plain_stop"
-      },
-      {
-        "skinKey": "男变装-基本脸型",
-        "characterId": 45,
-        "sourceFrameCount": 10,
-        "playback": "static-first-frame",
-        "reason": "frame1_plain_stop"
-      }
-    ],
-    "nestedAnimationSkinKeys": 0,
-    "nestedAnimationSamples": [],
-    "nestedLayerUnsupportedDescendants": 0,
-    "nestedLayerCompositedDescendants": 0,
-    "exportedNestedLayerKeys": 0,
-    "exportedNestedLayerFrames": 0,
-    "missingNestedLayerFrame": [],
-    "uniqueFrameImages": 2,
-    "duplicateFrameRefs": 0,
-    "timelineLogicalFrames": 2,
-    "timelineFrameEntries": 2,
-    "timelineCompressedFrameRefs": 0,
-    "timelineCompressionSamples": [],
-    "conditionalVariantSkinKeys": 0,
-    "conditionalVariantFrames": 0,
-    "conditionalVariantRemovedPlaceObjects": 0,
-    "conditionalVariantSamples": [],
-    "expressionSkinKeys": 2,
-    "expressionFrames": 10,
-    "expressionFrameImages": 8,
-    "missingExpressionFrame": [],
-    "preservedSkinKeyExports": 2717,
-    "preservedBasicHolderExports": 259
+    "preservedSkinKeyExports": 2719,
+    "preservedBasicHolderExports": 231,
+    "orphanAssetsPurged": 1,
+    "orphanAssetSamples": [
+      "skins/6dbb496e_1.png"
+    ]
   },
   "animatedSkinKeys": [
     {
@@ -7372,13 +7300,5 @@
       ],
       "uri": "skins/46391d29_1.png"
     }
-  ],
-  "workbenchUpdate": {
-    "jobId": "5d13b8d05e5d4bfeab80712d3f342700",
-    "item": "血色光剑天秤",
-    "skinKeys": [
-      "刀-Codex-血色光剑天秤"
-    ],
-    "validation": "selected_images_frames_origins"
-  }
+  ]
 }

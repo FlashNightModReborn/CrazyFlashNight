@@ -82,6 +82,8 @@ class org.flashNight.arki.unit.UnitComponent.Dressup.DressupReferenceManager {
         巨拳:     { 右下臂_引用: true, 左下臂_引用: true }
     };
 
+    // refDepths 是历史默认顺序（面具压发型）；当前头部装备声明
+    // hairAbove=true 时 doConfig 互换两者的 attach 深度（发型压面具）。
     public static var refDepths:Object = {
         发型_引用: 1,
         面具_引用: 2
@@ -144,6 +146,12 @@ class org.flashNight.arki.unit.UnitComponent.Dressup.DressupReferenceManager {
         var deferredKey:String = referenceName + ":ready";
         var hasDeferred:Boolean = (unit.syncRefs[deferredKey] === true);
         var depth:Number = refDepths[baseRefName];
+        // 逐件层级标记：当前头部装备声明 hairAbove=true 时互换 面具/发型 的
+        // attach 深度（发型压面具）；缺省保持 refDepths 的历史顺序（面具压发型）。
+        if ((baseRefName == "发型_引用" || baseRefName == "面具_引用")
+                && unit.头部装备数据.hairAbove) {
+            depth = refDepths[baseRefName == "发型_引用" ? "面具_引用" : "发型_引用"];
+        }
 
         var skin:MovieClip;
         if (skinConfig) {

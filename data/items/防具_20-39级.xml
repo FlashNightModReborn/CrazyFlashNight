@@ -30,6 +30,7 @@
     <setId>sword_saint_armor</setId>
     <price>80000</price>
     <description>外观形似某岛国的鬼面，不过仪器无法识别的生物材质，证明它并不像表面那般落后。</description>
+    <hairAbove>true</hairAbove>
     <data>
       <level>20</level>
       <weight>1</weight>
@@ -134,6 +135,7 @@
     <setId>sword_saint_armor</setId>
     <price>80000</price>
     <description>外观形似某岛国的鬼面，不过仪器无法识别的生物材质，证明它并不像表面那般落后。</description>
+    <hairAbove>true</hairAbove>
     <data>
       <level>20</level>
       <weight>1</weight>
@@ -876,6 +878,7 @@
     <setId>andy_standard</setId>
     <price>80000</price>
     <description>Andy专属装备</description>
+    <hairAbove>true</hairAbove>
     <data>
       <dressup>男变装-andy套领口</dressup>
       <level>22</level>
@@ -896,6 +899,7 @@
     <use>头部装备</use>
     <price>0</price>
     <description>物品简介：暂无</description>
+    <helmet>true</helmet>
     <data>
       <level>20</level>
       <weight>9</weight>
@@ -1808,6 +1812,7 @@
     <price>32500</price>
     <description>黑铁行刑者们使用的下颚护具，俗称铁下巴。
     虽然看着老土，却也实实在在地降低了黑铁行刑者群体被击中下巴一击KO的概率。</description>
+    <hairAbove>true</hairAbove>
     <data>
       <level>20</level>
       <weight>1</weight>
@@ -1829,6 +1834,7 @@
     <description>在末日的废土中，每一寸土地都可能隐藏着威胁，而能够快速探知敌人位置的能力，往往能决定生死存亡。
     复镕望远热感仪成为了黑铁会刺客们所钟爱的制式面罩，它的望远功能使得&lt;font color="#000000"&gt;刺客们&lt;/font&gt;能够在较远的距离侦测敌人，而不暴露自己的位置。
     进而在复杂环境中精准探测敌人的体温，帮助&lt;font color="#000000"&gt;刺客们&lt;/font&gt;无声无息地斩杀目标。</description>
+    <hairAbove>true</hairAbove>
     <data>
       <level>20</level>
       <weight>1</weight>
@@ -1851,6 +1857,7 @@
     <price>52000</price>
     <description>黑铁行刑者的标准配置，铁下巴和目镜。
     &lt;font color="#66cc66"&gt;【夜视】&lt;/font&gt;装备后可在亮度较低时开启夜视功能辅助作战，有低级别的夜视效果，开启亮度等级为0~2。</description>
+    <hairAbove>true</hairAbove>
     <data>
       <level>20</level>
       <weight>2</weight>
@@ -1891,6 +1898,7 @@
     <use>头部装备</use>
     <price>83200</price>
     <description>黑铁会刺客装备，加装热感应仪器。</description>
+    <hairAbove>true</hairAbove>
     <data>
       <level>20</level>
       <weight>2</weight>
@@ -2026,6 +2034,7 @@
     面部主体沿用了fmj05，但将滤毒罐改良为一体式，减少重量，且相对于制式款，滤毒种类更广泛。
     并安装了保明片，降低在非常环境下对视线的影响。
     同时整体亲肤材料占比更多，穿戴更舒适，深受&lt;font color="#ff0000"&gt;A兵团精锐&lt;/font&gt;的青睐。</description>
+    <hairAbove>true</hairAbove>
     <data>
       <level>21</level>
       <weight>2</weight>
@@ -2048,6 +2057,7 @@
     <use>头部装备</use>
     <price>50000</price>
     <description>这是另一种版本的A兵团面具，很显然不是所有的A兵团成员都喜欢全遮脸的防毒面具。</description>
+    <hairAbove>true</hairAbove>
     <data>
       <level>21</level>
       <weight>2</weight>
@@ -2267,6 +2277,7 @@
     质地相当坚固的护目镜，内置动感识别模块，可以释放刺激神经的弱电流协助佩戴者快速反应危险。
     这个功能曾被指控会对大脑产生不可逆的损伤，而你现在并不需要担心这个问题——它压根没电源。</description>
     <helmet>false</helmet>
+    <hairAbove>true</hairAbove>
     <data>
       <level>22</level>
       <weight>0.2</weight>
@@ -2802,6 +2813,7 @@
     <price>90000</price>
     <description>这种奇怪的搭配，没人知道是怎么回事，使用这种面具的人的实力如何？
     ，也没什么，就是给了盗贼们和军阀们留下了噩梦的回忆。</description>
+    <hairAbove>true</hairAbove>
     <data>
       <level>26</level>
       <weight>2</weight>
@@ -2847,6 +2859,7 @@
     不要痴心妄想，末世哪有可爱的孩子心性。
     等着被打成筛子吧。</description>
     <helmet>false</helmet>
+    <hairAbove>true</hairAbove>
     <data>
       <level>28</level>
       <weight>2</weight>
@@ -2985,6 +2998,7 @@
     对不起我们，轻率妄为的肉身塑造人。
     等着被砍成肉泥吧。</description>
     <helmet>false</helmet>
+    <hairAbove>true</hairAbove>
     <data>
       <level>28</level>
       <weight>2</weight>
@@ -3640,6 +3654,7 @@
     <setId>inferior_blue_crystal</setId>
     <price>10000</price>
     <description>少量蓝晶矿石打造而成，可抵挡一般伤害。</description>
+    <hairAbove>true</hairAbove>
     <data>
       <level>30</level>
       <weight>2</weight>
@@ -4193,6 +4208,7 @@
     <setId>blue_crystal</setId>
     <price>1000</price>
     <description>融合更多蓝晶矿石后坚不可摧。</description>
+    <hairAbove>true</hairAbove>
     <data>
       <level>35</level>
       <weight>1</weight>
@@ -4317,6 +4333,7 @@
     <setId>alloy_armor</setId>
     <price>10000</price>
     <description>最新合金打造，可以适应所有战斗</description>
+    <helmet>true</helmet>
     <data>
       <level>35</level>
       <weight>3</weight>

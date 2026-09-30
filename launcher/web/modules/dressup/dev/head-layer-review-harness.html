@@ -1,0 +1,791 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>头部层级验收台 · 面具/发型顺序对比</title>
+<base href="../../../">
+<style>
+:root {
+    color-scheme: dark;
+    font-family: "Microsoft YaHei UI", "Microsoft YaHei", sans-serif;
+    background: #070a0e;
+    color: #eef3f7;
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; min-height: 100%; }
+body {
+    background: linear-gradient(135deg, #111820 0%, #070a0e 58%, #0c1117 100%);
+}
+button, select, input {
+    font: inherit;
+}
+button, select {
+    min-height: 30px;
+    border: 1px solid rgba(190, 220, 231, .22);
+    border-radius: 5px;
+    padding: 0 10px;
+    background: #17222c;
+    color: #dfeaf0;
+    cursor: pointer;
+}
+button[aria-pressed="true"] {
+    border-color: #8fd3e7;
+    background: #1d4b5a;
+    color: #fff;
+}
+input[type="search"] {
+    min-height: 30px;
+    border: 1px solid rgba(190, 220, 231, .22);
+    border-radius: 5px;
+    padding: 0 10px;
+    background: #101820;
+    color: #dfeaf0;
+}
+.toolbar {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 14px;
+    border-bottom: 1px solid rgba(205, 228, 236, .12);
+    background: rgba(8, 13, 18, .94);
+}
+.toolbar .title { margin-right: auto; }
+.toolbar .title strong { display: block; font-size: 15px; letter-spacing: .04em; }
+.toolbar .title span { color: #8da2ad; font-size: 11px; }
+.toolbar .group { display: flex; align-items: center; gap: 6px; }
+.toolbar label { color: #aeb8c6; font-size: 12px; }
+.legend {
+    display: flex;
+    gap: 18px;
+    padding: 8px 14px;
+    color: #9fb2bd;
+    font-size: 12px;
+    border-bottom: 1px solid rgba(205, 228, 236, .08);
+}
+.legend b { color: #dfeaf0; font-weight: 600; }
+.grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(500px, 1fr));
+    gap: 12px;
+    padding: 12px 14px 40px;
+}
+.card {
+    border: 1px solid rgba(190, 220, 231, .14);
+    border-radius: 8px;
+    background: rgba(16, 24, 32, .72);
+    overflow: hidden;
+}
+.card.helmet { opacity: .45; }
+.card .name {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 7px 10px;
+    font-size: 13px;
+    border-bottom: 1px solid rgba(205, 228, 236, .08);
+}
+.card .name .badge {
+    font-size: 11px;
+    color: #8da2ad;
+    border: 1px solid rgba(190, 220, 231, .25);
+    border-radius: 4px;
+    padding: 0 5px;
+}
+.pair {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+}
+.pair figure {
+    margin: 0;
+    padding: 6px 6px 4px;
+    text-align: center;
+}
+.pair figure + figure { border-left: 1px solid rgba(205, 228, 236, .08); }
+.pair canvas {
+    width: 100%;
+    aspect-ratio: 1 / 1;
+    display: block;
+    background: rgba(4, 7, 10, .6);
+    border-radius: 4px;
+}
+.pair figcaption {
+    padding-top: 5px;
+    font-size: 11px;
+    color: #8da2ad;
+}
+.note {
+    padding: 0 14px 24px;
+    color: #7d919d;
+    font-size: 12px;
+    line-height: 1.7;
+}
+.empty {
+    padding: 40px;
+    text-align: center;
+    color: #8da2ad;
+}
+.verdict {
+    display: flex;
+    align-items: baseline;
+    gap: 8px;
+    flex-wrap: wrap;
+    padding: 5px 10px;
+    font-size: 11px;
+    color: #9fb2bd;
+    border-bottom: 1px solid rgba(205, 228, 236, .08);
+}
+.chip {
+    border-radius: 4px;
+    padding: 0 6px;
+    font-size: 11px;
+    white-space: nowrap;
+}
+.chip.ok { background: #1d4b2a; color: #bfe8c8; }
+.chip.keep { background: #5a3a1d; color: #f0d7b8; }
+.chip.review { background: #3a4a5a; color: #cfe0ee; }
+.chip.none { background: #232c34; color: #7d919d; }
+.verdict .reason {
+    color: #7d919d;
+    flex: 1 1 100%;
+}
+.decisions {
+    display: flex;
+    gap: 6px;
+    align-items: center;
+    padding: 6px 10px;
+    border-top: 1px solid rgba(205, 228, 236, .08);
+}
+.decisions button {
+    min-height: 24px;
+    font-size: 11px;
+    padding: 0 8px;
+}
+.decisions button[aria-pressed="true"] {
+    border-color: #8fd3e7;
+    background: #1d4b5a;
+    color: #fff;
+}
+.decisions .clearBtn { margin-left: auto; }
+.card.decided { outline: 2px solid rgba(143, 211, 231, .4); }
+.card.decided .name span:first-child { color: #8fd3e7; }
+</style>
+</head>
+<body>
+<div class="toolbar">
+    <div class="title">
+        <strong>头部层级验收台</strong>
+        <span>逐件对比不遮发头部装备在两种层级顺序下的纸娃娃表现（当前 63 件）</span>
+    </div>
+    <div class="group" id="genderGroup">
+        <label>性别</label>
+        <button type="button" data-gender="男" aria-pressed="true">男</button>
+        <button type="button" data-gender="女" aria-pressed="false">女</button>
+    </div>
+    <div class="group">
+        <label for="hairSelect">发型</label>
+        <select id="hairSelect"></select>
+    </div>
+    <div class="group">
+        <label for="zoomToggle">视野</label>
+        <button type="button" id="zoomHead" aria-pressed="true">头部特写</button>
+        <button type="button" id="zoomFull" aria-pressed="false">全身</button>
+    </div>
+    <div class="group">
+        <label><input type="checkbox" id="includeHelmet"> 含遮发头盔</label>
+    </div>
+    <div class="group">
+        <label><input type="checkbox" id="pendingOnly"> 只看待定</label>
+    </div>
+    <div class="group">
+        <input type="search" id="filterInput" placeholder="按名称过滤…">
+    </div>
+    <div class="group">
+        <span id="decisionCount" style="color:#8da2ad;font-size:12px">已拍板 0 件</span>
+        <button type="button" id="exportDecisions">导出决定 JSON</button>
+    </div>
+</div>
+<div class="legend">
+    <span><b>左列</b> ＝ 游戏内现状（面具压发型）</span>
+    <span><b>右列</b> ＝ 调整后（发型压面具，与纸娃娃一致）</span>
+    <span id="countLine"></span>
+</div>
+<div class="grid" id="grid"></div>
+<div class="empty" id="emptyTip" style="display:none">没有匹配的头部装备。</div>
+<div class="note">
+    说明：本页只对比 battle rig 中 脸型/面具/发型 三件套的相对层叠；helmet=true 的遮发头盔本来就
+    不挂载发型，两种顺序下画面相同（默认不列出）。纸娃娃不含游戏内的「后发」层（后发由发型
+    lifecycle 挂到人物身后），长发背面观感不在本页覆盖范围内。候选试穿/身材等其余逻辑与本页无关。
+</div>
+<script src="modules/asset-timeline.js"></script>
+<script src="modules/dressup-doll-renderer.js"></script>
+<script>
+(function() {
+    'use strict';
+
+    // 游戏内（Flash）现状：refDepths 发型_引用=1、面具_引用=2，即 脸型<发型<面具。
+    var FLASH_HEAD_ORDER = {'脸型':0, '发型':1, '面具':2};
+    var HEAD_FIELDS = ['脸型', '面具', '发型'];
+    var FACE_BY_GENDER = {'男':'男变装-基本脸型', '女':'女变装-基本脸型'};
+
+    var grid = document.getElementById('grid');
+    var emptyTip = document.getElementById('emptyTip');
+    var countLine = document.getElementById('countLine');
+    var hairSelect = document.getElementById('hairSelect');
+    var filterInput = document.getElementById('filterInput');
+    var includeHelmetBox = document.getElementById('includeHelmet');
+    var pendingOnlyBox = document.getElementById('pendingOnly');
+    var decisionCount = document.getElementById('decisionCount');
+    var zoomHeadBtn = document.getElementById('zoomHead');
+    var zoomFullBtn = document.getElementById('zoomFull');
+
+    // swe2 打标结果（来自 serve-head-layer-review.js 的 /review-data/ 路由；
+    // 文件缺席时页面照常可用，只是不同屏显示判定）。
+    var summaryByItem = {};   // itemName -> summary 行（suggestion + 计数 + dissentHairs）
+    var verdictByCell = {};   // itemName -> { hair -> {verdict, reason} }
+    // 人工拍板：itemName -> {action: hairAbove|keep|helmet, ts}；缺省即待定。
+    var decisions = {};
+    var DECISION_LABELS = { hairAbove: '发压面具', keep: '保持现状', helmet: '遮发头盔' };
+
+    var dollManifest = null;   // 唯一 manifest；列间顺序差异由 state.headHairAbove 承担
+    var flashManifest = null;  // 与 dollManifest 同引用，仅为旧调用点保留别名
+    var headItems = [];        // [{name, helmet}]
+    var rows = [];             // 每行持有 renderer、canvas 与最近状态
+    var gender = '男';
+    var headOnly = true;
+    var CARD_PIXEL_RATIO = 2;
+    var TIGHT_PADDING = 10;    // 内容坐标单位：紧贴可见像素后的留白
+
+    // 透明边距是 Flash 元件的原始包围盒，直接 fit 会把头部缩得很小。
+    // 两遍渲染：先按 holder 包围盒画一遍，读回 alpha 可见包围盒，
+    // 折回内容坐标后以 fitEnvelope 重画，让可见头部占满画布。
+    // 图片异步加载期间画布是空的，必须等 pendingImages 归零后再取紧框。
+    function tightRender(renderer, canvas, state, dpr) {
+        var first = renderer.render(state);
+        if (!first || !canvas.width || !canvas.height) return first;
+        if (first.pendingImages > 0) return first;
+        var ctx = canvas.getContext('2d');
+        var pixels;
+        try {
+            pixels = ctx.getImageData(0, 0, canvas.width, canvas.height).data;
+        } catch (error) {
+            return first;
+        }
+        var minX = canvas.width;
+        var minY = canvas.height;
+        var maxX = -1;
+        var maxY = -1;
+        for (var y = 0; y < canvas.height; y += 1) {
+            for (var x = 0; x < canvas.width; x += 1) {
+                if (pixels[(y * canvas.width + x) * 4 + 3] > 8) {
+                    if (x < minX) minX = x;
+                    if (x > maxX) maxX = x;
+                    if (y < minY) minY = y;
+                    if (y > maxY) maxY = y;
+                }
+            }
+        }
+        if (maxX < 0) return first;  // 空白画布不二次取景
+        // 画布物理像素 = dpr * (offset + 内容坐标 * scale)
+        var toContent = function(px, offset, scale) {
+            return (px / dpr - offset) / scale;
+        };
+        var tight = {
+            minX: toContent(minX, first.offsetX, first.scale) - TIGHT_PADDING,
+            maxX: toContent(maxX + 1, first.offsetX, first.scale) + TIGHT_PADDING,
+            minY: toContent(minY, first.offsetY, first.scale) - TIGHT_PADDING,
+            maxY: toContent(maxY + 1, first.offsetY, first.scale) + TIGHT_PADDING
+        };
+        return renderer.render(Object.assign({}, state, {
+            fitEnvelope: tight,
+            zoom: 1
+        }));
+    }
+
+    // 仅重排 battle rig 中 脸型/发型/面具 的相对顺序，其余 holder 原位不动。
+    // 现已由 dressup-doll-renderer 按 state.headHairAbove 在渲染期统一执行，
+    // 本页只需按列显式携带该布尔：flash 列 = false（面具压发型，游戏内现状），
+    // doll 列 = true（发型压面具，调整后）。
+
+    function itemMaskFields(item, g) {
+        var byGender = item && item.fieldsByGender;
+        var fields = byGender && (byGender[g] || byGender['男']);
+        if (!fields || !fields['面具']) return null;
+        return fields;
+    }
+
+    function collectHeadItems(manifest) {
+        var items = manifest.items || {};
+        return Object.keys(items).filter(function(name) {
+            var item = items[name];
+            return item && item.use === '头部装备' && itemMaskFields(item, '男');
+        }).map(function(name) {
+            return {name: name, helmet: items[name].helmet === true};
+        });
+    }
+
+    function rebuildHairOptions() {
+        var catalog = dollManifest.appearance && dollManifest.appearance.hairById || {};
+        var prefix = gender === '女' ? '发型-女式-' : '发型-男式-';
+        var previous = hairSelect.value;
+        hairSelect.innerHTML = '';
+        Object.keys(catalog).sort(function(a, b) { return Number(a) - Number(b); })
+            .forEach(function(id) {
+                var key = catalog[id];
+                if (key !== '光头' && key.indexOf(prefix) !== 0) return;
+                var option = document.createElement('option');
+                option.value = key;
+                option.textContent = key;
+                hairSelect.appendChild(option);
+            });
+        if (previous && hairSelect.querySelector('option[value="' + previous + '"]')) {
+            hairSelect.value = previous;
+        } else {
+            // 默认选中第一个非光头发型，光秃不利于层级对比。
+            for (var i = 0; i < hairSelect.options.length; i++) {
+                if (hairSelect.options[i].value !== '光头') {
+                    hairSelect.selectedIndex = i;
+                    break;
+                }
+            }
+        }
+    }
+
+    function visibleRows() {
+        var needle = filterInput.value.trim();
+        var includeHelmet = includeHelmetBox.checked;
+        var pendingOnly = pendingOnlyBox.checked;
+        return headItems.filter(function(row) {
+            if (row.helmet && !includeHelmet) return false;
+            if (needle && row.name.indexOf(needle) < 0) return false;
+            if (pendingOnly && decisions[row.name]) return false;
+            return true;
+        });
+    }
+
+    function buildState(colManifest, item, order, hairKey, genderKey) {
+        var g = genderKey || gender;
+        var appearance = {'脸型': FACE_BY_GENDER[g] || FACE_BY_GENDER['男']};
+        if (!item.helmet) appearance['发型'] = hairKey || hairSelect.value;
+        var stateOptions = {
+            gender: g,
+            equipment: {'头部装备': item.name},
+            appearance: appearance,
+            rig: 'battle',
+            stateLabel: '空手站立',
+            margin: 10,
+            zoom: 1
+        };
+        if (headOnly) {
+            stateOptions.fitFields = HEAD_FIELDS;
+            stateOptions.drawFields = HEAD_FIELDS;
+            stateOptions.strictFields = true;
+        }
+        var state = DressupDollRenderer.buildStateFromEquipment(colManifest, stateOptions);
+        // 覆盖 manifest 逐件标记：本页按列固定演示两种顺序。
+        state.headHairAbove = (order === 'doll');
+        return state;
+    }
+
+    // 状态变化 → 直接取紧框；图片未就绪时 onRender 里补一次。
+    // renderer 内部的图片加载回调只会用 lastState 重画，不经过本页紧框，
+    // 因此每个单元格各自记录 pending 标记并在归零后补画。
+    function renderRow(row) {
+        row.flashPending = false;
+        row.dollPending = false;
+        row.flashState = buildState(dollManifest, row.item, 'flash');
+        row.dollState = buildState(dollManifest, row.item, 'doll');
+        tightRender(row.flashRenderer, row.flashCanvas, row.flashState, CARD_PIXEL_RATIO);
+        tightRender(row.dollRenderer, row.dollCanvas, row.dollState, CARD_PIXEL_RATIO);
+    }
+
+    function renderAll() {
+        rows.forEach(function(row) {
+            if (row.verdictEl) row.verdictEl.textContent = cellVerdictText(row.item.name);
+        });
+        rows.forEach(renderRow);
+        var shown = rows.length;
+        var totalAffected = headItems.filter(function(item) { return !item.helmet; }).length;
+        var totalHelmet = headItems.length - totalAffected;
+        countLine.textContent = '当前显示 ' + shown + ' 件 ／ 不遮发 ' + totalAffected
+            + ' 件 · 遮发头盔 ' + totalHelmet + ' 件';
+        emptyTip.style.display = shown ? 'none' : '';
+    }
+
+    function makeRowRenderer(row, key, canvas, manifest) {
+        return DressupDollRenderer.create(canvas, {
+            manifest: manifest,
+            animate: false,
+            pixelRatio: CARD_PIXEL_RATIO,
+            maxScale: 12,
+            onRender: function(meta) {
+                var pendingKey = key + 'Pending';
+                var stateKey = key + 'State';
+                if (meta && meta.pendingImages > 0) {
+                    row[pendingKey] = true;
+                    return;
+                }
+                if (!row[pendingKey] || !row[stateKey]) return;
+                row[pendingKey] = false;
+                var renderer = row[key + 'Renderer'];
+                var canvasRef = row[key + 'Canvas'];
+                setTimeout(function() {
+                    tightRender(renderer, canvasRef, row[stateKey], CARD_PIXEL_RATIO);
+                }, 0);
+            }
+        });
+    }
+
+    // swe2 判定与人工拍板数据的加载、展示与持久化。
+    function loadReviewData() {
+        var summaryReq = fetch('/review-data/summary.json').then(function(r) {
+            return r.ok ? r.json() : null;
+        });
+        var verdictsReq = fetch('/review-data/verdicts.jsonl').then(function(r) {
+            return r.ok ? r.text() : '';
+        });
+        var decisionsReq = fetch('/review-data/decisions.json').then(function(r) {
+            return r.ok ? r.json() : null;
+        });
+        return Promise.all([summaryReq, verdictsReq, decisionsReq]).then(function(all) {
+            var summary = all[0];
+            if (summary && summary.items instanceof Array) {
+                summary.items.forEach(function(row) {
+                    summaryByItem[row.item] = row;
+                });
+            }
+            String(all[1] || '').split('\n').forEach(function(line) {
+                if (!line.trim()) return;
+                try {
+                    var v = JSON.parse(line);
+                    if (!verdictByCell[v.item]) verdictByCell[v.item] = {};
+                    verdictByCell[v.item][v.hair] = { verdict: v.verdict, reason: v.reason };
+                } catch (error) { /* 坏行跳过 */ }
+            });
+            var saved = all[2];
+            if (saved && saved.schema === 'cf7.head-layer-decisions.v1'
+                    && typeof saved.decisions === 'object') {
+                decisions = saved.decisions;
+            }
+        }).catch(function() { /* 无 review-data 路由时静默降级 */ });
+    }
+
+    function suggestionChip(summary) {
+        if (!summary) return null;
+        var chip = document.createElement('span');
+        var cls = summary.suggestion === 'hair_over_ok' ? 'ok'
+            : summary.suggestion === 'keep_mask_over' ? 'keep' : 'review';
+        chip.className = 'chip ' + cls;
+        chip.textContent = summary.suggestion === 'hair_over_ok' ? 'swe2 建议翻转'
+            : summary.suggestion === 'keep_mask_over' ? 'swe2 建议保持' : 'swe2 待人工';
+        chip.title = '翻转 ' + summary.hairOverOk + ' · 保持 ' + summary.keepMaskOver
+            + ' · 含糊 ' + summary.ambiguous
+            + (summary.dissentHairs && summary.dissentHairs.length
+                ? '\n判保持的发型：' + summary.dissentHairs.join('、') : '');
+        return chip;
+    }
+
+    function cellVerdictText(name) {
+        var byHair = verdictByCell[name];
+        if (!byHair) return '';
+        var cell = byHair[hairSelect.value];
+        if (!cell) return '';
+        var label = cell.verdict === 'hair_over_ok' ? '可翻转'
+            : cell.verdict === 'keep_mask_over' ? '保持现状' : '含糊';
+        return '当前发型判定：' + label + ' — ' + cell.reason;
+    }
+
+    function decisionsPayload() {
+        return {
+            schema: 'cf7.head-layer-decisions.v1',
+            generatedAt: new Date().toISOString(),
+            decisions: decisions
+        };
+    }
+
+    function persistDecisions() {
+        try {
+            fetch('/review-data/decisions.json', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(decisionsPayload())
+            });
+        } catch (error) { /* 持久化失败不清内存态 */ }
+    }
+
+    function refreshDecisionCount() {
+        var decided = Object.keys(decisions).length;
+        var total = headItems.filter(function(item) { return !item.helmet; }).length;
+        decisionCount.textContent = '已拍板 ' + decided + ' / ' + total + ' 件';
+    }
+
+    function decide(name, action, buttons) {
+        if (action) {
+            decisions[name] = { action: action, ts: new Date().toISOString() };
+        } else {
+            delete decisions[name];
+        }
+        persistDecisions();
+        buttons.forEach(function(btn) {
+            btn.setAttribute('aria-pressed',
+                String(btn.getAttribute('data-action') === action));
+        });
+        var card = buttons[0] ? buttons[0].closest('.card') : null;
+        if (card) card.classList.toggle('decided', !!action);
+        refreshDecisionCount();
+        if (pendingOnlyBox.checked) rebuildGrid();
+    }
+
+    function buildDecisionBar(row) {
+        var bar = document.createElement('div');
+        bar.className = 'decisions';
+        var buttons = [];
+        Object.keys(DECISION_LABELS).forEach(function(action) {
+            var btn = document.createElement('button');
+            btn.type = 'button';
+            btn.textContent = DECISION_LABELS[action];
+            btn.setAttribute('data-action', action);
+            var current = decisions[row.item.name];
+            btn.setAttribute('aria-pressed', String(!!current && current.action === action));
+            btn.addEventListener('click', function() {
+                var pressed = btn.getAttribute('aria-pressed') === 'true';
+                decide(row.item.name, pressed ? null : action, buttons);
+            });
+            bar.appendChild(btn);
+            buttons.push(btn);
+        });
+        var clearBtn = document.createElement('button');
+        clearBtn.type = 'button';
+        clearBtn.className = 'clearBtn';
+        clearBtn.textContent = '清除';
+        clearBtn.addEventListener('click', function() {
+            decide(row.item.name, null, buttons);
+        });
+        bar.appendChild(clearBtn);
+        return bar;
+    }
+    function rebuildGrid() {
+        rows.forEach(function(row) {
+            row.flashRenderer.destroy();
+            row.dollRenderer.destroy();
+        });
+        rows = [];
+        grid.innerHTML = '';
+        visibleRows().forEach(function(item) {
+            var card = document.createElement('div');
+            card.className = 'card' + (item.helmet ? ' helmet' : '');
+            var name = document.createElement('div');
+            name.className = 'name';
+            var label = document.createElement('span');
+            label.textContent = item.name;
+            name.appendChild(label);
+            var badge = document.createElement('span');
+            badge.className = 'badge';
+            badge.textContent = item.helmet ? '遮发头盔' : '面具类';
+            name.appendChild(badge);
+            card.appendChild(name);
+
+            // swe2 判定条：装备级建议 chip + 当前发型格子的判定与理由。
+            var summary = summaryByItem[item.name];
+            var chip = suggestionChip(summary);
+            if (chip || verdictByCell[item.name]) {
+                var verdict = document.createElement('div');
+                verdict.className = 'verdict';
+                if (chip) verdict.appendChild(chip);
+                var cellText = document.createElement('span');
+                cellText.className = 'reason';
+                verdict.appendChild(cellText);
+                card.appendChild(verdict);
+            }
+
+            var pair = document.createElement('div');
+            pair.className = 'pair';
+            var canvases = [];
+            ['游戏内现状（面具压发型）', '调整后（发型压面具）'].forEach(function(caption) {
+                var figure = document.createElement('figure');
+                var canvas = document.createElement('canvas');
+                figure.appendChild(canvas);
+                var figcaption = document.createElement('figcaption');
+                figcaption.textContent = caption;
+                figure.appendChild(figcaption);
+                pair.appendChild(figure);
+                canvases.push(canvas);
+            });
+            card.appendChild(pair);
+
+            var row = {
+                item: item,
+                flashCanvas: canvases[0],
+                dollCanvas: canvases[1],
+                flashState: null,
+                dollState: null,
+                flashPending: false,
+                dollPending: false,
+                verdictEl: card.querySelector('.verdict .reason')
+            };
+            card.appendChild(buildDecisionBar(row));
+            if (decisions[item.name]) card.classList.add('decided');
+            grid.appendChild(card);
+            row.flashRenderer = makeRowRenderer(row, 'flash', canvases[0], flashManifest);
+            row.dollRenderer = makeRowRenderer(row, 'doll', canvases[1], dollManifest);
+            rows.push(row);
+        });
+        renderAll();
+    }
+
+    document.getElementById('genderGroup').addEventListener('click', function(event) {
+        var button = event.target.closest('button[data-gender]');
+        if (!button) return;
+        gender = button.getAttribute('data-gender');
+        this.querySelectorAll('button').forEach(function(btn) {
+            btn.setAttribute('aria-pressed', String(btn === button));
+        });
+        rebuildHairOptions();
+        rebuildGrid();
+    });
+    hairSelect.addEventListener('change', renderAll);
+    filterInput.addEventListener('input', rebuildGrid);
+    includeHelmetBox.addEventListener('change', rebuildGrid);
+    pendingOnlyBox.addEventListener('change', rebuildGrid);
+    document.getElementById('exportDecisions').addEventListener('click', function() {
+        var blob = new Blob([JSON.stringify(decisionsPayload(), null, 2)],
+            { type: 'application/json' });
+        var link = document.createElement('a');
+        link.href = URL.createObjectURL(blob);
+        link.download = 'head-layer-decisions.json';
+        link.click();
+        URL.revokeObjectURL(link.href);
+    });
+    zoomHeadBtn.addEventListener('click', function() {
+        headOnly = true;
+        zoomHeadBtn.setAttribute('aria-pressed', 'true');
+        zoomFullBtn.setAttribute('aria-pressed', 'false');
+        renderAll();
+    });
+    zoomFullBtn.addEventListener('click', function() {
+        headOnly = false;
+        zoomHeadBtn.setAttribute('aria-pressed', 'false');
+        zoomFullBtn.setAttribute('aria-pressed', 'true');
+        renderAll();
+    });
+
+    // 批量打标 capture API：供 tools/capture-head-layer-labels.js 逐件调用。
+    // 隐藏大画布按高 pixelRatio 渲染，等图片就绪后取紧框并输出 PNG dataURL。
+    var captureCanvas = null;
+    var captureRenderers = null;
+    window.headLayerReview = {
+        ready: false,
+        list: function() {
+            return headItems.map(function(item) {
+                return {name: item.name, helmet: item.helmet};
+            });
+        },
+        capture: function(name, order, hairKey, genderKey, pixelRatio) {
+            var dpr = pixelRatio || 3;
+            var item = null;
+            for (var i = 0; i < headItems.length; i++) {
+                if (headItems[i].name === name) {
+                    item = headItems[i];
+                    break;
+                }
+            }
+            if (!item) return Promise.resolve(null);
+            if (!captureCanvas) {
+                captureCanvas = document.createElement('canvas');
+                captureCanvas.style.width = '512px';
+                captureCanvas.style.height = '512px';
+                // 离屏但保留可测量布局盒：display:none 会让 renderer 退回 360x520 默认画布。
+                captureCanvas.style.position = 'fixed';
+                captureCanvas.style.left = '-10000px';
+                captureCanvas.style.top = '0';
+                document.body.appendChild(captureCanvas);
+            }
+            if (!captureRenderers) {
+                captureRenderers = {
+                    flash: DressupDollRenderer.create(captureCanvas, {
+                        manifest: flashManifest,
+                        animate: false,
+                        pixelRatio: dpr,
+                        maxScale: 12
+                    }),
+                    doll: DressupDollRenderer.create(captureCanvas, {
+                        manifest: dollManifest,
+                        animate: false,
+                        pixelRatio: dpr,
+                        maxScale: 12
+                    })
+                };
+            }
+            var renderer = captureRenderers[order === 'flash' ? 'flash' : 'doll'];
+            var colManifest = order === 'flash' ? flashManifest : dollManifest;
+            var state = DressupDollRenderer.buildStateFromEquipment(colManifest, {
+                gender: genderKey || gender,
+                equipment: {'头部装备': name},
+                appearance: (function() {
+                    var appearance = {'脸型': FACE_BY_GENDER[genderKey] || FACE_BY_GENDER['男']};
+                    if (!item.helmet) appearance['发型'] = hairKey || hairSelect.value;
+                    return appearance;
+                })(),
+                fitFields: HEAD_FIELDS,
+                drawFields: HEAD_FIELDS,
+                strictFields: true,
+                rig: 'battle',
+                stateLabel: '空手站立',
+                margin: 10,
+                zoom: 1
+            });
+            // 覆盖 manifest 逐件标记：本页按列固定演示两种顺序。
+            state.headHairAbove = (order === 'doll');
+            return new Promise(function(resolve) {
+                var attempts = 0;
+                function tryRender() {
+                    var result = renderer.render(state);
+                    if (result && result.pendingImages > 0 && attempts < 80) {
+                        attempts++;
+                        setTimeout(tryRender, 50);
+                        return;
+                    }
+                    var meta = tightRender(renderer, captureCanvas, state, dpr);
+                    window.headLayerReview.lastCaptureMeta = meta && {
+                        scale: meta.scale,
+                        offsetX: meta.offsetX,
+                        offsetY: meta.offsetY,
+                        bounds: meta.bounds,
+                        pendingImages: meta.pendingImages,
+                        drawnImages: meta.drawnImages
+                    };
+                    try {
+                        resolve(captureCanvas.toDataURL('image/png'));
+                    } catch (error) {
+                        resolve(null);
+                    }
+                }
+                tryRender();
+            });
+        }
+    };
+
+    DressupDollRenderer.loadManifest('assets/dressup/manifest.json').then(function(data) {
+        dollManifest = data;
+        flashManifest = data;
+        headItems = collectHeadItems(data);
+        return loadReviewData();
+    }).then(function() {
+        rebuildHairOptions();
+        rebuildGrid();
+        refreshDecisionCount();
+        window.headLayerReview.ready = true;
+    }).catch(function(error) {
+        grid.innerHTML = '';
+        emptyTip.style.display = '';
+        emptyTip.textContent = 'manifest 加载失败：' + error.message
+            + '（请通过静态 HTTP 服务打开本页，见 tools/serve-head-layer-review.js）';
+    });
+})();
+</script>
+</body>
+</html>

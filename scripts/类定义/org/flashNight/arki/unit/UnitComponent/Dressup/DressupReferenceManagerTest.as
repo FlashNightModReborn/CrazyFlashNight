@@ -241,6 +241,31 @@ class org.flashNight.arki.unit.UnitComponent.Dressup.DressupReferenceManagerTest
         assertNull("initObject 未注入", mc.attachLog[0].initObject);
     }
 
+    private static function test_doConfig_hairAbove互换发型面具深度():Void {
+        trace("--- doConfig: hairAbove 逐件标记互换 发型/面具 attach 深度 ---");
+        // 缺省（无标记）：发型=1、面具=2（面具压发型，历史顺序）
+        var unitDefault = makeMockUnit("正常", "男");
+        var mcDefault = makeMockMC();
+        DressupReferenceManager.doConfig(mcDefault, "skin_hair", "装扮2", "发型_引用", unitDefault);
+        DressupReferenceManager.doConfig(mcDefault, "skin_mask", "装扮3", "面具_引用", unitDefault);
+        assertEquals("缺省时 发型_引用 depth=1", 1, mcDefault.attachLog[0].depth);
+        assertEquals("缺省时 面具_引用 depth=2", 2, mcDefault.attachLog[1].depth);
+
+        // 当前头部装备声明 hairAbove=true：互换为 面具=1、发型=2（发型压面具）
+        var unitMarked = makeMockUnit("正常", "男");
+        unitMarked.头部装备数据 = { hairAbove: true };
+        var mcMarked = makeMockMC();
+        DressupReferenceManager.doConfig(mcMarked, "skin_hair", "装扮2", "发型_引用", unitMarked);
+        DressupReferenceManager.doConfig(mcMarked, "skin_mask", "装扮3", "面具_引用", unitMarked);
+        assertEquals("hairAbove=true 时 发型_引用 depth=2", 2, mcMarked.attachLog[0].depth);
+        assertEquals("hairAbove=true 时 面具_引用 depth=1", 1, mcMarked.attachLog[1].depth);
+
+        // 标记不影响非头部引用（身体仍走默认 undefined 深度）
+        DressupReferenceManager.doConfig(mcMarked, "skin_body", "装扮", "身体_引用", unitMarked);
+        assertEquals("hairAbove=true 时 身体_引用 depth 仍为 undefined",
+            undefined, mcMarked.attachLog[2].depth);
+    }
+
     private static function test_attach_不同mc同refName_溢出命名空间():Void {
         trace("--- attach: 不同 mc 撞同 referenceName 时走 #N 溢出命名空间 ---");
         var unit = makeMockUnit("正常", "男");
@@ -626,6 +651,7 @@ class org.flashNight.arki.unit.UnitComponent.Dressup.DressupReferenceManagerTest
         test_doConfig_deferred路径initObject注入();
         test_doConfig_deferred_fallback路径同样注入initObject();
         test_doConfig_未订阅deferred时不传initObject();
+        test_doConfig_hairAbove互换发型面具深度();
         test_attach_不同mc同refName_溢出命名空间();
         test_attach_同mc重入_复用regKey();
         test_attach_失效MC复用regKey();
