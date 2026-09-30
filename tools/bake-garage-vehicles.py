@@ -23,7 +23,12 @@ VEHICLES = {"bicycle": "自行车", "motorcycle": "越野摩托车", "offroad": 
 
 
 def sha(path):
-    return hashlib.sha256(Path(path).read_bytes()).hexdigest()
+    path = Path(path)
+    data = path.read_bytes()
+    # Git/Windows checkout 可改换行；文本来源按同一 LF 配方绑定，二进制仍核原始字节。
+    if path.suffix.lower() in (".py", ".xml", ".bat"):
+        data = data.replace(b"\r\n", b"\n").replace(b"\r", b"\n")
+    return hashlib.sha256(data).hexdigest()
 
 
 def load_module(name, path):
@@ -125,6 +130,7 @@ def main():
     tools = [Path(__file__).relative_to(ROOT).as_posix(), "tools/bake-icons-offline.py",
              "tools/asset-workbench/core.py", "tools/swf-audit/swfscan.py", "tools/ffdec/ffdec.jar", "tools/ffdec/ffdec.bat"]
     manifest = {"schema": "cf7.garage-vehicle-images.v1", "recipe": "ffdec-first-frame-trim-lanczos-lossless-webp-v1",
+                "textHashMode": "utf8-lf",
                 "sourceSwf": {"path": SWF, "sha256": swf_sha}, "sources": sources,
                 "tools": {tool: sha(ROOT / tool) for tool in tools},
                 "renderer": {"pillow": pillow_version, "sourceZoom": 2, "widthLimit": 960, "heightLimit": 640}, "vehicles": {}}

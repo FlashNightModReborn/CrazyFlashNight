@@ -1,6 +1,7 @@
 {
   "schema": "cf7.garage-vehicle-images.v1",
   "recipe": "ffdec-first-frame-trim-lanczos-lossless-webp-v1",
+  "textHashMode": "utf8-lf",
   "sourceSwf": {
     "path": "flashswf/levels/基地场景合集.swf",
     "sha256": "6400478054ca5e8d2d57582c532112d59095b2bd389008ef5b19d303231ebb15"
@@ -17,12 +18,12 @@
     "flashswf/levels/基地场景合集/LIBRARY/黑色透明.xml": "9e21db14321c9f20b703b2673f5433373942cc47a41d5a5250b6c3027854382d"
   },
   "tools": {
-    "tools/bake-garage-vehicles.py": "ed80fbe7982eca8c9a7db7e14bcc8a0321c8a96cac56c641774e1ad3c87ff03c",
-    "tools/bake-icons-offline.py": "c57a4f9595209a25572b90f091a14e44d614cff85aeb970d60bb0500ef526834",
+    "tools/bake-garage-vehicles.py": "e4d8037ef2c5f684bec64731f9d98b4d04e4e001752e570b5c928b438a90b565",
+    "tools/bake-icons-offline.py": "b1e4a4bae5ae5eac30d91387aa6602e38758004e2ff01b9bbf6aeebfc4376a44",
     "tools/asset-workbench/core.py": "5128b607497232507916990a382eab9876e6ac113384a4990184ef87dce5bab4",
     "tools/swf-audit/swfscan.py": "020953fd72461e5cf12cf6281af447d8c3d1bdc3f6013e0c7e100f19e2a97fa7",
     "tools/ffdec/ffdec.jar": "7f75b47152d955be5ccc853eb259a1a7910ea9a0bd2b41cf9b9085bcfb003952",
-    "tools/ffdec/ffdec.bat": "ed9f3d97ef0f1447e5cd048725c9df4ac009cc2c7ec93a2ade43b36854878690"
+    "tools/ffdec/ffdec.bat": "5255c55ac3986f7e9797069bcb7feb1ecbfba36ee5093fe520ef0e8c3ae3192f"
   },
   "renderer": {
     "pillow": "12.2.0",

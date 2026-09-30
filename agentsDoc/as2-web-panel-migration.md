@@ -501,7 +501,7 @@ NativeHud 的 × 始终保留安全退出路由，仅在既有按钮内部投影
 
 购车面板沿用共享 `PanelScale`，以 1024×576 画布铺满游戏显示区域；非 16:9 浏览器预览等比居中。左侧展示原画烘焙的车辆，右侧列具体权益、报价与驾驶要求。价格与门槛仍取 Level 0，权益说明取 Level 1；更高级载具覆盖低档出行，不要求逐级购买，地图剧情/发现条件与战备箱开放条件在购买前明确展示。
 
-车辆 XFL 为唯一美术编辑源，图片取当前已发布 [基地 SWF](../flashswf/levels/基地场景合集.swf) 三处购车 opener 对应元件的第 1 帧；保留原稿透明度，裁去时间轴留白，统一展示朝向，排除 hover 描边帧。生成器 [bake-garage-vehicles.py](../tools/bake-garage-vehicles.py) 复用现有物品素材工作台的 FFDec 导出内核，产出 [三车图片与 manifest](../launcher/web/assets/garage-vehicles/manifest.json)。修改车辆 XFL 后先按其归属发布基地 SWF，再运行 `python -X utf8 -B tools/bake-garage-vehicles.py` 与同命令追加 `--check`；后者实际再生并核对来源/工具、字节、尺寸、体积及精确文件集合。图片读取失败保留权益与购买操作。
+车辆 XFL 为唯一美术编辑源，图片取当前已发布 [基地 SWF](../flashswf/levels/基地场景合集.swf) 三处购车 opener 对应元件的第 1 帧；保留原稿透明度，裁去时间轴留白，统一展示朝向，排除 hover 描边帧。生成器 [bake-garage-vehicles.py](../tools/bake-garage-vehicles.py) 复用现有物品素材工作台的 FFDec 导出内核，产出 [三车图片与 manifest](../launcher/web/assets/garage-vehicles/manifest.json)。修改车辆 XFL 后先按其归属发布基地 SWF，再运行 `python -X utf8 -B tools/bake-garage-vehicles.py` 与同命令追加 `--check`；后者实际再生并核对来源/工具、字节、尺寸、体积及精确文件集合。文本来源/工具按 UTF-8 LF 归一摘要，SWF/WebP/JAR 按原始字节绑定，避免 Git 换行策略造成假漂移。图片读取失败保留权益与购买操作。
 
 - AS2 snapshot 绑定车库根入口、稳定 world identity、存档 owner 与槽位。commit 在实际扣费前复验车辆身份、拥有状态、驾驶等级、余额和报价。已拥有返回 owned，无扣费或新增保存。
 - 一次扣费、车辆标志写入和货币播报后进入 save_pending；严格保存成功才返回 applied/saved。相同 token 重复提交返回回执，待保存重试只执行同槽保存。query 只读结果，未解决的购买在重开时继续恢复。
