@@ -256,6 +256,43 @@
       "sourceChecks": []
     },
     {
+      "id": "garage",
+      "wireDomain": "garage",
+      "hostTask": "launcher/src/Tasks/GaragePurchaseTask.cs",
+      "flashResponseTask": "garage_purchase_response",
+      "hostResponseHandler": "garagePurchaseTask.HandleFlashResponse",
+      "hostPayloadMode": "normalized",
+      "flashCommandHandler": "org.flashNight.arki.ui.GaragePurchasePanelService",
+      "flashSources": [
+        "scripts/类定义/org/flashNight/arki/ui/GaragePurchasePanelService.as"
+      ],
+      "commands": [
+        {
+          "cmd": "snapshot",
+          "action": "garagePurchaseSnapshot",
+          "capability": "query",
+          "access": "read",
+          "businessDecisionOwner": "as2"
+        },
+        {
+          "cmd": "commit",
+          "action": "garagePurchaseCommit",
+          "capability": "transaction",
+          "access": "write",
+          "businessDecisionOwner": "as2"
+        },
+        {
+          "cmd": "query",
+          "action": "garagePurchaseQuery",
+          "capability": "query",
+          "access": "read",
+          "businessDecisionOwner": "as2"
+        }
+      ],
+      "numericFields": [],
+      "sourceChecks": []
+    },
+    {
       "id": "hairdresser",
       "wireDomain": "hairdresser",
       "hostTask": "launcher/src/Tasks/HairdresserTask.cs",

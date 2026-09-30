@@ -260,30 +260,11 @@ onClipEvent(load){
                   </transformationPoint>
                   <Actionscript>
                     <script><![CDATA[on (release) {
-	if (!_root.基建系统.infrastructure.自行车)
-	{
-		_root.确认通用面板.名称 = "购买自行车";
-		_root.确认通用面板.说明 = "是否要购买自行车？总花费合计8000金币。\n购买后可解锁较近距离阵营与区域的地图快速传送功能，例如废城。";
-		_root.确认通用面板.成功说明 = "成功购买自行车！";
-		_root.确认通用面板.失败说明 = "购买失败！";
-		_root.确认通用面板.确认 = function()
-		{
-			if (_root.金钱 < 8000)
-			{
-				_root.确认通用面板.失败说明 = "购买失败，金币不足！";
-				return false;
-			}
-			_root.金钱 -= 8000;
-			_root.基建系统.infrastructure.自行车 = 1;
-			_root.记录玩家货币变化(
-				-8000, 0, {source:"vehicle_service", reason:"buy_bicycle", mergeScope:"operation"});
-			if (_root.存档系统 != undefined) _root.存档系统.dirtyMark = true;
-			return true;
-		};
-		_root.确认通用面板.启动();
-	}else{
-		_root.gameCommands["openWebMap"]({ source: "as2_garage_bike", pageId: "defense" });
-	}
+    if (!_root.基建系统.infrastructure.自行车) {
+        _root.打开车库购车("bicycle");
+    } else {
+        _root.gameCommands["openWebMap"]({source:"as2_garage_bike", pageId:"defense"});
+    }
 }
 on(rollOver){
    gotoAndStop("描边");
@@ -308,40 +289,11 @@ onClipEvent (load) {
                   </transformationPoint>
                   <Actionscript>
                     <script><![CDATA[on (release) {
-	if (!_root.基建系统.infrastructure.摩托车)
-	{
-		_root.确认通用面板.名称 = "购买摩托车";
-		_root.确认通用面板.说明 = "是否要购买摩托车？需要学习1级驾驶技能，总花费合计35000金币。\n购买后可解锁中等距离阵营与区域的地图快速传送功能，例如堕落城。";
-		_root.确认通用面板.成功说明 = "成功购买摩托车！";
-		_root.确认通用面板.失败说明 = "购买失败！";
-		_root.确认通用面板.确认 = function()
-		{
-			if (_root.主角被动技能.驾驶 && _root.主角被动技能.驾驶.等级 >= 1)
-			{
-				if (_root.金钱 < 35000)
-				{
-					_root.确认通用面板.失败说明 = "购买失败，金币不足！";
-					return false;
-				}
-				_root.金钱 -= 35000;
-				_root.基建系统.infrastructure.摩托车 = 1;
-				_root.记录玩家货币变化(
-					-35000, 0, {source:"vehicle_service", reason:"buy_motorcycle", mergeScope:"operation"});
-				if (_root.存档系统 != undefined) _root.存档系统.dirtyMark = true;
-			}
-			else
-			{
-				_root.确认通用面板.失败说明 = "购买失败，驾驶摩托车需获得驾照，请学习驾驶技能！";
-				return false;
-			}
-			return true;
-		};
-		_root.确认通用面板.启动();
-	}
-	else
-	{
-		_root.gameCommands["openWebMap"]({ source: "as2_garage_motorcycle", pageId: "faction" });
-	}
+    if (!_root.基建系统.infrastructure.摩托车) {
+        _root.打开车库购车("motorcycle");
+    } else {
+        _root.gameCommands["openWebMap"]({source:"as2_garage_motorcycle", pageId:"faction"});
+    }
 }
 on (rollOver) {
 	gotoAndStop("描边");
@@ -365,40 +317,11 @@ onClipEvent (load) {
                   </transformationPoint>
                   <Actionscript>
                     <script><![CDATA[on (release) {
-	if (!_root.基建系统.infrastructure.越野车)
-	{
-		_root.确认通用面板.名称 = "购买越野车";
-		_root.确认通用面板.说明 = "是否要购买越野车？需要学习2级驾驶技能，总花费合计50万金币。\n购买后可解锁所有阵营与区域的地图快速传送功能，例如军阀基地，并可增加一页后勤战备箱。";
-		_root.确认通用面板.成功说明 = "成功购买越野车！";
-		_root.确认通用面板.失败说明 = "购买失败！";
-		_root.确认通用面板.确认 = function()
-		{
-			if (_root.主角被动技能.驾驶 && _root.主角被动技能.驾驶.等级 >= 2)
-			{
-				if (_root.金钱 < 500000)
-				{
-					_root.确认通用面板.失败说明 = "购买失败，金币不足！";
-					return false;
-				}
-				_root.金钱 -= 500000;
-				_root.基建系统.infrastructure.越野车 = 1;
-				_root.记录玩家货币变化(
-					-500000, 0, {source:"vehicle_service", reason:"buy_offroad", mergeScope:"operation"});
-				if (_root.存档系统 != undefined) _root.存档系统.dirtyMark = true;
-			}
-			else
-			{
-				_root.确认通用面板.失败说明 = "购买失败，驾驶越野车需获得驾照，请学习驾驶技能至2级！";
-				return false;
-			}
-			return true;
-		};
-		_root.确认通用面板.启动();
-	}
-	else
-	{
-		_root.gameCommands["openWebMap"]({ source: "as2_garage_offroad", pageId: "faction" });
-	}
+    if (!_root.基建系统.infrastructure.越野车) {
+        _root.打开车库购车("offroad");
+    } else {
+        _root.gameCommands["openWebMap"]({source:"as2_garage_offroad", pageId:"faction"});
+    }
 }
 on (rollOver) {
 	gotoAndStop("描边");

@@ -31,7 +31,7 @@
     height: 36px;
     padding: 7px 10px;
     border: 1px solid var(--appearance-line);
-    background: #0c1014;
+    background: var(--appearance-preview-dark);
     color: var(--appearance-text);
     font: inherit;
 }

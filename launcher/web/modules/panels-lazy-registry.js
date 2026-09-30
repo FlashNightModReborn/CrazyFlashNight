@@ -168,6 +168,8 @@
          'modules/gym/gym-panel.js'], noop);
 
     // ── 医务室整形（共享身份控件与稳定取景，AS2 权威提交）──
+    Panels.registerLazy('garage', ['modules/panel-runtime.js', 'modules/garage-purchase-runtime.js', 'modules/garage-purchase.js'], noop);
+
     Panels.registerLazy('surgery',
         ['modules/panel-runtime.js', 'modules/asset-timeline.js', 'modules/dressup-doll-renderer.js',
          'modules/character-identity-controls.js', 'modules/character-appearance-preview.js',

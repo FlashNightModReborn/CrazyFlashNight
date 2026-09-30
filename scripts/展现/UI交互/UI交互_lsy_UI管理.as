@@ -16,6 +16,13 @@
     }
 }
 
+// 独立地图 SWF 只调用根入口，购车服务统一编进 asLoader。
+_root.打开车库购车 = function(vehicleId:String):Boolean {
+    var opened:Boolean = org.flashNight.arki.ui.GaragePurchasePanelService.openPanel(vehicleId);
+    if (!opened) _root.最上层发布文字提示("购车界面暂时无法打开，请稍后重试。");
+    return opened;
+};
+
 _root.打开整形手术 = function(){
     if(!org.flashNight.arki.ui.PlasticSurgeryPanelService.openPanel())
         _root.最上层发布文字提示("整形界面暂时无法打开，请稍后重试。");
@@ -69,6 +76,7 @@ _root.加载引导界面 = function(filename){
 if (_root.gameCommands == undefined) _root.gameCommands = {};
 org.flashNight.arki.ui.HairdresserPanelService.install();
 org.flashNight.arki.ui.PlasticSurgeryPanelService.install();
+org.flashNight.arki.ui.GaragePurchasePanelService.install();
 org.flashNight.arki.ui.SleepPanelService.install();
 org.flashNight.arki.ui.GymPreviewPanelService.install();
 org.flashNight.arki.ui.GameSettingsPanelService.install();

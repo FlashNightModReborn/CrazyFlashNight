@@ -114,6 +114,10 @@
 
 共享组件层 `css/terminal.css`（bootstrap.html 与 overlay.html 均直接 link）：品牌铭牌 `.term-brand-seal`、kicker `.term-kicker`、标题分隔线 `.term-heading-rule`、语义状态点 `.term-status-dot[data-state]`、四角 L 角标 `.corner-brackets` 与单角 `.term-corner-tick`、扫描线 `.term-scanlines`、切角按钮族 `.term-btn`、终端卡片 `.term-card`。组件只组合 token、不定义色值；页面通过组件上的 `--term-*` 旋钮变量调度量。
 
+### 6.2 基地服务共享色板（`--appearance-*`）
+
+理发、整形与车库共同使用基地服务壳，其已验收的中性材质色板统一由 [workbench/tokens.css](../launcher/web/css/workbench/tokens.css) 定义。`--appearance-*` 覆盖表面、边框、墨色、预览和控件的角色；[appearance-service.css](../launcher/web/css/appearance-service.css) 与各 feature 只引用这些角色，不再重复声明颜色字面量。强调、成功、警告和危险仍引用 `--wb-semantic-*`，不为购车另增语义色。2026-09-30 的收敛保留原色值及透明度，不改变已验收的三个面板构图和状态语言。
+
 ---
 
 ## 7. 面板 → 强调色映射（canonical）

@@ -51,6 +51,41 @@
     --launcher-bg-1: #0c0e12;
     --launcher-copy: #d4d8dc;
 
+    /* 基地服务共享色板：理发、整形与车库共同消费。
+       保留已验收的中性材质/墨色；强调与状态仍沿用 --wb-semantic-*。
+       色值唯一归属本处，feature CSS 只引用角色变量。 */
+    --appearance-text: #edf0f2;
+    --appearance-bg: #090b0e;
+    --appearance-hover-line: #687582;
+    --appearance-secondary-text: #c8ced3;
+    --appearance-strong-text: #fff;
+    --appearance-tint: rgba(255, 255, 255, .025);
+    --appearance-surface: #11151a;
+    --appearance-surface-raised: #181e24;
+    --appearance-line: #343d46;
+    --appearance-line-soft: #252c33;
+    --appearance-muted: #9ca7b0;
+    --appearance-frame-line: #3a434c;
+    --appearance-sheen: rgba(255, 255, 255, .045);
+    --appearance-surface-edge: #0d1014;
+    --appearance-surface-deep: #0b0e12;
+    --appearance-control-inset: #101419;
+    --appearance-pane-fill: rgba(14, 18, 22, .94);
+    --appearance-pane-heading: #dce1e5;
+    --appearance-preview-light: #222a31;
+    --appearance-preview-dark: #0c1014;
+    --appearance-preview-caption-fill: rgba(7, 9, 12, .88);
+    --appearance-preview-fallback-fill: rgba(9, 11, 14, .94);
+    --appearance-preview-fallback-text: #f0e3c4;
+    --appearance-fact-label: #77838d;
+    --appearance-fact-value: #d6dce0;
+    --appearance-button-fill: #151a20;
+    --appearance-button-text: #d8dde1;
+    --appearance-button-primary-text: #071014;
+    --appearance-button-hover-line: #7d8994;
+    --appearance-backdrop: #080a0d;
+    --appearance-empty-fill: #0d1115;
+
     /* 动效语言：微交互、状态、结构、拒绝、等待、环境核心。 */
     --wb-motion-micro: 100ms;
     --wb-motion-standard: 160ms;

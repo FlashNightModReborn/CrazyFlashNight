@@ -492,6 +492,25 @@ NativeHud 的 × 始终保留安全退出路由，仅在既有按钮内部投影
 
 只有 Armed 且收到 `sv:2` 的 Done 状态才能签发一次 `EXIT_CONFIRM` capability；Router 必须调用 widget 的 one-shot consume 后才执行普通退出。raw、重放、未 Arm、Saving、Failed 或已消费的 `EXIT_CONFIRM` 一律拒绝。Failed 只显示取消/重试，重试只重新派发 `SAFEEXIT`；Done 无操作自动收起也不得退出。Ctrl+Q 等明确 emergency、Flash 僵尸进程和 fatal shutdown 是独立止损路径，不继承 Done capability，也不能被写成普通安全退出成功。
 
+<a id="u13-garage-purchase"></a>
+### U13 车库购车（2026-09-30 本地施工）
+
+车库三个车辆按钮统一调用 `_root.打开车库购车(vehicleId)`；根桥与 `GaragePurchasePanelService` 编进 asLoader，独立基地 SWF 不复制服务类。已拥有车辆继续走原 `openWebMap`：自行车打开 defense，摩托车与越野车打开 faction。主时间轴不再放置旧确认实例，原确认库元件保留编辑源。
+
+`panel/domain=garage` 只支持 `snapshot / commit / query`，命令及 handler 对应关系登记在 [panel-contracts.v2.json](../launcher/contracts/panel-contracts.v2.json)。车辆身份为 bicycle、motorcycle、offroad；价格、驾驶门槛和说明从现役 `基建系统.dict` 的 XML 投影读取，Web 不接收任意扣费回调，也不传价格或车辆拥有标志。
+
+购车面板沿用共享 `PanelScale`，以 1024×576 画布铺满游戏显示区域；非 16:9 浏览器预览等比居中。左侧展示原画烘焙的车辆，右侧列具体权益、报价与驾驶要求。价格与门槛仍取 Level 0，权益说明取 Level 1；更高级载具覆盖低档出行，不要求逐级购买，地图剧情/发现条件与战备箱开放条件在购买前明确展示。
+
+车辆 XFL 为唯一美术编辑源，图片取当前已发布 [基地 SWF](../flashswf/levels/基地场景合集.swf) 三处购车 opener 对应元件的第 1 帧；保留原稿透明度，裁去时间轴留白，统一展示朝向，排除 hover 描边帧。生成器 [bake-garage-vehicles.py](../tools/bake-garage-vehicles.py) 复用现有物品素材工作台的 FFDec 导出内核，产出 [三车图片与 manifest](../launcher/web/assets/garage-vehicles/manifest.json)。修改车辆 XFL 后先按其归属发布基地 SWF，再运行 `python -X utf8 -B tools/bake-garage-vehicles.py` 与同命令追加 `--check`；后者实际再生并核对来源/工具、字节、尺寸、体积及精确文件集合。图片读取失败保留权益与购买操作。
+
+- AS2 snapshot 绑定车库根入口、稳定 world identity、存档 owner 与槽位。commit 在实际扣费前复验车辆身份、拥有状态、驾驶等级、余额和报价。已拥有返回 owned，无扣费或新增保存。
+- 一次扣费、车辆标志写入和货币播报后进入 save_pending；严格保存成功才返回 applied/saved。相同 token 重复提交返回回执，待保存重试只执行同槽保存。query 只读结果，未解决的购买在重开时继续恢复。
+- Host/Web 沿用 `PanelPendingCallTracker` 与 `PanelRequestMux`；结果未知查询原 token，关闭不清除未解决事实。普通 snapshot 不得替换所选车辆，query 不得用另一辆车的回执解锁购买。
+- 车辆标志继续由现役地图、战备箱容量和材料商店/合成导航消费，不新增存档 schema 或另一套权益规则。
+
+验证入口：`scripts/run-garage-purchase-tests.ps1`、`GaragePurchaseTaskTests`、`tools/run-garage-purchase-harness.js`，以及现有 panel-contract、存盘调用点与受影响 Host/SaveManager 门。
+验证结果、身份、闭包、产物与修复边界见 [本轮证据](../docs/evidence/u13-garage-local-2026-09-30.json)；已观察到绑定候选的实际运行，三车单次扣费与保存确认成立，维护者接受界面体验。状态为 candidate_executed；保存重启读回、完整权益专项与正式入口复验仍单列，未正式 runtime 发布。共享服务配色已归入唯一色板，普通/发布树 strict 样式门均为 0 error / 0 warning，原有稳定画面保持一致。
+
 ## 3. C# 接入清单
 
 地图内容工作台的 `map-workbench / map_workbench` 是 Host 本地 authoring 域；定义／人物／驻点／规则与素材由同一 C# 内核维护，任务端点只补丁写原任务 JSON。生产地图在页面创建前注入 C# 校验后的定义，运行时 snapshot v4、HUD outline、当前地点、任务与 NPC 投影由同一 C# 地图域基于有限 AS2 事实计算。`map_domain` 仅 XMLSocket，Web/HTTP 不能上传实时事实；AS2 执行导航前再检查会话／内容／事实 revision／scene epoch 与生命周期，不保留旧解锁 switch、别名或选址 fallback。结算后前往只记录意图，终态、exact close、pause lease 释放后才 fresh resolve。作者预览在隔离子文档复用生产 MapPanel，消息受 exact Window／同源／本轮 session 限制，直接使用 C# 原因树和方案 A/B；没有全解锁伪状态，也不执行游戏写入。应用／撤回是有摘要与恢复记录的多文件批次，重启生效，不是多文件系统原子事务。见[地图内容工作台](../tools/map-workbench/README.md)。

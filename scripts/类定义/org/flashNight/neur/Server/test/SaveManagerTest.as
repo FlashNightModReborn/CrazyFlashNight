@@ -1309,12 +1309,19 @@ class org.flashNight.neur.Server.test.SaveManagerTest {
         _root.lastsave = undefined;
     }
 
+    // 现役 DrugInputService 拒绝空目标药剂组；夹具须提供可切换的第二组。
+    private static function bankSwitchFixture():Object {
+        return {药剂组切换冷却时间:3000, 物品栏:{药剂栏:{getItem:function(slot:String):Object {
+            return {name:"普通hp药剂", value:1};
+        }}}};
+    }
+
     private static function armBankTwoAndAllDrugCooldowns():Void {
         ManualCooldownService.resetForTests();
         ManualCooldownService.setSchedulerForTests(function(callback:Function):Void {});
         DrugInputService.resetSession();
         DrugInputService.updateSwitch(
-            {hp:100}, true, true, {药剂组切换冷却时间:3000}, null);
+            {hp:100}, true, true, bankSwitchFixture(), null);
         for (var lane:Number = 0; lane < 4; lane++) {
             ManualCooldownService.start(ManualCooldownService.drugKey(lane), 3000);
         }
@@ -1533,7 +1540,7 @@ class org.flashNight.neur.Server.test.SaveManagerTest {
         DrugInputService.resetSession();
         var unit:Object = {hp:100};
         DrugInputService.updateSwitch(
-            unit, true, true, {药剂组切换冷却时间:3000}, null);
+            unit, true, true, bankSwitchFixture(), null);
         assert(DrugInputService.getActiveBank() == 1,
             "loadFromMydata_drug_success: fixture begins in bank II");
 
@@ -1566,7 +1573,7 @@ class org.flashNight.neur.Server.test.SaveManagerTest {
         DrugInputService.resetSession();
         var unit:Object = {hp:100};
         DrugInputService.updateSwitch(
-            unit, true, true, {药剂组切换冷却时间:3000}, null);
+            unit, true, true, bankSwitchFixture(), null);
         var md:Object = buildValidMydata();
         md.ext = {drugLoadout:{version:4}};
         var futureDrugs:Object = {};
