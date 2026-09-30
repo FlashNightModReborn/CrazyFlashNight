@@ -109,3 +109,31 @@ ROI 分近身、脚下、远近地面和上侧，剔除束心前方的 ±24 像�
 此入口经生产 F8 parser / ChainVisualEngine / 原生图集实际读回 8 组情形的 16 帧，
 验证正确样式、非空像素和清理。`chain-scene-proof.json` 保存 trace/Core/native/catalog 哈希。
 不进入玩家存档，不覆盖完整开枪入口/战斗 AI 或实战帧率；现场验收仍需原武器重试。
+
+## 性能收束的成本与缓存对照
+
+`--host-costs <项目根> <新输出目录>` 是 CPU-only 入口，不创建窗口或进入存档。
+它经生产 F8 parser、ChainVisualEngine、FrameTask 联弹合成及原生记录打包，重放相同的
+出生、多个八单元组、镜像、暂停和运动；三档各先预热至少一秒，再取七个样本。
+`host-costs.json` 绑定实际 Core 哈希、输入/输出哈希、分配量、耗时和严格语法接受结果。
+不包含 F5 解析、socket、HUD、native setter、GPU、完整 Flash、功耗或游戏 FPS。
+
+旧 Core 对照可在保留其依赖目录后，用
+`-p:BaselineCorePath=<绝对旧Core.dll路径>` 构建同一夹具；只改变测试程序集的引用，
+输出中的 `coreSha256` 必须与冻结的旧 Core 相同。生产构建不使用此参数。
+短进程的 tiered JIT 阶段会扰动时间，保留原始记录，先预热并交替运行旧/新；
+不把分配下降直接当作 CPU 时间或整机收益。
+
+`--caches` 使用真实 WGC/D3D 和可选 `ProbeGetWorkStats` 验证静态光场命中、
+特效缓冲复用、首次/缓存输出像素相同，以及灯位置/能量、镜头、调色参与参数、
+视口、清灯、恢复和新会话的失效路径。旧 ABI12 的生产导出和 Stats 布局保持不变；
+该附加诊断的计数是实际 worker 工作次数，不是 GPU 时间戳。
+
+```powershell
+& $fxDotnet launcher/perf/combat-fx/bin/Release/net10.0-windows/CombatFxProbe.dll --host-costs . tmp/perf-cost-new
+& $fxDotnet launcher/perf/combat-fx/bin/Release/net10.0-windows/CombatFxProbe.dll . <配套DLL路径> tmp/perf-cache-new --caches
+```
+
+这两条入口没有目标轻薄本的传感器数据，也没有完整游戏同时运行；热稳态包功耗、
+有效单核频率、限频原因与 Flash 帧间隔仍需在目标机器记录。
+本批实现、对照与候选状态归[性能收束施工记录](../../../docs/战斗表现性能收束-施工-2026-09-30.md)。

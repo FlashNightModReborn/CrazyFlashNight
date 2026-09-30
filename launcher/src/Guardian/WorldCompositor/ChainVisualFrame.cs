@@ -45,10 +45,11 @@ namespace CF7Launcher.Guardian.WorldCompositor
             epoch = sequence = tick = 0;
             if (string.IsNullOrEmpty(payload) || payload.Length > MaxPayloadCharacters) return false;
             int end = payload.IndexOf(';');
-            string[] header = (end < 0 ? payload : payload.Substring(0, end)).Split('|');
-            return header.Length == 4 && header[0] == "1" && Integer(header[1], 0, int.MaxValue, out epoch)
-                && Integer(header[2], 1, int.MaxValue, out sequence)
-                && Integer(header[3], 0, int.MaxValue, out tick);
+            ReadOnlySpan<char> header = end < 0 ? payload.AsSpan() : payload.AsSpan(0, end);
+            return Token(ref header, '|', out var version) && version.SequenceEqual("1".AsSpan())
+                && ReadInteger(ref header, '|', 0, int.MaxValue, out epoch)
+                && ReadInteger(ref header, '|', 1, int.MaxValue, out sequence)
+                && LastInteger(header, 0, int.MaxValue, out tick);
         }
 
         internal static bool TryParse(string payload, int styleCount, out ChainVisualFrame result)
@@ -57,57 +58,87 @@ namespace CF7Launcher.Guardian.WorldCompositor
             if (styleCount < 1 || styleCount > 16
                 || !TryReadHeader(payload, out int epoch, out int sequence, out int tick)) return false;
             var parsed = new ChainVisualFrame { Epoch = epoch, Sequence = sequence, Tick = tick };
-            string[] rows = payload.Split(';');
-            if (rows.Length > MaxUnits * 3 + 1) return false;
+            int first = payload.IndexOf(';');
+            if (first < 0) { result = parsed; return true; }
+            ReadOnlySpan<char> rows = payload.AsSpan(first + 1);
             var groupIds = new HashSet<int>();
             bool eventsStarted = false;
-            for (int i = 1; i < rows.Length; i++)
+            int rowCount = 0;
+            while (true)
             {
-                string[] fields = rows[i].Split(',');
-                if (fields.Length < 3 || !Integer(fields[1], 1, int.MaxValue, out int group)) return false;
-                if (fields[0] == "G")
+                if (++rowCount > MaxUnits * 3) return false;
+                int next = rows.IndexOf(';');
+                ReadOnlySpan<char> fields = next < 0 ? rows : rows.Slice(0, next);
+                if (!Token(ref fields, ',', out var kind)
+                    || !ReadInteger(ref fields, ',', 1, int.MaxValue, out int group)) return false;
+                if (kind.SequenceEqual("G".AsSpan()))
                 {
-                    if (eventsStarted || fields.Length != 13 || parsed.Groups.Count == MaxUnits
-                        || !groupIds.Add(group) || !Integer(fields[2], 0, styleCount - 1, out int style)
-                        || !Integer(fields[3], 0, int.MaxValue, out int step)
-                        || !Number(fields[4], -1000000, 1000000, out double x)
-                        || !Number(fields[5], -1000000, 1000000, out double y)
-                        || !Number(fields[6], -100000, 100000, out double rotation)
-                        || !Number(fields[7], -10000, 10000, out double sx)
-                        || !Number(fields[8], -10000, 10000, out double sy)
-                        || !Number(fields[9], 0, 100, out double alpha)
-                        || !Integer(fields[10], 0, 1, out int visible)
-                        || !Number(fields[11], -1000000, 1000000, out double advance)
-                        || !Integer(fields[12], 0, 1, out int advanceX)) return false;
+                    if (eventsStarted || parsed.Groups.Count == MaxUnits
+                        || !groupIds.Add(group) || !ReadInteger(ref fields, ',', 0, styleCount - 1, out int style)
+                        || !ReadInteger(ref fields, ',', 0, int.MaxValue, out int step)
+                        || !ReadNumber(ref fields, -1000000, 1000000, out double x)
+                        || !ReadNumber(ref fields, -1000000, 1000000, out double y)
+                        || !ReadNumber(ref fields, -100000, 100000, out double rotation)
+                        || !ReadNumber(ref fields, -10000, 10000, out double sx)
+                        || !ReadNumber(ref fields, -10000, 10000, out double sy)
+                        || !ReadNumber(ref fields, 0, 100, out double alpha)
+                        || !ReadInteger(ref fields, ',', 0, 1, out int visible)
+                        || !ReadNumber(ref fields, -1000000, 1000000, out double advance)
+                        || !LastInteger(fields, 0, 1, out int advanceX)) return false;
                     parsed.Groups.Add(new GroupState(group, style, step, x, y, rotation,
                         sx, sy, alpha, visible == 1, advance, advanceX == 1));
-                    continue;
                 }
-                eventsStarted = true;
-                if (!groupIds.Contains(group) || parsed.Events.Count == MaxUnits * 2
-                    || !Integer(fields[2], 1, int.MaxValue, out int id)) return false;
-                if (fields[0] == "B")
+                else
                 {
-                    if (fields.Length != 8
-                        || !Number(fields[3], -1000000, 1000000, out double x)
-                        || !Number(fields[4], -1000000, 1000000, out double y)
-                        || !Number(fields[5], -1, 1, out double sin)
-                        || !Number(fields[6], -1, 1, out double cos)
-                        || !Number(fields[7], -100000, 100000, out double rotation)) return false;
-                    parsed.Events.Add(new UnitEvent(true, group, id, x, y, sin, cos, rotation));
+                    eventsStarted = true;
+                    if (!groupIds.Contains(group) || parsed.Events.Count == MaxUnits * 2) return false;
+                    if (kind.SequenceEqual("B".AsSpan()))
+                    {
+                        if (!ReadInteger(ref fields, ',', 1, int.MaxValue, out int id)
+                            || !ReadNumber(ref fields, -1000000, 1000000, out double x)
+                            || !ReadNumber(ref fields, -1000000, 1000000, out double y)
+                            || !ReadNumber(ref fields, -1, 1, out double sin)
+                            || !ReadNumber(ref fields, -1, 1, out double cos)
+                            || fields.IndexOf(',') >= 0 || !Number(fields, -100000, 100000, out double rotation)) return false;
+                        parsed.Events.Add(new UnitEvent(true, group, id, x, y, sin, cos, rotation));
+                    }
+                    else if (kind.SequenceEqual("D".AsSpan()) && LastInteger(fields, 1, int.MaxValue, out int id))
+                        parsed.Events.Add(new UnitEvent(false, group, id));
+                    else return false;
                 }
-                else if (fields[0] == "D" && fields.Length == 3)
-                    parsed.Events.Add(new UnitEvent(false, group, id));
-                else return false;
+                if (next < 0) break;
+                // Process a trailing empty record too, matching the old Split grammar.
+                rows = rows.Slice(next + 1);
             }
             result = parsed;
             return true;
         }
 
-        private static bool Integer(string text, int minimum, int maximum, out int value) =>
+        private static bool Token(ref ReadOnlySpan<char> rest, char separator, out ReadOnlySpan<char> value)
+        {
+            int end = rest.IndexOf(separator);
+            if (end < 0) { value = default; return false; }
+            value = rest.Slice(0, end); rest = rest.Slice(end + 1); return true;
+        }
+        private static bool ReadInteger(ref ReadOnlySpan<char> rest, char separator, int minimum, int maximum, out int value)
+        {
+            value = 0;
+            return Token(ref rest, separator, out var token) && Integer(token, minimum, maximum, out value);
+        }
+        private static bool LastInteger(ReadOnlySpan<char> text, int minimum, int maximum, out int value)
+        {
+            value = 0;
+            return text.IndexOfAny('|', ',') < 0 && Integer(text, minimum, maximum, out value);
+        }
+        private static bool ReadNumber(ref ReadOnlySpan<char> rest, double minimum, double maximum, out double value)
+        {
+            value = 0;
+            return Token(ref rest, ',', out var token) && Number(token, minimum, maximum, out value);
+        }
+        private static bool Integer(ReadOnlySpan<char> text, int minimum, int maximum, out int value) =>
             int.TryParse(text, NumberStyles.None, CultureInfo.InvariantCulture, out value)
             && value >= minimum && value <= maximum;
-        private static bool Number(string text, double minimum, double maximum, out double value) =>
+        private static bool Number(ReadOnlySpan<char> text, double minimum, double maximum, out double value) =>
             double.TryParse(text, NumberStyles.Float, CultureInfo.InvariantCulture, out value)
             && double.IsFinite(value) && value >= minimum && value <= maximum;
     }

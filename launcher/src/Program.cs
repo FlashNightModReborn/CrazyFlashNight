@@ -2034,6 +2034,8 @@ class Program
             dispatchToUi,
             worldCompositor.Adopt, worldCompositor.ResetSource);
         frameTask.WeatherCameraObserved=worldCompositor.ObserveWeatherCamera;
+        frameTask.VisualFrameStarted=worldCompositor.BeginVisualFrame;
+        frameTask.VisualFrameCompleted=worldCompositor.EndVisualFrame;
         frameTask.BulletVisualObserved=worldCompositor.ObserveBulletFrame;
         frameTask.BulletVisualRejected=worldCompositor.RejectBulletFrame;
         frameTask.ChainVisualRejected=worldCompositor.RejectBulletFrame;

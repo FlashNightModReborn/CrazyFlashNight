@@ -185,5 +185,23 @@ namespace CF7Launcher.Tests.Guardian
             Assert.Null(engine.Consume(7, old, 8));
             Assert.Single(engine.Consume(7, Packet(1, Group() + ";" + Birth, epoch: 2), 8));
         }
+
+        [Theory]
+        [InlineData(";")]
+        [InlineData(";;")]
+        [InlineData(";D,1,1;")]
+        public void EmptyOrTrailingRecordsRemainRejected(string suffix)
+        {
+            Assert.False(ChainVisualFrame.TryParse(Packet(1, Group() + ";" + Birth) + suffix, 8, out _));
+        }
+
+        [Fact]
+        public void HeaderSignsAndExtraFieldsKeepTheirStrictGrammar()
+        {
+            Assert.False(ChainVisualFrame.TryReadHeader("1|+1|1|1", out _, out _, out _));
+            Assert.False(ChainVisualFrame.TryReadHeader("1|1|1|1|0", out _, out _, out _));
+            Assert.True(ChainVisualFrame.TryParse("1|1|1|1", 8, out var empty));
+            Assert.Empty(empty.Groups); Assert.Empty(empty.Events);
+        }
     }
 }

@@ -31,7 +31,7 @@ namespace CF7Launcher.Guardian.WorldCompositor
                 try {
                     _native.RayFrame(frame,x,y,scale);
                     _worldLights.SetRays(frame);
-                    SubmitWorldLightsLocked(x,y,scale);
+                    SubmitWorldLightsLocked(x,y,scale,ray:true);
                 }
                 catch(Exception error) { failure=error;LogManager.Log("event=ray_visual_native_failed "+error.Message); }
             }
@@ -43,7 +43,7 @@ namespace CF7Launcher.Guardian.WorldCompositor
                 _worldLights.ClearRays();
                 try {
                     _native?.ClearRayFrame();
-                    SubmitWorldLightsLocked(_lightCameraX,_lightCameraY,_lightCameraScale);
+                    SubmitWorldLightsLocked(_lightCameraX,_lightCameraY,_lightCameraScale,ray:true,immediate:true);
                 }
                 catch(Exception error) { LogManager.Log("event=ray_visual_clear_failed "+error.Message); }
             }

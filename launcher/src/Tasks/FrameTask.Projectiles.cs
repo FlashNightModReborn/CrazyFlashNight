@@ -148,8 +148,7 @@ namespace CF7Launcher.Tasks
         internal void DispatchProjectileBullets(BulletVisualFrame ordinary,HitNumberCamera camera)
         {
             lock(_projectileLock) {
-                var composed=_chainVisualItems.Length==0?ordinary:BulletVisualFrame.Compose(ordinary.Epoch,ordinary.Frame,
-                    ordinary.NativeOwned?ordinary.Instances:Array.Empty<BulletVisualInstance>(),_chainVisualItems);
+                var composed=_chainVisualItems.Length==0?ordinary:BulletVisualFrame.ComposeOwned(ordinary,_chainVisualItems);
                 BulletVisualObserved?.Invoke(composed,camera.OffsetX,camera.OffsetY,camera.Scale);
             }
         }

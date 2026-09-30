@@ -119,6 +119,7 @@ public:
     }
     void RequestContentProof() { contentRequested_=true; proofRequested_=true; }
     void ContentStats(ProbeContentStats& result) { std::lock_guard guard(mutex_); result=contentStats_; }
+    void WorkStats(ProbeWorkStats& result) { std::lock_guard guard(mutex_); result=workStats_; }
     bool Crop(int x, int y, int width, int height) {
         if (x < 0 || y < 0 || width < 1 || height < 1 || width > 8192 || height > 8192) return false;
         std::lock_guard guard(mutex_); crop_ = {x,y,x+width,y+height}; return true;
@@ -583,9 +584,14 @@ private:
         float atmosphereTime = 0;
         double lastAtmosphereDrawMs = 0;
         auto nextPresent = std::chrono::steady_clock::now();
+        bool lightCacheValid=false,fxItemsDirty=true;
+        int cachedLightCount=0;
+        uint64_t cachedLightGeneration=0;
+        float cachedLightParams[16]{},cachedLights[PointLightCap*16]{};
         State(1, S_OK, L"GPU display path; optional diagnostic readback");
         while (!stop_) {
             if (!active_) {
+                lightCacheValid=false;
                 if (session) { session.Close(); session=nullptr; }
                 arrived.revoke();
                 pool.Close();
@@ -772,7 +778,9 @@ private:
             // drawing; the loop-head copy could be one presented frame behind.
             std::shared_ptr<std::vector<uint8_t>> atlasPixels;int atlasW=0,atlasH=0;
             std::shared_ptr<std::vector<uint8_t>> bulletPixels;int bulletW=0,bulletH=0;uint64_t bulletAtlasVersion=0;
+            uint64_t lightCaptureGeneration=0;
             { std::lock_guard guard(mutex_);
+                lightCaptureGeneration=captureGeneration_;
                 weatherCamera=weatherCamera_; weatherVersion=weatherVersion_;
                 // Snapshot copies move metadata + count live records only. Draws
                 // index params[0..count) and uploads zero-pad the last cbuffer
@@ -784,6 +792,9 @@ private:
                     if(bulletFrame.count>0)std::memcpy(bulletFrame.params,bulletFrame_.params,static_cast<size_t>(bulletFrame.count)*32);
                     appliedBullet=bulletVersion_; }
                 if(fxVersion_!=appliedFx) {
+                    if(fxFrame.count!=fxFrame_.count || (fxFrame_.count>0
+                        && std::memcmp(fxFrame.params,fxFrame_.params,static_cast<size_t>(fxFrame_.count)*64)!=0))
+                        fxItemsDirty=true;
                     fxFrame.cameraX=fxFrame_.cameraX;fxFrame.cameraY=fxFrame_.cameraY;fxFrame.cameraScale=fxFrame_.cameraScale;
                     fxFrame.count=fxFrame_.count;fxFrame.casings=fxFrame_.casings;fxFrame.lightCount=fxFrame_.lightCount;
                     fxFrame.maximumLightResponse=fxFrame_.maximumLightResponse;
@@ -824,6 +835,8 @@ private:
             D3D11_VIEWPORT viewport{(w-textureW*scale)/2, (h-textureH*scale)/2, textureW*scale, textureH*scale, 0, 1};
             bool proof = proofRequested_.exchange(false);
             bool lightsOn=!proof && fxFrame.lightCount>0 && fxFrame.maximumLightResponse>0;
+            bool lightDrawn=false,lightCacheHit=false;
+            uint64_t fxUploads=0;
             float palette[3]{1,1,1};
             // Production uses LUT only for ambient "光照". Direct gunfire must not
             // inherit its blue darkness; night vision uses the separate matrix path.
@@ -842,7 +855,11 @@ private:
             ID3D11ShaderResourceView* noLight=nullptr;context->PSSetShaderResources(3,1,&noLight);
             context->RSSetState(raster.get());
             context->IASetInputLayout(nullptr); context->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-            if(lightsOn) {
+            bool rebuildLight=lightsOn && (!lightCacheValid || cachedLightCount!=fxFrame.lightCount
+                || cachedLightGeneration!=lightCaptureGeneration
+                || std::memcmp(cachedLightParams,lp,sizeof(lp))!=0
+                || std::memcmp(cachedLights,fxFrame.lights,static_cast<size_t>(fxFrame.lightCount)*64)!=0);
+            if(rebuildLight) {
                 auto target=lightTarget.get();context->OMSetRenderTargets(1,&target,nullptr);
                 const float transparent[]{0,0,0,0};context->ClearRenderTargetView(target,transparent);
                 D3D11_VIEWPORT lv{0,0,static_cast<float>(LightFieldW),static_cast<float>(LightFieldH),0,1};
@@ -852,7 +869,13 @@ private:
                 context->VSSetShader(lightVs.get(),nullptr,0);context->PSSetShader(lightPs.get(),nullptr,0);
                 context->OMSetBlendState(lightBlend.get(),nullptr,0xffffffff);
                 context->Draw(fxFrame.lightCount*6,0);context->OMSetBlendState(nullptr,nullptr,0xffffffff);
+                std::memcpy(cachedLightParams,lp,sizeof(lp));
+                std::memcpy(cachedLights,fxFrame.lights,static_cast<size_t>(fxFrame.lightCount)*64);
+                cachedLightCount=fxFrame.lightCount;cachedLightGeneration=lightCaptureGeneration;
+                lightCacheValid=true;lightDrawn=true;
             }
+            else if(lightsOn) lightCacheHit=true;
+            else lightCacheValid=false;
             auto target=rtv.get();context->OMSetRenderTargets(1,&target,nullptr);
             const float black[]{0,0,0,1};context->ClearRenderTargetView(target,black);
             context->RSSetViewports(1,&viewport);
@@ -924,7 +947,10 @@ private:
                 if(count<=0 || !fxSrv || proof) return;
                 float fp[8]{fxFrame.cameraX,fxFrame.cameraY,fxFrame.cameraScale,lutActive?1.f:0.f,static_cast<float>(first),0,0,0};
                 context->UpdateSubresource(fxParams.get(),0,nullptr,fp,0,0);
-                context->UpdateSubresource(fxItems.get(),0,nullptr,fxFrame.params,0,0);
+                if(fxItemsDirty) {
+                    context->UpdateSubresource(fxItems.get(),0,nullptr,fxFrame.params,0,0);
+                    fxItemsDirty=false;++fxUploads;
+                }
                 context->VSSetShader(fxVs.get(),nullptr,0);context->PSSetShader(fxPs.get(),nullptr,0);
                 auto params=fxParams.get(),items=fxItems.get();auto sampler=fxSampler.get();auto resource=fxSrv.get();
                 context->VSSetConstantBuffers(1,1,&params);context->PSSetConstantBuffers(1,1,&params);
@@ -1035,6 +1061,10 @@ private:
                 }
                 stats_.submitMs = submit - start; stats_.presentMs = end - presentStart;
                 stats_.lastFrameQpcMs = frameQpcMs;
+                ++workStats_.compositions;
+                workStats_.lightDraws+=lightDrawn?1:0;
+                workStats_.lightCacheHits+=lightCacheHit?1:0;
+                workStats_.fxUploads+=fxUploads;
             }
             presentation.unlock();
             if (present == DXGI_STATUS_OCCLUDED) std::this_thread::sleep_for(std::chrono::milliseconds(40));
@@ -1187,6 +1217,7 @@ private:
     int32_t presentedOutputW_=0,presentedOutputH_=0;
     uint64_t captureGeneration_=0;
     std::thread worker_; std::mutex mutex_; ProbeStats stats_{};
+    ProbeWorkStats workStats_{sizeof(ProbeWorkStats)};
     RECT crop_{};
     double cropNotBefore_=0;
     std::mutex presentationMutex_;
@@ -1259,6 +1290,10 @@ int __cdecl ProbeGetContentStats(void* handle, ProbeContentStats* stats) {
 int __cdecl ProbeGetStats(void* handle, ProbeStats* stats) {
     if (!handle || !stats || stats->size != sizeof(ProbeStats)) return 0;
     static_cast<Capture*>(handle)->Stats(*stats); return 1;
+}
+int __cdecl ProbeGetWorkStats(void* handle, ProbeWorkStats* stats) {
+    if(!handle || !stats || stats->size!=sizeof(ProbeWorkStats)) return 0;
+    static_cast<Capture*>(handle)->WorkStats(*stats);return 1;
 }
 int __cdecl ProbeGetCaptureSize(void* handle,int32_t* width,int32_t* height,uint64_t* generation) {
     if(!handle || !width || !height || !generation)return 0;

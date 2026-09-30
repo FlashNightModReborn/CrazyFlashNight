@@ -35,6 +35,13 @@ struct ProbeContentStats {
     uint32_t size, count, proofCount, width, height, maxRgbError;
     uint64_t inputHash, outputHash;
 };
+// Optional diagnostics: counts actual worker work, not GPU duration or game FPS.
+// Existing ABI 12 stats and rendering exports keep their layouts unchanged.
+struct ProbeWorkStats {
+    uint32_t size, reserved;
+    uint64_t compositions, lightDraws, lightCacheHits, fxUploads;
+};
+static_assert(sizeof(ProbeWorkStats)==40, "Diagnostic work layout");
 static_assert(sizeof(ProbeContentStats)==40, "Diagnostic content layout");
 extern "C" {
 __declspec(dllexport) void* __cdecl ProbeStartWorld(HWND source, DWORD sourcePid, HWND output, uint32_t vendor, int borderless);
@@ -108,6 +115,7 @@ __declspec(dllexport) int __cdecl ProbeGrabCompositeFrame(void* handle, uint8_t*
 __declspec(dllexport) void __cdecl ProbeRequestContentProof(void* handle);
 __declspec(dllexport) int __cdecl ProbeGetContentStats(void* handle, ProbeContentStats* stats);
 __declspec(dllexport) int __cdecl ProbeGetStats(void* handle, ProbeStats* stats);
+__declspec(dllexport) int __cdecl ProbeGetWorkStats(void* handle, ProbeWorkStats* stats);
 // New paired hosts require actual WGC content size.
 __declspec(dllexport) int __cdecl ProbeGetCaptureSize(void* handle, int32_t* width, int32_t* height, uint64_t* generation);
 // Diagnostic scene geometry: dimensions of the last successfully presented output.

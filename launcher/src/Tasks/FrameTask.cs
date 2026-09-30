@@ -45,6 +45,7 @@ namespace CF7Launcher.Tasks
         internal Action<CombatFxDrawFrame,float,float,float> CombatFxObserved;
         internal Action<CombatFxEvents,int> CombatFxEventsReady;
         internal Action CombatFxRejected,CombatFxCleared;
+        internal Action VisualFrameStarted,VisualFrameCompleted;
         private volatile bool _stopped;
 
         public FpsRingBuffer FpsBuffer { get { return _fpsBuffer; } }
@@ -202,11 +203,14 @@ namespace CF7Launcher.Tasks
                     weatherCamera = _hitNumberRuntime.Camera;
                 }
                 _overlay?.UpdateFrame(hitSnapshot);
-                WeatherCameraObserved?.Invoke(weatherCamera.OffsetX,weatherCamera.OffsetY,weatherCamera.Scale);
-                if(combatFxPayload!=null) ObserveCombatFx(combatFxPayload,connectionGeneration,weatherCamera);
-                ObserveProjectileVisuals(rayVisualPayload,chainVisualPayload,connectionGeneration,weatherCamera);
-                if (bulletVisualPayload != null && _bulletVisualShadow != null)
-                    ObserveOrdinaryBulletVisuals(bulletVisualPayload, connectionGeneration, weatherCamera);
+                VisualFrameStarted?.Invoke();
+                try {
+                    WeatherCameraObserved?.Invoke(weatherCamera.OffsetX,weatherCamera.OffsetY,weatherCamera.Scale);
+                    if(combatFxPayload!=null) ObserveCombatFx(combatFxPayload,connectionGeneration,weatherCamera);
+                    ObserveProjectileVisuals(rayVisualPayload,chainVisualPayload,connectionGeneration,weatherCamera);
+                    if (bulletVisualPayload != null && _bulletVisualShadow != null)
+                        ObserveOrdinaryBulletVisuals(bulletVisualPayload, connectionGeneration, weatherCamera);
+                } finally { VisualFrameCompleted?.Invoke(); }
 
                 // 搓招输入处理：解析 \x04 payload -> V8 -> K 前缀推送
                 if (!string.IsNullOrEmpty(inputPayload) && _socket != null)

@@ -7,8 +7,12 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>disable</Nullable>
     <RestorePackagesWithLockFile>true</RestorePackagesWithLockFile>
+    <DefineConstants Condition="'$(BaselineCorePath)' != ''">$(DefineConstants);PERF_BASELINE</DefineConstants>
   </PropertyGroup>
   <ItemGroup>
-    <ProjectReference Include="../../CRAZYFLASHER7MercenaryEmpire.csproj" />
+    <ProjectReference Include="../../CRAZYFLASHER7MercenaryEmpire.csproj" Condition="'$(BaselineCorePath)' == ''" />
+    <Reference Include="CRAZYFLASHER7MercenaryEmpire.Core" Condition="'$(BaselineCorePath)' != ''">
+      <HintPath>$(BaselineCorePath)</HintPath>
+    </Reference>
   </ItemGroup>
 </Project>

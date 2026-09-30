@@ -121,7 +121,7 @@ namespace CF7Launcher.Guardian.WorldCompositor
                 if (!_bulletCapabilityAdvertised || !_bulletStylesReady || _native == null) return;
                 try {
                     _native.BulletFrame(frame,cameraX,cameraY,cameraScale);
-                    if (frame.NativeOwned && frame.Instances.Length > 0) {
+                    if (frame.NativeOwned && frame.InstanceCount > 0) {
                         long now=Stopwatch.GetTimestamp();
                         if (now-_lastBulletFrameLogTicks>=Stopwatch.Frequency*2) {
                             _lastBulletFrameLogTicks=now;
@@ -280,6 +280,7 @@ namespace CF7Launcher.Guardian.WorldCompositor
             _bulletCatalog=bulletCatalog;
             _combatFxCatalog=combatFxCatalog;
             _worldLights=new WorldLightComposer(combatFxCatalog?.MaximumLightResponse??0);
+            _worldLightSubmissions=new WorldLightSubmitBatch((draw,x,y,scale) => _native?.CombatFxFrame(draw,x,y,scale));
             _overlays=overlays ?? Array.Empty<OverlayBase>();
             _bulletCandidateEnabled=bulletCatalog!=null
                 && Environment.GetEnvironmentVariable("CF7_BULLET_NATIVE_DISABLE")!="1";
@@ -753,7 +754,7 @@ namespace CF7Launcher.Guardian.WorldCompositor
         {
             lock(_weatherCameraLock) {
                 _worldLights.ClearCombatFx();
-                try { SubmitWorldLightsLocked(_lightCameraX,_lightCameraY,_lightCameraScale); }
+                try { SubmitWorldLightsLocked(_lightCameraX,_lightCameraY,_lightCameraScale,immediate:true); }
                 catch(Exception error) { LogManager.Log("event=combat_fx_clear_failed "+error.Message); }
             }
         }

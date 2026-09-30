@@ -13,6 +13,53 @@ namespace CF7Launcher.Tests.Tasks
     // reflection, engine substitutes, or duplicate protocol reducer is involved.
     public sealed class FrameTaskProjectileTests
     {
+        [Fact]
+        public void OwnedComposedPictureSurvivesLaterMovementAndSceneResetBeforeMaterialization()
+        {
+            var p = new Probe(); p.Start();
+            var first = p.Bullets(ordinary: true);
+            Assert.Equal(2, first.InstanceCount);
+            Assert.Equal(203f, first.InstanceAt(1).Y);
+            p.Feed(Ray(2, tick: 2), Chain(2, Group(1), tick: 2));
+            var next = p.Bullets(ordinary: true);
+            Assert.Equal(209f, next.InstanceAt(1).Y);
+            p.Task.ResetProjectileScene();
+            Assert.Equal(203f, first.Instances[1].Y);
+            Assert.Equal(209f, next.Instances[1].Y);
+            Assert.Equal(500f, first.Instances[0].X);
+        }
+
+        [Fact]
+        public void VisualFrameCompletionRunsEvenWhenAnObserverFails()
+        {
+            var p = new Probe(); int began = 0, ended = 0;
+            p.Task.VisualFrameStarted = () => began++;
+            p.Task.VisualFrameCompleted = () => ended++;
+            p.Task.WeatherCameraObserved = (x,y,scale) => throw new InvalidOperationException("observer");
+            p.Task.HandleRaw("0,0,1", "", null, null);
+            Assert.Equal(1, began); Assert.Equal(1, ended);
+        }
+
+        [Fact]
+        public void OneRawPacketKeepsBothLightSelectionStepsButSubmitsOnlyOnce()
+        {
+            var p=new Probe();int selections=0,submissions=0;
+            var composer=new WorldLightComposer(.78f);
+            var batch=new WorldLightSubmitBatch((draw,x,y,scale)=>submissions++);
+            p.Task.ConfigureCombatFx(CombatFxCatalog.Load(ProjectRoot()));
+            p.Task.VisualFrameStarted=batch.Begin;p.Task.VisualFrameCompleted=batch.End;
+            p.Task.CombatFxObserved=(draw,x,y,scale)=> {
+                composer.SetCombatFx(draw);selections++;
+                batch.Submit(composer.Compose(x,y,scale),x,y,scale,false);
+            };
+            p.Task.RayVisualObserved=(draw,x,y,scale)=> {
+                composer.SetRays(draw);selections++;
+                batch.Submit(composer.Compose(x,y,scale),x,y,scale,true);
+            };
+            p.Task.HandleRaw("0,0,1","",null,null,null,7,"1|1|1|0",Ray(1,Config()+";"+Spawn()));
+            Assert.Equal(2,selections);Assert.Equal(1,submissions);
+        }
+
         private static readonly Lazy<BulletVisualCatalog> Catalog = new(() => BulletVisualCatalog.Load(ProjectRoot()));
         private static readonly HitNumberCamera Camera = new(12, 34, 1.5f);
 

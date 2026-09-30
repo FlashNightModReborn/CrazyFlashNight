@@ -2,6 +2,7 @@ using System;
 using System.Diagnostics;
 using System.Globalization;
 using System.Text;
+using System.Threading;
 using CF7Launcher.Guardian;
 
 namespace CF7Launcher.Guardian.WorldCompositor
@@ -12,7 +13,35 @@ namespace CF7Launcher.Guardian.WorldCompositor
     {
         internal readonly int Epoch, Frame, NormalCount, ChainCount, Overflow;
         internal readonly bool NativeOwned;
-        internal readonly BulletVisualInstance[] Instances;
+        private BulletVisualInstance[] _instances;
+        private readonly BulletVisualInstance[] _ordinary, _chains;
+        internal int InstanceCount => NormalCount + ChainCount;
+        internal BulletVisualInstance[] Instances
+        {
+            get
+            {
+                var snapshot = Volatile.Read(ref _instances);
+                if (snapshot != null) return snapshot;
+                snapshot = new BulletVisualInstance[InstanceCount];
+                Array.Copy(_ordinary, snapshot, NormalCount);
+                Array.Copy(_chains, 0, snapshot, NormalCount, ChainCount);
+                return Interlocked.CompareExchange(ref _instances, snapshot, null) ?? snapshot;
+            }
+        }
+        internal BulletVisualInstance InstanceAt(int index)
+        {
+            if ((uint)index >= (uint)InstanceCount) throw new ArgumentOutOfRangeException(nameof(index));
+            var snapshot = Volatile.Read(ref _instances);
+            if (snapshot != null) return snapshot[index];
+            if (_ordinary != null) return index < NormalCount ? _ordinary[index] : _chains[index - NormalCount];
+            throw new InvalidOperationException("Bullet snapshot unavailable");
+        }
+        internal void ReadSegments(out ReadOnlySpan<BulletVisualInstance> first, out ReadOnlySpan<BulletVisualInstance> second)
+        {
+            var snapshot=Volatile.Read(ref _instances);
+            first=snapshot ?? _ordinary;
+            second=snapshot==null ? _chains : ReadOnlySpan<BulletVisualInstance>.Empty;
+        }
         // Shared three-tier bullet budget: ordinary snapshot 1024 + chain
         // reservation 15360 must fit the 16384 total native bullet budget.
         internal const int OrdinaryLimit = 1024, ChainLimit = 15360, TotalLimit = 16384;
@@ -25,11 +54,24 @@ namespace CF7Launcher.Guardian.WorldCompositor
             Array.Copy(ordinary,all,ordinary.Length);Array.Copy(chains,0,all,ordinary.Length,chains.Length);
             return new BulletVisualFrame(epoch,frame,ordinary.Length,chains.Length,0,true,all);
         }
+        // Only the dispatcher uses this path: both inputs are immutable packet-owned
+        // snapshots. Public Compose still copies borrowed input arrays as before.
+        internal static BulletVisualFrame ComposeOwned(BulletVisualFrame ordinary, BulletVisualInstance[] chains)
+        {
+            var items = ordinary.NativeOwned ? ordinary.Instances : Array.Empty<BulletVisualInstance>();
+            if (items.Length + chains.Length > TotalLimit) throw new ArgumentOutOfRangeException(nameof(chains));
+            return new BulletVisualFrame(ordinary.Epoch, ordinary.Frame, items, chains);
+        }
+        private BulletVisualFrame(int epoch, int frame, BulletVisualInstance[] ordinary, BulletVisualInstance[] chains)
+        {
+            Epoch = epoch; Frame = frame; NormalCount = ordinary.Length; ChainCount = chains.Length;
+            Overflow = 0; NativeOwned = true; _ordinary = ordinary; _chains = chains;
+        }
         private BulletVisualFrame(int epoch, int frame, int normal, int chain, int overflow, bool nativeOwned,
             BulletVisualInstance[] instances)
         {
             Epoch = epoch; Frame = frame; NormalCount = normal; ChainCount = chain;
-            Overflow = overflow; NativeOwned = nativeOwned; Instances = instances;
+            Overflow = overflow; NativeOwned = nativeOwned; _instances = instances;
         }
 
         internal static bool TryParse(string payload, int styleCount, out BulletVisualFrame result)
@@ -57,7 +99,7 @@ namespace CF7Launcher.Guardian.WorldCompositor
                 || normal + chain > TotalLimit || overflow < 0 || overflow > 65535) return false;
             int count = normal + chain;
             if ((firstEntry < 0) != (count == 0)) return false;
-            var instances = new BulletVisualInstance[count];
+            var instances = count == 0 ? Array.Empty<BulletVisualInstance>() : new BulletVisualInstance[count];
             if (count > 0)
             {
                 rest = rest.Slice(firstEntry + 1);

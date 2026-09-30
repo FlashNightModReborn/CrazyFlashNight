@@ -12,6 +12,7 @@ namespace CF7Launcher.Guardian.WorldCompositor
         private IntPtr _module, _session;
         private readonly StopDelegate _stop;
         private readonly ReadDelegate _read;
+        private readonly WorkReadDelegate _readWork;
         private readonly CaptureSizeDelegate _captureSize;
         private readonly CropDelegate _crop;
         private readonly ModeDelegate _mode;
@@ -48,6 +49,7 @@ namespace CF7Launcher.Guardian.WorldCompositor
                 _module = NativeLibrary.Load(Path.GetFullPath(modulePath));
                 if (Export<VersionDelegate>("ProbeGetAbiVersion")() != 12) throw new InvalidOperationException("Compositor ABI version mismatch");
                 _stop = Export<StopDelegate>("ProbeStop"); _read = Export<ReadDelegate>("ProbeGetStats");
+                _readWork=TryExport<WorkReadDelegate>("ProbeGetWorkStats");
                 _captureSize=Export<CaptureSizeDelegate>("ProbeGetCaptureSize"); // reject an old unpaired DLL
                 _crop = Export<CropDelegate>("ProbeSetCrop"); _mode = Export<ModeDelegate>("ProbeSetMode");
                 _matrix=Export<MatrixDelegate>("ProbeSetMatrix"); _active=Export<ActiveDelegate>("ProbeSetActive");
@@ -108,6 +110,12 @@ namespace CF7Launcher.Guardian.WorldCompositor
             var value = new Stats { Size = (uint)Marshal.SizeOf<Stats>() };
             if (_session == IntPtr.Zero || _read(_session,ref value) != 1) throw new InvalidOperationException("Compositor stats unavailable");
             return value;
+        }
+        internal WorkStats? ReadWork()
+        {
+            if (_readWork==null || _session==IntPtr.Zero) return null;
+            var value=new WorkStats { Size=(uint)Marshal.SizeOf<WorkStats>() };
+            return _readWork(_session,ref value)==1 ? value : null;
         }
         internal System.Drawing.Size ReadCaptureSize()
         {
@@ -219,26 +227,30 @@ namespace CF7Launcher.Guardian.WorldCompositor
         internal void BulletFrame(BulletVisualFrame frame, float cameraX, float cameraY, float cameraScale)
         {
             if (_session == IntPtr.Zero || frame == null) throw new InvalidOperationException("Bullet frame unavailable");
-            int count = frame.NativeOwned ? frame.Instances.Length : 0;
+            int count = frame.NativeOwned ? frame.InstanceCount : 0;
             if (count > NativeBulletItemLimit) throw new InvalidOperationException("Native bullet frame rejected");
             float[] values = ArrayPool<float>.Shared.Rent(Math.Max(1, count * 8));
             try
             {
-                for (int i = 0; i < count; i++)
-                {
-                    BulletVisualInstance item = frame.Instances[i];
-                    int at = i * 8;
-                    values[at] = item.Style;
-                    values[at + 1] = item.X; values[at + 2] = item.Y;
-                    values[at + 3] = item.Rotation;
-                    values[at + 4] = item.ScaleX; values[at + 5] = item.ScaleY;
-                    values[at + 6] = item.Alpha;
-                    values[at + 7] = 0;
-                }
+                if(count>0) PackBulletFrame(frame,values);
                 if (_bulletFrame(_session, values, count, cameraX, cameraY, cameraScale) != 1)
                     throw new InvalidOperationException("Native bullet frame rejected");
             }
             finally { ArrayPool<float>.Shared.Return(values); }
+        }
+        internal static void PackBulletFrame(BulletVisualFrame frame,float[] values)
+        {
+            if(values.Length<frame.InstanceCount*8) throw new ArgumentException("Bullet packing buffer too small",nameof(values));
+            frame.ReadSegments(out var first,out var second);
+            PackBulletSegment(first,values,0);PackBulletSegment(second,values,first.Length*8);
+        }
+        private static void PackBulletSegment(ReadOnlySpan<BulletVisualInstance> items,float[] values,int at)
+        {
+            foreach(ref readonly var item in items) {
+                values[at]=item.Style;values[at+1]=item.X;values[at+2]=item.Y;
+                values[at+3]=item.Rotation;values[at+4]=item.ScaleX;values[at+5]=item.ScaleY;
+                values[at+6]=item.Alpha;values[at+7]=0;at+=8;
+            }
         }
         internal void ClearBulletFrame()
         {
@@ -290,6 +302,12 @@ namespace CF7Launcher.Guardian.WorldCompositor
             [MarshalAs(UnmanagedType.ByValTStr,SizeConst=128)] public string Adapter;
             [MarshalAs(UnmanagedType.ByValTStr,SizeConst=256)] public string Message;
         }
+        [StructLayout(LayoutKind.Sequential)]
+        internal struct WorkStats
+        {
+            public uint Size, Reserved;
+            public ulong Compositions, LightDraws, LightCacheHits, FxUploads;
+        }
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)] private delegate uint VersionDelegate();
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)] private delegate int ViewportDelegate(IntPtr handle,int x,int y,int width,int height,double notBefore);
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)] private delegate int SharpnessDelegate(IntPtr handle,float value);
@@ -299,6 +317,7 @@ namespace CF7Launcher.Guardian.WorldCompositor
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)] private delegate IntPtr StartDelegate(IntPtr source,uint pid,IntPtr output,uint vendor,int borderless);
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)] private delegate void StopDelegate(IntPtr handle);
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)] private delegate int ReadDelegate(IntPtr handle,ref Stats stats);
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)] private delegate int WorkReadDelegate(IntPtr handle,ref WorkStats stats);
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)] private delegate int CaptureSizeDelegate(IntPtr handle,out int width,out int height,out ulong generation);
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)] private delegate int CropDelegate(IntPtr handle,int x,int y,int width,int height);
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)] private delegate void ModeDelegate(IntPtr handle,int mode);

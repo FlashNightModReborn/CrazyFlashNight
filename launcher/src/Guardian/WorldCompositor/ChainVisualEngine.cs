@@ -28,7 +28,6 @@ namespace CF7Launcher.Guardian.WorldCompositor
         private readonly Dictionary<int, int> _counts = new();
         private readonly HashSet<(int Group, int Unit)> _eventIds = new();
         private readonly List<int> _absent = new();
-        private readonly List<BulletVisualInstance> _draws = new();
         private int _generation = -1, _epoch = -1, _sequence, _tick = -1;
         private bool _needsResync;
         internal bool NeedsResync { get { lock (_sync) return _needsResync; } }
@@ -130,9 +129,13 @@ namespace CF7Launcher.Guardian.WorldCompositor
                 }
                 _sequence = frame.Sequence;
                 _tick = frame.Tick;
-                var draws = _draws;
-                draws.Clear();
-                if (draws.Capacity < total) draws.Capacity = total;
+                int visibleCount = 0;
+                foreach (var state in frame.Groups)
+                    if (state.Visible && state.Alpha > 0) visibleCount += _groups[state.Id].Units.Count;
+                // Returned pictures are owned snapshots. Fill the final array directly;
+                // callers may retain it across later Consume/reset operations.
+                var draws = visibleCount == 0 ? Array.Empty<BulletVisualInstance>() : new BulletVisualInstance[visibleCount];
+                int drawIndex = 0;
                 foreach (var state in frame.Groups)
                 {
                     if (!state.Visible || state.Alpha <= 0) continue;
@@ -147,13 +150,13 @@ namespace CF7Launcher.Guardian.WorldCompositor
                         double rotation = mirrored
                             ? Math.Atan2(mb * unit.Cos + md * unit.Sin, ma * unit.Cos + mc * unit.Sin) * (180 / Math.PI)
                             : state.Rotation + unit.Rotation;
-                        draws.Add(new BulletVisualInstance(state.Style,
+                        draws[drawIndex++] = new BulletVisualInstance(state.Style,
                             (float)(state.X + ma * unit.X + mc * unit.Y),
                             (float)(state.Y + mb * unit.X + md * unit.Y),
-                            (float)rotation, (float)state.ScaleX, (float)state.ScaleY, (float)state.Alpha));
+                            (float)rotation, (float)state.ScaleX, (float)state.ScaleY, (float)state.Alpha);
                     }
                 }
-                return draws.ToArray();
+                return draws;
             }
         }
 
