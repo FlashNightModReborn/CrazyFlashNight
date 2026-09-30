@@ -2649,8 +2649,9 @@ class org.flashNight.arki.item.CharacterBuildService {
         var appearance:Object = {};
         var face = hero != null && hero.脸型 != undefined
             ? hero.脸型 : r.脸型;
-        var hair = hero != null && hero.发型 != undefined
-            ? hero.发型 : r.发型;
+        // 发型始终投影玩家保留的原发型（_root.发型）；live hero.发型 会被头盔
+        // 遮蔽逻辑压成 ""，预览的遮蔽显隐由 Web 端按投影装备的 helmet 标记决定。
+        var hair = r.发型;
         if (face != undefined && face != null && String(face) != "") {
             appearance["脸型"] = String(face);
         }

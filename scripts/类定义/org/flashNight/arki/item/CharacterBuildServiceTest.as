@@ -1088,6 +1088,18 @@ class org.flashNight.arki.item.CharacterBuildServiceTest {
                 && payload.stateHealth == "ok"
                 && payload.diagnostics.length == 0,
             "portrait 只投影 gender/equipment/appearance");
+        // 回归：头盔遮蔽把 live hero.发型 压成 ""（换成面具后 flushLive 之前）时，
+        // portrait 仍须投影玩家保留的原发型，预览显隐由 Web 按 helmet 标记决定。
+        root.gameworld[root.控制目标].发型 = "";
+        var maskedHairParams:Object = wireParams("workbench.projection.1",
+            "character-build.projection.masked-hair");
+        maskedHairParams.sessionGeneration = snapshot.sessionGeneration;
+        var maskedHair:Object = CharacterBuildService.execute(
+            "snapshot", maskedHairParams);
+        check(maskedHair.success
+                && maskedHair.payload.portrait.appearance["发型"] == root.发型,
+            "live hero 发型被头盔遮蔽时 portrait 仍投影保留的原发型");
+        root.gameworld[root.控制目标].发型 = root.发型;
 
         var normalProjectItem:Function = callback.projectItem;
         callback.projectItem = function(item:Object):Object {
