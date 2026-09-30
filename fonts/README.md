@@ -54,16 +54,17 @@ custom 必须通过有界结构检查和 Launcher 实际字体解析探针；仅
 
 ## 常驻与按需集合
 
-当前只把两项高频、离线价值明确的字体设为 `residency="permanent"`：
+当前只把三项高频、离线价值明确的字体设为 `residency="permanent"`：
 
 | asset | 用途 | 大小 |
 |---|---|---:|
 | `jetbrains-mono` | Web terminal、动态 Canvas 等宽文本 | 92,380 bytes |
 | `source-han-serif-cn-regular` | 情报档案正文、Native HUD 中文 | 11,626,108 bytes |
+| `source-han-sans-cn-medium` | 刘海与 Native HUD 中文首选黑体 | 8,406,556 bytes |
 
-重黑标题、文楷与手写体共 12 项保持 `on-demand`，由 `fontctl sync` 或 Launcher FontPack 下载到 cache。`validate` 会拒绝常驻文件缺失、哈希漂移、未登记字体或把 on-demand 文件误放进 permanent。
+重黑标题、文楷与手写体共 11 项保持 `on-demand`，由 `fontctl sync` 或 Launcher FontPack 下载到 cache。`validate` 会拒绝常驻文件缺失、哈希漂移、未登记字体或把 on-demand 文件误放进 permanent。
 
-两项常驻字体均按 SIL Open Font License 1.1 分发，版权声明和完整许可文本位于 `licenses/`。许可证字段只记录工程事实，不替代发行前法律复核。
+三项常驻字体均按 SIL Open Font License 1.1 分发，版权声明和完整许可文本位于 `licenses/`。许可证字段只记录工程事实，不替代发行前法律复核。
 
 ## 语义隔离
 

@@ -594,13 +594,13 @@ test('同来源递归目录中的同 basename 确定性拒绝', () => withTempDi
 test('根目录与现役 manifest 完整等价', () => {
     const result = run(['validate']);
     assert.equal(result.status, 0);
-    assert.equal(result.json.data.assetCount, 14);
-    assert.equal(result.json.data.faceCount, 14);
-    assert.equal(result.json.data.roleCount, 28);
+    assert.equal(result.json.data.assetCount, 15);
+    assert.equal(result.json.data.faceCount, 15);
+    assert.equal(result.json.data.roleCount, 30);
     assert.equal(result.json.data.presetCount, 9);
-    assert.equal(result.json.data.declaredBytes, 119211978);
+    assert.equal(result.json.data.declaredBytes, 127618534);
     assert.equal(result.json.data.shippedFallbackCount, 1);
-    assert.equal(result.json.data.permanentAssetCount, 2);
+    assert.equal(result.json.data.permanentAssetCount, 3);
     assert.ok(result.json.warnings.some((item) => item.code === 'CUSTOM_WOFF2_OVERRIDE_UNSUPPORTED'));
 });
 
@@ -662,7 +662,7 @@ test('generate 产出确定性 CSS/JS/JSON，并可由 JS 消费 role 与兼容�
     assert.equal(validated.diagnostics.filter((item) => item.severity === 'error').length, 0);
     const first = generateCatalog(loaded, validated.maps, directory, false);
     assert.equal(first.diagnostics.length, 0);
-    assert.equal(first.projection.assets.filter((asset) => asset.residency === 'permanent').length, 2);
+    assert.equal(first.projection.assets.filter((asset) => asset.residency === 'permanent').length, 3);
     const checked = generateCatalog(loaded, validated.maps, directory, true);
     assert.equal(checked.diagnostics.length, 0);
     const generatedJs = path.join(directory, 'font-catalog.js');

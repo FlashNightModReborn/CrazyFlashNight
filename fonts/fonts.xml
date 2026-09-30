@@ -24,6 +24,7 @@
     <group id="expressive-handwriting" label="手写字体矩阵" description="私人批注、人物笔迹、标题手写与失控短句。"/>
     <group id="expressive-archive" label="正式档案衬线" description="正式资料、档案与 Native HUD 常用中文的衬线字体。"/>
     <group id="expressive-archive-heavy" label="正式档案重黑" description="任务标题与卡面衬线重黑字体。"/>
+    <group id="interface" label="界面与 HUD 黑体" description="刘海、HUD 与通用界面正文的无衬线中文字体。"/>
   </groups>
 
   <fonts>
@@ -93,6 +94,11 @@
       <face id="source-han-serif-cn-heavy-900" family="Source Han Serif CN" weight="900" style="normal" stretch="normal" classification="migrate"/>
       <download priority="1" url="https://cdn.jsdelivr.net/gh/adobe-fonts/source-han-serif@release/SubsetOTF/CN/SourceHanSerifCN-Heavy.otf" bytes="11862952" sha256="053e911fdb1a55d4d8512a1f11203f1fb9a7291e34bc260474b8c80358c69fa6"/>
       <download priority="2" url="https://github.com/adobe-fonts/source-han-serif/raw/release/SubsetOTF/CN/SourceHanSerifCN-Heavy.otf" bytes="11862952" sha256="053e911fdb1a55d4d8512a1f11203f1fb9a7291e34bc260474b8c80358c69fa6"/>
+    </font>
+    <font id="source-han-sans-cn-medium" label="Source Han Sans CN Medium（思源黑体 / 刘海与 HUD 中文）" file="source-han-sans-cn-medium.otf" format="otf" targets="native" license="SIL-OFL-1.1" group="interface" residency="permanent" shippedFallback="false">
+      <face id="source-han-sans-cn-medium-500" family="Source Han Sans CN" weight="500" style="normal" stretch="normal" classification="migrate"/>
+      <download priority="1" url="https://cdn.jsdelivr.net/gh/adobe-fonts/source-han-sans@release/SubsetOTF/CN/SourceHanSansCN-Medium.otf" bytes="8406556" sha256="a94e558a2fe972bee4f46bce0843abff37063fd68c33f1e7d9058f6f09432b01"/>
+      <download priority="2" url="https://github.com/adobe-fonts/source-han-sans/raw/release/SubsetOTF/CN/SourceHanSansCN-Medium.otf" bytes="8406556" sha256="a94e558a2fe972bee4f46bce0843abff37063fd68c33f1e7d9058f6f09432b01"/>
     </font>
   </fonts>
 
@@ -229,11 +235,11 @@
     </role>
 
     <role id="native.hud.body" label="原生 HUD 正文" status="accepted" allowPresetOverride="false">
+      <use face="source-han-sans-cn-medium-500"/>
       <use face="source-han-serif-cn-regular-400"/>
-      <systemFallback family="Noto Serif CJK SC" classification="compatibility"/>
-      <systemFallback family="SimSun" classification="system-owned"/>
+      <systemFallback family="Noto Sans CJK SC" classification="compatibility"/>
       <systemFallback family="Microsoft YaHei" classification="system-owned"/>
-      <genericFallback family="serif" classification="system-owned"/>
+      <genericFallback family="sans-serif" classification="system-owned"/>
     </role>
     <role id="native.hud.mono" label="原生 HUD 等宽" status="accepted" allowPresetOverride="false">
       <systemFallback family="Consolas" classification="system-owned"/>
@@ -322,7 +328,12 @@
       <alias name="Source Han Serif CN Heavy"/>
       <alias name="思源宋体 CN Heavy"/>
     </family>
+    <family name="Source Han Sans CN" classification="migrate">
+      <alias name="Source Han Sans SC"/>
+      <alias name="思源黑体 CN"/>
+    </family>
     <family name="Noto Serif CJK SC" classification="compatibility"/>
+    <family name="Noto Sans CJK SC" classification="compatibility"/>
     <family name="MS Mincho" classification="compatibility" role="legacy.tooltip.ms-mincho"/>
     <family name="Fixedsys" classification="compatibility" role="legacy.tooltip.fixedsys"/>
     <family name="Microsoft YaHei" classification="system-owned">
