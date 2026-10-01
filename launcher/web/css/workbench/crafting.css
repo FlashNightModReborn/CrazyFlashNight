@@ -1,13 +1,13 @@
 /* ── 合成工作台 C0-C3 ── */
 .crafting-scale-shell { width:1024px; height:576px; }
 .crafting-panel {
-    --wb-scrollbar-track:#0d1115;
-    --wb-scrollbar-thumb:#705a2d;
-    --wb-scrollbar-thumb-border:#a9863b;
-    --wb-scrollbar-thumb-hover:#967338;
-    --wb-accent:#f1b83b;
-    --wb-accent-soft:rgba(241,184,59,.16);
-    --wb-panel:#11161b;
+    --wb-scrollbar-track:var(--wb-crafting-crafting-panel-wb-scrollbar-track);
+    --wb-scrollbar-thumb:var(--wb-crafting-crafting-panel-wb-scrollbar-thumb);
+    --wb-scrollbar-thumb-border:var(--wb-crafting-crafting-panel-wb-scrollbar-thumb-border);
+    --wb-scrollbar-thumb-hover:var(--wb-crafting-crafting-panel-wb-scrollbar-thumb-hover);
+    --wb-accent:var(--wb-crafting-crafting-panel-wb-accent);
+    --wb-accent-soft:var(--wb-crafting-crafting-panel-wb-accent-soft);
+    --wb-panel:var(--wb-crafting-crafting-panel-wb-panel);
     --crafting-active-border:var(--dls-crystal);
     --crafting-active-bg:rgba(var(--dls-crystal-rgb),.08);
     --crafting-active-glow:0 0 8px rgba(var(--dls-crystal-rgb),.12);
@@ -54,7 +54,7 @@
 .crafting-catalog-grid::-webkit-scrollbar-track,
 .crafting-detail-body::-webkit-scrollbar-track,
 .crafting-material-grid::-webkit-scrollbar-track,
-.crafting-material-detail-body::-webkit-scrollbar-track { background:var(--wb-scrollbar-track); border-left:1px solid #1c2329; }
+.crafting-material-detail-body::-webkit-scrollbar-track { background:var(--wb-scrollbar-track); border-left:var(--wb-crafting-crafting-catalog-grid-webkit-scrollbar-track-crafting-detail-body-webkit-scrollbar-); }
 .crafting-catalog-grid::-webkit-scrollbar-thumb,
 .crafting-detail-body::-webkit-scrollbar-thumb,
 .crafting-material-grid::-webkit-scrollbar-thumb,
@@ -286,7 +286,7 @@
 .crafting-detail-body { padding:10px 12px 14px; }
 .crafting-detail-empty {
     height:100%; min-height:210px; display:grid; place-items:center;
-    color:#68747e; font:12px/1.5 "Microsoft YaHei",sans-serif; text-align:center;
+    color:var(--wb-crafting-crafting-detail-empty-color); font:12px/1.5 "Microsoft YaHei",sans-serif; text-align:center;
 }
 .crafting-material-detail-retry { align-self:center; margin-top:10px; }
 .crafting-output-card {
@@ -473,8 +473,8 @@
     min-width:0;
     height:27px;
     padding:0 8px;
-    color:#dce8eb;
-    background:#080c0f;
+    color:var(--wb-crafting-crafting-material-search-color);
+    background:var(--wb-crafting-crafting-material-search-background);
     border:1px solid rgba(var(--dls-crystal-rgb),.28);
     border-radius:0;
     font:10px/1 "Microsoft YaHei",sans-serif;
@@ -636,11 +636,11 @@
     height:14px;
     padding:0 2px;
     box-sizing:border-box;
-    color:#eafbff;
+    color:var(--wb-crafting-crafting-material-grid-item-grid-compact-crafting-material-card-owned-color);
     text-align:center;
-    background:rgba(4,9,11,.9);
+    background:var(--wb-crafting-crafting-material-grid-item-grid-compact-crafting-material-card-owned-background);
     border:1px solid color-mix(in srgb,var(--wb-text) 20%,transparent);
-    font:700 9px/12px Consolas,"Microsoft YaHei",sans-serif;
+    font:700 10px/12px Consolas,"Microsoft YaHei",sans-serif;
 }
 .crafting-material-grid.item-grid-compact .crafting-material-card-owned[hidden] { display:none; }
 .crafting-material-detail-body {
@@ -1025,7 +1025,7 @@
 .crafting-material-use-action-status[data-action-state="pending"] {
     color:var(--wb-muted);
 }
-.crafting-material-empty-copy { margin:0; color:#75848a; font:10px/1.5 "Microsoft YaHei",sans-serif; }
+.crafting-material-empty-copy { margin:0; color:var(--wb-crafting-crafting-material-empty-copy-color); font:10px/1.5 "Microsoft YaHei",sans-serif; }
 .crafting-detail-view [data-title] { position:relative; }
 .crafting-detail-view [data-title]:hover::after,
 .crafting-detail-view [data-title]:focus-visible::after {
@@ -1337,53 +1337,53 @@
 
 /* 烹饪：食谱卡纸 + 暖灶橙；签名 = 圆角卡片 */
 .crafting-panel[data-crafting-category="烹饪"] {
-    --wb-bg:#160f08; --wb-surface:#1d150c; --wb-panel:#171009;
-    --wb-line:#4a3826; --wb-line-soft:#3a2c1e; --wb-line-strong:#7a5c38;
-    --wb-text:#f5ead6; --wb-muted:#a89272;
-    --wb-accent:#ff9440; --wb-accent-soft:rgba(255,148,64,.16);
-    --dls-crystal:#ff9440; --dls-crystal-rgb:255,148,64;
-    --dls-crystal-deep:#c96a1e; --dls-crystal-dim:#5c3317;
-    --dls-crystal-bright:#ffc389;
-    --dls-crystal-soft:rgba(255,148,64,.12);
-    --dls-crystal-faint:rgba(255,148,64,.45);
-    --dls-glow:rgba(255,148,64,.18);
-    --wb-scrollbar-track:#181008; --wb-scrollbar-thumb:#8a5f30;
-    --wb-scrollbar-thumb-border:#b98a4a; --wb-scrollbar-thumb-hover:#a87a40;
+    --wb-bg:var(--wb-crafting-crafting-panel-data-crafting-category-wb-bg); --wb-surface:var(--wb-crafting-crafting-panel-data-crafting-category-wb-surface); --wb-panel:var(--wb-crafting-crafting-panel-data-crafting-category-wb-panel);
+    --wb-line:var(--wb-crafting-crafting-panel-data-crafting-category-wb-line); --wb-line-soft:var(--wb-crafting-crafting-panel-data-crafting-category-wb-line-soft); --wb-line-strong:var(--wb-crafting-crafting-panel-data-crafting-category-wb-line-strong);
+    --wb-text:var(--wb-crafting-crafting-panel-data-crafting-category-wb-text); --wb-muted:var(--wb-crafting-crafting-panel-data-crafting-category-wb-muted);
+    --wb-accent:var(--wb-crafting-crafting-panel-data-crafting-category-wb-accent); --wb-accent-soft:var(--wb-crafting-crafting-panel-data-crafting-category-wb-accent-soft);
+    --dls-crystal:var(--wb-crafting-crafting-panel-data-crafting-category-dls-crystal); --dls-crystal-rgb:255,148,64;
+    --dls-crystal-deep:var(--wb-crafting-crafting-panel-data-crafting-category-dls-crystal-deep); --dls-crystal-dim:var(--wb-crafting-crafting-panel-data-crafting-category-dls-crystal-dim);
+    --dls-crystal-bright:var(--wb-crafting-crafting-panel-data-crafting-category-dls-crystal-bright);
+    --dls-crystal-soft:var(--wb-crafting-crafting-panel-data-crafting-category-dls-crystal-soft);
+    --dls-crystal-faint:var(--wb-crafting-crafting-panel-data-crafting-category-dls-crystal-faint);
+    --dls-glow:var(--wb-crafting-crafting-panel-data-crafting-category-dls-glow);
+    --wb-scrollbar-track:var(--wb-crafting-crafting-panel-data-crafting-category-wb-scrollbar-track); --wb-scrollbar-thumb:var(--wb-crafting-crafting-panel-data-crafting-category-wb-scrollbar-thumb);
+    --wb-scrollbar-thumb-border:var(--wb-crafting-crafting-panel-data-crafting-category-wb-scrollbar-thumb-border); --wb-scrollbar-thumb-hover:var(--wb-crafting-crafting-panel-data-crafting-category-wb-scrollbar-thumb-hover);
 }
 .crafting-panel[data-crafting-category="烹饪"] .crafting-recipe-card { border-radius:10px; }
 .crafting-panel[data-crafting-category="烹饪"] .crafting-output-card { border-radius:10px; }
 
 /* 化学生产：实验台玻璃青绿；签名 = 细角方卡 */
 .crafting-panel[data-crafting-category="化学生产"] {
-    --wb-bg:#07130e; --wb-surface:#0c1a14; --wb-panel:#0a1510;
-    --wb-line:#2a4a3a; --wb-line-soft:#1e3a2c; --wb-line-strong:#3f7a58;
-    --wb-text:#d8f2e4; --wb-muted:#7fa893;
-    --wb-accent:#3fd68f; --wb-accent-soft:rgba(63,214,143,.16);
-    --dls-crystal:#3fd68f; --dls-crystal-rgb:63,214,143;
-    --dls-crystal-deep:#1e9960; --dls-crystal-dim:#14532f;
-    --dls-crystal-bright:#8fecc0;
-    --dls-crystal-soft:rgba(63,214,143,.12);
-    --dls-crystal-faint:rgba(63,214,143,.45);
-    --dls-glow:rgba(63,214,143,.18);
-    --wb-scrollbar-track:#081510; --wb-scrollbar-thumb:#1d4a34;
-    --wb-scrollbar-thumb-border:#2d7050; --wb-scrollbar-thumb-hover:#2d7050;
+    --wb-bg:var(--wb-crafting-crafting-panel-data-crafting-category-wb-bg-2); --wb-surface:var(--wb-crafting-crafting-panel-data-crafting-category-wb-surface-2); --wb-panel:var(--wb-crafting-crafting-panel-data-crafting-category-wb-panel-2);
+    --wb-line:var(--wb-crafting-crafting-panel-data-crafting-category-wb-line-2); --wb-line-soft:var(--wb-crafting-crafting-panel-data-crafting-category-wb-line-soft-2); --wb-line-strong:var(--wb-crafting-crafting-panel-data-crafting-category-wb-line-strong-2);
+    --wb-text:var(--wb-crafting-crafting-panel-data-crafting-category-wb-text-2); --wb-muted:var(--wb-crafting-crafting-panel-data-crafting-category-wb-muted-2);
+    --wb-accent:var(--wb-crafting-crafting-panel-data-crafting-category-wb-accent-2); --wb-accent-soft:var(--wb-crafting-crafting-panel-data-crafting-category-wb-accent-soft-2);
+    --dls-crystal:var(--wb-crafting-crafting-panel-data-crafting-category-dls-crystal-2); --dls-crystal-rgb:63,214,143;
+    --dls-crystal-deep:var(--wb-crafting-crafting-panel-data-crafting-category-dls-crystal-deep-2); --dls-crystal-dim:var(--wb-crafting-crafting-panel-data-crafting-category-dls-crystal-dim-2);
+    --dls-crystal-bright:var(--wb-crafting-crafting-panel-data-crafting-category-dls-crystal-bright-2);
+    --dls-crystal-soft:var(--wb-crafting-crafting-panel-data-crafting-category-dls-crystal-soft-2);
+    --dls-crystal-faint:var(--wb-crafting-crafting-panel-data-crafting-category-dls-crystal-faint-2);
+    --dls-glow:var(--wb-crafting-crafting-panel-data-crafting-category-dls-glow-2);
+    --wb-scrollbar-track:var(--wb-crafting-crafting-panel-data-crafting-category-wb-scrollbar-track-2); --wb-scrollbar-thumb:var(--wb-crafting-crafting-panel-data-crafting-category-wb-scrollbar-thumb-2);
+    --wb-scrollbar-thumb-border:var(--wb-crafting-crafting-panel-data-crafting-category-wb-scrollbar-thumb-border-2); --wb-scrollbar-thumb-hover:var(--wb-crafting-crafting-panel-data-crafting-category-wb-scrollbar-thumb-hover-2);
 }
 .crafting-panel[data-crafting-category="化学生产"] .crafting-recipe-card { border-radius:2px; }
 
 /* 铁枪会：锻造厂暗铁 + 炉膛橙红；签名 = 斜切角（金属件） */
 .crafting-panel[data-crafting-category="铁枪会"] {
-    --wb-bg:#0d0908; --wb-surface:#171008; --wb-panel:#120c08;
-    --wb-line:#4a3026; --wb-line-soft:#38241c; --wb-line-strong:#7a4a34;
-    --wb-text:#f0e2d2; --wb-muted:#a3896f;
-    --wb-accent:#ff6a33; --wb-accent-soft:rgba(255,106,51,.16);
-    --dls-crystal:#ff7a3d; --dls-crystal-rgb:255,122,61;
-    --dls-crystal-deep:#c24314; --dls-crystal-dim:#4a1e0e;
-    --dls-crystal-bright:#ffb08a;
-    --dls-crystal-soft:rgba(255,122,61,.12);
-    --dls-crystal-faint:rgba(255,122,61,.45);
-    --dls-glow:rgba(255,122,61,.2);
-    --wb-scrollbar-track:#120b08; --wb-scrollbar-thumb:#5c3220;
-    --wb-scrollbar-thumb-border:#8a4c30; --wb-scrollbar-thumb-hover:#8a4c30;
+    --wb-bg:var(--wb-crafting-crafting-panel-data-crafting-category-wb-bg-3); --wb-surface:var(--wb-crafting-crafting-panel-data-crafting-category-wb-surface-3); --wb-panel:var(--wb-crafting-crafting-panel-data-crafting-category-wb-panel-3);
+    --wb-line:var(--wb-crafting-crafting-panel-data-crafting-category-wb-line-3); --wb-line-soft:var(--wb-crafting-crafting-panel-data-crafting-category-wb-line-soft-3); --wb-line-strong:var(--wb-crafting-crafting-panel-data-crafting-category-wb-line-strong-3);
+    --wb-text:var(--wb-crafting-crafting-panel-data-crafting-category-wb-text-3); --wb-muted:var(--wb-crafting-crafting-panel-data-crafting-category-wb-muted-3);
+    --wb-accent:var(--wb-crafting-crafting-panel-data-crafting-category-wb-accent-3); --wb-accent-soft:var(--wb-crafting-crafting-panel-data-crafting-category-wb-accent-soft-3);
+    --dls-crystal:var(--wb-crafting-crafting-panel-data-crafting-category-dls-crystal-3); --dls-crystal-rgb:255,122,61;
+    --dls-crystal-deep:var(--wb-crafting-crafting-panel-data-crafting-category-dls-crystal-deep-3); --dls-crystal-dim:var(--wb-crafting-crafting-panel-data-crafting-category-dls-crystal-dim-3);
+    --dls-crystal-bright:var(--wb-crafting-crafting-panel-data-crafting-category-dls-crystal-bright-3);
+    --dls-crystal-soft:var(--wb-crafting-crafting-panel-data-crafting-category-dls-crystal-soft-3);
+    --dls-crystal-faint:var(--wb-crafting-crafting-panel-data-crafting-category-dls-crystal-faint-3);
+    --dls-glow:var(--wb-crafting-crafting-panel-data-crafting-category-dls-glow-3);
+    --wb-scrollbar-track:var(--wb-crafting-crafting-panel-data-crafting-category-wb-scrollbar-track-3); --wb-scrollbar-thumb:var(--wb-crafting-crafting-panel-data-crafting-category-wb-scrollbar-thumb-3);
+    --wb-scrollbar-thumb-border:var(--wb-crafting-crafting-panel-data-crafting-category-wb-scrollbar-thumb-border-3); --wb-scrollbar-thumb-hover:var(--wb-crafting-crafting-panel-data-crafting-category-wb-scrollbar-thumb-hover-3);
 }
 .crafting-panel[data-crafting-category="铁枪会"] .crafting-recipe-card {
     border-radius:0;
@@ -1395,153 +1395,153 @@
 
 /* 属性武器：秘能紫；签名 = 略圆的"法器"卡 */
 .crafting-panel[data-crafting-category="属性武器"] {
-    --wb-bg:#0e0a14; --wb-surface:#150f1d; --wb-panel:#120c18;
-    --wb-line:#3a2f4d; --wb-line-soft:#2c2438; --wb-line-strong:#574a75;
-    --wb-text:#ece5f7; --wb-muted:#9489b0;
-    --wb-accent:#9d5cff; --wb-accent-soft:rgba(157,92,255,.16);
-    --dls-crystal:#a86fff; --dls-crystal-rgb:168,111,255;
-    --dls-crystal-deep:#6b3ecc; --dls-crystal-dim:#341f5c;
-    --dls-crystal-bright:#c9a8ff;
-    --dls-crystal-soft:rgba(168,111,255,.12);
-    --dls-crystal-faint:rgba(168,111,255,.45);
-    --dls-glow:rgba(168,111,255,.18);
-    --wb-scrollbar-track:#100b18; --wb-scrollbar-thumb:#463466;
-    --wb-scrollbar-thumb-border:#66508c; --wb-scrollbar-thumb-hover:#66508c;
+    --wb-bg:var(--wb-crafting-crafting-panel-data-crafting-category-wb-bg-4); --wb-surface:var(--wb-crafting-crafting-panel-data-crafting-category-wb-surface-4); --wb-panel:var(--wb-crafting-crafting-panel-data-crafting-category-wb-panel-4);
+    --wb-line:var(--wb-crafting-crafting-panel-data-crafting-category-wb-line-4); --wb-line-soft:var(--wb-crafting-crafting-panel-data-crafting-category-wb-line-soft-4); --wb-line-strong:var(--wb-crafting-crafting-panel-data-crafting-category-wb-line-strong-4);
+    --wb-text:var(--wb-crafting-crafting-panel-data-crafting-category-wb-text-4); --wb-muted:var(--wb-crafting-crafting-panel-data-crafting-category-wb-muted-4);
+    --wb-accent:var(--wb-crafting-crafting-panel-data-crafting-category-wb-accent-4); --wb-accent-soft:var(--wb-crafting-crafting-panel-data-crafting-category-wb-accent-soft-4);
+    --dls-crystal:var(--wb-crafting-crafting-panel-data-crafting-category-dls-crystal-4); --dls-crystal-rgb:168,111,255;
+    --dls-crystal-deep:var(--wb-crafting-crafting-panel-data-crafting-category-dls-crystal-deep-4); --dls-crystal-dim:var(--wb-crafting-crafting-panel-data-crafting-category-dls-crystal-dim-4);
+    --dls-crystal-bright:var(--wb-crafting-crafting-panel-data-crafting-category-dls-crystal-bright-4);
+    --dls-crystal-soft:var(--wb-crafting-crafting-panel-data-crafting-category-dls-crystal-soft-4);
+    --dls-crystal-faint:var(--wb-crafting-crafting-panel-data-crafting-category-dls-crystal-faint-4);
+    --dls-glow:var(--wb-crafting-crafting-panel-data-crafting-category-dls-glow-4);
+    --wb-scrollbar-track:var(--wb-crafting-crafting-panel-data-crafting-category-wb-scrollbar-track-4); --wb-scrollbar-thumb:var(--wb-crafting-crafting-panel-data-crafting-category-wb-scrollbar-thumb-4);
+    --wb-scrollbar-thumb-border:var(--wb-crafting-crafting-panel-data-crafting-category-wb-scrollbar-thumb-border-4); --wb-scrollbar-thumb-hover:var(--wb-crafting-crafting-panel-data-crafting-category-wb-scrollbar-thumb-hover-4);
 }
 .crafting-panel[data-crafting-category="属性武器"] .crafting-recipe-card { border-radius:8px 2px 8px 2px; }
 
 /* 武器合成：军械蓝图蓝；签名 = 图纸直角卡 */
 .crafting-panel[data-crafting-category="武器合成"] {
-    --wb-bg:#08101a; --wb-surface:#0d1621; --wb-panel:#0a131c;
-    --wb-line:#26405a; --wb-line-soft:#1c3044; --wb-line-strong:#3f6080;
-    --wb-text:#dde9f5; --wb-muted:#7d97ad;
-    --wb-accent:#58a6ff; --wb-accent-soft:rgba(88,166,255,.16);
-    --dls-crystal:#58a6ff; --dls-crystal-rgb:88,166,255;
-    --dls-crystal-deep:#2e72cc; --dls-crystal-dim:#1a3a5c;
-    --dls-crystal-bright:#9ccaff;
-    --dls-crystal-soft:rgba(88,166,255,.12);
-    --dls-crystal-faint:rgba(88,166,255,.45);
-    --dls-glow:rgba(88,166,255,.18);
-    --wb-scrollbar-track:#0a1420; --wb-scrollbar-thumb:#2a4a6a;
-    --wb-scrollbar-thumb-border:#3f6a94; --wb-scrollbar-thumb-hover:#3f6a94;
+    --wb-bg:var(--wb-crafting-crafting-panel-data-crafting-category-wb-bg-5); --wb-surface:var(--wb-crafting-crafting-panel-data-crafting-category-wb-surface-5); --wb-panel:var(--wb-crafting-crafting-panel-data-crafting-category-wb-panel-5);
+    --wb-line:var(--wb-crafting-crafting-panel-data-crafting-category-wb-line-5); --wb-line-soft:var(--wb-crafting-crafting-panel-data-crafting-category-wb-line-soft-5); --wb-line-strong:var(--wb-crafting-crafting-panel-data-crafting-category-wb-line-strong-5);
+    --wb-text:var(--wb-crafting-crafting-panel-data-crafting-category-wb-text-5); --wb-muted:var(--wb-crafting-crafting-panel-data-crafting-category-wb-muted-5);
+    --wb-accent:var(--wb-crafting-crafting-panel-data-crafting-category-wb-accent-5); --wb-accent-soft:var(--wb-crafting-crafting-panel-data-crafting-category-wb-accent-soft-5);
+    --dls-crystal:var(--wb-crafting-crafting-panel-data-crafting-category-dls-crystal-5); --dls-crystal-rgb:88,166,255;
+    --dls-crystal-deep:var(--wb-crafting-crafting-panel-data-crafting-category-dls-crystal-deep-5); --dls-crystal-dim:var(--wb-crafting-crafting-panel-data-crafting-category-dls-crystal-dim-5);
+    --dls-crystal-bright:var(--wb-crafting-crafting-panel-data-crafting-category-dls-crystal-bright-5);
+    --dls-crystal-soft:var(--wb-crafting-crafting-panel-data-crafting-category-dls-crystal-soft-5);
+    --dls-crystal-faint:var(--wb-crafting-crafting-panel-data-crafting-category-dls-crystal-faint-5);
+    --dls-glow:var(--wb-crafting-crafting-panel-data-crafting-category-dls-glow-5);
+    --wb-scrollbar-track:var(--wb-crafting-crafting-panel-data-crafting-category-wb-scrollbar-track-5); --wb-scrollbar-thumb:var(--wb-crafting-crafting-panel-data-crafting-category-wb-scrollbar-thumb-5);
+    --wb-scrollbar-thumb-border:var(--wb-crafting-crafting-panel-data-crafting-category-wb-scrollbar-thumb-border-5); --wb-scrollbar-thumb-hover:var(--wb-crafting-crafting-panel-data-crafting-category-wb-scrollbar-thumb-hover-5);
 }
 .crafting-panel[data-crafting-category="武器合成"] .crafting-recipe-card { border-radius:0; }
 
 /* 饰品合成：金工暖金；签名 = 圆角+细描边 */
 .crafting-panel[data-crafting-category="饰品合成"] {
-    --wb-bg:#12100a; --wb-surface:#1a1610; --wb-panel:#151109;
-    --wb-line:#4d4230; --wb-line-soft:#3a3224; --wb-line-strong:#7a6a48;
-    --wb-text:#f2ecd8; --wb-muted:#a89c80;
-    --wb-accent:#d9a94e; --wb-accent-soft:rgba(217,169,78,.16);
-    --dls-crystal:#e5b95c; --dls-crystal-rgb:229,185,92;
-    --dls-crystal-deep:#a87e28; --dls-crystal-dim:#4d3d17;
-    --dls-crystal-bright:#f2d795;
-    --dls-crystal-soft:rgba(229,185,92,.12);
-    --dls-crystal-faint:rgba(229,185,92,.45);
-    --dls-glow:rgba(229,185,92,.18);
-    --wb-scrollbar-track:#14100a; --wb-scrollbar-thumb:#6a5836;
-    --wb-scrollbar-thumb-border:#947e4c; --wb-scrollbar-thumb-hover:#947e4c;
+    --wb-bg:var(--wb-crafting-crafting-panel-data-crafting-category-wb-bg-6); --wb-surface:var(--wb-crafting-crafting-panel-data-crafting-category-wb-surface-6); --wb-panel:var(--wb-crafting-crafting-panel-data-crafting-category-wb-panel-6);
+    --wb-line:var(--wb-crafting-crafting-panel-data-crafting-category-wb-line-6); --wb-line-soft:var(--wb-crafting-crafting-panel-data-crafting-category-wb-line-soft-6); --wb-line-strong:var(--wb-crafting-crafting-panel-data-crafting-category-wb-line-strong-6);
+    --wb-text:var(--wb-crafting-crafting-panel-data-crafting-category-wb-text-6); --wb-muted:var(--wb-crafting-crafting-panel-data-crafting-category-wb-muted-6);
+    --wb-accent:var(--wb-crafting-crafting-panel-data-crafting-category-wb-accent-6); --wb-accent-soft:var(--wb-crafting-crafting-panel-data-crafting-category-wb-accent-soft-6);
+    --dls-crystal:var(--wb-crafting-crafting-panel-data-crafting-category-dls-crystal-6); --dls-crystal-rgb:229,185,92;
+    --dls-crystal-deep:var(--wb-crafting-crafting-panel-data-crafting-category-dls-crystal-deep-6); --dls-crystal-dim:var(--wb-crafting-crafting-panel-data-crafting-category-dls-crystal-dim-6);
+    --dls-crystal-bright:var(--wb-crafting-crafting-panel-data-crafting-category-dls-crystal-bright-6);
+    --dls-crystal-soft:var(--wb-crafting-crafting-panel-data-crafting-category-dls-crystal-soft-6);
+    --dls-crystal-faint:var(--wb-crafting-crafting-panel-data-crafting-category-dls-crystal-faint-6);
+    --dls-glow:var(--wb-crafting-crafting-panel-data-crafting-category-dls-glow-6);
+    --wb-scrollbar-track:var(--wb-crafting-crafting-panel-data-crafting-category-wb-scrollbar-track-6); --wb-scrollbar-thumb:var(--wb-crafting-crafting-panel-data-crafting-category-wb-scrollbar-thumb-6);
+    --wb-scrollbar-thumb-border:var(--wb-crafting-crafting-panel-data-crafting-category-wb-scrollbar-thumb-border-6); --wb-scrollbar-thumb-hover:var(--wb-crafting-crafting-panel-data-crafting-category-wb-scrollbar-thumb-hover-6);
 }
 .crafting-panel[data-crafting-category="饰品合成"] .crafting-recipe-card { border-radius:12px; }
 
 /* 进阶防具：冷钢青灰；签名 = 直角硬朗卡 */
 .crafting-panel[data-crafting-category="进阶防具"] {
-    --wb-bg:#0a0f14; --wb-surface:#111820; --wb-panel:#0e141a;
-    --wb-line:#2c3d4d; --wb-line-soft:#202e3a; --wb-line-strong:#46607a;
-    --wb-text:#dfe8f0; --wb-muted:#8298a8;
-    --wb-accent:#6f9fd8; --wb-accent-soft:rgba(111,159,216,.16);
-    --dls-crystal:#7fabe0; --dls-crystal-rgb:127,171,224;
-    --dls-crystal-deep:#3d6fa8; --dls-crystal-dim:#1f3a52;
-    --dls-crystal-bright:#adccec;
-    --dls-crystal-soft:rgba(127,171,224,.12);
-    --dls-crystal-faint:rgba(127,171,224,.45);
-    --dls-glow:rgba(127,171,224,.18);
-    --wb-scrollbar-track:#0c1218; --wb-scrollbar-thumb:#2e4356;
-    --wb-scrollbar-thumb-border:#46627c; --wb-scrollbar-thumb-hover:#46627c;
+    --wb-bg:var(--wb-crafting-crafting-panel-data-crafting-category-wb-bg-7); --wb-surface:var(--wb-crafting-crafting-panel-data-crafting-category-wb-surface-7); --wb-panel:var(--wb-crafting-crafting-panel-data-crafting-category-wb-panel-7);
+    --wb-line:var(--wb-crafting-crafting-panel-data-crafting-category-wb-line-7); --wb-line-soft:var(--wb-crafting-crafting-panel-data-crafting-category-wb-line-soft-7); --wb-line-strong:var(--wb-crafting-crafting-panel-data-crafting-category-wb-line-strong-7);
+    --wb-text:var(--wb-crafting-crafting-panel-data-crafting-category-wb-text-7); --wb-muted:var(--wb-crafting-crafting-panel-data-crafting-category-wb-muted-7);
+    --wb-accent:var(--wb-crafting-crafting-panel-data-crafting-category-wb-accent-7); --wb-accent-soft:var(--wb-crafting-crafting-panel-data-crafting-category-wb-accent-soft-7);
+    --dls-crystal:var(--wb-crafting-crafting-panel-data-crafting-category-dls-crystal-7); --dls-crystal-rgb:127,171,224;
+    --dls-crystal-deep:var(--wb-crafting-crafting-panel-data-crafting-category-dls-crystal-deep-7); --dls-crystal-dim:var(--wb-crafting-crafting-panel-data-crafting-category-dls-crystal-dim-7);
+    --dls-crystal-bright:var(--wb-crafting-crafting-panel-data-crafting-category-dls-crystal-bright-7);
+    --dls-crystal-soft:var(--wb-crafting-crafting-panel-data-crafting-category-dls-crystal-soft-7);
+    --dls-crystal-faint:var(--wb-crafting-crafting-panel-data-crafting-category-dls-crystal-faint-7);
+    --dls-glow:var(--wb-crafting-crafting-panel-data-crafting-category-dls-glow-7);
+    --wb-scrollbar-track:var(--wb-crafting-crafting-panel-data-crafting-category-wb-scrollbar-track-7); --wb-scrollbar-thumb:var(--wb-crafting-crafting-panel-data-crafting-category-wb-scrollbar-thumb-7);
+    --wb-scrollbar-thumb-border:var(--wb-crafting-crafting-panel-data-crafting-category-wb-scrollbar-thumb-border-7); --wb-scrollbar-thumb-hover:var(--wb-crafting-crafting-panel-data-crafting-category-wb-scrollbar-thumb-hover-7);
 }
 .crafting-panel[data-crafting-category="进阶防具"] .crafting-recipe-card { border-radius:0; }
 
 /* 基础防具：鞣革棕褐；签名 = 柔和圆角 */
 .crafting-panel[data-crafting-category="基础防具"] {
-    --wb-bg:#110d09; --wb-surface:#1a1410; --wb-panel:#140f0b;
-    --wb-line:#453526; --wb-line-soft:#342920; --wb-line-strong:#6a5038;
-    --wb-text:#ece2d2; --wb-muted:#9c8a72;
-    --wb-accent:#b8895a; --wb-accent-soft:rgba(184,137,90,.16);
-    --dls-crystal:#c89a68; --dls-crystal-rgb:200,154,104;
-    --dls-crystal-deep:#8a6238; --dls-crystal-dim:#453322;
-    --dls-crystal-bright:#ddb98a;
-    --dls-crystal-soft:rgba(200,154,104,.12);
-    --dls-crystal-faint:rgba(200,154,104,.45);
-    --dls-glow:rgba(200,154,104,.18);
-    --wb-scrollbar-track:#130e0a; --wb-scrollbar-thumb:#57412c;
-    --wb-scrollbar-thumb-border:#7d5f42; --wb-scrollbar-thumb-hover:#7d5f42;
+    --wb-bg:var(--wb-crafting-crafting-panel-data-crafting-category-wb-bg-8); --wb-surface:var(--wb-crafting-crafting-panel-data-crafting-category-wb-surface-8); --wb-panel:var(--wb-crafting-crafting-panel-data-crafting-category-wb-panel-8);
+    --wb-line:var(--wb-crafting-crafting-panel-data-crafting-category-wb-line-8); --wb-line-soft:var(--wb-crafting-crafting-panel-data-crafting-category-wb-line-soft-8); --wb-line-strong:var(--wb-crafting-crafting-panel-data-crafting-category-wb-line-strong-8);
+    --wb-text:var(--wb-crafting-crafting-panel-data-crafting-category-wb-text-8); --wb-muted:var(--wb-crafting-crafting-panel-data-crafting-category-wb-muted-8);
+    --wb-accent:var(--wb-crafting-crafting-panel-data-crafting-category-wb-accent-8); --wb-accent-soft:var(--wb-crafting-crafting-panel-data-crafting-category-wb-accent-soft-8);
+    --dls-crystal:var(--wb-crafting-crafting-panel-data-crafting-category-dls-crystal-8); --dls-crystal-rgb:200,154,104;
+    --dls-crystal-deep:var(--wb-crafting-crafting-panel-data-crafting-category-dls-crystal-deep-8); --dls-crystal-dim:var(--wb-crafting-crafting-panel-data-crafting-category-dls-crystal-dim-8);
+    --dls-crystal-bright:var(--wb-crafting-crafting-panel-data-crafting-category-dls-crystal-bright-8);
+    --dls-crystal-soft:var(--wb-crafting-crafting-panel-data-crafting-category-dls-crystal-soft-8);
+    --dls-crystal-faint:var(--wb-crafting-crafting-panel-data-crafting-category-dls-crystal-faint-8);
+    --dls-glow:var(--wb-crafting-crafting-panel-data-crafting-category-dls-glow-8);
+    --wb-scrollbar-track:var(--wb-crafting-crafting-panel-data-crafting-category-wb-scrollbar-track-8); --wb-scrollbar-thumb:var(--wb-crafting-crafting-panel-data-crafting-category-wb-scrollbar-thumb-8);
+    --wb-scrollbar-thumb-border:var(--wb-crafting-crafting-panel-data-crafting-category-wb-scrollbar-thumb-border-8); --wb-scrollbar-thumb-hover:var(--wb-crafting-crafting-panel-data-crafting-category-wb-scrollbar-thumb-hover-8);
 }
 .crafting-panel[data-crafting-category="基础防具"] .crafting-recipe-card { border-radius:7px; }
 
 /* 公社防具：公社军绿/卡其；签名 = 朴素方卡 */
 .crafting-panel[data-crafting-category="公社防具"] {
-    --wb-bg:#0d110a; --wb-surface:#141a10; --wb-panel:#10150c;
-    --wb-line:#38452c; --wb-line-soft:#2a3522; --wb-line-strong:#566a42;
-    --wb-text:#e4ead6; --wb-muted:#93a07d;
-    --wb-accent:#93a05c; --wb-accent-soft:rgba(147,160,92,.16);
-    --dls-crystal:#a5b56a; --dls-crystal-rgb:165,181,106;
-    --dls-crystal-deep:#6a7c3a; --dls-crystal-dim:#33401f;
-    --dls-crystal-bright:#c8d695;
-    --dls-crystal-soft:rgba(165,181,106,.12);
-    --dls-crystal-faint:rgba(165,181,106,.45);
-    --dls-glow:rgba(165,181,106,.18);
-    --wb-scrollbar-track:#0f130b; --wb-scrollbar-thumb:#41502e;
-    --wb-scrollbar-thumb-border:#5d7046; --wb-scrollbar-thumb-hover:#5d7046;
+    --wb-bg:var(--wb-crafting-crafting-panel-data-crafting-category-wb-bg-9); --wb-surface:var(--wb-crafting-crafting-panel-data-crafting-category-wb-surface-9); --wb-panel:var(--wb-crafting-crafting-panel-data-crafting-category-wb-panel-9);
+    --wb-line:var(--wb-crafting-crafting-panel-data-crafting-category-wb-line-9); --wb-line-soft:var(--wb-crafting-crafting-panel-data-crafting-category-wb-line-soft-9); --wb-line-strong:var(--wb-crafting-crafting-panel-data-crafting-category-wb-line-strong-9);
+    --wb-text:var(--wb-crafting-crafting-panel-data-crafting-category-wb-text-9); --wb-muted:var(--wb-crafting-crafting-panel-data-crafting-category-wb-muted-9);
+    --wb-accent:var(--wb-crafting-crafting-panel-data-crafting-category-wb-accent-9); --wb-accent-soft:var(--wb-crafting-crafting-panel-data-crafting-category-wb-accent-soft-9);
+    --dls-crystal:var(--wb-crafting-crafting-panel-data-crafting-category-dls-crystal-9); --dls-crystal-rgb:165,181,106;
+    --dls-crystal-deep:var(--wb-crafting-crafting-panel-data-crafting-category-dls-crystal-deep-9); --dls-crystal-dim:var(--wb-crafting-crafting-panel-data-crafting-category-dls-crystal-dim-9);
+    --dls-crystal-bright:var(--wb-crafting-crafting-panel-data-crafting-category-dls-crystal-bright-9);
+    --dls-crystal-soft:var(--wb-crafting-crafting-panel-data-crafting-category-dls-crystal-soft-9);
+    --dls-crystal-faint:var(--wb-crafting-crafting-panel-data-crafting-category-dls-crystal-faint-9);
+    --dls-glow:var(--wb-crafting-crafting-panel-data-crafting-category-dls-glow-9);
+    --wb-scrollbar-track:var(--wb-crafting-crafting-panel-data-crafting-category-wb-scrollbar-track-9); --wb-scrollbar-thumb:var(--wb-crafting-crafting-panel-data-crafting-category-wb-scrollbar-thumb-9);
+    --wb-scrollbar-thumb-border:var(--wb-crafting-crafting-panel-data-crafting-category-wb-scrollbar-thumb-border-9); --wb-scrollbar-thumb-hover:var(--wb-crafting-crafting-panel-data-crafting-category-wb-scrollbar-thumb-hover-9);
 }
 .crafting-panel[data-crafting-category="公社防具"] .crafting-recipe-card { border-radius:3px; }
 
 /* 黑白契约：高对比黑白契约纸；签名 = 全直角 + 无色调 */
 .crafting-panel[data-crafting-category="黑白契约"] {
-    --wb-bg:#070708; --wb-surface:#111112; --wb-panel:#0d0d0e;
-    --wb-line:#3d3d40; --wb-line-soft:#2a2a2c; --wb-line-strong:#58585c;
-    --wb-text:#ececec; --wb-muted:#8e8e92;
-    --wb-accent:#e8e8e8; --wb-accent-soft:rgba(232,232,232,.14);
-    --dls-crystal:#e8e8e8; --dls-crystal-rgb:232,232,232;
-    --dls-crystal-deep:#a8a8a8; --dls-crystal-dim:#4a4a4c;
-    --dls-crystal-bright:#ffffff;
-    --dls-crystal-soft:rgba(232,232,232,.1);
-    --dls-crystal-faint:rgba(232,232,232,.42);
-    --dls-glow:rgba(232,232,232,.14);
-    --wb-scrollbar-track:#0c0c0e; --wb-scrollbar-thumb:#43434a;
-    --wb-scrollbar-thumb-border:#5e5e66; --wb-scrollbar-thumb-hover:#5e5e66;
+    --wb-bg:var(--wb-crafting-crafting-panel-data-crafting-category-wb-bg-10); --wb-surface:var(--wb-crafting-crafting-panel-data-crafting-category-wb-surface-10); --wb-panel:var(--wb-crafting-crafting-panel-data-crafting-category-wb-panel-10);
+    --wb-line:var(--wb-crafting-crafting-panel-data-crafting-category-wb-line-10); --wb-line-soft:var(--wb-crafting-crafting-panel-data-crafting-category-wb-line-soft-10); --wb-line-strong:var(--wb-crafting-crafting-panel-data-crafting-category-wb-line-strong-10);
+    --wb-text:var(--wb-crafting-crafting-panel-data-crafting-category-wb-text-10); --wb-muted:var(--wb-crafting-crafting-panel-data-crafting-category-wb-muted-10);
+    --wb-accent:var(--wb-crafting-crafting-panel-data-crafting-category-wb-accent-10); --wb-accent-soft:var(--wb-crafting-crafting-panel-data-crafting-category-wb-accent-soft-10);
+    --dls-crystal:var(--wb-crafting-crafting-panel-data-crafting-category-dls-crystal-10); --dls-crystal-rgb:232,232,232;
+    --dls-crystal-deep:var(--wb-crafting-crafting-panel-data-crafting-category-dls-crystal-deep-10); --dls-crystal-dim:var(--wb-crafting-crafting-panel-data-crafting-category-dls-crystal-dim-10);
+    --dls-crystal-bright:var(--wb-crafting-crafting-panel-data-crafting-category-dls-crystal-bright-10);
+    --dls-crystal-soft:var(--wb-crafting-crafting-panel-data-crafting-category-dls-crystal-soft-10);
+    --dls-crystal-faint:var(--wb-crafting-crafting-panel-data-crafting-category-dls-crystal-faint-10);
+    --dls-glow:var(--wb-crafting-crafting-panel-data-crafting-category-dls-glow-10);
+    --wb-scrollbar-track:var(--wb-crafting-crafting-panel-data-crafting-category-wb-scrollbar-track-10); --wb-scrollbar-thumb:var(--wb-crafting-crafting-panel-data-crafting-category-wb-scrollbar-thumb-10);
+    --wb-scrollbar-thumb-border:var(--wb-crafting-crafting-panel-data-crafting-category-wb-scrollbar-thumb-border-10); --wb-scrollbar-thumb-hover:var(--wb-crafting-crafting-panel-data-crafting-category-wb-scrollbar-thumb-hover-10);
 }
 .crafting-panel[data-crafting-category="黑白契约"] .crafting-recipe-card { border-radius:0; }
 
 /* 插件合成：磷光终端绿；签名 = 窄圆角电子件 */
 .crafting-panel[data-crafting-category="插件合成"] {
-    --wb-bg:#050e08; --wb-surface:#0b1810; --wb-panel:#08140c;
-    --wb-line:#1e4a2e; --wb-line-soft:#163825; --wb-line-strong:#2f7a4c;
-    --wb-text:#d4f2dd; --wb-muted:#6fa884;
-    --wb-accent:#4ade80; --wb-accent-soft:rgba(74,222,128,.16);
-    --dls-crystal:#4ade80; --dls-crystal-rgb:74,222,128;
-    --dls-crystal-deep:#1e9e52; --dls-crystal-dim:#124d2b;
-    --dls-crystal-bright:#8cf2b2;
-    --dls-crystal-soft:rgba(74,222,128,.12);
-    --dls-crystal-faint:rgba(74,222,128,.45);
-    --dls-glow:rgba(74,222,128,.18);
-    --wb-scrollbar-track:#071208; --wb-scrollbar-thumb:#1e5232;
-    --wb-scrollbar-thumb-border:#2e7a4e; --wb-scrollbar-thumb-hover:#2e7a4e;
+    --wb-bg:var(--wb-crafting-crafting-panel-data-crafting-category-wb-bg-11); --wb-surface:var(--wb-crafting-crafting-panel-data-crafting-category-wb-surface-11); --wb-panel:var(--wb-crafting-crafting-panel-data-crafting-category-wb-panel-11);
+    --wb-line:var(--wb-crafting-crafting-panel-data-crafting-category-wb-line-11); --wb-line-soft:var(--wb-crafting-crafting-panel-data-crafting-category-wb-line-soft-11); --wb-line-strong:var(--wb-crafting-crafting-panel-data-crafting-category-wb-line-strong-11);
+    --wb-text:var(--wb-crafting-crafting-panel-data-crafting-category-wb-text-11); --wb-muted:var(--wb-crafting-crafting-panel-data-crafting-category-wb-muted-11);
+    --wb-accent:var(--wb-crafting-crafting-panel-data-crafting-category-wb-accent-11); --wb-accent-soft:var(--wb-crafting-crafting-panel-data-crafting-category-wb-accent-soft-11);
+    --dls-crystal:var(--wb-crafting-crafting-panel-data-crafting-category-dls-crystal-11); --dls-crystal-rgb:74,222,128;
+    --dls-crystal-deep:var(--wb-crafting-crafting-panel-data-crafting-category-dls-crystal-deep-11); --dls-crystal-dim:var(--wb-crafting-crafting-panel-data-crafting-category-dls-crystal-dim-11);
+    --dls-crystal-bright:var(--wb-crafting-crafting-panel-data-crafting-category-dls-crystal-bright-11);
+    --dls-crystal-soft:var(--wb-crafting-crafting-panel-data-crafting-category-dls-crystal-soft-11);
+    --dls-crystal-faint:var(--wb-crafting-crafting-panel-data-crafting-category-dls-crystal-faint-11);
+    --dls-glow:var(--wb-crafting-crafting-panel-data-crafting-category-dls-glow-11);
+    --wb-scrollbar-track:var(--wb-crafting-crafting-panel-data-crafting-category-wb-scrollbar-track-11); --wb-scrollbar-thumb:var(--wb-crafting-crafting-panel-data-crafting-category-wb-scrollbar-thumb-11);
+    --wb-scrollbar-thumb-border:var(--wb-crafting-crafting-panel-data-crafting-category-wb-scrollbar-thumb-border-11); --wb-scrollbar-thumb-hover:var(--wb-crafting-crafting-panel-data-crafting-category-wb-scrollbar-thumb-hover-11);
 }
 .crafting-panel[data-crafting-category="插件合成"] .crafting-recipe-card { border-radius:4px; }
 
 /* 大学装备：学院海军蓝 + 羊皮纸文字 */
 .crafting-panel[data-crafting-category="大学装备"] {
-    --wb-bg:#0a1018; --wb-surface:#101724; --wb-panel:#0d1420;
-    --wb-line:#2c3d5c; --wb-line-soft:#202c44; --wb-line-strong:#46608a;
-    --wb-text:#e8e2d0; --wb-muted:#8a94a8;
-    --wb-accent:#8fb4e8; --wb-accent-soft:rgba(143,180,232,.16);
-    --dls-crystal:#9cc0ec; --dls-crystal-rgb:156,192,236;
-    --dls-crystal-deep:#4d74b3; --dls-crystal-dim:#253c60;
-    --dls-crystal-bright:#c4d9f5;
-    --dls-crystal-soft:rgba(156,192,236,.12);
-    --dls-crystal-faint:rgba(156,192,236,.45);
-    --dls-glow:rgba(156,192,236,.18);
-    --wb-scrollbar-track:#0c121c; --wb-scrollbar-thumb:#33455f;
-    --wb-scrollbar-thumb-border:#4d658a; --wb-scrollbar-thumb-hover:#4d658a;
+    --wb-bg:var(--wb-crafting-crafting-panel-data-crafting-category-wb-bg-12); --wb-surface:var(--wb-crafting-crafting-panel-data-crafting-category-wb-surface-12); --wb-panel:var(--wb-crafting-crafting-panel-data-crafting-category-wb-panel-12);
+    --wb-line:var(--wb-crafting-crafting-panel-data-crafting-category-wb-line-12); --wb-line-soft:var(--wb-crafting-crafting-panel-data-crafting-category-wb-line-soft-12); --wb-line-strong:var(--wb-crafting-crafting-panel-data-crafting-category-wb-line-strong-12);
+    --wb-text:var(--wb-crafting-crafting-panel-data-crafting-category-wb-text-12); --wb-muted:var(--wb-crafting-crafting-panel-data-crafting-category-wb-muted-12);
+    --wb-accent:var(--wb-crafting-crafting-panel-data-crafting-category-wb-accent-12); --wb-accent-soft:var(--wb-crafting-crafting-panel-data-crafting-category-wb-accent-soft-12);
+    --dls-crystal:var(--wb-crafting-crafting-panel-data-crafting-category-dls-crystal-12); --dls-crystal-rgb:156,192,236;
+    --dls-crystal-deep:var(--wb-crafting-crafting-panel-data-crafting-category-dls-crystal-deep-12); --dls-crystal-dim:var(--wb-crafting-crafting-panel-data-crafting-category-dls-crystal-dim-12);
+    --dls-crystal-bright:var(--wb-crafting-crafting-panel-data-crafting-category-dls-crystal-bright-12);
+    --dls-crystal-soft:var(--wb-crafting-crafting-panel-data-crafting-category-dls-crystal-soft-12);
+    --dls-crystal-faint:var(--wb-crafting-crafting-panel-data-crafting-category-dls-crystal-faint-12);
+    --dls-glow:var(--wb-crafting-crafting-panel-data-crafting-category-dls-glow-12);
+    --wb-scrollbar-track:var(--wb-crafting-crafting-panel-data-crafting-category-wb-scrollbar-track-12); --wb-scrollbar-thumb:var(--wb-crafting-crafting-panel-data-crafting-category-wb-scrollbar-thumb-12);
+    --wb-scrollbar-thumb-border:var(--wb-crafting-crafting-panel-data-crafting-category-wb-scrollbar-thumb-border-12); --wb-scrollbar-thumb-hover:var(--wb-crafting-crafting-panel-data-crafting-category-wb-scrollbar-thumb-hover-12);
 }
 .crafting-panel[data-crafting-category="大学装备"] .crafting-recipe-card { border-radius:6px 6px 2px 2px; }
