@@ -444,6 +444,43 @@
             <SpeedRate>8</SpeedRate>
         </Skybox>
         <BGM>Feel It Still</BGM>
+        <Lights>
+            <Light>
+                <Key>rockpark-lamp-cyan-w</Key>
+                <Preset>street</Preset>
+                <X>563.4</X>
+                <Y>311.1</Y>
+                <Color>#B2FBED</Color>
+            </Light>
+            <Light>
+                <Key>rockpark-lamp-red-w</Key>
+                <Preset>street</Preset>
+                <X>714.6</X>
+                <Y>297</Y>
+                <Color>#FF5533</Color>
+            </Light>
+            <Light>
+                <Key>rockpark-lamp-cyan-mid</Key>
+                <Preset>street</Preset>
+                <X>1048</X>
+                <Y>307.1</Y>
+                <Color>#B2FBED</Color>
+            </Light>
+            <Light>
+                <Key>rockpark-lamp-red-e</Key>
+                <Preset>street</Preset>
+                <X>1524</X>
+                <Y>291.1</Y>
+                <Color>#FF5533</Color>
+            </Light>
+            <Light>
+                <Key>rockpark-lamp-purple-e</Key>
+                <Preset>street</Preset>
+                <X>1709</X>
+                <Y>307.1</Y>
+                <Color>#B280FF</Color>
+            </Light>
+        </Lights>
     </Environment>
     <Environment>
         <BackgroundURL>地图-摇滚排练室</BackgroundURL>
@@ -803,8 +840,8 @@
         <Width>1600</Width>
         <Height>740</Height>
         <Horizon>280</Horizon>
-        <MaxIllumination>7</MaxIllumination>
-        <MinIllumination>5</MinIllumination>
+        <MaxIllumination>9</MaxIllumination>
+        <MinIllumination>1</MinIllumination>
         <BGM>Dialtone</BGM>
         <Lights>
             <Light>

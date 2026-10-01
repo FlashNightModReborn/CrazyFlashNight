@@ -1,0 +1,56 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="红灯" itemID="688caa8b-0000035e" lastModified="1754049179">
+  <timeline>
+    <DOMTimeline name="红灯">
+      <layers>
+        <DOMLayer name="图层 1" color="#4FFF4F" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#313131"/>
+                    </FillStyle>
+                    <FillStyle index="2">
+                      <SolidColor color="#515151"/>
+                    </FillStyle>
+                    <FillStyle index="3">
+                      <SolidColor color="#FF3300"/>
+                    </FillStyle>
+                    <FillStyle index="4">
+                      <SolidColor color="#990033"/>
+                    </FillStyle>
+                  </fills>
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke scaleMode="normal">
+                        <fill>
+                          <SolidColor/>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
+                  <edges>
+                    <Edge strokeStyle="1" edges="!819 889|813 912"/>
+                    <Edge fillStyle1="2" strokeStyle="1" edges="!813 912[802 1024 695 1105!695 1105[575 1195 407 1195!407 1195[238 1195 119 1105!119 1105[0 1015 0 887!0 887[0 831 22 782"/>
+                    <Edge fillStyle1="1" strokeStyle="1" edges="!22 782|316 121!316 121[445 4 615 0"/>
+                    <Edge fillStyle1="2" strokeStyle="1" edges="!615 0|705 6!705 6[805 20 874 68"/>
+                    <Edge fillStyle1="1" strokeStyle="1" edges="!874 68[964 129 1002 246!1002 246|819 889"/>
+                    <Edge fillStyle0="2" strokeStyle="1" edges="!813 912|814 887"/>
+                    <Edge fillStyle0="2" fillStyle1="1" strokeStyle="1" edges="!814 887[814 759 695 669!695 669[668 649 639 634"/>
+                    <Edge fillStyle0="2" fillStyle1="2" strokeStyle="1" edges="!639 634[538 579 407 579!407 579|345 582"/>
+                    <Edge fillStyle0="2" fillStyle1="1" strokeStyle="1" edges="!345 582[216 596 119 669!119 669[52 719 22 782"/>
+                    <Edge fillStyle0="1" edges="!814 887|819 889"/>
+                    <Edge fillStyle0="4" fillStyle1="2" strokeStyle="1" edges="!87 887[87 986 181 1054!181 1054[276 1123 409 1124!409 1124[541 1123 635 1054!635 1054[730 986 730 887!730 887[730 789 635 720!635 720[541 651 409 651!409 651[276 651 181 720!181 720[87 789 87 887"/>
+                    <Edge fillStyle0="3" fillStyle1="4" edges="!151 880[152 951 226 1002!226 1002[300 1053 405 1053!405 1053[509 1053 583 1002!583 1002[658 951 658 880!658 880[658 807 583 756!583 756[509 705 405 706!405 706[300 705 226 756!226 756[152 807 151 880"/>
+                    <Edge fillStyle0="1" fillStyle1="2" edges="!345 582|615 0!874 68|639 634"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>
