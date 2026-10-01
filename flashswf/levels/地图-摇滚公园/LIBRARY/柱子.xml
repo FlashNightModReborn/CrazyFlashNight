@@ -1,0 +1,36 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="柱子" itemID="688ca16a-0000031d" lastModified="1754046826">
+  <timeline>
+    <DOMTimeline name="柱子">
+      <layers>
+        <DOMLayer name="图层 1" color="#4FFF4F" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor/>
+                    </FillStyle>
+                    <FillStyle index="2">
+                      <LinearGradient>
+                        <matrix>
+                          <Matrix a="0.0177001953125" d="0.086700439453125" tx="15" ty="71.5"/>
+                        </matrix>
+                        <GradientEntry color="#999999" ratio="0"/>
+                        <GradientEntry color="#666666" ratio="1"/>
+                      </LinearGradient>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle0="1" fillStyle1="2" edges="!580 20S3|580 2841!580 2841|20 2841!20 2841|20 20!20 20|580 20"/>
+                    <Edge fillStyle0="1" edges="!10 0S1[6 0 3 3!3 3[0 6 0 10!0 10|0 2851!0 2851[0 2855 3 2858!3 2858[6 2861 10 2861!10 2861|590 2861!590 2861[594 2861 597 2858!597 2858[600 2855 600 2851!600 2851|600 10!600 10[600 6 597 3!597 3[594 0 590 0!590 0|10 0"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>
