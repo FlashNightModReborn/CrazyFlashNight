@@ -1,0 +1,174 @@
+{
+  "schema": "cf7.save-environment-durability-release.v1",
+  "date": "2026-10-01",
+  "authorization": "用户明确授权：无人值守推进到正式发布",
+  "source": {
+    "sourceCommitOid": "95b50fc4f9e3ecaa4934b10fc4bc6bd12a09c6ec",
+    "releaseTreeOid": "bb8ecb9ade11bc6cf25555b90bb77ef22beb2569",
+    "sourceRef": "refs/tags/runtime-build-v2/20261001-save-environment-durability-v3",
+    "implementationCommitOid": "99f0bc74a2b33d9cbf6d15250974ece52a080841",
+    "upstreamMergedCommitOid": "c724305c37"
+  },
+  "request": {
+    "requestId": "8C18C25A1A5FCC606C85D2374143148C7225E499D85282571600582046B86BD7",
+    "requestCommitOid": "45300ca904c2b644c86b68c93a37fb736977b9b1",
+    "bundleTreeOid": "c7bbb9e2da96ab092e4d1745892ae2efc739f8cb",
+    "bundleSha256": "1BA8FF9AEFA239FE7E2C34B7838B6E6DAE0FFD5B9D02143609EE72722E7E02AC"
+  },
+  "buildIdentityHash": "BB1C14C87E37A576F0E3F91F135468849B79CACDAC7DBF1BEBE85F7205EF0937",
+  "artifactSourceHash": "0C717F454F926EAC20F774011A382E2E27556CD207658BDA620ECF7A538684E3",
+  "producerRecipeHash": "23483061F6288CDE0142991DBE8A5F2FDAE8DCC84B098FC8332D1573365ABA8E",
+  "toolchainLockHash": "DFA769829F9740196DEF63351A00AAC309E50A2CA0A768759334EB2A2161DD36",
+  "payloadClosureHash": "E0174C2FB5EE200C93FA22BE1B0907A54ED1DC32A478F8DF5C321794BF0E4CCA",
+  "independentBuilders": {
+    "proofCount": 2,
+    "faultDomains": [
+      "physical-host-c",
+      "github-hosted-windows"
+    ],
+    "localWorkerId": "builder-local-c",
+    "localBuilderKeyId": "CFB70E2D339ACB25E9B6C2873DF4F1AEEBA8EA75AD23B825724B27FCA70C0B86",
+    "cloudBuilderIdentityHash": "61873A6F96CBC7A4578105D622CDEAEE5F4E99142F4D9F7FF7A83944EBD7DF9A",
+    "githubRunId": 36826557100,
+    "githubRunUrl": "https://github.com/FlashNightModReborn/CrazyFlashNight/actions/runs/36826557100",
+    "matchingIdentityAndClosure": true
+  },
+  "policy": {
+    "profile": "production",
+    "passed": true,
+    "passedChecks": 45,
+    "failedChecks": 0,
+    "policyHash": "7F9A4B0D374F05EB2D693615340F616BD1FCE18DE4455478CF834BD33305BAF5",
+    "receiptSha256": "27C05CF64C8350109707C2E0BA9830AE6ED095B9887A66AE36D8C58029AC31EF",
+    "receipt": "tmp/preventive-env-audit-20261001-110627/production-policy-v3.v2.json",
+    "startedAtUtc": "2026-10-01T06:46:17.6291925Z",
+    "completedAtUtc": "2026-10-01T07:01:29.6279518Z",
+    "gateWeakened": false
+  },
+  "deployment": {
+    "promoted": true,
+    "promotedAtUtc": "2026-10-01T07:21:01.2464013Z",
+    "deploymentCommitOid": "c18379800cd95bfcdb2d07d837e8f3735fbfaf61",
+    "pushed": true,
+    "bundleFiles": 36,
+    "coreSha256": "38C8A5FCDAEAB6DEA9D585B57C0B939813D92CEBDDDA8ADB54049AB14E5214FF",
+    "manifestSha256": "223750C7FC465C0373C20965F81EFE530E8470073DD057C20F3D1472DA8D0D97",
+    "bootstrapVerifyOnlyExitCode": 0,
+    "auditRunId": 36830117063,
+    "auditUrl": "https://github.com/FlashNightModReborn/CrazyFlashNight/actions/runs/36830117063",
+    "auditConclusion": "success",
+    "auditVerifiedRuntimeState": "promoted",
+    "deploymentChanged": true,
+    "recoverablePreviousBundle": "tmp/runtime-promotions/20261001T072024181Z-c5aa6bc0e59c4d23879675ab29123c2c/previous"
+  },
+  "regression": {
+    "host": {
+      "passed": 6415,
+      "canonicalSerialRunnerConfirmed": true,
+      "skipped": 5,
+      "total": 6420,
+      "failed": 0
+    },
+    "as2": {
+      "scratchRestored": true,
+      "freshTrace": true,
+      "saveManagerPassed": 357,
+      "failed": 0,
+      "freshCompilerErrors": 0,
+      "freshCompilerWarnings": 0
+    },
+    "asLoader": {
+      "target": "publish",
+      "bytes": 1421232,
+      "sha256": "65AF90520B3D27C44B8E087BD5DF4282A75011AD6AF8DEAF3946AA4D3C0B5D9F",
+      "freshCompilerErrors": 0,
+      "mainSwfManuallyEdited": false,
+      "freshCompilerWarnings": 0
+    },
+    "saveApiCallsites": {
+      "passed": true,
+      "logical": 34,
+      "physical": 42
+    }
+  },
+  "isolatedBusiness": {
+    "scope": "新建专用角色→实际 SOL 与 shadow 写出→新进程从 SOL 加载同一角色→原生保存退出入口本轮 sv:1/2 和两份写盘→Host 墓碑删除→独立进程不复活",
+    "runtimeMode": "isolated_candidate",
+    "coreSha256": "38C8A5FCDAEAB6DEA9D585B57C0B939813D92CEBDDDA8ADB54049AB14E5214FF",
+    "createdCorePid": 6776,
+    "reloadCorePid": 18552,
+    "deletedRestartCorePid": 15544,
+    "testSlot": "cf7_b72fff7d315e4b7382c58f419ef4",
+    "newCharacterLocalFlush": true,
+    "newCharacterDurable": true,
+    "freshProcessReadback": true,
+    "reloadSource": "sol",
+    "roleLoaded": true,
+    "gameEnteredObserved": true,
+    "exactAttemptBinding": true,
+    "nativeSaveExitFreshSavingThenDone": true,
+    "nativeSaveExitStorageWritten": true,
+    "nativeExitConfirmationButtonExecuted": false,
+    "processCloseMethod": "保存已确认后经受支持 /shutdown 正常关进程；原生确认条五秒自动取消未计为退出确认人验",
+    "deleteCommitted": true,
+    "tombstonePersistedAfterRestart": true,
+    "validOldSolDidNotResurrect": true,
+    "logs": "tmp/preventive-env-audit-20261001-110627/business-e2e",
+    "realPlayerSlotsTargeted": false
+  },
+  "formalEntry": {
+    "candidateSelectorUsed": false,
+    "runtimeMode": "formal_runtime",
+    "corePid": 27756,
+    "identityAndClosureConfirmed": true,
+    "childTempGuardConfirmed": true,
+    "freshFlashHandshakeObserved": true,
+    "bootstrapDocumentObserved": true,
+    "idleAfterUnselectedPrewarm": true,
+    "roleChosen": false,
+    "closedNormally": true,
+    "businessStandardEntryVerified": false,
+    "log": "tmp/preventive-env-audit-20261001-110627/formal-standard-entry.log"
+  },
+  "state": {
+    "compiled": true,
+    "candidate_built": true,
+    "candidate_executed": true,
+    "e2e_verified": true,
+    "e2eScope": "仅上述隔离持久化专项，不含原生退出确认按钮或正式入口完整游戏旅程",
+    "promoted": true,
+    "standard_entry_verified": false
+  },
+  "review": {
+    "kimiSession": "session_47e2826a-6f00-4a49-a517-f718ef0d3e73",
+    "kimiUseful": "存储环境、持久写和错误确认风险按源码与测试收敛；已有 HUD 提示不采用绝对不可见结论",
+    "devinModel": "swe-2-max",
+    "seedSnapshotMutationRaceFixed": true,
+    "unreadableCommitUnconfirmedFixed": true,
+    "committedTombstoneCleanupFailureFixed": true,
+    "newCharacterRenderDeadlineFixed": true,
+    "revealWatchdogAndAttemptResetVerifiedAgainstSource": true,
+    "modelOutputIsAcceptance": false
+  },
+  "limits": [
+    "本机 SUBST 同卷别名及非法父 TEMP 原始播放器均能写；未构造真实第二卷阴性，不泛化盘符差异机制。",
+    "重定向 AppData、网络目录、低空间与其他机器的实际覆盖仍需现场证据。",
+    "原生退出确认按钮的完整物理旅程、失败提示可感知性及正式入口保存重启业务未由本回执代签。"
+  ],
+  "cleanup": {
+    "ownedWorktreeRemoved": true,
+    "forcedRemovalUsed": false,
+    "ownedGeneratedSolRemoved": true,
+    "probeServerStopped": true,
+    "localBuilderWatcherStopped": true,
+    "otherWorktreesUntouched": true,
+    "originalSaveMetadataChanges": [],
+    "beforeSaveByteHashBaselineAvailable": false,
+    "previousTagsUntouched": true,
+    "v2RequestSuperseded": true,
+    "initialCombinedCleanupRejected": true,
+    "saferCleanupCompleted": true
+  },
+  "evidenceRoot": "tmp/preventive-env-audit-20261001-110627",
+  "issueClosed": false
+}

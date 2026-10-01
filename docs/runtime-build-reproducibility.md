@@ -1046,3 +1046,16 @@ strict production policy 42/42，receipt SHA-256 `0C612DBA8C5CB91E481E2386A5E124
 - 部署提交 `2033f5b5fab7f75beaeb3c724bf029ad2fb8285d` 已快进推送，远端 [Audit 36813625444](https://github.com/FlashNightModReborn/CrazyFlashNight/actions/runs/36813625444) success，独立重放 `state=promoted / deploymentChanged=true` 与 `signers=2 / faultDomains=2`；完整签名、安装与审计结果见 [发布回执](evidence/u8-guidance-release-2026-10-01.json)。
 - 首轮 **44/45** 失败票保留：旧工作区 `swfscan.py` 的 CRLF 与 `.gitattributes`、Git blob 及派生工具摘要中的 LF 不一致。恢复精确 Git blob 后，图集与目录均保持原字节，用同一源码、request、双签候选完整重跑；不降低门禁、不移动已创建标签。
 - 状态为 `promoted`。七项触发视觉、连续两次关卡结算及全局跳过/刘海通知的重启体验按 [U8 验收清单](U8引导迁移与共享教程基座-2026-09-30.md) 保留，未据机器门升级为 `e2e_verified / standard_entry_verified`。
+
+### 2026-10-01 存储环境、持久写与建角等待防护发布
+
+维护者明确授权“无人值守推进到正式发布”。在 TEMP 跨卷现场根因之后，补上 Flash 子进程专用同存储根临时目录与启动诊断，统一 Host 的持久写、替换和读回确认，保留未确认提交的恢复材料；AS2 删除及墓碑清理也消费真实 flush 确认。真实建角另暴露等待表单时世界渲染器误计 30 秒超时，渲染启动现同时等待 reveal 事务提交。实现及边界见 [存档环境根因与预防](存档写盘失败-TEMP跨卷根因诊断与处置-2026-09-30.md)。
+
+- 最终源码 `95b50fc4f9e3ecaa4934b10fc4bc6bd12a09c6ec`，不可变标签 `refs/tags/runtime-build-v2/20261001-save-environment-durability-v3`；request `8C18C25A1A5FCC606C85D2374143148C7225E499D85282571600582046B86BD7`。v1/v2 标签保留原值且未推广，v2 request 已 superseded。
+- 本机 X509 `physical-host-c` 与 GitHub hosted OIDC 的 identity/closure 一致；[cloud run 36826557100](https://github.com/FlashNightModReborn/CrazyFlashNight/actions/runs/36826557100) 的 source/tag/签名均已验证。production policy **45/45**；唯一 writer 原子推广并重验 36 文件闭包、双 signer / 双 faultDomain，上一版保留于 `tmp/runtime-promotions/20261001T072024181Z-c5aa6bc0e59c4d23879675ab29123c2c/previous`。
+- 部署提交 `c18379800cd95bfcdb2d07d837e8f3735fbfaf61` 已快进推送；远端 [Audit 36830117063](https://github.com/FlashNightModReborn/CrazyFlashNight/actions/runs/36830117063) success，独立重放 `state=promoted / deploymentChanged=true` 与 `signers=2 / faultDomains=2`。完整身份与验证摘要见 [发布回执](evidence/save-environment-durability-release-2026-10-01.json)。
+- 合并上游 U8 后 Host canonical runner **6415 passed / 5 skipped / 0 failed**；真实 CS6 SaveManager 专项 **357/357**、Compiler **0/0**。配套 asLoader 已重新 publish，`1,421,232 bytes`，SHA-256 `65AF90520B3D27C44B8E087BD5DF4282A75011AD6AF8DEAF3946AA4D3C0B5D9F`。首轮生成目录门失败保留；由生成器恢复磁盘 LF、确认 Git 内容未改并完整重跑，没有降低阈值。
+- 隔离新槽完成建角 `localFlush=true / durable=true`、SOL 与 shadow 实写、不同进程通过标准 Bootstrap 从 SOL 加载同一角色；原生保存退出入口本轮 `sv:1 → sv:2` 和两份实写成立，随后正常关进程。Host 删除回包确认墓碑；重启后有效旧 SOL 仍被墓碑压住，shadow 不复活。原生退出确认按钮的完整物理旅程未计通过，不能由保存状态代签。
+- 无候选参数的正式入口已绑定相同 identity/closure，根 `--verify-only` exit 0，真实 Flash 预热握手和子进程临时目录防护确认；未选角色，回到 Idle 后正常关闭。状态为 `promoted` 与上述隔离专项 `e2e_verified`，完整业务的 `standard_entry_verified` 仍未取得；失败提示可感知性、重定向 AppData、网络目录、低空间和其他机器的覆盖继续单列。
+
+本轮隔离工作树、专用 SOL、探针服务和本机 builder watcher 已收口；原始玩家存档文件的长度和写入时间未变，没有原始字节哈希基线的项目不宣称逐字节比较。Kimi 与 SWE-2 的发现均经源码/测试裁决，模型输出未当作验收。初次组合清理被自动审批拒绝后，先保全证据并核对唯一自有修改，再无强制参数移除干净工作树；其他工作树保持原状。
