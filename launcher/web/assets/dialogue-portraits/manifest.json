@@ -1,6 +1,6 @@
 {
   "schema": "cf7-dialogue-portraits-v2",
-  "generatedAt": "2026-09-13T07:47:57+0800",
+  "generatedAt": "2026-10-01T09:33:39+0800",
   "zoom": 2,
   "baseSize": {
     "width": 2048,
@@ -2144,7 +2144,7 @@
       "sourcePath": "flashswf/portraits/artist.swf",
       "sourceKey": "artist",
       "sourceSpriteId": 7,
-      "coordinateSpace": "sprite-natural",
+      "coordinateSpace": "stage",
       "selection": {
         "rule": "expression"
       },
@@ -2152,120 +2152,126 @@
       "expressions": {
         "普通": {
           "uri": "external/p_55051f2531bd/e_7cda072d452b.webp",
-          "width": 884,
-          "height": 1142,
+          "width": 2048,
+          "height": 1152,
           "frame": 1,
-          "sha256": "a2461d9f7311a0788e38c3fe85d5d343317413cfd233108f5fdfb41ffe2c6165",
-          "bytes": 62710,
+          "sha256": "576ad9893d3252af5981e8204cbcb73c1c1b457a1ea2ab76ddd8446bf040dfa7",
+          "bytes": 88242,
           "format": "webp",
           "bounds": {
-            "x": 0,
-            "y": 0,
-            "width": 884,
-            "height": 1142
+            "x": 303,
+            "y": 312,
+            "width": 511,
+            "height": 840
           },
           "rasterization": {
-            "renderer": "ffdec-svg-cairosvg",
+            "renderer": "ffdec-svg-cairosvg-root-stage",
             "sourceSpriteId": 7,
             "zoom": 2,
             "supersample": 2,
-            "resolutionScale": 7,
-            "minimumVisibleHeight": 1024
+            "resolutionScale": 1,
+            "minimumVisibleHeight": 0,
+            "sourceRootFrame": 1
           }
         },
         "愤怒": {
           "uri": "external/p_55051f2531bd/e_afa04bf58472.webp",
-          "width": 884,
-          "height": 1142,
+          "width": 2048,
+          "height": 1152,
           "frame": 2,
-          "sha256": "f6d854166104fce30094dda3e08709fd9c91a8702b38922b21fe6878875bbc34",
-          "bytes": 70448,
+          "sha256": "255f1b0eec658ee1ee6f711128fe0351365765e70ddfe3ba79e4f111ea371999",
+          "bytes": 88392,
           "format": "webp",
           "bounds": {
-            "x": 0,
-            "y": 0,
-            "width": 884,
-            "height": 1142
+            "x": 303,
+            "y": 312,
+            "width": 511,
+            "height": 840
           },
           "rasterization": {
-            "renderer": "ffdec-svg-cairosvg",
+            "renderer": "ffdec-svg-cairosvg-root-stage",
             "sourceSpriteId": 7,
             "zoom": 2,
             "supersample": 2,
-            "resolutionScale": 7,
-            "minimumVisibleHeight": 1024
+            "resolutionScale": 1,
+            "minimumVisibleHeight": 0,
+            "sourceRootFrame": 1
           }
         },
         "微笑": {
           "uri": "external/p_55051f2531bd/e_cdd57ddef6ed.webp",
-          "width": 884,
-          "height": 1142,
+          "width": 2048,
+          "height": 1152,
           "frame": 3,
-          "sha256": "51e6cd81efd528471a7aee88751f9a5559ac00f948502ff3e534699579bb97e5",
-          "bytes": 63908,
+          "sha256": "a24e273eb37447cdbe4693d7a82d1b1ec7dbf291209e3aabfb1e3b33ea99a8cf",
+          "bytes": 88286,
           "format": "webp",
           "bounds": {
-            "x": 0,
-            "y": 0,
-            "width": 884,
-            "height": 1142
+            "x": 303,
+            "y": 312,
+            "width": 511,
+            "height": 840
           },
           "rasterization": {
-            "renderer": "ffdec-svg-cairosvg",
+            "renderer": "ffdec-svg-cairosvg-root-stage",
             "sourceSpriteId": 7,
             "zoom": 2,
             "supersample": 2,
-            "resolutionScale": 7,
-            "minimumVisibleHeight": 1024
+            "resolutionScale": 1,
+            "minimumVisibleHeight": 0,
+            "sourceRootFrame": 1
           }
         },
         "大笑": {
           "uri": "external/p_55051f2531bd/e_6a50f99fc5e9.webp",
-          "width": 884,
-          "height": 1142,
+          "width": 2048,
+          "height": 1152,
           "frame": 4,
-          "sha256": "ef0733887c35aed93cc32d46f77c81c43aad61e1e702e4fa3dac6407e3a9d953",
-          "bytes": 66504,
+          "sha256": "fd2dd1dd99f22f932c38643ea19eb24a5f564316032083d5a35ead73557a9107",
+          "bytes": 88428,
           "format": "webp",
           "bounds": {
-            "x": 0,
-            "y": 0,
-            "width": 884,
-            "height": 1142
+            "x": 303,
+            "y": 312,
+            "width": 511,
+            "height": 840
           },
           "rasterization": {
-            "renderer": "ffdec-svg-cairosvg",
+            "renderer": "ffdec-svg-cairosvg-root-stage",
             "sourceSpriteId": 7,
             "zoom": 2,
             "supersample": 2,
-            "resolutionScale": 7,
-            "minimumVisibleHeight": 1024
+            "resolutionScale": 1,
+            "minimumVisibleHeight": 0,
+            "sourceRootFrame": 1
           }
         },
         "严肃": {
           "uri": "external/p_55051f2531bd/e_fe976b0943ff.webp",
-          "width": 884,
-          "height": 1142,
+          "width": 2048,
+          "height": 1152,
           "frame": 5,
-          "sha256": "0665ad20b7488571c2ddcec5bc3bcc3cd048321877e13527b5563f515de7cd5f",
-          "bytes": 60100,
+          "sha256": "c281f4a16395845d7bce9bbda894e9ac33bd5c7fe3107c3f6781f782dcfd2d25",
+          "bytes": 88462,
           "format": "webp",
           "bounds": {
-            "x": 0,
-            "y": 0,
-            "width": 884,
-            "height": 1142
+            "x": 303,
+            "y": 312,
+            "width": 511,
+            "height": 840
           },
           "rasterization": {
-            "renderer": "ffdec-svg-cairosvg",
+            "renderer": "ffdec-svg-cairosvg-root-stage",
             "sourceSpriteId": 7,
             "zoom": 2,
             "supersample": 2,
-            "resolutionScale": 7,
-            "minimumVisibleHeight": 1024
+            "resolutionScale": 1,
+            "minimumVisibleHeight": 0,
+            "sourceRootFrame": 1
           }
         }
-      }
+      },
+      "sourceRootFrame": 1
     },
     "soldier": {
       "key": "soldier",
@@ -3580,7 +3586,7 @@
   "generatorInputs": [
     {
       "path": "tools/bake-dialogue-portraits.py",
-      "sha256": "c1d365beac69e8461b0c9430103978c3197dc8717c6cb6dbc43ce917f1bf748e"
+      "sha256": "475c26177272db399e03dfe0819d5f26d772d7be7eca175b99540626d1e890e5"
     },
     {
       "path": "tools/dialogue_svg_fallback.py",
@@ -3588,7 +3594,7 @@
     },
     {
       "path": "tools/dialogue_portrait_variants.py",
-      "sha256": "2c6749300aa25becf12e566a0f3968a7ccf9e8673b14f321ad018376fdd65750"
+      "sha256": "d67a97177698b36bb00e8422738df78eb15a104d92dd03d6a96b2b58759d3fb7"
     },
     {
       "path": "tools/dialogue-portrait-source-review/requirements.txt",

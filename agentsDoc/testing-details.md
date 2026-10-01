@@ -1096,6 +1096,8 @@ u235 的远古诛神头/胸/腿/鞋由 4 个 unit-scoped virtual item 精确绑�
 
 - `python -m py_compile tools/bake-dialogue-portraits.py tools/test-dialogue-portrait-authority.py`
 - `python tools/test-dialogue-portrait-authority.py`
+- `python tools/test-dialogue-portrait-variants.py`（室友男女选择、artist 完整舞台装配、仅脸部像素变化、SVG id 冲突隔离与注册点漂移拒绝）。
+- 时间轴源复核：`python tools/test-dialogue-portrait-timelines.py`；Windows 的 EXE 包装器不能找到已有 Java 时，以 `CF7_FFDEC` 指向 `tools/ffdec/ffdec.bat` 并在当前进程 `PATH` 中使用已有 Java，不能据包装器失败判断 SWF 源损坏。
 - `python tools/bake-dialogue-portraits.py --external-only --limit 1 --output-dir tmp/dialogue-portrait-smoke-out --tmp-dir tmp/dialogue-portrait-smoke-tmp --ffdec-timeout-seconds 120`
 - `node --check launcher/web/modules/dialogue/dialogue-view.js`
 - 同名双源人工裁决追加 `node --check tools/dialogue-portrait-source-review/build-review.js` + `node --check tools/dialogue-portrait-source-review/test-review.js` + `node tools/dialogue-portrait-source-review/test-review.js` + `node tools/dialogue-portrait-source-review/build-review.js` +
