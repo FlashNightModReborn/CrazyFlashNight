@@ -63,8 +63,8 @@ namespace CF7Launcher.Guardian.Hud.Dialogue
         internal const float LINE_HEIGHT_EM = 1.2f;
         /// <summary>文本域局部内边距（Flash 文本域左 2px 惯例；顶部 1px）。</summary>
         internal const float TEXT_INSET_LOCAL = 2f;
-        /// <summary>打字节拍（ms/字）≈ 旧 24fps enterFrame 逐字节奏略提速。</summary>
-        internal const int DEFAULT_CHAR_MS = 36;
+        /// <summary>打字节拍（ms/字）。</summary>
+        internal const int DEFAULT_CHAR_MS = 24;
 
         // 命中 zone：显式动作区分，Down/Up 必须同 zone 同修订才生效。
         internal const int ZONE_NONE = 0;
