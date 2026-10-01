@@ -97,7 +97,7 @@ var CookingPanel = (function() {
             _statusEl.setAttribute('data-state', 'loading');
         }
         var generation = _generation;
-        _host.request('snapshot', {category:'烹饪'}, function(response) {
+        var callId = _host.request('snapshot', {category:'烹饪'}, function(response) {
             if (generation !== _generation || !_el) return;
             if (!response || !response.success) {
                 setStatus('读取失败', 'error');
@@ -120,6 +120,10 @@ var CookingPanel = (function() {
             renderBooks(); renderStage(); renderRight();
             if (_selectedRecipe) requestPreview();
         });
+        if (!callId) {
+            setStatus('发送失败', 'error');
+            toast('合成通道不可用，请关闭后重试。');
+        }
     }
 
     function groupBooks(recipes) {
@@ -155,7 +159,15 @@ var CookingPanel = (function() {
     }
 
     function selectBook(name) {
-        if (_selectedBook === name) return;
+        if (_selectedBook === name) {
+            // 点击当前菜谱条且正在看菜品详情 → 收回详情返回菜品列表。
+            if (_selectedRecipe) {
+                _selectedIndex = -1; _selectedRecipe = null;
+                _preview = null; _commitFeedback = null;
+                renderStage(); renderRight();
+            }
+            return;
+        }
         _selectedBook = name;
         _selectedIndex = -1; _selectedRecipe = null; _preview = null; _commitFeedback = null;
         renderBooks(); renderStage(); renderRight();
@@ -227,14 +239,14 @@ var CookingPanel = (function() {
                 + (book.name === _selectedBook ? ' active' : '');
             strip.setAttribute('data-audio-cue', 'activate');
             strip.setAttribute('aria-pressed', book.name === _selectedBook ? 'true' : 'false');
-            var name = document.createElement('span');
-            name.className = 'cooking-book-name';
-            name.textContent = book.name;
+            var nameEl = document.createElement('span');
+            nameEl.className = 'cooking-book-name';
+            nameEl.textContent = book.name;
             var count = document.createElement('span');
             count.className = 'cooking-book-count';
             count.textContent = book.recipes.length + ' 道';
-            strip.appendChild(name); strip.appendChild(count);
-            strip.addEventListener('click', bindBook(name));
+            strip.appendChild(nameEl); strip.appendChild(count);
+            strip.addEventListener('click', bindBook(book.name));
             _booksEl.appendChild(strip);
         }
         function bindBook(name) {
@@ -370,6 +382,18 @@ var CookingPanel = (function() {
     function renderDishDetail() {
         _rightEl.setAttribute('data-cooking-right', 'detail');
         var recipe = _selectedRecipe;
+        var back = document.createElement('button');
+        back.type = 'button';
+        back.className = 'cooking-back';
+        back.textContent = '← 返回菜品列表';
+        back.setAttribute('data-audio-cue', 'back');
+        back.setAttribute('aria-label', '返回菜品列表');
+        back.addEventListener('click', function() {
+            _selectedIndex = -1; _selectedRecipe = null;
+            _preview = null; _commitFeedback = null;
+            renderStage(); renderRight();
+        });
+        _rightEl.appendChild(back);
         var detail = document.createElement('div');
         detail.className = 'cooking-detail';
 
@@ -473,7 +497,7 @@ var CookingPanel = (function() {
             label.textContent = row.name + (row.appliance ? '·' + row.appliance : '');
             var value = document.createElement('span');
             value.className = 'cooking-req-value';
-            value.textContent = 'Lv.' + row.current + ' / Lv.' + row.required;
+            value.textContent = row.met ? '已满足' : '未满足';
             node.appendChild(label); node.appendChild(value);
             body.appendChild(node);
         }
@@ -535,7 +559,7 @@ var CookingPanel = (function() {
     function errorMessage(error) {
         var messages = {category_not_found:'未找到烹饪分类。', recipe_not_found:'菜谱已变化。',
             item_not_found:'未找到该材料或菜品。', level_locked:'角色等级与逆向等级不足。',
-            infrastructure_locked:'厨具等级不足，需要先在基地建造对应烹饪设备。',
+            infrastructure_locked:'厨具未就绪，需要先在基地建造对应烹饪设备。',
             material_missing:'所需材料不足。', insufficient_money:'金币不足。',
             insufficient_kpoint:'K 点不足。', inventory_full:'背包空间不足。',
             stale_state:'物品状态已变化，请重新核对。', batch_not_supported:'该菜品只能逐份烹饪。',

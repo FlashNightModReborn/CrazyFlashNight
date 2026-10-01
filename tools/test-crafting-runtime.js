@@ -361,9 +361,15 @@ test('Crafting recipe catalog accepts book grouping and infrastructure rows', ()
     response.recipes[0].availability = 'infrastructure_locked';
     assert.strictEqual(Runtime.validateBusinessResponse(response,
         {cmd:'snapshot',metadata:{payload:{category:'武器合成'}}}),true);
-    const missingBook = clone(response);
-    delete missingBook.recipes[0].book;
-    assert.strictEqual(Runtime.validateBusinessResponse(missingBook,
+    // book/infrastructure 是增量字段：旧权威不回传时缺省降级可用。
+    const missing = clone(response);
+    delete missing.recipes[0].book;
+    delete missing.recipes[0].infrastructure;
+    assert.strictEqual(Runtime.validateBusinessResponse(missing,
+        {cmd:'snapshot',metadata:{payload:{category:'武器合成'}}}),true);
+    const badRow = clone(response);
+    badRow.recipes[0].infrastructure[0].required = 'x';
+    assert.strictEqual(Runtime.validateBusinessResponse(badRow,
         {cmd:'snapshot',metadata:{payload:{category:'武器合成'}}}),false);
     const badAvailability = clone(response);
     badAvailability.recipes[0].availability = 'ready';
@@ -381,7 +387,7 @@ test('Crafting preview carries infrastructure rows through to the accepted plan'
     delete missing.infrastructure;
     delete missing.acceptedPlan.infrastructure;
     assert.strictEqual(Runtime.validateBusinessResponse(missing,
-        {cmd:'preview',metadata:{payload:{}}}),false);
+        {cmd:'preview',metadata:{payload:{}}}),true);
     const badRow = clone(preview);
     badRow.infrastructure[0].met = 'yes';
     badRow.acceptedPlan.infrastructure[0].met = 'yes';
