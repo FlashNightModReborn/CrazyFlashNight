@@ -68,6 +68,7 @@ var list:Array = XMLParser.configureDataAsArray(parsed.items);
 | `data/map/` | WebView 地图面板配置（`map_panel.xml` 单文件） |
 | `data/intelligence/` | 情报详情 legacy txt 文本；保留为 AS2 旧界面和 H5 迁移来源 |
 | `data/intelligence_h5/` | Launcher Web 情报面板 H5 JSON 组件树正文 |
+| `data/glossary/` | 情报面板「专有名词」词条（`glossary_index.json` + 每条 `<termName>.json`） |
 | `data/shops/` | NPC 金币商店清单、逐 NPC 商品目录与开发者分组 |
 | `data/arena/` | 竞技场标准/隐藏卡与标准佣兵装备掉落 XML 真源、势力元数据 JSON 真源与关卡派生 roster |
 | `config/` | 系统配置 |
@@ -431,6 +432,22 @@ producer 对材料 exact-set、重复/未知 identity、未知 type/purpose、�
 Launcher Web 情报面板不开放 WebView2 对 `data/` 或项目根的 fetch 权限，而是由 C# `IntelligenceTask` 精确命中字典项后读取固定目录 JSON，并校验最终 full path 仍在 `data/intelligence_h5/` 下。正式 runtime 入口通过 AS2 `intelligenceState` 只回每条情报收集值、解密等级和玩家名，C# 合并本地 catalog 后返回 `state` 小包；Web 点击目录项时再请求 `snapshot(itemName)`，H5 snapshot 返回 `contentMode:"h5"`、`skin` 与 `pages[].blocks`，锁定页不下发 blocks。H5 JSON 只允许白名单组件树和 inline token，内容中不得包含任意 HTML、脚本或事件属性；组件完整语义、逐篇手工创作流程和 KimiCode 使用边界见 [情报 H5 组件创作交接](../docs/情报H5组件创作交接.md)。
 
 H5 数据门禁：示范/迁移期可运行 `node tools/validate-intelligence-h5.js --allow-missing`，正式全量门禁使用 `node tools/validate-intelligence-h5.js --strict`。批量迁移给 KimiCode 的自包含 prompt 由 `node tools/generate-intelligence-h5-prompts.js --batch-size 10` 生成；该工具只产出 `tmp/intelligence-h5-prompts/`，实际施工范围限定在 `data/intelligence_h5/`。创作层表达增强可用 `node tools/enhance-intelligence-h5-expression.js` 重新应用当前人工固化的示范组合；`幻层残响` 当前刻意保持生成基线，避免额外组件稀释原文本高信息密度。
+
+### 专有名词词条（`data/glossary/`）
+
+情报面板右侧「专有名词」tab 的数据源，随情报物品收集进度逐步揭示词条与词条页。所有解锁条件都写成 `requires` 条件数组（全部满足即成立，AND 关系）：
+
+| 条件形态 | 含义 |
+|---|---|
+| `{ "item": "<物品名>", "minValue": n }` | 该情报物品收集进度 ≥ n（`minValue` 缺省 1 表示"已发现"，即 value>0） |
+| `{ "minCollectedItems": n }` | 已发现的情报物品总数 ≥ n |
+| `{ "decryptLevel": n }` | 玩家解密等级 ≥ n |
+
+目录 `glossary_index.json` 是数组，每项形如 `{ "termName", "displayName", "requires" }`；`requires` 缺省或空数组时词条恒可见。前端把 `{name: value}` 的物品进度表与解密等级发给 `glossary_catalog`，后端按各条目的 `requires` 过滤，返回 `items` 与 `lockedCount`（不满足条件的词条被隐藏，前端只显示"另有 N 个名词待解锁"的聚合提示，不泄露名字）。
+
+每个词条是独立 `<termName>.json`：`{ "schemaVersion":1, "termName", "displayName", "skin", "writerVoice?", "pages":[] }`。`pages[]` 每项含 `pageKey`、`requires`（同前述条件 DSL）与 `blocks`（与情报 H5 相同的白名单组件树，但当前由后端透传、不走 intelligence_h5 严格校验，创作时必须自觉只写白名单组件）。`glossary_snapshot` 返回所有已解锁页 `pages[]` 与 `lockedPageCount`（未解锁页数）。页按数组序渲染、可翻页；当一个物品不满足时其依赖页隐藏——多个条件可分别绑定不同物品，由此组成"交叉解锁"。
+
+建议写作惯例：第 1 页 `requires` 为空、写"传闻级"短释义；物品专属条件在补录页使用；跨物品的交叉解锁用于深层/终局页。校验：`node tools/validate-glossary.js` 会核对物品名注册表、`minValue ≤ maxvalue`、每个词条至少一页免门槛。
 
 ### map_definition.json v2：地图内容与有限领域规则
 

@@ -2,31 +2,73 @@
   "schemaVersion": 1,
   "termName": "三战",
   "displayName": "三战",
-  "skin": "field-notes",
-  "levels": [
+  "skin": "dossier",
+  "pages": [
     {
-      "levelKey": "0",
-      "requiredCollectedItems": 0,
-      "requiredDecryptLevel": 0,
+      "pageKey": "1",
+      "requires": [],
       "blocks": [
         {
+          "type": "heading", "level": 2,
+          "content": [{ "type": "text", "text": "§1 定义" }]
+        },
+        {
           "type": "paragraph",
-          "content": [
-            { "type": "text", "text": "第三次世界大战，又被称为统合战争，是统合政府击败反对者并基本确立全球统治的，21 世纪以来最大规模的战争。" }
-          ]
+          "content": [{ "type": "text", "text": "第三次世界大战，又被称为统合战争，是统合政府击败反对者并基本确立全球统治的，21 世纪以来最大规模的战争。后雅尔塔-别洛韦日联合体系塑造的经济不平等与长期被压制的地区冲突一并爆发，世界由此陷入热战。" }]
+        },
+        {
+          "type": "paragraph",
+          "content": [{ "type": "text", "text": "战争最终以统合政府的确立告终。为镇压反抗，统合大量运用雇佣军并确立正规军与 PMC 混合的军事体制；这套分配利益的办法短期压制了反对者，却也为之后的长期军事冲突埋下了祸根。" }]
+        },
+        {
+          "type": "note",
+          "content": [{ "type": "text", "text": "编注：本词条为公开常识级记录。涉及具体战区与参战势力的细节，需收集地方档案后补录。" }]
         }
       ]
     },
     {
-      "levelKey": "1",
-      "requiredCollectedItems": 2,
-      "requiredDecryptLevel": 1,
+      "pageKey": "2",
+      "requires": [{ "item": "地铁站通关证明", "minValue": 5 }],
       "blocks": [
+        {
+          "type": "heading", "level": 2,
+          "content": [{ "type": "text", "text": "§2 补录：尘都战区分记" }]
+        },
         {
           "type": "paragraph",
           "content": [
-            { "type": "text", "text": "第三次世界大战，又被称为统合战争，是统合政府击败反对者并基本确立全球统治的，21 世纪以来最大规模的战争。/n后雅尔塔-别洛韦日联合体系的不稳定，其来源是全球化过程塑造的各国经济不平等，以及相对和平环境下地区政治冲突被压制而长久得不到释放。结果是，随着一系列事件加剧了各国统治的崩溃，积压已久的矛盾爆发，世界陷入了热战之中。" }
+            { "type": "text", "text": "据废城档案残卷：三战之前，控制尘都地区的巨型企业" },
+            { "type": "colorToken", "token": "muted", "content": [{ "type": "text", "text": "3xf" }] },
+            { "type": "text", "text": "与统合的前身摩擦不断。三战以统合政府获胜、" },
+            { "type": "colorToken", "token": "muted", "content": [{ "type": "text", "text": "3xf" }] },
+            { "type": "text", "text": "覆灭告终；但" },
+            { "type": "colorToken", "token": "muted", "content": [{ "type": "text", "text": "C＆T" }] },
+            { "type": "text", "text": "的反扑让统合意识到直接统治各地的困难，转而扶持忠于自己的势力，" },
+            { "type": "colorToken", "token": "danger", "content": [{ "type": "text", "text": "WP" }] },
+            { "type": "text", "text": "因此崛起。" }
           ]
+        },
+        {
+          "type": "paragraph",
+          "content": [{ "type": "text", "text": "战争中，东区是死亡竞赛的中心之一，暴徒互斗的绞肉场既是社会泄压阀，也是统合从底层筛选战力的通道。战后划定的市区等级与围墙制度，正是这套筛选逻辑在市政上的延续。" }]
+        }
+      ]
+    },
+    {
+      "pageKey": "3",
+      "requires": [{ "item": "旧世残篇：西南自治区概况", "minValue": 1 }],
+      "blocks": [
+        {
+          "type": "heading", "level": 2,
+          "content": [{ "type": "text", "text": "§3 补录：西南自治区的战后生态" }]
+        },
+        {
+          "type": "paragraph",
+          "content": [{ "type": "text", "text": "据统合行政档案残件：战后 C 国西南名义上服从统合，实际辖区却多是自治区——巨型企业辖下都市、宗教自治村镇与游击区犬牙交错。统合对内陆缺乏限制手段，只能通过代理与放权维持表面秩序，直至审判日。" }]
+        },
+        {
+          "type": "note",
+          "content": [{ "type": "text", "text": "残件原件大量涂抹，留存文字亦真亦宣传。本页按归档口径摘录，不作采信担保。" }]
         }
       ]
     }

@@ -57,8 +57,13 @@ function run() {
     const report = validator.validateRepository({ root: ROOT, contract: clone(contract) });
     assert(report.ok, JSON.stringify(report.errors));
     assert(report.contractVersion === 2, "expected strict panel contract v2");
-    assert(report.checked.domains === 8, "expected eight governed domains");
-    assert(report.checked.commands === 45, "expected forty-five governed command mappings");
+    assert(report.checked.domains === 9, "expected nine governed domains");
+    assert(report.checked.commands === 48, "expected forty-eight governed command mappings");
+    const garage = contract.domains.find(function (domain) { return domain.id === "garage"; });
+    assert(garage && garage.hostPayloadMode === "normalized"
+      && garage.commands.map(function (command) { return command.cmd; }).join(',') === 'snapshot,commit,query'
+      && garage.commands.every(function (command) { return command.businessDecisionOwner === 'as2'; }),
+      "garage must use the narrow AS2-owned purchase contract");
     const surgery = contract.domains.find(function (domain) { return domain.id === "surgery"; });
     assert(surgery && surgery.hostPayloadMode === "normalized"
       && surgery.commands.map(function (command) { return command.cmd; }).join(',') === 'snapshot,commit,query',

@@ -274,7 +274,7 @@ class org.flashNight.neur.Server.SaveManager {
         "shop_legacy.close",
         "shop.panel_close", "shop.cart_edit",
         "ui.fade_out", "ui.safe_exit_open_legacy", "ui.taskbar_legacy_close",
-        "ui.storage_money_button_close", "ui.storage_money_close", "ui.plastic_surgery_paid",
+        "ui.storage_money_button_close", "ui.storage_money_close", "ui.plastic_surgery_paid", "ui.garage_purchase_paid",
         "ui.gym_training_paid",
         "ui.tablet_close", "ui.pet_info_close", "ui.inventory_close", "ui.warehouse_close",
         "ui.warehouse_legacy_close", "ui.inventory_legacy_close", "ui.player_info_inventory_close"

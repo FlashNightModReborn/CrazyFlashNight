@@ -1,0 +1,65 @@
+{
+  "schemaVersion": 1,
+  "termName": "军阀",
+  "displayName": "军阀（莱昂利亚自由革命军）",
+  "skin": "dossier",
+  "pages": [
+    {
+      "pageKey": "1",
+      "requires": [],
+      "blocks": [
+        {
+          "type": "heading", "level": 2,
+          "content": [{ "type": "text", "text": "§1 定义" }]
+        },
+        {
+          "type": "paragraph",
+          "content": [{ "type": "text", "text": "军阀，正式番号「莱昂利亚自由革命军」。其前身为统合太平洋西岸联合军——统合为削弱各地反抗而在大陆海岸线部署的跨国家军队；审判日混乱中，被称「将军」的军官率部跨境进入 C 国西南，驱逐西南政府、整合溃军，僭越而成此政权。" }]
+        },
+        {
+          "type": "paragraph",
+          "content": [{ "type": "text", "text": "军阀实行军政府统治与军队等级制度，奉行激进外交，以军火与纺织品出口维生。势力范围几乎覆盖整个荒漠，并向堕落城、废城边缘及雪山方向渗透。" }]
+        }
+      ]
+    },
+    {
+      "pageKey": "2",
+      "requires": [{ "item": "军阀前线基地通关证明", "minValue": 10 }],
+      "blocks": [
+        {
+          "type": "heading", "level": 2,
+          "content": [{ "type": "text", "text": "§2 补录：军队肌理" }]
+        },
+        {
+          "type": "paragraph",
+          "content": [{ "type": "text", "text": "军阀武装的强项在量与制：掌有旧世军火工厂与纺织厂残余，实行严格的军衔、哨卡与通关文书制度。前线基地的资料集多为战地归档，行文简短而重实效。" }]
+        },
+        {
+          "type": "paragraph",
+          "content": [{ "type": "text", "text": "军阀对意识形态上的死敌——军警宪政派与蓉都公社——持绝对歼灭态度，唯碍于 A 兵团的干预而无法彻底实行。同时它持续压制尘都的密钥经济，意在掐断黑市的纳米机器人地址流。" }]
+        }
+      ]
+    },
+    {
+      "pageKey": "3",
+      "requires": [
+        { "item": "牛仔的情报书", "minValue": 1 },
+        { "item": "军阀前线基地通关证明", "minValue": 15 }
+      ],
+      "blocks": [
+        {
+          "type": "heading", "level": 2,
+          "content": [{ "type": "text", "text": "§3 补录：首领更迭" }]
+        },
+        {
+          "type": "paragraph",
+          "content": [{ "type": "text", "text": "诺亚袭击后军阀一度陷入混乱，很快在「牛仔」的收拢下于荒野重新站稳。将军归来后，军阀依然是不容小觑的势力。牛仔以持枪、揣炸药的野战风格著名，是军阀威严的执行者；传闻其有一位护士模样的情人。" }]
+        },
+        {
+          "type": "note",
+          "content": [{ "type": "text", "text": "军阀内部诸派系与「将军」的长期意图，牛仔的情报书亦留白。待续。" }]
+        }
+      ]
+    }
+  ]
+}

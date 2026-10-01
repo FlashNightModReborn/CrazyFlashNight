@@ -1,0 +1,40 @@
+{
+  "schemaVersion": 1,
+  "termName": "死亡竞赛",
+  "displayName": "死亡竞赛",
+  "skin": "dossier",
+  "pages": [
+    {
+      "pageKey": "1",
+      "requires": [],
+      "blocks": [
+        {
+          "type": "heading", "level": 2,
+          "content": [{ "type": "text", "text": "§1 定义" }]
+        },
+        {
+          "type": "paragraph",
+          "content": [{ "type": "text", "text": "死亡竞赛，旧世最臭名昭著的社会制度之一——以城市为单位举办血腥斗技，向底层提供「上升通道」：胜者被招揽进上层，并获得更稳妥的进一步基因改造机会。其本质是统治者从潜在秩序挑战者中筛选并吸收维持者的机制。" }]
+        },
+        {
+          "type": "paragraph",
+          "content": [{ "type": "text", "text": "挑战者多为经信息素改造的亡命之徒，亦不乏机器人等科技造物；竞赛通常不限队伍构成与入场人数，不确定性极大。尘都东区曾是死亡竞赛的中心之一。" }]
+        }
+      ]
+    },
+    {
+      "pageKey": "2",
+      "requires": [{ "item": "Andy档案", "minValue": 1 }],
+      "blocks": [
+        {
+          "type": "heading", "level": 2,
+          "content": [{ "type": "text", "text": "§2 补录：竞赛造出的名字" }]
+        },
+        {
+          "type": "paragraph",
+          "content": [{ "type": "text", "text": "全球死亡竞赛是三战前统合政府雏形的选拔仪式。Andylaw 正是通过全球死亡竞赛走入秩序视野——他击败了包括大型人体机器人在内的诸多对手，并由此进入统合势力视野。档案可视为竞赛如何「制造」上层战力的一手材料。" }]
+        }
+      ]
+    }
+  ]
+}

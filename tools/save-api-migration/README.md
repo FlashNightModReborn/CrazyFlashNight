@@ -4,7 +4,7 @@ R1 路线（[原始裁决存档](../../docs/裁决存档/SaveManager-API分层�
 
 | 文件 | 作用 |
 |---|---|
-| `callsites.v1.json` | 机器可读调用点 manifest：40 条物理记录 / 33 个逻辑调用点（19 strict + 14 debounce；U4 健身结算同时登记 markDirty 与 flushDurableNow）+ canonical `存档系统.markDirty()` + C6 关联子层 flush 基线 + 当前发布 SWF hash 基线 |
+| `callsites.v1.json` | 机器可读调用点 manifest：精确数量取 `counts/callsites`；U4 健身和 U13 购车均登记 markDirty 与 flushDurableNow+ canonical `存档系统.markDirty()` + C6 关联子层 flush 基线 + 当前发布 SWF hash 基线 |
 | `check-callsites.js` | 回归门扫描器：全库独立扫描，精确数量断言（`==` 非 `<=`），扫描命中与 manifest 一一对应，任何漂移非零退出 |
 | `test-callsites.js` | 迁移合同负例与生产 SceneChanged 顺序回归 |
 | `check-published-scripts.py` | 按本地时间轴/linkage 可达图核对 FFDec 帧脚本，单列未引用和共享导入的源码副本 |
@@ -24,8 +24,8 @@ node tools/save-api-migration/check-callsites.js --verify-swf-hashes  # 额外�
 
 ### 什么算一个调用点
 
-- **逻辑调用点**：一个语义归属单位，现为 19 strict + 14 debounce = 33 个；U4 健身付费结算占一个新的 strict 逻辑点。
-- **物理调用点**：源码中一处实际的存盘 API 调用文本。现为 40 条；U4 新增 `markDirty()` 与 `flushDurableNow("ui.gym_training_paid")` 两条物理点。精确分类与归属以 manifest `counts` 和 `callsites` 为准，R1 阶段的 38/32 仍见历史收尾记录。
+- **逻辑调用点**：一个语义归属单位，实际数量取 manifest 的 `strictLogicalTotal/debounceLogicalTotal`；U4 健身和 U13 购车各占一个 strict 逻辑点。
+- **物理调用点**：源码中一处实际的存盘 API 调用文本。当前数量取 manifest；U4 健身与 U13 购车均登记 `markDirty()` 和本域 `flushDurableNow()` 两条物理点。精确分类与归属以 manifest `counts` 和 `callsites` 为准，R1 阶段的 38/32 仍见历史收尾记录。
 - manifest 每条记录 = 一个物理点，`callsiteId` 指向逻辑点，`physicalId` 全局唯一。
 
 ### 旧入口 family（扫描口径）

@@ -220,7 +220,7 @@
 
 .hairdresser-style-card.current {
     background:
-        linear-gradient(90deg, rgba(255, 255, 255, .045), transparent 58%),
+        linear-gradient(90deg, var(--appearance-sheen), transparent 58%),
         var(--appearance-surface);
 }
 
@@ -346,7 +346,7 @@
     display: grid;
     place-items: center;
     padding: 24px;
-    background: #0d1115;
+    background: var(--appearance-empty-fill);
     color: var(--appearance-muted);
     font-size: 13px;
     text-align: center;

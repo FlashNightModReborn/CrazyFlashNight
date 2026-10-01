@@ -1,0 +1,65 @@
+{
+  "schemaVersion": 1,
+  "termName": "堕落城",
+  "displayName": "堕落城",
+  "skin": "dossier",
+  "pages": [
+    {
+      "pageKey": "1",
+      "requires": [],
+      "blocks": [
+        {
+          "type": "heading", "level": 2,
+          "content": [{ "type": "text", "text": "§1 定义" }]
+        },
+        {
+          "type": "paragraph",
+          "content": [{ "type": "text", "text": "堕落城，原尘都西城。审判日的混乱中黑铁教夺取此地，在黑铁领导下组建黑铁会，并宣示对全城的统治权威。现为黑铁会治下的政教合一都会，是尘都目前人口与物资最集中的区域。" }]
+        },
+        {
+          "type": "paragraph",
+          "content": [{ "type": "text", "text": "城市并非铁板一块：联合大学、摇滚公园等势力均有各自的地盘与主张，共同构成黑铁会统治之下的破碎秩序。" }]
+        }
+      ]
+    },
+    {
+      "pageKey": "2",
+      "requires": [
+        { "item": "堕落城假肢市场动荡", "minValue": 1 },
+        { "item": "知识灯塔风雨飘摇", "minValue": 1 }
+      ],
+      "blocks": [
+        {
+          "type": "heading", "level": 2,
+          "content": [{ "type": "text", "text": "§2 补录：哨兵报时事二则" }]
+        },
+        {
+          "type": "paragraph",
+          "content": [{ "type": "text", "text": "《堕落城每日哨兵报》专题报道显示：城内正经历义肢市场价格飙升——政治紧张与派系冲突的直接投射；联合大学内部派系林立，外部势力角力加剧，「知识绿洲」风雨飘摇。" }]
+        },
+        {
+          "type": "paragraph",
+          "content": [{ "type": "text", "text": "两则报道合观可见：黑铁会的统治权威正在经受结构性考验——市场随政治波动，学府沦为大组织代理人的角力场。" }]
+        }
+      ]
+    },
+    {
+      "pageKey": "3",
+      "requires": [{ "item": "黑铁会信物", "minValue": 1 }],
+      "blocks": [
+        {
+          "type": "heading", "level": 2,
+          "content": [{ "type": "text", "text": "§3 补录：统治肌理" }]
+        },
+        {
+          "type": "paragraph",
+          "content": [{ "type": "text", "text": "据总堂亲信信物上残留的教主亲笔批注：黑铁对堕落城的管控以「坛—堂—总堂」的分级加授权维持，对科技与现实制度采取灵活解释的中道保守主义。批注笔意显示，统治集团内部对激进与极端两端的戒备从未放松。" }]
+        },
+        {
+          "type": "note",
+          "content": [{ "type": "text", "text": "本页材料来自黑铁会内部器物，立场偏向教廷叙事，引用时请自持。" }]
+        }
+      ]
+    }
+  ]
+}

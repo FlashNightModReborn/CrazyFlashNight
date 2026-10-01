@@ -1,0 +1,64 @@
+{
+  "schemaVersion": 1,
+  "termName": "军警宪政派",
+  "displayName": "军警宪政派",
+  "skin": "dossier",
+  "pages": [
+    {
+      "pageKey": "1",
+      "requires": [],
+      "blocks": [
+        {
+          "type": "heading", "level": 2,
+          "content": [{ "type": "text", "text": "§1 定义" }]
+        },
+        {
+          "type": "paragraph",
+          "content": [{ "type": "text", "text": "军警宪政派，原统合政府在尘都的残余。其议会即统合尘都临时政府，直接继承自末世前的统合议会建制。领袖为前治安官员出身，麾下聚集大量有经验的军人与警察。" }]
+        },
+        {
+          "type": "paragraph",
+          "content": [{ "type": "text", "text": "该派缺乏完全统一的意识形态，维系于对旧秩序的遵循；资源匮乏但有政府正统名号——如何将此名号变现，是其必须回答的问题。" }]
+        }
+      ]
+    },
+    {
+      "pageKey": "2",
+      "requires": [
+        { "item": "闹市区搜查手记", "minValue": 1 },
+        { "item": "第三集结点补给清单", "minValue": 1 }
+      ],
+      "blocks": [
+        {
+          "type": "heading", "level": 2,
+          "content": [{ "type": "text", "text": "§2 补录：废城压制线" }]
+        },
+        {
+          "type": "paragraph",
+          "content": [{ "type": "text", "text": "尽管资源紧张，军警宪政派仍维持对废城丧尸的压制。闹市区搜查队的手记与第三集结点的补给清单表明：其在废城边缘设有成建制的巡防—集结节点，行动有物资调度与记录制度可循。" }]
+        }
+      ]
+    },
+    {
+      "pageKey": "3",
+      "requires": [
+        { "item": "关于通缉令1", "minValue": 1 },
+        { "item": "关于通缉令2", "minValue": 1 }
+      ],
+      "blocks": [
+        {
+          "type": "heading", "level": 2,
+          "content": [{ "type": "text", "text": "§3 补录：通缉体制" }]
+        },
+        {
+          "type": "paragraph",
+          "content": [{ "type": "text", "text": "临时政府沿用旧制的通缉令体系，对威胁城内秩序者发出正式缉捕文书。通讯记录残件显示，通缉令的发布前后牵涉加密通讯渠道与外部观察者介入——文书的实际运作比表面更复杂。" }]
+        },
+        {
+          "type": "note",
+          "content": [{ "type": "text", "text": "编注：若干细节涉加密信道用语，未解密部分暂以残文载录。" }]
+        }
+      ]
+    }
+  ]
+}

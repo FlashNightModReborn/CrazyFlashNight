@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "generatedBy": "tools/fontctl",
-  "sourceSha256": "56d48b2f5f2295e1cd53bae071be55bb7e5a926374ccc22c3590feeeb6c29906",
+  "sourceSha256": "db79297e6217353f2f4f48bf6f9e376f2e22a2d1b3e7e885dc080b5bed41f133",
   "gate": "E",
   "comment": "Generated compatibility projection. Edit fonts/fonts.xml and run fontctl generate.",
   "groups": {
@@ -200,6 +200,25 @@
           "urls": [
             "https://cdn.jsdelivr.net/gh/adobe-fonts/source-han-serif@release/SubsetOTF/CN/SourceHanSerifCN-Heavy.otf",
             "https://github.com/adobe-fonts/source-han-serif/raw/release/SubsetOTF/CN/SourceHanSerifCN-Heavy.otf"
+          ],
+          "shippedFallback": false
+        }
+      ]
+    },
+    "interface": {
+      "label": "界面与 HUD 黑体",
+      "description": "刘海、HUD 与通用界面正文的无衬线中文字体。",
+      "totalBytes": 8406556,
+      "files": [
+        {
+          "name": "source-han-sans-cn-medium.otf",
+          "label": "Source Han Sans CN Medium（思源黑体 / 刘海与 HUD 中文）",
+          "license": "SIL-OFL-1.1",
+          "bytes": 8406556,
+          "sha256": "a94e558a2fe972bee4f46bce0843abff37063fd68c33f1e7d9058f6f09432b01",
+          "urls": [
+            "https://cdn.jsdelivr.net/gh/adobe-fonts/source-han-sans@release/SubsetOTF/CN/SourceHanSansCN-Medium.otf",
+            "https://github.com/adobe-fonts/source-han-sans/raw/release/SubsetOTF/CN/SourceHanSansCN-Medium.otf"
           ],
           "shippedFallback": false
         }

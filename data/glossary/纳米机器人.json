@@ -1,0 +1,57 @@
+{
+  "schemaVersion": 1,
+  "termName": "纳米机器人",
+  "displayName": "纳米机器人",
+  "skin": "dossier",
+  "pages": [
+    {
+      "pageKey": "1",
+      "requires": [],
+      "blocks": [
+        {
+          "type": "heading", "level": 2,
+          "content": [{ "type": "text", "text": "§1 定义" }]
+        },
+        {
+          "type": "paragraph",
+          "content": [{ "type": "text", "text": "纳米机器人，以蛋白质簇为标准核心、按功能搭载不同辅助物质的可动物质的总称，截面轴线小于 1 微米。按等级分为指挥者、编译者、增殖者三类，上级单位可激活并调度下级。" }]
+        },
+        {
+          "type": "paragraph",
+          "content": [{ "type": "text", "text": "其关键在密钥权限控制：密钥发生器—容器配对形成硬件锁，失效即报废；这套底层协议既约束其自复制风险，也构成末世中以密钥为锚的经济体制。" }]
+        }
+      ]
+    },
+    {
+      "pageKey": "2",
+      "requires": [
+        { "item": "符线溯源笔记", "minValue": 1 },
+        { "decryptLevel": 2 }
+      ],
+      "blocks": [
+        {
+          "type": "heading", "level": 2,
+          "content": [{ "type": "text", "text": "§2 补录：微观侧的异常" }]
+        },
+        {
+          "type": "paragraph",
+          "content": [{ "type": "text", "text": "符线溯源笔记的加密层显示：某些经由密钥配对的纳米机器人群，其地址与归属在观察记录中呈现「意料之外」的一致性——暗示存在未登记的密钥源头。「符线」词条可参见。" }]
+        }
+      ]
+    },
+    {
+      "pageKey": "3",
+      "requires": [{ "item": "幻层残响", "minValue": 8 }],
+      "blocks": [
+        {
+          "type": "heading", "level": 2,
+          "content": [{ "type": "text", "text": "§3 补录：密钥经济的延伸" }]
+        },
+        {
+          "type": "paragraph",
+          "content": [{ "type": "text", "text": "数据残响的深层片段显示：末世中以密钥容器—纳米机器人为锚的经济体系仍在运转。密钥发生器对应一组纳米机器人，「去中心化货币」的锚定对象正是这种可自我增殖的实物——这是末日语境下的信用货币替代品。" }]
+        }
+      ]
+    }
+  ]
+}

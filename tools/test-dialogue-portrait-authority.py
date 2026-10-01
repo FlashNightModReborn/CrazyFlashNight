@@ -196,6 +196,17 @@ def main() -> None:
         production_report["sourceAuthority"]["policySha256"] == digest,
         "production report authority policy digest mismatch",
     )
+    artist = production_manifest["entries"]["artist"]
+    require(artist.get("coordinateSpace") == "stage" and artist.get("sourceRootFrame") == 1,
+            "artist must use the complete author stage, not the basic face sprite")
+    require(set(artist["expressions"]) == {"普通", "愤怒", "微笑", "大笑", "严肃"},
+            "artist expression set changed")
+    for expression in artist["expressions"].values():
+        require((expression["width"], expression["height"])
+                == (production_manifest["baseSize"]["width"], production_manifest["baseSize"]["height"]),
+                "artist stage canvas changed")
+        require(expression.get("rasterization", {}).get("sourceRootFrame") == 1,
+                "artist expression lost its root-stage provenance")
     expected_entries = (
         production_report["externalEntries"]
         + production_report["internalEntries"]

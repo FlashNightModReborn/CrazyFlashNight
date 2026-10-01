@@ -1,0 +1,47 @@
+{
+  "schemaVersion": 1,
+  "termName": "浮士德",
+  "displayName": "浮士德",
+  "skin": "dossier",
+  "pages": [
+    {
+      "pageKey": "1",
+      "requires": [],
+      "blocks": [
+        {
+          "type": "heading", "level": 2,
+          "content": [{ "type": "text", "text": "§1 定义" }]
+        },
+        {
+          "type": "paragraph",
+          "content": [{ "type": "text", "text": "浮士德，游荡于堕落城的连环猎奇凶杀犯——实为兄弟二人，以迅猛的刀法与强大的火力压制闻名。其组合被外界视为坚不可摧，目击者稀少，情报亦极度匮乏。" }]
+        },
+        {
+          "type": "paragraph",
+          "content": [{ "type": "text", "text": "据盗贼兄弟会的残档，浮士德兄弟的作战天赋与其低下的生活自理能力形成鲜明对比；佩戴黑白对比色面具是其标志。" }]
+        }
+      ]
+    },
+    {
+      "pageKey": "2",
+      "requires": [
+        { "item": "关于通缉令1", "minValue": 1 },
+        { "item": "关于通缉令2", "minValue": 1 }
+      ],
+      "blocks": [
+        {
+          "type": "heading", "level": 2,
+          "content": [{ "type": "text", "text": "§2 补录：通缉令背后" }]
+        },
+        {
+          "type": "paragraph",
+          "content": [{ "type": "text", "text": "临时政府的通缉令前后配有加密通讯与外部观察记录，撰写者署名 Nyx。残件显示：浮士德兄弟的行为并非完全出自个人疯狂——存在通过近距干扰手段施加暗示的痕迹。" }]
+        },
+        {
+          "type": "note",
+          "content": [{ "type": "text", "text": "归档者按：两人真实动机、暗示方与委托方三者之间关系，档案未明；本页仅存疑。" }]
+        }
+      ]
+    }
+  ]
+}

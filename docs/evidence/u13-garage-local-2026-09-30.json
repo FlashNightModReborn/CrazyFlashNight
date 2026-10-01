@@ -1,0 +1,437 @@
+{
+  "schema": "cf7.u13-garage-local-evidence.v1",
+  "date": "2026-09-30",
+  "issue": 39,
+  "handoffBaseline": "6e72018e1b4691c288b66007f790c1bca9c0bb2c",
+  "authorization": "本会话人类授权的 U13 施工；等待 Epic 11 明确交接后开始。无提交、推送或正式 runtime 发布授权。 本轮人类明确授权：按全幅布局、权益文案与原画图片方向完成本地体验完善。 2026-10-01：人类明确授权“那就走发布列车”，含同步、提交、双签共识、正式部署与推送。",
+  "state": {
+    "compiled": true,
+    "candidate_built": true,
+    "candidate_executed": true,
+    "e2e_verified": false,
+    "promoted": false,
+    "standard_entry_verified": false
+  },
+  "candidate": {
+    "schema": "cf7-local-dev-runtime-selection.v1",
+    "candidateRelativePath": "tmp/runtime-candidates/v2/u13-garage-polish-0930",
+    "artifactSourceHash": "9ABB716A06322C9CED7471A02A39B8DAEBE9EEB39572096AE8DA11BEB1AD2324",
+    "producerRecipeHash": "E1046C729C2A40157C7246C327FE9B3FBFEBCCFA7F641962214DEF72E68AF58E",
+    "toolchainLockHash": "DFA769829F9740196DEF63351A00AAC309E50A2CA0A768759334EB2A2161DD36",
+    "buildIdentityHash": "F120961C4726B60D3FDB4FDF2263C199652FA8E5ACBD4F016B489C8BCE11E041",
+    "payloadClosureHash": "37F2AF55F868ED4CF717C21A44B9EC1C369E7B8C025F9F34D79EE007F1BB3E55",
+    "coreSha256": "BFE52C0835A5043105523B296C8C33181AFEF86569B00E05DD73FCA8C7FA7970",
+    "activatedAtUtc": "2026-09-30T12:52:52.9074313Z",
+    "trust": "INDEX_ONLY_REVERIFY_BEFORE_EXECUTION"
+  },
+  "checks": {
+    "garageAs2": {
+      "passed": 48,
+      "failed": 0,
+      "runId": "d581ded0a7c14b85a03bc685c65e5558",
+      "compiler": "0/0",
+      "traceFile": "tmp/u13/flash/garage-polish-trace.txt",
+      "healthLog": "tmp/u13/flash/garage-polish-test.log"
+    },
+    "saveAndCharacterAs2": {
+      "passed": 849,
+      "failed": 0,
+      "compiler": "0/0",
+      "traceFile": "tmp/u13/flash/character-build-pass-trace.txt",
+      "scopeNote": "U13 初轮施工证据；本次文案/图片打磨未重跑该套件。"
+    },
+    "host": {
+      "passed": 6330,
+      "skipped": 5,
+      "failed": 0,
+      "garageCases": 17,
+      "log": "tmp/u13/host-release-readiness-tests.log"
+    },
+    "browser": {
+      "passed": 124,
+      "viewports": 5,
+      "layer": "production modules and DOM, real infrastructure XML and baked vehicle WebP, mocked AS2 transaction replies",
+      "sizes": [
+        "1024x576",
+        "1366x768",
+        "1920x1080",
+        "1024x768",
+        "2560x1080"
+      ],
+      "log": "tmp/u13/browser-polish-test.log"
+    },
+    "panelContracts": {
+      "passed": 70,
+      "failed": 0
+    },
+    "panelRuntime": {
+      "passed": 41,
+      "failed": 0
+    },
+    "saveCallsites": {
+      "physical": 42,
+      "logical": 34,
+      "pass": true
+    },
+    "saveNegativeContracts": {
+      "passed": 17
+    },
+    "bom": true,
+    "asloaderAssembly": true,
+    "lazyClosure": true,
+    "cssClosure": true,
+    "docGovernance": true,
+    "workbenchUi": {
+      "globalPass": true,
+      "globalErrors": 0,
+      "globalWarnings": 0,
+      "affectedFileUnchangedAgainstHead": true,
+      "garageCssPass": true,
+      "garageCssDebt": {
+        "rawColor": 0,
+        "fontBelow9": 0,
+        "font9PlayerText": 0,
+        "rawDuration": 0,
+        "rawEasing": 0,
+        "transitionAll": 0
+      },
+      "globalLog": "tmp/u13/ui-palette-worktree-audit.json",
+      "scopeLog": "tmp/u13/garage-css-polish-audit.json",
+      "priorFinding": {
+        "level": "error",
+        "code": "WB122",
+        "message": "workbench CSS debt increased or remains on a line touched since the immutable baseline",
+        "file": "launcher/web/css/appearance-service.css",
+        "line": 8,
+        "detail": {
+          "rule": "rawColor",
+          "baseline": 2777,
+          "current": 2087,
+          "delta": -690,
+          "touchedCount": 32,
+          "samples": [
+            {
+              "rule": "rawColor",
+              "file": "launcher/web/css/appearance-service.css",
+              "line": 8,
+              "endLine": 8,
+              "selector": ".appearance-service-shell",
+              "property": "--appearance-text",
+              "value": "#edf0f2"
+            },
+            {
+              "rule": "rawColor",
+              "file": "launcher/web/css/appearance-service.css",
+              "line": 15,
+              "endLine": 15,
+              "selector": ".appearance-service-panel",
+              "property": "--appearance-bg",
+              "value": "#090b0e"
+            },
+            {
+              "rule": "rawColor",
+              "file": "launcher/web/css/appearance-service.css",
+              "line": 16,
+              "endLine": 16,
+              "selector": ".appearance-service-panel",
+              "property": "--appearance-hover-line",
+              "value": "#687582"
+            },
+            {
+              "rule": "rawColor",
+              "file": "launcher/web/css/appearance-service.css",
+              "line": 17,
+              "endLine": 17,
+              "selector": ".appearance-service-panel",
+              "property": "--appearance-secondary-text",
+              "value": "#c8ced3"
+            },
+            {
+              "rule": "rawColor",
+              "file": "launcher/web/css/appearance-service.css",
+              "line": 18,
+              "endLine": 18,
+              "selector": ".appearance-service-panel",
+              "property": "--appearance-strong-text",
+              "value": "#fff"
+            },
+            {
+              "rule": "rawColor",
+              "file": "launcher/web/css/appearance-service.css",
+              "line": 19,
+              "endLine": 19,
+              "selector": ".appearance-service-panel",
+              "property": "--appearance-tint",
+              "value": "rgba(255, 255, 255, .025)"
+            },
+            {
+              "rule": "rawColor",
+              "file": "launcher/web/css/appearance-service.css",
+              "line": 20,
+              "endLine": 20,
+              "selector": ".appearance-service-panel",
+              "property": "--appearance-surface",
+              "value": "#11151a"
+            },
+            {
+              "rule": "rawColor",
+              "file": "launcher/web/css/appearance-service.css",
+              "line": 21,
+              "endLine": 21,
+              "selector": ".appearance-service-panel",
+              "property": "--appearance-surface-raised",
+              "value": "#181e24"
+            }
+          ]
+        }
+      },
+      "releaseTreeStrictPass": true,
+      "worktreeStrictPass": true,
+      "resolvedBy": "shared base-service palette; original colors and alpha preserved",
+      "releaseLog": "tmp/u13/ui-palette-release-audit.json",
+      "rawColorCeiling": 2055,
+      "stableGarageRgbaIdentical": {
+        "bicycle": true,
+        "motorcycle": true,
+        "offroad": true
+      }
+    },
+    "vehicleImages": {
+      "regenerationPass": true,
+      "images": 3,
+      "totalBytes": 369056,
+      "manifest": "launcher/web/assets/garage-vehicles/manifest.json",
+      "manifestSha256": "8C41A8F71F6703C0032EFEC44F74EB12BF4246AB3BEC92DE96A7552A5E27EA66",
+      "log": "tmp/u13/vehicles-check.log"
+    },
+    "baseServiceConsumers": {
+      "garage": {
+        "passed": 124,
+        "viewports": 5
+      },
+      "hairdresser": {
+        "passed": 58,
+        "viewports": 3
+      },
+      "surgery": {
+        "passed": 72,
+        "viewports": 3
+      }
+    },
+    "fontCatalog": {
+      "resourcesValid": true,
+      "generatedCurrent": true,
+      "upstreamCommit": "42a5bc523b",
+      "usageAuditPass": false,
+      "usageAuditErrors": 24,
+      "cliTests": {
+        "passed": 32,
+        "failed": 1,
+        "total": 33
+      },
+      "scopeNote": "Extra usage audit found pre-existing unclassified families in sleep/LUT/minigames and third-party dependencies. This audit is not one of the formal release-policy checks; do not describe Gate E usage as all passed.",
+      "logs": [
+        "tmp/u13/fonts-release-validate.log",
+        "tmp/u13/fonts-release-generated.log",
+        "tmp/u13/fonts-release-audit.json",
+        "tmp/u13/fonts-release-test.log"
+      ]
+    },
+    "materialCatalogCurrent": true
+  },
+  "productionSwfs": [
+    {
+      "lastWrite": "2026-09-30T20:39:24.955683+08:00",
+      "swf": "scripts/asLoader.swf",
+      "sha256": "A640296E2977AEFBD3F0C8D2908FDAA97F34588A06476E56B3EBF0D9CAC06866",
+      "compiler": "0 个错误, 0 个警告",
+      "target": "publish",
+      "size": 1419567,
+      "compilerFile": "tmp/u13/flash/asloader-polish-compiler.txt",
+      "publishLog": "tmp/u13/flash/asloader-polish-publish.log"
+    },
+    {
+      "lastWrite": "2026-09-30T18:49:36.2566474+08:00",
+      "swf": "flashswf/levels/基地场景合集.swf",
+      "sha256": "6400478054CA5E8D2D57582C532112D59095B2BD389008EF5B19D303231EBB15",
+      "compiler": "0 个错误, 0 个警告",
+      "target": "flashswf/levels/基地场景合集/基地场景合集.xfl",
+      "size": 2976109
+    },
+    {
+      "fontParity": "four embedded font definitions unchanged; shared economy assets unchanged",
+      "parentTimedOut": true,
+      "size": 211075,
+      "swf": "CRAZYFLASHER7MercenaryEmpire.swf",
+      "lastWrite": "2026-09-30T19:04:19.5014279+08:00",
+      "lateTerminalObserved": true,
+      "target": "main",
+      "compiler": "0 个错误, 0 个警告",
+      "sha256": "95FFBE9CCBB3E5E40171632E8971B30C6C61B88C8B4A3568DCBF16180543BE1A"
+    }
+  ],
+  "publishedSymbolChecks": {
+    "scripts/asLoader.swf": {
+      "打开车库购车": true,
+      "garagePurchaseSnapshot": true,
+      "garage_purchase_response": true
+    },
+    "flashswf/levels/基地场景合集.swf": {
+      "打开车库购车": true,
+      "bicycle": true,
+      "motorcycle": true,
+      "offroad": true
+    }
+  },
+  "retiredConfirmationInstanceAbsent": true,
+  "fontParity": {
+    "baselineFonts": {
+      "Microsoft YaHei\u0000": {
+        "tag": 75,
+        "sha256": "6568c2e51d196f8efe2bda7b767daa5186b874ddebbb5342e78745d023f9f553"
+      },
+      "_sans\u0000": {
+        "tag": 75,
+        "sha256": "2d4231f60438092e9b6e3cffa3e352490cc2f11ee2d9e369f3ef15b2d5f35839"
+      },
+      "SimSun\u0000": {
+        "tag": 75,
+        "sha256": "51927e9f0c701bbd3b1266e64239ebe531824e6318b7bf2c1976ebbb99295afe"
+      },
+      "Usuzi\u0000": {
+        "tag": 75,
+        "sha256": "e2ea22a4ab872024ba7289b70799aa4c6721ff5b56c58ed8d2730162c17c6a79"
+      }
+    },
+    "currentFonts": {
+      "Microsoft YaHei\u0000": {
+        "tag": 75,
+        "sha256": "6568c2e51d196f8efe2bda7b767daa5186b874ddebbb5342e78745d023f9f553"
+      },
+      "_sans\u0000": {
+        "tag": 75,
+        "sha256": "2d4231f60438092e9b6e3cffa3e352490cc2f11ee2d9e369f3ef15b2d5f35839"
+      },
+      "SimSun\u0000": {
+        "tag": 75,
+        "sha256": "51927e9f0c701bbd3b1266e64239ebe531824e6318b7bf2c1976ebbb99295afe"
+      },
+      "Usuzi\u0000": {
+        "tag": 75,
+        "sha256": "e2ea22a4ab872024ba7289b70799aa4c6721ff5b56c58ed8d2730162c17c6a79"
+      }
+    },
+    "unchangedRetainedFonts": true,
+    "newFontNames": [],
+    "removedFontNames": [],
+    "sharedEconomyUnchanged": true
+  },
+  "validationRepairs": [
+    "按现有恢复合同归档 TestLoader 二阶段超时并核对 scratch 原始哈希。",
+    "SaveManager 药剂组测试夹具补齐现役 hasBankStock 所需的物品栏.药剂栏；保留全部断言与生产药剂逻辑。",
+    "main 字体映射弹窗解除后观察到晚到完成；fresh Compiler 0/0、目标 SWF 和字体字节一致性独立核对。",
+    "三车位图沿用 FFDec 路径，避免自行车 SVG 导出的孔洞失真；未修改共享矢量工具或原稿。",
+    "基建说明改变后显式再生材料字典 sidecar；仅两个来源摘要变化，字典 XML 内容保持一致。"
+  ],
+  "pending": [
+    "正式入口购车/拥有状态及保存重启读回。",
+    "地图、战备箱追加页和材料商店/合成导航的完整权益刷新专项。",
+    "上游新增思源黑体 Native HUD 字形/布局回归；本次候选用户运行发生在该上游快进之前。"
+  ],
+  "formalRuntimeChanged": false,
+  "committed": false,
+  "pushed": false,
+  "updatedAtUtc": "2026-09-30T14:54:53.192925+00:00",
+  "presentation": {
+    "layout": "full game anchor; shared 1024x576 proportional canvas, centered in non-16:9 browser previews",
+    "benefitsAuthority": "infrastructure Level 1 Description; quote and driving remain Level 0",
+    "dataPath": "data/infrastructure/infrastructure.xml",
+    "dataSha256": "B08615659BF65EE72EF7CF53877B733C9B6AD7DB2F19A20176056443CAAC71FF",
+    "screenshots": [
+      "tmp/u13/web/garage-bicycle-1024x576.png",
+      "tmp/u13/web/garage-motorcycle-1024x576.png",
+      "tmp/u13/web/garage-offroad-1024x576.png"
+    ],
+    "entry": "本地开发启动.cmd"
+  },
+  "formalRuntimeHashes": {
+    "coreSha256": "FC67DC94F61084F67F0C646BE022C502E9B44C01E7F3F7A89A59D14AB9518A44",
+    "nativeSha256": "76B2424FDCD974604B9AA486397CD7337766FEF3654B9F72D33FBF93A1F9E882"
+  },
+  "runtimeInspection": {
+    "session": "2026-09-30 21:03:17 through 21:11:09 +08:00",
+    "runtimeMode": "isolated_candidate",
+    "processPath": "tmp/runtime-candidates/v2/u13-garage-polish-0930/runtime/CRAZYFLASHER7MercenaryEmpire.Core.exe",
+    "coreSha256": "BFE52C0835A5043105523B296C8C33181AFEF86569B00E05DD73FCA8C7FA7970",
+    "buildIdentityHash": "F120961C4726B60D3FDB4FDF2263C199652FA8E5ACBD4F016B489C8BCE11E041",
+    "payloadClosureHash": "37F2AF55F868ED4CF717C21A44B9EC1C369E7B8C025F9F34D79EE007F1BB3E55",
+    "bindingEvidence": "Bootstrap mode/path/size/mtime and successful mandatory native self-check before Main; current immutable producer payload/hash matches that path and candidate metadata.",
+    "bootstrapSha256": "CBD68B92B16E5B1FA8FA8078F5F223ADB81C918A9F92EBFCF572E19B234151A2",
+    "launcherLogSha256": "53DD35708F681DCE5ACD6DFA822E07BF1C4651E8116F16F77878E10E544C97CB",
+    "runtimeIssues": 0,
+    "payments": [
+      {
+        "vehicleId": "bicycle",
+        "cost": 8000,
+        "count": 1,
+        "at": "21:06:24.680"
+      },
+      {
+        "vehicleId": "motorcycle",
+        "cost": 35000,
+        "count": 1,
+        "at": "21:06:45.654"
+      },
+      {
+        "vehicleId": "offroad",
+        "cost": 500000,
+        "count": 1,
+        "at": "21:06:55.557"
+      }
+    ],
+    "saveFlushAndShadowConfirmed": true,
+    "normalShutdown": true,
+    "fontRevisionNote": "Observed user session preceded upstream font commit synchronization; new-font native HUD visual revalidation is a separate upstream regression note."
+  },
+  "humanAcceptance": {
+    "garageUiAccepted": true,
+    "evidence": "User: 感觉没问题 (2026-09-30); actual three-car purchases also observed in launcher log."
+  },
+  "upstreamIntegration": {
+    "head": "42a5bc523bc9a220aab4d70d87e66ce6f0178742",
+    "method": "fast-forward after verifying 9 upstream paths had zero overlap with local changes; no local source commit made"
+  },
+  "releaseReadiness": {
+    "preparedForRelease": true,
+    "actualReleaseAuthorized": true,
+    "completePreflight": {
+      "checks": 43,
+      "passed": 42,
+      "failed": 1,
+      "failedCheck": "material-catalog-current",
+      "receipt": "tmp/u13/release-readiness-policy.json",
+      "releaseTreeOid": "1fa3fea35236108d66052cecd394b060dabb0526",
+      "passedReceipt": false
+    },
+    "correctedAfterPreflight": {
+      "check": "material-catalog-current",
+      "generator": "tools/derive-material-catalog.py derive",
+      "verification": "tools/derive-material-catalog.py --check",
+      "passed": true,
+      "output": "data/dictionaries/material_dictionary.generated.json",
+      "sha256": "08C8576D167F255A50146DCCD0FCAB1140ED5812C3668675E2A7CCDC6AEA09F6",
+      "scope": "only infrastructure source SHA and aggregate sourceDigest changed; material dictionary payload unchanged"
+    },
+    "requireFreshFrozenTreePolicyReceipt": true,
+    "notes": "No currently known unrepaired hard blocker. The failed receipt is preserved and cannot be relabeled or reused. Explicit commit/tag/request/signing/promotion/push authorization remains required.",
+    "pendingUpstream": {
+      "commit": "3a952451f6",
+      "paths": [
+        "launcher/src/Guardian/Hud/Dialogue/NativeDialogueWidget.cs",
+        "data/dialogues/npc_dialogue_A兵团元老.xml"
+      ],
+      "action": "Synchronize disjoint upstream C# dialogue changes, rebuild and revalidate candidate before freezing the formal source.",
+      "additionalCommit": "64380bfc6f"
+    }
+  }
+}

@@ -1,0 +1,64 @@
+/* 全游戏区域沿用共享 1024×576 画布与 PanelScale。 */
+#panel-container[data-panel="garage"] #panel-content {
+    inset: 0;
+    align-items: center;
+    justify-content: center;
+}
+#panel-container[data-panel="garage"] #panel-backdrop { background: var(--launcher-bg-0); }
+.garage-scale-shell.panel-scale-shell {
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) scale(var(--panel-scale, 1));
+    transform-origin: center;
+}
+.garage-body {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.13fr);
+    gap: 28px;
+    min-height: 0;
+    padding: 25px 30px;
+}
+.garage-eyebrow { color: var(--appearance-muted); font-size: 12px; letter-spacing: .14em; margin: 0 0 9px; }
+.garage-showcase {
+    display: grid;
+    grid-template-rows: auto minmax(0, 1fr) auto;
+    min-width: 0;
+    min-height: 0;
+    margin: 0;
+    padding: 20px;
+    border: 1px solid var(--appearance-line-soft);
+    background: radial-gradient(ellipse at 50% 46%, color-mix(in srgb, var(--appearance-accent) 8%, transparent), transparent 70%),
+        linear-gradient(145deg, var(--appearance-surface-raised), var(--appearance-bg));
+}
+.garage-vehicle-stage { position: relative; display: grid; place-items: center; min-height: 0; }
+.garage-vehicle-stage::after {
+    content: "";
+    position: absolute;
+    inset: auto 8% 12%;
+    height: 24px;
+    border: 1px solid var(--appearance-line-soft);
+    border-radius: 50%;
+    pointer-events: none;
+}
+.garage-vehicle-stage img { position: relative; z-index: 1; width: 100%; height: 100%; min-height: 0; object-fit: contain; }
+.garage-vehicle-stage img[hidden], .garage-image-placeholder[hidden] { display: none; }
+.garage-image-placeholder { color: var(--appearance-muted); font-size: 13px; }
+.garage-showcase figcaption { display: flex; justify-content: space-between; gap: 12px; padding-top: 12px; border-top: 1px solid var(--appearance-line-soft); font-size: 12px; color: var(--appearance-muted); }
+#garage-role { color: var(--appearance-secondary-text); }
+.garage-card { min-width: 0; min-height: 0; overflow-y: auto; scrollbar-width: thin; scrollbar-color: var(--appearance-line) var(--appearance-bg); }
+.garage-card::-webkit-scrollbar { width: 7px; }
+.garage-card::-webkit-scrollbar-track { background: var(--appearance-bg); }
+.garage-card::-webkit-scrollbar-thumb { background: var(--appearance-line); border-radius: 4px; }
+.garage-card h2 { margin: 0 0 14px; font-size: 29px; line-height: 1.25; color: var(--appearance-strong-text); }
+.garage-benefits { display: grid; gap: 11px; list-style: none; padding: 0; margin: 0 0 18px; }
+.garage-benefits li { display: grid; grid-template-columns: 66px minmax(0, 1fr); gap: 9px; line-height: 1.65; font-size: 13px; }
+.garage-benefit-label { color: var(--appearance-secondary-text); font-weight: 600; }
+.garage-benefit-text, .garage-benefit-plain { color: var(--appearance-secondary-text); }
+.garage-benefits .garage-benefit-plain { display: block; }
+.garage-card dl { display: grid; grid-template-columns: 1fr 1fr 1.35fr; gap: 16px; margin: 0; padding: 16px 0; border-block: 1px solid var(--appearance-line); }
+.garage-card dt { font-size: 12px; color: var(--appearance-muted); margin-bottom: 7px; }
+.garage-card dd { margin: 0; font-size: 16px; font-weight: 600; color: var(--appearance-strong-text); }
+.garage-card dd[data-insufficient="true"] { color: var(--appearance-warning); }
+.garage-status { min-height: 24px; margin: 13px 0 0; font-size: 13px; line-height: 1.6; color: var(--appearance-secondary-text); }
+.garage-panel .appearance-service-footer > p { max-width: 530px; margin: 0; font-size: 12px; line-height: 1.6; color: var(--appearance-muted); }
+.garage-panel .appearance-service-button { height: 42px; font-size: 13px; }

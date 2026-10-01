@@ -587,6 +587,143 @@ namespace CF7Launcher.Tests.Tasks
             Assert.Equal("unknown_item", (string)resp["error"]);
         }
 
+        [Fact]
+        public void GlossaryCatalog_FiltersTermsByItemProgressAndDecrypt()
+        {
+            WriteGlossaryIndex(
+                "[" +
+                "{\"termName\":\"三战\",\"displayName\":\"三战\"}," +
+                "{\"termName\":\"黑铁会\",\"displayName\":\"黑铁会\",\"requires\":[{\"item\":\"酒保线报：黑铁会崛起于乡间\",\"minValue\":1}]}," +
+                "{\"termName\":\"ECHO计划\",\"displayName\":\"ECHO计划\",\"requires\":[{\"item\":\"γ-ECHO病理摘要\",\"minValue\":1},{\"decryptLevel\":3}]}" +
+                "]");
+
+            var posted = new List<string>();
+            var task = new IntelligenceTask(_root);
+            task.SetPostToWeb(delegate(string json) { posted.Add(json); });
+
+            // 黑铁会揭示（对应线报已发现），ECHO 缺物 + 解密不足 → 锁
+            task.HandleWebRequest("glossary_catalog", JObject.Parse(
+                "{\"callId\":\"gcat-1\",\"values\":{\"酒保线报：黑铁会崛起于乡间\":1},\"decryptLevel\":1}"));
+
+            JObject resp = JObject.Parse(posted[0]);
+            Assert.True((bool)resp["success"]);
+            Assert.Equal("glossary_catalog", (string)resp["cmd"]);
+            Assert.Equal(2, ((JArray)resp["items"]).Count);
+            Assert.Equal("三战", (string)resp["items"][0]["termName"]);
+            Assert.Equal("黑铁会", (string)resp["items"][1]["termName"]);
+            Assert.Equal(1, (int)resp["lockedCount"]);
+
+            posted.Clear();
+            task.HandleWebRequest("glossary_catalog", JObject.Parse(
+                "{\"callId\":\"gcat-2\",\"values\":{\"酒保线报：黑铁会崛起于乡间\":1,\"γ-ECHO病理摘要\":1},\"decryptLevel\":3}"));
+            JObject respAll = JObject.Parse(posted[0]);
+            Assert.Equal(3, ((JArray)respAll["items"]).Count);
+            Assert.Equal(0, (int)respAll["lockedCount"]);
+        }
+
+        [Fact]
+        public void GlossaryCatalog_MissingProgressFields_RevealsOnlyFreeTerms()
+        {
+            WriteGlossaryIndex(
+                "[" +
+                "{\"termName\":\"三战\"}," +
+                "{\"termName\":\"黑铁会\",\"requires\":[{\"item\":\"酒保线报：黑铁会崛起于乡间\",\"minValue\":1}]}" +
+                "]");
+
+            var posted = new List<string>();
+            var task = new IntelligenceTask(_root);
+            task.SetPostToWeb(delegate(string json) { posted.Add(json); });
+
+            task.HandleWebRequest("glossary_catalog", JObject.Parse("{\"callId\":\"gcat-0\"}"));
+
+            JObject resp = JObject.Parse(posted[0]);
+            Assert.True((bool)resp["success"]);
+            Assert.Equal(1, ((JArray)resp["items"]).Count);
+            Assert.Equal("三战", (string)resp["items"][0]["termName"]);
+            Assert.Equal(1, (int)resp["lockedCount"]);
+        }
+
+        [Fact]
+        public void GlossaryCatalog_MinCollectedItemsCondition_UsesValuesMap()
+        {
+            WriteGlossaryIndex(
+                "[" +
+                "{\"termName\":\"自由词条\"}," +
+                "{\"termName\":\"集换词条\",\"requires\":[{\"minCollectedItems\":2}]}" +
+                "]");
+
+            var posted = new List<string>();
+            var task = new IntelligenceTask(_root);
+            task.SetPostToWeb(delegate(string json) { posted.Add(json); });
+
+            // values 里有两项 value>0 → 满足 minCollectedItems:2
+            task.HandleWebRequest("glossary_catalog", JObject.Parse(
+                "{\"callId\":\"gcat-3\",\"values\":{\"甲\":1,\"乙\":2,\"丙\":0}}"));
+
+            JObject resp = JObject.Parse(posted[0]);
+            Assert.Equal(2, ((JArray)resp["items"]).Count);
+            Assert.Equal(0, (int)resp["lockedCount"]);
+        }
+
+        [Fact]
+        public void GlossarySnapshot_ReturnsUnlockedPages_AndCrossItemRequires()
+        {
+            WriteGlossary("三战",
+                "{" +
+                "\"schemaVersion\":1,\"termName\":\"三战\",\"displayName\":\"三战\",\"skin\":\"dossier\",\"pages\":[" +
+                "{\"pageKey\":\"1\",\"requires\":[],\"blocks\":[{\"type\":\"paragraph\",\"content\":[{\"type\":\"text\",\"text\":\"基础释义\"}]}]}," +
+                "{\"pageKey\":\"2\",\"requires\":[{\"item\":\"地铁站通关证明\",\"minValue\":5}],\"blocks\":[{\"type\":\"paragraph\",\"content\":[{\"type\":\"text\",\"text\":\"战区补录\"}]}]}," +
+                "{\"pageKey\":\"3\",\"requires\":[{\"item\":\"地铁站通关证明\",\"minValue\":10},{\"item\":\"对前治安官的采访\",\"minValue\":1}],\"blocks\":[{\"type\":\"paragraph\",\"content\":[{\"type\":\"text\",\"text\":\"交叉补录\"}]}]}" +
+                "]}");
+
+            var posted = new List<string>();
+            var task = new IntelligenceTask(_root);
+            task.SetPostToWeb(delegate(string json) { posted.Add(json); });
+
+            // 只持一项物品的 5 进度 → 页 1+2 解锁，第 3 页缺另一件物品仍锁（但占位返回）
+            task.HandleWebRequest("glossary_snapshot", JObject.Parse(
+                "{\"callId\":\"gsnap-1\",\"termName\":\"三战\",\"values\":{\"地铁站通关证明\":5},\"decryptLevel\":0}"));
+            JObject resp = JObject.Parse(posted[0]);
+            Assert.True((bool)resp["success"]);
+            Assert.Equal("三战", (string)resp["termName"]);
+            var pages = (JArray)resp["pages"];
+            Assert.Equal(3, pages.Count);
+            Assert.True((bool)pages[1]["unlocked"]);
+            Assert.Equal("战区补录", (string)pages[1]["blocks"][0]["content"][0]["text"]);
+            Assert.False((bool)pages[2]["unlocked"]);
+            Assert.NotNull(pages[2]["requires"]);          // 锁定页回传条件供前端提示
+            Assert.Equal(1, (int)resp["lockedPageCount"]);
+
+            // 两件物品都满足 → 交叉条件成立，三页全开
+            task.HandleWebRequest("glossary_snapshot", JObject.Parse(
+                "{\"callId\":\"gsnap-2\",\"termName\":\"三战\",\"values\":{\"地铁站通关证明\":10,\"对前治安官的采访\":1},\"decryptLevel\":0}"));
+            JObject respFull = JObject.Parse(posted[1]);
+            Assert.Equal(3, ((JArray)respFull["pages"]).Count);
+            Assert.True((bool)respFull["pages"][2]["unlocked"]);
+            Assert.Equal("交叉补录", (string)respFull["pages"][2]["blocks"][0]["content"][0]["text"]);
+            Assert.Equal(0, (int)respFull["lockedPageCount"]);
+
+            task.HandleWebRequest("glossary_snapshot", JObject.Parse(
+                "{\"callId\":\"gsnap-3\",\"termName\":\"不存在\",\"values\":{},\"decryptLevel\":10}"));
+            JObject respMissing = JObject.Parse(posted[2]);
+            Assert.False((bool)respMissing["success"]);
+            Assert.Equal("term_missing", (string)respMissing["error"]);
+        }
+
+        private void WriteGlossaryIndex(string json)
+        {
+            string dir = Path.Combine(_root, "data", "glossary");
+            Directory.CreateDirectory(dir);
+            File.WriteAllText(Path.Combine(dir, "glossary_index.json"), json, Encoding.UTF8);
+        }
+
+        private void WriteGlossary(string termName, string json)
+        {
+            string dir = Path.Combine(_root, "data", "glossary");
+            Directory.CreateDirectory(dir);
+            File.WriteAllText(Path.Combine(dir, termName + ".json"), json, Encoding.UTF8);
+        }
+
         private void WriteDictionary(string xml)
         {
             File.WriteAllText(Path.Combine(_root, "data", "dictionaries", "information_dictionary.xml"), xml, Encoding.UTF8);

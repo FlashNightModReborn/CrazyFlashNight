@@ -970,17 +970,29 @@ namespace CF7Launcher.Guardian.Hud.Dialogue
                         NativeDialogueTextLayout.Run run = line.Runs[r];
                         if (run.GlyphStart >= _visibleChars) break;
                         int remain = _visibleChars - run.GlyphStart;
-                        string text = run.Text;
-                        if (remain < text.Length) text = text.Substring(0, remain);
-                        if (text.Length == 0) continue;
-                        g.DrawString(text, _fontBody,
-                            BrushFor(run.Color.A == 0 ? fs.Color : run.Color),
-                            x, y, _typoFormat);
-                        // run 覆盖 glyph 区间 [GlyphStart, +Text.Length)，x 按实际绘长推进
-                        int off = run.LineOffset;
-                        int drawn = Math.Min(text.Length, line.GlyphCount - off);
-                        if (drawn > 0 && off + drawn < line.PrefixW.Length)
-                            x += line.PrefixW[off + drawn] - line.PrefixW[off];
+                        SolidBrush brush = BrushFor(run.Color.A == 0 ? fs.Color : run.Color);
+                        if (remain < run.Text.Length)
+                        {
+                            // 已打印段冻结：整串绘制 + 仅裁剪可见前缀，不再按子串重排版；
+                            // 串尾收尾、缺字回退与代理对整形不再回跳已打出字符的位置。
+                            int drawn = remain;
+                            if (drawn > 0 && drawn < run.Text.Length
+                                && char.IsHighSurrogate(run.Text[drawn - 1])) drawn++;
+                            float reveal = _measureG.MeasureString(
+                                run.Text.Substring(0, drawn), _fontBody,
+                                int.MaxValue, _typoFormat).Width;
+                            GraphicsState rs = g.Save();
+                            g.SetClip(new RectangleF(x - 2f, y - 2f,
+                                Math.Max(0f, reveal) + 3f, lineH + 4f),
+                                CombineMode.Intersect);
+                            g.DrawString(run.Text, _fontBody, brush, x, y, _typoFormat);
+                            g.Restore(rs);
+                            break;   // 之后的 run 必然整体不可见
+                        }
+                        g.DrawString(run.Text, _fontBody, brush, x, y, _typoFormat);
+                        // run 覆盖 glyph 区间 [GlyphStart, +Text.Length)，x 按实际串宽推进
+                        x += _measureG.MeasureString(run.Text, _fontBody,
+                            int.MaxValue, _typoFormat).Width;
                     }
                     y += lineH;
                 }

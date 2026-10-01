@@ -1,0 +1,83 @@
+{
+  "schemaVersion": 1,
+  "termName": "A兵团",
+  "displayName": "A兵团",
+  "skin": "dossier",
+  "pages": [
+    {
+      "pageKey": "1",
+      "requires": [],
+      "blocks": [
+        {
+          "type": "heading", "level": 2,
+          "content": [{ "type": "text", "text": "§1 定义" }]
+        },
+        {
+          "type": "paragraph",
+          "content": [
+            { "type": "text", "text": "A 兵团，由 " },
+            { "type": "colorToken", "token": "faction-army", "content": [{ "type": "text", "text": "Andylaw" }] },
+            { "type": "text", "text": " 及其同侪于审判日后组建的佣兵组织。前身是 Andylaw 在末世前以「土匪」之名行战的武装集团；审判日带来权力真空后，他们占据监狱改组为实行佣兵等级制度的准军事组织。" }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "content": [{ "type": "text", "text": "兵团以联盟架构、相对温和的外交与高效率的农业出口维持运转；凭借掌控的地下水资源实现优质低价的农业产出，借商业扩张影响力。" }]
+        }
+      ]
+    },
+    {
+      "pageKey": "2",
+      "requires": [
+        { "item": "BPK档案", "minValue": 1 },
+        { "item": "Blue档案", "minValue": 1 }
+      ],
+      "blocks": [
+        {
+          "type": "heading", "level": 2,
+          "content": [{ "type": "text", "text": "§2 补录：核心班底" }]
+        },
+        {
+          "type": "paragraph",
+          "content": [
+            { "type": "text", "text": "兵团的核心不是制度而是人——" },
+            { "type": "colorToken", "token": "faction-army", "content": [{ "type": "text", "text": "Andylaw" }] },
+            { "type": "text", "text": "之外，档案中亦载有 Shopgirl、" },
+            { "type": "colorToken", "token": "faction-army", "content": [{ "type": "text", "text": "BPK 战队" }] },
+            { "type": "text", "text": "（Boy、Pig、King）、" },
+            { "type": "colorToken", "token": "faction-army", "content": [{ "type": "text", "text": "Blue" }] },
+            { "type": "text", "text": " 等旧世战斗班底。他们是兵团武力与外交信用的事实支柱，人事档案随成员权限分级存放。" }
+          ]
+        }
+      ]
+    },
+    {
+      "pageKey": "3",
+      "requires": [{ "item": "A兵团制式套装改造图纸", "minValue": 1 }],
+      "blocks": [
+        {
+          "type": "heading", "level": 2,
+          "content": [{ "type": "text", "text": "§3 补录：制式装备" }]
+        },
+        {
+          "type": "paragraph",
+          "content": [{ "type": "text", "text": "兵团有自研的制式战术套装与配套改造图纸，含量产工艺与纳米机器人适配工艺。图纸由技术干员「小 F」维护，末端附有个人批注——兵团装备链已形成稳定的自有范式。" }]
+        }
+      ]
+    },
+    {
+      "pageKey": "4",
+      "requires": [{ "item": "从宝石线人视角一窥新经济野望", "minValue": 1 }],
+      "blocks": [
+        {
+          "type": "heading", "level": 2,
+          "content": [{ "type": "text", "text": "§4 补录：委托与新经济" }]
+        },
+        {
+          "type": "paragraph",
+          "content": [{ "type": "text", "text": "A 兵团的委托发布体系中有一位活跃的「宝石线人」。据《政治构造视角》特刊，她本人是去中心化经济主义者，借发布进攻军阀的委托，为一套「无限制、永自由」的新经济秩序扩充版图——其背后与堕落城联合大学关系暧昧。" }]
+        }
+      ]
+    }
+  ]
+}

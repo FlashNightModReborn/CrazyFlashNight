@@ -1,0 +1,240 @@
+{
+  "schema": "cf7.u13.garage-release.v1",
+  "date": "2026-10-01",
+  "issue": "https://github.com/FlashNightModReborn/CrazyFlashNight/issues/39",
+  "authorization": "本会话人类明确授权：那就走发布列车。",
+  "source": {
+    "schema": "cf7.u13.release-freeze.v1",
+    "sourceCommitOid": "0cac47709b66c515910592f8426652bbd6d4b462",
+    "releaseTreeOid": "769ee09748eb2ae8b2978dd00da70080d1e9cd2d",
+    "sourceRef": "refs/tags/runtime-build-v2/20261001-u13-garage-v2",
+    "queueRoot": "C:\\qu131002",
+    "authorizedBy": "User: 那就走发布列车",
+    "frozenAtUtc": "2026-09-30T23:52:16.0509699Z"
+  },
+  "request": {
+    "schema": "cf7-runtime-build-request.v2",
+    "requestId": "25C611E94A27CC8994BB1007DD904B06C454364DBB11918978F0103E3C661C3A",
+    "sourceKind": "Treeish",
+    "releaseTreeOid": "769ee09748eb2ae8b2978dd00da70080d1e9cd2d",
+    "sourceCommitOid": "0cac47709b66c515910592f8426652bbd6d4b462",
+    "requestCommitOid": "b4d20c1a00582d8b014c1bd4a2aea89a58a091fe",
+    "bundleTreeOid": "830d95f6164f2d5f0fa656ef21ee77f1cf2303f4",
+    "artifactSourceHash": "5590A82102DA67BC553B57A428DEFA042BF7E2521FE8C64C51189BBF147AAC96",
+    "producerRecipeHash": "E1046C729C2A40157C7246C327FE9B3FBFEBCCFA7F641962214DEF72E68AF58E",
+    "toolchainLockHash": "DFA769829F9740196DEF63351A00AAC309E50A2CA0A768759334EB2A2161DD36",
+    "policyHash": "A07F2D38FF13B01D21F45C87607CECCC86F859E5EDB9F41D650570E58B573C39",
+    "buildIdentityHash": "FAE68AEB17B657E0E86EA7F610A71C7C9EE2B2F0764B94FB06DD64A45A51F1BE",
+    "bundleFile": "source.bundle",
+    "bundleSha256": "81F9BC372B92B3E935A0217D303A0F8CCA3A34481DA536FB052A659B71D08310",
+    "requiredQuorum": 2,
+    "createdAtUtc": "2026-10-01T00:00:45.7253083Z"
+  },
+  "buildIdentityHash": "FAE68AEB17B657E0E86EA7F610A71C7C9EE2B2F0764B94FB06DD64A45A51F1BE",
+  "payloadClosureHash": "9CECA1C8AD2566C937EBE19A8A01B51A724B5970ECD781C30A5B666F39CD93C6",
+  "independentBuilders": {
+    "schema": "cf7-runtime-build-consensus-result.v2",
+    "minimumConsensus": 2,
+    "proofCount": 2,
+    "signerIdentities": [
+      "github-oidc:54E58472D425519AD2DD0039327CEC74203A4BE9B6DCCCB9D0AD0534513F9DCB",
+      "x509:CFB70E2D339ACB25E9B6C2873DF4F1AEEBA8EA75AD23B825724B27FCA70C0B86"
+    ],
+    "faultDomains": [
+      "github-hosted-windows",
+      "physical-host-c"
+    ],
+    "proofs": [
+      {
+        "schema": "cf7-runtime-github-build-attestation.v2",
+        "kind": "github-oidc",
+        "signerIdentity": "github-oidc:54E58472D425519AD2DD0039327CEC74203A4BE9B6DCCCB9D0AD0534513F9DCB",
+        "faultDomain": "github-hosted-windows",
+        "canonicalPayloadSha256": "A6EDA64C5C0516F184E604CDBFE18177BBD01B71F1927DBA210BA550BAEDD171"
+      },
+      {
+        "schema": "cf7-runtime-build-attestation.v2",
+        "kind": "x509",
+        "signerIdentity": "x509:CFB70E2D339ACB25E9B6C2873DF4F1AEEBA8EA75AD23B825724B27FCA70C0B86",
+        "faultDomain": "physical-host-c",
+        "canonicalPayloadSha256": "2BBAA5FBA4F5963CC6ABB2A094C674389EF95082F2A0D00287E40FE638D432B3"
+      }
+    ]
+  },
+  "policy": {
+    "profile": "production",
+    "passed": true,
+    "passedChecks": 43,
+    "failedChecks": 0,
+    "releaseTreeOid": "769ee09748eb2ae8b2978dd00da70080d1e9cd2d",
+    "policyHash": "A07F2D38FF13B01D21F45C87607CECCC86F859E5EDB9F41D650570E58B573C39",
+    "receipt": "tmp/u13-release-1001/attempt2/policy-receipt.json",
+    "receiptSha256": "DCD9594D11F42D4EBB969263A348D8BC3F4ED13CF942A29C87F3B3B52E5595C6",
+    "startedAtUtc": "2026-10-01T00:05:51.5376699Z",
+    "completedAtUtc": "2026-10-01T00:16:13.1563714Z"
+  },
+  "deployment": {
+    "deploymentCommitOid": "5292ba472e3d5397311656e2abd778b066b00aa2",
+    "promoted": true,
+    "promotionExitCode": 0,
+    "bootstrapCompleteInstallVerified": true,
+    "coreSha256": "64B68B496CF6E99461960B31EEB88083A4D92DF90A69439573281C9DFCF3DB32",
+    "recoverablePreviousBundle": "tmp/runtime-promotions/20261001T002054664Z-0101b16e18ff4a658826af6e82d4471d/previous",
+    "pushed": true,
+    "pushedAtUtc": "2026-10-01T00:23:35.6384725Z",
+    "promotedAtUtc": "2026-10-01T00:21:27.2656154Z",
+    "nativeSha256": "76B2424FDCD974604B9AA486397CD7337766FEF3654B9F72D33FBF93A1F9E882",
+    "manifestSha256": "6F62C69789AF6ACDFE8D518129AC952E1A127DF78ADA8ACB4A19DABB207D0820",
+    "consensusSha256": "4DAD9E9592AE8ADB6475E679F1388F246D53323ED880E50DAFF3360C9785461D"
+  },
+  "ciAudit": {
+    "databaseId": 36795951616,
+    "url": "https://github.com/FlashNightModReborn/CrazyFlashNight/actions/runs/36795951616",
+    "headSha": "5292ba472e3d5397311656e2abd778b066b00aa2",
+    "status": "completed",
+    "conclusion": "success",
+    "releaseState": "promoted",
+    "signers": 2,
+    "faultDomains": 2,
+    "payloadClosureHash": "9CECA1C8AD2566C937EBE19A8A01B51A724B5970ECD781C30A5B666F39CD93C6",
+    "log": "tmp/u13-release-1001/attempt2/deployment-audit.log"
+  },
+  "preparation": {
+    "schema": "cf7.u13.release-preparation.v1",
+    "sourceCommitOid": "0cac47709b66c515910592f8426652bbd6d4b462",
+    "releaseTreeOid": "769ee09748eb2ae8b2978dd00da70080d1e9cd2d",
+    "sourceRef": "refs/tags/runtime-build-v2/20261001-u13-garage-v2",
+    "hostTests": {
+      "log": "tmp/u13-release-1001/host-tests.log",
+      "passed": 6334,
+      "total": 6339,
+      "skipped": 5
+    },
+    "garageBrowser": {
+      "log": "tmp/u13-release-1001/garage-browser-check.log",
+      "viewports": 5,
+      "passed": 124
+    },
+    "intelligenceBrowser": {
+      "pageErrors": 0,
+      "passed": 30,
+      "total": 30,
+      "log": "tmp/u13-release-1001/intelligence-check.log"
+    },
+    "glossary": {
+      "errors": 0,
+      "terms": 20,
+      "log": "tmp/u13-release-1001/glossary-check.log"
+    },
+    "vehicleImages": {
+      "webpBytesUnchanged": true,
+      "manifestSha256": "0667412AD1F964F226906EDEC5B313EDB7F8964E8D1F2471FB976E40487B63FA",
+      "textHashMode": "utf8-lf",
+      "log": "tmp/u13-release-1001/vehicles-check.log",
+      "bytes": 369056,
+      "count": 3,
+      "regenerationPass": true
+    },
+    "upstreamIncluded": [
+      "42a5bc523bc9a220aab4d70d87e66ce6f0178742",
+      "3a952451f6",
+      "64380bfc6f"
+    ],
+    "preparedAssets": {
+      "outputs": 16,
+      "trackedChanges": 0
+    },
+    "businessJourney": {
+      "standardEntryVerified": false,
+      "purchasesAlreadyObserved": 3,
+      "restartReadbackVerified": false,
+      "candidateRuntimeEvidence": "docs/evidence/u13-garage-local-2026-09-30.json",
+      "fullBenefitsJourneyVerified": false,
+      "humanGarageUiAccepted": true
+    },
+    "pending": [
+      "标准入口购车拥有状态及保存重启读回",
+      "地图、战备箱追加页与材料导航权益专项",
+      "新增字体、对白打字/折行及情报名词页面的实际游戏体验"
+    ],
+    "capturedAtUtc": "2026-09-30T23:21:24.8354298Z",
+    "paletteIntegration": {
+      "rawColorCeiling": 2055,
+      "strictWorktree": {
+        "warnings": 0,
+        "errors": 0
+      },
+      "directColorsMoved": 5,
+      "strictReleaseTree": {
+        "warnings": 0,
+        "errors": 0
+      },
+      "renderedColorValuesPreserved": true,
+      "failedAttemptRecord": "tmp/u13-release-1001/failed-attempt.json",
+      "intelligenceBrowser": {
+        "total": 30,
+        "pageErrors": 0,
+        "passed": 30,
+        "brokenImages": 0
+      },
+      "noManagedSourceChangeSinceHostTests": true
+    }
+  },
+  "flashBindings": [
+    {
+      "swf": "scripts/asLoader.swf",
+      "compiledSha256": "A640296E2977AEFBD3F0C8D2908FDAA97F34588A06476E56B3EBF0D9CAC06866",
+      "frozenSha256": "A640296E2977AEFBD3F0C8D2908FDAA97F34588A06476E56B3EBF0D9CAC06866",
+      "matched": true
+    },
+    {
+      "swf": "flashswf/levels/基地场景合集.swf",
+      "compiledSha256": "6400478054CA5E8D2D57582C532112D59095B2BD389008EF5B19D303231EBB15",
+      "frozenSha256": "6400478054CA5E8D2D57582C532112D59095B2BD389008EF5B19D303231EBB15",
+      "matched": true
+    },
+    {
+      "swf": "CRAZYFLASHER7MercenaryEmpire.swf",
+      "compiledSha256": "95FFBE9CCBB3E5E40171632E8971B30C6C61B88C8B4A3568DCBF16180543BE1A",
+      "frozenSha256": "95FFBE9CCBB3E5E40171632E8971B30C6C61B88C8B4A3568DCBF16180543BE1A",
+      "matched": true
+    }
+  ],
+  "earlierFailedAttempt": {
+    "sourceRef": "refs/tags/runtime-build-v2/20261001-u13-garage-v1",
+    "requestId": "76E12FE610E38B60FFB45192E579363DD75E591A86956EC9FF059EB35AAC46DF",
+    "sourceCommitOid": "fbce301d8802e20fd52fd1b2d154f2111e7e030e",
+    "passed": false,
+    "total": 43,
+    "failedChecks": [
+      "workbench-ui-ratchet-regression",
+      "workbench-ui-release-tree-audit"
+    ],
+    "receipt": "tmp/u13-release-1001/policy-receipt.json",
+    "receiptSha256": "91284AD0C2F4585DBF572ED9B2771F610842FB090C32C9A7D36F14CB44AA875C",
+    "deployed": false,
+    "reason": "上游情报名词增加五处直接色值，rawColor=2060 超过已冻结上限 2055；门禁保持原阈值"
+  },
+  "state": {
+    "compiled": true,
+    "candidate_built": true,
+    "candidate_executed": false,
+    "e2e_verified": false,
+    "promoted": true,
+    "standard_entry_verified": false
+  },
+  "productEvidence": {
+    "historicalCandidate": "docs/evidence/u13-garage-local-2026-09-30.json",
+    "historicalCandidateExecuted": true,
+    "historicalThreePurchasesAndSaveConfirmed": true,
+    "humanGarageUiAccepted": true,
+    "finalArtifactBusinessJourneyExecuted": false,
+    "note": "本次新产物完成构建/签名/政策/部署与安装完整性验证；此前候选的实际三车购买与界面认可单独保留。"
+  },
+  "pending": [
+    "标准入口购车拥有状态及保存重启读回",
+    "地图、战备箱追加页与材料导航权益专项",
+    "新增字体、对白打字/折行及情报名词页面的实际游戏体验"
+  ],
+  "issueClosed": false
+}

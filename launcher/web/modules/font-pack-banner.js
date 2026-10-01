@@ -145,7 +145,10 @@ var FontPackBanner = (function() {
             if (!host) return;
             removeBanner();
             _activeBanner = buildBanner(missing);
-            host.parentNode.insertBefore(_activeBanner, host);
+            // 必须作为 .intel-status 的子节点而非其前兄弟节点：
+            // .intel-reader 是「status(auto) + content(1fr)」两行 grid，
+            // 插入第三个直接子节点会把 content 挤进隐式行钉到底部。
+            host.insertBefore(_activeBanner, host.firstChild);
         });
     }
 

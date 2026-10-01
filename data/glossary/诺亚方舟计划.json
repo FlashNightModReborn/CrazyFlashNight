@@ -1,0 +1,61 @@
+{
+  "schemaVersion": 1,
+  "termName": "诺亚方舟计划",
+  "displayName": "诺亚方舟计划",
+  "skin": "dossier",
+  "pages": [
+    {
+      "pageKey": "1",
+      "requires": [],
+      "blocks": [
+        {
+          "type": "heading", "level": 2,
+          "content": [{ "type": "text", "text": "§1 定义" }]
+        },
+        {
+          "type": "paragraph",
+          "content": [{ "type": "text", "text": "诺亚方舟计划，统合政府为应对基因改造引发的人类阶级鸿沟而设立的生物科学计划，获称「第二批基因编辑实用化成果」。计划组汇聚大量优秀人才，在芯片科技与基因嫁接等领域成果显著；其工作极机密，外界所知仅止于风声。" }]
+        },
+        {
+          "type": "paragraph",
+          "content": [{ "type": "text", "text": "计划随统合倒台而流产，残余势力重组为「诺亚」——一个以技官统治与科技优先为纲、奉行封闭经济的组织。" }]
+        }
+      ]
+    },
+    {
+      "pageKey": "2",
+      "requires": [{ "item": "丽丽丝的芯片数据", "minValue": 1 }],
+      "blocks": [
+        {
+          "type": "heading", "level": 2,
+          "content": [{ "type": "text", "text": "§2 补录：成员的证词切片" }]
+        },
+        {
+          "type": "paragraph",
+          "content": [{ "type": "text", "text": "从丽丽丝的芯片数据中可见计划组的真实剖面：年轻的制药师、外科手术天才乃至无名的辅助者，都在这个「一半是叛徒、另一半是理想」的组织里承担了无法回头的角色。芯片所记不只技术——还有人。" }]
+        }
+      ]
+    },
+    {
+      "pageKey": "3",
+      "requires": [
+        { "item": "兵工厂备份硬盘", "minValue": 1 },
+        { "item": "方舟秘钥", "minValue": 1 }
+      ],
+      "blocks": [
+        {
+          "type": "heading", "level": 2,
+          "content": [{ "type": "text", "text": "§3 补录：重组之后" }]
+        },
+        {
+          "type": "paragraph",
+          "content": [{ "type": "text", "text": "诺亚方舟计划组的遗产并未随统合消散：前线兵工厂仍在运转备份体系，被称「方舟秘钥」的密钥器物依旧流通——它是诺亚基地与禁区网络之间的出入凭据。掌握秘钥者，方能真正接近该组织的核心计划。" }]
+        },
+        {
+          "type": "note",
+          "content": [{ "type": "text", "text": "其深层的「千人一面」等计划，残档语焉不详。待续。" }]
+        }
+      ]
+    }
+  ]
+}
