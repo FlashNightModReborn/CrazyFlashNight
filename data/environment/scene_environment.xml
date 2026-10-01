@@ -806,6 +806,22 @@
         <MaxIllumination>7</MaxIllumination>
         <MinIllumination>5</MinIllumination>
         <BGM>Dialtone</BGM>
+        <Lights>
+            <Light>
+                <Key>firstline-lamp-left</Key>
+                <Preset>street</Preset>
+                <X>240.4</X>
+                <Y>139.3</Y>
+                <Angle>69.6</Angle>
+            </Light>
+            <Light>
+                <Key>firstline-lamp-right</Key>
+                <Preset>street</Preset>
+                <X>972.1</X>
+                <Y>148.2</Y>
+                <Angle>110.6</Angle>
+            </Light>
+        </Lights>
     </Environment>
     <Environment>
         <BackgroundURL>地图-隧道据点</BackgroundURL>
