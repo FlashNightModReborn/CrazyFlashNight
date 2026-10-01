@@ -1,0 +1,40 @@
+/* Scoped tutorial presentation; production inventory tiles retain their shared skin. */
+.guidance-tutorials, .guidance-secondary { --wb-bg:var(--launcher-bg-1); --wb-surface:var(--launcher-bg-0); --wb-text:var(--launcher-copy); --wb-border:var(--wb-scrollbar-thumb); }
+.guidance-tutorials { position:relative; display:grid; grid-template-columns:170px minmax(0,1fr); gap:16px; min-height:330px; color:var(--wb-text); }
+.guidance-menu { display:flex; flex-direction:column; gap:7px; align-self:start; }
+.guidance-tutorials button { border:1px solid var(--wb-border); border-radius:4px; background:var(--wb-surface); color:var(--wb-text); padding:8px 10px; cursor:pointer; font:inherit; }
+.guidance-tutorials button:hover { border-color:var(--dls-crystal); background:var(--dls-crystal-soft); }
+.guidance-tutorials button:focus-visible { outline:2px solid var(--wb-role-focus); outline-offset:2px; }
+.guidance-tutorials button:disabled { opacity:.45; cursor:default; }
+.guidance-menu [aria-current=page] { border-color:var(--dls-crystal); background:var(--dls-crystal-soft); }
+.guidance-page { min-width:0; }
+.guidance-page h2 { font-size:20px; margin:0 0 14px; }
+.guidance-page h3 { font-size:16px; margin:12px 0; }
+.guidance-copy { white-space:pre-wrap; line-height:1.7; margin-bottom:22px; }
+.guidance-copy kbd { display:inline-block; min-width:22px; padding:0 5px; margin:0 2px; border:1px solid var(--wb-border); border-radius:3px; font:inherit; text-align:center; }
+.guidance-diagram { display:block; width:100%; height:170px; margin:10px 0 20px; color:var(--wb-text); font:inherit; }
+.guidance-playback { display:flex; flex-wrap:wrap; gap:6px; }
+.guidance-playback button { font-size:13px; padding:6px 8px; }
+.guidance-step { min-height:42px; color:var(--dls-crystal-bright); line-height:1.55; }
+.guidance-demo-notice { font-size:12px; color:var(--wb-text); border-bottom:1px solid var(--wb-border); padding-bottom:8px; }
+.guidance-demo-columns { display:grid; grid-template-columns:1fr 1fr; gap:15px; }
+.guidance-demo-grid { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:6px; }
+.guidance-demo-grid .inventory-slot-card { min-width:0; min-height:88px; }
+.guidance-demo-grid .inventory-slot-copy { font-size:12px; }
+.guidance-demo-actions { display:flex; gap:8px; margin-top:15px; }
+.guidance-demo-status { color:var(--wb-text); font-size:13px; }
+.guidance-pointer { position:absolute; width:18px; height:18px; margin:-9px; border:2px solid var(--wb-role-pending); border-radius:50%; box-shadow:0 0 15px var(--wb-role-pending); background:color-mix(in srgb,var(--wb-role-pending) 45%,transparent); pointer-events:none; transition:left var(--wb-motion-structural),top var(--wb-motion-structural); z-index:2; }
+.guidance-pointer[hidden] { display:none; }
+.guidance-secondary { inset:0; display:flex; flex-direction:column; background:var(--wb-bg); padding:20px; overflow:auto; }
+.guidance-secondary > div { min-height:0; overflow:auto; }
+.guidance-secondary-close { display:block; margin:0 0 16px auto; }
+.guidance-help-link { margin:0 0 12px; color:var(--wb-text); font-size:13px; }
+.help-content:has(.guidance-tutorials) { padding:18px; }
+.guidance-skip-bar { flex-shrink:0; display:flex; flex-wrap:wrap; align-items:center; gap:8px 16px; padding:12px 18px; border-top:1px solid var(--wb-scrollbar-thumb); color:var(--launcher-copy); font-size:13px; line-height:1.6; }
+.guidance-skip-bar[hidden] { display:none; }
+.guidance-skip-note { flex:1 1 260px; }
+.guidance-skip-actions { display:flex; flex-wrap:wrap; gap:8px; margin-left:auto; }
+.guidance-skip-btn, .guidance-disable-btn { flex-shrink:0; padding:8px 16px; border:1px solid var(--dls-crystal); border-radius:4px; background:var(--dls-crystal-soft); color:var(--launcher-copy); font:inherit; cursor:pointer; }
+.guidance-skip-btn:focus-visible, .guidance-disable-btn:focus-visible { outline:2px solid var(--wb-role-focus); outline-offset:2px; }
+.guidance-disable-btn:disabled { opacity:.6; cursor:default; }
+@media (prefers-reduced-motion: reduce) { .guidance-pointer { transition:none; } }

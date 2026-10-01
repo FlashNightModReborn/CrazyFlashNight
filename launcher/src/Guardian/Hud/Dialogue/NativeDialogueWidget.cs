@@ -1015,8 +1015,7 @@ namespace CF7Launcher.Guardian.Hud.Dialogue
             Bitmap scaled = EnsureScaled(ref _sceneScaled, ref _sceneScaledW,
                 ref _sceneScaledH, _sceneBmp, L.Scene.Width, L.Scene.Height);
             if (scaled == null) return;
-            g.DrawImage(scaled, L.Scene, 0, 0, scaled.Width, scaled.Height,
-                GraphicsUnit.Pixel);
+            CF7Launcher.Guardian.Hud.Guidance.GuidanceImageLayout.DrawContained(g, scaled, L.Scene, 1);
         }
 
         // ════════════════ 布局 ════════════════

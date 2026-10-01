@@ -52,15 +52,15 @@ _root.从库中加载全屏UI = function(identifier){
 }
 
 _root.卸载全屏UI = function(){
+    org.flashNight.arki.ui.NativeGuidanceService.clear();
     _root.全屏UI层.当前UI.removeMovieClip();
     _root.全屏UI层.当前UI = null;
     _root.全屏UI层.引导界面.unloadMovie();
 }
 
 _root.加载引导界面 = function(filename){
-    _root.全屏UI层.引导界面._visible = true;
-    _root.全屏UI层.引导界面._alpha = 100;
-    _root.全屏UI层.引导界面.loadMovie("flashswf/UI/引导界面合集/" + filename + ".swf");
+    // U8 uses native hints; this facade keeps all seven existing trigger sites unchanged.
+    org.flashNight.arki.ui.NativeGuidanceService.show(filename);
 }
 
 // ============================================================

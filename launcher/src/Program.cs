@@ -1744,6 +1744,7 @@ class Program
         CF7Launcher.Guardian.Hud.Loot.LootFeedWidget lootFeedWidget = null;
         CF7Launcher.Guardian.Hud.NpcMenuWidget npcMenuWidget = null;
         CF7Launcher.Guardian.Hud.Dialogue.NativeDialogueWidget dialogueWidget = null;
+        CF7Launcher.Guardian.Hud.Guidance.NativeGuidanceWidget guidanceWidget = null;
         CF7Launcher.Guardian.Hud.Tooltip.NativeTooltipWidget nativeTooltipWidget = null;
         CF7Launcher.Guardian.Hud.PlayerInfo.PlayerInfoSplitSurface
             playerInfoSurface = null;
@@ -1848,6 +1849,7 @@ class Program
                 Path.Combine(projectRoot, "tmp", "unified-live-entry", "web-profile"),
                 form.HandlePanelStateChanged,
                 reason => windowManager.RestoreFlashInputFocus(reason));
+            panelHost.ConfigureHelpTutorialPreference(new HelpTutorialPreferenceCommand(userPrefs, userPrefs.Save));
             webOverlay.SetPanelHost(panelHost);
             commandRouter.SetPanelHost(panelHost);
 
@@ -1935,6 +1937,10 @@ class Program
                 new CF7Launcher.Guardian.Hud.NpcMenuWidget(form.FlashHostPanel);
             nativeHud.AddWidget(npcMenuWidget);
             dialogueWidget = new CF7Launcher.Guardian.Hud.Dialogue.NativeDialogueWidget(form.FlashHostPanel);
+            guidanceWidget = new CF7Launcher.Guardian.Hud.Guidance.NativeGuidanceWidget(form.FlashHostPanel,
+                CF7Launcher.Guardian.Hud.Guidance.GuidanceCatalog.FromJson(
+                    File.ReadAllText(Path.Combine(projectRoot, "launcher", "data", "guidance-catalog.json"))));
+            nativeHud.AddWidget(guidanceWidget);
             nativeHud.AddWidget(dialogueWidget);
             // webOverlay 的 toast/notch 出口固定指向 nativeHud：WebOverlayForm.AddMessage/AddNotice
             // 直接转发 _toastFallback / _notchFallback（= nativeHud），无需 ExecScript。
@@ -2214,10 +2220,13 @@ class Program
                 && !form.ActivationState.IsMinimized
                 && form.Visible;
         });
+        NativeGuidanceTask nativeGuidanceTask = null;
         SettingsTask settingsTask = new SettingsTask(socketServer, userPrefs);
         settingsTask.SetHitNumberLedgerProvider(frameTask.BuildHitNumberLedgerPage);
         settingsTask.SetHostPreferenceApplied(delegate(string key, JToken value)
         {
+            if (key == "tutorialsAutoOpen" && nativeGuidanceTask != null)
+                nativeGuidanceTask.NotifyHelpAvailabilityChanged();
             if (key == "sfxEnabled" || key == "ambientEnabled")
                 webOverlay.PushAudioPrefs();
             if (key == "mapDisplayPreference" && rightContext != null
@@ -2582,6 +2591,38 @@ class Program
         nativeDialogueTask.LoadPortraitWithRect = dialoguePortraits.LoadPortrait;
         nativeDialogueTask.PrefetchPortrait = dialoguePortraits.PrefetchPortrait;
         nativeDialogueTask.LoadSceneImage = dialoguePortraits.LoadSceneImage;
+        nativeGuidanceTask = new NativeGuidanceTask(guidanceWidget,
+            action => { if (form.InvokeRequired) form.BeginInvoke(action); else action(); },
+            wire => socketServer.IsClientReady && socketServer.TrySend(wire),
+            () => nativeHud != null && !nativeHud.IsSuspended && !panelHost.IsPanelOpen);
+        nativeGuidanceTask.LoadImage = dialoguePortraits.LoadSceneImage;
+        nativeGuidanceTask.AutomaticHelpEnabled = () => userPrefs.TutorialsAutoOpen;
+        nativeGuidanceTask.CanOpenHelp = () => socketServer.IsClientReady && !panelHost.IsPanelOpen
+            && !form.IsShutdownAdmissionClosed && webOverlay.CanAcceptPanelDocumentMessages && !characterBuildTask.HasBoundPanel
+            && lootPanelCoordinator.State == LootPanelCoordinator.BindingState.Idle && lootPanelCoordinator.ActiveBinding == null;
+        nativeGuidanceTask.OpenHelp = (presentation, completed) => {
+            var init = new Newtonsoft.Json.Linq.JObject {
+                ["guidance"] = new Newtonsoft.Json.Linq.JObject {
+                    ["guideId"] = presentation.GuideId,
+                    ["keys"] = Newtonsoft.Json.Linq.JObject.FromObject(presentation.Keys)
+                }
+            };
+            bool queued = panelHost.TryOpenTrackedPanel("help", init.ToString(Newtonsoft.Json.Formatting.None),
+                presentation.PanelInstanceId,
+                () => !form.IsDisposed && !form.Disposing && socketServer.IsClientReady && presentation.IsCurrent()
+                    && !form.IsShutdownAdmissionClosed && webOverlay.CanAcceptPanelDocumentMessages && !characterBuildTask.HasBoundPanel,
+                outcome => completed(outcome == PanelHostController.TrackedOpenOutcome.OpenPosted));
+            if (!queued) completed(false);
+        };
+        nativeGuidanceTask.CloseHelp = instance => panelHost.TryCloseTrackedPanelExact("help", instance, null);
+        nativeGuidanceTask.HelpUnavailable = () => notchSink.AddNotice("tutorial",
+            "教程暂未打开 · 右上角帮助可查看", CF7Launcher.Guardian.Hud.NativeHudTheme.Cyan);
+        nativeGuidanceTask.HelpReminder = title => notchSink.AddNotice("tutorial",
+            "教程：" + title + " · 右上角帮助可查看", CF7Launcher.Guardian.Hud.NativeHudTheme.Cyan);
+        panelHost.PanelClosed += nativeGuidanceTask.NotifyHelpClosed;
+        lootPanelCoordinator.BindingSettled += binding => nativeGuidanceTask.NotifyHelpAvailabilityChanged();
+        socketServer.OnClientDisconnected += nativeGuidanceTask.HandleTransportDisconnected;
+        form.FormClosed += delegate { guidanceWidget.Dispose(); };
         nativeDialogueTask.ReceivePortraitResult = dialoguePortraits.HandleResult;
         socketServer.OnClientDisconnected += nativeDialogueTask.HandleTransportDisconnected;
         // wire v2 source book 装配器（kind:"source" 挂点；接口由并行任务定义）。
@@ -2593,7 +2634,7 @@ class Program
 
         using (PerfTrace.Scope("task.registry_register_all"))
         {
-            TaskRegistry.RegisterAll(router, gomokuTask, toastTask, frameTask, stageOutcomeTask, warlordStageTask, warlordBattleTask, dataQueryTask, audioTask, dollBakeTask, shopTask, inventoryTask, lootTask, lootFeedTask, lootPanelCoordinator, npcShopTask, craftingTask, materialShopAccessTask, hairdresserTask, plasticSurgeryTask, sleepTask, gymTrainingTask, settingsTask, equipmentTuningTask, characterBuildTask, itemUseTask, skillTask, mapTask, stageSelectTask, arenaTask, arenaCalibrationTask, agentControlTask, petTask, mercTask, taskTask, intelligenceTask, blackMarketTask, archiveTask, benchTask, fontPackTask, webOverlay, commandRouter, mapDomainTask, nativeInteractionTask, nativeDialogueTask, worldLightingTask, lutLabTask);
+            TaskRegistry.RegisterAll(router, gomokuTask, toastTask, frameTask, stageOutcomeTask, warlordStageTask, warlordBattleTask, dataQueryTask, audioTask, dollBakeTask, shopTask, inventoryTask, lootTask, lootFeedTask, lootPanelCoordinator, npcShopTask, craftingTask, materialShopAccessTask, hairdresserTask, plasticSurgeryTask, sleepTask, gymTrainingTask, settingsTask, equipmentTuningTask, characterBuildTask, itemUseTask, skillTask, mapTask, stageSelectTask, arenaTask, arenaCalibrationTask, agentControlTask, petTask, mercTask, taskTask, intelligenceTask, blackMarketTask, archiveTask, benchTask, fontPackTask, webOverlay, commandRouter, mapDomainTask, nativeInteractionTask, nativeDialogueTask, worldLightingTask, lutLabTask, nativeGuidanceTask);
         }
         StartupDiagnostics.Mark("task.registry_register_all_ok");
 

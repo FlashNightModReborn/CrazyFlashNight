@@ -77,6 +77,8 @@
          'modules/inventory-workbench-navigation.js',
          'modules/inventory-workbench-header.js',
          'modules/inventory-workbench-quick-transfer.js',
+         'generated/guidance-catalog.js', 'generated/tutorial-journeys.js',
+         'modules/guidance-inventory-demo.js', 'modules/guidance-tutorials.js',
          'modules/inventory-workbench-owned-view.js',
          'modules/inventory-workbench-stash-source.js',
          'modules/inventory-workbench-storage-source.js',
@@ -209,7 +211,12 @@
     // ── help ──
     // marked.min.js 在 boot 时已加载（panel content 用 markdown 渲染）
     Panels.registerLazy('help',
-        ['modules/help-panel.js'],
+        ['modules/workbench-lifecycle.js', 'modules/workbench-focus.js',
+         'modules/workbench-primitives.js', 'modules/workbench-profile.js',
+         'modules/workbench.js', 'modules/workbench-components.js', 'modules/inventory-ui.js',
+         'modules/inventory-workbench-quick-transfer.js', 'generated/guidance-catalog.js',
+         'generated/tutorial-journeys.js', 'modules/guidance-inventory-demo.js',
+         'modules/guidance-tutorials.js', 'modules/help-panel.js'],
         noop);
 
     // ── jukebox ──

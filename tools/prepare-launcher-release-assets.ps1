@@ -91,6 +91,7 @@ Invoke-Cf7PrepareCommand -Name 'compile Launcher V8 TypeScript bundle' -FilePath
     -Arguments @('tsc', '--project', 'tsconfig.json') -WorkingDirectory $tsDir
 
 $nodeSteps = @(
+    @{ Name = 'derive shared guidance and tutorial journeys'; Script = 'tools\generate-guidance-catalog.js' },
     @{ Name = 'derive task catalog'; Script = 'tools\derive-task-catalog.js' },
     @{ Name = 'derive achievement catalog'; Script = 'tools\derive-achievement-catalog.js' },
     @{ Name = 'derive arena meta teams'; Script = 'tools\derive-arena-meta-teams.js' },
@@ -145,6 +146,8 @@ if (-not [string]::IsNullOrWhiteSpace($SaveSchemaSource)) {
 }
 
 $generatedOutputs = @(
+    'launcher/web/generated/guidance-catalog.js',
+    'launcher/web/generated/tutorial-journeys.js',
     'launcher/scripts/dist/hit-number-bundle.js',
     'launcher/web/modules/tasks/task-catalog.json',
     'launcher/web/modules/tasks/achievement-catalog.json',

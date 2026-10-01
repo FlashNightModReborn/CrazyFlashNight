@@ -592,6 +592,8 @@
         hgrid.appendChild(hostBoolean('introEnabled', '下次启动播放片头动画'));
         hgrid.appendChild(hostBoolean('sfxEnabled', 'Web 界面音效'));
         hgrid.appendChild(hostBoolean('ambientEnabled', 'Web 环境音'));
+        hgrid.appendChild(annotate(hostBoolean('tutorialsAutoOpen', '自动打开教程页面'),
+            '关闭后，所有自动教程改为顶部通知提醒；仍可从帮助页查看全部教程，场景操作图示继续显示。'));
         hgrid.appendChild(hostSelect('mapDisplayPreference', '地图显示',
             [['auto','自动'],['off','关闭'],['compact','紧凑'],['expanded','展开']]));
         hgrid.appendChild(hostRange());

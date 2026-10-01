@@ -5,6 +5,8 @@
 **2026-09-12 工作区增量**：NPC 场景菜单迁入 NativeHud，两个开发占位保留兼容接口，AS2 注释语义由 C#/Web 分别渲染，注释样式和交互以旧 Web 为权威。当前仍在实现与候选验证，未人验或部署；协议、兼容与验收边界见 [专项 ADR](../docs/NPC菜单与原生注释迁移-ADR-2026-09-12.md)。
 
 **文档角色**：AS2 UI 迁移到 Launcher Web Panel 的专题 canonical doc。
+
+**U8 共享引导合同**：`native_guidance` 只承载 AS2→Host 的有界显示快照，close 意图仍由 AS2 核对当前场景；5 个现场提示保留原版白色图示，不拥有输入、暂停或业务写。新手/地图告示板由原触发打开对应 Web 帮助条目，复用 tracked exact instance、执行门及现役帮助暂停/关闭生命周期，不驱逐已有面板。自动教程必须等待 AS2 结算/切场与 loot lane 空闲，再由 Host 在投递前复核结算 binding 完全释放；不能只依赖面板已关闭。自动教程提供“跳过本次”与全局“关闭教程弹窗”；本机 `tutorialsAutoOpen` 关闭后，后续触发改为一次刘海屏通知提醒，等待相同的结算/场景准入，保留手动帮助与现场图示，不推进任务或改变奖励。Help 偏好命令只允许 exact 当前实例关闭自动弹窗，失败回滚，结果未知不重发。主帮助与领域帮助共用固定样例的演示页面和语义轨迹播放器，领域帮助留在原 Panel 的 `SecondaryPage` 内。对话图片与引导共用资源读取、缓存和 contain 绘制，剧情权威不随图像复用转移。源码、扩展接口与候选边界见 [U8 共享基座](../docs/U8引导迁移与共享教程基座-2026-09-30.md)。
 **最后核对代码基线**：release source commit `c59b9b4cdb9319c04503a703019a9dff30bc04a1`（2026-09-08，医务室整形与共享外观；tag `runtime-build-v2/20260908-plastic-surgery-v1`；限定 `HUMAN_ACCEPTANCE_PASSED / promoted`）。动态 identity/closure、签名共识与审计只读 [runtime manifest](../runtime/cf7-runtime-manifest.tsv)、[runtime release consensus](../config/build/runtime-release-consensus.json)和 [runtime build reproducibility](../docs/runtime-build-reproducibility.md)；整形的人类证据范围见下节，合并上游后的正式产物未重跑游戏业务，不称业务 `standard_entry_verified`。2026-08-30 稳定性修复各业务的现场状态以对应专项最新回执为准，总体部署记录不代签这些业务。
 
 **2026-09-19 药剂 HUD 局部复核**：commit `29567cb6c2f330410ac28250cabaa34ffc3eef60`；同步下文现役点阵、#71 现场收口与玩家资源区规划引用，不改变其他专项的代码或验收基线。

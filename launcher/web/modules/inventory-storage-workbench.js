@@ -90,14 +90,8 @@ var InventoryStorageWorkbench = (function() {
             else toast(errorMessage(error));
         }
     });
-    function tuningFeatureAvailable() {
-        return typeof InventoryTuningScope !== 'undefined'
-            && InventoryTuningScope && typeof InventoryTuningScope.Transition === 'function'
-            && typeof EquipmentTuningView !== 'undefined'
-            && EquipmentTuningView && typeof EquipmentTuningView.create === 'function'
-            && typeof EquipmentTuningRuntime !== 'undefined'
-            && EquipmentTuningRuntime && typeof EquipmentTuningRuntime.safeToken === 'function';
-    }
+    var _tutorialPage = null;
+    var tuningFeatureAvailable = InventoryWorkbenchOwnedView.isTuningFeatureAvailable;
     function ensureTuningFeature() {
         if (_tuningScope && _tuningView) return true;
         if (!tuningFeatureAvailable()) return false;
@@ -779,11 +773,14 @@ var InventoryStorageWorkbench = (function() {
     }
     function openHelp() {
         if (!_shell) return false;
-        return _viewMode === 'tuning' && _tuningView
-            ? _tuningView.openHelp(function(spec) { return _shell.openModal(spec); })
-            : !!_shell.openModal(InventoryWorkbenchOwnedView.storageHelpSpec(_rightContainerId));
+        if (_viewMode === 'tuning' && _tuningView)
+            return _tuningView.openHelp(function(spec) { return _shell.openModal(spec); });
+        _tutorialPage = GuidanceTutorials.openSecondary(_el,_tutorialPage,
+            {domain:'workbench',title:'物品与战备箱教程',backLabel:'返回物品',helpSpec:InventoryWorkbenchOwnedView.storageHelpSpec(_rightContainerId)});
+        return _tutorialPage.isActive();
     }
     function cleanup() {
+        _tutorialPage = GuidanceTutorials.disposeSecondary(_tutorialPage);
         _openGeneration += 1;
         if (_pager) _pager.detach();
         for (var i = 0; i < _dragControllers.length; i++) _dragControllers[i].destroy();
@@ -821,6 +818,7 @@ var InventoryStorageWorkbench = (function() {
     }
     function prepareExit(reason, callback) {
         callback = typeof callback === 'function' ? callback : function() {};
+        if (GuidanceTutorials.consumeEscape(_tutorialPage,reason,callback)) return false;
         if (_state.busyOwner || _quickTransfer.isBusy()) {
             toast(_viewMode === 'tuning' ? '调制写入与对账尚未完成，请稍候关闭。' : '库存写入尚未完成，请稍候关闭。');
             callback(false, 'blocked');
@@ -911,6 +909,7 @@ var InventoryStorageWorkbench = (function() {
         switchSource:switchSource,
         getSource:function() { return _sources ? _sources.getSource() : 'container'; },
         consumeEscape:function() {
+            if (GuidanceTutorials.consumeEscape(_tutorialPage,'escape',function() {})) return true;
             if (_viewMode === 'tuning' && _tuningView
                     && typeof _tuningView.consumeEscape === 'function'
                     && _tuningView.consumeEscape()) return true;

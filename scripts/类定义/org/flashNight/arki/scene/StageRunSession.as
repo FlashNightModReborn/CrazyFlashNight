@@ -257,6 +257,11 @@ class org.flashNight.arki.scene.StageRunSession {
         return "base_scene";
     }
 
+    /** 奖励已暂存会释放出口权威，但未申请的结算报告仍优先于自动教程。只读。 */
+    public static function hasUnpresentedSettlementReport():Boolean {
+        return _run != null && _returnRequested && _preparedReport != null && !_settlementStarted;
+    }
+
     public static function canNavigateAwayFromStage():Boolean {
         return getSceneExitBlockReason() == "";
     }

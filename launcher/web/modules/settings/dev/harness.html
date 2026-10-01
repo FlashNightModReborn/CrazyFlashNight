@@ -74,7 +74,7 @@
       jukeboxTrueRandom:false,jukeboxPlayMode:'albumLoop'
     },
     keys:ids.map(function(id,index){return{id:id,label:index===0?'undefined':id,keyCode:codes[index],keyName:keyNames[codes[index]]||String(codes[index])}}),
-    hostPrefs:{introEnabled:true,sfxEnabled:true,ambientEnabled:true,uiFontScale:1,mapDisplayPreference:'auto',hitNumberMode:'balanced',hitNumberWorldRowLimit:24}
+    hostPrefs:{introEnabled:true,sfxEnabled:true,ambientEnabled:true,tutorialsAutoOpen:true,uiFontScale:1,mapDisplayPreference:'auto',hitNumberMode:'balanced',hitNumberWorldRowLimit:24}
   };
   function clone(value){return JSON.parse(JSON.stringify(value))}
   function help(){

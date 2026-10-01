@@ -3528,6 +3528,8 @@ class org.flashNight.arki.scene.StageRunSessionTest {
     /** 暂存已落盘后报告打开失败不得撤销物资、不得重堵场景出口。 */
     private static function testStashedReportFailureKeepsExitEligible():Void {
         resetWorld(0);
+        assertFalse(StageRunSession.hasUnpresentedSettlementReport(),
+            "fresh scene has no report waiting ahead of tutorials");
         _root.关卡可获得奖励品 = [[REWARD, 1, 1]];
         StageRunSession._captureSettlementDiagForTest();
         StageRunSession.begin("报告失败不堵门", "困难");
@@ -3536,6 +3538,8 @@ class org.flashNight.arki.scene.StageRunSessionTest {
             "return commits the stash save before arrival");
         assertTrue(StageRunSession.isCurrentRewardStashed(),
             "stash is durable before the report attempt");
+        assertTrue(StageRunSession.hasUnpresentedSettlementReport(),
+            "durable stash still reserves the first report before optional tutorials");
         var occupied:Object = LootContainerService.beginStageSettlement(
             new ArrayInventory(null, 8), StageRunSession.testOnlySnapshot().report);
         assertTrue(occupied != null && occupied.success === true,
@@ -3547,6 +3551,8 @@ class org.flashNight.arki.scene.StageRunSessionTest {
             "report failure keeps the stashed terminal settlement");
         assertFalse(state.settlementStarted === true,
             "report failure does not mark the settlement as started");
+        assertTrue(StageRunSession.hasUnpresentedSettlementReport(),
+            "report admission failure does not release tutorial priority");
         assertEquals("", StageRunSession.getSceneExitBlockReason(),
             "saved stash keeps scene exit eligible when the report fails");
         assertTrue(StageRunSession.canNavigateAwayFromStage(),
@@ -3611,6 +3617,8 @@ class org.flashNight.arki.scene.StageRunSessionTest {
         var state:Object = StageRunSession.testOnlySnapshot();
         assertEquals("stashed", state.settlement,
             "restored partial settlement stashes durably on arrival");
+        assertFalse(StageRunSession.hasUnpresentedSettlementReport(),
+            "admitted partial report releases the pre-report tutorial hold");
         assertTrue(findDiagLine(StageRunSession._getSettlementDiagForTest(),
                 "result=committed") != "",
             "committed stash emits a bounded diagnostic record");
@@ -3649,6 +3657,8 @@ class org.flashNight.arki.scene.StageRunSessionTest {
         assertTrue(StageRunSession.isCurrentRewardStashed()
                 && StageRunSession.getSceneExitBlockReason() == "",
             "zero-reward stash commits and releases the exit gate");
+        assertTrue(StageRunSession.hasUnpresentedSettlementReport(),
+            "empty durable report retains tutorial priority while earlier loot is active");
 
         // 畸形记录 fail-closed：诊断报首个违例字段，原文保留。
         StageRunSession.testOnlyReset();

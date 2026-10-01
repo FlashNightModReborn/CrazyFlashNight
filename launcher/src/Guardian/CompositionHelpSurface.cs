@@ -10,7 +10,7 @@ using CF7Launcher.Guardian.WorldCompositor;
 using Microsoft.Web.WebView2.Core;
 using Newtonsoft.Json.Linq;
 
-// 真实游戏 help 面板的局部 composition 端点（只读试点）。
+// 真实游戏 help 面板的局部 composition 端点（游戏内容只读）。
 // 复用 WorldCompositor.CompositionSceneHost 与
 // CoreWebView2CompositionController；不使用 WinForms WebView2、CDP 或私有反射。
 // 本类不是 C1 虚拟世界宿主，不持有游戏存档/业务通道。
@@ -51,6 +51,7 @@ namespace CF7Launcher.Guardian
         private readonly System.Windows.Forms.Timer _closeTimer = new() { Interval = 25 };
 
         internal event Action<string>? CloseRequested;
+        internal Func<JObject, string, JObject?>? TutorialPreferenceRequested;
 
         internal CompositionHelpSurface(Form owner, string webRoot, string profileRoot)
         {
@@ -165,6 +166,10 @@ namespace CF7Launcher.Guardian
                     if (string.IsNullOrEmpty(instance)) return false;
                     _panelInstance = instance;
                 }
+            }
+            else if (type == "tutorial_preference_result")
+            {
+                if (!HelpTutorialPreferenceCommand.IsResultFor(message, _panelInstance)) return false;
             }
             else if (type != "panel_viewport_set" && type != "panel_esc") return false;
             _web.CoreWebView2.PostWebMessageAsJson(json);
@@ -300,6 +305,11 @@ namespace CF7Launcher.Guardian
             string? type = message.Value<string>("type");
             if (type == "composition_help_ready") {
                 _readyTcs?.TrySetResult(true);
+                return;
+            }
+            if (type == "tutorial_preference" && Active && _panelInstance.Length > 0) {
+                var result = TutorialPreferenceRequested?.Invoke(message, _panelInstance);
+                if (result != null) TryPost(result.ToString(Newtonsoft.Json.Formatting.None));
                 return;
             }
             // 页面关闭请求：等物理鼠标键与 ESC 全部释放后才上抛 CloseRequested，

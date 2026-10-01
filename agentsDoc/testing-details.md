@@ -198,7 +198,7 @@ test 会按当前配方、物品 XML、icon/dressup manifest、renderer/inspecto
 <a id="suite-dialogue"></a>
 ### 现场对白与原生交互
 
-**现场对白门**：运行 `node tools/test-server-callback-timeouts.js`，再顺序运行 `scripts/run-native-dialogue-tests.ps1`、`scripts/run-map-domain-tests.ps1`（机器钉死 MapDomainBridgeTest 60/60）、`scripts/run-map-loot-tests.ps1`（机器钉死 Loot 189 + Planner 12 + StageRunSession 594，见 [持久写与恢复](#save)），最后 `scripts/compile_test.ps1 -Target publish`。
+**现场对白门**：运行 `node tools/test-server-callback-timeouts.js`，再顺序运行 `scripts/run-native-dialogue-tests.ps1`、`scripts/run-map-domain-tests.ps1`（机器钉死 MapDomainBridgeTest 60/60）、`scripts/run-map-loot-tests.ps1`（机器钉死 Loot 189 + Planner 12 + StageRunSession 599，见 [持久写与恢复](#save)），最后 `scripts/compile_test.ps1 -Target publish`。
 覆盖握手/地图/面板毫秒期限、查询发送范围、同时超时托管、旧行数保护、新 rid 回退及 4096 行窗口的内容/暂停/事件移交。人力执行 [三组游戏旅程](../docs/对白v2审阅修复-人力验收单-2026-09-16.md)。Host/绘制改动继续跑 Launcher `NativeDialogue|NativeHudInputRoutingTests`、`tools/run-native-dialogue-webview2-smoke.ps1` 与 [SVG 工具](../tools/xfl-ui-svg/README.md) 只读 `--verify`，覆盖属性解析、富文本、时钟、作者窗口/按钮与缓存失效；
 smoke 复用 exact SDK resolver。hidden WebView2/位图是 fixture，机器通过不代签实际游戏体验；历史发布与人验边界见 [专项交接](../docs/对话框迁移与高清立绘治理-调研与施工准备-2026-09-12.md#114-已有验证与准确边界)。
 
@@ -420,6 +420,14 @@ Host 定向门使用用户态 SDK 执行 `dotnet test launcher/tests/Launcher.Te
 AS2 必须运行 `powershell -ExecutionPolicy Bypass -File scripts/run-item-panel-tests.ps1 -Suite Npc -TimeoutSeconds 240` 并取得 fresh `NpcShopPanelServiceTest` 现役钉值 + `Compiler 0/0 + 32K retry=0`；`-SkipCompile` 仍只属静态门。
 发布逻辑注入层时另跑 `scripts/compile_test.ps1 -Target publish -VerifySwf scripts/asLoader.swf`，确认 fresh compiler output、SWF 刷新与 function-size 门。上述自动证据只覆盖污染夹具、协议相关性和隔离策略；测试机物理隔离且原存档已丢失时，不得宣称原事故唯一归因或真实存档 E2E（另见 [诊断与现场观测](#diagnostics)）。
 
+<a id="suite-guidance"></a>
+### U8 原生引导与帮助轨迹
+
+必跑 `node tools/generate-guidance-catalog.js --check`、`node tools/test-guidance-tutorials.js`、`node tools/qa-composition-help.js` 与 `launcher/tests/run_tests.ps1`。
+修改 AS2 触发或协议时使用 `scripts/run-native-guidance-tests.ps1 -TimeoutSeconds 360`，精确 suite 计数以 runner 的 `ExpectedTracePatterns` 为准；要求 fresh 唯一 runId block、Compiler 0/0、32K retry=0 和 scratch byte-exact 恢复，随后独立 publish `asLoader.swf` 并检查 single ownership。仅 Host/Web 排版和呈现路由变化不因此重编未改动的 Flash 源码。
+浏览器门从生产 help 依赖加载领域适配器，遍历作者源中的全部轨迹，每步检查样例状态；领域帮助还要验证原工作台入口、Esc/焦点、关闭取消以及真实库存零请求。新增领域必须注册固定样例适配器并声明功能与轨迹，不以复制的业务模拟实现代替正式组件。
+Native 绘制变更检查 `NativeGuidanceVisualTests` 的实际像素、原场景位置、顶部透明与改键；自动 Web 教程检查延迟后一次打开、exact instance、busy 等待、撤销 queued open、关闭和断线，并验证生产 help 的目标条目、打开时键位和畸形 init 拒绝。结算交错必须覆盖 AS2 在 Host 请求到达前阻止地图教程、稳定等待与同 request 恢复、场景清理后不复活，以及 Host 在 PanelClosed 后继续等待 BindingSettled；policy deferral 不消费显示失败预算。“跳过本次”须验证键盘和 exact close，手动重开清除自动提示；`tutorialsAutoOpen` 通过 Settings 域严格布尔写入、保存失败回滚与隔离目录重启读回，不用真实用户偏好或玩家槽位试写。Help 底栏的全局关闭仅通过 exact instance 窄偏好命令保存；覆盖失败回滚、重复请求不重放、未知结果不重试、迟到回包不关闭新实例，以及 composition 出站允许当前偏好结果。关闭弹窗后，后续触发使用现役刘海屏通知，覆盖 opacity=0/结算等待、一次触发一次提醒、场景与 transport epoch 失效、白色现场图示保留。原生引导与对话共用图像设施时，守 page asset epoch、transport epoch 和图片所有权；透明度更新不得使当前页加载失效。7 个任务/关卡触发的实机表现单独验收，browser/AS2 fixture 不等于游戏 E2E。合同与候选入口见 [U8 基座](../docs/U8引导迁移与共享教程基座-2026-09-30.md)。
+
 <a id="suite-map"></a>
 ### 地图面板与地图内容工作台
 
@@ -630,7 +638,7 @@ Reward 未知写查询、O1 观测与存档闭包合同见 [持久写与恢复](
 <a id="suite-loot"></a>
 ### Loot / 关卡结算 runner
 
-**`scripts/run-map-loot-tests.ps1 -TimeoutSeconds 300`** 现役机器钉死：`LootContainerServiceTest` 189 + `LootMaterializationPlannerTest` 12 + `StageRunSessionTest` 594（脚本内 `$expectedServicePassCount/$expectedPlannerPassCount/$expectedStagePassCount`）。
+**`scripts/run-map-loot-tests.ps1 -TimeoutSeconds 300`** 现役机器钉死：`LootContainerServiceTest` 189 + `LootMaterializationPlannerTest` 12 + `StageRunSessionTest` 599（脚本内 `$expectedServicePassCount/$expectedPlannerPassCount/$expectedStagePassCount`）。U8 自动教程优先级追加覆盖：暂存已 durable、出口允许离开但报告尚未申请的窗口仍保留教程等待；报告准入失败不解除，已申请后解除；零奖励报告被上一 loot 阻断时也继续等待。`hasUnpresentedSettlementReport()` 只读，不改变场景出口或奖励权威。
 文本中的旧计数（267+12+419=698、165+9+372=546、205+9+382=596、676/684/824 等合计口径）均为各轮历史证据，见归档。该 runner 的 tracked TestLoader 直接 include 生产 `关卡系统_lsy_场景转换.as`，真实执行 `_root.返回基地/_root.关卡结束`，不得以测试 stub 代签转场异常与 exactly-once 合同。
 StageRunSession 覆盖大学/车库选关返回、真实胜利记录、撤退后迟到波次/判胜不能修改真实任务条件与正常胜利恰好一次回归、准备/保存/转场失败、v1/v2 失败投影握手、同结算重试与重复请求拒绝（配套 Host StageOutcome/RightContext、地图 AS2/Web 回归，见 [返回失败恢复](../docs/关卡结果与基地结算-CSharp-Web-ADR-2026-08-27.md#0d-2026-09-08-返回失败后的原生重试入口)）。
 

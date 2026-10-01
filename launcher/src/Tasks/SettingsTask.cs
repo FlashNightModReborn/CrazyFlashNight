@@ -343,6 +343,7 @@ namespace CF7Launcher.Tasks
             bool oldIntro = _userPrefs.IntroEnabled;
             bool oldSfx = _userPrefs.SfxEnabled;
             bool oldAmbient = _userPrefs.AmbientEnabled;
+            bool oldTutorials = _userPrefs.TutorialsAutoOpen;
             double oldScale = _userPrefs.UiFontScale;
             string oldMap = _userPrefs.MapDisplayPreference;
             string oldHitNumberMode = _userPrefs.HitNumberMode;
@@ -360,6 +361,7 @@ namespace CF7Launcher.Tasks
                 _userPrefs.IntroEnabled = oldIntro;
                 _userPrefs.SfxEnabled = oldSfx;
                 _userPrefs.AmbientEnabled = oldAmbient;
+                _userPrefs.TutorialsAutoOpen = oldTutorials;
                 _userPrefs.UiFontScale = oldScale;
                 _userPrefs.MapDisplayPreference = oldMap;
                 _userPrefs.HitNumberMode = oldHitNumberMode;
@@ -468,6 +470,11 @@ namespace CF7Launcher.Tasks
                     _userPrefs.AmbientEnabled = value.Value<bool>();
                     normalized = new JValue(_userPrefs.AmbientEnabled);
                     return true;
+                case "tutorialsAutoOpen":
+                    if (value == null || value.Type != JTokenType.Boolean) return false;
+                    _userPrefs.TutorialsAutoOpen = value.Value<bool>();
+                    normalized = new JValue(_userPrefs.TutorialsAutoOpen);
+                    return true;
                 case "uiFontScale":
                     double scale;
                     if (!TryFiniteNumber(value, out scale)
@@ -512,6 +519,7 @@ namespace CF7Launcher.Tasks
                 ["introEnabled"] = _userPrefs.IntroEnabled,
                 ["sfxEnabled"] = _userPrefs.SfxEnabled,
                 ["ambientEnabled"] = _userPrefs.AmbientEnabled,
+                ["tutorialsAutoOpen"] = _userPrefs.TutorialsAutoOpen,
                 ["uiFontScale"] = _userPrefs.UiFontScale,
                 ["mapDisplayPreference"] =
                     UserPrefs.NormalizeMapDisplayPreference(_userPrefs.MapDisplayPreference),

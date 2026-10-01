@@ -1,0 +1,92 @@
+{
+  "version": 1,
+  "keyLabels": {
+    "左方向键":"←", "右方向键":"→", "上方向键":"↑", "下方向键":"↓",
+    "Backspace":"Bksp", "Control":"Ctrl", "Caps Lock":"Caps", "Spacebar":"SPC",
+    "Page Up":"Pg↑", "Page Down":"Pg↓", "Num Lock":"Num", "Scroll Lock":"ScrL",
+    "Insert":"Ins", "Delete":"Del", "Home":"↖",
+    "Num0":"N0", "Num1":"N1", "Num2":"N2", "Num3":"N3", "Num4":"N4",
+    "Num5":"N5", "Num6":"N6", "Num7":"N7", "Num8":"N8", "Num9":"N9"
+  },
+  "guides": [
+    {"id":"start","legacy":"引导-开始游戏","title":"开始游戏","kind":"tutorial","surface":"help","pages":[
+      {"title":"基本操作","text":"移动：{up} {down} {left} {right}；攻击：{attack}；跳跃：{jump}。\n武器模式：1 空手、2 冷兵器、3 手枪（可设置双枪）、4 长枪、5 手雷；相应模式需要装备武器。\n换弹夹：R，需要有弹夹。\n技能：空格、UIOPLHGCBNM，需要学习并设置技能。\n消耗品：7 / 8 / 9，需要设置快捷栏。\n系统设置可以修改按键；方向、攻击、跳跃与互动提示使用当前绑定。"},
+      {"title":"互动与装备","text":"跳过对话：Enter、{interact} 或鼠标左键。\nF 使用装备主动战技；Q 装备变形。\n左 Alt 使用装甲技能（喷气背包）。\n拾取：{interact} 或鼠标左键；长按 {interact} 标注可拾取物。\n拾取并装备：Ctrl + {interact} 或 Ctrl + 鼠标左键。"},
+      {"title":"奔跑","text":"连续按两下 {left} 或 {right} 可以奔跑。\n也可以按住 Shift，再按方向键奔跑。","visual":[
+        {"type":"key","x":524.85,"y":219.1,"width":35,"height":35,"text":"{left}","fontSize":18},
+        {"type":"text","x":560.7,"y":224.4,"width":22,"height":28,"text":"+","fontSize":18},
+        {"type":"key","x":584.35,"y":219.1,"width":35,"height":35,"text":"{left}","fontSize":18},
+        {"type":"key","x":524.85,"y":270.6,"width":35,"height":35,"text":"{right}","fontSize":18},
+        {"type":"text","x":560.7,"y":276.4,"width":22,"height":28,"text":"+","fontSize":18},
+        {"type":"key","x":584.35,"y":270.6,"width":35,"height":35,"text":"{right}","fontSize":18},
+        {"type":"key","x":332,"y":323,"width":100,"height":35,"text":"Shift","fontSize":18},
+        {"type":"text","x":434.25,"y":328.9,"width":22,"height":28,"text":"+","fontSize":18},
+        {"type":"key","x":459.15,"y":323,"width":35,"height":35,"text":"{up}","fontSize":18},
+        {"type":"key","x":504.15,"y":323,"width":35,"height":35,"text":"{left}","fontSize":18},
+        {"type":"key","x":548.65,"y":323,"width":35,"height":35,"text":"{down}","fontSize":18},
+        {"type":"key","x":593.65,"y":323,"width":35,"height":35,"text":"{right}","fontSize":18},
+        {"type":"text","x":639.2,"y":290.15,"width":80,"height":36,"text":"奔跑","fontSize":24}
+      ]}
+    ]},
+    {"id":"map","legacy":"引导-地图传送","title":"地图与任务","kind":"tutorial","surface":"help","pages":[
+      {"title":"地图与任务","text":"点击地图查询位置，并从地图选择已开放的目的地。\n右上角问号按钮可以查看更多帮助和操作演示。\n红色叹号表示有任务可以提交；任务按钮可以查看任务，物品栏按钮可以管理物品。\n重置版新增或变更的按键，也可以在帮助页的基本操作中查看。"}
+    ]},
+    {"id":"combat","legacy":"引导-战斗","title":"移动与战斗","kind":"scene","pages":[
+      {"title":"移动与战斗","text":"移动：{up} / {down} / {left} / {right}\n攻击：{attack}　　跳跃：{jump}","visual":[
+        {"type":"key","x":318.5,"y":388.2,"width":35,"height":35,"text":"{up}","fontSize":18},
+        {"type":"key","x":318.5,"y":429.95,"width":35,"height":35,"text":"{down}","fontSize":18},
+        {"type":"key","x":275.85,"y":429.95,"width":35,"height":35,"text":"{left}","fontSize":18},
+        {"type":"key","x":360.8,"y":429.95,"width":35,"height":35,"text":"{right}","fontSize":18},
+        {"type":"text","x":407.7,"y":426,"width":70,"height":32,"text":"移动","fontSize":18},
+        {"type":"key","x":483.75,"y":420.4,"width":35,"height":35,"text":"{attack}","fontSize":18},
+        {"type":"key","x":526,"y":420.4,"width":35,"height":35,"text":"{jump}","fontSize":18},
+        {"type":"text","x":572.65,"y":426,"width":115,"height":32,"text":"攻击/跳跃","fontSize":18}
+      ]}
+    ]},
+    {"id":"run","legacy":"引导-奔跑","title":"奔跑","kind":"scene","pages":[
+      {"title":"奔跑","text":"连按两下 {left} 或 {right}，或按住 Shift + 方向键奔跑。","visual":[
+        {"type":"key","x":744.85,"y":359.1,"width":35,"height":35,"text":"{left}","fontSize":18},
+        {"type":"text","x":780.7,"y":364.4,"width":22,"height":28,"text":"+","fontSize":18},
+        {"type":"key","x":804.35,"y":359.1,"width":35,"height":35,"text":"{left}","fontSize":18},
+        {"type":"key","x":744.85,"y":410.6,"width":35,"height":35,"text":"{right}","fontSize":18},
+        {"type":"text","x":780.7,"y":416.4,"width":22,"height":28,"text":"+","fontSize":18},
+        {"type":"key","x":804.35,"y":410.6,"width":35,"height":35,"text":"{right}","fontSize":18},
+        {"type":"key","x":552,"y":463,"width":100,"height":35,"text":"Shift","fontSize":18},
+        {"type":"text","x":654.25,"y":468.9,"width":22,"height":28,"text":"+","fontSize":18},
+        {"type":"key","x":679.15,"y":463,"width":35,"height":35,"text":"{up}","fontSize":18},
+        {"type":"key","x":724.15,"y":463,"width":35,"height":35,"text":"{left}","fontSize":18},
+        {"type":"key","x":768.65,"y":463,"width":35,"height":35,"text":"{down}","fontSize":18},
+        {"type":"key","x":813.65,"y":463,"width":35,"height":35,"text":"{right}","fontSize":18},
+        {"type":"text","x":859.2,"y":430.15,"width":80,"height":36,"text":"奔跑","fontSize":24}
+      ]}
+    ]},
+    {"id":"pickup","legacy":"引导-拾取","title":"拾取物品","kind":"scene","pages":[
+      {"title":"拾取物品","text":"按 {interact} 或鼠标左键拾取。\nCtrl + {interact} 或 Ctrl + 鼠标左键：拾取并装备。","visual":[
+        {"type":"key","x":297,"y":398.45,"width":35,"height":35,"text":"{interact}","fontSize":18},
+        {"type":"text","x":334.95,"y":402.7,"width":18,"height":28,"text":"/","fontSize":18},
+        {"type":"mouse","x":352,"y":396,"width":46,"height":62},
+        {"type":"text","x":416.85,"y":402.95,"width":85,"height":28,"text":"拾取","fontSize":18},
+        {"type":"key","x":512,"y":403,"width":64,"height":35,"text":"Ctrl","fontSize":18},
+        {"type":"text","x":579.5,"y":406.85,"width":22,"height":28,"text":"+","fontSize":18},
+        {"type":"key","x":604.35,"y":401.8,"width":35,"height":35,"text":"{interact}","fontSize":18},
+        {"type":"text","x":642.55,"y":406.85,"width":18,"height":28,"text":"/","fontSize":18},
+        {"type":"mouse","x":660,"y":399,"width":46,"height":62},
+        {"type":"text","x":715.45,"y":406.3,"width":140,"height":28,"text":"拾取并装备","fontSize":18}
+      ]}
+    ]},
+    {"id":"crate","legacy":"引导-打开箱子","title":"开启箱子","kind":"scene","pages":[
+      {"title":"开启箱子","text":"靠近箱子后，按 {interact} 开启箱子。","visual":[
+        {"type":"key","x":514,"y":380,"width":35,"height":35,"text":"{interact}","fontSize":18},
+        {"type":"text","x":558.85,"y":384.5,"width":130,"height":28,"text":"开启箱子","fontSize":18}
+      ]}
+    ]},
+    {"id":"crate-safe","legacy":"引导-打开箱子2","title":"安全开启箱子","kind":"scene","pages":[
+      {"title":"安全开启箱子","text":"按 {interact} 开启箱子，也可以使用攻击破坏箱子。\n注意：坚硬的箱子被蛮力破坏时，会销毁其中的物品。","visual":[
+        {"type":"key","x":36.05,"y":353.5,"width":35,"height":35,"text":"{interact}","fontSize":18},
+        {"type":"text","x":80.9,"y":358,"width":150,"height":28,"text":"开启箱子","fontSize":18},
+        {"type":"text","x":36.55,"y":402,"width":340,"height":28,"text":"或使用攻击破坏箱子","fontSize":18},
+        {"type":"text","x":36.55,"y":437,"width":430,"height":30,"text":"坚硬的箱子被蛮力破坏时会销毁其中的物品","fontSize":18}
+      ]}
+    ]}
+  ]
+}

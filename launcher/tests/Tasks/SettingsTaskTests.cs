@@ -249,6 +249,24 @@ namespace CF7Launcher.Tests.Tasks
         }
 
         [Fact]
+        public void TutorialOptOut_IsHostLocalStrictBooleanAndSaveFailurePreservesAuthority()
+        {
+            using var h = new Harness();h.Prefs.TutorialsAutoOpen = true;
+            int notifications = 0;
+            h.Task.SetHostPreferenceApplied((key,value) => {
+                Assert.Equal("tutorialsAutoOpen",key);Assert.False(value.Value<bool>());notifications++;
+            });
+            h.Send("host_set",new JObject { ["v"]=1,["key"]="tutorialsAutoOpen",["value"]="false" },"web.settings.tutorial-invalid");
+            Assert.Equal("bad_value",h.Web[0].Value<string>("error"));Assert.True(h.Prefs.TutorialsAutoOpen);
+            h.Send("host_set",new JObject { ["v"]=1,["key"]="tutorialsAutoOpen",["value"]=false },"web.settings.tutorial-disable");
+            Assert.False(h.Prefs.TutorialsAutoOpen);Assert.False(h.Web[1].Value<bool>("currentValue"));Assert.Equal(1,notifications);
+            h.SaveResult = false;
+            h.Send("host_set",new JObject { ["v"]=1,["key"]="tutorialsAutoOpen",["value"]=true },"web.settings.tutorial-rollback");
+            Assert.Equal("save_failed",h.Web[2].Value<string>("error"));Assert.False(h.Web[2].Value<bool>("currentValue"));
+            Assert.False(h.Prefs.TutorialsAutoOpen);Assert.Equal(1,notifications);Assert.Empty(h.Flash);
+        }
+
+        [Fact]
         public void HostSet_RejectsUnknownHitModeAndOutOfRangeOrFractionalLimit()
         {
             using (var h = new Harness())
