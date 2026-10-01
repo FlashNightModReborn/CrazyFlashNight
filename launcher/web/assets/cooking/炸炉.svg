@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120">
+  <!-- 炸炉：深炸锅槽 + 沸腾油泡 + 提篮 -->
+  <defs>
+    <linearGradient id="fryer" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#5a6068"/>
+      <stop offset="1" stop-color="#2a2f34"/>
+    </linearGradient>
+  </defs>
+  <rect x="26" y="30" width="68" height="70" rx="6" fill="url(#fryer)" stroke="#161a1e" stroke-width="2"/>
+  <rect x="34" y="38" width="52" height="34" rx="4" fill="#0f0a06"/>
+  <rect x="34" y="38" width="52" height="34" rx="4" fill="none" stroke="#3a4046" stroke-width="2"/>
+  <rect x="38" y="44" width="44" height="24" rx="3" fill="#c8862e" opacity=".9"/>
+  <circle cx="46" cy="56" r="3" fill="#8a5a1a"/>
+  <circle cx="58" cy="62" r="2.5" fill="#8a5a1a"/>
+  <circle cx="70" cy="54" r="3" fill="#8a5a1a"/>
+  <circle cx="52" cy="50" r="2" fill="#e8a84a"/>
+  <circle cx="66" cy="64" r="2" fill="#e8a84a"/>
+  <circle cx="78" cy="58" r="2" fill="#e8a84a"/>
+  <rect x="42" y="30" width="36" height="6" rx="3" fill="#454c52"/>
+  <path d="M50 36 L50 44 M70 36 L70 44" stroke="#454c52" stroke-width="3"/>
+  <rect x="34" y="80" width="52" height="6" rx="2" fill="#1e2428"/>
+  <circle cx="82" cy="92" r="3" fill="#ff9a3c"/>
+</svg>

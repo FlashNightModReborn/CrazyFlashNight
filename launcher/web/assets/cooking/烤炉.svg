@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120">
+  <!-- 烤炉：拱形砖炉 + 炉膛火光 -->
+  <defs>
+    <linearGradient id="kiln" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#5c4a38"/>
+      <stop offset="1" stop-color="#2e211a"/>
+    </linearGradient>
+    <radialGradient id="fire" cx=".5" cy=".75" r=".6">
+      <stop offset="0" stop-color="#ffd28a"/>
+      <stop offset=".6" stop-color="#ff8c3a"/>
+      <stop offset="1" stop-color="#7a2c10"/>
+    </radialGradient>
+  </defs>
+  <path d="M20 100 L20 60 Q20 24 60 24 Q100 24 100 60 L100 100 Z"
+        fill="url(#kiln)" stroke="#1c140e" stroke-width="2"/>
+  <path d="M34 100 L34 64 Q34 40 60 40 Q86 40 86 64 L86 100 Z"
+        fill="#12090a" stroke="#4a3020" stroke-width="2"/>
+  <ellipse cx="60" cy="88" rx="20" ry="10" fill="url(#fire)"/>
+  <path d="M50 92 Q54 78 58 84 Q60 72 64 84 Q70 76 70 90" fill="#ffb356" opacity=".85"/>
+  <rect x="26" y="98" width="68" height="6" rx="2" fill="#1c140e"/>
+  <path d="M26 34 Q40 28 56 26 M70 26 Q84 28 94 34" fill="none" stroke="#7a6550" stroke-width="2" opacity=".5"/>
+  <rect x="88" y="52" width="8" height="14" rx="2" fill="#3a2c1e"/>
+</svg>

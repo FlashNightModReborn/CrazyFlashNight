@@ -1,0 +1,323 @@
+/* ── 烹饪厨房 ──
+   独立于 workbench 的专属视觉：暖木 + 羊皮纸 + 炉火橙。
+   左列是可抽出的菜谱书脊条，中列厨具舞台，右列菜品列表/配方详情。 */
+.cooking-panel {
+    position:relative;
+    width:1024px; height:576px;
+    display:flex; flex-direction:column;
+    color:#f2e6d2;
+    background:
+        radial-gradient(circle at 50% 115%,rgba(255,120,40,.10),transparent 55%),
+        linear-gradient(180deg,#221609,#1a1109 45%,#150e08);
+    font-family:"Microsoft YaHei",sans-serif;
+    overflow:hidden;
+    --ck-accent:#ff9440;
+    --ck-accent-soft:rgba(255,148,64,.16);
+    --ck-paper:#2a1d11;
+    --ck-paper-2:#332415;
+    --ck-line:#4d3a24;
+    --ck-line-soft:#3a2b1a;
+    --ck-text:#f2e6d2;
+    --ck-muted:#a8896a;
+    --ck-ready:#8fc97a;
+    --ck-blocked:#c97a5c;
+    --ck-scrollbar-track:#17100a;
+    --ck-scrollbar-thumb:#6a4c2a;
+    --ck-scrollbar-thumb-border:#9a7444;
+}
+.cooking-panel ::-webkit-scrollbar { width:7px; }
+.cooking-panel ::-webkit-scrollbar-track { background:var(--ck-scrollbar-track); }
+.cooking-panel ::-webkit-scrollbar-thumb {
+    background:var(--ck-scrollbar-thumb);
+    border:1px solid var(--ck-scrollbar-thumb-border);
+    border-radius:3px;
+}
+
+/* ── 顶栏 ── */
+.cooking-header {
+    flex:0 0 auto;
+    display:flex; align-items:center; gap:14px;
+    padding:12px 18px 10px;
+    border-bottom:1px solid var(--ck-line-soft);
+    background:
+        linear-gradient(180deg,rgba(255,148,64,.05),transparent),
+        linear-gradient(90deg,rgba(255,148,64,.04),transparent 40%);
+}
+.cooking-brand { display:flex; flex-direction:column; gap:1px; }
+.cooking-kicker {
+    font-size:9px; letter-spacing:.35em; color:var(--ck-muted);
+}
+.cooking-brand h1 {
+    margin:0; font:700 18px/1.2 "Microsoft YaHei",sans-serif;
+    color:var(--ck-text); letter-spacing:.08em;
+}
+.cooking-status {
+    font-size:10px; color:var(--ck-muted); letter-spacing:.05em;
+}
+.cooking-status[data-state="ready"] { color:var(--ck-ready); }
+.cooking-status[data-state="error"] { color:var(--ck-blocked); }
+.cooking-metrics {
+    margin-left:auto; display:flex; gap:14px; align-items:baseline;
+}
+.cooking-metric { font-size:11px; color:var(--ck-muted); }
+.cooking-metric b, .cooking-metric { font-family:Consolas,"Microsoft YaHei",monospace; }
+.cooking-close {
+    flex:0 0 auto; width:26px; height:26px;
+    border:1px solid var(--ck-line); border-radius:4px;
+    background:var(--ck-paper); color:var(--ck-muted);
+    font-size:14px; cursor:pointer;
+    transition:color .12s, border-color .12s;
+}
+.cooking-close:hover { color:#ff9a7c; border-color:rgba(255,110,80,.5); }
+
+/* ── 三段布局 ── */
+.cooking-body {
+    flex:1 1 auto; min-height:0;
+    display:grid;
+    grid-template-columns:200px 1fr 380px;
+    gap:10px; padding:10px 14px 14px;
+}
+
+/* ── 左：菜谱书脊条 ── */
+.cooking-books {
+    display:flex; flex-direction:column; gap:6px;
+    min-height:0; overflow-y:auto; padding:4px 2px;
+}
+.cooking-book-strip {
+    display:flex; align-items:baseline; justify-content:space-between; gap:8px;
+    padding:9px 12px 9px 16px;
+    border:1px solid var(--ck-line); border-left:4px solid #6a4322;
+    border-radius:2px 8px 8px 2px;
+    background:
+        linear-gradient(90deg,rgba(106,67,34,.5),transparent 30%),
+        linear-gradient(180deg,var(--ck-paper-2),var(--ck-paper));
+    color:var(--ck-text); cursor:pointer; text-align:left;
+    transition:transform .18s cubic-bezier(.2,.8,.25,1), border-color .15s,
+        background .15s, box-shadow .18s;
+}
+.cooking-book-strip:hover {
+    transform:translateX(4px);
+    border-color:var(--ck-accent);
+}
+.cooking-book-strip.active {
+    transform:translateX(12px);
+    border-color:var(--ck-accent);
+    border-left-color:var(--ck-accent);
+    background:
+        linear-gradient(90deg,rgba(255,148,64,.22),transparent 45%),
+        linear-gradient(180deg,#3a2a16,#2c1f10);
+    box-shadow:0 3px 10px rgba(0,0,0,.4), 0 0 14px rgba(255,148,64,.1);
+}
+.cooking-book-name {
+    font:700 12px/1.3 "Microsoft YaHei",sans-serif;
+    letter-spacing:.06em;
+}
+.cooking-book-count {
+    font-size:9px; color:var(--ck-muted); white-space:nowrap;
+}
+.cooking-book-strip.active .cooking-book-count { color:var(--ck-accent); }
+
+/* ── 中：厨具舞台 ── */
+.cooking-stage {
+    display:flex; flex-direction:column; align-items:center;
+    min-height:0; overflow:hidden;
+    padding:16px 10px 12px;
+    border:1px solid var(--ck-line-soft); border-radius:6px;
+    background:
+        radial-gradient(circle at 50% 30%,rgba(255,148,64,.06),transparent 60%),
+        linear-gradient(180deg,#1d1409,#17100a 60%,#120c07);
+}
+.cooking-cookware {
+    flex:1 1 auto; min-height:0;
+    display:flex; align-items:center; justify-content:center;
+    width:100%;
+}
+.cooking-cookware-img {
+    max-width:78%; max-height:78%;
+    object-fit:contain;
+    filter:drop-shadow(0 8px 18px rgba(0,0,0,.55));
+    animation:cooking-cookware-in .3s cubic-bezier(.2,.9,.3,1.1);
+}
+@keyframes cooking-cookware-in {
+    from { opacity:0; transform:scale(.92) translateY(6px); }
+    to { opacity:1; transform:none; }
+}
+.cooking-cookware-placeholder {
+    display:flex; flex-direction:column; align-items:center; gap:8px;
+    color:var(--ck-muted);
+}
+.cooking-cookware-placeholder i {
+    display:block; width:72px; height:52px;
+    border:2px solid var(--ck-line); border-radius:6px 6px 20px 20px;
+    border-bottom-width:5px;
+    background:linear-gradient(180deg,#241a10,#1a1209);
+    position:relative;
+}
+.cooking-cookware-placeholder i::before {
+    content:""; position:absolute; left:14%; right:14%; top:-7px; height:6px;
+    background:var(--ck-line); border-radius:3px;
+}
+.cooking-cookware-placeholder b {
+    font:10px/1 "Microsoft YaHei",sans-serif; letter-spacing:.1em;
+    color:var(--ck-muted);
+}
+.cooking-cookware-idle {
+    color:var(--ck-muted); font-size:11px; letter-spacing:.15em;
+    opacity:.55;
+}
+.cooking-cookware-label {
+    margin-top:8px; font:700 13px/1 "Microsoft YaHei",sans-serif;
+    color:var(--ck-accent); letter-spacing:.12em;
+}
+.cooking-stage-hint {
+    margin-top:6px; font-size:9px; color:var(--ck-muted); letter-spacing:.05em;
+}
+
+/* ── 右：菜品列表 ── */
+.cooking-right { min-height:0; display:flex; flex-direction:column; }
+.cooking-dish-list {
+    flex:1 1 auto; min-height:0; overflow-y:auto;
+    display:flex; flex-direction:column; gap:6px; padding:2px;
+}
+.cooking-dish-row {
+    display:flex; align-items:center; gap:10px;
+    padding:8px 12px;
+    border:1px solid var(--ck-line-soft); border-radius:4px;
+    background:linear-gradient(180deg,var(--ck-paper-2),var(--ck-paper));
+    color:var(--ck-text); cursor:pointer; text-align:left;
+    transition:border-color .12s, transform .12s;
+}
+.cooking-dish-row:hover { border-color:var(--ck-accent); transform:translateX(-2px); }
+.cooking-dish-row.is-blocked { opacity:.62; }
+.cooking-dish-row.is-blocked .cooking-dish-icon img { filter:grayscale(.5); }
+.cooking-dish-icon { flex:0 0 auto; width:34px; height:34px; }
+.cooking-icon, .cooking-icon-lg, .cooking-icon-sm {
+    display:inline-flex; align-items:center; justify-content:center;
+    width:100%; height:100%;
+}
+.cooking-icon img, .cooking-icon-lg img, .cooking-icon-sm img {
+    max-width:100%; max-height:100%; object-fit:contain;
+}
+.cooking-icon { width:34px; height:34px; }
+.cooking-icon-lg { width:52px; height:52px; }
+.cooking-icon-sm { width:20px; height:20px; }
+.cooking-dish-name {
+    flex:1 1 auto; min-width:0;
+    font:700 12px/1.3 "Microsoft YaHei",sans-serif;
+    overflow:hidden; text-overflow:ellipsis; white-space:nowrap;
+}
+.cooking-dish-state {
+    flex:0 0 auto; font-size:9px; letter-spacing:.08em;
+    padding:2px 7px; border-radius:3px;
+}
+.cooking-dish-row.is-ready .cooking-dish-state {
+    color:var(--ck-ready); background:rgba(143,201,122,.12);
+}
+.cooking-dish-row.is-blocked .cooking-dish-state {
+    color:var(--ck-blocked); background:rgba(201,122,92,.12);
+}
+.cooking-empty {
+    padding:24px 12px; text-align:center;
+    color:var(--ck-muted); font-size:11px; letter-spacing:.08em;
+}
+
+/* ── 右：配方详情 ── */
+.cooking-detail {
+    flex:1 1 auto; min-height:0;
+    display:flex; flex-direction:column;
+    border:1px solid var(--ck-line); border-radius:6px;
+    background:
+        linear-gradient(180deg,rgba(255,148,64,.04),transparent 20%),
+        var(--ck-paper);
+    overflow:hidden;
+}
+.cooking-detail-head {
+    display:flex; align-items:center; gap:12px;
+    padding:12px 14px;
+    border-bottom:1px solid var(--ck-line-soft);
+    background:rgba(0,0,0,.18);
+}
+.cooking-detail-icon {
+    flex:0 0 auto; width:52px; height:52px;
+    border:1px solid var(--ck-line); border-radius:6px;
+    background:#1c130a; padding:4px;
+}
+.cooking-detail-title { display:flex; flex-direction:column; gap:2px; min-width:0; }
+.cooking-detail-title b {
+    font:700 15px/1.2 "Microsoft YaHei",sans-serif; color:var(--ck-text);
+}
+.cooking-detail-title small { font-size:10px; color:var(--ck-muted); }
+.cooking-detail-body {
+    flex:1 1 auto; min-height:0; overflow-y:auto;
+    padding:10px 14px; display:flex; flex-direction:column; gap:5px;
+}
+.cooking-req {
+    display:flex; align-items:center; gap:8px;
+    padding:6px 10px; border-radius:4px;
+    border:1px solid var(--ck-line-soft);
+    background:rgba(0,0,0,.14);
+    font-size:11px;
+}
+.cooking-req.infra {
+    border-left:3px solid var(--ck-accent);
+    background:rgba(255,148,64,.06);
+}
+.cooking-req.met .cooking-req-value { color:var(--ck-ready); }
+.cooking-req.unmet { border-color:rgba(201,122,92,.4); }
+.cooking-req.unmet .cooking-req-value { color:var(--ck-blocked); }
+.cooking-req.unmet .cooking-req-name { color:var(--ck-blocked); }
+.cooking-req-icon { flex:0 0 auto; width:20px; height:20px; }
+.cooking-req-name {
+    flex:1 1 auto; min-width:0;
+    overflow:hidden; text-overflow:ellipsis; white-space:nowrap;
+    color:var(--ck-text);
+}
+.cooking-req-value {
+    flex:0 0 auto; font-family:Consolas,"Microsoft YaHei",monospace;
+    font-size:10px; color:var(--ck-muted);
+}
+.cooking-detail-note {
+    padding:14px 6px; color:var(--ck-muted); font-size:11px; text-align:center;
+}
+.cooking-detail-note.warn { color:var(--ck-blocked); }
+.cooking-detail-footer {
+    flex:0 0 auto;
+    display:flex; align-items:center; gap:10px;
+    padding:10px 14px;
+    border-top:1px solid var(--ck-line-soft);
+    background:rgba(0,0,0,.2);
+}
+.cooking-count { display:flex; align-items:center; gap:4px; }
+.cooking-count button {
+    width:24px; height:24px; border:1px solid var(--ck-line);
+    border-radius:3px; background:var(--ck-paper-2); color:var(--ck-text);
+    font-size:13px; cursor:pointer;
+}
+.cooking-count button:hover:not(:disabled) { border-color:var(--ck-accent); }
+.cooking-count button:disabled { opacity:.4; cursor:default; }
+.cooking-count-input {
+    width:34px; height:24px; text-align:center;
+    border:1px solid var(--ck-line); border-radius:3px;
+    background:#140d07; color:var(--ck-text); font-size:11px;
+}
+.cooking-cost {
+    flex:1 1 auto; font-size:10px; color:var(--ck-muted);
+    font-family:Consolas,"Microsoft YaHei",monospace;
+}
+.cooking-confirm {
+    flex:0 0 auto; min-width:96px;
+    padding:8px 18px;
+    border:1px solid var(--ck-accent); border-radius:4px;
+    background:linear-gradient(180deg,#ff9c4d,#e07a26);
+    color:#241203; font:700 12px/1 "Microsoft YaHei",sans-serif;
+    letter-spacing:.1em; cursor:pointer;
+    transition:filter .12s, box-shadow .12s;
+}
+.cooking-confirm:hover:not(:disabled) {
+    filter:brightness(1.1); box-shadow:0 0 12px rgba(255,148,64,.3);
+}
+.cooking-confirm:disabled {
+    background:var(--ck-paper-2); color:var(--ck-muted);
+    border-color:var(--ck-line); cursor:default;
+    filter:grayscale(.4);
+}

@@ -78,12 +78,17 @@ function procurementDemand(name, required, owned) {
 function snapshotResponse() {
     return {success:true,v:1,category:'武器合成',gender:'男',recipes:[{
         recipeId:'craft.weapon.test',recipeIndex:0,title:'测试产物',
+        book:'',infrastructure:[],
         output:catalogOutput('产物','equipment',1),owned:ownedSummary(1),plannedCrafts:0,
         baseCost:{money:90,kpoints:0},materialCount:1,batchEligible:false,
         canCraftOne:true,availability:'ready'
     }],balance:{money:1000,kpoints:100},
     skills:{reverseLevel:2,smithEnabled:true,smithLevel:2},
     procurement:{revision:0,directShopNavigation:false},note:''};
+}
+
+function infraRow(name, appliance, required, current, met) {
+    return {name,appliance,required,current,met};
 }
 
 function projectedMaterial(name, storageKind, enough) {
@@ -135,7 +140,8 @@ function prototypeFor(output, delivery) {
 function acceptedPlanFor(response) {
     return {category:response.category,recipeIndex:response.recipeIndex,
         craftCount:response.craftCount,output:clone(response.output),
-        materials:clone(response.materials),outputDelivery:clone(response.outputDelivery),
+        materials:clone(response.materials),infrastructure:clone(response.infrastructure || []),
+        outputDelivery:clone(response.outputDelivery),
         outputPrototype:prototypeFor(response.output,response.outputDelivery),cost:clone(response.cost)};
 }
 
@@ -165,6 +171,7 @@ function previewResponse(canCommit) {
     const result = envelope('preview', {
         success:true, v:1, category:'武器合成', recipeIndex:0, craftCount:1,
         batchEligible:false, maxCraftCount:1, output:output, materials:materials, cost:cost,
+        infrastructure:[],
         balance:{money:1000,kpoints:100}, skills:{reverseLevel:2,smithEnabled:true,smithLevel:2},
         levelAllowed:true, enoughMaterials:canCommit, enoughMoney:true, enoughKpoints:true,
         enoughSpace:canCommit, canCommit:canCommit,
@@ -344,6 +351,42 @@ test('Crafting accepts complete canonical identity leaves for every item respons
         assert.strictEqual(Runtime.validateBusinessResponse(item.response,
             {cmd:item.cmd,metadata:{payload:item.payload || {}}}),true,item.cmd);
     }
+});
+
+test('Crafting recipe catalog accepts book grouping and infrastructure rows', () => {
+    const response = snapshotResponse();
+    response.recipes[0].book = '炉具料理配方';
+    response.recipes[0].infrastructure = [infraRow('烹饪用具','烤炉',3,1,false)];
+    response.recipes[0].canCraftOne = false;
+    response.recipes[0].availability = 'infrastructure_locked';
+    assert.strictEqual(Runtime.validateBusinessResponse(response,
+        {cmd:'snapshot',metadata:{payload:{category:'武器合成'}}}),true);
+    const missingBook = clone(response);
+    delete missingBook.recipes[0].book;
+    assert.strictEqual(Runtime.validateBusinessResponse(missingBook,
+        {cmd:'snapshot',metadata:{payload:{category:'武器合成'}}}),false);
+    const badAvailability = clone(response);
+    badAvailability.recipes[0].availability = 'ready';
+    assert.strictEqual(Runtime.validateBusinessResponse(badAvailability,
+        {cmd:'snapshot',metadata:{payload:{category:'武器合成'}}}),false);
+});
+
+test('Crafting preview carries infrastructure rows through to the accepted plan', () => {
+    const preview = previewResponse(true);
+    preview.infrastructure = [infraRow('烹饪用具','烤炉',3,3,true)];
+    preview.acceptedPlan = acceptedPlanFor(preview);
+    assert.strictEqual(Runtime.validateBusinessResponse(preview,
+        {cmd:'preview',metadata:{payload:{}}}),true);
+    const missing = clone(preview);
+    delete missing.infrastructure;
+    delete missing.acceptedPlan.infrastructure;
+    assert.strictEqual(Runtime.validateBusinessResponse(missing,
+        {cmd:'preview',metadata:{payload:{}}}),false);
+    const badRow = clone(preview);
+    badRow.infrastructure[0].met = 'yes';
+    badRow.acceptedPlan.infrastructure[0].met = 'yes';
+    assert.strictEqual(Runtime.validateBusinessResponse(badRow,
+        {cmd:'preview',metadata:{payload:{}}}),false);
 });
 
 test('Crafting rejects every missing canonical display or icon field', () => {

@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120">
+  <!-- 烤箱：方形箱体 + 玻璃视窗 + 旋钮 -->
+  <defs>
+    <linearGradient id="oven" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#565c62"/>
+      <stop offset="1" stop-color="#2c3236"/>
+    </linearGradient>
+  </defs>
+  <rect x="22" y="26" width="76" height="76" rx="6" fill="url(#oven)" stroke="#181c1e" stroke-width="2"/>
+  <rect x="30" y="44" width="60" height="44" rx="4" fill="#0f0a08" stroke="#3a4046" stroke-width="2"/>
+  <rect x="34" y="48" width="52" height="36" rx="2" fill="#1c0e08"/>
+  <rect x="38" y="66" width="44" height="4" rx="2" fill="#ff9a3c" opacity=".85"/>
+  <rect x="38" y="76" width="44" height="4" rx="2" fill="#ff9a3c" opacity=".6"/>
+  <path d="M40 58 Q50 52 60 56 Q70 60 80 56" fill="none" stroke="#ffb356" stroke-width="2" opacity=".7"/>
+  <rect x="30" y="32" width="60" height="8" rx="3" fill="#1e2428"/>
+  <circle cx="40" cy="36" r="3" fill="#7a8590"/>
+  <circle cx="52" cy="36" r="3" fill="#7a8590"/>
+  <circle cx="64" cy="36" r="3" fill="#ff9a3c"/>
+  <rect x="74" y="34" width="10" height="4" rx="2" fill="#3fbf7a" opacity=".8"/>
+  <rect x="40" y="40" width="40" height="3" rx="1.5" fill="#454c52"/>
+</svg>

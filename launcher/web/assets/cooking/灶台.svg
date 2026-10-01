@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120">
+  <!-- 灶台：砖砌灶体 + 灶眼 + 火苗 -->
+  <defs>
+    <linearGradient id="stove" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#5a4a3a"/>
+      <stop offset="1" stop-color="#2c2118"/>
+    </linearGradient>
+  </defs>
+  <rect x="22" y="46" width="76" height="56" rx="4" fill="url(#stove)" stroke="#1c140e" stroke-width="2"/>
+  <rect x="22" y="46" width="76" height="10" rx="4" fill="#6b5643"/>
+  <ellipse cx="60" cy="46" rx="26" ry="6" fill="#0f0a06"/>
+  <ellipse cx="60" cy="44" rx="26" ry="6" fill="none" stroke="#7a6550" stroke-width="2"/>
+  <path d="M52 44 Q56 34 60 40 Q64 30 68 44 Q72 40 70 46 Q66 50 60 50 Q52 50 50 46 Z"
+        fill="#ff9a3c" opacity=".9"/>
+  <path d="M56 44 Q58 38 60 42 Q62 36 64 44 Q62 48 60 48 Q56 48 56 44 Z" fill="#ffd28a"/>
+  <rect x="30" y="62" width="24" height="30" rx="2" fill="#1a1109" stroke="#4a3a28"/>
+  <rect x="64" y="62" width="26" height="8" rx="2" fill="#3a2c1c"/>
+  <rect x="64" y="74" width="26" height="8" rx="2" fill="#3a2c1c"/>
+  <rect x="64" y="86" width="26" height="8" rx="2" fill="#3a2c1c"/>
+</svg>

@@ -608,6 +608,13 @@ class org.flashNight.arki.item.CraftingPanelService {
         var allMaterials:Boolean = containmentPlan != null;
         var inheritedLevel:Number = 1;
         var stateParts:Array = [];
+        // 基建门槛与材料核算同处一层：不消耗物品，只在等级不足时以
+        // infrastructure_locked 阻断预览与提交。
+        var infrastructureRows:Array = projectInfrastructureRows(recipe);
+        var infrastructureMet:Boolean = true;
+        for (var infraIndex:Number = 0; infraIndex < infrastructureRows.length; infraIndex++) {
+            if (!infrastructureRows[infraIndex].met) { infrastructureMet = false; break; }
+        }
         for (var i:Number = 0; i < requirements.length; i++) {
             var projection:Object = projectRequirement(requirements[i], containmentPlan,
                 procurementSources, ownedIndex);
@@ -660,7 +667,8 @@ class org.flashNight.arki.item.CraftingPanelService {
             || outputPrototype != null;
         var enoughSpace:Boolean = outputDelivery.available && projectionReady;
         var blockingError:String = "";
-        if (!levelAllowed) blockingError = "level_locked";
+        if (!infrastructureMet) blockingError = "infrastructure_locked";
+        else if (!levelAllowed) blockingError = "level_locked";
         else if (!allMaterials) blockingError = "material_missing";
         else if (!enoughMoney) blockingError = "insufficient_money";
         else if (!enoughKpoints) blockingError = "insufficient_kpoint";
@@ -675,16 +683,19 @@ class org.flashNight.arki.item.CraftingPanelService {
         output.requiredLevel = requiredLevel;
         var acceptedPlan:Object = {category:category, recipeIndex:recipeIndex,
             craftCount:craftCount, output:output, materials:materialRows,
+            infrastructure:infrastructureRows,
             outputDelivery:outputDelivery, outputPrototype:outputPrototype, cost:cost};
         var stateSignature:String = [recipeSignature(recipe), Number(_root.金钱),
             Number(_root.虚拟币), Number(_root.等级), reverseLevel, smith.enabled, smith.level,
             inventoryRevision(_root.物品栏.背包), inventoryRevision(_root.物品栏.药剂栏),
-            craftCount, stateParts.join("|"), outputDelivery.storageKind,
+            craftCount, stateParts.join("|"), infrastructureSignature(infrastructureRows),
+            outputDelivery.storageKind,
             outputDelivery.mode, outputDelivery.physicalSlot,
             projectionSignature(outputPrototype)].join(";");
         return {success:true, category:category, recipeIndex:recipeIndex, craftCount:craftCount,
             recipeSignature:recipeSignature(recipe), stateSignature:stateSignature,
             requirements:requirements, materials:materialRows, output:output, cost:cost,
+            infrastructure:infrastructureRows,
             outputDelivery:outputDelivery, acceptedPlan:acceptedPlan,
             balance:buildBalance(), skills:buildSkills(), levelAllowed:levelAllowed,
             enoughMaterials:allMaterials, enoughMoney:enoughMoney, enoughKpoints:enoughKpoints,
@@ -699,6 +710,7 @@ class org.flashNight.arki.item.CraftingPanelService {
             output:plan.output, materials:plan.materials,
             outputDelivery:plan.outputDelivery,
             cost:plan.cost, balance:plan.balance, skills:plan.skills,
+            infrastructure:plan.infrastructure,
             levelAllowed:plan.levelAllowed, enoughMaterials:plan.enoughMaterials,
             enoughMoney:plan.enoughMoney, enoughKpoints:plan.enoughKpoints,
             enoughSpace:plan.enoughSpace, canCommit:plan.canCommit,
@@ -997,6 +1009,8 @@ class org.flashNight.arki.item.CraftingPanelService {
         if (recipeId == "") return null;
         return {recipeId:recipeId, recipeIndex:recipeIndex,
             title:String(recipe.title || recipe.name),
+            book:recipeBookName(recipe),
+            infrastructure:projectInfrastructureRows(recipe),
             output:projectItem(String(recipe.name), value),
             owned:ProcurementPlanService.buildOwnedSummary(
                 String(recipe.name), ownedIndex),
@@ -1006,6 +1020,98 @@ class org.flashNight.arki.item.CraftingPanelService {
             batchEligible:availabilityPlan.batchEligible,
             canCraftOne:availabilityPlan.canCommit,
             availability:availabilityPlan.canCommit ? "ready" : String(availabilityPlan.blockingError)};
+    }
+
+    /**
+     * 配方可选 "book" 字段：目录端按菜谱/图谱归属分组展示（如"基础家常菜配方"）。
+     * 未显式声明时回落为材料列表中首个以"配方"结尾的物品名，找不到则为空串。
+     */
+    private static function recipeBookName(recipe:Object):String {
+        var book:String = recipe.book == undefined ? "" : String(recipe.book);
+        if (book != "") return book;
+        var materials:Array = recipe.materials instanceof Array ? recipe.materials : [];
+        for (var i:Number = 0; i < materials.length; i++) {
+            var entry:String = String(materials[i] || "");
+            var hashAt:Number = entry.lastIndexOf("#");
+            var itemName:String = hashAt >= 0 ? entry.substring(0, hashAt) : entry;
+            if (itemName.length >= 2
+                    && itemName.substring(itemName.length - 2) == "配方") {
+                return itemName;
+            }
+        }
+        return "";
+    }
+
+    /**
+     * 配方可选 "infrastructure" 字段：基建等级门槛，不参与消耗。
+     * 取值 "设施名#所需等级"，或同形字符串数组，或 {name, level} 对象；
+     * 所需等级对应 _root.基建系统.infrastructure[name] 的已完工级数，
+     * 判定与 _root.基建系统.检查基建等级(name, level) 语义一致。
+     */
+    private static function recipeInfrastructure(recipe:Object):Array {
+        var raw:Object = recipe.infrastructure;
+        if (raw == undefined || raw == null) return [];
+        var entries:Array = raw instanceof Array ? raw : [raw];
+        var rows:Array = [];
+        for (var i:Number = 0; i < entries.length; i++) {
+            var entry:Object = entries[i];
+            var name:String = "";
+            var level:Number = NaN;
+            if (typeof entry == "string") {
+                var text:String = String(entry);
+                var hashAt:Number = text.lastIndexOf("#");
+                if (hashAt <= 0) continue;
+                name = text.substring(0, hashAt);
+                level = Number(text.substring(hashAt + 1));
+            } else if (typeof entry == "object" && entry != null) {
+                name = String(entry.name || "");
+                level = Number(entry.level);
+            }
+            if (name == "" || !isStrictWholeNumber(level) || level < 1 || level > 99) {
+                continue;
+            }
+            rows.push({name:name, required:level});
+        }
+        return rows;
+    }
+
+    private static function infrastructureLevel(name:String):Number {
+        var system:Object = _root.基建系统;
+        if (system == undefined || system.infrastructure == undefined) return 0;
+        var value:Number = Number(system.infrastructure[name]);
+        return isNaN(value) || value < 0 ? 0 : value;
+    }
+
+    private static function infrastructureAppliance(name:String, required:Number):String {
+        var system:Object = _root.基建系统;
+        if (system == undefined || system.dict == undefined) return "";
+        var entry:Object = system.dict[name];
+        if (entry == undefined || !(entry.Level instanceof Array)) return "";
+        var node:Object = entry.Level[required - 1];
+        if (node == undefined || node.Description == undefined) return "";
+        return String(node.Description);
+    }
+
+    private static function projectInfrastructureRows(recipe:Object):Array {
+        var requirements:Array = recipeInfrastructure(recipe);
+        var rows:Array = [];
+        for (var i:Number = 0; i < requirements.length; i++) {
+            var name:String = String(requirements[i].name);
+            var required:Number = Number(requirements[i].required);
+            var current:Number = infrastructureLevel(name);
+            rows.push({name:name, required:required, current:current,
+                appliance:infrastructureAppliance(name, required),
+                met:current >= required});
+        }
+        return rows;
+    }
+
+    private static function infrastructureSignature(rows:Array):String {
+        var parts:Array = [];
+        for (var i:Number = 0; i < rows.length; i++) {
+            parts.push(String(rows[i].name) + "=" + Number(rows[i].current));
+        }
+        return parts.join(",");
     }
 
     private static function projectItem(name:String, value:Number):Object {
@@ -1081,7 +1187,7 @@ class org.flashNight.arki.item.CraftingPanelService {
     }
 
     private static function categoryNote(category:String):String {
-        if (category == "烹饪") return "菜品配方不会被消耗";
+        if (category == "烹饪") return "菜品配方不会被消耗；部分菜品需要对应烹饪设备等级。";
         if (category == "化学生产") return "合成产出可能会受炼金等级影响（暂未实装）";
         if (category == "插件合成") return "合成的经济消耗受铁匠等级影响";
         if (smithState().enabled) return "铁匠效果：减少货币消耗，装备继承素材最高强化度";

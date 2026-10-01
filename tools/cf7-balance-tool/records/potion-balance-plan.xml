@@ -60,6 +60,11 @@
     <record itemName="清炒花菜" sourceFile="消耗品_药剂_食品.xml" sourceLevel="15" domain="meal" balanceMode="formula" status="proposed" />
     <record itemName="清炒土豆丝" sourceFile="消耗品_药剂_食品.xml" sourceLevel="15" domain="meal" balanceMode="formula" status="proposed" />
     <record itemName="葱花炒蛋" sourceFile="消耗品_药剂_食品.xml" sourceLevel="15" domain="meal" balanceMode="formula" status="proposed" />
+    <!-- 炉具菜品：需烹饪用具基建等级（烤炉/烤箱/炸炉/蒸炉），品级随厨具层级上浮 -->
+    <record itemName="蒜蓉烤茄子" sourceFile="消耗品_药剂_食品.xml" sourceLevel="18" domain="meal" balanceMode="formula" status="proposed" />
+    <record itemName="蜜汁烤鸡" sourceFile="消耗品_药剂_食品.xml" sourceLevel="22" domain="meal" balanceMode="formula" status="proposed" />
+    <record itemName="酥炸大虾" sourceFile="消耗品_药剂_食品.xml" sourceLevel="26" domain="meal" balanceMode="formula" status="proposed" />
+    <record itemName="瑶柱蒸蛋" sourceFile="消耗品_药剂_食品.xml" sourceLevel="30" domain="meal" balanceMode="formula" status="proposed" />
     <record itemName="情报鸡尾酒" sourceFile="消耗品_药剂_食品.xml" sourceLevel="20" domain="meal" balanceMode="exception" status="proposed" exceptionCode="quest-intelligence-payload" />
     <record itemName="菠萝罐头" sourceFile="消耗品_药剂_食品.xml" sourceLevel="45" domain="meal" balanceMode="formula" status="proposed" />
     <record itemName="巧克力板" sourceFile="消耗品_药剂_食品.xml" sourceLevel="35" domain="meal" balanceMode="formula" status="proposed" />

@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120">
+  <!-- 蒸炉：叠层蒸笼 + 大量蒸汽 -->
+  <defs>
+    <linearGradient id="steam" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#7a6a52"/>
+      <stop offset="1" stop-color="#3a2e20"/>
+    </linearGradient>
+  </defs>
+  <ellipse cx="60" cy="98" rx="34" ry="6" fill="#0f0a06"/>
+  <rect x="26" y="72" width="68" height="18" rx="4" fill="url(#steam)" stroke="#1c140e" stroke-width="2"/>
+  <rect x="26" y="54" width="68" height="18" rx="4" fill="url(#steam)" stroke="#1c140e" stroke-width="2"/>
+  <rect x="28" y="38" width="64" height="18" rx="4" fill="url(#steam)" stroke="#1c140e" stroke-width="2"/>
+  <path d="M28 42 Q44 38 60 40 Q78 42 92 40 L92 46 Q78 48 60 46 Q44 44 28 48 Z" fill="#241a10"/>
+  <path d="M30 50 L90 50 M30 68 L90 68 M30 86 L90 86" stroke="#241a10" stroke-width="1.5" opacity=".7"/>
+  <path d="M44 30 Q48 22 44 14 M60 30 Q64 20 60 12 M76 30 Q80 22 76 14 M52 32 Q56 26 52 20 M68 32 Q72 26 68 20"
+        fill="none" stroke="#b8aa92" stroke-width="2.5" stroke-linecap="round" opacity=".55"/>
+  <rect x="20" y="60" width="6" height="10" rx="2" fill="#3a2e20"/>
+  <rect x="94" y="60" width="6" height="10" rx="2" fill="#3a2e20"/>
+</svg>

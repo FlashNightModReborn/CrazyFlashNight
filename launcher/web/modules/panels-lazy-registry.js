@@ -148,6 +148,7 @@
          'modules/crafting-detail-presenter.js',
          'modules/inventory-runtime.js',
          'modules/crafting-runtime.js',
+         'modules/cooking.js',
          'modules/crafting.js'],
         noop);
 
