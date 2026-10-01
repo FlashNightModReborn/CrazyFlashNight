@@ -509,7 +509,7 @@ NativeHud 的 × 始终保留安全退出路由，仅在既有按钮内部投影
 - 车辆标志继续由现役地图、战备箱容量和材料商店/合成导航消费，不新增存档 schema 或另一套权益规则。
 
 验证入口：`scripts/run-garage-purchase-tests.ps1`、`GaragePurchaseTaskTests`、`tools/run-garage-purchase-harness.js`，以及现有 panel-contract、存盘调用点与受影响 Host/SaveManager 门。
-验证结果、身份、闭包、产物与修复边界见 [本轮证据](../docs/evidence/u13-garage-local-2026-09-30.json)；已观察到绑定候选的实际运行，三车单次扣费与保存确认成立，维护者接受界面体验。状态为 candidate_executed；保存重启读回、完整权益专项与正式入口复验仍单列，未正式 runtime 发布。共享服务配色已归入唯一色板，普通/发布树 strict 样式门均为 0 error / 0 warning，原有稳定画面保持一致。
+验证结果、身份、闭包、产物与修复边界见 [本地候选证据](../docs/evidence/u13-garage-local-2026-09-30.json) 与 [正式发布回执](../docs/evidence/u13-garage-release-2026-10-01.json)。2026-10-01 已 promoted：新冻结树的双独立构建一致，production policy 43/43、原子部署、安装完整性校验及远端审计通过。此前候选的三车单次扣费、保存确认和界面认可单独保留；保存重启读回、完整权益专项与新产物的正式入口业务复验仍待验证。共享服务和情报名词注记配色已归入唯一色板，普通/发布树 strict 样式门均为 0 error / 0 warning，颜色与透明度保持一致。
 
 ## 3. C# 接入清单
 

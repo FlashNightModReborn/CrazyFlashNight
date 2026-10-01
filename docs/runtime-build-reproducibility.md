@@ -1025,3 +1025,14 @@ canonical Launcher 回归 6010 passed / 5 skipped；将实际候选 Core 放入�
 strict production policy 42/42，receipt SHA-256 `0C612DBA8C5CB91E481E2386A5E124E6D2FC2883B2F00E5C6898835BFB2016D8`。唯一 writer 于 `2026-09-28T02:07:25Z` 执行 promotion，重验双 signer / 双 faultDomain，根 bootstrap `--verify-only` 成功；正式 Core SHA-256 `3B400CCE2BA5165F645F125EFE9E19A31BB1088238CB3576CF1D19F492217C94` 与已测试候选一致。状态为 `promoted / FIELD_REVALIDATION_PENDING`，不将窗口夹具或启动器文件校验计为标准入口实际复活/返回业务复验。
 
 部署提交 `8d139c6f5cfb127e076ba3d2d2d1b21f457defaa` 已快进推送到 `main`；[CI Audit 36368812335](https://github.com/FlashNightModReborn/CrazyFlashNight/actions/runs/36368812335) 成功报告 `state=promoted / deploymentChanged=true`，独立重放 36 文件闭包与 `signers=2 / faultDomains=2`。测试员更新后正常使用观察；若再次出现遮挡，沿用原诊断包分析 `world.overlay_order` 与原始命中链，不要求开发机人工复现其环境。
+
+
+### 2026-10-01 U13 车库购车正式发布
+
+本会话人类明确授权“那就走发布列车”。车库全幅布局、三车原画烘焙、基建权益说明与窄购车命令进入正式安装树；本列车也包含已合入主线的新字体、对白稳定揭示和情报名词更新，其实际游戏体验仍分别待验证。
+
+- 冻结源码 `0cac47709b66c515910592f8426652bbd6d4b462`，保护标记 `refs/tags/runtime-build-v2/20261001-u13-garage-v2`；request `25C611E94A27CC8994BB1007DD904B06C454364DBB11918978F0103E3C661C3A`。
+- 注册本机 X509 与 GitHub hosted OIDC 两个独立故障域的构建 identity/closure 一致；新 production policy **43/43**，唯一 promotion writer 原子部署、signed consensus 与完整安装 `--verify-only` 通过。
+- 部署提交 `5292ba472e3d5397311656e2abd778b066b00aa2`，CI audit [36795951616](https://github.com/FlashNightModReborn/CrazyFlashNight/actions/runs/36795951616) success；完整身份、摘要、签名摘要及失败记录见 [发布回执](evidence/u13-garage-release-2026-10-01.json)。
+- v1 的 **41/43** 失败票和源码标记保留：情报名词新增五处直接色值使 rawColor=2060 超过 2055；五色按原值/透明度归入共享色板后，用新标记/request/proof/receipt 完成 v2，阈值保持 2055。
+- 状态为 `promoted`；历史候选的三车实际购买/保存确认与界面认可单列。新产物的购车保存重启、完整权益、新字体/对白及情报名词实际游戏体验仍 pending，未把部署与安装校验升级为 `standard_entry_verified`。
