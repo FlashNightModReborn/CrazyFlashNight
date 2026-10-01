@@ -1036,3 +1036,13 @@ strict production policy 42/42，receipt SHA-256 `0C612DBA8C5CB91E481E2386A5E124
 - 部署提交 `5292ba472e3d5397311656e2abd778b066b00aa2`，CI audit [36795951616](https://github.com/FlashNightModReborn/CrazyFlashNight/actions/runs/36795951616) success；完整身份、摘要、签名摘要及失败记录见 [发布回执](evidence/u13-garage-release-2026-10-01.json)。
 - v1 的 **41/43** 失败票和源码标记保留：情报名词新增五处直接色值使 rawColor=2060 超过 2055；五色按原值/透明度归入共享色板后，用新标记/request/proof/receipt 完成 v2，阈值保持 2055。
 - 状态为 `promoted`；历史候选的三车实际购买/保存确认与界面认可单列。新产物的购车保存重启、完整权益、新字体/对白及情报名词实际游戏体验仍 pending，未把部署与安装校验升级为 `standard_entry_verified`。
+
+### 2026-10-01 U8 教程帮助与刘海提醒发布
+
+维护者明确授权“合并上游冲突，然后走发布列车”。合入上游车库、字体、对白与情报更新，保留教程接线，并由真实 CS6 重新 publish 合并后的 asLoader。七项内容转接共享引导基座，两个告示板进入 Web 帮助，五种白色操作图示保留；全局关闭自动教程后沿既有刘海屏通知提醒，结算准入优先于自动教程。
+
+- 冻结源码 `3ce331b10109965efe967b698f9d22ca05c71187`，受保护标签 `refs/tags/runtime-build-v2/20261001-u8-guidance-v1`；immutable request `68DB7138E1126461C484D59C10272968B5BA97E689D05AC3A32D74A4148AAF56`。
+- 本机 X509 `physical-host-b` 与 GitHub hosted OIDC 同 identity/closure；production policy **45/45**、唯一 promotion writer 原子替换、36 文件完整安装和 staged 双签重放通过。
+- 部署提交 `2033f5b5fab7f75beaeb3c724bf029ad2fb8285d` 已快进推送，远端 [Audit 36813625444](https://github.com/FlashNightModReborn/CrazyFlashNight/actions/runs/36813625444) success，独立重放 `state=promoted / deploymentChanged=true` 与 `signers=2 / faultDomains=2`；完整签名、安装与审计结果见 [发布回执](evidence/u8-guidance-release-2026-10-01.json)。
+- 首轮 **44/45** 失败票保留：旧工作区 `swfscan.py` 的 CRLF 与 `.gitattributes`、Git blob 及派生工具摘要中的 LF 不一致。恢复精确 Git blob 后，图集与目录均保持原字节，用同一源码、request、双签候选完整重跑；不降低门禁、不移动已创建标签。
+- 状态为 `promoted`。七项触发视觉、连续两次关卡结算及全局跳过/刘海通知的重启体验按 [U8 验收清单](U8引导迁移与共享教程基座-2026-09-30.md) 保留，未据机器门升级为 `e2e_verified / standard_entry_verified`。

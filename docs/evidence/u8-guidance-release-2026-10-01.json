@@ -1,0 +1,168 @@
+{
+  "schema": "cf7.u8.guidance-release.v1",
+  "date": "2026-10-01",
+  "issue": "https://github.com/FlashNightModReborn/CrazyFlashNight/issues/35",
+  "authorization": "本会话人类明确授权：可行，合并上游冲突，然后走发布列车。",
+  "source": {
+    "schema": "cf7.u8.release-freeze.v1",
+    "sourceCommitOid": "3ce331b10109965efe967b698f9d22ca05c71187",
+    "releaseTreeOid": "a57497a92edcae52716f9e3b620344419df2bceb",
+    "sourceRef": "refs/tags/runtime-build-v2/20261001-u8-guidance-v1",
+    "queueRoot": "C:\\q81001",
+    "authorizedBy": "User: merge upstream conflicts and proceed through the release train",
+    "frozenAtUtc": "2026-10-01T03:24:04.3603175Z"
+  },
+  "upstreamMergedCommitOid": "9034e87672c2f4482fc0b9a5de12e162b4bc21d8",
+  "request": {
+    "schema": "cf7-runtime-build-request.v2",
+    "requestId": "68DB7138E1126461C484D59C10272968B5BA97E689D05AC3A32D74A4148AAF56",
+    "sourceKind": "Treeish",
+    "releaseTreeOid": "a57497a92edcae52716f9e3b620344419df2bceb",
+    "sourceCommitOid": "3ce331b10109965efe967b698f9d22ca05c71187",
+    "requestCommitOid": "afaab9a56bad64ff30a46b081e7b0042212113c1",
+    "bundleTreeOid": "26a4ee1b0458ef900b9fbfc50ad691adffc8b902",
+    "artifactSourceHash": "2AB0B93DA2ABABA2089D70821DD9E370C575CDEBABD186C7C870FCBFEF532CEA",
+    "producerRecipeHash": "23483061F6288CDE0142991DBE8A5F2FDAE8DCC84B098FC8332D1573365ABA8E",
+    "toolchainLockHash": "DFA769829F9740196DEF63351A00AAC309E50A2CA0A768759334EB2A2161DD36",
+    "policyHash": "0D25B229F5A748ED4FFB91097B3BB5B3600EAAA294C95958BAF2C131FC0DED41",
+    "buildIdentityHash": "80E72AE437046ED96DF99AB4F7A5DE5F7C1F60FD62CDA0F8E04652770DFF27E3",
+    "bundleFile": "source.bundle",
+    "bundleSha256": "512342B45CFD6D583BBC4E61FBA5BB35A5E6086F0D48EC50BD450DD7E4DAB69B",
+    "requiredQuorum": 2,
+    "createdAtUtc": "2026-10-01T03:30:40.3202506Z"
+  },
+  "buildIdentityHash": "80E72AE437046ED96DF99AB4F7A5DE5F7C1F60FD62CDA0F8E04652770DFF27E3",
+  "payloadClosureHash": "AF4114B5A11BB7F1ED8CF7D780710D72DFCE1359DC3D4F7EFCA39DFE9FF00F7F",
+  "independentBuilders": {
+    "minimumConsensus": 2,
+    "proofCount": 2,
+    "faultDomains": [
+      "github-hosted-windows",
+      "physical-host-b"
+    ],
+    "proofs": [
+      {
+        "schema": "cf7-runtime-github-build-attestation.v2",
+        "kind": "github-oidc",
+        "signerIdentity": "github-oidc:6F4336EB5846C643C5B2291E0DD7E8B86B0A8C9CF9AC321DB61483725845B7CD",
+        "faultDomain": "github-hosted-windows",
+        "buildIdentityHash": "80E72AE437046ED96DF99AB4F7A5DE5F7C1F60FD62CDA0F8E04652770DFF27E3",
+        "payloadClosureHash": "AF4114B5A11BB7F1ED8CF7D780710D72DFCE1359DC3D4F7EFCA39DFE9FF00F7F"
+      },
+      {
+        "schema": "cf7-runtime-build-attestation.v2",
+        "kind": "x509",
+        "signerIdentity": "x509:EB5D32E04B6EE8697850314E19698DE1A3FACFFCCC6418A12CF7FEDE6033CDA5",
+        "faultDomain": "physical-host-b",
+        "buildIdentityHash": "80E72AE437046ED96DF99AB4F7A5DE5F7C1F60FD62CDA0F8E04652770DFF27E3",
+        "payloadClosureHash": "AF4114B5A11BB7F1ED8CF7D780710D72DFCE1359DC3D4F7EFCA39DFE9FF00F7F"
+      }
+    ],
+    "githubRunId": 36811093633,
+    "githubRunUrl": "https://github.com/FlashNightModReborn/CrazyFlashNight/actions/runs/36811093633"
+  },
+  "policy": {
+    "profile": "production",
+    "passed": true,
+    "passedChecks": 45,
+    "failedChecks": 0,
+    "releaseTreeOid": "a57497a92edcae52716f9e3b620344419df2bceb",
+    "policyHash": "0D25B229F5A748ED4FFB91097B3BB5B3600EAAA294C95958BAF2C131FC0DED41",
+    "receipt": "tmp/u8-guidance/release/policy-receipt-lf.json",
+    "receiptSha256": "FF3B6D0B9D4662CC64332E3B9537409197D6A0D6243629A072BFB99011C152A8",
+    "startedAtUtc": "2026-10-01T03:53:21.2242791Z",
+    "completedAtUtc": "2026-10-01T03:59:09.5709627Z"
+  },
+  "deployment": {
+    "deploymentCommitOid": "2033f5b5fab7f75beaeb3c724bf029ad2fb8285d",
+    "promoted": true,
+    "promotionExitCode": 0,
+    "promotedAtUtc": "2026-10-01T04:01:31.7472150Z",
+    "bootstrapCompleteInstallVerified": true,
+    "coreSha256": "633C06A615B049B5113163734E05C7971779E7796BACFE6406E77F0DE6089CC1",
+    "manifestSha256": "0C74537F2F8ED1A14F921D3CF61064574301C0F391CBEF6E327DB924D2A886F2",
+    "pushed": true,
+    "pushedAtUtc": "2026-10-01T04:07:08.9571307Z",
+    "auditRunId": 36813625444,
+    "auditUrl": "https://github.com/FlashNightModReborn/CrazyFlashNight/actions/runs/36813625444",
+    "auditConclusion": "success",
+    "auditVerifiedRuntimeState": "promoted",
+    "recoverablePreviousBundle": "tmp/runtime-promotions/20261001T040105105Z-6c381a46b2ca4fbf876febd7e501ae51/previous"
+  },
+  "mergedRegression": {
+    "host": {
+      "total": 6407,
+      "passed": 6402,
+      "skipped": 5,
+      "failed": 0
+    },
+    "productionHelp": {
+      "passed": 85,
+      "failed": 0,
+      "transport": "fixture"
+    },
+    "tutorialJourneys": {
+      "passed": 47,
+      "failed": 0,
+      "realInventoryRequests": 0
+    },
+    "panelContracts": {
+      "passed": 70,
+      "failed": 0
+    },
+    "cssBundlePassed": true,
+    "as2": {
+      "nativeGuidancePassed": 54,
+      "mapLootPassed": 800,
+      "garagePurchasePassed": 48,
+      "freshRunIds": true,
+      "compilerErrors": 0,
+      "compilerWarnings": 0,
+      "scratchRestored": true
+    },
+    "publishedAsLoader": {
+      "bytes": 1421355,
+      "sha256": "DB6B49BBCBE059C5F18949E698CB3DE3ABB30035FA681E0E95003A1D35FD96C2",
+      "freshCompilerErrors": 0,
+      "freshCompilerWarnings": 0,
+      "singleClassOwnershipPassed": true,
+      "combinedFeatureMarkersPassed": true,
+      "maxFunctionBodyBytes": 51191
+    }
+  },
+  "preservedFailure": {
+    "profile": "production",
+    "passed": false,
+    "passedChecks": 44,
+    "totalChecks": 45,
+    "failedChecks": [
+      "combat-bullet-assets-current"
+    ],
+    "receipt": "tmp/u8-guidance/release/policy-receipt.json",
+    "receiptSha256": "E010F9DE0F4D4EB0337498504E921260D32515602A3D10EF42C20527C8A92D0C",
+    "reason": "旧工作区 swfscan.py 保留 CRLF；.gitattributes 指定 LF，Git blob 与派生 tools 摘要为 LF。恢复精确 Git blob 后在同一冻结版本完整重跑政策，源码与产物未变。",
+    "deployed": false,
+    "gateWeakened": false,
+    "sourceContentChanged": false,
+    "visualAssetsRegenerated": false
+  },
+  "state": {
+    "compiled": true,
+    "candidate_built": true,
+    "candidate_executed": false,
+    "e2e_verified": false,
+    "promoted": true,
+    "standard_entry_verified": false
+  },
+  "productEvidence": {
+    "finalArtifactBusinessJourneyExecuted": false,
+    "realPlayerSavesWritten": false,
+    "note": "自动回归、双签、政策与安装完整性单列；不代签真实关卡与视觉验收。"
+  },
+  "pending": [
+    "七个教程触发及五种白色场景图示的正式入口实机与视觉复验",
+    "连续两次通关先呈现结算，再允许自动教程",
+    "本次跳过、全局关闭后的刘海通知和重启读回、设置恢复自动弹窗"
+  ],
+  "issueClosed": false
+}
