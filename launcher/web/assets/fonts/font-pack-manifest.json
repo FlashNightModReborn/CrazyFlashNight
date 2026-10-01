@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "generatedBy": "tools/fontctl",
-  "sourceSha256": "db79297e6217353f2f4f48bf6f9e376f2e22a2d1b3e7e885dc080b5bed41f133",
+  "sourceSha256": "b0cb7437d00295f88736ee0001b08aeb629f1f9ed056e572f3d404a319efa0c8",
   "gate": "E",
   "comment": "Generated compatibility projection. Edit fonts/fonts.xml and run fontctl generate.",
   "groups": {
@@ -219,6 +219,25 @@
           "urls": [
             "https://cdn.jsdelivr.net/gh/adobe-fonts/source-han-sans@release/SubsetOTF/CN/SourceHanSansCN-Medium.otf",
             "https://github.com/adobe-fonts/source-han-sans/raw/release/SubsetOTF/CN/SourceHanSansCN-Medium.otf"
+          ],
+          "shippedFallback": false
+        }
+      ]
+    },
+    "expressive-commune": {
+      "label": "公社工业档案黑体",
+      "description": "公社防具旧工厂公文与生产指标档案的复古窄黑体。",
+      "totalBytes": 9902664,
+      "files": [
+        {
+          "name": "chill-g-sans.otf",
+          "label": "ChillGSans Medium（寒蝉高黑体 / 窄黑融合手写与旧字形 / 公社档案正文与红头）",
+          "license": "SIL-OFL-1.1",
+          "bytes": 9902664,
+          "sha256": "7855e353d50c2a07dd31e8ba6e3d0294b8a405b3b87f94655d0c8e5f492c1c50",
+          "urls": [
+            "https://cdn.jsdelivr.net/gh/Warren2060/ChillGSans@main/ChillGSans.otf",
+            "https://raw.githubusercontent.com/Warren2060/ChillGSans/main/ChillGSans.otf"
           ],
           "shippedFallback": false
         }

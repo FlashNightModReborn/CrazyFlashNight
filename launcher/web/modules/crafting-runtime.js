@@ -171,7 +171,11 @@
     }
 
     function validProjectedItem(value) {
-        var valid = exactKeys(value, ITEM_KEYS) && identityTriple(value, 'name')
+        // description 为增量投影：缺省降级，出现则必须是受限文本。
+        var keys = ITEM_KEYS.slice();
+        if (own(value, 'description')) keys.push('description');
+        var valid = exactKeys(value, keys) && identityTriple(value, 'name')
+            && (!own(value, 'description') || optionalText(value.description, 4000))
             && (value.itemKind === 'equipment' || value.itemKind === 'stack')
             && finiteNonNegative(value.value) && finiteNonNegative(value.quantity)
             && finiteNonNegative(value.enhancementLevel) && finiteNonNegative(value.requiredLevel)
@@ -189,7 +193,9 @@
 
     function validCatalogOutput(value) {
         var keys = ITEM_KEYS.filter(function(key) { return key !== 'requiredLevel'; });
+        if (own(value, 'description')) keys.push('description');
         var valid = exactKeys(value, keys) && identityTriple(value, 'name')
+            && (!own(value, 'description') || optionalText(value.description, 4000))
             && (value.itemKind === 'equipment' || value.itemKind === 'stack')
             && finiteNonNegative(value.value) && finiteNonNegative(value.quantity)
             && finiteNonNegative(value.enhancementLevel)

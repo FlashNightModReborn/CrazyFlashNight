@@ -3,7 +3,7 @@
   "catalogVersion": "1",
   "gate": "E",
   "runtimeAuthority": true,
-  "sourceSha256": "db79297e6217353f2f4f48bf6f9e376f2e22a2d1b3e7e885dc080b5bed41f133",
+  "sourceSha256": "b0cb7437d00295f88736ee0001b08aeb629f1f9ed056e572f3d404a319efa0c8",
   "virtualFontOrigin": "https://cfn-fonts.local/",
   "allowedHosts": [
     "github.com",
@@ -41,6 +41,11 @@
       "id": "interface",
       "label": "界面与 HUD 黑体",
       "description": "刘海、HUD 与通用界面正文的无衬线中文字体。"
+    },
+    "expressive-commune": {
+      "id": "expressive-commune",
+      "label": "公社工业档案黑体",
+      "description": "公社防具旧工厂公文与生产指标档案的复古窄黑体。"
     }
   },
   "assets": [
@@ -506,6 +511,38 @@
           "sha256": "a94e558a2fe972bee4f46bce0843abff37063fd68c33f1e7d9058f6f09432b01"
         }
       ]
+    },
+    {
+      "id": "chill-g-sans",
+      "label": "ChillGSans Medium（寒蝉高黑体 / 窄黑融合手写与旧字形 / 公社档案正文与红头）",
+      "file": "chill-g-sans.otf",
+      "format": "otf",
+      "targets": [
+        "web"
+      ],
+      "license": "SIL-OFL-1.1",
+      "group": "expressive-commune",
+      "residency": "on-demand",
+      "shippedFallback": false,
+      "bytes": 9902664,
+      "sha256": "7855e353d50c2a07dd31e8ba6e3d0294b8a405b3b87f94655d0c8e5f492c1c50",
+      "faces": [
+        "chill-g-sans-500"
+      ],
+      "downloads": [
+        {
+          "priority": 1,
+          "url": "https://cdn.jsdelivr.net/gh/Warren2060/ChillGSans@main/ChillGSans.otf",
+          "bytes": 9902664,
+          "sha256": "7855e353d50c2a07dd31e8ba6e3d0294b8a405b3b87f94655d0c8e5f492c1c50"
+        },
+        {
+          "priority": 2,
+          "url": "https://raw.githubusercontent.com/Warren2060/ChillGSans/main/ChillGSans.otf",
+          "bytes": 9902664,
+          "sha256": "7855e353d50c2a07dd31e8ba6e3d0294b8a405b3b87f94655d0c8e5f492c1c50"
+        }
+      ]
     }
   ],
   "faces": {
@@ -654,6 +691,16 @@
       "asset": "source-han-sans-cn-medium",
       "alias": "CF7Face--source-han-sans-cn-medium-500",
       "family": "Source Han Sans CN",
+      "weight": 500,
+      "style": "normal",
+      "stretch": "normal",
+      "classification": "migrate"
+    },
+    "chill-g-sans-500": {
+      "id": "chill-g-sans-500",
+      "asset": "chill-g-sans",
+      "alias": "CF7Face--chill-g-sans-500",
+      "family": "ChillGSans",
       "weight": 500,
       "style": "normal",
       "stretch": "normal",
@@ -1039,6 +1086,50 @@
       "generic": [
         {
           "family": "monospace",
+          "classification": "system-owned"
+        }
+      ]
+    },
+    "web.commune.title": {
+      "id": "web.commune.title",
+      "label": "公社档案红头",
+      "status": "accepted",
+      "allowPresetOverride": false,
+      "faces": [
+        "chill-g-sans-500",
+        "source-han-serif-cn-heavy-900"
+      ],
+      "system": [
+        {
+          "family": "SimHei",
+          "classification": "system-owned"
+        }
+      ],
+      "generic": [
+        {
+          "family": "sans-serif",
+          "classification": "system-owned"
+        }
+      ]
+    },
+    "web.commune.body": {
+      "id": "web.commune.body",
+      "label": "公社档案正文",
+      "status": "accepted",
+      "allowPresetOverride": false,
+      "faces": [
+        "chill-g-sans-500",
+        "lxgw-wenkai-screen-400"
+      ],
+      "system": [
+        {
+          "family": "FangSong",
+          "classification": "system-owned"
+        }
+      ],
+      "generic": [
+        {
+          "family": "serif",
           "classification": "system-owned"
         }
       ]

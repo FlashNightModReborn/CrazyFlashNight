@@ -2221,7 +2221,12 @@ namespace CF7Launcher.Tasks
                     "enhancementLevel", "majorType", "use", "actionType", "weaponType",
                     "setId", "setName", "setOrder" };
             int setOrder;
-            if (!HasExactKeys(item, keys) || !IsIdentityTriple(item)
+            // description 为增量投影：旧 asLoader 不回传时允许缺省，出现则严格校验。
+            if (!HasExactKeysWithOptional(item, keys, "description")
+                || (item["description"] != null
+                    && !IsSafeMultilineText(ReadExactString(item["description"]), 4000)))
+                return false;
+            if (!IsIdentityTriple(item)
                 || !IsItemKind(ReadExactString(item["itemKind"]))
                 || !IsNonNegativeNumber(item["value"]) || !IsNonNegativeNumber(item["quantity"])
                 || !IsNonNegativeNumber(item["enhancementLevel"])

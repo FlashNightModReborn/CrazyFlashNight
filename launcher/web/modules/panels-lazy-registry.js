@@ -150,6 +150,7 @@
          'modules/crafting-runtime.js',
          'modules/cooking.js',
          'modules/chemistry.js',
+         'modules/commune.js',
          'modules/crafting.js'],
         noop);
 

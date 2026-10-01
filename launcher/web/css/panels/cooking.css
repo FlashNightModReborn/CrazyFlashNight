@@ -184,6 +184,10 @@
     filter:contrast(1.02);
     animation:cooking-photo-in .3s cubic-bezier(.2,.9,.3,1.1);
 }
+/* 炒锅是宽扁图天然显大；其余厨具 svg 高窄，放宽限高保持视觉体量一致。 */
+.cooking-page.left:not([data-appliance="炒锅"]):not([data-appliance=""]) .cooking-photo-img {
+    max-height:290px;
+}
 @keyframes cooking-photo-in {
     from { opacity:0; transform:scale(.94); }
     to { opacity:1; transform:none; }
