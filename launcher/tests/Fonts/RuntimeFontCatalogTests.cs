@@ -43,7 +43,7 @@ namespace CF7Launcher.Tests.Fonts
                 File.ReadAllText(Path.Combine(root, "launcher", "web", "generated", "font-catalog.json")),
                 RuntimeFontCatalog.ProjectionJsonForTest);
             string[] roles = RuntimeFontCatalog.RoleIdsForTest;
-            Assert.Equal(30, roles.Length);
+            Assert.Equal(32, roles.Length);
             Assert.Contains("native.dialogue.body", roles);
             Assert.Contains("native.player-info.body", roles);
             Assert.Contains("native.hud.body", roles);
@@ -53,6 +53,8 @@ namespace CF7Launcher.Tests.Fonts
             Assert.Contains("native.combat.number", roles);
             Assert.Contains("web.intelligence.title", roles);
             Assert.Contains("web.overlay.mono", roles);
+            Assert.Contains("web.commune.title", roles);
+            Assert.Contains("web.commune.body", roles);
             Assert.True(RuntimeFontCatalog.IsAllowedDownloadHost("github.com"));
             Assert.True(RuntimeFontCatalog.IsAllowedDownloadHost(
                 "RELEASE-ASSETS.GITHUBUSERCONTENT.COM"));

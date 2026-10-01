@@ -29,6 +29,8 @@ const IMPORTS = [
     './workbench/entities.css',
     './workbench/crafting.css',
     './panels/cooking.css',
+    './panels/chemistry.css',
+    './panels/commune.css',
     './workbench/equipment-inspector.css',
     './workbench/skills.css',
     './workbench/equipment-tuning.css',

@@ -171,7 +171,11 @@
     }
 
     function validProjectedItem(value) {
-        var valid = exactKeys(value, ITEM_KEYS) && identityTriple(value, 'name')
+        // description 为增量投影：缺省降级，出现则必须是受限文本。
+        var keys = ITEM_KEYS.slice();
+        if (own(value, 'description')) keys.push('description');
+        var valid = exactKeys(value, keys) && identityTriple(value, 'name')
+            && (!own(value, 'description') || optionalText(value.description, 4000))
             && (value.itemKind === 'equipment' || value.itemKind === 'stack')
             && finiteNonNegative(value.value) && finiteNonNegative(value.quantity)
             && finiteNonNegative(value.enhancementLevel) && finiteNonNegative(value.requiredLevel)
@@ -189,7 +193,9 @@
 
     function validCatalogOutput(value) {
         var keys = ITEM_KEYS.filter(function(key) { return key !== 'requiredLevel'; });
+        if (own(value, 'description')) keys.push('description');
         var valid = exactKeys(value, keys) && identityTriple(value, 'name')
+            && (!own(value, 'description') || optionalText(value.description, 4000))
             && (value.itemKind === 'equipment' || value.itemKind === 'stack')
             && finiteNonNegative(value.value) && finiteNonNegative(value.quantity)
             && finiteNonNegative(value.enhancementLevel)
@@ -358,14 +364,19 @@
     }
 
     function validRecipe(value) {
-        return exactKeys(value, ['recipeId', 'recipeIndex', 'title', 'book', 'infrastructure',
-                'output', 'owned', 'plannedCrafts', 'baseCost', 'materialCount',
-                'batchEligible', 'canCraftOne', 'availability'])
+        // book/infrastructure 为增量投影：旧 asLoader 不回传时允许缺省降级，
+        // 出现则必须严格合法（同 hairdresser portrait 约定）。
+        var keys = ['recipeId', 'recipeIndex', 'title', 'output', 'owned',
+            'plannedCrafts', 'baseCost', 'materialCount', 'batchEligible',
+            'canCraftOne', 'availability'];
+        if (own(value, 'book')) keys.push('book');
+        if (own(value, 'infrastructure')) keys.push('infrastructure');
+        return exactKeys(value, keys)
             && validRecipeId(value.recipeId)
             && recipeIndex(value.recipeIndex)
             && identityText(value.title, 256)
-            && optionalText(value.book, 256)
-            && validInfraRows(value.infrastructure, 32)
+            && (!own(value, 'book') || optionalText(value.book, 256))
+            && (!own(value, 'infrastructure') || validInfraRows(value.infrastructure, 32))
             && validCatalogOutput(value.output)
             && validOwnedSummary(value.owned)
             && Number.isInteger(value.plannedCrafts) && value.plannedCrafts >= 0
@@ -421,14 +432,16 @@
     }
 
     function validAcceptedPlan(plan, response, outputField) {
-        return exactKeys(plan, ['category', 'recipeIndex', 'craftCount', 'output', 'materials',
-            'infrastructure', 'outputDelivery', 'outputPrototype', 'cost'])
+        var keys = ['category', 'recipeIndex', 'craftCount', 'output', 'materials',
+            'outputDelivery', 'outputPrototype', 'cost'];
+        if (own(plan, 'infrastructure')) keys.push('infrastructure');
+        return exactKeys(plan, keys)
             && plan.category === response.category
             && plan.recipeIndex === response.recipeIndex
             && plan.craftCount === response.craftCount
             && same(plan.output, response[outputField])
             && Array.isArray(plan.materials) && plan.materials.every(validMaterial)
-            && validInfraRows(plan.infrastructure, 32)
+            && (!own(plan, 'infrastructure') || validInfraRows(plan.infrastructure, 32))
             && validProjectedItem(plan.output) && validCost(plan.cost)
             && validOutputDelivery(plan.outputDelivery, plan.output)
             && validOutputPrototype(plan.outputPrototype, plan.output, plan.outputDelivery);
@@ -1012,14 +1025,14 @@
         if (cmd === 'preview') {
             var previewKeys = RESPONSE_ENVELOPE.concat(['success', 'v', 'category', 'recipeIndex',
                 'craftCount', 'batchEligible', 'maxCraftCount', 'output', 'materials', 'cost',
-                'infrastructure',
                 'balance', 'skills', 'levelAllowed', 'enoughMaterials', 'enoughMoney',
                 'enoughKpoints', 'enoughSpace', 'canCommit', 'blockingError', 'outputDelivery']);
+            if (own(data, 'infrastructure')) previewKeys.push('infrastructure');
             if (data.canCommit === true) previewKeys.push('craftToken', 'acceptedPlan');
             return exactKeys(data, previewKeys)
                 && validProjectedItem(data.output) && Array.isArray(data.materials)
                 && data.materials.every(validMaterial)
-                && validInfraRows(data.infrastructure, 32)
+                && (!own(data, 'infrastructure') || validInfraRows(data.infrastructure, 32))
                 && validOutputDelivery(data.outputDelivery, data.output)
                 && data.outputDelivery.available === data.enoughSpace
                 && (data.canCommit !== true || data.materials.every(function(material) {

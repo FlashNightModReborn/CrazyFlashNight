@@ -19,7 +19,7 @@ var CraftingPanel = (function() {
     var _returnCharacterBuildButton = null, _returnNavigationTimer = null;
     var _returnMaterialsButton = null, _materialRecipeReturn = null;
     var _panelInstanceId = '', _canReturnCharacterBuild = false;
-    var _cookingActive = false;
+    var _cookingActive = false, _chemistryActive = false, _communeActive = false;
     var _recipeSnapshotGeneration = 0, _recipeSnapshotCallId = '',
         _recipeSnapshotIntent = null;
     var _materialShopNavigation = null, _materialShopNavigationTimer = null,
@@ -2330,6 +2330,50 @@ var CraftingPanel = (function() {
             });
             return true;
         }
+        // 化学生产走独立蓝图界面（modules/chemistry.js + css/panels/chemistry.css）。
+        if (_mode === 'recipes' && _category === '化学生产'
+                && typeof ChemistryPanel !== 'undefined' && ChemistryPanel != null) {
+            _chemistryActive = true;
+            if (_scaleHandle) _scaleHandle.detach();
+            _scaleHandle = typeof PanelScale !== 'undefined'
+                ? PanelScale.attach(_shellEl, 1024, 576) : null;
+            if (!_mux.openSession({
+                    ownerPanel:'crafting',
+                    panelInstanceId:_panelInstanceId
+                })) return false;
+            Workbench.clearElement(_shellEl);
+            ChemistryPanel.mount(_shellEl, {
+                request:request,
+                toast:toast,
+                cue:cue,
+                iconHtml:iconHtml,
+                formatNumber:formatNumber,
+                requestClose:requestClose
+            });
+            return true;
+        }
+        // 公社防具走独立档案界面（modules/commune.js + css/panels/commune.css）。
+        if (_mode === 'recipes' && _category === '公社防具'
+                && typeof CommunePanel !== 'undefined' && CommunePanel != null) {
+            _communeActive = true;
+            if (_scaleHandle) _scaleHandle.detach();
+            _scaleHandle = typeof PanelScale !== 'undefined'
+                ? PanelScale.attach(_shellEl, 1024, 576) : null;
+            if (!_mux.openSession({
+                    ownerPanel:'crafting',
+                    panelInstanceId:_panelInstanceId
+                })) return false;
+            Workbench.clearElement(_shellEl);
+            CommunePanel.mount(_shellEl, {
+                request:request,
+                toast:toast,
+                cue:cue,
+                iconHtml:iconHtml,
+                formatNumber:formatNumber,
+                requestClose:requestClose
+            });
+            return true;
+        }
         buildDOM();
         if (_scaleHandle) _scaleHandle.detach();
         _scaleHandle = typeof PanelScale !== 'undefined' ? PanelScale.attach(_shellEl, 1024, 576) : null;
@@ -2356,6 +2400,20 @@ var CraftingPanel = (function() {
             if (typeof CookingPanel !== 'undefined' && CookingPanel != null
                     && typeof CookingPanel.unmount === 'function') {
                 CookingPanel.unmount();
+            }
+        }
+        if (_chemistryActive) {
+            _chemistryActive = false;
+            if (typeof ChemistryPanel !== 'undefined' && ChemistryPanel != null
+                    && typeof ChemistryPanel.unmount === 'function') {
+                ChemistryPanel.unmount();
+            }
+        }
+        if (_communeActive) {
+            _communeActive = false;
+            if (typeof CommunePanel !== 'undefined' && CommunePanel != null
+                    && typeof CommunePanel.unmount === 'function') {
+                CommunePanel.unmount();
             }
         }
         retireMaterialShopNavigation(false);
@@ -2407,6 +2465,14 @@ var CraftingPanel = (function() {
         if (_cookingActive && typeof CookingPanel !== 'undefined' && CookingPanel != null
                 && typeof CookingPanel.isBusy === 'function' && CookingPanel.isBusy()) {
             toast('厨房正在处理烹饪，请稍候。'); return;
+        }
+        if (_chemistryActive && typeof ChemistryPanel !== 'undefined' && ChemistryPanel != null
+                && typeof ChemistryPanel.isBusy === 'function' && ChemistryPanel.isBusy()) {
+            toast('工坊正在处理合成，请稍候。'); return;
+        }
+        if (_communeActive && typeof CommunePanel !== 'undefined' && CommunePanel != null
+                && typeof CommunePanel.isBusy === 'function' && CommunePanel.isBusy()) {
+            toast('产线正在处理投产，请稍候。'); return;
         }
         if (reason === 'escape' && _mode === 'materials' && _materials
                 && typeof _materials.consumeEscape === 'function'
@@ -2605,6 +2671,12 @@ var CraftingPanel = (function() {
         cookingActive:_cookingActive,
         cooking:_cookingActive && typeof CookingPanel !== 'undefined' && CookingPanel
             && typeof CookingPanel.debugState === 'function' ? CookingPanel.debugState() : null,
+        chemistryActive:_chemistryActive,
+        chemistry:_chemistryActive && typeof ChemistryPanel !== 'undefined' && ChemistryPanel
+            && typeof ChemistryPanel.debugState === 'function' ? ChemistryPanel.debugState() : null,
+        communeActive:_communeActive,
+        commune:_communeActive && typeof CommunePanel !== 'undefined' && CommunePanel
+            && typeof CommunePanel.debugState === 'function' ? CommunePanel.debugState() : null,
         filterPath:_filterPath.slice(), craftableOnly:_craftableOnly,
         craftableCount:_snapshot && _snapshot.recipes ? _snapshot.recipes.filter(function(recipe) { return recipe.canCraftOne === true; }).length : 0,
         busy:_busy, previewBusy:_previewBusy, planBusy:_planBusy,

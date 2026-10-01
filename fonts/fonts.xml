@@ -25,6 +25,7 @@
     <group id="expressive-archive" label="正式档案衬线" description="正式资料、档案与 Native HUD 常用中文的衬线字体。"/>
     <group id="expressive-archive-heavy" label="正式档案重黑" description="任务标题与卡面衬线重黑字体。"/>
     <group id="interface" label="界面与 HUD 黑体" description="刘海、HUD 与通用界面正文的无衬线中文字体。"/>
+    <group id="expressive-commune" label="公社工业档案黑体" description="公社防具旧工厂公文与生产指标档案的复古窄黑体。"/>
   </groups>
 
   <fonts>
@@ -99,6 +100,11 @@
       <face id="source-han-sans-cn-medium-500" family="Source Han Sans CN" weight="500" style="normal" stretch="normal" classification="migrate"/>
       <download priority="1" url="https://cdn.jsdelivr.net/gh/adobe-fonts/source-han-sans@release/SubsetOTF/CN/SourceHanSansCN-Medium.otf" bytes="8406556" sha256="a94e558a2fe972bee4f46bce0843abff37063fd68c33f1e7d9058f6f09432b01"/>
       <download priority="2" url="https://github.com/adobe-fonts/source-han-sans/raw/release/SubsetOTF/CN/SourceHanSansCN-Medium.otf" bytes="8406556" sha256="a94e558a2fe972bee4f46bce0843abff37063fd68c33f1e7d9058f6f09432b01"/>
+    </font>
+    <font id="chill-g-sans" label="ChillGSans Medium（寒蝉高黑体 / 窄黑融合手写与旧字形 / 公社档案正文与红头）" file="chill-g-sans.otf" format="otf" targets="web" license="SIL-OFL-1.1" group="expressive-commune" residency="on-demand" shippedFallback="false">
+      <face id="chill-g-sans-500" family="ChillGSans" weight="500" style="normal" stretch="normal" classification="migrate"/>
+      <download priority="1" url="https://cdn.jsdelivr.net/gh/Warren2060/ChillGSans@main/ChillGSans.otf" bytes="9902664" sha256="7855e353d50c2a07dd31e8ba6e3d0294b8a405b3b87f94655d0c8e5f492c1c50"/>
+      <download priority="2" url="https://raw.githubusercontent.com/Warren2060/ChillGSans/main/ChillGSans.otf" bytes="9902664" sha256="7855e353d50c2a07dd31e8ba6e3d0294b8a405b3b87f94655d0c8e5f492c1c50"/>
     </font>
   </fonts>
 
@@ -206,6 +212,18 @@
       <systemFallback family="Consolas" classification="system-owned"/>
       <systemFallback family="Courier New" classification="system-owned"/>
       <genericFallback family="monospace" classification="system-owned"/>
+    </role>
+    <role id="web.commune.title" label="公社档案红头" status="accepted" allowPresetOverride="false">
+      <use face="chill-g-sans-500"/>
+      <use face="source-han-serif-cn-heavy-900"/>
+      <systemFallback family="SimHei" classification="system-owned"/>
+      <genericFallback family="sans-serif" classification="system-owned"/>
+    </role>
+    <role id="web.commune.body" label="公社档案正文" status="accepted" allowPresetOverride="false">
+      <use face="chill-g-sans-500"/>
+      <use face="lxgw-wenkai-screen-400"/>
+      <systemFallback family="FangSong" classification="system-owned"/>
+      <genericFallback family="serif" classification="system-owned"/>
     </role>
     <role id="web.stage-select.body" label="选关正文" status="accepted" allowPresetOverride="false">
       <systemFallback family="Microsoft YaHei" classification="system-owned"/>
@@ -352,6 +370,15 @@
     </family>
     <family name="SimHei" classification="system-owned">
       <alias name="黑体"/>
+    </family>
+    <family name="ChillGSans" classification="migrate">
+      <alias name="Chill G Sans Medium"/>
+      <alias name="寒蝉高黑体"/>
+      <alias name="寒蟬高黑體"/>
+    </family>
+    <family name="FangSong" classification="system-owned">
+      <alias name="仿宋"/>
+      <alias name="仿宋_GB2312"/>
     </family>
     <family name="STSong" classification="system-owned"/>
     <family name="Songti SC" classification="system-owned"/>
