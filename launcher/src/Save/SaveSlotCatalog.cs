@@ -293,23 +293,17 @@ namespace CF7Launcher.Save
         private bool TryWriteAtomicLocked(JObject document, out string error)
         {
             error = null;
-            string tmp = _path + ".tmp-" + Guid.NewGuid().ToString("N");
             try
             {
-                File.WriteAllText(
-                    tmp,
+                DurableFileWriter.WriteAllText(
+                    _path,
                     document.ToString(Formatting.None),
                     new UTF8Encoding(false));
-                if (File.Exists(_path))
-                    File.Replace(tmp, _path, null, true);
-                else
-                    File.Move(tmp, _path);
                 return true;
             }
             catch (Exception ex)
             {
                 error = "metadata_write_failed:" + ex.GetType().Name;
-                try { if (File.Exists(tmp)) File.Delete(tmp); } catch { }
                 return false;
             }
         }

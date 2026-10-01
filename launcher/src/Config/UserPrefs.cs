@@ -181,7 +181,8 @@ namespace CF7Launcher.Config
                     NormalizeHitNumberWorldRowLimit(HitNumberWorldRowLimit);
                 if (!string.IsNullOrEmpty(SuppressedHighDpiWarningRaw))
                     obj["suppressedHighDpiWarningRaw"] = SuppressedHighDpiWarningRaw;
-                File.WriteAllText(_path, obj.ToString(Newtonsoft.Json.Formatting.Indented));
+                CF7Launcher.Save.DurableFileWriter.WriteAllText(_path,
+                    obj.ToString(Newtonsoft.Json.Formatting.Indented), new System.Text.UTF8Encoding(false));
                 return true;
             }
             catch (Exception ex)

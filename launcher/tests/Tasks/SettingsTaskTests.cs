@@ -32,10 +32,12 @@ namespace CF7Launcher.Tests.Tasks
             public readonly SettingsTask Task;
             public bool SaveResult = true;
             public string PanelInstance = "settings.instance.1";
+            private readonly string prefsDirectory = Path.Combine(Path.GetTempPath(),
+                "cf7-settings-fixture-" + Guid.NewGuid().ToString("N"));
 
             public Harness(int timeoutMs = 10000, bool sendResult = true)
             {
-                Prefs = new UserPrefs(Path.GetTempPath());
+                Prefs = new UserPrefs(prefsDirectory, prefsDirectory);
                 Task = new SettingsTask(
                     delegate { return true; },
                     delegate(string payload) { Flash.Add(payload); return sendResult; },
@@ -65,7 +67,11 @@ namespace CF7Launcher.Tests.Tasks
                 Task.SetPostToWeb(delegate(string json) { Web.Add(JObject.Parse(json)); });
             }
 
-            public void Dispose() { Task.Dispose(); }
+            public void Dispose()
+            {
+                Task.Dispose();
+                if (Directory.Exists(prefsDirectory)) Directory.Delete(prefsDirectory, true);
+            }
         }
 
         [Fact]

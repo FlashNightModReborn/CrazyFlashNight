@@ -793,6 +793,8 @@ cycle 必须从 AS2 源精确派生并收到 14 个 summary 与各自 raw sample
 <a id="save"></a>
 ## 持久写与恢复
 
+**环境与文件提交可靠性**：改 `FlashStorageEnvironment`、`DurableFileWriter` 或其存档/偏好调用方时，先运行对应 Host focused tests，覆盖旧启动者 TEMP/TMP、临时目录拒写、同目录替换失败、部分替换与提交后异常对账，再跑 canonical Launcher 全量 runner。真实 Flash 的隔离槽写出、新进程读回和驱动命令见[存盘探针说明](../tools/save-storage/README.md)；盘符别名与真实跨卷分别报告，负例没有复现就保留未验证边界。AS2 墓碑/删除结果变更运行 `scripts/run-save-storage-tests.ps1`，要求唯一新鲜 suite block、零失败与 Compiler `0/0`；其当前进程内 SharedObject 字段断言不代签重启落盘。发布逻辑注入另以 `-Target publish` 核对新鲜 asLoader 产物。
+
 **触发**：SaveManager/R1、SafeExit、库存/共享收纳/暂存领取、交易、奖励或可能触达真实用户槽位的 E2E。未知写只走该域允许的 exact query/reconcile，不自动重试写；实写必须有明确测试范围，使用规定隔离/克隆槽，保护既有差异及原始字节，不反向覆盖玩家已有存档。
 
 ### Host/Web 权威与生命周期门

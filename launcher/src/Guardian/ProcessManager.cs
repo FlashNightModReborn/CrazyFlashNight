@@ -37,6 +37,9 @@ namespace CF7Launcher.Guardian
                 psi.FileName = _flashPlayerPath;
                 psi.Arguments = "\"" + _swfPath + "\"";
                 psi.UseShellExecute = false;
+                string flashTemp = CF7Launcher.Config.FlashStorageEnvironment.Prepare(psi);
+                LogManager.Log("[FlashStorage] child TEMP/TMP=" + flashTemp + " environment="
+                    + CF7Launcher.Config.FlashStorageEnvironment.Snapshot().ToString(Newtonsoft.Json.Formatting.None));
                 // 注意：不要在这里设 psi.WindowStyle = ProcessWindowStyle.Hidden.
                 // 实测当前 Flash SA 直接用 WS_VISIBLE 创窗，忽略 STARTF_USESHOWWINDOW，hint 零收益；
                 // 而 WindowManager.PollMainWindowHandle 走 .NET MainWindowHandle (= IsWindowVisible

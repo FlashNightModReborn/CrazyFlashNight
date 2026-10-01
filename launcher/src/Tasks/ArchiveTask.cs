@@ -116,7 +116,8 @@ namespace CF7Launcher.Tasks
                 error = "invalid_slot_key";
                 return false;
             }
-            string json = data.ToString(Formatting.None);
+            JObject snapshot = data.DeepClone() as JObject;
+            string json = snapshot.ToString(Formatting.None);
             string acceptedPath = null;
             string rejectedError = null;
             bool accepted = RunOnFifo(delegate
@@ -132,7 +133,7 @@ namespace CF7Launcher.Tasks
                     }
                     // 写入已被接受：同一临界区内更新 accepted-state 基线。
                     // 克隆快照：调用方仍持有 data 所有权，可能继续复用/修改。
-                    _prevSnapshots[safeName] = data.DeepClone() as JObject;
+                    _prevSnapshots[safeName] = snapshot;
                     acceptedPath = path;
                     return true;
                 }
@@ -156,7 +157,6 @@ namespace CF7Launcher.Tasks
         {
             targetPath = Path.Combine(_savesDir, safeName + ".json");
             error = null;
-            string tmpPath = targetPath + ".tmp";
             string tombPath = Path.Combine(_savesDir, safeName + ".tombstone");
 
             if (File.Exists(tombPath))
@@ -167,21 +167,11 @@ namespace CF7Launcher.Tasks
 
             try
             {
-                File.WriteAllText(tmpPath, data, new UTF8Encoding(false));
-                if (File.Exists(targetPath))
-                    File.Delete(targetPath);
-                File.Move(tmpPath, targetPath);
+                CF7Launcher.Save.DurableFileWriter.WriteAllText(targetPath, data, new UTF8Encoding(false));
                 return true;
             }
             catch (Exception ex)
             {
-                try
-                {
-                    if (File.Exists(tmpPath))
-                        File.Delete(tmpPath);
-                }
-                catch { }
-
                 error = ex.Message;
                 return false;
             }
@@ -664,21 +654,23 @@ namespace CF7Launcher.Tasks
                 return BuildError("invalid_slot_key");
             string jsonPath = Path.Combine(_savesDir, safeName + ".json");
             string tombPath = Path.Combine(_savesDir, safeName + ".tombstone");
-            string tombTmp = tombPath + ".tmp";
 
             // 原子写 .tombstone：先写 .tmp 再 rename；完成后删 .json（若存在）
-            // 失败即抛到 HandleAsync 的 catch，不进入 "部分删" 状态
+            // 墓碑是删除权威；提交后的 JSON 清理失败只报告残件，不反转已提交事实。
+            bool cleanupPending = false;
             lock (_lock)
             {
                 string stamp = DateTime.UtcNow.ToString("o");
-                File.WriteAllText(tombTmp, "{\"deletedAt\":\"" + stamp + "\"}",
+                CF7Launcher.Save.DurableFileWriter.WriteAllText(tombPath, "{\"deletedAt\":\"" + stamp + "\"}",
                     new System.Text.UTF8Encoding(false));
-                if (File.Exists(tombPath))
-                    File.Delete(tombPath);
-                File.Move(tombTmp, tombPath);
 
-                if (File.Exists(jsonPath))
-                    File.Delete(jsonPath);
+                try { if (File.Exists(jsonPath)) File.Delete(jsonPath); }
+                catch (Exception ex)
+                {
+                    cleanupPending = true;
+                    LogManager.Log("[ArchiveTask] deletion committed; shadow cleanup pending slot="
+                        + safeName + " error=" + ex.Message);
+                }
 
                 LogManager.Log("[ArchiveTask] Tombstoned: " + safeName);
             }
@@ -688,6 +680,7 @@ namespace CF7Launcher.Tasks
             result["task"] = "archive";
             result["slot"] = safeName;
             result["tombstoned"] = true;
+            if (cleanupPending) result["warning"] = "shadow_cleanup_pending";
             return result.ToString(Formatting.None);
         }
 

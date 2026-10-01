@@ -657,6 +657,15 @@ for ($i = 1; $i -le $TimeoutSeconds; $i++) {
             Remove-Item -LiteralPath $ModeCfg -ErrorAction SilentlyContinue
         }
         $reopenRequestCount++
+        # 计划任务默认忽略并发新实例；首阶段尚在 Running 时立即重触发会丢掉重开。
+        $reopenTaskDeadline = [DateTime]::UtcNow.AddSeconds(15)
+        while ((Get-ScheduledTask -TaskName 'CompileTriggerTask').State -eq 'Running') {
+            if ([DateTime]::UtcNow -gt $reopenTaskDeadline) {
+                Write-CompileUncertain -Reason 'first-phase task did not become ready for reopen'
+                throw 'CompileTriggerTask still running; second phase was not dispatched.'
+            }
+            Start-Sleep -Milliseconds 100
+        }
         Write-Host ('[INFO] JSFL 已关闭目标；触发二阶段重开 ({0})' -f $reopenTargetUri)
         Start-ScheduledTask -TaskName 'CompileTriggerTask'
         continue

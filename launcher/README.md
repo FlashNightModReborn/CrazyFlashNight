@@ -422,6 +422,10 @@ Action 使用有界 handoff；Host 在捕获的同一 socket generation、同一
 整局 recovery 不承担第二套场景生命周期。交接、结算及面板关闭时释放隐藏沙盘，AS2 resume 显示静态终局，game reveal 后退休 Bootstrap WebView2。当前候选、历史失败、自动证据与人类验收只维护于[基础闭环施工交接](../docs/军阀-基础闭环施工交接-2026-09-05.md)。
 ## 存档编辑与诊断
 
+Flash 启动时由 `FlashStorageEnvironment` 根据实际 Roaming AppData 选择 `CF7FlashNight/flash-temp`，完成写入、刷盘、改名与读回探针后，仅设置 Flash 子进程的 `TEMP/TMP`；启动失败保留明确日志，不修改用户环境变量。启动日志和诊断包的 `flashStorage` 记录父进程环境、实际存档根、已准备的 Flash 临时目录和可用空间。空间信息用于诊断，不以任意容量阈值阻断游戏；网络重定向仍需相应环境的真实 Flash 验证。
+
+影子、墓碑、自动修复、槽位元数据、重建备份及用户偏好使用 `DurableFileWriter` 同目录提交：临时文件与旧字节副本先刷盘，再替换并读回。失败仅在目标缺失时恢复旧副本，不覆盖已有目标；无法确认的旧副本以 `.previous-*` 保留为恢复材料，不能当成第二权威或自动重放写入。AS2 墓碑对齐统一经过 `flushSO`；旧删档返回未确认时保留角色内存，但 `SharedObject.clear()` 自身可能已影响持久对象，不能解释为完全未执行。
+
 Bootstrap 存档编辑器当前提供 schema 驱动的简易系统设置、原始编辑、diff、搜索和诊断包导出。字段权威是 [save_schema.json](data/save_schema.json)，业务读写仍经过 Host handler 和存档安全策略。
 简易模式的系统卡片仍是迁移期可发现性补偿，不代表 Audio 平台验收。旧 `AudioTask.SetToastSink` 当前只是兼容 no-op，不能声称会弹出音量提示。事件起因、现役边界和退出条件见 [音频迁移期存档编辑器事件记录](../docs/launcher-save-editor-audio-migration-incident-2026-04-28.md)；高频 README 不保存事故时间线。
 ## 故障定位

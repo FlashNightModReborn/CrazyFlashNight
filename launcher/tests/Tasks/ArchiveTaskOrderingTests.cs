@@ -324,28 +324,40 @@ namespace CF7Launcher.Tests.Tasks
         [Fact]
         public void FailedWrite_DoesNotPolluteConsistencyBaseline()
         {
-            // 物理写失败的候选不得更新 _prevSnapshots：A(10) 接受；B(5) 因 .tmp
-            // 路径被目录占用而写失败；C(7) 必须与 A 比较 → 报"等级 倒退: 10 -> 7"。
+            // 物理写失败不得更新基线：A(10) 接受；B(5) 遇到真实文件独占锁；
+            // C(7) 必须与 A 比较 → 报"等级 倒退: 10 -> 7"。
             // 若 B 污染基线（旧行为：写前更新），C 对比 5 不会报倒退。
             const string slot = "slot_r3a_writefail";
             Assert.True(SendShadow(slot, "角色子", 10).Result(TimeSpan.FromSeconds(5)).Value<bool>("success"));
 
-            string tmpBlock = JsonPath(slot) + ".tmp";
-            Directory.CreateDirectory(tmpBlock);
-            try
+            using (new FileStream(JsonPath(slot), FileMode.Open, FileAccess.ReadWrite, FileShare.None))
             {
                 JObject rb = SendShadow(slot, "角色子", 5).Result(TimeSpan.FromSeconds(5));
-                Assert.False(rb.Value<bool>("success"), "tmp 路径被占用时写入必须失败");
-            }
-            finally
-            {
-                Directory.Delete(tmpBlock);
+                Assert.False(rb.Value<bool>("success"), "旧影子文件被独占时提交必须失败且保留旧字节");
             }
             Assert.Equal(10, (int)((JArray)ReadSlotJson(slot)["0"])[3]);
 
             JObject rc = SendShadow(slot, "角色子", 7).Result(TimeSpan.FromSeconds(5));
             Assert.True(rc.Value<bool>("success"));
             AssertLevelRegression(rc, "10 -> 7");
+        }
+
+        [Fact]
+        public void CommittedTombstoneSurvivesBlockedShadowCleanup()
+        {
+            const string slot = "slot_delete_cleanup";
+            Assert.True(SendShadow(slot, "删除回归", 10).Result(TimeSpan.FromSeconds(5)).Value<bool>("success"));
+            using (new FileStream(JsonPath(slot), FileMode.Open, FileAccess.ReadWrite, FileShare.None))
+            {
+                JObject result = SendOp("delete", slot).Result(TimeSpan.FromSeconds(5));
+                Assert.True(result.Value<bool>("success"));
+                Assert.Equal("shadow_cleanup_pending", result.Value<string>("warning"));
+                Assert.True(File.Exists(TombPath(slot)));
+            }
+            Assert.True(File.Exists(JsonPath(slot)));
+            JObject load = SendOp("load", slot).Result(TimeSpan.FromSeconds(5));
+            Assert.False(load.Value<bool>("success"));
+            Assert.StartsWith("tombstoned:", load.Value<string>("error"));
         }
 
         [Fact]
