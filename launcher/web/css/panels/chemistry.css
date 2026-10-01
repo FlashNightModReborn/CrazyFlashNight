@@ -6,28 +6,26 @@
     position:relative;
     width:1024px; height:576px;
     display:flex; flex-direction:column;
-    color:#dfeaf5;
+    color:var(--wb-chemistry-chem-panel-color);
     font-family:"Microsoft YaHei",sans-serif;
     overflow:hidden;
-    --ch-line:rgba(255,255,255,.22);
-    --ch-line-strong:rgba(255,255,255,.85);
-    --ch-ink:#eaf3fb;
-    --ch-muted:#8fa8bf;
-    --ch-ready:#7de8b4;
-    --ch-blocked:#ff8f7a;
-    --ch-accent:#5fb6ff;
+    --ch-line:var(--wb-chemistry-chem-panel-ch-line);
+    --ch-line-strong:var(--wb-chemistry-chem-panel-ch-line-strong);
+    --ch-ink:var(--wb-chemistry-chem-panel-ch-ink);
+    --ch-muted:var(--wb-chemistry-chem-panel-ch-muted);
+    --ch-ready:var(--wb-chemistry-chem-panel-ch-ready);
+    --ch-blocked:var(--wb-chemistry-chem-panel-ch-blocked);
+    --ch-accent:var(--wb-chemistry-chem-panel-ch-accent);
 }
 .chem-panel,
 .chem-blueprint {
-    background-color:#17334f;
-    background-image:
-        url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='48' height='48'%3E%3Crect x='.5' y='.5' width='47' height='47' fill='none' stroke='rgba(255,255,255,.14)' stroke-dasharray='5 4'/%3E%3C/svg%3E"),
-        radial-gradient(circle at 60% 30%, rgba(90,160,220,.14), transparent 60%);
+    background-color:var(--wb-chemistry-chem-panel-chem-blueprint-background-color);
+    background-image:var(--wb-chemistry-chem-panel-chem-blueprint-background-image);
 }
 .chem-panel ::-webkit-scrollbar { width:7px; }
-.chem-panel ::-webkit-scrollbar-track { background:#10263c; }
+.chem-panel ::-webkit-scrollbar-track { background:var(--wb-chemistry-chem-panel-webkit-scrollbar-track-background); }
 .chem-panel ::-webkit-scrollbar-thumb {
-    background:#33506e; border:1px solid #4c6f92; border-radius:3px;
+    background:var(--wb-chemistry-chem-panel-webkit-scrollbar-thumb-background); border:var(--wb-chemistry-chem-panel-webkit-scrollbar-thumb-border); border-radius:3px;
 }
 
 /* ── 顶栏 ── */
@@ -35,10 +33,10 @@
     flex:0 0 auto;
     display:flex; align-items:center; gap:14px;
     padding:12px 18px 10px;
-    border-bottom:1px dashed rgba(255,255,255,.25);
+    border-bottom:var(--wb-chemistry-chem-header-border-bottom);
 }
 .chem-brand { display:flex; flex-direction:column; gap:1px; }
-.chem-kicker { font-size:9px; letter-spacing:.35em; color:var(--ch-muted); }
+.chem-kicker { font-size:10px; letter-spacing:.35em; color:var(--ch-muted); }
 .chem-brand h1 {
     margin:0; font:700 18px/1.2 "Microsoft YaHei",sans-serif;
     color:var(--ch-ink); letter-spacing:.08em;
@@ -53,12 +51,12 @@
 }
 .chem-close {
     flex:0 0 auto; width:26px; height:26px;
-    border:1px dashed rgba(255,255,255,.4); border-radius:2px;
+    border:var(--wb-chemistry-chem-close-border); border-radius:2px;
     background:transparent; color:var(--ch-muted);
     font-size:14px; cursor:pointer;
-    transition:color .12s, border-color .12s;
+    transition:var(--wb-chemistry-chem-close-transition);
 }
-.chem-close:hover { color:#ffb0a0; border-color:#ff8f7a; }
+.chem-close:hover { color:var(--wb-chemistry-chem-close-hover-color); border-color:var(--wb-chemistry-chem-close-hover-border-color); }
 
 /* ── 布局 ── */
 .chem-body {
@@ -79,18 +77,18 @@
     display:flex; flex-direction:column; align-items:center; gap:3px;
     padding:7px 5px 6px;
     border:1px dashed var(--ch-line); border-radius:2px;
-    background:rgba(255,255,255,.03);
+    background:var(--wb-chemistry-chem-cell-background);
     color:var(--ch-ink); cursor:pointer;
-    transition:border-color .15s, background .15s, transform .12s;
+    transition:var(--wb-chemistry-chem-cell-transition);
 }
 .chem-cell:hover {
-    border-color:rgba(255,255,255,.6);
-    background:rgba(255,255,255,.07);
+    border-color:var(--wb-chemistry-chem-cell-hover-border-color);
+    background:var(--wb-chemistry-chem-cell-hover-background);
 }
 .chem-cell.active {
     border-style:solid; border-color:var(--ch-line-strong);
-    background:rgba(255,255,255,.1);
-    box-shadow:0 0 0 1px rgba(255,255,255,.15), 0 4px 14px rgba(0,0,0,.3);
+    background:var(--wb-chemistry-chem-cell-active-background);
+    box-shadow:var(--wb-chemistry-chem-cell-active-box-shadow);
 }
 .chem-cell.is-blocked { opacity:.6; }
 .chem-cell.is-blocked .chem-iconwrap img { filter:grayscale(.6); }
@@ -104,7 +102,7 @@
     overflow:hidden; text-overflow:ellipsis; white-space:nowrap;
 }
 .chem-cell-state {
-    font-size:9px; letter-spacing:.08em; color:var(--ch-muted);
+    font-size:10px; letter-spacing:.08em; color:var(--ch-muted);
 }
 .chem-cell.is-ready .chem-cell-state { color:var(--ch-ready); }
 .chem-cell.is-blocked .chem-cell-state { color:var(--ch-blocked); }
@@ -117,7 +115,7 @@
 .chem-blueprint {
     position:relative; min-height:0;
     margin-left:14px;
-    border:1px dashed rgba(255,255,255,.3); border-radius:2px;
+    border:var(--wb-chemistry-chem-blueprint-border); border-radius:2px;
     overflow:hidden;
 }
 /* 汇聚线层 */
@@ -127,9 +125,9 @@
 }
 .chem-wire {
     fill:none; stroke:var(--ch-line-strong); stroke-width:1.6;
-    filter:drop-shadow(0 0 3px rgba(255,255,255,.45));
+    filter:var(--wb-chemistry-chem-wire-filter);
 }
-.chem-wire.dim { stroke:rgba(255,255,255,.45); stroke-width:1.2; filter:none; }
+.chem-wire.dim { stroke:var(--wb-chemistry-chem-wire-dim-stroke); stroke-width:1.2; filter:none; }
 
 /* 材料环绕布局容器：覆盖蓝图区，行由 JS 沿弧线定位 */
 .chem-materials {
@@ -140,23 +138,23 @@
     position:absolute; width:190px;
     display:flex; align-items:center; gap:7px;
     padding:4px 8px 4px 5px;
-    border:1px dashed rgba(255,255,255,.3); border-radius:2px;
-    background:rgba(16,38,60,.75);
+    border:var(--wb-chemistry-chem-mat-border); border-radius:2px;
+    background:var(--wb-chemistry-chem-mat-background);
     font-size:11px; color:var(--ch-ink);
     pointer-events:auto;
-    box-shadow:0 2px 8px rgba(0,0,0,.3);
-    animation:chem-mat-in .25s ease-out;
+    box-shadow:var(--wb-chemistry-chem-mat-box-shadow);
+    animation:var(--wb-chemistry-chem-mat-animation);
 }
 @keyframes chem-mat-in {
     from { opacity:0; transform:translateX(-8px); }
     to { opacity:1; transform:none; }
 }
-.chem-mat.infra { border-color:rgba(95,182,255,.5); color:#bcd8ee; }
+.chem-mat.infra { border-color:var(--wb-chemistry-chem-mat-infra-border-color); color:var(--wb-chemistry-chem-mat-infra-color); }
 .chem-mat-icon {
     flex:0 0 auto; width:22px; height:22px;
     display:inline-flex; align-items:center; justify-content:center;
-    border:1px solid rgba(255,255,255,.4);
-    background:#0f2438; overflow:hidden;
+    border:var(--wb-chemistry-chem-mat-icon-border);
+    background:var(--wb-chemistry-chem-mat-icon-background); overflow:hidden;
 }
 .chem-mat-name {
     flex:1 1 auto; min-width:0;
@@ -173,7 +171,7 @@
     font:700 12px/1 "Microsoft YaHei",sans-serif;
 }
 .chem-mat-mark.ok { color:var(--ch-ready); }
-.chem-mat-mark.no { color:#ff6b5e; }
+.chem-mat-mark.no { color:var(--wb-chemistry-chem-mat-mark-no-color); }
 
 /* 结果大图 */
 .chem-result {
@@ -186,10 +184,9 @@
     width:120px; height:120px;
     display:flex; align-items:center; justify-content:center;
     border:1.5px solid var(--ch-line-strong); border-radius:2px;
-    background:rgba(16,38,60,.8);
-    box-shadow:0 0 0 4px rgba(255,255,255,.06),
-        0 0 22px rgba(95,182,255,.25);
-    animation:chem-result-in .28s cubic-bezier(.2,.9,.3,1.1);
+    background:var(--wb-chemistry-chem-result-figure-background);
+    box-shadow:var(--wb-chemistry-chem-result-figure-box-shadow);
+    animation:var(--wb-chemistry-chem-result-figure-animation);
 }
 @keyframes chem-result-in {
     from { opacity:0; transform:scale(.92); }
@@ -209,13 +206,13 @@
 .chem-veil {
     position:absolute; inset:0; z-index:5;
     display:none; align-items:center; justify-content:center;
-    background:rgba(14,32,50,.35);
+    background:var(--wb-chemistry-chem-veil-background);
 }
 .chem-veil.on { display:flex; }
 .chem-veil-note {
     padding:6px 16px;
-    border:1px dashed rgba(255,255,255,.5);
-    background:rgba(16,38,60,.9);
+    border:var(--wb-chemistry-chem-veil-note-border);
+    background:var(--wb-chemistry-chem-veil-note-background);
     color:var(--ch-ink); font-size:11px; letter-spacing:.15em;
 }
 .chem-panel.chem-pending .chem-list { pointer-events:none; opacity:.55; }
@@ -228,19 +225,19 @@
 .chem-count { display:flex; align-items:center; gap:4px; }
 .chem-count button {
     width:24px; height:24px;
-    border:1px solid rgba(255,255,255,.5); border-radius:2px;
-    background:rgba(255,255,255,.06); color:var(--ch-ink);
+    border:var(--wb-chemistry-chem-count-button-border); border-radius:2px;
+    background:var(--wb-chemistry-chem-count-button-background); color:var(--ch-ink);
     font-size:13px; cursor:pointer;
-    transition:background .12s, transform .12s;
+    transition:var(--wb-chemistry-chem-count-button-transition);
 }
 .chem-count button:hover:not(:disabled) {
-    background:rgba(255,255,255,.16); transform:translateY(-1px);
+    background:var(--wb-chemistry-chem-count-button-hover-not-disabled-background); transform:translateY(-1px);
 }
 .chem-count button:disabled { opacity:.35; cursor:default; }
 .chem-count-input {
     width:34px; height:24px; text-align:center;
-    border:none; border-bottom:1px solid rgba(255,255,255,.5);
-    background:rgba(255,255,255,.06); color:var(--ch-ink); font-size:11px;
+    border:none; border-bottom:var(--wb-chemistry-chem-count-input-border-bottom);
+    background:var(--wb-chemistry-chem-count-input-background); color:var(--ch-ink); font-size:11px;
 }
 .chem-cost {
     font-size:10px; color:var(--ch-muted);
@@ -249,19 +246,19 @@
 .chem-confirm {
     min-width:96px; padding:8px 18px;
     border:1.5px solid var(--ch-line-strong); border-radius:2px;
-    background:rgba(255,255,255,.08);
+    background:var(--wb-chemistry-chem-confirm-background);
     color:var(--ch-ink); font:700 12px/1 "Microsoft YaHei",sans-serif;
     letter-spacing:.18em; cursor:pointer;
-    transition:background .12s, box-shadow .12s, transform .12s;
+    transition:var(--wb-chemistry-chem-confirm-transition);
 }
 .chem-confirm:hover:not(:disabled) {
-    background:rgba(255,255,255,.2);
-    box-shadow:0 0 12px rgba(120,190,255,.35);
+    background:var(--wb-chemistry-chem-confirm-hover-not-disabled-background);
+    box-shadow:var(--wb-chemistry-chem-confirm-hover-not-disabled-box-shadow);
     transform:translateY(-1px);
 }
 .chem-confirm:disabled {
-    border-style:dashed; border-color:rgba(255,255,255,.3);
-    color:rgba(255,255,255,.35); background:transparent; cursor:default;
+    border-style:dashed; border-color:var(--wb-chemistry-chem-confirm-disabled-border-color);
+    color:var(--wb-chemistry-chem-confirm-disabled-color); background:transparent; cursor:default;
 }
 
 /* ── 图标就绪门控 ── */
@@ -271,9 +268,9 @@
 }
 .chem-iconwrap.pending { visibility:hidden; }
 .chem-iconwrap.empty {
-    border:1px dashed rgba(255,255,255,.35);
+    border:var(--wb-chemistry-chem-iconwrap-empty-border);
 }
-.chem-iconwrap.loaded { animation:chem-icon-in .18s ease-out; }
+.chem-iconwrap.loaded { animation:var(--wb-chemistry-chem-iconwrap-loaded-animation); }
 @keyframes chem-icon-in {
     from { opacity:0; transform:scale(.92); }
     to { opacity:1; transform:none; }

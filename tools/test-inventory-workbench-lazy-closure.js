@@ -285,6 +285,9 @@ async function main() {
         'modules/crafting-detail-presenter.js',
         'modules/inventory-runtime.js',
         'modules/crafting-runtime.js',
+        'modules/cooking.js',
+        'modules/chemistry.js',
+        'modules/commune.js',
         'modules/crafting.js'
     ], 'crafting lazy closure must load exact enemy/shop portrait resolvers before its material consumer');
     assert(!craftingSection.includes('dialogue/dialogue-view.js')
