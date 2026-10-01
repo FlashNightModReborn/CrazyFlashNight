@@ -1,0 +1,290 @@
+/* ── 化学生产 · 蓝图 ──
+   深蓝铺底 + 白色虚线方格底纹；左区两列合成目录，右区蓝图：
+   材料按次序竖排在目录右侧，先横后斜的亮白实线汇聚到大图标结果，
+   右下角确认合成。图标在 img load 前隐藏（.pending）。 */
+.chem-panel {
+    position:relative;
+    width:1024px; height:576px;
+    display:flex; flex-direction:column;
+    color:#dfeaf5;
+    font-family:"Microsoft YaHei",sans-serif;
+    overflow:hidden;
+    --ch-line:rgba(255,255,255,.22);
+    --ch-line-strong:rgba(255,255,255,.85);
+    --ch-ink:#eaf3fb;
+    --ch-muted:#8fa8bf;
+    --ch-ready:#7de8b4;
+    --ch-blocked:#ff8f7a;
+    --ch-accent:#5fb6ff;
+}
+.chem-panel,
+.chem-blueprint {
+    background-color:#17334f;
+    background-image:
+        url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='48' height='48'%3E%3Crect x='.5' y='.5' width='47' height='47' fill='none' stroke='rgba(255,255,255,.14)' stroke-dasharray='5 4'/%3E%3C/svg%3E"),
+        radial-gradient(circle at 60% 30%, rgba(90,160,220,.14), transparent 60%);
+}
+.chem-panel ::-webkit-scrollbar { width:7px; }
+.chem-panel ::-webkit-scrollbar-track { background:#10263c; }
+.chem-panel ::-webkit-scrollbar-thumb {
+    background:#33506e; border:1px solid #4c6f92; border-radius:3px;
+}
+
+/* ── 顶栏 ── */
+.chem-header {
+    flex:0 0 auto;
+    display:flex; align-items:center; gap:14px;
+    padding:12px 18px 10px;
+    border-bottom:1px dashed rgba(255,255,255,.25);
+}
+.chem-brand { display:flex; flex-direction:column; gap:1px; }
+.chem-kicker { font-size:9px; letter-spacing:.35em; color:var(--ch-muted); }
+.chem-brand h1 {
+    margin:0; font:700 18px/1.2 "Microsoft YaHei",sans-serif;
+    color:var(--ch-ink); letter-spacing:.08em;
+}
+.chem-status { font-size:10px; color:var(--ch-muted); letter-spacing:.05em; }
+.chem-status[data-state="ready"] { color:var(--ch-ready); }
+.chem-status[data-state="error"] { color:var(--ch-blocked); }
+.chem-metrics { margin-left:auto; display:flex; gap:14px; align-items:baseline; }
+.chem-metric {
+    font-size:11px; color:var(--ch-muted);
+    font-family:Consolas,"Microsoft YaHei",monospace;
+}
+.chem-close {
+    flex:0 0 auto; width:26px; height:26px;
+    border:1px dashed rgba(255,255,255,.4); border-radius:2px;
+    background:transparent; color:var(--ch-muted);
+    font-size:14px; cursor:pointer;
+    transition:color .12s, border-color .12s;
+}
+.chem-close:hover { color:#ffb0a0; border-color:#ff8f7a; }
+
+/* ── 布局 ── */
+.chem-body {
+    flex:1 1 auto; min-height:0;
+    display:grid;
+    grid-template-columns:380px 1fr;
+    gap:0; padding:12px 16px 14px;
+}
+
+/* ── 左：三列合成目录 ── */
+.chem-list {
+    display:grid; grid-template-columns:repeat(3,1fr);
+    gap:8px; align-content:start;
+    min-height:0; overflow-y:auto;
+    padding:4px 6px 6px 2px;
+}
+.chem-cell {
+    display:flex; flex-direction:column; align-items:center; gap:3px;
+    padding:7px 5px 6px;
+    border:1px dashed var(--ch-line); border-radius:2px;
+    background:rgba(255,255,255,.03);
+    color:var(--ch-ink); cursor:pointer;
+    transition:border-color .15s, background .15s, transform .12s;
+}
+.chem-cell:hover {
+    border-color:rgba(255,255,255,.6);
+    background:rgba(255,255,255,.07);
+}
+.chem-cell.active {
+    border-style:solid; border-color:var(--ch-line-strong);
+    background:rgba(255,255,255,.1);
+    box-shadow:0 0 0 1px rgba(255,255,255,.15), 0 4px 14px rgba(0,0,0,.3);
+}
+.chem-cell.is-blocked { opacity:.6; }
+.chem-cell.is-blocked .chem-iconwrap img { filter:grayscale(.6); }
+.chem-cell-icon {
+    width:34px; height:34px;
+    display:flex; align-items:center; justify-content:center;
+}
+.chem-cell-name {
+    font:600 10px/1.25 "Microsoft YaHei",sans-serif;
+    letter-spacing:.05em; max-width:100%;
+    overflow:hidden; text-overflow:ellipsis; white-space:nowrap;
+}
+.chem-cell-state {
+    font-size:9px; letter-spacing:.08em; color:var(--ch-muted);
+}
+.chem-cell.is-ready .chem-cell-state { color:var(--ch-ready); }
+.chem-cell.is-blocked .chem-cell-state { color:var(--ch-blocked); }
+.chem-empty {
+    grid-column:1/-1; padding:28px 10px; text-align:center;
+    color:var(--ch-muted); font-size:11px; letter-spacing:.08em;
+}
+
+/* ── 右：蓝图区 ── */
+.chem-blueprint {
+    position:relative; min-height:0;
+    margin-left:14px;
+    border:1px dashed rgba(255,255,255,.3); border-radius:2px;
+    overflow:hidden;
+}
+/* 汇聚线层 */
+.chem-wires {
+    position:absolute; inset:0;
+    pointer-events:none; z-index:1;
+}
+.chem-wire {
+    fill:none; stroke:var(--ch-line-strong); stroke-width:1.6;
+    filter:drop-shadow(0 0 3px rgba(255,255,255,.45));
+}
+.chem-wire.dim { stroke:rgba(255,255,255,.45); stroke-width:1.2; filter:none; }
+
+/* 材料环绕布局容器：覆盖蓝图区，行由 JS 沿弧线定位 */
+.chem-materials {
+    position:absolute; inset:0; z-index:2;
+    pointer-events:none;
+}
+.chem-mat {
+    position:absolute; width:190px;
+    display:flex; align-items:center; gap:7px;
+    padding:4px 8px 4px 5px;
+    border:1px dashed rgba(255,255,255,.3); border-radius:2px;
+    background:rgba(16,38,60,.75);
+    font-size:11px; color:var(--ch-ink);
+    pointer-events:auto;
+    box-shadow:0 2px 8px rgba(0,0,0,.3);
+    animation:chem-mat-in .25s ease-out;
+}
+@keyframes chem-mat-in {
+    from { opacity:0; transform:translateX(-8px); }
+    to { opacity:1; transform:none; }
+}
+.chem-mat.infra { border-color:rgba(95,182,255,.5); color:#bcd8ee; }
+.chem-mat-icon {
+    flex:0 0 auto; width:22px; height:22px;
+    display:inline-flex; align-items:center; justify-content:center;
+    border:1px solid rgba(255,255,255,.4);
+    background:#0f2438; overflow:hidden;
+}
+.chem-mat-name {
+    flex:1 1 auto; min-width:0;
+    overflow:hidden; text-overflow:ellipsis; white-space:nowrap;
+}
+.chem-mat.unmet .chem-mat-name { color:var(--ch-blocked); }
+.chem-mat-count {
+    flex:0 0 auto; font-family:Consolas,"Microsoft YaHei",monospace;
+    font-size:10px; color:var(--ch-muted);
+}
+.chem-mat.unmet .chem-mat-count { color:var(--ch-blocked); }
+.chem-mat-mark {
+    flex:0 0 auto; width:14px; text-align:center;
+    font:700 12px/1 "Microsoft YaHei",sans-serif;
+}
+.chem-mat-mark.ok { color:var(--ch-ready); }
+.chem-mat-mark.no { color:#ff6b5e; }
+
+/* 结果大图 */
+.chem-result {
+    position:absolute; right:24px; top:50%;
+    transform:translateY(-60%);
+    width:200px; z-index:2;
+    display:flex; flex-direction:column; align-items:center; gap:6px;
+}
+.chem-result-figure {
+    width:120px; height:120px;
+    display:flex; align-items:center; justify-content:center;
+    border:1.5px solid var(--ch-line-strong); border-radius:2px;
+    background:rgba(16,38,60,.8);
+    box-shadow:0 0 0 4px rgba(255,255,255,.06),
+        0 0 22px rgba(95,182,255,.25);
+    animation:chem-result-in .28s cubic-bezier(.2,.9,.3,1.1);
+}
+@keyframes chem-result-in {
+    from { opacity:0; transform:scale(.92); }
+    to { opacity:1; transform:none; }
+}
+.chem-result-name {
+    font:700 14px/1.3 "Microsoft YaHei",sans-serif;
+    color:var(--ch-ink); letter-spacing:.06em; text-align:center;
+}
+.chem-result-owned { font-size:10px; color:var(--ch-muted); }
+.chem-blueprint-note {
+    padding:12px 8px; color:var(--ch-muted); font-size:11px; text-align:center;
+}
+.chem-blueprint-note.warn { color:var(--ch-blocked); }
+
+/* 核算幕布：罩住蓝图区挡输入 */
+.chem-veil {
+    position:absolute; inset:0; z-index:5;
+    display:none; align-items:center; justify-content:center;
+    background:rgba(14,32,50,.35);
+}
+.chem-veil.on { display:flex; }
+.chem-veil-note {
+    padding:6px 16px;
+    border:1px dashed rgba(255,255,255,.5);
+    background:rgba(16,38,60,.9);
+    color:var(--ch-ink); font-size:11px; letter-spacing:.15em;
+}
+.chem-panel.chem-pending .chem-list { pointer-events:none; opacity:.55; }
+
+/* ── 右下：操作区 ── */
+.chem-foot {
+    position:absolute; right:18px; bottom:14px; z-index:3;
+    display:flex; align-items:center; gap:10px;
+}
+.chem-count { display:flex; align-items:center; gap:4px; }
+.chem-count button {
+    width:24px; height:24px;
+    border:1px solid rgba(255,255,255,.5); border-radius:2px;
+    background:rgba(255,255,255,.06); color:var(--ch-ink);
+    font-size:13px; cursor:pointer;
+    transition:background .12s, transform .12s;
+}
+.chem-count button:hover:not(:disabled) {
+    background:rgba(255,255,255,.16); transform:translateY(-1px);
+}
+.chem-count button:disabled { opacity:.35; cursor:default; }
+.chem-count-input {
+    width:34px; height:24px; text-align:center;
+    border:none; border-bottom:1px solid rgba(255,255,255,.5);
+    background:rgba(255,255,255,.06); color:var(--ch-ink); font-size:11px;
+}
+.chem-cost {
+    font-size:10px; color:var(--ch-muted);
+    font-family:Consolas,"Microsoft YaHei",monospace;
+}
+.chem-confirm {
+    min-width:96px; padding:8px 18px;
+    border:1.5px solid var(--ch-line-strong); border-radius:2px;
+    background:rgba(255,255,255,.08);
+    color:var(--ch-ink); font:700 12px/1 "Microsoft YaHei",sans-serif;
+    letter-spacing:.18em; cursor:pointer;
+    transition:background .12s, box-shadow .12s, transform .12s;
+}
+.chem-confirm:hover:not(:disabled) {
+    background:rgba(255,255,255,.2);
+    box-shadow:0 0 12px rgba(120,190,255,.35);
+    transform:translateY(-1px);
+}
+.chem-confirm:disabled {
+    border-style:dashed; border-color:rgba(255,255,255,.3);
+    color:rgba(255,255,255,.35); background:transparent; cursor:default;
+}
+
+/* ── 图标就绪门控 ── */
+.chem-iconwrap {
+    display:inline-flex; align-items:center; justify-content:center;
+    width:100%; height:100%;
+}
+.chem-iconwrap.pending { visibility:hidden; }
+.chem-iconwrap.empty {
+    border:1px dashed rgba(255,255,255,.35);
+}
+.chem-iconwrap.loaded { animation:chem-icon-in .18s ease-out; }
+@keyframes chem-icon-in {
+    from { opacity:0; transform:scale(.92); }
+    to { opacity:1; transform:none; }
+}
+.chem-icon, .chem-icon-lg, .chem-icon-sm {
+    display:inline-flex; align-items:center; justify-content:center;
+    width:100%; height:100%;
+}
+.chem-icon img, .chem-icon-lg img, .chem-icon-sm img {
+    max-width:100%; max-height:100%; object-fit:contain;
+}
+.chem-icon { width:32px; height:32px; }
+.chem-icon-lg { width:104px; height:104px; }
+.chem-icon-sm { width:20px; height:20px; }
