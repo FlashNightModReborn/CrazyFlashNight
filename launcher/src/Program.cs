@@ -2020,6 +2020,7 @@ class Program
         var worldCompositor = new CF7Launcher.Guardian.WorldCompositor.WorldCompositorController(
             form, form.FlashHostPanel, form.GetFlashHwnd,
             () => !form.IsShutdownAdmissionClosed && launchFlow != null && launchFlow.CurrentState == "Ready"
+                && launchFlow.RevealPerformed
                 && (panelHost == null || !panelHost.IsPanelOpen),
             message => toastSink.AddMessage(message), projectRoot,
             () => launchFlow != null && (launchFlow.CurrentState == "Embedding"
