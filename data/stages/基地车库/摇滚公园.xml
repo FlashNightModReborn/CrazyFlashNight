@@ -469,11 +469,13 @@ Instances描述额外加载的影片剪辑实例。
                 <x>900</x>
                 <y>264</y>
                 <Identifier>跳动的火焰</Identifier>
+                <LightKey>rock-fire-left</LightKey>
             </Instance>
             <Instance id="1">
                 <x>1313</x>
                 <y>265</y>
                 <Identifier>跳动的火焰</Identifier>
+                <LightKey>rock-fire-right</LightKey>
             </Instance>
             <Instance id="2">
                 <x>1681</x>
@@ -681,5 +683,24 @@ SubWave的必要参数：
                 </EnemyGroup>
             </SubWave>
         </Wave>
+        <Lights>
+            <Light>
+                <Key>rock-fire-left</Key>
+                <Preset>fire</Preset>
+                <AttachTo>rock-fire-left</AttachTo>
+                <OffsetX>22</OffsetX>
+                <OffsetY>32</OffsetY>
+                <Phase>15</Phase>
+            </Light>
+            <Light>
+                <Key>rock-fire-right</Key>
+                <Preset>fire</Preset>
+                <AttachTo>rock-fire-right</AttachTo>
+                <OffsetX>22</OffsetX>
+                <OffsetY>32</OffsetY>
+                <Radius>180</Radius>
+                <Phase>130</Phase>
+            </Light>
+        </Lights>
     </SubStage>
 </GameStage>

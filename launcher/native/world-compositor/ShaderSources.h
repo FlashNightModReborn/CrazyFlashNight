@@ -5,6 +5,11 @@
 constexpr char PointLightShared[] = R"hlsl(
 Texture2D pointField : register(t3);
 SamplerState pointSamplerLinear : register(s3);
+Texture2D scenePointField : register(t6);
+cbuffer SceneLightParams : register(b6) {
+    float4 sceneRegion; // min world XY, inverse world extent XY
+    float4 sceneControl; // enabled, baking, world texel XY
+};
 cbuffer PointLightParams : register(b4) {
     float4 pointView; float4 pointCamera; float4 pointControl; float4 pointPalette;
 };
@@ -12,7 +17,13 @@ float2 pointUv(float2 pixel) { return (pixel-pointView.xy)/pointView.zw; }
 float3 pointLit(float3 graded,float3 raw,float2 uv) {
     float3 result=graded;
     [branch] if(pointControl.x>=0.5) {
-        float4 field=pointField.SampleLevel(pointSamplerLinear,uv,0);
+        float4 field=float4(0,0,0,0);
+        if(pointControl.z>=0.5) field=pointField.SampleLevel(pointSamplerLinear,uv,0);
+        if(sceneControl.x>=0.5) {
+            float2 world=(uv*float2(1024.0,576.0)-pointCamera.xy)/pointCamera.z;
+            float2 sceneUv=(world-sceneRegion.xy)*sceneRegion.zw;
+            if(all(sceneUv>=0.0) && all(sceneUv<=1.0)) field+=scenePointField.SampleLevel(pointSamplerLinear,sceneUv,0);
+        }
         float weight=max(field.a,0.0);
         [branch] if(weight>0.0001) {
             float response=pointControl.y*(1.0-exp(-weight));
@@ -60,7 +71,7 @@ LVertex LVS(uint id:SV_VertexID) {
         float2 d=c.xy,n=float2(-c.y,c.x);
         // Expand the raster quad by half a light-field texel; otherwise a thin
         // rotated beam can miss all samples even with a smooth pixel falloff.
-        float margin=2.0/max(pointCamera.z,0.0001);
+        float margin=sceneControl.y>=0.5?0.5*max(sceneControl.z,sceneControl.w):2.0/max(pointCamera.z,0.0001);
         float lo=0.0,hi=a.z,latHalf=c.z+margin;
         // A kind-1 near circle shares this one quad and budget: project its
         // center into the light basis and union the along/lateral ranges.
@@ -79,6 +90,7 @@ LVertex LVS(uint id:SV_VertexID) {
         world=a.xy+d*along+n*(latHalf*s);
     }
     float2 stage=(pointCamera.xy+world*pointCamera.z)/float2(1024.0,576.0);
+    if(sceneControl.y>=0.5)stage=(world-sceneRegion.xy)*sceneRegion.zw;
     v.pos=float4(stage.x*2.0-1.0,1.0-stage.y*2.0,0.5,1.0);
     return v;
 }

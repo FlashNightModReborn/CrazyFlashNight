@@ -41,6 +41,8 @@ namespace CF7Launcher.Guardian.WorldCompositor
         private readonly CombatFxAtlasDelegate _combatFxAtlas;
         private readonly CombatFxReadyDelegate _combatFxReady;
         private readonly CombatFxFrameDelegate _combatFxFrame;
+        private readonly SceneLightsDelegate _sceneLights;
+        private readonly SceneLightsReadDelegate _sceneLightsRead;
 
         internal NativeCompositorSession(string modulePath, IntPtr source, uint pid, IntPtr output, uint vendor = 0, bool borderless = false)
         {
@@ -71,6 +73,8 @@ namespace CF7Launcher.Guardian.WorldCompositor
                 _combatFxAtlas=Export<CombatFxAtlasDelegate>("ProbeSetCombatFxAtlas");
                 _combatFxReady=Export<CombatFxReadyDelegate>("ProbeCombatFxReady");
                 _combatFxFrame=Export<CombatFxFrameDelegate>("ProbeSetCombatFxFrame");
+                _sceneLights=Export<SceneLightsDelegate>("ProbeSetSceneLights");
+                _sceneLightsRead=Export<SceneLightsReadDelegate>("ProbeGetSceneLightStats");
                 _session = Export<StartDelegate>("ProbeStartWorld")(source,pid,output,vendor,borderless ? 1 : 0);
                 if (_session == IntPtr.Zero) throw new InvalidOperationException("Compositor initialization failed");
             }
@@ -289,6 +293,20 @@ namespace CF7Launcher.Guardian.WorldCompositor
             if (_session != IntPtr.Zero) { _stop(_session); _session=IntPtr.Zero; }
             if (_module != IntPtr.Zero) { NativeLibrary.Free(_module); _module=IntPtr.Zero; }
         }
+        internal void SceneLightField(float[] lights,int count,float response)
+        {
+            if(_session==IntPtr.Zero || count<0 || count>SceneLightCatalog.Limit || lights==null || lights.Length<count*16
+                || _sceneLights(_session,lights,count,response)!=1)throw new InvalidOperationException("Native scene light field rejected");
+        }
+        internal SceneLightsStats ReadSceneLights()
+        {
+            var stats=new SceneLightsStats {Size=(uint)Marshal.SizeOf<SceneLightsStats>()};
+            if(_session==IntPtr.Zero || _sceneLightsRead(_session,ref stats)!=1)throw new InvalidOperationException("Scene light counters unavailable");return stats;
+        }
+        [StructLayout(LayoutKind.Sequential)]
+        internal struct SceneLightsStats {internal uint Size,Count,Width,Height;internal ulong Builds,CacheHits,Updates;}
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)] private delegate int SceneLightsDelegate(IntPtr handle,[In] float[] lights,int count,float response);
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)] private delegate int SceneLightsReadDelegate(IntPtr handle,ref SceneLightsStats stats);
         [StructLayout(LayoutKind.Sequential,CharSet=CharSet.Unicode)]
         internal struct Stats
         {

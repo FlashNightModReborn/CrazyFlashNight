@@ -893,11 +893,13 @@
                 <url>flashswf/backgrounds/elements/灯光.swf</url>
                 <x>964.05</x>
                 <y>412.9</y>
+                <LightKey>campus-left</LightKey>
             </Instance>
             <Instance>
                 <url>flashswf/backgrounds/elements/灯光.swf</url>
                 <x>1440</x>
                 <y>414.85</y>
+                <LightKey>campus-right</LightKey>
             </Instance>          
         </Instances>
         <Collision>
@@ -907,6 +909,56 @@
             <Point>800,800</Point>
             <Point>280,800</Point>
         </Collision>
+        <Lights>
+            <Light>
+                <Key>campus-left-base</Key>
+                <Preset>street</Preset>
+                <AttachTo>campus-left</AttachTo>
+                <OffsetX>-13.5</OffsetX>
+                <OffsetY>-279.6</OffsetY>
+                <Length>310</Length>
+                <HalfWidth>85</HalfWidth>
+                <Energy>0.45</Energy>
+                <Priority>50</Priority>
+            </Light>
+            <Light>
+                <Key>campus-left-breathe</Key>
+                <Preset>street</Preset>
+                <AttachTo>campus-left</AttachTo>
+                <OffsetX>-13.5</OffsetX>
+                <OffsetY>-279.6</OffsetY>
+                <Length>310</Length>
+                <HalfWidth>85</HalfWidth>
+                <Energy>0.3</Energy>
+                <RenderMode>realtime</RenderMode>
+                <Priority>40</Priority>
+                <FrameCurve>1:0,39:1,66:0,90:0</FrameCurve>
+            </Light>
+            <Light>
+                <Key>campus-right-base</Key>
+                <Preset>street</Preset>
+                <AttachTo>campus-right</AttachTo>
+                <OffsetX>-13.5</OffsetX>
+                <OffsetY>-279.6</OffsetY>
+                <Length>310</Length>
+                <HalfWidth>85</HalfWidth>
+                <Energy>0.45</Energy>
+                <Priority>50</Priority>
+            </Light>
+            <Light>
+                <Key>campus-right-breathe</Key>
+                <Preset>street</Preset>
+                <AttachTo>campus-right</AttachTo>
+                <OffsetX>-13.5</OffsetX>
+                <OffsetY>-279.6</OffsetY>
+                <Length>310</Length>
+                <HalfWidth>85</HalfWidth>
+                <Energy>0.3</Energy>
+                <RenderMode>realtime</RenderMode>
+                <Priority>40</Priority>
+                <FrameCurve>1:0,39:1,66:0,90:0</FrameCurve>
+            </Light>
+        </Lights>
     </Environment>
     <Environment>
         <BackgroundURL>gk12_2_BG.swf</BackgroundURL>
@@ -1043,8 +1095,98 @@
                 <url>flashswf/backgrounds/elements/演唱会灯.swf</url>
                 <x>1129.25</x>
                 <y>456.4</y>
+                <LightKey>concert-rig</LightKey>
             </Instance>
         </Instances>
+        <Lights>
+            <Light>
+                <Key>concert-left-base</Key>
+                <Preset>lamp</Preset>
+                <AttachTo>concert-rig</AttachTo>
+                <OffsetX>-420</OffsetX>
+                <OffsetY>-210</OffsetY>
+                <Radius>190</Radius>
+                <Energy>0.35</Energy>
+                <Color>#8FBFFF</Color>
+                <Priority>40</Priority>
+            </Light>
+            <Light>
+                <Key>concert-left-pulse</Key>
+                <Preset>concert</Preset>
+                <AttachTo>concert-rig</AttachTo>
+                <OffsetX>-420</OffsetX>
+                <OffsetY>-320</OffsetY>
+                <Angle>90</Angle>
+                <Length>340</Length>
+                <HalfWidth>110</HalfWidth>
+                <Energy>0.38</Energy>
+                <Color>#8FBFFF</Color>
+                <Color2>#8FBFFF</Color2>
+                <Animation>pulse</Animation>
+                <Amplitude>0.12</Amplitude>
+                <Rate>0.22</Rate>
+                <Phase>0</Phase>
+                <Priority>45</Priority>
+            </Light>
+            <Light>
+                <Key>concert-center-base</Key>
+                <Preset>lamp</Preset>
+                <AttachTo>concert-rig</AttachTo>
+                <OffsetX>0</OffsetX>
+                <OffsetY>-210</OffsetY>
+                <Radius>190</Radius>
+                <Energy>0.35</Energy>
+                <Color>#E69ACB</Color>
+                <Priority>40</Priority>
+            </Light>
+            <Light>
+                <Key>concert-center-pulse</Key>
+                <Preset>concert</Preset>
+                <AttachTo>concert-rig</AttachTo>
+                <OffsetX>0</OffsetX>
+                <OffsetY>-320</OffsetY>
+                <Angle>90</Angle>
+                <Length>340</Length>
+                <HalfWidth>110</HalfWidth>
+                <Energy>0.38</Energy>
+                <Color>#E69ACB</Color>
+                <Color2>#E69ACB</Color2>
+                <Animation>pulse</Animation>
+                <Amplitude>0.12</Amplitude>
+                <Rate>0.22</Rate>
+                <Phase>100</Phase>
+                <Priority>45</Priority>
+            </Light>
+            <Light>
+                <Key>concert-right-base</Key>
+                <Preset>lamp</Preset>
+                <AttachTo>concert-rig</AttachTo>
+                <OffsetX>420</OffsetX>
+                <OffsetY>-210</OffsetY>
+                <Radius>190</Radius>
+                <Energy>0.35</Energy>
+                <Color>#A2D5CF</Color>
+                <Priority>40</Priority>
+            </Light>
+            <Light>
+                <Key>concert-right-pulse</Key>
+                <Preset>concert</Preset>
+                <AttachTo>concert-rig</AttachTo>
+                <OffsetX>420</OffsetX>
+                <OffsetY>-320</OffsetY>
+                <Angle>90</Angle>
+                <Length>340</Length>
+                <HalfWidth>110</HalfWidth>
+                <Energy>0.38</Energy>
+                <Color>#A2D5CF</Color>
+                <Color2>#A2D5CF</Color2>
+                <Animation>pulse</Animation>
+                <Amplitude>0.12</Amplitude>
+                <Rate>0.22</Rate>
+                <Phase>210</Phase>
+                <Priority>45</Priority>
+            </Light>
+        </Lights>
     </Environment>
     <!-- 革命军哨所-->
     <Environment>
@@ -1660,10 +1802,65 @@
                 <url>flashswf/backgrounds/elements/昏暗街头灯光.swf</url>
                 <x>1080.35</x>
                 <y>373.2</y>
+                <LightKey>dim-street-rig</LightKey>
             </Instance>
         </Instances>
         <MaxIllumination>7</MaxIllumination>
         <MinIllumination>3</MinIllumination>
+        <Lights>
+            <Light>
+                <Key>dim-street-0</Key>
+                <Preset>street</Preset>
+                <AttachTo>dim-street-rig</AttachTo>
+                <OffsetX>690.7</OffsetX>
+                <OffsetY>-292.7</OffsetY>
+                <Angle>110.56</Angle>
+                <Length>210</Length>
+                <HalfWidth>70</HalfWidth>
+                <Energy>0.6</Energy>
+                <Color>#EACD9D</Color>
+                <Priority>55</Priority>
+            </Light>
+            <Light>
+                <Key>dim-street-1</Key>
+                <Preset>street</Preset>
+                <AttachTo>dim-street-rig</AttachTo>
+                <OffsetX>482.95</OffsetX>
+                <OffsetY>-288.7</OffsetY>
+                <Angle>90</Angle>
+                <Length>310</Length>
+                <HalfWidth>90</HalfWidth>
+                <Energy>0.6</Energy>
+                <Color>#EACD9D</Color>
+                <Priority>55</Priority>
+            </Light>
+            <Light>
+                <Key>dim-street-2</Key>
+                <Preset>street</Preset>
+                <AttachTo>dim-street-rig</AttachTo>
+                <OffsetX>-103.2</OffsetX>
+                <OffsetY>-288.7</OffsetY>
+                <Angle>90</Angle>
+                <Length>310</Length>
+                <HalfWidth>90</HalfWidth>
+                <Energy>0.6</Energy>
+                <Color>#EACD9D</Color>
+                <Priority>55</Priority>
+            </Light>
+            <Light>
+                <Key>dim-street-3</Key>
+                <Preset>street</Preset>
+                <AttachTo>dim-street-rig</AttachTo>
+                <OffsetX>-643.45</OffsetX>
+                <OffsetY>-257</OffsetY>
+                <Angle>110.56</Angle>
+                <Length>210</Length>
+                <HalfWidth>70</HalfWidth>
+                <Energy>0.6</Energy>
+                <Color>#EACD9D</Color>
+                <Priority>55</Priority>
+            </Light>
+        </Lights>
     </Environment>
     <Environment>
         <BackgroundURL>通缉令_浮士德_BG.swf</BackgroundURL>

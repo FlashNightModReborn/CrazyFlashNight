@@ -44,6 +44,7 @@ class org.flashNight.arki.weather.EnvironmentConfig {
             天气情况: "正常", 空间情况: "室外", 视觉情况: "光照",
             最大光照: 8, 最小光照: 4,
             背景元素: null,
+            场景灯: null,
             门: null, 地图碰撞箱: null,
             左侧出生线: null, 右侧出生线: null,
             佣兵刷新数据: null, BGM: null,
@@ -232,6 +233,7 @@ class org.flashNight.arki.weather.EnvironmentConfig {
 
         // 背景元素
         info.背景元素 = rawConfig.Instances ? parseBackgroundElements(ObjectUtil.toArray(rawConfig.Instances.Instance)) : defaults.背景元素;
+        info.场景灯 = rawConfig.Lights ? ObjectUtil.toArray(rawConfig.Lights.Light) : defaults.场景灯;
 
         // 无限过图参数 - 门
         if (rawConfig.Door) {

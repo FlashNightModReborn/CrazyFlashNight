@@ -4,6 +4,7 @@ import org.flashNight.arki.audio.AudioBridge;
 
 // 只提交出生事件与游戏时钟；不创建活动弹壳 MC，也不逐粒子更新或回传。
 import org.flashNight.arki.render.EquipmentLightBridge;
+import org.flashNight.arki.render.SceneLightBridge;
 
 class org.flashNight.arki.render.CombatFxBridge {
     private static var enabled:Boolean = false;
@@ -54,9 +55,10 @@ class org.flashNight.arki.render.CombatFxBridge {
         styles = next;
         enabled = active;
         EquipmentLightBridge.configure(caps);
+        SceneLightBridge.configureCaps(caps);
     }
 
-    public static function disconnect():Void { enabled = false; generation = -1; EquipmentLightBridge.disconnect(); resetScene(); }
+    public static function disconnect():Void { enabled = false; generation = -1; EquipmentLightBridge.disconnect(); SceneLightBridge.configureCaps({}); resetScene(); }
 
     public static function resetScene():Void {
         epoch++;

@@ -10,6 +10,7 @@ class org.flashNight.arki.scene.StageInfo {
 
     public var basicInfo:Object; // 基本信息
     public var instanceInfo:Array; // 实例信息
+    public var lightInfo:Array; // 子场景灯覆盖，独立于素材实例
     public var spawnPointInfo:Array; // 出生点信息
     public var pickupInfo:Array; // 可拾取物信息
     public var waveInfo:Array; // 波次信息
@@ -23,6 +24,7 @@ class org.flashNight.arki.scene.StageInfo {
     public function StageInfo(data:Object) {
         basicInfo = parseBasicInfo(data);
         instanceInfo = parseInstanceInfo(data);
+        lightInfo = ObjectUtil.toArray(data.Lights.Light);
         spawnPointInfo = parseSpawnPointInfo(data);
         pickupInfo = parsePickupInfo(data);
         waveInfo = parseWaveInfo(data);

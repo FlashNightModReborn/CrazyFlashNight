@@ -163,6 +163,8 @@ class org.flashNight.arki.render.FrameBroadcaster {
         if (rayPayload != null) msg += "\x07" + rayPayload;
         var chainPayload:String = org.flashNight.arki.render.ChainVisualBridge.flush();
         if (chainPayload != null) msg += "\x08" + chainPayload;
+        var sceneLightPayload:String = org.flashNight.arki.render.SceneLightBridge.flush();
+        if (sceneLightPayload != null) msg += "\x09" + sceneLightPayload;
         // SFX 优先发送：音效对延迟敏感，必须在 F 消息（含伤害 reducer/绘制）之前到达 C# 端。
         org.flashNight.arki.audio.AudioBridge.flush();
 

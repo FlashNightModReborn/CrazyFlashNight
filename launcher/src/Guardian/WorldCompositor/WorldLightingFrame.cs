@@ -17,6 +17,7 @@ namespace CF7Launcher.Guardian.WorldCompositor
         internal float WeatherIntensity;
         internal float WeatherGroundMin=360, WeatherGroundMax=520;
         internal AtmosphereFrame Atmosphere=AtmosphereFrame.None;
+        internal SceneLightSnapshot SceneLights;
         internal static bool TryParse(JObject value, out WorldLightingFrame frame)
         {
             frame = null;
@@ -60,6 +61,7 @@ namespace CF7Launcher.Guardian.WorldCompositor
                 }
             }
             if (!AtmosphereFrame.TryParse(value["atmosphere"],out frame.Atmosphere)) return false;
+            if (!SceneLightSnapshot.TryParse(value["sceneLights"],out frame.SceneLights)) return false;
             return true;
         }
         private static bool Number(JToken token, double limit, out double number)

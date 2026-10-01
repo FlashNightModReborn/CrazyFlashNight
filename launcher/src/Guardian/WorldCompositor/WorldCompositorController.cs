@@ -279,7 +279,9 @@ namespace CF7Launcher.Guardian.WorldCompositor
             _setRenderScale=setRenderScale; _focusFlash=focusFlash;
             _bulletCatalog=bulletCatalog;
             _combatFxCatalog=combatFxCatalog;
-            _worldLights=new WorldLightComposer(combatFxCatalog?.MaximumLightResponse??0);
+            var sceneCatalog=SceneLightCatalog.Load(projectRoot);
+            _sceneLights=new SceneLightEngine(sceneCatalog);
+            _worldLights=new WorldLightComposer(combatFxCatalog?.MaximumLightResponse??0,sceneCatalog.SceneReserve);
             _worldLightSubmissions=new WorldLightSubmitBatch((draw,x,y,scale) => _native?.CombatFxFrame(draw,x,y,scale));
             _overlays=overlays ?? Array.Empty<OverlayBase>();
             _bulletCandidateEnabled=bulletCatalog!=null
@@ -305,6 +307,7 @@ namespace CF7Launcher.Guardian.WorldCompositor
             if (!frame.Ready || frame.Scene!=previousScene)
                 _surface?.CancelPointer();
             _frame=frame;
+            QueueSceneLights(frame);
             if (!frame.Ready || frame.Scene!=previousScene) InvalidateWeather();
             if (_lighting.Pending && (!wasPending || frame.Scene!=previousScene))
                 LogManager.Log("event=world_lighting_hold scene="+frame.Scene+" hasGrade="+_lighting.HasValidState);
@@ -315,6 +318,7 @@ namespace CF7Launcher.Guardian.WorldCompositor
         }
         internal void ResetSource()
         {
+            ResetSceneLights();
             _lighting=new WorldLightingTransition(); _reportedPendingScene=0; _frame=null; _schedulingAllowed=false; StopCapture();
             _targetScale=_appliedScale=1; _setRenderScale(1);
         }
@@ -461,6 +465,10 @@ namespace CF7Launcher.Guardian.WorldCompositor
                 // timestamp freshness fence, not proof of the pixels' semantic scene identity.
                 if (ready && _lighting.ConfirmCapturedFrame(stats.LastFrameQpcMs,NowMs()))
                     LogManager.Log("event=world_lighting_frame_handoff scene="+_lighting.ReadyScene+" captureQpcMs="+stats.LastFrameQpcMs.ToString("F1",CultureInfo.InvariantCulture));
+                lock(_weatherCameraLock) {
+                    if(ApplySceneLightsLocked() && _native!=null)
+                        _worldLightSubmissions.Submit(_worldLights.Compose(_weatherCameraX,_weatherCameraY,_weatherCameraScale),_weatherCameraX,_weatherCameraY,_weatherCameraScale,false);
+                }
                 if (_preset.UsesLut(_lighting.CurrentMode)) {
                     // LUT 路径（lut-set-v1）：350ms 过渡状态机不变，采样语义由矩阵改为连续 light 等级，
                     // 相邻整数档 CPU blend（32^3 逐字节）；变更才上传原生（过渡期间逐 tick、稳态零上传）。
@@ -773,6 +781,7 @@ namespace CF7Launcher.Guardian.WorldCompositor
         }
         private void StopCapture()
         {
+            _sentSceneLightVersion=-1;
             // Same-socket source loss must return visual ownership to Flash.
             RevokeBulletCapability("capture_stopped",true);
             RevokeCombatFx("capture_stopped");

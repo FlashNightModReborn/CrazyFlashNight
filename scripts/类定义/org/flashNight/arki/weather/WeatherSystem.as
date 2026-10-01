@@ -352,6 +352,8 @@ class org.flashNight.arki.weather.WeatherSystem {
         if (envInfo.视觉情况) this.visualCondition = envInfo.视觉情况;
         if (envInfo.最大光照 != undefined) this.maxLight = envInfo.最大光照;
         if (envInfo.最小光照 != undefined) this.minLight = envInfo.最小光照;
+        if (!org.flashNight.arki.render.SceneLightBridge.isConfigured())
+            org.flashNight.arki.render.SceneLightBridge.configure(envInfo.场景灯, null, "environment");
 
         // ---- 天空盒渲染器：室内/禁用天空判定 ----
         var skyDisabled:Boolean = (this.spaceCondition == "室内") || (envInfo.禁用天空 == true);

@@ -415,7 +415,9 @@ class org.flashNight.arki.scene.SceneManager {
         if (info.url != null) {
             // 检测url参数载入外部swf
             inst = gameworld.createEmptyMovieClip(name, gameworld.getNextHighestDepth());
-            inst.loadMovie(info.url);
+            if (info.LightKey != undefined)
+                org.flashNight.arki.render.SceneLightBridge.loadSource(inst,info.url,String(info.LightKey));
+            else inst.loadMovie(info.url);
         } else if(info.Identifier != null) {
             // 根据identifier从库中加载元件
             inst = gameworld.attachMovie(info.Identifier, name, gameworld.getNextHighestDepth());
@@ -432,6 +434,7 @@ class org.flashNight.arki.scene.SceneManager {
             inst.swapDepths(info.Depth);
         }
         if (info.Parameters) ObjectUtil.cloneParameters(inst, info.Parameters);
+        if (info.url == null) org.flashNight.arki.render.SceneLightBridge.track(inst, info.LightKey);
         return inst;
     }
 

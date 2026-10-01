@@ -258,6 +258,7 @@
                 <x>680</x>
                 <y>290</y>
                 <Identifier>跳动的火焰</Identifier>
+                <LightKey>ruin-fire</LightKey>
             </Instance>
             <Instance id="1">
                 <x>1400</x>
@@ -513,6 +514,19 @@
                 </EnemyGroup>
             </SubWave>
         </Wave>
+        <Lights>
+            <Light>
+                <Key>ruin-fire</Key>
+                <Preset>fire</Preset>
+                <AttachTo>ruin-fire</AttachTo>
+                <OffsetX>22</OffsetX>
+                <OffsetY>32</OffsetY>
+                <Radius>155</Radius>
+                <Energy>1.0</Energy>
+                <BaseEnergy>0.78</BaseEnergy>
+                <Phase>85</Phase>
+            </Light>
+        </Lights>
     </SubStage>
     <SubStage id="2">
         <BasicInformation>

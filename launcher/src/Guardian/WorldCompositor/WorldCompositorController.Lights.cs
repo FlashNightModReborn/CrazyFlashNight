@@ -71,6 +71,7 @@ namespace CF7Launcher.Guardian.WorldCompositor
         {
             _lightCameraX=x;_lightCameraY=y;_lightCameraScale=scale;
             if(_native==null)return;
+            ApplySceneLightsLocked();
             _worldLightSubmissions.Submit(_worldLights.Compose(x,y,scale),x,y,scale,ray,immediate);
         }
     }

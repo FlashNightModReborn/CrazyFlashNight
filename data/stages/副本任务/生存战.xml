@@ -27,21 +27,25 @@
                 <x>0</x>
                 <y>288</y>
                 <Identifier>闪烁的灯光</Identifier>
+                <LightKey>survival-flash-0</LightKey>
             </Instance>
             <Instance id="2">
                 <x>466</x>
                 <y>288</y>
                 <Identifier>闪烁的灯光</Identifier>
+                <LightKey>survival-flash-1</LightKey>
             </Instance>
             <Instance id="3">
                 <x>875</x>
                 <y>288</y>
                 <Identifier>闪烁的灯光</Identifier>
+                <LightKey>survival-flash-2</LightKey>
             </Instance>
             <Instance id="4">
                 <x>1280</x>
                 <y>288</y>
                 <Identifier>闪烁的灯光</Identifier>
+                <LightKey>survival-flash-3</LightKey>
             </Instance>
         </Instances>
         <Event>
@@ -53,5 +57,43 @@
                 <Text>关卡模板和rouge模式正在重构，原来的生存战暂时弃用了，敬请期待捏</Text>
             </Dialogue>
         </Event>
+        <Lights>
+            <Light>
+                <Key>survival-flash-0</Key>
+                <Preset>flicker</Preset>
+                <AttachTo>survival-flash-0</AttachTo>
+                <OffsetY>-170</OffsetY>
+                <Length>330</Length>
+                <HalfWidth>105</HalfWidth>
+                <FrameCurve>1:1,2:0,3:1,4:0,160:0</FrameCurve>
+            </Light>
+            <Light>
+                <Key>survival-flash-1</Key>
+                <Preset>flicker</Preset>
+                <AttachTo>survival-flash-1</AttachTo>
+                <OffsetY>-170</OffsetY>
+                <Length>330</Length>
+                <HalfWidth>105</HalfWidth>
+                <FrameCurve>1:1,2:0,3:1,4:0,160:0</FrameCurve>
+            </Light>
+            <Light>
+                <Key>survival-flash-2</Key>
+                <Preset>flicker</Preset>
+                <AttachTo>survival-flash-2</AttachTo>
+                <OffsetY>-170</OffsetY>
+                <Length>330</Length>
+                <HalfWidth>105</HalfWidth>
+                <FrameCurve>1:1,2:0,3:1,4:0,160:0</FrameCurve>
+            </Light>
+            <Light>
+                <Key>survival-flash-3</Key>
+                <Preset>flicker</Preset>
+                <AttachTo>survival-flash-3</AttachTo>
+                <OffsetY>-170</OffsetY>
+                <Length>330</Length>
+                <HalfWidth>105</HalfWidth>
+                <FrameCurve>1:1,2:0,3:1,4:0,160:0</FrameCurve>
+            </Light>
+        </Lights>
     </SubStage>
 </GameStage>

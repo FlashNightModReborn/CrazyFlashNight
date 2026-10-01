@@ -61,6 +61,73 @@ struct BulletStylesState { int count = 0; float params[BulletStyleCap*32]{}; };
 struct BulletFrameState { int count = 0; float cameraX = 0, cameraY = 0, cameraScale = 1; float params[BulletItemCap*8]{}; };
 constexpr int CombatFxCap=512;
 constexpr int PointLightCap=16;
+constexpr int SceneLightCap=128;
+struct SceneLightState { int count=0;float maximumResponse=0;float lights[SceneLightCap*16]{}; };
+// One bounded world-space cache. Camera/viewport changes only change sampling.
+class SceneLightGpu {
+public:
+    SceneLightGpu(ID3D11Device* d,ID3D11DeviceContext* c,ID3D11Buffer* items,ID3D11Buffer* lightParams,
+        ID3D11VertexShader* vs,ID3D11PixelShader* ps,ID3D11BlendState* blend,ID3D11RasterizerState* raster)
+        :device(d),context(c),lightItems(items),lightSettings(lightParams),vertex(vs),pixel(ps),blending(blend),rasterizer(raster) {
+        D3D11_BUFFER_DESC bd{};bd.ByteWidth=32;bd.BindFlags=D3D11_BIND_CONSTANT_BUFFER;bd.Usage=D3D11_USAGE_DEFAULT;
+        check_hresult(device->CreateBuffer(&bd,nullptr,params.put()));
+    }
+    uint64_t version=UINT64_MAX;int width=0,height=0,count=0;float response=0;
+    bool Prepare(const SceneLightState& state,uint64_t next) {
+        if(version==next)return false;version=next;count=state.count;response=state.maximumResponse;
+        if(count==0)return false;
+        float minX=10000000,minY=10000000,maxX=-10000000,maxY=-10000000;
+        for(int n=0;n<count;n++) {
+            const float* p=state.lights+n*16;
+            if(p[7]==0) {minX=std::min(minX,p[0]-p[2]);maxX=std::max(maxX,p[0]+p[2]);minY=std::min(minY,p[1]-p[2]);maxY=std::max(maxY,p[1]+p[2]);}
+            else for(int end=0;end<2;end++)for(int side=-1;side<=1;side+=2) {
+                float x=p[0]+p[8]*p[2]*end-p[9]*p[10]*side,y=p[1]+p[9]*p[2]*end+p[8]*p[10]*side;
+                minX=std::min(minX,x);maxX=std::max(maxX,x);minY=std::min(minY,y);maxY=std::max(maxY,y);
+            }
+        }
+        minX=std::floor(minX/4)*4-4;minY=std::floor(minY/4)*4-4;maxX=std::ceil(maxX/4)*4+4;maxY=std::ceil(maxY/4)*4+4;
+        float worldW=maxX-minX,worldH=maxY-minY;
+        double density=std::min(.25,std::min(4096.0/worldW,4096.0/worldH));
+        density=std::min(density,std::sqrt(1048576.0/(static_cast<double>(worldW)*worldH)));
+        int w=std::max(2,static_cast<int>(worldW*density)),h=std::max(2,static_cast<int>(worldH*density));
+        ID3D11ShaderResourceView* none=nullptr;context->PSSetShaderResources(6,1,&none);
+        if(!texture || w!=width || h!=height) {
+            resource=nullptr;target=nullptr;texture=nullptr;
+            D3D11_TEXTURE2D_DESC td{};td.Width=w;td.Height=h;td.MipLevels=1;td.ArraySize=1;td.Format=DXGI_FORMAT_R16G16B16A16_FLOAT;
+            td.SampleDesc.Count=1;td.Usage=D3D11_USAGE_DEFAULT;td.BindFlags=D3D11_BIND_RENDER_TARGET|D3D11_BIND_SHADER_RESOURCE;
+            check_hresult(device->CreateTexture2D(&td,nullptr,texture.put()));
+            check_hresult(device->CreateRenderTargetView(texture.get(),nullptr,target.put()));
+            check_hresult(device->CreateShaderResourceView(texture.get(),nullptr,resource.put()));width=w;height=h;
+        }
+        region[0]=minX;region[1]=minY;region[2]=1/worldW;region[3]=1/worldH;
+        float sc[8]{minX,minY,1/worldW,1/worldH,0,1,worldW/w,worldH/h};SetParameters(sc);
+        float lp[16]{0,0,static_cast<float>(w),static_cast<float>(h),0,0,1,0,1,response,0,0,1,1,1,0};
+        context->UpdateSubresource(lightSettings,0,nullptr,lp,0,0);context->VSSetConstantBuffers(4,1,&lightSettings);
+        auto rt=target.get();context->OMSetRenderTargets(1,&rt,nullptr);const float zero[]{0,0,0,0};context->ClearRenderTargetView(rt,zero);
+        D3D11_VIEWPORT view{0,0,static_cast<float>(w),static_cast<float>(h),0,1};context->RSSetViewports(1,&view);
+        context->RSSetState(rasterizer);context->IASetInputLayout(nullptr);context->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+        context->VSSetShader(vertex,nullptr,0);context->PSSetShader(pixel,nullptr,0);context->OMSetBlendState(blending,nullptr,0xffffffff);
+        context->VSSetConstantBuffers(5,1,&lightItems);
+        for(int first=0;first<count;first+=PointLightCap) {
+            int amount=std::min(PointLightCap,count-first);float batch[PointLightCap*16]{};
+            std::memcpy(batch,state.lights+first*16,static_cast<size_t>(amount)*64);
+            context->UpdateSubresource(lightItems,0,nullptr,batch,0,0);context->Draw(amount*6,0);
+        }
+        context->OMSetBlendState(nullptr,nullptr,0xffffffff);return true;
+    }
+    bool Bind(bool allowed) {
+        bool enabled=allowed && count>0 && response>0 && resource;
+        float sc[8]{region[0],region[1],region[2],region[3],enabled?1.f:0.f,0,0,0};SetParameters(sc);
+        ID3D11RenderTargetView* noTarget=nullptr;context->OMSetRenderTargets(1,&noTarget,nullptr);
+        auto srv=enabled?resource.get():nullptr;context->PSSetShaderResources(6,1,&srv);return enabled;
+    }
+private:
+    void SetParameters(const float* data) {context->UpdateSubresource(params.get(),0,nullptr,data,0,0);auto b=params.get();context->VSSetConstantBuffers(6,1,&b);context->PSSetConstantBuffers(6,1,&b);}
+    ID3D11Device* device;ID3D11DeviceContext* context;ID3D11Buffer *lightItems,*lightSettings;
+    ID3D11VertexShader* vertex;ID3D11PixelShader* pixel;ID3D11BlendState* blending;ID3D11RasterizerState* rasterizer;
+    com_ptr<ID3D11Buffer> params;com_ptr<ID3D11Texture2D> texture;com_ptr<ID3D11RenderTargetView> target;com_ptr<ID3D11ShaderResourceView> resource;
+    float region[4]{};
+};
 struct CombatFxState {
     int count=0,casings=0,lightCount=0;float maximumLightResponse=0;
     float cameraX=0,cameraY=0,cameraScale=1;float params[CombatFxCap*16]{},lights[PointLightCap*16]{};
@@ -120,6 +187,26 @@ public:
     void RequestContentProof() { contentRequested_=true; proofRequested_=true; }
     void ContentStats(ProbeContentStats& result) { std::lock_guard guard(mutex_); result=contentStats_; }
     void WorkStats(ProbeWorkStats& result) { std::lock_guard guard(mutex_); result=workStats_; }
+    void SceneLightStats(ProbeSceneLightStats& result) { std::lock_guard guard(mutex_); result=sceneLightStats_; }
+    bool SceneLights(const float* lights,int count,float response) {
+        if(count<0 || count>SceneLightCap || (count>0 && !lights) || !std::isfinite(response) || response<0 || response>.8f)return false;
+        for(int n=0;n<count;n++) {
+            const float* p=lights+n*16;
+            for(int i=0;i<16;i++)if(!std::isfinite(p[i]))return false;
+            if(std::abs(p[0])>1000000 || std::abs(p[1])>1000000 || p[2]<1 || p[2]>1024 || p[3]<0 || p[3]>2
+                || p[4]<0 || p[4]>1 || p[5]<0 || p[5]>1 || p[6]<0 || p[6]>1
+                || (p[7]!=0 && p[7]!=1 && p[7]!=2) || p[11]!=0 || p[12]!=0 || p[13]!=0 || p[14]!=0 || p[15]!=0)return false;
+            if(p[7]==0 ? (p[8]!=0 || p[9]!=0 || p[10]!=0) : (std::abs(p[8]*p[8]+p[9]*p[9]-1)>.01f || p[10]<.5f || p[10]>512))return false;
+        }
+        {std::lock_guard guard(mutex_);
+            if(sceneLights_.count==count && sceneLights_.maximumResponse==response
+                && (count==0 || std::memcmp(sceneLights_.lights,lights,static_cast<size_t>(count)*64)==0))return true;
+            sceneLights_.count=count;sceneLights_.maximumResponse=response;
+            if(count>0)std::memcpy(sceneLights_.lights,lights,static_cast<size_t>(count)*64);
+            ++sceneLightVersion_;++sceneLightStats_.updates;sceneLightStats_.count=count;
+        }
+        Signal();return true;
+    }
     bool Crop(int x, int y, int width, int height) {
         if (x < 0 || y < 0 || width < 1 || height < 1 || width > 8192 || height > 8192) return false;
         std::lock_guard guard(mutex_); crop_ = {x,y,x+width,y+height}; return true;
@@ -539,6 +626,8 @@ private:
         com_ptr<ID3D11BlendState> lightBlend;
         bd.RenderTarget[0].DestBlend=bd.RenderTarget[0].DestBlendAlpha=D3D11_BLEND_ONE;
         check_hresult(device->CreateBlendState(&bd,lightBlend.put()));
+        SceneLightGpu sceneGpu(device.get(),context.get(),lightItems.get(),lightParams.get(),lightVs.get(),lightPs.get(),lightBlend.get(),raster.get());
+        SceneLightState sceneSnapshot;
         constexpr int LightFieldW=256,LightFieldH=144;
         D3D11_TEXTURE2D_DESC lightDesc{};lightDesc.Width=LightFieldW;lightDesc.Height=LightFieldH;
         lightDesc.MipLevels=1;lightDesc.ArraySize=1;lightDesc.Format=DXGI_FORMAT_R16G16B16A16_FLOAT;
@@ -621,6 +710,7 @@ private:
                 || atmosphereStyle.family==atmosphere.preset) && texture;
             bool bulletsOn = bulletFrame.count>0 && bulletStyles.count>0 && texture;
             bool fxOn=(fxFrame.count>0 || fxFrame.lightCount>0) && fxSrv && texture;
+            uint64_t observedSceneLightVersion;{std::lock_guard guard(mutex_);observedSceneLightVersion=sceneLightVersion_;}
             // Weather animates per presented frame; keep a 30fps floor even on
             // unpaced probe sessions so motion stays at the worker cadence.
             int paceFps = fps_>0 ? fps_ : ((weatherOn || atmosphereOn || bulletsOn || fxOn || rayFrame.count>0) ? 30 : 0);
@@ -673,7 +763,8 @@ private:
                     && appliedAtmosphere==atmosphereVersion && !atmosphereOn
                     && appliedBullet==bulletVersion && appliedBulletAtlas==bulletAtlasObserved
                     && !bulletsOn && appliedRay==rayVersion && rayFrame.count==0
-                    && appliedFx==fxVersion && appliedFxAtlas==fxAtlasVersion && !fxOn))) {
+                    && appliedFx==fxVersion && appliedFxAtlas==fxAtlasVersion && !fxOn
+                    && sceneGpu.version==observedSceneLightVersion))) {
                 presentation.unlock();
                 std::unique_lock lock(waitMutex_);
                 wake_.wait_for(lock,std::chrono::milliseconds(100),[this,observedWake] { return stop_.load() || wakeVersion_.load()!=observedWake; });
@@ -835,12 +926,17 @@ private:
             D3D11_VIEWPORT viewport{(w-textureW*scale)/2, (h-textureH*scale)/2, textureW*scale, textureH*scale, 0, 1};
             bool proof = proofRequested_.exchange(false);
             bool lightsOn=!proof && fxFrame.lightCount>0 && fxFrame.maximumLightResponse>0;
+            uint64_t sceneVersion;
+            {std::lock_guard guard(mutex_);sceneVersion=sceneLightVersion_;if(sceneVersion!=sceneGpu.version)sceneSnapshot=sceneLights_;}
+            bool sceneRebuilt=sceneGpu.Prepare(sceneSnapshot,sceneVersion),sceneOn=sceneGpu.Bind(!proof);
+            {std::lock_guard guard(mutex_);sceneLightStats_.builds+=sceneRebuilt?1:0;sceneLightStats_.cacheHits+=sceneOn && !sceneRebuilt?1:0;
+                sceneLightStats_.width=sceneGpu.width;sceneLightStats_.height=sceneGpu.height;}
             bool lightDrawn=false,lightCacheHit=false;
             uint64_t fxUploads=0;
             float palette[3]{1,1,1};
             // Production uses LUT only for ambient "光照". Direct gunfire must not
             // inherit its blue darkness; night vision uses the separate matrix path.
-            if(lightsOn && !lutActive) {
+            if((lightsOn || sceneOn) && !lutActive) {
                 Settings grade=custom?settings:ColorMode(mode);
                 const float* rows[]{grade.r,grade.g,grade.b};
                 for(int c=0;c<3;c++)palette[c]=std::pow(std::clamp(rows[c][0]+rows[c][1]+rows[c][2]+rows[c][3]+grade.offset[c],0.f,1.f),1.f/std::max(grade.offset[3],.001f));
@@ -849,7 +945,7 @@ private:
             }
             float lp[16]{viewport.TopLeftX,viewport.TopLeftY,viewport.Width,viewport.Height,
                 fxFrame.cameraX,fxFrame.cameraY,fxFrame.cameraScale,0,
-                lightsOn?1.f:0.f,fxFrame.maximumLightResponse,0,0,palette[0],palette[1],palette[2],0};
+                lightsOn || sceneOn?1.f:0.f,std::max(fxFrame.maximumLightResponse,sceneOn?sceneGpu.response:0.f),lightsOn?1.f:0.f,0,palette[0],palette[1],palette[2],0};
             context->UpdateSubresource(lightParams.get(),0,nullptr,lp,0,0);
             auto lightBuffer=lightParams.get();context->VSSetConstantBuffers(4,1,&lightBuffer);context->PSSetConstantBuffers(4,1,&lightBuffer);
             ID3D11ShaderResourceView* noLight=nullptr;context->PSSetShaderResources(3,1,&noLight);
@@ -1218,6 +1314,8 @@ private:
     uint64_t captureGeneration_=0;
     std::thread worker_; std::mutex mutex_; ProbeStats stats_{};
     ProbeWorkStats workStats_{sizeof(ProbeWorkStats)};
+    SceneLightState sceneLights_{};uint64_t sceneLightVersion_=0;
+    ProbeSceneLightStats sceneLightStats_{sizeof(ProbeSceneLightStats)};
     RECT crop_{};
     double cropNotBefore_=0;
     std::mutex presentationMutex_;
@@ -1294,6 +1392,13 @@ int __cdecl ProbeGetStats(void* handle, ProbeStats* stats) {
 int __cdecl ProbeGetWorkStats(void* handle, ProbeWorkStats* stats) {
     if(!handle || !stats || stats->size!=sizeof(ProbeWorkStats)) return 0;
     static_cast<Capture*>(handle)->WorkStats(*stats);return 1;
+}
+int __cdecl ProbeSetSceneLights(void* handle,const float* lights,int count,float response) {
+    return handle && static_cast<Capture*>(handle)->SceneLights(lights,count,response)?1:0;
+}
+int __cdecl ProbeGetSceneLightStats(void* handle,ProbeSceneLightStats* stats) {
+    if(!handle || !stats || stats->size!=sizeof(ProbeSceneLightStats))return 0;
+    static_cast<Capture*>(handle)->SceneLightStats(*stats);return 1;
 }
 int __cdecl ProbeGetCaptureSize(void* handle,int32_t* width,int32_t* height,uint64_t* generation) {
     if(!handle || !width || !height || !generation)return 0;

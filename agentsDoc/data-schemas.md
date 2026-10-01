@@ -80,6 +80,7 @@ data/items/list.xml          → 引用 54 个物品分类文件 + item_sets.xml
 data/enemy_properties/list.xml → 引用 14 个敌人定义文件
 data/dialogues/list.xml       → 引用 16 个对话文件
 data/environment/             → scene_environment.xml、stage_environment.xml、color_engine_preset.xml、presentation_presets.v1.json
+                               scene_lights.v1.json 提供场景灯预设，Lights/Light 保存逐场景覆盖
 data/stages/                  → 按地点组织的关卡数据
 data/dictionaries/            → 材料/情报字典
 data/intelligence/            → 按情报名称存放的 legacy txt 正文
