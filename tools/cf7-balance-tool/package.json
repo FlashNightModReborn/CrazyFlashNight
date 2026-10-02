@@ -32,6 +32,9 @@
     "potion-balance-sync": "tsx packages/cli/src/potion-balance.ts sync",
     "armor-balance-check": "tsx packages/cli/src/armor-balance.ts check",
     "armor-balance-sync": "tsx packages/cli/src/armor-balance.ts sync",
+    "monster-census": "tsx packages/cli/src/monster-flags.ts census",
+    "monster-solve": "tsx packages/cli/src/monster-flags.ts solve",
+    "monster-flags-apply": "tsx packages/cli/src/monster-flags.ts apply",
     "dev:web": "npm run dev:renderer --workspace @cf7-balance-tool/web",
     "dev:electron": "npm run dev:electron --workspace @cf7-balance-tool/web"
   },

@@ -7,3 +7,4 @@ export * from "./damage.js";
 export * from "./economy.js";
 export * from "./potions.js";
 export * from "./monsters.js";
+export * from "./monster-solve.js";
