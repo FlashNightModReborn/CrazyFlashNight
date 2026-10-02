@@ -58,6 +58,7 @@ class org.flashNight.arki.render.CombatFxBridge {
         SceneLightBridge.configureCaps(caps);
     }
 
+    public static function isEnabled():Boolean { return enabled; }
     public static function disconnect():Void { enabled = false; generation = -1; EquipmentLightBridge.disconnect(); SceneLightBridge.configureCaps({}); resetScene(); }
 
     public static function resetScene():Void {

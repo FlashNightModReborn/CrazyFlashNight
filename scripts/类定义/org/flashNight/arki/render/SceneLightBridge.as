@@ -15,9 +15,19 @@ class org.flashNight.arki.render.SceneLightBridge {
     private static var sequence:Number = 0;
     private static var sceneKey:String = "";
     private static var valid:Boolean = true;
+    private static var capsSeen:Number = 0;
+    private static var capsNative:String = "n/a";
+    private static var capsSlv:String = "n/a";
+    private static var capsKeys:String = "n/a";
     private static var failureReason:String = "";
 
     public static function configureCaps(caps:Object):Void {
+        capsSeen++;
+        capsNative = String(caps["native"]);
+        capsSlv = String(caps.sceneLightsVersion);
+        var ks:Array = [];
+        for (var k:String in caps) ks.push(k);
+        capsKeys = ks.join(",");
         var next:Boolean = caps["native"] === true && caps.sceneLightsVersion === 1;
         if (enabled != next) {
             enabled = next; dirty = true; revision++;
@@ -82,12 +92,29 @@ class org.flashNight.arki.render.SceneLightBridge {
         if (receipt.world === identity && sources[receipt.key].receipt === receipt) fail("anchor_load_error");
         receipt.loader.removeListener(receipt.listener); receipt.loader = null; receipt.listener = null;
     }
+    public static function diag():String {
+        return (enabled ? 1 : 0) + "" + (configured ? 1 : 0) + "" + (valid ? 1 : 0)
+            + "" + (dirty ? 1 : 0) + "|" + capsSeen + ":" + capsNative + ":" + capsSlv
+            + "|" + definitions.length + "|" + sceneKey + "|" + capsKeys;
+    }
     public static function configure(base:Array, extra:Array, key:String):Void {
         if (!ensureWorld()) return;
         var merged:Array = []; var indices:Object = {};
         indices.__proto__ = null;
         merge(base, merged, indices); merge(extra, merged, indices);
         if (merged.length > 128) { fail("source_capacity"); return; }
+        // XML 源里所有字段都是字符串；快照直接进宿主强类型校验，
+        // 数值/布尔字段必须在发送前归一为 JSON number/boolean。
+        var numericFields:Array = ["X","Y","OffsetX","OffsetY","Angle","Radius","Length",
+            "HalfWidth","Energy","BaseEnergy","Amplitude","Rate","Phase","SweepAngle","Priority"];
+        for (var i:Number = 0; i < merged.length; i++) {
+            var def:Object = merged[i];
+            for (var f:String in numericFields) {
+                var name:String = numericFields[f];
+                if (def[name] != undefined) def[name] = Number(def[name]);
+            }
+            if (def.Enabled != undefined) def.Enabled = flag(def.Enabled, true);
+        }
         definitions = merged; entries = []; sceneKey = key; configured = true; dirty = true; revision++;
         for (var i:Number = 0; i < merged.length; i++) {
             var raw:Object = merged[i];
