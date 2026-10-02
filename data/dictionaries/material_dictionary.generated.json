@@ -1,10 +1,10 @@
 {
   "catalog": {
     "archiveOrderFirst": 0,
-    "archiveOrderLast": 225,
+    "archiveOrderLast": 226,
     "authoredDirectPurposeReferenceCount": 27,
     "directPurposeCount": 2,
-    "entryCount": 226,
+    "entryCount": 227,
     "equipmentTuningDistinctCount": 113,
     "machineDerivedEquipmentTuningCount": 107,
     "path": "data/dictionaries/material_catalog.xml",
@@ -12,7 +12,7 @@
     "typeCounts": {
       "equipment_mod": 107,
       "food": 45,
-      "general": 74
+      "general": 75
     }
   },
   "crafting": {
@@ -47,7 +47,7 @@
   "inputs": [
     {
       "path": "data/dictionaries/material_catalog.xml",
-      "sha256": "ADE2BAAF2D8A38875F6365326B0B8A3FDAB4433A2E4E115F301F851FD36FC257"
+      "sha256": "800EA3EEF69F19DD74E4C926A9510957C1FB0F559D52689A9416714658CCB5FF"
     },
     {
       "path": "data/items/list.xml",
@@ -79,7 +79,7 @@
     },
     {
       "path": "data/items/收集品_材料.xml",
-      "sha256": "1EC3633479C0F2F85A21360328F76FB1BEB2E7AEC1719D3070B7EE3C870FCE9C"
+      "sha256": "14FF9160EC792BC4A36677397E1030F7B38C48EA1562D30E3780D6B6012AAA3B"
     },
     {
       "path": "data/items/收集品_材料_插件.xml",
@@ -267,7 +267,7 @@
     },
     {
       "path": "data/items/武器_长枪_近战.xml",
-      "sha256": "6E4D4A8F80D6153B28C0942FF6C8503CA74518D8EA28AED9C3BD6CD9DD4018C8"
+      "sha256": "440506094D77EAA000DAF48B026E69920986D14EF14AC978D6C47D1D37F05BB3"
     },
     {
       "path": "data/items/武器_长枪_霰弹枪.xml",
@@ -371,7 +371,7 @@
     },
     {
       "path": "data/equipment/equipment_config.xml",
-      "sha256": "EAE1CE5ED628A11BF1E527472B9EC169B0C31314B572AC068D32985F56CC5764"
+      "sha256": "B11686465AD471B62D9C6E3D36D390716F8AFDF3F62B41E7E6117E5382B4471E"
     },
     {
       "path": "scripts/类定义/org/flashNight/arki/item/EquipmentTuningService.as",
@@ -396,5 +396,5 @@
     "sha256": "012D1415B7DA4E78F05E06D5728B1F33EF6E767A627DB35993E91A8EAEC3DDC8"
   },
   "schema": "cf7.material-dictionary-generated.v2",
-  "sourceDigest": "5DA17A156146AD48377D4FB9BB451B737ADF3B1C3C69E1ACC44AD7DE713BE5A4"
+  "sourceDigest": "B09BF3FD3AE37D46AC99385E23649E2268A8E7293FB32757455A18726DE048A7"
 }

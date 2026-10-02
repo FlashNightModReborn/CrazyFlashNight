@@ -468,6 +468,32 @@ if ($VerifySwf) {
     }
 }
 
+# 30秒的触发任务只负责向已运行CS6递交JSFL，不能承接冷启动编辑器的生命周期。
+# 否则大型目标尚未压缩完SWF，Task Scheduler便会终止CS6；外层timeout无法延长它。
+if ($taskMode.IsNative -and -not (Get-Process -Name Flash -ErrorAction SilentlyContinue)) {
+    try {
+        $editorTask = Get-ScheduledTask -TaskName 'FlashCS6Task' -ErrorAction Stop
+        if ($editorTask.Actions.Count -ne 1 -or
+            $editorTask.Actions[0].Execute -ine $taskMode.Execute -or
+            -not [string]::IsNullOrWhiteSpace($editorTask.Actions[0].Arguments) -or
+            $editorTask.Principal.RunLevel -ne 'Highest' -or
+            $editorTask.Settings.ExecutionTimeLimit -ne 'PT0S') {
+            throw 'FlashCS6Task must launch the same CS6 executable without arguments or a time limit.'
+        }
+        Write-Host '[INFO] 冷启动CS6：复用已登记的不限时FlashCS6Task；编译触发任务不承接编辑器生命周期。'
+        Start-ScheduledTask -TaskName 'FlashCS6Task' -ErrorAction Stop
+        $editorDeadline = [DateTime]::UtcNow.AddSeconds(15)
+        do {
+            Start-Sleep -Milliseconds 250
+            $editorProcess = Get-Process -Name Flash -ErrorAction SilentlyContinue
+        } while (-not $editorProcess -and [DateTime]::UtcNow -lt $editorDeadline)
+        if (-not $editorProcess) { throw 'CS6 did not start within 15 seconds.' }
+    } catch {
+        Write-Host ('[ERROR] 无法安全冷启动CS6，尚未触发编译：{0}' -f $_.Exception.Message)
+        exit 1
+    }
+}
+
 Write-Host ('[INFO] 触发编译... (超时 {0}s)' -f $TimeoutSeconds)
 $compileStartedUtc = [System.DateTime]::UtcNow
 if ($targetUri) {

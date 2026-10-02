@@ -690,7 +690,8 @@ class org.flashNight.arki.unit.UnitComponent.Initializer.DressupInitializer {
     }
 
 
-    public static function updateActions(target:MovieClip):Void{
+    /** 运行态借用槽装载完成后，再判断当前模式是否仍有可用装备。 */
+    public static function validateAttackMode(target:MovieClip):Void{
         // 判断卸下装备后的转回空手
         var 旧攻击模式 = target.攻击模式;
         if (旧攻击模式 != "空手" && target.状态.indexOf(旧攻击模式) != -1) {
@@ -709,9 +710,14 @@ class org.flashNight.arki.unit.UnitComponent.Initializer.DressupInitializer {
             if (是否卸下装备) {
                 target.状态 = "空手站立";
                 target.攻击模式 = "空手";
+                target.根据模式重新读取武器加成("空手");
             }
         }
 
+    }
+
+    public static function updateActions(target:MovieClip, deferModeValidation:Boolean):Void{
+        if (!deferModeValidation) validateAttackMode(target);
         // 更新装备动作类型
         target.空手动作类型 = target.手部装备数据.actiontype;
         target.兵器动作类型 = target.刀数据.actiontype;
@@ -827,7 +833,7 @@ class org.flashNight.arki.unit.UnitComponent.Initializer.DressupInitializer {
         updateWeightAndSpeed(target);
 
         // 更新人物动作
-        updateActions(target);
+        updateActions(target, true);
 
         // 装载武器战技
         updateWeqaponSkills(target);
@@ -835,6 +841,8 @@ class org.flashNight.arki.unit.UnitComponent.Initializer.DressupInitializer {
         // 装载生命周期函数
         updateLifeCycles(target);
 
+        // 空刀槽可能在生命周期中由复合长枪合法借用；不能在那之前误判卸装。
+        validateAttackMode(target);
         if(target._name === _root.控制目标) _root.玩家信息界面.刷新攻击模式(target.攻击模式);
         RuntimeEquipmentProjection.completeCanonical(target);
     }

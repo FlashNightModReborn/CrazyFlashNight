@@ -767,6 +767,31 @@ def load_items(project_root: Path, genders: tuple[str, ...]) -> tuple[dict[str, 
             # 避免 manifest 为 60+ 件装备携带冗余显式 false。
             if child_text(item, "hairAbove").lower() == "true":
                 items[name]["hairAbove"] = True
+            # Tier data can replace the whole skin or individual blade parts.
+            # Collect the effective visual closure as well as the base item;
+            # runtime selection remains an AS2 instance projection.
+            appearance_variants = {}
+            for tier in item:
+                if not tier.tag.startswith("data_") or not any(
+                    tier.find(field) is not None for field in ("dressup", *WEAPON_DRESSUP_FIELDS)
+                ):
+                    continue
+                effective = {
+                    field: child_text(tier, field) if tier.find(field) is not None else child_text(data, field)
+                    for field in ("dressup", *WEAPON_DRESSUP_FIELDS)
+                }
+                variant_fields = derive_item_fields(use, effective["dressup"], genders)
+                if use == "刀":
+                    for index, field in enumerate(WEAPON_DRESSUP_FIELDS, 1):
+                        if effective[field]:
+                            for gender in genders:
+                                variant_fields.setdefault(gender, {})[f"刀{index}_装扮"] = effective[field]
+                for fields in variant_fields.values():
+                    for key in fields.values():
+                        add_skin(skin_keys, key, use, name, path.name)
+                appearance_variants[tier.tag] = {"fieldsByGender": variant_fields}
+            if appearance_variants:
+                items[name]["appearanceVariants"] = appearance_variants
     for name, virtual_item in ARENA_LEGACY_VIRTUAL_ITEMS.items():
         if name in items:
             raise ValueError(f"Arena legacy virtual item collides with canonical item: {name}")

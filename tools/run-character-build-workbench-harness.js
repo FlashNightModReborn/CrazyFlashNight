@@ -2,6 +2,7 @@
 'use strict';
 
 const fs = require('fs');
+const crypto = require('crypto');
 const http = require('http');
 const path = require('path');
 const url = require('url');
@@ -26,6 +27,33 @@ function writeShots(shots, viewport) {
         written++;
     });
     return written;
+}
+
+// The Host font surface now resolves the project catalog, not the retired
+// LOCALAPPDATA flat cache. Exercise actual pinned bytes and an ordinary 404
+// fallback for optional fonts that are not installed; never download in QA.
+async function routeCatalogFonts(page) {
+    const catalog = require('../launcher/web/generated/font-catalog.js').catalog;
+    page.__optionalFontFallbacks = new Set();
+    await page.route('https://cfn-fonts.local/**', async route => {
+        const file = path.basename(new URL(route.request().url()).pathname);
+        const asset = Object.values(catalog.assets).find(entry => entry.file === file);
+        const headers = {'access-control-allow-origin':'*'};
+        if (asset) {
+            for (const source of ['temporary/cache', 'permanent/runtime']) {
+                const candidate = path.join(ROOT, 'fonts', source, file);
+                if (!fs.existsSync(candidate)) continue;
+                const bytes = fs.readFileSync(candidate);
+                if (bytes.length !== asset.bytes
+                        || crypto.createHash('sha256').update(bytes).digest('hex') !== asset.sha256) continue;
+                return route.fulfill({status:200, body:bytes, contentType:'font/' + asset.format, headers});
+            }
+        }
+        if (asset && asset.residency === 'on-demand') {
+            page.__optionalFontFallbacks.add(route.request().url());
+        }
+        return route.fulfill({status:404, body:'', headers});
+    });
 }
 
 function edgeExecutable() {
@@ -370,17 +398,14 @@ async function runStorageToBuildVisibilityProbe(browser, server, shotDirectory) 
     const pageErrors = [];
     const failedRequests = [];
     page.on('pageerror', error => pageErrors.push(error.message));
-    page.on('requestfailed', request => failedRequests.push(request.url()));
-    await page.route('https://cfn-fonts.local/**', async route => {
-        const fontName = path.basename(new URL(route.request().url()).pathname);
-        const fontPath = path.join(process.env.LOCALAPPDATA || '',
-            'CF7FlashNight', 'fonts', fontName);
-        if (!fs.existsSync(fontPath)) return route.abort('failed');
-        return route.fulfill({
-            path:fontPath,
-            headers:{'access-control-allow-origin':'*'}
-        });
+    page.on('requestfailed', request => {
+        // Canonical on-demand font absence is a real tested fallback. Unknown
+        // requests and missing permanent fonts remain diagnostics failures.
+        if (!page.__optionalFontFallbacks || !page.__optionalFontFallbacks.has(request.url())) {
+            failedRequests.push(request.url());
+        }
     });
+    await routeCatalogFonts(page);
     try {
         await page.goto('http://127.0.0.1:' + server.address().port + '/' + HARNESS
             + '?stats-probe=1',
@@ -620,17 +645,14 @@ async function runPreparationMenuViewportMatrix(browser, server, viewports) {
         const pageErrors = [];
         const failedRequests = [];
         page.on('pageerror', error => pageErrors.push(error.message));
-        page.on('requestfailed', request => failedRequests.push(request.url()));
-        await page.route('https://cfn-fonts.local/**', async route => {
-            const fontName = path.basename(new URL(route.request().url()).pathname);
-            const fontPath = path.join(process.env.LOCALAPPDATA || '',
-                'CF7FlashNight', 'fonts', fontName);
-            if (!fs.existsSync(fontPath)) return route.abort('failed');
-            return route.fulfill({
-                path:fontPath,
-                headers:{'access-control-allow-origin':'*'}
-            });
-        });
+        page.on('requestfailed', request => {
+        // Canonical on-demand font absence is a real tested fallback. Unknown
+        // requests and missing permanent fonts remain diagnostics failures.
+        if (!page.__optionalFontFallbacks || !page.__optionalFontFallbacks.has(request.url())) {
+            failedRequests.push(request.url());
+        }
+    });
+        await routeCatalogFonts(page);
         try {
             await page.goto('http://127.0.0.1:' + server.address().port + '/'
                 + HARNESS + '?stats-probe=1', {waitUntil:'load'});
@@ -765,17 +787,14 @@ async function runPreparationMenuViewportMatrix(browser, server, viewports) {
             const pageErrors = [];
             const failedRequests = [];
             page.on('pageerror', error => pageErrors.push(error.message));
-            page.on('requestfailed', request => failedRequests.push(request.url()));
-            await page.route('https://cfn-fonts.local/**', async route => {
-                const fontName = path.basename(new URL(route.request().url()).pathname);
-                const fontPath = path.join(process.env.LOCALAPPDATA || '',
-                    'CF7FlashNight', 'fonts', fontName);
-                if (!fs.existsSync(fontPath)) return route.abort('failed');
-                return route.fulfill({
-                    path:fontPath,
-                    headers:{'access-control-allow-origin':'*'}
-                });
-            });
+            page.on('requestfailed', request => {
+        // Canonical on-demand font absence is a real tested fallback. Unknown
+        // requests and missing permanent fonts remain diagnostics failures.
+        if (!page.__optionalFontFallbacks || !page.__optionalFontFallbacks.has(request.url())) {
+            failedRequests.push(request.url());
+        }
+    });
+            await routeCatalogFonts(page);
             await page.goto('http://127.0.0.1:' + server.address().port + '/' + HARNESS
                 + '?stats-probe=1',
                 {waitUntil:'load'});
@@ -843,7 +862,8 @@ async function runPreparationMenuViewportMatrix(browser, server, viewports) {
             await page.keyboard.press('End');
             await page.waitForFunction(() => {
                 const scroll = document.querySelector('[data-scroll-region="stats"]');
-                return scroll.scrollTop >= scroll.scrollHeight - scroll.clientHeight - 1;
+                return scroll.scrollTop >= scroll.scrollHeight - scroll.clientHeight - 1
+                    && scroll.getAttribute('data-scroll-position') === 'end';
             });
             Object.assign(inputProbe, await page.evaluate(() => {
                 const scroll = document.querySelector('[data-scroll-region="stats"]');
@@ -939,7 +959,9 @@ async function runPreparationMenuViewportMatrix(browser, server, viewports) {
                 }
             });
             if (report.renderer.expectedAssetFailures !== 2
-                    || report.shotNames.length !== 34
+                    || report.shotNames.length !== 36
+                    || !report.shotNames.includes('production-m7-tier-male')
+                    || !report.shotNames.includes('production-m7-tier-female')
                     || report.visual.poseMatrix.length !== 35
                     || !report.visual.stats || !report.visual.stats.input
                     || report.visual.stats.input.wheelDelta <= 1

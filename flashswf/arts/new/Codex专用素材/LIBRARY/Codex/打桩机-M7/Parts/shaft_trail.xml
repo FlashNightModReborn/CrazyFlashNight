@@ -1,0 +1,45 @@
+<?xml version='1.0' encoding='utf-8'?>
+<DOMSymbolItem xmlns="http://ns.adobe.com/xfl/2008/" name="Codex/打桩机-M7/Parts/shaft_trail" itemID="d30eef14-9035df85">
+  <timeline>
+    <DOMTimeline name="shaft_trail">
+      <layers>
+        <DOMLayer name="完整矢量母件" color="#6D9981" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMGroup>
+                  <members>
+                    <DOMShape>
+                      <fills>
+                        <FillStyle index="1">
+                          <SolidColor color="#E0C579" />
+                        </FillStyle>
+                      </fills>
+                      <edges>
+                        <Edge fillStyle0="1" edges="!0 0|-500 -160!-500 -160|-1860 -80!-1860 -80|-2540 -200!-2540 -200|-3760 -40!-3760 -40|-1740 100!-1740 100|-480 160!-480 160|0 0" />
+                      </edges>
+                    </DOMShape>
+                  </members>
+                </DOMGroup>
+                <DOMGroup>
+                  <members>
+                    <DOMShape>
+                      <fills>
+                        <FillStyle index="1">
+                          <SolidColor color="#FFEEC2" />
+                        </FillStyle>
+                      </fills>
+                      <edges>
+                        <Edge fillStyle0="1" edges="!-80 0|-1260 -40!-1260 -40|-3540 0!-3540 0|-1320 60!-1320 60|-80 0" />
+                      </edges>
+                    </DOMShape>
+                  </members>
+                </DOMGroup>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

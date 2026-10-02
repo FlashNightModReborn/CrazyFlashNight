@@ -158,7 +158,82 @@
     <Include href="Codex/Ti61-血剑/图标-Codex-血色光剑天秤.xml"/>
     <Include href="Codex/Ti61-血剑/图标遮罩.xml"/>
     <Include href="Codex/Ti61-血剑/接口/判定使用.xml"/>
-  </symbols>
+            <Include href="Codex/打桩机-M7/Icon.xml" itemID="947ed196-cd458445" loadImmediate="false"/>
+          <Include href="Codex/打桩机-M7/Clips/idle.xml" itemID="9ece0764-c85cde22" loadImmediate="false"/>
+          <Include href="Codex/打桩机-M7/Parts/fixed_frame_back.xml" itemID="5b667425-46ece79a" loadImmediate="false"/>
+          <Include href="Codex/打桩机-M7/Parts/fixed_lower_housing.xml" itemID="5bf25aaf-f76c4717" loadImmediate="false"/>
+          <Include href="Codex/打桩机-M7/Parts/fixed_buffer_rail.xml" itemID="5124e718-900acb54" loadImmediate="false"/>
+          <Include href="Codex/打桩机-M7/Parts/main_shaft.xml" itemID="abef3d80-f1631e3f" loadImmediate="false"/>
+          <Include href="Codex/打桩机-M7/Source/杆体.xml" itemID="726702a2-b9e700ce" loadImmediate="false"/>
+          <Include href="Codex/打桩机-M7/Parts/shaft_lock_recesses.xml" itemID="0f5e9cc0-9d8ac1f9" loadImmediate="false"/>
+          <Include href="Codex/打桩机-M7/Parts/inner_core.xml" itemID="48590d88-97f67ca8" loadImmediate="false"/>
+          <Include href="Codex/打桩机-M7/Parts/rear_damper_rod.xml" itemID="8c5cffa1-cca48659" loadImmediate="false"/>
+          <Include href="Codex/打桩机-M7/Parts/rear_damper_body.xml" itemID="c3600e5d-98ef1b90" loadImmediate="false"/>
+          <Include href="Codex/打桩机-M7/Parts/moving_buffer_seat.xml" itemID="95d88383-c647fd0f" loadImmediate="false"/>
+          <Include href="Codex/打桩机-M7/Parts/rear_damper_eye.xml" itemID="03b7db19-e99ff0c4" loadImmediate="false"/>
+          <Include href="Codex/打桩机-M7/Parts/fixed_grip_bridge.xml" itemID="1b5635b3-f63f5e16" loadImmediate="false"/>
+          <Include href="Codex/打桩机-M7/Parts/power_magazine.xml" itemID="a8f64959-444e36db" loadImmediate="false"/>
+          <Include href="Codex/打桩机-M7/Parts/ammo_live.xml" itemID="7502ff95-5159f502" loadImmediate="false"/>
+          <Include href="Codex/打桩机-M7/Parts/burst_selector.xml" itemID="0d95b325-525f9398" loadImmediate="false"/>
+          <Include href="Codex/打桩机-M7/Parts/control_sleeve.xml" itemID="9a3f9bfa-77ec140c" loadImmediate="false"/>
+          <Include href="Codex/打桩机-M7/Parts/cam_keeper.xml" itemID="dda5b768-0f14de57" loadImmediate="false"/>
+          <Include href="Codex/打桩机-M7/Parts/pressure_cam.xml" itemID="4063b192-2db60a65" loadImmediate="false"/>
+          <Include href="Codex/打桩机-M7/Parts/cam_roller.xml" itemID="8f4123d7-ce6e27a2" loadImmediate="false"/>
+          <Include href="Codex/打桩机-M7/Parts/cam_mounts.xml" itemID="607c5e77-afcf1322" loadImmediate="false"/>
+          <Include href="Codex/打桩机-M7/Parts/gauge_mount.xml" itemID="1c3b2bb2-561d76b1" loadImmediate="false"/>
+          <Include href="Codex/打桩机-M7/Parts/gauge.xml" itemID="1cab2f3c-b2bbf820" loadImmediate="false"/>
+          <Include href="Codex/打桩机-M7/Source/压力表.xml" itemID="19effab7-c75712ca" loadImmediate="false"/>
+          <Include href="Codex/打桩机-M7/Parts/ready_flag.xml" itemID="f912775d-d987d946" loadImmediate="false"/>
+          <Include href="Codex/打桩机-M7/Parts/fixed_front_bearing.xml" itemID="a70aee06-21676bfc" loadImmediate="false"/>
+          <Include href="Codex/打桩机-M7/Parts/fixed_exhaust_collar.xml" itemID="9bab39cb-9358e5fa" loadImmediate="false"/>
+          <Include href="Codex/打桩机-M7/Parts/rod_window_well.xml" itemID="9e73e4d8-5ac6b038" loadImmediate="false"/>
+          <Include href="Codex/打桩机-M7/Parts/body_rod_lock.xml" itemID="f52b2edc-14840b63" loadImmediate="false"/>
+          <Include href="Codex/打桩机-M7/Parts/body_rod_key.xml" itemID="0b4cd373-d8dff66b" loadImmediate="false"/>
+          <Include href="Codex/打桩机-M7/Parts/firing_catch.xml" itemID="bb856f6f-3e57e44d" loadImmediate="false"/>
+          <Include href="Codex/打桩机-M7/Parts/body_rod_housing.xml" itemID="efb222dc-27f17467" loadImmediate="false"/>
+          <Include href="Codex/打桩机-M7/Parts/firing_catch_housing.xml" itemID="3d967976-81087a9a" loadImmediate="false"/>
+          <Include href="Codex/打桩机-M7/Parts/exhaust_elbow.xml" itemID="1938a251-c8b86fba" loadImmediate="false"/>
+          <Include href="Codex/打桩机-M7/Parts/exhaust_flap.xml" itemID="fe9b2cac-3c7482bc" loadImmediate="false"/>
+          <Include href="Codex/打桩机-M7/Parts/hammer_brace_roots.xml" itemID="329358d8-e2bc8b1e" loadImmediate="false"/>
+          <Include href="Codex/打桩机-M7/Parts/hammer_buffer_cradle.xml" itemID="a68aca46-d4e91d7a" loadImmediate="false"/>
+          <Include href="Codex/打桩机-M7/Parts/hammer_buffer_clamp.xml" itemID="85bb947a-2b5c1253" loadImmediate="false"/>
+          <Include href="Codex/打桩机-M7/Parts/fixed_frame_front.xml" itemID="dff696a3-72c1ddc4" loadImmediate="false"/>
+          <Include href="Codex/打桩机-M7/Parts/guide_supports.xml" itemID="793ccda0-3e4515dc" loadImmediate="false"/>
+          <Include href="Codex/打桩机-M7/Parts/shield_carriage.xml" itemID="ebd9e524-a74e32bb" loadImmediate="false"/>
+          <Include href="Codex/打桩机-M7/Parts/hammer_head_tongues.xml" itemID="43268677-0dbe408b" loadImmediate="false"/>
+          <Include href="Codex/打桩机-M7/Parts/hammer_head_carrier.xml" itemID="2a465344-22d0654f" loadImmediate="false"/>
+          <Include href="Codex/打桩机-M7/Parts/hammer_face_upper.xml" itemID="5ffd64a3-0c24243e" loadImmediate="false"/>
+          <Include href="Codex/打桩机-M7/Parts/hammer_face_lower.xml" itemID="290d2767-878c1395" loadImmediate="false"/>
+          <Include href="Codex/打桩机-M7/Parts/hammer_upper_cap.xml" itemID="4e518936-894a0888" loadImmediate="false"/>
+          <Include href="Codex/打桩机-M7/Parts/hammer_face_actuator_rod.xml" itemID="b2babcbe-2c6cf542" loadImmediate="false"/>
+          <Include href="Codex/打桩机-M7/Parts/hammer_face_actuator_body.xml" itemID="98fb839b-60cb98b3" loadImmediate="false"/>
+          <Include href="Codex/打桩机-M7/Parts/shield_lock.xml" itemID="b08e330a-230005db" loadImmediate="false"/>
+          <Include href="Codex/打桩机-M7/Parts/head_pin_guide.xml" itemID="4ebfd6fe-e7768d94" loadImmediate="false"/>
+          <Include href="Codex/打桩机-M7/Parts/hammer_lower_cap.xml" itemID="89f5fa5b-b49f5e77" loadImmediate="false"/>
+          <Include href="Codex/打桩机-M7/Parts/shield_hardware.xml" itemID="1addfd42-41abc3c1" loadImmediate="false"/>
+          <Include href="Codex/打桩机-M7/Parts/actuator_rod.xml" itemID="2e3dc5e7-42b40397" loadImmediate="false"/>
+          <Include href="Codex/打桩机-M7/Parts/actuator_body.xml" itemID="3533c98b-645422f4" loadImmediate="false"/>
+          <Include href="Codex/打桩机-M7/Parts/fixed_shield_tracks.xml" itemID="4557f399-2abe1512" loadImmediate="false"/>
+          <Include href="Codex/打桩机-M7/Parts/hammer_brace_receivers.xml" itemID="81ef1a17-d3fc543e" loadImmediate="false"/>
+          <Include href="Codex/打桩机-M7/Parts/hammer_stow_seats.xml" itemID="51cbea88-76fe6da9" loadImmediate="false"/>
+          <Include href="Codex/打桩机-M7/Parts/hammer_brace.xml" itemID="4efe4ccc-e9fe2f30" loadImmediate="false"/>
+          <Include href="Codex/打桩机-M7/Parts/brace_position_gate.xml" itemID="c0423147-6a4f8e5d" loadImmediate="false"/>
+          <Include href="Codex/打桩机-M7/Parts/brace_position_hinge.xml" itemID="1b203b9f-af19c848" loadImmediate="false"/>
+          <Include href="Codex/打桩机-M7/NamedRig.xml" itemID="4f4c4509-17fd562b" loadImmediate="false"/>
+          <Include href="Codex/打桩机-M7/RigSupport/AmmoSlot.xml" itemID="1bfce67c-e1726d81" loadImmediate="false"/>
+          <Include href="Codex/打桩机-M7/Parts/ammo_spent.xml" itemID="163007e9-7b8e1832" loadImmediate="false"/>
+          <Include href="Codex/打桩机-M7/Parts/magazine_pulse.xml" itemID="29d254a9-6a8e3f72" loadImmediate="false"/>
+          <Include href="Codex/打桩机-M7/Parts/shaft_trail.xml" itemID="d30eef14-9035df85" loadImmediate="false"/>
+          <Include href="Codex/打桩机-M7/Parts/strike_flash.xml" itemID="f3fd68d5-3dd3bbf6" loadImmediate="false"/>
+          <Include href="Codex/打桩机-M7/Parts/vent_jet.xml" itemID="2527cfc7-4fef4a1b" loadImmediate="false"/>
+          <Include href="Codex/打桩机-M7/Parts/vent_smoke.xml" itemID="3de048ba-10f19ceb" loadImmediate="false"/>
+          <Include href="Codex/打桩机-M7/Parts/shock_star.xml" itemID="74e4a653-f34bf5ed" loadImmediate="false"/>
+          <Include href="Codex/打桩机-M7/Parts/shock_ring.xml" itemID="135be9d9-e0152d45" loadImmediate="false"/>
+          <Include href="Codex/打桩机-M7/Parts/impact_sparks.xml" itemID="952af9c1-47fa3dc3" loadImmediate="false"/>
+          <Include href="Codex/打桩机-M7/Anchors/Point.xml" itemID="8c75628e-6fb98e38" loadImmediate="false"/>
+          <Include href="Codex/打桩机-M7/Weapon.xml" itemID="bbc205d4-3082149b" loadImmediate="false"/>
+               <Include href="Codex/打桩机-M7/BladeHitMarker.xml" itemID="7a8d5624-10ec8ea0" loadImmediate="false"/>
+     </symbols>
      <timelines>
           <DOMTimeline name="Codex素材总览">
                <layers>

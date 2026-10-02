@@ -351,6 +351,7 @@ button[aria-pressed="true"] {
         return DressupDollRenderer.buildStateFromEquipment(manifest, {
             gender: gender,
             equipment: equipment,
+            equipmentAppearance: scenario.equipmentAppearance || {},
             appearance: fixture.appearanceByGender[gender],
             fitFields: BODY_FIT_FIELDS,
             drawFields: CHARACTER_DRAW_FIELDS,

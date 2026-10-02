@@ -34,6 +34,8 @@
 
 `rewardReady` 只表示已遮盖且可申请原权威会话，不能替代场景就绪；`prepared/reportReady` 仍须真实目标捕获。绑定后的结算会话允许目标场景编号更新，不能因此清掉 exact 渲染回执。AS2 核 ready 世界和同一业务身份，结束原过场时间轴后，Host 才取得普通面板暂停；页面只更新就绪能力，没有重新开窗、截图背景、恢复四项状态或第二次 snapshot。外层 PanelScale 唯一缩放。提前关闭必须先由原 exact close/revision/lease/terminal 裁决，未就绪继续同一次加载，到达不再重开；未知写不能靠关闭或重试清锁。失败页重试与奖励操作锁分开，重试沿用同一已绑定报告，不重开、不重复暂存。主动切走时等待回到游戏；v1 未并行报告仍等待成功尾帧，自动帮助继续等待报告与遮罩。
 
+**角色构筑实例外观**：Host 仅在 snapshot 命令声明 `appearanceVersion=1`；AS2 在 exact 会话通过后启用 `item.appearance`，已装备、候选及成功变更后的快照共用同一实例来源。字段为 `dressup/dressup1/dressup2/dressup3/helmet/hairAbove`，Host 闭集校验，Web 不参与进阶或装备裁决。未协商的旧 Host 保留原字段形状，关闭/重开清除能力；无外观字段的旧 AS2 渐进回退基础清单。渲染与资源生成细节见[美术装配](art-asset-assembly.md#装备进阶外观投影)，正式部署和入口证据归[runtime发布记录](../docs/runtime-build-reproducibility.md)，不以协议实现代替真实业务复验。
+
 <a id="authority-core"></a>
 ## 权威核心：何时必读本文
 

@@ -64,6 +64,7 @@ var list:Array = XMLParser.configureDataAsArray(parsed.items);
 | `data/units/` | 单位数据 |
 | `data/dialogues/` | 对话脚本 |
 | `data/environment/` | 场景、关卡环境与世界表现预设 |
+| `data/weapon-animations/` | 按装备需求读取的具名姿态JSON；格式、派生和缓存归 [武器动画工具](../tools/weapon-animation/README.md#m7-常驻总装与外置姿态) |
 | `data/config/` | 运行时配置 |
 | `data/map/` | WebView 地图面板配置（`map_panel.xml` 单文件） |
 | `data/intelligence/` | 情报详情 legacy txt 文本；保留为 AS2 旧界面和 H5 迁移来源 |
@@ -415,6 +416,8 @@ producer 对材料 exact-set、重复/未知 identity、未知 type/purpose、�
 最小字段：`name`、`cd`、`power`、`capacity`、`reserveName`、`bullet`、`consumeMode`、`consumeTiming`。常用字段：`sound`、`split`、`diffusion`、`velocity`、`range`、`impact`、`damageType`、`magicType`、`powerMultiplier`、`initialLoaded`、`manualReloadAnimation`、`manualReloadBurden`、`clipCostPerLoad`、`fireCost`、`mp`、`hp`。
 
 当前迁移语义：`consumeMode=onLoadGroup + consumeTiming=onReloadCommit` 表示 1 份 `reserveName` 支持一组 `capacity` 发；首仓由 `initialLoaded` 表达预装；R 联动补装与 F 快装都在换弹提交帧扣组弹药。逐发消耗武器使用 `consumeMode=onFire + consumeTiming=onFire + fireCost`。
+
+重锤打桩机的内置联动模块由其唯一生命周期 `initParam.flamethrower` 声明，根层仍只保留一个锁定战技。控制器依据 Q 的实际机械阶段，在同一个运行态特殊槽中切换副武器补装与过载；这不开放普通配件的双特殊槽。模块复用 `LongGunSubWeaponCore` 的唯一已装弹药与物品镜像，枪锤联动只能经核对宿主/状态身份的 `consumeLoadedAmmo` 消费已付费组弹药，不能复制一份私有油量或绕过逐发库存/MP/HP成本。副射击阶段许可在请求与提交点复核，卸载只清理本人持有的状态和槽位。数值与具体玩法见[打桩机模型](../tools/cf7-balance-tool/models/pilebunker/README.md)。
 
 ### 联弹双层配置与补弹参数（2026-06-12 起）
 

@@ -34,6 +34,8 @@ class org.flashNight.arki.unit.Action.Shoot.LongGunSubWeaponCoreTest {
         trace("--- LongGunSubWeaponCoreTest ---");
 
         testSubweaponNormalization();
+        testPrepaidAmmoConsumption();
+        testEquipmentFireGuard();
         testConfigureUnitAndImpactChainMultiplier();
         testImpactZeroPreservesForcedKnockdown();
         testImpactChainAddsEquipmentGunpowerAfterShotgunMultiplier();
@@ -97,11 +99,53 @@ class org.flashNight.arki.unit.Action.Shoot.LongGunSubWeaponCoreTest {
         testGunslingerLevel10SkipsLinkedReloadWhenSubweaponNotEmpty();
         testReloadKeyStartsSubweaponWhenMainFull();
         testCombinedReloadBurdenAddsSubweaponBurden();
+        testPileBunkerReloadPenaltyAndSkillBypass();
         testNonHeroRollReloadRefillsSubweaponWithoutInventory();
         testHeroRollReloadRefillsSubweaponWhenMainFull();
         testTooltipRendersSubweapon();
 
         trace("--- LongGunSubWeaponCoreTest: " + testsPassed + "/" + testsRun + " passed, " + testsFailed + " failed ---");
+    }
+
+    private static function testPrepaidAmmoConsumption():Void {
+        var unit:Object = makeUnit();
+        var sub:Object = makeSubweapon(false); sub.mp = 0;
+        LongGunSubWeaponCore.configureUnit(unit,{weapontype:"近战",subweapon:sub});
+        var host:Object = unit.长枪;
+        var state:Object = unit.长枪副武器状态;
+        assert(LongGunSubWeaponCore.consumeLoadedAmmo(unit,host,state,3),"prepaid linked effect consumes three loaded units");
+        assert(LongGunSubWeaponCore.getLoadedCount(unit) == 2 && state.loaded == 2
+            && unit.长枪副武器.value.shot == 3 && host.value.subweaponShot == 3,"linked effect synchronizes every ammo projection and durable mirror");
+        assert(!LongGunSubWeaponCore.consumeLoadedAmmo(unit,host,state,3) && state.loaded == 2,"insufficient loaded fuel rejects without partial spend");
+        assert(!LongGunSubWeaponCore.consumeLoadedAmmo(unit,host,state,0)
+            && !LongGunSubWeaponCore.consumeLoadedAmmo(unit,host,state,.5)
+            && !LongGunSubWeaponCore.consumeLoadedAmmo(unit,host,state,Number.NaN),"linked spend rejects zero fractional and NaN requests");
+        assert(!LongGunSubWeaponCore.consumeLoadedAmmo(unit,{},state,1),"foreign host cannot consume current fuel");
+        assert(!LongGunSubWeaponCore.consumeLoadedAmmo(unit,host,{},1),"obsolete state cannot consume replacement fuel");
+        state.groupPaid = false;
+        assert(!LongGunSubWeaponCore.consumeLoadedAmmo(unit,host,state,1),"unpaid preload cannot bypass reserve payment");
+        state.groupPaid = true; unit.长枪副武器配置.mp = 1;
+        assert(!LongGunSubWeaponCore.consumeLoadedAmmo(unit,host,state,1),"neutral fuel API cannot bypass MP cost");
+        unit.长枪副武器配置.mp = 0; unit.长枪副武器配置.consumeMode = "onFire";
+        assert(!LongGunSubWeaponCore.consumeLoadedAmmo(unit,host,state,1),"neutral fuel API cannot bypass per-shot inventory cost");
+        LongGunSubWeaponCore.clearUnit(unit);
+        LongGunSubWeaponCore.configureUnit(unit,{weapontype:"近战",subweapon:sub});
+        assert(LongGunSubWeaponCore.getLoadedCount(unit) == 2,"reconfiguration restores spent fuel rather than issuing another preload");
+        assert(!LongGunSubWeaponCore.consumeLoadedAmmo(unit,host,state,1),"old callback remains rejected after same-host reconfiguration");
+        assert(LongGunSubWeaponCore.consumeLoadedAmmo(unit,host,unit.长枪副武器状态,2)
+            && LongGunSubWeaponCore.getLoadedCount(unit) == 0 && unit.mp == 500,"last loaded units commit once without charging inventory or MP again");
+    }
+
+    private static function testEquipmentFireGuard():Void {
+        var unit:Object = makeUnit();
+        var sub:Object = makeSubweapon(false); sub.mp = 0;
+        LongGunSubWeaponCore.configureUnit(unit,{weapontype:"近战",subweapon:sub});
+        unit.长枪副武器状态.fireGuard = function():Boolean { return false; };
+        assert(!LongGunSubWeaponCore.requestShoot(unit),"equipment phase rejects before subweapon pose scheduling");
+        assert(!LongGunSubWeaponCore.executeShot(unit,null,null) && LongGunSubWeaponCore.getLoadedCount(unit) == 5,
+            "equipment phase is revalidated at actual fire commit without consuming fuel");
+        unit.长枪副武器状态.fireGuard = 5;
+        assert(!LongGunSubWeaponCore.executeShot(unit,null,null),"malformed equipment guard fails closed");
     }
 
     private static function testSubweaponNormalization():Void {
@@ -1780,6 +1824,53 @@ class org.flashNight.arki.unit.Action.Shoot.LongGunSubWeaponCoreTest {
         LongGunSubWeaponCore.setLinkedReloadRequest(unit.man, unit);
         ReloadManager.initReloadBurden(unit.man, 42, 50, 43, 74, [51, 56, 64]);
         assert(unit.man.reloadBurden == 175, "combined reload burden adds subweapon burden");
+    }
+
+    private static function testPileBunkerReloadPenaltyAndSkillBypass():Void {
+        var unit:Object = makeUnit();
+        unit._name = "heroUnit";
+        unit.长枪 = {value:{shot:3,reloadCount:0}};
+        unit.长枪弹匣容量 = 3;
+        unit.长枪属性 = {reloadType:"normal",reloadPenalty:200,clipname:"主武器弹匣"};
+        LongGunSubWeaponCore.configureUnit(unit,{weapontype:"突击步枪",subweapon:makeSubweapon(false)});
+        installMockHero(unit);
+        unit.man = makeReloadClip(unit);
+        ReloadManager.initReloadBurden(unit.man,42,50,43,74,[51,56,64]);
+        assert(unit.man.reloadBurden == 300,"pilebunker +200 percent means triple main reload burden");
+        ReloadManager.finishReload(unit.man); unit.man = makeReloadClip(unit);
+        LongGunSubWeaponCore.setLinkedReloadRequest(unit.man,unit);
+        ReloadManager.initReloadBurden(unit.man,42,50,43,74,[51,56,64]);
+        assert(unit.man.reloadBurden == 325,"pilebunker linked fuel adds 25 after main burden");
+        ReloadManager.finishReload(unit.man); unit.man = makeReloadClip(unit);
+        LongGunSubWeaponCore.setManualReloadRequest(unit.man,unit);
+        ReloadManager.initReloadBurden(unit.man,42,50,43,74,[51,56,64]);
+        assert(unit.man.reloadBurden == 25,"fuel-only refill does not inherit main reload penalty");
+        ReloadManager.finishReload(unit.man); unit.man = makeReloadClip(unit);
+        unit.被动技能.枪械师 = {启用:true,等级:1};
+        ReloadManager.initReloadBurden(unit.man,42,50,43,74,[51,56,64]);
+        assert(unit.man.reloadBurden == 225,"gunslinger level one still proportionally reduces +200 penalty");
+        ReloadManager.finishReload(unit.man); unit.man = makeReloadClip(unit);
+        unit.被动技能.枪械师.等级 = 10;
+        ReloadManager.initReloadBurden(unit.man,42,50,43,74,[51,56,64]);
+        assert(unit.man.reloadBurden == 197,"gunslinger level ten retains production rounding");
+        ReloadManager.finishReload(unit.man); unit.man = makeReloadClip(unit);
+        unit.被动技能.枪械师.等级 = 1;
+        LongGunSubWeaponCore.setLinkedReloadRequest(unit.man,unit);
+        ReloadManager.initReloadBurden(unit.man,42,50,43,74,[51,56,64]);
+        assert(unit.man.reloadBurden == 250,"linked fuel burden is added after gunslinger reduction");
+        ReloadManager.finishReload(unit.man); unit.man = makeReloadClip(unit);
+        // 只使用隔离库存；现役翻滚换弹调用这个技能补弹入口，不进入普通换弹时间轴。
+        installMockInventory("火焰喷射器燃料罐",1,"主武器弹匣",1);
+        markSubweaponEmpty(unit,false);
+        unit.手枪 = {value:{shot:0}}; unit.手枪2 = {value:{shot:0}};
+        SkillReloadCore.reloadAllWeapons(unit);
+        assert(unit.长枪.value.shot == 0,"roll skill refills empty +200 penalty main magazine");
+        assert(ItemUtil.getTotal("主武器弹匣") == 0,"roll skill consumes exactly one main reserve");
+        assert(unit.长枪副武器状态.loaded == unit.长枪副武器状态.capacity
+            && ItemUtil.getTotal("火焰喷射器燃料罐") == 0,"roll skill still links exactly one fuel reserve");
+        assert(unit.man.reloadBurden == undefined && unit.man.playFrame == undefined,
+            "roll skill does not acquire the slower ordinary reload animation");
+        restoreMockInventory(); restoreMockHero();
     }
 
     private static function testNonHeroRollReloadRefillsSubweaponWithoutInventory():Void {

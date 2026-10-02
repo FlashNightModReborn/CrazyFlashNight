@@ -266,14 +266,16 @@ class org.flashNight.arki.hud.PlayerHudService {
     }
     private static function readCombat(unit:Object):Object {
         var mode:String = text(unit.攻击模式);
-        if (mode == "长枪" && LongGunSubWeaponCore.hasSubweapon(unit)) mode = "长枪副武器";
+        var skill:Object = unit.主动战技[unit.攻击模式];
+        // 同一特殊槽按装备阶段切换时，就绪的普通战技仍需显示 F 与冷却。
+        if (mode == "长枪" && LongGunSubWeaponCore.hasSubweapon(unit)
+                && (skill == null || skill.isSubweaponControl === true)) mode = "长枪副武器";
         var valid:Boolean = false;
         for (var i:Number = 0; i < modes.length; i++) if (modes[i] == mode) valid = true;
         if (!valid) return lastCombat != null ? lastCombat : {mode:"", ammo:["", "", "", ""],
             weapon:{visible:false, name:"", mp:0, cooldownMs:0, key:keyLabel("武器技能键")}};
         compat.玩家必要信息界面.mode = mode;
         synchronizeAmmoOwners(unit);
-        var skill:Object = unit.主动战技[unit.攻击模式];
         lastCombat = {mode:mode, ammo:[text(ammo[0]), text(ammo[1]), text(ammo[2]), text(ammo[3])],
             weapon:{visible:skill != null && skill.isSubweaponControl !== true,
             name:weaponName(skill), mp:finiteValue(skill.消耗mp), cooldownMs:finiteValue(skill.冷却时间),

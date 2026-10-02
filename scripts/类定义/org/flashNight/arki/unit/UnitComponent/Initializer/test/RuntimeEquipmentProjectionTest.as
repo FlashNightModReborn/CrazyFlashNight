@@ -16,6 +16,7 @@ class org.flashNight.arki.unit.UnitComponent.Initializer.test.RuntimeEquipmentPr
         testCanonicalAndSemanticDrift();
         testForwardAndReverseAliases();
         testIntentGuardsAndCleanup();
+        testModeValidationAfterAliases();
         trace("RuntimeEquipmentProjectionTest Tests Passed: " + _passed);
         trace("RuntimeEquipmentProjectionTest Tests Failed: " + _failed);
         trace("=== RuntimeEquipmentProjectionTest end ===");
@@ -75,6 +76,36 @@ class org.flashNight.arki.unit.UnitComponent.Initializer.test.RuntimeEquipmentPr
             装备名称:value[sourceSlot].name,
             版本号:value.version
         };
+    }
+
+    private static function testModeValidationAfterAliases():Void {
+        var api = org.flashNight.arki.unit.UnitComponent.Initializer.DressupInitializer;
+        var cases:Array = [{source:"长枪",dest:"刀",mode:"兵器"},{source:"刀",dest:"长枪",mode:"长枪"}];
+        for (var i:Number = 0; i < cases.length; i++) {
+            var spec:Object = cases[i];
+            var value:Object = target(31 + i);
+            value[spec.source] = equipment("复合装备",1,"",[]);
+            value.攻击模式 = spec.mode; value.状态 = spec.mode + "站立";
+            RuntimeEquipmentProjection.beginCanonical(value);
+            api.updateActions(value,true);
+            check(value.攻击模式 == spec.mode,"模式校验推迟到运行态借用槽装载之后");
+            var intent:Object = RuntimeEquipmentProjection.reserveEmptySlotAlias(owner(value,spec.source),spec.dest);
+            RuntimeEquipmentProjection.commitSlotAlias(intent);
+            value.兵器动作类型 = "狂野";
+            api.validateAttackMode(value);
+            check(value.攻击模式 == spec.mode && value.兵器动作类型 == "狂野",
+                "合法正反向借用保留攻击模式且不抹去生命周期动作类型");
+            check(RuntimeEquipmentProjection.completeCanonical(value),"模式保留不改变canonical装备身份");
+            RuntimeEquipmentProjection.releaseAliases(value);
+            api.validateAttackMode(value);
+            check(value.攻击模式 == "空手" && value.状态 == "空手站立","实际失去装备后仍回退空手");
+        }
+        var real:Object = target(41); real.刀 = equipment("真实刀",1,"",[]);
+        real.攻击模式 = "兵器"; real.状态 = "兵器站立";
+        api.updateActions(real);
+        check(real.攻击模式 == "兵器","有真实刀时直接校验仍保持兵器模式");
+        real.刀 = null; api.updateActions(real);
+        check(real.攻击模式 == "空手","未请求延期的原入口仍即时处理卸装");
     }
 
     private static function testCanonicalAndSemanticDrift():Void {

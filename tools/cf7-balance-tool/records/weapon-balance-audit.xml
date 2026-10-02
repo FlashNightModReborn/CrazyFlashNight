@@ -797,7 +797,7 @@
       <status>unresolved</status>
       <displayEligible>false</displayEligible>
       <inputDigest>fnv1a32:43c7cfc8</inputDigest>
-      <sourceDigest>sha256:2b1f65b35b0d76d3ee167b85fa8c3d547410441471f51373d5f7fcdc1503b8ba</sourceDigest>
+      <sourceDigest>sha256:b00ac0f16ee5e7ce72be28a6d2ac550b8a7130f152bb05368aab265398f23e02</sourceDigest>
       <budgetBreakdown>
         <entry>
           <code>acquisition.kshop</code>
@@ -2284,7 +2284,7 @@
       <status>confirmed</status>
       <displayEligible>true</displayEligible>
       <inputDigest>fnv1a32:7fe6e998</inputDigest>
-      <sourceDigest>sha256:29166b59f56f6810ca1f0d8f546e0fe4e5538d965a5ccf97ae69e2d5e7a2369a</sourceDigest>
+      <sourceDigest>sha256:66ef136dffa783cbfbdba64254e557e5959d558a22d23d6d42535fe7683778c6</sourceDigest>
       <budgetBreakdown>
         <entry>
           <code>acquisition.gold-standard</code>
@@ -3488,7 +3488,7 @@
       <status>confirmed</status>
       <displayEligible>true</displayEligible>
       <inputDigest>fnv1a32:d418f929</inputDigest>
-      <sourceDigest>sha256:cc9fc1f80d41edf5fbf18aed935a482aad1997cfd568b43e4d6de19f88b44889</sourceDigest>
+      <sourceDigest>sha256:a05e9fa27d31e4a2de1ab964c11de70863813fd9099ad65733e6ea3565d41688</sourceDigest>
       <budgetBreakdown>
         <entry>
           <code>acquisition.high-price</code>
@@ -3630,7 +3630,7 @@
       <status>unresolved</status>
       <displayEligible>false</displayEligible>
       <inputDigest>fnv1a32:a5ad7202</inputDigest>
-      <sourceDigest>sha256:d795daf59972d77647830a235f69da9ae6081bceb18ab8ad15054a30f94f6be1</sourceDigest>
+      <sourceDigest>sha256:d7d70c0bc4caf07ae4cae0a5ec0789628e34a652e0e45b0f1cd1ae4c40872a2c</sourceDigest>
       <budgetBreakdown>
         <entry>
           <code>acquisition.crafting</code>
@@ -3754,7 +3754,7 @@
       <status>confirmed</status>
       <displayEligible>true</displayEligible>
       <inputDigest>fnv1a32:432fe878</inputDigest>
-      <sourceDigest>sha256:d1e6d457ad8e59c199f433b531b3491c946b83de88e6e9b9c7fec1fb941ff587</sourceDigest>
+      <sourceDigest>sha256:009dc36e048519c54f4ec990e5b7bb304e4339febcea1d0a9b4901ecabf50440</sourceDigest>
       <budgetBreakdown>
         <entry>
           <code>acquisition.crafting</code>
@@ -3850,6 +3850,142 @@
           <evidenceRef>docs/P90印花集与钛合金61式共用激光装配-2026-09-07.md#印花集合成一层</evidenceRef>
         </ref>
       </ruleRefs>
+    </record>
+    <record>
+      <auditRef>weapon:火药燃气液压打桩机:data</auditRef>
+      <itemName>火药燃气液压打桩机</itemName>
+      <profileKey>data</profileKey>
+      <dualWield>1</dualWield>
+      <pierce>1</pierce>
+      <damageType>1</damageType>
+      <shotgun>3</shotgun>
+      <magPrice>2500</magPrice>
+      <weightLayers>0</weightLayers>
+      <category>1</category>
+      <formula>1</formula>
+      <status>unresolved</status>
+      <displayEligible>false</displayEligible>
+      <inputDigest>fnv1a32:e6897d26</inputDigest>
+      <sourceDigest>sha256:20e5591dbb0e792ca6022c9d92b638393f2487119498a31f05210aa663902029</sourceDigest>
+      <budgetBreakdown>
+        <entry>
+          <code>acquisition.unverified</code>
+          <delta>0</delta>
+          <ruleRef>WBR-WL-006</ruleRef>
+          <evidenceRef>tools/cf7-balance-tool/models/pilebunker/README.md#分层拟合</evidenceRef>
+        </entry>
+      </budgetBreakdown>
+      <ruleRefs>
+        <ref>
+          <id>WBR-DUAL-001</id>
+          <target>input.dualWield</target>
+          <evidenceRef>data/items/武器_长枪_近战.xml#item=火药燃气液压打桩机/use=长枪</evidenceRef>
+        </ref>
+        <ref>
+          <id>WBR-PIERCE-001</id>
+          <target>input.pierce</target>
+          <evidenceRef>scripts/类定义/org/flashNight/arki/bullet/BulletComponent/Type/BulletTypesetter.as#近战联弹无穿刺标记</evidenceRef>
+        </ref>
+        <ref>
+          <id>WBR-DMG-001</id>
+          <target>input.damageType</target>
+          <evidenceRef>data/items/武器_长枪_近战.xml#data/physical-default</evidenceRef>
+        </ref>
+        <ref>
+          <id>WBR-SHOT-002</id>
+          <target>input.shotgun</target>
+          <evidenceRef>data/items/武器_长枪_近战.xml#data/split=3;horizontal-chain</evidenceRef>
+        </ref>
+        <ref>
+          <id>WBR-AMMO-001</id>
+          <target>input.magPrice</target>
+          <evidenceRef>data/items/消耗品_弹夹.xml#item=榴弹弹药/price=2500</evidenceRef>
+        </ref>
+        <ref>
+          <id>WBR-WL-006</id>
+          <target>input.weightLayers</target>
+          <evidenceRef>tools/cf7-balance-tool/models/pilebunker/README.md#分层拟合</evidenceRef>
+        </ref>
+        <ref>
+          <id>WBR-CAT-001</id>
+          <target>input.category</target>
+          <evidenceRef>data/items/武器_长枪_近战.xml#近战</evidenceRef>
+        </ref>
+        <ref>
+          <id>WBR-AUTH-001</id>
+          <target>input.formula</target>
+          <evidenceRef>0.说明文件与教程/武器-技能数值-价格-合成表填写的参考公式（修改后请勿上传git）.xlsx#枪械!Q1</evidenceRef>
+        </ref>
+      </ruleRefs>
+      <note>维护者裁定总3层（隐藏1＋金币高价2）。枪械面板固定0层、使用榴弹弹药；额外层按刀页与0层的锋利度差全部转让防御/生命，详见models/pilebunker。impact=1及accuracy/evasion/toughness=300为刻意定位；近战接触和实际强度尚未实战标定。</note>
+    </record>
+    <record>
+      <auditRef>weapon:火药燃气液压打桩机:data_pilebunker_m7</auditRef>
+      <itemName>火药燃气液压打桩机</itemName>
+      <profileKey>data_pilebunker_m7</profileKey>
+      <dualWield>1</dualWield>
+      <pierce>1</pierce>
+      <damageType>1</damageType>
+      <shotgun>3</shotgun>
+      <magPrice>2500</magPrice>
+      <weightLayers>0</weightLayers>
+      <category>1</category>
+      <formula>1</formula>
+      <status>unresolved</status>
+      <displayEligible>false</displayEligible>
+      <inputDigest>fnv1a32:bf0ed3f3</inputDigest>
+      <sourceDigest>sha256:ac23407f3d69e48d1cccb1e3efde4950a72da6c5c495a5ab4578952fc2f279fe</sourceDigest>
+      <budgetBreakdown>
+        <entry>
+          <code>acquisition.unverified</code>
+          <delta>0</delta>
+          <ruleRef>WBR-WL-006</ruleRef>
+          <evidenceRef>tools/cf7-balance-tool/models/pilebunker/README.md#分层拟合</evidenceRef>
+        </entry>
+      </budgetBreakdown>
+      <ruleRefs>
+        <ref>
+          <id>WBR-DUAL-001</id>
+          <target>input.dualWield</target>
+          <evidenceRef>data/items/武器_长枪_近战.xml#item=火药燃气液压打桩机/use=长枪</evidenceRef>
+        </ref>
+        <ref>
+          <id>WBR-PIERCE-001</id>
+          <target>input.pierce</target>
+          <evidenceRef>scripts/类定义/org/flashNight/arki/bullet/BulletComponent/Type/BulletTypesetter.as#近战联弹无穿刺标记</evidenceRef>
+        </ref>
+        <ref>
+          <id>WBR-DMG-001</id>
+          <target>input.damageType</target>
+          <evidenceRef>data/items/武器_长枪_近战.xml#data_2/physical-default</evidenceRef>
+        </ref>
+        <ref>
+          <id>WBR-SHOT-002</id>
+          <target>input.shotgun</target>
+          <evidenceRef>data/items/武器_长枪_近战.xml#data_2/split=3;horizontal-chain</evidenceRef>
+        </ref>
+        <ref>
+          <id>WBR-AMMO-001</id>
+          <target>input.magPrice</target>
+          <evidenceRef>data/items/消耗品_弹夹.xml#item=榴弹弹药/price=2500</evidenceRef>
+        </ref>
+        <ref>
+          <id>WBR-WL-006</id>
+          <target>input.weightLayers</target>
+          <evidenceRef>tools/cf7-balance-tool/models/pilebunker/README.md#分层拟合</evidenceRef>
+        </ref>
+        <ref>
+          <id>WBR-CAT-001</id>
+          <target>input.category</target>
+          <evidenceRef>data/items/武器_长枪_近战.xml#近战</evidenceRef>
+        </ref>
+        <ref>
+          <id>WBR-AUTH-001</id>
+          <target>input.formula</target>
+          <evidenceRef>0.说明文件与教程/武器-技能数值-价格-合成表填写的参考公式（修改后请勿上传git）.xlsx#枪械!Q1</evidenceRef>
+        </ref>
+      </ruleRefs>
+      <note>维护者裁定55级毕业重锤共5层；专属材料K点合成与支线获取链待接入。枪械0层，额外层全部转让防护；击倒/命中/跳弹定位保留。N1按间隔加蓄力反推，S1以单次整匣输出加显式机械周期拟合，按余弹插值并清匣；120MP/10秒冷却不追加伤害预算。专项时间模型见models/pilebunker，不等同原表单弹容直算；三段/借刀/实际强度尚未实战标定。</note>
     </record>
   </records>
 </weaponBalanceAudit>

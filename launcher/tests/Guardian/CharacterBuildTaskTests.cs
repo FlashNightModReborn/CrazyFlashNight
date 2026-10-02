@@ -1204,7 +1204,7 @@ namespace CF7Launcher.Tests.Guardian
                 AssertExactKeys(
                     flash,
                     "task", "action", "callId", "v", "panelInstanceId",
-                    "requestCallId", "writeEpoch");
+                    "requestCallId", "writeEpoch", "appearanceVersion");
                 Assert.Equal("cmd", flash.Value<string>("task"));
                 Assert.Equal(
                     "characterBuildSnapshot", flash.Value<string>("action"));
@@ -3591,6 +3591,60 @@ namespace CF7Launcher.Tests.Guardian
                     "malformed_response",
                     web.Value<string>("error"));
                 Assert.Null(harness.Task.SessionGeneration);
+            }
+        }
+
+        [Theory]
+        [InlineData("valid", true)]
+        [InlineData("legacy", true)]
+        [InlineData("extra", false)]
+        [InlineData("missing", false)]
+        [InlineData("long", false)]
+        [InlineData("object", false)]
+        [InlineData("flag", false)]
+        [InlineData("null", false)]
+        public void ProductionSnapshotValidatesResolvedAppearanceWithoutChangingItemIdentity(
+            string mutation, bool expectedSuccess)
+        {
+            using (var harness = new ProductionHarness())
+            {
+                harness.Task.HandleWebRequest("snapshot", WebRequest(
+                    "snapshot", "prod.appearance." + mutation, new JObject { ["v"] = 1 }));
+                JObject flash = Assert.Single(harness.Flash);
+                Assert.Equal(1, flash.Value<int>("appearanceVersion"));
+                JObject response = SuccessResponse(flash, "snapshot", Generation,
+                    3, 3, InitialDrugRevision, false);
+                JObject item = CandidateItem("长枪", "equipment", 1);
+                item["name"] = "火药燃气液压打桩机";
+                var appearance = new JObject {
+                    ["dressup"] = "枪-长枪-Codex-打桩机M7",
+                    ["dressup1"] = "", ["dressup2"] = "", ["dressup3"] = "",
+                    ["helmet"] = false, ["hairAbove"] = false
+                };
+                if (mutation != "legacy") item["appearance"] = appearance;
+                switch (mutation)
+                {
+                    case "extra": appearance["power"] = 999; break;
+                    case "missing": appearance.Remove("dressup3"); break;
+                    case "long": appearance["dressup"] = new string('x', 257); break;
+                    case "object": appearance["dressup"] = new JObject(); break;
+                    case "flag": appearance["helmet"] = "true"; break;
+                    case "null": item["appearance"] = JValue.CreateNull(); break;
+                }
+                JObject row = (JObject)response["payload"]["equipment"][6];
+                row["occupied"] = true;
+                row["item"] = item;
+                harness.Task.HandleFlashResponse(response, null);
+                JObject web = Assert.Single(harness.Web);
+                Assert.Equal(expectedSuccess, web.Value<bool>("success"));
+                if (expectedSuccess)
+                {
+                    Assert.Equal("火药燃气液压打桩机",
+                        web["payload"]["equipment"][6]["item"].Value<string>("name"));
+                    Assert.True(JToken.DeepEquals(item["appearance"],
+                        web["payload"]["equipment"][6]["item"]["appearance"]));
+                }
+                else Assert.Equal("malformed_response", web.Value<string>("error"));
             }
         }
 

@@ -468,10 +468,12 @@ namespace CF7Launcher.Guardian
             if (item == null) return false;
 
             bool hasBalance = item["balanceSummary"] != null;
+            bool hasAppearance = item["appearance"] != null;
             var expectedKeys = new HashSet<string>(
                 ItemKeys,
                 StringComparer.Ordinal);
             if (hasBalance) expectedKeys.Add("balanceSummary");
+            if (hasAppearance) expectedKeys.Add("appearance");
             if (!IsExactObject(item, expectedKeys)
                 || !IsIdentityText(item["name"], 256)
                 || !IsIdentityText(item["displayName"], 256)
@@ -590,8 +592,23 @@ namespace CF7Launcher.Guardian
                 return false;
             }
 
-            return !hasBalance
-                || IsBalanceSummary(item["balanceSummary"] as JObject);
+            return (!hasBalance
+                    || IsBalanceSummary(item["balanceSummary"] as JObject))
+                && (!hasAppearance || (EquipmentSlotSet.Contains(use)
+                    && IsEquipmentAppearance(item["appearance"] as JObject)));
+        }
+
+        private static bool IsEquipmentAppearance(JObject appearance)
+        {
+            if (!IsExactObject(appearance, Set(
+                    "dressup", "dressup1", "dressup2", "dressup3", "helmet", "hairAbove")))
+                return false;
+            foreach (string key in new[] { "dressup", "dressup1", "dressup2", "dressup3" })
+            {
+                if (!IsBoundedText(appearance[key], 256, true)) return false;
+            }
+            return appearance["helmet"].Type == JTokenType.Boolean
+                && appearance["hairAbove"].Type == JTokenType.Boolean;
         }
 
         internal static bool TryNormalizeBackpackSource(

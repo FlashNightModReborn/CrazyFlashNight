@@ -38,6 +38,8 @@ class org.flashNight.arki.item.CharacterBuildService {
     private static var _generationCounter:Number = 0;
     private static var _sessionGeneration:Number = 0;
     private static var _panelInstanceId:String = "";
+    // Host explicitly opts in; older runtime keeps the exact legacy item shape.
+    private static var _appearanceProjectionEnabled:Boolean = false;
     private static var _active:Boolean = false;
     private static var _stale:Boolean = false;
     private static var _staleError:String = "";
@@ -233,6 +235,7 @@ class org.flashNight.arki.item.CharacterBuildService {
         if (live == null) return rejectOpen("live_unavailable");
         _generationCounter++;
         _sessionGeneration = _generationCounter;
+        _appearanceProjectionEnabled = false;
         _finalizeReceipt = null;
         _active = true;
         _stale = false;
@@ -847,6 +850,9 @@ class org.flashNight.arki.item.CharacterBuildService {
     }
 
     private static function executeSnapshot(params:Object):Object {
+        if (params.appearanceVersion !== undefined && params.appearanceVersion !== 1) {
+            return fail("invalid_payload");
+        }
         var panelInstanceId:String = params.panelInstanceId == undefined
             ? "" : String(params.panelInstanceId);
         if (panelInstanceId == "") return fail("invalid_payload");
@@ -894,6 +900,7 @@ class org.flashNight.arki.item.CharacterBuildService {
     private static function attachSnapshotRequestExtras(params:Object,
                                                         current:Object,
                                                         clearNeedsReconcile:Boolean):Object {
+        _appearanceProjectionEnabled = params.appearanceVersion === 1;
         var backpackSnapshot:Object = buildBackpackSnapshot();
         attachSnapshotProjection(current, backpackSnapshot);
         if (params.reconcileAfterCallId == undefined
@@ -2677,7 +2684,27 @@ class org.flashNight.arki.item.CharacterBuildService {
             diagnostics.push("item_projection_failed:" + context);
             projection = {};
         }
-        return normalizeItemProjection(item, projection);
+        var result:Object = normalizeItemProjection(item, projection);
+        if (_appearanceProjectionEnabled && SLOT_ALLOWLIST[result.use] === true) {
+            var effective:Object = getEffectiveItemData(item);
+            if (effective != null) {
+                // Display-only values from the same tier/mod calculation as gameplay.
+                // Keep item.name and every write selector unchanged.
+                result.appearance = {
+                    dressup:appearanceText(effective.data.dressup),
+                    dressup1:appearanceText(effective.data.dressup1),
+                    dressup2:appearanceText(effective.data.dressup2),
+                    dressup3:appearanceText(effective.data.dressup3),
+                    helmet:Boolean(effective.helmet),
+                    hairAbove:Boolean(effective.hairAbove)
+                };
+            }
+        }
+        return result;
+    }
+
+    private static function appearanceText(value):String {
+        return typeof value == "string" ? String(value) : "";
     }
 
     /**
@@ -3328,6 +3355,7 @@ class org.flashNight.arki.item.CharacterBuildService {
     }
 
     private static function clearSession():Void {
+        _appearanceProjectionEnabled = false;
         _sessionGeneration = 0;
         _active = false;
         _stale = false;

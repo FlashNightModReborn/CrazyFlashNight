@@ -24,10 +24,8 @@
     function buildStateFromEquipment(manifest, options) {
         options = options || {};
         var state = root.DressupDollRenderer.buildStateFromEquipment(manifest, options);
-        var equipment = options.equipment || {};
-        var head = manifest.items[equipment['头部装备'] || equipment.head];
         // 与 AS2 的 helmet 标记一致：仅隐藏预览中的发型，不能改写保留的原发型。
-        state.hairHidden = !!(head && head.helmet === true);
+        state.hairHidden = state.headHelmet === true;
         if (state.hairHidden) state.keyMap['发型'] = '';
         return state;
     }

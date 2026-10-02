@@ -225,6 +225,7 @@ class org.flashNight.arki.unit.Action.Shoot.LongGunSubWeaponCore {
         if (!hasSubweapon(unit)) {
             return false;
         }
+        if (!passesEquipmentFireGuard(unit)) return false;
         if (unit.攻击模式 != "长枪") {
             return false;
         }
@@ -433,6 +434,27 @@ class org.flashNight.arki.unit.Action.Shoot.LongGunSubWeaponCore {
         if (!unit || !unit.长枪副武器状态) return 0;
         var state:Object = unit.长枪副武器状态;
         return getLoadedCountFromFired(getStateCapacity(state), getFiredCount(unit));
+    }
+
+    /**
+     * 装备联动只消费已经付费装入的组弹药；不伪造副武器射击，也不另扣库存。
+     * host/state 必须是调用方装备初始化时捕获的确切身份，拒绝换装后的旧回调。
+     */
+    public static function consumeLoadedAmmo(unit:Object, host:Object, expectedState:Object, count:Number):Boolean {
+        if (!hasSubweapon(unit) || unit.长枪 !== host || unit.长枪副武器状态 !== expectedState) return false;
+        var config:Object = unit.长枪副武器配置;
+        if (config.consumeMode != "onLoadGroup" || expectedState.groupPaid !== true
+                || config.hp > 0 || config.mp > 0) return false;
+        if (!isFinite(count) || !(count > 0) || count != Math.floor(count) || count > getLoadedCount(unit)) return false;
+        setFiredCount(unit, getFiredCount(unit) + count);
+        updateAmmoDisplay(unit);
+        return true;
+    }
+
+    /** 复合装备可按实际机械阶段暂停副武器；换弹与已装弹药的所有权不随之改变。 */
+    private static function passesEquipmentFireGuard(unit:Object):Boolean {
+        var guard:Function = unit.长枪副武器状态.fireGuard;
+        return guard == undefined || (typeof guard == "function" && guard(unit) === true);
     }
 
     public static function setFiredCount(unit:Object, fired:Number):Void {
@@ -984,6 +1006,7 @@ class org.flashNight.arki.unit.Action.Shoot.LongGunSubWeaponCore {
 
     private static function canCommitFire(unit:Object, man:Object):Boolean {
         if (!hasSubweapon(unit)) return false;
+        if (!passesEquipmentFireGuard(unit)) return false;
         if (unit.攻击模式 != "长枪") return false;
         if (unit.浮空 || unit.倒地) return false;
         if (!isSubweaponShootPoseReady(unit)) return false;

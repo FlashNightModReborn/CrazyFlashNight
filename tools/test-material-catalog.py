@@ -15,7 +15,7 @@ REPOSITORY_ROOT = Path(__file__).resolve().parent.parent
 PRODUCER_PATH = REPOSITORY_ROOT / "tools/derive-material-catalog.py"
 EXPECTED_LEGACY_SHA256 = "012D1415B7DA4E78F05E06D5728B1F33EF6E767A627DB35993E91A8EAEC3DDC8"
 EXPECTED_ARCHIVE_ORDER_SHA256 = "D186B9E1DDC883EC67D1656766D4F73207BD1C4F6BDCFF241197F882EED567C8"
-EXPECTED_TYPE_COUNTS = {"equipment_mod": 107, "food": 45, "general": 74}
+EXPECTED_TYPE_COUNTS = {"equipment_mod": 107, "food": 45, "general": 75}
 EXPECTED_CRAFTING_CATEGORIES = (
     "铁枪会",
     "属性武器",
@@ -84,7 +84,7 @@ def main():
         == "material-catalog-producer.v2",
         "material catalog sidecar/generator version drift",
     )
-    require(len(first.catalog.materials) == 226, "material baseline must be 226")
+    require(len(first.catalog.materials) == 227, "material baseline must be 227 (including 重锤改装组件)")
     require(len(first.catalog.purposes) == 2, "direct-purpose registry must contain two entries")
     require(
         tuple(purpose.purpose_id for purpose in first.catalog.purposes)
@@ -197,8 +197,12 @@ def main():
     require(len(legacy) == 58, "legacy-visible count drift")
     require(list(first.catalog.materials[:58]) == legacy, "legacy entries are not the prefix")
     require(
-        archive_order_digest(first.catalog.materials) == EXPECTED_ARCHIVE_ORDER_SHA256,
+        archive_order_digest(first.catalog.materials[:226]) == EXPECTED_ARCHIVE_ORDER_SHA256,
         "authored archive-order ratchet drifted from the reviewed 58+168 migration",
+    )
+    require(
+        tuple(material.name for material in first.catalog.materials[226:]) == ("重锤改装组件",),
+        "new material suffix must contain only the reviewed pilebunker upgrade component",
     )
     authored_tuning_names = {
         material.name
@@ -540,7 +544,7 @@ def main():
         "authored non-legacy order must be preserved instead of re-sorted by manifest/name",
     )
     require(
-        archive_order_digest(reordered.materials) != EXPECTED_ARCHIVE_ORDER_SHA256,
+        archive_order_digest(reordered.materials[:226]) != EXPECTED_ARCHIVE_ORDER_SHA256,
         "archive-order ratchet must observe authored non-legacy reordering",
     )
 

@@ -300,6 +300,30 @@ async function runBrowserAudit(browser, port) {
             JSON.stringify({male: maleProbe, female: femaleProbe}));
         await saveShot(page, 'character-build-dressup-female-1024x576.png');
 
+        const appearanceManifest = loadManifest();
+        const baseM7Uri = appearanceManifest.skinKeys['枪-长枪-火药燃气液压打桩机'].export.uri;
+        const tierM7Uri = appearanceManifest.skinKeys['枪-长枪-Codex-打桩机M7'].export.uri;
+        for (const gender of ['男','女']) {
+            const base = await renderScenario(page, 'm7Base', gender);
+            const basePixels = await canvasProbe(page);
+            const tier = await renderScenario(page, 'm7Tier', gender);
+            const tierPixels = await canvasProbe(page);
+            check(base.state.keyMap['长枪_装扮'] === '枪-长枪-火药燃气液压打桩机'
+                && tier.state.keyMap['长枪_装扮'] === '枪-长枪-Codex-打桩机M7',
+                gender + ' M7 base and resolved tier select different canonical skins');
+            check(tier.meta.failedImages === 0 && tier.meta.missing === 0
+                && tier.drawSources.includes(tierM7Uri) && !tier.drawSources.includes(baseM7Uri)
+                && tierPixels.alphaPixels > 2000 && tierPixels.hash !== basePixels.hash,
+                gender + ' M7 tier renders actual baked pixels without missing resources');
+            await saveShot(page, 'character-build-m7-tier-' + (gender === '男' ? 'male' : 'female') + '.png');
+            const restored = await renderScenario(page, 'm7Base', gender);
+            // Other equipment has independent animated layers. Prove the exact
+            // restored weapon draw source, not equality of the whole actor bitmap.
+            check(restored.state.keyMap['长枪_装扮'] === '枪-长枪-火药燃气液压打桩机'
+                && restored.drawSources.includes(baseM7Uri) && !restored.drawSources.includes(tierM7Uri),
+                gender + ' returning to the base variant clears the tier appearance');
+        }
+
         const poseCases = [
             ['longGun','长枪站立','长枪'],
             ['dualPistol','双枪站立','双枪'],

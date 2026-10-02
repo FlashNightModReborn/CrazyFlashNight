@@ -43,6 +43,20 @@ var CharacterBuildDressupFixture = (function() {
             }
         },
         scenarios: {
+            m7Base: {
+                id:'m7-base', label:'打桩机原型', targetSlot:'长枪',
+                stateLabel:'长枪站立', attackMode:'长枪',
+                equipmentOverrides:{'长枪':'火药燃气液压打桩机'}
+            },
+            m7Tier: {
+                id:'m7-tier', label:'重锤进阶', targetSlot:'长枪',
+                stateLabel:'长枪站立', attackMode:'长枪',
+                equipmentOverrides:{'长枪':'火药燃气液压打桩机'},
+                equipmentAppearance:{'长枪':{
+                    dressup:'枪-长枪-Codex-打桩机M7', dressup1:'', dressup2:'', dressup3:'',
+                    helmet:false, hairAbove:false
+                }}
+            },
             longGun: {
                 id:'long-gun',
                 label:'长枪站立',

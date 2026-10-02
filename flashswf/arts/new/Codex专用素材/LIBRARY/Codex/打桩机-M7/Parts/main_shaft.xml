@@ -1,0 +1,22 @@
+<?xml version='1.0' encoding='utf-8'?>
+<DOMSymbolItem xmlns="http://ns.adobe.com/xfl/2008/" name="Codex/打桩机-M7/Parts/main_shaft" itemID="abef3d80-f1631e3f">
+  <timeline>
+    <DOMTimeline name="main_shaft">
+      <layers>
+        <DOMLayer name="完整矢量母件" color="#6D9981" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/打桩机-M7/Source/杆体" name="source_art">
+                  <matrix>
+                    <Matrix a="-3.89251709" d="3.89251709" tx="272.5" ty="32.05" />
+                  </matrix>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

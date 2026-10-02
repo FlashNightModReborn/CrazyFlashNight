@@ -1,0 +1,22 @@
+<?xml version='1.0' encoding='utf-8'?>
+<DOMSymbolItem xmlns="http://ns.adobe.com/xfl/2008/" name="Codex/打桩机-M7/Parts/gauge" itemID="1cab2f3c-b2bbf820">
+  <timeline>
+    <DOMTimeline name="gauge">
+      <layers>
+        <DOMLayer name="完整矢量母件" color="#6D9981" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/打桩机-M7/Source/压力表" name="source_art">
+                  <matrix>
+                    <Matrix a="-3.50326538" d="3.50326538" tx="9.9" ty="-9.95" />
+                  </matrix>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

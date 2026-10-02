@@ -131,6 +131,20 @@ function shotgunMult(shotgun: number): number {
 // ─── 主计算 ───
 
 export function computeWeaponRow(input: WeaponInput): WeaponOutput {
+  return computeWeaponRowInternal(input, 0);
+}
+
+/**
+ * 专项时间模型：在工作簿的弹匣周期外显式加入准备/回收时间。
+ * 默认公式入口始终为0，不改变formula=1或既有标定；调用方必须披露额外时间的来源。
+ * overhead只延长一次完整弹匣周期及其非换弹部分，不改变弹药、命中段数或数值预算。
+ */
+export function computeWeaponRowWithCycleOverhead(input: WeaponInput, overheadMs: number): WeaponOutput {
+  if (!Number.isFinite(overheadMs) || overheadMs < 0) throw new Error("cycle overhead must be finite and non-negative");
+  return computeWeaponRowInternal(input, overheadMs);
+}
+
+function computeWeaponRowInternal(input: WeaponInput, overheadMs: number): WeaponOutput {
   const {
     level, bulletPower: power, shootInterval: interval, magSize: cap,
     magPrice, weight, dualWieldFactor: dw, pierceFactor: pierce,
@@ -138,7 +152,7 @@ export function computeWeaponRow(input: WeaponInput): WeaponOutput {
     extraWeightLayers: extraWeight, categoryFactor: catFactor = 1,
   } = input;
 
-  const denom = cycleDenom(interval, cap, dw);
+  const denom = cycleDenom(interval, cap, dw) + overheadMs;
   const bp = basePower(power, dw);
   const dmgBonus = damageBonus(level);
   const psn = poison(level);
@@ -217,7 +231,7 @@ export function computeWeaponRow(input: WeaponInput): WeaponOutput {
   hitRateCoeff = Math.max(hitRateCoeff, 0.1);
 
   // 周期DPS
-  const cycleDPS = 1000 * cycleDamage / Math.max(interval * (cap - 1), 100 / dw);
+  const cycleDPS = 1000 * cycleDamage / Math.max(interval * (cap - 1) + overheadMs, 100 / dw);
 
   // 周期DPS系数 (sigmoid)
   let cycleDPSCoeff: number;
