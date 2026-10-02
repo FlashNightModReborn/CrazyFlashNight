@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>场景加载</title>
+<link rel="stylesheet" href="generated/font-catalog.css">
+<link rel="stylesheet" href="css/game-ui-behavior.css">
+<link rel="stylesheet" href="css/panels.css">
+<link rel="stylesheet" href="css/terminal.css">
+<link rel="stylesheet" href="css/scene-transition.css">
+</head>
+<body>
+<main id="transition" hidden aria-busy="true">
+  <div class="transition-shell">
+    <img id="transition-image" alt="" draggable="false">
+    <section class="transition-copy" aria-live="polite">
+      <h1 id="transition-title">正在加载场景</h1>
+      <p id="transition-tip"></p>
+      <p id="transition-status">请稍候</p>
+      <div id="transition-activity" aria-hidden="true"><span></span></div>
+      <div id="transition-actions" hidden>
+        <button type="button" data-transition-action="retry">重试加载</button>
+        <button type="button" data-transition-action="return">返回安全地点</button>
+      </div>
+    </section>
+    <div id="transition-report" hidden>
+      <div id="panel-container"><div id="panel-backdrop" hidden></div><div id="panel-content"></div></div>
+    </div>
+  </div>
+</main>
+<div id="panel-tooltip"></div>
+<script src="generated/scene-transition-catalog.js"></script>
+<script src="modules/bridge.js"></script>
+<script src="modules/toast.js"></script>
+<script src="modules/panels.js"></script>
+<script>window.__LOOT_PANEL_CONFIG__={externalScale:true,closePreview:function(){window.dispatchEvent(new Event('transition-close-preview'));}};</script>
+<script src="modules/panel-scale.js"></script>
+<script src="modules/asset-timeline.js"></script>
+<script src="modules/icons.js"></script>
+<script src="modules/lazy-loader.js"></script>
+<script src="modules/doll-bake.js"></script>
+<script src="modules/tooltip-document.js"></script>
+<script src="modules/tooltip.js"></script>
+<script src="modules/portrait-resolver.js"></script>
+<script src="modules/workbench-lifecycle.js"></script>
+<script src="modules/workbench-focus.js"></script>
+<script src="modules/workbench-primitives.js"></script>
+<script src="modules/workbench-profile.js"></script>
+<script src="modules/workbench.js"></script>
+<script src="modules/workbench-components.js"></script>
+<script src="modules/inventory-ui.js"></script>
+<script src="modules/panel-runtime.js"></script>
+<script src="modules/inventory-runtime.js"></script>
+<script src="modules/loot/loot-runtime.js"></script>
+<script src="modules/loot/loot-state.js"></script>
+<script src="modules/loot/loot-view.js"></script>
+<script src="modules/loot/loot-organizer.js"></script>
+<script src="modules/loot/loot-panel.js"></script>
+<script>Panels.init();</script>
+<script src="modules/scene-transition.js"></script>
+</body>
+</html>

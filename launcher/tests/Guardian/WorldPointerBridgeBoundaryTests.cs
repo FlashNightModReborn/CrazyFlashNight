@@ -196,6 +196,40 @@ namespace CF7Launcher.Tests.Guardian
                 Assert.Equal(afterDispose,sink.Sent.Count);
             } finally { LogManager.ResetSink(); }
         }
+        [Fact] public void LoadingCurtainExcludesLongFramesFromSchedulingAndCancelsAGestureOnlyOnce()
+        {
+            string root=Path.GetFullPath(Path.Combine(AppContext.BaseDirectory,"..","..","..",".."));
+            using var owner=new TestOwnerForm();
+            using var anchor=new Control();
+            using var flash=FakeSource();
+            var sink=new FakeSink();
+            using var surface=Surface(sink,()=>flash.Handle);
+            surface.Bounds=new Rectangle(10,10,50,40);surface.Show();
+            using var controller=new WorldCompositorController(owner,anchor,()=>IntPtr.Zero,()=>false,_=>{},root,()=>false,_=>{},()=>{});
+            SetSurface(controller,surface);
+            // The old scene can still be capture-ready when its curtain arrives.
+            typeof(WorldCompositorController).GetField("_schedulingAllowed",BindingFlags.NonPublic|BindingFlags.Instance)
+                .SetValue(controller,true);
+            Assert.True(controller.SchedulingAllowed);
+            surface.IntakePointer(Down,new Point(5,5),0);
+            controller.HoldTransitionInput(true);
+            Assert.False(controller.SchedulingAllowed);
+            uint floor=sink.Floor;int calls=sink.Calls.Count;
+            var schedule=new RenderSchedule(new RenderScheduleSettings());
+            for(int i=0;i<8;i++) {
+                controller.HoldTransitionInput(true);
+                schedule.Observe(new RenderSample {Frames=2,DurationMs=750,LongFrames=2,MaxFrameMs=556,
+                    Preset="MEDIUM",Quality="MEDIUM"},(i+1)*750,controller.SchedulingAllowed);
+            }
+            Assert.Equal(0,schedule.Current.Stage);
+            Assert.Equal(floor,sink.Floor);Assert.Equal(calls,sink.Calls.Count);
+            controller.HoldTransitionInput(false);
+            Assert.True(controller.SchedulingAllowed);
+            // Normal gameplay pressure still drives the existing downgrade policy.
+            for(int i=0;i<4;i++) schedule.Observe(new RenderSample {Frames=2,DurationMs=750,
+                Preset="MEDIUM",Quality="MEDIUM"},7000+i*750,controller.SchedulingAllowed);
+            Assert.Equal("LOW",schedule.Current.Quality);
+        }
         private sealed class TestOwnerForm : Form { internal void RaiseDeactivated() => OnDeactivate(EventArgs.Empty); }
         private static void SetSurface(WorldCompositorController controller,WorldCompositionSurface surface)
             => typeof(WorldCompositorController).GetField("_surface",BindingFlags.NonPublic|BindingFlags.Instance).SetValue(controller,surface);

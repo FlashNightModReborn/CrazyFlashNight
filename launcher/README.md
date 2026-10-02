@@ -157,6 +157,11 @@ C1 工程保留薄启动适配；Core 的显式 `--unified-input-candidate c1` �
 
 工作树基线 `e210db872d` 的正常游戏试点仅将帮助面板分流到 `CompositionHelpSurface`；由 `PanelHostController.CompositionHelp.cs` 复用暂停、实例与几何合同。帮助合成已经维护者人验通过并授权推广为正式默认；根目录 `本地开发启动.cmd` 继续作为唯一开发入口，不再需要候选开关或专项转发 CMD。其他面板和世界输入尚未切换，验收及回退见[真实游戏帮助面板试点](../docs/reports/统一输入-真实游戏帮助面板试点-2026-09-24.md)。
 
+U12 游戏内过场由 `SceneTransitionController` 复用独立合成表面。返回时使用原完整 Loot Panel/View、双栏和生产样式；遮罩确认显示后，原 Loot 权威会话即可接通，奖励/整理操作与基地加载并行。
+基地捕获完成只更新同一页面的就绪能力，保留同一个 DOM、Core、HWND、密度、搜索及滚动状态；AS2 先结束过场时间轴，Host 再取得普通面板暂停。提前关闭由原 exact 业务关闭裁决，加载页继续遮盖；失败重试保留同一奖励会话及未知写锁。
+同一不可变报告的接通/关闭意图可跨加载/提示的显示 revision 前进；request/generation、单次准入与未知锁仍受校验。世界呈现、失败导航和 Loot 业务 revision 保持各自 exact 权威，不能据此重复写奖励。
+固定页面仅向既有 Loot/库存域开放 exact 当前实例入口，不进入通用 Web 任务路由。AS2 保留导航、奖励暂存与保存权威。按 commit `c724305c374de423bce06bd39de0b27e09638f4c` 加 2026-10-02 工作区核对，协议、自动门和人验见 [U12 专项](../docs/U12过场Web迁移与人力验收-2026-10-01.md)。
+
 ## 构建、候选与发布
 
 **最后核对代码基线**：commit `dff0c4390b5788151f75954cde397d54fba54257`（2026-08-31）；2026-09-01 vNext 施工仍在未提交工作树。
@@ -275,6 +280,11 @@ candidate 与正式入口旅程按 [#runtime](../agentsDoc/testing-guide.md#runt
 | `webOverlayHotReload` | `false` / `false` | `CF7_WEB_HOTRELOAD` | 开发热重载，玩家版保持关闭 |
 <!-- launcher-config-registry:end -->
 `CF7_DIAG_FOCUS_PROBE` 是 `UiFreezeProbe` 的独立环境急停，不属于 `AppConfig` key。生产默认值、诊断建议和硬件边界以 `config.toml` 注释为准，README 不复制长注释。用户偏好落在 `%LOCALAPPDATA%/CF7FlashNight/launcher_user_prefs.json`；项目根同名文件只作一次性 legacy 导入。
+
+瞬间鼠标延迟诊断使用 `automation/diagnose-input.ps1 -Cursor Native` / `-Cursor System`；沿用本地开发候选核验及焦点滚动日志，不修改配置文件。
+仅 `CF7_INPUT_LATENCY=1` 且焦点录制开启时启用；每个转场最多观察 30 秒，结束后保留至多 2 秒，20ms 发送一个最多单飞的界面线程探针，40ms 起记录尖刺。
+记录区分探针线程调度、UI 排队、鼠标钩子分发、光标绘制及同步窗口调用，每个窗口最多 64 条尖刺，汇总保留省略数量与峰值。
+不记录鼠标移动坐标，不注入输入；耗时不是显示器实际呈现延迟。细节见 [U12 记录](../docs/U12过场Web迁移与人力验收-2026-10-01.md)。
 <!-- launcher-user-prefs-registry:start -->
 当前字段为 `lastPlayedSlot`、`introEnabled`、`sfxEnabled`、`ambientEnabled`、`tutorialsAutoOpen`、`uiFontScale`、`suppressedHighDpiWarningRaw`、`mapDisplayPreference`、`hitNumberMode` 和 `hitNumberWorldRowLimit`。
 <!-- launcher-user-prefs-registry:end -->

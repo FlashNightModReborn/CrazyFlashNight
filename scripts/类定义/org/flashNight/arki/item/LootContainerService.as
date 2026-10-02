@@ -736,6 +736,37 @@ class org.flashNight.arki.item.LootContainerService {
     }
 
     /** 基地待领奖卡片的重开入口；不接受 target，也绝不替地图箱绕过场景 anchor。 */
+    /** 只读交接诊断；只有 exact 空报告且暂停/恢复均已解除才允许用户重新操作。 */
+    public static function parallelReportHandoffState(runId:String):String {
+        var record:Object = _active;
+        if (record == null) return _root._webPanelPauseLease == undefined ? "rejected" : "pending";
+        if (record.panelSource !== STAGE_SETTLEMENT_SOURCE || record.stashedReport !== true
+                || String(record.report.runId) !== runId) return "pending";
+        if (record.state == STATE_SUSPENDED && record.suspendPauseReleasePending !== true
+                && record.transportDetachNeeded !== true && _root._webPanelPauseLease == undefined
+                && record.pendingBatch == null && record.pendingCommit == null
+                && record.postCommitEffects == null) return "rejected";
+        return "pending";
+    }
+
+    /** 已关闭/挂起的 exact 已暂存报告可消费呈现；未知写与交接锁不能由 UI 消除。 */
+    public static function canDismissStashedReport(runId:String):Boolean {
+        var record:Object = _active;
+        if (record == null) return _reservation == null && _root._webPanelPauseLease == undefined;
+        return record.panelSource === STAGE_SETTLEMENT_SOURCE && record.stashedReport === true
+            && String(record.report.runId) === runId
+            && (isTerminalState(record.state) || record.state == STATE_SUSPENDED)
+            && record.pendingTerminal == null && record.pendingCommit == null
+            && record.pendingBatch == null && record.postCommitEffects == null
+            && record.transportDetachNeeded !== true && record.suspendPauseReleasePending !== true;
+    }
+    public static function hasActiveStashedReport(runId:String):Boolean {
+        return _active != null && _active.panelSource === STAGE_SETTLEMENT_SOURCE
+            && _active.stashedReport === true && String(_active.report.runId) === runId
+            && !isTerminalState(_active.state) && _active.state != STATE_SUSPENDED
+            && _active.transportDetachNeeded !== true;
+    }
+
     public static function resumeStageSettlement():Object {
         if (_busy) return localFailure("busy");
         var record:Object = _active;
@@ -1528,6 +1559,17 @@ class org.flashNight.arki.item.LootContainerService {
         var result:Object;
         if (record != null && record.pendingTerminal != null) {
             return continuePendingTerminal(record);
+        }
+        // This empty report owns no scene clip or reward stock: the same run's
+        // rewards were durably moved to the global stash before the return began.
+        // Preserve its exact session through cleanup; never broaden map-chest or
+        // uncommitted settlement lifetimes.
+        if (record != null && record.panelSource === STAGE_SETTLEMENT_SOURCE
+                && record.stashedReport === true && remainingCount(record) == 0
+                && org.flashNight.arki.scene.StageRunSession.ownsParallelReport(String(record.report.runId))
+                && record.pendingBatch == null && record.pendingCommit == null
+                && record.postCommitEffects == null && record.transportDetachNeeded !== true) {
+            return {success:true, state:record.state, reason:"parallel_report_preserved"};
         }
         if (record != null && record.panelSource === STAGE_SETTLEMENT_SOURCE
                 && record.state == STATE_SUSPENDED

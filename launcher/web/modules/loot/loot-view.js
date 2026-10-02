@@ -251,6 +251,7 @@ var LootView = (function() {
         this.interaction = interactionForState({}, false, false);
         this.isSettlement = this.init && this.init.sourceKind === 'stage_settlement';
         this.isRewardInbox = this.init && this.init.sourceKind === 'reward_inbox';
+        this.isStashedReport = this.isSettlement && this.init.report.rewardStashed === true;
         this.reportPane = null;
         this.reportView = null;
         this.settlementSidePane = null;
@@ -330,10 +331,14 @@ var LootView = (function() {
             kind:'loot-help',
             ariaLabel:this.isSettlement ? '查看关卡结算帮助' : '查看战利品整理帮助',
             title:this.isSettlement ? '关卡结算帮助' : '战利品整理帮助',
-            message:this.isSettlement
+            message:this.isStashedReport
+                ? '本轮奖励已保存到暂存区。右栏展示本轮实际入账的关卡奖励，无需重复领取。'
+                : this.isSettlement
                 ? '领取奖励\n• 单击或 Enter 可直接领取。\n• Ctrl+A 或底部“全部收取”会批量领取。\n• 左栏合并击杀与物资记录；右栏可切换材料存量。'
                 : '领取物品\n• Enter、双击或 Ctrl+单击可直接领取。\n• 空格先选择，再到背包侧确认。\n• Ctrl+A 或底部“全部收取”会批量领取。',
-            detail:this.isSettlement
+            detail:this.isStashedReport
+                ? '关闭结算不会丢失奖励。可在角色物品页进入暂存区整理；材料存量展示当前持有量。'
+                : this.isSettlement
                 ? '左栏合并展示击杀与物资记录；右栏可切换待领取奖励和当前材料存量。\n库存整理仍使用原有背包与战备箱界面。普通关闭会保留未领取内容；“放弃剩余”会永久丢弃剩余奖励。'
                 : this.isRewardInbox
                     ? '普通关闭会保留未领取内容；待领取恢复批次不提供永久放弃。'
@@ -455,7 +460,7 @@ var LootView = (function() {
                 viewKind:'stage-settlement-side',
                 mount:function(container) {
                     container.appendChild(sidePane);
-                    self.rightGrid.view.mount(rewardSection);
+                    if (!self.isStashedReport) self.rightGrid.view.mount(rewardSection);
                 },
                 unmount:function() {
                     self.rightGrid.view.unmount();
@@ -521,7 +526,8 @@ var LootView = (function() {
                 : 'loot-backpack-view inventory-owned-view',
             gridClassName:(isLoot ? 'loot-source-grid' : 'loot-backpack-grid')
                 + ' inventory-owned-grid',
-            emptyText:isLoot ? (this.isSettlement ? '本次奖励已全部处理' : '箱内已无可领取内容')
+            emptyText:isLoot ? (this.options.transitionPreview ? '正在加载基地，奖励状态稍后同步。'
+                : this.isSettlement ? '本次奖励已全部处理' : '箱内已无可领取内容')
                 : '当前窗口没有物品',
             getItems:function() {
                 var projection=self._projection();
@@ -623,6 +629,12 @@ var LootView = (function() {
         this.materialSearch=root.querySelector('input[type="search"]');
         this.materialStatus=root.querySelector('[data-settlement-material-status]');
         this.materialList=root.querySelector('[data-settlement-materials]');
+        if (this.isStashedReport) {
+            root.setAttribute('aria-label','本轮已入账奖励与材料存量');
+            this.rewardTabButton.textContent='本轮关卡奖励';
+            this.rewardSection.classList.add('loot-settlement-stashed-report');
+            this.reportDensity.register(this.rewardSection);
+        }
         this._selectRightTab('rewards');
         return root;
     };
@@ -701,7 +713,7 @@ var LootView = (function() {
             var flowName=document.createElement('b');flowName.textContent=flow.displayName;
             var flowDetail=document.createElement('small');
             flowDetail.textContent=flowSourceLabel(flow.source)
-                +(flow.reason?' · '+flow.reason:'');
+                +(flow.reason==='stage_reward_stashed'?' · 已存入暂存区':flow.reason?' · '+flow.reason:'');
             flowCopy.appendChild(flowName);flowCopy.appendChild(flowDetail);
             var flowCount=document.createElement('strong');
             flowCount.textContent=(flow.direction==='gain'?'+':'−')+flow.count;
@@ -711,6 +723,28 @@ var LootView = (function() {
         this.flowStatus.textContent=report.omittedItemFlowTypes
             ? '另有 '+report.omittedItemFlowTypes+' 类物资事实未展开'
             : '展示 '+report.itemFlows.length+' 类';
+        if (this.isStashedReport && this.rewardSection) {
+            this.rewardSection.textContent='';
+            var rewardStatus=document.createElement('p');
+            rewardStatus.className='loot-settlement-empty';
+            rewardStatus.textContent='已存入暂存区，可在角色物品页整理。';
+            this.rewardSection.appendChild(rewardStatus);
+            var rewards=document.createElement('div');
+            rewards.className='loot-settlement-flows';
+            rewards.setAttribute('data-settlement-stashed-rewards','');
+            for (i=0;i<report.itemFlows.length;i++) {
+                var reward=report.itemFlows[i];
+                if (reward.direction==='gain' && reward.source==='stage_settlement'
+                    && reward.reason==='stage_reward_stashed') {
+                    rewards.appendChild(this.flowList.children[i].cloneNode(true));
+                }
+            }
+            if (!rewards.children.length) rewardStatus.textContent=report.omittedItemFlowTypes
+                ? '本轮物资已保存；部分明细未展开，可在角色物品页查看暂存区。'
+                : report.outcome==='victory' ? '本轮未获得额外关卡奖励；战斗拾取见左侧记录。'
+                : '本轮未通关，没有额外关卡奖励；战斗拾取见左侧记录。';
+            this.rewardSection.appendChild(rewards);
+        }
         this._diagnostic({event:'report_render', outcome:'complete',
             kills:report.kills.length, flows:report.itemFlows.length,
             requested:this.reportAssetCounts ? this.reportAssetCounts.requested : 0});
@@ -723,7 +757,7 @@ var LootView = (function() {
             inventory_discard:'丢弃',equipment_tuning:'装备调制',loot_box:'战利品',
             consumable_effect:'消耗品',reload:'装填',skill_cost:'技能消耗',
             weapon_cost:'武器消耗',item_use:'使用物品',arena_entry:'竞技场入场',
-            arena_reward:'竞技场奖励',player_revive:'复活',unknown:'其他'};
+            arena_reward:'竞技场奖励',player_revive:'复活',stage_settlement:'关卡奖励',unknown:'其他'};
         return labels[source]||source;
     }
 
@@ -1225,7 +1259,7 @@ var LootView = (function() {
             if (activeTooltipScope) activeTooltipScope.dispose();
             if (self.tooltipScope === activeTooltipScope) self.tooltipScope = null;
         });
-        this.scaleHandle = typeof PanelScale !== 'undefined'
+        this.scaleHandle = !this.options.externalScale && typeof PanelScale !== 'undefined'
             ? PanelScale.attach(this.options.hostElement,1024,576) : null;
         session.defer(function() {
             if (self.scaleHandle) self.scaleHandle.detach();
@@ -1472,6 +1506,9 @@ var LootView = (function() {
             if (this.leftGrid) this.tooltipScope.releaseTree(this.leftGrid.root);
             if (this.rightGrid) this.tooltipScope.releaseTree(this.rightGrid.root);
         }
+        if (this.rightGrid) this.rightGrid.renderer.options.emptyText = this.options.transitionPreview
+            ? '正在加载基地，奖励状态稍后同步。'
+            : this.isSettlement ? '本次奖励已全部处理' : '箱内已无可领取内容';
         if (this.backpackPane) this.backpackPane.update(projection && projection.backpack || null,{});
         if (this.lootPane) this.lootPane.update(projection && projection.loot || null,{});
         if (this.leftGrid) this.leftGrid.chrome.setMeta(projection && projection.backpack
@@ -1482,8 +1519,8 @@ var LootView = (function() {
             ? (this.isSettlement ? '待领取 '+state.remainingCount+' 项奖励'
                 : '箱内 '+state.remainingCount+' 个非空槽位')
             : (this.isSettlement ? '等待奖励内容' : '等待箱子内容'));
-        this.shell.setMetric('remaining',this.isSettlement?'待领奖励':'剩余槽位',
-            state.remainingCount == null ? '—' : state.remainingCount);
+        this.shell.setMetric('remaining',this.isStashedReport?'奖励去向':this.isSettlement?'待领奖励':'剩余槽位',
+            this.isStashedReport ? '暂存区' : state.remainingCount == null ? '—' : state.remainingCount);
         var busy=state.phase==='opening'||state.phase==='write_pending'||!!state.pending
             ||claimAll||organizerActive;
         if (state.phase==='reconcile_required') this.shell.setStatus('需要核对','warning');
@@ -1521,7 +1558,9 @@ var LootView = (function() {
             this.inventoryButton.setAttribute('aria-busy',organizerActive?'true':'false');
         }
         if (this.commitBar) this.commitBar.update(
-            commitPresentation(
+            this.isStashedReport && (this.options.transitionPreview || state.phase==='active' && !busy)
+                ? {label:'完成结算',status:'奖励已保存，可在角色物品页整理暂存物资；关闭结算不会丢失奖励。',state:'ready',canCommit:true}
+                : commitPresentation(
                 state,claimAll,organizerActive,this.isSettlement,this.isRewardInbox,
                 !this.isRewardInbox || this.init.rootAdmissionEnabled === true));
     };
@@ -1792,8 +1831,39 @@ var LootView = (function() {
             .replace(/</g,'&lt;').replace(/>/g,'&gt;');
     }
 
+    function normalizeReportPresentation(value) {
+        if (!exactKeys(value,{scrollTop:true,density:true,rightTab:true,materialSearch:true})
+            || !Number.isSafeInteger(value.scrollTop)||value.scrollTop<0||value.scrollTop>1000000
+            || (value.density!=='compact'&&value.density!=='full')
+            || (value.rightTab!=='rewards'&&value.rightTab!=='materials')
+            || !safeText(value.materialSearch,64,true)) return null;
+        return {scrollTop:value.scrollTop,density:value.density,
+            rightTab:value.rightTab,materialSearch:value.materialSearch};
+    }
+
+    View.prototype.reportPresentation = function() {
+        if (!this.isSettlement||!this.reportPane||!this.reportDensity) return null;
+        var scroll=this.reportPane.querySelector('.loot-settlement-report-scroll');
+        return normalizeReportPresentation({scrollTop:Math.round(scroll.scrollTop),
+            density:this.reportDensity.mode,rightTab:this.rightTab,
+            materialSearch:this.materialSearch.value});
+    };
+
+    View.prototype.restoreReportPresentation = function(value) {
+        var state=normalizeReportPresentation(value);
+        if (!state||!this.isSettlement||!this.reportPane||!this.reportDensity) return false;
+        var toggle=this.reportDensityToggle.querySelector('button[data-layout-mode="'+state.density+'"]');
+        if (toggle) toggle.click();
+        this.materialSearch.value=state.materialSearch;
+        this._selectRightTab(state.rightTab);
+        this.reportPane.querySelector('.loot-settlement-report-scroll').scrollTop=state.scrollTop;
+        return true;
+    };
+
     return {
         View:View,
+        normalizeSettlementReport:normalizeSettlementReport,
+        normalizeReportPresentation:normalizeReportPresentation,
         normalizeInitData:normalizeInitData,
         commitPresentation:commitPresentation,
         interactionForState:interactionForState,

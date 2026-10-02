@@ -600,6 +600,25 @@ var Panels = (function() {
         return !!(data && data.cmd === 'open' && data.panel === 'loot' && data.initData);
     }
 
+    // A fixed loading document may mount the real panel before its business identity
+    // arrives. The panel owns that preview lifecycle and adopts the later exact open.
+    function preview(id, data) {
+        var panel = _registry[id];
+        if (!_content || !panel || !panel.onPreview || _active || _pendingOpen) return false;
+        if (!panel._el) {
+            panel._el = panel.create(_content);
+            _content.appendChild(panel._el);
+        }
+        panel._el.style.display = '';
+        _container.style.display = '';
+        _container.setAttribute('data-panel',id);
+        _content.setAttribute('data-panel',id);
+        _active = id;
+        _activePanelInstanceId = null;
+        if (panel.onPreview(panel._el,data) === false) { close();return false; }
+        return true;
+    }
+
     function safePanelCommandLog(data) {
         var redactLootInitData = isLootOpenLog(data);
         if (!data || !data.initData || (!redactLootInitData
@@ -647,6 +666,7 @@ var Panels = (function() {
 
     return {
         register: register,
+        preview: preview,
         installRegistrationDecorator: installRegistrationDecorator,
         registerLazy: function(id, deps, registerFn) {
             // 占位 entry：open() 命中 _lazy 分支后会先 load deps、再让 registerFn 覆盖 _registry[id]

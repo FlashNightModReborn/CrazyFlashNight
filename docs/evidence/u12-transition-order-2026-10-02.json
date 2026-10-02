@@ -1,0 +1,619 @@
+{
+  "schema": "cf7-u12-transition-order.v1",
+  "recordedAtUtc": "2026-10-02T04:36:52.120Z",
+  "source": "uncommitted worktree",
+  "state": "candidate_built",
+  "problem": "Actual settlement mouse update stalls align with synchronous RaiseTransition SetWindowPos calls.",
+  "previousRound": "docs/evidence/u12-input-latency-2026-10-02.json",
+  "candidate": {
+    "schema": "cf7-local-dev-runtime-selection.v1",
+    "candidateRelativePath": "tmp/runtime-candidates/v2/u12-order-fix-20261002",
+    "artifactSourceHash": "795ACBCE6467C25BDF9C93782A1A6EEAB90CA961E10D147393B95F54975DB22D",
+    "producerRecipeHash": "23483061F6288CDE0142991DBE8A5F2FDAE8DCC84B098FC8332D1573365ABA8E",
+    "toolchainLockHash": "DFA769829F9740196DEF63351A00AAC309E50A2CA0A768759334EB2A2161DD36",
+    "buildIdentityHash": "532ECADAD767332560DF5F8A07D97EAB0E6BE1479E991A311D022B3ACAEAAC64",
+    "payloadClosureHash": "69C6F9CE6337A30B1AC8596FEADD8A952168BC50BB12B093CC847FFA871630A7",
+    "coreSha256": "1BB31B4995F8BE0086B9607ABACB5CEFFFE8EE9A0EA20A4261D993DD4683721A",
+    "activatedAtUtc": "2026-10-02T04:33:29.7542151Z",
+    "trust": "INDEX_ONLY_REVERIFY_BEFORE_EXECUTION"
+  },
+  "fieldBefore": {
+    "core": {
+      "schema": "cf7-local-dev-runtime-selection.v1",
+      "candidateRelativePath": "tmp/runtime-candidates/v2/u12-input-probe-20261002",
+      "artifactSourceHash": "9CDF8DA7F4FA870B9283D93A46AABB3E6FD37CB144DC05E9AE2F037C98ED6CAF",
+      "producerRecipeHash": "23483061F6288CDE0142991DBE8A5F2FDAE8DCC84B098FC8332D1573365ABA8E",
+      "toolchainLockHash": "DFA769829F9740196DEF63351A00AAC309E50A2CA0A768759334EB2A2161DD36",
+      "buildIdentityHash": "4110FE3D5449DFB4DB8F835F698FAAC541E1DB0D3FA2B738799DF0BCD3B71419",
+      "payloadClosureHash": "C9402EF254AC61FA37FDB851C3F93381FB041B6566550D292B991787E9490638",
+      "coreSha256": "0AF16788DD2B740C299325D09B697385F2B4F9E08CF068EFFC39D891184B8ED7",
+      "activatedAtUtc": "2026-10-02T03:57:22.3697276Z",
+      "trust": "INDEX_ONLY_REVERIFY_BEFORE_EXECUTION"
+    },
+    "recordings": [
+      {
+        "file": "focus-trace.log.1",
+        "sha256": "4CC677A3605E0BBE9087A62C02C959AC6D09DB2A1236FC5FE1EB78531B39857D",
+        "session": "3d0a086c051d47649ca7cb2204a46945",
+        "cursorMode": "desktop",
+        "summary": {
+          "id": "tr:2",
+          "epoch": 0,
+          "phase": "base_ready",
+          "reason": "window_end",
+          "cursorMode": "desktop",
+          "durationMs": 5493.28,
+          "omittedSlowEvents": 0,
+          "metrics": [
+            {
+              "name": "ui_dispatch",
+              "count": 147,
+              "slow": 8,
+              "maxMs": 1525.35
+            },
+            {
+              "name": "sampler_gap",
+              "count": 273,
+              "slow": 0,
+              "maxMs": 18.53
+            },
+            {
+              "name": "hook_delivery",
+              "count": 497,
+              "slow": 0,
+              "maxMs": 16
+            },
+            {
+              "name": "cursor_queue",
+              "count": 130,
+              "slow": 5,
+              "maxMs": 1523.45
+            },
+            {
+              "name": "cursor_present",
+              "count": 150,
+              "slow": 0,
+              "maxMs": 2.91
+            },
+            {
+              "name": "transition_tick",
+              "count": 100,
+              "slow": 6,
+              "maxMs": 1528.06
+            },
+            {
+              "name": "transition_raise",
+              "count": 34,
+              "slow": 5,
+              "maxMs": 1527.97
+            },
+            {
+              "name": "surface_present",
+              "count": 75,
+              "slow": 0,
+              "maxMs": 17.32
+            },
+            {
+              "name": "surface_viewport",
+              "count": 82,
+              "slow": 0,
+              "maxMs": 7.53
+            },
+            {
+              "name": "web_input",
+              "count": 212,
+              "slow": 0,
+              "maxMs": 0.94
+            },
+            {
+              "name": "world_read",
+              "count": 41,
+              "slow": 0,
+              "maxMs": 0.04
+            },
+            {
+              "name": "world_geometry",
+              "count": 41,
+              "slow": 0,
+              "maxMs": 0.27
+            },
+            {
+              "name": "transition_hide",
+              "count": 1,
+              "slow": 0,
+              "maxMs": 0.53
+            }
+          ]
+        },
+        "alignedSpikes": [
+          {
+            "utc": "2026-10-02T04:17:59.8565228Z",
+            "event": "input_latency.slow",
+            "data": {
+              "id": "tr:2",
+              "epoch": 0,
+              "phase": "reveal",
+              "metric": "transition_raise",
+              "ms": 1527.97,
+              "offsetMs": 3363.98
+            }
+          },
+          {
+            "utc": "2026-10-02T04:17:59.856549Z",
+            "event": "input_latency.slow",
+            "data": {
+              "id": "tr:2",
+              "epoch": 0,
+              "phase": "reveal",
+              "metric": "transition_tick",
+              "ms": 1528.06,
+              "offsetMs": 3364.02
+            }
+          },
+          {
+            "utc": "2026-10-02T04:17:59.8578235Z",
+            "event": "input_latency.slow",
+            "data": {
+              "id": "tr:2",
+              "epoch": 0,
+              "phase": "reveal",
+              "metric": "cursor_queue",
+              "ms": 1523.45,
+              "offsetMs": 3365.29
+            }
+          },
+          {
+            "utc": "2026-10-02T04:17:59.8597271Z",
+            "event": "input_latency.slow",
+            "data": {
+              "id": "tr:2",
+              "epoch": 0,
+              "phase": "reveal",
+              "metric": "ui_dispatch",
+              "ms": 1525.35,
+              "offsetMs": 3367.19
+            }
+          }
+        ]
+      },
+      {
+        "file": "focus-trace.log",
+        "sha256": "5C7EC2B15ECEDC6157445A49522FB9DAE9F970EA027246D82811DF0CB1928061",
+        "session": "b519f12613f34fc9975097688a712963",
+        "cursorMode": "desktop",
+        "summary": {
+          "id": "tr:2",
+          "epoch": 0,
+          "phase": "base_ready",
+          "reason": "window_end",
+          "cursorMode": "desktop",
+          "durationMs": 5684.58,
+          "omittedSlowEvents": 0,
+          "metrics": [
+            {
+              "name": "ui_dispatch",
+              "count": 139,
+              "slow": 8,
+              "maxMs": 1628.4
+            },
+            {
+              "name": "sampler_gap",
+              "count": 283,
+              "slow": 0,
+              "maxMs": 19.57
+            },
+            {
+              "name": "hook_delivery",
+              "count": 570,
+              "slow": 1,
+              "maxMs": 62
+            },
+            {
+              "name": "cursor_queue",
+              "count": 138,
+              "slow": 7,
+              "maxMs": 1631.75
+            },
+            {
+              "name": "cursor_present",
+              "count": 171,
+              "slow": 0,
+              "maxMs": 2.96
+            },
+            {
+              "name": "transition_tick",
+              "count": 92,
+              "slow": 7,
+              "maxMs": 1634.76
+            },
+            {
+              "name": "transition_raise",
+              "count": 31,
+              "slow": 5,
+              "maxMs": 1634.62
+            },
+            {
+              "name": "surface_present",
+              "count": 66,
+              "slow": 0,
+              "maxMs": 39.82
+            },
+            {
+              "name": "surface_viewport",
+              "count": 73,
+              "slow": 0,
+              "maxMs": 6.21
+            },
+            {
+              "name": "web_input",
+              "count": 231,
+              "slow": 0,
+              "maxMs": 1.55
+            },
+            {
+              "name": "world_read",
+              "count": 38,
+              "slow": 0,
+              "maxMs": 0.04
+            },
+            {
+              "name": "world_geometry",
+              "count": 38,
+              "slow": 0,
+              "maxMs": 0.22
+            },
+            {
+              "name": "transition_hide",
+              "count": 1,
+              "slow": 0,
+              "maxMs": 0.28
+            }
+          ]
+        },
+        "alignedSpikes": [
+          {
+            "utc": "2026-10-02T04:19:21.6057793Z",
+            "event": "input_latency.slow",
+            "data": {
+              "id": "tr:2",
+              "epoch": 0,
+              "phase": "loading",
+              "metric": "transition_raise",
+              "ms": 1634.62,
+              "offsetMs": 3487.33
+            }
+          },
+          {
+            "utc": "2026-10-02T04:19:21.6058213Z",
+            "event": "input_latency.slow",
+            "data": {
+              "id": "tr:2",
+              "epoch": 0,
+              "phase": "loading",
+              "metric": "transition_tick",
+              "ms": 1634.76,
+              "offsetMs": 3487.38
+            }
+          },
+          {
+            "utc": "2026-10-02T04:19:21.605908Z",
+            "event": "input_latency.slow",
+            "data": {
+              "id": "tr:2",
+              "epoch": 0,
+              "phase": "loading",
+              "metric": "cursor_queue",
+              "ms": 1631.75,
+              "offsetMs": 3487.47
+            }
+          },
+          {
+            "utc": "2026-10-02T04:19:21.6090478Z",
+            "event": "input_latency.slow",
+            "data": {
+              "id": "tr:2",
+              "epoch": 0,
+              "phase": "loading",
+              "metric": "ui_dispatch",
+              "ms": 1628.4,
+              "offsetMs": 3490.6
+            }
+          }
+        ]
+      }
+    ],
+    "cursorComparisonValid": false,
+    "reason": "The delivered CMD wrapper reset CHOICE ERRORLEVEL with SET before reading it. Both user runs were native desktop cursor; no System-versus-Native conclusion is supported.",
+    "evidence": [
+      {
+        "path": "tmp/u12-transition-order-20261002/before/auto-20261002-121812-397-3d0a086c051d47649ca7cb2204a46945.zip",
+        "bytes": 984029,
+        "sha256": "6DE98C37368C2E63BEADEFDBB674C7B430A7D6028684E4E7BA46862D5A32ED35"
+      },
+      {
+        "path": "tmp/u12-transition-order-20261002/before/auto-20261002-121925-973-b519f12613f34fc9975097688a712963.zip",
+        "bytes": 1076877,
+        "sha256": "E46B2CBE52313C04368FBA4E2CDA746CB3222979643858184823BD7CBFFAB3FA"
+      },
+      {
+        "path": "tmp/u12-transition-order-20261002/before/focus-trace.log",
+        "bytes": 515445,
+        "sha256": "5C7EC2B15ECEDC6157445A49522FB9DAE9F970EA027246D82811DF0CB1928061"
+      },
+      {
+        "path": "tmp/u12-transition-order-20261002/before/focus-trace.log.1",
+        "bytes": 778880,
+        "sha256": "4CC677A3605E0BBE9087A62C02C959AC6D09DB2A1236FC5FE1EB78531B39857D"
+      },
+      {
+        "path": "tmp/u12-transition-order-20261002/before/recording-context-3d0a086c051d47649ca7cb2204a46945.json",
+        "bytes": 1305,
+        "sha256": "9DF4515AB521062469F28B14AF2D9DD2B687F66AF095284CD8A6861A467CE41B"
+      },
+      {
+        "path": "tmp/u12-transition-order-20261002/before/recording-context-b519f12613f34fc9975097688a712963.json",
+        "bytes": 1304,
+        "sha256": "1A78BFDAB10D20F56CB12F248DD9711764349E688D820A8260440DA3D25F69FB"
+      },
+      {
+        "path": "tmp/u12-transition-order-20261002/before/recording-context.json",
+        "bytes": 1304,
+        "sha256": "1A78BFDAB10D20F56CB12F248DD9711764349E688D820A8260440DA3D25F69FB"
+      }
+    ]
+  },
+  "fix": [
+    "Read actual owned-window order before submitting SetWindowPos; stable ticks are read-only.",
+    "Use SWP_NOOWNERZORDER on a needed repair so owner ordering is untouched.",
+    "Keep backing below a healthy transition surface without alternating front requests; failed renderer remains coverable.",
+    "Coalesce HUD presentation callbacks and recheck live admission, curtain and foreground before late repair.",
+    "Read CHOICE result before SET in the delivered comparison launcher."
+  ],
+  "sourceSnapshot": [
+    {
+      "path": "launcher/src/Guardian/SceneTransitionWindowOrder.cs",
+      "bytes": 2428,
+      "sha256": "B9FCA7B74A019B9CD27B39648D02CC4B4B1FA3EE4BEFA6ECF45FB1699CE1AFB9"
+    },
+    {
+      "path": "launcher/src/Guardian/CompositionHelpSurface.cs",
+      "bytes": 33244,
+      "sha256": "C48B748BD53FEAFDCEEBDDC3A10E6BE3B9D922ADEBD48CEC0FEDBD699CFB201C"
+    },
+    {
+      "path": "launcher/src/Guardian/SceneTransitionController.cs",
+      "bytes": 16706,
+      "sha256": "3E725517581252B66869F295FD98744718373DB50AB382E62DC87738E4A2BFDD"
+    },
+    {
+      "path": "launcher/tests/Guardian/SceneTransitionWindowOrderTests.cs",
+      "bytes": 7608,
+      "sha256": "15D3903215011842E304613D32547908B9EEFF0D6AC1E26105E2443F7AC9F742"
+    },
+    {
+      "path": "tools/scene-transition-smoke/Program.cs",
+      "bytes": 48378,
+      "sha256": "4955E13351FFD299515641C787CDBE30EA298B77A305B5D3129C53DF35E36079"
+    },
+    {
+      "path": "automation/diagnose-input.ps1",
+      "bytes": 1663,
+      "sha256": "3DFBE1915D717D4B2DC641C405A0B08AC205001F5101CBC17FBBB0428D8B6479"
+    }
+  ],
+  "checks": {
+    "focused": {
+      "passed": 91,
+      "newWindowOrderTests": 5
+    },
+    "host": {
+      "passed": 6494,
+      "skipped": 5,
+      "canonicalRunner": true,
+      "parallelTestCollections": false
+    },
+    "nativeBefore": {
+      "expectedFailure": true,
+      "result": {
+        "path": "tmp/u12-order-before-20261002/result.json",
+        "bytes": 2778,
+        "sha256": "9117DEA008B94E5F447173564529657740304F3B09B60D175DBEBD30717465B2"
+      },
+      "measurement": {
+        "repetitions": 40,
+        "elapsedMs": 2.1054,
+        "curtainPositionRequests": 40,
+        "ownerPositionRequests": 40
+      }
+    },
+    "nativeInitialAttempt": {
+      "result": {
+        "path": "tmp/u12-order-after-20261002/result.json",
+        "bytes": 2384,
+        "sha256": "FF0A1C115CE8710721D12BC22EB56A603BB57325A32D05BE7630E5DA832E0201"
+      },
+      "reason": "Fixture initial foreground was not admitted before exercising the transition; retained and rerun without changing production or fixture code."
+    },
+    "nativeAfter": {
+      "passed": 57,
+      "result": {
+        "path": "tmp/u12-order-after-verified-20261002/result.json",
+        "bytes": 8533,
+        "sha256": "ECBEDD989DB529DA4BED21536FC77E6DEF9B54DFF965031C066E10633461F4A7"
+      },
+      "measurement": {
+        "repetitions": 40,
+        "elapsedMs": 0.753,
+        "curtainPositionRequests": 0,
+        "ownerPositionRequests": 0
+      },
+      "scope": "Real HWND/WebView2 fixture verifies native position requests and presentation/focus recovery; it does not measure actual Flash loading after the fix."
+    },
+    "comparisonEntry": {
+      "choices": [
+        {
+          "choice": "1",
+          "expected": "Native",
+          "passed": true
+        },
+        {
+          "choice": "2",
+          "expected": "System",
+          "passed": true
+        }
+      ],
+      "entry": {
+        "path": "tmp/u12-transition-order-20261002/结算鼠标对照.cmd",
+        "bytes": 576,
+        "sha256": "3CCD8B10718572903D1A81606BC30259308BBEF0C13BD8B2016D4AFCA98775D8"
+      },
+      "realChoiceRedirectedInput": true,
+      "actualSystemGameplayRecorded": false
+    },
+    "docs": "passed with existing warnings",
+    "diffCheck": "passed"
+  },
+  "reusedFlash": {
+    "recompiled": false,
+    "hashesVerified": true,
+    "files": [
+      {
+        "path": "scripts/asLoader.swf",
+        "bytes": 1425477,
+        "sha256": "A0FE22FD337D3893D919FABE5A20BD28CB65B646417E62410DE2FB6F4F133AF2"
+      },
+      {
+        "path": "CRAZYFLASHER7MercenaryEmpire.swf",
+        "bytes": 207247,
+        "sha256": "F0BDD31048055BAF47EA582D71896190998D563AFB7B2CC8E9F67E06E67436B6"
+      },
+      {
+        "path": "scripts/类定义/org/flashNight/arki/ui/SceneTransitionService.as",
+        "bytes": 14917,
+        "sha256": "43629AF68C38A968ADFDE86AD05923F90265FD6F011F0AF405EABDDABDBA2754"
+      },
+      {
+        "path": "scripts/类定义/org/flashNight/arki/weather/WorldLightingBridge.as",
+        "bytes": 5885,
+        "sha256": "8A7F7A2B553FCC3CD6D8CB15E132FF5125A2AB7B1CC9B2CAB82FBA3F287AF47F"
+      },
+      {
+        "path": "scripts/展现/UI交互/UI交互_lsy_UI管理.as",
+        "bytes": 16354,
+        "sha256": "B775A1F2D8169D242C50DA4BFC5DCA534476FEA44E0E0D2DC71AF6C3D112008F"
+      },
+      {
+        "path": "CRAZYFLASHER7MercenaryEmpire/LIBRARY/sprite/淡出动画.xml",
+        "bytes": 10872,
+        "sha256": "B1B5D4C4883976EF54F0EB334E70C03A12D43AC2DFC8EF5CFF83F72F8180A1CE"
+      },
+      {
+        "path": "scripts/类定义/org/flashNight/arki/scene/StageRunSession.as",
+        "bytes": 131804,
+        "sha256": "60A69F5495D0EEBF4EDF4CC3D6DE9F3C4E89A4A3AD2BB92659EE6FA1C3EE5DE7"
+      },
+      {
+        "path": "scripts/类定义/org/flashNight/arki/scene/StageReturnFlow.as",
+        "bytes": 8054,
+        "sha256": "8128EAC3EC196A55B68DBDC0A626A55CD9525B2AC9A51964E61AEDE51FB95EEC"
+      },
+      {
+        "path": "scripts/类定义/org/flashNight/arki/item/LootContainerService.as",
+        "bytes": 172428,
+        "sha256": "31A3B90451F14B4C9D7997C73F821EFBE565160FC430A2AD83A6B5770A894311"
+      },
+      {
+        "path": "scripts/类定义/org/flashNight/arki/scene/StageRunSessionTest.as",
+        "bytes": 250943,
+        "sha256": "F5ACA3BFD8069F6EADF94510C0C35CCA37D0EA40385002C7A5A423D63C1C0DA5"
+      }
+    ],
+    "priorEvidenceScope": "Prior real AVM1 and SWF compilation/readback evidence retained for unchanged inputs; not rerun."
+  },
+  "formalRuntimeUnchanged": [
+    {
+      "path": "runtime/CRAZYFLASHER7MercenaryEmpire.Core.dll",
+      "bytes": 5865472,
+      "sha256": "633C06A615B049B5113163734E05C7971779E7796BACFE6406E77F0DE6089CC1"
+    },
+    {
+      "path": "runtime/cf7-runtime-manifest.tsv",
+      "bytes": 4412,
+      "sha256": "0C74537F2F8ED1A14F921D3CF61064574301C0F391CBEF6E327DB924D2A886F2"
+    }
+  ],
+  "gameStallCapturedBeforeFix": true,
+  "gameE2eVerifiedAfterFix": false,
+  "cursorComparisonExecutedCorrectly": false,
+  "saveRestartVerified": false,
+  "promoted": false,
+  "standardEntryVerified": false,
+  "playerSlotsTouched": false,
+  "humanAcceptance": "Pending user retest of the game cursor at settlement/base-load completion.",
+  "references": [
+    "https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-setwindowpos",
+    "https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-getwindow"
+  ],
+  "logs": [
+    {
+      "path": "tmp/u12-transition-order-20261002/focused.log",
+      "bytes": 64445,
+      "sha256": "91A108E1264DBE0B9C9297FC24CE2B0D90142EDF107BB2409F6D8F74DB32F7D7"
+    },
+    {
+      "path": "tmp/u12-transition-order-20261002/host.log",
+      "bytes": 931725,
+      "sha256": "477F8C224C08D96D72337B2BF3B1F572F6CE1191A5E626C3DC8D6302BA6EE0DF"
+    },
+    {
+      "path": "tmp/u12-transition-order-20261002/build.log",
+      "bytes": 5696,
+      "sha256": "2459A56AB61F6E1345188677711C981102441D302972F881802374E2C834E1C8"
+    },
+    {
+      "path": "tmp/u12-transition-order-20261002/native-before.log",
+      "bytes": 1327,
+      "sha256": "AD0C940BF88AAA7DC7492C4F10091F1E55BB21F3AFBA146615063379B640D89F"
+    },
+    {
+      "path": "tmp/u12-transition-order-20261002/native-after.log",
+      "bytes": 8674,
+      "sha256": "F822A2FBBA010A788417A8623D381B1B89582BBEF5C175F02359EAEE5AD5CB62"
+    },
+    {
+      "path": "tmp/u12-transition-order-20261002/native-foreground-before.log",
+      "bytes": 1325,
+      "sha256": "DE45CB376AC8CEF02B5AE18D0BCD529A68D9CCE7180842D0442934A42E4B92FA"
+    },
+    {
+      "path": "tmp/u12-transition-order-20261002/dev-status.log",
+      "bytes": 1871,
+      "sha256": "045E43FBB76587372774ACF900BD52E038BC5D01770D2024EADE79ECFD31FD67"
+    },
+    {
+      "path": "tmp/u12-transition-order-20261002/docs-before-evidence.log",
+      "bytes": 3712,
+      "sha256": "35AA667DB1D96619A1465B78C2C820C1E5F3A0415EA1FF10AA624DDD314FF733"
+    },
+    {
+      "path": "tmp/u12-transition-order-20261002/docs.log",
+      "bytes": 3553,
+      "sha256": "0853EFF33A99FCEA5A4E1484FBC620B2DE7B963BC7F34C79FB26E29DF940E5DB"
+    },
+    {
+      "path": "tmp/u12-transition-order-20261002/diff-check.log",
+      "bytes": 154,
+      "sha256": "FDF1DF71642D873E0D35ED91E930326CA66B529D0EB7E15BCA9CAED78CA16BFB"
+    },
+    {
+      "path": "tmp/u12-transition-order-20261002/field-measurements.json",
+      "bytes": 6885,
+      "sha256": "B94CA71CDE34624A46BF641A0F29808AA83815459CD203292EDA8FEF223CE5FB"
+    },
+    {
+      "path": "tmp/u12-transition-order-20261002/choice-result.json",
+      "bytes": 161,
+      "sha256": "28138B5E762A30E46AB643EDB9E90C36F64DF6969FD9C364E4E0439A331A2633"
+    }
+  ]
+}

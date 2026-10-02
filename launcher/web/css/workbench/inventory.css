@@ -314,7 +314,9 @@
 }
 .loot-settlement-side-body { min-height:0; overflow:hidden; }
 .loot-settlement-reward-section { height:100%; min-height:0; }
+.loot-settlement-stashed-report { overflow:auto; padding:10px; box-sizing:border-box; }
 .loot-settlement-report-section {
+    flex:0 0 auto;
     display:grid; grid-template-rows:auto auto auto auto; gap:8px;
     min-height:0; box-sizing:border-box;
 }
@@ -458,6 +460,7 @@
     font-size:10px;
 }
 .loot-settlement-flow-section {
+    flex:0 0 auto;
     display:grid; grid-template-rows:auto auto auto; gap:7px;
     min-height:0; padding-top:10px; box-sizing:border-box;
     border-top:1px solid var(--wb-line-soft);
@@ -509,19 +512,19 @@
 .loot-settlement-report.loot-settlement-compact .loot-settlement-flow-metrics > div {
     min-height:27px; padding:3px 6px;
 }
-.loot-settlement-report.loot-settlement-compact .loot-settlement-flows {
+:is(.loot-settlement-report,.loot-settlement-stashed-report).loot-settlement-compact .loot-settlement-flows {
     grid-template-columns:repeat(auto-fill,48px); grid-auto-rows:48px;
     justify-content:start; gap:4px;
 }
-.loot-settlement-report.loot-settlement-compact .loot-settlement-flow-card {
+:is(.loot-settlement-report,.loot-settlement-stashed-report).loot-settlement-compact .loot-settlement-flow-card {
     display:block; box-sizing:border-box; width:48px; min-width:48px;
     height:48px; min-height:48px; padding:5px;
 }
-.loot-settlement-report.loot-settlement-compact .loot-settlement-flow-icon {
+:is(.loot-settlement-report,.loot-settlement-stashed-report).loot-settlement-compact .loot-settlement-flow-icon {
     width:36px; height:36px;
 }
-.loot-settlement-report.loot-settlement-compact .loot-settlement-flow-copy { display:none; }
-.loot-settlement-report.loot-settlement-compact .loot-settlement-flow-card > strong {
+:is(.loot-settlement-report,.loot-settlement-stashed-report).loot-settlement-compact .loot-settlement-flow-copy { display:none; }
+:is(.loot-settlement-report,.loot-settlement-stashed-report).loot-settlement-compact .loot-settlement-flow-card > strong {
     position:absolute; z-index:2; right:0; bottom:0; padding:1px 2px;
     border:1px solid currentColor; background:color-mix(in srgb,var(--wb-bg) 92%,transparent);
     font-size:10px;

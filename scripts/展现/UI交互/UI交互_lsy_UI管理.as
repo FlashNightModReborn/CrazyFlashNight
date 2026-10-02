@@ -80,6 +80,7 @@ org.flashNight.arki.ui.GaragePurchasePanelService.install();
 org.flashNight.arki.ui.SleepPanelService.install();
 org.flashNight.arki.ui.GymPreviewPanelService.install();
 org.flashNight.arki.ui.GameSettingsPanelService.install();
+org.flashNight.arki.ui.SceneTransitionService.install();
 
 _root.gameCommands["togglePause"] = function() {
     _root.暂停 = !_root.暂停;  // watch 自动 pushUiState("p:0/1")

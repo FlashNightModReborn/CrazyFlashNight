@@ -2021,7 +2021,7 @@ class Program
             form, form.FlashHostPanel, form.GetFlashHwnd,
             () => !form.IsShutdownAdmissionClosed && launchFlow != null && launchFlow.CurrentState == "Ready"
                 && launchFlow.RevealPerformed
-                && (panelHost == null || !panelHost.IsPanelOpen),
+                && (panelHost == null || !panelHost.IsPanelOpen || panelHost.SceneSettlementLoading),
             message => toastSink.AddMessage(message), projectRoot,
             () => launchFlow != null && (launchFlow.CurrentState == "Embedding"
                 || launchFlow.CurrentState == "WaitingGameReady" || launchFlow.CurrentState == "Ready"),
@@ -2040,6 +2040,19 @@ class Program
         var worldLightingTask = new WorldLightingTask(
             dispatchToUi,
             worldCompositor.Adopt, worldCompositor.ResetSource);
+        var inputLatency = CF7Launcher.Diagnostic.InputLatencyProbe.StartConfigured(form,
+            !config.NativeCursorOverlayEnabled ? "system" : config.UseDesktopCursorOverlay ? "desktop" : "legacy");
+        var sceneTransition = new CF7Launcher.Guardian.SceneTransitionController(
+            form, form.FlashHostPanel, projectRoot, dispatchToUi,
+            wire => socketServer.IsClientReady && socketServer.TrySend(wire),
+            () => !form.IsShutdownAdmissionClosed && launchFlow?.CurrentState == "Ready",
+            worldCompositor.IsTransitionScenePresented,
+            foreground => windowManager.HandoffFlashFocusBeforePanelHide("scene_transition:before_hide",foreground),
+            worldOverlays, worldCompositor.HoldTransitionInput);
+        socketServer.OnClientDisconnected += sceneTransition.Task.HandleTransportDisconnected;
+        panelHost?.ConfigureTransitionSettlement(sceneTransition);
+        form.FormClosed += delegate { sceneTransition.Dispose(); };
+        form.FormClosed += delegate { inputLatency?.Dispose(); };
         frameTask.WeatherCameraObserved=worldCompositor.ObserveWeatherCamera;
         frameTask.VisualFrameStarted=worldCompositor.BeginVisualFrame;
         frameTask.VisualFrameCompleted=worldCompositor.EndVisualFrame;
@@ -2192,6 +2205,12 @@ class Program
             rewardRootAdmissionEnabled:
                 rewardRootAdmissionEnabled);
         LootTask lootTask = new LootTask(socketServer, lootPanelCoordinator);
+        sceneTransition.ConfigureSettlement(
+            receipt => SceneTransitionTask.MatchesSettlementReceipt(receipt,
+                lootPanelCoordinator.ActiveBinding,
+                lootPanelCoordinator.State == LootPanelCoordinator.BindingState.Bound,
+                panelHost.ActivePanelName, panelHost.ActivePanelInstanceId),
+            worldCompositor.IsCurrentTransitionScene);
         lootPanelCoordinator.SetAdmissionLeaseFactory(
             lootTask.TryAcquirePanelAdmissionLease);
         panelHost.PanelClosed += lootPanelCoordinator.OnPanelHostClosed;
@@ -2602,7 +2621,7 @@ class Program
             () => nativeHud != null && !nativeHud.IsSuspended && !panelHost.IsPanelOpen);
         nativeGuidanceTask.LoadImage = dialoguePortraits.LoadSceneImage;
         nativeGuidanceTask.AutomaticHelpEnabled = () => userPrefs.TutorialsAutoOpen;
-        nativeGuidanceTask.CanOpenHelp = () => socketServer.IsClientReady && !panelHost.IsPanelOpen
+        nativeGuidanceTask.CanOpenHelp = () => socketServer.IsClientReady && !panelHost.IsPanelOpen && !sceneTransition.OwnsCurtain
             && !form.IsShutdownAdmissionClosed && webOverlay.CanAcceptPanelDocumentMessages && !characterBuildTask.HasBoundPanel
             && lootPanelCoordinator.State == LootPanelCoordinator.BindingState.Idle && lootPanelCoordinator.ActiveBinding == null;
         nativeGuidanceTask.OpenHelp = (presentation, completed) => {
@@ -2627,6 +2646,7 @@ class Program
         panelHost.PanelClosed += nativeGuidanceTask.NotifyHelpClosed;
         lootPanelCoordinator.BindingSettled += binding => nativeGuidanceTask.NotifyHelpAvailabilityChanged();
         socketServer.OnClientDisconnected += nativeGuidanceTask.HandleTransportDisconnected;
+        sceneTransition.CurtainReleased += nativeGuidanceTask.NotifyHelpAvailabilityChanged;
         form.FormClosed += delegate { guidanceWidget.Dispose(); };
         nativeDialogueTask.ReceivePortraitResult = dialoguePortraits.HandleResult;
         socketServer.OnClientDisconnected += nativeDialogueTask.HandleTransportDisconnected;
@@ -2639,7 +2659,7 @@ class Program
 
         using (PerfTrace.Scope("task.registry_register_all"))
         {
-            TaskRegistry.RegisterAll(router, gomokuTask, toastTask, frameTask, stageOutcomeTask, warlordStageTask, warlordBattleTask, dataQueryTask, audioTask, dollBakeTask, shopTask, inventoryTask, lootTask, lootFeedTask, lootPanelCoordinator, npcShopTask, craftingTask, materialShopAccessTask, hairdresserTask, plasticSurgeryTask, garagePurchaseTask, sleepTask, gymTrainingTask, settingsTask, equipmentTuningTask, characterBuildTask, itemUseTask, skillTask, mapTask, stageSelectTask, arenaTask, arenaCalibrationTask, agentControlTask, petTask, mercTask, taskTask, intelligenceTask, blackMarketTask, archiveTask, benchTask, fontPackTask, webOverlay, commandRouter, mapDomainTask, nativeInteractionTask, nativeDialogueTask, worldLightingTask, lutLabTask, nativeGuidanceTask);
+            TaskRegistry.RegisterAll(router, gomokuTask, toastTask, frameTask, stageOutcomeTask, warlordStageTask, warlordBattleTask, dataQueryTask, audioTask, dollBakeTask, shopTask, inventoryTask, lootTask, lootFeedTask, lootPanelCoordinator, npcShopTask, craftingTask, materialShopAccessTask, hairdresserTask, plasticSurgeryTask, garagePurchaseTask, sleepTask, gymTrainingTask, settingsTask, equipmentTuningTask, characterBuildTask, itemUseTask, skillTask, mapTask, stageSelectTask, arenaTask, arenaCalibrationTask, agentControlTask, petTask, mercTask, taskTask, intelligenceTask, blackMarketTask, archiveTask, benchTask, fontPackTask, webOverlay, commandRouter, mapDomainTask, nativeInteractionTask, nativeDialogueTask, worldLightingTask, lutLabTask, nativeGuidanceTask, sceneTransition.Task);
         }
         StartupDiagnostics.Mark("task.registry_register_all_ok");
 
@@ -2764,6 +2784,7 @@ class Program
 
             commandRouter.CancelAllPanelNavigationIntents(
                 "host_shutdown");
+            sceneTransition.Dispose();
             // 顺序敏感: 这两步必须最前。
             // 1) 卸全局低级鼠标 hook —— UI 线程接下来要被 KillFlash WaitForExit 阻塞数秒,
             //    hook 还挂着的话全系统鼠标消息都要排队走它的回调, 光标视觉延迟显著。

@@ -1,0 +1,3 @@
+﻿trace("FocusedTestRunId scene-transition Start: __FOCUSED_RUN_ID__");
+org.flashNight.arki.ui.SceneTransitionServiceTest.runAllTests();
+trace("FocusedTestRunId scene-transition Complete: __FOCUSED_RUN_ID__");

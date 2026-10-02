@@ -1,0 +1,165 @@
+{
+  "schema": "cf7-u12-footer-close.v1",
+  "recordedAtUtc": "2026-10-02T07:28:29.4783408Z",
+  "source": "uncommitted worktree",
+  "baseline": "856ac640c5c1705b2c2ea3bacfebc35e5fd14fff",
+  "deploymentStatus": "NOT_DEPLOYED",
+  "change": "Restore the stashed settlement footer to the existing close intent in both preview and bound authority states. Saved reward confirmation remains status text.",
+  "candidate": {
+    "selectionState": "ready",
+    "path": "tmp/runtime-candidates/v2/u12-followup-20261002",
+    "coreSha256": "3E1684A705DAD4ABBBF0FB49BD6104A488F732DE35A1B5C08C1CBEE47C27A68B",
+    "buildIdentityHash": "F044657C3DBFEF2E49058F3800FA690C4EEA08AD55E0D70EA95D062BEEA9657B",
+    "rebuiltThisTurn": false
+  },
+  "checks": {
+    "sceneTransitionBrowser": 366,
+    "lootBrowser": 114,
+    "lootLazyCancel": 6,
+    "lootState": 88,
+    "panelContracts": 70,
+    "playerCopyLiterals": 355,
+    "playerCopyForbidden": 0,
+    "workbenchUiAudit": {
+      "errors": 0,
+      "warnings": 0
+    },
+    "documentationGovernance": "passed; existing historical link debt remains"
+  },
+  "coverage": [
+    "Click actual footer before authority binding; pending intent deduplicates subsequent Escape.",
+    "Bound footer closes through the original lease before base readiness and after three warm-document settlements.",
+    "Lost close response retains unknown lock; footer reconciliation only queries and never replays close or grants rewards.",
+    "Pending and disconnected previews disable the footer.",
+    "Explicit density choice survives the next two settlements and a fresh document."
+  ],
+  "compatibility": {
+    "basis": "HEAD original Loot source and current production DOM fixtures",
+    "preserved": [
+      "Default compact mode and full toggle",
+      "Original two-column report",
+      "Inventory organizer and material search",
+      "Exact close and unknown-operation guards"
+    ],
+    "intentionalChanges": [
+      "Report visible while loading, same DOM at base readiness",
+      "Committed stage reward history shown in the side pane",
+      "Fix long-record overlap and duplicate scaling"
+    ],
+    "openIssues": [
+      {
+        "id": "legacy-settlement-density",
+        "status": "not_implemented",
+        "before": "overlay.local in launcher/webview2_overlay_userdata",
+        "after": "cf7-transition.local in tmp/unified-live-entry/web-profile",
+        "key": "cf7.itemgrid.mode.loot-stage-settlement",
+        "required": "Before claiming a seamless upgrade, carry over a valid old preference without overwriting a choice already made in the new page, and verify with isolated profiles."
+      }
+    ],
+    "sourceRefs": [
+      {
+        "path": "launcher/web/modules/workbench.js",
+        "sha256": "1E4C9A5D0521CD35900397FC05B7B845E113ABB169505CDE69CDA8C83B7F3923"
+      },
+      {
+        "path": "launcher/web/modules/loot/loot-organizer.js",
+        "sha256": "5B90F3B429C4DB8A4E3EA429070F4AA60083892CCF3E2153E9D2D2E5BC993D8D"
+      },
+      {
+        "path": "launcher/web/modules/loot/loot-state.js",
+        "sha256": "23F5F892B3A0A45DB2D7A4DEC7F02D234019F1264D5B52D32E92DF430586FCDE"
+      },
+      {
+        "path": "launcher/web/modules/loot/loot-runtime.js",
+        "sha256": "B3EBED49B6358FFDA2C49B06C654F811F4845BC53FC70EC5332FD84966C081AB"
+      },
+      {
+        "path": "launcher/src/Guardian/WebOverlayForm.cs",
+        "sha256": "632E37A86D90766E7170E7C2D7F42D29D2462F6CB78B7975E6B42397B9C4A63F"
+      },
+      {
+        "path": "launcher/src/Guardian/CompositionHelpSurface.cs",
+        "sha256": "C48B748BD53FEAFDCEEBDDC3A10E6BE3B9D922ADEBD48CEC0FEDBD699CFB201C"
+      },
+      {
+        "path": "launcher/src/Guardian/SceneTransitionController.cs",
+        "sha256": "A41EABA930587066367433B82484043AD6C682E6246027031AB538FB0F34170C"
+      }
+    ]
+  },
+  "failedAttempts": [
+    {
+      "path": "tmp/u12-footer-close-20261002.log",
+      "reason": "Fixture asserted the outer transition wrapper hidden without simulating the Host hide projection. Corrected to assert the original settlement panel hidden after its authority acknowledgement; no premature curtain hide added."
+    }
+  ],
+  "boundaries": {
+    "physicalGameAcceptance": false,
+    "saveRestartAcceptance": false,
+    "realSaveTouched": false,
+    "hostOrFlashChangedThisTurn": false,
+    "commit": false,
+    "push": false,
+    "releaseTrain": false
+  },
+  "sources": [
+    {
+      "path": "launcher/web/modules/loot/loot-view.js",
+      "sha256": "3811AD5DDE582DDA2EF1B9422155ED397AE278544628C230BFA545794816A59F"
+    },
+    {
+      "path": "launcher/web/modules/loot/loot-panel.js",
+      "sha256": "A6F9F7D7D9B4CF3151C776D30A26D8B2CD63926DA1AA08B8946A0577CE109753"
+    },
+    {
+      "path": "tools/test-scene-transition.js",
+      "sha256": "72EF32FFDB8587C1719FC024AB3C1A6621DBE671B463F621B2F743D059BCEDF1"
+    },
+    {
+      "path": "docs/U12过场Web迁移与人力验收-2026-10-01.md",
+      "sha256": "C627BAAEE5096FA689859430D81158C423E24F499E54303DEA0B4A2A82CD1541"
+    }
+  ],
+  "logs": [
+    {
+      "path": "tmp/u12-footer-close-20261002-final.log",
+      "sha256": "BE7A6DCC3A07942F5234D61AA89EA62A7B5D05C55347DDDA1CD4137F86C11DF3"
+    },
+    {
+      "path": "tmp/u12-footer-close-20261002-final/browser-results.json",
+      "sha256": "F1E344C872200BEE127EC0331474F542B214BE42BC71F63B33C91A4E38BC5E49"
+    },
+    {
+      "path": "tmp/u12-footer-close-loot-browser.log",
+      "sha256": "38AAFCC7A6674A5C8AEBFAD133E12F9978B8A2B34D565D0689166C161D6AC5A6"
+    },
+    {
+      "path": "tmp/u12-footer-close-loot-state.log",
+      "sha256": "A63F6DF1BD8242D5B20AD17BAD242A6A1833F3AE259964090BC1CE76AACDACF1"
+    },
+    {
+      "path": "tmp/u12-footer-close-player-copy.log",
+      "sha256": "B3ABBDB1C2EB54DCF410F5A2FF230009F71B0268343E398D9241001CF6D21FCB"
+    },
+    {
+      "path": "tmp/u12-footer-close-panel-contracts.log",
+      "sha256": "139653E41509DF93D65EBB04FEFEB32F02FC654FACF384A5F7B56F037F981C23"
+    },
+    {
+      "path": "tmp/u12-footer-close-dev-status.log",
+      "sha256": "376E29BD2DF44DD0C289AA7C60FAB1848C9779DF7266556BA484DE81ADBEB99D"
+    },
+    {
+      "path": "tmp/u12-footer-close-20261002.log",
+      "sha256": "21CFF5C0129FB07DECEDC4E5D62ECD63F147A9C7C0D9A0A719BFA2E50E32648C"
+    },
+    {
+      "path": "tmp/u12-footer-close-ui-audit.log",
+      "sha256": "3F08D36B832A36EFD0FF066663FE169BFF47B8A225B6C295D10483203812A3BA"
+    },
+    {
+      "path": "tmp/u12-footer-close-doc-governance.log",
+      "sha256": "74ACF51879BA1521A3C9394203F2A3BB4497C613229652AF4D3125DD999AF754"
+    }
+  ]
+}

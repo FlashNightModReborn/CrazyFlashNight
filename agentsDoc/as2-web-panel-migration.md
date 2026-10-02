@@ -17,6 +17,23 @@
 
 本文用于所有“旧 Flash / AS2 UI 迁移到 Launcher WebView2 panel”的任务。它不是普通前端开发指南，而是跨 AS2、C# 总线、Web panel、Flash CS6 编译链的稳定性护栏。是否必须先读本文按任务命中条件判定，见下节权威核心；“凡迁移旧 UI、替换运行态入口、扩展 panel 协议、把 dev harness 推向生产都必须整份通读本文”的无条件口径不再成立。
 
+<a id="u12-scene-transition"></a>
+### U12 游戏内过场投影
+
+`scene_transition` 是 AS2 单向权威快照，由独立固定 WebView2 合成表面接收。纯过场不注册普通 Panel、不暂停或取得场景导航权威；并行结算在同一端点绑定既有 Loot Panel 的 exact 身份与业务权威。AS2 继续拥有原淡出时间轴的清理、跳图、奖励暂存和保存；Host 分别核遮罩呈现、奖励绑定、目标世界合成帧及时间轴结束。身份、断连和未知操作保护及人工验收见 [U12 专项](../docs/U12过场Web迁移与人力验收-2026-10-01.md)。本节按 commit `c724305c374de423bce06bd39de0b27e09638f4c` 加 2026-10-02 工作区核对，状态不升级为正式入口验证。
+
+地图交接在跳图受理的同步函数中先发布 cover，第 2 帧复用同一身份；Host 入幕先装不透明底板，当前 Web covered 回执后才撤掉。页面等待图片期间保持不透明，透明动效仅用于已获世界帧许可的揭幕。真实失败旅程属于自然发生时的条件人验，未遇到不要求制造故障，也不能把夹具结果称为真实失败通过。
+
+旧淡出时间轴第 17 帧的 `__returnFadeActive` 释放是副本初始化 admission 合同，不能随遮罩延长到揭幕结束；Web 遮罩由独立投影身份继续等待 `SceneReady` 和目标帧。修改这段时序需覆盖生产副本 admission，防止初始化与揭幕相互等待。
+
+基地返回 token/run 精确一致、报告已经 durable 暂存时，v2 `scene_transition` 携带不可变 `report/reportVisible/reportHandoff`。原 Loot Panel/View 先以无业务权威的预览显示；Host 确认 covered 后自动经原 Loot 权威绑定，原操作即可与加载并行，每次请求只申请一次，不新增按钮。绑定复用现有 View/DOM/Core/HWND 和阅读状态；固定源与 exact panel/chest/container/epoch/run 同时成立才开放既有 Loot/库存域，拒绝其他任务及 foreign 实例，不复制业务后端。
+
+该请求内 `manageReport/closeReport` 是同一不可变报告的内部意图，加载/提示的显示 revision 前进不能使在途意图失效。Host 要求同一 request/generation、整数 `1 ≤ 意图 revision ≤ 当前显示 revision`、报告可用及既有操作锁，AS2 再核请求、原返回 token/run 和关闭权威；未来/畸形/foreign 仍拒绝。已经接受的 covered 证明仅随同一报告请求延续，新请求、hide 或断连清除。世界呈现回执、失败导航和 Loot 奖励/库存/关闭的业务 revision 仍要求各自的 exact 权威；不能用该显示意图规则重放未知写。
+
+已暂存报告在 durable 回调后才补齐已提交资产回执的物资字段；未提交或未知候选不得提前呈现为所得。右栏显示本轮已入账奖励，空 Loot 容器仍是原领取权威，不能为填充界面再发一次奖励。原生测试必须使用隔离 WebView2 profile，不能改写日常结算密度偏好。
+
+`rewardReady` 只表示已遮盖且可申请原权威会话，不能替代场景就绪；`prepared/reportReady` 仍须真实目标捕获。绑定后的结算会话允许目标场景编号更新，不能因此清掉 exact 渲染回执。AS2 核 ready 世界和同一业务身份，结束原过场时间轴后，Host 才取得普通面板暂停；页面只更新就绪能力，没有重新开窗、截图背景、恢复四项状态或第二次 snapshot。外层 PanelScale 唯一缩放。提前关闭必须先由原 exact close/revision/lease/terminal 裁决，未就绪继续同一次加载，到达不再重开；未知写不能靠关闭或重试清锁。失败页重试与奖励操作锁分开，重试沿用同一已绑定报告，不重开、不重复暂存。主动切走时等待回到游戏；v1 未并行报告仍等待成功尾帧，自动帮助继续等待报告与遮罩。
+
 <a id="authority-core"></a>
 ## 权威核心：何时必读本文
 

@@ -485,7 +485,7 @@ function activeResponse(message){var response=common(message);response.snapshots
       !document.querySelector('.workbench-modal[data-modal-kind="loot-help"]')
       &&document.activeElement===lootHelpButton&&lootHelpBefore===lootHelpAfter);
     var lootNode=document.querySelector('.loot-source-slot.occupied');lootNode.dispatchEvent(new KeyboardEvent('keydown',{key:'Enter',bubbles:true}));
-    await waitFor(function(){return LootPanel.debugState().blockReason==='target_full'});
+    await waitFor(function(){return LootPanel.debugState().blockReason==='target_full'&&LootPanel.debugState().claimAll===false});
     var blockedCommit=document.querySelector('.workbench-commit-bar.is-blocked');
     var blockedCommitStatus=blockedCommit&&blockedCommit.querySelector('.workbench-commit-status');
     var blockedCommitCta=blockedCommit&&blockedCommit.querySelector('[data-commit-primary]');
@@ -1029,7 +1029,8 @@ function activeResponse(message){var response=common(message);response.snapshots
     await waitFor(function(){return LootPanel.debugState().blockReason==='target_full'});
     ok('failed claim-all keeps the authority binding open and never submits close',
       Panels.getActive()==='loot'&&LootPanel.debugState().claimAll===false
-      &&LootPanel.debugState().remainingCount===1&&tasks('close').length===failedClaimAllClosesBefore);
+      &&LootPanel.debugState().remainingCount===1&&tasks('close').length===failedClaimAllClosesBefore,
+      JSON.stringify({state:LootPanel.debugState(),closes:tasks('close').length,before:failedClaimAllClosesBefore}));
     Panels.forceClose();await delay();
 
     resetMixedClaimAllAuthority();__mode='mixed_full';var mixedBatchesBefore=tasks('claimBatch').length,mixedClosesBefore=tasks('close').length;
@@ -1343,6 +1344,56 @@ function activeResponse(message){var response=common(message);response.snapshots
       &&authority.terminal.kind==='CONSUMED'
       &&__events.indexOf('terminal_response')>=0
       &&__events.indexOf('visual_close')>__events.indexOf('terminal_response'));
+    ok('ordinary loot and unstashed reports never emit transition handoff paint',
+      !__sent.some(function(x){return x.type==='scene_transition_report_presented'}));
+    resetAuthority(false);__mode='normal';
+    var parallelInit=settlementInit('parallel-paint');parallelInit.report.rewardStashed=true;
+    parallelInit.report.totalKills=24;
+    parallelInit.report.kills=Array.from({length:24},function(_,i){return {key:'enemy.'+i,displayName:'敌人 '+i,
+      iconName:'',doll:null,eliteLevel:0,count:1}});
+    authority.loot=[empty(0),empty(1),empty(2)];
+    Panels.open('loot',parallelInit);
+    ok('durable report does not announce paint before its authoritative root snapshot',
+      !__sent.some(function(x){return x.type==='scene_transition_report_presented'}));
+    await waitFor(function(){return __sent.some(function(x){return x.type==='scene_transition_report_presented'})});
+    var paint=__sent.filter(function(x){return x.type==='scene_transition_report_presented'});
+    ok('durable full report announces exactly one current identity after presentation',paint.length===1
+      &&JSON.stringify(paint[0])===JSON.stringify({type:'scene_transition_report_presented',version:1,
+        panelInstanceId:parallelInit.panelInstanceId,chestSessionId:parallelInit.chestSessionId,
+        lootContainerId:parallelInit.lootContainerId,containerEpoch:parallelInit.containerEpoch,runId:parallelInit.report.runId}),
+      JSON.stringify({paint:paint,state:LootPanel.debugState(),active:Panels.getActive()}));
+    var restoreView={scrollTop:25,density:'full',rightTab:'materials',materialSearch:'金属'};
+    var restoreMessage={type:'scene_transition_report_restore',version:1,
+      panelInstanceId:parallelInit.panelInstanceId,chestSessionId:parallelInit.chestSessionId,
+      lootContainerId:parallelInit.lootContainerId,containerEpoch:parallelInit.containerEpoch,runId:parallelInit.report.runId,
+      viewState:restoreView};
+    var restoreHandlers=__handlers.scene_transition_report_restore||[];
+    var beforeRestoreTasks=tasks().length;
+    var wrongRestore=JSON.parse(JSON.stringify(restoreMessage));wrongRestore.panelInstanceId='old-panel';
+    restoreHandlers.forEach(function(fn){fn(wrongRestore)});await delay(50);
+    ok('foreign report presentation restore never changes the current settlement',
+      !__sent.some(function(x){return x.type==='scene_transition_report_presented'&&x.version===2})
+      &&document.querySelector('.loot-settlement-side-tabs [aria-selected=true]').getAttribute('data-settlement-side-tab')==='rewards');
+    wrongRestore=JSON.parse(JSON.stringify(restoreMessage));wrongRestore.viewState.claim=true;
+    restoreHandlers.forEach(function(fn){fn(wrongRestore)});await delay(50);
+    ok('presentation restore rejects authority fields without sending inventory commands',
+      tasks().length===beforeRestoreTasks&&!__sent.some(function(x){return x.type==='scene_transition_report_presented'&&x.version===2}));
+    restoreHandlers.forEach(function(fn){fn(restoreMessage)});
+    await waitFor(function(){return __sent.some(function(x){return x.type==='scene_transition_report_presented'&&x.version===2})});
+    var restoredPaint=__sent.filter(function(x){return x.type==='scene_transition_report_presented'&&x.version===2});
+    ok('same settlement preserves density tab and search before acknowledging the visual handoff',
+      restoredPaint.length===1&&JSON.stringify(restoredPaint[0].viewState)===JSON.stringify(restoreView)
+      &&document.querySelector('.item-grid-mode-toggle').getAttribute('data-layout-mode')==='full'
+      &&document.querySelector('.loot-settlement-side-tabs [aria-selected=true]').getAttribute('data-settlement-side-tab')==='materials'
+      &&document.querySelector('.loot-settlement-material-toolbar input').value==='金属'
+      &&document.querySelector('.loot-settlement-report-scroll').scrollTop===25
+      &&tasks().length===beforeRestoreTasks);
+    await delay();await delay();Panels.forceClose();
+    ok('closing a presented report does not duplicate the readonly handoff receipt',
+      __sent.filter(function(x){return x.type==='scene_transition_report_presented'}).length===2);
+    restoreHandlers.forEach(function(fn){fn(restoreMessage)});await delay(50);
+    ok('a closed settlement cannot restore presentation or announce another handoff',
+      __sent.filter(function(x){return x.type==='scene_transition_report_presented'}).length===2);
     var result={passed:checks.filter(function(x){return x.ok}).length,total:checks.length,checks:checks};window.__qaResult=result;window.__qaDone=true;document.getElementById('qa-output').textContent=JSON.stringify(result,null,2)
   }catch(error){window.__qaError=error.stack||String(error);window.__qaDone=true;document.getElementById('qa-output').textContent=window.__qaError}
 })();

@@ -1017,6 +1017,40 @@ namespace Launcher.Tests.Tasks
         }
 
         [Fact]
+        public void PreHandshakeDisconnect_DoesNotInventTrainerCleanup()
+        {
+            var sent = new List<JObject>();
+            using (var task = new SkillTask(() => true, value => { sent.Add(ParseWire(value)); return true; }))
+            {
+                task.ClearPending(mayHaveTrainerState: false);
+                task.OnSocketReconnected();
+                Assert.Empty(sent);
+                Assert.True(task.CanOpenTrainer);
+                Assert.True(task.IsClosedAndSettled);
+            }
+        }
+
+        [Fact]
+        public void PreHandshakeDisconnect_PreservesPreviouslyQueuedCleanup()
+        {
+            bool ready = false;
+            var sent = new List<JObject>();
+            using (var task = new SkillTask(() => ready, value => { sent.Add(ParseWire(value)); return true; }))
+            {
+                task.RequestTrainerCleanup("trainer.retained");
+                task.ClearPending(mayHaveTrainerState: false);
+                ready = true;
+                task.OnSocketReconnected();
+                var cleanup = Assert.Single(sent);
+                Assert.Equal("skillPanelClose", (string)cleanup["action"]);
+                Assert.Equal("trainer.retained", (string)cleanup["trainerSession"]);
+                Assert.False(task.CanOpenTrainer);
+                task.HandleFlashResponse(CleanupAck((int)cleanup["callId"], 13), null);
+                Assert.True(task.CanOpenTrainer);
+            }
+        }
+
+        [Fact]
         public void ExpiredTrainerAfterMalformedLearnCommit_FallsBackToManageBackgroundReconcile()
         {
             var sent = new List<JObject>();

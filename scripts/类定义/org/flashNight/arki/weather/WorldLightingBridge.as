@@ -17,6 +17,7 @@ class org.flashNight.arki.weather.WorldLightingBridge {
         _mode = "光照";
     }
     public static function sceneReady():Void { _ready = true; _lastSend = -1000; }
+    public static function sceneNumber():Number { return _scene; }
     public static function setMode(mode:String):Void { if (_mode !== mode) _snap=true; _mode = mode; }
     public static function snapNext():Void { _snap=true; }
     public static function getScene():Number { return _scene; }

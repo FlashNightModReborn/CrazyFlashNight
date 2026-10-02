@@ -1,0 +1,256 @@
+{
+  "schema": "cf7-u12-settlement-performance.v1",
+  "recordedAtUtc": "2026-10-02T03:30:08.822Z",
+  "baseline": "c724305c374de423bce06bd39de0b27e09638f4c",
+  "source": "uncommitted worktree",
+  "state": "candidate_built",
+  "feedback": "Settlement is already visible; a brief stutter remains when the base finishes loading.",
+  "previousRound": "docs/evidence/u12-scene-transition-local-2026-10-01.json",
+  "findings": [
+    "Unchanged 25ms surface polling repeatedly called native Commit + WaitForCommitCompletion on the UI thread.",
+    "Loading long frames remained admitted to dynamic-quality scheduling and triggered a LOW panic downgrade.",
+    "A warm document retained sceneReady across consecutive settlement sessions.",
+    "Repeated curtain-state snapshots cancelled the pointer epoch even when ownership had not changed."
+  ],
+  "sourceSnapshot": [
+    {
+      "path": "launcher/src/Guardian/CompositionHelpSurface.cs",
+      "bytes": 33125,
+      "sha256": "99D9BFC39DBB525621AF296A27BDA42B3BC0A4768E21E7A412817C96C8C7C17D"
+    },
+    {
+      "path": "launcher/src/Guardian/WorldCompositor/WorldCompositorController.cs",
+      "bytes": 56157,
+      "sha256": "1CECB11B5DF912A18D791B8A004FCE19DE41CA95E7B70F3E63CAF13F821FCB93"
+    },
+    {
+      "path": "launcher/web/modules/loot/loot-panel.js",
+      "bytes": 51403,
+      "sha256": "9608C118AB252145AE79F862499D769BE4F0E6297F72B30E5DB3CA45CAC0B9E3"
+    },
+    {
+      "path": "launcher/tests/Guardian/WorldPointerBridgeBoundaryTests.cs",
+      "bytes": 30585,
+      "sha256": "70666CBB88B93FD465F8534BB25AC9D88C76D22F598BAC75D9DD97489D790BEA"
+    },
+    {
+      "path": "tools/test-scene-transition.js",
+      "bytes": 33307,
+      "sha256": "3AFA6A7A36A61D394D9AF90CE82BC9DD3728A5C7D09F5C96DBC786C7793CB5BD"
+    },
+    {
+      "path": "tools/scene-transition-smoke/Program.cs",
+      "bytes": 42619,
+      "sha256": "33CFF09AF98DD9135CFDC5B6F01873135F16638F1C0F01BA679EFDA8B9A6649B"
+    }
+  ],
+  "candidate": {
+    "schema": "cf7-local-dev-runtime-selection.v1",
+    "candidateRelativePath": "tmp/runtime-candidates/v2/u12-smooth-20261002",
+    "artifactSourceHash": "66F6121EAF228468B404C8B105381B4E18CED0FECE4292446777A846DDABDE1F",
+    "producerRecipeHash": "23483061F6288CDE0142991DBE8A5F2FDAE8DCC84B098FC8332D1573365ABA8E",
+    "toolchainLockHash": "DFA769829F9740196DEF63351A00AAC309E50A2CA0A768759334EB2A2161DD36",
+    "buildIdentityHash": "6076324327AE922BE4A22B2FEF95BF314B926FC3AC0591C3454481F75898A232",
+    "payloadClosureHash": "1447DB8A88A223A9CB1DF0C53282E83DD36D34F8A61F2D6946D86F401BA4BDAE",
+    "coreSha256": "A0B933DCE018C004A1272625D4EB9A318236FB828CE74697F384736B54227693",
+    "activatedAtUtc": "2026-10-02T03:26:22.1657904Z",
+    "trust": "INDEX_ONLY_REVERIFY_BEFORE_EXECUTION"
+  },
+  "nativeMeasurement": {
+    "before": {
+      "repetitions": 40,
+      "elapsedMs": 667.429,
+      "viewportDuplicates": 45
+    },
+    "after": {
+      "repetitions": 40,
+      "elapsedMs": 0.0517,
+      "viewportDuplicates": 0
+    },
+    "scope": "40 repeated same-size production-surface calls inside an isolated real WebView2/DirectComposition fixture. This is not gameplay transition latency.",
+    "baselineResult": {
+      "path": "tmp/u12-takeover-native-before/result.json",
+      "bytes": 6005,
+      "sha256": "53B7B183DE9ECCA10183023340E75DB0682AA771CB6A6193640B5F4EECD1AF8D"
+    },
+    "currentResult": {
+      "path": "tmp/u12-takeover-native-final/result.json",
+      "bytes": 8086,
+      "sha256": "1B1D7A6E6EC09D3F48ADD00BE06C539DCDB509B54378785F9B4E0BC9EBF2661D"
+    },
+    "intermediateAttempt": {
+      "result": {
+        "path": "tmp/u12-takeover-native-after/result.json",
+        "bytes": 7951,
+        "sha256": "A31A12B3D5AFA56386A10EB0591738B7B459FE05B09FB1079CC21EAE410203A7"
+      },
+      "reason": "The added next-run check exposed that the fixture had not actually reacquired foreground after its deliberate external switch. The fixture now uses a foreground-peer return gesture and checks actual window visibility."
+    }
+  },
+  "checks": {
+    "host": {
+      "passed": 6479,
+      "skipped": 5,
+      "canonicalRunner": true,
+      "parallelTestCollections": false
+    },
+    "browser": {
+      "passed": 321,
+      "consecutiveRunsInSameDocument": 3,
+      "mockedBusinessAuthority": true
+    },
+    "loot": {
+      "passed": 114,
+      "lazyCancel": 6
+    },
+    "composition": {
+      "passed": 54,
+      "reportPixelsVerified": true,
+      "sameDomCoreHwnd": true,
+      "newSessionViewportExactlyOnce": true,
+      "mockedSceneAndBusinessAuthority": true
+    },
+    "originalBackgrounds": 14,
+    "stageEntrySourceFixture": 9,
+    "documentation": {
+      "passed": true,
+      "logPath": "tmp/u12-settlement-performance-20261002/doc-governance.log",
+      "scope": "Existing repository link debt retained as warnings."
+    },
+    "diffWhitespace": {
+      "passed": true,
+      "logPath": "tmp/u12-settlement-performance-20261002/diff-check.log"
+    }
+  },
+  "reusedFlash": {
+    "recompiled": false,
+    "hashesVerified": true,
+    "files": [
+      {
+        "path": "scripts/asLoader.swf",
+        "bytes": 1425477,
+        "sha256": "A0FE22FD337D3893D919FABE5A20BD28CB65B646417E62410DE2FB6F4F133AF2"
+      },
+      {
+        "path": "CRAZYFLASHER7MercenaryEmpire.swf",
+        "bytes": 207247,
+        "sha256": "F0BDD31048055BAF47EA582D71896190998D563AFB7B2CC8E9F67E06E67436B6"
+      },
+      {
+        "path": "scripts/类定义/org/flashNight/arki/ui/SceneTransitionService.as",
+        "bytes": 14917,
+        "sha256": "43629AF68C38A968ADFDE86AD05923F90265FD6F011F0AF405EABDDABDBA2754"
+      },
+      {
+        "path": "scripts/类定义/org/flashNight/arki/weather/WorldLightingBridge.as",
+        "bytes": 5885,
+        "sha256": "8A7F7A2B553FCC3CD6D8CB15E132FF5125A2AB7B1CC9B2CAB82FBA3F287AF47F"
+      },
+      {
+        "path": "scripts/展现/UI交互/UI交互_lsy_UI管理.as",
+        "bytes": 16354,
+        "sha256": "B775A1F2D8169D242C50DA4BFC5DCA534476FEA44E0E0D2DC71AF6C3D112008F"
+      },
+      {
+        "path": "CRAZYFLASHER7MercenaryEmpire/LIBRARY/sprite/淡出动画.xml",
+        "bytes": 10872,
+        "sha256": "B1B5D4C4883976EF54F0EB334E70C03A12D43AC2DFC8EF5CFF83F72F8180A1CE"
+      },
+      {
+        "path": "scripts/类定义/org/flashNight/arki/scene/StageRunSession.as",
+        "bytes": 131804,
+        "sha256": "60A69F5495D0EEBF4EDF4CC3D6DE9F3C4E89A4A3AD2BB92659EE6FA1C3EE5DE7"
+      },
+      {
+        "path": "scripts/类定义/org/flashNight/arki/scene/StageReturnFlow.as",
+        "bytes": 8054,
+        "sha256": "8128EAC3EC196A55B68DBDC0A626A55CD9525B2AC9A51964E61AEDE51FB95EEC"
+      },
+      {
+        "path": "scripts/类定义/org/flashNight/arki/item/LootContainerService.as",
+        "bytes": 172428,
+        "sha256": "31A3B90451F14B4C9D7997C73F821EFBE565160FC430A2AD83A6B5770A894311"
+      },
+      {
+        "path": "scripts/类定义/org/flashNight/arki/scene/StageRunSessionTest.as",
+        "bytes": 250943,
+        "sha256": "F5ACA3BFD8069F6EADF94510C0C35CCA37D0EA40385002C7A5A423D63C1C0DA5"
+      }
+    ],
+    "priorEvidenceScope": "Prior real AVM1 and SWF compilation/readback evidence retained for unchanged inputs; not rerun."
+  },
+  "formalRuntimeUnchanged": true,
+  "gameE2eVerified": false,
+  "saveRestartVerified": false,
+  "promoted": false,
+  "standardEntryVerified": false,
+  "playerSlotsTouched": false,
+  "humanAcceptance": "pending: restart using the local development entry and assess the already-visible settlement as the base becomes ready; consecutive returns, window restore and save/restart remain separate.",
+  "logs": [
+    {
+      "path": "tmp/u12-settlement-performance-20261002/launcher-before.log",
+      "bytes": 1962933,
+      "sha256": "6F5E175BB6FDDED548DF8319FB3E8EADEB425E07A8D505B99541960B2038C676"
+    },
+    {
+      "path": "tmp/u12-settlement-performance-20261002/host-before.log",
+      "bytes": 39102,
+      "sha256": "CCDBB396702888D1F6688B6B8EBFE4387EDC209FCD9C6E1E3C9814DA5A6AF2E1"
+    },
+    {
+      "path": "tmp/u12-settlement-performance-20261002/host-after.log",
+      "bytes": 969865,
+      "sha256": "CF7298E3873EBF846A977A08E465385491D83F97971AC1238BE42D89FB024430"
+    },
+    {
+      "path": "tmp/u12-settlement-performance-20261002/browser-before.log",
+      "bytes": 347,
+      "sha256": "FDF990188A85A7C8A2E171B65B93A41E6EA973BD4602722B7B57649D43A9E37A"
+    },
+    {
+      "path": "tmp/u12-settlement-performance-20261002/browser-final.log",
+      "bytes": 71,
+      "sha256": "946B1435EE30E32FF392F4F7334BF638A56FCD3727E7923E799502A8D3ABC1E6"
+    },
+    {
+      "path": "tmp/u12-settlement-performance-20261002/loot-after.log",
+      "bytes": 126,
+      "sha256": "501E29A2C8C1726A48FD16520A08B1045C09FE620FE82927E29217EFC93E9D16"
+    },
+    {
+      "path": "tmp/u12-settlement-performance-20261002/build.log",
+      "bytes": 5594,
+      "sha256": "F8990FFC8B7A7B0F099FE21967EC33EE26F1EBD8625FCDC11F9C8B4DFEBFF2A2"
+    },
+    {
+      "path": "tmp/u12-settlement-performance-20261002/native-before.log",
+      "bytes": 560,
+      "sha256": "4E1C39F0DCEB22CD7484C572990B6EDBF4C6229E02F05DD147980683B8E0976B"
+    },
+    {
+      "path": "tmp/u12-settlement-performance-20261002/native-after.log",
+      "bytes": 560,
+      "sha256": "21BA12746577E3112E4C1066B7CC57E80242C1CC6A0064F3FDC3FA2B1F51E5BA"
+    },
+    {
+      "path": "tmp/u12-settlement-performance-20261002/native-final.log",
+      "bytes": 8648,
+      "sha256": "00433F0357C70DD3B6250874F8AF0C1B6D47BB190B71D61DDE512E61B354B457"
+    },
+    {
+      "path": "tmp/u12-settlement-performance-20261002/dev-status.log",
+      "bytes": 1724,
+      "sha256": "5ED35387606C283CCA47D3C3E49E81EF6659A478DF700E1B2B98EF9267B2EB2E"
+    },
+    {
+      "path": "tmp/u12-settlement-performance-20261002/doc-governance.log",
+      "bytes": 3553,
+      "sha256": "F0D9C7A079D432A261A63824B688B2F2AF1514DB7614EB2F3CC2BCA7997843EA"
+    },
+    {
+      "path": "tmp/u12-settlement-performance-20261002/diff-check.log",
+      "bytes": 154,
+      "sha256": "FDF1DF71642D873E0D35ED91E930326CA66B529D0EB7E15BCA9CAED78CA16BFB"
+    }
+  ]
+}

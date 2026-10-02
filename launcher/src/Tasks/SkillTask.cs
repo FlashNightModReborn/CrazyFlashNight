@@ -774,7 +774,7 @@ namespace CF7Launcher.Tasks
             TryStartTrainerCleanup();
         }
 
-        public void ClearPending()
+        public void ClearPending(bool mayHaveTrainerState = true)
         {
             lock (_lock)
             {
@@ -813,7 +813,7 @@ namespace CF7Launcher.Tasks
                 MergeDisconnectedCleanupSessionLocked(returnSession);
                 // No capability survived locally, but Flash may still retain one after the socket
                 // break. A global cleanup is the only safe recovery in that fully unknown case.
-                if (_cleanupQueue.Count == 0) QueueTrainerCleanupLocked(null, false);
+                if (_cleanupQueue.Count == 0 && mayHaveTrainerState) QueueTrainerCleanupLocked(null, false);
                 _panelInstanceId = null;
                 _panelView = "manage";
                 _panelTrainerSession = null;
