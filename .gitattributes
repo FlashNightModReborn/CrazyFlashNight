@@ -83,3 +83,7 @@ launcher/app.manifest text eol=lf
 /tools/combat-bullet-visuals/*.java text eol=lf
 /tools/swf-audit/swfscan.py text eol=lf
 /data/combat_visuals/*.json text eol=lf
+
+# Named-pose source, runtime and provenance use exact JSON byte hashes.
+/data/weapon-animations/*.json text eol=lf
+/flashswf/arts/new/Codex素材源稿/打桩机-M7/*.json text eol=lf
