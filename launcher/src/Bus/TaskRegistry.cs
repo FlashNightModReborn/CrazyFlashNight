@@ -489,7 +489,8 @@ namespace CF7Launcher.Bus
             NativeDialogueTask nativeDialogueTask = null,
             WorldLightingTask worldLightingTask = null,
             LutLabTask lutLabTask = null,
-            NativeGuidanceTask nativeGuidanceTask = null)
+            NativeGuidanceTask nativeGuidanceTask = null,
+            SceneTransitionTask sceneTransitionTask = null)
         {
             // JSON 路由 task（经 MessageRouter 分发）
             router.RegisterAsync("gomoku_eval", gomoku.HandleAsync);
@@ -608,6 +609,8 @@ namespace CF7Launcher.Bus
                 router.RegisterSync("native_interaction", nativeInteractionTask.Handle);
             if (nativeGuidanceTask != null)
                 router.RegisterSync(NativeGuidanceTask.TaskKey, nativeGuidanceTask.Handle);
+            if (sceneTransitionTask != null)
+                router.RegisterSync(SceneTransitionTask.TaskKey, sceneTransitionTask.Handle);
             if (worldLightingTask != null) router.RegisterSync("world_lighting", worldLightingTask.Handle);
             // LUT 实验室（dev 面板）：Program.cs 无条件构造；Web ingress 由
             // WebOverlayForm.IsLutLabIngressAllowed 按 task 名放行，httpCallable 保持 false。
@@ -914,6 +917,7 @@ namespace CF7Launcher.Bus
             first = AppendTask(sb, "lutlab.bakeXml", "json_async","Web->C#", false, first);
             first = AppendTask(sb, "native_dialogue","json_async", "AS2->C#", false, first);
             first = AppendTask(sb, "native_guidance","json_sync", "AS2->C#", false, first);
+            first = AppendTask(sb, "scene_transition","json_sync", "AS2->C#", false, first);
             first = AppendTask(sb, "dialogue_portrait_result","json_sync", "Web->C#", false, first);
             first = AppendTask(sb, "cursor_control", "json_sync", "AS2->C#", false, first);
             first = AppendTask(sb, "panel_request",  "json_sync", "AS2->C#", false, first);

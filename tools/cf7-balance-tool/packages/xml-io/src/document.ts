@@ -84,6 +84,39 @@ export class XmlDocument {
     return this.#readRange(node.innerStart, node.innerEnd);
   }
 
+  /** 按节点本身读取叶子文本；普查这类需要遍历大量节点的场景不必拼路径。 */
+  leafText(node: XmlDocumentNode): string | undefined {
+    if (node.selfClosing || node.children.length > 0) {
+      return undefined;
+    }
+
+    const value = this.#readRange(node.innerStart, node.innerEnd).trim();
+    return value.length > 0 ? value : undefined;
+  }
+
+  childText(node: XmlDocumentNode, name: string): string | undefined {
+    const child = node.children.find((item) => item.name === name);
+    return child === undefined ? undefined : this.leafText(child);
+  }
+
+  childrenNamed(node: XmlDocumentNode, name: string): XmlDocumentNode[] {
+    return node.children.filter((item) => item.name === name);
+  }
+
+  /** 按节点本身写入叶子文本；与 leafText 对称，避免为长中文节点名拼路径。 */
+  setLeafText(node: XmlDocumentNode, value: string): void {
+    if (node.selfClosing || node.children.length > 0) {
+      throw new Error("Cannot set text on a non-leaf node");
+    }
+
+    this.#writeRange(node.innerStart, node.innerEnd, value);
+  }
+
+  /** 在原文偏移处插入文本，用于补齐 XML 里尚不存在的节点。 */
+  insertTextAt(offset: number, value: string): void {
+    this.#writeRange(offset, offset, value);
+  }
+
   setNodeText(pathValue: string, value: string): void {
     const node = this.#requireNode(pathValue);
 

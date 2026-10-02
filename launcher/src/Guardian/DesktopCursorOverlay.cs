@@ -565,6 +565,7 @@ namespace CF7Launcher.Guardian
 
         private void PresentCursor()
         {
+            using var latency = CF7Launcher.Diagnostic.InputLatencyProbe.Measure("cursor_present");
             if (_visibility != CursorVisibility.Active
                 || _screenX == Int32.MinValue || _screenY == Int32.MinValue)
             {

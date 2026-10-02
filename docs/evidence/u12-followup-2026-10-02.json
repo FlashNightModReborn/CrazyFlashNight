@@ -1,0 +1,494 @@
+{
+  "schema": "cf7-u12-followup-local.v1",
+  "recordedAtUtc": "2026-10-02T05:57:58.088Z",
+  "state": "candidate_built",
+  "source": "uncommitted worktree",
+  "deploymentStatus": "NOT_DEPLOYED",
+  "authorization": {
+    "scope": "Repair compact settlement, committed reward display, related defects, and upstream conflicts; leave local acceptance ready.",
+    "commit": false,
+    "push": false,
+    "releaseTrain": false,
+    "promotion": false
+  },
+  "integration": {
+    "oldHead": "c724305c374de423bce06bd39de0b27e09638f4c",
+    "head": "856ac640c5c1705b2c2ea3bacfebc35e5fd14fff",
+    "upstream": "856ac640c5c1705b2c2ea3bacfebc35e5fd14fff",
+    "divergence": "0\t0",
+    "retainedStash": "1ac4df12543d251e73307dca09e122818e81e7b9",
+    "backupDirectory": "C:\\Users\\iuo\\Documents\\Codex\\2026-10-02\\codex-threads-01a0f5ba-647b-72e2-a871\\work\\u12-followup-checkpoint-20261002",
+    "unmergedFiles": [],
+    "indexChanges": "",
+    "conflicts": [
+      "Program.cs combines upstream launchFlow.RevealPerformed with scene-settlement presentation exception.",
+      "scripts/asLoader.swf freshly compiled from combined sources; neither old binary selected."
+    ],
+    "formalRuntime": "Matches fetched HEAD. Fast-forward included upstream existing formal artifacts; no local promotion or runtime copy was performed."
+  },
+  "fieldEvidence": {
+    "log": {
+      "path": "tmp/u12-followup-field-before/launcher.log",
+      "sha256": "BC6D31869BBF1227F204B182A975E6E2CE77F8F4F5AFF2F2D93719AF658DDE38"
+    },
+    "receiptLine": 4122,
+    "receipt": {
+      "payload": {
+        "reason": "stage_reward_stashed",
+        "operationId": "stage.settlement.28.stash",
+        "v": 1,
+        "direction": "gain",
+        "kind": "material",
+        "itemKey": "锌棒",
+        "name": "锌棒",
+        "count": 1,
+        "source": "stage_settlement",
+        "icon": "锌棒"
+      },
+      "task": "loot"
+    },
+    "commitLine": 4133,
+    "commitExcerpt": "[RewardCommit] event=commit outcome=committed op=stage.settlement.28.stash reason=stage.return_base",
+    "conclusion": "This observed zinc bar was committed. The report froze before its receipt and the side pane showed an already-empty claim container. This does not prove every historical zero-reward run was wrong.",
+    "newDiagnostics": "Bounded stash log now includes outcome, configured reward count, and omitted roll count."
+  },
+  "preferenceRepair": {
+    "after": "compact",
+    "before": "full",
+    "key": "cf7.itemgrid.mode.loot-stage-settlement",
+    "origin": "https://cf7-transition.local",
+    "backupDirectory": "C:\\Users\\iuo\\Documents\\Codex\\2026-10-02\\codex-threads-01a0f5ba-647b-72e2-a871\\work\\u12-density-repair\\leveldb-before",
+    "scope": "Only the settlement density localStorage key at cf7-transition.local; no real save writes.",
+    "prevention": "Native controller smoke now supplies its own output/controller-profile; production compact default is unchanged."
+  },
+  "fixes": [
+    "Refresh only frozen report asset fields after durable committed PAT projection; retain report identity, kills and elapsed time. Failed/unknown saves do not add rewards.",
+    "Show committed stage reward history with empty claim authority, saved status during preview, and no second delivery.",
+    "Keep long kill/asset sections at content height so the common scroll container cannot overlap them in full or compact mode.",
+    "Pre-handshake policy probe disconnect no longer invents global skill trainer cleanup; known sessions and unresolved writes still survive.",
+    "Required transition release assets, catalog freshness, stage-entry contract, and exact source/image policy closure inputs are checked.",
+    "Restore shownpc help coverage, current 3D Stage Select QA contracts, bounded GLB cancellation classification, and UTF-8 BOM for scene-lighting runner."
+  ],
+  "candidate": {
+    "schema": "cf7-local-dev-runtime-selection.v1",
+    "candidateRelativePath": "tmp/runtime-candidates/v2/u12-followup-20261002",
+    "artifactSourceHash": "4620B3615AA00172C44BE784BBCA9FD6579A0C7902030B1F88412AAEC5EC0059",
+    "producerRecipeHash": "23483061F6288CDE0142991DBE8A5F2FDAE8DCC84B098FC8332D1573365ABA8E",
+    "toolchainLockHash": "DFA769829F9740196DEF63351A00AAC309E50A2CA0A768759334EB2A2161DD36",
+    "buildIdentityHash": "F044657C3DBFEF2E49058F3800FA690C4EEA08AD55E0D70EA95D062BEEA9657B",
+    "payloadClosureHash": "D250A7236C80A8B2403CDA3F9ACF81B171A399B46D28B34BFC169036058D42B4",
+    "coreSha256": "3E1684A705DAD4ABBBF0FB49BD6104A488F732DE35A1B5C08C1CBEE47C27A68B",
+    "activatedAtUtc": "2026-10-02T05:38:12.1471183Z",
+    "trust": "INDEX_ONLY_REVERIFY_BEFORE_EXECUTION"
+  },
+  "flash": {
+    "asLoader": {
+      "path": "scripts/asLoader.swf",
+      "sha256": "32385FE20D43E6C15B8FA95DF6A843D7701B0A520F9FDFE054E08E277CB0DBD7"
+    },
+    "main": {
+      "path": "CRAZYFLASHER7MercenaryEmpire.swf",
+      "sha256": "F0BDD31048055BAF47EA582D71896190998D563AFB7B2CC8E9F67E06E67436B6"
+    },
+    "compilerErrors": {
+      "path": "tmp/u12-followup-publish/compiler_errors.txt",
+      "sha256": "6D64657E843CFA06C243B6B51F8732C1B5910EBD29940AA7F6F9342B38034FD3"
+    },
+    "compiler": {
+      "errors": 0,
+      "warnings": 0,
+      "target": "publish",
+      "freshTarget": true,
+      "freshOutput": true,
+      "trace": "Publish does not emit a fresh trace; no trace-pass claim."
+    },
+    "mainScope": "No new main-XFL changes this followup; preserved prior same-hash artifact."
+  },
+  "tests": {
+    "as2": {
+      "mapLootStage": {
+        "passed": 964,
+        "newDurableRewardAssertions": 25,
+        "compiler": "0/0"
+      },
+      "sceneTransition": 48,
+      "stageReturn": 119,
+      "settings": 47,
+      "sceneLighting": 30,
+      "characterBuild": 854,
+      "playerManualInput": 615,
+      "scope": "Real CS6 TestLoader, isolated save owners, fresh trace/output/compiler. No player-slot writes."
+    },
+    "host": {
+      "passed": 6530,
+      "skipped": 5,
+      "failed": 0,
+      "total": 6535,
+      "collectionsParallel": false,
+      "focusedPassed": 177,
+      "earlierFailure": "NativeDialogueReappearanceRestoresActualWindowOrderWithNoBuffs timed out once. Individual recheck and complete canonical serial rerun passed; underlying cause not established."
+    },
+    "web": {
+      "sceneTransition": 338,
+      "loot": 114,
+      "lootLazyCancel": 6,
+      "lootState": 88,
+      "stageSelect": 58,
+      "tasksAchievements": 63,
+      "settings": 18,
+      "panelContracts": 70,
+      "stageEntry": 9,
+      "playerCopyLiterals": 353,
+      "stageSelectNetworkFailures": 0,
+      "stageSelectPageErrors": 0,
+      "scope": "Browser/mock authority fixtures, not real save or game E2E."
+    },
+    "uiAudit": {
+      "errors": 0,
+      "warnings": 0,
+      "strictWarnings": true
+    },
+    "documentGovernance": {
+      "passed": true,
+      "historicalBrokenLinks": 296,
+      "affectedHistoricalFiles": 34,
+      "lineBudgetNotice": "launcher/README.md 462/430; non-blocking",
+      "scope": "Existing debt retained; no new blocking document errors."
+    },
+    "diffCheck": {
+      "passed": true
+    },
+    "releasePolicy": {
+      "passed": 12,
+      "scope": "Production check definitions exercised with isolated missing-resource/stale-output/changed-image negative fixtures; no formal release receipt."
+    },
+    "native": {
+      "state": "blocked_by_initial_foreground_admission",
+      "fixtureCompleted": false,
+      "finalFixtureCompiled": true,
+      "attempts": [
+        {
+          "path": "tmp/u12-followup-native-20261002/result.json",
+          "sha256": "E328405B8F38BFF3A28755F20354E19B319EE40CF5138582876E92BEA3969AB6",
+          "state": "failed",
+          "completedChecks": 2,
+          "coreSha256": "3E1684A705DAD4ABBBF0FB49BD6104A488F732DE35A1B5C08C1CBEE47C27A68B",
+          "reportPixelsVerified": false,
+          "failure": "System.Exception: fixture initial foreground was not admitted\r\n   at Probe.Run() in C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\resources\\tools\\scene-transition-smoke\\Program.cs:line 168"
+        },
+        {
+          "path": "tmp/u12-followup-native-2/result.json",
+          "sha256": "8E59A9971712FF0F1E329155B26F366083752F1B67639A8F1854F2598BE8386F",
+          "state": "failed",
+          "completedChecks": 2,
+          "coreSha256": "3E1684A705DAD4ABBBF0FB49BD6104A488F732DE35A1B5C08C1CBEE47C27A68B",
+          "reportPixelsVerified": false,
+          "failure": "System.Exception: fixture initial foreground was not admitted\r\n   at Probe.Run() in C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\resources\\tools\\scene-transition-smoke\\Program.cs:line 172"
+        },
+        {
+          "path": "tmp/u12-followup-native-3/result.json",
+          "sha256": "8E59A9971712FF0F1E329155B26F366083752F1B67639A8F1854F2598BE8386F",
+          "state": "failed",
+          "completedChecks": 2,
+          "coreSha256": "3E1684A705DAD4ABBBF0FB49BD6104A488F732DE35A1B5C08C1CBEE47C27A68B",
+          "reportPixelsVerified": false,
+          "failure": "System.Exception: fixture initial foreground was not admitted\r\n   at Probe.Run() in C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\resources\\tools\\scene-transition-smoke\\Program.cs:line 172"
+        },
+        {
+          "path": "tmp/u12-followup-native-4/result.json",
+          "sha256": "9AA5E32F4BA7E23C987F9664D66FD8B5D5869352F6E845B7C471C8D8CD25BE02",
+          "state": "failed",
+          "completedChecks": 2,
+          "coreSha256": "3E1684A705DAD4ABBBF0FB49BD6104A488F732DE35A1B5C08C1CBEE47C27A68B",
+          "reportPixelsVerified": false,
+          "failure": "System.Exception: fixture initial foreground was not admitted; visible=True foreground=985442 owner=135020\r\n   at Probe.Run() in C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\resources\\tools\\scene-transition-smoke\\Program.cs:line 177"
+        }
+      ],
+      "environment": {
+        "queriedAt": "2026-10-02T13:45:34.1744106+08:00",
+        "requestedSessionId": 5,
+        "sizeBytes": 232,
+        "level": 1,
+        "sessionId": 5,
+        "connectionState": 0,
+        "sessionFlags": 1,
+        "definition": "Windows SDK 10.0.22621.0 WtsApi32.h: 0=LOCK, 1=UNLOCK"
+      },
+      "observation": "CS6 remained foreground. Computer-use activation failed. Cause unresolved; no native handoff/pixel pass asserted for this candidate.",
+      "fixtureDiagnosticTrials": "Temporary visible-start/taskbar/wait experiments did not resolve admission and were reverted; only clearer diagnostic retained.",
+      "gameE2e": false,
+      "slotsTouched": false
+    },
+    "localEntry": {
+      "state": "ready",
+      "entry": "本地开发启动.cmd",
+      "formalEntryVerified": false
+    }
+  },
+  "visualReview": {
+    "kind": "browser fixture screenshots",
+    "images": [
+      {
+        "path": "tmp/u12-followup-browser-ready/report-compact-rewards.png",
+        "sha256": "A98EFFA29EB90D37E6DD43FDD61F4886C5C48078967A1644817F86ECEE360B95"
+      },
+      {
+        "path": "tmp/u12-followup-browser-ready/report-original-layout-loading.png",
+        "sha256": "59D07FF2A7EC1F24AB8B239DAF545C6FFFA0A52877D488478A5B621AF6DA242A"
+      }
+    ],
+    "findings": "Compact first view exposes saved reward count; full long kill list no longer overlaps asset records. Mock placeholder icons do not certify production asset coverage."
+  },
+  "retainedAttempts": [
+    {
+      "path": "tmp/u12-followup-map-loot.log",
+      "reason": "Initial report replacement broke existing identity/retry assertions; fixed by in-place asset-field refresh. Diagnostic test capture resets its bounded counter."
+    },
+    {
+      "path": "tmp/u12-followup-browser.log",
+      "reason": "Stashed-report fixture incorrectly supplied claimable stock; corrected to empty authority and lost-close-ACK recovery."
+    },
+    {
+      "path": "tmp/u12-followup-host-all.log",
+      "reason": "One native HUD presentation timeout; not silently discarded."
+    },
+    {
+      "path": "tmp/u12-followup-extra-scene-lighting.log",
+      "reason": "PowerShell 5.1 Chinese path preflight failed before compile due missing BOM. Copied adjacent old trace is not this suite evidence."
+    },
+    {
+      "path": "tmp/u12-followup-run-settings-panel-harness.log",
+      "reason": "Help missed existing shownpc command; repaired."
+    },
+    {
+      "path": "tmp/u12-followup-stage-select-final.log",
+      "reason": "Three stale QA expectations after 3D migration; updated current contracts, latest 58/58."
+    },
+    {
+      "path": "tmp/u12-followup-browser-accepted.log",
+      "reason": "New saved-label assertion caught preview controller overriding view label; fixed in preview owner."
+    },
+    {
+      "path": "tmp/u12-followup-run-tasks-harness.log",
+      "reason": "This invocation lacked --qa and was only a page launch; 63-case QA proof is the later explicit --qa run."
+    }
+  ],
+  "pendingAcceptance": [
+    "Native composition fixture must be rerun when its owner can acquire foreground.",
+    "Use 本地开发启动.cmd to verify compact first display, switch to full and back, non-empty stage rewards, and three consecutive returns with cursor movement while base load completes.",
+    "Verify the displayed reward in the actual stash on a test slot and read it back after save/restart; do not infer this from a durable ACK or mock fixtures.",
+    "Release train, commit and push require separate user authorization; no formal release readiness is declared."
+  ],
+  "sources": [
+    {
+      "path": "launcher/src/Guardian/SceneTransitionController.cs",
+      "sha256": "A41EABA930587066367433B82484043AD6C682E6246027031AB538FB0F34170C"
+    },
+    {
+      "path": "launcher/src/Guardian/SceneTransitionWindowOrder.cs",
+      "sha256": "B3A7BDBFEC92A129F4902EB6D41C1D0A11BC2FDA1181EAAFB8BFC692AACE97A6"
+    },
+    {
+      "path": "launcher/src/Guardian/WorldCompositor/WorldCompositorController.cs",
+      "sha256": "E1CFA91878212E054F6FA2CC1478176AFD585632F58D457F61D89DE9EE19E72A"
+    },
+    {
+      "path": "launcher/src/Guardian/WebOverlayForm.cs",
+      "sha256": "632E37A86D90766E7170E7C2D7F42D29D2462F6CB78B7975E6B42397B9C4A63F"
+    },
+    {
+      "path": "launcher/src/Tasks/SkillTask.cs",
+      "sha256": "A6C08A561A59B588A66F822490734D3C1886F37DF0CD65E413F8BFF69470AC6C"
+    },
+    {
+      "path": "launcher/tests/Tasks/SkillTaskTests.cs",
+      "sha256": "2C4F496771EABCE36C384BCD7C7DAB7EC718BCDDBFEA6E42013B74FC129A4E8D"
+    },
+    {
+      "path": "launcher/src/Program.cs",
+      "sha256": "8E4D9933F46E032106D881BC654FDA86057E8B7849CA7AF5BFB3D8C0BC4E2FC5"
+    },
+    {
+      "path": "launcher/web/modules/loot/loot-view.js",
+      "sha256": "E619D352DA77BF812F8B831EB14A1494E57E9CC87C8F782E69AB7117350CFA5D"
+    },
+    {
+      "path": "launcher/web/modules/loot/loot-panel.js",
+      "sha256": "16B419FF3888C6E6E07B80C24B77602A5530965121A3E12435892838913DBE8F"
+    },
+    {
+      "path": "launcher/web/css/workbench/inventory.css",
+      "sha256": "46832E728519113DF261CA28EFFB1CCFEA55FE499CE3172606FF3BA7CFF51F80"
+    },
+    {
+      "path": "launcher/web/modules/scene-transition.js",
+      "sha256": "CCCAED199647F3BEE310F6556123B71141FC167E37945102346015D0F9E1FEE5"
+    },
+    {
+      "path": "launcher/web/modules/stage-select/dev/qa-suite.js",
+      "sha256": "97370434E7C83935A7A07AE6E2F295CFD052F0885D9526FB0B02ACDF89AC1363"
+    },
+    {
+      "path": "launcher/web/help/cheat-codes.md",
+      "sha256": "D9D79516C4353EF20FE745FF6C4CB5E4EDDECA48E6F32B29485451C26BFC6F5F"
+    },
+    {
+      "path": "scripts/类定义/org/flashNight/arki/scene/StageRunSession.as",
+      "sha256": "7E3C22ACD61D515CED885FF5BAB7B6C7DB95629BBE39F95D932514EDCD8A7F07"
+    },
+    {
+      "path": "scripts/类定义/org/flashNight/arki/scene/StageRunSessionTest.as",
+      "sha256": "7CE34F0D0FCEBD0A5D959150D27AD2E48CB2A7505A560B0AF17539B74518490C"
+    },
+    {
+      "path": "scripts/类定义/org/flashNight/arki/weather/WorldLightingBridge.as",
+      "sha256": "6003B36E5E4CF25446128BFAE2BE36D4B67F9CBEBF75060CBCE8D34C0F3FE39F"
+    },
+    {
+      "path": "scripts/run-map-loot-tests.ps1",
+      "sha256": "D3F0BD6522472DED66D98D2B6AF1E40EA55DA8AE8B06F027481083D8E367F450"
+    },
+    {
+      "path": "scripts/run-scene-lighting-tests.ps1",
+      "sha256": "6BF6F31484D97DC1C92A6FC62AE36352ED1818FB229FA9AA517AD20813F8F801"
+    },
+    {
+      "path": "tools/scene-transition-smoke/Program.cs",
+      "sha256": "6497D56D2EEA3229B3893C417ED6FBD3812747B7C5D90970D3008DDF90C9715F"
+    },
+    {
+      "path": "tools/run-scene-transition-smoke.ps1",
+      "sha256": "1CA18B7251A519263C6EF33A14F758A0DC9BF34B5EC00B97F4B2FD752DF05044"
+    },
+    {
+      "path": "tools/test-scene-transition.js",
+      "sha256": "CA685A740B0BE2E8FDF5B9629934DC89B35DAC6A5CC236C6FAF63918F2EC9EC6"
+    },
+    {
+      "path": "tools/run-stage-select-harness.js",
+      "sha256": "D3FCBBDEEC938885275AB924AE1E92F8D347977277E24101EEE8ABAB8B9D5B9C"
+    },
+    {
+      "path": "tools/test-scene-transition-policy.ps1",
+      "sha256": "3AF361F6FA5216A4CD00F49078F1A323A1CF02E7BB5581CD2C7E87B297A7AC98"
+    },
+    {
+      "path": "tools/validate-launcher-release-policy.ps1",
+      "sha256": "10DE4AFCAD7169F9DE18DC70541259F44C493001AA1C9BE50CAED2611BC4F8FC"
+    },
+    {
+      "path": "config/build/runtime-inputs.v2.json",
+      "sha256": "5F90CFF39232D745B718EB893E3B3BD7CF24059BAA72F8A33226838245D83DF3"
+    }
+  ],
+  "logs": [
+    {
+      "path": "tmp/u12-followup-map-loot-2.log",
+      "sha256": "AC61A17FB51CC6DADB26966A026DF132F83958608878EEB68CE325E9E57B29CF"
+    },
+    {
+      "path": "tmp/u12-followup-scene-as2.log",
+      "sha256": "695997C7B46B37E898D698C29E4C7D7FC2F5555E36B0F88D861CF52DEB8CBA3E"
+    },
+    {
+      "path": "tmp/u12-followup-settings-as2.log",
+      "sha256": "DDFBC39CC2474EECECE1DF13D3FFE1173AB07861D35AA43A5F3DF73C7A2E78F1"
+    },
+    {
+      "path": "tmp/u12-followup-extra-stage-return.log",
+      "sha256": "DC749602C2070D45E596D5E1F16D238233A7FA1C6E8C64BE65AF114E97C20D38"
+    },
+    {
+      "path": "tmp/u12-followup-extra-scene-lighting-2.log",
+      "sha256": "F49743ADCEEE1DE4B51CCD24D47A4AA0E114E5DF124D06369E6852C16F7661C0"
+    },
+    {
+      "path": "tmp/u12-followup-extra-character-build-2.log",
+      "sha256": "05759209B2FC0DDF2B703CEE294F81FA5F38CB6CFFCE30134C7625513D7D0F9F"
+    },
+    {
+      "path": "tmp/u12-followup-extra-player-manual-input-2.log",
+      "sha256": "431DCFE087952099EA9D5BEE07109308AB5302CC91552F6D6C1848F21D787345"
+    },
+    {
+      "path": "tmp/u12-followup-publish.log",
+      "sha256": "2C37CD4D8AB10B619C0943569985AF8F4479696E8DD1D42385C08426B8A79205"
+    },
+    {
+      "path": "tmp/u12-followup-focused-host.log",
+      "sha256": "48A8979818A3A73C2B4C99755E220886EE4D157BB2587B96EE9DF4BEBF0908EF"
+    },
+    {
+      "path": "tmp/u12-followup-host-all-2.log",
+      "sha256": "1D9C313A8FA154DE2C2C22CBAC3AB69E8AB50DCC20F023D07F2D0692A8962DA9"
+    },
+    {
+      "path": "tmp/u12-followup-browser-ready.log",
+      "sha256": "36172F59EB52DFBE841C192A956AD00EC46CD3CFA4545C5365F666BBB545E5EA"
+    },
+    {
+      "path": "tmp/u12-followup-loot-accepted.log",
+      "sha256": "D2E422076ACA8743B3BF53C74C9B47C0AB00D3E9AFD9967433800D17A0163B2F"
+    },
+    {
+      "path": "tmp/u12-followup-stage-select-4.log",
+      "sha256": "6BB66821B9B162D30E6913BEAAD321A063CF3DD4CDE8AEC9EBDC22F030103C29"
+    },
+    {
+      "path": "tmp/u12-followup-tasks-qa.log",
+      "sha256": "5FA8BEE17E6B1E9F637240AA906C289E65D22C8BF37A1C5760291A93023E7CC4"
+    },
+    {
+      "path": "tmp/u12-followup-settings-web-2.log",
+      "sha256": "93B2BBA7BFCB4E56523B47E1ACD065DC51F1D8C27CD2141AFC6C7654A092B389"
+    },
+    {
+      "path": "tmp/u12-followup-test-panel-contracts.log",
+      "sha256": "139653E41509DF93D65EBB04FEFEB32F02FC654FACF384A5F7B56F037F981C23"
+    },
+    {
+      "path": "tmp/u12-followup-test-loot-state.log",
+      "sha256": "A63F6DF1BD8242D5B20AD17BAD242A6A1833F3AE259964090BC1CE76AACDACF1"
+    },
+    {
+      "path": "tmp/u12-followup-test-scene-transition-stage-entry.log",
+      "sha256": "84EC4A3F326CDAB4FEF6A4A838C30ACDA6E41A8A97826A0FF3C32F3F74AA6D82"
+    },
+    {
+      "path": "tmp/u12-followup-policy.log",
+      "sha256": "FD352885B9F4C07EE63F9FF6C7E4DD9A955B1C12BBA453402BA1D36265A9F36F"
+    },
+    {
+      "path": "tmp/u12-followup-ui-audit-final.log",
+      "sha256": "3F08D36B832A36EFD0FF066663FE169BFF47B8A225B6C295D10483203812A3BA"
+    },
+    {
+      "path": "tmp/u12-followup-build.log",
+      "sha256": "BE400EBA0A7C0BF4B961D3D34DD02C5ADA342AFA68A510747483EF11DD7543D9"
+    },
+    {
+      "path": "tmp/u12-followup-dev-status.log",
+      "sha256": "376E29BD2DF44DD0C289AA7C60FAB1848C9779DF7266556BA484DE81ADBEB99D"
+    },
+    {
+      "path": "tmp/u12-followup-dev-status-final.log",
+      "sha256": "376E29BD2DF44DD0C289AA7C60FAB1848C9779DF7266556BA484DE81ADBEB99D"
+    },
+    {
+      "path": "tmp/u12-followup-formal-unchanged.log",
+      "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "path": "tmp/u12-followup-doc-governance.log",
+      "sha256": "74ACF51879BA1521A3C9394203F2A3BB4497C613229652AF4D3125DD999AF754"
+    },
+    {
+      "path": "tmp/u12-followup-diff-check.log",
+      "sha256": "43DEA582C48A7943A5FB03088196BB71586559E8B9A7331A5E3334CB26F5CC3E"
+    },
+    {
+      "path": "tmp/u12-followup-smoke-compile.log",
+      "sha256": "2B0B935918CC089606155353CFA1A45C86ED450A6DAA0142BF71CAA5C38B2CE3"
+    }
+  ]
+}

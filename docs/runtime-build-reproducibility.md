@@ -1059,3 +1059,13 @@ strict production policy 42/42，receipt SHA-256 `0C612DBA8C5CB91E481E2386A5E124
 - 无候选参数的正式入口已绑定相同 identity/closure，根 `--verify-only` exit 0，真实 Flash 预热握手和子进程临时目录防护确认；未选角色，回到 Idle 后正常关闭。状态为 `promoted` 与上述隔离专项 `e2e_verified`，完整业务的 `standard_entry_verified` 仍未取得；失败提示可感知性、重定向 AppData、网络目录、低空间和其他机器的覆盖继续单列。
 
 本轮隔离工作树、专用 SOL、探针服务和本机 builder watcher 已收口；原始玩家存档文件的长度和写入时间未变，没有原始字节哈希基线的项目不宣称逐字节比较。Kimi 与 SWE-2 的发现均经源码/测试裁决，模型输出未当作验收。初次组合清理被自动审批拒绝后，先保全证据并核对唯一自有修改，再无强制参数移除干净工作树；其他工作树保持原状。
+
+### 2026-10-02 U12 并行结算、奖励回显与过场平滑发布
+
+维护者确认“可行，相当顺滑”，并在奖励明细、紧凑默认及底部关闭修复后反馈“复核看起来没问题”，随后明确授权发布列车。保持原 Loot Panel/View、DOM、Core 与窗口，基地后台加载完成只更新同一报告；压掉重复 viewport/native Commit 和无必要抬窗，奖励明细消费已提交回执，右下角“完成结算”复用原关闭协议。旧版完整/紧凑偏好迁移按维护者取舍不做。
+
+- 已整合上游 `856ac640c5`，冻结源码 `97b13e15d1e7024f255dc6695ad9f763e66ca70e`，不可变标签 `refs/tags/runtime-build-v2/20261002-u12-settlement-v1`；request `893C83C564C8BF7BF3AF3D132B998F17323AC4EAF953DF55A91DEFB091F5610E`。
+- 本机 X509 `physical-host-b` 与 [GitHub hosted OIDC 独立构建 36982250220](https://github.com/FlashNightModReborn/CrazyFlashNight/actions/runs/36982250220) 的 identity/closure 一致；Core SHA-256 `3E1684A705DAD4ABBBF0FB49BD6104A488F732DE35A1B5C08C1CBEE47C27A68B` 与维护者验收候选相同。production policy **47/47**，receipt SHA-256 `FE23184C7E43378FCBB5CE252D82D3993CDDD83D8F0FE2F3EC3EECB909E690A8`。选用本机 signed CAS candidate，cloud 仅取签名证明，最终 policy 绑定的 candidate 路径一致。
+- 唯一 writer 已原子部署，36 文件闭包、双 signer / 双 faultDomain 和根 bootstrap `--verify-only` 通过；旧包保留于 `tmp/runtime-promotions/20261002T081630720Z-22899cdb801f45769b8a85266095983b/previous`。部署提交 `c30627355851303200a39d504ba4705042b39581` 已普通快进推送；[远端 Audit 36983349784](https://github.com/FlashNightModReborn/CrazyFlashNight/actions/runs/36983349784) success，独立重放 `state=promoted / deploymentChanged=true` 与 `signers=2 / faultDomains=2`。
+- 无候选参数的正式入口绑定同一 identity/closure，实际 Core PID 29332，观测启动画面和 Flash 预热握手；未进入存档，正常窗口关闭令 Flash exit 0、Core 退出，无残留。`saves/` 除例行更新的启动版本标记外，34 个文件长度及 SHA-256 均未变，自动修复 `applied=0 / drops=0`。未对外部 SOL 建立哈希基线，不扩大此存档检查范围。
+- 状态为 `promoted`。这次正式入口检查只证明启动/退出，未重跑战斗结算；完整保存重启、全部窗口组合及自然加载失败继续按[专项验收](U12过场Web迁移与人力验收-2026-10-01.md)独立记录。最新原生合成夹具的前台准入失败和历史失败回执均保留，不借旧候选结果代签。机器摘要见[本轮发布回执](evidence/u12-settlement-release-2026-10-02.json)。

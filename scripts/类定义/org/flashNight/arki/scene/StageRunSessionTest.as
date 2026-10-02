@@ -36,6 +36,8 @@ class org.flashNight.arki.scene.StageRunSessionTest {
     private static var _testHero:MovieClip;
     private static var REWARD:String = "StageRunSession测试补给";
     private static var REVIVE:String = "复活币";
+    private static var _transitionPanelCalls:Number;
+    private static var _transitionMessages:Array;
 
     public static function runAllTests():Void {
         _passed = 0;
@@ -54,6 +56,17 @@ class org.flashNight.arki.scene.StageRunSessionTest {
         testFailedRespawnRefundsAndRestrictionDoesNotSpend();
         testProjectionFailureCannotBreakRevive();
         testReturnFreezesAndOfflinePanelPreservesRewards();
+        testCommittedRewardReport(true);
+        testCommittedRewardReport(false);
+        testCommittedRewardReport("pending");
+        testCurtainSettlementHandoff("victory", 1);
+        testCurtainSettlementHandoff("retreat", 0);
+        testCurtainSettlementHandoff("failure", 0);
+        testParallelReturnReport("victory", "closeEarly", 1);
+        testParallelReturnReport("retreat", "closeReady", 0);
+        testParallelReturnReport("failure", "manage", 0);
+        testParallelReturnReport("victory", "manage", 1);
+        testEarlyBoundReportClose();
         testZeroRewardOfflineSettlementSurvivesSceneExpiry();
         testSettlementRewardInformationCapFilter();
         testPreparedSettlementPersistsWithoutReroll();
@@ -2957,6 +2970,298 @@ class org.flashNight.arki.scene.StageRunSessionTest {
         assertTrue(state.settlement == "stashed" && state.inventory == null,
             "terminal return cannot materialize the same stage rewards a second time");
         fixture.removeMovieClip();
+    }
+
+    /** 使用真实暂存事务与 WireProjector，仅替换外部播报出口，验证提交后才进入报告。 */
+    private static function testCommittedRewardReport(saveResult):Void {
+        resetWorld(0);
+        _root.关卡可获得奖励品 = [[REWARD, 1, 1]];
+        org.flashNight.arki.item.PlayerAssetTransaction.setTestSink(function(receipt:Object):Void {
+            org.flashNight.arki.item.PlayerAssetWireProjector.forEachEffect(receipt,
+                function(effect:Object, effectIndex:Number):Void {
+                    StageRunSession.recordAssetProjection(
+                        org.flashNight.arki.item.PlayerAssetWireProjector.buildMessage({
+                            version:1, direction:effect.direction, kind:effect.kind,
+                            itemKey:effect.name, name:effect.name, icon:effect.name,
+                            count:effect.count, tier:effect.tier, source:effect.source,
+                            reason:effect.reason, operationId:receipt.operationId
+                        }));
+                }, null);
+        });
+        StageRunSession.begin("已提交奖励报告", "简单");
+        StageRunSession.finish("victory");
+        StageRunSession.prepareSettlement();
+        assertEquals(0, StageRunSession.testOnlySnapshot().report.totalItemGains,
+            "rolling a reward does not claim a committed gain " + saveResult);
+        _root.__reportSaveResult = saveResult;
+        _root.存档系统.flushBeforeTransition = function() { return _root.__reportSaveResult; };
+        assertEquals(saveResult === true, StageRunSession.onReturnBaseStarted(),
+            "only confirmed save admits return " + saveResult);
+        if (saveResult !== true) {
+            assertEquals(0, StageRunSession.testOnlySnapshot().report.totalItemGains,
+                "failed or unknown save leaves reward report unchanged " + saveResult);
+            assertEquals(0, RewardStashStore.ownedQuantity(RewardStashService.committedFeature(), REWARD),
+                "failed or unknown save exposes no committed reward " + saveResult);
+            _root.__reportSaveResult = true;
+            if (saveResult === "pending") {
+                SaveManager.getInstance()._configureSaveFlowForTest({flushResult:true});
+                RewardStashService.resume(RewardStashService.pendingOperationId());
+            }
+            StageRunSession.onReturnBaseStarted();
+        }
+        var report:Object = StageRunSession.testOnlySnapshot().report;
+        assertEquals(1, report.totalItemGains, "committed reward enters final report " + saveResult);
+        assertEquals(1, report.itemFlows.length, "committed reward has one visible row " + saveResult);
+        assertEquals("stage_settlement", report.itemFlows[0].source, "row retains reward source " + saveResult);
+        assertEquals(1, RewardStashStore.ownedQuantity(RewardStashService.peek(), REWARD),
+            "report count matches committed stash " + saveResult);
+        StageRunSession.onReturnBaseStarted();
+        assertEquals(1, StageRunSession.testOnlySnapshot().report.totalItemGains,
+            "repeated return does not duplicate report or reward " + saveResult);
+        org.flashNight.arki.item.PlayerAssetTransaction.setTestSink(null);
+        delete _root.__reportSaveResult;
+    }
+
+    /** 真实 SceneReady include + 返回身份 + U12 撤幕 + 报告投递；资产只用隔离 mock owner。 */
+    private static function testCurtainSettlementHandoff(outcome:String, rewardCount:Number):Void {
+        resetWorld(0);
+        var transition:Object = org.flashNight.arki.ui.SceneTransitionService;
+        var oldSend:Function = transition.sendOverride;
+        transition.clear();
+        _transitionPanelCalls = 0;
+        _transitionMessages = [];
+        transition.sendOverride = function(p:Object):Boolean {
+            _transitionMessages.push(p);
+            return true;
+        };
+        var savedFade:Object = _root.淡出动画;
+        var fade:Object = {_currentframe:5, __returnFadeActive:false,
+            play:function():Void {}, stop:function():Void {}};
+        _root.淡出动画 = fade;
+        _root.server = {isSocketConnected:true,
+            sendTaskWithCallback:function(task:String,p:Object,context:Object,callback:Function,timeout:Number):Void {
+                if (task == "panel_request") _transitionPanelCalls++;
+            }};
+        _root.关卡可获得奖励品 = rewardCount == 0 ? [] : [[REWARD, rewardCount, rewardCount]];
+        installHero("no_effect");
+        var fixture:MovieClip = _root.createEmptyMovieClip("__curtainSettlementFixture", _root.getNextHighestDepth());
+        _root.gameworld = fixture.createEmptyMovieClip("world", 1);
+        var flow:Object = org.flashNight.arki.scene.StageReturnFlow;
+        assertTrue(StageRunSession.begin("过场结算交接" + outcome, "简单"), "curtain handoff begins " + outcome);
+        if (outcome != "retreat") StageRunSession.finish(outcome);
+        assertTrue(StageRunSession.onReturnBaseStarted(), "curtain handoff freezes " + outcome);
+        var stashed:Number = RewardStashStore.ownedQuantity(RewardStashService.peek(), REWARD);
+        assertEquals(rewardCount, stashed, "return stashes rewards before any presentation " + outcome);
+        var token:String = flow.prepareTransition("地图-联合大学");
+        flow.acceptTransition(token);
+        flow.beginSceneLoad(token, "地图-联合大学");
+        transition.begin(fade);
+        var cover:Object = _transitionMessages[_transitionMessages.length-1];
+        transition.presented({requestId:cover.requestId, revision:cover.revision, kind:"covered"});
+        _root.gameworld.removeMovieClip();
+        var returnedWorld:MovieClip = fixture.createEmptyMovieClip("world", 1);
+        _root.gameworld = returnedWorld;
+        var init:Object = flow.sceneInit("地图-联合大学");
+        for (var key:String in init) returnedWorld[key] = init[key];
+        _root.当前为战斗地图 = false;
+        _root.控制目标 = "__absent_curtain_fixture_hero";
+        fade._currentframe = 17;
+        fade.__returnFadeActive = false;
+        var readyIdentity:Object = flow.worldIdentity(returnedWorld);
+        org.flashNight.neur.Event.EventBus.getInstance().publish("SceneReady",returnedWorld,token,readyIdentity);
+        assertEquals(0, _transitionPanelCalls, "SceneReady cannot open a pausing report under the curtain " + outcome);
+        assertTrue(StageRunSession.hasUnpresentedSettlementReport(), "automatic help keeps waiting for the report " + outcome);
+        var state:Object = StageRunSession.testOnlySnapshot();
+        assertTrue(state.settlement == "stashed" && state.inventory == null, "presentation delay preserves durable source finality " + outcome);
+        org.flashNight.neur.Event.EventBus.getInstance().publish("SceneReady",returnedWorld,token,readyIdentity);
+        assertEquals(0, _transitionPanelCalls, "duplicate ready does not bypass the presentation fence " + outcome);
+        fade._currentframe = 30;
+        transition.awaitReveal(fade);
+        var reveal:Object = _transitionMessages[_transitionMessages.length-1];
+        transition.presented({requestId:"tr:foreign", revision:reveal.revision, kind:"revealed"});
+        assertEquals(0, _transitionPanelCalls, "foreign reveal cannot open the report " + outcome);
+        transition.presented({requestId:reveal.requestId, revision:reveal.revision, kind:"revealed"});
+        assertEquals(0, _transitionPanelCalls, "report waits for the successful tail and hide publication " + outcome);
+        fade._currentframe = 36;
+        transition.tick();
+        assertEquals(1, _transitionPanelCalls, "successful curtain release dispatches one report " + outcome);
+        assertFalse(StageRunSession.hasUnpresentedSettlementReport(), "report request ends its automatic-help wait " + outcome);
+        assertEquals(stashed, RewardStashStore.ownedQuantity(RewardStashService.peek(), REWARD), "release never replays a reward write " + outcome);
+        transition.clear();
+        org.flashNight.neur.Event.EventBus.getInstance().publish("SceneReady",returnedWorld,token,readyIdentity);
+        assertEquals(1, _transitionPanelCalls, "late ready and duplicate clear never redispatch the report " + outcome);
+        fixture.removeMovieClip();
+        _root.淡出动画 = savedFade;
+        transition.sendOverride = oldSend;
+    }
+
+    private static function testParallelReturnReport(outcome:String, mode:String, rewardCount:Number):Void {
+        resetWorld(0);
+        var transition:Object = org.flashNight.arki.ui.SceneTransitionService;
+        var oldSend:Function = transition.sendOverride;
+        transition.clear(); _transitionMessages = []; _transitionPanelCalls = 0;
+        transition.sendOverride = function(p:Object):Boolean { _transitionMessages.push(p); return true; };
+        var savedFade:Object = _root.淡出动画;
+        var fade:Object = {_currentframe:5,play:function():Void {},stop:function():Void {},
+            gotoAndStop:function(frame:Number):Void { this._currentframe = frame; }};
+        _root.淡出动画 = fade;
+        _root.server = {isSocketConnected:true,
+            sendTaskWithCallback:function(task:String,p:Object,context:Object,callback:Function,timeout:Number):Void {
+                if (task == "panel_request") _transitionPanelCalls++;
+            }};
+        _root.关卡可获得奖励品 = rewardCount == 0 ? [] : [[REWARD,rewardCount,rewardCount]];
+        installHero("no_effect");
+        var fixture:MovieClip = _root.createEmptyMovieClip("__parallelReturnFixture",_root.getNextHighestDepth());
+        _root.gameworld = fixture.createEmptyMovieClip("world",1);
+        var flow:Object = org.flashNight.arki.scene.StageReturnFlow;
+        StageRunSession.begin("并行战报" + outcome,"简单");
+        if (outcome != "retreat") StageRunSession.finish(outcome);
+        assertTrue(StageRunSession.onReturnBaseStarted(),"parallel return has durable stash " + mode + outcome);
+        assertTrue(StageRunSession.parallelReturnReport("foreign") == null,"foreign return cannot borrow a report " + mode + outcome);
+        var token:String = flow.prepareTransition("地图-联合大学");
+        fade.__stageReturnToken = token;
+        transition.begin(fade); // 与生产跳转一致：begin 先于 acceptTransition。
+        flow.acceptTransition(token); flow.beginSceneLoad(token,"地图-联合大学");
+        var cover:Object = _transitionMessages[_transitionMessages.length-1];
+        assertTrue(cover.version == 2 && cover.reportVisible && cover.report.rewardStashed,
+            "frozen report projects before target SceneReady " + mode + outcome);
+        assertEquals(outcome == "retreat" ? "retreat" : outcome,cover.report.outcome,"parallel report preserves outcome " + mode + outcome);
+        assertEquals(0,_transitionPanelCalls,"early report does not acquire a pausing panel " + mode + outcome);
+        assertEquals("rejected",StageRunSession.parallelReportHandoffState(cover.report.runId),"unissued open is definitely not pending " + mode + outcome);
+        assertEquals("pending",StageRunSession.parallelReportHandoffState("foreign"),"foreign report never supplies rejection authority " + mode + outcome);
+        transition.action({requestId:cover.requestId,revision:cover.revision,verb:"manageReport"});
+        assertEquals(0,_transitionPanelCalls,"rewards remain unavailable before curtain coverage " + mode + outcome);
+        if (mode == "closeEarly") {
+            transition.setTip(fade,"close intent crosses a display-only update");
+            transition.action({requestId:cover.requestId,revision:cover.revision,verb:"closeReport"});
+            assertFalse(_transitionMessages[_transitionMessages.length-1].reportVisible,"early close returns to the same curtain");
+            assertFalse(StageRunSession.hasUnpresentedSettlementReport(),"early close consumes presentation only");
+        }
+        transition.presented({requestId:cover.requestId,revision:cover.revision,kind:"covered"});
+        if (mode == "manage") {
+            fade._currentframe = 6; transition.tick();
+            transition.setTip(fade,"loading advances while reward admission is in flight");
+            var advanced:Object = _transitionMessages[_transitionMessages.length-1];
+            assertTrue(advanced.phase == "loading" && advanced.revision > cover.revision,
+                "display advances before the covered report intent arrives " + outcome);
+            transition.action({requestId:"tr:foreign",revision:cover.revision,verb:"manageReport"});
+            transition.action({requestId:cover.requestId,revision:advanced.revision+1,verb:"manageReport"});
+            transition.action({requestId:cover.requestId,revision:1.5,verb:"manageReport"});
+            transition.action({requestId:cover.requestId,revision:"1",verb:"manageReport"});
+            transition.action({requestId:cover.requestId,revision:0,verb:"manageReport"});
+            assertEquals(0,_transitionPanelCalls,"foreign future and malformed report intents stay fenced " + outcome);
+            transition.action({requestId:cover.requestId,revision:cover.revision,verb:"manageReport"});
+            assertEquals(1,_transitionPanelCalls,"durable report binds before target SceneReady " + outcome);
+            assertTrue(_root._webPanelPauseLease == undefined,"early binding never pauses loading " + outcome);
+            var earlyAuthority:Object = LootContainerService.expireScene("scene_cleanup");
+            assertTrue(earlyAuthority.success && earlyAuthority.reason == "parallel_report_preserved",
+                "same durable report survives actual scene cleanup " + outcome);
+            assertFalse(LootContainerService.canDismissStashedReport(cover.report.runId),
+                "active reward owner cannot be dismissed through a visual close " + outcome);
+        }
+        _root.gameworld.removeMovieClip();
+        var world:MovieClip = fixture.createEmptyMovieClip("world",1); _root.gameworld = world;
+        var init:Object = flow.sceneInit("地图-联合大学");
+        for (var key:String in init) world[key] = init[key];
+        _root.当前为战斗地图 = false; _root.控制目标 = "__absent_parallel_hero";
+        fade._currentframe = 30; fade.__returnFadeActive = false;
+        var identity:Object = flow.worldIdentity(world);
+        org.flashNight.neur.Event.EventBus.getInstance().publish("SceneReady",world,token,identity);
+        transition.awaitReveal(fade);
+        var ready:Object = _transitionMessages[_transitionMessages.length-1];
+        assertEquals("reveal",ready.phase,"target readiness preserves one curtain identity " + mode + outcome);
+        assertEquals(mode == "manage" ? 1 : 0,_transitionPanelCalls,"arrival never remounts the bound report " + mode + outcome);
+        if (mode != "closeEarly") {
+            transition.presented({requestId:ready.requestId,revision:ready.revision,kind:"revealed"});
+            assertTrue(transition.isPresentationPending(),"capture never dismisses the player's report " + mode + outcome);
+            if (mode == "manage") transition.action({requestId:ready.requestId,revision:ready.revision,verb:"manageReport"});
+            assertEquals(mode == "manage" ? 1 : 0,_transitionPanelCalls,"scene readiness does not repeat reward admission " + mode + outcome);
+            transition.presented({requestId:ready.requestId,revision:ready.revision,kind:"prepared"});
+        }
+        if (mode == "manage") {
+            transition.action({requestId:ready.requestId,revision:ready.revision,verb:"manageReport"});
+            var opening:Object = _transitionMessages[_transitionMessages.length-1];
+            assertTrue(opening.reportHandoff && opening.actionPending,"reward handoff locks the preview " + outcome);
+            assertEquals("pending",StageRunSession.parallelReportHandoffState(opening.report.runId),"issued unacknowledged open keeps the result lock " + outcome);
+            assertEquals(1,_transitionPanelCalls,"capture authorizes one full report open " + outcome);
+            transition.action({requestId:opening.requestId,revision:opening.revision,verb:"manageReport"});
+            transition.action({requestId:opening.requestId,revision:opening.revision,verb:"closeReport"});
+            assertEquals(1,_transitionPanelCalls,"unknown open cannot replay or unlock through close " + outcome);
+            transition.presented({requestId:opening.requestId,revision:opening.revision-1,kind:"handoff"});
+            assertTrue(transition.isPresentationPending(),"old panel paint receipt cannot withdraw the report " + outcome);
+            transition.presented({requestId:opening.requestId,revision:opening.revision,kind:"handoff"});
+            assertEquals(36,fade._currentframe,"full panel paint completes without relying on paused world frames " + outcome);
+        } else {
+            if (mode == "closeReady") {
+                transition.setTip(fade,"ready close crosses a display-only update");
+                transition.action({requestId:ready.requestId,revision:ready.revision,verb:"closeReport"});
+                ready = _transitionMessages[_transitionMessages.length-1];
+                assertFalse(ready.reportVisible,"ready close reveals the base directly");
+            }
+            transition.presented({requestId:ready.requestId,revision:ready.revision,kind:"revealed"});
+            fade._currentframe = 36; transition.tick();
+            assertEquals(0,_transitionPanelCalls,"dismissed report never reopens on arrival " + mode);
+        }
+        assertFalse(transition.isPresentationPending(),"parallel presentation completes " + mode + outcome);
+        assertEquals(rewardCount,RewardStashStore.ownedQuantity(RewardStashService.peek(),REWARD),
+            "presentation never rerolls or reclaims the stored reward " + mode + outcome);
+        org.flashNight.neur.Event.EventBus.getInstance().publish("SceneReady",world,token,identity);
+        assertEquals(mode == "manage" ? 1 : 0,_transitionPanelCalls,"late arrival cannot reopen a report " + mode + outcome);
+        fixture.removeMovieClip(); _root.淡出动画 = savedFade; transition.sendOverride = oldSend;
+    }
+
+    private static function testEarlyBoundReportClose():Void {
+        resetWorld(0);
+        var transition:Object = org.flashNight.arki.ui.SceneTransitionService;
+        var flow:Object = org.flashNight.arki.scene.StageReturnFlow;
+        var oldFade:Object = _root.淡出动画;
+        var oldSend:Function = transition.sendOverride;
+        transition.clear(); _transitionMessages = []; _transitionPanelCalls = 0;
+        transition.sendOverride = function(p:Object):Boolean { _transitionMessages.push(p); return true; };
+        var opened:Object = null;
+        _root.server = {isSocketConnected:true,
+            sendTaskWithCallback:function(task:String,p:Object,context:Object,callback:Function,timeout:Number):Void {
+                if (task == "panel_request") { opened = p.initData; _transitionPanelCalls++; }
+            }};
+        _root.关卡可获得奖励品 = [[REWARD,1,1]];
+        assertTrue(StageRunSession.begin("提前关闭业务结算","简单"),"early close begins one stage owner");
+        StageRunSession.finish("victory");
+        assertTrue(StageRunSession.onReturnBaseStarted(),"early close durably stashes the single reward");
+        var fade:Object = {_currentframe:5,play:function():Void {},stop:function():Void {}};
+        _root.淡出动画 = fade;
+        fade.__stageReturnToken = flow.prepareTransition("地图-联合大学");
+        transition.begin(fade); flow.acceptTransition(fade.__stageReturnToken);
+        var cover:Object = _transitionMessages[_transitionMessages.length-1];
+        transition.presented({requestId:cover.requestId,revision:cover.revision,kind:"covered"});
+        transition.action({requestId:cover.requestId,revision:cover.revision,verb:"manageReport"});
+        assertTrue(opened != null && _root._webPanelPauseLease == undefined,"one early business owner opens without pausing the scene");
+        assertTrue(LootContainerService.hasActiveStashedReport(cover.report.runId),"the early reward owner remains authoritative during retry");
+        var retryReport:Object = StageRunSession.parallelReturnReport(fade.__stageReturnToken);
+        assertTrue(retryReport != null && retryReport.runId == cover.report.runId,"retry borrows the same committed report");
+        transition.failed(fade); transition.begin(fade);
+        var retryCover:Object = _transitionMessages[_transitionMessages.length-1];
+        assertTrue(retryCover.requestId != cover.requestId && retryCover.reportHandoff && retryCover.report.runId == cover.report.runId,
+            "a fresh loading attempt carries the existing reward session");
+        transition.presented({requestId:retryCover.requestId,revision:retryCover.revision,kind:"covered"});
+        transition.action({requestId:retryCover.requestId,revision:retryCover.revision,verb:"manageReport"});
+        assertEquals(1,_transitionPanelCalls,"loading retry cannot reopen the early reward authority");
+        var snap:Object = LootContainerService.execute("snapshot", {v:2,
+            chestSessionId:opened.chestSessionId,lootContainerId:opened.lootContainerId,
+            containerEpoch:opened.containerEpoch,loot:{offset:0,limit:8},backpack:{offset:0,limit:50}});
+        assertTrue(snap.success && snap.remainingCount == 0,"stashed report reads its real empty authority before arrival");
+        var closed:Object = LootContainerService.execute("close", {v:2,
+            chestSessionId:opened.chestSessionId,lootContainerId:opened.lootContainerId,
+            containerEpoch:opened.containerEpoch,expectedAuthorityRevision:snap.authorityRevision,
+            operationId:"parallel.early.close",closeLease:snap.closeLease,abandon:false});
+        assertTrue(closed.success && closed.terminal.kind == "CONSUMED","existing exact close terminalizes the early business session");
+        assertTrue(StageRunSession.parallelReturnReport(fade.__stageReturnToken) == null,"a closed reward session cannot be revived by loading retry");
+        var current:Object = _transitionMessages[_transitionMessages.length-1];
+        transition.setTip(fade,"exact business closure crosses a display-only update");
+        transition.action({requestId:current.requestId,revision:current.revision,verb:"closeReport"});
+        assertFalse(_transitionMessages[_transitionMessages.length-1].reportVisible,"authority-confirmed early closure returns to the same curtain");
+        assertFalse(StageRunSession.hasUnpresentedSettlementReport(),"early business close cannot reopen the report on arrival");
+        assertEquals(1,RewardStashStore.ownedQuantity(RewardStashService.peek(),REWARD),"early business close preserves the committed stash without a second reward write");
+        transition.clear();transition.sendOverride=oldSend;_root.淡出动画=oldFade;
     }
 
     private static function testReturnAvailabilityAndRetreat():Void {
