@@ -1,0 +1,81 @@
+{
+  "schemaVersion": 1,
+  "itemName": "炉具料理配方",
+  "skin": "blueprint",
+  "pages": [
+    {
+      "pageKey": "1",
+      "blocks": [
+        {
+          "type": "blueprint",
+          "title": [
+            {
+              "type": "text",
+              "text": "炉具料理配方"
+            }
+          ],
+          "materials": [],
+          "steps": []
+        },
+        {
+          "type": "paragraph",
+          "content": [
+            {
+              "type": "text",
+              "text": "这些做法都得动用厨房里的专用厨具——烤炉、烤箱、炸炉、蒸炉，光有炒锅可不行。厨具不齐就别想着开火了。"
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "content": [
+            {
+              "type": "text",
+              "text": "炉具菜单："
+            }
+          ]
+        },
+        {
+          "type": "heading",
+          "level": 2,
+          "content": [
+            {
+              "type": "text",
+              "text": "【蒜蓉烤茄子】烤炉"
+            }
+          ]
+        },
+        {
+          "type": "heading",
+          "level": 2,
+          "content": [
+            {
+              "type": "text",
+              "text": "【蜜汁烤鸡】烤箱"
+            }
+          ]
+        },
+        {
+          "type": "heading",
+          "level": 2,
+          "content": [
+            {
+              "type": "text",
+              "text": "【酥炸大虾】炸炉"
+            }
+          ]
+        },
+        {
+          "type": "heading",
+          "level": 2,
+          "content": [
+            {
+              "type": "text",
+              "text": "【瑶柱蒸蛋】蒸炉"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

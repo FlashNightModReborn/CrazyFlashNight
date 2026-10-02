@@ -55,6 +55,11 @@ class org.flashNight.arki.scene.StageReturnFlow {
     public static function acceptTransition(token:String):Void {
         if (_transition.token === token) _transition.accepted = true;
     }
+    /** 只读绑定：冻结战报属于这一次返回，而不是旧淡出元件上残留的 token。 */
+    public static function isReturnTransition(token:String, run:Object):Boolean {
+        return typeof token == "string" && token != "" && _transition != undefined
+            && _transition.token === token && _transition.run === run;
+    }
     public static function cancelTransition(token:String):Void {
         if (_transition.token === token && !_transition.accepted) _transition = undefined;
     }

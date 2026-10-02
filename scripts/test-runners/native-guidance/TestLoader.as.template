@@ -1,0 +1,3 @@
+﻿trace("FocusedTestRunId native-guidance Start: __FOCUSED_RUN_ID__");
+org.flashNight.arki.ui.NativeGuidanceServiceTest.runAllTests();
+trace("FocusedTestRunId native-guidance Complete: __FOCUSED_RUN_ID__");

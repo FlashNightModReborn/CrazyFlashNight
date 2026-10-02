@@ -63,8 +63,8 @@ namespace CF7Launcher.Guardian.Hud.Dialogue
         internal const float LINE_HEIGHT_EM = 1.2f;
         /// <summary>文本域局部内边距（Flash 文本域左 2px 惯例；顶部 1px）。</summary>
         internal const float TEXT_INSET_LOCAL = 2f;
-        /// <summary>打字节拍（ms/字）≈ 旧 24fps enterFrame 逐字节奏略提速。</summary>
-        internal const int DEFAULT_CHAR_MS = 36;
+        /// <summary>打字节拍（ms/字）。</summary>
+        internal const int DEFAULT_CHAR_MS = 24;
 
         // 命中 zone：显式动作区分，Down/Up 必须同 zone 同修订才生效。
         internal const int ZONE_NONE = 0;
@@ -970,17 +970,29 @@ namespace CF7Launcher.Guardian.Hud.Dialogue
                         NativeDialogueTextLayout.Run run = line.Runs[r];
                         if (run.GlyphStart >= _visibleChars) break;
                         int remain = _visibleChars - run.GlyphStart;
-                        string text = run.Text;
-                        if (remain < text.Length) text = text.Substring(0, remain);
-                        if (text.Length == 0) continue;
-                        g.DrawString(text, _fontBody,
-                            BrushFor(run.Color.A == 0 ? fs.Color : run.Color),
-                            x, y, _typoFormat);
-                        // run 覆盖 glyph 区间 [GlyphStart, +Text.Length)，x 按实际绘长推进
-                        int off = run.LineOffset;
-                        int drawn = Math.Min(text.Length, line.GlyphCount - off);
-                        if (drawn > 0 && off + drawn < line.PrefixW.Length)
-                            x += line.PrefixW[off + drawn] - line.PrefixW[off];
+                        SolidBrush brush = BrushFor(run.Color.A == 0 ? fs.Color : run.Color);
+                        if (remain < run.Text.Length)
+                        {
+                            // 已打印段冻结：整串绘制 + 仅裁剪可见前缀，不再按子串重排版；
+                            // 串尾收尾、缺字回退与代理对整形不再回跳已打出字符的位置。
+                            int drawn = remain;
+                            if (drawn > 0 && drawn < run.Text.Length
+                                && char.IsHighSurrogate(run.Text[drawn - 1])) drawn++;
+                            float reveal = _measureG.MeasureString(
+                                run.Text.Substring(0, drawn), _fontBody,
+                                int.MaxValue, _typoFormat).Width;
+                            GraphicsState rs = g.Save();
+                            g.SetClip(new RectangleF(x - 2f, y - 2f,
+                                Math.Max(0f, reveal) + 3f, lineH + 4f),
+                                CombineMode.Intersect);
+                            g.DrawString(run.Text, _fontBody, brush, x, y, _typoFormat);
+                            g.Restore(rs);
+                            break;   // 之后的 run 必然整体不可见
+                        }
+                        g.DrawString(run.Text, _fontBody, brush, x, y, _typoFormat);
+                        // run 覆盖 glyph 区间 [GlyphStart, +Text.Length)，x 按实际串宽推进
+                        x += _measureG.MeasureString(run.Text, _fontBody,
+                            int.MaxValue, _typoFormat).Width;
                     }
                     y += lineH;
                 }
@@ -1015,8 +1027,7 @@ namespace CF7Launcher.Guardian.Hud.Dialogue
             Bitmap scaled = EnsureScaled(ref _sceneScaled, ref _sceneScaledW,
                 ref _sceneScaledH, _sceneBmp, L.Scene.Width, L.Scene.Height);
             if (scaled == null) return;
-            g.DrawImage(scaled, L.Scene, 0, 0, scaled.Width, scaled.Height,
-                GraphicsUnit.Pixel);
+            CF7Launcher.Guardian.Hud.Guidance.GuidanceImageLayout.DrawContained(g, scaled, L.Scene, 1);
         }
 
         // ════════════════ 布局 ════════════════

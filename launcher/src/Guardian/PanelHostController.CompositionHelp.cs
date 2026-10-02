@@ -11,7 +11,15 @@ namespace CF7Launcher.Guardian
         private Action<bool> _compositionPanelState;
         private Func<string, bool> _compositionRestoreFocus;
 
-        internal bool CompositionHelpOwnsInput => _compositionHelpSelected;
+        internal bool CompositionHelpOwnsInput => SelectedCompositionSurface!=null;
+
+        internal void ConfigureHelpTutorialPreference(HelpTutorialPreferenceCommand command)
+        {
+            if (_compositionHelp == null) throw new InvalidOperationException("Help surface not configured");
+            _compositionHelp.TutorialPreferenceRequested = (request, instance) =>
+                !_disposed && _compositionHelpSelected && _activePanel == "help" && _activePanelInstanceId == instance
+                    ? command.Handle(request, instance) : null;
+        }
 
         internal void ConfigureCompositionHelp(string webRoot, string profileRoot,
             Action<bool> panelState, Func<string, bool> restoreFocus)
@@ -45,43 +53,41 @@ namespace CF7Launcher.Guardian
             finally { _compositionHelpPreparing = false; }
         }
 
-        private int PanelSurfaceGeneration => _compositionHelpSelected
-            ? _compositionHelp.SessionGeneration : _web.PanelSessionGeneration;
-        private IntPtr PanelSurfaceHandle => _compositionHelpSelected
-            ? _compositionHelp.Handle : (_web.IsHandleCreated ? _web.Handle : IntPtr.Zero);
+        private int PanelSurfaceGeneration => SelectedCompositionSurface?.SessionGeneration ?? _web.PanelSessionGeneration;
+        private IntPtr PanelSurfaceHandle => SelectedCompositionSurface?.Handle ?? (_web.IsHandleCreated ? _web.Handle : IntPtr.Zero);
         private bool ResumePanelSurface(Rectangle rect)
         {
-            if (!_compositionHelpSelected) return _web.ResumeForPanel(rect);
-            bool resumed = _compositionHelp.ResumePanel(rect);
+            if (SelectedCompositionSurface==null) return _web.ResumeForPanel(rect);
+            bool resumed = SelectedCompositionSurface.ResumePanel(rect);
             if (resumed) _compositionPanelState?.Invoke(true);
             return resumed;
         }
-        private bool TryPostToPanelSurface(string json) => _compositionHelpSelected
-            ? _compositionHelp.TryPost(json) : _web.TryPostToWeb(json);
+        private bool TryPostToPanelSurface(string json) => SelectedCompositionSurface!=null
+            ? SelectedCompositionSurface.TryPost(json) : _web.TryPostToWeb(json);
         private void PostToPanelSurface(string json)
         {
-            if (_compositionHelpSelected) _compositionHelp.TryPost(json);
+            if (SelectedCompositionSurface!=null) SelectedCompositionSurface.TryPost(json);
             else _web.PostToWeb(json);
         }
         private void RepositionPanelSurface(Rectangle rect, bool ensureVisible)
         {
-            if (_compositionHelpSelected) _compositionHelp.RepositionPanel(rect, ensureVisible);
+            if (SelectedCompositionSurface!=null) SelectedCompositionSurface.RepositionPanel(rect, ensureVisible);
             else _web.RepositionForPanel(rect, ensureVisible);
         }
         private bool CommitPanelSurfaceGeometry(Rectangle rect, int generation)
-            => _compositionHelpSelected ? _compositionHelp.CommitGeometry(rect, generation)
+            => SelectedCompositionSurface!=null ? SelectedCompositionSurface.CommitGeometry(rect, generation)
                 : _web.CommitPanelGeometry(rect, generation);
         private void ClearPanelSurfaceGeometry(string reason)
         {
-            if (_compositionHelpSelected) _compositionHelp.ClearGeometry(reason);
+            if (SelectedCompositionSurface!=null) SelectedCompositionSurface.ClearGeometry(reason);
             else _web?.ClearCommittedPanelGeometry(reason);
         }
         private bool ReplayPanelSurface(Rectangle rect, int generation, string reason)
-            => _compositionHelpSelected ? _compositionHelp.Replay(rect, generation, reason)
+            => SelectedCompositionSurface!=null ? SelectedCompositionSurface.Replay(rect, generation, reason)
                 : _web.ReplayCommittedPanelPresentation(rect, generation, reason);
 
-        // Only the read-only help pilot uses this lifecycle. No task or save authority
-        // is exposed, and no AVM1 cancellation receipt is fabricated.
+        // Help exposes no game task or save authority. The separate, exact-instance
+        // tutorial preference command only changes a local launcher preference.
         private bool RetireCompositionHelp()
         {
             if (!_compositionHelpSelected) return false;

@@ -112,6 +112,7 @@ class org.flashNight.neur.Server.test.SaveManagerTest {
         test_saveApi_strict_outcome_buckets_per_family();
         test_saveApi_full_origin_and_flush_lane_buckets();
         test_saveApi_flush_lane_read_migration_and_preload_tombstone();
+        test_tombstone_false_and_pending_keep_character_memory();
         test_saveApi_reason_registry_clamps_dynamic_text();
         test_saveApi_stats_snapshot_isolation_reset_and_trace();
         test_reward_wrapper_physical_counts();
@@ -1309,12 +1310,19 @@ class org.flashNight.neur.Server.test.SaveManagerTest {
         _root.lastsave = undefined;
     }
 
+    // 现役 DrugInputService 拒绝空目标药剂组；夹具须提供可切换的第二组。
+    private static function bankSwitchFixture():Object {
+        return {药剂组切换冷却时间:3000, 物品栏:{药剂栏:{getItem:function(slot:String):Object {
+            return {name:"普通hp药剂", value:1};
+        }}}};
+    }
+
     private static function armBankTwoAndAllDrugCooldowns():Void {
         ManualCooldownService.resetForTests();
         ManualCooldownService.setSchedulerForTests(function(callback:Function):Void {});
         DrugInputService.resetSession();
         DrugInputService.updateSwitch(
-            {hp:100}, true, true, {药剂组切换冷却时间:3000}, null);
+            {hp:100}, true, true, bankSwitchFixture(), null);
         for (var lane:Number = 0; lane < 4; lane++) {
             ManualCooldownService.start(ManualCooldownService.drugKey(lane), 3000);
         }
@@ -1533,7 +1541,7 @@ class org.flashNight.neur.Server.test.SaveManagerTest {
         DrugInputService.resetSession();
         var unit:Object = {hp:100};
         DrugInputService.updateSwitch(
-            unit, true, true, {药剂组切换冷却时间:3000}, null);
+            unit, true, true, bankSwitchFixture(), null);
         assert(DrugInputService.getActiveBank() == 1,
             "loadFromMydata_drug_success: fixture begins in bank II");
 
@@ -1566,7 +1574,7 @@ class org.flashNight.neur.Server.test.SaveManagerTest {
         DrugInputService.resetSession();
         var unit:Object = {hp:100};
         DrugInputService.updateSwitch(
-            unit, true, true, {药剂组切换冷却时间:3000}, null);
+            unit, true, true, bankSwitchFixture(), null);
         var md:Object = buildValidMydata();
         md.ext = {drugLoadout:{version:4}};
         var futureDrugs:Object = {};
@@ -3197,6 +3205,35 @@ class org.flashNight.neur.Server.test.SaveManagerTest {
             sm._resetProtocol2ForTest();
             _root.savePath = oldPath;
             _root.允许存档 = oldAllow;
+        }
+    }
+
+    private static function test_tombstone_false_and_pending_keep_character_memory():Void {
+        var saved:Object = beginSaveFlowTest();
+        try {
+            var sm:SaveManager = SaveManager.getInstance();
+            var roleBefore:Object = _root.角色名;
+            var allowBefore:Object = _root.允许存档;
+            sm._resetSavePhysicalStatsForTest();
+            sm._resetSaveApiStatsForTest();
+            sm._configureSaveFlowForTest({flushResult:false});
+            assert(sm.handlePreloadTombstoned(TEST_SLOT) === false,
+                   "tombstone_failure: direct alignment returns unconfirmed on false");
+            assert(sm.deleteSlot() === false && _root.角色名 == roleBefore && _root.允许存档 == allowBefore,
+                   "tombstone_failure: failed delete retains character memory and returns unconfirmed");
+            sm._configureSaveFlowForTest({flushResult:"pending"});
+            assert(sm.handlePreloadTombstoned(TEST_SLOT) === false && sm.deleteSlot() === false,
+                   "tombstone_pending: neither path treats authorization pending as durable");
+            var api:Object = sm._getSaveApiStatsForTest();
+            assert(api.flushLane.preload_tombstone.attempt == 2
+                   && api.flushLane.preload_tombstone["false"] == 1 && api.flushLane.preload_tombstone.pending == 1
+                   && api.flushLane.delete_tombstone.attempt == 2
+                   && api.flushLane.delete_tombstone["false"] == 1 && api.flushLane.delete_tombstone.pending == 1,
+                   "tombstone_failure: both paths use the exact physical outcome lanes");
+            assert(_root.角色名 == roleBefore && _root.允许存档 == allowBefore,
+                   "tombstone_pending: pending delete preserves recoverable in-memory state");
+        } finally {
+            endSaveFlowTest(saved);
         }
     }
 

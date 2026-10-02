@@ -190,10 +190,7 @@ namespace CF7Launcher.Save
             // 还没收到任何 saveAll 推送，shadow 一致性 _prevSnapshots 不需要预热；自己原子写够用）
             try
             {
-                string tmpPath = filePath + ".tmp";
-                File.WriteAllText(tmpPath, snapshot.ToString(Formatting.None), new UTF8Encoding(false));
-                if (File.Exists(filePath)) File.Delete(filePath);
-                File.Move(tmpPath, filePath);
+                DurableFileWriter.WriteAllText(filePath, snapshot.ToString(Formatting.None), new UTF8Encoding(false));
             }
             catch (Exception ex)
             {

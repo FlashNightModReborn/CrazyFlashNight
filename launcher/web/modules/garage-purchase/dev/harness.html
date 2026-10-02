@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="zh-CN"><head><meta charset="utf-8"><base href="/launcher/web/">
+<title>车库购车验证</title>
+<link rel="stylesheet" href="css/overlay.css"><link rel="stylesheet" href="css/panels.css"><link rel="stylesheet" href="css/terminal.css">
+<style>html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#080b0e}</style></head><body>
+<div id="panel-container" style="display:none"><div id="panel-backdrop"></div><div id="panel-content"></div></div><div id="panel-tooltip"></div>
+<script>
+window.__sent=[];window.__handlers={};window.__sequence=0;window.__fault=null;window.__closeFails=false;
+window.__charges=0;window.__saves=0;window.__queries=0;window.__balance=600000;window.__driving=2;window.__owned={};window.__session=null;
+var catalog={};window.__catalog=catalog;
+function clone(v){return JSON.parse(JSON.stringify(v))}
+window.__emit=function(v){(__handlers[v.type]||[]).slice().forEach(function(callback){callback(v)})};
+function response(message){
+  var s=__session,c=catalog[s.id],owned=!!__owned[s.id];
+  return {type:'panel_resp',panel:'garage',domain:'garage',cmd:message.cmd,callId:message.callId,panelInstanceId:message.panelInstanceId,
+    v:1,operation:message.cmd,token:s.token,phase:s.phase,vehicleId:s.id,draft:{vehicleId:s.id},name:c.name,description:c.description,
+    cost:c.cost,balance:__balance,requiredDrivingLevel:c.required,drivingLevel:__driving,owned:owned,
+    canPurchase:!owned&&__balance>=c.cost&&__driving>=c.required,success:s.phase!=='save_pending',
+    changed:s.phase==='applied'||s.phase==='save_pending',saved:s.phase==='applied',error:s.phase==='save_pending'?'save_pending':undefined};
+}
+window.Bridge={on:function(type,cb){(__handlers[type]||(__handlers[type]=[])).push(cb)},
+off:function(type,cb){var a=__handlers[type]||[],i=a.indexOf(cb);if(i>=0)a.splice(i,1)},
+send:function(message){
+  __sent.push(clone(message));
+  if(message.cmd==='close')return !__closeFails;
+  if(message.domain!=='garage')return true;
+  var fault=__fault;__fault=null;
+  if(fault==='not_sent')return false;
+  if(message.cmd==='snapshot'){
+    if(!__session||__session.phase!=='save_pending')__session={token:'garage.test.'+(++__sequence),id:message.payload.vehicleId,phase:__owned[message.payload.vehicleId]?'owned':'editing'};
+  }else if(message.cmd==='commit'){
+    var c=catalog[__session.id];
+    if(__session.phase==='editing'){
+      if(__balance<c.cost||__driving<c.required)return false;
+      __balance-=c.cost;__owned[__session.id]=true;__charges++;
+    }
+    __saves++;__session.phase=fault==='save_failure'?'save_pending':'applied';
+  }else if(message.cmd==='query'){__queries++}
+  var result=response(message);
+  if(fault==='unknown_applied')result={type:'panel_resp',panel:'garage',domain:'garage',cmd:message.cmd,callId:message.callId,
+    panelInstanceId:message.panelInstanceId,success:false,error:'timeout',requiresReconcile:true,token:__session.token};
+  window.__lastResponse=clone(result);
+  setTimeout(function(){__emit(result)},5);return true;
+}};
+window.Toast={add:function(){}};
+</script>
+<script src="modules/panels.js"></script><script src="modules/panel-scale.js"></script><script src="modules/panel-runtime.js"></script>
+<script src="modules/garage-purchase-runtime.js"></script><script src="modules/garage-purchase.js"></script>
+<script>
+Panels.init();window.__open=function(id){Panels.open('garage',{panelInstanceId:'garage.panel.'+(++__sequence),source:'world_garage_purchase',vehicleId:id||'bicycle'})};
+window.__reset=function(){__balance=600000;__driving=2;__owned={};__charges=0;__saves=0;__queries=0;__session=null;__fault=null;__closeFails=false};
+// 使用真实 XML 的说明、报价与驾驶门槛；仅交易和保存为受控替身。
+fetch('/data/infrastructure/infrastructure.xml').then(function(response){if(!response.ok)throw new Error('catalog unavailable');return response.text()}).then(function(text){
+  var xml=new DOMParser().parseFromString(text,'text/xml'),names={bicycle:'自行车',motorcycle:'摩托车',offroad:'越野车'};
+  Object.keys(names).forEach(function(id){
+    var item=Array.from(xml.querySelectorAll('Infrastructure')).find(function(node){return node.querySelector('Name').textContent===names[id]}),
+      quote=item.querySelector('Level[id="0"]'),benefits=item.querySelector('Level[id="1"]'),skill=quote.querySelector('Skill Level');
+    catalog[id]={name:names[id],cost:Number(quote.querySelector('Price').textContent),required:skill?Number(skill.textContent):0,
+      description:benefits.querySelector('Description').textContent};
+  });__open();
+});
+</script></body></html>

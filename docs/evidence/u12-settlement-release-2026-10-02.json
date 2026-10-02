@@ -1,0 +1,123 @@
+{
+  "schema": "cf7-u12-release-evidence.v1",
+  "recordedAtUtc": "2026-10-02T08:28:00.091Z",
+  "state": "promoted",
+  "authorization": "维护者在复核后明确授权：那就发布列车。旧版完整/紧凑偏好继承明确不做。",
+  "source": {
+    "commit": "97b13e15d1e7024f255dc6695ad9f763e66ca70e",
+    "tree": "8fdacdb993b507621b5bbdd21afe773bb2f71332",
+    "tag": "refs/tags/runtime-build-v2/20261002-u12-settlement-v1",
+    "upstreamBase": "856ac640c5c1705b2c2ea3bacfebc35e5fd14fff",
+    "deploymentCommit": "c30627355851303200a39d504ba4705042b39581"
+  },
+  "request": {
+    "requestId": "893C83C564C8BF7BF3AF3D132B998F17323AC4EAF953DF55A91DEFB091F5610E",
+    "buildIdentityHash": "F044657C3DBFEF2E49058F3800FA690C4EEA08AD55E0D70EA95D062BEEA9657B",
+    "payloadClosureHash": "D250A7236C80A8B2403CDA3F9ACF81B171A399B46D28B34BFC169036058D42B4",
+    "policyHash": "193729048ABE14680DCEE6473DCF761301D29E9D6E75AEBC496BA0E510B521F5"
+  },
+  "builds": {
+    "localWorker": "builder-local-b",
+    "faultDomains": [
+      "physical-host-b",
+      "github-hosted-windows"
+    ],
+    "signerCount": 2,
+    "identityAndClosureMatch": true,
+    "cloudRunId": 36982250220,
+    "cloudRunUrl": "https://github.com/FlashNightModReborn/CrazyFlashNight/actions/runs/36982250220",
+    "cloudConclusion": "success",
+    "cloudArtifactScope": "attestation-only",
+    "finalCandidate": "local signed CAS"
+  },
+  "policy": {
+    "passed": true,
+    "passedChecks": 47,
+    "totalChecks": 47,
+    "receiptSha256": "FE23184C7E43378FCBB5CE252D82D3993CDDD83D8F0FE2F3EC3EECB909E690A8",
+    "log": "tmp/u12-release-policy-v1.log"
+  },
+  "promotion": {
+    "passed": true,
+    "promotedAtUtc": "2026-10-02T08:16:57.7116835Z",
+    "writer": "tools/promote-runtime-bundle.ps1",
+    "files": 36,
+    "bootstrapVerifyOnlyExitCode": 0,
+    "coreSha256": "3E1684A705DAD4ABBBF0FB49BD6104A488F732DE35A1B5C08C1CBEE47C27A68B",
+    "manifestSha256": "8A9488F5A2580776DC8693CA27663AA2866F13EB41953A811CC39C9E415F5DED",
+    "asLoaderSha256": "32385FE20D43E6C15B8FA95DF6A843D7701B0A520F9FDFE054E08E277CB0DBD7",
+    "previousBundle": "tmp/runtime-promotions/20261002T081630720Z-22899cdb801f45769b8a85266095983b/previous",
+    "log": "tmp/u12-release-promotion-v1.log"
+  },
+  "remoteAudit": {
+    "runId": 36983349784,
+    "url": "https://github.com/FlashNightModReborn/CrazyFlashNight/actions/runs/36983349784",
+    "headSha": "c30627355851303200a39d504ba4705042b39581",
+    "status": "completed",
+    "conclusion": "success",
+    "releaseState": "promoted",
+    "deploymentChanged": true,
+    "verifiedSigners": 2,
+    "verifiedFaultDomains": 2,
+    "log": "tmp/u12-release-audit-v1.log",
+    "logSha256": "3D3C6B40FC89A968E94B822A2B540BC4DB8E267D67D25111C6DD85C5A69DBF72"
+  },
+  "formalStartup": {
+    "passed": true,
+    "entry": "automation/start.ps1 without CandidateRoot",
+    "runtimeMode": "formal_runtime",
+    "guardianPid": 29332,
+    "flashPid": 25788,
+    "identityAndClosureMatch": true,
+    "bootstrapWindowObserved": true,
+    "flashHandshakeObserved": true,
+    "enteredPlayerSlot": false,
+    "closeAction": "title-bar close button through computer-use",
+    "flashExitCode": 0,
+    "residualGameProcesses": 0,
+    "observedAtLocal": "2026-10-02 16:19:59–16:20:31 Asia/Shanghai",
+    "entryLog": "tmp/u12-release-formal-start-v1.log",
+    "entryLogSha256": "FA5C1A705A4CBECEA0A41D16401B192FA9ED482581AFA1A168BB266AEC678864",
+    "launcherLog": "tmp/u12-release-formal-launcher-v1.log",
+    "launcherLogSha256": "1482AADE2E0E3E0BB1271DDB42BCAC9B67ADFFDB0B519723CD181900C499598D"
+  },
+  "saves": {
+    "scope": "All 35 files under saves/ before and after formal startup",
+    "unchangedFilesExcludingMarker": 34,
+    "unchangedFileHashes": true,
+    "changedFiles": [
+      ".launcher-version-marker.json"
+    ],
+    "markerExplanation": "LauncherVersionGate.WriteMarker writes the current schema version and startup timestamp on each launch; all other saves/ files retained identical SHA-256 and size.",
+    "autoRepair": {
+      "slots": 27,
+      "corrupted": 0,
+      "applied": 0,
+      "drops": 0
+    },
+    "externalSolHashBaselineCaptured": false
+  },
+  "acceptance": {
+    "humanFeedback": [
+      "可行，相当顺滑",
+      "复核看起来没问题"
+    ],
+    "preReleaseFieldLog": "tmp/u12-release-field-before/launcher.log",
+    "preReleaseFieldLogSha256": "8EB942DF3F52760DBFCC0A9442B7A168F24C79F2BCD7D4CC1A6FAB6106EB0086",
+    "scope": "维护者正常结算旅程与操作体验复核；当次奖励提交、保存确认、关闭及焦点交回有现场日志。",
+    "formalStartupOnly": true,
+    "fullBusinessStandardEntryVerified": false,
+    "fullSaveRestartE2eVerified": false,
+    "legacyDensityPreferenceMigration": "intentionally omitted by maintainer"
+  },
+  "priorEvidence": [
+    "docs/evidence/u12-followup-2026-10-02.json",
+    "docs/evidence/u12-footer-close-2026-10-02.json"
+  ],
+  "limitations": [
+    "正式入口本轮未进入存档、战斗或再做关卡结算；发布证明不代签完整业务旅程。",
+    "全部 H3/H4 窗口组合、自然加载失败和完整保存重启仍按专项验收单独记录。",
+    "最新候选原生合成夹具停在初始前台准入；未用旧候选回执代签本候选。",
+    "既有失败日志和历史机器证据保持原状，新的发布状态由本回执和 signed consensus 表达。"
+  ]
+}

@@ -5,6 +5,8 @@
 **2026-09-12 工作区增量**：NPC 场景菜单迁入 NativeHud，两个开发占位保留兼容接口，AS2 注释语义由 C#/Web 分别渲染，注释样式和交互以旧 Web 为权威。当前仍在实现与候选验证，未人验或部署；协议、兼容与验收边界见 [专项 ADR](../docs/NPC菜单与原生注释迁移-ADR-2026-09-12.md)。
 
 **文档角色**：AS2 UI 迁移到 Launcher Web Panel 的专题 canonical doc。
+
+**U8 共享引导合同**：`native_guidance` 只承载 AS2→Host 的有界显示快照，close 意图仍由 AS2 核对当前场景；5 个现场提示保留原版白色图示，不拥有输入、暂停或业务写。新手/地图告示板由原触发打开对应 Web 帮助条目，复用 tracked exact instance、执行门及现役帮助暂停/关闭生命周期，不驱逐已有面板。自动教程必须等待 AS2 结算/切场与 loot lane 空闲，再由 Host 在投递前复核结算 binding 完全释放；不能只依赖面板已关闭。自动教程提供“跳过本次”与全局“关闭教程弹窗”；本机 `tutorialsAutoOpen` 关闭后，后续触发改为一次刘海屏通知提醒，等待相同的结算/场景准入，保留手动帮助与现场图示，不推进任务或改变奖励。Help 偏好命令只允许 exact 当前实例关闭自动弹窗，失败回滚，结果未知不重发。主帮助与领域帮助共用固定样例的演示页面和语义轨迹播放器，领域帮助留在原 Panel 的 `SecondaryPage` 内。对话图片与引导共用资源读取、缓存和 contain 绘制，剧情权威不随图像复用转移。源码、扩展接口与候选边界见 [U8 共享基座](../docs/U8引导迁移与共享教程基座-2026-09-30.md)。
 **最后核对代码基线**：release source commit `c59b9b4cdb9319c04503a703019a9dff30bc04a1`（2026-09-08，医务室整形与共享外观；tag `runtime-build-v2/20260908-plastic-surgery-v1`；限定 `HUMAN_ACCEPTANCE_PASSED / promoted`）。动态 identity/closure、签名共识与审计只读 [runtime manifest](../runtime/cf7-runtime-manifest.tsv)、[runtime release consensus](../config/build/runtime-release-consensus.json)和 [runtime build reproducibility](../docs/runtime-build-reproducibility.md)；整形的人类证据范围见下节，合并上游后的正式产物未重跑游戏业务，不称业务 `standard_entry_verified`。2026-08-30 稳定性修复各业务的现场状态以对应专项最新回执为准，总体部署记录不代签这些业务。
 
 **2026-09-19 药剂 HUD 局部复核**：commit `29567cb6c2f330410ac28250cabaa34ffc3eef60`；同步下文现役点阵、#71 现场收口与玩家资源区规划引用，不改变其他专项的代码或验收基线。
@@ -14,6 +16,23 @@
 2026-07-29 的 B7 施工从 commit `c96f4c3d750561022b706c72a4d53050431e627d` 起步；2026-07-30 的历史 cut 又删除仓库、装备、NPC 商店、合成与技能教师的 legacy renderer/fallback，并收口 main XFL 可达闭包。该 cut 与 2026-08-06 A1–A6 release 的 immutable tag、双故障域 quorum、promotion、成功与失败标准入口证据全部保留，但均已被上方 2026-08-08 release supersede；旧纵切没有执行 Character、Materials、Intelligence、PlayerInfo、业务 preview/commit、普通 panel close 或持久化专项旅程，本次 Help smoke 也不补齐这些业务范围。
 
 本文用于所有“旧 Flash / AS2 UI 迁移到 Launcher WebView2 panel”的任务。它不是普通前端开发指南，而是跨 AS2、C# 总线、Web panel、Flash CS6 编译链的稳定性护栏。是否必须先读本文按任务命中条件判定，见下节权威核心；“凡迁移旧 UI、替换运行态入口、扩展 panel 协议、把 dev harness 推向生产都必须整份通读本文”的无条件口径不再成立。
+
+<a id="u12-scene-transition"></a>
+### U12 游戏内过场投影
+
+`scene_transition` 是 AS2 单向权威快照，由独立固定 WebView2 合成表面接收。纯过场不注册普通 Panel、不暂停或取得场景导航权威；并行结算在同一端点绑定既有 Loot Panel 的 exact 身份与业务权威。AS2 继续拥有原淡出时间轴的清理、跳图、奖励暂存和保存；Host 分别核遮罩呈现、奖励绑定、目标世界合成帧及时间轴结束。身份、断连和未知操作保护及人工验收见 [U12 专项](../docs/U12过场Web迁移与人力验收-2026-10-01.md)。本节按 commit `c724305c374de423bce06bd39de0b27e09638f4c` 加 2026-10-02 工作区核对，状态不升级为正式入口验证。
+
+地图交接在跳图受理的同步函数中先发布 cover，第 2 帧复用同一身份；Host 入幕先装不透明底板，当前 Web covered 回执后才撤掉。页面等待图片期间保持不透明，透明动效仅用于已获世界帧许可的揭幕。真实失败旅程属于自然发生时的条件人验，未遇到不要求制造故障，也不能把夹具结果称为真实失败通过。
+
+旧淡出时间轴第 17 帧的 `__returnFadeActive` 释放是副本初始化 admission 合同，不能随遮罩延长到揭幕结束；Web 遮罩由独立投影身份继续等待 `SceneReady` 和目标帧。修改这段时序需覆盖生产副本 admission，防止初始化与揭幕相互等待。
+
+基地返回 token/run 精确一致、报告已经 durable 暂存时，v2 `scene_transition` 携带不可变 `report/reportVisible/reportHandoff`。原 Loot Panel/View 先以无业务权威的预览显示；Host 确认 covered 后自动经原 Loot 权威绑定，原操作即可与加载并行，每次请求只申请一次，不新增按钮。绑定复用现有 View/DOM/Core/HWND 和阅读状态；固定源与 exact panel/chest/container/epoch/run 同时成立才开放既有 Loot/库存域，拒绝其他任务及 foreign 实例，不复制业务后端。
+
+该请求内 `manageReport/closeReport` 是同一不可变报告的内部意图，加载/提示的显示 revision 前进不能使在途意图失效。Host 要求同一 request/generation、整数 `1 ≤ 意图 revision ≤ 当前显示 revision`、报告可用及既有操作锁，AS2 再核请求、原返回 token/run 和关闭权威；未来/畸形/foreign 仍拒绝。已经接受的 covered 证明仅随同一报告请求延续，新请求、hide 或断连清除。世界呈现回执、失败导航和 Loot 奖励/库存/关闭的业务 revision 仍要求各自的 exact 权威；不能用该显示意图规则重放未知写。
+
+已暂存报告在 durable 回调后才补齐已提交资产回执的物资字段；未提交或未知候选不得提前呈现为所得。右栏显示本轮已入账奖励，空 Loot 容器仍是原领取权威，不能为填充界面再发一次奖励。原生测试必须使用隔离 WebView2 profile，不能改写日常结算密度偏好。
+
+`rewardReady` 只表示已遮盖且可申请原权威会话，不能替代场景就绪；`prepared/reportReady` 仍须真实目标捕获。绑定后的结算会话允许目标场景编号更新，不能因此清掉 exact 渲染回执。AS2 核 ready 世界和同一业务身份，结束原过场时间轴后，Host 才取得普通面板暂停；页面只更新就绪能力，没有重新开窗、截图背景、恢复四项状态或第二次 snapshot。外层 PanelScale 唯一缩放。提前关闭必须先由原 exact close/revision/lease/terminal 裁决，未就绪继续同一次加载，到达不再重开；未知写不能靠关闭或重试清锁。失败页重试与奖励操作锁分开，重试沿用同一已绑定报告，不重开、不重复暂存。主动切走时等待回到游戏；v1 未并行报告仍等待成功尾帧，自动帮助继续等待报告与遮罩。
 
 <a id="authority-core"></a>
 ## 权威核心：何时必读本文
@@ -491,6 +510,25 @@ NativeHud 的 × 始终保留安全退出路由，仅在既有按钮内部投影
 本轮不把外部进程键盘输入改成 Number 位掩码协议。单 Number 可安全承载多少位、拆成两个掩码是否比 JSON 键数组更划算，必须另建 AS2/Host 端到端 benchmark，分别测序列化、socket、AVM1 拆位与每帧消费后再裁决；当前迁移只修正确性和设置管理，不把未经测量的位运算研究带入生产 wire。开发关闭点固定为 `DEVELOPMENT_COMPLETE / HUMAN_ACCEPTANCE_REQUIRED / NOT_DEPLOYED`：真实 WebView2/Flash 中的布局、试听手感、键位操作、挑战帮助、复活/返回基地与保存重启读回必须由人类体验并反馈，完成打磨后才允许 commit、正式 deployment build 或 push。
 
 只有 Armed 且收到 `sv:2` 的 Done 状态才能签发一次 `EXIT_CONFIRM` capability；Router 必须调用 widget 的 one-shot consume 后才执行普通退出。raw、重放、未 Arm、Saving、Failed 或已消费的 `EXIT_CONFIRM` 一律拒绝。Failed 只显示取消/重试，重试只重新派发 `SAFEEXIT`；Done 无操作自动收起也不得退出。Ctrl+Q 等明确 emergency、Flash 僵尸进程和 fatal shutdown 是独立止损路径，不继承 Done capability，也不能被写成普通安全退出成功。
+
+<a id="u13-garage-purchase"></a>
+### U13 车库购车（2026-09-30 本地施工）
+
+车库三个车辆按钮统一调用 `_root.打开车库购车(vehicleId)`；根桥与 `GaragePurchasePanelService` 编进 asLoader，独立基地 SWF 不复制服务类。已拥有车辆继续走原 `openWebMap`：自行车打开 defense，摩托车与越野车打开 faction。主时间轴不再放置旧确认实例，原确认库元件保留编辑源。
+
+`panel/domain=garage` 只支持 `snapshot / commit / query`，命令及 handler 对应关系登记在 [panel-contracts.v2.json](../launcher/contracts/panel-contracts.v2.json)。车辆身份为 bicycle、motorcycle、offroad；价格、驾驶门槛和说明从现役 `基建系统.dict` 的 XML 投影读取，Web 不接收任意扣费回调，也不传价格或车辆拥有标志。
+
+购车面板沿用共享 `PanelScale`，以 1024×576 画布铺满游戏显示区域；非 16:9 浏览器预览等比居中。左侧展示原画烘焙的车辆，右侧列具体权益、报价与驾驶要求。价格与门槛仍取 Level 0，权益说明取 Level 1；更高级载具覆盖低档出行，不要求逐级购买，地图剧情/发现条件与战备箱开放条件在购买前明确展示。
+
+车辆 XFL 为唯一美术编辑源，图片取当前已发布 [基地 SWF](../flashswf/levels/基地场景合集.swf) 三处购车 opener 对应元件的第 1 帧；保留原稿透明度，裁去时间轴留白，统一展示朝向，排除 hover 描边帧。生成器 [bake-garage-vehicles.py](../tools/bake-garage-vehicles.py) 复用现有物品素材工作台的 FFDec 导出内核，产出 [三车图片与 manifest](../launcher/web/assets/garage-vehicles/manifest.json)。修改车辆 XFL 后先按其归属发布基地 SWF，再运行 `python -X utf8 -B tools/bake-garage-vehicles.py` 与同命令追加 `--check`；后者实际再生并核对来源/工具、字节、尺寸、体积及精确文件集合。文本来源/工具按 UTF-8 LF 归一摘要，SWF/WebP/JAR 按原始字节绑定，避免 Git 换行策略造成假漂移。图片读取失败保留权益与购买操作。
+
+- AS2 snapshot 绑定车库根入口、稳定 world identity、存档 owner 与槽位。commit 在实际扣费前复验车辆身份、拥有状态、驾驶等级、余额和报价。已拥有返回 owned，无扣费或新增保存。
+- 一次扣费、车辆标志写入和货币播报后进入 save_pending；严格保存成功才返回 applied/saved。相同 token 重复提交返回回执，待保存重试只执行同槽保存。query 只读结果，未解决的购买在重开时继续恢复。
+- Host/Web 沿用 `PanelPendingCallTracker` 与 `PanelRequestMux`；结果未知查询原 token，关闭不清除未解决事实。普通 snapshot 不得替换所选车辆，query 不得用另一辆车的回执解锁购买。
+- 车辆标志继续由现役地图、战备箱容量和材料商店/合成导航消费，不新增存档 schema 或另一套权益规则。
+
+验证入口：`scripts/run-garage-purchase-tests.ps1`、`GaragePurchaseTaskTests`、`tools/run-garage-purchase-harness.js`，以及现有 panel-contract、存盘调用点与受影响 Host/SaveManager 门。
+验证结果、身份、闭包、产物与修复边界见 [本地候选证据](../docs/evidence/u13-garage-local-2026-09-30.json) 与 [正式发布回执](../docs/evidence/u13-garage-release-2026-10-01.json)。2026-10-01 已 promoted：新冻结树的双独立构建一致，production policy 43/43、原子部署、安装完整性校验及远端审计通过。此前候选的三车单次扣费、保存确认和界面认可单独保留；保存重启读回、完整权益专项与新产物的正式入口业务复验仍待验证。共享服务和情报名词注记配色已归入唯一色板，普通/发布树 strict 样式门均为 0 error / 0 warning，颜色与透明度保持一致。
 
 ## 3. C# 接入清单
 

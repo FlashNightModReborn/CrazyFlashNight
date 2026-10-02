@@ -1,0 +1,61 @@
+{
+  "schemaVersion": 1,
+  "termName": "摇滚公园",
+  "displayName": "摇滚公园",
+  "skin": "dossier",
+  "pages": [
+    {
+      "pageKey": "1",
+      "requires": [],
+      "blocks": [
+        {
+          "type": "heading", "level": 2,
+          "content": [{ "type": "text", "text": "§1 定义" }]
+        },
+        {
+          "type": "paragraph",
+          "content": [{ "type": "text", "text": "摇滚公园，堕落城内以「民粹主义＋自由商业」为旗号的异质势力，其创立者与核心成员皆女子：被称「主唱」的前流行巨星、「键盘」与「吉他」。组织以偶像性凝聚成员——崇拜发扬于喜爱而非畏服，并以歌声维系其「指路人」地位。" }]
+        },
+        {
+          "type": "paragraph",
+          "content": [{ "type": "text", "text": "摇滚公园的强化石加工技术在尘都属最强的一支，武器自造与外销皆精。表面暂时服从黑铁会，实则被多方视为潜在的叛乱源。" }]
+        }
+      ]
+    },
+    {
+      "pageKey": "2",
+      "requires": [{ "item": "学校与摇滚敌对的缘由？", "minValue": 1 }],
+      "blocks": [
+        {
+          "type": "heading", "level": 2,
+          "content": [{ "type": "text", "text": "§2 补录：与联合大学的旧怨" }]
+        },
+        {
+          "type": "paragraph",
+          "content": [{ "type": "text", "text": "摇滚公园与堕落城联合大学长期敌对。高校标榜理性和知识自治，摇滚公园则以民粹和偶像动员为纲，两者在争夺堕落城民间话语权的路上针锋相对——《政治构造视角》特刊对此有专篇分析。" }]
+        }
+      ]
+    },
+    {
+      "pageKey": "3",
+      "requires": [
+        { "item": "摇滚公园乐器研究报告", "minValue": 1 },
+        { "item": "堕落城假肢市场动荡", "minValue": 1 }
+      ],
+      "blocks": [
+        {
+          "type": "heading", "level": 2,
+          "content": [{ "type": "text", "text": "§3 补录：乐器即武器" }]
+        },
+        {
+          "type": "paragraph",
+          "content": [{ "type": "text", "text": "临时政府受摇滚公园一方邀请所作的技术报告证实：其乐器武器化路线并非噱头——结合强化石加工与音响共振特性，乐器可被改造成高致命性的单兵装备。这项技术联动义肢流通，解释了近期假肢市场价格波动中摇滚公园的资金流向。" }]
+        },
+        {
+          "type": "note",
+          "content": [{ "type": "text", "text": "交叉证引：临时政府研究总结／哨兵报假肢市场专题。" }]
+        }
+      ]
+    }
+  ]
+}

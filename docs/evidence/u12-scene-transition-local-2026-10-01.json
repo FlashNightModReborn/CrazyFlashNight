@@ -1,0 +1,4619 @@
+{
+  "schema": "cf7-u12-scene-transition-local.v1",
+  "recordedAtUtc": "2026-10-02T03:00:15.316Z",
+  "baseline": "c724305c374de423bce06bd39de0b27e09638f4c",
+  "state": "candidate_built",
+  "source": "uncommitted worktree",
+  "candidate": {
+    "root": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\resources\\tmp\\runtime-candidates\\v2\\u12-sync-20261002",
+    "metadataRelativePath": "tmp/runtime-candidates/v2/u12-sync-20261002/runtime-build-metadata.v2.json",
+    "metadataSha256": "FE9B7EACBD6A2BACFD349D1489F6B693626C71408AD02FD1346E2DF23165942A",
+    "coreSha256": "E7BC356C9777720A6AF4FFF0015AF11DF7A86EAB2464D85E66121361F3504BE4",
+    "nativeSha256": "76B2424FDCD974604B9AA486397CD7337766FEF3654B9F72D33FBF93A1F9E882",
+    "buildIdentityHash": "E23387D4B40BB37C3174D9909605E86D64B5965D67B417522B6C1B5167E70BB2",
+    "payloadClosureHash": "288FA2B17E52B03B10EF0F90073F58B3BB7B1D825BF0A6D8F00D829F50A71B4A",
+    "selectionState": "ready",
+    "deploymentStatus": "NOT_DEPLOYED",
+    "formalRuntimeBinaryUnchanged": true,
+    "statusLogPath": "tmp/u12-shared-return-stall-20261002/dev-status.txt",
+    "sourceRecipe": {
+      "artifactSourceHash": "0025EC63E967D160F94AA4300C8D795F8CB542B92133146386ECF31FFA0EFD2E",
+      "producerRecipeHash": "23483061F6288CDE0142991DBE8A5F2FDAE8DCC84B098FC8332D1573365ABA8E",
+      "toolchainLockHash": "DFA769829F9740196DEF63351A00AAC309E50A2CA0A768759334EB2A2161DD36"
+    },
+    "frontendSourceAhead": false,
+    "frontendOutsideDllClosure": true,
+    "reusedWithoutDllClosureChangeThisRound": false
+  },
+  "frontend": {
+    "schema": "cf7-u12-frontend-source-snapshot.v1",
+    "files": [
+      {
+        "path": "scripts/asLoader.swf",
+        "bytes": 1425477,
+        "sha256": "A0FE22FD337D3893D919FABE5A20BD28CB65B646417E62410DE2FB6F4F133AF2"
+      },
+      {
+        "path": "CRAZYFLASHER7MercenaryEmpire.swf",
+        "bytes": 207247,
+        "sha256": "F0BDD31048055BAF47EA582D71896190998D563AFB7B2CC8E9F67E06E67436B6"
+      },
+      {
+        "path": "scripts/类定义/org/flashNight/arki/ui/SceneTransitionService.as",
+        "bytes": 14917,
+        "sha256": "43629AF68C38A968ADFDE86AD05923F90265FD6F011F0AF405EABDDABDBA2754"
+      },
+      {
+        "path": "scripts/类定义/org/flashNight/arki/weather/WorldLightingBridge.as",
+        "bytes": 5885,
+        "sha256": "8A7F7A2B553FCC3CD6D8CB15E132FF5125A2AB7B1CC9B2CAB82FBA3F287AF47F"
+      },
+      {
+        "path": "scripts/展现/UI交互/UI交互_lsy_UI管理.as",
+        "bytes": 16354,
+        "sha256": "B775A1F2D8169D242C50DA4BFC5DCA534476FEA44E0E0D2DC71AF6C3D112008F"
+      },
+      {
+        "path": "CRAZYFLASHER7MercenaryEmpire/LIBRARY/sprite/淡出动画.xml",
+        "bytes": 10872,
+        "sha256": "B1B5D4C4883976EF54F0EB334E70C03A12D43AC2DFC8EF5CFF83F72F8180A1CE"
+      },
+      {
+        "path": "launcher/web/scene-transition.html",
+        "bytes": 2841,
+        "sha256": "F6F7BDFB4FCE17387A6F8EC9C471B47BB7F52B70740D8E6601439F6BF105E895"
+      },
+      {
+        "path": "launcher/web/css/scene-transition.css",
+        "bytes": 2414,
+        "sha256": "E650B98C441CCA2121B4819E2D39B217D49FFF6F0A27BA78FEFA6181D36310F3"
+      },
+      {
+        "path": "launcher/web/modules/scene-transition.js",
+        "bytes": 12179,
+        "sha256": "6B3239C037BFFC4304A4449751991E5AF7D35F95A350D7895C106603C232BD3E"
+      },
+      {
+        "path": "launcher/web/generated/scene-transition-catalog.js",
+        "bytes": 759,
+        "sha256": "5BEA6245626B0AD63C88A9A0B8DC904F12D30C37E47C89A8DA54C8348DCA55A9"
+      },
+      {
+        "path": "launcher/data/scene-transition/catalog.manifest.json",
+        "bytes": 3589,
+        "sha256": "CC831C7839623B7051194D03784EBCDFFE4C23039E5F8B1344A7220354A96E9E"
+      },
+      {
+        "path": "tools/generate-scene-transition-catalog.js",
+        "bytes": 3616,
+        "sha256": "DA00838CABB903F9F566057131B9619F8827E0892C9313CC24E9DBF768801D19"
+      },
+      {
+        "path": "scripts/类定义/org/flashNight/arki/scene/StageRunSession.as",
+        "bytes": 131804,
+        "sha256": "60A69F5495D0EEBF4EDF4CC3D6DE9F3C4E89A4A3AD2BB92659EE6FA1C3EE5DE7"
+      },
+      {
+        "path": "scripts/类定义/org/flashNight/arki/scene/StageReturnFlow.as",
+        "bytes": 8054,
+        "sha256": "8128EAC3EC196A55B68DBDC0A626A55CD9525B2AC9A51964E61AEDE51FB95EEC"
+      },
+      {
+        "path": "scripts/类定义/org/flashNight/arki/item/LootContainerService.as",
+        "bytes": 172428,
+        "sha256": "31A3B90451F14B4C9D7997C73F821EFBE565160FC430A2AD83A6B5770A894311"
+      },
+      {
+        "path": "launcher/web/modules/loot/loot-view.js",
+        "bytes": 97208,
+        "sha256": "2223751DCD6E12C593CFCECA5862B052F7D2262834F61FDF86DDD817CBDF27BB"
+      },
+      {
+        "path": "launcher/web/modules/loot/loot-panel.js",
+        "bytes": 51295,
+        "sha256": "AAAEDBBEA2EB6C8383C902717ECA48B6881B17A474380E8DACD6A34765438033"
+      },
+      {
+        "path": "launcher/web/css/panels.css",
+        "bytes": 1443,
+        "sha256": "738D0AFC59BC5DE71F0A24D14F430D6C5607BDDA79AB74C9A3B73D99094857DC"
+      },
+      {
+        "path": "launcher/web/css/terminal.css",
+        "bytes": 10396,
+        "sha256": "F6D2DB430701BA4A1ED506D25224A263A4721CFAFFFA37686EB1A8ED1DC1D1C0"
+      },
+      {
+        "path": "launcher/src/Guardian/PanelHostController.TransitionSettlement.cs",
+        "bytes": 3896,
+        "sha256": "4C08F16729E7352EDCDAA3CC30C64DE1C13BDF81385B47D0D92FEBC5A1F8B606"
+      },
+      {
+        "path": "launcher/src/Guardian/SceneTransitionController.cs",
+        "bytes": 15460,
+        "sha256": "E5052DAB35252958A4422B31A20D9D85D0E1DEE21E7E981042CC7603573302A1"
+      },
+      {
+        "path": "launcher/src/Guardian/PanelHostController.cs",
+        "bytes": 150491,
+        "sha256": "3B9A355AB6ADE1E7663518B939743BAD7FDC0B9A503059046CDDC642D8B7FF43"
+      },
+      {
+        "path": "launcher/src/Guardian/PanelHostController.CompositionHelp.cs",
+        "bytes": 5545,
+        "sha256": "DF9016CD350F36EB13AB4ECD812024A46E5B506FBDE81E798BD5281042BB5B80"
+      },
+      {
+        "path": "launcher/src/Guardian/CompositionHelpSurface.cs",
+        "bytes": 32276,
+        "sha256": "ADB3EE06806CB0326F2304CE8551BAFCCD488DA8555340ABD6AB5F2268DC74E1"
+      },
+      {
+        "path": "launcher/src/Guardian/WebOverlayForm.cs",
+        "bytes": 452453,
+        "sha256": "344255CDDE938B6427112FE58CA77333D937B3BD5C5339D7B282DA1567347584"
+      },
+      {
+        "path": "launcher/src/Program.cs",
+        "bytes": 190891,
+        "sha256": "F5C04385190C274D727E607A661F8F9CCA39822B66B42A7D0E12A6CBBE2ADF82"
+      },
+      {
+        "path": "launcher/src/Tasks/SceneTransitionTask.cs",
+        "bytes": 15017,
+        "sha256": "398C41AF4873A353CDA4CC17CBC35193C38B7E5A821E31DF15EA1E386EE828A3"
+      },
+      {
+        "path": "launcher/tests/Tasks/SceneTransitionTaskTests.cs",
+        "bytes": 21667,
+        "sha256": "A46E09D833C4A6FAF14D4811B6BFA666601A41BC145D9A03267CBD7AA811AAE7"
+      },
+      {
+        "path": "launcher/web/modules/panels.js",
+        "bytes": 32144,
+        "sha256": "0C8746009FA85378EB10BA65B64D2B8BEF0CF99D0DCD07AD8BA00E18DAE45590"
+      },
+      {
+        "path": "scripts/类定义/org/flashNight/arki/scene/StageRunSessionTest.as",
+        "bytes": 250943,
+        "sha256": "F5ACA3BFD8069F6EADF94510C0C35CCA37D0EA40385002C7A5A423D63C1C0DA5"
+      },
+      {
+        "path": "scripts/run-map-loot-tests.ps1",
+        "bytes": 22697,
+        "sha256": "F1AD2591DB5F9A5F0DE9A3EB565F807C1C06A859CBDD8082C9DD3F7F10AD31BC"
+      }
+    ],
+    "covers": "Original Loot Panel/View and CSS unchanged this round; same DOM/Core/HWND. New Host/AS2 report-intent arbitration accepts same-request display advancement without weakening business revisions or scene receipts."
+  },
+  "compiled": [
+    {
+      "state": "compiled",
+      "target": "publish",
+      "path": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\resources\\scripts\\asLoader.swf",
+      "sha256": "A0FE22FD337D3893D919FABE5A20BD28CB65B646417E62410DE2FB6F4F133AF2",
+      "bytes": 1425477,
+      "modifiedUtc": "2026-10-02T02:25:07.868Z",
+      "log": "tmp/u12-shared-return-stall-20261002/asloader-publish.txt",
+      "invocationExitCode": 1,
+      "invocationTimedOut": true,
+      "lateTerminalVerified": true,
+      "compilerErrors": 0,
+      "compilerWarnings": 0,
+      "compilerReportPath": "tmp/u12-shared-return-stall-20261002/publish-late-compiler.txt",
+      "compilerReportSha256": "6D64657E843CFA06C243B6B51F8732C1B5910EBD29940AA7F6F9342B38034FD3",
+      "recovery": {
+        "path": "tmp/u12-shared-return-stall-20261002/publish-late-recovery.json",
+        "bytes": 1207,
+        "sha256": "F7C1BE808D73714A250386303138E86E5F5436FA6AEBAA1AD245AB145C9DC39C"
+      },
+      "traceExpected": false,
+      "reusedWithoutSourceChangeThisRound": false,
+      "recompiledThisRound": true
+    },
+    {
+      "state": "compiled",
+      "target": "main",
+      "path": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\resources\\CRAZYFLASHER7MercenaryEmpire.swf",
+      "sha256": "F0BDD31048055BAF47EA582D71896190998D563AFB7B2CC8E9F67E06E67436B6",
+      "bytes": 207247,
+      "modifiedUtc": "2026-10-01T09:49:09.8895988Z",
+      "log": "tmp/u12-scene-transition/main-dungeon-stall-compile.log",
+      "compilerErrors": 0,
+      "compilerWarnings": 0,
+      "compilerReportPath": "tmp/u12-scene-transition/main-dungeon-stall-compiler_errors.txt",
+      "compilerReportSha256": "6D64657E843CFA06C243B6B51F8732C1B5910EBD29940AA7F6F9342B38034FD3",
+      "reusedWithoutSourceChangeThisRound": true,
+      "recompiledThisRound": false
+    }
+  ],
+  "checks": {
+    "originalBackgrounds": {
+      "passed": 14,
+      "failed": 0,
+      "logPath": "tmp/u12-shared-catalog.txt",
+      "reusedWithoutRelevantInputChangeThisRound": true,
+      "evidenceRound": "prior round; retained as scoped unchanged-input evidence"
+    },
+    "as2Guards": {
+      "passed": 48,
+      "failed": 0,
+      "compilerErrors": 0,
+      "compilerWarnings": 0,
+      "logPath": "tmp/u12-shared-return-stall-20261002/scene-guards-after.txt",
+      "realAvm1Fixture": true,
+      "freshTrace": true,
+      "traceRunBlocks": 1,
+      "bytecode32KRetries": 0,
+      "gameE2e": false
+    },
+    "hostProtocol": {
+      "passed": 76,
+      "failed": 0,
+      "logPath": "tmp/u12-shared-return-stall-20261002/host-regression-after.txt",
+      "scope": "Same immutable report intent crosses loading/reveal advancement once; accepted cover proof persists; uncovered/foreign/generation/future/malformed/unknown denied; navigation and presentation receipts stay exact."
+    },
+    "browserFixture": {
+      "passed": 313,
+      "failed": 0,
+      "logPath": "tmp/u12-shared-return-stall-20261002/browser-after.txt",
+      "artifactDirectory": "tmp/u12-scene-transition",
+      "realEdgeDomFixture": true,
+      "mockedBusinessAuthority": true,
+      "gameE2e": false,
+      "scope": "Unchanged shared production frontend rerun. DOM/render fixture and mocked business authority; does not certify actual Flash game stutter or rewards persistence.",
+      "frontendChangedThisRound": false,
+      "priorUniqueArtifactDirectory": "tmp/u12-scene-transition/shared-complete-20261002"
+    },
+    "candidateCompositionFixture": {
+      "state": "fixture_executed",
+      "candidateBound": true,
+      "passed": 48,
+      "failed": 0,
+      "result": {
+        "path": "tmp/u12-shared-return-stall-20261002/native-after/result.json",
+        "bytes": 7357,
+        "sha256": "C3979B9B598FCC58FE1F5299EAC56E8A869D6DE720A93E6AB7F7C5823EACD1BC"
+      },
+      "logPath": "tmp/u12-shared-return-stall-20261002/native-after.txt",
+      "candidateCoreSha256": "E7BC356C9777720A6AF4FFF0015AF11DF7A86EAB2464D85E66121361F3504BE4",
+      "nativeSha256": "76B2424FDCD974604B9AA486397CD7337766FEF3654B9F72D33FBF93A1F9E882",
+      "candidateBuildIdentityHash": "E23387D4B40BB37C3174D9909605E86D64B5965D67B417522B6C1B5167E70BB2",
+      "candidatePayloadClosureHash": "288FA2B17E52B03B10EF0F90073F58B3BB7B1D825BF0A6D8F00D829F50A71B4A",
+      "reportPixelsVerified": true,
+      "sameDomCoreHwnd": true,
+      "singleSnapshot": true,
+      "fakeSceneCapture": true,
+      "mockedBusinessTransport": true,
+      "actualDelayedWebViewIngress": true,
+      "gameE2e": false,
+      "playerSlotsTouched": false,
+      "scope": "Hold one actual production page automatic intent at WebView2 postMessage, advance Host display, release unchanged intent through real production ingress; exactly one admission. Existing real HWND, DComp, screen pixels, scale, same live frontend and external foreground checks retained; world and business responses are fixture-owned."
+    },
+    "fullHost": {
+      "total": 6483,
+      "passed": 6478,
+      "failed": 0,
+      "skipped": 5,
+      "allGreen": true,
+      "requiredSuiteSucceeded": true,
+      "skipNotPass": true,
+      "logPath": "tmp/u12-shared-return-stall-20261002/full-host-final.txt",
+      "canonicalRunnerUsed": true,
+      "nodeBindingResolved": true,
+      "parallelTestCollections": false,
+      "failedTests": [],
+      "scope": "Current final managed source passed the serial canonical full suite. First run HUD presentation timeout retained with an isolated pass and full retry pass; no HUD/test-source fix or causal attribution."
+    },
+    "hudIsolatedGroup": {
+      "passed": 1,
+      "failed": 0,
+      "logPath": "tmp/u12-shared-return-stall-20261002/hud-isolated-after.txt",
+      "filter": "NativeDialogueReappearanceRestoresActualWindowOrderWithNoBuffs",
+      "testSourceChanged": false,
+      "priorIsolatedGroup": {
+        "passed": 76,
+        "failed": 0,
+        "scope": "previous U12 run; current full suite also passed this group"
+      },
+      "scope": "Only the unchanged test that failed in the first current full run; no source edits."
+    },
+    "mainDecompile": {
+      "passed": true,
+      "resultPath": "tmp/u12-scene-transition/main-script-check-dungeon-stall.json",
+      "resultSha256": "90CA340F38E0A4070997718CB4F5C115162FF9EA87813B884D84D53A4302B1ED",
+      "reusedWithoutRelevantSourceChangeThisRound": true,
+      "reusedWithoutRelevantInputChangeThisRound": true,
+      "evidenceRound": "prior round; retained as scoped unchanged-input evidence"
+    },
+    "mainXflAudit": {
+      "issueCategories": 2,
+      "legacySymbolName": 1,
+      "brokenReferences": 4,
+      "baselineIssueCategories": 2,
+      "baselineLegacySymbolName": 1,
+      "baselineBrokenReferences": 4,
+      "newIssues": 0,
+      "allClean": false,
+      "logPath": "tmp/u12-scene-transition/main-xfl-audit-dungeon-stall.log",
+      "reusedWithoutRelevantInputChangeThisRound": true,
+      "evidenceRound": "prior round; retained as scoped unchanged-input evidence"
+    },
+    "linkageScan": {
+      "completed": true,
+      "mode": "xml-only",
+      "outputPath": "tmp/u12-scene-transition/linkage-source-map-no-exposure.xml",
+      "outputSha256": "CD78C50BA17F8378B15A4B90AC4C7C37DBB443A646067E5C80EEDE9B73D11329",
+      "authoritativeAssetMapModified": false,
+      "scope": "Prior XML-only linkage scan retained; current repair changes AS2 behavior only, not linkage or symbol references.",
+      "reusedWithoutRelevantInputChangeThisRound": true,
+      "evidenceRound": "prior round; retained as scoped unchanged-input evidence"
+    },
+    "stageEntrySourceFixture": {
+      "passed": 9,
+      "failed": 0,
+      "logPath": "tmp/u12-shared-stage-entry.txt",
+      "realAvm1Fixture": false,
+      "reusedWithoutRelevantInputChangeThisRound": true,
+      "evidenceRound": "prior round; retained as scoped unchanged-input evidence"
+    },
+    "documentationGovernance": {
+      "passed": true,
+      "logPath": "tmp/u12-shared-return-stall-20261002/doc-governance.txt"
+    },
+    "mapLootReturnHandoff": {
+      "passed": 939,
+      "failed": 0,
+      "loot": 189,
+      "planner": 12,
+      "stageRun": 738,
+      "outcomes": [
+        "victory",
+        "failure",
+        "retreat"
+      ],
+      "compilerErrors": 0,
+      "compilerWarnings": 0,
+      "traceRunBlocks": 1,
+      "bytecode32KRetries": 0,
+      "logPath": "tmp/u12-shared-return-stall-20261002/as2-regression-after.txt",
+      "productionSceneReadyInclude": true,
+      "realAvm1Fixture": true,
+      "mockSaveOwner": true,
+      "gameE2e": false,
+      "playerSlotsTouched": false,
+      "scope": "Deliver older report intent after actual loading/tip advancement; cover proof, early/exact/ready close, no reopening or reward replay; foreign/future/malformed/unknown fences remain. Existing early authority and retry continuity retained."
+    },
+    "stageReturn": {
+      "passed": 119,
+      "failed": 0,
+      "compilerErrors": 0,
+      "compilerWarnings": 0,
+      "logPath": "tmp/u12-shared-as2-return.txt",
+      "gameE2e": false,
+      "scope": "Prior 119-check return suite retained for unchanged StageReturnFlow and return inputs. The changed SceneTransitionService report-intent path is freshly covered by the 939-check map/loot suite and 48 transition guards.",
+      "reusedWithoutRelevantInputChangeThisRound": true,
+      "evidenceRound": "prior round; retained as scoped unchanged-input evidence"
+    },
+    "characterBuildRegression": {
+      "requiredSuitesSucceeded": true,
+      "failed": 0,
+      "compilerErrors": 0,
+      "compilerWarnings": 0,
+      "logPath": "tmp/u12-scene-transition/character-build-return-handoff.log",
+      "suites": [
+        "SaveManager",
+        "EquipmentInventory",
+        "InventoryPanelService",
+        "EquipmentTransactionSpike",
+        "RuntimeEquipmentProjection",
+        "CharacterBuildService",
+        "PlayerInfoProvider"
+      ],
+      "mockSaveOwner": true,
+      "gameE2e": false,
+      "scope": "Previous return-handoff round; unchanged producer contract, not rerun for this parallel-report round.",
+      "reusedWithoutRelevantSourceChangeThisRound": true,
+      "reusedWithoutRelevantInputChangeThisRound": true,
+      "evidenceRound": "prior round; retained as scoped unchanged-input evidence"
+    },
+    "manualInputRegression": {
+      "passed": 615,
+      "failed": 0,
+      "longGun": 486,
+      "manualCooldown": 57,
+      "drugInput": 58,
+      "keyManager": 14,
+      "compilerErrors": 0,
+      "compilerWarnings": 0,
+      "logPath": "tmp/u12-scene-transition/player-input-return-handoff.log",
+      "gameE2e": false,
+      "scope": "Previous return-handoff round; not rerun for this parallel-report round.",
+      "reusedWithoutRelevantSourceChangeThisRound": true,
+      "reusedWithoutRelevantInputChangeThisRound": true,
+      "evidenceRound": "prior round; retained as scoped unchanged-input evidence"
+    },
+    "panelRuntime": {
+      "passed": 41,
+      "failed": 0,
+      "logPath": "tmp/u12-shared-panel-runtime.txt",
+      "reusedWithoutRelevantInputChangeThisRound": true,
+      "evidenceRound": "prior round; retained as scoped unchanged-input evidence"
+    },
+    "panelContracts": {
+      "passed": true,
+      "logPath": "tmp/u12-shared-contracts.txt",
+      "tool": "validate-panel-contracts",
+      "contractVersion": 2,
+      "contractPath": "launcher/contracts/panel-contracts.v2.json",
+      "ok": true,
+      "checked": {
+        "domains": 9,
+        "commands": 48,
+        "numericFields": 3,
+        "vectors": 3,
+        "sourceChecks": 7
+      },
+      "errors": [],
+      "reusedWithoutRelevantInputChangeThisRound": true,
+      "evidenceRound": "prior round; retained as scoped unchanged-input evidence"
+    },
+    "asLoaderDecompile": {
+      "passed": true,
+      "structuralChecks": 20,
+      "result": {
+        "path": "tmp/u12-shared-return-stall-20261002/readback-check.json",
+        "bytes": 2247,
+        "sha256": "5F991B55E5E3FE45CEBF25961FE65849186368D237172AF79963D1C48D2066D9"
+      },
+      "swfSha256": "A0FE22FD337D3893D919FABE5A20BD28CB65B646417E62410DE2FB6F4F133AF2",
+      "exporter": "bundled FFDec 21.1.1 full script export",
+      "fullExporterClean": true,
+      "fullExporterLimitation": null,
+      "fullExportLogPath": "tmp/u12-shared-return-stall-20261002/readback-full-export.txt",
+      "gameE2e": false
+    },
+    "classOwnership": {
+      "passed": true,
+      "policy": "single-ownership",
+      "mainClasses": 0,
+      "loaderClasses": 689,
+      "intersection": 0,
+      "logPath": "tmp/u12-parallel-ownership.log",
+      "reusedWithoutRelevantSourceChangeThisRound": true,
+      "scope": "Previous class-ownership evidence reused for unchanged class membership/imports; changed method bodies are freshly tested and read back separately.",
+      "reusedWithoutRelevantInputChangeThisRound": true,
+      "evidenceRound": "prior round; retained as scoped unchanged-input evidence"
+    },
+    "asLoaderFunctionSizes": {
+      "passed": true,
+      "functionCount": 12299,
+      "largestBodyBytes": 51261,
+      "maxBytes": 60000,
+      "logPath": "tmp/u12-shared-return-stall-20261002/asloader-function-sizes.txt",
+      "swfSha256": "A0FE22FD337D3893D919FABE5A20BD28CB65B646417E62410DE2FB6F4F133AF2",
+      "limitation": "Function lengths alone cannot exclude wrapping; combined with fresh scoped real AVM1 suites and complete class readback."
+    },
+    "lootBrowserFixture": {
+      "passed": 114,
+      "lazyCancelPassed": 6,
+      "failed": 0,
+      "logPath": "tmp/u12-shared-loot-final-web.txt",
+      "gameE2e": false,
+      "reusedWithoutRelevantInputChangeThisRound": true,
+      "evidenceRound": "prior round; retained as scoped unchanged-input evidence"
+    },
+    "lootState": {
+      "passed": 88,
+      "failed": 0,
+      "logPath": "tmp/u12-original-report-contract-receipt.json",
+      "summaryReceipt": true,
+      "reusedWithoutRelevantInputChangeThisRound": true,
+      "evidenceRound": "prior round; retained as scoped unchanged-input evidence"
+    },
+    "workbenchUiAudit": {
+      "passed": true,
+      "logPath": "tmp/u12-shared-ui-audit-final.txt",
+      "reusedWithoutRelevantInputChangeThisRound": true,
+      "evidenceRound": "prior round; retained as scoped unchanged-input evidence"
+    },
+    "workbenchCssBundle": {
+      "passed": true,
+      "logPath": "tmp/u12-shared-css-bundle.txt",
+      "reusedWithoutRelevantInputChangeThisRound": true,
+      "evidenceRound": "prior round; retained as scoped unchanged-input evidence"
+    },
+    "diffWhitespace": {
+      "passed": true,
+      "logPath": "tmp/u12-shared-return-stall-20261002/diff-check.txt"
+    }
+  },
+  "verificationLimitation": {
+    "priorWindowTimeout": {
+      "test": "NativeDialogueReappearanceRestoresActualWindowOrderWithNoBuffs",
+      "failure": "native HUD presentation timed out during resize / restore checks in full suite",
+      "testSourceChanged": false,
+      "cause": "undetermined",
+      "isolatedGroupPassed": true,
+      "scope": "Historical timeout and earlier passing suites retained. Latest unchanged DLL-source full suite still has one NativeHUD presentation timeout plus nine WorldOverlay foreground-admission failures; this isolated U12 window pass does not resolve them.",
+      "currentFullSuitePassed": false
+    },
+    "currentFullSuitePassed": true,
+    "currentNativeFixturePassed": true,
+    "currentNativeCause": null,
+    "humanChecksRemaining": [
+      "H2 same game process at least three consecutive victory/base returns and timely original reward/material/organizer binding",
+      "H2 early exact close or Esc continues same loader and does not reopen report",
+      "H3 resize/non-16:9 first size",
+      "H4 minimize/restore, held input, external foreground and no background application exposure",
+      "H1 map visual continuity",
+      "task 20053 if available",
+      "test-slot save/restart"
+    ],
+    "nonCanonicalRunnerFailures": {
+      "logPath": "tmp/u12-parallel-host-static.log",
+      "failed": 3,
+      "canonicalRunnerLaterPassed": true,
+      "reason": "Direct dotnet test invocation omitted CF7_NODE_EXE; canonical runner binds the resolved Node executable."
+    },
+    "currentFullSuiteRetry": {
+      "previousLog": "tmp/u12-shared-return-stall-20261002/full-host-after.txt",
+      "total": 6483,
+      "passed": 6477,
+      "failed": 1,
+      "skipped": 5,
+      "failedTests": [
+        "NativeDialogueReappearanceRestoresActualWindowOrderWithNoBuffs"
+      ],
+      "cause": "undetermined",
+      "testSourcesChanged": false,
+      "isolatedPassed": true,
+      "isolatedLog": "tmp/u12-shared-return-stall-20261002/hud-isolated-after.txt",
+      "finalFullSuitePassed": true,
+      "finalLog": "tmp/u12-shared-return-stall-20261002/full-host-final.txt"
+    },
+    "nativeScope": "Hold one actual production page automatic intent at WebView2 postMessage, advance Host display, release unchanged intent through real production ingress; exactly one admission. Existing real HWND, DComp, screen pixels, scale, same live frontend and external foreground checks retained; world and business responses are fixture-owned. Real gameplay, minimize/restore and save/restart remain human checks.",
+    "currentNativeAttempts": [
+      {
+        "result": {
+          "path": "tmp/u12-shared-return-stall-20261002/native-before/result.json",
+          "bytes": 5326,
+          "sha256": "949AAC10F3C7181DD8336A94335754BDF050922D3C8B7E177138ECC713CE9EE1"
+        },
+        "passed": false,
+        "candidate": "prior u12-shared-20261002",
+        "reason": "Real production ingress drops the deliberately delayed report intent after display advancement."
+      },
+      {
+        "result": {
+          "path": "tmp/u12-shared-return-stall-20261002/native-after/result.json",
+          "bytes": 7357,
+          "sha256": "C3979B9B598FCC58FE1F5299EAC56E8A869D6DE720A93E6AB7F7C5823EACD1BC"
+        },
+        "passed": true,
+        "checks": 48,
+        "candidate": "u12-sync-20261002"
+      }
+    ],
+    "previousFullSuiteRetry": {
+      "previousLog": "tmp/u12-original-report-host-terminal-final.log",
+      "total": 6472,
+      "passed": 6465,
+      "failed": 2,
+      "skipped": 5,
+      "failedTests": [
+        "NativeDialogueReappearanceRestoresActualWindowOrderWithNoBuffs",
+        "SocketReconnect_QueryTimeoutRetriesSingleFlight"
+      ],
+      "cause": "undetermined",
+      "testSourcesChanged": false
+    },
+    "previousNativeAttempts": [
+      {
+        "result": {
+          "path": "tmp/u12-scene-transition/surface-shared-20261002/result.json",
+          "bytes": 6481,
+          "sha256": "61C43AAE6366AD24955336E73E5F77FAA7A36629E05E57E9934BA4A226392A9F"
+        },
+        "passed": false,
+        "reason": "Fixture treated rejected handoff attempt as delivered; corrected to track successful delivery."
+      },
+      {
+        "result": {
+          "path": "tmp/u12-scene-transition/surface-shared-ack-20261002/result.json",
+          "bytes": 6865,
+          "sha256": "19F613E3CA4883CE3A76E2B5B07618FB889EDC481B0F3D571D43E6FAACD8BFE2"
+        },
+        "passed": true,
+        "checks": 44
+      },
+      {
+        "result": {
+          "path": "tmp/u12-scene-transition/surface-shared-final-20261002/result.json",
+          "bytes": 5652,
+          "sha256": "CB1B510512B5301F2898BD1341DEE8C2868AEF88056B4A7FBB777885BF7F5FD1"
+        },
+        "passed": false,
+        "reason": "Fixture assumed an empty inventory would omit physical empty slots; corrected to assert preview text is gone."
+      },
+      {
+        "result": {
+          "path": "tmp/u12-scene-transition/surface-shared-complete-20261002/result.json",
+          "bytes": 6983,
+          "sha256": "30DF8ADF8E47F1418DEB74685431D84851A6831AAEDFB48A489B189602930AD7"
+        },
+        "passed": true,
+        "checks": 45
+      },
+      {
+        "result": {
+          "path": "tmp/u12-scene-transition/surface-shared-painted-20261002/result.json",
+          "bytes": 7089,
+          "sha256": "B46800FA675C788E8B1C3ED245B88100AA10785751914BA7C45D8A1C21539B00"
+        },
+        "passed": true,
+        "checks": 46
+      }
+    ],
+    "publishTimeoutRecovery": {
+      "invocation": {
+        "path": "tmp/u12-shared-return-stall-20261002/asloader-publish.txt",
+        "bytes": 1113,
+        "sha256": "8B749B29B814046C5F0261222FF5E3BDEC882E36E0CC0A1BB5B05934466E5D30"
+      },
+      "invocationExitCode": 1,
+      "result": {
+        "path": "tmp/u12-shared-return-stall-20261002/publish-late-recovery.json",
+        "bytes": 1207,
+        "sha256": "F7C1BE808D73714A250386303138E86E5F5436FA6AEBAA1AD245AB145C9DC39C"
+      },
+      "lateCompiled": true,
+      "markerRetired": true,
+      "humanClosedElevatedTestPlayer": true,
+      "scope": "Original default-30s timeout is preserved; fresh late Compiler 0/0, exact target hash/readback and terminal verified before exact-owned marker removal. No repeat compiler invocation or blind lock deletion."
+    }
+  },
+  "humanAcceptance": "New identity H2/H3/H4 pending: consecutive returns, early original actions/close, same page on readiness, sizing and foreground. Natural load failure and save/restart are separate.",
+  "gameCandidateExecuted": false,
+  "gameE2eVerified": false,
+  "saveRestartVerified": false,
+  "promoted": false,
+  "standardEntryVerified": false,
+  "playersSlotsTouched": false,
+  "logs": [
+    {
+      "path": "tmp/u12-scene-transition/as2-no-exposure.log",
+      "sha256": "76720C88AF2CFC39AB8951AB74ADF81C6052B464AB92774192EF031D4FA6E69F"
+    },
+    {
+      "path": "tmp/u12-scene-transition/host-no-exposure-retry.log",
+      "sha256": "1787A4D0D9F933B81A52810DBBD27DCB82EDD1A1342F505E289976640A87F26C"
+    },
+    {
+      "path": "tmp/u12-scene-transition/host-full-no-exposure.log",
+      "sha256": "1129EF248A2BE4D99EE9304EA8865CE299737C0BF34C1D718B697EBBA7A47F35"
+    },
+    {
+      "path": "tmp/u12-scene-transition/browser-no-exposure.log",
+      "sha256": "166776B71273551AA815599AAF0BFC7604ADB9B2CE5FF7BBEF6A21451B8FC85D"
+    },
+    {
+      "path": "tmp/u12-scene-transition/candidate-no-exposure-build-final.log",
+      "sha256": "B8B411EA41FEA3C44BFE87AC902444C1A74BBCEEF540F3E95A3281A55B5F8123"
+    },
+    {
+      "path": "tmp/u12-scene-transition/asloader-no-exposure-compile.log",
+      "sha256": "E59EF539A2D5E8A34D5A4720E526906A709B8DDE1F729B71675036D8F9B31DE1"
+    },
+    {
+      "path": "tmp/u12-scene-transition/asloader-no-exposure-compiler_errors.txt",
+      "sha256": "6D64657E843CFA06C243B6B51F8732C1B5910EBD29940AA7F6F9342B38034FD3"
+    },
+    {
+      "path": "tmp/u12-scene-transition/main-no-exposure-compile.log",
+      "sha256": "FBD335CBDFBF1013200306F8C85A61F63EADA0D188E9FDF26090984D24900160"
+    },
+    {
+      "path": "tmp/u12-scene-transition/main-no-exposure-compiler_errors.txt",
+      "sha256": "6D64657E843CFA06C243B6B51F8732C1B5910EBD29940AA7F6F9342B38034FD3"
+    },
+    {
+      "path": "tmp/u12-scene-transition/surface-no-exposure-closure.log",
+      "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "path": "tmp/u12-scene-transition/main-script-no-exposure.log",
+      "sha256": "E68037EE1B399C35ACB9564E721D7B11233AA1CA4536C38AA4B50D1991A1754F"
+    },
+    {
+      "path": "tmp/u12-scene-transition/main-xfl-audit-no-exposure.log",
+      "sha256": "A1A4A82A6DE226C35A719BB160112A2B4BBEAB31DC407F06A9EDAC664D5BD61C"
+    },
+    {
+      "path": "tmp/u12-scene-transition/main-xfl-audit-baseline.log",
+      "sha256": "A186C72D501A008613DF21AE1D29687F793CFA3A9E5F5CE8D33E3AE03E6DF315"
+    },
+    {
+      "path": "tmp/u12-scene-transition/entry-gap-before.log",
+      "sha256": "8D5A084A974F605D11E083856DCEDD4FEF30BFCEBEA9468757EC7D8BCD54BE1D"
+    },
+    {
+      "path": "tmp/u12-scene-transition/swf-ownership-no-exposure.log",
+      "sha256": "4B310AAA5E909DB9F2F68A5BDCC1450E604CBEEF387C109CC3C5CA6B5B734808"
+    },
+    {
+      "path": "tmp/u12-scene-transition/asloader-sizes-no-exposure.log",
+      "sha256": "1B3DEF99B8CF8F0B406DF8F0874DA0096A50026CF55C9F7A1856C1A3287555CA"
+    },
+    {
+      "path": "tmp/u12-scene-transition/dev-status-no-exposure.log",
+      "sha256": "F53E62582BD512BCF53404EAAB628E1A03C5014BA179D3F081AB94305728B00E"
+    },
+    {
+      "path": "tmp/u12-scene-transition/docs-no-exposure-final.log",
+      "sha256": "7F1247B95209B59E61464D80B754369B59273CE7D47BBFEA36380DF7CB6C6A62"
+    },
+    {
+      "path": "tmp/u12-scene-transition/linkage-audit-no-exposure.log",
+      "sha256": "DB0CC2F1F475489E343927A18365DAB094A3B1A0BC7EAA75C4DF830F4C61C216"
+    },
+    {
+      "path": "tmp/u12-scene-transition/focus-handoff-before.log",
+      "sha256": "3C71DA34054C0251D8694D053803894DA3DB46E2641B1CEEA785D023ED2DC9D4"
+    },
+    {
+      "path": "tmp/u12-scene-transition/focus-handoff-old-candidate-03/result.json",
+      "sha256": "6F3B6362E8910CCE5717DE879C40D2C2A8ACD4B7C39E0DD51ADF2430D7670980"
+    },
+    {
+      "path": "tmp/u12-scene-transition/focus-handoff-old-candidate-03/peer-activated.jsonl",
+      "sha256": "7D0887A2BE3BF25DCD1C4A5C5A2BEB163FA4018AB80370AF16360B1E699A79A1"
+    },
+    {
+      "path": "tmp/u12-scene-transition/focus-handoff-candidate/result.json",
+      "sha256": "BC44877676163AA8FACD3D7C680F80BE4726C6BB3700D434AD0A46432AA84E60"
+    },
+    {
+      "path": "tmp/u12-scene-transition/focus-handoff-candidate/peer-activated.jsonl",
+      "sha256": "B2634CB156FABD2A385143F9DE6C3EB45DA47A700DF27F23CD3527EAB94E4965"
+    },
+    {
+      "path": "tmp/u12-scene-transition/host-full-focus-handoff.log",
+      "sha256": "13E707D89146D87EAF72F11FF2451E75A2C813A0AA93736B3400556E7FB9C3FF"
+    },
+    {
+      "path": "tmp/u12-scene-transition/candidate-build-focus-handoff.log",
+      "sha256": "151ABC53F6C07D6476653726C93B5C7C4DBA0FA91AEB12EB355DA898119CED50"
+    },
+    {
+      "path": "tmp/u12-scene-transition/dev-status-focus-handoff.log",
+      "sha256": "376D2C7D3E056C76CBDDAEB948CF94BED035367F3FF013050BFF5A288D8948A1"
+    },
+    {
+      "path": "tmp/u12-scene-transition/docs-focus-handoff-final.log",
+      "sha256": "7F1247B95209B59E61464D80B754369B59273CE7D47BBFEA36380DF7CB6C6A62"
+    },
+    {
+      "path": "tmp/u12-scene-transition/dungeon-stall-before.log",
+      "sha256": "63D58418C2C301E4DA57B8D14CBDC267CEDCC74737A2D9F671220FE400E80DD4"
+    },
+    {
+      "path": "tmp/u12-scene-transition/stage-entry-source-before.log",
+      "sha256": "EDB3B498E84D03AB68ECBDDED5E8E0E4564877426CD394F97FF1347E1BC7CD59"
+    },
+    {
+      "path": "tmp/u12-scene-transition/stage-entry-source-after.log",
+      "sha256": "84EC4A3F326CDAB4FEF6A4A838C30ACDA6E41A8A97826A0FF3C32F3F74AA6D82"
+    },
+    {
+      "path": "tmp/u12-scene-transition/stage-entry-source-results.json",
+      "sha256": "9EE38CE0775B3A2E70C52D0F687DDE091E78E6765F3C4969E42FC5A0FCA26A28"
+    },
+    {
+      "path": "tmp/u12-scene-transition/as2-dungeon-stall.log",
+      "sha256": "0B2C0629763F5C70A62A0CBE2E8C7DACCA258C3C6FB54515868ACAF38F075D30"
+    },
+    {
+      "path": "tmp/u12-scene-transition/main-dungeon-stall-compile.log",
+      "sha256": "FE6BFDF152BC682ECA78BCFA7D30DE5407745A53036A994F4CAC7CEF0D76FC85"
+    },
+    {
+      "path": "tmp/u12-scene-transition/main-dungeon-stall-compiler_errors.txt",
+      "sha256": "6D64657E843CFA06C243B6B51F8732C1B5910EBD29940AA7F6F9342B38034FD3"
+    },
+    {
+      "path": "tmp/u12-scene-transition/main-dungeon-stall-compile_output.txt",
+      "sha256": "98CF28C0013C53230CEC5B867D9A5D8F04A4735806311262416962F218ACFEDB"
+    },
+    {
+      "path": "tmp/u12-scene-transition/main-script-dungeon-stall.log",
+      "sha256": "4FF19ED86269A9305FE12761F01310323019AF6C465A497E866CBBF078AC8C90"
+    },
+    {
+      "path": "tmp/u12-scene-transition/main-script-check-dungeon-stall.json",
+      "sha256": "90CA340F38E0A4070997718CB4F5C115162FF9EA87813B884D84D53A4302B1ED"
+    },
+    {
+      "path": "tmp/u12-scene-transition/main-xfl-audit-dungeon-stall.log",
+      "sha256": "A1A4A82A6DE226C35A719BB160112A2B4BBEAB31DC407F06A9EDAC664D5BD61C"
+    },
+    {
+      "path": "tmp/u12-scene-transition/swf-ownership-dungeon-stall.log",
+      "sha256": "4B310AAA5E909DB9F2F68A5BDCC1450E604CBEEF387C109CC3C5CA6B5B734808"
+    },
+    {
+      "path": "tmp/u12-scene-transition/browser-dungeon-stall.log",
+      "sha256": "166776B71273551AA815599AAF0BFC7604ADB9B2CE5FF7BBEF6A21451B8FC85D"
+    },
+    {
+      "path": "tmp/u12-scene-transition/host-full-dungeon-stall.log",
+      "sha256": "4418911174C0768EDB3AEAD8492AE2A5859ED74A5F78B004040A535727C2B496"
+    },
+    {
+      "path": "tmp/u12-scene-transition/dev-status-dungeon-stall.log",
+      "sha256": "376D2C7D3E056C76CBDDAEB948CF94BED035367F3FF013050BFF5A288D8948A1"
+    },
+    {
+      "path": "tmp/u12-scene-transition/docs-dungeon-stall-final.log",
+      "sha256": "7F1247B95209B59E61464D80B754369B59273CE7D47BBFEA36380DF7CB6C6A62"
+    },
+    {
+      "path": "tmp/u12-scene-transition/evidence-before-return-handoff.json",
+      "sha256": "FF694421A7E2C97E3513901A6631351AE72179885B4C838D3145992CFD7195BC"
+    },
+    {
+      "path": "tmp/u12-scene-transition/return-stall-before-20261001a.log",
+      "sha256": "0F6114DA4B9D721BB897C99106795AE0D620DDCEB8714E23D9F0AA048278EB8E"
+    },
+    {
+      "path": "tmp/u12-scene-transition/return-stall-before-20261001a.previous.log",
+      "sha256": "E868A41C18B753D89D1B340366146D20E591D98B1F94B8416A53D57B5B5765E1"
+    },
+    {
+      "path": "tmp/u12-scene-transition/as2-return-handoff.log",
+      "sha256": "BB1F13B1AB5A0FE7FAB4A2A34B1B830D364DEACFF7D282B2494B3D544EC4AC28"
+    },
+    {
+      "path": "tmp/u12-scene-transition/map-loot-return-handoff.log",
+      "sha256": "BE0474441966D961050B300A6CF9870AB52F7F96C7887C9C1385EBA9AF7218A6"
+    },
+    {
+      "path": "tmp/u12-scene-transition/stage-return-handoff.log",
+      "sha256": "3222CCB4FC7E12303E0D02A131D3F6057C2998007E90DC3FDF156CAA9719F5A2"
+    },
+    {
+      "path": "tmp/u12-scene-transition/character-build-return-handoff.log",
+      "sha256": "1DB228A822FD95E13F5176ED65ED79FD02494AE31738CC5D31B463A6232BCF54"
+    },
+    {
+      "path": "tmp/u12-scene-transition/player-input-return-handoff.log",
+      "sha256": "7CBA99F63CAB0948EE8A303A12E5B6054DDF444ECD87F658156D336394747EFC"
+    },
+    {
+      "path": "tmp/u12-scene-transition/stage-entry-source-return-handoff.log",
+      "sha256": "84EC4A3F326CDAB4FEF6A4A838C30ACDA6E41A8A97826A0FF3C32F3F74AA6D82"
+    },
+    {
+      "path": "tmp/u12-scene-transition/panel-runtime-return-handoff.log",
+      "sha256": "DA0577FB46A69B0A190F9D40BA6B27F3770FBB6F76B208A4A6D9DC0EFEEBED67"
+    },
+    {
+      "path": "tmp/u12-scene-transition/panel-contracts-return-handoff.log",
+      "sha256": "107D00170D24F0D034BDA03A2A146B44ABC728565D4602178D54BAAFF5630801"
+    },
+    {
+      "path": "tmp/u12-scene-transition/panel-contract-tests-return-handoff.log",
+      "sha256": "139653E41509DF93D65EBB04FEFEB32F02FC654FACF384A5F7B56F037F981C23"
+    },
+    {
+      "path": "tmp/u12-scene-transition/asloader-return-handoff-compile.log",
+      "sha256": "43C963466C4582BBB3D10C684FEAF85D4BCFA54F900AB798D2256C1246184A41"
+    },
+    {
+      "path": "tmp/u12-scene-transition/asloader-return-handoff-compiler_errors.txt",
+      "sha256": "6D64657E843CFA06C243B6B51F8732C1B5910EBD29940AA7F6F9342B38034FD3"
+    },
+    {
+      "path": "tmp/u12-scene-transition/asloader-return-handoff-compile_output.txt",
+      "sha256": "4079A3F186452C17A1D53EFC7D0144B4A1746CE6829F625EFA8D25A56220ED72"
+    },
+    {
+      "path": "tmp/u12-scene-transition/asloader-script-return-handoff.log",
+      "sha256": "94B34ECA45B397AE64C11290775D9D17F1B71718BEB6B7083219C0EE939548B8"
+    },
+    {
+      "path": "tmp/u12-scene-transition/asloader-script-check-return-handoff.json",
+      "sha256": "777B5C7630BD3FDF8447036A753884F599D8216360C5AACDDBEA57AAF84EC62E"
+    },
+    {
+      "path": "tmp/u12-scene-transition/asloader-function-sizes-return-handoff.log",
+      "sha256": "EBBFEAFB315CCA168128159ECCA3DDECF04092A189BB4E71671E97F98D477739"
+    },
+    {
+      "path": "tmp/u12-scene-transition/ownership-return-handoff.log",
+      "sha256": "4B310AAA5E909DB9F2F68A5BDCC1450E604CBEEF387C109CC3C5CA6B5B734808"
+    },
+    {
+      "path": "tmp/u12-scene-transition/host-full-return-handoff.log",
+      "sha256": "9F40B5CCBC62AB88E8E566B24B70AE6A4CD8593D841B7929913C87CFD44C09B8"
+    },
+    {
+      "path": "tmp/u12-scene-transition/dev-status-return-handoff.log",
+      "sha256": "376D2C7D3E056C76CBDDAEB948CF94BED035367F3FF013050BFF5A288D8948A1"
+    },
+    {
+      "path": "tmp/u12-scene-transition/evidence-before-return-terminal-fence.json",
+      "sha256": "86F794C0FBEA0522A52F76C83232B58FA022C4E0B4D0948C7389E8EC8B304297"
+    },
+    {
+      "path": "tmp/u12-scene-transition/as2-return-handoff-final.log",
+      "sha256": "1116577F8F730847F8DB67E7C48CC5B2A27B803DAB7E8E60C5A3C0A9FCBDAD92"
+    },
+    {
+      "path": "tmp/u12-scene-transition/map-loot-return-handoff-final.log",
+      "sha256": "FF7034211ACF5C801D16CC79AC4D375F72D293C55BDE36B00F6E01E5B4E8B936"
+    },
+    {
+      "path": "tmp/u12-scene-transition/asloader-return-handoff-final-compile.log",
+      "sha256": "3C46C58858F484EB1DDD62A5FE379309FC8D0DECB28288EF99E354F42F05AC8F"
+    },
+    {
+      "path": "tmp/u12-scene-transition/asloader-return-handoff-final-compiler_errors.txt",
+      "sha256": "6D64657E843CFA06C243B6B51F8732C1B5910EBD29940AA7F6F9342B38034FD3"
+    },
+    {
+      "path": "tmp/u12-scene-transition/asloader-return-handoff-final-compile_output.txt",
+      "sha256": "839A21370E22E3C3FB0B51C4DD2A9183148584B0102F95C4F6DBE5AB82C17F85"
+    },
+    {
+      "path": "tmp/u12-scene-transition/asloader-script-return-handoff-final.log",
+      "sha256": "912D81882B474EC58968E1BFCC43F7D78E29D9369E5C947F268848AA88136E63"
+    },
+    {
+      "path": "tmp/u12-scene-transition/asloader-script-check-return-handoff-final.json",
+      "sha256": "822FAF72A05AE4813EE357CACF05CA9B9419D10A4C97D99F126AC68D34CA369C"
+    },
+    {
+      "path": "tmp/u12-scene-transition/asloader-function-sizes-return-handoff-final.log",
+      "sha256": "EBBFEAFB315CCA168128159ECCA3DDECF04092A189BB4E71671E97F98D477739"
+    },
+    {
+      "path": "tmp/u12-scene-transition/ownership-return-handoff-final.log",
+      "sha256": "4B310AAA5E909DB9F2F68A5BDCC1450E604CBEEF387C109CC3C5CA6B5B734808"
+    },
+    {
+      "path": "tmp/u12-scene-transition/dev-status-return-handoff-final.log",
+      "sha256": "376D2C7D3E056C76CBDDAEB948CF94BED035367F3FF013050BFF5A288D8948A1"
+    },
+    {
+      "path": "tmp/u12-scene-transition/docs-return-handoff-terminal-final.log",
+      "sha256": "7F1247B95209B59E61464D80B754369B59273CE7D47BBFEA36380DF7CB6C6A62"
+    },
+    {
+      "path": "tmp/u12-parallel-asloader-compile.log",
+      "sha256": "7C7EBDEE7B4B33A75CA6CABBBDE796443DDD83E65AC688E969D12F17F4366B30"
+    },
+    {
+      "path": "tmp/u12-parallel-asloader-compiler_errors.txt",
+      "sha256": "6D64657E843CFA06C243B6B51F8732C1B5910EBD29940AA7F6F9342B38034FD3"
+    },
+    {
+      "path": "tmp/u12-parallel-asloader-terminal-compiler_errors.txt",
+      "sha256": "6D64657E843CFA06C243B6B51F8732C1B5910EBD29940AA7F6F9342B38034FD3"
+    },
+    {
+      "path": "tmp/u12-parallel-asloader-terminal.log",
+      "sha256": "B6D779AF1F61B9DF88614C09AD35AFC3D86721E557D3B8ED6584F43553297FAD"
+    },
+    {
+      "path": "tmp/u12-parallel-browser-final.log",
+      "sha256": "CBADAB6905C59AD3A98835F75ED61F08AEC13EA0035A536EBD98545EAD1534B1"
+    },
+    {
+      "path": "tmp/u12-parallel-browser-proof.log",
+      "sha256": "CBADAB6905C59AD3A98835F75ED61F08AEC13EA0035A536EBD98545EAD1534B1"
+    },
+    {
+      "path": "tmp/u12-parallel-browser-terminal.log",
+      "sha256": "CBADAB6905C59AD3A98835F75ED61F08AEC13EA0035A536EBD98545EAD1534B1"
+    },
+    {
+      "path": "tmp/u12-parallel-browser.log",
+      "sha256": "CBADAB6905C59AD3A98835F75ED61F08AEC13EA0035A536EBD98545EAD1534B1"
+    },
+    {
+      "path": "tmp/u12-parallel-candidate-build.log",
+      "sha256": "1B2C3F92876D7A71FD37D699844C9639A235309F67CB6FB1B5C87E9A79DCC9E4"
+    },
+    {
+      "path": "tmp/u12-parallel-catalog.log",
+      "sha256": "1E3C0CC5B15FED75AF02EAB8C6119F54AC3B03D35072720582338147D728A8F6"
+    },
+    {
+      "path": "tmp/u12-parallel-compiled-readback.log",
+      "sha256": "2B550A00D3105E24421FC2F96336AEA56AB3B24BA114071FE6EA593BF9616797"
+    },
+    {
+      "path": "tmp/u12-parallel-dev-status-terminal.log",
+      "sha256": "B809B5FF4C27BAC3D28D46B46578E31E489B6A9B4F31DF3A72D04C1C2F371BEC"
+    },
+    {
+      "path": "tmp/u12-parallel-dev-status.log",
+      "sha256": "B809B5FF4C27BAC3D28D46B46578E31E489B6A9B4F31DF3A72D04C1C2F371BEC"
+    },
+    {
+      "path": "tmp/u12-parallel-docs-terminal.log",
+      "sha256": "7F1247B95209B59E61464D80B754369B59273CE7D47BBFEA36380DF7CB6C6A62"
+    },
+    {
+      "path": "tmp/u12-parallel-docs.log",
+      "sha256": "7F1247B95209B59E61464D80B754369B59273CE7D47BBFEA36380DF7CB6C6A62"
+    },
+    {
+      "path": "tmp/u12-parallel-ffdec-export.log",
+      "sha256": "813B891FEB2A2A32372EA43805B5E248FD7CCE5CEBD717E184005B27C939FD1B"
+    },
+    {
+      "path": "tmp/u12-parallel-function-sizes.log",
+      "sha256": "6E33A3B287BFABCDAD5A8C93CC2397A0A2AE8C915ED60BA64A46F2995DBF5A3B"
+    },
+    {
+      "path": "tmp/u12-parallel-host-complete.log",
+      "sha256": "E239E31C30E2F764B846353796F26628EE7C4B32EE303EB4632B88A3F7A7DE42"
+    },
+    {
+      "path": "tmp/u12-parallel-host-focused.log",
+      "sha256": "546EDA34B8315367F405B03F955241D6CA9B2F2B28A2442B489D356D865B5CD6"
+    },
+    {
+      "path": "tmp/u12-parallel-host-initial.log",
+      "sha256": "2AA9C6879358B845DDE3D19FC29791D2ABF62F7CED2E12CFC835DE04AA90A646"
+    },
+    {
+      "path": "tmp/u12-parallel-host-static.log",
+      "sha256": "D985D3747561BB9A359EA3F2E06A38BC06398EF7447707B1A6E9C13164A273C8"
+    },
+    {
+      "path": "tmp/u12-parallel-host-terminal.log",
+      "sha256": "74C6E4AA4101BA9ADB416D5F3C8617F5993A1B274706D0A846808207178CF0B4"
+    },
+    {
+      "path": "tmp/u12-parallel-host.log",
+      "sha256": "F50278239C50CED05F79E0ADCF19B8BC400F97F9428F78DF728CBD3B61878BA7"
+    },
+    {
+      "path": "tmp/u12-parallel-loot-web-complete.log",
+      "sha256": "D2137611B0022F63CF15539E4A3C2349834A1581D58C95B8682E8A6D231E512F"
+    },
+    {
+      "path": "tmp/u12-parallel-loot-web-final.log",
+      "sha256": "3411E1C968B89C6A36AB064C56F1D6596C8540E173CA8EE95D383DA2F6C0F626"
+    },
+    {
+      "path": "tmp/u12-parallel-loot-web-receipt.log",
+      "sha256": "286430294E783AE68655274667DB404A51381593CC9560A30D9FFD8A8AFEAB65"
+    },
+    {
+      "path": "tmp/u12-parallel-loot-web.log",
+      "sha256": "4D39EB7066143EF60AD0928A2F4A340C921FF56DB1851C9284C19E70E153FD5E"
+    },
+    {
+      "path": "tmp/u12-parallel-map-loot-final.log",
+      "sha256": "750FC721EE937469267BBA17F43B91899CFEA40EF0066B9D5B6CF392F4CA810D"
+    },
+    {
+      "path": "tmp/u12-parallel-map-loot-terminal.log",
+      "sha256": "1B89FCACD5D05B00ED52B690D28145008B84F7817273DE3B86A2A562821A2AA1"
+    },
+    {
+      "path": "tmp/u12-parallel-map-loot.log",
+      "sha256": "354BD9FEF17A0D8ABA8F862B48EC7112878CDAF64588184A113933A757021E33"
+    },
+    {
+      "path": "tmp/u12-parallel-native-fixture-1.log",
+      "sha256": "B2E5C3B86F31F97CEC00B52F9593157690CEC0184E39E1C09D52BC6481862797"
+    },
+    {
+      "path": "tmp/u12-parallel-native-fixture-2.log",
+      "sha256": "B2E5C3B86F31F97CEC00B52F9593157690CEC0184E39E1C09D52BC6481862797"
+    },
+    {
+      "path": "tmp/u12-parallel-native-fixture-3.log",
+      "sha256": "B2E5C3B86F31F97CEC00B52F9593157690CEC0184E39E1C09D52BC6481862797"
+    },
+    {
+      "path": "tmp/u12-parallel-native-fixture-4.log",
+      "sha256": "B2E5C3B86F31F97CEC00B52F9593157690CEC0184E39E1C09D52BC6481862797"
+    },
+    {
+      "path": "tmp/u12-parallel-native-fixture-5.log",
+      "sha256": "58A4D07C95DAB3BC116841A5474783141ECF721E6C94C186672829EA46BC00DE"
+    },
+    {
+      "path": "tmp/u12-parallel-ownership.log",
+      "sha256": "4B310AAA5E909DB9F2F68A5BDCC1450E604CBEEF387C109CC3C5CA6B5B734808"
+    },
+    {
+      "path": "tmp/u12-parallel-panel-contracts.log",
+      "sha256": "139653E41509DF93D65EBB04FEFEB32F02FC654FACF384A5F7B56F037F981C23"
+    },
+    {
+      "path": "tmp/u12-parallel-panel-runtime.log",
+      "sha256": "DA0577FB46A69B0A190F9D40BA6B27F3770FBB6F76B208A4A6D9DC0EFEEBED67"
+    },
+    {
+      "path": "tmp/u12-parallel-panel-validation.log",
+      "sha256": "107D00170D24F0D034BDA03A2A146B44ABC728565D4602178D54BAAFF5630801"
+    },
+    {
+      "path": "tmp/u12-parallel-scene-as2.log",
+      "sha256": "548E2F69F2F4D4B5096056A5DDC754CC38439744FE466E813A11D839B7A55D0A"
+    },
+    {
+      "path": "tmp/u12-parallel-stage-entry.log",
+      "sha256": "84EC4A3F326CDAB4FEF6A4A838C30ACDA6E41A8A97826A0FF3C32F3F74AA6D82"
+    },
+    {
+      "path": "tmp/u12-parallel-stage-return.log",
+      "sha256": "D5F894F41472CFA62CC55AAC701B58011E85D28E8C9D63B431DDF31860B43213"
+    },
+    {
+      "path": "tmp/u12-parallel-whitespace-terminal.log",
+      "sha256": "FDF1DF71642D873E0D35ED91E930326CA66B529D0EB7E15BCA9CAED78CA16BFB"
+    },
+    {
+      "path": "tmp/u12-scene-transition/asloader-script-check-parallel-terminal.json",
+      "sha256": "FBEED5C9012EF618ECC6FBE729A2B1105B921B81266D882A8F60DB957D87E470"
+    },
+    {
+      "path": "tmp/u12-scene-transition/asloader-script-parallel-terminal/scripts/__Packages/org/flashNight/arki/ui/SceneTransitionService.as",
+      "sha256": "A53384D1E2BED34230A7E70E997185688AEDE472E0BFD41E1BAFFAA8E601E7B3"
+    },
+    {
+      "path": "tmp/u12-scene-transition/asloader-script-parallel-terminal/scripts/__Packages/org/flashNight/arki/scene/StageRunSession.as",
+      "sha256": "7B0FF40A0A1550002C25B73AD34313D8629FF67ED3562C8F589FF0FC7C2D80DF"
+    },
+    {
+      "path": "tmp/u12-scene-transition/asloader-script-parallel-terminal/scripts/__Packages/org/flashNight/arki/scene/StageReturnFlow.as",
+      "sha256": "B3BB90E265C69EF77447B7098825E11ABA5268A03420BC545AE1AB70933DE7F2"
+    },
+    {
+      "path": "tmp/u12-scene-transition/asloader-script-parallel-terminal/scripts/__Packages/org/flashNight/arki/item/LootContainerService.as",
+      "sha256": "54AC3FD9AD2F380EFBD1B422EFD249E373C12792DBD2DFB2803AD44F9D7AA24F"
+    },
+    {
+      "path": "tmp/u12-scene-transition/surface-parallel-report-1/result.json",
+      "sha256": "958169BA4F10A1C01A70D7D82A7A46A322E222E4B729C7383981A4D601314A6B"
+    },
+    {
+      "path": "tmp/u12-scene-transition/surface-parallel-report-2/result.json",
+      "sha256": "1B6544AEA17404901CB96FCCA4319829FDDE03284464978AE0254CB5E510694E"
+    },
+    {
+      "path": "tmp/u12-scene-transition/surface-parallel-report-3/result.json",
+      "sha256": "DBD11D1781C75AF29F6E493A68A513F1F936BBDF0233A8C762317E0C02010BDC"
+    },
+    {
+      "path": "tmp/u12-scene-transition/surface-parallel-report-4/result.json",
+      "sha256": "933E0E782C0E187C73E0C078D810DF3C65B5E53C4E458D8C7D11C4C5E299A3A2"
+    },
+    {
+      "path": "tmp/u12-scene-transition/surface-parallel-report-5/result.json",
+      "sha256": "933E0E782C0E187C73E0C078D810DF3C65B5E53C4E458D8C7D11C4C5E299A3A2"
+    },
+    {
+      "path": "tmp/u12-scene-transition/report-loading.png",
+      "sha256": "C54ED7C563EA67FBD3E78287E65AB18B71E09070E3FE1A1AA431C08B6F46282C"
+    },
+    {
+      "path": "tmp/u12-scene-transition/report-loading-reduced.png",
+      "sha256": "C54ED7C563EA67FBD3E78287E65AB18B71E09070E3FE1A1AA431C08B6F46282C"
+    },
+    {
+      "path": "tmp/runtime-candidates/v2/u12-parallel-report-20261001/runtime-build-metadata.v2.json",
+      "sha256": "BDF4118554AAF470F7CDACDD122D3D8862A8D78AC854B901DEDC2A9312DF4602"
+    },
+    {
+      "path": "tmp/u12-parallel-docs-post-evidence.log",
+      "sha256": "7F1247B95209B59E61464D80B754369B59273CE7D47BBFEA36380DF7CB6C6A62"
+    },
+    {
+      "path": "tmp/u12-original-report-contract-receipt.json",
+      "bytes": 450,
+      "sha256": "CFEFDE82A9B0EECEE689DC511F23FF13BC0BB0ADCA12FF2B7986F270CF029EFE"
+    },
+    {
+      "path": "tmp/u12-original-report-dev-ready.log",
+      "bytes": 1748,
+      "sha256": "D7DB40155296AB80923D9A38EB730903B40DABD52D7D43BEDC62452A8417E04F"
+    },
+    {
+      "path": "tmp/u12-original-report-host-ready.log",
+      "bytes": 968046,
+      "sha256": "6FD00892A46ACC99565BD7DF287CEB9C5AEE26627F6874612ACC6EAF3B3DFF2F"
+    },
+    {
+      "path": "tmp/u12-original-report-browser-final.log",
+      "bytes": 71,
+      "sha256": "D851F88D0109CFBDB43244FC9A8108F38FDA49851DDF82FD7D3517F21D5F2C95"
+    },
+    {
+      "path": "tmp/u12-original-report-loot-terminal.log",
+      "bytes": 126,
+      "sha256": "58CED09ADB04EF772C6544C40AF100FC2491F677BE16F7A16559EE8A2CF448FF"
+    },
+    {
+      "path": "tmp/u12-original-report-catalog.log",
+      "bytes": 65,
+      "sha256": "1E3C0CC5B15FED75AF02EAB8C6119F54AC3B03D35072720582338147D728A8F6"
+    },
+    {
+      "path": "tmp/u12-original-report-stage-entry.log",
+      "bytes": 73,
+      "sha256": "84EC4A3F326CDAB4FEF6A4A838C30ACDA6E41A8A97826A0FF3C32F3F74AA6D82"
+    },
+    {
+      "path": "tmp/u12-original-report-docs.log",
+      "bytes": 3630,
+      "sha256": "D0F0CBF9229EB1077734D0BBAE620ECE4C52F9679C85DABDC004A17BC11B53EA"
+    },
+    {
+      "path": "tmp/u12-original-report-whitespace.log",
+      "bytes": 154,
+      "sha256": "FDF1DF71642D873E0D35ED91E930326CA66B529D0EB7E15BCA9CAED78CA16BFB"
+    },
+    {
+      "path": "tmp/u12-scene-transition/report-original-layout-loading.png",
+      "bytes": 208105,
+      "sha256": "544073207954C55C94D456FBFB6AA5ED600CFA82755BD153666084BAAA0E595E"
+    },
+    {
+      "path": "tmp/u12-scene-transition/report-original-layout-loading-reduced.png",
+      "bytes": 208095,
+      "sha256": "6400A9A0C38F6F2E29E93DD697E337544B9C5D5A91D055A75C53E543BD9F988D"
+    },
+    {
+      "path": "tmp/u12-original-report-browser-first.log",
+      "bytes": 288,
+      "sha256": "AC7A660D42368911F988BDA3CC9A550D8E4768DA35106FCA024227A092BE3F1D"
+    },
+    {
+      "path": "tmp/u12-original-report-browser-fourth.log",
+      "bytes": 626,
+      "sha256": "DD6051A7AE9482B1B9C8482CEFB47E88BA7D8545526E189F00D4CE606CC8DFB1"
+    },
+    {
+      "path": "tmp/u12-original-report-browser-second.log",
+      "bytes": 346,
+      "sha256": "F29F6BA15B34D4948DE0324A7778C0AFB590D973122AA176B292A6A85634C690"
+    },
+    {
+      "path": "tmp/u12-original-report-browser-terminal.log",
+      "bytes": 925,
+      "sha256": "E0E8AA3AF3E6DA80BFD3C06212BCC49E68695CE4ABCBE5566BC52F7473AC5B54"
+    },
+    {
+      "path": "tmp/u12-original-report-browser-third.log",
+      "bytes": 334,
+      "sha256": "C9B5D3FDBA08F7B10D204C89E80DF12C357EC2109EA729A5C1A698FE9CC2A766"
+    },
+    {
+      "path": "tmp/u12-original-report-candidate-build.log",
+      "bytes": 1613,
+      "sha256": "27A7367569417BE3EE0195AF9A5197FBB71DA414A4B32E13943B1440D5083DDD"
+    },
+    {
+      "path": "tmp/u12-original-report-candidate-final.log",
+      "bytes": 5666,
+      "sha256": "1C2E167FE13D681A47273DFC091E3654CE070159A83EE90AE9A000BA38DC54B4"
+    },
+    {
+      "path": "tmp/u12-original-report-candidate-ready.log",
+      "bytes": 5658,
+      "sha256": "FDAEDE1796AEA808CCE1E38866A81BFACB0CDA04627879A920B1FBDFE4FE30A1"
+    },
+    {
+      "path": "tmp/u12-original-report-candidate-terminal-final.log",
+      "bytes": 0,
+      "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "path": "tmp/u12-original-report-candidate-terminal.log",
+      "bytes": 1408,
+      "sha256": "5B516954B765C7FC2E45C39AD893A4E2025629479110E9F9272CA6FAC7CC7A4D"
+    },
+    {
+      "path": "tmp/u12-original-report-dev-status.log",
+      "bytes": 1751,
+      "sha256": "3AE838207F182AA3D07AD5DB4EB16CC13B5119E83F5436DA0FD17C75017A7347"
+    },
+    {
+      "path": "tmp/u12-original-report-docs-ready.log",
+      "bytes": 3553,
+      "sha256": "15A7842982FCD0E84AE11CC19233B340BB880E05F45D2B9716DE9D5FF30B5520"
+    },
+    {
+      "path": "tmp/u12-original-report-host-final.log",
+      "bytes": 966337,
+      "sha256": "96A2237EB48048ACE7E66D97D7F75E1D4ECD90126C99DFCB319E42F1D5F27B12"
+    },
+    {
+      "path": "tmp/u12-original-report-host-full.log",
+      "bytes": 16035,
+      "sha256": "DE0AFDFE2366944E20C9F91B0165670E4455F9E2828A08E19FB616D0E505D95C"
+    },
+    {
+      "path": "tmp/u12-original-report-host-terminal-final.log",
+      "bytes": 943793,
+      "sha256": "9A3F3431840EA9E240622AA1C3A456182D3DF25EB1273DEA69B59ACC340D7B45"
+    },
+    {
+      "path": "tmp/u12-original-report-host-terminal.log",
+      "bytes": 964692,
+      "sha256": "85295F64C1BBAF5D785F17A7E573227D95A0020381EAED8FACF6B752CB2D79B2"
+    },
+    {
+      "path": "tmp/u12-original-report-loot-browser.log",
+      "bytes": 126,
+      "sha256": "58CED09ADB04EF772C6544C40AF100FC2491F677BE16F7A16559EE8A2CF448FF"
+    },
+    {
+      "path": "tmp/u12-original-report-loot-final.log",
+      "bytes": 492,
+      "sha256": "3225B38E18FE882726F09615F79130C7AA066B15A8DF68E92201212F6D37CCA2"
+    },
+    {
+      "path": "tmp/u12-original-report-native-fixture-2.log",
+      "bytes": 560,
+      "sha256": "95A85C369CDCD20B3119A320DBC36BDCAF22D61C516A57C5B517B1A20DCAFE52"
+    },
+    {
+      "path": "tmp/u12-original-report-native-fixture-3.log",
+      "bytes": 560,
+      "sha256": "95A85C369CDCD20B3119A320DBC36BDCAF22D61C516A57C5B517B1A20DCAFE52"
+    },
+    {
+      "path": "tmp/u12-original-report-native-fixture-4.log",
+      "bytes": 560,
+      "sha256": "DFFFDE65335FFC327A83F38AC665AEC7E0021C2A6D80F7C4A1442F9449FE3713"
+    },
+    {
+      "path": "tmp/u12-original-report-native-fixture.log",
+      "bytes": 560,
+      "sha256": "12A8F07104BA4BBF3EBD69CF885EC89DD11CD2DB227AAB6E6C8A082CFBD1F5C4"
+    },
+    {
+      "path": "tmp/u12-scene-transition/surface-original-layout-1/admission.png",
+      "bytes": 6308,
+      "sha256": "AD1088BDC0FB5B00EAF0E87418F1BB3A498A5A7DF081F3A80CFF4C0D354304CB"
+    },
+    {
+      "path": "tmp/u12-scene-transition/surface-original-layout-1/covered.png",
+      "bytes": 1044242,
+      "sha256": "E5C7475384D63D4A38D31ED1C8E9BB23BD92BE2AADB1360A27ED76A5305C0EEC"
+    },
+    {
+      "path": "tmp/u12-scene-transition/surface-original-layout-1/error.png",
+      "bytes": 1012870,
+      "sha256": "2E7325CDA264D7044D6B4D465792C38AA67E8D79B8E6B87AC9775C5B70775049"
+    },
+    {
+      "path": "tmp/u12-scene-transition/surface-original-layout-1/peer-activated.jsonl",
+      "bytes": 138,
+      "sha256": "4DD75096202464055EDECFDB63B6374D8B522A52DDC0E1F5842A21F35BF30EB7"
+    },
+    {
+      "path": "tmp/u12-scene-transition/surface-original-layout-1/peer-ready.json",
+      "bytes": 29,
+      "sha256": "91BEE60CCBE9CFA446C2D989830CFB32FA452CD28ACD468B6472040AC4C32B5D"
+    },
+    {
+      "path": "tmp/u12-scene-transition/surface-original-layout-1/result.json",
+      "bytes": 4767,
+      "sha256": "32FE4EC4854ACAB720EA8372A36FE907A8F3184636CCC7D13E40E36BC7F66A63"
+    },
+    {
+      "path": "tmp/u12-scene-transition/surface-original-layout-1/revealed.png",
+      "bytes": 4249,
+      "sha256": "FE41F42215DC0F25634169F0A063D6178FC237D4C7C6A4570B5D5BA5D74E5813"
+    },
+    {
+      "path": "tmp/u12-scene-transition/surface-original-layout-2/admission.png",
+      "bytes": 6308,
+      "sha256": "AD1088BDC0FB5B00EAF0E87418F1BB3A498A5A7DF081F3A80CFF4C0D354304CB"
+    },
+    {
+      "path": "tmp/u12-scene-transition/surface-original-layout-2/covered.png",
+      "bytes": 1044236,
+      "sha256": "CDEA5AB1D87384F0CC3B86565A58003806C5B3CA11297364E480A27270CEFE1C"
+    },
+    {
+      "path": "tmp/u12-scene-transition/surface-original-layout-2/error.png",
+      "bytes": 1012870,
+      "sha256": "2E7325CDA264D7044D6B4D465792C38AA67E8D79B8E6B87AC9775C5B70775049"
+    },
+    {
+      "path": "tmp/u12-scene-transition/surface-original-layout-2/peer-activated.jsonl",
+      "bytes": 136,
+      "sha256": "A6840900B3F6B8D024C0315AAD5BCB8116403DBD346EE293D0DD7053B75A42C2"
+    },
+    {
+      "path": "tmp/u12-scene-transition/surface-original-layout-2/peer-ready.json",
+      "bytes": 28,
+      "sha256": "F9F1717302CE257F2A45A5D7D78F69B24A28337DAA1808933B3856CA0481198A"
+    },
+    {
+      "path": "tmp/u12-scene-transition/surface-original-layout-2/result.json",
+      "bytes": 4571,
+      "sha256": "95D758F09F6E9E2648B886354CBC426C425E80AED0E66FCDB6DEB26730BACBF9"
+    },
+    {
+      "path": "tmp/u12-scene-transition/surface-original-layout-2/revealed.png",
+      "bytes": 4249,
+      "sha256": "FE41F42215DC0F25634169F0A063D6178FC237D4C7C6A4570B5D5BA5D74E5813"
+    },
+    {
+      "path": "tmp/u12-scene-transition/surface-original-layout-3/admission.png",
+      "bytes": 6308,
+      "sha256": "AD1088BDC0FB5B00EAF0E87418F1BB3A498A5A7DF081F3A80CFF4C0D354304CB"
+    },
+    {
+      "path": "tmp/u12-scene-transition/surface-original-layout-3/covered.png",
+      "bytes": 1044242,
+      "sha256": "60F8971F239FDCE921B2D04642A0A366AEB5FE9FDFFFF10FEC89AEDF1CD226A1"
+    },
+    {
+      "path": "tmp/u12-scene-transition/surface-original-layout-3/error.png",
+      "bytes": 1012870,
+      "sha256": "2E7325CDA264D7044D6B4D465792C38AA67E8D79B8E6B87AC9775C5B70775049"
+    },
+    {
+      "path": "tmp/u12-scene-transition/surface-original-layout-3/parallel-report-loading.png",
+      "bytes": 1044223,
+      "sha256": "5DC95210A0FEDC0D27CBC65B2C96293DB5C11F9650E5FB8AC0FC6718F63A22A0"
+    },
+    {
+      "path": "tmp/u12-scene-transition/surface-original-layout-3/peer-activated.jsonl",
+      "bytes": 204,
+      "sha256": "32E274E1D6B744338DD9F59F20C0F9C89B9C59E854FAC56DCF8FDF13ABA6EE70"
+    },
+    {
+      "path": "tmp/u12-scene-transition/surface-original-layout-3/peer-ready.json",
+      "bytes": 28,
+      "sha256": "2557D4C5000CE159682E3C2BDA96E4E8944111C222A7FEE9E67AE32C75630B53"
+    },
+    {
+      "path": "tmp/u12-scene-transition/surface-original-layout-3/result.json",
+      "bytes": 6161,
+      "sha256": "94AD6162E4AA1869A22605DB57BA4A7CBD7953EF03ECDF2312D3972A86E467F0"
+    },
+    {
+      "path": "tmp/u12-scene-transition/surface-original-layout-3/revealed.png",
+      "bytes": 4249,
+      "sha256": "FE41F42215DC0F25634169F0A063D6178FC237D4C7C6A4570B5D5BA5D74E5813"
+    },
+    {
+      "path": "tmp/u12-scene-transition/surface-original-layout-4/result.json",
+      "bytes": 2217,
+      "sha256": "2F3E3F9516026372ABA78C3B63018E711C26AC97830BFAD0101BA94BED5479D1"
+    },
+    {
+      "path": "tmp/u12-original-report-docs-final.log",
+      "bytes": 3553,
+      "sha256": "15A7842982FCD0E84AE11CC19233B340BB880E05F45D2B9716DE9D5FF30B5520"
+    },
+    {
+      "path": "tmp/u12-scene-transition/evidence-before-scale-20261002.json",
+      "bytes": 106796,
+      "sha256": "EC8F252B45B1907565258F981DE873D0DFDB8B0FFFFF89C6BEC8474DF19A0430"
+    },
+    {
+      "path": "tmp/u12-scale-browser-before-20261002.log",
+      "bytes": 640,
+      "sha256": "9E2E40BEBDC51845A75DB28AF85EE9B25F7D5B34BE740E4FCD3C7FCCAC501785"
+    },
+    {
+      "path": "tmp/u12-scale-browser-reproduced-20261002.log",
+      "bytes": 1199,
+      "sha256": "8912B83C1AC13E6B5DABA99E9979340FB0414CEAA540D67F200BE158C9F5DDB3"
+    },
+    {
+      "path": "tmp/u12-scale-browser-fixed-20261002.log",
+      "bytes": 71,
+      "sha256": "4D3CA3BEB10533E08A54D10DD66BB3B2851F7A54736B681F4F6D246B607D069B"
+    },
+    {
+      "path": "tmp/u12-scale-loot-20261002.log",
+      "bytes": 126,
+      "sha256": "58CED09ADB04EF772C6544C40AF100FC2491F677BE16F7A16559EE8A2CF448FF"
+    },
+    {
+      "path": "tmp/u12-scale-ui-audit-20261002.log",
+      "bytes": 12788,
+      "sha256": "AB0A12F0B0AFC4B7838B2A709CCEDF404030A1742D0739D110865C6D46D65CE8"
+    },
+    {
+      "path": "tmp/u12-scale-css-bundle-20261002.log",
+      "bytes": 8619,
+      "sha256": "E8F6FFA15EEEC321C8DD409E1C0279A1BBEA6385AC2C58336828E5E444C85166"
+    },
+    {
+      "path": "tmp/u12-scale-dev-status-20261002.log",
+      "bytes": 1748,
+      "sha256": "D7DB40155296AB80923D9A38EB730903B40DABD52D7D43BEDC62452A8417E04F"
+    },
+    {
+      "path": "tmp/u12-scale-native-20261002.log",
+      "bytes": 6963,
+      "sha256": "81928D2A2C687419202CC41ADF14A91A9356110A810A970DB087872B61E76C23"
+    },
+    {
+      "path": "tmp/u12-scale-native-pixels-20261002.log",
+      "bytes": 7114,
+      "sha256": "FF1E0E6F88FDE0912AD62F54093A0F600EFBBF2E15344C633FE9C2AD4E929076"
+    },
+    {
+      "path": "tmp/u12-scene-transition/settlement-scale-field-20261002.png",
+      "bytes": 349381,
+      "sha256": "93EB6B21580EECD5120ECD6A060278F7275032319A182303CB0DB66418096B75"
+    },
+    {
+      "path": "tmp/u12-scene-transition/fixture-geometry-before-pixel-check-20261002.cs",
+      "bytes": 32285,
+      "sha256": "491ED93440AEB6E44FC42D8A63730494AE40397C0740A690568F7FCFDCEC9646"
+    },
+    {
+      "path": "tmp/u12-scene-transition/scale-before-20261002/error-reduced.png",
+      "bytes": 859899,
+      "sha256": "83D850D35E470068C202BFBC53B515E678F2DC2539921DD60BBB0BF710F1102A"
+    },
+    {
+      "path": "tmp/u12-scene-transition/scale-before-20261002/error.png",
+      "bytes": 859899,
+      "sha256": "83D850D35E470068C202BFBC53B515E678F2DC2539921DD60BBB0BF710F1102A"
+    },
+    {
+      "path": "tmp/u12-scene-transition/scale-before-20261002/report-first-paint-1600.json",
+      "bytes": 908,
+      "sha256": "05B8365B48C3702E706FB50969A2E031E4E0B8F9E5D2208934AFA9C25D1B882E"
+    },
+    {
+      "path": "tmp/u12-scene-transition/scale-before-20261002/report-first-paint-1600.png",
+      "bytes": 388595,
+      "sha256": "BE7221CA0538B6C9D4CA7786A0C301290DDDB341C5D5D4E63C2251FA03B64CDD"
+    },
+    {
+      "path": "tmp/u12-scene-transition/scale-before-20261002/report-original-layout-loading-reduced.png",
+      "bytes": 208095,
+      "sha256": "6400A9A0C38F6F2E29E93DD697E337544B9C5D5A91D055A75C53E543BD9F988D"
+    },
+    {
+      "path": "tmp/u12-scene-transition/scale-before-20261002/report-original-layout-loading.png",
+      "bytes": 208105,
+      "sha256": "544073207954C55C94D456FBFB6AA5ED600CFA82755BD153666084BAAA0E595E"
+    },
+    {
+      "path": "tmp/u12-scene-transition/scale-fixed-20261002/browser-results.json",
+      "bytes": 269,
+      "sha256": "9BE2ABF687B83EB8D90DD03B0CCB0D6831ED65DF99AAFCC945391190E5B8C4FC"
+    },
+    {
+      "path": "tmp/u12-scene-transition/scale-fixed-20261002/error-reduced.png",
+      "bytes": 859899,
+      "sha256": "83D850D35E470068C202BFBC53B515E678F2DC2539921DD60BBB0BF710F1102A"
+    },
+    {
+      "path": "tmp/u12-scene-transition/scale-fixed-20261002/error.png",
+      "bytes": 859899,
+      "sha256": "83D850D35E470068C202BFBC53B515E678F2DC2539921DD60BBB0BF710F1102A"
+    },
+    {
+      "path": "tmp/u12-scene-transition/scale-fixed-20261002/report-first-paint-1600.json",
+      "bytes": 863,
+      "sha256": "EF38376F29EDCBE4D7D3CAC96FFF6B1788FC7F54773CFEDE9B34AF064F459186"
+    },
+    {
+      "path": "tmp/u12-scene-transition/scale-fixed-20261002/report-first-paint-1600.png",
+      "bytes": 346580,
+      "sha256": "3A3D5744FDEA2F0E233A945DD25B07AC90558E1E1E4AFCE448755C0C74EF7D54"
+    },
+    {
+      "path": "tmp/u12-scene-transition/scale-fixed-20261002/report-original-layout-loading-reduced.png",
+      "bytes": 208095,
+      "sha256": "6400A9A0C38F6F2E29E93DD697E337544B9C5D5A91D055A75C53E543BD9F988D"
+    },
+    {
+      "path": "tmp/u12-scene-transition/scale-fixed-20261002/report-original-layout-loading.png",
+      "bytes": 208105,
+      "sha256": "544073207954C55C94D456FBFB6AA5ED600CFA82755BD153666084BAAA0E595E"
+    },
+    {
+      "path": "tmp/u12-scene-transition/surface-scale-20261002/admission.png",
+      "bytes": 6308,
+      "sha256": "AD1088BDC0FB5B00EAF0E87418F1BB3A498A5A7DF081F3A80CFF4C0D354304CB"
+    },
+    {
+      "path": "tmp/u12-scene-transition/surface-scale-20261002/covered.png",
+      "bytes": 1044248,
+      "sha256": "577E427600E3436080DE56941249408629BEDF56FB4E0F4DBAA457EF8A291354"
+    },
+    {
+      "path": "tmp/u12-scene-transition/surface-scale-20261002/error.png",
+      "bytes": 1012870,
+      "sha256": "2E7325CDA264D7044D6B4D465792C38AA67E8D79B8E6B87AC9775C5B70775049"
+    },
+    {
+      "path": "tmp/u12-scene-transition/surface-scale-20261002/parallel-report-loading.png",
+      "bytes": 2130387,
+      "sha256": "4FD26DDE674AE48B785158C852A2CCF46DF367753977E760316D43A444E7F910"
+    },
+    {
+      "path": "tmp/u12-scene-transition/surface-scale-20261002/peer-activated.jsonl",
+      "bytes": 207,
+      "sha256": "21FDAEA123AB537E760B0F04A77F5D9EA2521090A9A62D278673CE6BB131D9B9"
+    },
+    {
+      "path": "tmp/u12-scene-transition/surface-scale-20261002/peer-ready.json",
+      "bytes": 29,
+      "sha256": "904DEE3B676A64C2B2EB958210A0F014C86EA2C4705E9C4C0FBCD98B62944879"
+    },
+    {
+      "path": "tmp/u12-scene-transition/surface-scale-20261002/report-first-1600x900.json",
+      "bytes": 213,
+      "sha256": "B0FE3F20F9791927FD12F5E75B7D46F73725EABF8C24F7F63716DC5B5B721E5F"
+    },
+    {
+      "path": "tmp/u12-scene-transition/surface-scale-20261002/report-resized-1280x720.json",
+      "bytes": 198,
+      "sha256": "6A8D7FA9221A920655C929771685A279BA4C1C1C71D21665982AC5D66D23E4E1"
+    },
+    {
+      "path": "tmp/u12-scene-transition/surface-scale-20261002/report-restored-1024x576.json",
+      "bytes": 193,
+      "sha256": "15716FD14B2D8DE7BA59D82FD6DB576D94C334B6C6AADA3DD44C38C9E8893BE7"
+    },
+    {
+      "path": "tmp/u12-scene-transition/surface-scale-20261002/result.json",
+      "bytes": 6401,
+      "sha256": "0C8DED8D5DEC2F78EFC606B0719DEE8E197BB5A0AED0BDAB850E7E3560B95915"
+    },
+    {
+      "path": "tmp/u12-scene-transition/surface-scale-20261002/revealed.png",
+      "bytes": 4249,
+      "sha256": "FE41F42215DC0F25634169F0A063D6178FC237D4C7C6A4570B5D5BA5D74E5813"
+    },
+    {
+      "path": "tmp/u12-scene-transition/surface-scale-pixels-20261002/admission.png",
+      "bytes": 6308,
+      "sha256": "AD1088BDC0FB5B00EAF0E87418F1BB3A498A5A7DF081F3A80CFF4C0D354304CB"
+    },
+    {
+      "path": "tmp/u12-scene-transition/surface-scale-pixels-20261002/covered.png",
+      "bytes": 1044244,
+      "sha256": "3BCE097AFFC35F393834AC6AB380DC2BF16700B62B717564CEEF00246D196A77"
+    },
+    {
+      "path": "tmp/u12-scene-transition/surface-scale-pixels-20261002/error.png",
+      "bytes": 1012870,
+      "sha256": "2E7325CDA264D7044D6B4D465792C38AA67E8D79B8E6B87AC9775C5B70775049"
+    },
+    {
+      "path": "tmp/u12-scene-transition/surface-scale-pixels-20261002/parallel-report-loading.png",
+      "bytes": 315095,
+      "sha256": "438AAEB6C6D084075B62F6B1D04AFA24969EEEAF57FD298619F0C559E6EFEF6B"
+    },
+    {
+      "path": "tmp/u12-scene-transition/surface-scale-pixels-20261002/parallel-report-webview.png",
+      "bytes": 333935,
+      "sha256": "1B8C59A70EF230EAA4EEF780127EC5E3AED8BAB21064CBB5157BA8CB3E7D0BCE"
+    },
+    {
+      "path": "tmp/u12-scene-transition/surface-scale-pixels-20261002/peer-activated.jsonl",
+      "bytes": 203,
+      "sha256": "DAB0D20D8ED70DAA10338DB563E86F8D414D1CE8A14002F39784A0508F05A5BA"
+    },
+    {
+      "path": "tmp/u12-scene-transition/surface-scale-pixels-20261002/peer-ready.json",
+      "bytes": 28,
+      "sha256": "99FD67F4E7B0964263D92245A64DE294D1BCA4980F6B12A573EB98FDFA49E4D4"
+    },
+    {
+      "path": "tmp/u12-scene-transition/surface-scale-pixels-20261002/report-first-1600x900.json",
+      "bytes": 213,
+      "sha256": "B0FE3F20F9791927FD12F5E75B7D46F73725EABF8C24F7F63716DC5B5B721E5F"
+    },
+    {
+      "path": "tmp/u12-scene-transition/surface-scale-pixels-20261002/report-resized-1280x720.json",
+      "bytes": 198,
+      "sha256": "6A8D7FA9221A920655C929771685A279BA4C1C1C71D21665982AC5D66D23E4E1"
+    },
+    {
+      "path": "tmp/u12-scene-transition/surface-scale-pixels-20261002/report-restored-1024x576.json",
+      "bytes": 193,
+      "sha256": "15716FD14B2D8DE7BA59D82FD6DB576D94C334B6C6AADA3DD44C38C9E8893BE7"
+    },
+    {
+      "path": "tmp/u12-scene-transition/surface-scale-pixels-20261002/report-screen-pixels.json",
+      "bytes": 621,
+      "sha256": "AA2BA6A22A2AF4D6BF53A5C74ED1F93B7DF2F713C5713D6D2393263ACD615828"
+    },
+    {
+      "path": "tmp/u12-scene-transition/surface-scale-pixels-20261002/result.json",
+      "bytes": 6552,
+      "sha256": "870687E78A2E91A10AE716DB58B132BE4549097E0CF7ECF1EE5A31BEF28F9ED6"
+    },
+    {
+      "path": "tmp/u12-scene-transition/surface-scale-pixels-20261002/revealed.png",
+      "bytes": 4249,
+      "sha256": "FE41F42215DC0F25634169F0A063D6178FC237D4C7C6A4570B5D5BA5D74E5813"
+    },
+    {
+      "path": "tmp/u12-scale-docs-20261002.log",
+      "bytes": 3553,
+      "sha256": "15A7842982FCD0E84AE11CC19233B340BB880E05F45D2B9716DE9D5FF30B5520"
+    },
+    {
+      "path": "tmp/u12-scale-whitespace-20261002.log",
+      "bytes": 154,
+      "sha256": "FDF1DF71642D873E0D35ED91E930326CA66B529D0EB7E15BCA9CAED78CA16BFB"
+    },
+    {
+      "path": "tmp/u12-scale-evidence-20261002.log",
+      "bytes": 144,
+      "sha256": "6217983FC749AB27CD1C3643AA19D624AA378A0643861EE6B1F0653650B7E2F4"
+    },
+    {
+      "path": "tmp/u12-shared-as2-return.txt",
+      "bytes": 2937,
+      "sha256": "42A6A435C8A4DF54E480BA68CDF602F51D70236B9B48CADF593D0D14638875BC"
+    },
+    {
+      "path": "tmp/u12-shared-as2-scene.txt",
+      "bytes": 2775,
+      "sha256": "DE7C11CBCE8CE6404B78F0E1569D271A0AF30310BFBA6925AD6C9A4E2E0E8477"
+    },
+    {
+      "path": "tmp/u12-shared-asloader-function-sizes.txt",
+      "bytes": 863,
+      "sha256": "7BF29346254393072A73B064E36E5595362DF26BD9F34483FE786E3D6F19D7EA"
+    },
+    {
+      "path": "tmp/u12-shared-asloader-publish.txt",
+      "bytes": 1315,
+      "sha256": "BF2930F648957335FC3BB9087D15B3B5F27CFA5FAA43607C5B36ACB530D2B37C"
+    },
+    {
+      "path": "tmp/u12-shared-asloader-readback-check-first.json",
+      "bytes": 2222,
+      "sha256": "AE6C0B1F719476677544556A86206C4AA8D66FD526D09B354FC3591EFA51EC9F"
+    },
+    {
+      "path": "tmp/u12-shared-asloader-readback-check-first.txt",
+      "bytes": 117,
+      "sha256": "CDB915D9D7D6EE7917414FCD2465AE60EB5E58E1F17840EFB80BF8168A2D5190"
+    },
+    {
+      "path": "tmp/u12-shared-asloader-readback-check.json",
+      "bytes": 2219,
+      "sha256": "1AA9814A732F67C67D9743461185940029442D9D2B22503DECBEE0C13B80B7C2"
+    },
+    {
+      "path": "tmp/u12-shared-asloader-readback-check.txt",
+      "bytes": 41,
+      "sha256": "66949BE4A3750562F44679544539BE7A920D65887801ED9A17DFB5FB73A5D0E4"
+    },
+    {
+      "path": "tmp/u12-shared-asloader-readback.txt",
+      "bytes": 178925,
+      "sha256": "5680E2D8ACF57AE5929C1390BF3003BA37B9BF8E1485350034D59E76D5D66197"
+    },
+    {
+      "path": "tmp/u12-shared-bom.txt",
+      "bytes": 49,
+      "sha256": "D2B88BB86C02009561F60A0F307A5BC0ED78455D185190CFE9D07B60E660C08D"
+    },
+    {
+      "path": "tmp/u12-shared-business-final-web.txt",
+      "bytes": 332,
+      "sha256": "D9F3920D0ADBC87886BFEEE1961A2A8BEE02B29CAE1AC5BA3A07C0188BB5FC14"
+    },
+    {
+      "path": "tmp/u12-shared-business-second-web.txt",
+      "bytes": 211,
+      "sha256": "1BEA49E5EF9C90407C920CBB3265E15F9A88E03F9E08D9954B401CFD1A0EFE6E"
+    },
+    {
+      "path": "tmp/u12-shared-business-third-web.txt",
+      "bytes": 433,
+      "sha256": "441DBD05855ED5A4DB7168BD7F962FE65353117DB411725A6606D599AAC05A56"
+    },
+    {
+      "path": "tmp/u12-shared-business-verified-web.txt",
+      "bytes": 71,
+      "sha256": "ADE7AA17DB4F8DBABD134C3B505409FEDA03C25168656415F133D401B85FBC1F"
+    },
+    {
+      "path": "tmp/u12-shared-business-web.txt",
+      "bytes": 212,
+      "sha256": "6F3CE644230C534704C01CFECF82AD37278DE54716210E94E7E52DD4FB5F6E36"
+    },
+    {
+      "path": "tmp/u12-shared-candidate-build.txt",
+      "bytes": 5594,
+      "sha256": "C4B3DB5F4309E5116727343C967071CC1CA227062D6B52AEBC1E91FDB0A77F43"
+    },
+    {
+      "path": "tmp/u12-shared-catalog.txt",
+      "bytes": 65,
+      "sha256": "1E3C0CC5B15FED75AF02EAB8C6119F54AC3B03D35072720582338147D728A8F6"
+    },
+    {
+      "path": "tmp/u12-shared-complete-web.txt",
+      "bytes": 71,
+      "sha256": "A92151AAC67BCF976B6A90B514162DB5DD0CCBB6096DF45EDEF1E940B15A744F"
+    },
+    {
+      "path": "tmp/u12-shared-contracts.txt",
+      "bytes": 295,
+      "sha256": "107D00170D24F0D034BDA03A2A146B44ABC728565D4602178D54BAAFF5630801"
+    },
+    {
+      "path": "tmp/u12-shared-css-bundle.txt",
+      "bytes": 8619,
+      "sha256": "E8F6FFA15EEEC321C8DD409E1C0279A1BBEA6385AC2C58336828E5E444C85166"
+    },
+    {
+      "path": "tmp/u12-shared-dev-status.txt",
+      "bytes": 1724,
+      "sha256": "5B88903C221AF2970ACD0AFB960D3F537B65D3CCA3225A1EC1A5B24DC053E666"
+    },
+    {
+      "path": "tmp/u12-shared-final-verified-web.txt",
+      "bytes": 292,
+      "sha256": "A9B8F39E0E230B8A773E08A16294E94C70402FA40CB5A84857D37DEE3982383D"
+    },
+    {
+      "path": "tmp/u12-shared-final-web.txt",
+      "bytes": 71,
+      "sha256": "9EFD81DFB67904D2BE9812A4E0DD299D5F26262697C3483730CE188082FBD6DC"
+    },
+    {
+      "path": "tmp/u12-shared-first-host.txt",
+      "bytes": 50470,
+      "sha256": "817D6FA73A3B85A38AA032CD826EEDAF1AA1AFD43D52DF685547AF83E5CFF067"
+    },
+    {
+      "path": "tmp/u12-shared-first-web.txt",
+      "bytes": 1070,
+      "sha256": "64312F48DFBC07809EDF2F14095B05055E9ED41B5FA5017369F2535E0A39897C"
+    },
+    {
+      "path": "tmp/u12-shared-full-host-final.txt",
+      "bytes": 927829,
+      "sha256": "B39C0C3CD7A62D8FBC3D636591ADC1FECC1AD57B6CA6FBDC2F25F995493B308C"
+    },
+    {
+      "path": "tmp/u12-shared-full-host-first.txt",
+      "bytes": 968736,
+      "sha256": "89A289EC449F25CDB5B7C40BD1B20CBFF50C6E2F2D20273D4EF43730AEE16AC7"
+    },
+    {
+      "path": "tmp/u12-shared-host-protocol-final.txt",
+      "bytes": 50696,
+      "sha256": "E79C668B0F6A3C5FDFEB57A367A5A3EC5B43A1E3C3AB3876B3AF6416220F65F7"
+    },
+    {
+      "path": "tmp/u12-shared-loot-final-web.txt",
+      "bytes": 126,
+      "sha256": "501E29A2C8C1726A48FD16520A08B1045C09FE620FE82927E29217EFC93E9D16"
+    },
+    {
+      "path": "tmp/u12-shared-loot-web.txt",
+      "bytes": 126,
+      "sha256": "1F1EF4503471C58ED1D681041AEA40A63D2CCF7E8A06AA777CD312BEAE50F615"
+    },
+    {
+      "path": "tmp/u12-shared-map-loot-final.txt",
+      "bytes": 90701,
+      "sha256": "37BD1063B56633053E057B646B022B3A5856C02E44C16C56C8FF147756E89668"
+    },
+    {
+      "path": "tmp/u12-shared-map-loot-first.txt",
+      "bytes": 90442,
+      "sha256": "C2C60D52633F01B076E03FF7C623390667377EE2FA4FE08557103D40EE2C70F0"
+    },
+    {
+      "path": "tmp/u12-shared-map-loot-retry-final.txt",
+      "bytes": 91005,
+      "sha256": "B61906419D4E7598D5B2F39E44E7970E490872A91D1DE3F4B6B99CCA6179B5A6"
+    },
+    {
+      "path": "tmp/u12-shared-map-loot-second.txt",
+      "bytes": 89997,
+      "sha256": "6A8F5C98B35265CAAF09C90F53C9A4116044ACC1A4054D559AAFDF18683D2D62"
+    },
+    {
+      "path": "tmp/u12-shared-native-smoke-ack.txt",
+      "bytes": 7427,
+      "sha256": "15AE4EA8C74927813E010AF8456DBD796AE825AE55C4DA8D7D1C9E6707B4BFFF"
+    },
+    {
+      "path": "tmp/u12-shared-native-smoke-complete.txt",
+      "bytes": 7545,
+      "sha256": "D495BC3300C396F7835210FA054EA592D2D13259B7EEF098C5F327B42CE5BED7"
+    },
+    {
+      "path": "tmp/u12-shared-native-smoke-final.txt",
+      "bytes": 560,
+      "sha256": "79124097455493E8A89B8B6244588F4364EE8C1FCE1F863015C07A13A0BB78FB"
+    },
+    {
+      "path": "tmp/u12-shared-native-smoke-painted.txt",
+      "bytes": 7651,
+      "sha256": "53D4B7FF4F42F2C16F2D31681DCB9104804C0F5FD06A4DF04B53E32B0CB85391"
+    },
+    {
+      "path": "tmp/u12-shared-native-smoke.txt",
+      "bytes": 560,
+      "sha256": "79124097455493E8A89B8B6244588F4364EE8C1FCE1F863015C07A13A0BB78FB"
+    },
+    {
+      "path": "tmp/u12-shared-panel-runtime.txt",
+      "bytes": 3563,
+      "sha256": "DA0577FB46A69B0A190F9D40BA6B27F3770FBB6F76B208A4A6D9DC0EFEEBED67"
+    },
+    {
+      "path": "tmp/u12-shared-record-evidence.txt",
+      "bytes": 292,
+      "sha256": "7AAD9750C6673BA7A17558EA01A847B4828E3E16CA0CAB5F7578DA06F6C24015"
+    },
+    {
+      "path": "tmp/u12-shared-retry-web.txt",
+      "bytes": 71,
+      "sha256": "9EFD81DFB67904D2BE9812A4E0DD299D5F26262697C3483730CE188082FBD6DC"
+    },
+    {
+      "path": "tmp/u12-shared-scene-final.txt",
+      "bytes": 2775,
+      "sha256": "BCAD1B35B3FFAA1C98DF416FB098D1A290912C72421BCF2D11C91D231D09ADFB"
+    },
+    {
+      "path": "tmp/u12-shared-second-host.txt",
+      "bytes": 50803,
+      "sha256": "22237744B4A8D051A7B9B1112AA6DC459D0F4E51900107CD20D20DEA6F6F9783"
+    },
+    {
+      "path": "tmp/u12-shared-second-web.txt",
+      "bytes": 345,
+      "sha256": "9F416A2EA983F222B7DBE7FB8BF5891351A3E0CCFEEB94D6DFF8731DC1C91571"
+    },
+    {
+      "path": "tmp/u12-shared-stage-entry.txt",
+      "bytes": 73,
+      "sha256": "84EC4A3F326CDAB4FEF6A4A838C30ACDA6E41A8A97826A0FF3C32F3F74AA6D82"
+    },
+    {
+      "path": "tmp/u12-shared-third-web.txt",
+      "bytes": 71,
+      "sha256": "4D3CA3BEB10533E08A54D10DD66BB3B2851F7A54736B681F4F6D246B607D069B"
+    },
+    {
+      "path": "tmp/u12-shared-ui-audit-final.txt",
+      "bytes": 12788,
+      "sha256": "AB0A12F0B0AFC4B7838B2A709CCEDF404030A1742D0739D110865C6D46D65CE8"
+    },
+    {
+      "path": "tmp/u12-shared-ui-audit.txt",
+      "bytes": 12788,
+      "sha256": "AB0A12F0B0AFC4B7838B2A709CCEDF404030A1742D0739D110865C6D46D65CE8"
+    },
+    {
+      "path": "tmp/u12-shared-compiled-20261002/map-compile-output.txt",
+      "bytes": 88209,
+      "sha256": "9360CB1E451287E5D11B06DEE1968BA28BDDF6F17863D8CDEDF5D349FF72E455"
+    },
+    {
+      "path": "tmp/u12-shared-compiled-20261002/map-compiler-errors.txt",
+      "bytes": 27,
+      "sha256": "6D64657E843CFA06C243B6B51F8732C1B5910EBD29940AA7F6F9342B38034FD3"
+    },
+    {
+      "path": "tmp/u12-shared-compiled-20261002/map-flashlog.txt",
+      "bytes": 88307,
+      "sha256": "E3C19E8C3E871A5E4D4EA396FBFB4D36F17209EFE53468AE8DBEB2B61B5E30D2"
+    },
+    {
+      "path": "tmp/u12-shared-compiled-20261002/publish-compile-output.txt",
+      "bytes": 67,
+      "sha256": "4079A3F186452C17A1D53EFC7D0144B4A1746CE6829F625EFA8D25A56220ED72"
+    },
+    {
+      "path": "tmp/u12-shared-compiled-20261002/publish-compiler-errors.txt",
+      "bytes": 27,
+      "sha256": "6D64657E843CFA06C243B6B51F8732C1B5910EBD29940AA7F6F9342B38034FD3"
+    },
+    {
+      "path": "tmp/u12-shared-compiled-20261002/scene-compile-output.txt",
+      "bytes": 619,
+      "sha256": "C359B7A0C6A9E800150A0048715259E8CEFD753271C6A5C70F4DE1B296C9BB68"
+    },
+    {
+      "path": "tmp/u12-shared-compiled-20261002/scene-compiler-errors.txt",
+      "bytes": 27,
+      "sha256": "6D64657E843CFA06C243B6B51F8732C1B5910EBD29940AA7F6F9342B38034FD3"
+    },
+    {
+      "path": "tmp/u12-shared-compiled-20261002/scene-flashlog.txt",
+      "bytes": 600,
+      "sha256": "BAE99A2FE29D101A49BE4C14001BFFC9A5FFDCC5A87629BF1BAD0B0BC61BAFEC"
+    },
+    {
+      "path": "tmp/u12-scene-transition/surface-shared-painted-20261002/admission.png",
+      "bytes": 6308,
+      "sha256": "AD1088BDC0FB5B00EAF0E87418F1BB3A498A5A7DF081F3A80CFF4C0D354304CB"
+    },
+    {
+      "path": "tmp/u12-scene-transition/surface-shared-painted-20261002/covered.png",
+      "bytes": 1044237,
+      "sha256": "A05ED80B6C610FD110DC6737DCDF61BEFE3E78616A087393527CE72FDDEF6F52"
+    },
+    {
+      "path": "tmp/u12-scene-transition/surface-shared-painted-20261002/error.png",
+      "bytes": 1012870,
+      "sha256": "2E7325CDA264D7044D6B4D465792C38AA67E8D79B8E6B87AC9775C5B70775049"
+    },
+    {
+      "path": "tmp/u12-scene-transition/surface-shared-painted-20261002/parallel-report-bound.png",
+      "bytes": 305349,
+      "sha256": "DAC64271434192B0E45CF770EA7661CAAB3250C08D43FF53C504539B1FBE11B3"
+    },
+    {
+      "path": "tmp/u12-scene-transition/surface-shared-painted-20261002/parallel-report-loading.png",
+      "bytes": 318115,
+      "sha256": "6C68149A0FB2D36D903D54DC3CD8DA4B591259B236B40145AF7AD7ECB82330B9"
+    },
+    {
+      "path": "tmp/u12-scene-transition/surface-shared-painted-20261002/parallel-report-scene-ready.png",
+      "bytes": 147460,
+      "sha256": "D3F78DAC30EA6DAB9B00904B8D2EC9A0CDA6082CFB7BF92311104621418803F8"
+    },
+    {
+      "path": "tmp/u12-scene-transition/surface-shared-painted-20261002/parallel-report-webview.png",
+      "bytes": 337302,
+      "sha256": "173631293CC54DBBF8716A64D4631D25B0E9811F8731AB99FEF632C2218B68F4"
+    },
+    {
+      "path": "tmp/u12-scene-transition/surface-shared-painted-20261002/peer-ready.json",
+      "bytes": 27,
+      "sha256": "89C310D024C74A9E198759D532DD136F761BDD0D8E5EE5AA47889D8200405FD3"
+    },
+    {
+      "path": "tmp/u12-scene-transition/surface-shared-painted-20261002/report-first-1600x900.json",
+      "bytes": 213,
+      "sha256": "B0FE3F20F9791927FD12F5E75B7D46F73725EABF8C24F7F63716DC5B5B721E5F"
+    },
+    {
+      "path": "tmp/u12-scene-transition/surface-shared-painted-20261002/report-resized-1280x720.json",
+      "bytes": 198,
+      "sha256": "6A8D7FA9221A920655C929771685A279BA4C1C1C71D21665982AC5D66D23E4E1"
+    },
+    {
+      "path": "tmp/u12-scene-transition/surface-shared-painted-20261002/report-restored-1024x576.json",
+      "bytes": 193,
+      "sha256": "15716FD14B2D8DE7BA59D82FD6DB576D94C334B6C6AADA3DD44C38C9E8893BE7"
+    },
+    {
+      "path": "tmp/u12-scene-transition/surface-shared-painted-20261002/report-screen-pixels.json",
+      "bytes": 620,
+      "sha256": "1C4A9D57E4EB27EA0525C580EE9B6D3461F9721F92A3DF36C5194B08F0ECD95A"
+    },
+    {
+      "path": "tmp/u12-scene-transition/surface-shared-painted-20261002/result.json",
+      "bytes": 7089,
+      "sha256": "B46800FA675C788E8B1C3ED245B88100AA10785751914BA7C45D8A1C21539B00"
+    },
+    {
+      "path": "tmp/u12-scene-transition/surface-shared-painted-20261002/revealed.png",
+      "bytes": 4208,
+      "sha256": "08234566D47E1FB1E4714E22A59D3CCA5015EF2942CE1417EB63452FBA2D0F1C"
+    },
+    {
+      "path": "tmp/u12-scene-transition/shared-complete-20261002/browser-results.json",
+      "bytes": 273,
+      "sha256": "A0B54ED4100051B33BE0E08A6284D6737E092BDBBC43F169DCC4C3459EA021BD"
+    },
+    {
+      "path": "tmp/u12-scene-transition/shared-complete-20261002/error-reduced.png",
+      "bytes": 859899,
+      "sha256": "83D850D35E470068C202BFBC53B515E678F2DC2539921DD60BBB0BF710F1102A"
+    },
+    {
+      "path": "tmp/u12-scene-transition/shared-complete-20261002/error.png",
+      "bytes": 859899,
+      "sha256": "83D850D35E470068C202BFBC53B515E678F2DC2539921DD60BBB0BF710F1102A"
+    },
+    {
+      "path": "tmp/u12-scene-transition/shared-complete-20261002/report-first-paint-1600.json",
+      "bytes": 863,
+      "sha256": "EF38376F29EDCBE4D7D3CAC96FFF6B1788FC7F54773CFEDE9B34AF064F459186"
+    },
+    {
+      "path": "tmp/u12-scene-transition/shared-complete-20261002/report-first-paint-1600.png",
+      "bytes": 301524,
+      "sha256": "9C6345917A45BB8C36F786FF33213F59B832D60C6C7E06307C76F7FC7B0B7D91"
+    },
+    {
+      "path": "tmp/u12-scene-transition/shared-complete-20261002/report-original-layout-loading-reduced.png",
+      "bytes": 206121,
+      "sha256": "729A288ADFCDF4BF4114636F8732FB72B8AE4BAEC5C27E7FDEE99FFBDA2F419A"
+    },
+    {
+      "path": "tmp/u12-scene-transition/shared-complete-20261002/report-original-layout-loading.png",
+      "bytes": 206130,
+      "sha256": "758025D7CD8A7594B2DC0E6AA43DAF20DA80BD99CB99F735BE4454647FD5CD76"
+    },
+    {
+      "path": "tmp/u12-scene-transition/shared-complete-20261002/shared-claim.png",
+      "bytes": 353430,
+      "sha256": "D21D454A192898F0CFD0FE8B82EB5FFF2C98AB2800F37C444D8B1477B38DCA17"
+    },
+    {
+      "path": "tmp/u12-scene-transition/shared-complete-20261002/shared-unknown.png",
+      "bytes": 365220,
+      "sha256": "5538BF4FF442FBFEE648857F5EEAA5AD9D09BDFE5BB93DD50627726F6590DA46"
+    },
+    {
+      "path": "tmp/u12-shared-doc-governance.txt",
+      "bytes": 3553,
+      "sha256": "15A7842982FCD0E84AE11CC19233B340BB880E05F45D2B9716DE9D5FF30B5520"
+    },
+    {
+      "path": "tmp/u12-shared-diff-check.txt",
+      "bytes": 154,
+      "sha256": "FDF1DF71642D873E0D35ED91E930326CA66B529D0EB7E15BCA9CAED78CA16BFB"
+    },
+    {
+      "path": "tmp/u12-shared-return-stall-20261002/active-before.json",
+      "bytes": 815,
+      "sha256": "33960113E116CB9700B381E38D1AB7C67A5EB6935760498D319AFFEE10F9FF24"
+    },
+    {
+      "path": "tmp/u12-shared-return-stall-20261002/as2-after-compiler.txt",
+      "bytes": 27,
+      "sha256": "6D64657E843CFA06C243B6B51F8732C1B5910EBD29940AA7F6F9342B38034FD3"
+    },
+    {
+      "path": "tmp/u12-shared-return-stall-20261002/as2-after-output.txt",
+      "bytes": 88535,
+      "sha256": "C156066A3B37AD989C6850F1AAF97FC66881A18B1C6A208CD75B7B38594FFAED"
+    },
+    {
+      "path": "tmp/u12-shared-return-stall-20261002/as2-after-trace.txt",
+      "bytes": 88633,
+      "sha256": "0449047C6B40F1D56D7A7E092A325465D3E4C52122B9A827DC98A6A33D497184"
+    },
+    {
+      "path": "tmp/u12-shared-return-stall-20261002/as2-base-visible.png",
+      "bytes": 1391846,
+      "sha256": "6331D520492E5EBC3B24759191247545EA96AB64667B4CE5C465E08A28983705"
+    },
+    {
+      "path": "tmp/u12-shared-return-stall-20261002/as2-before-compiler.txt",
+      "bytes": 27,
+      "sha256": "6D64657E843CFA06C243B6B51F8732C1B5910EBD29940AA7F6F9342B38034FD3"
+    },
+    {
+      "path": "tmp/u12-shared-return-stall-20261002/as2-before-output.txt",
+      "bytes": 89304,
+      "sha256": "2D61C9AFEFC743389909CBD58F60E25E23271ED5AA59B90F1770AA867690A343"
+    },
+    {
+      "path": "tmp/u12-shared-return-stall-20261002/as2-before-trace.txt",
+      "bytes": 89402,
+      "sha256": "66A177CE007127FD3E3B7923CE5C8BF0AE0EB339BFEB044DC939C1ED5EB6A880"
+    },
+    {
+      "path": "tmp/u12-shared-return-stall-20261002/as2-regression-after.txt",
+      "bytes": 91335,
+      "sha256": "BC0363263FFA58A314E66F93B1D375C84CCDA4F8AEA91307EB3071105F0D3003"
+    },
+    {
+      "path": "tmp/u12-shared-return-stall-20261002/as2-regression-before.txt",
+      "bytes": 92074,
+      "sha256": "959B040C6AFF9489D70C590EBCAE7D3E831261D5501D2F59A6F85E2BDB5DEFD3"
+    },
+    {
+      "path": "tmp/u12-shared-return-stall-20261002/asloader-function-sizes.txt",
+      "bytes": 863,
+      "sha256": "7BF29346254393072A73B064E36E5595362DF26BD9F34483FE786E3D6F19D7EA"
+    },
+    {
+      "path": "tmp/u12-shared-return-stall-20261002/asloader-publish.txt",
+      "bytes": 1113,
+      "sha256": "8B749B29B814046C5F0261222FF5E3BDEC882E36E0CC0A1BB5B05934466E5D30"
+    },
+    {
+      "path": "tmp/u12-shared-return-stall-20261002/bootstrap-before.log",
+      "bytes": 5153971,
+      "sha256": "F27F95AB668BB131BB483AE517C3AB91A2949E4DDBF9A4E93368AD23F3EE1FBA"
+    },
+    {
+      "path": "tmp/u12-shared-return-stall-20261002/browser-after.txt",
+      "bytes": 71,
+      "sha256": "A92151AAC67BCF976B6A90B514162DB5DD0CCBB6096DF45EDEF1E940B15A744F"
+    },
+    {
+      "path": "tmp/u12-shared-return-stall-20261002/candidate-build.txt",
+      "bytes": 5578,
+      "sha256": "8DF36EF066B047A51B163C6527D12E9542734048BC771E866B75322781261548"
+    },
+    {
+      "path": "tmp/u12-shared-return-stall-20261002/dev-status.txt",
+      "bytes": 1718,
+      "sha256": "94F928442D5CAD44BB5D68817134BAB0D6B5588C81C07387256147775708F6C4"
+    },
+    {
+      "path": "tmp/u12-shared-return-stall-20261002/diff-check.txt",
+      "bytes": 154,
+      "sha256": "FDF1DF71642D873E0D35ED91E930326CA66B529D0EB7E15BCA9CAED78CA16BFB"
+    },
+    {
+      "path": "tmp/u12-shared-return-stall-20261002/doc-governance.txt",
+      "bytes": 3553,
+      "sha256": "F0D9C7A079D432A261A63824B688B2F2AF1514DB7614EB2F3CC2BCA7997843EA"
+    },
+    {
+      "path": "tmp/u12-shared-return-stall-20261002/evidence-before.json",
+      "bytes": 159684,
+      "sha256": "2DF2308BD2CD4D8325C057ED456CD4D0DF34960DA5B77922AF171C02EAF40DA5"
+    },
+    {
+      "path": "tmp/u12-shared-return-stall-20261002/full-host-after.txt",
+      "bytes": 932528,
+      "sha256": "5E3AC39FB5591E3C5E5848F16B2D0B9B8A4EF99E3A5AD77B07D747405804F603"
+    },
+    {
+      "path": "tmp/u12-shared-return-stall-20261002/full-host-final.txt",
+      "bytes": 929287,
+      "sha256": "5848352540B98B81FDDF264C42F5827EEE01A98ACA3A06A8A903731E5949ED4A"
+    },
+    {
+      "path": "tmp/u12-shared-return-stall-20261002/host-regression-after.txt",
+      "bytes": 38198,
+      "sha256": "8E03BE5E1C899A3D0B668C288C2AB98FD9BEB649CC9069E1A384B5CC4E5F6845"
+    },
+    {
+      "path": "tmp/u12-shared-return-stall-20261002/host-regression-before.txt",
+      "bytes": 40143,
+      "sha256": "9EE55055D04E46DF62E6F69116B4C9C71ED8BC75DFCCAD96C109974D005B3870"
+    },
+    {
+      "path": "tmp/u12-shared-return-stall-20261002/host-regression-first-fix.txt",
+      "bytes": 50696,
+      "sha256": "DD050A5479E385FDE963F03BE445FA7E67935386391BF2157CF558A495617FEC"
+    },
+    {
+      "path": "tmp/u12-shared-return-stall-20261002/hud-isolated-after.txt",
+      "bytes": 851,
+      "sha256": "BB1AA6DCEE8DFB67D125669BCC992CA0F4041057625F3BC3773D3677B15D847C"
+    },
+    {
+      "path": "tmp/u12-shared-return-stall-20261002/launcher-before.log",
+      "bytes": 1704370,
+      "sha256": "108677570F269B9554DEEE149782A89E8B966FFEB75590E8231305E9E8DA4582"
+    },
+    {
+      "path": "tmp/u12-shared-return-stall-20261002/native-after.txt",
+      "bytes": 7919,
+      "sha256": "48FB3D36E91DD195532A10C601D50EB100F7A2F69EE3F2C49EEAF8D41A89F3FC"
+    },
+    {
+      "path": "tmp/u12-shared-return-stall-20261002/native-before.txt",
+      "bytes": 560,
+      "sha256": "79124097455493E8A89B8B6244588F4364EE8C1FCE1F863015C07A13A0BB78FB"
+    },
+    {
+      "path": "tmp/u12-shared-return-stall-20261002/perf-before.jsonl",
+      "bytes": 69119,
+      "sha256": "7A031B21AED545CA912FF8EDB99E3199BBDF74603A8E8863C4EEBA1E0AAC1853"
+    },
+    {
+      "path": "tmp/u12-shared-return-stall-20261002/publish-late-compiler.txt",
+      "bytes": 27,
+      "sha256": "6D64657E843CFA06C243B6B51F8732C1B5910EBD29940AA7F6F9342B38034FD3"
+    },
+    {
+      "path": "tmp/u12-shared-return-stall-20261002/publish-late-output.txt",
+      "bytes": 233,
+      "sha256": "77A5F1935913412950F867F6D177AB7BE855C48BF6037884555AE3C906549111"
+    },
+    {
+      "path": "tmp/u12-shared-return-stall-20261002/publish-late-recovery.json",
+      "bytes": 1207,
+      "sha256": "F7C1BE808D73714A250386303138E86E5F5436FA6AEBAA1AD245AB145C9DC39C"
+    },
+    {
+      "path": "tmp/u12-shared-return-stall-20261002/publish-late-terminal.marker",
+      "bytes": 2,
+      "sha256": "2689367B205C16CE32ED4200942B8B8B1E262DFC70D9BC9FBC77C49699A4F1DF"
+    },
+    {
+      "path": "tmp/u12-shared-return-stall-20261002/publish-timeout.marker",
+      "bytes": 105,
+      "sha256": "F4BCDF6243D1DCAAAAB19A5813322000372227C421B1496002A95EB140FD106B"
+    },
+    {
+      "path": "tmp/u12-shared-return-stall-20261002/readback-check.cjs",
+      "bytes": 5456,
+      "sha256": "CD1090ED4D69C74B706E2408C4A91CB437D4976485F765083AE87A481413A49F"
+    },
+    {
+      "path": "tmp/u12-shared-return-stall-20261002/readback-check.json",
+      "bytes": 2247,
+      "sha256": "5F991B55E5E3FE45CEBF25961FE65849186368D237172AF79963D1C48D2066D9"
+    },
+    {
+      "path": "tmp/u12-shared-return-stall-20261002/readback-export.txt",
+      "bytes": 3806,
+      "sha256": "A7D514485EFD2E828C742DF38E0EAE4176E419BDC545CD35E65FC4AFC2BB1EB4"
+    },
+    {
+      "path": "tmp/u12-shared-return-stall-20261002/readback-full-export.txt",
+      "bytes": 171307,
+      "sha256": "27DA72A57F5778C5AAEAA9A913997FE46552F6FA9BB9AE9428478B97523E51D6"
+    },
+    {
+      "path": "tmp/u12-shared-return-stall-20261002/record-evidence.cjs",
+      "bytes": 18242,
+      "sha256": "C969A322BB0DBFB11CC96AA3742F70E0C6D3C74E68D5083B9D19473592566600"
+    },
+    {
+      "path": "tmp/u12-shared-return-stall-20261002/return-sync-before.log",
+      "bytes": 40439,
+      "sha256": "C671A64ADE0B9635D7B3057048798038050D85618B6CBF3003E6FF4273972FAF"
+    },
+    {
+      "path": "tmp/u12-shared-return-stall-20261002/scene-after-compiler.txt",
+      "bytes": 27,
+      "sha256": "6D64657E843CFA06C243B6B51F8732C1B5910EBD29940AA7F6F9342B38034FD3"
+    },
+    {
+      "path": "tmp/u12-shared-return-stall-20261002/scene-after-output.txt",
+      "bytes": 619,
+      "sha256": "94EA4B29BFAB2A1D8295AE7661EB65CCB7F3C608922B1155A66E69BFDCEA07A1"
+    },
+    {
+      "path": "tmp/u12-shared-return-stall-20261002/scene-after-trace.txt",
+      "bytes": 600,
+      "sha256": "39E2B8AE4E23F67225FC263E055F344367CA277E8E4D172A80FACF9C7633C2D6"
+    },
+    {
+      "path": "tmp/u12-shared-return-stall-20261002/scene-guards-after.txt",
+      "bytes": 2779,
+      "sha256": "C43509DA99DE6F7E9395B5559EAE4A75EF91F189CEE795E4E7881CCD9BCF40AA"
+    },
+    {
+      "path": "tmp/u12-shared-return-stall-20261002/web-stalled.png",
+      "bytes": 405113,
+      "sha256": "24FCD051B7F28D043CF857BBC29C747AFAC94B35637C4604618E54EAF9AC67B4"
+    },
+    {
+      "path": "tmp/u12-shared-return-stall-20261002/native-before/admission.png",
+      "bytes": 11755,
+      "sha256": "CC60A221397AB6CBF27F644F61EE9839F73F574EE6A10F08479C5EB03A322067"
+    },
+    {
+      "path": "tmp/u12-shared-return-stall-20261002/native-before/covered.png",
+      "bytes": 1051185,
+      "sha256": "6BFED3CEFC3C37FFC97D10CFEAD0E2C434F363550A649EC0A860DF5B5080259D"
+    },
+    {
+      "path": "tmp/u12-shared-return-stall-20261002/native-before/error.png",
+      "bytes": 1019722,
+      "sha256": "C54E7E382A506832226F6557E611D4C3519B6DBB7B687A3481358628C2EAF951"
+    },
+    {
+      "path": "tmp/u12-shared-return-stall-20261002/native-before/parallel-report-loading.png",
+      "bytes": 342821,
+      "sha256": "7E2C2D2FCA3A74E625E767BD93D03709872A658577AAAC1DA458379EFD6E2269"
+    },
+    {
+      "path": "tmp/u12-shared-return-stall-20261002/native-before/parallel-report-webview.png",
+      "bytes": 337300,
+      "sha256": "E780C946FD6FFF786ADBEF7F2E30870CE52D20901D087FA9145FC2461C98DF9D"
+    },
+    {
+      "path": "tmp/u12-shared-return-stall-20261002/native-before/peer-activated.jsonl",
+      "bytes": 136,
+      "sha256": "EBFC3970482820E66915AD855262B9D6AD1B2FA9AEF63180D62E554E842C483E"
+    },
+    {
+      "path": "tmp/u12-shared-return-stall-20261002/native-before/peer-ready.json",
+      "bytes": 28,
+      "sha256": "E2EFBBB340FE9FC3AE546134325528E6A392CCBD84DE4F1D7475B989C2F10A2F"
+    },
+    {
+      "path": "tmp/u12-shared-return-stall-20261002/native-before/projection-diagnostic.json",
+      "bytes": 2025,
+      "sha256": "0692A8ECCDDC32ED8EEB3864D73CBC7A7DB3999E4CD9DC5652D949D4C1FD1309"
+    },
+    {
+      "path": "tmp/u12-shared-return-stall-20261002/native-before/report-first-1600x900.json",
+      "bytes": 213,
+      "sha256": "B0FE3F20F9791927FD12F5E75B7D46F73725EABF8C24F7F63716DC5B5B721E5F"
+    },
+    {
+      "path": "tmp/u12-shared-return-stall-20261002/native-before/report-screen-pixels.json",
+      "bytes": 621,
+      "sha256": "AA158CCB2185518DB61622E1F825AFA3985E4BE637F4E4318B98E950AEF8F671"
+    },
+    {
+      "path": "tmp/u12-shared-return-stall-20261002/native-before/result.json",
+      "bytes": 5326,
+      "sha256": "949AAC10F3C7181DD8336A94335754BDF050922D3C8B7E177138ECC713CE9EE1"
+    },
+    {
+      "path": "tmp/u12-shared-return-stall-20261002/native-before/revealed.png",
+      "bytes": 8358,
+      "sha256": "42981746251005BF1C3026C660EAED9BECDA1579579AE0E5E386D74D58CC1655"
+    },
+    {
+      "path": "tmp/u12-shared-return-stall-20261002/native-after/admission.png",
+      "bytes": 6308,
+      "sha256": "AD1088BDC0FB5B00EAF0E87418F1BB3A498A5A7DF081F3A80CFF4C0D354304CB"
+    },
+    {
+      "path": "tmp/u12-shared-return-stall-20261002/native-after/covered.png",
+      "bytes": 1044245,
+      "sha256": "C0F7EA1D0F2D0CC0BC5DB9AA01D03F6BD46D25F57BBE75BAD26DD68F938ED8CF"
+    },
+    {
+      "path": "tmp/u12-shared-return-stall-20261002/native-after/error.png",
+      "bytes": 1012870,
+      "sha256": "2E7325CDA264D7044D6B4D465792C38AA67E8D79B8E6B87AC9775C5B70775049"
+    },
+    {
+      "path": "tmp/u12-shared-return-stall-20261002/native-after/parallel-report-bound.png",
+      "bytes": 333526,
+      "sha256": "77A4EA716DA48569B9098A581E159A1C4ACE2938B836628E90BBBF42FA996337"
+    },
+    {
+      "path": "tmp/u12-shared-return-stall-20261002/native-after/parallel-report-loading.png",
+      "bytes": 345544,
+      "sha256": "CBBD859DBEA7483242694044B36A6A411C2F3928E4E082F71D897853A904D8FE"
+    },
+    {
+      "path": "tmp/u12-shared-return-stall-20261002/native-after/parallel-report-scene-ready.png",
+      "bytes": 147458,
+      "sha256": "658EC376386109B3D2895077C6FC2626D0F11C333464C14DB899FB40F36FF10F"
+    },
+    {
+      "path": "tmp/u12-shared-return-stall-20261002/native-after/parallel-report-webview.png",
+      "bytes": 337302,
+      "sha256": "90A7E07485A3720527381ED7850D7B1C5ADC8AD67F571FE73CE919F864602738"
+    },
+    {
+      "path": "tmp/u12-shared-return-stall-20261002/native-after/peer-activated.jsonl",
+      "bytes": 203,
+      "sha256": "4E61072BBD190AC4607880A0317736C4F03ADE5FF19D7218E1B7284314A4151E"
+    },
+    {
+      "path": "tmp/u12-shared-return-stall-20261002/native-after/peer-ready.json",
+      "bytes": 28,
+      "sha256": "46646E056FBD407989C21A98BAD2510B78A5D36384991AF399650B540CF87A9F"
+    },
+    {
+      "path": "tmp/u12-shared-return-stall-20261002/native-after/report-first-1600x900.json",
+      "bytes": 213,
+      "sha256": "B0FE3F20F9791927FD12F5E75B7D46F73725EABF8C24F7F63716DC5B5B721E5F"
+    },
+    {
+      "path": "tmp/u12-shared-return-stall-20261002/native-after/report-resized-1280x720.json",
+      "bytes": 198,
+      "sha256": "6A8D7FA9221A920655C929771685A279BA4C1C1C71D21665982AC5D66D23E4E1"
+    },
+    {
+      "path": "tmp/u12-shared-return-stall-20261002/native-after/report-restored-1024x576.json",
+      "bytes": 193,
+      "sha256": "15716FD14B2D8DE7BA59D82FD6DB576D94C334B6C6AADA3DD44C38C9E8893BE7"
+    },
+    {
+      "path": "tmp/u12-shared-return-stall-20261002/native-after/report-screen-pixels.json",
+      "bytes": 622,
+      "sha256": "097AF781165D30D0F447194CC1BF5511277C0B179729454CF3C9BA8066C9D264"
+    },
+    {
+      "path": "tmp/u12-shared-return-stall-20261002/native-after/result.json",
+      "bytes": 7357,
+      "sha256": "C3979B9B598FCC58FE1F5299EAC56E8A869D6DE720A93E6AB7F7C5823EACD1BC"
+    },
+    {
+      "path": "tmp/u12-shared-return-stall-20261002/native-after/revealed.png",
+      "bytes": 4261,
+      "sha256": "E2D0A5DD935B491AACA4BF326149BBB16302F9BC3EF4857701F0E46837D092D9"
+    },
+    {
+      "path": "tmp/u12-shared-return-stall-20261002/readback/scripts/__Packages/org/flashNight/arki/ui/SceneTransitionService.as",
+      "bytes": 18373,
+      "sha256": "6C0BBD718A9C1016D70213EC993D39E1D88E9173B6E291D14A23F2D1EF5BC984"
+    },
+    {
+      "path": "tmp/u12-shared-return-stall-20261002/readback/scripts/__Packages/org/flashNight/arki/scene/StageRunSession.as",
+      "bytes": 153503,
+      "sha256": "CE39CCC9FEE8EF67114467E69B1D7C8FFD63F1E44D3860DAF1DA18AAABF30590"
+    },
+    {
+      "path": "tmp/u12-shared-return-stall-20261002/readback/scripts/__Packages/org/flashNight/arki/item/LootContainerService.as",
+      "bytes": 178551,
+      "sha256": "8298F1A636FE2A4F70F51D0A517CB05B8EE551A3F7ACA528E9D7D81DB3796421"
+    }
+  ],
+  "manualFailureJourney": {
+    "status": "not_covered",
+    "conditionalOnly": true,
+    "forcedFailureRequired": false,
+    "blocksNormalJourneyAcceptance": false,
+    "automatedFixtureIsNotRealFailureJourney": true
+  },
+  "priorHumanFeedback": {
+    "candidate": "u12-scene-transition-20261001",
+    "issue": "AS2 briefly exposed before loading image during map navigation",
+    "positionConfirmedByUser": true,
+    "fixedCandidateAcceptance": "pending",
+    "timingLog": "tmp/u12-scene-transition/entry-gap-before.log"
+  },
+  "playerSlotWriteScope": "Agent fixtures used isolated mock save owners and made no player-slot writes; prior human gameplay is separate.",
+  "fixtureToolSource": {
+    "path": "tools/scene-transition-smoke/Program.cs",
+    "bytes": 39295,
+    "sha256": "FAF10C88D364F4AD5B892EAFC307AEDE5DAF79CCC28EEB249330395DBF499948"
+  },
+  "priorFocusFeedback": {
+    "candidate": {
+      "root": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\resources\\tmp\\runtime-candidates\\v2\\u12-curtain-gap-20261001b",
+      "buildIdentityHash": "3DE6A77C2ECAAB933A996AFD31044C16A8B723BBAABBAF2F615D4CE57535DDA1",
+      "payloadClosureHash": "E55881C065AE01490CA06677F4DA56736AB3D1952D907ACED987FB6E63BB2D33",
+      "coreSha256": "9D5CC717A91832637D86262A39B048BF6BF5BB61B5B6846876DF9FA2604B2DEE"
+    },
+    "candidateExecutedByHuman": true,
+    "issue": "Scene changes briefly exposed the application behind the game; no visible flicker with only desktop behind.",
+    "humanAcceptance": "H1/H4 not passed; replacement candidate awaits visual acceptance",
+    "timingLog": "tmp/u12-scene-transition/focus-handoff-before.log",
+    "observedForegroundBeforeRestore": [
+      "ChatGPT",
+      "Visual Studio Code"
+    ],
+    "baselineFixture": {
+      "resultPath": "tmp/u12-scene-transition/focus-handoff-old-candidate-03/result.json",
+      "state": "failed_expected_regression",
+      "backgroundProcessActivationObserved": true,
+      "gameE2e": false,
+      "slotsTouched": false
+    },
+    "fixedCandidateAcceptance": "pending"
+  },
+  "focusHandoffSources": [
+    {
+      "path": "launcher/src/Guardian/SceneTransitionController.cs",
+      "bytes": 14069,
+      "sha256": "9F9B2358FDC07F0F0B82228F36DCD68F8FB4BC51865DFCE69EC1003374A9BF6B"
+    },
+    {
+      "path": "launcher/src/Guardian/CompositionHelpSurface.cs",
+      "bytes": 29697,
+      "sha256": "94FE5812DB64D2366E0E81712B90C30FB5976196A80743DD3B10438E5DC24948"
+    },
+    {
+      "path": "launcher/src/Program.cs",
+      "bytes": 191298,
+      "sha256": "FA09D03FA3EE7669A516ED090430928675B42D678B8DE4A884CCE6851A153B0F"
+    },
+    {
+      "path": "launcher/src/Guardian/WebOverlayForm.cs",
+      "bytes": 450726,
+      "sha256": "1AD639866674688A66BF9FBED089D8F2B28B6FD0218094BEFC512BFB4F23B195"
+    },
+    {
+      "path": "launcher/src/Guardian/WorldCompositor/WorldCompositorController.cs",
+      "bytes": 55873,
+      "sha256": "9035028C98A9A259276448B862E704877196B668A5A134CBFEEE8E6C59315BC4"
+    },
+    {
+      "path": "launcher/src/Tasks/SceneTransitionTask.cs",
+      "bytes": 13038,
+      "sha256": "1405B137BF641412A6F03F7610E811A8DB1CC2DD03DED2F3E7CECEA3CEC2C83B"
+    }
+  ],
+  "gameCandidateExecutionScope": "New verified candidate DLL executed only in an isolated 48-check real composition fixture. Prior user field journey belongs to u12-shared-20261002; no controlled Flash game launch/save evidence on this new identity.",
+  "priorDungeonFeedback": {
+    "candidate": {
+      "root": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\resources\\tmp\\runtime-candidates\\v2\\u12-focus-handoff-20261001",
+      "buildIdentityHash": "AB482C947851F89407E4D8D68AFFD558A1B1BEF68100C18E88031579192DA282",
+      "payloadClosureHash": "BEE4CC0E05DD5CB2CD32566F281DE5544F4C55746994E1896CEF6CFD834F96E3",
+      "coreSha256": "12CF9806E6A190E3D516EAEFF7CAFD52EDE97F4A39C8ABCA27C93F781A2941C6"
+    },
+    "frontendBeforeRepair": {
+      "mainSwfSha256": "F13069A7286C79519041E369A6B0ACF36D3B950DA4ED5CD23CDF5D0F719F4157",
+      "fadeXflSha256": "88C42F0B8E039F06A46A7B4AB531283E5066314A698D50606657AA3E2913C2F1"
+    },
+    "candidateExecutedByHuman": true,
+    "acceptance": "H2 failed; repaired frontend acceptance pending",
+    "dungeonTaskId": 20053,
+    "dungeonName": "挑战战斗天才",
+    "mode": "normal",
+    "requestId": "tr:7",
+    "stalledScene": 9,
+    "timingLog": "tmp/u12-scene-transition/dungeon-stall-before.log",
+    "observed": "Cover at 17:26:22.627, loading at 17:26:23.212, scene 9 stayed ready=false; no reveal/error; game continued sending messages until user exit.",
+    "sourceCause": "Legacy frame-17 admission flag was held until reveal; StageRunSession.begin rejected initStage, so SceneReady and the legacy loading-failure frame were never produced.",
+    "sourceRegressionReproducedBeforeRepair": true,
+    "repairedMainSwfSha256": "F0BDD31048055BAF47EA582D71896190998D563AFB7B2CC8E9F67E06E67436B6",
+    "actualFailureJourneyCovered": false,
+    "forcedRevealOrAutomaticReplayAdded": false
+  },
+  "stageEntryRegressionSources": [
+    {
+      "path": "tools/test-scene-transition-stage-entry.js",
+      "bytes": 3447,
+      "sha256": "58B74D9D1ADBB17400C04E369F0D2B1B451A71C89A7809E56D6C2F3EC234F107"
+    },
+    {
+      "path": "scripts/类定义/org/flashNight/arki/ui/SceneTransitionServiceTest.as",
+      "bytes": 13847,
+      "sha256": "4E1E9F8BF8DFAB6977A32DD511472086D85EB240EC1900D1CFE121A73CA2DE84"
+    },
+    {
+      "path": "scripts/run-scene-transition-tests.ps1",
+      "bytes": 864,
+      "sha256": "4DE8B17D6106F364F23CC0C873203285EA716DF3D65EA7DF419ECDB1820713E5"
+    },
+    {
+      "path": "scripts/类定义/org/flashNight/arki/scene/StageRunSession.as",
+      "bytes": 131355,
+      "sha256": "CDB4734E89EF2703B432919CE4F571BB7E2C61947B8383FDF08A3A90F84B2FD1"
+    }
+  ],
+  "priorReturnFeedback": {
+    "candidate": {
+      "root": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\resources\\tmp\\runtime-candidates\\v2\\u12-focus-handoff-20261001",
+      "buildIdentityHash": "AB482C947851F89407E4D8D68AFFD558A1B1BEF68100C18E88031579192DA282",
+      "payloadClosureHash": "BEE4CC0E05DD5CB2CD32566F281DE5544F4C55746994E1896CEF6CFD834F96E3",
+      "coreSha256": "12CF9806E6A190E3D516EAEFF7CAFD52EDE97F4A39C8ABCA27C93F781A2941C6"
+    },
+    "frontendBeforeRepair": [
+      {
+        "path": "scripts/asLoader.swf",
+        "bytes": 1423861,
+        "sha256": "3918AD71436C71993C2E9DA44AF77043D0F23A96FE3E2D388278C23D29361190"
+      },
+      {
+        "path": "CRAZYFLASHER7MercenaryEmpire.swf",
+        "bytes": 207247,
+        "sha256": "F0BDD31048055BAF47EA582D71896190998D563AFB7B2CC8E9F67E06E67436B6"
+      },
+      {
+        "path": "scripts/类定义/org/flashNight/arki/ui/SceneTransitionService.as",
+        "bytes": 10152,
+        "sha256": "CB317AB0E735AE9295B874747647065A246A46ABB98F07B33DB4F35107ACEFCB"
+      }
+    ],
+    "stageRunSourceBeforeRepair": {
+      "path": "scripts/类定义/org/flashNight/arki/scene/StageRunSession.as",
+      "sha256": "8DE7CE4AD82462BCC0FF6819C94DB07A6D083FE70B4031B89C2C0CD0230D76AA"
+    },
+    "candidateExecutedByHuman": true,
+    "stageName": "地铁站",
+    "difficulty": "修罗",
+    "entryRequestId": "tr:3",
+    "entryScene": 5,
+    "entryRevealedAtLocal": "2026-10-01 18:08:09.691",
+    "entryHumanConfirmed": true,
+    "originalDungeonReplayCovered": false,
+    "returnRequestId": "tr:4",
+    "targetScene": 6,
+    "acceptance": "Entry confirmed on the prior frontend; full return failed. Current repaired loader awaits human replay.",
+    "timingLog": "tmp/u12-scene-transition/return-stall-before-20261001a.log",
+    "timingLogSha256": "0F6114DA4B9D721BB897C99106795AE0D620DDCEB8714E23D9F0AA048278EB8E",
+    "observed": "Scene 6 ready at 18:08:13.832; stage_settlement opened at 14.210 and paused/hidden world; revealFalse at 14.324 and captureReady=False at 14.379; no tr:4 revealed before user exit.",
+    "sourceCause": "SceneReady opened the settlement panel before target capture and curtain reveal. The panel paused and hid the world required by reveal admission.",
+    "repair": "Preserve arrival confirmation and durable reward stash; defer report construction/open until exact successful curtain release. Cancelled/failed/foreign-world clears do not publish successful arrival.",
+    "forcedRevealOrAutomaticReplayAdded": false,
+    "actualRepairedReturnJourneyCovered": false
+  },
+  "stateScope": "Fresh late asLoader compiled; new local runtime candidate_built, isolated fixture_executed; full Host 6478 pass/5 skip/0 fail. Human gameplay acceptance pending; NOT_DEPLOYED.",
+  "stageReturnRegressionSources": [
+    {
+      "path": "scripts/类定义/org/flashNight/arki/scene/StageRunSession.as",
+      "bytes": 131355,
+      "sha256": "CDB4734E89EF2703B432919CE4F571BB7E2C61947B8383FDF08A3A90F84B2FD1"
+    },
+    {
+      "path": "scripts/类定义/org/flashNight/arki/scene/StageRunSessionTest.as",
+      "bytes": 243987,
+      "sha256": "69032A565980D3EE8FFE2F31A2E098E296527C5CBEE5EBF20D6A27C7C862CA92"
+    },
+    {
+      "path": "scripts/run-map-loot-tests.ps1",
+      "bytes": 22697,
+      "sha256": "425D0DF395EEA9DBBC8FFD0350F3BB9EC1178C5DC6F6F59E15E88D546113C63E"
+    },
+    {
+      "path": "scripts/类定义/org/flashNight/arki/ui/SceneTransitionService.as",
+      "bytes": 14213,
+      "sha256": "4A431C9AE10576791127947EE7038C1C63929CDF39BDE9AA2F21A9E31EE2ECF2"
+    },
+    {
+      "path": "scripts/类定义/org/flashNight/arki/ui/SceneTransitionServiceTest.as",
+      "bytes": 13847,
+      "sha256": "4E1E9F8BF8DFAB6977A32DD511472086D85EB240EC1900D1CFE121A73CA2DE84"
+    },
+    {
+      "path": "scripts/run-scene-transition-tests.ps1",
+      "bytes": 864,
+      "sha256": "4DE8B17D6106F364F23CC0C873203285EA716DF3D65EA7DF419ECDB1820713E5"
+    },
+    {
+      "path": "scripts/类定义/org/flashNight/arki/item/LootContainerService.as",
+      "bytes": 170360,
+      "sha256": "85243D04A8ADCDAC2592191CF03F630296D208B9E6C2714329574D1B8819CE86"
+    },
+    {
+      "path": "scripts/类定义/org/flashNight/arki/scene/StageReturnFlow.as",
+      "bytes": 8054,
+      "sha256": "8128EAC3EC196A55B68DBDC0A626A55CD9525B2AC9A51964E61AEDE51FB95EEC"
+    },
+    {
+      "path": "launcher/web/modules/loot/dev/harness.html",
+      "bytes": 114205,
+      "sha256": "C6006C3EF3A863B2D0D292FD47E285173F79C130F5236567C9258D48F0CD6EA0"
+    },
+    {
+      "path": "launcher/tests/Tasks/SceneTransitionTaskTests.cs",
+      "bytes": 17376,
+      "sha256": "8CA6139EA925AF9888D8471F38A86D2BE23D994A5470C0AB9CA98830124BEFB4"
+    },
+    {
+      "path": "tools/test-scene-transition.js",
+      "bytes": 15558,
+      "sha256": "A5E51E6BBF832ECABE81DF0F26D8A00A95878B2EB0AC97EC9A77F4983A0835A6"
+    }
+  ],
+  "previousReturnHandoffEvidence": {
+    "recordedAtUtc": "2026-10-01T11:17:14.7823527Z",
+    "scope": "Superseded source and candidate snapshot. These hashes and passed fixture results belong to the previous return-handoff implementation and do not qualify the parallel-report candidate.",
+    "candidate": {
+      "root": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\resources\\tmp\\runtime-candidates\\v2\\u12-focus-handoff-20261001",
+      "metadataRelativePath": "tmp/runtime-candidates/v2/u12-focus-handoff-20261001/runtime-build-metadata.v2.json",
+      "metadataSha256": "7C554DC428E6A36F2204730F60DF46122CC141A214E41171C1FA7BCA9AF7686B",
+      "coreSha256": "12CF9806E6A190E3D516EAEFF7CAFD52EDE97F4A39C8ABCA27C93F781A2941C6",
+      "buildIdentityHash": "AB482C947851F89407E4D8D68AFFD558A1B1BEF68100C18E88031579192DA282",
+      "payloadClosureHash": "BEE4CC0E05DD5CB2CD32566F281DE5544F4C55746994E1896CEF6CFD834F96E3",
+      "selectionState": "ready",
+      "deploymentStatus": "NOT_DEPLOYED",
+      "formalRuntimeBinaryUnchanged": true,
+      "frontendSourceAhead": true,
+      "mainOnlyRepairReusesNativeCandidate": false,
+      "statusLogPath": "tmp/u12-scene-transition/dev-status-return-handoff-final.log",
+      "as2OnlyRepairReusesNativeCandidate": true
+    },
+    "frontend": {
+      "schema": "cf7-u12-frontend-source-snapshot.v1",
+      "files": [
+        {
+          "path": "scripts/asLoader.swf",
+          "bytes": 1424142,
+          "sha256": "E5468C2A35DA8643766D0E31184F4640B30BD1BC3F72C5C9A3DE299DC42D5BA9"
+        },
+        {
+          "path": "CRAZYFLASHER7MercenaryEmpire.swf",
+          "bytes": 207247,
+          "sha256": "F0BDD31048055BAF47EA582D71896190998D563AFB7B2CC8E9F67E06E67436B6"
+        },
+        {
+          "path": "scripts/类定义/org/flashNight/arki/ui/SceneTransitionService.as",
+          "bytes": 11314,
+          "sha256": "E23D405338ECE076EE2EB9D20ECAD80EDE9BDBA355BCCA4E503D629957D020B9"
+        },
+        {
+          "path": "scripts/类定义/org/flashNight/arki/weather/WorldLightingBridge.as",
+          "bytes": 5885,
+          "sha256": "8A7F7A2B553FCC3CD6D8CB15E132FF5125A2AB7B1CC9B2CAB82FBA3F287AF47F"
+        },
+        {
+          "path": "scripts/展现/UI交互/UI交互_lsy_UI管理.as",
+          "bytes": 16354,
+          "sha256": "B775A1F2D8169D242C50DA4BFC5DCA534476FEA44E0E0D2DC71AF6C3D112008F"
+        },
+        {
+          "path": "CRAZYFLASHER7MercenaryEmpire/LIBRARY/sprite/淡出动画.xml",
+          "bytes": 10872,
+          "sha256": "B1B5D4C4883976EF54F0EB334E70C03A12D43AC2DFC8EF5CFF83F72F8180A1CE"
+        },
+        {
+          "path": "launcher/web/scene-transition.html",
+          "bytes": 1246,
+          "sha256": "8FE60C3E76968CA6E382D4AD3B14A44FAA7D9EA29BEDB443B464FF4EF8B6A1DB"
+        },
+        {
+          "path": "launcher/web/css/scene-transition.css",
+          "bytes": 2037,
+          "sha256": "D663BD7C907DB29FA236C20DD408372426472DB84A653775D0B38A34A0B4BADC"
+        },
+        {
+          "path": "launcher/web/modules/scene-transition.js",
+          "bytes": 6690,
+          "sha256": "E3E64AB2EAD0321B15A9E3CE05DEF8A9A16CA0ED3A943871AF956058C981627F"
+        },
+        {
+          "path": "launcher/web/generated/scene-transition-catalog.js",
+          "bytes": 759,
+          "sha256": "5BEA6245626B0AD63C88A9A0B8DC904F12D30C37E47C89A8DA54C8348DCA55A9"
+        },
+        {
+          "path": "launcher/data/scene-transition/catalog.manifest.json",
+          "bytes": 3589,
+          "sha256": "CC831C7839623B7051194D03784EBCDFFE4C23039E5F8B1344A7220354A96E9E"
+        },
+        {
+          "path": "tools/generate-scene-transition-catalog.js",
+          "bytes": 3616,
+          "sha256": "DA00838CABB903F9F566057131B9619F8827E0892C9313CC24E9DBF768801D19"
+        },
+        {
+          "path": "scripts/类定义/org/flashNight/arki/scene/StageRunSession.as",
+          "bytes": 128753,
+          "sha256": "CC99FBE7A4F78483C99D93EBD26A74115BBEECF68B14BB55FDC170DC5CAB0D33"
+        }
+      ],
+      "covers": "Current root SWFs and U12 frontend/return sources; independent from runtime DLL closure. The prior human-tested frontend is separately recorded."
+    },
+    "compiled": [
+      {
+        "state": "compiled",
+        "target": "publish",
+        "path": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\resources\\scripts\\asLoader.swf",
+        "sha256": "E5468C2A35DA8643766D0E31184F4640B30BD1BC3F72C5C9A3DE299DC42D5BA9",
+        "bytes": 1424142,
+        "modifiedUtc": "2026-10-01T11:14:58.7185812Z",
+        "log": "tmp/u12-scene-transition/asloader-return-handoff-final-compile.log",
+        "compilerErrors": 0,
+        "compilerWarnings": 0,
+        "compilerReportPath": "tmp/u12-scene-transition/asloader-return-handoff-final-compiler_errors.txt",
+        "compilerReportSha256": "6D64657E843CFA06C243B6B51F8732C1B5910EBD29940AA7F6F9342B38034FD3",
+        "traceExpected": false
+      },
+      {
+        "state": "compiled",
+        "target": "main",
+        "path": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\resources\\CRAZYFLASHER7MercenaryEmpire.swf",
+        "sha256": "F0BDD31048055BAF47EA582D71896190998D563AFB7B2CC8E9F67E06E67436B6",
+        "bytes": 207247,
+        "modifiedUtc": "2026-10-01T09:49:09.8895988Z",
+        "log": "tmp/u12-scene-transition/main-dungeon-stall-compile.log",
+        "compilerErrors": 0,
+        "compilerWarnings": 0,
+        "compilerReportPath": "tmp/u12-scene-transition/main-dungeon-stall-compiler_errors.txt",
+        "compilerReportSha256": "6D64657E843CFA06C243B6B51F8732C1B5910EBD29940AA7F6F9342B38034FD3"
+      }
+    ],
+    "checks": {
+      "originalBackgrounds": {
+        "passed": 14,
+        "failed": 0
+      },
+      "as2Guards": {
+        "passed": 48,
+        "failed": 0,
+        "compilerErrors": 0,
+        "compilerWarnings": 0,
+        "logPath": "tmp/u12-scene-transition/as2-return-handoff-final.log"
+      },
+      "hostProtocol": {
+        "passed": 26,
+        "failed": 0
+      },
+      "browserFixture": {
+        "passed": 39,
+        "failed": 0,
+        "logPath": "tmp/u12-scene-transition/browser-dungeon-stall.log"
+      },
+      "candidateCompositionFixture": {
+        "passed": 22,
+        "failed": 0,
+        "coreSha256": "12CF9806E6A190E3D516EAEFF7CAFD52EDE97F4A39C8ABCA27C93F781A2941C6",
+        "nativeSha256": "76B2424FDCD974604B9AA486397CD7337766FEF3654B9F72D33FBF93A1F9E882",
+        "fixtureOnly": true,
+        "gameE2e": false,
+        "slotsTouched": false,
+        "resultPath": "tmp/u12-scene-transition/focus-handoff-candidate/result.json",
+        "resultSha256": "BC44877676163AA8FACD3D7C680F80BE4726C6BB3700D434AD0A46432AA84E60",
+        "candidateBuildIdentityHash": "AB482C947851F89407E4D8D68AFFD558A1B1BEF68100C18E88031579192DA282",
+        "candidatePayloadClosureHash": "BEE4CC0E05DD5CB2CD32566F281DE5544F4C55746994E1896CEF6CFD834F96E3"
+      },
+      "fullHost": {
+        "total": 6433,
+        "passed": 6428,
+        "failed": 0,
+        "skipped": 5,
+        "allGreen": false,
+        "requiredSuiteSucceeded": true,
+        "skipNotPass": true,
+        "logPath": "tmp/u12-scene-transition/host-full-return-handoff.log",
+        "durationMinutes": 1.9645
+      },
+      "hudIsolatedGroup": {
+        "passed": 76,
+        "failed": 0,
+        "scope": "previous U12 run; current full suite also passed this group"
+      },
+      "mainDecompile": {
+        "passed": true,
+        "resultPath": "tmp/u12-scene-transition/main-script-check-dungeon-stall.json",
+        "resultSha256": "90CA340F38E0A4070997718CB4F5C115162FF9EA87813B884D84D53A4302B1ED"
+      },
+      "mainXflAudit": {
+        "issueCategories": 2,
+        "legacySymbolName": 1,
+        "brokenReferences": 4,
+        "baselineIssueCategories": 2,
+        "baselineLegacySymbolName": 1,
+        "baselineBrokenReferences": 4,
+        "newIssues": 0,
+        "allClean": false,
+        "logPath": "tmp/u12-scene-transition/main-xfl-audit-dungeon-stall.log"
+      },
+      "linkageScan": {
+        "completed": true,
+        "mode": "xml-only",
+        "outputPath": "tmp/u12-scene-transition/linkage-source-map-no-exposure.xml",
+        "outputSha256": "CD78C50BA17F8378B15A4B90AC4C7C37DBB443A646067E5C80EEDE9B73D11329",
+        "authoritativeAssetMapModified": false,
+        "scope": "Prior XML-only linkage scan retained; current repair changes AS2 behavior only, not linkage or symbol references."
+      },
+      "stageEntrySourceFixture": {
+        "passed": 9,
+        "failed": 0,
+        "baselineFailed": true,
+        "sourceFixtureOnly": true,
+        "gameE2e": false,
+        "slotsTouched": false,
+        "resultPath": "tmp/u12-scene-transition/stage-entry-source-results.json",
+        "resultSha256": "9EE38CE0775B3A2E70C52D0F687DDE091E78E6765F3C4969E42FC5A0FCA26A28",
+        "baselineLogPath": "tmp/u12-scene-transition/stage-entry-source-before.log",
+        "repairedLogPath": "tmp/u12-scene-transition/stage-entry-source-return-handoff.log"
+      },
+      "documentationGovernance": {
+        "passed": true,
+        "legacyLinkDebtRemains": true,
+        "logPath": "tmp/u12-scene-transition/docs-return-handoff-terminal-final.log",
+        "diffWhitespaceCheckPassed": true
+      },
+      "mapLootReturnHandoff": {
+        "passed": 839,
+        "failed": 0,
+        "loot": 189,
+        "planner": 12,
+        "stageRun": 638,
+        "newOutcomeChecks": 39,
+        "outcomes": [
+          "victory",
+          "failure",
+          "retreat"
+        ],
+        "compilerErrors": 0,
+        "compilerWarnings": 0,
+        "traceRunBlocks": 1,
+        "bytecode32KRetries": 0,
+        "logPath": "tmp/u12-scene-transition/map-loot-return-handoff-final.log",
+        "productionSceneReadyInclude": true,
+        "realAvm1Fixture": true,
+        "mockSaveOwner": true,
+        "gameE2e": false,
+        "playerSlotsTouched": false
+      },
+      "stageReturn": {
+        "passed": 119,
+        "failed": 0,
+        "compilerErrors": 0,
+        "compilerWarnings": 0,
+        "logPath": "tmp/u12-scene-transition/stage-return-handoff.log",
+        "gameE2e": false
+      },
+      "characterBuildRegression": {
+        "requiredSuitesSucceeded": true,
+        "failed": 0,
+        "compilerErrors": 0,
+        "compilerWarnings": 0,
+        "logPath": "tmp/u12-scene-transition/character-build-return-handoff.log",
+        "suites": [
+          "SaveManager",
+          "EquipmentInventory",
+          "InventoryPanelService",
+          "EquipmentTransactionSpike",
+          "RuntimeEquipmentProjection",
+          "CharacterBuildService",
+          "PlayerInfoProvider"
+        ],
+        "mockSaveOwner": true,
+        "gameE2e": false
+      },
+      "manualInputRegression": {
+        "passed": 615,
+        "failed": 0,
+        "longGun": 486,
+        "manualCooldown": 57,
+        "drugInput": 58,
+        "keyManager": 14,
+        "compilerErrors": 0,
+        "compilerWarnings": 0,
+        "logPath": "tmp/u12-scene-transition/player-input-return-handoff.log",
+        "gameE2e": false
+      },
+      "panelRuntime": {
+        "passed": 41,
+        "failed": 0,
+        "logPath": "tmp/u12-scene-transition/panel-runtime-return-handoff.log"
+      },
+      "panelContracts": {
+        "passed": true,
+        "errors": 0,
+        "logPath": "tmp/u12-scene-transition/panel-contracts-return-handoff.log",
+        "testPassed": 70,
+        "testFailed": 0,
+        "testLogPath": "tmp/u12-scene-transition/panel-contract-tests-return-handoff.log"
+      },
+      "asLoaderDecompile": {
+        "passed": true,
+        "structuralChecks": 9,
+        "resultPath": "tmp/u12-scene-transition/asloader-script-check-return-handoff-final.json",
+        "resultSha256": "822FAF72A05AE4813EE357CACF05CA9B9419D10A4C97D99F126AC68D34CA369C",
+        "swfSha256": "E5468C2A35DA8643766D0E31184F4640B30BD1BC3F72C5C9A3DE299DC42D5BA9",
+        "gameE2e": false
+      },
+      "classOwnership": {
+        "passed": true,
+        "policy": "single-ownership",
+        "mainClasses": 0,
+        "loaderClasses": 689,
+        "intersection": 0,
+        "logPath": "tmp/u12-scene-transition/ownership-return-handoff-final.log"
+      },
+      "asLoaderFunctionSizes": {
+        "passed": true,
+        "functionCount": 12289,
+        "largestBodyBytes": 51261,
+        "maxBytes": 60000,
+        "logPath": "tmp/u12-scene-transition/asloader-function-sizes-return-handoff-final.log",
+        "limitation": "Bytecode size inspection alone cannot exclude wrapped lengths; combined with fresh scoped real AVM1 behavior and source closure gates."
+      }
+    },
+    "fixtureToolSource": {
+      "path": "tools/scene-transition-smoke/Program.cs",
+      "sha256": "610446D6403095363D4480731D8665C192291F9587F949F6F089CF039E50731A"
+    },
+    "focusHandoffSources": [
+      {
+        "path": "launcher/src/Guardian/SceneTransitionController.cs",
+        "sha256": "9CFC9E5AC38E049507190A171FEED80E32A7539FEDC3630533DF791F306B687D"
+      },
+      {
+        "path": "launcher/src/Guardian/CompositionHelpSurface.cs",
+        "sha256": "E598B5431B68375946F4D44D1356F268723EEE4DFED786EB4FE1825B4C280E86"
+      },
+      {
+        "path": "launcher/src/Program.cs",
+        "sha256": "60BCB9303BD823AECCF102DA192DA3B971E71B78DC03B0BB00919E81CACE7431"
+      }
+    ],
+    "stageEntryRegressionSources": [
+      {
+        "path": "tools/test-scene-transition-stage-entry.js",
+        "sha256": "58B74D9D1ADBB17400C04E369F0D2B1B451A71C89A7809E56D6C2F3EC234F107"
+      },
+      {
+        "path": "scripts/类定义/org/flashNight/arki/ui/SceneTransitionServiceTest.as",
+        "sha256": "4E1E9F8BF8DFAB6977A32DD511472086D85EB240EC1900D1CFE121A73CA2DE84"
+      },
+      {
+        "path": "scripts/run-scene-transition-tests.ps1",
+        "sha256": "4DE8B17D6106F364F23CC0C873203285EA716DF3D65EA7DF419ECDB1820713E5"
+      },
+      {
+        "path": "scripts/类定义/org/flashNight/arki/scene/StageRunSession.as",
+        "sha256": "CC99FBE7A4F78483C99D93EBD26A74115BBEECF68B14BB55FDC170DC5CAB0D33"
+      }
+    ],
+    "stageReturnRegressionSources": [
+      {
+        "path": "scripts/类定义/org/flashNight/arki/scene/StageRunSession.as",
+        "sha256": "CC99FBE7A4F78483C99D93EBD26A74115BBEECF68B14BB55FDC170DC5CAB0D33"
+      },
+      {
+        "path": "scripts/类定义/org/flashNight/arki/scene/StageRunSessionTest.as",
+        "sha256": "36D45BE7675CF490DF201A261C75CFC3B5F624A92D18B01135C72705E411A87E"
+      },
+      {
+        "path": "scripts/run-map-loot-tests.ps1",
+        "sha256": "30E91A03624440CF7753C049F6FC272170FCDA4011F422785D3A4D56DC4D37CB"
+      },
+      {
+        "path": "scripts/类定义/org/flashNight/arki/ui/SceneTransitionService.as",
+        "sha256": "E23D405338ECE076EE2EB9D20ECAD80EDE9BDBA355BCCA4E503D629957D020B9"
+      },
+      {
+        "path": "scripts/类定义/org/flashNight/arki/ui/SceneTransitionServiceTest.as",
+        "sha256": "4E1E9F8BF8DFAB6977A32DD511472086D85EB240EC1900D1CFE121A73CA2DE84"
+      },
+      {
+        "path": "scripts/run-scene-transition-tests.ps1",
+        "sha256": "4DE8B17D6106F364F23CC0C873203285EA716DF3D65EA7DF419ECDB1820713E5"
+      }
+    ],
+    "humanAcceptance": "Prior frontend: ordinary stage entry confirmed, full return failed. Current repaired loader awaits H2 full return/report/reward replay; H1/H4 visual checks, original dungeon task 20053 and save/restart remain separate.",
+    "verificationLimitation": {
+      "test": "NativeDialogueReappearanceRestoresActualWindowOrderWithNoBuffs",
+      "failure": "native HUD presentation timed out during resize / restore checks in full suite",
+      "testSourceChanged": false,
+      "cause": "undetermined",
+      "isolatedGroupPassed": true,
+      "scope": "Historical full-suite timeout retained; four later full suites passed, including the current return-handoff suite. Cause remains undetermined.",
+      "currentFullSuitePassed": true
+    }
+  },
+  "fixtureToolSources": [
+    {
+      "path": "tools/scene-transition-smoke/Program.cs",
+      "bytes": 39295,
+      "sha256": "FAF10C88D364F4AD5B892EAFC307AEDE5DAF79CCC28EEB249330395DBF499948"
+    },
+    {
+      "path": "tools/scene-transition-smoke/SceneTransition.Smoke.csproj",
+      "bytes": 922,
+      "sha256": "7FB15D732E337EBBA47A4C8080B9C6B3FAB7D28270D3B67CF231CCF78977C75C"
+    },
+    {
+      "path": "tools/run-scene-transition-smoke.ps1",
+      "bytes": 1417,
+      "sha256": "55392FEB892D0A7AAEF176FD4A6C23B2A2F44F6D0A725D7E8DE963329A2EF509"
+    },
+    {
+      "path": "tools/test-scene-transition.js",
+      "bytes": 31210,
+      "sha256": "F0768E4CBD01F6ECC1DEA2C88C66CB2922541FFB9279B782FCDB0CA26D30E8D6"
+    },
+    {
+      "path": "tmp/u12-shared-return-stall-20261002/readback-check.cjs",
+      "bytes": 5456,
+      "sha256": "CD1090ED4D69C74B706E2408C4A91CB437D4976485F765083AE87A481413A49F"
+    },
+    {
+      "path": "tmp/u12-shared-return-stall-20261002/record-evidence.cjs",
+      "bytes": 18242,
+      "sha256": "C969A322BB0DBFB11CC96AA3742F70E0C6D3C74E68D5083B9D19473592566600"
+    }
+  ],
+  "parallelReportHumanFeedback": {
+    "reported": "Victory return completes, but transition Web, AS2 base, then settlement are seen in sequence.",
+    "pathAndCandidateIdentityBound": false,
+    "acceptance": "Product motivation only; not acceptance of this new candidate."
+  },
+  "previousParallelReportEvidence": {
+    "candidate": {
+      "root": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\resources\\tmp\\runtime-candidates\\v2\\u12-parallel-report-20261001",
+      "metadataRelativePath": "tmp/runtime-candidates/v2/u12-parallel-report-20261001/runtime-build-metadata.v2.json",
+      "metadataSha256": "BDF4118554AAF470F7CDACDD122D3D8862A8D78AC854B901DEDC2A9312DF4602",
+      "coreSha256": "62A29F1A46917962877EF85C183414BC6D50140594E46734BC4A01AD9288E76E",
+      "nativeSha256": "76B2424FDCD974604B9AA486397CD7337766FEF3654B9F72D33FBF93A1F9E882",
+      "buildIdentityHash": "CD660DED94E9BB5C6D6EE8D2BA6C6CD4EEE280C10CC2422D4D662733084C5C74",
+      "payloadClosureHash": "D477F8457D694963615B76346B15A8DF97D09FBC4CF3B7016C0ED02EF2CF5C02",
+      "selectionState": "ready",
+      "deploymentStatus": "NOT_DEPLOYED",
+      "formalRuntimeBinaryUnchanged": true,
+      "statusLogPath": "tmp/u12-parallel-dev-status-terminal.log",
+      "sourceRecipe": "Authorized local automation/dev.ps1 -ForceBuild -BuildOnly route. No promotion writer used.",
+      "frontendSourceAhead": true,
+      "frontendOutsideDllClosure": true
+    },
+    "frontend": {
+      "schema": "cf7-u12-frontend-source-snapshot.v1",
+      "files": [
+        {
+          "path": "scripts/asLoader.swf",
+          "bytes": 1425146,
+          "sha256": "C284C838155C1EBF862A70D3B69A5324871C5ED8E4463DB43D0B1F89E93F57AD"
+        },
+        {
+          "path": "CRAZYFLASHER7MercenaryEmpire.swf",
+          "bytes": 207247,
+          "sha256": "F0BDD31048055BAF47EA582D71896190998D563AFB7B2CC8E9F67E06E67436B6"
+        },
+        {
+          "path": "scripts/类定义/org/flashNight/arki/ui/SceneTransitionService.as",
+          "bytes": 14213,
+          "sha256": "4A431C9AE10576791127947EE7038C1C63929CDF39BDE9AA2F21A9E31EE2ECF2"
+        },
+        {
+          "path": "scripts/类定义/org/flashNight/arki/weather/WorldLightingBridge.as",
+          "bytes": 5885,
+          "sha256": "8A7F7A2B553FCC3CD6D8CB15E132FF5125A2AB7B1CC9B2CAB82FBA3F287AF47F"
+        },
+        {
+          "path": "scripts/展现/UI交互/UI交互_lsy_UI管理.as",
+          "bytes": 16354,
+          "sha256": "B775A1F2D8169D242C50DA4BFC5DCA534476FEA44E0E0D2DC71AF6C3D112008F"
+        },
+        {
+          "path": "CRAZYFLASHER7MercenaryEmpire/LIBRARY/sprite/淡出动画.xml",
+          "bytes": 10872,
+          "sha256": "B1B5D4C4883976EF54F0EB334E70C03A12D43AC2DFC8EF5CFF83F72F8180A1CE"
+        },
+        {
+          "path": "launcher/web/scene-transition.html",
+          "bytes": 2287,
+          "sha256": "96E715A1F9C1560954969438ECF9DA2F960050421FBF7A58A54C293297144CD8"
+        },
+        {
+          "path": "launcher/web/css/scene-transition.css",
+          "bytes": 4159,
+          "sha256": "F7F813D6A3D08598F6E0B2B00D6B8FBF1CF5A136C1B033160254E958D3A8DD10"
+        },
+        {
+          "path": "launcher/web/modules/scene-transition.js",
+          "bytes": 9931,
+          "sha256": "24D2261226346205DB864AEE4D1A4721F3B23C57075F99F2A51E498DA0F0D6F4"
+        },
+        {
+          "path": "launcher/web/generated/scene-transition-catalog.js",
+          "bytes": 759,
+          "sha256": "5BEA6245626B0AD63C88A9A0B8DC904F12D30C37E47C89A8DA54C8348DCA55A9"
+        },
+        {
+          "path": "launcher/data/scene-transition/catalog.manifest.json",
+          "bytes": 3589,
+          "sha256": "CC831C7839623B7051194D03784EBCDFFE4C23039E5F8B1344A7220354A96E9E"
+        },
+        {
+          "path": "tools/generate-scene-transition-catalog.js",
+          "bytes": 3616,
+          "sha256": "DA00838CABB903F9F566057131B9619F8827E0892C9313CC24E9DBF768801D19"
+        },
+        {
+          "path": "scripts/类定义/org/flashNight/arki/scene/StageRunSession.as",
+          "bytes": 131355,
+          "sha256": "CDB4734E89EF2703B432919CE4F571BB7E2C61947B8383FDF08A3A90F84B2FD1"
+        },
+        {
+          "path": "scripts/类定义/org/flashNight/arki/scene/StageReturnFlow.as",
+          "bytes": 8054,
+          "sha256": "8128EAC3EC196A55B68DBDC0A626A55CD9525B2AC9A51964E61AEDE51FB95EEC"
+        },
+        {
+          "path": "scripts/类定义/org/flashNight/arki/item/LootContainerService.as",
+          "bytes": 170360,
+          "sha256": "85243D04A8ADCDAC2592191CF03F630296D208B9E6C2714329574D1B8819CE86"
+        },
+        {
+          "path": "launcher/web/modules/loot/loot-view.js",
+          "bytes": 96013,
+          "sha256": "8E99F5DD7036F7300E87043E3E84077A94D7ED302A23031EBC71722A8AC8C46E"
+        },
+        {
+          "path": "launcher/web/modules/loot/loot-panel.js",
+          "bytes": 45169,
+          "sha256": "4C25E5AA4BC6F1F856677C213BA441A4367B961ADF57954D406FD118855ED8EB"
+        }
+      ],
+      "covers": "Current root SWFs, U12 projection, return authority and shared report renderer. Separate from runtime DLL identity and closure."
+    },
+    "compiled": [
+      {
+        "state": "compiled",
+        "target": "publish",
+        "path": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\resources\\scripts\\asLoader.swf",
+        "sha256": "C284C838155C1EBF862A70D3B69A5324871C5ED8E4463DB43D0B1F89E93F57AD",
+        "bytes": 1425146,
+        "modifiedUtc": "2026-10-01T13:15:45.838Z",
+        "log": "tmp/u12-parallel-asloader-terminal.log",
+        "compilerErrors": 0,
+        "compilerWarnings": 0,
+        "compilerReportPath": "tmp/u12-parallel-asloader-terminal-compiler_errors.txt",
+        "compilerReportSha256": "6D64657E843CFA06C243B6B51F8732C1B5910EBD29940AA7F6F9342B38034FD3",
+        "traceExpected": false
+      },
+      {
+        "state": "compiled",
+        "target": "main",
+        "path": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\resources\\CRAZYFLASHER7MercenaryEmpire.swf",
+        "sha256": "F0BDD31048055BAF47EA582D71896190998D563AFB7B2CC8E9F67E06E67436B6",
+        "bytes": 207247,
+        "modifiedUtc": "2026-10-01T09:49:09.8895988Z",
+        "log": "tmp/u12-scene-transition/main-dungeon-stall-compile.log",
+        "compilerErrors": 0,
+        "compilerWarnings": 0,
+        "compilerReportPath": "tmp/u12-scene-transition/main-dungeon-stall-compiler_errors.txt",
+        "compilerReportSha256": "6D64657E843CFA06C243B6B51F8732C1B5910EBD29940AA7F6F9342B38034FD3",
+        "reusedWithoutSourceChangeThisRound": true
+      }
+    ],
+    "checks": {
+      "originalBackgrounds": {
+        "passed": 14,
+        "failed": 0,
+        "logPath": "tmp/u12-parallel-catalog.log"
+      },
+      "as2Guards": {
+        "passed": 48,
+        "failed": 0,
+        "compilerErrors": 0,
+        "compilerWarnings": 0,
+        "logPath": "tmp/u12-parallel-scene-as2.log",
+        "realAvm1Fixture": true,
+        "gameE2e": false
+      },
+      "hostProtocol": {
+        "passed": 48,
+        "failed": 0,
+        "logPath": "tmp/u12-parallel-host-focused.log",
+        "sourceHarnessOnly": true
+      },
+      "browserFixture": {
+        "passed": 83,
+        "failed": 0,
+        "logPath": "tmp/u12-parallel-browser-terminal.log",
+        "fixtureOnly": true,
+        "gameE2e": false
+      },
+      "candidateCompositionFixture": {
+        "state": "qualification_not_passed",
+        "candidateBound": true,
+        "currentParallelReportWindowChecksPassed": false,
+        "nativeSha256": "76B2424FDCD974604B9AA486397CD7337766FEF3654B9F72D33FBF93A1F9E882",
+        "candidateBuildIdentityHash": "CD660DED94E9BB5C6D6EE8D2BA6C6CD4EEE280C10CC2422D4D662733084C5C74",
+        "candidatePayloadClosureHash": "D477F8457D694963615B76346B15A8DF97D09FBC4CF3B7016C0ED02EF2CF5C02",
+        "attempts": [
+          {
+            "attempt": 1,
+            "resultPath": "tmp/u12-scene-transition/surface-parallel-report-1/result.json",
+            "resultSha256": "958169BA4F10A1C01A70D7D82A7A46A322E222E4B729C7383981A4D601314A6B",
+            "state": "failed",
+            "completedInitialChecks": 0,
+            "failure": "System.DllNotFoundException: Unable to load DLL 'WebView2Loader.dll' or one of its dependencies: 找不到指定的模块。 (0x8007007E)",
+            "coreSha256": "62A29F1A46917962877EF85C183414BC6D50140594E46734BC4A01AD9288E76E",
+            "gameE2e": false,
+            "slotsTouched": false
+          },
+          {
+            "attempt": 2,
+            "resultPath": "tmp/u12-scene-transition/surface-parallel-report-2/result.json",
+            "resultSha256": "1B6544AEA17404901CB96FCCA4319829FDDE03284464978AE0254CB5E510694E",
+            "state": "failed",
+            "completedInitialChecks": 2,
+            "failure": "System.Exception: opaque original background pixels differ",
+            "coreSha256": "62A29F1A46917962877EF85C183414BC6D50140594E46734BC4A01AD9288E76E",
+            "gameE2e": false,
+            "slotsTouched": false
+          },
+          {
+            "attempt": 3,
+            "resultPath": "tmp/u12-scene-transition/surface-parallel-report-3/result.json",
+            "resultSha256": "DBD11D1781C75AF29F6E493A68A513F1F936BBDF0233A8C762317E0C02010BDC",
+            "state": "failed",
+            "completedInitialChecks": 2,
+            "failure": "System.Exception: opaque original background pixels differ",
+            "coreSha256": "62A29F1A46917962877EF85C183414BC6D50140594E46734BC4A01AD9288E76E",
+            "gameE2e": false,
+            "slotsTouched": false
+          },
+          {
+            "attempt": 4,
+            "resultPath": "tmp/u12-scene-transition/surface-parallel-report-4/result.json",
+            "resultSha256": "933E0E782C0E187C73E0C078D810DF3C65B5E53C4E458D8C7D11C4C5E299A3A2",
+            "state": "failed",
+            "completedInitialChecks": 1,
+            "failure": "System.Exception: fixture initial foreground was not admitted",
+            "coreSha256": "62A29F1A46917962877EF85C183414BC6D50140594E46734BC4A01AD9288E76E",
+            "gameE2e": false,
+            "slotsTouched": false
+          },
+          {
+            "attempt": 5,
+            "resultPath": "tmp/u12-scene-transition/surface-parallel-report-5/result.json",
+            "resultSha256": "933E0E782C0E187C73E0C078D810DF3C65B5E53C4E458D8C7D11C4C5E299A3A2",
+            "state": "failed",
+            "completedInitialChecks": 1,
+            "failure": "System.Exception: fixture initial foreground was not admitted",
+            "coreSha256": "62A29F1A46917962877EF85C183414BC6D50140594E46734BC4A01AD9288E76E",
+            "gameE2e": false,
+            "slotsTouched": false
+          }
+        ],
+        "limitation": "Missing WebView2Loader deployment was repaired after attempt 1. Later screenshot pixel mismatch and foreground admission failures remain undiagnosed. The current parallel report window cases were not reached; the prior 22 passed checks belong to the superseded candidate.",
+        "fixtureOnly": true,
+        "gameE2e": false,
+        "slotsTouched": false
+      },
+      "fullHost": {
+        "total": 6455,
+        "passed": 6450,
+        "failed": 0,
+        "skipped": 5,
+        "allGreen": false,
+        "requiredSuiteSucceeded": true,
+        "skipNotPass": true,
+        "logPath": "tmp/u12-parallel-host-terminal.log",
+        "canonicalRunnerUsed": true,
+        "nodeBindingResolved": true,
+        "durationMinutes": 2.3081
+      },
+      "hudIsolatedGroup": {
+        "passed": 76,
+        "failed": 0,
+        "scope": "previous U12 run; current full suite also passed this group"
+      },
+      "mainDecompile": {
+        "passed": true,
+        "resultPath": "tmp/u12-scene-transition/main-script-check-dungeon-stall.json",
+        "resultSha256": "90CA340F38E0A4070997718CB4F5C115162FF9EA87813B884D84D53A4302B1ED"
+      },
+      "mainXflAudit": {
+        "issueCategories": 2,
+        "legacySymbolName": 1,
+        "brokenReferences": 4,
+        "baselineIssueCategories": 2,
+        "baselineLegacySymbolName": 1,
+        "baselineBrokenReferences": 4,
+        "newIssues": 0,
+        "allClean": false,
+        "logPath": "tmp/u12-scene-transition/main-xfl-audit-dungeon-stall.log"
+      },
+      "linkageScan": {
+        "completed": true,
+        "mode": "xml-only",
+        "outputPath": "tmp/u12-scene-transition/linkage-source-map-no-exposure.xml",
+        "outputSha256": "CD78C50BA17F8378B15A4B90AC4C7C37DBB443A646067E5C80EEDE9B73D11329",
+        "authoritativeAssetMapModified": false,
+        "scope": "Prior XML-only linkage scan retained; current repair changes AS2 behavior only, not linkage or symbol references."
+      },
+      "stageEntrySourceFixture": {
+        "passed": 9,
+        "failed": 0,
+        "baselineFailed": true,
+        "sourceFixtureOnly": true,
+        "gameE2e": false,
+        "slotsTouched": false,
+        "resultPath": "tmp/u12-scene-transition/stage-entry-source-results.json",
+        "resultSha256": "9EE38CE0775B3A2E70C52D0F687DDE091E78E6765F3C4969E42FC5A0FCA26A28",
+        "baselineLogPath": "tmp/u12-scene-transition/stage-entry-source-before.log",
+        "repairedLogPath": "tmp/u12-parallel-stage-entry.log"
+      },
+      "documentationGovernance": {
+        "passed": true,
+        "legacyLinkDebtRemains": true,
+        "logPath": "tmp/u12-parallel-docs-post-evidence.log",
+        "diffWhitespaceCheckPassed": true,
+        "whitespaceLogPath": "tmp/u12-parallel-whitespace-terminal.log"
+      },
+      "mapLootReturnHandoff": {
+        "passed": 914,
+        "failed": 0,
+        "loot": 189,
+        "planner": 12,
+        "stageRun": 713,
+        "priorV1HandoffChecks": 39,
+        "newParallelReportChecks": 75,
+        "outcomes": [
+          "victory",
+          "failure",
+          "retreat"
+        ],
+        "compilerErrors": 0,
+        "compilerWarnings": 0,
+        "traceRunBlocks": 1,
+        "bytecode32KRetries": 0,
+        "logPath": "tmp/u12-parallel-map-loot-terminal.log",
+        "productionSceneReadyInclude": true,
+        "realAvm1Fixture": true,
+        "mockSaveOwner": true,
+        "gameE2e": false,
+        "playerSlotsTouched": false
+      },
+      "stageReturn": {
+        "passed": 119,
+        "failed": 0,
+        "compilerErrors": 0,
+        "compilerWarnings": 0,
+        "logPath": "tmp/u12-parallel-stage-return.log",
+        "gameE2e": false
+      },
+      "characterBuildRegression": {
+        "requiredSuitesSucceeded": true,
+        "failed": 0,
+        "compilerErrors": 0,
+        "compilerWarnings": 0,
+        "logPath": "tmp/u12-scene-transition/character-build-return-handoff.log",
+        "suites": [
+          "SaveManager",
+          "EquipmentInventory",
+          "InventoryPanelService",
+          "EquipmentTransactionSpike",
+          "RuntimeEquipmentProjection",
+          "CharacterBuildService",
+          "PlayerInfoProvider"
+        ],
+        "mockSaveOwner": true,
+        "gameE2e": false,
+        "scope": "Previous return-handoff round; unchanged producer contract, not rerun for this parallel-report round."
+      },
+      "manualInputRegression": {
+        "passed": 615,
+        "failed": 0,
+        "longGun": 486,
+        "manualCooldown": 57,
+        "drugInput": 58,
+        "keyManager": 14,
+        "compilerErrors": 0,
+        "compilerWarnings": 0,
+        "logPath": "tmp/u12-scene-transition/player-input-return-handoff.log",
+        "gameE2e": false,
+        "scope": "Previous return-handoff round; not rerun for this parallel-report round."
+      },
+      "panelRuntime": {
+        "passed": 41,
+        "failed": 0,
+        "logPath": "tmp/u12-parallel-panel-runtime.log"
+      },
+      "panelContracts": {
+        "passed": true,
+        "errors": 0,
+        "logPath": "tmp/u12-parallel-panel-validation.log",
+        "testPassed": 70,
+        "testFailed": 0,
+        "testLogPath": "tmp/u12-parallel-panel-contracts.log"
+      },
+      "asLoaderDecompile": {
+        "passed": true,
+        "structuralChecks": 18,
+        "resultPath": "tmp/u12-scene-transition/asloader-script-check-parallel-terminal.json",
+        "resultSha256": "FBEED5C9012EF618ECC6FBE729A2B1105B921B81266D882A8F60DB957D87E470",
+        "swfSha256": "C284C838155C1EBF862A70D3B69A5324871C5ED8E4463DB43D0B1F89E93F57AD",
+        "gameE2e": false
+      },
+      "classOwnership": {
+        "passed": true,
+        "policy": "single-ownership",
+        "mainClasses": 0,
+        "loaderClasses": 689,
+        "intersection": 0,
+        "logPath": "tmp/u12-parallel-ownership.log"
+      },
+      "asLoaderFunctionSizes": {
+        "passed": true,
+        "functionCount": 12296,
+        "largestBodyBytes": 51261,
+        "maxBytes": 60000,
+        "logPath": "tmp/u12-parallel-function-sizes.log",
+        "limitation": "Bytecode size inspection alone cannot exclude wrapped lengths; combined with fresh scoped real AVM1 behavior and source closure gates."
+      },
+      "lootBrowserFixture": {
+        "passed": 110,
+        "failed": 0,
+        "lazyCancelPassed": 6,
+        "lazyCancelFailed": 0,
+        "playerCopyLiterals": 324,
+        "forbiddenCopy": 0,
+        "newPresentationChecks": 4,
+        "logPath": "tmp/u12-parallel-loot-web-complete.log"
+      }
+    },
+    "verificationLimitation": {
+      "priorWindowTimeout": {
+        "test": "NativeDialogueReappearanceRestoresActualWindowOrderWithNoBuffs",
+        "failure": "native HUD presentation timed out during resize / restore checks in full suite",
+        "testSourceChanged": false,
+        "cause": "undetermined",
+        "isolatedGroupPassed": true,
+        "scope": "Historical full-suite timeout retained; four later full suites passed, including the current return-handoff suite. Cause remains undetermined.",
+        "currentFullSuitePassed": true
+      },
+      "currentFullSuitePassed": true,
+      "currentNativeFixturePassed": false,
+      "currentNativeCause": "Undetermined. Screenshot content was stale and fixture foreground could not be admitted; lock/sleep state was not confirmed.",
+      "humanChecksRemaining": [
+        "H1 visual continuity",
+        "H2 parallel report and reward handoff in actual gameplay",
+        "H4 foreground and no background application exposure",
+        "task 20053 entry if available",
+        "save/restart on a test slot"
+      ],
+      "nonCanonicalRunnerFailures": {
+        "logPath": "tmp/u12-parallel-host-static.log",
+        "failed": 3,
+        "canonicalRunnerLaterPassed": true,
+        "reason": "Direct dotnet test invocation omitted CF7_NODE_EXE; canonical runner binds the resolved Node executable."
+      }
+    },
+    "humanAcceptance": "Current parallel-report candidate awaits H2 and H4 in actual gameplay. Prior victory-return success was reported without refreshed path/identity binding. Natural load failure and save/restart remain separate.",
+    "snapshot": {
+      "path": "tmp/u12-scene-transition/evidence-before-original-layout.json",
+      "bytes": 68183,
+      "sha256": "9CFE7B2AC64C2C31CF4C9900E47469F92E89CD4A0BCC5D9E60A48FF86A78D070"
+    }
+  },
+  "formalRuntimeVerification": {
+    "manifest": {
+      "path": "runtime/cf7-runtime-manifest.tsv",
+      "bytes": 4412,
+      "sha256": "0C74537F2F8ED1A14F921D3CF61064574301C0F391CBEF6E327DB924D2A886F2"
+    },
+    "files": [
+      {
+        "path": "runtime/CRAZYFLASHER7MercenaryEmpire.Core.dll",
+        "bytes": 5865472,
+        "sha256": "633C06A615B049B5113163734E05C7971779E7796BACFE6406E77F0DE6089CC1"
+      },
+      {
+        "path": "runtime/FlashCompositorNative.dll",
+        "bytes": 452608,
+        "sha256": "76B2424FDCD974604B9AA486397CD7337766FEF3654B9F72D33FBF93A1F9E882"
+      }
+    ]
+  },
+  "originalLayoutScope": {
+    "preserved": "Original settlement layout, typography, dual panes, density, help, close, materials and organizer controls.",
+    "changed": "Host/AS2 accept same-request immutable report intent across display revision advancement, retain accepted curtain proof and log action verb/revision. No frontend/layout/reward semantics edits.",
+    "as2AndSwfChangedThisRound": true,
+    "hostAndNativeChangedThisRound": true,
+    "hostChangedThisRound": true,
+    "nativeChangedThisRound": false,
+    "frontendChangedThisRound": false
+  },
+  "originalLayoutSourceSnapshot": [
+    {
+      "path": "launcher/src/Guardian/SceneTransitionController.cs",
+      "bytes": 14069,
+      "sha256": "9F9B2358FDC07F0F0B82228F36DCD68F8FB4BC51865DFCE69EC1003374A9BF6B"
+    },
+    {
+      "path": "launcher/src/Guardian/CompositionHelpSurface.cs",
+      "bytes": 29697,
+      "sha256": "94FE5812DB64D2366E0E81712B90C30FB5976196A80743DD3B10438E5DC24948"
+    },
+    {
+      "path": "launcher/src/Program.cs",
+      "bytes": 191298,
+      "sha256": "FA09D03FA3EE7669A516ED090430928675B42D678B8DE4A884CCE6851A153B0F"
+    },
+    {
+      "path": "launcher/src/Guardian/WebOverlayForm.cs",
+      "bytes": 450726,
+      "sha256": "1AD639866674688A66BF9FBED089D8F2B28B6FD0218094BEFC512BFB4F23B195"
+    },
+    {
+      "path": "launcher/src/Guardian/WorldCompositor/WorldCompositorController.cs",
+      "bytes": 55873,
+      "sha256": "9035028C98A9A259276448B862E704877196B668A5A134CBFEEE8E6C59315BC4"
+    },
+    {
+      "path": "launcher/src/Tasks/SceneTransitionTask.cs",
+      "bytes": 13038,
+      "sha256": "1405B137BF641412A6F03F7610E811A8DB1CC2DD03DED2F3E7CECEA3CEC2C83B"
+    },
+    {
+      "path": "launcher/tests/Tasks/SceneTransitionTaskTests.cs",
+      "bytes": 17376,
+      "sha256": "8CA6139EA925AF9888D8471F38A86D2BE23D994A5470C0AB9CA98830124BEFB4"
+    },
+    {
+      "path": "launcher/web/modules/loot/dev/harness.html",
+      "bytes": 114205,
+      "sha256": "C6006C3EF3A863B2D0D292FD47E285173F79C130F5236567C9258D48F0CD6EA0"
+    },
+    {
+      "path": "launcher/web/modules/loot/loot-view.js",
+      "bytes": 100774,
+      "sha256": "1732B692A5AFBE70BC5AE78F84A63E0A00BB502AC1050AFBF25BDA4F05D53B26"
+    },
+    {
+      "path": "launcher/web/modules/loot/loot-panel.js",
+      "bytes": 47028,
+      "sha256": "999A83DDD578ACC1F30D17EEC1F6E9919EF12F0D19CEA71393F10ED88A1139BB"
+    },
+    {
+      "path": "launcher/web/modules/scene-transition.js",
+      "bytes": 10912,
+      "sha256": "3271D5350FF8A247880BCAB1F554D85B222A30BD36CFE3AFDF55E633F1835860"
+    },
+    {
+      "path": "launcher/web/scene-transition.html",
+      "bytes": 1881,
+      "sha256": "87FC07AE4DB31C69582833A6B2FBC1D8B673316AF1EC5FCB1759B7BD82571CF4"
+    },
+    {
+      "path": "launcher/web/css/scene-transition.css",
+      "bytes": 2210,
+      "sha256": "6574F0738179FA06039FBF9F7206FB99391BB018B22B280CE0C145F6E5BDE049"
+    },
+    {
+      "path": "tools/test-scene-transition.js",
+      "bytes": 19775,
+      "sha256": "A55E6148158229DD869E271EB5D3C037921267EDD062AC44DD3D857D18D75DE1"
+    }
+  ],
+  "previousScaleEvidence": {
+    "snapshot": {
+      "path": "tmp/u12-scene-transition/evidence-before-scale-20261002.json",
+      "bytes": 106796,
+      "sha256": "EC8F252B45B1907565258F981DE873D0DFDB8B0FFFFF89C6BEC8474DF19A0430"
+    },
+    "recordedAtUtc": "2026-10-01T15:23:14.786Z",
+    "browserFixture": {
+      "passed": 105,
+      "failed": 0,
+      "logPath": "tmp/u12-original-report-browser-final.log",
+      "fixtureOnly": true,
+      "gameE2e": false
+    },
+    "candidateCompositionFixture": {
+      "state": "qualification_not_passed",
+      "candidateBound": true,
+      "currentParallelReportWindowChecksPassed": false,
+      "nativeSha256": "76B2424FDCD974604B9AA486397CD7337766FEF3654B9F72D33FBF93A1F9E882",
+      "candidateCoreSha256": "4C7667FF1DD9B4041199CF0CE4692A5D9AD5A950E7E7EBC4CC54AF2BDB936016",
+      "candidateBuildIdentityHash": "138CC569D44972C28840875F7A4DD9EA61D59CFDDB0BD5AC79501B092B2048C9",
+      "candidatePayloadClosureHash": "C8EC443BBB5EB0A46F7F26C5578437AC842A22CDE5B61707303EF3388CA37266",
+      "attempts": [
+        {
+          "path": "tmp/u12-scene-transition/surface-original-layout-1/result.json",
+          "bytes": 4767,
+          "sha256": "32FE4EC4854ACAB720EA8372A36FE907A8F3184636CCC7D13E40E36BC7F66A63",
+          "state": "failed",
+          "checksPassed": 22,
+          "failure": "System.Exception: probe timed out: parallel frozen report paints before base readiness\r\n   at Probe.Wait(Func`1 done, String label) in C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\resources\\tools\\scene-transition-smoke\\Program.cs:line 50\r\n   at Probe.Run() in C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\resources\\tools\\scene-transition-smoke\\Program.cs:line 234",
+          "buildIdentityHash": "5ADC68F38D26BF7CAB00A1ED40513810907CC6F3BCC8EE3DEEEA8382C6DE5096",
+          "payloadClosureHash": "2A7B45FE6C4A51F651C8909EA31B3B41B278E4A2B3AB89B6A354F82F68504154"
+        },
+        {
+          "path": "tmp/u12-scene-transition/surface-original-layout-2/result.json",
+          "bytes": 4571,
+          "sha256": "95D758F09F6E9E2648B886354CBC426C425E80AED0E66FCDB6DEB26730BACBF9",
+          "state": "failed",
+          "checksPassed": 22,
+          "failure": "System.Exception: fixture did not regain foreground before parallel report admission\r\n   at Probe.Run() in C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\resources\\tools\\scene-transition-smoke\\Program.cs:line 216",
+          "buildIdentityHash": "5ADC68F38D26BF7CAB00A1ED40513810907CC6F3BCC8EE3DEEEA8382C6DE5096",
+          "payloadClosureHash": "2A7B45FE6C4A51F651C8909EA31B3B41B278E4A2B3AB89B6A354F82F68504154"
+        },
+        {
+          "path": "tmp/u12-scene-transition/surface-original-layout-3/result.json",
+          "bytes": 6161,
+          "sha256": "94AD6162E4AA1869A22605DB57BA4A7CBD7953EF03ECDF2312D3972A86E467F0",
+          "state": "failed",
+          "checksPassed": 36,
+          "failure": "System.Exception: external-foreground report did not request reading-state restoration\r\n   at Probe.Run() in C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\resources\\tools\\scene-transition-smoke\\Program.cs:line 300",
+          "buildIdentityHash": "5ADC68F38D26BF7CAB00A1ED40513810907CC6F3BCC8EE3DEEEA8382C6DE5096",
+          "payloadClosureHash": "2A7B45FE6C4A51F651C8909EA31B3B41B278E4A2B3AB89B6A354F82F68504154"
+        },
+        {
+          "path": "tmp/u12-scene-transition/surface-original-layout-4/result.json",
+          "bytes": 2217,
+          "sha256": "2F3E3F9516026372ABA78C3B63018E711C26AC97830BFAD0101BA94BED5479D1",
+          "state": "failed",
+          "checksPassed": 1,
+          "failure": "System.Exception: fixture initial foreground was not admitted\r\n   at Probe.Run() in C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\resources\\tools\\scene-transition-smoke\\Program.cs:line 108",
+          "buildIdentityHash": "138CC569D44972C28840875F7A4DD9EA61D59CFDDB0BD5AC79501B092B2048C9",
+          "payloadClosureHash": "C8EC443BBB5EB0A46F7F26C5578437AC842A22CDE5B61707303EF3388CA37266"
+        }
+      ],
+      "checksPassed": 1,
+      "currentFailure": "System.Exception: fixture initial foreground was not admitted\r\n   at Probe.Run() in C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\resources\\tools\\scene-transition-smoke\\Program.cs:line 108",
+      "scope": "Current final candidate reached real WebView2 readiness but foreground admission failed; new report/window cases were not reached. Earlier 36 isolated protocol/window timing checks include report receipt and restored reward handoff, with no verified physical report pixels. No actual game journey or slot writes.",
+      "priorFailures": "Attempt 1 timed out after the external-switch case; attempt 2 identified missing fixture return admission. Attempt 3 exposed early paint before reading metadata; current controller holds until current state exists and is restored. Attempt 4 stopped at initial foreground admission.",
+      "priorReportPixelsVerified": false,
+      "priorReportPixelsLimitation": "Prior report screenshot still showed loading background. Report receipt and window timing are distinct from actual report screen pixels."
+    },
+    "frontendCss": {
+      "path": "launcher/web/css/scene-transition.css",
+      "bytes": 2073,
+      "sha256": "2EE01EDEFE733CBAF31B2B242BB1BF9BEC10E176A6B1D80AD301D99D0BB76F7D"
+    },
+    "fixtureToolSource": {
+      "path": "tools/scene-transition-smoke/Program.cs",
+      "bytes": 30020,
+      "sha256": "5BD32855DDDF3C6BF7C60063128E3D7F436CB566EF95210F970250D68FEF10C3"
+    }
+  },
+  "settlementScaleHumanFeedback": {
+    "date": "2026-10-02",
+    "screenshot": {
+      "path": "tmp/u12-scene-transition/settlement-scale-field-20261002.png",
+      "bytes": 349381,
+      "sha256": "93EB6B21580EECD5120ECD6A060278F7275032319A182303CB0DB66418096B75"
+    },
+    "issue": "Original settlement page initially enlarged/cropped, later returned to normal; window behavior requested for follow-up.",
+    "feedbackBoundToExactCandidate": false,
+    "rootCause": "Nested report inherited outer --panel-scale and applied a second transform.",
+    "before": {
+      "viewport": [
+        1600,
+        900
+      ],
+      "report": [
+        2500,
+        1406.25
+      ]
+    },
+    "after": {
+      "viewport": [
+        1600,
+        900
+      ],
+      "report": [
+        1600,
+        900
+      ]
+    },
+    "fixSource": {
+      "path": "launcher/web/css/scene-transition.css",
+      "bytes": 2210,
+      "sha256": "6574F0738179FA06039FBF9F7206FB99391BB018B22B280CE0C145F6E5BDE049"
+    },
+    "originalViewAndCssUnchanged": true
+  },
+  "scaleRepairSourceSnapshot": [
+    {
+      "path": "launcher/web/css/scene-transition.css",
+      "bytes": 2210,
+      "sha256": "6574F0738179FA06039FBF9F7206FB99391BB018B22B280CE0C145F6E5BDE049"
+    },
+    {
+      "path": "tools/test-scene-transition.js",
+      "bytes": 19775,
+      "sha256": "A55E6148158229DD869E271EB5D3C037921267EDD062AC44DD3D857D18D75DE1"
+    },
+    {
+      "path": "tools/scene-transition-smoke/Program.cs",
+      "bytes": 34661,
+      "sha256": "6BFE6CEFF0659D8DCA6764037EE5C6CFDD3CA9DCCA9BB996E306A59A59570AB4"
+    },
+    {
+      "path": "docs/U12过场Web迁移与人力验收-2026-10-01.md",
+      "bytes": 25675,
+      "sha256": "01E812D248CA739DC63C8CB0065718D3B96E0C265245B46681D4A9F4219BBB5D"
+    },
+    {
+      "path": "agentsDoc/testing-details.md",
+      "bytes": 287444,
+      "sha256": "729F881D12D2BD90954E2AD964622B5E9B59C60C80EB49721DEDEE15F0744EE6"
+    }
+  ],
+  "previousSharedFrontEndEvidence": {
+    "snapshot": {
+      "path": "tmp/u12-shared-session-20261002-before/evidence.json",
+      "bytes": 129606,
+      "sha256": "7C015D7D381344DEF7783B01C5949207591A1C7D4ECF96D0EA12C12F1311ADCB"
+    },
+    "scope": "Frozen pre-refactor ledger includes previous candidate, compiled checks, 10-failure full suite and the 42-check state-restoration fixture."
+  },
+  "sharedSettlementSourceSnapshot": [
+    {
+      "path": "launcher/src/Guardian/PanelHostController.TransitionSettlement.cs",
+      "bytes": 3896,
+      "sha256": "4C08F16729E7352EDCDAA3CC30C64DE1C13BDF81385B47D0D92FEBC5A1F8B606"
+    },
+    {
+      "path": "launcher/src/Guardian/SceneTransitionController.cs",
+      "bytes": 15393,
+      "sha256": "F5CBD72D730B43DA4A5A9226F4FDE499B191479D4ECF86550E688A8402AB213B"
+    },
+    {
+      "path": "launcher/src/Guardian/PanelHostController.cs",
+      "bytes": 150491,
+      "sha256": "3B9A355AB6ADE1E7663518B939743BAD7FDC0B9A503059046CDDC642D8B7FF43"
+    },
+    {
+      "path": "launcher/src/Guardian/PanelHostController.CompositionHelp.cs",
+      "bytes": 5545,
+      "sha256": "DF9016CD350F36EB13AB4ECD812024A46E5B506FBDE81E798BD5281042BB5B80"
+    },
+    {
+      "path": "launcher/src/Guardian/CompositionHelpSurface.cs",
+      "bytes": 32276,
+      "sha256": "ADB3EE06806CB0326F2304CE8551BAFCCD488DA8555340ABD6AB5F2268DC74E1"
+    },
+    {
+      "path": "launcher/src/Guardian/WebOverlayForm.cs",
+      "bytes": 452453,
+      "sha256": "344255CDDE938B6427112FE58CA77333D937B3BD5C5339D7B282DA1567347584"
+    },
+    {
+      "path": "launcher/src/Program.cs",
+      "bytes": 190891,
+      "sha256": "F5C04385190C274D727E607A661F8F9CCA39822B66B42A7D0E12A6CBBE2ADF82"
+    },
+    {
+      "path": "launcher/src/Tasks/SceneTransitionTask.cs",
+      "bytes": 13510,
+      "sha256": "527EAFA296D8630957B6E838F2771BA73762C43FCED5156B815D47A5A1DB7794"
+    },
+    {
+      "path": "launcher/tests/Tasks/SceneTransitionTaskTests.cs",
+      "bytes": 19368,
+      "sha256": "92D986F467EEFF23E6925509906260F2E1649515C9C966BA41649A858DC57CC6"
+    },
+    {
+      "path": "launcher/web/modules/panels.js",
+      "bytes": 32144,
+      "sha256": "0C8746009FA85378EB10BA65B64D2B8BEF0CF99D0DCD07AD8BA00E18DAE45590"
+    },
+    {
+      "path": "launcher/web/modules/loot/loot-panel.js",
+      "bytes": 51295,
+      "sha256": "AAAEDBBEA2EB6C8383C902717ECA48B6881B17A474380E8DACD6A34765438033"
+    },
+    {
+      "path": "launcher/web/modules/loot/loot-view.js",
+      "bytes": 97208,
+      "sha256": "2223751DCD6E12C593CFCECA5862B052F7D2262834F61FDF86DDD817CBDF27BB"
+    },
+    {
+      "path": "launcher/web/modules/scene-transition.js",
+      "bytes": 12179,
+      "sha256": "6B3239C037BFFC4304A4449751991E5AF7D35F95A350D7895C106603C232BD3E"
+    },
+    {
+      "path": "launcher/web/scene-transition.html",
+      "bytes": 2841,
+      "sha256": "F6F7BDFB4FCE17387A6F8EC9C471B47BB7F52B70740D8E6601439F6BF105E895"
+    },
+    {
+      "path": "launcher/web/css/scene-transition.css",
+      "bytes": 2414,
+      "sha256": "E650B98C441CCA2121B4819E2D39B217D49FFF6F0A27BA78FEFA6181D36310F3"
+    },
+    {
+      "path": "scripts/类定义/org/flashNight/arki/ui/SceneTransitionService.as",
+      "bytes": 14516,
+      "sha256": "4CA8EE45B1FED20365A4F657C6F52151E55BE044EA61362E908C2B9CB61739DA"
+    },
+    {
+      "path": "scripts/类定义/org/flashNight/arki/scene/StageRunSession.as",
+      "bytes": 131804,
+      "sha256": "60A69F5495D0EEBF4EDF4CC3D6DE9F3C4E89A4A3AD2BB92659EE6FA1C3EE5DE7"
+    },
+    {
+      "path": "scripts/类定义/org/flashNight/arki/scene/StageRunSessionTest.as",
+      "bytes": 249647,
+      "sha256": "9BDF6B99C7532D0DB5533CD5BE60CD2AA0192FFE49045F76FAE8DA5308604F64"
+    },
+    {
+      "path": "scripts/类定义/org/flashNight/arki/item/LootContainerService.as",
+      "bytes": 172428,
+      "sha256": "31A3B90451F14B4C9D7997C73F821EFBE565160FC430A2AD83A6B5770A894311"
+    },
+    {
+      "path": "scripts/run-map-loot-tests.ps1",
+      "bytes": 22697,
+      "sha256": "7B388AE67A14C1914FDA10FA762A4DECA4AE546912BAE8C353EBCD961D1DB79C"
+    }
+  ],
+  "sharedSettlementAuthority": {
+    "rewardStashRuleChanged": false,
+    "duplicateRewardStoreAdded": false,
+    "previewOwnsBusiness": false,
+    "earlyExistingAuthorityAfterCovered": true,
+    "earlyPanelDoesNotPauseWorld": true,
+    "worldCaptureContinues": true,
+    "pauseOnlyAfterAs2TimelineRetires": true,
+    "sceneReadyDoesNotRemountOrResnapshot": true,
+    "closeRequiresOriginalAuthority": true,
+    "retryPreservesUnknownFence": true,
+    "reportIntentSurvivesDisplayRevisionAdvance": true,
+    "reportCoverProofScopedToImmutableRequest": true,
+    "navigationAndSceneReceiptsStillExact": true,
+    "businessRevisionUnchanged": true,
+    "unknownWritesStillSingleFlight": true
+  },
+  "currentCheckArtifacts": [
+    {
+      "path": "tmp/u12-shared-return-stall-20261002/active-before.json",
+      "bytes": 815,
+      "sha256": "33960113E116CB9700B381E38D1AB7C67A5EB6935760498D319AFFEE10F9FF24"
+    },
+    {
+      "path": "tmp/u12-shared-return-stall-20261002/as2-after-compiler.txt",
+      "bytes": 27,
+      "sha256": "6D64657E843CFA06C243B6B51F8732C1B5910EBD29940AA7F6F9342B38034FD3"
+    },
+    {
+      "path": "tmp/u12-shared-return-stall-20261002/as2-after-output.txt",
+      "bytes": 88535,
+      "sha256": "C156066A3B37AD989C6850F1AAF97FC66881A18B1C6A208CD75B7B38594FFAED"
+    },
+    {
+      "path": "tmp/u12-shared-return-stall-20261002/as2-after-trace.txt",
+      "bytes": 88633,
+      "sha256": "0449047C6B40F1D56D7A7E092A325465D3E4C52122B9A827DC98A6A33D497184"
+    },
+    {
+      "path": "tmp/u12-shared-return-stall-20261002/as2-base-visible.png",
+      "bytes": 1391846,
+      "sha256": "6331D520492E5EBC3B24759191247545EA96AB64667B4CE5C465E08A28983705"
+    },
+    {
+      "path": "tmp/u12-shared-return-stall-20261002/as2-before-compiler.txt",
+      "bytes": 27,
+      "sha256": "6D64657E843CFA06C243B6B51F8732C1B5910EBD29940AA7F6F9342B38034FD3"
+    },
+    {
+      "path": "tmp/u12-shared-return-stall-20261002/as2-before-output.txt",
+      "bytes": 89304,
+      "sha256": "2D61C9AFEFC743389909CBD58F60E25E23271ED5AA59B90F1770AA867690A343"
+    },
+    {
+      "path": "tmp/u12-shared-return-stall-20261002/as2-before-trace.txt",
+      "bytes": 89402,
+      "sha256": "66A177CE007127FD3E3B7923CE5C8BF0AE0EB339BFEB044DC939C1ED5EB6A880"
+    },
+    {
+      "path": "tmp/u12-shared-return-stall-20261002/as2-regression-after.txt",
+      "bytes": 91335,
+      "sha256": "BC0363263FFA58A314E66F93B1D375C84CCDA4F8AEA91307EB3071105F0D3003"
+    },
+    {
+      "path": "tmp/u12-shared-return-stall-20261002/as2-regression-before.txt",
+      "bytes": 92074,
+      "sha256": "959B040C6AFF9489D70C590EBCAE7D3E831261D5501D2F59A6F85E2BDB5DEFD3"
+    },
+    {
+      "path": "tmp/u12-shared-return-stall-20261002/asloader-function-sizes.txt",
+      "bytes": 863,
+      "sha256": "7BF29346254393072A73B064E36E5595362DF26BD9F34483FE786E3D6F19D7EA"
+    },
+    {
+      "path": "tmp/u12-shared-return-stall-20261002/asloader-publish.txt",
+      "bytes": 1113,
+      "sha256": "8B749B29B814046C5F0261222FF5E3BDEC882E36E0CC0A1BB5B05934466E5D30"
+    },
+    {
+      "path": "tmp/u12-shared-return-stall-20261002/bootstrap-before.log",
+      "bytes": 5153971,
+      "sha256": "F27F95AB668BB131BB483AE517C3AB91A2949E4DDBF9A4E93368AD23F3EE1FBA"
+    },
+    {
+      "path": "tmp/u12-shared-return-stall-20261002/browser-after.txt",
+      "bytes": 71,
+      "sha256": "A92151AAC67BCF976B6A90B514162DB5DD0CCBB6096DF45EDEF1E940B15A744F"
+    },
+    {
+      "path": "tmp/u12-shared-return-stall-20261002/candidate-build.txt",
+      "bytes": 5578,
+      "sha256": "8DF36EF066B047A51B163C6527D12E9542734048BC771E866B75322781261548"
+    },
+    {
+      "path": "tmp/u12-shared-return-stall-20261002/dev-status.txt",
+      "bytes": 1718,
+      "sha256": "94F928442D5CAD44BB5D68817134BAB0D6B5588C81C07387256147775708F6C4"
+    },
+    {
+      "path": "tmp/u12-shared-return-stall-20261002/diff-check.txt",
+      "bytes": 154,
+      "sha256": "FDF1DF71642D873E0D35ED91E930326CA66B529D0EB7E15BCA9CAED78CA16BFB"
+    },
+    {
+      "path": "tmp/u12-shared-return-stall-20261002/doc-governance.txt",
+      "bytes": 3553,
+      "sha256": "F0D9C7A079D432A261A63824B688B2F2AF1514DB7614EB2F3CC2BCA7997843EA"
+    },
+    {
+      "path": "tmp/u12-shared-return-stall-20261002/evidence-before.json",
+      "bytes": 159684,
+      "sha256": "2DF2308BD2CD4D8325C057ED456CD4D0DF34960DA5B77922AF171C02EAF40DA5"
+    },
+    {
+      "path": "tmp/u12-shared-return-stall-20261002/full-host-after.txt",
+      "bytes": 932528,
+      "sha256": "5E3AC39FB5591E3C5E5848F16B2D0B9B8A4EF99E3A5AD77B07D747405804F603"
+    },
+    {
+      "path": "tmp/u12-shared-return-stall-20261002/full-host-final.txt",
+      "bytes": 929287,
+      "sha256": "5848352540B98B81FDDF264C42F5827EEE01A98ACA3A06A8A903731E5949ED4A"
+    },
+    {
+      "path": "tmp/u12-shared-return-stall-20261002/host-regression-after.txt",
+      "bytes": 38198,
+      "sha256": "8E03BE5E1C899A3D0B668C288C2AB98FD9BEB649CC9069E1A384B5CC4E5F6845"
+    },
+    {
+      "path": "tmp/u12-shared-return-stall-20261002/host-regression-before.txt",
+      "bytes": 40143,
+      "sha256": "9EE55055D04E46DF62E6F69116B4C9C71ED8BC75DFCCAD96C109974D005B3870"
+    },
+    {
+      "path": "tmp/u12-shared-return-stall-20261002/host-regression-first-fix.txt",
+      "bytes": 50696,
+      "sha256": "DD050A5479E385FDE963F03BE445FA7E67935386391BF2157CF558A495617FEC"
+    },
+    {
+      "path": "tmp/u12-shared-return-stall-20261002/hud-isolated-after.txt",
+      "bytes": 851,
+      "sha256": "BB1AA6DCEE8DFB67D125669BCC992CA0F4041057625F3BC3773D3677B15D847C"
+    },
+    {
+      "path": "tmp/u12-shared-return-stall-20261002/launcher-before.log",
+      "bytes": 1704370,
+      "sha256": "108677570F269B9554DEEE149782A89E8B966FFEB75590E8231305E9E8DA4582"
+    },
+    {
+      "path": "tmp/u12-shared-return-stall-20261002/native-after.txt",
+      "bytes": 7919,
+      "sha256": "48FB3D36E91DD195532A10C601D50EB100F7A2F69EE3F2C49EEAF8D41A89F3FC"
+    },
+    {
+      "path": "tmp/u12-shared-return-stall-20261002/native-before.txt",
+      "bytes": 560,
+      "sha256": "79124097455493E8A89B8B6244588F4364EE8C1FCE1F863015C07A13A0BB78FB"
+    },
+    {
+      "path": "tmp/u12-shared-return-stall-20261002/perf-before.jsonl",
+      "bytes": 69119,
+      "sha256": "7A031B21AED545CA912FF8EDB99E3199BBDF74603A8E8863C4EEBA1E0AAC1853"
+    },
+    {
+      "path": "tmp/u12-shared-return-stall-20261002/publish-late-compiler.txt",
+      "bytes": 27,
+      "sha256": "6D64657E843CFA06C243B6B51F8732C1B5910EBD29940AA7F6F9342B38034FD3"
+    },
+    {
+      "path": "tmp/u12-shared-return-stall-20261002/publish-late-output.txt",
+      "bytes": 233,
+      "sha256": "77A5F1935913412950F867F6D177AB7BE855C48BF6037884555AE3C906549111"
+    },
+    {
+      "path": "tmp/u12-shared-return-stall-20261002/publish-late-recovery.json",
+      "bytes": 1207,
+      "sha256": "F7C1BE808D73714A250386303138E86E5F5436FA6AEBAA1AD245AB145C9DC39C"
+    },
+    {
+      "path": "tmp/u12-shared-return-stall-20261002/publish-late-terminal.marker",
+      "bytes": 2,
+      "sha256": "2689367B205C16CE32ED4200942B8B8B1E262DFC70D9BC9FBC77C49699A4F1DF"
+    },
+    {
+      "path": "tmp/u12-shared-return-stall-20261002/publish-timeout.marker",
+      "bytes": 105,
+      "sha256": "F4BCDF6243D1DCAAAAB19A5813322000372227C421B1496002A95EB140FD106B"
+    },
+    {
+      "path": "tmp/u12-shared-return-stall-20261002/readback-check.cjs",
+      "bytes": 5456,
+      "sha256": "CD1090ED4D69C74B706E2408C4A91CB437D4976485F765083AE87A481413A49F"
+    },
+    {
+      "path": "tmp/u12-shared-return-stall-20261002/readback-check.json",
+      "bytes": 2247,
+      "sha256": "5F991B55E5E3FE45CEBF25961FE65849186368D237172AF79963D1C48D2066D9"
+    },
+    {
+      "path": "tmp/u12-shared-return-stall-20261002/readback-export.txt",
+      "bytes": 3806,
+      "sha256": "A7D514485EFD2E828C742DF38E0EAE4176E419BDC545CD35E65FC4AFC2BB1EB4"
+    },
+    {
+      "path": "tmp/u12-shared-return-stall-20261002/readback-full-export.txt",
+      "bytes": 171307,
+      "sha256": "27DA72A57F5778C5AAEAA9A913997FE46552F6FA9BB9AE9428478B97523E51D6"
+    },
+    {
+      "path": "tmp/u12-shared-return-stall-20261002/record-evidence.cjs",
+      "bytes": 18242,
+      "sha256": "C969A322BB0DBFB11CC96AA3742F70E0C6D3C74E68D5083B9D19473592566600"
+    },
+    {
+      "path": "tmp/u12-shared-return-stall-20261002/return-sync-before.log",
+      "bytes": 40439,
+      "sha256": "C671A64ADE0B9635D7B3057048798038050D85618B6CBF3003E6FF4273972FAF"
+    },
+    {
+      "path": "tmp/u12-shared-return-stall-20261002/scene-after-compiler.txt",
+      "bytes": 27,
+      "sha256": "6D64657E843CFA06C243B6B51F8732C1B5910EBD29940AA7F6F9342B38034FD3"
+    },
+    {
+      "path": "tmp/u12-shared-return-stall-20261002/scene-after-output.txt",
+      "bytes": 619,
+      "sha256": "94EA4B29BFAB2A1D8295AE7661EB65CCB7F3C608922B1155A66E69BFDCEA07A1"
+    },
+    {
+      "path": "tmp/u12-shared-return-stall-20261002/scene-after-trace.txt",
+      "bytes": 600,
+      "sha256": "39E2B8AE4E23F67225FC263E055F344367CA277E8E4D172A80FACF9C7633C2D6"
+    },
+    {
+      "path": "tmp/u12-shared-return-stall-20261002/scene-guards-after.txt",
+      "bytes": 2779,
+      "sha256": "C43509DA99DE6F7E9395B5559EAE4A75EF91F189CEE795E4E7881CCD9BCF40AA"
+    },
+    {
+      "path": "tmp/u12-shared-return-stall-20261002/web-stalled.png",
+      "bytes": 405113,
+      "sha256": "24FCD051B7F28D043CF857BBC29C747AFAC94B35637C4604618E54EAF9AC67B4"
+    },
+    {
+      "path": "tmp/u12-shared-return-stall-20261002/native-before/admission.png",
+      "bytes": 11755,
+      "sha256": "CC60A221397AB6CBF27F644F61EE9839F73F574EE6A10F08479C5EB03A322067"
+    },
+    {
+      "path": "tmp/u12-shared-return-stall-20261002/native-before/covered.png",
+      "bytes": 1051185,
+      "sha256": "6BFED3CEFC3C37FFC97D10CFEAD0E2C434F363550A649EC0A860DF5B5080259D"
+    },
+    {
+      "path": "tmp/u12-shared-return-stall-20261002/native-before/error.png",
+      "bytes": 1019722,
+      "sha256": "C54E7E382A506832226F6557E611D4C3519B6DBB7B687A3481358628C2EAF951"
+    },
+    {
+      "path": "tmp/u12-shared-return-stall-20261002/native-before/parallel-report-loading.png",
+      "bytes": 342821,
+      "sha256": "7E2C2D2FCA3A74E625E767BD93D03709872A658577AAAC1DA458379EFD6E2269"
+    },
+    {
+      "path": "tmp/u12-shared-return-stall-20261002/native-before/parallel-report-webview.png",
+      "bytes": 337300,
+      "sha256": "E780C946FD6FFF786ADBEF7F2E30870CE52D20901D087FA9145FC2461C98DF9D"
+    },
+    {
+      "path": "tmp/u12-shared-return-stall-20261002/native-before/peer-activated.jsonl",
+      "bytes": 136,
+      "sha256": "EBFC3970482820E66915AD855262B9D6AD1B2FA9AEF63180D62E554E842C483E"
+    },
+    {
+      "path": "tmp/u12-shared-return-stall-20261002/native-before/peer-ready.json",
+      "bytes": 28,
+      "sha256": "E2EFBBB340FE9FC3AE546134325528E6A392CCBD84DE4F1D7475B989C2F10A2F"
+    },
+    {
+      "path": "tmp/u12-shared-return-stall-20261002/native-before/projection-diagnostic.json",
+      "bytes": 2025,
+      "sha256": "0692A8ECCDDC32ED8EEB3864D73CBC7A7DB3999E4CD9DC5652D949D4C1FD1309"
+    },
+    {
+      "path": "tmp/u12-shared-return-stall-20261002/native-before/report-first-1600x900.json",
+      "bytes": 213,
+      "sha256": "B0FE3F20F9791927FD12F5E75B7D46F73725EABF8C24F7F63716DC5B5B721E5F"
+    },
+    {
+      "path": "tmp/u12-shared-return-stall-20261002/native-before/report-screen-pixels.json",
+      "bytes": 621,
+      "sha256": "AA158CCB2185518DB61622E1F825AFA3985E4BE637F4E4318B98E950AEF8F671"
+    },
+    {
+      "path": "tmp/u12-shared-return-stall-20261002/native-before/result.json",
+      "bytes": 5326,
+      "sha256": "949AAC10F3C7181DD8336A94335754BDF050922D3C8B7E177138ECC713CE9EE1"
+    },
+    {
+      "path": "tmp/u12-shared-return-stall-20261002/native-before/revealed.png",
+      "bytes": 8358,
+      "sha256": "42981746251005BF1C3026C660EAED9BECDA1579579AE0E5E386D74D58CC1655"
+    },
+    {
+      "path": "tmp/u12-shared-return-stall-20261002/native-after/admission.png",
+      "bytes": 6308,
+      "sha256": "AD1088BDC0FB5B00EAF0E87418F1BB3A498A5A7DF081F3A80CFF4C0D354304CB"
+    },
+    {
+      "path": "tmp/u12-shared-return-stall-20261002/native-after/covered.png",
+      "bytes": 1044245,
+      "sha256": "C0F7EA1D0F2D0CC0BC5DB9AA01D03F6BD46D25F57BBE75BAD26DD68F938ED8CF"
+    },
+    {
+      "path": "tmp/u12-shared-return-stall-20261002/native-after/error.png",
+      "bytes": 1012870,
+      "sha256": "2E7325CDA264D7044D6B4D465792C38AA67E8D79B8E6B87AC9775C5B70775049"
+    },
+    {
+      "path": "tmp/u12-shared-return-stall-20261002/native-after/parallel-report-bound.png",
+      "bytes": 333526,
+      "sha256": "77A4EA716DA48569B9098A581E159A1C4ACE2938B836628E90BBBF42FA996337"
+    },
+    {
+      "path": "tmp/u12-shared-return-stall-20261002/native-after/parallel-report-loading.png",
+      "bytes": 345544,
+      "sha256": "CBBD859DBEA7483242694044B36A6A411C2F3928E4E082F71D897853A904D8FE"
+    },
+    {
+      "path": "tmp/u12-shared-return-stall-20261002/native-after/parallel-report-scene-ready.png",
+      "bytes": 147458,
+      "sha256": "658EC376386109B3D2895077C6FC2626D0F11C333464C14DB899FB40F36FF10F"
+    },
+    {
+      "path": "tmp/u12-shared-return-stall-20261002/native-after/parallel-report-webview.png",
+      "bytes": 337302,
+      "sha256": "90A7E07485A3720527381ED7850D7B1C5ADC8AD67F571FE73CE919F864602738"
+    },
+    {
+      "path": "tmp/u12-shared-return-stall-20261002/native-after/peer-activated.jsonl",
+      "bytes": 203,
+      "sha256": "4E61072BBD190AC4607880A0317736C4F03ADE5FF19D7218E1B7284314A4151E"
+    },
+    {
+      "path": "tmp/u12-shared-return-stall-20261002/native-after/peer-ready.json",
+      "bytes": 28,
+      "sha256": "46646E056FBD407989C21A98BAD2510B78A5D36384991AF399650B540CF87A9F"
+    },
+    {
+      "path": "tmp/u12-shared-return-stall-20261002/native-after/report-first-1600x900.json",
+      "bytes": 213,
+      "sha256": "B0FE3F20F9791927FD12F5E75B7D46F73725EABF8C24F7F63716DC5B5B721E5F"
+    },
+    {
+      "path": "tmp/u12-shared-return-stall-20261002/native-after/report-resized-1280x720.json",
+      "bytes": 198,
+      "sha256": "6A8D7FA9221A920655C929771685A279BA4C1C1C71D21665982AC5D66D23E4E1"
+    },
+    {
+      "path": "tmp/u12-shared-return-stall-20261002/native-after/report-restored-1024x576.json",
+      "bytes": 193,
+      "sha256": "15716FD14B2D8DE7BA59D82FD6DB576D94C334B6C6AADA3DD44C38C9E8893BE7"
+    },
+    {
+      "path": "tmp/u12-shared-return-stall-20261002/native-after/report-screen-pixels.json",
+      "bytes": 622,
+      "sha256": "097AF781165D30D0F447194CC1BF5511277C0B179729454CF3C9BA8066C9D264"
+    },
+    {
+      "path": "tmp/u12-shared-return-stall-20261002/native-after/result.json",
+      "bytes": 7357,
+      "sha256": "C3979B9B598FCC58FE1F5299EAC56E8A869D6DE720A93E6AB7F7C5823EACD1BC"
+    },
+    {
+      "path": "tmp/u12-shared-return-stall-20261002/native-after/revealed.png",
+      "bytes": 4261,
+      "sha256": "E2D0A5DD935B491AACA4BF326149BBB16302F9BC3EF4857701F0E46837D092D9"
+    },
+    {
+      "path": "tmp/u12-shared-return-stall-20261002/readback/scripts/__Packages/org/flashNight/arki/ui/SceneTransitionService.as",
+      "bytes": 18373,
+      "sha256": "6C0BBD718A9C1016D70213EC993D39E1D88E9173B6E291D14A23F2D1EF5BC984"
+    },
+    {
+      "path": "tmp/u12-shared-return-stall-20261002/readback/scripts/__Packages/org/flashNight/arki/scene/StageRunSession.as",
+      "bytes": 153503,
+      "sha256": "CE39CCC9FEE8EF67114467E69B1D7C8FFD63F1E44D3860DAF1DA18AAABF30590"
+    },
+    {
+      "path": "tmp/u12-shared-return-stall-20261002/readback/scripts/__Packages/org/flashNight/arki/item/LootContainerService.as",
+      "bytes": 178551,
+      "sha256": "8298F1A636FE2A4F70F51D0A517CB05B8EE551A3F7ACA528E9D7D81DB3796421"
+    }
+  ],
+  "historicalSourceSnapshots": [
+    "originalLayoutSourceSnapshot",
+    "scaleRepairSourceSnapshot",
+    "focusHandoffSources",
+    "stageEntryRegressionSources",
+    "stageReturnRegressionSources",
+    "sharedSettlementSourceSnapshot"
+  ],
+  "currentSourceSnapshotField": "returnSyncSourceSnapshot",
+  "previousReturnSyncEvidence": {
+    "snapshot": {
+      "path": "tmp/u12-shared-return-stall-20261002/evidence-before.json",
+      "bytes": 159684,
+      "sha256": "2DF2308BD2CD4D8325C057ED456CD4D0DF34960DA5B77922AF171C02EAF40DA5"
+    },
+    "activePointer": {
+      "path": "tmp/u12-shared-return-stall-20261002/active-before.json",
+      "bytes": 815,
+      "sha256": "33960113E116CB9700B381E38D1AB7C67A5EB6935760498D319AFFEE10F9FF24"
+    },
+    "scope": "Frozen previous candidate/source/test ledger and local-dev pointer. Field logs belong to the prior u12-shared-20261002 path, not this new candidate."
+  },
+  "returnSyncHumanFeedback": {
+    "report": "Base visible underneath Web settlement; report remains returning/connecting rewards.",
+    "fieldCandidate": {
+      "root": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\resources\\tmp\\runtime-candidates\\v2\\u12-shared-20261002",
+      "metadataRelativePath": "tmp/runtime-candidates/v2/u12-shared-20261002/runtime-build-metadata.v2.json",
+      "metadataSha256": "3651A7741C3FA72D0BD662655945B2AD9B2FB40059CF5DB6E0581192795E7374",
+      "coreSha256": "DDBCFA6EBB691D4A643F4717DCEDF663D626EB6EA0D13EF0DFE54E92F0045079",
+      "nativeSha256": "76B2424FDCD974604B9AA486397CD7337766FEF3654B9F72D33FBF93A1F9E882",
+      "buildIdentityHash": "81A0807005EB0E2ABED38DAFF375E1754A57BBBAD5A8B239773B0E481BD46F00",
+      "payloadClosureHash": "A0E6B90D113DAEC26E7A54B26C5B0FDAB4DA9DF72753F7C178175E6A7D8BBB67",
+      "selectionState": "ready",
+      "deploymentStatus": "NOT_DEPLOYED",
+      "formalRuntimeBinaryUnchanged": true,
+      "statusLogPath": "tmp/u12-shared-dev-status.txt",
+      "sourceRecipe": {
+        "artifactSourceHash": "ADF6641C42B572ED07392E2BF01D6A0C463CC0E3D41FB739134CB2346DF4896F",
+        "producerRecipeHash": "23483061F6288CDE0142991DBE8A5F2FDAE8DCC84B098FC8332D1573365ABA8E",
+        "toolchainLockHash": "DFA769829F9740196DEF63351A00AAC309E50A2CA0A768759334EB2A2161DD36"
+      },
+      "frontendSourceAhead": false,
+      "frontendOutsideDllClosure": true,
+      "reusedWithoutDllClosureChangeThisRound": false
+    },
+    "fieldCandidateScope": "Actual startup path plus frozen prior metadata and matching payload hashes; old field messages do not log action verb/revision.",
+    "images": [
+      {
+        "path": "tmp/u12-shared-return-stall-20261002/web-stalled.png",
+        "bytes": 405113,
+        "sha256": "24FCD051B7F28D043CF857BBC29C747AFAC94B35637C4604618E54EAF9AC67B4"
+      },
+      {
+        "path": "tmp/u12-shared-return-stall-20261002/as2-base-visible.png",
+        "bytes": 1391846,
+        "sha256": "6331D520492E5EBC3B24759191247545EA96AB64667B4CE5C465E08A28983705"
+      }
+    ],
+    "evidence": [
+      {
+        "path": "tmp/u12-shared-return-stall-20261002/launcher-before.log",
+        "bytes": 1704370,
+        "sha256": "108677570F269B9554DEEE149782A89E8B966FFEB75590E8231305E9E8DA4582"
+      },
+      {
+        "path": "tmp/u12-shared-return-stall-20261002/bootstrap-before.log",
+        "bytes": 5153971,
+        "sha256": "F27F95AB668BB131BB483AE517C3AB91A2949E4DDBF9A4E93368AD23F3EE1FBA"
+      },
+      {
+        "path": "tmp/u12-shared-return-stall-20261002/perf-before.jsonl",
+        "bytes": 69119,
+        "sha256": "7A031B21AED545CA912FF8EDB99E3199BBDF74603A8E8863C4EEBA1E0AAC1853"
+      },
+      {
+        "path": "tmp/u12-shared-return-stall-20261002/return-sync-before.log",
+        "bytes": 40439,
+        "sha256": "C671A64ADE0B9635D7B3057048798038050D85618B6CBF3003E6FF4273972FAF"
+      }
+    ],
+    "fieldSequence": [
+      {
+        "requestId": "tr:2",
+        "result": "First victory return opened, bound and reached settlement-ready at 09:57:37.415."
+      },
+      {
+        "requestId": "tr:4",
+        "result": "Action sent at 09:57:56.451; cover revision 2 then loading revision 3; no loot panel_request/bound. Reveal capture allowed at 09:57:58.922; reportHandoff stayed false until human exit at 09:59:19."
+      }
+    ],
+    "inference": "Consistent with display-revision race; field logs alone do not establish its unique cause.",
+    "deterministicCause": "Both production Host ingress and AS2 action dropped an otherwise valid report intent after display revision advancement; single-attempt lock then retained preview.",
+    "oldProductEvidence": {
+      "hostLog": {
+        "path": "tmp/u12-shared-return-stall-20261002/host-regression-before.txt",
+        "bytes": 40143,
+        "sha256": "9EE55055D04E46DF62E6F69116B4C9C71ED8BC75DFCCAD96C109974D005B3870"
+      },
+      "hostPassed": 74,
+      "hostFailed": 2,
+      "hostScope": "Initial regression demonstrates manageReport dropped after loading/reveal; final close cases additionally assert first delivery before duplicates.",
+      "as2Log": {
+        "path": "tmp/u12-shared-return-stall-20261002/as2-regression-before.txt",
+        "bytes": 92074,
+        "sha256": "959B040C6AFF9489D70C590EBCAE7D3E831261D5501D2F59A6F85E2BDB5DEFD3"
+      },
+      "as2StagePassed": 720,
+      "as2StageFailed": 18,
+      "nativeResult": {
+        "path": "tmp/u12-shared-return-stall-20261002/native-before/result.json",
+        "bytes": 5326,
+        "sha256": "949AAC10F3C7181DD8336A94335754BDF050922D3C8B7E177138ECC713CE9EE1"
+      },
+      "nativeCoreSha256": "DDBCFA6EBB691D4A643F4717DCEDF663D626EB6EA0D13EF0DFE54E92F0045079",
+      "nativeIdentity": "81A0807005EB0E2ABED38DAFF375E1754A57BBBAD5A8B239773B0E481BD46F00",
+      "nativeFailure": "Timeout waiting for reward admission after releasing the delayed actual page intent into the prior candidate."
+    },
+    "gameCandidateExecutedThisNewIdentity": false,
+    "gameJourneyVerified": false
+  },
+  "returnSyncSourceSnapshot": [
+    {
+      "path": "launcher/src/Guardian/PanelHostController.TransitionSettlement.cs",
+      "bytes": 3896,
+      "sha256": "4C08F16729E7352EDCDAA3CC30C64DE1C13BDF81385B47D0D92FEBC5A1F8B606"
+    },
+    {
+      "path": "launcher/src/Guardian/SceneTransitionController.cs",
+      "bytes": 15460,
+      "sha256": "E5052DAB35252958A4422B31A20D9D85D0E1DEE21E7E981042CC7603573302A1"
+    },
+    {
+      "path": "launcher/src/Guardian/PanelHostController.cs",
+      "bytes": 150491,
+      "sha256": "3B9A355AB6ADE1E7663518B939743BAD7FDC0B9A503059046CDDC642D8B7FF43"
+    },
+    {
+      "path": "launcher/src/Guardian/PanelHostController.CompositionHelp.cs",
+      "bytes": 5545,
+      "sha256": "DF9016CD350F36EB13AB4ECD812024A46E5B506FBDE81E798BD5281042BB5B80"
+    },
+    {
+      "path": "launcher/src/Guardian/CompositionHelpSurface.cs",
+      "bytes": 32276,
+      "sha256": "ADB3EE06806CB0326F2304CE8551BAFCCD488DA8555340ABD6AB5F2268DC74E1"
+    },
+    {
+      "path": "launcher/src/Guardian/WebOverlayForm.cs",
+      "bytes": 452453,
+      "sha256": "344255CDDE938B6427112FE58CA77333D937B3BD5C5339D7B282DA1567347584"
+    },
+    {
+      "path": "launcher/src/Program.cs",
+      "bytes": 190891,
+      "sha256": "F5C04385190C274D727E607A661F8F9CCA39822B66B42A7D0E12A6CBBE2ADF82"
+    },
+    {
+      "path": "launcher/src/Tasks/SceneTransitionTask.cs",
+      "bytes": 15017,
+      "sha256": "398C41AF4873A353CDA4CC17CBC35193C38B7E5A821E31DF15EA1E386EE828A3"
+    },
+    {
+      "path": "launcher/tests/Tasks/SceneTransitionTaskTests.cs",
+      "bytes": 21667,
+      "sha256": "A46E09D833C4A6FAF14D4811B6BFA666601A41BC145D9A03267CBD7AA811AAE7"
+    },
+    {
+      "path": "launcher/web/modules/panels.js",
+      "bytes": 32144,
+      "sha256": "0C8746009FA85378EB10BA65B64D2B8BEF0CF99D0DCD07AD8BA00E18DAE45590"
+    },
+    {
+      "path": "launcher/web/modules/loot/loot-panel.js",
+      "bytes": 51295,
+      "sha256": "AAAEDBBEA2EB6C8383C902717ECA48B6881B17A474380E8DACD6A34765438033"
+    },
+    {
+      "path": "launcher/web/modules/loot/loot-view.js",
+      "bytes": 97208,
+      "sha256": "2223751DCD6E12C593CFCECA5862B052F7D2262834F61FDF86DDD817CBDF27BB"
+    },
+    {
+      "path": "launcher/web/modules/scene-transition.js",
+      "bytes": 12179,
+      "sha256": "6B3239C037BFFC4304A4449751991E5AF7D35F95A350D7895C106603C232BD3E"
+    },
+    {
+      "path": "launcher/web/scene-transition.html",
+      "bytes": 2841,
+      "sha256": "F6F7BDFB4FCE17387A6F8EC9C471B47BB7F52B70740D8E6601439F6BF105E895"
+    },
+    {
+      "path": "launcher/web/css/scene-transition.css",
+      "bytes": 2414,
+      "sha256": "E650B98C441CCA2121B4819E2D39B217D49FFF6F0A27BA78FEFA6181D36310F3"
+    },
+    {
+      "path": "scripts/类定义/org/flashNight/arki/ui/SceneTransitionService.as",
+      "bytes": 14917,
+      "sha256": "43629AF68C38A968ADFDE86AD05923F90265FD6F011F0AF405EABDDABDBA2754"
+    },
+    {
+      "path": "scripts/类定义/org/flashNight/arki/scene/StageRunSession.as",
+      "bytes": 131804,
+      "sha256": "60A69F5495D0EEBF4EDF4CC3D6DE9F3C4E89A4A3AD2BB92659EE6FA1C3EE5DE7"
+    },
+    {
+      "path": "scripts/类定义/org/flashNight/arki/scene/StageRunSessionTest.as",
+      "bytes": 250943,
+      "sha256": "F5ACA3BFD8069F6EADF94510C0C35CCA37D0EA40385002C7A5A423D63C1C0DA5"
+    },
+    {
+      "path": "scripts/类定义/org/flashNight/arki/item/LootContainerService.as",
+      "bytes": 172428,
+      "sha256": "31A3B90451F14B4C9D7997C73F821EFBE565160FC430A2AD83A6B5770A894311"
+    },
+    {
+      "path": "scripts/run-map-loot-tests.ps1",
+      "bytes": 22697,
+      "sha256": "F1AD2591DB5F9A5F0DE9A3EB565F807C1C06A859CBDD8082C9DD3F7F10AD31BC"
+    },
+    {
+      "path": "tools/scene-transition-smoke/Program.cs",
+      "bytes": 39295,
+      "sha256": "FAF10C88D364F4AD5B892EAFC307AEDE5DAF79CCC28EEB249330395DBF499948"
+    }
+  ]
+}

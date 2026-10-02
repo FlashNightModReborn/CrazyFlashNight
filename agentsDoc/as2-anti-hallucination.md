@@ -9,7 +9,7 @@
 - **事件**：无 `addEventListener`，用回调赋值 `mc.onPress = handler`
 - **显示对象**：无 `Sprite`/`Stage`，核心是 `MovieClip`
 - **禁用 API**：无 `JSON.parse`（用 `LiteJSON`）、无 `setTimeout`（用帧计时器）、无 `Promise`、无模板字符串、无解构
-- **保留字陷阱**：`eq/ne/lt/gt/le/ge/and/or/not/add` 是保留字，命名避开，键名用 `obj["lt"]`
+- **保留字陷阱**：`eq/ne/lt/gt/le/ge/and/or/not/add/on/native` 等保留字不可作参数名；对象属性用 `obj["native"]`。AS2 对象字面量不用带引号的键名，保留字属性在创建对象后用方括号赋值。
 - **字典对象**：仅限封闭内部字典可 `obj.__proto__ = null`；凡会泄露到模块边界的数据/配置对象保持普通 `Object`
 - **proto-null 判空**：对断原型对象禁用 `== null` / `!= null` / `== undefined` / `!= undefined`
 - **NUL 被吞**：`String.fromCharCode(0)` 在字符串拼接中被 AVM1 吞掉（`"A\x00"+x` 退化为 `"A"+x`)——哈希/HMAC 的 0x00 分隔符必须以 code unit 直喂（2026-09-04 KAT 实锤，K 店行指纹 FNV lane 因此全域偏移）

@@ -520,7 +520,8 @@ namespace CF7Launcher.Bus
                     if (_frameTask == null) return;
 
                     // 1) 从尾到头拆开装饰事件与子弹快照，保持旧帧段不变。
-                    string chainFree=SplitFrameSection(message,'\x08',out string chainVisualPayload);
+                    string sceneFree=SplitFrameSection(message,'\x09',out string sceneLightPayload);
+                    string chainFree=SplitFrameSection(sceneFree,'\x08',out string chainVisualPayload);
                     string rayFree=SplitFrameSection(chainFree,'\x07',out string rayVisualPayload);
                     string fxFree=SplitFrameCombatFxSection(rayFree,out string combatFxPayload);
                     string visualFree = SplitFrameVisualSection(fxFree, out string bulletVisualPayload);
@@ -570,7 +571,7 @@ namespace CF7Launcher.Bus
                         fps = "";
                     }
                     _frameTask.HandleRaw(cam, hn, fps, inputPayload, bulletVisualPayload, connectionGen,combatFxPayload,
-                        rayVisualPayload,chainVisualPayload);
+                        rayVisualPayload,chainVisualPayload,sceneLightPayload);
                     // UI 状态段透传到 WebView2（与帧渲染同步）
                     if (uiState != null && uiState.Length > 0)
                     {

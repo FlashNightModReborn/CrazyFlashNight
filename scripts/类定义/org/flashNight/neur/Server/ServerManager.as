@@ -775,6 +775,7 @@ class org.flashNight.neur.Server.ServerManager {
         xmlSocket = null;
         AudioBridge.onTransportDisconnected();
         org.flashNight.arki.dialogue.NativeDialogueService.onTransportDisconnected();
+        org.flashNight.arki.ui.NativeGuidanceService.clear();
 
         // loot 奖励只存在本地内存；Host 断线时直接让服务续跑 exact journal/effects，
         // 并把同一 authority 收敛到 Web-only SUSPENDED 或终态。不存在 Flash UI 回退。

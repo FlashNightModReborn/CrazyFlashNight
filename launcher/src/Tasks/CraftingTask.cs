@@ -120,7 +120,8 @@ namespace CF7Launcher.Tasks
         };
         private static readonly HashSet<string> AvailabilityCodes = new HashSet<string>(StringComparer.Ordinal)
         {
-            "ready", "level_locked", "material_missing", "insufficient_money",
+            "ready", "infrastructure_locked", "level_locked", "material_missing",
+            "insufficient_money",
             "insufficient_kpoint", "inventory_full", "output_projection_failed"
         };
         private static readonly HashSet<string> StorageKinds = new HashSet<string>(StringComparer.Ordinal)
@@ -1023,9 +1024,15 @@ namespace CF7Launcher.Tasks
                 int recipeIndex;
                 int materialCount;
                 if (recipe == null
-                    || !HasExactKeys(recipe, "recipeId", "recipeIndex", "title", "output",
+                    || !HasExactKeysWithOptional(recipe, new[] {
+                        "recipeId", "recipeIndex", "title", "output",
                         "owned", "plannedCrafts", "baseCost", "materialCount",
-                        "batchEligible", "canCraftOne", "availability")
+                        "batchEligible", "canCraftOne", "availability" },
+                        "book", "infrastructure")
+                    || (recipe["book"] != null
+                        && !IsSafeOptionalText(ReadExactString(recipe["book"]), 256))
+                    || (recipe["infrastructure"] != null
+                        && !IsInfrastructureRows(recipe["infrastructure"]))
                     || !ProcurementProjectionValidator.IsRecipeId(recipe["recipeId"])
                     || !seenRecipeIds.Add(ReadExactString(recipe["recipeId"]))
                     || !TryReadInteger(recipe["recipeIndex"], 0, 999, out recipeIndex)
@@ -2084,17 +2091,20 @@ namespace CF7Launcher.Tasks
             int craftCount;
             int maxCraftCount;
             bool canCommit = msg.Value<bool?>("canCommit") == true;
-            string[] responseKeys = canCommit
-                ? new[] { "v", "category", "recipeIndex", "craftCount", "batchEligible",
-                    "maxCraftCount", "output", "materials", "cost", "balance", "skills",
-                    "levelAllowed", "enoughMaterials", "enoughMoney", "enoughKpoints",
-                    "enoughSpace", "canCommit", "blockingError", "outputDelivery",
-                    "craftToken", "acceptedPlan" }
-                : new[] { "v", "category", "recipeIndex", "craftCount", "batchEligible",
-                    "maxCraftCount", "output", "materials", "cost", "balance", "skills",
-                    "levelAllowed", "enoughMaterials", "enoughMoney", "enoughKpoints",
-                    "enoughSpace", "canCommit", "blockingError", "outputDelivery" };
+            var keyList = new List<string> { "v", "category", "recipeIndex", "craftCount",
+                "batchEligible", "maxCraftCount", "output", "materials", "cost", "balance",
+                "skills", "levelAllowed", "enoughMaterials", "enoughMoney", "enoughKpoints",
+                "enoughSpace", "canCommit", "blockingError", "outputDelivery" };
+            // infrastructure 为增量投影：旧 asLoader 不回传时允许缺省，出现则严格校验。
+            if (msg["infrastructure"] != null) keyList.Add("infrastructure");
+            if (canCommit)
+            {
+                keyList.Add("craftToken");
+                keyList.Add("acceptedPlan");
+            }
+            string[] responseKeys = keyList.ToArray();
             if (!HasExactResponseKeys(msg, responseKeys)
+                || (msg["infrastructure"] != null && !IsInfrastructureRows(msg["infrastructure"]))
                 || !HasProtocolVersion(msg)
                 || !MatchesSelector(msg, entry, "category", "recipeIndex", "craftCount")
                 || !TryReadInteger(msg["recipeIndex"], 0, 999, out recipeIndex)
@@ -2211,7 +2221,12 @@ namespace CF7Launcher.Tasks
                     "enhancementLevel", "majorType", "use", "actionType", "weaponType",
                     "setId", "setName", "setOrder" };
             int setOrder;
-            if (!HasExactKeys(item, keys) || !IsIdentityTriple(item)
+            // description 为增量投影：旧 asLoader 不回传时允许缺省，出现则严格校验。
+            if (!HasExactKeysWithOptional(item, keys, "description")
+                || (item["description"] != null
+                    && !IsSafeMultilineText(ReadExactString(item["description"]), 4000)))
+                return false;
+            if (!IsIdentityTriple(item)
                 || !IsItemKind(ReadExactString(item["itemKind"]))
                 || !IsNonNegativeNumber(item["value"]) || !IsNonNegativeNumber(item["quantity"])
                 || !IsNonNegativeNumber(item["enhancementLevel"])
@@ -2312,8 +2327,11 @@ namespace CF7Launcher.Tasks
             int recipeIndex;
             int craftCount;
             return plan != null
-                && HasExactKeys(plan, "category", "recipeIndex", "craftCount", "output",
-                    "materials", "outputDelivery", "outputPrototype", "cost")
+                && HasExactKeysWithOptional(plan, new[] { "category", "recipeIndex",
+                    "craftCount", "output", "materials", "outputDelivery",
+                    "outputPrototype", "cost" }, "infrastructure")
+                && (plan["infrastructure"] == null || IsInfrastructureRows(plan["infrastructure"]))
+                && JToken.DeepEquals(plan["infrastructure"], preview["infrastructure"])
                 && TryReadInteger(plan["recipeIndex"], 0, 999, out recipeIndex)
                 && TryReadInteger(plan["craftCount"], 1, 99, out craftCount)
                 && string.Equals(ReadExactString(plan["category"]),
@@ -2477,6 +2495,56 @@ namespace CF7Launcher.Tasks
             foreach (JProperty property in value.Properties())
             {
                 if (!names.Contains(property.Name)) return false;
+            }
+            return true;
+        }
+
+        /// <summary>
+        /// 必填键全在、可选键可出现可缺省、其余键一律拒绝——增量投影字段
+        /// （recipe.book / infrastructure）的旧 asLoader 兼容通道。
+        /// </summary>
+        private static bool HasExactKeysWithOptional(
+            JObject value, string[] required, params string[] optional)
+        {
+            if (value == null) return false;
+            var allowed = new HashSet<string>(required, StringComparer.Ordinal);
+            if (allowed.Count != required.Length) return false;
+            if (optional != null)
+            {
+                foreach (var name in optional) allowed.Add(name);
+            }
+            var present = new HashSet<string>(StringComparer.Ordinal);
+            foreach (JProperty property in value.Properties())
+            {
+                if (!allowed.Contains(property.Name)) return false;
+                present.Add(property.Name);
+            }
+            foreach (var name in required)
+            {
+                if (!present.Contains(name)) return false;
+            }
+            return true;
+        }
+
+        /// <summary>
+        /// 基建等级门槛行：{name, appliance, required, current, met}。
+        /// </summary>
+        private static bool IsInfrastructureRows(JToken token)
+        {
+            var rows = token as JArray;
+            if (rows == null || rows.Count > 32) return false;
+            foreach (var rowToken in rows)
+            {
+                var row = rowToken as JObject;
+                int required;
+                int current;
+                if (row == null
+                    || !HasExactKeys(row, "name", "appliance", "required", "current", "met")
+                    || !IsIdentityText(ReadExactString(row["name"]), 128)
+                    || !IsSafeOptionalText(ReadExactString(row["appliance"]), 256)
+                    || !TryReadInteger(row["required"], 1, 99, out required)
+                    || !TryReadInteger(row["current"], 0, 99, out current)
+                    || row["met"] == null || row["met"].Type != JTokenType.Boolean) return false;
             }
             return true;
         }

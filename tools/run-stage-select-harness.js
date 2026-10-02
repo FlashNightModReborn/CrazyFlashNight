@@ -13,6 +13,7 @@ function parseArgs(argv) {
         browser: 'edge',
         viewport: '1366x768',
         caseId: '',
+        timeoutMs: 60000,
         headed: false
     };
     for (let i = 0; i < argv.length; i += 1) {
@@ -23,6 +24,10 @@ function parseArgs(argv) {
         } else if (arg === '--viewport') {
             args.viewport = argv[i + 1] || '1366x768';
             i += 1;
+        } else if (arg === '--timeout-ms') {
+            args.timeoutMs = Number(argv[++i]);
+            if (!Number.isInteger(args.timeoutMs) || args.timeoutMs < 1000 || args.timeoutMs > 120000)
+                throw new Error('--timeout-ms must be an integer from 1000 to 120000');
         } else if (arg === '--case') {
             args.caseId = argv[i + 1] || '';
             i += 1;
@@ -41,7 +46,7 @@ function parseArgs(argv) {
 
 function printHelp(exitCode, error) {
     if (error) console.error(error);
-    console.error('usage: node tools/run-stage-select-harness.js [--browser edge|chrome] [--viewport 1366x768] [--case <id>] [--headed]');
+    console.error('usage: node tools/run-stage-select-harness.js [--browser edge|chrome] [--viewport 1366x768] [--case <id>] [--timeout-ms 60000] [--headed]');
     process.exit(exitCode);
 }
 
@@ -95,8 +100,12 @@ async function main() {
     page.on('requestfailed', request => {
         const failure = request.failure();
         const text = request.url() + ' :: ' + (failure && failure.errorText || 'failed');
-        // 快速切换地图或关闭浏览器会取消已被替换的图片请求；单独保留，区别于加载失败。
-        if (request.resourceType() === 'image' && failure && failure.errorText === 'net::ERR_ABORTED') cancelledRequests.push(text);
+        // 切换地图也会主动中止旧场景的 GLB fetch；只放行本地场景资源的明确取消。
+        const cancelledDiorama = request.resourceType() === 'fetch'
+            && request.url().startsWith(origin + '/assets/stage-diorama/')
+            && new URL(request.url()).pathname.endsWith('.glb');
+        if ((request.resourceType() === 'image' || cancelledDiorama)
+            && failure && failure.errorText === 'net::ERR_ABORTED') cancelledRequests.push(text);
         else failedRequests.push(text);
     });
     page.on('pageerror', error => pageErrors.push(error && error.message ? error.message : String(error)));
@@ -107,7 +116,17 @@ async function main() {
     }));
 
     await page.goto(url, { waitUntil: 'load' });
-    await page.waitForFunction(() => window.__qaResult && window.__qaResult.qa, null, { timeout: 20000 });
+    try {
+        await page.waitForFunction(() => window.__qaResult && window.__qaResult.qa, null, { timeout: args.timeoutMs });
+    } catch (error) {
+        console.error('Stage Select harness diagnostic: ' + JSON.stringify({
+            pageErrors, failedRequests,
+            state: await page.evaluate(() => ({qa:window.__qaResult && window.__qaResult.qa || null,
+                text:document.body.innerText.slice(0,2000)}))
+        }));
+        await browser.close(); server.close();
+        throw error;
+    }
     const result = await page.evaluate(() => window.__qaResult.qa);
     const brokenImages = await page.evaluate(() => Array.from(document.images)
         .filter(img => img.currentSrc && (!img.complete || img.naturalWidth === 0))

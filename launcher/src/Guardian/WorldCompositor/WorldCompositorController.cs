@@ -41,9 +41,24 @@ namespace CF7Launcher.Guardian.WorldCompositor
         private WorldLightingFrame _frame;
         private WorldLightingTransition _lighting = new WorldLightingTransition();
         private long _reportedPendingScene;
+        private long _transitionGradeScene, _transitionPresentedScene;
+        private double _transitionGradeSubmittedAt;
+        internal bool IsTransitionScenePresented(long scene) => !_disposed && !_faulted && _active
+            && _surface?.Visible == true && _transitionPresentedScene == scene
+            && _frame?.Ready == true && _frame.Scene == scene && !_lighting.Pending && !_lighting.WaitingForCapture;
+        // A report may now pause/hide an already captured scene. This is only the identity
+        // recheck after that capture proof; it never grants an initial world reveal.
+        internal bool IsCurrentTransitionScene(long scene) => !_disposed && !_faulted
+            && _frame?.Ready == true && _frame.Scene == scene;
         private bool _disposed, _starting, _faulted, _active;
         private double _faultedRevokeDeadlineMs;
         private bool _inputRenewRequested,_inputClosed;
+        private volatile bool _transitionInputHeld;
+        internal void HoldTransitionInput(bool held) {
+            if (_transitionInputHeld==held) return;
+            _transitionInputHeld=held;
+            if(held) _surface?.CancelPointer("scene_transition");
+        }
         private Task<bool> _retiringInput;
         internal NativePointerBridge InputBridgeForDiagnostics => _pointerBridge;
         internal int InputRenewals { get; private set; }
@@ -90,9 +105,11 @@ namespace CF7Launcher.Guardian.WorldCompositor
         // 只观测记录，不触发自动重启或抢焦。
         private bool _everReady, _frameAdvancing, _progressKnown;
         private volatile bool _schedulingAllowed;
-        internal bool SchedulingAllowed => _schedulingAllowed;
+        // Loading stalls are not gameplay pressure. Capture must keep running to
+        // prove the target scene, without changing quality/viewport behind its report.
+        internal bool SchedulingAllowed => _schedulingAllowed && !_transitionInputHeld;
         internal bool RouteCapturedPointer(int x,int y,int message,uint mouseData) =>
-            !_disposed && _active && _surface!=null && _surface.RouteCapturedPointer(x,y,message,mouseData);
+            !_disposed && !_transitionInputHeld && _active && _surface!=null && _surface.RouteCapturedPointer(x,y,message,mouseData);
         internal void ApplyRenderSelection(RenderSelection selection,float sharpness)
         {
             if (_disposed) return;
@@ -279,7 +296,9 @@ namespace CF7Launcher.Guardian.WorldCompositor
             _setRenderScale=setRenderScale; _focusFlash=focusFlash;
             _bulletCatalog=bulletCatalog;
             _combatFxCatalog=combatFxCatalog;
-            _worldLights=new WorldLightComposer(combatFxCatalog?.MaximumLightResponse??0);
+            var sceneCatalog=SceneLightCatalog.Load(projectRoot);
+            _sceneLights=new SceneLightEngine(sceneCatalog);
+            _worldLights=new WorldLightComposer(combatFxCatalog?.MaximumLightResponse??0,sceneCatalog.SceneReserve);
             _worldLightSubmissions=new WorldLightSubmitBatch((draw,x,y,scale) => _native?.CombatFxFrame(draw,x,y,scale));
             _overlays=overlays ?? Array.Empty<OverlayBase>();
             _bulletCandidateEnabled=bulletCatalog!=null
@@ -305,6 +324,7 @@ namespace CF7Launcher.Guardian.WorldCompositor
             if (!frame.Ready || frame.Scene!=previousScene)
                 _surface?.CancelPointer();
             _frame=frame;
+            QueueSceneLights(frame);
             if (!frame.Ready || frame.Scene!=previousScene) InvalidateWeather();
             if (_lighting.Pending && (!wasPending || frame.Scene!=previousScene))
                 LogManager.Log("event=world_lighting_hold scene="+frame.Scene+" hasGrade="+_lighting.HasValidState);
@@ -315,6 +335,7 @@ namespace CF7Launcher.Guardian.WorldCompositor
         }
         internal void ResetSource()
         {
+            ResetSceneLights();
             _lighting=new WorldLightingTransition(); _reportedPendingScene=0; _frame=null; _schedulingAllowed=false; StopCapture();
             _targetScale=_appliedScale=1; _setRenderScale(1);
         }
@@ -414,7 +435,7 @@ namespace CF7Launcher.Guardian.WorldCompositor
                     return;
                 }
                 _surface.FlushMove();
-                if (!_inputClosed && !_surface.InputRenewing && _targetScale!=_appliedScale && !_surface.IsDragging) {
+                if (!_transitionInputHeld && !_inputClosed && !_surface.InputRenewing && _targetScale!=_appliedScale && !_surface.IsDragging) {
                     _starting=true; _schedulingAllowed=false;
                     var resizingNative=_native; var resizingSource=_flash;
                     double resizeStarted=NowMs();
@@ -434,7 +455,8 @@ namespace CF7Launcher.Guardian.WorldCompositor
                         +" handoffMs="+(NowMs()-resizeStarted).ToString("F1",CultureInfo.InvariantCulture));
                     if (!CanShow()) { _native.Active(false); _active=false; _surface.Hide(); return; }
                 }
-                var stats=_native.Read();
+                NativeCompositorSession.Stats stats;
+                using (CF7Launcher.Diagnostic.InputLatencyProbe.Measure("world_read")) stats=_native.Read();
                 if (stats.State==2 || stats.State==3) throw new InvalidOperationException(stats.Message+" HRESULT=0x"+stats.Error.ToString("X8"));
                 if (!Synchronize()) { NoteBulletCaptureNotReady("geometry_unknown"); return; } // an unknown extent must not mask native failure
                 bool ready=stats.Received>0 && stats.Width==_crop.Width && stats.Height==_crop.Height && stats.LastFrameQpcMs>=_requiredFrameMs;
@@ -461,6 +483,10 @@ namespace CF7Launcher.Guardian.WorldCompositor
                 // timestamp freshness fence, not proof of the pixels' semantic scene identity.
                 if (ready && _lighting.ConfirmCapturedFrame(stats.LastFrameQpcMs,NowMs()))
                     LogManager.Log("event=world_lighting_frame_handoff scene="+_lighting.ReadyScene+" captureQpcMs="+stats.LastFrameQpcMs.ToString("F1",CultureInfo.InvariantCulture));
+                lock(_weatherCameraLock) {
+                    if(ApplySceneLightsLocked() && _native!=null)
+                        _worldLightSubmissions.Submit(_worldLights.Compose(_weatherCameraX,_weatherCameraY,_weatherCameraScale),_weatherCameraX,_weatherCameraY,_weatherCameraScale,false);
+                }
                 if (_preset.UsesLut(_lighting.CurrentMode)) {
                     // LUT 路径（lut-set-v1）：350ms 过渡状态机不变，采样语义由矩阵改为连续 light 等级，
                     // 相邻整数档 CPU blend（32^3 逐字节）；变更才上传原生（过渡期间逐 tick、稳态零上传）。
@@ -481,6 +507,16 @@ namespace CF7Launcher.Guardian.WorldCompositor
                 ApplyWeatherCamera(ready);
                 ApplyWeather(ready);
                 ApplyAtmosphere(ready);
+                // The grade is submitted after Read's Present. Require a subsequent fresh
+                // capture before granting U12 reveal; this is still not a physical pixel receipt.
+                if (ready && !_lighting.Pending && !_lighting.WaitingForCapture) {
+                    if (_transitionGradeScene != _lighting.ReadyScene) {
+                        _transitionGradeScene = _lighting.ReadyScene;
+                        _transitionGradeSubmittedAt = NowMs();
+                        _transitionPresentedScene = 0;
+                    } else if (stats.LastFrameQpcMs >= _transitionGradeSubmittedAt)
+                        _transitionPresentedScene = _transitionGradeScene;
+                } else _transitionPresentedScene = 0;
                 bool projectileReady = CanGrantProjectileCapability(ready, _frame?.Ready == true,
                     _lighting.WaitingForCapture, _frame?.Scene ?? 0, _lighting.ReadyScene);
                 PublishRayCapability(projectileReady);
@@ -551,6 +587,7 @@ namespace CF7Launcher.Guardian.WorldCompositor
         private bool CanShow() => !_owner.IsDisposed && _owner.Visible && _owner.WindowState!=FormWindowState.Minimized && _anchor.Visible && _canPresent();
         private bool Synchronize()
         {
+            using var latency = CF7Launcher.Diagnostic.InputLatencyProbe.Measure("world_geometry");
             Rectangle screen=_anchor.RectangleToScreen(_anchor.ClientRectangle);
             if (DwmGetWindowAttribute(_owner.Handle,9,out Rect frame,Marshal.SizeOf<Rect>())!=0) throw new InvalidOperationException("Cannot resolve capture bounds");
             if(!GetWindowRect(_owner.Handle,out Rect window))return false;
@@ -773,6 +810,7 @@ namespace CF7Launcher.Guardian.WorldCompositor
         }
         private void StopCapture()
         {
+            _sentSceneLightVersion=-1;
             // Same-socket source loss must return visual ownership to Flash.
             RevokeBulletCapability("capture_stopped",true);
             RevokeCombatFx("capture_stopped");
@@ -804,6 +842,7 @@ namespace CF7Launcher.Guardian.WorldCompositor
             _inputRenewRequested=false;_inputClosed=false;
             _viewportHeld=false; _paintFenceMs=0;
             _everReady=false; _frameAdvancing=false; _progressKnown=false;
+            _transitionGradeScene=0; _transitionPresentedScene=0; _transitionGradeSubmittedAt=0;
             _surface?.Hide();
             try { lock (_weatherCameraLock) { _native?.Dispose(); _native=null; } }
             finally { _native=null; _overlayOrder?.Dispose(); _overlayOrder=null; _surface?.CancelPointer(); _surface?.Dispose(); _surface=null; if(_pointerBridge!=null)_retiringInput=_pointerBridge.CloseAsync(); _pointerBridge=null; _flash=IntPtr.Zero; }

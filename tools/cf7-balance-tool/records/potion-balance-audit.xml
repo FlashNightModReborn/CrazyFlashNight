@@ -649,6 +649,62 @@
       <outputs recoveryStrength="400" purifyStrength="0" toxicStrength="0" buffStrength="902.8" toughnessStrength="0" currentValue="1302.8" valueCap="1600" rawPrice="1511.593357" recommendedPrice="1500" />
     </record>
     <record>
+      <auditRef>potion:蒜蓉烤茄子</auditRef>
+      <itemName>蒜蓉烤茄子</itemName>
+      <sourceFile>消耗品_药剂_食品.xml</sourceFile>
+      <sourceLevel>18</sourceLevel>
+      <domain>meal</domain>
+      <balanceMode>formula</balanceMode>
+      <status>proposed</status>
+      <marketPrice>1800</marketPrice>
+      <inputDigest>fnv1a32:781cf9e8</inputDigest>
+      <sourceDigest>sha256:512a5c27572232c821b0284b6f75749dcca50d249203db907ce5b8fc092b34c1</sourceDigest>
+      <inputs instantHp="230" instantMp="230" regenHp="0" regenMp="0" regenFrames="0" playerLevel="18" isGroup="0" purifyValue="0" toxicity="0" buffHp="0" buffMp="0" buffDefence="24" buffMagicResist="0" buffDamage="24" buffPunch="0" buffSpeed="1" buffToughness="0" buffDuration="1800" />
+      <outputs recoveryStrength="460" purifyStrength="0" toxicStrength="0" buffStrength="1037" toughnessStrength="0" currentValue="1497" valueCap="1900" rawPrice="1820.152812" recommendedPrice="1800" />
+    </record>
+    <record>
+      <auditRef>potion:蜜汁烤鸡</auditRef>
+      <itemName>蜜汁烤鸡</itemName>
+      <sourceFile>消耗品_药剂_食品.xml</sourceFile>
+      <sourceLevel>22</sourceLevel>
+      <domain>meal</domain>
+      <balanceMode>formula</balanceMode>
+      <status>proposed</status>
+      <marketPrice>2200</marketPrice>
+      <inputDigest>fnv1a32:c3953027</inputDigest>
+      <sourceDigest>sha256:587e5fafb14ec7a285df89632a04ffeacbe1ca096c3b335ddb37b9d9b2204f06</sourceDigest>
+      <inputs instantHp="270" instantMp="270" regenHp="0" regenMp="0" regenFrames="0" playerLevel="22" isGroup="0" purifyValue="0" toxicity="0" buffHp="0" buffMp="0" buffDefence="28" buffMagicResist="0" buffDamage="30" buffPunch="0" buffSpeed="1.5" buffToughness="0" buffDuration="1800" />
+      <outputs recoveryStrength="540" purifyStrength="0" toxicStrength="0" buffStrength="1348.1" toughnessStrength="0" currentValue="1888.1" valueCap="2300" rawPrice="2570.333942" recommendedPrice="2550" />
+    </record>
+    <record>
+      <auditRef>potion:酥炸大虾</auditRef>
+      <itemName>酥炸大虾</itemName>
+      <sourceFile>消耗品_药剂_食品.xml</sourceFile>
+      <sourceLevel>26</sourceLevel>
+      <domain>meal</domain>
+      <balanceMode>formula</balanceMode>
+      <status>proposed</status>
+      <marketPrice>2600</marketPrice>
+      <inputDigest>fnv1a32:9918c3cc</inputDigest>
+      <sourceDigest>sha256:a67170b3099ac3beaef051d588730dbf4a0366adf655096c1149201e61ba4201</sourceDigest>
+      <inputs instantHp="310" instantMp="310" regenHp="0" regenMp="0" regenFrames="0" playerLevel="26" isGroup="0" purifyValue="0" toxicity="0" buffHp="0" buffMp="0" buffDefence="36" buffMagicResist="0" buffDamage="32" buffPunch="0" buffSpeed="1.5" buffToughness="0" buffDuration="1800" />
+      <outputs recoveryStrength="620" purifyStrength="0" toxicStrength="0" buffStrength="1482.3" toughnessStrength="0" currentValue="2102.3" valueCap="2700" rawPrice="2991.644376" recommendedPrice="3000" />
+    </record>
+    <record>
+      <auditRef>potion:瑶柱蒸蛋</auditRef>
+      <itemName>瑶柱蒸蛋</itemName>
+      <sourceFile>消耗品_药剂_食品.xml</sourceFile>
+      <sourceLevel>30</sourceLevel>
+      <domain>meal</domain>
+      <balanceMode>formula</balanceMode>
+      <status>proposed</status>
+      <marketPrice>2000</marketPrice>
+      <inputDigest>fnv1a32:6fd531c4</inputDigest>
+      <sourceDigest>sha256:17bcd615ab81e1d9cdce4a4ac1e631f528f7f5b56897e412e8c7baf8bff548b5</sourceDigest>
+      <inputs instantHp="340" instantMp="340" regenHp="0" regenMp="0" regenFrames="0" playerLevel="30" isGroup="0" purifyValue="0" toxicity="0" buffHp="0" buffMp="0" buffDefence="30" buffMagicResist="0" buffDamage="28" buffPunch="0" buffSpeed="2" buffToughness="0" buffDuration="1800" />
+      <outputs recoveryStrength="680" purifyStrength="0" toxicStrength="0" buffStrength="1488.4" toughnessStrength="0" currentValue="2168.4" valueCap="3100" rawPrice="3085.111613" recommendedPrice="3100" />
+    </record>
+    <record>
       <auditRef>potion:情报鸡尾酒</auditRef>
       <itemName>情报鸡尾酒</itemName>
       <sourceFile>消耗品_药剂_食品.xml</sourceFile>

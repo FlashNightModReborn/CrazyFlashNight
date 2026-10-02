@@ -65,7 +65,7 @@ test("snapshot adopts exact authority and normalizes legacy performance display"
     keyMigrationNotice:"", migrationPending:false,
     settings:Object.assign({}, settings, {"性能等级上限":3}),
     keys, defaultKeys:keys.map(row => ({id:row.id,keyCode:row.keyCode})),
-    allowedKeyCodes:allowed, hostPrefs:{introEnabled:false,sfxEnabled:true,ambientEnabled:false,
+    allowedKeyCodes:allowed, hostPrefs:{introEnabled:false,sfxEnabled:true,ambientEnabled:false,tutorialsAutoOpen:true,
       uiFontScale:1.35,mapDisplayPreference:"auto",hitNumberMode:"balanced",hitNumberWorldRowLimit:24}, challengeMode:false,
     modeLabel:"困难", cheatHelp:[], forceControls:{}, previewActive:false
   };
@@ -74,6 +74,7 @@ test("snapshot adopts exact authority and normalizes legacy performance display"
   assert.strictEqual(model.settings["性能等级上限"], 1);
   assert.strictEqual(model.keys[12].keyCode, 54);
   assert.strictEqual(model.keyMigrationNotice, "");
+  assert.strictEqual(model.hostPrefs.tutorialsAutoOpen, true);
   const draft = runtime.gameDraft(model);
   draft.settings.setGlobalVolume = 79;
   assert.strictEqual(runtime.hasGameChanges(model, draft), true);

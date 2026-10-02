@@ -1,0 +1,67 @@
+{
+  "schemaVersion": 1,
+  "termName": "废城",
+  "displayName": "废城",
+  "skin": "dossier",
+  "pages": [
+    {
+      "pageKey": "1",
+      "requires": [],
+      "blocks": [
+        {
+          "type": "heading", "level": 2,
+          "content": [{ "type": "text", "text": "§1 定义" }]
+        },
+        {
+          "type": "paragraph",
+          "content": [{ "type": "text", "text": "废城，旧称尘都东区，C 国西南重要城市之一。其位于盆地平原，坐拥规模庞大的铁路网，曾能向周围区域辐射影响力；亦是死亡竞赛的中心之一。审判日摧毁其治安体系后，各方撤守，此地沦为废墟，遂有今名。" }]
+        },
+        {
+          "type": "paragraph",
+          "content": [{ "type": "text", "text": "现况：尘都其他区域已被各方划分完毕，废城是仅存的未封口地带——危险与遗物并存，吸引着各类探险者。" }]
+        }
+      ]
+    },
+    {
+      "pageKey": "2",
+      "requires": [{ "item": "地铁站通关证明", "minValue": 15 }],
+      "blocks": [
+        {
+          "type": "heading", "level": 2,
+          "content": [{ "type": "text", "text": "§2 补录：围墙与第一防线" }]
+        },
+        {
+          "type": "paragraph",
+          "content": [{ "type": "text", "text": "三战后，统合政府与各地巨型企业按收入等级强行划分市区，以武力围墙维系区分。WP 治下的尘都防线远较直辖黻城简陋——预算被大量投入电子信息领域，市区南部中心仅设「第一防线」作为应急。" }]
+        },
+        {
+          "type": "paragraph",
+          "content": [{ "type": "text", "text": "审判日后防线上的物资被搬空，如今徒留空名。但因其扼守市区南部的位置，仍是任何势力控制废城时绕不开的前进基地。" }]
+        }
+      ]
+    },
+    {
+      "pageKey": "3",
+      "requires": [
+        { "item": "地铁站通关证明", "minValue": 10 },
+        { "item": "贫民窟探查笔记", "minValue": 1 }
+      ],
+      "blocks": [
+        {
+          "type": "heading", "level": 2,
+          "content": [{ "type": "text", "text": "§3 补录：废城角力现状" }]
+        },
+        {
+          "type": "paragraph",
+          "content": [
+            { "type": "text", "text": "多方在此对峙：A 兵团稳住脚跟后逐步渗透，俨然以废城的主人自居；蓉都公社与军警宪政派在外围建立据点互相牵制；CSSF 残部抵抗失败后散落各处，已无成建制武装。" }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "content": [{ "type": "text", "text": "据探查队遗物中的笔记残页：深入腹地的队伍遭遇过有组织性的危险迹象——废城并非无人看护的空壳。行走其间者宜自重。" }]
+        }
+      ]
+    }
+  ]
+}

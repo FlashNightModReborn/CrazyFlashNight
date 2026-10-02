@@ -90,16 +90,12 @@ namespace CF7Launcher.Save
                 Directory.CreateDirectory(savesDir);
 
             string markerPath = Path.Combine(savesDir, MarkerFileName);
-            string tmpPath = markerPath + ".tmp";
 
             JObject obj = new JObject();
             obj["version"] = CurrentSchemaVersion;
             obj["writtenAt"] = DateTime.UtcNow.ToString("yyyy-MM-dd'T'HH:mm:ss'Z'");
 
-            File.WriteAllText(tmpPath, obj.ToString(Formatting.None), new UTF8Encoding(false));
-            if (File.Exists(markerPath))
-                File.Delete(markerPath);
-            File.Move(tmpPath, markerPath);
+            DurableFileWriter.WriteAllText(markerPath, obj.ToString(Formatting.None), new UTF8Encoding(false));
         }
     }
 }

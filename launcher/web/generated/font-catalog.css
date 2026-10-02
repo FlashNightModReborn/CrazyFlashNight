@@ -126,6 +126,15 @@
     font-display: swap;
 }
 
+@font-face {
+    font-family: "CF7Face--chill-g-sans-500";
+    src: url('https://cfn-fonts.local/chill-g-sans.otf') format('opentype');
+    font-weight: 500;
+    font-style: normal;
+    font-stretch: normal;
+    font-display: swap;
+}
+
 :root {
     --cf7-font-web-intelligence-title: "CF7Face--ma-shan-zheng-regular-400", "CF7Face--zhi-mang-xing-regular-400", "KaiTi", serif;
     --cf7-font-web-intelligence-body: "CF7Face--lxgw-wenkai-screen-400", "KaiTi", serif;
@@ -144,6 +153,8 @@
     --cf7-font-web-workbench-title: "CF7Face--source-han-serif-cn-heavy-900", "CF7Face--source-han-serif-cn-regular-400", "Microsoft YaHei", sans-serif;
     --cf7-font-web-workbench-body: "Microsoft YaHei", sans-serif;
     --cf7-font-web-workbench-mono: "Consolas", "Courier New", monospace;
+    --cf7-font-web-commune-title: "CF7Face--chill-g-sans-500", "CF7Face--source-han-serif-cn-heavy-900", "SimHei", sans-serif;
+    --cf7-font-web-commune-body: "CF7Face--chill-g-sans-500", "CF7Face--lxgw-wenkai-screen-400", "FangSong", serif;
     --cf7-font-web-stage-select-body: "Microsoft YaHei", "Microsoft JhengHei", "Arial", sans-serif;
     --cf7-font-web-stage-select-mono: "Consolas", monospace;
     --cf7-font-web-overlay-mono: "CF7Face--jetbrains-mono-400", "Consolas", "Courier New", monospace;

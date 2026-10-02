@@ -178,6 +178,14 @@ function Get-Cf7ProductionChecks {
         -Arguments @((Join-Path $ProjectRoot 'tools\test-derive-task-conditions.js')) -WorkingDirectory $ProjectRoot
     $checks += New-Cf7CommandCheck -Name 'panel-cross-layer-contracts' -FilePath $node `
         -Arguments @((Join-Path $ProjectRoot 'tools\validate-panel-contracts.js')) -WorkingDirectory $ProjectRoot
+    $checks += New-Cf7CommandCheck -Name 'guidance-catalog-current' -FilePath $node `
+        -Arguments @((Join-Path $ProjectRoot 'tools\generate-guidance-catalog.js'), '--check') -WorkingDirectory $ProjectRoot
+    $checks += New-Cf7CommandCheck -Name 'scene-transition-catalog-current' -FilePath $node `
+        -Arguments @((Join-Path $ProjectRoot 'tools\generate-scene-transition-catalog.js'), '--check') -WorkingDirectory $ProjectRoot
+    $checks += New-Cf7CommandCheck -Name 'scene-transition-stage-entry' -FilePath $node `
+        -Arguments @((Join-Path $ProjectRoot 'tools\test-scene-transition-stage-entry.js')) -WorkingDirectory $ProjectRoot
+    $checks += New-Cf7CommandCheck -Name 'guidance-tutorial-journeys' -FilePath $node `
+        -Arguments @((Join-Path $ProjectRoot 'tools\test-guidance-tutorials.js')) -WorkingDirectory $ProjectRoot
     $checks += New-Cf7CommandCheck -Name 'web-item-icon-closure' -FilePath $node `
         -Arguments @((Join-Path $ProjectRoot 'tools\audit-web-item-icon-closure.js')) -WorkingDirectory $ProjectRoot
     $checks += New-Cf7CommandCheck -Name 'web-icon-render-entrypoints' -FilePath $node `
@@ -226,6 +234,10 @@ function Get-Cf7ProductionChecks {
     $requiredWebPaths = @(
         'bootstrap.html', 'bootstrap-main.js', 'overlay.html', 'config\version.js',
         'composition-help.html', 'modules\composition-help.js',
+        'scene-transition.html', 'modules\scene-transition.js',
+        'css\scene-transition.css', 'generated\scene-transition-catalog.js',
+        'css\guidance.css', 'modules\guidance-inventory-demo.js', 'modules\guidance-tutorials.js',
+        'generated\guidance-catalog.js', 'generated\tutorial-journeys.js',
         'css\bootstrap.css', 'css\game-ui-behavior.css', 'css\welcome.css', 'css\overlay.css',
         'css\panels.css', 'css\panels\foundation-top.css', 'css\workbench\tokens.css',
         'css\panels\foundation-rest.css', 'css\workbench\core.css', 'css\workbench\profiles.css',
@@ -398,7 +410,7 @@ function Get-Cf7ProductionChecks {
         -Arguments @((Join-Path $ProjectRoot 'tools\audit-native-cursor-assets.js')) -WorkingDirectory $ProjectRoot
     $checks += New-Cf7RequiredPathsCheck -Name 'required-launcher-data-assets' `
         -Root (Join-Path $ProjectRoot 'launcher\data') `
-        -Paths @('save_repair_dict.json', 'save_schema.json')
+        -Paths @('save_repair_dict.json', 'save_schema.json', 'guidance-catalog.json', 'tutorial-journeys.json', 'scene-transition\catalog.manifest.json')
     $checks += New-Cf7RequiredPathsCheck -Name 'required-font-runtime-assets' `
         -Root (Join-Path $ProjectRoot 'fonts') `
         -Paths @(

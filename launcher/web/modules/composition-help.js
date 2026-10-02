@@ -1,5 +1,5 @@
 /**
- * composition-help.js — 只读 Help 试点页（composition-help.html）的胶水层
+ * composition-help.js — Help 组合页（游戏内容只读，本机教程偏好有界写）的胶水层
  *
  * 职责：
  *   1. 记录 Host panel_cmd:open(help) 下发的 initData.panelInstanceId，
@@ -8,6 +8,7 @@
  *   2. 过滤 Bridge.send 出站：只放行
  *        { type:'composition_help_ready' }
  *        { type:'panel', cmd:'close', panel:'help', panelInstanceId:<记录的实例> }
+ *        tutorial_preference:disable_auto_open（仅本机教程偏好，绑定当前实例）
  *      其余（task / viewportMetrics / gpuInfo / 诊断等）全部丢弃。
  *   3. window load 后先 Panels.init()，再发 composition_help_ready——init 未完成不发，
  *      Host 不会在 ready 之前授予 open。
@@ -50,6 +51,12 @@
             if (!_helpInstanceId) return false;
             out.panelInstanceId = _helpInstanceId;
             return _origSend.call(Bridge, out);
+        }
+        if (msg.type === 'tutorial_preference') {
+            if (Object.keys(msg).length !== 5 || msg.version !== 1 || msg.cmd !== 'disable_auto_open'
+                    || !_helpInstanceId || msg.panelInstanceId !== _helpInstanceId
+                    || typeof msg.callId !== 'string' || !/^[A-Za-z0-9._~-]{1,160}$/.test(msg.callId)) return false;
+            return _origSend.call(Bridge, msg);
         }
         // 丢所有诊断 / task / viewportMetrics / gpuInfo / 其他 panel 命令。
         // 返回 true：面板层不需要为被丢弃的消息保留重试状态。

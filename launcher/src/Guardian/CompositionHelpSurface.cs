@@ -10,7 +10,7 @@ using CF7Launcher.Guardian.WorldCompositor;
 using Microsoft.Web.WebView2.Core;
 using Newtonsoft.Json.Linq;
 
-// 真实游戏 help 面板的局部 composition 端点（只读试点）。
+// 真实游戏 help 面板的局部 composition 端点（游戏内容只读）。
 // 复用 WorldCompositor.CompositionSceneHost 与
 // CoreWebView2CompositionController；不使用 WinForms WebView2、CDP 或私有反射。
 // 本类不是 C1 虚拟世界宿主，不持有游戏存档/业务通道。
@@ -37,6 +37,8 @@ namespace CF7Launcher.Guardian
         private readonly Form _owner;
         private readonly string _webRoot;
         private readonly string _profileRoot;
+        private readonly bool _transition;
+        private readonly string _hostName, _pageUrl;
         private CoreWebView2Environment? _environment;
         private CompositionSceneHost? _scene;
         private CoreWebView2CompositionController? _web;
@@ -45,18 +47,27 @@ namespace CF7Launcher.Guardian
         private int _prepareVersion;
         private bool _ready, _active, _disposed, _closePending, _trackingLeave, _capturedButton;
         private Rectangle _committed = Rectangle.Empty;
+        private Rectangle _presentedViewport = Rectangle.Empty, _postedViewport = Rectangle.Empty;
+        private int _postedViewportGeneration = -1;
         private string _panelInstance = "";
         private string _closeReason = "page_close";
         private int _pressedButtons;
         private readonly System.Windows.Forms.Timer _closeTimer = new() { Interval = 25 };
 
         internal event Action<string>? CloseRequested;
+        internal event Action<JObject>? TransitionMessage;
+        internal event Action? TransitionFailed;
+        internal Func<JObject, string, JObject?>? TutorialPreferenceRequested;
 
-        internal CompositionHelpSurface(Form owner, string webRoot, string profileRoot)
+        internal CompositionHelpSurface(Form owner, string webRoot, string profileRoot, bool transition = false)
         {
             _owner = owner ?? throw new ArgumentNullException(nameof(owner));
             _webRoot = webRoot ?? throw new ArgumentNullException(nameof(webRoot));
             _profileRoot = profileRoot ?? throw new ArgumentNullException(nameof(profileRoot));
+            _transition = transition;
+            _hostName = transition ? "cf7-transition.local" : HostName;
+            _pageUrl = transition ? "https://cf7-transition.local/scene-transition.html" : PageUrl;
+            Text = transition ? "CF7 Scene Transition" : "CF7 Help";
             FormBorderStyle = FormBorderStyle.None;
             ShowInTaskbar = false;
             StartPosition = FormStartPosition.Manual;
@@ -67,6 +78,17 @@ namespace CF7Launcher.Guardian
         }
 
         protected override bool ShowWithoutActivation => true;
+        protected override CreateParams CreateParams {
+            get {
+                var value = base.CreateParams;
+                // DirectComposition supplies the complete alpha surface, including fade edges.
+                if (_transition) value.ExStyle |= 0x00200000 | 0x80; // NOREDIRECTIONBITMAP | TOOLWINDOW
+                return value;
+            }
+        }
+        protected override void OnPaintBackground(PaintEventArgs e) {
+            if (!_transition) base.OnPaintBackground(e);
+        }
 
         internal bool Ready { get { return _ready && !_disposed; } }
         internal bool Active { get { return _active && Ready; } }
@@ -105,7 +127,7 @@ namespace CF7Launcher.Guardian
                 IntPtr visual = _scene.AcquireVisual(2);
                 try { _webVisual = Marshal.GetObjectForIUnknown(visual); _web.RootVisualTarget = _webVisual; }
                 finally { Marshal.Release(visual); }
-                core.SetVirtualHostNameToFolderMapping(HostName, _webRoot, CoreWebView2HostResourceAccessKind.DenyCors);
+                core.SetVirtualHostNameToFolderMapping(_hostName, _webRoot, CoreWebView2HostResourceAccessKind.DenyCors);
                 core.NavigationStarting += OnNavigationStarting;
                 core.NewWindowRequested += (_, args) => args.Handled = true;
                 core.DownloadStarting += (_, args) => args.Cancel = true;
@@ -115,7 +137,7 @@ namespace CF7Launcher.Guardian
                 core.WebMessageReceived += OnWebMessage;
                 _web.AcceleratorKeyPressed += OnAcceleratorKey;
                 _readyTcs = new TaskCompletionSource<bool>(TaskCreationOptions.RunContinuationsAsynchronously);
-                core.Navigate(PageUrl);
+                core.Navigate(_pageUrl);
                 var ready = _readyTcs.Task;
                 var timeout = Task.Delay(15000);
                 if (await Task.WhenAny(ready, timeout) != ready)
@@ -153,6 +175,7 @@ namespace CF7Launcher.Guardian
 
         internal bool TryPost(string json)
         {
+            if (_transition) return TryPostTransitionPanel(json);
             if (!Active || _web == null) return false;
             var message = JObject.Parse(json);
             string? type = message.Value<string>("type");
@@ -165,6 +188,10 @@ namespace CF7Launcher.Guardian
                     if (string.IsNullOrEmpty(instance)) return false;
                     _panelInstance = instance;
                 }
+            }
+            else if (type == "tutorial_preference_result")
+            {
+                if (!HelpTutorialPreferenceCommand.IsResultFor(message, _panelInstance)) return false;
             }
             else if (type != "panel_viewport_set" && type != "panel_esc") return false;
             _web.CoreWebView2.PostWebMessageAsJson(json);
@@ -217,19 +244,51 @@ namespace CF7Launcher.Guardian
             LogManager.Log("[HelpSurface] retired gen=" + SessionGeneration);
         }
 
+        // The transition is a separate fixed projection endpoint; it never enters panel pause/snapshot.
+        internal bool PresentTransition(Rectangle rect) {
+            using var latency = CF7Launcher.Diagnostic.InputLatencyProbe.Measure("surface_present");
+            if (!_transition || !Ready || _web == null || !CanRestoreGameFocus) return false;
+            if (!_active) return ResumePanel(rect) && CommitGeometry(rect, SessionGeneration);
+            _committed = rect;
+            if (Bounds != rect) Bounds = rect;
+            if (!Visible) { Show(); Activate(); _web.MoveFocus(CoreWebView2MoveFocusReason.Programmatic); }
+            SyncViewport();
+            return true;
+        }
+        internal bool PostTransition(JObject message) {
+            if (!_transition || !Active || _web == null || message.Value<string>("type") != "scene_transition") return false;
+            _web.CoreWebView2.PostWebMessageAsJson(message.ToString(Newtonsoft.Json.Formatting.None));
+            return true;
+        }
+        internal void HideTransition() {
+            if (!_transition || _disposed) return;
+            _active = false; _committed = Rectangle.Empty;
+            _pressedButtons = 0; _capturedButton = false; Capture = false;
+            if (Visible) Hide();
+            SyncViewport();
+        }
+        internal void SuppressTransition() {
+            if (_transition && !_disposed && Visible) { Hide(); SyncViewport(); }
+        }
+        internal void RaiseTransition() {
+            if (_transition && Active && Visible && CanRestoreGameFocus)
+                SceneTransitionWindowOrder.RaiseIfCovered(this, _owner);
+        }
+        internal bool TransitionInputReleased => _pressedButtons == 0
+            && (GetAsyncKeyState(0x01) | GetAsyncKeyState(0x02) | GetAsyncKeyState(0x0D) | GetAsyncKeyState(0x20)) >= 0;
+
         // 当前前台是本窗（含 WebView 内部子窗口）或 owner 及其同进程窗口；
         // 不按进程名猜测。
-        internal bool CanRestoreGameFocus
+        internal bool CanRestoreGameFocus => CaptureGameForeground()!=IntPtr.Zero;
+        internal IntPtr CaptureGameForeground()
         {
-            get {
-                IntPtr foreground = GetForegroundWindow();
-                if (foreground == IntPtr.Zero) return false;
-                if (foreground == Handle || GetAncestor(foreground, 2) == Handle) return true;
-                if (_owner != null && !_owner.IsDisposed
-                    && (foreground == _owner.Handle || GetAncestor(foreground, 2) == _owner.Handle)) return true;
-                GetWindowThreadProcessId(foreground, out uint pid);
-                return pid == Environment.ProcessId;
-            }
+            IntPtr foreground = GetForegroundWindow();
+            if (foreground == IntPtr.Zero) return IntPtr.Zero;
+            if (foreground == Handle || GetAncestor(foreground, 2) == Handle) return foreground;
+            if (_owner != null && !_owner.IsDisposed
+                && (foreground == _owner.Handle || GetAncestor(foreground, 2) == _owner.Handle)) return foreground;
+            GetWindowThreadProcessId(foreground, out uint pid);
+            return pid == Environment.ProcessId ? foreground : IntPtr.Zero;
         }
 
         private bool ForegroundIsSameProcess()
@@ -248,6 +307,7 @@ namespace CF7Launcher.Guardian
 
         private void SyncViewport()
         {
+            using var latency = CF7Launcher.Diagnostic.InputLatencyProbe.Measure("surface_viewport");
             if (_disposed || IsDisposed) return;
             var bounds = DeviceClientRectangle();
             if (_web != null && _web.Bounds != bounds) _web.Bounds = bounds;
@@ -264,26 +324,34 @@ namespace CF7Launcher.Guardian
                         + " gen=" + SessionGeneration);
                 }
             }
-            if (Active && _web != null)
+            if (Active && _web != null
+                && (_postedViewport != bounds || _postedViewportGeneration != SessionGeneration))
+            {
                 _web.CoreWebView2.PostWebMessageAsJson(new JObject {
                     ["type"] = "panel_viewport_set", ["w"] = bounds.Width, ["h"] = bounds.Height
                 }.ToString(Newtonsoft.Json.Formatting.None));
-            if (_scene != null) {
+                _postedViewport = bounds;
+                _postedViewportGeneration = SessionGeneration;
+            }
+            // Presentation already commits and waits for native completion. A 25ms
+            // transition tick must not repeat that UI-thread fence at unchanged size.
+            // Browser visibility and WebView's own frame submissions remain independent.
+            if (_scene != null && _presentedViewport != bounds) {
                 _scene.Presentation(false, false, bounds.Width, bounds.Height);
-                _scene.Commit();
+                _presentedViewport = bounds;
             }
         }
 
         private void OnNavigationStarting(object? sender, CoreWebView2NavigationStartingEventArgs args)
         {
-            if (args.Uri != PageUrl) args.Cancel = true;
+            if (args.Uri != _pageUrl) args.Cancel = true;
         }
 
         private void OnWebResourceRequested(object? sender, CoreWebView2WebResourceRequestedEventArgs args)
         {
             // 仅放行同 origin 文件；不读游戏 save，不响应外链/下载。
             if (_environment == null
-                || !args.Request.Uri.StartsWith("https://" + HostName + "/", StringComparison.Ordinal)) {
+                || !args.Request.Uri.StartsWith("https://" + _hostName + "/", StringComparison.Ordinal)) {
                 args.Response = _environment?.CreateWebResourceResponse(
                     Stream.Null, 403, "help origin only", "Content-Type: text/plain");
                 return;
@@ -293,13 +361,27 @@ namespace CF7Launcher.Guardian
         private void OnWebMessage(object? sender, CoreWebView2WebMessageReceivedEventArgs args)
         {
             if (_disposed || _web == null || !ReferenceEquals(sender, _web.CoreWebView2)
-                || args.Source != PageUrl) return;
+                || args.Source != _pageUrl) return;
             JObject message;
             try { message = JObject.Parse(args.WebMessageAsJson); }
             catch { return; }
             string? type = message.Value<string>("type");
-            if (type == "composition_help_ready") {
+            if (type == (_transition ? "scene_transition_ready" : "composition_help_ready")) {
                 _readyTcs?.TrySetResult(true);
+                return;
+            }
+            if (_transition) {
+                if (Active && IsTransitionMessageType(type))
+                    TransitionMessage?.Invoke(message);
+                else if (Active && (IsSettlementMessage(message,_panelInstance)
+                    || type=="panel-toast" && _panelInstance.Length>0 && message["html"]?.Type==JTokenType.String
+                        && message.Value<string>("html").Length<=4096))
+                    SettlementMessage?.Invoke(message);
+                return;
+            }
+            if (type == "tutorial_preference" && Active && _panelInstance.Length > 0) {
+                var result = TutorialPreferenceRequested?.Invoke(message, _panelInstance);
+                if (result != null) TryPost(result.ToString(Newtonsoft.Json.Formatting.None));
                 return;
             }
             // 页面关闭请求：等物理鼠标键与 ESC 全部释放后才上抛 CloseRequested，
@@ -312,10 +394,48 @@ namespace CF7Launcher.Guardian
             }
         }
 
+        internal static bool IsTransitionMessageType(string type) => type is
+            "scene_transition_presented" or "scene_transition_action" or "scene_transition_report_view";
+
+        internal event Action<JObject> SettlementMessage;
+        internal string SettlementInstance => _transition ? _panelInstance : "";
+        internal bool TryPostTransitionPanel(string json) {
+            if (!_transition || !Active || _web == null) return false;
+            JObject p;
+            try { p=JObject.Parse(json); } catch { return false; }
+            string type=p.Value<string>("type");
+            if(type=="panel_cmd") {
+                if(p.Value<string>("panel")!="loot") return false;
+                if(p.Value<string>("cmd")=="open") {
+                    string instance=p["initData"]?.Value<string>("panelInstanceId");
+                    if(string.IsNullOrEmpty(instance) || _panelInstance.Length>0 && _panelInstance!=instance) return false;
+                    _panelInstance=instance;
+                } else if(p.Value<string>("panelInstanceId")!=_panelInstance || _panelInstance.Length==0) return false;
+            } else if(type is "panel_resp" or "scene_transition_report_restore") {
+                if(p.Value<string>("panelInstanceId")!=_panelInstance || _panelInstance.Length==0) return false;
+            } else if(type=="scene_transition_complete") {
+                if(_panelInstance.Length==0) return false;
+            } else if(type is not ("panel_viewport_set" or "panel_esc")) return false;
+            _web.CoreWebView2.PostWebMessageAsJson(json);
+            return true;
+        }
+        internal void ReleaseSettlementBinding() { if(_transition) _panelInstance=""; }
+        internal static bool IsSettlementMessage(JObject p,string instance) {
+            if(p==null || string.IsNullOrEmpty(instance) || p["panelInstanceId"]?.Type!=JTokenType.String
+                || p.Value<string>("panelInstanceId")!=instance) return false;
+            string text(string key) => p[key]?.Type==JTokenType.String ? p.Value<string>(key) : null;
+            string type=text("type");
+            return type=="task" && text("task")=="loot_request"
+                || type=="panel" && text("panel")=="loot"
+                    && (text("domain")=="inventory" || text("cmd")=="close")
+                || type=="scene_transition_report_presented";
+        }
+
         private void OnWebProcessFailed(object? sender, CoreWebView2ProcessFailedEventArgs args)
         {
             if (_web == null || !ReferenceEquals(sender, _web.CoreWebView2)) return;
             LogManager.Log("[HelpSurface] web process failed: " + args.ProcessFailedKind);
+            if (_transition) { _ready = false; TransitionFailed?.Invoke(); return; }
             RequestClose("process_failed:" + args.ProcessFailedKind);
         }
 
@@ -324,7 +444,7 @@ namespace CF7Launcher.Guardian
             if (args.VirtualKey == VkEscape)
             {
                 args.Handled = true;
-                if (args.KeyEventKind == CoreWebView2KeyEventKind.KeyUp)
+                if (!_transition && args.KeyEventKind == CoreWebView2KeyEventKind.KeyUp)
                     RequestClose("esc");
             }
         }
@@ -345,7 +465,10 @@ namespace CF7Launcher.Guardian
             if (_disposed || IsDisposed || !IsHandleCreated) return;
             BeginInvoke((Action)(() => {
                 if (_disposed || !_active || IsDisposed) return;
-                if (!ForegroundIsOurs()) RequestClose("deactivated");
+                if (!ForegroundIsOurs()) {
+                    if (_transition) { Hide(); SyncViewport(); }
+                    else RequestClose("deactivated");
+                }
             }));
         }
 
@@ -362,6 +485,7 @@ namespace CF7Launcher.Guardian
 
         private void RequestClose(string reason)
         {
+            if (_transition) return;
             if (_disposed || !_active || _closePending) return;
             _closePending = true;
             _closeReason = reason;
@@ -397,7 +521,8 @@ namespace CF7Launcher.Guardian
                     }
                     break;
                 case WmMouseMove:
-                    if (_web != null) _web.SendMouseInput(CoreWebView2MouseEventKind.Move, MouseKeys(m.WParam), 0, MousePoint(m.LParam));
+                    using (CF7Launcher.Diagnostic.InputLatencyProbe.Measure("web_input"))
+                        if (_web != null) _web.SendMouseInput(CoreWebView2MouseEventKind.Move, MouseKeys(m.WParam), 0, MousePoint(m.LParam));
                     EnsureLeaveTracking();
                     break;
                 case WmMouseLeave:
@@ -479,6 +604,8 @@ namespace CF7Launcher.Guardian
 
         private void TearDownEndpoint()
         {
+            _presentedViewport = _postedViewport = Rectangle.Empty;
+            _postedViewportGeneration = -1;
             if (_web != null) {
                 var core = _web.CoreWebView2;
                 core.NavigationStarting -= OnNavigationStarting;

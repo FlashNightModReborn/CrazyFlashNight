@@ -1,0 +1,4 @@
+﻿trace("FocusedTestRunId scene-lighting Start: __FOCUSED_RUN_ID__");
+org.flashNight.arki.render.SceneLightBridgeTest.runAllTests();
+org.flashNight.arki.render.SceneLightAssetTest.setRunId("__FOCUSED_RUN_ID__");
+org.flashNight.arki.render.SceneLightAssetTest.runAllTests();

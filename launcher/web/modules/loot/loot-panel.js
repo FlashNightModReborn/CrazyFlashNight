@@ -8,6 +8,8 @@ var LootPanel = (function() {
     var _organizerActive = false, _organizerReturning = false, _organizerDestroying = false;
     var _init, _identity, _generation = 0, _claimAll = false;
     var _transportInstanceId = '';
+    var _preview = null, _activeSession = null;
+    var _reportPaintGeneration = -1;
     var _claimAllTimer = null, _terminalCloseTimer = null, _closingVisual = false;
     var _claimAllQueue = [], _claimAllBlockedSlots = {}, _claimAllBlockedReason = '';
     var _materials = {items:null,busy:false,error:'',requestedRevision:null,dirty:false};
@@ -41,6 +43,7 @@ var LootPanel = (function() {
     Panels.register('loot', {
         create:createDOM,
         onOpen:onOpen,
+        onPreview:onPreview,
         onRebind:onRebind,
         onClose:cleanup,
         onRequestClose:requestClose,
@@ -56,15 +59,31 @@ var LootPanel = (function() {
         return _el;
     }
 
-    function onOpen(el, initData) {
-        cleanup();
-        var generation = ++_generation;
+    function onPreview(el, report) {
+        var normalized = LootView.normalizeSettlementReport(report);
+        if (!normalized || normalized.rewardStashed !== true) return false;
+        return onOpen(el, {v:1, panelInstanceId:'transition.pending',
+            chestSessionId:'transition.pending', lootContainerId:'transition.pending',
+            containerEpoch:1, capacity:8, columns:4, displayName:'关卡结算',
+            sourceKind:'stage_settlement', report:normalized}, true);
+    }
+
+    function onOpen(el, initData, preview) {
+        var normalized = LootView.normalizeInitData(initData);
+        var reuse = !preview && _preview && _view && normalized
+            && normalized.sourceKind === 'stage_settlement'
+            && JSON.stringify(normalized.report) === JSON.stringify(_init.report);
+        if (!reuse) {
+            cleanup();
+            if (_runtimeConfig.externalScale) _runtimeConfig.sceneReady = false;
+        }
+        var generation = reuse ? _generation : ++_generation;
         _emitDiagnostic.reset();
         _el = el;
         _transportInstanceId = initData && typeof initData.panelInstanceId === 'string'
             && /^[A-Za-z0-9._~-]+$/.test(initData.panelInstanceId)
             && initData.panelInstanceId.length <= 128 ? initData.panelInstanceId : '';
-        _init = LootView.normalizeInitData(initData);
+        _init = normalized;
         if (!_init) {
             emitDiagnostic({event:'init_received', outcome:'rejected',
                 error:'invalid_init'}, null, generation, null);
@@ -86,6 +105,24 @@ var LootPanel = (function() {
             kills:_init.report ? _init.report.kills.length : -1,
             flows:_init.report ? _init.report.itemFlows.length : -1},
             _identity, generation, _init.report);
+        if (!preview) bindModel(generation);
+        if (reuse) {
+            _preview = null;
+            _view.init = _init;
+            _view.identity = _identity;
+            _view.options.init = _init;
+            _view.options.identity = _identity;
+            _view.options.transitionPreview = false;
+            setupOrganizer(_activeSession, generation);
+            openModel(generation);
+            return true;
+        }
+        _preview = preview ? {report:_init.report} : null;
+        mountView(generation);
+        return !!_view;
+    }
+
+    function bindModel(generation) {
         _mux = new LootRuntime.RequestMux({
             identity:_identity,
             send:function(message) { return Bridge.send(message); },
@@ -122,11 +159,16 @@ var LootPanel = (function() {
                     scheduleSuspendedClose(generation);
             }
         });
+    }
+
+    function mountView(generation) {
         _view = new LootView.View({
             hostElement:_el,
             init:_init,
             identity:_identity,
             runtimeConfig:_runtimeConfig,
+            externalScale:_runtimeConfig.externalScale === true,
+            transitionPreview:!!_preview,
             getProjection:projection,
             canWrite:canWrite,
             isOpen:isOpen,
@@ -167,15 +209,26 @@ var LootPanel = (function() {
     }
 
     function activate(session, generation) {
+        _activeSession = session;
         session.defer(function() {
             if (_mux) { _mux.destroy(); _mux=null; }
         });
         session.defer(function() { if (_model) _model.destroy(); });
         _view.activate(session);
-        setupOrganizer(session,generation);
+        if (_model) setupOrganizer(session,generation);
         _claimAll = false;
         resetClaimAllOutcome();
         _closingVisual = false;
+        if (!_model) {
+            _view.render({phase:'opening',remainingCount:null},null,false,false);
+            _view.closeButton.disabled = false;
+            _view.shell.setStatus('正在返回基地','busy');
+            return;
+        }
+        openModel(generation);
+    }
+
+    function openModel(generation) {
         _model.open(function(ok,response) {
             if (generation !== _generation) return;
             var adoptedPhase=_model?_model.debugState().phase:'';
@@ -718,11 +771,13 @@ var LootPanel = (function() {
     }
 
     function primaryAction() {
+        if (_preview) { requestClose('footer');return; }
         var state=_model&&_model.debugState();
         if (!state) return;
         if (_organizerActive||_organizerReturning) return;
         if (state.phase==='reconcile_required') { reconcile();return; }
         if (state.phase!=='active') return;
+        if (_view&&_view.isStashedReport) { requestClose('footer');return; }
         if (state.remainingCount===0) commitClose(false);
         else if (LootView.isInventoryCapacityBlock(state.blockReason)
                 ||LootView.isInventoryCapacityBlock(_claimAllBlockedReason)) openOrganizer();
@@ -734,6 +789,10 @@ var LootPanel = (function() {
 
     function requestClose(reason) {
         if (_view&&_view.hasModal()) { _view.closeModal('cancel');return; }
+        if (_preview) {
+            if (typeof _runtimeConfig.closePreview === 'function') _runtimeConfig.closePreview();
+            return;
+        }
         if (_organizerActive) { requestOrganizerReturn(reason === 'escape' ? undefined : true);return; } // 契约 §5.5：Esc 只返回战利品视图；×/backdrop/toggle 重同步后直接关面板
         var state=_model&&_model.debugState();
         if (!state||state.phase==='opening') {
@@ -799,6 +858,20 @@ var LootPanel = (function() {
         state.claimAllBlockedCount=claimAllBlockedCount();
         _view.setMaterials(_materials.items,_materials.busy,_materials.error);
         _view.render(state,projection(),_claimAll,_organizerActive||_organizerReturning);
+        if (_runtimeConfig.externalScale && !_runtimeConfig.sceneReady && state.phase === 'active')
+            _view.shell.setStatus('奖励已就绪 · 正在返回基地','busy');
+        if (_init.sourceKind==='stage_settlement' && _init.report && _init.report.rewardStashed===true
+            && state.phase==='active' && _reportPaintGeneration!==_generation && !_closingVisual) {
+            var generation=_generation, view=_view, identity=_identity, runId=_init.report.runId;
+            _reportPaintGeneration=generation;
+            requestAnimationFrame(function() { requestAnimationFrame(function() {
+                if (generation!==_generation || _view!==view || _closingVisual || !isOpen()
+                    || !view.reportSection || !view.reportSection.isConnected) return;
+                Bridge.send({type:'scene_transition_report_presented',version:1,
+                    panelInstanceId:identity.panelInstanceId,chestSessionId:identity.chestSessionId,
+                    lootContainerId:identity.lootContainerId,containerEpoch:identity.containerEpoch,runId:runId});
+            }); });
+        }
     }
 
     function scheduleTerminalClose(generation) {
@@ -827,7 +900,29 @@ var LootPanel = (function() {
         Bridge.send(message);
     }
 
-    function onRebind(el,initData) { cleanup();onOpen(el,initData); }
+    function onRebind(el,initData) { return onOpen(el,initData); }
+    function restoreTransitionReport(message) {
+        var fields=['type','version','panelInstanceId','chestSessionId','lootContainerId','containerEpoch','runId','viewState'];
+        if (!message||Object.keys(message).length!==fields.length||fields.some(function(k){return !Object.hasOwn(message,k);})
+            ||message.type!=='scene_transition_report_restore'||message.version!==1
+            ||!_view||!_identity||!_init||_init.sourceKind!=='stage_settlement'
+            ||!_init.report||_init.report.rewardStashed!==true||_closingVisual||!isOpen()
+            ||!_model||_model.debugState().phase!=='active'
+            ||message.panelInstanceId!==_identity.panelInstanceId||message.chestSessionId!==_identity.chestSessionId
+            ||message.lootContainerId!==_identity.lootContainerId||message.containerEpoch!==_identity.containerEpoch
+            ||message.runId!==_init.report.runId) return;
+        var viewState=LootView.normalizeReportPresentation(message.viewState);
+        if(!viewState||!_view.restoreReportPresentation(viewState))return;
+        var generation=_generation,view=_view,identity=_identity,runId=_init.report.runId;
+        requestAnimationFrame(function(){requestAnimationFrame(function(){
+            if(generation!==_generation||_view!==view||_closingVisual||!isOpen()
+                ||!view.reportSection||!view.reportSection.isConnected||!_model||_model.debugState().phase!=='active')return;
+            Bridge.send({type:'scene_transition_report_presented',version:2,
+                panelInstanceId:identity.panelInstanceId,chestSessionId:identity.chestSessionId,
+                lootContainerId:identity.lootContainerId,containerEpoch:identity.containerEpoch,runId:runId,viewState:viewState});
+        });});
+    }
+    Bridge.on('scene_transition_report_restore',restoreTransitionReport);
     function destroyOrganizerRuntime() {
         if (_organizerDestroying) return;
         _organizerDestroying=true;
@@ -848,6 +943,8 @@ var LootPanel = (function() {
         _organizerDestroying=false;
     }
     function cleanup() {
+        _preview=null;
+        _activeSession=null;
         _generation++;
         stopClaimAll();
         if (_terminalCloseTimer!=null) {
@@ -921,6 +1018,36 @@ var LootPanel = (function() {
             return state;
         },
         requestClose:requestClose,
+        reportPresentation:function(){return _view && _view.reportPresentation();},
+        hasModal:function(){return !!(_view && _view.hasModal());},
+        isPreview:function(){return !!_preview;},
+        updatePreview:function(state){
+            if (!_preview || !_view) return;
+            _view.closeButton.disabled=!!state.pending || state.connected===false;
+            _view.closeButton.setAttribute('aria-disabled',_view.closeButton.disabled?'true':'false');
+            _view.closeButton.setAttribute('aria-busy',state.pending?'true':'false');
+            if (_view.focusScope) {
+                if (state.visible && _preview.hidden) _view.focusScope.activate({initialFocus:_view.closeButton});
+                else if (!state.visible) _view.focusScope.deactivate();
+            }
+            _preview.hidden=!state.visible;
+            _view.shell.setStatus(state.connected===false?'等待连接':state.rejected?'奖励界面暂未打开':'正在返回基地',
+                state.connected===false||state.rejected?'warning':'busy');
+            _view.commitBar.update({label:_view.isStashedReport?'完成结算':'全部收取',
+                disabled:!_view.isStashedReport||_view.closeButton.disabled,busy:!!state.pending,state:'busy',
+                status:state.connected===false?'连接暂时中断，等待恢复':state.rejected?'奖励界面暂未能打开，可先关闭报告。'
+                    :_view.isStashedReport?'奖励已存入暂存区，正在接通物品整理。':'正在接通奖励，请稍候。'});
+        },
+        sceneReady:function(){
+            _runtimeConfig.sceneReady=true;
+            if (_view && _model && _model.debugState().phase==='active')
+                _view.shell.setStatus('结算状态已同步','ready');
+        },
+        setVisible:function(visible){
+            if (!_view || !_view.focusScope) return;
+            if (visible) _view.focusScope.activate({initialFocus:_view.closeButton});
+            else _view.focusScope.deactivate();
+        },
         reconcile:reconcile,
         exactInitData:LootView.normalizeInitData
     };

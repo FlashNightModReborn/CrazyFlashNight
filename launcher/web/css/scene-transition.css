@@ -1,0 +1,28 @@
+html,body { width:100%; height:100%; margin:0; overflow:hidden; background:transparent; }
+body { font-family:var(--font-ui,"Microsoft YaHei"),sans-serif; }
+#transition { position:fixed; inset:0; overflow:hidden; background:var(--launcher-bg-0); opacity:0; }
+#transition [hidden],#transition[hidden] { display:none; }
+#transition.is-covered { opacity:1; }
+.transition-shell { position:absolute; width:1024px; height:576px; transform-origin:top left; }
+#transition-image { width:100%; height:100%; object-fit:contain; display:block; }
+.transition-copy { position:absolute; left:0; right:0; bottom:0; padding:38px 48px 25px; color:var(--launcher-copy);
+    background:linear-gradient(transparent,color-mix(in srgb,var(--launcher-bg-0) 90%,transparent)); }
+.transition-copy h1 { font-size:24px; margin:0 0 12px; color:var(--term-ink-hi); }
+#transition-tip { margin:0; font-size:16px; line-height:1.6; white-space:pre-line; min-height:26px; }
+#transition-status { font-size:12px; margin:8px 0; }
+#transition-activity { height:3px; width:240px; overflow:hidden; background:var(--wb-scrollbar-track); }
+#transition-activity span { display:block; height:100%; width:70px; background:var(--wb-role-selected);
+    animation:transition-activity var(--wb-motion-ambient) var(--wb-ease-standard,ease) infinite alternate; }
+#transition-actions { display:flex; gap:14px; margin-top:18px; }
+#transition-actions button { font:inherit; font-size:16px; padding:10px 22px; cursor:pointer;
+    color:var(--term-ink-hi); background:var(--launcher-bg-1); border:1px solid var(--wb-role-focus); border-radius:4px; }
+#transition-actions button:focus-visible { outline:2px solid var(--wb-role-focus); outline-offset:4px; }
+#transition-actions button:disabled { opacity:.5; cursor:default; }
+@keyframes transition-activity { from { transform:translateX(-70px); } to { transform:translateX(240px); } }
+@media (prefers-reduced-motion:reduce) { #transition-activity span { animation:none; width:100%; } }
+
+/* The outer transition canvas owns viewport scaling; this nested canvas stays logical-sized. */
+#transition-report { position:absolute;inset:0; --panel-scale:1; }
+#transition-report #panel-container, #transition-report #panel-content { position:absolute;inset:0; }
+#transition-report #panel-content > .loot-scale-shell { --panel-scale:1; }
+/* Settlement geometry and typography are owned by the unchanged production workbench styles. */

@@ -16,6 +16,13 @@
     }
 }
 
+// 独立地图 SWF 只调用根入口，购车服务统一编进 asLoader。
+_root.打开车库购车 = function(vehicleId:String):Boolean {
+    var opened:Boolean = org.flashNight.arki.ui.GaragePurchasePanelService.openPanel(vehicleId);
+    if (!opened) _root.最上层发布文字提示("购车界面暂时无法打开，请稍后重试。");
+    return opened;
+};
+
 _root.打开整形手术 = function(){
     if(!org.flashNight.arki.ui.PlasticSurgeryPanelService.openPanel())
         _root.最上层发布文字提示("整形界面暂时无法打开，请稍后重试。");
@@ -52,15 +59,15 @@ _root.从库中加载全屏UI = function(identifier){
 }
 
 _root.卸载全屏UI = function(){
+    org.flashNight.arki.ui.NativeGuidanceService.clear();
     _root.全屏UI层.当前UI.removeMovieClip();
     _root.全屏UI层.当前UI = null;
     _root.全屏UI层.引导界面.unloadMovie();
 }
 
 _root.加载引导界面 = function(filename){
-    _root.全屏UI层.引导界面._visible = true;
-    _root.全屏UI层.引导界面._alpha = 100;
-    _root.全屏UI层.引导界面.loadMovie("flashswf/UI/引导界面合集/" + filename + ".swf");
+    // U8 uses native hints; this facade keeps all seven existing trigger sites unchanged.
+    org.flashNight.arki.ui.NativeGuidanceService.show(filename);
 }
 
 // ============================================================
@@ -69,9 +76,11 @@ _root.加载引导界面 = function(filename){
 if (_root.gameCommands == undefined) _root.gameCommands = {};
 org.flashNight.arki.ui.HairdresserPanelService.install();
 org.flashNight.arki.ui.PlasticSurgeryPanelService.install();
+org.flashNight.arki.ui.GaragePurchasePanelService.install();
 org.flashNight.arki.ui.SleepPanelService.install();
 org.flashNight.arki.ui.GymPreviewPanelService.install();
 org.flashNight.arki.ui.GameSettingsPanelService.install();
+org.flashNight.arki.ui.SceneTransitionService.install();
 
 _root.gameCommands["togglePause"] = function() {
     _root.暂停 = !_root.暂停;  // watch 自动 pushUiState("p:0/1")

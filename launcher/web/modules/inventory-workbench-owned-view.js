@@ -7,6 +7,15 @@
 })(typeof window !== 'undefined' ? window : globalThis, function() {
     'use strict';
 
+    function tuningFeatureAvailable() {
+        return typeof InventoryTuningScope !== 'undefined' && InventoryTuningScope
+            && typeof InventoryTuningScope.Transition === 'function'
+            && typeof EquipmentTuningView !== 'undefined' && EquipmentTuningView
+            && typeof EquipmentTuningView.create === 'function'
+            && typeof EquipmentTuningRuntime !== 'undefined' && EquipmentTuningRuntime
+            && typeof EquipmentTuningRuntime.safeToken === 'function';
+    }
+
     function countOccupied(slots) {
         var count = 0;
         slots = slots || [];
@@ -356,6 +365,7 @@
     }
 
     return {
+        isTuningFeatureAvailable:tuningFeatureAvailable,
         countOccupied:countOccupied,
         presentationFor:presentationFor,
         authorityInteraction:authorityInteraction,

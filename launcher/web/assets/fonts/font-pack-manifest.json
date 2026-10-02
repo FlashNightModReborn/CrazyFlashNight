@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "generatedBy": "tools/fontctl",
-  "sourceSha256": "56d48b2f5f2295e1cd53bae071be55bb7e5a926374ccc22c3590feeeb6c29906",
+  "sourceSha256": "b0cb7437d00295f88736ee0001b08aeb629f1f9ed056e572f3d404a319efa0c8",
   "gate": "E",
   "comment": "Generated compatibility projection. Edit fonts/fonts.xml and run fontctl generate.",
   "groups": {
@@ -200,6 +200,44 @@
           "urls": [
             "https://cdn.jsdelivr.net/gh/adobe-fonts/source-han-serif@release/SubsetOTF/CN/SourceHanSerifCN-Heavy.otf",
             "https://github.com/adobe-fonts/source-han-serif/raw/release/SubsetOTF/CN/SourceHanSerifCN-Heavy.otf"
+          ],
+          "shippedFallback": false
+        }
+      ]
+    },
+    "interface": {
+      "label": "界面与 HUD 黑体",
+      "description": "刘海、HUD 与通用界面正文的无衬线中文字体。",
+      "totalBytes": 8406556,
+      "files": [
+        {
+          "name": "source-han-sans-cn-medium.otf",
+          "label": "Source Han Sans CN Medium（思源黑体 / 刘海与 HUD 中文）",
+          "license": "SIL-OFL-1.1",
+          "bytes": 8406556,
+          "sha256": "a94e558a2fe972bee4f46bce0843abff37063fd68c33f1e7d9058f6f09432b01",
+          "urls": [
+            "https://cdn.jsdelivr.net/gh/adobe-fonts/source-han-sans@release/SubsetOTF/CN/SourceHanSansCN-Medium.otf",
+            "https://github.com/adobe-fonts/source-han-sans/raw/release/SubsetOTF/CN/SourceHanSansCN-Medium.otf"
+          ],
+          "shippedFallback": false
+        }
+      ]
+    },
+    "expressive-commune": {
+      "label": "公社工业档案黑体",
+      "description": "公社防具旧工厂公文与生产指标档案的复古窄黑体。",
+      "totalBytes": 9902664,
+      "files": [
+        {
+          "name": "chill-g-sans.otf",
+          "label": "ChillGSans Medium（寒蝉高黑体 / 窄黑融合手写与旧字形 / 公社档案正文与红头）",
+          "license": "SIL-OFL-1.1",
+          "bytes": 9902664,
+          "sha256": "7855e353d50c2a07dd31e8ba6e3d0294b8a405b3b87f94655d0c8e5f492c1c50",
+          "urls": [
+            "https://cdn.jsdelivr.net/gh/Warren2060/ChillGSans@main/ChillGSans.otf",
+            "https://raw.githubusercontent.com/Warren2060/ChillGSans/main/ChillGSans.otf"
           ],
           "shippedFallback": false
         }

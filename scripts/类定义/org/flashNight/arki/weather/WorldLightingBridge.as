@@ -11,13 +11,16 @@ class org.flashNight.arki.weather.WorldLightingBridge {
 
     public static function sceneChanged():Void {
         _scene++; _snap=true;
+        org.flashNight.arki.render.SceneLightBridge.resetScene();
         _ready = false;
         _lastSend = -1000;
         _mode = "光照";
     }
     public static function sceneReady():Void { _ready = true; _lastSend = -1000; }
+    public static function sceneNumber():Number { return _scene; }
     public static function setMode(mode:String):Void { if (_mode !== mode) _snap=true; _mode = mode; }
     public static function snapNext():Void { _snap=true; }
+    public static function getScene():Number { return _scene; }
 
     // Pure continuous light calculation. Does not advance WeatherSystem's gameplay clock
     // or overwrite its quantized authoritative light/reward state.
@@ -93,8 +96,9 @@ class org.flashNight.arki.weather.WorldLightingBridge {
             weatherType:weatherType, weatherIntensity:weatherIntensity,
             weatherQuality:weatherQuality,
             weatherGroundMin:groundMin, weatherGroundMax:groundMax,
-            atmosphere:GameWorldOverlayRenderer.getState()
+            atmosphere:GameWorldOverlayRenderer.getState(),
+            sceneLights:org.flashNight.arki.render.SceneLightBridge.snapshot()
         }, null) === true;
-        if (sent) { _lastSend = now; _snap=false; }
+        if (sent) { _lastSend = now; _snap=false; org.flashNight.arki.render.SceneLightBridge.sent(); }
     }
 }

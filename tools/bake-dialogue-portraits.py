@@ -926,10 +926,13 @@ def bake_external(
                 entry = entries.setdefault(variant_key, {
                     "key": variant_key, "aliases": [], "source": "external-swf",
                     "sourcePath": swf.relative_to(project_root).as_posix(), "sourceKey": key,
-                    "sourceSpriteId": result["sourceSpriteId"], "coordinateSpace": "sprite-natural",
+                    "sourceSpriteId": result["sourceSpriteId"],
+                    "coordinateSpace": result.get("coordinateSpace", "sprite-natural"),
                     "selection": result["selection"], "defaultExpression": DEFAULT_EXPRESSION,
                     "expressions": {},
                 })
+                if "sourceRootFrame" in result:
+                    entry["sourceRootFrame"] = result["sourceRootFrame"]
                 asset = copy_asset(variant_dir / result["png"], Path(args.output_dir),
                                    f"external/{stable_dir('p', variant_key)}", result["expression"],
                                    image_format=args.image_format)
@@ -938,6 +941,8 @@ def bake_external(
                                           "zoom": args.zoom, "supersample": args.supersample,
                                           "resolutionScale": result["resolutionScale"],
                                           "minimumVisibleHeight": result["minimumVisibleHeight"] // args.supersample}
+                if "sourceRootFrame" in result:
+                    asset["rasterization"]["sourceRootFrame"] = result["sourceRootFrame"]
                 entry["expressions"][result["expression"]] = asset
             for entry in entries.values():
                 append_entry(manifest, entry, authority_decisions, report)

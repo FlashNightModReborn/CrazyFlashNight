@@ -63,16 +63,19 @@
                 <x>750</x>
                 <y>430</y>
                 <Identifier>出生点-聚光灯</Identifier>
+                <LightKey>concert-spawn-0</LightKey>
             </Point>
             <Point id="1">
                 <x>1130</x>
                 <y>440</y>
                 <Identifier>出生点-聚光灯</Identifier>
+                <LightKey>concert-spawn-1</LightKey>
             </Point>
             <Point id="2">
                 <x>1510</x>
                 <y>431</y>
                 <Identifier>出生点-聚光灯</Identifier>
+                <LightKey>concert-spawn-2</LightKey>
             </Point>
             <Point id="3">
                 <x>850</x>
@@ -1218,5 +1221,31 @@
                 </EnemyGroup>
             </SubWave>
         </Wave>
+        <Lights>
+            <Light>
+                <Key>concert-spawn-0</Key>
+                <Preset>spawn</Preset>
+                <AttachTo>concert-spawn-0</AttachTo>
+                <Radius>155</Radius>
+                <Energy>0.7</Energy>
+                <FrameCurve>1:0,6:0,7:0.3,9:0.8,11:1,15:1,18:0.35,20:0</FrameCurve>
+            </Light>
+            <Light>
+                <Key>concert-spawn-1</Key>
+                <Preset>spawn</Preset>
+                <AttachTo>concert-spawn-1</AttachTo>
+                <Radius>155</Radius>
+                <Energy>0.7</Energy>
+                <FrameCurve>1:0,6:0,7:0.3,9:0.8,11:1,15:1,18:0.35,20:0</FrameCurve>
+            </Light>
+            <Light>
+                <Key>concert-spawn-2</Key>
+                <Preset>spawn</Preset>
+                <AttachTo>concert-spawn-2</AttachTo>
+                <Radius>155</Radius>
+                <Energy>0.7</Energy>
+                <FrameCurve>1:0,6:0,7:0.3,9:0.8,11:1,15:1,18:0.35,20:0</FrameCurve>
+            </Light>
+        </Lights>
     </SubStage>
 </GameStage>

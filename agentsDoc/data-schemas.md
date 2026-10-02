@@ -68,6 +68,7 @@ var list:Array = XMLParser.configureDataAsArray(parsed.items);
 | `data/map/` | WebView 地图面板配置（`map_panel.xml` 单文件） |
 | `data/intelligence/` | 情报详情 legacy txt 文本；保留为 AS2 旧界面和 H5 迁移来源 |
 | `data/intelligence_h5/` | Launcher Web 情报面板 H5 JSON 组件树正文 |
+| `data/glossary/` | 情报面板「专有名词」词条（`glossary_index.json` + 每条 `<termName>.json`） |
 | `data/shops/` | NPC 金币商店清单、逐 NPC 商品目录与开发者分组 |
 | `data/arena/` | 竞技场标准/隐藏卡与标准佣兵装备掉落 XML 真源、势力元数据 JSON 真源与关卡派生 roster |
 | `config/` | 系统配置 |
@@ -79,6 +80,7 @@ data/items/list.xml          → 引用 54 个物品分类文件 + item_sets.xml
 data/enemy_properties/list.xml → 引用 14 个敌人定义文件
 data/dialogues/list.xml       → 引用 16 个对话文件
 data/environment/             → scene_environment.xml、stage_environment.xml、color_engine_preset.xml、presentation_presets.v1.json
+                               scene_lights.v1.json 提供场景灯预设，Lights/Light 保存逐场景覆盖
 data/stages/                  → 按地点组织的关卡数据
 data/dictionaries/            → 材料/情报字典
 data/intelligence/            → 按情报名称存放的 legacy txt 正文
@@ -389,6 +391,8 @@ XMLParser.parseXMLNode() 解析 → { items: ["消耗品_货币.xml", "武器_�
 - `system:infrastructure_upgrade` 的材料集合只以 `data/infrastructure/infrastructure.xml` 中各级 `<Material><Name>` 为真源；当前为 67 个需求 occurrence、21 个 unique material identity。catalog 中这 21 项的 `authoredDirectPurposeId` 只是由 generator exact-check 约束的分类投影：集合必须与 XML 去重结果完全相等，所有 identity 必须命中材料 exact-set；连同装备改装六例外，当前 authored direct-purpose refs 总数为 27、registry 总数为 2。`flashswf/UI/平板电脑界面/LIBRARY/基建内容整体.xml` 只作为 `InfrastructureUpgradeUI` consumer evidence。sidecar 当前 schema 为 `cf7.material-dictionary-generated.v2`、producer 为 `material-catalog-producer.v2`；其顶层 `infrastructure` exact 为 `{path,consumerEvidencePath,materialOccurrenceCount,materialCount}`，并把两个输入的 digest 纳入闭包。
 - 含该 direct purpose 的 v2 `materialDetail` 条件增加 `infrastructureUses[]`；其他材料及历史不含该 registry 的 v2 response 必须省略此键。项目 exact 为 `{infrastructureName,projectOrder,currentLevel,maximumLevel,levels}`，等级 exact 为 `{levelIndex,targetLevel,required,owned,missing,status}`，其中 `status` 只允许 `completed|current|future`。配置与物理顺序在 catalog snapshot 时从已就绪的 `_root.基建系统.nameList/dict` 冻结，缺失或不闭合时局部失败关闭；`levelIndex/targetLevel=levelIndex+1` 只认 `Level[]` 数组位置，不信任历史 XML `id`。详情读取 live `infrastructure[name]`，只投影已有自有键的已发现项目；未发现项目不得泄露名称。`owned` 沿用材料 snapshot，完成级 `missing=0`，当前/后续级为 `max(required-owned,0)`。Web 用这些数据替换重复的泛化“基建升级”行，显示逐项目、逐等级需求与缺口；仍为纯只读信息，不提供“前往基建”。
 - 配方 category 的 authored order 仍只来自 `data/crafting/list.xml` 的物理 `<list>` 顺序，catalog 不复制第二真源。生成 sidecar 会绑定并列出该顺序，运行时 loader 必须在 keyed merge 前保存它。
+- 配方所属菜谱/图谱：AS2 默认取 `materials` 里首个以"配方"结尾的物品名（如"基础家常菜配方""炉具料理配方"），烹饪面板据此把配方分到左列可抽出的菜谱条。仅当菜谱书本身不作为材料出现时，才显式声明可选 `book` 字段覆盖；正常不要在 `materials` 与 `book` 里重复写同一个菜谱名。
+- 配方可选 `infrastructure`：基建等级门槛，**不参与消耗**。取值 `"设施名#所需等级"`（如 `"烹饪用具#3"` 表示烹饪用具已完工级数 ≥3，即烤炉可用），或同形字符串数组/`{name, level}` 对象。判定语义与 `_root.基建系统.检查基建等级` 一致；AS2 在 buildPlan 里逐条投影 `{name, appliance, required, current, met}`，`appliance` 取 `基建系统.dict[设施].Level[required-1].Description`，不满足时以 `infrastructure_locked` 阻断预览与提交（提交侧经 stateSignature + deepEqual 复核兜底）。快照配方行额外携带 `book` 与 `infrastructure` 数组，预览/acceptedPlan 携带同形 `infrastructure` 数组；这两个字段是增量投影——旧 asLoader 不回传时 Web 端按缺省降级放行（参照 hairdresser `portrait` 惯例），出现则必须严格合法。
 
 `material_dictionary.xml` 现在是只投影 `legacyVisible=true` 的 `{Name,Information}` generated compatibility artifact；当前 58 条摘要、顺序和历史末尾无换行字节保持不变。`material_dictionary.generated.json` 是 manifest-last 审计 sidecar，绑定 generator 版本/哈希、全部逻辑输入、source digest、catalog/type/purpose/category 计数与 legacy 输出 SHA-256。
 
@@ -435,6 +439,22 @@ producer 对材料 exact-set、重复/未知 identity、未知 type/purpose、�
 Launcher Web 情报面板不开放 WebView2 对 `data/` 或项目根的 fetch 权限，而是由 C# `IntelligenceTask` 精确命中字典项后读取固定目录 JSON，并校验最终 full path 仍在 `data/intelligence_h5/` 下。正式 runtime 入口通过 AS2 `intelligenceState` 只回每条情报收集值、解密等级和玩家名，C# 合并本地 catalog 后返回 `state` 小包；Web 点击目录项时再请求 `snapshot(itemName)`，H5 snapshot 返回 `contentMode:"h5"`、`skin` 与 `pages[].blocks`，锁定页不下发 blocks。H5 JSON 只允许白名单组件树和 inline token，内容中不得包含任意 HTML、脚本或事件属性；组件完整语义、逐篇手工创作流程和 KimiCode 使用边界见 [情报 H5 组件创作交接](../docs/情报H5组件创作交接.md)。
 
 H5 数据门禁：示范/迁移期可运行 `node tools/validate-intelligence-h5.js --allow-missing`，正式全量门禁使用 `node tools/validate-intelligence-h5.js --strict`。批量迁移给 KimiCode 的自包含 prompt 由 `node tools/generate-intelligence-h5-prompts.js --batch-size 10` 生成；该工具只产出 `tmp/intelligence-h5-prompts/`，实际施工范围限定在 `data/intelligence_h5/`。创作层表达增强可用 `node tools/enhance-intelligence-h5-expression.js` 重新应用当前人工固化的示范组合；`幻层残响` 当前刻意保持生成基线，避免额外组件稀释原文本高信息密度。
+
+### 专有名词词条（`data/glossary/`）
+
+情报面板右侧「专有名词」tab 的数据源，随情报物品收集进度逐步揭示词条与词条页。所有解锁条件都写成 `requires` 条件数组（全部满足即成立，AND 关系）：
+
+| 条件形态 | 含义 |
+|---|---|
+| `{ "item": "<物品名>", "minValue": n }` | 该情报物品收集进度 ≥ n（`minValue` 缺省 1 表示"已发现"，即 value>0） |
+| `{ "minCollectedItems": n }` | 已发现的情报物品总数 ≥ n |
+| `{ "decryptLevel": n }` | 玩家解密等级 ≥ n |
+
+目录 `glossary_index.json` 是数组，每项形如 `{ "termName", "displayName", "requires" }`；`requires` 缺省或空数组时词条恒可见。前端把 `{name: value}` 的物品进度表与解密等级发给 `glossary_catalog`，后端按各条目的 `requires` 过滤，返回 `items` 与 `lockedCount`（不满足条件的词条被隐藏，前端只显示"另有 N 个名词待解锁"的聚合提示，不泄露名字）。
+
+每个词条是独立 `<termName>.json`：`{ "schemaVersion":1, "termName", "displayName", "skin", "writerVoice?", "pages":[] }`。`pages[]` 每项含 `pageKey`、`requires`（同前述条件 DSL）与 `blocks`（与情报 H5 相同的白名单组件树，但当前由后端透传、不走 intelligence_h5 严格校验，创作时必须自觉只写白名单组件）。`glossary_snapshot` 返回所有已解锁页 `pages[]` 与 `lockedPageCount`（未解锁页数）。页按数组序渲染、可翻页；当一个物品不满足时其依赖页隐藏——多个条件可分别绑定不同物品，由此组成"交叉解锁"。
+
+建议写作惯例：第 1 页 `requires` 为空、写"传闻级"短释义；物品专属条件在补录页使用；跨物品的交叉解锁用于深层/终局页。校验：`node tools/validate-glossary.js` 会核对物品名注册表、`minValue ≤ maxvalue`、每个词条至少一页免门槛。
 
 ### map_definition.json v2：地图内容与有限领域规则
 

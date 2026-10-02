@@ -14,6 +14,9 @@
 @import url("./workbench/skins.css");
 @import url("./workbench/entities.css");
 @import url("./workbench/crafting.css");
+@import url("./panels/cooking.css");
+@import url("./panels/chemistry.css");
+@import url("./panels/commune.css");
 @import url("./workbench/equipment-inspector.css");
 @import url("./workbench/skills.css");
 @import url("./workbench/equipment-tuning.css");
@@ -27,6 +30,7 @@
 @import url("./appearance-service.css");
 @import url("./hairdresser.css");
 @import url("./plastic-surgery.css");
+@import url("./garage-purchase.css");
 @import url("./sleep/tokens.css");
 @import url("./sleep-panel.css");
 @import url("./gym-panel.css");

@@ -1,0 +1,54 @@
+{
+  "schemaVersion": 1,
+  "termName": "天网",
+  "displayName": "天网",
+  "skin": "dossier",
+  "pages": [
+    {
+      "pageKey": "1",
+      "requires": [],
+      "blocks": [
+        {
+          "type": "heading", "level": 2,
+          "content": [{ "type": "text", "text": "§1 定义" }]
+        },
+        {
+          "type": "paragraph",
+          "content": [{ "type": "text", "text": "天网，统合政府为支撑其全球统治而建的永久卫星群＋地层基站＋高性能机器人网络，是统合科技与军事的巅峰。中枢采分布式架构，经卫星 AI 群统辖地面机器人，以「能级-白名单」与「异常能量波动」两套审查制度巡查威胁。" }]
+        },
+        {
+          "type": "paragraph",
+          "content": [{ "type": "text", "text": "审判日前夕，中枢 AI 群遭 C＆T 投放的病毒潜伏感染；系统在末日当天被仓促启动，继而失控——卫星倒戈、节点反噬、机器人无限扩张禁区，成为尘都最大的现存威胁。" }]
+        }
+      ]
+    },
+    {
+      "pageKey": "2",
+      "requires": [{ "item": "幻层残响", "minValue": 3 }],
+      "blocks": [
+        {
+          "type": "heading", "level": 2,
+          "content": [{ "type": "text", "text": "§2 补录：残响中的碎片" }]
+        },
+        {
+          "type": "paragraph",
+          "content": [{ "type": "text", "text": "旧世数据网络的碎片仍在废墟服务器节点间流转。「幻层残响」捕捉到若干涉及天网算法与接入设备的片段——其中可见其对数据流量进行「能级—波动」双路审计的痕迹，电子战即运行于这套网络的残留许可内。" }]
+        }
+      ]
+    },
+    {
+      "pageKey": "3",
+      "requires": [{ "item": "兵工厂备份硬盘", "minValue": 1 }],
+      "blocks": [
+        {
+          "type": "heading", "level": 2,
+          "content": [{ "type": "text", "text": "§3 补录：智械内战" }]
+        },
+        {
+          "type": "paragraph",
+          "content": [{ "type": "text", "text": "诺亚前线基地的兵工厂硬盘残档间接印证：天网并非铁板一块——受损节点与中枢互相敌对，部分失控机器人获得独立意识并叛逃。尘都禁区边缘的机器人内战，是人类存续的间隙，也是潜在的转机。" }]
+        }
+      ]
+    }
+  ]
+}

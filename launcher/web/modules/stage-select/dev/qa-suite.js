@@ -216,8 +216,10 @@ var StageSelectHarnessQA = (function() {
             ['hover-preview', 'stage card has preview and difficulty buttons', function() {
                 host.open();
                 return waitReady(api).then(function() {
-                    var button = document.querySelector('.stage-select-stage-button');
+                    var button = document.querySelector('.stage-select-stage-button:not(.is-direct-entry):not(.is-locked)');
                     api.assert(!!button, 'stage button exists');
+                    // 三维图的程序性回焦不弹卡；键盘 Tab 到达才应打开预览。
+                    button.dispatchEvent(new KeyboardEvent('keydown', { key: 'Tab', bubbles: true, cancelable: true }));
                     button.focus();
                     // P2：hover 卡在锚点层；focus 驱动 .is-card-open，DOM 恒存在
                     var anchor = findCardAnchor(button.getAttribute('data-stage-id'));
@@ -444,9 +446,17 @@ var StageSelectHarnessQA = (function() {
                     var cs = getComputedStyle(entry);
                     var padL = parseFloat(cs.paddingLeft);
                     var padR = parseFloat(cs.paddingRight);
-                    api.assert(padL >= 12 && padR >= 12, 'entry nav has horizontal padding >=12 (L=' + padL + ', R=' + padR + ')');
-                    api.assert(parseFloat(cs.minWidth) >= 110, 'entry nav min-width >= 110');
-                    api.assert(parseFloat(cs.height) >= 34, 'entry nav height >= 34');
+                    if (entry.classList.contains('is-diorama-nav')) {
+                        // 三维投影入口沿用地图标签宽度，不受旧矩形按钮的 116px 下限约束。
+                        api.assert(padL >= 4 && padR >= 4, 'projected nav has horizontal padding >=4');
+                        api.assert(parseFloat(cs.height) >= 32, 'projected nav hit height >=32');
+                        api.assert(entry.clientWidth >= 44, 'projected nav hit width >=44');
+                        api.assert(entry.scrollWidth <= entry.clientWidth + 1, 'projected nav label is not clipped');
+                    } else {
+                        api.assert(padL >= 12 && padR >= 12, 'entry nav has horizontal padding >=12 (L=' + padL + ', R=' + padR + ')');
+                        api.assert(parseFloat(cs.minWidth) >= 110, 'entry nav min-width >= 110');
+                        api.assert(parseFloat(cs.height) >= 34, 'entry nav height >= 34');
+                    }
                     var ret = document.querySelector('.stage-select-nav-button.is-return, .stage-select-nav-button.is-return-garage');
                     if (ret) {
                         var rcs = getComputedStyle(ret);
@@ -1032,7 +1042,11 @@ var StageSelectHarnessQA = (function() {
                             api.assert(Math.abs(markerY - expectedMarkerY) < 0.8, 'marker y matches XFL: ' + button.stageName);
                             api.assert(Math.abs(labelX - expectedLabelX) < 1.2, 'label x matches XFL: ' + button.stageName);
                             api.assert(Math.abs(labelY - expectedLabelY) < 1.2, 'label y matches XFL: ' + button.stageName);
-                            if (textLayout.label) {
+                            if (projected && projected.shortLabel) {
+                                api.assertEqual(label.textContent, projected.shortLabel, 'label matches projected caption: ' + button.stageName);
+                                api.assert(node.getAttribute('aria-label').indexOf(textLayout.label || button.stageName) >= 0,
+                                    'abbreviated map label retains full accessible name: ' + button.stageName);
+                            } else if (textLayout.label) {
                                 api.assertEqual(label.textContent, textLayout.label, 'label text matches XFL: ' + button.stageName);
                             }
                             checked += 1;

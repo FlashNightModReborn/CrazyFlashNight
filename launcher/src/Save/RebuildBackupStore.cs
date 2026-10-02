@@ -91,23 +91,17 @@ namespace CF7Launcher.Save
             lock (_gate)
             {
                 path = GetBackupPath(exact);
-                string tmp = path + ".tmp-" + Guid.NewGuid().ToString("N");
                 try
                 {
                     Directory.CreateDirectory(_directory);
-                    File.WriteAllText(
-                        tmp,
+                    DurableFileWriter.WriteAllText(
+                        path,
                         document.ToString(Formatting.None),
                         new UTF8Encoding(false));
-                    if (File.Exists(path))
-                        File.Replace(tmp, path, null, true);
-                    else
-                        File.Move(tmp, path);
                 }
                 catch (Exception ex)
                 {
                     error = "backup_write_failed:" + ex.GetType().Name;
-                    try { if (File.Exists(tmp)) File.Delete(tmp); } catch { }
                     return false;
                 }
 

@@ -36,6 +36,7 @@ class org.flashNight.arki.item.CraftingPanelServiceTest {
         testSnapshotGenderNormalization();
         testSnapshotAvailabilityRefresh();
         testNestedCraftingSourceProjection();
+        testInfrastructureGating();
         testProcurementOwnedScope();
         testProcurementPlanAndTaskDemand();
         testProcurementMutationAndConsumption();
@@ -173,6 +174,54 @@ class org.flashNight.arki.item.CraftingPanelServiceTest {
             "preview projects exact nested crafting source identity without Web inference");
         materials.pop();
         SynthesisIndex.reset();
+        CraftingPanelService.testOnlyReset();
+    }
+
+    private static function testInfrastructureGating():Void {
+        resetOwned();
+        var previousDict:Object = _root.基建系统.dict;
+        _root.基建系统.dict = {烹饪用具:{Level:[
+            {Description:"炒锅"}, {Description:"灶台"}, {Description:"烤炉"}
+        ]}};
+        _root.改装清单["烹饪"] = [
+            {recipeId:"craft.cooking.test", title:"测试烤菜", name:"测试药剂",
+                price:0, kprice:0, book:"炉具料理配方",
+                infrastructure:"烹饪用具#3",
+                materials:["测试图纸#1", "测试矿石#1"]}
+        ];
+        _root.基建系统.infrastructure["烹饪用具"] = 0;
+        var snapshot:Object = CraftingPanelService.execute("snapshot", {category:"烹饪"});
+        check(snapshot.success && snapshot.recipes.length == 1
+                && snapshot.recipes[0].book == "炉具料理配方"
+                && snapshot.recipes[0].infrastructure.length == 1
+                && snapshot.recipes[0].infrastructure[0].name == "烹饪用具"
+                && snapshot.recipes[0].infrastructure[0].appliance == "烤炉"
+                && snapshot.recipes[0].infrastructure[0].required == 3
+                && snapshot.recipes[0].infrastructure[0].current == 0
+                && snapshot.recipes[0].infrastructure[0].met == false
+                && snapshot.recipes[0].availability == "infrastructure_locked"
+                && snapshot.recipes[0].canCraftOne == false,
+            "snapshot projects recipe book, infrastructure row and locked availability");
+        var blocked:Object = CraftingPanelService.execute("preview", {
+            category:"烹饪", recipeIndex:0, craftCount:1});
+        check(blocked.success && blocked.canCommit == false
+                && blocked.blockingError == "infrastructure_locked"
+                && blocked.craftToken == undefined
+                && blocked.infrastructure.length == 1
+                && blocked.infrastructure[0].met == false,
+            "preview blocked by infrastructure before any commit authority");
+        _root.基建系统.infrastructure["烹饪用具"] = 3;
+        var allowed:Object = CraftingPanelService.execute("preview", {
+            category:"烹饪", recipeIndex:0, craftCount:1});
+        check(allowed.success && allowed.canCommit == true
+                && allowed.blockingError == ""
+                && allowed.infrastructure[0].met == true
+                && allowed.infrastructure[0].current == 3
+                && allowed.acceptedPlan.infrastructure[0].met == true,
+            "built infrastructure releases the gate and reports live level");
+        delete _root.改装清单["烹饪"];
+        delete _root.基建系统.infrastructure["烹饪用具"];
+        _root.基建系统.dict = previousDict;
         CraftingPanelService.testOnlyReset();
     }
 

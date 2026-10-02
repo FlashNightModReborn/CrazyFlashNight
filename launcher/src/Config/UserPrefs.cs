@@ -14,6 +14,7 @@ namespace CF7Launcher.Config
     ///   IntroEnabled    — "加载片头动画" 复选框状态
     ///   SfxEnabled      — Web Audio UI 音效 (hover / click / confirm / error 等), 默认 true
     ///   AmbientEnabled  — Web Audio 环境 hum (Idle 态背景低频 drone), 默认 false
+    ///   TutorialsAutoOpen — 自动打开场景教程页面，默认 true；手动帮助不受影响
     ///   UiFontScale     — 引导页字号缩放倍率, 网页侧作用于 :root --fs-scale (bootstrap/welcome.css)
     ///                    允许值 [FontScaleMin..FontScaleMax], 默认 FontScaleDefault (略放大基线)
     ///   SuppressedHighDpiWarningRaw — 用户选择不再提示的高 DPI 兼容性 raw value
@@ -36,6 +37,7 @@ namespace CF7Launcher.Config
         public bool IntroEnabled { get; set; }
         public bool SfxEnabled { get; set; }
         public bool AmbientEnabled { get; set; }
+        public bool TutorialsAutoOpen { get; set; }
         public double UiFontScale { get; set; }
         public string SuppressedHighDpiWarningRaw { get; set; }
         public string MapDisplayPreference { get; set; }
@@ -46,11 +48,16 @@ namespace CF7Launcher.Config
         private readonly string _legacyPath;
 
         public UserPrefs(string projectRoot)
+            : this(projectRoot, null)
+        {
+        }
+
+        internal UserPrefs(string projectRoot, string preferenceDirectory)
         {
             _legacyPath = Path.Combine(projectRoot, "launcher_user_prefs.json");
             try
             {
-                string localDir = Path.Combine(
+                string localDir = preferenceDirectory ?? Path.Combine(
                     Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
                     "CF7FlashNight");
                 Directory.CreateDirectory(localDir);
@@ -65,6 +72,7 @@ namespace CF7Launcher.Config
             IntroEnabled = false;
             SfxEnabled = true;
             AmbientEnabled = false;
+            TutorialsAutoOpen = true;
             UiFontScale = FontScaleDefault;
             SuppressedHighDpiWarningRaw = null;
             MapDisplayPreference = "auto";
@@ -120,6 +128,8 @@ namespace CF7Launcher.Config
                 if (sfx.HasValue) SfxEnabled = sfx.Value;
                 bool? ambient = obj.Value<bool?>("ambientEnabled");
                 if (ambient.HasValue) AmbientEnabled = ambient.Value;
+                if (obj["tutorialsAutoOpen"]?.Type == JTokenType.Boolean)
+                    TutorialsAutoOpen = obj.Value<bool>("tutorialsAutoOpen");
                 double? scale = obj.Value<double?>("uiFontScale");
                 if (scale.HasValue) UiFontScale = ClampFontScale(scale.Value);
                 SuppressedHighDpiWarningRaw = obj.Value<string>("suppressedHighDpiWarningRaw");
@@ -141,6 +151,7 @@ namespace CF7Launcher.Config
                 IntroEnabled = false;
                 SfxEnabled = true;
                 AmbientEnabled = false;
+                TutorialsAutoOpen = true;
                 UiFontScale = FontScaleDefault;
                 SuppressedHighDpiWarningRaw = null;
                 MapDisplayPreference = "auto";
@@ -162,6 +173,7 @@ namespace CF7Launcher.Config
                 obj["introEnabled"] = IntroEnabled;
                 obj["sfxEnabled"] = SfxEnabled;
                 obj["ambientEnabled"] = AmbientEnabled;
+                obj["tutorialsAutoOpen"] = TutorialsAutoOpen;
                 obj["uiFontScale"] = UiFontScale;
                 obj["mapDisplayPreference"] = NormalizeMapDisplayPreference(MapDisplayPreference);
                 obj["hitNumberMode"] = NormalizeHitNumberMode(HitNumberMode);
@@ -169,7 +181,8 @@ namespace CF7Launcher.Config
                     NormalizeHitNumberWorldRowLimit(HitNumberWorldRowLimit);
                 if (!string.IsNullOrEmpty(SuppressedHighDpiWarningRaw))
                     obj["suppressedHighDpiWarningRaw"] = SuppressedHighDpiWarningRaw;
-                File.WriteAllText(_path, obj.ToString(Newtonsoft.Json.Formatting.Indented));
+                CF7Launcher.Save.DurableFileWriter.WriteAllText(_path,
+                    obj.ToString(Newtonsoft.Json.Formatting.Indented), new System.Text.UTF8Encoding(false));
                 return true;
             }
             catch (Exception ex)

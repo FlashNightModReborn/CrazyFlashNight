@@ -1,0 +1,61 @@
+{
+  "schemaVersion": 1,
+  "termName": "硬化僵尸",
+  "displayName": "硬化僵尸",
+  "skin": "dossier",
+  "pages": [
+    {
+      "pageKey": "1",
+      "requires": [],
+      "blocks": [
+        {
+          "type": "heading", "level": 2,
+          "content": [{ "type": "text", "text": "§1 定义" }]
+        },
+        {
+          "type": "paragraph",
+          "content": [{ "type": "text", "text": "硬化僵尸，堕落城周边臭名昭著的通缉生物。其原型是早年 3xf 人体实验中的「失败品」——控制人脑的病毒未能突破其大脑屏障，只作用于肌肉与有限脑功能，受试者因此保有一定智慧。" }]
+        },
+        {
+          "type": "paragraph",
+          "content": [{ "type": "text", "text": "该个体在审判日前的生化泄露事故中出逃，游荡于禁区边缘；在一次天网袭击商队事件中意外摄入黑铁会流出的突变剂，肉体膨胀硬化，由此成为废城—堕落城边界最令人畏惧的存在。" }]
+        }
+      ]
+    },
+    {
+      "pageKey": "2",
+      "requires": [{ "item": "γ-ECHO病理摘要", "minValue": 1 }],
+      "blocks": [
+        {
+          "type": "heading", "level": 2,
+          "content": [{ "type": "text", "text": "§2 补录：与 ECHO 株系的病理关联" }]
+        },
+        {
+          "type": "paragraph",
+          "content": [{ "type": "text", "text": "γ-ECHO 病理摘要显示：硬化过程与 γ-ECHO 株系的感染阶段存在可对照的特征——骨刺化、硬化期与末期转化均可比对。有研究者据此推断，硬化僵尸是同一技术树的分支产物，唯其偶发强化路径不可复制。" }]
+        },
+        {
+          "type": "note",
+          "content": [{ "type": "text", "text": "编注：此推断仅据病理对比，直接源流证据未获。" }]
+        }
+      ]
+    },
+    {
+      "pageKey": "3",
+      "requires": [
+        { "item": "商业区感染日记", "minValue": 1 },
+        { "item": "超市求生笔记", "minValue": 1 }
+      ],
+      "blocks": [
+        {
+          "type": "heading", "level": 2,
+          "content": [{ "type": "text", "text": "§3 补录：民间目击链" }]
+        },
+        {
+          "type": "paragraph",
+          "content": [{ "type": "text", "text": "散落民间的日记与求生手记中，不乏对硬化个体的目击记录：感染末期的宿主外形趋同、行动缓慢但破坏力惊人。这些一手记录与研究文件互为印证，勾出废城感染链条的完整图景。" }]
+        }
+      ]
+    }
+  ]
+}

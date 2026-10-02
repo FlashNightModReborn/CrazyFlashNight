@@ -1,0 +1,282 @@
+{
+  "schema": "cf7-u12-input-latency.v1",
+  "recordedAtUtc": "2026-10-02T04:07:22.962Z",
+  "source": "uncommitted worktree",
+  "state": "candidate_built",
+  "purpose": "Observe remaining momentary mouse lag at base-load completion; compare existing native and system cursor modes.",
+  "previousRound": "docs/evidence/u12-settlement-performance-2026-10-02.json",
+  "candidate": {
+    "schema": "cf7-local-dev-runtime-selection.v1",
+    "candidateRelativePath": "tmp/runtime-candidates/v2/u12-input-probe-20261002",
+    "artifactSourceHash": "9CDF8DA7F4FA870B9283D93A46AABB3E6FD37CB144DC05E9AE2F037C98ED6CAF",
+    "producerRecipeHash": "23483061F6288CDE0142991DBE8A5F2FDAE8DCC84B098FC8332D1573365ABA8E",
+    "toolchainLockHash": "DFA769829F9740196DEF63351A00AAC309E50A2CA0A768759334EB2A2161DD36",
+    "buildIdentityHash": "4110FE3D5449DFB4DB8F835F698FAAC541E1DB0D3FA2B738799DF0BCD3B71419",
+    "payloadClosureHash": "C9402EF254AC61FA37FDB851C3F93381FB041B6566550D292B991787E9490638",
+    "coreSha256": "0AF16788DD2B740C299325D09B697385F2B4F9E08CF068EFFC39D891184B8ED7",
+    "activatedAtUtc": "2026-10-02T03:57:22.3697276Z",
+    "trust": "INDEX_ONLY_REVERIFY_BEFORE_EXECUTION"
+  },
+  "sourceSnapshot": [
+    {
+      "path": "launcher/src/Diagnostic/InputLatencyProbe.cs",
+      "bytes": 9339,
+      "sha256": "22DF6C7B2BD9A4ABED45D7C1DD788D30661055012BC646BE61788F7CA536C8CB"
+    },
+    {
+      "path": "launcher/tests/Diagnostic/InputLatencyProbeTests.cs",
+      "bytes": 5436,
+      "sha256": "C84E6D04F1EFF63D0980A0EA1AD55E9B218AD411F157CB8C023430CC19580C2B"
+    },
+    {
+      "path": "launcher/src/Program.cs",
+      "bytes": 191166,
+      "sha256": "CA85B968281FC1DB00FC072D650543659DD4B1C0C0554A6860577439D110A986"
+    },
+    {
+      "path": "launcher/src/Guardian/SceneTransitionController.cs",
+      "bytes": 15930,
+      "sha256": "82D131607678AAE94720750FC54CF827EA355BA74B9441AF64E4276E893E83A9"
+    },
+    {
+      "path": "launcher/src/Guardian/CompositionHelpSurface.cs",
+      "bytes": 33528,
+      "sha256": "471CCF0D21D92F83A2D770907AD4402EBED12AE35684B8CCFAFC6AB7EDAD47F9"
+    },
+    {
+      "path": "launcher/src/Guardian/WebOverlayForm.cs",
+      "bytes": 452838,
+      "sha256": "39FFE95DD5359111CCA917BF21A032E23B8CA6203D18C678FBA5FDF72472C7CF"
+    },
+    {
+      "path": "launcher/src/Guardian/DesktopCursorOverlay.cs",
+      "bytes": 37934,
+      "sha256": "A0E5E85BC7773C1758B1E77388EB0ECDC41FD0D293CCFB3D0759C13F33523FC7"
+    },
+    {
+      "path": "launcher/src/Guardian/WorldCompositor/WorldCompositorController.cs",
+      "bytes": 56379,
+      "sha256": "6CE7CBC21B1A96C363D0483DCF36B34B4B8B31427B1AF9FE01AFFB73081E43AB"
+    },
+    {
+      "path": "automation/diagnose-input.ps1",
+      "bytes": 1663,
+      "sha256": "3DFBE1915D717D4B2DC641C405A0B08AC205001F5101CBC17FBBB0428D8B6479"
+    },
+    {
+      "path": "tools/scene-transition-smoke/Program.cs",
+      "bytes": 45575,
+      "sha256": "A8722D5C978C2E74B7F62E76B0BC735B851668DBEBA4CE81DAA0016659B276ED"
+    },
+    {
+      "path": "tools/run-scene-transition-smoke.ps1",
+      "bytes": 1859,
+      "sha256": "11F1C0DCAC75D410F4C870503AB70E8B64F4804D430A3FA1FCFB3BE2776A98D1"
+    }
+  ],
+  "checks": {
+    "focused": {
+      "passed": 10
+    },
+    "host": {
+      "passed": 6489,
+      "skipped": 5,
+      "canonicalRunner": true,
+      "parallelTestCollections": false
+    },
+    "native": {
+      "passed": 55,
+      "result": {
+        "path": "tmp/u12-input-latency-native-verified/result.json",
+        "bytes": 8254,
+        "sha256": "D40BDC317C139C132C0589197F5C0A3FF18B9D20234A63C70F34212195CEA09E"
+      },
+      "measurement": {
+        "path": "tmp/u12-input-latency-native-verified/input-latency.log",
+        "bytes": 3183,
+        "sha256": "AD0B106F2DBD1A23472396C5C14419F47854080921DCDAB64D31519872193FA1"
+      },
+      "injectedUiStallMs": 150,
+      "observedDispatchSpikesMs": [
+        124.22
+      ],
+      "scope": "Intentional isolated UI stall proves detection, not gameplay improvement."
+    },
+    "wrapper": {
+      "nativeSystemModes": true,
+      "verifiedReuseRoute": true,
+      "environmentRestoredOnSuccessAndFailure": true,
+      "existingGameRejected": true
+    },
+    "docs": "passed with pre-existing link warnings",
+    "diffCheck": "passed"
+  },
+  "reusedFlash": {
+    "recompiled": false,
+    "hashesVerified": true,
+    "files": [
+      {
+        "path": "scripts/asLoader.swf",
+        "bytes": 1425477,
+        "sha256": "A0FE22FD337D3893D919FABE5A20BD28CB65B646417E62410DE2FB6F4F133AF2"
+      },
+      {
+        "path": "CRAZYFLASHER7MercenaryEmpire.swf",
+        "bytes": 207247,
+        "sha256": "F0BDD31048055BAF47EA582D71896190998D563AFB7B2CC8E9F67E06E67436B6"
+      },
+      {
+        "path": "scripts/类定义/org/flashNight/arki/ui/SceneTransitionService.as",
+        "bytes": 14917,
+        "sha256": "43629AF68C38A968ADFDE86AD05923F90265FD6F011F0AF405EABDDABDBA2754"
+      },
+      {
+        "path": "scripts/类定义/org/flashNight/arki/weather/WorldLightingBridge.as",
+        "bytes": 5885,
+        "sha256": "8A7F7A2B553FCC3CD6D8CB15E132FF5125A2AB7B1CC9B2CAB82FBA3F287AF47F"
+      },
+      {
+        "path": "scripts/展现/UI交互/UI交互_lsy_UI管理.as",
+        "bytes": 16354,
+        "sha256": "B775A1F2D8169D242C50DA4BFC5DCA534476FEA44E0E0D2DC71AF6C3D112008F"
+      },
+      {
+        "path": "CRAZYFLASHER7MercenaryEmpire/LIBRARY/sprite/淡出动画.xml",
+        "bytes": 10872,
+        "sha256": "B1B5D4C4883976EF54F0EB334E70C03A12D43AC2DFC8EF5CFF83F72F8180A1CE"
+      },
+      {
+        "path": "scripts/类定义/org/flashNight/arki/scene/StageRunSession.as",
+        "bytes": 131804,
+        "sha256": "60A69F5495D0EEBF4EDF4CC3D6DE9F3C4E89A4A3AD2BB92659EE6FA1C3EE5DE7"
+      },
+      {
+        "path": "scripts/类定义/org/flashNight/arki/scene/StageReturnFlow.as",
+        "bytes": 8054,
+        "sha256": "8128EAC3EC196A55B68DBDC0A626A55CD9525B2AC9A51964E61AEDE51FB95EEC"
+      },
+      {
+        "path": "scripts/类定义/org/flashNight/arki/item/LootContainerService.as",
+        "bytes": 172428,
+        "sha256": "31A3B90451F14B4C9D7997C73F821EFBE565160FC430A2AD83A6B5770A894311"
+      },
+      {
+        "path": "scripts/类定义/org/flashNight/arki/scene/StageRunSessionTest.as",
+        "bytes": 250943,
+        "sha256": "F5ACA3BFD8069F6EADF94510C0C35CCA37D0EA40385002C7A5A423D63C1C0DA5"
+      }
+    ],
+    "priorEvidenceScope": "Prior real AVM1 and SWF compilation/readback evidence retained for unchanged inputs; not rerun."
+  },
+  "formalRuntimeUnchanged": [
+    {
+      "path": "runtime/CRAZYFLASHER7MercenaryEmpire.Core.dll",
+      "bytes": 5865472,
+      "sha256": "633C06A615B049B5113163734E05C7971779E7796BACFE6406E77F0DE6089CC1"
+    },
+    {
+      "path": "runtime/cf7-runtime-manifest.tsv",
+      "bytes": 4412,
+      "sha256": "0C74537F2F8ED1A14F921D3CF61064574301C0F391CBEF6E327DB924D2A886F2"
+    }
+  ],
+  "fixtureCorrections": [
+    "The existing runner read a null LASTEXITCODE after successful in-process PowerShell verification; it now requires the verifier structured passed=true and exact schema/state.",
+    "The added fixture LINQ import was corrected after an initial fixture-only compile error; neither attempt executed the fixture or touched slots.",
+    "The first executed fixture timed out waiting for the owner HWND while the exact live settlement HWND had already regained foreground and visibility; the fixture now accepts those two exact handles and still requires real surface visibility.",
+    "The diagnostic fixture initially concatenated log batches without separators; its parser was corrected to preserve batch boundaries. The retained failed attempt already contains a measured 138.95ms UI queue spike, but is not counted as a passing fixture."
+  ],
+  "earlierNativeAttempt": {
+    "result": {
+      "path": "tmp/u12-input-latency-native/result.json",
+      "bytes": 7730,
+      "sha256": "478C71266780D054ED4288646F0BBBB8F938E195D0F1B91FAC3566E1073E11F6"
+    },
+    "diagnostic": {
+      "path": "tmp/u12-input-latency-native/projection-diagnostic.json",
+      "bytes": 1356,
+      "sha256": "5BE5A83B46A21B56D6A185735036A5266030487A52CEC8F2BC82496085AB5633"
+    }
+  },
+  "earlierParserAttempt": {
+    "result": {
+      "path": "tmp/u12-input-latency-native-final/result.json",
+      "bytes": 3009,
+      "sha256": "FA476A64F8D19A893075FB6A64B292214ECA89CEA32D04EEE909B8394928E3D0"
+    },
+    "measurement": {
+      "path": "tmp/u12-input-latency-native-final/input-latency.log",
+      "bytes": 3180,
+      "sha256": "491B2E0F8633E0638C21560D31514749C0F4E0676B09432D22C9F5AC9ED879D6"
+    }
+  },
+  "gameE2eVerified": false,
+  "cursorComparisonExecutedByUser": false,
+  "saveRestartVerified": false,
+  "promoted": false,
+  "standardEntryVerified": false,
+  "playerSlotsTouched": false,
+  "humanAcceptance": "Pending native/system comparison in actual gameplay.",
+  "logs": [
+    {
+      "path": "tmp/u12-input-latency-20261002/focused.log",
+      "bytes": 51632,
+      "sha256": "8768A02E1A10D4DBB9F3714BA26BBFC4528F559CB452CA74C7001CC3021110F4"
+    },
+    {
+      "path": "tmp/u12-input-latency-20261002/host.log",
+      "bytes": 959168,
+      "sha256": "BEFD72EDE94956ECD464A9BE82606429A69880047200C44B7DACE37289EE0E04"
+    },
+    {
+      "path": "tmp/u12-input-latency-20261002/build.log",
+      "bytes": 5712,
+      "sha256": "A6ED2092F1C7B597F91A6D8CB4EF706A5EF9A988154A7D44B2F01C735A2560C0"
+    },
+    {
+      "path": "tmp/u12-input-latency-20261002/wrapper.log",
+      "bytes": 305,
+      "sha256": "8376D0E4EF0CAD03C21FAD6CBCB4F5F0DD31933F292F71714292F09434BBE1A8"
+    },
+    {
+      "path": "tmp/u12-input-latency-20261002/native.log",
+      "bytes": 8816,
+      "sha256": "80953D68348D2D9173AC53154190A875057C5F4C70DC5A1CD00D714021B75D5C"
+    },
+    {
+      "path": "tmp/u12-input-latency-20261002/dev-status.log",
+      "bytes": 1877,
+      "sha256": "AFB106CC187EF13530A189517B61B3E5B3E2088C7436DE649F00A6E06A9120EC"
+    },
+    {
+      "path": "tmp/u12-input-latency-20261002/native-admission-before.log",
+      "bytes": 661,
+      "sha256": "8438A4FB645E0F7203F690546B94A3947F935752FF09242A7CAE07CB35C97A9D"
+    },
+    {
+      "path": "tmp/u12-input-latency-20261002/native-compile-before.log",
+      "bytes": 1868,
+      "sha256": "92FD4D31B6BA9296D33CAD04093013E78B90BCD9CAE5E115D58F1923E7D4EACF"
+    },
+    {
+      "path": "tmp/u12-input-latency-20261002/native-foreground-before.log",
+      "bytes": 1325,
+      "sha256": "75B3C07466FFC5F9E26667AE5F5A4E65A52A3107979766CEAE48CC41926E6576"
+    },
+    {
+      "path": "tmp/u12-input-latency-20261002/native-parser-before.log",
+      "bytes": 1337,
+      "sha256": "DA2AB110B5A4DE4C60E437EA9C35E1D9211BAE6F0336DCBF2AE84D375C4F743D"
+    },
+    {
+      "path": "tmp/u12-input-latency-20261002/docs.log",
+      "bytes": 3553,
+      "sha256": "0853EFF33A99FCEA5A4E1484FBC620B2DE7B963BC7F34C79FB26E29DF940E5DB"
+    },
+    {
+      "path": "tmp/u12-input-latency-20261002/diff-check.log",
+      "bytes": 154,
+      "sha256": "FDF1DF71642D873E0D35ED91E930326CA66B529D0EB7E15BCA9CAED78CA16BFB"
+    }
+  ]
+}

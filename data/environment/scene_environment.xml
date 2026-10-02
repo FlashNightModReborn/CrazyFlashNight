@@ -37,7 +37,7 @@
         <Height>547</Height>
         <SpaceCondition>室内</SpaceCondition>
         <MaxIllumination>7</MaxIllumination>
-        <MinIllumination>5</MinIllumination>
+        <MinIllumination>7</MinIllumination>
         <Collision>
             <Point>1449,204</Point>
             <Point>1535,204</Point>
@@ -69,7 +69,7 @@
         <Height>545</Height>
         <SpaceCondition>室内</SpaceCondition>
         <MaxIllumination>7</MaxIllumination>
-        <MinIllumination>5</MinIllumination>
+        <MinIllumination>7</MinIllumination>
         <Collision>
             <Point>0,225</Point>
             <Point>0,552</Point>
@@ -104,7 +104,7 @@
         <Height>500</Height>
         <SpaceCondition>室内</SpaceCondition>
         <MaxIllumination>7</MaxIllumination>
-        <MinIllumination>3</MinIllumination>
+        <MinIllumination>7</MinIllumination>
         <MercenaryRefresh>
             <Entrance>20</Entrance>
         </MercenaryRefresh>
@@ -121,7 +121,7 @@
         <Height>545</Height>
         <SpaceCondition>室内</SpaceCondition>
         <MaxIllumination>7</MaxIllumination>
-        <MinIllumination>5</MinIllumination>
+        <MinIllumination>7</MinIllumination>
         <!--
         <Preset>警报</Preset>
         -->
@@ -168,7 +168,7 @@
         <Height>547</Height>
         <SpaceCondition>室内</SpaceCondition>
         <MaxIllumination>7</MaxIllumination>
-        <MinIllumination>5</MinIllumination>
+        <MinIllumination>7</MinIllumination>
         <Collision>
             <Point>1537,220</Point>
             <Point>1813,550</Point>
@@ -191,7 +191,7 @@
         <Height>547</Height>
         <SpaceCondition>室内</SpaceCondition>
         <MaxIllumination>7</MaxIllumination>
-        <MinIllumination>5</MinIllumination>
+        <MinIllumination>7</MinIllumination>
         <Collision>
             <Point>1131,433</Point>
             <Point>345,433</Point>
@@ -259,7 +259,7 @@
         <Height>600</Height>
         <Horizon>240</Horizon>
         <MaxIllumination>9</MaxIllumination>
-        <MinIllumination>0</MinIllumination>
+        <MinIllumination>1</MinIllumination>
         <!--
         <WeatherCondition>雨</WeatherCondition>
         <WeatherIntensity>0.8</WeatherIntensity>
@@ -326,7 +326,7 @@
         <Height>700</Height>
         <Horizon>140</Horizon>
         <MaxIllumination>9</MaxIllumination>
-        <MinIllumination>0</MinIllumination>
+        <MinIllumination>1</MinIllumination>
         <Collision>
             <Point>976,294</Point>
             <Point>971,278</Point>
@@ -379,7 +379,7 @@
         <Height>613</Height>
         <Horizon>140</Horizon>
         <MaxIllumination>9</MaxIllumination>
-        <MinIllumination>0</MinIllumination>
+        <MinIllumination>1</MinIllumination>
         <Collision>
             <Point>287,302</Point>
             <Point>17,615</Point>
@@ -444,6 +444,43 @@
             <SpeedRate>8</SpeedRate>
         </Skybox>
         <BGM>Feel It Still</BGM>
+        <Lights>
+            <Light>
+                <Key>rockpark-lamp-cyan-w</Key>
+                <Preset>street</Preset>
+                <X>563.4</X>
+                <Y>311.1</Y>
+                <Color>#B2FBED</Color>
+            </Light>
+            <Light>
+                <Key>rockpark-lamp-red-w</Key>
+                <Preset>street</Preset>
+                <X>714.6</X>
+                <Y>297</Y>
+                <Color>#FF5533</Color>
+            </Light>
+            <Light>
+                <Key>rockpark-lamp-cyan-mid</Key>
+                <Preset>street</Preset>
+                <X>1048</X>
+                <Y>307.1</Y>
+                <Color>#B2FBED</Color>
+            </Light>
+            <Light>
+                <Key>rockpark-lamp-red-e</Key>
+                <Preset>street</Preset>
+                <X>1524</X>
+                <Y>291.1</Y>
+                <Color>#FF5533</Color>
+            </Light>
+            <Light>
+                <Key>rockpark-lamp-purple-e</Key>
+                <Preset>street</Preset>
+                <X>1709</X>
+                <Y>307.1</Y>
+                <Color>#B280FF</Color>
+            </Light>
+        </Lights>
     </Environment>
     <Environment>
         <BackgroundURL>地图-摇滚排练室</BackgroundURL>
@@ -803,9 +840,25 @@
         <Width>1600</Width>
         <Height>740</Height>
         <Horizon>280</Horizon>
-        <MaxIllumination>7</MaxIllumination>
-        <MinIllumination>5</MinIllumination>
+        <MaxIllumination>9</MaxIllumination>
+        <MinIllumination>1</MinIllumination>
         <BGM>Dialtone</BGM>
+        <Lights>
+            <Light>
+                <Key>firstline-lamp-left</Key>
+                <Preset>street</Preset>
+                <X>240.4</X>
+                <Y>139.3</Y>
+                <Angle>69.6</Angle>
+            </Light>
+            <Light>
+                <Key>firstline-lamp-right</Key>
+                <Preset>street</Preset>
+                <X>972.1</X>
+                <Y>148.2</Y>
+                <Angle>110.6</Angle>
+            </Light>
+        </Lights>
     </Environment>
     <Environment>
         <BackgroundURL>地图-隧道据点</BackgroundURL>

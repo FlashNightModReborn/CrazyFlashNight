@@ -219,6 +219,8 @@ Character Build 候选区以独立 `ChoiceGroup` 提供“兼容 / 背包”范�
 
 共享组件消费角色 token，例如 surface、line、text、muted、accent、focus、success、warning、danger、disabled；skin 只能覆盖 token，不能重写组件结构、命中区或状态优先级。领域差异优先来自构图与信息节奏，而不是不断增加新主色：商城强调“青色系统 + 琥珀经济”，合成强调“琥珀浏览 + 青色权威”，库存保持档案/实体感，技能和调制用不同构图区分同属 DLS 的青色家族。
 
+理发、整形与车库的中性服务材质同样按角色共享，唯一色值来源为 `css/workbench/tokens.css` 的 `--appearance-*` 色板；feature 只消费角色。此族保留现有材质色，功能强调/状态继续引用共享语义 token，详见 [基地服务共享色板](../docs/dls-color-system.md#62-基地服务共享色板--appearance-)。
+
 边框不能全部等权。推荐层级为：surface 明度/间距建立主分组，柔线分隔内部，accent 只标识 focus、selected、pending 或主决策。
 
 ### 4.3 Elevation、焦点环与卡片表面

@@ -1,0 +1,36 @@
+{
+  "schemaVersion": 1,
+  "termName": "BPK战队",
+  "displayName": "BPK战队",
+  "skin": "dossier",
+  "pages": [
+    {
+      "pageKey": "1",
+      "requires": [],
+      "blocks": [
+        {
+          "type": "heading", "level": 2,
+          "content": [{ "type": "text", "text": "§1 定义" }]
+        },
+        {
+          "type": "paragraph",
+          "content": [{ "type": "text", "text": "BPK 战队，末日前成名的强力战斗队，由 Boy 领衔、Pig 与 King 担任前锋。三战前曾参与死亡竞赛及反统合势力的多次冲突，其名在旧世档案中常与 Andylaw 并提。" }]
+        }
+      ]
+    },
+    {
+      "pageKey": "2",
+      "requires": [{ "item": "Andy档案", "minValue": 1 }],
+      "blocks": [
+        {
+          "type": "heading", "level": 2,
+          "content": [{ "type": "text", "text": "§2 补录：与 A 兵团的渊源" }]
+        },
+        {
+          "type": "paragraph",
+          "content": [{ "type": "text", "text": "据 Andy 档案：BPK 与 Andylaw 早于全球死亡竞赛时代结缘——他们曾交手、也曾并肩演戏突围；末世后并入 A 兵团编制，成为其核心战力的一部分。" }]
+        }
+      ]
+    }
+  ]
+}

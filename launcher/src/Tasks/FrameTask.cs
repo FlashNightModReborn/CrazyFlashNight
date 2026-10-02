@@ -119,6 +119,7 @@ namespace CF7Launcher.Tasks
                 if(frame.Epoch<_minimumCombatFxEpoch) return;
                 _combatFxGeneration=generation;
                 if(!_combatFxEngine.Apply(frame,generation)) return;
+                SceneLightClockObserved?.Invoke(frame.GameTick,frame.Paused);
                 CombatFxDrawFrame draw=_combatFxEngine.BuildDraw();
                 CombatFxObserved?.Invoke(draw,camera.OffsetX,camera.OffsetY,camera.Scale);
                 CombatFxEvents events=_combatFxEngine.TakeEvents();
@@ -188,7 +189,7 @@ namespace CF7Launcher.Tasks
         /// </summary>
         public void HandleRaw(string cam, string hn, string fps, string inputPayload,
             string bulletVisualPayload = null, int connectionGeneration = 0,string combatFxPayload=null,
-            string rayVisualPayload=null,string chainVisualPayload=null)
+            string rayVisualPayload=null,string chainVisualPayload=null,string sceneLightPayload=null)
         {
             if (_stopped) return;
             try
@@ -206,6 +207,10 @@ namespace CF7Launcher.Tasks
                 VisualFrameStarted?.Invoke();
                 try {
                     WeatherCameraObserved?.Invoke(weatherCamera.OffsetX,weatherCamera.OffsetY,weatherCamera.Scale);
+                    if(sceneLightPayload!=null && connectionGeneration>=_combatFxGeneration) {
+                        if(SceneLightState.TryParse(sceneLightPayload,out var sceneState))SceneLightObserved?.Invoke(sceneState);
+                        else VisualFaultReported?.Invoke("scene","scene_light_frame_invalid");
+                    }
                     if(combatFxPayload!=null) ObserveCombatFx(combatFxPayload,connectionGeneration,weatherCamera);
                     ObserveProjectileVisuals(rayVisualPayload,chainVisualPayload,connectionGeneration,weatherCamera);
                     if (bulletVisualPayload != null && _bulletVisualShadow != null)

@@ -454,6 +454,7 @@ namespace CF7Launcher.Guardian
             Crafting,
             Hairdresser,
             PlasticSurgery,
+            GaragePurchase,
             Sleep,
             Gym,
             Settings,
@@ -475,6 +476,7 @@ namespace CF7Launcher.Guardian
             if (domain == "crafting") return PanelDomainRoute.Crafting;
             if (domain == "hairdresser") return PanelDomainRoute.Hairdresser;
             if (domain == "surgery") return PanelDomainRoute.PlasticSurgery;
+            if (domain == "garage") return PanelDomainRoute.GaragePurchase;
             if (domain == "sleep") return PanelDomainRoute.Sleep;
             if (domain == "gym") return PanelDomainRoute.Gym;
             if (domain == "settings") return PanelDomainRoute.Settings;
@@ -1274,6 +1276,7 @@ namespace CF7Launcher.Guardian
         private ulong _webNavigationId;
         private int _webDocumentObservationGeneration;
         internal event Action DocumentAdvanced;
+        internal event Action<JObject> TransitionReportPresented;
         private bool _shown;
         private bool _disposed;
         private readonly bool _lowEffectsMode;
@@ -1352,6 +1355,7 @@ namespace CF7Launcher.Guardian
             _materialShopNavigationCoordinator;
         private HairdresserTask _hairdresserTask;
         private PlasticSurgeryTask _plasticSurgeryTask;
+        private GaragePurchaseTask _garagePurchaseTask;
         private SleepTask _sleepTask;
         private GymTrainingTask _gymTrainingTask;
         private SettingsTask _settingsTask;
@@ -1382,6 +1386,7 @@ namespace CF7Launcher.Guardian
                 new PanelRequestOwnerLifecycle(IsInventoryOwnerPanel);
         private bool _pauseNeedsRestore;
         private int _lastSocketDisconnectGeneration;
+        private int _lastSocketReadyGeneration;
 
         // 光照等级（静态 24h 数组，panel 模式下一次性推送给 JS）
         private int[] _lightLevels;
@@ -1414,6 +1419,7 @@ namespace CF7Launcher.Guardian
         private IntPtr _cursorHook = IntPtr.Zero;
         private LowLevelMouseProc _cursorHookProc;
         private bool _cursorHookPostPending;
+        private CF7Launcher.Diagnostic.InputLatencyProbe.Sample _cursorLatencyQueue;
         private int _cursorHookPendingX;
         private int _cursorHookPendingY;
         private int _cursorHookLastX = Int32.MinValue;
@@ -2955,7 +2961,15 @@ namespace CF7Launcher.Guardian
                     return;
                 }
 
-                if (type == "viewportMetrics")
+                if (type == "scene_transition_report_presented")
+                {
+                    if (CanAcceptPanelDocumentMessages && _panelMode
+                        && ReferenceEquals(sender, _webView?.CoreWebView2)
+                        && string.Equals(args.Source, _webView?.Source?.AbsoluteUri,
+                            StringComparison.OrdinalIgnoreCase))
+                        TransitionReportPresented?.Invoke(parsed);
+                }
+                else if (type == "viewportMetrics")
                 {
                     HandleViewportMetrics(parsed);
                 }
@@ -3444,6 +3458,12 @@ namespace CF7Launcher.Guardian
 
         private bool PostToWebCore(string json)
         {
+            if (_panelHost?.UsesTransitionSettlement==true) {
+                JObject message=null;
+                try { message=JObject.Parse(json); } catch { }
+                if(message?.Value<string>("panel")=="loot" && message.Value<string>("type")=="panel_resp")
+                    return _panelHost.TryPostTransitionSettlement(json);
+            }
             if (!_webReady || _disposed || _webView == null || _webView.CoreWebView2 == null) return false;
             try
             {
@@ -3612,6 +3632,7 @@ namespace CF7Launcher.Guardian
                 if (IsCursorHookMessage(message))
                 {
                     MSLLHOOKSTRUCT info = (MSLLHOOKSTRUCT)Marshal.PtrToStructure(lParam, typeof(MSLLHOOKSTRUCT));
+                    CF7Launcher.Diagnostic.InputLatencyProbe.ObserveHook(info.time, info.flags);
                     if (CF7Launcher.Diagnostic.FocusTrace.Enabled)
                     {
                         if (message == WM_LBUTTONDOWN || message == WM_LBUTTONUP)
@@ -3724,6 +3745,7 @@ namespace CF7Launcher.Guardian
                     if (IsHandleCreated)
                     {
                         _cursorHookPostPending = true;
+                        _cursorLatencyQueue = CF7Launcher.Diagnostic.InputLatencyProbe.Measure("cursor_queue");
                         BeginInvoke(new Action(FlushHookCursorSample));
                     }
                 }
@@ -3733,6 +3755,8 @@ namespace CF7Launcher.Guardian
 
         private void FlushHookCursorSample()
         {
+            _cursorLatencyQueue.Dispose();
+            _cursorLatencyQueue = default;
             _cursorHookPostPending = false;
             if (_disposed)
                 return;
@@ -4653,6 +4677,26 @@ namespace CF7Launcher.Guardian
             }
         }
 
+        // The fixed composition document has already proven its CoreWebView2,
+        // origin and exact instance. Only these existing Loot/organizer boundaries
+        // are reachable here; it never enters the generic Web task router.
+        internal void HandleTransitionSettlementMessage(JObject p) {
+            if(_disposed || _panelHost?.UsesTransitionSettlement!=true) return;
+            if(p.Value<string>("type")=="panel-toast") { AddMessage(p.Value<string>("html"));return; }
+            if(!CompositionHelpSurface.IsSettlementMessage(p,_panelHost.ActivePanelInstanceId)) return;
+            if(p.Value<string>("type")=="task") _lootTask?.HandleWebRequest(p);
+            else if(p.Value<string>("cmd")=="close" && p.Value<string>("domain")!="inventory") HandleLootVisualClose(p);
+            else if(p.Value<string>("domain")=="inventory") {
+                if(IsValidLootInventoryEnvelope(p,"loot",_panelHost.ActivePanelInstanceId)
+                    && _lootPanelCoordinator?.IsBoundVisualExact(_panelHost.ActivePanelInstanceId)==true)
+                    _inventoryTask?.HandleWebRequest(p.Value<string>("cmd"),p);
+            }
+        }
+        internal void HandleTransitionSettlementFailure() {
+            _inventoryTask?.ClearPending();
+            _lootPanelCoordinator?.ForceDetach("web_process_failed");
+        }
+
         public void SetLootPanelCoordinator(LootPanelCoordinator coordinator)
         {
             _lootPanelCoordinator = coordinator;
@@ -4710,6 +4754,13 @@ namespace CF7Launcher.Guardian
         public void SetPlasticSurgeryTask(PlasticSurgeryTask task)
         {
             _plasticSurgeryTask = task;
+            task.SetPostToWeb(PostToWeb);
+            task.SetInvoker(delegate(Action a) { try { this.BeginInvoke(a); } catch {} });
+        }
+
+        public void SetGaragePurchaseTask(GaragePurchaseTask task)
+        {
+            _garagePurchaseTask = task;
             task.SetPostToWeb(PostToWeb);
             task.SetInvoker(delegate(Action a) { try { this.BeginInvoke(a); } catch {} });
         }
@@ -5336,6 +5387,28 @@ namespace CF7Launcher.Guardian
                 _panelFocusRestoreGate.Complete(generation);
                 LogManager.Log("[PanelFocus] schedule failed reason=" + reason
                     + " generation=" + generation + " error=" + ex.Message);
+            }
+        }
+
+        internal bool HandoffPanelFocusBeforeTransitionHide(IntPtr expectedForeground)
+        {
+            if (_disposed || !_panelMode || !IsHandleCreated || expectedForeground == IntPtr.Zero
+                || GetForegroundWindow() != expectedForeground) return false;
+            try
+            {
+                if (expectedForeground != Handle) SetForegroundWindow(Handle);
+                IntPtr foreground = GetForegroundWindow();
+                if (!IsPanelFocusTargetForeground(foreground, Handle,
+                        foreground != IntPtr.Zero && IsChild(Handle, foreground))) return false;
+                var controller = TryGetWebViewController();
+                if (controller == null || !_panelMode || _disposed) return false;
+                controller.MoveFocus(CoreWebView2MoveFocusReason.Programmatic);
+                return true;
+            }
+            catch (Exception ex)
+            {
+                LogManager.Log("event=scene_transition_report_focus_failed error=" + ex.Message);
+                return false;
             }
         }
 
@@ -7302,6 +7375,13 @@ namespace CF7Launcher.Guardian
                 else RespondPanelDomainError(parsed, "gym_unavailable");
                 return;
             }
+            if (domainRoute == PanelDomainRoute.GaragePurchase)
+            {
+                if (!HasExactActivePanelOwnerBinding(parsed, "garage")) { RespondPanelDomainError(parsed, "panel_instance_expired"); return; }
+                if (_garagePurchaseTask != null) _garagePurchaseTask.HandleWebRequest(cmd, parsed);
+                else RespondPanelDomainError(parsed, "garage_unavailable");
+                return;
+            }
             if (domainRoute == PanelDomainRoute.PlasticSurgery)
             {
                 if (!HasExactActivePanelOwnerBinding(parsed, "surgery"))
@@ -8312,6 +8392,8 @@ namespace CF7Launcher.Guardian
                 case "catalog":
                 case "state":
                 case "bundle":
+                case "glossary_catalog":
+                case "glossary_snapshot":
                 case "preview":
                 case "equip_tooltip":
                 case "custom_start":
@@ -9188,11 +9270,14 @@ namespace CF7Launcher.Guardian
             if (_craftingTask != null) _craftingTask.ClearPending();
             if (_hairdresserTask != null) _hairdresserTask.ClearPending();
             if (_plasticSurgeryTask != null) _plasticSurgeryTask.ClearPending();
+            if (_garagePurchaseTask != null) _garagePurchaseTask.ClearPending();
             if (_sleepTask != null) _sleepTask.ClearPending();
             if (_gymTrainingTask != null) _gymTrainingTask.OnSocketDisconnected();
             if (_settingsTask != null) _settingsTask.ClearPending();
             if (_equipmentTuningTask != null) _equipmentTuningTask.ClearPending();
-            if (_skillTask != null) _skillTask.ClearPending();
+            // Flash's policy-file probe is also a socket generation, but never owns a trainer.
+            // Preserve known cleanup/write intents; do not invent global cleanup before handshake.
+            if (_skillTask != null) _skillTask.ClearPending(closedGeneration == _lastSocketReadyGeneration);
             if (_mapTask != null) _mapTask.ClearPending();
             if (_stageSelectTask != null) _stageSelectTask.ClearPending();
             if (_arenaTask != null) _arenaTask.ClearPending();
@@ -9220,6 +9305,7 @@ namespace CF7Launcher.Guardian
                 return;
             }
 
+            _lastSocketReadyGeneration = Math.Max(_lastSocketReadyGeneration, readyGeneration);
             if (_pauseNeedsRestore)
             {
                 if (TrySendGameCommand("shopPanelClose"))

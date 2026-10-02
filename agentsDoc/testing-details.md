@@ -198,7 +198,7 @@ test 会按当前配方、物品 XML、icon/dressup manifest、renderer/inspecto
 <a id="suite-dialogue"></a>
 ### 现场对白与原生交互
 
-**现场对白门**：运行 `node tools/test-server-callback-timeouts.js`，再顺序运行 `scripts/run-native-dialogue-tests.ps1`、`scripts/run-map-domain-tests.ps1`（机器钉死 MapDomainBridgeTest 60/60）、`scripts/run-map-loot-tests.ps1`（机器钉死 Loot 189 + Planner 12 + StageRunSession 594，见 [持久写与恢复](#save)），最后 `scripts/compile_test.ps1 -Target publish`。
+**现场对白门**：运行 `node tools/test-server-callback-timeouts.js`，再顺序运行 `scripts/run-native-dialogue-tests.ps1`、`scripts/run-map-domain-tests.ps1`（机器钉死 MapDomainBridgeTest 60/60）、`scripts/run-map-loot-tests.ps1`（机器钉死 Loot 189 + Planner 12 + StageRunSession 638，见 [持久写与恢复](#save)），最后 `scripts/compile_test.ps1 -Target publish`。
 覆盖握手/地图/面板毫秒期限、查询发送范围、同时超时托管、旧行数保护、新 rid 回退及 4096 行窗口的内容/暂停/事件移交。人力执行 [三组游戏旅程](../docs/对白v2审阅修复-人力验收单-2026-09-16.md)。Host/绘制改动继续跑 Launcher `NativeDialogue|NativeHudInputRoutingTests`、`tools/run-native-dialogue-webview2-smoke.ps1` 与 [SVG 工具](../tools/xfl-ui-svg/README.md) 只读 `--verify`，覆盖属性解析、富文本、时钟、作者窗口/按钮与缓存失效；
 smoke 复用 exact SDK resolver。hidden WebView2/位图是 fixture，机器通过不代签实际游戏体验；历史发布与人验边界见 [专项交接](../docs/对话框迁移与高清立绘治理-调研与施工准备-2026-09-12.md#114-已有验证与准确边界)。
 
@@ -420,6 +420,27 @@ Host 定向门使用用户态 SDK 执行 `dotnet test launcher/tests/Launcher.Te
 AS2 必须运行 `powershell -ExecutionPolicy Bypass -File scripts/run-item-panel-tests.ps1 -Suite Npc -TimeoutSeconds 240` 并取得 fresh `NpcShopPanelServiceTest` 现役钉值 + `Compiler 0/0 + 32K retry=0`；`-SkipCompile` 仍只属静态门。
 发布逻辑注入层时另跑 `scripts/compile_test.ps1 -Target publish -VerifySwf scripts/asLoader.swf`，确认 fresh compiler output、SWF 刷新与 function-size 门。上述自动证据只覆盖污染夹具、协议相关性和隔离策略；测试机物理隔离且原存档已丢失时，不得宣称原事故唯一归因或真实存档 E2E（另见 [诊断与现场观测](#diagnostics)）。
 
+<a id="suite-guidance"></a>
+### U8 原生引导与帮助轨迹
+
+必跑 `node tools/generate-guidance-catalog.js --check`、`node tools/test-guidance-tutorials.js`、`node tools/qa-composition-help.js` 与 `launcher/tests/run_tests.ps1`。
+修改 AS2 触发或协议时使用 `scripts/run-native-guidance-tests.ps1 -TimeoutSeconds 360`，精确 suite 计数以 runner 的 `ExpectedTracePatterns` 为准；要求 fresh 唯一 runId block、Compiler 0/0、32K retry=0 和 scratch byte-exact 恢复，随后独立 publish `asLoader.swf` 并检查 single ownership。仅 Host/Web 排版和呈现路由变化不因此重编未改动的 Flash 源码。
+浏览器门从生产 help 依赖加载领域适配器，遍历作者源中的全部轨迹，每步检查样例状态；领域帮助还要验证原工作台入口、Esc/焦点、关闭取消以及真实库存零请求。新增领域必须注册固定样例适配器并声明功能与轨迹，不以复制的业务模拟实现代替正式组件。
+Native 绘制变更检查 `NativeGuidanceVisualTests` 的实际像素、原场景位置、顶部透明与改键；自动 Web 教程检查延迟后一次打开、exact instance、busy 等待、撤销 queued open、关闭和断线，并验证生产 help 的目标条目、打开时键位和畸形 init 拒绝。结算交错必须覆盖 AS2 在 Host 请求到达前阻止地图教程、稳定等待与同 request 恢复、场景清理后不复活，以及 Host 在 PanelClosed 后继续等待 BindingSettled；policy deferral 不消费显示失败预算。“跳过本次”须验证键盘和 exact close，手动重开清除自动提示；`tutorialsAutoOpen` 通过 Settings 域严格布尔写入、保存失败回滚与隔离目录重启读回，不用真实用户偏好或玩家槽位试写。Help 底栏的全局关闭仅通过 exact instance 窄偏好命令保存；覆盖失败回滚、重复请求不重放、未知结果不重试、迟到回包不关闭新实例，以及 composition 出站允许当前偏好结果。关闭弹窗后，后续触发使用现役刘海屏通知，覆盖 opacity=0/结算等待、一次触发一次提醒、场景与 transport epoch 失效、白色现场图示保留。原生引导与对话共用图像设施时，守 page asset epoch、transport epoch 和图片所有权；透明度更新不得使当前页加载失效。7 个任务/关卡触发的实机表现单独验收，browser/AS2 fixture 不等于游戏 E2E。合同与候选入口见 [U8 基座](../docs/U8引导迁移与共享教程基座-2026-09-30.md)。
+
+<a id="suite-scene-transition"></a>
+### U12 游戏内过场
+
+背景来源先运行 `node tools/generate-scene-transition-catalog.js --check`；AS2 运行 `scripts/run-scene-transition-tests.ps1`，时间轴/初始化交接另运行 `node tools/test-scene-transition-stage-entry.js` 执行生产第 17 帧和副本 admission 的公共控制流子集，该源码夹具不替代真实 AVM1 或游戏旅程。Host 定向 `SceneTransitionTaskTests`，Web 运行 `node tools/test-scene-transition.js`；并行报告追加 `node launcher/web/modules/loot/dev/run-harness.js`，核原完整 View/生产 CSS、预览零业务命令、covered 后既有 Loot/库存提前操作、exact 实例准入、原帮助/关闭和每请求只接通一次。加载结束须保持同一 DOM/Core/HWND、阅读状态和业务模型，仅更新就绪能力；不以四项状态复制替代共用页面。未知 claim/close、失败重试、场景编号变化及重复 hide 均须覆盖。共享合成窗口和世界指针路由变化追加 `launcher/tests/run_tests.ps1` 全量回归；实际合成使用 `tools/run-scene-transition-smoke.ps1 -OutputDirectory <新的 tmp 子目录> -CandidateRoot <隔离候选目录>`，先核完整性并绑定该候选 DLL，与 GUI 编译/其他窗口测试错开。
+
+结算预览须核大/小及非 16:9 窗口的首次显示、基地未就绪期间的同表面调整尺寸、关闭/双栏/底部操作位置；外层缩放只应用一次，不能只测比例为 1 的 1024×576。真实合成夹具分开记录 DOM 几何、屏幕像素和呈现回执，窗口最小化恢复与实际游戏交接观感仍留人验。
+
+报告接通/关闭必须覆盖两段异步时序：真实 WebView2 已发出的自动意图先被夹具截留，Host 的 loading/reveal 显示前进后原样释放；真实 AVM1 则在 Host 形成意图后推进加载/提示再交付 AS2。接通与提前/就绪/exact 业务关闭均须首次迟到消息就生效，不能由第二次发送掩盖。已经接受的 covered 证明可在同请求内保留，foreign/generation/未来或畸形 revision、无 coverage 与未知锁仍拒绝，失败导航和世界呈现维持 exact revision。实际游戏另验同一进程连续至少三次返回，不由夹具次数代签。
+
+本包 AS2 逻辑变更编译 `-Target publish`，main 时间轴变更才编译 `-Target main`，核对应 SWF 刷新；不重编原背景 SWF。只改 Host/Web 时不重编同哈希 AS2/SWF，应显式记录复用的既有证据。自动门覆盖严格身份、遮罩回执、揭幕许可、未知操作锁和真实合成测试窗口，不能代签基地/战斗/失败的实际游戏旅程或保存重启。合同与人验入口见 [U12 专项](../docs/U12过场Web迁移与人力验收-2026-10-01.md)。
+
+涉及关卡返回报告的等待/开窗时序，追加 `scripts/run-map-loot-tests.ps1` 与 `scripts/run-stage-return-tests.ps1`：覆盖胜利、战败、主动撤退报告、durable 暂存后提前绑定且不暂停、清场只保留 exact 空暂存报告、原权威提前关闭、失败重试复用会话、奖励不重放、教程优先级和重复就绪不重复投递；过场 focused 同时覆盖清场取消撤罩、取消/错误不伪造成功及重绑定世界拒绝旧揭幕，并覆盖已收到揭幕后再取消/失败/提前清理均不能越过成功终帧。Battle outcome 的 failure 不是加载失败页的真实旅程。
+
 <a id="suite-map"></a>
 ### 地图面板与地图内容工作台
 
@@ -533,6 +554,13 @@ T800 托管长枪追加 `powershell -ExecutionPolicy Bypass -File scripts/run-ma
 
 Team/Pet/Merc 的 exact 身份与迟到回包合同见 [持久写与恢复](#save) 的「Host/Web 权威与生命周期门」。
 
+<a id="suite-garage-purchase"></a>
+### 车库购车（U13）
+
+领域合同见 [U13 车库购车](as2-web-panel-migration.md#u13-garage-purchase)。必跑 `scripts/run-garage-purchase-tests.ps1`、`GaragePurchaseTaskTests`、`node tools/run-garage-purchase-harness.js`，以及现有 `validate-panel-contracts`、`test-panel-contracts`、`test-panel-runtime`、lazy closure、存盘调用点与 Launcher 全量门。
+三车验证价格/驾驶资格、余额与拥有状态的提交时复验、取消、一次扣费、待保存重试、原 token 查询、场景/槽位变化和车辆权益。生产 SWF 分别核 asLoader 根桥、基地三处调用和 main 无旧确认 placement；真实保存重启与权益刷新须用隔离槽另验，Mock-browser 不代签。
+权益说明来自真实 XML 的 Level 1，报价/驾驶门槛保留 Level 0；focused runner 覆盖二者分离与展示回退。浏览器门使用真实 XML 和正式三车 WebP，覆盖最低 1024×576、常用尺寸、4:3 与超宽预览的等比居中、图片读取失败和中文长文案局部滚动。图片变更必跑 `python -X utf8 -B tools/bake-garage-vehicles.py --check`，实际再生核对 manifest 与派生字节。
+
 <a id="suite-hairdresser"></a>
 ### 理发与整形
 
@@ -630,7 +658,7 @@ Reward 未知写查询、O1 观测与存档闭包合同见 [持久写与恢复](
 <a id="suite-loot"></a>
 ### Loot / 关卡结算 runner
 
-**`scripts/run-map-loot-tests.ps1 -TimeoutSeconds 300`** 现役机器钉死：`LootContainerServiceTest` 189 + `LootMaterializationPlannerTest` 12 + `StageRunSessionTest` 594（脚本内 `$expectedServicePassCount/$expectedPlannerPassCount/$expectedStagePassCount`）。
+**`scripts/run-map-loot-tests.ps1 -TimeoutSeconds 360`** 现役机器钉死：`LootContainerServiceTest` 189 + `LootMaterializationPlannerTest` 12 + `StageRunSessionTest` 763（脚本内 `$expectedServicePassCount/$expectedPlannerPassCount/$expectedStagePassCount`）。U12 保留 v1 交接并覆盖并行报告：三种 outcome、durable 报告早于目标就绪、covered 后内部开窗意图、提前/就绪关闭不重开、同一会话重试、终结不复活、未知开窗锁和奖励不重放；接通与关闭新增跨加载/提示显示 revision 的迟到交付回归。此前 638/713/734/738 均为历史口径。本轮增加 durable 奖励回执进入最终报告、明确失败/未知不提前增记及重试不重复的 25 项断言。当前 Web 自动发送原内部意图，不新增按钮，自动一次/共用页面另由 Host/Web 夹具证明。U8 自动教程优先级保持：待呈现报告/遮罩未释放继续等待；关闭只消费报告呈现，奖励权威不变。`hasUnpresentedSettlementReport()` 只读，不改变场景出口或奖励权威。
 文本中的旧计数（267+12+419=698、165+9+372=546、205+9+382=596、676/684/824 等合计口径）均为各轮历史证据，见归档。该 runner 的 tracked TestLoader 直接 include 生产 `关卡系统_lsy_场景转换.as`，真实执行 `_root.返回基地/_root.关卡结束`，不得以测试 stub 代签转场异常与 exactly-once 合同。
 StageRunSession 覆盖大学/车库选关返回、真实胜利记录、撤退后迟到波次/判胜不能修改真实任务条件与正常胜利恰好一次回归、准备/保存/转场失败、v1/v2 失败投影握手、同结算重试与重复请求拒绝（配套 Host StageOutcome/RightContext、地图 AS2/Web 回归，见 [返回失败恢复](../docs/关卡结果与基地结算-CSharp-Web-ADR-2026-08-27.md#0d-2026-09-08-返回失败后的原生重试入口)）。
 
@@ -778,6 +806,8 @@ cycle 必须从 AS2 源精确派生并收到 14 个 summary 与各自 raw sample
 <a id="save"></a>
 ## 持久写与恢复
 
+**环境与文件提交可靠性**：改 `FlashStorageEnvironment`、`DurableFileWriter` 或其存档/偏好调用方时，先运行对应 Host focused tests，覆盖旧启动者 TEMP/TMP、临时目录拒写、同目录替换失败、部分替换与提交后异常对账，再跑 canonical Launcher 全量 runner。真实 Flash 的隔离槽写出、新进程读回和驱动命令见[存盘探针说明](../tools/save-storage/README.md)；盘符别名与真实跨卷分别报告，负例没有复现就保留未验证边界。AS2 墓碑/删除结果变更运行 `scripts/run-save-storage-tests.ps1`，要求唯一新鲜 suite block、零失败与 Compiler `0/0`；其当前进程内 SharedObject 字段断言不代签重启落盘。发布逻辑注入另以 `-Target publish` 核对新鲜 asLoader 产物。
+
 **触发**：SaveManager/R1、SafeExit、库存/共享收纳/暂存领取、交易、奖励或可能触达真实用户槽位的 E2E。未知写只走该域允许的 exact query/reconcile，不自动重试写；实写必须有明确测试范围，使用规定隔离/克隆槽，保护既有差异及原始字节，不反向覆盖玩家已有存档。
 
 ### Host/Web 权威与生命周期门
@@ -809,7 +839,7 @@ recovery ledger 的确定性回归固定验证：8 条稳定 proof 仍允许一�
 ### SaveManager API 分层（R1）门
 
 **调用点扫描门**：改 SaveManager 存盘入口（`_root.强制存盘` / `_root.自动存盘` / `_root.本地存盘` / 直调 `flushNow()` / XFL 帧脚本对应调用）时必跑 `node tools/save-api-migration/check-callsites.js`；R1 步骤 10–14 起另有 `node tools/save-api-migration/test-callsites.js`（文本记录 17/17，待核：阈值来源为历史文本，未找到当前机器真源）。
-manifest 为 `tools/save-api-migration/callsites.v1.json`（当前机器真值：40 物理点 / 33 逻辑点 = strict 19 + debounce 14；U4 健身结算新增一个 strict 逻辑点及 markDirty/flushDurableNow 两个物理点；scripts 旧入口 forceSave/directFlushNow/autoSave/localSave 已全部归零，XFL 旧入口亦归零；文本中「36 物理点 / 17 strict + 15 debounce」「37 物理点 / 32 逻辑点」「38 物理点 / 32 逻辑点」与「步骤 10/11/12/13 另轮施工」为历史口径，见归档）。发布前后对照追加 `--verify-swf-hashes`；
+manifest 为 `tools/save-api-migration/callsites.v1.json`（精确数量取 manifest 的 counts/callsites；U4 健身与 U13 购车各登记一个 strict 逻辑点及 markDirty/flushDurableNow 两个物理点；scripts 旧入口 forceSave/directFlushNow/autoSave/localSave 已全部归零，XFL 旧入口亦归零；文本中「36 物理点 / 17 strict + 15 debounce」「37 物理点 / 32 逻辑点」「38 物理点 / 32 逻辑点」与「步骤 10/11/12/13 另轮施工」为历史口径，见归档）。发布前后对照追加 `--verify-swf-hashes`；
 口径、paired 副本与 liveState 取信规则见 [tools/save-api-migration/README.md](../tools/save-api-migration/README.md)；Slice 2+ 迁移改旧入口文本必须同轮更新 manifest，否则本门以未命中/数量不足拒绝。所选 XFL 经 CS6 fresh publish 后以 `python -X utf8 tools/save-api-migration/check-published-scripts.py <swf> <export-dir>` 对 FFDec 输出核对可达 API/reason。
 
 **四层语义合同（Slice 1–4 起，未迁调用点部分仍有效）**：改 `SaveManager.as` / `通信_lsy_原版存档系统.as` / `SaveManagerTest.as` 后必跑 `scripts/run-character-build-tests.ps1` 与 `node tools/save-api-migration/check-callsites.js`。
@@ -1089,6 +1119,8 @@ u235 的远古诛神头/胸/腿/鞋由 4 个 unit-scoped virtual item 精确绑�
 
 - `python -m py_compile tools/bake-dialogue-portraits.py tools/test-dialogue-portrait-authority.py`
 - `python tools/test-dialogue-portrait-authority.py`
+- `python tools/test-dialogue-portrait-variants.py`（室友男女选择、artist 完整舞台装配、仅脸部像素变化、SVG id 冲突隔离与注册点漂移拒绝）。
+- 时间轴源复核：`python tools/test-dialogue-portrait-timelines.py`；Windows 的 EXE 包装器不能找到已有 Java 时，以 `CF7_FFDEC` 指向 `tools/ffdec/ffdec.bat` 并在当前进程 `PATH` 中使用已有 Java，不能据包装器失败判断 SWF 源损坏。
 - `python tools/bake-dialogue-portraits.py --external-only --limit 1 --output-dir tmp/dialogue-portrait-smoke-out --tmp-dir tmp/dialogue-portrait-smoke-tmp --ffdec-timeout-seconds 120`
 - `node --check launcher/web/modules/dialogue/dialogue-view.js`
 - 同名双源人工裁决追加 `node --check tools/dialogue-portrait-source-review/build-review.js` + `node --check tools/dialogue-portrait-source-review/test-review.js` + `node tools/dialogue-portrait-source-review/test-review.js` + `node tools/dialogue-portrait-source-review/build-review.js` +

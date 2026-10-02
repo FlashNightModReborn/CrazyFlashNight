@@ -1,0 +1,3 @@
+﻿_root.storageProbeRunId = "__FOCUSED_RUN_ID__";
+trace("FocusedTestRunId save-storage-probe Start: __FOCUSED_RUN_ID__");
+org.flashNight.neur.Server.test.FlashStorageProbeTest.runAllTests();

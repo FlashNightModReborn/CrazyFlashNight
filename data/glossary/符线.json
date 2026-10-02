@@ -1,0 +1,61 @@
+{
+  "schemaVersion": 1,
+  "termName": "符线",
+  "displayName": "符线",
+  "skin": "dossier",
+  "pages": [
+    {
+      "pageKey": "1",
+      "requires": [],
+      "blocks": [
+        {
+          "type": "heading", "level": 2,
+          "content": [{ "type": "text", "text": "§1 定义" }]
+        },
+        {
+          "type": "paragraph",
+          "content": [{ "type": "text", "text": "符线，翅虎堂主在防务协调期间察觉的一类异常网络路径——以密钥、地址与节点构成，能通过嵌入信标的方式接入黑铁会的工程与物流管道。其名最初为工作附录中的非正式代称，后为档案沿用。" }]
+        },
+        {
+          "type": "paragraph",
+          "content": [{ "type": "text", "text": "符线的成因与归属尚无定论：或与旧世密钥经济有关，或与天网禁区的外溢有关。翅虎本人在笔记中仅记「所记之事远不寻常」。" }]
+        }
+      ]
+    },
+    {
+      "pageKey": "2",
+      "requires": [{ "decryptLevel": 2 }],
+      "blocks": [
+        {
+          "type": "heading", "level": 2,
+          "content": [{ "type": "text", "text": "§2 补录：加密页的原文" }]
+        },
+        {
+          "type": "paragraph",
+          "content": [{ "type": "text", "text": "溯源笔记的中段以加密方式留存——其中包含「旧制管脉」「节枢」等被部分涂掉的术语，以及一段被明确删去的短语。能够读到这层内容，意味着对应的解密等级已达要求。" }]
+        }
+      ]
+    },
+    {
+      "pageKey": "3",
+      "requires": [
+        { "item": "翅虎令", "minValue": 2 },
+        { "decryptLevel": 2 }
+      ],
+      "blocks": [
+        {
+          "type": "heading", "level": 2,
+          "content": [{ "type": "text", "text": "§3 补录：翅虎的旁证" }]
+        },
+        {
+          "type": "paragraph",
+          "content": [{ "type": "text", "text": "翅虎亲笔密令中对同一现象有侧面调度指令：要求坛口对涉及「符线」性质的物流异常报明而不动——显示黑铁会内部对该渠道的态度是「警惕利用」，而非彻底剿除。" }]
+        },
+        {
+          "type": "note",
+          "content": [{ "type": "text", "text": "编注：本词源仍为判读性记录，容以后续物证修正。" }]
+        }
+      ]
+    }
+  ]
+}

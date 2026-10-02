@@ -117,6 +117,8 @@ namespace CF7Launcher.Guardian
             sb.Append(" forceWebViewFail=").Append(forceWebViewFail);
             sb.Append(" args=").Append(args == null ? 0 : args.Length);
             Write("INFO", "core.environment", sb.ToString());
+            Write("INFO", "flash.storage_environment",
+                CF7Launcher.Config.FlashStorageEnvironment.Snapshot().ToString(Newtonsoft.Json.Formatting.None));
         }
 
         public static bool ProbeFile(string label, string path, bool required)

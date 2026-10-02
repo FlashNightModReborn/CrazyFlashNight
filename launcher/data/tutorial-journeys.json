@@ -1,0 +1,15 @@
+{
+  "version": 1,
+  "domains": [{"id":"workbench","title":"物品与战备箱","features":["single-transfer","batch-transfer"]}],
+  "journeys": [
+    {"id":"single-transfer","domain":"workbench","title":"快速存入一件物品","version":1,"steps":[
+      {"action":"click","target":"backpack-0","ctrl":true,"point":{"x":0.5,"y":0.5},"text":"按住 Ctrl，点击医疗包，将这一槽物品存入战备箱。","expected":{"backpack":[0,5,2],"battlebox":[3,0,0],"mode":null,"pending":0,"requests":["autoTransfer"]}}
+    ]},
+    {"id":"batch-transfer","domain":"workbench","title":"选择多件再一起存入","version":1,"steps":[
+      {"action":"click","target":"deposit","point":{"x":0.5,"y":0.5},"text":"进入选择存入模式。","expected":{"backpack":[3,5,2],"battlebox":[0,0,0],"mode":"deposit","pending":0,"requests":[]}},
+      {"action":"click","target":"backpack-0","point":{"x":0.5,"y":0.5},"text":"选择医疗包。","expected":{"backpack":[3,5,2],"battlebox":[0,0,0],"mode":"deposit","pending":1,"requests":[]}},
+      {"action":"click","target":"backpack-1","point":{"x":0.5,"y":0.5},"text":"再选择手枪弹夹。物品会先留在背包中。","expected":{"backpack":[3,5,2],"battlebox":[0,0,0],"mode":"deposit","pending":2,"requests":[]}},
+      {"action":"click","target":"commit","point":{"x":0.5,"y":0.5},"text":"一次存入所选物品。","expected":{"backpack":[0,0,2],"battlebox":[3,5,0],"mode":null,"pending":0,"requests":["autoTransferBatch"]}}
+    ]}
+  ]
+}

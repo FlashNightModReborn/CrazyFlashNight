@@ -31,19 +31,19 @@
     <Infrastructure>
         <Name>自行车</Name>
         <Level id="0">
-            <Description>自行车在短距离仍然是很优秀的代步工具，尤其是在废城的城市道路中。现已在车库开放售卖，也可线上购买。</Description>
+            <Description>轻便、可靠的近途代步工具。废城的街巷里，两只轮子往往比两条腿更省事。</Description>
             <Price>8000</Price>
         </Level>
         <Level id="1">
-            <Description>使用自行车可以快速到达距离较近的据点。
-解锁较近距离阵营与区域的地图快速传送功能，例如废城。
-解锁材料档案的“前往商店”，可快速联系已发现的商店。</Description>
+            <Description>地图出行：可使用废城等近途区域的地图快速传送。
+材料导航：解锁材料档案“前往商店”，快速前往已发现的商店。
+开放条件：地图目的地仍需满足对应剧情与发现条件。</Description>
         </Level>
     </Infrastructure>
     <Infrastructure>
         <Name>摩托车</Name>
         <Level id="0">
-            <Description>油的供应不稳定使得摩托车的使用成本也高了不少，但它依然是方便又快速的载具选择。出于最新的安全管理条例，现在购买摩托车需要提供驾照，可前往车库线下确认。</Description>
+            <Description>灵活的中途出行选择。走出废城、前往更远的据点时，有辆摩托车会方便得多。</Description>
             <Price>35000</Price>
             <Skill>
                 <Name>驾驶</Name>
@@ -51,16 +51,15 @@
             </Skill>
         </Level>
         <Level id="1">
-            <Description>使用摩托车可以快速到达距离中等的据点。
-解锁中等距离阵营与区域的地图快速传送功能，例如堕落城。
-解锁材料档案的“前往商店”和“前往合成”。</Description>
+            <Description>地图出行：覆盖近途区域，并可使用堕落城等中途区域的地图快速传送。
+材料导航：解锁材料档案“前往商店”和“前往合成”。
+购买顺序：无需先购买自行车；地图目的地仍需满足剧情与发现条件。</Description>
         </Level>
     </Infrastructure>
     <Infrastructure>
         <Name>越野车</Name>
         <Level id="0">
-            <Description>末世之后，载具的成本更加高昂，但请相信这辆越野车的性能对得起它的价格。款式可在车库查看。
-当你需要快速前往其他地区，或者有大量携带物资的需求时，购买它是一个好的选择——如果你有钱，且考了驾照的话。</Description>
+            <Description>适合跨区奔波与物资周转的越野车。车库里最贵的选择，也给远途出行和后勤储备留出了更多余地。</Description>
             <Price>500000</Price>
             <Skill>
                 <Name>驾驶</Name>
@@ -68,9 +67,10 @@
             </Skill>
         </Level>
         <Level id="1">
-            <Description>使用越野车可以快速、安全地抵达尘都各处，尤其是在携带大量物资的情况下。
-解锁所有阵营与区域的地图快速传送功能，例如军阀基地，并增加一页后勤战备箱。
-兼容材料档案的“前往商店”和“前往合成”。</Description>
+            <Description>地图出行：满足全部区域的载具条件，包括军阀基地与禁区；目的地仍需满足剧情与发现条件。
+材料导航：支持材料档案“前往商店”和“前往合成”。
+后勤扩容：后勤战备箱开放后增加一页（40格）。
+购买顺序：无需先购买自行车或摩托车。</Description>
         </Level>
     </Infrastructure>
     <Infrastructure>
@@ -320,7 +320,7 @@
                 <Value>20</Value>
             </Material>
         </Level>
-        <Level id="3">
+        <Level id="6">
             <Description>破壁机</Description>
         </Level>
     </Infrastructure>

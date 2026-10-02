@@ -53,12 +53,13 @@ internal static partial class Program
     {
         if (args.Length==3 && args[0]=="--host-costs") return RunHostCosts(Path.GetFullPath(args[1]),Path.GetFullPath(args[2]));
         bool caches=args.Length==4 && args[3]=="--caches";
+        bool sceneLights=args.Length==4 && args[3]=="--scene-lights";
         bool startup=args.Length==4 && args[3]=="--startup";
         bool rays=args.Length==5 && args[3]=="--rays",field=args.Length==5 && args[3]=="--field";
         bool reference=args.Length==5 && args[3]=="--reference";
         bool channels=args.Length==5 && args[3]=="--channels";
         bool chainScenes=args.Length==5 && args[3]=="--chain-scenes";
-        if(args.Length!=3 && !startup && !rays && !field && !reference && !channels && !chainScenes && !caches) { Console.Error.WriteLine("Usage: CombatFxProbe <project> <native-dll> <output-dir> [--rays <CS6-trace> | --field <CS6-trace> | --reference <CS6-trace> | --channels <CS6-trace> | --startup | --caches], or --host-costs <project> <output-dir>");return 2; }
+        if(args.Length!=3 && !startup && !rays && !field && !reference && !channels && !chainScenes && !caches && !sceneLights) { Console.Error.WriteLine("Usage: CombatFxProbe <project> <native-dll> <output-dir> [--rays <CS6-trace> | --field <CS6-trace> | --reference <CS6-trace> | --channels <CS6-trace> | --startup | --caches], or --host-costs <project> <output-dir>");return 2; }
         string root=Path.GetFullPath(args[0]),native=Path.GetFullPath(args[1]),output=Path.GetFullPath(args[2]);
         Directory.CreateDirectory(output);
         Application.SetHighDpiMode(HighDpiMode.PerMonitorV2);
@@ -88,6 +89,13 @@ internal static partial class Program
 #else
                     await RunCacheGallery(root,native,output,sourceHwnd,targetHwnd,
                         bounds=>target.Invoke(new Action(()=>target.Bounds=bounds)));
+#endif
+                }
+                else if(sceneLights) {
+#if PERF_BASELINE
+                    throw new InvalidOperationException("Scene light proof requires the new paired build");
+#else
+                    await RunSceneLightGallery(root,native,output,sourceHwnd,targetHwnd);
 #endif
                 }
                 else if(channels) await RunRayChannelGallery(root,native,output,sourceHwnd,targetHwnd,Path.GetFullPath(args[4]));

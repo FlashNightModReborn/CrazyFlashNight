@@ -15,6 +15,8 @@ namespace CF7Launcher.Tasks
         internal Action<RayVisualDrawFrame,float,float,float> RayVisualObserved;
         internal Action RayVisualRejected,RayVisualCleared,ChainVisualRejected;
         internal Action<string,string> VisualFaultReported;
+        internal Action<SceneLightState> SceneLightObserved;
+        internal Action<int,bool> SceneLightClockObserved;
 
         /// <summary>
         /// AS2 视觉桥上报的通道级致命故障：V{channel}|{reason}。
@@ -26,7 +28,7 @@ namespace CF7Launcher.Tasks
             string channel=payload??"",reason="";
             int sep=channel.IndexOf('|');
             if(sep>=0){reason=channel.Substring(sep+1);channel=channel.Substring(0,sep);}
-            if((channel!="bullet"&&channel!="chain"&&channel!="ray")
+            if((channel!="bullet"&&channel!="chain"&&channel!="ray"&&channel!="scene")
                 ||reason.Length==0||reason.Length>64)
             {
                 CF7Launcher.Guardian.PerfTrace.Counter("visual_fault.malformed");

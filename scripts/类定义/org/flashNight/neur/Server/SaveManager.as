@@ -274,7 +274,7 @@ class org.flashNight.neur.Server.SaveManager {
         "shop_legacy.close",
         "shop.panel_close", "shop.cart_edit",
         "ui.fade_out", "ui.safe_exit_open_legacy", "ui.taskbar_legacy_close",
-        "ui.storage_money_button_close", "ui.storage_money_close", "ui.plastic_surgery_paid",
+        "ui.storage_money_button_close", "ui.storage_money_close", "ui.plastic_surgery_paid", "ui.garage_purchase_paid",
         "ui.gym_training_paid",
         "ui.tablet_close", "ui.pet_info_close", "ui.inventory_close", "ui.warehouse_close",
         "ui.warehouse_legacy_close", "ui.inventory_legacy_close", "ui.player_info_inventory_close"
@@ -1353,20 +1353,29 @@ class org.flashNight.neur.Server.SaveManager {
      * preload 收到 launcher load 响应 error 以 "tombstoned:" 开头时调用本方法，
      * 对齐 SOL 墓碑（_deleted=true）。不变式 3：launcher tombstone 清除的唯一路径仍是 shadow。
      */
-    public function handlePreloadTombstoned(slot:String):Void {
-        if (_rewardCandidate != null) return;
+    public function handlePreloadTombstoned(slot:String):Boolean {
+        if (_rewardCandidate != null) return false;
         // 不变式 3：launcher tombstone → 对齐 SOL 墓碑，清预取
         // （saveAll → shadow 是 tombstone 唯一安全清除路径；这里不碰 launcher tombstone）
         var safeSlot:String = (slot == undefined || slot.length == 0) ? _root.savePath : slot;
         var so:SharedObject = SharedObject.getLocal(safeSlot);
+        var flushOk:Boolean = false;
         if (so != null) {
             so.data._deleted = true;
-            try { so.flush(); } catch (e:Error) {}
+            try {
+                flushOk = flushSO(so, "preload_tombstone");
+            } catch (flushError:Error) {
+                ServerManager.getInstance().sendServerMessage(
+                    "[SaveManager.preload] tombstone flush exception slot=" + safeSlot + " error=" + flushError);
+            }
         }
+        if (!flushOk) ServerManager.getInstance().sendServerMessage(
+            "[SaveManager.preload] tombstone alignment unconfirmed slot=" + safeSlot);
         _prefetchedData = undefined;
         _prefetchedSlot = undefined;
         _prefetchInFlight = false;
         _prefetchGen++;
+        return flushOk;
     }
 
     public function preload():Void {
@@ -1742,8 +1751,8 @@ class org.flashNight.neur.Server.SaveManager {
         return true;
     }
 
-    public function deleteSlot():Void {
-        if (_rewardCandidate != null) return;
+    public function deleteSlot():Boolean {
+        if (_rewardCandidate != null) return false;
         // P3a: 清理预取缓存（防止删档后被内存缓存复活）
         clearPrefetch();
 
@@ -1755,7 +1764,15 @@ class org.flashNight.neur.Server.SaveManager {
         // 原因：旧的 inflight shadow 可能晚于 delete 落地，重新写回 JSON 文件；
         // 如果 delete 回调清了墓碑，这个迟到的旧 shadow 就会在下次启动时复活已删存档。
         so.data._deleted = true;
-        flushSO(so, "delete_tombstone");
+        var localConfirmed:Boolean = flushSO(so, "delete_tombstone");
+        if (!localConfirmed) {
+            // clear 本身可能已影响持久对象；不宣称“未执行”或成功，不重放。
+            // 保留角色内存以便恢复，当前启动页仍由 Host 墓碑独立裁决。
+            FrameBroadcaster.pushUiState("sv:3");
+            ServerManager.getInstance().sendServerMessage(
+                "[SaveManager.deleteSlot] deletion unconfirmed; character memory retained slot=" + _root.savePath);
+            return false;
+        }
 
         // 通知 Launcher 删除 shadow JSON（best-effort，墓碑是真正的防线）
         var sm:ServerManager = ServerManager.getInstance();
@@ -1768,6 +1785,7 @@ class org.flashNight.neur.Server.SaveManager {
         }
 
         resetPerCharacterMemory();
+        return true;
     }
 
     /**

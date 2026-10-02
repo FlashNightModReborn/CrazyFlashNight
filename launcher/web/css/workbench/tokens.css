@@ -51,6 +51,48 @@
     --launcher-bg-1: #0c0e12;
     --launcher-copy: #d4d8dc;
 
+    /* 基地服务共享色板：理发、整形与车库共同消费。
+       保留已验收的中性材质/墨色；强调与状态仍沿用 --wb-semantic-*。
+       色值唯一归属本处，feature CSS 只引用角色变量。 */
+    --appearance-text: #edf0f2;
+    --appearance-bg: #090b0e;
+    --appearance-hover-line: #687582;
+    --appearance-secondary-text: #c8ced3;
+    --appearance-strong-text: #fff;
+    --appearance-tint: rgba(255, 255, 255, .025);
+    --appearance-surface: #11151a;
+    --appearance-surface-raised: #181e24;
+    --appearance-line: #343d46;
+    --appearance-line-soft: #252c33;
+    --appearance-muted: #9ca7b0;
+    --appearance-frame-line: #3a434c;
+    --appearance-sheen: rgba(255, 255, 255, .045);
+    --appearance-surface-edge: #0d1014;
+    --appearance-surface-deep: #0b0e12;
+    --appearance-control-inset: #101419;
+    --appearance-pane-fill: rgba(14, 18, 22, .94);
+    --appearance-pane-heading: #dce1e5;
+    --appearance-preview-light: #222a31;
+    --appearance-preview-dark: #0c1014;
+    --appearance-preview-caption-fill: rgba(7, 9, 12, .88);
+    --appearance-preview-fallback-fill: rgba(9, 11, 14, .94);
+    --appearance-preview-fallback-text: #f0e3c4;
+    --appearance-fact-label: #77838d;
+    --appearance-fact-value: #d6dce0;
+    --appearance-button-fill: #151a20;
+    --appearance-button-text: #d8dde1;
+    --appearance-button-primary-text: #071014;
+    --appearance-button-hover-line: #7d8994;
+    --appearance-backdrop: #080a0d;
+    --appearance-empty-fill: #0d1115;
+
+    /* 情报名词页的档案注记与解锁条件：沿用既有墨金/纸色及透明度。 */
+    --intel-archive-note-text: rgba(122,106,69,0.75);
+    --intel-archive-note-line: rgba(101,78,38,0.22);
+    --intel-archive-requirement-text: #7a6a45;
+    --intel-archive-requirement-fill: rgba(255,255,255,0.12);
+    --intel-archive-requirement-line: rgba(101,78,38,0.3);
+
     /* 动效语言：微交互、状态、结构、拒绝、等待、环境核心。 */
     --wb-motion-micro: 100ms;
     --wb-motion-standard: 160ms;
@@ -97,4 +139,746 @@
     --term-ink-lo: color-mix(in srgb,var(--launcher-copy) 62%,var(--launcher-bg-1));
     --term-ink-faint: color-mix(in srgb,var(--launcher-copy) 45%,var(--launcher-bg-1));
     --term-control-h: 28px;
+}
+
+/* 合成、菜谱、蓝图与公社档案：既有配色和动效值按原 selector 收至唯一 token 真源。 */
+.crafting-panel {
+    --wb-crafting-crafting-panel-wb-scrollbar-track: #0d1115;
+    --wb-crafting-crafting-panel-wb-scrollbar-thumb: #705a2d;
+    --wb-crafting-crafting-panel-wb-scrollbar-thumb-border: #a9863b;
+    --wb-crafting-crafting-panel-wb-scrollbar-thumb-hover: #967338;
+    --wb-crafting-crafting-panel-wb-accent: #f1b83b;
+    --wb-crafting-crafting-panel-wb-accent-soft: rgba(241,184,59,.16);
+    --wb-crafting-crafting-panel-wb-panel: #11161b;
+}
+.crafting-catalog-grid::-webkit-scrollbar-track,
+.crafting-detail-body::-webkit-scrollbar-track,
+.crafting-material-grid::-webkit-scrollbar-track,
+.crafting-material-detail-body::-webkit-scrollbar-track {
+    --wb-crafting-crafting-catalog-grid-webkit-scrollbar-track-crafting-detail-body-webkit-scrollbar-: 1px solid #1c2329;
+}
+.crafting-detail-empty {
+    --wb-crafting-crafting-detail-empty-color: #68747e;
+}
+.crafting-material-search {
+    --wb-crafting-crafting-material-search-color: #dce8eb;
+    --wb-crafting-crafting-material-search-background: #080c0f;
+}
+.crafting-material-grid.item-grid-compact .crafting-material-card-owned {
+    --wb-crafting-crafting-material-grid-item-grid-compact-crafting-material-card-owned-color: #eafbff;
+    --wb-crafting-crafting-material-grid-item-grid-compact-crafting-material-card-owned-background: rgba(4,9,11,.9);
+}
+.crafting-material-empty-copy {
+    --wb-crafting-crafting-material-empty-copy-color: #75848a;
+}
+.crafting-panel[data-crafting-category="烹饪"] {
+    --wb-crafting-crafting-panel-data-crafting-category-wb-bg: #160f08;
+    --wb-crafting-crafting-panel-data-crafting-category-wb-surface: #1d150c;
+    --wb-crafting-crafting-panel-data-crafting-category-wb-panel: #171009;
+    --wb-crafting-crafting-panel-data-crafting-category-wb-line: #4a3826;
+    --wb-crafting-crafting-panel-data-crafting-category-wb-line-soft: #3a2c1e;
+    --wb-crafting-crafting-panel-data-crafting-category-wb-line-strong: #7a5c38;
+    --wb-crafting-crafting-panel-data-crafting-category-wb-text: #f5ead6;
+    --wb-crafting-crafting-panel-data-crafting-category-wb-muted: #a89272;
+    --wb-crafting-crafting-panel-data-crafting-category-wb-accent: #ff9440;
+    --wb-crafting-crafting-panel-data-crafting-category-wb-accent-soft: rgba(255,148,64,.16);
+    --wb-crafting-crafting-panel-data-crafting-category-dls-crystal: #ff9440;
+    --wb-crafting-crafting-panel-data-crafting-category-dls-crystal-deep: #c96a1e;
+    --wb-crafting-crafting-panel-data-crafting-category-dls-crystal-dim: #5c3317;
+    --wb-crafting-crafting-panel-data-crafting-category-dls-crystal-bright: #ffc389;
+    --wb-crafting-crafting-panel-data-crafting-category-dls-crystal-soft: rgba(255,148,64,.12);
+    --wb-crafting-crafting-panel-data-crafting-category-dls-crystal-faint: rgba(255,148,64,.45);
+    --wb-crafting-crafting-panel-data-crafting-category-dls-glow: rgba(255,148,64,.18);
+    --wb-crafting-crafting-panel-data-crafting-category-wb-scrollbar-track: #181008;
+    --wb-crafting-crafting-panel-data-crafting-category-wb-scrollbar-thumb: #8a5f30;
+    --wb-crafting-crafting-panel-data-crafting-category-wb-scrollbar-thumb-border: #b98a4a;
+    --wb-crafting-crafting-panel-data-crafting-category-wb-scrollbar-thumb-hover: #a87a40;
+}
+.crafting-panel[data-crafting-category="化学生产"] {
+    --wb-crafting-crafting-panel-data-crafting-category-wb-bg-2: #07130e;
+    --wb-crafting-crafting-panel-data-crafting-category-wb-surface-2: #0c1a14;
+    --wb-crafting-crafting-panel-data-crafting-category-wb-panel-2: #0a1510;
+    --wb-crafting-crafting-panel-data-crafting-category-wb-line-2: #2a4a3a;
+    --wb-crafting-crafting-panel-data-crafting-category-wb-line-soft-2: #1e3a2c;
+    --wb-crafting-crafting-panel-data-crafting-category-wb-line-strong-2: #3f7a58;
+    --wb-crafting-crafting-panel-data-crafting-category-wb-text-2: #d8f2e4;
+    --wb-crafting-crafting-panel-data-crafting-category-wb-muted-2: #7fa893;
+    --wb-crafting-crafting-panel-data-crafting-category-wb-accent-2: #3fd68f;
+    --wb-crafting-crafting-panel-data-crafting-category-wb-accent-soft-2: rgba(63,214,143,.16);
+    --wb-crafting-crafting-panel-data-crafting-category-dls-crystal-2: #3fd68f;
+    --wb-crafting-crafting-panel-data-crafting-category-dls-crystal-deep-2: #1e9960;
+    --wb-crafting-crafting-panel-data-crafting-category-dls-crystal-dim-2: #14532f;
+    --wb-crafting-crafting-panel-data-crafting-category-dls-crystal-bright-2: #8fecc0;
+    --wb-crafting-crafting-panel-data-crafting-category-dls-crystal-soft-2: rgba(63,214,143,.12);
+    --wb-crafting-crafting-panel-data-crafting-category-dls-crystal-faint-2: rgba(63,214,143,.45);
+    --wb-crafting-crafting-panel-data-crafting-category-dls-glow-2: rgba(63,214,143,.18);
+    --wb-crafting-crafting-panel-data-crafting-category-wb-scrollbar-track-2: #081510;
+    --wb-crafting-crafting-panel-data-crafting-category-wb-scrollbar-thumb-2: #1d4a34;
+    --wb-crafting-crafting-panel-data-crafting-category-wb-scrollbar-thumb-border-2: #2d7050;
+    --wb-crafting-crafting-panel-data-crafting-category-wb-scrollbar-thumb-hover-2: #2d7050;
+}
+.crafting-panel[data-crafting-category="铁枪会"] {
+    --wb-crafting-crafting-panel-data-crafting-category-wb-bg-3: #0d0908;
+    --wb-crafting-crafting-panel-data-crafting-category-wb-surface-3: #171008;
+    --wb-crafting-crafting-panel-data-crafting-category-wb-panel-3: #120c08;
+    --wb-crafting-crafting-panel-data-crafting-category-wb-line-3: #4a3026;
+    --wb-crafting-crafting-panel-data-crafting-category-wb-line-soft-3: #38241c;
+    --wb-crafting-crafting-panel-data-crafting-category-wb-line-strong-3: #7a4a34;
+    --wb-crafting-crafting-panel-data-crafting-category-wb-text-3: #f0e2d2;
+    --wb-crafting-crafting-panel-data-crafting-category-wb-muted-3: #a3896f;
+    --wb-crafting-crafting-panel-data-crafting-category-wb-accent-3: #ff6a33;
+    --wb-crafting-crafting-panel-data-crafting-category-wb-accent-soft-3: rgba(255,106,51,.16);
+    --wb-crafting-crafting-panel-data-crafting-category-dls-crystal-3: #ff7a3d;
+    --wb-crafting-crafting-panel-data-crafting-category-dls-crystal-deep-3: #c24314;
+    --wb-crafting-crafting-panel-data-crafting-category-dls-crystal-dim-3: #4a1e0e;
+    --wb-crafting-crafting-panel-data-crafting-category-dls-crystal-bright-3: #ffb08a;
+    --wb-crafting-crafting-panel-data-crafting-category-dls-crystal-soft-3: rgba(255,122,61,.12);
+    --wb-crafting-crafting-panel-data-crafting-category-dls-crystal-faint-3: rgba(255,122,61,.45);
+    --wb-crafting-crafting-panel-data-crafting-category-dls-glow-3: rgba(255,122,61,.2);
+    --wb-crafting-crafting-panel-data-crafting-category-wb-scrollbar-track-3: #120b08;
+    --wb-crafting-crafting-panel-data-crafting-category-wb-scrollbar-thumb-3: #5c3220;
+    --wb-crafting-crafting-panel-data-crafting-category-wb-scrollbar-thumb-border-3: #8a4c30;
+    --wb-crafting-crafting-panel-data-crafting-category-wb-scrollbar-thumb-hover-3: #8a4c30;
+}
+.crafting-panel[data-crafting-category="属性武器"] {
+    --wb-crafting-crafting-panel-data-crafting-category-wb-bg-4: #0e0a14;
+    --wb-crafting-crafting-panel-data-crafting-category-wb-surface-4: #150f1d;
+    --wb-crafting-crafting-panel-data-crafting-category-wb-panel-4: #120c18;
+    --wb-crafting-crafting-panel-data-crafting-category-wb-line-4: #3a2f4d;
+    --wb-crafting-crafting-panel-data-crafting-category-wb-line-soft-4: #2c2438;
+    --wb-crafting-crafting-panel-data-crafting-category-wb-line-strong-4: #574a75;
+    --wb-crafting-crafting-panel-data-crafting-category-wb-text-4: #ece5f7;
+    --wb-crafting-crafting-panel-data-crafting-category-wb-muted-4: #9489b0;
+    --wb-crafting-crafting-panel-data-crafting-category-wb-accent-4: #9d5cff;
+    --wb-crafting-crafting-panel-data-crafting-category-wb-accent-soft-4: rgba(157,92,255,.16);
+    --wb-crafting-crafting-panel-data-crafting-category-dls-crystal-4: #a86fff;
+    --wb-crafting-crafting-panel-data-crafting-category-dls-crystal-deep-4: #6b3ecc;
+    --wb-crafting-crafting-panel-data-crafting-category-dls-crystal-dim-4: #341f5c;
+    --wb-crafting-crafting-panel-data-crafting-category-dls-crystal-bright-4: #c9a8ff;
+    --wb-crafting-crafting-panel-data-crafting-category-dls-crystal-soft-4: rgba(168,111,255,.12);
+    --wb-crafting-crafting-panel-data-crafting-category-dls-crystal-faint-4: rgba(168,111,255,.45);
+    --wb-crafting-crafting-panel-data-crafting-category-dls-glow-4: rgba(168,111,255,.18);
+    --wb-crafting-crafting-panel-data-crafting-category-wb-scrollbar-track-4: #100b18;
+    --wb-crafting-crafting-panel-data-crafting-category-wb-scrollbar-thumb-4: #463466;
+    --wb-crafting-crafting-panel-data-crafting-category-wb-scrollbar-thumb-border-4: #66508c;
+    --wb-crafting-crafting-panel-data-crafting-category-wb-scrollbar-thumb-hover-4: #66508c;
+}
+.crafting-panel[data-crafting-category="武器合成"] {
+    --wb-crafting-crafting-panel-data-crafting-category-wb-bg-5: #08101a;
+    --wb-crafting-crafting-panel-data-crafting-category-wb-surface-5: #0d1621;
+    --wb-crafting-crafting-panel-data-crafting-category-wb-panel-5: #0a131c;
+    --wb-crafting-crafting-panel-data-crafting-category-wb-line-5: #26405a;
+    --wb-crafting-crafting-panel-data-crafting-category-wb-line-soft-5: #1c3044;
+    --wb-crafting-crafting-panel-data-crafting-category-wb-line-strong-5: #3f6080;
+    --wb-crafting-crafting-panel-data-crafting-category-wb-text-5: #dde9f5;
+    --wb-crafting-crafting-panel-data-crafting-category-wb-muted-5: #7d97ad;
+    --wb-crafting-crafting-panel-data-crafting-category-wb-accent-5: #58a6ff;
+    --wb-crafting-crafting-panel-data-crafting-category-wb-accent-soft-5: rgba(88,166,255,.16);
+    --wb-crafting-crafting-panel-data-crafting-category-dls-crystal-5: #58a6ff;
+    --wb-crafting-crafting-panel-data-crafting-category-dls-crystal-deep-5: #2e72cc;
+    --wb-crafting-crafting-panel-data-crafting-category-dls-crystal-dim-5: #1a3a5c;
+    --wb-crafting-crafting-panel-data-crafting-category-dls-crystal-bright-5: #9ccaff;
+    --wb-crafting-crafting-panel-data-crafting-category-dls-crystal-soft-5: rgba(88,166,255,.12);
+    --wb-crafting-crafting-panel-data-crafting-category-dls-crystal-faint-5: rgba(88,166,255,.45);
+    --wb-crafting-crafting-panel-data-crafting-category-dls-glow-5: rgba(88,166,255,.18);
+    --wb-crafting-crafting-panel-data-crafting-category-wb-scrollbar-track-5: #0a1420;
+    --wb-crafting-crafting-panel-data-crafting-category-wb-scrollbar-thumb-5: #2a4a6a;
+    --wb-crafting-crafting-panel-data-crafting-category-wb-scrollbar-thumb-border-5: #3f6a94;
+    --wb-crafting-crafting-panel-data-crafting-category-wb-scrollbar-thumb-hover-5: #3f6a94;
+}
+.crafting-panel[data-crafting-category="饰品合成"] {
+    --wb-crafting-crafting-panel-data-crafting-category-wb-bg-6: #12100a;
+    --wb-crafting-crafting-panel-data-crafting-category-wb-surface-6: #1a1610;
+    --wb-crafting-crafting-panel-data-crafting-category-wb-panel-6: #151109;
+    --wb-crafting-crafting-panel-data-crafting-category-wb-line-6: #4d4230;
+    --wb-crafting-crafting-panel-data-crafting-category-wb-line-soft-6: #3a3224;
+    --wb-crafting-crafting-panel-data-crafting-category-wb-line-strong-6: #7a6a48;
+    --wb-crafting-crafting-panel-data-crafting-category-wb-text-6: #f2ecd8;
+    --wb-crafting-crafting-panel-data-crafting-category-wb-muted-6: #a89c80;
+    --wb-crafting-crafting-panel-data-crafting-category-wb-accent-6: #d9a94e;
+    --wb-crafting-crafting-panel-data-crafting-category-wb-accent-soft-6: rgba(217,169,78,.16);
+    --wb-crafting-crafting-panel-data-crafting-category-dls-crystal-6: #e5b95c;
+    --wb-crafting-crafting-panel-data-crafting-category-dls-crystal-deep-6: #a87e28;
+    --wb-crafting-crafting-panel-data-crafting-category-dls-crystal-dim-6: #4d3d17;
+    --wb-crafting-crafting-panel-data-crafting-category-dls-crystal-bright-6: #f2d795;
+    --wb-crafting-crafting-panel-data-crafting-category-dls-crystal-soft-6: rgba(229,185,92,.12);
+    --wb-crafting-crafting-panel-data-crafting-category-dls-crystal-faint-6: rgba(229,185,92,.45);
+    --wb-crafting-crafting-panel-data-crafting-category-dls-glow-6: rgba(229,185,92,.18);
+    --wb-crafting-crafting-panel-data-crafting-category-wb-scrollbar-track-6: #14100a;
+    --wb-crafting-crafting-panel-data-crafting-category-wb-scrollbar-thumb-6: #6a5836;
+    --wb-crafting-crafting-panel-data-crafting-category-wb-scrollbar-thumb-border-6: #947e4c;
+    --wb-crafting-crafting-panel-data-crafting-category-wb-scrollbar-thumb-hover-6: #947e4c;
+}
+.crafting-panel[data-crafting-category="进阶防具"] {
+    --wb-crafting-crafting-panel-data-crafting-category-wb-bg-7: #0a0f14;
+    --wb-crafting-crafting-panel-data-crafting-category-wb-surface-7: #111820;
+    --wb-crafting-crafting-panel-data-crafting-category-wb-panel-7: #0e141a;
+    --wb-crafting-crafting-panel-data-crafting-category-wb-line-7: #2c3d4d;
+    --wb-crafting-crafting-panel-data-crafting-category-wb-line-soft-7: #202e3a;
+    --wb-crafting-crafting-panel-data-crafting-category-wb-line-strong-7: #46607a;
+    --wb-crafting-crafting-panel-data-crafting-category-wb-text-7: #dfe8f0;
+    --wb-crafting-crafting-panel-data-crafting-category-wb-muted-7: #8298a8;
+    --wb-crafting-crafting-panel-data-crafting-category-wb-accent-7: #6f9fd8;
+    --wb-crafting-crafting-panel-data-crafting-category-wb-accent-soft-7: rgba(111,159,216,.16);
+    --wb-crafting-crafting-panel-data-crafting-category-dls-crystal-7: #7fabe0;
+    --wb-crafting-crafting-panel-data-crafting-category-dls-crystal-deep-7: #3d6fa8;
+    --wb-crafting-crafting-panel-data-crafting-category-dls-crystal-dim-7: #1f3a52;
+    --wb-crafting-crafting-panel-data-crafting-category-dls-crystal-bright-7: #adccec;
+    --wb-crafting-crafting-panel-data-crafting-category-dls-crystal-soft-7: rgba(127,171,224,.12);
+    --wb-crafting-crafting-panel-data-crafting-category-dls-crystal-faint-7: rgba(127,171,224,.45);
+    --wb-crafting-crafting-panel-data-crafting-category-dls-glow-7: rgba(127,171,224,.18);
+    --wb-crafting-crafting-panel-data-crafting-category-wb-scrollbar-track-7: #0c1218;
+    --wb-crafting-crafting-panel-data-crafting-category-wb-scrollbar-thumb-7: #2e4356;
+    --wb-crafting-crafting-panel-data-crafting-category-wb-scrollbar-thumb-border-7: #46627c;
+    --wb-crafting-crafting-panel-data-crafting-category-wb-scrollbar-thumb-hover-7: #46627c;
+}
+.crafting-panel[data-crafting-category="基础防具"] {
+    --wb-crafting-crafting-panel-data-crafting-category-wb-bg-8: #110d09;
+    --wb-crafting-crafting-panel-data-crafting-category-wb-surface-8: #1a1410;
+    --wb-crafting-crafting-panel-data-crafting-category-wb-panel-8: #140f0b;
+    --wb-crafting-crafting-panel-data-crafting-category-wb-line-8: #453526;
+    --wb-crafting-crafting-panel-data-crafting-category-wb-line-soft-8: #342920;
+    --wb-crafting-crafting-panel-data-crafting-category-wb-line-strong-8: #6a5038;
+    --wb-crafting-crafting-panel-data-crafting-category-wb-text-8: #ece2d2;
+    --wb-crafting-crafting-panel-data-crafting-category-wb-muted-8: #9c8a72;
+    --wb-crafting-crafting-panel-data-crafting-category-wb-accent-8: #b8895a;
+    --wb-crafting-crafting-panel-data-crafting-category-wb-accent-soft-8: rgba(184,137,90,.16);
+    --wb-crafting-crafting-panel-data-crafting-category-dls-crystal-8: #c89a68;
+    --wb-crafting-crafting-panel-data-crafting-category-dls-crystal-deep-8: #8a6238;
+    --wb-crafting-crafting-panel-data-crafting-category-dls-crystal-dim-8: #453322;
+    --wb-crafting-crafting-panel-data-crafting-category-dls-crystal-bright-8: #ddb98a;
+    --wb-crafting-crafting-panel-data-crafting-category-dls-crystal-soft-8: rgba(200,154,104,.12);
+    --wb-crafting-crafting-panel-data-crafting-category-dls-crystal-faint-8: rgba(200,154,104,.45);
+    --wb-crafting-crafting-panel-data-crafting-category-dls-glow-8: rgba(200,154,104,.18);
+    --wb-crafting-crafting-panel-data-crafting-category-wb-scrollbar-track-8: #130e0a;
+    --wb-crafting-crafting-panel-data-crafting-category-wb-scrollbar-thumb-8: #57412c;
+    --wb-crafting-crafting-panel-data-crafting-category-wb-scrollbar-thumb-border-8: #7d5f42;
+    --wb-crafting-crafting-panel-data-crafting-category-wb-scrollbar-thumb-hover-8: #7d5f42;
+}
+.crafting-panel[data-crafting-category="公社防具"] {
+    --wb-crafting-crafting-panel-data-crafting-category-wb-bg-9: #0d110a;
+    --wb-crafting-crafting-panel-data-crafting-category-wb-surface-9: #141a10;
+    --wb-crafting-crafting-panel-data-crafting-category-wb-panel-9: #10150c;
+    --wb-crafting-crafting-panel-data-crafting-category-wb-line-9: #38452c;
+    --wb-crafting-crafting-panel-data-crafting-category-wb-line-soft-9: #2a3522;
+    --wb-crafting-crafting-panel-data-crafting-category-wb-line-strong-9: #566a42;
+    --wb-crafting-crafting-panel-data-crafting-category-wb-text-9: #e4ead6;
+    --wb-crafting-crafting-panel-data-crafting-category-wb-muted-9: #93a07d;
+    --wb-crafting-crafting-panel-data-crafting-category-wb-accent-9: #93a05c;
+    --wb-crafting-crafting-panel-data-crafting-category-wb-accent-soft-9: rgba(147,160,92,.16);
+    --wb-crafting-crafting-panel-data-crafting-category-dls-crystal-9: #a5b56a;
+    --wb-crafting-crafting-panel-data-crafting-category-dls-crystal-deep-9: #6a7c3a;
+    --wb-crafting-crafting-panel-data-crafting-category-dls-crystal-dim-9: #33401f;
+    --wb-crafting-crafting-panel-data-crafting-category-dls-crystal-bright-9: #c8d695;
+    --wb-crafting-crafting-panel-data-crafting-category-dls-crystal-soft-9: rgba(165,181,106,.12);
+    --wb-crafting-crafting-panel-data-crafting-category-dls-crystal-faint-9: rgba(165,181,106,.45);
+    --wb-crafting-crafting-panel-data-crafting-category-dls-glow-9: rgba(165,181,106,.18);
+    --wb-crafting-crafting-panel-data-crafting-category-wb-scrollbar-track-9: #0f130b;
+    --wb-crafting-crafting-panel-data-crafting-category-wb-scrollbar-thumb-9: #41502e;
+    --wb-crafting-crafting-panel-data-crafting-category-wb-scrollbar-thumb-border-9: #5d7046;
+    --wb-crafting-crafting-panel-data-crafting-category-wb-scrollbar-thumb-hover-9: #5d7046;
+}
+.crafting-panel[data-crafting-category="黑白契约"] {
+    --wb-crafting-crafting-panel-data-crafting-category-wb-bg-10: #070708;
+    --wb-crafting-crafting-panel-data-crafting-category-wb-surface-10: #111112;
+    --wb-crafting-crafting-panel-data-crafting-category-wb-panel-10: #0d0d0e;
+    --wb-crafting-crafting-panel-data-crafting-category-wb-line-10: #3d3d40;
+    --wb-crafting-crafting-panel-data-crafting-category-wb-line-soft-10: #2a2a2c;
+    --wb-crafting-crafting-panel-data-crafting-category-wb-line-strong-10: #58585c;
+    --wb-crafting-crafting-panel-data-crafting-category-wb-text-10: #ececec;
+    --wb-crafting-crafting-panel-data-crafting-category-wb-muted-10: #8e8e92;
+    --wb-crafting-crafting-panel-data-crafting-category-wb-accent-10: #e8e8e8;
+    --wb-crafting-crafting-panel-data-crafting-category-wb-accent-soft-10: rgba(232,232,232,.14);
+    --wb-crafting-crafting-panel-data-crafting-category-dls-crystal-10: #e8e8e8;
+    --wb-crafting-crafting-panel-data-crafting-category-dls-crystal-deep-10: #a8a8a8;
+    --wb-crafting-crafting-panel-data-crafting-category-dls-crystal-dim-10: #4a4a4c;
+    --wb-crafting-crafting-panel-data-crafting-category-dls-crystal-bright-10: #ffffff;
+    --wb-crafting-crafting-panel-data-crafting-category-dls-crystal-soft-10: rgba(232,232,232,.1);
+    --wb-crafting-crafting-panel-data-crafting-category-dls-crystal-faint-10: rgba(232,232,232,.42);
+    --wb-crafting-crafting-panel-data-crafting-category-dls-glow-10: rgba(232,232,232,.14);
+    --wb-crafting-crafting-panel-data-crafting-category-wb-scrollbar-track-10: #0c0c0e;
+    --wb-crafting-crafting-panel-data-crafting-category-wb-scrollbar-thumb-10: #43434a;
+    --wb-crafting-crafting-panel-data-crafting-category-wb-scrollbar-thumb-border-10: #5e5e66;
+    --wb-crafting-crafting-panel-data-crafting-category-wb-scrollbar-thumb-hover-10: #5e5e66;
+}
+.crafting-panel[data-crafting-category="插件合成"] {
+    --wb-crafting-crafting-panel-data-crafting-category-wb-bg-11: #050e08;
+    --wb-crafting-crafting-panel-data-crafting-category-wb-surface-11: #0b1810;
+    --wb-crafting-crafting-panel-data-crafting-category-wb-panel-11: #08140c;
+    --wb-crafting-crafting-panel-data-crafting-category-wb-line-11: #1e4a2e;
+    --wb-crafting-crafting-panel-data-crafting-category-wb-line-soft-11: #163825;
+    --wb-crafting-crafting-panel-data-crafting-category-wb-line-strong-11: #2f7a4c;
+    --wb-crafting-crafting-panel-data-crafting-category-wb-text-11: #d4f2dd;
+    --wb-crafting-crafting-panel-data-crafting-category-wb-muted-11: #6fa884;
+    --wb-crafting-crafting-panel-data-crafting-category-wb-accent-11: #4ade80;
+    --wb-crafting-crafting-panel-data-crafting-category-wb-accent-soft-11: rgba(74,222,128,.16);
+    --wb-crafting-crafting-panel-data-crafting-category-dls-crystal-11: #4ade80;
+    --wb-crafting-crafting-panel-data-crafting-category-dls-crystal-deep-11: #1e9e52;
+    --wb-crafting-crafting-panel-data-crafting-category-dls-crystal-dim-11: #124d2b;
+    --wb-crafting-crafting-panel-data-crafting-category-dls-crystal-bright-11: #8cf2b2;
+    --wb-crafting-crafting-panel-data-crafting-category-dls-crystal-soft-11: rgba(74,222,128,.12);
+    --wb-crafting-crafting-panel-data-crafting-category-dls-crystal-faint-11: rgba(74,222,128,.45);
+    --wb-crafting-crafting-panel-data-crafting-category-dls-glow-11: rgba(74,222,128,.18);
+    --wb-crafting-crafting-panel-data-crafting-category-wb-scrollbar-track-11: #071208;
+    --wb-crafting-crafting-panel-data-crafting-category-wb-scrollbar-thumb-11: #1e5232;
+    --wb-crafting-crafting-panel-data-crafting-category-wb-scrollbar-thumb-border-11: #2e7a4e;
+    --wb-crafting-crafting-panel-data-crafting-category-wb-scrollbar-thumb-hover-11: #2e7a4e;
+}
+.crafting-panel[data-crafting-category="大学装备"] {
+    --wb-crafting-crafting-panel-data-crafting-category-wb-bg-12: #0a1018;
+    --wb-crafting-crafting-panel-data-crafting-category-wb-surface-12: #101724;
+    --wb-crafting-crafting-panel-data-crafting-category-wb-panel-12: #0d1420;
+    --wb-crafting-crafting-panel-data-crafting-category-wb-line-12: #2c3d5c;
+    --wb-crafting-crafting-panel-data-crafting-category-wb-line-soft-12: #202c44;
+    --wb-crafting-crafting-panel-data-crafting-category-wb-line-strong-12: #46608a;
+    --wb-crafting-crafting-panel-data-crafting-category-wb-text-12: #e8e2d0;
+    --wb-crafting-crafting-panel-data-crafting-category-wb-muted-12: #8a94a8;
+    --wb-crafting-crafting-panel-data-crafting-category-wb-accent-12: #8fb4e8;
+    --wb-crafting-crafting-panel-data-crafting-category-wb-accent-soft-12: rgba(143,180,232,.16);
+    --wb-crafting-crafting-panel-data-crafting-category-dls-crystal-12: #9cc0ec;
+    --wb-crafting-crafting-panel-data-crafting-category-dls-crystal-deep-12: #4d74b3;
+    --wb-crafting-crafting-panel-data-crafting-category-dls-crystal-dim-12: #253c60;
+    --wb-crafting-crafting-panel-data-crafting-category-dls-crystal-bright-12: #c4d9f5;
+    --wb-crafting-crafting-panel-data-crafting-category-dls-crystal-soft-12: rgba(156,192,236,.12);
+    --wb-crafting-crafting-panel-data-crafting-category-dls-crystal-faint-12: rgba(156,192,236,.45);
+    --wb-crafting-crafting-panel-data-crafting-category-dls-glow-12: rgba(156,192,236,.18);
+    --wb-crafting-crafting-panel-data-crafting-category-wb-scrollbar-track-12: #0c121c;
+    --wb-crafting-crafting-panel-data-crafting-category-wb-scrollbar-thumb-12: #33455f;
+    --wb-crafting-crafting-panel-data-crafting-category-wb-scrollbar-thumb-border-12: #4d658a;
+    --wb-crafting-crafting-panel-data-crafting-category-wb-scrollbar-thumb-hover-12: #4d658a;
+}
+.cooking-panel {
+    --wb-cooking-cooking-panel-color: #f2e6d2;
+    --wb-cooking-cooking-panel-background: radial-gradient(circle at 50% 120%,rgba(255,150,70,.08),transparent 55%),
+        linear-gradient(180deg,#241a0e,#1b1209 50%,#140d07);
+    --wb-cooking-cooking-panel-ck-accent: #c97b2f;
+    --wb-cooking-cooking-panel-ck-ink: #26221b;
+    --wb-cooking-cooking-panel-ck-ink-soft: #5a5245;
+    --wb-cooking-cooking-panel-ck-paper: #fbf7ec;
+    --wb-cooking-cooking-panel-ck-paper-edge: #efe8d6;
+    --wb-cooking-cooking-panel-ck-rule-blue: rgba(96,140,190,.55);
+    --wb-cooking-cooking-panel-ck-rule-red: rgba(196,74,64,.6);
+    --wb-cooking-cooking-panel-ck-ready: #2e6b2e;
+    --wb-cooking-cooking-panel-ck-blocked: #b03030;
+    --wb-cooking-cooking-panel-ck-desk-line: #4d3a24;
+    --wb-cooking-cooking-panel-ck-muted: #a8896a;
+    --wb-cooking-cooking-panel-ck-scrollbar-track: #e8e0cd;
+    --wb-cooking-cooking-panel-ck-scrollbar-thumb: #c9bda0;
+    --wb-cooking-cooking-panel-ck-scrollbar-thumb-border: #a99a7c;
+}
+.cooking-header {
+    --wb-cooking-cooking-header-border-bottom: 1px solid #3a2b1a;
+}
+.cooking-brand h1 {
+    --wb-cooking-cooking-brand-h1-color: #f2e6d2;
+}
+.cooking-status[data-state="ready"] {
+    --wb-cooking-cooking-status-data-state-ready-color: #9ecb8f;
+}
+.cooking-status[data-state="error"] {
+    --wb-cooking-cooking-status-data-state-error-color: #e08a70;
+}
+.cooking-close {
+    --wb-cooking-cooking-close-background: #2a1d11;
+    --wb-cooking-cooking-close-transition: color .12s, border-color .12s;
+}
+.cooking-close:hover {
+    --wb-cooking-cooking-close-hover-color: #ff9a7c;
+    --wb-cooking-cooking-close-hover-border-color: rgba(255,110,80,.5);
+}
+.cooking-slip {
+    --wb-cooking-cooking-slip-background: repeating-linear-gradient(180deg,
+            transparent 0 10px,
+            var(--ck-rule-red) 10px, var(--ck-rule-red) 11px),
+        linear-gradient(180deg,#fdfaf1,#f5efdd);
+    --wb-cooking-cooking-slip-box-shadow: 0 2px 5px rgba(0,0,0,.4), inset 0 -1px 0 rgba(0,0,0,.06);
+    --wb-cooking-cooking-slip-transition: transform .18s cubic-bezier(.2,.8,.25,1), box-shadow .18s;
+}
+.cooking-slip:hover {
+    --wb-cooking-cooking-slip-hover-box-shadow: 0 4px 9px rgba(0,0,0,.45);
+}
+.cooking-slip.active {
+    --wb-cooking-cooking-slip-active-box-shadow: 3px 4px 10px rgba(0,0,0,.5);
+}
+.cooking-slip-name {
+    --wb-cooking-cooking-slip-name-color: #1d1a14;
+}
+.cooking-book {
+    --wb-cooking-cooking-book-box-shadow: 0 10px 30px rgba(0,0,0,.55), 0 2px 6px rgba(0,0,0,.4);
+    --wb-cooking-cooking-book-background: linear-gradient(90deg,
+        transparent calc(50% - 9px),
+        rgba(80,60,35,.35) 50%,
+        transparent calc(50% + 9px));
+}
+.cooking-page {
+    --wb-cooking-cooking-page-background: repeating-linear-gradient(180deg,
+            transparent 0 21px,
+            var(--ck-rule-blue) 21px, var(--ck-rule-blue) 22px),
+        linear-gradient(180deg,#fdfbf3,#f6f0dd 85%,#efe6cf);
+}
+.cooking-page.left {
+    --wb-cooking-cooking-page-left-border-right: 1px solid rgba(120,95,60,.35);
+    --wb-cooking-cooking-page-left-box-shadow: inset -18px 0 22px -16px rgba(90,70,40,.5);
+}
+.cooking-page.right {
+    --wb-cooking-cooking-page-right-box-shadow: inset 18px 0 22px -16px rgba(90,70,40,.5);
+}
+.cooking-photo {
+    --wb-cooking-cooking-photo-background: #fdfdf8;
+    --wb-cooking-cooking-photo-border: 1.5px solid #181512;
+    --wb-cooking-cooking-photo-box-shadow: 0 6px 16px rgba(0,0,0,.45);
+    --wb-cooking-cooking-photo-transition: opacity .18s ease-out;
+}
+.cooking-photo-frame {
+    --wb-cooking-cooking-photo-frame-background: #141210;
+}
+.cooking-photo-img {
+    --wb-cooking-cooking-photo-img-animation: cooking-photo-in .3s cubic-bezier(.2,.9,.3,1.1);
+}
+.cooking-photo-placeholder {
+    --wb-cooking-cooking-photo-placeholder-color: #8f8a80;
+}
+.cooking-photo-placeholder i {
+    --wb-cooking-cooking-photo-placeholder-i-border: 2px solid #6d675d;
+    --wb-cooking-cooking-photo-placeholder-i-background: #201c18;
+}
+.cooking-photo-placeholder i::before {
+    --wb-cooking-cooking-photo-placeholder-i-before-background: #6d675d;
+}
+.cooking-photo-placeholder b {
+    --wb-cooking-cooking-photo-placeholder-b-color: #8f8a80;
+}
+.cooking-photo-caption {
+    --wb-cooking-cooking-photo-caption-color: #2a251d;
+}
+.cooking-dish-photo {
+    --wb-cooking-cooking-dish-photo-border: 1.5px solid #181512;
+    --wb-cooking-cooking-dish-photo-background: #fdfdf8;
+    --wb-cooking-cooking-dish-photo-box-shadow: 0 4px 9px rgba(0,0,0,.3);
+    --wb-cooking-cooking-dish-photo-transition: transform .15s cubic-bezier(.2,.8,.25,1), box-shadow .15s;
+}
+.cooking-dish-photo:hover {
+    --wb-cooking-cooking-dish-photo-hover-box-shadow: 0 7px 14px rgba(0,0,0,.4);
+}
+.cooking-dish-thumb {
+    --wb-cooking-cooking-dish-thumb-background: #141210;
+}
+.cooking-dish-thumb.sm {
+    --wb-cooking-cooking-dish-thumb-sm-border: 3px solid #fdfdf8;
+    --wb-cooking-cooking-dish-thumb-sm-outline: 1.5px solid #181512;
+    --wb-cooking-cooking-dish-thumb-sm-box-shadow: 0 2px 5px rgba(0,0,0,.3);
+}
+.cooking-dish-name {
+    --wb-cooking-cooking-dish-name-color: #211d16;
+}
+.cooking-recipe-pop {
+    --wb-cooking-cooking-recipe-pop-background: rgba(30,22,12,.28);
+}
+.cooking-recipe-card {
+    --wb-cooking-cooking-recipe-card-border: 1.5px solid #2a251c;
+    --wb-cooking-cooking-recipe-card-background: repeating-linear-gradient(180deg,
+            transparent 0 31px,
+            var(--ck-rule-blue) 31px, var(--ck-rule-blue) 32px) 0 96px,
+        linear-gradient(180deg,#fdfbf3,#f5efdd);
+    --wb-cooking-cooking-recipe-card-box-shadow: 0 14px 34px rgba(0,0,0,.55);
+    --wb-cooking-cooking-recipe-card-animation: cooking-card-in .22s cubic-bezier(.2,.9,.3,1.15);
+}
+.cooking-recipe-head {
+    --wb-cooking-cooking-recipe-head-border-bottom: 2px solid #3a3226;
+}
+.cooking-recipe-title b {
+    --wb-cooking-cooking-recipe-title-b-color: #1d1a14;
+}
+.cooking-req.infra {
+    --wb-cooking-cooking-req-infra-color: #4a3a20;
+}
+.cooking-req-icon {
+    --wb-cooking-cooking-req-icon-background: #141210;
+    --wb-cooking-cooking-req-icon-border: 2px solid #fdfdf8;
+    --wb-cooking-cooking-req-icon-outline: 1px solid #181512;
+}
+.cooking-req-mark.ok {
+    --wb-cooking-cooking-req-mark-ok-color: #1c1a16;
+}
+.cooking-req-mark.no {
+    --wb-cooking-cooking-req-mark-no-color: #c22020;
+}
+.cooking-recipe-pop.veil {
+    --wb-cooking-cooking-recipe-pop-veil-background: rgba(30,22,12,.25);
+}
+.cooking-veil-note {
+    --wb-cooking-cooking-veil-note-background: linear-gradient(180deg,#fdfaf1,#efe7d2);
+    --wb-cooking-cooking-veil-note-border: 1px solid #4a4132;
+    --wb-cooking-cooking-veil-note-box-shadow: 0 3px 8px rgba(0,0,0,.4);
+}
+.cooking-recipe-footer {
+    --wb-cooking-cooking-recipe-footer-border-top: 1.5px solid #3a3226;
+}
+.cooking-count button {
+    --wb-cooking-cooking-count-button-border: 1px solid #4a4132;
+    --wb-cooking-cooking-count-button-background: linear-gradient(180deg,#fdfaf1,#efe7d2);
+    --wb-cooking-cooking-count-button-box-shadow: 0 2px 3px rgba(60,45,20,.25);
+    --wb-cooking-cooking-count-button-transition: transform .12s, box-shadow .12s;
+}
+.cooking-count button:hover:not(:disabled) {
+    --wb-cooking-cooking-count-button-hover-not-disabled-box-shadow: 0 3px 6px rgba(60,45,20,.35);
+}
+.cooking-count button:active:not(:disabled) {
+    --wb-cooking-cooking-count-button-active-not-disabled-box-shadow: 0 1px 2px rgba(60,45,20,.25);
+}
+.cooking-count-input {
+    --wb-cooking-cooking-count-input-border-bottom: 1.5px solid #4a4132;
+    --wb-cooking-cooking-count-input-background: rgba(255,255,255,.5);
+}
+.cooking-confirm {
+    --wb-cooking-cooking-confirm-border: 1px solid #3a3226;
+    --wb-cooking-cooking-confirm-background: linear-gradient(180deg,#fdfaf1,#ede4cd);
+    --wb-cooking-cooking-confirm-box-shadow: 0 3px 6px rgba(60,45,20,.3);
+    --wb-cooking-cooking-confirm-color: #2a251d;
+    --wb-cooking-cooking-confirm-transition: transform .12s, box-shadow .12s;
+}
+.cooking-confirm:hover:not(:disabled) {
+    --wb-cooking-cooking-confirm-hover-not-disabled-box-shadow: 0 5px 12px rgba(60,45,20,.4);
+}
+.cooking-confirm:active:not(:disabled) {
+    --wb-cooking-cooking-confirm-active-not-disabled-box-shadow: 0 2px 4px rgba(60,45,20,.25);
+}
+.cooking-confirm:disabled {
+    --wb-cooking-cooking-confirm-disabled-background: linear-gradient(180deg,#efe9d8,#e2d9c2);
+    --wb-cooking-cooking-confirm-disabled-color: #a99d85;
+    --wb-cooking-cooking-confirm-disabled-border-color: #b5a98e;
+}
+.cooking-pop-close {
+    --wb-cooking-cooking-pop-close-border: 1px solid #6a5f4a;
+    --wb-cooking-cooking-pop-close-background: linear-gradient(180deg,#fdfaf1,#ece3cc);
+    --wb-cooking-cooking-pop-close-box-shadow: 0 1px 3px rgba(60,45,20,.3);
+    --wb-cooking-cooking-pop-close-color: #6a5f4a;
+    --wb-cooking-cooking-pop-close-transition: transform .12s, color .12s;
+}
+.cooking-pop-close:hover {
+    --wb-cooking-cooking-pop-close-hover-color: #b03030;
+}
+.chem-panel {
+    --wb-chemistry-chem-panel-color: #dfeaf5;
+    --wb-chemistry-chem-panel-ch-line: rgba(255,255,255,.22);
+    --wb-chemistry-chem-panel-ch-line-strong: rgba(255,255,255,.85);
+    --wb-chemistry-chem-panel-ch-ink: #eaf3fb;
+    --wb-chemistry-chem-panel-ch-muted: #8fa8bf;
+    --wb-chemistry-chem-panel-ch-ready: #7de8b4;
+    --wb-chemistry-chem-panel-ch-blocked: #ff8f7a;
+    --wb-chemistry-chem-panel-ch-accent: #5fb6ff;
+}
+.chem-panel,
+.chem-blueprint {
+    --wb-chemistry-chem-panel-chem-blueprint-background-color: #17334f;
+    --wb-chemistry-chem-panel-chem-blueprint-background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='48' height='48'%3E%3Crect x='.5' y='.5' width='47' height='47' fill='none' stroke='rgba(255,255,255,.14)' stroke-dasharray='5 4'/%3E%3C/svg%3E"),
+        radial-gradient(circle at 60% 30%, rgba(90,160,220,.14), transparent 60%);
+}
+.chem-panel ::-webkit-scrollbar-track {
+    --wb-chemistry-chem-panel-webkit-scrollbar-track-background: #10263c;
+}
+.chem-panel ::-webkit-scrollbar-thumb {
+    --wb-chemistry-chem-panel-webkit-scrollbar-thumb-background: #33506e;
+    --wb-chemistry-chem-panel-webkit-scrollbar-thumb-border: 1px solid #4c6f92;
+}
+.chem-header {
+    --wb-chemistry-chem-header-border-bottom: 1px dashed rgba(255,255,255,.25);
+}
+.chem-close {
+    --wb-chemistry-chem-close-border: 1px dashed rgba(255,255,255,.4);
+    --wb-chemistry-chem-close-transition: color .12s, border-color .12s;
+}
+.chem-close:hover {
+    --wb-chemistry-chem-close-hover-color: #ffb0a0;
+    --wb-chemistry-chem-close-hover-border-color: #ff8f7a;
+}
+.chem-cell {
+    --wb-chemistry-chem-cell-background: rgba(255,255,255,.03);
+    --wb-chemistry-chem-cell-transition: border-color .15s, background .15s, transform .12s;
+}
+.chem-cell:hover {
+    --wb-chemistry-chem-cell-hover-border-color: rgba(255,255,255,.6);
+    --wb-chemistry-chem-cell-hover-background: rgba(255,255,255,.07);
+}
+.chem-cell.active {
+    --wb-chemistry-chem-cell-active-background: rgba(255,255,255,.1);
+    --wb-chemistry-chem-cell-active-box-shadow: 0 0 0 1px rgba(255,255,255,.15), 0 4px 14px rgba(0,0,0,.3);
+}
+.chem-blueprint {
+    --wb-chemistry-chem-blueprint-border: 1px dashed rgba(255,255,255,.3);
+}
+.chem-wire {
+    --wb-chemistry-chem-wire-filter: drop-shadow(0 0 3px rgba(255,255,255,.45));
+}
+.chem-wire.dim {
+    --wb-chemistry-chem-wire-dim-stroke: rgba(255,255,255,.45);
+}
+.chem-mat {
+    --wb-chemistry-chem-mat-border: 1px dashed rgba(255,255,255,.3);
+    --wb-chemistry-chem-mat-background: rgba(16,38,60,.75);
+    --wb-chemistry-chem-mat-box-shadow: 0 2px 8px rgba(0,0,0,.3);
+    --wb-chemistry-chem-mat-animation: chem-mat-in .25s ease-out;
+}
+.chem-mat.infra {
+    --wb-chemistry-chem-mat-infra-border-color: rgba(95,182,255,.5);
+    --wb-chemistry-chem-mat-infra-color: #bcd8ee;
+}
+.chem-mat-icon {
+    --wb-chemistry-chem-mat-icon-border: 1px solid rgba(255,255,255,.4);
+    --wb-chemistry-chem-mat-icon-background: #0f2438;
+}
+.chem-mat-mark.no {
+    --wb-chemistry-chem-mat-mark-no-color: #ff6b5e;
+}
+.chem-result-figure {
+    --wb-chemistry-chem-result-figure-background: rgba(16,38,60,.8);
+    --wb-chemistry-chem-result-figure-box-shadow: 0 0 0 4px rgba(255,255,255,.06),
+        0 0 22px rgba(95,182,255,.25);
+    --wb-chemistry-chem-result-figure-animation: chem-result-in .28s cubic-bezier(.2,.9,.3,1.1);
+}
+.chem-veil {
+    --wb-chemistry-chem-veil-background: rgba(14,32,50,.35);
+}
+.chem-veil-note {
+    --wb-chemistry-chem-veil-note-border: 1px dashed rgba(255,255,255,.5);
+    --wb-chemistry-chem-veil-note-background: rgba(16,38,60,.9);
+}
+.chem-count button {
+    --wb-chemistry-chem-count-button-border: 1px solid rgba(255,255,255,.5);
+    --wb-chemistry-chem-count-button-background: rgba(255,255,255,.06);
+    --wb-chemistry-chem-count-button-transition: background .12s, transform .12s;
+}
+.chem-count button:hover:not(:disabled) {
+    --wb-chemistry-chem-count-button-hover-not-disabled-background: rgba(255,255,255,.16);
+}
+.chem-count-input {
+    --wb-chemistry-chem-count-input-border-bottom: 1px solid rgba(255,255,255,.5);
+    --wb-chemistry-chem-count-input-background: rgba(255,255,255,.06);
+}
+.chem-confirm {
+    --wb-chemistry-chem-confirm-background: rgba(255,255,255,.08);
+    --wb-chemistry-chem-confirm-transition: background .12s, box-shadow .12s, transform .12s;
+}
+.chem-confirm:hover:not(:disabled) {
+    --wb-chemistry-chem-confirm-hover-not-disabled-background: rgba(255,255,255,.2);
+    --wb-chemistry-chem-confirm-hover-not-disabled-box-shadow: 0 0 12px rgba(120,190,255,.35);
+}
+.chem-confirm:disabled {
+    --wb-chemistry-chem-confirm-disabled-border-color: rgba(255,255,255,.3);
+    --wb-chemistry-chem-confirm-disabled-color: rgba(255,255,255,.35);
+}
+.chem-iconwrap.empty {
+    --wb-chemistry-chem-iconwrap-empty-border: 1px dashed rgba(255,255,255,.35);
+}
+.chem-iconwrap.loaded {
+    --wb-chemistry-chem-iconwrap-loaded-animation: chem-icon-in .18s ease-out;
+}
+.comm-panel {
+    --wb-commune-comm-panel-color: #d8d2bd;
+    --wb-commune-comm-panel-cm-paper: #e8ddc0;
+    --wb-commune-comm-panel-cm-ink: #2e281e;
+    --wb-commune-comm-panel-cm-ink-soft: #6b6150;
+    --wb-commune-comm-panel-cm-red: #b03430;
+    --wb-commune-comm-panel-cm-green: #3a6b3a;
+    --wb-commune-comm-panel-cm-muted: #9a9274;
+    --wb-commune-comm-panel-cm-line: #4a4636;
+    --wb-commune-comm-panel-background: repeating-linear-gradient(180deg,
+            rgba(255,255,255,.018) 0 3px, transparent 3px 6px),
+        radial-gradient(circle at 80% -10%, rgba(140,120,80,.12), transparent 55%),
+        linear-gradient(180deg,#2e2c20,#26251b 55%,#1d1c14);
+}
+.comm-panel ::-webkit-scrollbar-track {
+    --wb-commune-comm-panel-webkit-scrollbar-track-background: #c9bd9c;
+}
+.comm-panel ::-webkit-scrollbar-thumb {
+    --wb-commune-comm-panel-webkit-scrollbar-thumb-background: #8d8464;
+    --wb-commune-comm-panel-webkit-scrollbar-thumb-border: 1px solid #6f684c;
+}
+.comm-header {
+    --wb-commune-comm-header-border-bottom: 1px solid #45402c;
+}
+.comm-brand h1 {
+    --wb-commune-comm-brand-h1-color: #e6dfca;
+}
+.comm-status[data-state="ready"] {
+    --wb-commune-comm-status-data-state-ready-color: #8fc98a;
+}
+.comm-status[data-state="error"] {
+    --wb-commune-comm-status-data-state-error-color: #d88a7a;
+}
+.comm-close {
+    --wb-commune-comm-close-border: 1px solid #55503a;
+    --wb-commune-comm-close-background: #302e20;
+    --wb-commune-comm-close-transition: color .12s, border-color .12s;
+}
+.comm-close:hover {
+    --wb-commune-comm-close-hover-color: #e8a090;
+    --wb-commune-comm-close-hover-border-color: #a07060;
+}
+.comm-minutes, .comm-doc {
+    --wb-commune-comm-minutes-comm-doc-background: repeating-linear-gradient(0deg,
+            rgba(90,70,40,.04) 0 1px, transparent 1px 4px),
+        radial-gradient(circle at 15% 8%, rgba(120,90,40,.10), transparent 40%),
+        linear-gradient(180deg,var(--cm-paper-2),var(--cm-paper) 60%,#e0d4b4);
+    --wb-commune-comm-minutes-comm-doc-border: 1px solid #7a6f52;
+    --wb-commune-comm-minutes-comm-doc-box-shadow: 0 8px 22px rgba(0,0,0,.5), inset 0 0 40px rgba(120,95,50,.12);
+}
+.comm-item:hover {
+    --wb-commune-comm-item-hover-background: rgba(90,70,40,.08);
+}
+.comm-item.is-blocked .comm-item-name {
+    --wb-commune-comm-item-is-blocked-comm-item-name-color: #8a8074;
+}
+.comm-item.is-blocked .comm-item-state {
+    --wb-commune-comm-item-is-blocked-comm-item-state-color: #9c4a40;
+}
+.comm-item-circle {
+    --wb-commune-comm-item-circle-transition: opacity .18s;
+}
+.comm-doc-figure .comm-iconwrap {
+    --wb-commune-comm-doc-figure-comm-iconwrap-border: 1px solid #6b6150;
+    --wb-commune-comm-doc-figure-comm-iconwrap-background: #f4eedd;
+}
+.comm-req {
+    --wb-commune-comm-req-border-bottom: 1px solid rgba(107,97,80,.25);
+}
+.comm-req.infra {
+    --wb-commune-comm-req-infra-color: #5a4a28;
+}
+.comm-req-icon {
+    --wb-commune-comm-req-icon-border: 1px solid #6b6150;
+    --wb-commune-comm-req-icon-background: #f4eedd;
+}
+.comm-doc-foot {
+    --wb-commune-comm-doc-foot-border-top: 1px solid rgba(107,97,80,.35);
+}
+.comm-count button {
+    --wb-commune-comm-count-button-border: 1px solid #7a6f52;
+}
+.comm-count button:hover:not(:disabled) {
+    --wb-commune-comm-count-button-hover-not-disabled-background: #e0d4b4;
+}
+.comm-count-input {
+    --wb-commune-comm-count-input-border-bottom: 1px solid #7a6f52;
+}
+.comm-confirm {
+    --wb-commune-comm-confirm-background: #f4eedd;
+    --wb-commune-comm-confirm-transition: transform .12s, box-shadow .12s;
+}
+.comm-confirm:hover:not(:disabled) {
+    --wb-commune-comm-confirm-hover-not-disabled-box-shadow: 0 3px 8px rgba(120,30,25,.3);
+}
+.comm-iconwrap.loaded .comm-icon,
+.comm-iconwrap.loaded .comm-icon-lg,
+.comm-iconwrap.loaded .comm-icon-sm {
+    --wb-commune-comm-iconwrap-loaded-comm-icon-comm-iconwrap-loaded-comm-icon-lg-comm-iconwrap-loade: comm-icon-in .2s ease-out;
+}
+.comm-iconwrap.empty::after {
+    --wb-commune-comm-iconwrap-empty-after-border: 1px dashed rgba(107,97,80,.5);
+}
+.comm-veil {
+    --wb-commune-comm-veil-background: rgba(232,221,192,.82);
+}
+.comm-veil-note {
+    --wb-commune-comm-veil-note-box-shadow: 0 4px 12px rgba(0,0,0,.2);
 }

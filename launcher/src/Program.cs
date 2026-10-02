@@ -1744,6 +1744,7 @@ class Program
         CF7Launcher.Guardian.Hud.Loot.LootFeedWidget lootFeedWidget = null;
         CF7Launcher.Guardian.Hud.NpcMenuWidget npcMenuWidget = null;
         CF7Launcher.Guardian.Hud.Dialogue.NativeDialogueWidget dialogueWidget = null;
+        CF7Launcher.Guardian.Hud.Guidance.NativeGuidanceWidget guidanceWidget = null;
         CF7Launcher.Guardian.Hud.Tooltip.NativeTooltipWidget nativeTooltipWidget = null;
         CF7Launcher.Guardian.Hud.PlayerInfo.PlayerInfoSplitSurface
             playerInfoSurface = null;
@@ -1848,6 +1849,7 @@ class Program
                 Path.Combine(projectRoot, "tmp", "unified-live-entry", "web-profile"),
                 form.HandlePanelStateChanged,
                 reason => windowManager.RestoreFlashInputFocus(reason));
+            panelHost.ConfigureHelpTutorialPreference(new HelpTutorialPreferenceCommand(userPrefs, userPrefs.Save));
             webOverlay.SetPanelHost(panelHost);
             commandRouter.SetPanelHost(panelHost);
 
@@ -1935,6 +1937,10 @@ class Program
                 new CF7Launcher.Guardian.Hud.NpcMenuWidget(form.FlashHostPanel);
             nativeHud.AddWidget(npcMenuWidget);
             dialogueWidget = new CF7Launcher.Guardian.Hud.Dialogue.NativeDialogueWidget(form.FlashHostPanel);
+            guidanceWidget = new CF7Launcher.Guardian.Hud.Guidance.NativeGuidanceWidget(form.FlashHostPanel,
+                CF7Launcher.Guardian.Hud.Guidance.GuidanceCatalog.FromJson(
+                    File.ReadAllText(Path.Combine(projectRoot, "launcher", "data", "guidance-catalog.json"))));
+            nativeHud.AddWidget(guidanceWidget);
             nativeHud.AddWidget(dialogueWidget);
             // webOverlay 的 toast/notch 出口固定指向 nativeHud：WebOverlayForm.AddMessage/AddNotice
             // 直接转发 _toastFallback / _notchFallback（= nativeHud），无需 ExecScript。
@@ -2014,7 +2020,8 @@ class Program
         var worldCompositor = new CF7Launcher.Guardian.WorldCompositor.WorldCompositorController(
             form, form.FlashHostPanel, form.GetFlashHwnd,
             () => !form.IsShutdownAdmissionClosed && launchFlow != null && launchFlow.CurrentState == "Ready"
-                && (panelHost == null || !panelHost.IsPanelOpen),
+                && launchFlow.RevealPerformed
+                && (panelHost == null || !panelHost.IsPanelOpen || panelHost.SceneSettlementLoading),
             message => toastSink.AddMessage(message), projectRoot,
             () => launchFlow != null && (launchFlow.CurrentState == "Embedding"
                 || launchFlow.CurrentState == "WaitingGameReady" || launchFlow.CurrentState == "Ready"),
@@ -2033,9 +2040,24 @@ class Program
         var worldLightingTask = new WorldLightingTask(
             dispatchToUi,
             worldCompositor.Adopt, worldCompositor.ResetSource);
+        var inputLatency = CF7Launcher.Diagnostic.InputLatencyProbe.StartConfigured(form,
+            !config.NativeCursorOverlayEnabled ? "system" : config.UseDesktopCursorOverlay ? "desktop" : "legacy");
+        var sceneTransition = new CF7Launcher.Guardian.SceneTransitionController(
+            form, form.FlashHostPanel, projectRoot, dispatchToUi,
+            wire => socketServer.IsClientReady && socketServer.TrySend(wire),
+            () => !form.IsShutdownAdmissionClosed && launchFlow?.CurrentState == "Ready",
+            worldCompositor.IsTransitionScenePresented,
+            foreground => windowManager.HandoffFlashFocusBeforePanelHide("scene_transition:before_hide",foreground),
+            worldOverlays, worldCompositor.HoldTransitionInput);
+        socketServer.OnClientDisconnected += sceneTransition.Task.HandleTransportDisconnected;
+        panelHost?.ConfigureTransitionSettlement(sceneTransition);
+        form.FormClosed += delegate { sceneTransition.Dispose(); };
+        form.FormClosed += delegate { inputLatency?.Dispose(); };
         frameTask.WeatherCameraObserved=worldCompositor.ObserveWeatherCamera;
         frameTask.VisualFrameStarted=worldCompositor.BeginVisualFrame;
         frameTask.VisualFrameCompleted=worldCompositor.EndVisualFrame;
+        frameTask.SceneLightObserved=worldCompositor.ObserveSceneLightState;
+        frameTask.SceneLightClockObserved=worldCompositor.ObserveSceneLightClock;
         frameTask.BulletVisualObserved=worldCompositor.ObserveBulletFrame;
         frameTask.BulletVisualRejected=worldCompositor.RejectBulletFrame;
         frameTask.ChainVisualRejected=worldCompositor.RejectBulletFrame;
@@ -2082,7 +2104,7 @@ class Program
                 fxStyles.Add(new { index=style.Index,linkage=style.Linkage,
                     kind=style.IsCasing?"casing":(style.IsImpact?"impact":"muzzle"),skipOriginYZero=style.SkipOriginYZero });
             bool PublishFxCaps(bool available,int generation) => socketServer.TrySendIfGen(JsonSerializer.Serialize(new {
-                task="combat_fx_caps",version=1,generation,native=available,equipmentLights=available?2:0,equipmentRadialLights=available?1:0,digest=combatFxCatalog.Sha256,styles=fxStyles
+                task="combat_fx_caps",version=1,generation,native=available,equipmentLights=available?2:0,equipmentRadialLights=available?1:0,sceneLightsVersion=available?1:0,digest=combatFxCatalog.Sha256,styles=fxStyles
             })+"\0",generation);
             Action<int> readyFx=generation => {
                 Volatile.Write(ref fxCapsGeneration,generation);
@@ -2183,6 +2205,12 @@ class Program
             rewardRootAdmissionEnabled:
                 rewardRootAdmissionEnabled);
         LootTask lootTask = new LootTask(socketServer, lootPanelCoordinator);
+        sceneTransition.ConfigureSettlement(
+            receipt => SceneTransitionTask.MatchesSettlementReceipt(receipt,
+                lootPanelCoordinator.ActiveBinding,
+                lootPanelCoordinator.State == LootPanelCoordinator.BindingState.Bound,
+                panelHost.ActivePanelName, panelHost.ActivePanelInstanceId),
+            worldCompositor.IsCurrentTransitionScene);
         lootPanelCoordinator.SetAdmissionLeaseFactory(
             lootTask.TryAcquirePanelAdmissionLease);
         panelHost.PanelClosed += lootPanelCoordinator.OnPanelHostClosed;
@@ -2206,6 +2234,7 @@ class Program
             webOverlay.CloseKShopForMaterialNavigationNoFail);
         HairdresserTask hairdresserTask = new HairdresserTask(socketServer);
         PlasticSurgeryTask plasticSurgeryTask = new PlasticSurgeryTask(socketServer);
+        GaragePurchaseTask garagePurchaseTask = new GaragePurchaseTask(socketServer);
         SleepTask sleepTask = new SleepTask(socketServer);
         GymTrainingTask gymTrainingTask = new GymTrainingTask(socketServer);
         gymTrainingTask.SetActivityProbe(delegate
@@ -2214,10 +2243,13 @@ class Program
                 && !form.ActivationState.IsMinimized
                 && form.Visible;
         });
+        NativeGuidanceTask nativeGuidanceTask = null;
         SettingsTask settingsTask = new SettingsTask(socketServer, userPrefs);
         settingsTask.SetHitNumberLedgerProvider(frameTask.BuildHitNumberLedgerPage);
         settingsTask.SetHostPreferenceApplied(delegate(string key, JToken value)
         {
+            if (key == "tutorialsAutoOpen" && nativeGuidanceTask != null)
+                nativeGuidanceTask.NotifyHelpAvailabilityChanged();
             if (key == "sfxEnabled" || key == "ambientEnabled")
                 webOverlay.PushAudioPrefs();
             if (key == "mapDisplayPreference" && rightContext != null
@@ -2321,6 +2353,7 @@ class Program
                     equipmentTuningTask.HandlePanelClosed(panelInstanceId);
                 if (panelName == "hairdresser") hairdresserTask.ClearPending();
                 if (panelName == "surgery") plasticSurgeryTask.ClearPending();
+                if (panelName == "garage") garagePurchaseTask.ClearPending();
                 if (panelName == "sleep") sleepTask.ClearPending();
                 if (panelName == "gym") gymTrainingTask.HandlePanelClosed(panelInstanceId);
                 if (panelName == "settings") settingsTask.HandleAuthoritativePanelClosed(panelInstanceId);
@@ -2582,6 +2615,39 @@ class Program
         nativeDialogueTask.LoadPortraitWithRect = dialoguePortraits.LoadPortrait;
         nativeDialogueTask.PrefetchPortrait = dialoguePortraits.PrefetchPortrait;
         nativeDialogueTask.LoadSceneImage = dialoguePortraits.LoadSceneImage;
+        nativeGuidanceTask = new NativeGuidanceTask(guidanceWidget,
+            action => { if (form.InvokeRequired) form.BeginInvoke(action); else action(); },
+            wire => socketServer.IsClientReady && socketServer.TrySend(wire),
+            () => nativeHud != null && !nativeHud.IsSuspended && !panelHost.IsPanelOpen);
+        nativeGuidanceTask.LoadImage = dialoguePortraits.LoadSceneImage;
+        nativeGuidanceTask.AutomaticHelpEnabled = () => userPrefs.TutorialsAutoOpen;
+        nativeGuidanceTask.CanOpenHelp = () => socketServer.IsClientReady && !panelHost.IsPanelOpen && !sceneTransition.OwnsCurtain
+            && !form.IsShutdownAdmissionClosed && webOverlay.CanAcceptPanelDocumentMessages && !characterBuildTask.HasBoundPanel
+            && lootPanelCoordinator.State == LootPanelCoordinator.BindingState.Idle && lootPanelCoordinator.ActiveBinding == null;
+        nativeGuidanceTask.OpenHelp = (presentation, completed) => {
+            var init = new Newtonsoft.Json.Linq.JObject {
+                ["guidance"] = new Newtonsoft.Json.Linq.JObject {
+                    ["guideId"] = presentation.GuideId,
+                    ["keys"] = Newtonsoft.Json.Linq.JObject.FromObject(presentation.Keys)
+                }
+            };
+            bool queued = panelHost.TryOpenTrackedPanel("help", init.ToString(Newtonsoft.Json.Formatting.None),
+                presentation.PanelInstanceId,
+                () => !form.IsDisposed && !form.Disposing && socketServer.IsClientReady && presentation.IsCurrent()
+                    && !form.IsShutdownAdmissionClosed && webOverlay.CanAcceptPanelDocumentMessages && !characterBuildTask.HasBoundPanel,
+                outcome => completed(outcome == PanelHostController.TrackedOpenOutcome.OpenPosted));
+            if (!queued) completed(false);
+        };
+        nativeGuidanceTask.CloseHelp = instance => panelHost.TryCloseTrackedPanelExact("help", instance, null);
+        nativeGuidanceTask.HelpUnavailable = () => notchSink.AddNotice("tutorial",
+            "教程暂未打开 · 右上角帮助可查看", CF7Launcher.Guardian.Hud.NativeHudTheme.Cyan);
+        nativeGuidanceTask.HelpReminder = title => notchSink.AddNotice("tutorial",
+            "教程：" + title + " · 右上角帮助可查看", CF7Launcher.Guardian.Hud.NativeHudTheme.Cyan);
+        panelHost.PanelClosed += nativeGuidanceTask.NotifyHelpClosed;
+        lootPanelCoordinator.BindingSettled += binding => nativeGuidanceTask.NotifyHelpAvailabilityChanged();
+        socketServer.OnClientDisconnected += nativeGuidanceTask.HandleTransportDisconnected;
+        sceneTransition.CurtainReleased += nativeGuidanceTask.NotifyHelpAvailabilityChanged;
+        form.FormClosed += delegate { guidanceWidget.Dispose(); };
         nativeDialogueTask.ReceivePortraitResult = dialoguePortraits.HandleResult;
         socketServer.OnClientDisconnected += nativeDialogueTask.HandleTransportDisconnected;
         // wire v2 source book 装配器（kind:"source" 挂点；接口由并行任务定义）。
@@ -2593,7 +2659,7 @@ class Program
 
         using (PerfTrace.Scope("task.registry_register_all"))
         {
-            TaskRegistry.RegisterAll(router, gomokuTask, toastTask, frameTask, stageOutcomeTask, warlordStageTask, warlordBattleTask, dataQueryTask, audioTask, dollBakeTask, shopTask, inventoryTask, lootTask, lootFeedTask, lootPanelCoordinator, npcShopTask, craftingTask, materialShopAccessTask, hairdresserTask, plasticSurgeryTask, sleepTask, gymTrainingTask, settingsTask, equipmentTuningTask, characterBuildTask, itemUseTask, skillTask, mapTask, stageSelectTask, arenaTask, arenaCalibrationTask, agentControlTask, petTask, mercTask, taskTask, intelligenceTask, blackMarketTask, archiveTask, benchTask, fontPackTask, webOverlay, commandRouter, mapDomainTask, nativeInteractionTask, nativeDialogueTask, worldLightingTask, lutLabTask);
+            TaskRegistry.RegisterAll(router, gomokuTask, toastTask, frameTask, stageOutcomeTask, warlordStageTask, warlordBattleTask, dataQueryTask, audioTask, dollBakeTask, shopTask, inventoryTask, lootTask, lootFeedTask, lootPanelCoordinator, npcShopTask, craftingTask, materialShopAccessTask, hairdresserTask, plasticSurgeryTask, garagePurchaseTask, sleepTask, gymTrainingTask, settingsTask, equipmentTuningTask, characterBuildTask, itemUseTask, skillTask, mapTask, stageSelectTask, arenaTask, arenaCalibrationTask, agentControlTask, petTask, mercTask, taskTask, intelligenceTask, blackMarketTask, archiveTask, benchTask, fontPackTask, webOverlay, commandRouter, mapDomainTask, nativeInteractionTask, nativeDialogueTask, worldLightingTask, lutLabTask, nativeGuidanceTask, sceneTransition.Task);
         }
         StartupDiagnostics.Mark("task.registry_register_all_ok");
 
@@ -2611,6 +2677,7 @@ class Program
             materialShopNavigationCoordinator);
         webOverlay.SetHairdresserTask(hairdresserTask);
         webOverlay.SetPlasticSurgeryTask(plasticSurgeryTask);
+        webOverlay.SetGaragePurchaseTask(garagePurchaseTask);
         webOverlay.SetSleepTask(sleepTask);
         webOverlay.SetGymTrainingTask(gymTrainingTask);
         webOverlay.SetSettingsTask(settingsTask);
@@ -2717,6 +2784,7 @@ class Program
 
             commandRouter.CancelAllPanelNavigationIntents(
                 "host_shutdown");
+            sceneTransition.Dispose();
             // 顺序敏感: 这两步必须最前。
             // 1) 卸全局低级鼠标 hook —— UI 线程接下来要被 KillFlash WaitForExit 阻塞数秒,
             //    hook 还挂着的话全系统鼠标消息都要排队走它的回调, 光标视觉延迟显著。
@@ -2755,7 +2823,7 @@ class Program
             materialShopAccessTask.Dispose();
             npcShopTask.Dispose();
             craftingTask.Dispose();
-            hairdresserTask.Dispose(); plasticSurgeryTask.Dispose(); sleepTask.Dispose(); gymTrainingTask.Dispose();
+            hairdresserTask.Dispose(); plasticSurgeryTask.Dispose(); garagePurchaseTask.Dispose(); sleepTask.Dispose(); gymTrainingTask.Dispose();
             settingsTask.Dispose();
             stageOutcomeTask.Dispose();
             petTask.Dispose();
@@ -2827,7 +2895,7 @@ class Program
             try { materialShopAccessTask.Dispose(); } catch { }
             try { npcShopTask.Dispose(); } catch { }
             try { craftingTask.Dispose(); } catch { }
-            try { hairdresserTask.Dispose(); plasticSurgeryTask.Dispose(); sleepTask.Dispose(); gymTrainingTask.Dispose(); } catch { }
+            try { hairdresserTask.Dispose(); plasticSurgeryTask.Dispose(); garagePurchaseTask.Dispose(); sleepTask.Dispose(); gymTrainingTask.Dispose(); } catch { }
             try { settingsTask.Dispose(); } catch { }
             try { stageOutcomeTask.Dispose(); } catch { }
             try { petTask.Dispose(); } catch { }
@@ -3740,7 +3808,7 @@ class Program
         try { materialShopAccessTask.Dispose(); } catch { }
         try { npcShopTask.Dispose(); } catch { }
         try { craftingTask.Dispose(); } catch { }
-        try { hairdresserTask.Dispose(); plasticSurgeryTask.Dispose(); sleepTask.Dispose(); gymTrainingTask.Dispose(); } catch { }
+        try { hairdresserTask.Dispose(); plasticSurgeryTask.Dispose(); garagePurchaseTask.Dispose(); sleepTask.Dispose(); gymTrainingTask.Dispose(); } catch { }
         try { worldCompositor.Dispose(); } catch { }
         try { settingsTask.Dispose(); } catch { }
         try { stageOutcomeTask.Dispose(); } catch { }

@@ -41,9 +41,19 @@ struct ProbeWorkStats {
     uint32_t size, reserved;
     uint64_t compositions, lightDraws, lightCacheHits, fxUploads;
 };
+struct ProbeSceneLightStats {
+    uint32_t size,count,width,height;
+    uint64_t builds,cacheHits,updates;
+};
+static_assert(sizeof(ProbeSceneLightStats)==40,"Scene light diagnostic layout");
 static_assert(sizeof(ProbeWorkStats)==40, "Diagnostic work layout");
 static_assert(sizeof(ProbeContentStats)==40, "Diagnostic content layout");
 extern "C" {
+// Required scene-light-v1 extension; existing ABI12 record layouts are unchanged.
+// Up to 128 cached world lights, rendered in bounded batches of 16. No camera
+// in this snapshot: panning/zooming samples the existing world-space field.
+__declspec(dllexport) int __cdecl ProbeSetSceneLights(void* handle,const float* lights,int count,float maximumResponse);
+__declspec(dllexport) int __cdecl ProbeGetSceneLightStats(void* handle,ProbeSceneLightStats* stats);
 __declspec(dllexport) void* __cdecl ProbeStartWorld(HWND source, DWORD sourcePid, HWND output, uint32_t vendor, int borderless);
 // Candidate-only unified scene. Caller owns the visual's device/Commit and must
 // stop this capture before retiring its scene. This entry's signature is

@@ -1,0 +1,16 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net10.0-windows</TargetFramework>
+    <UseWindowsForms>true</UseWindowsForms>
+    <Nullable>disable</Nullable>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="CRAZYFLASHER7MercenaryEmpire.Core"><HintPath>$(U12CandidateRoot)/runtime/CRAZYFLASHER7MercenaryEmpire.Core.dll</HintPath></Reference>
+    <Reference Include="Newtonsoft.Json"><HintPath>$(U12CandidateRoot)/runtime/Newtonsoft.Json.dll</HintPath></Reference>
+    <Content Include="$(U12CandidateRoot)/runtime/WebView2Loader.dll" Link="WebView2Loader.dll" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+  <Target Name="RequireU12Candidate" BeforeTargets="ResolveReferences" Condition="'$(U12CandidateRoot)' == ''">
+    <Error Text="Pass U12CandidateRoot: this smoke must execute an integrity-verified candidate." />
+  </Target>
+</Project>

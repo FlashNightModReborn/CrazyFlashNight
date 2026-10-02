@@ -8,18 +8,20 @@ namespace CF7Launcher.Guardian.WorldCompositor
     {
         internal readonly long Key;
         internal readonly int Priority, Kind;
+        internal readonly bool SceneReserved;
         internal readonly float X, Y, Length, Energy, R, G, B;
         internal readonly float DirectionX, DirectionY, HalfWidth, NearX, NearY, NearRadius, NearEnergy;
 
         internal WorldLightCandidate(long key, int priority, float x, float y, float length,
             float energy, float r, float g, float b, int kind, float directionX = 0,
             float directionY = 0, float halfWidth = 0, float nearX = 0, float nearY = 0,
-            float nearRadius = 0, float nearEnergy = 0)
+            float nearRadius = 0, float nearEnergy = 0, bool sceneReserved = false)
         {
             Key = key; Priority = priority; X = x; Y = y; Length = length; Energy = energy;
             R = r; G = g; B = b; Kind = kind; DirectionX = directionX; DirectionY = directionY;
             HalfWidth = halfWidth; NearX = nearX; NearY = nearY;
             NearRadius = nearRadius; NearEnergy = nearEnergy;
+            SceneReserved = sceneReserved;
         }
 
         internal void WriteTo(float[] target, int offset)

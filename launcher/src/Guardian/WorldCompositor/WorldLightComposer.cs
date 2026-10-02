@@ -17,8 +17,12 @@ namespace CF7Launcher.Guardian.WorldCompositor
         private readonly long[] _fxIds = new long[Limit];
         private readonly WorldLightCandidate[] _fxCandidates = new WorldLightCandidate[FxCandidateLimit];
         private readonly WorldLightCandidate[] _rays = new WorldLightCandidate[RayLimit];
-        private readonly Candidate[] _candidates = new Candidate[FxCandidateLimit + RayLimit];
-        private readonly Dictionary<Identity, int> _seen = new(FxCandidateLimit + RayLimit);
+        private readonly WorldLightCandidate[] _scene = new WorldLightCandidate[SceneLightCatalog.Limit];
+        private readonly Candidate[] _candidates = new Candidate[FxCandidateLimit + RayLimit + SceneLightCatalog.Limit];
+        private readonly Dictionary<Identity, int> _seen = new(FxCandidateLimit + RayLimit + SceneLightCatalog.Limit);
+        private readonly Candidate[] _selected = new Candidate[Limit];
+        private int _sceneCount;
+        private readonly int _sceneReserve;
         private readonly HashSet<Identity> _previous = new();
         private readonly float _maximumResponse;
         private int _fxCount, _casings, _impacts, _fxLightCount, _residentCount, _fxCandidateCount, _rayCount;
@@ -47,10 +51,12 @@ namespace CF7Launcher.Guardian.WorldCompositor
                 : a.SourceOrder.CompareTo(b.SourceOrder);
         });
 
-        internal WorldLightComposer(float maximumResponse)
+        internal WorldLightComposer(float maximumResponse, int sceneReserve = 2)
         {
             if (!Valid(maximumResponse, 0, .8f)) throw new ArgumentOutOfRangeException(nameof(maximumResponse));
             _maximumResponse = maximumResponse;
+            if (sceneReserve < 0 || sceneReserve > 8) throw new ArgumentOutOfRangeException(nameof(sceneReserve));
+            _sceneReserve = sceneReserve;
             _draw.MaximumLightResponse = maximumResponse;
         }
 
@@ -106,7 +112,7 @@ namespace CF7Launcher.Guardian.WorldCompositor
         {
             _fxCount = _casings = _impacts = _fxLightCount = _residentCount = _fxCandidateCount = 0;
             _draw.Count = _draw.CasingCount = _draw.ImpactCount = 0;
-            _previous.RemoveWhere(key => key.Source != 2);
+            _previous.RemoveWhere(key => key.Source < 2);
         }
 
         internal void ClearRays()
@@ -115,9 +121,17 @@ namespace CF7Launcher.Guardian.WorldCompositor
             _previous.RemoveWhere(key => key.Source == 2);
         }
 
+        internal void SetSceneLights(WorldLightCandidate[] lights,int count)
+        {
+            if(count<0 || count>SceneLightCatalog.Limit || lights==null || lights.Length<count)throw new ArgumentException("Invalid scene lights");
+            Array.Copy(lights,_scene,count);_sceneCount=count;
+            if(count==0)_previous.RemoveWhere(key=>key.Source==3);
+        }
+
         internal void Reset()
         {
             ClearCombatFx(); ClearRays(); _previous.Clear(); _seen.Clear();
+            _sceneCount=0;
             _draw.LightCount = _draw.ResidentLightCount = _draw.CandidateLightCount = 0;
             _draw.MaximumLightResponse = _maximumResponse;
         }
@@ -133,6 +147,7 @@ namespace CF7Launcher.Guardian.WorldCompositor
             _seen.Clear();
             int count = 0;
             for (int i = 0; i < _rayCount; i++) Add(_rays[i], 2, i, cameraX, cameraY, scale, ref count);
+            for (int i = 0; i < _sceneCount; i++) Add(_scene[i],3,i,cameraX,cameraY,scale,ref count);
             if (count == 0)
             {
                 // No contributing ray lights: keep the exact original FX light
@@ -152,12 +167,20 @@ namespace CF7Launcher.Guardian.WorldCompositor
                 Add(_fxCandidates[i], i < _residentCount ? (byte)0 : (byte)1, i, cameraX, cameraY, scale, ref count);
             Array.Sort(_candidates, 0, count, Ranking);
             int selected = Math.Min(Limit, count);
-            Array.Sort(_candidates, 0, selected, OutputOrder);
+            int reserved=0;
+            for(int i=0;i<count && reserved<_sceneReserve;i++)
+                if(_candidates[i].Identity.Source==3 && _candidates[i].Light.SceneReserved)_selected[reserved++]=_candidates[i];
+            int used=reserved;
+            for(int i=0;i<count && used<selected;i++) {
+                bool duplicate=false;for(int j=0;j<reserved;j++)if(_selected[j].Identity==_candidates[i].Identity){duplicate=true;break;}
+                if(!duplicate)_selected[used++]=_candidates[i];
+            }
+            Array.Sort(_selected, 0, selected, OutputOrder);
             _previous.Clear();
             _draw.ResidentLightCount = 0;
             for (int i = 0; i < selected; i++)
             {
-                Candidate candidate = _candidates[i];
+                Candidate candidate = _selected[i];
                 candidate.Light.WriteTo(_draw.Lights, i * Stride);
                 _draw.LightIds[i] = candidate.Light.Key;
                 _draw.CandidateLights[i] = candidate.Light;

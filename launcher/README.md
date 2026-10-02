@@ -95,6 +95,7 @@ bootstrap preflight
 |---|---|---|
 | WebView2 message | Bootstrap、Overlay、Panel 控制与展示 | Host 校验命令和 payload；Web 不拥有业务写权限。Character Build `item_use` 只转发严格闭集，AS2 独占物资裁决与四条药剂帧冷却；Web 的格内冷却阴影仅采样 `cooldownSnapshot`，不按现实时间续算，也不新增独立排版行。Reward Inbox 结束先经 AS2 nonce preflight，再由 PanelHost 原位换成全新构筑会话并继承 pause lease，失败才 exact close/unpause 后从 idle 重试 |
 | XMLSocket | Flash ↔ Host 任务消息 | 连接、握手、业务回包分别判定；军阀 `warlord_stage_start` 使用 exact binding，Host 只在 tracked close 后回送 AS2，不放宽 `panel_request`。outer `not_started` 是吸收性父启动失败，整局恢复面已移除；父退出只用 outer cancellation 退休 Host owner |
+| `native_guidance` / `nativeGuidanceAction` | AS2 引导快照 / exact close 意图 | 5 种原版白色场景图示；2 类告示板自动打开对应 Web 帮助，使用 tracked exact instance；scene、request、revision 与图片 page epoch 隔离，AS2 保留触发与清理，不开放 Web 调用；见 [U8 基座](../docs/U8引导迁移与共享教程基座-2026-09-30.md) |
 | HTTP | 兼容查询、资源与受限控制面 | legacy automation 不是 Agent Runtime 的信任边界 |
 | V8 | 搓招 `GameInput` DFA | 单 engine/单锁，模块源与加载闭包必须可复验；不再持有伤害数字状态或渲染描述符 |
 | named pipe / MCP | CF7 Agent Runtime | 观察 grant 与 write lease 分离，绑定 peer/session/frame/generation |
@@ -155,6 +156,11 @@ C1 工程保留薄启动适配；Core 的显式 `--unified-input-candidate c1` �
 诊断注入默认关闭。真实基地 B1 profile 尚未开放；源码接入不能代替该场景的人验，进度见 [B1 检查点](../docs/reports/统一输入-B1共享底座与冷装配检查点-2026-09-24.md)。
 
 工作树基线 `e210db872d` 的正常游戏试点仅将帮助面板分流到 `CompositionHelpSurface`；由 `PanelHostController.CompositionHelp.cs` 复用暂停、实例与几何合同。帮助合成已经维护者人验通过并授权推广为正式默认；根目录 `本地开发启动.cmd` 继续作为唯一开发入口，不再需要候选开关或专项转发 CMD。其他面板和世界输入尚未切换，验收及回退见[真实游戏帮助面板试点](../docs/reports/统一输入-真实游戏帮助面板试点-2026-09-24.md)。
+
+U12 游戏内过场由 `SceneTransitionController` 复用独立合成表面。返回时使用原完整 Loot Panel/View、双栏和生产样式；遮罩确认显示后，原 Loot 权威会话即可接通，奖励/整理操作与基地加载并行。
+基地捕获完成只更新同一页面的就绪能力，保留同一个 DOM、Core、HWND、密度、搜索及滚动状态；AS2 先结束过场时间轴，Host 再取得普通面板暂停。提前关闭由原 exact 业务关闭裁决，加载页继续遮盖；失败重试保留同一奖励会话及未知写锁。
+同一不可变报告的接通/关闭意图可跨加载/提示的显示 revision 前进；request/generation、单次准入与未知锁仍受校验。世界呈现、失败导航和 Loot 业务 revision 保持各自 exact 权威，不能据此重复写奖励。
+固定页面仅向既有 Loot/库存域开放 exact 当前实例入口，不进入通用 Web 任务路由。AS2 保留导航、奖励暂存与保存权威。按 commit `c724305c374de423bce06bd39de0b27e09638f4c` 加 2026-10-02 工作区核对，协议、自动门和人验见 [U12 专项](../docs/U12过场Web迁移与人力验收-2026-10-01.md)。
 
 ## 构建、候选与发布
 
@@ -274,10 +280,19 @@ candidate 与正式入口旅程按 [#runtime](../agentsDoc/testing-guide.md#runt
 | `webOverlayHotReload` | `false` / `false` | `CF7_WEB_HOTRELOAD` | 开发热重载，玩家版保持关闭 |
 <!-- launcher-config-registry:end -->
 `CF7_DIAG_FOCUS_PROBE` 是 `UiFreezeProbe` 的独立环境急停，不属于 `AppConfig` key。生产默认值、诊断建议和硬件边界以 `config.toml` 注释为准，README 不复制长注释。用户偏好落在 `%LOCALAPPDATA%/CF7FlashNight/launcher_user_prefs.json`；项目根同名文件只作一次性 legacy 导入。
+
+瞬间鼠标延迟诊断使用 `automation/diagnose-input.ps1 -Cursor Native` / `-Cursor System`；沿用本地开发候选核验及焦点滚动日志，不修改配置文件。
+仅 `CF7_INPUT_LATENCY=1` 且焦点录制开启时启用；每个转场最多观察 30 秒，结束后保留至多 2 秒，20ms 发送一个最多单飞的界面线程探针，40ms 起记录尖刺。
+记录区分探针线程调度、UI 排队、鼠标钩子分发、光标绘制及同步窗口调用，每个窗口最多 64 条尖刺，汇总保留省略数量与峰值。
+不记录鼠标移动坐标，不注入输入；耗时不是显示器实际呈现延迟。细节见 [U12 记录](../docs/U12过场Web迁移与人力验收-2026-10-01.md)。
 <!-- launcher-user-prefs-registry:start -->
-当前字段为 `lastPlayedSlot`、`introEnabled`、`sfxEnabled`、`ambientEnabled`、`uiFontScale`、`suppressedHighDpiWarningRaw`、`mapDisplayPreference`、`hitNumberMode` 和 `hitNumberWorldRowLimit`。
+当前字段为 `lastPlayedSlot`、`introEnabled`、`sfxEnabled`、`ambientEnabled`、`tutorialsAutoOpen`、`uiFontScale`、`suppressedHighDpiWarningRaw`、`mapDisplayPreference`、`hitNumberMode` 和 `hitNumberWorldRowLimit`。
 <!-- launcher-user-prefs-registry:end -->
-公开 Web 写入必须经过 `config_set` 白名单；Host-only 字段不得因前端同名而获得写权限。<a id="打击伤害数字生产路径"></a> **打击伤害数字生产路径**：AS2 仍负责伤害结算，`HitNumberBatchProcessor` 仅发送结算后的逐段事实；C# `HitNumberRuntime` 是唯一表现状态机，负责短寿命状态、模式投影和世界行裁剪，`HitNumberOverlay` 消费 latest-wins frame 并以紧边界持久 DIB 绘制。V8 只保留 `GameInput`，Flash renderer 不再作为 fallback。
+欢迎页的公开 Web 写入必须经过 `config_set` 白名单；游戏设置使用绑定实例的 `settings.host_set` 域白名单，Host-only 字段不得因前端同名而获得写权限。
+`tutorialsAutoOpen` 默认开启，作用于全部自动教程与玩家槽位。自动教程底栏的“关闭教程弹窗”或“设置 → 本机与 Web → 自动打开教程页面”都保存同一本机偏好；失败回滚。关闭后触发教程改为一次刘海屏通知提醒，手动帮助与场景操作图示继续可用。
+Help composition 端点仅新增 `tutorial_preference:disable_auto_open` / `tutorial_preference_result` 窄协议：version 1、callId 与当前 exact panelInstanceId。只允许关闭自动弹窗，不能调用 Settings RPC、修改其他偏好或游戏状态；保存确认后关闭当前教程，结果未知不重发。
+
+<a id="打击伤害数字生产路径"></a> **打击伤害数字生产路径**：AS2 仍负责伤害结算，`HitNumberBatchProcessor` 仅发送结算后的逐段事实；C# `HitNumberRuntime` 是唯一表现状态机，负责短寿命状态、模式投影和世界行裁剪，`HitNumberOverlay` 消费 latest-wins frame 并以紧边界持久 DIB 绘制。V8 只保留 `GameInput`，Flash renderer 不再作为 fallback。
 机器全局偏好提供 `off/balanced/total/classic/detail` 五状态。默认 `balanced` 只保留同目标最近三次 Burst，并把总伤的“最新段来源色闪现→该次攻击贡献主体色”、属性来源色、固定效果色、emoji、贡献强度及吸血/护盾精确值投影到攻击摘要；`classic` 复刻旧 Flash 散射/14 帧动效，`detail` 按 Burst 原子展示逐段并按实际数字/属性标签边界扩格、缩列。四模式共用同一 11 色语义表，逐段项永远使用自身来源色；属性贡献可见度与模式标签密度为正交尺度，因此平衡/逐发可保持紧凑而不伪造低贡献。
 `total` 保留旧总伤表达：当前段颜色闪现后回落到贡献主体色，状态按伤害贡献衰减，吸血/护盾保留精确累计值，总伤与 hit 渐进追赶；伤害类型与粉碎使用独立文字槽，非 MISS 零伤保持来源色，MISS 不累计，淡出续击恢复同一条目，最新目标最后绘制，冲击脉冲受平衡字号上限约束。balanced/detail 同样把最新受击目标最后绘制。
 非零 `hitNumberWorldRowLimit` 是全局攻击行上限，有限 `detail` 另对每目标只保留最新六行；`0` 明确解除两层产品上限并保持真正无限制。四种显示模式仍保留屏外剔除和自然寿命，有限上限不拆攻击，切换立即建立新 generation 并重排。
@@ -358,11 +373,12 @@ Bootstrap 建角遮罩按 `openRequestId` 关联，snapshot 与有效首帧（�
 | `crafting` | 工作台 | `modules/crafting.js` |
 | `hairdresser` | 业务 Panel | `modules/hairdresser.js` |
 | `surgery` | [医务室整形](../docs/医务室整形-Web面板与外观共享-2026-09-08.md) | `modules/plastic-surgery.js` |
+| `garage` | [车库购车](../agentsDoc/as2-web-panel-migration.md#u13-garage-purchase) | `modules/garage-purchase.js` |
 | `sleep` | [床铺睡眠与拨针闹钟](../docs/U3睡眠面板-Web闹钟迁移-2026-09-19.md)；候选人验通过，发布状态见专项 | `modules/sleep-panel.js` |
 | `gym` | 业务 Panel（健身训练、进度与完成结算） | `modules/gym/gym-panel.js` |
 | `settings` | 全屏工具 / Launcher bootstrap shell | `modules/settings-panel.js` |
 | `skills` | 工作台 | `modules/skills.js` |
-| `help` | 工具 Panel | `modules/help-panel.js` |
+| `help` | 工具 Panel；[共享教程目录与轨迹](../docs/U8引导迁移与共享教程基座-2026-09-30.md)，工作台帮助使用内部 SecondaryPage | `modules/help-panel.js` |
 | `jukebox` | 工具 Panel | `modules/jukebox/jukebox-panel.js` |
 | `cutscene-test` | 开发 Panel | `modules/cutscene-test.js` |
 | `lut-lab` | 开发 Panel | `modules/lut-lab/lut-lab-panel.js` |
@@ -415,6 +431,10 @@ Slice 6.1 已按 `APPROVE_COLLAPSE / PREFER_B` 收敛：`StageManager` 物化临
 Action 使用有界 handoff；Host 在捕获的同一 socket generation、同一 binding 上有限重发，AS2 duplicate 不重建场景，terminal 优先重投。玩家操控侧仅从实际参战的可信主角投影推导；普通部队交战使用 `none` 旁观，不按战略阵营授予操控权。
 整局 recovery 不承担第二套场景生命周期。交接、结算及面板关闭时释放隐藏沙盘，AS2 resume 显示静态终局，game reveal 后退休 Bootstrap WebView2。当前候选、历史失败、自动证据与人类验收只维护于[基础闭环施工交接](../docs/军阀-基础闭环施工交接-2026-09-05.md)。
 ## 存档编辑与诊断
+
+Flash 启动时由 `FlashStorageEnvironment` 根据实际 Roaming AppData 选择 `CF7FlashNight/flash-temp`，完成写入、刷盘、改名与读回探针后，仅设置 Flash 子进程的 `TEMP/TMP`；启动失败保留明确日志，不修改用户环境变量。启动日志和诊断包的 `flashStorage` 记录父进程环境、实际存档根、已准备的 Flash 临时目录和可用空间。空间信息用于诊断，不以任意容量阈值阻断游戏；网络重定向仍需相应环境的真实 Flash 验证。
+
+影子、墓碑、自动修复、槽位元数据、重建备份及用户偏好使用 `DurableFileWriter` 同目录提交：临时文件与旧字节副本先刷盘，再替换并读回。失败仅在目标缺失时恢复旧副本，不覆盖已有目标；无法确认的旧副本以 `.previous-*` 保留为恢复材料，不能当成第二权威或自动重放写入。AS2 墓碑对齐统一经过 `flushSO`；旧删档返回未确认时保留角色内存，但 `SharedObject.clear()` 自身可能已影响持久对象，不能解释为完全未执行。
 
 Bootstrap 存档编辑器当前提供 schema 驱动的简易系统设置、原始编辑、diff、搜索和诊断包导出。字段权威是 [save_schema.json](data/save_schema.json)，业务读写仍经过 Host handler 和存档安全策略。
 简易模式的系统卡片仍是迁移期可发现性补偿，不代表 Audio 平台验收。旧 `AudioTask.SetToastSink` 当前只是兼容 no-op，不能声称会弹出音量提示。事件起因、现役边界和退出条件见 [音频迁移期存档编辑器事件记录](../docs/launcher-save-editor-audio-migration-incident-2026-04-28.md)；高频 README 不保存事故时间线。

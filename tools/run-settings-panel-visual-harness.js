@@ -317,6 +317,17 @@ async function runViewport(browser, baseUrl, viewport, screenshotDir) {
   assert.deepStrictEqual(rescuePayload, {v:1});
 
   await page.click('.settings-tab[data-tab="local"]');
+  const tutorialToggle = page.locator('[data-host-key="tutorialsAutoOpen"]');
+  assert.strictEqual(await tutorialToggle.isChecked(), true);
+  const beforeTutorial = await page.evaluate(() => window.__settingsHarness.sent.length);
+  await tutorialToggle.click();
+  await page.waitForFunction(count => window.__settingsHarness.sent.length > count, beforeTutorial);
+  const tutorialWrite = await page.evaluate(() => window.__settingsHarness.sent.filter(message =>
+    message.cmd === 'host_set' && message.payload.key === 'tutorialsAutoOpen').pop().payload);
+  assert.deepStrictEqual(tutorialWrite, {v:1,key:'tutorialsAutoOpen',value:false});
+  await page.click('.settings-tab[data-tab="game"]');
+  await page.click('.settings-tab[data-tab="local"]');
+  assert.strictEqual(await tutorialToggle.isChecked(), false);
   await page.evaluate(() => {
     window.__settingsHarness.dropNextResponse('host_set');
     window.__settingsHarness.failNextSnapshot();
@@ -352,7 +363,7 @@ async function runViewport(browser, baseUrl, viewport, screenshotDir) {
   assert.deepStrictEqual(pageErrors, []);
   assert.deepStrictEqual(failedRequests, []);
   await page.close();
-  return 58;
+  return 61;
 }
 
 async function main() {
@@ -370,8 +381,9 @@ async function main() {
   let passed = 0;
   try {
     for (const viewport of [{width:1024,height:576},{width:1600,height:900}]) {
-      passed += await runViewport(browser, url, viewport, screenshotDir);
-      process.stdout.write('[PASS] settings Edge ' + viewport.width + 'x' + viewport.height + ' (58/58)\n');
+      const count = await runViewport(browser, url, viewport, screenshotDir);
+      passed += count;
+      process.stdout.write('[PASS] settings Edge ' + viewport.width + 'x' + viewport.height + ' (' + count + '/' + count + ')\n');
     }
   } finally {
     await browser.close();

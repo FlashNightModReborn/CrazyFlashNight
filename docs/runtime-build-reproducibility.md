@@ -1025,3 +1025,47 @@ canonical Launcher 回归 6010 passed / 5 skipped；将实际候选 Core 放入�
 strict production policy 42/42，receipt SHA-256 `0C612DBA8C5CB91E481E2386A5E124E6D2FC2883B2F00E5C6898835BFB2016D8`。唯一 writer 于 `2026-09-28T02:07:25Z` 执行 promotion，重验双 signer / 双 faultDomain，根 bootstrap `--verify-only` 成功；正式 Core SHA-256 `3B400CCE2BA5165F645F125EFE9E19A31BB1088238CB3576CF1D19F492217C94` 与已测试候选一致。状态为 `promoted / FIELD_REVALIDATION_PENDING`，不将窗口夹具或启动器文件校验计为标准入口实际复活/返回业务复验。
 
 部署提交 `8d139c6f5cfb127e076ba3d2d2d1b21f457defaa` 已快进推送到 `main`；[CI Audit 36368812335](https://github.com/FlashNightModReborn/CrazyFlashNight/actions/runs/36368812335) 成功报告 `state=promoted / deploymentChanged=true`，独立重放 36 文件闭包与 `signers=2 / faultDomains=2`。测试员更新后正常使用观察；若再次出现遮挡，沿用原诊断包分析 `world.overlay_order` 与原始命中链，不要求开发机人工复现其环境。
+
+
+### 2026-10-01 U13 车库购车正式发布
+
+本会话人类明确授权“那就走发布列车”。车库全幅布局、三车原画烘焙、基建权益说明与窄购车命令进入正式安装树；本列车也包含已合入主线的新字体、对白稳定揭示和情报名词更新，其实际游戏体验仍分别待验证。
+
+- 冻结源码 `0cac47709b66c515910592f8426652bbd6d4b462`，保护标记 `refs/tags/runtime-build-v2/20261001-u13-garage-v2`；request `25C611E94A27CC8994BB1007DD904B06C454364DBB11918978F0103E3C661C3A`。
+- 注册本机 X509 与 GitHub hosted OIDC 两个独立故障域的构建 identity/closure 一致；新 production policy **43/43**，唯一 promotion writer 原子部署、signed consensus 与完整安装 `--verify-only` 通过。
+- 部署提交 `5292ba472e3d5397311656e2abd778b066b00aa2`，CI audit [36795951616](https://github.com/FlashNightModReborn/CrazyFlashNight/actions/runs/36795951616) success；完整身份、摘要、签名摘要及失败记录见 [发布回执](evidence/u13-garage-release-2026-10-01.json)。
+- v1 的 **41/43** 失败票和源码标记保留：情报名词新增五处直接色值使 rawColor=2060 超过 2055；五色按原值/透明度归入共享色板后，用新标记/request/proof/receipt 完成 v2，阈值保持 2055。
+- 状态为 `promoted`；历史候选的三车实际购买/保存确认与界面认可单列。新产物的购车保存重启、完整权益、新字体/对白及情报名词实际游戏体验仍 pending，未把部署与安装校验升级为 `standard_entry_verified`。
+
+### 2026-10-01 U8 教程帮助与刘海提醒发布
+
+维护者明确授权“合并上游冲突，然后走发布列车”。合入上游车库、字体、对白与情报更新，保留教程接线，并由真实 CS6 重新 publish 合并后的 asLoader。七项内容转接共享引导基座，两个告示板进入 Web 帮助，五种白色操作图示保留；全局关闭自动教程后沿既有刘海屏通知提醒，结算准入优先于自动教程。
+
+- 冻结源码 `3ce331b10109965efe967b698f9d22ca05c71187`，受保护标签 `refs/tags/runtime-build-v2/20261001-u8-guidance-v1`；immutable request `68DB7138E1126461C484D59C10272968B5BA97E689D05AC3A32D74A4148AAF56`。
+- 本机 X509 `physical-host-b` 与 GitHub hosted OIDC 同 identity/closure；production policy **45/45**、唯一 promotion writer 原子替换、36 文件完整安装和 staged 双签重放通过。
+- 部署提交 `2033f5b5fab7f75beaeb3c724bf029ad2fb8285d` 已快进推送，远端 [Audit 36813625444](https://github.com/FlashNightModReborn/CrazyFlashNight/actions/runs/36813625444) success，独立重放 `state=promoted / deploymentChanged=true` 与 `signers=2 / faultDomains=2`；完整签名、安装与审计结果见 [发布回执](evidence/u8-guidance-release-2026-10-01.json)。
+- 首轮 **44/45** 失败票保留：旧工作区 `swfscan.py` 的 CRLF 与 `.gitattributes`、Git blob 及派生工具摘要中的 LF 不一致。恢复精确 Git blob 后，图集与目录均保持原字节，用同一源码、request、双签候选完整重跑；不降低门禁、不移动已创建标签。
+- 状态为 `promoted`。七项触发视觉、连续两次关卡结算及全局跳过/刘海通知的重启体验按 [U8 验收清单](U8引导迁移与共享教程基座-2026-09-30.md) 保留，未据机器门升级为 `e2e_verified / standard_entry_verified`。
+
+### 2026-10-01 存储环境、持久写与建角等待防护发布
+
+维护者明确授权“无人值守推进到正式发布”。在 TEMP 跨卷现场根因之后，补上 Flash 子进程专用同存储根临时目录与启动诊断，统一 Host 的持久写、替换和读回确认，保留未确认提交的恢复材料；AS2 删除及墓碑清理也消费真实 flush 确认。真实建角另暴露等待表单时世界渲染器误计 30 秒超时，渲染启动现同时等待 reveal 事务提交。实现及边界见 [存档环境根因与预防](存档写盘失败-TEMP跨卷根因诊断与处置-2026-09-30.md)。
+
+- 最终源码 `95b50fc4f9e3ecaa4934b10fc4bc6bd12a09c6ec`，不可变标签 `refs/tags/runtime-build-v2/20261001-save-environment-durability-v3`；request `8C18C25A1A5FCC606C85D2374143148C7225E499D85282571600582046B86BD7`。v1/v2 标签保留原值且未推广，v2 request 已 superseded。
+- 本机 X509 `physical-host-c` 与 GitHub hosted OIDC 的 identity/closure 一致；[cloud run 36826557100](https://github.com/FlashNightModReborn/CrazyFlashNight/actions/runs/36826557100) 的 source/tag/签名均已验证。production policy **45/45**；唯一 writer 原子推广并重验 36 文件闭包、双 signer / 双 faultDomain，上一版保留于 `tmp/runtime-promotions/20261001T072024181Z-c5aa6bc0e59c4d23879675ab29123c2c/previous`。
+- 部署提交 `c18379800cd95bfcdb2d07d837e8f3735fbfaf61` 已快进推送；远端 [Audit 36830117063](https://github.com/FlashNightModReborn/CrazyFlashNight/actions/runs/36830117063) success，独立重放 `state=promoted / deploymentChanged=true` 与 `signers=2 / faultDomains=2`。完整身份与验证摘要见 [发布回执](evidence/save-environment-durability-release-2026-10-01.json)。
+- 合并上游 U8 后 Host canonical runner **6415 passed / 5 skipped / 0 failed**；真实 CS6 SaveManager 专项 **357/357**、Compiler **0/0**。配套 asLoader 已重新 publish，`1,421,232 bytes`，SHA-256 `65AF90520B3D27C44B8E087BD5DF4282A75011AD6AF8DEAF3946AA4D3C0B5D9F`。首轮生成目录门失败保留；由生成器恢复磁盘 LF、确认 Git 内容未改并完整重跑，没有降低阈值。
+- 隔离新槽完成建角 `localFlush=true / durable=true`、SOL 与 shadow 实写、不同进程通过标准 Bootstrap 从 SOL 加载同一角色；原生保存退出入口本轮 `sv:1 → sv:2` 和两份实写成立，随后正常关进程。Host 删除回包确认墓碑；重启后有效旧 SOL 仍被墓碑压住，shadow 不复活。原生退出确认按钮的完整物理旅程未计通过，不能由保存状态代签。
+- 无候选参数的正式入口已绑定相同 identity/closure，根 `--verify-only` exit 0，真实 Flash 预热握手和子进程临时目录防护确认；未选角色，回到 Idle 后正常关闭。状态为 `promoted` 与上述隔离专项 `e2e_verified`，完整业务的 `standard_entry_verified` 仍未取得；失败提示可感知性、重定向 AppData、网络目录、低空间和其他机器的覆盖继续单列。
+
+本轮隔离工作树、专用 SOL、探针服务和本机 builder watcher 已收口；原始玩家存档文件的长度和写入时间未变，没有原始字节哈希基线的项目不宣称逐字节比较。Kimi 与 SWE-2 的发现均经源码/测试裁决，模型输出未当作验收。初次组合清理被自动审批拒绝后，先保全证据并核对唯一自有修改，再无强制参数移除干净工作树；其他工作树保持原状。
+
+### 2026-10-02 U12 并行结算、奖励回显与过场平滑发布
+
+维护者确认“可行，相当顺滑”，并在奖励明细、紧凑默认及底部关闭修复后反馈“复核看起来没问题”，随后明确授权发布列车。保持原 Loot Panel/View、DOM、Core 与窗口，基地后台加载完成只更新同一报告；压掉重复 viewport/native Commit 和无必要抬窗，奖励明细消费已提交回执，右下角“完成结算”复用原关闭协议。旧版完整/紧凑偏好迁移按维护者取舍不做。
+
+- 已整合上游 `856ac640c5`，冻结源码 `97b13e15d1e7024f255dc6695ad9f763e66ca70e`，不可变标签 `refs/tags/runtime-build-v2/20261002-u12-settlement-v1`；request `893C83C564C8BF7BF3AF3D132B998F17323AC4EAF953DF55A91DEFB091F5610E`。
+- 本机 X509 `physical-host-b` 与 [GitHub hosted OIDC 独立构建 36982250220](https://github.com/FlashNightModReborn/CrazyFlashNight/actions/runs/36982250220) 的 identity/closure 一致；Core SHA-256 `3E1684A705DAD4ABBBF0FB49BD6104A488F732DE35A1B5C08C1CBEE47C27A68B` 与维护者验收候选相同。production policy **47/47**，receipt SHA-256 `FE23184C7E43378FCBB5CE252D82D3993CDDD83D8F0FE2F3EC3EECB909E690A8`。选用本机 signed CAS candidate，cloud 仅取签名证明，最终 policy 绑定的 candidate 路径一致。
+- 唯一 writer 已原子部署，36 文件闭包、双 signer / 双 faultDomain 和根 bootstrap `--verify-only` 通过；旧包保留于 `tmp/runtime-promotions/20261002T081630720Z-22899cdb801f45769b8a85266095983b/previous`。部署提交 `c30627355851303200a39d504ba4705042b39581` 已普通快进推送；[远端 Audit 36983349784](https://github.com/FlashNightModReborn/CrazyFlashNight/actions/runs/36983349784) success，独立重放 `state=promoted / deploymentChanged=true` 与 `signers=2 / faultDomains=2`。
+- 无候选参数的正式入口绑定同一 identity/closure，实际 Core PID 29332，观测启动画面和 Flash 预热握手；未进入存档，正常窗口关闭令 Flash exit 0、Core 退出，无残留。`saves/` 除例行更新的启动版本标记外，34 个文件长度及 SHA-256 均未变，自动修复 `applied=0 / drops=0`。未对外部 SOL 建立哈希基线，不扩大此存档检查范围。
+- 状态为 `promoted`。这次正式入口检查只证明启动/退出，未重跑战斗结算；完整保存重启、全部窗口组合及自然加载失败继续按[专项验收](U12过场Web迁移与人力验收-2026-10-01.md)独立记录。最新原生合成夹具的前台准入失败和历史失败回执均保留，不借旧候选结果代签。机器摘要见[本轮发布回执](evidence/u12-settlement-release-2026-10-02.json)。

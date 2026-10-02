@@ -171,7 +171,11 @@
     }
 
     function validProjectedItem(value) {
-        var valid = exactKeys(value, ITEM_KEYS) && identityTriple(value, 'name')
+        // description 为增量投影：缺省降级，出现则必须是受限文本。
+        var keys = ITEM_KEYS.slice();
+        if (own(value, 'description')) keys.push('description');
+        var valid = exactKeys(value, keys) && identityTriple(value, 'name')
+            && (!own(value, 'description') || optionalText(value.description, 4000))
             && (value.itemKind === 'equipment' || value.itemKind === 'stack')
             && finiteNonNegative(value.value) && finiteNonNegative(value.quantity)
             && finiteNonNegative(value.enhancementLevel) && finiteNonNegative(value.requiredLevel)
@@ -189,7 +193,9 @@
 
     function validCatalogOutput(value) {
         var keys = ITEM_KEYS.filter(function(key) { return key !== 'requiredLevel'; });
+        if (own(value, 'description')) keys.push('description');
         var valid = exactKeys(value, keys) && identityTriple(value, 'name')
+            && (!own(value, 'description') || optionalText(value.description, 4000))
             && (value.itemKind === 'equipment' || value.itemKind === 'stack')
             && finiteNonNegative(value.value) && finiteNonNegative(value.quantity)
             && finiteNonNegative(value.enhancementLevel)
@@ -341,13 +347,36 @@
             && finiteNonNegative(value.money) && finiteNonNegative(value.kpoints);
     }
 
+    // 基建门槛行：name 为基建项目名，appliance 为该等级对应设备/描述文本，
+    // required 为需求级数，current 为当前级数，met 为是否已满足。
+    function validInfraRow(value) {
+        return exactKeys(value, ['name', 'appliance', 'required', 'current', 'met'])
+            && identityText(value.name, 128)
+            && optionalText(value.appliance, 256)
+            && Number.isInteger(value.required) && value.required >= 1 && value.required <= 99
+            && Number.isInteger(value.current) && value.current >= 0 && value.current <= 99
+            && typeof value.met === 'boolean';
+    }
+
+    function validInfraRows(value, limit) {
+        return Array.isArray(value) && value.length <= (limit || 32)
+            && value.every(validInfraRow);
+    }
+
     function validRecipe(value) {
-        return exactKeys(value, ['recipeId', 'recipeIndex', 'title', 'output', 'owned',
-                'plannedCrafts', 'baseCost', 'materialCount', 'batchEligible',
-                'canCraftOne', 'availability'])
+        // book/infrastructure 为增量投影：旧 asLoader 不回传时允许缺省降级，
+        // 出现则必须严格合法（同 hairdresser portrait 约定）。
+        var keys = ['recipeId', 'recipeIndex', 'title', 'output', 'owned',
+            'plannedCrafts', 'baseCost', 'materialCount', 'batchEligible',
+            'canCraftOne', 'availability'];
+        if (own(value, 'book')) keys.push('book');
+        if (own(value, 'infrastructure')) keys.push('infrastructure');
+        return exactKeys(value, keys)
             && validRecipeId(value.recipeId)
             && recipeIndex(value.recipeIndex)
             && identityText(value.title, 256)
+            && (!own(value, 'book') || optionalText(value.book, 256))
+            && (!own(value, 'infrastructure') || validInfraRows(value.infrastructure, 32))
             && validCatalogOutput(value.output)
             && validOwnedSummary(value.owned)
             && Number.isInteger(value.plannedCrafts) && value.plannedCrafts >= 0
@@ -357,7 +386,8 @@
             && value.materialCount <= 999
             && typeof value.batchEligible === 'boolean'
             && typeof value.canCraftOne === 'boolean'
-            && ['ready', 'level_locked', 'material_missing', 'insufficient_money',
+            && ['ready', 'infrastructure_locked', 'level_locked', 'material_missing',
+                'insufficient_money',
                 'insufficient_kpoint', 'inventory_full'].indexOf(value.availability) >= 0
             && value.canCraftOne === (value.availability === 'ready');
     }
@@ -402,13 +432,16 @@
     }
 
     function validAcceptedPlan(plan, response, outputField) {
-        return exactKeys(plan, ['category', 'recipeIndex', 'craftCount', 'output', 'materials',
-            'outputDelivery', 'outputPrototype', 'cost'])
+        var keys = ['category', 'recipeIndex', 'craftCount', 'output', 'materials',
+            'outputDelivery', 'outputPrototype', 'cost'];
+        if (own(plan, 'infrastructure')) keys.push('infrastructure');
+        return exactKeys(plan, keys)
             && plan.category === response.category
             && plan.recipeIndex === response.recipeIndex
             && plan.craftCount === response.craftCount
             && same(plan.output, response[outputField])
             && Array.isArray(plan.materials) && plan.materials.every(validMaterial)
+            && (!own(plan, 'infrastructure') || validInfraRows(plan.infrastructure, 32))
             && validProjectedItem(plan.output) && validCost(plan.cost)
             && validOutputDelivery(plan.outputDelivery, plan.output)
             && validOutputPrototype(plan.outputPrototype, plan.output, plan.outputDelivery);
@@ -994,10 +1027,12 @@
                 'craftCount', 'batchEligible', 'maxCraftCount', 'output', 'materials', 'cost',
                 'balance', 'skills', 'levelAllowed', 'enoughMaterials', 'enoughMoney',
                 'enoughKpoints', 'enoughSpace', 'canCommit', 'blockingError', 'outputDelivery']);
+            if (own(data, 'infrastructure')) previewKeys.push('infrastructure');
             if (data.canCommit === true) previewKeys.push('craftToken', 'acceptedPlan');
             return exactKeys(data, previewKeys)
                 && validProjectedItem(data.output) && Array.isArray(data.materials)
                 && data.materials.every(validMaterial)
+                && (!own(data, 'infrastructure') || validInfraRows(data.infrastructure, 32))
                 && validOutputDelivery(data.outputDelivery, data.output)
                 && data.outputDelivery.available === data.enoughSpace
                 && (data.canCommit !== true || data.materials.every(function(material) {

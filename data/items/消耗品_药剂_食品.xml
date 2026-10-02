@@ -689,6 +689,156 @@
     </balance>
   </item>
 
+  <!-- ========== 炉具菜品 (需对应烹饪基建等级，见 data/crafting/烹饪.json infrastructure) ========== -->
+  <item>
+    <name>蒜蓉烤茄子</name>
+    <displayname>蒜蓉烤茄子</displayname>
+    <icon>茄子</icon>
+    <type>消耗品</type>
+    <use>药剂</use>
+    <price>1800</price>
+    <description>烤炉里逼出茄子的绵软，蒜蓉热油一泼，香气能漫过半个食堂。
+    需要烤炉才能做出这道菜。</description>
+    <data>
+      <effects>
+        <effect type="buffDomain" domain="meal" />
+        <effect type="heal" hp="230" mp="230" target="self" scaleWithAlchemy="true" />
+        <effect type="buff" property="伤害加成" calc="add_positive" value="24" duration="1800" buffId="药剂_伤害加成" />
+        <effect type="buff" property="防御力" calc="add_positive" value="24" duration="1800" buffId="药剂_防御力" />
+        <effect type="buff" property="行走X速度" calc="mult_positive" value="1.02" duration="1800" buffId="药剂_速度" />
+        <effect type="playEffect" name="药剂动画" />
+      </effects>
+    </data>
+    <balance>
+      <formulaFamily>potion</formulaFamily>
+      <schemaVersion>1</schemaVersion>
+      <formulaVersion>2</formulaVersion>
+      <authorityStatus>workbook-registration-pending</authorityStatus>
+      <sourceLevel>18</sourceLevel>
+      <domain>meal</domain>
+      <balanceMode>formula</balanceMode>
+      <status>proposed</status>
+      <currentValue>1497</currentValue>
+      <valueCap>1900</valueCap>
+      <formulaPrice>1800</formulaPrice>
+      <marketPrice>1800</marketPrice>
+      <inputDigest>fnv1a32:781cf9e8</inputDigest>
+      <sourceDigest>sha256:512a5c27572232c821b0284b6f75749dcca50d249203db907ce5b8fc092b34c1</sourceDigest>
+      <auditRef>potion:蒜蓉烤茄子</auditRef>
+    </balance>
+  </item>
+  <item>
+    <name>蜜汁烤鸡</name>
+    <displayname>蜜汁烤鸡</displayname>
+    <icon>鸡腿</icon>
+    <type>消耗品</type>
+    <use>药剂</use>
+    <price>2200</price>
+    <description>白糖和香料在烤箱里慢慢渗进鸡皮，出炉时表皮亮得像上了釉。
+    需要烤箱才能做出这道菜。</description>
+    <data>
+      <effects>
+        <effect type="buffDomain" domain="meal" />
+        <effect type="heal" hp="270" mp="270" target="self" scaleWithAlchemy="true" />
+        <effect type="buff" property="伤害加成" calc="add_positive" value="30" duration="1800" buffId="药剂_伤害加成" />
+        <effect type="buff" property="防御力" calc="add_positive" value="28" duration="1800" buffId="药剂_防御力" />
+        <effect type="buff" property="行走X速度" calc="mult_positive" value="1.03" duration="1800" buffId="药剂_速度" />
+        <effect type="playEffect" name="药剂动画" />
+      </effects>
+    </data>
+    <balance>
+      <formulaFamily>potion</formulaFamily>
+      <schemaVersion>1</schemaVersion>
+      <formulaVersion>2</formulaVersion>
+      <authorityStatus>workbook-registration-pending</authorityStatus>
+      <sourceLevel>22</sourceLevel>
+      <domain>meal</domain>
+      <balanceMode>formula</balanceMode>
+      <status>proposed</status>
+      <currentValue>1888.1</currentValue>
+      <valueCap>2300</valueCap>
+      <formulaPrice>2550</formulaPrice>
+      <marketPrice>2200</marketPrice>
+      <inputDigest>fnv1a32:c3953027</inputDigest>
+      <sourceDigest>sha256:587e5fafb14ec7a285df89632a04ffeacbe1ca096c3b335ddb37b9d9b2204f06</sourceDigest>
+      <auditRef>potion:蜜汁烤鸡</auditRef>
+    </balance>
+  </item>
+  <item>
+    <name>酥炸大虾</name>
+    <displayname>酥炸大虾</displayname>
+    <icon>虾</icon>
+    <type>消耗品</type>
+    <use>药剂</use>
+    <price>2600</price>
+    <description>裹粉下锅，炸炉里滚出一层酥脆的金壳。虾肉弹牙，外壳掉渣。
+    需要炸炉才能做出这道菜。</description>
+    <data>
+      <effects>
+        <effect type="buffDomain" domain="meal" />
+        <effect type="heal" hp="310" mp="310" target="self" scaleWithAlchemy="true" />
+        <effect type="buff" property="伤害加成" calc="add_positive" value="32" duration="1800" buffId="药剂_伤害加成" />
+        <effect type="buff" property="防御力" calc="add_positive" value="36" duration="1800" buffId="药剂_防御力" />
+        <effect type="buff" property="行走X速度" calc="mult_positive" value="1.03" duration="1800" buffId="药剂_速度" />
+        <effect type="playEffect" name="药剂动画" />
+      </effects>
+    </data>
+    <balance>
+      <formulaFamily>potion</formulaFamily>
+      <schemaVersion>1</schemaVersion>
+      <formulaVersion>2</formulaVersion>
+      <authorityStatus>workbook-registration-pending</authorityStatus>
+      <sourceLevel>26</sourceLevel>
+      <domain>meal</domain>
+      <balanceMode>formula</balanceMode>
+      <status>proposed</status>
+      <currentValue>2102.3</currentValue>
+      <valueCap>2700</valueCap>
+      <formulaPrice>3000</formulaPrice>
+      <marketPrice>2600</marketPrice>
+      <inputDigest>fnv1a32:9918c3cc</inputDigest>
+      <sourceDigest>sha256:a67170b3099ac3beaef051d588730dbf4a0366adf655096c1149201e61ba4201</sourceDigest>
+      <auditRef>potion:酥炸大虾</auditRef>
+    </balance>
+  </item>
+  <item>
+    <name>瑶柱蒸蛋</name>
+    <displayname>瑶柱蒸蛋</displayname>
+    <icon>瑶柱</icon>
+    <type>消耗品</type>
+    <use>药剂</use>
+    <price>2000</price>
+    <description>蒸炉里慢慢凝出的蛋羹，瑶柱吊出整碗的鲜味，滑得几乎不用嚼。
+    需要蒸炉才能做出这道菜。</description>
+    <data>
+      <effects>
+        <effect type="buffDomain" domain="meal" />
+        <effect type="heal" hp="340" mp="340" target="self" scaleWithAlchemy="true" />
+        <effect type="buff" property="伤害加成" calc="add_positive" value="28" duration="1800" buffId="药剂_伤害加成" />
+        <effect type="buff" property="防御力" calc="add_positive" value="30" duration="1800" buffId="药剂_防御力" />
+        <effect type="buff" property="行走X速度" calc="mult_positive" value="1.04" duration="1800" buffId="药剂_速度" />
+        <effect type="playEffect" name="药剂动画" />
+      </effects>
+    </data>
+    <balance>
+      <formulaFamily>potion</formulaFamily>
+      <schemaVersion>1</schemaVersion>
+      <formulaVersion>2</formulaVersion>
+      <authorityStatus>workbook-registration-pending</authorityStatus>
+      <sourceLevel>30</sourceLevel>
+      <domain>meal</domain>
+      <balanceMode>formula</balanceMode>
+      <status>proposed</status>
+      <currentValue>2168.4</currentValue>
+      <valueCap>3100</valueCap>
+      <formulaPrice>3100</formulaPrice>
+      <marketPrice>2000</marketPrice>
+      <inputDigest>fnv1a32:6fd531c4</inputDigest>
+      <sourceDigest>sha256:17bcd615ab81e1d9cdce4a4ac1e631f528f7f5b56897e412e8c7baf8bff548b5</sourceDigest>
+      <auditRef>potion:瑶柱蒸蛋</auditRef>
+    </balance>
+  </item>
+
   <!-- ========== 特殊品 (独立验算) ========== -->
   <item>
     <name>情报鸡尾酒</name>

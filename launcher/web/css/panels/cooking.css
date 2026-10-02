@@ -1,0 +1,433 @@
+/* ── 烹饪厨房 · 纸质感 ──
+   左列：红线白纸黑字纸条（菜谱）；中右：摊开的蓝色横线白纸书本。
+   厨具与菜品都以「照片」贴到纸上（黑底 + 白边 + 黑外框）。
+   配方是弹在书上的一张横线纸卡，满足打黑勾、不满足打红叉。 */
+.cooking-panel {
+    position:relative;
+    width:1024px; height:576px;
+    display:flex; flex-direction:column;
+    color:var(--wb-cooking-cooking-panel-color);
+    background:var(--wb-cooking-cooking-panel-background);
+    font-family:"Microsoft YaHei",sans-serif;
+    overflow:hidden;
+    --ck-accent:var(--wb-cooking-cooking-panel-ck-accent);
+    --ck-ink:var(--wb-cooking-cooking-panel-ck-ink);
+    --ck-ink-soft:var(--wb-cooking-cooking-panel-ck-ink-soft);
+    --ck-paper:var(--wb-cooking-cooking-panel-ck-paper);
+    --ck-paper-edge:var(--wb-cooking-cooking-panel-ck-paper-edge);
+    --ck-rule-blue:var(--wb-cooking-cooking-panel-ck-rule-blue);
+    --ck-rule-red:var(--wb-cooking-cooking-panel-ck-rule-red);
+    --ck-ready:var(--wb-cooking-cooking-panel-ck-ready);
+    --ck-blocked:var(--wb-cooking-cooking-panel-ck-blocked);
+    --ck-desk-line:var(--wb-cooking-cooking-panel-ck-desk-line);
+    --ck-muted:var(--wb-cooking-cooking-panel-ck-muted);
+    --ck-scrollbar-track:var(--wb-cooking-cooking-panel-ck-scrollbar-track);
+    --ck-scrollbar-thumb:var(--wb-cooking-cooking-panel-ck-scrollbar-thumb);
+    --ck-scrollbar-thumb-border:var(--wb-cooking-cooking-panel-ck-scrollbar-thumb-border);
+}
+.cooking-panel ::-webkit-scrollbar { width:7px; }
+.cooking-panel ::-webkit-scrollbar-track { background:var(--ck-scrollbar-track); }
+.cooking-panel ::-webkit-scrollbar-thumb {
+    background:var(--ck-scrollbar-thumb);
+    border:1px solid var(--ck-scrollbar-thumb-border);
+    border-radius:3px;
+}
+
+/* ── 顶栏 ── */
+.cooking-header {
+    flex:0 0 auto;
+    display:flex; align-items:center; gap:14px;
+    padding:12px 18px 10px;
+    border-bottom:var(--wb-cooking-cooking-header-border-bottom);
+}
+.cooking-brand { display:flex; flex-direction:column; gap:1px; }
+.cooking-kicker {
+    font-size:10px; letter-spacing:.35em; color:var(--ck-muted);
+}
+.cooking-brand h1 {
+    margin:0; font:700 18px/1.2 "Microsoft YaHei",sans-serif;
+    color:var(--wb-cooking-cooking-brand-h1-color); letter-spacing:.08em;
+}
+.cooking-status {
+    font-size:10px; color:var(--ck-muted); letter-spacing:.05em;
+}
+.cooking-status[data-state="ready"] { color:var(--wb-cooking-cooking-status-data-state-ready-color); }
+.cooking-status[data-state="error"] { color:var(--wb-cooking-cooking-status-data-state-error-color); }
+.cooking-metrics {
+    margin-left:auto; display:flex; gap:14px; align-items:baseline;
+}
+.cooking-metric {
+    font-size:11px; color:var(--ck-muted);
+    font-family:Consolas,"Microsoft YaHei",monospace;
+}
+.cooking-close {
+    flex:0 0 auto; width:26px; height:26px;
+    border:1px solid var(--ck-desk-line); border-radius:4px;
+    background:var(--wb-cooking-cooking-close-background); color:var(--ck-muted);
+    font-size:14px; cursor:pointer;
+    transition:var(--wb-cooking-cooking-close-transition);
+}
+.cooking-close:hover { color:var(--wb-cooking-cooking-close-hover-color); border-color:var(--wb-cooking-cooking-close-hover-border-color); }
+
+/* ── 布局：纸条列 + 摊开的书 ── */
+.cooking-body {
+    flex:1 1 auto; min-height:0;
+    display:grid;
+    grid-template-columns:190px 1fr;
+    gap:14px; padding:12px 16px 16px;
+}
+
+/* ── 左：纸条（红线白纸黑字） ── */
+.cooking-slips {
+    display:flex; flex-direction:column; gap:10px;
+    min-height:0; overflow-y:auto; overflow-x:visible;
+    padding:6px 8px 6px 12px;
+}
+.cooking-slip {
+    position:relative;
+    display:flex; align-items:center; justify-content:space-between; gap:8px;
+    min-height:34px;
+    padding:8px 12px 8px 14px;
+    border:none; border-radius:2px;
+    background:var(--wb-cooking-cooking-slip-background);
+    box-shadow:var(--wb-cooking-cooking-slip-box-shadow);
+    color:var(--ck-ink); cursor:pointer; text-align:left;
+    transform:rotate(.4deg);
+    transition:var(--wb-cooking-cooking-slip-transition);
+}
+.cooking-slip:nth-child(2n) { transform:rotate(-.5deg); }
+.cooking-slip:hover {
+    transform:translateX(4px) rotate(0deg);
+    box-shadow:var(--wb-cooking-cooking-slip-hover-box-shadow);
+}
+.cooking-slip.active {
+    transform:translateX(-10px) rotate(-.6deg);
+    box-shadow:var(--wb-cooking-cooking-slip-active-box-shadow);
+}
+.cooking-slip-name {
+    font:600 12px/1.3 "KaiTi","STKaiti","Microsoft YaHei",serif;
+    color:var(--wb-cooking-cooking-slip-name-color); letter-spacing:.04em;
+    overflow:hidden; text-overflow:ellipsis; white-space:nowrap;
+}
+.cooking-slip-count {
+    flex:0 0 auto; font-size:10px; color:var(--ck-ink-soft);
+    letter-spacing:.05em; white-space:nowrap;
+}
+
+/* ── 摊开的书 ── */
+.cooking-book {
+    position:relative;
+    display:grid; grid-template-columns:1fr 1fr;
+    min-height:0;
+    border-radius:4px 8px 8px 4px;
+    box-shadow:var(--wb-cooking-cooking-book-box-shadow);
+    /* 书脊中线 */
+    background:var(--wb-cooking-cooking-book-background);
+}
+.cooking-page {
+    position:relative; min-height:0;
+    display:flex; flex-direction:column;
+    padding:22px 24px 20px;
+    /* 蓝横线白纸 + 页缘轻微做旧 */
+    background:var(--wb-cooking-cooking-page-background);
+}
+.cooking-page.left {
+    border-radius:4px 0 0 4px;
+    border-right:var(--wb-cooking-cooking-page-left-border-right);
+    box-shadow:var(--wb-cooking-cooking-page-left-box-shadow);
+    align-items:center; justify-content:center;
+}
+.cooking-page.right {
+    border-radius:0 8px 8px 0;
+    box-shadow:var(--wb-cooking-cooking-page-right-box-shadow);
+    overflow-y:auto;
+}
+.cooking-page.left.blank .cooking-photo { display:none; }
+
+/* ── 照片（黑底 + 白边 + 黑外框，拍立得式） ── */
+.cooking-photo {
+    flex:0 1 auto; max-width:82%;
+    padding:10px 10px 0;
+    background:var(--wb-cooking-cooking-photo-background);
+    border:var(--wb-cooking-cooking-photo-border);
+    box-shadow:var(--wb-cooking-cooking-photo-box-shadow);
+    transform:rotate(-1.6deg);
+    display:flex; flex-direction:column; align-items:center;
+    opacity:1; transition:var(--wb-cooking-cooking-photo-transition);
+}
+.cooking-photo.loading {
+    opacity:0;
+    transition:none;
+}
+.cooking-photo-frame {
+    width:100%; min-height:180px;
+    display:flex; align-items:center; justify-content:center;
+    background:var(--wb-cooking-cooking-photo-frame-background);
+    overflow:hidden;
+}
+.cooking-photo-img {
+    max-width:96%; max-height:210px;
+    object-fit:contain;
+    filter:contrast(1.02);
+    animation:var(--wb-cooking-cooking-photo-img-animation);
+}
+/* 炒锅是宽扁图天然显大；其余厨具 svg 高窄，放宽限高保持视觉体量一致。 */
+.cooking-page.left:not([data-appliance="炒锅"]):not([data-appliance=""]) .cooking-photo-img {
+    max-height:290px;
+}
+@keyframes cooking-photo-in {
+    from { opacity:0; transform:scale(.94); }
+    to { opacity:1; transform:none; }
+}
+.cooking-photo-placeholder {
+    display:flex; flex-direction:column; align-items:center; gap:8px;
+    padding:18px; color:var(--wb-cooking-cooking-photo-placeholder-color);
+}
+.cooking-photo-placeholder i {
+    display:block; width:64px; height:46px;
+    border:var(--wb-cooking-cooking-photo-placeholder-i-border); border-radius:6px 6px 18px 18px;
+    border-bottom-width:5px; background:var(--wb-cooking-cooking-photo-placeholder-i-background); position:relative;
+}
+.cooking-photo-placeholder i::before {
+    content:""; position:absolute; left:14%; right:14%; top:-6px; height:5px;
+    background:var(--wb-cooking-cooking-photo-placeholder-i-before-background); border-radius:3px;
+}
+.cooking-photo-placeholder b {
+    font:10px/1 "Microsoft YaHei",sans-serif; letter-spacing:.1em; color:var(--wb-cooking-cooking-photo-placeholder-b-color);
+}
+.cooking-photo-caption {
+    padding:7px 4px 8px;
+    font:600 12px/1.2 "KaiTi","STKaiti","Microsoft YaHei",serif;
+    color:var(--wb-cooking-cooking-photo-caption-color); letter-spacing:.15em;
+}
+
+/* ── 右页：菜品小照片 ── */
+.cooking-dish-grid {
+    flex:1 1 auto; min-height:0;
+    display:grid; grid-template-columns:repeat(2,1fr);
+    gap:14px 16px; align-content:start;
+    padding:2px 2px 6px;
+}
+.cooking-dish-grid.empty { display:block; }
+.cooking-dish-photo {
+    display:flex; flex-direction:column; align-items:center; gap:0;
+    padding:8px 8px 0;
+    border:var(--wb-cooking-cooking-dish-photo-border);
+    background:var(--wb-cooking-cooking-dish-photo-background);
+    box-shadow:var(--wb-cooking-cooking-dish-photo-box-shadow);
+    color:var(--ck-ink); cursor:pointer;
+    transform:rotate(.8deg);
+    transition:var(--wb-cooking-cooking-dish-photo-transition);
+}
+.cooking-dish-photo:nth-child(2n) { transform:rotate(-.8deg); }
+.cooking-dish-photo:hover {
+    transform:rotate(0deg) translateY(-3px);
+    box-shadow:var(--wb-cooking-cooking-dish-photo-hover-box-shadow);
+}
+.cooking-dish-photo.active {
+    outline:2px solid var(--ck-accent); outline-offset:1px;
+    transform:rotate(0deg) translateY(-3px);
+}
+.cooking-dish-photo.is-blocked { opacity:.66; }
+.cooking-dish-photo.is-blocked .cooking-dish-thumb img { filter:grayscale(.7); }
+.cooking-dish-thumb {
+    width:100%; height:64px;
+    display:flex; align-items:center; justify-content:center;
+    background:var(--wb-cooking-cooking-dish-thumb-background); overflow:hidden;
+}
+.cooking-dish-thumb.sm {
+    width:52px; height:52px; flex:0 0 auto;
+    border:var(--wb-cooking-cooking-dish-thumb-sm-border); outline:var(--wb-cooking-cooking-dish-thumb-sm-outline);
+    box-shadow:var(--wb-cooking-cooking-dish-thumb-sm-box-shadow);
+}
+.cooking-dish-thumb img {
+    max-width:90%; max-height:90%; object-fit:contain;
+}
+.cooking-icon, .cooking-icon-lg, .cooking-icon-sm {
+    display:inline-flex; align-items:center; justify-content:center;
+    width:100%; height:100%;
+}
+.cooking-icon img, .cooking-icon-lg img, .cooking-icon-sm img {
+    max-width:100%; max-height:100%; object-fit:contain;
+}
+.cooking-icon { width:58px; height:58px; }
+.cooking-icon-lg { width:52px; height:52px; }
+.cooking-icon-sm { width:20px; height:20px; }
+.cooking-dish-name {
+    padding:5px 2px 1px;
+    font:600 11px/1.3 "KaiTi","STKaiti","Microsoft YaHei",serif;
+    color:var(--wb-cooking-cooking-dish-name-color); letter-spacing:.05em;
+    max-width:100%; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;
+}
+.cooking-dish-state {
+    padding-bottom:6px;
+    font-size:10px; letter-spacing:.08em; color:var(--ck-ink-soft);
+}
+.cooking-dish-photo.is-ready .cooking-dish-state { color:var(--ck-ready); }
+.cooking-dish-photo.is-blocked .cooking-dish-state { color:var(--ck-blocked); }
+.cooking-empty {
+    padding:30px 10px; text-align:center;
+    color:var(--ck-ink-soft); font-size:11px; letter-spacing:.08em;
+}
+
+/* ── 配方纸卡（弹在书上） ── */
+.cooking-pop-host {
+    position:absolute; inset:0;
+    pointer-events:none;
+}
+.cooking-recipe-pop {
+    position:absolute; inset:0;
+    display:flex; align-items:center; justify-content:center;
+    padding:18px;
+    background:var(--wb-cooking-cooking-recipe-pop-background);
+    pointer-events:auto;
+}
+.cooking-recipe-card {
+    position:relative;
+    width:min(430px,92%); max-height:100%;
+    display:flex; flex-direction:column;
+    padding:16px 18px 12px;
+    border:var(--wb-cooking-cooking-recipe-card-border);
+    /* 蓝线行距 32px；定位偏移使列表行恰好落在空隙内 */
+    background:var(--wb-cooking-cooking-recipe-card-background);
+    box-shadow:var(--wb-cooking-cooking-recipe-card-box-shadow);
+    transform:rotate(.4deg);
+    color:var(--ck-ink);
+    animation:var(--wb-cooking-cooking-recipe-card-animation);
+}
+@keyframes cooking-card-in {
+    from { opacity:0; transform:rotate(.4deg) translateY(14px) scale(.96); }
+    to { opacity:1; transform:rotate(.4deg) none; }
+}
+
+.cooking-recipe-head {
+    display:flex; align-items:center; gap:12px;
+    height:62px;
+    border-bottom:var(--wb-cooking-cooking-recipe-head-border-bottom);
+}
+.cooking-recipe-title { display:flex; flex-direction:column; gap:2px; min-width:0; }
+.cooking-recipe-title b {
+    font:700 15px/1.2 "KaiTi","STKaiti","Microsoft YaHei",serif;
+    color:var(--wb-cooking-cooking-recipe-title-b-color);
+}
+.cooking-recipe-title small { font-size:10px; color:var(--ck-ink-soft); }
+.cooking-recipe-body {
+    flex:1 1 auto; min-height:0; overflow-y:auto;
+    /* 14px 上补白使首行顶在第一条蓝线（96px）处，每行恰占一格空隙 */
+    padding:14px 0 6px; display:flex; flex-direction:column;
+}
+.cooking-req {
+    display:flex; align-items:center; gap:8px;
+    height:32px; padding:0 4px;
+    font-size:11px; color:var(--ck-ink);
+}
+.cooking-req.infra { color:var(--wb-cooking-cooking-req-infra-color); }
+.cooking-req.unmet .cooking-req-name { color:var(--ck-blocked); }
+.cooking-req-icon {
+    flex:0 0 auto; width:20px; height:20px;
+    display:inline-flex; align-items:center; justify-content:center;
+    overflow:hidden;
+    background:var(--wb-cooking-cooking-req-icon-background);
+    border:var(--wb-cooking-cooking-req-icon-border); outline:var(--wb-cooking-cooking-req-icon-outline);
+    box-sizing:content-box;
+}
+.cooking-req-icon:empty { background:transparent; border-color:transparent; outline-color:transparent; }
+.cooking-req-name {
+    flex:1 1 auto; min-width:0;
+    overflow:hidden; text-overflow:ellipsis; white-space:nowrap;
+}
+.cooking-req-value {
+    flex:0 0 auto; font-family:Consolas,"Microsoft YaHei",monospace;
+    font-size:10px; color:var(--ck-ink-soft);
+}
+.cooking-req.unmet .cooking-req-value { color:var(--ck-blocked); }
+.cooking-req-mark {
+    flex:0 0 auto; width:18px; text-align:center;
+    font:700 13px/1 "KaiTi","Microsoft YaHei",serif;
+}
+.cooking-req-mark.ok { color:var(--wb-cooking-cooking-req-mark-ok-color); }
+.cooking-req-mark.no { color:var(--wb-cooking-cooking-req-mark-no-color); }
+.cooking-recipe-note {
+    height:32px; display:flex; align-items:center; justify-content:center;
+    color:var(--ck-ink-soft); font-size:11px;
+}
+/* 核算期幕布：罩住书本挡点击，无中间态内容 */
+.cooking-recipe-pop.veil { background:var(--wb-cooking-cooking-recipe-pop-veil-background); }
+.cooking-veil-note {
+    padding:6px 16px;
+    background:var(--wb-cooking-cooking-veil-note-background);
+    border:var(--wb-cooking-cooking-veil-note-border);
+    box-shadow:var(--wb-cooking-cooking-veil-note-box-shadow);
+    color:var(--ck-ink); font-size:11px; letter-spacing:.15em;
+    transform:rotate(-.6deg);
+}
+.cooking-panel.cooking-pending .cooking-slips {
+    pointer-events:none; opacity:.55;
+}
+.cooking-recipe-note.warn { color:var(--ck-blocked); }
+.cooking-recipe-footer {
+    flex:0 0 auto;
+    display:flex; align-items:center; gap:10px;
+    padding-top:10px;
+    border-top:var(--wb-cooking-cooking-recipe-footer-border-top);
+}
+.cooking-count { display:flex; align-items:center; gap:4px; }
+.cooking-count button {
+    width:24px; height:24px;
+    border:var(--wb-cooking-cooking-count-button-border); border-radius:2px;
+    background:var(--wb-cooking-cooking-count-button-background);
+    box-shadow:var(--wb-cooking-cooking-count-button-box-shadow);
+    color:var(--ck-ink); font-size:13px; cursor:pointer;
+    transition:var(--wb-cooking-cooking-count-button-transition);
+}
+.cooking-count button:hover:not(:disabled) {
+    transform:translateY(-1px);
+    box-shadow:var(--wb-cooking-cooking-count-button-hover-not-disabled-box-shadow);
+}
+.cooking-count button:active:not(:disabled) {
+    transform:translateY(0); box-shadow:var(--wb-cooking-cooking-count-button-active-not-disabled-box-shadow);
+}
+.cooking-count button:disabled { opacity:.4; cursor:default; box-shadow:none; }
+.cooking-count-input {
+    width:34px; height:24px; text-align:center;
+    border:none; border-bottom:var(--wb-cooking-cooking-count-input-border-bottom);
+    background:var(--wb-cooking-cooking-count-input-background); color:var(--ck-ink); font-size:11px;
+}
+.cooking-cost {
+    flex:1 1 auto; font-size:10px; color:var(--ck-ink-soft);
+    font-family:Consolas,"Microsoft YaHei",monospace;
+}
+.cooking-confirm {
+    flex:0 0 auto; min-width:96px;
+    padding:8px 18px;
+    border:var(--wb-cooking-cooking-confirm-border); border-radius:2px;
+    background:var(--wb-cooking-cooking-confirm-background);
+    box-shadow:var(--wb-cooking-cooking-confirm-box-shadow);
+    color:var(--wb-cooking-cooking-confirm-color); font:700 12px/1 "KaiTi","Microsoft YaHei",serif;
+    letter-spacing:.18em; cursor:pointer;
+    transition:var(--wb-cooking-cooking-confirm-transition);
+}
+.cooking-confirm:hover:not(:disabled) {
+    transform:translateY(-2px) rotate(-.4deg);
+    box-shadow:var(--wb-cooking-cooking-confirm-hover-not-disabled-box-shadow);
+}
+.cooking-confirm:active:not(:disabled) {
+    transform:translateY(0); box-shadow:var(--wb-cooking-cooking-confirm-active-not-disabled-box-shadow);
+}
+.cooking-confirm:disabled {
+    background:var(--wb-cooking-cooking-confirm-disabled-background);
+    color:var(--wb-cooking-cooking-confirm-disabled-color); border-color:var(--wb-cooking-cooking-confirm-disabled-border-color);
+    box-shadow:none; cursor:default;
+}
+.cooking-pop-close {
+    position:absolute; top:8px; right:10px;
+    width:22px; height:22px;
+    border:var(--wb-cooking-cooking-pop-close-border); border-radius:2px;
+    background:var(--wb-cooking-cooking-pop-close-background);
+    box-shadow:var(--wb-cooking-cooking-pop-close-box-shadow);
+    color:var(--wb-cooking-cooking-pop-close-color); font-size:13px; line-height:1;
+    cursor:pointer; transition:var(--wb-cooking-cooking-pop-close-transition);
+}
+.cooking-pop-close:hover {
+    color:var(--wb-cooking-cooking-pop-close-hover-color); transform:translateY(-1px) rotate(4deg);
+}

@@ -118,7 +118,7 @@ onClipEvent (load) {
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="artist" color="#FF4FFF" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="artist" color="#FF4FFF" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
@@ -139,7 +139,7 @@ onClipEvent (load) {
 }]]></script>
                   </Actionscript>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="NPC/前治安官/前治安官-NPC" selected="true" centerPoint3DX="1539.65" centerPoint3DY="721.65">
+                <DOMSymbolInstance libraryItemName="NPC/前治安官/前治安官-NPC" centerPoint3DX="1539.65" centerPoint3DY="721.65">
                   <matrix>
                     <Matrix tx="1481.05" ty="616.7"/>
                   </matrix>
@@ -270,11 +270,11 @@ on (rollOut) {
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="背景" color="#FF800A" autoNamed="false">
+        <DOMLayer name="背景" color="#FF800A" current="true" isSelected="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="第一防线地图" name="背景" centerPoint3DX="1016.9" centerPoint3DY="368" exportAsBitmap="true">
+                <DOMSymbolInstance libraryItemName="第一防线地图" name="背景" selected="true" centerPoint3DX="1016.9" centerPoint3DY="368" exportAsBitmap="true">
                   <matrix>
                     <Matrix tx="951.9" ty="367"/>
                   </matrix>

@@ -214,6 +214,8 @@ namespace CF7Launcher.Diagnostic
             sb.Append("  \"is64BitOS\": ").Append(Environment.Is64BitOperatingSystem ? "true" : "false").Append(",\n");
             sb.Append("  \"processorCount\": ").Append(Environment.ProcessorCount).Append(",\n");
             sb.Append("  \"workingSetMB\": ").Append(Environment.WorkingSet / 1024 / 1024).Append(",\n");
+            sb.Append("  \"flashStorage\": ").Append(CF7Launcher.Config.FlashStorageEnvironment.Snapshot()
+                .ToString(Newtonsoft.Json.Formatting.None)).Append(",\n");
             sb.Append("  \"gitHead\": \"").Append(EscapeJson(TryReadGitHead(projectRoot))).Append("\"\n");
             sb.Append("}\n");
             AddText(zip, "meta.json", sb.ToString());

@@ -44,6 +44,8 @@
 		this.__returnFadeActive = true;
 		this.__stageReturnToken = 返回令牌;
 		跳转帧 = 帧名;
+		// 先承接已受理的跳图，再让调用方关闭地图；第 2 帧复用同一次遮罩。
+		_root.开始Web过场(this);
 		this.gotoAndPlay(2);
 		return true;
 	}
@@ -51,7 +53,7 @@
 
 function 显示游戏提示()
 {
-	游戏提示文本.text = _root.获取游戏提示文本();
+	_root.设置Web过场提示(this, _root.获取游戏提示文本());
 }
 
 gotoAndStop("空");
@@ -73,7 +75,8 @@ gotoAndStop("空");
 	}
 }*/
 
-//尝试解决淡出动画卡住的bug
+// 所有开门与返回入口共同经过此帧。
+_root.开始Web过场(this);
 play();
 ]]></script>
               </Actionscript>
@@ -82,6 +85,7 @@ play();
             <DOMFrame index="4" keyMode="9728">
               <Actionscript>
                 <script><![CDATA[显示游戏提示();
+_root.等待Web过场遮罩(this);
 ]]></script>
               </Actionscript>
               <elements/>
@@ -105,9 +109,10 @@ play();
               </Actionscript>
               <elements/>
             </DOMFrame>
-            <DOMFrame index="16" duration="19" keyMode="9728">
+            <DOMFrame index="16" duration="13" keyMode="9728">
               <Actionscript>
-                <script><![CDATA[this.__returnFadeActive = false;
+                <script><![CDATA[// 原第 17 帧释放初始化占用；Web 遮罩由独立身份继续等待 SceneReady。
+this.__returnFadeActive = false;
 // Plan A: dirtyMark 守卫。SceneChanged hook 在 deactivateAll 前已 unconditional
 // flushDurableNow，到达本帧时 dirty 已清零；只有 SceneChanged 之后又有新 mutator 标脏
 // 才触发本守卫。audit 漏标的 mutator 也由 SceneChanged hook 兜底，数据不丢。
@@ -116,15 +121,23 @@ if (_root.存档系统.dirtyMark) _root.存档系统.requestSave("ui.fade_out");
               </Actionscript>
               <elements/>
             </DOMFrame>
+            <DOMFrame index="29" duration="6" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[_root.等待Web过场揭幕(this);]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
             <DOMFrame index="35" keyMode="9728">
               <Actionscript>
-                <script><![CDATA[stop();]]></script>
+                <script><![CDATA[this.__returnFadeActive = false;
+_root.清理Web过场();
+stop();]]></script>
               </Actionscript>
               <elements/>
             </DOMFrame>
             <DOMFrame index="36" duration="8" keyMode="9728">
               <Actionscript>
-                <script><![CDATA[this.__returnFadeActive = false;
+                <script><![CDATA[_root.显示Web加载失败(this);
 stop();
 ]]></script>
               </Actionscript>
@@ -160,42 +173,13 @@ stop();
               <elements/>
             </DOMFrame>
             <DOMFrame index="4" duration="25" keyMode="9728">
-              <elements>
-                <DOMSymbolInstance libraryItemName="sprite/Symbol 697" centerPoint3DX="602.4" centerPoint3DY="493.85">
-                  <matrix>
-                    <Matrix a="0.255447387695313" d="0.255447387695313" tx="511.8" ty="415.45"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point/>
-                  </transformationPoint>
-                  <filters>
-                    <BevelFilter blurX="1" blurY="1" quality="3" angle="44.9992520943067" distance="1" strength="0.5"/>
-                    <DropShadowFilter angle="44.9992520943067" blurX="2" blurY="2" distance="1" strength="0.5"/>
-                  </filters>
-                </DOMSymbolInstance>
-              </elements>
+              <elements/>
             </DOMFrame>
             <DOMFrame index="29" duration="7" keyMode="9728">
               <elements/>
             </DOMFrame>
             <DOMFrame index="36" duration="8" keyMode="9728">
-              <elements>
-                <DOMSymbolInstance libraryItemName="button/Symbol 702" symbolType="button">
-                  <matrix>
-                    <Matrix tx="406.5" ty="222.5"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point/>
-                  </transformationPoint>
-                  <Actionscript>
-                    <script><![CDATA[on(release){
-   _root.场景进入位置名 = "出生地";
-   _root.从加载失败返回();
-}
-]]></script>
-                  </Actionscript>
-                </DOMSymbolInstance>
-              </elements>
+              <elements/>
             </DOMFrame>
           </frames>
         </DOMLayer>
@@ -205,62 +189,13 @@ stop();
               <elements/>
             </DOMFrame>
             <DOMFrame index="4" duration="25" keyMode="9728">
-              <elements>
-                <DOMDynamicText name="游戏提示文本" fontRenderingMode="device" width="618.95" height="195.95" isSelectable="false" lineType="multiline">
-                  <matrix>
-                    <Matrix tx="202" ty="202"/>
-                  </matrix>
-                  <textRuns>
-                    <DOMTextRun>
-                      <characters></characters>
-                      <textAttrs>
-                        <DOMTextAttrs alignment="center" aliasText="false" autoKern="false" rotation="true" size="16" bitmapSize="320" face="MicrosoftYaHei" fillColor="#FFFFFF"/>
-                      </textAttrs>
-                    </DOMTextRun>
-                  </textRuns>
-                  <filters>
-                    <GlowFilter color="#000000" strength="10"/>
-                  </filters>
-                </DOMDynamicText>
-              </elements>
+              <elements/>
             </DOMFrame>
             <DOMFrame index="29" duration="7" keyMode="9728">
               <elements/>
             </DOMFrame>
             <DOMFrame index="36" duration="8" keyMode="9728">
-              <elements>
-                <DOMStaticText fontRenderingMode="device" width="211.7" height="15.55" isSelectable="false">
-                  <matrix>
-                    <Matrix tx="300.1" ty="183.15"/>
-                  </matrix>
-                  <textRuns>
-                    <DOMTextRun>
-                      <characters>网络错误</characters>
-                      <textAttrs>
-                        <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" bitmapSize="240" face="MicrosoftYaHei" fillColor="#CCCCCC"/>
-                      </textAttrs>
-                    </DOMTextRun>
-                    <DOMTextRun>
-                      <characters>,</characters>
-                      <textAttrs>
-                        <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" bitmapSize="240" face="MicrosoftYaHei" fillColor="#CCCCCC"/>
-                      </textAttrs>
-                    </DOMTextRun>
-                    <DOMTextRun>
-                      <characters>重试</characters>
-                      <textAttrs>
-                        <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" bitmapSize="240" face="MicrosoftYaHei" fillColor="#CCCCCC"/>
-                      </textAttrs>
-                    </DOMTextRun>
-                    <DOMTextRun>
-                      <characters>……</characters>
-                      <textAttrs>
-                        <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" bitmapSize="240" face="MicrosoftYaHei" fillColor="#CCCCCC"/>
-                      </textAttrs>
-                    </DOMTextRun>
-                  </textRuns>
-                </DOMStaticText>
-              </elements>
+              <elements/>
             </DOMFrame>
           </frames>
         </DOMLayer>
@@ -270,43 +205,13 @@ stop();
               <elements/>
             </DOMFrame>
             <DOMFrame index="4" duration="25" keyMode="9728">
-              <elements>
-                <DOMShape>
-                  <strokes>
-                    <StrokeStyle index="1">
-                      <SolidStroke scaleMode="normal">
-                        <fill>
-                          <SolidColor color="#CCCCCC"/>
-                        </fill>
-                      </SolidStroke>
-                    </StrokeStyle>
-                  </strokes>
-                  <edges>
-                    <Edge strokeStyle="1" edges="!12120 9064|8360 9064!8360 9064|8360 8904!8360 8904|12120 8904!12120 8904|12120 9064"/>
-                  </edges>
-                </DOMShape>
-              </elements>
+              <elements/>
             </DOMFrame>
             <DOMFrame index="29" duration="7" keyMode="9728">
               <elements/>
             </DOMFrame>
             <DOMFrame index="36" duration="8" keyMode="9728">
-              <elements>
-                <DOMSymbolInstance libraryItemName="button/Symbol 698" symbolType="button">
-                  <matrix>
-                    <Matrix tx="311" ty="221.1"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point/>
-                  </transformationPoint>
-                  <Actionscript>
-                    <script><![CDATA[on(release){
-   _root.淡出动画.淡出跳转帧(_root.关卡标志, _root.淡出动画.__stageReturnToken);
-}
-]]></script>
-                  </Actionscript>
-                </DOMSymbolInstance>
-              </elements>
+              <elements/>
             </DOMFrame>
           </frames>
         </DOMLayer>
@@ -327,109 +232,32 @@ stop();
                 </morphSegments>
                 <morphHintsList/>
               </MorphShape>
-              <elements>
-                <DOMShape>
-                  <fills>
-                    <FillStyle index="1">
-                      <SolidColor color="#666666"/>
-                    </FillStyle>
-                  </fills>
-                  <edges>
-                    <Edge fillStyle1="1" edges="!8505 8904|8505 9064!8505 9064|8360 9064!8360 9064|8360 8904!8360 8904|8505 8904"/>
-                  </edges>
-                </DOMShape>
-              </elements>
+              <elements/>
             </DOMFrame>
             <DOMFrame index="22" duration="7" keyMode="9728">
-              <elements>
-                <DOMShape>
-                  <fills>
-                    <FillStyle index="1">
-                      <SolidColor color="#666666"/>
-                    </FillStyle>
-                  </fills>
-                  <edges>
-                    <Edge fillStyle0="1" edges="!12120 8904|8360 8904!8360 8904|8360 9064!8360 9064|12120 9064!12120 9064|12120 8904"/>
-                  </edges>
-                </DOMShape>
-              </elements>
+              <elements/>
             </DOMFrame>
             <DOMFrame index="29" duration="7" keyMode="9728">
               <elements/>
             </DOMFrame>
             <DOMFrame index="36" duration="8" keyMode="9728">
-              <elements>
-                <DOMSymbolInstance libraryItemName="sprite/Symbol 292" centerPoint3DX="390.5" centerPoint3DY="210.5">
-                  <matrix>
-                    <Matrix tx="286.2" ty="165.5"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point/>
-                  </transformationPoint>
-                  <filters>
-                    <BevelFilter blurX="1" blurY="1" angle="44.9992520943067" distance="1" highlightColor="#666666"/>
-                    <DropShadowFilter angle="44.9992520943067" distance="3" quality="3" strength="0.5"/>
-                  </filters>
-                </DOMSymbolInstance>
-              </elements>
+              <elements/>
             </DOMFrame>
           </frames>
         </DOMLayer>
         <DOMLayer name="Layer 9" color="#C5A367">
           <frames>
             <DOMFrame index="0" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017">
-              <elements>
-                <DOMSymbolInstance libraryItemName="import/加载背景 1024*576" centerPoint3DX="400" centerPoint3DY="240">
-                  <matrix>
-                    <Matrix a="0.999984741210938" d="0.999984741210938"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point/>
-                  </transformationPoint>
-                  <color>
-                    <Color alphaMultiplier="0"/>
-                  </color>
-                </DOMSymbolInstance>
-              </elements>
+              <elements/>
             </DOMFrame>
             <DOMFrame index="4" duration="25" keyMode="9728">
-              <elements>
-                <DOMSymbolInstance libraryItemName="import/加载背景 1024*576" centerPoint3DX="400" centerPoint3DY="240">
-                  <matrix>
-                    <Matrix a="0.999984741210938" d="0.999984741210938"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point/>
-                  </transformationPoint>
-                </DOMSymbolInstance>
-              </elements>
+              <elements/>
             </DOMFrame>
             <DOMFrame index="29" duration="5" tweenType="motion" motionTweenSnap="true" keyMode="22017">
-              <elements>
-                <DOMSymbolInstance libraryItemName="import/加载背景 1024*576" centerPoint3DX="400" centerPoint3DY="240">
-                  <matrix>
-                    <Matrix a="0.999984741210938" d="0.999984741210938"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point/>
-                  </transformationPoint>
-                </DOMSymbolInstance>
-              </elements>
+              <elements/>
             </DOMFrame>
             <DOMFrame index="34" keyMode="9728">
-              <elements>
-                <DOMSymbolInstance libraryItemName="import/加载背景 1024*576" centerPoint3DX="400" centerPoint3DY="240">
-                  <matrix>
-                    <Matrix a="0.999984741210938" d="0.999984741210938"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point/>
-                  </transformationPoint>
-                  <color>
-                    <Color alphaMultiplier="0"/>
-                  </color>
-                </DOMSymbolInstance>
-              </elements>
+              <elements/>
             </DOMFrame>
             <DOMFrame index="35" keyMode="9728">
               <elements/>

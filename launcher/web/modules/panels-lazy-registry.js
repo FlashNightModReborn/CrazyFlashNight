@@ -77,6 +77,8 @@
          'modules/inventory-workbench-navigation.js',
          'modules/inventory-workbench-header.js',
          'modules/inventory-workbench-quick-transfer.js',
+         'generated/guidance-catalog.js', 'generated/tutorial-journeys.js',
+         'modules/guidance-inventory-demo.js', 'modules/guidance-tutorials.js',
          'modules/inventory-workbench-owned-view.js',
          'modules/inventory-workbench-stash-source.js',
          'modules/inventory-workbench-storage-source.js',
@@ -146,6 +148,9 @@
          'modules/crafting-detail-presenter.js',
          'modules/inventory-runtime.js',
          'modules/crafting-runtime.js',
+         'modules/cooking.js',
+         'modules/chemistry.js',
+         'modules/commune.js',
          'modules/crafting.js'],
         noop);
 
@@ -168,6 +173,8 @@
          'modules/gym/gym-panel.js'], noop);
 
     // ── 医务室整形（共享身份控件与稳定取景，AS2 权威提交）──
+    Panels.registerLazy('garage', ['modules/panel-runtime.js', 'modules/garage-purchase-runtime.js', 'modules/garage-purchase.js'], noop);
+
     Panels.registerLazy('surgery',
         ['modules/panel-runtime.js', 'modules/asset-timeline.js', 'modules/dressup-doll-renderer.js',
          'modules/character-identity-controls.js', 'modules/character-appearance-preview.js',
@@ -209,7 +216,12 @@
     // ── help ──
     // marked.min.js 在 boot 时已加载（panel content 用 markdown 渲染）
     Panels.registerLazy('help',
-        ['modules/help-panel.js'],
+        ['modules/workbench-lifecycle.js', 'modules/workbench-focus.js',
+         'modules/workbench-primitives.js', 'modules/workbench-profile.js',
+         'modules/workbench.js', 'modules/workbench-components.js', 'modules/inventory-ui.js',
+         'modules/inventory-workbench-quick-transfer.js', 'generated/guidance-catalog.js',
+         'generated/tutorial-journeys.js', 'modules/guidance-inventory-demo.js',
+         'modules/guidance-tutorials.js', 'modules/help-panel.js'],
         noop);
 
     // ── jukebox ──

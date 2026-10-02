@@ -18,6 +18,7 @@ from __future__ import annotations
 
 import importlib.util
 import json
+import os
 import tempfile
 from pathlib import Path
 from typing import Any
@@ -28,7 +29,7 @@ from PIL import Image
 ROOT = Path(__file__).resolve().parent.parent
 PRODUCTION_ASSET_ROOT = ROOT / "launcher" / "web" / "assets" / "dialogue-portraits"
 BAKER_PATH = ROOT / "tools" / "bake-dialogue-portraits.py"
-FFDEC_PATH = ROOT / "tools" / "ffdec" / "ffdec-cli.exe"
+FFDEC_PATH = Path(os.environ.get("CF7_FFDEC", str(ROOT / "tools" / "ffdec" / "ffdec-cli.exe")))
 PORTRAIT_DIR = ROOT / "flashswf" / "portraits"
 FFDEC_TIMEOUT_SECONDS = 300
 

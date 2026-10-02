@@ -2574,6 +2574,8 @@ namespace CF7Launcher.Guardian
             // Candidate-only help uses the real game lifecycle and a separate
             // composition endpoint. Never silently fall back during its acceptance.
             bool compositionHelp = name == "help" && _compositionHelp != null;
+            if(name=="loot" && _sceneSettlement?.CanAdmitSettlement(initDataJson)==true)
+                return OpenTransitionSettlement(provisional,initDataJson,instanceId,requireTrackedDelivery,trackedWebPostAccepted);
             if (compositionHelp && !_compositionHelp.Ready)
             {
                 LogManager.Log("[CompositionHelp] open rejected: endpoint not ready");
@@ -2673,7 +2675,7 @@ namespace CF7Launcher.Guardian
                 ReTopOverlay(_hitNumber);
                 ReTopOverlay(_cursor as Form);
                 if (_escSource != null)
-                    _escSource.SetPanelEscapeEnabled(!_compositionHelpSelected);
+                    _escSource.SetPanelEscapeEnabled(SelectedCompositionSurface==null);
                 SubscribeOwnerLayout();
 
                 _activePanel = name;
@@ -3191,6 +3193,7 @@ namespace CF7Launcher.Guardian
             string closingName = _activePanel;
             string closingInstance = _activePanelInstanceId;
             bool closingComposition = _compositionHelpSelected;
+            bool closingSettlement = _transitionSettlementSelected;
             bool restoreCompositionFocus = false;
             PerfTrace.Mark("panel.close_start", closingName ?? "<null>");
             Action<string, string> closeObserver = _panelCloseObserver;
@@ -3233,7 +3236,8 @@ namespace CF7Launcher.Guardian
                 panel = closingName, instance = closingInstance, generation = PanelSurfaceGeneration });
             try
             {
-                if (closingComposition) restoreCompositionFocus = RetireCompositionHelp();
+                if (closingSettlement) restoreCompositionFocus = RetireTransitionSettlement();
+                else if (closingComposition) restoreCompositionFocus = RetireCompositionHelp();
                 else _web.SuspendAfterPanel(closingName);
             }
             catch (Exception ex) { LogManager.Log("[PanelHost] SuspendAfterPanel failed: " + ex.Message); }
@@ -3271,7 +3275,12 @@ namespace CF7Launcher.Guardian
             // 面板已关闭却无法与游戏 UI 交互。
             try
             {
-                if (closingComposition)
+                if (closingSettlement)
+                {
+                    if(restoreCompositionFocus && _sceneSettlement.SettlementSurface.CanRestoreGameFocus)
+                        _compositionRestoreFocus?.Invoke("scene_settlement_close");
+                }
+                else if (closingComposition)
                 {
                     if (restoreCompositionFocus && _compositionHelp.CanRestoreGameFocus)
                         _compositionRestoreFocus?.Invoke("composition_help_close");
@@ -3547,7 +3556,8 @@ namespace CF7Launcher.Guardian
             string resetTag = (_activePanel != null) ? (_activePanel + ":reset") : "reset";
             try
             {
-                if (_compositionHelpSelected) RetireCompositionHelp();
+                if (_transitionSettlementSelected) RetireTransitionSettlement();
+                else if (_compositionHelpSelected) RetireCompositionHelp();
                 else _web.ForceIdleState(resetTag);
             }
             catch (Exception ex) { LogManager.Log("[PanelHost] Web ForceIdleState partial failure: " + ex.Message); }

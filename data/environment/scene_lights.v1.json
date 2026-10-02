@@ -1,0 +1,13 @@
+{
+  "schema": "cf7-scene-lights.v1",
+  "sceneReserve": 2,
+  "maximumResponse": 0.78,
+  "presets": {
+    "lamp": {"Shape":"point","RenderMode":"cached","Radius":180,"Energy":0.8,"Color":"#FFE0AD","Priority":45},
+    "street": {"Shape":"cone","RenderMode":"cached","Length":310,"HalfWidth":130,"Angle":90,"Energy":0.9,"Color":"#FFE4B5","Priority":55},
+    "fire": {"Shape":"point","RenderMode":"hybrid","Radius":170,"Energy":1.05,"BaseEnergy":0.82,"Color":"#FFC06B","Priority":50,"Animation":"flicker","Amplitude":0.18,"Rate":2.4},
+    "flicker": {"Shape":"cone","RenderMode":"realtime","Length":300,"HalfWidth":115,"Angle":90,"Energy":0.85,"Color":"#B9D8FF","Priority":45},
+    "concert": {"Shape":"cone","RenderMode":"realtime","Length":420,"HalfWidth":130,"Angle":-90,"Energy":0.65,"Color":"#80B9FF","Color2":"#EA87D7","Priority":50,"Animation":"sweep","Amplitude":0.1,"Rate":0.18,"SweepAngle":22},
+    "spawn": {"Shape":"point","RenderMode":"realtime","Radius":180,"Energy":0.75,"Color":"#C4E2FF","Priority":65}
+  }
+}

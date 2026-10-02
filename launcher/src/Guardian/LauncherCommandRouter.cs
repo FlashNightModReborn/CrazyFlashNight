@@ -3329,6 +3329,17 @@ namespace CF7Launcher.Guardian
                 else LogManager.Log("[Router] gym rejected invalid preview snapshot");
                 return;
             }
+            if (string.Equals(panelName, "garage", StringComparison.Ordinal))
+            {
+                JObject data = null;
+                try { data = JObject.Parse(initDataExtrasJson ?? "{}"); } catch { }
+                string vehicleId = data?["vehicleId"]?.Type == JTokenType.String ? data.Value<string>("vehicleId") : null;
+                if (safeSource == "world_garage_purchase" && GaragePurchaseTask.ValidVehicleId(vehicleId)
+                    && data.Count == 1)
+                    OpenPanel("garage", new JObject { ["source"] = safeSource, ["vehicleId"] = vehicleId }.ToString(Formatting.None));
+                else LogManager.Log("[Router] garage rejected invalid source or vehicle");
+                return;
+            }
             if (string.Equals(panelName, "surgery", StringComparison.Ordinal))
             {
                 if (safeSource == "world_plastic_surgery")
