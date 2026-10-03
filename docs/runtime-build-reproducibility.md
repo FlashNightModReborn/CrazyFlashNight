@@ -1085,3 +1085,16 @@ strict production policy 42/42，receipt SHA-256 `0C612DBA8C5CB91E481E2386A5E124
 自动退出协议另保留两项未通过：Flash 起画与 panel swap 后，trusted runner 因 `trusted_runner_shutdown_capture_failed` 回收自有进程；早期启动补测则已写出 shutdown receipt，但随后出现 `flash_exited_pre_reveal` 与 exit guard，runner 报 `trusted_runner_protocol_shutdown_exit_code_invalid`。两者均未生成严格成功完成证据，根因尚未完整定位；普通窗口 exit 0 不覆盖这两项资格，也没有放宽捕获、lease 或退出策略。完整限定摘要见[发布回执](evidence/pilebunker-runtime-release-2026-10-03.json)，本机原始回执与分段日志保留于 `tmp/pilebunker-m7/release-20261003-v2/`。
 
 本批状态为 `promoted` 与普通前门启动/关闭验证通过；`businessJourneyExecuted=false`、`agentProtocolShutdownVerified=false`。新锤击、延迟换弹、全部进阶配装及保存重启的正式入口业务尚未重跑，不据供应链或窗口关闭结果称其 `standard_entry_verified`。
+
+
+### 2026-10-04 U6 书架、角色切换与修理大学发布
+
+维护者完成试玩并反馈“整体体验感觉好了很多”，明确要求走发布列车，后续交测试群继续反馈。本批为 2.718 开发增量，纳入旧书阅读迁移、常驻角色切换、七图《修理大学》、随机自选配给与复活币、原角色返回及 SP 回流、体育老师有限增援；同步保留上游打桩机与场景更新。
+
+- 冻结源码 `a46770f504d4af56dd6c7df00c598d058afb28f3`，不可变标签 `refs/tags/runtime-build-v2/20261003-bookshelf-campus-v2`。本机 `builder-local-b / physical-host-b` 与 [GitHub hosted OIDC 构建 37137380753](https://github.com/FlashNightModReborn/CrazyFlashNight/actions/runs/37137380753) 的 build identity / 36 文件 payload closure 一致；production policy **47/47**。完整身份以 manifest、consensus 及[本轮回执](evidence/bookshelf-runtime-release-2026-10-04.json)为准。
+- 唯一 writer 已原子推广并通过全安装 bootstrap 校验，旧包保留在回执记录的 rollback 目录。v1 **46/47** 的失败票保留、request 已 superseded、标签未移动，且未消耗 cloud build：新增书中商店缺少头像闭包。v2 以两个 exact shopId 显式复用原盔甲君图像，重新烘焙及 `--check` 后，原有 36 张图片逐字节不变；本机已签名 producer 三域未变，复用同一 CAS。
+- 合并后真实 CS6 专项 **1143/1143**（书架 134、战利品 968、自选奖励 41）；asLoader Compiler **0/0**，16 项回读通过，单一类归属与函数尺寸门通过。Host 完整重跑 **6583 通过、5 跳过**；首轮原生呈现超时保留，独立及全套重跑均通过，未把并行 CS6 编译猜成已证实根因。浏览器夹具使用 fake Host，不能代签游戏通关。
+- 无候选参数的正式入口绑定本次 identity/closure，观测 `Idle` 后点击原生窗口关闭，日志为 `UserClosing / no_binding`，窗口与 Core 进程均已退出、无残留游戏进程。等待期间未进入角色，预热握手按 deadline 重置到 Idle，预热 Flash exit 0。附加的 PowerShell 观察器未取得 Core 退出码，其失败诊断保留，**不记为 Core exit 0 或 Agent 退出协议通过**。
+- 启动前已备份并核对 75 个 shadow 相关文件和 50 个本安装 SOL，启动关闭后长度与 SHA-256 均未变；仅例行启动版本标记不纳入玩家文件比较。状态为 `promoted`，正式入口本轮只覆盖启动/关闭；完整角色切换、死亡返回、奖励回流及不同流派的正式入口旅程继续群测。
+
+远端事后审计以部署提交关联的 **Runtime native audit** GitHub Check 为准，不从本地 promotion 推断其结果。功能与调参入口继续归[书架与角色档案合同](bookshelf-player-context.md)，本机原始日志保留于 `tmp/book-release-20261003/`。

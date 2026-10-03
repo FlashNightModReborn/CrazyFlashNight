@@ -1,0 +1,158 @@
+{
+  "schema": "cf7-bookshelf-release-evidence.v1",
+  "recordedAtUtc": "2026-10-03T16:59:07.342003+00:00",
+  "state": "promoted",
+  "authorization": "维护者确认整体体验好了很多，准备测试群试玩，并明确要求走发布列车。",
+  "source": {
+    "commit": "a46770f504d4af56dd6c7df00c598d058afb28f3",
+    "tree": "1882cb1b8f36218f7dadb69cbac206d1cd85d889",
+    "tag": "refs/tags/runtime-build-v2/20261003-bookshelf-campus-v2",
+    "featureCommit": "e98814d1d4",
+    "mergedUpstream": "57da221803892757950b1cea5b279d7729654e32"
+  },
+  "request": {
+    "requestId": "F5C9FC67A1F4164E42020C94CE35C212876A4586B0C73AED840F39B6BDAF484D",
+    "artifactSourceHash": "3255B9B3B05FF5B5608A1F7BB8A808FB8BC4257414AFD4C4F42180CBD2E4A37B",
+    "producerRecipeHash": "7DAFFCFA252E05F530F687B106933E888EF88187DDA6AB481054D432B1DF78CD",
+    "toolchainLockHash": "DFA769829F9740196DEF63351A00AAC309E50A2CA0A768759334EB2A2161DD36",
+    "policyHash": "1F3EBAF14C75EF006134412171F1CE32A5C919166AB6517E442F5A57C2798295",
+    "buildIdentityHash": "616517405FABB219E0CC97383619C53A23B1F63DE03EC10640944EB7436BFA44"
+  },
+  "payload": {
+    "closure": "6104061D692A60B890AD00800F957688AE33DADDC4CD8DD5CE1B6D0A1799289E",
+    "fileCount": 36,
+    "manifestSha256": "3CB2B4E7F916C5D34B9339D36A8BDCA01820294C57164919C966B236799B9B57",
+    "coreDllSha256": "0BA7234D49C294ADE3BCBB9C7B966B1BD08C763D090EBDE44FB0C4DAE0A49438"
+  },
+  "builds": {
+    "localWorker": "builder-local-b",
+    "faultDomains": [
+      "github-hosted-windows",
+      "physical-host-b"
+    ],
+    "signerCount": 2,
+    "identityAndClosureMatch": true,
+    "localProducerReusedAcrossPolicyOnlyRepair": true,
+    "cloudRunId": 37137380753,
+    "cloudRunUrl": "https://github.com/FlashNightModReborn/CrazyFlashNight/actions/runs/37137380753",
+    "cloudConclusion": "success",
+    "cloudArtifactScope": "attestation-only"
+  },
+  "policy": {
+    "profile": "production",
+    "passed": true,
+    "passedChecks": 47,
+    "totalChecks": 47,
+    "receiptSha256": "C9F17F88BEBF8178AF931A7B288E325C833716A6DB1EF596674C994920A71098"
+  },
+  "promotion": {
+    "promotedAtUtc": "2026-10-03T16:47:41.5838170Z",
+    "soleWriter": "tools/promote-runtime-bundle.ps1",
+    "fullInstallBootstrapVerifyOnlyPassed": true,
+    "rollback": "tmp/runtime-promotions/20261003T164708221Z-7d1d476112634f0a97791bc8beb2797f/previous"
+  },
+  "ciAuthority": "Runtime native audit on the GitHub deployment commit; local promotion does not certify this check.",
+  "regression": {
+    "as2": {
+      "bookshelf": 134,
+      "mapLoot": 968,
+      "choiceRewards": 41,
+      "totalPassed": 1143,
+      "failed": 0
+    },
+    "asLoader": {
+      "bytes": 1469458,
+      "sha256": "7D1F97B9C95B60450C75AD77FB7C6335E8EBF00C3E7CE4D792CF2B1476A574A2",
+      "compilerErrors": 0,
+      "compilerWarnings": 0,
+      "readbackChecksPassed": 16,
+      "maximumFunctionBytes": 51454,
+      "duplicateGameClasses": 0
+    },
+    "hostFinalReplay": {
+      "passed": 6583,
+      "skipped": 5,
+      "failed": 0
+    },
+    "data": {
+      "bookCasesPassed": 33,
+      "choiceCasesPassed": 19,
+      "materialEntries": 229,
+      "legacyItemsUnchanged": 58
+    },
+    "browserHarness": {
+      "passed": true,
+      "panels": [
+        "bookshelf",
+        "choice-rewards"
+      ],
+      "viewports": [
+        "1024x576",
+        "1366x768",
+        "1920x1080"
+      ],
+      "authority": "fake Host; not gameplay E2E"
+    },
+    "shopPortraits": {
+      "listedShops": 38,
+      "activeIdentities": 37,
+      "subjects": 36,
+      "oldPixelsUnchanged": true,
+      "freshGeneratorCheckPassed": true,
+      "resolverCasesPassed": 13
+    }
+  },
+  "formalWindowLifecycle": {
+    "entry": "automation/start.ps1 without candidate arguments",
+    "runtimeMode": "formal_runtime",
+    "coreProcessId": 13164,
+    "coreExeSha256": "3988B5F22F00880270BB2B8329F2E690C623887E6E0767483AE2D0EBF11621FE",
+    "identityAndClosureMatched": true,
+    "observedUiState": "Idle",
+    "closeAction": "computer-use accessibility window Close button",
+    "userClosingAndNoBindingLogged": true,
+    "processExited": true,
+    "remainingGameProcesses": 0,
+    "coreExitCode": null,
+    "coreExitCodeCaptured": false,
+    "observerLimitation": "The attached PowerShell observer returned a null exit code; its exit-1 diagnostic is retained. Window disappearance, process exit and shutdown logs were observed separately.",
+    "prewarmDeadline": "No character was entered; the held prewarm handshake reached its deadline, reset to Idle and closed the prewarm Flash process with code 0.",
+    "protectedFiles": {
+      "shadow": 75,
+      "installationSol": 50,
+      "bytesUnchanged": true,
+      "originalsBackedUp": true,
+      "excluded": [
+        "saves/.launcher-version-marker.json"
+      ]
+    },
+    "businessJourneyExecuted": false,
+    "agentProtocolShutdownVerified": false
+  },
+  "retainedFailures": [
+    {
+      "scope": "v1 production policy",
+      "passed": 46,
+      "total": 47,
+      "failedCheck": "shop-portrait-assets",
+      "reason": "New book shop lacked an exact portrait binding and source closure.",
+      "requestId": "2257B1A619C01177B1803E87F34114BBB2D154C8E7E6CECCE49E284C02CED65A",
+      "superseded": true,
+      "tagRetained": true,
+      "cloudDispatched": false
+    },
+    {
+      "scope": "initial Host suite",
+      "test": "PlayerHudVisualTests.NativeDialogueReappearanceRestoresActualWindowOrderWithNoBuffs",
+      "reason": "Native presentation timeout during concurrent CS6 compilation; root cause not proven.",
+      "isolatedReplayPassed": true,
+      "fullSuiteReplayPassed": true
+    }
+  ],
+  "pendingHumanChecks": [
+    "书架换档与书中结束后返回原角色的完整正式入口旅程",
+    "死亡、复活币与 SP 奖励回流",
+    "拳脚、刀剑和枪械构筑强度，以及最终战增援与补给节奏"
+  ],
+  "localEvidenceRoot": "tmp/book-release-20261003/"
+}
