@@ -1069,3 +1069,19 @@ strict production policy 42/42，receipt SHA-256 `0C612DBA8C5CB91E481E2386A5E124
 - 唯一 writer 已原子部署，36 文件闭包、双 signer / 双 faultDomain 和根 bootstrap `--verify-only` 通过；旧包保留于 `tmp/runtime-promotions/20261002T081630720Z-22899cdb801f45769b8a85266095983b/previous`。部署提交 `c30627355851303200a39d504ba4705042b39581` 已普通快进推送；[远端 Audit 36983349784](https://github.com/FlashNightModReborn/CrazyFlashNight/actions/runs/36983349784) success，独立重放 `state=promoted / deploymentChanged=true` 与 `signers=2 / faultDomains=2`。
 - 无候选参数的正式入口绑定同一 identity/closure，实际 Core PID 29332，观测启动画面和 Flash 预热握手；未进入存档，正常窗口关闭令 Flash exit 0、Core 退出，无残留。`saves/` 除例行更新的启动版本标记外，34 个文件长度及 SHA-256 均未变，自动修复 `applied=0 / drops=0`。未对外部 SOL 建立哈希基线，不扩大此存档检查范围。
 - 状态为 `promoted`。这次正式入口检查只证明启动/退出，未重跑战斗结算；完整保存重启、全部窗口组合及自然加载失败继续按[专项验收](U12过场Web迁移与人力验收-2026-10-01.md)独立记录。最新原生合成夹具的前台准入失败和历史失败回执均保留，不借旧候选结果代签。机器摘要见[本轮发布回执](evidence/u12-settlement-release-2026-10-02.json)。
+
+### 2026-10-03 打桩机双形态与进阶外观发布
+
+维护者明确授权“可行，把其他潜在需要处理的问题都收尾，然后走发布列车”。本批发布原版空刀槽普通狂野锤、重锤进阶及余弹三档过载、共享燃料联动、系列普通主仓换弹延迟 +200%，并让角色构筑的当前装备和候选预览消费实际进阶外观。真实刀槽保护、原物品身份及翻滚补弹保留；重锤与专属改装材料仍仅供修改器取得，正常获取暂缓。本次为 2.718 开发增量，不新增稳定整包。玩法与资源真源见[打桩机模型](../tools/cf7-balance-tool/models/pilebunker/README.md)。
+
+- 冻结源码 `2856f94bdbe5ce1df92196d067fee716ab70b4bc`，不可变标签 `refs/tags/runtime-build-v2/20261003-pilebunker-v2`，release tree `311fcbe12aeda0494844a555a50b4ffd724164a5`；request `5D0D7B27EDC91E78E68925BD50C28D0D18C7F036F5BC8D190B1DB6B4C5D0C0CB`。
+- build identity `46B9191F1A861752AE0C3580E6C6E6CB2A9B695B7D209F0FB0B000557E03A0B9`，36 文件 payload closure `3586DCA088E4FBF4E8631861DDA111C101CB338976993098023590FE82ED34CA`；Core DLL SHA-256 `EA221728F6A021B69A186FFEAF299C8026D7B2D781C8FB7E2BEAA32D802286A6`。
+- 本地 X509 `builder-local-c / physical-host-c` 与 [GitHub hosted OIDC 构建 37083440255](https://github.com/FlashNightModReborn/CrazyFlashNight/actions/runs/37083440255) 的 identity/closure 一致。v2 仅调整 Web 模块归属和政策输入，producer 三域未变，按规范复用本地 signed CAS；云端从 v2 标签重新独立生产。完整 production policy **47/47**，receipt SHA-256 `38AED634867C3078C599BC18F92298554E2F2D0C9AC750DE8002418994AFF245`；最终仍选择该本地 CAS，云端 attestation-only 证明已在 promotion 中对真实候选逐文件重放。
+- 唯一 writer 于 `2026-10-03T00:57:21.7899472Z` 原子部署，36 文件、双 signer / 双 faultDomain 和根 bootstrap `--verify-only` 通过。旧包保留于 `tmp/runtime-promotions/20261003T005652711Z-1aaf8cf3b6cb43849f58005746ab6d53/previous`。部署提交 `0b20004010802dfc0cb01ce254848390fed399ee` 已快进推送；[Audit 37084969440](https://github.com/FlashNightModReborn/CrazyFlashNight/actions/runs/37084969440) success，独立重放 `state=promoted / deploymentChanged=true` 与 `signers=2 / faultDomains=2`。
+- 真实 CS6 夹具 **1085/1085**（原版 53、M7 392、手动输入 640），asLoader 新鲜 Compiler **0/0**，`1,447,783 bytes` / SHA-256 `E63A889BB9C1ECB02D6338DAD9CE8ACB1CE30D905F6BC4DBA6C770D1BAFD55D9`。Web 外观 **2298**、会话 **39**、投影 **11** 项通过；生产控制器配 fake Host 的真实浏览器三尺寸 **1149/1149**，另含显示/键盘 **30/30**。这些夹具不代签真实战斗手感。
+- v1 的 **45/47** 失败票保留，标签未移动、request 已 superseded：新增外观选择使 `character-build.js` 超过既有 640 行上限；归回现有纸娃娃模块后控制器为 637 行、预览模块为 78 行，两个阈值保持不变，再以新 source/tag/request/receipt 发布。准备阶段还补齐新材料的存档修复字典，并固定三个源/派生 JSON 的 LF，避免跨机检出破坏原始字节摘要。
+- 普通根启动器入口已观测实际 Core PID 25840、正式路径及 EXE SHA-256 与已推广包一致。前门回到 `Idle` 后，通过 computer-use 点击窗口“关闭”，日志为 `UserClosing / no_binding`，实际 Core exit **0**，无残留游戏进程；未点击确认进入角色。启动前已备份并逐字节比较 **8 份 shadow + 8 份本安装 SOL**，三轮检查均未变，例行启动版本标记不计为玩家存档。
+
+自动退出协议另保留两项未通过：Flash 起画与 panel swap 后，trusted runner 因 `trusted_runner_shutdown_capture_failed` 回收自有进程；早期启动补测则已写出 shutdown receipt，但随后出现 `flash_exited_pre_reveal` 与 exit guard，runner 报 `trusted_runner_protocol_shutdown_exit_code_invalid`。两者均未生成严格成功完成证据，根因尚未完整定位；普通窗口 exit 0 不覆盖这两项资格，也没有放宽捕获、lease 或退出策略。完整限定摘要见[发布回执](evidence/pilebunker-runtime-release-2026-10-03.json)，本机原始回执与分段日志保留于 `tmp/pilebunker-m7/release-20261003-v2/`。
+
+本批状态为 `promoted` 与普通前门启动/关闭验证通过；`businessJourneyExecuted=false`、`agentProtocolShutdownVerified=false`。新锤击、延迟换弹、全部进阶配装及保存重启的正式入口业务尚未重跑，不据供应链或窗口关闭结果称其 `standard_entry_verified`。
