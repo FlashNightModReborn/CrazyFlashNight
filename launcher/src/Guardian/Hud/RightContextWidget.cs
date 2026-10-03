@@ -272,7 +272,7 @@ namespace CF7Launcher.Guardian.Hud
                     string[] samples = {
                         "地图 任务 装备",
                         "⚙ Ⅱ ▶ × ＋ － ➤",
-                        "展开预览 缩略预览 任务已达成 可交付 持有 复活币 返回原处 选择交付 医务室"
+                        "展开预览 缩略预览 任务已达成 可交付 持有 复活币 返回原处 选择交付 医务室 书架"
                     };
                     // 只接静态 base font，不触碰任何实例 _font*；与 UI 线程 Paint 路径完全无共享状态
                     g.DrawString(samples[0], _baseTools15Bold,     BR_TOOLS_FG,         0f,  0f);
@@ -1352,6 +1352,8 @@ namespace CF7Launcher.Guardian.Hud
             {
                 StageOutcomeState state = _stageOutcomeState;
                 if (!ShouldPresentStageOutcome(state)) return;
+                // 显示名只投影现有权威关卡身份；点击仍发送原 return_base 意图。
+                bool bookStage = state.StageName == "书中历险-修理大学";
                 if (state.HasReturnFailure)
                 {
                     AddStageAction("retry_return", "重试返回", "return_base", state.CanReturnBase);
@@ -1381,7 +1383,7 @@ namespace CF7Launcher.Guardian.Hud
                             "revive", "禁复活", "revive", false);
                     }
                     if (state.CanReturnBase)
-                        AddStageAction("return", "医务室", "return_base", true);
+                        AddStageAction("return", bookStage ? "书架" : "医务室", "return_base", true);
                     return;
                 }
                 if (state.Life == "reviving") return;
@@ -1392,14 +1394,14 @@ namespace CF7Launcher.Guardian.Hud
                     else if (state.ReturnOptions.Status == "error")
                         AddStageAction("refresh", "刷新交付", "refresh_return", true);
                     if (state.CanReturnBase)
-                        AddStageAction("return", "返回原处", "return_base", state.ReturnOptions.Status != "confirming");
+                        AddStageAction("return", bookStage ? "书架" : "返回原处", "return_base", state.ReturnOptions.Status != "confirming");
                     return;
                 }
                 if (CanOfferStageDelivery(state))
                     AddStageAction("deliver", "选择交付",
                         "select_return", true);
                 if (state.CanReturnBase)
-                    AddStageAction("return", "返回原处", "return_base", true);
+                    AddStageAction("return", bookStage ? "书架" : "返回原处", "return_base", true);
             }
             finally
             {

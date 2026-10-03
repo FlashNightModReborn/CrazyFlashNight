@@ -1,10 +1,10 @@
 {
   "catalog": {
     "archiveOrderFirst": 0,
-    "archiveOrderLast": 225,
+    "archiveOrderLast": 227,
     "authoredDirectPurposeReferenceCount": 27,
     "directPurposeCount": 2,
-    "entryCount": 226,
+    "entryCount": 228,
     "equipmentTuningDistinctCount": 113,
     "machineDerivedEquipmentTuningCount": 107,
     "path": "data/dictionaries/material_catalog.xml",
@@ -12,11 +12,11 @@
     "typeCounts": {
       "equipment_mod": 107,
       "food": 45,
-      "general": 74
+      "general": 76
     }
   },
   "crafting": {
-    "categoryCount": 12,
+    "categoryCount": 13,
     "categoryOrder": [
       "铁枪会",
       "属性武器",
@@ -29,7 +29,8 @@
       "公社防具",
       "黑白契约",
       "插件合成",
-      "大学装备"
+      "大学装备",
+      "书中配给"
     ],
     "manifestPath": "data/crafting/list.xml"
   },
@@ -47,11 +48,11 @@
   "inputs": [
     {
       "path": "data/dictionaries/material_catalog.xml",
-      "sha256": "ADE2BAAF2D8A38875F6365326B0B8A3FDAB4433A2E4E115F301F851FD36FC257"
+      "sha256": "73EE1A7F684A358428DF1DA95CA51EE93F469DA2015D5B94AF27F8ABECC21C4A"
     },
     {
       "path": "data/items/list.xml",
-      "sha256": "F928A35D22627FB5ED0600EA892E673B2D770E0E83A43432ECCB646B7822792C"
+      "sha256": "6D40089DE7B09E860928D90AA890693E06251E9A6494D7384FCE14004BD86A90"
     },
     {
       "path": "data/items/消耗品_货币.xml",
@@ -274,6 +275,14 @@
       "sha256": "F97DCA712A530E006A4658E6E9CA2A7C534562ABE98C60537CAE916D04FDF4D6"
     },
     {
+      "path": "data/items/消耗品_书中配给.xml",
+      "sha256": "C412E6055B10AD570114531FA8D2057B66AD53B7F44D88DA59BC65C863E24E7B"
+    },
+    {
+      "path": "data/items/消耗品_自选配给.xml",
+      "sha256": "613A6FD5B5EA032D5457712E68154F71D06AA7CB96B24863F1055F914B0DB6A3"
+    },
+    {
       "path": "data/items/equipment_mods/list.xml",
       "sha256": "9CC0879A81E2A252A576D9D6191237C730DABAC0FE2067E083B2713622C49DD5"
     },
@@ -387,7 +396,7 @@
     },
     {
       "path": "data/crafting/list.xml",
-      "sha256": "7A5F1F627D0B11133A3EA998684189B2CEDB24F4BBFD88C5650130A2AD4D2A96"
+      "sha256": "061CFE851B0906B7C3DFCF42288490ABB849B5E1EFAC59527D72C74C721AACF2"
     }
   ],
   "legacyProjection": {
@@ -396,5 +405,5 @@
     "sha256": "012D1415B7DA4E78F05E06D5728B1F33EF6E767A627DB35993E91A8EAEC3DDC8"
   },
   "schema": "cf7.material-dictionary-generated.v2",
-  "sourceDigest": "5DA17A156146AD48377D4FB9BB451B737ADF3B1C3C69E1ACC44AD7DE713BE5A4"
+  "sourceDigest": "C03652732E0100CAF3CC333B8FEADBECFE84EB40F8750F0D2E88B48CAFDDC7FD"
 }

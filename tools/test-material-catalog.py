@@ -14,8 +14,8 @@ import xml.etree.ElementTree as ET
 REPOSITORY_ROOT = Path(__file__).resolve().parent.parent
 PRODUCER_PATH = REPOSITORY_ROOT / "tools/derive-material-catalog.py"
 EXPECTED_LEGACY_SHA256 = "012D1415B7DA4E78F05E06D5728B1F33EF6E767A627DB35993E91A8EAEC3DDC8"
-EXPECTED_ARCHIVE_ORDER_SHA256 = "D186B9E1DDC883EC67D1656766D4F73207BD1C4F6BDCFF241197F882EED567C8"
-EXPECTED_TYPE_COUNTS = {"equipment_mod": 107, "food": 45, "general": 74}
+EXPECTED_ARCHIVE_ORDER_SHA256 = "A15EA9D4922EAED58BF09FD000AC87FCBFB06C9FD9D4BE436E8AE37591BDA94F"
+EXPECTED_TYPE_COUNTS = {"equipment_mod": 107, "food": 45, "general": 76}
 EXPECTED_CRAFTING_CATEGORIES = (
     "铁枪会",
     "属性武器",
@@ -29,6 +29,7 @@ EXPECTED_CRAFTING_CATEGORIES = (
     "黑白契约",
     "插件合成",
     "大学装备",
+    "书中配给",
 )
 
 
@@ -84,7 +85,7 @@ def main():
         == "material-catalog-producer.v2",
         "material catalog sidecar/generator version drift",
     )
-    require(len(first.catalog.materials) == 226, "material baseline must be 226")
+    require(len(first.catalog.materials) == 228, "material baseline must be 228")
     require(len(first.catalog.purposes) == 2, "direct-purpose registry must contain two entries")
     require(
         tuple(purpose.purpose_id for purpose in first.catalog.purposes)

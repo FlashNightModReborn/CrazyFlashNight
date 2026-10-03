@@ -148,7 +148,7 @@ AS2 必须证明目标只扫描一次、来源/目标各一次 revision 与 inde
 
 - `EquipmentInventoryTest` 28/28（机器钉死）。
 - `InventoryPanelServiceTest` 194/194（机器钉死；取代文本中 131/138/142/144/147/170 等旧计数，旧值见归档）。
-- `CraftingPanelServiceTest` 158/158 + `SynthesisIndexTest` 18/18（机器钉死）。
+- `CraftingPanelServiceTest` 168/168 + `SynthesisIndexTest` 18/18（机器钉死）。
 - `NpcShopPanelServiceTest` 66/66（机器钉死）。
 
 物品格协议施工须看到 `InventoryPanelServiceTest` 的现役机器钉值、合成/材料来源与用途施工须看到 `CraftingPanelServiceTest` + `SynthesisIndexTest` 的新鲜 Output Panel/trace 证据，不能只凭 publish marker。`-SkipCompile` 只证明静态合同。
@@ -616,6 +616,10 @@ AS2 覆盖三模式礼包、stale/满容量零写、回执查询、64-occurrence
 候选旧回包按 `stale_state` 安全刷新、已被后续操作取代时静默收束；四条有序 lane 严格 shape、活动期短轮询/全 ready 停止、两组同列格内阴影同步，从 0 条 ready 首次转为至少 1 条时只对含 `no_available_lane` 的当前背包总览重读一次并复原同物品选择，且 cooldown 不产生 blocked 红框或新增排版行。Host 只在无 selector 背包总览要求并复验 `useAction/useBlockedReason`，装备槽、药剂槽和带 selector 的 backpack scope 必须保持原候选行形状。
 静态/XFL 门不代签 Flash CS6 fresh Compiler/trace、游戏旅程、promotion 或 `standard_entry_verified`。
 
+**随机自选礼包**（核对基线 commit `73366752444d9b3ca062ca5b3e23ceb04b5772ce` 加当前工作树）：配置、浏览器与 Flash 的定向入口见 [随机自选礼包验证](../data/rewards/README.md#修改与验证)。`run-choice-rewards-tests.ps1` 使用独立槽，验证首次冻结、失效租约、分组无放回、保存失败回滚、未知写、精确查询、重复提交、配置变化、AMF 修复、跨存档/局次隔离与满背包暂存；Host `ChoiceRewardTaskTests` 检查封闭协议和畸形成功保锁。浏览器检查生产 view/channel/transport 的开包、关闭重开、键盘、2–4 卡与领取恢复，权威为模拟数据，不代表 Flash 实机旅程。
+
+**书中返回与终战增援**：`scripts/run-bookshelf-tests.ps1` 覆盖旧世界销毁后换档、临时结算保存门、原角色 SP 单次回流、新编辑令牌、死亡升级/拾取保护及有限援军的间隔、上限、暂停、死亡取消和晚到加载；`scripts/run-map-loot-tests.ps1` 调用生产返回函数，区分书中直接换回原角色与普通关卡医务室路线。`node tools/run-bookshelf-flow-harness.js` 在三个视口验证核对后无需关窗重开、新快照失败重读、未知写仅查询与自动返回；与 `BookshelfTaskTests` 配合检查跨层回执。模拟存储和浏览器不代替实机完整旅程、保存重启或真人难度验收。
+
 **统一奖励暂存回归**：共享收纳工作树定向 Web/DOM/Host/AS2 入口与证据层级见 [本轮回归矩阵](../docs/暂存物资并入共享收纳工作台-调研与施工方案-2026-09-12.md#103-定向回归与证据)。旧奖励回归：`scripts/run-reward-stash-tests.ps1`（机器钉死 114/114），加 `-RunScale` 测隔离 SOL 的 0/64/256/1024/4096 条与实际字节/P95/P99/pack/flush/保存分段耗时；旧 root N+1/terminal ACK 和关卡继续跑 `scripts/run-map-loot-tests.ps1`。
 Web/Host 入口、已替换的旧产品合同、20 样本的观测边界与候选验收状态见 [暂存 ADR](../docs/统一奖励暂存与非阻塞领取-ADR-2026-09-11.md)。
 
@@ -658,7 +662,7 @@ Reward 未知写查询、O1 观测与存档闭包合同见 [持久写与恢复](
 <a id="suite-loot"></a>
 ### Loot / 关卡结算 runner
 
-**`scripts/run-map-loot-tests.ps1 -TimeoutSeconds 360`** 现役机器钉死：`LootContainerServiceTest` 189 + `LootMaterializationPlannerTest` 12 + `StageRunSessionTest` 763（脚本内 `$expectedServicePassCount/$expectedPlannerPassCount/$expectedStagePassCount`）。U12 保留 v1 交接并覆盖并行报告：三种 outcome、durable 报告早于目标就绪、covered 后内部开窗意图、提前/就绪关闭不重开、同一会话重试、终结不复活、未知开窗锁和奖励不重放；接通与关闭新增跨加载/提示显示 revision 的迟到交付回归。此前 638/713/734/738 均为历史口径。本轮增加 durable 奖励回执进入最终报告、明确失败/未知不提前增记及重试不重复的 25 项断言。当前 Web 自动发送原内部意图，不新增按钮，自动一次/共用页面另由 Host/Web 夹具证明。U8 自动教程优先级保持：待呈现报告/遮罩未释放继续等待；关闭只消费报告呈现，奖励权威不变。`hasUnpresentedSettlementReport()` 只读，不改变场景出口或奖励权威。
+**`scripts/run-map-loot-tests.ps1 -TimeoutSeconds 360`** 现役机器钉死：`LootContainerServiceTest` 189 + `LootMaterializationPlannerTest` 12 + `StageRunSessionTest` 767（脚本内 `$expectedServicePassCount/$expectedPlannerPassCount/$expectedStagePassCount`）。U12 保留 v1 交接并覆盖并行报告：三种 outcome、durable 报告早于目标就绪、covered 后内部开窗意图、提前/就绪关闭不重开、同一会话重试、终结不复活、未知开窗锁和奖励不重放；接通与关闭新增跨加载/提示显示 revision 的迟到交付回归。此前 638/713/734/738/763 均为历史口径。durable 奖励回执、明确失败/未知不提前增记及重试不重复有 25 项断言，书中/普通关卡、死亡/存活与错误槽位的生产返回目标另有 4 项断言。当前 Web 自动发送原内部意图，不新增按钮，自动一次/共用页面另由 Host/Web 夹具证明。U8 自动教程优先级保持：待呈现报告/遮罩未释放继续等待；关闭只消费报告呈现，奖励权威不变。`hasUnpresentedSettlementReport()` 只读，不改变场景出口或奖励权威。
 文本中的旧计数（267+12+419=698、165+9+372=546、205+9+382=596、676/684/824 等合计口径）均为各轮历史证据，见归档。该 runner 的 tracked TestLoader 直接 include 生产 `关卡系统_lsy_场景转换.as`，真实执行 `_root.返回基地/_root.关卡结束`，不得以测试 stub 代签转场异常与 exactly-once 合同。
 StageRunSession 覆盖大学/车库选关返回、真实胜利记录、撤退后迟到波次/判胜不能修改真实任务条件与正常胜利恰好一次回归、准备/保存/转场失败、v1/v2 失败投影握手、同结算重试与重复请求拒绝（配套 Host StageOutcome/RightContext、地图 AS2/Web 回归，见 [返回失败恢复](../docs/关卡结果与基地结算-CSharp-Web-ADR-2026-08-27.md#0d-2026-09-08-返回失败后的原生重试入口)）。
 
@@ -844,7 +848,7 @@ manifest 为 `tools/save-api-migration/callsites.v1.json`（精确数量取 mani
 
 **四层语义合同（Slice 1–4 起，未迁调用点部分仍有效）**：改 `SaveManager.as` / `通信_lsy_原版存档系统.as` / `SaveManagerTest.as` 后必跑 `scripts/run-character-build-tests.ps1` 与 `node tools/save-api-migration/check-callsites.js`。
 canonical dirty：`SaveManager.markDirty()` 为唯一置位入口并双镜像 `_root.存档系统.dirtyMark`，`hasPendingChanges()` 已补 `_settingsMigrationPending` 与 `KeyManager.hasPendingKeySettingsMigration()`，三处悬空 `存档系统.markDirty()` 由 `installSaveApiShims()` 接通为真 API。
-四层 API：`_root.存档系统.markDirty / requestSave / flushDurableNow / flushBeforeTransition`；`requestSave` 返回 Void、全局单 300ms trailing timer、reason 只接受与 `callsites.v1.json` 同源的注册 ID（transition 仅 `safe_exit / stage.return_base / character_creation.start_tutorial` 三个 allowlist，越表 fail-closed）；
+四层 API：`_root.存档系统.markDirty / requestSave / flushDurableNow / flushBeforeTransition`；`requestSave` 返回 Void、全局单 300ms trailing timer、reason 只接受与 `callsites.v1.json` 同源的注册 ID（transition allowlist 为 `safe_exit / stage.return_base / character_creation.start_tutorial / bookshelf.switch`，越表 fail-closed；书架在入场及旧世界销毁后的换档边界均消费保存结果）；
 `flushNow / flushDurableNow / flushBeforeTransition` 分别进入同一私有内核 `_strictFlushCore`，静态门禁止 public 级联（防 ingress 双计数）；`true` 仍仅代表本地 `SharedObject.flush()===true`，无 dirty 早退、无 strict 合并；成功 strict fence 才吸收 pending request，timer 遇 `_saveInFlight` 重挂不丢弃，wheel 边界守卫吞异常（sv:3 + 诊断保留 dirty，不 rethrow）。
 语义桶 `_saveApiStats`：6 ingress / 6 request disposition / 5 full origin / 3 家族×5 strict outcome / 5 flush lane×4（lane 合计恒等于物理 flushAttempt）/ 固定 reason 桶 + reasonUnregistered + 测试有界 trace，物理八分桶名称与含义不变。
 

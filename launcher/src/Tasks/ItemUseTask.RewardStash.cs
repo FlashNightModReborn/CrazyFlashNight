@@ -10,7 +10,8 @@ namespace CF7Launcher.Tasks
         private static bool IsQueryCommand(string command) => command == "query" || command == "stashQuery";
         private static bool IsStashCommand(string command) => command == "stashPage" || command == "stashTooltip"
             || command == "stashTake" || command == "stashQuery" || command == "stashMigrate"
-            || command == "stashOpen" || command == "stashOpenMany" || command == "stashResume";
+            || command == "stashOpen" || command == "stashOpenMany" || command == "stashResume"
+            || command == "stashChoices" || command == "stashChoose";
 
         private static bool TryNormalizeStashPayload(string command, string binding, JObject payload,
             out JObject normalized, out string operationId, out string panelInstanceId, out long generation)
@@ -21,6 +22,12 @@ namespace CF7Launcher.Tasks
                 || panelInstanceId != binding
                 || !TryReadLongInteger(payload["sessionGeneration"], 1, int.MaxValue, out generation)) return false;
             var keys = new List<string> { "v", "panelInstanceId", "sessionGeneration" };
+            if (command == "stashChoices")
+            {
+                if (!IsExactObject(payload, keys.ToArray())) return false;
+                normalized = (JObject)payload.DeepClone();
+                return true;
+            }
             JObject normalizedFilterSpec = null;
             JObject normalizedTarget = null;
             if (command == "stashPage")
@@ -53,6 +60,13 @@ namespace CF7Launcher.Tasks
                     if (!TryReadSafeText(payload["storeId"], 128, true, out string storeId)
                         || storeId.Length > 0 && !ValidToken.IsMatch(storeId)
                         || !TryReadLongInteger(payload["expectedRevision"], 0, MaxSafeInteger - 1, out long revision)) return false;
+                }
+                if (command == "stashChoose")
+                {
+                    keys.Add("offerId"); keys.Add("optionId");
+                    if (!StashEntryId(payload["offerId"], out string offerId)
+                        || !TryReadSafeText(payload["optionId"], 64, false, out string optionId)
+                        || !ValidToken.IsMatch(optionId)) return false;
                 }
                 if (command == "stashTake")
                 {
@@ -168,7 +182,7 @@ namespace CF7Launcher.Tasks
             out JObject sanitized, out bool definitive, out bool reconciled)
         {
             sanitized = null; definitive = false; reconciled = false;
-            bool hasOperation = entry.WebCommand != "stashPage" && entry.WebCommand != "stashTooltip";
+            bool hasOperation = entry.WebCommand != "stashPage" && entry.WebCommand != "stashTooltip" && entry.WebCommand != "stashChoices";
             if (message == null || ReadString(message["task"]) != "item_use_response"
                 || !TryReadInteger(message["v"], 2, 2, out int version)
                 || ReadString(message["command"]) != entry.WebCommand
@@ -190,14 +204,20 @@ namespace CF7Launcher.Tasks
                     || error == "reward_stash_quarantined" || error == "invalid_legacy_purchased"
                     || error == "malformed_legacy_equipment"
                     || error == "invalid_target" || error == "target_stale"
-                    || error == "target_occupied" || error == "target_incompatible");
+                    || error == "target_occupied" || error == "target_incompatible"
+                    || error == "invalid_choice_store" || error == "choice_context_unavailable"
+                    || error == "choice_limit" || error == "stale_choice" || error == "invalid_choice");
                 sanitized = new JObject { ["success"] = false, ["error"] = error };
                 return true;
             }
             if (!(message["data"] is JObject data) || data["success"]?.Type != JTokenType.Boolean
                 || !data.Value<bool>("success")) return false;
             JObject clean;
-            if (entry.WebCommand == "stashPage")
+            if (entry.WebCommand == "stashChoices")
+            {
+                if (!TrySanitizeChoiceSnapshot(data, out clean)) return false;
+            }
+            else if (entry.WebCommand == "stashPage")
             {
                 if (!TrySanitizeStashPage(data, entry.Request, out clean)) return false;
                 if (clean.Value<int>("offset") != entry.Request.Value<int>("offset")) return false;
@@ -251,6 +271,8 @@ namespace CF7Launcher.Tasks
         {
             clean = null;
             if (data == null || request == null || data["success"]?.Type != JTokenType.Boolean || !data.Value<bool>("success")) return false;
+            if (command == "stashChoose" || command == "stashOpen" && ReadString(data["kind"]) == "choiceOpen")
+                return TrySanitizeChoiceResult(data, command, request, out clean);
             if (command == "stashMigrate")
             {
                 if (!IsExactObject(data, "success", "migrated") || data["migrated"]?.Type != JTokenType.Boolean) return false;

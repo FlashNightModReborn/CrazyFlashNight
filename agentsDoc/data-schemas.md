@@ -321,9 +321,11 @@ XMLParser.parseXMLNode() 解析 → { items: ["消耗品_货币.xml", "武器_�
 
 ### 礼包 `<rewardPack>` 与物品使用
 
-`data/items/消耗品_礼包.xml` 是现役礼包目录；礼包必须声明 `type=消耗品`、`use=礼包`，并只在 `<data><rewardPack>` 描述领取内容，不再携带手雷投掷字段。`<mode>` 只允许三种值：`fixed` 逐项生成，`chooseOne` 按正整数 `<weight>` 选择一项，`independent` 按每项正整数 `chanceNumerator/chanceDenominator` 独立检定。每个 `<entry>` 必须有目录中真实存在的 `itemName`，并满足 `1 <= quantityMin <= quantityMax`；缺失物品直接删除，不得静默换成近似名称或货币。
+`data/items/消耗品_礼包.xml` 是现役礼包目录；礼包必须声明 `type=消耗品`、`use=礼包`，并只在 `<data><rewardPack>` 描述领取内容，不再携带手雷投掷字段。普通自动抽取的 `<mode>` 支持三种值：`fixed` 逐项生成，`chooseOne` 按正整数 `<weight>` 选择一项，`independent` 按每项正整数 `chanceNumerator/chanceDenominator` 独立检定。每个 `<entry>` 必须有目录中真实存在的 `itemName`，并满足 `1 <= quantityMin <= quantityMax`；缺失物品直接删除，不得静默换成近似名称或货币。
 
 礼包只能从角色构筑的背包总览显式“打开”。运行时先完成随机结果与 64 occurrence 待领取容量预检，再以同一事务消耗一个来源礼包、追加不可变领取批次、记录 `operationId` 回执并刷盘；未知写结果只按同一 `operationId` 查询，不重放打开。礼包产出若仍是礼包，只作为普通待领取物品交付，不递归自动打开。旧在线奖励按钮与 5 分钟任务已封存；圣诞树恢复旧系统“每次 Flash 运行可领五档”的会话语义，改用 `_root.帧计时器` 的本次运行帧时间，在 10–20、20–40、40–60、60–120 与 `>=120` 分钟五个窗口中分别幂等投送在线补给包Ⅰ–Ⅴ，并继续要求主线进度 `>28`。成功投送并强制存盘后，圣诞树必须用 strict `panel_request {panel:"loot",source:"reward_inbox",initData:<authority>}` 请求现役领取页；面板拒绝不回滚批次，玩家仍可从角色构筑的“待领取”入口继续。持久 `supplyKeys` 只保留当前进程 token 的最多五个窗口键，存盘切换不丢本会话幂等性，新运行首次成功投送时才以事务替换旧会话索引；token 的毫秒时间必须先拆为 AVM1 int32 安全段再编码，禁止直接对时间戳调用 `Number.toString(36)` 而把所有现代日期饱和成同一键。`#supplytime:<minutes>` 只调整该在线补给域的会话偏移，不改全局帧数、冷却或调度，也不清除本会话已经领取的档位。`node tools/validate-reward-packs.js` 固定校验 mode/字段形状、数量与概率边界、物品目录闭包、在线补给帧时间/五窗口/幂等探针闭包及旧手雷定义已迁空。
+
+`playerChoice` 为玩家自选模式，`rewardPack` 只能含 `mode` 和 `poolId`，池内容来自 [随机自选礼包配置](../data/rewards/README.md)，不允许在 XML 内混入 entries。首次开包扣物并冻结候选，选定后才将物资写入 v2 暂存；两步分别复用同一持久事务与未知结果核对。当前只支持单包打开、2–4 选 1、无重抽；不会套用旧 v1 的 64 occurrence 批次上限。
 
 ### 平衡记录 `<balance>`
 

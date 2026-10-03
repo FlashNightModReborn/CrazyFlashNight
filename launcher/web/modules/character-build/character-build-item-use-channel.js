@@ -4,10 +4,12 @@
     var cooldown = typeof module !== 'undefined' && module.exports
         ? require('./character-build-cooldown-channel.js')
         : root && root.CharacterBuildCooldownChannel;
-    var api = factory(cooldown);
+    var choices = typeof module !== 'undefined' && module.exports
+        ? require('./character-build-choice-rewards.js') : root && root.CharacterBuildChoiceRewards;
+    var api = factory(cooldown, choices);
     if (typeof module !== 'undefined' && module.exports) module.exports = api;
     if (root) root.CharacterBuildItemUseChannel = api;
-})(typeof window !== 'undefined' ? window : globalThis, function(Cooldown) {
+})(typeof window !== 'undefined' ? window : globalThis, function(Cooldown, Choices) {
     'use strict';
 
     function finiteWhole(value) {
@@ -22,6 +24,8 @@
         var candidate = pending.candidate || {};
         var itemName = String(candidate.name || '').trim();
         var subject = itemName ? '「' + itemName + '」' : '所选物品';
+        if (receipt.kind === 'choiceOpen') return '配给候选已保留，请选择一套；稍后也可从“自选礼包”继续。';
+        if (receipt.kind === 'choiceSelect') return '所选配给已存入暂存物资，领取后即可换装。';
         if (pending.command === 'open' || pending.command === 'openMany') {
             var summary = response.inboxSummary || receipt.inboxSummary || {};
             var inboxRemaining = finiteWhole(summary.remainingCount);
@@ -75,8 +79,10 @@
 
     function install(controller) {
         if (!controller) throw new Error('CharacterBuildItemUseChannel requires a controller');
+        Choices.install(controller);
 
         controller._itemUseStateChanged = function(_, reason) {
+            this._choiceRewardsStateChanged(this._itemUse.debugState().state);
             this._stateChanged(this._session.getState(),
                 'item_use_' + String(reason || 'state'),
                 this._session.debugState());
@@ -144,6 +150,7 @@
                 this._itemUse.debugState().state);
             if (fresh) {
                 this._itemUse.refreshInbox();
+                this._refreshChoiceRewards();
                 this._startItemUseCooldownPolling();
             }
             return true;
@@ -187,6 +194,8 @@
                 return;
             }
             var receipt = response && response.receipt || response || {};
+            if (receipt.kind === 'choiceOpen') this._refreshChoiceRewards(receipt.offerId);
+            if (receipt.kind === 'choiceSelect') this._refreshChoiceRewards();
             if (!pending || pending.command !== 'consume') {
                 this._itemUseResumeSelection = null;
             }

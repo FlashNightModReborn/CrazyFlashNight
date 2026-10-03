@@ -716,6 +716,8 @@ namespace CF7Launcher.Tasks
 
             foreach (string slot in slotNames)
             {
+                // 内部临时角色只承载局内事务/结果，不是可续玩的常驻档案。
+                if (slot.StartsWith("bookrun_", StringComparison.OrdinalIgnoreCase)) continue;
                 slots.Add(BuildListEntry(slot, displayNames));
             }
 

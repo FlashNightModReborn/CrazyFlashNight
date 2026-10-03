@@ -1,0 +1,143 @@
+{
+  "schema": "bookshelf-pages.v1",
+  "source": "flashswf/UI/书架界面.swf",
+  "sourceSha256": "2ead6beb02d11fedce2af70a795fba247156db24c7396f0a12b8745a3bfbdf0c",
+  "generator": "FFDec 21.1.1 sprite:svg + tools/build-bookshelf-pages.py reader viewport",
+  "books": [
+    {
+      "id": "dust",
+      "title": "尘都诡谈",
+      "symbol": 44,
+      "pages": 15
+    },
+    {
+      "id": "babylon",
+      "title": "光明巴比伦",
+      "symbol": 55,
+      "pages": 15
+    }
+  ],
+  "totalBytes": 651037,
+  "files": {
+    "dust/01.svg": {
+      "sha256": "e14bd59ef134b019acc3bdcbb152d03819a6179092930543b53e84c8c90dfb63",
+      "bytes": 250598
+    },
+    "dust/02.svg": {
+      "sha256": "419dc716e6414e85b24af253e16ca2b8f664e531f2ad0caeaf6ebd5bf6071aad",
+      "bytes": 98001
+    },
+    "dust/03.svg": {
+      "sha256": "b7df4a98647218fa4434575ee4dab8d8d5db2ba4c7143ea02bf308ff900f4629",
+      "bytes": 95524
+    },
+    "dust/04.svg": {
+      "sha256": "719d5aeb9f1740e9cc5c2662382af4cd5ae7d665e6244be11b5e8b3290cce2a8",
+      "bytes": 7765
+    },
+    "dust/05.svg": {
+      "sha256": "275b9f732aee32e05dd5bc0e527a2f316806c7f818f60fb345700b9c916d10f5",
+      "bytes": 7025
+    },
+    "dust/06.svg": {
+      "sha256": "eba489b3796d1192d90d366f792b9a26d351f6500053ac8ca9f27340e0f3887d",
+      "bytes": 7477
+    },
+    "dust/07.svg": {
+      "sha256": "1130075af251be501f458b77fd21ba774e0b98d04ca171302ea0d8ab31a14f6e",
+      "bytes": 7472
+    },
+    "dust/08.svg": {
+      "sha256": "07ddbf2e9b7843e240c3473be8c2b08b16aa338a236e9c970937f73efba1b711",
+      "bytes": 6928
+    },
+    "dust/09.svg": {
+      "sha256": "522edf0c8f042490f0d26cf97d69c8337831ae263f0ab0ae1b273638fa6b009a",
+      "bytes": 7857
+    },
+    "dust/10.svg": {
+      "sha256": "0ee600e7f8c8c812c21b07e79df8962793e65c1785d3bec54b0c590a043fe0fb",
+      "bytes": 7550
+    },
+    "dust/11.svg": {
+      "sha256": "7ef2de16731a09b5d6e67dd7ebea43e36a51a273ba5ecebb3accde743b0fd1a0",
+      "bytes": 8017
+    },
+    "dust/12.svg": {
+      "sha256": "1b3f2078f2e6758fcb74855d281b537f49010c7ece6c27fa20be5fe89c8b7bbf",
+      "bytes": 7248
+    },
+    "dust/13.svg": {
+      "sha256": "efb0d02ffce47a652ee25b88981fc512f4719e951955888744d68213521e7631",
+      "bytes": 8049
+    },
+    "dust/14.svg": {
+      "sha256": "7c032c6741a01c889e8b583572793bd4cf84d015c0f87441c9686c7e25e6ed3c",
+      "bytes": 8302
+    },
+    "dust/15.svg": {
+      "sha256": "f7d4bdc0874f59873a563f4a6d15d361d2933c7188871b868e1ce45f8472ce48",
+      "bytes": 5721
+    },
+    "babylon/01.svg": {
+      "sha256": "64c626fc4555c1688cb520803f48aca727f6fa8e1c84f21fa6bb7c0a96802a27",
+      "bytes": 13553
+    },
+    "babylon/02.svg": {
+      "sha256": "70988566d02d70fdfc807510366f770392360f3acaab631eb27e0aea89695faa",
+      "bytes": 7079
+    },
+    "babylon/03.svg": {
+      "sha256": "39e1c8c265c2e87ae9fdf07ec9d3f79cbc2fd7673dd9e0e8050209c0552f342c",
+      "bytes": 7508
+    },
+    "babylon/04.svg": {
+      "sha256": "045a80c90ff4b9c017cb5b9b71d1843144b0fd1b6fed1bd9190942c6ca45616e",
+      "bytes": 7761
+    },
+    "babylon/05.svg": {
+      "sha256": "30d87631b4f2b0017f26a17e67b2958b6d62cfa4fdefc706adc49207ecbe1e6f",
+      "bytes": 7021
+    },
+    "babylon/06.svg": {
+      "sha256": "a60fd7770086b1cab460f40375db425904a21c45afe3b9dc6a7e33855a1c8e28",
+      "bytes": 7473
+    },
+    "babylon/07.svg": {
+      "sha256": "51cb9e8285061180d5f1ed186d27a5b2d282f3755e76880fce1fc5d16e7e83ca",
+      "bytes": 7468
+    },
+    "babylon/08.svg": {
+      "sha256": "6030a5084198704ee03a44aafd487e815a02cfe8c4c03274af24fd32a0bde958",
+      "bytes": 6924
+    },
+    "babylon/09.svg": {
+      "sha256": "c1547e273af3a1f65e007cd0fe465d2f8acfab1acc13306f1262e79023bb021c",
+      "bytes": 7853
+    },
+    "babylon/10.svg": {
+      "sha256": "26da394621789c61732fd02af86669d0a0350e74552dfd2edf50af301db7fd6e",
+      "bytes": 7546
+    },
+    "babylon/11.svg": {
+      "sha256": "f5b67581883c4adc9ca28477f4038f8b4915f2f1004f93d717b013c7786d3f94",
+      "bytes": 8013
+    },
+    "babylon/12.svg": {
+      "sha256": "095e32de6726add1e8a130e4aa5a7fd6b7bee21d1b031ae709a9c04073f7d210",
+      "bytes": 7244
+    },
+    "babylon/13.svg": {
+      "sha256": "76c4d002c47f2d03ed6efff98a0c8d5fd91a30a8bf8ae0799a3d2ff760812199",
+      "bytes": 8045
+    },
+    "babylon/14.svg": {
+      "sha256": "f26c0b506b64a10f2a50a578b70848f8cfcd4f2d5cf2abf34dd8727afdeafd92",
+      "bytes": 8298
+    },
+    "babylon/15.svg": {
+      "sha256": "2334086aca07fabf91b119add409e94b556d1ece503376390ce5dfc71ee2dc1d",
+      "bytes": 5717
+    }
+  }
+}

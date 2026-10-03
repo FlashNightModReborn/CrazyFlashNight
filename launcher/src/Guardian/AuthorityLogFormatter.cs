@@ -101,7 +101,8 @@ namespace CF7Launcher.Guardian
                 "skillReorder",
                 "itemUseOpen", "itemUseOpenMany", "itemUseConsume", "itemUseQuery",
                 "itemUseInboxSnapshot", "itemUseStashPage", "itemUseStashTooltip", "itemUseStashTake",
-                "itemUseStashQuery", "itemUseStashResume", "itemUseStashMigrate", "itemUseStashOpen", "itemUseStashOpenMany"
+                "itemUseStashQuery", "itemUseStashResume", "itemUseStashMigrate", "itemUseStashOpen", "itemUseStashOpenMany",
+                "itemUseStashChoices", "itemUseStashChoose"
             };
 
         private static readonly Dictionary<string, string> KnownSensitiveKeys =

@@ -49,10 +49,7 @@ _root.健身房主角是否升级 = function()
 	if (是否升级) {
 		_root.身价 = _root.基础身价值 * _root.等级;
 		var 控制对象 = TargetCacheManager.findHero();
-		控制对象.等级 = _root.等级;
-		控制对象.根据等级初始数值(_root.等级);
-		if(!控制对象.hp || 控制对象.hp < 控制对象.hp满血值) 控制对象.hp = 控制对象.hp满血值;
-		if(!控制对象.mp || 控制对象.mp < 控制对象.mp满血值) 控制对象.mp = 控制对象.mp满血值;
+		org.flashNight.arki.unit.Action.Regeneration.LevelUpRecovery.refresh(控制对象, _root.等级);
 		_root.玩家信息界面.刷新hp显示();
 		_root.玩家信息界面.刷新mp显示();
 		EffectSystem.Effect("升级动画",控制对象._x,控制对象._y,100);
@@ -69,10 +66,7 @@ _root.投影已提交任务成长 = function(提交前等级) {
     if (_root.等级 <= 提交前等级) return;
     var 控制对象 = TargetCacheManager.findHero();
     if (控制对象 == undefined) return;
-    控制对象.等级 = _root.等级;
-    控制对象.根据等级初始数值(_root.等级);
-    控制对象.hp = 控制对象.hp满血值;
-    控制对象.mp = 控制对象.mp满血值;
+    org.flashNight.arki.unit.Action.Regeneration.LevelUpRecovery.refresh(控制对象, _root.等级);
     _root.玩家信息界面.刷新hp显示();
     _root.玩家信息界面.刷新mp显示();
     EffectSystem.Effect("升级动画", 控制对象._x, 控制对象._y, 100);
@@ -109,10 +103,7 @@ _root.主角是否升级 = function(当前等级, 当前经验值)
 	if (是否升级) {
 		_root.身价 = _root.基础身价值 * _root.等级;
 		var 控制对象 = TargetCacheManager.findHero();
-		控制对象.等级 = _root.等级;
-		控制对象.根据等级初始数值(_root.等级);
-		控制对象.hp = 控制对象.hp满血值;
-		控制对象.mp = 控制对象.mp满血值;
+		org.flashNight.arki.unit.Action.Regeneration.LevelUpRecovery.refresh(控制对象, _root.等级);
 		_root.玩家信息界面.刷新hp显示();
 		_root.玩家信息界面.刷新mp显示();
 		EffectSystem.Effect("升级动画",控制对象._x,控制对象._y,100);

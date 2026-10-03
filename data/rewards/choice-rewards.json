@@ -1,0 +1,566 @@
+{
+  "schema": "choice-rewards.v1",
+  "bundles": [
+    {
+      "id": "campus.initial.1",
+      "name": "书中冲锋配给包",
+      "title": "初阶·冲锋穿透",
+      "description": "7级UZI、磁稳贯穿弹、冲锋枪弹药12份。安装后获得贯穿火力，同时降低射速。",
+      "weapon": "UZI",
+      "mods": [
+        "磁稳贯穿弹"
+      ],
+      "consumables": [
+        {
+          "name": "冲锋枪通用弹药",
+          "count": 12
+        }
+      ]
+    },
+    {
+      "id": "campus.initial.2",
+      "name": "书中步榴配给包",
+      "title": "初阶·步榴协同",
+      "description": "7级AK47、磁稳贯穿弹、M203榴弹发射器、步枪弹药8份、榴弹6份。贯穿射击配合下挂爆发。",
+      "weapon": "AK47",
+      "mods": [
+        "磁稳贯穿弹",
+        "M203榴弹发射器"
+      ],
+      "consumables": [
+        {
+          "name": "突击步枪通用弹药",
+          "count": 8
+        },
+        {
+          "name": "榴弹弹药",
+          "count": 6
+        }
+      ]
+    },
+    {
+      "id": "campus.initial.3",
+      "name": "书中霰弹配给包",
+      "title": "初阶·集中霰弹",
+      "description": "8级雷明登870、霰弹枪口收束器、磁稳贯穿弹、霰弹18份。集中霰弹并获得贯穿；与镇暴弹属于互斥的弹药改装。",
+      "weapon": "雷明登870",
+      "mods": [
+        "霰弹枪口收束器",
+        "磁稳贯穿弹"
+      ],
+      "consumables": [
+        {
+          "name": "12号霰弹弹药",
+          "count": 18
+        }
+      ]
+    },
+    {
+      "id": "campus.initial.4",
+      "name": "书中军刀配给包",
+      "title": "初阶·军刀突进",
+      "description": "9级破旧的军刀、绳扣穿孔片、手柄皮、石英磨刀石、中蓝6瓶、手雷4枚。磨刀石提升威力并锁定物理伤害。",
+      "weapon": "破旧的军刀",
+      "mods": [
+        "绳扣穿孔片",
+        "手柄皮",
+        "石英磨刀石"
+      ],
+      "consumables": [
+        {
+          "name": "加强mp药剂",
+          "count": 6
+        },
+        {
+          "name": "普通手雷",
+          "count": 4
+        }
+      ]
+    },
+    {
+      "id": "campus.advanced.1",
+      "name": "书中机枪配给包",
+      "title": "进阶·机枪压制",
+      "description": "13级M249、水冷机构、磁稳贯穿弹、机枪弹药4份。贯穿火力支持持续压制；插件会增加负重、降低射速，可自行决定是否安装。",
+      "weapon": "M249",
+      "mods": [
+        "水冷机构",
+        "磁稳贯穿弹"
+      ],
+      "consumables": [
+        {
+          "name": "机枪通用弹药",
+          "count": 4
+        }
+      ]
+    },
+    {
+      "id": "campus.advanced.2",
+      "name": "书中榴弹配给包",
+      "title": "进阶·榴弹爆破",
+      "description": "12级M79式榴弹发射器、榴弹12份、普通手雷6枚。爆炸火力适合应对集群，仍需规划换弹和后续弹药。",
+      "weapon": "M79式榴弹发射器",
+      "mods": [],
+      "consumables": [
+        {
+          "name": "榴弹弹药",
+          "count": 12
+        },
+        {
+          "name": "普通手雷",
+          "count": 6
+        }
+      ]
+    },
+    {
+      "id": "campus.advanced.3",
+      "name": "书中镇暴配给包",
+      "title": "进阶·霰弹控场",
+      "description": "8级雷明登870、霰弹枪口收束器、八门金锁镇暴弹、霰弹18份、手雷6枚。镇暴弹偏向对群控制，与磁稳贯穿弹不能同时安装。",
+      "weapon": "雷明登870",
+      "mods": [
+        "霰弹枪口收束器",
+        "八门金锁镇暴弹"
+      ],
+      "consumables": [
+        {
+          "name": "12号霰弹弹药",
+          "count": 18
+        },
+        {
+          "name": "普通手雷",
+          "count": 6
+        }
+      ]
+    },
+    {
+      "id": "campus.advanced.4",
+      "name": "书中双刀配给包",
+      "title": "进阶·双刀突进",
+      "description": "13级战术双刀、绳扣穿孔片、石英磨刀石、大蓝6瓶、手雷6枚。两枚插件适配双刀的两个插槽，强化瞬步斩与物理威力。",
+      "weapon": "战术双刀",
+      "mods": [
+        "绳扣穿孔片",
+        "石英磨刀石"
+      ],
+      "consumables": [
+        {
+          "name": "大MP药剂",
+          "count": 6
+        },
+        {
+          "name": "普通手雷",
+          "count": 6
+        }
+      ]
+    },
+    {
+      "id": "campus.initial.medical",
+      "name": "书中初阶急救选项",
+      "title": "应急储备",
+      "description": "中药与手雷，保留现有武器继续成长。",
+      "items": [
+        {
+          "itemName": "加强抗生素药剂",
+          "quantity": 6
+        },
+        {
+          "itemName": "加强mp药剂",
+          "quantity": 6
+        },
+        {
+          "itemName": "普通手雷",
+          "quantity": 4
+        }
+      ]
+    },
+    {
+      "id": "campus.initial.armor",
+      "name": "书中初阶防护选项",
+      "title": "防护改装",
+      "description": "防弹衣与衣服进阶材料。",
+      "items": [
+        {
+          "itemName": "军绿防弹衣",
+          "quantity": 1
+        },
+        {
+          "itemName": "军用帆布",
+          "quantity": 4
+        },
+        {
+          "itemName": "可塑式钢板",
+          "quantity": 4
+        }
+      ]
+    },
+    {
+      "id": "campus.advanced.medical",
+      "name": "书中进阶急救选项",
+      "title": "决战储备",
+      "description": "大药和手雷，支撑最后几场战斗。",
+      "items": [
+        {
+          "itemName": "大HP药剂",
+          "quantity": 6
+        },
+        {
+          "itemName": "大MP药剂",
+          "quantity": 6
+        },
+        {
+          "itemName": "普通手雷",
+          "quantity": 6
+        }
+      ]
+    },
+    {
+      "id": "campus.advanced.armor",
+      "name": "书中进阶防护选项",
+      "title": "防线强化",
+      "description": "战术背心与防御进阶组件。",
+      "items": [
+        {
+          "itemName": "A兵团制式战术背心",
+          "quantity": 1
+        },
+        {
+          "itemName": "二阶复合防御组件",
+          "quantity": 2
+        }
+      ]
+    },
+    {
+      "id": "campus.advanced.revive",
+      "name": "书中复活币选项",
+      "title": "再战一次",
+      "description": "一枚复活币。死亡后可复活一次；仅属于本次旅程。",
+      "items": [
+        {
+          "itemName": "复活币",
+          "quantity": 1
+        }
+      ]
+    },
+    {
+      "id": "campus.initial.fist",
+      "name": "书中初阶拳套选项",
+      "title": "初阶·拳脚起手",
+      "description": "5级道钉手套、中蓝6瓶。提供拳脚威力，支持空手技能构筑；未抽到时也可在商店购买拳套。",
+      "items": [
+        {
+          "itemName": "道钉手套",
+          "quantity": 1
+        },
+        {
+          "itemName": "加强mp药剂",
+          "quantity": 6
+        }
+      ]
+    },
+    {
+      "id": "campus.advanced.fist",
+      "name": "书中进阶拳套选项",
+      "title": "进阶·重拳出击",
+      "description": "13级大型拳套、大蓝6瓶。提升拳脚威力与韧性，需要承担更高负重。",
+      "items": [
+        {
+          "itemName": "大型拳套",
+          "quantity": 1
+        },
+        {
+          "itemName": "大MP药剂",
+          "quantity": 6
+        }
+      ]
+    },
+    {
+      "id": "campus.necklace.blade",
+      "name": "书中刀剑项链选项",
+      "title": "刀剑项链",
+      "description": "1级冷兵器小加成项链。提供生存属性与冷兵器威力加成；可延续现有路线，也可据此转型。",
+      "items": [
+        {
+          "itemName": "冷兵器小加成项链",
+          "quantity": 1
+        }
+      ]
+    },
+    {
+      "id": "campus.necklace.gun",
+      "name": "书中枪械项链选项",
+      "title": "枪械项链",
+      "description": "1级枪械小加成项链。提供生存属性与枪械威力加成；可延续现有路线，也可据此转型。",
+      "items": [
+        {
+          "itemName": "枪械小加成项链",
+          "quantity": 1
+        }
+      ]
+    },
+    {
+      "id": "campus.necklace.fist",
+      "name": "书中空手项链选项",
+      "title": "空手项链",
+      "description": "1级空手小加成项链。提供生存属性与拳脚威力加成；可延续现有路线，也可据此转型。",
+      "items": [
+        {
+          "itemName": "空手小加成项链",
+          "quantity": 1
+        }
+      ]
+    },
+    {
+      "id": "campus.initial.moon",
+      "name": "书中月之碎片选项",
+      "title": "初阶·内力启蒙",
+      "description": "月之碎片1枚。安装到上装，将装备的内力加成设为10，覆盖原有内力加成；刀剑与拳脚路线均可使用。",
+      "items": [
+        {
+          "itemName": "月之碎片",
+          "quantity": 1
+        }
+      ]
+    },
+    {
+      "id": "campus.advanced.moon",
+      "name": "书中月之精华选项",
+      "title": "进阶·内力精进",
+      "description": "月之精华1枚。安装到上装，将装备的内力加成设为35，覆盖原有内力加成；与月之碎片占同一个内力槽。",
+      "items": [
+        {
+          "itemName": "月之精华",
+          "quantity": 1
+        }
+      ]
+    },
+    {
+      "id": "campus.advanced.flame",
+      "name": "书中下挂喷火器选项",
+      "title": "进阶·燃焰压制",
+      "description": "下挂喷火器、火焰喷射器燃料罐3份。需自备AK47、M4A1等可装下挂的突击步枪，替换已有下挂；后续弹药可用金币在商店购买。",
+      "items": [
+        {
+          "itemName": "下挂喷火器",
+          "quantity": 1
+        },
+        {
+          "itemName": "火焰喷射器燃料罐",
+          "quantity": 3
+        }
+      ]
+    },
+    {
+      "id": "campus.advanced.storm",
+      "name": "书中下挂金属风暴榴弹发射器选项",
+      "title": "进阶·金属风暴",
+      "description": "下挂金属风暴榴弹发射器、榴弹弹药6份。需自备AK47、M4A1等可装下挂的突击步枪，替换已有下挂；后续弹药可用金币在商店购买。",
+      "items": [
+        {
+          "itemName": "下挂金属风暴榴弹发射器",
+          "quantity": 1
+        },
+        {
+          "itemName": "榴弹弹药",
+          "quantity": 6
+        }
+      ]
+    },
+    {
+      "id": "campus.advanced.missile",
+      "name": "书中下挂微型导弹发射器选项",
+      "title": "进阶·导弹爆发",
+      "description": "下挂微型导弹发射器、能量电池1份。需自备AK47、M4A1等可装下挂的突击步枪，替换已有下挂；后续弹药可用金币在商店购买。",
+      "items": [
+        {
+          "itemName": "下挂微型导弹发射器",
+          "quantity": 1
+        },
+        {
+          "itemName": "能量电池",
+          "quantity": 1
+        }
+      ]
+    },
+    {
+      "id": "campus.advanced.revolver",
+      "name": "书中下挂转轮霰弹枪选项",
+      "title": "进阶·转轮突击",
+      "description": "下挂转轮霰弹枪、00号鹿弹6份。需自备AK47、M4A1等可装下挂的突击步枪，替换已有下挂；后续弹药可用金币在商店购买。",
+      "items": [
+        {
+          "itemName": "下挂转轮霰弹枪",
+          "quantity": 1
+        },
+        {
+          "itemName": "00号鹿弹",
+          "quantity": 6
+        }
+      ]
+    }
+  ],
+  "pools": [
+    {
+      "id": "repair-campus.initial",
+      "version": 3,
+      "title": "初阶配给",
+      "itemName": "书中初阶自选配给包",
+      "scope": {
+        "kind": "book",
+        "bookId": "repair-campus"
+      },
+      "maxItemLevel": 9,
+      "chooseCount": 1,
+      "rerolls": 0,
+      "groups": [
+        {
+          "id": "combat",
+          "draw": 2,
+          "entries": [
+            {
+              "bundleId": "campus.initial.1",
+              "weight": 1
+            },
+            {
+              "bundleId": "campus.initial.2",
+              "weight": 1
+            },
+            {
+              "bundleId": "campus.initial.3",
+              "weight": 1
+            },
+            {
+              "bundleId": "campus.initial.4",
+              "weight": 1
+            },
+            {
+              "bundleId": "campus.initial.fist",
+              "weight": 1
+            }
+          ]
+        },
+        {
+          "id": "support",
+          "draw": 1,
+          "entries": [
+            {
+              "bundleId": "campus.initial.medical",
+              "weight": 1
+            },
+            {
+              "bundleId": "campus.initial.armor",
+              "weight": 1
+            },
+            {
+              "bundleId": "campus.necklace.blade",
+              "weight": 1
+            },
+            {
+              "bundleId": "campus.necklace.gun",
+              "weight": 1
+            },
+            {
+              "bundleId": "campus.necklace.fist",
+              "weight": 1
+            },
+            {
+              "bundleId": "campus.initial.moon",
+              "weight": 1
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "repair-campus.advanced",
+      "version": 3,
+      "title": "进阶配给",
+      "itemName": "书中进阶自选配给包",
+      "scope": {
+        "kind": "book",
+        "bookId": "repair-campus"
+      },
+      "maxItemLevel": 13,
+      "chooseCount": 1,
+      "rerolls": 0,
+      "groups": [
+        {
+          "id": "combat",
+          "draw": 2,
+          "entries": [
+            {
+              "bundleId": "campus.advanced.1",
+              "weight": 1
+            },
+            {
+              "bundleId": "campus.advanced.2",
+              "weight": 1
+            },
+            {
+              "bundleId": "campus.advanced.3",
+              "weight": 1
+            },
+            {
+              "bundleId": "campus.advanced.4",
+              "weight": 1
+            },
+            {
+              "bundleId": "campus.advanced.fist",
+              "weight": 1
+            },
+            {
+              "bundleId": "campus.advanced.flame",
+              "weight": 1
+            },
+            {
+              "bundleId": "campus.advanced.storm",
+              "weight": 1
+            },
+            {
+              "bundleId": "campus.advanced.missile",
+              "weight": 1
+            },
+            {
+              "bundleId": "campus.advanced.revolver",
+              "weight": 1
+            }
+          ]
+        },
+        {
+          "id": "support",
+          "draw": 1,
+          "entries": [
+            {
+              "bundleId": "campus.advanced.medical",
+              "weight": 1
+            },
+            {
+              "bundleId": "campus.advanced.armor",
+              "weight": 1
+            },
+            {
+              "bundleId": "campus.advanced.revive",
+              "weight": 1
+            },
+            {
+              "bundleId": "campus.necklace.blade",
+              "weight": 1
+            },
+            {
+              "bundleId": "campus.necklace.gun",
+              "weight": 1
+            },
+            {
+              "bundleId": "campus.necklace.fist",
+              "weight": 1
+            },
+            {
+              "bundleId": "campus.advanced.moon",
+              "weight": 1
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

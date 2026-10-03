@@ -667,5 +667,57 @@ check('reward inbox now delegates to the facade storage-source port', function()
     assert.deepStrictEqual(toasts, ['暂存入口尚未就绪，请重试。']);
 });
 
+check('player choice survives backpack projection and cannot bulk-open', function() {
+    const Projection = require('../launcher/web/modules/character-build/character-build-projection.js');
+    const Many = require('../launcher/web/modules/character-build/character-build-item-use-openmany-view.js');
+    const row = candidate('openChoice').raw;
+    row.quantity = 12;
+    const projected = Projection.viewCandidates({target:{kind:'backpack'},candidates:[row]})[0];
+    assert.strictEqual(projected.useAction.command, 'openChoice');
+    assert.strictEqual(Many.quantity(projected, projected.useAction), 0);
+    assert(projected.summary.includes('随机候选'));
+});
+
+check('player choice opening reuses the durable single-pack transaction', function() {
+    const run = harness();
+    run.controller._acceptInbox({success:true,rewardReady:false,rewardAuthority:null,
+        inboxSummary:{v:2,storeId:'stash.test',authorityRevision:4,remainingCount:0}});
+    assert(run.controller.invoke(candidate('openChoice')));
+    const request = run.sent[0];
+    assert.strictEqual(request.cmd, 'stashOpen');
+    assert.strictEqual(request.payload.count, undefined);
+    assert.strictEqual(run.controller.debugState().pending.choice, true);
+    respond(run, request, {success:true,operationId:request.payload.operationId,
+        data:{success:true,kind:'choiceOpen',offerId:'stash.test.choice.1',consumed:1,remaining:11}});
+    assert.strictEqual(run.settled[0].response.offerId, 'stash.test.choice.1');
+    assert.strictEqual(run.settled[0].committed, true);
+});
+
+check('reading choices is read-only and cannot unlock an unknown selection', function() {
+    const run = harness();
+    run.controller.invokeStash('stashChoose', {storeId:'stash.test',expectedRevision:4,
+        offerId:'stash.test.choice.1',optionId:'campus.initial.1'});
+    const write = run.sent[0];
+    assert.deepStrictEqual(Object.keys(write.payload).sort(),
+        ['v','panelInstanceId','sessionGeneration','operationId','storeId','expectedRevision','offerId','optionId'].sort());
+    respond(run, write, {success:false,error:'reconcile_required',requiresReconcile:true,
+        operationId:write.payload.operationId});
+    const query = run.sent[1];
+    assert.strictEqual(query.cmd, 'stashQuery');
+    assert.strictEqual(query.payload.operationId, write.payload.operationId);
+    let snapshot;
+    run.controller.requestChoices(data => { snapshot = data; });
+    const read = run.sent[2];
+    assert.deepStrictEqual(read.payload, {v:2,panelInstanceId:'panel.workbench.1',sessionGeneration:7});
+    respond(run, read, {success:true,data:{storeId:'stash.test',revision:4,offers:[],pendingOperationId:write.payload.operationId}});
+    assert(snapshot);
+    assert.strictEqual(run.controller.debugState().state, 'query_pending');
+    assert.strictEqual(run.controller.invokeStash('stashChoose', {}), null);
+    respond(run, query, {success:true,operationId:write.payload.operationId,data:{state:'committed',
+        result:{success:true,kind:'choiceSelect',offerId:'stash.test.choice.1',optionId:'campus.initial.1',rewardReady:true}}});
+    assert.strictEqual(run.controller.debugState().state, 'idle');
+    assert.strictEqual(run.sent.filter(r => r.cmd === 'stashChoose').length, 1);
+});
+
 process.stdout.write(
     'Character Build item use: ' + passed + '/' + passed + ' passed\n');

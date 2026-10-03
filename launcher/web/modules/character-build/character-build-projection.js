@@ -126,10 +126,10 @@ function(TuningAdapter, CandidateEligibility, DrugLayout) {
             var source = row.source || {};
             var rawUseAction = overview && row.useAction || null;
             var useCommand = rawUseAction && String(rawUseAction.command || '');
-            var useAction = useCommand === 'open' || useCommand === 'consume' ? {
+            var useAction = useCommand === 'open' || useCommand === 'openChoice' || useCommand === 'consume' ? {
                 command:useCommand,
                 label:String(rawUseAction.label
-                    || (useCommand === 'open' ? '打开' : '服用'))
+                    || (useCommand === 'open' ? '打开' : useCommand === 'openChoice' ? '自选配给' : '服用'))
             } : null;
             var useBlockedReason = useAction
                 ? useBlockedCopy(row.useBlockedReason) : '';
@@ -146,7 +146,9 @@ function(TuningAdapter, CandidateEligibility, DrugLayout) {
                 summary:useBlockedReason || blockedReason
                     || (overview
                         ? useAction
-                            ? useAction.command === 'open'
+                            ? useAction.command === 'openChoice'
+                                ? '打开后从随机候选中自选一套配给；关闭后可继续选择。'
+                                : useAction.command === 'open'
                                 ? '选中后点击“打开”；内容会进入待领取页。'
                                 : '选中后点击“服用”；系统会选择符合规则的冷却通道。'
                             : '来自背包总览；拖到高亮栏位可直接配装。'

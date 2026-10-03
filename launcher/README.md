@@ -375,6 +375,7 @@ Bootstrap 建角遮罩按 `openRequestId` 关联，snapshot 与有效首帧（�
 | `surgery` | [医务室整形](../docs/医务室整形-Web面板与外观共享-2026-09-08.md) | `modules/plastic-surgery.js` |
 | `garage` | [车库购车](../agentsDoc/as2-web-panel-migration.md#u13-garage-purchase) | `modules/garage-purchase.js` |
 | `sleep` | [床铺睡眠与拨针闹钟](../docs/U3睡眠面板-Web闹钟迁移-2026-09-19.md)；候选人验通过，发布状态见专项 | `modules/sleep-panel.js` |
+| `bookshelf` | [书架、角色档案与书中历险](../docs/bookshelf-player-context.md)；本地候选已构建，实际游戏旅程与人验待完成 | `modules/bookshelf-panel.js` |
 | `gym` | 业务 Panel（健身训练、进度与完成结算） | `modules/gym/gym-panel.js` |
 | `settings` | 全屏工具 / Launcher bootstrap shell | `modules/settings-panel.js` |
 | `skills` | 工作台 | `modules/skills.js` |

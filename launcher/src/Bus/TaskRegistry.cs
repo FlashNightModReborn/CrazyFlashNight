@@ -463,6 +463,7 @@ namespace CF7Launcher.Bus
             PlasticSurgeryTask plasticSurgeryTask,
             GaragePurchaseTask garagePurchaseTask,
             SleepTask sleepTask,
+            BookshelfTask bookshelfTask,
             GymTrainingTask gymTrainingTask,
             SettingsTask settingsTask,
             EquipmentTuningTask equipmentTuningTask,
@@ -573,6 +574,8 @@ namespace CF7Launcher.Bus
                 router.RegisterAsync("garage_purchase_response", garagePurchaseTask.HandleFlashResponse);
             if (sleepTask != null)
                 router.RegisterAsync("sleep_response", sleepTask.HandleFlashResponse);
+            if (bookshelfTask != null)
+                router.RegisterAsync("bookshelf_response", bookshelfTask.HandleFlashResponse);
             if (gymTrainingTask != null)
                 router.RegisterAsync("gym_training_response", gymTrainingTask.HandleFlashResponse);
 
@@ -891,6 +894,7 @@ namespace CF7Launcher.Bus
             first = AppendTask(sb, "hairdresser_response","json_async","AS2<->C#",false, first);
             first = AppendTask(sb, "plastic_surgery_response","json_async","AS2<->C#",false, first);
             first = AppendTask(sb, "garage_purchase_response","json_async","AS2<->C#",false, first);
+            first = AppendTask(sb, "bookshelf_response", "json_async", "AS2->C#", false, first);
             first = AppendTask(sb, "sleep_response", "json_async", "AS2<->C#", false, first);
             first = AppendTask(sb, "gym_training_response", "json_async", "AS2<->C#", false, first);
             first = AppendTask(sb, "settings_response",  "json_async","AS2<->C#",false, first);

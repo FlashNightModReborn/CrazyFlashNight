@@ -466,6 +466,43 @@
       ],
       "numericFields": [],
       "sourceChecks": []
+    },
+    {
+      "id": "bookshelf",
+      "wireDomain": "bookshelf",
+      "hostTask": "launcher/src/Tasks/BookshelfTask.cs",
+      "flashResponseTask": "bookshelf_response",
+      "hostResponseHandler": "bookshelfTask.HandleFlashResponse",
+      "hostPayloadMode": "normalized",
+      "flashCommandHandler": "org.flashNight.arki.ui.BookshelfPanelService",
+      "flashSources": [
+        "scripts/类定义/org/flashNight/arki/ui/BookshelfPanelService.as"
+      ],
+      "commands": [
+        {
+          "cmd": "snapshot",
+          "action": "bookshelfSnapshot",
+          "capability": "query",
+          "access": "read",
+          "businessDecisionOwner": "as2"
+        },
+        {
+          "cmd": "commit",
+          "action": "bookshelfCommit",
+          "capability": "transaction",
+          "access": "write",
+          "businessDecisionOwner": "as2"
+        },
+        {
+          "cmd": "query",
+          "action": "bookshelfQuery",
+          "capability": "query",
+          "access": "read",
+          "businessDecisionOwner": "as2"
+        }
+      ],
+      "numericFields": [],
+      "sourceChecks": []
     }
   ],
   "vectors": {

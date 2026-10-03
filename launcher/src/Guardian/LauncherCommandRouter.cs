@@ -3315,6 +3315,12 @@ namespace CF7Launcher.Guardian
                     openRequestId);
                 return;
             }
+            if (string.Equals(panelName, "bookshelf", StringComparison.Ordinal))
+            {
+                JObject data = BookshelfTask.BuildOpenData(safeSource, initDataExtrasJson);
+                if (data != null) OpenPanel("bookshelf", data.ToString(Formatting.None));
+                return;
+            }
             if (string.Equals(panelName, "sleep", StringComparison.Ordinal))
             {
                 JObject sleepData = SleepTask.BuildOpenData(safeSource, initDataExtrasJson);
@@ -4194,7 +4200,7 @@ namespace CF7Launcher.Guardian
             {
                 case "铁枪会": case "属性武器": case "烹饪": case "化学生产":
                 case "武器合成": case "饰品合成": case "进阶防具": case "基础防具":
-                case "公社防具": case "黑白契约": case "插件合成": case "大学装备": return true;
+                case "公社防具": case "黑白契约": case "插件合成": case "大学装备": case "书中配给": return true;
                 default: return false;
             }
         }

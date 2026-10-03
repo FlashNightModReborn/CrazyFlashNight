@@ -50,6 +50,7 @@ class org.flashNight.arki.item.CraftingPanelServiceTest {
         testStalePlanHasNoWrite();
         testProjectionDriftHasNoWrite();
         testAtomicCommitAndReplay();
+        testFiniteBookVoucher();
         testBlockedPreviewHasNoToken();
         testResponseWire();
         testResponseWireEscaping();
@@ -463,6 +464,20 @@ class org.flashNight.arki.item.CraftingPanelServiceTest {
                     locked:false, maxQuantity:0}];
         };
         _root.UI系统.NPC商店WebView = shopProjector;
+
+        var oldSlot = _root.savePath, oldStage = _root.当前关卡名;
+        _root.savePath = "bookrun_crafting_fixture";
+        _root.当前关卡名 = org.flashNight.arki.scene.BookDefinition.get().stageName;
+        _root._saveExt.bookRun = {slot:_root.savePath, bookId:"repair-campus", outcome:"active"};
+        var access:Object = CraftingPanelService.execute("materials", {v:2});
+        check(access.success && access.navigationAccess.crafting === true
+            && access.navigationAccess.shop === false
+            && MaterialArchiveProjector.authorizeCraftingAccess(access.snapshotId) == "",
+            "active book character can navigate from materials to its loadouts without inventing vehicle ownership");
+        _root._saveExt.bookRun.slot = "foreign_slot";
+        check(MaterialArchiveProjector.authorizeCraftingAccess(access.snapshotId) == "access_denied",
+            "book crafting navigation rechecks current slot ownership after a snapshot");
+        _root.savePath = oldSlot; _root.当前关卡名 = oldStage; delete _root._saveExt.bookRun;
 
         var catalog:Object = CraftingPanelService.execute("materials", {v:2});
         var snapshotId:String = String(catalog.snapshotId || "");
@@ -2574,6 +2589,40 @@ class org.flashNight.arki.item.CraftingPanelServiceTest {
             && result.craftToken == undefined && result.acceptedPlan == undefined
             && result.outputDelivery != undefined,
             "blocked preview exposes delivery capability but never issues an accepted plan or token");
+    }
+
+    private static function testFiniteBookVoucher():Void {
+        resetOwned();
+        var voucher:String = "书中初阶配给凭证";
+        var first:String = "书中冲锋配给包", second:String = "书中军刀配给包";
+        ItemUtil.itemDataDict[voucher] = itemData(voucher, "收集品", "材料", 0);
+        ItemUtil.materialDict[voucher] = true;
+        ItemUtil.itemDataDict[first] = itemData(first, "消耗品", "礼包", 0);
+        ItemUtil.itemDataDict[second] = itemData(second, "消耗品", "礼包", 0);
+        _root.改装清单["书中配给"] = [
+            {recipeId:"craft.book-supply.001", title:"冲锋配给", name:first, value:1, price:0, kprice:0, materials:[voucher + "#1"]},
+            {recipeId:"craft.book-supply.004", title:"军刀配给", name:second, value:1, price:0, kprice:0, materials:[voucher + "#1"]}
+        ];
+        var missing:Object = CraftingPanelService.execute("preview", {category:"书中配给", recipeIndex:0, craftCount:1});
+        check(missing.success && !missing.canCommit && missing.blockingError == "material_missing"
+            && missing.craftToken == undefined, "book loadouts require the finite voucher even with sufficient money");
+        _root.收集品栏.材料.add(voucher, 1);
+        var many:Object = CraftingPanelService.execute("preview", {category:"书中配给", recipeIndex:0, craftCount:2});
+        check(many.success && !many.canCommit && many.craftToken == undefined,
+            "one voucher cannot batch-craft two loadouts");
+        var preview:Object = CraftingPanelService.execute("preview", {category:"书中配给", recipeIndex:0, craftCount:1});
+        var result:Object = CraftingPanelService.execute("commit", {category:"书中配给", expectedCraftToken:preview.craftToken});
+        check(result.success && result.crafted.name == first
+            && Number(_root.收集品栏.材料.getValue(voucher) || 0) == 0
+            && _root.金钱 == 1000 && _root.虚拟币 == 100 && _root.存档系统.dirtyMark,
+            "book exchange consumes exactly one voucher and creates its pack without another money or SP fee");
+        var replay:Object = CraftingPanelService.execute("commit", {category:"书中配给", expectedCraftToken:preview.craftToken});
+        check(!replay.success && replay.error == "stale_state", "book exchange cannot replay its spent token");
+        var other:Object = CraftingPanelService.execute("preview", {category:"书中配给", recipeIndex:1, craftCount:1});
+        check(other.success && !other.canCommit && other.blockingError == "material_missing",
+            "choosing one loadout exhausts the shared voucher for other choices");
+        delete ItemUtil.itemDataDict[voucher]; delete ItemUtil.materialDict[voucher];
+        delete ItemUtil.itemDataDict[first]; delete ItemUtil.itemDataDict[second];
     }
 
     private static function testResponseWire():Void {

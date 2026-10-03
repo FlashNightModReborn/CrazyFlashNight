@@ -1,0 +1,20 @@
+<!doctype html>
+<html lang="zh-CN"><head><meta charset="utf-8"><base href="/launcher/web/">
+<title>书架候选 · 界面验证</title><link rel="stylesheet" href="css/overlay.css"><link rel="stylesheet" href="css/panels.css"><link rel="stylesheet" href="css/bookshelf.css">
+<style>html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#0c110e}</style></head><body>
+<div id="panel-container" style="display:none"><div id="panel-backdrop"></div><div id="panel-content"></div></div>
+<script>
+var handlers={},requests=[];
+var mode = new URLSearchParams(location.search).get('mode') || 'normal';
+window.Bridge={on:function(t,f){(handlers[t]||(handlers[t]=[])).push(f)},off:function(t,f){handlers[t]=(handlers[t]||[]).filter(function(x){return x!==f})},
+send:function(m){requests.push(m);if(m.cmd==='close')return true;
+setTimeout(function(){(handlers.panel_resp||[]).forEach(function(f){f({type:'panel_resp',panel:'bookshelf',domain:'bookshelf',cmd:m.cmd,
+callId:m.callId,panelInstanceId:m.panelInstanceId,v:1,token:m.payload.token,phase:m.cmd==='commit'?'switching':'editing',success:true,
+activeSlot:mode==='run'?'bookrun_preview':'preview_a',role:mode==='run'?'Andy Law':'归来的佣兵',inRun:mode==='run',originSlot:'preview_a',canSwitch:true,unlocked:mode!=='locked',pendingRun:mode==='pending'?'bookrun_preview':'',lastReward:0,
+slots:[{slot:'preview_a',name:'归来的佣兵'},{slot:'preview_b',name:'另一位幸存者'}]})})},8);return true}};
+window.Toast={add:function(){}};
+</script>
+<script src="modules/lazy-loader.js"></script><script src="modules/panels.js"></script><script src="modules/panel-scale.js"></script>
+<script src="modules/panels-lazy-registry.js"></script>
+<script>Panels.init();Panels.open('bookshelf',{panelInstanceId:'bookshelf.preview.1',token:'bookshelf.preview.1',source:'world_bookshelf'});</script>
+</body></html>

@@ -536,6 +536,11 @@ _root.返回基地 = function(){
 		_root.发布消息(_root.获得翻译("关卡结算尚未准备完成，请稍后重试返回基地。"));
 		return false;
 	}
+	// 书中角色不进入任何基地地图。先打开受限返回流程，再由同一书架权威换回原档。
+    if (org.flashNight.arki.scene.BookRunService.isBookStageContext()) {
+        if (org.flashNight.arki.scene.BookRunService.requestReturn()) return true;
+        return org.flashNight.arki.scene.StageRunSession.failReturnAttempt("return_base_failed");
+    }
 	// 以下都是可选投影：任何一个 UI/限制/BGM 对象缺失或抛错，
 	// 都不得阻塞其他清理与本次转场。
 	try {
@@ -595,6 +600,7 @@ _root.返回基地 = function(){
 	if (返回前主角 == undefined || isNaN(返回前生命值) || 返回前生命值 <= 0) {
 		返回目标帧 = "医务室";
 	}
+	返回目标帧 = org.flashNight.arki.scene.BookRunService.returnFrame(返回目标帧);
 
 	var 返回前关卡管理器:org.flashNight.arki.scene.StageManager =
 		org.flashNight.arki.scene.StageManager.instance;
@@ -787,6 +793,10 @@ _root.从加载失败返回 = function():Boolean {
 
 _root.跳转地图 = function(跳转帧, 返回令牌:String){
 	if (!org.flashNight.arki.scene.StageReturnFlow.beginSceneLoad(返回令牌, 跳转帧)) return;
+    if (!org.flashNight.arki.ui.BookshelfPanelService.applyAtSceneBoundary()) {
+        _root.淡出动画.gotoAndStop("加载失败");
+        return;
+    }
 	_root.关卡标志 = 跳转帧;
 	_root.当前为战斗地图 = false;
 	_root.soundEffectManager.notifyLeaveBattle();

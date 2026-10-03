@@ -456,6 +456,7 @@ namespace CF7Launcher.Guardian
             PlasticSurgery,
             GaragePurchase,
             Sleep,
+            Bookshelf,
             Gym,
             Settings,
             EquipmentTuning,
@@ -478,6 +479,7 @@ namespace CF7Launcher.Guardian
             if (domain == "surgery") return PanelDomainRoute.PlasticSurgery;
             if (domain == "garage") return PanelDomainRoute.GaragePurchase;
             if (domain == "sleep") return PanelDomainRoute.Sleep;
+            if (domain == "bookshelf") return PanelDomainRoute.Bookshelf;
             if (domain == "gym") return PanelDomainRoute.Gym;
             if (domain == "settings") return PanelDomainRoute.Settings;
             if (domain == "equipment_tuning") return PanelDomainRoute.EquipmentTuning;
@@ -1357,6 +1359,7 @@ namespace CF7Launcher.Guardian
         private PlasticSurgeryTask _plasticSurgeryTask;
         private GaragePurchaseTask _garagePurchaseTask;
         private SleepTask _sleepTask;
+        private BookshelfTask _bookshelfTask;
         private GymTrainingTask _gymTrainingTask;
         private SettingsTask _settingsTask;
         private EquipmentTuningTask _equipmentTuningTask;
@@ -4737,6 +4740,13 @@ namespace CF7Launcher.Guardian
             }
         }
 
+        public void SetBookshelfTask(BookshelfTask task)
+        {
+            _bookshelfTask = task;
+            task.SetPostToWeb(PostToWeb);
+            task.SetInvoker(delegate(Action a) { try { this.BeginInvoke(a); } catch {} });
+        }
+
         public void SetSleepTask(SleepTask task)
         {
             _sleepTask = task;
@@ -7353,6 +7363,14 @@ namespace CF7Launcher.Guardian
                 else RespondPanelDomainError(parsed, "crafting_unavailable");
                 return;
             }
+            if (domainRoute == PanelDomainRoute.Bookshelf)
+            {
+                if (!HasExactActivePanelOwnerBinding(parsed, "bookshelf"))
+                { RespondPanelDomainError(parsed, "panel_instance_expired"); return; }
+                if (_bookshelfTask != null) _bookshelfTask.HandleWebRequest(cmd, parsed);
+                else RespondPanelDomainError(parsed, "bookshelf_unavailable");
+                return;
+            }
             if (domainRoute == PanelDomainRoute.Sleep)
             {
                 if (!HasExactActivePanelOwnerBinding(parsed, "sleep"))
@@ -9272,6 +9290,7 @@ namespace CF7Launcher.Guardian
             if (_plasticSurgeryTask != null) _plasticSurgeryTask.ClearPending();
             if (_garagePurchaseTask != null) _garagePurchaseTask.ClearPending();
             if (_sleepTask != null) _sleepTask.ClearPending();
+            if (_bookshelfTask != null) _bookshelfTask.ClearPending();
             if (_gymTrainingTask != null) _gymTrainingTask.OnSocketDisconnected();
             if (_settingsTask != null) _settingsTask.ClearPending();
             if (_equipmentTuningTask != null) _equipmentTuningTask.ClearPending();

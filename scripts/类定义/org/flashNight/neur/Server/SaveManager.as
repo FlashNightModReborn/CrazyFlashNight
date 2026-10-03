@@ -261,10 +261,10 @@ class org.flashNight.neur.Server.SaveManager {
         "reward.resume_pending", "reward.child_bridge", "reward.terminal",
         "reward.quarantine", "reward.pending_persist",
         "asset_tx.commit",
-        "item_use.open_commit",
+        "item_use.open_commit", "item_use.choice_open", "item_use.choice_select",
         "reward.stash_take", "reward.stash_migration", "reward.quest_finish", "reward.map_stash",
         "loot.claim_batch", "loot.standalone_claim", "loot.settlement_terminal",
-        "stage.return_base",
+        "stage.return_base", "bookshelf.switch", "bookshelf.reward",
         "scene.changed_safety_net",
         "character_creation.start_tutorial",
         "settings.apply", "settings.save",
@@ -281,7 +281,7 @@ class org.flashNight.neur.Server.SaveManager {
     ];
     // transition barrier 固定 reason allowlist（裁决 §2.2/§3.1：A1/A6/B2）
     private static var TRANSITION_REASON_IDS:Array = [
-        "safe_exit", "stage.return_base", "character_creation.start_tutorial"
+        "safe_exit", "stage.return_base", "character_creation.start_tutorial", "bookshelf.switch"
     ];
     private static var _reasonRegistry:Object = null;
     private static var _transitionReasonAllowlist:Object = null;
@@ -2094,6 +2094,54 @@ class org.flashNight.neur.Server.SaveManager {
         var prepared:Object = prepareNewCharacter(null, "new_character");
         if (!prepared.success) return false;
         return startNewCharacterTutorial(String(prepared.startToken), true, null, null);
+    }
+
+    /** 仅供覆盖过场中的角色切换调用；旧世界和所有写事务必须已经退出。 */
+    public function replacePlayerContext(slot:String, snapshot:Object, run:Object):Boolean {
+        if (_rewardCandidate != null || _saveInFlight || PlayerAssetTransaction.current() != null
+                || slot == undefined || slot == "" || slot.length > 128 || sanitizeSlot(slot) !== slot
+                || _root.gameworld._parent != undefined
+                || !org.flashNight.arki.scene.StageRunSession.canNavigateAwayFromStage()) return false;
+        if (run != null && (run.slot !== slot || typeof run.originSlot != "string" || run.originSlot == "")) return false;
+        if (run == null && !validateMydata(snapshot)) return false;
+        clearPrefetch();
+        org.flashNight.arki.scene.StageManager.getInstance().clear();
+        resetPerCharacterMemory();
+        org.flashNight.arki.scene.StageRunSession.resetForRestart();
+        _root.savePath = slot;
+        _root.转场景数据 = [0, 0, "空手"];
+        _root.转场景记录数据第一次记录 = false;
+        _root.新出生 = true;
+        _root.同伴数 = 0;
+        _root.当前通关的关卡 = "";
+        _root.当前关卡名 = "";
+        _root.当前关卡难度 = "简单";
+        _root.难度等级 = 1;
+        _root.关卡地图帧值 = "房间";
+        _root.场景进入位置名 = "出生地";
+        if (_root.限制系统 != undefined) {
+            _root.限制系统.clearEntries();
+            _root.限制系统.addLimitLevel(0);
+        }
+        _root.关卡可获得奖励品 = [];
+        if (run == null) {
+            if (!loadFromMydata(snapshot, "bookshelf_context")) return false;
+        } else {
+            _root.角色名 = "Andy Law"; _root.性别 = "男"; _root.身高 = 175;
+            _root.脸型 = "男变装-基本脸型"; _root.发型 = "发型-男式-Andy发型";
+            _root.等级 = 1; _root.经验值 = 0; _root.技能点数 = org.flashNight.arki.scene.BookDefinition.get().startingSkillPoints;
+            _root.金钱 = org.flashNight.arki.scene.BookDefinition.get().startingMoney;
+            _root.虚拟币 = 0; _root.身价 = _root.基础身价值;
+            _root.difficultyMode = 0;
+            _root.物品栏.装备栏.add("上装装备", BaseItem.create("白色中山上装", 1));
+            _root.物品栏.装备栏.add("下装装备", BaseItem.create("白色中山装裤子", 1));
+            _root.物品栏.装备栏.add("脚部装备", BaseItem.create("黑色板鞋", 1));
+            _root._saveExt.bookRun = org.flashNight.gesh.object.PersistedSnapshot.clone(run);
+            _root.mydata = packGameState();
+            markRuntimeSaveLoaded("bookshelf_run");
+        }
+        _root.允许存档 = true;
+        return true;
     }
 
     /**

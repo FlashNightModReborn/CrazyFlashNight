@@ -264,6 +264,14 @@ class org.flashNight.arki.scene.StageRunSession {
         return _run != null && _returnRequested && _preparedReport != null && !_settlementStarted;
     }
 
+    /** 书中退出只在本局奖励已持久暂存后，允许直接进入原角色切换过场。 */
+    public static function canReturnBookContext():Boolean {
+        return org.flashNight.arki.scene.BookRunService.isBookStageContext()
+            && _run != null && _returnRequested && isCurrentRewardStashed()
+            && _preparedInventory == null && !LootContainerService.hasStageSettlementPending()
+            && !hasPersistedSettlementPending();
+    }
+
     public static function canNavigateAwayFromStage():Boolean {
         return getSceneExitBlockReason() == "";
     }
@@ -309,6 +317,7 @@ class org.flashNight.arki.scene.StageRunSession {
         if (_run == null || (outcome != "victory" && outcome != "failure")) return;
         if (_run.outcome != "active") return;
         _run.outcome = outcome;
+        org.flashNight.arki.scene.BookRunService.finish(outcome);
         bumpRevision();
         pushState();
     }
@@ -670,9 +679,10 @@ class org.flashNight.arki.scene.StageRunSession {
         // _preparedInventory 在终态会释放，不能因此重新随机化一次通关奖励。
         if (_returnRequested) return true;
         if (_run.outcome == "active") {
-            _run.outcome = "retreat";
+            _run.outcome = _run.life == "dead" && org.flashNight.arki.scene.BookRunService.isBookStageContext() ? "failure" : "retreat";
             bumpRevision();
         }
+        org.flashNight.arki.scene.BookRunService.finish(_run.outcome);
         if (!prepareSettlement()) {
             observeFocus("return_gate", _focusHandlingIntent, "prepare_failed");
             settlementDiag("return_gate", "result=prepare_failed"
@@ -803,7 +813,7 @@ class org.flashNight.arki.scene.StageRunSession {
             return false;
         }
         if (_run.outcome == "active") {
-            _run.outcome = "retreat";
+            _run.outcome = _run.life == "dead" ? "failure" : "retreat";
             bumpRevision();
         }
 

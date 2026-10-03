@@ -1,0 +1,79 @@
+using System;
+using System.Collections.Generic;
+using Newtonsoft.Json.Linq;
+
+namespace CF7Launcher.Tasks
+{
+    public sealed partial class ItemUseTask
+    {
+        private static bool TrySanitizeChoiceSnapshot(JObject data, out JObject clean)
+        {
+            clean = null;
+            if (!IsExactObject(data, "success", "storeId", "revision", "offers", "pendingOperationId")
+                || !TryReadSafeText(data["storeId"], 128, true, out string storeId)
+                || storeId.Length > 0 && !ValidToken.IsMatch(storeId)
+                || !TryReadLongInteger(data["revision"], 0, MaxSafeInteger, out long revision)
+                || !TryReadSafeText(data["pendingOperationId"], 128, true, out string pending)
+                || pending.Length > 0 && !ValidToken.IsMatch(pending)
+                || !(data["offers"] is JArray offers) || offers.Count > 16
+                || storeId.Length == 0 && (revision != 0 || offers.Count != 0)) return false;
+            var ids = new HashSet<string>(StringComparer.Ordinal);
+            foreach (JToken token in offers)
+            {
+                var offer = token as JObject;
+                if (!IsExactObject(offer, "offerId", "title", "options")
+                    || !StashEntryId(offer["offerId"], out string id) || !ids.Add(id)
+                    || !id.StartsWith(storeId + ".choice.", StringComparison.Ordinal)
+                    || !TryReadSafeText(offer["title"], 96, false, out string title)
+                    || !(offer["options"] is JArray options) || options.Count < 2 || options.Count > 4) return false;
+                var optionIds = new HashSet<string>(StringComparer.Ordinal);
+                foreach (JToken optionToken in options)
+                {
+                    var option = optionToken as JObject;
+                    if (!IsExactObject(option, "optionId", "title", "description", "items")
+                        || !TryReadSafeText(option["optionId"], 64, false, out string optionId)
+                        || !ValidToken.IsMatch(optionId) || !optionIds.Add(optionId)
+                        || !TryReadSafeText(option["title"], 64, false, out string optionTitle)
+                        || !TryReadSafeText(option["description"], 256, false, out string description)
+                        || !(option["items"] is JArray items) || items.Count < 1 || items.Count > 16) return false;
+                    foreach (JToken itemToken in items)
+                    {
+                        var item = itemToken as JObject;
+                        if (!IsExactObject(item, "itemName", "displayName", "quantity", "level")
+                            || !TryReadSafeText(item["itemName"], 96, false, out string name)
+                            || !TryReadSafeText(item["displayName"], 128, false, out string display)
+                            || !TryReadLongInteger(item["quantity"], 1, MaxSafeInteger, out long quantity)
+                            || !TryReadInteger(item["level"], 0, 60, out int level)) return false;
+                    }
+                }
+            }
+            clean = (JObject)data.DeepClone();
+            return true;
+        }
+
+        private static bool TrySanitizeChoiceResult(JObject data, string command, JObject request, out JObject clean)
+        {
+            clean = null;
+            if (command == "stashOpen")
+            {
+                if (!IsExactObject(data, "success", "kind", "offerId", "consumed", "remaining")
+                    || ReadString(data["kind"]) != "choiceOpen"
+                    || !StashEntryId(data["offerId"], out string offerId)
+                    || !TryReadInteger(data["consumed"], 1, 1, out int consumed)
+                    || !TryReadLongInteger(data["remaining"], 0, MaxSafeInteger, out long remaining)) return false;
+                string store = ReadString(request["storeId"]);
+                if (store.Length > 0 && !offerId.StartsWith(store + ".choice.", StringComparison.Ordinal)) return false;
+            }
+            else
+            {
+                if (!IsExactObject(data, "success", "kind", "offerId", "optionId", "rewardReady")
+                    || ReadString(data["kind"]) != "choiceSelect"
+                    || ReadString(data["offerId"]) != ReadString(request["offerId"])
+                    || ReadString(data["optionId"]) != ReadString(request["optionId"])
+                    || data["rewardReady"]?.Type != JTokenType.Boolean || !data.Value<bool>("rewardReady")) return false;
+            }
+            clean = (JObject)data.DeepClone();
+            return true;
+        }
+    }
+}

@@ -196,6 +196,21 @@ namespace Launcher.Tests.Tasks
         }
 
         [Fact]
+        public void WebRequest_BookSupplyCategory_ReachesFlashAuthority()
+        {
+            string sent = null;
+            using (var task = new CraftingTask(() => true, value => { sent = value; return true; }))
+            {
+                JObject request = Request("preview", "craft.book.supply");
+                request["payload"]["category"] = "书中配给";
+                request["payload"]["craftCount"] = 1;
+                task.HandleWebRequest("preview", request);
+                Assert.NotNull(sent);
+                Assert.Equal("书中配给", (string)JObject.Parse(sent.TrimEnd('\0'))["category"]);
+            }
+        }
+
+        [Fact]
         public void WebRequest_RejectsUnknownCategoryBeforeFlash()
         {
             bool sent = false;

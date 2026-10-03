@@ -914,6 +914,10 @@ body[data-character-stats-fixture] .character-build-stats-profile::before {
             },
             rewardAuthority:null
         };
+        if (message.cmd === 'stashChoices') {
+            response.success = true;
+            response.data = {storeId:'',revision:0,offers:[],pendingOperationId:''};
+        }
         if (message.cmd === 'consume' && harness.itemUse.commitNextConsume) {
             harness.itemUse.commitNextConsume = false;
             harness.itemUse.potionQuantity--;
@@ -1336,6 +1340,7 @@ body[data-character-stats-fixture] .character-build-stats-profile::before {
 <script src="modules/character-build/character-build-stash-transport.js"></script>
 <script src="modules/character-build/character-build-item-use.js"></script>
 <script src="modules/character-build/character-build-stash-authority.js"></script>
+<script src="modules/character-build/character-build-choice-rewards.js"></script>
 <script src="modules/character-build/character-build-item-use-channel.js"></script>
 <script src="modules/character-build/character-build-candidate-channel.js"></script>
 <script src="modules/character-build.js"></script>

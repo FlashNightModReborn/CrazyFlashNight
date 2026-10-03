@@ -1,5 +1,7 @@
 ﻿import org.flashNight.gesh.object.PersistedSnapshot;
 
+import org.flashNight.arki.item.ChoiceRewardStore;
+
 /** v2 当前奖励库存的纯数据合同。没有 _root、SaveManager、面板或领取会话副作用。 */
 class org.flashNight.arki.item.RewardStashStore {
     public static var VERSION:Number = 2;
@@ -81,6 +83,8 @@ class org.flashNight.arki.item.RewardStashStore {
                 }
             }
         }
+        if (!ChoiceRewardStore.normalize(raw.choiceOffers, String(raw.storeId), repairs)) return {ok:false, changed:changed, error:"invalid_choice_store"};
+        if (repairs.length > 0) changed = true;
         for (var fix:Number = 0; fix < repairs.length; fix++) repairs[fix].owner[repairs[fix].key] = repairs[fix].value;
         return {ok:true, changed:changed, feature:raw};
     }

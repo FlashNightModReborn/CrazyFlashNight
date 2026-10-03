@@ -6,7 +6,7 @@ const path = require('path');
 
 const ROOT = path.resolve(__dirname, '..');
 const ITEM_DIR = path.join(ROOT, 'data', 'items');
-const MODES = new Set(['fixed', 'independent', 'chooseOne']);
+const MODES = new Set(['fixed', 'independent', 'chooseOne', 'playerChoice']);
 const ENTRY_FIELDS = new Set([
     'itemName',
     'quantityMin',
@@ -205,7 +205,7 @@ files.forEach((relativeFile) => {
 
 let packCount = 0;
 let entryCount = 0;
-const modeCounts = {fixed:0, independent:0, chooseOne:0};
+const modeCounts = {fixed:0, independent:0, chooseOne:0, playerChoice:0};
 
 items.forEach((item) => {
     const rewardPacks = blocksOf(item.raw, 'rewardPack');
@@ -236,6 +236,15 @@ items.forEach((item) => {
         return;
     }
     modeCounts[mode] += 1;
+    if (mode === 'playerChoice') {
+        const catalog = JSON.parse(fs.readFileSync(path.join(ROOT, 'data/rewards/choice-rewards.json'), 'utf8'));
+        const poolId = textOf(rewardPack, 'poolId');
+        const pool = catalog.pools.find(p => p.id === poolId && p.itemName === item.name);
+        const fields = Array.from(rewardPack.matchAll(/<([A-Za-z][A-Za-z0-9]*)\b[^>]*>/g), m => m[1]);
+        if (!pool || fields.length !== 2 || fields[0] !== 'mode' || fields[1] !== 'poolId')
+            fail(item.context + ': playerChoice must reference its exact pool and contain no independent reward entries');
+        return;
+    }
 
     const entriesBlocks = blocksOf(rewardPack, 'entries');
     if (entriesBlocks.length !== 1) {
@@ -306,6 +315,6 @@ if (errors.length > 0) {
 process.stdout.write(
     '[reward-packs] OK: ' + packCount + ' packs, ' + entryCount + ' entries; ' +
     'fixed=' + modeCounts.fixed + ', independent=' + modeCounts.independent +
-    ', chooseOne=' + modeCounts.chooseOne + '; onlineSupply=' +
+    ', chooseOne=' + modeCounts.chooseOne + ', playerChoice=' + modeCounts.playerChoice + '; onlineSupply=' +
     (onlineSupplyValidated ? 'frame-clock/5-windows/session-bounded' : 'unvalidated') + '\n'
 );

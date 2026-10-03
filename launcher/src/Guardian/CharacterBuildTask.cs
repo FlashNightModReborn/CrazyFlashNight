@@ -2816,8 +2816,9 @@ namespace CF7Launcher.Guardian
             return IsExactObject(
                     action, Set("command", "label", "source"))
                 && ((command == "open" && label == "打开")
+                    || (command == "openChoice" && label == "自选配给")
                     || (command == "consume" && label == "服用"))
-                && ((command == "open"
+                && (((command == "open" || command == "openChoice")
                         && itemUse == "礼包"
                         && (blockedReason.Length == 0
                             || blockedReason == "reward_inbox_full"

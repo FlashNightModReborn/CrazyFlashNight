@@ -1243,6 +1243,39 @@ class org.flashNight.arki.scene.StageRunSessionTest {
 
         resetWorld(0);
         manager.dispose();
+        var savedBookExt:Object = _root._saveExt, savedBookSlot = _root.savePath, savedBookTimer = _root.帧计时器;
+        var bookReturnCases:Array = [
+            {book:true, dead:true, foreign:false, frame:""},
+            {book:false, dead:true, foreign:false, frame:"医务室"},
+            {book:true, dead:true, foreign:true, frame:"医务室"},
+            {book:true, dead:false, foreign:false, frame:""}];
+        for (var bookCase:Number = 0; bookCase < bookReturnCases.length; bookCase++) {
+            resetWorld(0); manager.dispose();
+            var bc:Object = bookReturnCases[bookCase];
+            var bookHero:MovieClip = installHero("success"); bookHero.hp = bc.dead ? -1 : 50;
+            _root.savePath = "book_return_fixture";
+            _root._saveExt = {};
+            _root.当前关卡名 = bc.book ? org.flashNight.arki.scene.BookDefinition.get().stageName : "普通关卡";
+            if (bc.book) _root._saveExt.bookRun = {slot:bc.foreign ? "foreign" : _root.savePath,
+                bookId:"repair-campus", outcome:"failure"};
+            StageRunSession.begin(_root.当前关卡名, "简单");
+            if (bc.book && !bc.foreign) { if (bc.dead) StageRunSession.onHeroDeath(); }
+            else StageRunSession.finish("failure");
+            _root.当前为战斗地图 = true;
+            _root.帧计时器 = {添加单次任务:function(fn:Function, delay:Number):Void { this.returnJob = fn; }};
+            _root.关卡地图帧值 = "原返回帧";
+            _root.淡出动画 = {lastFrame:"", 淡出跳转帧:function(frame):Boolean { this.lastFrame = frame; return true; }};
+            _root.返回基地 = productionReturnBase;
+            var acceptedBookReturn:Boolean = _root.返回基地() === true;
+            assertTrue(acceptedBookReturn && _root.淡出动画.lastFrame === bc.frame
+                    && (!(bc.book && !bc.foreign) || (StageRunSession.canReturnBookContext()
+                        && _root.savePath == "book_return_fixture" && _root.当前为战斗地图 === true
+                        && typeof _root.帧计时器.returnJob == "function"
+                        && StageRunSession.getRunAuthority().outcome == (bc.dead ? "failure" : "retreat"))),
+                "production book return queues context restoration without a playable temporary base: case " + bookCase);
+        }
+        _root._saveExt = savedBookExt; _root.savePath = savedBookSlot; _root.帧计时器 = savedBookTimer;
+        resetWorld(0); manager.dispose();
         var retryHero:MovieClip = installHero("success");
         retryHero.hp = 50;
         StageRunSession.begin("生产返回淡出重试", "简单");
