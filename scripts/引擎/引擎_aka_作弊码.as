@@ -547,6 +547,26 @@ _root.cheatCode = function(作弊码){
 				_root.最上层发布文字提示("用法：#supplytime:分钟（允许 0 至 1440）");
 			}
 		}
+	}else if(作弊码.indexOf("#time:") == 0){
+		var timeText:String = 作弊码.split("#time:")[1]
+			.split(" ").join("").split("　").join("").split("\t").join("");
+		var timeParts:Array = timeText.split(":");
+		var timeHours:Number = Number(timeParts[0]);
+		var timeMins:Number = (timeParts.length > 1) ? Number(timeParts[1]) : 0;
+		var timeTotal:Number = Math.floor(timeHours * 60 + timeMins);
+		if (_root.天气系统 == undefined
+				|| typeof _root.天气系统.setSleepTime != "function") {
+			_root.最上层发布文字提示("天气系统尚未就绪");
+		} else if (isNaN(timeTotal) || timeTotal < 0 || timeTotal > 1439) {
+			_root.最上层发布文字提示("用法：#time:小时 或 #time:时:分（0:00 至 23:59）");
+		} else {
+			_root.天气系统.setSleepTime(timeTotal);
+			var displayH:Number = Math.floor(timeTotal / 60);
+			var displayM:Number = timeTotal % 60;
+			_root.最上层发布文字提示("时间已设为 "
+				+ displayH + ":" + (displayM < 10 ? "0" : "") + displayM
+				+ "（仅本次运行）");
+		}
 	}else if(作弊码.indexOf("#gold:")>-1){
 		var goldVal:Number = Number(作弊码.split("#gold:")[1].split(" ").join(""));
 		var goldBefore:Number = Number(_root.金钱);

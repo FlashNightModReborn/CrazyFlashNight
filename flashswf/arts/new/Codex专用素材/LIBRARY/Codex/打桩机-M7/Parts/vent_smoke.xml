@@ -1,0 +1,37 @@
+<?xml version='1.0' encoding='utf-8'?>
+<DOMSymbolItem xmlns="http://ns.adobe.com/xfl/2008/" name="Codex/打桩机-M7/Parts/vent_smoke" itemID="3de048ba-10f19ceb">
+  <timeline>
+    <DOMTimeline name="vent_smoke">
+      <layers>
+        <DOMLayer name="完整矢量母件" color="#6D9981" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMGroup>
+                  <members>
+                    <DOMShape>
+                      <fills>
+                        <FillStyle index="1">
+                          <LinearGradient>
+                            <matrix>
+                              <Matrix a="-0.0671386719" b="-0.0152587891" c="0.0152587891" d="-0.0671386719" tx="-55" ty="-12.5" />
+                            </matrix>
+                            <GradientEntry color="#ABA49A" alpha="0.701960784313725" ratio="0" />
+                            <GradientEntry color="#66615C" alpha="0" ratio="1" />
+                          </LinearGradient>
+                        </FillStyle>
+                      </fills>
+                      <edges>
+                        <Edge fillStyle0="1" edges="!0 0[-160 -340 -420 -220!-420 -220[-448 -379 -533 -420!-533 -420[-630 -466 -800 -360!-800 -360[-865 -589 -990 -628!-990 -628[-1094 -660 -1240 -560!-1240 -560[-1520 -680 -1680 -360!-1680 -360[-2020 -480 -2220 -180!-2220 -180[-1760 140  -1400 -20!-1400 -20[-920 240 -560 100!-560 100[-180 220 0 0" />
+                      </edges>
+                    </DOMShape>
+                  </members>
+                </DOMGroup>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

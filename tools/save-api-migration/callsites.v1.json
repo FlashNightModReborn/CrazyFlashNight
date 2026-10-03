@@ -13,12 +13,12 @@
     "lineNumberNote": "本 manifest 全部行号以 headCommit 及当前 R1 迁移工作树为准。历次已确认漂移（均为行号漂移，数量不变）：相对 callsites.md 封包基线 776db2ae26——A3 PlayerAssetTransaction.as 422→440（专项 A① K 店 durable fence 已合入 HEAD，flushStrongSaveNow 位于 :196）、D2 商城系统_WebView.as 721→749。相对 af69c795c3（2026-09-04 步骤 10 开工前校准时发现，K店 batch/openMany 两列车合入所致）——A4 ItemUseService.as 597→788、D1 商城系统_WebView.as 199→216、D2.requestSave 750→782、D2.markDirty 749→781；四项经 check-callsites.js 报「未命中 / 不在 manifest」后逐一定位，扫描计数与 manifest counts 全项一致，无任何调用点增删。 2026-09-05 现场反馈增量：Reward 分段与 ItemUse 合并仅引起 A2/A4 wrapper 行号漂移，调用点和 reason 不变。 合并上游 bbdb1fac1d：军阀返回基地路径使 A6 行号 523→531；A4 保留本轮合并结果后的 832，不退回上游旧值 788。 同文件已有 markDirty 仅随上游插入漂移 1345→1353，无新增调用。 2026-09-08 整形迁移同步 A1/B2/E6 行号；另按当前 HEAD 校正地图撤退合入后 A6 与 StageRunSession canonical dirty 的既有行号漂移，调用数量和语义不变。",
     "swf": {
       "scripts/asLoader.swf": {
-        "sha256": "1f5e1de5d7bcd9fd805cf518836b14391b67454bb58a61c95888c0d6c4d6011f",
-        "sizeBytes": 1450388,
-        "functions": 12417,
+        "sha256": "7d1f97b9c95b60450c75ad77fb7c6335e8ebf00c3e7ce4d792cf2b1476a574a2",
+        "sizeBytes": 1469458,
+        "functions": 12518,
         "maxFunctionBytes": 51454,
         "functionSizeGate": "node tools/swf-function-sizes.js scripts/asLoader.swf --max 60000 --top 15（未发现 codeSize >= 60000 B 近墙项）",
-        "republishNote": "2026-10-03 书中返回与混合配给迭代：fresh CS6 publish Compiler 0/0；12417 函数，最大 51454B。书架 134、地图结算 968、自选奖励 41 项通过，FFDec 回读当前定义及关键分支。仅本地候选，未正式推广；完整游戏旅程待复验。",
+        "republishNote": "2026-10-03 书架发布前合并主线打桩机与场景灯：fresh CS6 publish Compiler 0/0；12518 函数最大 51454B。书架 134、地图结算 968、自选奖励 41 项通过。完整书籍/候选池和双方关键逻辑已从 SWF 回读；真实游戏反馈与正式发布状态分别记录。",
         "r1Disposition": "published",
         "r1Reason": "Reward/SceneChanged 现役 AS2 服务；本轮生产逻辑入口。"
       },
@@ -462,7 +462,7 @@
       "physicalId": "B5",
       "layer": "scripts",
       "sourcePath": "scripts/类定义/org/flashNight/arki/item/CharacterBuildService.as",
-      "line": 3007,
+      "line": 3034,
       "frame": null,
       "legacyEntry": "apiFlushDurableNow",
       "legacyApi": "saveManager.flushDurableNow(\"character_build.finalize\")（invokeBoolean(\"flushNow\") 桥 fallback）",

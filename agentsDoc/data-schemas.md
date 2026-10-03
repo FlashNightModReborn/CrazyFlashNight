@@ -64,6 +64,7 @@ var list:Array = XMLParser.configureDataAsArray(parsed.items);
 | `data/units/` | 单位数据 |
 | `data/dialogues/` | 对话脚本 |
 | `data/environment/` | 场景、关卡环境与世界表现预设 |
+| `data/weapon-animations/` | 按装备需求读取的具名姿态JSON；格式、派生和缓存归 [武器动画工具](../tools/weapon-animation/README.md#m7-常驻总装与外置姿态) |
 | `data/config/` | 运行时配置 |
 | `data/map/` | WebView 地图面板配置（`map_panel.xml` 单文件） |
 | `data/intelligence/` | 情报详情 legacy txt 文本；保留为 AS2 旧界面和 H5 迁移来源 |
@@ -346,6 +347,10 @@ XMLParser.parseXMLNode() 解析 → { items: ["消耗品_货币.xml", "武器_�
 </balance>
 ```
 
+### 怪物标识 `<标识>`
+
+`data/enemy_properties/*.xml` 每个敌人模板根层的 `<标识>` 是设计侧标注，运行时不消费，不进入战斗结算，也不能替代 `<data>` 里的面板数值。十个子字段 `阶段/档次系数/成长系数/攻速系数/攻击倍率/段数系数/速度系数/高攻低血防系数/霸体系数/高防低血系数` 一一对应 `0.说明文件与教程/武器-技能数值-价格-合成表填写的参考公式（修改后请勿上传git）.xlsx》《怪物大致面板》的 C~L 列：正算引擎是 `tools/cf7-balance-tool/packages/core/src/formulas/monsters.ts`，逆问题求解在 `monster-solve.ts`，普查与写回走 `monster-flags` CLI（改动只到数据 XML，不触发 SWF 重编）。档次系数与攻击节奏三系数（攻速/攻击倍率/段数）不能由面板唯一确定，必须人工观测；阶段与速度系数可机械推出。取值判据、阶段归属规则、命令与写回格式合同以 [`monster-flag-rulebook.md`](../tools/cf7-balance-tool/docs/monster-flag-rulebook.md) 为准，当前完备度快照见 [怪物标识普查与面板反推可行性](../docs/怪物标识普查与面板反推可行性-2026-10-01.md)。魔神图的怪不需要标识，不为其补写。
+
 ### 装备插件条件战技
 
 `data/items/equipment_mods/*.xml` 的插件支持根层 `<skillSwitch>`（与 `<skill>`、`<stats>` 同级），用于按宿主装备 `use` / `weapontype` 切换主动战技。命中分支时优先使用分支技能，未命名 `<use>` 是 default 分支，仅在无命名分支命中时使用；多个分支同时匹配时按 XML 顺序取第一个。根层 `<skill>` 仍可作为兼容回退，但有条件战技映射时建议把默认技能也写进 `skillSwitch` 的 default 分支，避免 tooltip 表达成多个可同时装载的战技。`skillSwitch` 只决定技能，不应用属性，条件数值仍走 `<stats><useSwitch>...</useSwitch></stats>`。完整写法与示例见 `data/items/equipment_mods/README.md`。
@@ -413,6 +418,8 @@ producer 对材料 exact-set、重复/未知 identity、未知 type/purpose、�
 最小字段：`name`、`cd`、`power`、`capacity`、`reserveName`、`bullet`、`consumeMode`、`consumeTiming`。常用字段：`sound`、`split`、`diffusion`、`velocity`、`range`、`impact`、`damageType`、`magicType`、`powerMultiplier`、`initialLoaded`、`manualReloadAnimation`、`manualReloadBurden`、`clipCostPerLoad`、`fireCost`、`mp`、`hp`。
 
 当前迁移语义：`consumeMode=onLoadGroup + consumeTiming=onReloadCommit` 表示 1 份 `reserveName` 支持一组 `capacity` 发；首仓由 `initialLoaded` 表达预装；R 联动补装与 F 快装都在换弹提交帧扣组弹药。逐发消耗武器使用 `consumeMode=onFire + consumeTiming=onFire + fireCost`。
+
+重锤打桩机的内置联动模块由其唯一生命周期 `initParam.flamethrower` 声明，根层仍只保留一个锁定战技。控制器依据 Q 的实际机械阶段，在同一个运行态特殊槽中切换副武器补装与过载；这不开放普通配件的双特殊槽。模块复用 `LongGunSubWeaponCore` 的唯一已装弹药与物品镜像，枪锤联动只能经核对宿主/状态身份的 `consumeLoadedAmmo` 消费已付费组弹药，不能复制一份私有油量或绕过逐发库存/MP/HP成本。副射击阶段许可在请求与提交点复核，卸载只清理本人持有的状态和槽位。数值与具体玩法见[打桩机模型](../tools/cf7-balance-tool/models/pilebunker/README.md)。
 
 ### 联弹双层配置与补弹参数（2026-06-12 起）
 

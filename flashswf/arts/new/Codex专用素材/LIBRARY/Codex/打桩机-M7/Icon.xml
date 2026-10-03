@@ -1,0 +1,86 @@
+<?xml version='1.0' encoding='utf-8'?>
+<DOMSymbolItem xmlns="http://ns.adobe.com/xfl/2008/" name="Codex/打桩机-M7/Icon" itemID="947ed196-cd458445" linkageExportForAS="true" linkageIdentifier="图标-Codex-打桩机M7">
+  <timeline>
+    <DOMTimeline name="Icon">
+      <layers>
+        <DOMLayer name="24x24遮罩" color="#6D9981" locked="true" current="true" isSelected="true" layerType="mask">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMGroup>
+                  <members>
+                    <DOMShape>
+                      <fills>
+                        <FillStyle index="1">
+                          <SolidColor color="#FFFFFF" />
+                        </FillStyle>
+                      </fills>
+                      <edges>
+                        <Edge fillStyle0="1" edges="!0 0|0 480!0 480|480 480!480 480|480 0!480 0|0 0" />
+                      </edges>
+                    </DOMShape>
+                  </members>
+                </DOMGroup>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="1" keyMode="9728">
+              <elements />
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="第一帧特写" color="#6D9981" parentLayerIndex="0" locked="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMGroup>
+                  <members>
+                    <DOMShape>
+                      <fills>
+                        <FillStyle index="1">
+                          <SolidColor color="#323B38" alpha="0.349019607843137" />
+                        </FillStyle>
+                      </fills>
+                      <edges>
+                        <Edge fillStyle0="1" edges="!440 380[438 361 381 349!381 349[325 336 240 336!240 336[155 336 99 349!99 349[42 361 40 380!40 380[42 399 99 411!99 411[155 424 240 424!240 424[325 424 381 411!381 411[438 399 440 380" />
+                      </edges>
+                    </DOMShape>
+                  </members>
+                </DOMGroup>
+                <DOMSymbolInstance libraryItemName="Codex/打桩机-M7/Clips/idle" name="icon_pose" symbolType="graphic" loop="single frame">
+                  <matrix>
+                    <Matrix a="0.139999389648438" d="0.139999389648438" tx="-4" ty="10" />
+                  </matrix>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="1" keyMode="9728">
+              <elements />
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="第二帧完整掉落" color="#6D9981">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements />
+            </DOMFrame>
+            <DOMFrame index="1" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/打桩机-M7/Clips/idle" name="icon_pose" symbolType="graphic" loop="single frame" />
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="停止" color="#FFFF00">
+          <frames>
+            <DOMFrame index="0" duration="2" keyMode="9728">
+              <Actionscript>
+                <script>stop();</script>
+              </Actionscript>
+              <elements />
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

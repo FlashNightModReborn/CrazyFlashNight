@@ -1,0 +1,937 @@
+<?xml version='1.0' encoding='utf-8'?>
+<DOMSymbolItem xmlns="http://ns.adobe.com/xfl/2008/" name="Codex/打桩机-M7/Clips/idle" itemID="9ece0764-c85cde22" symbolType="graphic">
+  <timeline>
+    <DOMTimeline name="idle">
+      <layers>
+        <DOMLayer name="机构动作阶段" color="#6D9981" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" duration="18" name="前导向座由收拢斜撑支承，杆侧锁保持" labelType="name" keyMode="9728">
+              <elements />
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="lower_deployed_hinge" color="#6D9981">
+          <frames>
+            <DOMFrame index="0" duration="18" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/打桩机-M7/Parts/brace_position_hinge" name="part_lower_deployed_hinge">
+                  <matrix>
+                    <Matrix a="0.184288535" b="-0.982872187" c="0.982872187" d="0.184288535" tx="239.5" ty="152.45" />
+                  </matrix>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="lower_hammer_brace_key" color="#6D9981">
+          <frames>
+            <DOMFrame index="0" duration="18" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/打桩机-M7/Parts/brace_position_gate" name="part_lower_hammer_brace_key">
+                  <matrix>
+                    <Matrix a="0.982872187" b="0.184288535" c="-0.184288535" d="0.982872187" tx="239.5" ty="152.45" />
+                  </matrix>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="upper_deployed_hinge" color="#6D9981">
+          <frames>
+            <DOMFrame index="0" duration="18" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/打桩机-M7/Parts/brace_position_hinge" name="part_upper_deployed_hinge">
+                  <matrix>
+                    <Matrix a="0.184288535" b="0.982872187" c="0.982872187" d="-0.184288535" tx="257.5" ty="-68.45" />
+                  </matrix>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="upper_hammer_brace_key" color="#6D9981">
+          <frames>
+            <DOMFrame index="0" duration="18" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/打桩机-M7/Parts/brace_position_gate" name="part_upper_hammer_brace_key">
+                  <matrix>
+                    <Matrix a="0.982872187" b="-0.184288535" c="-0.184288535" d="-0.982872187" tx="257.5" ty="-68.45" />
+                  </matrix>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="lower_stow_hinge" color="#6D9981">
+          <frames>
+            <DOMFrame index="0" duration="18" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/打桩机-M7/Parts/brace_position_hinge" name="part_lower_stow_hinge">
+                  <matrix>
+                    <Matrix a="0.927183855" b="0.374606593" c="0.374606593" d="-0.927183855" tx="208.5" ty="55.55" />
+                  </matrix>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="lower_stow_gate" color="#6D9981">
+          <frames>
+            <DOMFrame index="0" duration="18" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/打桩机-M7/Parts/brace_position_gate" name="part_lower_stow_gate">
+                  <matrix>
+                    <Matrix a="0.927183855" b="0.374606593" c="0.374606593" d="-0.927183855" tx="208.5" ty="55.55" />
+                  </matrix>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="upper_stow_hinge" color="#6D9981">
+          <frames>
+            <DOMFrame index="0" duration="18" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/打桩机-M7/Parts/brace_position_hinge" name="part_upper_stow_hinge">
+                  <matrix>
+                    <Matrix a="0.927183855" b="-0.374606593" c="0.374606593" d="0.927183855" tx="226.5" ty="28.4" />
+                  </matrix>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="upper_stow_gate" color="#6D9981">
+          <frames>
+            <DOMFrame index="0" duration="18" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/打桩机-M7/Parts/brace_position_gate" name="part_upper_stow_gate">
+                  <matrix>
+                    <Matrix a="0.927183855" b="-0.374606593" c="0.374606593" d="0.927183855" tx="226.5" ty="28.4" />
+                  </matrix>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="lower_hammer_brace" color="#6D9981">
+          <frames>
+            <DOMFrame index="0" duration="18" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/打桩机-M7/Parts/hammer_brace" name="part_lower_hammer_brace">
+                  <matrix>
+                    <Matrix a="0.374606593" b="-0.927183855" c="0.927183855" d="0.374606593" tx="162" ty="144" />
+                  </matrix>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="upper_hammer_brace" color="#6D9981">
+          <frames>
+            <DOMFrame index="0" duration="18" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/打桩机-M7/Parts/hammer_brace" name="part_upper_hammer_brace">
+                  <matrix>
+                    <Matrix a="0.374606593" b="0.927183855" c="-0.927183855" d="0.374606593" tx="180" ty="-60" />
+                  </matrix>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="hammer_stow_seats" color="#6D9981">
+          <frames>
+            <DOMFrame index="0" duration="18" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/打桩机-M7/Parts/hammer_stow_seats" name="part_hammer_stow_seats" />
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="hammer_brace_receivers" color="#6D9981">
+          <frames>
+            <DOMFrame index="0" duration="18" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/打桩机-M7/Parts/hammer_brace_receivers" name="part_hammer_brace_receivers" />
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="fixed_shield_tracks" color="#6D9981">
+          <frames>
+            <DOMFrame index="0" duration="18" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/打桩机-M7/Parts/fixed_shield_tracks" name="part_fixed_shield_tracks" />
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="lower_shield_lock" color="#6D9981">
+          <frames>
+            <DOMFrame index="0" duration="18" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/打桩机-M7/Parts/shield_lock" name="part_lower_shield_lock">
+                  <matrix>
+                    <Matrix d="-1" tx="192" ty="161" />
+                  </matrix>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="upper_shield_lock" color="#6D9981">
+          <frames>
+            <DOMFrame index="0" duration="18" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/打桩机-M7/Parts/shield_lock" name="part_upper_shield_lock">
+                  <matrix>
+                    <Matrix tx="212" ty="-39" />
+                  </matrix>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="lower_actuator_body" color="#6D9981">
+          <frames>
+            <DOMFrame index="0" duration="18" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/打桩机-M7/Parts/actuator_body" name="part_lower_actuator_body">
+                  <matrix>
+                    <Matrix ty="128" />
+                  </matrix>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="upper_actuator_body" color="#6D9981">
+          <frames>
+            <DOMFrame index="0" duration="18" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/打桩机-M7/Parts/actuator_body" name="part_upper_actuator_body">
+                  <matrix>
+                    <Matrix ty="100" />
+                  </matrix>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="lower_actuator_rod" color="#6D9981">
+          <frames>
+            <DOMFrame index="0" duration="18" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/打桩机-M7/Parts/actuator_rod" name="part_lower_actuator_rod">
+                  <matrix>
+                    <Matrix ty="128" />
+                  </matrix>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="upper_actuator_rod" color="#6D9981">
+          <frames>
+            <DOMFrame index="0" duration="18" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/打桩机-M7/Parts/actuator_rod" name="part_upper_actuator_rod">
+                  <matrix>
+                    <Matrix ty="100" />
+                  </matrix>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="shield_hardware" color="#6D9981">
+          <frames>
+            <DOMFrame index="0" duration="18" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/打桩机-M7/Parts/shield_hardware" name="part_shield_hardware" />
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="lower_head_pin_guide" color="#6D9981">
+          <frames>
+            <DOMFrame index="0" duration="18" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/打桩机-M7/Parts/head_pin_guide" name="part_lower_head_pin_guide">
+                  <matrix>
+                    <Matrix tx="246" ty="140" />
+                  </matrix>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="lower_hammer_head_key" color="#6D9981">
+          <frames>
+            <DOMFrame index="0" duration="18" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/打桩机-M7/Parts/shield_lock" name="part_lower_hammer_head_key">
+                  <matrix>
+                    <Matrix tx="246" ty="129" />
+                  </matrix>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="lower_face_gland" color="#6D9981">
+          <frames>
+            <DOMFrame index="0" duration="18" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/打桩机-M7/Parts/hammer_face_actuator_body" name="part_lower_face_gland">
+                  <matrix>
+                    <Matrix d="-1" tx="252" ty="96.3" />
+                  </matrix>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="lower_face_rod" color="#6D9981">
+          <frames>
+            <DOMFrame index="0" duration="18" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/打桩机-M7/Parts/hammer_face_actuator_rod" name="part_lower_face_rod">
+                  <matrix>
+                    <Matrix d="-1" tx="252" ty="96.3" />
+                  </matrix>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="hammer_lower_cap" color="#6D9981">
+          <frames>
+            <DOMFrame index="0" duration="18" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/打桩机-M7/Parts/hammer_lower_cap" name="part_hammer_lower_cap">
+                  <matrix>
+                    <Matrix tx="-18" />
+                  </matrix>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="upper_head_pin_guide" color="#6D9981">
+          <frames>
+            <DOMFrame index="0" duration="18" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/打桩机-M7/Parts/head_pin_guide" name="part_upper_head_pin_guide">
+                  <matrix>
+                    <Matrix tx="246" ty="-44" />
+                  </matrix>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="upper_hammer_head_key" color="#6D9981">
+          <frames>
+            <DOMFrame index="0" duration="18" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/打桩机-M7/Parts/shield_lock" name="part_upper_hammer_head_key">
+                  <matrix>
+                    <Matrix tx="246" ty="-55" />
+                  </matrix>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="upper_face_gland" color="#6D9981">
+          <frames>
+            <DOMFrame index="0" duration="18" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/打桩机-M7/Parts/hammer_face_actuator_body" name="part_upper_face_gland">
+                  <matrix>
+                    <Matrix tx="252" />
+                  </matrix>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="upper_face_rod" color="#6D9981">
+          <frames>
+            <DOMFrame index="0" duration="18" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/打桩机-M7/Parts/hammer_face_actuator_rod" name="part_upper_face_rod">
+                  <matrix>
+                    <Matrix tx="252" />
+                  </matrix>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="hammer_upper_cap" color="#6D9981">
+          <frames>
+            <DOMFrame index="0" duration="18" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/打桩机-M7/Parts/hammer_upper_cap" name="part_hammer_upper_cap">
+                  <matrix>
+                    <Matrix tx="-18" />
+                  </matrix>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="hammer_face_lower" color="#6D9981">
+          <frames>
+            <DOMFrame index="0" duration="18" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/打桩机-M7/Parts/hammer_face_lower" name="part_hammer_face_lower">
+                  <matrix>
+                    <Matrix tx="-18" />
+                  </matrix>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="hammer_face_upper" color="#6D9981">
+          <frames>
+            <DOMFrame index="0" duration="18" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/打桩机-M7/Parts/hammer_face_upper" name="part_hammer_face_upper">
+                  <matrix>
+                    <Matrix tx="-18" />
+                  </matrix>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="hammer_head_carrier" color="#6D9981">
+          <frames>
+            <DOMFrame index="0" duration="18" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/打桩机-M7/Parts/hammer_head_carrier" name="part_hammer_head_carrier" />
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="hammer_head_tongues" color="#6D9981">
+          <frames>
+            <DOMFrame index="0" duration="18" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/打桩机-M7/Parts/hammer_head_tongues" name="part_hammer_head_tongues">
+                  <matrix>
+                    <Matrix tx="-18" />
+                  </matrix>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="shield_carriage" color="#6D9981">
+          <frames>
+            <DOMFrame index="0" duration="18" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/打桩机-M7/Parts/shield_carriage" name="part_shield_carriage" />
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="guide_supports" color="#6D9981">
+          <frames>
+            <DOMFrame index="0" duration="18" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/打桩机-M7/Parts/guide_supports" name="part_guide_supports" />
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="fixed_frame_front" color="#6D9981">
+          <frames>
+            <DOMFrame index="0" duration="18" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/打桩机-M7/Parts/fixed_frame_front" name="part_fixed_frame_front" />
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="hammer_buffer_clamp" color="#6D9981">
+          <frames>
+            <DOMFrame index="0" duration="18" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/打桩机-M7/Parts/hammer_buffer_clamp" name="part_hammer_buffer_clamp">
+                  <matrix>
+                    <Matrix ty="10" />
+                  </matrix>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="hammer_buffer_cradle" color="#6D9981">
+          <frames>
+            <DOMFrame index="0" duration="18" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/打桩机-M7/Parts/hammer_buffer_cradle" name="part_hammer_buffer_cradle" />
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="hammer_brace_roots" color="#6D9981">
+          <frames>
+            <DOMFrame index="0" duration="18" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/打桩机-M7/Parts/hammer_brace_roots" name="part_hammer_brace_roots" />
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="exhaust_flap" color="#6D9981">
+          <frames>
+            <DOMFrame index="0" duration="18" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/打桩机-M7/Parts/exhaust_flap" name="part_exhaust_flap">
+                  <matrix>
+                    <Matrix tx="-155" ty="24" />
+                  </matrix>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="exhaust_elbow" color="#6D9981">
+          <frames>
+            <DOMFrame index="0" duration="18" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/打桩机-M7/Parts/exhaust_elbow" name="part_exhaust_elbow" />
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="firing_catch_housing" color="#6D9981">
+          <frames>
+            <DOMFrame index="0" duration="18" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/打桩机-M7/Parts/firing_catch_housing" name="part_firing_catch_housing">
+                  <matrix>
+                    <Matrix tx="-121" ty="35" />
+                  </matrix>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="body_rod_housing" color="#6D9981">
+          <frames>
+            <DOMFrame index="0" duration="18" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/打桩机-M7/Parts/body_rod_housing" name="part_body_rod_housing" />
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="firing_catch" color="#6D9981">
+          <frames>
+            <DOMFrame index="0" duration="18" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/打桩机-M7/Parts/firing_catch" name="part_firing_catch">
+                  <matrix>
+                    <Matrix a="0.5" b="-0.866025404" c="0.866025404" d="0.5" tx="-121" ty="35" />
+                  </matrix>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="body_rod_key" color="#6D9981">
+          <frames>
+            <DOMFrame index="0" duration="18" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/打桩机-M7/Parts/body_rod_key" name="part_body_rod_key">
+                  <matrix>
+                    <Matrix tx="-108" ty="68.15" />
+                  </matrix>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="body_rod_lock" color="#6D9981">
+          <frames>
+            <DOMFrame index="0" duration="18" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/打桩机-M7/Parts/body_rod_lock" name="part_body_rod_lock">
+                  <matrix>
+                    <Matrix tx="-114" ty="50.15" />
+                  </matrix>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="机体观察窗遮罩" color="#6D9981" locked="true" layerType="mask">
+          <frames>
+            <DOMFrame index="0" duration="18" keyMode="9728">
+              <elements>
+                <DOMGroup>
+                  <members>
+                    <DOMShape>
+                      <fills>
+                        <FillStyle index="1">
+                          <SolidColor color="#FFFFFF" />
+                        </FillStyle>
+                      </fills>
+                      <edges>
+                        <Edge fillStyle0="1" edges="!-2540 760|-2540 1220!-2540 1220|-2020 1220!-2020 1220|-2020 760!-2020 760|-2540 760" />
+                      </edges>
+                    </DOMShape>
+                  </members>
+                </DOMGroup>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="rod_window_recesses" color="#6D9981" parentLayerIndex="48" locked="true">
+          <frames>
+            <DOMFrame index="0" duration="18" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/打桩机-M7/Parts/shaft_lock_recesses" name="part_rod_window_recesses" />
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="rod_window_shaft" color="#6D9981" parentLayerIndex="48" locked="true">
+          <frames>
+            <DOMFrame index="0" duration="18" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/打桩机-M7/Parts/main_shaft" name="part_rod_window_shaft" />
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="rod_window_well" color="#6D9981">
+          <frames>
+            <DOMFrame index="0" duration="18" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/打桩机-M7/Parts/rod_window_well" name="part_rod_window_well" />
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="fixed_exhaust_collar" color="#6D9981">
+          <frames>
+            <DOMFrame index="0" duration="18" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/打桩机-M7/Parts/fixed_exhaust_collar" name="part_fixed_exhaust_collar" />
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="fixed_front_bearing" color="#6D9981">
+          <frames>
+            <DOMFrame index="0" duration="18" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/打桩机-M7/Parts/fixed_front_bearing" name="part_fixed_front_bearing" />
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="ready_flag" color="#6D9981">
+          <frames>
+            <DOMFrame index="0" duration="18" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/打桩机-M7/Parts/ready_flag" name="part_ready_flag">
+                  <matrix>
+                    <Matrix tx="10" ty="80" />
+                  </matrix>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="gauge" color="#6D9981">
+          <frames>
+            <DOMFrame index="0" duration="18" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/打桩机-M7/Parts/gauge" name="part_gauge">
+                  <matrix>
+                    <Matrix tx="94" ty="-2" />
+                  </matrix>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="gauge_mount" color="#6D9981">
+          <frames>
+            <DOMFrame index="0" duration="18" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/打桩机-M7/Parts/gauge_mount" name="part_gauge_mount" />
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="cam_mounts" color="#6D9981">
+          <frames>
+            <DOMFrame index="0" duration="18" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/打桩机-M7/Parts/cam_mounts" name="part_cam_mounts" />
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="lower_cam_roller" color="#6D9981">
+          <frames>
+            <DOMFrame index="0" duration="18" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/打桩机-M7/Parts/cam_roller" name="part_lower_cam_roller">
+                  <matrix>
+                    <Matrix tx="132.8" ty="59.2" />
+                  </matrix>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="lower_cam" color="#6D9981">
+          <frames>
+            <DOMFrame index="0" duration="18" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/打桩机-M7/Parts/pressure_cam" name="part_lower_cam">
+                  <matrix>
+                    <Matrix a="-0.342020143" b="0.939692621" c="-0.939692621" d="-0.342020143" tx="126" ty="78" />
+                  </matrix>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="upper_cam_roller" color="#6D9981">
+          <frames>
+            <DOMFrame index="0" duration="18" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/打桩机-M7/Parts/cam_roller" name="part_upper_cam_roller">
+                  <matrix>
+                    <Matrix tx="119.15" ty="-0.75" />
+                  </matrix>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="upper_cam" color="#6D9981">
+          <frames>
+            <DOMFrame index="0" duration="18" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/打桩机-M7/Parts/pressure_cam" name="part_upper_cam">
+                  <matrix>
+                    <Matrix a="0.342020143" b="0.939692621" c="-0.939692621" d="0.342020143" tx="126" ty="18" />
+                  </matrix>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="lower_cam_keeper" color="#6D9981">
+          <frames>
+            <DOMFrame index="0" duration="18" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/打桩机-M7/Parts/cam_keeper" name="part_lower_cam_keeper">
+                  <matrix>
+                    <Matrix tx="86.35" ty="70.5" />
+                  </matrix>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="upper_cam_keeper" color="#6D9981">
+          <frames>
+            <DOMFrame index="0" duration="18" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/打桩机-M7/Parts/cam_keeper" name="part_upper_cam_keeper">
+                  <matrix>
+                    <Matrix tx="86.35" ty="25.5" />
+                  </matrix>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="control_sleeve" color="#6D9981">
+          <frames>
+            <DOMFrame index="0" duration="18" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/打桩机-M7/Parts/control_sleeve" name="part_control_sleeve" />
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="burst_selector" color="#6D9981">
+          <frames>
+            <DOMFrame index="0" duration="18" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/打桩机-M7/Parts/burst_selector" name="part_burst_selector">
+                  <matrix>
+                    <Matrix tx="137" ty="-5" />
+                  </matrix>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="ammo_3" color="#6D9981">
+          <frames>
+            <DOMFrame index="0" duration="18" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/打桩机-M7/Parts/ammo_live" name="part_ammo_3">
+                  <matrix>
+                    <Matrix tx="155" ty="-9" />
+                  </matrix>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="ammo_2" color="#6D9981">
+          <frames>
+            <DOMFrame index="0" duration="18" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/打桩机-M7/Parts/ammo_live" name="part_ammo_2">
+                  <matrix>
+                    <Matrix tx="137" ty="6" />
+                  </matrix>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="ammo_1" color="#6D9981">
+          <frames>
+            <DOMFrame index="0" duration="18" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/打桩机-M7/Parts/ammo_live" name="part_ammo_1">
+                  <matrix>
+                    <Matrix tx="119" ty="-7" />
+                  </matrix>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="power_magazine" color="#6D9981">
+          <frames>
+            <DOMFrame index="0" duration="18" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/打桩机-M7/Parts/power_magazine" name="part_power_magazine" />
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="fixed_grip_bridge" color="#6D9981">
+          <frames>
+            <DOMFrame index="0" duration="18" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/打桩机-M7/Parts/fixed_grip_bridge" name="part_fixed_grip_bridge" />
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="rear_damper_eye" color="#6D9981">
+          <frames>
+            <DOMFrame index="0" duration="18" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/打桩机-M7/Parts/rear_damper_eye" name="part_rear_damper_eye" />
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="moving_buffer_seat" color="#6D9981">
+          <frames>
+            <DOMFrame index="0" duration="18" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/打桩机-M7/Parts/moving_buffer_seat" name="part_moving_buffer_seat" />
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="rear_damper_body" color="#6D9981">
+          <frames>
+            <DOMFrame index="0" duration="18" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/打桩机-M7/Parts/rear_damper_body" name="part_rear_damper_body" />
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="rear_damper_rod" color="#6D9981">
+          <frames>
+            <DOMFrame index="0" duration="18" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/打桩机-M7/Parts/rear_damper_rod" name="part_rear_damper_rod" />
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="inner_core" color="#6D9981">
+          <frames>
+            <DOMFrame index="0" duration="18" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/打桩机-M7/Parts/inner_core" name="part_inner_core" />
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="shaft_lock_recesses" color="#6D9981">
+          <frames>
+            <DOMFrame index="0" duration="18" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/打桩机-M7/Parts/shaft_lock_recesses" name="part_shaft_lock_recesses" />
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="main_shaft" color="#6D9981">
+          <frames>
+            <DOMFrame index="0" duration="18" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/打桩机-M7/Parts/main_shaft" name="part_main_shaft" />
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="fixed_buffer_rail" color="#6D9981">
+          <frames>
+            <DOMFrame index="0" duration="18" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/打桩机-M7/Parts/fixed_buffer_rail" name="part_fixed_buffer_rail" />
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="fixed_lower_housing" color="#6D9981">
+          <frames>
+            <DOMFrame index="0" duration="18" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/打桩机-M7/Parts/fixed_lower_housing" name="part_fixed_lower_housing" />
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="fixed_frame_back" color="#6D9981">
+          <frames>
+            <DOMFrame index="0" duration="18" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/打桩机-M7/Parts/fixed_frame_back" name="part_fixed_frame_back" />
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

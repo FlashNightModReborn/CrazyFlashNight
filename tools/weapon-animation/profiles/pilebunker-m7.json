@@ -1,0 +1,29 @@
+{
+  "schemaVersion": 1,
+  "itemName": "火药燃气液压打桩机",
+  "namespace": "Codex/打桩机-M7",
+  "library": "flashswf/arts/new/Codex专用素材",
+  "poseSource": "flashswf/arts/new/Codex素材源稿/打桩机-M7/运行姿态表.json",
+  "runtimeData": "data/weapon-animations/pilebunker-m7.json",
+  "sourceArchiveSHA256": "5439a02e3adff1c33c216d818680e29d055da8b1e13b6e1efe5b24b27e4eeb34",
+  "sourcePoseSHA256": "91dbc368985ea63dc2f38dc704698b28c04885da11b1cf43e90c13e699a97f88",
+  "weaponLinkage": "枪-长枪-Codex-打桩机M7",
+  "iconLinkage": "图标-Codex-打桩机M7",
+  "chargeCountMax": 30,
+  "prepareTicks": 15,
+  "transformTicks": 15,
+  "normalFireEntry0": 8,
+  "bladeRotation": 90,
+  "bladeX": 0,
+  "bladeY": 0,
+  "bladeFaceHalfHeight": 100,
+  "profileKey": "data_pilebunker_m7",
+  "tier": "重锤",
+  "displayName": "重锤燃气打桩机",
+  "scope": "火药燃气液压打桩机的重锤进阶形态；原物品身份保留，基础形态使用原版外观与生命周期。数值真源为物品XML，姿态配置负责播放与单次桩击的完整出桩区域。",
+  "strikeFrames0": {
+    "N0": 8,
+    "N1": 1,
+    "S1": 1
+  }
+}

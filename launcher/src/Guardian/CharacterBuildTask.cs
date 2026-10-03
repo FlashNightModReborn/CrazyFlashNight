@@ -2210,6 +2210,9 @@ namespace CF7Launcher.Guardian
             parameters["panelInstanceId"] = entry.PanelInstanceId;
             parameters["requestCallId"] = entry.WebCallId;
             parameters["writeEpoch"] = entry.WriteEpoch;
+            // Host-owned read capability; older AS2 may omit the optional projection.
+            // Keeping it off Web mutation payloads preserves their exact write contract.
+            if (entry.Command == "snapshot") parameters["appearanceVersion"] = 1;
             JObject flash = PanelBridge.BuildFlashCommand(
                 entry.FlashAction,
                 entry.BackendCallId,

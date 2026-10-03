@@ -450,11 +450,12 @@
     <icon>火药燃气液压打桩机</icon>
     <type>武器</type>
     <use>长枪</use>
-    <price>300000</price>
-    <description>....</description>
+    <price>349440</price>
+    <description>用于大型构筑物拆解的火药燃气工程器械。燃气向前推动打击杆，同时经后部喷口排出，以抵消主要后坐冲量。厚重框架承担导向与回收载荷，前置护盾阻挡作业时飞溅的碎石。
+    原型可用常规桩击，空刀槽时也能切换为狂野重锤：基础锋利度590、物理锤击。普通换弹延迟+200%，可由翻滚换弹技能补装；进阶后获得蓄压与燃气联动。</description>
     <data>
       <level>35</level>
-      <weight>25</weight>
+      <weight>80</weight>
       <dressup>枪-长枪-火药燃气液压打桩机</dressup>
       <capacity>3</capacity>
       <split>3</split>
@@ -466,24 +467,126 @@
       <sound>awp1.wav</sound>
       <muzzle>发射器枪火</muzzle>
       <bullethit>火花</bullethit>
-      <clipname>突击步枪通用弹药</clipname>
+      <clipname>榴弹弹药</clipname>
       <bulletsize>40</bulletsize>
-      <power>3000</power>
+      <power>8270</power>
       <impact>1</impact>
       <hp>300</hp>
-      <defence>300</defence>
+      <defence>350</defence>
       <accuracy>300</accuracy>
       <evasion>300</evasion>
       <toughness>300</toughness>
-      <reloadPenalty>0</reloadPenalty>
+      <reloadPenalty>200</reloadPenalty>
     </data>
+    <balance>
+      <formulaFamily>weapon</formulaFamily>
+      <schemaVersion>1</schemaVersion>
+      <workbookVersion>1</workbookVersion>
+      <profiles>
+        <data>
+          <dualWield>1</dualWield>
+          <pierce>1</pierce>
+          <damageType>1</damageType>
+          <shotgun>3</shotgun>
+          <magPrice>2500</magPrice>
+          <weightLayers>0</weightLayers>
+          <category>1</category>
+          <formula>1</formula>
+          <status>unresolved</status>
+          <displayEligible>false</displayEligible>
+          <inputDigest>fnv1a32:e6897d26</inputDigest>
+          <auditRef>weapon:火药燃气液压打桩机:data</auditRef>
+        </data>
+        <data_pilebunker_m7>
+          <dualWield>1</dualWield>
+          <pierce>1</pierce>
+          <damageType>1</damageType>
+          <shotgun>3</shotgun>
+          <magPrice>2500</magPrice>
+          <weightLayers>0</weightLayers>
+          <category>1</category>
+          <formula>1</formula>
+          <status>unresolved</status>
+          <displayEligible>false</displayEligible>
+          <inputDigest>fnv1a32:bf0ed3f3</inputDigest>
+          <auditRef>weapon:火药燃气液压打桩机:data_pilebunker_m7</auditRef>
+        </data_pilebunker_m7>
+      </profiles>
+    </balance>
+    <data_pilebunker_m7>
+      <level>55</level>
+      <weight>150</weight>
+      <displayname>重锤燃气打桩机</displayname>
+      <icon>Codex-打桩机M7</icon>
+      <dressup>枪-长枪-Codex-打桩机M7</dressup>
+      <power>17420</power>
+      <hp>1015</hp>
+      <defence>1185</defence>
+      <description>这台机器最初面对的是承重墙。突击工兵给它加上分体护盾、回收锁扣和喷火管线；收起桩杆，整副机架便成了一柄重锤。它保留着工程器械的脾气：先站稳，再把挡路的东西拆掉。
+    【枪态·默认键位】按住Q蓄压；就绪后普攻为1.5倍桩击，F释放过载，再按Q卸压。普通与蓄力桩击均不追加烈焰。
+    【换弹】普通主仓换弹延迟+200%；翻滚换弹沿用技能补弹。
+    【喷火与补装】K喷火（基础威力850、间隔220毫秒）；基础燃料12格，R补装，一罐补满一仓。喷火与两种战技共用燃料。
+    【锤态】空刀槽时可使用狂野重锤：基础锋利度890、装甲破击，重击附带免费碎石。
+    【锤态战技】F发动燃气破坏，50 MP、共享10秒冷却。6秒内锤击附带0.05%击溃、6%斩杀；重击耗油触发立场烈焰，无油时改出碎石。</description>
+      <skill>
+        <skillname>打桩过载</skillname>
+        <description>蓄压就绪后耗尽余弹，完成一次过载桩击。弹仓指示1／2／3档对应1.5／2／3倍威力，附带1%击溃、13%斩杀。每发榴弹可联动一档立场烈焰，最多三档；每档另耗一格燃料，缺油仅减少火焰。</description>
+        <cd>10000</cd>
+        <mp>120</mp>
+        <skillLocked>true</skillLocked>
+      </skill>
+      <lifecycle>
+        <attr_0>
+          <skillInteraction>bound</skillInteraction>
+          <init>
+            <initRoutines>打桩机M7初始化</initRoutines>
+            <initParam>
+              <poseData>data/weapon-animations/pilebunker-m7.json</poseData>
+              <normalPowerMultiplier>1</normalPowerMultiplier>
+              <chargedPowerMultiplier>1.5</chargedPowerMultiplier>
+              <skillMiddlePowerMultiplier>2</skillMiddlePowerMultiplier>
+              <skillPowerMultiplier>3</skillPowerMultiplier>
+              <bladePower>890</bladePower>
+              <chargedCrumble>1</chargedCrumble>
+              <skillExecute>13</skillExecute>
+              <hammerBuffFrames>180</hammerBuffFrames>
+              <hammerCrumble>0.05</hammerCrumble>
+              <hammerExecute>6</hammerExecute>
+              <rockPowerMultiplier>0.5</rockPowerMultiplier>
+              <effectIntervalFrames>15</effectIntervalFrames>
+              <flame_0><bullet>熔炎裂渊</bullet><powerMultiplier>1</powerMultiplier></flame_0>
+              <flame_1><bullet>烈炎斜升</bullet><powerMultiplier>1.5</powerMultiplier></flame_1>
+              <flame_2><bullet>终极打击</bullet><powerMultiplier>2</powerMultiplier></flame_2>
+              <skill_1>
+                <skillname>燃气破坏</skillname>
+                <description>发动破坏殆尽，进入6秒强化：锤击附带0.05%击溃、6%斩杀；指定重击消耗一格燃料触发立场烈焰，无油时改出免费碎石。</description>
+                <cd>10000</cd><mp>50</mp><skillLocked>true</skillLocked>
+              </skill_1>
+              <flamethrower>
+                <name>重锤内置喷火器</name><controlName>喷火器补装</controlName>
+                <description>与枪锤联动共用12格燃料。蓄压就绪时切换为过载战技，卸压或击发回收后恢复副喷火器。</description>
+                <cd>220</cd><mp>0</mp><power>850</power><powerMultiplier>1</powerMultiplier>
+                <capacity>12</capacity><reserveName>火焰喷射器燃料罐</reserveName>
+                <bullet>喷火束</bullet><sound>火焰枪.wav</sound><split>1</split><diffusion>10</diffusion>
+                <velocity>45</velocity><range>25</range><impact>100</impact><damageType>物理</damageType>
+                <consumeMode>onLoadGroup</consumeMode><consumeTiming>onReloadCommit</consumeTiming>
+                <clipCostPerLoad>1</clipCostPerLoad><initialLoaded>12</initialLoaded>
+                <manualReloadAnimation>longGun</manualReloadAnimation><manualReloadBurden>25</manualReloadBurden>
+              </flamethrower>
+            </initParam>
+          </init>
+          <cycle>
+            <cycleRoutines>打桩机M7周期</cycleRoutines>
+          </cycle>
+        </attr_0>
+      </lifecycle>
+    </data_pilebunker_m7>
     <lifecycle>
       <attr_0>
         <skillInteraction>independent</skillInteraction>
         <init>
           <initRoutines>火药燃气液压打桩机初始化</initRoutines>
-          <initParam>
-          </initParam>
+          <initParam><bladePower>590</bladePower><bladeRotation>90</bladeRotation><bladeFaceHalfHeight>100</bladeFaceHalfHeight></initParam>
         </init>
         <cycle>
           <cycleRoutines>火药燃气液压打桩机周期</cycleRoutines>

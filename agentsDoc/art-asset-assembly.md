@@ -60,6 +60,14 @@ Codex 的装备装配以 `flashswf/arts/new/Codex专用素材/Codex专用素材.
 
 确定性编辑 XFL 后仍由 CS6 完成原生源保存、SWF 发布，并核对新鲜 Compiler Errors 与实际导出链接。CS6 另存 XFL 会重建目标目录，原稿和说明放在旁边的 `Codex素材源稿/`，不要混入 XFL 目录。首件 QJZ171 的来源和倍率见 [素材说明](../flashswf/arts/new/Codex素材源稿/README.md)，人类已验收的范围及独立物品标定见 [案例](../docs/QJZ171-独立物品与Flash资产流程标定-2026-09-05.md)。
 
+### 装备进阶外观投影
+
+完整能力需 Host、asLoader 与 Web 配对；实现合同如下，正式发布状态与入口证据以 runtime manifest 及[runtime发布记录](../docs/runtime-build-reproducibility.md)为准。
+
+角色构筑保持原物品名作为存档和操作身份。Host 在只读 snapshot 中声明 `appearanceVersion=1`，AS2 才在已装备与候选的 item 投影中增加 `appearance`：四个有效 `dressup/dressup1/dressup2/dressup3` 链接及 `helmet/hairAbove` 两个布尔值，来源为实例 `getData()` 的进阶/插件计算结果。Host 严格校验此闭集；Web 只按性别与槽位展开部件，不从名称、图标或说明猜进阶。旧 Host 未声明能力时保留原协议形状；旧 AS2 未提供外观时使用基础清单。
+
+离线生成器同时收集各 `data_*` 覆盖后的完整外观及复合刀部件，登记为物品的 `appearanceVariants` 并补齐 skin 资源；它只负责资源闭包，不替 AS2 选择实例进阶。候选试穿替换当前槽的完整投影，退回基础款时不能残留上件的外观；共享人物取景仍由身体控制，不因长武器挤小人物。新增检查为 `node tools/test-character-build-appearance.js`，真实像素见 `node tools/run-character-build-dressup-harness.js` 的男女 M7 基础/重锤切换；资源闭包继续由 `tools/test-dressup-manifest-integrity.py` 检查。
+
 ### 单一编辑源：FLA 转 XFL 后收尾
 
 FLA 与完整 XFL 是同一工程的两种保存形式；小型 `.xfl` 文件只是打开入口，必须连同 DOMDocument、LIBRARY、bin 等目录内容保留。确认工程转向 XFL 后移除旧 FLA，避免搜索、误打开、误编译和双份编辑漂移。SWF 是运行时产物，仍须保留；尚未转成 XFL 的库继续以 FLA 为源。
@@ -94,6 +102,8 @@ FLA 与完整 XFL 是同一工程的两种保存形式；小型 `.xfl` 文件只
 雌鹿直升机 G04 交接包（G01 完整母版／G02 军阀中损／G03R1 A 兵团坠毁，全部零脚本纯矢量）源稿登记在 `flashswf/arts/new/Codex素材源稿/雌鹿直升机G04/`，素材接口契约与绘制经验沉淀见 [雌鹿直升机G04交接经验](../docs/雌鹿直升机G04交接-绘制经验与接入要点-2026-09-15.md)。练习场图 4 的 `gk1_4_BG` 已按 gk22_2_BG 先例迁为完整 XFL；G03R1 首批接入于 2026-09-16 完成，残骸进变体背景 `gk1_4_BG_坠毁.swf`（剧情节点素材不污染公共原图），authority 为唯一消费者变体自身，工具为 [hind-map-assets](../tools/hind-map-assets/README.md)，86 元件闭包冻结（FactionSlot 锁 A 帧、原生遮罩保留、全单帧 Graphic），0.75 倍摆放在行走区上缘之后。
 
 ### 武器分件射击动画
+
+大量完整姿态使用 [M7 常驻总装与外置姿态](../tools/weapon-animation/README.md#m7-常驻总装与外置姿态)：原生分件只装配一次，逐帧矩阵由 JSON 完整索引提供；复用数据读取基建并按装备租约管理共享缓存，不生成大量逐页 `.as` 数据或加入启动预载。原版物品临时借用只改配置绑定，进阶玩法放在独立脚本。
 
 已有静态武器要增加后坐、复进等运动时，使用 [weapon-animation](../tools/weapon-animation/README.md)：先核实原型和既有样例的运动部件，再以 profile 声明分件轨迹，由 XFL 生成器构造受控 MovieClip，CS6 原生核对并发布。静态总装继续供图标使用；射击动画采用成功 `processShot` → 状态/周期 → placement 视觉同步的接线，不能用一个自行循环的时间轴代替发射事件。
 

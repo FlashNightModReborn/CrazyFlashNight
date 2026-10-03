@@ -1,0 +1,153 @@
+{
+  "schema": "cf7-pilebunker-release-evidence.v1",
+  "recordedAtUtc": "2026-10-03T01:27:01.636591+00:00",
+  "state": "promoted",
+  "authorization": "维护者明确授权：可行，把其他潜在需要处理的问题都收尾，然后走发布列车。",
+  "source": {
+    "commit": "2856f94bdbe5ce1df92196d067fee716ab70b4bc",
+    "tree": "311fcbe12aeda0494844a555a50b4ffd724164a5",
+    "tag": "refs/tags/runtime-build-v2/20261003-pilebunker-v2",
+    "deploymentCommit": "0b20004010802dfc0cb01ce254848390fed399ee"
+  },
+  "request": {
+    "requestId": "5D0D7B27EDC91E78E68925BD50C28D0D18C7F036F5BC8D190B1DB6B4C5D0C0CB",
+    "artifactSourceHash": "D63CEEA997F94B8278A5E3670D5CDFCE5F234C1A62EEC4EE49887171C933A456",
+    "producerRecipeHash": "310F5CA955E5210C2F305C10D2DAB06CA84BBD84924998176A5F0620748574D0",
+    "toolchainLockHash": "DFA769829F9740196DEF63351A00AAC309E50A2CA0A768759334EB2A2161DD36",
+    "policyHash": "8D2CC8939173F9C992BEAC6724B9AC950557E8332E9AF594E9E3357CCB58B9A1",
+    "buildIdentityHash": "46B9191F1A861752AE0C3580E6C6E6CB2A9B695B7D209F0FB0B000557E03A0B9"
+  },
+  "payload": {
+    "closure": "3586DCA088E4FBF4E8631861DDA111C101CB338976993098023590FE82ED34CA",
+    "fileCount": 36,
+    "manifestSha256": "63A5BD0071B0E343BE6EB22B2588C50691CBC4E769CA64D830722D8E78ECBA4E",
+    "coreDllSha256": "EA221728F6A021B69A186FFEAF299C8026D7B2D781C8FB7E2BEAA32D802286A6"
+  },
+  "builds": {
+    "localWorker": "builder-local-c",
+    "faultDomains": [
+      "physical-host-c",
+      "github-hosted-windows"
+    ],
+    "signerCount": 2,
+    "identityAndClosureMatch": true,
+    "localProducerReusedAcrossPolicyOnlyRefactor": true,
+    "cloudRunId": 37083440255,
+    "cloudRunUrl": "https://github.com/FlashNightModReborn/CrazyFlashNight/actions/runs/37083440255",
+    "cloudConclusion": "success",
+    "cloudArtifactScope": "attestation-only"
+  },
+  "policy": {
+    "profile": "production",
+    "passed": true,
+    "passedChecks": 47,
+    "totalChecks": 47,
+    "receiptSha256": "38AED634867C3078C599BC18F92298554E2F2D0C9AC750DE8002418994AFF245"
+  },
+  "promotion": {
+    "promotedAtUtc": "2026-10-03T00:57:21.7899472Z",
+    "soleWriter": "tools/promote-runtime-bundle.ps1",
+    "fullInstallBootstrapVerifyOnlyPassed": true,
+    "rollback": "tmp/runtime-promotions/20261003T005652711Z-1aaf8cf3b6cb43849f58005746ab6d53/previous"
+  },
+  "ci": {
+    "runId": 37084969440,
+    "url": "https://github.com/FlashNightModReborn/CrazyFlashNight/actions/runs/37084969440",
+    "conclusion": "success",
+    "state": "promoted",
+    "deploymentChanged": true,
+    "signers": 2,
+    "faultDomains": 2
+  },
+  "regression": {
+    "as2": {
+      "classicPassed": 53,
+      "advancedPassed": 392,
+      "manualInputPassed": 640,
+      "totalPassed": 1085,
+      "failed": 0
+    },
+    "asLoader": {
+      "compilerErrors": 0,
+      "compilerWarnings": 0,
+      "bytes": 1447783,
+      "sha256": "E63A889BB9C1ECB02D6338DAD9CE8ACB1CE30D905F6BC4DBA6C770D1BAFD55D9"
+    },
+    "appearanceCasesPassed": 2298,
+    "sessionCasesPassed": 39,
+    "projectionCasesPassed": 11,
+    "productionControllerBrowserCasesPassed": 1149,
+    "browserViewports": 3,
+    "browserVisibilityAndKeyboardCasesPassed": 30
+  },
+  "formalWindowLifecycle": {
+    "passed": true,
+    "entry": "standard_root_bootstrap",
+    "coreProcessId": 25840,
+    "coreSha256": "3988B5F22F00880270BB2B8329F2E690C623887E6E0767483AE2D0EBF11621FE",
+    "observedCorePathMatchedFormalInstallation": true,
+    "buildIdentity": "46B9191F1A861752AE0C3580E6C6E6CB2A9B695B7D209F0FB0B000557E03A0B9",
+    "payloadClosure": "3586DCA088E4FBF4E8631861DDA111C101CB338976993098023590FE82ED34CA",
+    "identityEvidence": "promoted manifest plus observed Core process path and SHA256",
+    "observedUiState": "Idle",
+    "closeAction": "computer-use accessibility window Close button",
+    "coreExitCode": 0,
+    "noBindingObserved": true,
+    "residualGameProcesses": 0,
+    "protectedFiles": {
+      "shadow": 8,
+      "sol": 8,
+      "bytesUnchanged": true,
+      "originalsBackedUp": true,
+      "scope": "saves root except launcher version marker, and exact installation SOL files"
+    },
+    "businessJourneyExecuted": false,
+    "agentProtocolShutdownVerified": false
+  },
+  "retainedAgentQualificationFailures": [
+    {
+      "scope": "after_flash_reveal",
+      "passed": false,
+      "runnerExitCode": 2,
+      "error": "trusted_runner_shutdown_capture_failed",
+      "sessionStatusVerified": true,
+      "flashRevealAndPanelSwapObserved": true,
+      "trustedCompletionEvidenceEmitted": false,
+      "savesUnchanged": true,
+      "businessJourneyExecuted": false,
+      "localReport": "tmp/pilebunker-m7/release-20261003-v2/formal-entry.json"
+    },
+    {
+      "scope": "early_launcher_shutdown",
+      "passed": false,
+      "runnerExitCode": 2,
+      "error": "trusted_runner_protocol_shutdown_exit_code_invalid",
+      "sessionStatusVerified": true,
+      "flashRevealAndPanelSwapObserved": false,
+      "trustedCompletionEvidenceEmitted": false,
+      "savesUnchanged": true,
+      "businessJourneyExecuted": false,
+      "localReport": "tmp/pilebunker-m7/release-20261003-v2/formal-launcher-phase.json"
+    }
+  ],
+  "retainedFirstPolicyFailure": {
+    "tag": "refs/tags/runtime-build-v2/20261003-pilebunker-v1",
+    "requestId": "69FFE7877565223BF5C0209BE44DA543CE75C8F79033092D4DEADA57555629DA",
+    "passedChecks": 45,
+    "totalChecks": 47,
+    "reason": "WB112 character-build.js exceeded the unchanged 640-line module threshold",
+    "resolution": "Move resolved appearance selection to the existing paper-doll module; new source/tag/request/policy receipt",
+    "promoted": false,
+    "supersededByRequestId": "5D0D7B27EDC91E78E68925BD50C28D0D18C7F036F5BC8D190B1DB6B4C5D0C0CB"
+  },
+  "scopeLimits": {
+    "normalAcquisitionDeferred": true,
+    "modifierOnlyAcquisition": true,
+    "newStablePackageCreated": false,
+    "businessStandardEntryVerified": false,
+    "newMeleeAndReloadFeelHumanRevalidationPending": true,
+    "agentShutdownQualificationPassed": false,
+    "agentShutdownRootCausesFullyDiagnosed": false
+  },
+  "localEvidenceRoot": "tmp/pilebunker-m7/release-20261003-v2"
+}

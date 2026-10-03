@@ -13,6 +13,7 @@
 |------|------|--------|
 | [docs/agent-balance-record-design.md](./docs/agent-balance-record-design.md) | **当前契约** - 武器 `<balance>` schema、权威边界、施工与验证 | 必读 |
 | [docs/weapon-balance-rulebook.md](./docs/weapon-balance-rulebook.md) | **当前规则** - 武器平衡业务判据与稳定条款 ID | 必读 |
+| [docs/monster-flag-rulebook.md](./docs/monster-flag-rulebook.md) | **当前规则** - 怪物面板公式、`<标识>` 反推可辨识性与阶段反查 | 数值/关卡相关必读 |
 | [CF7-BalanceTool-DevSpec-v3.md](./CF7-BalanceTool-DevSpec-v3.md) | 历史开发规格；与当前契约冲突时不得采用 | 历史 |
 | [CF7-BalanceTool-Investigation-Report.md](./CF7-BalanceTool-Investigation-Report.md) | 历史调研报告 | 历史 |
 | [CF7-BalanceTool-DocAudit-v1.md](./CF7-BalanceTool-DocAudit-v1.md) | 历史文档审计 | 历史 |
@@ -58,6 +59,7 @@
 | 防具 | 4 | 0-19级/20-39级/40+级/颈部 |
 | 近战(刀) | 15 | 15种刀类子类 |
 | 药剂 | 1 | 59个公式，治疗效果计算 |
+| 怪物(敌人属性) | 13 | enemy_properties/，面板公式正反算、`<标识>` 普查与写回，魔神.xml 除外 |
 | 经济/合成 | - | 价格/合成成本/副本收益 |
 
 ### 仅 CRUD (暂无数值理论)
@@ -72,7 +74,7 @@
 
 | 品类 | 文件数 | 说明 |
 |------|--------|------|
-| 怪物属性 | 11 | enemy_properties/，完全不同的结构 |
+| 怪物 GUI 编辑 | - | `<标识>` 只有 CLI，Electron 侧未接 |
 
 ### 不纳入
 
@@ -159,6 +161,12 @@ npm run balance-check
 
 # 生成字段扫描报告
 npm run field-scan -- --project ./project.json --output ./reports/field-usage-report.json
+
+# 怪物标识普查（CLI 走 tsx，需要先构建 workspace dist）
+npx tsc -b packages/core packages/xml-io
+npm run monster-census -- --markdown --scan-tier
+npm run monster-solve -- 敌人-体育老师 --stage 4 --tier 12 --known 速度系数=2.5
+npm run monster-flags-apply -- reports/monster-flag-census.json   # dry-run，加 --write 才落盘
 
 # 启动 renderer shell
 npm run dev:web

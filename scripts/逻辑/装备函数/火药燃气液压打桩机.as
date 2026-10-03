@@ -1,4 +1,5 @@
 ﻿_root.装备生命周期函数.火药燃气液压打桩机初始化 = function(reflector:Object, paramObj:Object) {
+    if (reflector.classicPileBunkerController) reflector.classicPileBunkerController.dispose();
     var target:MovieClip = reflector.自机;
 
     // 创建状态机
@@ -52,17 +53,17 @@
     reflector.fsm.start();
 
     // 订阅长枪射击事件
-    target.dispatcher.subscribe("长枪射击", function() {
-        reflector.fsm.data.flag = true;
-    });
-
-    PlacementVisual.hookVisualUpdate(target, "长枪_引用", reflector, _root.装备生命周期函数.火药燃气液压打桩机视觉更新);
+    reflector.classicShotHandler = function():Void { reflector.fsm.data.flag = true; };
+    target.dispatcher.subscribe("长枪射击",reflector.classicShotHandler,reflector);
+    reflector.classicGunPlacement = PlacementVisual.hookVisualUpdate(target,"长枪_引用",reflector,
+        _root.装备生命周期函数.火药燃气液压打桩机视觉更新,reflector);
+    reflector.classicPileBunkerController = new org.flashNight.arki.unit.UnitComponent.Dressup.EquipmentUtil.PileBunkerClassicController(reflector,paramObj);
 };
 
 /**
  * 火药燃气液压打桩机的装备生命周期函数
  * @param reflector:Object - 反射器对象，包含动画状态和目标
- * @param paramObj:Object - 参数对象(当前未使用)
+ * @param paramObj:Object - 原版锤锋利度与定位配置
  */
 _root.装备生命周期函数.火药燃气液压打桩机周期 = function(reflector:Object, paramObj:Object) {
     if (!EquipmentTick.open(reflector)) return;
@@ -83,4 +84,5 @@ _root.装备生命周期函数.火药燃气液压打桩机视觉更新 = functio
     var gun:MovieClip = reflector.自机.长枪_引用;
     if (!gun || !gun.动画) return;
     gun.动画.gotoAndStop(reflector.fsm.data.currentframe);
+    reflector.classicPileBunkerController.syncVisual();
 };

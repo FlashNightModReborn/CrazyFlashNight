@@ -1,11 +1,11 @@
 {
   "schema": "cf7-dressup-report-v1",
   "counts": {
-    "items": 1345,
-    "skinKeys": 2860,
-    "coveredSkinKeys": 2719,
+    "items": 1349,
+    "skinKeys": 2909,
+    "coveredSkinKeys": 2768,
     "aliasCoveredSkinKeys": 9,
-    "coveredExcludingAliasSkinKeys": 2710,
+    "coveredExcludingAliasSkinKeys": 2759,
     "missingSkinKeys": 141,
     "holdersMale": 21,
     "holdersFemale": 21,
@@ -14,18 +14,38 @@
     "compatAliasSkinKeys": 9,
     "manualCompatAliasSkinKeys": 9,
     "autoOppositeGenderCompatAliasSkinKeys": 0,
-    "preservedSkinKeyExports": 2719,
-    "preservedBasicHolderExports": 231,
+    "missingExportSkinKeys": 48,
+    "exportedSkinKeys": 48,
+    "exportedFrames": 3041,
+    "exportedBasicKeys": 0,
+    "exportedBasicFrames": 0,
+    "metadataErrors": 0,
+    "timelineScriptErrors": 0,
+    "spriteGraphErrors": 0,
+    "staticStopSkinKeys": 2,
+    "staticStopCollapsedFrames": 45,
+    "purgedStaleFrames": 0,
+    "nestedAnimationSkinKeys": 25,
+    "nestedLayerUnsupportedDescendants": 0,
+    "nestedLayerCompositedDescendants": 0,
+    "exportedNestedLayerKeys": 1,
+    "exportedNestedLayerFrames": 7,
+    "uniqueFrameImages": 2828,
+    "duplicateFrameRefs": 213,
+    "timelineLogicalFrames": 3041,
+    "timelineFrameEntries": 2830,
+    "timelineCompressedFrameRefs": 211,
+    "conditionalVariantSkinKeys": 0,
+    "conditionalVariantFrames": 0,
+    "conditionalVariantRemovedPlaceObjects": 0,
+    "expressionSkinKeys": 0,
+    "expressionFrames": 0,
+    "expressionFrameImages": 0,
+    "missingExpressionFrame": 0,
     "animatedSkinKeys": 17,
-    "staticCollapsedSkinKeys": 22,
-    "nestedAnimationSkinKeys": 24,
-    "uniqueFrameImages": 2829,
-    "duplicateFrameRefs": 217,
-    "timelineLogicalFrames": 3046,
-    "timelineFrameEntries": 2831,
-    "timelineCompressedFrameRefs": 215,
-    "exportedFrames": 2992,
-    "orphanAssetsPurged": 1
+    "staticCollapsedSkinKeys": 24,
+    "preservedSkinKeyExports": 2720,
+    "preservedBasicHolderExports": 231
   },
   "missingSummary": {
     "byUse": {
@@ -6509,12 +6529,85 @@
     }
   },
   "assetExport": {
-    "preservedSkinKeyExports": 2719,
-    "preservedBasicHolderExports": 231,
-    "orphanAssetsPurged": 1,
-    "orphanAssetSamples": [
-      "skins/6dbb496e_1.png"
-    ]
+    "selectedSkinKeys": 48,
+    "resolvedSkinKeys": 48,
+    "exportedSkinKeys": 48,
+    "exportedFrames": 48,
+    "resolvedBasicKeys": 0,
+    "exportedBasicKeys": 0,
+    "exportedBasicFrames": 0,
+    "missingSymbol": [],
+    "missingBasicSymbol": [],
+    "symbolErrors": [],
+    "exportErrors": [],
+    "metadataErrors": [],
+    "exportFallbacks": [],
+    "missingFrame": [],
+    "missingBasicFrame": [],
+    "timelineScriptErrors": [],
+    "spriteGraphErrors": [],
+    "staticStopSkinKeys": 2,
+    "staticStopCollapsedFrames": 45,
+    "purgedStaleFrames": 0,
+    "staticStopSamples": [
+      {
+        "skinKey": "枪-长枪-MACSIV",
+        "characterId": 610,
+        "sourceFrameCount": 16,
+        "playback": "static-first-frame",
+        "reason": "frame1_plain_stop"
+      },
+      {
+        "skinKey": "枪-长枪-热临界破障机",
+        "characterId": 586,
+        "sourceFrameCount": 31,
+        "playback": "static-parent-nested-animation",
+        "reason": "frame1_plain_stop_with_nested_animation"
+      }
+    ],
+    "nestedAnimationSkinKeys": 1,
+    "nestedAnimationSamples": [
+      {
+        "skinKey": "枪-长枪-热临界破障机",
+        "characterId": 586,
+        "playback": "static-parent-nested-animation",
+        "sourceFrameCount": 31,
+        "descendantCount": 1,
+        "maxDescendantFrameCount": 7,
+        "sampleDescendants": [
+          {
+            "characterId": 578,
+            "frameCount": 7,
+            "depth": 1,
+            "path": [
+              586,
+              578
+            ]
+          }
+        ]
+      }
+    ],
+    "nestedLayerUnsupportedDescendants": 0,
+    "nestedLayerCompositedDescendants": 0,
+    "exportedNestedLayerKeys": 1,
+    "exportedNestedLayerFrames": 7,
+    "missingNestedLayerFrame": [],
+    "uniqueFrameImages": 55,
+    "duplicateFrameRefs": 0,
+    "timelineLogicalFrames": 55,
+    "timelineFrameEntries": 55,
+    "timelineCompressedFrameRefs": 0,
+    "timelineCompressionSamples": [],
+    "conditionalVariantSkinKeys": 0,
+    "conditionalVariantFrames": 0,
+    "conditionalVariantRemovedPlaceObjects": 0,
+    "conditionalVariantSamples": [],
+    "expressionSkinKeys": 0,
+    "expressionFrames": 0,
+    "expressionFrameImages": 0,
+    "missingExpressionFrame": [],
+    "preservedSkinKeyExports": 2720,
+    "preservedBasicHolderExports": 231
   },
   "animatedSkinKeys": [
     {
@@ -6750,6 +6843,17 @@
       "uri": "skins/fbaee6f1_1.png"
     },
     {
+      "skinKey": "枪-长枪-热临界破障机",
+      "sourceFrameCount": 31,
+      "playback": "static-parent-nested-animation",
+      "staticReason": "frame1_plain_stop_with_nested_animation",
+      "nestedAnimation": true,
+      "uses": [
+        "长枪"
+      ],
+      "uri": "skins/eaaeb322_1.png"
+    },
+    {
       "skinKey": "刀-雷铁斩斧",
       "sourceFrameCount": 30,
       "playback": "static-first-frame",
@@ -6792,6 +6896,17 @@
         "长枪"
       ],
       "uri": "skins/5b4ff743_1.png"
+    },
+    {
+      "skinKey": "枪-长枪-MACSIV",
+      "sourceFrameCount": 16,
+      "playback": "static-first-frame",
+      "staticReason": "frame1_plain_stop",
+      "nestedAnimation": false,
+      "uses": [
+        "长枪"
+      ],
+      "uri": "skins/c8cb86b4_1.png"
     },
     {
       "skinKey": "枪-长枪-Jackhammer",
@@ -7219,6 +7334,22 @@
         "长枪"
       ],
       "uri": "skins/fbaee6f1_1.png"
+    },
+    {
+      "skinKey": "枪-长枪-热临界破障机",
+      "playback": "static-parent-nested-animation",
+      "frameCount": 1,
+      "sourceFrameCount": 31,
+      "descendantCount": 1,
+      "maxDescendantFrameCount": 7,
+      "layerCount": 1,
+      "strategy": "direct-layered",
+      "unsupportedDescendantCount": 0,
+      "compositedDescendantCount": 0,
+      "uses": [
+        "长枪"
+      ],
+      "uri": "skins/eaaeb322_1.png"
     },
     {
       "skinKey": "枪-长枪-生命收割者",

@@ -71,6 +71,45 @@ var DressupDollRenderer = (function() {
         });
     }
 
+    // AS2 resolves tier/mod overrides. This only expands its visual linkage into
+    // the same gender/part names as the offline baker; it never selects a tier.
+    function appearanceFields(use, appearance, gender) {
+        var fields = {}, dressup = appearance.dressup;
+        var parts = use === '上装装备' ? ['身体', '上臂', '左下臂', '右下臂']
+            : use === '下装装备' ? ['屁股', '左大腿', '右大腿', '小腿']
+            : use === '手部装备' ? ['左手', '右手'] : null;
+        if (dressup && parts) {
+            parts.forEach(function(field) {
+                fields[field] = (use === '手部装备' ? '' : gender) + dressup + field;
+            });
+        } else if (dressup) {
+            var direct = {
+                '头部装备':['面具'], '脚部装备':['脚'],
+                '长枪':['长枪_装扮'], '手枪':['手枪_装扮', '手枪2_装扮'],
+                '刀':['刀_装扮', '刀1_装扮'], '手雷':['手雷_装扮']
+            }[use] || [];
+            direct.forEach(function(field) { fields[field] = dressup; });
+        }
+        if (use === '刀') {
+            [1, 2, 3].forEach(function(index) {
+                if (appearance['dressup' + index]) {
+                    fields['刀' + index + '_装扮'] = appearance['dressup' + index];
+                }
+            });
+        }
+        return fields;
+    }
+
+    function resolvedEquipmentItem(manifest, name, appearance, gender, slot) {
+        var item = manifest.items[name];
+        if (!appearance) return item;
+        var fields = {};
+        var use = item ? item.use : slot === '手枪2' ? '手枪' : slot;
+        fields[gender] = appearanceFields(use, appearance, gender);
+        return {use:use, fieldsByGender:fields,
+            helmet:appearance.helmet === true, hairAbove:appearance.hairAbove === true};
+    }
+
     // 武器槽位 → 该槽允许贡献的装扮字段（对齐 AS2 DressupInitializer 的逐槽赋值、
     // 空槽不挂载语义）。烘焙层对手枪类物品固定写 手枪_装扮+手枪2_装扮 双字段
     // （tools/bake-dressup-offline.py，槽位无关数据）；合并时若不按槽过滤，一把
@@ -108,9 +147,11 @@ var DressupDollRenderer = (function() {
         var gender = options.gender || '男';
         var keyMap = {};
         var equipment = options.equipment || {};
+        var equipmentAppearance = options.equipmentAppearance || {};
         Object.keys(equipment).forEach(function(slot) {
             var itemName = equipment[slot];
-            var item = manifest.items[itemName];
+            var item = resolvedEquipmentItem(manifest, itemName,
+                equipmentAppearance[slot], gender, slot);
             if (item && item.fieldsByGender) {
                 mergeEquipmentFields(keyMap, slot, item, gender);
             }
@@ -124,9 +165,11 @@ var DressupDollRenderer = (function() {
         // 逐件层级标记：当前头部装备在 manifest 声明 hairAbove=true 时
         // 钉住 脸型<面具<发型（发型压面具），否则 脸型<发型<面具（历史顺序）。
         // render() 只在 state 显式携带布尔值时重排，raw state 保持 rig 烘焙顺序。
-        var headItem = manifest.items
-            && manifest.items[equipment['头部装备'] || equipment.head];
+        var headSlot = equipment['头部装备'] ? '头部装备' : 'head';
+        var headItem = resolvedEquipmentItem(manifest, equipment[headSlot],
+            equipmentAppearance[headSlot], gender, '头部装备');
         state.headHairAbove = !!(headItem && headItem.hairAbove === true);
+        state.headHelmet = !!(headItem && headItem.helmet === true);
         if (options.fitFields && options.fitFields.length) {
             state.fitFields = options.fitFields.slice ? options.fitFields.slice(0) : options.fitFields;
         }

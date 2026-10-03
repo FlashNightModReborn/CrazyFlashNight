@@ -1,0 +1,52 @@
+{
+  "version": 1,
+  "comment": "怪物标识普查配置：字段名对应 data/enemy_properties/*.xml，阶段区间对应 Excel《怪物大致面板》B19~C32 阶次表。",
+  "flagElement": "标识",
+  "templatePrefix": "敌人-",
+  "displayNameField": "displayname",
+  "tenacityField": "韧性系数",
+  "moveSpeedFields": { "min": "速度_min", "max": "速度_max" },
+  "flagFields": [
+    "阶段",
+    "档次系数",
+    "成长系数",
+    "攻速系数",
+    "攻击倍率",
+    "段数系数",
+    "速度系数",
+    "高攻低血防系数",
+    "霸体系数",
+    "高防低血系数"
+  ],
+  "panelFields": {
+    "空手攻击力_min": "atkMin",
+    "空手攻击力_max": "atkMax",
+    "hp_min": "hpMin",
+    "hp_max": "hpMax",
+    "基本防御力_min": "defMin",
+    "基本防御力_max": "defMax",
+    "最小经验值": "expMin",
+    "最大经验值": "expMax"
+  },
+  "excludedSourceFiles": ["魔神.xml"],
+  "excludedStagePatterns": ["菲尼克斯", "锡蒙利", "挑战人修罗", "挑战混沌王"],
+  "mainlineCompletedUntil": 77,
+  "mainlineBands": [
+    { "from": 1, "to": 22, "stage": 1, "label": "废城" },
+    { "from": 23, "to": 29, "stage": 2, "label": "盗贼（堕落城/游寇/摇滚公园）" },
+    { "from": 30, "to": 46, "stage": 3, "label": "军阀" },
+    { "from": 47, "to": 62, "stage": 4, "label": "总堂前期（含通缉犯，不含黑龙）" },
+    { "from": 63, "to": 77, "stage": 5, "label": "总堂后期（黑龙堂~深入禁区）" }
+  ],
+  "chapters": {
+    "特殊": 1,
+    "基地门口": 1,
+    "基地车库": 2,
+    "基地房顶": 3,
+    "黑铁会总部": 4,
+    "地下2层": 5
+  },
+  "stageChapterOverrides": {
+    "深入禁区": 5
+  }
+}
