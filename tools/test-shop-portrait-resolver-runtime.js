@@ -131,6 +131,15 @@ function imageRecorder() {
     });
     cases++;
 
+    const bookPortrait = productionApi.resolve('书中-迷之盔甲君');
+    const originalPortrait = productionApi.resolve('迷之盔甲君');
+    assert(bookPortrait && originalPortrait, 'both shop identities need an exact portrait binding');
+    assert.strictEqual(bookPortrait.shopId, '书中-迷之盔甲君');
+    assert.strictEqual(bookPortrait.url, originalPortrait.url, 'the same character reuses the approved portrait pixels');
+    assert.strictEqual(bookPortrait.sha256, originalPortrait.sha256);
+    assert.strictEqual(productionApi.resolve('书中-武器大师'), null, 'book prefix must not create an implicit alias');
+    cases++;
+
     assert.strictEqual(api.resolve(' 商店・甲'), null, 'shopId must not be trimmed');
     assert.strictEqual(api.resolve('商店・甲 '), null, 'shopId must not be trimmed');
     assert.strictEqual(api.resolve('HEEHO君'), null, 'shopId must not be case folded');

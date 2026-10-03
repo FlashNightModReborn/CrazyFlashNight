@@ -31,12 +31,15 @@ from PIL import Image, __version__ as PILLOW_VERSION
 SCHEMA = "cf7-shop-portraits-v1"
 PROVENANCE_SCHEMA = "cf7-shop-portrait-provenance-v1"
 RECEIPT_SCHEMA = "cf7-shop-portrait-promotion-receipt-v1"
-GENERATOR_VERSION = "1.0.0"
+GENERATOR_VERSION = "1.1.0"
 GEOMETRY = {"width": 256, "height": 256}
 PADDING = 16
-EXPECTED_LIST_COUNT = 37
-EXPECTED_ACTIVE_COUNT = 36
+EXPECTED_LIST_COUNT = 38
+EXPECTED_ACTIVE_COUNT = 37
 EXCLUDED_SHOPS = {"幸存老兵-暂时停用"}
+# Same character, separate inventory authority. Keep both exact runtime shopIds;
+# only these declared identities may share the existing portrait pixels.
+SHARED_SHOP_PORTRAITS = {"书中-迷之盔甲君": "迷之盔甲君"}
 DEFAULT_EXPRESSION = "普通"
 DIALOGUE_LINKAGE = "对话框肖像"
 WEAPON_MASTER = "武器大师"
@@ -662,6 +665,11 @@ def build_stage(
     internal_ids: list[str] = []
     external_ids: list[str] = []
     for shop_id in active_shops:
+        if shop_id in SHARED_SHOP_PORTRAITS:
+            source_id = SHARED_SHOP_PORTRAITS[shop_id]
+            if source_id not in active_shops or source_id in SHARED_SHOP_PORTRAITS:
+                raise BakeError(f"Invalid shared shop portrait source: {shop_id} -> {source_id}")
+            continue
         if shop_id == HEEHO:
             source_choices[shop_id] = {"kind": "heeho"}
             continue
@@ -717,6 +725,9 @@ def build_stage(
     heeho_image, heeho_evidence = build_heeho_source(root, ffdec, work, timeout_seconds, supersample)
     source_images[HEEHO] = heeho_image
     source_evidence[HEEHO] = heeho_evidence
+    for shop_id, source_id in SHARED_SHOP_PORTRAITS.items():
+        source_images[shop_id] = source_images[source_id]
+        source_evidence[shop_id] = {"kind": "shared-shop-portrait", "sourceShopId": source_id}
     if set(source_images) != set(active_shops) or set(source_evidence) != set(active_shops):
         raise BakeError("Source image/evidence closure does not equal active shops")
 
@@ -775,7 +786,10 @@ def build_stage(
         },
         "activeShopSource": active_source,
         "dialogueManifest": artifact(dialogue_manifest_path, root),
-        "sourcePartition": {"externalDialogue": 33, "internalDialogue": 2, "exactXflSwfPilot": 1},
+        "sourcePartition": {
+            "externalDialogue": 33, "internalDialogue": 2, "exactXflSwfPilot": 1,
+            "sharedShopPortrait": len(SHARED_SHOP_PORTRAITS),
+        },
         "sources": provenance_sources,
     }
     provenance_bytes = canonical_json(provenance)
