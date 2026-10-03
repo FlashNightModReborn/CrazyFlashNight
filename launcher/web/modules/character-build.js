@@ -362,21 +362,11 @@ function(SessionModule, ViewModule, TuningModule, Mutation, Pose, Projection,
         if (!this._manifest || !this._snapshotPayload) return null;
         var portrait = this._snapshotPayload.portrait || {};
         var equipment = copy(portrait.equipment);
-        var equipmentAppearance = {};
-        (this._snapshotPayload.equipment || []).forEach(function(row) {
-            if (row.occupied === true && row.item && row.item.appearance) {
-                equipmentAppearance[row.slotKey] = row.item.appearance;
-            }
-        });
+        var equipmentAppearance = Pose.appearanceForPreview(
+            this._snapshotPayload.equipment, candidate, this._selectedTarget);
         if (candidate && candidate.raw && candidate.raw.item && this._selectedTarget
                 && this._selectedTarget.kind === 'equipment') {
             equipment[this._selectedTarget.slotKey] = String(candidate.raw.item.name || '');
-            // An older candidate without an appearance must not inherit the
-            // currently equipped item's resolved tier or composite attachments.
-            delete equipmentAppearance[this._selectedTarget.slotKey];
-            if (candidate.raw.item.appearance) {
-                equipmentAppearance[this._selectedTarget.slotKey] = candidate.raw.item.appearance;
-            }
         }
         var pose = Pose.select(equipment, this._selectedTarget);
         return global.CharacterAppearancePreview.buildStateFromEquipment(this._manifest, {
