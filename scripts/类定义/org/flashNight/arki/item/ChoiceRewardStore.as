@@ -38,10 +38,24 @@ class org.flashNight.arki.item.ChoiceRewardStore {
                 var option:Object = o.options[c];
                 if (option == null || !text(option.optionId, 64) || seen["$" + option.optionId] === true
                         || !text(option.title, 64) || !text(option.description, 256)
-                        || !(option.items instanceof Array) || option.items.length < 1 || option.items.length > 16) return false;
+                        || (option.kCost !== undefined && (!RewardStashStore.whole(option.kCost) || option.kCost > 1200))) return false;
+                var skills:Object = option.skills === undefined ? [] : option.skills;
+                if (RewardStashStore.emptyObject(skills)) { skills = []; repairs.push({owner:option,key:"skills",value:skills}); }
+                if (!(skills instanceof Array) || skills.length > 2) return false;
+                var skillIds:Object = {};
+                for (var s:Number = 0; s < skills.length; s++) {
+                    var skill:Object = skills[s];
+                    if (!text(skill.skillKey,64) || skillIds["$"+skill.skillKey] === true
+                            || !RewardStashStore.whole(skill.level) || skill.level < 1 || skill.level > 100) return false;
+                    skillIds["$"+skill.skillKey] = true;
+                }
+                if (o.scopeKind != "book" && (skills.length > 0 || Number(option.kCost) > 0)) return false;
+                var items:Object = option.items;
+                if (RewardStashStore.emptyObject(items)) { items = []; repairs.push({owner:option,key:"items",value:items}); }
+                if (!(items instanceof Array) || items.length > 16 || items.length == 0 && skills.length == 0) return false;
                 seen["$" + option.optionId] = true;
-                for (var n:Number = 0; n < option.items.length; n++) {
-                    var item:Object = option.items[n];
+                for (var n:Number = 0; n < items.length; n++) {
+                    var item:Object = items[n];
                     var checked:Object = item;
                     if (item != null && typeof item.value == "object" && RewardStashStore.emptyObject(item.value.mods)) {
                         checked = PersistedSnapshot.clone(item); checked.value.mods = [];

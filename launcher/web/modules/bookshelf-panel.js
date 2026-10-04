@@ -1,15 +1,18 @@
 (function() {
     'use strict';
     var R = window.BookshelfRuntime;
-    var shell, host, scale, mux, token, instance, state, recovery, slotSignature, reader, original, catalogRequest;
+    var shell, host, scale, mux, originalMux, token, instance, state, recovery, slotSignature, reader, original, catalogRequest;
     var selected = 'dust', busy = false, generation = 0, autoReturnAttempted = false, readFailed = false;
     var playingOriginal = false, statusAttention = false;
+    var selectedChapter = 1, languages = {};
     function el(id) { return host.querySelector('#bookshelf-' + id); }
     function create() { shell = document.createElement('div'); shell.className = 'panel-scale-shell bookshelf-shell'; return shell; }
     function onOpen(element, data) {
         host = element; token = data.token; instance = data.panelInstanceId;
         state = null; recovery = ''; slotSignature = ''; busy = false; autoReturnAttempted = false; readFailed = false; generation++;
         playingOriginal = false; statusAttention = false;
+        selectedChapter = 1; languages = {};
+        if (selected === 'repair-campus') selected = 'crazy-flasher';
         host.innerHTML = '<section class="bookshelf-panel"><header><div><span class="bookshelf-eyebrow">基地藏书室</span>'
             + '<h1 id="bookshelf-title">基地藏书室</h1></div><div id="bookshelf-reader-tools" class="bookshelf-reader-tools" hidden></div>'
             + '<div id="bookshelf-original-tools" class="bookshelf-original-tools" hidden></div>'
@@ -28,7 +31,12 @@
             panel.classList.toggle('library-open');
             reader.get('library').setAttribute('aria-expanded', String(panel.classList.contains('library-open')));
         }});
-        original = new window.BookshelfOriginal(el('original'), el('original-tools'), {back:function() {
+        originalMux = new R.RequestMux({domain:'bookshelf-original', panelInstanceId:instance, send:function(message) { return Bridge.send(message); }});
+        original = new window.BookshelfOriginal(el('original'), el('original-tools'), {prepare:function(definition, done) {
+            originalMux.request('prepare', {v:1, token:token, chapter:definition.chapter, language:definition.language}, done);
+        }, release:function(session) {
+            if (originalMux) originalMux.request('release', {v:1, session:session}, function() {});
+        }, back:function() {
             playingOriginal = false; render();
             el('detail').querySelector('[data-action="original"]').focus();
         }});
@@ -90,7 +98,7 @@
         if (result.outcomePending) recovery = token;
         else if (cmd === 'query' && result.phase === 'editing' && !result.requiresReconcile) recovery = '';
         if (result.phase) {
-            if (!state && (result.inRun || result.pendingRun)) selected = 'repair-campus';
+            if (!state && (result.inRun || result.pendingRun)) { selected = 'crazy-flasher'; selectedChapter = 1; }
             state = result;
         }
         if (result.phase === 'switching') { status('正在翻开另一段人生…'); close(true); return; }
@@ -119,15 +127,16 @@
         var book = R.books.find(function(b) { return b.id === selected; });
         host.querySelectorAll('[data-book]').forEach(function(b) { b.setAttribute('aria-current', String(b.dataset.book === selected)); });
         var reading = book && book.pages > 0;
-        if (selected !== 'repair-campus') playingOriginal = false;
+        if (selected !== 'crazy-flasher' || !state || state.inRun || state.pendingRun || recovery || readFailed) playingOriginal = false;
+        var chapter = book && book.format === 'playable' && book.chapters[selectedChapter - 1];
         var panel = host.querySelector('.bookshelf-panel');
         el('reader').hidden = !reading; el('reader-tools').hidden = !reading;
         el('detail').hidden = reading || playingOriginal;
         el('original').hidden = el('original-tools').hidden = !playingOriginal;
         panel.classList.toggle('is-reading', !!reading); panel.classList.toggle('is-original', playingOriginal);
         panel.classList.toggle('needs-attention', statusAttention || busy || !!recovery || readFailed || !state);
-        el('title').textContent = playingOriginal ? '闪客快打 1' : book ? book.title : '角色档案';
-        if (playingOriginal) original.show(); else original.hide();
+        el('title').textContent = playingOriginal ? '闪客快打 ' + selectedChapter : book ? book.title : '角色档案';
+        if (playingOriginal && chapter) original.show({chapter:selectedChapter, language:languages[selectedChapter] || 'cn'}); else original.hide();
         if (reading) {
             reader.show(book);
         } else if (playingOriginal) {
@@ -135,20 +144,48 @@
         } else {
             reader.hide();
             var detail = el('detail');
-            if (detail.dataset.view !== selected) {
-                detail.textContent = ''; detail.dataset.view = selected;
-                if (selected === 'repair-campus') {
-                    detail.innerHTML = '<h2>修理大学</h2><p class="bookshelf-campus-intro">重温 Andy 的校园往事，或用自己的构筑重走这段旅程。</p>'
-                        + '<div class="bookshelf-editions"><section><span class="bookshelf-edition-tag">原版</span><h3>闪客快打 1</h3>'
-                        + '<p>游玩原作，体验原有剧情、对白和战斗。随时返回书架，重新进入会从头开始。</p>'
+            var detailKey = selected + (chapter ? ':' + selectedChapter : '');
+            if (detail.dataset.view !== detailKey) {
+                detail.textContent = ''; detail.dataset.view = detailKey;
+                if (chapter) {
+                    detail.innerHTML = '<div class="bookshelf-chapters" role="group" aria-label="闪客快打章节"></div>'
+                        + '<h2></h2><p class="bookshelf-campus-intro">翻开系列中的一章，选择原版或重制版。</p>'
+                        + '<div class="bookshelf-editions"><section><span class="bookshelf-edition-tag">原版</span><h3></h3>'
+                        + '<p data-edition="original-description"></p><label class="bookshelf-language">语言 <select data-action="language" aria-label="原版语言"></select></label>'
                         + '<p class="bookshelf-edition-note">独立游玩 · 不提供配给与 SP 奖励</p><button data-action="original">游玩原版</button></section>'
-                        + '<section><span class="bookshelf-edition-tag">重制版</span><h3>七图历险</h3>'
-                        + '<p>从 1 级 Andy Law 开始，挑选装备与配给，向迷之盔甲君学习技能，挑战修理大学。</p>'
-                        + '<p class="bookshelf-edition-note">配给与 SP 奖励 · 本次旅程不支持中途续玩</p><button class="bookshelf-primary" data-action="remake"></button></section></div>';
+                        + '<section><span class="bookshelf-edition-tag">重制版</span><h3></h3>'
+                        + '<p data-edition="remake-description"></p><p class="bookshelf-edition-note" data-edition="remake-note"></p>'
+                        + '<button class="bookshelf-primary" data-action="remake"></button></section></div>';
+                    book.chapters.forEach(function(c, i) {
+                        var button = document.createElement('button'); button.dataset.chapter = i + 1;
+                        button.textContent = '第 ' + (i + 1) + ' 章'; button.setAttribute('aria-label', '第 ' + (i + 1) + ' 章 ' + c.title);
+                        button.setAttribute('aria-pressed', String(i + 1 === selectedChapter));
+                        button.onclick = function() { selectedChapter = i + 1; render();
+                            detail.querySelector('[data-chapter="' + selectedChapter + '"]').focus({preventScroll:true}); };
+                        detail.querySelector('.bookshelf-chapters').appendChild(button);
+                    });
+                    detail.querySelector('h2').textContent = '第 ' + selectedChapter + ' 章 · ' + chapter.title;
+                    var titles = detail.querySelectorAll('.bookshelf-editions h3');
+                    titles[0].textContent = '闪客快打 ' + selectedChapter;
+                    titles[1].textContent = chapter.remake.available ? '修理大学 · 七图历险' : '尚未制作';
+                    detail.querySelector('[data-edition="original-description"]').textContent = selectedChapter === 1
+                        ? '重温 Andy 的校园往事。随时返回章节，重新载入会从头开始。'
+                        : '读取本机正版合集中的游戏，体验原有剧情与战斗。' + (selectedChapter >= 3 ? '存档与当前角色独立。' : '');
+                    detail.querySelector('[data-edition="remake-description"]').textContent = chapter.remake.available
+                        ? '从 1 级 Andy Law 开始，挑选配给，学习技能，挑战修理大学。本次旅程不支持中途续玩。'
+                        : '这一章的重制历险尚未制作。';
+                    detail.querySelector('[data-edition="remake-note"]').textContent = chapter.remake.available
+                        ? '首次通关或刷新个人纪录：45 SP；其他通关：5 SP。未通关或中途离开不发奖励。计时包含暂停、商店和过场。'
+                        : '原版不提供闪客快打 7 的奖励。';
+                    var language = detail.querySelector('[data-action="language"]');
+                    chapter.original.languages.forEach(function(code) { var option = document.createElement('option');
+                        option.value = code; option.textContent = code === 'cn' ? '中文' : 'English'; language.appendChild(option); });
+                    language.value = languages[selectedChapter] || 'cn'; language.parentElement.hidden = selectedChapter === 1;
+                    language.onchange = function() { languages[selectedChapter] = language.value; };
                 } else detail.append(document.createElement('h2'), document.createElement('p'), document.createElement('button'));
             }
             var heading = detail.children[0], text = detail.children[1];
-            var action = selected === 'repair-campus' ? detail.querySelector('[data-action="remake"]') : detail.children[2];
+            var action = chapter ? detail.querySelector('[data-action="remake"]') : detail.children[2];
             action.className = 'bookshelf-primary';
             if (selected.indexOf('slot:') === 0) {
                 var slot = selected.slice(5), entry = state && (state.slots || []).find(function(s) { return s.slot === slot; });
@@ -157,12 +194,14 @@
                 action.textContent = state && state.activeSlot === slot ? '当前角色' : '切换角色';
                 action.disabled = !state || state.activeSlot === slot || !state.canSwitch || state.inRun || !!state.pendingRun;
                 action.onclick = function() { commit('switch', slot); };
-            } else {
+            } else if (chapter) {
                 var originalAction = detail.querySelector('[data-action="original"]');
-                originalAction.disabled = !state || state.inRun || !!state.pendingRun || busy || !!recovery || readFailed;
+                originalAction.disabled = !state || !state.canSwitch || state.inRun || !!state.pendingRun || busy || !!recovery || readFailed;
                 originalAction.textContent = state && (state.inRun || state.pendingRun) ? '结束重制版旅程后游玩' : '游玩原版';
                 originalAction.onclick = function() { playingOriginal = true; render(); };
-                if (state && state.inRun) {
+                if (!chapter.remake.available) {
+                    action.textContent = '尚未制作'; action.onclick = null; action.disabled = true;
+                } else if (state && state.inRun) {
                     action.textContent = '结束旅程，返回原角色'; action.onclick = function() { commit('return', state.originSlot); };
                 } else if (state && state.pendingRun) {
                     action.textContent = '核对上次旅程'; action.onclick = function() { commit('settle', state.pendingRun); };
@@ -170,7 +209,7 @@
                     action.textContent = state && state.unlocked ? '进入重制版' : '完成地铁站主线后开放';
                     action.onclick = function() { commit('play', 'repair-campus'); };
                 }
-                action.disabled = !state || !state.canSwitch || (!state.inRun && !state.pendingRun && !state.unlocked);
+                action.disabled = !chapter.remake.available || !state || !state.canSwitch || (!state.inRun && !state.pendingRun && !state.unlocked);
             }
             action.disabled = action.disabled || busy || !!recovery || readFailed;
         }
@@ -205,6 +244,7 @@
         if (catalogRequest) catalogRequest.abort(); catalogRequest = null;
         if (reader) reader.destroy(); reader = null;
         if (original) original.destroy(); original = null; playingOriginal = false;
+        if (originalMux) originalMux.destroy(); originalMux = null;
         host = mux = scale = state = null; recovery = ''; slotSignature = ''; busy = false;
         if (shell) shell.textContent = '';
     }

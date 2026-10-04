@@ -8,7 +8,7 @@
         <type>消耗品</type>
         <use>礼包</use>
         <price>0</price>
-        <description>打开后随机展示3套配给，自选一套。候选保留，可稍后从装备界面的自选礼包继续选择；选定后到暂存物资领取，插件需自行安装。</description>
+        <description>打开后随机展示3套配给，自选一套。候选保留，可稍后从装备界面的自选礼包继续选择；技能直接授予；物品到暂存领取，插件需自行安装。付费卡确认时扣除显示的K点。</description>
         <data>
             <level>0</level>
             <weight>0</weight>
@@ -25,13 +25,81 @@
         <type>消耗品</type>
         <use>礼包</use>
         <price>0</price>
-        <description>打开后随机展示3套配给，自选一套。候选保留，可稍后从装备界面的自选礼包继续选择；选定后到暂存物资领取，插件需自行安装。</description>
+        <description>打开后随机展示4套配给，自选一套。候选保留，可稍后从装备界面的自选礼包继续选择；技能直接授予；物品到暂存领取，插件需自行安装。付费卡确认时扣除显示的K点。</description>
         <data>
             <level>0</level>
             <weight>0</weight>
             <rewardPack>
                 <mode>playerChoice</mode>
                 <poolId>repair-campus.advanced</poolId>
+            </rewardPack>
+        </data>
+    </item>
+    <item>
+        <name>书中入学特训自选包</name>
+        <displayname>书中入学特训自选包</displayname>
+        <icon>材料盒子</icon>
+        <type>消耗品</type>
+        <use>礼包</use>
+        <price>0</price>
+        <description>打开后随机展示3套配给，自选一套。候选保留，可稍后从装备界面的自选礼包继续选择；技能直接授予；物品到暂存领取，插件需自行安装。付费卡确认时扣除显示的K点。</description>
+        <data>
+            <level>0</level>
+            <weight>0</weight>
+            <rewardPack>
+                <mode>playerChoice</mode>
+                <poolId>repair-campus.opening</poolId>
+            </rewardPack>
+        </data>
+    </item>
+    <item>
+        <name>书中流派协同自选包</name>
+        <displayname>书中流派协同自选包</displayname>
+        <icon>材料盒子</icon>
+        <type>消耗品</type>
+        <use>礼包</use>
+        <price>0</price>
+        <description>打开后随机展示3套配给，自选一套。候选保留，可稍后从装备界面的自选礼包继续选择；技能直接授予；物品到暂存领取，插件需自行安装。付费卡确认时扣除显示的K点。</description>
+        <data>
+            <level>0</level>
+            <weight>0</weight>
+            <rewardPack>
+                <mode>playerChoice</mode>
+                <poolId>repair-campus.synergy</poolId>
+            </rewardPack>
+        </data>
+    </item>
+    <item>
+        <name>书中战技精进自选包</name>
+        <displayname>书中战技精进自选包</displayname>
+        <icon>材料盒子</icon>
+        <type>消耗品</type>
+        <use>礼包</use>
+        <price>0</price>
+        <description>打开后随机展示3套配给，自选一套。候选保留，可稍后从装备界面的自选礼包继续选择；技能直接授予；物品到暂存领取，插件需自行安装。付费卡确认时扣除显示的K点。</description>
+        <data>
+            <level>0</level>
+            <weight>0</weight>
+            <rewardPack>
+                <mode>playerChoice</mode>
+                <poolId>repair-campus.mastery</poolId>
+            </rewardPack>
+        </data>
+    </item>
+    <item>
+        <name>书中决战补给自选包</name>
+        <displayname>书中决战补给自选包</displayname>
+        <icon>材料盒子</icon>
+        <type>消耗品</type>
+        <use>礼包</use>
+        <price>0</price>
+        <description>打开后随机展示3套配给，自选一套。候选保留，可稍后从装备界面的自选礼包继续选择；技能直接授予；物品到暂存领取，插件需自行安装。付费卡确认时扣除显示的K点。</description>
+        <data>
+            <level>0</level>
+            <weight>0</weight>
+            <rewardPack>
+                <mode>playerChoice</mode>
+                <poolId>repair-campus.final</poolId>
             </rewardPack>
         </data>
     </item>

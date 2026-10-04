@@ -1379,7 +1379,8 @@ class org.flashNight.neur.Server.test.SaveManagerTest {
         var keys:Array = ["savePath", "gameworld", "场景转换中", "当前为战斗地图",
             "基础身价值", "允许存档", "限制系统", "转场景数据", "转场景记录数据第一次记录",
             "新出生", "当前关卡名", "当前关卡难度", "当前通关的关卡", "难度等级",
-            "关卡地图帧值", "场景进入位置名", "关卡可获得奖励品"];
+            "关卡地图帧值", "场景进入位置名", "关卡可获得奖励品",
+            "是否达成任务检测", "__contextTaskUi"];
         var previous:Object = {};
         var key:String;
         for (var i:Number = 0; i < keys.length; i++) {
@@ -1399,11 +1400,19 @@ class org.flashNight.neur.Server.test.SaveManagerTest {
             _root.限制系统 = undefined;
             _root.基础身价值 = 1000;
             sm._resetSavePhysicalStatsForTest();
+            _root.是否达成任务检测 = function():Void {
+                _root.__contextTaskUi = {slot:String(_root.savePath),
+                    taskCount:_root.tasks_to_do.length, mainline:_root.主线任务进度,
+                    completed:_root.tasks_finished["21"]};
+            };
 
             var a:Object = buildValidMydata();
             a[0][0] = "书架测试甲"; a[0][2] = 1111; a[0][6] = 42;
+            a[0][9] = 1234; a[3] = 77;
             a[5] = [["甲技能", 3, true, "", true]];
+            a.tasks.tasks_to_do = [{id:"22"}];
             a.tasks.tasks_finished["21"] = true;
+            a.tasks.task_chains_progress = {主线:77, 支线:3};
             a.shop.商城购物车 = ["甲商品"];
             a.pets.宠物信息[0] = ["甲宠物"];
             a.ext.isolationProbe = "甲";
@@ -1444,6 +1453,11 @@ class org.flashNight.neur.Server.test.SaveManagerTest {
                     && _root.主角技能表.length == 0 && _root._saveExt.isolationProbe == "乙",
                 "replace_context: tasks, shop, pets, skills and ext from A do not leak into B");
 
+            assert(sm.replacePlayerContext(slotA, a, null)
+                    && _root.__contextTaskUi.slot == slotA && _root.__contextTaskUi.taskCount == 1
+                    && _root.__contextTaskUi.mainline == 77 && _root.__contextTaskUi.completed == true
+                    && _root.虚拟币 == 1234,
+                "replace_context: prime populated task state, HUD projection and K balance before entering the book");
             armBankTwoAndAllDrugCooldowns();
             _root.转场景数据 = [99, 88, "长枪"];
             var run:Object = {slot:runSlot, originSlot:slotA, status:"active", seed:7};
@@ -1452,6 +1466,12 @@ class org.flashNight.neur.Server.test.SaveManagerTest {
                     && _root.等级 == 1 && _root.金钱 == 8000 && _root.技能点数 == 120
                     && _root.虚拟币 == 0,
                 "replace_context: temporary Andy receives independent initial balances");
+            assert(_root.tasks_to_do.length == 0 && _root.tasks_finished["21"] == undefined
+                    && _root.task_chains_progress.主线 == undefined
+                    && _root.task_chains_progress.支线 == undefined && _root.主线任务进度 == 0
+                    && _root.__contextTaskUi.slot == runSlot && _root.__contextTaskUi.taskCount == 0
+                    && _root.__contextTaskUi.mainline == 0 && _root.__contextTaskUi.completed == undefined,
+                "replace_context: empty book tasks refresh the HUD instead of retaining the permanent delivery notice");
             assert(_root.物品栏.装备栏.getItem("上装装备").name == "白色中山上装"
                     && _root.物品栏.装备栏.getItem("下装装备").name == "白色中山装裤子"
                     && _root.物品栏.装备栏.getItem("脚部装备").name == "黑色板鞋",
@@ -1466,17 +1486,22 @@ class org.flashNight.neur.Server.test.SaveManagerTest {
                 "replace_context: carry-over HP/MP and drug session are reset");
 
             _root.金钱 = 999999; _root.技能点数 = 999;
+            _root.虚拟币 = 1399;
             _root.主角技能表[0][0] = "局内技能";
             _root.tasks_finished["局内任务"] = true;
             _root.商城购物车.push("局内商品");
             assert(sm.replacePlayerContext(slotA, a, null)
                     && _root.金钱 == 1111 && _root.技能点数 == 42
+                    && _root.虚拟币 == 1234 && _root.tasks_to_do.length == 1
+                    && _root.task_chains_progress.主线 == 77 && _root.task_chains_progress.支线 == 3
+                    && _root.__contextTaskUi.slot == slotA && _root.__contextTaskUi.taskCount == 1
+                    && _root.__contextTaskUi.mainline == 77 && _root.__contextTaskUi.completed == true
                     && _root.主角技能表[0][0] == "甲技能" && _root.tasks_finished["21"] == true
                     && _root.tasks_finished["局内任务"] == undefined
                     && _root.商城购物车.length == 1 && _root.商城购物车[0] == "甲商品"
                     && _root.宠物信息[0][0] == "甲宠物" && _root._saveExt.bookRun == undefined,
                 "replace_context: returning to A discards run balances and restores character domains");
-            assert(a[0][2] == 1111 && b[0][2] == 2222 && run.status == "active"
+            assert(a[0][2] == 1111 && a[0][9] == 1234 && b[0][2] == 2222 && run.status == "active"
                     && a.ext.bookRun == undefined && b.ext.bookRun == undefined,
                 "replace_context: temporary mutations do not rewrite permanent input snapshots");
             var stats:Object = sm._getSavePhysicalStatsForTest();

@@ -83,5 +83,16 @@
 .bookshelf-original-tools{display:flex;gap:8px;align-items:center;flex:1;min-width:0;font-size:12px}
 .bookshelf-original-tools button{padding:4px 8px;white-space:nowrap}
 .bookshelf-original-label{color:var(--launcher-bone);white-space:nowrap}
-.bookshelf-original-keys{flex:1;color:var(--appearance-muted);text-align:right;white-space:nowrap}
+.bookshelf-original-keys{flex:1;min-width:0;color:var(--appearance-muted);text-align:right}
 .bookshelf-original-status{position:absolute;top:10px;left:50%;transform:translateX(-50%);padding:10px 16px;background:var(--appearance-surface);color:var(--appearance-text);border:1px solid var(--appearance-line);font-size:14px;pointer-events:none}
+.bookshelf-chapters{display:flex;gap:8px;margin-bottom:12px}
+.bookshelf-chapters button{flex:1;min-height:44px;font-size:14px;white-space:nowrap;padding:7px 8px}
+.bookshelf-chapters button[aria-pressed="true"]{border-color:var(--launcher-bone);background:var(--appearance-surface-raised)}
+#bookshelf-detail:has(.bookshelf-chapters){padding:18px 26px}
+#bookshelf-detail:has(.bookshelf-chapters) h2{font-size:25px;margin-bottom:8px}
+#bookshelf-detail:has(.bookshelf-chapters) .bookshelf-campus-intro{margin-bottom:12px}
+#bookshelf-detail:has(.bookshelf-chapters) .bookshelf-editions section{padding:14px 16px}
+#bookshelf-detail:has(.bookshelf-chapters) .bookshelf-editions h3{font-size:20px;margin:8px 0 0}
+#bookshelf-detail:has(.bookshelf-chapters) .bookshelf-editions p{margin:8px 0;line-height:1.6}
+.bookshelf-language{font-size:14px;display:flex;gap:8px;align-items:center}
+.bookshelf-language select{min-height:32px}

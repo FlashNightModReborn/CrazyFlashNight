@@ -2139,6 +2139,8 @@ class org.flashNight.neur.Server.SaveManager {
             _root._saveExt.bookRun = org.flashNight.gesh.object.PersistedSnapshot.clone(run);
             _root.mydata = packGameState();
             markRuntimeSaveLoaded("bookshelf_run");
+            // 临时角色不经过 loadFromMydata；空任务同样必须刷新地图投影和 Host 交付提示。
+            if (typeof _root.是否达成任务检测 == "function") _root.是否达成任务检测();
         }
         _root.允许存档 = true;
         return true;

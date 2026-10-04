@@ -20,6 +20,9 @@ class org.flashNight.arki.scene.BookRunRules {
             for (var c:Number = 0; c < config.buildChoices.length; c++) {
                 if (config.buildChoices[c].afterMap == i) choice = config.buildChoices[c];
             }
+            for (var mc:Number = 0; mc < config.minorChoices.length; mc++)
+                if (config.minorChoices[mc].afterMap == i) choice = config.minorChoices[mc];
+            var optionalPercent:Number = i >= config.optionalLoot.firstMap && i <= config.optionalLoot.lastMap ? config.optionalLoot.percent : 100;
             var armorOffset:Number = integer(state, 0, map.armor.length - 1);
             for (var w:Number = 0; w < map.waves; w++) {
                 var loot:String = map.equipment[integer(state, 0, map.equipment.length - 1)];
@@ -39,7 +42,7 @@ class org.flashNight.arki.scene.BookRunRules {
                 var carrier:Object = {
                     Type:"兵种" + enemyType, Level:enemyLevel,
                     Quantity:1, Interval:900, Delay:(quantity - 1) * 900, SpawnIndex:"right",
-                    Parameters:{掉落物:[{名字:loot, 概率:economy.equipmentChance, 最小数量:1, 最大数量:1, 总数:1},
+                    Parameters:{掉落物:[{名字:loot, 概率:economy.equipmentChance * optionalPercent / 100, 最小数量:1, 最大数量:1, 总数:1},
                         {名字:supply, 概率:medical ? 100 : economy.supplyChance, 最小数量:1, 最大数量:1, 总数:1},
                         // 敌人先查物品字典，必须使用“金币”；显示名“金钱”会被跳过。
                         {名字:economy.moneyItem, 概率:100, 最小数量:map.money[0], 最大数量:map.money[1], 总数:map.money[1]},
@@ -58,8 +61,12 @@ class org.flashNight.arki.scene.BookRunRules {
                     最大数量:map.skillPoints, 总数:map.skillPoints});
                 if (w < map.materials.length) {
                     var material:Object = map.materials[w];
-                    carrier.Parameters.掉落物.push({名字:material.name, 概率:100,
+                    carrier.Parameters.掉落物.push({名字:material.name, 概率:optionalPercent,
                         最小数量:material.count, 最大数量:material.count, 总数:material.count});
+                }
+                if (i < config.kBudget.mapCount && w == map.waves - 1) {
+                    var kpoints:Number = config.kBudget.guaranteed + integer(state,0,config.kBudget.randomMax);
+                    carrier.Parameters.掉落物.push({名字:"K点",概率:100,最小数量:kpoints,最大数量:kpoints,总数:kpoints});
                 }
                 // 末波一个自选配给包；打开后冻结候选，选定整套物资进入持久暂存。
                 if (choice != null && w == map.waves - 1) carrier.Parameters.掉落物.push({
@@ -76,8 +83,8 @@ class org.flashNight.arki.scene.BookRunRules {
                     EndFrame:"房间", BGM:{Command:"play", Title:"Bulletproof", Loop:true}},
                 Wave:{SubWave:waves}, Event:[{EventName:"Start", Callback:{Name:"书中章节", Parameter:[i]}, Message:"修理大学 · " + (i + 1) + "/7 · " + map.title
                     + (i == 0 ? "。先找迷之盔甲君选择武器和技能；初始 " + config.startingSkillPoints + " SP。弹药补给包需在背包打开并领取。" : "")
-                    + (choice != null ? "。末波掉落自选配给包：从背包打开，三选一后到暂存物资领取。" : "")
-                    + (i == 2 || i == 4 ? "。出发前可打开上图的自选配给包，在装备界面的自选礼包中选择一套武器、插件与补给。" : "")}],
+                    + (choice != null ? "。末波掉落自选配给包：从背包打开，选定后技能直接获得，物品到暂存领取；K点仅在确认付费卡时扣除。" : "")
+                    + (i > 0 ? "。出发前可打开上图的自选配给包，在装备界面的自选礼包中选择一套武器、插件与补给。" : "")}],
                 Instances:{Instance:[]}, Pickups:{Pickup:[]}};
             if (i == config.bossEncounter.mapIndex) {
                 waves[0].EnemyGroup.Enemy[0].InstanceName = config.bossEncounter.instanceName;
@@ -125,7 +132,7 @@ class org.flashNight.arki.scene.BookRunRules {
             && !isNaN(elapsed) && elapsed > 0 && elapsed < 86400000) {
             for (var i:Number = 0; i < c.recordMinutes.length; i++)
                 if (elapsed <= c.recordMinutes[i] * 60000) tier = i + 1;
-            sp = c.regularSp + (first ? 0 : c.firstClearSp) + Math.max(0, tier - best) * c.recordSpPerTier;
+            sp = !first || bestMs == 0 || elapsed < bestMs ? c.recordSp : c.regularSp;
             first = true; best = Math.max(best, tier);
             if (bestMs == 0 || elapsed < bestMs) bestMs = elapsed;
         }

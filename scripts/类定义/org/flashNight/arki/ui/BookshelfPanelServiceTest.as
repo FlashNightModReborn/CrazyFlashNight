@@ -253,11 +253,11 @@ class org.flashNight.arki.ui.BookshelfPanelServiceTest {
             check(fake.dismissed == "book.stage.fixture", "temporary report is retired only after accepted return fade");
             _root.gameworld.removeMovieClip(); delete _root.gameworld;
             check(BookshelfPanelService.applyAtSceneBoundary() && _root.savePath == "book_fixture_a"
-                    && _root._saveExt.bookRun == null && _root.技能点数 == 175,
+                    && _root._saveExt.bookRun == null && _root.技能点数 == 145,
                 "covered scene boundary restores original character and grants only the SP result");
             BookshelfPanelService.applyAtSceneBoundary();
             BookshelfPanelService.execute("query", {v:1,token:token});
-            check(fake.replacements == 1 && _root.技能点数 == 175, "boundary/query repeats do not repeat context replacement or SP");
+            check(fake.replacements == 1 && _root.技能点数 == 145, "boundary/query repeats do not repeat context replacement or SP");
         } finally {
             stageClass.canReturnBookContext = oldBook; stageClass.canNavigateAwayFromStage = oldNav;
             stageClass.getRunAuthority = oldAuthority; stageClass.dismissParallelReport = oldDismiss;
@@ -332,9 +332,9 @@ class org.flashNight.arki.ui.BookshelfPanelServiceTest {
             _root._saveExt.bookshelf = {active:active};
             var finalRun:Object = PersistedSnapshot.clone(active); finalRun.outcome = "victory"; finalRun.elapsedMs = 20 * 60000;
             result = BookshelfPanelService.execute("commit", {v:1,token:token,kind:"settle",target:"bookrun_fixture",snapshot:{ext:{bookRun:finalRun}}});
-            check(result.phase == "save_pending" && _root.技能点数 == 175, "reward and receipt share pending candidate");
+            check(result.phase == "save_pending" && _root.技能点数 == 145, "reward and receipt share pending candidate");
             BookshelfPanelService.execute("commit", {v:1,token:token,kind:"settle",target:"bookrun_fixture",snapshot:{ext:{bookRun:finalRun}}});
-            check(_root.技能点数 == 175, "duplicate pending result does not grant twice");
+            check(_root.技能点数 == 145, "duplicate pending result does not grant twice");
             result = BookshelfPanelService.execute("query", {v:1,token:token});
             check(result.phase == "applied" && _root._saveExt.bookshelf.active == null, "confirmed reward consumes origin marker");
             var freshToken:String = result.nextToken;

@@ -117,7 +117,7 @@ class org.flashNight.arki.scene.BookRunRulesTest {
         check(differentArmor, "two guaranteed armor pieces in a map are different choices");
         check(medicalValid, "first and third waves guarantee exactly one compound emergency pickup");
         check(randomBuffValid, "middle waves retain the random battlefield buff slot");
-        check(trainerValid && config.skills.length == 36, "every map exposes only the 36 curated skills through level fifteen");
+        check(trainerValid && config.skills.length == 11, "every map exposes only the 11 essential skills only");
         check(config.maps[0].healingItem == "普通hp药剂" && config.maps[2].healingItem == "加强抗生素药剂"
             && config.maps[5].healingItem == "大HP药剂" && config.maps[5].manaItem == "大MP药剂",
             "carried medicines progress from early supplies to late HP and MP recovery");
@@ -147,7 +147,7 @@ class org.flashNight.arki.scene.BookRunRulesTest {
                 if (w < map.materials.length) {
                     var material:Object = map.materials[w];
                     var drop:Object = findDrop(enemy, material.name);
-                    materialValid = materialValid && drop != null && drop.概率 == 100
+                    materialValid = materialValid && drop != null && drop.概率 == (m >= 2 && m <= 5 ? 75 : 100)
                         && drop.最小数量 == material.count && drop.最大数量 == material.count
                         && drop.总数 == material.count;
                     if (drop.名字 == "二阶复合防御组件") tierTotal += drop.最小数量;
@@ -160,7 +160,7 @@ class org.flashNight.arki.scene.BookRunRulesTest {
             "moving military later does not silently raise their existing levels");
         check(medValid, "actual pickup plans use small then medium then large HP and MP potions");
         check(spValid && spTotal == 360, "360 local SP in six guaranteed single stacks before the boss");
-        check(materialValid, "material quotas are guaranteed exact stacks through the normal pickup path");
+        check(materialValid, "optional material value in maps three through six moves one quarter to cards");
         check(tierTotal == 5 && stoneTotal == 78, "five tier components and 78 enhancement stones support local tuning");
         var unchanged:Array = BookRunRules.stages(1729, 0);
         var itemName:String = config.maps[0].materials[0].name;
@@ -254,7 +254,7 @@ class org.flashNight.arki.scene.BookRunRulesTest {
                 var enemy:Object = carrier(waves[w]);
                 var expectedSlots:Number = 6 + (w < config.loot.armorWaves ? 1 : 0)
                     + (w == 0 && map.skillPoints > 0 ? 1 : 0) + (w < map.materials.length ? 1 : 0)
-                    + ((m == 1 || m == 3) && w == map.waves - 1 ? 1 : 0);
+                    + (m < 6 && w == map.waves - 1 ? 2 : 0);
                 drops = drops && enemy.Parameters.掉落物.length == expectedSlots
                     && findDrop(enemy, "金币") != null;
             }
@@ -263,8 +263,8 @@ class org.flashNight.arki.scene.BookRunRulesTest {
         check(drops, "carrier adds at most one armor, one material and one map SP stack to existing supplies");
         check(concentrated, "exactly one carrier per wave including the single-enemy boss");
         check(cadence, "splitting the carrier preserves the original 900ms arrival cadence without a double spawn");
-        check(currentDropSlots == 153 && currentDropSlots < priorDropSlots * 0.7,
-            "bundled ammunition and two build vouchers keep pickup rules below seventy percent of the minimum old scatter");
+        check(currentDropSlots == 163 && currentDropSlots < priorDropSlots * 0.75,
+            "six choice vouchers and the K budget still cut pickup rules by at least a quarter of the minimum old scatter");
         check(services, "each stage exposes existing shop and skill service");
         check(first[6].Wave.SubWave[0].EnemyGroup.Enemy[0].Type == "兵种455", "physical teacher boss");
         first[0].Wave.SubWave[0].EnemyGroup.Enemy[0].Quantity = 999;
@@ -273,22 +273,33 @@ class org.flashNight.arki.scene.BookRunRulesTest {
         testSurvivalChoices(same, config);
         testBuildResources(same, config);
         testLoadoutChoices(same, config);
+        var kTotal:Number=0, deliveryCount:Number=0, budgetOk:Boolean=true;
+        for(var bm:Number=0;bm<same.length;bm++) {
+            var bw:Array=same[bm].Wave.SubWave;
+            for(var wi:Number=0;wi<bw.length;wi++) {
+                var budgetDrop:Object=findDrop(carrier(bw[wi]),"K点");
+                if(budgetDrop!=null) {kTotal+=budgetDrop.最小数量;budgetOk=budgetOk&&bm<6&&wi==bw.length-1&&budgetDrop.最小数量>=200&&budgetDrop.最大数量<=300&&budgetDrop.概率==100;}
+                for(var mi:Number=0;mi<config.minorChoices.length;mi++) if(findDrop(carrier(bw[wi]),config.minorChoices[mi].choiceItem)!=null) deliveryCount++;
+            }
+        }
+        check(budgetOk&&kTotal>=1200&&kTotal<=1800,"six exact K budgets replace random coin conversion");
+        check(deliveryCount==4,"four small choices supplement two complete loadout choices");
         findDrop(carrier(first[0].Wave.SubWave[0]), "经验值").总数 = 0;
         check(findDrop(carrier(same[0].Wave.SubWave[0]), "经验值").总数 > 0
                 && findDrop(carrier(first[0].Wave.SubWave[1]), "经验值").总数 > 0,
             "consuming one XP drop does not deplete other waves or plans");
         var run:Object = {bookId:"repair-campus",outcome:"victory",elapsedMs:31 * 60000};
         var quote:Object = BookRunRules.reward(run, {});
-        check(quote.sp == 60 && quote.firstClear && quote.bestTier == 0, "first clear plus regular reward");
-        quote = BookRunRules.reward(run, {firstClear:true,bestTier:0});
-        check(quote.sp == 30, "ordinary clear");
+        check(quote.sp == 45 && quote.firstClear && quote.bestTier == 0, "first clear is a personal best");
+        quote = BookRunRules.reward(run, {firstClear:true,bestTier:0,bestMs:31 * 60000});
+        check(quote.sp == 5, "ordinary clear");
         run.elapsedMs = 20 * 60000;
         quote = BookRunRules.reward(run, {});
-        check(quote.sp == 75 && quote.bestTier == 3, "first clear reaches all three finite records");
+        check(quote.sp == 45 && quote.bestTier == 3, "first clear pays the personal-best total only");
         quote = BookRunRules.reward(run, {firstClear:true,bestTier:3,bestMs:19 * 60000});
-        check(quote.sp == 30 && quote.bestMs == 19 * 60000, "record cannot be farmed again");
+        check(quote.sp == 5 && quote.bestMs == 19 * 60000, "record cannot be farmed again");
         quote = BookRunRules.reward(run, {firstClear:true,bestTier:1});
-        check(quote.sp == 40, "only unearned record tiers return");
+        check(quote.sp == 45, "missing old time establishes a personal best");
         run.outcome = "defeat";
         quote = BookRunRules.reward(run, {});
         check(quote.sp == 0 && !quote.firstClear && quote.bestTier == 0, "defeat neither pays nor consumes first clear");

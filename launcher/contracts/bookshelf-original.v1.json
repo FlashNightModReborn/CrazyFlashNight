@@ -1,0 +1,24 @@
+{
+  "schema": "bookshelf-original.v1",
+  "panel": "bookshelf",
+  "domain": "bookshelf-original",
+  "source": "https://overlay.local/overlay.html",
+  "contentOrigin": "https://cf7-originals.local",
+  "hostTask": "launcher/src/Tasks/BookshelfOriginalContent.cs",
+  "commands": {
+    "prepare": {"access":"read","payload":["v","token","chapter","language"]},
+    "release": {"access":"read","payload":["v","session"]}
+  },
+  "responseEnvelope": ["type","panel","domain","cmd","callId","panelInstanceId"],
+  "requiresAs2Snapshot": "editing; success; canSwitch; no inRun/pendingRun/outcomePending; exact instance/token; no unresolved write",
+  "collectionAppId": 1540150,
+  "collectionDlcAppId": 2917650,
+  "collectionAccess": {
+    "development": "existing SteamOwnershipCheck.IsDevRepository exemption; installed local collection; no Steam client, user identity or DLC grants",
+    "ordinaryInstall": "authenticated Steam user, collection ownership and installation; no local-file fallback"
+  },
+  "storage": "stable Steam account or separate development repository digest / chapter / language document path plus data.swfFileName; transient session URL only for content requests",
+  "cf7Persistence": false,
+  "cf7Rewards": false,
+  "commercialAssetRedistribution": false
+}

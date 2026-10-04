@@ -38,8 +38,8 @@ class BookDefinitionTests(unittest.TestCase):
             self.assertIn(stage['healingItem'], catalog)
             self.assertIn(stage['manaItem'], catalog)
             self.assertTrue({entry['name'] for entry in stage['materials']} <= catalog)
-        self.assertEqual(36, len(self.data['skills']))
-        self.assertTrue({'闪现', '翻滚换弹', '炼金', '轰炸专家', '枪械师', '冲击连携'} <= set(self.data['skills']))
+        self.assertEqual(11, len(self.data['skills']))
+        self.assertEqual({'小跳','兴奋剂','铁布衫','寸拳','气动波','移动射击','刀剑攻击','枪械攻击','拳脚攻击','口才','独行者'}, set(self.data['skills']))
         self.assertFalse({'重力场', '能量盾', '铁匠', '解密', '烹饪', '逆向', '驾驶'} & set(self.data['skills']))
 
     def test_fist_progression_has_drop_and_shop_access(self):
@@ -65,7 +65,7 @@ class BookDefinitionTests(unittest.TestCase):
             with self.assertRaises(ValueError):builder.validate_boss(data,units,self.items)
 
     def test_book_can_curate_a_subset_of_eligible_skills(self):
-        self.data['skills'].remove('闪现')
+        self.data['skills'].remove('小跳')
         self.validate()
 
     def test_empty_skill_menu_is_rejected(self):
@@ -212,8 +212,9 @@ class BookDefinitionTests(unittest.TestCase):
             for option in checkpoint['options']:
                 item = self.items[option['name']]
                 self.assertEqual('fixed', item.findtext('data/rewardPack/mode'))
-                actual = {e.findtext('itemName'): int(e.findtext('quantityMin')) for e in item.findall('data/rewardPack/entries/entry')}
-                expected = {option['weapon']: 1, **{n: 1 for n in option['mods']}, **{e['name']: e['count'] for e in option['consumables']}}
+                actual = [(e.findtext('itemName'), int(e.findtext('quantityMin'))) for e in item.findall('data/rewardPack/entries/entry')]
+                count = option.get('weaponCount', 1)
+                expected = [(option['weapon'], 1)] * count + [(n, count) for n in option['mods']] + [(e['name'], e['count']) for e in option['consumables']]
                 self.assertEqual(expected, actual)
                 self.assertTrue(all(e.findtext('quantityMin') == e.findtext('quantityMax') for e in item.findall('data/rewardPack/entries/entry')))
 
@@ -251,8 +252,11 @@ class BookDefinitionTests(unittest.TestCase):
                 with self.assertRaises(ValueError): self.validate()
 
     def test_build_resources_do_not_raise_original_character_rewards(self):
-        self.assertEqual((30, 30, 5, [30, 25, 20]),
+        self.assertEqual((5, 0, 0, [30, 25, 20]),
                          (self.data['regularSp'], self.data['firstClearSp'], self.data['recordSpPerTier'], self.data['recordMinutes']))
+
+    def test_record_bonus_is_a_total_not_an_extra_tier(self):
+        self.assertEqual(self.data['recordSp'], 45)
 
     def test_checkpoint_xp_unlocks_every_loadout_before_next_map(self):
         # Current cumulative level gates from 引擎_lsy_等级与经验值.as (13 * previousLevel**4 + 500).

@@ -206,7 +206,8 @@ namespace CF7Launcher.Tasks
                     || error == "invalid_target" || error == "target_stale"
                     || error == "target_occupied" || error == "target_incompatible"
                     || error == "invalid_choice_store" || error == "choice_context_unavailable"
-                    || error == "choice_limit" || error == "stale_choice" || error == "invalid_choice");
+                    || error == "choice_limit" || error == "stale_choice" || error == "invalid_choice"
+                    || error == "insufficient_kpoints" || error == "no_reward_upgrade" || error == "invalid_skill_reward");
                 sanitized = new JObject { ["success"] = false, ["error"] = error };
                 return true;
             }

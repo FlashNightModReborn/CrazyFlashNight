@@ -9,7 +9,10 @@
     var books = [
         {id:'dust', title:'尘都诡谈', subtitle:'原版藏书 · 15 页', format:'facsimile', pages:15},
         {id:'babylon', title:'光明巴比伦', subtitle:'原版藏书 · 15 页', format:'facsimile', pages:15},
-        {id:'repair-campus', title:'修理大学', subtitle:'原版重温 · 重制版历险', format:'playable', pages:0}
+        {id:'crazy-flasher', title:'闪客快打', subtitle:'系列藏书 · 6 个章节', format:'playable', pages:0,
+            chapters:[1,2,3,4,5,6].map(function(n) { return {id:'cf' + n, title:n === 1 ? '修理大学' : '闪客快打 ' + n,
+                original:{chapter:n, languages:n === 1 ? ['cn'] : ['cn','en']},
+                remake:{id:n === 1 ? 'repair-campus' : null, available:n === 1}}; })}
     ];
     function pageUrl(id, page) {
         var book = books.find(function(b) { return b.id === id; });
@@ -31,6 +34,12 @@
                     || (b.format === 'playable') !== (b.pages === 0)
                     || (['comic','novel'].includes(b.format) && !safeAsset(b.index))) throw new Error('invalid_book');
             ids.add(b.id);
+            if (b.format === 'playable' && (b.id !== 'crazy-flasher' || !Array.isArray(b.chapters) || b.chapters.length !== 6
+                || !b.chapters.every(function(c, i) { return c && c.id === 'cf' + (i + 1) && typeof c.title === 'string'
+                    && c.original && c.original.chapter === i + 1
+                    && JSON.stringify(c.original.languages) === JSON.stringify(i === 0 ? ['cn'] : ['cn','en'])
+                    && c.remake && c.remake.available === (i === 0) && c.remake.id === (i === 0 ? 'repair-campus' : null);
+                }))) throw new Error('invalid_series');
         });
         books.splice.apply(books, [0, books.length].concat(data.books));
         return books;
@@ -60,22 +69,26 @@
         return index;
     }
     function RequestMux(options) {
-        var instance = options.panelInstanceId;
+        var instance = options.panelInstanceId, domain = options.domain || 'bookshelf';
+        if (!['bookshelf','bookshelf-original'].includes(domain)) throw new Error('unsupported_domain');
+        this.domain = domain;
         this.mux = new PanelRuntime.PanelRequestMux({
             send:options.send, timeoutMs:options.timeoutMs || 18000, callPrefix:'bookshelf',
             router:options.router || PanelRuntime.sharedResponseRouter,
-            createMessage:function(c) { return {type:'panel', panel:'bookshelf', domain:'bookshelf', cmd:c.entry.cmd,
+            createMessage:function(c) { return {type:'panel', panel:'bookshelf', domain:domain, cmd:c.entry.cmd,
                 callId:c.entry.callId, panelInstanceId:instance, payload:c.payload}; },
             validateResponse:function(d, e) { return d && d.type === 'panel_resp' && d.panel === 'bookshelf'
-                && d.domain === 'bookshelf' && d.cmd === e.cmd && d.callId === e.callId && d.panelInstanceId === instance; },
+                && d.domain === domain && d.cmd === e.cmd && d.callId === e.callId && d.panelInstanceId === instance; },
             createSynthetic:function(c) { return {success:false, error:c.error, clientSynthetic:true,
                 requiresReconcile:c.entry.write && c.error === 'client_timeout'}; }
         });
         this.mux.openSession({});
     }
     RequestMux.prototype.request = function(cmd, payload, done) {
-        if (!/^(snapshot|commit|query)$/.test(cmd)) return null;
-        return this.mux.request(cmd, payload, {kind:cmd, singleFlight:true, write:cmd === 'commit', sendError:'not_sent'}, done);
+        var original = this.domain === 'bookshelf-original';
+        if (!(original ? /^(prepare|release)$/ : /^(snapshot|commit|query)$/).test(cmd)) return null;
+        return this.mux.request(cmd, payload, {kind:cmd,
+            singleFlight:!original, write:!original && cmd === 'commit', sendError:'not_sent'}, done);
     };
     RequestMux.prototype.destroy = function() { this.mux.destroy(); };
     return {books:books, pageUrl:pageUrl, safeAsset:safeAsset, adoptCatalog:adoptCatalog, validateIndex:validateIndex, RequestMux:RequestMux};

@@ -1360,6 +1360,7 @@ namespace CF7Launcher.Guardian
         private GaragePurchaseTask _garagePurchaseTask;
         private SleepTask _sleepTask;
         private BookshelfTask _bookshelfTask;
+        private BookshelfOriginalContent _bookshelfOriginalContent;
         private GymTrainingTask _gymTrainingTask;
         private SettingsTask _settingsTask;
         private EquipmentTuningTask _equipmentTuningTask;
@@ -1776,6 +1777,7 @@ namespace CF7Launcher.Guardian
 
                 // 字体只允许通过 catalog exact-set handler 暴露；不再映射可枚举目录。
                 RuntimeFontCatalog.RegisterWebResources(_webView.CoreWebView2, "WebOverlayForm");
+                BookshelfOriginalWebResources.Register(_webView.CoreWebView2, () => _bookshelfOriginalContent);
 
                 // 游戏素材虚拟主机：https://cfn-assets.local/ → {projectRoot}/flashswf/
                 TryRegisterGameAssetsVirtualHost(
@@ -2939,6 +2941,9 @@ namespace CF7Launcher.Guardian
         private void OnWebMessageReceived(object sender,
             CoreWebView2WebMessageReceivedEventArgs args)
         {
+            // The movie origin never receives any generic task/panel/save bridge.
+            if (Uri.TryCreate(args.Source, UriKind.Absolute, out var movieSource)
+                && movieSource.Host == BookshelfOriginalContent.VirtualHost) return;
             try
             {
                 string json = args.WebMessageAsJson;
@@ -2955,6 +2960,12 @@ namespace CF7Launcher.Guardian
                     || parsed?.Value<string>("domain") == AssetWorkbenchTask.Domain)
                 {
                     HandleAssetWorkbenchMessage(json, args.Source);
+                    return;
+                }
+
+                if (parsed?.Value<string>("domain") == BookshelfOriginalContent.Domain)
+                {
+                    HandleBookshelfOriginalMessage(parsed, args.Source);
                     return;
                 }
 
@@ -4452,6 +4463,7 @@ namespace CF7Launcher.Guardian
 
             if (disposing)
             {
+                _bookshelfOriginalContent?.Dispose();
                 if (_materialShopNavigationCoordinator != null)
                 {
                     _materialShopNavigationCoordinator
@@ -4743,8 +4755,24 @@ namespace CF7Launcher.Guardian
         public void SetBookshelfTask(BookshelfTask task)
         {
             _bookshelfTask = task;
+            _bookshelfOriginalContent ??= new BookshelfOriginalContent(_projectRoot,
+                (instance, token) => CanAcceptPanelDocumentMessages && _panelHost?.ActivePanelName == "bookshelf"
+                    && _panelHost.ActivePanelInstanceId == instance && _bookshelfTask != null && _bookshelfTask.CanOpenOriginal(instance, token));
+            task.SetOriginalRevoked(_bookshelfOriginalContent.Revoke);
             task.SetPostToWeb(PostToWeb);
             task.SetInvoker(delegate(Action a) { try { this.BeginInvoke(a); } catch {} });
+        }
+
+        private async void HandleBookshelfOriginalMessage(JObject parsed, string source)
+        {
+            if (!CanAcceptPanelDocumentMessages || !BookshelfOriginalContent.IsOverlaySource(source)
+                || !HasExactActivePanelOwnerBinding(parsed, "bookshelf") || _bookshelfOriginalContent == null) return;
+            string instance = parsed.Value<string>("panelInstanceId");
+            var result = await _bookshelfOriginalContent.ExecuteAsync(parsed);
+            if (IsDisposed || Disposing || !HasExactActivePanelOwnerBinding(parsed, "bookshelf")) return;
+            result["type"] = "panel_resp"; result["panel"] = "bookshelf"; result["domain"] = BookshelfOriginalContent.Domain;
+            result["cmd"] = parsed["cmd"]; result["callId"] = parsed["callId"]; result["panelInstanceId"] = instance;
+            PostToWeb(result.ToString(Newtonsoft.Json.Formatting.None));
         }
 
         public void SetSleepTask(SleepTask task)

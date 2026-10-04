@@ -25,7 +25,7 @@
         var itemName = String(candidate.name || '').trim();
         var subject = itemName ? '「' + itemName + '」' : '所选物品';
         if (receipt.kind === 'choiceOpen') return '配给候选已保留，请选择一套；稍后也可从“自选礼包”继续。';
-        if (receipt.kind === 'choiceSelect') return '所选配给已存入暂存物资，领取后即可换装。';
+        if (receipt.kind === 'choiceSelect') return '配给已领取：技能直接授予，主动技能请在技能页装备；物品可到暂存领取。';
         if (pending.command === 'open' || pending.command === 'openMany') {
             var summary = response.inboxSummary || receipt.inboxSummary || {};
             var inboxRemaining = finiteWhole(summary.remainingCount);

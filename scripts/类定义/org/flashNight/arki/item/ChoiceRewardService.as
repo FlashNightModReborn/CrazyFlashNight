@@ -1,5 +1,6 @@
 ﻿import org.flashNight.gesh.object.PersistedSnapshot;
 
+import org.flashNight.arki.skill.SkillLoadoutService;
 import org.flashNight.arki.item.BaseItem;
 import org.flashNight.arki.item.ItemUtil;
 import org.flashNight.arki.item.PlayerAssetTransaction;
@@ -39,6 +40,29 @@ class org.flashNight.arki.item.ChoiceRewardService {
         if (!isFinite(value) || value < 0 || value >= 1) throw new Error("invalid_choice_rng");
         return Math.floor(value * bound);
     }
+    private static function skillEligible(skills:Array):Boolean {
+        for (var i:Number = 0; i < skills.length; i++)
+            if (!SkillLoadoutService.rewardSkillStatus(skills[i].skillKey, skills[i].level).success) return false;
+        return true;
+    }
+    private static function ownedEquipment(name:String):Boolean {
+        var sources:Array = [_root.物品栏.背包, _root.物品栏.装备栏];
+        for (var c:Number = 0; c < sources.length; c++) {
+            var items:Object = sources[c].toObject();
+            for (var key:String in items) if (items[key].name === name) return true;
+        }
+        return RewardStashStore.ownedQuantity(RewardStashService.peek(),name) > 0;
+    }
+    private static function useful(entry:Object):Boolean {
+        if (!skillEligible(entry.skills == null ? [] : entry.skills)) return false;
+        if (entry.skills.length > 0) return true;
+        for (var i:Number = 0; i < entry.entries.length; i++)
+            if (!ItemUtil.isEquipment(entry.entries[i].itemName) || !ownedEquipment(entry.entries[i].itemName)) return true;
+        return false;
+    }
+    private static function selectionResolved(committed:Boolean):Boolean {
+        return SkillLoadoutService.resolveRewardSkills(committed);
+    }
     public static function snapshot():Object {
         var store:Object = RewardStashService.committedFeature();
         var offers:Array = [];
@@ -64,14 +88,24 @@ class org.flashNight.arki.item.ChoiceRewardService {
                             quantity:RewardStashStore.quantity(item), level:Math.max(0, Number(meta.data.level) || 0),
                             icon:String(meta.icon || item.name), details:detail.substr(0, 4096)});
                     }
-                    options.push({optionId:option.optionId, title:option.title, description:option.description, items:items});
+                    var skills:Array = [];
+                    for (var s:Number = 0; s < option.skills.length; s++) {
+                        var grant:Object = option.skills[s];
+                        var state:Object = SkillLoadoutService.inspectSkill(grant.skillKey);
+                        var metadata:Object = _root.技能表对象[grant.skillKey];
+                        skills.push({skillKey:grant.skillKey,level:grant.level,currentLevel:SkillLoadoutService.committedRewardSkillLevel(grant.skillKey),
+                            description:org.flashNight.gesh.string.StringUtils.htmlToPlainTextFast(String(metadata.Description || "")).substr(0,2048)});
+                    }
+                    options.push({optionId:option.optionId, title:option.title, description:option.description, items:items,
+                        skills:skills,kCost:option.kCost == undefined ? 0 : option.kCost,
+                        available:RewardStashService.pendingOperationId() == "" && skillEligible(option.skills == null ? [] : option.skills)});
                 }
                 offers.push({offerId:offer.offerId, title:offer.title, options:options});
             }
         }
         return {success:true, storeId:store != null && store.v === 2 ? store.storeId : "",
             revision:store != null && store.v === 2 ? store.commitRevision : 0,
-            offers:offers, pendingOperationId:RewardStashService.pendingOperationId()};
+            offers:offers, kpoints:RewardStashService.committedKPoints(), pendingOperationId:RewardStashService.pendingOperationId()};
     }
     public static function open(params:Object, source:Object, definition:Object, fingerprint:String):Object {
         var binding:Object = scope(definition);
@@ -93,8 +127,9 @@ class org.flashNight.arki.item.ChoiceRewardService {
                 runIdentity:binding.runIdentity, options:[]};
             for (var g:Number = 0; g < definition.groups.length; g++) {
                 var group:Object = definition.groups[g];
-                var available:Array = group.entries.slice();
-                for (var d:Number = 0; d < group.draw; d++) {
+                var available:Array = [];
+                for (var a:Number = 0; a < group.entries.length; a++) if (useful(group.entries[a])) available.push(group.entries[a]);
+                for (var d:Number = 0; d < group.draw && available.length > 0; d++) {
                     var total:Number = 0;
                     for (var w:Number = 0; w < available.length; w++) total += available[w].weight;
                     var hit:Number = randomInt(total), index:Number = 0;
@@ -106,7 +141,8 @@ class org.flashNight.arki.item.ChoiceRewardService {
                         if (item == null) return RewardStashService.cancel("invalid_reward_pack");
                         frozen.push(item.toObject());
                     }
-                    offer.options.push({optionId:chosen.id, title:chosen.title, description:chosen.description, items:frozen});
+                    offer.options.push({optionId:chosen.id, title:chosen.title, description:chosen.description, items:frozen,
+                        skills:chosen.skills == null ? [] : PersistedSnapshot.clone(chosen.skills), kCost:chosen.kCost == undefined ? 0 : chosen.kCost});
                 }
             }
             saved.offers.push(offer);
@@ -134,9 +170,15 @@ class org.flashNight.arki.item.ChoiceRewardService {
         var option:Object = null;
         for (var c:Number = 0; c < offer.options.length; c++) if (offer.options[c].optionId === params.optionId) option = offer.options[c];
         if (option == null) return {success:false,error:"invalid_choice"};
+        var cost:Number = option.kCost == undefined ? 0 : Number(option.kCost);
+        if (!RewardStashStore.whole(_root.虚拟币) || _root.虚拟币 < cost) return {success:false,error:"insufficient_kpoints"};
+        if (!skillEligible(option.skills == null ? [] : option.skills)) return {success:false,error:"no_reward_upgrade"};
         var context:Object = {source:"item_use", reason:"choice_select", operationId:params.operationId};
-        if (!RewardStashService.begin(String(params.operationId), context, null, null)) return {success:false,error:RewardStashService.lastError};
+        if (!RewardStashService.begin(String(params.operationId), context, selectionResolved, null)) return {success:false,error:RewardStashService.lastError};
         try {
+            if (option.skills.length > 0 && !SkillLoadoutService.prepareRewardSkills(option.skills)) return RewardStashService.cancel("invalid_skill_reward");
+            _root.虚拟币 -= cost;
+            if (cost > 0) PlayerAssetTransaction.recordCurrencyDeltas(0, -cost, context);
             var selectedItems:Array = option.items;
             if (!RewardStashService.admit(selectedItems, false, true, context)) return RewardStashService.cancel("invalid_reward_pack");
             var saved:Object = RewardStashService.peek().choiceOffers;

@@ -38,7 +38,10 @@
                     || map.waves < 1 || map.waves > 8) return false;
         }
         return data.bossEncounter.mapIndex == data.maps.length - 1 && data.regularSp <= 100
-            && data.firstClearSp <= 100 && data.recordSpPerTier <= 100;
+            && data.firstClearSp <= 100 && data.recordSpPerTier <= 100 && data.recordSp <= 100
+            && data.kBudget.mapCount == 6 && data.kBudget.guaranteed <= 1000 && data.kBudget.randomMax <= 1000
+            && data.optionalLoot.percent <= 100 && data.optionalLoot.firstMap <= data.optionalLoot.lastMap
+            && data.optionalLoot.lastMap < data.maps.length;
     }
     private static function shape(value, example, depth:Number):Boolean {
         if (depth > 12 || value == null || typeof value != typeof example) return false;

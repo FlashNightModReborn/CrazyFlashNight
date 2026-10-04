@@ -5,7 +5,7 @@ import re
 from pathlib import Path
 import shutil
 import xml.etree.ElementTree as ET
-from choice_reward_catalog import resolve_book_choices, validate_loadout
+from choice_reward_catalog import resolve_book_choices, validate_loadout, loadout_entries
 
 ROOT = Path(__file__).resolve().parents[1]
 SOURCE = ROOT / 'data/stages/books/repair-campus.json'
@@ -92,8 +92,7 @@ def generated_deliveries(data):
         voucher = checkpoint['voucher']
         item(voucher, '收集品', '材料', '强化石', '从装备菜单进入材料，选中本凭证前往合成，在“书中配给”分类兑换一套配给包。每张凭证四选一，兑换后打开包并领取装备、插件和补给。仅供本次书中历险使用。')
         for option in checkpoint['options']:
-            entries = [(option['weapon'], 1)] + [(n, 1) for n in option['mods']]
-            entries += [(entry['name'], entry['count']) for entry in option['consumables']]
+            entries = [(entry['itemName'], entry['quantity']) for entry in loadout_entries(option)]
             pack(option['name'], option['description'], entries)
             recipes.append(dict(recipeId='craft.book-supply.%03d' % (len(recipes) + 1),
                                 title=option['title'], name=option['name'], value=1,
@@ -278,6 +277,10 @@ def main():
         if path == PACK_OUTPUT: continue
         items.update((item.findtext('name'), item) for item in ET.parse(path).findall('.//item'))
     validate_choices(data, items)
+    if [c['afterMap'] for c in data['minorChoices']] != [0, 2, 4, 5]: raise ValueError('four minor deliveries must complement the two loadout checkpoints')
+    if data['kBudget'] != {'mapCount': 6, 'guaranteed': 200, 'randomMax': 100}: raise ValueError('invalid run K budget')
+    if data['optionalLoot'] != {'firstMap': 2, 'lastMap': 5, 'percent': 75}: raise ValueError('invalid optional loot transfer')
+    bounded_integer(data['recordSp'], 0, 100, 'personal best SP')
     outputs = generated_deliveries(data)
     items.update((item.findtext('name'), item) for item in ET.fromstring(outputs[PACK_OUTPUT]).findall('item'))
     if not 6 <= len(data['maps']) <= 8:

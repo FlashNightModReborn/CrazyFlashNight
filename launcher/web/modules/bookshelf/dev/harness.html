@@ -10,9 +10,10 @@ var mode = new URLSearchParams(location.search).get('mode') || 'normal';
 document.getElementById('request-trace').hidden = !new URLSearchParams(location.search).has('trace');
 window.Bridge={on:function(t,f){(handlers[t]||(handlers[t]=[])).push(f)},off:function(t,f){handlers[t]=(handlers[t]||[]).filter(function(x){return x!==f})},
 send:function(m){requests.push(m);document.getElementById('request-log').textContent=requests.map(function(r){return r.cmd+' '+(r.payload&&r.payload.kind||'')+' '+(r.payload&&r.payload.target||'')}).join('\n');if(m.cmd==='close')return true;
+if(m.domain==='bookshelf-original'){setTimeout(function(){(handlers.panel_resp||[]).forEach(function(f){f({type:'panel_resp',panel:'bookshelf',domain:'bookshelf-original',cmd:m.cmd,callId:m.callId,panelInstanceId:m.panelInstanceId,success:m.cmd==='release',error:m.cmd==='prepare'?'not_owned':undefined})})},8);return true;}
 setTimeout(function(){(handlers.panel_resp||[]).forEach(function(f){f({type:'panel_resp',panel:'bookshelf',domain:'bookshelf',cmd:m.cmd,
 callId:m.callId,panelInstanceId:m.panelInstanceId,v:1,token:m.payload.token,phase:mode==='unavailable'?undefined:m.cmd==='commit'?'switching':'editing',success:mode!=='unavailable',error:mode==='unavailable'?'disconnected':undefined,
-activeSlot:mode==='run'?'bookrun_preview':'preview_a',role:mode==='run'?'Andy Law':'归来的佣兵',inRun:mode==='run',originSlot:'preview_a',canSwitch:true,unlocked:mode!=='locked',pendingRun:mode==='pending'?'bookrun_preview':'',lastReward:30,
+activeSlot:mode==='run'?'bookrun_preview':'preview_a',role:mode==='run'?'Andy Law':'归来的佣兵',inRun:mode==='run',originSlot:'preview_a',canSwitch:true,unlocked:mode!=='locked',pendingRun:mode==='pending'?'bookrun_preview':'',lastReward:45,
 slots:[{slot:'preview_a',name:'归来的佣兵'},{slot:'preview_b',name:'另一位幸存者'}]})})},8);return true}};
 window.Toast={add:function(){}};
 </script>

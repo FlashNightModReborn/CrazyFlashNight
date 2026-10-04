@@ -191,6 +191,41 @@ namespace Launcher.Tests.Tasks
             Assert.Equal("bookshelfCommit", sent[2].Value<string>("action"));
         }
 
+        [Fact]
+        public void OriginalAccessRequiresExactCurrentEditingSnapshotAndIsRevokedOnWriteOrClose()
+        {
+            var sent = new List<JObject>(); var posted = new List<JObject>();
+            using var task = Create(sent, posted);
+            Assert.False(task.CanOpenOriginal("bookshelf.panel.1", "bookshelf.test.1"));
+            task.HandleWebRequest("snapshot", Request("snapshot"));
+            var state = Response(sent[0], "editing", kind:null, target:null);
+            state["operation"] = "snapshot"; state["inRun"] = false; state["pendingRun"] = ""; state["outcomePending"] = false;
+            state["canSwitch"] = true;
+            task.HandleFlashResponse(state, _ => {});
+            Assert.True(task.CanOpenOriginal("bookshelf.panel.1", "bookshelf.test.1"));
+            Assert.False(task.CanOpenOriginal("bookshelf.other", "bookshelf.test.1"));
+            Assert.False(task.CanOpenOriginal("bookshelf.panel.1", "bookshelf.old"));
+            task.HandleWebRequest("commit", Request("commit", "call.2"));
+            Assert.False(task.CanOpenOriginal("bookshelf.panel.1", "bookshelf.test.1"));
+            task.ClearPending(); Assert.False(task.CanOpenOriginal("bookshelf.panel.1", "bookshelf.test.1"));
+            Assert.True(posted.Count == 1); // no original request reached the AS2 write protocol
+        }
+
+        [Theory]
+        [InlineData("inRun")][InlineData("pendingRun")][InlineData("outcomePending")][InlineData("canSwitch")]
+        public void OriginalAccessCannotBypassJourneyOrContextAdmission(string blocked)
+        {
+            var sent = new List<JObject>(); var posted = new List<JObject>();
+            using var task = Create(sent, posted);
+            task.HandleWebRequest("snapshot", Request("snapshot"));
+            var state = Response(sent[0], "editing", kind:null, target:null);
+            state["operation"] = "snapshot"; state["inRun"] = blocked == "inRun";
+            state["pendingRun"] = blocked == "pendingRun" ? "bookrun_previous" : "";
+            state["outcomePending"] = blocked == "outcomePending"; state["canSwitch"] = blocked != "canSwitch";
+            task.HandleFlashResponse(state, _ => {});
+            Assert.False(task.CanOpenOriginal("bookshelf.panel.1", "bookshelf.test.1"));
+        }
+
         [Theory]
         [InlineData("save_pending", "bookshelf.next")]
         [InlineData("applied", "bookshelf.test.1")]

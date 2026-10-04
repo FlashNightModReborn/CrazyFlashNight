@@ -40,7 +40,10 @@ class org.flashNight.arki.scene.BookDefinition {
                     || map.waves < 1 || map.waves > 8) return false;
         }
         return data.bossEncounter.mapIndex == data.maps.length - 1 && data.regularSp <= 100
-            && data.firstClearSp <= 100 && data.recordSpPerTier <= 100;
+            && data.firstClearSp <= 100 && data.recordSpPerTier <= 100 && data.recordSp <= 100
+            && data.kBudget.mapCount == 6 && data.kBudget.guaranteed <= 1000 && data.kBudget.randomMax <= 1000
+            && data.optionalLoot.percent <= 100 && data.optionalLoot.firstMap <= data.optionalLoot.lastMap
+            && data.optionalLoot.lastMap < data.maps.length;
     }
     private static function shape(value, example, depth:Number):Boolean {
         if (depth > 12 || value == null || typeof value != typeof example) return false;
@@ -75,9 +78,9 @@ class org.flashNight.arki.scene.BookDefinition {
     title: "修理大学",
     stageName: "书中历险-修理大学",
     unlockTask: 21,
-    regularSp: 30,
-    firstClearSp: 30,
-    recordSpPerTier: 5,
+    regularSp: 5,
+    firstClearSp: 0,
+    recordSpPerTier: 0,
     recordMinutes: [
         30,
         25,
@@ -559,39 +562,14 @@ class org.flashNight.arki.scene.BookDefinition {
         "小跳",
         "兴奋剂",
         "铁布衫",
-        "闪现",
-        "霸体",
         "寸拳",
         "气动波",
-        "踩人",
-        "日字冲拳",
-        "组合拳",
-        "瞬步斩",
-        "凶斩",
-        "迅斩",
-        "震地",
-        "追猎射击",
-        "翻滚换弹",
-        "不卸之力",
-        "扭转乾坤",
-        "升龙拳",
-        "裂地拳",
-        "拳脚空中连招",
-        "上挑",
-        "下劈",
-        "刀剑空中连招",
         "移动射击",
-        "轰炸专家",
-        "枪械师",
         "刀剑攻击",
         "枪械攻击",
         "拳脚攻击",
         "口才",
-        "炼金",
-        "聚气",
-        "独行者",
-        "冲击连携",
-        "内力爆发"
+        "独行者"
     ],
     skillMaxUnlockLevel: 15,
     buildChoices: [
@@ -605,15 +583,16 @@ class org.flashNight.arki.scene.BookDefinition {
                 {
                     name: "书中冲锋配给包",
                     title: "初阶·冲锋穿透",
-                    description: "7级UZI、磁稳贯穿弹、冲锋枪弹药12份。安装后获得贯穿火力，同时降低射速。",
+                    description: "7级UZI两把、磁稳贯穿弹两份、冲锋枪弹药24份。双持配给，两把各装一份插件；贯穿射击会降低射速。",
                     weapon: "UZI",
+                    weaponCount: 2,
                     mods: [
                         "磁稳贯穿弹"
                     ],
                     consumables: [
                         {
                             name: "冲锋枪通用弹药",
-                            count: 12
+                            count: 24
                         }
                     ]
                 },
@@ -702,13 +681,14 @@ class org.flashNight.arki.scene.BookDefinition {
                 {
                     name: "书中榴弹配给包",
                     title: "进阶·榴弹爆破",
-                    description: "12级M79式榴弹发射器、榴弹12份、普通手雷6枚。爆炸火力适合应对集群，仍需规划换弹和后续弹药。",
+                    description: "12级M79式榴弹发射器两把、榴弹24份、普通手雷6枚。双持爆炸火力适合应对集群，仍需规划换弹和后续弹药。",
                     weapon: "M79式榴弹发射器",
+                    weaponCount: 2,
                     mods: [],
                     consumables: [
                         {
                             name: "榴弹弹药",
-                            count: 12
+                            count: 24
                         },
                         {
                             name: "普通手雷",
@@ -869,7 +849,48 @@ class org.flashNight.arki.scene.BookDefinition {
                 count: 3
             }
         ]
-    }
+    },
+    minorChoices: [
+        {
+            afterMap: 0,
+            poolId: "repair-campus.opening",
+            choiceItem: "书中入学特训自选包",
+            levelCeiling: 15,
+            options: []
+        },
+        {
+            afterMap: 2,
+            poolId: "repair-campus.synergy",
+            choiceItem: "书中流派协同自选包",
+            levelCeiling: 15,
+            options: []
+        },
+        {
+            afterMap: 4,
+            poolId: "repair-campus.mastery",
+            choiceItem: "书中战技精进自选包",
+            levelCeiling: 15,
+            options: []
+        },
+        {
+            afterMap: 5,
+            poolId: "repair-campus.final",
+            choiceItem: "书中决战补给自选包",
+            levelCeiling: 15,
+            options: []
+        }
+    ],
+    kBudget: {
+        mapCount: 6,
+        guaranteed: 200,
+        randomMax: 100
+    },
+    optionalLoot: {
+        firstMap: 2,
+        lastMap: 5,
+        percent: 75
+    },
+    recordSp: 45
 };
     }
 }

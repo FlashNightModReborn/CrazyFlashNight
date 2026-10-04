@@ -25,6 +25,8 @@ namespace CF7Launcher.Tasks
         private Action<Action> _invoke;
         private Action<string> _permanentSlotApplied;
         private string _lastAppliedToken;
+        private string _originalInstance, _originalToken;
+        private Action _originalRevoked;
         private SaveResolutionContext _saves;
         private readonly Func<JArray> _catalogSource;
         private readonly Func<string, SolResolveResult> _resolveSource;
@@ -45,8 +47,15 @@ namespace CF7Launcher.Tasks
         public void SetSaveContext(SaveResolutionContext saves) { _saves = saves; }
         public void SetPostToWeb(Action<string> post) { _post = post; }
         public void SetInvoker(Action<Action> invoke) { _invoke = invoke; }
-        public void ClearPending() { lock (_gate) _pending.Clear(); }
-        public void Dispose() { lock (_gate) { _disposed = true; _pending.Dispose(); } }
+        internal void SetOriginalRevoked(Action callback) { _originalRevoked = callback; }
+        private void RevokeOriginal() { _originalInstance = _originalToken = null; _originalRevoked?.Invoke(); }
+        internal bool CanOpenOriginal(string instance, string token)
+        {
+            lock (_gate) return !_disposed && !_writePending && _unresolved == null && _pending.IsReady()
+                && _originalInstance == instance && _originalToken == token && instance != null && token != null;
+        }
+        public void ClearPending() { lock (_gate) { RevokeOriginal(); _pending.Clear(); } }
+        public void Dispose() { lock (_gate) { _disposed = true; RevokeOriginal(); _pending.Dispose(); } }
         internal static JObject BuildOpenData(string source, string extras)
         {
             if (source != "world_bookshelf") return null;
@@ -143,7 +152,7 @@ namespace CF7Launcher.Tasks
                     Target = isWrite ? Text(payload["target"]) : _unresolvedTarget,
                     Destination = isWrite ? Text(normalized["runSlot"]) ?? Text(payload["target"]) : _unresolvedDestination };
                 if (!_pending.TryBegin(callId, context, out int fid)) return;
-                if (isWrite) { _writePending = true; _unresolved = context.Token; _unresolvedKind = context.Kind;
+                if (isWrite) { RevokeOriginal(); _writePending = true; _unresolved = context.Token; _unresolvedKind = context.Kind;
                     _unresolvedTarget = context.Target; _unresolvedDestination = context.Destination; }
                 _pending.Send(fid, PanelBridge.BuildFlashCommand(action, fid, normalized).ToString(Formatting.None) + "\0");
             }
@@ -211,6 +220,12 @@ namespace CF7Launcher.Tasks
                     _saves?.Archive.QueueSettledBookRunCleanup(Text(message["activeSlot"]));
                 JObject result = state || rejected ? (JObject)message.DeepClone()
                     : new JObject { ["success"] = false, ["error"] = "malformed_response" };
+                if (state && message.Value<bool>("success") && phase == "editing" && request.Cmd == "snapshot"
+                    && message.Value<bool>("canSwitch") && !message.Value<bool>("inRun") && _unresolved == null
+                    && string.IsNullOrEmpty(Text(message["pendingRun"]))
+                    && message["outcomePending"]?.Type == JTokenType.Boolean && !message.Value<bool>("outcomePending"))
+                { _originalInstance = request.Instance; _originalToken = request.Token; }
+                else RevokeOriginal();
                 result.Remove("task"); Send(result, call.WebCallId, request.Cmd, request.Instance);
             }
             respond?.Invoke(null);
@@ -220,6 +235,7 @@ namespace CF7Launcher.Tasks
             lock (_gate)
             {
                 if (call.Context.IsWrite) _writePending = false;
+                RevokeOriginal();
                 if (reason != PanelPendingCallEndReason.Cleared)
                     Send(new JObject { ["success"] = false, ["error"] = reason == PanelPendingCallEndReason.Timeout ? "timeout" : "disconnected" },
                         call.WebCallId, call.Context.Cmd, call.Context.Instance);

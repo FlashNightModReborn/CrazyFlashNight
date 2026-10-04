@@ -8,8 +8,8 @@ const catalog = JSON.parse(fs.readFileSync(path.join(ROOT, 'data/rewards/choice-
 const optionFixture = [catalog.bundles[3],catalog.bundles[0],catalog.bundles.find(b => b.id === 'campus.advanced.revive'),catalog.bundles[2]]
     .map(b => ({optionId:b.id, title:b.title, description:b.description,
     items:b.items ? b.items.map(i => ({displayName:i.itemName,itemName:i.itemName,quantity:i.quantity,level:0}))
-        : [{displayName:b.weapon,itemName:b.weapon,quantity:1,level:0}]
-        .concat(b.mods.map(n => ({displayName:n,itemName:n,quantity:1,level:0})))
+        : Array.from({length:b.weaponCount || 1},()=>({displayName:b.weapon,itemName:b.weapon,quantity:1,level:0}))
+        .concat(b.mods.map(n => ({displayName:n,itemName:n,quantity:b.weaponCount || 1,level:0})))
         .concat(b.consumables.map(e => ({displayName:e.name,itemName:e.name,quantity:e.count,level:0})))}));
 const out = path.resolve((process.argv.find(a => a.startsWith('--shot-dir=')) || '--shot-dir=tmp/choice-rewards-ui').split('=').slice(1).join('='));
 fs.mkdirSync(out, {recursive:true});
@@ -69,7 +69,7 @@ async function main() {
                             inboxSummary:{v:2,storeId:'fixture',authorityRevision:qa.revision,remainingCount:qa.stock ? 3 : 0}});
                         else if (message.cmd === 'stashChoices') {
                             if (qa.failRead) Object.assign(response, {success:false,error:'disconnected'});
-                            else response.data={storeId:'fixture',revision:qa.revision,offers:JSON.parse(JSON.stringify(qa.offers)),pendingOperationId:''};
+                            else response.data={storeId:'fixture',revision:qa.revision,kpoints:qa.kpoints || 0,offers:JSON.parse(JSON.stringify(qa.offers)),pendingOperationId:''};
                         } else if (message.cmd === 'stashOpen') response.data={success:true,kind:'choiceOpen',offerId:qa.addOffer(),consumed:1,remaining:1};
                         else if (message.cmd === 'stashChoose') {
                             qa.receipt={success:true,kind:'choiceSelect',offerId:message.payload.offerId,optionId:message.payload.optionId,rewardReady:true};
@@ -101,6 +101,7 @@ async function main() {
             await dialog.waitFor({state:'visible'});
             await page.waitForFunction(() => document.querySelectorAll('[data-choice-option]').length === 3);
             assert((await page.locator('[data-choice-option]').nth(2).textContent()).includes('复活币'));
+            assert.strictEqual(await page.locator('[data-choice-option]').nth(1).getByText('UZI',{exact:true}).count(),2);
             assert(await page.locator('[data-choice-confirm]').isDisabled());
             await page.locator('[data-choice-option]').nth(1).click();
             const saved = await page.evaluate(() => ({offer:__choiceQa.control._choiceRewards.offerId,
@@ -159,7 +160,29 @@ async function main() {
             await page.evaluate(() => {__choiceQa.addOffer(4);__choiceQa.addOffer(2);__choiceQa.control._refreshChoiceRewards(__choiceQa.offers[0].offerId);});
             await page.waitForFunction(() => document.querySelectorAll('[data-choice-option]').length===4);
             await page.evaluate(() => {
+                const qa=__choiceQa;qa.kpoints=200;
+                const paid=qa.offers[0].options[0];paid.title='闪现特训';paid.description='直接获得闪现2级，主动技能需在技能页装备，不消耗SP。';paid.items=[];paid.kCost=300;paid.available=true;
+                paid.skills=[{skillKey:'闪现',level:2,currentLevel:0,description:'回避技能，获得后在技能页装备。'}];
+                qa.control._refreshChoiceRewards();
+            });
+            await page.waitForFunction(() => document.querySelector('[data-choice-option]').textContent.includes('300 K点'));
+            await page.locator('[data-choice-option]').first().click();
+            assert(await page.locator('[data-choice-confirm]').isDisabled());
+            assert((await dialog.textContent()).includes('K点不足'));
+            await page.locator('[data-choice-option]').nth(1).click();
+            assert(await page.locator('[data-choice-confirm]').isEnabled());
+            await page.evaluate(() => {__choiceQa.kpoints=400;__choiceQa.control._refreshChoiceRewards();});
+            await page.waitForFunction(() => __choiceQa.control._choiceRewards.snapshot.kpoints===400);
+            await page.locator('[data-choice-option]').first().click();
+            assert(await page.locator('[data-choice-confirm]').isEnabled());
+            assert((await page.locator('[data-choice-confirm]').textContent()).includes('支付 300 K点'));
+            await page.screenshot({path:path.join(out,'paid-skill-'+width+'x'+height+'.png')});
+            await page.evaluate(() => {__choiceQa.offers[0].options[0].available=false;__choiceQa.control._refreshChoiceRewards();});
+            await page.waitForFunction(() => __choiceQa.control._choiceRewards.snapshot.offers[0].options[0].available===false);
+            assert(await page.locator('[data-choice-confirm]').isDisabled());
+            await page.evaluate(() => {
                 const qa=__choiceQa;
+                qa.offers[0].options[0].skills=[];
                 qa.offers[0].options.forEach(o=>{
                     o.description='长中文说明验证候选内容不会遮挡确认与返回按钮。'.repeat(8);
                     o.items=Array.from({length:16},(_,i)=>({itemName:'fixture.'+i,displayName:'较长的测试物品名称用于检查换行与可滚动候选',quantity:9999,level:15}));

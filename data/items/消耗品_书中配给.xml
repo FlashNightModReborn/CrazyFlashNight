@@ -17,7 +17,7 @@
         <type>消耗品</type>
         <use>礼包</use>
         <price>0</price>
-        <description>7级UZI、磁稳贯穿弹、冲锋枪弹药12份。安装后获得贯穿火力，同时降低射速。 打开后在待领取中领取；插件需自行安装。仅供本次书中历险使用。</description>
+        <description>7级UZI两把、磁稳贯穿弹两份、冲锋枪弹药24份。双持配给，两把各装一份插件；贯穿射击会降低射速。 打开后在待领取中领取；插件需自行安装。仅供本次书中历险使用。</description>
         <data>
             <level>0</level>
             <weight>0</weight>
@@ -30,14 +30,19 @@
                         <quantityMax>1</quantityMax>
                     </entry>
                     <entry>
-                        <itemName>磁稳贯穿弹</itemName>
+                        <itemName>UZI</itemName>
                         <quantityMin>1</quantityMin>
                         <quantityMax>1</quantityMax>
                     </entry>
                     <entry>
+                        <itemName>磁稳贯穿弹</itemName>
+                        <quantityMin>2</quantityMin>
+                        <quantityMax>2</quantityMax>
+                    </entry>
+                    <entry>
                         <itemName>冲锋枪通用弹药</itemName>
-                        <quantityMin>12</quantityMin>
-                        <quantityMax>12</quantityMax>
+                        <quantityMin>24</quantityMin>
+                        <quantityMax>24</quantityMax>
                     </entry>
                 </entries>
             </rewardPack>
@@ -226,7 +231,7 @@
         <type>消耗品</type>
         <use>礼包</use>
         <price>0</price>
-        <description>12级M79式榴弹发射器、榴弹12份、普通手雷6枚。爆炸火力适合应对集群，仍需规划换弹和后续弹药。 打开后在待领取中领取；插件需自行安装。仅供本次书中历险使用。</description>
+        <description>12级M79式榴弹发射器两把、榴弹24份、普通手雷6枚。双持爆炸火力适合应对集群，仍需规划换弹和后续弹药。 打开后在待领取中领取；插件需自行安装。仅供本次书中历险使用。</description>
         <data>
             <level>0</level>
             <weight>0</weight>
@@ -239,9 +244,14 @@
                         <quantityMax>1</quantityMax>
                     </entry>
                     <entry>
+                        <itemName>M79式榴弹发射器</itemName>
+                        <quantityMin>1</quantityMin>
+                        <quantityMax>1</quantityMax>
+                    </entry>
+                    <entry>
                         <itemName>榴弹弹药</itemName>
-                        <quantityMin>12</quantityMin>
-                        <quantityMax>12</quantityMax>
+                        <quantityMin>24</quantityMin>
+                        <quantityMax>24</quantityMax>
                     </entry>
                     <entry>
                         <itemName>普通手雷</itemName>

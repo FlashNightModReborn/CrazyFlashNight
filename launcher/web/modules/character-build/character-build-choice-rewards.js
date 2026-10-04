@@ -40,7 +40,9 @@
         this.back = element(this.document, 'button', '稍后再选');
         header.appendChild(this.back); this.page.bindBack(this.back);
         this.page.root.appendChild(header);
-        this.page.root.appendChild(element(this.document, 'p', '每个礼包只能选一套。候选已经保留，关闭后可继续选择；选定后到暂存物资领取。', 'character-build-choice-hint'));
+        this.balance = element(this.document, 'p', '', 'character-build-choice-hint');
+        this.page.root.appendChild(this.balance);
+        this.page.root.appendChild(element(this.document, 'p', '每次选择一张。技能直接授予，主动技能需在技能页装备；物品进入暂存。付费卡确认时扣除局内K点。', 'character-build-choice-hint'));
         this.select = element(this.document, 'select'); this.select.setAttribute('aria-label', '待选择的礼包');
         this.select.onchange = function() { self.offerId = self.select.value; self.selected = ''; self.renderCards(); };
         this.page.root.appendChild(this.select);
@@ -125,7 +127,15 @@
                 if (self.tooltipScope && item.details) self.bindPreview(row, item.displayName, item.details);
 
             });
+            (option.skills || []).forEach(function(skill) {
+                var row = element(self.document, 'span', '', 'character-build-choice-item-copy');
+                row.appendChild(element(self.document, 'strong', skill.skillKey + ' · ' + skill.level + '级'));
+                row.appendChild(element(self.document, 'small', skill.currentLevel ? '现有 ' + skill.currentLevel + '级 → ' + skill.level + '级' : '直接学会，不消耗SP'));
+                items.appendChild(row);
+                if (self.tooltipScope) self.bindPreview(row, skill.skillKey, skill.description || option.description);
+            });
             card.appendChild(items);
+            card.appendChild(element(self.document, 'strong', option.kCost ? option.kCost + ' K点' : '免费配给'));
             card.onclick = function() {
                 if (self.state !== 'idle' || self.snapshot.pendingOperationId) return;
                 self.selected = option.optionId;
@@ -168,12 +178,18 @@
         this.cards.querySelectorAll('[data-choice-option]').forEach(function(node) { node.disabled = busy; });
         var offer = this.snapshot && this.snapshot.offers.find(function(o) { return o.offerId === this.offerId; }, this);
         var chosen = offer && offer.options.find(function(o) { return o.optionId === this.selected; }, this);
-        this.confirm.textContent = chosen ? '领取「' + chosen.title + '」' : '领取这套配给';
+        var balance = this.snapshot && this.snapshot.kpoints || 0;
+        this.balance.textContent = '本局 K点：' + balance + ' · 每次只扣所选卡片的价格';
+        var affordable = !chosen || (chosen.kCost || 0) <= balance;
+        this.confirm.disabled = this.confirm.disabled || !affordable || !!chosen && chosen.available === false;
+        this.confirm.textContent = chosen ? (chosen.kCost ? '支付 ' + chosen.kCost + ' K点领取「' : '领取「') + chosen.title + '」' : '领取这套配给';
         this.status.textContent = this.loadFailed ? '配给列表暂时无法读取，请刷新重试。'
             : state === 'write_pending' ? '正在保存你的选择…'
             : state === 'query_pending' ? '正在核对领取结果…'
             : state === 'needs_reconcile' || pending ? '上次操作结果待确认，请先核对。'
-            : this.selected ? '已选中一套配给，确认后其余候选将放弃。' : count ? '点选一套配给，再确认领取。' : '';
+            : chosen && chosen.available === false ? '该技能已达到奖励等级，或当前状态不可领取，请改选其他配给。'
+            : !affordable ? 'K点不足，可选择免费配给，或保留候选稍后领取。'
+            : this.selected ? '确认后其余候选将放弃；只支付这一张卡片的价格。' : count ? '点选一套配给，再确认领取。' : '';
     };
     ChoiceView.prototype.destroy = function() {
         if (this.destroyed) return;

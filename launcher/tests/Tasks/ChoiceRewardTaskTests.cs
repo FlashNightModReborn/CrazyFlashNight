@@ -73,6 +73,8 @@ namespace CF7Launcher.Tests.Tasks
         [InlineData("quantity")]
         [InlineData("seed")]
         [InlineData("poolId")]
+        [InlineData("kCost")]
+        [InlineData("skills")]
         public void ClientCannotSupplyRewardContents(string field)
         {
             using var h = new Harness();
@@ -95,6 +97,25 @@ namespace CF7Launcher.Tests.Tasks
             if (!forged) Assert.Equal("攻击力 42\n需要等级 7", h.Web[0]["data"]["offers"][0]["options"][0]["items"][0].Value<string>("details"));
         }
 
+        [Theory]
+        [InlineData(300, 2, true)]
+        [InlineData(-1, 2, false)]
+        [InlineData(1201, 2, false)]
+        [InlineData(300, 0, false)]
+        public void PaidSkillOnlySnapshotIsBounded(int cost, int level, bool expected)
+        {
+            using var h = new Harness(); h.Task.HandleWebRequest("stashChoices", Request("stashChoices"));
+            var data = Snapshot(); data["kpoints"] = 400;
+            foreach (JObject option in data["offers"][0]["options"])
+            {
+                option["kCost"] = 0; option["available"] = true; option["skills"] = new JArray();
+            }
+            var paid = (JObject)data["offers"][0]["options"][0];
+            paid["items"] = new JArray(); paid["kCost"] = cost;
+            paid["skills"] = new JArray(new JObject { ["skillKey"] = "闪现", ["level"] = level, ["currentLevel"] = 0, ["description"] = "回避技能" });
+            h.Reply("stashChoices", data);
+            Assert.Equal(expected, Assert.Single(h.Web).Value<bool>("success"));
+        }
         [Fact]
         public void SnapshotProjectsTheFrozenBundle()
         {

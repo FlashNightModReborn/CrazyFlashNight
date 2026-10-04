@@ -4,9 +4,9 @@
   "title": "修理大学",
   "stageName": "书中历险-修理大学",
   "unlockTask": 21,
-  "regularSp": 30,
-  "firstClearSp": 30,
-  "recordSpPerTier": 5,
+  "regularSp": 5,
+  "firstClearSp": 0,
+  "recordSpPerTier": 0,
   "recordMinutes": [
     30,
     25,
@@ -488,39 +488,14 @@
     "小跳",
     "兴奋剂",
     "铁布衫",
-    "闪现",
-    "霸体",
     "寸拳",
     "气动波",
-    "踩人",
-    "日字冲拳",
-    "组合拳",
-    "瞬步斩",
-    "凶斩",
-    "迅斩",
-    "震地",
-    "追猎射击",
-    "翻滚换弹",
-    "不卸之力",
-    "扭转乾坤",
-    "升龙拳",
-    "裂地拳",
-    "拳脚空中连招",
-    "上挑",
-    "下劈",
-    "刀剑空中连招",
     "移动射击",
-    "轰炸专家",
-    "枪械师",
     "刀剑攻击",
     "枪械攻击",
     "拳脚攻击",
     "口才",
-    "炼金",
-    "聚气",
-    "独行者",
-    "冲击连携",
-    "内力爆发"
+    "独行者"
   ],
   "skillMaxUnlockLevel": 15,
   "buildChoices": [
@@ -649,5 +624,42 @@
         "count": 3
       }
     ]
-  }
+  },
+  "minorChoices": [
+    {
+      "afterMap": 0,
+      "poolId": "repair-campus.opening",
+      "choiceItem": "书中入学特训自选包",
+      "levelCeiling": 15
+    },
+    {
+      "afterMap": 2,
+      "poolId": "repair-campus.synergy",
+      "choiceItem": "书中流派协同自选包",
+      "levelCeiling": 15
+    },
+    {
+      "afterMap": 4,
+      "poolId": "repair-campus.mastery",
+      "choiceItem": "书中战技精进自选包",
+      "levelCeiling": 15
+    },
+    {
+      "afterMap": 5,
+      "poolId": "repair-campus.final",
+      "choiceItem": "书中决战补给自选包",
+      "levelCeiling": 15
+    }
+  ],
+  "kBudget": {
+    "mapCount": 6,
+    "guaranteed": 200,
+    "randomMax": 100
+  },
+  "optionalLoot": {
+    "firstMap": 2,
+    "lastMap": 5,
+    "percent": 75
+  },
+  "recordSp": 45
 }

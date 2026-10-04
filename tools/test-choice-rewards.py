@@ -23,7 +23,7 @@ class ChoiceCatalogTests(unittest.TestCase):
         for checkpoint, pool in zip(book['buildChoices'], self.catalog['pools']):
             self.assertEqual(checkpoint['choiceItem'], pool['itemName'])
             self.assertEqual(len(checkpoint['options']), 4)
-            self.assertEqual([g['draw'] for g in pool['groups']], [2, 1])
+            self.assertTrue(3 <= sum(g['draw'] for g in pool['groups']) <= 4)
 
     def test_revive_coin_is_a_single_advanced_candidate_not_legacy_crafting(self):
         pools = runtime_catalog(self.catalog)
@@ -42,6 +42,25 @@ class ChoiceCatalogTests(unittest.TestCase):
         contents = {e['itemName']: e['quantity'] for e in option['entries']}
         self.assertEqual(contents['M203榴弹发射器'], 1)
         self.assertEqual(contents['榴弹弹药'], 6)
+
+    def test_short_gun_loadouts_deliver_two_independent_weapons(self):
+        items = item_catalog()
+        cards = {e['id']: e for p in runtime_catalog(self.catalog) for g in p['groups'] for e in g['entries']}
+        for bundle in self.catalog['bundles']:
+            if 'weapon' not in bundle or items[bundle['weapon']].findtext('use') != '手枪': continue
+            entries = cards[bundle['id']]['entries']
+            guns = [e for e in entries if e['itemName'] == bundle['weapon']]
+            self.assertEqual([e['quantity'] for e in guns], [1, 1])
+            self.assertIsNot(guns[0], guns[1])
+            for name in bundle['mods']:
+                self.assertEqual(next(e['quantity'] for e in entries if e['itemName'] == name), 2)
+        self.assertEqual(next(e['quantity'] for e in cards['campus.initial.1']['entries'] if e['itemName'] == '冲锋枪通用弹药'), 24)
+        self.assertEqual(next(e['quantity'] for e in cards['campus.advanced.2']['entries'] if e['itemName'] == '榴弹弹药'), 24)
+
+    def test_weapon_count_cannot_substitute_for_enhancement_or_half_a_pair(self):
+        for count in [1, 0, 3, True]:
+            self.reject(lambda d: d['bundles'][0].update(weaponCount=count))
+        self.reject(lambda d: d['bundles'][1].update(weaponCount=2))
 
     def test_no_rerolls_or_multiple_selections(self):
         for key, value in [('rerolls',1), ('chooseCount',2), ('chooseCount',True)]:
@@ -103,9 +122,28 @@ class ChoiceCatalogTests(unittest.TestCase):
             with self.assertRaises(ValueError): validate_loadout(option, 13, items, mods)
         battery_cards = [o for p in runtime_catalog(self.catalog) for g in p['groups'] for o in g['entries']
                          if any(e['itemName'] == '能量电池' for e in o['entries'])]
-        self.assertEqual([o['id'] for o in battery_cards], ['campus.advanced.missile'])
+        self.assertEqual([o['id'] for o in battery_cards], ['campus.rifle.missile', 'campus.advanced.missile'])
         self.assertEqual(next(e['quantity'] for e in battery_cards[0]['entries'] if e['itemName'] == '能量电池'), 1)
         self.assertNotIn('能量电池', [e['name'] for e in book['ammoBundle']['contents']])
+
+    def test_six_deliveries_and_free_complete_rifle_before_students(self):
+        book = json.loads((ROOT/'data/stages/books/repair-campus.json').read_text('utf-8'))
+        self.assertEqual(sorted(c['afterMap'] for c in book['buildChoices'] + book['minorChoices']), list(range(6)))
+        rifle = runtime_catalog(self.catalog)[0]['groups'][0]
+        self.assertEqual(rifle['draw'], 1)
+        for option in rifle['entries']:
+            self.assertEqual(option['kCost'], 0)
+            self.assertIn('AK47', [e['itemName'] for e in option['entries']])
+            self.assertTrue(option['id'].startswith('campus.rifle.'))
+
+    def test_skill_prices_and_scope_are_authoritative(self):
+        for bad in [-1, True, 1201]:
+            self.reject(lambda d: next(b for b in d['bundles'] if b.get('skills')).update(kCost=bad))
+        self.reject(lambda d: next(b for b in d['bundles'] if b.get('skills'))['skills'][0].update(level=1000))
+        self.reject(lambda d: d['pools'][2].update(scope={'kind':'character'}))
+        rows = [o for p in runtime_catalog(self.catalog) for g in p['groups'] for o in g['entries'] if o['skills']]
+        self.assertTrue(rows)
+        self.assertTrue(all(not o['entries'] for o in rows))
 
     def test_book_cannot_reference_another_runs_pool(self):
         data = copy.deepcopy(self.catalog)
@@ -125,7 +163,7 @@ class ChoiceCatalogTests(unittest.TestCase):
     def test_generic_medical_bundle_does_not_require_a_weapon(self):
         data = copy.deepcopy(self.catalog)
         bundle = data['bundles'][0]
-        for key in ('weapon','mods','consumables'): del bundle[key]
+        for key in ('weapon','weaponCount','mods','consumables'): bundle.pop(key, None)
         bundle['items'] = [{'itemName':'普通hp药剂','quantity':5}]
         validate(data)
         rows = [e for g in runtime_catalog(data)[0]['groups'] for e in g['entries']]

@@ -249,9 +249,11 @@ class org.flashNight.arki.unit.Action.PickUp.PickUpManager {
             数量 = 1;
         }
 
-        var exactCurrency:Boolean = parameterObject.精确货币数量 === true;
+        // 书中 K 点由分图预算唯一提供；不再把金币随机改成另一份收入。
+        var bookCurrency:Boolean = org.flashNight.arki.scene.BookRunService.isBookStageContext();
+        var exactCurrency:Boolean = parameterObject.精确货币数量 === true || bookCurrency && 物品名 === "K点";
         if (物品名 === "金币") 物品名 = "金钱";
-        if (物品名 === "金钱" && !exactCurrency
+        if (物品名 === "金钱" && !exactCurrency && !bookCurrency
                 && LinearCongruentialEngine.instance.randomCheck(_root.打怪掉钱机率)) {
             物品名 = "K点";
         }

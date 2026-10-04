@@ -1,32 +1,41 @@
-/* Runs inside an opaque sandbox. Only fixed local movie assets and player controls are allowed. */
+/* Fixed, isolated document. The Host owns its closed local resource set and CSP. */
 (function() {
     'use strict';
-    var CHANNEL = 'bookshelf-original.v1', session = location.hash.slice(1), player;
-    var parentOrigin = new URL(location.href).origin;
-    var assets = location.hostname === 'overlay.local' ? 'https://cfn-assets.local/'
-        : /^(127\.0\.0\.1|localhost)$/.test(location.hostname) ? parentOrigin + '/flashswf/' : '';
+    var CHANNEL = 'bookshelf-original.v1', ORIGIN = 'https://cf7-originals.local';
+    var parentOrigin = 'https://overlay.local', session = location.hash.slice(1), player;
     function report(state) { parent.postMessage({channel:CHANNEL, session:session, state:state}, parentOrigin); }
-    if (parent === window || !/^[0-9a-f-]{36}$/.test(session) || !assets) return;
-    window.RufflePlayer = {config:{autoplay:'on', unmuteOverlay:'hidden', contextMenu:'off',
-        allowScriptAccess:false, allowNetworking:'none', openUrlMode:'deny',
+    if (parent === window || location.origin !== ORIGIN || !/^[0-9a-f-]{36}$/.test(session)) return;
+    window.RufflePlayer = {config:{autoplay:'on', unmuteOverlay:'hidden', splashScreen:false, contextMenu:'on',
+        allowScriptAccess:false, allowNetworking:'internal', openUrlMode:'deny', showSwfDownload:false,
         scale:'showAll', forceScale:true, letterbox:'on', logLevel:'warn',
-        publicPath:assets + '_ruffle/'}};
+        deviceFontRenderer:'canvas', backgroundExecutionMode:'none', publicPath:ORIGIN + '/ruffle/'}};
     window.addEventListener('message', function(event) {
         var data = event.data;
         if (event.source !== parent || event.origin !== parentOrigin || !player
                 || !data || data.channel !== CHANNEL || data.session !== session) return;
-        if (data.action === 'pause') { player.pause(); report('paused'); }
-        else if (data.action === 'play') { player.play(); report('playing'); }
+        if (data.action === 'pause') { player.ruffle().suspend(); report('paused'); }
+        else if (data.action === 'play') { player.ruffle().resume(); report('playing'); }
     });
-    var script = document.createElement('script'); script.src = assets + '_ruffle/ruffle.js';
-    script.onerror = function() { report('error'); };
-    script.onload = async function() {
+    async function load() {
         try {
+            var response = await fetch('/session/' + session + '/manifest.json', {cache:'no-store'});
+            if (!response.ok) throw new Error('content_unavailable');
+            var info = await response.json(), chapter = info.chapter, language = info.language;
+            if (!Number.isInteger(chapter) || chapter < 1 || chapter > 6 || !['cn','en'].includes(language)
+                    || (chapter === 1 && language !== 'cn') || info.swfFileName !== 'cf' + chapter + '-' + language + '.swf'
+                    || info.movieUrl !== ORIGIN + '/session/' + session + '/movie.swf'
+                    || info.baseUrl !== ORIGIN + '/session/' + session + '/exes/') throw new Error('invalid_content');
+            var movie = await fetch(info.movieUrl, {cache:'no-store'});
+            if (!movie.ok) throw new Error('content_unavailable');
+            var data = await movie.arrayBuffer();
+            if (data.byteLength < 8 || data.byteLength > 24 * 1024 * 1024) throw new Error('invalid_content');
+            var script = document.createElement('script'); script.src = ORIGIN + '/ruffle/ruffle.js';
+            await new Promise(function(resolve, reject) { script.onload = resolve; script.onerror = reject; document.head.appendChild(script); });
             player = window.RufflePlayer.newest().createPlayer();
             document.getElementById('stage').replaceChildren(player);
-            await player.load({url:assets + 'originals/crazy-flasher-1.swf'});
+            await player.ruffle().load({data:data, swfFileName:info.swfFileName, base:info.baseUrl});
             report('playing');
         } catch (error) { report('error'); }
-    };
-    document.head.appendChild(script);
+    }
+    load();
 })();

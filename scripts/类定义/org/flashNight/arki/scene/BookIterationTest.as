@@ -111,9 +111,28 @@ class org.flashNight.arki.scene.BookIterationTest {
         manager.pickup(drop, null, true);
         check(_root.__bookAcquired == 0 && _root.__bookConsumed == 0, "dead keyboard pickup is rejected at the same authority");
     }
+    private static function testBookCurrency():Void {
+        var manager:PickUpManager=new PickUpManager();
+        var randomSource:Object=org.flashNight.naki.RandomNumberEngine.LinearCongruentialEngine.instance;
+        var beforeCheck:Function=randomSource.randomCheck;
+        randomSource.randomCheck=function():Boolean {return true;};
+        _root.savePath="book.currency.fixture";
+        _root.当前关卡名=BookDefinition.get().stageName;
+        _root._saveExt.bookRun={slot:_root.savePath,bookId:BookDefinition.get().id,outcome:"active"};
+        _root.等级=1;_root.isEasyMode=function():Boolean {return false;};_root.isChallengeMode=function():Boolean {return true;};
+        try {
+            var money:Object={};manager.createCollectible("金币",500,10,10,false,money);
+            check(money.物品名=="金钱","book coins cannot roll an extra K budget even when the generic random roll always succeeds");
+            var fixed:Object={};manager.createCollectible("K点",250,10,10,false,fixed);
+            check(fixed.数量==250,"authored book K quantity bypasses low-level caps and challenge halving");
+            _root.savePath="ordinary.fixture";
+            var ordinary:Object={};manager.createCollectible("金币",500,10,10,false,ordinary);
+            check(ordinary.物品名=="K点","foreign slot retains ordinary world currency rules");
+        } finally {randomSource.randomCheck=beforeCheck;}
+    }
     public static function runAllTests():Void {
         passed = 0; failed = 0;
-        var keys:Array = ["gameworld","兵种库","暂停","singleAcquire","_saveExt","__bookSpawns","__bookClears","__bookCloses","__bookDelayed","__bookLate","__bookAcquired","__bookConsumed"];
+        var keys:Array = ["gameworld","兵种库","暂停","singleAcquire","_saveExt","__bookSpawns","__bookClears","__bookCloses","__bookDelayed","__bookLate","__bookAcquired","__bookConsumed","savePath","当前关卡名","等级","isEasyMode","isChallengeMode"];
         var saved:Object = {};
         for (var i:Number = 0; i < keys.length; i++) saved[keys[i]] = _root[keys[i]];
         var stageClass:Object = StageManager, wheelClass:Object = WaveSpawner;
@@ -122,7 +141,7 @@ class org.flashNight.arki.scene.BookIterationTest {
         var oldFind:Function = targetClass.findHero;
         targetClass.findHero = function():MovieClip { return _root.gameworld.hero; };
         _root.gameworld = undefined; _root._saveExt = {};
-        try { testBoss(); testGrowthAndPickup(); }
+        try { testBoss(); testGrowthAndPickup(); testBookCurrency(); }
         finally {
             _root.gameworld.removeMovieClip();
             stageClass.instance = oldStage; wheelClass.instance = oldWheel; targetClass.findHero = oldFind;

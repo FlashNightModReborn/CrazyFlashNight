@@ -37,6 +37,10 @@ def validate_loadout(option, ceiling, items, mods):
     weapon = items.get(option['weapon'])
     if weapon is None or weapon.findtext('type') != '武器' or not 1 <= int(weapon.findtext('data/level', '999')) <= ceiling:
         raise ValueError('choice weapon exceeds its pool level')
+    count = option.get('weaponCount', 1)
+    integer(count, 1, 2, 'loadout weapon count')
+    if count != (2 if weapon.findtext('use') == '手枪' else 1):
+        raise ValueError('short-gun loadouts require two weapons; other slots require one')
     tags, occupied = words(weapon, 'inherentTags'), set()
     ammo = {weapon.findtext('data/clipname')} - {None, ''}
     # ItemUtil.getDefaultModSlot supplies this field when the XML omits it.
@@ -77,7 +81,7 @@ def validate_loadout(option, ceiling, items, mods):
 
 def validate_items(bundle, ceiling, items):
     rows = bundle['items']
-    if type(rows) is not list or not 1 <= len(rows) <= 16: raise ValueError('invalid bundle items')
+    if type(rows) is not list or not 0 <= len(rows) <= 16 or not rows and not bundle.get('skills'): raise ValueError('invalid bundle items')
     names = set()
     for row in rows:
         exact(row, 'itemName quantity', 'bundle item')
@@ -106,7 +110,19 @@ def validate(data):
             for m in ET.parse(directory / e.text).findall('mod')}
     bundles, pool_ids, item_names, used = {}, set(), set(), set()
     for bundle in data['bundles']:
-        exact(bundle, 'id name title description items' if 'items' in bundle else 'id name title description weapon mods consumables', 'bundle')
+        keys = 'id name title description items' if 'items' in bundle else 'id name title description weapon mods consumables'
+        exact(bundle, keys + (' weaponCount' if 'weapon' in bundle and 'weaponCount' in bundle else '') + (' skills' if 'skills' in bundle else '') + (' kCost' if 'kCost' in bundle else ''), 'bundle')
+        integer(bundle.get('kCost', 0), 0, 1200, 'card K price')
+        skills = bundle.get('skills', [])
+        if type(skills) is not list or len(skills) > 2: raise ValueError('invalid skill rewards')
+        skill_catalog = {s.findtext('Name'): s for s in ET.parse(ROOT / 'data/skills/skills.xml').findall('Skill') if s.findtext('Name')}
+        skill_names = set()
+        for grant in skills:
+            exact(grant, 'skillKey level', 'skill reward')
+            key = grant['skillKey']
+            if key not in skill_catalog or key in skill_names: raise ValueError('unknown/duplicate skill reward')
+            skill_names.add(key)
+            integer(grant['level'], 1, int(skill_catalog[key].findtext('MaxLevel')), 'reward skill level')
         if not ID.fullmatch(bundle['id']) or bundle['id'] in bundles: raise ValueError('duplicate/invalid bundle id')
         for key, limit in [('name', 96), ('title', 64), ('description', 256)]:
             if type(bundle[key]) is not str or not 1 <= len(bundle[key]) <= limit or any(ord(c) < 32 for c in bundle[key]):
@@ -142,6 +158,8 @@ def validate(data):
                 if bid not in bundles or bid in seen: raise ValueError('unknown/duplicate pool bundle')
                 seen.add(bid); used.add(bid)
                 integer(row['weight'], 1, 10000, 'bundle weight')
+                if (bundles[bid].get('skills') or bundles[bid].get('kCost')) and scope['kind'] != 'book':
+                    raise ValueError('skill and K rewards require an isolated book scope')
                 if 'items' in bundles[bid]: validate_items(bundles[bid], pool['maxItemLevel'], items)
                 else: validate_loadout(bundles[bid], pool['maxItemLevel'], items, mods)
         if not 2 <= count <= 4: raise ValueError('offer must contain two to four candidates')
@@ -154,13 +172,22 @@ def resolve_book_choices(book, catalog=None):
     pools = {p['id']: p for p in catalog['pools']}
     bundles = {b['id']: b for b in catalog['bundles']}
     result = copy.deepcopy(book)
-    for checkpoint in result['buildChoices']:
+    for checkpoint in result['buildChoices'] + result.get('minorChoices', []):
         pool = pools[checkpoint['poolId']]
         if pool['scope'] != {'kind': 'book', 'bookId': book['id']} or checkpoint['choiceItem'] != pool['itemName'] or checkpoint['levelCeiling'] != pool['maxItemLevel']:
             raise ValueError('book checkpoint does not match its choice pool')
         ids = {row['bundleId'] for group in pool['groups'] for row in group['entries']}
-        checkpoint['options'] = [{k:v for k,v in b.items() if k != 'id'} for b in catalog['bundles'] if b['id'] in ids and 'items' not in b]
+        checkpoint['options'] = [{k:v for k,v in b.items() if k != 'id'} for b in catalog['bundles'] if b['id'] in ids and re.fullmatch(r'campus\.(initial|advanced)\.[1-4]', b['id'])]
     return result
+
+
+def loadout_entries(bundle):
+    count = bundle.get('weaponCount', 1)
+    # Equipment quantity is its enhancement level in AS2. Two guns require two independent instances.
+    entries = [{'itemName': bundle['weapon'], 'quantity': 1} for _ in range(count)]
+    entries += [{'itemName': name, 'quantity': count} for name in bundle['mods']]
+    entries += [{'itemName': row['name'], 'quantity': row['count']} for row in bundle['consumables']]
+    return entries
 
 
 def runtime_catalog(catalog):
@@ -174,11 +201,8 @@ def runtime_catalog(catalog):
             for row in group['entries']:
                 b = bundles[row['bundleId']]
                 if 'items' in b: entries = copy.deepcopy(b['items'])
-                else:
-                    entries = [{'itemName':b['weapon'], 'quantity':1}]
-                    entries += [{'itemName':n, 'quantity':1} for n in b['mods']]
-                    entries += [{'itemName':e['name'], 'quantity':e['count']} for e in b['consumables']]
-                rows.append(dict(id=b['id'], weight=row['weight'], title=b['title'], description=b['description'], entries=entries))
+                else: entries = loadout_entries(b)
+                rows.append(dict(id=b['id'], weight=row['weight'], title=b['title'], description=b['description'], entries=entries, skills=copy.deepcopy(b.get('skills', [])), kCost=b.get('kCost', 0)))
             output['groups'].append(dict(draw=group['draw'], entries=rows))
         result.append(output)
     return result

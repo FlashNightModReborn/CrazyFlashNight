@@ -61,6 +61,19 @@ async function main() {
     const catalog=JSON.parse(fs.readFileSync(path.join(assets,'catalog.json'),'utf8'));
     R.adoptCatalog(catalog);
     check(R.books.length===5, 'five catalog books');
+    const series = R.books.find(b => b.id === 'crazy-flasher');
+    check(series.chapters.length === 6 && R.books.filter(b => b.format === 'playable').length === 1, 'one book and six chapters');
+    check(series.chapters[0].remake.id === 'repair-campus' && series.chapters.slice(1).every(c => !c.remake.available), 'stable first remake identity and unfinished future chapters');
+    const malformed = JSON.parse(JSON.stringify(catalog)); malformed.books[4].chapters[1].original.languages.push('file:/fake.swf');
+    assert.throws(() => R.adoptCatalog(malformed)); passed++;
+    const transport = new R.RequestMux({domain:'bookshelf-original', panelInstanceId:'bookshelf.original.1',router,send:m=>{sent=m;return true;}});
+    let originalReplies = 0;
+    check(transport.request('commit', {kind:'play'}, () => {}) === null, 'original transport never sends CF7 business commands');
+    transport.request('prepare', {v:1,token:'bookshelf.test',chapter:2,language:'cn'}, () => originalReplies++);
+    check(sent.domain === 'bookshelf-original', 'separate original content domain');
+    router.handleResponse({...sent,type:'panel_resp',domain:'bookshelf'}); check(originalReplies === 0, 'AS2 reply cannot authorize original content');
+    router.handleResponse({...sent,type:'panel_resp',success:false,error:'not_owned'}); check(originalReplies === 1, 'exact content failure stays read-only');
+    transport.destroy();
     for(const book of R.books.filter(b=>b.index)) {
         const index=JSON.parse(fs.readFileSync(path.join(assets,book.index),'utf8'));
         check(R.validateIndex(book,index)===index,'reader index '+book.id);

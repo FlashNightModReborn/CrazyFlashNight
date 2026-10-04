@@ -9,7 +9,10 @@ namespace CF7Launcher.Tasks
         private static bool TrySanitizeChoiceSnapshot(JObject data, out JObject clean)
         {
             clean = null;
-            if (!IsExactObject(data, "success", "storeId", "revision", "offers", "pendingOperationId")
+            bool modern = data?["kpoints"] != null;
+            if (!(modern ? IsExactObject(data, "success", "storeId", "revision", "offers", "pendingOperationId", "kpoints")
+                    : IsExactObject(data, "success", "storeId", "revision", "offers", "pendingOperationId"))
+                || modern && !TryReadLongInteger(data["kpoints"], 0, MaxSafeInteger, out _)
                 || !TryReadSafeText(data["storeId"], 128, true, out string storeId)
                 || storeId.Length > 0 && !ValidToken.IsMatch(storeId)
                 || !TryReadLongInteger(data["revision"], 0, MaxSafeInteger, out long revision)
@@ -30,12 +33,27 @@ namespace CF7Launcher.Tasks
                 foreach (JToken optionToken in options)
                 {
                     var option = optionToken as JObject;
-                    if (!IsExactObject(option, "optionId", "title", "description", "items")
+                    if (!(modern ? IsExactObject(option, "optionId", "title", "description", "items", "skills", "kCost", "available")
+                            : IsExactObject(option, "optionId", "title", "description", "items"))
                         || !TryReadSafeText(option["optionId"], 64, false, out string optionId)
                         || !ValidToken.IsMatch(optionId) || !optionIds.Add(optionId)
                         || !TryReadSafeText(option["title"], 64, false, out string optionTitle)
                         || !TryReadSafeText(option["description"], 256, false, out string description)
-                        || !(option["items"] is JArray items) || items.Count < 1 || items.Count > 16) return false;
+                        || !(option["items"] is JArray items) || items.Count > 16 || !modern && items.Count < 1) return false;
+                    if (modern)
+                    {
+                        if (!TryReadInteger(option["kCost"], 0, 1200, out _) || option["available"]?.Type != JTokenType.Boolean
+                            || !(option["skills"] is JArray skills) || skills.Count > 2 || skills.Count == 0 && items.Count == 0) return false;
+                        var skillKeys = new HashSet<string>(StringComparer.Ordinal);
+                        foreach (JToken grant in skills)
+                        {
+                            if (!IsExactObject(grant as JObject, "skillKey", "level", "currentLevel", "description")
+                                || !TryReadSafeText(grant["skillKey"], 64, false, out string key) || !skillKeys.Add(key)
+                                || !TryReadInteger(grant["level"], 1, 100, out _) || !TryReadInteger(grant["currentLevel"], 0, 100, out _)
+                                || grant["description"]?.Type != JTokenType.String || grant.Value<string>("description").Length > 2048
+                                || System.Linq.Enumerable.Any(grant.Value<string>("description"), ch => char.IsControl(ch) && ch != '\n' && ch != '\r' && ch != '\t')) return false;
+                        }
+                    }
                     foreach (JToken itemToken in items)
                     {
                         var item = itemToken as JObject;
