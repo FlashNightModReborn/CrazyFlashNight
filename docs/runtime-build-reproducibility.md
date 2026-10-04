@@ -1098,3 +1098,14 @@ strict production policy 42/42，receipt SHA-256 `0C612DBA8C5CB91E481E2386A5E124
 - 启动前已备份并核对 75 个 shadow 相关文件和 50 个本安装 SOL，启动关闭后长度与 SHA-256 均未变；仅例行启动版本标记不纳入玩家文件比较。状态为 `promoted`，正式入口本轮只覆盖启动/关闭；完整角色切换、死亡返回、奖励回流及不同流派的正式入口旅程继续群测。
 
 远端事后审计以部署提交关联的 **Runtime native audit** GitHub Check 为准，不从本地 promotion 推断其结果。功能与调参入口继续归[书架与角色档案合同](bookshelf-player-context.md)，本机原始日志保留于 `tmp/book-release-20261003/`。
+
+### 2026-10-04 书架紧凑阅读、原版双入口与大学怪物发布
+
+维护者明确授权当前部分由 sol 代理走发布列车。本批包含紧凑全屏阅读、1227 页漫画与 28 章小说、隔离本地原版双入口、配给图标、已结束临时角色清理、关卡人工源迁移、数据化过场及大学怪物完整 XFL 源与 CS6 产物。下一轮技能卡、奖励与经济设计未纳入。
+
+- 最终源码 `7b2a4bf3eee379341c58cc8e604f8694cbaa28ab`，不可变标签 `refs/tags/runtime-build-v2/20261004-bookshelf-reading-original-v3`；request `F4C8A7171017BEEA165854EC8A6C230BD7DC5861262CC1C81C7679CC8494C6F7`。
+- 本机 `builder-local-b / physical-host-b` 与 [GitHub hosted 独立构建 37200863389](https://github.com/FlashNightModReborn/CrazyFlashNight/actions/runs/37200863389) 的 identity/36 文件 closure 一致；production policy **47/47**，strict v2 双 signer/双 faultDomain、唯一 writer 推广与完整安装校验通过。详见[发布回执](evidence/bookshelf-reading-original-release-2026-10-04.json)。
+- v1 Git 媒体 blob 文本归一化问题由精确二进制属性与限定 renormalize 修正，原标签保留且未发布 request；v2 material catalog 来源摘要失败票 **46/47** 保留，生成器仅更新 sidecar 来源摘要后以新 v3 标签/request 发布。最终 Git blob 与阅读清单 **896 文件 / 29,932,972 bytes**、八份原始源逐字节一致。
+- Host 完整 canonical runner **6598 passed / 5 skipped / 0 failed**；历史原生 overlay 环境失败保留，全量复跑恢复，不猜测已证实根因。
+- 无候选参数的正式根入口绑定新 Core DLL，实际 PID 22968，前门 Idle 后原生关闭，Core exit **0**、无残留。**75 shadow + 46 本安装 SOL** 的 121 个保护文件字节未变，例行版本标记排除。首次观察器 basename 错误保留，附着真实进程后取得退出码，未重启补造证据。
+- 状态为 `promoted`，启动/身份/关闭通过；`businessJourneyExecuted=false / agentProtocolShutdownVerified=false`。原版当前集成完整输入/声音、临时档清理保存重启、大学怪物完整实机战斗及业务全旅程仍待专项体验；七张标题卡未填原作对白。远端 Runtime native audit 结果将在部署提交后独立登记。

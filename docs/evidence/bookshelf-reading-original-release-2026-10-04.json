@@ -1,0 +1,119 @@
+{
+  "schema": "cf7-bookshelf-reading-release-evidence.v1",
+  "recordedAtUtc": "2026-10-04T12:24:19.383033+00:00",
+  "state": "promoted",
+  "authorization": "维护者明确授权当前部分由 sol 代理走发布列车。",
+  "source": {
+    "commit": "7b2a4bf3eee379341c58cc8e604f8694cbaa28ab",
+    "tree": "c295679f20b43b05c58583e132f75366cf2a22ec",
+    "tag": "refs/tags/runtime-build-v2/20261004-bookshelf-reading-original-v3",
+    "deploymentCommit": null
+  },
+  "request": {
+    "schema": "cf7-runtime-build-request.v2",
+    "requestId": "F4C8A7171017BEEA165854EC8A6C230BD7DC5861262CC1C81C7679CC8494C6F7",
+    "sourceKind": "Treeish",
+    "releaseTreeOid": "c295679f20b43b05c58583e132f75366cf2a22ec",
+    "sourceCommitOid": "7b2a4bf3eee379341c58cc8e604f8694cbaa28ab",
+    "requestCommitOid": "3380034f7053cf6288c0b4bc149e9509ecfce1a7",
+    "bundleTreeOid": "0839f590f4afc5e58a4e0bcfcd57f21598a7ae00",
+    "artifactSourceHash": "C87351E7C5D7B2B77C7785C3757AC21EE71DB962B0F4CF970D75AF341C4526C4",
+    "producerRecipeHash": "C4DEEF1B6E387EEBF8D101CC2364E8A0232087A248EFEB530506011411EDA694",
+    "toolchainLockHash": "DFA769829F9740196DEF63351A00AAC309E50A2CA0A768759334EB2A2161DD36",
+    "policyHash": "1DE7618D6287D45BDE7283104132265E44CCE8E51A38FE749C53D20072D6B2C4",
+    "buildIdentityHash": "238BEA34A93CA712DD606FB870A6C62C72D0753D756487BE085F4DE0E60D8D7A",
+    "bundleFile": "source.bundle",
+    "bundleSha256": "02603ED4B5357021288F500AECD5D542ADFE6A3309E2CF5F7018DC7D2414F431",
+    "requiredQuorum": 2,
+    "createdAtUtc": "2026-10-04T12:02:58.3519884Z"
+  },
+  "payload": {
+    "buildIdentityHash": "238BEA34A93CA712DD606FB870A6C62C72D0753D756487BE085F4DE0E60D8D7A",
+    "closure": "20BEB304DF3D4FBD5AA6D9A544B6C1D2698920C37E0AFB4EA54252C21441BBD2",
+    "fileCount": 36,
+    "coreDllSha256": "3601B9B24FF0EAAAA6F1AC075E4F9AC65BE0148C340160E3219C44D7557717AA"
+  },
+  "builds": {
+    "localWorker": "builder-local-b",
+    "faultDomains": [
+      "physical-host-b",
+      "github-hosted-windows"
+    ],
+    "signerCount": 2,
+    "identityAndClosureMatch": true,
+    "cloudRunUrl": "https://github.com/FlashNightModReborn/CrazyFlashNight/actions/runs/37200863389",
+    "cloudConclusion": "success",
+    "cloudArtifactScope": "attestation-only"
+  },
+  "policy": {
+    "passed": 47,
+    "total": 47,
+    "receiptSha256": "E624A78AEDA97B6DB630F018D7066B96449018F78FA417889DA00202CDE52E9D"
+  },
+  "promotion": {
+    "strictV2": true,
+    "soleWriter": true,
+    "fullInstallVerifyExitCode": 0,
+    "promotedAtUtc": "2026-10-04T12:15:32.2992363Z",
+    "rollback": "tmp/runtime-promotions/20261004T121503207Z-832dcaf155b648dc86971ed6c10a4837/previous"
+  },
+  "standardEntry": {
+    "entry": "root bootstrap without candidate arguments",
+    "corePid": 22968,
+    "corePath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\resources\\runtime\\CRAZYFLASHER7MercenaryEmpire.Core.exe",
+    "coreStartedAtUtc": "2026-10-04T12:17:12.3060723Z",
+    "coreExeSha256": "3988B5F22F00880270BB2B8329F2E690C623887E6E0767483AE2D0EBF11621FE",
+    "coreDllSha256": "3601B9B24FF0EAAAA6F1AC075E4F9AC65BE0148C340160E3219C44D7557717AA",
+    "windowHandle": 3280928,
+    "businessJourneyExecuted": false,
+    "agentProtocolShutdownVerified": false,
+    "initialObserverFailure": "wrong executable basename; preserved log; recovered exact actual window/process without relaunch",
+    "coreExitCode": 0,
+    "exitCodeCaptured": true,
+    "exitedAtUtc": "2026-10-04T12:20:01.9123699Z"
+  },
+  "saveProtection": {
+    "shadowCount": 75,
+    "solCount": 46,
+    "compared": 121,
+    "changedOrMissing": 0,
+    "added": 0,
+    "bytesUnchanged": true,
+    "excluded": [
+      "saves/.launcher-version-marker.json"
+    ]
+  },
+  "gitLibrary": {
+    "sourceCommit": "7b2a4bf3eee379341c58cc8e604f8694cbaa28ab",
+    "libraryFilesVerified": 896,
+    "libraryBytesVerified": 29932972,
+    "sourceFilesExact": 8,
+    "passed": true
+  },
+  "tests": {
+    "hostCanonical": {
+      "passed": 6598,
+      "skipped": 5,
+      "failed": 0
+    },
+    "bookshelfRuntime": 122,
+    "originalIsolation": 24
+  },
+  "retainedFailures": [
+    "v1 staged binary text normalization detected by Git blob checks; no published request or promotion; immutable tag retained",
+    "v2 material catalog source hashes stale; policy 46/47; generator corrected sidecar only; request superseded and immutable tag retained",
+    "earlier Host overlay failures retained; complete canonical rerun passed; root cause not claimed",
+    "initial standard observer executable basename incorrect; recovered exact running process without relaunch"
+  ],
+  "pending": [
+    "current in-bookshelf original full game input/sound/clear; Ruffle MP3 main_data_begin warning",
+    "safe temporary archive cleanup real save/restart E2E",
+    "university monsters natural obstacle/full combat experience",
+    "original dialogue still seven title cards",
+    "full role switch/death/SP/save business journey and Agent protocol shutdown"
+  ],
+  "remoteAudit": {
+    "state": "pending"
+  },
+  "rawEvidenceDirectory": "tmp/bookshelf-release-20261004/"
+}
