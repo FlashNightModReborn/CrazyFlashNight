@@ -1,6 +1,6 @@
 # 闪客快打系列书籍与合集原版接入
 
-**状态：2026-10-05 工作树实现与专项验证，未发布。** 本文负责章节目录、原版内容许可和隔离播放器；重制旅程、奖励及存档权威仍归[书架玩家上下文合同](bookshelf-player-context.md)。专项通过不证明正式 Steam 入口、完整战斗或玩家体验验收。
+**状态：2026-10-05 已按双独立 builder 正式 promotion 并通过远端部署 Audit。** 本文负责章节目录、原版内容许可和隔离播放器；重制旅程、奖励及存档权威仍归[书架玩家上下文合同](bookshelf-player-context.md)。专项通过不证明正式 Steam 入口、完整战斗或玩家体验验收。
 
 ## 一册六章
 
@@ -56,3 +56,9 @@ CF1 保留原有从头进入的行为。CF3–6 的 SharedObject 由原作自身
 - `CF7_TEST_BOOKSHELF_WEBVIEW=1`、`CF7_TEST_BOOKSHELF_ROOT=<仓库>` 后运行 `BookshelfOriginalWebViewTests`；`CF7_TEST_BOOKSHELF_CHAPTER=5` 可验证本机合集中的第 5 章，默认第 1 章。使用隔离 WebView2 profile 和不激活的离屏窗口，准入由夹具提供，内容选择、读取与资源 handler 均走生产实现；默认全量跳过，不与依赖窗口顺序的测试并跑。
 
 提交、正式发布、合集 Steam 入口的真实账号许可链、完整原版关卡体验、所有自定义右键命令、完整存档游戏进度与重启续玩、人类视觉和输入验收仍是不同工作。最终 Host 全量与合并后的候选构建由主控协调，不用这里的叶门替代。
+
+## 2026-10-05 正式发布
+
+本轮源码 `1318feadfe8b4634fed80b3805d257189a36b821` 经本地 X509 与 GitHub hosted OIDC 双故障域构建，identity / closure 全等，production policy 47/47、strict v2 和正式安装校验通过。部署提交 `29976fd57732f0721a88530446ae8f1e6b03b7fe` 的[远端 Audit](https://github.com/FlashNightModReborn/CrazyFlashNight/actions/runs/37221863217)成功；机器证据归[本轮发布回执](evidence/bookshelf-rations-originals-release-2026-10-05.json)。
+
+标准无候选参数入口仅完成 formal runtime 身份、Core路径与通信就绪启动检查，随后正常关窗；真实CF7存档与SOL前后逐字节未改变。该启动smoke不代签完整七图、配给与SP存档重启、Steam账号许可链、原作通关输入或听感验收。

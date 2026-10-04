@@ -331,3 +331,7 @@ Host 最终全量测试为 6,589 通过、5 跳过、9 失败，包含新增的 
 本轮开发准入与书架 Host 专项 68/68，通过普通安装拒绝、缺失内容、跨库定位、存档隔离和资源租约检查；Node 原版控制器 34 项、书架资源 129 项及阅读资产闭包通过。真实 WebView2 的生产资源 handler 已从本机合集载入 CF5，完成 `playing → paused → playing`，报告 `developmentContent=true`；该项使用隔离 profile 与夹具准入，不冒充完整 CF7 游戏入口或存档续玩验收。证据为 `tmp/bookshelf-dev-access-focused.log` 和 `tmp/bookshelf-dev-access-webview.log`。
 
 最终启动器全量为 6640 通过、6 跳过、0 失败，日志为 `tmp/bookshelf-dev-access-host-full.log`。上述开发豁免不代替普通发行环境的真实 Steam 账号验收。
+
+## 2026-10-05 发布收口
+
+上述配给、技能、双短枪、系列章节和开发环境豁免已随源码 `1318feadfe8b4634fed80b3805d257189a36b821` 走正式发布列车。双独立 builder identity/closure 全等，production policy 47/47、strict v2、正式安装校验及部署提交远端 Audit 通过，详见[本轮发布回执](evidence/bookshelf-rations-originals-release-2026-10-05.json)。上文各日期的验证和当时未发布状态为历史记录。标准入口本轮只做身份和通信就绪启动smoke并正常关闭，真实存档未变；完整业务旅程、真实Steam许可链和声音手感仍待游玩反馈。
