@@ -1,0 +1,50 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="长枪小登/主角肢体素材/左下臂" itemID="693fc4b1-000046c4" lastModified="1776150195" lastUniqueIdentifier="8">
+  <timeline>
+    <DOMTimeline name="左下臂">
+      <layers>
+        <DOMLayer name="as" color="#9933CC" current="true" isSelected="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="2" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[stop();
+if (_parent._parent.性别 === "女")
+{
+	gotoAndStop(2);
+}]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer_1" color="#B5F5B0">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="3.防具/04.科技潜入/男变装-科技潜入上装右下臂" centerPoint3DX="18.5" centerPoint3DY="95.6">
+                  <matrix>
+                    <Matrix tx="1.05" ty="39.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="1" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="3.防具/04.科技潜入/女变装-科技潜入上装右下臂" centerPoint3DX="18.5" centerPoint3DY="95.6">
+                  <matrix>
+                    <Matrix tx="1.05" ty="39.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

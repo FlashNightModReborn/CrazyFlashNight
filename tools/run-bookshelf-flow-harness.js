@@ -84,13 +84,14 @@ async function main(){
                     assert(await primary.isDisabled()); assert.strictEqual(await recover.textContent(),'重新读取');
                     await recover.click();
                 }
-                await page.waitForFunction(()=>document.querySelector('.bookshelf-primary').textContent==='进入书中'&&!document.querySelector('.bookshelf-primary').disabled);
+                await page.waitForFunction(()=>document.querySelector('.bookshelf-primary').textContent==='进入重制版'&&!document.querySelector('.bookshelf-primary').disabled);
                 const messages=await page.evaluate(()=>__bookQa.sent);
                 assert.strictEqual(messages.filter(m=>m.cmd==='close').length,0);
                 assert(messages.filter(m=>m.cmd==='query').every(m=>m.payload.token==='bookshelf.preview.1'));
                 assert(messages.some(m=>m.cmd==='snapshot'&&m.payload.token==='bookshelf.fixture.next'));
                 const geometry=await page.evaluate(()=>{const n=document.querySelector('.bookshelf-panel'),b=n.getBoundingClientRect();
-                    return b.left>=-1&&b.top>=-1&&b.right<=innerWidth+1&&b.bottom<=innerHeight+1&&n.scrollWidth<=n.clientWidth+1;});
+                    return Math.abs(b.left)<=1&&Math.abs(b.top)<=1&&Math.abs(b.width-innerWidth)<=1
+                        &&Math.abs(b.height-innerHeight)<=1&&n.scrollWidth<=n.clientWidth+1;});
                 assert(geometry);
                 if(scenario==='settle')await page.screenshot({path:path.join(out,width+'x'+height+'.png')});
                 await primary.click();

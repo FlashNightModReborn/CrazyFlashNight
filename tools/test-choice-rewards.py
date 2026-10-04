@@ -18,7 +18,7 @@ class ChoiceCatalogTests(unittest.TestCase):
             validate(data)
 
     def test_current_book_checkpoints_resolve_only_their_pool(self):
-        book = resolve_book_choices(json.loads((ROOT/'data/books/repair-campus.json').read_text('utf-8')))
+        book = resolve_book_choices(json.loads((ROOT/'data/stages/books/repair-campus.json').read_text('utf-8')))
         self.assertEqual(len(book['buildChoices']), 2)
         for checkpoint, pool in zip(book['buildChoices'], self.catalog['pools']):
             self.assertEqual(checkpoint['choiceItem'], pool['itemName'])
@@ -32,7 +32,7 @@ class ChoiceCatalogTests(unittest.TestCase):
         self.assertEqual(len(coins),1)
         self.assertEqual(coins[0][0],1)
         self.assertEqual(coins[0][1]['entries'],[{'itemName':'复活币','quantity':1}])
-        book = resolve_book_choices(json.loads((ROOT/'data/books/repair-campus.json').read_text('utf-8')))
+        book = resolve_book_choices(json.loads((ROOT/'data/stages/books/repair-campus.json').read_text('utf-8')))
         self.assertEqual(sum(1 for c in book['buildChoices'] if c['poolId']==pools[1]['id']),1)
         self.assertTrue(all('items' not in option for c in book['buildChoices'] for option in c['options']))
 
@@ -79,7 +79,7 @@ class ChoiceCatalogTests(unittest.TestCase):
         self.reject(lambda d: next(b for b in d['bundles'] if b['id'] == 'campus.advanced.4')['mods'].append('手柄皮'))
 
     def test_underbarrel_cards_have_compatible_book_guns_and_correct_ammo(self):
-        book = json.loads((ROOT / 'data/books/repair-campus.json').read_text('utf-8'))
+        book = json.loads((ROOT / 'data/stages/books/repair-campus.json').read_text('utf-8'))
         shop = json.loads((ROOT / 'data/shops/npcs/书中-迷之盔甲君.json').read_text('utf-8'))
         items = item_catalog()
         directory = ROOT / 'data/items/equipment_mods'
@@ -110,7 +110,7 @@ class ChoiceCatalogTests(unittest.TestCase):
     def test_book_cannot_reference_another_runs_pool(self):
         data = copy.deepcopy(self.catalog)
         data['pools'][0]['scope']['bookId'] = 'other-book'
-        book = json.loads((ROOT/'data/books/repair-campus.json').read_text('utf-8'))
+        book = json.loads((ROOT/'data/stages/books/repair-campus.json').read_text('utf-8'))
         with self.assertRaises(ValueError): resolve_book_choices(book, data)
 
     def test_ordinary_character_scope_is_supported(self):

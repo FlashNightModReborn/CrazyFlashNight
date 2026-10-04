@@ -90,3 +90,10 @@ launcher/app.manifest text eol=lf
 # Named-pose source, runtime and provenance use exact JSON byte hashes.
 /data/weapon-animations/*.json text eol=lf
 /flashswf/arts/new/Codex素材源稿/打桩机-M7/*.json text eol=lf
+
+# Imported reading media and source records retain their original bytes.
+/launcher/web/assets/bookshelf/**/*.avif -text
+/launcher/web/assets/bookshelf/**/*.jpeg -text
+/launcher/web/assets/bookshelf/**/*.webm -text
+/launcher/web/assets/bookshelf/**/*.webp -text
+/data/books/sources/** -text

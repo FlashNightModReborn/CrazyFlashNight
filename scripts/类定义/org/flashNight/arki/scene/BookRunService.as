@@ -32,7 +32,8 @@ class org.flashNight.arki.scene.BookRunService {
             org.flashNight.arki.scene.BookBossEncounter.start(_root.gameworld,
                 _bossPlan);
         }
-        _root.书中当前章节 = {index:index, title:config.maps[index].title, slot:String(_root.savePath),
+        _root.书中当前章节 = {index:index, total:config.maps.length, title:config.maps[index].title,
+            dialogue:config.maps[index].dialogue, slot:String(_root.savePath),
             owner:org.flashNight.arki.scene.StageReturnFlow.worldIdentity(_root.gameworld)};
         // 独立 SWF 不导入游戏类；暂停租约仍由注入层唯一持有。
         _root.书中过场取得暂停 = function():String {

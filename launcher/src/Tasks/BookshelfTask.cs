@@ -190,7 +190,7 @@ namespace CF7Launcher.Tasks
                     state = message["exitRequired"].Type == JTokenType.Boolean;
                 bool rejected = envelope && message["success"]?.Type == JTokenType.Boolean && !message.Value<bool>("success")
                     && new[] { "invalid_payload", "stale_token", "context_changed", "busy", "locked", "invalid_target",
-                        "save_failed", "transition_rejected", "token_conflict" }.Contains(Text(message["error"]));
+                        "save_failed", "transition_rejected", "token_conflict", "config_unavailable" }.Contains(Text(message["error"]));
                 if (_unresolved == request.Token && ((state && (phase == "applied" || phase == "expired")) || (request.IsWrite && rejected)))
                 { _unresolved = _unresolvedKind = _unresolvedTarget = _unresolvedDestination = null; }
                 if (state && phase == "applied" && (request.Kind == "switch" || request.Kind == "return")
@@ -204,6 +204,11 @@ namespace CF7Launcher.Tasks
                     };
                     if (_invoke == null) publish(); else _invoke(publish);
                 }
+                if (state && message.Value<bool>("success") && message.Value<bool>("canSwitch")
+                    && !message.Value<bool>("inRun") && (phase == "editing" || phase == "applied")
+                    && IsPermanentSlot(Text(message["activeSlot"])) && string.IsNullOrEmpty(Text(message["pendingRun"]))
+                    && message["outcomePending"]?.Type == JTokenType.Boolean && !message.Value<bool>("outcomePending"))
+                    _saves?.Archive.QueueSettledBookRunCleanup(Text(message["activeSlot"]));
                 JObject result = state || rejected ? (JObject)message.DeepClone()
                     : new JObject { ["success"] = false, ["error"] = "malformed_response" };
                 result.Remove("task"); Send(result, call.WebCallId, request.Cmd, request.Instance);

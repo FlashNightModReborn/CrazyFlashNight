@@ -80,6 +80,21 @@ namespace CF7Launcher.Tests.Tasks
             h.Task.HandleWebRequest("stashChoose", request);
             Assert.Empty(h.Flash); Assert.Equal("idle", h.Task.WriteState);
         }
+        [Theory]
+        [InlineData(false)]
+        [InlineData(true)]
+        public void ReadOnlyPreviewIsBoundedAndCannotSmuggleInventoryAuthority(bool forged)
+        {
+            using var h = new Harness(); h.Task.HandleWebRequest("stashChoices", Request("stashChoices"));
+            JObject data = Snapshot();
+            var item = (JObject)data["offers"][0]["options"][0]["items"][0];
+            item["icon"] = "UZI"; item["details"] = "攻击力 42\n需要等级 7";
+            if (forged) item["source"] = new JObject { ["slot"] = 0 };
+            h.Reply("stashChoices", data);
+            Assert.Equal(!forged, Assert.Single(h.Web).Value<bool>("success"));
+            if (!forged) Assert.Equal("攻击力 42\n需要等级 7", h.Web[0]["data"]["offers"][0]["options"][0]["items"][0].Value<string>("details"));
+        }
+
         [Fact]
         public void SnapshotProjectsTheFrozenBundle()
         {

@@ -55,6 +55,54 @@ namespace CF7Launcher.Tests.Tasks
             Assert.Equal("测试角色", (string)((JArray)written["0"])[0]);
         }
 
+        [Theory]
+        [InlineData("victory")]
+        [InlineData("failure")]
+        [InlineData("retreat")]
+        [InlineData("abandoned")]
+        public void ReceiptedBookRunIsRetiredAndLateShadowsCannotReviveIt(string outcome)
+        {
+            string run = "bookrun_0123456789abcdef01234567";
+            JObject parent = BuildValidMydata(), child = BuildValidMydata();
+            parent["ext"] = new JObject { ["bookshelf"] = new JObject { ["lastRun"] = run, ["active"] = null } };
+            child["ext"] = new JObject { ["bookRun"] = new JObject { ["slot"] = run, ["originSlot"] = "origin", ["outcome"] = outcome } };
+            string dir = Path.Combine(_projectRoot, "saves"), backup = Path.Combine(dir, run + ".json.previous-" + new string('a', 32));
+            File.WriteAllText(Path.Combine(dir, "origin.json"), parent.ToString());
+            File.WriteAllText(Path.Combine(dir, run + ".json"), child.ToString());
+            File.WriteAllText(backup, "recovery copy");
+            string unrelated = Path.Combine(dir, "origin.json.previous-" + new string('b', 32)); File.WriteAllText(unrelated, "keep");
+            Assert.True(_archive.TryRetireSettledBookRun("origin"));
+            Assert.True(_archive.IsTombstoned(run)); Assert.False(File.Exists(backup));
+            Assert.False(File.Exists(Path.Combine(dir, run + ".json"))); Assert.True(File.Exists(unrelated));
+            Assert.True(_archive.TryRetireSettledBookRun("origin"));
+            Assert.False(SendShadow(run, child).Value<bool>("success"));
+        }
+
+        [Theory]
+        [InlineData("pending")]
+        [InlineData("active")]
+        [InlineData("wrong_owner")]
+        [InlineData("wrong_receipt")]
+        [InlineData("corrupt_origin")]
+        public void UnprovenBookRunRemainsRecoverable(string scenario)
+        {
+            string run = "bookrun_0123456789abcdef01234567";
+            JObject parent = BuildValidMydata(), child = BuildValidMydata();
+            parent["ext"] = new JObject { ["bookshelf"] = new JObject { ["lastRun"] = run, ["active"] = null } };
+            child["ext"] = new JObject { ["bookRun"] = new JObject { ["slot"] = run, ["originSlot"] = "origin", ["outcome"] = "victory" } };
+            if (scenario == "pending") parent["ext"]["bookshelf"]["active"] = new JObject { ["slot"] = run };
+            if (scenario == "active") child["ext"]["bookRun"]["outcome"] = "active";
+            if (scenario == "wrong_owner") child["ext"]["bookRun"]["originSlot"] = "another";
+            if (scenario == "wrong_receipt") parent["ext"]["bookshelf"]["lastRun"] = "ordinary_player";
+            if (scenario == "corrupt_origin") parent.Remove("inventory");
+            string dir = Path.Combine(_projectRoot, "saves");
+            File.WriteAllText(Path.Combine(dir, "origin.json"), parent.ToString());
+            string childPath = Path.Combine(dir, run + ".json"); File.WriteAllText(childPath, child.ToString());
+            string before = File.ReadAllText(childPath);
+            Assert.False(_archive.TryRetireSettledBookRun("origin"));
+            Assert.False(_archive.IsTombstoned(run)); Assert.Equal(before, File.ReadAllText(childPath));
+        }
+
         private JObject SendShadow(string slot, JObject data)
         {
             JObject msg = new JObject();

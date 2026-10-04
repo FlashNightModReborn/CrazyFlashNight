@@ -2,6 +2,7 @@ using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Runtime.ExceptionServices;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -262,6 +263,51 @@ namespace CF7Launcher.Tasks
             });
 
             LogManager.Log("[ArchiveTask] reset(sync) slot=" + safeName);
+        }
+
+        /// <summary>Reclaim only the exact terminal run already receipted by its origin.
+        /// A tombstone prevents a late shadow/SOL from resurrecting the temporary slot.</summary>
+        public bool TryRetireSettledBookRun(string originSlot)
+        {
+            if (!SaveSlotKey.TryValidateExisting(originSlot, out string origin)
+                || origin.StartsWith("bookrun_", StringComparison.OrdinalIgnoreCase)) return false;
+            return RunOnFifo(() => {
+                lock (_lock)
+                {
+                    if (IsTombstoned(origin) || !TryLoadShadowSync(origin, out JObject parent, out _)) return false;
+                    var shelf = parent["ext"]?["bookshelf"] as JObject;
+                    string runSlot = shelf?.Value<string>("lastRun");
+                    if (!SaveMigrator.ValidateResolvedSnapshot(parent) || parent["ext"]?["bookRun"] != null && parent["ext"]["bookRun"].Type != JTokenType.Null
+                        || shelf?["active"] != null && shelf["active"].Type != JTokenType.Null
+                        || runSlot == null || !Regex.IsMatch(runSlot, @"^bookrun_[a-f0-9]{24}$")) return false;
+                    string runPath = Path.Combine(_savesDir, runSlot + ".json");
+                    if (!IsTombstoned(runSlot))
+                    {
+                        if (!TryLoadShadowSync(runSlot, out JObject saved, out _)) return false;
+                        var run = saved["ext"]?["bookRun"] as JObject;
+                        if (!SaveMigrator.ValidateResolvedSnapshot(saved) || run?.Value<string>("slot") != runSlot || run.Value<string>("originSlot") != origin
+                            || !new[] { "victory", "failure", "retreat", "abandoned" }.Contains(run.Value<string>("outcome"))) return false;
+                        // Same atomic deletion authority used by the normal archive delete operation.
+                        HandleDelete(new JObject { ["slot"] = runSlot });
+                    }
+                    // Reconcile leftovers only after the deletion authority has committed.
+                    File.Delete(runPath);
+                    foreach (string suffix in new[] { ".json.previous-", ".json.tmp-" })
+                        foreach (string residue in Directory.GetFiles(_savesDir, runSlot + suffix + "*"))
+                            if (Regex.IsMatch(Path.GetFileName(residue).Substring((runSlot + suffix).Length), @"^[a-fA-F0-9]{32}$"))
+                                File.Delete(residue);
+                    _prevSnapshots.Remove(runSlot);
+                    return true;
+                }
+            });
+        }
+
+        public void QueueSettledBookRunCleanup(string originSlot)
+        {
+            _opQueue.Add(() => {
+                try { TryRetireSettledBookRun(originSlot); }
+                catch (Exception error) { LogManager.Log("[ArchiveTask] book cleanup pending: " + error.GetType().Name); }
+            });
         }
 
         // 一致性校验基线（accepted-state）：每个 slot 上一份"已接受"的 shadow 快照。

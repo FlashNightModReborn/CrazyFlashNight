@@ -50,7 +50,7 @@ async function main() {
         if(entry.isDirectory())walk(path.join(dir,entry.name),prefix+entry.name+'/');
         else if(entry.name!=='manifest.json')actual.push(prefix+entry.name);
     }}
-    walk(assets);assert.deepStrictEqual(actual.sort(),Object.keys(manifest.files).sort());passed++;
+    walk(path.join(assets,'dust'),'dust/'); walk(path.join(assets,'babylon'),'babylon/');assert.deepStrictEqual(actual.sort(),Object.keys(manifest.files).sort());passed++;
     let total=0;
     for(const [file,expected] of Object.entries(manifest.files)) {
         const data=fs.readFileSync(path.join(assets,file)); total+=data.length;
@@ -58,6 +58,17 @@ async function main() {
         check(!/<script\b|<foreignObject\b|(?:href|src)=["'](?:https?:|file:|javascript:)/i.test(data.toString()),'passive local vector page '+file);
     }
     check(total===manifest.totalBytes && total<1024*1024,'complete bounded asset closure');
+    const catalog=JSON.parse(fs.readFileSync(path.join(assets,'catalog.json'),'utf8'));
+    R.adoptCatalog(catalog);
+    check(R.books.length===5, 'five catalog books');
+    for(const book of R.books.filter(b=>b.index)) {
+        const index=JSON.parse(fs.readFileSync(path.join(assets,book.index),'utf8'));
+        check(R.validateIndex(book,index)===index,'reader index '+book.id);
+        const invalid=JSON.parse(JSON.stringify(index));
+        if(book.format==='comic')invalid.pages[0].file='../escape.avif';else invalid.chapters[0].paragraphs=[{}];
+        assert.throws(()=>R.validateIndex(book,invalid));passed++;
+    }
+    for(const bad of ['../x','x//y','/x','x/./y','x\\y','https://x']) check(!R.safeAsset(bad),'unsafe library path');
     console.log(`Bookshelf runtime/assets: ${passed} passed; no Flash, SOL or gameplay claim.`);
 }
 main().catch(error=>{console.error(error);process.exitCode=1;});

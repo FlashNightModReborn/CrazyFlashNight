@@ -218,6 +218,13 @@ class org.flashNight.arki.scene.BookRunRulesTest {
         check(codec.stringifySafe(first) != codec.stringifySafe(changed), "different seed changes plan");
         check(codec.stringifySafe(BookRunRules.stages(1729, 6)[0]) == codec.stringifySafe(first[6]), "boss jump preserves plan");
         var config:Object = BookDefinition.get();
+        check(BookDefinition.valid(config), "runtime config accepts generated data");
+        var broken:Object = org.flashNight.gesh.object.PersistedSnapshot.clone(config);
+        broken.maps[0].background = "../outside.swf";
+        check(!BookDefinition.valid(broken), "runtime config rejects traversal");
+        broken = org.flashNight.gesh.object.PersistedSnapshot.clone(config); broken.maps[0].count = [0, 999];
+        check(!BookDefinition.valid(broken), "runtime config rejects malformed spawn range");
+        check(BookDefinition.accept(config) && BookDefinition.ready(), "validated data unlocks runtime entry");
         var waveCount:Number = 0;
         var bounded:Boolean = true, drops:Boolean = true, services:Boolean = true, concentrated:Boolean = true;
         var priorDropSlots:Number = 0, currentDropSlots:Number = 0, cadence:Boolean = true;

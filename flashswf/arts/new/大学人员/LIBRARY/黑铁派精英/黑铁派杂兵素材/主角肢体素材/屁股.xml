@@ -1,0 +1,50 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="黑铁派精英/黑铁派杂兵素材/主角肢体素材/屁股" itemID="693fcbef-000256f5" lastModified="1776095635" lastUniqueIdentifier="9">
+  <timeline>
+    <DOMTimeline name="屁股">
+      <layers>
+        <DOMLayer name="as" color="#9933CC" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="2" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[stop();
+if (_parent._parent.性别 === "女")
+{
+	gotoAndStop(2);
+}]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer_1" color="#0397E6" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="黑铁派杂兵/校服相关/男变装-黑色校服裤子屁股" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix tx="0.6" ty="-0.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="1" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="3.防具/校服相关/女变装-黑色校服裤子屁股" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix tx="0.6" ty="-0.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

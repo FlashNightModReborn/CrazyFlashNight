@@ -27,8 +27,10 @@ class org.flashNight.arki.ui.BookshelfPanelService {
         _root.gameCommands["bookshelfQuery"] = function(p) { org.flashNight.arki.ui.BookshelfPanelService.handle("query", p); };
         EventBus.getInstance().subscribe("SceneReady", onSceneReady, null);
         org.flashNight.arki.scene.BookRunService.install();
+        org.flashNight.arki.scene.BookDefinition.load();
     }
     public static function openPanel():Boolean {
+        org.flashNight.arki.scene.BookDefinition.load();
         if (org.flashNight.arki.ui.SceneTransitionService.isPresentationPending()) return false;
         if (_root.gameworld == undefined || typeof _root.server.sendSocketMessage != "function") return false;
         if (_active != null && _active.phase == "editing") _active.phase = "expired";
@@ -85,6 +87,10 @@ class org.flashNight.arki.ui.BookshelfPanelService {
         var run:Object = _root._saveExt.bookRun;
         var feature:Object = _root._saveExt.bookshelf;
         if (kind == "play") {
+            if (!org.flashNight.arki.scene.BookDefinition.ready()) {
+                org.flashNight.arki.scene.BookDefinition.load();
+                return fail(cmd, token, "config_unavailable");
+            }
             if (!unlocked() || run != null || feature.active != null) return fail(cmd, token, "locked");
             if (p.target !== "repair-campus" || typeof p.runSlot != "string" || p.runSlot.indexOf("bookrun_") != 0) return fail(cmd, token, "invalid_target");
             r.run = {v:1, bookId:"repair-campus", slot:p.runSlot, originSlot:r.slot,

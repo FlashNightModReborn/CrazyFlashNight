@@ -19,6 +19,10 @@
         var self = this;
         this.options = options;
         this.document = options.view.root.ownerDocument;
+        var win = this.document.defaultView;
+        this.icons = win && win.Icons;
+        this.tooltip = win && win.PanelTooltip;
+        this.tooltipScope = this.tooltip && this.tooltip.createScope('choice-rewards', {profile:'dense-inspect'});
         this.snapshot = null; this.selected = ''; this.offerId = ''; this.state = 'idle';
         this.signature = ''; this.destroyed = false;
         var entryHost = options.view.root.querySelector('[data-build-pane="candidates"] .character-build-pane-heading .character-build-pane-tools');
@@ -29,7 +33,7 @@
         this.page = new Components.SecondaryPage({document:this.document, role:'dialog', ariaLabel:'自选礼包',
             className:'character-build-choice-page', underlay:options.view._underlay,
             onBack:function() { return self.state !== 'write_pending' && self.state !== 'query_pending'; },
-            onClose:function() { self.updateState(self.state); }});
+            onClose:function() { if (self.tooltipScope) self.tooltipScope.releaseTree(self.cards); self.updateState(self.state); }});
         this.page.mount(options.view.root);
         var header = element(this.document, 'header', '', 'character-build-choice-header');
         header.appendChild(element(this.document, 'h2', '选择你的配给'));
@@ -51,6 +55,7 @@
         this.confirm = element(this.document, 'button', '领取这套配给'); this.confirm.onclick = function() {
             if (!self.confirm.disabled && self.snapshot) options.choose(self.snapshot, self.offerId, self.selected);
         };
+        this.confirm.setAttribute('data-choice-confirm', '');
         this.storage = element(this.document, 'button', '前往暂存物资'); this.storage.onclick = function() {
             if (self.state === 'idle') { self.page.close('storage'); options.storage(); }
         };
@@ -61,6 +66,7 @@
     ChoiceView.prototype.open = function() {
         var shell = this.options.view.root.closest('.inventory-workbench-panel');
         var header = shell && shell.querySelector('.workbench-header');
+        this.renderCards();
         return this.page.open({opener:this.button, initialFocus:this.back,
             underlay:header ? [this.options.view._underlay, header] : this.options.view._underlay});
     };
@@ -73,8 +79,10 @@
         if (signature !== this.signature || preferred && preferred !== this.offerId) {
             this.signature = signature;
             var wanted = preferred || this.offerId;
+            var previousOffer = this.offerId;
             this.offerId = data.offers.some(function(o) { return o.offerId === wanted; }) ? wanted
                 : data.offers.length ? data.offers[0].offerId : '';
+            if (previousOffer !== this.offerId) this.selected = '';
             this.select.textContent = '';
             for (var i = 0; i < data.offers.length; i++) {
                 var row = element(this.document, 'option', data.offers[i].title + ' · ' + (i + 1));
@@ -88,6 +96,7 @@
     ChoiceView.prototype.renderCards = function() {
         var self = this;
         var offer = this.snapshot && this.snapshot.offers.find(function(o) { return o.offerId === self.offerId; });
+        if (this.tooltipScope) this.tooltipScope.releaseTree(this.cards);
         this.cards.textContent = '';
         if (!offer) { this.selected = ''; this.cards.appendChild(element(this.document, 'p', '暂无待选择的礼包。打开背包中的自选配给包后，就可以在这里继续选择。')); this.updateState(this.state); return; }
         this.cards.style.setProperty('--choice-columns', String(offer.options.length));
@@ -100,8 +109,21 @@
             card.appendChild(element(self.document, 'span', option.description, 'character-build-choice-description'));
             var items = element(self.document, 'span', '', 'character-build-choice-items');
             option.items.forEach(function(item) {
-                items.appendChild(element(self.document, 'span', item.displayName + ' ×' + item.quantity
-                    + (item.level > 0 ? '　Lv.' + item.level : '')));
+                var row = element(self.document, 'span', '', 'character-build-choice-item');
+                var icon = element(self.document, 'span', '', 'character-build-choice-icon');
+                icon.setAttribute('aria-hidden', 'true');
+                function paintIcon() {
+                    if (self.destroyed || !row.isConnected) return;
+                    icon.innerHTML = self.icons.html(item.icon || item.itemName, 'item-icon');
+                    if (!icon.firstChild) icon.textContent = '·';
+                }
+                var copy = element(self.document, 'span', '', 'character-build-choice-item-copy');
+                copy.appendChild(element(self.document, 'span', item.displayName));
+                copy.appendChild(element(self.document, 'small', '数量 ' + item.quantity + (item.level > 0 ? ' · 需要等级 ' + item.level : '')));
+                row.append(icon, copy); items.appendChild(row);
+                if (self.icons) self.icons.load(function() { Promise.resolve().then(paintIcon); });
+                if (self.tooltipScope && item.details) self.bindPreview(row, item.displayName, item.details);
+
             });
             card.appendChild(items);
             card.onclick = function() {
@@ -113,8 +135,19 @@
                 self.updateState(self.state);
             };
             self.cards.appendChild(card);
+            if (self.tooltipScope) self.bindPreview(card, option.title, option.description + '\n\n'
+                + option.items.map(function(item) { return item.details || item.displayName + ' ×' + item.quantity; }).join('\n\n'));
         });
         this.updateState(this.state);
+    };
+    ChoiceView.prototype.bindPreview = function(node, title, details) {
+        var doc = this.document;
+        this.tooltipScope.bindAsync(node, {key:title + '\n' + details, item:{},
+            renderBasic:function() {
+                var box = element(doc, 'div', '', 'character-build-choice-tooltip');
+                box.appendChild(element(doc, 'strong', title)); box.appendChild(element(doc, 'p', details));
+                return box.outerHTML;
+            }});
     };
     ChoiceView.prototype.updateState = function(state) {
         if (this.destroyed) return;
@@ -133,6 +166,9 @@
         this.query.disabled = state === 'query_pending' || state === 'write_pending';
         this.back.disabled = state === 'write_pending' || state === 'query_pending';
         this.cards.querySelectorAll('[data-choice-option]').forEach(function(node) { node.disabled = busy; });
+        var offer = this.snapshot && this.snapshot.offers.find(function(o) { return o.offerId === this.offerId; }, this);
+        var chosen = offer && offer.options.find(function(o) { return o.optionId === this.selected; }, this);
+        this.confirm.textContent = chosen ? '领取「' + chosen.title + '」' : '领取这套配给';
         this.status.textContent = this.loadFailed ? '配给列表暂时无法读取，请刷新重试。'
             : state === 'write_pending' ? '正在保存你的选择…'
             : state === 'query_pending' ? '正在核对领取结果…'
@@ -141,7 +177,7 @@
     };
     ChoiceView.prototype.destroy = function() {
         if (this.destroyed) return;
-        this.destroyed = true; this.page.destroy(); this.button.remove();
+        this.destroyed = true; if (this.tooltipScope) this.tooltipScope.dispose(); this.page.destroy(); this.button.remove();
     };
     function install(controller) {
         controller._ensureChoiceRewards = function() {

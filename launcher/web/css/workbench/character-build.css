@@ -68,7 +68,14 @@
 }
 .character-build-choice-card strong { font-size:16px; }
 .character-build-choice-description { color:var(--wb-muted); font-size:12px; line-height:1.6; }
-.character-build-choice-items { display:grid; gap:7px; font-size:12px; line-height:1.4; }
+.character-build-choice-items { display:grid; gap:8px; font-size:13px; line-height:1.5; }
+.character-build-choice-item { display:flex; align-items:center; gap:8px; padding:5px 0; }
+.character-build-choice-icon { display:flex; align-items:center; justify-content:center; width:44px; height:44px; flex:0 0 44px; background:var(--wb-surface-raised,var(--wb-surface)); border:1px solid var(--wb-line); }
+.character-build-choice-icon .item-icon { max-width:40px; max-height:40px; object-fit:contain; }
+.character-build-choice-item-copy { display:grid; gap:3px; }
+.character-build-choice-item-copy small { color:var(--wb-muted); font-size:12px; }
+.character-build-choice-tooltip { max-width:440px; }
+.character-build-choice-tooltip p { white-space:pre-wrap; line-height:1.6; margin:8px 0 0; }
 .character-build-choice-card[aria-pressed="true"] { border-color:var(--wb-focus); box-shadow:inset 3px 0 0 var(--wb-focus); }
 .character-build-choice-card[aria-pressed="true"] strong::after { content:' · 已选'; color:var(--wb-focus); font-size:12px; }
 .character-build-choice-footer { grid-row:5; flex-wrap:wrap; }

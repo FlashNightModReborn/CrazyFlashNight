@@ -1,0 +1,50 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="黑铁派杂兵/黑铁派杂兵素材/主角肢体素材/左下臂" itemID="693fcafa-0001886d" lastModified="1776095589" lastUniqueIdentifier="8">
+  <timeline>
+    <DOMTimeline name="左下臂" currentFrame="1">
+      <layers>
+        <DOMLayer name="as" color="#9933CC" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="2" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[stop();
+if (_parent._parent.性别 === "女")
+{
+	gotoAndStop(2);
+}]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer_1" color="#B5F5B0" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="黑铁派杂兵/校服相关/男变装-黑色立领校服右下臂" selected="true" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix tx="1.05" ty="39.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="1" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="3.防具/校服相关/女变装-黑色立领校服右下臂" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix tx="1.05" ty="39.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

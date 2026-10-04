@@ -68,8 +68,9 @@ class org.flashNight.arki.scene.CutsceneService {
         var holder:MovieClip = getHolder();
         if (holder == undefined || holder._name == undefined || path == undefined || path == "") return;
         var name:String = assetName(path);
-        // 章节卡自己持有 book_chapter claim 和收尾，保留原挂载关系。
-        if (name == "修理大学章节" || (!requestPause && _legacyPause[name] !== true)) {
+        // Chapters share the managed lifetime/input gate, while retaining their own page controls.
+        var bookChapter:Boolean = name == "修理大学章节";
+        if (!bookChapter && !requestPause && _legacyPause[name] !== true) {
             holder._visible = true;
             holder.loadMovie(path);
             return;
@@ -82,8 +83,8 @@ class org.flashNight.arki.scene.CutsceneService {
         var clipName:String = "__cutscene_" + (++_sequence);
         var session:Object = {
             name: clipName, holder: holder, holderName: holder._name, layerDepth: holder.getDepth(),
-            target: null, path: path, preparing: true,
-            tailFrame: _skipTails[name], skipAllowed: false, skipRequested: false,
+            target: null, path: path, preparing: true, bookChapter: bookChapter,
+            tailFrame: bookChapter ? 1 : _skipTails[name], skipAllowed: false, skipRequested: false,
             skipKey: NaN, skipWasDown: true,
             sceneId: NativeInteractionContext.getSceneId(), terminal: false,
             initialized: false, leaseId: PauseManager.leaseLegacyAnimation("animation"),
@@ -331,6 +332,11 @@ class org.flashNight.arki.scene.CutsceneService {
         var wasDown:Boolean = session.skipWasDown;
         session.skipWasDown = down;
         if (down && !wasDown) {
+            if (session.bookChapter && typeof target.advanceChapter == "function") {
+                _consumedSkipKey = code;
+                target.advanceChapter();
+                return;
+            }
             session.skipRequested = true;
             _consumedSkipKey = code;
             session.skipWaitFrames = 0;
@@ -364,7 +370,7 @@ class org.flashNight.arki.scene.CutsceneService {
         session.hintKey = code;
         var keyName:String = KeyManager.getKeyName(code);
         if (keyName == "") keyName = String(code);
-        var label:String = "跳过动画";
+        var label:String = session.bookChapter ? "继续" : "跳过动画";
         if (_root.获得翻译 != undefined) label = _root.获得翻译(label);
         hint.label.text = keyName + " " + label;
     }

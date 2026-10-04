@@ -2,6 +2,9 @@
    canonical source: docs/dls-color-system.md
    禁止在 panels.css 之外新增 DLS/技能/调制的硬编码色值。 */
 :root {
+    /* Bookshelf reading surfaces, independent of the game/workbench skin. */
+    --bookshelf-paper: #f4eedd;
+    --bookshelf-ink: #2e281e;
     /* DLS 物质光谱 */
     --dls-crystal: #3dd5ff;
     --dls-crystal-rgb: 61,213,255;

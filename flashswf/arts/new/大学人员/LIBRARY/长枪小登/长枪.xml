@@ -1,0 +1,56 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="长枪小登/长枪" itemID="665dea36-000008d4" lastModified="1765784435" lastUniqueIdentifier="10">
+  <timeline>
+    <DOMTimeline name="长枪">
+      <layers>
+        <DOMLayer name="图层_3" color="#FF800A" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="长枪小登/诺亚长枪枪身" selected="true" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix tx="-62.9" ty="-82"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="160.65" y="48.85"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层_6" color="#FF0000">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="长枪小登/Ammunitions &amp;#038 Magazines/Magazines/STANAG 4179 Magazine/STANAG 4179 Magazine (30 rounds)" selected="true" symbolType="graphic" centerPoint3DX="100.85" centerPoint3DY="2.4" loop="loop">
+                  <matrix>
+                    <Matrix a="2.6600341796875" b="-0.71270751953125" c="0.613876342773438" d="2.2911376953125" tx="77.15" ty="-21.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="6.2" y="12.45"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层_2" color="#9933CC">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="长枪小登/Specials/F.N.H Mk.13/F.N.H Mk.13 EGLM/F.N.H Mk.13 EGLM Handguard" selected="true" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="3.153564453125" d="3.153564453125" tx="101.4" ty="-36.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="15.15" y="4.3"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

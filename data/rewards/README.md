@@ -24,7 +24,7 @@
 
 不支持金币、SP、经验的伪物品直写；这类效果继续走现有成长/消耗品系统。候选产出中的礼包不会递归打开。
 
-书籍配置 `buildChoices` 只保存掉落时机、`poolId`、`choiceItem`、等级上限和旧凭证名。书籍生成器只将池中的武器构筑 bundle 投影为旧凭证四选一配方；通用 `items` bundle 只走随机选择领取，不拓展旧凭证兑换能力。弹药包仍由 `data/books/repair-campus.json` 的 `ammoBundle` 编辑。
+书籍配置 `buildChoices` 只保存掉落时机、`poolId`、`choiceItem`、等级上限和旧凭证名。书籍生成器只将池中的武器构筑 bundle 投影为旧凭证四选一配方；通用 `items` bundle 只走随机选择领取，不拓展旧凭证兑换能力。弹药包仍由 `data/stages/books/repair-campus.json` 的 `ammoBundle` 编辑。
 
 ## 存储与领取
 

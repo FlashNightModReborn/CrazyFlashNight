@@ -27,7 +27,7 @@ class org.flashNight.arki.scene.CutsceneSkipTest {
     private static var _tested:Object = {};
     private static var _testedCount:Number = 0;
     private static var _finished:Boolean = false;
-    private static var _rootKeys:Array = ["暂停", "外部动画加载壳mc", "最上层发布文字提示", "获得翻译"];
+    private static var _rootKeys:Array = ["暂停", "外部动画加载壳mc", "最上层发布文字提示", "获得翻译", "savePath", "_saveExt", "gameworld", "书中当前章节", "书中过场取得暂停", "书中过场释放暂停"];
 
     private static function check(value:Boolean, message:String):Void {
         if (value) { _passed++; trace("[PASS] skip " + message); }
@@ -97,6 +97,7 @@ class org.flashNight.arki.scene.CutsceneSkipTest {
         _root.外部动画加载壳mc = _root.__skipTestShell;
         _root.外部动画加载壳mc.swapDepths(-100);
         _cases = [
+            {asset:"修理大学章节", mode:"chapter"},
             {asset:"movie_gk_15_5"}, {asset:"movie_avp_1_3"}, {asset:"movie_avp_1_5"},
             {asset:"movie_avp_1_7"}, {asset:"movie_avp_1_14"}, {asset:"movie_gk_1_1"},
             {asset:"movie_gk_8_2"}, {asset:"movie_gk_9_4"}, {asset:"movie_gk_11_4"},
@@ -138,6 +139,15 @@ class org.flashNight.arki.scene.CutsceneSkipTest {
             var cls:Object = CutsceneService;
             cls["_skipTails"].movie_gk_15_5 = 170;
         }
+        if (_case.mode == "chapter") {
+            _root.savePath = "book_chapter_fixture"; _root._saveExt = {bookRun:{slot:_root.savePath}};
+            _root.gameworld = {__stageReturnWorldIdentity:{}};
+            _root.书中当前章节 = {index:0, total:7, title:"章节夹具", slot:_root.savePath,
+                owner:_root.gameworld.__stageReturnWorldIdentity,
+                dialogue:[{speaker:"Andy",text:"第一句"},{speaker:"同学",text:"第二句"}]};
+            _root.书中过场取得暂停 = function():String { return PauseManager.lease(true, "book_chapter"); };
+            _root.书中过场释放暂停 = function(id:String):Void { PauseManager.releaseLease(id); };
+        }
         CutsceneService.play("../flashswf/movies/" + _case.asset + ".swf", !_case.implicit);
         _session = active();
         check(_session != null && PauseManager.isPaused(), _case.asset + " prepares a paused session before loading");
@@ -176,6 +186,16 @@ class org.flashNight.arki.scene.CutsceneSkipTest {
         _phase = 1;
         var target:MovieClip = _session.target;
         var cls:Object = CutsceneService;
+        if (_case.mode == "chapter") {
+            check(_session.bookChapter && _session.skipAllowed, "chapter uses managed input and pause ownership");
+            sample(); _down[69] = true; sample();
+            check(target.speech.text == "第一句" && !_session.skipRequested, "interaction advances first line without restarting frame one");
+            sample(); check(target.speech.text == "第一句", "held interaction cannot consume second line");
+            _down[69] = false; sample(); _down[69] = true; sample();
+            check(target.speech.text == "第二句" && PauseManager.isPaused(), "second line retains pause");
+            _down[69] = false; sample(); _down[69] = true; sample();
+            return;
+        }
         if (_case.mode == "frames_changed" || _case.mode == "unreviewed") {
             sample();
             _down[69] = true;

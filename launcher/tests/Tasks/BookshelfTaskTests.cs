@@ -161,6 +161,19 @@ namespace Launcher.Tests.Tasks
             Assert.True(posted[0].Value<bool>("requiresReconcile"));
         }
 
+        [Theory]
+        [InlineData("\"pending\"")][InlineData("{}")] [InlineData("null")][InlineData("0")]
+        public void MalformedCleanupHintCannotInterruptCanonicalOperationResponse(string hint)
+        {
+            var sent = new List<JObject>(); var posted = new List<JObject>();
+            using var task = Create(sent, posted);
+            task.HandleWebRequest("commit", Request("commit"));
+            var response = Response(sent[0]); response["outcomePending"] = JToken.Parse(hint);
+            task.HandleFlashResponse(response, _ => { });
+            Assert.Single(posted);
+            Assert.True(posted[0].Value<bool>("success"));
+        }
+
         [Fact]
         public void SettledJourneyCanAdoptFreshEditingTokenWithoutClosingPanel()
         {

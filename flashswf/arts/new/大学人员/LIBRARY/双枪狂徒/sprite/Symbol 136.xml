@@ -1,0 +1,874 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="双枪狂徒/sprite/Symbol 136" itemID="6577b699-000009b3" lastModified="1780232967" lastUniqueIdentifier="4">
+  <timeline>
+    <DOMTimeline name="Symbol 136" currentFrame="19">
+      <layers>
+        <DOMLayer name="代码" color="#9933CC" current="true" isSelected="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="19" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="19" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[_parent.动画完毕();
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer_5" color="#8DE7E2">
+          <frames>
+            <DOMFrame index="0" duration="10" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="双枪狂徒/左下臂" centerPoint3DX="66.45" centerPoint3DY="-56.95">
+                  <matrix>
+                    <Matrix a="-0.529342651367188" b="-0.6544189453125" c="0.6544189453125" d="-0.529342651367188" tx="11" ty="-75.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="0.05" y="0.05"/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="10" duration="9" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="双枪狂徒/左下臂" selected="true" centerPoint3DX="72.2" centerPoint3DY="-34.1">
+                  <matrix>
+                    <Matrix a="-0.8023681640625" b="-0.254257202148438" c="0.254257202148438" d="-0.8023681640625" tx="15.95" ty="-18.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="0.05" y="0.05"/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="19" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="双枪狂徒/左下臂" centerPoint3DX="57.85" centerPoint3DY="-56.45">
+                  <matrix>
+                    <Matrix a="-0.529342651367188" b="-0.6544189453125" c="0.6544189453125" d="-0.529342651367188" tx="2.4" ty="-74.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="0.05" y="0.05"/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer_3" color="#EEFC31">
+          <frames>
+            <DOMFrame index="0" duration="10" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="双枪狂徒/右手" centerPoint3DX="107.9" centerPoint3DY="-122">
+                  <matrix>
+                    <Matrix a="0.597320556640625" b="-0.59356689453125" c="0.59356689453125" d="0.597320556640625" tx="71.4" ty="-121.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="0.1"/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="10" duration="9" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="双枪狂徒/右手" selected="true" centerPoint3DX="70.9" centerPoint3DY="-111.2">
+                  <matrix>
+                    <Matrix a="0.171234130859375" b="-0.824462890625" c="0.824462890625" d="0.171234130859375" tx="40.5" ty="-90.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="0.15" y="-0.05"/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="19" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="双枪狂徒/右手" centerPoint3DX="99.3" centerPoint3DY="-121.5">
+                  <matrix>
+                    <Matrix a="0.597320556640625" b="-0.59356689453125" c="0.59356689453125" d="0.597320556640625" tx="62.8" ty="-121.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="0.1"/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer_37" color="#FD5ECC">
+          <frames>
+            <DOMFrame index="0" duration="10" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="双枪狂徒/上臂" centerPoint3DX="-12.8" centerPoint3DY="-84.45">
+                  <matrix>
+                    <Matrix a="0.74371337890625" b="-0.395797729492188" c="0.395797729492188" d="0.74371337890625" tx="-36.45" ty="-151.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="10" duration="9" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="双枪狂徒/上臂" selected="true" centerPoint3DX="3.75" centerPoint3DY="-27.95">
+                  <matrix>
+                    <Matrix a="0.66204833984375" b="-0.522323608398438" c="0.522323608398438" d="0.66204833984375" tx="-36.45" ty="-86.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="19" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="双枪狂徒/上臂" centerPoint3DX="-12.8" centerPoint3DY="-84.45">
+                  <matrix>
+                    <Matrix a="0.74371337890625" b="-0.395797729492188" c="0.395797729492188" d="0.74371337890625" tx="-36.45" ty="-151.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer_38" color="#FDFB67">
+          <frames>
+            <DOMFrame index="0" duration="10" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="双枪狂徒/主角肢体素材/手枪" centerPoint3DX="27.65" centerPoint3DY="-167">
+                  <matrix>
+                    <Matrix a="0.622894287109375" b="-0.7811279296875" c="0.7811279296875" d="0.622894287109375" tx="68.4" ty="-113.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="0.05"/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="10" duration="9" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="双枪狂徒/主角肢体素材/手枪" selected="true" centerPoint3DX="-20.9" centerPoint3DY="-104.55">
+                  <matrix>
+                    <Matrix a="0.08917236328125" b="-0.995086669921875" c="0.995086669921875" d="0.08917236328125" tx="42.4" ty="-82.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="0.15" y="0.05"/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="19" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="双枪狂徒/主角肢体素材/手枪" centerPoint3DX="19.05" centerPoint3DY="-166.5">
+                  <matrix>
+                    <Matrix a="0.622894287109375" b="-0.7811279296875" c="0.7811279296875" d="0.622894287109375" tx="59.8" ty="-113.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="0.05"/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer_39" color="#D08DE9">
+          <frames>
+            <DOMFrame index="0" duration="10" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="双枪狂徒/小腿" centerPoint3DX="-56.55" centerPoint3DY="191.9">
+                  <matrix>
+                    <Matrix a="0.77734375" b="0.3507080078125" c="-0.3507080078125" d="0.77734375" tx="-78.15" ty="117.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="10" duration="9" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="双枪狂徒/小腿" selected="true" centerPoint3DX="-32.4" centerPoint3DY="259.2">
+                  <matrix>
+                    <Matrix a="0.278549194335938" b="0.804550170898438" c="-0.804550170898438" d="0.278549194335938" tx="-54" ty="185.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="19" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="双枪狂徒/小腿" centerPoint3DX="-56.55" centerPoint3DY="191.9">
+                  <matrix>
+                    <Matrix a="0.77734375" b="0.3507080078125" c="-0.3507080078125" d="0.77734375" tx="-78.15" ty="117.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer_40" color="#AD876A">
+          <frames>
+            <DOMFrame index="0" duration="10" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="双枪狂徒/脚" centerPoint3DX="-82.45" centerPoint3DY="239.25">
+                  <matrix>
+                    <Matrix a="0.8463134765625" b="0.0995941162109375" c="-0.0995941162109375" d="0.8463134765625" tx="-121.6" ty="205.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="10" duration="9" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="双枪狂徒/脚" selected="true" centerPoint3DX="-117.8" centerPoint3DY="245.2">
+                  <matrix>
+                    <Matrix a="0.8463134765625" b="0.0995941162109375" c="-0.0995941162109375" d="0.8463134765625" tx="-156.95" ty="211.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="19" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="双枪狂徒/脚" centerPoint3DX="-82.45" centerPoint3DY="239.25">
+                  <matrix>
+                    <Matrix a="0.8463134765625" b="0.0995941162109375" c="-0.0995941162109375" d="0.8463134765625" tx="-121.6" ty="205.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer_41" color="#F7B38C">
+          <frames>
+            <DOMFrame index="0" duration="10" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="双枪狂徒/右大腿" centerPoint3DX="-30.6" centerPoint3DY="92.2">
+                  <matrix>
+                    <Matrix a="0.8343505859375" b="0.16650390625" c="-0.16650390625" d="0.8343505859375" tx="-56.85" ty="14.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="10" duration="9" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="双枪狂徒/右大腿" selected="true" centerPoint3DX="-30.6" centerPoint3DY="157.15">
+                  <matrix>
+                    <Matrix a="0.8511962890625" b="-0.018402099609375" c="0.018402099609375" d="0.8511962890625" tx="-56.85" ty="79.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="19" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="双枪狂徒/右大腿" centerPoint3DX="-30.6" centerPoint3DY="92.2">
+                  <matrix>
+                    <Matrix a="0.8343505859375" b="0.16650390625" c="-0.16650390625" d="0.8343505859375" tx="-56.85" ty="14.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer_42" color="#AC04E7">
+          <frames>
+            <DOMFrame index="0" duration="10" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="双枪狂徒/小腿" centerPoint3DX="60.35" centerPoint3DY="157.15">
+                  <matrix>
+                    <Matrix a="0.8372802734375" b="0.1710205078125" c="-0.1710205078125" d="0.8372802734375" tx="38.75" ty="83.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="10" duration="9" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="双枪狂徒/小腿" selected="true" centerPoint3DX="88.3" centerPoint3DY="178.8">
+                  <matrix>
+                    <Matrix a="0.8372802734375" b="0.1710205078125" c="-0.1710205078125" d="0.8372802734375" tx="66.7" ty="104.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="19" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="双枪狂徒/小腿" centerPoint3DX="60.35" centerPoint3DY="157.15">
+                  <matrix>
+                    <Matrix a="0.8372802734375" b="0.1710205078125" c="-0.1710205078125" d="0.8372802734375" tx="38.75" ty="83.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer_43" color="#76F4D5">
+          <frames>
+            <DOMFrame index="0" duration="10" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="双枪狂徒/脚" centerPoint3DX="60.6" centerPoint3DY="211.4">
+                  <matrix>
+                    <Matrix a="0.848297119140625" b="0.06219482421875" c="-0.06219482421875" d="0.848297119140625" tx="21.45" ty="177.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="10" duration="9" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="双枪狂徒/脚" selected="true" centerPoint3DX="85.65" centerPoint3DY="235.8">
+                  <matrix>
+                    <Matrix a="0.845504760742188" b="-0.0978851318359375" c="0.0978851318359375" d="0.845504760742188" tx="46.5" ty="202.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="19" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="双枪狂徒/脚" centerPoint3DX="60.6" centerPoint3DY="211.4">
+                  <matrix>
+                    <Matrix a="0.848297119140625" b="0.06219482421875" c="-0.06219482421875" d="0.848297119140625" tx="21.45" ty="177.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer_45" color="#9534D3">
+          <frames>
+            <DOMFrame index="0" duration="10" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="双枪狂徒/屁股" centerPoint3DX="7" centerPoint3DY="38.15">
+                  <matrix>
+                    <Matrix a="0.8372802734375" b="0.1710205078125" c="-0.1710205078125" d="0.8372802734375" tx="-39" ty="2.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="10" duration="9" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="双枪狂徒/屁股" selected="true" centerPoint3DX="7" centerPoint3DY="103.1">
+                  <matrix>
+                    <Matrix a="0.8372802734375" b="0.1710205078125" c="-0.1710205078125" d="0.8372802734375" tx="-39" ty="67.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="19" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="双枪狂徒/屁股" centerPoint3DX="7" centerPoint3DY="38.15">
+                  <matrix>
+                    <Matrix a="0.8372802734375" b="0.1710205078125" c="-0.1710205078125" d="0.8372802734375" tx="-39" ty="2.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer_46" color="#E0D0F3">
+          <frames>
+            <DOMFrame index="0" duration="10" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="双枪狂徒/头" centerPoint3DX="50.3" centerPoint3DY="-131.9">
+                  <matrix>
+                    <Matrix a="0.964218139648438" b="0.0296630859375" c="-0.0296630859375" d="0.964218139648438" tx="18.8" ty="-172.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="10" duration="9" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="双枪狂徒/头" selected="true" centerPoint3DX="50.3" centerPoint3DY="-70.2">
+                  <matrix>
+                    <Matrix a="0.956085205078125" b="0.130233764648438" c="-0.130233764648438" d="0.956085205078125" tx="18.8" ty="-110.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="19" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="双枪狂徒/头" centerPoint3DX="50.3" centerPoint3DY="-131.9">
+                  <matrix>
+                    <Matrix a="0.964218139648438" b="0.0296630859375" c="-0.0296630859375" d="0.964218139648438" tx="18.8" ty="-172.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer_47" color="#69B4DD">
+          <frames>
+            <DOMFrame index="0" duration="10" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="双枪狂徒/身体" centerPoint3DX="31.95" centerPoint3DY="60.55">
+                  <matrix>
+                    <Matrix a="0.808578491210938" b="0.2677001953125" c="-0.2677001953125" d="0.808578491210938" tx="-26.15" ty="-48"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="10" duration="9" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="双枪狂徒/身体" selected="true" centerPoint3DX="31.95" centerPoint3DY="125.5">
+                  <matrix>
+                    <Matrix a="0.808578491210938" b="0.2677001953125" c="-0.2677001953125" d="0.808578491210938" tx="-26.15" ty="16.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="19" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="双枪狂徒/身体" centerPoint3DX="31.95" centerPoint3DY="60.55">
+                  <matrix>
+                    <Matrix a="0.808578491210938" b="0.2677001953125" c="-0.2677001953125" d="0.808578491210938" tx="-26.15" ty="-48"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer_48" color="#945EAD">
+          <frames>
+            <DOMFrame index="0" duration="10" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="双枪狂徒/左大腿" centerPoint3DX="6.8" centerPoint3DY="84.3">
+                  <matrix>
+                    <Matrix a="0.655319213867188" b="-0.540618896484375" c="0.540618896484375" d="0.655319213867188" tx="-19.45" ty="6.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="10" duration="9" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="双枪狂徒/左大腿" selected="true" centerPoint3DX="6.8" centerPoint3DY="149.25">
+                  <matrix>
+                    <Matrix a="0.29534912109375" b="-0.795989990234375" c="0.795989990234375" d="0.29534912109375" tx="-19.45" ty="71.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="19" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="双枪狂徒/左大腿" centerPoint3DX="6.8" centerPoint3DY="84.3">
+                  <matrix>
+                    <Matrix a="0.655319213867188" b="-0.540618896484375" c="0.540618896484375" d="0.655319213867188" tx="-19.45" ty="6.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer_51" color="#68FA31">
+          <frames>
+            <DOMFrame index="0" duration="10" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="双枪狂徒/左手臂" centerPoint3DX="130.05" centerPoint3DY="-66.25">
+                  <matrix>
+                    <Matrix a="-0.80804443359375" b="0.23187255859375" c="-0.23187255859375" d="-0.80804443359375" tx="112.6" ty="-121.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="10" duration="9" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="双枪狂徒/左手臂" selected="true" centerPoint3DX="111.65" centerPoint3DY="41">
+                  <matrix>
+                    <Matrix a="-0.83477783203125" b="0.128219604492188" c="-0.128219604492188" d="-0.83477783203125" tx="94.2" ty="-14.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="19" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="双枪狂徒/左手臂" centerPoint3DX="130.05" centerPoint3DY="-66.25">
+                  <matrix>
+                    <Matrix a="-0.80804443359375" b="0.23187255859375" c="-0.23187255859375" d="-0.80804443359375" tx="112.6" ty="-121.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer_50" color="#9172E4">
+          <frames>
+            <DOMFrame index="0" duration="10" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="双枪狂徒/左手" centerPoint3DX="125.3" centerPoint3DY="-167">
+                  <matrix>
+                    <Matrix a="-0.460922241210938" b="-0.70391845703125" c="0.70391845703125" d="-0.460922241210938" tx="95.8" ty="-188.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="10" duration="9" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="双枪狂徒/左手" selected="true" centerPoint3DX="114.15" centerPoint3DY="-67.55">
+                  <matrix>
+                    <Matrix a="-0.256988525390625" b="-0.805648803710938" c="0.805648803710938" d="-0.256988525390625" tx="84.65" ty="-89"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="19" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="双枪狂徒/左手" centerPoint3DX="125.3" centerPoint3DY="-167">
+                  <matrix>
+                    <Matrix a="-0.460922241210938" b="-0.70391845703125" c="0.70391845703125" d="-0.460922241210938" tx="95.8" ty="-188.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer_52" color="#8B93C2">
+          <frames>
+            <DOMFrame index="0" duration="10" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="双枪狂徒/上臂" centerPoint3DX="58.2" centerPoint3DY="-64.6">
+                  <matrix>
+                    <Matrix a="0.138107299804688" b="-0.827743530273438" c="0.827743530273438" d="0.138107299804688" tx="34.55" ty="-131.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="10" duration="9" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="双枪狂徒/上臂" selected="true" centerPoint3DX="51.7" centerPoint3DY="3.6">
+                  <matrix>
+                    <Matrix a="0.516845703125" b="-0.66632080078125" c="0.66632080078125" d="0.516845703125" tx="28.05" ty="-63.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="19" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="双枪狂徒/上臂" centerPoint3DX="58.2" centerPoint3DY="-64.6">
+                  <matrix>
+                    <Matrix a="0.138107299804688" b="-0.827743530273438" c="0.827743530273438" d="0.138107299804688" tx="34.55" ty="-131.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer_49" color="#D4ED80">
+          <frames>
+            <DOMFrame index="0" duration="10" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="双枪狂徒/手枪2" centerPoint3DX="23.55" centerPoint3DY="-201.05">
+                  <matrix>
+                    <Matrix a="-0.32415771484375" b="-0.945297241210938" c="0.945297241210938" d="-0.32415771484375" tx="90.5" ty="-202.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="0.05"/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="10" duration="9" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="双枪狂徒/手枪2" selected="true" centerPoint3DX="10.05" centerPoint3DY="-102.2">
+                  <matrix>
+                    <Matrix a="-0.32415771484375" b="-0.945297241210938" c="0.945297241210938" d="-0.32415771484375" tx="77" ty="-103.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="0.05"/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="19" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="双枪狂徒/手枪2" centerPoint3DX="23.55" centerPoint3DY="-201.05">
+                  <matrix>
+                    <Matrix a="-0.32415771484375" b="-0.945297241210938" c="0.945297241210938" d="-0.32415771484375" tx="90.5" ty="-202.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="0.05"/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer_54" color="#95B4E0" locked="true">
+          <frames>
+            <DOMFrame index="0" duration="20" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="双枪狂徒/Symbol 3" centerPoint3DX="71.45" centerPoint3DY="319.7">
+                  <matrix>
+                    <Matrix a="1.37506103515625" d="0.559799194335938" tx="-15.2" ty="233.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

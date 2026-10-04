@@ -39,11 +39,17 @@ namespace CF7Launcher.Tasks
                     foreach (JToken itemToken in items)
                     {
                         var item = itemToken as JObject;
-                        if (!IsExactObject(item, "itemName", "displayName", "quantity", "level")
+                        bool preview = item?["icon"] != null || item?["details"] != null;
+                        if (!(preview ? IsExactObject(item, "itemName", "displayName", "quantity", "level", "icon", "details")
+                                : IsExactObject(item, "itemName", "displayName", "quantity", "level"))
                             || !TryReadSafeText(item["itemName"], 96, false, out string name)
                             || !TryReadSafeText(item["displayName"], 128, false, out string display)
                             || !TryReadLongInteger(item["quantity"], 1, MaxSafeInteger, out long quantity)
                             || !TryReadInteger(item["level"], 0, 60, out int level)) return false;
+                        if (preview && (!TryReadSafeText(item["icon"], 96, false, out _)
+                            || item["details"]?.Type != JTokenType.String || item.Value<string>("details").Length > 4096
+                            || System.Linq.Enumerable.Any(item.Value<string>("details"), ch =>
+                                char.IsControl(ch) && ch != '\n' && ch != '\r' && ch != '\t'))) return false;
                     }
                 }
             }

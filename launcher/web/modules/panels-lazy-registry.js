@@ -37,7 +37,7 @@
            'modules/asset-timeline.js', 'modules/icons.js', 'modules/dressup-doll-renderer.js',
          'modules/asset-workbench.js'], noop);
 
-    Panels.registerLazy('bookshelf', ['modules/panel-runtime.js', 'modules/bookshelf-runtime.js', 'modules/bookshelf-panel.js'], noop);
+    Panels.registerLazy('bookshelf', ['modules/panel-runtime.js', 'modules/bookshelf-runtime.js', 'modules/bookshelf-media.js', 'modules/bookshelf-reader.js', 'modules/bookshelf-original.js', 'modules/bookshelf-panel.js'], noop);
 
     // ── kshop ──
     Panels.registerLazy('kshop',

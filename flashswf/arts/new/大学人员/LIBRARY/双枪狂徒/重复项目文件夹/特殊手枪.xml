@@ -1,0 +1,35 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="双枪狂徒/重复项目文件夹/特殊手枪" itemID="693fc1e9-00002e9a" symbolType="graphic" lastModified="1765691408">
+  <timeline>
+    <DOMTimeline name="特殊手枪">
+      <layers>
+        <DOMLayer name="图层_1" color="#00FFFF" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="双枪狂徒/重复项目文件夹/Symbol 5853" selected="true" centerPoint3DX="205.5" centerPoint3DY="78">
+                  <matrix>
+                    <Matrix a="0.98480224609375" b="-0.0524749755859375" c="0.293212890625" d="1.13922119140625" tx="184.05" ty="80.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="0.05" y="0.05"/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="20" blurY="20" color="#CC00FF"/>
+                  </filters>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="双枪狂徒/重复项目文件夹/Symbol 5856" selected="true" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="1.47979736328125" b="-0.03277587890625" c="-0.03436279296875" d="1.64501953125" tx="2.15" ty="4.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-0.05" y="-0.1"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

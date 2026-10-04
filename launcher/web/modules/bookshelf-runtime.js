@@ -7,14 +7,57 @@
 })(typeof window !== 'undefined' ? window : globalThis, function(PanelRuntime) {
     'use strict';
     var books = [
-        {id:'dust', title:'尘都诡谈', subtitle:'原稿 · 十五页', pages:15},
-        {id:'babylon', title:'光明巴比伦', subtitle:'原稿 · 十五页', pages:15},
-        {id:'repair-campus', title:'修理大学', subtitle:'传奇经历 · 可玩小型副本', pages:0}
+        {id:'dust', title:'尘都诡谈', subtitle:'原版藏书 · 15 页', format:'facsimile', pages:15},
+        {id:'babylon', title:'光明巴比伦', subtitle:'原版藏书 · 15 页', format:'facsimile', pages:15},
+        {id:'repair-campus', title:'修理大学', subtitle:'原版重温 · 重制版历险', format:'playable', pages:0}
     ];
     function pageUrl(id, page) {
         var book = books.find(function(b) { return b.id === id; });
-        return book && Number.isInteger(page) && page >= 1 && page <= book.pages
+        return book && book.format === 'facsimile' && Number.isInteger(page) && page >= 1 && page <= book.pages
             ? 'assets/bookshelf/' + id + '/' + String(page).padStart(2, '0') + '.svg' : null;
+    }
+    function safeAsset(path) {
+        return typeof path === 'string' && /^[A-Za-z0-9_./-]+$/.test(path)
+            && path.split('/').every(function(p) { return p && p !== '.' && p !== '..'; });
+    }
+    function adoptCatalog(data) {
+        if (!data || data.schema !== 'bookshelf-catalog.v1' || !Array.isArray(data.books)
+                || !data.books.length || data.books.length > 32) throw new Error('invalid_catalog');
+        var ids = new Set();
+        data.books.forEach(function(b) {
+            if (!b || !/^[a-z0-9-]+$/.test(b.id) || ids.has(b.id) || typeof b.title !== 'string'
+                    || typeof b.subtitle !== 'string' || !Number.isInteger(b.pages) || b.pages < 0 || b.pages > 10000
+                    || !['facsimile','comic','novel','playable'].includes(b.format)
+                    || (b.format === 'playable') !== (b.pages === 0)
+                    || (['comic','novel'].includes(b.format) && !safeAsset(b.index))) throw new Error('invalid_book');
+            ids.add(b.id);
+        });
+        books.splice.apply(books, [0, books.length].concat(data.books));
+        return books;
+    }
+    function validateIndex(book, index) {
+        if (book.format === 'novel') {
+            if (!index || index.schema !== 'bookshelf-novel.v1' || !Array.isArray(index.chapters)
+                    || index.chapters.length !== book.pages || !index.chapters.every(function(c) {
+                        return c && typeof c.title === 'string' && Array.isArray(c.paragraphs)
+                            && c.paragraphs.length > 0 && c.paragraphs.every(function(p) { return typeof p === 'string'; });
+                    })) throw new Error('invalid_novel');
+        } else {
+            if (!index || index.schema !== 'bookshelf-comic.v1' || !Array.isArray(index.pages)
+                    || index.pages.length !== book.pages || !Array.isArray(index.chapters)) throw new Error('invalid_comic');
+            index.pages.forEach(function(p, i) {
+                if (!p || p.page !== i + 1 || !safeAsset(p.file) || !Number.isInteger(p.width)
+                        || !Number.isInteger(p.height) || p.width < 1 || p.height < 1 || p.width > 8192 || p.height > 8192
+                        || !['image','video-frame'].includes(p.storage)) throw new Error('invalid_page');
+                if (p.storage === 'video-frame' && (!Number.isInteger(p.frame) || p.frame < 0 || p.frame > 63
+                        || p.time_seconds !== p.frame || !Array.isArray(p.crop) || p.crop.length !== 4
+                        || p.crop.some(function(n) { return !Number.isInteger(n) || n < 0; })
+                        || p.crop[2] !== p.width || p.crop[3] !== p.height)) throw new Error('invalid_frame');
+            });
+            if (!index.chapters.every(function(c) { return c && typeof c.title === 'string'
+                && Number.isInteger(c.page) && c.page >= 1 && c.page <= book.pages; })) throw new Error('invalid_chapter');
+        }
+        return index;
     }
     function RequestMux(options) {
         var instance = options.panelInstanceId;
@@ -35,5 +78,5 @@
         return this.mux.request(cmd, payload, {kind:cmd, singleFlight:true, write:cmd === 'commit', sendError:'not_sent'}, done);
     };
     RequestMux.prototype.destroy = function() { this.mux.destroy(); };
-    return {books:books, pageUrl:pageUrl, RequestMux:RequestMux};
+    return {books:books, pageUrl:pageUrl, safeAsset:safeAsset, adoptCatalog:adoptCatalog, validateIndex:validateIndex, RequestMux:RequestMux};
 });

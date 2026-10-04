@@ -54,8 +54,15 @@ class org.flashNight.arki.item.ChoiceRewardService {
                     for (var n:Number = 0; n < option.items.length; n++) {
                         var item:Object = option.items[n];
                         var meta:Object = ItemUtil.itemDataDict[item.name];
+                        // A detached copy is presentation only; never attach a candidate to inventory.
+                        var preview:org.flashNight.arki.item.BaseItem = org.flashNight.arki.item.BaseItem.createFromObject(
+                            org.flashNight.gesh.object.PersistedSnapshot.clone(item));
+                        var detail:String = org.flashNight.gesh.tooltip.TooltipComposer.generateIntroPanelContent(preview, meta, item.value)
+                            + org.flashNight.gesh.tooltip.TooltipComposer.generateItemDescriptionText(meta, preview);
+                        detail = org.flashNight.gesh.string.StringUtils.htmlToPlainTextFast(detail);
                         items.push({itemName:item.name, displayName:String(meta.displayname || item.name),
-                            quantity:RewardStashStore.quantity(item), level:Math.max(0, Number(meta.data.level) || 0)});
+                            quantity:RewardStashStore.quantity(item), level:Math.max(0, Number(meta.data.level) || 0),
+                            icon:String(meta.icon || item.name), details:detail.substr(0, 4096)});
                     }
                     options.push({optionId:option.optionId, title:option.title, description:option.description, items:items});
                 }

@@ -1,0 +1,38 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="军阀派精英/主角肢体素材/右大腿" itemID="693fca98-00011524" lastModified="1776103186" lastUniqueIdentifier="8">
+  <timeline>
+    <DOMTimeline name="右大腿" currentFrame="1">
+      <layers>
+        <DOMLayer name="as" color="#9933CC" outline="true" useOutlineView="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="2" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[stop();
+if (_parent._parent.性别 === "女")
+{
+	gotoAndStop(2);
+}]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer_1" color="#D3B46A" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="军阀派精英/校服相关/男变装-废城军装下装右大腿" centerPoint3DX="28.2" centerPoint3DY="128.85">
+                  <matrix>
+                    <Matrix tx="1.95" ty="50.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

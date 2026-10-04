@@ -101,7 +101,7 @@ async function main() {
             await dialog.waitFor({state:'visible'});
             await page.waitForFunction(() => document.querySelectorAll('[data-choice-option]').length === 3);
             assert((await page.locator('[data-choice-option]').nth(2).textContent()).includes('复活币'));
-            assert(await page.getByRole('button',{name:'领取这套配给',exact:true}).isDisabled());
+            assert(await page.locator('[data-choice-confirm]').isDisabled());
             await page.locator('[data-choice-option]').nth(1).click();
             const saved = await page.evaluate(() => ({offer:__choiceQa.control._choiceRewards.offerId,
                 selected:__choiceQa.control._choiceRewards.selected,options:JSON.stringify(__choiceQa.offers)}));
@@ -140,12 +140,12 @@ async function main() {
             // Failed refresh cannot authorize a choice against old authority.
             await page.evaluate(() => {__choiceQa.failRead=true;__choiceQa.control._refreshChoiceRewards();});
             await page.waitForFunction(() => __choiceQa.control._choiceRewards.loadFailed === true);
-            assert(await page.getByRole('button',{name:'领取这套配给',exact:true}).isDisabled());
+            assert(await page.locator('[data-choice-confirm]').isDisabled());
             await page.evaluate(() => {__choiceQa.failRead=false;__choiceQa.mode='unknown';__choiceQa.control._refreshChoiceRewards();});
-            await page.getByRole('button',{name:'领取这套配给',exact:true}).click();
+            await page.locator('[data-choice-confirm]').click();
             await page.waitForFunction(() => __choiceQa.control._itemUse.debugState().state === 'needs_reconcile');
             await page.getByRole('button',{name:'刷新',exact:true}).click();
-            assert(await page.getByRole('button',{name:'领取这套配给',exact:true}).isDisabled());
+            assert(await page.locator('[data-choice-confirm]').isDisabled());
             await page.evaluate(() => {__choiceQa.mode='commit';});
             await page.getByRole('button',{name:'核对领取结果',exact:true}).click();
             await page.waitForFunction(() => __choiceQa.control._choiceRewards.snapshot.offers.length === 0);
