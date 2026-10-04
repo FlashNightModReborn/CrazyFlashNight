@@ -7,7 +7,7 @@
     "commit": "7b2a4bf3eee379341c58cc8e604f8694cbaa28ab",
     "tree": "c295679f20b43b05c58583e132f75366cf2a22ec",
     "tag": "refs/tags/runtime-build-v2/20261004-bookshelf-reading-original-v3",
-    "deploymentCommit": null
+    "deploymentCommit": "2a45212786f10a3090c832291911db56b1ad9d8e"
   },
   "request": {
     "schema": "cf7-runtime-build-request.v2",
@@ -113,7 +113,14 @@
     "full role switch/death/SP/save business journey and Agent protocol shutdown"
   ],
   "remoteAudit": {
-    "state": "pending"
+    "state": "promoted",
+    "conclusion": "success",
+    "deploymentChanged": true,
+    "signers": 2,
+    "faultDomains": 2,
+    "runId": 37201992474,
+    "url": "https://github.com/FlashNightModReborn/CrazyFlashNight/actions/runs/37201992474",
+    "logSha256": "36499D4ACD2754C3EC26D6606D24DF652FE854B7C5674696B11A5B6973C5B4CA"
   },
   "rawEvidenceDirectory": "tmp/bookshelf-release-20261004/"
 }
