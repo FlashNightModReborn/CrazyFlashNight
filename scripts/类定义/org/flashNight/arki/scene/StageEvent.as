@@ -98,8 +98,7 @@ class org.flashNight.arki.scene.StageEvent {
 
         //动画
         if (animation.Path){
-            _root.最上层加载外部动画(animation.Path);
-            if (animation.Pause == 1) _root.暂停 = true;
+            _root.最上层加载外部动画(animation.Path, animation.Pause == 1);
         }
 
         // 音乐

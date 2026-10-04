@@ -173,6 +173,11 @@ class org.flashNight.arki.dialogue.NativeDialogueService {
         return _installed;
     }
 
+    /** 交互归属：等待提交/传输收口的对白也继续阻挡动画跳过。 */
+    public static function hasActiveSession():Boolean {
+        return _session != null && !_session.terminal;
+    }
+
     /** 测试/诊断只读观测面：活动会话的浅快照或 null；不暴露可变内部引用。 */
     public static function getSessionSnapshot():Object {
         var s:Object = _session;

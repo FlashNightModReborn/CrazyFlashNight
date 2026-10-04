@@ -88,7 +88,7 @@ org.flashNight.arki.ui.GameSettingsPanelService.install();
 org.flashNight.arki.ui.SceneTransitionService.install();
 
 _root.gameCommands["togglePause"] = function() {
-    _root.暂停 = !_root.暂停;  // watch 自动 pushUiState("p:0/1")
+    org.flashNight.arki.pause.PauseManager.set(!_root.暂停, "manual");  // watch 自动 pushUiState("p:0/1")
     System.IME.setEnabled(false);
     if (_root.暂停) {
         _root.最上层发布文字提示(_root.获得翻译("游戏暂停"));

@@ -411,6 +411,7 @@ class org.flashNight.arki.dialogue.NativeDialogueServiceTest {
             "ordinary: facade mirrors session lines");
         assertEq(0, _root.对话框界面.对话进度, "ordinary: facade 进度=0");
         assert(_root.对话框界面._visible === true, "ordinary: facade visible while active");
+        assert(NativeDialogueService.hasActiveSession(), "ordinary: active dialogue owns interaction even without pause");
     }
 
     private static function test_append_sameRequest():Void {
@@ -479,6 +480,7 @@ class org.flashNight.arki.dialogue.NativeDialogueServiceTest {
         assertEq(1, p.lineIndex, "advance: lineIndex 1");
         act("advance", rid, ctxScene, curRev());
         assert(curSession() == null, "finish: session cleared at last line");
+        assert(!NativeDialogueService.hasActiveSession(), "finish: last line releases interaction ownership");
         assertEq(1, countOp("hide"), "finish: hide sent");
         // 终态后再到的 advance/close 一律拒绝
         act("advance", rid, ctxScene, 99);
@@ -530,6 +532,7 @@ class org.flashNight.arki.dialogue.NativeDialogueServiceTest {
         assertEq(1, countOp("hide"), "cancel: hide sent");
         assert(_root.暂停 === false, "cancel: claim released");
         assert(curSession() == null, "cancel: session cleared");
+        assert(!NativeDialogueService.hasActiveSession(), "cancel: interaction ownership released");
     }
 
     private static function test_teardown_cancels():Void {
@@ -1772,6 +1775,7 @@ class org.flashNight.arki.dialogue.NativeDialogueServiceTest {
         ackRejected(lastSentOp(), "oversize");
         sendResult = true;
         assert(curSession().awaitingCommit === true, "gate: failed recovery defers completion");
+        assert(NativeDialogueService.hasActiveSession(), "gate: deferred completion still owns interaction");
         assertEq(0, published.length, "gate: failed recovery cannot bypass pending");
         rewardPending = false;
         PauseManager.setRewardCommitPending(false);

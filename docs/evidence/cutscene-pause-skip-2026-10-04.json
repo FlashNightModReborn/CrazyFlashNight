@@ -1,0 +1,406 @@
+{
+  "schema": "cf7-cutscene-pause-skip-evidence.v1",
+  "date": "2026-10-04",
+  "baselineCommit": "ee0014f33961fe7be79be8cd42b973633994a8ed",
+  "hashConvention": "SHA256 of the validated local CS6 input/output bytes; Git may normalize text line endings.",
+  "sourceHashes": {
+    "scripts/类定义/org/flashNight/arki/scene/CutsceneService.as": "FC30B287F3C4A26B56B4E997F3438844BFDBAA407A7546E931B144C488E6DB66",
+    "scripts/类定义/org/flashNight/arki/scene/CutsceneServiceTest.as": "2043EC262A5BAAA848FEC13117EDC8946E2EE97C337DA91C8C4D61E252AE0C54",
+    "scripts/类定义/org/flashNight/arki/scene/CutsceneSkipTest.as": "C2AADB4DCBC1CE726CF6573DA69600ED77B9035BD328B75ECC3382BBD18AF895",
+    "scripts/类定义/org/flashNight/arki/dialogue/NativeDialogueService.as": "D63E85633077B75D034B390BD18A0C220B8601DDE7A315ED6CE19F693DF3FDF1",
+    "scripts/类定义/org/flashNight/arki/dialogue/NativeDialogueServiceTest.as": "596EF187073482388E74AA8DC41AE9EB139DCD668D987132FCD9A08A3061DBCF",
+    "scripts/类定义/org/flashNight/arki/scene/StageManager.as": "EA35CFC65B17175BDA043EEE8F6E8D08EC144A069A27465196CFEC12FDAF248E",
+    "scripts/类定义/org/flashNight/arki/scene/StageEvent.as": "32C395C1218859DA4D0E35C0917F4950BE4C8815BAAB980FE6B151B0D7C978CD",
+    "scripts/类定义/org/flashNight/arki/pause/PauseManager.as": "D5D2B9179AE05487B9707F43EA8478BA586A8A5498783E43D324F492085F408C",
+    "scripts/引擎/引擎_lsy_层级管理器.as": "A69E5EDF0D5AFE755E6E4BCBB42A0B4B169FF611258FDF6FCC95697285801BFD",
+    "scripts/展现/UI交互/UI交互_lsy_UI管理.as": "1C9AC4D5BAC8054C1B2CBE69E8109B2CA1159727449B7FC860276C959B9C0C32",
+    "scripts/run-cutscene-tests.ps1": "9189424196CAA78CDDDB529F08B00EFCD14E92E00C32198EF18FEB0C66B17AD1",
+    "scripts/test-runners/cutscene/TestLoader.as.template": "EFFEB2D5AF19D0AC0AFB1642E8E8FB464D5A824B1F2DC2CCEC2B4874DB21DCDD",
+    "scripts/展现/UI交互/UI交互_fs_按键设定.as": "9E4E83C3BD7FA12636477FFB274F1C8D1319B39B33F20F89BFEC98FA424572DE",
+    "agentsDoc/game-systems.md": "BFD962BD6BAADB99DE8B3F47DE1D53C63261E43883AF9F89B682DC045B0FBF80"
+  },
+  "binaryAudit": [
+    {
+      "path": "flashswf/movies/电子战过场.swf",
+      "bytes": 58362,
+      "sha256": "D5516D2F3DF459607E8567180E5F6F76BC7A83A3B26E1900D29A6358A6B45A67",
+      "baselineBytes": 58362,
+      "baselineSha256": "D5516D2F3DF459607E8567180E5F6F76BC7A83A3B26E1900D29A6358A6B45A67",
+      "changed": false
+    },
+    {
+      "path": "flashswf/movies/堕落城深处尸体堆.swf",
+      "bytes": 67019,
+      "sha256": "FB2705D9F79AD2C69CC40B7CAE8B67542F02EFE5EB3BFE87D4A9DF414F16BEE6",
+      "baselineBytes": 67019,
+      "baselineSha256": "FB2705D9F79AD2C69CC40B7CAE8B67542F02EFE5EB3BFE87D4A9DF414F16BEE6",
+      "changed": false
+    },
+    {
+      "path": "flashswf/movies/故障转场.swf",
+      "bytes": 147271,
+      "sha256": "6FCCEEF08C8A4015A778A74749E2981272676F618ACC4CADB2569F05BC76CFA8",
+      "baselineBytes": 147271,
+      "baselineSha256": "6FCCEEF08C8A4015A778A74749E2981272676F618ACC4CADB2569F05BC76CFA8",
+      "changed": false
+    },
+    {
+      "path": "flashswf/movies/黑色渐隐过场.swf",
+      "bytes": 838,
+      "sha256": "751939E330E2FF06F6E0530157B23F6107931FB7BCAC919896B76D9DE998A11B",
+      "baselineBytes": 838,
+      "baselineSha256": "751939E330E2FF06F6E0530157B23F6107931FB7BCAC919896B76D9DE998A11B",
+      "changed": false
+    },
+    {
+      "path": "flashswf/movies/将军死亡_军阀前线基地.swf",
+      "bytes": 23420,
+      "sha256": "98335034D0DEEDAFF78456C8A1524834B5E1C52995D867080F0B3E2D074B5C92",
+      "baselineBytes": 23420,
+      "baselineSha256": "98335034D0DEEDAFF78456C8A1524834B5E1C52995D867080F0B3E2D074B5C92",
+      "changed": false
+    },
+    {
+      "path": "flashswf/movies/前线基地过场动画.swf",
+      "bytes": 14270243,
+      "sha256": "5ED3992CBBD5EDB546242F0F925380E47797211259ED61C417F93C1425E82653",
+      "baselineBytes": 14270243,
+      "baselineSha256": "5ED3992CBBD5EDB546242F0F925380E47797211259ED61C417F93C1425E82653",
+      "changed": false
+    },
+    {
+      "path": "flashswf/movies/尸母巢穴巨型尸母.swf",
+      "bytes": 85599,
+      "sha256": "CA1BE4D0DD0AE92C9CBB8D6CCC93AE023A522A5CABDCB1CBDC886B75981F040B",
+      "baselineBytes": 85599,
+      "baselineSha256": "CA1BE4D0DD0AE92C9CBB8D6CCC93AE023A522A5CABDCB1CBDC886B75981F040B",
+      "changed": false
+    },
+    {
+      "path": "flashswf/movies/修理大学章节.swf",
+      "bytes": 1440,
+      "sha256": "DB2D7D9C9756665FA0B2A14103DA88CCEE7CEFA1542B45C21E992C76FAE0F13C",
+      "baselineBytes": 1440,
+      "baselineSha256": "DB2D7D9C9756665FA0B2A14103DA88CCEE7CEFA1542B45C21E992C76FAE0F13C",
+      "changed": false
+    },
+    {
+      "path": "flashswf/movies/异形卵巢_avp1_13.swf",
+      "bytes": 43678,
+      "sha256": "EA06DA11E773D7D2B2FC6B46F0E58138A2F74BB76D836D9EC5F5524D15BD0AE1",
+      "baselineBytes": 43678,
+      "baselineSha256": "EA06DA11E773D7D2B2FC6B46F0E58138A2F74BB76D836D9EC5F5524D15BD0AE1",
+      "changed": false
+    },
+    {
+      "path": "flashswf/movies/异形卵巢_avp1_14.swf",
+      "bytes": 9076,
+      "sha256": "49805A00F4947628F009BC004F437B9B83EA142E1CDF892911403C4E52C01477",
+      "baselineBytes": 9076,
+      "baselineSha256": "49805A00F4947628F009BC004F437B9B83EA142E1CDF892911403C4E52C01477",
+      "changed": false
+    },
+    {
+      "path": "flashswf/movies/月面暗道控制拉杆.swf",
+      "bytes": 3522,
+      "sha256": "224EE063677A90E1F5ADDE1DF5E219FC0041C580646B666503CDAB21E6488B88",
+      "baselineBytes": 3522,
+      "baselineSha256": "224EE063677A90E1F5ADDE1DF5E219FC0041C580646B666503CDAB21E6488B88",
+      "changed": false
+    },
+    {
+      "path": "flashswf/movies/月面暗门.swf",
+      "bytes": 7786,
+      "sha256": "CB67B0189D772C2155E4CE2DB3804BEB40ED9EAAA8D342D8666F6798E62197F1",
+      "baselineBytes": 7786,
+      "baselineSha256": "CB67B0189D772C2155E4CE2DB3804BEB40ED9EAAA8D342D8666F6798E62197F1",
+      "changed": false
+    },
+    {
+      "path": "flashswf/movies/bigmovie1.swf",
+      "bytes": 1689048,
+      "sha256": "A2C510F441EC7484667326BE9680257FE093C4118FE443D2E978A259148040AD",
+      "baselineBytes": 1689048,
+      "baselineSha256": "A2C510F441EC7484667326BE9680257FE093C4118FE443D2E978A259148040AD",
+      "changed": false
+    },
+    {
+      "path": "flashswf/movies/bigmovie2.swf",
+      "bytes": 1917221,
+      "sha256": "AE5C1E3660009D7089E589595EBD6A5BD110B3767F92FB16388A0E6378266EAB",
+      "baselineBytes": 1917221,
+      "baselineSha256": "AE5C1E3660009D7089E589595EBD6A5BD110B3767F92FB16388A0E6378266EAB",
+      "changed": false
+    },
+    {
+      "path": "flashswf/movies/bigmovie3.swf",
+      "bytes": 2140898,
+      "sha256": "A35446828ECFAA28C892377ADDBCC3E20026732A0CFF36F0ECD809E5CD41C2C6",
+      "baselineBytes": 2140898,
+      "baselineSha256": "A35446828ECFAA28C892377ADDBCC3E20026732A0CFF36F0ECD809E5CD41C2C6",
+      "changed": false
+    },
+    {
+      "path": "flashswf/movies/bigmovie4.swf",
+      "bytes": 8930383,
+      "sha256": "695E18F0D3340FECEE37239C9BC6B5444E77532ECDF0D9CBACB80808355647E0",
+      "baselineBytes": 8930383,
+      "baselineSha256": "695E18F0D3340FECEE37239C9BC6B5444E77532ECDF0D9CBACB80808355647E0",
+      "changed": false
+    },
+    {
+      "path": "flashswf/movies/FakeStageClear.swf",
+      "bytes": 121554,
+      "sha256": "4DB5012EB824774859A503326A298510BBE6EF950D13B5797445ECF8C7AC7099",
+      "baselineBytes": 121554,
+      "baselineSha256": "4DB5012EB824774859A503326A298510BBE6EF950D13B5797445ECF8C7AC7099",
+      "changed": false
+    },
+    {
+      "path": "flashswf/movies/movie_avp_1_14.swf",
+      "bytes": 161394,
+      "sha256": "E46DEA3475E1F195ABE51C4EB421F137852E65BECE547BF24AAB200F5DDFAD93",
+      "baselineBytes": 161394,
+      "baselineSha256": "E46DEA3475E1F195ABE51C4EB421F137852E65BECE547BF24AAB200F5DDFAD93",
+      "changed": false
+    },
+    {
+      "path": "flashswf/movies/movie_avp_1_3.swf",
+      "bytes": 83856,
+      "sha256": "8D7B39980C588F06104FB017AE6DA60E092B53C418FB167C22CF731BCA47F2F5",
+      "baselineBytes": 83856,
+      "baselineSha256": "8D7B39980C588F06104FB017AE6DA60E092B53C418FB167C22CF731BCA47F2F5",
+      "changed": false
+    },
+    {
+      "path": "flashswf/movies/movie_avp_1_5.swf",
+      "bytes": 199385,
+      "sha256": "A09C50F3693FAEB31C2CA23AC00C60C2ED7F58C3BA37C2CC6D2A677673619B49",
+      "baselineBytes": 199385,
+      "baselineSha256": "A09C50F3693FAEB31C2CA23AC00C60C2ED7F58C3BA37C2CC6D2A677673619B49",
+      "changed": false
+    },
+    {
+      "path": "flashswf/movies/movie_avp_1_7.swf",
+      "bytes": 190814,
+      "sha256": "F264C656320DABD87E5251C551759084E90DBB4FD4FC8F0783C3DDA5C4F239C8",
+      "baselineBytes": 190814,
+      "baselineSha256": "F264C656320DABD87E5251C551759084E90DBB4FD4FC8F0783C3DDA5C4F239C8",
+      "changed": false
+    },
+    {
+      "path": "flashswf/movies/movie_gk_1_1.swf",
+      "bytes": 48234,
+      "sha256": "E0F882EF8C34598D449DAA3FA5AFB2101702D4BBE9AB094572413A44E6D4DEDC",
+      "baselineBytes": 48234,
+      "baselineSha256": "E0F882EF8C34598D449DAA3FA5AFB2101702D4BBE9AB094572413A44E6D4DEDC",
+      "changed": false
+    },
+    {
+      "path": "flashswf/movies/movie_gk_11_4.swf",
+      "bytes": 51275,
+      "sha256": "F59C49E26B47F2019307FC94FD3EC90D9C2438013FD5F74F51F5A2CE3ED42851",
+      "baselineBytes": 51275,
+      "baselineSha256": "F59C49E26B47F2019307FC94FD3EC90D9C2438013FD5F74F51F5A2CE3ED42851",
+      "changed": false
+    },
+    {
+      "path": "flashswf/movies/movie_gk_15_5.swf",
+      "bytes": 55552,
+      "sha256": "A3E3409B2E665EB2123B26EDC1FC654626FDA89A87A1FC1885164DFD3C687315",
+      "baselineBytes": 55552,
+      "baselineSha256": "A3E3409B2E665EB2123B26EDC1FC654626FDA89A87A1FC1885164DFD3C687315",
+      "changed": false
+    },
+    {
+      "path": "flashswf/movies/movie_gk_17_1.swf",
+      "bytes": 43897,
+      "sha256": "81A43DA75F09397DD2A009C5DAECAF7413322FBB52F7E70FB1F94B88A47DFDC6",
+      "baselineBytes": 43897,
+      "baselineSha256": "81A43DA75F09397DD2A009C5DAECAF7413322FBB52F7E70FB1F94B88A47DFDC6",
+      "changed": false
+    },
+    {
+      "path": "flashswf/movies/movie_gk_21_4.swf",
+      "bytes": 50408,
+      "sha256": "2E417D4DABAABB93610772898BA52503F0A2A74C473F82AC85CE2DCE9BEE1DB6",
+      "baselineBytes": 50408,
+      "baselineSha256": "2E417D4DABAABB93610772898BA52503F0A2A74C473F82AC85CE2DCE9BEE1DB6",
+      "changed": false
+    },
+    {
+      "path": "flashswf/movies/movie_gk_21_5.swf",
+      "bytes": 45134,
+      "sha256": "206A3455572269A4B5D464B35D12126542BEFB632BB059F2B1DF73A87007EBFB",
+      "baselineBytes": 45134,
+      "baselineSha256": "206A3455572269A4B5D464B35D12126542BEFB632BB059F2B1DF73A87007EBFB",
+      "changed": false
+    },
+    {
+      "path": "flashswf/movies/movie_gk_22_5.swf",
+      "bytes": 49650,
+      "sha256": "EC6458F3AE1317A54EC8673616B3D8A8701B595491B11D8FC47CEDDD38C89EFF",
+      "baselineBytes": 49650,
+      "baselineSha256": "EC6458F3AE1317A54EC8673616B3D8A8701B595491B11D8FC47CEDDD38C89EFF",
+      "changed": false
+    },
+    {
+      "path": "flashswf/movies/movie_gk_24_1.swf",
+      "bytes": 50514,
+      "sha256": "8FD47E9425C9B1632975DBF20EB3ACEF08F29E8B1225E49FF6A71358AF7B09EB",
+      "baselineBytes": 50514,
+      "baselineSha256": "8FD47E9425C9B1632975DBF20EB3ACEF08F29E8B1225E49FF6A71358AF7B09EB",
+      "changed": false
+    },
+    {
+      "path": "flashswf/movies/movie_gk_8_2.swf",
+      "bytes": 50712,
+      "sha256": "2113A84F3D7B9D990F4B9B77D79DBE82DE794FA6B9DC82C20CEE990B438C5A73",
+      "baselineBytes": 50712,
+      "baselineSha256": "2113A84F3D7B9D990F4B9B77D79DBE82DE794FA6B9DC82C20CEE990B438C5A73",
+      "changed": false
+    },
+    {
+      "path": "flashswf/movies/movie_gk_9_4.swf",
+      "bytes": 40103,
+      "sha256": "595BFBA5D53CE484DA3079C7D3AEE0B72982620EF5641BAEB64DFA401E8269B2",
+      "baselineBytes": 40103,
+      "baselineSha256": "595BFBA5D53CE484DA3079C7D3AEE0B72982620EF5641BAEB64DFA401E8269B2",
+      "changed": false
+    },
+    {
+      "path": "flashswf/movies/movieone.swf",
+      "bytes": 955660,
+      "sha256": "CC98CCDFD4A4E549DB7C881D87FC1E33B81052B80CF730595FE63710D664642D",
+      "baselineBytes": 955660,
+      "baselineSha256": "CC98CCDFD4A4E549DB7C881D87FC1E33B81052B80CF730595FE63710D664642D",
+      "changed": false
+    },
+    {
+      "path": "CRAZYFLASHER7MercenaryEmpire.swf",
+      "bytes": 207247,
+      "sha256": "F0BDD31048055BAF47EA582D71896190998D563AFB7B2CC8E9F67E06E67436B6",
+      "baselineBytes": 207247,
+      "baselineSha256": "F0BDD31048055BAF47EA582D71896190998D563AFB7B2CC8E9F67E06E67436B6",
+      "changed": false
+    },
+    {
+      "path": "scripts/asLoader.swf",
+      "bytes": 1473386,
+      "sha256": "1DCF99F4A37FD72874265CAC3340AFE6040E6708ECAF209DBD64B4A65482FEFD",
+      "baselineBytes": 1469458,
+      "baselineSha256": "7D1F97B9C95B60450C75AD77FB7C6335E8EBF00C3E7CE4D792CF2B1476A574A2",
+      "changed": true,
+      "acceptedV1Bytes": 1472328,
+      "acceptedV1Sha256": "D009033C0D5260E21BC1191301E92643FA96A785C55BBFBD4C05E8F825F0FFAA"
+    }
+  ],
+  "focusedSuites": [
+    {
+      "domain": "cutscene",
+      "suite": "CutsceneServiceTest",
+      "runId": "587449ef98cc402a93b78f83e01ff67b",
+      "passed": 214,
+      "failed": 0,
+      "compilerErrors": 0,
+      "compilerWarnings": 0,
+      "retry32k": 0,
+      "traceSha256": "8960C2A974D010613F6899960F24FDBB39B6AD8B4642595053F0A0BD73A829EF",
+      "testSwfSha256": "29899C5E8D0A979B25EF7A405B9BD317795F749529D16EF73B3CFD6A9A6486DF"
+    },
+    {
+      "domain": "cutscene",
+      "suite": "CutsceneSkipTest",
+      "runId": "587449ef98cc402a93b78f83e01ff67b",
+      "passed": 309,
+      "failed": 0,
+      "compilerErrors": 0,
+      "compilerWarnings": 0,
+      "retry32k": 0,
+      "traceSha256": "8960C2A974D010613F6899960F24FDBB39B6AD8B4642595053F0A0BD73A829EF",
+      "testSwfSha256": "29899C5E8D0A979B25EF7A405B9BD317795F749529D16EF73B3CFD6A9A6486DF"
+    },
+    {
+      "domain": "native-dialogue",
+      "suite": "NativeDialogueServiceTest",
+      "runId": "7d96f5d247bd4b86bac3b38235b9356c",
+      "passed": 412,
+      "failed": 0,
+      "compilerErrors": 0,
+      "compilerWarnings": 0,
+      "retry32k": 0,
+      "traceSha256": "4416EE18733FC04452CEE28BF07097FD5BCAB034A560F2F31EFE33E42AA64AFB",
+      "testSwfSha256": "3C83624C7808BADDA4823723D2E7CEB2BAC0E29BE39BF21168DAF824C45B0C51"
+    }
+  ],
+  "managedMovieCount": 16,
+  "loaderLifecycleCases": 29,
+  "skipBoundaryCases": 27,
+  "publishedCodeChecks": {
+    "stage_entry_and_completion_forward_xml_pause": true,
+    "stage_event_forwards_xml_pause": true,
+    "public_loader_has_two_arguments_and_calls_service": true,
+    "manual_toggle_is_tagged_pause_manager_write": true,
+    "pause_manager_has_legacy_guard_and_acquire_release": true,
+    "lifecycle_service_is_in_published_binary": true,
+    "test_and_probe_classes_not_in_published_binary": true,
+    "dialogue_has_active_session_ownership_api": true,
+    "skip_checks_actual_dialogue_session": true,
+    "skip_uses_current_binding_and_key_name": true,
+    "skip_honors_isolated_input_policy": true,
+    "skip_executes_audited_tail": true,
+    "world_down_and_repeat_guard_before_broadcast": true,
+    "skip_consumed_key_latch_is_published": true,
+    "owned_skip_prompt_is_published": true
+  },
+  "publishCompletion": {
+    "initialWaitTimedOut": true,
+    "waitSeconds": 600,
+    "lateTerminalValidated": true,
+    "exactOwnedTimeoutMarkerReconciled": true,
+    "metadata": {
+      "asLoader.swf": {
+        "bytes": 1473386,
+        "mtime": "2026-10-04T12:06:26.819656+08:00"
+      },
+      "compiler_errors.txt": {
+        "bytes": 27,
+        "mtime": "2026-10-04T12:06:40.532697+08:00"
+      },
+      "compile_output.txt": {
+        "bytes": 67,
+        "mtime": "2026-10-04T12:06:41.495385+08:00"
+      },
+      "publish_done.marker": {
+        "bytes": 2,
+        "mtime": "2026-10-04T12:06:41.499091+08:00"
+      },
+      "compile_state_uncertain.marker": {
+        "bytes": 106,
+        "mtime": "2026-10-04T12:05:53.151334+08:00"
+      }
+    }
+  },
+  "asLoaderFunctionSizeGate": {
+    "functionCount": 12551,
+    "maxBytes": 51684,
+    "limit": 60000,
+    "over": []
+  },
+  "runtime": {
+    "nativeInputsChanged": false,
+    "nativePromotionRequired": false,
+    "consensusPath": "config/build/runtime-release-consensus.json",
+    "buildIdentityHash": "616517405FABB219E0CC97383619C53A23B1F63DE03EC10640944EB7436BFA44",
+    "releaseTreeOid": "1882cb1b8f36218f7dadb69cbac206d1cd85d889",
+    "policyHash": "1F3EBAF14C75EF006134412171F1CE32A5C919166AB6517E442F5A57C2798295"
+  },
+  "evidenceState": {
+    "flash": "compiled_and_focused_tests_passed",
+    "acceptedV1ManualAcceptance": "user_confirmed",
+    "newSkipManualAcceptance": "user_confirmed_effective",
+    "manualCoverage": "维护者于 2026-10-04 确认可行、有效；未逐项登记全部场景、画面和声音覆盖。",
+    "fullGameByAgent": "not_executed",
+    "nativePromotion": "not_required_for_content_only_change"
+  }
+}

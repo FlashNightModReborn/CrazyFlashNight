@@ -60,11 +60,13 @@ _root.getKeySetting = Delegate.create(KeyManager, KeyManager.getKeySetting)
 
 
 KeyManager.onRepeat("互动键", 30, function() {
+    if (org.flashNight.arki.scene.CutsceneService.blocksWorldInteraction()) return;
     // _root.发布消息("互动键重复");
     _root.帧计时器.eventBus.publish("interactionKeyDown");
 });
 
 KeyManager.onKeyDown("互动键", function() {
+    if (org.flashNight.arki.scene.CutsceneService.blocksWorldInteraction()) return;
     //_root.发布消息("互动键按下");
     _root.帧计时器.eventBus.publish("interactionKeyDown");
 });
