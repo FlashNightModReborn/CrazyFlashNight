@@ -8,6 +8,15 @@ distribution inventory, not a legal conclusion or legal advice.
 Package graph
 -------------
 
+* Microsoft Edge WebView2 Fixed Version Runtime 154.0.4258.53, Windows x64
+  Publisher: Microsoft Corporation
+  Distribution: https://developer.microsoft.com/en-us/microsoft-edge/webview2/
+  Dependency identity: launcher/webview2-runtime.lock.json
+  The complete, unmodified Microsoft CAB is distributed in runtime/webview2
+  chunks. All bundled third-party license and credit material is preserved.
+  After materialization, show_third_party_software_licenses.bat in the engine
+  directory opens the runtime's embedded Chromium and other software credits.
+
 The Audio Platform v2 native DLL statically links source derived from the
 following pinned upstream releases. Exact upstream identities, declared local
 modifications, materialized source hashes, and build flags are recorded in
