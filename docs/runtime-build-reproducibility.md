@@ -1109,3 +1109,15 @@ strict production policy 42/42，receipt SHA-256 `0C612DBA8C5CB91E481E2386A5E124
 - Host 完整 canonical runner **6598 passed / 5 skipped / 0 failed**；历史原生 overlay 环境失败保留，全量复跑恢复，不猜测已证实根因。
 - 无候选参数的正式根入口绑定新 Core DLL，实际 PID 22968，前门 Idle 后原生关闭，Core exit **0**、无残留。**75 shadow + 46 本安装 SOL** 的 121 个保护文件字节未变，例行版本标记排除。首次观察器 basename 错误保留，附着真实进程后取得退出码，未重启补造证据。
 - 状态为 `promoted`，启动/身份/关闭通过；`businessJourneyExecuted=false / agentProtocolShutdownVerified=false`。原版当前集成完整输入/声音、临时档清理保存重启、大学怪物完整实机战斗及业务全旅程仍待专项体验；七张标题卡未填原作对白。部署提交 `2a45212786f10a3090c832291911db56b1ad9d8e` 已普通快进推送；[远端 Runtime native audit 37201992474](https://github.com/FlashNightModReborn/CrazyFlashNight/actions/runs/37201992474) success，独立重放 `state=promoted / deploymentChanged=true`、双 signer / 双 faultDomain 与 36 文件闭包。
+
+### 2026-10-06 固定浏览器与输入焦点恢复发布
+
+维护者明确授权无人值守开发、验收与发布，并允许协调另一资产会话的机器资源。本批固定私有 WebView2 154.0.4258.53；将世界鼠标钩子安装与游标更新固定到窗口消息线程，补上空闲游戏的前台激活恢复，并在 Web 初始化失败、文档就绪超时或未呈现意图被替换时退还对应旧游戏面板状态。AS2、XFL 与 SWF 未改；已呈现同名面板和未知持久写仍由现役权威协议管理。维护说明见[固定浏览器合同](fixed-webview2-runtime.md)。
+
+- 冻结源码 `24011b26bca8713760e07d472f215ba7e222dd49`，不可变标签 `refs/tags/runtime-build-v2/20261006-focus-fixed-webview-v1`；request `57FD463C64BA95AA016866FA9E406E59A1017CE0F440107F8064AC85527CA7FE`。
+- 本机 `builder-local-b / physical-host-b` 与 [GitHub hosted OIDC 独立构建 37371038664](https://github.com/FlashNightModReborn/CrazyFlashNight/actions/runs/37371038664) 的 build identity、43 文件 payload closure 与 Core SHA 全等。完整 production policy **47/47**；云端只取签名证明，最终沿用绑定同一本机 CAS 路径的 receipt。完整身份、原始失败票及环境处理见[本轮回执](evidence/focus-runtime-release-2026-10-06.json)。
+- 官方完整 CAB 被锁定为 7 个 48 MiB 分片，全部进入 bootstrap manifest、双生产者共识与原子推广；257 个展开文件保留完整许可，运行时可离线启动。实际版本/路径、逐文件校验、损坏缓存重建以及原版资源拦截接口通过。固定版本的安全更新由维护者更新 lock 并重走发布列车。
+- Launcher 最终非桌面回归 **6694 passed / 7 skipped / 0 failed**，另有 323 项焦点/生命周期回归、2 项真实离屏 WebView/游标线程、1 项实际固定引擎归档、284 项构建协议与 153 项共识夹具回归通过。历史 canonical 全套的 10 项实窗口失败保留；Windows `LockScreenBackstopFrame` 持续遮挡 Default 桌面，最终实窗口项待解锁重跑，不宣称完整 Launcher suite 已通过。
+- 唯一 writer 已原子推广；部署提交 `39040ebf564ba349ebb479d533d284d6e9c80bd3` 普通快进推送。共享 Steam 安装入口 `--verify-only` exit **0**；[远端 Runtime native audit 37374154214](https://github.com/FlashNightModReborn/CrazyFlashNight/actions/runs/37374154214) success，独立重放 `state=promoted / deploymentChanged=true`、43 文件与双 signer / 双 faultDomain。另一个资产会话的 250 个未提交/未跟踪文件在主工作区快进前后状态、大小、SHA 全同，运行时资源已释放。
+- 状态为 `promoted`；`businessJourneyExecuted=false / physicalInputAttestation=false / standardEntryVerified=false`。实机窗口输入与正式入口业务等待解锁，后续受控进档仅用专用 `cf7_agent_*` 克隆槽。原测试机仍须回归缩放/切窗后移动与 NPC 点击、商店关闭后恢复输入、多次传送及车库进出；供应链和离屏 API 证据不能代签这些体验。
+
