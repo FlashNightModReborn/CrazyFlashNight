@@ -71,7 +71,8 @@
             <split>6</split>
             <diffusion>12</diffusion>
             <velocity>35</velocity>
-            <range>50</range>
+            <!-- 纵深命中容差；不延长弹体前向寿命/射程。 -->
+            <range>80</range>
             <impact>8</impact>
             <damageType>物理</damageType>
             <consumeMode>onLoadGroup</consumeMode>

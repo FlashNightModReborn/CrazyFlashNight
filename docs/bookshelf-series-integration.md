@@ -39,6 +39,18 @@
 
 返回、改章、关面板、rebind 和重载都会销毁旧 iframe、计时器和事件监听，并释放旧内容租约。异步授权回来时若页面已离开，只释放租约，不挂载、不抢焦点。原版保留游戏自定义右键菜单；设备字体用 Ruffle `deviceFontRenderer=canvas`，避免动态中文缺字。比例仍使用 `showAll / forceScale / letterbox`，外部书架使用既有 1024×576 PanelScale。
 
+## 修理大学重制版漫画
+
+重制版的序章和终战漫画使用 `book-comic` Web 面板，内容真源是 `data/books/repair-campus-comic.json`，由 `node tools/build-book-comic-content.js` 生成播放器目录。批准图片及摘要位于 `launcher/web/assets/book-comic/`。页面按 1024×576 逻辑画布经 PanelScale 整体等比缩放、居中留边；画面、字幕和控制栏保持固定位置。样式从生产 `panels.css` 导入，JS-only LazyLoader 不加载 CSS。
+
+书架 `play` 只启动一次前往战斗帧的转场。旧世界销毁、原角色保存屏障确认和临时角色接纳后，BookshelfPanelService 在这一次遮幕内授予同步且不可复用的首图准备权限。普通入场及其他槽位不能借用该权限。临时角色保存未确认时保持加载失败页；明确重试只准备已接纳的角色，明确返回仍须先确认保存屏障。常驻换档和返回原角色沿用原有房间路线。
+
+章节回调等 `SceneTransitionReleased` 所代表的真实撤幕后，才申请漫画或对白的暂停。排队期间绑定槽位、运行对象和独立世界身份，换图或换档后丢弃旧回调。Host 在当前漫画面板实例存活期间隐藏下层加载窗口，并禁止旧转场重新置顶或夺回焦点。竞速从首次演出交接开始，只累计未暂停时间；暂停漫画、整页阅读和局内对白均不增加竞速用时。
+
+退出漫画时，AS2 先退休本次漫画暂停并交给后续对白；Host 必须等同一漫画实例的 Web/native 界面关闭成功，再走标准 `webPanelUnpause` 释放通用面板暂停。迟到、被替换或未执行的关闭不得释放后续面板的暂停，也不能直接写全局暂停为 false。整页文字和放大画面的滚动区使用漫画配色的细滚动条，保留滚轮、键盘聚焦与滚动操作。
+
+漫画接入与入场优化属于当前开发源码；本节不改变下面既有合集原版发布记录的范围，也不代表这些新增改动已正式部署。
+
 ## 原版存档
 
 CF1 保留原有从头进入的行为。CF3–6 的 SharedObject 由原作自身读写；它们与 CF7 永久档和肉鸽临时档无关联。合集原版文档使用稳定的当前账号摘要 / 章节 / 语言路径；`data + swfFileName` 使用固定 `cfN-lang.swf`，临时 session URL 只供内容和兼容资源请求。
@@ -50,6 +62,9 @@ CF1 保留原有从头进入的行为。CF3–6 的 SharedObject 由原作自身
 - `python tools/import-bookshelf-library.py --check`：阅读派生目录与资产闭包。
 - `node tools/test-bookshelf-runtime.js`：目录、六章身份、传输域与阅读资产。
 - `node tools/test-bookshelf-original.js`：原版控制器准入回包、固定来源、迟到回包、重载和关闭清理。
+- `node tools/build-book-comic-content.js --check`、`node tools/test-book-comic-player.js`：漫画资产摘要、内容派生和播放器生命周期。
+- `node tools/test-book-comic-browser.js`：隔离浏览器中的生产 CSS、固定比例、字幕容纳和整页视图；不代替游戏窗口的点击、前后台切换验收。
+- `scripts/run-bookshelf-tests.ps1`：覆盖换档中首图准备、普通入场拒绝、保存失败/重试、加载幕到漫画的交接、暂停计时和迟到回调；存储夹具不代替真实落盘。
 - `node tools/run-bookshelf-flow-harness.js`：生产面板与模拟 Host/AS2 回执，章节选择、待制作状态、许可失败、对账和三视口布局；不证明 Steam 许可或真实玩家旅程。
 - `DevelopmentCollectionAccessTests` / `BookshelfOriginalContentTests` / `BookshelfTaskTests`：复用 Git 豁免且不调用 Steam、普通安装仍校验、跨库发现、开发存档稳定及隔离、缺失内容提示，以及许可缺失不读文件、巨大整数、篡改字段、切账号、内容租约、边界范围与准入撤销。
 - `node tools/probe-bookshelf-original-runtime.js --collection-root=<本机合集目录> --out=<临时输出>`：明确 opt-in 的只读本机资产探针，以隔离 Chromium profile 执行生产 wrapper / CSP。11 个变体加载，外部请求封锁，以及 CF4/CF5 原版 SharedObject flush、旋转 session 后稳定键和实际读取。不会建立 Steam/Host 准入结论，不启动原 EXE，不导出 SWF。

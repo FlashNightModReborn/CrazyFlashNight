@@ -14,6 +14,18 @@ class org.flashNight.arki.bullet.BulletComponent.Lifecycle.PierceBulletLifecycle
         super(900);
     }
 
+    /** 退场帧保留碰撞/地图检测，让素材播完；射程不能每帧重启同一消失动画。 */
+    public function shouldDestroy(target:MovieClip):Boolean {
+        if (target._currentframe > 1) {
+            #include "../macros/STATE_HIT_MAP.as"
+            // 父类地图检测为 private；保持同一 Y/Z 与像素判定，并写权威状态位。
+            var hitMap:Boolean = target._y > target.Z轴坐标
+                || _root.collisionLayer.hitTest(target._x, target.Z轴坐标, true);
+            if (hitMap) target.stateFlags |= STATE_HIT_MAP;
+            return hitMap;
+        }
+        return super.shouldDestroy(target);
+    }
     /**
      * 必须在 attachMovie 前传入。XFL 第1帧仅在 hook 为假值时安装旧默认函数，
      * 因此预先提供共用执行器可以接管默认行为，同时保留装备传入的自定义函数。

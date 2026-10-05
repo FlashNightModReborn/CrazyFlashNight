@@ -22,7 +22,10 @@ class org.flashNight.arki.bullet.BulletComponent.Movement.MissileStates.SearchTa
             // 切换到 TrackTarget 状态
             this.superMachine.ChangeState("TrackTarget");
         } else {
-            // 未找到目标，切换到 FreeFly 状态
+            // false may mean an unfinished bounded batch, rather than an exhausted search.
+            var progress:Object = this.movement;
+            if (progress._searchLen > 0 && progress._searchIndex < progress._searchLen) return;
+            // Completed search without a target: keep flying until the next bounded retry.
             this.superMachine.ChangeState("FreeFly");
         }
     }

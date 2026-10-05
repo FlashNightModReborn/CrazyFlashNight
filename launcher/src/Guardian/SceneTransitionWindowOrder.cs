@@ -10,10 +10,15 @@ namespace CF7Launcher.Guardian
     // synchronously wait on the owner's embedded Flash window while it is loading.
     internal static class SceneTransitionWindowOrder
     {
+        // WebOverlayForm presents its HWND with SWP_SHOWWINDOW. That does not
+        // update WinForms' managed Visible state, so read the actual window.
+        internal static bool IsPresented(Form window) => window != null && !window.IsDisposed
+            && window.IsHandleCreated && IsWindowVisible(window.Handle);
+
         internal static bool RaiseIfCovered(Form window, Form owner, IntPtr keepAbove = default)
         {
             using var latency = InputLatencyProbe.Measure("transition_raise");
-            if (window.IsDisposed || !window.IsHandleCreated || !window.Visible || window.Owner != owner
+            if (!IsPresented(window) || window.Owner != owner
                 || owner.IsDisposed || !owner.IsHandleCreated || !owner.Visible
                 || owner.WindowState == FormWindowState.Minimized) return false;
 

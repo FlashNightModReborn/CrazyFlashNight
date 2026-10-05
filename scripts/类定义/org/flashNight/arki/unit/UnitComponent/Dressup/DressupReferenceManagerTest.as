@@ -103,6 +103,7 @@ class org.flashNight.arki.unit.UnitComponent.Dressup.DressupReferenceManagerTest
             });
             if (this.failLinkages[linkage]) return undefined;
             var skin = { _parent: this, _name: instanceName };
+            skin.removeMovieClip = function():Void { delete this._parent[this._name]; };
             if (initObject) {
                 for (var k:String in initObject) skin[k] = initObject[k];
             }
@@ -179,6 +180,29 @@ class org.flashNight.arki.unit.UnitComponent.Dressup.DressupReferenceManagerTest
         var result = DressupReferenceManager.doConfig(mc, "primary_skin", "装扮", "身体_引用", unit);
         assertEquals("attachMovie 仅调用 1 次（无 fallback）", 1, mc.attachLog.length);
         assertEquals("unit.身体_引用 降级到基本款", "基本款", unit.身体_引用._name);
+    }
+
+    private static function test_doConfig_脱装恢复基本款():Void {
+        var unit = makeMockUnit("正常", "男");
+        var refs:Array = ["身体_引用", "上臂_引用", "左下臂_引用", "右下臂_引用",
+            "左手_引用", "右手_引用", "屁股_引用", "左大腿_引用", "右大腿_引用", "小腿1_引用", "脚_引用"];
+        for (var i:Number = 0; i < refs.length; i++) {
+            var mc = makeMockMC();
+            DressupReferenceManager.doConfig(mc, "clothed", "装扮", refs[i], unit);
+            assertEquals("穿装隐藏基本款 " + refs[i], false, mc.基本款._visible);
+            DressupReferenceManager.doConfig(mc, null, "装扮", refs[i], unit);
+            assertEquals("脱装恢复基本款 " + refs[i], true, mc.基本款._visible);
+            assertEquals("脱装引用回到基础肢体 " + refs[i], mc.基本款, unit[refs[i]]);
+            DressupReferenceManager.doConfig(mc, "clothed", "装扮", refs[i], unit);
+            assertEquals("再穿装无双层肢体 " + refs[i], false, mc.基本款._visible);
+        }
+        unit = makeMockUnit("正常", "女");
+        mc = makeMockMC();
+        DressupReferenceManager.doConfig(mc, null, "装扮", "身体_引用", unit);
+        assertEquals("女性 fallback 隐藏男性基本款", false, mc.基本款._visible);
+        mc.failLinkages["女变装-裸体身体"] = true;
+        DressupReferenceManager.doConfig(mc, null, "装扮", "身体_引用", unit);
+        assertEquals("fallback 缺失时不丢失肢体", true, mc.基本款._visible);
     }
 
     private static function test_doConfig_同步publish条件触发():Void {
@@ -647,6 +671,7 @@ class org.flashNight.arki.unit.UnitComponent.Dressup.DressupReferenceManagerTest
         test_doConfig_refNameAliases_小腿1解析为小腿();
         test_doConfig_女性fallback触发();
         test_doConfig_男性无fallback();
+        test_doConfig_脱装恢复基本款();
         test_doConfig_同步publish条件触发();
         test_doConfig_deferred路径initObject注入();
         test_doConfig_deferred_fallback路径同样注入initObject();

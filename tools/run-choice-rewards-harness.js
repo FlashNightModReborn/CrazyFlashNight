@@ -23,12 +23,46 @@ const server = http.createServer((req, res) => {
         res.end(bytes);
     });
 });
+async function assertCardBoundaries(page) {
+    const metrics = await page.evaluate(() => {
+        const root = __choiceQa.control._choiceRewards.page.root;
+        const cards = root.querySelector('.character-build-choice-cards');
+        const footer = root.querySelector('.character-build-choice-footer');
+        const colorProbe=document.createElement('span');
+        colorProbe.style.backgroundColor='var(--wb-scrollbar-track)';
+        root.appendChild(colorProbe);
+        const expectedTrack=getComputedStyle(colorProbe).backgroundColor;
+        colorProbe.remove();
+        return {
+            children: root.children.length,
+            noPageOverflow: root.scrollHeight <= root.clientHeight + 1 && root.scrollWidth <= root.clientWidth + 1,
+            separated: cards.getBoundingClientRect().bottom <= footer.getBoundingClientRect().top,
+            themedTrack: getComputedStyle(cards, '::-webkit-scrollbar-track').backgroundColor,
+            expectedTrack,
+            arrowsHidden: getComputedStyle(cards, '::-webkit-scrollbar-button').display === 'none',
+            cardContentBounded: Array.from(cards.querySelectorAll('[data-choice-option]')).every(card => {
+                const bounds = card.getBoundingClientRect();
+                return card.scrollWidth <= card.clientWidth + 1 && card.scrollHeight <= card.clientHeight + 1
+                    && Array.from(card.querySelectorAll('*')).every(child => {
+                        const rect = child.getBoundingClientRect();
+                        return rect.left >= bounds.left - 1 && rect.right <= bounds.right + 1
+                            && rect.top >= bounds.top - 1 && rect.bottom <= bounds.bottom + 1;
+                    });
+            })
+        };
+    });
+    assert.strictEqual(metrics.children, 4, 'header/context/cards/footer');
+    assert(metrics.noPageOverflow && metrics.separated && metrics.cardContentBounded, JSON.stringify(metrics));
+    assert.strictEqual(metrics.themedTrack, metrics.expectedTrack);
+    assert(metrics.arrowsHidden, 'no native scrollbar arrow buttons');
+    return metrics;
+}
 async function main() {
     await new Promise(resolve => server.listen(0, '127.0.0.1', resolve));
     const base = 'http://127.0.0.1:' + server.address().port;
     const edge = [process.env['ProgramFiles(x86)'],process.env.ProgramFiles].filter(Boolean)
         .map(p => path.join(p,'Microsoft/Edge/Application/msedge.exe')).find(fs.existsSync);
-    const browser = await chromium.launch({headless:true, executablePath:edge});
+    const browser = await chromium.launch({headless:true, executablePath:edge, ignoreDefaultArgs:['--hide-scrollbars']});
     const report = [];
     try {
         for (const [width,height] of [[1024,576],[1366,768],[1920,1080]]) {
@@ -74,10 +108,10 @@ async function main() {
                         else if (message.cmd === 'stashChoose') {
                             qa.receipt={success:true,kind:'choiceSelect',offerId:message.payload.offerId,optionId:message.payload.optionId,rewardReady:true};
                             if (qa.mode === 'unknown') Object.assign(response,{success:false,error:'reconcile_required',requiresReconcile:true});
-                            else { qa.offers=[];qa.stock=true;qa.revision++;response.data=qa.receipt; }
+                            else { qa.offers=qa.offers.filter(o=>o.offerId!==message.payload.offerId);qa.stock=!qa.noOverflow;qa.revision++;response.data=qa.receipt; }
                         } else if (message.cmd === 'stashQuery') {
                             if (qa.mode === 'unknown') Object.assign(response,{success:false,error:'client_timeout',requiresReconcile:true});
-                            else { qa.offers=[];qa.stock=true;qa.revision++;response.data={state:'committed',result:qa.receipt}; }
+                            else { qa.offers=qa.offers.filter(o=>o.offerId!==qa.receipt.offerId);qa.stock=!qa.noOverflow;qa.revision++;response.data={state:'committed',result:qa.receipt}; }
                         } else throw new Error('unexpected fixture command '+message.cmd);
                         router.handleResponse(response);
                     }, 0);
@@ -106,7 +140,7 @@ async function main() {
             await page.locator('[data-choice-option]').nth(1).click();
             const saved = await page.evaluate(() => ({offer:__choiceQa.control._choiceRewards.offerId,
                 selected:__choiceQa.control._choiceRewards.selected,options:JSON.stringify(__choiceQa.offers)}));
-            await page.getByRole('button',{name:'稍后再选',exact:true}).click();
+            await page.getByRole('button',{name:'返回构筑',exact:true}).click();
             const entryGeometry = await page.evaluate(() => {
                 CharacterBuildHarness.view.clearCandidateSelection();
                 const entry=document.querySelector('[data-choice-rewards-open]'),heading=entry.closest('header'),box=heading.getBoundingClientRect();
@@ -137,6 +171,7 @@ async function main() {
                     blocked:CharacterBuildHarness.view._underlay.hasAttribute('inert')};
             });
             assert(Object.values(geometry).every(Boolean),JSON.stringify(geometry));
+            await assertCardBoundaries(page);
             await page.screenshot({path:path.join(out,width+'x'+height+'.png')});
             // Failed refresh cannot authorize a choice against old authority.
             await page.evaluate(() => {__choiceQa.failRead=true;__choiceQa.control._refreshChoiceRewards();});
@@ -150,6 +185,8 @@ async function main() {
             await page.evaluate(() => {__choiceQa.mode='commit';});
             await page.getByRole('button',{name:'核对领取结果',exact:true}).click();
             await page.waitForFunction(() => __choiceQa.control._choiceRewards.snapshot.offers.length === 0);
+            assert(await page.getByRole('button',{name:'返回构筑',exact:true}).isEnabled());
+            assert((await dialog.textContent()).includes('物品优先进入背包，装不下的进入暂存'));
             const writes = await page.evaluate(() => __choiceQa.sent.filter(r=>r.cmd==='stashChoose'||r.cmd==='stashQuery'));
             assert.strictEqual(writes.filter(r=>r.cmd==='stashChoose').length,1);
             assert(writes.every(r=>r.payload.operationId===writes[0].payload.operationId));
@@ -159,6 +196,10 @@ async function main() {
             // Multiple pending packs and a larger four-card pool stay within the same surface.
             await page.evaluate(() => {__choiceQa.addOffer(4);__choiceQa.addOffer(2);__choiceQa.control._refreshChoiceRewards(__choiceQa.offers[0].offerId);});
             await page.waitForFunction(() => document.querySelectorAll('[data-choice-option]').length===4);
+            assert.strictEqual(await dialog.locator('select').count(),0);
+            assert.strictEqual(await page.locator('[data-choice-offer]').count(),2);
+            await assertCardBoundaries(page);
+            await page.screenshot({path:path.join(out,'multiple-offers-'+width+'x'+height+'.png')});
             await page.evaluate(() => {
                 const qa=__choiceQa;qa.kpoints=200;
                 const paid=qa.offers[0].options[0];paid.title='闪现特训';paid.description='直接获得闪现2级，主动技能需在技能页装备，不消耗SP。';paid.items=[];paid.kCost=300;paid.available=true;
@@ -184,6 +225,7 @@ async function main() {
                 const qa=__choiceQa;
                 qa.offers[0].options[0].skills=[];
                 qa.offers[0].options.forEach(o=>{
+                    o.title='长中文候选配给标题用于验证换行后仍完整位于卡片内部';
                     o.description='长中文说明验证候选内容不会遮挡确认与返回按钮。'.repeat(8);
                     o.items=Array.from({length:16},(_,i)=>({itemName:'fixture.'+i,displayName:'较长的测试物品名称用于检查换行与可滚动候选',quantity:9999,level:15}));
                 });
@@ -195,11 +237,54 @@ async function main() {
                 return c.cards.scrollHeight>c.cards.clientHeight&&c.cards.scrollWidth<=c.cards.clientWidth+1
                     && c.confirm.getBoundingClientRect().bottom<=innerHeight+1;
             }));
-            await page.getByLabel('待选择的礼包',{exact:true}).selectOption({index:1});
+            await assertCardBoundaries(page);
+            await page.locator('[data-choice-option]').first().focus();
+            const scrollState = await page.evaluate(() => {
+                const view=__choiceQa.control._choiceRewards;
+                view.cards.scrollTop=120;
+                return {top:view.cards.scrollTop, focused:document.activeElement.getAttribute('data-choice-option')};
+            });
+            await page.evaluate(() => {
+                __choiceQa.kpoints=999999;
+                __choiceQa.control._refreshChoiceRewards();
+            });
+            await page.waitForFunction(() => __choiceQa.control._choiceRewards.snapshot.kpoints===999999);
+            assert.deepStrictEqual(await page.evaluate(() => ({top:__choiceQa.control._choiceRewards.cards.scrollTop,
+                focused:document.activeElement.getAttribute('data-choice-option')})),scrollState);
+            await page.evaluate(() => {
+                const cards=__choiceQa.control._choiceRewards.cards;
+                cards.scrollTop=cards.scrollHeight;
+            });
+            await page.screenshot({path:path.join(out,'long-content-bottom-'+width+'x'+height+'.png')});
+            await page.locator('[data-choice-offer]').nth(1).click();
             assert.strictEqual(await page.locator('[data-choice-option]').count(),2);
             await page.keyboard.press('Escape');
             await dialog.waitFor({state:'hidden'});
             assert(await page.evaluate(() => !CharacterBuildHarness.view._underlay.hasAttribute('inert')));
+            // A committed last choice returns directly to build only after both
+            // the choice list and overflow inbox have authoritative empty reads.
+            await page.evaluate(() => {
+                const qa=__choiceQa;qa.offers=[];qa.stock=false;qa.noOverflow=true;
+                qa.addOffer(2);qa.addOffer(2);qa.control._refreshChoiceRewards(qa.offers[0].offerId);
+            });
+            await dialog.waitFor({state:'visible'});
+            await page.locator('[data-choice-option]').first().click();
+            await page.locator('[data-choice-confirm]').click();
+            await page.waitForFunction(() => __choiceQa.control._choiceRewards.snapshot.offers.length===1);
+            assert(await dialog.isVisible(), 'another choice must remain available');
+            await page.evaluate(() => {
+                const qa=__choiceQa;qa.offers[0].options.forEach(o=>{o.items=[];o.skills=[{skillKey:'闪现',level:2,currentLevel:0}];});
+                qa.control._refreshChoiceRewards();
+            });
+            await page.waitForFunction(() => __choiceQa.control._choiceRewards.snapshot.offers[0].options[0].items.length===0);
+            await page.locator('[data-choice-option]').first().click();
+            await page.locator('[data-choice-confirm]').click();
+            await dialog.waitFor({state:'hidden'});
+            assert(await page.evaluate(() => !CharacterBuildHarness.view._underlay.hasAttribute('inert')));
+            // Merely reading an empty list does not force-close a manually opened page.
+            await page.evaluate(() => {__choiceQa.control._choiceRewards.open();__choiceQa.control._refreshChoiceRewards();});
+            await page.waitForFunction(() => __choiceQa.control._choiceRewards.snapshot.offers.length===0);
+            assert(await dialog.isVisible());
             assert.deepStrictEqual(errors,[]);
             report.push({width,height,geometry,entryGeometry,checks:['backpack open','frozen reopen','keyboard focus','read failure','unknown write','exact query','stash navigation','multiple offers','2-4 cards','long content scroll']});
             await page.close();

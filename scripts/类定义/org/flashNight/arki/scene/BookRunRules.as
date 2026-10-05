@@ -136,6 +136,20 @@ class org.flashNight.arki.scene.BookRunRules {
             first = true; best = Math.max(best, tier);
             if (bestMs == 0 || elapsed < bestMs) bestMs = elapsed;
         }
-        return {sp:sp, firstClear:first, bestTier:best, bestMs:bestMs};
+        return {sp:sp, firstClear:first, bestTier:best, bestMs:bestMs,
+            reason:sp == 0 ? (run.debug === true ? "debug" : "incomplete")
+                : previous.firstClear !== true ? "first_clear"
+                : sp == c.recordSp ? "personal_best" : "clear"};
+    }
+
+    /** 保存简短战绩；不把临时角色或其装备复制回原档。 */
+    public static function resultRecord(run:Object, quote:Object, completedAt:Number):Object {
+        var elapsed:Number = Number(run.elapsedMs);
+        if (isNaN(elapsed) || elapsed < 0 || elapsed >= 86400000) elapsed = 0;
+        var outcome:String = String(run.outcome);
+        if (outcome != "victory" && outcome != "failure" && outcome != "defeat" && outcome != "retreat") outcome = "abandoned";
+        return {runId:String(run.slot), bookId:String(run.bookId), outcome:outcome,
+            elapsedMs:Math.floor(elapsed), completedAt:completedAt, sp:quote.sp,
+            reason:quote.reason, debug:run.debug === true};
     }
 }

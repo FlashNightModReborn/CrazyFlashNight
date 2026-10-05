@@ -253,6 +253,12 @@ class org.flashNight.arki.item.ItemUseService {
         _busy = true;
         var packages:Array = [];
         try {
+            // 先在同一保存候选中消耗礼包，让最后一包腾出的格子也能接收奖励。
+            var remaining:Number = Number(source.item.value) - count;
+            source.inventory.addValue(String(source.slot), -count);
+            var after:Object = source.inventory.getItem(source.slot);
+            if ((after == null ? 0 : Number(after.value)) != remaining) throw new Error("source_changed");
+            PlayerAssetTransaction.recordItems("loss", [{name:params.source.itemName, value:count}], context);
             for (var p:Number = 0; p < count; p++) {
                 var rolled:Object = rollRecipe(recipe);
                 if (!rolled.success) throw new Error("invalid_reward_pack");
@@ -264,14 +270,9 @@ class org.flashNight.arki.item.ItemUseService {
                     items.push(item.toObject());
                 }
                 if (_testFaultCut == "append" && p == _testFaultOrdinal) throw new Error("injected_stash_append_fault");
-                if (!RewardStashService.admit(items, false, true, context)) throw new Error("invalid_reward_pack");
+                if (!RewardStashService.admit(items, true, true, context)) throw new Error("invalid_reward_pack");
                 packages.push({ordinal:p, batchId:String(params.operationId) + ".p" + p, entryCount:items.length});
             }
-            var remaining:Number = Number(source.item.value) - count;
-            source.inventory.addValue(String(source.slot), -count);
-            var after:Object = source.inventory.getItem(source.slot);
-            if ((after == null ? 0 : Number(after.value)) != remaining) throw new Error("source_changed");
-            PlayerAssetTransaction.recordItems("loss", [{name:params.source.itemName, value:count}], context);
             var result:Object = {success:true, kind:count == 1 ? "open" : "openMany",
                 consumed:count, requestedCount:count, remaining:remaining, packages:packages,
                 rewardReady:RewardStashService.peek().entries.length > 0};

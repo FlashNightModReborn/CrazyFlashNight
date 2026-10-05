@@ -169,7 +169,7 @@ class org.flashNight.arki.bullet.Factory.BulletFactory {
             // • isMelee = true: 近战子弹无散射，角度为0
             // • isChain = true: 联弹子弹无随机偏移，使用精确射击角度
             // • 其他情况: 应用随机散射偏移，模拟武器精度
-            scatteringAngle:Number = isMelee ? 0 : (shootingAngle + (isChain ? 0 : LinearCongruentialEngine.getInstance().randomOffset(Obj.子弹散射度))),
+            scatteringAngle:Number = isMelee ? 0 : (shootingAngle + (isChain ? 0 : sampleScatterOffset(Obj))),
 
             angleRadians = scatteringAngle * (Math.PI / 180),
             bulletInstance;
@@ -208,14 +208,15 @@ class org.flashNight.arki.bullet.Factory.BulletFactory {
             // depth 用 count + 1000000 偏移，避免覆盖 gameworld 现有实例
             bulletInstance = gameWorld.attachMovie(
                 Obj.baseAsset,
-                Obj.发射者名 + Obj.子弹种类 + count + scatteringAngle,
+                "b" + count,
                 (count++) + 1000000,
                 Obj);
         } else {
-            // 利用子弹计数来管理子弹深度
+            // 实例路径只用序号。小数角度的点号会使 area.getRect 的目标路径失效，
+            // 产生 NaN 碰撞框，继而被队列拒收并跳过运动/清理；角度仅保留在变换中。
             bulletInstance = gameWorld.子弹区域.attachMovie(
                 Obj.baseAsset,
-                Obj.发射者名 + Obj.子弹种类 + count + scatteringAngle,
+                "b" + count,
                 count++,
                 pierceProfile ? PierceBulletLifecycle.prepareInit(Obj, pierceProfile) : Obj);
         }
@@ -314,6 +315,13 @@ class org.flashNight.arki.bullet.Factory.BulletFactory {
 
         return bulletInstance;
     };
+
+    /** 保留原整数抽样与 RNG 消耗；小数倍率只缩放结果，未盖戳的旁路仍用原角度。 */
+    public static function sampleScatterOffset(Obj:Object):Number {
+        var scale:Number = Obj.武器扩散倍率;
+        if (!(scale > 0) || scale > 1) scale = 1;
+        return LinearCongruentialEngine.getInstance().randomOffset(Obj.子弹散射度) * scale;
+    }
 
     /**
      * 准备子弹数据：执行不依赖 MovieClip 的 6 步初始化（就地 mutate Obj）。

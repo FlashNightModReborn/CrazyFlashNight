@@ -18,6 +18,7 @@ class org.flashNight.arki.ui.BookshelfPanelService {
     private static var _lastAccepted:Object;
     private static var _arrivalOpen:Object;
     private static var _json:LiteJSON;
+    private static var _boundaryFallback:String = "";
 
     public static function install():Void {
         if (_installed) return;
@@ -70,6 +71,7 @@ class org.flashNight.arki.ui.BookshelfPanelService {
             }
             org.flashNight.arki.scene.BookRunService.reconcileOutcome();
             if (r === _job && r.phase == "save_pending") resume(r);
+            completeRetainedReturn(r);
             return project(r, cmd);
         }
         if (r.phase != "editing") {
@@ -153,7 +155,8 @@ class org.flashNight.arki.ui.BookshelfPanelService {
             r.phase = "save_pending"; r.waitFor = "fence"; return;
         }
         r.phase = "switching";
-        if (_root.淡出动画.淡出跳转帧("房间") !== true) {
+        var frame:String = r.kind == "play" ? "wuxianguotu_1" : "房间";
+        if (_root.淡出动画.淡出跳转帧(frame) !== true) {
             r.phase = "save_pending"; r.waitFor = "fence";
         } else if (r.fromStage === true) {
             // 淡出接纳后才释放旧关卡；临时战报由返回后的书籍结果替代。
@@ -174,10 +177,21 @@ class org.flashNight.arki.ui.BookshelfPanelService {
         }
     }
     /** 在根跳图函数内、旧世界已销毁后调用。绝不在旧 actor 的 onUnload 之前换槽。 */
-    public static function applyAtSceneBoundary():Boolean {
+    public static function applyAtSceneBoundary(targetFrame):Boolean {
         var r:Object = _job;
-        if (r == null || r.phase != "switching" || r.adopted === true) return true;
+        if (r == null || r.phase != "switching") return true;
         var save:SaveManager = SaveManager.getInstance();
+        if (r.adopted === true) {
+            if (r.kind != "play" || r.entryPrepared === true) return true;
+            // 加载失败页的明确返回才恢复原角色；重试只继续这一次接纳，不再次换档。
+            if (targetFrame == "房间") {
+                if (!save.flushBeforeTransition("bookshelf.switch")
+                        || !save.replacePlayerContext(r.slot, r.before, null)) return false;
+                r.phase = "expired"; r.error = "entry_cancelled"; r.before = null; _job = null;
+                return true;
+            }
+            return prepareBookEntry(r);
+        }
         if (String(_root.savePath) !== r.slot || !save.flushBeforeTransition("bookshelf.switch")) {
             r.phase = "save_pending"; r.waitFor = "fence"; return false;
         }
@@ -189,12 +203,41 @@ class org.flashNight.arki.ui.BookshelfPanelService {
                 r.phase = "save_pending"; r.waitFor = "restore"; r.error = "context_load_failed";
                 return false;
             }
-            r.phase = "expired"; r.error = "context_load_failed"; _job = null;
+            r.error = "context_load_failed";
+            if (r.kind == "return") { r.restored = true; r.adopted = true; r.phase = "switching"; }
+            else { r.phase = "expired"; _job = null; }
+            _boundaryFallback = "房间";
             return true;
         }
-        r.adopted = true; r.before = null; r.snapshot = null;
+        r.adopted = true; r.snapshot = null;
+        if (r.kind == "play") return prepareBookEntry(r);
+        r.before = null;
         if (r.kind == "return") settle(r);
         return true;
+    }
+    /** 接纳失败恢复原档时只改本次目的地，不能带原角色误入书中战场。 */
+    public static function takeBoundaryFrame(fallback) {
+        if (_boundaryFallback == "") return fallback;
+        var frame:String = _boundaryFallback; _boundaryFallback = "";
+        return frame;
+    }
+    private static function prepareBookEntry(r:Object):Boolean {
+        r.preparingEntry = true;
+        var ready:Boolean = org.flashNight.arki.scene.BookRunService.prepareAtSceneBoundary();
+        r.preparingEntry = false;
+        if (!ready) return false;
+        r.entryPrepared = true; r.before = null;
+        return true;
+    }
+    /** 只在同步准备窗口内授予转场中 admission；不是可由面板传入的 allow 标志。 */
+    public static function isPreparingBookEntry(slot:String):Boolean {
+        var r:Object = _job;
+        var run:Object = _root._saveExt.bookRun;
+        return r != null && r.kind == "play" && r.phase == "switching" && r.adopted === true
+            && r.preparingEntry === true && r.entryPrepared !== true && r.arrived !== true
+            && slot === String(_root.savePath) && slot === r.destination && run.slot === slot
+            && run.originSlot === r.slot && run.seed === r.run.seed && run.outcome == "active"
+            && run.bookId === r.run.bookId && _root.gameworld._parent == undefined;
     }
     private static function settle(r:Object):Void {
         var result:Object = r.result;
@@ -202,7 +245,9 @@ class org.flashNight.arki.ui.BookshelfPanelService {
         if (state.active.slot !== result.slot || result.originSlot !== String(_root.savePath)
             || state.active.seed !== result.seed) { r.phase = "expired"; r.error = "context_changed"; _job = null; return; }
         r.waitFor = "reward"; r.phase = "save_pending";
-        if (!RewardStashService.begin(r.token + ".reward", {source:"bookshelf", reason:"book_reward"}, rewardResolved, r)) return;
+        r.previousFeature = PersistedSnapshot.clone(state);
+        if (!RewardStashService.begin(r.token + ".reward", {source:"level_reward", reason:"book_reward",
+                operationId:"book.reward." + result.slot, mergeScope:"operation"}, rewardResolved, r)) return;
         state = _root._saveExt.bookshelf;
         var quote:Object = org.flashNight.arki.scene.BookRunRules.reward(result, state);
         _root.技能点数 += quote.sp;
@@ -210,22 +255,40 @@ class org.flashNight.arki.ui.BookshelfPanelService {
         state.bestMs = quote.bestMs; state.lastRun = result.slot;
         state.clears = Number(state.clears || 0) + (quote.sp > 0 ? 1 : 0);
         state.lastReward = quote.sp; state.active = null;
+        var record:Object = org.flashNight.arki.scene.BookRunRules.resultRecord(result, quote, new Date().getTime());
+        var history:Array = [record];
+        if (state.history instanceof Array) {
+            for (var h:Number = 0; h < state.history.length && history.length < 20; h++) {
+                if (state.history[h].runId !== result.slot) history.push(state.history[h]);
+            }
+        }
+        state.history = history;
+        // 与 SP 和领取凭据一起提交；失败/未知保存不会提前播报到账。
+        if (quote.sp > 0) PlayerAssetTransaction.recordEffect("gain", "skillpoint", "技能点", quote.sp,
+            {source:"level_reward", reason:"book_reward", operationId:"book.reward." + result.slot, mergeScope:"operation"});
         r.reward = quote.sp;
         RewardStashService.end("book.reward|" + result.slot, {success:true, sp:quote.sp}, "bookshelf.reward");
     }
     private static function rewardResolved(committed:Boolean, r:Object):Boolean {
         r.rewardSaved = committed;
-        if (committed) { r.phase = r.adopted === true && r.arrived !== true ? "switching" : "applied"; if (r.phase == "applied") _job = null; }
+        if (committed) { r.phase = r.adopted === true ? "switching" : "applied"; if (r.phase == "applied") _job = null; }
         return true;
+    }
+    private static function completeRetainedReturn(r:Object):Void {
+        if (r !== _job || r.kind != "return" || (r.rewardSaved !== true && r.restored !== true) || r.arrived !== true
+            || (r.restored === true ? r.slot : r.destination) !== String(_root.savePath) || r.arrivalOwner !== StageReturnFlow.worldIdentity(_root.gameworld)
+            || org.flashNight.arki.ui.SceneTransitionService.isPresentationPending()
+            || _root.淡出动画.__returnFadeActive === true || _root.场景转换中 === true) return;
+        r.phase = r.restored === true ? "expired" : "applied"; _job = null;
     }
     private static function onSceneReady(world:Object, token:String, identity:Object):Void {
         if (world !== _root.gameworld || identity == null || identity !== StageReturnFlow.worldIdentity(world)) return;
         var r:Object = _job;
-        if (r != null && r.adopted === true && r.destination === String(_root.savePath)) {
-            r.arrived = true;
-            if (r.kind != "return" || r.rewardSaved === true) { r.phase = "applied"; _job = null; }
-            if (r.kind == "play") org.flashNight.arki.scene.BookRunService.queueStart();
-            else {
+        if (r != null && r.adopted === true && (r.restored === true ? r.slot : r.destination) === String(_root.savePath)) {
+            r.arrived = true; r.arrivalOwner = identity;
+            if (r.kind != "return") { r.phase = "applied"; _job = null; }
+            // 返回书中挑战保留原 Web 实例，查询到终态后签发原角色的新能力。
+            if (r.kind == "switch") {
                 _arrivalOpen = {slot:String(_root.savePath), owner:identity};
                 _root.帧计时器.添加单次任务(openAfterArrival, 1);
             }
@@ -258,8 +321,13 @@ class org.flashNight.arki.ui.BookshelfPanelService {
     }
     private static function project(r:Object, cmd:String):Object {
         var run:Object = _root._saveExt.bookRun, feature:Object = _root._saveExt.bookshelf;
+        if (_job != null && _job.waitFor == "reward" && _job.rewardSaved !== true
+                && _job.previousFeature != null) feature = _job.previousFeature;
         // 终态回执仍归旧 token；新的编辑能力独立签发，不能把已完成 token 重新变可写。
-        if ((r.phase == "applied" || r.phase == "expired") && _job == null && r === _active && same(r)) {
+        var returned:Boolean = r.kind == "return" && (r.phase == "applied" || r.restored === true && r.phase == "expired")
+            && (r.restored === true ? r.slot : r.destination) === String(_root.savePath)
+            && r.arrivalOwner === StageReturnFlow.worldIdentity(_root.gameworld);
+        if ((r.phase == "applied" || r.phase == "expired") && _job == null && r === _active && (same(r) || returned)) {
             var fresh:Object = newSession(); fresh.slots = r.slots; r.nextToken = fresh.token;
         }
         return {v:1, operation:cmd, token:r.token, phase:r.phase, success:r.phase != "expired" && r.phase != "save_pending",
@@ -269,7 +337,12 @@ class org.flashNight.arki.ui.BookshelfPanelService {
             outcomePending:org.flashNight.arki.scene.BookRunService.hasUnsettledOutcome(),
             unlocked:unlocked(), inRun:run != null, originSlot:run == null ? "" : String(run.originSlot),
             runOutcome:run == null ? "" : String(run.outcome), pendingRun:feature.active == null ? "" : String(feature.active.slot),
-            reward:Number(r.reward || 0), lastReward:Number(feature.lastReward || 0), error:String(r.error || ""), slots:r.slots};
+            reward:r.rewardSaved === true ? Number(r.reward || 0) : 0, lastReward:Number(feature.lastReward || 0),
+            records:{bestMs:Number(feature.bestMs || 0), clears:Number(feature.clears || 0),
+                history:feature.history instanceof Array ? PersistedSnapshot.clone(feature.history) : []},
+            returningResult:r.kind == "return" && r.result != null
+                ? org.flashNight.arki.scene.BookRunRules.resultRecord(r.result, {sp:0,reason:"pending"}, 0) : null,
+            error:String(r.error || ""), slots:r.slots};
     }
     private static function validPayload(cmd:String, p:Object):Boolean {
         var allowed:Object = {v:true, token:true, task:true, action:true, callId:true};
@@ -288,6 +361,7 @@ class org.flashNight.arki.ui.BookshelfPanelService {
     }
     public static function _resetForTests():Void {
         _active = null; _records = {}; _order = []; _job = null; _lastAccepted = null; _arrivalOpen = null;
+        _boundaryFallback = "";
     }
     private static function fail(cmd:String, token:String, error:String):Object {
         return {v:1, operation:cmd, token:token, success:false, error:error};

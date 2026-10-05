@@ -12,7 +12,7 @@
 }
 .character-build-choice-page {
     inset:0;
-    grid-template-rows:auto auto auto minmax(0,1fr) auto;
+    grid-template-rows:auto auto minmax(0,1fr) auto;
     gap:10px;
     border:1px solid var(--wb-line);
 }
@@ -34,18 +34,16 @@
     font-size:12px;
     line-height:1.5;
 }
-.character-build-choice-page > select {
-    width:100%;
-    min-height:28px;
-    color:var(--wb-text);
-    background:var(--wb-surface);
-    border:1px solid var(--wb-line);
-}
+.character-build-choice-context { display:grid; gap:5px; min-width:0; }
+.character-build-choice-offers { display:flex; gap:6px; overflow:auto; padding:3px; min-width:0; }
+.character-build-choice-offers button { flex:0 0 auto; max-width:300px; overflow-wrap:anywhere; }
+.character-build-choice-page .character-build-choice-offers button[aria-pressed="true"] { border-color:var(--wb-focus); color:var(--wb-focus); }
 .character-build-choice-cards {
-    grid-row:4;
+    grid-row:3;
     display:grid;
     grid-template-columns:repeat(var(--choice-columns,3),minmax(0,1fr));
     gap:10px;
+    grid-auto-rows:minmax(min-content,1fr);
     min-height:0;
     overflow:auto;
     padding:3px;
@@ -66,19 +64,21 @@
     font:inherit;
     cursor:pointer;
 }
+.character-build-choice-card > * { flex-shrink:0; }
 .character-build-choice-card strong { font-size:16px; }
 .character-build-choice-description { color:var(--wb-muted); font-size:12px; line-height:1.6; }
 .character-build-choice-items { display:grid; gap:8px; font-size:13px; line-height:1.5; }
 .character-build-choice-item { display:flex; align-items:center; gap:8px; padding:5px 0; }
 .character-build-choice-icon { display:flex; align-items:center; justify-content:center; width:44px; height:44px; flex:0 0 44px; background:var(--wb-surface-raised,var(--wb-surface)); border:1px solid var(--wb-line); }
 .character-build-choice-icon .item-icon { max-width:40px; max-height:40px; object-fit:contain; }
-.character-build-choice-item-copy { display:grid; gap:3px; }
+.character-build-choice-item-copy { display:grid; gap:3px; min-width:0; overflow-wrap:anywhere; }
 .character-build-choice-item-copy small { color:var(--wb-muted); font-size:12px; }
 .character-build-choice-tooltip { max-width:440px; }
 .character-build-choice-tooltip p { white-space:pre-wrap; line-height:1.6; margin:8px 0 0; }
 .character-build-choice-card[aria-pressed="true"] { border-color:var(--wb-focus); box-shadow:inset 3px 0 0 var(--wb-focus); }
 .character-build-choice-card[aria-pressed="true"] > strong:first-child::after { content:' · 已选'; color:var(--wb-focus); font-size:12px; }
-.character-build-choice-footer { grid-row:5; flex-wrap:wrap; }
+.character-build-choice-footer { grid-row:4; flex-wrap:wrap; }
+.character-build-choice-footer [data-choice-confirm] { max-width:410px; white-space:normal; overflow-wrap:anywhere; }
 .character-build-choice-footer p { flex:1 1 170px; margin:0; font-size:12px; color:var(--wb-muted); }
 .character-build-choice-page button:not(.character-build-choice-card) {
     min-height:32px;
@@ -91,6 +91,29 @@
 }
 .character-build-choice-page button:disabled { opacity:.55; cursor:default; }
 .character-build-choice-page [hidden] { display:none; }
+.character-build-choice-cards,
+.character-build-choice-offers {
+    scrollbar-color:var(--wb-scrollbar-thumb) var(--wb-scrollbar-track);
+    scrollbar-width:thin;
+    overscroll-behavior:contain;
+}
+/* Chromium uses the themed pseudo-elements, including suppression of system arrows. */
+@supports selector(::-webkit-scrollbar) {
+    .character-build-choice-cards,
+    .character-build-choice-offers { scrollbar-color:auto; scrollbar-width:auto; }
+}
+.character-build-choice-cards::-webkit-scrollbar,
+.character-build-choice-offers::-webkit-scrollbar { width:8px; height:8px; }
+.character-build-choice-cards::-webkit-scrollbar-track,
+.character-build-choice-offers::-webkit-scrollbar-track,
+.character-build-choice-cards::-webkit-scrollbar-corner,
+.character-build-choice-offers::-webkit-scrollbar-corner { background:var(--wb-scrollbar-track); }
+.character-build-choice-cards::-webkit-scrollbar-thumb,
+.character-build-choice-offers::-webkit-scrollbar-thumb { background:var(--wb-scrollbar-thumb); border:1px solid var(--wb-scrollbar-thumb-border); border-radius:4px; }
+.character-build-choice-cards::-webkit-scrollbar-thumb:hover,
+.character-build-choice-offers::-webkit-scrollbar-thumb:hover { background:var(--wb-scrollbar-thumb-hover); }
+.character-build-choice-cards::-webkit-scrollbar-button,
+.character-build-choice-offers::-webkit-scrollbar-button { display:none; width:0; height:0; }
 .character-build-host {
     position:relative;
     grid-column:1;

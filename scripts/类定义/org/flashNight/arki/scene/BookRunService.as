@@ -2,6 +2,8 @@
 import org.flashNight.arki.scene.StageRunSession;
 import org.flashNight.arki.scene.BookRunRules;
 import org.flashNight.arki.scene.BookDefinition;
+import org.flashNight.arki.scene.BookComicService;
+import org.flashNight.arki.scene.BookRunClock;
 import org.flashNight.arki.weather.WeatherSystem;
 import org.flashNight.neur.Server.SaveManager;
 import org.flashNight.neur.Event.EventBus;
@@ -14,10 +16,16 @@ class org.flashNight.arki.scene.BookRunService {
     private static var _ending:Object;
     private static var _debug:Object;
     private static var _returnUi:Object;
+    private static var _chapter:Object;
+    private static var _chapterWatch:MovieClip;
+    private static var _startError:String = "";
     public static function install():Void {
         if (_installed) return;
         _installed = true;
+        BookComicService.install();
+        BookRunClock.install();
         EventBus.getInstance().subscribe("SceneReady", onSceneReady, null);
+        EventBus.getInstance().subscribe("SceneTransitionReleased", onTransitionReleased, null);
         // 仅 AS2 开发控制台可调用；调试局明确禁止奖励回流。
         _root.书中调试 = function(seed:Number, startMap:Number):Boolean {
             return org.flashNight.arki.scene.BookRunService.configureDebug(seed, startMap);
@@ -28,21 +36,60 @@ class org.flashNight.arki.scene.BookRunService {
         var config:Object = BookDefinition.get();
         if (run == null || run.outcome != "active" || isNaN(index) || Math.floor(index) != index
                 || index < 0 || index >= config.maps.length) return;
+        var owner:Object = org.flashNight.arki.scene.StageReturnFlow.worldIdentity(_root.gameworld);
+        if (_chapter != null && _chapter.owner === owner && _chapter.index === index) return;
+        _chapter = {index:index, owner:owner, slot:String(_root.savePath), run:run};
+        if (_chapterWatch == null || _chapterWatch._name == undefined)
+            _chapterWatch = _root.createEmptyMovieClip("__bookChapterHandoff", _root.getNextHighestDepth());
+        _chapterWatch.onEnterFrame = function():Void { org.flashNight.arki.scene.BookRunService.presentChapter(); };
+        presentChapter();
+    }
+    private static function onTransitionReleased(world:Object, token:String, identity:Object):Void {
+        if (world !== _root.gameworld || identity == null
+                || identity !== org.flashNight.arki.scene.StageReturnFlow.worldIdentity(world)) return;
+        presentChapter();
+    }
+    /** 先等加载幕真实退场，再取得漫画/对白暂停；否则暂停会把旧遮幕永久留在下层。 */
+    public static function presentChapter():Void {
+        var chapter:Object = _chapter;
+        if (chapter == null) return;
+        if (chapter.slot !== String(_root.savePath) || chapter.run !== _root._saveExt.bookRun
+                || chapter.run.outcome != "active"
+                || chapter.owner !== org.flashNight.arki.scene.StageReturnFlow.worldIdentity(_root.gameworld)) {
+            _chapter = null; delete _chapterWatch.onEnterFrame; return;
+        }
+        if (org.flashNight.arki.ui.SceneTransitionService.isPresentationPending()
+                || _root.淡出动画.__returnFadeActive === true || _root.场景转换中 === true) return;
+        _chapter = null; delete _chapterWatch.onEnterFrame;
+        // 首次可演出/可操作时才开表；后续章节不会重置已有计时。
+        BookRunClock.ensureStarted(chapter.run);
+        var index:Number = chapter.index;
+        var config:Object = BookDefinition.get();
         if (index == config.bossEncounter.mapIndex) {
             org.flashNight.arki.scene.BookBossEncounter.start(_root.gameworld,
                 _bossPlan);
         }
-        _root.书中当前章节 = {index:index, total:config.maps.length, title:config.maps[index].title,
-            dialogue:config.maps[index].dialogue, slot:String(_root.savePath),
-            owner:org.flashNight.arki.scene.StageReturnFlow.worldIdentity(_root.gameworld)};
-        // 独立 SWF 不导入游戏类；暂停租约仍由注入层唯一持有。
-        _root.书中过场取得暂停 = function():String {
-            return org.flashNight.arki.pause.PauseManager.lease(true, "book_chapter");
+        var follow:Function = chapterContinuation(index, chapter.owner, chapter.slot);
+        var pageId:String = index == 0 ? "prologue" : (index == config.bossEncounter.mapIndex ? "boss" : "");
+        if (pageId == "" || !BookComicService.begin(pageId, follow)) follow();
+    }
+    private static function chapterContinuation(index:Number, owner:Object, slot:String):Function {
+        return function():Void {
+            org.flashNight.arki.scene.BookRunService.showChapterDialogue(index, owner, slot);
         };
-        _root.书中过场释放暂停 = function(lease:String):Void {
-            org.flashNight.arki.pause.PauseManager.releaseLease(lease);
-        };
-        _root.最上层加载外部动画("flashswf/movies/修理大学章节.swf");
+    }
+    private static function showChapterDialogue(index:Number, owner:Object, slot:String):Void {
+        if (slot !== String(_root.savePath) || owner == undefined
+                || owner !== org.flashNight.arki.scene.StageReturnFlow.worldIdentity(_root.gameworld)
+                || _root._saveExt.bookRun.outcome != "active") return;
+        var lines:Array = BookDefinition.get().maps[index].dialogue;
+        if (lines.length == 0) return;
+        var rows:Array = [];
+        for (var i:Number = 0; i < lines.length; i++) {
+            rows.push({name:lines[i].speaker, title:"", text:lines[i].text,
+                char:lines[i].speaker == "Andy" ? "$PC_CHAR" : "", target:null, imageurl:""});
+        }
+        org.flashNight.arki.dialogue.NativeDialogueService.beginStage(rows, null);
     }
     public static function configureDebug(seed:Number, startMap:Number):Boolean {
         if (_root._saveExt.bookRun != null || isNaN(seed) || seed < 1 || seed >= 2147483647
@@ -58,8 +105,22 @@ class org.flashNight.arki.scene.BookRunService {
     private static function tryStart():Void {
         if (_startSlot == "" || _startSlot !== String(_root.savePath)) return;
         if (org.flashNight.arki.ui.SceneTransitionService.isPresentationPending() || !StageRunSession.canStartStage()) { _root.帧计时器.添加单次任务(tryStart, 1); return; }
+        var token:String = prepareStage(false);
+        if (token == "") { startFailed(_startError); return; }
+        if (_root.淡出动画.淡出跳转帧("wuxianguotu_1") !== true) {
+            StageManager.getInstance().abortPreparedStage(token); StageRunSession.cancelStageStart(token);
+            startFailed("过场尚未就绪，请返回书架。");
+        }
+        _startSlot = "";
+    }
+    public static function prepareAtSceneBoundary():Boolean {
+        if (!org.flashNight.arki.ui.BookshelfPanelService.isPreparingBookEntry(String(_root.savePath))) return false;
+        return prepareStage(true) != "";
+    }
+    private static function prepareStage(coveredEntry:Boolean):String {
         var run:Object = _root._saveExt.bookRun;
-        if (run == null || run.outcome != "active") { _startSlot = ""; return; }
+        _startError = "书中关卡未能准备，请返回书架。";
+        if (run == null || run.outcome != "active") return "";
         var startMap:Number = 0;
         var planSeed:Number = run.seed;
         if (_debug != null) { planSeed = _debug.seed; run.planSeed = planSeed; startMap = _debug.startMap; run.debug = true; _debug = null; }
@@ -69,7 +130,7 @@ class org.flashNight.arki.scene.BookRunService {
         for (var i:Number = 0; i < stages.length; i++) {
             var env:Object = WeatherSystem.getInstance().getEnvConfig().getStageEnv(String(String(stages[i].BasicInformation.Background).split("/").pop()));
             // 环境名称解析与 StageManager 一致；运行前检查，避免默默生成原点商人。
-            if (env == null) { startFailed("书中地图环境未就绪，请返回书架。"); return; }
+            if (env == null) { _startError = "书中地图环境未就绪，请返回书架。"; return ""; }
             stages[i].Instances.Instance[0].x = Number(env.Xmin) + 180;
             stages[i].Instances.Instance[0].y = Number(env.Ymin) + 75;
         }
@@ -77,11 +138,12 @@ class org.flashNight.arki.scene.BookRunService {
             org.flashNight.arki.scene.BookRunService.playChapter(index);
         };
         var name:String = BookDefinition.get().stageName;
-        var token:String = StageRunSession.reserveStageStart("bookshelf", name, "简单");
-        if (token == "") return;
+        var token:String = coveredEntry ? StageRunSession.reserveBookshelfEntry(String(_root.savePath), name)
+            : StageRunSession.reserveStageStart("bookshelf", name, "简单");
+        if (token == "") return "";
         var manager:StageManager = StageManager.getInstance();
         if (!manager.initialize(stages, null, token, false, [], name, [])) {
-            StageRunSession.cancelStageStart(token); startFailed("书中关卡未能准备，请返回书架。"); return;
+            StageRunSession.cancelStageStart(token); return "";
         }
         _root.当前关卡名 = name; _root.当前关卡难度 = "简单"; _root.难度等级 = 1;
         _root.关卡类型 = "无限过图"; _root.关卡地图帧值 = "房间";
@@ -89,15 +151,13 @@ class org.flashNight.arki.scene.BookRunService {
         _root.限制系统.openEntries(["DisableCompanion"]);
         run.startedAt = new Date().getTime();
         run.started = true;
+        run.playTimeMs = 0; run.clockVersion = 1;
         if (!SaveManager.getInstance().flushBeforeTransition("bookshelf.switch")) {
             manager.abortPreparedStage(token); StageRunSession.cancelStageStart(token);
-            startFailed("书中角色尚未保存，请返回书架核对。"); return;
+            run.started = false;
+            _startError = "书中角色尚未保存，请返回书架核对。"; return "";
         }
-        if (_root.淡出动画.淡出跳转帧("wuxianguotu_1") !== true) {
-            manager.abortPreparedStage(token); StageRunSession.cancelStageStart(token);
-            startFailed("过场尚未就绪，请返回书架。");
-        }
-        _startSlot = "";
+        return token;
     }
     private static function startFailed(message:String):Void {
         _startSlot = "";
@@ -110,7 +170,7 @@ class org.flashNight.arki.scene.BookRunService {
         if (run == null || run.outcome != "active" || _ending != null
             || _root.当前关卡名 !== BookDefinition.get().stageName) return;
         _ending = {slot:String(_root.savePath), outcome:outcome,
-            elapsedMs:Math.max(1, new Date().getTime() - Number(run.startedAt)), run:run};
+            elapsedMs:BookRunClock.elapsed(run), run:run};
         persistOutcome();
     }
     private static function persistOutcome():Void {
@@ -139,8 +199,8 @@ class org.flashNight.arki.scene.BookRunService {
     public static function abandonIfActive():Void {
         var run:Object = _root._saveExt.bookRun;
         if (run != null && run.outcome == "active") {
+            run.elapsedMs = BookRunClock.elapsed(run);
             run.outcome = "abandoned";
-            run.elapsedMs = Math.max(1, new Date().getTime() - Number(run.startedAt));
         }
     }
     private static function onSceneReady(world:Object, token:String, identity:Object):Void {

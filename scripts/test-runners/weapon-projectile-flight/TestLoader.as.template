@@ -1,0 +1,9 @@
+﻿import org.flashNight.arki.bullet.BulletComponent.Chain.*;
+import org.flashNight.gesh.depth.*;
+import org.flashNight.neur.ScheduleTimer.*;
+#include "逻辑/战斗系统/战斗系统_fs_联弹管理.as"
+_root.weaponProjectileFlightComplete = function():Void {
+    trace("FocusedTestRunId weapon-projectile-flight Complete: __FOCUSED_RUN_ID__");
+};
+trace("FocusedTestRunId weapon-projectile-flight Start: __FOCUSED_RUN_ID__");
+org.flashNight.arki.unit.Action.Shoot.WeaponProjectileFlightTest.runAllTests();

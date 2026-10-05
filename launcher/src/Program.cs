@@ -2021,7 +2021,7 @@ class Program
             form, form.FlashHostPanel, form.GetFlashHwnd,
             () => !form.IsShutdownAdmissionClosed && launchFlow != null && launchFlow.CurrentState == "Ready"
                 && launchFlow.RevealPerformed
-                && (panelHost == null || !panelHost.IsPanelOpen || panelHost.SceneSettlementLoading),
+                && (panelHost == null || !panelHost.IsPanelOpen || panelHost.SceneSettlementLoading || panelHost.BookshelfReturnLoading),
             message => toastSink.AddMessage(message), projectRoot,
             () => launchFlow != null && (launchFlow.CurrentState == "Embedding"
                 || launchFlow.CurrentState == "WaitingGameReady" || launchFlow.CurrentState == "Ready"),
@@ -2049,6 +2049,9 @@ class Program
             worldCompositor.IsTransitionScenePresented,
             foreground => windowManager.HandoffFlashFocusBeforePanelHide("scene_transition:before_hide",foreground),
             worldOverlays, worldCompositor.HoldTransitionInput);
+        // The returned character may render below the still-visible bookshelf.
+        // Repair its order in the same UI callback that shows the world HWND.
+        worldCompositor.PresentationShown += sceneTransition.RestoreRetainedBookshelfOrder;
         socketServer.OnClientDisconnected += sceneTransition.Task.HandleTransportDisconnected;
         panelHost?.ConfigureTransitionSettlement(sceneTransition);
         form.FormClosed += delegate { sceneTransition.Dispose(); };
@@ -2235,6 +2238,10 @@ class Program
         HairdresserTask hairdresserTask = new HairdresserTask(socketServer);
         PlasticSurgeryTask plasticSurgeryTask = new PlasticSurgeryTask(socketServer);
         GaragePurchaseTask garagePurchaseTask = new GaragePurchaseTask(socketServer);
+        BookComicTask bookComicTask = new BookComicTask(socketServer);
+        commandRouter.SetBookComicTask(bookComicTask);
+        panelHost?.SetBookComicTask(bookComicTask);
+        webOverlay.SetBookComicTask(bookComicTask);
         SleepTask sleepTask = new SleepTask(socketServer);
         BookshelfTask bookshelfTask = new BookshelfTask(socketServer);
         bookshelfTask.SetPermanentSlotApplied(delegate(string slotKey)
@@ -2362,6 +2369,7 @@ class Program
                 if (panelName == "surgery") plasticSurgeryTask.ClearPending();
                 if (panelName == "garage") garagePurchaseTask.ClearPending();
                 if (panelName == "sleep") sleepTask.ClearPending();
+                if (panelName == "book-comic") bookComicTask.OnHostClosed(panelInstanceId);
                 if (panelName == "bookshelf") bookshelfTask.ClearPending();
                 if (panelName == "gym") gymTrainingTask.HandlePanelClosed(panelInstanceId);
                 if (panelName == "settings") settingsTask.HandleAuthoritativePanelClosed(panelInstanceId);
@@ -2667,7 +2675,7 @@ class Program
 
         using (PerfTrace.Scope("task.registry_register_all"))
         {
-            TaskRegistry.RegisterAll(router, gomokuTask, toastTask, frameTask, stageOutcomeTask, warlordStageTask, warlordBattleTask, dataQueryTask, audioTask, dollBakeTask, shopTask, inventoryTask, lootTask, lootFeedTask, lootPanelCoordinator, npcShopTask, craftingTask, materialShopAccessTask, hairdresserTask, plasticSurgeryTask, garagePurchaseTask, sleepTask, bookshelfTask, gymTrainingTask, settingsTask, equipmentTuningTask, characterBuildTask, itemUseTask, skillTask, mapTask, stageSelectTask, arenaTask, arenaCalibrationTask, agentControlTask, petTask, mercTask, taskTask, intelligenceTask, blackMarketTask, archiveTask, benchTask, fontPackTask, webOverlay, commandRouter, mapDomainTask, nativeInteractionTask, nativeDialogueTask, worldLightingTask, lutLabTask, nativeGuidanceTask, sceneTransition.Task);
+            TaskRegistry.RegisterAll(router, gomokuTask, toastTask, frameTask, stageOutcomeTask, warlordStageTask, warlordBattleTask, dataQueryTask, audioTask, dollBakeTask, shopTask, inventoryTask, lootTask, lootFeedTask, lootPanelCoordinator, npcShopTask, craftingTask, materialShopAccessTask, hairdresserTask, plasticSurgeryTask, garagePurchaseTask, sleepTask, bookshelfTask, gymTrainingTask, settingsTask, equipmentTuningTask, characterBuildTask, itemUseTask, skillTask, mapTask, stageSelectTask, arenaTask, arenaCalibrationTask, agentControlTask, petTask, mercTask, taskTask, intelligenceTask, blackMarketTask, archiveTask, benchTask, fontPackTask, webOverlay, commandRouter, mapDomainTask, nativeInteractionTask, nativeDialogueTask, worldLightingTask, lutLabTask, nativeGuidanceTask, sceneTransition.Task, bookComicTask);
         }
         StartupDiagnostics.Mark("task.registry_register_all_ok");
 
@@ -2832,7 +2840,7 @@ class Program
             materialShopAccessTask.Dispose();
             npcShopTask.Dispose();
             craftingTask.Dispose();
-            hairdresserTask.Dispose(); plasticSurgeryTask.Dispose(); garagePurchaseTask.Dispose(); sleepTask.Dispose();
+            hairdresserTask.Dispose(); plasticSurgeryTask.Dispose(); garagePurchaseTask.Dispose(); sleepTask.Dispose(); bookComicTask.Dispose();
             bookshelfTask.Dispose(); gymTrainingTask.Dispose();
             settingsTask.Dispose();
             stageOutcomeTask.Dispose();

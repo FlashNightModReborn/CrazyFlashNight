@@ -26,6 +26,23 @@
 .bookshelf-panel .bookshelf-slot{display:block;text-align:left;width:100%;margin:5px 0;font-size:13px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .bookshelf-slot[aria-current=true]{border-color:var(--launcher-bone)}
 .bookshelf-muted{font-size:12px;color:var(--appearance-muted)}
+.bookshelf-run-records{margin:12px 0 18px;padding:12px 14px;background:var(--appearance-surface-raised);border:1px solid var(--appearance-line)}
+.bookshelf-record-summary{margin:0 0 10px;font-size:13px;color:var(--appearance-secondary-text)}
+.bookshelf-last-run{display:grid;grid-template-columns:1fr auto;gap:8px 12px;font-size:14px;align-items:center}
+.bookshelf-record-reward{color:var(--launcher-bone);font-size:20px}
+.bookshelf-last-run small{text-align:right}
+.bookshelf-history{margin-top:12px;border-top:1px solid var(--appearance-line);padding-top:10px}
+.bookshelf-history summary{cursor:pointer;min-height:26px;font-size:13px;color:var(--appearance-secondary-text)}
+.bookshelf-history table{width:100%;border-collapse:collapse;font-size:12px;margin-top:8px}
+.bookshelf-history th,.bookshelf-history td{padding:9px 6px;text-align:left;border-bottom:1px solid var(--appearance-line)}
+.bookshelf-history th{font-weight:500;color:var(--appearance-muted)}
+.bookshelf-body nav,#bookshelf-detail{scrollbar-width:thin;scrollbar-color:var(--wb-scrollbar-thumb) var(--wb-scrollbar-track);scrollbar-gutter:stable;overscroll-behavior:contain}
+.bookshelf-body nav::-webkit-scrollbar,#bookshelf-detail::-webkit-scrollbar{width:7px;height:7px}
+.bookshelf-body nav::-webkit-scrollbar-track,#bookshelf-detail::-webkit-scrollbar-track{background:var(--wb-scrollbar-track)}
+.bookshelf-body nav::-webkit-scrollbar-thumb,#bookshelf-detail::-webkit-scrollbar-thumb{background:var(--wb-scrollbar-thumb);border:1px solid var(--wb-scrollbar-thumb-border)}
+.bookshelf-body nav::-webkit-scrollbar-thumb:hover,#bookshelf-detail::-webkit-scrollbar-thumb:hover{background:var(--wb-scrollbar-thumb-hover)}
+.bookshelf-body nav::-webkit-scrollbar-button,#bookshelf-detail::-webkit-scrollbar-button{display:none;width:0;height:0}
+.bookshelf-body nav::-webkit-scrollbar-corner,#bookshelf-detail::-webkit-scrollbar-corner{background:var(--wb-scrollbar-track)}
 .bookshelf-body main{min-width:0;min-height:0;position:relative}
 #bookshelf-reader{height:100%;display:flex;flex-direction:column;min-width:0;position:relative}
 .bookshelf-reader-tools{display:flex;align-items:center;gap:6px;font-size:12px;flex:1;min-width:0}
@@ -96,3 +113,33 @@
 #bookshelf-detail:has(.bookshelf-chapters) .bookshelf-editions p{margin:8px 0;line-height:1.6}
 .bookshelf-language{font-size:14px;display:flex;gap:8px;align-items:center}
 .bookshelf-language select{min-height:32px}
+
+/* Prefer Chromium's themed pseudo-elements so system arrow buttons stay hidden. */
+@supports selector(::-webkit-scrollbar) {
+    .bookshelf-body nav,
+    #bookshelf-detail { scrollbar-color:auto; scrollbar-width:auto; }
+}
+
+/* The general hover rule must not replace the primary button's light theme fill. */
+.bookshelf-panel button.bookshelf-primary:not(:disabled),
+.bookshelf-panel button.bookshelf-primary:hover:not(:disabled) {
+    background:var(--launcher-bone);
+    color:var(--bookshelf-ink);
+    border-color:var(--launcher-bone);
+}
+
+/* Keep chapter entries and the newest result visible on the fixed game canvas. */
+#bookshelf-detail:has(.bookshelf-chapters){padding:12px 24px}
+#bookshelf-detail:has(.bookshelf-chapters) .bookshelf-chapters{margin-bottom:8px}
+#bookshelf-detail:has(.bookshelf-chapters) h2{margin:4px 0 6px}
+#bookshelf-detail:has(.bookshelf-chapters) .bookshelf-campus-intro{margin-bottom:8px}
+#bookshelf-detail:has(.bookshelf-chapters) .bookshelf-editions section{padding:10px 14px}
+#bookshelf-detail:has(.bookshelf-chapters) .bookshelf-editions h3{margin-top:4px}
+#bookshelf-detail:has(.bookshelf-chapters) .bookshelf-editions p{margin:6px 0}
+#bookshelf-detail:has(.bookshelf-chapters) .bookshelf-editions p.bookshelf-edition-note{font-size:12px;line-height:1.5;padding-top:6px}
+#bookshelf-detail:has(.bookshelf-chapters) .bookshelf-editions button{margin-top:8px}
+#bookshelf-detail .bookshelf-last-run{grid-template-columns:1fr auto auto}
+#bookshelf-detail .bookshelf-last-run small{grid-column:1 / -1}
+#bookshelf-detail .bookshelf-record-reward{font-size:16px}
+#bookshelf-detail .bookshelf-run-records{padding:10px 14px}
+#bookshelf-detail .bookshelf-record-summary{margin-bottom:6px}

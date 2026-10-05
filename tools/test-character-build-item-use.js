@@ -515,7 +515,7 @@ check('committed open reports the saved rewards and stays on the current page', 
     });
     assert.deepStrictEqual(order, [
         'snapshot',
-        'notice:已打开「福袋」；奖励已存入暂存区（当前 3 件）。'
+        'notice:已打开「福袋」；物资优先入包，溢出部分留在暂存（当前 3 件）。'
     ]);
 });
 

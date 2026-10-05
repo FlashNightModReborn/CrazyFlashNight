@@ -1,0 +1,91 @@
+{
+  "schema": "cf7.book-comic.lifecycle.v1",
+  "panel": "book-comic",
+  "domain": "book-comic",
+  "open": {
+    "task": "panel_request",
+    "source": "book_chapter",
+    "payload": "initData",
+    "fields": [
+      "v",
+      "presentationId",
+      "slot",
+      "sceneId",
+      "pageId"
+    ],
+    "queuedAcknowledgement": [
+      "success",
+      "accepted",
+      "bound",
+      "panel",
+      "presentationId",
+      "error"
+    ],
+    "bound": false
+  },
+  "webCommands": {
+    "prepared": {
+      "action": "bookComicPrepared",
+      "operation": "prepared"
+    },
+    "continue": {
+      "action": "bookComicFinish",
+      "operation": "finish",
+      "reason": "continue"
+    },
+    "skip": {
+      "action": "bookComicFinish",
+      "operation": "finish",
+      "reason": "skip"
+    },
+    "failed": {
+      "action": "bookComicFinish",
+      "operation": "finish",
+      "reason": "failed"
+    }
+  },
+  "hostClose": {
+    "action": "bookComicFinish",
+    "operation": "finish",
+    "reason": "closed"
+  },
+  "response": {
+    "task": "book_comic_response",
+    "fields": [
+      "callId",
+      "v",
+      "presentationId",
+      "slot",
+      "sceneId",
+      "pageId",
+      "panelInstanceId",
+      "operation",
+      "success",
+      "phase",
+      "error"
+    ],
+    "phases": [
+      "presenting",
+      "finished",
+      "expired"
+    ],
+    "unsolicitedExpiry": {
+      "callId": 0,
+      "operation": "finish",
+      "success": true,
+      "phase": "expired",
+      "emptyInstanceAllowed": true
+    },
+    "envelope": {
+      "task": "book_comic_response",
+      "payload": "response fields; Host also accepts flat socket response"
+    }
+  },
+  "authority": {
+    "story": "as2",
+    "comicPause": "as2 book_chapter lease",
+    "webPause": "existing PanelHost web lease",
+    "clock": "unpaused game time; Web duration is not a score"
+  },
+  "assets": "launcher/web/assets/book-comic/manifest.json"
+}

@@ -37,15 +37,18 @@
         this.page.mount(options.view.root);
         var header = element(this.document, 'header', '', 'character-build-choice-header');
         header.appendChild(element(this.document, 'h2', '选择你的配给'));
-        this.back = element(this.document, 'button', '稍后再选');
+        this.back = element(this.document, 'button', '返回构筑');
         header.appendChild(this.back); this.page.bindBack(this.back);
         this.page.root.appendChild(header);
+        this.context = element(this.document, 'div', '', 'character-build-choice-context');
         this.balance = element(this.document, 'p', '', 'character-build-choice-hint');
-        this.page.root.appendChild(this.balance);
-        this.page.root.appendChild(element(this.document, 'p', '每次选择一张。技能直接授予，主动技能需在技能页装备；物品进入暂存。付费卡确认时扣除局内K点。', 'character-build-choice-hint'));
-        this.select = element(this.document, 'select'); this.select.setAttribute('aria-label', '待选择的礼包');
-        this.select.onchange = function() { self.offerId = self.select.value; self.selected = ''; self.renderCards(); };
-        this.page.root.appendChild(this.select);
+        this.context.appendChild(this.balance);
+        this.context.appendChild(element(this.document, 'p', '每次选择一张。技能直接授予，主动技能需在技能页装备；物品优先进入背包，装不下的进入暂存。付费卡确认时扣除局内K点。', 'character-build-choice-hint'));
+        this.offers = element(this.document, 'div', '', 'character-build-choice-offers');
+        this.offers.setAttribute('role', 'group');
+        this.offers.setAttribute('aria-label', '待选择的礼包');
+        this.context.appendChild(this.offers);
+        this.page.root.appendChild(this.context);
         this.cards = element(this.document, 'div', '', 'character-build-choice-cards');
         this.cards.setAttribute('role', 'group'); this.cards.setAttribute('aria-label', '配给候选');
         this.page.root.appendChild(this.cards);
@@ -85,18 +88,36 @@
             this.offerId = data.offers.some(function(o) { return o.offerId === wanted; }) ? wanted
                 : data.offers.length ? data.offers[0].offerId : '';
             if (previousOffer !== this.offerId) this.selected = '';
-            this.select.textContent = '';
-            for (var i = 0; i < data.offers.length; i++) {
-                var row = element(this.document, 'option', data.offers[i].title + ' · ' + (i + 1));
-                row.value = data.offers[i].offerId; this.select.appendChild(row);
-            }
-            this.select.value = this.offerId; this.select.hidden = data.offers.length < 2;
+            var self = this;
+            var focusOffer = this.document.activeElement && this.document.activeElement.getAttribute('data-choice-offer');
+            var scrollLeft = this.offers.scrollLeft;
+            this.offers.textContent = '';
+            data.offers.forEach(function(offer, index) {
+                var row = element(self.document, 'button', offer.title + ' · ' + (index + 1));
+                row.setAttribute('data-choice-offer', offer.offerId);
+                row.setAttribute('aria-pressed', String(offer.offerId === self.offerId));
+                row.onclick = function() {
+                    if (self.state !== 'idle' || self.snapshot.pendingOperationId) return;
+                    if (self.offerId === offer.offerId) return;
+                    self.offerId = offer.offerId; self.selected = ''; self.cards.scrollTop = 0;
+                    self.offers.querySelectorAll('[data-choice-offer]').forEach(function(node) {
+                        node.setAttribute('aria-pressed', String(node.getAttribute('data-choice-offer') === self.offerId));
+                    });
+                    self.renderCards();
+                };
+                self.offers.appendChild(row);
+                if (focusOffer === offer.offerId) row.focus({preventScroll:true});
+            });
+            this.offers.hidden = data.offers.length < 2;
+            this.offers.scrollLeft = scrollLeft;
             this.renderCards();
         }
         this.updateState(this.state);
     };
     ChoiceView.prototype.renderCards = function() {
         var self = this;
+        var scrollTop = this.cards.scrollTop;
+        var focusOption = this.document.activeElement && this.document.activeElement.getAttribute('data-choice-option');
         var offer = this.snapshot && this.snapshot.offers.find(function(o) { return o.offerId === self.offerId; });
         if (this.tooltipScope) this.tooltipScope.releaseTree(this.cards);
         this.cards.textContent = '';
@@ -145,9 +166,11 @@
                 self.updateState(self.state);
             };
             self.cards.appendChild(card);
+            if (focusOption === option.optionId) card.focus({preventScroll:true});
             if (self.tooltipScope) self.bindPreview(card, option.title, option.description + '\n\n'
                 + option.items.map(function(item) { return item.details || item.displayName + ' ×' + item.quantity; }).join('\n\n'));
         });
+        this.cards.scrollTop = scrollTop;
         this.updateState(this.state);
     };
     ChoiceView.prototype.bindPreview = function(node, title, details) {
@@ -170,7 +193,7 @@
         this.button.disabled = state === 'write_pending' || state === 'query_pending';
         this.confirm.disabled = busy || this.loadFailed || !this.selected || !this.snapshot;
         this.storage.disabled = busy;
-        this.select.disabled = busy;
+        this.offers.querySelectorAll('[data-choice-offer]').forEach(function(node) { node.disabled = busy; });
         this.refresh.disabled = state === 'write_pending' || state === 'query_pending';
         this.query.hidden = state !== 'needs_reconcile' && !pending;
         this.query.disabled = state === 'query_pending' || state === 'write_pending';
@@ -213,16 +236,31 @@
                     self._itemUse.invokeStash('stashChoose', {storeId:snapshot.storeId, expectedRevision:snapshot.revision,
                         offerId:offerId, optionId:optionId}, function(response, committed) {
                         self._itemUseSettled(response, committed, {command:'stashChoose'});
-                        self._refreshChoiceRewards();
                     });
                 }});
             return this._choiceRewards;
         };
-        controller._refreshChoiceRewards = function(preferred) {
+        controller._refreshChoiceRewards = function(preferred, returnWhenFinished) {
             var view = this._ensureChoiceRewards();
             if (!view) return;
+            var self = this;
+            var request = this._choiceRefreshSequence = (this._choiceRefreshSequence || 0) + 1;
             if (preferred) view.open();
-            this._itemUse.requestChoices(function(data) { if (!view.destroyed) view.setSnapshot(data, preferred); });
+            this._itemUse.requestChoices(function(data) {
+                if (view.destroyed || self._choiceRewards !== view) return;
+                view.setSnapshot(data, preferred);
+                // Only a committed choice may finish this workflow. An empty or
+                // failed background read must never dismiss a pending receipt.
+                if (!returnWhenFinished || !data || data.offers.length || data.pendingOperationId) return;
+                self._itemUse.refreshInbox(function(response, accepted) {
+                    var summary = response && response.inboxSummary;
+                    if (accepted && summary && summary.remainingCount === 0 && summary.recoveryRequired !== true && summary.storeId === data.storeId
+                            && summary.authorityRevision >= data.revision && request === self._choiceRefreshSequence
+                            && !view.destroyed && self._choiceRewards === view && view.snapshot === data
+                            && self._itemUse.debugState().state === 'idle' && view.page.isActive())
+                        view.page.close('claimed');
+                });
+            });
         };
         controller._choiceRewardsStateChanged = function(state) {
             if (this._choiceRewards) {

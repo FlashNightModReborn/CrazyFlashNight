@@ -1,0 +1,8 @@
+﻿import org.flashNight.arki.bullet.BulletComponent.Chain.*;
+import org.flashNight.gesh.depth.*;
+import org.flashNight.neur.ScheduleTimer.*;
+import org.flashNight.arki.unit.Action.Shoot.*;
+#include "逻辑/战斗系统/战斗系统_fs_联弹管理.as"
+trace("FocusedTestRunId weapon-spread Start: __FOCUSED_RUN_ID__");
+org.flashNight.arki.unit.Action.Shoot.WeaponSpreadRuntimeTest.runAllTests();
+trace("FocusedTestRunId weapon-spread Complete: __FOCUSED_RUN_ID__");

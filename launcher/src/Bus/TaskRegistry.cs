@@ -491,8 +491,10 @@ namespace CF7Launcher.Bus
             WorldLightingTask worldLightingTask = null,
             LutLabTask lutLabTask = null,
             NativeGuidanceTask nativeGuidanceTask = null,
-            SceneTransitionTask sceneTransitionTask = null)
+            SceneTransitionTask sceneTransitionTask = null,
+            BookComicTask bookComicTask = null)
         {
+            if (bookComicTask != null) router.RegisterAsync("book_comic_response", bookComicTask.HandleFlashResponse);
             // JSON 路由 task（经 MessageRouter 分发）
             router.RegisterAsync("gomoku_eval", gomoku.HandleAsync);
             router.RegisterAsync("data_query", dataQuery.HandleAsync);
@@ -688,6 +690,7 @@ namespace CF7Launcher.Bus
                     JObject request = callbackPayload ?? msg;
                     string panel = request.Value<string>("panel") ?? "";
                     string source = request.Value<string>("source") ?? "as2_request";
+                    if (panel == "book-comic") return commandRouter != null ? commandRouter.TryOpenBookComic(request) : "{\"success\":false,\"accepted\":false,\"error\":\"router_unavailable\"}";
 
                     // 这是生产 loot panel 唯一的 Flash ingress：使用 tracked PanelHost 与 exact identity。
                     // 专用协调器先对顶层 source 和 initData 分别做 exact-shape 校验；queue accepted 明确不是 bound。
@@ -924,6 +927,7 @@ namespace CF7Launcher.Bus
             first = AppendTask(sb, "scene_transition","json_sync", "AS2->C#", false, first);
             first = AppendTask(sb, "dialogue_portrait_result","json_sync", "Web->C#", false, first);
             first = AppendTask(sb, "cursor_control", "json_sync", "AS2->C#", false, first);
+            first = AppendTask(sb, "book_comic_response", "json_async", "AS2->C#", false, first);
             first = AppendTask(sb, "panel_request",  "json_sync", "AS2->C#", false, first);
             first = AppendTask(sb, "archive",        "json_async","AS2<->C#",true,  first);
             first = AppendTask(sb, "bench_sync",     "json_sync", "AS2<->C#",false, first);

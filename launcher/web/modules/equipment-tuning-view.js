@@ -806,7 +806,7 @@ var EquipmentTuningView = (function() {
                 self._preview = null;
                 self._previewDiagnostic = null;
                 self._modIntent = null;
-                self._status = errorMessage(response && response.error);
+                self._status = errorMessage(response && response.error, response);
             }
             var quickIntentReady = !!self._preview
                 && self._quickCommitIntent

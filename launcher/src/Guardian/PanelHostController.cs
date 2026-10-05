@@ -393,6 +393,8 @@ namespace CF7Launcher.Guardian
         private Func<string, string, string, string> _securityInitDataEnricher;
         private Func<string, string, string, string> _initDataEnricher;
         private Action<string, string> _panelCloseObserver;
+        private CF7Launcher.Tasks.BookComicTask _bookComicTask;
+        public void SetBookComicTask(CF7Launcher.Tasks.BookComicTask task) { _bookComicTask = task; }
         public event Action<string, string> PanelClosed;
         internal event Action<string, string> PanelChanged;
         private PanelCommand? _deferredRebind;
@@ -2518,6 +2520,7 @@ namespace CF7Launcher.Guardian
         private bool DoOpen(string name, string initDataJson, string reservedPanelInstanceId,
             bool requireTrackedDelivery, Action trackedWebPostAccepted)
         {
+            if (name == "book-comic" && (_bookComicTask == null || !_bookComicTask.CanOpen(initDataJson))) return false;
             if (_testPumpDispatcher != null)
             {
                 SuspendHudCompanion();
@@ -2533,6 +2536,7 @@ namespace CF7Launcher.Guardian
                         testInstance);
                 // 测试可观测 hook：记录与生产 DoOpen 同构的 open payload（enricher 链已应用），
                 // 供单测断言 router/host 的 initData 造型，替代已拆除的 router fallback post。
+                if (name == "book-comic" && !_bookComicTask.Bind(testInstance, initDataJson)) return false;
                 _lastOpenPayloadForTest =
                     BuildPanelOpenPayload(name, testEnriched, testInstance);
                 _activePanel = name;
@@ -2553,6 +2557,7 @@ namespace CF7Launcher.Guardian
             string instanceId = string.IsNullOrEmpty(reservedPanelInstanceId)
                 ? NextPanelInstanceId()
                 : reservedPanelInstanceId;
+            if (name == "book-comic" && !_bookComicTask.Bind(instanceId, initDataJson)) return false;
             ClearCommittedGeometry("open_attempt_begin");
             PanelGeometrySnapshot provisional;
             PanelGeometryMeasurement measurement;

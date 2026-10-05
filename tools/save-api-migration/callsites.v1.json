@@ -87,9 +87,9 @@
     "publicationNote": "2026-09-05 实际发布过 11 个目标，复核归属后只交付 5 个更新；其余 6 个恢复接手时原字节，试编结果留 tmp。各 SWF 的 r1Disposition 为本轮处置，不代表删除或永久退役许可。"
   },
   "counts": {
-    "strictLogicalTotal": 23,
+    "strictLogicalTotal": 24,
     "debounceLogicalTotal": 14,
-    "scriptsStrictPhysical": 17,
+    "scriptsStrictPhysical": 18,
     "scriptsDebouncePhysical": 2,
     "xflStrictPhysical": 10,
     "xflDebouncePhysical": 12,
@@ -100,7 +100,7 @@
     "scriptsApiMarkDirtyPhysical": 8,
     "scriptsApiRequestSavePhysical": 2,
     "scriptsApiFlushDurableNowPhysical": 11,
-    "scriptsApiFlushBeforeTransitionPhysical": 5,
+    "scriptsApiFlushBeforeTransitionPhysical": 6,
     "xflLocalSavePhysical": 0,
     "xflApiMarkDirtyPhysical": 0,
     "xflApiRequestSavePhysical": 12,
@@ -282,7 +282,7 @@
       "physicalId": "A4",
       "layer": "scripts",
       "sourcePath": "scripts/类定义/org/flashNight/arki/item/ItemUseService.as",
-      "line": 1026,
+      "line": 1027,
       "frame": null,
       "legacyEntry": "apiFlushDurableNow",
       "legacyApi": "_root.存档系统.flushDurableNow(\"item_use.open_commit\")",
@@ -1194,7 +1194,7 @@
       "physicalId": "U6.1",
       "layer": "scripts",
       "sourcePath": "scripts/类定义/org/flashNight/arki/scene/BookRunService.as",
-      "line": 92,
+      "line": 155,
       "frame": null,
       "legacyEntry": "apiFlushBeforeTransition",
       "legacyApi": "flushBeforeTransition(\"bookshelf.switch\")",
@@ -1218,7 +1218,7 @@
       "physicalId": "U6.2",
       "layer": "scripts",
       "sourcePath": "scripts/类定义/org/flashNight/arki/ui/BookshelfPanelService.as",
-      "line": 152,
+      "line": 154,
       "frame": null,
       "legacyEntry": "apiFlushBeforeTransition",
       "legacyApi": "flushBeforeTransition(\"bookshelf.switch\")",
@@ -1242,7 +1242,7 @@
       "physicalId": "U6.3",
       "layer": "scripts",
       "sourcePath": "scripts/类定义/org/flashNight/arki/ui/BookshelfPanelService.as",
-      "line": 181,
+      "line": 195,
       "frame": null,
       "legacyEntry": "apiFlushBeforeTransition",
       "legacyApi": "flushBeforeTransition(\"bookshelf.switch\")",
@@ -1260,6 +1260,30 @@
       "upstream": "保存原角色及清场迟到修改后才切换角色权威",
       "migrateSlice": 4,
       "notes": "未知保存结果阻止换槽和进入地图。进入凭据与 SP 回流共用 A6 完整候选；临时终局数据复用正规返回和换槽全量屏障。"
+    },
+    {
+      "callsiteId": "U6.4",
+      "physicalId": "U6.4",
+      "layer": "scripts",
+      "sourcePath": "scripts/类定义/org/flashNight/arki/ui/BookshelfPanelService.as",
+      "line": 188,
+      "frame": null,
+      "legacyEntry": "apiFlushBeforeTransition",
+      "legacyApi": "flushBeforeTransition(\"bookshelf.switch\")",
+      "targetApi": "flushBeforeTransition",
+      "reasonId": [
+        "bookshelf.switch"
+      ],
+      "returnConsumed": true,
+      "duplicateGroup": null,
+      "pairRole": "sole",
+      "liveState": "live",
+      "dirtyGuard": false,
+      "expectedSwf": "scripts/asLoader.swf",
+      "wrapper": null,
+      "upstream": "书中首图准备失败后明确返回原角色，仍须确认临时角色保存屏障",
+      "migrateSlice": 4,
+      "notes": "只由加载失败页显式返回消费；失败保持遮幕，不从未知保存状态强行换回原档。"
     }
   ],
   "canonicalMarkDirty": [
@@ -1272,7 +1296,7 @@
     },
     {
       "sourcePath": "scripts/类定义/org/flashNight/arki/scene/StageRunSession.as",
-      "line": 1961,
+      "line": 1976,
       "api": "_root.存档系统.markDirty()",
       "liveState": "live",
       "notes": "同 SkillLoadoutService.as:839；typeof 守卫在 :1344。"
@@ -1286,7 +1310,7 @@
     },
     {
       "sourcePath": "scripts/类定义/org/flashNight/arki/scene/BookRunService.as",
-      "line": 129,
+      "line": 189,
       "api": "_root.存档系统.markDirty()",
       "liveState": "live",
       "notes": "书中终局数据等待正规返回与书架换槽的严格全量保存；不另占奖励候选。"

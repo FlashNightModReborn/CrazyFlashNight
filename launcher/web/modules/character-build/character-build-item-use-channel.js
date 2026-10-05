@@ -25,14 +25,14 @@
         var itemName = String(candidate.name || '').trim();
         var subject = itemName ? '「' + itemName + '」' : '所选物品';
         if (receipt.kind === 'choiceOpen') return '配给候选已保留，请选择一套；稍后也可从“自选礼包”继续。';
-        if (receipt.kind === 'choiceSelect') return '配给已领取：技能直接授予，主动技能请在技能页装备；物品可到暂存领取。';
+        if (receipt.kind === 'choiceSelect') return '配给已领取：技能直接授予，主动技能请在技能页装备；物品优先入包，溢出部分留在暂存。';
         if (pending.command === 'open' || pending.command === 'openMany') {
             var summary = response.inboxSummary || receipt.inboxSummary || {};
             var inboxRemaining = finiteWhole(summary.remainingCount);
             var opened = finiteWhole(response.consumed != null
                 ? response.consumed : receipt.consumed);
             return '已打开'                + (pending.command === 'openMany' && opened !== null
-                    ? opened + ' 个' : '') + subject + '；奖励已存入暂存区'
+                    ? opened + ' 个' : '') + subject + '；物资优先入包，溢出部分留在暂存'
                 + (inboxRemaining !== null ? '（当前 ' + inboxRemaining + ' 件）' : '') + '。';
         }
         var lane = finiteWhole(response.selectedLane != null
@@ -195,7 +195,7 @@
             }
             var receipt = response && response.receipt || response || {};
             if (receipt.kind === 'choiceOpen') this._refreshChoiceRewards(receipt.offerId);
-            if (receipt.kind === 'choiceSelect') this._refreshChoiceRewards();
+            if (receipt.kind === 'choiceSelect') this._refreshChoiceRewards(null, true);
             if (!pending || pending.command !== 'consume') {
                 this._itemUseResumeSelection = null;
             }

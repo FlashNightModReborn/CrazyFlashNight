@@ -268,7 +268,7 @@ namespace CF7Launcher.Guardian
             SyncViewport();
         }
         internal void SuppressTransition() {
-            if (_transition && !_disposed && Visible) { Hide(); SyncViewport(); }
+            if (_transition && !_disposed && Visible) { _pressedButtons = 0; _capturedButton = false; Capture = false; Hide(); SyncViewport(); }
         }
         internal void RaiseTransition() {
             if (_transition && Active && Visible && CanRestoreGameFocus)

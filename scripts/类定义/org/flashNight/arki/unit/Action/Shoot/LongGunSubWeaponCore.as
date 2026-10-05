@@ -199,7 +199,9 @@ class org.flashNight.arki.unit.Action.Shoot.LongGunSubWeaponCore {
 
         if (!bulletProps) bulletProps = prepareManBulletProps(unit, man);
         if (!bulletProps) return false;
-        if (muzzlePosition) bulletProps.区域定位area = muzzlePosition;
+        // 枪口只供 processShot 换算出生坐标；飞行弹的碰撞区域必须随弹体移动。
+        // 清除可复用模板的旧引用，避免旋转导弹窄相位一直停在枪口。
+        delete bulletProps.区域定位area;
 
         var ok:Boolean = org.flashNight.arki.unit.Action.Shoot.WeaponFireCore.executeShot(
             unit,

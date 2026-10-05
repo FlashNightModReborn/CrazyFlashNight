@@ -180,7 +180,7 @@ class org.flashNight.arki.item.ChoiceRewardService {
             _root.虚拟币 -= cost;
             if (cost > 0) PlayerAssetTransaction.recordCurrencyDeltas(0, -cost, context);
             var selectedItems:Array = option.items;
-            if (!RewardStashService.admit(selectedItems, false, true, context)) return RewardStashService.cancel("invalid_reward_pack");
+            if (!RewardStashService.admit(selectedItems, true, true, context)) return RewardStashService.cancel("invalid_reward_pack");
             var saved:Object = RewardStashService.peek().choiceOffers;
             for (var i:Number = 0; i < saved.offers.length; i++) if (saved.offers[i].offerId === params.offerId) { saved.offers.splice(i, 1); break; }
             return RewardStashService.end(fingerprint, {success:true,kind:"choiceSelect",offerId:params.offerId,

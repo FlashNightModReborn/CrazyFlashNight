@@ -793,10 +793,13 @@ _root.从加载失败返回 = function():Boolean {
 
 _root.跳转地图 = function(跳转帧, 返回令牌:String){
 	if (!org.flashNight.arki.scene.StageReturnFlow.beginSceneLoad(返回令牌, 跳转帧)) return;
-    if (!org.flashNight.arki.ui.BookshelfPanelService.applyAtSceneBoundary()) {
+    if (!org.flashNight.arki.ui.BookshelfPanelService.applyAtSceneBoundary(跳转帧)) {
+        // 保留这次真实目的地，加载失败页的重试不能沿用旧房间标志。
+        _root.关卡标志 = 跳转帧;
         _root.淡出动画.gotoAndStop("加载失败");
         return;
     }
+    跳转帧 = org.flashNight.arki.ui.BookshelfPanelService.takeBoundaryFrame(跳转帧);
 	_root.关卡标志 = 跳转帧;
 	_root.当前为战斗地图 = false;
 	_root.soundEffectManager.notifyLeaveBattle();

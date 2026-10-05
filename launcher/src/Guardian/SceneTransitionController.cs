@@ -39,6 +39,16 @@ namespace CF7Launcher.Guardian
         internal event Action SettlementTransportFailed;
         internal CompositionHelpSurface SettlementSurface => _surface;
         private bool _handoffSent;
+        private Func<bool> _exclusivePresentation = () => false;
+        private BookshelfReturnPresentation _bookshelfReturn;
+        internal void ConfigureBookshelfReturn(BookshelfReturnPresentation presentation) => _bookshelfReturn = presentation;
+        internal bool BookshelfReturnLoading => _bookshelfReturn?.Loading == true;
+        private bool BookshelfVisible => _bookshelfReturn?.CanPresent == true && _admitted()
+            && _owner.Visible && _owner.WindowState != FormWindowState.Minimized && _surface.CanRestoreGameFocus;
+        internal void RestoreRetainedBookshelfOrder() { if (!_disposed && BookshelfVisible) _bookshelfReturn.RestoreOrder(); }
+        internal void ConfigureExclusivePresentation(Func<bool> active) => _exclusivePresentation = active;
+        internal static bool AllowsFocusHandoff(bool requested, bool admitted, bool exclusive) => requested && admitted && !exclusive;
+        internal static bool IsExclusivePresentation(string panel, string instance) => panel == "book-comic" && !string.IsNullOrEmpty(instance);
         internal bool CanAdmitSettlement(string initJson) {
             if(_disposed || !_surface.Ready || !Task.Connected || _latest?.Value<bool?>("reportHandoff")!=true
                 || _latest.Value<bool?>("reportVisible")!=true || _surface.SettlementInstance.Length>0) return false;
@@ -144,6 +154,32 @@ namespace CF7Launcher.Guardian
         private void Tick() {
             using var latency = InputLatencyProbe.Measure("transition_tick");
             if(_disposed || _owner.IsDisposed || _anchor.IsDisposed) return;
+            _bookshelfReturn?.RetryPauseRestore();
+            if (_exclusivePresentation()) { if (_fallback.Visible) _fallback.Hide(); _surface.SuppressTransition(); return; }
+            if (_bookshelfReturn?.Active == true)
+            {
+                // A return receipt may arrive after the ordinary curtain has gained focus.
+                // Hand off that exact foreground before hiding it; never take focus from another app.
+                if ((_fallback.Visible || _surface.Visible) && _bookshelfReturn.CanPresent && _admitted())
+                {
+                    IntPtr foreground = _surface.CaptureGameForeground();
+                    if (foreground != IntPtr.Zero) _handoffFocus(foreground);
+                }
+                _fallback.Hide(); _surface.SuppressTransition();
+                if (!BookshelfVisible) return;
+                RestoreRetainedBookshelfOrder();
+                if (_latest != null && !_revealed)
+                {
+                    var bookProjection = (JObject)_latest.DeepClone();
+                    bookProjection["connected"] = Task.Connected; bookProjection["generation"] = Task.Epoch;
+                    bookProjection["revealAllowed"] = Task.Connected && bookProjection.Value<string>("phase") == "reveal"
+                        && _scenePresented(bookProjection.Value<long>("targetScene"));
+                    // The retained endpoint owns its own delivery/acknowledgement cache.
+                    // An accepted Web post is not proof that foreground-gated presentation was accepted.
+                    _bookshelfReturn.Post(bookProjection);
+                }
+                return;
+            }
             Prepare();
             if(_latest==null || _revealed) {
                 if(_surface.SettlementInstance.Length>0 && _surface.Ready) {
@@ -229,6 +265,7 @@ namespace CF7Launcher.Guardian
             } catch(InvalidOperationException) { _orderQueued=false; }
         }
         private void RestoreWindowOrder() {
+            if (_exclusivePresentation() || _bookshelfReturn?.Active == true) return;
             bool showSurface=_surface.Active && !_recovering;
             if(_fallback.Visible) SceneTransitionWindowOrder.RaiseIfCovered(_fallback,_owner,
                 showSurface && _surface.Visible ? _surface.Handle : IntPtr.Zero);
@@ -239,7 +276,7 @@ namespace CF7Launcher.Guardian
             // Pin the live foreground and hand it to the game root before any Hide call.
             // The existing primitive checks that exact HWND again and never retries against
             // a foreign foreground window; an intentional Alt+Tab remains untouched.
-            if(handoff && _admitted()) {
+            if(AllowsFocusHandoff(handoff, _admitted(), _exclusivePresentation() || _bookshelfReturn?.Active == true)) {
                 IntPtr foreground=_surface.CaptureGameForeground();
                 if(foreground!=IntPtr.Zero && !_handoffFocus(foreground))
                     LogManager.Log("event=scene_transition_handoff_failed id="+_identity);
@@ -263,9 +300,33 @@ namespace CF7Launcher.Guardian
                     _surface.TryPostTransitionPanel("{\"type\":\"scene_transition_complete\"}");
                     SceneCompleted?.Invoke();
                 }
-            } else HidePresentation(handoff);
+            } else {
+                HidePresentation(handoff);
+                if (_bookshelfReturn?.Active == true) _bookshelfReturn.CompleteScene();
+            }
             InputLatencyProbe.Current?.SetPhase(complete ? "base_ready" : "hidden", finished: true);
             if(held) CurtainReleased?.Invoke();
+        }
+        internal void HandleBookshelfMessage(string instance, JObject p)
+        {
+            if (_disposed || !BookshelfVisible || _bookshelfReturn.Instance != instance
+                || _latest == null || !Task.Connected || p == null) return;
+            if (p.Value<string>("type") == "scene_transition_action")
+            {
+                // Loading-error recovery retains the original transition identity.
+                Task.Action(p); return;
+            }
+            if (p.Value<string>("type") != "scene_transition_presented" || !Task.MatchesWeb(p)) return;
+            string kind = p.Value<string>("kind");
+            if (kind == "covered") { if (Task.Presented(p)) { _covered = true; _bookshelfReturn.Confirm(p); } }
+            else if (kind == "revealed" && _latest.Value<string>("phase") == "reveal"
+                && _scenePresented(_latest.Value<long>("targetScene")) && Task.Presented(p))
+            {
+                // The bookshelf remains visible. AS2 still owns frames 30..36 and
+                // sends hide before CompleteScene can reacquire the Web pause.
+                _revealed = true;
+                _bookshelfReturn.Confirm(p);
+            }
         }
         public void Dispose() {
             if(_disposed)return; _disposed=true;

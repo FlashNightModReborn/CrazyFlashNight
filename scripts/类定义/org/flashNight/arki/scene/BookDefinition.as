@@ -167,7 +167,12 @@ class org.flashNight.arki.scene.BookDefinition {
                     count: 1
                 }
             ],
-            dialogue: []
+            dialogue: [
+                {
+                    speaker: "Andy",
+                    text: "先练两下。别钱还没挣到，自己先倒了……"
+                }
+            ]
         },
         {
             title: "校门口的混混",
@@ -223,10 +228,19 @@ class org.flashNight.arki.scene.BookDefinition {
                     count: 12
                 }
             ],
-            dialogue: []
+            dialogue: [
+                {
+                    speaker: "对方",
+                    text: "人来了，往那边走！"
+                },
+                {
+                    speaker: "Andy",
+                    text: "别跑！水管是不是你们砸的？"
+                }
+            ]
         },
         {
-            title: "军阀派的地盘",
+            title: "拦路的一伙",
             background: "gk13_2_BG.swf",
             enemies: [
                 447,
@@ -279,10 +293,23 @@ class org.flashNight.arki.scene.BookDefinition {
                     count: 1
                 }
             ],
-            dialogue: []
+            dialogue: [
+                {
+                    speaker: "学员",
+                    text: "这人怎么还往前走？"
+                },
+                {
+                    speaker: "另一人",
+                    text: "先别管，表现要记分的。"
+                },
+                {
+                    speaker: "Andy",
+                    text: "打人还算成绩？你们这什么学校啊？"
+                }
+            ]
         },
         {
-            title: "黑铁派的挑战",
+            title: "没完没了",
             background: "gk12_3_BG.swf",
             enemies: [
                 436,
@@ -340,7 +367,7 @@ class org.flashNight.arki.scene.BookDefinition {
             dialogue: []
         },
         {
-            title: "军校生的欢迎",
+            title: "还有下一组",
             background: "gk12_2_BG.swf",
             enemies: [
                 449,
@@ -395,10 +422,23 @@ class org.flashNight.arki.scene.BookDefinition {
                     count: 24
                 }
             ],
-            dialogue: []
+            dialogue: [
+                {
+                    speaker: "学员",
+                    text: "不是说他知道规则吗？"
+                },
+                {
+                    speaker: "另一人",
+                    text: "先顾好自己！"
+                },
+                {
+                    speaker: "Andy",
+                    text: "什么规则？谁跟我说过了？"
+                }
+            ]
         },
         {
-            title: "剑道社的试炼",
+            title: "谁在记分",
             background: "gk12_4_BG.swf",
             enemies: [
                 444,
@@ -452,7 +492,16 @@ class org.flashNight.arki.scene.BookDefinition {
                     count: 24
                 }
             ],
-            dialogue: []
+            dialogue: [
+                {
+                    speaker: "学员",
+                    text: "老师在校门口。有话你找他说。"
+                },
+                {
+                    speaker: "Andy",
+                    text: "老师？那我倒要问问，他是怎么教的！"
+                }
+            ]
         },
         {
             title: "最后一堂体育课",

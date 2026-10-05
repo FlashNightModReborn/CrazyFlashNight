@@ -386,7 +386,15 @@
         return cmd === 'detach';
     }
 
-    function validateFailureResponse(data) {
+    function validateFailureResponse(data, cmd, payload) {
+        if (data && own.call(data, 'materialShortage')) {
+            var shortage = data.materialShortage;
+            if (cmd !== 'preview' || !payload || payload.operation !== 'enhance' || data.error !== 'insufficient_material'
+                    || !shortage || Object.keys(shortage).length !== 4 || shortage.itemName !== '强化石'
+                    || !integer(shortage.required, 1, 2147483647) || !integer(shortage.owned, 0, 2147483647)
+                    || !integer(shortage.missing, 1, 2147483647) || shortage.required <= shortage.owned
+                    || shortage.missing !== shortage.required - shortage.owned) return false;
+        }
         return !!data && data.success === false
             && identityText(data.error, 64)
             && (!own.call(data, 'requiresReconcile')
@@ -433,7 +441,7 @@
                 if (!mismatches.length && !(data.success === true
                         ? validateSuccessResponse(data, entry.cmd,
                             entry.metadata && entry.metadata.payload)
-                        : validateFailureResponse(data))) {
+                        : validateFailureResponse(data, entry.cmd, entry.metadata && entry.metadata.payload))) {
                     mismatches.push('businessShape');
                 }
                 if (mismatches.length) {

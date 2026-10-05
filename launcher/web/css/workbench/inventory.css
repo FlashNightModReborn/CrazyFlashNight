@@ -36,7 +36,7 @@
 .inventory-slot-card.write-locked { opacity:1; cursor:help; }
 .inventory-workbench-panel[data-quick-transfer-mode="deposit"] .inventory-owned-backpack .inventory-slot-card:not(.empty),
 .inventory-workbench-panel[data-quick-transfer-mode="withdraw"] .inventory-owned-warehouse .inventory-slot-card:not(.empty) {
-    cursor:pointer; box-shadow:inset 0 0 0 1px rgba(240,164,58,.55);
+    cursor:pointer;
 }
 .inventory-slot-card.quick-transfer-pending {
     opacity:.7; box-shadow:inset 0 0 0 2px rgba(240,164,58,.85) !important;
@@ -1238,3 +1238,5 @@
 .inventory-inline-quantity .workbench-quantity-range-shell { grid-column:5; grid-row:1; }
 .inventory-inline-quantity .workbench-quantity-feedback { grid-column:1 / -1; }
 .inventory-move-selected:not(:disabled) { color:var(--wb-accent); border-color:var(--wb-accent); }
+
+.inventory-take-page{min-height:40px!important;white-space:nowrap}

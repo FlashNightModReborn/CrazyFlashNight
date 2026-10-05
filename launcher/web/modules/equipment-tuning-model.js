@@ -175,7 +175,12 @@
             replace_mod:'替换配件',detach_mod:'卸下配件',detach_all_mods:'卸下全部配件'};
         return labels[value] || '调制预览';
     }
-    function errorMessage(error) {
+    function errorMessage(error, response) {
+        var shortage = response && response.materialShortage;
+        if (error === 'insufficient_material' && shortage && shortage.itemName === '强化石') {
+            return '强化石不足：本次需要 ' + exactQuantity(shortage.required) + '，持有 '
+                + exactQuantity(shortage.owned) + '，还差 ' + exactQuantity(shortage.missing) + '。';
+        }
         var labels = {invalid_payload:'请求字段无效。',stale_state:'装备或材料状态已变化，请重新选择。',
             material_missing:'材料不足。',insufficient_material:'材料不足。',target_invalid:'转换目标无效。',
             invalid_target:'转换目标无效。',same_slot:'不能选择同一件装备。',

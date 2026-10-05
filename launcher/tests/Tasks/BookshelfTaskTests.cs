@@ -9,6 +9,49 @@ namespace Launcher.Tests.Tasks
 {
     public sealed class BookshelfTaskTests
     {
+        [Fact]
+        public void ReturnPresentationIsAdmittedByValidatedReceiptAndKeepsRecoveryIdentity()
+        {
+            var sent = new List<JObject>(); var posted = new List<JObject>(); var phases = new List<string>();
+            using var task = Create(sent, posted);
+            task.SetReturnPresentation((instance, receipt) => { Assert.Equal("bookshelf.panel.1", instance); phases.Add(receipt.Value<string>("phase")); });
+            task.HandleWebRequest("commit", Request("commit", kind:"return"));
+            Assert.True(task.IsReturning); Assert.Empty(phases);
+            task.HandleFlashResponse(Response(sent[0], "switching", active:"bookrun_fixture", kind:"return"), _ => { });
+            Assert.Equal(new[] { "switching" }, phases); Assert.True(task.IsReturning);
+            task.HandleWebRequest("query", Request("query", "call.2"));
+            task.HandleFlashResponse(Response(sent[1], "applied", kind:"return"), _ => { });
+            Assert.Equal(new[] { "switching", "applied" }, phases); Assert.False(task.IsReturning);
+        }
+        [Theory]
+        [InlineData("foreign_kind")][InlineData("foreign_token")][InlineData("bad_record")]
+        public void MalformedReturnCannotSuppressLoadingOrReleaseItsWriteFence(string fault)
+        {
+            var sent = new List<JObject>(); var posted = new List<JObject>(); int projections = 0;
+            using var task = Create(sent, posted); task.SetReturnPresentation((_, _) => projections++);
+            task.HandleWebRequest("commit", Request("commit", kind:"return"));
+            var receipt = Response(sent[0], "switching", kind:"return");
+            if (fault == "foreign_kind") receipt["kind"] = "switch";
+            else if (fault == "foreign_token") receipt["token"] = "bookshelf.foreign";
+            else receipt["records"] = new JObject { ["bestMs"] = -1, ["clears"] = 1, ["history"] = new JArray() };
+            task.HandleFlashResponse(receipt, _ => { });
+            Assert.Equal(0, projections); Assert.True(task.IsReturning);
+            Assert.True(posted[0].Value<bool>("requiresReconcile"));
+        }
+        [Fact]
+        public void HistoryIsOnlyAReadProjectionAndPendingResultCannotClaimPaidSP()
+        {
+            var sent = new List<JObject>(); var posted = new List<JObject>();
+            using var task = Create(sent, posted);
+            task.HandleWebRequest("commit", Request("commit", kind:"return"));
+            var receipt = Response(sent[0], "switching", kind:"return");
+            receipt["records"] = new JObject { ["bestMs"] = 600000, ["clears"] = 3, ["history"] = new JArray() };
+            receipt["returningResult"] = new JObject { ["runId"] = "bookrun_fixture", ["bookId"] = "repair-campus",
+                ["outcome"] = "victory", ["elapsedMs"] = 700000, ["completedAt"] = 0, ["debug"] = false,
+                ["sp"] = 45, ["reason"] = "pending" };
+            task.HandleFlashResponse(receipt, _ => { });
+            Assert.Equal("malformed_response", posted[0].Value<string>("error")); Assert.True(task.IsReturning);
+        }
         private static JObject Read(string text) => JObject.Parse(text.TrimEnd('\0'));
         private static JObject Request(string cmd, string call = "call.1", string token = "bookshelf.test.1", string kind = "switch", string target = "slot_b")
         {

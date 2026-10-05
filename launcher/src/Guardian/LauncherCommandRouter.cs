@@ -176,6 +176,14 @@ namespace CF7Launcher.Guardian
         private readonly Action<string> _postToWeb;
         private readonly bool _preparationNavigationV1;
         private PanelHostController _panelHost;
+        private BookComicTask _bookComicTask;
+        public void SetBookComicTask(BookComicTask task) { _bookComicTask = task; }
+        public string TryOpenBookComic(JObject request) {
+            var data = BookComicTask.BuildOpenData(request.Value<string>("source"), request["initData"]?.ToString(Formatting.None));
+            bool accepted = data != null && _bookComicTask != null && _panelHost != null && string.IsNullOrEmpty(_panelHost.ActivePanelName) && _bookComicTask.Reserve(data);
+            if (accepted) { accepted = OpenPanel("book-comic", data.ToString(Formatting.None)); if (!accepted) _bookComicTask.RejectOpen(data); }
+            return new JObject { ["success"] = accepted, ["accepted"] = accepted, ["bound"] = false, ["panel"] = "book-comic", ["presentationId"] = data?["presentationId"], ["error"] = accepted ? "" : "comic_open_rejected" }.ToString(Formatting.None);
+        }
         private LootPanelCoordinator _lootPanelCoordinator;
         private SkillTask _skillTask;
         private EquipmentTuningTask _equipmentTuningTask;

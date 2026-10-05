@@ -457,6 +457,7 @@ namespace CF7Launcher.Guardian
             GaragePurchase,
             Sleep,
             Bookshelf,
+            BookComic,
             Gym,
             Settings,
             EquipmentTuning,
@@ -480,6 +481,7 @@ namespace CF7Launcher.Guardian
             if (domain == "garage") return PanelDomainRoute.GaragePurchase;
             if (domain == "sleep") return PanelDomainRoute.Sleep;
             if (domain == "bookshelf") return PanelDomainRoute.Bookshelf;
+            if (domain == "book-comic") return PanelDomainRoute.BookComic;
             if (domain == "gym") return PanelDomainRoute.Gym;
             if (domain == "settings") return PanelDomainRoute.Settings;
             if (domain == "equipment_tuning") return PanelDomainRoute.EquipmentTuning;
@@ -1359,7 +1361,30 @@ namespace CF7Launcher.Guardian
         private PlasticSurgeryTask _plasticSurgeryTask;
         private GaragePurchaseTask _garagePurchaseTask;
         private SleepTask _sleepTask;
+        private BookComicTask _bookComicTask;
+        public void SetBookComicTask(BookComicTask task)
+        {
+            _bookComicTask = task;
+            task.SetPostToWeb(PostToWeb,
+                a => { try { BeginInvoke(a); } catch {} },
+                CloseBookComicPresentation);
+        }
+
+        internal void CloseBookComicPresentation(string instance)
+        {
+            if (_panelHost == null) return;
+            _panelHost.TryClosePanelExact("book-comic", instance, true,
+                delegate(bool closed)
+                {
+                    if (!closed) return;
+                    // AS2 retires the comic claim before this callback. The ordinary Web
+                    // panel claim remains ours until this exact native/Web surface is closed.
+                    // Reuse the standard release so a following dialogue keeps its own claim.
+                    CommitAcceptedPanelCloseEffects("book-comic", false, false);
+                });
+        }
         private BookshelfTask _bookshelfTask;
+        private BookshelfReturnPresentation _bookshelfReturn;
         private BookshelfOriginalContent _bookshelfOriginalContent;
         private GymTrainingTask _gymTrainingTask;
         private SettingsTask _settingsTask;
@@ -4755,6 +4780,16 @@ namespace CF7Launcher.Guardian
         public void SetBookshelfTask(BookshelfTask task)
         {
             _bookshelfTask = task;
+            _bookshelfReturn = new BookshelfReturnPresentation(
+                instance => _panelHost?.ActivePanelName == "bookshelf" && _panelHost.ActivePanelInstanceId == instance,
+                TryReleaseGenericWebPanelPause, AssertWebPanelPause, TryPostToWeb,
+                () => SceneTransitionWindowOrder.IsPresented(this) && _panelMode && CanAcceptPanelDocumentMessages,
+                () => SceneTransitionWindowOrder.RaiseIfCovered(this, Owner));
+            task.SetReturnPresentation((instance, receipt) =>
+            {
+                _panelHost?.SceneTransition?.ConfigureBookshelfReturn(_bookshelfReturn);
+                _bookshelfReturn.Observe(instance, receipt);
+            });
             _bookshelfOriginalContent ??= new BookshelfOriginalContent(_projectRoot,
                 (instance, token) => CanAcceptPanelDocumentMessages && _panelHost?.ActivePanelName == "bookshelf"
                     && _panelHost.ActivePanelInstanceId == instance && _bookshelfTask != null && _bookshelfTask.CanOpenOriginal(instance, token));
@@ -7107,6 +7142,8 @@ namespace CF7Launcher.Guardian
                 HandleLootVisualClose(parsed);
                 return;
             }
+            if (cmd == "close" && messagePanel == "bookshelf" && _bookshelfTask?.IsReturning == true)
+                return;
             if (ShouldRejectLegacyPetsClose(parsed)
                 || ShouldRejectLegacyMercsClose(parsed))
             {
@@ -7391,10 +7428,16 @@ namespace CF7Launcher.Guardian
                 else RespondPanelDomainError(parsed, "crafting_unavailable");
                 return;
             }
+            if (domainRoute == PanelDomainRoute.BookComic) { if (!HasExactActivePanelOwnerBinding(parsed, "book-comic")) { RespondPanelDomainError(parsed, "panel_instance_expired"); return; } _bookComicTask?.HandleWebRequest(cmd, parsed); return; }
             if (domainRoute == PanelDomainRoute.Bookshelf)
             {
                 if (!HasExactActivePanelOwnerBinding(parsed, "bookshelf"))
                 { RespondPanelDomainError(parsed, "panel_instance_expired"); return; }
+                if (cmd == "transitionPresented" || cmd == "transitionAction")
+                {
+                    _panelHost?.SceneTransition?.HandleBookshelfMessage(messagePanelInstanceId, parsed["payload"] as JObject);
+                    return;
+                }
                 if (_bookshelfTask != null) _bookshelfTask.HandleWebRequest(cmd, parsed);
                 else RespondPanelDomainError(parsed, "bookshelf_unavailable");
                 return;
@@ -9318,6 +9361,7 @@ namespace CF7Launcher.Guardian
             if (_plasticSurgeryTask != null) _plasticSurgeryTask.ClearPending();
             if (_garagePurchaseTask != null) _garagePurchaseTask.ClearPending();
             if (_sleepTask != null) _sleepTask.ClearPending();
+            _bookComicTask?.OnDisconnected();
             if (_bookshelfTask != null) _bookshelfTask.ClearPending();
             if (_gymTrainingTask != null) _gymTrainingTask.OnSocketDisconnected();
             if (_settingsTask != null) _settingsTask.ClearPending();

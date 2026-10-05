@@ -24,6 +24,7 @@ namespace CF7Launcher.Tasks
         private Action<string> _post;
         private Action<Action> _invoke;
         private Action<string> _permanentSlotApplied;
+        private Action<string, JObject> _returnPresentation;
         private string _lastAppliedToken;
         private string _originalInstance, _originalToken;
         private Action _originalRevoked;
@@ -47,6 +48,8 @@ namespace CF7Launcher.Tasks
         public void SetSaveContext(SaveResolutionContext saves) { _saves = saves; }
         public void SetPostToWeb(Action<string> post) { _post = post; }
         public void SetInvoker(Action<Action> invoke) { _invoke = invoke; }
+        internal void SetReturnPresentation(Action<string, JObject> callback) { _returnPresentation = callback; }
+        internal bool IsReturning { get { lock (_gate) return _unresolvedKind == "return"; } }
         internal void SetOriginalRevoked(Action callback) { _originalRevoked = callback; }
         private void RevokeOriginal() { _originalInstance = _originalToken = null; _originalRevoked?.Invoke(); }
         internal bool CanOpenOriginal(string instance, string token)
@@ -197,6 +200,9 @@ namespace CF7Launcher.Tasks
                         && Text(message["nextToken"]) != request.Token;
                 if (state && message["exitRequired"] != null)
                     state = message["exitRequired"].Type == JTokenType.Boolean;
+                if (state && message["records"] != null) state = ValidRecords(message["records"] as JObject);
+                if (state && message["returningResult"]?.Type != JTokenType.Null && message["returningResult"] != null)
+                    state = ValidResult(message["returningResult"] as JObject, true);
                 bool rejected = envelope && message["success"]?.Type == JTokenType.Boolean && !message.Value<bool>("success")
                     && new[] { "invalid_payload", "stale_token", "context_changed", "busy", "locked", "invalid_target",
                         "save_failed", "transition_rejected", "token_conflict", "config_unavailable" }.Contains(Text(message["error"]));
@@ -218,6 +224,12 @@ namespace CF7Launcher.Tasks
                     && IsPermanentSlot(Text(message["activeSlot"])) && string.IsNullOrEmpty(Text(message["pendingRun"]))
                     && message["outcomePending"]?.Type == JTokenType.Boolean && !message.Value<bool>("outcomePending"))
                     _saves?.Archive.QueueSettledBookRunCleanup(Text(message["activeSlot"]));
+                if (state && request.Kind == "return" && _returnPresentation != null)
+                {
+                    var receipt = (JObject)message.DeepClone();
+                    Action presentReturn = () => _returnPresentation(request.Instance, receipt);
+                    if (_invoke == null) presentReturn(); else _invoke(presentReturn);
+                }
                 JObject result = state || rejected ? (JObject)message.DeepClone()
                     : new JObject { ["success"] = false, ["error"] = "malformed_response" };
                 if (state && message.Value<bool>("success") && phase == "editing" && request.Cmd == "snapshot"
@@ -241,6 +253,24 @@ namespace CF7Launcher.Tasks
                         call.WebCallId, call.Context.Cmd, call.Context.Instance);
             }
         }
+        private static bool BoundedInteger(JToken value, long maximum)
+            => value?.Type == JTokenType.Integer && long.TryParse(value.ToString(), out long number) && number >= 0 && number <= maximum;
+        private static bool ValidResult(JObject result, bool pending)
+        {
+            if (result == null || !Exact(result, "runId", "bookId", "outcome", "elapsedMs", "completedAt", "sp", "reason", "debug")) return false;
+            return Text(result["runId"]) is string run && SaveSlotKey.IsValidExisting(run)
+                && Text(result["bookId"]) == "repair-campus"
+                && new[] { "victory", "failure", "defeat", "retreat", "abandoned" }.Contains(Text(result["outcome"]))
+                && BoundedInteger(result["elapsedMs"], 86399999) && BoundedInteger(result["completedAt"], 9007199254740991)
+                && BoundedInteger(result["sp"], 1000000) && result["debug"]?.Type == JTokenType.Boolean
+                && (new[] { "first_clear", "personal_best", "clear", "debug", "incomplete" }.Contains(Text(result["reason"]))
+                    || pending && Text(result["reason"]) == "pending" && result.Value<int>("sp") == 0);
+        }
+        private static bool ValidRecords(JObject records)
+            => records != null && Exact(records, "bestMs", "clears", "history")
+                && BoundedInteger(records["bestMs"], 86399999) && BoundedInteger(records["clears"], 9007199254740991)
+                && records["history"] is JArray history && history.Count <= 20 && history.All(r => ValidResult(r as JObject, false))
+                && history.Select(r => Text(r["runId"])).Distinct(StringComparer.Ordinal).Count() == history.Count;
         private void RejectAndRemember(string call, string cmd, string instance, string error)
         { if (_pending.TryRememberRejected(call)) Send(new JObject { ["success"] = false, ["error"] = error }, call, cmd, instance); }
         private void Send(JObject result, string call, string cmd, string instance)

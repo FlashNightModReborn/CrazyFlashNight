@@ -941,7 +941,7 @@ _root.敌人函数.重装拾荒者随机兵器表 = [
 	"M249",
 	"HK23",
 	"MK48",
-	"PKM机枪",
+	"PKM机枪"
 ];
 
 _root.敌人函数.获取拾荒者随机装扮 = function(target, type:String){

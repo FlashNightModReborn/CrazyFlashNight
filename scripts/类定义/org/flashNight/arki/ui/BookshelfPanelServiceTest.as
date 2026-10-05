@@ -17,8 +17,9 @@ class org.flashNight.arki.ui.BookshelfPanelServiceTest {
         _root._saveExt = {}; _root.tasks_finished = {}; _root.tasks_finished[21] = 1;
         _root.场景转换中 = false; _root.技能点数 = 100;
         _root.__bookWire = ""; _root.__bookFades = 0; _root.__bookEntry = null;
+        _root.__bookEffects = [];
         _root.server = {sendSocketMessage:function(message) { _root.__bookWire = message; return true; }};
-        _root.淡出动画 = {淡出跳转帧:function(frame) { _root.__bookFades++; return true; }};
+        _root.淡出动画 = {淡出跳转帧:function(frame) { _root.__bookFrame = frame; _root.__bookFades++; return true; }};
         fake = {pending:false,fence:true,replacements:0};
         fake.hasRewardCommitPending = function() { return this.pending; };
         fake.rewardCommitOperationId = function() { return this.pending ? _root.__bookEntry.id : ""; };
@@ -183,8 +184,17 @@ class org.flashNight.arki.ui.BookshelfPanelServiceTest {
                 fade._currentframe = 36;
                 org.flashNight.arki.ui.SceneTransitionService.clear();
                 pumpReturnJobs(); pumpReturnJobs();
-                check(_root.__bookReturnOpens == 1 && fake.replacements == 1,
-                    kinds[i] + ": successful release opens once without replaying context or reward");
+                check(_root.__bookReturnOpens == (kinds[i] == "return" ? 0 : 1) && fake.replacements == 1,
+                    kinds[i] + ": return retains its existing panel; ordinary switch opens once");
+                if (kinds[i] == "return") {
+                    result = BookshelfPanelService.execute("query", {v:1, token:token});
+                    check(result.phase == "applied" && result.nextToken != token && result.nextToken.indexOf("bookshelf.") == 0,
+                        "retained return issues original character capability only after curtain retirement");
+                    check(BookshelfPanelService.execute("snapshot", {v:1, token:result.nextToken}).activeSlot == "book_fixture_b",
+                        "same panel successor reads the restored character without reopening");
+                    check(BookshelfPanelService.execute("query", {v:1, token:token}).nextToken == result.nextToken
+                            && fake.replacements == 1, "late return query cannot repeat context replacement");
+                }
             }
             setup();
             _root._saveExt.bookRun = {outcome:"active"};
@@ -265,6 +275,102 @@ class org.flashNight.arki.ui.BookshelfPanelServiceTest {
             _root.当前为战斗地图 = oldBattle; _root.关卡类型 = oldType;
         }
     }
+    /** 生产书架接纳、实际 admission 与关卡准备；仅存储、环境、manager 为受控 fixture。 */
+    private static function testDirectBookEntry():Void {
+        var runClass:Object = org.flashNight.arki.scene.BookRunService;
+        var stageClass:Object = org.flashNight.arki.scene.StageRunSession;
+        var managerClass:Object = org.flashNight.arki.scene.StageManager;
+        var weatherClass:Object = org.flashNight.arki.weather.WeatherSystem;
+        var oldManager:Function = managerClass.getInstance, oldWeather:Function = weatherClass.getInstance;
+        var keys:Array = ["关卡回调函数","限制系统","当前为战斗地图","当前关卡名","当前关卡难度",
+            "关卡类型","关卡地图帧值","场景进入位置名","难度等级","帧计时器","__bookReturnJobs"];
+        var saved:Object = {};
+        for (var k:Number = 0; k < keys.length; k++) saved[keys[k]] = _root[keys[k]];
+        _root.关卡回调函数 = {}; _root.限制系统 = {openEntries:function():Void {}};
+        _root.当前为战斗地图 = false;
+        _root.帧计时器 = {添加单次任务:function(fn:Function):Void { _root.__bookReturnJobs.push(fn); }};
+        managerClass.getInstance = function():Object { return fixtureSave().manager; };
+        weatherClass.getInstance = function():Object { return {getEnvConfig:function():Object {
+            return {getStageEnv:function():Object { return {Xmin:100,Ymin:200}; }};
+        }}; };
+        try {
+            setup(); stageClass.testOnlyReset();
+            fake.manager = {initialize:function(stages, unused, reservation, allow, rewards, name):Boolean {
+                var f:Object = fixtureSave(); f.initialized++; f.stageToken = reservation;
+                f.stageCount = stages.length; f.merchantX = stages[0].Instances.Instance[0].x;
+                f.preparedSlot = String(_root.savePath); f.worldGone = _root.gameworld._parent == undefined;
+                f.ordinaryAdmission = org.flashNight.arki.scene.StageRunSession.reserveStageStart("other", "other", "简单");
+                f.foreignAdmission = org.flashNight.arki.scene.StageRunSession.reserveBookshelfEntry("foreign", name);
+                f.currentAdmission = org.flashNight.arki.scene.StageRunSession.isStageStartReservationValid(reservation);
+                return true;
+            }, abortPreparedStage:function():Void { fixtureSave().aborts++; }};
+            fake.initialized = 0; fake.aborts = 0; _root.__bookReturnJobs = [];
+            var token:String = open();
+            BookshelfPanelService.execute("commit", {v:1,token:token,kind:"play",target:"repair-campus",runSlot:"bookrun_direct"});
+            BookshelfPanelService.execute("query", {v:1,token:token});
+            check(_root.__bookFrame == "wuxianguotu_1" && _root.__bookFades == 1,
+                "play targets battle on the original fade; no dorm frame requested");
+            check(!runClass.prepareAtSceneBoundary() && fake.initialized == 0,
+                "external prepare cannot adopt an active old world");
+            _root.场景转换中 = true; _root.淡出动画.__returnFadeActive = true;
+            _root.gameworld.removeMovieClip(); delete _root.gameworld;
+            check(BookshelfPanelService.applyAtSceneBoundary("wuxianguotu_1") && fake.replacements == 1,
+                "one covered boundary adopts and prepares the run directly");
+            check(fake.worldGone && fake.preparedSlot == "bookrun_direct" && fake.currentAdmission,
+                "stage preparation follows world disposal and the new slot exact reservation");
+            check(fake.stageCount == 7 && fake.merchantX == 280 && _root._saveExt.bookRun.started === true,
+                "production run plan and environment are prepared before entering battle");
+            check(fake.ordinaryAdmission == "" && fake.foreignAdmission == "",
+                "covered entry does not relax ordinary or foreign stage admission");
+            check(!BookshelfPanelService.isPreparingBookEntry("bookrun_direct") && !runClass.prepareAtSceneBoundary(),
+                "synchronous boundary capability expires after preparation");
+            BookshelfPanelService.applyAtSceneBoundary("wuxianguotu_1");
+            check(fake.replacements == 1 && fake.initialized == 1 && _root.__bookFades == 1,
+                "boundary replay cannot replace, initialize, or fade twice");
+            stageClass.cancelStageStart(fake.stageToken);
+            _root.当前为战斗地图 = true;
+            _root.gameworld = _root.createEmptyMovieClip("bookFixtureWorld",9230);
+            org.flashNight.neur.Event.EventBus.getInstance().publish("SceneReady",_root.gameworld,"",StageReturnFlow.worldIdentity(_root.gameworld));
+            check(BookshelfPanelService.execute("query",{v:1,token:token}).phase == "applied" && _root.__bookReturnJobs.length == 0,
+                "battle arrival acknowledges the switch without queueing a second transition");
+
+            _root.当前为战斗地图 = false;
+            var manager:Object = fake.manager;
+            setup(); stageClass.testOnlyReset(); fake.manager = manager; fake.initialized = 0; fake.aborts = 0;
+            token = open();
+            BookshelfPanelService.execute("commit", {v:1,token:token,kind:"play",target:"repair-campus",runSlot:"bookrun_retry"});
+            BookshelfPanelService.execute("query", {v:1,token:token});
+            fake.flushBeforeTransition = function():Boolean { return String(_root.savePath) != "bookrun_retry" || this.tempSaved === true; };
+            _root.场景转换中 = true; _root.淡出动画.__returnFadeActive = true;
+            _root.gameworld.removeMovieClip(); delete _root.gameworld;
+            check(!BookshelfPanelService.applyAtSceneBoundary("wuxianguotu_1") && fake.aborts == 1
+                    && _root._saveExt.bookRun.started === false,
+                "unconfirmed temporary save cancels reservation and keeps the loading curtain");
+            check(stageClass.getCurrentRunId() == "" && !stageClass.isStageStartReservationValid(fake.stageToken),
+                "failed entry leaves no live stage or reservation");
+            fake.tempSaved = true;
+            check(BookshelfPanelService.applyAtSceneBoundary("wuxianguotu_1") && fake.replacements == 1 && fake.initialized == 2,
+                "explicit retry prepares the already adopted slot without replaying the origin transaction");
+            stageClass.cancelStageStart(fake.stageToken);
+
+            setup(); stageClass.testOnlyReset(); token = open();
+            BookshelfPanelService.execute("commit", {v:1,token:token,kind:"play",target:"repair-campus",runSlot:"bookrun_rejected"});
+            BookshelfPanelService.execute("query", {v:1,token:token});
+            fake.replacePlayerContext = function(slot, snapshot, run):Boolean {
+                this.replacements++; if (run != null) return false;
+                _root.savePath = slot; _root._saveExt = PersistedSnapshot.clone(snapshot.ext); return true;
+            };
+            _root.gameworld.removeMovieClip(); delete _root.gameworld;
+            check(BookshelfPanelService.applyAtSceneBoundary("wuxianguotu_1") && _root.savePath == "book_fixture_a"
+                    && BookshelfPanelService.takeBoundaryFrame("wuxianguotu_1") == "房间",
+                "failed context adoption restores original character and redirects away from battle");
+            check(BookshelfPanelService.takeBoundaryFrame("other") == "other",
+                "recovery redirect is consumed once and cannot rewrite later scene navigation");
+        } finally {
+            stageClass.testOnlyReset(); managerClass.getInstance = oldManager; weatherClass.getInstance = oldWeather;
+            for (k = 0; k < keys.length; k++) _root[keys[k]] = saved[keys[k]];
+        }
+    }
     public static function runAllTests():Void {
         passed = 0; failed = 0;
         var result:Object;
@@ -274,6 +380,10 @@ class org.flashNight.arki.ui.BookshelfPanelServiceTest {
         var rewardClass:Object = org.flashNight.arki.item.RewardStashService;
         var oldGet:Function = saveClass.getInstance, oldNav:Function = stageClass.canNavigateAwayFromStage;
         var oldCurrent:Function = assetClass.current, oldBegin:Function = rewardClass.begin, oldEnd:Function = rewardClass.end;
+        var oldEffect:Function = assetClass.recordEffect;
+        assetClass.recordEffect = function(direction, kind, name, count, context):Void {
+            _root.__bookEffects.push({direction:direction, kind:kind, name:name, count:count, context:context});
+        };
         saveClass.getInstance = function() { return org.flashNight.arki.ui.BookshelfPanelServiceTest.fixtureSave(); };
         stageClass.canNavigateAwayFromStage = function() { return true; };
         assetClass.current = function() { return null; };
@@ -333,10 +443,20 @@ class org.flashNight.arki.ui.BookshelfPanelServiceTest {
             var finalRun:Object = PersistedSnapshot.clone(active); finalRun.outcome = "victory"; finalRun.elapsedMs = 20 * 60000;
             result = BookshelfPanelService.execute("commit", {v:1,token:token,kind:"settle",target:"bookrun_fixture",snapshot:{ext:{bookRun:finalRun}}});
             check(result.phase == "save_pending" && _root.技能点数 == 145, "reward and receipt share pending candidate");
+            check(result.records.history.length == 0 && result.lastReward == 0 && result.reward == 0,
+                "unconfirmed candidate does not advertise SP or history as committed");
+            check(_root.__bookEffects.length == 1 && _root.__bookEffects[0].kind == "skillpoint"
+                    && _root.__bookEffects[0].count == 45 && _root.__bookEffects[0].context.source == "level_reward",
+                "SP notification joins the durable reward asset transaction");
             BookshelfPanelService.execute("commit", {v:1,token:token,kind:"settle",target:"bookrun_fixture",snapshot:{ext:{bookRun:finalRun}}});
             check(_root.技能点数 == 145, "duplicate pending result does not grant twice");
+            check(_root.__bookEffects.length == 1, "duplicate pending commit does not queue another SP notification");
             result = BookshelfPanelService.execute("query", {v:1,token:token});
             check(result.phase == "applied" && _root._saveExt.bookshelf.active == null, "confirmed reward consumes origin marker");
+            check(result.records.history.length == 1 && result.records.history[0].runId == finalRun.slot
+                    && result.records.history[0].reason == "first_clear" && result.records.history[0].sp == 45
+                    && result.records.bestMs == finalRun.elapsedMs && result.records.clears == 1,
+                "confirmed result preserves last run, record and actually paid SP");
             var freshToken:String = result.nextToken;
             check(freshToken != token && freshToken.indexOf("bookshelf.") == 0, "completed reconciliation issues a separate editing capability");
             check(BookshelfPanelService.execute("query", {v:1,token:token}).nextToken == freshToken,
@@ -353,12 +473,25 @@ class org.flashNight.arki.ui.BookshelfPanelServiceTest {
             setup(); token = open(); _root._saveExt.bookshelf = {active:active};
             result = BookshelfPanelService.execute("commit", {v:1,token:token,kind:"settle",target:"bookrun_fixture",missingRun:true});
             check(result.phase == "save_pending" && _root.技能点数 == 100, "verified missing run retires without reward");
+            check(_root.__bookEffects.length == 0, "abandoned run does not publish a positive reward");
+            setup(); token = open();
+            var oldHistory:Array = [];
+            for (var h:Number = 0; h < 20; h++) oldHistory.push({runId:"old." + h, sp:5});
+            _root._saveExt.bookshelf = {active:active, history:oldHistory, firstClear:true, bestMs:600000, clears:20};
+            finalRun.seed = active.seed; finalRun.outcome = "failure";
+            BookshelfPanelService.execute("commit", {v:1,token:token,kind:"settle",target:"bookrun_fixture",snapshot:{ext:{bookRun:finalRun}}});
+            result = BookshelfPanelService.execute("query", {v:1,token:token});
+            check(result.records.history.length == 20 && result.records.history[0].outcome == "failure"
+                    && result.records.history[19].runId == "old.18", "history keeps newest twenty results including failures");
+            check(result.records.bestMs == 600000 && result.records.clears == 20 && result.lastReward == 0,
+                "failed last run preserves all-time best and clears but never reuses previous SP");
             testDirectStageReturn();
             testReturnUiWaitsForCurtain();
             testContextArrivalWaitsForCurtain();
+            testDirectBookEntry();
         } finally {
             saveClass.getInstance = oldGet; stageClass.canNavigateAwayFromStage = oldNav;
-            assetClass.current = oldCurrent; rewardClass.begin = oldBegin; rewardClass.end = oldEnd;
+            assetClass.current = oldCurrent; assetClass.recordEffect = oldEffect; rewardClass.begin = oldBegin; rewardClass.end = oldEnd;
             BookshelfPanelService._resetForTests();
             if (_root.gameworld != undefined) _root.gameworld.removeMovieClip();
         }
