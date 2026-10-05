@@ -287,7 +287,8 @@ function Get-Cf7GitBlobBytes {
         $errorText = $process.StandardError.ReadToEnd()
         $process.WaitForExit()
         if ($process.ExitCode -ne 0) { throw "Cannot read Git index blob $RelativePath`: $errorText" }
-        return $memory.ToArray()
+        # Preserve the binary value; pipeline enumeration boxes each byte of large payloads.
+        return ,($memory.ToArray())
     } finally {
         $memory.Dispose()
         $process.Dispose()
