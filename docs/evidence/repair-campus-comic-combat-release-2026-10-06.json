@@ -1,0 +1,171 @@
+{
+  "schema": "cf7-repair-campus-comic-combat-release-evidence.v1",
+  "recordedAtUtc": "2026-10-05T17:36:40.573180+00:00",
+  "state": "promoted",
+  "authorization": "维护者在本轮体验反馈和只读发布评估后明确授权：可行，走发布列车。",
+  "source": {
+    "commit": "5ec31cef2b2d46eff798c1e203421c5c2bb66b0c",
+    "tree": "8f0c71cb83f2c18ad238f08786499b125cfbb2d6",
+    "tag": "refs/tags/runtime-build-v2/20261006-campus-comic-combat-v3",
+    "deploymentCommit": "63af08b7ffb21bfa1ef274b45329befe93df8488",
+    "scopeFiles": 118,
+    "upstreamPreserved": "17665e92020ca593bd9fd4021b7036eedc362652",
+    "integrationFix": "修正上游重装拾荒者随机兵器数组末项逗号，重新通过 CS6 编译。"
+  },
+  "request": {
+    "schema": "cf7-runtime-build-request.v2",
+    "requestId": "94388783AB799259D505CFED905D286F4C0286EE8268A4A3035FE1BCF0AF56CC",
+    "sourceKind": "Treeish",
+    "releaseTreeOid": "8f0c71cb83f2c18ad238f08786499b125cfbb2d6",
+    "sourceCommitOid": "5ec31cef2b2d46eff798c1e203421c5c2bb66b0c",
+    "requestCommitOid": "d7f7a77fa306feaab74b6be067edf3b72657d195",
+    "bundleTreeOid": "7af8b8aa60589dd148891758cd50790db5ba19e3",
+    "artifactSourceHash": "444E9B936B295203D6D096140D5724E452500753498A95136ED41FDD366DC440",
+    "producerRecipeHash": "C4DEEF1B6E387EEBF8D101CC2364E8A0232087A248EFEB530506011411EDA694",
+    "toolchainLockHash": "DFA769829F9740196DEF63351A00AAC309E50A2CA0A768759334EB2A2161DD36",
+    "policyHash": "9DEE3B93F40D8486050FB4900901AF58EF9A83493E66DFF28FDD95B210682212",
+    "buildIdentityHash": "D0183F96366FB246483AA7DD6935D91F362B13DBE40071C07CD2CFEBD705F5E1",
+    "bundleFile": "source.bundle",
+    "bundleSha256": "CEDA35997A9A9FC4AFB16D179BBE190F6ECA692D6EC1CBCD2EC97F756F265439",
+    "requiredQuorum": 2,
+    "createdAtUtc": "2026-10-05T17:14:58.7383338Z"
+  },
+  "payload": {
+    "buildIdentityHash": "D0183F96366FB246483AA7DD6935D91F362B13DBE40071C07CD2CFEBD705F5E1",
+    "closure": "2012BC6C568719C9DB2BB2A4CF5CD2DC3F0712567606E5E38E27B3151221835C",
+    "coreDllSha256": "AE3743220C2B022CE3CB29EF2E7AD0286BBB8BBF872CDB21E4C8524147B8D3BE",
+    "asLoaderSha256": "8CC4B51FA76C043BA0C2E0FFFE09F4972AC3956D676CB6968137514404615247",
+    "asLoaderBytes": 1486358
+  },
+  "builds": {
+    "localWorker": "builder-local-b",
+    "proofs": [
+      {
+        "builderKind": "github-oidc",
+        "builderIdentityHash": "FA5F30C08C973CB11D7A41FBF6651DBFAB80ED4747328056B4AC61E5A53B31D8",
+        "faultDomain": "github-hosted-windows",
+        "sourceCommitOid": "5ec31cef2b2d46eff798c1e203421c5c2bb66b0c",
+        "sourceRef": "refs/tags/runtime-build-v2/20261006-campus-comic-combat-v3",
+        "buildIdentityHash": "D0183F96366FB246483AA7DD6935D91F362B13DBE40071C07CD2CFEBD705F5E1",
+        "payloadClosureHash": "2012BC6C568719C9DB2BB2A4CF5CD2DC3F0712567606E5E38E27B3151221835C"
+      },
+      {
+        "builderKeyId": "EB5D32E04B6EE8697850314E19698DE1A3FACFFCCC6418A12CF7FEDE6033CDA5",
+        "builderEpoch": 1,
+        "faultDomain": "physical-host-b",
+        "buildIdentityHash": "D0183F96366FB246483AA7DD6935D91F362B13DBE40071C07CD2CFEBD705F5E1",
+        "payloadClosureHash": "2012BC6C568719C9DB2BB2A4CF5CD2DC3F0712567606E5E38E27B3151221835C"
+      }
+    ],
+    "localProofReusedAcrossPolicyOnlyRevision": true,
+    "nativeInputsUnchangedAfterStyleCorrection": true,
+    "signerCount": 2,
+    "faultDomains": [
+      "github-hosted-windows",
+      "physical-host-b"
+    ],
+    "identityAndClosureMatch": true,
+    "cloudRunUrl": "https://github.com/FlashNightModReborn/CrazyFlashNight/actions/runs/37346145061",
+    "cloudConclusion": "success",
+    "cloudArtifactScope": "attestation-only"
+  },
+  "policy": {
+    "profile": "production",
+    "passed": 47,
+    "total": 47,
+    "receiptSha256": "3C4EB6284F0A11C9DF40795EA4FBCD1A0F31309357A6B678508100FD8ECDEE15"
+  },
+  "promotion": {
+    "strictV2": true,
+    "soleWriter": "tools/promote-runtime-bundle.ps1",
+    "promotedAtUtc": "2026-10-05T17:21:09.1070950Z",
+    "fullInstallVerifyExitCode": 0,
+    "stagedStrictExitCode": 0,
+    "rollbackDirectory": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\resources\\tmp\\runtime-promotions\\20261005T172040087Z-352f07dda0d147e4a323e764b9c58e31\\previous",
+    "log": "tmp/campus-release-20261006/promotion.log"
+  },
+  "validation": {
+    "hostCanonical": {
+      "passed": 6679,
+      "skipped": 6,
+      "failed": 0,
+      "logSha256": "13E137A9089F3FEA597BFF5B19C1FA52A6257516DC9AFE6FAC90358A58F6F454"
+    },
+    "equipmentTuningAs2": {
+      "passed": 92,
+      "failed": 0
+    },
+    "inventoryAs2": {
+      "passed": 194,
+      "failed": 0
+    },
+    "stageAdmissionSourceFixture": {
+      "passed": 28,
+      "gameE2e": false
+    },
+    "materialCatalog": {
+      "canonicalCheckPassed": true,
+      "dictionaryContentChangedByGateRepair": false
+    },
+    "as2Publish": {
+      "errors": 0,
+      "warnings": 0,
+      "loaderClasses": 709,
+      "mainClasses": 0,
+      "classIntersection": 0,
+      "maxFunctionBytes": 51684
+    },
+    "comicAssets": {
+      "approvedImages": 2,
+      "bytes": 5308181,
+      "digestCheckPassed": true
+    },
+    "readback": {
+      "modifiedTargetsVerified": [
+        "LongGunSubWeaponCore",
+        "BulletFactory",
+        "获取拾荒者随机装扮"
+      ],
+      "limitation": "FFDec 对未改动的 JSON 类导出报告异常；不声称全包反编译无错误。"
+    },
+    "humanFeedback": "整体可行；授权正式发布。",
+    "runtimeEvidenceBeforeTrain": "候选日志记录通关恢复原角色、奖励提交、存档写入和书架转场完成。"
+  },
+  "standardEntry": {
+    "executedAfterPromotion": false,
+    "businessJourneyExecutedAfterPromotion": false,
+    "reason": "按用户约定，实际游玩验收交由人类；本轮未代玩或操作真实玩家存档。"
+  },
+  "pending": [
+    "正式版重启后原角色、SP、战绩保留且不重复发奖的人工验收"
+  ],
+  "remoteAudit": {
+    "conclusion": "success",
+    "databaseId": 37348783295,
+    "event": "push",
+    "headSha": "63af08b7ffb21bfa1ef274b45329befe93df8488",
+    "status": "completed",
+    "url": "https://github.com/FlashNightModReborn/CrazyFlashNight/actions/runs/37348783295",
+    "runId": 37348783295,
+    "state": "promoted",
+    "deploymentChanged": true,
+    "signers": 2,
+    "faultDomains": 2,
+    "payloadClosureHash": "2012BC6C568719C9DB2BB2A4CF5CD2DC3F0712567606E5E38E27B3151221835C",
+    "logSha256": "188A4B4514DA0426A8A5EAEC09628C896893C20349C0EBC955DCA9ECAF2C2FD8",
+    "verifiedStateLines": [
+      "audit-native-runtime\tAudit native/runtime release state\t2026-10-05T17:35:18.8720579Z [RuntimeReleaseState] OK state=promoted mode=Audit manifest=cf7-runtime-manifest-v2 deploymentChanged=true forcedDeploymentVerification=false base=5ec31cef2b2d46eff798c1e203421c5c2bb66b0c head=63af08b7ffb21bfa1ef274b45329befe93df8488"
+    ]
+  },
+  "worktrees": {
+    "createdThisTrain": 0,
+    "historicalWorktreesUntouched": true
+  },
+  "rawEvidenceDirectory": "tmp/campus-release-20261006/",
+  "retainedFailures": [
+    "上游数组尾逗号导致首次编译失败；第一次修补误命中另一处同名条目，随即还原并精确修正。失败日志保留，最终发布使用后续 Compiler 0/0 的新产物。",
+    "首次 production policy 被 WB133 新增 important 和 WB131 颜色清理后未收紧台账拦截。修正按钮 selector、移除新增 important 并把 rawColor ceiling 从 2041 收紧到 2040。",
+    "v2 完整策略回执为 45/47；转场检查仍匹配旧函数签名，材料目录来源摘要未刷新。前一轮未完整收集失败项，造成多余一次冻结和云构建。修正检查并补充 28 个准入断言，通过规范生成器刷新摘要；冻结最终 v3 tag/request，保留旧失败回执和不可变标签，重新执行全量策略并取得最终源码云端证明。",
+    "暂存区验证驱动首次误调用旧版 verify-runtime-bundle.ps1，因只接受 v1 清单立即拒绝；随后改用 verify-runtime-bundle-v2.ps1 完成 strict v2 校验，保留原错误日志，未降级或变更清单。"
+  ]
+}
