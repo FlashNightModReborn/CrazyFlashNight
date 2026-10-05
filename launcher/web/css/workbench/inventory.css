@@ -1239,4 +1239,4 @@
 .inventory-inline-quantity .workbench-quantity-feedback { grid-column:1 / -1; }
 .inventory-move-selected:not(:disabled) { color:var(--wb-accent); border-color:var(--wb-accent); }
 
-.inventory-take-page{min-height:40px!important;white-space:nowrap}
+.inventory-quick-transfer-bar .workbench-mode-btn.inventory-take-page { min-height:40px; white-space:nowrap; }
