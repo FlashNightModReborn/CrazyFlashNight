@@ -305,13 +305,14 @@ internal sealed partial class UnifiedInputHost : Form
     private async Task CreateWebEndpoint()
     {
         pageBoot = false;
-        var environment = await CoreWebView2Environment.CreateAsync(null, Path.Combine(evidence, "web-profile"));
+        var environment = await FixedWebViewRuntime.CreateAsync(Path.Combine(evidence, "web-profile"));
         string browserExpected = Path.Combine(AppContext.BaseDirectory, "c1-expected-browser.txt");
         if (File.Exists(browserExpected) && File.ReadAllText(browserExpected).Trim() != environment.BrowserVersionString)
             throw new InvalidDataException("WebView runtime changed since candidate qualification");
         Log("web_endpoint_environment", new { version = environment.BrowserVersionString, scope = WScope });
         web = await environment.CreateCoreWebView2CompositionControllerAsync(Handle);
         web.Bounds = ClientRectangle; web.DefaultBackgroundColor = Color.Transparent;
+        FixedWebViewRuntime.ValidateCore(web.CoreWebView2);
         web.CoreWebView2.Settings.AreDevToolsEnabled = false;
         web.CoreWebView2.Settings.AreDefaultContextMenusEnabled = false;
         web.CoreWebView2.Settings.IsZoomControlEnabled = false;

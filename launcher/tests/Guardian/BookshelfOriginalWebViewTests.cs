@@ -68,8 +68,9 @@ namespace CF7Launcher.Tests.Guardian
                         request["payload"]["chapter"] = chapter;
                         var prepared = await content.ExecuteAsync(request);
                         Assert.True(prepared.Value<bool>("success"), prepared.ToString());
-                        var environment = await CoreWebView2Environment.CreateAsync(null, profile);
+                        var environment = await FixedWebViewRuntime.CreateAsync(profile);
                         await view.EnsureCoreWebView2Async(environment);
+                        FixedWebViewRuntime.ValidateCore(view.CoreWebView2);
                         WebView2BrowserPolicy.Apply(view.CoreWebView2.Settings, false, "Bookshelf isolated test");
                         BookshelfOriginalWebResources.Register(view.CoreWebView2, () => content);
                         view.CoreWebView2.FrameCreated += (_, created) => {

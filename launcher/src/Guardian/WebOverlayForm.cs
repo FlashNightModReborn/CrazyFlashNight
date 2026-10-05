@@ -1302,6 +1302,7 @@ namespace CF7Launcher.Guardian
         private IToastSink _toastFallback;
         private INotchSink _notchFallback;
         private bool _webFailed; // 初始化永久失败，后续 UiData 仅维护快照
+        private System.Windows.Forms.Timer _webReadinessDeadline;
 
         // WebView 进程故障观测/有界恢复（STATUS_BREAKPOINT 类渲染进程退出曾让壳存活
         // 而 WebView 永久死亡）。恢复永远发生在 RetireDocumentOwnersForProcessLoss
@@ -1548,6 +1549,8 @@ namespace CF7Launcher.Guardian
             this.Owner = owner;
 
             CreateHandle();
+            // World input must remain operational even if Web initialization never reaches JS ready.
+            EnsureCursorTimer();
             ApplyHiddenWarmupBounds("ctor_warmup");
 
             // WebView2 控件
@@ -1747,6 +1750,7 @@ namespace CF7Launcher.Guardian
 
         private async void InitWebView2Async(string webDir)
         {
+            ArmWebReadinessDeadline();
             try
             {
                 _webDir = webDir;
@@ -1757,7 +1761,7 @@ namespace CF7Launcher.Guardian
 
                 CoreWebView2EnvironmentOptions options = CreateWebView2EnvironmentOptions();
                 CoreWebView2Environment env =
-                    await CoreWebView2Environment.CreateAsync(null, userDataDir, options);
+                    await FixedWebViewRuntime.CreateAsync(userDataDir, options);
                 _webViewEnvironment = env;
                 try { env.BrowserProcessExited += OnWebViewBrowserProcessExited; }
                 catch (Exception hookEx)
@@ -1767,6 +1771,7 @@ namespace CF7Launcher.Guardian
                 }
                 try { _webBrowserVersion = env.BrowserVersionString; } catch { }
                 await _webView.EnsureCoreWebView2Async(env);
+                FixedWebViewRuntime.ValidateCore(_webView.CoreWebView2);
                 try { _webBrowserProcessId = (long)_webView.CoreWebView2.BrowserProcessId; }
                 catch { }
                 SyncWebViewViewportBounds(this.ClientSize.Width, this.ClientSize.Height,
@@ -1833,6 +1838,7 @@ namespace CF7Launcher.Guardian
                         PublishDocumentAdvanced();
                     }
                     _webReady = false;
+                    ArmWebReadinessDeadline();
                     _webNavigationId = args.NavigationId;
                     _webNavigationLoadedNewDocument = false;
                     LootPanelCoordinator lootCoordinator = _lootPanelCoordinator;
@@ -1874,6 +1880,7 @@ namespace CF7Launcher.Guardian
                         if (restoreOldReady)
                         {
                             _webReady = true;
+                            _webReadinessDeadline?.Stop();
                             FlushDeferredPanelDelivery();
                             PushAudioPrefs();   // P0: 恢复就绪后重发音频偏好
                         }
@@ -2491,10 +2498,36 @@ namespace CF7Launcher.Guardian
         /// <summary>Web 通道就绪/恢复后，唤醒 NativeHud toast/notch 渲染端。</summary>
         private void ActivateFallback()
         {
+            if (_webFailed)
+            {
+                _webReadinessDeadline?.Stop();
+                _panelHost?.FailUnavailableOpenRequests();
+            }
             if (_toastFallback != null)
                 _toastFallback.SetReady();
             if (_notchFallback != null)
                 _notchFallback.SetReady();
+        }
+
+        private void ArmWebReadinessDeadline()
+        {
+            if (_disposed) return;
+            if (_webReadinessDeadline == null)
+            {
+                _webReadinessDeadline = new System.Windows.Forms.Timer { Interval = 20000 };
+                _webReadinessDeadline.Tick += delegate
+                {
+                    _webReadinessDeadline.Stop();
+                    if (_disposed || _webReady) return;
+                    _webFailed = true;
+                    WebViewFailureRecorder.Record(new WebViewFailureRecorder.Entry
+                    { Kind = "document_ready_timeout", Reason = "no_ready_after_20s", BrowserVersion = _webBrowserVersion });
+                    LogManager.Log("[WebOverlay] document ready timed out; unposted panel requests retired");
+                    ActivateFallback();
+                };
+            }
+            _webReadinessDeadline.Stop();
+            _webReadinessDeadline.Start();
         }
 
         #endregion
@@ -3072,6 +3105,7 @@ namespace CF7Launcher.Guardian
                     LogManager.Log("[WebOverlay] JS side ready → activating web channel");
                     _webReady = true;
                     _webFailed = false; // 热重载恢复时清除降级标记
+                    _webReadinessDeadline?.Stop();
                     FlushDeferredPanelDelivery();
                     PushAudioPrefs();   // P0: 初始下发音频偏好（热重载后同样重发）
                     ApplyWebPerfMode("ready");
@@ -3533,6 +3567,21 @@ namespace CF7Launcher.Guardian
             string state = (payload != null ? payload.Value<string>("state") : null) ?? msg.Value<string>("state") ?? "normal";
             bool dragging = (payload != null ? payload.Value<bool?>("dragging") : null) ?? msg.Value<bool?>("dragging") ?? false;
 
+            if (_disposed) return "{\"success\":false}";
+            if (InvokeRequired)
+            {
+                try { BeginInvoke(new Action(() => ApplyCursorControl(state, dragging))); }
+                catch { return "{\"success\":false}"; }
+                return "{\"success\":true}";
+            }
+            ApplyCursorControl(state, dragging);
+            return "{\"success\":true}";
+        }
+
+        private void ApplyCursorControl(string state, bool dragging)
+        {
+            if (_disposed) return;
+
             bool wasDragging = _cursorDragging;
             _cursorState = NormalizeCursorState(state);
             _cursorDragging = dragging;
@@ -3542,8 +3591,6 @@ namespace CF7Launcher.Guardian
             EnsureCursorTimer();
             if (draggingChanged || !_cursorLastVisible)
                 SendCursorPosition(true);
-
-            return "{\"success\":true}";
         }
 
         private void HandleWebCursorFeedback(JObject parsed)
@@ -3596,6 +3643,11 @@ namespace CF7Launcher.Guardian
         private void EnsureCursorTimer()
         {
             if (_disposed) return;
+            if (InvokeRequired)
+            {
+                try { BeginInvoke(new Action(EnsureCursorTimer)); } catch { }
+                return;
+            }
             if (_frozenForIdle) return; // idle 态不重新 start，避免 unsuspend WebView2
             EnsureCursorHook();
             if (_cursorTimer == null)
@@ -3637,6 +3689,7 @@ namespace CF7Launcher.Guardian
 
         private void EnsureCursorHook()
         {
+            if (InvokeRequired) throw new InvalidOperationException("Cursor hook requires the UI message-loop thread.");
             if (_cursorHook != IntPtr.Zero || _disposed)
                 return;
 
@@ -4488,6 +4541,8 @@ namespace CF7Launcher.Guardian
 
             if (disposing)
             {
+                _webReadinessDeadline?.Dispose();
+                _webReadinessDeadline = null;
                 _bookshelfOriginalContent?.Dispose();
                 if (_materialShopNavigationCoordinator != null)
                 {
@@ -4501,8 +4556,11 @@ namespace CF7Launcher.Guardian
                             "web_overlay_dispose");
                 }
                 if (_panelHost != null)
+                {
                     _panelHost.PanelChanged -=
                         OnAuthoritativePanelChanged;
+                    _panelHost.PanelOpenRejected -= OnUnpostedPanelOpenRejected;
+                }
                 ShowSystemCursor();
                 if (_cursorTimer != null)
                 {
@@ -5248,8 +5306,33 @@ namespace CF7Launcher.Guardian
         /// </summary>
         public void RequestPanelFocusRestoreAfterAppActivation()
         {
-            QueuePanelFocusRestore("app_reactivated");
+            if (_panelMode || _panelHost?.ActivePanelName != null)
+            {
+                QueuePanelFocusRestore("app_reactivated");
+                return;
+            }
+            if (_disposed || IdleFlashFocusRestorer == null) return;
+            try
+            {
+                BeginInvoke(new Action(() =>
+                {
+                    bool Eligible() => !_disposed && !_panelMode && _panelHost?.ActivePanelName == null
+                        && _anchor.Visible && _owner.WindowState != FormWindowState.Minimized
+                        && GetForegroundWindow() == _owner.Handle;
+                    if (!Eligible()) return;
+                    // Preserve native edit/control focus. Only the idle Guardian/host itself
+                    // (or an empty thread focus) needs the Flash child restored.
+                    IntPtr focus = GetFocus();
+                    if (focus != IntPtr.Zero && focus != _owner.Handle && focus != _anchor.Handle) return;
+                    IdleFlashFocusRestorer(Eligible);
+                }));
+            }
+            catch { }
         }
+
+        [DllImport("user32.dll")]
+        private static extern IntPtr GetFocus();
+        internal Func<Func<bool>, bool> IdleFlashFocusRestorer;
 
         private void FlushDeferredPanelDelivery()
         {
@@ -5265,15 +5348,30 @@ namespace CF7Launcher.Guardian
         public void SetPanelHost(PanelHostController host)
         {
             if (_panelHost != null)
+            {
                 _panelHost.PanelChanged -= OnAuthoritativePanelChanged;
+                _panelHost.PanelOpenRejected -= OnUnpostedPanelOpenRejected;
+            }
             _panelHost = host;
             if (_panelHost != null)
             {
                 _panelHost.PanelChanged += OnAuthoritativePanelChanged;
+                _panelHost.PanelOpenRejected += OnUnpostedPanelOpenRejected;
+                _panelHost.SetDocumentUnavailableGate(() => _disposed || _webFailed);
                 OnAuthoritativePanelChanged(
                     _panelHost.ActivePanelName,
                     _panelHost.ActivePanelInstanceId);
             }
+        }
+
+        private void OnUnpostedPanelOpenRejected(string panel, string reason)
+        {
+            string command = ResolvePanelCloseGameCommand(panel);
+            if (command == null) return;
+            bool delivered = TrySendGameCommand(command);
+            if (!delivered && command == "shopPanelClose") _pauseNeedsRestore = true;
+            LogManager.Log("[Panel] failed-open cleanup panel=" + panel + " reason=" + reason
+                + " command=" + command + " delivered=" + delivered);
         }
 
         /// <summary>

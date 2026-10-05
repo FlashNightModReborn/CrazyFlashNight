@@ -6,6 +6,7 @@
         "launcher/CRAZYFLASHER7MercenaryEmpire.csproj",
         "launcher/Directory.Packages.props",
         "launcher/packages.lock.json",
+        "launcher/webview2-runtime.lock.json",
         "launcher/app.ico",
         "launcher/app.manifest",
         "launcher/THIRD-PARTY-NOTICES.txt",
@@ -62,6 +63,7 @@
         "launcher/native/sol_parser/.cargo/config.toml",
         "launcher/native/sol_parser/build.bat",
         "tools/check-runtime-build-env.ps1",
+        "tools/stage-fixed-webview-runtime.ps1",
         "tools/runtime-build-v2-common.ps1"
       ],
       "trees": []

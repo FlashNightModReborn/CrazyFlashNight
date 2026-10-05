@@ -445,6 +445,8 @@ try {
         Copy-Item -LiteralPath $_.FullName -Destination (Join-Path $runtimeDir $_.Name) -Force
     }
 
+    & (Join-Path $projectRoot 'tools\stage-fixed-webview-runtime.ps1') -ProjectRoot $projectRoot -DestinationDirectory (Join-Path $runtimeDir 'webview2')
+
     foreach ($nativeName in @('miniaudio.dll','sol_parser.dll','FlashCompositorNative.dll','FlashInputBridge.dll','FlashInputBroker.exe')) {
         $nativePath = Join-Path $nativeOut $nativeName
         if (-not (Test-Path -LiteralPath $nativePath -PathType Leaf)) { throw "Native output missing: $nativePath" }

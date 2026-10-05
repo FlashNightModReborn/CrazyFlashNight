@@ -130,6 +130,7 @@ Agent Runtime 的 wire、受信 runner、credential bootstrap、30 秒预算和 
 |---|---|
 | [CRAZYFLASHER7MercenaryEmpire.csproj](CRAZYFLASHER7MercenaryEmpire.csproj) | Host 编译边界、依赖、嵌入资源和确定性构建设置 |
 | [src/Program.cs](src/Program.cs) | Core 入口、运行模式、依赖装配和启动顺序 |
+| [src/FixedWebViewRuntime.cs](src/FixedWebViewRuntime.cs) | 随包固定 WebView2 引擎的完整性校验、缓存准备和所有生产宿主的显式版本/路径校验；见 [固定引擎与输入失败回收](../docs/fixed-webview2-runtime.md) |
 | [src/Guardian](src/Guardian/) | 窗口、WebView2、Native HUD、Panel、焦点；对白呈现见 [Hud/Dialogue](src/Guardian/Hud/Dialogue/)，图像服务见 [Dialogue](src/Guardian/Dialogue/) |
 | [src/Fonts](src/Fonts/) | XML-hash runtime 投影、face-major 来源解析、已验证字节快照缓存、Native role 创建与 WebView2 exact-set/ETag 资源处理 |
 | [src/Tasks](src/Tasks/) | Flash/Host 任务与领域消息；[NativeDialogueTask](src/Tasks/NativeDialogueTask.cs) 校验对白快照与输入归属；竞技场标定仍按 session ID 反查 canonical roster |

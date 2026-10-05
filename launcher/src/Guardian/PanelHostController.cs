@@ -389,6 +389,8 @@ namespace CF7Launcher.Guardian
         private readonly object _queueLock = new object();
         private long _openAdmissionEpoch;
         private Func<string, bool> _openGate;
+        private Func<bool> _documentUnavailable;
+        internal event Action<string, string> PanelOpenRejected;
         private Func<string, bool> _rebindGate;
         private Func<string, string, string, string> _securityInitDataEnricher;
         private Func<string, string, string, string> _initDataEnricher;
@@ -905,6 +907,47 @@ namespace CF7Launcher.Guardian
         }
 
         public void SetOpenGate(Func<string, bool> gate) { _openGate = gate; }
+        internal void SetDocumentUnavailableGate(Func<bool> gate) { _documentUnavailable = gate; }
+
+        // Called on the UI thread after a terminal document failure. Tracked write owners
+        // remain with their existing reconciliation protocols; only unposted generic opens retire.
+        internal void FailUnavailableOpenRequests()
+        {
+            PanelCommand? open;
+            PanelCommand? rebind;
+            lock (_queueLock)
+            {
+                open = _deferredBarrierOpen;
+                rebind = _deferredRebind;
+                _deferredBarrierOpen = null;
+                _deferredRebind = null;
+            }
+            if (open.HasValue) RejectUnpostedOpen(open.Value.Name, "document_unavailable");
+            if (rebind.HasValue && (!open.HasValue || open.Value.Name != rebind.Value.Name))
+                RejectUnpostedOpen(rebind.Value.Name, "document_unavailable");
+        }
+
+        private void RejectUnpostedOpen(string name, string reason)
+        {
+            LogManager.Log("[PanelHost] open rejected panel=" + name + " reason=" + reason);
+            // A rejected rebind never releases the already-presented instance's game state.
+            if (_activePanel == name) return;
+            try { PanelOpenRejected?.Invoke(name, reason); }
+            catch (Exception error) { LogManager.Log("[PanelHost] rejected-open observer failed: " + error.Message); }
+        }
+
+        private void DeferOpen(PanelCommand command, string reason)
+        {
+            PanelCommand? previous;
+            lock (_queueLock)
+            {
+                previous = _deferredBarrierOpen;
+                _deferredBarrierOpen = command;
+            }
+            if (previous.HasValue && previous.Value.Name != command.Name)
+                RejectUnpostedOpen(previous.Value.Name, "superseded_before_open");
+            LogManager.Log("[PanelHost] open deferred by " + reason + ": " + command.Name);
+        }
         public void SetRebindGate(Func<string, bool> gate) { _rebindGate = gate; }
         internal void SetSecurityInitDataEnricher(
             Func<string, string, string, string> enricher)
@@ -1365,28 +1408,21 @@ namespace CF7Launcher.Guardian
             }
             if (cmd.Kind == PanelCommandKind.Open)
             {
+                if (_documentUnavailable != null && _documentUnavailable())
+                {
+                    RejectUnpostedOpen(cmd.Name, "document_unavailable");
+                    return;
+                }
                 if (HasVisualRetireBarrier())
                 {
-                    lock (_queueLock)
-                    {
-                        _deferredBarrierOpen = cmd;
-                    }
-                    LogManager.Log(
-                        "[PanelHost] open deferred by visual-retire barrier: "
-                        + cmd.Name);
+                    DeferOpen(cmd, "visual-retire barrier");
                     _consecutiveFailures = 0;
                     return;
                 }
                 Func<string, bool> openGate = _openGate;
                 if (openGate != null && !openGate(cmd.Name))
                 {
-                    lock (_queueLock)
-                    {
-                        _deferredBarrierOpen = cmd;
-                    }
-                    LogManager.Log(
-                        "[PanelHost] open deferred by authority barrier: "
-                        + cmd.Name);
+                    DeferOpen(cmd, "authority barrier");
                     _consecutiveFailures = 0;
                     return;
                 }
@@ -1407,6 +1443,7 @@ namespace CF7Launcher.Guardian
                 if (_activePanel != null) DoClose();
                 if (!DoOpen(cmd.Name, cmd.InitDataJson))
                 {
+                    RejectUnpostedOpen(cmd.Name, "open_failed");
                     _consecutiveFailures = 0;
                     return;
                 }

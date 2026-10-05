@@ -11,6 +11,8 @@ config/build/runtime-toolchain.lock.json -text
 CRAZYFLASHER7MercenaryEmpire.exe -text
 runtime/** -text
 runtime/cf7-runtime-manifest.tsv text eol=lf
+launcher/webview2-runtime.lock.json text eol=lf
+tools/stage-fixed-webview-runtime.ps1 text eol=lf
 
 # Generated artifacts — canonical LF.
 # 注：launcher/web/modules/stage-select-data.js 曾是生成物，.fla 退役后已是手写权威 SOT，

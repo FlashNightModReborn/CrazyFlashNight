@@ -2985,7 +2985,7 @@ namespace CF7Launcher.Guardian
                 case "SHOP":
                     LogManager.Log("[Router] SHOP clicked");
                     if (TrySendGameCommand("shopPanelOpen"))
-                        OpenPanel("kshop", null);
+                        OpenPanelWithAcquiredGameState("kshop", "shopPanelClose");
                     else
                     {
                         LogManager.Log("[Router] SHOP shopPanelOpen failed");
@@ -3052,7 +3052,7 @@ namespace CF7Launcher.Guardian
                 case "NEW_TASK_UI":
                     LogManager.Log("[Router] task UI clicked -> web panel");
                     if (TrySendGameCommand("taskPanelOpen"))
-                        OpenPanel("tasks", null);
+                        OpenPanelWithAcquiredGameState("tasks", "taskPanelClose");
                     else
                     {
                         LogManager.Log("[Router] task panel taskPanelOpen failed");
@@ -4612,6 +4612,15 @@ namespace CF7Launcher.Guardian
         /// <summary>
         /// returnTo 版本：关闭本 panel 后自动 reopen returnToPanel。仅 PanelHostController 路径支持。
         /// </summary>
+        private void OpenPanelWithAcquiredGameState(string panelName, string cleanup)
+        {
+            // Only these native entries have already sent a matching game-side open.
+            // Generic admission failures can belong to an acknowledged write/recovery owner.
+            if (!OpenPanel(panelName, null) && _panelHost?.ActivePanelName != panelName)
+                LogManager.Log("[Router] rejected-open cleanup panel=" + panelName
+                    + " command=" + cleanup + " delivered=" + TrySendGameCommand(cleanup));
+        }
+
         private bool OpenPanel(
             string panelName,
             string initDataJson,

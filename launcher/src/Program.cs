@@ -1061,7 +1061,7 @@ class Program
             {
                 try
                 {
-                    string wv2Version = CoreWebView2Environment.GetAvailableBrowserVersionString();
+                    string wv2Version = CF7Launcher.FixedWebViewRuntime.EnsureAvailable();
                     StartupDiagnostics.Mark("webview2.precheck_ok", "version=" + wv2Version);
                 }
                 catch (Exception ex) { wv2Error = ex.Message; }
@@ -1078,7 +1078,7 @@ class Program
                     "CF7-LAUNCH-WEBVIEW2-MISSING",
                     "WebView2 Runtime 不可用",
                     wv2Error,
-                    "请安装或修复 Microsoft Edge WebView2 Runtime，然后重新启动游戏。官方下载页: https://developer.microsoft.com/microsoft-edge/webview2/",
+                    "请验证或重新安装游戏文件以修复随游戏提供的 WebView2 运行时，然后重新启动游戏。",
                     null,
                     null,
                     null);
@@ -1599,7 +1599,7 @@ class Program
         string wv2ver;
         using (PerfTrace.Scope("webview2.runtime_check"))
         {
-            wv2ver = CoreWebView2Environment.GetAvailableBrowserVersionString();
+            wv2ver = CF7Launcher.FixedWebViewRuntime.EnsureAvailable();
         }
         LogManager.Log("[WebView2] Runtime found: " + wv2ver);
         StartupDiagnostics.Mark("webview2.runtime_check_ok", "version=" + wv2ver);
@@ -1637,6 +1637,8 @@ class Program
                 windowManager.HandoffFlashFocusBeforePanelHide);
         }
         StartupDiagnostics.Mark("web_overlay.construct_ok");
+        webOverlay.IdleFlashFocusRestorer = eligible => windowManager.RestoreFlashInputFocus(
+            "app_reactivated_idle", () => !compositionHelpOwnsInput() && eligible());
         CF7Launcher.Guardian.Hud.INativeCursor cursorOverlay = null;
         if (config.NativeCursorOverlayEnabled)
         {

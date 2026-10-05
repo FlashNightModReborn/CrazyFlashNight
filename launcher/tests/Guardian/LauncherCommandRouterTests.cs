@@ -96,6 +96,34 @@ namespace CF7Launcher.Tests.Guardian
             return router;
         }
 
+        [Theory]
+        [InlineData("SHOP", "shopPanelOpen", "shopPanelClose")]
+        [InlineData("TASK_UI", "taskPanelOpen", "taskPanelClose")]
+        [InlineData("NEW_TASK_UI", "taskPanelOpen", "taskPanelClose")]
+        public void NativeOpenWithoutHost_CompensatesOnlyItsAlreadySentGameState(string entry, string open, string close)
+        {
+            var router = MakeRouter(new Capture());
+            var commands = new List<string>();
+            router.SetGameCommandSenderForTests(value => { commands.Add(JObject.Parse(value.TrimEnd('\0')).Value<string>("action")); return true; });
+            router.Dispatch(entry);
+            Assert.Equal(new[] { open, close }, commands);
+        }
+
+        [Fact]
+        public void RejectedShopRebind_PreservesAlreadyPresentedShopLease()
+        {
+            var router = MakeRouter(new Capture());
+            using var host = new HostHarness(router);
+            var commands = new List<string>();
+            router.SetGameCommandSenderForTests(value => { commands.Add(JObject.Parse(value.TrimEnd('\0')).Value<string>("action")); return true; });
+            router.Dispatch("SHOP");
+            string instance = host.Host.ActivePanelInstanceId;
+            router.SetPanelAdmissionGate(() => false);
+            router.Dispatch("SHOP");
+            Assert.Equal(new[] { "shopPanelOpen", "shopPanelOpen" }, commands);
+            Assert.Equal(instance, host.Host.ActivePanelInstanceId);
+        }
+
         private static JObject BuildWarlordResumeInitDataForRouterTest()
         {
             JObject state = new JObject

@@ -64,6 +64,8 @@
   </ItemGroup>
 
   <ItemGroup>
+    <EmbeddedResource Include="webview2-runtime.lock.json"
+                      LogicalName="CF7Launcher.webview2-runtime.lock.json" />
     <EmbeddedResource Include="src\Guardian\Hud\PlayerInfo\Assets\player-info.manifest.json"
                       LogicalName="CF7Launcher.Guardian.Hud.PlayerInfo.Assets.player-info.manifest.json" />
     <EmbeddedResource Include="src\Guardian\Hud\PlayerInfo\Assets\hp\backplate.svg"

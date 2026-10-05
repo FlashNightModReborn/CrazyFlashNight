@@ -94,13 +94,14 @@ namespace CF7Launcher.Guardian
                 long envStart = Stopwatch.GetTimestamp();
                 StartupDiagnostics.Mark("bootstrap.webview2.create_environment_start", "userDataDir=" + userDataDir);
                 CoreWebView2Environment env =
-                    await CoreWebView2Environment.CreateAsync(null, userDataDir, CreateWebView2EnvironmentOptions());
+                    await FixedWebViewRuntime.CreateAsync(userDataDir, CreateWebView2EnvironmentOptions());
                 PerfTrace.Duration("bootstrap.webview2.create_environment", envStart);
                 StartupDiagnostics.Mark("bootstrap.webview2.create_environment_ok");
 
                 long ensureStart = Stopwatch.GetTimestamp();
                 StartupDiagnostics.Mark("bootstrap.webview2.ensure_core_start");
                 await _webView.EnsureCoreWebView2Async(env);
+                FixedWebViewRuntime.ValidateCore(_webView.CoreWebView2);
                 PerfTrace.Duration("bootstrap.webview2.ensure_core", ensureStart);
                 StartupDiagnostics.Mark("bootstrap.webview2.ensure_core_ok");
 
