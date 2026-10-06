@@ -93,7 +93,10 @@ scripts/compiler_errors.txt
 # db
 memory.db
 # vector_index
+# 目录名由 cfn-rag-backend 固定，禁止改名（改名会导致索引被误提交/重复构建）；
+# vector_index 为旧版 LlamaIndex 格式，vector_index_v3 为 V3 自研二进制格式。
 tools/vector_index
+tools/vector_index_v3
 
 # illustration
 flashswf/portraits/illustration/
