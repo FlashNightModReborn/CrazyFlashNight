@@ -15,6 +15,7 @@ import fs from "node:fs";
 import path from "node:path";
 
 import { loadXmlDocument } from "./document.js";
+import type { ArmorRules, MeleeBulletRules, PierceSegmentRules } from "./monster-attack.js";
 import type { XmlDocument, XmlDocumentNode } from "./document.js";
 
 export interface MonsterCensusConfig {
@@ -40,6 +41,82 @@ export interface MonsterCensusConfig {
   chapters: Record<string, number>;
   /** 同名目录内需要单独指定阶段的关卡（如总堂前期/后期的分界）。 */
   stageChapterOverrides: Record<string, number>;
+  /**
+   * 前摇均值（帧，动画开始帧到第一个子弹实例）→ 攻速系数档位。
+   * 制作组口径：<9 极快、9~16 快、16~26 中等、26~41 慢、>41 极慢（门槛是人工定的，改这里不用改代码）。
+   * 上界不含，即前摇均值正好 16 帧起算中等档。
+   */
+  attackTempoBands?: Array<{ maxWindupFrames: number; factor: number; label: string }>;
+  /**
+   * 段数的一次攻击换算窗口（帧）：量子弹跨度（首子弹帧到末子弹帧），不满一个窗口算 1 次，
+   * 满窗口按 跨度/窗口 折成小数次数，段数 = 霰弹值加总 / 次数（制作组 2026-10-04 口径）。
+   */
+  attackSegmentWindowFrames?: number;
+  /**
+   * 后摇换算倍率：攻速取档比的是「前摇均值 + 后摇均值×该倍率」，档位门槛同步乘 (1 + 该倍率)。
+   * 0.2 就是"后摇只按两成的分量算，同时允许整档放宽两成"，一个旋钮管两处，不改 attackTempoBands 的常量值。
+   */
+  attackTempoTailFactor?: number;
+  /**
+   * 状态硬门词表：容器状态段名命中 attackStateWords 且不含 nonAttackStateWords 才算出手动作，
+   * 只有挂在出手状态段上的元件才产招式（被击/击倒/血腥死 一类的状态段里摆了带参数的子弹也不算）。
+   * 缺省用 xml-io 里的 DEFAULT_ATTACK_STATE_RULES；新增进攻状态改这里，不用改代码。
+   */
+  attackStateWords?: string[];
+  nonAttackStateWords?: string[];
+  /**
+   * 近战子弹有效颗数口径（段数系数的第二层折算）：联弹打折 霰弹值（横向联弹无条件折、纵向联弹一律不折、其余要传 区域定位area），
+   * 点状判定（没传 区域定位area）的近战子弹按拨折成打得中人的颗数。
+   * 缺省用 xml-io 的 DEFAULT_MELEE_BULLET_RULES；mode 取简单法还是几何法由人工定，两种取法的对照值都在实测 JSON 里。
+   */
+  meleeSegmentRules?: MeleeBulletRules;
+  /**
+   * 穿刺类子弹的段数放大（段数系数的第三层）：命中 穿刺 词的子弹自己那段数乘 pierceFactor，
+   * 命中 次级穿刺 词的乘 secondaryPierceFactor（判定先认次级穿刺，否则「次级穿刺子弹」会被当成穿刺）。
+   * 缺省用 xml-io 的 DEFAULT_PIERCE_SEGMENT_RULES；命中的种类串在实测 JSON 的 pierce 块里，人工据此核对词表。
+   */
+  pierceSegmentRules?: PierceSegmentRules;
+  /**
+   * 霸体系数 的元件观测口径：击倒/倒地 两段的击飞逻辑词表（含没统一进函数的内联浮空写法）+ 被击 状态词表
+   * + 长击退的帧阈值与多发击退时长的归类读法。缺省用 xml-io 的 DEFAULT_ARMOR_RULES；改口径改这里，不改代码。
+   */
+  armorRules?: ArmorRules;
+  /**
+   * 攻击实测的人工定源覆盖：模板名 → 用哪个包的哪个元件取源。
+   * 注册表把跨包同名副本记在 `<conflict>`、同包多处导出记在 `<duplicate>`，那是扫描器刻意留给人工的定源名单，
+   * 而 `data/items/asset_source_map.xml` 是 scan_linkage.py 的 DO-NOT-EDIT 生成物、又被图标/换装烘焙管线消费，
+   * 所以不替它补 `<asset>`；要量这一类模板就在这一条里指定源，note 记下另一份实测差多少。
+   */
+  attackSourceOverrides?: Record<string, Array<{ swf: string; symbolName?: string; note?: string }>>;
+  /**
+   * 人工判定「无需标识」的模板（分身、投影、召唤物一类不挂面板的单位）。
+   * 这些行不参与关卡反查、不拟合、不写盘 —— 少了这条通道，普查每次重跑都会按出场关卡给它们长出 `<阶段>`。
+   * 取代原先 `monster-stage-backfill.csv` 里「待填阶段」填 0 的写法。
+   */
+  noFlagTemplates?: string[];
+  /**
+   * 制作组点名的档次判定：模板名 → 档次系数。
+   * 档次是设计判断（看样貌与招式），不是面板能定住的东西，点名了就不参与联立拟合。
+   * 写在配置而不是行内标识里，是为了让"这一档是人工钉的"在重跑之后仍然读得出来。
+   */
+  humanTierFactors?: Record<string, number>;
+  /**
+   * HEAD 里写了 `<档次系数>` 但制作组认定那只是**预估**的模板：档次放回本次联立搜索，重算后照写回。
+   * 只豁免 `档次系数` 这一项 —— 同一批标识里的 阶段 等其余字段照旧按 git HEAD 钉住，不靠这份名单翻案。
+   * 与 `humanTierFactors` 的分工：那张表是「人工把档次钉死」，这里是「HEAD 有值但钉不住」；两边都不许把观测五项放出去。
+   * 两份名单点到同一行时按 `humanTierFactors` 钉住 —— 点名比「那颗是预估」更强。
+   */
+  estimatedTierTemplates?: string[];
+  /**
+   * 阶段数字 → 主线进度描述，对应工作表 B19~C32 的阶次表（废城 1 … 雪山 8、主线完结 9、主线后 10~15）。
+   * 全量表的「主线进度」列用它；区间写成 [from, to]，取值落在哪个区间就报哪个描述。
+   */
+  stageLabels?: Array<{ from: number; to: number; label: string }>;
+  /**
+   * 档次系数 → 中文档次描述，对应工作表 B20~C32 的档次表（小型小怪 1 … 顶级boss 20~25）。
+   * 全量表的「档次描述」列用它；门槛只取各档下限（8~9 按 8 起算），落在两档之间时按就近档写「本档+」或「上一档−」。
+   */
+  tierLabels?: Array<{ from: number; to: number; label: string }>;
 }
 
 export interface StageResolution {
@@ -416,4 +493,48 @@ function descendantsNamed(node: XmlDocumentNode, name: string): XmlDocumentNode[
 
 function isRecord(value: unknown): value is Record<string, unknown> {
   return typeof value === "object" && value !== null;
+}
+
+/**
+ * 单元格级 CSV 切分：吃掉文首 BOM，容忍引号包裹、`""` 转义、CRLF 与引号内的换行，丢掉全空行。
+ * 标识全量表要按原文读回人工改过的系数，Excel 保存出来的这几种写法都得吃下。
+ */
+export function parseCsvRows(input: string): string[][] {
+  const text = input.charCodeAt(0) === 0xfeff ? input.slice(1) : input;
+  const rows: string[][] = [];
+  let row: string[] = [];
+  let cell = "";
+  let quoted = false;
+  for (let index = 0; index < text.length; index += 1) {
+    const char = text[index]!;
+    if (quoted) {
+      if (char !== '"') {
+        cell += char;
+        continue;
+      }
+      if (text[index + 1] === '"') {
+        cell += '"';
+        index += 1;
+        continue;
+      }
+      quoted = false;
+      continue;
+    }
+    if (char === '"') quoted = true;
+    else if (char === ",") {
+      row.push(cell);
+      cell = "";
+    } else if (char === "\r") continue;
+    else if (char === "\n") {
+      row.push(cell);
+      rows.push(row);
+      row = [];
+      cell = "";
+    } else cell += char;
+  }
+  if (cell !== "" || row.length > 0) {
+    row.push(cell);
+    rows.push(row);
+  }
+  return rows.filter((entry) => entry.some((value) => value.trim() !== ""));
 }

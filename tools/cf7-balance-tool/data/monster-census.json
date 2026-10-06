@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "comment": "怪物标识普查配置：字段名对应 data/enemy_properties/*.xml，阶段区间对应 Excel《怪物大致面板》B19~C32 阶次表。",
+  "comment": "怪物标识普查配置：字段名对应 data/enemy_properties/*.xml，阶段区间对应 Excel《怪物大致面板》B19~C32 阶次表，attackTempoBands 是前摇帧数→攻速系数的档位门槛。",
   "flagElement": "标识",
   "templatePrefix": "敌人-",
   "displayNameField": "displayname",
@@ -29,7 +29,36 @@
     "最大经验值": "expMax"
   },
   "excludedSourceFiles": ["魔神.xml"],
-  "excludedStagePatterns": ["菲尼克斯", "锡蒙利", "挑战人修罗", "挑战混沌王"],
+  "excludedStagePatterns": ["菲尼克斯", "锡蒙利"],
+  "excludedStagePatternsComment": "魔神图当前只有 菲尼克斯 与 锡蒙利；挑战人修罗/挑战混沌王 是普通支线挑战副本，不再排除。",
+  "noFlagTemplates": [
+    "敌人-迷你黑洞",
+    "敌人-浮士德",
+    "敌人-黑铁分身",
+    "敌人-黑无常索命",
+    "敌人-拟态投影",
+    "敌人-虚拟向导"
+  ],
+  "noFlagTemplatesComment": "人工判定「无需标识」的模板：分身、投影、召唤物一类不挂面板的单位。不反查阶段、不拟合、不写盘 —— 原来靠 monster-stage-backfill.csv 的「待填阶段」填 0 表达，那张表已废，判定照登在这里，否则下次普查会按出场关卡给它们重新长出 <阶段>。",
+  "humanTierFactors": {
+    "敌人-方舟收割者": 20,
+    "敌人-诺亚地狱三头犬": 16,
+    "敌人-诺亚狙击兵": 3,
+    "敌人-诺亚突击兵": 4,
+    "敌人-诺亚重装兵": 8,
+    "敌人-A兵团改造人": 13,
+    "敌人-方舟爪豪": 16,
+    "敌人-EXUSIAI指挥官": 16,
+    "敌人-人修罗": 21,
+    "敌人-方舟兽王": 20,
+    "敌人-拼命之王": 16
+  },
+  "humanTierFactorsComment": "制作组点名的档次判定（2026-10-04/10-05 两轮）：档次是看样貌与招式的设计判断，面板定不住，所以这几行不参与联立拟合，只把其余三个自由量按面板解。写在配置里而不是只写行内标识，是为了让「这一档是人工钉的」在全量重算之后仍然读得出来；值与盘上 <档次系数> 一致，改这里不会自动改盘上，要重跑 monster-flags-apply。",
+  "estimatedTierTemplates": [
+    "敌人-双喷少女",
+    "敌人-特警僵尸"
+  ],
+  "estimatedTierTemplatesComment": "HEAD 里写了 <档次系数> 但那只是制作组当时预估的两行（2026-10-07 口径：阶段是准的、档次要重算真实值）：档次放回本次四元联立搜索、重算后照写回 <标识>。只豁免 档次系数 这一项，同一行其余已提交标识（含 阶段）照旧按 git HEAD 钉住；与 humanTierFactors 相反，那张表是「人工把档次钉死」。",
   "mainlineCompletedUntil": 77,
   "mainlineBands": [
     { "from": 1, "to": 22, "stage": 1, "label": "废城" },
@@ -48,5 +77,112 @@
   },
   "stageChapterOverrides": {
     "深入禁区": 5
-  }
+  },
+  "stageLabels": [
+    { "from": 1, "to": 1, "label": "废城" },
+    { "from": 2, "to": 2, "label": "盗贼" },
+    { "from": 3, "to": 3, "label": "军阀" },
+    { "from": 4, "to": 4, "label": "总堂前期" },
+    { "from": 5, "to": 5, "label": "总堂后期" },
+    { "from": 6, "to": 6, "label": "诺亚前期" },
+    { "from": 7, "to": 7, "label": "诺亚后期" },
+    { "from": 8, "to": 8, "label": "雪山" },
+    { "from": 9, "to": 9, "label": "主线完结" },
+    { "from": 10, "to": 15, "label": "主线后" }
+  ],
+  "stageLabelsComment": "阶段数字 → 主线进度描述，给全量表的「主线进度」列用（制作组 2026-10-05 口径，与 Excel B19~C32 阶次表同源）。主线只推进到 77 关，6 以上按已公布的章节顺序预排，反查通道仍会把超上限的关卡标 deferred 交人工。",
+  "tierLabels": [
+    { "from": 1, "to": 1, "label": "小型小怪" },
+    { "from": 1.5, "to": 1.5, "label": "中型小怪" },
+    { "from": 2, "to": 2, "label": "大型小怪" },
+    { "from": 3, "to": 4, "label": "低级精英" },
+    { "from": 5, "to": 6, "label": "中级精英" },
+    { "from": 8, "to": 9, "label": "高级精英" },
+    { "from": 9, "to": 9, "label": "低级boss" },
+    { "from": 13, "to": 13, "label": "中级boss" },
+    { "from": 16, "to": 16, "label": "高级boss" },
+    { "from": 20, "to": 25, "label": "顶级boss" }
+  ],
+  "tierLabelsComment": "档次系数 → 中文档次描述（制作组 2026-10-05 口径）。9 同时是高级精英的上界与低级boss，落在两段之间或命中多段时按原样并列报出来，不替人工挑一个。",
+  "attackTempoBands": [
+    { "maxWindupFrames": 9, "factor": 5, "label": "极快" },
+    { "maxWindupFrames": 16, "factor": 4, "label": "快" },
+    { "maxWindupFrames": 26, "factor": 3, "label": "中等" },
+    { "maxWindupFrames": 41, "factor": 2, "label": "慢" },
+    { "maxWindupFrames": 999, "factor": 1, "label": "极慢" }
+  ],
+  "attackTempoBandsComment": "前摇均值→攻速系数的档位门槛（上界不含，均值正好 16 帧起算中等）。这三个系数的取值全来自实测，不吃面板。",
+  "attackSegmentWindowFrames": 15,
+  "attackSegmentWindowFramesComment": "段数的一次攻击换算窗口（帧）：比的是子弹跨度（首子弹帧到末子弹帧），不满一个窗口算 1 次，满了按 跨度/窗口 折成小数次数、不 ceil 补整，段数=霰弹值加总/次数。制作组 2026-10-05 定 15 帧：量纲就是「每 15 帧一次出手」，与黑铁实机观测「每 15 帧约命中 10 段、最多 20 段」同单位（黑铁行级 10.6、a1 单招 17.5）。中间试过 10 帧（黑铁 7.7），换回 15 的理由是单位对齐而不是拟合度；旧的按整段动画长度 30 帧 ceil 已废。窗口只改分母单位，不改子弹颗数账。",
+  "attackTempoTailFactor": 0.2,
+  "attackTempoTailFactorComment": "后摇分量倍率：攻速取档比的是 前摇均值 + 后摇均值×该倍率，同时把 attackTempoBands 的每个门槛乘 (1+该倍率)——一个旋钮管两处，档位常量值不改。后摇=末子弹帧到招式结束帧，结束帧认 动画完毕 调用，找不到的退回段尾并记进疑点。设 0 即只看前摇。",
+  "attackStateWords": ["攻击", "近战", "出招", "招式", "技能", "施法", "连招", "扑击", "喷吐", "吐舌"],
+  "nonAttackStateWords": [
+    "站立", "行走", "跑", "跳", "待机", "死亡", "死", "受创", "被击", "击倒", "倒地", "被投",
+    "拾取", "躲闪", "出生", "出现", "消失", "登场", "复活", "变身", "巡逻", "后退", "抓取", "拖拽",
+    "逃跑", "无效", "结束", "-无"
+  ],
+  "attackStateWordsComment": "状态硬门词表：容器状态段名含 attackStateWords 且不含 nonAttackStateWords 才算出手动作，只有挂在出手状态上的元件才产招式。现网状态名固定一套（空手站立/空手行走/空手跑/空手跳/近战/空手攻击/拾取/躲闪/被击/击倒/倒地/被投/血腥死/消失），持械怪多一档 长枪攻击；-无/数字尾巴 表示这一档没有动画，整段摆的子弹也不算招式。新出现的进攻状态（地母的晚餐、弹射弧光斩、生成面抱虫 一类）人工按需加词，不加就进待复核清单。",
+  "meleeSegmentRules": {
+    "mode": "hitbox",
+    "kindWords": ["近战"],
+    "linkageWords": ["联弹"],
+    "linkageHorizontalWords": ["横向"],
+    "linkageVerticalWords": ["纵向"],
+    "linkageFactor": 0.6,
+    "clusterFrames": 2,
+    "clusterCap": 3,
+    "hitboxWidth": 80,
+    "hitboxHeight": 170
+  },
+  "meleeSegmentRulesComment": "近战子弹有效颗数（段数的第二层折算，制作组 2026-10-04 定层、2026-10-06 收紧门）：只有 子弹种类 含 kindWords 的才折颗数（没声明时看子弹元件名），非近战子弹射出多少颗就算多少颗，一律不做 80×170 命中框判定。kindWords 只留「近战」—— 原先把「联弹」也当近战类，等于让 穿刺联弹／横向联弹 这类非近战联弹也进几何门，与制作组口径不符；联弹打折 霰弹值 是另一条口径，认 linkageWords，不看 kindWords。子弹种类 含 linkageWords 的是联弹、单元体铺开、霰弹值打不满 → 乘 linkageFactor，方向决定要不要 area 这个条件（制作组 2026-10-06 改口，与 10-04 那条正好反过来）：含 linkageHorizontalWords 的（横向联弹、横向机枪联弹、横向联弹-穿刺子弹 都算）无条件折，不看有没有传 子弹属性.区域定位area；含 linkageVerticalWords 的（纵向联弹、纵向机枪联弹、纵向联弹-穿刺子弹 都算）一律不折；近战联弹与其余联弹保持传了 area 才折。方向词在认到 联弹 之后才看，所以 横向／纵向 前缀能覆盖 机枪联弹 那一类（现网 11 个含 联弹 的种类字面、683 处声明，全落在 近战／横向／纵向 三家，不必逐条列名）。没传 area 的是早期怪的小命中点，几帧内在屏幕各处摆一大把也只有一小部分中得上人 → 按拨折叠：与拨内首颗相距小于 clusterFrames 帧算同一拨，cap 法每拨最多算 clusterCap 颗，hitbox 法按玩家命中框 hitboxWidth×hitboxHeight 能框住的最大颗数算（距离量子弹实例 centerPoint3DX/Y，是动画本地坐标系、不含容器缩放），mode 定取哪种、off 就回到摆了颗数就算。几何法遇到读不到坐标的子弹退回简单法。现取 hitbox：黑铁分身 a1 一招 56 颗分 7 拨，简单法折完仍 33.33 段、几何法 11.67 段才对上制作组口径的每 15 帧约 10 段；摇滚公园萝莉每拨本就不满 3 颗，简单法一点不动（30 段）、几何法 20.64 与人工现标 20.7 重合。",
+  "pierceSegmentRules": {
+    "pierceWords": ["穿刺"],
+    "secondaryPierceWords": ["次级穿刺"],
+    "pierceFactor": 2,
+    "secondaryPierceFactor": 1.5
+  },
+  "pierceSegmentRulesComment": "穿刺类子弹的段数放大（段数的第三层，制作组 2026-10-06 口径）：穿刺子弹命中后不消失、同一颗能连着打到人，所以这一颗自己的段数乘 pierceFactor＝2；次级穿刺乘 secondaryPierceFactor＝1.5。判定顺序必须先次级穿刺后穿刺 ——「次级穿刺子弹」这个串里也含「穿刺」，反过来认就全被算成 2 倍（运行期 BulletTypesetter 的 indexOf(\"穿刺\") 就是这么误收的，我们量段数不跟它）。取法与近战类同一路：有 子弹种类 声明按声明认，没声明才退回子弹元件名（现网确有 穿刺子弹／次级穿刺子弹 这类元件名）。这一层乘在联弹打折之上，作用在每一颗自己的 霰弹值 上，所以只有穿刺那一招受影响。命中的种类串逐招记在实测 JSON 的 skills[].pierce 里，markdown 的「穿刺子弹段数放大对照」节据此人工核对词表还漏哪一类。",
+  "armorRules": {
+    "knockdownWords": ["击倒"],
+    "lyingWords": ["倒地"],
+    "hitWords": ["被击", "受创", "受伤"],
+    "airborneCallWords": ["击飞浮空", "击飞倒地"],
+    "inlineAirborneWords": ["浮空 = true", "倒地 = true", "被击飞浮空"],
+    "airborneInstanceWords": ["击飞"],
+    "longKnockbackFrames": 9,
+    "knockbackReading": "any"
+  },
+  "armorRulesComment": "霸体系数 的元件观测口径（制作组 2026-10-05 定）：五档表是 长击退可击飞 1／短击退可击飞 2／长击退不可击飞 3／短击退不可击飞 4／不可击退不可击飞 5。可击飞 = 击倒 与 倒地 两个状态段各自都摆了击飞逻辑，统一写法是段首实例上的 _parent.击飞浮空();／_parent.击飞倒地();（现网各出现一次、全部挂实例脚本 onClipEvent(load)，所在帧号恒等于该状态标签的 index）；没统一进这两个函数的老模板把浮空代码内联在同一段上（_parent.浮空 = true; 加自写的 onEnterFrame 落回 Z轴坐标，或 _parent.倒地 = true;），认 inlineAirborneWords 与 airborneInstanceWords —— 按制作组口径这类同样算可击飞，代码逻辑在上面只是没并进函数。击退长短看 被击 段摆出的那份受创动画：每个命名帧（a0/a1 一类，命名帧只在这份 man 元件里，容器状态层没有）到下一个 动画完毕 的持续就是一发击退时长，没有命名帧就按第一帧到 动画完毕；大于 longKnockbackFrames（9 帧）算长击退，否则短击退，与招式那侧的命名帧计时同一个口径。一发出手有多段命名帧时按 knockbackReading 归成一个判断：any 有一发长就算长、all 全都长才算长、mean 按均值——27 行人工现标就是拿这个旋钮做校准靶的，谁对齐率高取谁。被击 状态不存在或读不出击退时长 → 取 5（不可击退）；击倒/倒地 缺一段、段里没摆元件、或摆了但没有击飞逻辑 → 取 3 或 4（不可击飞）。",
+  "attackSourceOverrides": {
+    "敌人-巨臂僵尸": [
+      {
+        "swf": "flashswf/arts/new/3XD做的npc.swf",
+        "symbolName": "巨臂僵尸/敌人-巨臂僵尸",
+        "note": "注册表把这份与 arts/公共素材位3.swf（巨臂僵尸文件/敌人-巨臂僵尸）记在 <conflict>。两源各测一遍：都是 3 招全 placed、攻速系数 4（前摇均值 13 帧）、攻击倍率 1，段数系数 2.2 对 2.1 —— 差异只在 冲刺 摆了 12 颗还是 13 颗子弹、砍两下 1 颗还是 2 颗。取展开的 XFL 目录那份（可编辑源形态，容器里还多一段 横向技能库 的技能库段落）。美术若认定 公共素材位3 才是现役源，改这一条即可。"
+      }
+    ],
+    "敌人-兽化变种": [
+      {
+        "swf": "flashswf/arts/new/3XD做的npc.swf",
+        "symbolName": "兽化变种/敌人-兽化变种",
+        "note": "同样记在 <conflict>。两源实测逐项一致（3 招、攻速系数 4、攻击倍率 2、段数系数 3），选哪份都不影响观测值；取展开的 XFL 目录那份。"
+      }
+    ],
+    "敌人-方舟妖姬": [
+      {
+        "swf": "flashswf/arts/new/蓝环章鱼烧.swf",
+        "symbolName": "A.个人编辑单位/敌人-方舟妖姬",
+        "note": "注册表把它与 flashswf/arts/new/方舟妖姬新.swf 记在 <conflict>；制作组 2026-10-04 指定用 蓝环章鱼烧.swf 这份（库里路径 A.个人编辑单位/敌人-方舟妖姬）。"
+      }
+    ],
+    "敌人-唐头肌肉男": [
+      {
+        "swf": "flashswf/arts/new/闪三兄贵.swf",
+        "symbolName": "敌人-唐头肌肉男/敌人-唐头肌肉男",
+        "note": "注册表把它记在 <duplicate>：根目录那份标了 orphan=\"true\"，分组这份（敌人-唐头肌肉男/敌人-唐头肌肉男）才是扫描器认定的活源，只是没升成 <asset>。按这份实测到 1 招：近战/空手攻击 101 帧 4 次攻击 12 次命中、段数 5、前摇 4 帧、倍率 1.25 → 攻速系数 5／攻击倍率 1.3／段数系数 5，与同包换皮的 白面肌肉男、灰面肌肉男 逐字相同。"
+      }
+    ]
+  },
+  "attackSourceOverridesComment": "人工定源覆盖：只喂给攻击实测取源，不动 data/items/asset_source_map.xml —— 它是 tools/linkage_scanner/scan_linkage.py 的 DO-NOT-EDIT 生成物，<conflict>/<duplicate> 是扫描器刻意留给人工定源的名单，而且注册表还被图标/换装烘焙管线（tools/bake-icons-offline.py、tools/bake-dressup-offline.py、tools/asset-workbench）消费。"
 }

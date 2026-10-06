@@ -33,8 +33,12 @@
     "armor-balance-check": "tsx packages/cli/src/armor-balance.ts check",
     "armor-balance-sync": "tsx packages/cli/src/armor-balance.ts sync",
     "monster-census": "tsx packages/cli/src/monster-flags.ts census",
+    "monster-attack": "tsx packages/cli/src/monster-attack.ts measure",
+    "monster-attack-show": "tsx packages/cli/src/monster-attack.ts show",
     "monster-solve": "tsx packages/cli/src/monster-flags.ts solve",
     "monster-flags-apply": "tsx packages/cli/src/monster-flags.ts apply",
+    "monster-flags-csv": "tsx packages/cli/src/monster-flags-csv.ts",
+    "monster-flags-table-apply": "tsx packages/cli/src/monster-flags-table-apply.ts",
     "dev:web": "npm run dev:renderer --workspace @cf7-balance-tool/web",
     "dev:electron": "npm run dev:electron --workspace @cf7-balance-tool/web"
   },

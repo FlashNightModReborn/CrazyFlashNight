@@ -163,10 +163,53 @@ npm run balance-check
 npm run field-scan -- --project ./project.json --output ./reports/field-usage-report.json
 
 # 怪物标识普查（CLI 走 tsx，需要先构建 workspace dist）
-npx tsc -b packages/core packages/xml-io
-npm run monster-census -- --markdown --scan-tier
-npm run monster-solve -- 敌人-体育老师 --stage 4 --tier 12 --known 速度系数=2.5
+npx tsc -b packages/core packages/xml-io packages/cli
+npm run monster-census                              # 清点 + 四元联立反推，人工权威按 git HEAD 判
+npm run monster-census -- --free-tier               # 一次性把 档次系数 放回搜索：只越过 humanTierFactors 点名的行，HEAD 已提交标识照旧钉住（estimatedTierTemplates 点名的两行两种模式都进搜索）
+#   ⚠ 盘上现在的 档次 是放开档次解出来又写回的值，所以 census 与 monster-flags-csv 要用同一条模式跑；用默认模式重跑会把 11 行点名档次钉回旧值去解其余三项，表上误差整段虚高（见 rulebook §4）
+npm run monster-solve -- 敌人-体育老师 --known 速度系数=2.5,档次系数=12   # 单行反推，没钉住的自由量都解
 npm run monster-flags-apply -- reports/monster-flag-census.json   # dry-run，加 --write 才落盘
+npm run monster-flags-csv                           # 出四张查验表：全量表 / 超范围表 / 偏差大表 / 人工表（前三张按盘上现值重生成，会盖掉全量表上没读回的手工改动）
+npm run monster-flags-table-apply                   # 读回全量表上人工改过的系数，加 --write 才落盘 —— 重生成表之前必须先跑这一步
+
+# 攻击结构实测：翻 XFL/.fla 量 攻速系数/攻击倍率/段数系数 的观测值，并从击倒/倒地/被击三段的状态层判 霸体系数，
+# 连同机械可定的 阶段/速度系数 一起存候选 JSON
+npm run monster-attack                                            # 全量，写 reports/monster-attack-census.{json,md}
+npm run monster-attack-show -- 敌人-特警僵尸                        # 逐招明细（状态/标签/帧/子弹跨度/命中/段数/前摇/后摇/近战颗数/函数发弹/倍率与疑点）+ 霸体判据（击飞证据、被击每发击退帧数）
+npm run monster-flags-apply -- --from reports/monster-attack-proposal.json   # 只补缺项，已标注的字段不覆盖
+npm run monster-attack -- --overwrite                             # 口径变更后重标：观测值与已标注不同的也进候选，配 --only 圈行
+# 模板被注册表记在 <conflict>/<duplicate>（有源没定源）时，定源写在 data/monster-census.json 的 attackSourceOverrides，
+# 不手填 data/items/asset_source_map.xml（scan_linkage.py 的 DO-NOT-EDIT 生成物，图标/换装烘焙管线也读它）
+# 口径旋钮同在 monster-census.json：attackTempoBands（攻速档位）、attackSegmentWindowFrames（段数的子弹跨度窗口）、
+# attackTempoTailFactor（后摇分量倍率，同时放宽档位门槛）、attackStateWords/nonAttackStateWords（状态硬门词表）、
+# meleeSegmentRules（近战子弹有效颗数：联弹折 霰弹值 分量 + 无区域散弹按拨折颗数，mode 取 cap/hitbox/off）；
+# 联弹方向口径（制作组 2026-10-06 定，此前写反）：linkageHorizontalWords（现 横向）无条件折、
+# linkageVerticalWords（现 纵向）一律不折、其余联弹（含 近战联弹）要传了 子弹属性.区域定位area 才折；
+# 方向词在认到 linkageWords（现 联弹）之后才看，所以 横向机枪联弹／纵向机枪联弹 按前缀自动归入，不必逐个列名
+# 80×170 那层只对 kindWords 命中的近战类生效，联弹不在 kindWords 里（非近战联弹射出多少算多少，制作组 2026-10-06 定）
+# pierceSegmentRules（穿刺子弹段数放大）：穿刺 ×pierceFactor（现 2）、次级穿刺 ×secondaryPierceFactor（现 1.5），逐颗乘在自己的 霰弹值 上；
+# 判定必须先认 secondaryPierceWords 再认 pierceWords —— 「次级穿刺子弹」含「穿刺」，顺序反了会被当 2 倍（运行期 BulletTypesetter 就是这么误收的，量段数不跟它）
+# armorRules（霸体系数五档）：可击飞 = 击倒 与 倒地 两段各自都有**生效**的击飞代码（统一函数 airborneCallWords 或内联写法 inlineAirborneWords，去空白后匹配）**且**该段确实摆了元件；
+# 元件名（airborneInstanceWords）与被注释掉的代码都不算证据（匹配前先剔行注释与块注释），只摆了名字叫击飞的元件是美术摆放、判不可击飞；airborneInstanceWords 现在只用来把 concerns 的原因写准
+# 击退长短看 被击 段每发受创动画到 动画完毕 的帧数，比 longKnockbackFrames（现定 9，判「大于」）；多发改读法用 knockbackReading（any/all/mean）
+# 整数档之上还带韧性小数位：读面板 韧性系数（census 的 tenacityField），高于 20 时每 20 点加 0.1、上限 0.5（Excel H34），
+# 常量在 core 的 superArmorDecimalFromTenacity、由 proposeAttackFlags 在取档后合成 —— 这是观测通道唯一读面板的一处，改标准改代码不改 armorRules
+# 逐行查验与改数都在 data/monster-flag-table.csv（UTF-8 BOM + CRLF，Excel 直接开）：一行一怪，十项系数各一列，
+# 空着表示「这格不改」；改完跑 npm run monster-flags-table-apply 写回 data/enemy_properties/*.xml。
+# 表列按表头名定位，主线进度/档次描述/超出范围/误差值 都是派生列、读回时忽略；全量表的 数据文件 列已于 2026-10-06 删掉（该值仍参与排序，只是不再占列；超范围表仍带这一列）
+# 全量表行序 = 阶段升序 → 同阶段内 档次系数 升序 → 同数据文件聚片 → 模板名（缺阶段/缺档次的排最后；制作组 2026-10-06 第二次改口改的就是这张表）
+# 档次描述的门槛只取各档下限（8~9 按 8 起算），落在两档之间按就近档写「低级精英+／高级精英-」，四舍五入进档
+# 同批另出两张只读投影：monster-flag-out-of-range.csv（系数超出参考区间，档次越界的行整块置顶，块内与其后都按 超出倍数 降序 → 阶段 → 模板名）与 monster-flag-high-error.csv（复算面板对不上，
+# 含制作组点名档次的全部行）。缺 <阶段> 又反查不到的行不单独成表，看全量表里那格空着；判定「无需标识」的模板登在
+# monster-census.json 的 noFlagTemplates，制作组点名的档次登在 humanTierFactors，两处都不进反推的自由量
+# HEAD 里那颗 档次系数 被制作组认定只是当初预估的行登在 estimatedTierTemplates：只摘 档次系数 放回搜索并重算写回，同一行其余已提交标识（含 阶段）照旧钉住（现量 敌人-双喷少女、敌人-特警僵尸）
+# monster-flag-human.csv（人工表）只记 git HEAD 里已完整打标的行（除 速度系数 外十项齐全；速度系数 来自移动速度定义档、不算人工输入）：
+# 印的是 HEAD 那份原文，不是盘上现值 ∪ 工具候选。这批行的标识不是工具识别出来的，所以从前三张表里整块移出（制作组 2026-10-07 口径），
+# 只读不改；现量 27 行 = 本次一个自由量都没有的 27 行，与全量表的 143 行不重叠。留 数据文件 与 标识行 两列方便跳回 XML 原文
+# 档次的搜索网格不受参考区间约束（core 的 tierFitCandidates：0.1~0.9 每 0.1、1~10 每 0.5、11 起每 1，解顶到上界按块加长到 200）；
+# 参考区间只用来登记越界，越界值照常写盘并报警，不夹紧
+# 全量表把 阶段 填 0 = 这只怪整行排除（面板待重做/临时下线）：0 会写进 <标识>，但该行不反推、不产候选、不进任何一张查验表与统计，
+#   只保留从 SWF 实测到的 攻速/倍率/段数/霸体；table-apply 遇 阶段=0 只写 阶段 这一格，其余九格即使填了也跳过
 
 # 启动 renderer shell
 npm run dev:web
