@@ -74,7 +74,8 @@ function Get-Cf7RuntimeV2GitIndexBlobBytes {
         $errorText = $process.StandardError.ReadToEnd()
         $process.WaitForExit()
         if ($process.ExitCode -ne 0) { throw "Cannot read Git index blob $RelativePath`: $errorText" }
-        return $memory.ToArray()
+        # Index payloads can include the fixed-browser chunks. Emit one binary array.
+        return ,($memory.ToArray())
     } finally {
         $memory.Dispose()
         $process.Dispose()

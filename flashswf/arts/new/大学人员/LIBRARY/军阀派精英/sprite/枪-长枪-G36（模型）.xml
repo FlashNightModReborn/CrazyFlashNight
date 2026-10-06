@@ -1,0 +1,37 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="军阀派精英/sprite/枪-长枪-G36（模型）" itemID="693fca96-00010f66" lastModified="1776239309" lastUniqueIdentifier="6">
+  <timeline>
+    <DOMTimeline name="枪-长枪-G36（模型）">
+      <layers>
+        <DOMLayer name="Layer_1" color="#EEDFAD" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="军阀派精英/sprite/Symbol 6 副本" name="枪口位置" selected="true" centerPoint3DX="155.6" centerPoint3DY="-34.65">
+                  <matrix>
+                    <Matrix tx="143.1" ty="-47.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer_2" color="#7F42FB">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="军阀派精英/shape/Symbol 4" symbolType="graphic" loop="loop">
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

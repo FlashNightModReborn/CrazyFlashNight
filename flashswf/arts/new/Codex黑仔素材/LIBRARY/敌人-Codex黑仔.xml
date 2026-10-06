@@ -1,0 +1,808 @@
+<?xml version='1.0' encoding='utf-8'?>
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="敌人-Codex黑仔" itemID="6ac01006-c1b36536" linkageExportForAS="true" linkageIdentifier="敌人-Codex黑仔">
+  <timeline>
+    <DOMTimeline name="敌人-Codex黑仔">
+      <layers>
+        <DOMLayer name="Labels_Layer" color="#B5F5B0" locked="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="1" duration="8" name="兵器站立" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="9" duration="10" name="兵器行走" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="19" duration="10" name="兵器跑" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="29" duration="6" name="兵器跳" labelType="comment" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="35" duration="2" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="37" duration="4" name="迅斩" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="41" duration="10" name="兵器攻击" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="51" duration="6" name="凶斩" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="57" duration="4" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="61" duration="6" name="躲闪" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="67" duration="4" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="71" duration="8" name="被击" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="79" duration="9" name="击倒" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="88" duration="7" name="倒地" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="95" duration="9" name="被投" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="104" duration="16" name="血腥死" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="120" name="消失" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          <DOMFrame index="121" name="霸体" labelType="name" keyMode="9728"><elements/></DOMFrame></frames>
+        </DOMLayer>
+        <DOMLayer name="代码层" color="#A4EFED" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[import org.flashNight.arki.unit.Action.Skill.*;
+// 黑仔独立敌人。外观和球棒已固化，hasDressup 仅保留装备数值初始化。
+hasDressup = true;
+性别 = "男";
+刀 = "木制球棒";
+攻击模式 = "兵器";
+mp满血值 = 300;
+mp = 300;
+停止机率 = 500;
+随机移动机率 = 500;
+攻击欲望 = 3;
+x轴攻击范围 = 100;
+y轴攻击范围 = 30;
+x轴保持距离 = 65;
+近战技能库 = [];
+中程技能库 = [];
+远程技能库 = [];
+近战技能随机数 = 中程技能随机数 = 远程技能随机数 = 0;
+_root.敌人函数.配置音效("人类", this);
+
+// 所有持久方法使用 this；不捕获即将卸载的 man 或帧 activation。
+// 仅显式标定参数启用观测；正常敌人不发诊断消息。
+黑仔标定记录 = function(event:String):Void {
+    if (this.黑仔标定观测 !== true) return;
+    _root.发布消息("[BlackCalibration] " + this._name + "|" + event + "|" + this.__黑仔动作 +
+        "|windows=" + this.__黑仔出手窗口 + "|force=" + this.内力 + "|mp=" + this.mp +
+        "|maxMp=" + this.mp满血值 + "|maxHp=" + this.hp满血值 + "|power=" + this.刀属性.power +
+        "|atk=" + this.空手攻击力 + "|toughness=" + this.韧性系数 + "|time=" + getTimer() +
+        "|cast=" + this.__黑仔招式序号 + "|dx=" + Math.abs(this.黑仔目标()._x - this._x) +
+        "|dz=" + Math.abs(this.黑仔目标().Z轴坐标 - this.Z轴坐标) + "|selfHp=" + this.hp +
+        "|opening=" + (this.__黑仔本次凶斩借势 ? 1 : 0) +
+        "|rigid=" + (this.刚体 ? 1 : 0) + "|poiseFrames=" + this.__黑仔霸体剩余帧 +
+        "|impactLoad=" + this.remainingImpactForce + "|impactCap=" + this.韧性上限);
+};
+// AI 只从真实命中/破韧生产事件获取机会；诊断开关只控制日志。
+// 当前目标单订阅，切换/死亡清理，不把出手窗口当作命中。
+黑仔目标解绑 = function():Void {
+    var t:MovieClip = this.__黑仔事件对象;
+    if (t.dispatcher != undefined) {
+        t.dispatcher.unsubscribe("hit", this.黑仔目标命中, this);
+        t.dispatcher.unsubscribe("ToughnessBroken", this.黑仔目标破韧, this);
+    }
+    delete this.__黑仔事件对象;
+    delete this.__黑仔凶斩机会目标;
+    this.__黑仔凶斩机会到期 = 0;
+};
+黑仔目标命中 = function(t:MovieClip, shooter:MovieClip, bullet:Object, collision:Object, result:Object):Void {
+    if (shooter !== this || result == undefined) return;
+    // 标定观察读取已加载的生产类，不把完整伤害/特效闭包重复编入素材库。
+    var damageClass:Object = _global["org"]["flashNight"]["arki"]["component"]["Damage"]["DamageResult"];
+    if (damageClass == undefined || result === damageClass.NULL) return;
+    var damage:Number = Number(t.损伤值);
+    if (!isFinite(damage) || damage < 0) return;
+    if (bullet.技能名 == "迅斩" && bullet.黑仔招式序号 == this.__黑仔招式序号 &&
+        t.hp > 0 && !t.免疫击退 && !t.刚体 && !t.man.刚体标签 && bullet.水平击退速度 > 0) {
+        this.__黑仔凶斩机会目标 = t;
+        this.__黑仔凶斩机会到期 = getTimer() + 1800;
+    }
+    if (this.黑仔标定观测 !== true) return;
+    _root.发布消息("[BlackCalibration] " + this._name + "|hit|" + bullet.技能名 +
+        "|damage=" + damage + "|knock=" + bullet.击倒率 + "|targetHp=" + t.hp +
+        "|cast=" + bullet.黑仔招式序号 + "|dx=" + Math.abs(t._x - this._x));
+};
+黑仔目标破韧 = function(t:MovieClip, shooter:MovieClip, bullet:Object):Void {
+    if (shooter !== this) return;
+    if (bullet.技能名 == "迅斩" && bullet.黑仔招式序号 == this.__黑仔招式序号 && t.hp > 0) {
+        this.__黑仔凶斩机会目标 = t;
+        this.__黑仔凶斩机会到期 = getTimer() + 1800;
+    }
+    if (this.黑仔标定观测 !== true) return;
+    _root.发布消息("[BlackCalibration] " + this._name + "|toughness_break|" + bullet.技能名 +
+        "|targetHp=" + t.hp + "|cast=" + bullet.黑仔招式序号);
+};
+黑仔目标绑定 = function():Void {
+    var t:MovieClip = this.黑仔目标();
+    if (this.hp <= 0 || !(t.hp > 0)) { this.黑仔目标解绑();return; }
+    if (this.__黑仔事件对象 === t || t.dispatcher.subscribe == undefined) return;
+    this.黑仔目标解绑();this.__黑仔事件对象 = t;
+    t.dispatcher.subscribe("hit", this.黑仔目标命中, this);
+    t.dispatcher.subscribe("ToughnessBroken", this.黑仔目标破韧, this);
+};
+黑仔目标 = function():MovieClip {
+    return _root.gameworld[this.攻击目标];
+};
+黑仔待机 = function():Boolean {
+    return this.状态 == "兵器站立" || this.状态 == "兵器行走" || this.状态 == "兵器跑";
+};
+黑仔动作有效 = function(clip:MovieClip):Boolean {
+    return this.hp > 0 && this.man === clip && this.__黑仔动作中 &&
+        !_root.暂停 && this.黑仔目标().hp > 0;
+};
+黑仔凶斩机会有效 = function(t:MovieClip, now:Number):Boolean {
+    return t === this.__黑仔凶斩机会目标 && t.hp > 0 && now < this.__黑仔凶斩机会到期;
+};
+// 独立霸体租约并入刚体读值；外部对刚体的写入保留，结束不覆盖其他来源。
+黑仔霸体可用 = function():Boolean {
+    var t:MovieClip = this.黑仔目标();
+    var now:Number = getTimer();
+    if (!(Number(this.等级) > 29) || !isFinite(Number(this.等级)) || !this.黑仔待机() || this.硬直中 || this.刚体 ||
+        this.man.刚体标签 || !(t.hp > 0) || now < this.__黑仔霸体就绪 ||
+        now < this.__黑仔下次技能 || Math.abs(t.Z轴坐标 - this.Z轴坐标) > 30) return false;
+    var dx:Number = Math.abs(t._x - this._x);
+    if (dx >= 180 && dx <= 350) return true;
+    var cap:Number = Number(this.韧性上限);
+    var load:Number = Number(this.remainingImpactForce);
+    return dx < 105 && cap > 0 && isFinite(cap) && isFinite(load) && load > cap * 0.55;
+};
+黑仔霸体结束 = function():Void {
+    if (!this.__黑仔霸体刚体) return;
+    this.__黑仔霸体刚体 = false;
+    this.__黑仔霸体剩余帧 = 0;
+    if (this.__黑仔霸体光环._parent != undefined) this.__黑仔霸体光环.removeMovieClip();
+    delete this.__黑仔霸体光环;
+    this.黑仔标定记录("poise_end");
+};
+黑仔霸体推进 = function():Void {
+    if (!this.__黑仔霸体刚体) return;
+    if (this.hp <= 0 || !(this.黑仔目标().hp > 0)) { this.黑仔霸体结束();return; }
+    if (_root.暂停) return;
+    if (--this.__黑仔霸体剩余帧 <= 0) this.黑仔霸体结束();
+};
+黑仔技能选择 = function():String {
+    var t:MovieClip = this.黑仔目标();
+    if (!(t.hp > 0)) return "";
+    var dx:Number = Math.abs(t._x - this._x);
+    var dz:Number = Math.abs(t.Z轴坐标 - this.Z轴坐标);
+    var now:Number = getTimer();
+    if (dz > 30 || now < this.__黑仔下次技能) return "";
+    // 发布素材刀口实测：凶斩前两窗约81..158，后两窗约64..130。
+    // 常态从105..140起手；迅斩实击后可在90..135借势，禁止贴身盲放。
+    if (this.黑仔霸体可用()) return "霸体";
+    var opening:Boolean = this.黑仔凶斩机会有效(t, now);
+    var heavyMin:Number = opening ? 90 : 105;
+    var heavyMax:Number = opening ? 135 : 140;
+    if (dz <= 20 && dx >= heavyMin && dx <= heavyMax &&
+        now >= this.__黑仔凶斩就绪) return "凶斩";
+    if (dx >= 70 && dx <= 230 && now >= this.__黑仔迅斩就绪) return "迅斩";
+    return "";
+};
+// 退步仍由原生行走载体消费一次移动；沿 Mover 的地图碰撞，不改变朝向。
+黑仔开始退步 = function():Boolean {
+    var t:MovieClip = this.黑仔目标();
+    var now:Number = getTimer();
+    if (!this.黑仔待机() || !(t.hp > 0) || this.__黑仔禁用技能AI ||
+        now < this.__黑仔下次技能 || now < this.__黑仔凶斩就绪 || now < this.__黑仔退步就绪 ||
+        Math.abs(t.Z轴坐标 - this.Z轴坐标) > 30 || Math.abs(t._x - this._x) >= 105) return false;
+    this.__黑仔退步中 = true;
+    this.__黑仔退步起点 = this._x;
+    this.__黑仔退步目标 = t;
+    this.__黑仔退步截止 = now + 600;
+    this.__黑仔退步就绪 = now + 1800;
+    this.左行 = this.右行 = this.上行 = this.下行 = false;
+    this.方向改变(t._x < this._x ? "左" : "右");
+    this.__黑仔基础状态改变("兵器行走");
+    this.黑仔标定记录("retreat_start");
+    return true;
+};
+黑仔停止退步 = function():Void {
+    if (!this.__黑仔退步中) return;
+    this.__黑仔退步中 = false;
+    delete this.__黑仔退步目标;
+    this.左行 = this.右行 = this.上行 = this.下行 = false;
+    this.黑仔标定记录("retreat_end");
+    if (this.黑仔待机()) this.__黑仔基础状态改变("兵器站立");
+};
+黑仔行走 = function():Void {
+    if (!this.__黑仔退步中) { this.__黑仔基础行走();return; }
+    var t:MovieClip = this.黑仔目标();
+    if (_root.暂停 || this.硬直中 || this.hp <= 0 || !this.黑仔待机() ||
+        t !== this.__黑仔退步目标 || !(t.hp > 0)) return;
+    var dx:Number = t._x - this._x;
+    var budget:Number = Math.min(110 - Math.abs(dx), 45 - Math.abs(this._x - this.__黑仔退步起点));
+    var step:Number = Math.min(6, this.行走X速度, budget);
+    this.左行 = this.右行 = this.上行 = this.下行 = false;
+    if (step > 0) this.移动(dx < 0 ? "右" : "左", step);
+    this.方向改变(dx < 0 ? "左" : "右");
+};
+黑仔状态改变 = function(next:String):Void {
+    if (this.状态 == next) return;
+    // 通用追击 AI 不得以走、跑或普攻覆盖正在播放的攻击；受击/击倒可中断。
+    if (this.__黑仔动作中 && (next == "兵器攻击" || next == "兵器站立" ||
+        next == "兵器行走" || next == "兵器跑")) return;
+    if (this.__黑仔退步中 && (next == "兵器攻击" || next == "兵器站立" ||
+        next == "兵器行走" || next == "兵器跑")) return;
+    if (next == "兵器攻击" && this.黑仔待机()) {
+        var skill:String = this.黑仔技能选择();
+        if (skill != "") next = skill;
+        else if (this.黑仔开始退步()) return;
+    }
+    if (next == "霸体") {
+        if (!this.黑仔霸体可用()) return;
+        // 敌人招式以冷却和出招条件限制，不消耗 MP。
+        this.__黑仔霸体就绪 = getTimer() + this.__黑仔霸体冷却;
+        this.__黑仔下次技能 = getTimer() + 1200;
+        this.__黑仔霸体剩余帧 = 90;
+        this.__黑仔霸体刚体 = true;
+        this.技能浮空 = false;
+        var aura:MovieClip = this.createEmptyMovieClip("__黑仔霸体光环", this.getNextHighestDepth());
+        aura.lineStyle(2, 0xE7A45B, 85);
+        aura.moveTo(-25, -6);aura.curveTo(-45, -20, -22, -50);
+        aura.lineStyle(2, 0xE7A45B, 70);
+        aura.moveTo(25, -6);aura.curveTo(45, -20, 22, -50);
+        this.__黑仔霸体光环 = aura;
+        this.黑仔标定记录("poise_start");
+    }
+    if (next == "迅斩" || next == "凶斩") {
+        if (!this.黑仔待机() || !(this.黑仔目标().hp > 0)) return;
+        var now:Number = getTimer();
+        var ready:Number = next == "迅斩" ? this.__黑仔迅斩就绪 : this.__黑仔凶斩就绪;
+
+        if (now < ready) return;
+        this.__黑仔本次凶斩借势 = next == "凶斩" && this.黑仔凶斩机会有效(this.黑仔目标(), now);
+        this.__黑仔招式序号++;
+        if (next == "凶斩") { delete this.__黑仔凶斩机会目标;this.__黑仔凶斩机会到期 = 0; }
+
+        if (next == "迅斩") this.__黑仔迅斩就绪 = now + this.__黑仔迅斩冷却;
+        else this.__黑仔凶斩就绪 = now + this.__黑仔凶斩冷却;
+        this.__黑仔下次技能 = now + 1600;
+        this.技能浮空 = false;
+    }
+    if (this.__黑仔动作中 && (this.__黑仔动作 == "迅斩" || this.__黑仔动作 == "凶斩")) {
+        this.黑仔标定记录("interrupt");
+    }
+    this.__黑仔退步中 = false;
+    delete this.__黑仔退步目标;
+    if (next == "被击" || next == "击倒" || next == "倒地" || next == "血腥死") {
+        delete this.__黑仔凶斩机会目标;this.__黑仔凶斩机会到期 = 0;
+    }
+    this.__黑仔动作中 = next == "兵器攻击" || next == "迅斩" || next == "凶斩" || next == "霸体";
+    this.__黑仔动作 = this.__黑仔动作中 ? next : "";
+    this.__黑仔出手窗口 = 0;
+    if (next == "迅斩" || next == "凶斩") this.黑仔标定记录("start");
+    if (this.__黑仔动作中) this.左行 = this.右行 = this.上行 = this.下行 = false;
+    if (this.hp <= 0) { this.黑仔霸体结束();this.黑仔目标解绑(); }
+    else if (next == "被击" || next == "击倒" || next == "倒地" || next == "被投") this.黑仔霸体结束();
+    this.__黑仔基础状态改变(next);
+};
+黑仔动画完毕 = function():Void {
+    // 实击的迅斩在自身恢复结束后允许转凶斩；各招独立冷却仍照常，敌人技能不消耗 MP。
+    if (this.__黑仔动作 == "迅斩" && this.黑仔凶斩机会有效(this.黑仔目标(), getTimer())) {
+        this.__黑仔下次技能 = Math.min(this.__黑仔下次技能, getTimer());
+    }
+    if (this.__黑仔动作 == "迅斩" || this.__黑仔动作 == "凶斩") this.黑仔标定记录("end");
+    if (this.__黑仔动作 == "霸体") this.黑仔标定记录("poise_cast_end");
+    this.__黑仔动作中 = false;
+    this.__黑仔动作 = "";
+    this.__黑仔基础动画完毕();
+};
+UpdateBigSmallState = function(big:String, small:String):Void {
+    this.大状态 = big;
+    this.小状态 = small;
+};
+UpdateSmallState = function(small:String):Void {
+    this.小状态 = small;
+};
+黑仔攻击移动 = function(clip:MovieClip, speed:Number):Void {
+    if (!this.黑仔动作有效(clip)) return;
+    var t:MovieClip = this.黑仔目标();
+    var dx:Number = t._x - this._x;
+    if ((dx < 0 && this.方向 != "左") || (dx > 0 && this.方向 != "右")) return;
+    var stopDistance:Number = this.__黑仔动作 == "迅斩" ? 72 : 35;
+    var step:Number = Math.min(Math.abs(speed), Math.max(0, Math.abs(dx) - stopDistance));
+    if (step > 0) this.移动(this.方向, Math.min(step, 12));
+};
+黑仔普攻 = function(clip:MovieClip, power:Number, rangeZ:Number, knock:Number, horizontal:Number, vertical:Number):Void {
+    if (!this.黑仔动作有效(clip) || this.状态 != "兵器攻击" || isNaN(power)) return;
+    var p:Object = {技能名:"棍棒普攻", 子弹威力:power, Z轴攻击范围:rangeZ, 击倒率:knock,
+        水平击退速度:horizontal, 击中后子弹的效果:"斩打命中特效"};
+    if (vertical) p.垂直击退速度 = vertical;
+    if (this.mp攻击加成) p.子弹威力 += this.mp攻击加成;
+    SkillAttributeCore.transferWeaponAttributes(this, p);
+    this.刀口位置生成子弹(this, p);
+};
+黑仔技能攻击 = function(clip:MovieClip, skill:String, noStun:Boolean):Void {
+    if (!this.黑仔动作有效(clip) || this.状态 != skill) return;
+    // 主角帧函数中的裸 _parent 依赖原播放器作用域；敌人显式传入自己。
+    var p:Object = {技能名:skill, 黑仔招式序号:this.__黑仔招式序号};
+    if (skill == "迅斩") {
+        p.子弹威力 = this.空手攻击力 * 0.1 + this.刀属性.power * (3 + this.技能等级 * 0.35);
+        if (this.行走X速度) p.子弹威力 += SkillDamageCore.speedToDamage(this.行走X速度);
+        p.Z轴攻击范围 = 50;
+        // 击倒率是冲击公式的分母。只放大冲击，不提高迅斩伤害或强制击倒。
+        p.击倒率 = 2 / ((10 + this.技能等级) * this.__黑仔迅斩冲击倍率);
+        p.不硬直 = true;
+        // 破韧后原生摩擦0.5会留下约60像素空间；普通命中摩擦3不会强推远。
+        p.水平击退速度 = this.__黑仔迅斩击退速度;
+    } else {
+        var multiplier:Number = SkillDamageCore.getSkillMultiplier(this, "凶斩");
+        p.子弹威力 = this.空手攻击力 * 0.1 + 1.5 * this.内力 * (5 + this.技能等级) +
+            this.刀属性.power * multiplier * 0.125 * (10 + this.技能等级);
+        if (this.mp攻击加成) p.子弹威力 += this.mp攻击加成;
+        p.Z轴攻击范围 = 30;
+        p.击倒率 = 10;
+        p.不硬直 = noStun;
+    }
+    if (isNaN(p.子弹威力) || p.子弹威力 <= 0) return;
+    this.__黑仔出手窗口++;
+    if (this.__黑仔出手窗口 == 1) this.黑仔标定记录("first_hit_window");
+    SkillAttributeCore.transferWeaponAttributes(this, p);
+    this.刀口位置生成子弹(this, p);
+};
+黑仔消弹 = function(clip:MovieClip):Void {
+    if (!this.黑仔动作有效(clip) || clip.攻击点 == undefined) return;
+    var p:Object = _root.消弹属性初始化(clip.攻击点);
+    p.消弹方向 = this.方向 == "右" ? "左" : "右";
+    p.Z轴攻击范围 = 30;
+    p.区域定位area = clip.攻击点;
+    _root.消除子弹(p);
+};
+黑仔连招续段 = function(clip:MovieClip, label:String):Void {
+    if (this.黑仔动作有效(clip) && label != "" &&
+        Math.abs(this.黑仔目标()._x - this._x) <= 160) {
+        clip.gotoAndPlay(label);
+        return;
+    }
+    clip.stop();
+    this.动画完毕();
+};
+黑仔每帧 = function():Void {
+    this.黑仔霸体推进();
+    this.黑仔目标绑定();
+    if (_root.暂停) {
+        if (!this.__黑仔已暂停 && (this.__黑仔动作中 || this.黑仔待机())) {
+            this.__黑仔暂停man = this.man;
+            this.man.stop();
+            this.__黑仔已暂停 = true;
+        }
+        return;
+    }
+    if (this.__黑仔已暂停) {
+        if (this.man === this.__黑仔暂停man) this.man.play();
+        this.__黑仔已暂停 = false;
+        delete this.__黑仔暂停man;
+    }
+    if (this.hp <= 0) {
+        if (this.状态 != "血腥死") this.状态改变("血腥死");
+        return;
+    }
+    if (this.__黑仔动作中 && !(this.黑仔目标().hp > 0)) {
+        this.动画完毕();
+        return;
+    }
+    if (this.__黑仔禁用技能AI) return;
+    // 原生行走载体每帧消费 AI 方向标志一次；技能驱动不再重复移动。
+    if (!this.黑仔待机()) return;
+    var t:MovieClip = this.黑仔目标();
+    if (this.__黑仔退步中) {
+        if (t !== this.__黑仔退步目标 || !(t.hp > 0) || getTimer() >= this.__黑仔退步截止 ||
+            Math.abs(t._x - this._x) >= 110 || Math.abs(this._x - this.__黑仔退步起点) >= 45 ||
+            Math.abs(t.Z轴坐标 - this.Z轴坐标) > 30) this.黑仔停止退步();
+        else return;
+    }
+    var skill:String = this.黑仔技能选择();
+    if (skill != "") {
+        this.方向改变(this.黑仔目标()._x < this._x ? "左" : "右");
+        this.状态改变(skill);
+    } else this.黑仔开始退步();
+};
+
+初始化敌人模板 = _root.初始化敌人模板;
+初始化敌人模板();
+__黑仔外部刚体 = Boolean(刚体);
+__黑仔霸体刚体 = false;
+delete this.刚体;
+this.addProperty("刚体", function():Boolean { return this.__黑仔外部刚体 || this.__黑仔霸体刚体; },
+    function(value):Void { this.__黑仔外部刚体 = Boolean(value); });
+__黑仔霸体剩余帧 = 0;
+__黑仔霸体就绪 = 0;
+刀口位置生成子弹 = _root.主角函数.刀口位置生成子弹;
+if (isNaN(Number(内力))) 内力 = 35;
+if (isNaN(Number(技能等级))) 技能等级 = 1;
+__黑仔基础状态改变 = 状态改变;
+__黑仔基础动画完毕 = 动画完毕;
+__黑仔基础行走 = 行走;
+行走 = 黑仔行走;
+状态改变 = 黑仔状态改变;
+动画完毕 = 黑仔动画完毕;
+__黑仔动作中 = false;
+__黑仔动作 = "";
+__黑仔迅斩就绪 = __黑仔凶斩就绪 = 0;
+__黑仔招式序号 = 0;
+__黑仔退步中 = false;
+__黑仔退步就绪 = 0;
+__黑仔凶斩机会到期 = 0;
+__黑仔下次技能 = getTimer() + 1200;
+// 单位参数可提供局部标定配置；未提供时读取兵种 XML。
+var 黑仔配置:Object = this.技能配置;
+if (黑仔配置 == undefined) 黑仔配置 = _root.敌人属性表[this.兵种].技能配置;
+var 黑仔内力加成:Number = Number(黑仔配置.内力加成);
+if (!isFinite(黑仔内力加成) || 黑仔内力加成 < 0) 黑仔内力加成 = 0;
+// 成长仅来自显式技能配置；局部平坦加成配置不隐式叠加兵种成长。
+var 黑仔内力每级:Number = Number(黑仔配置.内力每级);
+var 黑仔内力起点:Number = Number(黑仔配置.内力成长起始等级);
+var 黑仔成长等级:Number = Number(this.等级);
+if (!isFinite(黑仔内力每级) || 黑仔内力每级 < 0) 黑仔内力每级 = 0;
+if (!isFinite(黑仔内力起点) || 黑仔内力起点 < 0) 黑仔内力起点 = 0;
+var 黑仔成长内力:Number = isFinite(黑仔成长等级) ? Math.max(0, 黑仔成长等级 - 黑仔内力起点) * 黑仔内力每级 : 0;
+if (!isFinite(黑仔成长内力)) 黑仔成长内力 = 0;
+内力 += 黑仔内力加成 + 黑仔成长内力;
+__黑仔迅斩冲击倍率 = Number(黑仔配置.迅斩冲击倍率);
+if (!isFinite(__黑仔迅斩冲击倍率) || __黑仔迅斩冲击倍率 < 1 || __黑仔迅斩冲击倍率 > 4) __黑仔迅斩冲击倍率 = 2;
+__黑仔出手窗口 = 0;
+__黑仔迅斩击退速度 = Number(黑仔配置.迅斩击退速度);
+if (!isFinite(__黑仔迅斩击退速度) || __黑仔迅斩击退速度 < 4 || __黑仔迅斩击退速度 > 12) __黑仔迅斩击退速度 = 8;
+__黑仔霸体冷却 = Number(黑仔配置.霸体冷却);
+if (!isFinite(__黑仔霸体冷却) || __黑仔霸体冷却 < 8000) __黑仔霸体冷却 = 15000;
+__黑仔迅斩冷却 = Number(黑仔配置.迅斩冷却);
+__黑仔凶斩冷却 = Number(黑仔配置.凶斩冷却);
+if (isNaN(__黑仔迅斩冷却) || __黑仔迅斩冷却 < 1000) __黑仔迅斩冷却 = 5000;
+if (isNaN(__黑仔凶斩冷却) || __黑仔凶斩冷却 < 1000) __黑仔凶斩冷却 = 8000;
+var 黑仔驱动:MovieClip = this.createEmptyMovieClip("__黑仔驱动", this.getNextHighestDepth());
+黑仔驱动.onEnterFrame = function():Void { this._parent.黑仔每帧(); };
+黑仔标定记录("init");
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="1" duration="119" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[this.swapDepths(this._y);
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="120" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[hp = 0;
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+          <DOMFrame index="121" keyMode="9728"><elements/></DOMFrame></frames>
+        </DOMLayer>
+        <DOMLayer name="Layer_2" color="#5AD2ED">
+          <frames>
+            <DOMFrame index="0" duration="120" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex黑仔/模板/军阀派杂兵/怪物通用模板/血条与名称/新版血条位置示意" name="人物文字信息" centerPoint3DX="88" centerPoint3DY="-141.4">
+                  <matrix>
+                    <Matrix tx="1" ty="-170.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="120" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          <DOMFrame index="121" duration="1" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex黑仔/模板/军阀派杂兵/怪物通用模板/血条与名称/新版血条位置示意" name="人物文字信息" centerPoint3DX="88" centerPoint3DY="-141.4">
+                  <matrix>
+                    <Matrix tx="1" ty="-170.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer_4" color="#CDB6B4" locked="true" outline="true" useOutlineView="true">
+          <frames>
+            <DOMFrame index="0" duration="88" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex黑仔/模板/军阀派杂兵/怪物通用模板/area框/hitbox-area框载体" name="area" centerPoint3DX="-13.95" centerPoint3DY="-114">
+                  <matrix>
+                    <Matrix a="2.11715698242188" d="5.48248291015625" tx="-26.45" ty="-126.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="88" duration="7" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex黑仔/模板/军阀派杂兵/怪物通用模板/area框/hitbox-area框载体" name="area" centerPoint3DX="-72.75" centerPoint3DY="-37.85">
+                  <matrix>
+                    <Matrix a="5.72386169433594" d="1.68096923828125" tx="-85.25" ty="-50.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="95" duration="9" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex黑仔/模板/军阀派杂兵/怪物通用模板/area框/hitbox-area框载体" name="area" centerPoint3DX="-13.95" centerPoint3DY="-114">
+                  <matrix>
+                    <Matrix a="2.11715698242188" d="5.48248291015625" tx="-26.45" ty="-126.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="104" duration="17" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          <DOMFrame index="121" duration="1" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex黑仔/模板/军阀派杂兵/怪物通用模板/area框/hitbox-area框载体" name="area" centerPoint3DX="-13.95" centerPoint3DY="-114">
+                  <matrix>
+                    <Matrix a="2.11715698242188" d="5.48248291015625" tx="-26.45" ty="-126.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            </frames>
+        </DOMLayer>
+        <DOMLayer name="思考标签" color="#B2728A" locked="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="29" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex黑仔/模板/军阀派杂兵/怪物通用模板/通用ai元件/思考标签" centerPoint3DX="-33.5" centerPoint3DY="18.85">
+                  <matrix>
+                    <Matrix tx="-36" ty="16.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="29" duration="92" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          <DOMFrame index="121" duration="1" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="行走ai层" color="#A5D8F2" outline="true" useOutlineView="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="29" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex黑仔/模板/军阀派杂兵/怪物通用模板/通用ai元件/行走ai载体" name="控制块" centerPoint3DX="120" centerPoint3DY="130.5">
+                  <matrix>
+                    <Matrix a="0.01446533203125" d="0.0158538818359375" tx="-31.5" ty="-21"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent (enterFrame) {
+	_parent.行走();
+}]]></script>
+                  </Actionscript>
+                  <color>
+                    <Color alphaMultiplier="0"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="29" duration="92" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          <DOMFrame index="121" duration="1" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="人物层" color="#EECCB6" current="true" isSelected="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="9" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex黑仔/动作/站立" name="man" selected="true" centerPoint3DX="232.3" centerPoint3DY="217.65">
+                  <matrix>
+                    <Matrix a="0.277084350585938" d="0.2769775390625" tx="3.4" ty="-62.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="9" duration="10" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex黑仔/动作/行走" name="man" centerPoint3DX="235.9" centerPoint3DY="216.45">
+                  <matrix>
+                    <Matrix a="0.277084350585938" d="0.2769775390625" tx="7" ty="-63.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="19" duration="10" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex黑仔/动作/跑" name="man" centerPoint3DX="233.1" centerPoint3DY="219.5">
+                  <matrix>
+                    <Matrix a="0.277084350585938" d="0.27679443359375" tx="3.35" ty="-60.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="29" duration="8" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="37" duration="4" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex黑仔/动作/迅斩" name="man" centerPoint3DX="307.45" centerPoint3DY="497.55">
+                  <matrix>
+                    <Matrix a="0.2769775390625" d="0.2769775390625" tx="3.5" ty="-62.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="41" duration="10" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex黑仔/动作/棍棒普攻" name="man" centerPoint3DX="298.8" centerPoint3DY="218.1">
+                  <matrix>
+                    <Matrix a="0.277084350585938" d="0.276901245117188" tx="3.4" ty="-62.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="51" duration="10" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex黑仔/动作/凶斩" name="man">
+                  <matrix>
+                    <Matrix a="0.277084350585938" d="0.276901245117188" tx="3.4" ty="-62.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="61" duration="10" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="71" duration="8" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex黑仔/动作/受击" name="man" centerPoint3DX="294.85" centerPoint3DY="293.1">
+                  <matrix>
+                    <Matrix a="0.277084350585938" d="0.276901245117188" tx="3.4" ty="-62.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="79" duration="9" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex黑仔/动作/击倒" name="man" centerPoint3DX="340.55" centerPoint3DY="234.9">
+                  <matrix>
+                    <Matrix a="0.277084350585938" d="0.276901245117188" tx="3.4" ty="-62.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent (load) { _parent.击飞浮空(); }]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="88" duration="7" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex黑仔/动作/起身" name="man" centerPoint3DX="279.4" centerPoint3DY="158.85">
+                  <matrix>
+                    <Matrix a="0.277084350585938" d="0.276901245117188" tx="3.4" ty="-62.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent (load) { _parent.击飞倒地(); }]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="95" duration="9" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex黑仔/动作/受击" name="man" centerPoint3DX="294.85" centerPoint3DY="293.1">
+                  <matrix>
+                    <Matrix a="0.277084350585938" d="0.276901245117188" tx="3.4" ty="-62.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="104" duration="16" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex黑仔/动作/死亡" name="man" selected="true" centerPoint3DX="621.55" centerPoint3DY="340.05">
+                  <matrix>
+                    <Matrix a="0.277084350585938" d="0.276901245117188" tx="3.4" ty="-62.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent (load) { gotoAndPlay("a" + random(7)); }]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="120" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          <DOMFrame index="121" duration="1" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex黑仔/动作/霸体" name="man">
+                  <matrix>
+                    <Matrix a="0.277084350585938" d="0.276901245117188" tx="3.4" ty="-62.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

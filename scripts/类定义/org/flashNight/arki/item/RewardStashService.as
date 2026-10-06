@@ -23,6 +23,10 @@ class org.flashNight.arki.item.RewardStashService {
         return _pending == null ? _root._saveExt.rewardInbox : _pending.before.ext.rewardInbox;
     }
 
+    public static function committedKPoints():Number {
+        var value:Number = _pending == null ? Number(_root.虚拟币) : Number(_pending.before.assets.kpoints);
+        return RewardStashStore.whole(value) ? value : 0;
+    }
     public static function pendingOperationId():String {
         return SaveManager.getInstance().rewardCommitOperationId();
     }

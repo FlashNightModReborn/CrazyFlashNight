@@ -1,0 +1,3 @@
+﻿trace("FocusedTestRunId choice-rewards Start: __FOCUSED_RUN_ID__");
+org.flashNight.arki.item.ChoiceRewardServiceTest.runAllTests();
+trace("FocusedTestRunId choice-rewards Complete: __FOCUSED_RUN_ID__");

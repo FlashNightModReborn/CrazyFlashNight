@@ -1,0 +1,45 @@
+<?xml version='1.0' encoding='utf-8'?>
+<DOMSymbolItem xmlns="http://ns.adobe.com/xfl/2008/" name="Codex/打桩机-M7/Parts/strike_flash" itemID="f3fd68d5-3dd3bbf6">
+  <timeline>
+    <DOMTimeline name="strike_flash">
+      <layers>
+        <DOMLayer name="完整矢量母件" color="#6D9981" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMGroup>
+                  <members>
+                    <DOMShape>
+                      <fills>
+                        <FillStyle index="1">
+                          <SolidColor color="#E8C16B" />
+                        </FillStyle>
+                      </fills>
+                      <edges>
+                        <Edge fillStyle0="1" edges="!0 -100|0 100!0 100|340 120!340 120|1240 200!1240 200|660 60!660 60|1900 -40!1900 -40|260 -60!260 -60|360 -180!360 -180|0 -100" />
+                      </edges>
+                    </DOMShape>
+                  </members>
+                </DOMGroup>
+                <DOMGroup>
+                  <members>
+                    <DOMShape>
+                      <fills>
+                        <FillStyle index="1">
+                          <SolidColor color="#FFF3D3" />
+                        </FillStyle>
+                      </fills>
+                      <edges>
+                        <Edge fillStyle0="1" edges="!0 -40|0 40!0 40|320 60!320 60|1540 0!1540 0|340 -80!340 -80|0 -40" />
+                      </edges>
+                    </DOMShape>
+                  </members>
+                </DOMGroup>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

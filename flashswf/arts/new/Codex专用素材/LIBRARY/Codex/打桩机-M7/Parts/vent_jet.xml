@@ -1,0 +1,45 @@
+<?xml version='1.0' encoding='utf-8'?>
+<DOMSymbolItem xmlns="http://ns.adobe.com/xfl/2008/" name="Codex/打桩机-M7/Parts/vent_jet" itemID="2527cfc7-4fef4a1b">
+  <timeline>
+    <DOMTimeline name="vent_jet">
+      <layers>
+        <DOMLayer name="完整矢量母件" color="#6D9981" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMGroup>
+                  <members>
+                    <DOMShape>
+                      <fills>
+                        <FillStyle index="1">
+                          <SolidColor color="#D9B977" />
+                        </FillStyle>
+                      </fills>
+                      <edges>
+                        <Edge fillStyle0="1" edges="!0 -100|-260 -60!-260 -60|-560 -280!-560 -280|-380 -20!-380 -20|-2300 0!-2300 0|-680 80!-680 80|-1100 280!-1100 280|-320 120!-320 120|0 100!0 100|0 -100" />
+                      </edges>
+                    </DOMShape>
+                  </members>
+                </DOMGroup>
+                <DOMGroup>
+                  <members>
+                    <DOMShape>
+                      <fills>
+                        <FillStyle index="1">
+                          <SolidColor color="#FFF1D1" />
+                        </FillStyle>
+                      </fills>
+                      <edges>
+                        <Edge fillStyle0="1" edges="!0 -40|-280 0!-280 0|-1660 20!-1660 20|-300 60!-300 60|0 40!0 40|0 -40" />
+                      </edges>
+                    </DOMShape>
+                  </members>
+                </DOMGroup>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

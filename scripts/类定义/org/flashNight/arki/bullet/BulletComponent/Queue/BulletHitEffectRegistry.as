@@ -16,6 +16,13 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletHitEffectRegistry {
 
     /** 在伤害管线选择处理器前，按当前目标层数临时注入击溃/斩杀。 */
     public static function prepare(bullet:Object, shooter:Object, target:Object):Void {
+        if (bullet.hitBehavior.type == "pileBunkerFuel" && bullet.hitBehavior.fuelUnits > 0) {
+            // 素材首帧会写回魔法/热；付费燃爆在结算入口恢复本次声明的立场破击。
+            // 资格随这一发保存，不能从射手当前形态或剩余油量反推。
+            bullet.伤害类型 = "破击";
+            bullet.魔法伤害属性 = "立场";
+            return;
+        }
         if (bullet.hitBehavior.type == "titaniumFireControl" || bullet.hitBehavior.type == "titaniumBloodPact") {
             // 火控仍锁定小额物伤；血剑战技保留自身联弹与声明的击溃斩杀。
             bullet.击溃 = bullet.斩杀 = bullet.吸血 = bullet.毒 = 0;

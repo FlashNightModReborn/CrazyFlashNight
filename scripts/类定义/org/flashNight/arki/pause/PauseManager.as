@@ -41,7 +41,8 @@
  *  约束：
  *    - 任何想观察 _root.暂停 变化的新代码必须走 PauseManager.subscribe，
  *      禁止再调 _root.watch("暂停", ...)（会覆盖 PauseManager 的回调）。
- *    - 业务侧直写 _root.暂停 = ... 不变（subscribers 收到 tag === null）。
+ *    - 普通业务侧直写暂停保留原语义（tag === null）；受管旧过场期间裸写不更新
+ *      恢复基值。手动暂停必须使用 set(value, "manual")，避免被识别成旧动画写入。
  *    - 帧脚本不要在 install 之前发起 set / lease / subscribe / unsubscribe 调用
  *      （_subscribers / _leases 字段在 install() 内才初始化，提前调用会 NPE）。
  * =============================================================================
@@ -90,6 +91,8 @@ class org.flashNight.arki.pause.PauseManager {
     // OR 语义：任一 claim 存活期间 _root.暂停 恒 true；最后一条释放才恢复基值。
     private static var _claims:Object;
     private static var _claimCount:Number = 0;
+    // 仅受管旧过场存续期间，裸写 true/false 属于动画内部实现，不表达业务基值。
+    private static var _legacyAnimationCount:Number = 0;
     // 无 claim 时业务侧对 _root.暂停 的取值意图；claim 存续期间由外部写持续更新。
     private static var _unownedPause:Boolean = false;
     // claim/lease 内部写标记：acquire/release 路径的 set 不参与基值记账。
@@ -113,6 +116,7 @@ class org.flashNight.arki.pause.PauseManager {
         PauseManager._leases = {};
         PauseManager._claims = {};
         PauseManager._claimCount = 0;
+        PauseManager._legacyAnimationCount = 0;
         PauseManager._unownedPause = false;
         PauseManager._claimWriting = false;
         PauseManager._writerTag = null;
@@ -133,16 +137,17 @@ class org.flashNight.arki.pause.PauseManager {
         // **不会收到该次嵌套写入的通知**。这是设计意图：避免无限递归 + 避免分发顺序乱套。
         // 业务约束：subscriber 内不要做"会改 _root.暂停 又依赖被其他 subscriber 同步观察到"的操作。
         var tag:String = PauseManager._writerTag;
+        var legacyAnimationWrite:Boolean = tag == null && PauseManager._legacyAnimationCount > 0;
         // claim 记账先于 reward 折叠：必须使用调用方原始入参（newVal 改写前），
         // 否则 pending 期被 reward 折成 true 的值会污染基值意图。
         // reward_save 自己的 force/resume 写不表达业务基值意图，跳过记账——
         // pending 期间的 resume 值已含 claim 产生的强制 true，回写会永久化。
         if (PauseManager._claimCount > 0 && !PauseManager._claimWriting
-                && tag != "reward_save") {
+                && tag != "reward_save" && !legacyAnimationWrite) {
             PauseManager._unownedPause = (newVal === true);
         }
         if (PauseManager._rewardCommitPending && tag != "reward_save") {
-            PauseManager._rewardResumeValue = newVal === true;
+            if (!legacyAnimationWrite) PauseManager._rewardResumeValue = newVal === true;
             newVal = true;
         }
         if (PauseManager._claimCount > 0 && !PauseManager._claimWriting) {
@@ -269,10 +274,19 @@ class org.flashNight.arki.pause.PauseManager {
         return leaseId;
     }
 
+    /** 受管旧过场的 claim；不替换 watch，不改普通 lease 的裸写契约。 */
+    public static function leaseLegacyAnimation(owner:String):String {
+        var leaseId:String = PauseManager.lease(true, owner);
+        PauseManager._claims[leaseId].legacyAnimation = true;
+        PauseManager._legacyAnimationCount++;
+        return leaseId;
+    }
+
     public static function releaseLease(leaseId:String):Void {
         var claim:Object = PauseManager._claims != undefined
             ? PauseManager._claims[leaseId] : undefined;
         if (claim != undefined) {
+            if (claim.legacyAnimation === true) PauseManager._legacyAnimationCount--;
             delete PauseManager._claims[leaseId];
             PauseManager._claimCount--;
             if (PauseManager._claimCount <= 0) {

@@ -8,13 +8,16 @@ namespace CF7Launcher.Guardian
         private SceneTransitionController _sceneSettlement;
         private bool _transitionSettlementSelected, _transitionSettlementPaused;
         internal bool SceneSettlementLoading => _transitionSettlementSelected && !_transitionSettlementPaused;
+        internal bool BookshelfReturnLoading => _sceneSettlement?.BookshelfReturnLoading == true;
         internal bool UsesTransitionSettlement => _transitionSettlementSelected;
+        internal SceneTransitionController SceneTransition => _sceneSettlement;
         private CompositionHelpSurface SelectedCompositionSurface => _transitionSettlementSelected
             ? _sceneSettlement.SettlementSurface : _compositionHelpSelected ? _compositionHelp : null;
 
         internal void ConfigureTransitionSettlement(SceneTransitionController controller)
         {
             _sceneSettlement=controller;
+            controller.ConfigureExclusivePresentation(() => SceneTransitionController.IsExclusivePresentation(_activePanel, _activePanelInstanceId));
             controller.SettlementRequest+=p=>_web.HandleTransitionSettlementMessage(p);
             controller.SettlementTransportFailed+=()=>_web.HandleTransitionSettlementFailure();
             controller.SceneCompleted+=()=> {

@@ -1083,7 +1083,18 @@ class org.flashNight.arki.item.EquipmentTuningService {
         var materials:Object = getMaterialCollection();
         if (materials == null) return fail("condition_failed");
         var materialProjection:Object = buildMaterialPlan(materials, materialDeltas);
-        if (!materialProjection.success) return materialProjection;
+        if (!materialProjection.success) {
+            // Preserve the authority's exact cost on a rejected preview. This is
+            // informational only: no plan or commit token is installed.
+            if (operation == "enhance" && materialProjection.error == "insufficient_material") {
+                var requiredStones:Number = -Number(materialDeltas["强化石"]);
+                var ownedStones:Number = materials.getValue("强化石");
+                if (requiredStones > ownedStones) materialProjection.materialShortage = {
+                    itemName:"强化石", required:requiredStones, owned:ownedStones, missing:requiredStones - ownedStones
+                };
+            }
+            return materialProjection;
+        }
 
         var changes:Array = [];
         if (!noOp) {

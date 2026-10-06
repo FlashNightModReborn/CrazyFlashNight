@@ -250,7 +250,7 @@ class org.flashNight.arki.item.RewardStashServiceTest {
         ItemUseService.setContextValidator(function(panel:String,generation:Number):Object { return {success:true}; });
         var snapshot:Object = InventoryPanelService.buildExternalSnapshot("背包", 0, 50);
         var store:Object = RewardStashService.peek();
-        var owned:Number = RewardStashStore.ownedQuantity(store,"暂存测试材料");
+        var owned:Number = _root.收集品栏.材料.getValue("暂存测试材料");
         var request:Object = {task:"cmd", action:"itemUseStashOpenMany", callId:1,v:2,panelInstanceId:"test.stash",sessionGeneration:1,
             operationId:"packs.3",storeId:store.storeId,expectedRevision:store.commitRevision,count:3,
             source:{physicalSlot:20,slotLease:String(snapshot.slots[20].slotLease),itemName:"暂存测试礼包",backpackVersion:Number(snapshot.containerVersion)}};
@@ -260,8 +260,8 @@ class org.flashNight.arki.item.RewardStashServiceTest {
             "multi-pack freezes three rolls and deducts three in one candidate");
         sm._configureSaveFlowForTest({flushResult:true});
         check(RewardStashService.resume(RewardStashService.pendingOperationId()).success
-            && RewardStashStore.ownedQuantity(RewardStashService.peek(),"暂存测试材料") == owned + 6,
-            "multi-pack pending resumes frozen rewards without reroll");
+            && _root.收集品栏.材料.getValue("暂存测试材料") == owned + 6,
+            "multi-pack pending resumes direct material rewards without reroll");
         result = ItemUseService.execute("stashOpenMany",request);
         check(result.success && result.data.packages.length == 3 && _root.物品栏.背包.getItem(20).value == 1,
             "multi-pack exact replay returns original receipt without another deduction");
@@ -282,7 +282,7 @@ class org.flashNight.arki.item.RewardStashServiceTest {
         bag.remove(20); bag.add(20,BaseItem.create("暂存测试礼包",64));
         InventoryPanelService.invalidateExternalSlot("背包",20);
         var invalid:Array = [0,1,65,NaN,"3"];
-        var owned:Number = RewardStashStore.ownedQuantity(RewardStashService.peek(),"暂存测试材料");
+        var owned:Number = _root.收集品栏.材料.getValue("暂存测试材料");
         var initial:Number = sm._getSavePhysicalStatsForTest().flushAttempt;
         for(var i:Number=0;i<invalid.length;i++) {
             var bad:Object = packRequest("invalid."+i,3); bad.count=invalid[i];
@@ -296,12 +296,14 @@ class org.flashNight.arki.item.RewardStashServiceTest {
         for(var f:Number=0;f<faults.length;f++) {
             var before:Object = PersistedSnapshot.clone(RewardStashService.peek());
             var req:Object = packRequest("fault."+f,3);
+            var materialBefore:Number = _root.收集品栏.材料.getValue("暂存测试材料");
             ItemUseService.setOpenManyFaultForTests(faults[f],1);
             sm._configureSaveFlowForTest({flushResult:faults[f]=="false"?false:true,
                 beforeLocalCommit:faults[f]=="throw"?function():Void {throw new Error("preflush");}:null});
             var result:Object = ItemUseService.execute("stashOpenMany",req);
             check(!result.success && bag.getItem(20).value == 64 && ObjectUtil.deepEquals(RewardStashService.peek(),before)
-                && RewardStashService.pendingOperationId() == "", "v2 pack full rollback at "+faults[f]);
+                && RewardStashService.pendingOperationId() == "" && _root.收集品栏.材料.getValue("暂存测试材料") == materialBefore,
+                "v2 pack full rollback including directly admitted materials at "+faults[f]);
         }
         ItemUseService.setOpenManyFaultForTests("",0);
         sm._configureSaveFlowForTest({flushResult:true,beforeLocalCommit:null});
@@ -309,8 +311,8 @@ class org.flashNight.arki.item.RewardStashServiceTest {
         initial = sm._getSavePhysicalStatsForTest().flushAttempt;
         var committed:Object = ItemUseService.execute("stashOpenMany",request);
         check(committed.success && committed.data.packages.length == 64 && bag.getItem(20) == null
-            && RewardStashStore.ownedQuantity(RewardStashService.peek(),"暂存测试材料") == owned+128
-            && sm._getSavePhysicalStatsForTest().flushAttempt == initial+1,"v2 sixty-four packs merge across sources with one save");
+            && _root.收集品栏.材料.getValue("暂存测试材料") == owned+128
+            && sm._getSavePhysicalStatsForTest().flushAttempt == initial+1,"v2 sixty-four packs directly admit materials with one save");
         var conflict:Object = PersistedSnapshot.clone(request); conflict.count=2;
         check(!ItemUseService.execute("stashOpenMany",conflict).success
             && sm._getSavePhysicalStatsForTest().flushAttempt == initial+1,"v2 same operation with changed payload cannot append");
@@ -324,14 +326,34 @@ class org.flashNight.arki.item.RewardStashServiceTest {
         var zero:Object=ItemUseService.execute("stashOpenMany",packRequest("packs.zero",2));
         ItemUseService.setRandomValuesForTests(null);
         check(zero.success && zero.data.packages.length == 2 && zero.data.packages[0].entryCount == 0
-            && bag.getItem(20) == null && RewardStashStore.ownedQuantity(RewardStashService.peek(),"暂存测试材料") == owned+128,
+            && bag.getItem(20) == null && _root.收集品栏.材料.getValue("暂存测试材料") == owned+128,
             "zero-hit packs consume exactly their source and retain empty receipt descriptors");
         check(!ItemUseService.execute("stashOpenMany",request).success
-            && RewardStashStore.ownedQuantity(RewardStashService.peek(),"暂存测试材料") == owned+128,
+            && _root.收集品栏.材料.getValue("暂存测试材料") == owned+128,
             "forgotten v2 operation remains stale after a later commit");
         var legacy:Object = {v:1,operationId:"retired.fresh"};
         check(ItemUseService.execute("openMany",legacy).error == "unsupported_version"
-            && RewardStashStore.ownedQuantity(RewardStashService.peek(),"暂存测试材料") == owned+128,"v1 fresh pack write is retired without asset changes");
+            && _root.收集品栏.材料.getValue("暂存测试材料") == owned+128,"v1 fresh pack write is retired without asset changes");
+        // Two full packs free one slot: one equipment enters it, the second stays in stash.
+        ItemUtil.itemDataDict["暂存测试礼包"].data.rewardPack = {mode:"fixed",entries:{entry:{itemName:"暂存测试装备",quantityMin:1,quantityMax:1}}};
+        for (var fill:Number = 0; fill < 50; fill++) { bag.remove(fill); bag.add(fill, BaseItem.create("暂存测试装备", 2)); }
+        bag.remove(20); bag.add(20, BaseItem.create("暂存测试礼包", 2));
+        InventoryPanelService.invalidateExternalSlot("背包",20);
+        var gearBefore:Number = RewardStashStore.ownedQuantity(RewardStashService.peek(), "暂存测试装备");
+        sm._configureSaveFlowForTest({flushResult:false});
+        var split:Object = ItemUseService.execute("stashOpenMany", packRequest("packs.split.failed", 2));
+        check(!split.success && bag.getItem(20).name == "暂存测试礼包" && bag.getItem(20).value == 2
+            && RewardStashStore.ownedQuantity(RewardStashService.peek(), "暂存测试装备") == gearBefore,
+            "failed full-pack delivery restores consumed slot and stash together");
+        sm._configureSaveFlowForTest({flushResult:true});
+        var splitRequest:Object = packRequest("packs.split", 2);
+        split = ItemUseService.execute("stashOpenMany", splitRequest);
+        check(split.success && bag.getItem(20).name == "暂存测试装备"
+            && RewardStashStore.ownedQuantity(RewardStashService.peek(), "暂存测试装备") == gearBefore + 1,
+            "consumed last pack frees a destination and only overflow enters stash");
+        check(ItemUseService.execute("stashOpenMany", splitRequest).success
+            && RewardStashStore.ownedQuantity(RewardStashService.peek(), "暂存测试装备") == gearBefore + 1,
+            "direct and overflow pack delivery share one replay-safe receipt");
     }
 
     private static function testSummaryPurity():Void {

@@ -1,0 +1,957 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="长枪小登/sprite/军阀精英击飞" itemID="693d2759-0000a4be" lastModified="1765783957">
+  <timeline>
+    <DOMTimeline name="军阀精英击飞" currentFrame="19">
+      <layers>
+        <DOMLayer name="Labels_Layer" color="#88E2C5">
+          <frames>
+            <DOMFrame index="0" name="兵器0" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="1" duration="9" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="10" name="兵器1" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Script_Layer" color="#7BFE83">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[_parent.硬直(this,_parent.被击硬直度 / 2);
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="1" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[_parent.动画完毕();
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="2" duration="8" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="10" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[_parent.硬直(this,_parent.被击硬直度 / 2);
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="11" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[_parent.动画完毕();
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer_3" color="#EEFC31">
+          <frames>
+            <DOMFrame index="0" duration="10" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="长枪小登/主角肢体素材/右手" centerPoint3DX="113.7" centerPoint3DY="-31.6">
+                  <matrix>
+                    <Matrix a="0.83270263671875" b="-0.125595092773438" c="0.125595092773438" d="0.83270263671875" tx="84.2" ty="-53"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="10" duration="9" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="长枪小登/主角肢体素材/右手" centerPoint3DX="97.75" centerPoint3DY="52.2">
+                  <matrix>
+                    <Matrix a="0.785797119140625" b="-0.314208984375" c="0.314208984375" d="0.785797119140625" tx="68.25" ty="30.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="19" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="长枪小登/主角肢体素材/右手" centerPoint3DX="113.7" centerPoint3DY="-31.6">
+                  <matrix>
+                    <Matrix a="0.83270263671875" b="-0.125595092773438" c="0.125595092773438" d="0.83270263671875" tx="84.2" ty="-53"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer_5" color="#8DE7E2">
+          <frames>
+            <DOMFrame index="0" duration="10" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="长枪小登/主角肢体素材/左下臂" centerPoint3DX="28.5" centerPoint3DY="-19.4">
+                  <matrix>
+                    <Matrix a="0.225204467773438" b="-0.81103515625" c="0.81103515625" d="0.225204467773438" tx="11.05" ty="-75.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="10" duration="9" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="长枪小登/主角肢体素材/左下臂" centerPoint3DX="18.7" centerPoint3DY="49.2">
+                  <matrix>
+                    <Matrix a="0.410568237304688" b="-0.738037109375" c="0.738037109375" d="0.410568237304688" tx="1.25" ty="-6.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="19" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="长枪小登/主角肢体素材/左下臂" centerPoint3DX="28.5" centerPoint3DY="-19.4">
+                  <matrix>
+                    <Matrix a="0.225204467773438" b="-0.81103515625" c="0.81103515625" d="0.225204467773438" tx="11.05" ty="-75.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer_37" color="#FD5ECC">
+          <frames>
+            <DOMFrame index="0" duration="10" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="长枪小登/主角肢体素材/上臂" centerPoint3DX="-12.8" centerPoint3DY="-84.45">
+                  <matrix>
+                    <Matrix a="0.74371337890625" b="-0.395797729492188" c="0.395797729492188" d="0.74371337890625" tx="-36.45" ty="-151.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="10" duration="9" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="长枪小登/主角肢体素材/上臂" centerPoint3DX="-12.8" centerPoint3DY="-19.5">
+                  <matrix>
+                    <Matrix a="0.774703979492188" b="-0.33319091796875" c="0.33319091796875" d="0.774703979492188" tx="-36.45" ty="-86.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="19" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="长枪小登/主角肢体素材/上臂" centerPoint3DX="-12.8" centerPoint3DY="-84.45">
+                  <matrix>
+                    <Matrix a="0.74371337890625" b="-0.395797729492188" c="0.395797729492188" d="0.74371337890625" tx="-36.45" ty="-151.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer_38" color="#FDFB67">
+          <frames>
+            <DOMFrame index="0" duration="10" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="长枪小登/小刀" centerPoint3DX="-13.05" centerPoint3DY="-29.7">
+                  <matrix>
+                    <Matrix a="-0.255416870117188" b="0.9659423828125" c="-0.9659423828125" d="-0.255416870117188" tx="-71.8" ty="-61.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="10" duration="9" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="长枪小登/小刀" centerPoint3DX="-13.05" centerPoint3DY="35.25">
+                  <matrix>
+                    <Matrix a="-0.255416870117188" b="0.9659423828125" c="-0.9659423828125" d="-0.255416870117188" tx="-71.8" ty="3.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="19" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="长枪小登/小刀" centerPoint3DX="-13.05" centerPoint3DY="-29.7">
+                  <matrix>
+                    <Matrix a="-0.255416870117188" b="0.9659423828125" c="-0.9659423828125" d="-0.255416870117188" tx="-71.8" ty="-61.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer_39" color="#D08DE9">
+          <frames>
+            <DOMFrame index="0" duration="10" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="长枪小登/主角肢体素材/小腿" centerPoint3DX="-56.55" centerPoint3DY="191.9">
+                  <matrix>
+                    <Matrix a="0.77734375" b="0.3507080078125" c="-0.3507080078125" d="0.77734375" tx="-78.15" ty="117.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="10" duration="9" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="长枪小登/主角肢体素材/小腿" centerPoint3DX="-32.4" centerPoint3DY="259.2">
+                  <matrix>
+                    <Matrix a="0.278549194335938" b="0.804550170898438" c="-0.804550170898438" d="0.278549194335938" tx="-54" ty="185.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="19" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="长枪小登/主角肢体素材/小腿" centerPoint3DX="-56.55" centerPoint3DY="191.9">
+                  <matrix>
+                    <Matrix a="0.77734375" b="0.3507080078125" c="-0.3507080078125" d="0.77734375" tx="-78.15" ty="117.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer_40" color="#AD876A">
+          <frames>
+            <DOMFrame index="0" duration="10" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="长枪小登/主角肢体素材/脚" centerPoint3DX="-82.45" centerPoint3DY="239.25">
+                  <matrix>
+                    <Matrix a="0.8463134765625" b="0.0995941162109375" c="-0.0995941162109375" d="0.8463134765625" tx="-121.6" ty="205.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="10" duration="9" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="长枪小登/主角肢体素材/脚" centerPoint3DX="-117.8" centerPoint3DY="245.2">
+                  <matrix>
+                    <Matrix a="0.8463134765625" b="0.0995941162109375" c="-0.0995941162109375" d="0.8463134765625" tx="-156.95" ty="211.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="19" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="长枪小登/主角肢体素材/脚" centerPoint3DX="-82.45" centerPoint3DY="239.25">
+                  <matrix>
+                    <Matrix a="0.8463134765625" b="0.0995941162109375" c="-0.0995941162109375" d="0.8463134765625" tx="-121.6" ty="205.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer_41" color="#F7B38C">
+          <frames>
+            <DOMFrame index="0" duration="10" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="长枪小登/主角肢体素材/右大腿" centerPoint3DX="-30.6" centerPoint3DY="92.2">
+                  <matrix>
+                    <Matrix a="0.8343505859375" b="0.16650390625" c="-0.16650390625" d="0.8343505859375" tx="-56.85" ty="14.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="10" duration="9" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="长枪小登/主角肢体素材/右大腿" centerPoint3DX="-30.6" centerPoint3DY="157.15">
+                  <matrix>
+                    <Matrix a="0.8511962890625" b="-0.018402099609375" c="0.018402099609375" d="0.8511962890625" tx="-56.85" ty="79.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="19" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="长枪小登/主角肢体素材/右大腿" centerPoint3DX="-30.6" centerPoint3DY="92.2">
+                  <matrix>
+                    <Matrix a="0.8343505859375" b="0.16650390625" c="-0.16650390625" d="0.8343505859375" tx="-56.85" ty="14.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer_42" color="#AC04E7">
+          <frames>
+            <DOMFrame index="0" duration="10" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="长枪小登/主角肢体素材/小腿" centerPoint3DX="60.35" centerPoint3DY="157.15">
+                  <matrix>
+                    <Matrix a="0.8372802734375" b="0.1710205078125" c="-0.1710205078125" d="0.8372802734375" tx="38.75" ty="83.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="10" duration="9" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="长枪小登/主角肢体素材/小腿" centerPoint3DX="88.3" centerPoint3DY="178.8">
+                  <matrix>
+                    <Matrix a="0.8372802734375" b="0.1710205078125" c="-0.1710205078125" d="0.8372802734375" tx="66.7" ty="104.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="19" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="长枪小登/主角肢体素材/小腿" centerPoint3DX="60.35" centerPoint3DY="157.15">
+                  <matrix>
+                    <Matrix a="0.8372802734375" b="0.1710205078125" c="-0.1710205078125" d="0.8372802734375" tx="38.75" ty="83.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer_43" color="#76F4D5">
+          <frames>
+            <DOMFrame index="0" duration="10" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="长枪小登/主角肢体素材/脚" centerPoint3DX="60.6" centerPoint3DY="211.4">
+                  <matrix>
+                    <Matrix a="0.848297119140625" b="0.06219482421875" c="-0.06219482421875" d="0.848297119140625" tx="21.45" ty="177.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="10" duration="9" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="长枪小登/主角肢体素材/脚" centerPoint3DX="85.65" centerPoint3DY="235.8">
+                  <matrix>
+                    <Matrix a="0.845504760742188" b="-0.0978851318359375" c="0.0978851318359375" d="0.845504760742188" tx="46.5" ty="202.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="19" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="长枪小登/主角肢体素材/脚" centerPoint3DX="60.6" centerPoint3DY="211.4">
+                  <matrix>
+                    <Matrix a="0.848297119140625" b="0.06219482421875" c="-0.06219482421875" d="0.848297119140625" tx="21.45" ty="177.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer_44" color="#84AD8E" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" duration="10" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="长枪小登/长枪" centerPoint3DX="-32.65" centerPoint3DY="-16.5">
+                  <matrix>
+                    <Matrix a="0.0213623046875" b="-0.991607666015625" c="0.991607666015625" d="0.0213623046875" tx="117.5" ty="-20.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="0.05"/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="10" duration="9" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="长枪小登/长枪" centerPoint3DX="-45.3" centerPoint3DY="60.3">
+                  <matrix>
+                    <Matrix a="0.0213623046875" b="-0.991607666015625" c="0.991607666015625" d="0.0213623046875" tx="104.85" ty="56.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="0.05"/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="19" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="长枪小登/长枪" centerPoint3DX="-32.65" centerPoint3DY="-16.5">
+                  <matrix>
+                    <Matrix a="0.0213623046875" b="-0.991607666015625" c="0.991607666015625" d="0.0213623046875" tx="117.5" ty="-20.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="0.05"/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer_45" color="#9534D3">
+          <frames>
+            <DOMFrame index="0" duration="10" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="长枪小登/主角肢体素材/屁股" centerPoint3DX="7" centerPoint3DY="38.15">
+                  <matrix>
+                    <Matrix a="0.8372802734375" b="0.1710205078125" c="-0.1710205078125" d="0.8372802734375" tx="-39" ty="2.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="10" duration="9" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="长枪小登/主角肢体素材/屁股" centerPoint3DX="7" centerPoint3DY="103.1">
+                  <matrix>
+                    <Matrix a="0.8372802734375" b="0.1710205078125" c="-0.1710205078125" d="0.8372802734375" tx="-39" ty="67.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="19" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="长枪小登/主角肢体素材/屁股" centerPoint3DX="7" centerPoint3DY="38.15">
+                  <matrix>
+                    <Matrix a="0.8372802734375" b="0.1710205078125" c="-0.1710205078125" d="0.8372802734375" tx="-39" ty="2.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer_46" color="#E0D0F3">
+          <frames>
+            <DOMFrame index="0" duration="10" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="长枪小登/主角肢体素材/头" centerPoint3DX="50.3" centerPoint3DY="-131.9">
+                  <matrix>
+                    <Matrix a="0.964218139648438" b="0.0296630859375" c="-0.0296630859375" d="0.964218139648438" tx="18.8" ty="-172.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="10" duration="9" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="长枪小登/主角肢体素材/头" centerPoint3DX="50.3" centerPoint3DY="-70.2">
+                  <matrix>
+                    <Matrix a="0.956085205078125" b="0.130233764648438" c="-0.130233764648438" d="0.956085205078125" tx="18.8" ty="-110.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="19" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="长枪小登/主角肢体素材/头" centerPoint3DX="50.3" centerPoint3DY="-131.9">
+                  <matrix>
+                    <Matrix a="0.964218139648438" b="0.0296630859375" c="-0.0296630859375" d="0.964218139648438" tx="18.8" ty="-172.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer_47" color="#69B4DD">
+          <frames>
+            <DOMFrame index="0" duration="10" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="长枪小登/主角肢体素材/身体" centerPoint3DX="31.95" centerPoint3DY="60.55">
+                  <matrix>
+                    <Matrix a="0.808578491210938" b="0.2677001953125" c="-0.2677001953125" d="0.808578491210938" tx="-26.15" ty="-48"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="10" duration="9" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="长枪小登/主角肢体素材/身体" centerPoint3DX="31.95" centerPoint3DY="125.5">
+                  <matrix>
+                    <Matrix a="0.808578491210938" b="0.2677001953125" c="-0.2677001953125" d="0.808578491210938" tx="-26.15" ty="16.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="19" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="长枪小登/主角肢体素材/身体" centerPoint3DX="31.95" centerPoint3DY="60.55">
+                  <matrix>
+                    <Matrix a="0.808578491210938" b="0.2677001953125" c="-0.2677001953125" d="0.808578491210938" tx="-26.15" ty="-48"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer_48" color="#945EAD">
+          <frames>
+            <DOMFrame index="0" duration="10" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="长枪小登/主角肢体素材/左大腿" centerPoint3DX="6.8" centerPoint3DY="84.3">
+                  <matrix>
+                    <Matrix a="0.655319213867188" b="-0.540618896484375" c="0.540618896484375" d="0.655319213867188" tx="-19.45" ty="6.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="10" duration="9" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="长枪小登/主角肢体素材/左大腿" centerPoint3DX="6.8" centerPoint3DY="149.25">
+                  <matrix>
+                    <Matrix a="0.29534912109375" b="-0.795989990234375" c="0.795989990234375" d="0.29534912109375" tx="-19.45" ty="71.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="19" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="长枪小登/主角肢体素材/左大腿" centerPoint3DX="6.8" centerPoint3DY="84.3">
+                  <matrix>
+                    <Matrix a="0.655319213867188" b="-0.540618896484375" c="0.540618896484375" d="0.655319213867188" tx="-19.45" ty="6.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer_49" color="#D4ED80">
+          <frames>
+            <DOMFrame index="0" duration="10" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="长枪小登/主角肢体素材/手枪2" centerPoint3DX="51.5" centerPoint3DY="10">
+                  <matrix>
+                    <Matrix a="-0.19189453125" b="0.980758666992188" c="-0.980758666992188" d="-0.19189453125" tx="-7.25" ty="-22.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="10" duration="9" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="长枪小登/主角肢体素材/手枪2" centerPoint3DX="51.5" centerPoint3DY="74.95">
+                  <matrix>
+                    <Matrix a="-0.19189453125" b="0.980758666992188" c="-0.980758666992188" d="-0.19189453125" tx="-7.25" ty="42.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="19" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="长枪小登/主角肢体素材/手枪2" centerPoint3DX="51.5" centerPoint3DY="10">
+                  <matrix>
+                    <Matrix a="-0.19189453125" b="0.980758666992188" c="-0.980758666992188" d="-0.19189453125" tx="-7.25" ty="-22.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer_50" color="#9172E4">
+          <frames>
+            <DOMFrame index="0" duration="10" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="长枪小登/主角肢体素材/左手" centerPoint3DX="125.3" centerPoint3DY="-167">
+                  <matrix>
+                    <Matrix a="-0.460922241210938" b="-0.70391845703125" c="0.70391845703125" d="-0.460922241210938" tx="95.8" ty="-188.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="10" duration="9" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="长枪小登/主角肢体素材/左手" centerPoint3DX="114.15" centerPoint3DY="-67.55">
+                  <matrix>
+                    <Matrix a="-0.256988525390625" b="-0.805648803710938" c="0.805648803710938" d="-0.256988525390625" tx="84.65" ty="-89"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="19" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="长枪小登/主角肢体素材/左手" centerPoint3DX="125.3" centerPoint3DY="-167">
+                  <matrix>
+                    <Matrix a="-0.460922241210938" b="-0.70391845703125" c="0.70391845703125" d="-0.460922241210938" tx="95.8" ty="-188.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer_51" color="#68FA31">
+          <frames>
+            <DOMFrame index="0" duration="10" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="长枪小登/主角肢体素材/左手臂" centerPoint3DX="130.05" centerPoint3DY="-66.25">
+                  <matrix>
+                    <Matrix a="-0.80804443359375" b="0.23187255859375" c="-0.23187255859375" d="-0.80804443359375" tx="112.6" ty="-121.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="10" duration="9" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="长枪小登/主角肢体素材/左手臂" centerPoint3DX="111.65" centerPoint3DY="41">
+                  <matrix>
+                    <Matrix a="-0.83477783203125" b="0.128219604492188" c="-0.128219604492188" d="-0.83477783203125" tx="94.2" ty="-14.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="19" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="长枪小登/主角肢体素材/左手臂" centerPoint3DX="130.05" centerPoint3DY="-66.25">
+                  <matrix>
+                    <Matrix a="-0.80804443359375" b="0.23187255859375" c="-0.23187255859375" d="-0.80804443359375" tx="112.6" ty="-121.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer_52" color="#8B93C2">
+          <frames>
+            <DOMFrame index="0" duration="10" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="长枪小登/主角肢体素材/上臂" centerPoint3DX="58.2" centerPoint3DY="-64.6">
+                  <matrix>
+                    <Matrix a="0.138107299804688" b="-0.827743530273438" c="0.827743530273438" d="0.138107299804688" tx="34.55" ty="-131.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="10" duration="9" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="长枪小登/主角肢体素材/上臂" centerPoint3DX="51.7" centerPoint3DY="3.6">
+                  <matrix>
+                    <Matrix a="0.516845703125" b="-0.66632080078125" c="0.66632080078125" d="0.516845703125" tx="28.05" ty="-63.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="19" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="长枪小登/主角肢体素材/上臂" centerPoint3DX="58.2" centerPoint3DY="-64.6">
+                  <matrix>
+                    <Matrix a="0.138107299804688" b="-0.827743530273438" c="0.827743530273438" d="0.138107299804688" tx="34.55" ty="-131.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer_54" color="#95B4E0" locked="true">
+          <frames>
+            <DOMFrame index="0" duration="20" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="长枪小登/主角肢体素材/Symbol 3" centerPoint3DX="71.45" centerPoint3DY="319.7">
+                  <matrix>
+                    <Matrix a="1.37506103515625" d="0.559799194335938" tx="-15.2" ty="233.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

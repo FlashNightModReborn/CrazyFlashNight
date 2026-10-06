@@ -1,6 +1,6 @@
 {
   "schema": "cf7-shop-portrait-provenance-v1",
-  "generatorVersion": "1.0.0",
+  "generatorVersion": "1.1.0",
   "geometry": {
     "width": 256,
     "height": 256,
@@ -11,8 +11,8 @@
   "toolchain": {
     "generator": {
       "path": "tools/bake-shop-portraits.py",
-      "sha256": "cee73a5225e421552ea1c728b40c8b6137717c7ade1cf86ef9bfcaabd6fca1bc",
-      "bytes": 36280
+      "sha256": "67167c45a42d9cd5ef6b0045a1331228738e4a4791fe3569c32237e06edc3cf7",
+      "bytes": 37106
     },
     "dialogueBaker": {
       "path": "tools/bake-dialogue-portraits.py",
@@ -41,11 +41,11 @@
   "activeShopSource": {
     "list": {
       "path": "data/shops/list.xml",
-      "sha256": "f202705028d5938406577f97d0516513679839ad73e1326ccc431c082e4931a2",
-      "bytes": 1428
+      "sha256": "dcd66ea71b1262f9ef7da54a932c42e92d45b54a899b588dc1b6706015e5a5e0",
+      "bytes": 1519
     },
-    "listedCount": 37,
-    "activeCount": 36,
+    "listedCount": 38,
+    "activeCount": 37,
     "excludedShopIds": [
       "幸存老兵-暂时停用"
     ],
@@ -124,6 +124,11 @@
         "path": "data/shops/npcs/迷之盔甲君.json",
         "sha256": "8236e239f01965ef26d3eb3b60b5217797d5f10d450dd015d71a3623a18454d5",
         "bytes": 1241
+      },
+      {
+        "path": "data/shops/npcs/书中-迷之盔甲君.json",
+        "sha256": "8fba670c8c5e78f52d400132a36726c29ab673ecb68025b358c6fa22eaa766a0",
+        "bytes": 2958
       },
       {
         "path": "data/shops/npcs/诺艾尔.json",
@@ -245,7 +250,8 @@
   "sourcePartition": {
     "externalDialogue": 33,
     "internalDialogue": 2,
-    "exactXflSwfPilot": 1
+    "exactXflSwfPilot": 1,
+    "sharedShopPortrait": 1
   },
   "sources": {
     "Andy Law": {
@@ -588,6 +594,23 @@
       },
       "expression": "普通",
       "frame1Based": 1,
+      "extractedPngSha256": "b1631c240888b05dccf30cf9b21daf64bce99f9a75beec05af49700e40d610dc",
+      "output": {
+        "uri": "subjects/243f48ee6ea051d7cd442563ff446fba350fb3797285ee8f9a4b49ffd0d582cf.png",
+        "width": 256,
+        "height": 256,
+        "bounds": {
+          "x": 16,
+          "y": 35,
+          "width": 224,
+          "height": 185
+        },
+        "sha256": "243f48ee6ea051d7cd442563ff446fba350fb3797285ee8f9a4b49ffd0d582cf"
+      }
+    },
+    "书中-迷之盔甲君": {
+      "kind": "shared-shop-portrait",
+      "sourceShopId": "迷之盔甲君",
       "extractedPngSha256": "b1631c240888b05dccf30cf9b21daf64bce99f9a75beec05af49700e40d610dc",
       "output": {
         "uri": "subjects/243f48ee6ea051d7cd442563ff446fba350fb3797285ee8f9a4b49ffd0d582cf.png",
@@ -1144,32 +1167,5 @@
         "sha256": "a874393fff7c81f38717eb5df9e03c0ac50d74fc311a428bd3e38ac4cf50d32f"
       }
     }
-  },
-  "shopSourceRefresh": {
-    "mode": "shop-id-metadata-only",
-    "tool": {
-      "path": "tools/refresh-shop-portrait-sources.py",
-      "sha256": "297872799f52cf9d2e4f9650c1e903751fb0c868342d8715dfd5bad8690b0e18",
-      "bytes": 8071
-    },
-    "previousActiveSourceSha256": "9a48844a35f977df8408e71f8da61d3aaa47178e6ec44573a7955c015d197e66"
-  },
-  "dialogueMetadataRefresh": {
-    "mode": "unconsumed-dialogue-metadata-only",
-    "tool": {
-      "path": "tools/refresh-shop-portrait-sources.py",
-      "sha256": "297872799f52cf9d2e4f9650c1e903751fb0c868342d8715dfd5bad8690b0e18",
-      "bytes": 8071
-    },
-    "previousManifestSha256": "14d39a70dfdd262d9ed002230417319509b9e61134b1fe99d8c3e9ed03ab8fb7",
-    "previousBakerSha256": "c1d365beac69e8461b0c9430103978c3197dc8717c6cb6dbc43ce917f1bf748e",
-    "consumedModuleAstSha256": "b2337701bf19d608a93faa33f0435d4bb80ed209137018e29ea5f117170a148d",
-    "unchangedShopDialogueHelpers": [
-      "export_external_frames",
-      "export_swf_xml",
-      "frame_ranges_from_dialogue_portrait",
-      "timeline_labels_from_swf_xml"
-    ],
-    "unchangedShopEntries": 36
   }
 }

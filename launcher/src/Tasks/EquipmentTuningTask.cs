@@ -1487,6 +1487,8 @@ namespace CF7Launcher.Tasks
 
             if (!msg.Value<bool>("success"))
             {
+                if (msg["materialShortage"] != null && (entry.WebCmd != "preview" || entry.Operation != "enhance"
+                    || ReadString(msg["error"]) != "insufficient_material" || !IsMaterialShortage(msg["materialShortage"] as JObject))) return false;
                 if (entry.WebCmd == "commit" && msg["transactionId"] != null
                     && !IsOpaque(ReadString(msg["transactionId"]))) return false;
                 return IsSafeText(ReadString(msg["error"]), 1, 64);
@@ -1521,12 +1523,23 @@ namespace CF7Launcher.Tasks
                 && TrySanitizeStatRows(msg["statsAfter"] as JArray, out statsAfter);
         }
 
+        private static bool IsMaterialShortage(JObject value)
+        {
+            int required, owned, missing;
+            return value != null && value.Count == 4 && ReadString(value["itemName"]) == "强化石"
+                && TryReadInteger(value["required"], 1, int.MaxValue, out required)
+                && TryReadInteger(value["owned"], 0, int.MaxValue, out owned)
+                && TryReadInteger(value["missing"], 1, int.MaxValue, out missing)
+                && required > owned && missing == required - owned;
+        }
+
         private static bool HasOnlyResponseKeys(JObject msg, string cmd, bool success)
         {
             HashSet<string> keys = Set("task", "callId", "v", "success", "command",
                 "panelInstanceId", "viewSessionId", "writeEpoch", "reconciled",
                 "reconcileAfterCallId", "error");
             if (!success && cmd == "commit") keys.Add("transactionId");
+            if (!success && cmd == "preview") keys.Add("materialShortage");
             if (success)
             {
                 if (cmd == "snapshot") keys.Add("snapshot");

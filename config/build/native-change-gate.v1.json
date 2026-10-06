@@ -65,6 +65,7 @@
     "config/build/runtime-inputs.v2.json",
     "launcher/native/.gitattributes",
     "launcher/build.ps1",
+    "launcher/webview2-runtime.lock.json",
     "launcher/contracts/panel-contracts.v2.json",
     "tools/lib/runtime-process-identity.js",
     "tools/audit-native-cursor-assets.js",
@@ -75,6 +76,7 @@
     "tools/test-panel-contracts.js",
     "tools/test-resolve-runtime-trusted-base.ps1",
     "tools/prepare-launcher-release-assets.ps1",
+    "tools/stage-fixed-webview-runtime.ps1",
     "tools/validate-launcher-release-policy.ps1",
     "tools/validate-panel-contracts.js",
     "本地开发启动.cmd"

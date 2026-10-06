@@ -46,7 +46,7 @@ var Panels = (function() {
         if (id === 'skills' || id === 'crafting' || id === 'kshop'
                 || id === 'settings' || id === 'surgery'
                 || id === 'npcshop' || id === 'blackmarket' || id === 'team' || id === 'gym'
-                || id === 'warlord') {
+                || id === 'warlord' || id === 'bookshelf' || id === 'book-comic') {
             closeMessage.panelInstanceId = readPanelInstanceId(initData);
             if (id === 'npcshop' && isNpcShopOuterCloseReason(reason)) {
                 closeMessage.reason = reason;
@@ -64,7 +64,7 @@ var Panels = (function() {
         return id === 'loot' || id === 'workbench' || id === 'skills'
             || id === 'settings' || id === 'surgery'
             || id === 'crafting' || id === 'kshop' || id === 'npcshop'
-            || id === 'blackmarket' || id === 'team' || id === 'gym' || id === 'warlord';
+            || id === 'blackmarket' || id === 'team' || id === 'gym' || id === 'warlord' || id === 'bookshelf' || id === 'book-comic';
     }
 
     function safeBridgeSend(message, context) {
@@ -478,7 +478,7 @@ var Panels = (function() {
             // Loot 尚未完成 required-assets/lazy mount 时没有 authorityRevision/closeLease，
             // 因而不能把 ESC/backdrop 伪装成故障解绑，也不能猜测普通 close 写入。保持
             // pending；依赖完成后由已挂载的 LootPanel 统一提交 non-abandon suspend intent。
-            if (_pendingOpen.id === 'loot') {
+            if (_pendingOpen.id === 'loot' || _pendingOpen.id === 'book-comic') {
                 console.log('[Panels] ignore close intent while loot lazy open is pending');
                 return;
             }

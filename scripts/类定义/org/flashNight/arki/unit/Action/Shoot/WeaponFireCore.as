@@ -3,6 +3,7 @@ import org.flashNight.arki.unit.*;
 import org.flashNight.sara.util.*;
 import org.flashNight.neur.Event.*;
 import org.flashNight.arki.render.RayVisualBridge;
+import org.flashNight.arki.unit.Action.Shoot.WeaponSpreadRuntime;
 
 /**
  * @class WeaponFireCore
@@ -61,6 +62,12 @@ class org.flashNight.arki.unit.Action.Shoot.WeaponFireCore {
      * @return Boolean 射击是否成功执行（弹药不足时返回false）
      */
     public static function executeShot(owner, weaponType:String, muzzlePosition:MovieClip, bulletProps:Object, commitGuard:Function):Boolean {
+        // 可复用模板不携带上一发倍率；暂停拒绝在弹药提交与密度记录之前。
+        bulletProps.武器扩散倍率 = 1;
+        if (_root.暂停) {
+            owner.__pendingFireInterval = 0;
+            return false;
+        }
         // 获取当前武器的弹药信息
         var currentShot:Number = owner[weaponType].value.shot;
         var maxAmmo:Number = owner[weaponType + "弹匣容量"];
@@ -83,8 +90,6 @@ class org.flashNight.arki.unit.Action.Shoot.WeaponFireCore {
         if (owner.__titaniumType61) {
             bulletProps = owner.__titaniumType61.projectShot(owner, weaponType, firedWeapon, bulletProps);
         }
-        dispatcher.publish("processShot", owner, weaponType, muzzlePosition, bulletProps, firedWeapon);
-
         // 盖戳本次发射间隔（毫秒）：供纵向联弹生成整数分数补弹率（<1 即隔帧补弹），
         // 使霰弹值在调度器有效射击间隔的末 tick 补完；同 tick 内事件先后不作保证。
         // 全武器普及（原 fillrate=auto opt-in 已默认化；非纵向联弹该键为惰性属性，零消费）。
@@ -97,6 +102,9 @@ class org.flashNight.arki.unit.Action.Shoot.WeaponFireCore {
         } else {
             bulletProps.发射间隔毫秒 = owner[weaponType + "属性"].interval;
         }
+
+        dispatcher.publish("processShot", owner, weaponType, muzzlePosition, bulletProps, firedWeapon);
+        WeaponSpreadRuntime.applyShot(owner, weaponType, firedWeapon, bulletProps);
 
         // 只冻结真实发射槽/枪口/物件的表现身份；不更改命中、弹药或随机数。
         RayVisualBridge.captureShot(owner, weaponType, muzzlePosition, bulletProps, firedWeapon);

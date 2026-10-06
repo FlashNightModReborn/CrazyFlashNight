@@ -1,0 +1,71 @@
+{
+  "schema": "cf7.pilebunker-balance-design.v1",
+  "itemName": "火药燃气液压打桩机",
+  "workbookVersion": 1,
+  "workbookSha256": "bac3d341db2b2bf966c3d473ed4793725baf0b68be01ba0d2804a76d6dcb840a",
+  "verifiedCurrentWorkbookSha256": "357e07955281d4cb3884902b58165e19e97852216ae5a76965d3ebd04fb4e107",
+  "formulaComparison": "ac112ec210d7 对照现役工作簿：枪械、装备价格及刀页的值和公式一致。",
+  "formulaInputs": {
+    "dualWieldFactor": 1,
+    "pierceFactor": 1,
+    "damageTypeFactor": 1,
+    "extraWeightLayers": 0
+  },
+  "profiles": {
+    "data": {
+      "totalWeightLayers": 3,
+      "bladeWeightLayers": 0,
+      "goldPriceLayers": 2,
+      "budgetBasis": "维护者裁定：特殊玩法隐藏1层＋金币高价2层。"
+    },
+    "data_pilebunker_m7": {
+      "totalWeightLayers": 5,
+      "bladeWeightLayers": -1,
+      "budgetBasis": "维护者裁定：55级毕业武器共5层；正常获取途径冷藏，现阶段保留为修改器可取得的武器。"
+    }
+  },
+  "notes": [
+    "数值真源为物品XML；本文件只记录维护者裁定和拟合方法。",
+    "枪械威力以完整实际重量、榴弹弹药价格、0加权求解，不先扣防护重量，不重复把额外层计入枪伤。",
+    "防护转让来自刀页：同等级同重量的总加权锋利度减0加权锋利度。按刀!C10/J18换算为防御及生命。",
+    "当前防御/生命按70%/30%分配并取最近5点，保留舍入残差。此比例为首轮候选，可在不改变总预算的情况下调整。",
+    "重锤武器保留原物品身份，以专属改装材料进阶；正常获取途径按维护者要求冷藏，不作为本轮收口阻塞。",
+    "impact=1、accuracy/evasion/toughness=300为维护者明确保留的击倒、必杀与跳弹定位，不作为误填纠正。",
+    "保留时序反推的N1与S1结果作为数值参照，不把取整后的运行倍率称为公式精确解。S1专项时间扩展不改formula=1默认计算。",
+    "普通蓄力为1.5倍；S1按三个机械弹仓指示窗取1.5/2/3倍，档位ceil(余弹*3/容量)。成功一次耗尽余弹，基础首发只计一次。",
+    "维护者明确保留120 MP和10秒冷却；两者不用于追加伤害预算。射击间隔与回收结束后才累计新蓄力。",
+    "原版普通狂野锤按35级80kg、刀页0层得到590物理锋利度；重锤的装甲/立场机制支付半层，免费碎石再支付半层，按刀页负1层得到890。各自防护转让保持独立。",
+    "维护者于2026-10-03裁定两形态普通主仓换弹延迟+200%，运行负担100+200=300；沿用枪械师减时及翻滚换弹技能补弹。目的为限制增重后的枪模式持续输出，不据此增加8270/17420枪械面板。公式900ms换弹假设与真实动画分开报告。",
+    "内置喷火采用战术版喷火器850/220ms等参数，弹容12、一罐燃料补满一仓，沿现役副武器加成规则。Q就绪时同一特殊槽改为过载，卸压或回收完成恢复副武器。",
+    "机械桩击保留物理，刀口与碎石为装甲破击；付燃料的联动火焰为立场破击。N1/S1的1%击溃、S1的13%斩杀、锤战技6秒及0.05%击溃/6%斩杀均为首轮体验参数，尚未纳入基础枪械公式的平衡确认。",
+    "面板求解取最近10点，保留枪械0层、防护转让与时序拟合参照；运行倍率经维护者授权收口为易读三档，并报告与原拟合的差值。既有实战由维护者确认无问题。"
+  ],
+  "defenceAllocation": {
+    "defenceShare": 0.7,
+    "hpShare": 0.3,
+    "roundingStep": 5
+  },
+  "gameplayMultipliers": {
+    "charged": 1.5,
+    "skillMiddle": 2,
+    "skillFull": 3,
+    "selection": "ceil(remaining*3/capacity)"
+  },
+  "availability": {
+    "status": "modifier_only_acquisition_deferred",
+    "decisionDate": "2026-10-02",
+    "note": "维护者明确冷藏正常获取途径；保留物品与专属进阶材料供修改器取得，后续再设计配方及支线。"
+  },
+  "gameplayAcceptance": {
+    "status": "maintainer_reported_pass",
+    "date": "2026-10-02",
+    "scope": "倍率取整、Web外观、原版近战及+200%换弹改动前的已有机制与实战表现",
+    "baselineAsLoaderSha256": "7373f3307de8fc2731cfaa36acfa5902c4d19404b69fc78ff64ff100f1f9da0f"
+  },
+  "releaseDecision": {
+    "date": "2026-10-03",
+    "status": "maintainer_accepted_and_release_authorized",
+    "scope": "本轮原版近战、系列+200%换弹及此前重锤机制、数值和进阶外观配套收口",
+    "boundary": "维护者确认可行并授权发布；不以此代签穷尽配装、弱机或新正式入口业务复验。"
+  }
+}

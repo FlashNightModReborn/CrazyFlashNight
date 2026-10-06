@@ -72,6 +72,9 @@ class org.flashNight.arki.unit.Action.PickUp.PickUpManager {
      * 拾取物品
      */
     public function pickup(target:MovieClip, 拾取者:Object, 播放拾取动画:Boolean):Void {
+        // 鼠标与快捷键共用此权威门；拒绝时保留实体，也不能触发升级或快捷换装。
+        var actor:Object = 拾取者 == undefined ? TargetCacheManager.findHero() : 拾取者;
+        if (actor == undefined || !(actor.hp > 0)) return;
         // 同一领取 ID 即使因重复配置同时生成多个实体，也只允许首个成功进入背包。
         if (PickUpManager.isOneTimeClaimed(target.一次性领取ID)) {
             target.gotoAndPlay("消失");
@@ -246,9 +249,11 @@ class org.flashNight.arki.unit.Action.PickUp.PickUpManager {
             数量 = 1;
         }
 
-        var exactCurrency:Boolean = parameterObject.精确货币数量 === true;
+        // 书中 K 点由分图预算唯一提供；不再把金币随机改成另一份收入。
+        var bookCurrency:Boolean = org.flashNight.arki.scene.BookRunService.isBookStageContext();
+        var exactCurrency:Boolean = parameterObject.精确货币数量 === true || bookCurrency && 物品名 === "K点";
         if (物品名 === "金币") 物品名 = "金钱";
-        if (物品名 === "金钱" && !exactCurrency
+        if (物品名 === "金钱" && !exactCurrency && !bookCurrency
                 && LinearCongruentialEngine.instance.randomCheck(_root.打怪掉钱机率)) {
             物品名 = "K点";
         }

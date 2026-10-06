@@ -1,0 +1,9 @@
+﻿_root.cutsceneFocusedComplete = function():Void {
+    org.flashNight.arki.scene.CutsceneSkipTest.runAllTests();
+};
+_root.cutsceneSkipFocusedComplete = function():Void {
+    trace("FocusedTestRunId cutscene Complete: __FOCUSED_RUN_ID__");
+    fscommand("quit");
+};
+trace("FocusedTestRunId cutscene Start: __FOCUSED_RUN_ID__");
+org.flashNight.arki.scene.CutsceneServiceTest.runAllTests();

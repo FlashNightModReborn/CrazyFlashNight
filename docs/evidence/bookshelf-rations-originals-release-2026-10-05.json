@@ -1,0 +1,172 @@
+{
+  "schema": "cf7-bookshelf-rations-originals-release-evidence.v1",
+  "recordedAtUtc": "2026-10-04T17:55:22.002743+00:00",
+  "state": "promoted",
+  "authorization": "维护者明确授权本轮走正式发布列车，由唯一发布代理执行提交推送与发布。",
+  "source": {
+    "commit": "1318feadfe8b4634fed80b3805d257189a36b821",
+    "tree": "baf32877bbfe65b07ba0ebb6dbff4914057b7216",
+    "tag": "refs/tags/runtime-build-v2/20261005-bookshelf-rations-originals",
+    "deploymentCommit": "29976fd57732f0721a88530446ae8f1e6b03b7fe",
+    "scopeFiles": 73,
+    "authoredScopeFiles": 71,
+    "mechanicalPreparePaths": [
+      "config/build/runtime-github-builder.v2.json",
+      "launcher/data/save_repair_dict.json"
+    ]
+  },
+  "request": {
+    "schema": "cf7-runtime-build-request.v2",
+    "requestId": "1900E1E89258EC050F1528BA6B7FF4605CE60869534FDB1147BEB0B5BD2E193F",
+    "sourceKind": "Treeish",
+    "releaseTreeOid": "baf32877bbfe65b07ba0ebb6dbff4914057b7216",
+    "sourceCommitOid": "1318feadfe8b4634fed80b3805d257189a36b821",
+    "requestCommitOid": "3a2cd29acf24fc226d726518402bc8a5b43ee411",
+    "bundleTreeOid": "e145b2d3cbfb6159a1bf1cacc79e5c9bc8a2b307",
+    "artifactSourceHash": "7B20FC1B7269A9C1CE4EEBABF30C48567876C4189F6FC2D4364750877D45AD7C",
+    "producerRecipeHash": "C4DEEF1B6E387EEBF8D101CC2364E8A0232087A248EFEB530506011411EDA694",
+    "toolchainLockHash": "DFA769829F9740196DEF63351A00AAC309E50A2CA0A768759334EB2A2161DD36",
+    "policyHash": "86A437EA7B2CEACCD04240E97B04824FD2AAB9E805BBAAFD019550F3889E17F8",
+    "buildIdentityHash": "0709A93B1A597934F06C49FA322F177957BB70D73F27E70D586C9B897CA5826B",
+    "bundleFile": "source.bundle",
+    "bundleSha256": "1E8FF14CD4DE2C237749931B60CE57D938A4CFFCBF5E86E5B2C37363761B654F",
+    "requiredQuorum": 2,
+    "createdAtUtc": "2026-10-04T17:13:08.9027507Z"
+  },
+  "payload": {
+    "buildIdentityHash": "0709A93B1A597934F06C49FA322F177957BB70D73F27E70D586C9B897CA5826B",
+    "closure": "9AEFC7FF035295026311BD216AF05A448B6C7D3D4D4BD97F0ECE42FB575AA9FB",
+    "fileCount": 36,
+    "coreDllSha256": "EBD0DE54D3134F1DEDCBFD451FD49C024614062DAE436BBD79261AB16BE14B2B"
+  },
+  "builds": {
+    "localWorker": "builder-local-b",
+    "proofs": [
+      {
+        "builderKind": "github-oidc",
+        "builderIdentityHash": "24F9FDD20D58F8561E0718B410E4190269F04F4EA3AA850AC32443E7C1B39D45",
+        "faultDomain": "github-hosted-windows",
+        "sourceCommitOid": "1318feadfe8b4634fed80b3805d257189a36b821",
+        "sourceRef": "refs/tags/runtime-build-v2/20261005-bookshelf-rations-originals",
+        "buildIdentityHash": "0709A93B1A597934F06C49FA322F177957BB70D73F27E70D586C9B897CA5826B",
+        "payloadClosureHash": "9AEFC7FF035295026311BD216AF05A448B6C7D3D4D4BD97F0ECE42FB575AA9FB"
+      },
+      {
+        "builderKeyId": "EB5D32E04B6EE8697850314E19698DE1A3FACFFCCC6418A12CF7FEDE6033CDA5",
+        "builderEpoch": 1,
+        "faultDomain": "physical-host-b",
+        "buildIdentityHash": "0709A93B1A597934F06C49FA322F177957BB70D73F27E70D586C9B897CA5826B",
+        "payloadClosureHash": "9AEFC7FF035295026311BD216AF05A448B6C7D3D4D4BD97F0ECE42FB575AA9FB"
+      }
+    ],
+    "faultDomains": [
+      "github-hosted-windows",
+      "physical-host-b"
+    ],
+    "signerCount": 2,
+    "identityAndClosureMatch": true,
+    "cloudRunUrl": "https://github.com/FlashNightModReborn/CrazyFlashNight/actions/runs/37220425458",
+    "cloudConclusion": "success",
+    "cloudArtifactScope": "attestation-only"
+  },
+  "policy": {
+    "profile": "production",
+    "passed": 47,
+    "total": 47,
+    "receiptSha256": "F852751ED88B640FBD0AD87888D2D1A9B27884990D4274687141A0A7C76E5E40"
+  },
+  "promotion": {
+    "strictV2": true,
+    "soleWriter": true,
+    "fullInstallVerifyExitCode": 0,
+    "promotedAtUtc": "2026-10-04T17:38:54.7862908Z",
+    "log": "tmp/bookshelf-release-20261005/promotion.log",
+    "stagedStrictExitCode": 0,
+    "rollback": "tmp/runtime-promotions/20261004T173825863Z-841bedab02f946cf97c914a3ade26c31/previous"
+  },
+  "standardEntry": {
+    "entry": "automation/start.ps1 without candidate arguments",
+    "runtimeMode": "formal_runtime",
+    "startedAtUtc": "2026-10-04T17:44:02.8790024Z",
+    "corePid": 31128,
+    "corePath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\resources\\runtime\\CRAZYFLASHER7MercenaryEmpire.Core.exe",
+    "coreExeSha256": "3988B5F22F00880270BB2B8329F2E690C623887E6E0767483AE2D0EBF11621FE",
+    "coreDllSha256": "EBD0DE54D3134F1DEDCBFD451FD49C024614062DAE436BBD79261AB16BE14B2B",
+    "buildIdentityHash": "0709A93B1A597934F06C49FA322F177957BB70D73F27E70D586C9B897CA5826B",
+    "payloadClosureHash": "9AEFC7FF035295026311BD216AF05A448B6C7D3D4D4BD97F0ECE42FB575AA9FB",
+    "busReady": true,
+    "windowHandle": 22155060,
+    "identityStartupVerified": true,
+    "affectedDomainSmokeExecuted": false,
+    "businessJourneyExecuted": false,
+    "agentProtocolShutdownVerified": false,
+    "initialObserverFailure": "exe-name observer also matched owned hotkey guard; recovered exact Guardian PID/path/commandline from canonical startup log without relaunch",
+    "recoveredSameProcess": true,
+    "closeMainWindowAccepted": true,
+    "coreExitCode": 0,
+    "exitCodeCaptured": true,
+    "exitedAtUtc": "2026-10-04T17:46:58.6471928Z"
+  },
+  "saveProtection": {
+    "atUtc": "2026-10-04T17:46:58.913829+00:00",
+    "passed": true,
+    "files": 129,
+    "shadowFiles": 76,
+    "solFiles": 53,
+    "changed": [],
+    "excluded": [
+      "saves/.launcher-version-marker.json"
+    ]
+  },
+  "tests": {
+    "hostCanonical": {
+      "passed": 6640,
+      "skipped": 6,
+      "failed": 0
+    },
+    "developmentAccess": 68,
+    "choiceRewardAfterDualGuns": 58,
+    "bookshelfOriginal": 34,
+    "bookshelfRuntime": 129,
+    "as2CompilerErrors": 0,
+    "as2CompilerWarnings": 0,
+    "asLoaderSha256": "BA95E9F306EA5A54166F969BE7751EE49583454FBB9E14264DC56868E338E1CE",
+    "readingImport": {
+      "files": 896,
+      "bytes": 29933740,
+      "comicPages": 1227,
+      "novelChapters": 28
+    }
+  },
+  "pending": [
+    "完整七图旅程、主动技能手感与K点取舍",
+    "配给/技能/SP的真实新局与存档重启完整业务旅程",
+    "普通发行环境真实Steam账号合集许可链",
+    "原作完整游戏进度、输入和声音听感",
+    "Agent协议shutdown验收"
+  ],
+  "remoteAudit": {
+    "state": "promoted",
+    "conclusion": "success",
+    "deploymentChanged": true,
+    "signers": 2,
+    "faultDomains": 2,
+    "runId": 37221863217,
+    "headSha": "29976fd57732f0721a88530446ae8f1e6b03b7fe",
+    "event": "push",
+    "url": "https://github.com/FlashNightModReborn/CrazyFlashNight/actions/runs/37221863217",
+    "logSha256": "CB98BF70DC48646983EB41CBEDC579C36C3D9B3B5D2D11713B625C448E64D541"
+  },
+  "worktrees": {
+    "createdThisTrain": 0,
+    "historicalWorktreesUntouched": [
+      "C:/cf7-audio-r7-sniff-fix/resources",
+      "C:/cf7-audio-v2-repro-s11-b/resources",
+      "C:/cf7-focus-0909/resources"
+    ]
+  },
+  "rawEvidenceDirectory": "tmp/bookshelf-release-20261005/",
+  "retainedFailures": [
+    "Initial startup observer matched the same apphost hotkey guard; canonical Guardian PID/path/commandline recovery reused the original process without relaunch; original failure log retained"
+  ]
+}

@@ -28,9 +28,11 @@ MANIFEST_SCHEMA = "cf7-shop-portraits-v1"
 PROVENANCE_SCHEMA = "cf7-shop-portrait-provenance-v1"
 RECEIPT_SCHEMA = "cf7-shop-portrait-promotion-receipt-v1"
 GEOMETRY = {"width": 256, "height": 256}
-EXPECTED_LIST_COUNT = 37
-EXPECTED_ACTIVE_COUNT = 36
+EXPECTED_LIST_COUNT = 38
+EXPECTED_ACTIVE_COUNT = 37
+EXPECTED_SUBJECT_COUNT = 36
 EXCLUDED_SHOP = "幸存老兵-暂时停用"
+SHARED_SHOP_PORTRAITS = {"书中-迷之盔甲君": "迷之盔甲君"}
 SHA256_RE = re.compile(r"^[0-9a-f]{64}$")
 URI_RE = re.compile(r"^subjects/([0-9a-f]{64})\.png$")
 
@@ -196,6 +198,7 @@ def validate_manifest(active: list[str]) -> tuple[dict[str, dict[str, Any]], int
     require(len(entries) == EXPECTED_ACTIVE_COUNT, f"Manifest coverage drift: {len(entries)}")
 
     referenced: set[str] = set()
+    owners: dict[str, str] = {}
     total_bytes = 0
     for shop_id, entry in entries.items():
         require(is_identity(shop_id), f"Invalid manifest shopId: {shop_id!r}")
@@ -206,7 +209,10 @@ def validate_manifest(active: list[str]) -> tuple[dict[str, dict[str, Any]], int
         match = URI_RE.fullmatch(uri or "")
         require(match is not None, f"Invalid content-addressed URI: {shop_id} -> {uri!r}")
         require(entry.get("sha256") == match.group(1), f"URI/SHA mismatch: {shop_id}")
-        require(uri not in referenced, f"Shop subjects must be one-to-one: {shop_id} -> {uri}")
+        if uri in referenced:
+            require(SHARED_SHOP_PORTRAITS.get(shop_id) == owners[uri], f"Undeclared shared shop subject: {shop_id} -> {uri}")
+        else:
+            owners[uri] = shop_id
         referenced.add(uri)
         subject_path = ASSET_ROOT / uri
         require(subject_path.is_file(), f"Missing subject: {shop_id} -> {uri}")
@@ -217,20 +223,24 @@ def validate_manifest(active: list[str]) -> tuple[dict[str, dict[str, Any]], int
         require(bounds["x"] >= 0 and bounds["y"] >= 0 and bounds["width"] > 0 and bounds["height"] > 0, f"Invalid bounds: {shop_id}")
         require(bounds["x"] + bounds["width"] <= 256 and bounds["y"] + bounds["height"] <= 256, f"Bounds escape canvas: {shop_id}")
         require(alpha_bounds(subject_path) == bounds, f"Alpha-bounds drift: {shop_id}")
-        total_bytes += subject_path.stat().st_size
+        if owners[uri] == shop_id:
+            total_bytes += subject_path.stat().st_size
+
+    for shop_id, source_id in SHARED_SHOP_PORTRAITS.items():
+        require(source_id in entries and entries.get(shop_id) == entries[source_id], f"Shared shop portrait drift: {shop_id}")
 
     files = {f"subjects/{path.name}" for path in SUBJECTS_ROOT.glob("*.png") if path.is_file()}
     require(files == referenced, f"Subject-file closure drift: missing={sorted(referenced - files)} extra={sorted(files - referenced)}")
-    require(len(files) == EXPECTED_ACTIVE_COUNT, f"Subject-file count drift: {len(files)}")
+    require(len(files) == EXPECTED_SUBJECT_COUNT, f"Subject-file count drift: {len(files)}")
     return entries, total_bytes
 
 
 def validate_provenance(active: list[str], entries: dict[str, dict[str, Any]]) -> dict[str, Any]:
     provenance = read_json(PROVENANCE_PATH, "ShopPortraits provenance")
     require(provenance.get("schema") == PROVENANCE_SCHEMA, "Provenance schema drift")
-    require(provenance.get("generatorVersion") == "1.0.0", "Generator version drift")
+    require(provenance.get("generatorVersion") == "1.1.0", "Generator version drift")
     require(provenance.get("geometry") == {**GEOMETRY, "padding": 16, "fit": "alpha-bounds-contain-center"}, "Provenance geometry drift")
-    require(provenance.get("sourcePartition") == {"externalDialogue": 33, "internalDialogue": 2, "exactXflSwfPilot": 1}, "Source partition drift")
+    require(provenance.get("sourcePartition") == {"externalDialogue": 33, "internalDialogue": 2, "exactXflSwfPilot": 1, "sharedShopPortrait": 1}, "Source partition drift")
     require(provenance.get("dialogueManifest", {}).get("path") == "launcher/web/assets/dialogue-portraits/manifest.json", "Dialogue manifest provenance drift")
 
     toolchain = provenance.get("toolchain")
@@ -243,12 +253,12 @@ def validate_provenance(active: list[str], entries: dict[str, dict[str, Any]]) -
 
     active_source = provenance.get("activeShopSource")
     require(isinstance(active_source, dict), "Active-shop source provenance is missing")
-    require(active_source.get("listedCount") == 37 and active_source.get("activeCount") == 36, "Active-shop counts drift")
+    require(active_source.get("listedCount") == EXPECTED_LIST_COUNT and active_source.get("activeCount") == EXPECTED_ACTIVE_COUNT, "Active-shop counts drift")
     require(active_source.get("excludedShopIds") == [EXCLUDED_SHOP], "Active-shop exclusion drift")
 
     sources = provenance.get("sources")
     require(isinstance(sources, dict) and list(sources) == active, "Provenance source closure/order drift")
-    kinds = {"external-dialogue-swf": 0, "dialogue-ui-linkage": 0, "exact-xfl-swf-pilot": 0}
+    kinds = {"external-dialogue-swf": 0, "dialogue-ui-linkage": 0, "exact-xfl-swf-pilot": 0, "shared-shop-portrait": 0}
     for shop_id, source in sources.items():
         require(isinstance(source, dict), f"Invalid source record: {shop_id}")
         kind = source.get("kind")
@@ -256,7 +266,12 @@ def validate_provenance(active: list[str], entries: dict[str, dict[str, Any]]) -
         kinds[kind] += 1
         require(SHA256_RE.fullmatch(source.get("extractedPngSha256") or "") is not None, f"Invalid extracted PNG SHA: {shop_id}")
         require(source.get("output") == entries[shop_id], f"Provenance/output mismatch: {shop_id}")
-    require(kinds == {"external-dialogue-swf": 33, "dialogue-ui-linkage": 2, "exact-xfl-swf-pilot": 1}, f"Source-kind count drift: {kinds}")
+        if kind == "shared-shop-portrait":
+            source_id = SHARED_SHOP_PORTRAITS.get(shop_id)
+            require(source_id is not None and source.get("sourceShopId") == source_id, f"Undeclared shared shop source: {shop_id}")
+            original = sources.get(source_id, {})
+            require(original.get("kind") != kind and source.get("extractedPngSha256") == original.get("extractedPngSha256"), f"Shared shop source pixels drift: {shop_id}")
+    require(kinds == {"external-dialogue-swf": 33, "dialogue-ui-linkage": 2, "exact-xfl-swf-pilot": 1, "shared-shop-portrait": 1}, f"Source-kind count drift: {kinds}")
 
     weapon = sources.get("武器大师", {})
     require(
@@ -338,7 +353,7 @@ def validate_receipt(entries: dict[str, dict[str, Any]]) -> None:
     require(receipt.get("schema") == RECEIPT_SCHEMA, "Promotion receipt schema drift")
     require(receipt.get("promotionOrder") == ["subjects", "provenance.json", "promotion-receipt.json", "manifest.json"], "Promotion order drift")
     require(receipt.get("subjectsFirst") is True and receipt.get("manifestLast") is True, "Promotion ordering guarantees are missing")
-    require(receipt.get("shopCount") == 36 and receipt.get("subjectFileCount") == 36, "Promotion closure count drift")
+    require(receipt.get("shopCount") == EXPECTED_ACTIVE_COUNT and receipt.get("subjectFileCount") == EXPECTED_SUBJECT_COUNT, "Promotion closure count drift")
     require(receipt.get("subjectClosureSha256") == subject_closure(entries), "Subject closure SHA drift")
     require(receipt.get("provenanceSha256") == sha256_file(PROVENANCE_PATH), "Provenance receipt SHA drift")
     require(receipt.get("manifestSha256") == sha256_file(MANIFEST_PATH), "Manifest receipt SHA drift")
@@ -357,9 +372,9 @@ def main() -> None:
                 {
                     "status": "passed",
                     "schema": MANIFEST_SCHEMA,
-                    "listedShops": 36,
+                    "listedShops": EXPECTED_LIST_COUNT,
                     "activeShops": len(entries),
-                    "subjects": len(entries),
+                    "subjects": len({entry["uri"] for entry in entries.values()}),
                     "subjectBytes": subject_bytes,
                     "assetTreeBytes": tree_bytes,
                     "weaponMaster": {"characterId": 981, "frame1Based": 257},

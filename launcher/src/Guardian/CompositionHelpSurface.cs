@@ -106,7 +106,7 @@ namespace CF7Launcher.Guardian
             _ready = false; _active = false; _closePending = false;
             TearDownEndpoint();
             try {
-                var environment = await CoreWebView2Environment.CreateAsync(null, _profileRoot);
+                var environment = await FixedWebViewRuntime.CreateAsync(_profileRoot);
                 if (Stale(version)) { throw new ObjectDisposedException(nameof(CompositionHelpSurface)); }
                 _environment = environment;
                 _scene = CompositionSceneHost.Create(Handle);
@@ -120,6 +120,7 @@ namespace CF7Launcher.Guardian
                 _web.RasterizationScale = 1;
                 _web.BoundsMode = CoreWebView2BoundsMode.UseRawPixels;
                 var core = _web.CoreWebView2;
+                FixedWebViewRuntime.ValidateCore(core);
                 core.Settings.AreDevToolsEnabled = false;
                 core.Settings.AreDefaultContextMenusEnabled = false;
                 core.Settings.IsZoomControlEnabled = false;
@@ -268,7 +269,7 @@ namespace CF7Launcher.Guardian
             SyncViewport();
         }
         internal void SuppressTransition() {
-            if (_transition && !_disposed && Visible) { Hide(); SyncViewport(); }
+            if (_transition && !_disposed && Visible) { _pressedButtons = 0; _capturedButton = false; Capture = false; Hide(); SyncViewport(); }
         }
         internal void RaiseTransition() {
             if (_transition && Active && Visible && CanRestoreGameFocus)

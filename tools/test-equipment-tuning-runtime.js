@@ -130,6 +130,21 @@ assert.strictEqual(mux.handleResponse(Object.assign(tuple('snapshot',callId),{
 assert.strictEqual(response.success,true);
 assert.strictEqual(mux.debugState().pendingCount,0);
 
+let shortageResponse = null;
+const shortageCall = mux.request('preview',{operation:'enhance',targetLevel:3},value=>{shortageResponse=value;});
+const shortageReply = Object.assign(tuple('preview',shortageCall),{success:false,error:'insufficient_material',
+  materialShortage:{itemName:'强化石',required:3,owned:2,missing:1}});
+for (const patch of [{missing:2},{owned:-1},{required:3.5},{extra:true}]) {
+  const malformed=JSON.parse(JSON.stringify(shortageReply));Object.assign(malformed.materialShortage,patch);
+  assert.strictEqual(mux.handleResponse(malformed),false);
+  assert.strictEqual(shortageResponse,null);
+}
+assert.strictEqual(mux.handleResponse(shortageReply),true);
+assert.deepStrictEqual(shortageResponse.materialShortage,{itemName:'强化石',required:3,owned:2,missing:1});
+const otherOperation = mux.request('preview',{operation:'install_mod'},()=>{});
+assert.strictEqual(mux.handleResponse(Object.assign({},shortageReply,{callId:otherOperation})),false);
+assert.strictEqual(mux.handleResponse(Object.assign(tuple('preview',otherOperation),{success:false,error:'insufficient_material'})),true);
+
 let terminalError = null;
 const terminalErrorCall = mux.request('preview',{operation:'install_mod'},value=>{ terminalError=value; });
 assert.strictEqual(mux.handleResponse({type:'panel_resp',domain:'equipment_tuning',cmd:'preview',

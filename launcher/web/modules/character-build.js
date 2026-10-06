@@ -362,6 +362,8 @@ function(SessionModule, ViewModule, TuningModule, Mutation, Pose, Projection,
         if (!this._manifest || !this._snapshotPayload) return null;
         var portrait = this._snapshotPayload.portrait || {};
         var equipment = copy(portrait.equipment);
+        var equipmentAppearance = Pose.appearanceForPreview(
+            this._snapshotPayload.equipment, candidate, this._selectedTarget);
         if (candidate && candidate.raw && candidate.raw.item && this._selectedTarget
                 && this._selectedTarget.kind === 'equipment') {
             equipment[this._selectedTarget.slotKey] = String(candidate.raw.item.name || '');
@@ -370,6 +372,7 @@ function(SessionModule, ViewModule, TuningModule, Mutation, Pose, Projection,
         return global.CharacterAppearancePreview.buildStateFromEquipment(this._manifest, {
             gender:portrait.gender === '女' ? '女' : '男',
             equipment:equipment,
+            equipmentAppearance:equipmentAppearance,
             appearance:portrait.appearance || {},
             rig:'battle',
             stateLabel:pose.stateLabel,
@@ -512,6 +515,7 @@ function(SessionModule, ViewModule, TuningModule, Mutation, Pose, Projection,
         if (this._renderer) this._renderer.destroy();
         this._renderer = null;
         this._rendererState = null;
+        this._destroyChoiceRewards();
         if (this._view) this._view.destroy();
         this._view = null;
         return true;

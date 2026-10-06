@@ -8,6 +8,7 @@ class org.flashNight.arki.skill.SkillLoadoutService {
     public static var SKILL_ROW_COUNT:Number = 80;
     public static var QUICK_SLOT_COUNT:Number = 12;
 
+    private static var _rewardState:Object = null;
     private static var _revision:Number = 0;
     private static var _signature:String = null;
     private static var _lastScan:Object = null;
@@ -70,6 +71,7 @@ class org.flashNight.arki.skill.SkillLoadoutService {
     }
 
     public static function buildSnapshot(view:String, trainer:Object):Object {
+        if (org.flashNight.neur.Server.SaveManager.getInstance().hasRewardCommitPending()) return fail("commit_pending");
         var sync:Object = synchronize();
         if (!sync.success) return sync;
         var r:Object = root();
@@ -341,7 +343,62 @@ class org.flashNight.arki.skill.SkillLoadoutService {
         return finishMutation([skillKey], before);
     }
 
+    /** Only the durable reward domain calls this; ordinary trainer costs and level gates remain unchanged. */
+    public static function rewardSkillStatus(skillKey:String, level:Number):Object {
+        var sync:Object = synchronize();
+        if (!sync.success || sync.scan.tailData) return {success:false,error:"corrupt_skill_state"};
+        var state:Object = inspectFromScan(sync.scan,skillKey);
+        if (!state.success || state.stateHealth != "ok") return {success:false,error:"corrupt_skill_state"};
+        var metadata:Object = root().技能表对象[skillKey];
+        if (metadata == null || !validLearnMetadata(metadata) || !wholeInRange(level, 1, metadataMaxLevel(metadata)))
+            return {success:false,error:"invalid_skill_reward"};
+        var current:Number = state.learned ? state.level : 0;
+        if (current >= level) return {success:false,error:"no_reward_upgrade",currentLevel:current};
+        if (!state.learned && findLearnTargetIndex() < 0) return {success:false,error:"skill_table_full"};
+        return {success:true,currentLevel:current,index:state.learned ? state.index : findLearnTargetIndex()};
+    }
+    public static function prepareRewardSkills(grants:Array):Boolean {
+        if (_rewardState != null || !(grants instanceof Array) || grants.length < 1 || grants.length > 2
+                || org.flashNight.neur.Server.SaveManager.getInstance().rewardCommitOperationId() == "") return false;
+        var before:Object = captureTransactionState();
+        var keys:Array = [];
+        for (var i:Number = 0; i < grants.length; i++) {
+            var grant:Object = grants[i];
+            var plan:Object = rewardSkillStatus(String(grant.skillKey), Number(grant.level));
+            if (!plan.success) { restoreTransactionState(before); return false; }
+            var metadata:Object = root().技能表对象[grant.skillKey];
+            var table:Array = root().主角技能表;
+            if (plan.currentLevel == 0) {
+                var passive:Boolean = isPurePassive(metadata);
+                table[plan.index] = [grant.skillKey, grant.level, passive, metadata.Type, passive];
+            } else table[plan.index][1] = grant.level;
+            keys.push(grant.skillKey);
+        }
+        if (!finishMutation(keys, before).success) return false;
+        _rewardState = before;
+        return true;
+    }
+    public static function committedRewardSkillLevel(skillKey:String):Number {
+        if (_rewardState == null) {
+            var current:Object = inspectSkill(skillKey);
+            return current.learned ? Number(current.level) : 0;
+        }
+        for (var i:Number=0;i<_rewardState.rows.length;i++) {
+            var row:Object=_rewardState.rows[i];
+            if (row.exists && row.values[0] === skillKey) return Number(row.values[1]);
+        }
+        return 0;
+    }
+    public static function resolveRewardSkills(committed:Boolean):Boolean {
+        if (_rewardState == null) return true;
+        var before:Object = _rewardState;
+        _rewardState = null;
+        if (!committed) restoreTransactionState(before);
+        else runOptionalRenderers();
+        return true;
+    }
     private static function writeGate(expectedRevision:Number):Object {
+        if (org.flashNight.neur.Server.SaveManager.getInstance().hasRewardCommitPending()) return fail("commit_pending");
         var sync:Object = synchronize();
         if (!sync.success) return sync;
         if (!wholeInRange(expectedRevision, 0, 2147483647)) return fail("invalid_payload");

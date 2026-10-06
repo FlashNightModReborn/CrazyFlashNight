@@ -225,7 +225,7 @@ namespace CF7Launcher.Tests.Guardian
                 "Func<string, bool> openGate = _openGate;",
                 StringComparison.Ordinal);
             int deferIntent = execute.IndexOf(
-                "_deferredBarrierOpen = cmd;",
+                "DeferOpen(cmd, \"authority barrier\");",
                 authorityGate,
                 StringComparison.Ordinal);
             int sameNameRebind = execute.IndexOf(

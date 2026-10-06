@@ -9,16 +9,16 @@
     "publicationScope": "docs/R1存盘API迁移收尾-2026-09-05.md（2026-09-05 对交接 commit 4ae00a176265b7d00ea38364d545d29cbe601efa 工作树实际入口复核）"
   },
   "baseline": {
-    "headCommit": "bbdb1fac1de053f195c3d041f534edbc7a30cb7a",
+    "headCommit": "cbb018da95f078c3ac68fed9dff20c2b535140a1",
     "lineNumberNote": "本 manifest 全部行号以 headCommit 及当前 R1 迁移工作树为准。历次已确认漂移（均为行号漂移，数量不变）：相对 callsites.md 封包基线 776db2ae26——A3 PlayerAssetTransaction.as 422→440（专项 A① K 店 durable fence 已合入 HEAD，flushStrongSaveNow 位于 :196）、D2 商城系统_WebView.as 721→749。相对 af69c795c3（2026-09-04 步骤 10 开工前校准时发现，K店 batch/openMany 两列车合入所致）——A4 ItemUseService.as 597→788、D1 商城系统_WebView.as 199→216、D2.requestSave 750→782、D2.markDirty 749→781；四项经 check-callsites.js 报「未命中 / 不在 manifest」后逐一定位，扫描计数与 manifest counts 全项一致，无任何调用点增删。 2026-09-05 现场反馈增量：Reward 分段与 ItemUse 合并仅引起 A2/A4 wrapper 行号漂移，调用点和 reason 不变。 合并上游 bbdb1fac1d：军阀返回基地路径使 A6 行号 523→531；A4 保留本轮合并结果后的 832，不退回上游旧值 788。 同文件已有 markDirty 仅随上游插入漂移 1345→1353，无新增调用。 2026-09-08 整形迁移同步 A1/B2/E6 行号；另按当前 HEAD 校正地图撤退合入后 A6 与 StageRunSession canonical dirty 的既有行号漂移，调用数量和语义不变。",
     "swf": {
       "scripts/asLoader.swf": {
-        "sha256": "4b23133144319416c6f9a1d30af2cb6600f76ee47a9df39cff1f7da882476985",
-        "sizeBytes": 1324978,
-        "functions": 11608,
-        "maxFunctionBytes": 50407,
+        "sha256": "7d1f97b9c95b60450c75ad77fb7c6335e8ebf00c3e7ce4d792cf2b1476a574a2",
+        "sizeBytes": 1469458,
+        "functions": 12518,
+        "maxFunctionBytes": 51454,
         "functionSizeGate": "node tools/swf-function-sizes.js scripts/asLoader.swf --max 60000 --top 15（未发现 codeSize >= 60000 B 近墙项）",
-        "republishNote": "2026-09-11 统一奖励暂存候选：fresh CS6 publish Compiler 0/0，11608 函数最大 50407B；新暂存事务 82/82，map-loot 729/729。正式 runtime 未 promotion，实际试玩与重启验收待完成。",
+        "republishNote": "2026-10-03 书架发布前合并主线打桩机与场景灯：fresh CS6 publish Compiler 0/0；12518 函数最大 51454B。书架 134、地图结算 968、自选奖励 41 项通过。完整书籍/候选池和双方关键逻辑已从 SWF 回读；真实游戏反馈与正式发布状态分别记录。",
         "r1Disposition": "published",
         "r1Reason": "Reward/SceneChanged 现役 AS2 服务；本轮生产逻辑入口。"
       },
@@ -87,9 +87,9 @@
     "publicationNote": "2026-09-05 实际发布过 11 个目标，复核归属后只交付 5 个更新；其余 6 个恢复接手时原字节，试编结果留 tmp。各 SWF 的 r1Disposition 为本轮处置，不代表删除或永久退役许可。"
   },
   "counts": {
-    "strictLogicalTotal": 20,
+    "strictLogicalTotal": 24,
     "debounceLogicalTotal": 14,
-    "scriptsStrictPhysical": 14,
+    "scriptsStrictPhysical": 18,
     "scriptsDebouncePhysical": 2,
     "xflStrictPhysical": 10,
     "xflDebouncePhysical": 12,
@@ -97,10 +97,10 @@
     "scriptsDirectFlushNowPhysical": 0,
     "scriptsAutoSavePhysical": 0,
     "scriptsLocalSavePhysical": 0,
-    "scriptsApiMarkDirtyPhysical": 7,
+    "scriptsApiMarkDirtyPhysical": 8,
     "scriptsApiRequestSavePhysical": 2,
     "scriptsApiFlushDurableNowPhysical": 11,
-    "scriptsApiFlushBeforeTransitionPhysical": 2,
+    "scriptsApiFlushBeforeTransitionPhysical": 6,
     "xflLocalSavePhysical": 0,
     "xflApiMarkDirtyPhysical": 0,
     "xflApiRequestSavePhysical": 12,
@@ -203,7 +203,7 @@
       "physicalId": "A1",
       "layer": "scripts",
       "sourcePath": "scripts/展现/UI交互/UI交互_lsy_UI管理.as",
-      "line": 130,
+      "line": 136,
       "frame": null,
       "legacyEntry": "apiFlushBeforeTransition",
       "legacyApi": "_root.存档系统.flushBeforeTransition(\"safe_exit\")",
@@ -282,7 +282,7 @@
       "physicalId": "A4",
       "layer": "scripts",
       "sourcePath": "scripts/类定义/org/flashNight/arki/item/ItemUseService.as",
-      "line": 1005,
+      "line": 1027,
       "frame": null,
       "legacyEntry": "apiFlushDurableNow",
       "legacyApi": "_root.存档系统.flushDurableNow(\"item_use.open_commit\")",
@@ -306,7 +306,7 @@
       "physicalId": "A5",
       "layer": "scripts",
       "sourcePath": "scripts/类定义/org/flashNight/arki/item/LootContainerService.as",
-      "line": 3270,
+      "line": 3312,
       "frame": null,
       "legacyEntry": "apiFlushDurableNow",
       "legacyApi": "_root.存档系统.flushDurableNow(reason)（flushSaveVerified(reason) wrapper 内）",
@@ -332,7 +332,7 @@
       "physicalId": "A6",
       "layer": "scripts",
       "sourcePath": "scripts/类定义/org/flashNight/arki/item/RewardStashService.as",
-      "line": 98,
+      "line": 102,
       "frame": null,
       "legacyEntry": "apiCommitRewardCandidate",
       "legacyApi": "SaveManager.getInstance().commitRewardCandidate(operationId, reason)",
@@ -344,7 +344,11 @@
         "reward.quest_finish",
         "reward.map_stash",
         "reward.supply_delivery",
-        "item_use.open_commit"
+        "item_use.open_commit",
+        "item_use.choice_open",
+        "item_use.choice_select",
+        "bookshelf.switch",
+        "bookshelf.reward"
       ],
       "returnConsumed": true,
       "duplicateGroup": null,
@@ -458,7 +462,7 @@
       "physicalId": "B5",
       "layer": "scripts",
       "sourcePath": "scripts/类定义/org/flashNight/arki/item/CharacterBuildService.as",
-      "line": 3007,
+      "line": 3034,
       "frame": null,
       "legacyEntry": "apiFlushDurableNow",
       "legacyApi": "saveManager.flushDurableNow(\"character_build.finalize\")（invokeBoolean(\"flushNow\") 桥 fallback）",
@@ -794,7 +798,7 @@
       "physicalId": "E1",
       "layer": "xfl-main",
       "sourcePath": "CRAZYFLASHER7MercenaryEmpire/LIBRARY/sprite/淡出动画.xml",
-      "line": 114,
+      "line": 119,
       "frame": 16,
       "legacyEntry": "apiRequestSave",
       "legacyApi": "_root.存档系统.requestSave(\"ui.fade_out\")",
@@ -971,7 +975,9 @@
       "legacyEntry": "apiFlushDurableNow",
       "legacyApi": "_root.存档系统.flushDurableNow(\"ui.gym_training_paid\")",
       "targetApi": "flushDurableNow",
-      "reasonId": ["ui.gym_training_paid"],
+      "reasonId": [
+        "ui.gym_training_paid"
+      ],
       "returnConsumed": true,
       "duplicateGroup": null,
       "pairRole": "sole",
@@ -993,7 +999,9 @@
       "legacyEntry": "apiMarkDirty",
       "legacyApi": "_root.存档系统.markDirty()",
       "targetApi": "markDirty",
-      "reasonId": ["(none)"],
+      "reasonId": [
+        "(none)"
+      ],
       "returnConsumed": false,
       "duplicateGroup": null,
       "pairRole": "sole",
@@ -1180,19 +1188,115 @@
       "upstream": "玩家信息内 \"物品栏界面\" 关闭分支（控制窗体 == \"物品栏界面\"）",
       "migrateSlice": 8,
       "notes": "V1 无条件 requestSave。"
+    },
+    {
+      "callsiteId": "U6.1",
+      "physicalId": "U6.1",
+      "layer": "scripts",
+      "sourcePath": "scripts/类定义/org/flashNight/arki/scene/BookRunService.as",
+      "line": 155,
+      "frame": null,
+      "legacyEntry": "apiFlushBeforeTransition",
+      "legacyApi": "flushBeforeTransition(\"bookshelf.switch\")",
+      "targetApi": "flushBeforeTransition",
+      "reasonId": [
+        "bookshelf.switch"
+      ],
+      "returnConsumed": true,
+      "duplicateGroup": null,
+      "pairRole": "sole",
+      "liveState": "live",
+      "dirtyGuard": false,
+      "expectedSwf": "scripts/asLoader.swf",
+      "wrapper": null,
+      "upstream": "保存临时角色后进入书中作战地图",
+      "migrateSlice": 4,
+      "notes": "未知保存结果阻止换槽和进入地图。进入凭据与 SP 回流共用 A6 完整候选；临时终局数据复用正规返回和换槽全量屏障。"
+    },
+    {
+      "callsiteId": "U6.2",
+      "physicalId": "U6.2",
+      "layer": "scripts",
+      "sourcePath": "scripts/类定义/org/flashNight/arki/ui/BookshelfPanelService.as",
+      "line": 154,
+      "frame": null,
+      "legacyEntry": "apiFlushBeforeTransition",
+      "legacyApi": "flushBeforeTransition(\"bookshelf.switch\")",
+      "targetApi": "flushBeforeTransition",
+      "reasonId": [
+        "bookshelf.switch"
+      ],
+      "returnConsumed": true,
+      "duplicateGroup": null,
+      "pairRole": "sole",
+      "liveState": "live",
+      "dirtyGuard": false,
+      "expectedSwf": "scripts/asLoader.swf",
+      "wrapper": null,
+      "upstream": "保存原角色及清场迟到修改后才切换角色权威",
+      "migrateSlice": 4,
+      "notes": "未知保存结果阻止换槽和进入地图。进入凭据与 SP 回流共用 A6 完整候选；临时终局数据复用正规返回和换槽全量屏障。"
+    },
+    {
+      "callsiteId": "U6.3",
+      "physicalId": "U6.3",
+      "layer": "scripts",
+      "sourcePath": "scripts/类定义/org/flashNight/arki/ui/BookshelfPanelService.as",
+      "line": 195,
+      "frame": null,
+      "legacyEntry": "apiFlushBeforeTransition",
+      "legacyApi": "flushBeforeTransition(\"bookshelf.switch\")",
+      "targetApi": "flushBeforeTransition",
+      "reasonId": [
+        "bookshelf.switch"
+      ],
+      "returnConsumed": true,
+      "duplicateGroup": null,
+      "pairRole": "sole",
+      "liveState": "live",
+      "dirtyGuard": false,
+      "expectedSwf": "scripts/asLoader.swf",
+      "wrapper": null,
+      "upstream": "保存原角色及清场迟到修改后才切换角色权威",
+      "migrateSlice": 4,
+      "notes": "未知保存结果阻止换槽和进入地图。进入凭据与 SP 回流共用 A6 完整候选；临时终局数据复用正规返回和换槽全量屏障。"
+    },
+    {
+      "callsiteId": "U6.4",
+      "physicalId": "U6.4",
+      "layer": "scripts",
+      "sourcePath": "scripts/类定义/org/flashNight/arki/ui/BookshelfPanelService.as",
+      "line": 188,
+      "frame": null,
+      "legacyEntry": "apiFlushBeforeTransition",
+      "legacyApi": "flushBeforeTransition(\"bookshelf.switch\")",
+      "targetApi": "flushBeforeTransition",
+      "reasonId": [
+        "bookshelf.switch"
+      ],
+      "returnConsumed": true,
+      "duplicateGroup": null,
+      "pairRole": "sole",
+      "liveState": "live",
+      "dirtyGuard": false,
+      "expectedSwf": "scripts/asLoader.swf",
+      "wrapper": null,
+      "upstream": "书中首图准备失败后明确返回原角色，仍须确认临时角色保存屏障",
+      "migrateSlice": 4,
+      "notes": "只由加载失败页显式返回消费；失败保持遮幕，不从未知保存状态强行换回原档。"
     }
   ],
   "canonicalMarkDirty": [
     {
       "sourcePath": "scripts/类定义/org/flashNight/arki/skill/SkillLoadoutService.as",
-      "line": 903,
+      "line": 960,
       "api": "_root.存档系统.markDirty()",
       "liveState": "live",
       "notes": "Slice 1（2026-09-04）已由 installSaveApiShims() 接通为 canonical markDirty()（原 dangling：typeof 守卫恒 no-op，实际标脏由前行 dirtyMark = true 完成）。"
     },
     {
       "sourcePath": "scripts/类定义/org/flashNight/arki/scene/StageRunSession.as",
-      "line": 1869,
+      "line": 1976,
       "api": "_root.存档系统.markDirty()",
       "liveState": "live",
       "notes": "同 SkillLoadoutService.as:839；typeof 守卫在 :1344。"
@@ -1203,6 +1307,13 @@
       "api": "_root.存档系统.markDirty()",
       "liveState": "live",
       "notes": "同 SkillLoadoutService.as:839。"
+    },
+    {
+      "sourcePath": "scripts/类定义/org/flashNight/arki/scene/BookRunService.as",
+      "line": 189,
+      "api": "_root.存档系统.markDirty()",
+      "liveState": "live",
+      "notes": "书中终局数据等待正规返回与书架换槽的严格全量保存；不另占奖励候选。"
     }
   ],
   "outOfScope": {

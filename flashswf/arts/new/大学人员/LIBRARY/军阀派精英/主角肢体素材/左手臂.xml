@@ -1,0 +1,80 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="军阀派精英/主角肢体素材/左手臂" itemID="693fca9b-00011c7d" lastModified="1776103040" lastUniqueIdentifier="7">
+  <timeline>
+    <DOMTimeline name="左手臂">
+      <layers>
+        <DOMLayer name="as" color="#9933CC" outline="true" useOutlineView="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="2" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[stop();
+if (_parent._parent.性别 === "女")
+{
+	gotoAndStop(2);
+}]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer_1" color="#E3C645" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="军阀派精英/校服相关/男变装-废城防弹军装上装左下臂" centerPoint3DX="23.5" centerPoint3DY="93.65">
+                  <matrix>
+                    <Matrix a="0.995834350585938" b="-0.0911712646484375" c="0.0911712646484375" d="0.995834350585938" tx="1.05" ty="39.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="1" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#CBA389"/>
+                    </FillStyle>
+                  </fills>
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke scaleMode="normal">
+                        <fill>
+                          <SolidColor color="#5F3F29"/>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
+                  <edges>
+                    <Edge fillStyle1="1" edges="!-295 -57|-234 -131!-234 -131[-155 -227 142 -79"/>
+                    <Edge fillStyle1="1" strokeStyle="1" edges="!142 -79[414 278 276 952!276 952|274 1936"/>
+                    <Edge fillStyle1="1" edges="!274 1936[109 2116 -84 1999"/>
+                    <Edge fillStyle1="1" strokeStyle="1" edges="!-84 1999[-439 304 -307 -38!-307 -38|-311 -38!-311 -38|-295 -57"/>
+                    <Edge fillStyle0="1" fillStyle1="1" strokeStyle="1" edges="!-44 1513|29 1928"/>
+                  </edges>
+                </DOMShape>
+                <DOMGroup>
+                  <members>
+                    <DOMShape>
+                      <fills>
+                        <FillStyle index="1">
+                          <SolidColor color="#122C0E" alpha="0.6"/>
+                        </FillStyle>
+                      </fills>
+                      <edges>
+                        <Edge fillStyle1="1" edges="!51 35[283 536 245 1061!245 1061[163 1392 241 1650!241 1650[105 1533 92 976!92 976[49 1168 -160 1061!-160 1061[-111 1446 200 1890!200 1890[103 1852 -5 1653!-5 1653[-40 1801 -142 1787!-142 1787[-52 1686 -105 1437!-105 1437[-154 1330 -223
+ 1363!-223 1363[-172 1279 -160 1061!-160 1061[-199 1042 -242 1013!-242 1013[51 1048 29 690!29 690[12 480 -326 554!-326 554[-121 358 90 559!90 559[120 372 51 35"/>
+                      </edges>
+                    </DOMShape>
+                  </members>
+                </DOMGroup>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

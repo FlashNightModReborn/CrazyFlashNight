@@ -148,6 +148,8 @@ equal(Model.isOperation('formula'), false, 'unknown operation rejected');
 equal(Model.isOperationGroup('replace_mod'), false, 'replacement stays inside mod top-level group');
 equal(Model.errorMessage('level_locked'), '调制后的装备需要更高角色等级。',
     'loadout post-state level rejection has a specific player-facing message');
+equal(Model.errorMessage('insufficient_material', {materialShortage:{itemName:'强化石',required:13,owned:5,missing:8}}),
+    '强化石不足：本次需要 13，持有 5，还差 8。', 'unaffordable enhancement reports cost and exact deficit');
 
 equal(Model.quickCommitEligible({
     materials:[{itemName:'导轨',delta:-1}],removedMods:[]

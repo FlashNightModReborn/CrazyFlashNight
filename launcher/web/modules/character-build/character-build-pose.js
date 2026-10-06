@@ -1,5 +1,5 @@
 /**
- * Pure paper-doll pose selection for the character-build preview.
+ * Pure paper-doll pose and resolved appearance selection for the build preview.
  *
  * A selected weapon slot owns preview visibility; otherwise the pose is a stable
  * representative of the current build and never imitates combat state.
@@ -55,5 +55,23 @@
         return pose('空手站立', '空手');
     }
 
-    return {select:select};
+    function appearanceForPreview(equipmentRows, candidate, target) {
+        var appearance = {};
+        (equipmentRows || []).forEach(function(row) {
+            if (row.occupied === true && row.item && row.item.appearance) {
+                appearance[row.slotKey] = row.item.appearance;
+            }
+        });
+        if (candidate && candidate.raw && candidate.raw.item && target
+                && target.kind === 'equipment') {
+            // Legacy candidates must not inherit the equipped tier or attachments.
+            delete appearance[target.slotKey];
+            if (candidate.raw.item.appearance) {
+                appearance[target.slotKey] = candidate.raw.item.appearance;
+            }
+        }
+        return appearance;
+    }
+
+    return {select:select, appearanceForPreview:appearanceForPreview};
 });

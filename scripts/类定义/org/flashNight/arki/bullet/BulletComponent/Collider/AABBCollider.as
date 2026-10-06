@@ -319,9 +319,13 @@ class org.flashNight.arki.bullet.BulletComponent.Collider.AABBCollider extends A
         // 生成唯一缓存键值
         var area_key:Number = (detectionArea._x << 16) | (detectionArea._height << 8) | (detectionArea._width ^ detectionArea._y);
         var cache:Object = bullet[area_key];
+        var rotation:Number = bullet._rotation;
+        var scaleX:Number = bullet._xscale;
+        var scaleY:Number = bullet._yscale;
 
-        // 单次查表：miss 时创建展平缓存
-        if (!cache) {
+        // 追踪弹会转向：同一个局部 area 不代表同一个世界碰撞框。
+        // 保留直线弹的平移快径；旋转/缩放变化时重新取界，不能只平移出生时的框。
+        if (!cache || cache.rotation != rotation || cache.scaleX != scaleX || cache.scaleY != scaleY) {
             var coords:Object = getBulletCoordinates(bullet, detectionArea);
             cache = {
                 left: coords.left,
@@ -329,7 +333,10 @@ class org.flashNight.arki.bullet.BulletComponent.Collider.AABBCollider extends A
                 top: coords.top,
                 bottom: coords.bottom,
                 x: bullet_x,
-                y: bullet_y
+                y: bullet_y,
+                rotation: rotation,
+                scaleX: scaleX,
+                scaleY: scaleY
             };
             bullet[area_key] = cache;
         }

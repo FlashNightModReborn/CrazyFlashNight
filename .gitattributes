@@ -11,6 +11,8 @@ config/build/runtime-toolchain.lock.json -text
 CRAZYFLASHER7MercenaryEmpire.exe -text
 runtime/** -text
 runtime/cf7-runtime-manifest.tsv text eol=lf
+launcher/webview2-runtime.lock.json text eol=lf
+tools/stage-fixed-webview-runtime.ps1 text eol=lf
 
 # Generated artifacts — canonical LF.
 # 注：launcher/web/modules/stage-select-data.js 曾是生成物，.fla 退役后已是手写权威 SOT，
@@ -29,6 +31,9 @@ launcher/web/assets/stage-diorama/fallen-city/** -text
 launcher/web/assets/sleep/** text eol=lf
 launcher/web/css/sleep/tokens.css text eol=lf
 tools/export-sleep-art.py text eol=lf
+
+# Bookshelf vectors and their manifest are verified byte-for-byte after checkout.
+launcher/web/assets/bookshelf/** text eol=lf
 
 # PlayerInfo runtime assets participate in byte-for-byte build identity.
 launcher/src/Guardian/Hud/PlayerInfo/Assets/**/*.svg text eol=lf
@@ -83,3 +88,14 @@ launcher/app.manifest text eol=lf
 /tools/combat-bullet-visuals/*.java text eol=lf
 /tools/swf-audit/swfscan.py text eol=lf
 /data/combat_visuals/*.json text eol=lf
+
+# Named-pose source, runtime and provenance use exact JSON byte hashes.
+/data/weapon-animations/*.json text eol=lf
+/flashswf/arts/new/Codex素材源稿/打桩机-M7/*.json text eol=lf
+
+# Imported reading media and source records retain their original bytes.
+/launcher/web/assets/bookshelf/**/*.avif -text
+/launcher/web/assets/bookshelf/**/*.jpeg -text
+/launcher/web/assets/bookshelf/**/*.webm -text
+/launcher/web/assets/bookshelf/**/*.webp -text
+/data/books/sources/** -text

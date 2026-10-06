@@ -40,6 +40,7 @@ class org.flashNight.arki.item.CraftingPanelService {
         _categories["黑白契约"] = true;
         _categories["插件合成"] = true;
         _categories["大学装备"] = true;
+        _categories["书中配给"] = true;
         _json = new LiteJSON();
         _root.gameCommands["craftingSnapshot"] = function(params) {
             org.flashNight.arki.item.CraftingPanelService.handle("snapshot", params);

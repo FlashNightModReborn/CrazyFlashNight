@@ -27,6 +27,7 @@ namespace CF7Launcher.Guardian.WorldCompositor
         private volatile bool _combatFxResourcesReady,_combatFxCapabilityAdvertised;
         private double _lastCombatFxCapAttemptMs;
         internal Func<bool,bool> CombatFxCapabilityChanged;
+        internal event Action PresentationShown;
         private readonly bool _bulletCandidateEnabled;
         private readonly Timer _timer = new Timer { Interval=33 };
         private NativeCompositorSession _native;
@@ -520,7 +521,7 @@ namespace CF7Launcher.Guardian.WorldCompositor
                 bool projectileReady = CanGrantProjectileCapability(ready, _frame?.Ready == true,
                     _lighting.WaitingForCapture, _frame?.Scene ?? 0, _lighting.ReadyScene);
                 PublishRayCapability(projectileReady);
-                if (ready && !_surface.Visible) { _surface.Show(); PlaceBelowHud(); _surface.RefreshPointer(); }
+                if (ready && !_surface.Visible) { _surface.Show(); PlaceBelowHud(); PresentationShown?.Invoke(); _surface.RefreshPointer(); }
                 if (ready && !_weatherCapabilityAdvertised && NowMs()-_lastWeatherCapAttemptMs>=500) {
                     _lastWeatherCapAttemptMs=NowMs();
                     try { _weatherCapabilityAdvertised=WeatherCapabilityChanged?.Invoke(true)==true; }

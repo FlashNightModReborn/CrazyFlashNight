@@ -1,0 +1,40 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="长枪小登/各种武器" itemID="693911d1-0000280d" symbolType="graphic" lastModified="1765785428">
+  <timeline>
+    <DOMTimeline name="各种武器">
+      <layers>
+        <DOMLayer name="图层_2" color="#9933CC" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="长枪小登/Specials/F.N.H Mk.13/F.N.H Mk.13 EGLM/F.N.H Mk.13 EGLM Handguard" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="2.3792724609375" b="2.0697021484375" c="-2.0697021484375" d="2.3792724609375" tx="315.45" ty="277.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="15.15" y="4.25"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="长枪小登/Ammunitions &amp;#038 Magazines/Magazines/STANAG 4179 Magazine/STANAG 4179 Magazine (30 rounds)" symbolType="graphic" centerPoint3DX="289.25" centerPoint3DY="306.9" loop="loop">
+                  <matrix>
+                    <Matrix a="2.47467041015625" b="1.20809936523438" c="-1.04052734375" d="2.1314697265625" tx="287.3" ty="273"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="6.2" y="12.45"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="长枪小登/诺亚长枪枪身" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.75445556640625" b="0.65631103515625" c="-0.65631103515625" d="0.75445556640625" tx="221.1" ty="135.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="160.65" y="48.8"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

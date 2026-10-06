@@ -1,0 +1,53 @@
+<?xml version='1.0' encoding='utf-8'?>
+<DOMSymbolItem xmlns="http://ns.adobe.com/xfl/2008/" name="Codex/打桩机-M7/Weapon" itemID="bbc205d4-3082149b" linkageExportForAS="true" linkageIdentifier="枪-长枪-Codex-打桩机M7">
+  <timeline>
+    <DOMTimeline name="Weapon">
+      <layers>
+        <DOMLayer name="常驻总装与接口" color="#FFFF00">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <Actionscript>
+                <script>stop();</script>
+              </Actionscript>
+              <elements>
+                <DOMSymbolInstance name="动画" libraryItemName="Codex/打桩机-M7/NamedRig" symbolType="movie clip" />
+                <DOMSymbolInstance name="枪口位置" libraryItemName="Codex/打桩机-M7/Anchors/Point" symbolType="movie clip">
+                  <matrix>
+                    <Matrix tx="424.1" ty="6.45" />
+                  </matrix>
+                  <color>
+                    <Color alphaMultiplier="0" />
+                  </color>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance name="刀口位置1" libraryItemName="Codex/打桩机-M7/BladeHitMarker" symbolType="movie clip">
+                  <matrix>
+                    <Matrix tx="300" ty="-100" />
+                  </matrix>
+                  <color>
+                    <Color alphaMultiplier="0" />
+                  </color>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance name="刀口位置2" libraryItemName="Codex/打桩机-M7/BladeHitMarker" symbolType="movie clip">
+                  <matrix>
+                    <Matrix tx="300" ty="0" />
+                  </matrix>
+                  <color>
+                    <Color alphaMultiplier="0" />
+                  </color>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance name="刀口位置3" libraryItemName="Codex/打桩机-M7/BladeHitMarker" symbolType="movie clip">
+                  <matrix>
+                    <Matrix tx="300" ty="100" />
+                  </matrix>
+                  <color>
+                    <Color alphaMultiplier="0" />
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

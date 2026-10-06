@@ -21,6 +21,11 @@ namespace CF7Launcher.Config
     {
         // 本体 AppID（与 DLL 中 BIsSubscribedApp 使用的一致）
         private const uint BASE_GAME_APP_ID = 2402310;
+        // Steam content queries share this process's client and never switch AppID.
+        // The existing repository exemption selects separate local development content.
+        internal static readonly object ClientGate = new object();
+        private static IntPtr _clientModule;
+        private static bool _clientInitialized;
 
         // 校验失败的具体原因（供调用方区分提示信息）
         private static string _failReason;
@@ -37,6 +42,7 @@ namespace CF7Launcher.Config
 
         // steam_api64.dll 函数签名
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+        [return: MarshalAs(UnmanagedType.I1)]
         private delegate bool SteamAPI_Init_Delegate();
 
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
@@ -48,6 +54,7 @@ namespace CF7Launcher.Config
 
         // flat API: SteamAPI_ISteamApps_BIsSubscribedApp(ISteamApps*, AppId_t)
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+        [return: MarshalAs(UnmanagedType.I1)]
         private delegate bool SteamAPI_ISteamApps_BIsSubscribedApp_Delegate(IntPtr self, uint appID);
 
         /// <summary>
@@ -69,33 +76,52 @@ namespace CF7Launcher.Config
 
             // === 以下为发行环境路径，采用 fail-closed 策略 ===
 
-            string dllPath = FindSteamApiDll(projectRoot);
-            if (dllPath == null)
+            lock (ClientGate)
             {
-                // 发行环境下 DLL 应该存在，缺失视为篡改
-                LogManager.Log("[SteamCheck] steam_api64.dll not found in release environment — blocking");
-                _failReason = "dll_missing";
-                return false;
-            }
-
-            LogManager.Log("[SteamCheck] Loading: " + dllPath);
-            IntPtr hModule = LoadLibraryW(dllPath);
-            if (hModule == IntPtr.Zero)
-            {
-                // DLL 存在但加载失败，可能被替换为无效文件
-                LogManager.Log("[SteamCheck] LoadLibrary failed: " + Marshal.GetLastWin32Error());
-                _failReason = "dll_load_failed";
-                return false;
-            }
-
-            try
-            {
-                return DoCheck(hModule);
-            }
-            finally
-            {
+                if (!TryLoadClient(projectRoot, out string error)) { _failReason = error; return false; }
+                return DoCheck(_clientModule);
                 // 不 Shutdown/FreeLibrary —— 让 Steam overlay 继续工作
                 // Steam API 在进程生命周期内只应 Init 一次
+            }
+        }
+
+        private static bool TryLoadClient(string projectRoot, out string error)
+        {
+            error = null;
+            if (_clientModule != IntPtr.Zero) return true;
+            string path = FindSteamApiDll(projectRoot);
+            if (path == null) { error = "dll_missing"; return false; }
+            _clientModule = LoadLibraryW(path);
+            if (_clientModule == IntPtr.Zero) { error = "dll_load_failed"; return false; }
+            return true;
+        }
+
+        private static bool InitializeClient(IntPtr initializer)
+        {
+            if (_clientInitialized) return true;
+            var initialize = Marshal.GetDelegateForFunctionPointer<SteamAPI_Init_Delegate>(initializer);
+            return _clientInitialized = initialize();
+        }
+
+        internal static IntPtr Export(IntPtr module, params string[] names)
+        {
+            foreach (string name in names) { IntPtr ptr = GetProcAddress(module, name); if (ptr != IntPtr.Zero) return ptr; }
+            return IntPtr.Zero;
+        }
+
+        internal static bool TryGetContentClient(string root, out IntPtr module, out IntPtr apps, out string error)
+        {
+            lock (ClientGate)
+            {
+                module = apps = IntPtr.Zero; error = null;
+                if (!TryLoadClient(root, out _)) { error = "sdk_unavailable"; return false; }
+                var init = Export(_clientModule, "SteamAPI_Init");
+                var accessor = Export(_clientModule, "SteamAPI_SteamApps_v008", "SteamAPI_SteamApps_v007", "SteamAPI_SteamApps_v006", "SteamAPI_SteamApps");
+                if (init == IntPtr.Zero || accessor == IntPtr.Zero) { error = "sdk_unavailable"; return false; }
+                if (!InitializeClient(init)) { error = "steam_unavailable"; return false; }
+                apps = Marshal.GetDelegateForFunctionPointer<SteamAPI_SteamApps_Delegate>(accessor)();
+                if (apps == IntPtr.Zero) { error = "steam_unavailable"; return false; }
+                module = _clientModule; return true;
             }
         }
 
@@ -297,7 +323,7 @@ namespace CF7Launcher.Config
                 pSubscribed, typeof(SteamAPI_ISteamApps_BIsSubscribedApp_Delegate));
 
             // Init
-            if (!fnInit())
+            if (!InitializeClient(pInit))
             {
                 LogManager.Log("[SteamCheck] SteamAPI_Init failed — Steam not running or not launched from Steam");
                 _failReason = "steam_not_running";

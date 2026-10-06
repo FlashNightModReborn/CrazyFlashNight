@@ -27,6 +27,7 @@ namespace CF7Launcher.Guardian
         private static readonly HashSet<string> ExactResponseTasks =
             new HashSet<string>(StringComparer.Ordinal)
             {
+                "book_comic_response",
                 "equipment_tuning_response",
                 "loot_response",
                 "shop_response",
@@ -41,6 +42,7 @@ namespace CF7Launcher.Guardian
 
         private static readonly string[] ResponseFamilyPrefixes =
         {
+            "book_comic_",
             "equipment_tuning_",
             "loot_",
             "shop_",
@@ -56,19 +58,20 @@ namespace CF7Launcher.Guardian
         private static readonly HashSet<string> AuthorityPanels =
             new HashSet<string>(StringComparer.Ordinal)
             {
-                "workbench", "kshop", "crafting", "npcshop", "skills", "loot"
+                "book-comic", "workbench", "kshop", "crafting", "npcshop", "skills", "loot"
             };
 
         private static readonly HashSet<string> AuthorityDomains =
             new HashSet<string>(StringComparer.Ordinal)
             {
-                "inventory", "npcshop", "crafting", "equipment_tuning",
+                "book-comic", "inventory", "npcshop", "crafting", "equipment_tuning",
                 "tuning", "loadout", "item_use", "skills"
             };
 
         private static readonly HashSet<string> SafeOperations =
             new HashSet<string>(StringComparer.Ordinal)
             {
+                "prepared", "finish", "continue", "skip", "failed", "bookComicPrepared", "bookComicFinish",
                 "close", "snapshot", "candidates", "preview", "commit", "tooltip", "detach",
                 "open", "openMany", "consume", "query", "inboxSnapshot",
                 "bulkQuery", "saveCart", "checkoutPreview", "checkoutCommit",
@@ -101,7 +104,8 @@ namespace CF7Launcher.Guardian
                 "skillReorder",
                 "itemUseOpen", "itemUseOpenMany", "itemUseConsume", "itemUseQuery",
                 "itemUseInboxSnapshot", "itemUseStashPage", "itemUseStashTooltip", "itemUseStashTake",
-                "itemUseStashQuery", "itemUseStashResume", "itemUseStashMigrate", "itemUseStashOpen", "itemUseStashOpenMany"
+                "itemUseStashQuery", "itemUseStashResume", "itemUseStashMigrate", "itemUseStashOpen", "itemUseStashOpenMany",
+                "itemUseStashChoices", "itemUseStashChoose"
             };
 
         private static readonly Dictionary<string, string> KnownSensitiveKeys =

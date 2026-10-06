@@ -35,6 +35,30 @@ namespace CF7Launcher.Tests.Guardian
             widget.OnMouseEvent(args, MouseEventKind.Click);
         }
 
+        [Theory]
+        [InlineData("书中历险-修理大学", "书架")]
+        [InlineData("摇滚公园", "医务室")]
+        public void DeathReturnLabelKeepsTheSameBoundAuthorityIntent(string stageName, string label)
+        {
+            using var owner = new Form { ClientSize = new Size(1024, 576) };
+            var anchor = new Panel { Bounds = new Rectangle(0, 0, 1024, 576) };
+            owner.Controls.Add(anchor); owner.CreateControl(); anchor.CreateControl();
+            var router = new LauncherCommandRouter(null, k => { }, () => { }, () => { }, () => { }, postToWeb: s => { });
+            using var widget = new RightContextWidget(anchor, router, MapHudDataCatalog.FromPayload(BuildPayload()), MapDisplayPreference.Off);
+            var commands = new List<JObject>();
+            using var bridge = new StageOutcomeTask(raw => { commands.Add(JObject.Parse(raw.TrimEnd('\0'))); return true; }, widget);
+            widget.ForceGameReady(true); widget.SetReady();
+            widget.ApplyState(StageState("active", "dead", "none", reviveBlockedReason: "resurrection_restricted", stageName: stageName));
+            NativeHudOverlay.ResolveAndProjectRightContextSlotOwner(widget, null);
+            Assert.Equal(new[] { "禁复活", label }, widget.StageActionLabelsForTest);
+            Assert.True(widget.StageActionLabelFitsForTest(1));
+            ReturnClick(widget, widget.StageActionBoundsForTest(1));
+            var command = Assert.Single(commands);
+            Assert.Equal("return_base", (string)command["intent"]);
+            Assert.Equal("run.right-context.1", (string)command["runId"]);
+            Assert.Equal(7, (int)command["expectedRevision"]);
+        }
+
         [Fact]
         public void InlineReturnUsesNativeSelectionAndOneBoundConfirmation()
         {

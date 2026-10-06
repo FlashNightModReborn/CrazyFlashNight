@@ -49,6 +49,13 @@
                         ? response.data : null, response);
                 });
         };
+        Controller.prototype.requestChoices = function(callback) {
+            if (this._destroyed || this._state === 'closed') return null;
+            var payload = this._base(); payload.v = 2;
+            return this._mux.request('stashChoices', payload, {kind:'stash_choices', latestWins:true}, function(response) {
+                callback(response && response.success === true ? response.data : null, response);
+            });
+        };
         Controller.prototype.requestStashTooltip = function(storeId, entry, callback) {
             if (this._destroyed || this._state === 'closed') return null;
             var payload = this._base(); payload.v = 2;
@@ -96,7 +103,7 @@
                 var retrySelf = this;
                 return this.refreshInbox(function(_, ok) { if (ok) retrySelf.invoke(candidate); });
             }
-            return this.invokeStash(action.command === 'open' ? 'stashOpen' : 'stashOpenMany', {
+            return this.invokeStash(action.command === 'openMany' ? 'stashOpenMany' : 'stashOpen', {
                 source:source, count:action.count,
                 storeId:summary.v === 2 ? summary.storeId : '',
                 expectedRevision:summary.v === 2 ? summary.authorityRevision : 0

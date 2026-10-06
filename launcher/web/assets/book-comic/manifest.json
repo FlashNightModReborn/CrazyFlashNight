@@ -1,0 +1,37 @@
+{
+  "schema": "cf7.book-comic.assets.v1",
+  "generation": "Imported without image modification from approved v4 local preview; content strips preview scene selector and maps page images to production URLs.",
+  "pages": [
+    {
+      "id": "prologue",
+      "panels": 10,
+      "image": "assets/book-comic/prologue.png"
+    },
+    {
+      "id": "boss",
+      "panels": 8,
+      "image": "assets/book-comic/boss.png"
+    }
+  ],
+  "totalImageBytes": 5308181,
+  "files": [
+    {
+      "path": "prologue.png",
+      "bytes": 2647632,
+      "sha256": "c6ef5f7f364be8c0214fb37ea2b3f8e17e5f5de836daba8ba54b6160cd0186cd",
+      "source": "修理大学-序章长页-v3.png",
+      "width": 1024,
+      "height": 1536
+    },
+    {
+      "path": "boss.png",
+      "bytes": 2660549,
+      "sha256": "ba10096b0d43879ad3460f0f4b61042a3412062b8d46d257b12af82dec9a576b",
+      "source": "修理大学-Boss长页-v4.png",
+      "width": 1024,
+      "height": 1536
+    }
+  ],
+  "contentSource": "data/books/repair-campus-comic.json",
+  "contentGenerator": "tools/build-book-comic-content.js"
+}

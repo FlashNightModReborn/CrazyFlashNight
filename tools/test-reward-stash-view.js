@@ -5,7 +5,7 @@ const root=path.resolve(__dirname,'..');
 function css(file){return fs.readFileSync(file,'utf8').replace(/@import url\("([^"]+)"\);/g,(_,part)=>css(path.resolve(path.dirname(file),part)));}
 (async()=>{
  const executablePath=['C:/Program Files (x86)/Microsoft/Edge/Application/msedge.exe','C:/Program Files/Microsoft/Edge/Application/msedge.exe'].find(fs.existsSync);
- const browser=await chromium.launch({executablePath,headless:true});
+ const browser=await chromium.launch({executablePath,headless:true,ignoreDefaultArgs:['--hide-scrollbars']});
  try{
  for(const entryRoute of ['build','battlebox']){
  const page=await browser.newPage({viewport:{width:1024,height:576}}), errors=[];
@@ -22,7 +22,7 @@ function css(file){return fs.readFileSync(file,'utf8').replace(/@import url\("([
   window.Toast={add:message=>fixture.messages.push(message)};
   window.Bridge={on:()=>{},send:message=>{setTimeout(()=>fixture.respond(message),10);return true;}};
  });
- for(const name of ['panel-runtime','tooltip-document','tooltip','workbench-lifecycle','workbench-focus','workbench-primitives','workbench-profile','workbench','workbench-components','item-filter','inventory-runtime','inventory-ui','inventory-workbench-config','inventory-workbench-quick-transfer','inventory-workbench-owned-view','inventory-workbench-stash-source','inventory-workbench-storage-source','inventory-workbench-storage-controls','inventory-storage-workbench','inventory-workbench-stash-navigation','character-build/character-build-stash-transport'])
+ for(const name of ['panel-runtime','tooltip-document','tooltip','workbench-lifecycle','workbench-focus','workbench-primitives','workbench-profile','workbench','workbench-components','guidance-tutorials','item-filter','inventory-runtime','inventory-ui','inventory-workbench-config','inventory-workbench-quick-transfer','inventory-workbench-owned-view','inventory-workbench-stash-source','inventory-workbench-storage-source','inventory-workbench-storage-controls','inventory-storage-workbench','inventory-workbench-stash-navigation','character-build/character-build-stash-transport'])
   await page.addScriptTag({path:path.join(root,'launcher/web/modules',name+'.js')});
  await page.evaluate(entryRoute=>{
   const f=fixture;
@@ -170,8 +170,28 @@ function css(file){return fs.readFileSync(file,'utf8').replace(/@import url\("([
  await page.evaluate(()=>{fixture.full=true;});await page.locator('[data-quick-mode="withdraw"]').click();await page.locator('[data-entry-id="s.e3"]').click();await page.locator('[data-entry-id="s.e1"]').click();
  await page.locator('.inventory-quick-transfer-commit').click();await page.waitForFunction(()=>!InventoryStorageWorkbench.debugState().quickTransfer.committing&&fixture.writes.length>=3);
  assert(await page.evaluate(()=>fixture.messages.some(m=>m.includes('仍保留在暂存'))));
+ // Page navigation must retire the old selection; the next page action covers only its visible rows.
  await page.locator('.inventory-page-next').click();await page.waitForFunction(()=>document.querySelector('[data-entry-id="s.e40"]'));
- await page.evaluate(()=>{fixture.unknown=true;});await page.locator('[data-entry-id="s.e40"]').click({modifiers:['Control']});await page.waitForFunction(()=>fixture.state==='needs_reconcile');
+ await page.locator('[data-entry-id="s.e40"]').click();
+ await page.locator('.inventory-page-prev').click();await page.waitForFunction(()=>document.querySelector('[data-entry-id="s.e3"]'));
+ // Full-page action submits one exact batch, without selecting each item or replaying blocked rows.
+ const pageBefore=await page.evaluate(()=>({writes:fixture.writes.length,ids:InventoryStorageWorkbench.debugState().quickTransfer.pending}));
+ assert.strictEqual(pageBefore.ids,0,'page navigation retires the off-page manual selection');
+ assert.strictEqual(await page.locator('.quick-transfer-pending').count(),0,'batch mode alone does not highlight every item');
+ const pageIds=await page.locator('[data-entry-id]').evaluateAll(nodes=>nodes.map(node=>node.getAttribute('data-entry-id')));
+ await page.locator('.inventory-take-page').click();
+ await page.waitForFunction(n=>fixture.writes.length===n+1&&!InventoryStorageWorkbench.debugState().coordinator.busyOwner,pageBefore.writes);
+ assert(await page.evaluate(()=>fixture.writes.at(-1).fields.entries.length===32));
+ assert.deepStrictEqual(await page.evaluate(()=>fixture.writes.at(-1).fields.entries.map(row=>row.entryId)),pageIds,'page claim contains only all current-page entries');
+ assert(await page.evaluate(()=>fixture.rows.some(r=>r.entryId==='s.e3')),'capacity-blocked equipment remains in stash');
+ assert(await page.evaluate(()=>fixture.writes.at(-1).fields.entries.some(r=>r.entryId==='s.e32')),'batch includes later eligible material');
+ assert.strictEqual(await page.evaluate(()=>fixture.writes.length),pageBefore.writes+1,'one page action issues one stashTake');
+ await page.locator('.inventory-page-next').click();await page.waitForFunction(()=>document.querySelector('[data-entry-id="s.e40"]'));
+ await page.evaluate(()=>{fixture.unknown=true;});await page.locator('.inventory-take-page').click();await page.waitForFunction(()=>fixture.state==='needs_reconcile');
+ assert(await page.locator('.inventory-take-page').isDisabled());
+ const unknownWrites=await page.evaluate(()=>fixture.writes.length);
+ await page.locator('.inventory-take-page').evaluate(button=>button.click());
+ assert.strictEqual(await page.evaluate(()=>fixture.writes.length),unknownWrites,'unknown page claim cannot repeat');
  assert.strictEqual(await page.evaluate(()=>fixture.switch('container')),false);
  assert.strictEqual(await page.evaluate(()=>InventoryStorageWorkbench.prepareClose('close',()=>{})),false);
  const issued=await page.evaluate(()=>fixture.writes.length);await page.getByRole('button',{name:'核对领取结果',exact:true}).click();

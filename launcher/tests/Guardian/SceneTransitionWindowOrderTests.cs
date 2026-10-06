@@ -12,6 +12,38 @@ namespace CF7Launcher.Tests.Guardian
     public class SceneTransitionWindowOrderTests
     {
         [Fact]
+        public void NativeShownBookshelf_CanDeliverReturnAndRepairOrderWithManagedVisibilityFalse()
+        {
+            RunSta(() =>
+            {
+                using var owner = new ObservedForm(); owner.Show();
+                using var bookshelf = new ObservedForm { Owner = owner };
+                // Production ResumeForPanel uses SetWindowPos, not Form.Show.
+                Assert.True(SetWindowPos(bookshelf.Handle, IntPtr.Zero, 0, 0, 0, 0, 0x0253));
+                Assert.False(bookshelf.Visible);
+                Assert.True(SceneTransitionWindowOrder.IsPresented(bookshelf));
+                int delivered = 0, pauses = 0;
+                var presentation = new BookshelfReturnPresentation(i => i == "book.native",
+                    () => true, () => { pauses++; return true; }, _ => { delivered++; return true; },
+                    () => SceneTransitionWindowOrder.IsPresented(bookshelf));
+                presentation.Observe("book.native", new Newtonsoft.Json.Linq.JObject { ["kind"] = "return", ["phase"] = "switching" });
+                Assert.True(presentation.Post(new Newtonsoft.Json.Linq.JObject {
+                    ["requestId"] = "tr:8", ["revision"] = 4, ["generation"] = 0, ["phase"] = "reveal" }));
+                using var world = new ObservedForm { Owner = owner }; world.Show(); Raise(world);
+                var foreground = GetForegroundWindow();
+                Assert.True(SceneTransitionWindowOrder.RaiseIfCovered(bookshelf, owner));
+                Assert.True(IsAbove(bookshelf.Handle, world.Handle));
+                Assert.Equal(foreground, GetForegroundWindow());
+                presentation.CompleteScene();
+                Assert.Equal(2, delivered); Assert.Equal(1, pauses); Assert.False(presentation.Loading);
+                // Native hiding must revoke admission even if managed state diverges.
+                Assert.True(SetWindowPos(bookshelf.Handle, IntPtr.Zero, 0, 0, 0, 0, 0x0293));
+                Assert.False(presentation.CanPresent);
+                Assert.False(SceneTransitionWindowOrder.RaiseIfCovered(bookshelf, owner));
+            });
+        }
+
+        [Fact]
         public void CorrectStack_DoesNotSendWindowPositionMessagesAcrossRepeatedTicks()
         {
             RunSta(() =>

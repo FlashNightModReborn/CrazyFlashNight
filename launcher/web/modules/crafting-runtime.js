@@ -77,7 +77,7 @@
     var CRAFTING_CATEGORIES = {
         '铁枪会':true, '属性武器':true, '烹饪':true, '化学生产':true,
         '武器合成':true, '饰品合成':true, '进阶防具':true, '基础防具':true,
-        '公社防具':true, '黑白契约':true, '插件合成':true, '大学装备':true
+        '公社防具':true, '黑白契约':true, '插件合成':true, '大学装备':true, '书中配给':true
     };
     var INFRASTRUCTURE_PURPOSE_ID = 'system:infrastructure_upgrade';
 

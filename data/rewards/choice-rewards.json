@@ -1,0 +1,1559 @@
+{
+  "schema": "choice-rewards.v1",
+  "bundles": [
+    {
+      "id": "campus.initial.1",
+      "name": "书中冲锋配给包",
+      "title": "初阶·冲锋穿透",
+      "description": "7级UZI两把、磁稳贯穿弹两份、冲锋枪弹药24份。双持配给，两把各装一份插件；贯穿射击会降低射速。",
+      "weapon": "UZI",
+      "weaponCount": 2,
+      "mods": [
+        "磁稳贯穿弹"
+      ],
+      "consumables": [
+        {
+          "name": "冲锋枪通用弹药",
+          "count": 24
+        }
+      ]
+    },
+    {
+      "id": "campus.initial.2",
+      "name": "书中步榴配给包",
+      "title": "初阶·步榴协同",
+      "description": "7级AK47、磁稳贯穿弹、M203榴弹发射器、步枪弹药8份、榴弹6份。贯穿射击配合下挂爆发。",
+      "weapon": "AK47",
+      "mods": [
+        "磁稳贯穿弹",
+        "M203榴弹发射器"
+      ],
+      "consumables": [
+        {
+          "name": "突击步枪通用弹药",
+          "count": 8
+        },
+        {
+          "name": "榴弹弹药",
+          "count": 6
+        }
+      ]
+    },
+    {
+      "id": "campus.initial.3",
+      "name": "书中霰弹配给包",
+      "title": "初阶·集中霰弹",
+      "description": "8级雷明登870、霰弹枪口收束器、磁稳贯穿弹、霰弹18份。集中霰弹并获得贯穿；与镇暴弹属于互斥的弹药改装。",
+      "weapon": "雷明登870",
+      "mods": [
+        "霰弹枪口收束器",
+        "磁稳贯穿弹"
+      ],
+      "consumables": [
+        {
+          "name": "12号霰弹弹药",
+          "count": 18
+        }
+      ]
+    },
+    {
+      "id": "campus.initial.4",
+      "name": "书中军刀配给包",
+      "title": "初阶·军刀突进",
+      "description": "9级破旧的军刀、绳扣穿孔片、手柄皮、石英磨刀石、中蓝6瓶、手雷4枚。磨刀石提升威力并锁定物理伤害。",
+      "weapon": "破旧的军刀",
+      "mods": [
+        "绳扣穿孔片",
+        "手柄皮",
+        "石英磨刀石"
+      ],
+      "consumables": [
+        {
+          "name": "加强mp药剂",
+          "count": 6
+        },
+        {
+          "name": "普通手雷",
+          "count": 4
+        }
+      ]
+    },
+    {
+      "id": "campus.advanced.1",
+      "name": "书中机枪配给包",
+      "title": "进阶·机枪压制",
+      "description": "13级M249、水冷机构、磁稳贯穿弹、机枪弹药4份。贯穿火力支持持续压制；插件会增加负重、降低射速，可自行决定是否安装。",
+      "weapon": "M249",
+      "mods": [
+        "水冷机构",
+        "磁稳贯穿弹"
+      ],
+      "consumables": [
+        {
+          "name": "机枪通用弹药",
+          "count": 4
+        }
+      ]
+    },
+    {
+      "id": "campus.advanced.2",
+      "name": "书中榴弹配给包",
+      "title": "进阶·榴弹爆破",
+      "description": "12级M79式榴弹发射器两把、榴弹24份、普通手雷6枚。双持爆炸火力适合应对集群，仍需规划换弹和后续弹药。",
+      "weapon": "M79式榴弹发射器",
+      "weaponCount": 2,
+      "mods": [],
+      "consumables": [
+        {
+          "name": "榴弹弹药",
+          "count": 24
+        },
+        {
+          "name": "普通手雷",
+          "count": 6
+        }
+      ]
+    },
+    {
+      "id": "campus.advanced.3",
+      "name": "书中镇暴配给包",
+      "title": "进阶·霰弹控场",
+      "description": "8级雷明登870、霰弹枪口收束器、八门金锁镇暴弹、霰弹18份、手雷6枚。镇暴弹偏向对群控制，与磁稳贯穿弹不能同时安装。",
+      "weapon": "雷明登870",
+      "mods": [
+        "霰弹枪口收束器",
+        "八门金锁镇暴弹"
+      ],
+      "consumables": [
+        {
+          "name": "12号霰弹弹药",
+          "count": 18
+        },
+        {
+          "name": "普通手雷",
+          "count": 6
+        }
+      ]
+    },
+    {
+      "id": "campus.advanced.4",
+      "name": "书中双刀配给包",
+      "title": "进阶·双刀突进",
+      "description": "13级战术双刀、绳扣穿孔片、石英磨刀石、大蓝6瓶、手雷6枚。两枚插件适配双刀的两个插槽，强化瞬步斩与物理威力。",
+      "weapon": "战术双刀",
+      "mods": [
+        "绳扣穿孔片",
+        "石英磨刀石"
+      ],
+      "consumables": [
+        {
+          "name": "大MP药剂",
+          "count": 6
+        },
+        {
+          "name": "普通手雷",
+          "count": 6
+        }
+      ]
+    },
+    {
+      "id": "campus.initial.medical",
+      "name": "书中初阶急救选项",
+      "title": "应急储备",
+      "description": "中药与手雷，保留现有武器继续成长。",
+      "items": [
+        {
+          "itemName": "加强抗生素药剂",
+          "quantity": 6
+        },
+        {
+          "itemName": "加强mp药剂",
+          "quantity": 6
+        },
+        {
+          "itemName": "普通手雷",
+          "quantity": 4
+        }
+      ]
+    },
+    {
+      "id": "campus.initial.armor",
+      "name": "书中初阶防护选项",
+      "title": "防护改装",
+      "description": "防弹衣与衣服进阶材料。",
+      "items": [
+        {
+          "itemName": "军绿防弹衣",
+          "quantity": 1
+        },
+        {
+          "itemName": "军用帆布",
+          "quantity": 4
+        },
+        {
+          "itemName": "可塑式钢板",
+          "quantity": 4
+        }
+      ]
+    },
+    {
+      "id": "campus.advanced.medical",
+      "name": "书中进阶急救选项",
+      "title": "决战储备",
+      "description": "大药和手雷，支撑最后几场战斗。",
+      "items": [
+        {
+          "itemName": "大HP药剂",
+          "quantity": 6
+        },
+        {
+          "itemName": "大MP药剂",
+          "quantity": 6
+        },
+        {
+          "itemName": "普通手雷",
+          "quantity": 6
+        }
+      ]
+    },
+    {
+      "id": "campus.advanced.armor",
+      "name": "书中进阶防护选项",
+      "title": "防线强化",
+      "description": "战术背心与防御进阶组件。",
+      "items": [
+        {
+          "itemName": "A兵团制式战术背心",
+          "quantity": 1
+        },
+        {
+          "itemName": "二阶复合防御组件",
+          "quantity": 2
+        }
+      ]
+    },
+    {
+      "id": "campus.advanced.revive",
+      "name": "书中复活币选项",
+      "title": "再战一次",
+      "description": "一枚复活币。死亡后可复活一次；仅属于本次旅程。",
+      "items": [
+        {
+          "itemName": "复活币",
+          "quantity": 1
+        }
+      ]
+    },
+    {
+      "id": "campus.initial.fist",
+      "name": "书中初阶拳套选项",
+      "title": "初阶·拳脚起手",
+      "description": "5级道钉手套、中蓝6瓶。提供拳脚威力，支持空手技能构筑；未抽到时也可在商店购买拳套。",
+      "items": [
+        {
+          "itemName": "道钉手套",
+          "quantity": 1
+        },
+        {
+          "itemName": "加强mp药剂",
+          "quantity": 6
+        }
+      ]
+    },
+    {
+      "id": "campus.advanced.fist",
+      "name": "书中进阶拳套选项",
+      "title": "进阶·重拳出击",
+      "description": "13级大型拳套、大蓝6瓶。提升拳脚威力与韧性，需要承担更高负重。",
+      "items": [
+        {
+          "itemName": "大型拳套",
+          "quantity": 1
+        },
+        {
+          "itemName": "大MP药剂",
+          "quantity": 6
+        }
+      ]
+    },
+    {
+      "id": "campus.necklace.blade",
+      "name": "书中刀剑项链选项",
+      "title": "刀剑项链",
+      "description": "1级冷兵器小加成项链。提供生存属性与冷兵器威力加成；可延续现有路线，也可据此转型。",
+      "items": [
+        {
+          "itemName": "冷兵器小加成项链",
+          "quantity": 1
+        }
+      ]
+    },
+    {
+      "id": "campus.necklace.gun",
+      "name": "书中枪械项链选项",
+      "title": "枪械项链",
+      "description": "1级枪械小加成项链。提供生存属性与枪械威力加成；可延续现有路线，也可据此转型。",
+      "items": [
+        {
+          "itemName": "枪械小加成项链",
+          "quantity": 1
+        }
+      ]
+    },
+    {
+      "id": "campus.necklace.fist",
+      "name": "书中空手项链选项",
+      "title": "空手项链",
+      "description": "1级空手小加成项链。提供生存属性与拳脚威力加成；可延续现有路线，也可据此转型。",
+      "items": [
+        {
+          "itemName": "空手小加成项链",
+          "quantity": 1
+        }
+      ]
+    },
+    {
+      "id": "campus.initial.moon",
+      "name": "书中月之碎片选项",
+      "title": "初阶·内力启蒙",
+      "description": "月之碎片1枚。安装到上装，将装备的内力加成设为10，覆盖原有内力加成；刀剑与拳脚路线均可使用。",
+      "items": [
+        {
+          "itemName": "月之碎片",
+          "quantity": 1
+        }
+      ]
+    },
+    {
+      "id": "campus.advanced.moon",
+      "name": "书中月之精华选项",
+      "title": "进阶·内力精进",
+      "description": "月之精华1枚。安装到上装，将装备的内力加成设为35，覆盖原有内力加成；与月之碎片占同一个内力槽。",
+      "items": [
+        {
+          "itemName": "月之精华",
+          "quantity": 1
+        }
+      ]
+    },
+    {
+      "id": "campus.advanced.flame",
+      "name": "书中下挂喷火器选项",
+      "title": "进阶·燃焰压制",
+      "description": "AK47、下挂喷火器、火焰喷射器燃料罐3份。完整转型配给，插件需自行安装；替换同槽下挂。",
+      "items": [
+        {
+          "itemName": "AK47",
+          "quantity": 1
+        },
+        {
+          "itemName": "下挂喷火器",
+          "quantity": 1
+        },
+        {
+          "itemName": "火焰喷射器燃料罐",
+          "quantity": 3
+        },
+        {
+          "itemName": "突击步枪通用弹药",
+          "quantity": 6
+        }
+      ]
+    },
+    {
+      "id": "campus.advanced.storm",
+      "name": "书中下挂金属风暴榴弹发射器选项",
+      "title": "进阶·金属风暴",
+      "description": "AK47、下挂金属风暴榴弹发射器、榴弹弹药6份。完整转型配给，插件需自行安装；替换同槽下挂。",
+      "items": [
+        {
+          "itemName": "AK47",
+          "quantity": 1
+        },
+        {
+          "itemName": "下挂金属风暴榴弹发射器",
+          "quantity": 1
+        },
+        {
+          "itemName": "榴弹弹药",
+          "quantity": 6
+        },
+        {
+          "itemName": "突击步枪通用弹药",
+          "quantity": 6
+        }
+      ]
+    },
+    {
+      "id": "campus.advanced.missile",
+      "name": "书中下挂微型导弹发射器选项",
+      "title": "进阶·导弹爆发",
+      "description": "AK47、下挂微型导弹发射器、能量电池1份。完整转型配给，插件需自行安装；替换同槽下挂。",
+      "items": [
+        {
+          "itemName": "AK47",
+          "quantity": 1
+        },
+        {
+          "itemName": "下挂微型导弹发射器",
+          "quantity": 1
+        },
+        {
+          "itemName": "能量电池",
+          "quantity": 1
+        },
+        {
+          "itemName": "突击步枪通用弹药",
+          "quantity": 6
+        }
+      ]
+    },
+    {
+      "id": "campus.advanced.revolver",
+      "name": "书中下挂转轮霰弹枪选项",
+      "title": "进阶·转轮突击",
+      "description": "AK47、下挂转轮霰弹枪、00号鹿弹6份。完整转型配给，插件需自行安装；替换同槽下挂。",
+      "items": [
+        {
+          "itemName": "AK47",
+          "quantity": 1
+        },
+        {
+          "itemName": "下挂转轮霰弹枪",
+          "quantity": 1
+        },
+        {
+          "itemName": "00号鹿弹",
+          "quantity": 6
+        },
+        {
+          "itemName": "突击步枪通用弹药",
+          "quantity": 6
+        }
+      ]
+    },
+    {
+      "id": "campus.rifle.flame",
+      "name": "书中步枪下挂喷火器组合",
+      "title": "步枪·下挂喷火器",
+      "description": "免费配给：7级AK47、下挂喷火器与对应弹药。第三图前可成型；插件需自行安装，下挂消耗独立弹药。",
+      "weapon": "AK47",
+      "mods": [
+        "下挂喷火器"
+      ],
+      "consumables": [
+        {
+          "name": "突击步枪通用弹药",
+          "count": 8
+        },
+        {
+          "name": "火焰喷射器燃料罐",
+          "count": 3
+        }
+      ]
+    },
+    {
+      "id": "campus.rifle.storm",
+      "name": "书中步枪下挂金属风暴榴弹发射器组合",
+      "title": "步枪·下挂金属风暴榴弹发射器",
+      "description": "免费配给：7级AK47、下挂金属风暴榴弹发射器与对应弹药。第三图前可成型；插件需自行安装，下挂消耗独立弹药。",
+      "weapon": "AK47",
+      "mods": [
+        "下挂金属风暴榴弹发射器"
+      ],
+      "consumables": [
+        {
+          "name": "突击步枪通用弹药",
+          "count": 8
+        },
+        {
+          "name": "榴弹弹药",
+          "count": 6
+        }
+      ]
+    },
+    {
+      "id": "campus.rifle.missile",
+      "name": "书中步枪下挂微型导弹发射器组合",
+      "title": "步枪·下挂微型导弹发射器",
+      "description": "免费配给：7级AK47、下挂微型导弹发射器与对应弹药。第三图前可成型；插件需自行安装，下挂消耗独立弹药。",
+      "weapon": "AK47",
+      "mods": [
+        "下挂微型导弹发射器"
+      ],
+      "consumables": [
+        {
+          "name": "突击步枪通用弹药",
+          "count": 8
+        },
+        {
+          "name": "能量电池",
+          "count": 1
+        }
+      ]
+    },
+    {
+      "id": "campus.rifle.revolver",
+      "name": "书中步枪下挂转轮霰弹枪组合",
+      "title": "步枪·下挂转轮霰弹枪",
+      "description": "免费配给：7级AK47、下挂转轮霰弹枪与对应弹药。第三图前可成型；插件需自行安装，下挂消耗独立弹药。",
+      "weapon": "AK47",
+      "mods": [
+        "下挂转轮霰弹枪"
+      ],
+      "consumables": [
+        {
+          "name": "突击步枪通用弹药",
+          "count": 8
+        },
+        {
+          "name": "00号鹿弹",
+          "count": 6
+        }
+      ]
+    },
+    {
+      "id": "campus.skill.early.0",
+      "name": "书中霸体入门选项",
+      "title": "霸体入门",
+      "description": "直接获得霸体2级，不消耗SP。主动技能需在技能页装入快捷栏；已拥有同级或更高等级时不再投放。",
+      "items": [],
+      "skills": [
+        {
+          "skillKey": "霸体",
+          "level": 2
+        }
+      ]
+    },
+    {
+      "id": "campus.skill.early.1",
+      "name": "书中迅斩入门选项",
+      "title": "迅斩入门",
+      "description": "直接获得迅斩2级，不消耗SP。主动技能需在技能页装入快捷栏；已拥有同级或更高等级时不再投放。",
+      "items": [],
+      "skills": [
+        {
+          "skillKey": "迅斩",
+          "level": 2
+        }
+      ]
+    },
+    {
+      "id": "campus.skill.early.2",
+      "name": "书中踩人入门选项",
+      "title": "踩人入门",
+      "description": "直接获得踩人2级，不消耗SP。主动技能需在技能页装入快捷栏；已拥有同级或更高等级时不再投放。",
+      "items": [],
+      "skills": [
+        {
+          "skillKey": "踩人",
+          "level": 2
+        }
+      ]
+    },
+    {
+      "id": "campus.skill.early.3",
+      "name": "书中上挑入门选项",
+      "title": "上挑入门",
+      "description": "直接获得上挑2级，不消耗SP。主动技能需在技能页装入快捷栏；已拥有同级或更高等级时不再投放。",
+      "items": [],
+      "skills": [
+        {
+          "skillKey": "上挑",
+          "level": 2
+        }
+      ]
+    },
+    {
+      "id": "campus.skill.early.4",
+      "name": "书中下劈入门选项",
+      "title": "下劈入门",
+      "description": "直接获得下劈2级，不消耗SP。主动技能需在技能页装入快捷栏；已拥有同级或更高等级时不再投放。",
+      "items": [],
+      "skills": [
+        {
+          "skillKey": "下劈",
+          "level": 2
+        }
+      ]
+    },
+    {
+      "id": "campus.skill.early.5",
+      "name": "书中裂地拳入门选项",
+      "title": "裂地拳入门",
+      "description": "直接获得裂地拳2级，不消耗SP。主动技能需在技能页装入快捷栏；已拥有同级或更高等级时不再投放。",
+      "items": [],
+      "skills": [
+        {
+          "skillKey": "裂地拳",
+          "level": 2
+        }
+      ]
+    },
+    {
+      "id": "campus.skill.early.6",
+      "name": "书中追猎射击入门选项",
+      "title": "追猎射击入门",
+      "description": "直接获得追猎射击2级，不消耗SP。主动技能需在技能页装入快捷栏；已拥有同级或更高等级时不再投放。",
+      "items": [],
+      "skills": [
+        {
+          "skillKey": "追猎射击",
+          "level": 2
+        }
+      ]
+    },
+    {
+      "id": "campus.skill.early.7",
+      "name": "书中翻滚换弹入门选项",
+      "title": "翻滚换弹入门",
+      "description": "直接获得翻滚换弹2级，不消耗SP。主动技能需在技能页装入快捷栏；已拥有同级或更高等级时不再投放。",
+      "items": [],
+      "skills": [
+        {
+          "skillKey": "翻滚换弹",
+          "level": 2
+        }
+      ]
+    },
+    {
+      "id": "campus.skill.mid.0",
+      "name": "书中瞬步斩协同选项",
+      "title": "瞬步斩协同",
+      "description": "直接获得瞬步斩2级，不消耗SP。可补充已有流派的战斗动作，主动技能需自行装备。",
+      "items": [],
+      "skills": [
+        {
+          "skillKey": "瞬步斩",
+          "level": 2
+        }
+      ]
+    },
+    {
+      "id": "campus.skill.late.0",
+      "name": "书中瞬步斩精进选项",
+      "title": "瞬步斩精进",
+      "description": "直接获得瞬步斩3级；已有较低等级时提升至3级，不返还已花费的SP。",
+      "items": [],
+      "skills": [
+        {
+          "skillKey": "瞬步斩",
+          "level": 3
+        }
+      ]
+    },
+    {
+      "id": "campus.skill.mid.1",
+      "name": "书中凶斩协同选项",
+      "title": "凶斩协同",
+      "description": "直接获得凶斩2级，不消耗SP。可补充已有流派的战斗动作，主动技能需自行装备。",
+      "items": [],
+      "skills": [
+        {
+          "skillKey": "凶斩",
+          "level": 2
+        }
+      ]
+    },
+    {
+      "id": "campus.skill.late.1",
+      "name": "书中凶斩精进选项",
+      "title": "凶斩精进",
+      "description": "直接获得凶斩3级；已有较低等级时提升至3级，不返还已花费的SP。",
+      "items": [],
+      "skills": [
+        {
+          "skillKey": "凶斩",
+          "level": 3
+        }
+      ]
+    },
+    {
+      "id": "campus.skill.mid.2",
+      "name": "书中日字冲拳协同选项",
+      "title": "日字冲拳协同",
+      "description": "直接获得日字冲拳2级，不消耗SP。可补充已有流派的战斗动作，主动技能需自行装备。",
+      "items": [],
+      "skills": [
+        {
+          "skillKey": "日字冲拳",
+          "level": 2
+        }
+      ]
+    },
+    {
+      "id": "campus.skill.late.2",
+      "name": "书中日字冲拳精进选项",
+      "title": "日字冲拳精进",
+      "description": "直接获得日字冲拳3级；已有较低等级时提升至3级，不返还已花费的SP。",
+      "items": [],
+      "skills": [
+        {
+          "skillKey": "日字冲拳",
+          "level": 3
+        }
+      ]
+    },
+    {
+      "id": "campus.skill.mid.3",
+      "name": "书中组合拳协同选项",
+      "title": "组合拳协同",
+      "description": "直接获得组合拳2级，不消耗SP。可补充已有流派的战斗动作，主动技能需自行装备。",
+      "items": [],
+      "skills": [
+        {
+          "skillKey": "组合拳",
+          "level": 2
+        }
+      ]
+    },
+    {
+      "id": "campus.skill.late.3",
+      "name": "书中组合拳精进选项",
+      "title": "组合拳精进",
+      "description": "直接获得组合拳3级；已有较低等级时提升至3级，不返还已花费的SP。",
+      "items": [],
+      "skills": [
+        {
+          "skillKey": "组合拳",
+          "level": 3
+        }
+      ]
+    },
+    {
+      "id": "campus.skill.mid.4",
+      "name": "书中震地协同选项",
+      "title": "震地协同",
+      "description": "直接获得震地2级，不消耗SP。可补充已有流派的战斗动作，主动技能需自行装备。",
+      "items": [],
+      "skills": [
+        {
+          "skillKey": "震地",
+          "level": 2
+        }
+      ]
+    },
+    {
+      "id": "campus.skill.late.4",
+      "name": "书中震地精进选项",
+      "title": "震地精进",
+      "description": "直接获得震地3级；已有较低等级时提升至3级，不返还已花费的SP。",
+      "items": [],
+      "skills": [
+        {
+          "skillKey": "震地",
+          "level": 3
+        }
+      ]
+    },
+    {
+      "id": "campus.skill.mid.5",
+      "name": "书中追猎射击协同选项",
+      "title": "追猎射击协同",
+      "description": "直接获得追猎射击2级，不消耗SP。可补充已有流派的战斗动作，主动技能需自行装备。",
+      "items": [],
+      "skills": [
+        {
+          "skillKey": "追猎射击",
+          "level": 2
+        }
+      ]
+    },
+    {
+      "id": "campus.skill.late.5",
+      "name": "书中追猎射击精进选项",
+      "title": "追猎射击精进",
+      "description": "直接获得追猎射击3级；已有较低等级时提升至3级，不返还已花费的SP。",
+      "items": [],
+      "skills": [
+        {
+          "skillKey": "追猎射击",
+          "level": 3
+        }
+      ]
+    },
+    {
+      "id": "campus.skill.mid.6",
+      "name": "书中翻滚换弹协同选项",
+      "title": "翻滚换弹协同",
+      "description": "直接获得翻滚换弹2级，不消耗SP。可补充已有流派的战斗动作，主动技能需自行装备。",
+      "items": [],
+      "skills": [
+        {
+          "skillKey": "翻滚换弹",
+          "level": 2
+        }
+      ]
+    },
+    {
+      "id": "campus.skill.late.6",
+      "name": "书中翻滚换弹精进选项",
+      "title": "翻滚换弹精进",
+      "description": "直接获得翻滚换弹3级；已有较低等级时提升至3级，不返还已花费的SP。",
+      "items": [],
+      "skills": [
+        {
+          "skillKey": "翻滚换弹",
+          "level": 3
+        }
+      ]
+    },
+    {
+      "id": "campus.skill.mid.7",
+      "name": "书中霸体协同选项",
+      "title": "霸体协同",
+      "description": "直接获得霸体2级，不消耗SP。可补充已有流派的战斗动作，主动技能需自行装备。",
+      "items": [],
+      "skills": [
+        {
+          "skillKey": "霸体",
+          "level": 2
+        }
+      ]
+    },
+    {
+      "id": "campus.skill.late.7",
+      "name": "书中霸体精进选项",
+      "title": "霸体精进",
+      "description": "直接获得霸体3级；已有较低等级时提升至3级，不返还已花费的SP。",
+      "items": [],
+      "skills": [
+        {
+          "skillKey": "霸体",
+          "level": 3
+        }
+      ]
+    },
+    {
+      "id": "campus.skill.paid.0",
+      "name": "书中闪现特训选项",
+      "title": "闪现特训",
+      "description": "支付300 K点，直接获得闪现2级。属于额外能力；主动技能需自行装备。",
+      "items": [],
+      "skills": [
+        {
+          "skillKey": "闪现",
+          "level": 2
+        }
+      ],
+      "kCost": 300
+    },
+    {
+      "id": "campus.skill.paid.1",
+      "name": "书中冲击连携特训选项",
+      "title": "冲击连携特训",
+      "description": "支付300 K点，直接获得冲击连携2级。属于额外能力；主动技能需自行装备。",
+      "items": [],
+      "skills": [
+        {
+          "skillKey": "冲击连携",
+          "level": 2
+        }
+      ],
+      "kCost": 300
+    },
+    {
+      "id": "campus.skill.paid.2",
+      "name": "书中拳脚空中连招特训选项",
+      "title": "拳脚空中连招特训",
+      "description": "支付700 K点，直接获得拳脚空中连招3级。属于额外能力；主动技能需自行装备。",
+      "items": [],
+      "skills": [
+        {
+          "skillKey": "拳脚空中连招",
+          "level": 3
+        }
+      ],
+      "kCost": 700
+    },
+    {
+      "id": "campus.skill.paid.3",
+      "name": "书中刀剑空中连招特训选项",
+      "title": "刀剑空中连招特训",
+      "description": "支付700 K点，直接获得刀剑空中连招3级。属于额外能力；主动技能需自行装备。",
+      "items": [],
+      "skills": [
+        {
+          "skillKey": "刀剑空中连招",
+          "level": 3
+        }
+      ],
+      "kCost": 700
+    },
+    {
+      "id": "campus.skill.paid.4",
+      "name": "书中内力爆发特训选项",
+      "title": "内力爆发特训",
+      "description": "支付700 K点，直接获得内力爆发3级。属于额外能力；主动技能需自行装备。",
+      "items": [],
+      "skills": [
+        {
+          "skillKey": "内力爆发",
+          "level": 3
+        }
+      ],
+      "kCost": 700
+    },
+    {
+      "id": "campus.skill.paid.5",
+      "name": "书中枪械师特训选项",
+      "title": "枪械师特训",
+      "description": "支付700 K点，直接获得枪械师3级。属于额外能力；主动技能需自行装备。",
+      "items": [],
+      "skills": [
+        {
+          "skillKey": "枪械师",
+          "level": 3
+        }
+      ],
+      "kCost": 700
+    },
+    {
+      "id": "campus.skill.paid.6",
+      "name": "书中火舞旋风特训选项",
+      "title": "火舞旋风特训",
+      "description": "支付1100 K点，直接获得火舞旋风2级。属于额外能力；主动技能需自行装备。",
+      "items": [],
+      "skills": [
+        {
+          "skillKey": "火舞旋风",
+          "level": 2
+        }
+      ],
+      "kCost": 1100
+    },
+    {
+      "id": "campus.skill.paid.7",
+      "name": "书中旋风腿特训选项",
+      "title": "旋风腿特训",
+      "description": "支付1100 K点，直接获得旋风腿2级。属于额外能力；主动技能需自行装备。",
+      "items": [],
+      "skills": [
+        {
+          "skillKey": "旋风腿",
+          "level": 2
+        }
+      ],
+      "kCost": 1100
+    },
+    {
+      "id": "campus.skill.paid.8",
+      "name": "书中火力支援特训选项",
+      "title": "火力支援特训",
+      "description": "支付1100 K点，直接获得火力支援2级。属于额外能力；主动技能需自行装备。",
+      "items": [],
+      "skills": [
+        {
+          "skillKey": "火力支援",
+          "level": 2
+        }
+      ],
+      "kCost": 1100
+    },
+    {
+      "id": "campus.supply.mana",
+      "name": "书中内力续航选项",
+      "title": "内力续航",
+      "description": "加强mp药剂6瓶，供主动技能衔接使用。",
+      "items": [
+        {
+          "itemName": "加强mp药剂",
+          "quantity": 6
+        }
+      ]
+    },
+    {
+      "id": "campus.supply.grenade",
+      "name": "书中爆破协同选项",
+      "title": "爆破协同",
+      "description": "普通手雷6枚；补充一次集中爆发。",
+      "items": [
+        {
+          "itemName": "普通手雷",
+          "quantity": 6
+        }
+      ]
+    },
+    {
+      "id": "campus.supply.ammo",
+      "name": "书中持续火力选项",
+      "title": "持续火力",
+      "description": "一份全类弹药补给包；打开后从暂存领取。",
+      "items": [
+        {
+          "itemName": "书中弹药补给包",
+          "quantity": 1
+        }
+      ]
+    },
+    {
+      "id": "campus.burst.mana",
+      "name": "书中决战内力选项",
+      "title": "决战内力",
+      "description": "大MP药剂6瓶；在最后一战保持技能循环。",
+      "items": [
+        {
+          "itemName": "大MP药剂",
+          "quantity": 6
+        }
+      ]
+    },
+    {
+      "id": "campus.burst.grenade",
+      "name": "书中决战爆破选项",
+      "title": "决战爆破",
+      "description": "普通手雷8枚与加强mp药剂3瓶。",
+      "items": [
+        {
+          "itemName": "普通手雷",
+          "quantity": 8
+        },
+        {
+          "itemName": "加强mp药剂",
+          "quantity": 3
+        }
+      ]
+    },
+    {
+      "id": "campus.burst.heal",
+      "name": "书中决战急救选项",
+      "title": "决战急救",
+      "description": "大HP药剂3瓶，用于最后一战。",
+      "items": [
+        {
+          "itemName": "大HP药剂",
+          "quantity": 3
+        }
+      ]
+    },
+    {
+      "id": "campus.burst.paid",
+      "name": "书中决战续战选项",
+      "title": "决战续战",
+      "description": "支付300 K点：大MP药剂10瓶与普通手雷8枚。有限补给，不重复投放。",
+      "items": [
+        {
+          "itemName": "大MP药剂",
+          "quantity": 10
+        },
+        {
+          "itemName": "普通手雷",
+          "quantity": 8
+        }
+      ],
+      "kCost": 300
+    }
+  ],
+  "pools": [
+    {
+      "id": "repair-campus.initial",
+      "version": 4,
+      "title": "初阶配给",
+      "itemName": "书中初阶自选配给包",
+      "scope": {
+        "kind": "book",
+        "bookId": "repair-campus"
+      },
+      "maxItemLevel": 9,
+      "chooseCount": 1,
+      "rerolls": 0,
+      "groups": [
+        {
+          "id": "rifle",
+          "draw": 1,
+          "entries": [
+            {
+              "bundleId": "campus.rifle.flame",
+              "weight": 1
+            },
+            {
+              "bundleId": "campus.rifle.storm",
+              "weight": 1
+            },
+            {
+              "bundleId": "campus.rifle.missile",
+              "weight": 1
+            },
+            {
+              "bundleId": "campus.rifle.revolver",
+              "weight": 1
+            }
+          ]
+        },
+        {
+          "id": "combat",
+          "draw": 1,
+          "entries": [
+            {
+              "bundleId": "campus.initial.1",
+              "weight": 1
+            },
+            {
+              "bundleId": "campus.initial.2",
+              "weight": 1
+            },
+            {
+              "bundleId": "campus.initial.3",
+              "weight": 1
+            },
+            {
+              "bundleId": "campus.initial.4",
+              "weight": 1
+            },
+            {
+              "bundleId": "campus.initial.fist",
+              "weight": 1
+            }
+          ]
+        },
+        {
+          "id": "support",
+          "draw": 1,
+          "entries": [
+            {
+              "bundleId": "campus.initial.medical",
+              "weight": 1
+            },
+            {
+              "bundleId": "campus.initial.armor",
+              "weight": 1
+            },
+            {
+              "bundleId": "campus.necklace.blade",
+              "weight": 1
+            },
+            {
+              "bundleId": "campus.necklace.gun",
+              "weight": 1
+            },
+            {
+              "bundleId": "campus.necklace.fist",
+              "weight": 1
+            },
+            {
+              "bundleId": "campus.initial.moon",
+              "weight": 1
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "repair-campus.advanced",
+      "version": 4,
+      "title": "进阶配给",
+      "itemName": "书中进阶自选配给包",
+      "scope": {
+        "kind": "book",
+        "bookId": "repair-campus"
+      },
+      "maxItemLevel": 13,
+      "chooseCount": 1,
+      "rerolls": 0,
+      "groups": [
+        {
+          "id": "combat",
+          "draw": 1,
+          "entries": [
+            {
+              "bundleId": "campus.advanced.1",
+              "weight": 1
+            },
+            {
+              "bundleId": "campus.advanced.2",
+              "weight": 1
+            },
+            {
+              "bundleId": "campus.advanced.3",
+              "weight": 1
+            },
+            {
+              "bundleId": "campus.advanced.4",
+              "weight": 1
+            },
+            {
+              "bundleId": "campus.advanced.fist",
+              "weight": 1
+            }
+          ]
+        },
+        {
+          "id": "support",
+          "draw": 1,
+          "entries": [
+            {
+              "bundleId": "campus.advanced.medical",
+              "weight": 1
+            },
+            {
+              "bundleId": "campus.advanced.armor",
+              "weight": 1
+            },
+            {
+              "bundleId": "campus.advanced.revive",
+              "weight": 1
+            },
+            {
+              "bundleId": "campus.necklace.blade",
+              "weight": 1
+            },
+            {
+              "bundleId": "campus.necklace.gun",
+              "weight": 1
+            },
+            {
+              "bundleId": "campus.necklace.fist",
+              "weight": 1
+            },
+            {
+              "bundleId": "campus.advanced.moon",
+              "weight": 1
+            }
+          ]
+        },
+        {
+          "id": "underbarrel",
+          "draw": 1,
+          "entries": [
+            {
+              "bundleId": "campus.advanced.flame",
+              "weight": 1
+            },
+            {
+              "bundleId": "campus.advanced.storm",
+              "weight": 1
+            },
+            {
+              "bundleId": "campus.advanced.missile",
+              "weight": 1
+            },
+            {
+              "bundleId": "campus.advanced.revolver",
+              "weight": 1
+            }
+          ]
+        },
+        {
+          "id": "premium",
+          "draw": 1,
+          "entries": [
+            {
+              "bundleId": "campus.skill.paid.2",
+              "weight": 1
+            },
+            {
+              "bundleId": "campus.skill.paid.3",
+              "weight": 1
+            },
+            {
+              "bundleId": "campus.skill.paid.4",
+              "weight": 1
+            },
+            {
+              "bundleId": "campus.skill.paid.5",
+              "weight": 1
+            },
+            {
+              "bundleId": "campus.skill.paid.6",
+              "weight": 1
+            },
+            {
+              "bundleId": "campus.skill.paid.7",
+              "weight": 1
+            },
+            {
+              "bundleId": "campus.skill.paid.8",
+              "weight": 1
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "repair-campus.opening",
+      "version": 1,
+      "title": "入学特训",
+      "itemName": "书中入学特训自选包",
+      "scope": {
+        "kind": "book",
+        "bookId": "repair-campus"
+      },
+      "maxItemLevel": 15,
+      "chooseCount": 1,
+      "rerolls": 0,
+      "groups": [
+        {
+          "id": "function",
+          "draw": 3,
+          "entries": [
+            {
+              "bundleId": "campus.skill.early.0",
+              "weight": 1
+            },
+            {
+              "bundleId": "campus.skill.early.1",
+              "weight": 1
+            },
+            {
+              "bundleId": "campus.skill.early.2",
+              "weight": 1
+            },
+            {
+              "bundleId": "campus.skill.early.3",
+              "weight": 1
+            },
+            {
+              "bundleId": "campus.skill.early.4",
+              "weight": 1
+            },
+            {
+              "bundleId": "campus.skill.early.5",
+              "weight": 1
+            },
+            {
+              "bundleId": "campus.skill.early.6",
+              "weight": 1
+            },
+            {
+              "bundleId": "campus.skill.early.7",
+              "weight": 1
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "repair-campus.synergy",
+      "version": 1,
+      "title": "流派协同",
+      "itemName": "书中流派协同自选包",
+      "scope": {
+        "kind": "book",
+        "bookId": "repair-campus"
+      },
+      "maxItemLevel": 15,
+      "chooseCount": 1,
+      "rerolls": 0,
+      "groups": [
+        {
+          "id": "skill",
+          "draw": 1,
+          "entries": [
+            {
+              "bundleId": "campus.skill.mid.0",
+              "weight": 1
+            },
+            {
+              "bundleId": "campus.skill.mid.1",
+              "weight": 1
+            },
+            {
+              "bundleId": "campus.skill.mid.2",
+              "weight": 1
+            },
+            {
+              "bundleId": "campus.skill.mid.3",
+              "weight": 1
+            },
+            {
+              "bundleId": "campus.skill.mid.4",
+              "weight": 1
+            },
+            {
+              "bundleId": "campus.skill.mid.5",
+              "weight": 1
+            },
+            {
+              "bundleId": "campus.skill.mid.6",
+              "weight": 1
+            },
+            {
+              "bundleId": "campus.skill.mid.7",
+              "weight": 1
+            }
+          ]
+        },
+        {
+          "id": "supply",
+          "draw": 1,
+          "entries": [
+            {
+              "bundleId": "campus.supply.mana",
+              "weight": 1
+            },
+            {
+              "bundleId": "campus.supply.grenade",
+              "weight": 1
+            },
+            {
+              "bundleId": "campus.supply.ammo",
+              "weight": 1
+            }
+          ]
+        },
+        {
+          "id": "premium",
+          "draw": 1,
+          "entries": [
+            {
+              "bundleId": "campus.skill.paid.0",
+              "weight": 1
+            },
+            {
+              "bundleId": "campus.skill.paid.1",
+              "weight": 1
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "repair-campus.mastery",
+      "version": 1,
+      "title": "战技精进",
+      "itemName": "书中战技精进自选包",
+      "scope": {
+        "kind": "book",
+        "bookId": "repair-campus"
+      },
+      "maxItemLevel": 15,
+      "chooseCount": 1,
+      "rerolls": 0,
+      "groups": [
+        {
+          "id": "skill",
+          "draw": 1,
+          "entries": [
+            {
+              "bundleId": "campus.skill.late.0",
+              "weight": 1
+            },
+            {
+              "bundleId": "campus.skill.late.1",
+              "weight": 1
+            },
+            {
+              "bundleId": "campus.skill.late.2",
+              "weight": 1
+            },
+            {
+              "bundleId": "campus.skill.late.3",
+              "weight": 1
+            },
+            {
+              "bundleId": "campus.skill.late.4",
+              "weight": 1
+            },
+            {
+              "bundleId": "campus.skill.late.5",
+              "weight": 1
+            },
+            {
+              "bundleId": "campus.skill.late.6",
+              "weight": 1
+            },
+            {
+              "bundleId": "campus.skill.late.7",
+              "weight": 1
+            }
+          ]
+        },
+        {
+          "id": "supply",
+          "draw": 1,
+          "entries": [
+            {
+              "bundleId": "campus.supply.mana",
+              "weight": 1
+            },
+            {
+              "bundleId": "campus.supply.grenade",
+              "weight": 1
+            },
+            {
+              "bundleId": "campus.supply.ammo",
+              "weight": 1
+            }
+          ]
+        },
+        {
+          "id": "premium",
+          "draw": 1,
+          "entries": [
+            {
+              "bundleId": "campus.skill.paid.2",
+              "weight": 1
+            },
+            {
+              "bundleId": "campus.skill.paid.3",
+              "weight": 1
+            },
+            {
+              "bundleId": "campus.skill.paid.4",
+              "weight": 1
+            },
+            {
+              "bundleId": "campus.skill.paid.5",
+              "weight": 1
+            },
+            {
+              "bundleId": "campus.skill.paid.6",
+              "weight": 1
+            },
+            {
+              "bundleId": "campus.skill.paid.7",
+              "weight": 1
+            },
+            {
+              "bundleId": "campus.skill.paid.8",
+              "weight": 1
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "repair-campus.final",
+      "version": 1,
+      "title": "决战补给",
+      "itemName": "书中决战补给自选包",
+      "scope": {
+        "kind": "book",
+        "bookId": "repair-campus"
+      },
+      "maxItemLevel": 15,
+      "chooseCount": 1,
+      "rerolls": 0,
+      "groups": [
+        {
+          "id": "supply",
+          "draw": 2,
+          "entries": [
+            {
+              "bundleId": "campus.burst.mana",
+              "weight": 1
+            },
+            {
+              "bundleId": "campus.burst.grenade",
+              "weight": 1
+            },
+            {
+              "bundleId": "campus.burst.heal",
+              "weight": 1
+            }
+          ]
+        },
+        {
+          "id": "premium",
+          "draw": 1,
+          "entries": [
+            {
+              "bundleId": "campus.burst.paid",
+              "weight": 1
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

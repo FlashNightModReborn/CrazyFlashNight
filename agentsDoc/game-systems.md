@@ -122,6 +122,18 @@
 - **碰撞层权威与重绘**：`SceneCollisionManager` 持有边界之外的 polygon 追加快照与 MC 矩形；`ObstacleRenderer` 在普通障碍初绘成功后把同一 MC / 矩形直接登记进该权威集合（AVM1 不保证 `for..in gameworld` 枚举时间轴子实例），`redraw()` 在 `clearAll()` 后只回放全部追加来源与存活登记 MC，不得因任一 MC 卸载丢失普通障碍。`SceneManager.removeGameWorld()` 必须先通过 loot authority barrier；成功后才停帧更新，再在 dispatcher/gameworld 存活时 `dispose()` 精确旧层和 MC/矩形强引用，最后才销毁 dispatcher 与 gameworld；本轮静态门 **35/35**，2026-07-25 最终 helper/marker 代码冻结后的 fresh CS6 回归为 **21/21、4/4 cases、0 failed、Compiler Errors 0/0、32K retry=0**；专项门见 [testing-guide.md](testing-guide.md) §2。
 - **关卡事件音效**：`StageEvent` 消费 XML 解析后已归一化的 `Sound[]`，只逐项播放有效非空音效名；不得再保留永远不可达的字符串分支。本轮静态回归 **11/11**。
 
+### 过场暂停与结束清理
+
+`_root.最上层加载外部动画(path, pause)` 把暂停需求交给 `arki/scene/CutsceneService.as`。进场、通关和 StageEvent 都传入 XML 的 Pause 语义；不得在装载后另裸写暂停。服务在首帧执行前取得 `PauseManager.leaseLegacyAnimation`，并兼容服务中登记的旧素材首帧暂停。只要动画、对白、其他界面或奖励提交中任一暂停责任尚未结束，游戏保持暂停；最后恢复此前的业务基值。手动暂停使用 `PauseManager.set(value, "manual")`，普通 lease 在受管动画以外保留原裸写契约。
+
+受管素材和空外壳都使用不复用的实际实例名；原中文壳成员作为别名继续提供给旧调用方。卸载后保留 native 名称的 MC 不能继续持有会话标记，也不能同名重建后继续装载。动画根实例与空外壳交换深度，保留素材原有父级和显示层级；结束时还原外壳并移除旧片。完成、自行卸载、替换、加载失败和 SceneChanged 均进入幂等清理。根上的逐帧观察者兼容丢失 onUnload 与同路径父层重建；会话身份使用普通对象，异步回调显式携带该身份。清理期间继续保护旧 onUnload 裸写，下一根帧释放动画责任。用不复用的外壳实际实例名确认层级归属，重建后不允许旧片调整新壳深度；原壳迟到删除导致中文别名丢失时，从仍存活的独占外壳恢复别名。修理大学章节继续使用自身 book_chapter 暂停责任；未登记且未请求暂停的素材沿用原挂载路径。现有动画 SWF 无需逐一重编，逻辑只发布 asLoader。
+
+互动键跳过只对服务内 `_skipTails` 已审查的 16 种素材开放，实际总帧数必须与登记尾帧相符；素材更新或新增时先核对根时间轴、嵌套脚本及必要中途事件，再调整登记。未知素材、章节卡继续原行为，不推测尾帧。`NativeDialogueService.hasActiveSession()` 在对白及待提交收口期间保留交互归属，不使用诊断快照或界面可见性作判定。对白结束、动画装载或改键后的长按均须先松开，再重新按当前互动键；无对白时显示当前键名与“跳过动画”，跟随改键。跳过执行原尾帧（保留教学提示等），随后进入同一幂等清理流程，只释放动画责任。
+
+跳过提示由生命周期观察者持有独立子层，结束、替换或对白接管时只移除自身提示。互动键 down/repeat 在下发场景互动前查询 `CutsceneService.blocksWorldInteraction()`，受管动画及跳过键尚未松开时不广播，避免同次 E 顺带触发门或拾取。根观察者在尾帧结束后继续追踪该键到松开，兼容这期间改键。`IsolatedInputPolicy` 禁止旧输入驱动时不开启动画跳过采样和提示。
+
+专项回归入口为 `scripts/run-cutscene-tests.ps1`，涵盖暂停交叠、现有素材真实加载和结束脚本、交互键采样边界及跳过后的场景输入消费；暂停/对白归属改动还需运行 `scripts/run-native-dialogue-tests.ps1`。完整关卡中的画面、声音、对白节奏与物理 E 键操作另由人工验收。
+
 ## 13. 装备生命周期系统
 - **帧脚本**：`scripts/逻辑/装备函数/`（每个 `.as` 注册 `_root.装备生命周期函数.XXX初始化/周期`，物品 XML `<lifecycle>` 节点按装备绑定，战斗中驱动动画/特效/子弹/buff）
 - **用途索引 + API 快查 + 新增 7 步流程**：`scripts/逻辑/装备函数/README.md`（就近 hub）

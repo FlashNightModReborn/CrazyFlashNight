@@ -52,7 +52,7 @@ test('所有当前 XFL 物理点都满足冻结合同', () => {
     assert.deepEqual(validateXflCallsite(record, fs.readFileSync(path.join(root, record.sourcePath), 'utf8')), [], record.physicalId);
   }
 });
-test('manifest reason 均由 SaveManager 注册，transition 只允许冻结三条车道', () => {
+test('manifest reason 均由 SaveManager 注册，transition 只允许已登记的原有与书架入口', () => {
   const source = fs.readFileSync(path.join(root, 'scripts/类定义/org/flashNight/neur/Server/SaveManager.as'), 'utf8');
   const registry = source.match(/SAVE_REASON_IDS:Array\s*=\s*\[([\s\S]*?)\]/)[1];
   const reasons = new Set([...registry.matchAll(/"([^"]+)"/g)].map(m => m[1]));
@@ -62,7 +62,12 @@ test('manifest reason 均由 SaveManager 注册，transition 只允许冻结三�
     }
   }
   assert.deepEqual(manifest.callsites.filter(c => c.targetApi === 'flushBeforeTransition' || c.reasonId.includes('stage.return_base'))
-    .map(c => c.callsiteId).sort(), ['A1', 'A6', 'B2']);
+    .map(c => c.callsiteId).sort(), ['A1', 'A6', 'B2', 'U6.1', 'U6.2', 'U6.3']);
+  for (const id of ['U6.1', 'U6.2', 'U6.3']) {
+    const record = manifest.callsites.find(c => c.callsiteId === id);
+    assert.deepEqual(record.reasonId, ['bookshelf.switch']);
+    assert.equal(record.returnConsumed, true, id + ': switch must consume the persistence fence result');
+  }
 });
 test('C6 购物车 partial 保存顺序与两个入口保持', () => {
   const record = manifest.callsites.find(c => c.physicalId === 'C6');

@@ -130,6 +130,7 @@ Agent Runtime 的 wire、受信 runner、credential bootstrap、30 秒预算和 
 |---|---|
 | [CRAZYFLASHER7MercenaryEmpire.csproj](CRAZYFLASHER7MercenaryEmpire.csproj) | Host 编译边界、依赖、嵌入资源和确定性构建设置 |
 | [src/Program.cs](src/Program.cs) | Core 入口、运行模式、依赖装配和启动顺序 |
+| [src/FixedWebViewRuntime.cs](src/FixedWebViewRuntime.cs) | 随包固定 WebView2 引擎的完整性校验、缓存准备和所有生产宿主的显式版本/路径校验；见 [固定引擎与输入失败回收](../docs/fixed-webview2-runtime.md) |
 | [src/Guardian](src/Guardian/) | 窗口、WebView2、Native HUD、Panel、焦点；对白呈现见 [Hud/Dialogue](src/Guardian/Hud/Dialogue/)，图像服务见 [Dialogue](src/Guardian/Dialogue/) |
 | [src/Fonts](src/Fonts/) | XML-hash runtime 投影、face-major 来源解析、已验证字节快照缓存、Native role 创建与 WebView2 exact-set/ETag 资源处理 |
 | [src/Tasks](src/Tasks/) | Flash/Host 任务与领域消息；[NativeDialogueTask](src/Tasks/NativeDialogueTask.cs) 校验对白快照与输入归属；竞技场标定仍按 session ID 反查 canonical roster |
@@ -375,6 +376,8 @@ Bootstrap 建角遮罩按 `openRequestId` 关联，snapshot 与有效首帧（�
 | `surgery` | [医务室整形](../docs/医务室整形-Web面板与外观共享-2026-09-08.md) | `modules/plastic-surgery.js` |
 | `garage` | [车库购车](../agentsDoc/as2-web-panel-migration.md#u13-garage-purchase) | `modules/garage-purchase.js` |
 | `sleep` | [床铺睡眠与拨针闹钟](../docs/U3睡眠面板-Web闹钟迁移-2026-09-19.md)；候选人验通过，发布状态见专项 | `modules/sleep-panel.js` |
+| `bookshelf` | [书架、角色档案与书中历险](../docs/bookshelf-player-context.md)；[系列章节与合集原版接入](../docs/bookshelf-series-integration.md)已正式 promotion 并通过远端部署 Audit，专项验证不代签完整旅程与人验 | `modules/bookshelf-panel.js` |
+| `book-comic` | [修理大学重制版漫画](../docs/bookshelf-series-integration.md#修理大学重制版漫画)；固定比例全屏演出与整页阅读 | `modules/book-comic-panel.js` |
 | `gym` | 业务 Panel（健身训练、进度与完成结算） | `modules/gym/gym-panel.js` |
 | `settings` | 全屏工具 / Launcher bootstrap shell | `modules/settings-panel.js` |
 | `skills` | 工作台 | `modules/skills.js` |
@@ -403,6 +406,7 @@ Bootstrap 建角遮罩按 `openRequestId` 关联，snapshot 与有效首帧（�
 - LoadoutPicker 候选只接受装备槽、药剂槽或无 selector 背包总览三种 target。Character `equipmentEligibility` 在两种 scope 由 Host 复验；Merc `eligibleSlots` 由 AS2 两种 scope 签发。scope 只筛候选，白名单裁决 drop target，写后保留原 scope/anchor；Merc 按新 revision 恰好刷新一次 authority。详见[迁移护栏](../agentsDoc/as2-web-panel-migration.md)。
 - `equipment_tuning` 的 loadout `convert` 只接受 exact 背包 inventory target。已改变的成功 commit 必须包含一份完整背包 snapshot，其他 loadout 写与 convert no-op 必须包含零份；Host 依 operation/no-op 严格校验后，Web 才可在同一写锁下收敛 loadout/背包 authority。配件候选 snapshot 可携完整兼容目录，但 Web fresh open 默认只显示“已拥有”；全目录只能由玩家显式切换。
 - `equipment_tuning` 的已穿戴调制按 after effective data 复核玩家等级；`level_locked` 是 Host 可确定收束的业务拒绝，Web 显示“调制后的装备需要更高角色等级”。背包装备不受该玩家等级门限制。`replace_mod` 的候选可用性和 after `modSlotCapacity` 都来自拆件后的 probe；存档加载不做迁移、卸装或清洗。进阶页仅显示 `available=true` 并在 Web 空态解释缺料/顺序；四入口同排。候选错误留在 Web，flush/finalize 先取消旁路读，保存失败仍阻断。
+- 强化预览的 `insufficient_material` 可携只读 `materialShortage`（强化石的 `required/owned/missing`）；AS2 复用本次成本计算，Host/Web 校验非负整数与差额，仅接纳当前强化预览回执。Web 同时显示所需、持有和缺口，失败报价不签发 token 或恢复旧提交能力。
 - 合法配件变换可使 before/after effective `modSlotCapacity` 不同；Host 仍复核 `0..64` 整数、installed≤capacity、操作差分及 preview/commit/fresh snapshot 深绑定。空背包未建 Flash authority 时，仅 exact panel 在 idle 且无 pending/detaching/write 可本地 no-op detach；其余仍严格走 Flash，断线不可绕过。
 - Panel close/recovery 共用 lifecycle fence，迟到或旧实例不得关闭 replacement。W/B0 将 anchor 分为 valid / explicit-invalid / unavailable：invalid 在 pause/focus/presentation 前拒绝且不 fallback；valid 仅提交代际绑定 snapshot；同代同矩形恢复只按 committed snapshot 无焦点重放一次。当前状态与验收见[止血治理 ADR](../docs/AS2-WebPanel止血治理-窗口生命周期与Reward根事务-ADR-2026-09-01.md)。
 - Workbench 见 [UI System](../agentsDoc/workbench-ui-system.md)。关卡返回与日常交付共用 NativeHud 任务/地点/头像下拉栏；各自确认与执行，领奖不导航。`stage_outcome` v4/action v3；socket-only `task_delivery` v1 与 sync/action v1。候选协议与人验见[关卡结果 ADR §0E](../docs/关卡结果与基地结算-CSharp-Web-ADR-2026-08-27.md#0e-2026-09-11-明确任务选择单次返回与到达确认隔离候选)。

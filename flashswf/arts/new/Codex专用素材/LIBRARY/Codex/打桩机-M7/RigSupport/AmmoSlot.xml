@@ -1,0 +1,31 @@
+<?xml version='1.0' encoding='utf-8'?>
+<DOMSymbolItem xmlns="http://ns.adobe.com/xfl/2008/" name="Codex/打桩机-M7/RigSupport/AmmoSlot" itemID="1bfce67c-e1726d81">
+  <timeline>
+    <DOMTimeline name="AmmoSlot">
+      <layers>
+        <DOMLayer name="spent alternative" color="#6D9981" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/打桩机-M7/Parts/ammo_spent" name="spent">
+                  <color>
+                    <Color alphaMultiplier="0" />
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="live alternative" color="#6D9981">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/打桩机-M7/Parts/ammo_live" name="live" />
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

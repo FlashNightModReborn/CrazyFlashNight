@@ -1,0 +1,36 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="军阀派杂兵/各种武器" itemID="693fca67-0000df44" symbolType="graphic" lastModified="1765627192">
+  <timeline>
+    <DOMTimeline name="各种武器">
+      <layers>
+        <DOMLayer name="图层_1" color="#00FFFF" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="军阀派杂兵/sprite/Symbol 8" name="枪" selected="true" centerPoint3DX="329.1" centerPoint3DY="395.85">
+                  <matrix>
+                    <Matrix a="0.756576538085938" b="0.653564453125" c="-0.653564453125" d="0.756576538085938" tx="257.85" ty="263.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-0.1" y="0.15"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="1" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="军阀派杂兵/主角肢体素材/小刀" centerPoint3DX="202.8" centerPoint3DY="261.25">
+                  <matrix>
+                    <Matrix a="0.2557373046875" b="-0.993865966796875" c="0.993865966796875" d="0.2557373046875" tx="269.2" ty="276.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-0.05" y="0.2"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

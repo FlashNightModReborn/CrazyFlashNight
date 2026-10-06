@@ -1,0 +1,59 @@
+#panel-container[data-panel="book-comic"] #panel-content{inset:0}
+#panel-container[data-panel="book-comic"] #panel-backdrop{background:var(--book-comic-bg)}
+.book-comic-panel{position:absolute;inset:0;overflow:hidden;background:var(--book-comic-bg);color:var(--book-comic-text);font-family:"Microsoft YaHei",sans-serif}
+.book-comic-shell{width:1024px;height:576px;overflow:hidden;background:var(--book-comic-bg);box-sizing:border-box}
+.book-comic-shell *{box-sizing:border-box}
+.book-comic-shell canvas{width:1024px;height:384px;display:block}
+.book-comic-tag{position:absolute;top:16px;left:26px;background:var(--book-comic-tag-bg);padding:6px 12px;color:var(--book-comic-tag-text);font-size:12px;letter-spacing:2px;border-left:2px solid var(--book-comic-accent)}
+.book-comic-subtitle{position:absolute;left:0;right:0;top:384px;height:128px;padding:13px 38px;background:var(--book-comic-subtitle-bg);border-top:1px solid var(--book-comic-rule);overflow:auto}
+.book-comic-subtitle b{display:block;color:var(--book-comic-speaker);font-size:13px;letter-spacing:2px;margin-bottom:6px}
+.book-comic-subtitle p{margin:0;font-size:21px;line-height:1.5;white-space:pre-line}
+.book-comic-shell footer{position:absolute;bottom:0;left:0;right:0;height:64px;padding:10px 26px;background:var(--book-comic-footer-bg);display:flex;justify-content:space-between;align-items:center;gap:12px;border-top:1px solid var(--book-comic-footer-rule)}
+.book-comic-shell footer span{max-width:340px;line-height:1.4;font-size:13px;color:var(--book-comic-muted)}
+.book-comic-shell footer>div:last-child{display:flex;gap:8px;flex-shrink:0}
+.book-comic-shell button{font:15px "Microsoft YaHei",sans-serif;cursor:pointer;background:var(--book-comic-button-bg);color:var(--book-comic-button-text);border:1px solid var(--book-comic-button-border);padding:9px 16px;border-radius:3px;min-height:38px}
+.book-comic-shell button:hover{background:var(--book-comic-button-hover)}
+.book-comic-shell button.primary{background:var(--book-comic-primary);border-color:var(--book-comic-primary);color:var(--book-comic-primary-ink)}
+.book-comic-shell button:disabled{opacity:.45;cursor:default}
+.book-comic-shell button:focus-visible{outline:2px solid var(--book-comic-focus);outline-offset:2px}
+.book-comic-progress{position:absolute;top:-2px;left:0;right:0;height:2px;background:var(--book-comic-progress-track)}
+.book-comic-progress i{display:block;height:100%;background:var(--book-comic-progress-fill);width:0}
+.book-comic-reading{position:absolute;inset:0 0 64px;display:grid;grid-template-columns:580px 444px;background:var(--book-comic-bg)}
+.book-comic-reading[hidden],.book-comic-subtitle[hidden],.book-comic-tag[hidden]{display:none}
+.book-comic-paper{overflow:auto;cursor:grab;border-right:1px solid var(--book-comic-paper-divider);padding:16px}
+.book-comic-paper img{display:block;width:auto;height:480px;max-width:none;margin:0 auto}
+.book-comic-transcript{overflow:auto;padding:18px;display:grid;gap:12px;align-content:start}
+.book-comic-transcript article{padding:14px 18px;background:var(--book-comic-paper);color:var(--book-comic-ink);border-radius:2px}
+.book-comic-transcript h3{margin:0 0 9px;font-size:14px;border-bottom:1px solid var(--book-comic-paper-rule);padding-bottom:7px}
+.book-comic-transcript p{font-size:17px;line-height:1.55;margin:9px 0;white-space:pre-line}
+.book-comic-transcript b{display:block;color:var(--book-comic-paper-speaker);font-size:12px}
+
+/* Keep scroll affordances visible without the system's light scrollbar chrome. */
+.book-comic-paper,
+.book-comic-transcript,
+.book-comic-subtitle {
+  scrollbar-color: var(--book-comic-scroll-thumb) var(--book-comic-subtitle-bg);
+  scrollbar-width: thin;
+  overscroll-behavior: contain;
+}
+.book-comic-paper::-webkit-scrollbar,
+.book-comic-transcript::-webkit-scrollbar,
+.book-comic-subtitle::-webkit-scrollbar { width: 10px; height: 10px; }
+.book-comic-paper::-webkit-scrollbar-track,
+.book-comic-transcript::-webkit-scrollbar-track,
+.book-comic-subtitle::-webkit-scrollbar-track,
+.book-comic-paper::-webkit-scrollbar-corner,
+.book-comic-transcript::-webkit-scrollbar-corner,
+.book-comic-subtitle::-webkit-scrollbar-corner { background: var(--book-comic-subtitle-bg); }
+.book-comic-paper::-webkit-scrollbar-thumb,
+.book-comic-transcript::-webkit-scrollbar-thumb,
+.book-comic-subtitle::-webkit-scrollbar-thumb {
+  background: var(--book-comic-scroll-thumb);
+  border: 2px solid var(--book-comic-subtitle-bg);
+  border-radius: 5px;
+}
+.book-comic-paper::-webkit-scrollbar-thumb:hover,
+.book-comic-transcript::-webkit-scrollbar-thumb:hover,
+.book-comic-subtitle::-webkit-scrollbar-thumb:hover { background: var(--book-comic-scroll-hover); }
+.book-comic-paper:focus-visible,
+.book-comic-transcript:focus-visible { outline: 2px solid var(--book-comic-focus); outline-offset: -3px; }

@@ -1381,9 +1381,13 @@ class org.flashNight.arki.item.MaterialArchiveProjector {
         var bicycle:Boolean = infrastructureUnlocked(infra, "自行车");
         var motorcycle:Boolean = infrastructureUnlocked(infra, "摩托车");
         var offroad:Boolean = infrastructureUnlocked(infra, "越野车");
+        // 书中角色在当前战场兑换局内配给，不经过世界地图出行，不伪造载具存档。
+        var bookRun:Object = _root._saveExt == null ? null : _root._saveExt.bookRun;
+        var bookCrafting:Boolean = bookRun != null && bookRun.outcome == "active"
+            && org.flashNight.arki.scene.BookRunService.isBookStageContext();
         return {
             shop:bicycle || motorcycle || offroad,
-            crafting:motorcycle || offroad
+            crafting:motorcycle || offroad || bookCrafting
         };
     }
 

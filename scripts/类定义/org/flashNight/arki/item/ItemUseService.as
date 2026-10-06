@@ -5,6 +5,8 @@ import org.flashNight.arki.item.RewardInboxService;
 import org.flashNight.arki.item.RewardStashService;
 import org.flashNight.arki.item.RewardStashStore;
 import org.flashNight.arki.item.BaseItem;
+import org.flashNight.arki.item.ChoiceRewardService;
+import org.flashNight.arki.item.ChoiceRewardStore;
 import org.flashNight.gesh.object.ObjectUtil;
 
 /** 背包物品的封闭 open/consume/query 权威服务。 */
@@ -56,6 +58,8 @@ class org.flashNight.arki.item.ItemUseService {
         _root.gameCommands["itemUseStashOpenMany"] = function(params) { org.flashNight.arki.item.ItemUseService.handle("stashOpenMany", params); };
         _root.gameCommands["itemUseLegacyInboxOpen"] = function(params) { org.flashNight.arki.item.ItemUseService.handle("legacyInboxOpen", params); };
         _root.gameCommands["itemUseStashResume"] = function(params) { org.flashNight.arki.item.ItemUseService.handle("stashResume", params); };
+        _root.gameCommands["itemUseStashChoices"] = function(params) { org.flashNight.arki.item.ItemUseService.handle("stashChoices", params); };
+        _root.gameCommands["itemUseStashChoose"] = function(params) { org.flashNight.arki.item.ItemUseService.handle("stashChoose", params); };
         _inited = true;
     }
 
@@ -127,7 +131,7 @@ class org.flashNight.arki.item.ItemUseService {
         response.v = 2;
         if (!validateStashEnvelope(commandName, params)) return response;
         if (RewardStashService.pendingOperationId() != "" && commandName != "stashPage" && commandName != "stashTooltip"
-                && commandName != "stashQuery" && commandName != "stashResume") {
+                && commandName != "stashQuery" && commandName != "stashResume" && commandName != "stashChoices") {
             response.error = "commit_pending"; return response;
         }
         var context:Object = _contextValidator == null ? null
@@ -137,6 +141,8 @@ class org.flashNight.arki.item.ItemUseService {
         }
         var result:Object;
         if (commandName == "stashPage") result = RewardStashService.page(Number(params.offset), params.filterSpec);
+        else if (commandName == "stashChoices") result = ChoiceRewardService.snapshot();
+        else if (commandName == "stashChoose") result = ChoiceRewardService.choose(params);
         else if (commandName == "stashTooltip") result = RewardStashService.tooltip(params);
         else if (commandName == "stashTake") result = RewardStashService.take(params);
         else if (commandName == "stashQuery") result = RewardStashService.query(params);
@@ -156,6 +162,7 @@ class org.flashNight.arki.item.ItemUseService {
         var action:String = "itemUse" + commandName.charAt(0).toUpperCase() + commandName.substr(1);
         if (params.action !== action) return false;
         var keys:Array = ["task", "action", "callId", "v", "panelInstanceId", "sessionGeneration"];
+        if (commandName == "stashChoices") return onlyKeys(params, keys);
         if (commandName == "stashPage") {
             keys.push("offset");
             if (params.filterSpec !== undefined) keys.push("filterSpec");
@@ -176,6 +183,10 @@ class org.flashNight.arki.item.ItemUseService {
         if (typeof params.storeId != "string" || params.storeId.length > 128
                 || !RewardStashStore.whole(params.expectedRevision)) return false;
         keys.push("storeId"); keys.push("expectedRevision");
+        if (commandName == "stashChoose") {
+            keys.push("offerId"); keys.push("optionId");
+            return onlyKeys(params, keys) && ChoiceRewardStore.text(params.offerId, 160) && ChoiceRewardStore.text(params.optionId, 64);
+        }
         if (commandName == "stashQuery" || commandName == "stashMigrate") return onlyKeys(params, keys);
         if (commandName == "stashTake") {
             keys.push("entries");
@@ -233,11 +244,21 @@ class org.flashNight.arki.item.ItemUseService {
         var recipe:Object = normalizeRecipe(data.data == null ? null : data.data.rewardPack);
         if (!recipe.success) return {success:false, error:"invalid_reward_pack"};
         if (Number(source.item.value) < count) return {success:false, error:"insufficient_quantity"};
+        if (recipe.mode == "playerChoice") {
+            if (count != 1 || recipe.pool.itemName !== params.source.itemName) return {success:false,error:"unsupported_item"};
+            return ChoiceRewardService.open(params, source, recipe.pool, fingerprint);
+        }
         var context:Object = {source:"item_use", reason:"reward_pack_open", operationId:params.operationId, mergeScope:"operation"};
         if (!RewardStashService.begin(String(params.operationId), context, null, null)) return {success:false, error:RewardStashService.lastError};
         _busy = true;
         var packages:Array = [];
         try {
+            // 先在同一保存候选中消耗礼包，让最后一包腾出的格子也能接收奖励。
+            var remaining:Number = Number(source.item.value) - count;
+            source.inventory.addValue(String(source.slot), -count);
+            var after:Object = source.inventory.getItem(source.slot);
+            if ((after == null ? 0 : Number(after.value)) != remaining) throw new Error("source_changed");
+            PlayerAssetTransaction.recordItems("loss", [{name:params.source.itemName, value:count}], context);
             for (var p:Number = 0; p < count; p++) {
                 var rolled:Object = rollRecipe(recipe);
                 if (!rolled.success) throw new Error("invalid_reward_pack");
@@ -249,14 +270,9 @@ class org.flashNight.arki.item.ItemUseService {
                     items.push(item.toObject());
                 }
                 if (_testFaultCut == "append" && p == _testFaultOrdinal) throw new Error("injected_stash_append_fault");
-                if (!RewardStashService.admit(items, false, true, context)) throw new Error("invalid_reward_pack");
+                if (!RewardStashService.admit(items, true, true, context)) throw new Error("invalid_reward_pack");
                 packages.push({ordinal:p, batchId:String(params.operationId) + ".p" + p, entryCount:items.length});
             }
-            var remaining:Number = Number(source.item.value) - count;
-            source.inventory.addValue(String(source.slot), -count);
-            var after:Object = source.inventory.getItem(source.slot);
-            if ((after == null ? 0 : Number(after.value)) != remaining) throw new Error("source_changed");
-            PlayerAssetTransaction.recordItems("loss", [{name:params.source.itemName, value:count}], context);
             var result:Object = {success:true, kind:count == 1 ? "open" : "openMany",
                 consumed:count, requestedCount:count, remaining:remaining, packages:packages,
                 rewardReady:RewardStashService.peek().entries.length > 0};
@@ -681,9 +697,10 @@ class org.flashNight.arki.item.ItemUseService {
             if (!recipe.success) return none;
             command = "open";
             label = "打开";
+            if (recipe.mode == "playerChoice") { command = "openChoice"; label = "自选配给"; }
             var summary:Object = RewardInboxService.inboxSummary();
             if (summary == null) blocked = "service_not_ready";
-            else if (Number(summary.remainingCount) + Number(recipe.maxOccurrences)
+            else if (recipe.mode != "playerChoice" && Number(summary.remainingCount) + Number(recipe.maxOccurrences)
                     > RewardInboxService.MAX_OCCURRENCES) blocked = "reward_inbox_full";
         } else if (itemData.use === "药剂") {
             command = "consume";
@@ -710,6 +727,11 @@ class org.flashNight.arki.item.ItemUseService {
     public static function normalizeRecipe(raw:Object):Object {
         if (raw == null || typeof raw != "object") return {success:false};
         var mode:String = String(raw.mode || "");
+        if (mode == "playerChoice") {
+            if (!onlyKeys(raw, ["mode", "poolId"]) || typeof raw.poolId != "string") return {success:false};
+            var pool:Object = ChoiceRewardService.pool(raw.poolId, "");
+            return pool == null ? {success:false} : {success:true, mode:mode, pool:pool, maxOccurrences:0};
+        }
         if (mode != "fixed" && mode != "independent" && mode != "chooseOne") {
             return {success:false};
         }
@@ -944,7 +966,7 @@ class org.flashNight.arki.item.ItemUseService {
             callId:params == null ? undefined : params.callId,
             panelInstanceId:params == null ? undefined : params.panelInstanceId,
             sessionGeneration:params == null ? 0 : Number(params.sessionGeneration)};
-        if (commandName != "inboxSnapshot" && commandName != "cooldownSnapshot" && commandName != "legacyInboxOpen" && commandName != "stashPage" && commandName != "stashTooltip") {
+        if (commandName != "inboxSnapshot" && commandName != "cooldownSnapshot" && commandName != "legacyInboxOpen" && commandName != "stashPage" && commandName != "stashTooltip" && commandName != "stashChoices") {
             response.operationId = params == null ? undefined : params.operationId;
         }
         if (!success) response.error = errorCode;

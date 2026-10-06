@@ -1,0 +1,24 @@
+<!doctype html>
+<html lang="zh-CN"><head><meta charset="utf-8"><base href="/launcher/web/">
+<title>书架候选 · 界面验证</title><link rel="stylesheet" href="css/overlay.css"><link rel="stylesheet" href="css/panels.css"><link rel="stylesheet" href="css/bookshelf.css">
+<style>html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#0c110e}</style></head><body>
+<div id="panel-container" style="display:none"><div id="panel-backdrop"></div><div id="panel-content"></div></div>
+<details id="request-trace" hidden style="position:fixed;bottom:0;left:0;z-index:99999;background:#111;color:#fff;font:12px monospace;padding:4px"><summary>操作记录（仅界面验证）</summary><pre id="request-log"></pre></details>
+<script>
+var handlers={},requests=[];
+var mode = new URLSearchParams(location.search).get('mode') || 'normal';
+document.getElementById('request-trace').hidden = !new URLSearchParams(location.search).has('trace');
+window.Bridge={on:function(t,f){(handlers[t]||(handlers[t]=[])).push(f)},off:function(t,f){handlers[t]=(handlers[t]||[]).filter(function(x){return x!==f})},
+send:function(m){requests.push(m);document.getElementById('request-log').textContent=requests.map(function(r){return r.cmd+' '+(r.payload&&r.payload.kind||'')+' '+(r.payload&&r.payload.target||'')}).join('\n');if(m.cmd==='close')return true;
+if(m.domain==='bookshelf-original'){setTimeout(function(){(handlers.panel_resp||[]).forEach(function(f){f({type:'panel_resp',panel:'bookshelf',domain:'bookshelf-original',cmd:m.cmd,callId:m.callId,panelInstanceId:m.panelInstanceId,success:m.cmd==='release',error:m.cmd==='prepare'?'not_owned':undefined})})},8);return true;}
+setTimeout(function(){(handlers.panel_resp||[]).forEach(function(f){f({type:'panel_resp',panel:'bookshelf',domain:'bookshelf',cmd:m.cmd,
+callId:m.callId,panelInstanceId:m.panelInstanceId,v:1,token:m.payload.token,phase:mode==='unavailable'?undefined:m.cmd==='commit'?'switching':'editing',success:mode!=='unavailable',error:mode==='unavailable'?'disconnected':undefined,
+activeSlot:mode==='run'?'bookrun_preview':'preview_a',role:mode==='run'?'Andy Law':'归来的佣兵',inRun:mode==='run',originSlot:'preview_a',canSwitch:true,unlocked:mode!=='locked',pendingRun:mode==='pending'?'bookrun_preview':'',lastReward:45,
+slots:[{slot:'preview_a',name:'归来的佣兵'},{slot:'preview_b',name:'另一位幸存者'}]})})},8);return true}};
+window.Toast={add:function(){}};
+</script>
+<script src="modules/asset-timeline.js"></script><script src="modules/icons.js"></script>
+<script src="modules/lazy-loader.js"></script><script src="modules/panels.js"></script><script src="modules/panel-scale.js"></script>
+<script src="modules/panels-lazy-registry.js"></script>
+<script>Panels.init();Panels.open('bookshelf',{panelInstanceId:'bookshelf.preview.1',token:'bookshelf.preview.1',source:'world_bookshelf'});</script>
+</body></html>

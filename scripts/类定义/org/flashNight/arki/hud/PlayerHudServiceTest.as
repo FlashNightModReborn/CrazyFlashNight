@@ -368,6 +368,20 @@ class org.flashNight.arki.hud.PlayerHudServiceTest {
         check(retained === combat && retained.ammo[2] == "3", "unknown mode retains the same actor's whole prior view");
         unit.攻击模式 = "长枪"; unit.长枪 = {};
         check(PlayerHudService.testOnlyCombat(unit).ammo[0] == "", "mode switch does not borrow a previous weapon's ammo");
+        unit.长枪副武器配置 = {}; unit.长枪副武器状态 = {capacity:18};
+        var control:Object = {isSubweaponControl:true};
+        unit.主动战技.长枪 = control;
+        combat = PlayerHudService.testOnlyCombat(unit);
+        check(combat.mode == "长枪副武器" && !combat.weapon.visible,"idle composite mode displays subweapon ammo");
+        PlayerHudService.testOnlyAmmo(unit,2,6);
+        unit.主动战技.长枪 = {名字:"打桩过载",消耗mp:120,冷却时间:10000};
+        combat = PlayerHudService.testOnlyCombat(unit);
+        check(combat.mode == "长枪" && combat.weapon.visible && combat.weapon.name == "打桩过载",
+            "charged composite mode exposes the ordinary weapon skill on the existing HUD layout");
+        check(combat.ammo[2] == "6","changing special-slot role preserves the same fuel owner");
+        unit.主动战技.长枪 = control;
+        check(PlayerHudService.testOnlyCombat(unit).mode == "长枪副武器","spent or vented charge returns to subweapon layout");
+        unit.长枪副武器配置 = null; unit.长枪副武器状态 = null; unit.主动战技.长枪 = null;
         PlayerHudService.testOnlyAmmo(unit, 0, 44);
         unit.长枪 = {};
         check(PlayerHudService.testOnlyCombat(unit).ammo[0] == "", "same-mode primary replacement clears old ammo");

@@ -143,7 +143,7 @@ Audio Platform v2 仍复用现役 `cf7-runtime-build-request.v2`，不得注入 
 
 worker 具有单机 mutex、request lease、heartbeat/TTL 与失败记录；抢到 lease 后从 Git bundle 隔离 clone、复核 frozen tree/identity、调用纯 producer、签名并发布结果。构建后 worker 不再对工作树重算四域 identity：纯 producer 已在自身收尾重查输入漂移并把四域 identity 写进 candidate 根部的 `runtime-build-metadata.v2.json`，worker 读取该 metadata 并逐字段与 immutable request 比对（不等即 fail-closed，绝不盲信），签名时经 `New-Cf7RuntimeBuildAttestationV2 -ExpectedIdentity` 传入 request 锚定值——该参数会校验字段形状并重推 `buildIdentityHash` 一致性，只在一致时跳过进程内重算；自定义 `-BuildCommand` 不产出 v2 metadata 时仍回退完整重算。失败时会在删除短 checkout 前把非 reparse、单文件 ≤1 MiB、总计 ≤2 MiB 的 bootstrap diagnostics 写到该 request 的 `_failures` 记录；若 queue I/O 已不可用、失败记录本身无法落盘，worker 只追加固定告警并保留原始构建错误，不能让二次诊断写失败覆盖首因或转成成功。CAS 地址是 `buildIdentityHash/payloadClosureHash`；发布前后都严格复核 candidate，key 对同一 build identity 出现分叉 closure 会作为 equivocation 拒绝。状态退出码固定为 `0=active 全 ready`、`10=pending/empty`、`20=failed/invalid`、`30=只有 superseded`。status 只统计 queue 内本地 X509 result；采用 local + GitHub 时显示 `1/2` 是正常的，最终 combined quorum 由 promotion 把该本地 proof 与外部 verified GitHub proof 一起计算。
 
-推荐把便宜、可离线完成的失败门前移：先取得本地 X509 candidate/proof，再对**该本地 candidate** 跑一次 production policy preflight；这份 preflight receipt 只用于提前暴露 source、CSS、inventory 等政策问题，因为 receipt 绑定具体 `candidateRoot`，不能拿去批准稍后选中的 cloud candidate。preflight 通过后再消耗 GitHub hosted build；cloud proof 到手并选定最终 cloud candidate 后，仍须针对该 cloud candidate 重新签正式 production policy receipt，promotion 只接受后者。这样不削弱双故障域和最终 receipt 约束，同时避免本地即可发现的政策失败拖到云构建之后。
+推荐把便宜、可离线完成的失败门前移：先取得本地 X509 candidate/proof，再对**该本地 candidate** 跑一次完整 production policy preflight，提前暴露 source、CSS、inventory 等政策问题。通过后再消耗 GitHub hosted build。默认采用下文的 attestation-only 交接，最终仍选择同一个本地 CAS candidate；只要 frozen tree、policy、candidate 路径和字节均未变化，这份 production receipt 即可用于 promotion，云端 proof 由 promotion 对候选逐文件重验。若显式下载并改选 cloud candidate，必须针对新 `candidateRoot` 重新运行完整 production policy，不能沿用绑定本地路径的 receipt。双故障域和最终 receipt 约束保持不变。
 
 ### GitHub hosted 独立故障域
 
@@ -1069,3 +1069,65 @@ strict production policy 42/42，receipt SHA-256 `0C612DBA8C5CB91E481E2386A5E124
 - 唯一 writer 已原子部署，36 文件闭包、双 signer / 双 faultDomain 和根 bootstrap `--verify-only` 通过；旧包保留于 `tmp/runtime-promotions/20261002T081630720Z-22899cdb801f45769b8a85266095983b/previous`。部署提交 `c30627355851303200a39d504ba4705042b39581` 已普通快进推送；[远端 Audit 36983349784](https://github.com/FlashNightModReborn/CrazyFlashNight/actions/runs/36983349784) success，独立重放 `state=promoted / deploymentChanged=true` 与 `signers=2 / faultDomains=2`。
 - 无候选参数的正式入口绑定同一 identity/closure，实际 Core PID 29332，观测启动画面和 Flash 预热握手；未进入存档，正常窗口关闭令 Flash exit 0、Core 退出，无残留。`saves/` 除例行更新的启动版本标记外，34 个文件长度及 SHA-256 均未变，自动修复 `applied=0 / drops=0`。未对外部 SOL 建立哈希基线，不扩大此存档检查范围。
 - 状态为 `promoted`。这次正式入口检查只证明启动/退出，未重跑战斗结算；完整保存重启、全部窗口组合及自然加载失败继续按[专项验收](U12过场Web迁移与人力验收-2026-10-01.md)独立记录。最新原生合成夹具的前台准入失败和历史失败回执均保留，不借旧候选结果代签。机器摘要见[本轮发布回执](evidence/u12-settlement-release-2026-10-02.json)。
+
+### 2026-10-03 打桩机双形态与进阶外观发布
+
+维护者明确授权“可行，把其他潜在需要处理的问题都收尾，然后走发布列车”。本批发布原版空刀槽普通狂野锤、重锤进阶及余弹三档过载、共享燃料联动、系列普通主仓换弹延迟 +200%，并让角色构筑的当前装备和候选预览消费实际进阶外观。真实刀槽保护、原物品身份及翻滚补弹保留；重锤与专属改装材料仍仅供修改器取得，正常获取暂缓。本次为 2.718 开发增量，不新增稳定整包。玩法与资源真源见[打桩机模型](../tools/cf7-balance-tool/models/pilebunker/README.md)。
+
+- 冻结源码 `2856f94bdbe5ce1df92196d067fee716ab70b4bc`，不可变标签 `refs/tags/runtime-build-v2/20261003-pilebunker-v2`，release tree `311fcbe12aeda0494844a555a50b4ffd724164a5`；request `5D0D7B27EDC91E78E68925BD50C28D0D18C7F036F5BC8D190B1DB6B4C5D0C0CB`。
+- build identity `46B9191F1A861752AE0C3580E6C6E6CB2A9B695B7D209F0FB0B000557E03A0B9`，36 文件 payload closure `3586DCA088E4FBF4E8631861DDA111C101CB338976993098023590FE82ED34CA`；Core DLL SHA-256 `EA221728F6A021B69A186FFEAF299C8026D7B2D781C8FB7E2BEAA32D802286A6`。
+- 本地 X509 `builder-local-c / physical-host-c` 与 [GitHub hosted OIDC 构建 37083440255](https://github.com/FlashNightModReborn/CrazyFlashNight/actions/runs/37083440255) 的 identity/closure 一致。v2 仅调整 Web 模块归属和政策输入，producer 三域未变，按规范复用本地 signed CAS；云端从 v2 标签重新独立生产。完整 production policy **47/47**，receipt SHA-256 `38AED634867C3078C599BC18F92298554E2F2D0C9AC750DE8002418994AFF245`；最终仍选择该本地 CAS，云端 attestation-only 证明已在 promotion 中对真实候选逐文件重放。
+- 唯一 writer 于 `2026-10-03T00:57:21.7899472Z` 原子部署，36 文件、双 signer / 双 faultDomain 和根 bootstrap `--verify-only` 通过。旧包保留于 `tmp/runtime-promotions/20261003T005652711Z-1aaf8cf3b6cb43849f58005746ab6d53/previous`。部署提交 `0b20004010802dfc0cb01ce254848390fed399ee` 已快进推送；[Audit 37084969440](https://github.com/FlashNightModReborn/CrazyFlashNight/actions/runs/37084969440) success，独立重放 `state=promoted / deploymentChanged=true` 与 `signers=2 / faultDomains=2`。
+- 真实 CS6 夹具 **1085/1085**（原版 53、M7 392、手动输入 640），asLoader 新鲜 Compiler **0/0**，`1,447,783 bytes` / SHA-256 `E63A889BB9C1ECB02D6338DAD9CE8ACB1CE30D905F6BC4DBA6C770D1BAFD55D9`。Web 外观 **2298**、会话 **39**、投影 **11** 项通过；生产控制器配 fake Host 的真实浏览器三尺寸 **1149/1149**，另含显示/键盘 **30/30**。这些夹具不代签真实战斗手感。
+- v1 的 **45/47** 失败票保留，标签未移动、request 已 superseded：新增外观选择使 `character-build.js` 超过既有 640 行上限；归回现有纸娃娃模块后控制器为 637 行、预览模块为 78 行，两个阈值保持不变，再以新 source/tag/request/receipt 发布。准备阶段还补齐新材料的存档修复字典，并固定三个源/派生 JSON 的 LF，避免跨机检出破坏原始字节摘要。
+- 普通根启动器入口已观测实际 Core PID 25840、正式路径及 EXE SHA-256 与已推广包一致。前门回到 `Idle` 后，通过 computer-use 点击窗口“关闭”，日志为 `UserClosing / no_binding`，实际 Core exit **0**，无残留游戏进程；未点击确认进入角色。启动前已备份并逐字节比较 **8 份 shadow + 8 份本安装 SOL**，三轮检查均未变，例行启动版本标记不计为玩家存档。
+
+自动退出协议另保留两项未通过：Flash 起画与 panel swap 后，trusted runner 因 `trusted_runner_shutdown_capture_failed` 回收自有进程；早期启动补测则已写出 shutdown receipt，但随后出现 `flash_exited_pre_reveal` 与 exit guard，runner 报 `trusted_runner_protocol_shutdown_exit_code_invalid`。两者均未生成严格成功完成证据，根因尚未完整定位；普通窗口 exit 0 不覆盖这两项资格，也没有放宽捕获、lease 或退出策略。完整限定摘要见[发布回执](evidence/pilebunker-runtime-release-2026-10-03.json)，本机原始回执与分段日志保留于 `tmp/pilebunker-m7/release-20261003-v2/`。
+
+本批状态为 `promoted` 与普通前门启动/关闭验证通过；`businessJourneyExecuted=false`、`agentProtocolShutdownVerified=false`。新锤击、延迟换弹、全部进阶配装及保存重启的正式入口业务尚未重跑，不据供应链或窗口关闭结果称其 `standard_entry_verified`。
+
+
+### 2026-10-04 U6 书架、角色切换与修理大学发布
+
+维护者完成试玩并反馈“整体体验感觉好了很多”，明确要求走发布列车，后续交测试群继续反馈。本批为 2.718 开发增量，纳入旧书阅读迁移、常驻角色切换、七图《修理大学》、随机自选配给与复活币、原角色返回及 SP 回流、体育老师有限增援；同步保留上游打桩机与场景更新。
+
+- 冻结源码 `a46770f504d4af56dd6c7df00c598d058afb28f3`，不可变标签 `refs/tags/runtime-build-v2/20261003-bookshelf-campus-v2`。本机 `builder-local-b / physical-host-b` 与 [GitHub hosted OIDC 构建 37137380753](https://github.com/FlashNightModReborn/CrazyFlashNight/actions/runs/37137380753) 的 build identity / 36 文件 payload closure 一致；production policy **47/47**。完整身份以 manifest、consensus 及[本轮回执](evidence/bookshelf-runtime-release-2026-10-04.json)为准。
+- 唯一 writer 已原子推广并通过全安装 bootstrap 校验，旧包保留在回执记录的 rollback 目录。v1 **46/47** 的失败票保留、request 已 superseded、标签未移动，且未消耗 cloud build：新增书中商店缺少头像闭包。v2 以两个 exact shopId 显式复用原盔甲君图像，重新烘焙及 `--check` 后，原有 36 张图片逐字节不变；本机已签名 producer 三域未变，复用同一 CAS。
+- 合并后真实 CS6 专项 **1143/1143**（书架 134、战利品 968、自选奖励 41）；asLoader Compiler **0/0**，16 项回读通过，单一类归属与函数尺寸门通过。Host 完整重跑 **6583 通过、5 跳过**；首轮原生呈现超时保留，独立及全套重跑均通过，未把并行 CS6 编译猜成已证实根因。浏览器夹具使用 fake Host，不能代签游戏通关。
+- 无候选参数的正式入口绑定本次 identity/closure，观测 `Idle` 后点击原生窗口关闭，日志为 `UserClosing / no_binding`，窗口与 Core 进程均已退出、无残留游戏进程。等待期间未进入角色，预热握手按 deadline 重置到 Idle，预热 Flash exit 0。附加的 PowerShell 观察器未取得 Core 退出码，其失败诊断保留，**不记为 Core exit 0 或 Agent 退出协议通过**。
+- 启动前已备份并核对 75 个 shadow 相关文件和 50 个本安装 SOL，启动关闭后长度与 SHA-256 均未变；仅例行启动版本标记不纳入玩家文件比较。状态为 `promoted`，正式入口本轮只覆盖启动/关闭；完整角色切换、死亡返回、奖励回流及不同流派的正式入口旅程继续群测。
+
+远端事后审计以部署提交关联的 **Runtime native audit** GitHub Check 为准，不从本地 promotion 推断其结果。功能与调参入口继续归[书架与角色档案合同](bookshelf-player-context.md)，本机原始日志保留于 `tmp/book-release-20261003/`。
+
+### 2026-10-04 书架紧凑阅读、原版双入口与大学怪物发布
+
+维护者明确授权当前部分由 sol 代理走发布列车。本批包含紧凑全屏阅读、1227 页漫画与 28 章小说、隔离本地原版双入口、配给图标、已结束临时角色清理、关卡人工源迁移、数据化过场及大学怪物完整 XFL 源与 CS6 产物。下一轮技能卡、奖励与经济设计未纳入。
+
+- 最终源码 `7b2a4bf3eee379341c58cc8e604f8694cbaa28ab`，不可变标签 `refs/tags/runtime-build-v2/20261004-bookshelf-reading-original-v3`；request `F4C8A7171017BEEA165854EC8A6C230BD7DC5861262CC1C81C7679CC8494C6F7`。
+- 本机 `builder-local-b / physical-host-b` 与 [GitHub hosted 独立构建 37200863389](https://github.com/FlashNightModReborn/CrazyFlashNight/actions/runs/37200863389) 的 identity/36 文件 closure 一致；production policy **47/47**，strict v2 双 signer/双 faultDomain、唯一 writer 推广与完整安装校验通过。详见[发布回执](evidence/bookshelf-reading-original-release-2026-10-04.json)。
+- v1 Git 媒体 blob 文本归一化问题由精确二进制属性与限定 renormalize 修正，原标签保留且未发布 request；v2 material catalog 来源摘要失败票 **46/47** 保留，生成器仅更新 sidecar 来源摘要后以新 v3 标签/request 发布。最终 Git blob 与阅读清单 **896 文件 / 29,932,972 bytes**、八份原始源逐字节一致。
+- Host 完整 canonical runner **6598 passed / 5 skipped / 0 failed**；历史原生 overlay 环境失败保留，全量复跑恢复，不猜测已证实根因。
+- 无候选参数的正式根入口绑定新 Core DLL，实际 PID 22968，前门 Idle 后原生关闭，Core exit **0**、无残留。**75 shadow + 46 本安装 SOL** 的 121 个保护文件字节未变，例行版本标记排除。首次观察器 basename 错误保留，附着真实进程后取得退出码，未重启补造证据。
+- 状态为 `promoted`，启动/身份/关闭通过；`businessJourneyExecuted=false / agentProtocolShutdownVerified=false`。原版当前集成完整输入/声音、临时档清理保存重启、大学怪物完整实机战斗及业务全旅程仍待专项体验；七张标题卡未填原作对白。部署提交 `2a45212786f10a3090c832291911db56b1ad9d8e` 已普通快进推送；[远端 Runtime native audit 37201992474](https://github.com/FlashNightModReborn/CrazyFlashNight/actions/runs/37201992474) success，独立重放 `state=promoted / deploymentChanged=true`、双 signer / 双 faultDomain 与 36 文件闭包。
+
+### 2026-10-06 固定浏览器与输入焦点恢复发布
+
+维护者明确授权无人值守开发、验收与发布，并允许协调另一资产会话的机器资源。本批固定私有 WebView2 154.0.4258.53；将世界鼠标钩子安装与游标更新固定到窗口消息线程，补上空闲游戏的前台激活恢复，并在 Web 初始化失败、文档就绪超时或未呈现意图被替换时退还对应旧游戏面板状态。AS2、XFL 与 SWF 未改；已呈现同名面板和未知持久写仍由现役权威协议管理。维护说明见[固定浏览器合同](fixed-webview2-runtime.md)。
+
+- 冻结源码 `24011b26bca8713760e07d472f215ba7e222dd49`，不可变标签 `refs/tags/runtime-build-v2/20261006-focus-fixed-webview-v1`；request `57FD463C64BA95AA016866FA9E406E59A1017CE0F440107F8064AC85527CA7FE`。
+- 本机 `builder-local-b / physical-host-b` 与 [GitHub hosted OIDC 独立构建 37371038664](https://github.com/FlashNightModReborn/CrazyFlashNight/actions/runs/37371038664) 的 build identity、43 文件 payload closure 与 Core SHA 全等。完整 production policy **47/47**；云端只取签名证明，最终沿用绑定同一本机 CAS 路径的 receipt。完整身份、原始失败票及环境处理见[本轮回执](evidence/focus-runtime-release-2026-10-06.json)。
+- 官方完整 CAB 被锁定为 7 个 48 MiB 分片，全部进入 bootstrap manifest、双生产者共识与原子推广；257 个展开文件保留完整许可，运行时可离线启动。实际版本/路径、逐文件校验、损坏缓存重建以及原版资源拦截接口通过。固定版本的安全更新由维护者更新 lock 并重走发布列车。
+- Launcher 最终非桌面回归 **6694 passed / 7 skipped / 0 failed**，另有 323 项焦点/生命周期回归、2 项真实离屏 WebView/游标线程、1 项实际固定引擎归档、284 项构建协议与 153 项共识夹具回归通过。历史 canonical 全套的 10 项实窗口失败保留；Windows `LockScreenBackstopFrame` 持续遮挡 Default 桌面，最终实窗口项待解锁重跑，不宣称完整 Launcher suite 已通过。
+- 唯一 writer 已原子推广；部署提交 `39040ebf564ba349ebb479d533d284d6e9c80bd3` 普通快进推送。共享 Steam 安装入口 `--verify-only` exit **0**；[远端 Runtime native audit 37374154214](https://github.com/FlashNightModReborn/CrazyFlashNight/actions/runs/37374154214) success，独立重放 `state=promoted / deploymentChanged=true`、43 文件与双 signer / 双 faultDomain。另一个资产会话的 250 个未提交/未跟踪文件在主工作区快进前后状态、大小、SHA 全同，运行时资源已释放。
+- 状态为 `promoted`；`businessJourneyExecuted=false / physicalInputAttestation=false / standardEntryVerified=false`。实机窗口输入与正式入口业务等待解锁，后续受控进档仅用专用 `cf7_agent_*` 克隆槽。原测试机仍须回归缩放/切窗后移动与 NPC 点击、商店关闭后恢复输入、多次传送及车库进出；供应链和离屏 API 证据不能代签这些体验。
+
+
+
+### 2026-10-07 军阀学生修复与黑仔棍棒招式发布
+
+维护者接受最新迅斩空手协同后明确要求走发布列车。本批修正军阀男女学生有效起身区间、死亡肢体矩阵与长枪近战分支；新增固定外观的黑仔 `u457`，保留原 NPC，补齐短柄棍棒、迅斩前摇/挥棒/空手协同、影子、距离/韧性 AI、凶斩与 30 级霸体。技能仅受冷却限制，本次列车沿用现有占位数值。
+
+- 冻结源码 `56f52c3e1c3981a2f616453e403bb4a4025f6deb`，不可变标签 `refs/tags/runtime-build-v2/20261007-black-military-v1`；本机 `builder-local-b / physical-host-b` 与 [GitHub hosted OIDC 独立构建 37502451489](https://github.com/FlashNightModReborn/CrazyFlashNight/actions/runs/37502451489) 的 build identity / 43 文件 payload closure 全等。production policy **47/47**；最终选用同一本机 signed CAS 与绑定该路径的 receipt。完整身份见[发布回执](evidence/black-military-runtime-release-2026-10-07.json)。
+- 唯一 writer 已原子推广并保留 previous bundle；安装入口 `--verify-only` exit **0**。部署提交 `a281cc0401366de89df724a68d03054f092a88c9` 已普通快进推送；[远端 Runtime native audit 37504061645](https://github.com/FlashNightModReborn/CrazyFlashNight/actions/runs/37504061645) success，独立重放 `state=promoted / deploymentChanged=true`、双 signer / 双 faultDomain 与 43 文件闭包。原生引擎字节沿用上一发布基线，发布身份绑定本批冻结源。
+- 真实 CS6 **0 错误 / 0 警告**；当前编译素材原生回归 **691/691**、70 个实际时间轴案例、52 份完整 BitmapData，覆盖军阀起身/死亡及黑仔技能/生命周期。此前 MP=0 / 影子夹具 **3105/3105** 单独保留；最新空手迭代没有改变其根控制器。[资产证据](evidence/black-military-assets-2026-10-07.json) 记录来源、哈希与证据边界。
+- 维护者已接受本轮动画进入发布；完整标准入口战斗、玩家物理输入、存档重启及取消 MP 限制后的同级斗兽仍未在本次列车复验。历史 90 场有限 MP 斗兽不能代替现行强度标定。自动接续 `automation-2` 保持暂停。

@@ -695,7 +695,7 @@ namespace CF7Launcher.Tasks
             if (IsStashCommand(command))
             {
                 action = "itemUse" + char.ToUpperInvariant(command[0]) + command.Substring(1);
-                isWrite = command != "stashTooltip" && command != "stashPage" && command != "stashQuery" && command != "stashResume";
+                isWrite = command != "stashTooltip" && command != "stashPage" && command != "stashQuery" && command != "stashResume" && command != "stashChoices";
                 return true;
             }
             switch (command)

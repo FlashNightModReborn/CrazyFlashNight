@@ -143,6 +143,8 @@ launcher_user_prefs.json
 
 # Save shadow backups (player-specific, not source)
 saves/*.json
+saves/*.json.previous-*
+saves/*.json.tmp-*
 saves/*.json.tmp
 # 玩家本地修复备份与 audit log（C1b/C2-α 自动写入，含真实存档数据，不入库）
 saves/.repair-backups/

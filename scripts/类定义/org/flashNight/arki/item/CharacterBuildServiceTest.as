@@ -38,6 +38,7 @@ class org.flashNight.arki.item.CharacterBuildServiceTest {
         testInstallAndWireIdentity();
         testReadinessProbeIsPure();
         testSnapshotProjectionAndCooldown();
+        testResolvedEquipmentAppearance();
         testLoadoutTooltipAuthority();
         testCandidateProjectionAndUseAuthority();
         testCandidateEligibilityAndCooldownAuthority();
@@ -1014,6 +1015,72 @@ class org.flashNight.arki.item.CharacterBuildServiceTest {
                 && captured.indexOf('"command":"snapshot"') >= 0
                 && captured.indexOf('"panelInstanceId":"workbench.instance.1"') >= 0,
             "安装 action 统一发送 task=loadout_response");
+    }
+
+    private static function testResolvedEquipmentAppearance():Void {
+        var savedConfig:Object = ObjectUtil.cloneFast(EquipmentConfigManager.getFullConfig());
+        EquipmentUtil.loadEquipmentConfig(effectiveQualificationConfig());
+        var itemData:Object = effectiveQualificationCatalog();
+        itemData.M4A1.data.dressup = "枪-长枪-M4A1";
+        itemData.M4A1.data_ice.dressup = "枪-长枪-M4A1墨冰";
+        itemData.M4A1.data_fire.dressup = "枪-长枪-M4A1狱火";
+        var root:Object = fixtureRoot(1);
+        root.等级 = 99;
+        var worn:BaseItem = new BaseItem("M4A1", {level:1,tier:"墨冰",mods:[]}, 31);
+        var plain:BaseItem = new BaseItem("M4A1", {level:1,tier:"",mods:[]}, 32);
+        var fire:BaseItem = new BaseItem("M4A1", {level:1,tier:"狱火",mods:[]}, 33);
+        root.物品栏.装备栏.items["长枪"] = worn;
+        root.物品栏.背包.items["0"] = plain;
+        root.物品栏.背包.items["1"] = fire;
+        var binding:Object = bindEffectiveQualificationFixture(root, itemData);
+        installEffectiveRootCatalog(root, itemData);
+        installLiveFixture(root);
+        var callback:Object = protocolCallbacks(root, false, true);
+        CharacterBuildService.testOnlyUseRoot(root);
+        CharacterBuildService.testOnlyUseCallbacks(callback);
+        var panel:String = "workbench.appearance";
+        var legacy:Object = CharacterBuildService.execute("snapshot", wireParams(panel,"appearance.legacy"));
+        check(legacy.success && legacy.payload.equipment[6].item.appearance === undefined,
+            "旧Host未声明外观能力时保持原有投影字段");
+        var params:Object = wireParams(panel,"appearance.current");
+        params.sessionGeneration = legacy.sessionGeneration;
+        params.appearanceVersion = 1;
+        var projected:Object = CharacterBuildService.execute("snapshot",params);
+        var view:Object = projected.payload.equipment[6].item;
+        check(projected.success && view.name == "M4A1" && view.appearance.dressup == "枪-长枪-M4A1墨冰",
+            "进阶外观来自真实BaseItem/TierSystem，存档身份保持原名");
+        check(hasOnlyKeys(view.appearance,{dressup:true,dressup1:true,dressup2:true,dressup3:true,helmet:true,hairAbove:true})
+                && view.appearance.dressup1 == "" && view.appearance.dressup2 == "" && view.appearance.dressup3 == ""
+                && view.appearance.helmet === false && view.appearance.hairAbove === false,
+            "外观只投影四个装扮链接与两个显示标记");
+        var candidateParams:Object = wireParams(panel,"appearance.candidates");
+        candidateParams.sessionGeneration = projected.sessionGeneration;
+        candidateParams.expectedLoadoutRevision = projected.loadoutRevision;
+        candidateParams.expectedDrugRevision = projected.drugRevision;
+        candidateParams.candidateScope = "backpack";
+        candidateParams.slotKey = "长枪";
+        var candidates:Object = CharacterBuildService.execute("candidates",candidateParams);
+        check(candidates.success && findCandidate(candidates,"M4A1",0).item.appearance.dressup == "枪-长枪-M4A1"
+                && findCandidate(candidates,"M4A1",1).item.appearance.dressup == "枪-长枪-M4A1狱火",
+            "同名基础与另一进阶候选各自使用实例外观");
+        view.appearance.dressup = "篡改展示副本";
+        params.requestCallId = "appearance.copy";
+        var again:Object = CharacterBuildService.execute("snapshot",params);
+        check(again.payload.equipment[6].item.appearance.dressup == "枪-长枪-M4A1墨冰"
+                && itemData.M4A1.data.dressup == "枪-长枪-M4A1" && worn.value.tier == "墨冰"
+                && !root.存档系统.dirtyMark,
+            "外观副本不污染基础配置、进阶或存档脏标记");
+        params.appearanceVersion = 2;
+        check(!CharacterBuildService.execute("snapshot",params).success,
+            "未知外观协议版本拒绝，不猜测显示数据");
+        delete params.appearanceVersion;
+        params.requestCallId = "appearance.legacy.again";
+        var legacyAgain:Object = CharacterBuildService.execute("snapshot",params);
+        check(legacyAgain.success && legacyAgain.payload.equipment[6].item.appearance === undefined,
+            "兼容快照不继承上一次外观能力");
+        CharacterBuildService.testOnlyReset();
+        restoreItemUtilFixture(binding);
+        EquipmentUtil.loadEquipmentConfig(savedConfig);
     }
 
     private static function testSnapshotProjectionAndCooldown():Void {

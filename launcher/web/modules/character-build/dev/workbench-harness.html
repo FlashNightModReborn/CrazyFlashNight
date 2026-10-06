@@ -77,6 +77,7 @@ body[data-character-stats-fixture] .character-build-stats-profile::before {
         '刀':dressup.equipment.blade,
         '手雷':dressup.equipment.grenade
     };
+    var appearanceBySlot = {};
     var enhancementBySlot = {};
     equipmentKeys.forEach(function(slotKey, index) {
         enhancementBySlot[slotKey] = slotKey === '手雷' ? 0 : index % 4 + 1;
@@ -195,9 +196,11 @@ body[data-character-stats-fixture] .character-build-stats-profile::before {
     window.__routeHarness.setPortraitGender = function(gender) {
         portraitGender = gender === '女' ? '女' : '男';
     };
-    window.__routeHarness.setEquipment = function(slotKey, itemName) {
+    window.__routeHarness.setEquipment = function(slotKey, itemName, appearance) {
         if (equipmentKeys.indexOf(slotKey) < 0) return false;
         equipmentBySlot[slotKey] = String(itemName || '');
+        if (appearance) appearanceBySlot[slotKey] = appearance;
+        else delete appearanceBySlot[slotKey];
         return true;
     };
     function emit(type, data) {
@@ -206,7 +209,7 @@ body[data-character-stats-fixture] .character-build-stats-profile::before {
     function equipmentRows() {
         return equipmentKeys.map(function(slotKey, index) {
             var itemName = equipmentBySlot[slotKey];
-            return {
+            var row = {
                 slotKey:slotKey,
                 occupied:!!itemName,
                 quantity:slotKey === '手雷' ? 3 : 1,
@@ -235,6 +238,8 @@ body[data-character-stats-fixture] .character-build-stats-profile::before {
                     ] : []
                 } : null
             };
+            if (row.item && appearanceBySlot[slotKey]) row.item.appearance = appearanceBySlot[slotKey];
+            return row;
         });
     }
     function projection() {
@@ -914,6 +919,10 @@ body[data-character-stats-fixture] .character-build-stats-profile::before {
             },
             rewardAuthority:null
         };
+        if (message.cmd === 'stashChoices') {
+            response.success = true;
+            response.data = {storeId:'',revision:0,offers:[],pendingOperationId:''};
+        }
         if (message.cmd === 'consume' && harness.itemUse.commitNextConsume) {
             harness.itemUse.commitNextConsume = false;
             harness.itemUse.potionQuantity--;
@@ -1130,6 +1139,17 @@ body[data-character-stats-fixture] .character-build-stats-profile::before {
             if (downstream) downstream(meta);
         };
         var renderer = nativeCreateRenderer(canvas, observed);
+        var nativeRender = renderer.render;
+        renderer.render = function(state) {
+            // Shared CharacterAppearancePreview applies the camera envelope at
+            // render time. Observe that final state, not the earlier item mapper.
+            metrics.lastBuild = {
+                gender:state.gender, stateLabel:state.stateLabel, attackMode:state.attackMode,
+                fitFields:(state.fitFields || []).slice(), drawFields:(state.drawFields || []).slice(),
+                zoom:state.zoom, margin:state.margin, keyMap:state.keyMap
+            };
+            return nativeRender.call(renderer, state);
+        };
         var nativeDestroy = renderer.destroy, nativeSetPixelRatio = renderer.setPixelRatio;
         var destroyed = false;
         metrics.created++; metrics.active++;
@@ -1336,6 +1356,7 @@ body[data-character-stats-fixture] .character-build-stats-profile::before {
 <script src="modules/character-build/character-build-stash-transport.js"></script>
 <script src="modules/character-build/character-build-item-use.js"></script>
 <script src="modules/character-build/character-build-stash-authority.js"></script>
+<script src="modules/character-build/character-build-choice-rewards.js"></script>
 <script src="modules/character-build/character-build-item-use-channel.js"></script>
 <script src="modules/character-build/character-build-candidate-channel.js"></script>
 <script src="modules/character-build.js"></script>
@@ -2894,11 +2915,11 @@ CharacterBuild.CharacterBuildController.prototype.activate = function(host, pane
                      .indexOf(message.cmd) >= 0;
              }));
         var selectedActionRow = candidateActionRow();
-        check('1024 candidate PaneChrome keeps its three direct actions on one row',
-            selectedActionRow.count === 3
-            && selectedActionRow.labels.join('|') === '装备|调制候选|卸下'
+        check('1024 candidate PaneChrome keeps storage access and three direct actions on one row',
+            selectedActionRow.count === 4
+            && selectedActionRow.labels.join('|') === '暂存物资|装备|调制候选|卸下'
             && selectedActionRow.aria.join('|') ===
-                '装备所选候选|调制所选候选：'
+                '领取待领取物品|装备所选候选|调制所选候选：'
                     + CharacterBuildDressupFixture.scenarios.candidate.candidateItem
                     + '|卸下当前物品'
             && selectedActionRow.sameRow && selectedActionRow.inside
@@ -5006,6 +5027,25 @@ CharacterBuild.CharacterBuildController.prototype.activate = function(host, pane
                 '[data-header-action="preparation-menu"]')
             && commandCount('finalize') === 0
             && window.__routeHarness.events.indexOf('close_sent') < 0);
+
+        // Exercise the actual production snapshot/session/controller path with
+        // the optional AS2 appearance projection, retaining the canonical name.
+        for (var m7GenderIndex = 0; m7GenderIndex < 2; m7GenderIndex++) {
+            var m7Gender = m7GenderIndex === 0 ? '男' : '女';
+            window.__routeHarness.setPortraitGender(m7Gender);
+            var m7Keys = ['枪-长枪-火药燃气液压打桩机','枪-长枪-Codex-打桩机M7','枪-长枪-火药燃气液压打桩机'];
+            for (var m7Phase = 0; m7Phase < m7Keys.length; m7Phase++) {
+                window.__routeHarness.setEquipment('长枪','火药燃气液压打桩机', {
+                    dressup:m7Keys[m7Phase],dressup1:'',dressup2:'',dressup3:'',helmet:false,hairAbove:false
+                });
+                check('production resolved M7 ' + m7Gender + '/' + m7Phase + ' adopts the exact skin',
+                    await refreshProjection()
+                    && window.__routeHarness.renderer.lastBuild.keyMap['长枪_装扮'] === m7Keys[m7Phase]
+                    && window.__routeHarness.renderer.lastMeta.failedImages === 0
+                    && canvasProbe().alphaPixels > 2500);
+                if (m7Phase === 1) captureCanvas('production-m7-tier-' + (m7Gender === '男' ? 'male' : 'female'));
+            }
+        }
 
         await runPoseMatrix('男');
         await runPoseMatrix('女');

@@ -746,6 +746,7 @@ class org.flashNight.neur.Server.ServerManager {
                 && action != "lootQuery" && action.indexOf("itemUseStash") != 0
                 && action != "openInventoryWorkbench" && action != "inventorySnapshot" && action != "inventoryTooltip"
                 && action != "characterBuildSnapshot" && action != "webPanelUnpause"
+                && action != "bookComicPrepared" && action != "bookComicFinish"
                 && action != "itemUseInboxSnapshot" && action != "itemUseCooldownSnapshot") {
             trace("[GameCmd] reward candidate pending: " + action);
             return;
@@ -775,6 +776,7 @@ class org.flashNight.neur.Server.ServerManager {
         xmlSocket = null;
         AudioBridge.onTransportDisconnected();
         org.flashNight.arki.dialogue.NativeDialogueService.onTransportDisconnected();
+        org.flashNight.arki.scene.BookComicService.onTransportDisconnected();
         org.flashNight.arki.ui.NativeGuidanceService.clear();
 
         // loot 奖励只存在本地内存；Host 断线时直接让服务续跑 exact journal/effects，

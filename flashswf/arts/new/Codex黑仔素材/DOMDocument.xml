@@ -1,0 +1,297 @@
+<?xml version='1.0' encoding='utf-8'?>
+<DOMDocument xmlns="http://ns.adobe.com/xfl/2008/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" backgroundColor="#E5E3DF" width="550" height="400" frameRate="24" xflVersion="2.2" creatorInfo="Adobe Flash Professional CS6" platform="Windows" versionInfo="Saved by Adobe Flash Windows 12.0 build 481" majorVersion="12" buildNumber="481" nextSceneIdentifier="2">
+  <folders>
+    <DOMFolderItem name="Codex黑仔" itemID="6ac11006-4fdadc18"/>
+    <DOMFolderItem name="Codex黑仔/动作" itemID="6ac11006-a65fd36b"/>
+    <DOMFolderItem name="Codex黑仔/原生" itemID="6ac11006-e12ac5bb"/>
+    <DOMFolderItem name="Codex黑仔/原生/shape" itemID="6ac11006-6a7d6f55"/>
+    <DOMFolderItem name="Codex黑仔/原生/sprite" itemID="6ac11006-a6a33d93"/>
+    <DOMFolderItem name="Codex黑仔/原生/主角肢体素材" itemID="6ac11006-d3a5e0c1"/>
+    <DOMFolderItem name="Codex黑仔/原生/属性标签标志元件" itemID="6ac11006-659a0077"/>
+    <DOMFolderItem name="Codex黑仔/原生/怪物通用模板" itemID="6ac11006-43070c75"/>
+    <DOMFolderItem name="Codex黑仔/原生/怪物通用模板/新近战子弹定位元件" itemID="6ac11006-0bc542f1"/>
+    <DOMFolderItem name="Codex黑仔/原生/怪物通用模板/新近战子弹定位元件/子弹素材" itemID="6ac11006-fdb75b75"/>
+    <DOMFolderItem name="Codex黑仔/原生/特效与子弹" itemID="6ac11006-a5acfb9e"/>
+    <DOMFolderItem name="Codex黑仔/原生/特效与子弹/幻影" itemID="6ac11006-7850817b"/>
+    <DOMFolderItem name="Codex黑仔/固定外观" itemID="6ac11006-87877cdf"/>
+    <DOMFolderItem name="Codex黑仔/固定外观/NPC" itemID="6ac11006-d2bdad34"/>
+    <DOMFolderItem name="Codex黑仔/固定外观/NPC/NPC-Bat" itemID="6ac11006-3acf89ec"/>
+    <DOMFolderItem name="Codex黑仔/固定外观/NPC/NPC-Bat/素材" itemID="6ac11006-97172f5d"/>
+    <DOMFolderItem name="Codex黑仔/固定外观/NPC/NPC-Bat/素材/无AS链接" itemID="6ac11006-c68c3e21"/>
+    <DOMFolderItem name="Codex黑仔/固定外观/NPC/NPC-黑仔" itemID="6ac11006-b1a46342"/>
+    <DOMFolderItem name="Codex黑仔/固定外观/NPC/NPC-黑仔/素材" itemID="6ac11006-e3e6c8ec"/>
+    <DOMFolderItem name="Codex黑仔/固定槽" itemID="6ac11006-9adcb3b8"/>
+    <DOMFolderItem name="Codex黑仔/模板" itemID="6ac11006-d2a51395"/>
+    <DOMFolderItem name="Codex黑仔/模板/军阀派杂兵" itemID="6ac11006-93eb09ab"/>
+    <DOMFolderItem name="Codex黑仔/模板/军阀派杂兵/怪物通用模板" itemID="6ac11006-60f02bb1"/>
+    <DOMFolderItem name="Codex黑仔/模板/军阀派杂兵/怪物通用模板/area框" itemID="6ac11006-b9f9fef7"/>
+    <DOMFolderItem name="Codex黑仔/模板/军阀派杂兵/怪物通用模板/血条与名称" itemID="6ac11006-b0183127"/>
+    <DOMFolderItem name="Codex黑仔/模板/军阀派杂兵/怪物通用模板/通用ai元件" itemID="6ac11006-d74970c9"/>
+    <DOMFolderItem name="Codex黑仔/模板/军阀派杂兵/重复项目文件夹" itemID="6ac11006-9e917805"/>
+    <DOMFolderItem name="Codex黑仔/球棒" itemID="6ac11006-868913ca"/>
+    <DOMFolderItem name="Codex黑仔/球棒/图标" itemID="6ac11006-5034be1e"/>
+    <DOMFolderItem name="Codex黑仔/肢体" itemID="6ac11006-d5b37681"/>
+  </folders>
+  <symbols>
+    <Include href="Codex黑仔/动作/凶斩.xml" itemID="6ac01006-33e99361" loadImmediate="false"/>
+    <Include href="Codex黑仔/动作/击倒.xml" itemID="6ac01006-6e56a916" loadImmediate="false"/>
+    <Include href="Codex黑仔/动作/受击.xml" itemID="6ac01006-b931fcfa" loadImmediate="false"/>
+    <Include href="Codex黑仔/动作/棍棒普攻.xml" itemID="6ac01006-8a59d4fc" loadImmediate="false"/>
+    <Include href="Codex黑仔/动作/死亡.xml" itemID="6ac01006-f8083945" loadImmediate="false"/>
+    <Include href="Codex黑仔/动作/站立.xml" itemID="6ac01006-3c0b2c6a" loadImmediate="false"/>
+    <Include href="Codex黑仔/动作/行走.xml" itemID="6ac01006-8e3cb075" loadImmediate="false"/>
+    <Include href="Codex黑仔/动作/起身.xml" itemID="6ac01006-318b2bb4" loadImmediate="false"/>
+    <Include href="Codex黑仔/动作/跑.xml" itemID="6ac01006-3316c6ec" loadImmediate="false"/>
+    <Include href="Codex黑仔/动作/迅斩.xml" itemID="6ac01006-fcb824b7" loadImmediate="false"/>
+    <Include href="Codex黑仔/动作/霸体.xml" itemID="6ac11006-003c720f" loadImmediate="false"/><Include href="Codex黑仔/原生/shape/Symbol 178.xml" itemID="6ac11006-d63bc304" loadImmediate="false"/><Include href="Codex黑仔/原生/shape/Symbol 179.xml" itemID="6ac11006-a13cf392" loadImmediate="false"/><Include href="Codex黑仔/原生/shape/Symbol 180.xml" itemID="6ac11006-5f7857f9" loadImmediate="false"/><Include href="Codex黑仔/原生/shape/Symbol 182.xml" itemID="6ac11006-b17636d5" loadImmediate="false"/><Include href="Codex黑仔/原生/shape/Symbol 183.xml" itemID="6ac11006-c6710643" loadImmediate="false"/><Include href="Codex黑仔/原生/shape/Symbol 184.xml" itemID="6ac11006-581593e0" loadImmediate="false"/><Include href="Codex黑仔/原生/shape/Symbol 185.xml" itemID="6ac11006-2f12a376" loadImmediate="false"/><Include href="Codex黑仔/原生/shape/Symbol 186.xml" itemID="6ac11006-b61bf2cc" loadImmediate="false"/><Include href="Codex黑仔/原生/shape/Symbol 187.xml" itemID="6ac11006-c11cc25a" loadImmediate="false"/><Include href="Codex黑仔/原生/shape/Symbol 189.xml" itemID="6ac11006-26a4ef5d" loadImmediate="false"/><Include href="Codex黑仔/原生/shape/Symbol 190.xml" itemID="6ac11006-466366b8" loadImmediate="false"/><Include href="Codex黑仔/原生/shape/Symbol 191.xml" itemID="6ac11006-3164562e" loadImmediate="false"/><Include href="Codex黑仔/原生/shape/Symbol 192.xml" itemID="6ac11006-a86d0794" loadImmediate="false"/><Include href="Codex黑仔/原生/shape/Symbol 5.xml" itemID="6ac01006-bae11ec1" loadImmediate="false"/>
+    <Include href="Codex黑仔/原生/shape/Symbol 668.xml" itemID="6ac01006-ca6fe4c0" loadImmediate="false"/>
+    <Include href="Codex黑仔/原生/shape/Symbol 669.xml" itemID="6ac01006-bd68d456" loadImmediate="false"/>
+    <Include href="Codex黑仔/原生/shape/Symbol 671.xml" itemID="6ac01006-aaa86d25" loadImmediate="false"/>
+    <Include href="Codex黑仔/原生/shape/Symbol 675.xml" itemID="6ac01006-adc5a93c" loadImmediate="false"/>
+    <Include href="Codex黑仔/原生/shape/Symbol 677.xml" itemID="6ac01006-43cbc810" loadImmediate="false"/>
+    <Include href="Codex黑仔/原生/shape/Symbol 678.xml" itemID="6ac01006-d374d581" loadImmediate="false"/>
+    <Include href="Codex黑仔/原生/shape/Symbol 679.xml" itemID="6ac01006-a473e517" loadImmediate="false"/>
+    <Include href="Codex黑仔/原生/shape/Symbol 681.xml" itemID="6ac01006-2d3071ea" loadImmediate="false"/>
+    <Include href="Codex黑仔/原生/shape/Symbol 682.xml" itemID="6ac01006-b4392050" loadImmediate="false"/>
+    <Include href="Codex黑仔/原生/shape/Symbol 683.xml" itemID="6ac01006-c33e10c6" loadImmediate="false"/>
+    <Include href="Codex黑仔/原生/shape/Symbol 684.xml" itemID="6ac01006-5d5a8565" loadImmediate="false"/>
+    <Include href="Codex黑仔/原生/shape/Symbol 685.xml" itemID="6ac01006-2a5db5f3" loadImmediate="false"/>
+    <Include href="Codex黑仔/原生/shape/Symbol 686.xml" itemID="6ac01006-b354e449" loadImmediate="false"/>
+    <Include href="Codex黑仔/原生/shape/Symbol 687.xml" itemID="6ac01006-c453d4df" loadImmediate="false"/>
+    <Include href="Codex黑仔/原生/shape/Symbol 688.xml" itemID="6ac01006-54ecc94e" loadImmediate="false"/>
+    <Include href="Codex黑仔/原生/shape/Symbol 689.xml" itemID="6ac01006-23ebf9d8" loadImmediate="false"/>
+    <Include href="Codex黑仔/原生/shape/Symbol 690.xml" itemID="6ac01006-432c703d" loadImmediate="false"/>
+    <Include href="Codex黑仔/原生/shape/Symbol 691.xml" itemID="6ac01006-342b40ab" loadImmediate="false"/>
+    <Include href="Codex黑仔/原生/shape/Symbol 692.xml" itemID="6ac01006-ad221111" loadImmediate="false"/>
+    <Include href="Codex黑仔/原生/shape/Symbol 693.xml" itemID="6ac01006-da252187" loadImmediate="false"/>
+    <Include href="Codex黑仔/原生/shape/Symbol 694.xml" itemID="6ac01006-4441b424" loadImmediate="false"/>
+    <Include href="Codex黑仔/原生/shape/Symbol 696.xml" itemID="6ac01006-aa4fd508" loadImmediate="false"/>
+    <Include href="Codex黑仔/原生/shape/Symbol 697.xml" itemID="6ac01006-dd48e59e" loadImmediate="false"/>
+    <Include href="Codex黑仔/原生/shape/Symbol 698.xml" itemID="6ac01006-4df7f80f" loadImmediate="false"/>
+    <Include href="Codex黑仔/原生/shape/Symbol 699.xml" itemID="6ac01006-3af0c899" loadImmediate="false"/>
+    <Include href="Codex黑仔/原生/shape/Symbol 700.xml" itemID="6ac01006-932ca143" loadImmediate="false"/>
+    <Include href="Codex黑仔/原生/shape/Symbol 701.xml" itemID="6ac01006-e42b91d5" loadImmediate="false"/>
+    <Include href="Codex黑仔/原生/shape/Symbol 703.xml" itemID="6ac01006-0a25f0f9" loadImmediate="false"/>
+    <Include href="Codex黑仔/原生/shape/Symbol 707.xml" itemID="6ac01006-0d4834e0" loadImmediate="false"/>
+    <Include href="Codex黑仔/原生/shape/Symbol 708.xml" itemID="6ac01006-9df72971" loadImmediate="false"/>
+    <Include href="Codex黑仔/原生/shape/Symbol 709.xml" itemID="6ac01006-eaf019e7" loadImmediate="false"/>
+    <Include href="Codex黑仔/原生/shape/Symbol 710.xml" itemID="6ac01006-8a379002" loadImmediate="false"/>
+    <Include href="Codex黑仔/原生/shape/Symbol 711.xml" itemID="6ac01006-fd30a094" loadImmediate="false"/>
+    <Include href="Codex黑仔/原生/shape/Symbol 712.xml" itemID="6ac01006-6439f12e" loadImmediate="false"/>
+    <Include href="Codex黑仔/原生/shape/Symbol 713.xml" itemID="6ac01006-133ec1b8" loadImmediate="false"/>
+    <Include href="Codex黑仔/原生/shape/Symbol 714.xml" itemID="6ac01006-8d5a541b" loadImmediate="false"/>
+    <Include href="Codex黑仔/原生/shape/Symbol 715.xml" itemID="6ac01006-fa5d648d" loadImmediate="false"/>
+    <Include href="Codex黑仔/原生/shape/Symbol 716.xml" itemID="6ac01006-63543537" loadImmediate="false"/>
+    <Include href="Codex黑仔/原生/shape/Symbol 717.xml" itemID="6ac01006-145305a1" loadImmediate="false"/>
+    <Include href="Codex黑仔/原生/shape/Symbol 718.xml" itemID="6ac01006-84ec1830" loadImmediate="false"/>
+    <Include href="Codex黑仔/原生/shape/Symbol 719.xml" itemID="6ac01006-f3eb28a6" loadImmediate="false"/>
+    <Include href="Codex黑仔/原生/shape/Symbol 720.xml" itemID="6ac01006-a11ac3c1" loadImmediate="false"/>
+    <Include href="Codex黑仔/原生/shape/Symbol 721.xml" itemID="6ac01006-d61df357" loadImmediate="false"/>
+    <Include href="Codex黑仔/原生/shape/Symbol 722.xml" itemID="6ac01006-4f14a2ed" loadImmediate="false"/>
+    <Include href="Codex黑仔/原生/shape/Symbol 723.xml" itemID="6ac01006-3813927b" loadImmediate="false"/>
+    <Include href="Codex黑仔/原生/shape/Symbol 724.xml" itemID="6ac01006-a67707d8" loadImmediate="false"/>
+    <Include href="Codex黑仔/原生/shape/Symbol 725.xml" itemID="6ac01006-d170374e" loadImmediate="false"/>
+    <Include href="Codex黑仔/原生/shape/Symbol 726.xml" itemID="6ac01006-487966f4" loadImmediate="false"/>
+    <Include href="Codex黑仔/原生/shape/Symbol 727.xml" itemID="6ac01006-3f7e5662" loadImmediate="false"/>
+    <Include href="Codex黑仔/原生/shape/Symbol 730.xml" itemID="6ac01006-b801f280" loadImmediate="false"/>
+    <Include href="Codex黑仔/原生/shape/Symbol 733.xml" itemID="6ac01006-2108a33a" loadImmediate="false"/>
+    <Include href="Codex黑仔/原生/shape/Symbol 734.xml" itemID="6ac01006-bf6c3699" loadImmediate="false"/>
+    <Include href="Codex黑仔/原生/shape/Symbol 735.xml" itemID="6ac01006-c86b060f" loadImmediate="false"/>
+    <Include href="Codex黑仔/原生/shape/Symbol 736.xml" itemID="6ac01006-516257b5" loadImmediate="false"/>
+    <Include href="Codex黑仔/原生/shape/Symbol 737.xml" itemID="6ac01006-26656723" loadImmediate="false"/>
+    <Include href="Codex黑仔/原生/shape/Symbol 738.xml" itemID="6ac01006-b6da7ab2" loadImmediate="false"/>
+    <Include href="Codex黑仔/原生/shape/Symbol 739.xml" itemID="6ac01006-c1dd4a24" loadImmediate="false"/>
+    <Include href="Codex黑仔/原生/shape/Symbol 740.xml" itemID="6ac01006-f7406447" loadImmediate="false"/>
+    <Include href="Codex黑仔/原生/shape/Symbol 741.xml" itemID="6ac01006-804754d1" loadImmediate="false"/>
+    <Include href="Codex黑仔/原生/shape/Symbol 742.xml" itemID="6ac01006-194e056b" loadImmediate="false"/>
+    <Include href="Codex黑仔/原生/shape/Symbol 743.xml" itemID="6ac01006-6e4935fd" loadImmediate="false"/>
+    <Include href="Codex黑仔/原生/shape/Symbol 744.xml" itemID="6ac01006-f02da05e" loadImmediate="false"/>
+    <Include href="Codex黑仔/原生/shape/Symbol 745.xml" itemID="6ac01006-872a90c8" loadImmediate="false"/>
+    <Include href="Codex黑仔/原生/shape/Symbol 747.xml" itemID="6ac01006-6924f1e4" loadImmediate="false"/>
+    <Include href="Codex黑仔/原生/shape/Symbol 750.xml" itemID="6ac01006-ee5b5506" loadImmediate="false"/>
+    <Include href="Codex黑仔/原生/shape/Symbol 751.xml" itemID="6ac01006-995c6590" loadImmediate="false"/>
+    <Include href="Codex黑仔/原生/shape/Symbol 752.xml" itemID="6ac01006-0055342a" loadImmediate="false"/>
+    <Include href="Codex黑仔/原生/shape/Symbol 753.xml" itemID="6ac01006-775204bc" loadImmediate="false"/>
+    <Include href="Codex黑仔/原生/shape/Symbol 754.xml" itemID="6ac01006-e936911f" loadImmediate="false"/>
+    <Include href="Codex黑仔/原生/shape/Symbol 755.xml" itemID="6ac01006-9e31a189" loadImmediate="false"/>
+    <Include href="Codex黑仔/原生/shape/Symbol 756.xml" itemID="6ac01006-0738f033" loadImmediate="false"/>
+    <Include href="Codex黑仔/原生/shape/Symbol 757.xml" itemID="6ac01006-703fc0a5" loadImmediate="false"/>
+    <Include href="Codex黑仔/原生/shape/Symbol 758.xml" itemID="6ac01006-e080dd34" loadImmediate="false"/>
+    <Include href="Codex黑仔/原生/shape/Symbol 759.xml" itemID="6ac01006-9787eda2" loadImmediate="false"/>
+    <Include href="Codex黑仔/原生/shape/Symbol 760.xml" itemID="6ac01006-c57606c5" loadImmediate="false"/>
+    <Include href="Codex黑仔/原生/shape/Symbol 761.xml" itemID="6ac01006-b2713653" loadImmediate="false"/>
+    <Include href="Codex黑仔/原生/shape/Symbol 762.xml" itemID="6ac01006-2b7867e9" loadImmediate="false"/>
+    <Include href="Codex黑仔/原生/shape/Symbol 763.xml" itemID="6ac01006-5c7f577f" loadImmediate="false"/>
+    <Include href="Codex黑仔/原生/shape/Symbol 764.xml" itemID="6ac01006-c21bc2dc" loadImmediate="false"/>
+    <Include href="Codex黑仔/原生/shape/Symbol 765.xml" itemID="6ac01006-b51cf24a" loadImmediate="false"/>
+    <Include href="Codex黑仔/原生/shape/Symbol 766.xml" itemID="6ac01006-2c15a3f0" loadImmediate="false"/>
+    <Include href="Codex黑仔/原生/shape/Symbol 768.xml" itemID="6ac01006-cbad8ef7" loadImmediate="false"/>
+    <Include href="Codex黑仔/原生/shape/Symbol 769.xml" itemID="6ac01006-bcaabe61" loadImmediate="false"/>
+    <Include href="Codex黑仔/原生/shape/Symbol 770.xml" itemID="6ac01006-dc6d3784" loadImmediate="false"/>
+    <Include href="Codex黑仔/原生/shape/Symbol 771.xml" itemID="6ac01006-ab6a0712" loadImmediate="false"/>
+    <Include href="Codex黑仔/原生/shape/Symbol 772.xml" itemID="6ac01006-326356a8" loadImmediate="false"/>
+    <Include href="Codex黑仔/原生/shape/Symbol 773.xml" itemID="6ac01006-4564663e" loadImmediate="false"/>
+    <Include href="Codex黑仔/原生/shape/Symbol 774.xml" itemID="6ac01006-db00f39d" loadImmediate="false"/>
+    <Include href="Codex黑仔/原生/shape/Symbol 775.xml" itemID="6ac01006-ac07c30b" loadImmediate="false"/>
+    <Include href="Codex黑仔/原生/shape/Symbol 776.xml" itemID="6ac01006-350e92b1" loadImmediate="false"/>
+    <Include href="Codex黑仔/原生/shape/Symbol 777.xml" itemID="6ac01006-4209a227" loadImmediate="false"/>
+    <Include href="Codex黑仔/原生/shape/Symbol 778.xml" itemID="6ac01006-d2b6bfb6" loadImmediate="false"/>
+    <Include href="Codex黑仔/原生/shape/Symbol 779.xml" itemID="6ac01006-a5b18f20" loadImmediate="false"/>
+    <Include href="Codex黑仔/原生/shape/Symbol 780.xml" itemID="6ac01006-5bf52b4b" loadImmediate="false"/>
+    <Include href="Codex黑仔/原生/shape/Symbol 781.xml" itemID="6ac01006-2cf21bdd" loadImmediate="false"/>
+    <Include href="Codex黑仔/原生/shape/Symbol 782.xml" itemID="6ac01006-b5fb4a67" loadImmediate="false"/>
+    <Include href="Codex黑仔/原生/shape/Symbol 783.xml" itemID="6ac01006-c2fc7af1" loadImmediate="false"/>
+    <Include href="Codex黑仔/原生/shape/Symbol 784.xml" itemID="6ac01006-5c98ef52" loadImmediate="false"/>
+    <Include href="Codex黑仔/原生/shape/Symbol 786.xml" itemID="6ac01006-b2968e7e" loadImmediate="false"/>
+    <Include href="Codex黑仔/原生/shape/Symbol 789.xml" itemID="6ac01006-222993ef" loadImmediate="false"/>
+    <Include href="Codex黑仔/原生/shape/Symbol 790.xml" itemID="6ac01006-42ee1a0a" loadImmediate="false"/>
+    <Include href="Codex黑仔/原生/shape/Symbol 791.xml" itemID="6ac01006-35e92a9c" loadImmediate="false"/>
+    <Include href="Codex黑仔/原生/shape/Symbol 792.xml" itemID="6ac01006-ace07b26" loadImmediate="false"/>
+    <Include href="Codex黑仔/原生/shape/Symbol 793.xml" itemID="6ac01006-dbe74bb0" loadImmediate="false"/>
+    <Include href="Codex黑仔/原生/shape/Symbol 794.xml" itemID="6ac01006-4583de13" loadImmediate="false"/>
+    <Include href="Codex黑仔/原生/shape/Symbol 795.xml" itemID="6ac01006-3284ee85" loadImmediate="false"/>
+    <Include href="Codex黑仔/原生/shape/Symbol 796.xml" itemID="6ac01006-ab8dbf3f" loadImmediate="false"/>
+    <Include href="Codex黑仔/原生/shape/Symbol 797.xml" itemID="6ac01006-dc8a8fa9" loadImmediate="false"/>
+    <Include href="Codex黑仔/原生/shape/Symbol 798.xml" itemID="6ac01006-4c359238" loadImmediate="false"/>
+    <Include href="Codex黑仔/原生/shape/Symbol 799.xml" itemID="6ac01006-3b32a2ae" loadImmediate="false"/>
+    <Include href="Codex黑仔/原生/shape/Symbol 800.xml" itemID="6ac01006-9870e67e" loadImmediate="false"/>
+    <Include href="Codex黑仔/原生/shape/Symbol 801.xml" itemID="6ac01006-ef77d6e8" loadImmediate="false"/>
+    <Include href="Codex黑仔/原生/shape/Symbol 802.xml" itemID="6ac01006-767e8752" loadImmediate="false"/>
+    <Include href="Codex黑仔/原生/shape/Symbol 803.xml" itemID="6ac01006-0179b7c4" loadImmediate="false"/>
+    <Include href="Codex黑仔/原生/shape/Symbol 804.xml" itemID="6ac01006-9f1d2267" loadImmediate="false"/>
+    <Include href="Codex黑仔/原生/shape/Symbol 805.xml" itemID="6ac01006-e81a12f1" loadImmediate="false"/>
+    <Include href="Codex黑仔/原生/shape/Symbol 806.xml" itemID="6ac01006-7113434b" loadImmediate="false"/>
+    <Include href="Codex黑仔/原生/shape/Symbol 807.xml" itemID="6ac01006-061473dd" loadImmediate="false"/>
+    <Include href="Codex黑仔/原生/shape/Symbol 808.xml" itemID="6ac01006-96ab6e4c" loadImmediate="false"/>
+    <Include href="Codex黑仔/原生/shape/Symbol 809.xml" itemID="6ac01006-e1ac5eda" loadImmediate="false"/>
+    <Include href="Codex黑仔/原生/shape/Symbol 810.xml" itemID="6ac01006-816bd73f" loadImmediate="false"/>
+    <Include href="Codex黑仔/原生/shape/Symbol 811.xml" itemID="6ac01006-f66ce7a9" loadImmediate="false"/>
+    <Include href="Codex黑仔/原生/shape/Symbol 812.xml" itemID="6ac01006-6f65b613" loadImmediate="false"/>
+    <Include href="Codex黑仔/原生/shape/Symbol 813.xml" itemID="6ac01006-18628685" loadImmediate="false"/>
+    <Include href="Codex黑仔/原生/shape/Symbol 814.xml" itemID="6ac01006-86061326" loadImmediate="false"/>
+    <Include href="Codex黑仔/原生/shape/Symbol 815.xml" itemID="6ac01006-f10123b0" loadImmediate="false"/>
+    <Include href="Codex黑仔/原生/shape/Symbol 816.xml" itemID="6ac01006-6808720a" loadImmediate="false"/>
+    <Include href="Codex黑仔/原生/shape/Symbol 817.xml" itemID="6ac01006-1f0f429c" loadImmediate="false"/>
+    <Include href="Codex黑仔/原生/shape/Symbol 818.xml" itemID="6ac01006-8fb05f0d" loadImmediate="false"/>
+    <Include href="Codex黑仔/原生/shape/Symbol 819.xml" itemID="6ac01006-f8b76f9b" loadImmediate="false"/>
+    <Include href="Codex黑仔/原生/shape/Symbol 820.xml" itemID="6ac01006-aa4684fc" loadImmediate="false"/>
+    <Include href="Codex黑仔/原生/shape/Symbol 821.xml" itemID="6ac01006-dd41b46a" loadImmediate="false"/>
+    <Include href="Codex黑仔/原生/shape/Symbol 822.xml" itemID="6ac01006-4448e5d0" loadImmediate="false"/>
+    <Include href="Codex黑仔/原生/shape/Symbol 823.xml" itemID="6ac01006-334fd546" loadImmediate="false"/>
+    <Include href="Codex黑仔/原生/shape/Symbol 824.xml" itemID="6ac01006-ad2b40e5" loadImmediate="false"/>
+    <Include href="Codex黑仔/原生/sprite/Symbol 1236.xml" itemID="6ac11006-7f5cc85d" loadImmediate="false"/><Include href="Codex黑仔/原生/sprite/Symbol 1237.xml" itemID="6ac11006-085bf8cb" loadImmediate="false"/><Include href="Codex黑仔/原生/sprite/Symbol 1238.xml" itemID="6ac11006-98e4e55a" loadImmediate="false"/><Include href="Codex黑仔/原生/sprite/Symbol 1239.xml" itemID="6ac11006-efe3d5cc" loadImmediate="false"/><Include href="Codex黑仔/原生/sprite/Symbol 142.xml" itemID="6ac01006-18f2014c" loadImmediate="false"/>
+    <Include href="Codex黑仔/原生/sprite/Symbol 243.xml" itemID="6ac01006-6db38f83" loadImmediate="false"/>
+    <Include href="Codex黑仔/原生/sprite/Symbol 245.xml" itemID="6ac01006-84d02ab6" loadImmediate="false"/>
+    <Include href="Codex黑仔/原生/sprite/Symbol 247.xml" itemID="6ac01006-6ade4b9a" loadImmediate="false"/>
+    <Include href="Codex黑仔/原生/sprite/Symbol 249.xml" itemID="6ac01006-8d66669d" loadImmediate="false"/>
+    <Include href="Codex黑仔/原生/sprite/Symbol 252.xml" itemID="6ac01006-03af8e54" loadImmediate="false"/>
+    <Include href="Codex黑仔/原生/sprite/Symbol 254.xml" itemID="6ac01006-eacc2b61" loadImmediate="false"/>
+    <Include href="Codex黑仔/原生/sprite/Symbol 256.xml" itemID="6ac01006-04c24a4d" loadImmediate="false"/>
+    <Include href="Codex黑仔/原生/sprite/Symbol 258.xml" itemID="6ac01006-e37a674a" loadImmediate="false"/>
+    <Include href="Codex黑仔/原生/sprite/Symbol 260.xml" itemID="6ac01006-c68cbcbb" loadImmediate="false"/>
+    <Include href="Codex黑仔/原生/sprite/Symbol 262.xml" itemID="6ac01006-2882dd97" loadImmediate="false"/>
+    <Include href="Codex黑仔/原生/sprite/Symbol 264.xml" itemID="6ac01006-c1e178a2" loadImmediate="false"/>
+    <Include href="Codex黑仔/原生/sprite/Symbol 266.xml" itemID="6ac01006-2fef198e" loadImmediate="false"/>
+    <Include href="Codex黑仔/原生/sprite/Symbol 268.xml" itemID="6ac01006-c8573489" loadImmediate="false"/>
+    <Include href="Codex黑仔/原生/sprite/Symbol 270.xml" itemID="6ac01006-df978dfa" loadImmediate="false"/>
+    <Include href="Codex黑仔/原生/sprite/Symbol 272.xml" itemID="6ac01006-3199ecd6" loadImmediate="false"/>
+    <Include href="Codex黑仔/原生/sprite/Symbol 3.xml" itemID="6ac01006-128a935a" loadImmediate="false"/>
+    <Include href="Codex黑仔/原生/sprite/Symbol 732.xml" itemID="6ac01006-533eeb39" loadImmediate="false"/>
+    <Include href="Codex黑仔/原生/sprite/Symbol 749.xml" itemID="6ac01006-8bada476" loadImmediate="false"/>
+    <Include href="Codex黑仔/原生/sprite/Symbol 788.xml" itemID="6ac01006-501fdbec" loadImmediate="false"/>
+    <Include href="Codex黑仔/原生/sprite/近战子弹 副本.xml" itemID="6ac01006-48934b73" loadImmediate="false"/>
+    <Include href="Codex黑仔/原生/主角肢体素材/Symbol 3.xml" itemID="6ac01006-eb09302f" loadImmediate="false"/>
+    <Include href="Codex黑仔/原生/主角肢体素材/Symbol 6.xml" itemID="6ac01006-9b63c4a0" loadImmediate="false"/>
+    <Include href="Codex黑仔/原生/容器/兵器攻击容器/平A/主角肢体素材/Symbol 6.xml" itemID="6ac11006-ac70f15f" loadImmediate="false"/><Include href="Codex黑仔/原生/容器/兵器攻击容器/平A/属性标签标志元件/兵器使用标签.xml" itemID="6ac11006-b039ee1f" loadImmediate="false"/><Include href="Codex黑仔/原生/容器/兵器攻击容器/平A/属性标签标志元件/兵器攻击标志.xml" itemID="6ac11006-1b0ec564" loadImmediate="false"/><Include href="Codex黑仔/原生/容器/兵器攻击容器/平A/怪物通用模板/新近战子弹定位元件/子弹素材/Symbol 13 副本.xml" itemID="6ac11006-21053186" loadImmediate="false"/><Include href="Codex黑仔/原生/容器/兵器攻击容器/平A/怪物通用模板/新近战子弹定位元件/子弹素材/Symbol 14 副本.xml" itemID="6ac11006-2bc0389f" loadImmediate="false"/><Include href="Codex黑仔/原生/容器/兵器攻击容器/平A/怪物通用模板/新近战子弹定位元件/近战子弹定位用 副本.xml" itemID="6ac11006-a1eed978" loadImmediate="false"/><Include href="Codex黑仔/原生/属性标签标志元件/兵器使用标签.xml" itemID="6ac01006-22b13a52" loadImmediate="false"/>
+    <Include href="Codex黑仔/原生/属性标签标志元件/兵器攻击标志.xml" itemID="6ac01006-89861129" loadImmediate="false"/>
+    <Include href="Codex黑仔/原生/属性标签标志元件/刚体标签.xml" itemID="6ac01006-347670c9" loadImmediate="false"/>
+    <Include href="Codex黑仔/原生/怪物通用模板/新近战子弹定位元件/子弹素材/Symbol 13 副本.xml" itemID="6ac01006-d2caf889" loadImmediate="false"/>
+    <Include href="Codex黑仔/原生/怪物通用模板/新近战子弹定位元件/子弹素材/Symbol 14 副本.xml" itemID="6ac01006-d80ff190" loadImmediate="false"/>
+    <Include href="Codex黑仔/原生/怪物通用模板/新近战子弹定位元件/近战子弹定位用 副本.xml" itemID="6ac01006-d7569e6a" loadImmediate="false"/>
+    <Include href="Codex黑仔/原生/消弹所用攻击点.xml" itemID="6ac01006-cc6589c0" loadImmediate="false"/>
+    <Include href="Codex黑仔/原生/特效与子弹/幻影/后撤步幻影.xml" itemID="6ac01006-78beabc3" loadImmediate="false"/>
+    <Include href="Codex黑仔/原生/特效与子弹/残影.xml" itemID="6ac11006-dc2f40e6" loadImmediate="false"/><Include href="Codex黑仔/固定外观/NPC/NPC-Bat/素材/无AS链接/Symbol 1323.xml" itemID="6ac01006-f4ed1f27" loadImmediate="false"/>
+    <Include href="Codex黑仔/固定外观/NPC/NPC-Bat/素材/无AS链接/Symbol 1331.xml" itemID="6ac01006-03f84f4a" loadImmediate="false"/>
+    <Include href="Codex黑仔/固定外观/NPC/NPC-Bat/素材/无AS链接/Symbol 1337.xml" itemID="6ac01006-ea9bea7f" loadImmediate="false"/>
+    <Include href="Codex黑仔/固定外观/NPC/NPC-黑仔/素材/Symbol 804.xml" itemID="6ac01006-f4eb31db" loadImmediate="false"/>
+    <Include href="Codex黑仔/固定外观/NPC/NPC-黑仔/素材/五官黑线.xml" itemID="6ac01006-7deb0b4e" loadImmediate="false"/>
+    <Include href="Codex黑仔/固定外观/NPC/NPC-黑仔/素材/男变装-天山黑侠上装上臂.xml" itemID="6ac01006-46482f17" loadImmediate="false"/>
+    <Include href="Codex黑仔/固定外观/NPC/NPC-黑仔/素材/男变装-天山黑侠上装右下臂.xml" itemID="6ac01006-d085fef6" loadImmediate="false"/>
+    <Include href="Codex黑仔/固定外观/NPC/NPC-黑仔/素材/男变装-天山黑侠上装左下臂.xml" itemID="6ac01006-b34b0557" loadImmediate="false"/>
+    <Include href="Codex黑仔/固定外观/NPC/NPC-黑仔/素材/男变装-天山黑侠上装身体.xml" itemID="6ac01006-15c773b8" loadImmediate="false"/>
+    <Include href="Codex黑仔/固定外观/NPC/NPC-黑仔/素材/男变装-天山黑侠裤子右大腿.xml" itemID="6ac01006-16cae0a1" loadImmediate="false"/>
+    <Include href="Codex黑仔/固定外观/NPC/NPC-黑仔/素材/男变装-天山黑侠裤子小腿.xml" itemID="6ac01006-e88e12b3" loadImmediate="false"/>
+    <Include href="Codex黑仔/固定外观/NPC/NPC-黑仔/素材/男变装-天山黑侠裤子屁股.xml" itemID="6ac01006-807fe794" loadImmediate="false"/>
+    <Include href="Codex黑仔/固定外观/NPC/NPC-黑仔/素材/男变装-天山黑侠裤子左大腿.xml" itemID="6ac01006-75041b00" loadImmediate="false"/>
+    <Include href="Codex黑仔/固定外观/NPC/NPC-黑仔/素材/男变装-黑色X蒙面.xml" itemID="6ac01006-720e6a78" loadImmediate="false"/>
+    <Include href="Codex黑仔/固定外观/NPC/NPC-黑仔/素材/男变装-黝黑右手.xml" itemID="6ac01006-69d19cb8" loadImmediate="false"/>
+    <Include href="Codex黑仔/固定外观/NPC/NPC-黑仔/素材/男变装-黝黑左手.xml" itemID="6ac01006-9f47c852" loadImmediate="false"/>
+    <Include href="Codex黑仔/固定外观/NPC/NPC-黑仔/素材/男变装-黝黑脸型.xml" itemID="6ac01006-725b03b9" loadImmediate="false"/>
+    <Include href="Codex黑仔/固定槽/上臂固定外观槽.xml" itemID="6ac01006-6929b1f4" loadImmediate="false"/>
+    <Include href="Codex黑仔/固定槽/右大腿固定外观槽.xml" itemID="6ac01006-b097b212" loadImmediate="false"/>
+    <Include href="Codex黑仔/固定槽/右手固定外观槽.xml" itemID="6ac01006-837a5bd5" loadImmediate="false"/>
+    <Include href="Codex黑仔/固定槽/小腿固定外观槽.xml" itemID="6ac01006-79ccfe1f" loadImmediate="false"/>
+    <Include href="Codex黑仔/固定槽/屁股固定外观槽.xml" itemID="6ac01006-6ee167b1" loadImmediate="false"/>
+    <Include href="Codex黑仔/固定槽/左下臂固定外观槽.xml" itemID="6ac01006-17ce223f" loadImmediate="false"/>
+    <Include href="Codex黑仔/固定槽/左大腿固定外观槽.xml" itemID="6ac01006-51c7c661" loadImmediate="false"/>
+    <Include href="Codex黑仔/固定槽/左手固定外观槽.xml" itemID="6ac01006-c953c0f9" loadImmediate="false"/>
+    <Include href="Codex黑仔/固定槽/左手臂固定外观槽.xml" itemID="6ac01006-6c57e32a" loadImmediate="false"/>
+    <Include href="Codex黑仔/固定槽/球棒.xml" itemID="6ac01006-a64ac120" loadImmediate="false"/>
+    <Include href="Codex黑仔/固定槽/碎片球棒.xml" itemID="6ac01006-977bf803" loadImmediate="false"/>
+    <Include href="Codex黑仔/固定槽/脚固定外观槽.xml" itemID="6ac01006-25a37e47" loadImmediate="false"/>
+    <Include href="Codex黑仔/固定槽/脸与X头巾.xml" itemID="6ac01006-b907b31c" loadImmediate="false"/>
+    <Include href="Codex黑仔/固定槽/身体固定外观槽.xml" itemID="6ac01006-3ae29e22" loadImmediate="false"/>
+    <Include href="Codex黑仔/模板/军阀派杂兵/怪物通用模板/area框/hitbox-area框载体.xml" itemID="6ac01006-8012d156" loadImmediate="false"/>
+    <Include href="Codex黑仔/模板/军阀派杂兵/怪物通用模板/血条与名称/新版血条位置示意.xml" itemID="6ac01006-26233595" loadImmediate="false"/>
+    <Include href="Codex黑仔/模板/军阀派杂兵/怪物通用模板/通用ai元件/思考标签.xml" itemID="6ac01006-e1d4e1b1" loadImmediate="false"/>
+    <Include href="Codex黑仔/模板/军阀派杂兵/怪物通用模板/通用ai元件/行走ai载体.xml" itemID="6ac01006-4287bfb8" loadImmediate="false"/>
+    <Include href="Codex黑仔/模板/军阀派杂兵/重复项目文件夹/Symbol 13.xml" itemID="6ac01006-d09cdfb3" loadImmediate="false"/>
+    <Include href="Codex黑仔/球棒/刀-木制球棒.xml" itemID="6ac01006-ff56064b" loadImmediate="false"/>
+    <Include href="Codex黑仔/球棒/图标/Symbol 12.xml" itemID="6ac01006-cd87e2c6" loadImmediate="false"/>
+    <Include href="Codex黑仔/球棒/图标/Symbol 13.xml" itemID="6ac01006-ba80d250" loadImmediate="false"/>
+    <Include href="Codex黑仔/肢体/上臂.xml" itemID="6ac01006-ee6d8378" loadImmediate="false"/>
+    <Include href="Codex黑仔/肢体/主角碎片刀.xml" itemID="6ac01006-d5d0f317" loadImmediate="false"/>
+    <Include href="Codex黑仔/肢体/刀.xml" itemID="6ac01006-5416fdc0" loadImmediate="false"/>
+    <Include href="Codex黑仔/肢体/右大腿.xml" itemID="6ac01006-344ec2d2" loadImmediate="false"/>
+    <Include href="Codex黑仔/肢体/右手.xml" itemID="6ac01006-56d23b40" loadImmediate="false"/>
+    <Include href="Codex黑仔/肢体/头.xml" itemID="6ac01006-4c9362db" loadImmediate="false"/>
+    <Include href="Codex黑仔/肢体/小腿.xml" itemID="6ac01006-48c1c5bd" loadImmediate="false"/>
+    <Include href="Codex黑仔/肢体/屁股.xml" itemID="6ac01006-2030309a" loadImmediate="false"/>
+    <Include href="Codex黑仔/肢体/左下臂.xml" itemID="6ac01006-b976ae40" loadImmediate="false"/>
+    <Include href="Codex黑仔/肢体/左大腿.xml" itemID="6ac01006-57803973" loadImmediate="false"/>
+    <Include href="Codex黑仔/肢体/左手.xml" itemID="6ac01006-a0446faa" loadImmediate="false"/>
+    <Include href="Codex黑仔/肢体/左手臂.xml" itemID="6ac01006-68ff9e7d" loadImmediate="false"/>
+    <Include href="Codex黑仔/肢体/脚.xml" itemID="6ac01006-0d19d8e5" loadImmediate="false"/>
+    <Include href="Codex黑仔/肢体/身体.xml" itemID="6ac01006-bde2dfd7" loadImmediate="false"/>
+    <Include href="Codex黑仔素材.xml" itemID="6ac01006-1a8f77e7" loadImmediate="false"/>
+    <Include href="敌人-Codex黑仔.xml" itemID="6ac01006-c1b36536" loadImmediate="false"/>
+  <Include href="Codex黑仔/肢体/脚-转向.xml" itemID="6ac01006-6c000001" loadImmediate="false"/><Include href="Codex黑仔/固定槽/脚转向固定外观槽.xml" itemID="6ac01006-6c000002" loadImmediate="false"/><Include href="Codex黑仔/固定外观/脚转向正面.xml" itemID="6ac01006-6c000003" loadImmediate="false"/></symbols>
+  <media>
+    <DOMBitmapItem name="Codex黑仔/原生/特效与子弹/幻影/位图 2" itemID="6ac21006-6e726d44" sourceExternalFilepath="位图 2.png" sourceLastImported="1763486083" allowSmoothing="true" useImportedJPEGData="false" compressionType="lossless" originalCompressionType="lossless" quality="50" href="特效与子弹/幻影/位图 2.png" bitmapDataHRef="black-6e726d44.dat" frameRight="5860" frameBottom="9460"/>
+  </media>
+  <timelines>
+    <DOMTimeline name="场景 1">
+      <layers>
+        <DOMLayer name="共享导出锚点" color="#4FFF4F">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <Actionscript>
+                <script>stop();</script>
+              </Actionscript>
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex黑仔素材">
+                  <matrix>
+                    <Matrix/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timelines>
+</DOMDocument>

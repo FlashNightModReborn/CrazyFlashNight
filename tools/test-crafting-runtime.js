@@ -242,7 +242,7 @@ function materialTaxonomy() {
                 }))}
         ],
         recipePurposes:registry(['铁枪会','属性武器','烹饪','化学生产','武器合成','饰品合成',
-            '进阶防具','基础防具','公社防具','黑白契约','插件合成','大学装备'],'recipe:'),
+            '进阶防具','基础防具','公社防具','黑白契约','插件合成','大学装备','书中配给'],'recipe:'),
         directPurposes:[{id:'system:equipment_tuning',label:'装备改装',order:0}],
         fallback:{id:'unstructured',label:'尚未结构化用途',order:2147483647}};
 }
@@ -518,10 +518,10 @@ test('Crafting v2 catalog enforces taxonomy closure, archive order and purpose c
         }));
     }
     const taxonomy1024 = v2CatalogResponse('战术握把');
-    taxonomy1024.taxonomy.directPurposes = directRegistry(987);
+    taxonomy1024.taxonomy.directPurposes = directRegistry(986);
     assert.strictEqual(Runtime.validateBusinessResponse(taxonomy1024,entry),true);
     const taxonomy1025 = v2CatalogResponse('战术握把');
-    taxonomy1025.taxonomy.directPurposes = directRegistry(988);
+    taxonomy1025.taxonomy.directPurposes = directRegistry(987);
     assert.strictEqual(Runtime.validateBusinessResponse(taxonomy1025,entry),false);
 
     const direct128 = v2CatalogResponse('战术握把');

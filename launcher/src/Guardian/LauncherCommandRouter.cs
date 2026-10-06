@@ -176,6 +176,14 @@ namespace CF7Launcher.Guardian
         private readonly Action<string> _postToWeb;
         private readonly bool _preparationNavigationV1;
         private PanelHostController _panelHost;
+        private BookComicTask _bookComicTask;
+        public void SetBookComicTask(BookComicTask task) { _bookComicTask = task; }
+        public string TryOpenBookComic(JObject request) {
+            var data = BookComicTask.BuildOpenData(request.Value<string>("source"), request["initData"]?.ToString(Formatting.None));
+            bool accepted = data != null && _bookComicTask != null && _panelHost != null && string.IsNullOrEmpty(_panelHost.ActivePanelName) && _bookComicTask.Reserve(data);
+            if (accepted) { accepted = OpenPanel("book-comic", data.ToString(Formatting.None)); if (!accepted) _bookComicTask.RejectOpen(data); }
+            return new JObject { ["success"] = accepted, ["accepted"] = accepted, ["bound"] = false, ["panel"] = "book-comic", ["presentationId"] = data?["presentationId"], ["error"] = accepted ? "" : "comic_open_rejected" }.ToString(Formatting.None);
+        }
         private LootPanelCoordinator _lootPanelCoordinator;
         private SkillTask _skillTask;
         private EquipmentTuningTask _equipmentTuningTask;
@@ -2977,7 +2985,7 @@ namespace CF7Launcher.Guardian
                 case "SHOP":
                     LogManager.Log("[Router] SHOP clicked");
                     if (TrySendGameCommand("shopPanelOpen"))
-                        OpenPanel("kshop", null);
+                        OpenPanelWithAcquiredGameState("kshop", "shopPanelClose");
                     else
                     {
                         LogManager.Log("[Router] SHOP shopPanelOpen failed");
@@ -3044,7 +3052,7 @@ namespace CF7Launcher.Guardian
                 case "NEW_TASK_UI":
                     LogManager.Log("[Router] task UI clicked -> web panel");
                     if (TrySendGameCommand("taskPanelOpen"))
-                        OpenPanel("tasks", null);
+                        OpenPanelWithAcquiredGameState("tasks", "taskPanelClose");
                     else
                     {
                         LogManager.Log("[Router] task panel taskPanelOpen failed");
@@ -3313,6 +3321,12 @@ namespace CF7Launcher.Guardian
                         "crafting",
                         StringComparison.Ordinal),
                     openRequestId);
+                return;
+            }
+            if (string.Equals(panelName, "bookshelf", StringComparison.Ordinal))
+            {
+                JObject data = BookshelfTask.BuildOpenData(safeSource, initDataExtrasJson);
+                if (data != null) OpenPanel("bookshelf", data.ToString(Formatting.None));
                 return;
             }
             if (string.Equals(panelName, "sleep", StringComparison.Ordinal))
@@ -4194,7 +4208,7 @@ namespace CF7Launcher.Guardian
             {
                 case "铁枪会": case "属性武器": case "烹饪": case "化学生产":
                 case "武器合成": case "饰品合成": case "进阶防具": case "基础防具":
-                case "公社防具": case "黑白契约": case "插件合成": case "大学装备": return true;
+                case "公社防具": case "黑白契约": case "插件合成": case "大学装备": case "书中配给": return true;
                 default: return false;
             }
         }
@@ -4598,6 +4612,15 @@ namespace CF7Launcher.Guardian
         /// <summary>
         /// returnTo 版本：关闭本 panel 后自动 reopen returnToPanel。仅 PanelHostController 路径支持。
         /// </summary>
+        private void OpenPanelWithAcquiredGameState(string panelName, string cleanup)
+        {
+            // Only these native entries have already sent a matching game-side open.
+            // Generic admission failures can belong to an acknowledged write/recovery owner.
+            if (!OpenPanel(panelName, null) && _panelHost?.ActivePanelName != panelName)
+                LogManager.Log("[Router] rejected-open cleanup panel=" + panelName
+                    + " command=" + cleanup + " delivered=" + TrySendGameCommand(cleanup));
+        }
+
         private bool OpenPanel(
             string panelName,
             string initDataJson,

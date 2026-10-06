@@ -135,6 +135,7 @@ class org.flashNight.neur.Server.test.SaveManagerTest {
         test_loadFromMydata_future_drug_schema_preserves_session();
         test_launcher_snapshot_migrates_drug_schema();
         test_launcher_snapshot_migrates_reward_inbox();
+        test_replacePlayerContext_isolates_character_and_temporary_run();
     }
 
     private static function runPrefetchTests():Void {
@@ -196,6 +197,9 @@ class org.flashNight.neur.Server.test.SaveManagerTest {
         itemData["测试初始上装"] = equipmentItemData("测试初始上装", "上装装备");
         itemData["测试初始下装"] = equipmentItemData("测试初始下装", "下装装备");
         itemData["测试初始鞋"] = equipmentItemData("测试初始鞋", "脚部装备");
+        itemData["白色中山上装"] = equipmentItemData("白色中山上装", "上装装备");
+        itemData["白色中山装裤子"] = equipmentItemData("白色中山装裤子", "下装装备");
+        itemData["黑色板鞋"] = equipmentItemData("黑色板鞋", "脚部装备");
         itemData["福袋"] = {
             name:"福袋", displayname:"福袋", icon:"福袋",
             type:"消耗品", use:"礼包", data:{level:1}
@@ -205,6 +209,9 @@ class org.flashNight.neur.Server.test.SaveManagerTest {
         equipment["测试初始上装"] = true;
         equipment["测试初始下装"] = true;
         equipment["测试初始鞋"] = true;
+        equipment["白色中山上装"] = true;
+        equipment["白色中山装裤子"] = true;
+        equipment["黑色板鞋"] = true;
         ItemUtil.equipmentDict = equipment;
         // TestLoader 不加载时间轴上的生产桥；装备栏仍按生产契约经
         // _root.getItemData 校验 use，因此 focused fixture 显式接到同一真源。
@@ -1366,6 +1373,151 @@ class org.flashNight.neur.Server.test.SaveManagerTest {
     }
 
     // ── Phase 1: loadFromMydata 测试用例 ──
+
+    /** 真实重建路径；不以 panel 的 replacePlayerContext 替身证明角色隔离。 */
+    private static function test_replacePlayerContext_isolates_character_and_temporary_run():Void {
+        var keys:Array = ["savePath", "gameworld", "场景转换中", "当前为战斗地图",
+            "基础身价值", "允许存档", "限制系统", "转场景数据", "转场景记录数据第一次记录",
+            "新出生", "当前关卡名", "当前关卡难度", "当前通关的关卡", "难度等级",
+            "关卡地图帧值", "场景进入位置名", "关卡可获得奖励品",
+            "是否达成任务检测", "__contextTaskUi"];
+        var previous:Object = {};
+        var key:String;
+        for (var i:Number = 0; i < keys.length; i++) {
+            key = keys[i]; previous[key] = _root[key];
+        }
+        var sm:SaveManager = SaveManager.getInstance();
+        var world:MovieClip;
+        setUpForLoadTest();
+        try {
+            sm._configureSaveFlowForTest({saveInFlight:false, resetDirty:true,
+                resetScheduler:true, flushResult:undefined, beforeLocalCommit:null});
+            StageRunSession.testOnlyReset();
+            _root._saveExt = {};
+            _root.gameworld = undefined;
+            _root.当前为战斗地图 = false;
+            _root.场景转换中 = true;
+            _root.限制系统 = undefined;
+            _root.基础身价值 = 1000;
+            sm._resetSavePhysicalStatsForTest();
+            _root.是否达成任务检测 = function():Void {
+                _root.__contextTaskUi = {slot:String(_root.savePath),
+                    taskCount:_root.tasks_to_do.length, mainline:_root.主线任务进度,
+                    completed:_root.tasks_finished["21"]};
+            };
+
+            var a:Object = buildValidMydata();
+            a[0][0] = "书架测试甲"; a[0][2] = 1111; a[0][6] = 42;
+            a[0][9] = 1234; a[3] = 77;
+            a[5] = [["甲技能", 3, true, "", true]];
+            a.tasks.tasks_to_do = [{id:"22"}];
+            a.tasks.tasks_finished["21"] = true;
+            a.tasks.task_chains_progress = {主线:77, 支线:3};
+            a.shop.商城购物车 = ["甲商品"];
+            a.pets.宠物信息[0] = ["甲宠物"];
+            a.ext.isolationProbe = "甲";
+            var b:Object = buildValidMydata();
+            b[0][0] = "书架测试乙"; b[0][2] = 2222; b[0][6] = 7;
+            b.ext.isolationProbe = "乙";
+            var slotA:String = TEST_SLOT + "_context_a";
+            var slotB:String = TEST_SLOT + "_context_b";
+            var runSlot:String = "bookrun_cf7_savemanager_fixture";
+
+            assert(sm.replacePlayerContext(slotA, a, null)
+                    && _root.savePath == slotA && _root.角色名 == "书架测试甲",
+                "replace_context: adopts permanent A while the transition covers the destroyed world");
+            world = _root.createEmptyMovieClip("__bookshelfContextWorld", _root.getNextHighestDepth());
+            _root.gameworld = world;
+            assert(!sm.replacePlayerContext(slotB, b, null)
+                    && _root.savePath == slotA && _root.金钱 == 1111,
+                "replace_context: a real surviving world rejects adoption without clearing A");
+            world.removeMovieClip();
+            _root.gameworld = undefined;
+            assert(!sm.replacePlayerContext("../invalid", b, null)
+                    && _root.savePath == slotA && _root._saveExt.isolationProbe == "甲",
+                "replace_context: noncanonical slot rejects before clearing character memory");
+            assert(!sm.replacePlayerContext(slotB, {}, null)
+                    && _root.技能点数 == 42 && _root.主角技能表[0][0] == "甲技能",
+                "replace_context: malformed snapshot preserves the current character");
+            sm._configureSaveFlowForTest({saveInFlight:true});
+            assert(!sm.replacePlayerContext(slotB, b, null) && _root.savePath == slotA,
+                "replace_context: in-flight save cannot change its owning slot");
+            sm._configureSaveFlowForTest({saveInFlight:false});
+
+            assert(sm.replacePlayerContext(slotB, b, null)
+                    && _root.savePath == slotB && _root.角色名 == "书架测试乙"
+                    && _root.金钱 == 2222 && _root.技能点数 == 7,
+                "replace_context: B replaces identity and balances");
+            assert(_root.tasks_finished["21"] == undefined
+                    && _root.商城购物车.length == 0 && _root.宠物信息[0].length == 0
+                    && _root.主角技能表.length == 0 && _root._saveExt.isolationProbe == "乙",
+                "replace_context: tasks, shop, pets, skills and ext from A do not leak into B");
+
+            assert(sm.replacePlayerContext(slotA, a, null)
+                    && _root.__contextTaskUi.slot == slotA && _root.__contextTaskUi.taskCount == 1
+                    && _root.__contextTaskUi.mainline == 77 && _root.__contextTaskUi.completed == true
+                    && _root.虚拟币 == 1234,
+                "replace_context: prime populated task state, HUD projection and K balance before entering the book");
+            armBankTwoAndAllDrugCooldowns();
+            _root.转场景数据 = [99, 88, "长枪"];
+            var run:Object = {slot:runSlot, originSlot:slotA, status:"active", seed:7};
+            assert(sm.replacePlayerContext(runSlot, null, run)
+                    && _root.savePath == runSlot && _root.角色名 == "Andy Law"
+                    && _root.等级 == 1 && _root.金钱 == 8000 && _root.技能点数 == 120
+                    && _root.虚拟币 == 0,
+                "replace_context: temporary Andy receives independent initial balances");
+            assert(_root.tasks_to_do.length == 0 && _root.tasks_finished["21"] == undefined
+                    && _root.task_chains_progress.主线 == undefined
+                    && _root.task_chains_progress.支线 == undefined && _root.主线任务进度 == 0
+                    && _root.__contextTaskUi.slot == runSlot && _root.__contextTaskUi.taskCount == 0
+                    && _root.__contextTaskUi.mainline == 0 && _root.__contextTaskUi.completed == undefined,
+                "replace_context: empty book tasks refresh the HUD instead of retaining the permanent delivery notice");
+            assert(_root.物品栏.装备栏.getItem("上装装备").name == "白色中山上装"
+                    && _root.物品栏.装备栏.getItem("下装装备").name == "白色中山装裤子"
+                    && _root.物品栏.装备栏.getItem("脚部装备").name == "黑色板鞋",
+                "replace_context: starter equipment uses the real BaseItem and EquipmentInventory path");
+            assert(_root.主角技能表.length == 80 && _root.主角技能表[0][0] == ""
+                    && _root.商城购物车.length == 0 && _root.宠物信息[0].length == 0
+                    && _root._saveExt.isolationProbe == undefined
+                    && _root._saveExt.bookRun !== run && _root._saveExt.bookRun.originSlot == slotA,
+                "replace_context: temporary state starts clean and owns a detached run record");
+            assert(_root.转场景数据[0] == 0 && _root.转场景数据[1] == 0
+                    && DrugInputService.getActiveBank() == 0 && allDrugCooldownsReady(true),
+                "replace_context: carry-over HP/MP and drug session are reset");
+
+            _root.金钱 = 999999; _root.技能点数 = 999;
+            _root.虚拟币 = 1399;
+            _root.主角技能表[0][0] = "局内技能";
+            _root.tasks_finished["局内任务"] = true;
+            _root.商城购物车.push("局内商品");
+            assert(sm.replacePlayerContext(slotA, a, null)
+                    && _root.金钱 == 1111 && _root.技能点数 == 42
+                    && _root.虚拟币 == 1234 && _root.tasks_to_do.length == 1
+                    && _root.task_chains_progress.主线 == 77 && _root.task_chains_progress.支线 == 3
+                    && _root.__contextTaskUi.slot == slotA && _root.__contextTaskUi.taskCount == 1
+                    && _root.__contextTaskUi.mainline == 77 && _root.__contextTaskUi.completed == true
+                    && _root.主角技能表[0][0] == "甲技能" && _root.tasks_finished["21"] == true
+                    && _root.tasks_finished["局内任务"] == undefined
+                    && _root.商城购物车.length == 1 && _root.商城购物车[0] == "甲商品"
+                    && _root.宠物信息[0][0] == "甲宠物" && _root._saveExt.bookRun == undefined,
+                "replace_context: returning to A discards run balances and restores character domains");
+            assert(a[0][2] == 1111 && a[0][9] == 1234 && b[0][2] == 2222 && run.status == "active"
+                    && a.ext.bookRun == undefined && b.ext.bookRun == undefined,
+                "replace_context: temporary mutations do not rewrite permanent input snapshots");
+            var stats:Object = sm._getSavePhysicalStatsForTest();
+            assert(stats.doSaveAll == 0 && stats.flushAttempt == 0 && stats.shadowDispatch == 0,
+                "replace_context: adoption only changes memory and never writes a player slot");
+        } finally {
+            if (world._parent != undefined) world.removeMovieClip();
+            sm._configureSaveFlowForTest({saveInFlight:false, resetDirty:true, resetScheduler:true});
+            sm.clearPrefetch();
+            StageRunSession.testOnlyReset();
+            ManualCooldownService.resetForTests();
+            for (var j:Number = 0; j < keys.length; j++) {
+                key = keys[j]; _root[key] = previous[key];
+            }
+        }
+    }
 
     private static function test_loadFromMydata_v3_succeeds():Void {
         setUpForLoadTest();

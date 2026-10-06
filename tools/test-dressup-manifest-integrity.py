@@ -631,6 +631,36 @@ def assert_torso_png_not_on_limbs(manifest: dict[str, Any], failures: list[str])
         failures.append(f"{hits - 12} additional 身体-PNG-on-limb collapses")
 
 
+def assert_tier_appearance_closure(manifest: dict[str, Any], failures: list[str]) -> None:
+    profiles = 0
+    for path in (PROJECT_ROOT / "data/items").glob("*.xml"):
+        for item in ET.parse(path).getroot().findall("item"):
+            name = item.findtext("name")
+            for profile in item:
+                if not profile.tag.startswith("data_") or not any(
+                    profile.find(key) is not None for key in ("dressup", "dressup1", "dressup2", "dressup3")
+                ):
+                    continue
+                profiles += 1
+                variant = ((manifest.get("items", {}).get(name) or {}).get("appearanceVariants") or {}).get(profile.tag)
+                if variant is None:
+                    failures.append(f"{name}/{profile.tag}: tier appearance missing from generated catalog")
+                    continue
+                for gender, fields in variant.get("fieldsByGender", {}).items():
+                    for skin in fields.values():
+                        if skin not in manifest.get("skinKeys", {}):
+                            failures.append(f"{name}/{profile.tag}/{gender}: unregistered skin {skin}")
+    m7 = manifest.get("items", {}).get("火药燃气液压打桩机", {})
+    if m7.get("dressup") != "枪-长枪-火药燃气液压打桩机":
+        failures.append("M7 tier must not replace the base item appearance")
+    for gender in ("男", "女"):
+        fields = m7.get("appearanceVariants", {}).get("data_pilebunker_m7", {}).get("fieldsByGender", {}).get(gender, {})
+        if fields.get("长枪_装扮") != "枪-长枪-Codex-打桩机M7":
+            failures.append(f"M7/{gender}: advanced appearance must resolve to its own baked skin")
+    if profiles == 0:
+        failures.append("tier appearance source scan found no profiles")
+
+
 def main() -> None:
     manifest = read_json(MANIFEST_PATH)
     report = read_json(REPORT_PATH) if REPORT_PATH.exists() else {}
@@ -684,6 +714,7 @@ def main() -> None:
     assert_required_appearance_keys(manifest, failures)
     assert_dialogue_face_expressions(manifest, failures)
     assert_required_item_helmet_flags(manifest, failures)
+    assert_tier_appearance_closure(manifest, failures)
     assert_battle_rig(manifest, failures)
     assert_attack_mode_runtime_variant(manifest, failures)
     assert_missing_source_references(manifest, report, failures)

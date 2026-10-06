@@ -1061,7 +1061,7 @@ class Program
             {
                 try
                 {
-                    string wv2Version = CoreWebView2Environment.GetAvailableBrowserVersionString();
+                    string wv2Version = CF7Launcher.FixedWebViewRuntime.EnsureAvailable();
                     StartupDiagnostics.Mark("webview2.precheck_ok", "version=" + wv2Version);
                 }
                 catch (Exception ex) { wv2Error = ex.Message; }
@@ -1078,7 +1078,7 @@ class Program
                     "CF7-LAUNCH-WEBVIEW2-MISSING",
                     "WebView2 Runtime 不可用",
                     wv2Error,
-                    "请安装或修复 Microsoft Edge WebView2 Runtime，然后重新启动游戏。官方下载页: https://developer.microsoft.com/microsoft-edge/webview2/",
+                    "请验证或重新安装游戏文件以修复随游戏提供的 WebView2 运行时，然后重新启动游戏。",
                     null,
                     null,
                     null);
@@ -1599,7 +1599,7 @@ class Program
         string wv2ver;
         using (PerfTrace.Scope("webview2.runtime_check"))
         {
-            wv2ver = CoreWebView2Environment.GetAvailableBrowserVersionString();
+            wv2ver = CF7Launcher.FixedWebViewRuntime.EnsureAvailable();
         }
         LogManager.Log("[WebView2] Runtime found: " + wv2ver);
         StartupDiagnostics.Mark("webview2.runtime_check_ok", "version=" + wv2ver);
@@ -1637,6 +1637,8 @@ class Program
                 windowManager.HandoffFlashFocusBeforePanelHide);
         }
         StartupDiagnostics.Mark("web_overlay.construct_ok");
+        webOverlay.IdleFlashFocusRestorer = eligible => windowManager.RestoreFlashInputFocus(
+            "app_reactivated_idle", () => !compositionHelpOwnsInput() && eligible());
         CF7Launcher.Guardian.Hud.INativeCursor cursorOverlay = null;
         if (config.NativeCursorOverlayEnabled)
         {
@@ -2021,7 +2023,7 @@ class Program
             form, form.FlashHostPanel, form.GetFlashHwnd,
             () => !form.IsShutdownAdmissionClosed && launchFlow != null && launchFlow.CurrentState == "Ready"
                 && launchFlow.RevealPerformed
-                && (panelHost == null || !panelHost.IsPanelOpen || panelHost.SceneSettlementLoading),
+                && (panelHost == null || !panelHost.IsPanelOpen || panelHost.SceneSettlementLoading || panelHost.BookshelfReturnLoading),
             message => toastSink.AddMessage(message), projectRoot,
             () => launchFlow != null && (launchFlow.CurrentState == "Embedding"
                 || launchFlow.CurrentState == "WaitingGameReady" || launchFlow.CurrentState == "Ready"),
@@ -2049,6 +2051,9 @@ class Program
             worldCompositor.IsTransitionScenePresented,
             foreground => windowManager.HandoffFlashFocusBeforePanelHide("scene_transition:before_hide",foreground),
             worldOverlays, worldCompositor.HoldTransitionInput);
+        // The returned character may render below the still-visible bookshelf.
+        // Repair its order in the same UI callback that shows the world HWND.
+        worldCompositor.PresentationShown += sceneTransition.RestoreRetainedBookshelfOrder;
         socketServer.OnClientDisconnected += sceneTransition.Task.HandleTransportDisconnected;
         panelHost?.ConfigureTransitionSettlement(sceneTransition);
         form.FormClosed += delegate { sceneTransition.Dispose(); };
@@ -2235,7 +2240,18 @@ class Program
         HairdresserTask hairdresserTask = new HairdresserTask(socketServer);
         PlasticSurgeryTask plasticSurgeryTask = new PlasticSurgeryTask(socketServer);
         GaragePurchaseTask garagePurchaseTask = new GaragePurchaseTask(socketServer);
+        BookComicTask bookComicTask = new BookComicTask(socketServer);
+        commandRouter.SetBookComicTask(bookComicTask);
+        panelHost?.SetBookComicTask(bookComicTask);
+        webOverlay.SetBookComicTask(bookComicTask);
         SleepTask sleepTask = new SleepTask(socketServer);
+        BookshelfTask bookshelfTask = new BookshelfTask(socketServer);
+        bookshelfTask.SetPermanentSlotApplied(delegate(string slotKey)
+        {
+            if (userPrefs == null || userPrefs.LastPlayedSlot == slotKey) return;
+            userPrefs.LastPlayedSlot = slotKey;
+            userPrefs.Save();
+        });
         GymTrainingTask gymTrainingTask = new GymTrainingTask(socketServer);
         gymTrainingTask.SetActivityProbe(delegate
         {
@@ -2355,6 +2371,8 @@ class Program
                 if (panelName == "surgery") plasticSurgeryTask.ClearPending();
                 if (panelName == "garage") garagePurchaseTask.ClearPending();
                 if (panelName == "sleep") sleepTask.ClearPending();
+                if (panelName == "book-comic") bookComicTask.OnHostClosed(panelInstanceId);
+                if (panelName == "bookshelf") bookshelfTask.ClearPending();
                 if (panelName == "gym") gymTrainingTask.HandlePanelClosed(panelInstanceId);
                 if (panelName == "settings") settingsTask.HandleAuthoritativePanelClosed(panelInstanceId);
             });
@@ -2659,7 +2677,7 @@ class Program
 
         using (PerfTrace.Scope("task.registry_register_all"))
         {
-            TaskRegistry.RegisterAll(router, gomokuTask, toastTask, frameTask, stageOutcomeTask, warlordStageTask, warlordBattleTask, dataQueryTask, audioTask, dollBakeTask, shopTask, inventoryTask, lootTask, lootFeedTask, lootPanelCoordinator, npcShopTask, craftingTask, materialShopAccessTask, hairdresserTask, plasticSurgeryTask, garagePurchaseTask, sleepTask, gymTrainingTask, settingsTask, equipmentTuningTask, characterBuildTask, itemUseTask, skillTask, mapTask, stageSelectTask, arenaTask, arenaCalibrationTask, agentControlTask, petTask, mercTask, taskTask, intelligenceTask, blackMarketTask, archiveTask, benchTask, fontPackTask, webOverlay, commandRouter, mapDomainTask, nativeInteractionTask, nativeDialogueTask, worldLightingTask, lutLabTask, nativeGuidanceTask, sceneTransition.Task);
+            TaskRegistry.RegisterAll(router, gomokuTask, toastTask, frameTask, stageOutcomeTask, warlordStageTask, warlordBattleTask, dataQueryTask, audioTask, dollBakeTask, shopTask, inventoryTask, lootTask, lootFeedTask, lootPanelCoordinator, npcShopTask, craftingTask, materialShopAccessTask, hairdresserTask, plasticSurgeryTask, garagePurchaseTask, sleepTask, bookshelfTask, gymTrainingTask, settingsTask, equipmentTuningTask, characterBuildTask, itemUseTask, skillTask, mapTask, stageSelectTask, arenaTask, arenaCalibrationTask, agentControlTask, petTask, mercTask, taskTask, intelligenceTask, blackMarketTask, archiveTask, benchTask, fontPackTask, webOverlay, commandRouter, mapDomainTask, nativeInteractionTask, nativeDialogueTask, worldLightingTask, lutLabTask, nativeGuidanceTask, sceneTransition.Task, bookComicTask);
         }
         StartupDiagnostics.Mark("task.registry_register_all_ok");
 
@@ -2679,6 +2697,7 @@ class Program
         webOverlay.SetPlasticSurgeryTask(plasticSurgeryTask);
         webOverlay.SetGaragePurchaseTask(garagePurchaseTask);
         webOverlay.SetSleepTask(sleepTask);
+        webOverlay.SetBookshelfTask(bookshelfTask);
         webOverlay.SetGymTrainingTask(gymTrainingTask);
         webOverlay.SetSettingsTask(settingsTask);
         webOverlay.SetEquipmentTuningTask(equipmentTuningTask);
@@ -2823,7 +2842,8 @@ class Program
             materialShopAccessTask.Dispose();
             npcShopTask.Dispose();
             craftingTask.Dispose();
-            hairdresserTask.Dispose(); plasticSurgeryTask.Dispose(); garagePurchaseTask.Dispose(); sleepTask.Dispose(); gymTrainingTask.Dispose();
+            hairdresserTask.Dispose(); plasticSurgeryTask.Dispose(); garagePurchaseTask.Dispose(); sleepTask.Dispose(); bookComicTask.Dispose();
+            bookshelfTask.Dispose(); gymTrainingTask.Dispose();
             settingsTask.Dispose();
             stageOutcomeTask.Dispose();
             petTask.Dispose();
@@ -2895,7 +2915,8 @@ class Program
             try { materialShopAccessTask.Dispose(); } catch { }
             try { npcShopTask.Dispose(); } catch { }
             try { craftingTask.Dispose(); } catch { }
-            try { hairdresserTask.Dispose(); plasticSurgeryTask.Dispose(); garagePurchaseTask.Dispose(); sleepTask.Dispose(); gymTrainingTask.Dispose(); } catch { }
+            try { hairdresserTask.Dispose(); plasticSurgeryTask.Dispose(); garagePurchaseTask.Dispose(); sleepTask.Dispose();
+            bookshelfTask.Dispose(); gymTrainingTask.Dispose(); } catch { }
             try { settingsTask.Dispose(); } catch { }
             try { stageOutcomeTask.Dispose(); } catch { }
             try { petTask.Dispose(); } catch { }
@@ -3022,6 +3043,7 @@ class Program
             solLocator, archiveTask, new CF7Launcher.Save.NativeSolParser(), archiveTask);
         CF7Launcher.Save.SaveResolutionContext saveCtx = new CF7Launcher.Save.SaveResolutionContext(
             solLocator, solResolver, archiveTask, config.SwfPath, projectRoot);
+        bookshelfTask.SetSaveContext(saveCtx);
 
         // 注入诊断打包依赖：HttpApiServer 的 /diagnostic 端点需要 SOL 解析器复制原件
         httpServer.SetDiagnosticDeps(config.SwfPath, solLocator);
@@ -3808,7 +3830,8 @@ class Program
         try { materialShopAccessTask.Dispose(); } catch { }
         try { npcShopTask.Dispose(); } catch { }
         try { craftingTask.Dispose(); } catch { }
-        try { hairdresserTask.Dispose(); plasticSurgeryTask.Dispose(); garagePurchaseTask.Dispose(); sleepTask.Dispose(); gymTrainingTask.Dispose(); } catch { }
+        try { hairdresserTask.Dispose(); plasticSurgeryTask.Dispose(); garagePurchaseTask.Dispose(); sleepTask.Dispose();
+            bookshelfTask.Dispose(); gymTrainingTask.Dispose(); } catch { }
         try { worldCompositor.Dispose(); } catch { }
         try { settingsTask.Dispose(); } catch { }
         try { stageOutcomeTask.Dispose(); } catch { }

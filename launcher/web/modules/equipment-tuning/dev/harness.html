@@ -74,6 +74,11 @@ function respond(message){var result=base(message);
   if(message.cmd==='snapshot'&&__resumeRequired&&!message.payload.reconcileAfterCallId){__resumeRequired=false;Object.assign(result,{success:false,error:'reconcile_required',requiresReconcile:true,reconcileAfterCallId:'tune.host.resume.1'});}
   else if(message.cmd==='snapshot')Object.assign(result,{success:true,snapshot:snapshot(message),reconciled:!!message.payload.reconcileAfterCallId,reconcileAfterCallId:message.payload.reconcileAfterCallId});
   else if(message.cmd==='preview'){
+    if(window.__shortageEnhanceOnce && message.payload.operation==='enhance'){
+      window.__shortageEnhanceOnce=false;
+      Object.assign(result,{success:false,error:'insufficient_material',materialShortage:{itemName:'强化石',required:208600,owned:208589,missing:11}});
+      emit(result);return;
+    }
     var operation=message.payload.operation,noOp=operation==='convert'&&slots[message.payload.source.slot].item.enhancementLevel===slots[message.payload.target.slot].item.enhancementLevel;
     var sourceSlot=message.payload.source.slot,current=slots[sourceSlot].item.enhancementLevel,beforeProjection={source:projection(sourceSlot,current)},afterProjection={source:projection(sourceSlot,operation==='enhance'?message.payload.targetLevel:current,operation==='replace_mod'?['测试瞄具']:undefined)};
     if(operation==='convert'){var targetSlot=message.payload.target.slot,targetLevel=slots[targetSlot].item.enhancementLevel;beforeProjection.target=projection(targetSlot,targetLevel);afterProjection.source=projection(sourceSlot,targetLevel);afterProjection.target=projection(targetSlot,current)}
@@ -307,6 +312,12 @@ function respond(message){var result=base(message);
     ok('enhance preview with stats leaves the hidden compact section and renders attribute delta rows',document.querySelector('.equipment-tuning-reactor-readout').textContent.indexOf('+5→+6')>=0&&document.querySelector('.equipment-tuning-preview')&&!document.querySelector('.equipment-tuning-preview').hidden&&document.querySelector('.equipment-tuning-preview .equipment-tuning-stats-row.is-better .equipment-tuning-stats-label').textContent==='锋利度'&&document.querySelector('.equipment-tuning-preview .equipment-tuning-stats-row .equipment-tuning-stats-change').textContent==='10.8 → 11'&&document.querySelector('.equipment-tuning-preview .equipment-tuning-stats-row .equipment-tuning-stats-delta-value').textContent==='+0.2'&&document.querySelectorAll('.equipment-tuning-commit').length===1&&document.querySelector('.equipment-tuning-commit').parentNode.classList.contains('equipment-tuning-commit-bar')&&!document.querySelector('.equipment-tuning-detail .equipment-tuning-commit'));
     __noStatsOnce=true;document.querySelector('[data-tuning-focus-key="enhance-level:8"]').click();await until(function(){return view.debugState().hasPreview&&document.querySelector('.equipment-tuning-commit').textContent.indexOf('强化至 +8')>=0});
     ok('enhance preview without stats falls back to the hidden compact section',document.querySelector('.equipment-tuning-preview.enhance-compact')&&document.querySelector('.equipment-tuning-preview.enhance-compact').hidden&&!document.querySelector('.equipment-tuning-stats-deltas'));
+    window.__shortageEnhanceOnce=true;view.requestPreview('enhance',{targetLevel:6});
+    await until(function(){return !view.debugState().readPending&&!view.debugState().hasPreview});
+    ok('unaffordable enhancement displays required owned and missing stones without enabling commit',
+      document.querySelector('.equipment-tuning-view').textContent.indexOf('本次需要 208,600，持有 208,589，还差 11')>=0
+      &&document.querySelector('.equipment-tuning-commit').disabled);
+    view.requestPreview('enhance',{targetLevel:6});await until(function(){return view.debugState().hasPreview});
     var explanationTabs=document.querySelectorAll('.equipment-tuning-tab');explanationTabs[2].click();await wait();
     var sourceACandidate=document.querySelector('.equipment-tuning-candidate');sourceACandidate.focus();
     document.querySelector('.equipment-tuning-info-open').click();

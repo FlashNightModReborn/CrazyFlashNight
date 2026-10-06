@@ -1,0 +1,121 @@
+{
+  "schema": "cf7-black-military-runtime-release-evidence.v1",
+  "recordedAtUtc": "2026-10-06T17:39:59.890004+00:00",
+  "state": "promoted",
+  "authorization": "维护者接受当前动画后明确要求：可行，走发布列车。",
+  "source": {
+    "commit": "56f52c3e1c3981a2f616453e403bb4a4025f6deb",
+    "tree": "f0f6eadb8243579765bd6f6015329c20a5f7edec",
+    "tag": "refs/tags/runtime-build-v2/20261007-black-military-v1",
+    "deploymentCommit": "a281cc0401366de89df724a68d03054f092a88c9"
+  },
+  "request": {
+    "schema": "cf7-runtime-build-request.v2",
+    "requestId": "202B9F5290DB08ACD217C0D4B5444D614D848ECC64BF259AF187777CC0D1C66B",
+    "sourceKind": "Treeish",
+    "releaseTreeOid": "f0f6eadb8243579765bd6f6015329c20a5f7edec",
+    "sourceCommitOid": "56f52c3e1c3981a2f616453e403bb4a4025f6deb",
+    "requestCommitOid": "19a50fd693561eaddc2ff62642267855f850ed71",
+    "bundleTreeOid": "a5433102834b724230924c66043508ce4489921f",
+    "artifactSourceHash": "C89FBA226FFB85129DE0CAF22401F85316F71AA6BAF91E9FE64FBBC26BA67A3D",
+    "producerRecipeHash": "10650B12BC1AFE8064150D3A2F43740352D8D05F820992837264E27B5D00E534",
+    "toolchainLockHash": "DFA769829F9740196DEF63351A00AAC309E50A2CA0A768759334EB2A2161DD36",
+    "policyHash": "5298739470A8CB432BB7AE7FBD36E2CEB3EFB50139E099C3F383D752D0C025A3",
+    "buildIdentityHash": "964497AE77F664B80B8E7BA2CB4EB1E86CBE8BF2DFC133256C477A5C88C216EA",
+    "requiredQuorum": 2
+  },
+  "scope": [
+    "军阀男女学生：以things0有效起身区间修正肢体/枪矩阵及死亡错位，近战转到实际长枪分支。",
+    "黑仔u457独立固定外观库、短柄棍棒常态动作、迅斩、凶斩、30级霸体及距离/韧性AI；保留原NPC。",
+    "迅斩重心、蓄力举棒、挥棒、空手协同及影子；技能仅受冷却限制。",
+    "已有占位数值、加载、单位目录与派生资产闭环；本次列车没有继续调整数值或战斗规则。"
+  ],
+  "payload": {
+    "buildIdentityHash": "964497AE77F664B80B8E7BA2CB4EB1E86CBE8BF2DFC133256C477A5C88C216EA",
+    "closure": "F341EAE3931CC3ABE2352B8783ECBF0D8DD7B3F1FA0C94F7711D03CE5C417376",
+    "fileCount": 43,
+    "coreDllSha256": "C3D1323954828A94F044A72653612E6239C2B1323105E6718C0EE115DB64E398",
+    "nativePayloadMatchesPreviousRelease": true
+  },
+  "builds": {
+    "localWorker": "builder-local-b",
+    "localKeyId": "EB5D32E04B6EE8697850314E19698DE1A3FACFFCCC6418A12CF7FEDE6033CDA5",
+    "faultDomains": [
+      "github-hosted-windows",
+      "physical-host-b"
+    ],
+    "signerCount": 2,
+    "identityAndClosureMatch": true,
+    "cloudRunId": 37502451489,
+    "cloudRunUrl": "https://github.com/FlashNightModReborn/CrazyFlashNight/actions/runs/37502451489",
+    "cloudConclusion": "success",
+    "cloudArtifactScope": "attestation-only"
+  },
+  "policy": {
+    "profile": "production",
+    "passed": true,
+    "checks": 47,
+    "failed": 0,
+    "receiptSha256": "02EFD887C8096B94FD783BFE1E237F0ABAD7A5878C26ACF3DBED935020A1F9F9",
+    "releaseTreeOid": "f0f6eadb8243579765bd6f6015329c20a5f7edec",
+    "candidatePayloadClosureHash": "F341EAE3931CC3ABE2352B8783ECBF0D8DD7B3F1FA0C94F7711D03CE5C417376",
+    "sameLocalCandidateUsedForPolicyAndPromotion": true
+  },
+  "promotion": {
+    "writer": "tools/promote-runtime-bundle.ps1",
+    "promotedAtUtc": "2026-10-06T17:28:09.4944218Z",
+    "manifestSha256": "937845574C9DF73DBBDD083E98CE632432564FD84863C1450F16DBF5582C8E43",
+    "consensusSha256": "3597EBF4CFDE6EA79C638D1463E800FBB0CDA7CA3A3083F4620A6AC7FF4E97CC",
+    "installedBootstrapVerifyOnly": {
+      "exitCode": 0,
+      "verifiedBy": "unique promotion writer",
+      "scope": "installed payload integrity; no gameplay"
+    },
+    "rollbackArchive": "tmp/runtime-promotions/20261006T172742327Z-ca48a31b99454da48b57052898e476aa/previous",
+    "previousBundleRetained": true
+  },
+  "remoteAudit": {
+    "runId": 37504061645,
+    "url": "https://github.com/FlashNightModReborn/CrazyFlashNight/actions/runs/37504061645",
+    "status": "completed",
+    "conclusion": "success",
+    "headSha": "a281cc0401366de89df724a68d03054f092a88c9",
+    "replayedState": "promoted",
+    "deploymentChanged": true,
+    "signerCount": 2,
+    "faultDomainCount": 2,
+    "fileCount": 43
+  },
+  "assetEvidence": {
+    "path": "docs/evidence/black-military-assets-2026-10-07.json",
+    "sha256": "1F4F1C536D3C8D8B3277957FF9C9FF4981DD6757E06E5BA197FBEB534801B231",
+    "realCS6Publish": true,
+    "compilerErrors": 0,
+    "compilerWarnings": 0,
+    "currentNativeRunId": "7c98bf04879a475ca0ce1881825d2f5a",
+    "currentNativePassed": 691,
+    "currentNativeFailed": 0,
+    "actualTimelineCases": 70,
+    "bitmapCaptures": 52,
+    "previousMP0AndShadowRunId": "c4f0defc86fc4272b74c1f7f125f0861",
+    "previousMP0AndShadowPassed": 3105,
+    "previousMP0AndShadowFailed": 0,
+    "previousMP0RootLogicUnchangedByFreeArmIteration": true
+  },
+  "experienceEvidence": {
+    "userFeedback": "维护者已认可影子有效、迅斩连贯性改善，并接受最新空手协同方案进入发布。",
+    "physicalPlayerInputE2EExecutedInThisTrain": false,
+    "standardEntryGameplayVerifiedInThisTrain": false,
+    "realPlayerSaveUsedForTestWrites": false,
+    "postNoMPArenaBalanceRecalibrated": false,
+    "historicalFiniteMPArenaMatchesAreCurrentStrengthProof": false,
+    "remaining": [
+      "正常战斗手感、技能命中与中断",
+      "取消MP限制后的20/30级同级斗兽与高等级强度"
+    ]
+  },
+  "automation": {
+    "id": "automation-2",
+    "status": "PAUSED"
+  }
+}

@@ -890,8 +890,8 @@ namespace Launcher.Tests.Tasks
         }
 
         [Theory]
-        [InlineData(987, true)]
-        [InlineData(988, false)]
+        [InlineData(986, true)]
+        [InlineData(987, false)]
         public void V2Catalog_EnforcesTaxonomyEntryBoundary(
             int directRegistryCount, bool accepted)
         {
@@ -1455,7 +1455,7 @@ namespace Launcher.Tests.Tasks
             string[] categories =
             {
                 "铁枪会", "属性武器", "烹饪", "化学生产", "武器合成", "饰品合成",
-                "进阶防具", "基础防具", "公社防具", "黑白契约", "插件合成", "大学装备"
+                "进阶防具", "基础防具", "公社防具", "黑白契约", "插件合成", "大学装备", "书中配给"
             };
             var recipes = new JArray();
             for (int index = 0; index < categories.Length; index++)

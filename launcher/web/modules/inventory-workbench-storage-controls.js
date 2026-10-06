@@ -7,7 +7,7 @@
 })(typeof window !== 'undefined' ? window : globalThis, function() {
     'use strict';
     function create(options) {
-        var selection = null, amount, quantity = null, moveButton = null, pageButton = null, batch = null;
+        var selection = null, amount, quantity = null, moveButton = null, pageButton = null, takePageButton = null, batch = null;
         function writable() {
             var state = options.state();
             return options.view() === 'storage' && state.ready
@@ -48,6 +48,15 @@
                 pageButton.hidden = !quick || !quick.mode;
                 pageButton.disabled = !writable() || !!quick.committing;
             }
+            if (takePageButton && batch) {
+                var snapshot = batch.getWindow(batch.rightId());
+                var count = snapshot && (snapshot.slots || []).filter(function(row) { return row.occupied; }).length || 0;
+                takePageButton.textContent = (batch.rightId() === 'stash' ? '领取本页' : '取出本页') + '（' + count + '）';
+                takePageButton.disabled = !writable() || !count || !!quick.committing;
+                takePageButton.title = batch.rightId() === 'stash'
+                    ? '一次领取当前页所有物资；背包装不下的仍留暂存'
+                    : '一次取出当前页所有物品；背包装不下时停止';
+            }
             var item = selection && selection.item.item;
             var maximum = Number(item && item.quantity) || 1;
             quantity.root.hidden = !item || item.itemKind !== 'stack' || maximum <= 1 || !!quick.mode;
@@ -77,11 +86,19 @@
                 if (!selected) batch.controller.enqueue(id, row, true);
             });
         }
+        function takePage() {
+            if (!batch || !writable() || batch.controller.isBusy()) return false;
+            if (batch.controller.getMode() !== 'withdraw') {
+                if (!batch.controller.setMode('withdraw')) return false;
+            }
+            selectPage();
+            return batch.controller.commit();
+        }
         function attach(bar, transfer) {
             batch = transfer;
             quantity = new options.components.QuantityControl({document:options.document,
                 className:'workbench-quantity-control inventory-inline-quantity',
-                ariaLabel:'所选物品移动数量', maxLabel:'全部', maxAriaLabel:'设为所选物品总数量',
+                ariaLabel:'所选物品移动数量', maxLabel:'全部数量', maxAriaLabel:'设为所选物品总数量（不选择其他物品）',
                 showPlusFive:false, onChange:function(value) { amount = value; updateMove(); }});
             quantity.root.addEventListener('input', updateMove);
             quantity.root.addEventListener('change', updateMove);
@@ -97,6 +114,12 @@
             pageButton.textContent = '选择本页';
             pageButton.addEventListener('click', selectPage);
             bar.root.querySelector('.inventory-quick-transfer-actions').prepend(pageButton);
+            takePageButton = options.document.createElement('button');
+            takePageButton.type = 'button';
+            takePageButton.className = 'workbench-mode-btn inventory-take-page';
+            takePageButton.setAttribute('data-audio-cue', 'activate');
+            takePageButton.addEventListener('click', takePage);
+            bar.root.querySelector('.inventory-quick-transfer-actions').prepend(takePageButton);
             update();
         }
         function discard(containerId, slot) {
@@ -139,7 +162,7 @@
             quantityFor:function(id,row) { return same(row,id) ? selectedQuantity() : undefined; },
             discard:discard, sort:sort, destroy:function() {
                 if (quantity) quantity.destroy();
-                selection = null; quantity = moveButton = pageButton = batch = null;
+                selection = null; quantity = moveButton = pageButton = takePageButton = batch = null;
             }};
     }
     return {create:create};

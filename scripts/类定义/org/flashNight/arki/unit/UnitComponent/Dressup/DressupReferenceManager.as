@@ -180,6 +180,10 @@ class org.flashNight.arki.unit.UnitComponent.Dressup.DressupReferenceManager {
             }
         }
 
+        // FLA load 脚本只在首次穿装时隐藏基本款；原地刷新不会重跑 load。
+        // 脱装/素材缺失时恢复基础肢体，重新穿装时隐藏，避免悬空或双层重叠。
+        if (mc.基本款) mc.基本款._visible = !skin;
+
         // 引用始终有效：换装成功用皮肤子级，否则用基本款（与皮肤同层级）
         unit[referenceName] = skin || mc.基本款 || mc;
 

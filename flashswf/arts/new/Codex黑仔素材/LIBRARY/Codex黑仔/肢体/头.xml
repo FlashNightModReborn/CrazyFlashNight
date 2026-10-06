@@ -1,0 +1,25 @@
+<?xml version='1.0' encoding='utf-8'?>
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="Codex黑仔/肢体/头" itemID="6ac01006-4c9362db">
+  <timeline>
+    <DOMTimeline name="头">
+      <layers>
+        <DOMLayer name="Layer 1" color="#AEB1BD" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex黑仔/固定槽/脸与X头巾" name="头" selected="true" centerPoint3DX="41.15" centerPoint3DY="16.5">
+                  <matrix>
+                    <Matrix tx="9.65" ty="-24.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

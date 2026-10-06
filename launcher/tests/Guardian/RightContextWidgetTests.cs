@@ -130,7 +130,8 @@ namespace CF7Launcher.Tests.Guardian
             int revision = 7,
             string returnFailure = null,
             bool canSelectReturn = false,
-            JObject returnOptions = null)
+            JObject returnOptions = null,
+            string stageName = "摇滚公园")
         {
             JObject message = new JObject
             {
@@ -140,7 +141,7 @@ namespace CF7Launcher.Tests.Guardian
                     ["v"] = 3,
                     ["runId"] = "run.right-context.1",
                     ["revision"] = revision,
-                    ["stageName"] = "摇滚公园",
+                    ["stageName"] = stageName,
                     ["difficulty"] = "地狱",
                     ["outcome"] = outcome,
                     ["life"] = life,

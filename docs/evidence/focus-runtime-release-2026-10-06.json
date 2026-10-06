@@ -1,0 +1,156 @@
+{
+  "schema": "cf7-focus-runtime-release-evidence.v1",
+  "recordedAtUtc": "2026-10-05T21:26:48.586269+00:00",
+  "state": "promoted",
+  "authorization": "维护者明确授权无人值守开发、验收与正式发布，并允许协调另一资产会话的机器资源。",
+  "source": {
+    "commit": "24011b26bca8713760e07d472f215ba7e222dd49",
+    "tree": "0c2ab62fb6a8c55eb7c6ffec4d71cf671544d77f",
+    "tag": "refs/tags/runtime-build-v2/20261006-focus-fixed-webview-v1",
+    "deploymentCommit": "39040ebf564ba349ebb479d533d284d6e9c80bd3"
+  },
+  "request": {
+    "schema": "cf7-runtime-build-request.v2",
+    "requestId": "57FD463C64BA95AA016866FA9E406E59A1017CE0F440107F8064AC85527CA7FE",
+    "sourceKind": "Treeish",
+    "releaseTreeOid": "0c2ab62fb6a8c55eb7c6ffec4d71cf671544d77f",
+    "sourceCommitOid": "24011b26bca8713760e07d472f215ba7e222dd49",
+    "requestCommitOid": "42304273d39f6beae3f2a89e9d9c3823c2ccda1c",
+    "bundleTreeOid": "9f3639edacbb3425de100b6ff04f77d4c736547d",
+    "artifactSourceHash": "C89FBA226FFB85129DE0CAF22401F85316F71AA6BAF91E9FE64FBBC26BA67A3D",
+    "producerRecipeHash": "10650B12BC1AFE8064150D3A2F43740352D8D05F820992837264E27B5D00E534",
+    "toolchainLockHash": "DFA769829F9740196DEF63351A00AAC309E50A2CA0A768759334EB2A2161DD36",
+    "policyHash": "124C8DD17000797C6DCACB56A5B413C4E98A658414D62C22F35367017707C5B2",
+    "buildIdentityHash": "964497AE77F664B80B8E7BA2CB4EB1E86CBE8BF2DFC133256C477A5C88C216EA",
+    "bundleFile": "source.bundle",
+    "bundleSha256": "30D9FDB6747938E7D0FC7A974DD03FD31A72984DDAA73BCB4027BE04B2529C61",
+    "requiredQuorum": 2,
+    "createdAtUtc": "2026-10-05T20:09:25.4476108Z"
+  },
+  "payload": {
+    "buildIdentityHash": "964497AE77F664B80B8E7BA2CB4EB1E86CBE8BF2DFC133256C477A5C88C216EA",
+    "closure": "F341EAE3931CC3ABE2352B8783ECBF0D8DD7B3F1FA0C94F7711D03CE5C417376",
+    "fileCount": 43,
+    "coreDllSha256": "C3D1323954828A94F044A72653612E6239C2B1323105E6718C0EE115DB64E398"
+  },
+  "fixedWebView2": {
+    "version": "154.0.4258.53",
+    "architecture": "x64",
+    "cabSha256": "EC12B2DB6423D127FB8E1935D34E2E68ABC70FE8ECB1F6162BA1C1CCC2825F6D",
+    "cabBytes": 307996323,
+    "shippedChunks": 7,
+    "extractedFiles": 257,
+    "extractedBytes": 701143409,
+    "microsoftBrowserSignatureValidated": true,
+    "offlineStartup": true,
+    "systemRuntimeFallback": false,
+    "securityUpdateResponsibility": "更新固定版本锁并重新走双生产者发布列车。"
+  },
+  "builds": {
+    "localWorker": "builder-local-b",
+    "faultDomains": [
+      "physical-host-b",
+      "github-hosted-windows"
+    ],
+    "signerCount": 2,
+    "identityAndClosureMatch": true,
+    "cloudRunUrl": "https://github.com/FlashNightModReborn/CrazyFlashNight/actions/runs/37371038664",
+    "cloudConclusion": "success",
+    "cloudArtifactScope": "attestation-only"
+  },
+  "policy": {
+    "profile": "production",
+    "passed": true,
+    "checks": 47,
+    "receiptSha256": "DF3CDC006A57F4B0B8245D36A7FA51E032C102CAC230B823F3F3D313012A7CDF",
+    "initialAttempt": {
+      "passed": 44,
+      "failed": 3,
+      "failureReceiptPreserved": true
+    },
+    "environmentRepairs": [
+      "按仓库锁文件补齐 launcher/perf Playwright 依赖。",
+      "data/items/list.xml、data/crafting/list.xml、data/shops/list.xml 的原始安装字节是 CRLF，既有来源记录绑定这些字节；新 checkout 为 LF。经逐项核对原记录 SHA 与 Git blob，仅在独立工作区恢复原安装的换行表示，并刷新 Git stat；冻结 Git tree、生成输出、所有四域身份未变。"
+    ]
+  },
+  "promotion": {
+    "writer": "tools/promote-runtime-bundle.ps1",
+    "promotedAtUtc": "2026-10-05T21:01:34.1959961Z",
+    "installedBootstrapVerifyOnly": {
+      "exitCode": 0,
+      "pid": 19160,
+      "scope": "installed payload integrity; no gameplay"
+    },
+    "rollbackArchive": "C:\\Users\\iuo\\Documents\\Codex\\2026-10-06\\10-05-22-51-46-image\\work\\focus-runtime-rollback",
+    "rollbackCopyFilesVerified": 38
+  },
+  "remoteAudit": {
+    "runId": 37374154214,
+    "url": "https://github.com/FlashNightModReborn/CrazyFlashNight/actions/runs/37374154214",
+    "status": "completed",
+    "conclusion": "success",
+    "replayedState": "promoted",
+    "deploymentChanged": true,
+    "signerCount": 2,
+    "faultDomainCount": 2,
+    "fileCount": 43
+  },
+  "tests": {
+    "finalNonDesktopLauncher": {
+      "total": 6701,
+      "passed": 6694,
+      "skipped": 7,
+      "failed": 0
+    },
+    "focusedLifecycle": {
+      "passed": 323
+    },
+    "pinnedEngineArchive": {
+      "passed": 1,
+      "initialMs": 12986,
+      "reuseMs": 1427,
+      "corruptCacheRebuilt": true
+    },
+    "liveOffscreenApiAndCursorThread": {
+      "passed": 2,
+      "browserVersion": "154.0.4258.53",
+      "states": "playing,paused,playing"
+    },
+    "runtimeBuildV2": {
+      "passed": 284
+    },
+    "consensusFixtures": {
+      "passed": 153,
+      "scope": "fixture regression, separate from real production quorum"
+    },
+    "historicalCanonicalLauncher": {
+      "total": 6706,
+      "passed": 6689,
+      "failed": 10,
+      "skipped": 7,
+      "failureContext": "LockScreenBackstopFrame covered Default desktop; not a passing full-suite result"
+    },
+    "finalFullLauncherSuite": "pending unlocked desktop; ten real-window cases remain"
+  },
+  "experienceEvidence": {
+    "state": "pending",
+    "desktopLocked": true,
+    "businessJourneyExecuted": false,
+    "physicalInputAttestation": false,
+    "standardEntryVerified": false,
+    "originalTesterAccepted": false,
+    "requiredHumanRegression": [
+      "缩放与切窗后移动、点击 NPC 和物品。",
+      "关闭商店后恢复移动、交互及键盘输入。",
+      "多次传送并进出车库，确认过图入口持续可用。"
+    ],
+    "postUnlockSaveContract": "使用专用 cf7_agent_* 克隆槽；不以真实玩家槽试写。"
+  },
+  "parallelAssetWork": {
+    "threadId": "01a10c7d-200e-7293-b560-b95a970dcef3",
+    "preservedUncommittedFiles": 250,
+    "statusSizeAndSha256IdenticalAfterFastForward": true,
+    "rootRuntimeResourcesReleased": true,
+    "as2XflSwfModifiedByThisRelease": false
+  }
+}

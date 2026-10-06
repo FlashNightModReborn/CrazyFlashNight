@@ -2210,6 +2210,9 @@ namespace CF7Launcher.Guardian
             parameters["panelInstanceId"] = entry.PanelInstanceId;
             parameters["requestCallId"] = entry.WebCallId;
             parameters["writeEpoch"] = entry.WriteEpoch;
+            // Host-owned read capability; older AS2 may omit the optional projection.
+            // Keeping it off Web mutation payloads preserves their exact write contract.
+            if (entry.Command == "snapshot") parameters["appearanceVersion"] = 1;
             JObject flash = PanelBridge.BuildFlashCommand(
                 entry.FlashAction,
                 entry.BackendCallId,
@@ -2816,8 +2819,9 @@ namespace CF7Launcher.Guardian
             return IsExactObject(
                     action, Set("command", "label", "source"))
                 && ((command == "open" && label == "打开")
+                    || (command == "openChoice" && label == "自选配给")
                     || (command == "consume" && label == "服用"))
-                && ((command == "open"
+                && (((command == "open" || command == "openChoice")
                         && itemUse == "礼包"
                         && (blockedReason.Length == 0
                             || blockedReason == "reward_inbox_full"

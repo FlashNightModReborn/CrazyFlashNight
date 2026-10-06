@@ -56,9 +56,9 @@
         var command = value && String(value.command || '');
         // exact count 2..64 随 envelope 下发；1 继续走单包 open
         var count = command === 'openMany' ? whole(value.count, 2, 64) : null;
-        if (command !== 'open' && command !== 'consume' && count === null) return null;
+        if (command !== 'open' && command !== 'openChoice' && command !== 'consume' && count === null) return null;
         var action = {command:command, label:String(value.label
-            || (command === 'open' ? '打开' : command === 'openMany' ? '全部打开' : '服用'))};
+            || (command === 'open' ? '打开' : command === 'openMany' ? '全部打开' : command === 'openChoice' ? '自选配给' : '服用'))};
         if (count !== null) action.count = count;
         return action;
     }
@@ -213,7 +213,7 @@
             this._onSettled({success:false, error:'invalid_source'}, false, null);
             return null;
         }
-        if (action.command === 'open' || action.command === 'openMany') {
+        if (action.command === 'open' || action.command === 'openChoice' || action.command === 'openMany') {
             return this._invokeStashPack(candidate, action, source);
         }
         var operationId = 'itemuse.' + this._operationNonce + '.'
@@ -319,7 +319,9 @@
             sessionGeneration:this._sessionGeneration,
             pending:this._pending ? {
                 operationId:this._pending.operationId,
-                command:this._pending.command
+                command:this._pending.command,
+                choice:this._pending.wireCommand === 'stashChoose'
+                    || !!(normalizedAction(this._pending.candidate) && normalizedAction(this._pending.candidate).command === 'openChoice')
             } : null,
             inboxRemaining:this._inbox && this._inbox.summary
                 ? Number(this._inbox.summary.remainingCount) : null,

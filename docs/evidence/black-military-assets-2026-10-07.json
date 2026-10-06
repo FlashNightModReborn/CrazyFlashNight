@@ -1,0 +1,848 @@
+{
+  "schema": "cf7-black-military-assets.v1",
+  "authorization": "可行，走发布列车",
+  "acceptedCandidate": "v9a-free-arm",
+  "scope": [
+    "军阀起身25有效帧与死亡身体矩阵",
+    "军阀近战使用实际长枪动作",
+    "黑仔独立固定NPC外观与短柄普通攻击",
+    "迅斩连续前摇、身体发力与空手协同",
+    "迅斩破韧击退、凶斩内力伤害、分距离AI与30级霸体",
+    "正常动作与死亡影子、技能仅限冷却而无MP门槛",
+    "共享导入锚点、单位配置和竞技场目录闭环"
+  ],
+  "owningXfl": [
+    "flashswf/arts/new/大学人员/大学人员.xfl",
+    "flashswf/arts/new/Codex黑仔素材/Codex黑仔素材.xfl"
+  ],
+  "files": {
+    "flashswf/arts/new/大学人员.swf": {
+      "bytes": 1779465,
+      "sha256": "3e8b3afe6412f5353f5e5dc52e7add6313f8858dd2888266447a6686876c863c"
+    },
+    "flashswf/arts/new/Codex黑仔素材.swf": {
+      "bytes": 238897,
+      "sha256": "91455616a00d3669cd99afca299e092ba5024ce36046fed4646468b248b76d67"
+    },
+    "flashswf/arts/new/Codex黑仔素材/LIBRARY/Codex黑仔/动作/迅斩.xml": {
+      "bytes": 291189,
+      "sha256": "fa4b293cb274f014d8fa7e72343ca3c2980aafd34790a032e26720e3f90c1c33"
+    },
+    "flashswf/arts/new/Codex黑仔素材/LIBRARY/敌人-Codex黑仔.xml": {
+      "bytes": 40160,
+      "sha256": "757f4872b439780ef42a93ec673289361a232f31e7db564f3e8391b15f53549c"
+    },
+    "flashswf/arts/things-new.fla": {
+      "bytes": 538656,
+      "sha256": "64bd62600a2659bbeff4c8e39157f41c8eadf5ba5a952df54314ad9f45b0aa57"
+    },
+    "flashswf/arts/things-new.swf": {
+      "bytes": 113742,
+      "sha256": "2fca607f1a18396d505115c55b311acad9bb01d4bc1b4dbec7a444dda8f26b83"
+    },
+    "data/units/units.json": {
+      "bytes": 149579,
+      "sha256": "32e1184c11252234f5e888dd14236a13e275389cee7e0157dd5f7f80790a539f"
+    },
+    "data/enemy_properties/大学.xml": {
+      "bytes": 12277,
+      "sha256": "7cdc8c788d03ba2dce5d893f5f64a0757901709cdb0b663788a8df94ae0020d6"
+    },
+    "data/items/asset_source_map.xml": {
+      "bytes": 851152,
+      "sha256": "cfda2fbf15f4e41b0944d28a8fd1ddac4d07e1e1984e755527b0dd76ef8d81f9"
+    }
+  },
+  "publishedBlackCS6": {
+    "freshSwf": true,
+    "compilerErrors": 0,
+    "compilerWarnings": 0
+  },
+  "latestNativeAssetFixture": {
+    "startedUtc": "2026-10-06T16:00:58.5403279Z",
+    "finishedUtc": "2026-10-06T16:07:58.0131729Z",
+    "runnerExit": 0,
+    "freshNativeTrace": true,
+    "freshCompletedNativeRun": true,
+    "nativeTestsSucceeded": true,
+    "rawFresh": true,
+    "testSwfFresh": true,
+    "closureHistoricalOnly": false,
+    "rawSha256": "5499F4535E9A871B961E82FD14000EA82ED0D635ED2FE8E7328D16C6CE4BCC59",
+    "blackSwfSha256": "91455616A00D3669CD99AFCA299E092BA5024CE36046FED4646468B248B76D67",
+    "rapidSourceSha256": "FA4B293CB274F014D8FA7E72343CA3C2980AAFD34790A032E26720E3F90C1C33",
+    "closureCount": 1,
+    "closure": [
+      "StudentRepairAssetTest: 691 passed, 0 failed; 70 actual timeline cases"
+    ],
+    "runId": "7c98bf04879a475ca0ce1881825d2f5a",
+    "bitmapBlocks": 52
+  },
+  "priorShadowAndMPFixture": {
+    "startedUtc": "2026-10-06T15:21:47.8282131Z",
+    "finishedUtc": "2026-10-06T15:24:43.4622644Z",
+    "runnerExit": 0,
+    "fresh": true,
+    "closed": true,
+    "runId": "c4f0defc86fc4272b74c1f7f125f0861",
+    "rawSha256": "29A4DB57CB1E971D40B342488D61B39FAF71D2DCF72E1391D40BECF0ACFE5104",
+    "blackSwfSha256": "30A8F74ADC277C205918440860AEC49C769D9B0A936BD043C3D27085855FA408",
+    "teacherSwfSha256": "1D9ECB00C3715A9442EC6EF67F51C002771E329485F2637084218CD0EEF8DE98",
+    "closure": [
+      "BlackShadowAssetTest: 3105 passed, 0 failed; 34 shadow timelines; 7 teacher MP0 moves"
+    ],
+    "verifiedOnPreviousV8Asset": true,
+    "rootAndShadowSourceUnchangedInLatestVersion": true
+  },
+  "sourceOnlyFreeArmProof": {
+    "version": "v9a articulated free arm",
+    "sourceSha256": "FA4B293CB274F014D8FA7E72343CA3C2980AAFD34790A032E26720E3F90C1C33",
+    "baselineSourceSha256": "B916BD2CDC8D10A450C872E5ADE2F167BE8FCEEFA6EBBF997F51E76C81F46050",
+    "onlyChangedRoles": [
+      [
+        "上臂",
+        0
+      ],
+      [
+        "左手臂",
+        0
+      ],
+      [
+        "左手",
+        0
+      ]
+    ],
+    "affectedFrames": [
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11,
+      12,
+      13,
+      14,
+      15,
+      16,
+      17,
+      18,
+      19,
+      20,
+      21,
+      22,
+      23,
+      24,
+      25
+    ],
+    "bodyLegsHeldHandBatAndEffectsUnchanged": true,
+    "existingMPAndShadowsPreserved": true,
+    "frame1And26And27OriginalPoseRetained": true,
+    "noNewSymbolReferences": true,
+    "rows": [
+      {
+        "frame": 1,
+        "originalPoseRetained": true
+      },
+      {
+        "frame": 2,
+        "shoulder": [
+          42.5019315867,
+          -152.292682096
+        ],
+        "elbow": [
+          18.58556679829787,
+          -67.60731899197368
+        ],
+        "hand": [
+          57.5124312116612,
+          -17.171186745651198
+        ],
+        "handBodyLocal": [
+          54.0,
+          51.0
+        ],
+        "upperLength": 87.99774558903599,
+        "lowerLength": 63.711099574759366,
+        "upperStretch": 1.0,
+        "lowerStretch": 1.0000000000000002,
+        "jointResidual": 1.0658141036401503e-14,
+        "handResidual": 7.105427357601002e-15
+      },
+      {
+        "frame": 3,
+        "shoulder": [
+          31.8350459372,
+          -152.53305497
+        ],
+        "elbow": [
+          -1.4558216074089572,
+          -71.09171310693125
+        ],
+        "hand": [
+          58.624642295266206,
+          -49.7716461735916
+        ],
+        "handBodyLocal": [
+          68.0,
+          13.0
+        ],
+        "upperLength": 87.982805287908,
+        "lowerLength": 63.751136435382364,
+        "upperStretch": 0.9999999999999999,
+        "lowerStretch": 1.0,
+        "jointResidual": 1.4210854715202004e-14,
+        "handResidual": 7.105427357601002e-15
+      },
+      {
+        "frame": 4,
+        "shoulder": [
+          7.13431942524,
+          -153.060928392
+        ],
+        "elbow": [
+          -7.3220664374370585,
+          -66.32433226504156
+        ],
+        "hand": [
+          49.749374059708,
+          -95.03154686062061
+        ],
+        "handBodyLocal": [
+          87.0,
+          -38.0
+        ],
+        "upperLength": 87.93306658988818,
+        "lowerLength": 63.884689012750115,
+        "upperStretch": 1.0,
+        "lowerStretch": 1.0,
+        "jointResidual": 7.993605777301127e-15,
+        "handResidual": 7.105427357601002e-15
+      },
+      {
+        "frame": 5,
+        "shoulder": [
+          -53.5229859914,
+          -129.314752884
+        ],
+        "elbow": [
+          -22.331223618353476,
+          -47.29800006929782
+        ],
+        "hand": [
+          6.898373633168006,
+          -104.666639520774
+        ],
+        "handBodyLocal": [
+          108.0,
+          -70.0
+        ],
+        "upperLength": 87.74778505583237,
+        "lowerLength": 64.38579150713005,
+        "upperStretch": 0.9999999999999999,
+        "lowerStretch": 1.0,
+        "jointResidual": 2.1316282072803006e-14,
+        "handResidual": 3.552713678800501e-15
+      },
+      {
+        "frame": 6,
+        "shoulder": [
+          -113.584775761,
+          -92.1455416034
+        ],
+        "elbow": [
+          -62.045089610014294,
+          -21.474546019582206
+        ],
+        "hand": [
+          -46.111500925353,
+          -84.648446242004
+        ],
+        "handBodyLocal": [
+          119.0,
+          -85.0
+        ],
+        "upperLength": 87.46844496931509,
+        "lowerLength": 65.15229019523773,
+        "upperStretch": 0.9999999999999999,
+        "lowerStretch": 1.0,
+        "jointResidual": 2.1316282072803006e-14,
+        "handResidual": 1.4210854715202004e-14
+      },
+      {
+        "frame": 7,
+        "shoulder": [
+          -54.157547422,
+          -88.3883177041
+        ],
+        "elbow": [
+          -7.7657614853284755,
+          -14.760340151011192
+        ],
+        "hand": [
+          15.556344166330192,
+          -76.92839301830551
+        ],
+        "handBodyLocal": [
+          125.0,
+          -92.0
+        ],
+        "upperLength": 87.02457630435269,
+        "lowerLength": 66.39870035880094,
+        "upperStretch": 1.0,
+        "lowerStretch": 1.0,
+        "jointResidual": 7.105427357601002e-15,
+        "handResidual": 0.0
+      },
+      {
+        "frame": 8,
+        "shoulder": [
+          48.9084059067,
+          -62.6360635332
+        ],
+        "elbow": [
+          58.58715920408235,
+          35.904750168735745
+        ],
+        "hand": [
+          109.052909906884,
+          -30.253646212349
+        ],
+        "handBodyLocal": [
+          122.0,
+          -89.0
+        ],
+        "upperLength": 99.01500002742613,
+        "lowerLength": 83.20892623819906,
+        "upperStretch": 1.0000000000000002,
+        "lowerStretch": 0.9999999999999997,
+        "jointResidual": 2.1316282072803006e-14,
+        "handResidual": 2.842170943040401e-14
+      },
+      {
+        "frame": 9,
+        "shoulder": [
+          88.0793160119,
+          -41.2131490487
+        ],
+        "elbow": [
+          80.11562447309555,
+          44.39325429994371
+        ],
+        "hand": [
+          136.06370524837598,
+          3.1699041455210697
+        ],
+        "handBodyLocal": [
+          117.39736164736165,
+          -83.80212355212355
+        ],
+        "upperLength": 85.97602385093128,
+        "lowerLength": 69.49498068487712,
+        "upperStretch": 1.0,
+        "lowerStretch": 1.0,
+        "jointResidual": 2.842170943040401e-14,
+        "handResidual": 2.4868995751603507e-14
+      },
+      {
+        "frame": 10,
+        "shoulder": [
+          103.306325387,
+          -25.790980213
+        ],
+        "elbow": [
+          76.68300738663075,
+          55.375430960929336
+        ],
+        "hand": [
+          140.553416014914,
+          23.843795407410006
+        ],
+        "handBodyLocal": [
+          112.0,
+          -79.0
+        ],
+        "upperLength": 85.42123485529899,
+        "lowerLength": 71.2297208967145,
+        "upperStretch": 1.0000000000000002,
+        "lowerStretch": 0.9999999999999998,
+        "jointResidual": 1.4210854715202004e-14,
+        "handResidual": 3.552713678800501e-15
+      },
+      {
+        "frame": 11,
+        "shoulder": [
+          115.856321094,
+          -8.50930889117
+        ],
+        "elbow": [
+          72.15841554266689,
+          64.33509296775435
+        ],
+        "hand": [
+          141.7776458385736,
+          43.13415055556995
+        ],
+        "handBodyLocal": [
+          105.88765928906774,
+          -76.60714285714285
+        ],
+        "upperLength": 84.94594652929408,
+        "lowerLength": 72.77580082801735,
+        "upperStretch": 1.0000000000000002,
+        "lowerStretch": 1.0000000000000002,
+        "jointResidual": 1.4210854715202004e-14,
+        "handResidual": 7.105427357601002e-15
+      },
+      {
+        "frame": 12,
+        "shoulder": [
+          126.653680063,
+          11.8951499955
+        ],
+        "elbow": [
+          66.70436258413439,
+          71.57927799351573
+        ],
+        "hand": [
+          140.339483507318,
+          64.653370564456
+        ],
+        "handBodyLocal": [
+          101.0,
+          -75.0
+        ],
+        "upperLength": 84.59382838638612,
+        "lowerLength": 73.96011916626269,
+        "upperStretch": 1.0,
+        "lowerStretch": 1.0,
+        "jointResidual": 2.842170943040401e-14,
+        "handResidual": 0.0
+      },
+      {
+        "frame": 13,
+        "shoulder": [
+          131.850992282,
+          23.6561423774
+        ],
+        "elbow": [
+          64.50418927907438,
+          74.5023135727713
+        ],
+        "hand": [
+          139.15535829699502,
+          76.476006625124
+        ],
+        "handBodyLocal": [
+          99.0,
+          -74.0
+        ],
+        "upperLength": 84.38557341124059,
+        "lowerLength": 74.6772555736153,
+        "upperStretch": 0.9999999999999998,
+        "lowerStretch": 1.0,
+        "jointResidual": 2.842170943040401e-14,
+        "handResidual": 0.0
+      },
+      {
+        "frame": 14,
+        "shoulder": [
+          144.231026317,
+          28.5699301499
+        ],
+        "elbow": [
+          62.346911308426755,
+          48.963966269982365
+        ],
+        "hand": [
+          130.878219762479,
+          78.6313264755
+        ],
+        "handBodyLocal": [
+          83.0,
+          -60.0
+        ],
+        "upperLength": 84.38557341159965,
+        "lowerLength": 74.67725557349029,
+        "upperStretch": 1.0,
+        "lowerStretch": 1.0,
+        "jointResidual": 1.4210854715202004e-14,
+        "handResidual": 2.842170943040401e-14
+      },
+      {
+        "frame": 15,
+        "shoulder": [
+          158.551495812,
+          42.0614333613
+        ],
+        "elbow": [
+          76.64926136102756,
+          21.74028693757556
+        ],
+        "hand": [
+          116.63029335658001,
+          84.81333649632
+        ],
+        "handBodyLocal": [
+          60.0,
+          -40.0
+        ],
+        "upperLength": 84.38557341178947,
+        "lowerLength": 74.67725557403152,
+        "upperStretch": 0.9999999999999997,
+        "lowerStretch": 0.9999999999999998,
+        "jointResidual": 1.4210854715202004e-14,
+        "handResidual": 1.4210854715202004e-14
+      },
+      {
+        "frame": 16,
+        "shoulder": [
+          166.597014866,
+          60.4166790627
+        ],
+        "elbow": [
+          93.7487162717232,
+          17.825008610832718
+        ],
+        "hand": [
+          105.80532350564499,
+          91.522571134915
+        ],
+        "handBodyLocal": [
+          43.0,
+          -29.0
+        ],
+        "upperLength": 84.38557341134427,
+        "lowerLength": 74.6772555734614,
+        "upperStretch": 1.0,
+        "lowerStretch": 0.9999999999999998,
+        "jointResidual": 1.4210854715202004e-14,
+        "handResidual": 1.4210854715202004e-14
+      },
+      {
+        "frame": 17,
+        "shoulder": [
+          161.789962207,
+          79.6775922339
+        ],
+        "elbow": [
+          95.08098818698915,
+          27.96141695696747
+        ],
+        "hand": [
+          90.445031625734,
+          102.42035132158199
+        ],
+        "handBodyLocal": [
+          36.0,
+          -22.0
+        ],
+        "upperLength": 84.40764183459274,
+        "lowerLength": 74.60311655656095,
+        "upperStretch": 1.0000000000000002,
+        "lowerStretch": 1.0,
+        "jointResidual": 1.4210854715202004e-14,
+        "handResidual": 0.0
+      },
+      {
+        "frame": 18,
+        "shoulder": [
+          155.639417122,
+          81.2442763278
+        ],
+        "elbow": [
+          89.54974814943085,
+          28.738984641957302
+        ],
+        "hand": [
+          88.821695448741,
+          103.33854857683701
+        ],
+        "handBodyLocal": [
+          39.0,
+          -27.0
+        ],
+        "upperLength": 84.40764183365857,
+        "lowerLength": 74.60311655694544,
+        "upperStretch": 1.0000000000000002,
+        "lowerStretch": 0.9999999999999998,
+        "jointResidual": 1.4210854715202004e-14,
+        "handResidual": 1.4210854715202004e-14
+      },
+      {
+        "frame": 19,
+        "shoulder": [
+          144.922255432,
+          76.8753193618
+        ],
+        "elbow": [
+          73.61789702317836,
+          31.864198826192464
+        ],
+        "hand": [
+          92.23318964866,
+          103.82525343566
+        ],
+        "handBodyLocal": [
+          51.0,
+          -40.0
+        ],
+        "upperLength": 84.32266895660193,
+        "lowerLength": 74.32982241361186,
+        "upperStretch": 1.0000000000000002,
+        "lowerStretch": 0.9999999999999997,
+        "jointResidual": 1.4210854715202004e-14,
+        "handResidual": 4.263256414560601e-14
+      },
+      {
+        "frame": 20,
+        "shoulder": [
+          144.227603287,
+          78.5956359019
+        ],
+        "elbow": [
+          63.82853668643958,
+          53.18235020946638
+        ],
+        "hand": [
+          110.59707743497401,
+          110.964493612718
+        ],
+        "handBodyLocal": [
+          66.0,
+          -58.0
+        ],
+        "upperLength": 84.3198968211335,
+        "lowerLength": 74.33755780237375,
+        "upperStretch": 0.9999999999999998,
+        "lowerStretch": 0.9999999999999998,
+        "jointResidual": 2.842170943040401e-14,
+        "handResidual": 2.842170943040401e-14
+      },
+      {
+        "frame": 21,
+        "shoulder": [
+          142.814337159,
+          78.5311012286
+        ],
+        "elbow": [
+          58.63218172560187,
+          82.9970509219014
+        ],
+        "hand": [
+          124.10191189013,
+          117.9565550967
+        ],
+        "handBodyLocal": [
+          80.0,
+          -70.0
+        ],
+        "upperLength": 84.30053380658927,
+        "lowerLength": 74.21894973633005,
+        "upperStretch": 1.0000000000000002,
+        "lowerStretch": 1.0000000000000002,
+        "jointResidual": 1.4210854715202004e-14,
+        "handResidual": 1.4210854715202004e-14
+      },
+      {
+        "frame": 22,
+        "shoulder": [
+          142.328950495,
+          68.955511072
+        ],
+        "elbow": [
+          60.49189073459141,
+          89.39660081341371
+        ],
+        "hand": [
+          130.315803642068,
+          114.52176123802401
+        ],
+        "handBodyLocal": [
+          88.0,
+          -72.0
+        ],
+        "upperLength": 84.35130408028803,
+        "lowerLength": 74.20682246312182,
+        "upperStretch": 1.0,
+        "lowerStretch": 1.0,
+        "jointResidual": 2.842170943040401e-14,
+        "handResidual": 2.842170943040401e-14
+      },
+      {
+        "frame": 23,
+        "shoulder": [
+          140.617629259,
+          49.1862573932
+        ],
+        "elbow": [
+          62.22614401395755,
+          80.11237970220294
+        ],
+        "hand": [
+          134.918286073816,
+          94.855343543222
+        ],
+        "handBodyLocal": [
+          88.0,
+          -74.0
+        ],
+        "upperLength": 84.27128811164049,
+        "lowerLength": 74.1721140326217,
+        "upperStretch": 0.9999999999999998,
+        "lowerStretch": 1.0,
+        "jointResidual": 2.842170943040401e-14,
+        "handResidual": 0.0
+      },
+      {
+        "frame": 24,
+        "shoulder": [
+          136.822597193,
+          22.3333062784
+        ],
+        "elbow": [
+          59.568166073855124,
+          56.092088432111105
+        ],
+        "hand": [
+          132.82372371794503,
+          66.91039579533499
+        ],
+        "handBodyLocal": [
+          83.0,
+          -71.0
+        ],
+        "upperLength": 84.30837740132604,
+        "lowerLength": 74.05006752158813,
+        "upperStretch": 0.9999999999999998,
+        "lowerStretch": 0.9999999999999997,
+        "jointResidual": 1.4210854715202004e-14,
+        "handResidual": 2.842170943040401e-14
+      },
+      {
+        "frame": 25,
+        "shoulder": [
+          130.439459141,
+          -8.48906081836
+        ],
+        "elbow": [
+          53.930755838216996,
+          26.978541566361706
+        ],
+        "hand": [
+          127.719261549593,
+          33.79920317851699
+        ],
+        "handBodyLocal": [
+          76.0,
+          -69.0
+        ],
+        "upperLength": 84.32990276286338,
+        "lowerLength": 74.10307011146905,
+        "upperStretch": 0.9999999999999998,
+        "lowerStretch": 0.9999999999999998,
+        "jointResidual": 1.4210854715202004e-14,
+        "handResidual": 1.4210854715202004e-14
+      },
+      {
+        "frame": 26,
+        "originalPoseRetained": true
+      },
+      {
+        "frame": 27,
+        "originalPoseRetained": true
+      }
+    ],
+    "humanVisualAccepted": false,
+    "sourceGeometryOnlyNotNativeReadback": true,
+    "affectedFrameRangeInclusive": [
+      2,
+      25
+    ]
+  },
+  "nativePixels": {
+    "liveAll26PixelsIdenticalToFinalRun": true,
+    "currentRunId": "7c98bf04879a475ca0ce1881825d2f5a",
+    "currentNativeLogSha256": "5499F4535E9A871B961E82FD14000EA82ED0D635ED2FE8E7328D16C6CE4BCC59",
+    "blackSwfSha256": "91455616A00D3669CD99AFCA299E092BA5024CE36046FED4646468B248B76D67",
+    "rapidSourceSha256": "FA4B293CB274F014D8FA7E72343CA3C2980AAFD34790A032E26720E3F90C1C33",
+    "sameRGBAImages": [
+      "black-combo-f1.png",
+      "black-combo-f101.png",
+      "black-combo-f104.png",
+      "black-combo-f11.png",
+      "black-combo-f14.png",
+      "black-combo-f23.png",
+      "black-combo-f29.png",
+      "black-combo-f3.png",
+      "black-combo-f35.png",
+      "black-combo-f44.png",
+      "black-combo-f46.png",
+      "black-combo-f5.png",
+      "black-combo-f53.png",
+      "black-combo-f64.png",
+      "black-combo-f71.png",
+      "black-combo-f74.png",
+      "black-combo-f84.png",
+      "black-combo-f87.png",
+      "black-combo-f9.png",
+      "black-combo-f91.png",
+      "black-poise-f1.png",
+      "black-poise-f13.png",
+      "black-poise-f25.png",
+      "black-rapid-entry-idle.png",
+      "black-rapid-f1.png",
+      "black-rapid-f26.png",
+      "black-stand.png",
+      "military-corpses.png"
+    ],
+    "changedRGBAImages": [
+      "black-rapid-f10.png",
+      "black-rapid-f11.png",
+      "black-rapid-f12.png",
+      "black-rapid-f13.png",
+      "black-rapid-f14.png",
+      "black-rapid-f15.png",
+      "black-rapid-f16.png",
+      "black-rapid-f17.png",
+      "black-rapid-f18.png",
+      "black-rapid-f19.png",
+      "black-rapid-f2.png",
+      "black-rapid-f20.png",
+      "black-rapid-f21.png",
+      "black-rapid-f22.png",
+      "black-rapid-f23.png",
+      "black-rapid-f24.png",
+      "black-rapid-f25.png",
+      "black-rapid-f3.png",
+      "black-rapid-f4.png",
+      "black-rapid-f5.png",
+      "black-rapid-f6.png",
+      "black-rapid-f7.png",
+      "black-rapid-f8.png",
+      "black-rapid-f9.png"
+    ],
+    "nonRapid28SnapshotPixelsUnchanged": true,
+    "rapidEntry1AndExit26Unchanged": true
+  },
+  "visualReview": {
+    "humanFeedback": "可行，走发布列车",
+    "twoAgentsAndK3Max": "no identified mandatory fix, local human trial ready",
+    "modelsAreNotHumanAcceptance": true
+  },
+  "balance": {
+    "mpRule": "only cooldown; no MP check or consumption",
+    "currentNoMPPolicyArenaRerun": false,
+    "finiteMp90MatchesHistoricalOnly": true
+  },
+  "testLimits": [
+    "Native request emissions do not prove complete hit settlement",
+    "No new standard-entry player physical battle or save/restart journey",
+    "Current no-MP balance not recalibrated",
+    "Teacher code/assets unchanged; teacher MP0 is prior actual asset fixture"
+  ],
+  "originalNpcPreserved": true
+}

@@ -2570,6 +2570,31 @@ namespace Launcher.Tests.Tasks
         }
 
         [Fact]
+        public void EnhancementShortage_IsForwardedWithoutCommitAuthority_AndRejectsMalformedAmounts()
+        {
+            foreach (string scenario in new[] { "valid", "wrong_difference", "negative_owned", "extra_field" })
+            {
+                var sent = new List<JObject>(); var web = new List<JObject>();
+                using var task = NewTask(value => { sent.Add(ParseWire(value)); return true; }, web);
+                PrimeSession(task, sent, null, "tuning.token.old"); sent.Clear(); web.Clear();
+                task.HandleWebRequest("preview", Request("preview", "tune.shortage." + scenario, "enhance"));
+                var response = CommonResponse(Assert.Single(sent), "preview", false);
+                response["error"] = "insufficient_material";
+                var shortage = new JObject { ["itemName"] = "强化石", ["required"] = 10, ["owned"] = 3, ["missing"] = 7 };
+                if (scenario == "wrong_difference") shortage["missing"] = 8;
+                if (scenario == "negative_owned") shortage["owned"] = -1;
+                if (scenario == "extra_field") shortage["canCommit"] = true;
+                response["materialShortage"] = shortage;
+                task.HandleFlashResponse(response, null);
+                var reply = Assert.Single(web);
+                Assert.Equal(scenario == "valid" ? "insufficient_material" : "malformed_response", (string)reply["error"]);
+                if (scenario == "valid") Assert.True(JToken.DeepEquals(shortage, reply["materialShortage"]));
+                else Assert.Null(reply["materialShortage"]);
+                Assert.Equal(0, task.PreviewBindingCount);
+            }
+        }
+
+        [Fact]
         public void PreviewTimeout_DoesNotRestorePriorBinding()
         {
             var sent = new List<JObject>();

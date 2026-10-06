@@ -1,0 +1,50 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="军阀派杂兵/主角肢体素材/上臂" itemID="693fca6a-0000ecfa" lastModified="1776097501" lastUniqueIdentifier="8">
+  <timeline>
+    <DOMTimeline name="上臂">
+      <layers>
+        <DOMLayer name="as" color="#9933CC" outline="true" current="true" isSelected="true" useOutlineView="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="2" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[stop();
+if (_parent._parent.性别 === "女")
+{
+	gotoAndStop(2);
+}]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer_1" color="#FBB7BB">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="军阀派杂兵/校服相关/男变装-蓝色立领校服上臂" centerPoint3DX="23.5" centerPoint3DY="113.3">
+                  <matrix>
+                    <Matrix tx="-0.15" ty="46.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="1" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="无AS链接/Symbol 1815" symbolType="graphic" centerPoint3DX="-0.05" centerPoint3DY="46.45" loop="loop">
+                  <matrix>
+                    <Matrix d="1.07998657226563" tx="-0.15" ty="46.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="0.1" y="64.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

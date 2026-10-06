@@ -2,6 +2,9 @@
    canonical source: docs/dls-color-system.md
    禁止在 panels.css 之外新增 DLS/技能/调制的硬编码色值。 */
 :root {
+    /* Bookshelf reading surfaces, independent of the game/workbench skin. */
+    --bookshelf-paper: #f4eedd;
+    --bookshelf-ink: #2e281e;
     /* DLS 物质光谱 */
     --dls-crystal: #3dd5ff;
     --dls-crystal-rgb: 61,213,255;
@@ -881,4 +884,35 @@
 }
 .comm-veil-note {
     --wb-commune-comm-veil-note-box-shadow: 0 4px 12px rgba(0,0,0,.2);
+}
+
+/* Fullscreen book comics retain their ink, paper and olive/gold palette. */
+#panel-container[data-panel="book-comic"], .book-comic-panel {
+    --book-comic-bg: #080c09;
+    --book-comic-text: #e8e2cf;
+    --book-comic-tag-bg: #101610de;
+    --book-comic-tag-text: #e8dfc5;
+    --book-comic-accent: #cbb579;
+    --book-comic-subtitle-bg: #141b15;
+    --book-comic-rule: #47513b;
+    --book-comic-speaker: #dcca95;
+    --book-comic-footer-bg: #0e150f;
+    --book-comic-footer-rule: #283426;
+    --book-comic-muted: #bdbca5;
+    --book-comic-button-bg: #202d21;
+    --book-comic-button-text: #e9e0c6;
+    --book-comic-button-border: #4b5a43;
+    --book-comic-button-hover: #344432;
+    --book-comic-primary: #cfbb7c;
+    --book-comic-primary-ink: #19231a;
+    --book-comic-focus: #f0d78f;
+    --book-comic-progress-track: #263122;
+    --book-comic-progress-fill: #ccb777;
+    --book-comic-paper-divider: #46513d;
+    --book-comic-paper: #ded4ba;
+    --book-comic-ink: #252b22;
+    --book-comic-paper-rule: #aca58e;
+    --book-comic-paper-speaker: #6a5836;
+    --book-comic-scroll-thumb: #7d8962;
+    --book-comic-scroll-hover: #a3af82;
 }

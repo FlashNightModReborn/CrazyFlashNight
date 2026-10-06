@@ -1,4 +1,8 @@
 ﻿_root.加载外部UI = function(url){
+    if (url == "flashswf/UI/书架界面.swf") {
+        org.flashNight.arki.ui.BookshelfPanelService.openPanel();
+        return;
+    }
     // 三处床铺共用的生产入口；连接失败不回流旧睡眠 SWF。
     if (url == "flashswf/UI/睡觉界面.swf") {
         if (!org.flashNight.arki.ui.SleepPanelService.openPanel())
@@ -78,12 +82,13 @@ org.flashNight.arki.ui.HairdresserPanelService.install();
 org.flashNight.arki.ui.PlasticSurgeryPanelService.install();
 org.flashNight.arki.ui.GaragePurchasePanelService.install();
 org.flashNight.arki.ui.SleepPanelService.install();
+org.flashNight.arki.ui.BookshelfPanelService.install();
 org.flashNight.arki.ui.GymPreviewPanelService.install();
 org.flashNight.arki.ui.GameSettingsPanelService.install();
 org.flashNight.arki.ui.SceneTransitionService.install();
 
 _root.gameCommands["togglePause"] = function() {
-    _root.暂停 = !_root.暂停;  // watch 自动 pushUiState("p:0/1")
+    org.flashNight.arki.pause.PauseManager.set(!_root.暂停, "manual");  // watch 自动 pushUiState("p:0/1")
     System.IME.setEnabled(false);
     if (_root.暂停) {
         _root.最上层发布文字提示(_root.获得翻译("游戏暂停"));

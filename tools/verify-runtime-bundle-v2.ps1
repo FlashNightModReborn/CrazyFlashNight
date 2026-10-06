@@ -46,8 +46,8 @@ function Get-Cf7V2DeploymentPaths {
 }
 
 function Get-Cf7V2PathBytes([string]$RelativePath) {
-    if ($Staged) { return Get-Cf7GitBlobBytes -ProjectRoot $ProjectRoot -RelativePath $RelativePath }
-    return [IO.File]::ReadAllBytes((Join-Path $DeploymentRoot ($RelativePath -replace '/','\')))
+    if ($Staged) { return ,(Get-Cf7GitBlobBytes -ProjectRoot $ProjectRoot -RelativePath $RelativePath) }
+    return ,([IO.File]::ReadAllBytes((Join-Path $DeploymentRoot ($RelativePath -replace '/','\'))))
 }
 
 if ($Staged) {

@@ -1,10 +1,10 @@
 {
   "catalog": {
     "archiveOrderFirst": 0,
-    "archiveOrderLast": 225,
+    "archiveOrderLast": 228,
     "authoredDirectPurposeReferenceCount": 27,
     "directPurposeCount": 2,
-    "entryCount": 226,
+    "entryCount": 229,
     "equipmentTuningDistinctCount": 113,
     "machineDerivedEquipmentTuningCount": 107,
     "path": "data/dictionaries/material_catalog.xml",
@@ -12,11 +12,11 @@
     "typeCounts": {
       "equipment_mod": 107,
       "food": 45,
-      "general": 74
+      "general": 77
     }
   },
   "crafting": {
-    "categoryCount": 12,
+    "categoryCount": 13,
     "categoryOrder": [
       "铁枪会",
       "属性武器",
@@ -29,7 +29,8 @@
       "公社防具",
       "黑白契约",
       "插件合成",
-      "大学装备"
+      "大学装备",
+      "书中配给"
     ],
     "manifestPath": "data/crafting/list.xml"
   },
@@ -47,11 +48,11 @@
   "inputs": [
     {
       "path": "data/dictionaries/material_catalog.xml",
-      "sha256": "ADE2BAAF2D8A38875F6365326B0B8A3FDAB4433A2E4E115F301F851FD36FC257"
+      "sha256": "B43F6721621C373A7ED3C86D7F31380812B5A9CC74FD2BA5DA8BF7E502253BFB"
     },
     {
       "path": "data/items/list.xml",
-      "sha256": "F928A35D22627FB5ED0600EA892E673B2D770E0E83A43432ECCB646B7822792C"
+      "sha256": "6D40089DE7B09E860928D90AA890693E06251E9A6494D7384FCE14004BD86A90"
     },
     {
       "path": "data/items/消耗品_货币.xml",
@@ -79,7 +80,7 @@
     },
     {
       "path": "data/items/收集品_材料.xml",
-      "sha256": "1EC3633479C0F2F85A21360328F76FB1BEB2E7AEC1719D3070B7EE3C870FCE9C"
+      "sha256": "14FF9160EC792BC4A36677397E1030F7B38C48EA1562D30E3780D6B6012AAA3B"
     },
     {
       "path": "data/items/收集品_材料_插件.xml",
@@ -267,11 +268,19 @@
     },
     {
       "path": "data/items/武器_长枪_近战.xml",
-      "sha256": "6E4D4A8F80D6153B28C0942FF6C8503CA74518D8EA28AED9C3BD6CD9DD4018C8"
+      "sha256": "440506094D77EAA000DAF48B026E69920986D14EF14AC978D6C47D1D37F05BB3"
     },
     {
       "path": "data/items/武器_长枪_霰弹枪.xml",
       "sha256": "F97DCA712A530E006A4658E6E9CA2A7C534562ABE98C60537CAE916D04FDF4D6"
+    },
+    {
+      "path": "data/items/消耗品_书中配给.xml",
+      "sha256": "ED7681414D0FC9FB71D5F63B7001DA2339F4B26AA8588585B98F3641E6A88B4A"
+    },
+    {
+      "path": "data/items/消耗品_自选配给.xml",
+      "sha256": "7044EE65C15B1D3FC08F5D467821600172825E3A6F680D48E02F4B558D626AF7"
     },
     {
       "path": "data/items/equipment_mods/list.xml",
@@ -303,7 +312,7 @@
     },
     {
       "path": "data/items/equipment_mods/低级材料_下挂武器.xml",
-      "sha256": "6F148C03EEAEE4A51492ECAB1D0DF2F6FA6445D6FF598AF7F662BA4BE9174E5F"
+      "sha256": "9A20F44BF46DD9EAF8991B42945B5958F311B65D7E6A2A7CF51D526B9D7E0890"
     },
     {
       "path": "data/items/equipment_mods/中等材料_防具专用.xml",
@@ -351,7 +360,7 @@
     },
     {
       "path": "data/items/equipment_mods/高等材料_下挂武器.xml",
-      "sha256": "1EA2D5AACF21FBE6B5ADAA15ABA30D66139FFD4B85F2752D9A217960CB441C94"
+      "sha256": "D728D0EEAAAC0214E2A355588F2938FCCF5B7C1F366C55D89319F69FC624396B"
     },
     {
       "path": "data/items/equipment_mods/特殊材料_防具专用.xml",
@@ -371,11 +380,11 @@
     },
     {
       "path": "data/equipment/equipment_config.xml",
-      "sha256": "EAE1CE5ED628A11BF1E527472B9EC169B0C31314B572AC068D32985F56CC5764"
+      "sha256": "B11686465AD471B62D9C6E3D36D390716F8AFDF3F62B41E7E6117E5382B4471E"
     },
     {
       "path": "scripts/类定义/org/flashNight/arki/item/EquipmentTuningService.as",
-      "sha256": "E5F23B290F74C18EAD37E999150C12A416949CC7DCCEB1B736C747F5851484C7"
+      "sha256": "4316F9BAF19ED390EC0ACC29524A227A36A85D0F5CC0C5F5B9D44A24F841BD07"
     },
     {
       "path": "data/infrastructure/infrastructure.xml",
@@ -387,7 +396,7 @@
     },
     {
       "path": "data/crafting/list.xml",
-      "sha256": "7A5F1F627D0B11133A3EA998684189B2CEDB24F4BBFD88C5650130A2AD4D2A96"
+      "sha256": "061CFE851B0906B7C3DFCF42288490ABB849B5E1EFAC59527D72C74C721AACF2"
     }
   ],
   "legacyProjection": {
@@ -396,5 +405,5 @@
     "sha256": "012D1415B7DA4E78F05E06D5728B1F33EF6E767A627DB35993E91A8EAEC3DDC8"
   },
   "schema": "cf7.material-dictionary-generated.v2",
-  "sourceDigest": "5DA17A156146AD48377D4FB9BB451B737ADF3B1C3C69E1ACC44AD7DE713BE5A4"
+  "sourceDigest": "A0BEBF685B3A478AC226F1A83DE0C22C5972EEA0952A308C4CAC10005B79D3A0"
 }

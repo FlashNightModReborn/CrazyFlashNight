@@ -39,6 +39,7 @@ class org.flashNight.arki.item.EquipmentTuningServiceTest {
         testInstallAndEnhanceCommit();
         testSnapshotAndDetachInvalidateTokens();
         testPreviewAttemptRevokesPreviousToken();
+        testEnhancementShortageQuote();
         testSameLevelConvertNoOp();
         testStaleMaterialAndFailureRollback();
         testCandidateAvailabilityRequiresOwnedMaterial();
@@ -564,6 +565,32 @@ class org.flashNight.arki.item.EquipmentTuningServiceTest {
                 && item.value.level == 1
                 && _root.收集品栏.材料.getValue("强化石") == 10,
             "同 session 新 preview 即使业务失败也撤销 A，旧 token 后续提交零写拒绝");
+    }
+
+    private static function testEnhancementShortageQuote():Void {
+        for (var owned:Number = 0; owned <= 2; owned += 2) {
+            resetFixture();
+            var item:BaseItem = equipment("测试手枪A", 1, []);
+            _root.物品栏.背包.add(0, item);
+            if (owned > 0) _root.收集品栏.材料.add("强化石", owned);
+            var lease:Object = sourceRef(inventorySnapshot(), 0);
+            var request:Object = params("shortage-" + owned);
+            request.source = lease;
+            EquipmentTuningService.execute("snapshot", request);
+            request.operation = "enhance"; request.targetLevel = 3;
+            var bagRevision:Number = _root.物品栏.背包.getMutationRevision();
+            var materialRevision:Number = _root.收集品栏.材料.getMutationRevision();
+            var result:Object = EquipmentTuningService.execute("preview", request);
+            assertTrue(!result.success && result.error == "insufficient_material"
+                    && result.materialShortage.itemName == "强化石" && result.materialShortage.required == 3
+                    && result.materialShortage.owned == owned && result.materialShortage.missing == 3 - owned,
+                "强化石不足仍提供权威所需/持有/差额 " + owned);
+            assertTrue(result.tuningToken == undefined && result.canCommit != true
+                    && item.value.level == 1 && _root.收集品栏.材料.getValue("强化石") == owned
+                    && _root.物品栏.背包.getMutationRevision() == bagRevision
+                    && _root.收集品栏.材料.getMutationRevision() == materialRevision,
+                "不足报价不签发提交能力且零写 " + owned);
+        }
     }
 
     private static function testSameLevelConvertNoOp():Void {

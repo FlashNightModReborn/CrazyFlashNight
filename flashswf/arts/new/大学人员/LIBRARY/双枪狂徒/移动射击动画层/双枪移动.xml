@@ -1,0 +1,116 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="双枪狂徒/移动射击动画层/双枪移动" itemID="693fc19f-00002db7" lastModified="1775824675" lastUniqueIdentifier="182">
+  <timeline>
+    <DOMTimeline name="双枪移动">
+      <layers>
+        <DOMLayer name="长枪_手枪2行走右腿" color="#009999" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="21" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="双枪狂徒/重复项目文件夹/长枪-手枪2行走右腿" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.999267578125" d="0.99884033203125" tx="-14.25" ty="3.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-0.15" y="0.1"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="待机" color="#FF0000" current="true" isSelected="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="6" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="双枪狂徒/移动射击动画层/待机" selected="true" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.992904663085938" b="-0.1121826171875" c="0.112152099609375" d="0.992477416992188" tx="-6" ty="-1.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-0.1" y="-0.2"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="6" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="双枪狂徒/移动射击动画层/待机" selected="true" symbolType="graphic" firstFrame="6" centerPoint3DX="102.55" centerPoint3DY="-190.1" loop="loop">
+                  <matrix>
+                    <Matrix a="0.992904663085938" b="-0.1121826171875" c="0.112152099609375" d="0.992477416992188" tx="-6" ty="3.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-0.1" y="-0.2"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="9" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="双枪狂徒/移动射击动画层/待机" selected="true" symbolType="graphic" firstFrame="9" centerPoint3DX="102.55" centerPoint3DY="-197.35" loop="loop">
+                  <matrix>
+                    <Matrix a="0.992904663085938" b="-0.1121826171875" c="0.112152099609375" d="0.992477416992188" tx="-6" ty="-3.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-0.1" y="-0.2"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="12" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="双枪狂徒/移动射击动画层/待机" symbolType="graphic" firstFrame="12" centerPoint3DX="102.55" centerPoint3DY="-192.3" loop="loop">
+                  <matrix>
+                    <Matrix a="0.992904663085938" b="-0.1121826171875" c="0.112152099609375" d="0.992477416992188" tx="-6" ty="1.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-0.1" y="-0.2"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="15" duration="5" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="双枪狂徒/移动射击动画层/待机" selected="true" symbolType="graphic" firstFrame="15" centerPoint3DX="102.55" centerPoint3DY="-188.65" loop="loop">
+                  <matrix>
+                    <Matrix a="0.992904663085938" b="-0.1121826171875" c="0.112152099609375" d="0.992477416992188" tx="-6" ty="5.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-0.1" y="-0.2"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="20" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="双枪狂徒/移动射击动画层/待机" symbolType="graphic" centerPoint3DX="102.55" centerPoint3DY="-198.75" loop="loop">
+                  <matrix>
+                    <Matrix a="0.992904663085938" b="-0.1121826171875" c="0.112152099609375" d="0.992477416992188" tx="-6" ty="-4.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-0.1" y="-0.2"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="手枪2_双枪行走左腿" color="#669900" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="21" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="双枪狂徒/移动射击动画层/手枪2-双枪行走左腿" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.999267578125" d="0.99884033203125" tx="-18.75" ty="3.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-0.15" y="0.1"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

@@ -88,6 +88,7 @@ class org.flashNight.arki.weather.WorldLightingBridge {
             groundMin = 360; groundMax = 520;
         }
         var sent:Boolean = server.sendTaskToNode("world_lighting", {
+            slDiag:org.flashNight.arki.render.SceneLightBridge.diag(),
             version:1, sequence:++_sequence, scene:_scene, ready:_ready,
             light:light, mode:_mode, parameters:values,
             paused:ws.pauseDayNightCycle === true, immediate:_snap,

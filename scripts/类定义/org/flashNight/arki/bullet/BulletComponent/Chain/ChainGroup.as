@@ -97,6 +97,8 @@ class org.flashNight.arki.bullet.BulletComponent.Chain.ChainGroup {
     public var 补弹分子:Number;
     public var 补弹分母:Number;
     public var 补弹累计:Number;
+    // 纵向枪式联弹出生时冻结；所有补弹共用，不从角色或可复用模板追读。
+    public var 武器扩散倍率:Number;
 
     // ---------- 滑翔 ----------
     public var 下滑速度:Number;
@@ -127,6 +129,7 @@ class org.flashNight.arki.bullet.BulletComponent.Chain.ChainGroup {
         update = updateFn;
         render = renderFn;
         单元体列表 = [];
+        武器扩散倍率 = 1;
         rVer = 0;
         nativeGroupOwned = false;
         nativeStarved = false;

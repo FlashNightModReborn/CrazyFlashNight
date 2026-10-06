@@ -880,3 +880,88 @@ _root.敌人函数.获取大学军校学员随机装扮 = function(target){
 		else target.发型 = this.大学军校学员随机发型表_女[random(this.大学军校学员随机发型表_女.length)];
 	}
 };
+
+_root.敌人函数.拾荒者随机发型表_男 = [
+	"发型-男式-黑圆平头",
+	"发型-男式-黑骑士头",
+	"发型-男式-黑碎平头",
+	"发型-男式-黑蓬头",
+	"发型-男式-黑朋克头",
+	"发型-男式-非主流",
+	"发型-男式-黑猫王头",
+	"发型-男式-黑混混头",
+	"发型-男式-平头",
+	"发型-男式-精武短发",
+	"发型-男式-bob自由爆炸头",
+	"发型-男式-黑色不良少年头"
+];
+_root.敌人函数.拾荒者随机发型表_女 = [
+	"发型-男式-黑马尾头",
+	"发型-男式-黑妹妹头",
+	"发型-女式-玫红色马尾",
+	"发型-女式-咖啡色丸子头",
+	"发型-女式-骷髅帽子黄发头",
+	"发型-女式-棕发大姐头",
+	"发型-女式-中性遮发眼头"
+];
+
+_root.敌人函数.重装拾荒者随机兵器表 = [
+	"PPSh41",
+	"汤姆逊冲锋枪",
+	"UMP",
+	"M1A1SMG",
+	"TYPE79TAPSII",
+	"MP40BLACK",
+	"TTI MPX",
+	"PP1901",
+	"MP5A3",
+	"MP510",
+	"M16A1",
+	"M4A1",
+	"G36",
+	"FAMAS",
+	"AUG",
+	"AK200",
+	"XM8",
+	"MK17",
+	"FN F2000",
+	"AKS74U",
+	"DD MK18",
+	"AK74",
+	"HK33KA3",
+	"战术版AK200",
+	"HK53",
+	"QBZ95",
+	"HK416",
+	"HK33A2",
+	"QBZ-191",
+	"TTI TR1",
+	"DD MK18 Mod1",
+	"ZUX197",
+	"M249",
+	"HK23",
+	"MK48",
+	"PKM机枪"
+];
+
+_root.敌人函数.获取拾荒者随机装扮 = function(target, type:String){
+	target.hasDressup = true;
+	enableShoot = true;
+	if(!target.性别){
+		target.性别 = random(2) === 0 ? "男" : "女";
+	}
+
+	if(type === "重装拾荒者" & (!target.手枪 || !target.手枪2)){
+		target.手枪 = this.重装拾荒者随机兵器表[random(this.重装拾荒者随机兵器表.length)];
+		if(random(2) === 0){
+			target.手枪2 = target.手枪;
+		}else{
+			target.手枪2 = this.重装拾荒者随机兵器表[random(this.重装拾荒者随机兵器表.length)];
+		}
+	}
+	
+	if(!target.发型){
+		if(target.性别 === "男") target.发型 = this.拾荒者随机发型表_男[random(this.拾荒者随机发型表_男.length)];
+		else target.发型 = this.拾荒者随机发型表_女[random(this.拾荒者随机发型表_女.length)];
+	}
+}

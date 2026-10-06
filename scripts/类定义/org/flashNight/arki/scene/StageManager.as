@@ -479,10 +479,7 @@ class org.flashNight.arki.scene.StageManager {
 
         // 加载进图动画
         if (!isWarlordAction && basicInfo.Animation.Load == 1) {
-            _root.最上层加载外部动画(basicInfo.Animation.Path);
-            if (basicInfo.Animation.Pause == 1) {
-                _root.暂停 = true;
-            }
+            _root.最上层加载外部动画(basicInfo.Animation.Path, basicInfo.Animation.Pause == 1);
         }
 
         //播放场景bgm
@@ -999,8 +996,7 @@ class org.flashNight.arki.scene.StageManager {
         var animInfo = currentStageInfo.basicInfo.Animation;
         if (animInfo.Load == 0){
             try {
-                _root.最上层加载外部动画(animInfo.Path);
-                if (animInfo.Pause == 1) _root.暂停 = true;
+                _root.最上层加载外部动画(animInfo.Path, animInfo.Pause == 1);
             } catch (clearAnimationError) {
                 trace("[StageManager] clear animation projection failed: "
                     + clearAnimationError);

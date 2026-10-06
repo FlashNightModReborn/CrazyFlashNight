@@ -1,6 +1,6 @@
 {
   "schema": "cf7-dressup-manifest-v1",
-  "generatedAt": "2026-09-30T11:33:16+0800",
+  "generatedAt": "2026-10-02T22:28:43+0800",
   "genders": [
     "男",
     "女"
@@ -1587,7 +1587,33 @@
           "刀1_装扮": "刀-大剑"
         }
       },
-      "sourceFile": "武器_刀_直剑.xml"
+      "sourceFile": "武器_刀_直剑.xml",
+      "appearanceVariants": {
+        "data_ice": {
+          "fieldsByGender": {
+            "男": {
+              "刀_装扮": "刀-墨冰大剑",
+              "刀1_装扮": "刀-墨冰大剑"
+            },
+            "女": {
+              "刀_装扮": "刀-墨冰大剑",
+              "刀1_装扮": "刀-墨冰大剑"
+            }
+          }
+        },
+        "data_fire": {
+          "fieldsByGender": {
+            "男": {
+              "刀_装扮": "刀-狱火大剑",
+              "刀1_装扮": "刀-狱火大剑"
+            },
+            "女": {
+              "刀_装扮": "刀-狱火大剑",
+              "刀1_装扮": "刀-狱火大剑"
+            }
+          }
+        }
+      }
     },
     "光剑天秤": {
       "use": "刀",
@@ -1808,7 +1834,33 @@
           "刀1_装扮": "刀-匕首"
         }
       },
-      "sourceFile": "武器_刀_短兵.xml"
+      "sourceFile": "武器_刀_短兵.xml",
+      "appearanceVariants": {
+        "data_ice": {
+          "fieldsByGender": {
+            "男": {
+              "刀_装扮": "刀-墨冰匕首",
+              "刀1_装扮": "刀-墨冰匕首"
+            },
+            "女": {
+              "刀_装扮": "刀-墨冰匕首",
+              "刀1_装扮": "刀-墨冰匕首"
+            }
+          }
+        },
+        "data_fire": {
+          "fieldsByGender": {
+            "男": {
+              "刀_装扮": "刀-狱火匕首",
+              "刀1_装扮": "刀-狱火匕首"
+            },
+            "女": {
+              "刀_装扮": "刀-狱火匕首",
+              "刀1_装扮": "刀-狱火匕首"
+            }
+          }
+        }
+      }
     },
     "扳手": {
       "use": "刀",
@@ -2862,7 +2914,45 @@
           "刀1_装扮": "刀-雷铁斩斧"
         }
       },
-      "sourceFile": "武器_刀_重斩.xml"
+      "sourceFile": "武器_刀_重斩.xml",
+      "appearanceVariants": {
+        "data_2": {
+          "fieldsByGender": {
+            "男": {
+              "刀_装扮": "刀-雷铁斩斧",
+              "刀1_装扮": "刀-雷铁斩斧"
+            },
+            "女": {
+              "刀_装扮": "刀-雷铁斩斧",
+              "刀1_装扮": "刀-雷铁斩斧"
+            }
+          }
+        },
+        "data_3": {
+          "fieldsByGender": {
+            "男": {
+              "刀_装扮": "刀-雷铁斩斧",
+              "刀1_装扮": "刀-雷铁斩斧"
+            },
+            "女": {
+              "刀_装扮": "刀-雷铁斩斧",
+              "刀1_装扮": "刀-雷铁斩斧"
+            }
+          }
+        },
+        "data_4": {
+          "fieldsByGender": {
+            "男": {
+              "刀_装扮": "刀-雷铁斩斧",
+              "刀1_装扮": "刀-雷铁斩斧"
+            },
+            "女": {
+              "刀_装扮": "刀-雷铁斩斧",
+              "刀1_装扮": "刀-雷铁斩斧"
+            }
+          }
+        }
+      }
     },
     "键盘镰刀": {
       "use": "刀",
@@ -4071,7 +4161,33 @@
           "手枪2_装扮": "枪-手枪-Glock 18"
         }
       },
-      "sourceFile": "武器_手枪_冲锋枪.xml"
+      "sourceFile": "武器_手枪_冲锋枪.xml",
+      "appearanceVariants": {
+        "data_ice": {
+          "fieldsByGender": {
+            "男": {
+              "手枪_装扮": "枪-手枪-Glock18墨冰",
+              "手枪2_装扮": "枪-手枪-Glock18墨冰"
+            },
+            "女": {
+              "手枪_装扮": "枪-手枪-Glock18墨冰",
+              "手枪2_装扮": "枪-手枪-Glock18墨冰"
+            }
+          }
+        },
+        "data_fire": {
+          "fieldsByGender": {
+            "男": {
+              "手枪_装扮": "枪-手枪-Glock18狱火",
+              "手枪2_装扮": "枪-手枪-Glock18狱火"
+            },
+            "女": {
+              "手枪_装扮": "枪-手枪-Glock18狱火",
+              "手枪2_装扮": "枪-手枪-Glock18狱火"
+            }
+          }
+        }
+      }
     },
     "MAC10": {
       "use": "手枪",
@@ -4258,7 +4374,33 @@
           "手枪2_装扮": "枪-手枪-MP40"
         }
       },
-      "sourceFile": "武器_手枪_冲锋枪.xml"
+      "sourceFile": "武器_手枪_冲锋枪.xml",
+      "appearanceVariants": {
+        "data_ice": {
+          "fieldsByGender": {
+            "男": {
+              "手枪_装扮": "枪-手枪-MP40墨冰",
+              "手枪2_装扮": "枪-手枪-MP40墨冰"
+            },
+            "女": {
+              "手枪_装扮": "枪-手枪-MP40墨冰",
+              "手枪2_装扮": "枪-手枪-MP40墨冰"
+            }
+          }
+        },
+        "data_fire": {
+          "fieldsByGender": {
+            "男": {
+              "手枪_装扮": "枪-手枪-MP40狱火",
+              "手枪2_装扮": "枪-手枪-MP40狱火"
+            },
+            "女": {
+              "手枪_装扮": "枪-手枪-MP40狱火",
+              "手枪2_装扮": "枪-手枪-MP40狱火"
+            }
+          }
+        }
+      }
     },
     "APSstechkin": {
       "use": "手枪",
@@ -4870,7 +5012,33 @@
           "手枪2_装扮": "枪-手枪-韦森686"
         }
       },
-      "sourceFile": "武器_手枪_大威力手枪.xml"
+      "sourceFile": "武器_手枪_大威力手枪.xml",
+      "appearanceVariants": {
+        "data_ice": {
+          "fieldsByGender": {
+            "男": {
+              "手枪_装扮": "枪-手枪-韦森686墨冰",
+              "手枪2_装扮": "枪-手枪-韦森686墨冰"
+            },
+            "女": {
+              "手枪_装扮": "枪-手枪-韦森686墨冰",
+              "手枪2_装扮": "枪-手枪-韦森686墨冰"
+            }
+          }
+        },
+        "data_fire": {
+          "fieldsByGender": {
+            "男": {
+              "手枪_装扮": "枪-手枪-韦森686狱火",
+              "手枪2_装扮": "枪-手枪-韦森686狱火"
+            },
+            "女": {
+              "手枪_装扮": "枪-手枪-韦森686狱火",
+              "手枪2_装扮": "枪-手枪-韦森686狱火"
+            }
+          }
+        }
+      }
     },
     "N99": {
       "use": "手枪",
@@ -5380,7 +5548,33 @@
           "手枪2_装扮": "枪-手枪-MK23手枪"
         }
       },
-      "sourceFile": "武器_手枪_手枪.xml"
+      "sourceFile": "武器_手枪_手枪.xml",
+      "appearanceVariants": {
+        "data_ice": {
+          "fieldsByGender": {
+            "男": {
+              "手枪_装扮": "枪-手枪-MK23墨冰",
+              "手枪2_装扮": "枪-手枪-MK23墨冰"
+            },
+            "女": {
+              "手枪_装扮": "枪-手枪-MK23墨冰",
+              "手枪2_装扮": "枪-手枪-MK23墨冰"
+            }
+          }
+        },
+        "data_fire": {
+          "fieldsByGender": {
+            "男": {
+              "手枪_装扮": "枪-手枪-MK23狱火",
+              "手枪2_装扮": "枪-手枪-MK23狱火"
+            },
+            "女": {
+              "手枪_装扮": "枪-手枪-MK23狱火",
+              "手枪2_装扮": "枪-手枪-MK23狱火"
+            }
+          }
+        }
+      }
     },
     "m9": {
       "use": "手枪",
@@ -5550,7 +5744,33 @@
           "手枪2_装扮": "枪-手枪-Beretta90TWO"
         }
       },
-      "sourceFile": "武器_手枪_手枪.xml"
+      "sourceFile": "武器_手枪_手枪.xml",
+      "appearanceVariants": {
+        "data_ice": {
+          "fieldsByGender": {
+            "男": {
+              "手枪_装扮": "枪-手枪-Beretta90TWO墨冰",
+              "手枪2_装扮": "枪-手枪-Beretta90TWO墨冰"
+            },
+            "女": {
+              "手枪_装扮": "枪-手枪-Beretta90TWO墨冰",
+              "手枪2_装扮": "枪-手枪-Beretta90TWO墨冰"
+            }
+          }
+        },
+        "data_fire": {
+          "fieldsByGender": {
+            "男": {
+              "手枪_装扮": "枪-手枪-Beretta90TWO熔岩",
+              "手枪2_装扮": "枪-手枪-Beretta90TWO熔岩"
+            },
+            "女": {
+              "手枪_装扮": "枪-手枪-Beretta90TWO熔岩",
+              "手枪2_装扮": "枪-手枪-Beretta90TWO熔岩"
+            }
+          }
+        }
+      }
     },
     "TTI 2011 Combat Master": {
       "use": "手枪",
@@ -5567,7 +5787,33 @@
           "手枪2_装扮": "枪-手枪-TTI 2011 Combat Master"
         }
       },
-      "sourceFile": "武器_手枪_手枪.xml"
+      "sourceFile": "武器_手枪_手枪.xml",
+      "appearanceVariants": {
+        "data_ice": {
+          "fieldsByGender": {
+            "男": {
+              "手枪_装扮": "枪-手枪-TTI2011墨冰",
+              "手枪2_装扮": "枪-手枪-TTI2011墨冰"
+            },
+            "女": {
+              "手枪_装扮": "枪-手枪-TTI2011墨冰",
+              "手枪2_装扮": "枪-手枪-TTI2011墨冰"
+            }
+          }
+        },
+        "data_fire": {
+          "fieldsByGender": {
+            "男": {
+              "手枪_装扮": "枪-手枪-TTI2011狱火",
+              "手枪2_装扮": "枪-手枪-TTI2011狱火"
+            },
+            "女": {
+              "手枪_装扮": "枪-手枪-TTI2011狱火",
+              "手枪2_装扮": "枪-手枪-TTI2011狱火"
+            }
+          }
+        }
+      }
     },
     "TTI Glock 19": {
       "use": "手枪",
@@ -7048,7 +7294,29 @@
           "长枪_装扮": "枪-长枪-中国88式狙击步枪"
         }
       },
-      "sourceFile": "武器_长枪_战斗步枪.xml"
+      "sourceFile": "武器_长枪_战斗步枪.xml",
+      "appearanceVariants": {
+        "data_ice": {
+          "fieldsByGender": {
+            "男": {
+              "长枪_装扮": "枪-长枪-墨冰88式狙击枪"
+            },
+            "女": {
+              "长枪_装扮": "枪-长枪-墨冰88式狙击枪"
+            }
+          }
+        },
+        "data_fire": {
+          "fieldsByGender": {
+            "男": {
+              "长枪_装扮": "枪-长枪-狱火88式狙击枪"
+            },
+            "女": {
+              "长枪_装扮": "枪-长枪-狱火88式狙击枪"
+            }
+          }
+        }
+      }
     },
     "m14": {
       "use": "长枪",
@@ -7063,7 +7331,29 @@
           "长枪_装扮": "枪-长枪-m14"
         }
       },
-      "sourceFile": "武器_长枪_战斗步枪.xml"
+      "sourceFile": "武器_长枪_战斗步枪.xml",
+      "appearanceVariants": {
+        "data_ice": {
+          "fieldsByGender": {
+            "男": {
+              "长枪_装扮": "枪-长枪-M14墨冰"
+            },
+            "女": {
+              "长枪_装扮": "枪-长枪-M14墨冰"
+            }
+          }
+        },
+        "data_fire": {
+          "fieldsByGender": {
+            "男": {
+              "长枪_装扮": "枪-长枪-M14狱火"
+            },
+            "女": {
+              "长枪_装扮": "枪-长枪-M14狱火"
+            }
+          }
+        }
+      }
     },
     "中国88式狙击步枪改造版": {
       "use": "长枪",
@@ -7108,7 +7398,29 @@
           "长枪_装扮": "枪-长枪-SVD"
         }
       },
-      "sourceFile": "武器_长枪_战斗步枪.xml"
+      "sourceFile": "武器_长枪_战斗步枪.xml",
+      "appearanceVariants": {
+        "data_ice": {
+          "fieldsByGender": {
+            "男": {
+              "长枪_装扮": "枪-长枪-SVD墨冰"
+            },
+            "女": {
+              "长枪_装扮": "枪-长枪-SVD墨冰"
+            }
+          }
+        },
+        "data_fire": {
+          "fieldsByGender": {
+            "男": {
+              "长枪_装扮": "枪-长枪-SVD狱火"
+            },
+            "女": {
+              "长枪_装扮": "枪-长枪-SVD狱火"
+            }
+          }
+        }
+      }
     },
     "HKSL8EX": {
       "use": "长枪",
@@ -7618,7 +7930,29 @@
           "长枪_装扮": "枪-长枪-53式步骑枪"
         }
       },
-      "sourceFile": "武器_长枪_狙击步枪.xml"
+      "sourceFile": "武器_长枪_狙击步枪.xml",
+      "appearanceVariants": {
+        "data_ice": {
+          "fieldsByGender": {
+            "男": {
+              "长枪_装扮": "枪-长枪-53式步骑枪墨冰"
+            },
+            "女": {
+              "长枪_装扮": "枪-长枪-53式步骑枪墨冰"
+            }
+          }
+        },
+        "data_fire": {
+          "fieldsByGender": {
+            "男": {
+              "长枪_装扮": "枪-长枪-53式步骑枪狱火"
+            },
+            "女": {
+              "长枪_装扮": "枪-长枪-53式步骑枪狱火"
+            }
+          }
+        }
+      }
     },
     "Sniper": {
       "use": "长枪",
@@ -7633,7 +7967,29 @@
           "长枪_装扮": "枪-长枪-Sniper"
         }
       },
-      "sourceFile": "武器_长枪_狙击步枪.xml"
+      "sourceFile": "武器_长枪_狙击步枪.xml",
+      "appearanceVariants": {
+        "data_ice": {
+          "fieldsByGender": {
+            "男": {
+              "长枪_装扮": "枪-长枪-Sniper墨冰"
+            },
+            "女": {
+              "长枪_装扮": "枪-长枪-Sniper墨冰"
+            }
+          }
+        },
+        "data_fire": {
+          "fieldsByGender": {
+            "男": {
+              "长枪_装扮": "枪-长枪-Sniper狱火"
+            },
+            "女": {
+              "长枪_装扮": "枪-长枪-Sniper狱火"
+            }
+          }
+        }
+      }
     },
     "M24SWS": {
       "use": "长枪",
@@ -7873,7 +8229,29 @@
           "长枪_装扮": "枪-长枪-M4A1"
         }
       },
-      "sourceFile": "武器_长枪_突击步枪.xml"
+      "sourceFile": "武器_长枪_突击步枪.xml",
+      "appearanceVariants": {
+        "data_ice": {
+          "fieldsByGender": {
+            "男": {
+              "长枪_装扮": "枪-长枪-M4A1墨冰"
+            },
+            "女": {
+              "长枪_装扮": "枪-长枪-M4A1墨冰"
+            }
+          }
+        },
+        "data_fire": {
+          "fieldsByGender": {
+            "男": {
+              "长枪_装扮": "枪-长枪-M4A1狱火"
+            },
+            "女": {
+              "长枪_装扮": "枪-长枪-M4A1狱火"
+            }
+          }
+        }
+      }
     },
     "G36": {
       "use": "长枪",
@@ -7918,7 +8296,29 @@
           "长枪_装扮": "枪-长枪-AUG"
         }
       },
-      "sourceFile": "武器_长枪_突击步枪.xml"
+      "sourceFile": "武器_长枪_突击步枪.xml",
+      "appearanceVariants": {
+        "data_ice": {
+          "fieldsByGender": {
+            "男": {
+              "长枪_装扮": "枪-长枪-AUG墨冰全涂装"
+            },
+            "女": {
+              "长枪_装扮": "枪-长枪-AUG墨冰全涂装"
+            }
+          }
+        },
+        "data_fire": {
+          "fieldsByGender": {
+            "男": {
+              "长枪_装扮": "枪-长枪-AUG狱火"
+            },
+            "女": {
+              "长枪_装扮": "枪-长枪-AUG狱火"
+            }
+          }
+        }
+      }
     },
     "AK200": {
       "use": "长枪",
@@ -8023,7 +8423,29 @@
           "长枪_装扮": "枪-长枪-AK74"
         }
       },
-      "sourceFile": "武器_长枪_突击步枪.xml"
+      "sourceFile": "武器_长枪_突击步枪.xml",
+      "appearanceVariants": {
+        "data_ice": {
+          "fieldsByGender": {
+            "男": {
+              "长枪_装扮": "枪-长枪-AK74墨冰"
+            },
+            "女": {
+              "长枪_装扮": "枪-长枪-AK74墨冰"
+            }
+          }
+        },
+        "data_fire": {
+          "fieldsByGender": {
+            "男": {
+              "长枪_装扮": "枪-长枪-AK74狱火"
+            },
+            "女": {
+              "长枪_装扮": "枪-长枪-AK74狱火"
+            }
+          }
+        }
+      }
     },
     "M4A1改": {
       "use": "长枪",
@@ -8128,7 +8550,29 @@
           "长枪_装扮": "枪-长枪-HK416"
         }
       },
-      "sourceFile": "武器_长枪_突击步枪.xml"
+      "sourceFile": "武器_长枪_突击步枪.xml",
+      "appearanceVariants": {
+        "data_ice": {
+          "fieldsByGender": {
+            "男": {
+              "长枪_装扮": "枪-长枪-HK416墨冰"
+            },
+            "女": {
+              "长枪_装扮": "枪-长枪-HK416墨冰"
+            }
+          }
+        },
+        "data_fire": {
+          "fieldsByGender": {
+            "男": {
+              "长枪_装扮": "枪-长枪-HK416狱火"
+            },
+            "女": {
+              "长枪_装扮": "枪-长枪-HK416狱火"
+            }
+          }
+        }
+      }
     },
     "HK33A2": {
       "use": "长枪",
@@ -8653,7 +9097,19 @@
           "长枪_装扮": "枪-长枪-混凝土切割机"
         }
       },
-      "sourceFile": "武器_长枪_近战.xml"
+      "sourceFile": "武器_长枪_近战.xml",
+      "appearanceVariants": {
+        "data_fire_gold_stolen": {
+          "fieldsByGender": {
+            "男": {
+              "长枪_装扮": "枪-长枪-热临界破障机"
+            },
+            "女": {
+              "长枪_装扮": "枪-长枪-热临界破障机"
+            }
+          }
+        }
+      }
     },
     "生命收割者": {
       "use": "长枪",
@@ -8683,7 +9139,19 @@
           "长枪_装扮": "枪-长枪-MACSIII"
         }
       },
-      "sourceFile": "武器_长枪_近战.xml"
+      "sourceFile": "武器_长枪_近战.xml",
+      "appearanceVariants": {
+        "data_ice_gold_stolen": {
+          "fieldsByGender": {
+            "男": {
+              "长枪_装扮": "枪-长枪-MACSIV"
+            },
+            "女": {
+              "长枪_装扮": "枪-长枪-MACSIV"
+            }
+          }
+        }
+      }
     },
     "火药燃气液压打桩机": {
       "use": "长枪",
@@ -8698,7 +9166,19 @@
           "长枪_装扮": "枪-长枪-火药燃气液压打桩机"
         }
       },
-      "sourceFile": "武器_长枪_近战.xml"
+      "sourceFile": "武器_长枪_近战.xml",
+      "appearanceVariants": {
+        "data_pilebunker_m7": {
+          "fieldsByGender": {
+            "男": {
+              "长枪_装扮": "枪-长枪-Codex-打桩机M7"
+            },
+            "女": {
+              "长枪_装扮": "枪-长枪-Codex-打桩机M7"
+            }
+          }
+        }
+      }
     },
     "单管霰弹枪": {
       "use": "长枪",
@@ -8803,7 +9283,29 @@
           "长枪_装扮": "枪-长枪-XM1014"
         }
       },
-      "sourceFile": "武器_长枪_霰弹枪.xml"
+      "sourceFile": "武器_长枪_霰弹枪.xml",
+      "appearanceVariants": {
+        "data_ice": {
+          "fieldsByGender": {
+            "男": {
+              "长枪_装扮": "枪-长枪-XM1014墨冰"
+            },
+            "女": {
+              "长枪_装扮": "枪-长枪-XM1014墨冰"
+            }
+          }
+        },
+        "data_fire": {
+          "fieldsByGender": {
+            "男": {
+              "长枪_装扮": "枪-长枪-XM1014狱火"
+            },
+            "女": {
+              "长枪_装扮": "枪-长枪-XM1014狱火"
+            }
+          }
+        }
+      }
     },
     "FNSLP半自动霰弹枪": {
       "use": "长枪",
@@ -8833,7 +9335,29 @@
           "长枪_装扮": "枪-长枪-白火铳"
         }
       },
-      "sourceFile": "武器_长枪_霰弹枪.xml"
+      "sourceFile": "武器_长枪_霰弹枪.xml",
+      "appearanceVariants": {
+        "data_ice": {
+          "fieldsByGender": {
+            "男": {
+              "长枪_装扮": "枪-长枪-墨冰白火铳"
+            },
+            "女": {
+              "长枪_装扮": "枪-长枪-墨冰白火铳"
+            }
+          }
+        },
+        "data_fire": {
+          "fieldsByGender": {
+            "男": {
+              "长枪_装扮": "枪-长枪-狱火白火铳"
+            },
+            "女": {
+              "长枪_装扮": "枪-长枪-狱火白火铳"
+            }
+          }
+        }
+      }
     },
     "ZUX197": {
       "use": "长枪",
@@ -10450,6 +10974,38 @@
       "fieldsByGender": {},
       "sourceFile": "消耗品_药剂_食品.xml"
     },
+    "蒜蓉烤茄子": {
+      "use": "药剂",
+      "icon": "茄子",
+      "dressup": "",
+      "helmet": false,
+      "fieldsByGender": {},
+      "sourceFile": "消耗品_药剂_食品.xml"
+    },
+    "蜜汁烤鸡": {
+      "use": "药剂",
+      "icon": "鸡腿",
+      "dressup": "",
+      "helmet": false,
+      "fieldsByGender": {},
+      "sourceFile": "消耗品_药剂_食品.xml"
+    },
+    "酥炸大虾": {
+      "use": "药剂",
+      "icon": "虾",
+      "dressup": "",
+      "helmet": false,
+      "fieldsByGender": {},
+      "sourceFile": "消耗品_药剂_食品.xml"
+    },
+    "瑶柱蒸蛋": {
+      "use": "药剂",
+      "icon": "瑶柱",
+      "dressup": "",
+      "helmet": false,
+      "fieldsByGender": {},
+      "sourceFile": "消耗品_药剂_食品.xml"
+    },
     "情报鸡尾酒": {
       "use": "药剂",
       "icon": "情报鸡尾酒",
@@ -11538,7 +12094,57 @@
           "右下臂": "女变装-绿色马甲右下臂"
         }
       },
-      "sourceFile": "防具_0-19级.xml"
+      "sourceFile": "防具_0-19级.xml",
+      "appearanceVariants": {
+        "data_2": {
+          "fieldsByGender": {
+            "男": {
+              "身体": "男变装-二阶绿色马甲身体",
+              "上臂": "男变装-二阶绿色马甲上臂",
+              "左下臂": "男变装-二阶绿色马甲左下臂",
+              "右下臂": "男变装-二阶绿色马甲右下臂"
+            },
+            "女": {
+              "身体": "女变装-二阶绿色马甲身体",
+              "上臂": "女变装-二阶绿色马甲上臂",
+              "左下臂": "女变装-二阶绿色马甲左下臂",
+              "右下臂": "女变装-二阶绿色马甲右下臂"
+            }
+          }
+        },
+        "data_3": {
+          "fieldsByGender": {
+            "男": {
+              "身体": "男变装-二阶绿色马甲身体",
+              "上臂": "男变装-二阶绿色马甲上臂",
+              "左下臂": "男变装-二阶绿色马甲左下臂",
+              "右下臂": "男变装-二阶绿色马甲右下臂"
+            },
+            "女": {
+              "身体": "女变装-二阶绿色马甲身体",
+              "上臂": "女变装-二阶绿色马甲上臂",
+              "左下臂": "女变装-二阶绿色马甲左下臂",
+              "右下臂": "女变装-二阶绿色马甲右下臂"
+            }
+          }
+        },
+        "data_4": {
+          "fieldsByGender": {
+            "男": {
+              "身体": "男变装-二阶绿色马甲身体",
+              "上臂": "男变装-二阶绿色马甲上臂",
+              "左下臂": "男变装-二阶绿色马甲左下臂",
+              "右下臂": "男变装-二阶绿色马甲右下臂"
+            },
+            "女": {
+              "身体": "女变装-二阶绿色马甲身体",
+              "上臂": "女变装-二阶绿色马甲上臂",
+              "左下臂": "女变装-二阶绿色马甲左下臂",
+              "右下臂": "女变装-二阶绿色马甲右下臂"
+            }
+          }
+        }
+      }
     },
     "蓝发女黑白女仆装": {
       "use": "上装装备",
@@ -23575,6 +24181,86 @@
         }
       ]
     },
+    "刀-墨冰匕首": {
+      "covered": true,
+      "asset": {
+        "swf": "flashswf/arts/new/变体武器.swf",
+        "symbolName": "2.冷兵相关/匕首/0.墨冰/刀-墨冰匕首",
+        "conflict": false,
+        "matches": null
+      },
+      "uses": [
+        "刀"
+      ],
+      "items": [
+        "匕首"
+      ],
+      "sourceFiles": [
+        "武器_刀_短兵.xml"
+      ],
+      "export": {
+        "format": "png",
+        "zoom": 2,
+        "fps": 24.0,
+        "frameCount": 1,
+        "uri": "skins/fc5a346d_1.png",
+        "width": 76,
+        "height": 419,
+        "playback": "static",
+        "sourceFrameCount": 1
+      },
+      "frames": [
+        {
+          "uri": "skins/fc5a346d_1.png",
+          "frame": 1,
+          "sourceFrame": 1,
+          "width": 76,
+          "height": 419,
+          "originX": 37.6,
+          "originY": 82.9
+        }
+      ]
+    },
+    "刀-墨冰大剑": {
+      "covered": true,
+      "asset": {
+        "swf": "flashswf/arts/new/变体武器.swf",
+        "symbolName": "2.冷兵相关/大剑/0.墨冰/刀-墨冰大剑",
+        "conflict": false,
+        "matches": null
+      },
+      "uses": [
+        "刀"
+      ],
+      "items": [
+        "大剑"
+      ],
+      "sourceFiles": [
+        "武器_刀_直剑.xml"
+      ],
+      "export": {
+        "format": "png",
+        "zoom": 2,
+        "fps": 24.0,
+        "frameCount": 1,
+        "uri": "skins/d2ab3428_1.png",
+        "width": 169,
+        "height": 949,
+        "playback": "static",
+        "sourceFrameCount": 1
+      },
+      "frames": [
+        {
+          "uri": "skins/d2ab3428_1.png",
+          "frame": 1,
+          "sourceFrame": 1,
+          "width": 169,
+          "height": 949,
+          "originX": 83.4,
+          "originY": 173.4
+        }
+      ]
+    },
     "刀-复瞳赤枭": {
       "covered": true,
       "asset": {
@@ -31756,6 +32442,86 @@
           "height": 1717,
           "originX": 892.4,
           "originY": 525.2
+        }
+      ]
+    },
+    "刀-狱火匕首": {
+      "covered": true,
+      "asset": {
+        "swf": "flashswf/arts/new/变体武器.swf",
+        "symbolName": "2.冷兵相关/匕首/1.狱火/刀-狱火匕首",
+        "conflict": false,
+        "matches": null
+      },
+      "uses": [
+        "刀"
+      ],
+      "items": [
+        "匕首"
+      ],
+      "sourceFiles": [
+        "武器_刀_短兵.xml"
+      ],
+      "export": {
+        "format": "png",
+        "zoom": 2,
+        "fps": 24.0,
+        "frameCount": 1,
+        "uri": "skins/77e15829_1.png",
+        "width": 76,
+        "height": 419,
+        "playback": "static",
+        "sourceFrameCount": 1
+      },
+      "frames": [
+        {
+          "uri": "skins/77e15829_1.png",
+          "frame": 1,
+          "sourceFrame": 1,
+          "width": 76,
+          "height": 419,
+          "originX": 37.6,
+          "originY": 82.9
+        }
+      ]
+    },
+    "刀-狱火大剑": {
+      "covered": true,
+      "asset": {
+        "swf": "flashswf/arts/new/变体武器.swf",
+        "symbolName": "2.冷兵相关/大剑/1.狱火/刀-狱火大剑",
+        "conflict": false,
+        "matches": null
+      },
+      "uses": [
+        "刀"
+      ],
+      "items": [
+        "大剑"
+      ],
+      "sourceFiles": [
+        "武器_刀_直剑.xml"
+      ],
+      "export": {
+        "format": "png",
+        "zoom": 2,
+        "fps": 24.0,
+        "frameCount": 1,
+        "uri": "skins/5910586c_1.png",
+        "width": 169,
+        "height": 949,
+        "playback": "static",
+        "sourceFrameCount": 1
+      },
+      "frames": [
+        {
+          "uri": "skins/5910586c_1.png",
+          "frame": 1,
+          "sourceFrame": 1,
+          "width": 169,
+          "height": 949,
+          "originX": 83.4,
+          "originY": 173.4
         }
       ]
     },
@@ -48023,6 +48789,166 @@
           "height": 483,
           "originX": 110.4,
           "originY": 246
+        }
+      ]
+    },
+    "女变装-二阶绿色马甲上臂": {
+      "covered": true,
+      "asset": {
+        "swf": "flashswf/arts/new/雾人装备调整.swf",
+        "symbolName": "3.防具/03.绿色马甲/二阶/女变装-二阶绿色马甲上臂",
+        "conflict": false,
+        "matches": null
+      },
+      "uses": [
+        "上装装备"
+      ],
+      "items": [
+        "绿色马甲"
+      ],
+      "sourceFiles": [
+        "防具_0-19级.xml"
+      ],
+      "export": {
+        "format": "png",
+        "zoom": 2,
+        "fps": 24.0,
+        "frameCount": 1,
+        "uri": "skins/868a47fa_1.png",
+        "width": 78,
+        "height": 257,
+        "playback": "static",
+        "sourceFrameCount": 1
+      },
+      "frames": [
+        {
+          "uri": "skins/868a47fa_1.png",
+          "frame": 1,
+          "sourceFrame": 1,
+          "width": 78,
+          "height": 257,
+          "originX": 36.0,
+          "originY": 135.7
+        }
+      ]
+    },
+    "女变装-二阶绿色马甲右下臂": {
+      "covered": true,
+      "asset": {
+        "swf": "flashswf/arts/new/雾人装备调整.swf",
+        "symbolName": "3.防具/03.绿色马甲/二阶/女变装-二阶绿色马甲右下臂",
+        "conflict": false,
+        "matches": null
+      },
+      "uses": [
+        "上装装备"
+      ],
+      "items": [
+        "绿色马甲"
+      ],
+      "sourceFiles": [
+        "防具_0-19级.xml"
+      ],
+      "export": {
+        "format": "png",
+        "zoom": 2,
+        "fps": 24.0,
+        "frameCount": 1,
+        "uri": "skins/a9f1fff6_1.png",
+        "width": 54,
+        "height": 222,
+        "playback": "static",
+        "sourceFrameCount": 1
+      },
+      "frames": [
+        {
+          "uri": "skins/a9f1fff6_1.png",
+          "frame": 1,
+          "sourceFrame": 1,
+          "width": 54,
+          "height": 222,
+          "originX": 26.2,
+          "originY": 111.2
+        }
+      ]
+    },
+    "女变装-二阶绿色马甲左下臂": {
+      "covered": true,
+      "asset": {
+        "swf": "flashswf/arts/new/雾人装备调整.swf",
+        "symbolName": "3.防具/03.绿色马甲/二阶/女变装-二阶绿色马甲左下臂",
+        "conflict": false,
+        "matches": null
+      },
+      "uses": [
+        "上装装备"
+      ],
+      "items": [
+        "绿色马甲"
+      ],
+      "sourceFiles": [
+        "防具_0-19级.xml"
+      ],
+      "export": {
+        "format": "png",
+        "zoom": 2,
+        "fps": 24.0,
+        "frameCount": 1,
+        "uri": "skins/ca3f0457_1.png",
+        "width": 56,
+        "height": 222,
+        "playback": "static",
+        "sourceFrameCount": 1
+      },
+      "frames": [
+        {
+          "uri": "skins/ca3f0457_1.png",
+          "frame": 1,
+          "sourceFrame": 1,
+          "width": 56,
+          "height": 222,
+          "originX": 30.0,
+          "originY": 111.3
+        }
+      ]
+    },
+    "女变装-二阶绿色马甲身体": {
+      "covered": true,
+      "asset": {
+        "swf": "flashswf/arts/new/雾人装备调整.swf",
+        "symbolName": "3.防具/03.绿色马甲/二阶/女变装-二阶绿色马甲身体",
+        "conflict": false,
+        "matches": null
+      },
+      "uses": [
+        "上装装备"
+      ],
+      "items": [
+        "绿色马甲"
+      ],
+      "sourceFiles": [
+        "防具_0-19级.xml"
+      ],
+      "export": {
+        "format": "png",
+        "zoom": 2,
+        "fps": 24.0,
+        "frameCount": 1,
+        "uri": "skins/d5051b55_1.png",
+        "width": 248,
+        "height": 483,
+        "playback": "static",
+        "sourceFrameCount": 1
+      },
+      "frames": [
+        {
+          "uri": "skins/d5051b55_1.png",
+          "frame": 1,
+          "sourceFrame": 1,
+          "width": 248,
+          "height": 483,
+          "originX": 110.4,
+          "originY": 246.0
         }
       ]
     },
@@ -78510,6 +79436,86 @@
         }
       ]
     },
+    "枪-手枪-Beretta90TWO墨冰": {
+      "covered": true,
+      "asset": {
+        "swf": "flashswf/arts/new/变体武器.swf",
+        "symbolName": "1.枪械相关/手枪/Beretta90TWO/0.墨冰/枪-手枪-Beretta90TWO墨冰",
+        "conflict": false,
+        "matches": null
+      },
+      "uses": [
+        "手枪"
+      ],
+      "items": [
+        "Beretta90TWO"
+      ],
+      "sourceFiles": [
+        "武器_手枪_手枪.xml"
+      ],
+      "export": {
+        "format": "png",
+        "zoom": 2,
+        "fps": 24.0,
+        "frameCount": 1,
+        "uri": "skins/67339d23_1.png",
+        "width": 249,
+        "height": 111,
+        "playback": "static",
+        "sourceFrameCount": 1
+      },
+      "frames": [
+        {
+          "uri": "skins/67339d23_1.png",
+          "frame": 1,
+          "sourceFrame": 1,
+          "width": 249,
+          "height": 111,
+          "originX": 39.3,
+          "originY": 70.2
+        }
+      ]
+    },
+    "枪-手枪-Beretta90TWO熔岩": {
+      "covered": true,
+      "asset": {
+        "swf": "flashswf/arts/new/变体武器.swf",
+        "symbolName": "1.枪械相关/手枪/Beretta90TWO/1.狱火/枪-手枪-Beretta90TWO熔岩",
+        "conflict": false,
+        "matches": null
+      },
+      "uses": [
+        "手枪"
+      ],
+      "items": [
+        "Beretta90TWO"
+      ],
+      "sourceFiles": [
+        "武器_手枪_手枪.xml"
+      ],
+      "export": {
+        "format": "png",
+        "zoom": 2,
+        "fps": 24.0,
+        "frameCount": 1,
+        "uri": "skins/7b06a9c2_1.png",
+        "width": 249,
+        "height": 111,
+        "playback": "static",
+        "sourceFrameCount": 1
+      },
+      "frames": [
+        {
+          "uri": "skins/7b06a9c2_1.png",
+          "frame": 1,
+          "sourceFrame": 1,
+          "width": 249,
+          "height": 111,
+          "originX": 39.3,
+          "originY": 70.2
+        }
+      ]
+    },
     "枪-手枪-BergmannM1910": {
       "covered": true,
       "asset": {
@@ -78852,6 +79858,46 @@
         }
       ]
     },
+    "枪-手枪-Glock18墨冰": {
+      "covered": true,
+      "asset": {
+        "swf": "flashswf/arts/new/变体武器.swf",
+        "symbolName": "1.枪械相关/手枪/Glock18/0.墨冰/枪-手枪-Glock18墨冰",
+        "conflict": false,
+        "matches": null
+      },
+      "uses": [
+        "手枪"
+      ],
+      "items": [
+        "Glock 18"
+      ],
+      "sourceFiles": [
+        "武器_手枪_冲锋枪.xml"
+      ],
+      "export": {
+        "format": "png",
+        "zoom": 2,
+        "fps": 24.0,
+        "frameCount": 1,
+        "uri": "skins/23eb16c4_1.png",
+        "width": 276,
+        "height": 218,
+        "playback": "static",
+        "sourceFrameCount": 1
+      },
+      "frames": [
+        {
+          "uri": "skins/23eb16c4_1.png",
+          "frame": 1,
+          "sourceFrame": 1,
+          "width": 276,
+          "height": 218,
+          "originX": 64.2,
+          "originY": 71.3
+        }
+      ]
+    },
     "枪-手枪-Glock18战术版": {
       "covered": true,
       "asset": {
@@ -78890,6 +79936,46 @@
           "height": 261,
           "originX": 194.7,
           "originY": 99
+        }
+      ]
+    },
+    "枪-手枪-Glock18狱火": {
+      "covered": true,
+      "asset": {
+        "swf": "flashswf/arts/new/变体武器.swf",
+        "symbolName": "1.枪械相关/手枪/Glock18/1.狱火/枪-手枪-Glock18狱火",
+        "conflict": false,
+        "matches": null
+      },
+      "uses": [
+        "手枪"
+      ],
+      "items": [
+        "Glock 18"
+      ],
+      "sourceFiles": [
+        "武器_手枪_冲锋枪.xml"
+      ],
+      "export": {
+        "format": "png",
+        "zoom": 2,
+        "fps": 24.0,
+        "frameCount": 1,
+        "uri": "skins/494369ea_1.png",
+        "width": 276,
+        "height": 218,
+        "playback": "static",
+        "sourceFrameCount": 1
+      },
+      "frames": [
+        {
+          "uri": "skins/494369ea_1.png",
+          "frame": 1,
+          "sourceFrame": 1,
+          "width": 276,
+          "height": 218,
+          "originX": 64.2,
+          "originY": 71.3
         }
       ]
     },
@@ -79495,6 +80581,46 @@
         }
       ]
     },
+    "枪-手枪-MK23墨冰": {
+      "covered": true,
+      "asset": {
+        "swf": "flashswf/arts/new/变体武器.swf",
+        "symbolName": "1.枪械相关/手枪/MK23/0.墨冰/枪-手枪-MK23墨冰",
+        "conflict": false,
+        "matches": null
+      },
+      "uses": [
+        "手枪"
+      ],
+      "items": [
+        "MK23手枪"
+      ],
+      "sourceFiles": [
+        "武器_手枪_手枪.xml"
+      ],
+      "export": {
+        "format": "png",
+        "zoom": 2,
+        "fps": 24.0,
+        "frameCount": 1,
+        "uri": "skins/0647e048_1.png",
+        "width": 405,
+        "height": 126,
+        "playback": "static",
+        "sourceFrameCount": 1
+      },
+      "frames": [
+        {
+          "uri": "skins/0647e048_1.png",
+          "frame": 1,
+          "sourceFrame": 1,
+          "width": 405,
+          "height": 126,
+          "originX": 42.3,
+          "originY": 73.4
+        }
+      ]
+    },
     "枪-手枪-MK23手枪": {
       "covered": true,
       "asset": {
@@ -79535,6 +80661,46 @@
         }
       ]
     },
+    "枪-手枪-MK23狱火": {
+      "covered": true,
+      "asset": {
+        "swf": "flashswf/arts/new/变体武器.swf",
+        "symbolName": "1.枪械相关/手枪/MK23/1.狱火/枪-手枪-MK23狱火",
+        "conflict": false,
+        "matches": null
+      },
+      "uses": [
+        "手枪"
+      ],
+      "items": [
+        "MK23手枪"
+      ],
+      "sourceFiles": [
+        "武器_手枪_手枪.xml"
+      ],
+      "export": {
+        "format": "png",
+        "zoom": 2,
+        "fps": 24.0,
+        "frameCount": 1,
+        "uri": "skins/6cef9f66_1.png",
+        "width": 405,
+        "height": 126,
+        "playback": "static",
+        "sourceFrameCount": 1
+      },
+      "frames": [
+        {
+          "uri": "skins/6cef9f66_1.png",
+          "frame": 1,
+          "sourceFrame": 1,
+          "width": 405,
+          "height": 126,
+          "originX": 42.3,
+          "originY": 73.4
+        }
+      ]
+    },
     "枪-手枪-MP40": {
       "covered": true,
       "asset": {
@@ -79566,6 +80732,86 @@
       "frames": [
         {
           "uri": "skins/aa20769d_1.png",
+          "frame": 1,
+          "sourceFrame": 1,
+          "width": 680,
+          "height": 232,
+          "originX": 219.2,
+          "originY": 94.8
+        }
+      ]
+    },
+    "枪-手枪-MP40墨冰": {
+      "covered": true,
+      "asset": {
+        "swf": "flashswf/arts/new/变体武器.swf",
+        "symbolName": "1.枪械相关/手枪/MP40/0.墨冰/枪-手枪-MP40墨冰",
+        "conflict": false,
+        "matches": null
+      },
+      "uses": [
+        "手枪"
+      ],
+      "items": [
+        "MP40"
+      ],
+      "sourceFiles": [
+        "武器_手枪_冲锋枪.xml"
+      ],
+      "export": {
+        "format": "png",
+        "zoom": 2,
+        "fps": 24.0,
+        "frameCount": 1,
+        "uri": "skins/df552ffe_1.png",
+        "width": 680,
+        "height": 232,
+        "playback": "static",
+        "sourceFrameCount": 1
+      },
+      "frames": [
+        {
+          "uri": "skins/df552ffe_1.png",
+          "frame": 1,
+          "sourceFrame": 1,
+          "width": 680,
+          "height": 232,
+          "originX": 219.2,
+          "originY": 94.8
+        }
+      ]
+    },
+    "枪-手枪-MP40狱火": {
+      "covered": true,
+      "asset": {
+        "swf": "flashswf/arts/new/变体武器.swf",
+        "symbolName": "1.枪械相关/手枪/MP40/1.狱火/枪-手枪-MP40狱火",
+        "conflict": false,
+        "matches": null
+      },
+      "uses": [
+        "手枪"
+      ],
+      "items": [
+        "MP40"
+      ],
+      "sourceFiles": [
+        "武器_手枪_冲锋枪.xml"
+      ],
+      "export": {
+        "format": "png",
+        "zoom": 2,
+        "fps": 24.0,
+        "frameCount": 1,
+        "uri": "skins/b5fd50d0_1.png",
+        "width": 680,
+        "height": 232,
+        "playback": "static",
+        "sourceFrameCount": 1
+      },
+      "frames": [
+        {
+          "uri": "skins/b5fd50d0_1.png",
           "frame": 1,
           "sourceFrame": 1,
           "width": 680,
@@ -80665,6 +81911,86 @@
           "height": 151,
           "originX": 70.4,
           "originY": 65.7
+        }
+      ]
+    },
+    "枪-手枪-TTI2011墨冰": {
+      "covered": true,
+      "asset": {
+        "swf": "flashswf/arts/new/变体武器.swf",
+        "symbolName": "1.枪械相关/手枪/TTI 2011/0.墨冰/枪-手枪-TTI2011墨冰",
+        "conflict": false,
+        "matches": null
+      },
+      "uses": [
+        "手枪"
+      ],
+      "items": [
+        "TTI 2011 Combat Master"
+      ],
+      "sourceFiles": [
+        "武器_手枪_手枪.xml"
+      ],
+      "export": {
+        "format": "png",
+        "zoom": 2,
+        "fps": 24.0,
+        "frameCount": 1,
+        "uri": "skins/6563aeb0_1.png",
+        "width": 247,
+        "height": 144,
+        "playback": "static",
+        "sourceFrameCount": 1
+      },
+      "frames": [
+        {
+          "uri": "skins/6563aeb0_1.png",
+          "frame": 1,
+          "sourceFrame": 1,
+          "width": 247,
+          "height": 144,
+          "originX": 50.0,
+          "originY": 67.2
+        }
+      ]
+    },
+    "枪-手枪-TTI2011狱火": {
+      "covered": true,
+      "asset": {
+        "swf": "flashswf/arts/new/变体武器.swf",
+        "symbolName": "1.枪械相关/手枪/TTI 2011/1.狱火/枪-手枪-TTI2011狱火",
+        "conflict": false,
+        "matches": null
+      },
+      "uses": [
+        "手枪"
+      ],
+      "items": [
+        "TTI 2011 Combat Master"
+      ],
+      "sourceFiles": [
+        "武器_手枪_手枪.xml"
+      ],
+      "export": {
+        "format": "png",
+        "zoom": 2,
+        "fps": 24.0,
+        "frameCount": 1,
+        "uri": "skins/0fcbd19e_1.png",
+        "width": 247,
+        "height": 144,
+        "playback": "static",
+        "sourceFrameCount": 1
+      },
+      "frames": [
+        {
+          "uri": "skins/0fcbd19e_1.png",
+          "frame": 1,
+          "sourceFrame": 1,
+          "width": 247,
+          "height": 144,
+          "originX": 50.0,
+          "originY": 67.2
         }
       ]
     },
@@ -82647,6 +83973,86 @@
         }
       ]
     },
+    "枪-手枪-韦森686墨冰": {
+      "covered": true,
+      "asset": {
+        "swf": "flashswf/arts/new/变体武器.swf",
+        "symbolName": "1.枪械相关/手枪/韦森686/0.墨冰/枪-手枪-韦森686墨冰",
+        "conflict": false,
+        "matches": null
+      },
+      "uses": [
+        "手枪"
+      ],
+      "items": [
+        "韦森686"
+      ],
+      "sourceFiles": [
+        "武器_手枪_大威力手枪.xml"
+      ],
+      "export": {
+        "format": "png",
+        "zoom": 2,
+        "fps": 24.0,
+        "frameCount": 1,
+        "uri": "skins/f6614e5a_1.png",
+        "width": 301,
+        "height": 130,
+        "playback": "static",
+        "sourceFrameCount": 1
+      },
+      "frames": [
+        {
+          "uri": "skins/f6614e5a_1.png",
+          "frame": 1,
+          "sourceFrame": 1,
+          "width": 301,
+          "height": 130,
+          "originX": 55.4,
+          "originY": 77.3
+        }
+      ]
+    },
+    "枪-手枪-韦森686狱火": {
+      "covered": true,
+      "asset": {
+        "swf": "flashswf/arts/new/变体武器.swf",
+        "symbolName": "1.枪械相关/手枪/韦森686/1.狱火/枪-手枪-韦森686狱火",
+        "conflict": false,
+        "matches": null
+      },
+      "uses": [
+        "手枪"
+      ],
+      "items": [
+        "韦森686"
+      ],
+      "sourceFiles": [
+        "武器_手枪_大威力手枪.xml"
+      ],
+      "export": {
+        "format": "png",
+        "zoom": 2,
+        "fps": 24.0,
+        "frameCount": 1,
+        "uri": "skins/9cc93174_1.png",
+        "width": 301,
+        "height": 129,
+        "playback": "static",
+        "sourceFrameCount": 1
+      },
+      "frames": [
+        {
+          "uri": "skins/9cc93174_1.png",
+          "frame": 1,
+          "sourceFrame": 1,
+          "width": 301,
+          "height": 129,
+          "originX": 54.1,
+          "originY": 77.3
+        }
+      ]
+    },
     "枪-手枪-鲁格LCR": {
       "covered": true,
       "asset": {
@@ -82964,6 +84370,86 @@
           "height": 162,
           "originX": 300.3,
           "originY": 95
+        }
+      ]
+    },
+    "枪-长枪-53式步骑枪墨冰": {
+      "covered": true,
+      "asset": {
+        "swf": "flashswf/arts/new/变体武器.swf",
+        "symbolName": "1.枪械相关/长枪/53式步骑枪/0.墨冰/枪-长枪-53式步骑枪墨冰",
+        "conflict": false,
+        "matches": null
+      },
+      "uses": [
+        "长枪"
+      ],
+      "items": [
+        "53式步骑枪"
+      ],
+      "sourceFiles": [
+        "武器_长枪_狙击步枪.xml"
+      ],
+      "export": {
+        "format": "png",
+        "zoom": 2,
+        "fps": 24.0,
+        "frameCount": 1,
+        "uri": "skins/97066bf6_1.png",
+        "width": 888,
+        "height": 163,
+        "playback": "static",
+        "sourceFrameCount": 1
+      },
+      "frames": [
+        {
+          "uri": "skins/97066bf6_1.png",
+          "frame": 1,
+          "sourceFrame": 1,
+          "width": 888,
+          "height": 163,
+          "originX": 301.0,
+          "originY": 95.1
+        }
+      ]
+    },
+    "枪-长枪-53式步骑枪狱火": {
+      "covered": true,
+      "asset": {
+        "swf": "flashswf/arts/new/变体武器.swf",
+        "symbolName": "1.枪械相关/长枪/53式步骑枪/1.狱火/枪-长枪-53式步骑枪狱火",
+        "conflict": false,
+        "matches": null
+      },
+      "uses": [
+        "长枪"
+      ],
+      "items": [
+        "53式步骑枪"
+      ],
+      "sourceFiles": [
+        "武器_长枪_狙击步枪.xml"
+      ],
+      "export": {
+        "format": "png",
+        "zoom": 2,
+        "fps": 24.0,
+        "frameCount": 1,
+        "uri": "skins/fdae14d8_1.png",
+        "width": 888,
+        "height": 163,
+        "playback": "static",
+        "sourceFrameCount": 1
+      },
+      "frames": [
+        {
+          "uri": "skins/fdae14d8_1.png",
+          "frame": 1,
+          "sourceFrame": 1,
+          "width": 888,
+          "height": 163,
+          "originX": 301.0,
+          "originY": 95.1
         }
       ]
     },
@@ -83289,6 +84775,46 @@
         }
       ]
     },
+    "枪-长枪-AK74墨冰": {
+      "covered": true,
+      "asset": {
+        "swf": "flashswf/arts/new/变体武器.swf",
+        "symbolName": "1.枪械相关/长枪/AK74/0.墨冰/枪-长枪-AK74墨冰",
+        "conflict": false,
+        "matches": null
+      },
+      "uses": [
+        "长枪"
+      ],
+      "items": [
+        "AK74"
+      ],
+      "sourceFiles": [
+        "武器_长枪_突击步枪.xml"
+      ],
+      "export": {
+        "format": "png",
+        "zoom": 2,
+        "fps": 24.0,
+        "frameCount": 1,
+        "uri": "skins/50602a1d_1.png",
+        "width": 867,
+        "height": 220,
+        "playback": "static",
+        "sourceFrameCount": 1
+      },
+      "frames": [
+        {
+          "uri": "skins/50602a1d_1.png",
+          "frame": 1,
+          "sourceFrame": 1,
+          "width": 867,
+          "height": 220,
+          "originX": 245.9,
+          "originY": 111.6
+        }
+      ]
+    },
     "枪-长枪-AK74战术版": {
       "covered": true,
       "asset": {
@@ -83327,6 +84853,46 @@
           "height": 297,
           "originX": 271.3,
           "originY": 175.8
+        }
+      ]
+    },
+    "枪-长枪-AK74狱火": {
+      "covered": true,
+      "asset": {
+        "swf": "flashswf/arts/new/变体武器.swf",
+        "symbolName": "1.枪械相关/长枪/AK74/1.狱火/枪-长枪-AK74狱火",
+        "conflict": false,
+        "matches": null
+      },
+      "uses": [
+        "长枪"
+      ],
+      "items": [
+        "AK74"
+      ],
+      "sourceFiles": [
+        "武器_长枪_突击步枪.xml"
+      ],
+      "export": {
+        "format": "png",
+        "zoom": 2,
+        "fps": 24.0,
+        "frameCount": 1,
+        "uri": "skins/3ac85533_1.png",
+        "width": 867,
+        "height": 220,
+        "playback": "static",
+        "sourceFrameCount": 1
+      },
+      "frames": [
+        {
+          "uri": "skins/3ac85533_1.png",
+          "frame": 1,
+          "sourceFrame": 1,
+          "width": 867,
+          "height": 220,
+          "originX": 245.9,
+          "originY": 111.6
         }
       ]
     },
@@ -83531,6 +85097,86 @@
         }
       ]
     },
+    "枪-长枪-AUG墨冰全涂装": {
+      "covered": true,
+      "asset": {
+        "swf": "flashswf/arts/new/变体武器.swf",
+        "symbolName": "1.枪械相关/长枪/AUG/0.墨冰/枪-长枪-AUG墨冰全涂装",
+        "conflict": false,
+        "matches": null
+      },
+      "uses": [
+        "长枪"
+      ],
+      "items": [
+        "AUG"
+      ],
+      "sourceFiles": [
+        "武器_长枪_突击步枪.xml"
+      ],
+      "export": {
+        "format": "png",
+        "zoom": 2,
+        "fps": 24.0,
+        "frameCount": 1,
+        "uri": "skins/c5e5bf84_1.png",
+        "width": 674,
+        "height": 223,
+        "playback": "static",
+        "sourceFrameCount": 1
+      },
+      "frames": [
+        {
+          "uri": "skins/c5e5bf84_1.png",
+          "frame": 1,
+          "sourceFrame": 1,
+          "width": 674,
+          "height": 223,
+          "originX": 262.6,
+          "originY": 137.4
+        }
+      ]
+    },
+    "枪-长枪-AUG狱火": {
+      "covered": true,
+      "asset": {
+        "swf": "flashswf/arts/new/变体武器.swf",
+        "symbolName": "1.枪械相关/长枪/AUG/1.狱火/枪-长枪-AUG狱火",
+        "conflict": false,
+        "matches": null
+      },
+      "uses": [
+        "长枪"
+      ],
+      "items": [
+        "AUG"
+      ],
+      "sourceFiles": [
+        "武器_长枪_突击步枪.xml"
+      ],
+      "export": {
+        "format": "png",
+        "zoom": 2,
+        "fps": 24.0,
+        "frameCount": 1,
+        "uri": "skins/20e4c523_1.png",
+        "width": 674,
+        "height": 223,
+        "playback": "static",
+        "sourceFrameCount": 1
+      },
+      "frames": [
+        {
+          "uri": "skins/20e4c523_1.png",
+          "frame": 1,
+          "sourceFrame": 1,
+          "width": 674,
+          "height": 223,
+          "originX": 262.6,
+          "originY": 137.4
+        }
+      ]
+    },
     "枪-长枪-AWM狙击步枪": {
       "covered": true,
       "asset": {
@@ -83692,6 +85338,50 @@
           "height": 278,
           "originX": 163.8,
           "originY": 158.4
+        }
+      ]
+    },
+    "枪-长枪-Codex-打桩机M7": {
+      "covered": true,
+      "asset": {
+        "swf": "flashswf/arts/new/Codex专用素材.swf",
+        "symbolName": "Codex/打桩机-M7/Weapon",
+        "conflict": false,
+        "matches": null
+      },
+      "uses": [
+        "长枪"
+      ],
+      "items": [
+        "火药燃气液压打桩机"
+      ],
+      "sourceFiles": [
+        "武器_长枪_近战.xml"
+      ],
+      "export": {
+        "format": "png",
+        "zoom": 2,
+        "fps": 24.0,
+        "frameCount": 1,
+        "uri": "skins/9c385c06_1.png",
+        "width": 1836,
+        "height": 709,
+        "playback": "static",
+        "sourceFrameCount": 1,
+        "timelineScriptFrames": [
+          1
+        ],
+        "hasFrame1Stop": true
+      },
+      "frames": [
+        {
+          "uri": "skins/9c385c06_1.png",
+          "frame": 1,
+          "sourceFrame": 1,
+          "width": 1836,
+          "height": 709,
+          "originX": 635.6,
+          "originY": 300.0
         }
       ]
     },
@@ -84623,6 +86313,46 @@
         }
       ]
     },
+    "枪-长枪-HK416墨冰": {
+      "covered": true,
+      "asset": {
+        "swf": "flashswf/arts/new/变体武器.swf",
+        "symbolName": "1.枪械相关/长枪/HK416/0.墨冰/枪-长枪-HK416墨冰",
+        "conflict": false,
+        "matches": null
+      },
+      "uses": [
+        "长枪"
+      ],
+      "items": [
+        "HK416"
+      ],
+      "sourceFiles": [
+        "武器_长枪_突击步枪.xml"
+      ],
+      "export": {
+        "format": "png",
+        "zoom": 2,
+        "fps": 24.0,
+        "frameCount": 1,
+        "uri": "skins/18200397_1.png",
+        "width": 749,
+        "height": 216,
+        "playback": "static",
+        "sourceFrameCount": 1
+      },
+      "frames": [
+        {
+          "uri": "skins/18200397_1.png",
+          "frame": 1,
+          "sourceFrame": 1,
+          "width": 749,
+          "height": 216,
+          "originX": 239.3,
+          "originY": 136.4
+        }
+      ]
+    },
     "枪-长枪-HK416战术版": {
       "covered": true,
       "asset": {
@@ -84661,6 +86391,46 @@
           "height": 248,
           "originX": 255.2,
           "originY": 166.9
+        }
+      ]
+    },
+    "枪-长枪-HK416狱火": {
+      "covered": true,
+      "asset": {
+        "swf": "flashswf/arts/new/变体武器.swf",
+        "symbolName": "1.枪械相关/长枪/HK416/1.狱火/枪-长枪-HK416狱火",
+        "conflict": false,
+        "matches": null
+      },
+      "uses": [
+        "长枪"
+      ],
+      "items": [
+        "HK416"
+      ],
+      "sourceFiles": [
+        "武器_长枪_突击步枪.xml"
+      ],
+      "export": {
+        "format": "png",
+        "zoom": 2,
+        "fps": 24.0,
+        "frameCount": 1,
+        "uri": "skins/72887cb9_1.png",
+        "width": 749,
+        "height": 216,
+        "playback": "static",
+        "sourceFrameCount": 1
+      },
+      "frames": [
+        {
+          "uri": "skins/72887cb9_1.png",
+          "frame": 1,
+          "sourceFrame": 1,
+          "width": 749,
+          "height": 216,
+          "originX": 239.3,
+          "originY": 136.4
         }
       ]
     },
@@ -85192,6 +86962,86 @@
         }
       ]
     },
+    "枪-长枪-M14墨冰": {
+      "covered": true,
+      "asset": {
+        "swf": "flashswf/arts/new/变体武器.swf",
+        "symbolName": "1.枪械相关/长枪/M14/0.墨冰/枪-长枪-M14墨冰",
+        "conflict": false,
+        "matches": null
+      },
+      "uses": [
+        "长枪"
+      ],
+      "items": [
+        "m14"
+      ],
+      "sourceFiles": [
+        "武器_长枪_战斗步枪.xml"
+      ],
+      "export": {
+        "format": "png",
+        "zoom": 2,
+        "fps": 24.0,
+        "frameCount": 1,
+        "uri": "skins/25592dee_1.png",
+        "width": 1042,
+        "height": 208,
+        "playback": "static",
+        "sourceFrameCount": 1
+      },
+      "frames": [
+        {
+          "uri": "skins/25592dee_1.png",
+          "frame": 1,
+          "sourceFrame": 1,
+          "width": 1042,
+          "height": 208,
+          "originX": 184.0,
+          "originY": 156.6
+        }
+      ]
+    },
+    "枪-长枪-M14狱火": {
+      "covered": true,
+      "asset": {
+        "swf": "flashswf/arts/new/变体武器.swf",
+        "symbolName": "1.枪械相关/长枪/M14/1.狱火/枪-长枪-M14狱火",
+        "conflict": false,
+        "matches": null
+      },
+      "uses": [
+        "长枪"
+      ],
+      "items": [
+        "m14"
+      ],
+      "sourceFiles": [
+        "武器_长枪_战斗步枪.xml"
+      ],
+      "export": {
+        "format": "png",
+        "zoom": 2,
+        "fps": 24.0,
+        "frameCount": 1,
+        "uri": "skins/4ff152c0_1.png",
+        "width": 1042,
+        "height": 208,
+        "playback": "static",
+        "sourceFrameCount": 1
+      },
+      "frames": [
+        {
+          "uri": "skins/4ff152c0_1.png",
+          "frame": 1,
+          "sourceFrame": 1,
+          "width": 1042,
+          "height": 208,
+          "originX": 184.0,
+          "originY": 156.6
+        }
+      ]
+    },
     "枪-长枪-M16A1": {
       "covered": true,
       "asset": {
@@ -85592,6 +87442,46 @@
         }
       ]
     },
+    "枪-长枪-M4A1墨冰": {
+      "covered": true,
+      "asset": {
+        "swf": "flashswf/arts/new/变体武器.swf",
+        "symbolName": "1.枪械相关/长枪/M4A1/0.墨冰/枪-长枪-M4A1墨冰",
+        "conflict": false,
+        "matches": null
+      },
+      "uses": [
+        "长枪"
+      ],
+      "items": [
+        "M4A1"
+      ],
+      "sourceFiles": [
+        "武器_长枪_突击步枪.xml"
+      ],
+      "export": {
+        "format": "png",
+        "zoom": 2,
+        "fps": 24.0,
+        "frameCount": 1,
+        "uri": "skins/5d417127_1.png",
+        "width": 796,
+        "height": 260,
+        "playback": "static",
+        "sourceFrameCount": 1
+      },
+      "frames": [
+        {
+          "uri": "skins/5d417127_1.png",
+          "frame": 1,
+          "sourceFrame": 1,
+          "width": 796,
+          "height": 260,
+          "originX": 252.2,
+          "originY": 144.6
+        }
+      ]
+    },
     "枪-长枪-M4A1战术版": {
       "covered": true,
       "asset": {
@@ -85670,6 +87560,46 @@
           "height": 221,
           "originX": 200.6,
           "originY": 157.2
+        }
+      ]
+    },
+    "枪-长枪-M4A1狱火": {
+      "covered": true,
+      "asset": {
+        "swf": "flashswf/arts/new/变体武器.swf",
+        "symbolName": "1.枪械相关/长枪/M4A1/1.狱火/枪-长枪-M4A1狱火",
+        "conflict": false,
+        "matches": null
+      },
+      "uses": [
+        "长枪"
+      ],
+      "items": [
+        "M4A1"
+      ],
+      "sourceFiles": [
+        "武器_长枪_突击步枪.xml"
+      ],
+      "export": {
+        "format": "png",
+        "zoom": 2,
+        "fps": 24.0,
+        "frameCount": 1,
+        "uri": "skins/37e90e09_1.png",
+        "width": 796,
+        "height": 260,
+        "playback": "static",
+        "sourceFrameCount": 1
+      },
+      "frames": [
+        {
+          "uri": "skins/37e90e09_1.png",
+          "frame": 1,
+          "sourceFrame": 1,
+          "width": 796,
+          "height": 260,
+          "originX": 252.2,
+          "originY": 144.6
         }
       ]
     },
@@ -85996,6 +87926,52 @@
           "width": 768,
           "height": 531,
           "originX": 156.4,
+          "originY": 166.1
+        }
+      ]
+    },
+    "枪-长枪-MACSIV": {
+      "covered": true,
+      "asset": {
+        "swf": "flashswf/arts/new/fs配置素材.swf",
+        "symbolName": "长枪/火药燃气液压打桩机/MACSIV",
+        "conflict": false,
+        "matches": null
+      },
+      "uses": [
+        "长枪"
+      ],
+      "items": [
+        "MACSIII"
+      ],
+      "sourceFiles": [
+        "武器_长枪_近战.xml"
+      ],
+      "export": {
+        "format": "png",
+        "zoom": 2,
+        "fps": 24.0,
+        "frameCount": 1,
+        "uri": "skins/c8cb86b4_1.png",
+        "width": 767,
+        "height": 531,
+        "playback": "static-first-frame",
+        "sourceFrameCount": 16,
+        "timelineScriptFrames": [
+          1
+        ],
+        "hasFrame1Stop": true,
+        "staticReason": "frame1_plain_stop",
+        "collapsedFrameCount": 15
+      },
+      "frames": [
+        {
+          "uri": "skins/c8cb86b4_1.png",
+          "frame": 1,
+          "sourceFrame": 1,
+          "width": 767,
+          "height": 531,
+          "originX": 156.2,
           "originY": 166.1
         }
       ]
@@ -87365,6 +89341,86 @@
         }
       ]
     },
+    "枪-长枪-SVD墨冰": {
+      "covered": true,
+      "asset": {
+        "swf": "flashswf/arts/new/变体武器.swf",
+        "symbolName": "1.枪械相关/长枪/SVD/0.墨冰/枪-长枪-SVD墨冰",
+        "conflict": false,
+        "matches": null
+      },
+      "uses": [
+        "长枪"
+      ],
+      "items": [
+        "SVD"
+      ],
+      "sourceFiles": [
+        "武器_长枪_战斗步枪.xml"
+      ],
+      "export": {
+        "format": "png",
+        "zoom": 2,
+        "fps": 24.0,
+        "frameCount": 1,
+        "uri": "skins/771dcd84_1.png",
+        "width": 1041,
+        "height": 199,
+        "playback": "static",
+        "sourceFrameCount": 1
+      },
+      "frames": [
+        {
+          "uri": "skins/771dcd84_1.png",
+          "frame": 1,
+          "sourceFrame": 1,
+          "width": 1041,
+          "height": 199,
+          "originX": 215.8,
+          "originY": 148.9
+        }
+      ]
+    },
+    "枪-长枪-SVD狱火": {
+      "covered": true,
+      "asset": {
+        "swf": "flashswf/arts/new/变体武器.swf",
+        "symbolName": "1.枪械相关/长枪/SVD/1.狱火/枪-长枪-SVD狱火",
+        "conflict": false,
+        "matches": null
+      },
+      "uses": [
+        "长枪"
+      ],
+      "items": [
+        "SVD"
+      ],
+      "sourceFiles": [
+        "武器_长枪_战斗步枪.xml"
+      ],
+      "export": {
+        "format": "png",
+        "zoom": 2,
+        "fps": 24.0,
+        "frameCount": 1,
+        "uri": "skins/1db5b2aa_1.png",
+        "width": 1041,
+        "height": 199,
+        "playback": "static",
+        "sourceFrameCount": 1
+      },
+      "frames": [
+        {
+          "uri": "skins/1db5b2aa_1.png",
+          "frame": 1,
+          "sourceFrame": 1,
+          "width": 1041,
+          "height": 199,
+          "originX": 215.8,
+          "originY": 148.9
+        }
+      ]
+    },
     "枪-长枪-Scout": {
       "covered": true,
       "asset": {
@@ -87522,6 +89578,86 @@
           "height": 166,
           "originX": 232,
           "originY": 126
+        }
+      ]
+    },
+    "枪-长枪-Sniper墨冰": {
+      "covered": true,
+      "asset": {
+        "swf": "flashswf/arts/new/变体武器.swf",
+        "symbolName": "1.枪械相关/长枪/Sniper/0.墨冰/枪-长枪-Sniper墨冰",
+        "conflict": false,
+        "matches": null
+      },
+      "uses": [
+        "长枪"
+      ],
+      "items": [
+        "Sniper"
+      ],
+      "sourceFiles": [
+        "武器_长枪_狙击步枪.xml"
+      ],
+      "export": {
+        "format": "png",
+        "zoom": 2,
+        "fps": 24.0,
+        "frameCount": 1,
+        "uri": "skins/7b8af030_1.png",
+        "width": 933,
+        "height": 166,
+        "playback": "static",
+        "sourceFrameCount": 1
+      },
+      "frames": [
+        {
+          "uri": "skins/7b8af030_1.png",
+          "frame": 1,
+          "sourceFrame": 1,
+          "width": 933,
+          "height": 166,
+          "originX": 232.0,
+          "originY": 126.0
+        }
+      ]
+    },
+    "枪-长枪-Sniper狱火": {
+      "covered": true,
+      "asset": {
+        "swf": "flashswf/arts/new/变体武器.swf",
+        "symbolName": "1.枪械相关/长枪/Sniper/1.狱火/枪-长枪-Sniper狱火",
+        "conflict": false,
+        "matches": null
+      },
+      "uses": [
+        "长枪"
+      ],
+      "items": [
+        "Sniper"
+      ],
+      "sourceFiles": [
+        "武器_长枪_狙击步枪.xml"
+      ],
+      "export": {
+        "format": "png",
+        "zoom": 2,
+        "fps": 24.0,
+        "frameCount": 1,
+        "uri": "skins/11228f1e_1.png",
+        "width": 933,
+        "height": 166,
+        "playback": "static",
+        "sourceFrameCount": 1
+      },
+      "frames": [
+        {
+          "uri": "skins/11228f1e_1.png",
+          "frame": 1,
+          "sourceFrame": 1,
+          "width": 933,
+          "height": 166,
+          "originX": 232.0,
+          "originY": 126.0
         }
       ]
     },
@@ -88045,6 +90181,46 @@
         }
       ]
     },
+    "枪-长枪-XM1014墨冰": {
+      "covered": true,
+      "asset": {
+        "swf": "flashswf/arts/new/变体武器.swf",
+        "symbolName": "1.枪械相关/长枪/XM1014/0.墨冰/枪-长枪-XM1014墨冰",
+        "conflict": false,
+        "matches": null
+      },
+      "uses": [
+        "长枪"
+      ],
+      "items": [
+        "XM1014"
+      ],
+      "sourceFiles": [
+        "武器_长枪_霰弹枪.xml"
+      ],
+      "export": {
+        "format": "png",
+        "zoom": 2,
+        "fps": 24.0,
+        "frameCount": 1,
+        "uri": "skins/9780c52c_1.png",
+        "width": 853,
+        "height": 163,
+        "playback": "static",
+        "sourceFrameCount": 1
+      },
+      "frames": [
+        {
+          "uri": "skins/9780c52c_1.png",
+          "frame": 1,
+          "sourceFrame": 1,
+          "width": 853,
+          "height": 163,
+          "originX": 203.7,
+          "originY": 97.9
+        }
+      ]
+    },
     "枪-长枪-XM1014战术版": {
       "covered": true,
       "asset": {
@@ -88083,6 +90259,46 @@
           "height": 566,
           "originX": 224.9,
           "originY": 291
+        }
+      ]
+    },
+    "枪-长枪-XM1014狱火": {
+      "covered": true,
+      "asset": {
+        "swf": "flashswf/arts/new/变体武器.swf",
+        "symbolName": "1.枪械相关/长枪/XM1014/1.狱火/枪-长枪-XM1014狱火",
+        "conflict": false,
+        "matches": null
+      },
+      "uses": [
+        "长枪"
+      ],
+      "items": [
+        "XM1014"
+      ],
+      "sourceFiles": [
+        "武器_长枪_霰弹枪.xml"
+      ],
+      "export": {
+        "format": "png",
+        "zoom": 2,
+        "fps": 24.0,
+        "frameCount": 1,
+        "uri": "skins/fd28ba02_1.png",
+        "width": 853,
+        "height": 163,
+        "playback": "static",
+        "sourceFrameCount": 1
+      },
+      "frames": [
+        {
+          "uri": "skins/fd28ba02_1.png",
+          "frame": 1,
+          "sourceFrame": 1,
+          "width": 853,
+          "height": 163,
+          "originX": 203.7,
+          "originY": 97.9
         }
       ]
     },
@@ -89235,6 +91451,86 @@
         }
       ]
     },
+    "枪-长枪-墨冰88式狙击枪": {
+      "covered": true,
+      "asset": {
+        "swf": "flashswf/arts/new/变体武器.swf",
+        "symbolName": "1.枪械相关/长枪/88式狙击/0.墨冰/枪-长枪-墨冰88式狙击枪",
+        "conflict": false,
+        "matches": null
+      },
+      "uses": [
+        "长枪"
+      ],
+      "items": [
+        "中国88式狙击步枪"
+      ],
+      "sourceFiles": [
+        "武器_长枪_战斗步枪.xml"
+      ],
+      "export": {
+        "format": "png",
+        "zoom": 2,
+        "fps": 24.0,
+        "frameCount": 1,
+        "uri": "skins/a0f30594_1.png",
+        "width": 864,
+        "height": 228,
+        "playback": "static",
+        "sourceFrameCount": 1
+      },
+      "frames": [
+        {
+          "uri": "skins/a0f30594_1.png",
+          "frame": 1,
+          "sourceFrame": 1,
+          "width": 864,
+          "height": 228,
+          "originX": 307.2,
+          "originY": 175.7
+        }
+      ]
+    },
+    "枪-长枪-墨冰白火铳": {
+      "covered": true,
+      "asset": {
+        "swf": "flashswf/arts/new/变体武器.swf",
+        "symbolName": "1.枪械相关/长枪/白火铳/0.墨冰/枪-长枪-墨冰白火铳",
+        "conflict": false,
+        "matches": null
+      },
+      "uses": [
+        "长枪"
+      ],
+      "items": [
+        "白火铳"
+      ],
+      "sourceFiles": [
+        "武器_长枪_霰弹枪.xml"
+      ],
+      "export": {
+        "format": "png",
+        "zoom": 2,
+        "fps": 24.0,
+        "frameCount": 1,
+        "uri": "skins/69fe9152_1.png",
+        "width": 997,
+        "height": 219,
+        "playback": "static",
+        "sourceFrameCount": 1
+      },
+      "frames": [
+        {
+          "uri": "skins/69fe9152_1.png",
+          "frame": 1,
+          "sourceFrame": 1,
+          "width": 997,
+          "height": 219,
+          "originX": 282.8,
+          "originY": 124.3
+        }
+      ]
+    },
     "枪-长枪-夜莺": {
       "covered": true,
       "asset": {
@@ -90359,7 +92655,7 @@
       "export": {
         "format": "png",
         "zoom": 2,
-        "fps": 24,
+        "fps": 24.0,
         "frameCount": 1,
         "uri": "skins/81a36f64_1.png",
         "width": 1552,
@@ -90539,6 +92835,163 @@
         }
       ]
     },
+    "枪-长枪-热临界破障机": {
+      "covered": true,
+      "asset": {
+        "swf": "flashswf/arts/new/fs配置素材.swf",
+        "symbolName": "长枪/火药燃气液压打桩机/热临界破障机",
+        "conflict": false,
+        "matches": null
+      },
+      "uses": [
+        "长枪"
+      ],
+      "items": [
+        "混凝土切割机"
+      ],
+      "sourceFiles": [
+        "武器_长枪_近战.xml"
+      ],
+      "export": {
+        "format": "png",
+        "zoom": 2,
+        "fps": 24.0,
+        "frameCount": 1,
+        "uri": "skins/eaaeb322_1.png",
+        "width": 587,
+        "height": 486,
+        "playback": "static-parent-nested-animation",
+        "sourceFrameCount": 31,
+        "timelineScriptFrames": [
+          1
+        ],
+        "hasFrame1Stop": true,
+        "nestedAnimation": {
+          "autoPlayingDescendants": [
+            {
+              "characterId": 578,
+              "frameCount": 7,
+              "depth": 1,
+              "path": [
+                586,
+                578
+              ]
+            }
+          ],
+          "descendantCount": 1,
+          "maxDescendantFrameCount": 7,
+          "strategy": "direct-layered",
+          "directLayerCandidateCount": 1,
+          "layers": [
+            {
+              "characterId": 578,
+              "sourceParentId": 586,
+              "sourceFrameCount": 7,
+              "matrix": {
+                "a": -2.773804,
+                "b": 2.773865,
+                "c": -2.773865,
+                "d": -2.773804,
+                "tx": 283.15,
+                "ty": 197.7
+              },
+              "drawOrder": "under",
+              "path": [
+                586,
+                578
+              ],
+              "export": {
+                "format": "png-sequence",
+                "zoom": 2,
+                "fps": 24.0,
+                "frameCount": 7,
+                "uri": "skins/eaaeb322_layer578_1.png",
+                "width": 62,
+                "height": 57
+              },
+              "frames": [
+                {
+                  "uri": "skins/eaaeb322_layer578_1.png",
+                  "frame": 1,
+                  "sourceFrame": 1,
+                  "width": 62,
+                  "height": 57,
+                  "originX": -150.3,
+                  "originY": 104.9
+                },
+                {
+                  "uri": "skins/eaaeb322_layer578_2.png",
+                  "frame": 2,
+                  "sourceFrame": 2,
+                  "width": 62,
+                  "height": 57,
+                  "originX": -150.3,
+                  "originY": 104.9
+                },
+                {
+                  "uri": "skins/eaaeb322_layer578_3.png",
+                  "frame": 3,
+                  "sourceFrame": 3,
+                  "width": 62,
+                  "height": 57,
+                  "originX": -150.3,
+                  "originY": 104.9
+                },
+                {
+                  "uri": "skins/eaaeb322_layer578_4.png",
+                  "frame": 4,
+                  "sourceFrame": 4,
+                  "width": 62,
+                  "height": 57,
+                  "originX": -150.3,
+                  "originY": 104.9
+                },
+                {
+                  "uri": "skins/eaaeb322_layer578_5.png",
+                  "frame": 5,
+                  "sourceFrame": 5,
+                  "width": 62,
+                  "height": 57,
+                  "originX": -150.3,
+                  "originY": 104.9
+                },
+                {
+                  "uri": "skins/eaaeb322_layer578_6.png",
+                  "frame": 6,
+                  "sourceFrame": 6,
+                  "width": 62,
+                  "height": 57,
+                  "originX": -150.3,
+                  "originY": 104.9
+                },
+                {
+                  "uri": "skins/eaaeb322_layer578_7.png",
+                  "frame": 7,
+                  "sourceFrame": 7,
+                  "width": 62,
+                  "height": 57,
+                  "originX": -150.3,
+                  "originY": 104.9
+                }
+              ]
+            }
+          ]
+        },
+        "staticReason": "frame1_plain_stop_with_nested_animation",
+        "collapsedFrameCount": 30
+      },
+      "frames": [
+        {
+          "uri": "skins/eaaeb322_1.png",
+          "frame": 1,
+          "sourceFrame": 1,
+          "width": 587,
+          "height": 486,
+          "originX": 101.3,
+          "originY": 146.2
+        }
+      ]
+    },
     "枪-长枪-牛仔的温切斯特": {
       "covered": true,
       "asset": {
@@ -90576,6 +93029,86 @@
           "height": 194,
           "originX": 283.8,
           "originY": 68.6
+        }
+      ]
+    },
+    "枪-长枪-狱火88式狙击枪": {
+      "covered": true,
+      "asset": {
+        "swf": "flashswf/arts/new/变体武器.swf",
+        "symbolName": "1.枪械相关/长枪/88式狙击/1.狱火/枪-长枪-狱火88式狙击枪",
+        "conflict": false,
+        "matches": null
+      },
+      "uses": [
+        "长枪"
+      ],
+      "items": [
+        "中国88式狙击步枪"
+      ],
+      "sourceFiles": [
+        "武器_长枪_战斗步枪.xml"
+      ],
+      "export": {
+        "format": "png",
+        "zoom": 2,
+        "fps": 24.0,
+        "frameCount": 1,
+        "uri": "skins/f7098d27_1.png",
+        "width": 864,
+        "height": 228,
+        "playback": "static",
+        "sourceFrameCount": 1
+      },
+      "frames": [
+        {
+          "uri": "skins/f7098d27_1.png",
+          "frame": 1,
+          "sourceFrame": 1,
+          "width": 864,
+          "height": 228,
+          "originX": 307.2,
+          "originY": 175.7
+        }
+      ]
+    },
+    "枪-长枪-狱火白火铳": {
+      "covered": true,
+      "asset": {
+        "swf": "flashswf/arts/new/变体武器.swf",
+        "symbolName": "1.枪械相关/长枪/白火铳/1.狱火/枪-长枪-狱火白火铳",
+        "conflict": false,
+        "matches": null
+      },
+      "uses": [
+        "长枪"
+      ],
+      "items": [
+        "白火铳"
+      ],
+      "sourceFiles": [
+        "武器_长枪_霰弹枪.xml"
+      ],
+      "export": {
+        "format": "png",
+        "zoom": 2,
+        "fps": 24.0,
+        "frameCount": 1,
+        "uri": "skins/8b96fa6a_1.png",
+        "width": 997,
+        "height": 219,
+        "playback": "static",
+        "sourceFrameCount": 1
+      },
+      "frames": [
+        {
+          "uri": "skins/8b96fa6a_1.png",
+          "frame": 1,
+          "sourceFrame": 1,
+          "width": 997,
+          "height": 219,
+          "originX": 282.8,
+          "originY": 124.3
         }
       ]
     },
@@ -101079,6 +103612,166 @@
           "height": 439,
           "originX": 116.7,
           "originY": 217.2
+        }
+      ]
+    },
+    "男变装-二阶绿色马甲上臂": {
+      "covered": true,
+      "asset": {
+        "swf": "flashswf/arts/new/雾人装备调整.swf",
+        "symbolName": "3.防具/03.绿色马甲/二阶/男变装-二阶绿色马甲上臂",
+        "conflict": false,
+        "matches": null
+      },
+      "uses": [
+        "上装装备"
+      ],
+      "items": [
+        "绿色马甲"
+      ],
+      "sourceFiles": [
+        "防具_0-19级.xml"
+      ],
+      "export": {
+        "format": "png",
+        "zoom": 2,
+        "fps": 24.0,
+        "frameCount": 1,
+        "uri": "skins/39da6dd8_1.png",
+        "width": 108,
+        "height": 268,
+        "playback": "static",
+        "sourceFrameCount": 1
+      },
+      "frames": [
+        {
+          "uri": "skins/39da6dd8_1.png",
+          "frame": 1,
+          "sourceFrame": 1,
+          "width": 108,
+          "height": 268,
+          "originX": 58.8,
+          "originY": 134.1
+        }
+      ]
+    },
+    "男变装-二阶绿色马甲右下臂": {
+      "covered": true,
+      "asset": {
+        "swf": "flashswf/arts/new/雾人装备调整.swf",
+        "symbolName": "3.防具/03.绿色马甲/二阶/男变装-二阶绿色马甲右下臂",
+        "conflict": false,
+        "matches": null
+      },
+      "uses": [
+        "上装装备"
+      ],
+      "items": [
+        "绿色马甲"
+      ],
+      "sourceFiles": [
+        "防具_0-19级.xml"
+      ],
+      "export": {
+        "format": "png",
+        "zoom": 2,
+        "fps": 24.0,
+        "frameCount": 1,
+        "uri": "skins/9638f01b_1.png",
+        "width": 83,
+        "height": 222,
+        "playback": "static",
+        "sourceFrameCount": 1
+      },
+      "frames": [
+        {
+          "uri": "skins/9638f01b_1.png",
+          "frame": 1,
+          "sourceFrame": 1,
+          "width": 83,
+          "height": 222,
+          "originX": 42.8,
+          "originY": 111.2
+        }
+      ]
+    },
+    "男变装-二阶绿色马甲左下臂": {
+      "covered": true,
+      "asset": {
+        "swf": "flashswf/arts/new/雾人装备调整.swf",
+        "symbolName": "3.防具/03.绿色马甲/二阶/男变装-二阶绿色马甲左下臂",
+        "conflict": false,
+        "matches": null
+      },
+      "uses": [
+        "上装装备"
+      ],
+      "items": [
+        "绿色马甲"
+      ],
+      "sourceFiles": [
+        "防具_0-19级.xml"
+      ],
+      "export": {
+        "format": "png",
+        "zoom": 2,
+        "fps": 24.0,
+        "frameCount": 1,
+        "uri": "skins/f5f60bba_1.png",
+        "width": 79,
+        "height": 222,
+        "playback": "static",
+        "sourceFrameCount": 1
+      },
+      "frames": [
+        {
+          "uri": "skins/f5f60bba_1.png",
+          "frame": 1,
+          "sourceFrame": 1,
+          "width": 79,
+          "height": 222,
+          "originX": 38.4,
+          "originY": 111.3
+        }
+      ]
+    },
+    "男变装-二阶绿色马甲身体": {
+      "covered": true,
+      "asset": {
+        "swf": "flashswf/arts/new/雾人装备调整.swf",
+        "symbolName": "3.防具/03.绿色马甲/二阶/男变装-二阶绿色马甲身体",
+        "conflict": false,
+        "matches": null
+      },
+      "uses": [
+        "上装装备"
+      ],
+      "items": [
+        "绿色马甲"
+      ],
+      "sourceFiles": [
+        "防具_0-19级.xml"
+      ],
+      "export": {
+        "format": "png",
+        "zoom": 2,
+        "fps": 24.0,
+        "frameCount": 1,
+        "uri": "skins/6a553177_1.png",
+        "width": 253,
+        "height": 433,
+        "playback": "static",
+        "sourceFrameCount": 1
+      },
+      "frames": [
+        {
+          "uri": "skins/6a553177_1.png",
+          "frame": 1,
+          "sourceFrame": 1,
+          "width": 253,
+          "height": 433,
+          "originX": 116.2,
+          "originY": 217.1
         }
       ]
     },

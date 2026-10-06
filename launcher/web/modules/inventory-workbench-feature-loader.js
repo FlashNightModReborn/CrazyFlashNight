@@ -55,6 +55,7 @@
         'modules/character-build/character-build-cooldown-channel.js',
         'modules/character-build/character-build-stash-transport.js',
         'modules/character-build/character-build-item-use.js',
+        'modules/character-build/character-build-choice-rewards.js',
         'modules/character-build/character-build-item-use-channel.js',
         'modules/character-build/character-build-stash-authority.js',
         'modules/character-build/character-build-candidate-channel.js',

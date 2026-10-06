@@ -5,7 +5,7 @@
   <!-- orphan="true" = XML present in LIBRARY/ but not in DOMDocument <Include>; 
        Flash IDE library panel cannot see it but .swf compile may still expose linkage -->
 
-  <!-- 5661 unique assets -->
+  <!-- 5666 unique assets -->
   <asset id="(劣质)蓝色刀光" swf="flashswf/arts/new/雾人整合特效.swf" symbolName="尚未整理/(劣质)蓝色刀光/(劣质)蓝色刀光" />
   <asset id="0" swf="flashswf/arts/new/3XD的素材.swf" symbolName="1主武器/一部分武器/武器部分/mk23/MK23手枪" />
   <asset id="1" swf="flashswf/arts/new/3XD的素材.swf" symbolName="1主武器/一部分武器1/武器本体/PKM战术版/元件 16" />
@@ -25,6 +25,7 @@
   <asset id="BBPLAYER手雷" swf="flashswf/arts/原版素材库-子弹.swf" symbolName="手雷/BBPLAYER炸弹/BBPLAYER手雷" />
   <asset id="BBPLAYER炸弹" swf="flashswf/arts/原版素材库-子弹.swf" symbolName="手雷/BBPLAYER炸弹/BBPLAYER炸弹" />
   <asset id="Codex专用素材" swf="flashswf/arts/new/Codex专用素材.swf" />
+  <asset id="Codex黑仔素材" swf="flashswf/arts/new/Codex黑仔素材.swf" />
   <asset id="GM6j击杀特效" swf="flashswf/arts/new/fs配置素材.swf" symbolName="长枪/GM6_LYNX/GM6j击杀特效" />
   <asset id="HUD物品图标" swf="flashswf/UI/玩家信息界面.swf" symbolName="sprite/物品栏/物品图标位置示意" />
   <asset id="JK次元斩" swf="flashswf/arts/new/武装JK.swf" symbolName="特效与子弹/次元斩1" />
@@ -701,6 +702,7 @@
   <asset id="图标-CF手斧" swf="flashswf/arts/new/3XD的素材.swf" symbolName="3冷兵器/一部分武器/武器本体/图标-CF手斧" />
   <asset id="图标-COLT PYTHON" swf="flashswf/arts/things.swf" symbolName="1.枪械相关/手枪/图标-COLT PYTHON" />
   <asset id="图标-Codex-QJZ171" swf="flashswf/arts/new/Codex专用素材.swf" symbolName="Codex/QJZ171/图标-Codex-QJZ171" />
+  <asset id="图标-Codex-打桩机M7" swf="flashswf/arts/new/Codex专用素材.swf" symbolName="Codex/打桩机-M7/Icon" />
   <asset id="图标-Codex-血色光剑天秤" swf="flashswf/arts/new/Codex专用素材.swf" symbolName="Codex/Ti61-血剑/图标-Codex-血色光剑天秤" />
   <asset id="图标-Codex-钛合金P90" swf="flashswf/arts/new/Codex专用素材.swf" symbolName="Codex/P90-Ti61/图标-Codex-钛合金P90" />
   <asset id="图标-Codex-钛合金QJZ171" swf="flashswf/arts/new/Codex专用素材.swf" symbolName="Codex/QJZ171-Ti61/图标-Codex-钛合金QJZ171" />
@@ -3455,6 +3457,7 @@
   <asset id="敌人-ArmsArius素体" swf="flashswf/arts/new/天网大家庭.swf" />
   <asset id="敌人-ArmsMalakim" swf="flashswf/arts/new/天网大家庭.swf" />
   <asset id="敌人-A兵团改造人" swf="flashswf/arts/new/诺亚试验体-A兵团.swf" />
+  <asset id="敌人-Codex黑仔" swf="flashswf/arts/new/Codex黑仔素材.swf" />
   <asset id="敌人-EXUSIAI指挥官" swf="flashswf/arts/new/偷吃屑鱼坟头贡品.swf" />
   <asset id="敌人-EXUSIAI支援型" swf="flashswf/arts/new/偷吃屑鱼坟头贡品.swf" />
   <asset id="敌人-EXUSIAI突击型" swf="flashswf/arts/new/偷吃屑鱼坟头贡品.swf" />
@@ -3635,6 +3638,7 @@
   <asset id="敌人-重型改造僵尸" swf="flashswf/arts/things5.swf" />
   <asset id="敌人-重弓骑士" swf="flashswf/arts/new/魔神锡蒙利.swf" symbolName="小兵/敌人-重弓骑士" />
   <asset id="敌人-重盾骑士" swf="flashswf/arts/new/魔神锡蒙利.swf" symbolName="小兵/敌人-重盾骑士" />
+  <asset id="敌人-重装拾荒者" swf="flashswf/arts/new/素材库-牛仔支线.swf" symbolName="重装拾荒者/敌人-重装拾荒者" />
   <asset id="敌人-金发女僵尸1" swf="flashswf/arts/things1.swf" />
   <asset id="敌人-金发红衣服女僵尸1" swf="flashswf/arts/things1.swf" />
   <asset id="敌人-铁血小飞机" swf="flashswf/arts/things2.swf" />
@@ -3867,6 +3871,7 @@
   <asset id="枪-长枪-Benelli-M4-Select" swf="flashswf/arts/new/黑洞军工.swf" symbolName="1.长枪/枪-长枪-Benelli-M4-Select" />
   <asset id="枪-长枪-CAR" swf="flashswf/arts/new/3102&amp;Leave.swf" symbolName="TTF2/枪-长枪-CAR" />
   <asset id="枪-长枪-Codex-QJZ171" swf="flashswf/arts/new/Codex专用素材.swf" symbolName="Codex/QJZ171/枪-长枪-Codex-QJZ171" />
+  <asset id="枪-长枪-Codex-打桩机M7" swf="flashswf/arts/new/Codex专用素材.swf" symbolName="Codex/打桩机-M7/Weapon" />
   <asset id="枪-长枪-Codex-钛合金QJZ171" swf="flashswf/arts/new/Codex专用素材.swf" symbolName="Codex/QJZ171-Ti61/枪-长枪-Codex-钛合金QJZ171" />
   <asset id="枪-长枪-DBHshotgun" swf="flashswf/arts/new/原体融合生物.swf" />
   <asset id="枪-长枪-DD MK18" swf="flashswf/arts/new/Au的素材.swf" symbolName="枪械/枪-长枪-DD MK18" />

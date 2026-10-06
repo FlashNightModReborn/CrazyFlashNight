@@ -1,0 +1,25 @@
+<?xml version='1.0' encoding='utf-8'?>
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="Codex黑仔/肢体/主角碎片刀" itemID="6ac01006-d5d0f317">
+  <timeline>
+    <DOMTimeline name="主角碎片刀">
+      <layers>
+        <DOMLayer name="Layer 1" color="#A947D3" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex黑仔/固定槽/碎片球棒" name="刀" selected="true" centerPoint3DX="38.35" centerPoint3DY="89.55">
+                  <matrix>
+                    <Matrix tx="1.8" ty="-112.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

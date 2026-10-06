@@ -71,6 +71,7 @@ _root.__boot.f37_4 = function() {
 _root.__boot.f37_5 = function() {
     #include "../逻辑/装备函数/主唱光剑.as"
     #include "../逻辑/装备函数/火药燃气液压打桩机.as"
+#include "../逻辑/装备函数/打桩机M7.as"
     #include "../逻辑/装备函数/刀口触发特效.as"
     #include "../逻辑/装备函数/XM25.as"
     #include "../逻辑/装备函数/XM556_Microgun.as"
