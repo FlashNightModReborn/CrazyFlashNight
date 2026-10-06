@@ -1,0 +1,2108 @@
+<?xml version='1.0' encoding='utf-8'?>
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="Codex黑仔/动作/跑" itemID="6ac01006-3316c6ec">
+  <timeline>
+    <DOMTimeline name="跑" guides="&lt;guidelines&gt;&lt;guideline direction=&quot;h&quot;&gt;239&lt;/guideline&gt;&lt;guideline direction=&quot;h&quot;&gt;273&lt;/guideline&gt;&lt;/guidelines&gt;">
+      <layers>
+        <DOMLayer name="动作跳转代码" color="#9933CC" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="21" name="通用" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="21" keyMode="9728" duration="1">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="代码" color="#9933CC" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="21" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="21" duration="1" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="兵器使用检测" color="#FF4FFF" locked="true" outline="true" useOutlineView="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="22" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex黑仔/原生/属性标签标志元件/兵器使用标签" name="兵器使用标签" centerPoint3DX="-69.3" centerPoint3DY="291.55">
+                  <matrix>
+                    <Matrix tx="-69.3" ty="291.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="持刀手" color="#C08F7D" current="true" isSelected="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex黑仔/肢体/右手" centerPoint3DX="-139.1" centerPoint3DY="-119.2">
+                  <matrix>
+                    <Matrix a="-0.838241577148438" b="0.137481689453125" c="-0.137481689453125" d="-0.838241577148438" tx="-109.55" ty="-98.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="3" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex黑仔/肢体/右手" selected="true" centerPoint3DX="-133.2" centerPoint3DY="-126.3">
+                  <matrix>
+                    <Matrix a="-0.838241577148438" b="0.137481689453125" c="-0.137481689453125" d="-0.838241577148438" tx="-103.65" ty="-105.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="6" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex黑仔/肢体/右手" centerPoint3DX="-154.6" centerPoint3DY="-91.75">
+                  <matrix>
+                    <Matrix a="-0.838241577148438" b="0.137481689453125" c="-0.137481689453125" d="-0.838241577148438" tx="-125.05" ty="-70.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="9" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex黑仔/肢体/右手" centerPoint3DX="-141.85" centerPoint3DY="-118.25">
+                  <matrix>
+                    <Matrix a="-0.838241577148438" b="0.137481689453125" c="-0.137481689453125" d="-0.838241577148438" tx="-112.3" ty="-97.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="12" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex黑仔/肢体/右手" centerPoint3DX="-139.15" centerPoint3DY="-131.85">
+                  <matrix>
+                    <Matrix a="-0.838241577148438" b="0.137481689453125" c="-0.137481689453125" d="-0.838241577148438" tx="-109.6" ty="-110.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="15" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex黑仔/肢体/右手" centerPoint3DX="-150.5" centerPoint3DY="-92.05">
+                  <matrix>
+                    <Matrix a="-0.838241577148438" b="0.137481689453125" c="-0.137481689453125" d="-0.838241577148438" tx="-120.95" ty="-70.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="18" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex黑仔/肢体/右手" centerPoint3DX="-143.7" centerPoint3DY="-114.05">
+                  <matrix>
+                    <Matrix a="-0.838241577148438" b="0.137481689453125" c="-0.137481689453125" d="-0.838241577148438" tx="-114.15" ty="-92.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="21" tweenType="motion" motionTweenSnap="true" keyMode="22017" duration="1">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex黑仔/肢体/右手" centerPoint3DX="-139.1" centerPoint3DY="-119.2">
+                  <matrix>
+                    <Matrix a="-0.838241577148438" b="0.137481689453125" c="-0.137481689453125" d="-0.838241577148438" tx="-109.55" ty="-98.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="刀" color="#9159D7" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex黑仔/肢体/刀" centerPoint3DX="-56.65" centerPoint3DY="-368.25">
+                  <matrix>
+                    <Matrix a="0.857284545898438" b="0.485687255859375" c="-0.485687255859375" d="0.857284545898438" tx="-90" ty="-167.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="3" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex黑仔/肢体/刀" selected="true" centerPoint3DX="-50.75" centerPoint3DY="-375.35">
+                  <matrix>
+                    <Matrix a="0.857284545898438" b="0.485687255859375" c="-0.485687255859375" d="0.857284545898438" tx="-84.1" ty="-174.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="6" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex黑仔/肢体/刀" centerPoint3DX="-72.15" centerPoint3DY="-340.8">
+                  <matrix>
+                    <Matrix a="0.857284545898438" b="0.485687255859375" c="-0.485687255859375" d="0.857284545898438" tx="-105.5" ty="-139.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="9" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex黑仔/肢体/刀" centerPoint3DX="-59.4" centerPoint3DY="-367.3">
+                  <matrix>
+                    <Matrix a="0.857284545898438" b="0.485687255859375" c="-0.485687255859375" d="0.857284545898438" tx="-92.75" ty="-166.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="12" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex黑仔/肢体/刀" centerPoint3DX="-56.7" centerPoint3DY="-380.9">
+                  <matrix>
+                    <Matrix a="0.857284545898438" b="0.485687255859375" c="-0.485687255859375" d="0.857284545898438" tx="-90.05" ty="-179.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="15" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex黑仔/肢体/刀" centerPoint3DX="-68.05" centerPoint3DY="-341.1">
+                  <matrix>
+                    <Matrix a="0.857284545898438" b="0.485687255859375" c="-0.485687255859375" d="0.857284545898438" tx="-101.4" ty="-139.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="18" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex黑仔/肢体/刀" centerPoint3DX="-61.25" centerPoint3DY="-363.1">
+                  <matrix>
+                    <Matrix a="0.857284545898438" b="0.485687255859375" c="-0.485687255859375" d="0.857284545898438" tx="-94.6" ty="-161.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="21" tweenType="motion" motionTweenSnap="true" keyMode="22017" duration="1">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex黑仔/肢体/刀" centerPoint3DX="-56.65" centerPoint3DY="-368.25">
+                  <matrix>
+                    <Matrix a="0.857284545898438" b="0.485687255859375" c="-0.485687255859375" d="0.857284545898438" tx="-90" ty="-167.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="持刀小臂" color="#67A194" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex黑仔/肢体/左下臂" centerPoint3DX="-88.2" centerPoint3DY="-175.95">
+                  <matrix>
+                    <Matrix a="0.455322265625" b="0.71435546875" c="-0.71435546875" d="0.455322265625" tx="-45.05" ty="-136.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="3" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex黑仔/肢体/左下臂" selected="true" centerPoint3DX="-82.3" centerPoint3DY="-183.05">
+                  <matrix>
+                    <Matrix a="0.455322265625" b="0.71435546875" c="-0.71435546875" d="0.455322265625" tx="-39.15" ty="-143.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="6" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex黑仔/肢体/左下臂" centerPoint3DX="-103.7" centerPoint3DY="-148.5">
+                  <matrix>
+                    <Matrix a="0.455322265625" b="0.71435546875" c="-0.71435546875" d="0.455322265625" tx="-60.55" ty="-109.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="9" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex黑仔/肢体/左下臂" centerPoint3DX="-90.95" centerPoint3DY="-175">
+                  <matrix>
+                    <Matrix a="0.455322265625" b="0.71435546875" c="-0.71435546875" d="0.455322265625" tx="-47.8" ty="-135.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="12" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex黑仔/肢体/左下臂" centerPoint3DX="-88.25" centerPoint3DY="-188.6">
+                  <matrix>
+                    <Matrix a="0.455322265625" b="0.71435546875" c="-0.71435546875" d="0.455322265625" tx="-45.1" ty="-149.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="15" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex黑仔/肢体/左下臂" centerPoint3DX="-99.6" centerPoint3DY="-148.8">
+                  <matrix>
+                    <Matrix a="0.455322265625" b="0.71435546875" c="-0.71435546875" d="0.455322265625" tx="-56.45" ty="-109.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="18" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex黑仔/肢体/左下臂" centerPoint3DX="-92.8" centerPoint3DY="-170.8">
+                  <matrix>
+                    <Matrix a="0.455322265625" b="0.71435546875" c="-0.71435546875" d="0.455322265625" tx="-49.65" ty="-131.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="21" tweenType="motion" motionTweenSnap="true" keyMode="22017" duration="1">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex黑仔/肢体/左下臂" centerPoint3DX="-88.2" centerPoint3DY="-175.95">
+                  <matrix>
+                    <Matrix a="0.455322265625" b="0.71435546875" c="-0.71435546875" d="0.455322265625" tx="-45.05" ty="-136.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="一帧大臂" color="#B98068" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex黑仔/肢体/上臂" centerPoint3DX="-26.7" centerPoint3DY="-144.8">
+                  <matrix>
+                    <Matrix a="0.1849365234375" b="0.824722290039063" c="-0.824722290039063" d="0.1849365234375" tx="42.85" ty="-161.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="3" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex黑仔/肢体/上臂" selected="true" centerPoint3DX="-20.8" centerPoint3DY="-151.9">
+                  <matrix>
+                    <Matrix a="0.1849365234375" b="0.824722290039063" c="-0.824722290039063" d="0.1849365234375" tx="48.75" ty="-168.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="6" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex黑仔/肢体/上臂" centerPoint3DX="-42.2" centerPoint3DY="-117.35">
+                  <matrix>
+                    <Matrix a="0.1849365234375" b="0.824722290039063" c="-0.824722290039063" d="0.1849365234375" tx="27.35" ty="-133.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="9" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex黑仔/肢体/上臂" centerPoint3DX="-29.45" centerPoint3DY="-143.85">
+                  <matrix>
+                    <Matrix a="0.1849365234375" b="0.824722290039063" c="-0.824722290039063" d="0.1849365234375" tx="40.1" ty="-160.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="12" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex黑仔/肢体/上臂" centerPoint3DX="-26.75" centerPoint3DY="-157.45">
+                  <matrix>
+                    <Matrix a="0.1849365234375" b="0.824722290039063" c="-0.824722290039063" d="0.1849365234375" tx="42.8" ty="-174.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="15" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex黑仔/肢体/上臂" centerPoint3DX="-35.85" centerPoint3DY="-116.15">
+                  <matrix>
+                    <Matrix a="0.1849365234375" b="0.824722290039063" c="-0.824722290039063" d="0.1849365234375" tx="33.7" ty="-132.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="18" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex黑仔/肢体/上臂" centerPoint3DX="-24.35" centerPoint3DY="-139.1">
+                  <matrix>
+                    <Matrix a="0.252120971679688" b="0.806716918945313" c="-0.806716918945313" d="0.252120971679688" tx="43.65" ty="-161.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="21" tweenType="motion" motionTweenSnap="true" keyMode="22017" duration="1">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex黑仔/肢体/上臂" centerPoint3DX="-26.7" centerPoint3DY="-144.8">
+                  <matrix>
+                    <Matrix a="0.1849365234375" b="0.824722290039063" c="-0.824722290039063" d="0.1849365234375" tx="42.85" ty="-161.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 5" color="#E41F8B">
+          <frames>
+            <DOMFrame index="0" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                </elements>
+            </DOMFrame>
+            <DOMFrame index="3" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                </elements>
+            </DOMFrame>
+            <DOMFrame index="6" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                </elements>
+            </DOMFrame>
+            <DOMFrame index="9" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                </elements>
+            </DOMFrame>
+            <DOMFrame index="12" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                </elements>
+            </DOMFrame>
+            <DOMFrame index="15" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                </elements>
+            </DOMFrame>
+            <DOMFrame index="18" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                </elements>
+            </DOMFrame>
+            <DOMFrame index="21" tweenType="motion" motionTweenSnap="true" keyMode="22017" duration="1">
+              <elements>
+                </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 6" color="#88A9BF">
+          <frames>
+            <DOMFrame index="0" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex黑仔/肢体/小腿" centerPoint3DX="-81.7" centerPoint3DY="137.35">
+                  <matrix>
+                    <Matrix a="0.529647827148438" b="0.667633056640625" c="-0.667633056640625" d="0.529647827148438" tx="-83.3" ty="60.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="2" tweenType="motion" motionTweenSnap="true" keyMode="22017" duration="1">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex黑仔/肢体/小腿" centerPoint3DX="-101.4" centerPoint3DY="117.35">
+                  <matrix>
+                    <Matrix a="0.33880615234375" b="0.781951904296875" c="-0.781951904296875" d="0.33880615234375" tx="-83.3" ty="42.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="3" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex黑仔/肢体/小腿" centerPoint3DX="-108.15" centerPoint3DY="105.7">
+                  <matrix>
+                    <Matrix a="0.0755615234375" b="0.84747314453125" c="-0.84747314453125" d="0.0755615234375" tx="-109.9" ty="28.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="6" tweenType="motion" motionTweenSnap="true" keyMode="22017" duration="1">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex黑仔/肢体/小腿" centerPoint3DX="-124.55" centerPoint3DY="133.6">
+                  <matrix>
+                    <Matrix a="-0.3524169921875" b="0.773117065429688" c="-0.773117065429688" d="-0.3524169921875" tx="-126.2" ty="56.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="7" tweenType="motion" motionTweenSnap="true" keyMode="22017" duration="1">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex黑仔/肢体/小腿" centerPoint3DX="-47.65" centerPoint3DY="158.9">
+                  <matrix>
+                    <Matrix a="-0.205917358398438" b="0.823211669921875" c="-0.823211669921875" d="-0.205917358398438" tx="-63.35" ty="83.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="8" tweenType="motion" motionTweenSnap="true" keyMode="22017" duration="1">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex黑仔/肢体/小腿" centerPoint3DX="31.1" centerPoint3DY="158.9">
+                  <matrix>
+                    <Matrix a="-0.0526275634765625" b="0.846694946289063" c="-0.846694946289063" d="-0.0526275634765625" tx="1.95" ty="87.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="9" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex黑仔/肢体/小腿" centerPoint3DX="68.95" centerPoint3DY="125.35">
+                  <matrix>
+                    <Matrix a="0.097564697265625" b="0.842788696289063" c="-0.842788696289063" d="0.097564697265625" tx="67.2" ty="48.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="11" tweenType="motion" motionTweenSnap="true" keyMode="22017" duration="1">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex黑仔/肢体/小腿" centerPoint3DX="141.15" centerPoint3DY="86.95">
+                  <matrix>
+                    <Matrix a="0.803054809570313" b="0.269821166992188" c="-0.269821166992188" d="0.803054809570313" tx="70.9" ty="55.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="12" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex黑仔/肢体/小腿" centerPoint3DX="74.3" centerPoint3DY="136.55">
+                  <matrix>
+                    <Matrix a="0.823898315429688" b="-0.199844360351563" c="0.199844360351563" d="0.823898315429688" tx="72.75" ty="59.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="15" tweenType="motion" motionTweenSnap="true" keyMode="22017" duration="1">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex黑仔/肢体/小腿" centerPoint3DX="1.65" centerPoint3DY="204.85">
+                  <matrix>
+                    <Matrix a="0.845184326171875" b="-0.0605316162109375" c="0.0605316162109375" d="0.845184326171875" tx="-0.05" ty="127.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="16" tweenType="motion" motionTweenSnap="true" keyMode="22017" duration="1">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex黑仔/肢体/小腿" centerPoint3DX="-35.55" centerPoint3DY="199.35">
+                  <matrix>
+                    <Matrix a="0.832061767578125" b="0.160263061523438" c="-0.160263061523438" d="0.832061767578125" tx="-17.45" ty="124.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="17" tweenType="motion" motionTweenSnap="true" keyMode="22017" duration="1">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex黑仔/肢体/小腿" centerPoint3DX="-61.8" centerPoint3DY="167.2">
+                  <matrix>
+                    <Matrix a="0.762237548828125" b="0.370147705078125" c="-0.370147705078125" d="0.762237548828125" tx="-25.4" ty="99.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="18" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex黑仔/肢体/小腿" centerPoint3DX="-31.05" centerPoint3DY="176.8">
+                  <matrix>
+                    <Matrix a="0.7716064453125" b="0.34735107421875" c="-0.34735107421875" d="0.7716064453125" tx="-32.65" ty="99.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="21" tweenType="motion" motionTweenSnap="true" keyMode="22017" duration="1">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex黑仔/肢体/小腿" centerPoint3DX="-81.7" centerPoint3DY="137.35">
+                  <matrix>
+                    <Matrix a="0.529647827148438" b="0.667633056640625" c="-0.667633056640625" d="0.529647827148438" tx="-83.3" ty="60.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 7" color="#99EE58">
+          <frames>
+            <DOMFrame index="0" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex黑仔/肢体/脚" centerPoint3DX="-126.1" centerPoint3DY="160.7">
+                  <matrix>
+                    <Matrix a="0.361083984375" b="0.769821166992188" c="-0.769821166992188" d="0.361083984375" tx="-155.25" ty="118.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="2" tweenType="motion" motionTweenSnap="true" keyMode="22017" duration="1">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex黑仔/肢体/脚" centerPoint3DX="-148.25" centerPoint3DY="120.75">
+                  <matrix>
+                    <Matrix a="0.361083984375" b="0.769821166992188" c="-0.769821166992188" d="0.361083984375" tx="-177.4" ty="78.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="3" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex黑仔/肢体/脚" centerPoint3DX="-176" centerPoint3DY="81.75">
+                  <matrix>
+                    <Matrix a="-0.408554077148438" b="0.74420166015625" c="-0.74420166015625" d="-0.408554077148438" tx="-205.1" ty="39.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="6" tweenType="motion" motionTweenSnap="true" keyMode="22017" duration="1">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex黑仔/肢体/脚" centerPoint3DX="-183.95" centerPoint3DY="56.55">
+                  <matrix>
+                    <Matrix a="-0.408554077148438" b="0.74420166015625" c="-0.74420166015625" d="-0.408554077148438" tx="-212.7" ty="13.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="7" tweenType="motion" motionTweenSnap="true" keyMode="22017" duration="1">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex黑仔/肢体/脚" centerPoint3DX="-124.8" centerPoint3DY="103.05">
+                  <matrix>
+                    <Matrix a="-0.408401489257813" b="0.742935180664063" c="-0.742935180664063" d="-0.408401489257813" tx="-153.45" ty="60.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="8" tweenType="motion" motionTweenSnap="true" keyMode="22017" duration="1">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex黑仔/肢体/脚" centerPoint3DX="-63.2" centerPoint3DY="126.75">
+                  <matrix>
+                    <Matrix a="-0.408187866210938" b="0.742401123046875" c="-0.742401123046875" d="-0.408187866210938" tx="-91.85" ty="84"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="9" tweenType="motion" motionTweenSnap="true" keyMode="22017" duration="1">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex黑仔/肢体/脚" centerPoint3DX="-1.4" centerPoint3DY="106.9">
+                  <matrix>
+                    <Matrix a="-0.408554077148438" b="0.74420166015625" c="-0.74420166015625" d="-0.408554077148438" tx="-30.3" ty="64.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="10" tweenType="motion" motionTweenSnap="true" keyMode="22017" duration="1">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex黑仔/肢体/脚" centerPoint3DX="45.15" centerPoint3DY="118.65">
+                  <matrix>
+                    <Matrix a="0.2733154296875" b="0.801864624023438" c="-0.801864624023438" d="0.2733154296875" tx="-5.45" ty="111.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="11" tweenType="motion" motionTweenSnap="true" keyMode="22017" duration="1">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex黑仔/肢体/脚" centerPoint3DX="80.25" centerPoint3DY="114.85">
+                  <matrix>
+                    <Matrix a="0.7779541015625" b="0.335128784179688" c="-0.335128784179688" d="0.7779541015625" tx="40.95" ty="147.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="12" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex黑仔/肢体/脚" centerPoint3DX="121.8" centerPoint3DY="199.35">
+                  <matrix>
+                    <Matrix a="0.772186279296875" b="-0.349594116210938" c="0.349594116210938" d="0.772186279296875" tx="92.75" ty="156.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="15" tweenType="motion" motionTweenSnap="true" keyMode="22017" duration="1">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex黑仔/肢体/脚" centerPoint3DX="29.45" centerPoint3DY="267.85">
+                  <matrix>
+                    <Matrix a="0.772186279296875" b="-0.349594116210938" c="0.349594116210938" d="0.772186279296875" tx="0.6" ty="225.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="16" tweenType="motion" motionTweenSnap="true" keyMode="22017" duration="1">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex黑仔/肢体/脚" centerPoint3DX="-25" centerPoint3DY="267.4">
+                  <matrix>
+                    <Matrix a="0.836349487304688" b="-0.137832641601563" c="0.137832641601563" d="0.836349487304688" tx="-42.05" ty="218.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="17" tweenType="motion" motionTweenSnap="true" keyMode="22017" duration="1">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex黑仔/肢体/脚" centerPoint3DX="-69.55" centerPoint3DY="235.85">
+                  <matrix>
+                    <Matrix a="0.843521118164063" b="0.08331298828125" c="-0.08331298828125" d="0.843521118164063" tx="-73.55" ty="184.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="18" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex黑仔/肢体/脚" centerPoint3DX="-46.2" centerPoint3DY="229.2">
+                  <matrix>
+                    <Matrix a="0.832901000976563" b="0.150192260742188" c="-0.150192260742188" d="0.832901000976563" tx="-75.25" ty="186.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="21" tweenType="motion" motionTweenSnap="true" keyMode="22017" duration="1">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex黑仔/肢体/脚" centerPoint3DX="-126.1" centerPoint3DY="160.7">
+                  <matrix>
+                    <Matrix a="0.361083984375" b="0.769821166992188" c="-0.769821166992188" d="0.361083984375" tx="-155.25" ty="118.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 10" color="#9CE51B">
+          <frames>
+            <DOMFrame index="0" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex黑仔/肢体/右大腿" centerPoint3DX="-13.65" centerPoint3DY="72.3">
+                  <matrix>
+                    <Matrix a="0.603073120117188" b="0.599609375" c="-0.599609375" d="0.603073120117188" tx="-18.85" ty="-9.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="2" tweenType="motion" motionTweenSnap="true" keyMode="22017" duration="1">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex黑仔/肢体/右大腿" centerPoint3DX="-25.5" centerPoint3DY="72.15">
+                  <matrix>
+                    <Matrix a="0.51116943359375" b="0.679641723632813" c="-0.679641723632813" d="0.51116943359375" tx="-18.85" ty="-9.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="3" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex黑仔/肢体/右大腿" centerPoint3DX="-10.1" centerPoint3DY="63.1">
+                  <matrix>
+                    <Matrix a="0.429336547851563" b="0.73443603515625" c="-0.73443603515625" d="0.429336547851563" tx="-15.3" ty="-18.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="6" tweenType="motion" motionTweenSnap="true" keyMode="22017" duration="1">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex黑仔/肢体/右大腿" centerPoint3DX="-25.35" centerPoint3DY="102.45">
+                  <matrix>
+                    <Matrix a="0.3253173828125" b="0.785629272460938" c="-0.785629272460938" d="0.3253173828125" tx="-30.5" ty="20.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="7" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex黑仔/肢体/右大腿" centerPoint3DX="33.2" centerPoint3DY="70">
+                  <matrix>
+                    <Matrix a="0.730865478515625" b="0.431564331054688" c="-0.431564331054688" d="0.730865478515625" tx="-20.1" ty="7.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="9" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex黑仔/肢体/右大腿" centerPoint3DX="5.55" centerPoint3DY="64.3">
+                  <matrix>
+                    <Matrix a="0.617568969726563" b="-0.583114624023438" c="0.583114624023438" d="0.617568969726563" tx="0.75" ty="-17.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="12" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex黑仔/肢体/右大腿" centerPoint3DX="10.8" centerPoint3DY="55.85">
+                  <matrix>
+                    <Matrix a="0.646652221679688" b="-0.548934936523438" c="0.548934936523438" d="0.646652221679688" tx="5.9" ty="-26.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="15" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex黑仔/肢体/右大腿" centerPoint3DX="-12.2" centerPoint3DY="106.05">
+                  <matrix>
+                    <Matrix a="0.837677001953125" b="-0.125457763671875" c="0.125457763671875" d="0.837677001953125" tx="-17.2" ty="23.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="18" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex黑仔/肢体/右大腿" centerPoint3DX="-3.65" centerPoint3DY="84.5">
+                  <matrix>
+                    <Matrix a="0.815948486328125" b="0.223358154296875" c="-0.223358154296875" d="0.815948486328125" tx="-9.05" ty="2.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="21" tweenType="motion" motionTweenSnap="true" keyMode="22017" duration="1">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex黑仔/肢体/右大腿" centerPoint3DX="-13.65" centerPoint3DY="72.3">
+                  <matrix>
+                    <Matrix a="0.603073120117188" b="0.599609375" c="-0.599609375" d="0.603073120117188" tx="-18.85" ty="-9.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 8" color="#CE8DE5">
+          <frames>
+            <DOMFrame index="0" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex黑仔/肢体/小腿" centerPoint3DX="108.1" centerPoint3DY="116.05">
+                  <matrix>
+                    <Matrix a="0.275772094726563" b="0.807449340820313" c="-0.807449340820313" d="0.275772094726563" tx="106.6" ty="39.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="2" tweenType="motion" motionTweenSnap="true" keyMode="22017" duration="1">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex黑仔/肢体/小腿" centerPoint3DX="148.9" centerPoint3DY="113.8">
+                  <matrix>
+                    <Matrix a="0.765945434570313" b="0.3759765625" c="-0.3759765625" d="0.765945434570313" tx="93.55" ty="60.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="3" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex黑仔/肢体/小腿" centerPoint3DX="99.8" centerPoint3DY="130.75">
+                  <matrix>
+                    <Matrix a="0.852035522460938" b="-0.03887939453125" c="0.03887939453125" d="0.852035522460938" tx="98.15" ty="53.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="6" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex黑仔/肢体/小腿" centerPoint3DX="36.75" centerPoint3DY="199.15">
+                  <matrix>
+                    <Matrix a="0.852035522460938" b="-0.03887939453125" c="0.03887939453125" d="0.852035522460938" tx="35.1" ty="122.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="9" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex黑仔/肢体/小腿" centerPoint3DX="-43.25" centerPoint3DY="148">
+                  <matrix>
+                    <Matrix a="0.625091552734375" b="0.577316284179688" c="-0.577316284179688" d="0.625091552734375" tx="-44.8" ty="71.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="12" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex黑仔/肢体/小腿" centerPoint3DX="-62.1" centerPoint3DY="130.4">
+                  <matrix>
+                    <Matrix a="0.215789794921875" b="0.821853637695313" c="-0.821853637695313" d="0.215789794921875" tx="-63.85" ty="53.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="15" tweenType="motion" motionTweenSnap="true" keyMode="22017" duration="1">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex黑仔/肢体/小腿" centerPoint3DX="-74.2" centerPoint3DY="148.95">
+                  <matrix>
+                    <Matrix a="-0.232406616210938" b="0.816787719726563" c="-0.816787719726563" d="-0.232406616210938" tx="-75.9" ty="71.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="16" tweenType="motion" motionTweenSnap="true" keyMode="22017" duration="1">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex黑仔/肢体/小腿" centerPoint3DX="-3.15" centerPoint3DY="170.45">
+                  <matrix>
+                    <Matrix a="0.165771484375" b="0.831283569335938" c="-0.831283569335938" d="0.165771484375" tx="-39.85" ty="102.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="17" tweenType="motion" motionTweenSnap="true" keyMode="22017" duration="1">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex黑仔/肢体/小腿" centerPoint3DX="34.3" centerPoint3DY="173.5">
+                  <matrix>
+                    <Matrix a="0.126190185546875" b="0.836105346679688" c="-0.836105346679688" d="0.126190185546875" tx="0.75" ty="103.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="18" tweenType="motion" motionTweenSnap="true" keyMode="22017" duration="1">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex黑仔/肢体/小腿" centerPoint3DX="54.25" centerPoint3DY="182.35">
+                  <matrix>
+                    <Matrix a="-0.196823120117188" b="0.826080322265625" c="-0.826080322265625" d="-0.196823120117188" tx="49.2" ty="105.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="19" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex黑仔/肢体/小腿" centerPoint3DX="99.6" centerPoint3DY="160.15">
+                  <matrix>
+                    <Matrix a="0.13592529296875" b="0.83795166015625" c="-0.83795166015625" d="0.13592529296875" tx="65.85" ty="91.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="21" tweenType="motion" motionTweenSnap="true" keyMode="22017" duration="1">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex黑仔/肢体/小腿" centerPoint3DX="108.1" centerPoint3DY="116.05">
+                  <matrix>
+                    <Matrix a="0.275772094726563" b="0.807449340820313" c="-0.807449340820313" d="0.275772094726563" tx="106.6" ty="39.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 9" color="#CAED1E">
+          <frames>
+            <DOMFrame index="0" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex黑仔/肢体/脚" centerPoint3DX="44.65" centerPoint3DY="114.95">
+                  <matrix>
+                    <Matrix a="-0.098175048828125" b="0.846466064453125" c="-0.846466064453125" d="-0.098175048828125" tx="15.55" ty="72.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="2" tweenType="motion" motionTweenSnap="true" keyMode="22017" duration="1">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex黑仔/肢体/脚" centerPoint3DX="98.85" centerPoint3DY="160.1">
+                  <matrix>
+                    <Matrix a="0.529098510742188" b="0.667953491210938" c="-0.667953491210938" d="0.529098510742188" tx="48.2" ty="150.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="3" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex黑仔/肢体/脚" centerPoint3DX="126.3" centerPoint3DY="188.95">
+                  <matrix>
+                    <Matrix a="0.84014892578125" b="-0.14300537109375" c="0.14300537109375" d="0.84014892578125" tx="97.2" ty="146.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="6" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex黑仔/肢体/脚" centerPoint3DX="63.8" centerPoint3DY="260.5">
+                  <matrix>
+                    <Matrix a="0.84014892578125" b="-0.14300537109375" c="0.14300537109375" d="0.84014892578125" tx="34.8" ty="218"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="9" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex黑仔/肢体/脚" centerPoint3DX="-82.6" centerPoint3DY="181.1">
+                  <matrix>
+                    <Matrix a="0.77142333984375" b="0.359100341796875" c="-0.359100341796875" d="0.77142333984375" tx="-111.55" ty="138.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="12" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex黑仔/肢体/脚" centerPoint3DX="-121.85" centerPoint3DY="120.8">
+                  <matrix>
+                    <Matrix a="0.0099639892578125" b="0.847015380859375" c="-0.847015380859375" d="0.0099639892578125" tx="-150.8" ty="78.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="15" tweenType="motion" motionTweenSnap="true" keyMode="22017" duration="1">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex黑仔/肢体/脚" centerPoint3DX="-134.85" centerPoint3DY="86.6">
+                  <matrix>
+                    <Matrix a="-0.267532348632813" b="0.803802490234375" c="-0.803802490234375" d="-0.267532348632813" tx="-163.9" ty="43.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="16" tweenType="motion" motionTweenSnap="true" keyMode="22017" duration="1">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex黑仔/肢体/脚" centerPoint3DX="-81.5" centerPoint3DY="138.65">
+                  <matrix>
+                    <Matrix a="0.208709716796875" b="0.820083618164063" c="-0.820083618164063" d="0.208709716796875" tx="-129" ty="118.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="17" tweenType="motion" motionTweenSnap="true" keyMode="22017" duration="1">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex黑仔/肢体/脚" centerPoint3DX="-47.8" centerPoint3DY="116.9">
+                  <matrix>
+                    <Matrix a="0.4490966796875" b="0.715652465820313" c="-0.715652465820313" d="0.4490966796875" tx="-99.2" ty="111.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="18" tweenType="motion" motionTweenSnap="true" keyMode="22017" duration="1">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex黑仔/肢体/脚" centerPoint3DX="-12.15" centerPoint3DY="123.6">
+                  <matrix>
+                    <Matrix a="-0.232498168945313" b="0.81463623046875" c="-0.81463623046875" d="-0.232498168945313" tx="-43" ty="82.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="19" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex黑仔/肢体/脚" centerPoint3DX="2.8" centerPoint3DY="146.05">
+                  <matrix>
+                    <Matrix a="-0.122161865234375" b="0.837921142578125" c="-0.837921142578125" d="-0.122161865234375" tx="-33.2" ty="109.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="21" tweenType="motion" motionTweenSnap="true" keyMode="22017" duration="1">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex黑仔/肢体/脚" centerPoint3DX="44.65" centerPoint3DY="114.95">
+                  <matrix>
+                    <Matrix a="-0.098175048828125" b="0.846466064453125" c="-0.846466064453125" d="-0.098175048828125" tx="15.55" ty="72.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 11" color="#C521C9">
+          <frames>
+            <DOMFrame index="0" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex黑仔/肢体/屁股" centerPoint3DX="45.65" centerPoint3DY="30.95">
+                  <matrix>
+                    <Matrix a="0.720077514648438" b="0.459701538085938" c="-0.459701538085938" d="0.720077514648438" tx="10.95" ty="-15.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="3" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex黑仔/肢体/屁股" centerPoint3DX="49.3" centerPoint3DY="21.75">
+                  <matrix>
+                    <Matrix a="0.720077514648438" b="0.459701538085938" c="-0.459701538085938" d="0.720077514648438" tx="14.4" ty="-24.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="6" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex黑仔/肢体/屁股" centerPoint3DX="34.05" centerPoint3DY="61.35">
+                  <matrix>
+                    <Matrix a="0.720077514648438" b="0.459701538085938" c="-0.459701538085938" d="0.720077514648438" tx="-0.75" ty="14.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="9" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex黑仔/肢体/屁股" centerPoint3DX="45.65" centerPoint3DY="30.95">
+                  <matrix>
+                    <Matrix a="0.720077514648438" b="0.459701538085938" c="-0.459701538085938" d="0.720077514648438" tx="10.95" ty="-15.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="12" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex黑仔/肢体/屁股" centerPoint3DX="49.3" centerPoint3DY="21.75">
+                  <matrix>
+                    <Matrix a="0.720077514648438" b="0.459701538085938" c="-0.459701538085938" d="0.720077514648438" tx="14.4" ty="-24.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="15" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex黑仔/肢体/屁股" centerPoint3DX="34.05" centerPoint3DY="61.35">
+                  <matrix>
+                    <Matrix a="0.720077514648438" b="0.459701538085938" c="-0.459701538085938" d="0.720077514648438" tx="-0.75" ty="14.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="18" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex黑仔/肢体/屁股" centerPoint3DX="47.75" centerPoint3DY="34.45">
+                  <matrix>
+                    <Matrix a="0.720077514648438" b="0.459701538085938" c="-0.459701538085938" d="0.720077514648438" tx="12.75" ty="-12"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="21" tweenType="motion" motionTweenSnap="true" keyMode="22017" duration="1">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex黑仔/肢体/屁股" centerPoint3DX="45.65" centerPoint3DY="30.95">
+                  <matrix>
+                    <Matrix a="0.720077514648438" b="0.459701538085938" c="-0.459701538085938" d="0.720077514648438" tx="10.95" ty="-15.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 12" color="#DF2CB4">
+          <frames>
+            <DOMFrame index="0" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex黑仔/肢体/头" centerPoint3DX="128.85" centerPoint3DY="-128.4">
+                  <matrix>
+                    <Matrix a="0.769989013671875" b="0.585067749023438" c="-0.585067749023438" d="0.769989013671875" tx="109.1" ty="-175.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="3" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex黑仔/肢体/头" centerPoint3DX="132.65" centerPoint3DY="-137.7">
+                  <matrix>
+                    <Matrix a="0.769989013671875" b="0.585067749023438" c="-0.585067749023438" d="0.769989013671875" tx="112.65" ty="-185.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="6" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex黑仔/肢体/头" centerPoint3DX="117.2" centerPoint3DY="-98.1">
+                  <matrix>
+                    <Matrix a="0.769989013671875" b="0.585067749023438" c="-0.585067749023438" d="0.769989013671875" tx="97.5" ty="-145.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="9" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex黑仔/肢体/头" centerPoint3DX="128.85" centerPoint3DY="-128.4">
+                  <matrix>
+                    <Matrix a="0.769989013671875" b="0.585067749023438" c="-0.585067749023438" d="0.769989013671875" tx="109.1" ty="-175.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="12" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex黑仔/肢体/头" centerPoint3DX="132.65" centerPoint3DY="-137.7">
+                  <matrix>
+                    <Matrix a="0.769989013671875" b="0.585067749023438" c="-0.585067749023438" d="0.769989013671875" tx="112.65" ty="-185.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="15" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex黑仔/肢体/头" centerPoint3DX="117.2" centerPoint3DY="-98.1">
+                  <matrix>
+                    <Matrix a="0.769989013671875" b="0.585067749023438" c="-0.585067749023438" d="0.769989013671875" tx="97.5" ty="-145.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="18" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex黑仔/肢体/头" centerPoint3DX="130.7" centerPoint3DY="-124.75">
+                  <matrix>
+                    <Matrix a="0.769989013671875" b="0.585067749023438" c="-0.585067749023438" d="0.769989013671875" tx="111.05" ty="-172.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="21" tweenType="motion" motionTweenSnap="true" keyMode="22017" duration="1">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex黑仔/肢体/头" centerPoint3DX="128.85" centerPoint3DY="-128.4">
+                  <matrix>
+                    <Matrix a="0.769989013671875" b="0.585067749023438" c="-0.585067749023438" d="0.769989013671875" tx="109.1" ty="-175.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 13" color="#5CD78C">
+          <frames>
+            <DOMFrame index="0" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex黑仔/肢体/身体" centerPoint3DX="65.5" centerPoint3DY="62.65" name="身体">
+                  <matrix>
+                    <Matrix a="0.737655639648438" b="0.426132202148438" c="-0.426132202148438" d="0.737655639648438" tx="37.55" ty="-56.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="3" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex黑仔/肢体/身体" centerPoint3DX="68.75" centerPoint3DY="53.85" name="身体">
+                  <matrix>
+                    <Matrix a="0.737655639648438" b="0.426132202148438" c="-0.426132202148438" d="0.737655639648438" tx="41.15" ty="-66.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="6" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex黑仔/肢体/身体" centerPoint3DX="54.15" centerPoint3DY="93.2" name="身体">
+                  <matrix>
+                    <Matrix a="0.737655639648438" b="0.426132202148438" c="-0.426132202148438" d="0.737655639648438" tx="25.95" ty="-26.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="9" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex黑仔/肢体/身体" centerPoint3DX="65.5" centerPoint3DY="62.65" name="身体">
+                  <matrix>
+                    <Matrix a="0.737655639648438" b="0.426132202148438" c="-0.426132202148438" d="0.737655639648438" tx="37.55" ty="-56.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="12" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex黑仔/肢体/身体" centerPoint3DX="68.75" centerPoint3DY="53.85" name="身体">
+                  <matrix>
+                    <Matrix a="0.737655639648438" b="0.426132202148438" c="-0.426132202148438" d="0.737655639648438" tx="41.15" ty="-66.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="15" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex黑仔/肢体/身体" centerPoint3DX="54.15" centerPoint3DY="93.2" name="身体">
+                  <matrix>
+                    <Matrix a="0.737655639648438" b="0.426132202148438" c="-0.426132202148438" d="0.737655639648438" tx="25.95" ty="-26.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="18" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex黑仔/肢体/身体" centerPoint3DX="67.45" centerPoint3DY="66.3" name="身体">
+                  <matrix>
+                    <Matrix a="0.737655639648438" b="0.426132202148438" c="-0.426132202148438" d="0.737655639648438" tx="39.5" ty="-53.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="21" tweenType="motion" motionTweenSnap="true" keyMode="22017" duration="1">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex黑仔/肢体/身体" centerPoint3DX="65.5" centerPoint3DY="62.65" name="身体">
+                  <matrix>
+                    <Matrix a="0.737655639648438" b="0.426132202148438" c="-0.426132202148438" d="0.737655639648438" tx="37.55" ty="-56.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 14" color="#AF12EB">
+          <frames>
+            <DOMFrame index="0" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex黑仔/肢体/左大腿" centerPoint3DX="32.8" centerPoint3DY="77.3">
+                  <matrix>
+                    <Matrix a="0.439697265625" b="-0.728683471679688" c="0.728683471679688" d="0.439697265625" tx="27.8" ty="-4.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="2" tweenType="motion" motionTweenSnap="true" keyMode="22017" duration="1">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex黑仔/肢体/左大腿" centerPoint3DX="11.3" centerPoint3DY="75.8">
+                  <matrix>
+                    <Matrix a="0.613296508789063" b="-0.590057373046875" c="0.590057373046875" d="0.613296508789063" tx="27.8" ty="-4.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="3" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex黑仔/肢体/左大腿" centerPoint3DX="36.2" centerPoint3DY="67.95">
+                  <matrix>
+                    <Matrix a="0.61578369140625" b="-0.586441040039063" c="0.586441040039063" d="0.61578369140625" tx="31.3" ty="-14.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="6" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex黑仔/肢体/左大腿" centerPoint3DX="21.15" centerPoint3DY="107.6">
+                  <matrix>
+                    <Matrix a="0.838531494140625" b="-0.132781982421875" c="0.132781982421875" d="0.838531494140625" tx="16.1" ty="25.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="9" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex黑仔/肢体/左大腿" centerPoint3DX="32.8" centerPoint3DY="77.3">
+                  <matrix>
+                    <Matrix a="0.630874633789063" b="0.56500244140625" c="-0.56500244140625" d="0.630874633789063" tx="27.8" ty="-4.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="12" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex黑仔/肢体/左大腿" centerPoint3DX="27.15" centerPoint3DY="64.95">
+                  <matrix>
+                    <Matrix a="0.531265258789063" b="0.65911865234375" c="-0.65911865234375" d="0.531265258789063" tx="22.15" ty="-17.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="15" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex黑仔/肢体/左大腿" centerPoint3DX="21.15" centerPoint3DY="107.6">
+                  <matrix>
+                    <Matrix a="0.407852172851563" b="0.741317749023438" c="-0.741317749023438" d="0.407852172851563" tx="16.1" ty="25.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="18" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex黑仔/肢体/左大腿" centerPoint3DX="50.35" centerPoint3DY="81.25">
+                  <matrix>
+                    <Matrix a="0.818893432617188" b="-0.207015991210938" c="0.207015991210938" d="0.818893432617188" tx="24.25" ty="4.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="21" tweenType="motion" motionTweenSnap="true" keyMode="22017" duration="1">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex黑仔/肢体/左大腿" centerPoint3DX="32.8" centerPoint3DY="77.3">
+                  <matrix>
+                    <Matrix a="0.439697265625" b="-0.728683471679688" c="0.728683471679688" d="0.439697265625" tx="27.8" ty="-4.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 15" color="#DCBBA2">
+          <frames>
+            <DOMFrame index="0" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                </elements>
+            </DOMFrame>
+            <DOMFrame index="3" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                </elements>
+            </DOMFrame>
+            <DOMFrame index="6" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                </elements>
+            </DOMFrame>
+            <DOMFrame index="9" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                </elements>
+            </DOMFrame>
+            <DOMFrame index="12" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                </elements>
+            </DOMFrame>
+            <DOMFrame index="15" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                </elements>
+            </DOMFrame>
+            <DOMFrame index="18" duration="3" keyMode="9728">
+              <elements>
+                </elements>
+            </DOMFrame>
+            <DOMFrame index="21" tweenType="motion" motionTweenSnap="true" keyMode="22017" duration="1">
+              <elements>
+                </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 16" color="#CCBC63">
+          <frames>
+            <DOMFrame index="0" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex黑仔/肢体/左手" centerPoint3DX="96.55" centerPoint3DY="-12.9">
+                  <matrix>
+                    <Matrix a="0.568756103515625" b="0.628677368164063" c="-0.628677368164063" d="0.568756103515625" tx="73.85" ty="-41.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="3" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex黑仔/肢体/左手" centerPoint3DX="66.4" centerPoint3DY="-22.55">
+                  <matrix>
+                    <Matrix a="0.352432250976563" b="0.770187377929688" c="-0.770187377929688" d="0.352432250976563" tx="43.6" ty="-50.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="6" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex黑仔/肢体/左手" centerPoint3DX="51.15" centerPoint3DY="16.8">
+                  <matrix>
+                    <Matrix a="0.352432250976563" b="0.770187377929688" c="-0.770187377929688" d="0.352432250976563" tx="28.45" ty="-11.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="9" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex黑仔/肢体/左手" centerPoint3DX="138.2" centerPoint3DY="-0.35">
+                  <matrix>
+                    <Matrix a="0.75146484375" b="0.3878173828125" c="-0.3878173828125" d="0.75146484375" tx="115.35" ty="-28.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="12" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex黑仔/肢体/左手" centerPoint3DX="190.95" centerPoint3DY="-23.95">
+                  <matrix>
+                    <Matrix a="0.8427734375" b="-0.0522918701171875" c="0.0522918701171875" d="0.8427734375" tx="168.25" ty="-52.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="15" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex黑仔/肢体/左手" centerPoint3DX="205.5" centerPoint3DY="-1.75">
+                  <matrix>
+                    <Matrix a="0.78717041015625" b="-0.303359985351563" c="0.303359985351563" d="0.78717041015625" tx="183" ty="-30"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="18" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex黑仔/肢体/左手" centerPoint3DX="185.3" centerPoint3DY="4.65">
+                  <matrix>
+                    <Matrix a="0.841217041015625" b="0.0477294921875" c="-0.0477294921875" d="0.841217041015625" tx="162.55" ty="-23.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="21" tweenType="motion" motionTweenSnap="true" keyMode="22017" duration="1">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex黑仔/肢体/左手" centerPoint3DX="96.55" centerPoint3DY="-12.9">
+                  <matrix>
+                    <Matrix a="0.568756103515625" b="0.628677368164063" c="-0.628677368164063" d="0.568756103515625" tx="73.85" ty="-41.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 17" color="#1BEECA">
+          <frames>
+            <DOMFrame index="0" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex黑仔/肢体/左手臂" centerPoint3DX="35.5" centerPoint3DY="-41.7">
+                  <matrix>
+                    <Matrix a="0.701431274414063" b="-0.474639892578125" c="0.474639892578125" d="0.701431274414063" tx="33.1" ty="-99.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="3" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex黑仔/肢体/左手臂" centerPoint3DX="24.75" centerPoint3DY="-60.85">
+                  <matrix>
+                    <Matrix a="0.811141967773438" b="-0.240859985351563" c="0.240859985351563" d="0.811141967773438" tx="22.4" ty="-118.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="6" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex黑仔/肢体/左手臂" centerPoint3DX="9.75" centerPoint3DY="-21.25">
+                  <matrix>
+                    <Matrix a="0.811141967773438" b="-0.240859985351563" c="0.240859985351563" d="0.811141967773438" tx="7.3" ty="-79.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="9" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex黑仔/肢体/左手臂" centerPoint3DX="59.35" centerPoint3DY="-10.85">
+                  <matrix>
+                    <Matrix a="0.488723754882813" b="-0.689071655273438" c="0.689071655273438" d="0.488723754882813" tx="56.8" ty="-68.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="12" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex黑仔/肢体/左手臂" centerPoint3DX="99.35" centerPoint3DY="1.05">
+                  <matrix>
+                    <Matrix a="0.066131591796875" b="-0.840988159179688" c="0.840988159179688" d="0.066131591796875" tx="97.3" ty="-57"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="15" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex黑仔/肢体/左手臂" centerPoint3DX="116.3" centerPoint3DY="44.95">
+                  <matrix>
+                    <Matrix a="-0.189971923828125" b="-0.821090698242188" c="0.821090698242188" d="-0.189971923828125" tx="114.05" ty="-13.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="18" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex黑仔/肢体/左手臂" centerPoint3DX="95.2" centerPoint3DY="21.75">
+                  <matrix>
+                    <Matrix a="0.164886474609375" b="-0.825439453125" c="0.825439453125" d="0.164886474609375" tx="92.85" ty="-36.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="21" tweenType="motion" motionTweenSnap="true" keyMode="22017" duration="1">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex黑仔/肢体/左手臂" centerPoint3DX="35.5" centerPoint3DY="-41.7">
+                  <matrix>
+                    <Matrix a="0.701431274414063" b="-0.474639892578125" c="0.474639892578125" d="0.701431274414063" tx="33.1" ty="-99.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="左上臂" color="#E7B273" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex黑仔/肢体/上臂" centerPoint3DX="119.45" centerPoint3DY="-55.85">
+                  <matrix>
+                    <Matrix a="0.259765625" b="0.8046875" c="-0.8046875" d="0.259765625" tx="114.05" ty="-126.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="3" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex黑仔/肢体/上臂" centerPoint3DX="122.95" centerPoint3DY="-64.85">
+                  <matrix>
+                    <Matrix a="0.0681304931640625" b="0.842193603515625" c="-0.842193603515625" d="0.0681304931640625" tx="117.6" ty="-135.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="6" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex黑仔/肢体/上臂" centerPoint3DX="107.85" centerPoint3DY="-25.45">
+                  <matrix>
+                    <Matrix a="0.0681304931640625" b="0.842193603515625" c="-0.842193603515625" d="0.0681304931640625" tx="102.4" ty="-96.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="9" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex黑仔/肢体/上臂" centerPoint3DX="119.45" centerPoint3DY="-55.85">
+                  <matrix>
+                    <Matrix a="0.593505859375" b="0.5994873046875" c="-0.5994873046875" d="0.593505859375" tx="114.05" ty="-126.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="12" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex黑仔/肢体/上臂" centerPoint3DX="122.95" centerPoint3DY="-64.85">
+                  <matrix>
+                    <Matrix a="0.797943115234375" b="0.270248413085938" c="-0.270248413085938" d="0.797943115234375" tx="117.6" ty="-135.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="15" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex黑仔/肢体/上臂" centerPoint3DX="107.85" centerPoint3DY="-25.45">
+                  <matrix>
+                    <Matrix a="0.839340209960938" b="-0.0598602294921875" c="0.0598602294921875" d="0.839340209960938" tx="102.4" ty="-96.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="18" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex黑仔/肢体/上臂" centerPoint3DX="115.8" centerPoint3DY="-46.7">
+                  <matrix>
+                    <Matrix a="0.801834106445313" b="0.251983642578125" c="-0.251983642578125" d="0.801834106445313" tx="110.55" ty="-117.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="21" tweenType="motion" motionTweenSnap="true" keyMode="22017" duration="1">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex黑仔/肢体/上臂" centerPoint3DX="119.45" centerPoint3DY="-55.85">
+                  <matrix>
+                    <Matrix a="0.259765625" b="0.8046875" c="-0.8046875" d="0.259765625" tx="114.05" ty="-126.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 32" color="#4BCCAE">
+          <frames>
+            <DOMFrame index="0" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                </elements>
+            </DOMFrame>
+            <DOMFrame index="3" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                </elements>
+            </DOMFrame>
+            <DOMFrame index="6" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                </elements>
+            </DOMFrame>
+            <DOMFrame index="9" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                </elements>
+            </DOMFrame>
+            <DOMFrame index="12" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                </elements>
+            </DOMFrame>
+            <DOMFrame index="15" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                </elements>
+            </DOMFrame>
+            <DOMFrame index="18" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                </elements>
+            </DOMFrame>
+            <DOMFrame index="21" tweenType="motion" motionTweenSnap="true" keyMode="22017" duration="1">
+              <elements>
+                </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="阴影" color="#88F91D" locked="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="22" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex黑仔/原生/sprite/Symbol 3" centerPoint3DX="71.5" centerPoint3DY="319.7">
+                  <matrix>
+                    <Matrix a="1.37506103515625" d="0.559799194335938" tx="-15.2" ty="233.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Sound Layer 0" color="#FF4FFF" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="6" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="6" duration="11" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="17" duration="5" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="敌人循环" color="#4FFF4F">
+          <frames>
+            <DOMFrame index="0" duration="21" keyMode="9728"/>
+            <DOMFrame index="21" keyMode="9728">
+              <elements/>
+              <Actionscript>
+                <script><![CDATA[gotoAndPlay(1);]]></script>
+              </Actionscript>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

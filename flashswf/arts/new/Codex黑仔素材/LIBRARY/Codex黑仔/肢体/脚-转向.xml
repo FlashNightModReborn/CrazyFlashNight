@@ -1,0 +1,25 @@
+<?xml version='1.0' encoding='utf-8'?>
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="Codex黑仔/肢体/脚-转向" itemID="6ac01006-6c000001">
+  <timeline>
+    <DOMTimeline name="脚-转向">
+      <layers>
+        <DOMLayer name="Layer 1" color="#CDAD75" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex黑仔/固定槽/脚转向固定外观槽" selected="true" centerPoint3DX="55" centerPoint3DY="58.5" name="脚">
+                  <matrix>
+                    <Matrix tx="15.85" ty="24.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

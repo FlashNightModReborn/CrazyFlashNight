@@ -1,0 +1,25 @@
+<?xml version='1.0' encoding='utf-8'?>
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="Codex黑仔/肢体/左手臂" itemID="6ac01006-68ff9e7d">
+  <timeline>
+    <DOMTimeline name="左手臂">
+      <layers>
+        <DOMLayer name="Layer 1" color="#E3C645" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex黑仔/固定槽/左手臂固定外观槽" selected="true" centerPoint3DX="23.5" centerPoint3DY="93.65" name="左手臂">
+                  <matrix>
+                    <Matrix a="0.995834350585938" b="-0.0911712646484375" c="0.0911712646484375" d="0.995834350585938" tx="1.05" ty="39.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

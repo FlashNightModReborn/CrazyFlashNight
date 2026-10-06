@@ -1,0 +1,25 @@
+<?xml version='1.0' encoding='utf-8'?>
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="Codex黑仔/固定槽/左大腿固定外观槽" itemID="6ac01006-51c7c661">
+  <timeline>
+    <DOMTimeline name="左大腿固定外观槽">
+      <layers>
+        <DOMLayer name="Layer 1" color="#7894DB" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex黑仔/固定外观/NPC/NPC-黑仔/素材/男变装-天山黑侠裤子左大腿" name="基本款" centerPoint3DX="26.35" centerPoint3DY="78">
+                  <matrix>
+                    <Matrix a="0.998077392578125" d="1.00064086914063" tx="0.05" ty="-0.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

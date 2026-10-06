@@ -1,0 +1,33 @@
+<?xml version='1.0' encoding='utf-8'?>
+<DOMSymbolItem xmlns="http://ns.adobe.com/xfl/2008/" name="Codex黑仔/固定槽/脸与X头巾" itemID="6ac01006-b907b31c">
+  <timeline>
+    <DOMTimeline name="脸与X头巾">
+      <layers>
+        <DOMLayer name="固定素材" color="#4FFF4F">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex黑仔/固定外观/NPC/NPC-黑仔/素材/男变装-黝黑脸型" name="基本款">
+                  <matrix>
+                    <Matrix a="0.998382568359375" tx="-0.05" ty="0.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="Codex黑仔/固定外观/NPC/NPC-黑仔/素材/男变装-黑色X蒙面">
+                  <matrix>
+                    <Matrix a="1.055473" b="0.041624" c="0.041624" d="-1.055473" tx="-1.512" ty="1.218"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

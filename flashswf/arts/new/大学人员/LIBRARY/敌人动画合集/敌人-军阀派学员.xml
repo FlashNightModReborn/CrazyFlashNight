@@ -219,7 +219,7 @@ x轴保持距离 = 100;
 						_parent.近战招式 = _parent.近战技能库[random(_parent.近战技能随机数)];
 						_parent.状态改变("近战");
 					}else{
-						_parent.状态改变("空手攻击");
+						_parent.状态改变("长枪攻击"); // 军阀近战使用实际存在的枪托/刺刀动作。
 					}
 				}
 				else if (距离X < _parent.中程技能距离 && _parent.中程技能随机数 > 0)
