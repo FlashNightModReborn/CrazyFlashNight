@@ -1121,3 +1121,13 @@ strict production policy 42/42，receipt SHA-256 `0C612DBA8C5CB91E481E2386A5E124
 - 唯一 writer 已原子推广；部署提交 `39040ebf564ba349ebb479d533d284d6e9c80bd3` 普通快进推送。共享 Steam 安装入口 `--verify-only` exit **0**；[远端 Runtime native audit 37374154214](https://github.com/FlashNightModReborn/CrazyFlashNight/actions/runs/37374154214) success，独立重放 `state=promoted / deploymentChanged=true`、43 文件与双 signer / 双 faultDomain。另一个资产会话的 250 个未提交/未跟踪文件在主工作区快进前后状态、大小、SHA 全同，运行时资源已释放。
 - 状态为 `promoted`；`businessJourneyExecuted=false / physicalInputAttestation=false / standardEntryVerified=false`。实机窗口输入与正式入口业务等待解锁，后续受控进档仅用专用 `cf7_agent_*` 克隆槽。原测试机仍须回归缩放/切窗后移动与 NPC 点击、商店关闭后恢复输入、多次传送及车库进出；供应链和离屏 API 证据不能代签这些体验。
 
+
+
+### 2026-10-07 军阀学生修复与黑仔棍棒招式发布
+
+维护者接受最新迅斩空手协同后明确要求走发布列车。本批修正军阀男女学生有效起身区间、死亡肢体矩阵与长枪近战分支；新增固定外观的黑仔 `u457`，保留原 NPC，补齐短柄棍棒、迅斩前摇/挥棒/空手协同、影子、距离/韧性 AI、凶斩与 30 级霸体。技能仅受冷却限制，本次列车沿用现有占位数值。
+
+- 冻结源码 `56f52c3e1c3981a2f616453e403bb4a4025f6deb`，不可变标签 `refs/tags/runtime-build-v2/20261007-black-military-v1`；本机 `builder-local-b / physical-host-b` 与 [GitHub hosted OIDC 独立构建 37502451489](https://github.com/FlashNightModReborn/CrazyFlashNight/actions/runs/37502451489) 的 build identity / 43 文件 payload closure 全等。production policy **47/47**；最终选用同一本机 signed CAS 与绑定该路径的 receipt。完整身份见[发布回执](evidence/black-military-runtime-release-2026-10-07.json)。
+- 唯一 writer 已原子推广并保留 previous bundle；安装入口 `--verify-only` exit **0**。部署提交 `a281cc0401366de89df724a68d03054f092a88c9` 已普通快进推送；[远端 Runtime native audit 37504061645](https://github.com/FlashNightModReborn/CrazyFlashNight/actions/runs/37504061645) success，独立重放 `state=promoted / deploymentChanged=true`、双 signer / 双 faultDomain 与 43 文件闭包。原生引擎字节沿用上一发布基线，发布身份绑定本批冻结源。
+- 真实 CS6 **0 错误 / 0 警告**；当前编译素材原生回归 **691/691**、70 个实际时间轴案例、52 份完整 BitmapData，覆盖军阀起身/死亡及黑仔技能/生命周期。此前 MP=0 / 影子夹具 **3105/3105** 单独保留；最新空手迭代没有改变其根控制器。[资产证据](evidence/black-military-assets-2026-10-07.json) 记录来源、哈希与证据边界。
+- 维护者已接受本轮动画进入发布；完整标准入口战斗、玩家物理输入、存档重启及取消 MP 限制后的同级斗兽仍未在本次列车复验。历史 90 场有限 MP 斗兽不能代替现行强度标定。自动接续 `automation-2` 保持暂停。
