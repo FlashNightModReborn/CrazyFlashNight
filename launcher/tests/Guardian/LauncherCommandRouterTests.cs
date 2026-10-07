@@ -1,9 +1,12 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Windows.Forms;
 using CF7Launcher.Guardian;
+using CF7Launcher.RagTerminal;
 using CF7Launcher.Tasks;
+using CF7Launcher.Tests.RagTerminal;
 using Newtonsoft.Json.Linq;
 using Xunit;
 
@@ -9211,6 +9214,141 @@ namespace CF7Launcher.Tests.Guardian
                 ["learned"] = new JArray(), ["loadout"] = loadout, ["trainer"] = null,
                 ["diagnostics"] = new JArray()
             };
+        }
+
+        // ── ragchat（通讯终端内嵌）：真实 RagTerminalService + RagHttpStub（零真实网络/进程），
+        // 覆盖成功开面板 / frontend_url 拒绝 / 畸形载荷 / 服务未接线 / 后台完成时导航竞态放弃。
+
+        private static RagHttpStub HealthyRagHandler(string bindFrontendUrl)
+        {
+            return new RagHttpStub(request => request.RequestUri.AbsolutePath == "/api/health"
+                ? RagHttpStub.Json("{\"status\":\"ok\",\"mode\":\"embedded\"}")
+                : RagHttpStub.Json("{\"ok\":true,\"frontend_url\":\"" + bindFrontendUrl + "\",\"mode\":\"embedded\"}"));
+        }
+
+        [Fact]
+        public void RAGCHAT_RequestOpenPanel_OpensWithPreparedInitData()
+        {
+            Capture c = new Capture();
+            LauncherCommandRouter r = MakeRouter(c);
+            using var harnessR = new HostHarness(r);
+            using var service = new RagTerminalService(
+                @"C:\games\project\CrazyFlashNight", null,
+                HealthyRagHandler("http://127.0.0.1:7077/?embedded=1"), path => { });
+            r.SetRagTerminalService(service);
+
+            r.RequestOpenPanel(
+                "ragchat", "agent_console", null, null, null, null, null, "{\"savePath\":\"save1\"}");
+
+            Assert.True(harnessR.Host.IsPanelOpen);
+            Assert.Equal("ragchat", harnessR.Host.ActivePanelName);
+            JObject initData = (JObject)harnessR.LastOpenPayload["initData"];
+            Assert.Equal("agent_console", initData.Value<string>("source"));
+            Assert.Equal("http://127.0.0.1:7077/?embedded=1", initData.Value<string>("frontend_url"));
+            Assert.Equal("save1", initData.Value<string>("savePath"));
+        }
+
+        [Fact]
+        public void RAGCHAT_ForeignFrontendUrl_ToastsAndDoesNotOpen()
+        {
+            Capture c = new Capture();
+            LauncherCommandRouter r = MakeRouter(c);
+            using var harnessR = new HostHarness(r);
+            var commands = new List<JObject>();
+            r.SetGameCommandSenderForTests(value => { commands.Add(ParseWire(value)); return true; });
+            using var service = new RagTerminalService(
+                @"C:\games\project\CrazyFlashNight", null,
+                HealthyRagHandler("http://evil.invalid/"), path => { });
+            r.SetRagTerminalService(service);
+
+            r.RequestOpenPanel(
+                "ragchat", "agent_console", null, null, null, null, null, "{\"savePath\":\"save1\"}");
+
+            Assert.False(harnessR.Host.IsPanelOpen);
+            JObject cmd = Assert.Single(commands);
+            Assert.Equal("ragChatUnavailable", cmd.Value<string>("action"));
+            Assert.Equal("通讯终端返回的页面地址不可信，已拒绝打开。", cmd.Value<string>("message"));
+        }
+
+        [Fact]
+        public void RAGCHAT_MalformedPayload_ToastsInvalidAndSkipsHttp()
+        {
+            Capture c = new Capture();
+            LauncherCommandRouter r = MakeRouter(c);
+            using var harnessR = new HostHarness(r);
+            var commands = new List<JObject>();
+            r.SetGameCommandSenderForTests(value => { commands.Add(ParseWire(value)); return true; });
+            var handler = new RagHttpStub(request => RagHttpStub.Json("{\"status\":\"ok\"}"));
+            using var service = new RagTerminalService(
+                @"C:\games\project\CrazyFlashNight", null, handler, path => { });
+            r.SetRagTerminalService(service);
+
+            r.RequestOpenPanel("ragchat", "agent_console", null, null, null, null, null, "{\"savePath\":\"save1\",\"extra\":1}");
+            r.RequestOpenPanel("ragchat", "agent_console", null, null, null, null, null, "{\"savePath\":123}");
+            r.RequestOpenPanel("ragchat", "agent_console", null, null, null, null, null, "not-json");
+
+            Assert.False(harnessR.Host.IsPanelOpen);
+            Assert.Equal(3, commands.Count);
+            Assert.All(commands, cmd =>
+            {
+                Assert.Equal("ragChatUnavailable", cmd.Value<string>("action"));
+                Assert.Equal("终端请求载荷无效，请稍后重试。", cmd.Value<string>("message"));
+            });
+            Assert.Empty(handler.Requests);
+        }
+
+        [Fact]
+        public void RAGCHAT_ServiceNotWired_ToastsUnavailable()
+        {
+            Capture c = new Capture();
+            LauncherCommandRouter r = MakeRouter(c);
+            using var harnessR = new HostHarness(r);
+            var commands = new List<JObject>();
+            r.SetGameCommandSenderForTests(value => { commands.Add(ParseWire(value)); return true; });
+
+            r.RequestOpenPanel(
+                "ragchat", "agent_console", null, null, null, null, null, "{\"savePath\":\"save1\"}");
+
+            Assert.False(harnessR.Host.IsPanelOpen);
+            JObject cmd = Assert.Single(commands);
+            Assert.Equal("ragChatUnavailable", cmd.Value<string>("action"));
+            Assert.Equal("通讯终端暂不可用。", cmd.Value<string>("message"));
+        }
+
+        [Fact]
+        public void RAGCHAT_BackgroundCompletion_AbandonsWhenNavigatedAway()
+        {
+            Capture c = new Capture();
+            LauncherCommandRouter r = MakeRouter(c);
+            using var harnessR = new HostHarness(r);
+            var logs = new List<string>();
+            LogManager.SetSink(logs.Add);
+            try
+            {
+                using var service = new RagTerminalService(
+                    @"C:\games\project\CrazyFlashNight", null,
+                    HealthyRagHandler("http://127.0.0.1:7077/?embedded=1"), path => { });
+                r.SetRagTerminalService(service);
+                Action deferred = null;
+                r.SetLutLabEntryFrameProvider(() => null, action => { deferred = action; });
+
+                r.RequestOpenPanel(
+                    "ragchat", "agent_console", null, null, null, null, null, "{\"savePath\":\"save1\"}");
+                Assert.True(SpinWait.SpinUntil(() => deferred != null, TimeSpan.FromSeconds(5)));
+
+                Assert.True(r.TryOpenAgentPanel("help"));
+                Assert.Equal("help", harnessR.Host.ActivePanelName);
+
+                deferred();
+
+                Assert.Equal("help", harnessR.Host.ActivePanelName);
+                Assert.Equal("help", harnessR.LastOpenPayload.Value<string>("panel"));
+                Assert.Contains(logs, line => line.Contains("ragchat open abandoned"));
+            }
+            finally
+            {
+                LogManager.ResetSink();
+            }
         }
 
         private static JObject ParseWire(string value) { return JObject.Parse(value.TrimEnd('\0')); }

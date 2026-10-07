@@ -188,6 +188,8 @@ namespace CF7Launcher.Guardian
         private SkillTask _skillTask;
         private EquipmentTuningTask _equipmentTuningTask;
         private CharacterBuildTask _characterBuildTask;
+        private RagTerminal.RagTerminalService _ragTerminalService;
+        internal void SetRagTerminalService(RagTerminal.RagTerminalService service) { _ragTerminalService = service; }
         private Func<string, bool> _gameCommandSenderOverride;
         private Func<bool> _panelAdmissionGate;
         private Func<string> _lutLabEntryFrameProvider;
@@ -3394,6 +3396,11 @@ namespace CF7Launcher.Guardian
                 OpenTeamPanel(safeSource, initDataExtrasJson);
                 return;
             }
+            if (string.Equals(panelName, "ragchat", StringComparison.Ordinal))
+            {
+                RequestOpenRagChatPanel(safeSource, initDataExtrasJson);
+                return;
+            }
             LogManager.Log("[Router] RequestOpenPanel unsupported panel=" + panelName);
         }
 
@@ -4598,6 +4605,105 @@ namespace CF7Launcher.Guardian
                     ? ",\"entryFrameUrl\":\"" + EscapeJsonString(entryFrameUrl) + "\""
                     : "")
                 + "}";
+        }
+
+        // ragchat（AI 聊天终端 exe 面板）：panel_request 是同步路由且持连接屏障，exe 发现/
+        // 拉起/健康轮询可长至 20s，完整前置链必须在后台线程执行；失败经 gameCommand
+        // 回 AS2 toast，不开半开面板（open/admission 仍归 Host）。
+        private void RequestOpenRagChatPanel(string source, string initDataExtrasJson)
+        {
+            string slotKey = null;
+            try
+            {
+                JObject data = string.IsNullOrEmpty(initDataExtrasJson)
+                    ? null
+                    : JObject.Parse(initDataExtrasJson);
+                if (data != null && data.Count == 1
+                    && data.Property("savePath") != null
+                    && data["savePath"].Type == JTokenType.String)
+                {
+                    slotKey = data.Value<string>("savePath");
+                }
+            }
+            catch (Exception ex)
+            {
+                LogManager.Log("[Router] ragchat initData parse failed: " + ex.Message);
+            }
+            if (slotKey == null)
+            {
+                NotifyRagChatUnavailable("终端请求载荷无效，请稍后重试。");
+                return;
+            }
+            RagTerminal.RagTerminalService service = _ragTerminalService;
+            if (service == null)
+            {
+                NotifyRagChatUnavailable("通讯终端暂不可用。");
+                return;
+            }
+            string baselinePanel = _panelHost != null ? _panelHost.ActivePanelName : null;
+            Action<Action> marshal = _uiMarshal;
+            if (marshal == null)
+            {
+                // 测试缝线：无 UI marshal 时同步跑完链路，保持单测同步断言语义。
+                CompleteRagChatOpen(service, slotKey, source, baselinePanel, null);
+                return;
+            }
+            System.Threading.ThreadPool.QueueUserWorkItem(delegate
+            {
+                CompleteRagChatOpen(service, slotKey, source, baselinePanel, marshal);
+            });
+        }
+
+        private void CompleteRagChatOpen(RagTerminal.RagTerminalService service, string slotKey,
+            string source, string baselinePanel, Action<Action> marshal)
+        {
+            RagTerminal.RagTerminalPrepareResult result;
+            try
+            {
+                result = service.PrepareForPanelAsync(slotKey).GetAwaiter().GetResult();
+            }
+            catch (Exception ex)
+            {
+                LogManager.Log("[Router] ragchat prepare threw: " + ex.Message);
+                result = RagTerminal.RagTerminalPrepareResult.Fail(
+                    "rag_internal_error", "通讯终端启动失败，请稍后重试。");
+            }
+            if (!result.Success)
+            {
+                NotifyRagChatUnavailable(result.Message);
+                return;
+            }
+            string initData = new JObject
+            {
+                ["source"] = string.IsNullOrEmpty(source) ? "as2_request" : source,
+                ["frontend_url"] = result.FrontendUrl,
+                ["savePath"] = slotKey
+            }.ToString(Formatting.None);
+            if (marshal == null)
+            {
+                OpenRagChatPanelIfNavigable(baselinePanel, initData);
+                return;
+            }
+            marshal(delegate { OpenRagChatPanelIfNavigable(baselinePanel, initData); });
+        }
+
+        // 后台链路完成时用户可能已导航到别的面板；基线不一致即放弃这次打开（不排队、不抢占）。
+        private void OpenRagChatPanelIfNavigable(string baselinePanel, string initDataJson)
+        {
+            string currentPanel = _panelHost != null ? _panelHost.ActivePanelName : null;
+            if (!string.Equals(currentPanel ?? "", baselinePanel ?? "", StringComparison.Ordinal))
+            {
+                LogManager.Log("[Router] ragchat open abandoned reason=navigation active="
+                    + (currentPanel ?? "<null>"));
+                return;
+            }
+            OpenPanel("ragchat", initDataJson);
+        }
+
+        private void NotifyRagChatUnavailable(string message)
+        {
+            LogManager.Log("event=ragchat_unavailable message=" + message);
+            SendGameCommand("ragChatUnavailable", "\"message\":\"" + EscapeJsonString(message) + "\"");
         }
 
         /// <summary>
@@ -6140,8 +6246,10 @@ namespace CF7Launcher.Guardian
 
         private void SendGameCommand(string action, string extraJsonFields)
         {
+            string payload = "{\"task\":\"cmd\",\"action\":\"" + action + "\"," + extraJsonFields + "}\0";
+            if (_gameCommandSenderOverride != null) { _gameCommandSenderOverride(payload); return; }
             if (_socketServer == null) return;
-            _socketServer.Send("{\"task\":\"cmd\",\"action\":\"" + action + "\"," + extraJsonFields + "}\0");
+            _socketServer.Send(payload);
         }
 
         private bool TrySendGameCommand(string action)

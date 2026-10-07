@@ -916,3 +916,20 @@
     --book-comic-scroll-thumb: #7d8962;
     --book-comic-scroll-hover: #a3af82;
 }
+
+/* Embedded AI chat terminal keeps the overlay's dark console chrome;
+   the hosted page carries its own palette inside the iframe. */
+#panel-container[data-panel="ragchat"], .ragchat-panel {
+    --ragchat-bg: #05080a;
+    --ragchat-text: #d9e8ee;
+    --ragchat-header-bg: #0b1216;
+    --ragchat-title-text: #bfe8f5;
+    --ragchat-rule: #223239;
+    --ragchat-muted: #8ba3ad;
+    --ragchat-button-bg: #12212a;
+    --ragchat-button-text: #cfe9f2;
+    --ragchat-button-border: #2e4a56;
+    --ragchat-button-hover: #1b3440;
+    --ragchat-focus: #3dd5ff;
+    --ragchat-frame-bg: #05080a;
+}

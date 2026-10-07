@@ -68,6 +68,11 @@ namespace CF7Launcher.Config
         /// 架构背景见 docs/launcher-渲染架构-长期决策-2026-05-21.md。env: CF7_DESKTOP_CURSOR=0 一键回滚。
         /// </summary>
         public bool UseDesktopCursorOverlay { get; private set; }
+        /// <summary>
+        /// AI 聊天终端 exe（CFN-RAG-v*.exe）的显式路径。"": 自动发现（游戏安装根通配）。
+        /// env: CF7_RAG_EXE。见《AI聊天终端-游戏内嵌集成-开发计划-2026-10-07》§1.4-G1-1。
+        /// </summary>
+        public string RagTerminalExePath { get; private set; }
 
         private static readonly string DefaultFlashPlayer = "Adobe Flash Player 20.exe";
         private static readonly string DefaultSwf = "CRAZYFLASHER7MercenaryEmpire.swf";
@@ -95,6 +100,7 @@ namespace CF7Launcher.Config
             DiagReportIntervalSec = 5;
             DiagFocusTrace = false;
             WebOverlayHotReload = false;
+            RagTerminalExePath = "";
 
             string configPath = Path.Combine(projectRoot, "config.toml");
             if (File.Exists(configPath))
@@ -152,6 +158,8 @@ namespace CF7Launcher.Config
                         DiagFocusTrace = ParseBool(val, false);
                     else if (string.Equals(key, "webOverlayHotReload", StringComparison.OrdinalIgnoreCase))
                         WebOverlayHotReload = ParseBool(val, false);
+                    else if (string.Equals(key, "ragTerminalExePath", StringComparison.OrdinalIgnoreCase))
+                        RagTerminalExePath = val;
                 }
             }
 
@@ -162,6 +170,8 @@ namespace CF7Launcher.Config
                 FlashPlayerPath = Path.Combine(projectRoot, FlashPlayerPath);
             if (!Path.IsPathRooted(SwfPath))
                 SwfPath = Path.Combine(projectRoot, SwfPath);
+            if (!string.IsNullOrEmpty(RagTerminalExePath) && !Path.IsPathRooted(RagTerminalExePath))
+                RagTerminalExePath = Path.Combine(projectRoot, RagTerminalExePath);
         }
 
         private static bool ParseBool(string val, bool fallback)
@@ -245,6 +255,10 @@ namespace CF7Launcher.Config
             string webHotReload = Environment.GetEnvironmentVariable("CF7_WEB_HOTRELOAD");
             if (!string.IsNullOrEmpty(webHotReload))
                 WebOverlayHotReload = ParseBoolLike(webHotReload, WebOverlayHotReload);
+
+            string ragExe = Environment.GetEnvironmentVariable("CF7_RAG_EXE");
+            if (!string.IsNullOrEmpty(ragExe))
+                RagTerminalExePath = ragExe;
         }
 
         private static int ClampInterval(string val, int fallback)

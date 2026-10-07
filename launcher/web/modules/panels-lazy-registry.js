@@ -38,6 +38,10 @@
          'modules/asset-workbench.js'], noop);
 
     Panels.registerLazy('book-comic', ['modules/book-comic-content.js', 'modules/book-comic-panel.js'], noop);
+
+    // ── ragchat（通讯终端：iframe 承载本机 cfn-rag 内嵌聊天页面）──
+    Panels.registerLazy('ragchat', ['modules/ragchat.js'], noop);
+
     Panels.registerLazy('bookshelf', ['modules/panel-runtime.js', 'modules/bookshelf-runtime.js', 'modules/bookshelf-media.js', 'modules/bookshelf-reader.js', 'modules/bookshelf-original.js', 'modules/bookshelf-panel.js'], noop);
 
     // ── kshop ──
