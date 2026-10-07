@@ -1,0 +1,77 @@
+{
+  "schema": "cf7-desert-stage-select-review/1",
+  "date": "2026-10-08",
+  "status": "presented-layout-accepted-for-source-submission",
+  "reviewScope": "维护者认可本轮所展示的荒漠多子图布局并授权提交；不代表真实宿主流程、弱设备性能或正式runtime发布验收。",
+  "identities": {
+    "sourceBlendSha256": "438dd15589ace2ee06f514f539356a5ab2dd037759c1e2fa96e0fba5c85d5073",
+    "sourceArchive": {
+      "name": "CF7-desert-source-eleven-submap-20261007-v3.zip",
+      "sha256": "1064f7f2193b20e4c8c16ee6c5fc81c7bf3da2472781d7c25a701b897c020357",
+      "bytes": 160556574,
+      "status": "local-upload-ready; fresh extraction and editable source reopening verified; no cloud copy created"
+    },
+    "assetManifest": "launcher/web/assets/stage-diorama/desert-region/manifest.json",
+    "assetManifestSha256": "98bc6fa8f25fb4e4c0ffefc727de3cc2a8a56826fdb1aaf4319d7cbb987645ca",
+    "rawGlbSha256": "e94899a9ee8a6157cf0358fbd6e18aa9707c5a9cf8118398e61bbd90a0736f01",
+    "rawGlbBytes": 105993764,
+    "sceneTransport": {
+      "path": "scene.glb.gz",
+      "encoding": "gzip",
+      "sha256": "b11c42980cb911bbfdab9a15f7159fd61e70867ec3c9aaf2bb5a3e5291526860",
+      "bytes": 47909246,
+      "decodedBytes": 105993764
+    },
+    "transportRestoresEveryRawGlbByte": true
+  },
+  "sourceValidation": {
+    "freshArchiveExtractionAndReadonlyReopening": true,
+    "originalObjectsPreserved": 20757,
+    "addedObjects": 7008,
+    "originalMeshesTransformsMaterialsVisibilityAndPlaceAnchorsPreserved": true,
+    "subareas": {
+      "depot": 3,
+      "fort": 4,
+      "frontbase": 4
+    },
+    "packedImages": 109,
+    "activeExternalImages": 0,
+    "linkedLibraries": 0,
+    "newStructureRoadClearanceAuditsPassed": true,
+    "boundsComparisonUsesEachProducerContract": "depot: transformed local boxes; fort/frontbase: actual world vertices"
+  },
+  "webValidation": {
+    "environment": "Local Edge, production Web modules and real GLB, mock Host",
+    "fullStageHarness": 58,
+    "failedCases": 0,
+    "failedRequests": 0,
+    "brokenImages": 0,
+    "pageErrors": 0,
+    "elevenRealSubareaViews": true,
+    "observationControlsDoNotObscureOwnedGeometry": true,
+    "stageDifficultyEntryIdentityAndSavedPresetsUnchangedByObservation": true,
+    "wormhole2DFallbackAndDiplomacyEntryPreserved": true,
+    "idleRenderingAndReopenResourceLifecyclePassed": true,
+    "gzipBadIdentityCorruptionSizeBoundsCancellationMissingApiAndRetryPassed": true,
+    "isolatedIndexCheckoutImportCheckPassedOnWindows": true,
+    "grayboxGeneratorCheckPassed": true,
+    "commands": [
+      "python -B -X utf8 tools/import-stage-select-desert.py --check",
+      "node tools/test-stage-select-desert.js",
+      "node tools/test-stage-select-desert-framing.js",
+      "node tools/test-stage-select-desert-transport.js",
+      "node tools/test-stage-select-desert-transport-browser.js",
+      "node tools/test-stage-select-desert-browser.js",
+      "node tools/test-stage-select-desert-subareas-browser.js",
+      "node tools/run-stage-select-harness.js --browser edge",
+      "node tools/desert-graybox/build.mjs --check"
+    ]
+  },
+  "remaining": [
+    "两城引道修补仍为deferred，不能把已导出的连线称作道路几何接通。",
+    "真实WebView2/Flash进关、弱设备性能及标准入口专项仍待后续验证。",
+    "完整可编辑源ZIP仅在本地准备并验证，未创建云端副本。",
+    "外交返回审计旧正则与情报派生sourceHash既有问题未在本批修复，也未声明对应审计通过。"
+  ],
+  "publicationBoundary": "本批范围为荒漠数据、Web展示、生成工具及文档；不包含正式runtime晋级、AS2业务改动或玩家存档写入。"
+}

@@ -2,6 +2,7 @@ import * as THREE from '../../assets/stage-diorama/base-gate/vendor/three.module
 
 // 相机与高亮只在输入/过渡时出帧；总览、特写、开发取景共用同一个相机和 Canvas。
 export function createCameraView(config, root, camera, renderer, render, onChange, hooks = {}) {
+    const minSpan=Number.isFinite(config.camera.minSpan) && config.camera.minSpan>0 ? config.camera.minSpan : 5;
     let width=1024, height=576, span=config.camera.horizontalSpan;
     let target=new THREE.Vector3(...config.camera.gltfTarget), motion=0, controls=null, disposed=false;
     let highlighted='', materials=[], focusId='', editGeneration=0, controlsPromise=null;
@@ -57,7 +58,7 @@ export function createCameraView(config, root, camera, renderer, render, onChang
     function snapshot() { return {position:camera.position.toArray(),target:target.toArray(),span:span/camera.zoom}; }
     function valid(value) {
         return value && ['position','target'].every(key=>Array.isArray(value[key]) && value[key].length===3 && value[key].every(n=>Number.isFinite(n) && Math.abs(n)<10000))
-            && Number.isFinite(value.span) && value.span>=5 && value.span<=(config.camera.maxSpan || 240)
+            && Number.isFinite(value.span) && value.span>=minSpan && value.span<=(config.camera.maxSpan || 240)
             && new THREE.Vector3(...value.position).distanceTo(new THREE.Vector3(...value.target))>1;
     }
     function move(value, animate) {
@@ -133,7 +134,7 @@ export function createCameraView(config, root, camera, renderer, render, onChang
                 target.copy(controls.target); camera.updateMatrixWorld(true); render(); if(onChange)onChange();
             });
         }
-        controls.minZoom=span/(config.camera.maxSpan || 240); controls.maxZoom=span/5;
+        controls.minZoom=span/(config.camera.maxSpan || 240); controls.maxZoom=span/minSpan;
         controls.target.copy(target); controls.enabled=true; controls.update();
     }
     function pins() {

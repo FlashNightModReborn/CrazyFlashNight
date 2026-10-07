@@ -9,6 +9,7 @@ var StageSelectDiorama = (function() {
         if(frame.frameLabel===StageSelectDioramaData.frameLabel)return StageSelectDioramaData;
         if(typeof StageSelectBlackironData!=='undefined'&&frame.frameLabel===StageSelectBlackironData.frameLabel)return StageSelectBlackironData;
         if(typeof StageSelectFallenData!=='undefined'&&frame.frameLabel===StageSelectFallenData.frameLabel)return StageSelectFallenData;
+        if(typeof StageSelectDesertData!=='undefined'&&frame.frameLabel===StageSelectDesertData.frameLabel)return StageSelectDesertData;
         return null;
     }
     function presetKey(){var key=config && config.presetKey || 'cf7.stage-camera.base-gate.v1';return config&&config.presentationViews?key+'.'+presentationId:key;}
@@ -18,6 +19,7 @@ var StageSelectDiorama = (function() {
     }
     function discard(){
         generation++;if(loadAbort)loadAbort.abort();loadAbort=null;pending=null;
+        if(cache&&cache.focusControls)cache.focusControls.unmount();
         if(cache)cache.dispose();cache=null;focused='';focusHost=null;
         if(fallbackImage)fallbackImage.remove();fallbackImage=null;
     }
@@ -63,7 +65,7 @@ var StageSelectDiorama = (function() {
     function ensure(){
         if(pending)return pending;
         var token=generation,wanted=config,controller=new AbortController();loadAbort=controller;
-        var url=new URL(config.scene==='fallen'?'stage-select-fallen-scene.js':config.scene==='blackiron'?'stage-select-blackiron-scene.js':'stage-select-diorama-scene.js',baseUrl).href;
+        var url=new URL(config.scene==='desert'?'stage-select-desert-scene.js':config.scene==='fallen'?'stage-select-fallen-scene.js':config.scene==='blackiron'?'stage-select-blackiron-scene.js':'stage-select-diorama-scene.js',baseUrl).href;
         pending=import(url).then(function(module){
             if(token!==generation)return null;
             return module.createScene(wanted,function(){if(token===generation)contextLost();},function(){if(token===generation)changed();},function(id){
@@ -72,6 +74,7 @@ var StageSelectDiorama = (function() {
             },controller.signal);
         }).then(function(scene){
             if(token!==generation){if(scene)scene.dispose();return null;}
+            if(scene&&scene.visualConfig)Object.assign(wanted,scene.visualConfig);
             if(scene&&scene.setPresentation){scene.setPresentation(presentationId);scene.setEnvironment(environmentEnabled);}
             cache=scene;return scene;
         }).finally(function(){if(token===generation){pending=null;loadAbort=null;}});
@@ -131,19 +134,25 @@ var StageSelectDiorama = (function() {
     }
     function hide(){
         active=false;focused='';focusHost=null;
+        if(cache&&cache.focusControls)cache.focusControls.unmount();
         if(cache){cache.view.stop();cache.view.edit(false);}
         if(window.StageSelectCameraEditor)StageSelectCameraEditor.hide();
         if(pending || config&&config.releaseOnHide){discard();failed=false;}
         if(mount)mount.hidden=true;
         if(S._buttonLayerEl)S._buttonLayerEl.inert=false;if(S._cardLayerEl)S._cardLayerEl.inert=false;
     }
+    function canFocus(id){
+        return !!(active&&cache&&!failed&&(!id||!config.worldStageIds||config.worldStageIds.indexOf(id)>=0));
+    }
     function focus(id,host){
-        if(!active||!cache||failed)return;var changedFocus=focused!==id;focused=id;focusHost=host;
+        if(!canFocus(id))return;var changedFocus=focused!==id;focused=id;focusHost=host;
         host.appendChild(cache.canvas);cache.view.resize(host.clientWidth,host.clientHeight);
+        if(cache.focusControls)cache.focusControls.mount(host,id);
         if(changedFocus)cache.view.focus(id,preset(id),!S._el.classList.contains('is-camera-editing'));else cache.render();
     }
     function overview(){
         if(!focused)return;focused='';focusHost=null;if(!cache)return;
+        if(cache.focusControls)cache.focusControls.unmount();
         mount.prepend(cache.canvas);cache.view.resize(1024,576);
         if(active&&!failed)cache.view.overview(preset('overview'));else cache.view.stop();
     }
@@ -157,6 +166,7 @@ var StageSelectDiorama = (function() {
         if(!value||Array.isArray(value)||typeof value!=='object'||!cache)throw new Error('预设内容无效');
         Object.keys(value).forEach(function(key){if((key!=='overview'&&!Object.prototype.hasOwnProperty.call(config.pins,key))||!cache.view.valid(value[key]))throw new Error('预设内容无效：'+key);});
         presets=value;localStorage.setItem(presetKey(),JSON.stringify(presets));if(focused)cache.view.focus(focused,preset(focused),false);else cache.view.overview(preset('overview'),false);
+        if(cache.focusControls)cache.focusControls.reset();
     }
     function place(button, node, anchor, cardHeight) {
         var pin = S._visualStagePoints && S._visualStagePoints[button.id];
@@ -188,6 +198,10 @@ var StageSelectDiorama = (function() {
             var lastTrim=Math.min(lx?halfW/Math.abs(lx):Infinity,ly?halfH/Math.abs(ly):Infinity);
             pathData='M '+(bx*15/first)+' '+(by*15/first)+' L '+bx+' '+by+' L '+(dx-lx*lastTrim)+' '+(dy-ly*lastTrim);
         }
+        if(config&&config.scene==='desert'&&pin.screenOffset){
+            var sx=pin.screenOffset[0],sy=pin.screenOffset[1],offsetLength=Math.hypot(sx,sy);
+            if(offsetLength>15)pathData='M '+(-sx)+' '+(-sy)+' L '+(-sx*15/offsetLength)+' '+(-sy*15/offsetLength)+' '+pathData;
+        }
         leader.querySelectorAll('path').forEach(function(path){path.setAttribute('d',pathData);});
         if (anchor) {
             // 独立卡片在固定舞台内钳制，不沿用旧 Flash 元件的 133.7px 偏移。
@@ -208,6 +222,11 @@ var StageSelectDiorama = (function() {
         }
     }
     function placeNav(nav,node){
+        if(active&&config.scene==='desert'){
+            var screen=config.navPins&&config.navPins[nav.id];
+            if(screen){node.style.left=screen.x+'px';node.style.top=screen.y+'px';}
+            return;
+        }
         if(!active||config.scene!=='fallen')return;
         var pin=S._visualStagePoints&&S._visualStagePoints[nav.id];
         if(!pin){node.style.left='912px';node.style.top=nav.id==='nav_11_2'?'536px':'488px';return;}
@@ -215,14 +234,18 @@ var StageSelectDiorama = (function() {
     }
     window.addEventListener('pagehide',function(){active=false;discard();});
     return {bind:bind,hide:hide,place:place,placeNav:placeNav,retry:retry,focus:focus,overview:overview,edit:edit,
-        canFocus:function(){return !!(active&&cache&&!failed);},
-        fallbackMap:function(){return active&&failed&&config.fallback?{src:StageSelectCore.resolveAssetUrl(config.fallback),x:0,y:0,w:1024,h:576}:null;},
+        canFocus:canFocus,
+        fallbackMap:function(id){
+            var screenOnly=config&&config.twoDimensionalStageIds&&config.twoDimensionalStageIds.indexOf(id)>=0;
+            return active&&(failed||screenOnly)&&config.fallback?{src:StageSelectCore.resolveAssetUrl(config.fallback),x:0,y:0,w:1024,h:576,
+                point:screenOnly&&config.fallbackPins[id]||null}:null;
+        },
         orderButtons:function(frame){var c=forFrame(frame),list=(frame.stageButtons||[]).slice();return c&&c.displayOrder?list.sort(function(a,b){return c.displayOrder.indexOf(a.id)-c.displayOrder.indexOf(b.id);}):list;},
         savePreset:savePreset,loadPresets:loadPresets,exportPresets:exportPresets,
         snapshotCamera:function(){return cache?cache.view.snapshot():null;},
         restoreCamera:function(value){if(!active||!cache||failed||!cache.view.valid(value))return;if(focused)cache.view.focus(focused,value,false);else cache.view.overview(value,false);},
         hover:function(id){if(active&&cache&&!failed)cache.view.hover(id);},
-        resetCamera:function(){if(cache){if(focused)cache.view.focus(focused,null,false);else cache.view.overview(null,false);}},
+        resetCamera:function(){if(cache){if(focused)cache.view.focus(focused,null,false);else cache.view.overview(null,false);if(cache.focusControls)cache.focusControls.reset();}},
         stats:function(){return Object.assign({active:active,pending:!!pending,failed:failed,frameLabel:config&&config.frameLabel||'',state:mount&&mount.dataset.state||'empty'},cache?cache.stats():{});}
     };
 })();

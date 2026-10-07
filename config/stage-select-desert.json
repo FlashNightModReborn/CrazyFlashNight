@@ -1,0 +1,39 @@
+{
+  "schema": 1,
+  "revision": "R24-R25B-R28-eleven-submap-1",
+  "sourceBlendSha256": "438dd15589ace2ee06f514f539356a5ab2dd037759c1e2fa96e0fba5c85d5073",
+  "previousSourceBlendSha256": "15e2253ba1636b680e58f90062f5c8fb4a1469fe9d3580a0c93520a874c6ecf4",
+  "baseSourceBlendSha256": "a6242048e490c11d5e5c81edd6800fb6f231e2d71967c976d5f83016103da524",
+  "baseSourceArchive": {
+    "name": "CF7-desert-source-R24-R25B-R28-20261007-v1.zip",
+    "sha256": "96daf797ffa1436f6b4ce0e22b97c690cf1b3cb8b4fd9a21a30b4b5a22cdf955",
+    "bytes": 164091332,
+    "status": "local-upload-ready; no cloud copy created"
+  },
+  "previousSourceArchive": {
+    "name": "CF7-desert-source-six-place-detail-20261007-v2.zip",
+    "sha256": "6e7489bb80b44776bfff90e2e7b2d5249d02e859ebc75622f30626cbd2a65e24",
+    "bytes": 154586573,
+    "status": "local-upload-ready; fresh extraction and editable source reopening verified; no cloud copy created"
+  },
+  "sourceArchive": {
+    "name": "CF7-desert-source-eleven-submap-20261007-v3.zip",
+    "sha256": "1064f7f2193b20e4c8c16ee6c5fc81c7bf3da2472781d7c25a701b897c020357",
+    "bytes": 160556574,
+    "status": "local-upload-ready; fresh extraction and editable source reopening verified; no cloud copy created"
+  },
+  "camera": { "yawDegrees": -30, "pitchDegrees": 37, "viewport": [50, 80, 964, 450], "minSpan": 1.5 },
+  "contextPlaces": ["fallen", "waste", "commune", "forest"],
+  "contextRadius": 6,
+  "pins": {
+    "stage_34_0": { "shortLabel": "难民营地" },
+    "stage_34_1": { "shortLabel": "临时补给点" },
+    "stage_34_2": { "shortLabel": "残垣断壁" },
+    "stage_34_3": { "shortLabel": "A兵团基地" },
+    "stage_34_4": { "shortLabel": "军阀据点" },
+    "stage_34_5": { "shortLabel": "前线基地" },
+    "stage_34_6": { "shortLabel": "秘密基地" },
+    "stage_34_7": { "shortLabel": "袭杀与圈套" },
+    "stage_34_10": { "shortLabel": "军阀·外交" }
+  }
+}

@@ -100,10 +100,13 @@ async function main() {
     page.on('requestfailed', request => {
         const failure = request.failure();
         const text = request.url() + ' :: ' + (failure && failure.errorText || 'failed');
-        // 切换地图也会主动中止旧场景的 GLB fetch；只放行本地场景资源的明确取消。
+        // 切换地图会主动中止旧场景的模型或荒漠配置 fetch；
+        // 只识别已知本地资源的 ERR_ABORTED，404、坏包等真实失败仍报错。
         const cancelledDiorama = request.resourceType() === 'fetch'
             && request.url().startsWith(origin + '/assets/stage-diorama/')
-            && new URL(request.url()).pathname.endsWith('.glb');
+            && (new URL(request.url()).pathname.endsWith('.glb')
+                || ['/assets/stage-diorama/desert-region/scene.glb.gz',
+                    '/assets/stage-diorama/desert-region/config.json'].includes(new URL(request.url()).pathname));
         if ((request.resourceType() === 'image' || cancelledDiorama)
             && failure && failure.errorText === 'net::ERR_ABORTED') cancelledRequests.push(text);
         else failedRequests.push(text);

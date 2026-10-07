@@ -1,0 +1,2193 @@
+{
+  "schema": "desert-multistage-expansion/1",
+  "status": "evidence_bound_display_reconstruction_plan",
+  "documentRole": "11子地图源证据与多分区空间重建方案；不是新游戏关卡定义、现役地理注册表或验收回执。实际几何以 build_multistage.py 产生的独立构建报告为准。",
+  "date": "2026-10-07",
+  "sourceBaseline": "b84a140d817e6444f426a1ba41821e351a4fe286",
+  "sourceSnapshotPolicy": "事实绑定本文件所列输入哈希；背景使用既有完整SVG/PNG核对，没有重新导出。",
+  "authority": {
+    "authorizedScope": "用户最新要求把补给点、据点、前线基地扩为覆盖全部子图的完整关卡；地理anchor不动，旧局部水平包络上限本轮被扩容要求覆盖。",
+    "facts": "现役Stage XML、stage_environment、StageManager/WaveSpawner、现役SWF完整图、对应XFL载具实例及任务文本。",
+    "proposals": "子地块功能名、二维画面到三维方位映射、连接道/车场/外围边界、最终地块大小；由root与施工统一。",
+    "notAuthorizedByThisDraft": [
+      "修改游戏逻辑/XML",
+      "调整3个place地理anchor",
+      "改变难民营地所属或吞并该营地",
+      "提交、发布或玩家验收声明"
+    ]
+  },
+  "commonExitAndScaleRules": {
+    "sequence": "按GameStage XML出现顺序0..N-1进入；此处核到depot3、fort4、frontbase4。",
+    "screenExit": "11个Environment均无Door覆写；默认右侧50像素全可玩Y区门。中段Clear才允许通行，末图Clear结束整关。",
+    "geography": "屏幕右侧不是地理正东；串接轴可以折向西/西北，前提是顺序和前场通路连续。",
+    "scale": "游戏像素、现有模型source display units和区域km标签不同域；本稿不给1像素=1米换算。完整关卡通过增加分区、帐群/车场与连接空地形成，不是把原几顶帐等比放大。",
+    "largeEmptyAreas": "原图大片前景为战斗/行进空间。扩容不应将所有空地填满道具；必须同时扩足建筑组团与可读通道。"
+  },
+  "commonSourceRefs": {
+    "progression": {
+      "path": "scripts/类定义/org/flashNight/arki/scene/StageManager.as",
+      "sha256": "ea35cfc65b17175bda043eee8f6e8d08ec144a069a27465196cfec12fdaf248e",
+      "lines": [
+        141,
+        150
+      ]
+    },
+    "advance": {
+      "path": "scripts/类定义/org/flashNight/arki/scene/StageManager.as",
+      "sha256": "ea35cfc65b17175bda043eee8f6e8d08ec144a069a27465196cfec12fdaf248e",
+      "lines": [
+        270,
+        301
+      ]
+    },
+    "door": {
+      "path": "scripts/类定义/org/flashNight/arki/scene/StageManager.as",
+      "sha256": "ea35cfc65b17175bda043eee8f6e8d08ec144a069a27465196cfec12fdaf248e",
+      "lines": [
+        327,
+        375
+      ]
+    },
+    "clearAndFinish": {
+      "path": "scripts/类定义/org/flashNight/arki/scene/StageManager.as",
+      "sha256": "ea35cfc65b17175bda043eee8f6e8d08ec144a069a27465196cfec12fdaf248e",
+      "lines": [
+        984,
+        1041
+      ]
+    },
+    "nextStage": {
+      "path": "scripts/类定义/org/flashNight/arki/scene/StageManager.as",
+      "sha256": "ea35cfc65b17175bda043eee8f6e8d08ec144a069a27465196cfec12fdaf248e",
+      "lines": [
+        1068,
+        1081
+      ]
+    },
+    "waveFinishThreshold": {
+      "path": "scripts/类定义/org/flashNight/arki/scene/WaveSpawner.as",
+      "sha256": "961aacd899ab0f4858337dc7c0741119284b89a162e7b908a68d1174c4f84904",
+      "lines": [
+        280,
+        301
+      ]
+    },
+    "spawnNoCount": {
+      "path": "scripts/类定义/org/flashNight/arki/scene/WaveSpawner.as",
+      "sha256": "961aacd899ab0f4858337dc7c0741119284b89a162e7b908a68d1174c4f84904",
+      "lines": [
+        418,
+        426
+      ]
+    },
+    "environmentDoorFallback": {
+      "path": "scripts/类定义/org/flashNight/arki/weather/EnvironmentConfig.as",
+      "sha256": "ff53d2bb17cd680b70a006f54902941f22ef0f91506077b947739817bdcc08ea",
+      "lines": [
+        238,
+        248
+      ]
+    }
+  },
+  "narrativeSourceRefs": [
+    {
+      "path": "data/stages/基地房顶/__list__.xml",
+      "sha256": "bf7aa76117818cba7f73cb7810392213a4b96e0fa2aac2f1e8d6b016be06c447",
+      "lines": [
+        2,
+        24
+      ]
+    },
+    {
+      "path": "data/task/text/text1.json",
+      "sha256": "37d9472e1e9be39d7bbf83bccc3d79d0f31ebfd3325724a52c6b8595d7fdac27",
+      "lines": [
+        1656,
+        1690
+      ]
+    },
+    {
+      "path": "data/task/text/text1.json",
+      "sha256": "37d9472e1e9be39d7bbf83bccc3d79d0f31ebfd3325724a52c6b8595d7fdac27",
+      "lines": [
+        1830,
+        1858
+      ]
+    },
+    {
+      "path": "data/task/text/text1.json",
+      "sha256": "37d9472e1e9be39d7bbf83bccc3d79d0f31ebfd3325724a52c6b8595d7fdac27",
+      "lines": [
+        1860,
+        1903
+      ]
+    },
+    {
+      "path": "data/task/text/text1.json",
+      "sha256": "37d9472e1e9be39d7bbf83bccc3d79d0f31ebfd3325724a52c6b8595d7fdac27",
+      "lines": [
+        1904,
+        1931
+      ]
+    }
+  ],
+  "currentVehicleXflRefs": [
+    {
+      "path": "flashswf/backgrounds/gk22_2_BG/DOMDocument.xml",
+      "sha256": "c9da166e171f20aec4edb0d3c4fab221ae9d84a051f6c903213b68f6cb0cceee",
+      "lines": [
+        6705,
+        6729
+      ]
+    },
+    {
+      "path": "flashswf/backgrounds/gk22_3_BG/DOMDocument.xml",
+      "sha256": "1e831befd0f48478dd12ca1d647a725aee33fcc1fb51b194b730726e814a29d9",
+      "lines": [
+        7108,
+        7132
+      ]
+    }
+  ],
+  "existingSpatialReference": {
+    "path": "docs/design-data/desert-spatial-draft.json",
+    "sha256": "40d9adeff5a4688dddd9105ad8c89cc02bc56245c57783d5351ff6f5aa14e87b"
+  },
+  "places": [
+    {
+      "placeId": "depot",
+      "stageName": "军阀临时补给点",
+      "mainQuest": 30,
+      "subStageCount": 3,
+      "subStages": [
+        {
+          "id": "depot-1",
+          "subStageId": 0,
+          "sequenceIndex": 1,
+          "background": "flashswf/backgrounds/gk18_1_BG.swf",
+          "backgroundSHA256": "3fe45719d6b3db911d660a0259b9a703cb3e875ee7e21449b5192bec50ac4110",
+          "sourceRefs": [
+            {
+              "path": "data/stages/基地房顶/军阀临时补给点.xml",
+              "sha256": "debf8845df5d4fad151afec23b534bd8939949d41e0a9f4eb6121d991e6f9179",
+              "lines": [
+                50,
+                108
+              ]
+            },
+            {
+              "path": "data/environment/stage_environment.xml",
+              "sha256": "af9aa7a73a2ef5b2dd91e1336fc18ab33862074c8b368d67ff8f69e184bb7235",
+              "lines": [
+                1325,
+                1334
+              ]
+            }
+          ],
+          "existingFullPreview": {
+            "path": "tmp/desert-detail-audit/full-backgrounds/gk18_1_BG/full.png",
+            "sha256": "8a13c375772c1dee89e467304117d1cfbde73716ad95af2c3900cd0526b08e5b",
+            "method": "FFDec frame:svg; expand derived viewBox from top-level use transforms; original SWF unchanged",
+            "notNativeFlashVisualAcceptance": true
+          },
+          "observedSourceFeatures": {
+            "repeatedMotifs": [
+              "浅灰迷彩方帐",
+              "低穹小帐",
+              "白色房车",
+              "白色罐、黑桶、红褐携行罐",
+              "完整营地前的开阔地"
+            ],
+            "distinctiveFeatures": [
+              "左右两个营帐/物资组团之间留有明显间隔",
+              "两辆房车分居中左与最右；不应合成一辆中心地标",
+              "两组浅灰大帐间夹有低穹小帐"
+            ],
+            "visibleCounts": {
+              "motorhomes": 2,
+              "paleMainTents": 4
+            }
+          },
+          "narrativeAndPeople": {
+            "summary": "本子图没有专用对白、具名NPC或首领；任务30整体是夺回被劫物资给难民。",
+            "events": [],
+            "playersEntryPixel": [
+              200,
+              450
+            ],
+            "pickups": [],
+            "instances": []
+          },
+          "combatSource": {
+            "waves": [
+              {
+                "id": "0",
+                "finishRequirement": 0,
+                "duration": 0,
+                "enemies": [
+                  {
+                    "Type": "兵种54",
+                    "Quantity": 2,
+                    "Level": 24,
+                    "SpawnIndex": 0
+                  },
+                  {
+                    "Type": "兵种56",
+                    "Quantity": 2,
+                    "Level": 24,
+                    "SpawnIndex": 1
+                  },
+                  {
+                    "Type": "兵种57",
+                    "Quantity": 2,
+                    "Level": 24,
+                    "SpawnIndex": 2
+                  }
+                ]
+              }
+            ],
+            "spawnPoints": [
+              {
+                "id": "0",
+                "x": 1722,
+                "y": 517,
+                "QuantityMax": 1
+              },
+              {
+                "id": "1",
+                "x": 1722,
+                "y": 644,
+                "QuantityMax": 1
+              },
+              {
+                "id": "2",
+                "x": 1722,
+                "y": 772,
+                "QuantityMax": 1
+              }
+            ],
+            "configuredHostileQuantity": 6,
+            "quantityMeaning": "配置生成量，不是现场已生成数量、整营人口或过关必须击杀总数。"
+          },
+          "exitEvidence": {
+            "screenDirection": "right",
+            "hasCustomDoor": false,
+            "gameplayBoundsPixels": {
+              "Xmin": 50,
+              "Xmax": 1820,
+              "Ymin": 330,
+              "Ymax": 840
+            },
+            "defaultDoorRectanglePixels": [
+              1770,
+              330,
+              1820,
+              840
+            ],
+            "nextSubStageId": 1,
+            "afterClear": "enable passage to next XML SubStage",
+            "commonSourceRefs": [
+              "progression",
+              "advance",
+              "door",
+              "clearAndFinish",
+              "nextStage"
+            ],
+            "geographicDirection": "not established by the screen-right exit"
+          },
+          "proposedZoneRole": {
+            "name": "来货接卸与车辆等候段",
+            "status": "3D reconstruction proposal; not a source map name"
+          },
+          "mustRemainReadable": [
+            "保留连续的入口—前场—出口走线；不能让帐篷填满原开阔战斗面",
+            "按本子图独有结构布置，不把邻图完整营地再次平移复制"
+          ]
+        },
+        {
+          "id": "depot-2",
+          "subStageId": 1,
+          "sequenceIndex": 2,
+          "background": "flashswf/backgrounds/gk18_2_BG.swf",
+          "backgroundSHA256": "baffeeb53993450a2611e380df814f38c3d560df13671b6b147c248a15b189a8",
+          "sourceRefs": [
+            {
+              "path": "data/stages/基地房顶/军阀临时补给点.xml",
+              "sha256": "debf8845df5d4fad151afec23b534bd8939949d41e0a9f4eb6121d991e6f9179",
+              "lines": [
+                109,
+                176
+              ]
+            },
+            {
+              "path": "data/environment/stage_environment.xml",
+              "sha256": "af9aa7a73a2ef5b2dd91e1336fc18ab33862074c8b368d67ff8f69e184bb7235",
+              "lines": [
+                1335,
+                1344
+              ]
+            }
+          ],
+          "existingFullPreview": {
+            "path": "tmp/desert-detail-audit/full-backgrounds/gk18_2_BG/full.png",
+            "sha256": "ac6d853688f18b3b5898df03a0608915f4bb0696a536cae36c6bc8a1e57c724b",
+            "method": "FFDec frame:svg; expand derived viewBox from top-level use transforms; original SWF unchanged",
+            "notNativeFlashVisualAcceptance": true
+          },
+          "observedSourceFeatures": {
+            "repeatedMotifs": [
+              "浅灰迷彩方帐",
+              "低穹小帐",
+              "白色房车",
+              "白色罐与携行罐"
+            ],
+            "distinctiveFeatures": [
+              "浅灰帐明显比图1密集，形成前后层次，中央大帐更突出",
+              "一辆房车集中在画面右侧",
+              "多顶穹顶小帐插在大帐之间，白罐散布在前缘"
+            ],
+            "visibleCounts": {
+              "motorhomes": 1,
+              "paleMainTents": 9
+            }
+          },
+          "narrativeAndPeople": {
+            "summary": "没有独有对白；较前段新增兵种13，并有靠场地中段的兵种54刷新点，不全从最右来。",
+            "events": [],
+            "playersEntryPixel": [
+              200,
+              500
+            ],
+            "pickups": [],
+            "instances": []
+          },
+          "combatSource": {
+            "waves": [
+              {
+                "id": "0",
+                "finishRequirement": 1,
+                "duration": 0,
+                "enemies": [
+                  {
+                    "Type": "兵种13",
+                    "Quantity": 2,
+                    "Level": 20,
+                    "SpawnIndex": 0
+                  },
+                  {
+                    "Type": "兵种54",
+                    "Quantity": 2,
+                    "Level": 24,
+                    "SpawnIndex": 1
+                  },
+                  {
+                    "Type": "兵种56",
+                    "Quantity": 2,
+                    "Level": 24,
+                    "SpawnIndex": 2
+                  },
+                  {
+                    "Type": "兵种57",
+                    "Quantity": 2,
+                    "Level": 24,
+                    "SpawnIndex": 3
+                  }
+                ]
+              }
+            ],
+            "spawnPoints": [
+              {
+                "id": "0",
+                "x": 1740,
+                "y": 800,
+                "QuantityMax": 1
+              },
+              {
+                "id": "1",
+                "x": 1130,
+                "y": 660,
+                "BiasX": 110,
+                "BiasY": 110
+              },
+              {
+                "id": "2",
+                "x": 1740,
+                "y": 537,
+                "QuantityMax": 1
+              },
+              {
+                "id": "3",
+                "x": 1740,
+                "y": 670,
+                "QuantityMax": 1
+              }
+            ],
+            "configuredHostileQuantity": 8,
+            "quantityMeaning": "配置生成量，不是现场已生成数量、整营人口或过关必须击杀总数。"
+          },
+          "exitEvidence": {
+            "screenDirection": "right",
+            "hasCustomDoor": false,
+            "gameplayBoundsPixels": {
+              "Xmin": 50,
+              "Xmax": 1820,
+              "Ymin": 390,
+              "Ymax": 900
+            },
+            "defaultDoorRectanglePixels": [
+              1770,
+              390,
+              1820,
+              900
+            ],
+            "nextSubStageId": 2,
+            "afterClear": "enable passage to next XML SubStage",
+            "commonSourceRefs": [
+              "progression",
+              "advance",
+              "door",
+              "clearAndFinish",
+              "nextStage"
+            ],
+            "geographicDirection": "not established by the screen-right exit"
+          },
+          "proposedZoneRole": {
+            "name": "密集储备与分拣营段",
+            "status": "3D reconstruction proposal; not a source map name"
+          },
+          "mustRemainReadable": [
+            "保留连续的入口—前场—出口走线；不能让帐篷填满原开阔战斗面",
+            "按本子图独有结构布置，不把邻图完整营地再次平移复制"
+          ]
+        },
+        {
+          "id": "depot-3",
+          "subStageId": 2,
+          "sequenceIndex": 3,
+          "background": "flashswf/backgrounds/gk18_3_BG.swf",
+          "backgroundSHA256": "6870002aa68be8b7a2dec158432d9f23d8cf912e19b9b1f74a4180c41232fee9",
+          "sourceRefs": [
+            {
+              "path": "data/stages/基地房顶/军阀临时补给点.xml",
+              "sha256": "debf8845df5d4fad151afec23b534bd8939949d41e0a9f4eb6121d991e6f9179",
+              "lines": [
+                177,
+                249
+              ]
+            },
+            {
+              "path": "data/environment/stage_environment.xml",
+              "sha256": "af9aa7a73a2ef5b2dd91e1336fc18ab33862074c8b368d67ff8f69e184bb7235",
+              "lines": [
+                1345,
+                1354
+              ]
+            }
+          ],
+          "existingFullPreview": {
+            "path": "tmp/desert-detail-audit/full-backgrounds/gk18_3_BG/full.png",
+            "sha256": "2e3e8139d04cd42fcfe52a93f5efc6be801f80f576b2b03ce41fccff93bc0a06",
+            "method": "FFDec frame:svg; expand derived viewBox from top-level use transforms; original SWF unchanged",
+            "notNativeFlashVisualAcceptance": true
+          },
+          "observedSourceFeatures": {
+            "repeatedMotifs": [
+              "浅灰迷彩方帐",
+              "低穹小帐",
+              "白色房车",
+              "白色罐、黑桶、携行罐"
+            ],
+            "distinctiveFeatures": [
+              "当前可见画面将房车移到左侧，左中部大帐成为近景主体",
+              "帐篷与白罐向右分散延伸，不照搬图2的中心密集布局",
+              "末波增加一个从right进入的兵种55"
+            ],
+            "visibleCounts": {
+              "visibleMotorhomes": 1
+            },
+            "countCaveat": "SVG存在后绘地面覆盖较早对象，不能以所有顶层use数量当可见帐篷/RV总数。"
+          },
+          "narrativeAndPeople": {
+            "summary": "整关末段，无具名首领、对白或特殊建筑；不是全军阀后勤唯一总仓。",
+            "events": [],
+            "playersEntryPixel": [
+              200,
+              500
+            ],
+            "pickups": [],
+            "instances": []
+          },
+          "combatSource": {
+            "waves": [
+              {
+                "id": "0",
+                "finishRequirement": 0,
+                "duration": 0,
+                "enemies": [
+                  {
+                    "Type": "兵种13",
+                    "Quantity": 2,
+                    "Level": 20,
+                    "SpawnIndex": 0
+                  },
+                  {
+                    "Type": "兵种54",
+                    "Quantity": 2,
+                    "Level": 24,
+                    "SpawnIndex": 1
+                  },
+                  {
+                    "Type": "兵种56",
+                    "Quantity": 2,
+                    "Level": 24,
+                    "SpawnIndex": 2
+                  },
+                  {
+                    "Type": "兵种57",
+                    "Quantity": 2,
+                    "Level": 24,
+                    "SpawnIndex": 3
+                  },
+                  {
+                    "Type": "兵种55",
+                    "Quantity": 1,
+                    "Level": 24,
+                    "SpawnIndex": "right"
+                  }
+                ]
+              }
+            ],
+            "spawnPoints": [
+              {
+                "id": "0",
+                "x": 1895,
+                "y": 726,
+                "QuantityMax": 1
+              },
+              {
+                "id": "1",
+                "x": 1895,
+                "y": 507,
+                "QuantityMax": 1
+              },
+              {
+                "id": "2",
+                "x": 1895,
+                "y": 667,
+                "QuantityMax": 1
+              },
+              {
+                "id": "3",
+                "x": 1885,
+                "y": 855,
+                "QuantityMax": 1
+              }
+            ],
+            "configuredHostileQuantity": 9,
+            "quantityMeaning": "配置生成量，不是现场已生成数量、整营人口或过关必须击杀总数。"
+          },
+          "exitEvidence": {
+            "screenDirection": "right",
+            "hasCustomDoor": false,
+            "gameplayBoundsPixels": {
+              "Xmin": 50,
+              "Xmax": 1950,
+              "Ymin": 380,
+              "Ymax": 880
+            },
+            "defaultDoorRectanglePixels": [
+              1900,
+              380,
+              1950,
+              880
+            ],
+            "nextSubStageId": null,
+            "afterClear": "finish whole GameStage; no further child map in this XML",
+            "commonSourceRefs": [
+              "progression",
+              "advance",
+              "door",
+              "clearAndFinish",
+              "nextStage"
+            ],
+            "geographicDirection": "not established by the screen-right exit"
+          },
+          "proposedZoneRole": {
+            "name": "出库、分发与出行准备段",
+            "status": "3D reconstruction proposal; not a source map name"
+          },
+          "mustRemainReadable": [
+            "保留连续的入口—前场—出口走线；不能让帐篷填满原开阔战斗面",
+            "按本子图独有结构布置，不把邻图完整营地再次平移复制"
+          ]
+        }
+      ],
+      "layoutProposal": {
+        "name": "三段补给链：接卸等候—密集储备分拣—出库分发",
+        "geographicAnchorSourceXY": [
+          25000,
+          13000
+        ],
+        "expansionDirection": [
+          "west",
+          "northwest"
+        ],
+        "avoid": {
+          "placeId": "refugees",
+          "existingAnchorSourceXY": [
+            28000,
+            12000
+          ],
+          "rule": "新增主地块及大车辆区向西/西北发展；东侧难民营地保持独立，不用扩大地标吞并两地间通道。"
+        },
+        "localCoordinates": {
+          "unit": "normalized zone pitch, not km or gameplay pixel",
+          "x": "existing source east",
+          "y": "existing source north",
+          "note": "最终每格跨度、地块边界由整体布局施工确定；以下只给可施工的顺序和方位。"
+        },
+        "zoneCenters": [
+          {
+            "id": "depot-1",
+            "xy": [
+              -0.15,
+              0
+            ]
+          },
+          {
+            "id": "depot-2",
+            "xy": [
+              -1.2,
+              0.2
+            ]
+          },
+          {
+            "id": "depot-3",
+            "xy": [
+              -2.1,
+              1.05
+            ]
+          }
+        ],
+        "throughRoute": "保留现有南—北补给干路于东侧；从现锚点西肩接入图1前场，以服务道向西串图2，再向西北折入图3。",
+        "connections": [
+          {
+            "from": "regional-road-west-shoulder",
+            "to": "depot-1",
+            "kind": "entry proposal"
+          },
+          {
+            "from": "depot-1",
+            "to": "depot-2",
+            "kind": "ordered service-lane proposal"
+          },
+          {
+            "from": "depot-2",
+            "to": "depot-3",
+            "kind": "ordered northwest service-lane proposal"
+          },
+          {
+            "from": "depot-3",
+            "to": "regional-road-north-shoulder",
+            "kind": "optional supply egress proposal, not a fourth game substage"
+          }
+        ],
+        "silhouetteProgram": [
+          "图1用两辆RV及分离的浅灰大帐组团表现来货/等候",
+          "图2以密集前后帐群、穹顶小帐和容器分拣口占主量",
+          "图3转向出库场，房车偏一侧、货物集散和开阔回转空间形成终点"
+        ],
+        "sourceVsProposal": "三张背景、浅灰帐/RV/穹顶帐/容器是源事实；卸货、分拣、出库分工及西北折线、回转场、外接支路均是连接提案。",
+        "doNotInvent": [
+          "不恢复上一轮已判为占位的规则矩形围墙",
+          "不造大型永久油库、仓库厂房或全军唯一后勤总部",
+          "不把任务30夺回物资解释为军阀长期供养难民"
+        ]
+      }
+    },
+    {
+      "placeId": "fort",
+      "stageName": "军阀据点",
+      "mainQuest": 35,
+      "subStageCount": 4,
+      "subStages": [
+        {
+          "id": "fort-1",
+          "subStageId": 0,
+          "sequenceIndex": 1,
+          "background": "flashswf/backgrounds/gk21_1_BG.swf",
+          "backgroundSHA256": "f92210c873a0dab877b8a4138760cabcd9dea734ae1780c24666212f192fe9f5",
+          "sourceRefs": [
+            {
+              "path": "data/stages/基地房顶/军阀据点.xml",
+              "sha256": "36494615ef5486231b12676fb570dc2beb4b7588345e8c19a28ff1d3c1082ba8",
+              "lines": [
+                50,
+                138
+              ]
+            },
+            {
+              "path": "data/environment/stage_environment.xml",
+              "sha256": "af9aa7a73a2ef5b2dd91e1336fc18ab33862074c8b368d67ff8f69e184bb7235",
+              "lines": [
+                1555,
+                1564
+              ]
+            }
+          ],
+          "existingFullPreview": {
+            "path": "tmp/desert-detail-audit/military-full-backgrounds/gk21_1_BG/full.png",
+            "sha256": "6019ea6862a6e04b3e4aef24863cb3ca8790d91cbada860b44a61b5633de6847",
+            "method": "FFDec frame SVG, complete top-level use bounds; not native Flash fidelity acceptance",
+            "notNativeFlashVisualAcceptance": true
+          },
+          "observedSourceFeatures": {
+            "repeatedMotifs": [
+              "绿迷彩大帐",
+              "灰箱与黄黑边货盘",
+              "黑桶、红褐携行罐",
+              "通信杆/裸塔架"
+            ],
+            "distinctiveFeatures": [
+              "三顶帐集中在画面中右；左侧前场大幅留空",
+              "中央可见裸格构塔架，远处小通信杆",
+              "物资主要挤在两顶前景大帐之间"
+            ],
+            "visibleCounts": {
+              "greenMainTents": 3
+            }
+          },
+          "narrativeAndPeople": {
+            "summary": "Andy Law作为非敌对同伴在本图随行；初次接敌，两个敌人已有固定场内坐标。",
+            "events": [],
+            "playersEntryPixel": [
+              261,
+              483
+            ],
+            "pickups": [],
+            "instances": []
+          },
+          "combatSource": {
+            "waves": [
+              {
+                "id": "0",
+                "finishRequirement": 0,
+                "duration": 0,
+                "enemies": [
+                  {
+                    "Quantity": 1,
+                    "Level": 70,
+                    "x": 440,
+                    "y": 470,
+                    "Name": "Andy Law",
+                    "IsHostile": false
+                  },
+                  {
+                    "Type": "兵种56",
+                    "Quantity": 1,
+                    "Level": 26,
+                    "x": 1333,
+                    "y": 487
+                  },
+                  {
+                    "Type": "兵种55",
+                    "Quantity": 1,
+                    "Level": 26,
+                    "x": 1093,
+                    "y": 635
+                  },
+                  {
+                    "Type": "兵种56",
+                    "Quantity": 2,
+                    "Level": 28,
+                    "SpawnIndex": 0
+                  },
+                  {
+                    "Type": "兵种54",
+                    "Quantity": 2,
+                    "Level": 28,
+                    "SpawnIndex": 1
+                  }
+                ]
+              }
+            ],
+            "spawnPoints": [
+              {
+                "id": "0",
+                "x": 1716,
+                "y": 712,
+                "QuantityMax": 1
+              },
+              {
+                "id": "1",
+                "x": 1717,
+                "y": 564,
+                "QuantityMax": 1
+              }
+            ],
+            "configuredHostileQuantity": 6,
+            "quantityMeaning": "配置生成量，不是现场已生成数量、整营人口或过关必须击杀总数。"
+          },
+          "exitEvidence": {
+            "screenDirection": "right",
+            "hasCustomDoor": false,
+            "gameplayBoundsPixels": {
+              "Xmin": 50,
+              "Xmax": 1800,
+              "Ymin": 330,
+              "Ymax": 880
+            },
+            "defaultDoorRectanglePixels": [
+              1750,
+              330,
+              1800,
+              880
+            ],
+            "nextSubStageId": 1,
+            "afterClear": "enable passage to next XML SubStage",
+            "commonSourceRefs": [
+              "progression",
+              "advance",
+              "door",
+              "clearAndFinish",
+              "nextStage"
+            ],
+            "geographicDirection": "not established by the screen-right exit"
+          },
+          "proposedZoneRole": {
+            "name": "外缘驻屯与接敌场",
+            "status": "3D reconstruction proposal; not a source map name"
+          },
+          "mustRemainReadable": [
+            "保留连续的入口—前场—出口走线；不能让帐篷填满原开阔战斗面",
+            "按本子图独有结构布置，不把邻图完整营地再次平移复制"
+          ]
+        },
+        {
+          "id": "fort-2",
+          "subStageId": 1,
+          "sequenceIndex": 2,
+          "background": "flashswf/backgrounds/gk21_2_BG.swf",
+          "backgroundSHA256": "30cf3a8f6940a6f83f9a8fc2a1dbdb9b8415485db6b87163efb08ad75b842d7f",
+          "sourceRefs": [
+            {
+              "path": "data/stages/基地房顶/军阀据点.xml",
+              "sha256": "36494615ef5486231b12676fb570dc2beb4b7588345e8c19a28ff1d3c1082ba8",
+              "lines": [
+                139,
+                255
+              ]
+            },
+            {
+              "path": "data/environment/stage_environment.xml",
+              "sha256": "af9aa7a73a2ef5b2dd91e1336fc18ab33862074c8b368d67ff8f69e184bb7235",
+              "lines": [
+                1565,
+                1574
+              ]
+            }
+          ],
+          "existingFullPreview": {
+            "path": "tmp/desert-detail-audit/military-full-backgrounds/gk21_2_BG/full.png",
+            "sha256": "b520d8eebd6b58fa517d192e061cc68a90efba44db01ff400ba5ee43eba6e36f",
+            "method": "FFDec frame SVG, complete top-level use bounds; not native Flash fidelity acceptance",
+            "notNativeFlashVisualAcceptance": true
+          },
+          "observedSourceFeatures": {
+            "repeatedMotifs": [
+              "绿迷彩大帐",
+              "灰箱、货盘、携行罐",
+              "黑桶、通信杆"
+            ],
+            "distinctiveFeatures": [
+              "六顶绿帐形成三个前景主组及后排层次",
+              "高双碟通信塔位于中右，不是图3的全高多碟主塔",
+              "前景各帐之间多处独立货盘堆，仍保留连贯开阔前缘"
+            ],
+            "visibleCounts": {
+              "greenMainTents": 6
+            }
+          },
+          "narrativeAndPeople": {
+            "summary": "Andy随行；三名场内初始敌人与四组右侧增援构成第二段；FinishRequirement=2。",
+            "events": [],
+            "playersEntryPixel": [
+              193,
+              516
+            ],
+            "pickups": [],
+            "instances": []
+          },
+          "combatSource": {
+            "waves": [
+              {
+                "id": "0",
+                "finishRequirement": 2,
+                "duration": 0,
+                "enemies": [
+                  {
+                    "Quantity": 1,
+                    "Level": 70,
+                    "x": 380,
+                    "y": 510,
+                    "Name": "Andy Law",
+                    "IsHostile": false
+                  },
+                  {
+                    "Type": "兵种57",
+                    "Quantity": 1,
+                    "Level": 26,
+                    "x": 1455,
+                    "y": 701
+                  },
+                  {
+                    "Type": "兵种56",
+                    "Quantity": 1,
+                    "Level": 26,
+                    "x": 975,
+                    "y": 495
+                  },
+                  {
+                    "Type": "兵种55",
+                    "Quantity": 1,
+                    "Level": 26,
+                    "x": 780,
+                    "y": 633
+                  },
+                  {
+                    "Type": "兵种57",
+                    "Quantity": 2,
+                    "Level": 28,
+                    "SpawnIndex": 0
+                  },
+                  {
+                    "Type": "兵种56",
+                    "Quantity": 2,
+                    "Level": 28,
+                    "SpawnIndex": 1
+                  },
+                  {
+                    "Type": "兵种54",
+                    "Quantity": 2,
+                    "Level": 28,
+                    "SpawnIndex": 2
+                  },
+                  {
+                    "Type": "兵种13",
+                    "Quantity": 2,
+                    "Level": 22,
+                    "SpawnIndex": 3
+                  }
+                ]
+              }
+            ],
+            "spawnPoints": [
+              {
+                "id": "0",
+                "x": 1813,
+                "y": 825,
+                "QuantityMax": 1
+              },
+              {
+                "id": "1",
+                "x": 1812,
+                "y": 723,
+                "QuantityMax": 1
+              },
+              {
+                "id": "2",
+                "x": 1813,
+                "y": 540,
+                "QuantityMax": 1
+              },
+              {
+                "id": "3",
+                "x": 1812,
+                "y": 626,
+                "QuantityMax": 1
+              }
+            ],
+            "configuredHostileQuantity": 11,
+            "quantityMeaning": "配置生成量，不是现场已生成数量、整营人口或过关必须击杀总数。"
+          },
+          "exitEvidence": {
+            "screenDirection": "right",
+            "hasCustomDoor": false,
+            "gameplayBoundsPixels": {
+              "Xmin": 50,
+              "Xmax": 1900,
+              "Ymin": 350,
+              "Ymax": 920
+            },
+            "defaultDoorRectanglePixels": [
+              1850,
+              350,
+              1900,
+              920
+            ],
+            "nextSubStageId": 2,
+            "afterClear": "enable passage to next XML SubStage",
+            "commonSourceRefs": [
+              "progression",
+              "advance",
+              "door",
+              "clearAndFinish",
+              "nextStage"
+            ],
+            "geographicDirection": "not established by the screen-right exit"
+          },
+          "proposedZoneRole": {
+            "name": "中段驻屯与分散仓配场",
+            "status": "3D reconstruction proposal; not a source map name"
+          },
+          "mustRemainReadable": [
+            "保留连续的入口—前场—出口走线；不能让帐篷填满原开阔战斗面",
+            "按本子图独有结构布置，不把邻图完整营地再次平移复制"
+          ]
+        },
+        {
+          "id": "fort-3",
+          "subStageId": 2,
+          "sequenceIndex": 3,
+          "background": "flashswf/backgrounds/gk21_3_BG.swf",
+          "backgroundSHA256": "b09b995e6cb422b57dfc00a6dff50d50e7005ae9d55e9869ddf114cfc59169d2",
+          "sourceRefs": [
+            {
+              "path": "data/stages/基地房顶/军阀据点.xml",
+              "sha256": "36494615ef5486231b12676fb570dc2beb4b7588345e8c19a28ff1d3c1082ba8",
+              "lines": [
+                256,
+                388
+              ]
+            },
+            {
+              "path": "data/environment/stage_environment.xml",
+              "sha256": "af9aa7a73a2ef5b2dd91e1336fc18ab33862074c8b368d67ff8f69e184bb7235",
+              "lines": [
+                1575,
+                1584
+              ]
+            }
+          ],
+          "existingFullPreview": {
+            "path": "tmp/desert-detail-audit/military-full-backgrounds/gk21_3_BG/full.png",
+            "sha256": "27bc81e8c1c77df53d43b71eb7e94330c8e944092af1ab87d6e0081c25a47fc8",
+            "method": "FFDec frame SVG, complete top-level use bounds; not native Flash fidelity acceptance",
+            "notNativeFlashVisualAcceptance": true
+          },
+          "observedSourceFeatures": {
+            "repeatedMotifs": [
+              "绿迷彩大帐",
+              "密集箱盘与携行罐",
+              "黑桶",
+              "通信设施"
+            ],
+            "distinctiveFeatures": [
+              "九顶绿帐构成深纵队",
+              "全高多碟通信主塔在画面中部，是本段主要竖向识别物",
+              "右中有大型外露弧形骨架棚，棚内为货盘/箱具；不能武断称牢笼"
+            ],
+            "visibleCounts": {
+              "greenMainTents": 9,
+              "prominentBareFrameSheds": 1
+            }
+          },
+          "narrativeAndPeople": {
+            "summary": "Andy随行；加入兵种264/265/266/267四组，连同兵种13形成更深层增援配置；FinishRequirement=2。",
+            "events": [],
+            "playersEntryPixel": [
+              196,
+              563
+            ],
+            "pickups": [],
+            "instances": []
+          },
+          "combatSource": {
+            "waves": [
+              {
+                "id": "0",
+                "finishRequirement": 2,
+                "duration": 0,
+                "enemies": [
+                  {
+                    "Quantity": 1,
+                    "Level": 70,
+                    "x": 400,
+                    "y": 560,
+                    "Name": "Andy Law",
+                    "IsHostile": false
+                  },
+                  {
+                    "Type": "兵种57",
+                    "Quantity": 1,
+                    "Level": 26,
+                    "x": 1029,
+                    "y": 487
+                  },
+                  {
+                    "Type": "兵种56",
+                    "Quantity": 1,
+                    "Level": 26,
+                    "x": 1237,
+                    "y": 699
+                  },
+                  {
+                    "Type": "兵种55",
+                    "Quantity": 1,
+                    "Level": 26,
+                    "x": 754,
+                    "y": 630
+                  },
+                  {
+                    "Type": "兵种265",
+                    "Quantity": 2,
+                    "Level": 28,
+                    "SpawnIndex": 0
+                  },
+                  {
+                    "Type": "兵种266",
+                    "Quantity": 2,
+                    "Level": 28,
+                    "SpawnIndex": 1
+                  },
+                  {
+                    "Type": "兵种264",
+                    "Quantity": 2,
+                    "Level": 28,
+                    "SpawnIndex": 2
+                  },
+                  {
+                    "Type": "兵种267",
+                    "Quantity": 2,
+                    "Level": 28,
+                    "SpawnIndex": 3
+                  },
+                  {
+                    "Type": "兵种13",
+                    "Quantity": 3,
+                    "Level": 22,
+                    "SpawnIndex": 4
+                  }
+                ]
+              }
+            ],
+            "spawnPoints": [
+              {
+                "id": "0",
+                "x": 1779,
+                "y": 753,
+                "QuantityMax": 1
+              },
+              {
+                "id": "1",
+                "x": 1790,
+                "y": 549,
+                "QuantityMax": 1
+              },
+              {
+                "id": "2",
+                "x": 1790,
+                "y": 523,
+                "QuantityMax": 2
+              },
+              {
+                "id": "3",
+                "x": 1790,
+                "y": 806,
+                "QuantityMax": 2
+              },
+              {
+                "id": "4",
+                "x": 1790,
+                "y": 657,
+                "QuantityMax": 3
+              }
+            ],
+            "configuredHostileQuantity": 14,
+            "quantityMeaning": "配置生成量，不是现场已生成数量、整营人口或过关必须击杀总数。"
+          },
+          "exitEvidence": {
+            "screenDirection": "right",
+            "hasCustomDoor": false,
+            "gameplayBoundsPixels": {
+              "Xmin": 50,
+              "Xmax": 1900,
+              "Ymin": 350,
+              "Ymax": 920
+            },
+            "defaultDoorRectanglePixels": [
+              1850,
+              350,
+              1900,
+              920
+            ],
+            "nextSubStageId": 3,
+            "afterClear": "enable passage to next XML SubStage",
+            "commonSourceRefs": [
+              "progression",
+              "advance",
+              "door",
+              "clearAndFinish",
+              "nextStage"
+            ],
+            "geographicDirection": "not established by the screen-right exit"
+          },
+          "proposedZoneRole": {
+            "name": "通信主塔与骨架仓棚场",
+            "status": "3D reconstruction proposal; not a source map name"
+          },
+          "mustRemainReadable": [
+            "保留连续的入口—前场—出口走线；不能让帐篷填满原开阔战斗面",
+            "按本子图独有结构布置，不把邻图完整营地再次平移复制"
+          ]
+        },
+        {
+          "id": "fort-4",
+          "subStageId": 3,
+          "sequenceIndex": 4,
+          "background": "flashswf/backgrounds/gk21_4_BG.swf",
+          "backgroundSHA256": "560d95eeea48e83b0d4b76334322f1e49e63b8944322036adb989f32cf94ff24",
+          "sourceRefs": [
+            {
+              "path": "data/stages/基地房顶/军阀据点.xml",
+              "sha256": "36494615ef5486231b12676fb570dc2beb4b7588345e8c19a28ff1d3c1082ba8",
+              "lines": [
+                389,
+                543
+              ]
+            },
+            {
+              "path": "data/environment/stage_environment.xml",
+              "sha256": "af9aa7a73a2ef5b2dd91e1336fc18ab33862074c8b368d67ff8f69e184bb7235",
+              "lines": [
+                1585,
+                1594
+              ]
+            }
+          ],
+          "existingFullPreview": {
+            "path": "tmp/desert-detail-audit/military-full-backgrounds/gk21_4_BG/full.png",
+            "sha256": "919317a91b059dadb9f7252b645569d194e3159722f8288cd1f3c0fbb6cbff42",
+            "method": "FFDec frame SVG, complete top-level use bounds; not native Flash fidelity acceptance",
+            "notNativeFlashVisualAcceptance": true
+          },
+          "observedSourceFeatures": {
+            "repeatedMotifs": [
+              "绿迷彩大帐",
+              "灰箱、货盘、携行罐",
+              "黑桶、白色罐",
+              "通信杆及骨架棚"
+            ],
+            "distinctiveFeatures": [
+              "九顶帐仍分前后层，但不再把图3主塔放在画面中央",
+              "中央大帐右侧骨架棚、白罐及左右货堆围绕大前场",
+              "玩家与Andy在场地中部附近入场，中央空间服务将军对峙"
+            ],
+            "visibleCounts": {
+              "greenMainTents": 9,
+              "prominentBareFrameSheds": 1
+            }
+          },
+          "narrativeAndPeople": {
+            "summary": "玩家与general对话；general标题为自由革命军司令，实例军阀据点-将军。其死亡触发movie_gk_21_5；三处上沿和一处右侧增援点为NoCount=true。",
+            "events": [
+              {
+                "eventName": "Start",
+                "parameter": null,
+                "dialogue": [
+                  {
+                    "Name": "$PC",
+                    "Title": "$PC_TITLE",
+                    "Char": "$PC_CHAR#愤怒",
+                    "Text": "将军，为你的所作所为付出代价吧！"
+                  },
+                  {
+                    "Name": "general",
+                    "Title": "自由革命军司令",
+                    "Char": "general",
+                    "Text": "看来是我低估了你们的能力啊，A兵团！"
+                  },
+                  {
+                    "Name": "$PC",
+                    "Title": "$PC_TITLE",
+                    "Char": "$PC_CHAR#愤怒",
+                    "Text": "受死吧！"
+                  },
+                  {
+                    "Name": "general",
+                    "Title": "自由革命军司令",
+                    "Char": "general",
+                    "Text": "想要杀我还没那么容易！"
+                  }
+                ],
+                "animation": {}
+              },
+              {
+                "eventName": "UnitDeath",
+                "parameter": "军阀据点-将军",
+                "dialogue": [],
+                "animation": {
+                  "Path": "flashswf/movies/movie_gk_21_5.swf",
+                  "Pause": 1
+                }
+              }
+            ],
+            "playersEntryPixel": [
+              705,
+              425
+            ],
+            "pickups": [],
+            "instances": []
+          },
+          "combatSource": {
+            "waves": [
+              {
+                "id": "0",
+                "finishRequirement": 0,
+                "duration": 0,
+                "enemies": [
+                  {
+                    "Quantity": 1,
+                    "Level": 70,
+                    "x": 800,
+                    "y": 400,
+                    "Name": "Andy Law",
+                    "IsHostile": false
+                  },
+                  {
+                    "Type": "兵种53",
+                    "Quantity": 1,
+                    "Level": 28,
+                    "InstanceName": "军阀据点-将军",
+                    "x": 1070,
+                    "y": 446
+                  },
+                  {
+                    "Type": "兵种55",
+                    "Quantity": 5,
+                    "Level": 28,
+                    "SpawnIndex": 0
+                  },
+                  {
+                    "Type": "兵种55",
+                    "Quantity": 5,
+                    "Level": 28,
+                    "SpawnIndex": 1
+                  },
+                  {
+                    "Type": "兵种265",
+                    "Quantity": 5,
+                    "Level": 28,
+                    "SpawnIndex": 2
+                  },
+                  {
+                    "Type": "兵种13",
+                    "Quantity": 5,
+                    "Level": 22,
+                    "SpawnIndex": 3
+                  }
+                ]
+              }
+            ],
+            "spawnPoints": [
+              {
+                "id": "0",
+                "x": 270,
+                "y": 355,
+                "BiasX": 100,
+                "BiasY": 20,
+                "QuantityMax": 2,
+                "NoCount": true
+              },
+              {
+                "id": "1",
+                "x": 977,
+                "y": 356,
+                "BiasX": 100,
+                "BiasY": 20,
+                "QuantityMax": 2,
+                "NoCount": true
+              },
+              {
+                "id": "2",
+                "x": 1750,
+                "y": 357,
+                "BiasX": 100,
+                "BiasY": 20,
+                "QuantityMax": 2,
+                "NoCount": true
+              },
+              {
+                "id": "3",
+                "x": 1850,
+                "y": 700,
+                "QuantityMax": 3,
+                "NoCount": true
+              }
+            ],
+            "configuredHostileQuantity": 21,
+            "quantityMeaning": "配置生成量，不是现场已生成数量、整营人口或过关必须击杀总数。"
+          },
+          "exitEvidence": {
+            "screenDirection": "right",
+            "hasCustomDoor": false,
+            "gameplayBoundsPixels": {
+              "Xmin": 50,
+              "Xmax": 1900,
+              "Ymin": 330,
+              "Ymax": 880
+            },
+            "defaultDoorRectanglePixels": [
+              1850,
+              330,
+              1900,
+              880
+            ],
+            "nextSubStageId": null,
+            "afterClear": "finish whole GameStage; no further child map in this XML",
+            "commonSourceRefs": [
+              "progression",
+              "advance",
+              "door",
+              "clearAndFinish",
+              "nextStage"
+            ],
+            "geographicDirection": "not established by the screen-right exit"
+          },
+          "proposedZoneRole": {
+            "name": "指挥营与将军对峙场",
+            "status": "3D reconstruction proposal; not a source map name"
+          },
+          "mustRemainReadable": [
+            "保留连续的入口—前场—出口走线；不能让帐篷填满原开阔战斗面",
+            "按本子图独有结构布置，不把邻图完整营地再次平移复制"
+          ]
+        }
+      ],
+      "layoutProposal": {
+        "name": "四段团级据点：外缘接敌—分散驻屯—通信仓棚—指挥对峙",
+        "geographicAnchorSourceXY": [
+          36000,
+          24000
+        ],
+        "localCoordinates": {
+          "unit": "normalized zone pitch, not km or gameplay pixel",
+          "x": "existing source east",
+          "y": "existing source north",
+          "note": "四段沿南侧接近到北侧纵深的折线路径展开，不平均复制四个方院。最终跨距与边界由整体施工确定。"
+        },
+        "zoneCenters": [
+          {
+            "id": "fort-1",
+            "xy": [
+              -0.65,
+              -0.9
+            ]
+          },
+          {
+            "id": "fort-2",
+            "xy": [
+              0.45,
+              -0.15
+            ]
+          },
+          {
+            "id": "fort-3",
+            "xy": [
+              -0.35,
+              0.85
+            ]
+          },
+          {
+            "id": "fort-4",
+            "xy": [
+              0.6,
+              1.7
+            ]
+          }
+        ],
+        "throughRoute": "南/西南承接现主攻道路，四段内部步车通路曲折但不中断；保留北向前线撤收与东向工业补给接口作为场地外道路。",
+        "connections": [
+          {
+            "from": "assault-road",
+            "to": "fort-1",
+            "kind": "existing external route to proposed entry"
+          },
+          {
+            "from": "fort-1",
+            "to": "fort-2",
+            "kind": "ordered forecourt connection proposal"
+          },
+          {
+            "from": "fort-2",
+            "to": "fort-3",
+            "kind": "ordered communications-store connection proposal"
+          },
+          {
+            "from": "fort-3",
+            "to": "fort-4",
+            "kind": "ordered command-court connection proposal"
+          }
+        ],
+        "silhouetteProgram": [
+          "图1少帐、大接敌前场，入口清楚",
+          "图2六帐与多处货盘、双碟中塔提供驻屯纵深",
+          "图3九帐、多碟主塔与裸骨架棚成为中段识别核心",
+          "图4九帐指挥群、两侧物资与宽对峙场，保留上沿三处/右侧一处的兵员接近方向"
+        ],
+        "sourceVsProposal": "3/6/9/9帐密度层次、通信构件、裸骨架棚及将军终战是源事实；团部内四功能区命名、内部弯路及世界方位映射是连接提案。",
+        "doNotInvent": [
+          "大型据点之一不等于全军阀首都或唯一总部",
+          "原背景是营帐与物资群，不应直接改成石堡、宫殿或整齐高墙城",
+          "不能让四区相互隔绝而只靠标签暗示一整关"
+        ]
+      }
+    },
+    {
+      "placeId": "frontbase",
+      "stageName": "军阀前线基地",
+      "mainQuest": 36,
+      "subStageCount": 4,
+      "subStages": [
+        {
+          "id": "frontbase-1",
+          "subStageId": 0,
+          "sequenceIndex": 1,
+          "background": "flashswf/backgrounds/gk22_1_BG.swf",
+          "backgroundSHA256": "c984d7a7a7a75354f1741f7c016cbea5f30cbce1f2728c5119289315bb5b6269",
+          "sourceRefs": [
+            {
+              "path": "data/stages/基地房顶/军阀前线基地.xml",
+              "sha256": "0f69f64e18fa86f913d5172db10ca17b3bffb7d8bc396e1b3863cd66070b3862",
+              "lines": [
+                50,
+                83
+              ]
+            },
+            {
+              "path": "data/environment/stage_environment.xml",
+              "sha256": "af9aa7a73a2ef5b2dd91e1336fc18ab33862074c8b368d67ff8f69e184bb7235",
+              "lines": [
+                1596,
+                1605
+              ]
+            }
+          ],
+          "existingFullPreview": {
+            "path": "tmp/desert-detail-audit/military-full-backgrounds/gk22_1_BG/full.png",
+            "sha256": "6323435c23415f2870e60fbcf75217b29d352095d7aeaedf5c29e7f0554d9469",
+            "method": "FFDec frame SVG, complete top-level use bounds; not native Flash fidelity acceptance",
+            "notNativeFlashVisualAcceptance": true
+          },
+          "observedSourceFeatures": {
+            "repeatedMotifs": [
+              "绿迷彩大帐",
+              "格构通信塔",
+              "灰箱/黄黑货盘",
+              "外露骨架棚",
+              "黑桶与白罐"
+            ],
+            "distinctiveFeatures": [
+              "四顶绿帐分为左右两个组团",
+              "白罐集中在左侧，唯一房车在画面右后侧",
+              "左侧双碟高塔与靠近左帐的骨架棚形成入口识别；可见遭袭痕迹"
+            ],
+            "visibleCounts": {
+              "greenMainTents": 4,
+              "motorhomes": 1
+            }
+          },
+          "narrativeAndPeople": {
+            "summary": "玩家入场惊问是谁干的；没有配置活敌EnemyGroup。尸体/血迹属于主线36遭袭时相。",
+            "events": [
+              {
+                "eventName": "Start",
+                "parameter": null,
+                "dialogue": [
+                  {
+                    "Name": "$PC",
+                    "Title": "$PC_TITLE",
+                    "Char": "$PC_CHAR#愤怒",
+                    "Text": "!!!"
+                  },
+                  {
+                    "Name": "$PC",
+                    "Title": "$PC_TITLE",
+                    "Char": "$PC_CHAR#愤怒",
+                    "Text": "这是谁干的？"
+                  }
+                ],
+                "animation": {}
+              }
+            ],
+            "playersEntryPixel": [
+              193,
+              489
+            ],
+            "pickups": [],
+            "instances": []
+          },
+          "combatSource": {
+            "waves": [
+              {
+                "id": "0",
+                "finishRequirement": 0,
+                "duration": 0,
+                "enemies": []
+              }
+            ],
+            "spawnPoints": [],
+            "configuredHostileQuantity": 0,
+            "quantityMeaning": "配置生成量，不是现场已生成数量、整营人口或过关必须击杀总数。"
+          },
+          "exitEvidence": {
+            "screenDirection": "right",
+            "hasCustomDoor": false,
+            "gameplayBoundsPixels": {
+              "Xmin": 50,
+              "Xmax": 1900,
+              "Ymin": 350,
+              "Ymax": 880
+            },
+            "defaultDoorRectanglePixels": [
+              1850,
+              350,
+              1900,
+              880
+            ],
+            "nextSubStageId": 1,
+            "afterClear": "enable passage to next XML SubStage",
+            "commonSourceRefs": [
+              "progression",
+              "advance",
+              "door",
+              "clearAndFinish",
+              "nextStage"
+            ],
+            "geographicDirection": "not established by the screen-right exit"
+          },
+          "proposedZoneRole": {
+            "name": "遭袭后勤入口与联络营",
+            "status": "3D reconstruction proposal; not a source map name"
+          },
+          "mustRemainReadable": [
+            "保留连续的入口—前场—出口走线；不能让帐篷填满原开阔战斗面",
+            "按本子图独有结构布置，不把邻图完整营地再次平移复制"
+          ]
+        },
+        {
+          "id": "frontbase-2",
+          "subStageId": 1,
+          "sequenceIndex": 2,
+          "background": "flashswf/backgrounds/gk22_2_BG.swf",
+          "backgroundSHA256": "ff51e144baa275d7b01813b1cf6eb435b5b027303cc010e230d889e920482d31",
+          "sourceRefs": [
+            {
+              "path": "data/stages/基地房顶/军阀前线基地.xml",
+              "sha256": "0f69f64e18fa86f913d5172db10ca17b3bffb7d8bc396e1b3863cd66070b3862",
+              "lines": [
+                84,
+                112
+              ]
+            },
+            {
+              "path": "data/environment/stage_environment.xml",
+              "sha256": "af9aa7a73a2ef5b2dd91e1336fc18ab33862074c8b368d67ff8f69e184bb7235",
+              "lines": [
+                1606,
+                1615
+              ]
+            }
+          ],
+          "existingFullPreview": {
+            "path": "tmp/desert-detail-audit/military-full-backgrounds/gk22_2_BG/full.png",
+            "sha256": "4ce5b40a1f9de5bde4648b5e1bf115b6df154e021a46ca2aacdb18de64648d8a",
+            "method": "FFDec frame SVG, complete top-level use bounds; not native Flash fidelity acceptance",
+            "notNativeFlashVisualAcceptance": true
+          },
+          "observedSourceFeatures": {
+            "repeatedMotifs": [
+              "绿迷彩大帐",
+              "通信塔",
+              "骨架棚",
+              "箱盘、黑桶与白罐"
+            ],
+            "distinctiveFeatures": [
+              "六顶帐后方明确排列三辆猛虎G05防空车辆",
+              "一辆白色房车居后排中右，骨架棚在右中",
+              "这一段应读出防空火力车辆队列，不应复制坦克组替代"
+            ],
+            "visibleCounts": {
+              "greenMainTents": 6,
+              "motorhomes": 1,
+              "G05AntiAirVehicles": 3
+            }
+          },
+          "narrativeAndPeople": {
+            "summary": "玩家明确指出基本没见到作战部队、死者多是军官；无活敌波。",
+            "events": [
+              {
+                "eventName": "Start",
+                "parameter": null,
+                "dialogue": [
+                  {
+                    "Name": "$PC",
+                    "Title": "$PC_TITLE",
+                    "Char": "$PC_CHAR#愤怒",
+                    "Text": "不对，基本没见到作战部队，这些人大多是军官。"
+                  },
+                  {
+                    "Name": "$PC",
+                    "Title": "$PC_TITLE",
+                    "Char": "$PC_CHAR#愤怒",
+                    "Text": "这是谁干的？"
+                  }
+                ],
+                "animation": {}
+              }
+            ],
+            "playersEntryPixel": [
+              193,
+              505
+            ],
+            "pickups": [],
+            "instances": []
+          },
+          "combatSource": {
+            "waves": [
+              {
+                "id": "0",
+                "finishRequirement": 0,
+                "duration": 0,
+                "enemies": []
+              }
+            ],
+            "spawnPoints": [],
+            "configuredHostileQuantity": 0,
+            "quantityMeaning": "配置生成量，不是现场已生成数量、整营人口或过关必须击杀总数。"
+          },
+          "exitEvidence": {
+            "screenDirection": "right",
+            "hasCustomDoor": false,
+            "gameplayBoundsPixels": {
+              "Xmin": 50,
+              "Xmax": 1900,
+              "Ymin": 350,
+              "Ymax": 880
+            },
+            "defaultDoorRectanglePixels": [
+              1850,
+              350,
+              1900,
+              880
+            ],
+            "nextSubStageId": 2,
+            "afterClear": "enable passage to next XML SubStage",
+            "commonSourceRefs": [
+              "progression",
+              "advance",
+              "door",
+              "clearAndFinish",
+              "nextStage"
+            ],
+            "geographicDirection": "not established by the screen-right exit"
+          },
+          "proposedZoneRole": {
+            "name": "防空车辆驻泊与通信支援段",
+            "status": "3D reconstruction proposal; not a source map name"
+          },
+          "mustRemainReadable": [
+            "保留连续的入口—前场—出口走线；不能让帐篷填满原开阔战斗面",
+            "按本子图独有结构布置，不把邻图完整营地再次平移复制"
+          ]
+        },
+        {
+          "id": "frontbase-3",
+          "subStageId": 2,
+          "sequenceIndex": 3,
+          "background": "flashswf/backgrounds/gk22_3_BG.swf",
+          "backgroundSHA256": "d17c2c8fcc612ea5c5545090bd6dd816f5fc0dbaa0ac8e63d76c9c26de07e187",
+          "sourceRefs": [
+            {
+              "path": "data/stages/基地房顶/军阀前线基地.xml",
+              "sha256": "0f69f64e18fa86f913d5172db10ca17b3bffb7d8bc396e1b3863cd66070b3862",
+              "lines": [
+                113,
+                141
+              ]
+            },
+            {
+              "path": "data/environment/stage_environment.xml",
+              "sha256": "af9aa7a73a2ef5b2dd91e1336fc18ab33862074c8b368d67ff8f69e184bb7235",
+              "lines": [
+                1616,
+                1625
+              ]
+            }
+          ],
+          "existingFullPreview": {
+            "path": "tmp/desert-detail-audit/military-full-backgrounds/gk22_3_BG/full.png",
+            "sha256": "3c41b8dd945f868909122f4f3d38c099150e77cb7704724c3980d822bb8f812e",
+            "method": "FFDec frame SVG, complete top-level use bounds; not native Flash fidelity acceptance",
+            "notNativeFlashVisualAcceptance": true
+          },
+          "observedSourceFeatures": {
+            "repeatedMotifs": [
+              "绿迷彩大帐",
+              "通信塔",
+              "裸骨架棚",
+              "灰箱/货盘与黑桶"
+            ],
+            "distinctiveFeatures": [
+              "后排三辆犀牛R09主炮坦克，与上一图G05明确区分",
+              "八顶帐与左右两个骨架棚形成两处仓储口",
+              "中央一带尸体密度更高；资料拾取位置在场地中前部"
+            ],
+            "visibleCounts": {
+              "greenMainTents": 8,
+              "R09Tanks": 3,
+              "prominentBareFrameSheds": 2
+            }
+          },
+          "narrativeAndPeople": {
+            "summary": "资料拾取(Name=资料,Value=1,x=900,y=400)存在；关联动画Event Parameter为资料-暂时屏蔽，不能声明拾取必然播放动画或把它建成必经闸门。无活敌波。",
+            "events": [
+              {
+                "eventName": "Pickup",
+                "parameter": "资料-暂时屏蔽",
+                "dialogue": [],
+                "animation": {
+                  "Path": "flashswf/movies/前线基地过场动画.swf"
+                }
+              }
+            ],
+            "playersEntryPixel": [
+              206,
+              549
+            ],
+            "pickups": [
+              {
+                "Name": "资料",
+                "Value": 1,
+                "x": 900,
+                "y": 400
+              }
+            ],
+            "instances": []
+          },
+          "combatSource": {
+            "waves": [
+              {
+                "id": "0",
+                "finishRequirement": 0,
+                "duration": 0,
+                "enemies": []
+              }
+            ],
+            "spawnPoints": [],
+            "configuredHostileQuantity": 0,
+            "quantityMeaning": "配置生成量，不是现场已生成数量、整营人口或过关必须击杀总数。"
+          },
+          "exitEvidence": {
+            "screenDirection": "right",
+            "hasCustomDoor": false,
+            "gameplayBoundsPixels": {
+              "Xmin": 50,
+              "Xmax": 1900,
+              "Ymin": 350,
+              "Ymax": 880
+            },
+            "defaultDoorRectanglePixels": [
+              1850,
+              350,
+              1900,
+              880
+            ],
+            "nextSubStageId": 3,
+            "afterClear": "enable passage to next XML SubStage",
+            "commonSourceRefs": [
+              "progression",
+              "advance",
+              "door",
+              "clearAndFinish",
+              "nextStage"
+            ],
+            "geographicDirection": "not established by the screen-right exit"
+          },
+          "proposedZoneRole": {
+            "name": "装甲驻泊、仓棚与资料节点",
+            "status": "3D reconstruction proposal; not a source map name"
+          },
+          "mustRemainReadable": [
+            "保留连续的入口—前场—出口走线；不能让帐篷填满原开阔战斗面",
+            "按本子图独有结构布置，不把邻图完整营地再次平移复制"
+          ]
+        },
+        {
+          "id": "frontbase-4",
+          "subStageId": 3,
+          "sequenceIndex": 4,
+          "background": "flashswf/backgrounds/gk22_4_BG.swf",
+          "backgroundSHA256": "0b8dc9b18c5d667caa39b28778564c2e047b0d738f4e9eae40a9d68994f54e2e",
+          "sourceRefs": [
+            {
+              "path": "data/stages/基地房顶/军阀前线基地.xml",
+              "sha256": "0f69f64e18fa86f913d5172db10ca17b3bffb7d8bc396e1b3863cd66070b3862",
+              "lines": [
+                142,
+                232
+              ]
+            },
+            {
+              "path": "data/environment/stage_environment.xml",
+              "sha256": "af9aa7a73a2ef5b2dd91e1336fc18ab33862074c8b368d67ff8f69e184bb7235",
+              "lines": [
+                1626,
+                1635
+              ]
+            }
+          ],
+          "existingFullPreview": {
+            "path": "tmp/desert-detail-audit/military-full-backgrounds/gk22_4_BG/full.png",
+            "sha256": "9b55beea8105dbda07658c0749f120828b66371e452bcd056442fa5a8651c597",
+            "method": "FFDec frame SVG, complete top-level use bounds; not native Flash fidelity acceptance",
+            "notNativeFlashVisualAcceptance": true
+          },
+          "observedSourceFeatures": {
+            "repeatedMotifs": [
+              "绿迷彩大帐",
+              "高通信塔",
+              "两处骨架棚",
+              "成组货盘/箱具、黑桶和白罐"
+            ],
+            "distinctiveFeatures": [
+              "九顶帐围成最深层指挥营视觉；高多碟通信主塔在最右侧",
+              "当前背景没有上一图的坦克后排或图2的防空排",
+              "前场集中遭袭遗迹，终场需要保留清楚的单体对峙空间"
+            ],
+            "visibleCounts": {
+              "greenMainTents": 9,
+              "prominentBareFrameSheds": 2
+            }
+          },
+          "narrativeAndPeople": {
+            "summary": "加载将军死亡_军阀前线基地.swf实例；玩家辨认单位Ω与诺亚方舟标志。唯一敌人为神秘武士(兵种12)，死亡触发movie_gk_22_5。",
+            "events": [
+              {
+                "eventName": "Start",
+                "parameter": null,
+                "dialogue": [
+                  {
+                    "Name": "$PC",
+                    "Title": "$PC_TITLE",
+                    "Char": "$PC_CHAR#愤怒",
+                    "Text": "!!!"
+                  },
+                  {
+                    "Name": "$PC",
+                    "Title": "$PC_TITLE",
+                    "Char": "$PC_CHAR#愤怒",
+                    "Text": "这家伙是？！"
+                  },
+                  {
+                    "Name": "$PC",
+                    "Title": "$PC_TITLE",
+                    "Char": "$PC_CHAR#严肃",
+                    "Text": "就是这些家伙把这些军阀杀死的？"
+                  },
+                  {
+                    "Name": "$PC",
+                    "Title": "$PC_TITLE",
+                    "Char": "$PC_CHAR#愤怒",
+                    "Text": "只有它还在这里，难道是刚才说的那个单位Ω？它要收集谁的数据？"
+                  },
+                  {
+                    "Name": "$PC",
+                    "Title": "$PC_TITLE",
+                    "Char": "$PC_CHAR#愤怒",
+                    "Text": "这家伙的服装好像见过……在哪里呢……肩膀上的标志是……"
+                  },
+                  {
+                    "Name": "$PC",
+                    "Title": "$PC_TITLE",
+                    "Char": "$PC_CHAR#愤怒",
+                    "Text": "是诺亚方舟！！！等一下……！！"
+                  }
+                ],
+                "animation": {}
+              },
+              {
+                "eventName": "UnitDeath",
+                "parameter": "神秘武士",
+                "dialogue": [],
+                "animation": {
+                  "Path": "flashswf/movies/movie_gk_22_5.swf"
+                }
+              }
+            ],
+            "playersEntryPixel": [
+              493,
+              430
+            ],
+            "pickups": [],
+            "instances": [
+              {
+                "x": 825,
+                "y": 360,
+                "url": "flashswf/movies/将军死亡_军阀前线基地.swf"
+              }
+            ]
+          },
+          "combatSource": {
+            "waves": [
+              {
+                "id": "0",
+                "finishRequirement": 0,
+                "duration": 0,
+                "enemies": [
+                  {
+                    "Type": "兵种12",
+                    "Quantity": 1,
+                    "Level": 20,
+                    "x": 910,
+                    "y": 351,
+                    "InstanceName": "神秘武士"
+                  }
+                ]
+              }
+            ],
+            "spawnPoints": [],
+            "configuredHostileQuantity": 1,
+            "quantityMeaning": "配置生成量，不是现场已生成数量、整营人口或过关必须击杀总数。"
+          },
+          "exitEvidence": {
+            "screenDirection": "right",
+            "hasCustomDoor": false,
+            "gameplayBoundsPixels": {
+              "Xmin": 50,
+              "Xmax": 1900,
+              "Ymin": 350,
+              "Ymax": 880
+            },
+            "defaultDoorRectanglePixels": [
+              1850,
+              350,
+              1900,
+              880
+            ],
+            "nextSubStageId": null,
+            "afterClear": "finish whole GameStage; no further child map in this XML",
+            "commonSourceRefs": [
+              "progression",
+              "advance",
+              "door",
+              "clearAndFinish",
+              "nextStage"
+            ],
+            "geographicDirection": "not established by the screen-right exit"
+          },
+          "proposedZoneRole": {
+            "name": "前线指挥核心与单位Ω终场",
+            "status": "3D reconstruction proposal; not a source map name"
+          },
+          "mustRemainReadable": [
+            "保留连续的入口—前场—出口走线；不能让帐篷填满原开阔战斗面",
+            "按本子图独有结构布置，不把邻图完整营地再次平移复制"
+          ]
+        }
+      ],
+      "layoutProposal": {
+        "name": "四段前线体系：后勤入口—防空驻泊—装甲资料—指挥终场",
+        "geographicAnchorSourceXY": [
+          23000,
+          43000
+        ],
+        "localCoordinates": {
+          "unit": "normalized zone pitch, not km or gameplay pixel",
+          "x": "existing source east",
+          "y": "existing source north",
+          "note": "承接据点方向的东南来路，向西北纵深展开；最终跨距、车辆转弯与地形边界需整体审计。"
+        },
+        "zoneCenters": [
+          {
+            "id": "frontbase-1",
+            "xy": [
+              0.75,
+              -0.8
+            ]
+          },
+          {
+            "id": "frontbase-2",
+            "xy": [
+              0.65,
+              0.35
+            ]
+          },
+          {
+            "id": "frontbase-3",
+            "xy": [
+              -0.55,
+              0.65
+            ]
+          },
+          {
+            "id": "frontbase-4",
+            "xy": [
+              -1.05,
+              1.65
+            ]
+          }
+        ],
+        "throughRoute": "东南接据点撤收路；图1→图2→图3→图4构成主调查轴；车辆服务支路沿两类驻车区外缘，西北外路仍接区域接触带而非混成同一地点。",
+        "connections": [
+          {
+            "from": "retreat-front-road",
+            "to": "frontbase-1",
+            "kind": "existing external route to proposed entry"
+          },
+          {
+            "from": "frontbase-1",
+            "to": "frontbase-2",
+            "kind": "ordered support-lane proposal"
+          },
+          {
+            "from": "frontbase-2",
+            "to": "frontbase-3",
+            "kind": "ordered vehicle-service connection proposal"
+          },
+          {
+            "from": "frontbase-3",
+            "to": "frontbase-4",
+            "kind": "ordered command approach proposal"
+          },
+          {
+            "from": "frontbase-perimeter",
+            "to": "front-supply-road",
+            "kind": "preserve existing external contact-zone route"
+          }
+        ],
+        "silhouetteProgram": [
+          "图1保留两组帐与RV/罐列，给入口完整前场",
+          "图2以三辆G05后排和六帐防空驻泊支援群构成独立区域",
+          "图3以三辆R09、八帐与双骨架仓棚形成装甲后勤资料区",
+          "图4以九帐、右侧最高多碟塔和终战空场表达前线指挥核心，不再复制坦克排"
+        ],
+        "sourceVsProposal": "4/6/8/9帐、G05三辆/R09三辆、两类仓棚以及XML剧情先后是源事实；防空/装甲区的具体平面、维护支路与功能命名为重建提案。",
+        "phasePolicy": "主线36遭袭痕迹、死者和将军死亡动画有源依据，但应作为明确事件时相处理。常态地块不把死者当常驻单位，也不编造前三图活军阵。",
+        "doNotInvent": [
+          "前线基地与整个雪山—禁区接触带不是同一地块",
+          "不把资料-暂时屏蔽事件画成已生效的必经机关",
+          "不把G05与R09混成一排通用坦克",
+          "不因为有车辆背景就声称主力战斗部队仍在场"
+        ]
+      }
+    }
+  ],
+  "implementationAcceptanceTargets": [
+    "三个地点分别能辨识3、4、4个有不同主构成的相连子区，不能靠文字标签代替空间差异。",
+    "保留3个地理anchor及既有区域道路主轴；depot主体向西/西北扩，东侧难民营地保持独立。",
+    "全局选中视图能容纳整关，新总bounds包含全部子区和连接空地；不只缩镜头伪装扩大。",
+    "新建筑/车场与实际区域道路及内部门口净空做真实几何检查；组件闭合体法线朝外，修正绕序不改变位置。",
+    "底层源特征、连接提案、原生候选图、Web实际画面与人工接受分别记录，不互相代签。"
+  ]
+}
