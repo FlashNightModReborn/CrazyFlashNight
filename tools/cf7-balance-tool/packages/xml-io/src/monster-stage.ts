@@ -101,9 +101,9 @@ export interface MonsterCensusConfig {
    */
   humanTierFactors?: Record<string, number>;
   /**
-   * HEAD 里写了 `<档次系数>` 但制作组认定那只是**预估**的模板：档次放回本次联立搜索，重算后照写回。
-   * 只豁免 `档次系数` 这一项 —— 同一批标识里的 阶段 等其余字段照旧按 git HEAD 钉住，不靠这份名单翻案。
-   * 与 `humanTierFactors` 的分工：那张表是「人工把档次钉死」，这里是「HEAD 有值但钉不住」；两边都不许把观测五项放出去。
+   * 人工权威里写了 `<档次系数>` 但制作组认定那只是**预估**的模板：档次放回本次联立搜索，重算后照写回。
+   * 只豁免 `档次系数` 这一项 —— 同一批标识里的 阶段 等其余字段照旧按人工权威钉住，不靠这份名单翻案。
+   * 与 `humanTierFactors` 的分工：那张表是「人工把档次钉死」，这里是「人工权威里有值但那颗是预估」；两边都不许把观测五项放出去。
    * 两份名单点到同一行时按 `humanTierFactors` 钉住 —— 点名比「那颗是预估」更强。
    */
   estimatedTierTemplates?: string[];

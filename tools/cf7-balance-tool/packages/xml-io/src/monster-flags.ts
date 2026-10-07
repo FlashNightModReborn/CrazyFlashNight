@@ -3,8 +3,9 @@
  * 并按面板拟合出工具该补的标识，产出可复核的候选。
  *
  * 反推的可辨识性与分工见 core/formulas/monster-solve.ts：档次系数、成长系数、高攻低血防系数、高防低血系数
- * 四个量由面板联立拟合，其余系数只认观测。人工权威按 git HEAD 判定 —— 已提交的 `<标识>` 永不覆盖，
- * 所以 `humanFlags` 由调用方从 HEAD 读进来；制作组点名的档次判定写在 data/monster-census.json 的 `humanTierFactors`。
+ * 四个量由面板联立拟合，其余系数只认观测。人工权威按 `data/monster-flag-ledger.json` 判 —— HEAD 已提交的标识里
+ * 台账登记过同值的格是工具上一批自己写的，本次可以重算；其余永不覆盖，所以 `humanFlags` 由调用方判好读进来；
+ * 制作组点名的档次判定写在 data/monster-census.json 的 `humanTierFactors`。
  */
 import fs from "node:fs";
 import path from "node:path";
@@ -55,7 +56,7 @@ export interface MonsterFlagRow {
   stageStatus?: StageResolution["status"];
   stageBasis?: string;
   spawnStages?: string[];
-  /** 人工权威标识：git HEAD 已提交的 `<标识>`，加上配置里点名的档次判定。工具不覆盖这些字段。 */
+  /** 人工权威标识：HEAD 已提交标识摘掉台账登记的自写格、并上人工认领格，再加配置点名的档次判定。工具不覆盖这些字段。 */
   humanFlags?: Record<string, number>;
   /** 配置 `noFlagTemplates` 认定这一行无需标识：不反查阶段、不拟合、不写盘。 */
   waived?: boolean;
@@ -95,11 +96,11 @@ export interface MonsterCensusOptions {
   only?: string[];
   /** 只清点缺项与面板，不跑反推。 */
   skipFit?: boolean;
-  /** 人工权威标识：spritename → 标识字段 → 数值。由调用方从 git HEAD 读进来，工具侧不解释来源。 */
+  /** 人工权威标识：spritename → 标识字段 → 数值。由调用方按标识来源台账判好读进来，工具侧不解释来源。 */
   humanFlags?: Record<string, Record<string, number>>;
   /**
    * 让 档次系数 也进本次搜索：只放开配置 `humanTierFactors` 里制作组点名的那批档次，
-   * git HEAD 已提交的 `<标识>` 仍按人工权威钉住、不参与拟合也不覆盖。
+   * 人工权威（HEAD 那份过台账过滤后的标识）仍钉住、不参与拟合也不覆盖。
    */
   freeTier?: boolean;
 }
@@ -236,10 +237,10 @@ function buildRow(
 }
 
 /**
- * 人工权威标识 = git HEAD 已提交的 `<标识>` ∪ 配置里点名的档次判定。
+ * 人工权威标识 = HEAD 已提交的 `<标识>` 过标识来源台账（摘掉工具自写格、并上人工认领格）∪ 配置里点名的档次判定。
  * 档次判定写在 `humanTierFactors` 而不是行内标识，是因为它来自制作组的口头分档、不来自面板；
  * 写进行又会让普查把它当已有标识，读不出"这条是人工钉的"。
- * `freeTier` 只摘掉后一半：点名的档次回到搜索空间，HEAD 已提交的标识照旧不动。
+ * `freeTier` 只摘掉后一半：点名的档次回到搜索空间，人工权威的其余格照旧不动。
  * 配置 `estimatedTierTemplates` 点名的行例外：HEAD 里那颗档次按制作组口径只是预估，摘掉让本次重算，
  * 同一行其余已提交字段（阶段等）照旧钉住。
  */
@@ -330,7 +331,7 @@ export function mechanicalFlags(row: MonsterFlagRow): Record<string, number> {
 
 /**
  * 工具这一批该写的标识 = 机械可定项 ＋ 本次拟合的自由量（归到整数/半档/十分档的取值词表）。
- * 人工权威（git HEAD 已提交的标识、配置点名的档次）给过的字段一律不写；
+ * 人工权威（过台账的已提交标识、配置点名的档次）给过的字段一律不写；
  * 读不到面板方程的行只写机械项，免得把默认值当反推结论写进数据。
  */
 export function toolFlagProposal(row: MonsterFlagRow): Record<string, number> {
@@ -350,7 +351,7 @@ export function toolFlagProposal(row: MonsterFlagRow): Record<string, number> {
 }
 
 /**
- * 人工完整打标：git HEAD 已提交的 `<标识>` 把除 速度系数 以外的系数都给了值。
+ * 人工完整打标：人工权威（HEAD 过台账后的标识并上人工认领格）把除 速度系数 以外的系数都给了值。
  * 速度系数 来自移动速度的定义档、不算人工输入，所以是唯一豁免项。
  * 这类行的标识不是本次统计得出的，不跟工具识别的行混在同一张查验表里；
  * 制作组 2026-10-07 口径：三张表只统计工具自己识别的，人工已打标的另出一张对照表。
@@ -363,7 +364,8 @@ export function isFullyHumanFlagged(row: MonsterFlagRow, config: MonsterCensusCo
 
 /**
  * 从一份 `<标识>` 的原文（git HEAD 里的那份敌人属性 XML）读出 模板名 → 标识字段 → 数值。
- * 人工权威要按已提交版本判，不能看工作树 —— 工作树里混着工具上一批自写的值。
+ * 只看已提交版本，不看工作树 —— 工作树里全是这一批刚改的值；但已提交版本里也躺着工具自写的格，
+ * 所以这份原文还要过 `monster-flag-ledger.ts` 的台账才算人工权威。
  */
 export function readFlagsFromSource(source: string, config: MonsterCensusConfig): Record<string, Record<string, number>> {
   const document = parseXmlDocument(source);

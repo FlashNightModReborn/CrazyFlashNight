@@ -5,15 +5,15 @@
  *   npm run monster-census                     清点全部敌人模板并按面板反推，写 reports/monster-flag-census.json
  *     --markdown <路径>                         同时输出人工复核用表格（默认 reports/monster-flag-census.md）
  *     --only 敌人-A,敌人-B                       只反推指定模板
- *     --free-tier                                 让 档次系数 回到搜索空间（只放开 humanTierFactors 点名的行，HEAD 已提交标识仍钉住）
+ *     --free-tier                                 让 档次系数 回到搜索空间（只放开 humanTierFactors 点名的行，人工权威其余格仍钉住）
  *     --no-solve                                只清点缺项，不跑反推
  *   npm run monster-solve -- 敌人-体育老师 [--stage 4] [--known 档次系数=9,速度系数=2.5]
  *   npm run monster-flags-apply -- --from reports/monster-flag-census.json [--write]
  *     --only 敌人-A,敌人-B                       只写指定模板，用于小批试点
  *
  * 反推的分工见 core/formulas/monster-solve.ts：档次系数/成长系数/高攻低血防系数/高防低血系数 由面板联立拟合，
- * 攻速系数/攻击倍率/段数系数/霸体系数 只认攻击与击退元件的实测值。人工权威按 git HEAD 判 —— 已提交的 `<标识>`
- * 永不覆盖，所以 census 与 apply 都先读 HEAD 那份文件；未进 HEAD 的新文件整份按工具侧处理。
+ * 攻速系数/攻击倍率/段数系数/霸体系数 只认攻击与击退元件的实测值。人工权威按 data/monster-flag-ledger.json 判 ——
+ * HEAD 已提交的标识里，台账登记过同值的格是工具上一批自己写的，本次可以重算覆盖；其余（含人工认领格）不覆盖。
  */
 import fs from "node:fs";
 import path from "node:path";
@@ -28,11 +28,13 @@ import {
   censusMonsterFlags,
   fitPinnedCoefficients,
   loadMonsterCensusConfig,
+  recordToolWrites,
+  saveMonsterFlagLedger,
   toolFlagProposal,
 } from "@cf7-balance-tool/xml-io";
 import type { MonsterCensusOptions, MonsterFlagCensus, MonsterFlagRow, MonsterFlagUpdate } from "@cf7-balance-tool/xml-io";
 
-import { headFlags } from "./monster-flag-provenance.js";
+import { LEDGER_PATH, headFlags, humanAuthority, readLedger, repoRelative } from "./monster-flag-provenance.js";
 
 const TOOL_ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "../../..");
 const REPO_ROOT = path.resolve(TOOL_ROOT, "../..");
@@ -91,7 +93,7 @@ function runCensus(flags: Record<string, string | boolean>, positional: string[]
     ...(typeof flags.only === "string" ? { only: splitList(flags.only) } : positional.length > 0 ? { only: positional } : {}),
     ...(flags["no-solve"] === true ? { skipFit: true } : {}),
     ...(flags["free-tier"] === true ? { freeTier: true } : {}),
-    humanFlags: headFlags(REPO_ROOT, config),
+    humanFlags: humanAuthority(REPO_ROOT, config),
   };
 
   const census = censusMonsterFlags(REPO_ROOT, config, options);
@@ -99,13 +101,13 @@ function runCensus(flags: Record<string, string | boolean>, positional: string[]
   console.log(
     `普查完成：${census.totals.templates} 个模板，完整 ${census.totals.complete}，残缺 ${census.totals.partial}，无标识 ${census.totals.missing}，阶段可查 ${census.totals.stageResolved}，已反推 ${census.totals.fitted}，无需标识 ${census.totals.waived}，阶段 0 排除 ${census.totals.excluded}`,
   );
-  console.log(`  人工权威取自 git HEAD：${Object.keys(options.humanFlags ?? {}).length} 个模板有已提交标识`);
+  console.log(`  人工权威：${authorityNote(options.humanFlags ?? {})}`);
   const estimated = config.estimatedTierTemplates ?? [];
   if (estimated.length > 0) {
-    console.log(`  HEAD 的 档次系数 按预估处理、本次重算的 ${estimated.length} 行：${estimated.join("、")}（同一行其余已提交标识照旧钉住）`);
+    console.log(`  HEAD 的 档次系数 按预估处理、本次重算的 ${estimated.length} 行：${estimated.join("、")}（同一行其余人工权威标识照旧钉住）`);
   }
   if (options.freeTier === true) {
-    console.log(`  本批放开档次系数进搜索：配置点名的 ${Object.keys(config.humanTierFactors ?? {}).length} 行档次不再钉住，HEAD 已提交的标识照旧钉住`);
+    console.log(`  本批放开档次系数进搜索：配置点名的 ${Object.keys(config.humanTierFactors ?? {}).length} 行档次不再钉住，人工权威其余格照旧钉住`);
   }
   console.log(`JSON → ${CENSUS_PATH}`);
 
@@ -122,7 +124,7 @@ function runSolve(flags: Record<string, string | boolean>, positional: string[])
   if (!spritename) throw new Error("solve 需要指定 spritename");
 
   const config = loadMonsterCensusConfig(CONFIG_PATH);
-  const census = censusMonsterFlags(REPO_ROOT, config, { skipFit: true, only: [spritename], humanFlags: headFlags(REPO_ROOT, config) });
+  const census = censusMonsterFlags(REPO_ROOT, config, { skipFit: true, only: [spritename], humanFlags: humanAuthority(REPO_ROOT, config) });
   const row = census.rows.find((entry) => entry.spritename === spritename);
   if (!row) throw new Error(`普查里找不到 ${spritename}`);
 
@@ -182,7 +184,22 @@ function runApply(flags: Record<string, string | boolean>, positional: string[])
     return;
   }
   const written = applyMonsterFlagUpdates(REPO_ROOT, updates, config);
+  // 写盘之后把这批登记进台账：下一批读 HEAD 时才知道这些格是工具自己写的，不是人工打的标
+  saveMonsterFlagLedger(LEDGER_PATH, recordToolWrites(readLedger(), updates));
   console.log(`已写入 ${written.length} 个文件：\n${written.map((file) => `  ${path.relative(REPO_ROOT, file)}`).join("\n")}`);
+  console.log(`  台账已登记工具自写 ${updates.reduce((sum, update) => sum + Object.keys(update.flags).length, 0)} 格 → ${repoRelative(REPO_ROOT, LEDGER_PATH)}`);
+}
+
+/** 人工权威这行日志给口径：HEAD 已提交的格减去台账登记的自写格，再加人工认领的格。 */
+function authorityNote(authority: Record<string, Record<string, number>>): string {
+  const cells = (map: Record<string, Record<string, number>>) =>
+    Object.values(map).reduce((sum, fields) => sum + Object.keys(fields).length, 0);
+  const ledger = readLedger();
+  const committed = headFlags(REPO_ROOT, loadMonsterCensusConfig(CONFIG_PATH));
+  return (
+    `git HEAD 已提交 ${cells(committed)} 格，其中工具上一批自写 ${cells(ledger.writes)} 格、人工认领 ${cells(ledger.claims)} 格，` +
+    `本次算人工权威 ${cells(authority)} 格（${Object.keys(authority).length} 个模板）`
+  );
 }
 
 function writeJson(target: string, value: unknown): void {

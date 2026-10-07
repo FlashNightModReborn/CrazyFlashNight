@@ -164,13 +164,14 @@ npm run field-scan -- --project ./project.json --output ./reports/field-usage-re
 
 # 怪物标识普查（CLI 走 tsx，需要先构建 workspace dist）
 npx tsc -b packages/core packages/xml-io packages/cli
-npm run monster-census                              # 清点 + 四元联立反推，人工权威按 git HEAD 判
-npm run monster-census -- --free-tier               # 一次性把 档次系数 放回搜索：只越过 humanTierFactors 点名的行，HEAD 已提交标识照旧钉住（estimatedTierTemplates 点名的两行两种模式都进搜索）
+npm run monster-census                              # 清点 + 四元联立反推，人工权威按标识来源台账 data/monster-flag-ledger.json 判（HEAD 已提交格摘掉工具自写格、并上台账 claims 里手填点名的人工批次）
+npm run monster-census -- --free-tier               # 一次性把 档次系数 放回搜索：只越过 humanTierFactors 点名的行，人工权威的其余格照旧钉住（estimatedTierTemplates 点名的两行两种模式都进搜索）
 #   ⚠ 盘上现在的 档次 是放开档次解出来又写回的值，所以 census 与 monster-flags-csv 要用同一条模式跑；用默认模式重跑会把 11 行点名档次钉回旧值去解其余三项，表上误差整段虚高（见 rulebook §4）
 npm run monster-solve -- 敌人-体育老师 --known 速度系数=2.5,档次系数=12   # 单行反推，没钉住的自由量都解
-npm run monster-flags-apply -- reports/monster-flag-census.json   # dry-run，加 --write 才落盘
+npm run monster-flags-apply -- reports/monster-flag-census.json   # dry-run，加 --write 才落盘并把这批格登记为工具自写（进 data/monster-flag-ledger.json）
 npm run monster-flags-csv                           # 出四张查验表：全量表 / 超范围表 / 偏差大表 / 人工表（前三张按盘上现值重生成，会盖掉全量表上没读回的手工改动）
-npm run monster-flags-table-apply                   # 读回全量表上人工改过的系数，加 --write 才落盘 —— 重生成表之前必须先跑这一步
+npm run monster-flags-table-apply                   # 读回全量表上改过的系数，加 --write 才落盘并把这批格登记为工具自写（不算人工权威；要把某格钉成人工权威就手填台账 claims） —— 重生成表之前必须先跑这一步
+npm run monster-flags-table-apply -- --csv 路径.csv  # 换一张同列名（模板 + 十项系数）的表回写，默认读 data/monster-flag-table.csv；2026-10-07 用它把人工批次那张复测表写回 XML
 
 # 攻击结构实测：翻 XFL/.fla 量 攻速系数/攻击倍率/段数系数 的观测值，并从击倒/倒地/被击三段的状态层判 霸体系数，
 # 连同机械可定的 阶段/速度系数 一起存候选 JSON
@@ -202,10 +203,12 @@ npm run monster-attack -- --overwrite                             # 口径变更
 # 同批另出两张只读投影：monster-flag-out-of-range.csv（系数超出参考区间，档次越界的行整块置顶，块内与其后都按 超出倍数 降序 → 阶段 → 模板名）与 monster-flag-high-error.csv（复算面板对不上，
 # 含制作组点名档次的全部行）。缺 <阶段> 又反查不到的行不单独成表，看全量表里那格空着；判定「无需标识」的模板登在
 # monster-census.json 的 noFlagTemplates，制作组点名的档次登在 humanTierFactors，两处都不进反推的自由量
-# HEAD 里那颗 档次系数 被制作组认定只是当初预估的行登在 estimatedTierTemplates：只摘 档次系数 放回搜索并重算写回，同一行其余已提交标识（含 阶段）照旧钉住（现量 敌人-双喷少女、敌人-特警僵尸）
-# monster-flag-human.csv（人工表）只记 git HEAD 里已完整打标的行（除 速度系数 外十项齐全；速度系数 来自移动速度定义档、不算人工输入）：
-# 印的是 HEAD 那份原文，不是盘上现值 ∪ 工具候选。这批行的标识不是工具识别出来的，所以从前三张表里整块移出（制作组 2026-10-07 口径），
-# 只读不改；现量 27 行 = 本次一个自由量都没有的 27 行，与全量表的 143 行不重叠。留 数据文件 与 标识行 两列方便跳回 XML 原文
+# 人工权威里那颗 档次系数 被制作组认定只是当初预估的行登在 estimatedTierTemplates：只摘 档次系数 放回搜索并重算写回，同一行其余人工权威标识（含 阶段）照旧钉住（现量 敌人-双喷少女、敌人-特警僵尸）
+# monster-flag-human.csv（人工表）只记人工权威里已完整打标的行（除 速度系数 外十项齐全；速度系数 来自移动速度定义档、不算人工输入）：
+# 印的是人工权威那份值（HEAD 过台账、并上 claims 点名的人工批次），不是盘上现值 ∪ 工具候选。这批行的标识不是工具识别出来的，所以从前三张表里整块移出（制作组 2026-10-07 口径），
+# 只读不改；现量 28 行 = 本次一个自由量都没有的 27 行 + 远端新提交的人工行 敌人-Codex黑仔，与全量表的 143 行不重叠。留 数据文件 与 标识行 两列方便跳回 XML 原文
+# 2026-10-07 第十四批：制作组复看对照表（data/monster-flag-human-recheck.csv）后认可实测口径，把这 28 行的九项按「实测/定义档 ＋ 重解」回写 XML，只有 阶段 整列没动、仍算人工认领；
+# 这批格从此登记为工具自写，人工表只剩实测拿不到证据的行 —— 纯人工批次到此结束，后续统一走「改标识 → 重算面板 → 写 XML」
 # 档次的搜索网格不受参考区间约束（core 的 tierFitCandidates：0.1~0.9 每 0.1、1~10 每 0.5、11 起每 1，解顶到上界按块加长到 200）；
 # 参考区间只用来登记越界，越界值照常写盘并报警，不夹紧
 # 全量表把 阶段 填 0 = 这只怪整行排除（面板待重做/临时下线）：0 会写进 <标识>，但该行不反推、不产候选、不进任何一张查验表与统计，

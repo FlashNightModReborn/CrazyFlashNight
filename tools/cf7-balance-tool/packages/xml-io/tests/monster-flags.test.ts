@@ -179,7 +179,7 @@ describe("human authority and tool proposal", () => {
     expect(Object.keys(toolFlagProposal(named))).not.toContain("档次系数");
   });
 
-  it("freeTier 只把点名的档次放回搜索，git HEAD 已提交的档次照旧钉住", () => {
+  it("freeTier 只把点名的档次放回搜索，人工权威里的档次照旧钉住", () => {
     const census = censusMonsterFlags(writeFixtureRepo(), CONFIG, { humanFlags: {}, only: ["敌人-支线怪"], freeTier: true });
     const row = census.rows.find((entry) => entry.spritename === "敌人-支线怪")!;
 
@@ -197,7 +197,7 @@ describe("human authority and tool proposal", () => {
     expect(Object.keys(toolFlagProposal(committed))).not.toContain("档次系数");
   });
 
-  it("estimatedTierTemplates 摘掉 HEAD 里预估的档次让本次重算，同一行其余已提交标识照旧钉住", () => {
+  it("estimatedTierTemplates 摘掉人工权威里预估的档次让本次重算，同一行其余人工权威标识照旧钉住", () => {
     const given = { "敌人-残缺怪": { 阶段: 2, 档次系数: 3, 成长系数: 1 } };
     const rowFor = (config: MonsterCensusConfig) =>
       censusMonsterFlags(writeFixtureRepo(), config, { humanFlags: given, only: ["敌人-残缺怪"] })

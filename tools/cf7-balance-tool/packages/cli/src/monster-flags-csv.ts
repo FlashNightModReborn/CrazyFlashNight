@@ -11,13 +11,13 @@
  *   改完用 `npm run monster-flags-table-apply` 写回 `data/enemy_properties/*.xml`。
  * - `monster-flag-out-of-range.csv` 超范围表：系数落在参考区间外的行，只看/不改。
  * - `monster-flag-high-error.csv` 偏差大表：复算面板与盘上面板对不上的行（含制作组指定档次的全部行），只看/不改。
- * - `monster-flag-human.csv` 人工表：制作组在 git HEAD 里已经完整打过标的行（除 速度系数 外十项齐全），
- *   记的是 HEAD 那份原文的值，只看/不改，也不参与上面三张表的任何统计。
+ * - `monster-flag-human.csv` 人工表：人工权威已经完整打过标的行（除 速度系数 外十项齐全），
+ *   记的是人工权威那份值（HEAD 过台账、并上人工认领格），只看/不改，也不参与上面三张表的任何统计。
  *
  * **人工完整打标的行为什么要摘出去（制作组 2026-10-07 口径）**：那批行的攻速系数/攻击倍率/段数系数 是人工按手感填的，
  * 混进统计面就看不出「脚本识别得对不对」，误差也会被人工值一起承担。摘出来后三张表只数工具识别的行，
  * 人工那批另存一张表，留着以后逐行对照「人工标的」与「脚本测的」是否一致。
- * 注意人工表印的是 HEAD 的值，与盘上现值可能不同（例如 骨刺僵尸 的 阶段：HEAD 4、盘上 5）—— 那正是对照要看的东西。
+ * 注意人工表印的是人工权威那份值，不是盘上现值 —— 工作树里有没提交进去的改动时两边会不一样，那正是对照要看的东西。
  *
  * 表里的数按「盘上现值 ∪ 工具这批该写的值」给，误差也由这组数复算，所以表上看到的误差能由 XML 里的标识重现，
  * 不是拟合中间过程的连续解。超范围/偏差大/人工三张是只读投影，改数值只改全量表。
@@ -129,7 +129,7 @@ function main(argv: string[]): void {
   console.log(`超范围表 → ${OUT_OF_RANGE_PATH}（${views.filter((view) => view.outOfRange.length > 0).length} 行）`);
   console.log(`偏差大表 → ${HIGH_ERROR_PATH}（${high.length} 行，门槛 ${(threshold * 100).toFixed(0)}%）`);
   console.log(`  其中制作组点名档次的 ${named.length} 行全部列入，不看过不过门槛`);
-  console.log(`人工表 → ${HUMAN_PATH}（${human.length} 行，git HEAD 里除 速度系数 外十项都已人工打标，不进上面三张表的统计）`);
+  console.log(`人工表 → ${HUMAN_PATH}（${human.length} 行，人工权威里除 速度系数 外十项都已人工打标，不进上面三张表的统计）`);
   console.log(`  未参与：无需标识 ${census.totals.waived} 行、阶段 0 排除 ${census.rows.filter(isExcluded).length} 行`);
 }
 
@@ -153,7 +153,7 @@ function isExcluded(row: MonsterFlagRow): boolean {
 /**
  * 制作组点名的档次判定（配置 `humanTierFactors`）无条件进偏差大表：
  * 档次是人工按样貌与招式钉的，面板合不上只能说明面板或阶段有问题，必须让人看见，不能被门槛挡掉。
- * git HEAD 已提交的标识里也带档次系数，那批是按老口径校准过的，过门槛才进表。
+ * 人工权威里的档次系数（HEAD 过台账之后仍算人工的那批）是按老口径校准过的，过门槛才进表。
  */
 function isNamedTier(row: MonsterFlagRow, config: MonsterCensusConfig): boolean {
   return config.humanTierFactors?.[row.spritename] !== undefined;
