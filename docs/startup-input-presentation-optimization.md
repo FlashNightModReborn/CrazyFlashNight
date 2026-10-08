@@ -203,3 +203,15 @@ C# 执行门最初未通过：定向回归在测试宿主连接阶段按原 90 �
 材料 sidecar 由原生成器重生，运行字典 XML 字节未变。商店清单由当前 LF 精确还原 CRLF 后，大小 1519 与旧 SHA-256 完全吻合；新增显式 opt-in 只允许这种逐字节等价证明，默认仍拒绝 list 漂移，身份/顺序/数量/排除项/路径/内容/其他空白/反向与混合换行负例均保留。刷新仍复用完整渲染输入、工具、图片与 receipt validator，按原生成器更新商品来源与凭据，不改验证器或放宽断言。7 组纯字节回归通过，首次夹具将“未变 CRLF”误当成逆向转换的失败记录保留；37 个画像入口/36 个 subject 文件及 runtime manifest 均通过现有资产门，36 张图片和 manifest 的逐项哈希与原件一致。后续使用全新的 v2 tag/request 和政策回执，不借 v1 失败列车代签。
 
 字典构建工具的锁定开发依赖审计另保留 9 项告警（含 2 项 critical），不新增游戏运行依赖；本轮未启测试 UI/dev server，也没有强制依赖升级。该维护债不以本轮供应链门通过宣称已解决。
+
+## 本批正式部署
+
+2026-10-09，本批 `map_chest` / `stage_settlement` 播报兼容与已有启动、输入观测、共享伤害呈现优化已由唯一 promotion writer 正式安装。冻结 source 为 `58324fa0724ff279fb0dc72bbca3d67e027ad14a`，一次性 tag 为 `runtime-build-v2/20261008-startup-input-lootfeed-v2`；request、release tree、build identity、payload closure 和内嵌证明以当前 signed consensus 为机器真源。
+
+v2 final-tree Host 为 6810 项通过、11 项条件跳过、0 失败，serial marker 一次，测试 Core 与候选 Core 字节一致。新 production receipt 47/47 通过。v1 到 v2 只有 policy 域变化，artifact/recipe/toolchain 三域与 build identity 不变，因此按现行协议复用有效的本地 X509 producer result 与 CAS 字节，重新绑定新 request 和政策回执；不复用失败的 v1 policy receipt。云端从 v2 tag 独立构建并签名，[本次唯一云端 run](https://github.com/FlashNightModReborn/CrazyFlashNight/actions/runs/37803316026) 的 build identity 和完整 payload closure 与本地全等。
+
+GitHub API 的临时 EOF 使首次监控客户端中止，后续只观察并 Resume 同一 run/attempt 1，没有重复 dispatch。规范 helper 已完成证明验真；临时接续脚本曾误要求 CAS 中存在 producer metadata，按协议 CAS 只保留 payload，最终改读真实 producer result 完成比对，没有补造 metadata 或修改正式验证器。所有中断日志、v1 失败 receipt、两个不可变 tag/request 和原字节副本继续保留。
+
+promotion 完成双 signer/双 faultDomain 的 strict replay、staged/live payload 复核及正式 bootstrap `--verify-only` 完整安装核验，保留可恢复 previous bundle。实际更新仅根 bootstrap、Core、世界呈现 native DLL、runtime manifest 和 signed consensus 五个部署路径，没有手工把开发候选拷入正式目录。部署提交、推送与远端 Audit 结果由本节后续记录及 main 接续文件保存。
+
+该状态是 `promoted`，不是新发布程序的完整 `standard_entry_verified`：Agent 没有启动游戏/Flash actor、回放奖励或试写真实存档。新播报的实际视觉、物理输入与弱机器/MPO 专项仍待人验；专用鼠标泵、全部交互 HUD/Web 统一及嵌入迟到回调等后续风险未被本批冒称完成。旧候选的持续资格不转签给新 identity/closure，夜间未唤醒屏幕或放宽断言。
