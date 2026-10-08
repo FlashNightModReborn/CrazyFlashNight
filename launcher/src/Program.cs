@@ -1604,7 +1604,8 @@ class Program
         LogManager.Log("[WebView2] Runtime found: " + wv2ver);
         StartupDiagnostics.Mark("webview2.runtime_check_ok", "version=" + wv2ver);
         string webDir = Path.Combine(projectRoot, "launcher", "web");
-        // 磁盘批次恢复先于三个运行时消费者；进程内固定同一内容，作者应用后重启切换。
+        // 磁盘批次恢复先于三个运行时消费者；地图定义与世界源进程内固定（作者应用后重启切换），
+        // 任务目录层可按发布事件热重载，见 MapDomainTask 的 task_sync。
         var mapRuntimeContent = new CF7Launcher.Data.MapRuntimeContent(projectRoot);
         // Flash hwnd 动态查询（SA 进程重启后 hwnd 变）。提前到 WebOverlay 构造前，
         // 因为后续 PanelHostController 也复用同一份。WebOverlay 自身的焦点回推走 flashFocusRestorer。
@@ -2473,8 +2474,8 @@ class Program
             }
         });
         MapTask mapTask = new MapTask(socketServer);
-        MapDomainTask mapDomainTask = new MapDomainTask(socketServer, mapRuntimeContent, mapCatalog);
-        webOverlay.SetMapDomain(mapRuntimeContent, mapDomainTask);
+        MapDomainTask mapDomainTask = new MapDomainTask(socketServer, mapRuntimeContent, mapCatalog, projectRoot);
+        webOverlay.SetMapDomain(mapDomainTask);
         ArenaTask arenaTask = new ArenaTask(socketServer, projectRoot);
         ArenaCalibrationTask arenaCalibrationTask = new ArenaCalibrationTask(socketServer, projectRoot);
         arenaTask.SetCalibrationTask(arenaCalibrationTask);
@@ -2812,6 +2813,15 @@ class Program
             commandRouter.CancelAllPanelNavigationIntents(
                 "host_shutdown");
             sceneTransition.Dispose();
+            // AI 终端 exe：仅当 7077 实例确为本游戏拉起（--embedded）时被后端接受退出；
+            // standalone 实例回 409，用户手动启动的进程不受影响。
+            try { ragTerminalService.ShutdownEmbeddedOnExit(); }
+            catch (Exception ex)
+            {
+                LogManager.Log(
+                    "[RagTerminal] shutdown on exit failed: "
+                    + ex.GetType().Name + ": " + ex.Message);
+            }
             // 顺序敏感: 这两步必须最前。
             // 1) 卸全局低级鼠标 hook —— UI 线程接下来要被 KillFlash WaitForExit 阻塞数秒,
             //    hook 还挂着的话全系统鼠标消息都要排队走它的回调, 光标视觉延迟显著。

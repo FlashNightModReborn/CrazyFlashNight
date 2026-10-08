@@ -775,6 +775,36 @@ namespace CF7Launcher.Guardian.Hud
             FireRepaint();
         }
 
+        /// <summary>
+        /// 面板挂起期间 HUD 不 tick：恢复时把挂起时长补算进瞬时行寿命并移除过期行。
+        /// 否则挂起前刚出现的提示（如"正在启动通讯终端"）会在面板关闭后原样复活。
+        /// </summary>
+        public void AgeTransientRowsForSuspend(int elapsedMs)
+        {
+            if (elapsedMs <= 0) return;
+            // 挂起期间排队的 game 提示展示窗口已过：不补发
+            _gameQueue.Clear();
+            _gameThrottleRemainingMs = 0;
+            if (_infoRows.Count == 0) return;
+            bool removed = false;
+            for (int i = _infoRows.Count - 1; i >= 0; i--)
+            {
+                NotchInfoRow row = _infoRows[i];
+                if (row.Persistent) continue;
+                row.AgeMs += elapsedMs;
+                row.RemainingMs -= elapsedMs;
+                if (row.RemainingMs <= 0)
+                {
+                    _infoRows.RemoveAt(i);
+                    removed = true;
+                }
+            }
+            if (!removed) return;
+            FireBounds();
+            FireAnimationStateChanged();
+            FireRepaint();
+        }
+
         private void DrainGameQueue()
         {
             if (_gameThrottleRemainingMs > 0 || _gameQueue.Count == 0) return;

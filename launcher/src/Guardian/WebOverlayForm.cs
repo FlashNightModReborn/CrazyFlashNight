@@ -32,9 +32,9 @@ namespace CF7Launcher.Guardian
         private AssetWorkbenchTask _assetWorkbenchTask;
         private MapWorkbenchTask _mapWorkbenchTask;
         private JObject _mapFrozenDefinition;
-        public void SetMapDomain(CF7Launcher.Data.MapRuntimeContent content, MapDomainTask domain)
+        public void SetMapDomain(MapDomainTask domain)
         {
-            _mapWorkbenchTask = new MapWorkbenchTask(_projectRoot, content, domain);
+            _mapWorkbenchTask = new MapWorkbenchTask(_projectRoot, domain);
         }
 
         private async void HandleMapWorkbenchMessage(string json, string source)

@@ -5,7 +5,7 @@ using Newtonsoft.Json.Linq;
 
 namespace CF7Launcher.Data
 {
-    /// <summary>进程内固定地图内容；Web、HUD 和规则域共享同一份，作者保存后重启才切换。</summary>
+    /// <summary>进程内固定地图定义与世界源；任务目录层可按发布事件热重建（见 ReloadTasks）。Web、HUD 和规则域共享同一份。</summary>
     public sealed class MapRuntimeContent
     {
         public JObject Definition { get; }
@@ -16,6 +16,7 @@ namespace CF7Launcher.Data
         public JObject Bootstrap { get; }
         private readonly HashSet<string> taskIds;
         private readonly HashSet<string> structuredIds;
+        private readonly Dictionary<string, string> worldHashes;
         public MapRuntimeContent(string root)
         {
             MapAuthoringStore.RecoverForStartup(root);
@@ -25,20 +26,43 @@ namespace CF7Launcher.Data
             MapAssetCandidates.ValidatePublished(root, Definition);
             Catalog = MapTaskCatalog.Load(root); Catalog.ValidateBindings(Definition);
             var world = new MapRuntimeWorld(root, Definition); WorldOccurrences = world.Occurrences;
+            worldHashes = new Dictionary<string, string>(world.SourceHashes, StringComparer.Ordinal);
             DefinitionDigest = MapDefinition.Hash(bytes);
-            ContentDigest = MapDefinition.Hash(MapDefinition.Utf8.GetBytes(DefinitionDigest + "\n" + Catalog.Digest + "\n" + string.Join("\n", world.SourceHashes.OrderBy(p => p.Key, StringComparer.Ordinal).Select(p => p.Key + " " + p.Value))));
-            taskIds = new HashSet<string>(Catalog.Tasks.Properties().Select(p => p.Name), StringComparer.Ordinal);
-            structuredIds = new HashSet<string>(Catalog.Tasks.Properties().Where(p => p.Value["get_endpoint"] is JObject || p.Value["finish_endpoint"] is JObject).Select(p => p.Name), StringComparer.Ordinal);
+            ContentDigest = ContentDigestOf(DefinitionDigest, Catalog.Digest, worldHashes);
+            taskIds = TaskIdsOf(Catalog); structuredIds = StructuredIdsOf(Catalog);
             Bootstrap = BuildBootstrap();
         }
         internal MapRuntimeContent(JObject definition, MapTaskCatalog catalog, JObject world)
         {
             MapDefinition.Validate(definition); Definition = (JObject)definition.DeepClone(); Catalog = catalog; WorldOccurrences = (JObject)world.DeepClone();
-            DefinitionDigest = MapDefinition.Hash(MapDefinition.Bytes(definition)); ContentDigest = MapDefinition.Hash(MapDefinition.Utf8.GetBytes(DefinitionDigest + catalog.Digest));
-            taskIds = new HashSet<string>(catalog.Tasks.Properties().Select(p => p.Name), StringComparer.Ordinal);
-            structuredIds = new HashSet<string>(catalog.Tasks.Properties().Where(p => p.Value["get_endpoint"] is JObject || p.Value["finish_endpoint"] is JObject).Select(p => p.Name), StringComparer.Ordinal);
+            worldHashes = new Dictionary<string, string>(StringComparer.Ordinal);
+            DefinitionDigest = MapDefinition.Hash(MapDefinition.Bytes(definition)); ContentDigest = ContentDigestOf(DefinitionDigest, catalog.Digest, worldHashes);
+            taskIds = TaskIdsOf(catalog); structuredIds = StructuredIdsOf(catalog);
             Bootstrap = BuildBootstrap();
         }
+        private MapRuntimeContent(MapRuntimeContent previous, MapTaskCatalog catalog)
+        {
+            Definition = previous.Definition; DefinitionDigest = previous.DefinitionDigest;
+            WorldOccurrences = previous.WorldOccurrences; worldHashes = previous.worldHashes;
+            Catalog = catalog; ContentDigest = ContentDigestOf(DefinitionDigest, catalog.Digest, worldHashes);
+            taskIds = TaskIdsOf(catalog); structuredIds = StructuredIdsOf(catalog);
+            Bootstrap = BuildBootstrap();
+        }
+        /// <summary>只重建任务目录层。地图定义与世界源沿用本实例，作者保存地图后仍须重启才切换。校验失败直接抛出，调用方保留旧内容。</summary>
+        public MapRuntimeContent ReloadTasks(string root)
+        {
+            var catalog = MapTaskCatalog.Load(root);
+            catalog.ValidateBindings(Definition);
+            return new MapRuntimeContent(this, catalog);
+        }
+        // 摘要口径唯一：定义 + 任务目录 + 世界源。哪一层变了都换内容摘要，定义摘要单独用于「必须重启」判定。
+        private static string ContentDigestOf(string definitionDigest, string catalogDigest, Dictionary<string, string> hashes) =>
+            MapDefinition.Hash(MapDefinition.Utf8.GetBytes(definitionDigest + "\n" + catalogDigest + "\n"
+                + string.Join("\n", hashes.OrderBy(p => p.Key, StringComparer.Ordinal).Select(p => p.Key + " " + p.Value))));
+        private static HashSet<string> TaskIdsOf(MapTaskCatalog catalog) =>
+            new HashSet<string>(catalog.Tasks.Properties().Select(p => p.Name), StringComparer.Ordinal);
+        private static HashSet<string> StructuredIdsOf(MapTaskCatalog catalog) =>
+            new HashSet<string>(catalog.Tasks.Properties().Where(p => p.Value["get_endpoint"] is JObject || p.Value["finish_endpoint"] is JObject).Select(p => p.Name), StringComparer.Ordinal);
         private JObject BuildBootstrap()
         {
             var locationByHotspot = new JObject(); var pageByHotspot = new JObject(); var locationByFrame = new JObject(); var frames = new JObject();

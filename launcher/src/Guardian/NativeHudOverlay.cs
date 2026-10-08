@@ -68,6 +68,7 @@ namespace CF7Launcher.Guardian
 
         // NotchWidget 引用：AddWidget 时自动捕获，INotchSink.AddNotice/SetStatusItem/ClearStatusItem 路由到此
         private NotchWidget _notchWidget;
+        private int _suspendedAtMs;
 
         // 右侧条件槽只在这里做一次优先级仲裁；两个 widget 只消费同一个封闭 owner 投影。
         private RightContextWidget _rightContextWidget;
@@ -137,6 +138,7 @@ namespace CF7Launcher.Guardian
             NotifySuppressed("panel_suspend");
             if (FocusTrace.Enabled) FocusTrace.Record("hud.suspend");
             _suspendedForPanel = true;
+            _suspendedAtMs = Environment.TickCount;
             NotifyResumableState();
             if (_animTick != null) _animTick.Stop();
             _lastTickMs = 0;
@@ -150,6 +152,11 @@ namespace CF7Launcher.Guardian
         {
             _pointerBoundary = unchecked((uint)Environment.TickCount);
             _suspendedForPanel = false;
+            // 挂起期间 widget 未 tick：把这段时长老化给瞬时行，避免旧提示在面板关闭后复活
+            if (_suspendedAtMs != 0 && _notchWidget != null)
+                _notchWidget.AgeTransientRowsForSuspend(
+                    Math.Max(0, unchecked(Environment.TickCount - _suspendedAtMs)));
+            _suspendedAtMs = 0;
             NotifyResumableState();
             if (FocusTrace.Enabled) FocusTrace.Record("hud.resume");
             RecomputeBounds();

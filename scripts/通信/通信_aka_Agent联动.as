@@ -4,6 +4,10 @@ _root.agent = {};
 _root.agent.npc_state_db_exists = false;
 _root.agent.last_task_publish_version = null;
 _root.agent.sync_poll_busy = false;
+_root.agent.sync_apply_busy = false;
+// 宿主已换任务内容而游戏侧重载未落地时为 true；下一轮无条件整目录重载补齐。
+_root.agent.task_reload_owed = false;
+_root.agent.failed_publish_version = null;
 _root.agent.REL_SYNC_STATE = "data/rag/sync_state.json";
 _root.agent.REL_NPC_STATE_DB = "data/rag/npc_state_db.json";
 _root.agent.REL_LAUNCH_BAT = "data/rag/launch_cfn_rag.bat";
@@ -78,6 +82,9 @@ _root.agent.轮询同步状态 = function():Void {
     if (_root.agent.sync_poll_busy == true) {
         return;
     }
+    if (_root.agent.sync_apply_busy == true) {
+        return;
+    }
     if (!PathManager.isEnvironmentValid()) {
         return;
     }
@@ -108,18 +115,86 @@ _root.agent.轮询同步状态 = function():Void {
             return;
         }
         _root.发布消息("正在接收终端任务数据……");
-        _root.重新加载任务数据(
-            function():Void {
-                r.last_task_publish_version = fileVer;
-                _root.最上层发布文字提示("已接收终端任务数据！");
-            },
-            function():Void {
-                r.last_task_publish_version = fileVer;
-                _root.最上层发布文字提示("任务数据更新失败！");
-            }
-        );
+        _root.agent.同步任务热更新(fileVer);
     };
     lv.load(fullPath);
+};
+
+// 任务发布版本变化后的收敛流程。宿主是变更权威：由它重读任务目录、判定哪些源文件真的变了，
+// 游戏侧只按清单增量重载，最后原子提交宿主回传的新握手（内容摘要 + 会话令牌）。
+// finish 与 giveUp 合计恰好执行一次，绝不把桥留在提交窗口里；版本号只在真正收敛后推进。
+_root.agent.同步任务热更新 = function(fileVer:Number):Void {
+    var r:Object = _root.agent;
+    if (r.sync_apply_busy == true || _root._taskReloadBusy == true) {
+        return;
+    }
+    r.sync_apply_busy = true;
+    var done:Boolean = false;
+
+    function finish():Void {
+        if (done) {
+            return;
+        }
+        done = true;
+        r.sync_apply_busy = false;
+        r.task_reload_owed = false;
+        org.flashNight.arki.map.MapDomainBridge.commitTaskSync();
+        r.last_task_publish_version = fileVer;
+        _root.最上层发布文字提示("已接收终端任务数据！");
+    }
+
+    // 宿主已换内容但游戏侧没跟上时，欠账标记让下一轮无条件重载到磁盘真值；
+    // 版本号不推进，所以本轮不算同步完成，失败提示同一版本只出一次。
+    function giveUp(reason:String):Void {
+        if (done) {
+            return;
+        }
+        done = true;
+        r.sync_apply_busy = false;
+        _root.发布消息("任务热更新未收敛：" + reason);
+        if (r.failed_publish_version != fileVer) {
+            r.failed_publish_version = fileVer;
+            _root.最上层发布文字提示("任务数据更新失败！");
+        }
+    }
+
+    function reload(changedFiles:Array):Void {
+        if (_root._taskReloadBusy == true) {
+            giveUp("任务重载已在执行中");
+            return;
+        }
+        _root.重新加载任务数据(
+            function():Void {
+                finish();
+            },
+            function():Void {
+                if (changedFiles == null) {
+                    giveUp("任务数据重载失败");
+                    return;
+                }
+                reload(null);
+            },
+            changedFiles
+        );
+    }
+
+    org.flashNight.arki.map.MapDomainBridge.syncTasks(function(ok:Boolean, error:String, result:Object):Void {
+        if (ok != true) {
+            giveUp(String(error));
+            return;
+        }
+        // 欠账优先：上一轮宿主已换内容而游戏侧没落地，这轮无论宿主怎么答都整目录重载。
+        if (r.task_reload_owed == true) {
+            reload(null);
+            return;
+        }
+        if (result == undefined || result.changed != true) {
+            finish();
+            return;
+        }
+        r.task_reload_owed = true;
+        reload((result.listChanged == true || !(result.changedFiles instanceof Array)) ? null : result.changedFiles);
+    });
 };
 
 _root.agent.注册同步轮询 = function():Void {

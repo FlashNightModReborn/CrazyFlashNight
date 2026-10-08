@@ -23,6 +23,8 @@ class org.flashNight.arki.map.MapDomainBridgeTest {
     private static var _panelCallbacks:Array;
     private static var _acceptedTasks:Array;
     private static var _interestResults:Array;
+    private static var _syncCalls:Number;
+    private static var _lastSync:Object;
 
     private static function check(ok:Boolean, label:String):Void {
         if (ok) { _passed++; trace("[PASS] " + label); }
@@ -305,6 +307,135 @@ class org.flashNight.arki.map.MapDomainBridgeTest {
             restoreFields(_root,rootFields,savedRoot);
         }
     }
+    private static function hex(length:Number, seed:String):String {
+        var out:String = "";
+        while (out.length < length) out += seed;
+        return out.substring(0, length);
+    }
+    private static function bootOf(token:String, content:String, definition:String, ids:Array):Object {
+        return {version:2, sessionToken:token, contentDigest:content, definitionDigest:definition,
+            taskIds:ids, chains:[], worldBindings:[], infrastructureKeys:[], availableTaskIds:[],
+            structuredTaskIds:[], taskNpcLabels:{}, locationByHotspot:{alpha:"alpha"}, pageByHotspot:{},
+            locationByFrame:{}, frames:{alpha:"甲场景"}, locationLabels:{}};
+    }
+    private static function captureSync(ok:Boolean, error:String, result:Object):Void {
+        _syncCalls++;
+        _lastSync = {ok:ok, error:error, result:result};
+    }
+    private static function checkTaskSync():Void {
+        var bridge:Object = MapDomainBridge, world:Object = MapWorldNpcController;
+        var server:Object = ServerManager.getInstance();
+        var bridgeFields:Array = ["_installed","_bootstrap","_projection","_sessionToken","_loadedDigest","_loadedDefinitionDigest",
+            "_knownTasks","_interests","_waiters","_flight","_navigationFlight","_syncFlight","_syncBootstrap",
+            "_force","_acceptedRevision","_confirmedSignature","_helloFlight"];
+        var savedBridge:Object = snapshotFields(bridge, bridgeFields);
+        var oldObserve:Function = bridge.observeScene, oldRefresh:Function = world.refresh;
+        var oldConnected:Boolean = server.isSocketConnected, oldBoot:Object = _root.__boot;
+        try {
+            bridge.observeScene = function():Void {};
+            world.refresh = function():Void {};
+            server.isSocketConnected = true;
+            _root.__boot = {mapDomainReady:false, mapDomainFailed:false};
+            var base:Number = _wire.length;
+            var tokenA:String = hex(32,"a"), contentA:String = hex(64,"c"), definition:String = hex(64,"d");
+            bridge._installed = true; bridge._bootstrap = bootOf(tokenA, contentA, definition, ["1","2"]);
+            bridge._sessionToken = tokenA; bridge._loadedDigest = contentA; bridge._loadedDefinitionDigest = definition;
+            bridge._knownTasks = {"$1":true,"$2":true}; bridge._interests = ["1"]; bridge._waiters = [];
+            bridge._flight = undefined; bridge._navigationFlight = undefined; bridge._helloFlight = false;
+            bridge._syncFlight = undefined; bridge._syncBootstrap = undefined;
+            bridge._projection = {snapshot:{version:4}}; bridge._force = false;
+            _syncCalls = 0; _lastSync = {};
+
+            bridge._sessionToken = "";
+            MapDomainBridge.syncTasks(captureSync);
+            check(_syncCalls == 1 && _lastSync.ok === false && _lastSync.error == "map_domain_not_ready" && _wire.length == base,
+                "task sync refuses to reach the wire without an installed session");
+            bridge._sessionToken = tokenA;
+
+            MapDomainBridge.syncTasks(captureSync);
+            var request:Object = _wire[base].request;
+            var keyCount:Number = 0;
+            for (var key:String in request) keyCount++;
+            check(_wire.length == base + 1 && request.op == "task_sync" && request.version === 2 && keyCount == 2,
+                "task sync submits exactly the versioned operation and no sampled game facts");
+            MapDomainBridge.syncTasks(captureSync);
+            check(_wire.length == base + 1 && _lastSync.ok === false && _lastSync.error == "task_sync_busy",
+                "a second task sync is rejected while the first is still in flight");
+
+            _wire[base].callback({success:true, result:{version:2, changed:false}});
+            check(_lastSync.ok === true && _syncCalls == 3 && bridge._syncBootstrap == undefined
+                && bridge._sessionToken == tokenA && bridge._loadedDigest == contentA,
+                "an unchanged task catalog leaves the running session and content alone");
+
+            var staged:Object = bootOf(hex(32,"b"), hex(64,"e"), definition, ["1","2","3"]);
+            bridge._flight = {stale:true};
+            MapDomainBridge.syncTasks(captureSync);
+            _wire[_wire.length - 1].callback({success:true, result:{version:2, changed:true, listChanged:false,
+                changedFiles:["data/task/agent_tasks.json"], bootstrap:staged}});
+            check(_lastSync.ok === true && _lastSync.result.changedFiles.length == 1 && bridge._syncBootstrap === staged
+                && bridge._flight == undefined && bridge._sessionToken == tokenA && bridge._loadedDigest == contentA
+                && bridge._bootstrap.taskIds.length == 2,
+                "a changed catalog is staged without swapping the live session mid-reload");
+
+            var sent:Number = _wire.length;
+            bridge._waiters = [{ids:[], sceneEpoch:bridge._sceneEpoch, deadline:getTimer() + 3000,
+                callback:function(ok:Boolean, error:String):Void {
+                    org.flashNight.arki.map.MapDomainBridgeTest._interestResults.push(error);
+                }}];
+            _interestResults = [];
+            MapDomainBridge.tick();
+            check(_wire.length == sent && bridge._waiters.length == 1,
+                "the pending commit window submits no projection and keeps its waiter");
+            check(bridge.installResult({}, {success:false, error:"invalid_session"}) === false && bridge._bootstrap != undefined,
+                "a stale invalid_session reply cannot drop the installed bootstrap during the window");
+
+            check(MapDomainBridge.commitTaskSync() === true && bridge._sessionToken == staged.sessionToken
+                && bridge._loadedDigest == staged.contentDigest && bridge._loadedDefinitionDigest == definition
+                && bridge._bootstrap === staged && bridge._knownTasks["$3"] === true && bridge._knownTasks["$4"] == undefined
+                && bridge._interests.length == 0 && bridge._syncBootstrap == undefined && bridge._projection == undefined
+                && bridge._force === true && _root.__boot.mapDomainReady === true
+                && _interestResults.length == 1 && _interestResults[0] == "map_content_reloaded",
+                "commit swaps session, content digest and known tasks together and releases local waiters");
+            check(MapDomainBridge.commitTaskSync() === false, "a second commit without a staged bootstrap changes nothing");
+
+            MapDomainBridge.syncTasks(captureSync);
+            _wire[_wire.length - 1].callback({success:false, error:"任务源目录为空或过大。"});
+            check(_lastSync.ok === false && _lastSync.error == "任务源目录为空或过大。"
+                && bridge._syncBootstrap == undefined && bridge._sessionToken == staged.sessionToken,
+                "a rejected host reload keeps the previous catalog live");
+
+            MapDomainBridge.syncTasks(captureSync);
+            _wire[_wire.length - 1].callback({success:true, result:{version:2, changed:true, bootstrap:{version:2}}});
+            check(_lastSync.ok === false && _lastSync.error == "invalid_bootstrap" && bridge._syncBootstrap == undefined,
+                "a malformed staged bootstrap is rejected instead of half-installed");
+
+            MapDomainBridge.syncTasks(captureSync);
+            _wire[_wire.length - 1].callback({success:true, result:{version:2, changed:true,
+                bootstrap:bootOf(hex(32,"e"), hex(64,"f"), hex(64,"9"), ["1"])}});
+            check(_lastSync.ok === false && _lastSync.error == "definition_changed" && bridge._syncBootstrap == undefined,
+                "task sync can never smuggle in a different map definition");
+
+            var reloaded:Object = bootOf(hex(32,"c"), hex(64,"f"), definition, ["1","2","3"]);
+            bridge.onHello({success:true, result:reloaded});
+            check(bridge._sessionToken == reloaded.sessionToken && _root.__boot.mapDomainFailed === false,
+                "a new task catalog under the same definition installs without a restart");
+            bridge.onHello({success:true, result:bootOf(hex(32,"d"), hex(64,"f"), hex(64,"9"), ["1","2","3"])});
+            check(bridge._sessionToken == reloaded.sessionToken && _root.__boot.mapDomainFailed === true,
+                "a changed map definition still fails closed and demands a restart");
+
+            MapDomainBridge.syncTasks(captureSync);
+            _wire[_wire.length - 1].callback({success:true, result:{version:2, changed:true, bootstrap:staged}});
+            server.isSocketConnected = false;
+            MapDomainBridge.tick();
+            check(bridge._syncBootstrap == undefined && bridge._bootstrap == undefined,
+                "a dropped connection discards the staged bootstrap of a dead session generation");
+        } catch(error) { _failed++; trace("[FAIL] unexpected task sync test exception: " + error); }
+        finally {
+            restoreFields(bridge, bridgeFields, savedBridge);
+            bridge.observeScene = oldObserve; world.refresh = oldRefresh;
+            server.isSocketConnected = oldConnected; _root.__boot = oldBoot;
+        }
+    }
     public static function runAllTests():Void {
         _passed = 0; _failed = 0; _wire = []; _facts = {chains:{主线:0},tasks:{},scene:{stageFlag:"甲场景"}}; _blocked = "";
         _fadeCount = 0; _frame = "";
@@ -314,7 +445,8 @@ class org.flashNight.arki.map.MapDomainBridgeTest {
         var server:Object = ServerManager.getInstance();
         var fields:Array = ["_installed","_bootstrap","_projection","_json","_loadedDigest","_sessionToken","_helloFlight","_flight",
             "_navigationFlight","_waiters","_interests","_knownTasks","_revision","_acceptedRevision","_sceneEpoch",
-            "_lastWorld","_sceneStamp","_signature","_confirmedSignature","_lastAttempt","_helloAttempt","_navigationBusyUntil","_force"];
+            "_lastWorld","_sceneStamp","_signature","_confirmedSignature","_lastAttempt","_helloAttempt","_navigationBusyUntil","_force",
+            "_loadedDefinitionDigest","_syncFlight","_syncBootstrap"];
         var saved:Object = snapshotFields(bridge,fields);
         var rootFields:Array = ["淡出动画","关卡结束界面","场景进入位置名","__pushMapHudState","gameworld","初始化NPC"];
         var rootSaved:Object = snapshotFields(_root,rootFields);
@@ -404,6 +536,7 @@ class org.flashNight.arki.map.MapDomainBridgeTest {
             checkPanelResponses();
             checkMapReturn();
             checkInterestLifetimes();
+            checkTaskSync();
         } catch(error) { _failed++; trace("[FAIL] unexpected bridge test exception: " + error); }
         finally {
             restoreFields(bridge,fields,saved); restoreFields(world,worldFields,worldSaved); restoreFields(_root,rootFields,rootSaved);

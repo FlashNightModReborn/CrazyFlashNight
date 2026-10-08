@@ -13,9 +13,10 @@ namespace CF7Launcher.Tasks
     /// <summary>socket-only 地图事实入口。Web/HTTP 不能向此域投喂运行态事实。</summary>
     public sealed class MapDomainTask : IDisposable
     {
-        private readonly MapRuntimeContent content;
+        private MapRuntimeContent content;
         private readonly XmlSocketServer socket;
         private readonly CF7Launcher.Guardian.Hud.MapHudDataCatalog hudCatalog;
+        private readonly string projectRoot;
         private readonly object gate = new object();
         private int generation = -1;
         private string token = "", factsDigest = "";
@@ -23,12 +24,14 @@ namespace CF7Launcher.Tasks
         private JObject lastFacts;
         private readonly Dictionary<string, TaskCompletionSource<JObject>> captures = new Dictionary<string, TaskCompletionSource<JObject>>(StringComparer.Ordinal);
         private bool disposed;
-        public MapDomainTask(XmlSocketServer socket, MapRuntimeContent content, CF7Launcher.Guardian.Hud.MapHudDataCatalog hudCatalog = null)
+        /// <summary>当前生效内容。任务目录层热重载后会换成新实例，读取方每次都取实时值。</summary>
+        public MapRuntimeContent Content { get { lock (gate) return content; } }
+        public MapDomainTask(XmlSocketServer socket, MapRuntimeContent content, CF7Launcher.Guardian.Hud.MapHudDataCatalog hudCatalog = null, string projectRoot = null)
         {
-            this.socket = socket; this.content = content; this.hudCatalog = hudCatalog;
+            this.socket = socket; this.content = content; this.hudCatalog = hudCatalog; this.projectRoot = projectRoot;
             if (socket != null) socket.OnClientDisconnectedForGeneration += Disconnected;
         }
-        internal MapDomainTask(MapRuntimeContent content) : this(null, content) { }
+        internal MapDomainTask(MapRuntimeContent content, string projectRoot = null) : this(null, content, null, projectRoot) { }
         private void Disconnected(int expected)
         {
             lock (gate) if (generation == expected) Reset(-1);
@@ -57,6 +60,8 @@ namespace CF7Launcher.Tasks
         }
         internal JObject Process(JObject payload, int expected, Func<bool> ready, Func<Func<bool>, bool> fence = null)
         {
+            // 一包请求内只用一个内容快照，避免热重载把新旧任务目录混进同一次投影。
+            MapRuntimeContent snapshot = Content;
             try
             {
                 MapRuleEvaluator.Need(payload != null && payload["version"]?.Type == JTokenType.Integer && payload.Value<int>("version") == 2, "地图事实协议版本不正确。");
@@ -76,18 +81,43 @@ namespace CF7Launcher.Tasks
                     MapRuleEvaluator.Need(fence == null ? Hello() : fence(Hello), "地图事实连接尚未就绪。");
                     return Success(hello);
                 }
+                if (op == "task_sync")
+                {
+                    MapRuleEvaluator.Keys(payload, "version", "op");
+                    MapRuleEvaluator.Need(projectRoot != null, "宿主没有项目根，无法热重载任务目录。");
+                    // 磁盘重读与校验在会话锁外完成；失败直接抛出，旧内容原样保留，不半应用。
+                    MapRuntimeContent reloaded = snapshot.ReloadTasks(projectRoot);
+                    JObject sync = null;
+                    bool Sync()
+                    {
+                        lock (gate)
+                        {
+                            if (disposed || !ready()) return false;
+                            if (generation != expected) Reset(expected);
+                            if (content.ContentDigest == reloaded.ContentDigest) { sync = new JObject { ["version"] = 2, ["changed"] = false }; return true; }
+                            var changed = MapTaskCatalog.ChangedSources(content.Catalog, reloaded.Catalog);
+                            content = reloaded; RotateSessionForContentSwap();
+                            var bootstrap = (JObject)reloaded.Bootstrap.DeepClone(); bootstrap["sessionToken"] = token;
+                            sync = new JObject { ["version"] = 2, ["changed"] = true, ["listChanged"] = changed.Any(IsTaskSourceList),
+                                ["changedFiles"] = new JArray(changed.Select(x => (object)x).ToArray()), ["bootstrap"] = bootstrap };
+                            return true;
+                        }
+                    }
+                    MapRuleEvaluator.Need(fence == null ? Sync() : fence(Sync), "地图事实连接尚未就绪。");
+                    return Success(sync);
+                }
                 MapRuleEvaluator.Need(op == "project", "地图事实入口不支持该操作。");
                 MapRuleEvaluator.Keys(payload, "version", "op", "sessionToken", "contentDigest", "revision", "sceneEpoch", "ready", "facts", "interestTaskIds", "captureIds", "intent");
                 long nextRevision = MapRuleEvaluator.Integer(payload["revision"], "事实版本"), nextScene = MapRuleEvaluator.Integer(payload["sceneEpoch"], "场景版本");
                 MapRuleEvaluator.Need(payload["ready"]?.Type == JTokenType.Boolean, "缺少事实就绪状态。");
-                var interests = content.ValidateTaskIds(payload["interestTaskIds"]);
+                var interests = snapshot.ValidateTaskIds(payload["interestTaskIds"]);
                 MapRuleEvaluator.Need(payload["captureIds"] is JArray captureIds && captureIds.Count <= 8 && captureIds.All(x => x.Type == JTokenType.String && System.Text.RegularExpressions.Regex.IsMatch((string)x, @"\A[a-f0-9]{32}\z")) && captureIds.Select(x => (string)x).Distinct().Count() == captureIds.Count, "事实采样回执不正确。");
-                JObject facts = content.NormalizeFacts(payload["facts"] as JObject);
+                JObject facts = snapshot.NormalizeFacts(payload["facts"] as JObject);
                 MapRuleEvaluator.Need(payload["intent"] == null || payload["intent"].Type == JTokenType.Null || payload["intent"] is JObject, "地图意图必须是对象。");
                 string digest = MapDefinition.Hash(MapDefinition.Bytes(new JObject { ["ready"] = payload["ready"], ["sceneEpoch"] = nextScene, ["facts"] = facts }));
-                JObject projected = payload.Value<bool>("ready") ? content.Project(facts) : null;
-                var hud = projected == null || hudCatalog == null ? null : MapDefinition.Hud(content.Definition, (JObject)projected["snapshot"]).ToObject<CF7Launcher.Guardian.Hud.MapHudPayload>();
-                JObject admission = projected != null && payload["intent"] is JObject intent ? Admit(intent, projected, facts) : null;
+                JObject projected = payload.Value<bool>("ready") ? snapshot.Project(facts) : null;
+                var hud = projected == null || hudCatalog == null ? null : MapDefinition.Hud(snapshot.Definition, (JObject)projected["snapshot"]).ToObject<CF7Launcher.Guardian.Hud.MapHudPayload>();
+                JObject admission = projected != null && payload["intent"] is JObject intent ? Admit(snapshot, intent, projected, facts) : null;
                 JObject response = null;
                 bool Install()
                 {
@@ -119,7 +149,14 @@ namespace CF7Launcher.Tasks
             }
             catch (Exception e) { return Failure(e.Message); }
         }
-        private JObject Admit(JObject intent, JObject projected, JObject facts)
+        // 内容热交换只换会话身份，不清 HUD 载荷：下一包投影会自然覆盖，避免地图 HUD 瞬时空白。
+        private void RotateSessionForContentSwap()
+        {
+            token = Guid.NewGuid().ToString("N"); revision = -1; sceneEpoch = -1; factsDigest = ""; lastFacts = null;
+            foreach (var waiter in captures.Values) waiter.TrySetException(new InvalidOperationException("任务目录已热重载。")); captures.Clear();
+        }
+        private static bool IsTaskSourceList(string file) => file == "data/task/list.xml" || file == "data/task/text/list.xml";
+        private JObject Admit(MapRuntimeContent content, JObject intent, JObject projected, JObject facts)
         {
             string kind = intent.Value<string>("kind"), hotspot = "";
             if (kind == "navigate")
@@ -183,7 +220,8 @@ namespace CF7Launcher.Tasks
         }
         public async Task<JObject> CaptureAsync(JArray taskIds)
         {
-            var ids = content.ValidateTaskIds(taskIds); string captureId = Guid.NewGuid().ToString("N");
+            MapRuntimeContent snapshot = Content;
+            var ids = snapshot.ValidateTaskIds(taskIds); string captureId = Guid.NewGuid().ToString("N");
             var source = new TaskCompletionSource<JObject>(TaskCreationOptions.RunContinuationsAsynchronously);
             int expected = -1; JObject command = null;
             bool registered = socket.RunWithConnectionTransitionFence(() =>

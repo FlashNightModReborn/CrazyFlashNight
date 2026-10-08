@@ -295,6 +295,32 @@ namespace CF7Launcher.Tests.RagTerminal
         }
 
         [Fact]
+        public void ShutdownOnExitPostsExactEndpoint()
+        {
+            var handler = new RagHttpStub(request =>
+                RagHttpStub.Json("{\"ok\":true,\"status\":\"shutting_down\"}"));
+            using var service = new RagTerminalService(@"C:\x\CrazyFlashNight", null, handler, path => { });
+
+            service.ShutdownEmbeddedOnExit();
+
+            Assert.Equal("http://127.0.0.1:7077/api/integration/shutdown", handler.Requests[0].RequestUri.AbsoluteUri);
+            Assert.Equal(HttpMethod.Post, handler.Requests[0].Method);
+            Assert.Equal("{}", handler.Bodies[0]);
+        }
+
+        [Fact]
+        public void ShutdownOnExitStandaloneRejectionIsSilent()
+        {
+            var handler = new RagHttpStub(request =>
+                RagHttpStub.Json("{\"detail\":\"standalone\"}", HttpStatusCode.Conflict));
+            using var service = new RagTerminalService(@"C:\x\CrazyFlashNight", null, handler, path => { });
+
+            service.ShutdownEmbeddedOnExit();
+
+            Assert.Single(handler.Requests);
+        }
+
+        [Fact]
         public async Task PrepareHappyPathProbesHealthThenBinds()
         {
             var handler = new RagHttpStub(request => request.RequestUri.AbsolutePath == "/api/health"
