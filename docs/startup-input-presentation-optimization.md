@@ -215,3 +215,5 @@ GitHub API 的临时 EOF 使首次监控客户端中止，后续只观察并 Res
 promotion 完成双 signer/双 faultDomain 的 strict replay、staged/live payload 复核及正式 bootstrap `--verify-only` 完整安装核验，保留可恢复 previous bundle。实际更新仅根 bootstrap、Core、世界呈现 native DLL、runtime manifest 和 signed consensus 五个部署路径，没有手工把开发候选拷入正式目录。部署提交、推送与远端 Audit 结果由本节后续记录及 main 接续文件保存。
 
 该状态是 `promoted`，不是新发布程序的完整 `standard_entry_verified`：Agent 没有启动游戏/Flash actor、回放奖励或试写真实存档。新播报的实际视觉、物理输入与弱机器/MPO 专项仍待人验；专用鼠标泵、全部交互 HUD/Web 统一及嵌入迟到回调等后续风险未被本批冒称完成。旧候选的持续资格不转签给新 identity/closure，夜间未唤醒屏幕或放宽断言。
+
+部署提交 `0a2c92671f04aa980f2c7782df23715a114295a0` 已正常推送 main；提交后的本机 standalone strict replay 通过。[首次远端 Audit](https://github.com/FlashNightModReborn/CrazyFlashNight/actions/runs/37806299272) 成功，日志明确为 `state=promoted`、`deploymentChanged=true`、`signers=2 faultDomains=2`，不是仅 source-ahead 或跳过检查的绿灯。最终提交树、远端 HEAD、正式 Core 和保留回滚位置记录于 main 的 `tmp/startup-input-presentation/release-final-result.json`；后续只读核对真实新增日志，未收到下一阶段反馈前不继续扩功能或重建不变产物。
