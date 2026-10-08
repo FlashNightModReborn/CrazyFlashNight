@@ -33,7 +33,7 @@
         <entry code="level-band.40plus-float" delta="1" ruleRef="ABR-LAYER-004" />
       </budgetBreakdown>
       <inputDigest>fnv1a32:017ded45</inputDigest>
-      <sourceDigest>sha256:a7a2a99a7c68df49b05a3c1cc08b98bf0da888aee5d507d7a2cb720b5d1731af</sourceDigest>
+      <sourceDigest>sha256:1d229103cb41bc973fea20c2f3aa62facaf0b3d5bb15f0b180f7b8798ea4f604</sourceDigest>
       <note>金币公式值187200整十万取整+6.8%，2026-09-19经济权威确认（issue #62）；M=3=K点购买1+高价1+40级浮动1</note>
     </record>
     <record>
@@ -63,7 +63,7 @@
         <entry code="level-band.40plus-float" delta="1" ruleRef="ABR-LAYER-004" />
       </budgetBreakdown>
       <inputDigest>fnv1a32:2d32b831</inputDigest>
-      <sourceDigest>sha256:3b80f0c57a31759e15c88182860d586821916e056212d98be4acb75a0808b6e1</sourceDigest>
+      <sourceDigest>sha256:afb32f104f26dbb1c867e7a81ffa085771faa8a2b45eb8c6da80b9daecf461e0</sourceDigest>
       <note>金币公式值187200整十万取整+6.8%，2026-09-19经济权威确认（issue #62）；M=3=K点购买1+高价1+40级浮动1</note>
     </record>
     <record>
@@ -93,7 +93,7 @@
         <entry code="level-band.40plus-float" delta="1" ruleRef="ABR-LAYER-004" />
       </budgetBreakdown>
       <inputDigest>fnv1a32:2279a848</inputDigest>
-      <sourceDigest>sha256:299c81d1e4402eab13fd94b767c7ca6b7744cbd7ed776889a069071afb5b9e04</sourceDigest>
+      <sourceDigest>sha256:8d9640079c7e4aea64d30a119fe26971084e26c208bb5d5a57b712aa89e57aaa</sourceDigest>
       <note>金币公式值187200整十万取整+6.8%，2026-09-19经济权威确认（issue #62）；M=3=K点购买1+高价1+40级浮动1</note>
     </record>
     <record>
@@ -123,7 +123,7 @@
         <entry code="level-band.40plus-float" delta="1" ruleRef="ABR-LAYER-004" />
       </budgetBreakdown>
       <inputDigest>fnv1a32:5aaa475c</inputDigest>
-      <sourceDigest>sha256:a6966f8e9a8c137fc8b8dd2ef3fdff6b360c6fb3ecb3ee058ba01921471b3749</sourceDigest>
+      <sourceDigest>sha256:d6a05d23ad4ba09b3de6d55cefb5c70e2f300da57fcdb7a795f4226a2aaf8c99</sourceDigest>
       <note>金币公式值187200整十万取整+6.8%，2026-09-19经济权威确认（issue #62）；M=3=K点购买1+高价1+40级浮动1</note>
     </record>
     <record>
@@ -153,8 +153,138 @@
         <entry code="level-band.40plus-float" delta="1" ruleRef="ABR-LAYER-004" />
       </budgetBreakdown>
       <inputDigest>fnv1a32:fa15770f</inputDigest>
-      <sourceDigest>sha256:cd0c3aaa6757eb4feb16de5797f5391c3cd12a1a17cb754e22d99eba1d11ab14</sourceDigest>
+      <sourceDigest>sha256:7c77ac5555072611ca3f8eb784d7c8621d09fe237e7d674f6dfdfc1903b3ba3f</sourceDigest>
       <note>金币公式值187200整十万取整+6.8%，2026-09-19经济权威确认（issue #62）；M=3=K点购买1+高价1+40级浮动1</note>
+    </record>
+    <record>
+      <auditRef>armor:重装特勤头盔</auditRef>
+      <itemName>重装特勤头盔</itemName>
+      <sourceFile>data/items/防具_20-39级.xml</sourceFile>
+      <weightLayers>2</weightLayers>
+      <priceLayers>0</priceLayers>
+      <category>0.5</category>
+      <damageTypeFactor>1</damageTypeFactor>
+      <adoptedGoldPrice>27300</adoptedGoldPrice>
+      <status>unresolved</status>
+      <marketPrice>27300</marketPrice>
+      <currentScore>700</currentScore>
+      <balanceScore>450</balanceScore>
+      <weightedScore>703.125</weightedScore>
+      <magicDefAvgCap>14.2</magicDefAvgCap>
+      <magicDefMaxCap>29.2</magicDefMaxCap>
+      <recommendedGoldPrice>27300</recommendedGoldPrice>
+      <recommendedKPointPrice>1890</recommendedKPointPrice>
+      <inputs level="21" defence="150" hp="85" mp="60" damage="85" weaponBonus="0" weight="3" punch="0" magicDefence="0" />
+      <budgetBreakdown>
+        <entry code="acquisition.crafting" delta="2" ruleRef="ABR-LAYER-001" evidenceRef="data/crafting/公社防具.json#craft.commune-armor.011" />
+      </budgetBreakdown>
+      <inputDigest>fnv1a32:5486427d</inputDigest>
+      <sourceDigest>sha256:d3ad7bea2b939fd5288d21d86023d881a177089c29952ae5b3f4f24644f8b1e2</sourceDigest>
+      <note>21级，沿特战套配比；合成表成本D33低价合成1+高价1合并计2层。无成品购买途径，装备价格D22系数0.5、D27价格层0。每件折算成本33600；原战斗数值不变，实战验收待完成。</note>
+    </record>
+    <record>
+      <auditRef>armor:重装特勤背心</auditRef>
+      <itemName>重装特勤背心</itemName>
+      <sourceFile>data/items/防具_20-39级.xml</sourceFile>
+      <weightLayers>2</weightLayers>
+      <priceLayers>0</priceLayers>
+      <category>0.5</category>
+      <damageTypeFactor>1</damageTypeFactor>
+      <adoptedGoldPrice>27300</adoptedGoldPrice>
+      <status>unresolved</status>
+      <marketPrice>27300</marketPrice>
+      <currentScore>730</currentScore>
+      <balanceScore>470</balanceScore>
+      <weightedScore>734.375</weightedScore>
+      <magicDefAvgCap>14.2</magicDefAvgCap>
+      <magicDefMaxCap>29.2</magicDefMaxCap>
+      <recommendedGoldPrice>27300</recommendedGoldPrice>
+      <recommendedKPointPrice>1890</recommendedKPointPrice>
+      <inputs level="21" defence="165" hp="85" mp="60" damage="85" weaponBonus="0" weight="5" punch="0" magicDefence="0" />
+      <budgetBreakdown>
+        <entry code="acquisition.crafting" delta="2" ruleRef="ABR-LAYER-001" evidenceRef="data/crafting/公社防具.json#craft.commune-armor.012" />
+      </budgetBreakdown>
+      <inputDigest>fnv1a32:4be63d0c</inputDigest>
+      <sourceDigest>sha256:b41b7ea40981945d1f23b0047586e701c751f8899d41061a579f75ee8ae7d8c7</sourceDigest>
+      <note>21级，沿特战套配比；合成表成本D33低价合成1+高价1合并计2层。无成品购买途径，装备价格D22系数0.5、D27价格层0。每件折算成本33600；原战斗数值不变，实战验收待完成。</note>
+    </record>
+    <record>
+      <auditRef>armor:重装特勤手套</auditRef>
+      <itemName>重装特勤手套</itemName>
+      <sourceFile>data/items/防具_20-39级.xml</sourceFile>
+      <weightLayers>2</weightLayers>
+      <priceLayers>0</priceLayers>
+      <category>0.5</category>
+      <damageTypeFactor>1</damageTypeFactor>
+      <adoptedGoldPrice>27300</adoptedGoldPrice>
+      <status>unresolved</status>
+      <marketPrice>27300</marketPrice>
+      <currentScore>700</currentScore>
+      <balanceScore>450</balanceScore>
+      <weightedScore>703.125</weightedScore>
+      <magicDefAvgCap>14.2</magicDefAvgCap>
+      <magicDefMaxCap>29.2</magicDefMaxCap>
+      <recommendedGoldPrice>27300</recommendedGoldPrice>
+      <recommendedKPointPrice>1890</recommendedKPointPrice>
+      <inputs level="21" defence="150" hp="85" mp="60" damage="85" weaponBonus="0" weight="3" punch="0" magicDefence="0" />
+      <budgetBreakdown>
+        <entry code="acquisition.crafting" delta="2" ruleRef="ABR-LAYER-001" evidenceRef="data/crafting/公社防具.json#craft.commune-armor.013" />
+      </budgetBreakdown>
+      <inputDigest>fnv1a32:01b96783</inputDigest>
+      <sourceDigest>sha256:34d29e7243b9a0450787c00bb507e0c0b3ee6c278d1e389a733dff09b1a1987e</sourceDigest>
+      <note>21级，沿特战套配比；合成表成本D33低价合成1+高价1合并计2层。无成品购买途径，装备价格D22系数0.5、D27价格层0。每件折算成本33600；原战斗数值不变，实战验收待完成。</note>
+    </record>
+    <record>
+      <auditRef>armor:重装特勤战术裤</auditRef>
+      <itemName>重装特勤战术裤</itemName>
+      <sourceFile>data/items/防具_20-39级.xml</sourceFile>
+      <weightLayers>2</weightLayers>
+      <priceLayers>0</priceLayers>
+      <category>0.5</category>
+      <damageTypeFactor>1</damageTypeFactor>
+      <adoptedGoldPrice>27300</adoptedGoldPrice>
+      <status>unresolved</status>
+      <marketPrice>27300</marketPrice>
+      <currentScore>730</currentScore>
+      <balanceScore>470</balanceScore>
+      <weightedScore>734.375</weightedScore>
+      <magicDefAvgCap>14.2</magicDefAvgCap>
+      <magicDefMaxCap>29.2</magicDefMaxCap>
+      <recommendedGoldPrice>27300</recommendedGoldPrice>
+      <recommendedKPointPrice>1890</recommendedKPointPrice>
+      <inputs level="21" defence="165" hp="85" mp="60" damage="85" weaponBonus="0" weight="5" punch="0" magicDefence="0" />
+      <budgetBreakdown>
+        <entry code="acquisition.crafting" delta="2" ruleRef="ABR-LAYER-001" evidenceRef="data/crafting/公社防具.json#craft.commune-armor.014" />
+      </budgetBreakdown>
+      <inputDigest>fnv1a32:f0b667f8</inputDigest>
+      <sourceDigest>sha256:ea14b8a626a5f1725b99f0a8df30e728f4960a1fd73d21f4f9d53b0a0720c52e</sourceDigest>
+      <note>21级，沿特战套配比；合成表成本D33低价合成1+高价1合并计2层。无成品购买途径，装备价格D22系数0.5、D27价格层0。每件折算成本33600；原战斗数值不变，实战验收待完成。</note>
+    </record>
+    <record>
+      <auditRef>armor:重装特勤战靴</auditRef>
+      <itemName>重装特勤战靴</itemName>
+      <sourceFile>data/items/防具_20-39级.xml</sourceFile>
+      <weightLayers>2</weightLayers>
+      <priceLayers>0</priceLayers>
+      <category>0.5</category>
+      <damageTypeFactor>1</damageTypeFactor>
+      <adoptedGoldPrice>27300</adoptedGoldPrice>
+      <status>unresolved</status>
+      <marketPrice>27300</marketPrice>
+      <currentScore>700</currentScore>
+      <balanceScore>450</balanceScore>
+      <weightedScore>703.125</weightedScore>
+      <magicDefAvgCap>14.2</magicDefAvgCap>
+      <magicDefMaxCap>29.2</magicDefMaxCap>
+      <recommendedGoldPrice>27300</recommendedGoldPrice>
+      <recommendedKPointPrice>1890</recommendedKPointPrice>
+      <inputs level="21" defence="150" hp="85" mp="60" damage="85" weaponBonus="0" weight="3" punch="0" magicDefence="0" />
+      <budgetBreakdown>
+        <entry code="acquisition.crafting" delta="2" ruleRef="ABR-LAYER-001" evidenceRef="data/crafting/公社防具.json#craft.commune-armor.015" />
+      </budgetBreakdown>
+      <inputDigest>fnv1a32:1d80d7d1</inputDigest>
+      <sourceDigest>sha256:0ddb50a409a7328418ecd14bb7972a65ad44efe90aa4596282ec7c3047f53aa6</sourceDigest>
+      <note>21级，沿特战套配比；合成表成本D33低价合成1+高价1合并计2层。无成品购买途径，装备价格D22系数0.5、D27价格层0。每件折算成本33600；原战斗数值不变，实战验收待完成。</note>
     </record>
   </records>
 </armorBalanceAudit>

@@ -111,3 +111,7 @@ launcher/app.manifest text eol=lf
 /launcher/web/assets/bookshelf/**/*.webm -text
 /launcher/web/assets/bookshelf/**/*.webp -text
 /data/books/sources/** -text
+
+# Sheriff source snapshots carry byte-exact SHA-256 provenance.
+/flashswf/arts/new/Codex素材源稿/重装特勤-R26/** -text whitespace=cr-at-eol
+/flashswf/arts/new/Codex素材源稿/重装特勤-Q变形/** -text whitespace=cr-at-eol

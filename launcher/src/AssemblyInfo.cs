@@ -5,4 +5,6 @@ using System.Runtime.CompilerServices;
 [assembly: InternalsVisibleTo("Launcher.Tests")]
 [assembly: InternalsVisibleTo("HitNumberVisualHarness")]
 [assembly: InternalsVisibleTo("C1IslandHost")]
+[assembly: InternalsVisibleTo("G1Host")]
+[assembly: InternalsVisibleTo("FlashHoverHost")]
 [assembly: InternalsVisibleTo("CombatFxProbe")]

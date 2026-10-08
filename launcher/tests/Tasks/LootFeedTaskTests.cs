@@ -164,6 +164,8 @@ namespace CF7Launcher.Tests.Tasks
         [InlineData("inventory_discard")]
         [InlineData("equipment_tuning")]
         [InlineData("loot_box")]
+        [InlineData("map_chest")]
+        [InlineData("stage_settlement")]
         [InlineData("npc_shop_purchase")]
         [InlineData("npc_shop_sale")]
         [InlineData("kshop_purchase")]
@@ -197,6 +199,58 @@ namespace CF7Launcher.Tests.Tasks
                 Payload("item", "急救包", 1, goodSource),
                 out kind, out name, out count, out source, out icon));
             Assert.Equal(goodSource, source);
+        }
+
+        [Theory]
+        [InlineData("equip", "C级防化服上装", 1L, "map_chest", "map.2.1", "map.2.1", "opened_chest_stash")]
+        [InlineData("equip", "C级防化服下装", 1L, "map_chest", "map.2.1", "map.2.1", "opened_chest_stash")]
+        [InlineData("equip", "红外夜视仪", 1L, "map_chest", "map.2.1", "map.2.1", "opened_chest_stash")]
+        [InlineData("material", "螺丝套件", 4L, "stage_settlement", "stage.settlement.79.stash", null, "stage_reward_stashed")]
+        public void TryParse_ObservedStashReceipts_PreserveCommittedIdentity(
+            string expectedKind, string expectedName, long expectedCount,
+            string expectedSource, string expectedOperation, string expectedScope, string expectedReason)
+        {
+            JObject payload = VersionOnePayload(expectedKind, expectedName, expectedCount, expectedSource);
+            payload["icon"] = expectedName;
+            payload["operationId"] = expectedOperation;
+            payload["reason"] = expectedReason;
+            if (expectedScope != null) payload["mergeScope"] = expectedScope;
+            string kind, name, source, icon, direction, tier, operationId, mergeScope, reason, itemKey;
+            long count;
+            int eliteLevel;
+            System.Collections.Generic.Dictionary<string, string> doll;
+
+            Assert.True(LootFeedTask.TryParsePayload(payload,
+                out kind, out name, out count, out source, out icon,
+                out eliteLevel, out doll, out direction, out tier,
+                out operationId, out mergeScope, out reason, out itemKey));
+            Assert.Equal(expectedKind, kind);
+            Assert.Equal(expectedName, name);
+            Assert.Equal(expectedName, itemKey);
+            Assert.Equal(expectedName, icon);
+            Assert.Equal(expectedCount, count);
+            Assert.Equal(expectedSource, source);
+            Assert.Equal("gain", direction);
+            Assert.Equal(expectedOperation, operationId);
+            Assert.Equal(expectedScope, mergeScope);
+            Assert.Equal(expectedReason, reason);
+        }
+
+        [Theory]
+        [InlineData("Map_Chest")]
+        [InlineData("Stage_Settlement")]
+        [InlineData("map_chest_extra")]
+        [InlineData("stage_settlement_extra")]
+        [InlineData(42)]
+        [InlineData(true)]
+        public void TryParse_StashSourceCompatibilityDoesNotWidenVersionOneAdmission(object badSource)
+        {
+            JObject payload = VersionOnePayload("item", "急救包", 1, "map_chest");
+            payload["source"] = JToken.FromObject(badSource);
+            string kind, name, source, icon;
+            long count;
+            Assert.False(LootFeedTask.TryParsePayload(payload,
+                out kind, out name, out count, out source, out icon));
         }
 
         [Fact]
@@ -757,8 +811,11 @@ namespace CF7Launcher.Tests.Tasks
             }
         }
 
-        [Fact]
-        public void Handle_DivergentReplayForSameCommittedEffectIsDropped()
+        [Theory]
+        [InlineData("pickup")]
+        [InlineData("map_chest")]
+        [InlineData("stage_settlement")]
+        public void Handle_DivergentReplayForSameCommittedEffectIsDropped(string source)
         {
             string tempDir = CreateTempDir();
             try
@@ -768,9 +825,10 @@ namespace CF7Launcher.Tests.Tasks
                     var widget = new CF7Launcher.Guardian.Hud.Loot.LootFeedWidget(
                         new System.Windows.Forms.Control(), catalog);
                     var task = new LootFeedTask(widget);
-                    JObject payload = VersionOnePayload("item", "急救包", 1, "pickup");
+                    JObject payload = VersionOnePayload("item", "急救包", 1, source);
                     payload["operationId"] = "pickup-conflict";
                     task.Handle(new JObject { ["payload"] = payload });
+                    task.Handle(new JObject { ["payload"] = payload.DeepClone() });
 
                     JObject conflicting = (JObject)payload.DeepClone();
                     conflicting["count"] = 2;

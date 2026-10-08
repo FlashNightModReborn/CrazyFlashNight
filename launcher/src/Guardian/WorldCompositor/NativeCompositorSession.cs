@@ -13,6 +13,7 @@ namespace CF7Launcher.Guardian.WorldCompositor
         private readonly StopDelegate _stop;
         private readonly ReadDelegate _read;
         private readonly WorkReadDelegate _readWork;
+        private readonly TimingReadDelegate _readTiming;
         private readonly CaptureSizeDelegate _captureSize;
         private readonly CropDelegate _crop;
         private readonly ModeDelegate _mode;
@@ -44,7 +45,8 @@ namespace CF7Launcher.Guardian.WorldCompositor
         private readonly SceneLightsDelegate _sceneLights;
         private readonly SceneLightsReadDelegate _sceneLightsRead;
 
-        internal NativeCompositorSession(string modulePath, IntPtr source, uint pid, IntPtr output, uint vendor = 0, bool borderless = false)
+        internal NativeCompositorSession(string modulePath, IntPtr source, uint pid, IntPtr output, uint vendor = 0, bool borderless = false,
+            IntPtr sharedWorldVisual = default)
         {
             try
             {
@@ -52,6 +54,7 @@ namespace CF7Launcher.Guardian.WorldCompositor
                 if (Export<VersionDelegate>("ProbeGetAbiVersion")() != 12) throw new InvalidOperationException("Compositor ABI version mismatch");
                 _stop = Export<StopDelegate>("ProbeStop"); _read = Export<ReadDelegate>("ProbeGetStats");
                 _readWork=TryExport<WorkReadDelegate>("ProbeGetWorkStats");
+                _readTiming=TryExport<TimingReadDelegate>("ProbeGetTimingStats");
                 _captureSize=Export<CaptureSizeDelegate>("ProbeGetCaptureSize"); // reject an old unpaired DLL
                 _crop = Export<CropDelegate>("ProbeSetCrop"); _mode = Export<ModeDelegate>("ProbeSetMode");
                 _matrix=Export<MatrixDelegate>("ProbeSetMatrix"); _active=Export<ActiveDelegate>("ProbeSetActive");
@@ -75,7 +78,9 @@ namespace CF7Launcher.Guardian.WorldCompositor
                 _combatFxFrame=Export<CombatFxFrameDelegate>("ProbeSetCombatFxFrame");
                 _sceneLights=Export<SceneLightsDelegate>("ProbeSetSceneLights");
                 _sceneLightsRead=Export<SceneLightsReadDelegate>("ProbeGetSceneLightStats");
-                _session = Export<StartDelegate>("ProbeStartWorld")(source,pid,output,vendor,borderless ? 1 : 0);
+                _session = sharedWorldVisual == IntPtr.Zero
+                    ? Export<StartDelegate>("ProbeStartWorld")(source,pid,output,vendor,borderless ? 1 : 0)
+                    : Export<StartVisualDelegate>("ProbeStartWorldVisual")(source,pid,output,vendor,borderless ? 1 : 0,sharedWorldVisual);
                 if (_session == IntPtr.Zero) throw new InvalidOperationException("Compositor initialization failed");
             }
             catch { Dispose(); throw; }
@@ -120,6 +125,12 @@ namespace CF7Launcher.Guardian.WorldCompositor
             if (_readWork==null || _session==IntPtr.Zero) return null;
             var value=new WorkStats { Size=(uint)Marshal.SizeOf<WorkStats>() };
             return _readWork(_session,ref value)==1 ? value : null;
+        }
+        internal TimingStats? ReadTiming()
+        {
+            if (_readTiming==null || _session==IntPtr.Zero) return null;
+            var value=new TimingStats { Size=(uint)Marshal.SizeOf<TimingStats>() };
+            return _readTiming(_session,ref value)==1 ? value : null;
         }
         internal System.Drawing.Size ReadCaptureSize()
         {
@@ -326,6 +337,14 @@ namespace CF7Launcher.Guardian.WorldCompositor
             public uint Size, Reserved;
             public ulong Compositions, LightDraws, LightCacheHits, FxUploads;
         }
+        [StructLayout(LayoutKind.Sequential)]
+        internal struct TimingStats
+        {
+            public uint Size, Count, IntervalCount, FreshCount;
+            public ulong Presented;
+            public double LastPresentQpcMs, IntervalP50Ms, IntervalP95Ms, IntervalP99Ms, IntervalMaxMs;
+            public double SubmitP95Ms, PresentP95Ms, FreshAgeP95Ms;
+        }
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)] private delegate uint VersionDelegate();
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)] private delegate int ViewportDelegate(IntPtr handle,int x,int y,int width,int height,double notBefore);
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)] private delegate int SharpnessDelegate(IntPtr handle,float value);
@@ -333,9 +352,11 @@ namespace CF7Launcher.Guardian.WorldCompositor
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)] private delegate int MatrixDelegate(IntPtr handle,[In] float[] values);
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)] private delegate void ActiveDelegate(IntPtr handle,int active);
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)] private delegate IntPtr StartDelegate(IntPtr source,uint pid,IntPtr output,uint vendor,int borderless);
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)] private delegate IntPtr StartVisualDelegate(IntPtr source,uint pid,IntPtr output,uint vendor,int borderless,IntPtr visual);
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)] private delegate void StopDelegate(IntPtr handle);
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)] private delegate int ReadDelegate(IntPtr handle,ref Stats stats);
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)] private delegate int WorkReadDelegate(IntPtr handle,ref WorkStats stats);
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)] private delegate int TimingReadDelegate(IntPtr handle,ref TimingStats stats);
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)] private delegate int CaptureSizeDelegate(IntPtr handle,out int width,out int height,out ulong generation);
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)] private delegate int CropDelegate(IntPtr handle,int x,int y,int width,int height);
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)] private delegate void ModeDelegate(IntPtr handle,int mode);

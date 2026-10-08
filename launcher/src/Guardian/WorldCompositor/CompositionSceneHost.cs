@@ -1,4 +1,5 @@
 using System;
+using System.IO;
 using System.Runtime.InteropServices;
 using System.Threading;
 
@@ -7,29 +8,65 @@ namespace CF7Launcher.Guardian.WorldCompositor
     // Owns one native composition scene inside FlashCompositorNative.dll.
     // Every member, including Dispose, must run on the creating UI thread;
     // the component intentionally has no finalizer.
-    internal sealed class CompositionSceneHost : IDisposable
+    internal sealed class CompositionSceneHost : IDisposable, IWorldRasterScene
     {
         private const int ExpectedAbiVersion = 1;
         private readonly int _ownerThreadId;
-        private IntPtr _scene;
+        private IntPtr _module, _scene;
+        private readonly CreateDelegate _create;
+        private readonly VisualDelegate _visual;
+        private readonly UploadDelegate _upload;
+        private readonly SnapshotDelegate _snapshot;
+        private readonly PresentationDelegate _presentation;
+        private readonly SceneDelegate _commit, _destroy;
         private bool _disposed;
+        internal string ModulePath { get; }
 
-        public CompositionSceneHost(IntPtr output)
+        public CompositionSceneHost(IntPtr output, string modulePath = null)
         {
             _ownerThreadId = Thread.CurrentThread.ManagedThreadId;
-            // Missing export on an older native DLL surfaces as
-            // EntryPointNotFoundException; no fallback is attempted.
-            if (NativeMethods.CompositionSceneAbiVersion() != ExpectedAbiVersion)
-                throw new NotSupportedException(
-                    "FlashCompositorNative composition scene ABI mismatch; expected version " + ExpectedAbiVersion + ".");
-            _scene = NativeMethods.CompositionSceneCreate(output);
-            if (_scene == IntPtr.Zero)
-                throw new InvalidOperationException("CompositionSceneCreate failed for the supplied output window.");
+            modulePath ??= Path.Combine(AppContext.BaseDirectory, NativeCompositorSession.ModuleName);
+            if (!Path.IsPathFullyQualified(modulePath))
+                throw new ArgumentException("Composition module must use an absolute path.", nameof(modulePath));
+            ModulePath = Path.GetFullPath(modulePath);
+            try
+            {
+                _module = NativeLibrary.Load(ModulePath);
+                if (Export<AbiDelegate>("CompositionSceneAbiVersion")() != ExpectedAbiVersion)
+                    throw new NotSupportedException(
+                        "FlashCompositorNative composition scene ABI mismatch; expected version " + ExpectedAbiVersion + ".");
+                _create = Export<CreateDelegate>("CompositionSceneCreate");
+                _visual = Export<VisualDelegate>("CompositionSceneVisual");
+                _upload = Export<UploadDelegate>("CompositionSceneUploadHud");
+                _snapshot = Export<SnapshotDelegate>("CompositionSceneSnapshot");
+                _presentation = Export<PresentationDelegate>("CompositionScenePresentation");
+                _commit = Export<SceneDelegate>("CompositionSceneCommit");
+                _destroy = Export<SceneDelegate>("CompositionSceneDestroy");
+                _scene = _create(output);
+                if (_scene == IntPtr.Zero)
+                    throw new InvalidOperationException("CompositionSceneCreate failed for the supplied output window.");
+            }
+            catch
+            {
+                if (_module != IntPtr.Zero) NativeLibrary.Free(_module);
+                _module = IntPtr.Zero;
+                throw;
+            }
         }
 
-        public static CompositionSceneHost Create(IntPtr output)
+        public static CompositionSceneHost Create(IntPtr output, string modulePath = null)
         {
-            return new CompositionSceneHost(output);
+            return new CompositionSceneHost(output, modulePath);
+        }
+
+        private T Export<T>(string name) where T : Delegate
+            => Marshal.GetDelegateForFunctionPointer<T>(NativeLibrary.GetExport(_module, name));
+
+        // Borrowed delegates are valid only until this scene is disposed.
+        internal T GetRequiredExport<T>(string name) where T : Delegate
+        {
+            EnsureUsable();
+            return Export<T>(name);
         }
 
         // The returned pointer is AddRef'd; the caller must Marshal.Release it.
@@ -38,7 +75,7 @@ namespace CF7Launcher.Guardian.WorldCompositor
             EnsureUsable();
             if (layer < 0 || layer > 2)
                 throw new ArgumentOutOfRangeException(nameof(layer));
-            IntPtr visual = NativeMethods.CompositionSceneVisual(_scene, layer);
+            IntPtr visual = _visual(_scene, layer);
             if (visual == IntPtr.Zero)
                 throw new InvalidOperationException("CompositionSceneVisual returned no visual.");
             return visual;
@@ -47,36 +84,38 @@ namespace CF7Launcher.Guardian.WorldCompositor
         public void UploadHud(IntPtr pixels, int width, int height, int stride, int x, int y)
         {
             EnsureUsable();
-            ThrowIfFailed(NativeMethods.CompositionSceneUploadHud(_scene, pixels, width, height, stride, x, y));
+            ThrowIfFailed(_upload(_scene, pixels, width, height, stride, x, y));
         }
 
         public void Snapshot(IntPtr pixels, int width, int height, int stride)
         {
             EnsureUsable();
-            ThrowIfFailed(NativeMethods.CompositionSceneSnapshot(_scene, pixels, width, height, stride));
+            ThrowIfFailed(_snapshot(_scene, pixels, width, height, stride));
         }
 
         public void Presentation(bool modal, bool frozen, int width, int height)
         {
             EnsureUsable();
-            ThrowIfFailed(NativeMethods.CompositionScenePresentation(_scene, modal ? 1 : 0, frozen ? 1 : 0, width, height));
+            ThrowIfFailed(_presentation(_scene, modal ? 1 : 0, frozen ? 1 : 0, width, height));
         }
 
         public void Commit()
         {
             EnsureUsable();
-            ThrowIfFailed(NativeMethods.CompositionSceneCommit(_scene));
+            ThrowIfFailed(_commit(_scene));
         }
 
         public void Dispose()
         {
             if (_disposed) return;
             EnsureOwnerThread();
-            _disposed = true;
-            IntPtr scene = _scene;
+            // A failed native retirement retains the handle and module; never
+            // unload code that may still own live composition objects.
+            if (_scene != IntPtr.Zero) ThrowIfFailed(_destroy(_scene));
             _scene = IntPtr.Zero;
-            if (scene != IntPtr.Zero)
-                ThrowIfFailed(NativeMethods.CompositionSceneDestroy(scene));
+            if (_module != IntPtr.Zero) NativeLibrary.Free(_module);
+            _module = IntPtr.Zero;
+            _disposed = true;
         }
 
         private void EnsureUsable()
@@ -96,33 +135,15 @@ namespace CF7Launcher.Guardian.WorldCompositor
             if (hr < 0) Marshal.ThrowExceptionForHR(hr);
         }
 
-        private static class NativeMethods
-        {
-            private const string Dll = "FlashCompositorNative.dll";
-
-            [DllImport(Dll, CallingConvention = CallingConvention.Cdecl)]
-            internal static extern int CompositionSceneAbiVersion();
-
-            [DllImport(Dll, CallingConvention = CallingConvention.Cdecl)]
-            internal static extern IntPtr CompositionSceneCreate(IntPtr output);
-
-            [DllImport(Dll, CallingConvention = CallingConvention.Cdecl)]
-            internal static extern IntPtr CompositionSceneVisual(IntPtr handle, int layer);
-
-            [DllImport(Dll, CallingConvention = CallingConvention.Cdecl)]
-            internal static extern int CompositionSceneUploadHud(IntPtr handle, IntPtr pixels, int width, int height, int stride, int x, int y);
-
-            [DllImport(Dll, CallingConvention = CallingConvention.Cdecl)]
-            internal static extern int CompositionSceneSnapshot(IntPtr handle, IntPtr pixels, int width, int height, int stride);
-
-            [DllImport(Dll, CallingConvention = CallingConvention.Cdecl)]
-            internal static extern int CompositionScenePresentation(IntPtr handle, int modal, int frozen, int width, int height);
-
-            [DllImport(Dll, CallingConvention = CallingConvention.Cdecl)]
-            internal static extern int CompositionSceneCommit(IntPtr handle);
-
-            [DllImport(Dll, CallingConvention = CallingConvention.Cdecl)]
-            internal static extern int CompositionSceneDestroy(IntPtr handle);
-        }
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)] private delegate int AbiDelegate();
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)] private delegate IntPtr CreateDelegate(IntPtr output);
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)] private delegate IntPtr VisualDelegate(IntPtr scene, int layer);
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)] private delegate int UploadDelegate(IntPtr scene, IntPtr pixels,
+            int width, int height, int stride, int x, int y);
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)] private delegate int SnapshotDelegate(IntPtr scene, IntPtr pixels,
+            int width, int height, int stride);
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)] private delegate int PresentationDelegate(IntPtr scene,
+            int modal, int frozen, int width, int height);
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)] private delegate int SceneDelegate(IntPtr scene);
     }
 }

@@ -14,7 +14,7 @@ class org.flashNight.arki.unit.UnitComponent.Dressup.EquipmentUtil.EquipmentLigh
         var amount:Number = Number(param.evasionBonus);
         var extra:Number = param.electricEvasionBonus == undefined ? 0 : Number(param.electricEvasionBonus);
         if (!(amount > 0) || !isFinite(amount + extra) || amount + extra > 100 || extra < 0
-            || ref.equipmentLight.kind != 1 || ref.来源插件 == undefined) return;
+            || ref.equipmentLight.kind != 1 || (ref.来源插件 == undefined && param.builtinDefense !== true)) return;
         var actor:MovieClip = ref.自机;
         var item = actor[ref.装备类型];
         var tags:Object = TagManager.buildTagContext(item, actor[ref.装备类型 + "数据"]);

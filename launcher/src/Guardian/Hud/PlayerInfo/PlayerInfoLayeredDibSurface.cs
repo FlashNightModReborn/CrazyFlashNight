@@ -26,6 +26,7 @@ internal sealed class PlayerInfoLayeredDibSurface : IDisposable
     private IntPtr _memoryDc;
     private IntPtr _bitmapHandle;
     private IntPtr _previousObject;
+    private IntPtr _pixels;
     private bool _bitmapSelected;
     private Bitmap? _bitmap;
     private bool _disposed;
@@ -77,6 +78,7 @@ internal sealed class PlayerInfoLayeredDibSurface : IDisposable
                     Marshal.GetLastWin32Error(),
                     "CreateDIBSection failed for PlayerInfo.");
             }
+            _pixels = pixels;
             _previousObject = SelectObject(
                 _memoryDc,
                 _bitmapHandle);
@@ -104,6 +106,8 @@ internal sealed class PlayerInfoLayeredDibSurface : IDisposable
 
     internal int Width { get; }
     internal int Height { get; }
+    internal IntPtr Pixels => !_disposed && _pixels != IntPtr.Zero
+        ? _pixels : throw new ObjectDisposedException(nameof(PlayerInfoLayeredDibSurface));
     internal IntPtr MemoryDc =>
         !_disposed && _memoryDc != IntPtr.Zero
             ? _memoryDc

@@ -51,6 +51,18 @@ function plan() {
 }
 
 describe("strict armor balance plan parsing", () => {
+  it("permits gold/crafting without K shop but rejects incomplete or missing K evidence", () => {
+    const { expectedKPointPrice, kpointEvidenceRef, ...base } = record();
+    const goldCraft = { ...base, weightLayers: 2, budgetBreakdown: { entry: [
+      { code: "acquisition.high-price", delta: 1, ruleRef: "ABR-LAYER-001" },
+      { code: "acquisition.crafting", delta: 1, ruleRef: "ABR-LAYER-001" }
+    ] } };
+    expect(parseArmorBalancePlanRecord(goldCraft).expectedKPointPrice).toBeUndefined();
+    expect(() => parseArmorBalancePlanRecord({ ...goldCraft, expectedKPointPrice })).toThrow(/K 点/);
+    expect(() => parseArmorBalancePlanRecord({ ...goldCraft, kpointEvidenceRef })).toThrow(/K 点/);
+    expect(() => parseArmorBalancePlanRecord(base)).toThrow(/K 点/);
+    expect(() => parseArmorBalancePlanRecord({ ...goldCraft, expectedKPointPrice: -1, kpointEvidenceRef })).toThrow(/expectedKPointPrice/);
+  });
   it("accepts a well-formed plan with attribute-style records", () => {
     const attributeStyle = plan();
     const raw = attributeStyle.armorBalancePlan.records.record[0]!;

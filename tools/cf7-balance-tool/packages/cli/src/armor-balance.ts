@@ -260,6 +260,8 @@ function verifyKPointPrice(
   snapshot: ItemSnapshot,
   kshopCache: Map<string, Map<string, number>>,
 ): void {
+  // 没有 K 点获取的金币/合成方案不伪造 K 店证据。解析器保证两字段成对及 K 层必填。
+  if (record.kpointEvidenceRef === undefined) return;
   const evidencePath = path.join(REPO_ROOT, record.kpointEvidenceRef);
   let prices = kshopCache.get(evidencePath);
   if (!prices) {
@@ -319,8 +321,10 @@ function buildAuditXml(plan: ArmorBalancePlan, records: AuditRecord[]): string {
       `      <category>${formatNumber(record.category)}</category>`,
       `      <damageTypeFactor>${formatNumber(record.damageTypeFactor)}</damageTypeFactor>`,
       `      <adoptedGoldPrice>${formatNumber(record.adoptedGoldPrice)}</adoptedGoldPrice>`,
-      `      <expectedKPointPrice>${record.expectedKPointPrice}</expectedKPointPrice>`,
-      `      <kpointEvidenceRef>${escapeXml(record.kpointEvidenceRef)}</kpointEvidenceRef>`,
+      ...(record.kpointEvidenceRef === undefined ? [] : [
+        `      <expectedKPointPrice>${record.expectedKPointPrice}</expectedKPointPrice>`,
+        `      <kpointEvidenceRef>${escapeXml(record.kpointEvidenceRef)}</kpointEvidenceRef>`,
+      ]),
       `      <status>${record.status}</status>`,
       `      <marketPrice>${formatNumber(record.marketPrice)}</marketPrice>`,
       `      <currentScore>${formatNumber(record.scoreOutput.currentScore)}</currentScore>`,

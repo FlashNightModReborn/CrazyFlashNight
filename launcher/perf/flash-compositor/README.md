@@ -85,6 +85,22 @@ powershell -NoProfile -ExecutionPolicy Bypass -File launcher/perf/flash-composit
 
 `FlashInputBroker.exe` / `FlashInputBridge.dll` 与本仓 x64 Flash projector 配对。broker 校验子窗口、所属 PID 和宿主根窗口后，只向该 Flash UI 线程安装 `WH_GETMESSAGE`，在目标进程内交付鼠标包，转换宿主物理像素与 Flash DPI 坐标，并统一该进程的鼠标状态/捕获查询。它不更改桌面鼠标位置，也不向其他应用装钩子；启动时核验所需导入，失败即停止该次渲染。退出恢复 WndProc 和导入；DLL 在目标进程内固定到进程退出，避免仍在执行的回调落入已卸载代码。跨显示器 DPI、第三方叠层与其他 Flash 二进制仍需各自运行验证，不能仅凭构建通过外推兼容性。
 
+## 共享数字层与呈现诊断
+
+2026-10-08 工作区增量将世界和非交互伤害数字接入同一 HWND 的 DirectComposition 树。数字仍按实际范围绘制和上传，沿用量化增长缓存；旧数字窗口在共享路径可用时不显示。Native HUD、PlayerInfo、光标和大多数 Web 面板尚未迁移，多个 visual 也不等于单一交换链或绕过 DWM/MPO。实施边界、诊断与待办见[启动与统一呈现优化](../../../docs/startup-input-presentation-optimization.md)。
+
+只在已构建且完成清单核验的隔离候选上运行共享像素夹具，不启动真实游戏或注入物理输入：
+
+```powershell
+. ./launcher/resolve-dotnet.ps1
+$dotnet = Resolve-Cf7Dotnet -ProjectRoot (Get-Location).Path
+$env:CF7_TEST_SHARED_WORLD_CANDIDATE = Join-Path (Get-Location).Path 'tmp/runtime-candidates/v2/<candidate-leaf>'
+& $dotnet test launcher/tests/Launcher.Tests.csproj --filter WorldSharedPresentationGpuTests --logger 'console;verbosity=normal'
+Remove-Item Env:CF7_TEST_SHARED_WORLD_CANDIDATE
+```
+
+夹具核对模块实际路径、哈希与候选 identity/closure，检查源/输出像素、padded stride、缩小后残影、清除与无源回灌；另有旧/共享路径的静态源观测，以及亮屏条件下 UI 停泵期间原生设置提交和动态源计时环绕回检查。只有 Windows `GUID_SESSION_DISPLAY_STATUS` 明确为 On 才运行持续呈现资格；Off、Dim 或未知单独跳过，不自动亮屏、不以跳过充当通过。夹具进程显式使用 PMv2 DPI；失败日志保留，不能通过放宽颜色断言或把静止源当成持续帧源修绿。Host 测试装配与真实游戏入口分开记录，GPU 回读不代表物理 scanout 或测试员机器验收。未设置候选环境变量时全部跳过。
+
 ## 首版动态分辨率调度
 
 `launcher/data/world-lighting/render-schedule.json` 是版本 1 的启动期配置。默认 `fixedStage=-1` 自动调度；非负值用于固定档位采样，按当前用户 quality 的档位表钳制，不是玩家必须设置的开关。MEDIUM 路径为 `100% MEDIUM → 85% MEDIUM → 75% MEDIUM → 75% LOW → 67% LOW`；HIGH/BEST 在顶部保留原画质 100% 档，LOW 用户只走 `100% → 85% → 75% → 67% LOW`。倍率只改变实际绘制视口；逻辑视野、输出窗口和 Native HUD 尺寸不变。

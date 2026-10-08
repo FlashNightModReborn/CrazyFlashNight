@@ -1,6 +1,16 @@
 # 真实 Flash 鼠标悬停与取消夹具
 
-用现役 x64 Flash projector 运行只有两个 MovieClip 按钮的独立 AS2 SWF；不加载主游戏、存档或修改器。Host 原样编译生产 Controller、Surface、Mapper 和 Bridge，驱动真实 broker/DLL。AS2 通过仅绑定 loopback 的 32187 TCP 端口回传 rollOver、rollOut、press、release、releaseOutside、drag 与定频坐标样本。端口占用直接失败，不接管已有监听者。
+用现役 x64 Flash projector 运行只有两个 MovieClip 按钮的独立 AS2 SWF；不加载主游戏、存档或修改器。Host 直接引用当前 Core 工程中的 Controller、Surface、Mapper 和 Bridge，驱动真实 broker/DLL，不维护生产源码的逐文件副本清单。AS2 通过仅绑定 loopback 的 32187 TCP 端口回传 rollOver、rollOut、press、release、releaseOutside、drag 与定频坐标样本。端口占用直接失败，不接管已有监听者。
+
+仅检查托管编译及依赖时，无需 NativeRoot 或 SWF：
+
+```powershell
+powershell -NoProfile -ExecutionPolicy Bypass -File launcher/native/world-compositor/flash-hover-fixture/run.ps1 -ManagedBuildOnly
+```
+
+该模式使用 exact SDK，要求隔离输出包含 Core DLL，在复制原生模块和启动 actor 之前退出；不编译 SWF、不启动 Flash、不注入输入。
+`HOVER_MANAGED_BUILD_ONLY` 给出本轮独立目录。编译和依赖齐备不证明 Flash 语义或真实输入通过，不借历史回执代签新 Core。
+以下为完整 actor 运行流程，须另具备对应运行授权和桌面环境。
 
 AS2 唯一源为 `movie/HoverProbe.as`（UTF-8 BOM）和该目录 XFL。只允许真实 CS6 编译：
 

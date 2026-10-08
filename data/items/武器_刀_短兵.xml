@@ -670,4 +670,42 @@
         <bladeCount>3</bladeCount>
       </data>
     </item>
+  <item>
+  <name>特勤警棍</name>
+  <displayname>特勤警棍</displayname>
+  <icon>Codex-特勤警棍</icon>
+  <type>武器</type>
+  <use>刀</use>
+  <actiontype>棍棒</actiontype>
+  <price>81900</price>
+  <description>旧式镇暴警棍改成了可收折刃的特勤兵器。面对活人，警长仍习惯先把棍面横在身前；防线后的东西扑上来时，他也不再指望喝令能让对方停步。持用时按武器变形键（默认Q），15帧切换棍棒／短兵动作；完整棍形锋利度220、额外防御165，刃形锋利度330、无额外防御。</description>
+  <data>
+    <level>21</level>
+    <weight>1</weight>
+    <dressup>刀-Codex-特勤警棍</dressup>
+    <power>330</power>
+    <hp>0</hp>
+    <mp>0</mp>
+    <defence>0</defence>
+    <bladeCount>3</bladeCount>
+  </data>
+  <lifecycle>
+    <attr_sheriffBaton>
+      <skillInteraction>independent</skillInteraction>
+      <init>
+        <initRoutines>特勤警棍初始化</initRoutines>
+        <initParam>
+          <frameMax>15</frameMax>
+          <batonPower>220</batonPower>
+          <batonDefence>165</batonDefence>
+          <actionTypeA>棍棒</actionTypeA>
+          <actionTypeB>短兵</actionTypeB>
+        </initParam>
+      </init>
+      <cycle>
+        <cycleRoutines>特勤警棍周期</cycleRoutines>
+      </cycle>
+    </attr_sheriffBaton>
+  </lifecycle>
+</item>
 </root>

@@ -136,6 +136,7 @@
 - `auditRef` 全局唯一，并与 `itemName + profileKey` 一一对应。
 - 台账与 runtime 的 8 输入、状态、显示门和 input digest 必须完全相同。
 - `budgetBreakdown.entry.delta` 之和严格等于 `weightLayers`；零层也要有可复核的零贡献依据。
+- 超前机制可使用 `mechanic.early-unlock`，只接受 `delta=-1` 且引用 `WBR-WL-008`；解锁门槛和低等级折减仍须逐项证据，不能因枚举通过就自动判绿。
 - `confirmed` 必须让八个 `input.*` target 都有合法条款和真实证据；获取证据还要通过现役商店/合成等专项索引。
 - `unresolved/invalid` 必须 `displayEligible=false` 并提供非空 `note`；`confirmed` 的普通说明由结构化记录生成，`note` 可省。
 - v1 不再存在 `rationale` 字段。DPS、残差、条款列表、SHA 和路径均可机械生成，不在每个 item 中复述。
@@ -306,6 +307,10 @@ AS2获取引用复核按完整引号内物品名匹配，避免将钛合金变�
 防具公式已登记在权威工作簿「防具」「装备价格」页，因此没有药剂那样的 `authorityStatus` 保留态，记录可直接按证据分流为 `confirmed` / `unresolved` / `invalid`。plan 用 `workbookVersion` + `workbookSha256` pin 现役只读工作簿的实算快照（与 potion 家族 pin 的同一文件）；weapon 家族注册的 v1 映射是 2026-07-23 基线，armor 不复用该映射。
 
 数值加权（M 层，`weightLayers`）与价格加权（E 层，`priceLayers`）分离：M 层闭等于 `budgetBreakdown` 全部条目 delta 之和，E 层只计 `acquisition.high-price` 条目，两者都是硬闭合。item 标签无 AS2 投影属设计如此——当前没有任何 AS2 消费者读取防具 `<balance>`，加载链不需要剥离逻辑。plan 不强制整文件 coverage：未登记的防具物品没有 `<balance>` 不算漂移，armor 家族也只允许登记 `data/items/防具_*.xml`。
+
+仅有金币／合成途径的防具可省略 `expectedKPointPrice` 与 `kpointEvidenceRef`；二者必须同时提供或同时省略。出现 `acquisition.kshop` 时则强制提供，显式提供的 K 点证据继续执行实际商店及误差校验。派生审计仍给出公式推荐 K 点值，但省略字段不代表已配置 K 点出售。
+
+重装特勤按维护者指定统一 21 级，高价 1＋合成 1；防具沿特战配比、两枪按同系物理弹道拟合，手电仅照明。基础数值及价格已入账，获取链和实战保留 `unresolved`。沙鹰保留快射穿刺、暂去斩杀并付一层超前代价；警棍攻防切换预算尚未启用。复算及来源见[重装特勤说明](../../former-sheriff-assets/README.md)与[模型](../models/former-sheriff/model.ts)。
 
 ### 打桩机的专项拟合
 

@@ -285,9 +285,9 @@ candidate 与正式入口旅程按 [#runtime](../agentsDoc/testing-guide.md#runt
 `CF7_DIAG_FOCUS_PROBE` 是 `UiFreezeProbe` 的独立环境急停，不属于 `AppConfig` key。生产默认值、诊断建议和硬件边界以 `config.toml` 注释为准，README 不复制长注释。用户偏好落在 `%LOCALAPPDATA%/CF7FlashNight/launcher_user_prefs.json`；项目根同名文件只作一次性 legacy 导入。
 
 瞬间鼠标延迟诊断使用 `automation/diagnose-input.ps1 -Cursor Native` / `-Cursor System`；沿用本地开发候选核验及焦点滚动日志，不修改配置文件。
-仅 `CF7_INPUT_LATENCY=1` 且焦点录制开启时启用；每个转场最多观察 30 秒，结束后保留至多 2 秒，20ms 发送一个最多单飞的界面线程探针，40ms 起记录尖刺。
-记录区分探针线程调度、UI 排队、鼠标钩子分发、光标绘制及同步窗口调用，每个窗口最多 64 条尖刺，汇总保留省略数量与峰值。
-不记录鼠标移动坐标，不注入输入；耗时不是显示器实际呈现延迟。细节见 [U12 记录](../docs/U12过场Web迁移与人力验收-2026-10-01.md)。
+仅 `CF7_INPUT_LATENCY=1` 且焦点录制开启时启用；启动和每个转场最多观察 30 秒，转场结束后保留至多 2 秒，20ms 发送一个最多单飞的界面线程探针，40ms 起记录尖刺。
+记录区分探针线程调度、UI 排队、鼠标钩子分发、本地回调与下游 hook 链、光标绘制及同步窗口调用，每个窗口最多 64 条尖刺，汇总保留省略数量与峰值。
+焦点录制还每秒采集一次原生呈现的最近 256 次提交摘要；主动静止/hold 不计入连续帧间隔，统计不触发 GPU 回读。不记录鼠标移动坐标，不注入输入；提交耗时不是显示器实际呈现延迟。细节见 [U12 记录](../docs/U12过场Web迁移与人力验收-2026-10-01.md)及[启动与呈现优化](../docs/startup-input-presentation-optimization.md)。
 <!-- launcher-user-prefs-registry:start -->
 当前字段为 `lastPlayedSlot`、`introEnabled`、`sfxEnabled`、`ambientEnabled`、`tutorialsAutoOpen`、`uiFontScale`、`suppressedHighDpiWarningRaw`、`mapDisplayPreference`、`hitNumberMode`、`hitNumberWorldRowLimit` 和 `reducedPresentation`。
 <!-- launcher-user-prefs-registry:end -->

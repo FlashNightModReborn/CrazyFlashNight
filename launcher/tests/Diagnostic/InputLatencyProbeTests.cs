@@ -90,6 +90,23 @@ namespace CF7Launcher.Tests.Diagnostic
             Assert.Equal(139, hook.Value<double>("maxMs"));
             Assert.Equal(100, hook.Value<int>("slow"));
         }
+
+        [Fact]
+        public void HookWorkAndDownstreamChainAreSeparateFromDeliveryDelay()
+        {
+            var clock = new Clock(); using var probe = clock.Create();
+            probe.BeginTransition("startup:1", 0, "startup");
+            probe.Observe("hook_delivery", 90);
+            var own = probe.BeginSample("hook_callback");
+            clock.Now = 10; own.Dispose();
+            var chain = probe.BeginSample("hook_chain");
+            clock.Now = 110; chain.Dispose();
+            probe.Dispose();
+            var metrics = clock.Last("input_latency.summary")["metrics"];
+            Assert.Equal(10, metrics.Single(m => m.Value<string>("name") == "hook_callback").Value<double>("maxMs"));
+            Assert.Equal(100, metrics.Single(m => m.Value<string>("name") == "hook_chain").Value<double>("maxMs"));
+            Assert.Equal(90, metrics.Single(m => m.Value<string>("name") == "hook_delivery").Value<double>("maxMs"));
+        }
         [Fact]
         public void DisposeAndDispatcherFailureNeverRetryOrReviveObservation()
         {

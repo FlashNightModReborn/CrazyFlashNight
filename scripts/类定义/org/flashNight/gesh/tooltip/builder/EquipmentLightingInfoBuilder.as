@@ -39,9 +39,9 @@ class org.flashNight.gesh.tooltip.builder.EquipmentLightingInfoBuilder {
                 if (param.kind == "laser") laser = true;
                 else if (param.kind == "flashlight") {
                     torch = true;
-                    // Defense belongs only to projected/standalone mods. A built-in
-                    // torch never grants the mod's bonus, even with similar params.
-                    if (!standaloneMod && attr.__modName == undefined) continue;
+                    // Ordinary built-in lamps remain visual-only. Sealed tactical lamps
+                    // explicitly opt in through the same flag used by gameplay.
+                    if (!standaloneMod && attr.__modName == undefined && param.builtinDefense !== true) continue;
                     var amount:Number = Number(param.evasionBonus);
                     var extra:Number = param.electricEvasionBonus == undefined ? 0 : Number(param.electricEvasionBonus);
                     if (!(amount > 0) || !isFinite(amount+extra) || amount+extra > 100 || extra < 0) continue;

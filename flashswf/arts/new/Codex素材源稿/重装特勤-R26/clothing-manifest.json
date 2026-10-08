@@ -1,0 +1,200 @@
+{
+  "身体": {
+    "file": "10-torso",
+    "label": "R22 侧围搭接、三件下挂设备与画法校准",
+    "viewBox": [
+      -76.0,
+      -115.0,
+      148.0,
+      231.0
+    ],
+    "origin": [
+      152.0,
+      230.0
+    ],
+    "zoom": 2,
+    "reused_slots": 1,
+    "sha256": "34e5edac2cd68a7414243498c643137deb3350661950e3af3988c8f4612e7469",
+    "registration_note": "Original coordinate origin preserved; viewport expanded to contain armour."
+  },
+  "上臂": {
+    "file": "11-upper-arm",
+    "label": "R25 肩甲短吊带与甲下接触影",
+    "viewBox": [
+      -36.0,
+      -76.0,
+      77.0,
+      154.0
+    ],
+    "origin": [
+      72.0,
+      152.0
+    ],
+    "zoom": 2,
+    "reused_slots": 2,
+    "sha256": "fc83bd7a0aa9eafa1352e21ecc8c121ae00823a99938a23ca2193a838d70a0a6",
+    "registration_note": "Original coordinate origin preserved; viewport expanded to contain armour."
+  },
+  "左下臂": {
+    "file": "12-left-forearm",
+    "label": "R25 肘侧护片贴合软护套",
+    "viewBox": [
+      -42.0,
+      -75.0,
+      66.0,
+      153.0
+    ],
+    "origin": [
+      84.0,
+      150.0
+    ],
+    "zoom": 2,
+    "reused_slots": 1,
+    "sha256": "41a54175506ff785dc3299ac9c541c2e20dbafac80fa92b619d7b398ffc121f7",
+    "registration_note": "Original coordinate origin preserved; viewport expanded to contain armour."
+  },
+  "右下臂": {
+    "file": "13-right-forearm",
+    "label": "R25 肘罩减弱亮环、腕口局部压褶",
+    "viewBox": [
+      -28.0,
+      -75.0,
+      55.0,
+      153.0
+    ],
+    "origin": [
+      56.0,
+      150.0
+    ],
+    "zoom": 2,
+    "reused_slots": 1,
+    "sha256": "25732b343b394e6bce47071fe8952c956697c3b07623676ec9188c0edd4a625c",
+    "registration_note": "Original coordinate origin preserved; viewport expanded to contain armour."
+  },
+  "左手": {
+    "file": "14-left-glove",
+    "label": "R26 连续软护腕，保持原掌侧及握持轮廓",
+    "viewBox": [
+      -37.0,
+      -26.0,
+      74.0,
+      53.0
+    ],
+    "origin": [
+      74.0,
+      52.0
+    ],
+    "zoom": 2,
+    "reused_slots": 1,
+    "sha256": "45af279d94f0d6140d066fe522a3c51f7d8ef67d79035b3afcbabacecc7e84a8",
+    "registration_note": "Original coordinate origin preserved; viewport expanded to contain armour."
+  },
+  "右手": {
+    "file": "15-right-glove",
+    "label": "R26 连续软护腕，保持原手背护垫与指节及握持轮廓",
+    "viewBox": [
+      -39.0,
+      -26.0,
+      77.0,
+      54.0
+    ],
+    "origin": [
+      78.0,
+      52.0
+    ],
+    "zoom": 2,
+    "reused_slots": 1,
+    "sha256": "5904e37d6d27b9794d6b67eeb87921e517e55f5ee153c4284bda4d1d06d83d7c",
+    "registration_note": "Original coordinate origin preserved; viewport expanded to contain armour."
+  },
+  "屁股": {
+    "file": "20-pelvis",
+    "label": "斜侧腰胯与收窄前护裆；参考既有套装的体积和朝向；R15 错层防护与接口覆盖",
+    "viewBox": [
+      -62.0,
+      -54.0,
+      128.0,
+      97.0
+    ],
+    "origin": [
+      124.0,
+      108.0
+    ],
+    "zoom": 2,
+    "reused_slots": 1,
+    "sha256": "f7de177ccca124b53f01f07bdc60bf1f717338acb07e3dac0a5f5f1c4dad4c59",
+    "registration_note": "Original coordinate origin preserved; viewport expanded to contain armour."
+  },
+  "左大腿": {
+    "file": "21-left-thigh",
+    "label": "R25 连续近端软护套、外侧上翻、内侧屈曲区",
+    "viewBox": [
+      -46.0,
+      -84.0,
+      89.0,
+      167.0
+    ],
+    "origin": [
+      92.0,
+      168.0
+    ],
+    "zoom": 2,
+    "reused_slots": 1,
+    "sha256": "d7bf99a2636dc2ff622f8df52bac63b6b6cab27f77e15c0f06d06827d63f5b1f",
+    "registration_note": "Original coordinate origin preserved; viewport expanded to contain armour."
+  },
+  "右大腿": {
+    "file": "22-right-thigh",
+    "label": "R25 连续近端软护套、外侧上翻、内侧屈曲区",
+    "viewBox": [
+      -45.0,
+      -84.0,
+      89.0,
+      167.0
+    ],
+    "origin": [
+      90.0,
+      168.0
+    ],
+    "zoom": 2,
+    "reused_slots": 1,
+    "sha256": "7bc4fd34683b827bd3d44b9b194c693cac561bcbaf7c3c4686262244616eb562",
+    "registration_note": "Original coordinate origin preserved; viewport expanded to contain armour."
+  },
+  "小腿": {
+    "file": "23-shin",
+    "label": "R25 膝侧带端收回、特战靴筒后侧软搭接",
+    "viewBox": [
+      -39.3,
+      -84.0,
+      85.0,
+      168.0
+    ],
+    "origin": [
+      78.6,
+      168.0
+    ],
+    "zoom": 2,
+    "reused_slots": 2,
+    "sha256": "3cb6cc01abe64ed24c823cfdee06bdc1754bea0ec5f0fc2d4c2c0978ecad19d5",
+    "registration_note": "Original holder and original special boot art coordinates retained; split between calf and foot."
+  },
+  "脚": {
+    "file": "24-boot",
+    "label": "R24 特战靴鞋体：原鞋底、脚背轮廓与原挂点",
+    "viewBox": [
+      -40.8,
+      -18.9,
+      89.0,
+      57.5
+    ],
+    "origin": [
+      81.6,
+      37.8
+    ],
+    "zoom": 2,
+    "reused_slots": 2,
+    "sha256": "11b3280de276200048eeb1b46053fd4ee61015a98c847d226da9be158ccd99fc",
+    "registration_note": "Original holder and original special boot art coordinates retained; split between calf and foot."
+  }
+}

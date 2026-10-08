@@ -99,22 +99,29 @@ struct Scene {
     }
     void Upload(const void* pixels, int width, int height, int stride, int x, int y) {
         VerifyThread();
-        if (!pixels || width < 1 || height < 1 || width > 4096 || height > 4096 || stride != width * 4
+        if (!pixels || width < 1 || height < 1 || width > 4096 || height > 4096 || stride < width * 4 || stride > 16384 || stride % 4 != 0
             || x < 0 || y < 0 || x > 16384 || y > 16384) throw winrt::hresult_invalid_argument();
-        if (!hudSwap || width != hudWidth || height != hudHeight) {
+        if (!hudSwap || width > hudWidth || height > hudHeight) {
+            const int capacityWidth = (width + 63) & ~63;
+            const int capacityHeight = (height + 63) & ~63;
+            const int nextWidth = capacityWidth > hudWidth ? capacityWidth : hudWidth;
+            const int nextHeight = capacityHeight > hudHeight ? capacityHeight : hudHeight;
             winrt::check_hresult(hud->SetContent(nullptr)); hudSwap = nullptr;
             DXGI_SWAP_CHAIN_DESC1 description{};
-            description.Width = width; description.Height = height; description.Format = DXGI_FORMAT_B8G8R8A8_UNORM;
+            description.Width = static_cast<UINT>(nextWidth); description.Height = static_cast<UINT>(nextHeight); description.Format = DXGI_FORMAT_B8G8R8A8_UNORM;
             description.SampleDesc.Count = 1; description.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;
             description.BufferCount = 2; description.SwapEffect = DXGI_SWAP_EFFECT_FLIP_SEQUENTIAL;
             description.Scaling = DXGI_SCALING_STRETCH; description.AlphaMode = DXGI_ALPHA_MODE_PREMULTIPLIED;
             winrt::check_hresult(factory->CreateSwapChainForComposition(device.get(), &description, nullptr, hudSwap.put()));
-            winrt::check_hresult(hud->SetContent(hudSwap.get())); hudWidth = width; hudHeight = height;
+            winrt::check_hresult(hud->SetContent(hudSwap.get())); hudWidth = nextWidth; hudHeight = nextHeight;
         }
         winrt::com_ptr<ID3D11Texture2D> buffer;
         winrt::check_hresult(hudSwap->GetBuffer(0, __uuidof(ID3D11Texture2D), buffer.put_void()));
-        context->UpdateSubresource(buffer.get(), 0, nullptr, pixels, static_cast<UINT>(stride), 0);
+        D3D11_BOX region{0, 0, 0, static_cast<UINT>(width), static_cast<UINT>(height), 1};
+        context->UpdateSubresource(buffer.get(), 0, &region, pixels, static_cast<UINT>(stride), 0);
         winrt::check_hresult(hudSwap->Present(0, 0));
+        const D2D_RECT_F clip{0, 0, static_cast<float>(width), static_cast<float>(height)};
+        winrt::check_hresult(hud->SetClip(clip));
         winrt::check_hresult(hud->SetOffsetX(static_cast<float>(x)));
         winrt::check_hresult(hud->SetOffsetY(static_cast<float>(y)));
         winrt::check_hresult(composition->Commit());

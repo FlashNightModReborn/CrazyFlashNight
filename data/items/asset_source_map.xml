@@ -5,7 +5,7 @@
   <!-- orphan="true" = XML present in LIBRARY/ but not in DOMDocument <Include>; 
        Flash IDE library panel cannot see it but .swf compile may still expose linkage -->
 
-  <!-- 5666 unique assets -->
+  <!-- 5698 unique assets -->
   <asset id="(劣质)蓝色刀光" swf="flashswf/arts/new/雾人整合特效.swf" symbolName="尚未整理/(劣质)蓝色刀光/(劣质)蓝色刀光" />
   <asset id="0" swf="flashswf/arts/new/3XD的素材.swf" symbolName="1主武器/一部分武器/武器部分/mk23/MK23手枪" />
   <asset id="1" swf="flashswf/arts/new/3XD的素材.swf" symbolName="1主武器/一部分武器1/武器本体/PKM战术版/元件 16" />
@@ -207,6 +207,7 @@
   <asset id="刀-3XF电棍" swf="flashswf/arts/new/天网大家庭.swf" />
   <asset id="刀-BULLOVA DAIDALOS" swf="flashswf/arts/new/公共素材位2.swf" symbolName="2.参考武器-冷兵/BULLOVA DAIDALOS/刀-BULLOVA DAIDALOS" />
   <asset id="刀-CF手斧" swf="flashswf/arts/new/3XD的素材.swf" symbolName="3冷兵器/一部分武器/武器本体/刀-CF手斧" />
+  <asset id="刀-Codex-特勤警棍" swf="flashswf/arts/new/Codex专用素材.swf" symbolName="Codex/重装特勤/刀-Codex-特勤警棍" />
   <asset id="刀-Codex-血色光剑天秤" swf="flashswf/arts/new/Codex专用素材.swf" symbolName="Codex/Ti61-血剑/刀-Codex-血色光剑天秤" />
   <asset id="刀-M.REAPER LAVAS" swf="flashswf/arts/new/雾人装备调整.swf" symbolName="1.冷兵器/长柄/32.紫钢镰刀/刀-M.REAPER LAVAS" />
   <asset id="刀-SCYTHE SERPENTINE" swf="flashswf/arts/new/雾人装备调整.swf" symbolName="1.冷兵器/长柄/32.紫钢镰刀/刀-SCYTHE SERPENTINE" />
@@ -546,6 +547,7 @@
   <asset id="发型-女式-银色清爽直发" swf="flashswf/arts/things切割.swf" symbolName="发型/发型-女式-银色清爽直发" />
   <asset id="发型-女式-骷髅帽子黄发头" swf="flashswf/arts/new/公共素材位0.swf" symbolName="发型/发型-女式-骷髅帽子黄发头" />
   <asset id="发型-男式-Andy发型" swf="flashswf/arts/things切割.swf" symbolName="发型/发型-男式-Andy发型" />
+  <asset id="发型-男式-Codex-治安官" swf="flashswf/arts/new/Codex专用素材.swf" symbolName="Codex/重装特勤/发型-男式-Codex-治安官" />
   <asset id="发型-男式-bob自由爆炸头" swf="flashswf/arts/things切割.swf" symbolName="发型/发型-男式-bob自由爆炸头" />
   <asset id="发型-男式-boy发型" swf="flashswf/arts/things切割.swf" symbolName="发型/发型-男式-boy发型" />
   <asset id="发型-男式-亚麻短发" swf="flashswf/arts/new/公共素材位1.swf" symbolName="4.参考发型/发型-男式-亚麻短发" />
@@ -599,6 +601,10 @@
   <asset id="发型-男式-黑骑士头" swf="flashswf/arts/things切割.swf" symbolName="发型/发型-男式-黑骑士头" />
   <asset id="发射器枪火" swf="flashswf/arts/原版素材库-子弹.swf" symbolName="特效-枪火组/发射器枪火" />
   <asset id="变体武器" swf="flashswf/arts/new/变体武器.swf" />
+  <asset id="变装-Codex-重装特勤右手" swf="flashswf/arts/new/Codex专用素材.swf" symbolName="Codex/重装特勤/变装-Codex-重装特勤右手" />
+  <asset id="变装-Codex-重装特勤头盔" swf="flashswf/arts/new/Codex专用素材.swf" symbolName="Codex/重装特勤/变装-Codex-重装特勤头盔" />
+  <asset id="变装-Codex-重装特勤左手" swf="flashswf/arts/new/Codex专用素材.swf" symbolName="Codex/重装特勤/变装-Codex-重装特勤左手" />
+  <asset id="变装-Codex-重装特勤战靴" swf="flashswf/arts/new/Codex专用素材.swf" symbolName="Codex/重装特勤/变装-Codex-重装特勤战靴" />
   <asset id="可拾取物2" swf="flashswf/arts/things.swf" symbolName="可拾取物相关/可拾取物2" />
   <asset id="右大腿" swf="flashswf/arts/new/伊恩的素材.swf" symbolName="Symbol 60" />
   <asset id="右手" swf="flashswf/arts/new/伊恩的素材.swf" symbolName="Symbol 69" />
@@ -703,7 +709,15 @@
   <asset id="图标-COLT PYTHON" swf="flashswf/arts/things.swf" symbolName="1.枪械相关/手枪/图标-COLT PYTHON" />
   <asset id="图标-Codex-QJZ171" swf="flashswf/arts/new/Codex专用素材.swf" symbolName="Codex/QJZ171/图标-Codex-QJZ171" />
   <asset id="图标-Codex-打桩机M7" swf="flashswf/arts/new/Codex专用素材.swf" symbolName="Codex/打桩机-M7/Icon" />
+  <asset id="图标-Codex-特勤沙鹰" swf="flashswf/arts/new/Codex专用素材.swf" symbolName="Codex/重装特勤/图标-Codex-特勤沙鹰" />
+  <asset id="图标-Codex-特勤警棍" swf="flashswf/arts/new/Codex专用素材.swf" symbolName="Codex/重装特勤/图标-Codex-特勤警棍" />
+  <asset id="图标-Codex-特勤霰弹枪" swf="flashswf/arts/new/Codex专用素材.swf" symbolName="Codex/重装特勤/图标-Codex-特勤霰弹枪" />
   <asset id="图标-Codex-血色光剑天秤" swf="flashswf/arts/new/Codex专用素材.swf" symbolName="Codex/Ti61-血剑/图标-Codex-血色光剑天秤" />
+  <asset id="图标-Codex-重装特勤头盔" swf="flashswf/arts/new/Codex专用素材.swf" symbolName="Codex/重装特勤/图标-Codex-重装特勤头盔" />
+  <asset id="图标-Codex-重装特勤战术裤" swf="flashswf/arts/new/Codex专用素材.swf" symbolName="Codex/重装特勤/图标-Codex-重装特勤战术裤" />
+  <asset id="图标-Codex-重装特勤战靴" swf="flashswf/arts/new/Codex专用素材.swf" symbolName="Codex/重装特勤/图标-Codex-重装特勤战靴" />
+  <asset id="图标-Codex-重装特勤手套" swf="flashswf/arts/new/Codex专用素材.swf" symbolName="Codex/重装特勤/图标-Codex-重装特勤手套" />
+  <asset id="图标-Codex-重装特勤背心" swf="flashswf/arts/new/Codex专用素材.swf" symbolName="Codex/重装特勤/图标-Codex-重装特勤背心" />
   <asset id="图标-Codex-钛合金P90" swf="flashswf/arts/new/Codex专用素材.swf" symbolName="Codex/P90-Ti61/图标-Codex-钛合金P90" />
   <asset id="图标-Codex-钛合金QJZ171" swf="flashswf/arts/new/Codex专用素材.swf" symbolName="Codex/QJZ171-Ti61/图标-Codex-钛合金QJZ171" />
   <asset id="图标-C级防化服上装" swf="flashswf/arts/new/公共素材位2.swf" symbolName="5.参考防具/C级防化服套装/图标-C级防化服上装" />
@@ -2398,6 +2412,14 @@
   <asset id="女变装-B级防化服下装小腿" swf="flashswf/arts/new/公共素材位2.swf" symbolName="5.参考防具/B级防化服套装/女变装-B级防化服下装小腿" />
   <asset id="女变装-B级防化服下装屁股" swf="flashswf/arts/new/公共素材位2.swf" symbolName="5.参考防具/B级防化服套装/女变装-B级防化服下装屁股" />
   <asset id="女变装-B级防化服下装左大腿" swf="flashswf/arts/new/公共素材位2.swf" symbolName="5.参考防具/B级防化服套装/女变装-B级防化服下装左大腿" />
+  <asset id="女变装-Codex-重装特勤上臂" swf="flashswf/arts/new/Codex专用素材.swf" symbolName="Codex/重装特勤/女变装-Codex-重装特勤上臂" />
+  <asset id="女变装-Codex-重装特勤右下臂" swf="flashswf/arts/new/Codex专用素材.swf" symbolName="Codex/重装特勤/女变装-Codex-重装特勤右下臂" />
+  <asset id="女变装-Codex-重装特勤右大腿" swf="flashswf/arts/new/Codex专用素材.swf" symbolName="Codex/重装特勤/女变装-Codex-重装特勤右大腿" />
+  <asset id="女变装-Codex-重装特勤小腿" swf="flashswf/arts/new/Codex专用素材.swf" symbolName="Codex/重装特勤/女变装-Codex-重装特勤小腿" />
+  <asset id="女变装-Codex-重装特勤屁股" swf="flashswf/arts/new/Codex专用素材.swf" symbolName="Codex/重装特勤/女变装-Codex-重装特勤屁股" />
+  <asset id="女变装-Codex-重装特勤左下臂" swf="flashswf/arts/new/Codex专用素材.swf" symbolName="Codex/重装特勤/女变装-Codex-重装特勤左下臂" />
+  <asset id="女变装-Codex-重装特勤左大腿" swf="flashswf/arts/new/Codex专用素材.swf" symbolName="Codex/重装特勤/女变装-Codex-重装特勤左大腿" />
+  <asset id="女变装-Codex-重装特勤身体" swf="flashswf/arts/new/Codex专用素材.swf" symbolName="Codex/重装特勤/女变装-Codex-重装特勤身体" />
   <asset id="女变装-C级防化服上装上臂" swf="flashswf/arts/new/公共素材位2.swf" symbolName="5.参考防具/C级防化服套装/女变装-C级防化服上装上臂" />
   <asset id="女变装-C级防化服上装右下臂" swf="flashswf/arts/new/公共素材位2.swf" symbolName="5.参考防具/C级防化服套装/女变装-C级防化服上装右下臂" />
   <asset id="女变装-C级防化服上装左下臂" swf="flashswf/arts/new/公共素材位2.swf" symbolName="5.参考防具/C级防化服套装/女变装-C级防化服上装左下臂" />
@@ -3728,6 +3750,7 @@
   <asset id="枪-手枪-Beretta90TWO熔岩" swf="flashswf/arts/new/变体武器.swf" symbolName="1.枪械相关/手枪/Beretta90TWO/1.狱火/枪-手枪-Beretta90TWO熔岩" />
   <asset id="枪-手枪-Beretta90TWO狱火" swf="flashswf/arts/new/变体武器.swf" symbolName="1.枪械相关/手枪/Beretta90TWO/1.狱火/枪-手枪-Beretta90TWO狱火" />
   <asset id="枪-手枪-BergmannM1910" swf="flashswf/arts/new/偷吃屑鱼坟头贡品.swf" />
+  <asset id="枪-手枪-Codex-特勤沙鹰" swf="flashswf/arts/new/Codex专用素材.swf" symbolName="Codex/重装特勤/枪-手枪-Codex-特勤沙鹰" />
   <asset id="枪-手枪-Codex-钛合金P90" swf="flashswf/arts/new/Codex专用素材.swf" symbolName="Codex/P90-Ti61/枪-手枪-Codex-钛合金P90" />
   <asset id="枪-手枪-Desert Eagle" swf="flashswf/arts/things.swf" symbolName="1.枪械相关/手枪/枪-手枪-Desert Eagle" />
   <asset id="枪-手枪-Desert Eagle改装版" swf="flashswf/arts/new/3XD的素材.swf" symbolName="2副武器/沙鹰战术/Symbol 3799" />
@@ -3872,6 +3895,7 @@
   <asset id="枪-长枪-CAR" swf="flashswf/arts/new/3102&amp;Leave.swf" symbolName="TTF2/枪-长枪-CAR" />
   <asset id="枪-长枪-Codex-QJZ171" swf="flashswf/arts/new/Codex专用素材.swf" symbolName="Codex/QJZ171/枪-长枪-Codex-QJZ171" />
   <asset id="枪-长枪-Codex-打桩机M7" swf="flashswf/arts/new/Codex专用素材.swf" symbolName="Codex/打桩机-M7/Weapon" />
+  <asset id="枪-长枪-Codex-特勤霰弹枪" swf="flashswf/arts/new/Codex专用素材.swf" symbolName="Codex/重装特勤/枪-长枪-Codex-特勤霰弹枪" />
   <asset id="枪-长枪-Codex-钛合金QJZ171" swf="flashswf/arts/new/Codex专用素材.swf" symbolName="Codex/QJZ171-Ti61/枪-长枪-Codex-钛合金QJZ171" />
   <asset id="枪-长枪-DBHshotgun" swf="flashswf/arts/new/原体融合生物.swf" />
   <asset id="枪-长枪-DD MK18" swf="flashswf/arts/new/Au的素材.swf" symbolName="枪械/枪-长枪-DD MK18" />
@@ -4326,6 +4350,14 @@
   <asset id="男变装-B级防化服手套右手" swf="flashswf/arts/new/公共素材位2.swf" symbolName="5.参考防具/B级防化服套装/男变装-B级防化服手套右手" />
   <asset id="男变装-B级防化服手套左手" swf="flashswf/arts/new/公共素材位2.swf" symbolName="5.参考防具/B级防化服套装/男变装-B级防化服手套左手" />
   <asset id="男变装-B级防化服鞋" swf="flashswf/arts/new/公共素材位2.swf" symbolName="5.参考防具/B级防化服套装/男变装-B级防化服鞋" />
+  <asset id="男变装-Codex-重装特勤上臂" swf="flashswf/arts/new/Codex专用素材.swf" symbolName="Codex/重装特勤/男变装-Codex-重装特勤上臂" />
+  <asset id="男变装-Codex-重装特勤右下臂" swf="flashswf/arts/new/Codex专用素材.swf" symbolName="Codex/重装特勤/男变装-Codex-重装特勤右下臂" />
+  <asset id="男变装-Codex-重装特勤右大腿" swf="flashswf/arts/new/Codex专用素材.swf" symbolName="Codex/重装特勤/男变装-Codex-重装特勤右大腿" />
+  <asset id="男变装-Codex-重装特勤小腿" swf="flashswf/arts/new/Codex专用素材.swf" symbolName="Codex/重装特勤/男变装-Codex-重装特勤小腿" />
+  <asset id="男变装-Codex-重装特勤屁股" swf="flashswf/arts/new/Codex专用素材.swf" symbolName="Codex/重装特勤/男变装-Codex-重装特勤屁股" />
+  <asset id="男变装-Codex-重装特勤左下臂" swf="flashswf/arts/new/Codex专用素材.swf" symbolName="Codex/重装特勤/男变装-Codex-重装特勤左下臂" />
+  <asset id="男变装-Codex-重装特勤左大腿" swf="flashswf/arts/new/Codex专用素材.swf" symbolName="Codex/重装特勤/男变装-Codex-重装特勤左大腿" />
+  <asset id="男变装-Codex-重装特勤身体" swf="flashswf/arts/new/Codex专用素材.swf" symbolName="Codex/重装特勤/男变装-Codex-重装特勤身体" />
   <asset id="男变装-C级防化服上装上臂" swf="flashswf/arts/new/公共素材位2.swf" symbolName="5.参考防具/C级防化服套装/男变装-C级防化服上装上臂" />
   <asset id="男变装-C级防化服上装右下臂" swf="flashswf/arts/new/公共素材位2.swf" symbolName="5.参考防具/C级防化服套装/男变装-C级防化服上装右下臂" />
   <asset id="男变装-C级防化服上装左下臂" swf="flashswf/arts/new/公共素材位2.swf" symbolName="5.参考防具/C级防化服套装/男变装-C级防化服上装左下臂" />

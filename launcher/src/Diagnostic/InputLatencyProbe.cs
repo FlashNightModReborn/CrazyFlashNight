@@ -13,7 +13,7 @@ namespace CF7Launcher.Diagnostic
         internal const double SlowMs = 40;
         internal const int SlowEventLimit = 64;
         private const int IntervalMs = 20;
-        private static readonly string[] Metrics = { "ui_dispatch", "sampler_gap", "hook_delivery",
+        private static readonly string[] Metrics = { "ui_dispatch", "sampler_gap", "hook_delivery", "hook_callback", "hook_chain",
             "cursor_queue", "cursor_present", "transition_tick", "transition_raise", "surface_present",
             "surface_viewport", "web_input", "world_read", "world_geometry", "transition_hide" };
         internal static InputLatencyProbe Current { get; private set; }
@@ -33,6 +33,7 @@ namespace CF7Launcher.Diagnostic
             if (!IsRequested(Environment.GetEnvironmentVariable("CF7_INPUT_LATENCY"), FocusTrace.Enabled)) return null;
             Current = new InputLatencyProbe(action => owner.BeginInvoke(action),
                 (name, data) => FocusTrace.Record(name, data), cursorMode, useTimer: true);
+            Current.BeginTransition("startup:" + Environment.ProcessId, 0, "startup");
             return Current;
         }
         internal static bool IsRequested(string value, bool recording) => recording && value == "1";

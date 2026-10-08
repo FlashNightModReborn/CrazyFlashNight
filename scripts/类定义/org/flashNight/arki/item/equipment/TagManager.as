@@ -152,7 +152,7 @@ class org.flashNight.arki.item.equipment.TagManager {
         var modslot:Number = itemData.data.modslot;
         // 保持原行为：如果 modslot 为 undefined，不进行槽位限制检查
         // 原版中 len >= undefined 返回 false，相当于没有槽位限制
-        if (modslot !== undefined && mods.length > 0 && mods.length >= modslot) {
+        if (modslot !== undefined && mods.length >= modslot) {
             return -1; // 槽位已满
         }
 
@@ -390,7 +390,7 @@ class org.flashNight.arki.item.equipment.TagManager {
      * @return 过滤后的可用配件列表
      */
     public static function filterAvailableMods(availableMods:Array, item:BaseItem, itemData:Object):Array {
-        if (!availableMods || availableMods.length == 0) {
+        if (itemData.data.modslot === 0 || !availableMods || availableMods.length == 0) {
             return [];
         }
 

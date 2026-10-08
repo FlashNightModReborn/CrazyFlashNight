@@ -1,0 +1,78 @@
+<DOMSymbolItem xmlns="http://ns.adobe.com/xfl/2008/" name="Codex/重装特勤/图标-Codex-特勤霰弹枪" linkageExportForAS="true" linkageExportInFirstFrame="true" linkageIdentifier="图标-Codex-特勤霰弹枪">
+  <timeline>
+    <DOMTimeline name="图标-Codex-特勤霰弹枪">
+      <layers>
+        <DOMLayer name="停止" color="#4FFF4F">
+          <frames>
+            <DOMFrame index="0" duration="2" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[stop();]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="24 像素裁切" color="#4FFF4F" layerType="mask" locked="true">
+          <frames>
+            <DOMFrame index="0" duration="1" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/重装特勤/图标部件/底影" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="1.000000000" b="0.000000000" c="0.000000000" d="1.000000000" tx="0.000000000" ty="0.000000000"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图标细节" color="#4FFF4F" parentLayerIndex="1" locked="true">
+          <frames>
+            <DOMFrame index="0" duration="1" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/重装特勤/部件/已注册霰弹枪" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.160000000" b="-0.160000000" c="0.160000000" d="0.160000000" tx="-1.000000000" ty="9.000000000"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="底影与掉落" color="#4FFF4F">
+          <frames>
+            <DOMFrame index="0" duration="1" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/重装特勤/图标部件/底影" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="1.000000000" b="0.000000000" c="0.000000000" d="1.000000000" tx="0.000000000" ty="0.000000000"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="1" duration="1" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/重装特勤/部件/已注册霰弹枪" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.175680763" b="0.000000000" c="0.000000000" d="0.175680763" tx="-17.194754674" ty="-5.595432300"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

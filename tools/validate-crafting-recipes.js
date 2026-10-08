@@ -127,7 +127,7 @@ function validate() {
             recipeCount++;
         });
     });
-    if (recipeCount !== 321) fail('expected 321 recipes, got ' + recipeCount);
+    if (recipeCount !== 329) fail('expected 329 recipes, got ' + recipeCount);
     process.stdout.write('Crafting recipe identity: ' + recipeCount
         + ' recipes / ' + seen.size + ' unique recipeIds passed\n');
 }

@@ -25,7 +25,7 @@ namespace CF7Launcher.Guardian
     /// </summary>
     public class InputShieldForm : OverlayBase
     {
-        #region Win32 (TrackMouseEvent + GlobalHook)
+        #region Win32 (TrackMouseEvent + Foreground)
 
         [DllImport("user32.dll")]
         private static extern bool TrackMouseEvent(ref TRACKMOUSEEVENT lpEventTrack);
@@ -36,25 +36,11 @@ namespace CF7Launcher.Guardian
         [DllImport("user32.dll")]
         private static extern bool ReleaseCapture();
 
-        [DllImport("user32.dll", SetLastError = true)]
-        private static extern IntPtr SetWindowsHookEx(int idHook, LowLevelMouseProc lpfn, IntPtr hMod, uint dwThreadId);
-
-        [DllImport("user32.dll", SetLastError = true)]
-        private static extern bool UnhookWindowsHookEx(IntPtr hhk);
-
-        [DllImport("user32.dll")]
-        private static extern IntPtr CallNextHookEx(IntPtr hhk, int nCode, IntPtr wParam, IntPtr lParam);
-
         [DllImport("user32.dll")]
         private static extern IntPtr GetForegroundWindow();
 
         [DllImport("user32.dll")]
         private static extern bool IsChild(IntPtr hWndParent, IntPtr hWnd);
-
-        [DllImport("kernel32.dll", CharSet = CharSet.Auto)]
-        private static extern IntPtr GetModuleHandle(string lpModuleName);
-
-        private delegate IntPtr LowLevelMouseProc(int nCode, IntPtr wParam, IntPtr lParam);
 
         [StructLayout(LayoutKind.Sequential)]
         private struct TRACKMOUSEEVENT
@@ -65,25 +51,6 @@ namespace CF7Launcher.Guardian
             public int dwHoverTime;
         }
 
-        [StructLayout(LayoutKind.Sequential)]
-        private struct POINT_LL
-        {
-            public int X;
-            public int Y;
-        }
-
-        [StructLayout(LayoutKind.Sequential)]
-        private struct MSLLHOOKSTRUCT
-        {
-            public POINT_LL pt;
-            public uint mouseData;
-            public uint flags;
-            public uint time;
-            public IntPtr dwExtraInfo;
-        }
-
-        private const int WH_MOUSE_LL = 14;
-        private const int HC_ACTION_LL = 0;
         private const uint TME_LEAVE = 0x00000002;
 
         #endregion
@@ -167,7 +134,7 @@ namespace CF7Launcher.Guardian
         }
 
         #region Telemetry-only 模式（Phase 2 实化）
-        // Phase 2：α 蒙版清空（全 0 → HTTRANSPARENT），同时全局 mouse hook 过滤计数 panel 矩形外 click。
+        // Phase 2：α 蒙版清空（全 0 → HTTRANSPARENT），复用 WebOverlay mouse hook 观察 panel 矩形外 click。
         // 过滤条件（必须全部满足才计数到 _clicksOutsidePanel）：
         //   1) 前台窗口 = guardianHwnd 或其子窗口（排除桌面/其他窗口的无关 click）
         //   2) click 屏幕坐标在 anchorScreenRect 内（排除 Flash 区域外的 click）
@@ -184,8 +151,6 @@ namespace CF7Launcher.Guardian
         private IntPtr _telemetryGuardianHwnd;
         // panel 接管前台后 foreground = WebOverlay HWND（owned top-level，不是 IsChild）；纳入白名单避免污染数据
         private IntPtr _telemetryWebOverlayHwnd;
-        private IntPtr _telemetryHookHandle = IntPtr.Zero;
-        private LowLevelMouseProc _telemetryHookProc; // 必须长生命周期引用，防 GC 回收委托
         private int _clicksOutsidePanel;
         private int _sessionTotalClicks;
         private int _filteredExternalClicks;
@@ -193,15 +158,16 @@ namespace CF7Launcher.Guardian
         public void EnterTelemetryMode(Rectangle panelRect, IntPtr guardianHwnd, Rectangle anchorScreenRect,
                                        IntPtr webOverlayHwnd)
         {
+            if (IsDisposed || Disposing) return;
             if (_telemetryActive)
             {
-                // 同 panel A → B 切换：刷新缓存的矩形与 anchor，hook 沿用
+                // 同 panel A → B 切换：刷新矩形与 owner，保留本轮统计。
                 _telemetryPanelRect = panelRect;
                 _telemetryAnchorRect = anchorScreenRect;
                 _telemetryGuardianHwnd = guardianHwnd;
                 _telemetryWebOverlayHwnd = webOverlayHwnd;
                 ClearInteractiveRects();
-                LogManager.Log("[InputShield] telemetry refresh panel=" + panelRect.Width + "x" + panelRect.Height);
+                LogManager.Log("[InputShield] telemetry refresh source=shared_cursor_hook panel=" + panelRect.Width + "x" + panelRect.Height);
                 return;
             }
             _telemetryActive = true;
@@ -218,21 +184,7 @@ namespace CF7Launcher.Guardian
             ResetInputState();
             ClearInteractiveRects();
 
-            // 安装 WH_MOUSE_LL 全局钩子（仅观测，不修改事件）
-            try
-            {
-                _telemetryHookProc = new LowLevelMouseProc(TelemetryHookCallback);
-                IntPtr hMod = GetModuleHandle(null);
-                _telemetryHookHandle = SetWindowsHookEx(WH_MOUSE_LL, _telemetryHookProc, hMod, 0);
-                if (_telemetryHookHandle == IntPtr.Zero)
-                    LogManager.Log("[InputShield] SetWindowsHookEx failed err=" + Marshal.GetLastWin32Error());
-            }
-            catch (Exception ex)
-            {
-                LogManager.Log("[InputShield] EnterTelemetryMode hook install throw: " + ex.Message);
-            }
-
-            LogManager.Log("[InputShield] EnterTelemetryMode panel=" + panelRect.Width + "x" + panelRect.Height
+            LogManager.Log("[InputShield] EnterTelemetryMode source=shared_cursor_hook panel=" + panelRect.Width + "x" + panelRect.Height
                 + " anchor=" + anchorScreenRect.Width + "x" + anchorScreenRect.Height);
         }
 
@@ -240,12 +192,6 @@ namespace CF7Launcher.Guardian
         {
             bool wasActive = _telemetryActive;
             _telemetryActive = false;
-            if (_telemetryHookHandle != IntPtr.Zero)
-            {
-                try { UnhookWindowsHookEx(_telemetryHookHandle); } catch { }
-                _telemetryHookHandle = IntPtr.Zero;
-            }
-            _telemetryHookProc = null;
 
             // Close 的输入不变量必须幂等：即便调用时 telemetry 已结束，也不能让最后一次
             // full-panel interactiveRect 或未配对 capture 留在常驻透明 shield 上吞掉 Flash 点击。
@@ -254,7 +200,7 @@ namespace CF7Launcher.Guardian
 
             if (!wasActive) return;
 
-            LogManager.Log("[InputShield] ExitTelemetryMode session_total=" + _sessionTotalClicks
+            LogManager.Log("[InputShield] ExitTelemetryMode source=shared_cursor_hook session_total=" + _sessionTotalClicks
                 + " clicks_outside_panel=" + _clicksOutsidePanel
                 + " filtered_external=" + _filteredExternalClicks);
         }
@@ -273,40 +219,26 @@ namespace CF7Launcher.Guardian
             return 1;
         }
 
-        private IntPtr TelemetryHookCallback(int nCode, IntPtr wParam, IntPtr lParam)
+        // Called by the associated WebOverlay hook on the same UI thread.
+        // Observation has no consumption result and never forwards input.
+        internal void ObserveTelemetryButtonDown(int screenX, int screenY, int message)
         {
-            if (nCode == HC_ACTION_LL && _telemetryActive)
+            if (!_telemetryActive || IsDisposed || Disposing) return;
+            if (message != 0x0201 && message != 0x0204 && message != 0x0207 && message != 0x020B) return;
+            bool fgIsGuardian = false;
+            try
             {
-                int msg = wParam.ToInt32();
-                // 只采样 button-down 事件（mouseMoved 太频繁，无意义；按下足够采样）
-                bool isButtonDown = (msg == 0x0201 /*WM_LBUTTONDOWN*/) || (msg == 0x0204 /*WM_RBUTTONDOWN*/) ||
-                                    (msg == 0x0207 /*WM_MBUTTONDOWN*/) || (msg == 0x020B /*WM_XBUTTONDOWN*/);
-                if (isButtonDown)
-                {
-                    try
-                    {
-                        MSLLHOOKSTRUCT data = (MSLLHOOKSTRUCT)Marshal.PtrToStructure(lParam, typeof(MSLLHOOKSTRUCT));
-                        Point pt = new Point(data.pt.X, data.pt.Y);
-                        bool fgIsGuardian = false;
-                        try
-                        {
-                            IntPtr fg = GetForegroundWindow();
-                            // panel 接管前台时 fg=WebOverlay HWND（owned top-level，IsChild 不会命中）；
-                            // 直接把 webOverlay hwnd 也算"本进程交互"，避免 panel 期 click 全落 filtered_external。
-                            fgIsGuardian = (fg == _telemetryGuardianHwnd) ||
-                                           (fg == _telemetryWebOverlayHwnd && _telemetryWebOverlayHwnd != IntPtr.Zero) ||
-                                           (fg != IntPtr.Zero && IsChild(_telemetryGuardianHwnd, fg));
-                        }
-                        catch { }
-                        int kind = ClassifyTelemetryClick(pt, _telemetryPanelRect, _telemetryAnchorRect, fgIsGuardian);
-                        _sessionTotalClicks++;
-                        if (kind == 1) _clicksOutsidePanel++;
-                        else if (kind == -1) _filteredExternalClicks++;
-                    }
-                    catch { }
-                }
+                IntPtr fg = GetForegroundWindow();
+                // WebOverlay is owned top-level, not an IsChild descendant.
+                fgIsGuardian = (fg == _telemetryGuardianHwnd)
+                    || (fg == _telemetryWebOverlayHwnd && _telemetryWebOverlayHwnd != IntPtr.Zero)
+                    || (fg != IntPtr.Zero && IsChild(_telemetryGuardianHwnd, fg));
             }
-            return CallNextHookEx(_telemetryHookHandle, nCode, wParam, lParam);
+            catch { }
+            int kind = ClassifyTelemetryClick(new Point(screenX, screenY), _telemetryPanelRect, _telemetryAnchorRect, fgIsGuardian);
+            _sessionTotalClicks++;
+            if (kind == 1) _clicksOutsidePanel++;
+            else if (kind == -1) _filteredExternalClicks++;
         }
 
         #endregion
@@ -752,6 +684,7 @@ namespace CF7Launcher.Guardian
         {
             if (disposing)
             {
+                _telemetryActive = false;
                 if (_maskBitmap != null)
                 {
                     _maskBitmap.Dispose();
