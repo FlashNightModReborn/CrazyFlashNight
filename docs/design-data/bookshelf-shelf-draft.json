@@ -1,0 +1,78 @@
+{
+  "schema": "bookshelf-shelf-design/1",
+  "status": "graybox_candidate",
+  "date": "2026-10-08",
+  "note": "书架面板 3D 置物架总览灰盒设计稿 v3（构图修正）。v2 照搬 57 原生 2列×6行比例导致内容物过小；本稿保留 57 的材质与 2 列形制，但隔间重排为 2列×3行——内容隔间（藏书/碟盒/档案夹）放大、下部空隔间压缩压暗。架体正面由生成器用 57 渲染图作九宫格拼版（顶板/层板/侧板/中隔条/背板各自拉伸重组），非原生像素比例。单位 cm，glTF 坐标。书脊贴图=ffdec 矢量书脊高清栅格化（59 尘都诡谈/65 光明巴比伦/69 守护之力，以书脊文字实测为准），风帆双子程序化仿版；盒面=CF1 标题 Andy Law 涂鸦 logo（Ruffle 通道）；碟面程序化竖排，底色=六根原生书脊平均色。CF2-6 为商业资产不导出。美术定调留待真人验收。",
+  "books": ["dust", "babylon", "guardian", "sail-twins"],
+  "playableBook": "crazy-flasher",
+  "discs": ["cf1", "cf2", "cf3", "cf4", "cf5", "cf6"],
+  "shelf": {
+    "body": {"width": 56, "height": 36, "z": -3, "textureWidth": 2048},
+    "grid": {"sideW": 2.2, "dividerW": 1.4, "topH": 2.4, "bottomH": 1.6, "boardH": 1.3,
+      "rowHeights": [11.8, 10.0, 7.6],
+      "rowFloors": [21.8, 10.5, 1.6],
+      "note": "rows 自上而下；row0=内容行（藏书/碟盒），row1=档案夹，row2=空；rowFloors=各行地板世界 y（=顶板底 33.6 起逐行减行高与板厚）"},
+    "columns": {"left": [-25.8, -0.7], "right": [0.7, 25.8]},
+    "shadeCells": [],
+    "emptyShade": {"note": "空格间压暗：未被内容占用的格子；row2 与更底行更深。占用即点亮（重跑生成器）", "row2": 0.28, "other": 0.12},
+    "bookFillOrder": [
+      {"column": "left", "row": 0, "capacity": 5},
+      {"column": "left", "row": 2, "capacity": 5},
+      {"column": "right", "row": 2, "capacity": 5}
+    ],
+    "shell": {"side": 0.9, "top": 1.2, "depth": 6, "colors": {"side": "#3a3a3a", "top": "#6e6e6e", "bottom": "#484848"}},
+    "floorSlab": {"thickness": 0.62, "depth": 4, "color": "#6e6e6e"},
+    "palette": {"tray": "#3f3f3f", "box": "#20242e"},
+    "composeTiles": {
+      "note": "57 渲染图九宫格拼版采样区，坐标以 1064×1128 基线记录，生成器按实际栅格化分辨率等比缩放",
+      "top": [8, 8, 1048, 95], "board": [8, 240, 1048, 31], "bottom": [8, 1088, 1048, 32],
+      "left": [8, 103, 92, 985], "right": [970, 103, 86, 985], "divider": [545, 103, 34, 985],
+      "interior": [105, 108, 435, 127]
+    }
+  },
+  "placements": {
+    "books": "按 bookFillOrder 依 catalog 顺序填充，格内左对齐（margin 1.2），空格间即预留位",
+    "archives": {"column": "left", "row": 1},
+    "boxSet": {"column": "right", "row": 0}
+  },
+  "bookGeometry": {
+    "dust": {"width": 4.6, "height": 10.6, "depth": 4.0},
+    "babylon": {"width": 4.6, "height": 10.6, "depth": 4.0},
+    "guardian": {"width": 4.6, "height": 10.6, "depth": 4.0},
+    "sail-twins": {"width": 4.6, "height": 10.6, "depth": 4.0},
+    "gap": 0.5, "centerZ": -0.9
+  },
+  "boxSet": {
+    "panel": {"width": 19, "height": 10.2, "depth": 1.2, "x": 13.25, "z": -2.3},
+    "tray": {"width": 21, "height": 1.4, "depth": 4.5, "x": 13.25, "z": -0.5, "lipHeight": 0.7},
+    "disc": {"width": 2.6, "height": 5.8, "depth": 0.8, "gap": 0.5, "z": -0.2,
+      "note": "碟面底色=原生书脊平均色，竖排排版仿原版；副标题 0.86 处，托盘沿 0.7 不遮"}
+  },
+  "hoverPull": 1.2,
+  "archiveZone": {
+    "note": "常驻角色档案夹动态摆放区（snapshot slots 运行时数据），位于 left 列第 2 隔；最多 max 个档案夹，超出由面板追加“更多档案”盒",
+    "leftEdge": -22.55, "floorY": 10.5, "gap": 0.6, "width": 4.2, "height": 8.6, "depth": 3.6, "z": -0.9,
+    "max": 3, "color": "#b89b6a", "label": "#efe6cf"
+  },
+  "camera": {
+    "gltfPosition": [4, 22, 100],
+    "gltfTarget": [0, 18.5, -1],
+    "horizontalSpan": 68,
+    "minSpan": 12,
+    "maxSpan": 240
+  },
+  "lighting": {"background": "#221c17"},
+  "textures": {
+    "spine": {"width": 160, "height": 848},
+    "disc": {"width": 224, "height": 384},
+    "box": {"width": 640, "height": 430},
+    "fontFamily": "Microsoft YaHei"
+  },
+  "extractSources": {
+    "note": "ffdec 通道=tools/bookshelf-shelf-extract/out-ffdec/（矢量 sprite 栅格化）；Ruffle 通道=out/（CF1 标题 logo）",
+    "body": "shelf-body",
+    "spines": {"dust": "spine-dust", "babylon": "spine-babylon", "guardian": "spine-guardian"},
+    "boxLogo": "cf1-logo",
+    "discPalette": ["spine-babylon", "spine-ribbon", "spine-metal", "spine-guardian", "spine-dust", "spine-apocalypse"]
+  }
+}

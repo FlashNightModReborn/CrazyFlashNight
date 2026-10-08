@@ -7,10 +7,11 @@
 })(typeof window !== 'undefined' ? window : globalThis, function(PanelRuntime) {
     'use strict';
     var books = [
-        {id:'dust', title:'尘都诡谈', subtitle:'原版藏书 · 15 页', format:'facsimile', pages:15},
-        {id:'babylon', title:'光明巴比伦', subtitle:'原版藏书 · 15 页', format:'facsimile', pages:15},
-        {id:'crazy-flasher', title:'闪客快打', subtitle:'系列藏书 · 6 个章节', format:'playable', pages:0,
+        {id:'dust', title:'尘都诡谈', subtitle:'原版藏书 · 15 页', format:'facsimile', pages:15, spine:'shelf/textures/spine-dust.png'},
+        {id:'babylon', title:'光明巴比伦', subtitle:'原版藏书 · 15 页', format:'facsimile', pages:15, spine:'shelf/textures/spine-babylon.png'},
+        {id:'crazy-flasher', title:'闪客快打', subtitle:'系列藏书 · 6 个章节', format:'playable', pages:0, boxArt:'shelf/textures/box-crazy-flasher.png',
             chapters:[1,2,3,4,5,6].map(function(n) { return {id:'cf' + n, title:n === 1 ? '修理大学' : '闪客快打 ' + n,
+                cover:'shelf/textures/disc-cf' + n + '.png',
                 original:{chapter:n, languages:n === 1 ? ['cn'] : ['cn','en']},
                 remake:{id:n === 1 ? 'repair-campus' : null, available:n === 1}}; })}
     ];
@@ -32,10 +33,12 @@
                     || typeof b.subtitle !== 'string' || !Number.isInteger(b.pages) || b.pages < 0 || b.pages > 10000
                     || !['facsimile','comic','novel','playable'].includes(b.format)
                     || (b.format === 'playable') !== (b.pages === 0)
+                    || (b.format === 'playable' ? !safeAsset(b.boxArt) : !safeAsset(b.spine))
                     || (['comic','novel'].includes(b.format) && !safeAsset(b.index))) throw new Error('invalid_book');
             ids.add(b.id);
             if (b.format === 'playable' && (b.id !== 'crazy-flasher' || !Array.isArray(b.chapters) || b.chapters.length !== 6
                 || !b.chapters.every(function(c, i) { return c && c.id === 'cf' + (i + 1) && typeof c.title === 'string'
+                    && safeAsset(c.cover)
                     && c.original && c.original.chapter === i + 1
                     && JSON.stringify(c.original.languages) === JSON.stringify(i === 0 ? ['cn'] : ['cn','en'])
                     && c.remake && c.remake.available === (i === 0) && c.remake.id === (i === 0 ? 'repair-campus' : null);

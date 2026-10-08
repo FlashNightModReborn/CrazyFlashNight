@@ -1,0 +1,203 @@
+{
+  "schema": "bookshelf-shelf-extract-report/1",
+  "generatedAt": "2026-10-07T15:30:56.876Z",
+  "sources": [
+    {
+      "file": "flashswf/UI/书架界面.swf",
+      "sha256": "2ead6beb02d11fedce2af70a795fba247156db24c7396f0a12b8745a3bfbdf0c",
+      "bytes": 57387,
+      "frameLabels": [
+        {
+          "frame": 2,
+          "label": "空"
+        },
+        {
+          "frame": 8,
+          "label": "光明巴比伦"
+        },
+        {
+          "frame": 18,
+          "label": "无名丝带"
+        },
+        {
+          "frame": 26,
+          "label": "尘都诡谈"
+        },
+        {
+          "frame": 34,
+          "label": "末日异闻录"
+        }
+      ],
+      "note": "labeled frames rendered from in-memory gotoAndStop-patched copies; repo SWF unchanged"
+    },
+    {
+      "file": "flashswf/originals/crazy-flasher-1.swf",
+      "sha256": "aa1cb17a60b9efaffe8e969bb33d77342657728af0203f8bb0b5fcf07b145a00",
+      "bytes": 935674,
+      "note": "unpatched; title captured at its scripted stop frame"
+    }
+  ],
+  "renderer": "vendored Ruffle 0.3.0 (flashswf/_ruffle), wmode transparent, headless Edge",
+  "cropsConfig": {
+    "schema": "bookshelf-shelf-extract-crops/1",
+    "note": "crop rects are in SWF stage coordinates (shelf 500x460, cf1 400x300); the extractor multiplies by its capture SCALE",
+    "sets": [
+      {
+        "source": "shelf-label-空.png",
+        "rects": {
+          "spine-babylon": {
+            "x": 122.3,
+            "y": 55,
+            "w": 9.4,
+            "h": 53.4
+          },
+          "spine-ribbon": {
+            "x": 132.3,
+            "y": 55,
+            "w": 9.4,
+            "h": 53.4
+          },
+          "spine-metal": {
+            "x": 122.3,
+            "y": 120,
+            "w": 9.4,
+            "h": 55
+          },
+          "spine-guardian": {
+            "x": 132.3,
+            "y": 120,
+            "w": 9.4,
+            "h": 55
+          },
+          "spine-dust": {
+            "x": 122.3,
+            "y": 186.7,
+            "w": 9.4,
+            "h": 53.4
+          },
+          "spine-apocalypse": {
+            "x": 132.3,
+            "y": 186.7,
+            "w": 9.4,
+            "h": 53.4
+          },
+          "shelf-interior": {
+            "x": 300,
+            "y": 56.7,
+            "w": 73.4,
+            "h": 50
+          },
+          "shelf-side": {
+            "x": 85,
+            "y": 33.3,
+            "w": 33.4,
+            "h": 400
+          },
+          "shelf-top": {
+            "x": 120,
+            "y": 15,
+            "w": 300,
+            "h": 36.7
+          }
+        }
+      },
+      {
+        "source": "cf1-title-b.png",
+        "rects": {
+          "cf1-logo": {
+            "x": 75,
+            "y": 11.7,
+            "w": 253.4,
+            "h": 225
+          }
+        }
+      }
+    ],
+    "averages": {
+      "spine-babylon": "#504d8c",
+      "spine-ribbon": "#eb4141",
+      "spine-metal": "#552020",
+      "spine-guardian": "#d3dde3",
+      "spine-dust": "#737373",
+      "spine-apocalypse": "#1c4b1c",
+      "shelf-interior": "#4b4b4b",
+      "shelf-side": "#363636",
+      "shelf-top": "#828282",
+      "cf1-logo": "#9ab474"
+    }
+  },
+  "files": {
+    "cf1-logo.png": {
+      "bytes": 145313,
+      "sha256": "a64bf0f05ee1f06dc2cbebf124f9d589a8c4408540e636d23f240e3d3dd2bfaf"
+    },
+    "cf1-title-a.png": {
+      "bytes": 55050,
+      "sha256": "67371149704e45c215f7c272dcedcc0192ba0b0b41324502c46a267240327e14"
+    },
+    "cf1-title-b.png": {
+      "bytes": 55050,
+      "sha256": "67371149704e45c215f7c272dcedcc0192ba0b0b41324502c46a267240327e14"
+    },
+    "shelf-frame-1.png": {
+      "bytes": 70886,
+      "sha256": "c6964ba190552b161e560795f83c226470ec39aed006f5d99a4784dbf7305ae3"
+    },
+    "shelf-interior.png": {
+      "bytes": 2467,
+      "sha256": "dfd8e9bbce53ad5994294664bfabd2488d6be21bab707b7307a03fadf7aff735"
+    },
+    "shelf-label-光明巴比伦.png": {
+      "bytes": 101855,
+      "sha256": "35726bf6a441ee94f545eb54e66f48b4c87e55ece5301de153525224506a3f26"
+    },
+    "shelf-label-尘都诡谈.png": {
+      "bytes": 487397,
+      "sha256": "aea9703f207da364e6b0faf345d63168c343cb751ed50f178c8f0f0e3715d964"
+    },
+    "shelf-label-无名丝带.png": {
+      "bytes": 84674,
+      "sha256": "74ba47c8c1a402b9e3710fab7069d8e9cf1e4d1b52c57e49c307264e31a0c86f"
+    },
+    "shelf-label-末日异闻录.png": {
+      "bytes": 84674,
+      "sha256": "74ba47c8c1a402b9e3710fab7069d8e9cf1e4d1b52c57e49c307264e31a0c86f"
+    },
+    "shelf-label-空.png": {
+      "bytes": 84674,
+      "sha256": "74ba47c8c1a402b9e3710fab7069d8e9cf1e4d1b52c57e49c307264e31a0c86f"
+    },
+    "shelf-side.png": {
+      "bytes": 11755,
+      "sha256": "d8285f519ea602b4a1663b87bb65dd3630f4eca6b86543bb1d57c484fa86fcaa"
+    },
+    "shelf-top.png": {
+      "bytes": 4461,
+      "sha256": "9507691bfebc93a1a29261737b65ad4b2ab836d6ac2775ba47feb12a17e56d4d"
+    },
+    "spine-apocalypse.png": {
+      "bytes": 8335,
+      "sha256": "2943795ee78767ae153293693ae7140e2edb2fd59e3ace45bf9fe64ad8366907"
+    },
+    "spine-babylon.png": {
+      "bytes": 6206,
+      "sha256": "2652fafafa9b746b370fd4864237e076c5b284c21062341c646929bc3546b464"
+    },
+    "spine-dust.png": {
+      "bytes": 7341,
+      "sha256": "20efdc3dfdfee3c313ca73bd39aad653cc3cbdcc2a21f6f5632bd730ed646e00"
+    },
+    "spine-guardian.png": {
+      "bytes": 5188,
+      "sha256": "b1324906453eee250fe76ad3fffa009bbbc0142a46916b10757406d06ae90359"
+    },
+    "spine-metal.png": {
+      "bytes": 8354,
+      "sha256": "2146f97f721b75d33cad5ef20a9c6f52ac2ff7e4c473b231f898c641a16a0bad"
+    },
+    "spine-ribbon.png": {
+      "bytes": 6705,
+      "sha256": "e4dec8fbeed17e17bc653a4a889cf2f4d6e6dac61b94277c4f7e48f4916b4565"
+    }
+  }
+}

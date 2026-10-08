@@ -1,17 +1,17 @@
 {
   "schema": "bookshelf-catalog.v1",
   "books": [
-    {"id":"dust","title":"尘都诡谈","subtitle":"原版藏书 · 15 页","format":"facsimile","pages":15},
-    {"id":"babylon","title":"光明巴比伦","subtitle":"原版藏书 · 15 页","format":"facsimile","pages":15},
-    {"id":"guardian","title":"守护之力","subtitle":"漫画 · 1,227 页","format":"comic","pages":1227,"index":"guardian/index.json"},
-    {"id":"sail-twins","title":"风帆双子","subtitle":"Forever爱牛 · 28 章","format":"novel","pages":28,"index":"sail-twins/index.json"},
-    {"id":"crazy-flasher","title":"闪客快打","subtitle":"系列藏书 · 6 个章节","format":"playable","pages":0,"chapters":[
-      {"id":"cf1","title":"修理大学","original":{"chapter":1,"languages":["cn"]},"remake":{"id":"repair-campus","available":true}},
-      {"id":"cf2","title":"闪客快打 2","original":{"chapter":2,"languages":["cn","en"]},"remake":{"id":null,"available":false}},
-      {"id":"cf3","title":"闪客快打 3","original":{"chapter":3,"languages":["cn","en"]},"remake":{"id":null,"available":false}},
-      {"id":"cf4","title":"闪客快打 4","original":{"chapter":4,"languages":["cn","en"]},"remake":{"id":null,"available":false}},
-      {"id":"cf5","title":"闪客快打 5","original":{"chapter":5,"languages":["cn","en"]},"remake":{"id":null,"available":false}},
-      {"id":"cf6","title":"闪客快打 6","original":{"chapter":6,"languages":["cn","en"]},"remake":{"id":null,"available":false}}
+    {"id":"dust","title":"尘都诡谈","subtitle":"原版藏书 · 15 页","format":"facsimile","pages":15,"spine":"shelf/textures/spine-dust.png"},
+    {"id":"babylon","title":"光明巴比伦","subtitle":"原版藏书 · 15 页","format":"facsimile","pages":15,"spine":"shelf/textures/spine-babylon.png"},
+    {"id":"guardian","title":"守护之力","subtitle":"漫画 · 1,227 页","format":"comic","pages":1227,"index":"guardian/index.json","spine":"shelf/textures/spine-guardian.png"},
+    {"id":"sail-twins","title":"风帆双子","subtitle":"Forever爱牛 · 28 章","format":"novel","pages":28,"index":"sail-twins/index.json","spine":"shelf/textures/spine-sail-twins.png"},
+    {"id":"crazy-flasher","title":"闪客快打","subtitle":"系列藏书 · 6 个章节","format":"playable","pages":0,"boxArt":"shelf/textures/box-crazy-flasher.png","chapters":[
+      {"id":"cf1","title":"修理大学","cover":"shelf/textures/disc-cf1.png","original":{"chapter":1,"languages":["cn"]},"remake":{"id":"repair-campus","available":true}},
+      {"id":"cf2","title":"闪客快打 2","cover":"shelf/textures/disc-cf2.png","original":{"chapter":2,"languages":["cn","en"]},"remake":{"id":null,"available":false}},
+      {"id":"cf3","title":"闪客快打 3","cover":"shelf/textures/disc-cf3.png","original":{"chapter":3,"languages":["cn","en"]},"remake":{"id":null,"available":false}},
+      {"id":"cf4","title":"闪客快打 4","cover":"shelf/textures/disc-cf4.png","original":{"chapter":4,"languages":["cn","en"]},"remake":{"id":null,"available":false}},
+      {"id":"cf5","title":"闪客快打 5","cover":"shelf/textures/disc-cf5.png","original":{"chapter":5,"languages":["cn","en"]},"remake":{"id":null,"available":false}},
+      {"id":"cf6","title":"闪客快打 6","cover":"shelf/textures/disc-cf6.png","original":{"chapter":6,"languages":["cn","en"]},"remake":{"id":null,"available":false}}
     ]}
   ]
 }

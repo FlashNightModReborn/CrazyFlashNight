@@ -1,0 +1,89 @@
+{
+  "schema": "bookshelf-shelf-ffdec-report/1",
+  "generatedAt": "2026-10-07T23:16:25.518Z",
+  "source": {
+    "file": "flashswf/UI/书架界面.swf",
+    "sha256": "2ead6beb02d11fedce2af70a795fba247156db24c7396f0a12b8745a3bfbdf0c",
+    "bytes": 57387
+  },
+  "tool": {
+    "ffdec": "tools/ffdec/ffdec-cli.jar",
+    "java": "C:\\Program Files\\Adobe\\Adobe Animate 2024\\jre\\bin\\java.exe",
+    "sprites": {
+      "57": "shelf-body",
+      "59": "spine-dust",
+      "61": "spine-apocalypse",
+      "63": "spine-ribbon",
+      "65": "spine-babylon",
+      "67": "spine-metal",
+      "69": "spine-guardian"
+    }
+  },
+  "averages": {
+    "shelf-body": "#4b4b4b",
+    "spine-dust": "#737373",
+    "spine-apocalypse": "#1b461b",
+    "spine-ribbon": "#ea3d3d",
+    "spine-babylon": "#4b4889",
+    "spine-metal": "#511d1d",
+    "spine-guardian": "#d4dde4"
+  },
+  "files": {
+    "shelf-body.png": {
+      "bytes": 602767,
+      "sha256": "404cdd495c086a5eaaee728ccbc4d5356b2fa34f187c4828dc4f5f00f8dc820d"
+    },
+    "shelf-body.svg": {
+      "bytes": 46344,
+      "sha256": "122d23549873c20484ba7547650a7899ccb776f68aa8dc7d212f3e0d4b87827f"
+    },
+    "spine-apocalypse.png": {
+      "bytes": 84491,
+      "sha256": "5374ec4749d6651911e9e3d6a5f966786558319322b22131f74fe70e4e0caf5a"
+    },
+    "spine-apocalypse.svg": {
+      "bytes": 6280,
+      "sha256": "2bfd9e62c54fce342d1af6ff2ce2e8acca565560b201aa92e74fcd90aeaf06eb"
+    },
+    "spine-babylon.png": {
+      "bytes": 94909,
+      "sha256": "6f77942b033fd5da97a33f2dec773361be1424dcceefe61c7cf9947c479d0d08"
+    },
+    "spine-babylon.svg": {
+      "bytes": 5051,
+      "sha256": "daef7f5bc7aca071a4a95ad88f0b1819824bf6e1a50c244337867c5b22206ee5"
+    },
+    "spine-dust.png": {
+      "bytes": 89547,
+      "sha256": "e9ac208e6f0e0fa49d94a3a1682870003438f6784b2385695fc67c1f80fbdb71"
+    },
+    "spine-dust.svg": {
+      "bytes": 9886,
+      "sha256": "ba8798c674dc001f8288b79aa710bed1c7ccddffe6d9c21af055586075849e37"
+    },
+    "spine-guardian.png": {
+      "bytes": 70552,
+      "sha256": "4a465fbceeb31aa9ee6134bbd6eaad3caea9e9586c0224991add3b9bd78e0a78"
+    },
+    "spine-guardian.svg": {
+      "bytes": 5537,
+      "sha256": "7c18bfb9fd79b046b3b2dd3d2f928f3fc4e47074ad092a22981b9fd1f3d2f6f6"
+    },
+    "spine-metal.png": {
+      "bytes": 92674,
+      "sha256": "1db26196a2940fa03bf67b676ecc461bc3b4969b39fc9cc0d42f6f0af8aa05e1"
+    },
+    "spine-metal.svg": {
+      "bytes": 11469,
+      "sha256": "92d14c0d83b7c78821f198cf38f06fd2988efebcb2a22c8b4b228215c17a63ae"
+    },
+    "spine-ribbon.png": {
+      "bytes": 102317,
+      "sha256": "512b9506ba9dc31ed6431d23881067a3479183ee9a958a8109cf7c22326f70bf"
+    },
+    "spine-ribbon.svg": {
+      "bytes": 7297,
+      "sha256": "392493f5b6f70e7c9d673f54a6630551f678c56d2f049376e59a642328f8889a"
+    }
+  }
+}

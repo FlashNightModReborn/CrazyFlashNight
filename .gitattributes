@@ -43,6 +43,9 @@ tools/export-sleep-art.py text eol=lf
 
 # Bookshelf vectors and their manifest are verified byte-for-byte after checkout.
 launcher/web/assets/bookshelf/** text eol=lf
+# 3D shelf additions are binary payloads (GLB/PNG); never eol-normalize.
+/launcher/web/assets/bookshelf/**/*.glb -text
+/launcher/web/assets/bookshelf/**/*.png -text
 
 # PlayerInfo runtime assets participate in byte-for-byte build identity.
 launcher/src/Guardian/Hud/PlayerInfo/Assets/**/*.svg text eol=lf
