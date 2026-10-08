@@ -1,22 +1,22 @@
 {
   "catalog": {
     "archiveOrderFirst": 0,
-    "archiveOrderLast": 228,
+    "archiveOrderLast": 233,
     "authoredDirectPurposeReferenceCount": 27,
     "directPurposeCount": 2,
-    "entryCount": 229,
+    "entryCount": 234,
     "equipmentTuningDistinctCount": 113,
     "machineDerivedEquipmentTuningCount": 107,
     "path": "data/dictionaries/material_catalog.xml",
     "schemaVersion": 1,
     "typeCounts": {
       "equipment_mod": 107,
-      "food": 45,
+      "food": 50,
       "general": 77
     }
   },
   "crafting": {
-    "categoryCount": 13,
+    "categoryCount": 14,
     "categoryOrder": [
       "铁枪会",
       "属性武器",
@@ -30,7 +30,8 @@
       "黑白契约",
       "插件合成",
       "大学装备",
-      "书中配给"
+      "书中配给",
+      "调酒"
     ],
     "manifestPath": "data/crafting/list.xml"
   },
@@ -48,11 +49,11 @@
   "inputs": [
     {
       "path": "data/dictionaries/material_catalog.xml",
-      "sha256": "B43F6721621C373A7ED3C86D7F31380812B5A9CC74FD2BA5DA8BF7E502253BFB"
+      "sha256": "9682A50B84F4AA1CA6418540EE6E137692A33C7297B586C068671EDA95B2B0F3"
     },
     {
       "path": "data/items/list.xml",
-      "sha256": "6D40089DE7B09E860928D90AA890693E06251E9A6494D7384FCE14004BD86A90"
+      "sha256": "310A0E6E4C83E3E0945A5BE136350145CC97390040470A42EB480182C1F07CAB"
     },
     {
       "path": "data/items/消耗品_货币.xml",
@@ -96,7 +97,11 @@
     },
     {
       "path": "data/items/消耗品_材料_食材.xml",
-      "sha256": "7A13216D27AF179C81EF896DBE26DD18106BEBB08AA4C5C68D1CFAFAB9975ADF"
+      "sha256": "FBA0D92B29582F12E978EC3E83F0CE5821EEA25FB7592EF964C124592573E80C"
+    },
+    {
+      "path": "data/items/消耗品_酒水.xml",
+      "sha256": "AF7A77D7D0DB5D0C17D6E2EC444EBF467DD2AF214939725F35FD6EF8F2F5A856"
     },
     {
       "path": "data/items/收集品_情报.xml",
@@ -396,7 +401,7 @@
     },
     {
       "path": "data/crafting/list.xml",
-      "sha256": "061CFE851B0906B7C3DFCF42288490ABB849B5E1EFAC59527D72C74C721AACF2"
+      "sha256": "240543599A86E10909EA6C72D710FC3EA5D5026927004B42C485C0E6A8D28A68"
     }
   ],
   "legacyProjection": {
@@ -405,5 +410,5 @@
     "sha256": "012D1415B7DA4E78F05E06D5728B1F33EF6E767A627DB35993E91A8EAEC3DDC8"
   },
   "schema": "cf7.material-dictionary-generated.v2",
-  "sourceDigest": "A0BEBF685B3A478AC226F1A83DE0C22C5972EEA0952A308C4CAC10005B79D3A0"
+  "sourceDigest": "DA70553DC74F0106F14AF37EC72E34D20285A4B3B19ED1FDB1D6DAC1810774F0"
 }

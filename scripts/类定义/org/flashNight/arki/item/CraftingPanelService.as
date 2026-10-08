@@ -41,6 +41,7 @@ class org.flashNight.arki.item.CraftingPanelService {
         _categories["插件合成"] = true;
         _categories["大学装备"] = true;
         _categories["书中配给"] = true;
+        _categories["调酒"] = true;
         _json = new LiteJSON();
         _root.gameCommands["craftingSnapshot"] = function(params) {
             org.flashNight.arki.item.CraftingPanelService.handle("snapshot", params);
@@ -414,7 +415,18 @@ class org.flashNight.arki.item.CraftingPanelService {
                 || craftCount < 1 || craftCount > MAX_CRAFT_COUNT) return fail("invalid_payload");
         var resolved:Object = resolveRecipe(category, recipeIndex);
         if (!resolved.success) return resolved;
-        var plan:Object = buildPlan(category, recipeIndex, resolved.recipe, craftCount, true);
+        // 调制方式是配方级权威声明：Web 只提交选择，匹配裁决在此完成；
+        // 已配平的选择随计划冻结进 acceptedPlan，preview→commit 不可漂移。
+        var declared:Object = declaredTechnique(resolved.recipe);
+        var chosenTechnique:Object = null;
+        if (declared == null) {
+            if (params.technique != undefined) return fail("technique_not_supported");
+        } else {
+            chosenTechnique = matchTechnique(declared, params.technique);
+            if (chosenTechnique == null) return fail("technique_mismatch");
+        }
+        var plan:Object = buildPlan(category, recipeIndex, resolved.recipe, craftCount, true,
+            null, null, chosenTechnique);
         if (!plan.success) return plan;
         if (plan.canCommit) {
             _planSeq++;
@@ -452,7 +464,7 @@ class org.flashNight.arki.item.CraftingPanelService {
             return fail("stale_state");
         }
         var current:Object = buildPlan(category, Number(plan.recipeIndex), resolved.recipe,
-            Number(plan.craftCount), false);
+            Number(plan.craftCount), false, null, null, plan.technique);
         if (!current.success || current.stateSignature != String(plan.stateSignature)) return fail("stale_state");
         if (!current.canCommit) return fail(String(current.blockingError || "stale_state"));
         // 配方、进阶配置与产物投影都必须在首次写入前与预览冻结计划完全一致。
@@ -593,8 +605,13 @@ class org.flashNight.arki.item.CraftingPanelService {
 
     private static function buildPlan(category:String, recipeIndex:Number, recipe:Object,
             craftCount:Number, calculateMaximum:Boolean,
-            procurementSources:Object, ownedIndex:Object):Object {
+            procurementSources:Object, ownedIndex:Object, technique:Object):Object {
         var baseRequirements:Array = ItemUtil.getRequirementFromTask(recipe.materials || []);
+        // 卡莫特林可选的配方在选择加入时按份数追加一份材料需求；
+        // 未声明调制方式的配方 technique 为 null，需求保持不变。
+        if (technique != null && technique.karmotrine === true) {
+            baseRequirements.push({name:"卡莫特林", value:1, isQuantity:true});
+        }
         var batchEligible:Boolean = isBatchEligible(recipe, baseRequirements);
         if (!batchEligible && craftCount != 1) return fail("batch_not_supported");
         var requirements:Array = scaleRequirements(baseRequirements, craftCount);
@@ -686,18 +703,19 @@ class org.flashNight.arki.item.CraftingPanelService {
             craftCount:craftCount, output:output, materials:materialRows,
             infrastructure:infrastructureRows,
             outputDelivery:outputDelivery, outputPrototype:outputPrototype, cost:cost};
+        if (technique != null) acceptedPlan.technique = technique;
         var stateSignature:String = [recipeSignature(recipe), Number(_root.金钱),
             Number(_root.虚拟币), Number(_root.等级), reverseLevel, smith.enabled, smith.level,
             inventoryRevision(_root.物品栏.背包), inventoryRevision(_root.物品栏.药剂栏),
             craftCount, stateParts.join("|"), infrastructureSignature(infrastructureRows),
             outputDelivery.storageKind,
             outputDelivery.mode, outputDelivery.physicalSlot,
-            projectionSignature(outputPrototype)].join(";");
+            projectionSignature(outputPrototype), projectionSignature(technique)].join(";");
         return {success:true, category:category, recipeIndex:recipeIndex, craftCount:craftCount,
             recipeSignature:recipeSignature(recipe), stateSignature:stateSignature,
             requirements:requirements, materials:materialRows, output:output, cost:cost,
             infrastructure:infrastructureRows,
-            outputDelivery:outputDelivery, acceptedPlan:acceptedPlan,
+            outputDelivery:outputDelivery, acceptedPlan:acceptedPlan, technique:technique,
             balance:buildBalance(), skills:buildSkills(), levelAllowed:levelAllowed,
             enoughMaterials:allMaterials, enoughMoney:enoughMoney, enoughKpoints:enoughKpoints,
             enoughSpace:enoughSpace, batchEligible:batchEligible, maxCraftCount:maxCraftCount,
@@ -716,6 +734,7 @@ class org.flashNight.arki.item.CraftingPanelService {
             enoughMoney:plan.enoughMoney, enoughKpoints:plan.enoughKpoints,
             enoughSpace:plan.enoughSpace, canCommit:plan.canCommit,
             blockingError:plan.blockingError};
+        if (plan.technique != null) result.technique = plan.technique;
         if (plan.canCommit) {
             result.craftToken = plan.token;
             result.acceptedPlan = plan.acceptedPlan;
@@ -1008,7 +1027,8 @@ class org.flashNight.arki.item.CraftingPanelService {
         if (isNaN(value) || value <= 0) value = 1;
         var recipeId:String = String(recipe.recipeId || "");
         if (recipeId == "") return null;
-        return {recipeId:recipeId, recipeIndex:recipeIndex,
+        var declared:Object = declaredTechnique(recipe);
+        var entry:Object = {recipeId:recipeId, recipeIndex:recipeIndex,
             title:String(recipe.title || recipe.name),
             book:recipeBookName(recipe),
             infrastructure:projectInfrastructureRows(recipe),
@@ -1021,6 +1041,45 @@ class org.flashNight.arki.item.CraftingPanelService {
             batchEligible:availabilityPlan.batchEligible,
             canCraftOne:availabilityPlan.canCommit,
             availability:availabilityPlan.canCommit ? "ready" : String(availabilityPlan.blockingError)};
+        if (declared != null) entry.technique = declared;
+        return entry;
+    }
+
+    /**
+     * 配方可选 "technique" 字段：调酒类目的调制方式门槛。
+     * 形如 {shake:"light"|"hard"|"none", ice:Boolean, aged:Boolean,
+     * karmotrine:"required"|"optional"|"none"}，不参与消耗；
+     * karmotrine=="optional" 时预览允许选择加入一份卡莫特林。
+     * 返回值仅含合法声明；非法或缺失一律返回 null 按未声明处理。
+     */
+    private static function declaredTechnique(recipe:Object):Object {
+        var spec:Object = recipe.technique;
+        if (spec == undefined || typeof spec != "object") return null;
+        var shake:String = String(spec.shake);
+        if (shake != "light" && shake != "hard" && shake != "none") return null;
+        var karmotrine:String = String(spec.karmotrine);
+        if (karmotrine != "required" && karmotrine != "optional"
+                && karmotrine != "none") return null;
+        return {shake:shake, ice:spec.ice === true, aged:spec.aged === true,
+            karmotrine:karmotrine};
+    }
+
+    /**
+     * Web 提交的调制方式 {shake, ice, aged, karmotrine} 与配方声明逐项比对；
+     * 全等时返回标准化选择（卡莫特林折叠为 Boolean），否则返回 null。
+     */
+    private static function matchTechnique(declared:Object, chosen:Object):Object {
+        if (chosen == undefined || typeof chosen != "object") return null;
+        var shake:String = String(chosen.shake);
+        if (shake != "light" && shake != "hard" && shake != "none") return null;
+        var ice:Boolean = chosen.ice === true;
+        var aged:Boolean = chosen.aged === true;
+        var karmotrine:Boolean = chosen.karmotrine === true;
+        if (shake != declared.shake) return null;
+        if (ice != declared.ice) return null;
+        if (aged != declared.aged) return null;
+        if (karmotrine && declared.karmotrine != "optional") return null;
+        return {shake:shake, ice:ice, aged:aged, karmotrine:karmotrine};
     }
 
     /**
@@ -1190,6 +1249,7 @@ class org.flashNight.arki.item.CraftingPanelService {
     private static function categoryNote(category:String):String {
         if (category == "烹饪") return "菜品配方不会被消耗；部分菜品需要对应烹饪设备等级。";
         if (category == "化学生产") return "合成产出可能会受炼金等级影响（暂未实装）";
+        if (category == "调酒") return "调酒配方不会被消耗；调制方式必须与配方一致，卡莫特林可选的配方可自行决定是否加入。";
         if (category == "插件合成") return "合成的经济消耗受铁匠等级影响";
         if (smithState().enabled) return "铁匠效果：减少货币消耗，装备继承素材最高强化度";
         return "改装后的装备默认强化等级为 1";

@@ -19,7 +19,8 @@ const CATEGORY_CODES = Object.freeze({
     '黑白契约':'black-white',
     '插件合成':'plugin',
     '大学装备':'university',
-    '书中配给':'book-supply'
+    '书中配给':'book-supply',
+    '调酒':'bartending'
 });
 const RECIPE_ID = /^craft\.[a-z0-9]+(?:-[a-z0-9]+)*\.[0-9]{3}$/;
 
@@ -126,7 +127,7 @@ function validate() {
             recipeCount++;
         });
     });
-    if (recipeCount !== 296) fail('expected 296 recipes, got ' + recipeCount);
+    if (recipeCount !== 321) fail('expected 321 recipes, got ' + recipeCount);
     process.stdout.write('Crafting recipe identity: ' + recipeCount
         + ' recipes / ' + seen.size + ' unique recipeIds passed\n');
 }

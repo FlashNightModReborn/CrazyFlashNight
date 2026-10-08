@@ -77,8 +77,26 @@
     var CRAFTING_CATEGORIES = {
         '铁枪会':true, '属性武器':true, '烹饪':true, '化学生产':true,
         '武器合成':true, '饰品合成':true, '进阶防具':true, '基础防具':true,
-        '公社防具':true, '黑白契约':true, '插件合成':true, '大学装备':true, '书中配给':true
+        '公社防具':true, '黑白契约':true, '插件合成':true, '大学装备':true, '书中配给':true,
+        '调酒':true
     };
+    var TECHNIQUE_SHAKES = {light:true, hard:true, none:true};
+    var TECHNIQUE_KARMOTRINE = {required:true, optional:true, none:true};
+
+    // 调酒类目的调制方式增量投影：配方声明（snapshot）与玩家选择（preview/plan）。
+    function validDeclaredTechnique(value) {
+        return exactKeys(value, ['shake', 'ice', 'aged', 'karmotrine'])
+            && TECHNIQUE_SHAKES[value.shake] === true
+            && typeof value.ice === 'boolean' && typeof value.aged === 'boolean'
+            && TECHNIQUE_KARMOTRINE[value.karmotrine] === true;
+    }
+
+    function validTechnique(value) {
+        return exactKeys(value, ['shake', 'ice', 'aged', 'karmotrine'])
+            && TECHNIQUE_SHAKES[value.shake] === true
+            && typeof value.ice === 'boolean' && typeof value.aged === 'boolean'
+            && typeof value.karmotrine === 'boolean';
+    }
     var INFRASTRUCTURE_PURPOSE_ID = 'system:infrastructure_upgrade';
 
     function identityText(value, maxLength) {
@@ -371,12 +389,14 @@
             'canCraftOne', 'availability'];
         if (own(value, 'book')) keys.push('book');
         if (own(value, 'infrastructure')) keys.push('infrastructure');
+        if (own(value, 'technique')) keys.push('technique');
         return exactKeys(value, keys)
             && validRecipeId(value.recipeId)
             && recipeIndex(value.recipeIndex)
             && identityText(value.title, 256)
             && (!own(value, 'book') || optionalText(value.book, 256))
             && (!own(value, 'infrastructure') || validInfraRows(value.infrastructure, 32))
+            && (!own(value, 'technique') || validDeclaredTechnique(value.technique))
             && validCatalogOutput(value.output)
             && validOwnedSummary(value.owned)
             && Number.isInteger(value.plannedCrafts) && value.plannedCrafts >= 0
@@ -435,6 +455,7 @@
         var keys = ['category', 'recipeIndex', 'craftCount', 'output', 'materials',
             'outputDelivery', 'outputPrototype', 'cost'];
         if (own(plan, 'infrastructure')) keys.push('infrastructure');
+        if (own(plan, 'technique')) keys.push('technique');
         return exactKeys(plan, keys)
             && plan.category === response.category
             && plan.recipeIndex === response.recipeIndex
@@ -443,6 +464,9 @@
             && Array.isArray(plan.materials) && plan.materials.every(validMaterial)
             && (!own(plan, 'infrastructure') || validInfraRows(plan.infrastructure, 32))
             && validProjectedItem(plan.output) && validCost(plan.cost)
+            && (!own(plan, 'technique') || validTechnique(plan.technique))
+            // commit 响应不回显 technique；preview 回显时必须与冻结计划全等。
+            && (!own(response, 'technique') || same(plan.technique, response.technique))
             && validOutputDelivery(plan.outputDelivery, plan.output)
             && validOutputPrototype(plan.outputPrototype, plan.output, plan.outputDelivery);
     }
@@ -1028,11 +1052,14 @@
                 'balance', 'skills', 'levelAllowed', 'enoughMaterials', 'enoughMoney',
                 'enoughKpoints', 'enoughSpace', 'canCommit', 'blockingError', 'outputDelivery']);
             if (own(data, 'infrastructure')) previewKeys.push('infrastructure');
+            if (own(data, 'technique')) previewKeys.push('technique');
             if (data.canCommit === true) previewKeys.push('craftToken', 'acceptedPlan');
             return exactKeys(data, previewKeys)
                 && validProjectedItem(data.output) && Array.isArray(data.materials)
                 && data.materials.every(validMaterial)
                 && (!own(data, 'infrastructure') || validInfraRows(data.infrastructure, 32))
+                && (!own(data, 'technique') || validTechnique(data.technique))
+                && same(data.technique, payload.technique)
                 && validOutputDelivery(data.outputDelivery, data.output)
                 && data.outputDelivery.available === data.enoughSpace
                 && (data.canCommit !== true || data.materials.every(function(material) {

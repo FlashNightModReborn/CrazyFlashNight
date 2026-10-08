@@ -904,6 +904,152 @@
     --wb-commune-comm-veil-note-box-shadow: 0 4px 12px rgba(0,0,0,.2);
 }
 
+/* 调酒吧台：深夜蓝紫底 + 霓虹青/品红点缀（VA-11 吧台调子）。 */
+.bart-panel {
+    --wb-bartending-bart-panel-color: #dbe6f5;
+    --wb-bartending-bart-panel-background: radial-gradient(circle at 80% -20%,rgba(255,42,109,.10),transparent 45%),
+        radial-gradient(circle at 15% 120%,rgba(61,213,255,.10),transparent 50%),
+        linear-gradient(180deg,#12162b,#0d1122 55%,#0a0d1a);
+    --wb-bartending-bart-panel-bt-neon: #3dd5ff;
+    --wb-bartending-bart-panel-bt-neon-soft: rgba(61,213,255,.35);
+    --wb-bartending-bart-panel-bt-pink: #ff2a6d;
+    --wb-bartending-bart-panel-bt-ink: #dbe6f5;
+    --wb-bartending-bart-panel-bt-panel: #141a2e;
+    --wb-bartending-bart-panel-bt-panel-2: #0e1220;
+    --wb-bartending-bart-panel-bt-muted: #6f7f9c;
+    --wb-bartending-bart-panel-bt-line: #26304d;
+    --wb-bartending-bart-panel-bt-ready: #58e6a8;
+    --wb-bartending-bart-panel-bt-blocked: #ff6d8d;
+    --wb-bartending-bart-panel-webkit-scrollbar-track-background: #0c1020;
+    --wb-bartending-bart-panel-webkit-scrollbar-thumb-background: #2a3557;
+    --wb-bartending-bart-panel-webkit-scrollbar-thumb-border: #3d4c7a;
+}
+.bart-header {
+    --wb-bartending-bart-header-border-bottom: 1px solid #26304d;
+}
+.bart-brand h1 {
+    --wb-bartending-bart-brand-h1-color: #eef4ff;
+}
+.bart-status[data-state="ready"] {
+    --wb-bartending-bart-status-data-state-ready-color: #58e6a8;
+}
+.bart-status[data-state="error"] {
+    --wb-bartending-bart-status-data-state-error-color: #ff6d8d;
+}
+.bart-close {
+    --wb-bartending-bart-close-border: 1px solid #26304d;
+    --wb-bartending-bart-close-background: #141a2e;
+    --wb-bartending-bart-close-transition: color .12s, border-color .12s;
+}
+.bart-close:hover {
+    --wb-bartending-bart-close-hover-color: #ff9ab8;
+    --wb-bartending-bart-close-hover-border-color: rgba(255,42,109,.5);
+}
+.bart-slip {
+    --wb-bartending-bart-slip-border: 1px solid #26304d;
+    --wb-bartending-bart-slip-background: linear-gradient(180deg,#151b33,#10152a);
+    --wb-bartending-bart-slip-box-shadow: 0 2px 5px rgba(0,0,0,.4);
+    --wb-bartending-bart-slip-transition: border-color .15s, box-shadow .15s;
+}
+.bart-slip:hover {
+    --wb-bartending-bart-slip-hover-box-shadow: 0 3px 8px rgba(0,0,0,.5);
+}
+.bart-slip.active {
+    --wb-bartending-bart-slip-active-border-color: rgba(61,213,255,.55);
+    --wb-bartending-bart-slip-active-box-shadow: 0 0 0 1px rgba(61,213,255,.25), 0 3px 10px rgba(0,0,0,.5);
+}
+.bart-slip-name {
+    --wb-bartending-bart-slip-name-color: #eef4ff;
+}
+.bart-drink {
+    --wb-bartending-bart-drink-border: 1px solid #26304d;
+    --wb-bartending-bart-drink-background: linear-gradient(180deg,#141a2e,#10152a);
+    --wb-bartending-bart-drink-transition: border-color .15s, box-shadow .15s;
+}
+.bart-drink:hover {
+    --wb-bartending-bart-drink-hover-border-color: rgba(61,213,255,.4);
+}
+.bart-drink.active {
+    --wb-bartending-bart-drink-active-border-color: rgba(255,42,109,.6);
+    --wb-bartending-bart-drink-active-box-shadow: 0 0 0 1px rgba(255,42,109,.3), 0 4px 12px rgba(0,0,0,.5);
+}
+.bart-drink-thumb {
+    --wb-bartending-bart-drink-thumb-background: #0b0e1c;
+    --wb-bartending-bart-drink-thumb-border: 1px solid #26304d;
+}
+.bart-drink-name {
+    --wb-bartending-bart-drink-name-color: #dbe6f5;
+}
+.bart-card {
+    --wb-bartending-bart-card-border: 1px solid #2c3a5f;
+    --wb-bartending-bart-card-background: linear-gradient(180deg,#151b33,#10152a);
+    --wb-bartending-bart-card-box-shadow: 0 10px 26px rgba(0,0,0,.5);
+}
+.bart-card-title b {
+    --wb-bartending-bart-card-title-b-color: #eef4ff;
+}
+.bart-spec {
+    --wb-bartending-bart-spec-border: 1px dashed rgba(61,213,255,.35);
+    --wb-bartending-bart-spec-background: rgba(61,213,255,.06);
+}
+.bart-console {
+    --wb-bartending-bart-console-border: 1px solid #26304d;
+    --wb-bartending-bart-console-background: #0e1220;
+}
+.bart-tech-btn {
+    --wb-bartending-bart-tech-btn-border: 1px solid #2c3a5f;
+    --wb-bartending-bart-tech-btn-background: #141a2e;
+    --wb-bartending-bart-tech-btn-transition: border-color .12s, background .12s, box-shadow .12s;
+}
+.bart-tech-btn:hover:not(:disabled) {
+    --wb-bartending-bart-tech-btn-hover-border-color: rgba(61,213,255,.45);
+}
+.bart-tech-btn.active {
+    --wb-bartending-bart-tech-btn-active-background: rgba(61,213,255,.16);
+    --wb-bartending-bart-tech-btn-active-color: #bfefff;
+    --wb-bartending-bart-tech-btn-active-border-color: rgba(61,213,255,.7);
+    --wb-bartending-bart-tech-btn-active-box-shadow: 0 0 8px rgba(61,213,255,.25);
+}
+.bart-req {
+    --wb-bartending-bart-req-background: rgba(61,213,255,.05);
+}
+.bart-req-icon {
+    --wb-bartending-bart-req-icon-background: #0b0e1c;
+    --wb-bartending-bart-req-icon-border: 1px solid #26304d;
+}
+.bart-req-mark.ok {
+    --wb-bartending-bart-req-mark-ok-color: #58e6a8;
+}
+.bart-req-mark.no {
+    --wb-bartending-bart-req-mark-no-color: #ff6d8d;
+}
+.bart-card-footer {
+    --wb-bartending-bart-card-footer-border-top: 1px solid #26304d;
+}
+.bart-count button {
+    --wb-bartending-bart-count-button-border: 1px solid #2c3a5f;
+    --wb-bartending-bart-count-button-background: #141a2e;
+}
+.bart-count-input {
+    --wb-bartending-bart-count-input-border: 1px solid #2c3a5f;
+    --wb-bartending-bart-count-input-background: #0e1220;
+}
+.bart-confirm {
+    --wb-bartending-bart-confirm-border: 1px solid rgba(255,42,109,.6);
+    --wb-bartending-bart-confirm-background: linear-gradient(180deg,rgba(255,42,109,.22),rgba(255,42,109,.14));
+    --wb-bartending-bart-confirm-color: #ffd7e4;
+    --wb-bartending-bart-confirm-box-shadow: 0 0 12px rgba(255,42,109,.25), 0 3px 8px rgba(0,0,0,.4);
+    --wb-bartending-bart-confirm-transition: box-shadow .15s, transform .12s;
+}
+.bart-confirm:hover:not(:disabled) {
+    --wb-bartending-bart-confirm-hover-box-shadow: 0 0 18px rgba(255,42,109,.4), 0 4px 12px rgba(0,0,0,.5);
+}
+.bart-confirm:disabled {
+    --wb-bartending-bart-confirm-disabled-background: #141a2e;
+    --wb-bartending-bart-confirm-disabled-color: #4a5570;
+    --wb-bartending-bart-confirm-disabled-border-color: #26304d;
+}
+
 /* Fullscreen book comics retain their ink, paper and olive/gold palette. */
 #panel-container[data-panel="book-comic"], .book-comic-panel {
     --book-comic-bg: #080c09;

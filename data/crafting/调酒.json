@@ -1,0 +1,487 @@
+[
+  {
+    "recipeId": "craft.bartending.001",
+    "title": "糖分冲击",
+    "name": "糖分冲击",
+    "price": 30,
+    "kprice": 0,
+    "book": "经典酒单",
+    "materials": [
+      "艾德海德#2",
+      "粉末德尔塔#1"
+    ],
+    "technique": {
+      "shake": "light",
+      "ice": false,
+      "aged": false,
+      "karmotrine": "optional"
+    }
+  },
+  {
+    "recipeId": "craft.bartending.002",
+    "title": "蓝色妖精",
+    "name": "蓝色妖精",
+    "price": 50,
+    "kprice": 0,
+    "book": "经典酒单",
+    "materials": [
+      "艾德海德#4",
+      "弗拉内吉#1"
+    ],
+    "technique": {
+      "shake": "light",
+      "ice": false,
+      "aged": true,
+      "karmotrine": "optional"
+    }
+  },
+  {
+    "recipeId": "craft.bartending.003",
+    "title": "白兰提尼",
+    "name": "白兰提尼",
+    "price": 100,
+    "kprice": 0,
+    "book": "经典酒单",
+    "materials": [
+      "艾德海德#6",
+      "粉末德尔塔#3",
+      "卡莫特林#1"
+    ],
+    "technique": {
+      "shake": "light",
+      "ice": false,
+      "aged": true,
+      "karmotrine": "required"
+    }
+  },
+  {
+    "recipeId": "craft.bartending.004",
+    "title": "月爆",
+    "name": "月爆",
+    "price": 100,
+    "kprice": 0,
+    "book": "经典酒单",
+    "materials": [
+      "艾德海德#6",
+      "粉末德尔塔#1",
+      "弗拉内吉#1",
+      "卡莫特林#2"
+    ],
+    "technique": {
+      "shake": "hard",
+      "ice": true,
+      "aged": false,
+      "karmotrine": "required"
+    }
+  },
+  {
+    "recipeId": "craft.bartending.005",
+    "title": "钢琴女郎",
+    "name": "钢琴女郎",
+    "price": 180,
+    "kprice": 0,
+    "book": "经典酒单",
+    "materials": [
+      "艾德海德#5",
+      "布朗森提取物#5",
+      "粉末德尔塔#2",
+      "弗拉内吉#3",
+      "卡莫特林#3"
+    ],
+    "technique": {
+      "shake": "light",
+      "ice": false,
+      "aged": true,
+      "karmotrine": "required"
+    }
+  },
+  {
+    "recipeId": "craft.bartending.006",
+    "title": "闪耀星",
+    "name": "闪耀星",
+    "price": 30,
+    "kprice": 0,
+    "book": "经典酒单",
+    "materials": [
+      "艾德海德#2",
+      "粉末德尔塔#1"
+    ],
+    "technique": {
+      "shake": "light",
+      "ice": false,
+      "aged": true,
+      "karmotrine": "optional"
+    }
+  },
+  {
+    "recipeId": "craft.bartending.007",
+    "title": "滴血简",
+    "name": "滴血简",
+    "price": 70,
+    "kprice": 0,
+    "book": "经典酒单",
+    "materials": [
+      "布朗森提取物#1",
+      "粉末德尔塔#3",
+      "弗拉内吉#3"
+    ],
+    "technique": {
+      "shake": "hard",
+      "ice": false,
+      "aged": false,
+      "karmotrine": "none"
+    }
+  },
+  {
+    "recipeId": "craft.bartending.008",
+    "title": "火星爆",
+    "name": "火星爆",
+    "price": 130,
+    "kprice": 0,
+    "book": "经典酒单",
+    "materials": [
+      "布朗森提取物#6",
+      "粉末德尔塔#1",
+      "弗拉内吉#4",
+      "卡莫特林#2"
+    ],
+    "technique": {
+      "shake": "hard",
+      "ice": false,
+      "aged": false,
+      "karmotrine": "required"
+    }
+  },
+  {
+    "recipeId": "craft.bartending.009",
+    "title": "绽放之光",
+    "name": "绽放之光",
+    "price": 100,
+    "kprice": 0,
+    "book": "经典酒单",
+    "materials": [
+      "艾德海德#4",
+      "粉末德尔塔#1",
+      "弗拉内吉#2",
+      "卡莫特林#3"
+    ],
+    "technique": {
+      "shake": "light",
+      "ice": true,
+      "aged": true,
+      "karmotrine": "required"
+    }
+  },
+  {
+    "recipeId": "craft.bartending.010",
+    "title": "咸猪手",
+    "name": "咸猪手",
+    "price": 100,
+    "kprice": 0,
+    "book": "经典酒单",
+    "materials": [
+      "布朗森提取物#2",
+      "粉末德尔塔#2",
+      "弗拉内吉#2",
+      "卡莫特林#4"
+    ],
+    "technique": {
+      "shake": "light",
+      "ice": true,
+      "aged": false,
+      "karmotrine": "required"
+    }
+  },
+  {
+    "recipeId": "craft.bartending.011",
+    "title": "钢琴师",
+    "name": "钢琴师",
+    "price": 170,
+    "kprice": 0,
+    "book": "经典酒单",
+    "materials": [
+      "艾德海德#2",
+      "布朗森提取物#3",
+      "粉末德尔塔#5",
+      "弗拉内吉#5",
+      "卡莫特林#2"
+    ],
+    "technique": {
+      "shake": "light",
+      "ice": true,
+      "aged": false,
+      "karmotrine": "required"
+    }
+  },
+  {
+    "recipeId": "craft.bartending.012",
+    "title": "禅星",
+    "name": "禅星",
+    "price": 200,
+    "kprice": 0,
+    "book": "经典酒单",
+    "materials": [
+      "艾德海德#4",
+      "布朗森提取物#4",
+      "粉末德尔塔#4",
+      "弗拉内吉#4",
+      "卡莫特林#4"
+    ],
+    "technique": {
+      "shake": "light",
+      "ice": true,
+      "aged": false,
+      "karmotrine": "required"
+    }
+  },
+  {
+    "recipeId": "craft.bartending.013",
+    "title": "水星爆",
+    "name": "水星爆",
+    "price": 100,
+    "kprice": 0,
+    "book": "经典酒单",
+    "materials": [
+      "艾德海德#1",
+      "布朗森提取物#1",
+      "粉末德尔塔#3",
+      "弗拉内吉#3",
+      "卡莫特林#2"
+    ],
+    "technique": {
+      "shake": "hard",
+      "ice": true,
+      "aged": false,
+      "karmotrine": "required"
+    }
+  },
+  {
+    "recipeId": "craft.bartending.014",
+    "title": "裂谷尖刺",
+    "name": "裂谷尖刺",
+    "price": 60,
+    "kprice": 0,
+    "book": "经典酒单",
+    "materials": [
+      "粉末德尔塔#2",
+      "弗拉内吉#4"
+    ],
+    "technique": {
+      "shake": "hard",
+      "ice": false,
+      "aged": false,
+      "karmotrine": "optional"
+    }
+  },
+  {
+    "recipeId": "craft.bartending.015",
+    "title": "蓬松梦境",
+    "name": "蓬松梦境",
+    "price": 60,
+    "kprice": 0,
+    "book": "经典酒单",
+    "materials": [
+      "艾德海德#3",
+      "粉末德尔塔#3"
+    ],
+    "technique": {
+      "shake": "light",
+      "ice": false,
+      "aged": true,
+      "karmotrine": "optional"
+    }
+  },
+  {
+    "recipeId": "craft.bartending.016",
+    "title": "钴蓝天鹅绒",
+    "name": "钴蓝天鹅绒",
+    "price": 100,
+    "kprice": 0,
+    "book": "经典酒单",
+    "materials": [
+      "艾德海德#2",
+      "弗拉内吉#3",
+      "卡莫特林#5"
+    ],
+    "technique": {
+      "shake": "light",
+      "ice": true,
+      "aged": false,
+      "karmotrine": "required"
+    }
+  },
+  {
+    "recipeId": "craft.bartending.017",
+    "title": "边缘织者",
+    "name": "边缘织者",
+    "price": 100,
+    "kprice": 0,
+    "book": "经典酒单",
+    "materials": [
+      "艾德海德#1",
+      "卡莫特林#9"
+    ],
+    "technique": {
+      "shake": "light",
+      "ice": false,
+      "aged": true,
+      "karmotrine": "required"
+    }
+  },
+  {
+    "recipeId": "craft.bartending.018",
+    "title": "扎啤",
+    "name": "扎啤",
+    "price": 100,
+    "kprice": 0,
+    "book": "经典酒单",
+    "materials": [
+      "艾德海德#1",
+      "布朗森提取物#2",
+      "粉末德尔塔#1",
+      "弗拉内吉#2",
+      "卡莫特林#4"
+    ],
+    "technique": {
+      "shake": "light",
+      "ice": false,
+      "aged": false,
+      "karmotrine": "required"
+    }
+  },
+  {
+    "recipeId": "craft.bartending.019",
+    "title": "泡沫水",
+    "name": "泡沫水",
+    "price": 40,
+    "kprice": 0,
+    "book": "经典酒单",
+    "materials": [
+      "艾德海德#1",
+      "布朗森提取物#1",
+      "粉末德尔塔#1",
+      "弗拉内吉#1"
+    ],
+    "technique": {
+      "shake": "light",
+      "ice": false,
+      "aged": true,
+      "karmotrine": "none"
+    }
+  },
+  {
+    "recipeId": "craft.bartending.020",
+    "title": "过肩摔",
+    "name": "过肩摔",
+    "price": 100,
+    "kprice": 0,
+    "book": "经典酒单",
+    "materials": [
+      "布朗森提取物#4",
+      "弗拉内吉#3",
+      "卡莫特林#3"
+    ],
+    "technique": {
+      "shake": "light",
+      "ice": true,
+      "aged": false,
+      "karmotrine": "required"
+    }
+  },
+  {
+    "recipeId": "craft.bartending.021",
+    "title": "打桩机",
+    "name": "打桩机",
+    "price": 100,
+    "kprice": 0,
+    "book": "经典酒单",
+    "materials": [
+      "布朗森提取物#3",
+      "弗拉内吉#3",
+      "卡莫特林#4"
+    ],
+    "technique": {
+      "shake": "light",
+      "ice": false,
+      "aged": false,
+      "karmotrine": "required"
+    }
+  },
+  {
+    "recipeId": "craft.bartending.022",
+    "title": "灰熊圣殿",
+    "name": "灰熊圣殿",
+    "price": 100,
+    "kprice": 0,
+    "book": "经典酒单",
+    "materials": [
+      "艾德海德#3",
+      "布朗森提取物#3",
+      "粉末德尔塔#3",
+      "卡莫特林#1"
+    ],
+    "technique": {
+      "shake": "hard",
+      "ice": false,
+      "aged": false,
+      "karmotrine": "required"
+    }
+  },
+  {
+    "recipeId": "craft.bartending.023",
+    "title": "击腹重拳",
+    "name": "击腹重拳",
+    "price": 60,
+    "kprice": 0,
+    "book": "经典酒单",
+    "materials": [
+      "布朗森提取物#5",
+      "弗拉内吉#1"
+    ],
+    "technique": {
+      "shake": "light",
+      "ice": false,
+      "aged": true,
+      "karmotrine": "optional"
+    }
+  },
+  {
+    "recipeId": "craft.bartending.024",
+    "title": "阳光云",
+    "name": "阳光云",
+    "price": 40,
+    "kprice": 0,
+    "book": "经典酒单",
+    "materials": [
+      "艾德海德#2",
+      "布朗森提取物#2"
+    ],
+    "technique": {
+      "shake": "hard",
+      "ice": true,
+      "aged": false,
+      "karmotrine": "optional"
+    }
+  },
+  {
+    "recipeId": "craft.bartending.025",
+    "title": "烈焰摩艾",
+    "name": "烈焰摩艾",
+    "price": 120,
+    "kprice": 0,
+    "book": "隐藏酒单",
+    "materials": [
+      "艾德海德#1",
+      "布朗森提取物#1",
+      "粉末德尔塔#2",
+      "弗拉内吉#3",
+      "卡莫特林#5"
+    ],
+    "technique": {
+      "shake": "none",
+      "ice": false,
+      "aged": false,
+      "karmotrine": "required"
+    }
+  }
+]

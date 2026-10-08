@@ -162,6 +162,7 @@
          'modules/cooking.js',
          'modules/chemistry.js',
          'modules/commune.js',
+         'modules/bartending.js',
          'modules/crafting.js'],
         noop);
 

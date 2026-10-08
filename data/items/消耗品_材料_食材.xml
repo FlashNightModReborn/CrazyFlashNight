@@ -415,4 +415,51 @@
     <price>1000</price>
     <description>烹饪材料</description>
   </item>
+
+  <!-- ========== 调酒原料 (500/800) ========== -->
+  <item>
+    <name>艾德海德</name>
+    <displayname>艾德海德</displayname>
+    <icon>艾德海德</icon>
+    <type>消耗品</type>
+    <use>材料</use>
+    <price>500</price>
+    <description>调酒材料，红色基酒原料 Adelhyde，口感清甜微辣。</description>
+  </item>
+  <item>
+    <name>布朗森提取物</name>
+    <displayname>布朗森提取物</displayname>
+    <icon>布朗森提取物</icon>
+    <type>消耗品</type>
+    <use>材料</use>
+    <price>500</price>
+    <description>调酒材料，黄色基酒原料 Bronson Extract，风味沉稳厚重。</description>
+  </item>
+  <item>
+    <name>粉末德尔塔</name>
+    <displayname>粉末德尔塔</displayname>
+    <icon>粉末德尔塔</icon>
+    <type>消耗品</type>
+    <use>材料</use>
+    <price>500</price>
+    <description>调酒材料，深蓝色基酒原料 Powdered Delta，带矿物感的清冽后劲。</description>
+  </item>
+  <item>
+    <name>弗拉内吉</name>
+    <displayname>弗拉内吉</displayname>
+    <icon>弗拉内吉</icon>
+    <type>消耗品</type>
+    <use>材料</use>
+    <price>500</price>
+    <description>调酒材料，绿色基酒原料 Flanergide，草本气息浓郁。</description>
+  </item>
+  <item>
+    <name>卡莫特林</name>
+    <displayname>卡莫特林</displayname>
+    <icon>卡莫特林</icon>
+    <type>消耗品</type>
+    <use>材料</use>
+    <price>800</price>
+    <description>调酒材料，浅蓝色基酒原料 Karmotrine，决定酒精度；部分配方可选。</description>
+  </item>
 </root>

@@ -14,8 +14,8 @@ import xml.etree.ElementTree as ET
 REPOSITORY_ROOT = Path(__file__).resolve().parent.parent
 PRODUCER_PATH = REPOSITORY_ROOT / "tools/derive-material-catalog.py"
 EXPECTED_LEGACY_SHA256 = "012D1415B7DA4E78F05E06D5728B1F33EF6E767A627DB35993E91A8EAEC3DDC8"
-EXPECTED_ARCHIVE_ORDER_SHA256 = "D186B9E1DDC883EC67D1656766D4F73207BD1C4F6BDCFF241197F882EED567C8"
-EXPECTED_TYPE_COUNTS = {"equipment_mod": 107, "food": 45, "general": 77}
+EXPECTED_ARCHIVE_ORDER_SHA256 = "9446C993438ACA9AF632E3C88661066593DBA6A0E78F8153BB1FEA5CBF98064E"
+EXPECTED_TYPE_COUNTS = {"equipment_mod": 107, "food": 50, "general": 77}
 EXPECTED_CRAFTING_CATEGORIES = (
     "铁枪会",
     "属性武器",
@@ -30,6 +30,7 @@ EXPECTED_CRAFTING_CATEGORIES = (
     "插件合成",
     "大学装备",
     "书中配给",
+    "调酒",
 )
 
 
@@ -85,7 +86,7 @@ def main():
         == "material-catalog-producer.v2",
         "material catalog sidecar/generator version drift",
     )
-    require(len(first.catalog.materials) == 229, "material baseline must be 229 (including 重锤改装组件 and book vouchers)")
+    require(len(first.catalog.materials) == 234, "material baseline must be 234 (including 重锤改装组件, book vouchers and bartending ingredients)")
     require(len(first.catalog.purposes) == 2, "direct-purpose registry must contain two entries")
     require(
         tuple(purpose.purpose_id for purpose in first.catalog.purposes)
@@ -202,7 +203,7 @@ def main():
         "authored archive-order ratchet drifted from the reviewed 58+168 migration",
     )
     require(
-        tuple(material.name for material in first.catalog.materials[226:]) == ("重锤改装组件", "书中初阶配给凭证", "书中进阶配给凭证"),
+        tuple(material.name for material in first.catalog.materials[231:]) == ("重锤改装组件", "书中初阶配给凭证", "书中进阶配给凭证"),
         "new material suffix must preserve the released pilebunker component before book vouchers",
     )
     authored_tuning_names = {

@@ -11,7 +11,8 @@ const CALL_RE = /^craft\.[A-Za-z0-9._~-]{1,90}$/;
 const TOKEN_RE = /^[A-Za-z0-9._-]{1,160}$/;
 const CATEGORIES = new Set([
   "铁枪会", "属性武器", "烹饪", "化学生产", "武器合成", "饰品合成",
-  "进阶防具", "基础防具", "公社防具", "黑白契约", "插件合成", "大学装备"
+  "进阶防具", "基础防具", "公社防具", "黑白契约", "插件合成", "大学装备",
+  "书中配给", "调酒"
 ]);
 const ACTION_BY_CMD = Object.freeze({
   snapshot: "craftingSnapshot",
