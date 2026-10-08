@@ -1,0 +1,40 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="墙1" itemID="666fe6d8-0000020b" lastModified="1718609624">
+  <timeline>
+    <DOMTimeline name="墙1">
+      <layers>
+        <DOMLayer name="图层 1" color="#4FFF4F" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMBitmapInstance selected="true" libraryItemName="背景元件/位图 2">
+                  <matrix>
+                    <Matrix a="0.394973754882813" d="0.394973754882813"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="292.05" y="288.5"/>
+                  </transformationPoint>
+                </DOMBitmapInstance>
+                <DOMBitmapInstance selected="true" libraryItemName="背景元件/位图 2">
+                  <matrix>
+                    <Matrix a="0.394973754882813" d="0.394973754882813" tx="230.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="292.05" y="288.5"/>
+                  </transformationPoint>
+                </DOMBitmapInstance>
+                <DOMBitmapInstance selected="true" libraryItemName="背景元件/位图 2">
+                  <matrix>
+                    <Matrix a="0.394973754882813" d="0.394973754882813" tx="460.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="292.05" y="288.5"/>
+                  </transformationPoint>
+                </DOMBitmapInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

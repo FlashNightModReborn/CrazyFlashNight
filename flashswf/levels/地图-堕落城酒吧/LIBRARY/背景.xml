@@ -1,0 +1,187 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="背景" itemID="666e9802-0000028b" lastModified="1718610817" lastUniqueIdentifier="10">
+  <timeline>
+    <DOMTimeline name="背景">
+      <layers>
+        <DOMLayer name="渐变2" color="#4FFFFF" current="true" isSelected="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="背景元件/光效2" centerPoint3DX="767.7" centerPoint3DY="147.45">
+                  <matrix>
+                    <Matrix a="1.25" b="-0.0133819580078125" d="2.13999938964844" tx="705.2" ty="41.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="50" y="49.95"/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter blurY="10"/>
+                  </filters>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="背景元件/光效2" centerPoint3DX="913.75" centerPoint3DY="147.45">
+                  <matrix>
+                    <Matrix a="1.25" b="-0.0133819580078125" d="2.13999938964844" tx="851.25" ty="41.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="50" y="49.95"/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter blurY="10"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层 1" color="#4FFF4F" locked="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="背景元件/酒吧内部墙+门" centerPoint3DX="316.75" centerPoint3DY="101.5">
+                  <matrix>
+                    <Matrix a="1.04568481445313" b="0.373046875" d="0.55731201171875" tx="0.4" ty="-244.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="302.05" y="419.75"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="背景元件/酒吧柜台整体" centerPoint3DX="1326.9" centerPoint3DY="282.55">
+                  <matrix>
+                    <Matrix a="0.401123046875" d="0.401123046875" tx="1233" ty="76.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="234.6" y="513.8"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="背景元件/酒吧吧台" centerPoint3DX="1159.95" centerPoint3DY="368.65">
+                  <matrix>
+                    <Matrix a="0.401123046875" d="0.401123046875" tx="967.55" ty="236.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="478.8" y="326.7"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="渐变1" color="#FF4FFF" locked="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <RadialGradient>
+                        <matrix>
+                          <Matrix a="0.0858154296875" d="0.033172607421875" tx="393.1" ty="460.45"/>
+                        </matrix>
+                        <GradientEntry alpha="0.4" ratio="0.709803921568627"/>
+                        <GradientEntry alpha="0" ratio="1"/>
+                      </RadialGradient>
+                    </FillStyle>
+                    <FillStyle index="2">
+                      <SolidColor/>
+                    </FillStyle>
+                    <FillStyle index="3">
+                      <LinearGradient>
+                        <matrix>
+                          <Matrix a="0" b="0.0887298583984375" c="-0.76507568359375" d="0" tx="627.15" ty="68.65"/>
+                        </matrix>
+                        <GradientEntry alpha="0.501960784313725" ratio="0"/>
+                        <GradientEntry alpha="0" ratio="1"/>
+                      </LinearGradient>
+                    </FillStyle>
+                    <FillStyle index="4">
+                      <LinearGradient>
+                        <matrix>
+                          <Matrix a="0" b="0.241241455078125" c="-0.157501220703125" d="-0.240341186523438" tx="1383.8" ty="138.75"/>
+                        </matrix>
+                        <GradientEntry ratio="0.301960784313725"/>
+                        <GradientEntry alpha="0" ratio="1"/>
+                      </LinearGradient>
+                    </FillStyle>
+                    <FillStyle index="5">
+                      <RadialGradient>
+                        <matrix>
+                          <Matrix a="0.0858154296875" d="0.033172607421875" tx="531.1" ty="308.4"/>
+                        </matrix>
+                        <GradientEntry alpha="0.4" ratio="0.709803921568627"/>
+                        <GradientEntry alpha="0" ratio="1"/>
+                      </RadialGradient>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle1="2" edges="!28405.5 -60|30067 -60!30067 -60|30067 2474.5"/>
+                    <Edge fillStyle1="4" edges="!30067 2474.5|30256 2763!30256 2763|30256 10666!30256 10666|25095 2792!25095 2792|25095 -5111!25095 -5111|28405.5 -60"/>
+                    <Edge fillStyle0="2" fillStyle1="4" edges="!28405.5 -60|30067 2474.5"/>
+                    <Edge fillStyle1="5" edges="!9241 6168[9241 5947 9645 5791!9645 5791[10050 5635 10622 5635!10622 5635[11194 5635 11598 5791!11598 5791[12002 5947 12002 6168!12002 6168[12002 6389 11598 6545!11598 6545[11194 6702 10622 6702!10622 6702[10050 6702 9645 6545!9645 6545
+[9241 6389 9241 6168"/>
+                    <Edge fillStyle1="1" edges="
+!9242 9209[9242 9430 8838 9586!8838 9586[8434 9743 7862 9743!7862 9743[7290 9743 6885 9586!6885 9586[6481 9430 6481 9209!6481 9209[6481 8988 6885 8832!6885 8832[7290 8676 7862 8676!7862 8676[8434 8676 8838 8832!8838 8832[9242 8988 9242
+ 9209"/>
+                    <Edge fillStyle1="3" edges="
+!25077 -80|25077 2827!25077 2827|8 2827!8 2827|8 -80!8 -80|25077 -80"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层 2" color="#9933CC" locked="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="背景元件/地板" centerPoint3DX="621.25" centerPoint3DY="412.6">
+                  <matrix>
+                    <Matrix tx="-264" ty="221.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="885.45" y="191.3"/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter brightness="-10" contrast="10"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层 3" color="#FF800A" locked="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="墙1" centerPoint3DX="976.7" centerPoint3DY="108.5">
+                  <matrix>
+                    <Matrix tx="631.1" ty="-5.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="345.6" y="113.95"/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter brightness="-10" contrast="10"/>
+                  </filters>
+                </DOMSymbolInstance>
+                <DOMBitmapInstance libraryItemName="背景元件/位图 2">
+                  <matrix>
+                    <Matrix a="0.441864013671875" b="0.660293579101563" d="0.417434692382813" tx="1253.75" ty="-14.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="575.75" y="595.4"/>
+                  </transformationPoint>
+                </DOMBitmapInstance>
+                <DOMBitmapInstance libraryItemName="背景元件/位图 2">
+                  <matrix>
+                    <Matrix a="0.441864013671875" b="0.660293579101563" d="0.417434692382813" tx="1253.75" ty="-255.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="575.75" y="595.4"/>
+                  </transformationPoint>
+                </DOMBitmapInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

@@ -1,0 +1,42 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="酷女孩2/元件 7" itemID="668e5c7f-000005a1" symbolType="graphic" lastModified="1720606691">
+  <timeline>
+    <DOMTimeline name="元件 7" currentFrame="18">
+      <layers>
+        <DOMLayer name="图层_1" color="#00FFFF" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" duration="14" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="酷女孩2/元件 15" symbolType="graphic" loop="loop">
+                  <transformationPoint>
+                    <Point x="98.75" y="22.1"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="14" duration="15" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="酷女孩2/元件 15" selected="true" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.951202392578125" b="0.308563232421875" c="-0.308563232421875" d="0.951202392578125" tx="11.65" ty="-29.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="98.75" y="22.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="29" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="酷女孩2/元件 15" selected="true" symbolType="graphic" loop="loop">
+                  <transformationPoint>
+                    <Point x="98.75" y="22.1"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

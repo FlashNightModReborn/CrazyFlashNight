@@ -1,0 +1,464 @@
+<DOMDocument xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" width="1500" height="600" currentTimeline="1" xflVersion="2.2" creatorInfo="Adobe Flash Professional CS6" platform="Windows" versionInfo="Saved by Adobe Flash Windows 12.0 build 481" majorVersion="12" buildNumber="481" viewAngle3D="109.681321120569" nextSceneIdentifier="2" playOptionsPlayLoop="false" playOptionsPlayPages="false" playOptionsPlayFrameActions="false" autoSaveEnabled="true" autoSaveHasPrompted="true">
+     <folders>
+          <DOMFolderItem name="button" itemID="659760e3-00000e95"/>
+          <DOMFolderItem name="lo-chan" itemID="66e1b737-00000825"/>
+          <DOMFolderItem name="shape" itemID="6597616a-00000eb3"/>
+          <DOMFolderItem name="sprite" itemID="65976153-00000ea6"/>
+          <DOMFolderItem name="sprite/新地图" itemID="65c796bf-00000c50"/>
+          <DOMFolderItem name="UI重构" itemID="668a7e49-000018c6"/>
+          <DOMFolderItem name="UI重构/商店相关" itemID="668a7e49-000018c7"/>
+          <DOMFolderItem name="背景元件" itemID="666e999d-000002c6"/>
+          <DOMFolderItem name="地图元件" itemID="666fe6be-00000208" isExpanded="true"/>
+          <DOMFolderItem name="酷女孩2" itemID="6a1f2fa5-00000292"/>
+          <DOMFolderItem name="牛仔" itemID="66cff0e4-00000957" isExpanded="true"/>
+     </folders>
+     <media>
+          <DOMBitmapItem name="背景元件/位图 1" itemID="6ac7de60-00000261" sourceExternalFilepath="./LIBRARY/背景元件/位图 1.png.png" sourceLastImported="1718522503" originalCompressionType="lossless" quality="50" href="背景元件/位图 1.png" bitmapDataHRef="M 1 1718523249.dat" frameRight="20480" frameBottom="20480"/>
+          <DOMBitmapItem name="背景元件/位图 2" itemID="6ac7de61-00000262" sourceExternalFilepath="./LIBRARY/背景元件/位图 2.png" sourceLastImported="1718609297" originalCompressionType="lossless" quality="50" href="背景元件/位图 2.png" bitmapDataHRef="M 2 1718609297.dat" frameRight="11680" frameBottom="11540"/>
+     </media>
+     <symbols>
+          <Include href="button/Symbol 51923.xml" itemIcon="0" loadImmediate="false" itemID="6597607e-00000d4d" lastModified="1704196122"/>
+          <Include href="lo-chan/lo-channpc.xml" loadImmediate="false" itemID="66e1b6b2-000007c0" lastModified="1754490293"/>
+          <Include href="lo-chan/lo-chan侧发1.xml" loadImmediate="false" itemID="66c0a2c6-000003fa" lastModified="1726067065"/>
+          <Include href="lo-chan/lo-chan侧发2.xml" loadImmediate="false" itemID="66c0a34c-000003fe" lastModified="1723900748"/>
+          <Include href="lo-chan/lo-chan呆毛.xml" loadImmediate="false" itemID="66bf6782-00000208" lastModified="1723819906"/>
+          <Include href="lo-chan/lo-chan二维码.xml" loadImmediate="false" itemID="66c034c8-000001da" lastModified="1723872464"/>
+          <Include href="lo-chan/lo-chan发光点.xml" loadImmediate="false" itemID="66c03e42-000001e8" lastModified="1723874882"/>
+          <Include href="lo-chan/lo-chan发光字母.xml" loadImmediate="false" itemID="66c03297-000001b9" lastModified="1723872026"/>
+          <Include href="lo-chan/lo-chan发夹.xml" loadImmediate="false" itemID="66c0a115-000003f4" lastModified="1723901145"/>
+          <Include href="lo-chan/lo-chan发夹单体.xml" loadImmediate="false" itemID="66c0a06d-00000245" lastModified="1723900013"/>
+          <Include href="lo-chan/lo-chan发夹发光体.xml" loadImmediate="false" itemID="66c0a0d6-0000024d" lastModified="1723900118"/>
+          <Include href="lo-chan/lo-chan发卡.xml" loadImmediate="false" itemID="66bf673d-00000200" lastModified="1723819837"/>
+          <Include href="lo-chan/lo-chan发卡组件1.xml" loadImmediate="false" itemID="66bf638b-000001f0" lastModified="1723818892"/>
+          <Include href="lo-chan/lo-chan发卡组件2.xml" loadImmediate="false" itemID="66bf672c-000001fc" lastModified="1723819820"/>
+          <Include href="lo-chan/lo-chan颈饰.xml" loadImmediate="false" itemID="66c0a5ce-00000427" lastModified="1723901390"/>
+          <Include href="lo-chan/lo-chan颈饰1.xml" loadImmediate="false" itemID="66c0a414-00000405" lastModified="1723900948"/>
+          <Include href="lo-chan/lo-chan颈饰2.xml" loadImmediate="false" itemID="66c0a4c9-00000407" lastModified="1723901178"/>
+          <Include href="lo-chan/lo-chan颈饰3.xml" loadImmediate="false" itemID="66c0a538-0000040e" lastModified="1723901240"/>
+          <Include href="lo-chan/lo-chan颈饰4.xml" loadImmediate="false" itemID="66c0a59d-0000041b" lastModified="1723901341"/>
+          <Include href="lo-chan/lo-chan颈饰234集合.xml" loadImmediate="false" itemID="66c0a5c5-00000425" lastModified="1723901381"/>
+          <Include href="lo-chan/lo-chan身体字母.xml" loadImmediate="false" itemID="66c0a613-00000430" lastModified="1723901531"/>
+          <Include href="lo-chan/lo-chan头部.xml" loadImmediate="false" itemID="66bf60a8-000001ec" lastModified="1726066804"/>
+          <Include href="lo-chan/lo-chan头整体.xml" loadImmediate="false" itemID="66c03f31-000001fe" lastModified="1723901583"/>
+          <Include href="lo-chan/lo-chan兔耳.xml" loadImmediate="false" itemID="66bf6d37-0000021c" lastModified="1723821367"/>
+          <Include href="lo-chan/lo-chan鞋.xml" loadImmediate="false" itemID="66c09e8c-0000023a" lastModified="1723899532"/>
+          <Include href="lo-chan/lo-chan鞋单体.xml" loadImmediate="false" itemID="66c09e36-00000233" lastModified="1723899446"/>
+          <Include href="lo-chan/lo-chan型号.xml" loadImmediate="false" itemID="66c033ae-000001be" lastModified="1723872174"/>
+          <Include href="lo-chan/lo-chan胸胯.xml" loadImmediate="false" itemID="66c03de8-000001e4" lastModified="1726066850"/>
+          <Include href="lo-chan/lo-chan胸胯整体.xml" loadImmediate="false" itemID="66c03e6b-000001f2" lastModified="1723874923"/>
+          <Include href="lo-chan/lo-chan右大臂.xml" loadImmediate="false" itemID="66bf6e63-00000220" lastModified="1726066585"/>
+          <Include href="lo-chan/lo-chan右大腿.xml" loadImmediate="false" itemID="66c08f47-0000021a" lastModified="1723964215"/>
+          <Include href="lo-chan/lo-chan右手.xml" loadImmediate="false" itemID="66bf731e-00000228" lastModified="1726066613"/>
+          <Include href="lo-chan/lo-chan右小臂.xml" loadImmediate="false" itemID="66c06f84-0000020c" lastModified="1726066595"/>
+          <Include href="lo-chan/lo-chan右小腿.xml" loadImmediate="false" itemID="66c097c2-0000022b" lastModified="1723964161"/>
+          <Include href="lo-chan/lo-chan整体.xml" loadImmediate="false" itemID="66e1b4b6-000004cd" lastModified="1726072785"/>
+          <Include href="lo-chan/lo-chan左大臂.xml" loadImmediate="false" itemID="66bf7487-0000022c" lastModified="1726066838"/>
+          <Include href="lo-chan/lo-chan左大腿.xml" loadImmediate="false" itemID="66c09432-00000227" lastModified="1723896954"/>
+          <Include href="lo-chan/lo-chan左手.xml" loadImmediate="false" itemID="66bf77a8-00000234" lastModified="1723824040"/>
+          <Include href="lo-chan/lo-chan左小臂.xml" loadImmediate="false" itemID="66bf7538-00000230" lastModified="1726066857"/>
+          <Include href="lo-chan/lo-chan左小腿.xml" loadImmediate="false" itemID="66c09bf1-0000022f" lastModified="1723899713"/>
+          <Include href="lo-chan/补间 14.xml" itemIcon="1" loadImmediate="false" itemID="66e1b63c-0000065e" lastModified="1726068284"/>
+          <Include href="lo-chan/补间 15.xml" itemIcon="1" loadImmediate="false" itemID="66e1b63c-00000660" lastModified="1726068284"/>
+          <Include href="lo-chan/补间 16.xml" itemIcon="1" loadImmediate="false" itemID="66e1b63c-00000662" lastModified="1726068284"/>
+          <Include href="lo-chan/补间 17.xml" itemIcon="1" loadImmediate="false" itemID="66e1b63c-00000664" lastModified="1726068284"/>
+          <Include href="lo-chan/盘子.xml" loadImmediate="false" itemID="66e1b386-00000068" lastModified="1726067641"/>
+          <Include href="shape/Symbol 473.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-000007a4" lastModified="1704196122"/>
+          <Include href="sprite/Symbol 2363.xml" loadImmediate="false" itemID="6597607e-00000b21" lastModified="1707199899"/>
+          <Include href="sprite/通用按钮.xml" loadImmediate="false" itemID="659bbbf8-000014dc" lastModified="1791484952"/>
+          <Include href="sprite/新地图/Symbol 51883.xml" loadImmediate="false" itemID="6597607e-00000cf0" lastModified="1704196122"/>
+          <Include href="UI重构/商店相关/npc商店名称UI.xml" loadImmediate="false" itemID="668a5bba-000008f1" lastModified="1720795931"/>
+          <Include href="UI重构/商店相关/npc商店名称框.xml" loadImmediate="false" itemID="668a5ba5-000008ed" lastModified="1720349306"/>
+          <Include href="UI重构/商店相关/购物图标UI.xml" loadImmediate="false" itemID="668a7428-00000c8d" lastModified="1720349737"/>
+          <Include href="背景.xml" loadImmediate="false" itemID="666e9802-0000028b" lastModified="1718610817"/>
+          <Include href="背景元件/筹码fs.xml" loadImmediate="false" itemID="65cca2fb-00000366" lastModified="1707910086"/>
+          <Include href="背景元件/筹码lsy.xml" loadImmediate="false" itemID="65cca359-00000370" lastModified="1707910094"/>
+          <Include href="背景元件/筹码鸡蛋.xml" loadImmediate="false" itemID="65cca410-0000037c" lastModified="1707910160"/>
+          <Include href="背景元件/筹码无名氏.xml" loadImmediate="false" itemID="65cca457-00000380" lastModified="1707910231"/>
+          <Include href="背景元件/筹码雾人.xml" loadImmediate="false" itemID="65cca3b3-00000376" lastModified="1707910080"/>
+          <Include href="背景元件/地板.xml" loadImmediate="false" itemID="666e9d8f-000002f1" lastModified="1718528083"/>
+          <Include href="背景元件/光效1.xml" loadImmediate="false" itemID="666fea27-00000228" lastModified="1718610471"/>
+          <Include href="背景元件/光效2.xml" loadImmediate="false" itemID="666fea22-00000225" lastModified="1718610544"/>
+          <Include href="背景元件/酒吧吧台.xml" loadImmediate="false" itemID="65ccb495-000003ef" lastModified="1707914389"/>
+          <Include href="背景元件/酒吧柜台整体.xml" loadImmediate="false" itemID="65ccb8fe-0000043e" lastModified="1707915518"/>
+          <Include href="背景元件/酒吧酒柜.xml" loadImmediate="false" itemID="65ccb7d8-0000042b" lastModified="1707915584"/>
+          <Include href="背景元件/酒吧酒柜玻璃窗.xml" loadImmediate="false" itemID="65ccb7cf-00000427" lastModified="1707915595"/>
+          <Include href="背景元件/酒吧内部墙+门.xml" loadImmediate="false" itemID="65cc8dee-00000347" lastModified="1707904494"/>
+          <Include href="背景元件/酒吧外玻璃.xml" loadImmediate="false" itemID="65cb8ee4-00000293" lastModified="1707839378"/>
+          <Include href="背景元件/酒吧外玻璃2.xml" loadImmediate="false" itemID="65cb8fa3-0000029f" lastModified="1707839395"/>
+          <Include href="背景元件/酒吧外部墙体横向.xml" loadImmediate="false" itemID="65cb96a8-000002fe" lastModified="1707842059"/>
+          <Include href="背景元件/酒吧外门.xml" loadImmediate="false" itemID="65cb9627-000002fa" lastModified="1707841063"/>
+          <Include href="背景元件/酒吧外墙2层横向.xml" loadImmediate="false" itemID="65cb970d-00000314" lastModified="1707841293"/>
+          <Include href="背景元件/酒吧椅子.xml" loadImmediate="false" itemID="65cca985-00000392" lastModified="1707911612"/>
+          <Include href="背景元件/盘子.xml" loadImmediate="false" itemID="65ccb095-000003d1" lastModified="1707913365"/>
+          <Include href="背景元件/棋牌桌.xml" loadImmediate="false" itemID="65cca158-0000035c" lastModified="1707909464"/>
+          <Include href="背景元件/墙面.xml" loadImmediate="false" itemID="666e9cb1-000002e7" lastModified="1718525265"/>
+          <Include href="背景元件/桌布.xml" loadImmediate="false" itemID="65ccaffc-000003c2" lastModified="1707913212"/>
+          <Include href="标识.xml" loadImmediate="false" itemID="67387d18-000012c7" lastModified="1731755296"/>
+          <Include href="地图.xml" loadImmediate="false" itemID="666e9fbc-000003cf" lastModified="1749716402"/>
+          <Include href="地图-堕落城酒吧.xml" itemID="666e9e97-000002fd" lastModified="1791485088"/>
+          <Include href="地图元件/deadbody.xml" loadImmediate="false" itemID="666e9ef0-000003cc" lastModified="1724945122"/>
+          <Include href="地图元件/门.xml" loadImmediate="false" itemID="66cff12d-00000967" lastModified="1724903776"/>
+          <Include href="地图元件/效果.xml" loadImmediate="false" itemID="666ea047-000003ea" lastModified="1718526023"/>
+          <Include href="地图元件/子弹区域.xml" loadImmediate="false" itemID="666ea01c-000003e3" lastModified="1718525981"/>
+          <Include href="酷女孩2/酷2.xml" itemIcon="1" loadImmediate="false" itemID="668e2db1-00000420" lastModified="1781018092"/>
+          <Include href="酷女孩2/右手.xml" itemIcon="1" loadImmediate="false" itemID="6a035980-000000ef" lastModified="1778604423"/>
+          <Include href="酷女孩2/元件 1.xml" itemIcon="1" loadImmediate="false" itemID="668e5a1b-00000566" lastModified="1780468103"/>
+          <Include href="酷女孩2/元件 2.xml" itemIcon="1" loadImmediate="false" itemID="668e5a1d-0000056b" lastModified="1720605600"/>
+          <Include href="酷女孩2/元件 3.xml" itemIcon="1" loadImmediate="false" itemID="668e5a1e-0000056f" lastModified="1720607144"/>
+          <Include href="酷女孩2/元件 4.xml" itemIcon="1" loadImmediate="false" itemID="668e5a1f-00000573" lastModified="1720605215"/>
+          <Include href="酷女孩2/元件 5.xml" itemIcon="1" loadImmediate="false" itemID="668e5a21-00000577" lastModified="1780465308"/>
+          <Include href="酷女孩2/元件 6.xml" itemIcon="1" loadImmediate="false" itemID="668e5a22-0000057b" lastModified="1720605218"/>
+          <Include href="酷女孩2/元件 7.xml" itemIcon="1" loadImmediate="false" itemID="668e5c7f-000005a1" lastModified="1720606691"/>
+          <Include href="酷女孩2/元件 8.xml" itemIcon="1" loadImmediate="false" itemID="668e5cd0-000005ad" lastModified="1720606343"/>
+          <Include href="酷女孩2/元件 9.xml" itemIcon="1" loadImmediate="false" itemID="668e5df2-00000622" lastModified="1720606194"/>
+          <Include href="酷女孩2/元件 10.xml" itemIcon="1" loadImmediate="false" itemID="668e5df2-00000626" lastModified="1720606194"/>
+          <Include href="酷女孩2/元件 11.xml" itemIcon="1" loadImmediate="false" itemID="668e5df4-0000062a" lastModified="1720606196"/>
+          <Include href="酷女孩2/元件 12.xml" itemIcon="1" loadImmediate="false" itemID="668e5df6-0000062e" lastModified="1720606329"/>
+          <Include href="酷女孩2/元件 13.xml" itemIcon="1" loadImmediate="false" itemID="668e5df7-00000632" lastModified="1720606199"/>
+          <Include href="酷女孩2/元件 14.xml" itemIcon="1" loadImmediate="false" itemID="668e5df9-00000636" lastModified="1720606201"/>
+          <Include href="酷女孩2/元件 15.xml" itemIcon="1" loadImmediate="false" itemID="668e5fd2-00000663" lastModified="1720606674"/>
+          <Include href="牛仔/NPC牛仔.xml" loadImmediate="false" itemID="66cff10a-00000964" lastModified="1724903690"/>
+          <Include href="牛仔/Symbol 1.xml" itemIcon="1" loadImmediate="false" itemID="6577f221-00000948" lastModified="1701332846"/>
+          <Include href="牛仔/Symbol 2.xml" loadImmediate="false" itemID="6577f221-00000949" lastModified="1701332846"/>
+          <Include href="牛仔/Symbol 427.xml" itemIcon="1" loadImmediate="false" itemID="6577f221-00000a8d" lastModified="1701332846"/>
+          <Include href="牛仔/Symbol 428.xml" itemIcon="1" loadImmediate="false" itemID="6577f221-00000a8e" lastModified="1701332846"/>
+          <Include href="牛仔/Symbol 429.xml" itemIcon="1" loadImmediate="false" itemID="6577f221-00000a8f" lastModified="1701332846"/>
+          <Include href="牛仔/Symbol 430.xml" itemIcon="1" loadImmediate="false" itemID="6577f221-00000a90" lastModified="1701332846"/>
+          <Include href="牛仔/Symbol 431.xml" itemIcon="1" loadImmediate="false" itemID="6577f221-00000a91" lastModified="1701332846"/>
+          <Include href="牛仔/Symbol 432.xml" itemIcon="1" loadImmediate="false" itemID="6577f221-00000a92" lastModified="1701332846"/>
+          <Include href="牛仔/Symbol 433.xml" itemIcon="1" loadImmediate="false" itemID="6577f221-00000a93" lastModified="1701332846"/>
+          <Include href="牛仔/Symbol 434.xml" itemIcon="1" loadImmediate="false" itemID="6577f221-00000a94" lastModified="1701332846"/>
+          <Include href="牛仔/Symbol 435.xml" itemIcon="1" loadImmediate="false" itemID="6577f221-00000a95" lastModified="1704117798"/>
+          <Include href="牛仔/Symbol 436.xml" itemIcon="1" loadImmediate="false" itemID="6577f221-00000a96" lastModified="1701332846"/>
+          <Include href="牛仔/Symbol 437.xml" itemIcon="1" loadImmediate="false" itemID="6577f221-00000a97" lastModified="1701332846"/>
+          <Include href="牛仔/Symbol 438.xml" itemIcon="1" loadImmediate="false" itemID="6577f221-00000a98" lastModified="1701332846"/>
+          <Include href="牛仔/Symbol 439.xml" itemIcon="1" loadImmediate="false" itemID="6577f221-00000a99" lastModified="1701332846"/>
+          <Include href="牛仔/Symbol 440.xml" itemIcon="1" loadImmediate="false" itemID="6577f221-00000a9a" lastModified="1701332846"/>
+          <Include href="牛仔/Symbol 441.xml" itemIcon="1" loadImmediate="false" itemID="6577f221-00000a9b" lastModified="1701332846"/>
+          <Include href="牛仔/Symbol 442.xml" itemIcon="1" loadImmediate="false" itemID="6577f221-00000a9c" lastModified="1701332846"/>
+          <Include href="牛仔/Symbol 443.xml" itemIcon="1" loadImmediate="false" itemID="6577f221-00000a9d" lastModified="1701332846"/>
+          <Include href="牛仔/Symbol 444.xml" itemIcon="1" loadImmediate="false" itemID="6577f221-00000a9e" lastModified="1701332846"/>
+          <Include href="牛仔/Symbol 445.xml" itemIcon="1" loadImmediate="false" itemID="6577f221-00000a9f" lastModified="1701332846"/>
+          <Include href="牛仔/Symbol 446.xml" itemIcon="1" loadImmediate="false" itemID="6577f221-00000aa0" lastModified="1701332846"/>
+          <Include href="牛仔/Symbol 476.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-000007a5" lastModified="1704196122"/>
+          <Include href="牛仔/Symbol 51651.xml" itemIcon="0" loadImmediate="false" itemID="6597607e-00000b8f" lastModified="1704196122"/>
+          <Include href="牛仔/调酒师npc元件.xml" loadImmediate="false" itemID="6a282a09-0000030c" lastModified="1781017126"/>
+          <Include href="牛仔/牛仔npc元件.xml" loadImmediate="false" itemID="66e1b728-00000820" lastModified="1754490286"/>
+          <Include href="墙1.xml" loadImmediate="false" itemID="666fe6d8-0000020b" lastModified="1718609624"/>
+          <Include href="佣兵刷新器.xml" loadImmediate="false" itemID="66cff0cb-00000952" lastModified="1724906332"/>
+          <Include href="桌椅组1.xml" loadImmediate="false" itemID="666ea70b-00001484" lastModified="1718608298"/>
+          <Include href="桌椅组2.xml" loadImmediate="false" itemID="666ea6ff-00001473" lastModified="1718608308"/>
+     </symbols>
+     <timelines>
+          <DOMTimeline name="场景 1">
+               <layers>
+                    <DOMLayer name="图层 1" color="#4FFF4F" current="true" isSelected="true">
+                         <frames>
+                              <DOMFrame index="0" keyMode="9728">
+                                   <elements>
+                                        <DOMSymbolInstance libraryItemName="地图-堕落城酒吧" selected="true" centerPoint3DX="622.05" centerPoint3DY="97.95">
+                                             <transformationPoint>
+                                                  <Point/>
+                                             </transformationPoint>
+                                        </DOMSymbolInstance>
+                                   </elements>
+                              </DOMFrame>
+                         </frames>
+                    </DOMLayer>
+               </layers>
+          </DOMTimeline>
+     </timelines>
+     <swatchLists>
+          <swatchList>
+               <swatches>
+                    <SolidSwatchItem/>
+                    <SolidSwatchItem/>
+                    <SolidSwatchItem/>
+                    <SolidSwatchItem/>
+                    <SolidSwatchItem color="#003300" hue="80" saturation="239" brightness="24"/>
+                    <SolidSwatchItem color="#006600" hue="80" saturation="239" brightness="48"/>
+                    <SolidSwatchItem color="#009900" hue="80" saturation="239" brightness="72"/>
+                    <SolidSwatchItem color="#00CC00" hue="80" saturation="239" brightness="96"/>
+                    <SolidSwatchItem color="#00FF00" hue="80" saturation="239" brightness="120"/>
+                    <SolidSwatchItem color="#330000" saturation="239" brightness="24"/>
+                    <SolidSwatchItem color="#333300" hue="40" saturation="239" brightness="24"/>
+                    <SolidSwatchItem color="#336600" hue="60" saturation="239" brightness="48"/>
+                    <SolidSwatchItem color="#339900" hue="67" saturation="239" brightness="72"/>
+                    <SolidSwatchItem color="#33CC00" hue="70" saturation="239" brightness="96"/>
+                    <SolidSwatchItem color="#33FF00" hue="72" saturation="239" brightness="120"/>
+                    <SolidSwatchItem color="#660000" saturation="239" brightness="48"/>
+                    <SolidSwatchItem color="#663300" hue="20" saturation="239" brightness="48"/>
+                    <SolidSwatchItem color="#666600" hue="40" saturation="239" brightness="48"/>
+                    <SolidSwatchItem color="#669900" hue="53" saturation="239" brightness="72"/>
+                    <SolidSwatchItem color="#66CC00" hue="60" saturation="239" brightness="96"/>
+                    <SolidSwatchItem color="#66FF00" hue="64" saturation="239" brightness="120"/>
+                    <SolidSwatchItem/>
+                    <SolidSwatchItem color="#333333" brightness="48"/>
+                    <SolidSwatchItem/>
+                    <SolidSwatchItem color="#000033" hue="160" saturation="239" brightness="24"/>
+                    <SolidSwatchItem color="#003333" hue="120" saturation="239" brightness="24"/>
+                    <SolidSwatchItem color="#006633" hue="100" saturation="239" brightness="48"/>
+                    <SolidSwatchItem color="#009933" hue="93" saturation="239" brightness="72"/>
+                    <SolidSwatchItem color="#00CC33" hue="90" saturation="239" brightness="96"/>
+                    <SolidSwatchItem color="#00FF33" hue="88" saturation="239" brightness="120"/>
+                    <SolidSwatchItem color="#330033" hue="200" saturation="239" brightness="24"/>
+                    <SolidSwatchItem color="#333333" brightness="48"/>
+                    <SolidSwatchItem color="#336633" hue="80" saturation="80" brightness="72"/>
+                    <SolidSwatchItem color="#339933" hue="80" saturation="120" brightness="96"/>
+                    <SolidSwatchItem color="#33CC33" hue="80" saturation="144" brightness="120"/>
+                    <SolidSwatchItem color="#33FF33" hue="80" saturation="239" brightness="144"/>
+                    <SolidSwatchItem color="#660033" hue="220" saturation="239" brightness="48"/>
+                    <SolidSwatchItem color="#663333" saturation="80" brightness="72"/>
+                    <SolidSwatchItem color="#666633" hue="40" saturation="80" brightness="72"/>
+                    <SolidSwatchItem color="#669933" hue="60" saturation="120" brightness="96"/>
+                    <SolidSwatchItem color="#66CC33" hue="67" saturation="144" brightness="120"/>
+                    <SolidSwatchItem color="#66FF33" hue="70" saturation="239" brightness="144"/>
+                    <SolidSwatchItem/>
+                    <SolidSwatchItem color="#666666" brightness="96"/>
+                    <SolidSwatchItem/>
+                    <SolidSwatchItem color="#000066" hue="160" saturation="239" brightness="48"/>
+                    <SolidSwatchItem color="#003366" hue="140" saturation="239" brightness="48"/>
+                    <SolidSwatchItem color="#006666" hue="120" saturation="239" brightness="48"/>
+                    <SolidSwatchItem color="#009966" hue="107" saturation="239" brightness="72"/>
+                    <SolidSwatchItem color="#00CC66" hue="100" saturation="239" brightness="96"/>
+                    <SolidSwatchItem color="#00FF66" hue="96" saturation="239" brightness="120"/>
+                    <SolidSwatchItem color="#330066" hue="180" saturation="239" brightness="48"/>
+                    <SolidSwatchItem color="#333366" hue="160" saturation="80" brightness="72"/>
+                    <SolidSwatchItem color="#336666" hue="120" saturation="80" brightness="72"/>
+                    <SolidSwatchItem color="#339966" hue="100" saturation="120" brightness="96"/>
+                    <SolidSwatchItem color="#33CC66" hue="93" saturation="144" brightness="120"/>
+                    <SolidSwatchItem color="#33FF66" hue="90" saturation="239" brightness="144"/>
+                    <SolidSwatchItem color="#660066" hue="200" saturation="239" brightness="48"/>
+                    <SolidSwatchItem color="#663366" hue="200" saturation="80" brightness="72"/>
+                    <SolidSwatchItem color="#666666" brightness="96"/>
+                    <SolidSwatchItem color="#669966" hue="80" saturation="48" brightness="120"/>
+                    <SolidSwatchItem color="#66CC66" hue="80" saturation="120" brightness="144"/>
+                    <SolidSwatchItem color="#66FF66" hue="80" saturation="239" brightness="168"/>
+                    <SolidSwatchItem/>
+                    <SolidSwatchItem color="#999999" brightness="144"/>
+                    <SolidSwatchItem/>
+                    <SolidSwatchItem color="#000099" hue="160" saturation="239" brightness="72"/>
+                    <SolidSwatchItem color="#003399" hue="147" saturation="239" brightness="72"/>
+                    <SolidSwatchItem color="#006699" hue="133" saturation="239" brightness="72"/>
+                    <SolidSwatchItem color="#009999" hue="120" saturation="239" brightness="72"/>
+                    <SolidSwatchItem color="#00CC99" hue="110" saturation="239" brightness="96"/>
+                    <SolidSwatchItem color="#00FF99" hue="104" saturation="239" brightness="120"/>
+                    <SolidSwatchItem color="#330099" hue="173" saturation="239" brightness="72"/>
+                    <SolidSwatchItem color="#333399" hue="160" saturation="120" brightness="96"/>
+                    <SolidSwatchItem color="#336699" hue="140" saturation="120" brightness="96"/>
+                    <SolidSwatchItem color="#339999" hue="120" saturation="120" brightness="96"/>
+                    <SolidSwatchItem color="#33CC99" hue="107" saturation="144" brightness="120"/>
+                    <SolidSwatchItem color="#33FF99" hue="100" saturation="239" brightness="144"/>
+                    <SolidSwatchItem color="#660099" hue="187" saturation="239" brightness="72"/>
+                    <SolidSwatchItem color="#663399" hue="180" saturation="120" brightness="96"/>
+                    <SolidSwatchItem color="#666699" hue="160" saturation="48" brightness="120"/>
+                    <SolidSwatchItem color="#669999" hue="120" saturation="48" brightness="120"/>
+                    <SolidSwatchItem color="#66CC99" hue="100" saturation="120" brightness="144"/>
+                    <SolidSwatchItem color="#66FF99" hue="93" saturation="239" brightness="168"/>
+                    <SolidSwatchItem/>
+                    <SolidSwatchItem color="#CCCCCC" brightness="192"/>
+                    <SolidSwatchItem/>
+                    <SolidSwatchItem color="#0000CC" hue="160" saturation="239" brightness="96"/>
+                    <SolidSwatchItem color="#0033CC" hue="150" saturation="239" brightness="96"/>
+                    <SolidSwatchItem color="#0066CC" hue="140" saturation="239" brightness="96"/>
+                    <SolidSwatchItem color="#0099CC" hue="130" saturation="239" brightness="96"/>
+                    <SolidSwatchItem color="#00CCCC" hue="120" saturation="239" brightness="96"/>
+                    <SolidSwatchItem color="#00FFCC" hue="112" saturation="239" brightness="120"/>
+                    <SolidSwatchItem color="#3300CC" hue="170" saturation="239" brightness="96"/>
+                    <SolidSwatchItem color="#3333CC" hue="160" saturation="144" brightness="120"/>
+                    <SolidSwatchItem color="#3366CC" hue="147" saturation="144" brightness="120"/>
+                    <SolidSwatchItem color="#3399CC" hue="133" saturation="144" brightness="120"/>
+                    <SolidSwatchItem color="#33CCCC" hue="120" saturation="144" brightness="120"/>
+                    <SolidSwatchItem color="#33FFCC" hue="110" saturation="239" brightness="144"/>
+                    <SolidSwatchItem color="#6600CC" hue="180" saturation="239" brightness="96"/>
+                    <SolidSwatchItem color="#6633CC" hue="173" saturation="144" brightness="120"/>
+                    <SolidSwatchItem color="#6666CC" hue="160" saturation="120" brightness="144"/>
+                    <SolidSwatchItem color="#6699CC" hue="140" saturation="120" brightness="144"/>
+                    <SolidSwatchItem color="#66CCCC" hue="120" saturation="120" brightness="144"/>
+                    <SolidSwatchItem color="#66FFCC" hue="107" saturation="239" brightness="168"/>
+                    <SolidSwatchItem/>
+                    <SolidSwatchItem color="#FFFFFF" brightness="240"/>
+                    <SolidSwatchItem/>
+                    <SolidSwatchItem color="#0000FF" hue="160" saturation="239" brightness="120"/>
+                    <SolidSwatchItem color="#0033FF" hue="152" saturation="239" brightness="120"/>
+                    <SolidSwatchItem color="#0066FF" hue="144" saturation="239" brightness="120"/>
+                    <SolidSwatchItem color="#0099FF" hue="136" saturation="239" brightness="120"/>
+                    <SolidSwatchItem color="#00CCFF" hue="128" saturation="239" brightness="120"/>
+                    <SolidSwatchItem color="#00FFFF" hue="120" saturation="239" brightness="120"/>
+                    <SolidSwatchItem color="#3300FF" hue="168" saturation="239" brightness="120"/>
+                    <SolidSwatchItem color="#3333FF" hue="160" saturation="239" brightness="144"/>
+                    <SolidSwatchItem color="#3366FF" hue="150" saturation="239" brightness="144"/>
+                    <SolidSwatchItem color="#3399FF" hue="140" saturation="239" brightness="144"/>
+                    <SolidSwatchItem color="#33CCFF" hue="130" saturation="239" brightness="144"/>
+                    <SolidSwatchItem color="#33FFFF" hue="120" saturation="239" brightness="144"/>
+                    <SolidSwatchItem color="#6600FF" hue="176" saturation="239" brightness="120"/>
+                    <SolidSwatchItem color="#6633FF" hue="170" saturation="239" brightness="144"/>
+                    <SolidSwatchItem color="#6666FF" hue="160" saturation="239" brightness="168"/>
+                    <SolidSwatchItem color="#6699FF" hue="147" saturation="239" brightness="168"/>
+                    <SolidSwatchItem color="#66CCFF" hue="133" saturation="239" brightness="168"/>
+                    <SolidSwatchItem color="#66FFFF" hue="120" saturation="239" brightness="168"/>
+                    <SolidSwatchItem/>
+                    <SolidSwatchItem color="#FF0000" saturation="239" brightness="120"/>
+                    <SolidSwatchItem/>
+                    <SolidSwatchItem color="#990000" saturation="239" brightness="72"/>
+                    <SolidSwatchItem color="#993300" hue="13" saturation="239" brightness="72"/>
+                    <SolidSwatchItem color="#996600" hue="27" saturation="239" brightness="72"/>
+                    <SolidSwatchItem color="#999900" hue="40" saturation="239" brightness="72"/>
+                    <SolidSwatchItem color="#99CC00" hue="50" saturation="239" brightness="96"/>
+                    <SolidSwatchItem color="#99FF00" hue="56" saturation="239" brightness="120"/>
+                    <SolidSwatchItem color="#CC0000" saturation="239" brightness="96"/>
+                    <SolidSwatchItem color="#CC3300" hue="10" saturation="239" brightness="96"/>
+                    <SolidSwatchItem color="#CC6600" hue="20" saturation="239" brightness="96"/>
+                    <SolidSwatchItem color="#CC9900" hue="30" saturation="239" brightness="96"/>
+                    <SolidSwatchItem color="#CCCC00" hue="40" saturation="239" brightness="96"/>
+                    <SolidSwatchItem color="#CCFF00" hue="48" saturation="239" brightness="120"/>
+                    <SolidSwatchItem color="#FF0000" saturation="239" brightness="120"/>
+                    <SolidSwatchItem color="#FF3300" hue="8" saturation="239" brightness="120"/>
+                    <SolidSwatchItem color="#FF6600" hue="16" saturation="239" brightness="120"/>
+                    <SolidSwatchItem color="#FF9900" hue="24" saturation="239" brightness="120"/>
+                    <SolidSwatchItem color="#FFCC00" hue="32" saturation="239" brightness="120"/>
+                    <SolidSwatchItem color="#FFFF00" hue="40" saturation="239" brightness="120"/>
+                    <SolidSwatchItem/>
+                    <SolidSwatchItem color="#00FF00" hue="80" saturation="239" brightness="120"/>
+                    <SolidSwatchItem/>
+                    <SolidSwatchItem color="#990033" hue="227" saturation="239" brightness="72"/>
+                    <SolidSwatchItem color="#993333" saturation="120" brightness="96"/>
+                    <SolidSwatchItem color="#996633" hue="20" saturation="120" brightness="96"/>
+                    <SolidSwatchItem color="#999933" hue="40" saturation="120" brightness="96"/>
+                    <SolidSwatchItem color="#99CC33" hue="53" saturation="144" brightness="120"/>
+                    <SolidSwatchItem color="#99FF33" hue="60" saturation="239" brightness="144"/>
+                    <SolidSwatchItem color="#CC0033" hue="230" saturation="239" brightness="96"/>
+                    <SolidSwatchItem color="#CC3333" saturation="144" brightness="120"/>
+                    <SolidSwatchItem color="#CC6633" hue="13" saturation="144" brightness="120"/>
+                    <SolidSwatchItem color="#CC9933" hue="27" saturation="144" brightness="120"/>
+                    <SolidSwatchItem color="#CCCC33" hue="40" saturation="144" brightness="120"/>
+                    <SolidSwatchItem color="#CCFF33" hue="50" saturation="239" brightness="144"/>
+                    <SolidSwatchItem color="#FF0033" hue="232" saturation="239" brightness="120"/>
+                    <SolidSwatchItem color="#FF3333" saturation="239" brightness="144"/>
+                    <SolidSwatchItem color="#FF6633" hue="10" saturation="239" brightness="144"/>
+                    <SolidSwatchItem color="#FF9933" hue="20" saturation="239" brightness="144"/>
+                    <SolidSwatchItem color="#FFCC33" hue="30" saturation="239" brightness="144"/>
+                    <SolidSwatchItem color="#FFFF33" hue="40" saturation="239" brightness="144"/>
+                    <SolidSwatchItem/>
+                    <SolidSwatchItem color="#0000FF" hue="160" saturation="239" brightness="120"/>
+                    <SolidSwatchItem/>
+                    <SolidSwatchItem color="#990066" hue="213" saturation="239" brightness="72"/>
+                    <SolidSwatchItem color="#993366" hue="220" saturation="120" brightness="96"/>
+                    <SolidSwatchItem color="#996666" saturation="48" brightness="120"/>
+                    <SolidSwatchItem color="#999966" hue="40" saturation="48" brightness="120"/>
+                    <SolidSwatchItem color="#99CC66" hue="60" saturation="120" brightness="144"/>
+                    <SolidSwatchItem color="#99FF66" hue="67" saturation="239" brightness="168"/>
+                    <SolidSwatchItem color="#CC0066" hue="220" saturation="239" brightness="96"/>
+                    <SolidSwatchItem color="#CC3366" hue="227" saturation="144" brightness="120"/>
+                    <SolidSwatchItem color="#CC6666" saturation="120" brightness="144"/>
+                    <SolidSwatchItem color="#CC9966" hue="20" saturation="120" brightness="144"/>
+                    <SolidSwatchItem color="#CCCC66" hue="40" saturation="120" brightness="144"/>
+                    <SolidSwatchItem color="#CCFF66" hue="53" saturation="239" brightness="168"/>
+                    <SolidSwatchItem color="#FF0066" hue="224" saturation="239" brightness="120"/>
+                    <SolidSwatchItem color="#FF3366" hue="230" saturation="239" brightness="144"/>
+                    <SolidSwatchItem color="#FF6666" saturation="239" brightness="168"/>
+                    <SolidSwatchItem color="#FF9966" hue="13" saturation="239" brightness="168"/>
+                    <SolidSwatchItem color="#FFCC66" hue="27" saturation="239" brightness="168"/>
+                    <SolidSwatchItem color="#FFFF66" hue="40" saturation="239" brightness="168"/>
+                    <SolidSwatchItem/>
+                    <SolidSwatchItem color="#FFFF00" hue="40" saturation="239" brightness="120"/>
+                    <SolidSwatchItem/>
+                    <SolidSwatchItem color="#990099" hue="200" saturation="239" brightness="72"/>
+                    <SolidSwatchItem color="#993399" hue="200" saturation="120" brightness="96"/>
+                    <SolidSwatchItem color="#996699" hue="200" saturation="48" brightness="120"/>
+                    <SolidSwatchItem color="#999999" brightness="144"/>
+                    <SolidSwatchItem color="#99CC99" hue="80" saturation="80" brightness="168"/>
+                    <SolidSwatchItem color="#99FF99" hue="80" saturation="239" brightness="192"/>
+                    <SolidSwatchItem color="#CC0099" hue="210" saturation="239" brightness="96"/>
+                    <SolidSwatchItem color="#CC3399" hue="213" saturation="144" brightness="120"/>
+                    <SolidSwatchItem color="#CC6699" hue="220" saturation="120" brightness="144"/>
+                    <SolidSwatchItem color="#CC9999" saturation="80" brightness="168"/>
+                    <SolidSwatchItem color="#CCCC99" hue="40" saturation="80" brightness="168"/>
+                    <SolidSwatchItem color="#CCFF99" hue="60" saturation="239" brightness="192"/>
+                    <SolidSwatchItem color="#FF0099" hue="216" saturation="239" brightness="120"/>
+                    <SolidSwatchItem color="#FF3399" hue="220" saturation="239" brightness="144"/>
+                    <SolidSwatchItem color="#FF6699" hue="227" saturation="239" brightness="168"/>
+                    <SolidSwatchItem color="#FF9999" saturation="239" brightness="192"/>
+                    <SolidSwatchItem color="#FFCC99" hue="20" saturation="239" brightness="192"/>
+                    <SolidSwatchItem color="#FFFF99" hue="40" saturation="239" brightness="192"/>
+                    <SolidSwatchItem/>
+                    <SolidSwatchItem color="#00FFFF" hue="120" saturation="239" brightness="120"/>
+                    <SolidSwatchItem/>
+                    <SolidSwatchItem color="#9900CC" hue="190" saturation="239" brightness="96"/>
+                    <SolidSwatchItem color="#9933CC" hue="187" saturation="144" brightness="120"/>
+                    <SolidSwatchItem color="#9966CC" hue="180" saturation="120" brightness="144"/>
+                    <SolidSwatchItem color="#9999CC" hue="160" saturation="80" brightness="168"/>
+                    <SolidSwatchItem color="#99CCCC" hue="120" saturation="80" brightness="168"/>
+                    <SolidSwatchItem color="#99FFCC" hue="100" saturation="239" brightness="192"/>
+                    <SolidSwatchItem color="#CC00CC" hue="200" saturation="239" brightness="96"/>
+                    <SolidSwatchItem color="#CC33CC" hue="200" saturation="144" brightness="120"/>
+                    <SolidSwatchItem color="#CC66CC" hue="200" saturation="120" brightness="144"/>
+                    <SolidSwatchItem color="#CC99CC" hue="200" saturation="80" brightness="168"/>
+                    <SolidSwatchItem color="#CCCCCC" brightness="192"/>
+                    <SolidSwatchItem color="#CCFFCC" hue="80" saturation="239" brightness="216"/>
+                    <SolidSwatchItem color="#FF00CC" hue="208" saturation="239" brightness="120"/>
+                    <SolidSwatchItem color="#FF33CC" hue="210" saturation="239" brightness="144"/>
+                    <SolidSwatchItem color="#FF66CC" hue="213" saturation="239" brightness="168"/>
+                    <SolidSwatchItem color="#FF99CC" hue="220" saturation="239" brightness="192"/>
+                    <SolidSwatchItem color="#FFCCCC" saturation="239" brightness="216"/>
+                    <SolidSwatchItem color="#FFFFCC" hue="40" saturation="239" brightness="216"/>
+                    <SolidSwatchItem/>
+                    <SolidSwatchItem color="#FF00FF" hue="200" saturation="239" brightness="120"/>
+                    <SolidSwatchItem/>
+                    <SolidSwatchItem color="#9900FF" hue="184" saturation="239" brightness="120"/>
+                    <SolidSwatchItem color="#9933FF" hue="180" saturation="239" brightness="144"/>
+                    <SolidSwatchItem color="#9966FF" hue="173" saturation="239" brightness="168"/>
+                    <SolidSwatchItem color="#9999FF" hue="160" saturation="239" brightness="192"/>
+                    <SolidSwatchItem color="#99CCFF" hue="140" saturation="239" brightness="192"/>
+                    <SolidSwatchItem color="#99FFFF" hue="120" saturation="239" brightness="192"/>
+                    <SolidSwatchItem color="#CC00FF" hue="192" saturation="239" brightness="120"/>
+                    <SolidSwatchItem color="#CC33FF" hue="190" saturation="239" brightness="144"/>
+                    <SolidSwatchItem color="#CC66FF" hue="187" saturation="239" brightness="168"/>
+                    <SolidSwatchItem color="#CC99FF" hue="180" saturation="239" brightness="192"/>
+                    <SolidSwatchItem color="#CCCCFF" hue="160" saturation="239" brightness="216"/>
+                    <SolidSwatchItem color="#CCFFFF" hue="120" saturation="239" brightness="216"/>
+                    <SolidSwatchItem color="#FF00FF" hue="200" saturation="239" brightness="120"/>
+                    <SolidSwatchItem color="#FF33FF" hue="200" saturation="239" brightness="144"/>
+                    <SolidSwatchItem color="#FF66FF" hue="200" saturation="239" brightness="168"/>
+                    <SolidSwatchItem color="#FF99FF" hue="200" saturation="239" brightness="192"/>
+                    <SolidSwatchItem color="#FFCCFF" hue="200" saturation="239" brightness="216"/>
+                    <SolidSwatchItem color="#FFFFFF" brightness="240"/>
+                    <SolidSwatchItem color="#604641" hue="7" saturation="46" brightness="76"/>
+                    <SolidSwatchItem color="#4E3129" hue="8" saturation="73" brightness="56"/>
+                    <SolidSwatchItem color="#502D28" hue="4" saturation="79" brightness="57"/>
+                    <SolidSwatchItem color="#4C332E" hue="7" saturation="61" brightness="58"/>
+                    <SolidSwatchItem color="#482C28" hue="4" saturation="68" brightness="53"/>
+                    <SolidSwatchItem color="#462A26" hue="5" saturation="71" brightness="51"/>
+                    <SolidSwatchItem color="#502F28" hue="7" saturation="79" brightness="57"/>
+                    <SolidSwatchItem color="#65443D" hue="7" saturation="60" brightness="76"/>
+                    <SolidSwatchItem color="#977CB1" hue="180" saturation="61" brightness="142"/>
+               </swatches>
+          </swatchList>
+     </swatchLists>
+     <persistentData>
+          <PD n="TestMovieChecked" v="FlashPro"/>
+     </persistentData>
+     <PrinterSettings/>
+     <publishHistory>
+          <PublishItem publishSize="179931" publishTime="1781017345"/>
+          <PublishItem publishSize="161400" publishTime="1778909976"/>
+          <PublishItem publishSize="162090" publishTime="1731755309"/>
+          <PublishItem publishSize="162273" publishTime="1726070039"/>
+          <PublishItem publishSize="162371" publishTime="1726069332"/>
+          <PublishItem publishSize="162372" publishTime="1726068898"/>
+          <PublishItem publishSize="162369" publishTime="1726068850"/>
+          <PublishItem publishSize="162484" publishTime="1726068785"/>
+          <PublishItem publishSize="162488" publishTime="1726068771"/>
+          <PublishItem publishSize="161982" publishTime="1726068739"/>
+          <PublishItem publishSize="127719" publishTime="1724996049"/>
+          <PublishItem publishSize="127701" publishTime="1724992776"/>
+          <PublishItem publishSize="127616" publishTime="1724906367"/>
+          <PublishItem publishSize="127616" publishTime="1724906142"/>
+          <PublishItem publishSize="127600" publishTime="1724903935"/>
+          <PublishItem publishSize="126731" publishTime="1723291177"/>
+          <PublishItem publishSize="113103" publishTime="1718610679"/>
+          <PublishItem publishSize="113104" publishTime="1718610638"/>
+          <PublishItem publishSize="112858" publishTime="1718609990"/>
+          <PublishItem publishSize="112782" publishTime="1718609842"/>
+     </publishHistory>
+</DOMDocument>

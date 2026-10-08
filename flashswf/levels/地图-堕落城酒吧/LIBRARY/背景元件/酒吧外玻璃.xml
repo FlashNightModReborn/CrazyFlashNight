@@ -1,0 +1,56 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="背景元件/酒吧外玻璃" itemID="65cb8ee4-00000293" lastModified="1707839378">
+  <timeline>
+    <DOMTimeline name="酒吧外玻璃">
+      <layers>
+        <DOMLayer name="图层_1" color="#00FFFF" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#E6E6E6"/>
+                    </FillStyle>
+                    <FillStyle index="2">
+                      <SolidColor color="#E6FFFF"/>
+                    </FillStyle>
+                  </fills>
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke scaleMode="normal">
+                        <fill>
+                          <SolidColor/>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
+                  <edges>
+                    <Edge fillStyle0="1" fillStyle1="2" edges="!1985 4360|1319 3911!1319 3911[861 2735 428 3311!428 3311|0 3022"/>
+                    <Edge fillStyle0="1" strokeStyle="1" edges="!0 3022|0 5618!0 5618|1984 6956!1984 6956|1985 4360"/>
+                    <Edge fillStyle1="2" strokeStyle="1" edges="!0 3022|0 0!0 0|1985 1338!1985 1338|1985 4360"/>
+                  </edges>
+                </DOMShape>
+                <DOMStaticText width="114.2" height="49.5" isSelectable="false">
+                  <matrix>
+                    <Matrix a="0.798629760742188" b="0.601806640625" tx="4.8" ty="154.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="62.5" y="27.4"/>
+                  </transformationPoint>
+                  <textRuns>
+                    <DOMTextRun>
+                      <characters>crazyflasher7&#xD;     remake</characters>
+                      <textAttrs>
+                        <DOMTextAttrs aliasText="false" size="18" bitmapSize="360" face="MicrosoftYaHei" fillColor="#333333"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                  </textRuns>
+                </DOMStaticText>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

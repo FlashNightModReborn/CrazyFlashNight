@@ -1,0 +1,90 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="桌椅组1" itemID="666ea70b-00001484" lastModified="1718608298" lastUniqueIdentifier="8">
+  <timeline>
+    <DOMTimeline name="桌椅组1">
+      <layers>
+        <DOMLayer name="as" color="#9933CC" current="true" isSelected="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[this.swapDepths(this._y);]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层 1" color="#4FFF4F">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="背景元件/酒吧椅子">
+                  <matrix>
+                    <Matrix a="-0.402572631835938" d="0.402572631835938" tx="-35.65" ty="-62.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="53.15" y="84.6"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="背景元件/酒吧椅子" centerPoint3DX="49.9" centerPoint3DY="-50">
+                  <matrix>
+                    <Matrix a="0.402572631835938" d="0.402572631835938" tx="35.55" ty="-72.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="53.3" y="84.6"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="背景元件/棋牌桌">
+                  <matrix>
+                    <Matrix a="0.402572631835938" d="0.402572631835938" tx="-57.05" ty="-68.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="149.55" y="99.75"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="背景元件/筹码fs">
+                  <matrix>
+                    <Matrix a="0.354019165039063" d="0.354019165039063" tx="-41" ty="-56.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="11.7" y="3.8"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="背景元件/筹码lsy">
+                  <matrix>
+                    <Matrix a="0.354019165039063" d="0.354019165039063" tx="-47.35" ty="-54.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="12.15" y="3.8"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="背景元件/筹码雾人" centerPoint3DX="-3.7" centerPoint3DY="-47.15">
+                  <matrix>
+                    <Matrix a="0.354019165039063" d="0.354019165039063" tx="-7.3" ty="-48.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="12.15" y="3.8"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="背景元件/筹码鸡蛋">
+                  <matrix>
+                    <Matrix a="0.354019165039063" d="0.354019165039063" tx="12.15" ty="-48.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="12" y="3.8"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="背景元件/筹码无名氏" centerPoint3DX="-27.6" centerPoint3DY="-61.8">
+                  <matrix>
+                    <Matrix a="0.354019165039063" d="0.354019165039063" tx="-31.3" ty="-63.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="11.15" y="3.55"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

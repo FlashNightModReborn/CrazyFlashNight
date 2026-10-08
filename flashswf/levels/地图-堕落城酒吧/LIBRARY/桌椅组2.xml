@@ -1,0 +1,58 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="桌椅组2" itemID="666ea6ff-00001473" lastModified="1718608308" lastUniqueIdentifier="4">
+  <timeline>
+    <DOMTimeline name="桌椅组2">
+      <layers>
+        <DOMLayer name="as" color="#9933CC" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[this.swapDepths(this._y);]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层 1" color="#4FFF4F" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="背景元件/酒吧椅子">
+                  <matrix>
+                    <Matrix a="0.403518676757813" d="0.403518676757813" tx="47.75" ty="-66.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="53.3" y="84.5"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="背景元件/棋牌桌">
+                  <matrix>
+                    <Matrix a="0.403518676757813" d="0.403518676757813" tx="-60.5" ty="-72.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="149.55" y="99.75"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="背景元件/桌布" centerPoint3DX="-1.1" centerPoint3DY="-41.7">
+                  <matrix>
+                    <Matrix a="0.403518676757813" d="0.403518676757813" tx="-60.5" ty="-73.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="149.8" y="77.7"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="背景元件/盘子" centerPoint3DX="29.05" centerPoint3DY="-61.95">
+                  <matrix>
+                    <Matrix a="0.403518676757813" d="0.403518676757813" tx="17.3" ty="-66"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="30" y="9.8"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

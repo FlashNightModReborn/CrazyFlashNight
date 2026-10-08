@@ -1,0 +1,32 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="背景元件/地板" itemID="666e9d8f-000002f1" lastModified="1718528083">
+  <timeline>
+    <DOMTimeline name="地板">
+      <layers>
+        <DOMLayer name="图层 1" color="#4FFF4F" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMBitmapInstance libraryItemName="背景元件/位图 1">
+                  <matrix>
+                    <Matrix a="1.0948486328125" c="0.246246337890625" d="0.373626708984375"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="511.95" y="511.85"/>
+                  </transformationPoint>
+                </DOMBitmapInstance>
+                <DOMBitmapInstance libraryItemName="背景元件/位图 1">
+                  <matrix>
+                    <Matrix a="1.0948486328125" c="0.246246337890625" d="0.373626708984375" tx="397.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="512" y="511.85"/>
+                  </transformationPoint>
+                </DOMBitmapInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

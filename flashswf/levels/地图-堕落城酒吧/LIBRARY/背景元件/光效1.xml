@@ -1,0 +1,32 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="背景元件/光效1" itemID="666fea27-00000228" lastModified="1718610471">
+  <timeline>
+    <DOMTimeline name="光效1">
+      <layers>
+        <DOMLayer name="图层 1" color="#4FFF4F" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <RadialGradient>
+                        <matrix>
+                          <Matrix a="0.0618896484375" d="0.0618896484375" tx="50" ty="50"/>
+                        </matrix>
+                        <GradientEntry color="#FFFF99" alpha="0.250980392156863" ratio="0"/>
+                        <GradientEntry color="#FFFF99" alpha="0" ratio="1"/>
+                      </RadialGradient>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle1="1" edges="!1706 1707[1414 2000 1000 2000!1000 2000[586 2000 292 1707!292 1707[0 1414 0 1000!0 1000[0 586 292 293!292 293[586 0 1000 0!1000 0[1414 0 1706 293!1706 293[2000 586 2000 1000!2000 1000[2000 1414 1706 1707"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

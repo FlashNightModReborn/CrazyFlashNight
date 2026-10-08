@@ -1,0 +1,136 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="酷女孩2/酷2" itemID="668e2db1-00000420" symbolType="graphic" lastModified="1781018092" lastUniqueIdentifier="3">
+  <timeline>
+    <DOMTimeline name="酷2">
+      <layers>
+        <DOMLayer name="图层_2" color="#9933CC">
+          <frames>
+            <DOMFrame index="0" duration="35" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="酷女孩2/元件 1" symbolType="graphic" loop="single frame">
+                  <matrix>
+                    <Matrix a="0.609649658203125" d="0.630996704101563" tx="-99.2" ty="299.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="84.4" y="87.9"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层_6" color="#FF0000">
+          <frames>
+            <DOMFrame index="0" duration="35" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="酷女孩2/元件 2" symbolType="graphic" firstFrame="2" loop="single frame">
+                  <matrix>
+                    <Matrix a="0.789520263671875" d="0.9027099609375" tx="-43.45" ty="430.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="68.7" y="136.7"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层_8" color="#FF4F4F">
+          <frames>
+            <DOMFrame index="0" duration="35" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="酷女孩2/元件 3" symbolType="graphic" loop="single frame">
+                  <matrix>
+                    <Matrix a="0.789520263671875" d="0.80548095703125" tx="-138.65" ty="587.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="102" y="273.25"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层_3" color="#FF800A">
+          <frames>
+            <DOMFrame index="0" duration="35" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="酷女孩2/元件 4" symbolType="graphic" loop="single frame">
+                  <matrix>
+                    <Matrix a="0.789520263671875" d="0.948699951171875" tx="-110.75" ty="380.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="75.8" y="132.55"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层_7" color="#669900">
+          <frames>
+            <DOMFrame index="0" duration="35" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="酷女孩2/元件 5" symbolType="graphic" loop="single frame">
+                  <matrix>
+                    <Matrix a="0.789520263671875" d="0.9027099609375" tx="-163.95" ty="431.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="61" y="269.7"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="MergedLayer_1" color="#009999" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="35" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="酷女孩2/元件 6" symbolType="graphic" loop="single frame">
+                  <matrix>
+                    <Matrix a="0.609649658203125" d="0.630996704101563" tx="-113.6" ty="286.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="120.25" y="132.25"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层 2" color="#9933CC" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" duration="35" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="牛仔/Symbol 2" centerPoint3DX="35.5" centerPoint3DY="1084.85">
+                  <matrix>
+                    <Matrix a="1.13858032226563" d="0.46356201171875" tx="-51.15" ty="998.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   if(_root.是否阴影 == true)
+   {
+      this._visible = 1;
+   }
+   else
+   {
+      this._visible = 0;
+   }
+}
+]]></script>
+                  </Actionscript>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

@@ -1,0 +1,37 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="背景元件/酒吧柜台整体" itemID="65ccb8fe-0000043e" lastModified="1707915518">
+  <timeline>
+    <DOMTimeline name="酒吧柜台整体">
+      <layers>
+        <DOMLayer name="图层_1" color="#00FFFF" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="背景元件/酒吧酒柜">
+                  <transformationPoint>
+                    <Point x="234.8" y="513.8"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="背景元件/酒吧酒柜玻璃窗">
+                  <matrix>
+                    <Matrix tx="21" ty="191.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="32.3" y="131.1"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="背景元件/酒吧酒柜玻璃窗">
+                  <matrix>
+                    <Matrix tx="200.4" ty="464.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="32.3" y="131.1"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>
