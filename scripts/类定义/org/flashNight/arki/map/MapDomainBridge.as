@@ -28,6 +28,10 @@ class org.flashNight.arki.map.MapDomainBridge {
     private static var _helloAttempt:Number = 0;
     private static var _navigationBusyUntil:Number = 0;
     private static var _force:Boolean = false;
+    // 定义摘要单独判定「必须重启」；内容摘要随任务目录热重载变化，不触发重启。
+    private static var _loadedDefinitionDigest:String = "";
+    private static var _syncFlight:Object;
+    private static var _syncBootstrap:Object;
 
     public static function initialize():Void {
         if (_installed) return;
@@ -57,29 +61,37 @@ class org.flashNight.arki.map.MapDomainBridge {
     private static function onHello(response:Object):Void {
         _helloFlight = false;
         var result:Object = response.result;
-        if (response.success !== true || result.version !== 2 || typeof result.sessionToken != "string"
-                || result.sessionToken.length != 32 || typeof result.contentDigest != "string"
-                || result.contentDigest.length != 64 || !(result.taskIds instanceof Array)
-                || !(result.chains instanceof Array) || !(result.worldBindings instanceof Array) || !(result.infrastructureKeys instanceof Array)
-                || !(result.availableTaskIds instanceof Array) || result.taskNpcLabels == undefined
-                || result.locationByHotspot == undefined || result.frames == undefined) {
+        if (response.success !== true || !validBootstrap(result)) {
             _root.__boot.mapDomainFailed = true;
             log("静态地图加载失败：" + String(response.error || "invalid_bootstrap"));
             return;
         }
-        if (_loadedDigest != "" && _loadedDigest != result.contentDigest) {
+        if (_loadedDefinitionDigest != "" && _loadedDefinitionDigest != result.definitionDigest) {
             _root.__boot.mapDomainFailed = true;
-            log("地图内容已变化，必须重启游戏，不混用已加载任务与新地图。");
+            log("地图定义已变化，必须重启游戏，不混用已加载任务与新地图。");
             return;
         }
-        _loadedDigest = result.contentDigest; _sessionToken = result.sessionToken; _bootstrap = result;
+        installBootstrap(result);
+        log("地图静态投影已安装，人物/驻点与任务端点同源。");
+    }
+    private static function validBootstrap(result:Object):Boolean {
+        return result != undefined && result.version === 2 && typeof result.sessionToken == "string"
+            && result.sessionToken.length == 32 && typeof result.contentDigest == "string"
+            && result.contentDigest.length == 64 && typeof result.definitionDigest == "string"
+            && result.definitionDigest.length == 64 && result.taskIds instanceof Array
+            && result.chains instanceof Array && result.worldBindings instanceof Array
+            && result.infrastructureKeys instanceof Array && result.availableTaskIds instanceof Array
+            && result.taskNpcLabels != undefined && result.locationByHotspot != undefined && result.frames != undefined;
+    }
+    private static function installBootstrap(result:Object):Void {
+        _loadedDigest = result.contentDigest; _loadedDefinitionDigest = result.definitionDigest;
+        _sessionToken = result.sessionToken; _bootstrap = result;
         _knownTasks = {};
         for (var i:Number = 0; i < result.taskIds.length; i++) _knownTasks["$" + String(result.taskIds[i])] = true;
         _projection = undefined; _confirmedSignature = ""; _acceptedRevision = -1;
         _root.__boot.mapDomainReady = true;
         _root.__boot.mapDomainFailed = false;
         _force = true;
-        log("地图静态投影已安装，人物/驻点与任务端点同源。");
     }
 
     private static function observeScene():Void {
@@ -113,6 +125,14 @@ class org.flashNight.arki.map.MapDomainBridge {
         observeScene();
         if (!ServerManager.getInstance().isSocketConnected) {
             _sessionToken = ""; _bootstrap = undefined; _projection = undefined; _confirmedSignature = "";
+            // 暂存的握手属于已死的会话世代；在飞的同步请求由 ServerManager 的关闭/超时回调收口。
+            _syncBootstrap = undefined;
+        }
+        // 热重载提交前不发新投影：宿主已换会话令牌，旧包必然被判 invalid_session。
+        if (_syncBootstrap != undefined) {
+            expireWaiters();
+            org.flashNight.arki.map.MapWorldNpcController.refresh();
+            return;
         }
         if (_bootstrap == undefined) {
             if (getTimer() - _helloAttempt > 1000) hello();
@@ -148,7 +168,8 @@ class org.flashNight.arki.map.MapDomainBridge {
     private static function installResult(ctx:Object, response:Object):Boolean {
         var result:Object = response.result;
         if (response.success !== true) {
-            if (response.error == "invalid_session") { _bootstrap = undefined; _sessionToken = ""; _projection = undefined; _helloAttempt = 0; }
+            // 热重载窗口内旧包必然被判 invalid_session，此时暂存握手才是权威，不清已安装内容。
+            if (response.error == "invalid_session" && _syncBootstrap == undefined) { _bootstrap = undefined; _sessionToken = ""; _projection = undefined; _helloAttempt = 0; }
             return false;
         }
         observeScene();
@@ -251,6 +272,62 @@ class org.flashNight.arki.map.MapDomainBridge {
         _waiters.push({captureId:params.captureId,ids:interests,sessionToken:_sessionToken,deadline:getTimer() + 4000});
         _force = true;
         tick();
+    }
+
+    /**
+     * 请宿主重读任务目录并回报变化清单。宿主是变更权威：它决定哪些文件真的变了，
+     * 游戏侧只按清单重载。changed 为真时内容与会话令牌已在宿主侧交换，本桥进入
+     * 提交窗口，直到调用方在游戏侧重载完成后调用 commitTaskSync。
+     */
+    public static function syncTasks(callback:Function):Void {
+        observeScene();
+        if (!_installed || _bootstrap == undefined || _sessionToken == "") { callback(false, "map_domain_not_ready", undefined); return; }
+        if (_syncFlight != undefined || _syncBootstrap != undefined) { callback(false, "task_sync_busy", undefined); return; }
+        var flight:Object = {callback:callback};
+        _syncFlight = flight;
+        ServerManager.getInstance().sendTaskWithCallback("map_domain", {version:2, op:"task_sync"}, null, function(response:Object):Void {
+            org.flashNight.arki.map.MapDomainBridge.onTaskSync(flight, response);
+        }, 5000);
+    }
+    private static function onTaskSync(flight:Object, response:Object):Void {
+        if (_syncFlight !== flight) return;
+        _syncFlight = undefined;
+        var callback:Function = flight.callback;
+        if (response.success !== true || response.result == undefined) { callback(false, String(response.error || "task_sync_failed"), undefined); return; }
+        if (response.result.changed !== true) { callback(true, "", undefined); return; }
+        if (!validBootstrap(response.result.bootstrap)) { callback(false, "invalid_bootstrap", undefined); return; }
+        // 任务热重载永远不能成为换地图定义的后门：定义摘要必须与已装内容一致。
+        if (_loadedDefinitionDigest != "" && _loadedDefinitionDigest != response.result.bootstrap.definitionDigest) {
+            callback(false, "definition_changed", undefined); return;
+        }
+        // 在飞投影一律作废，其回调到达时因 _flight 已换而自行丢弃。
+        _flight = undefined;
+        _syncBootstrap = response.result.bootstrap;
+        callback(true, "", response.result);
+    }
+    /**
+     * 游戏侧任务数据重载完成后原子提交宿主回传的握手。提交前旧投影仍然生效，
+     * 不出现「新任务目录 + 旧投影」或「新投影 + 旧任务数据」的混用瞬间。
+     */
+    public static function commitTaskSync():Boolean {
+        var pending:Object = _syncBootstrap;
+        if (pending == undefined) return false;
+        _syncBootstrap = undefined;
+        if (!validBootstrap(pending)) {
+            _root.__boot.mapDomainFailed = true;
+            log("任务热重载回执不正确，等待下次握手重建投影。");
+            return false;
+        }
+        // 已接受投影的关注集合可能引用已被删除的任务，交给宿主复核会永久失败。
+        _interests = [];
+        var waiting:Array = _waiters; _waiters = [];
+        for (var i:Number = 0; i < waiting.length; i++) {
+            // 采样回执由宿主超时收口，这里只让本地回调立即拿到明确原因。
+            if (waiting[i].captureId == undefined) waiting[i].callback(false, "map_content_reloaded");
+        }
+        installBootstrap(pending);
+        log("任务目录已热重载，地图投影换到新会话。");
+        return true;
     }
 
     public static function navigate(intent:Object, callback:Function, guard:Function):Void {

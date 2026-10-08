@@ -6,6 +6,8 @@
 // initData：{source, frontend_url, savePath}。frontend_url 已由 Host 按 loopback
 //   前缀校验；本面板再按精确 origin 复核，不可信即不加载 iframe（fail-closed）。
 // 懒注册：panels-lazy-registry.js 的 registerLazy('ragchat', ['modules/ragchat.js'])。
+// 缩放：panel 态 WebView2 ZoomFactor 恒为 1.0（见 WebOverlayForm.ResumeForPanel），
+//   面板内 CSS 视口与浏览器 100% 等距，故 iframe 直接铺满、不做任何设计画布缩放。
 (function () {
   'use strict';
 
@@ -14,8 +16,6 @@
   var TRUSTED_ORIGIN = 'http://127.0.0.1:7077';
 
   var root = null;
-  var shell = null;
-  var scale = null;
   var statusEl = null;
   var disposers = [];
 
@@ -51,8 +51,7 @@
 
   function cleanup() {
     disposers.splice(0).forEach(function (f) { f(); });
-    if (scale) scale.detach();
-    scale = null; shell = null; statusEl = null;
+    statusEl = null;
     // 摘除 iframe → 销毁其浏览上下文，连带断开页面内 SSE / WebSocket
     if (root) root.textContent = '';
   }
@@ -66,20 +65,10 @@
   function onOpen(element, data) {
     root = element;
     root.innerHTML =
-      '<div class="panel-scale-shell ragchat-shell">' +
-        '<header class="ragchat-header">' +
-          '<span class="ragchat-title">通讯终端</span>' +
-          '<button class="ragchat-close-btn" data-ragchat="close" type="button" title="关闭" aria-label="关闭">关闭</button>' +
-        '</header>' +
-        '<div class="ragchat-body">' +
-          '<p class="ragchat-status" data-ragchat="status"></p>' +
-        '</div>' +
+      '<div class="ragchat-stage">' +
+        '<p class="ragchat-status" data-ragchat="status"></p>' +
+        '<button class="ragchat-close-btn" data-ragchat="close" type="button" title="关闭" aria-label="关闭">×</button>' +
       '</div>';
-    shell = root.firstElementChild;
-    scale = PanelScale.attach(shell, 1024, 576, { onUpdate: function (s) {
-      shell.style.left = ((root.clientWidth - 1024 * s) / 2) + 'px';
-      shell.style.top = ((root.clientHeight - 576 * s) / 2) + 'px';
-    }});
     statusEl = root.querySelector('[data-ragchat="status"]');
     listen(root.querySelector('[data-ragchat="close"]'), 'click', closeTerminal);
 
@@ -94,6 +83,6 @@
     frame.title = '通讯终端';
     frame.src = url;
     listen(frame, 'load', function () { statusEl.hidden = true; });
-    root.querySelector('.ragchat-body').appendChild(frame);
+    root.querySelector('.ragchat-stage').appendChild(frame);
   }
 })();

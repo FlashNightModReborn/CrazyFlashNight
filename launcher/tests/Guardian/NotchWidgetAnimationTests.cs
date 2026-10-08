@@ -108,5 +108,32 @@ namespace CF7Launcher.Tests.Guardian
                 new[] { "TEAM", "TABLET", "WAREHOUSE", "INTELLIGENCE", "MATERIALS", "SKILLS", "SHOP" },
                 modern);
         }
+
+        [Fact]
+        public void SuspendAging_ExpiresTransientNoticesButKeepsPersistentRows()
+        {
+            using (Control anchor = new Control())
+            {
+                NotchWidget widget = new NotchWidget(
+                    anchor,
+                    new FpsRingBuffer(300),
+                    "",
+                    null, null, null, null,
+                    new AudioHudState());
+                widget.AddNotice("game", "正在启动通讯终端，请稍后……",
+                    Color.FromArgb(255, 215, 0));
+                Assert.True(widget.WantsAnimationTick); // 面板挂起前刚出现的瞬时行
+
+                widget.AgeTransientRowsForSuspend(2999);
+                Assert.True(widget.WantsAnimationTick); // 未到期：面板关闭后仍可见
+
+                widget.AgeTransientRowsForSuspend(1);
+                Assert.False(widget.WantsAnimationTick); // 到期移除：关闭面板不再复活
+
+                widget.SetStatusItem("cap", "AI", "", Color.White);
+                widget.AgeTransientRowsForSuspend(3600000);
+                Assert.True(widget.WantsAnimationTick); // 常驻行不受挂起老化影响
+            }
+        }
     }
 }

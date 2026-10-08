@@ -8,6 +8,9 @@ class org.flashNight.gesh.json.LoadJson.TaskDataLoader extends BaseXMLLoader {
     private static var instance:TaskDataLoader = null;
     private static var path:String = "data/task/";
     private var combinedData:Array = null;
+    // 增量热重载缓存：list.xml 的条目顺序与各条目已解析的子数据。
+    private var entries:Array = null;
+    private var sources:Object = null;
 
     /**
      * 获取单例实例。
@@ -54,15 +57,21 @@ class org.flashNight.gesh.json.LoadJson.TaskDataLoader extends BaseXMLLoader {
                 return;
             }
             var entries:Array = ListLoader.normalizeToArray(data.task);
+            var sources:Object = {};
+            var merge:Function = ListLoader.concatField("tasks");
 
             ListLoader.loadChildren({
                 entries:      entries,
                 basePath:     path,
                 childType:    "json",
-                mergeFn:      ListLoader.concatField("tasks"),
+                mergeFn:      function(acc:Object, childData:Object, index:Number, entry:String):Object {
+                    sources[entry] = childData;
+                    return merge(acc, childData, index, entry);
+                },
                 initialValue: []
             }).then(function(result:Object):Void {
                 var arr = result;
+                self.entries = entries; self.sources = sources;
                 self.combinedData = arr;
                 if (onLoadHandler != null) onLoadHandler(self.combinedData);
             }).onCatch(function(reason:Object):Void {
@@ -91,6 +100,41 @@ class org.flashNight.gesh.json.LoadJson.TaskDataLoader extends BaseXMLLoader {
         // 清空现有数据
         this.combinedData = null;
         super.reload(onLoadHandler, onErrorHandler);
+    }
+
+    /**
+     * 只重读宿主判定变化的任务源文件，其余条目沿用缓存后按 list.xml 原顺序重合并。
+     * 缓存不全时退回整目录 reload，不猜半份数据。
+     * @param names 宿主给出的变化文件相对路径清单；null/undefined 表示整目录重载。
+     */
+    public function reloadFiles(names:Array, onLoadHandler:Function, onErrorHandler:Function):Void {
+        if (!(names instanceof Array) || this.combinedData == null || this.entries == null || this.sources == null) {
+            this.reload(onLoadHandler, onErrorHandler);
+            return;
+        }
+        var owned:Array = ListLoader.ownedEntries(names, path, this.entries);
+        if (owned.length == 0) {
+            if (onLoadHandler != null) onLoadHandler(this.combinedData);
+            return;
+        }
+        var self:TaskDataLoader = this;
+        ListLoader.reloadChanged({
+            entries:      this.entries,
+            sources:      this.sources,
+            changed:      owned,
+            basePath:     path,
+            childType:    "json",
+            mergeFn:      ListLoader.concatField("tasks"),
+            initialValue: []
+        }).then(function(result:Object):Void {
+            // 用 untyped 中间变量绕过 Flash CS6 的 Object→Array 赋值检查（combinedData 声明为 Array）。
+            var arr = result;
+            self.combinedData = arr;
+            if (onLoadHandler != null) onLoadHandler(self.combinedData);
+        }).onCatch(function(reason:Object):Void {
+            trace("[TaskDataLoader] " + reason);
+            if (onErrorHandler != null) onErrorHandler();
+        });
     }
 
     /**

@@ -93,6 +93,86 @@ class org.flashNight.aven.Promise.ListLoader {
         return [value];
     }
 
+    /**
+     * 从仓库相对路径清单里挑出属于本目录、且已登记在 entries 中的文件名。
+     * 目录不匹配或未登记的条目一律忽略：调用方拿到的清单可能同时覆盖多个目录。
+     *
+     * @param names    仓库相对路径清单（如 "data/task/agent_tasks.json"）
+     * @param basePath 本领域 loader 的目录前缀（以 "/" 结尾）
+     * @param entries  list.xml 已登记的子文件名
+     * @return Array 需要重读的子文件名
+     */
+    public static function ownedEntries(names:Array, basePath:String, entries:Array):Array {
+        var result:Array = [];
+        var known:Object = {};
+        var i:Number;
+        for (i = 0; i < entries.length; i++) known[entries[i]] = true;
+        for (i = 0; i < names.length; i++) {
+            var file:String = String(names[i]);
+            if (file.indexOf(basePath) != 0) continue;
+            var entry:String = file.substring(basePath.length);
+            if (known[entry] === true) result.push(entry);
+        }
+        return result;
+    }
+
+    /**
+     * 只重读变化的子文件，其余沿用调用方缓存，然后按 entries 原顺序重新合并。
+     * 用于「宿主已判定哪些文件真的变了」的热重载，避免整目录重解析。
+     *
+     * @param config 配置对象：
+     *   entries:Array      — list.xml 的全部子文件条目（合并顺序权威）
+     *   sources:Object     — 条目名 → 已解析子数据；变化条目会被就地替换
+     *   changed:Array      — 需要重读的条目名（通常来自 ownedEntries）
+     *   basePath:String    — 子文件基础路径
+     *   childType:String   — "xml"（默认）或 "json"
+     *   parseType:String   — JSON 解析器类型（仅 childType=="json" 时生效）
+     *   concurrency:Number — 并发窗口大小（默认 4）
+     *   mergeFn:Function   — 与 loadChildren 相同的合并函数
+     *   initialValue:Object— 累加器初值，必须是全新对象（会被就地合并）
+     * @return Promise 重新合并后的结果
+     */
+    public static function reloadChanged(config:Object):Promise {
+        var sources:Object = config.sources;
+        var changed:Array = config.changed;
+        if (changed == null || changed.length == 0) {
+            return Promise.resolve(ListLoader._remerge(config.entries, sources, config.mergeFn, config.initialValue));
+        }
+        var concurrency:Number = config.concurrency;
+        if (concurrency == undefined || concurrency == null || concurrency < 1) {
+            concurrency = DEFAULT_CONCURRENCY;
+        }
+        var loaderFn:Function = (config.childType || "xml") == "json"
+            ? ListLoader._makeJSONLoader(config.parseType)
+            : LoaderPromise.loadXML;
+        return ListLoader._chainBatches(changed, config.basePath, concurrency,
+                loaderFn, ListLoader._makeSourceStorer(sources), null, null, 0)
+            .then(ListLoader._makeRemerger(config.entries, sources, config.mergeFn, config.initialValue));
+    }
+
+    /** 按 entries 原顺序用缓存重合并；缺失条目跳过，不改变既有合并语义。 */
+    private static function _remerge(entries:Array, sources:Object, mergeFn:Function, initialValue:Object):Object {
+        var acc:Object = initialValue;
+        for (var i:Number = 0; i < entries.length; i++) {
+            var childData:Object = sources[entries[i]];
+            if (childData !== undefined) acc = mergeFn(acc, childData, i, entries[i]);
+        }
+        return acc;
+    }
+
+    private static function _makeSourceStorer(sources:Object):Function {
+        return function(acc:Object, childData:Object, index:Number, entry:String):Object {
+            sources[entry] = childData;
+            return acc;
+        };
+    }
+
+    private static function _makeRemerger(entries:Array, sources:Object, mergeFn:Function, initialValue:Object):Function {
+        return function():Object {
+            return ListLoader._remerge(entries, sources, mergeFn, initialValue);
+        };
+    }
+
     // ================================================================
     // 预定义合并策略工厂
     // ================================================================

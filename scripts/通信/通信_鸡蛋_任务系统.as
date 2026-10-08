@@ -2,7 +2,8 @@
 
 
  //从磁盘重新读取 data/task 与 data/task/text，并写回 TaskUtil。可选 onSuccess / onError。若正在执行中会忽略新的请求（避免重复点击叠加载）。
-_root.重新加载任务数据 = function(onSuccess:Function, onError:Function):Void {
+ //changedFiles 给出宿主判定变化的文件清单时只重读这些文件；缺省即整目录重载（ExternalInterface 入口保持不变）。
+_root.重新加载任务数据 = function(onSuccess:Function, onError:Function, changedFiles:Array):Void {
     if (_root._taskReloadBusy == true) {
         _root.发布消息("重新加载任务数据：已在执行中，跳过");
         return;
@@ -48,23 +49,25 @@ _root.重新加载任务数据 = function(onSuccess:Function, onError:Function):
         }
     }
 
-    TaskDataLoader.getInstance().reload(
-        function(data:Object):Void {
-            taskData = data;
-            taskDone = true;
-            tryFinish();
-        },
-        fail
-    );
+    function onTaskData(data:Object):Void {
+        taskData = data;
+        taskDone = true;
+        tryFinish();
+    }
 
-    TaskTextLoader.getInstance().reload(
-        function(data:Object):Void {
-            textData = data;
-            textDone = true;
-            tryFinish();
-        },
-        fail
-    );
+    function onTextData(data:Object):Void {
+        textData = data;
+        textDone = true;
+        tryFinish();
+    }
+
+    if (changedFiles instanceof Array) {
+        TaskDataLoader.getInstance().reloadFiles(changedFiles, onTaskData, fail);
+        TaskTextLoader.getInstance().reloadFiles(changedFiles, onTextData, fail);
+    } else {
+        TaskDataLoader.getInstance().reload(onTaskData, fail);
+        TaskTextLoader.getInstance().reload(onTextData, fail);
+    }
 };
 
 // ExternalInterface：若宿主（浏览器/部分壳）对 SWF 暴露了 JS 桥，外部可 call("reloadTaskData") 触发重新加载；独立播放器常不可用。

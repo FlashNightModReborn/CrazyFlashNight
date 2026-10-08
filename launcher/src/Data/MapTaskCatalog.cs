@@ -61,6 +61,18 @@ namespace CF7Launcher.Data
             }
             return catalog;
         }
+        /// <summary>逐文件比对任务源字节，返回变化清单（含 list.xml 与基建目录）。热重载据此只让游戏侧重读真正变化的文件。</summary>
+        public static List<string> ChangedSources(MapTaskCatalog before, MapTaskCatalog after)
+        {
+            var changed = new List<string>();
+            foreach (string file in before.SourceBytes.Keys.Union(after.SourceBytes.Keys).OrderBy(x => x, StringComparer.Ordinal))
+            {
+                if (before.SourceBytes.TryGetValue(file, out byte[] left) && after.SourceBytes.TryGetValue(file, out byte[] right)
+                    && left.Length == right.Length && left.AsSpan().SequenceEqual(right)) continue;
+                changed.Add(file);
+            }
+            return changed;
+        }
         public string Title(JObject task)
         {
             string value = task.Value<string>("title") ?? "";

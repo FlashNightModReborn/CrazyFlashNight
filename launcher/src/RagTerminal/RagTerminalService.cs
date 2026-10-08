@@ -38,6 +38,7 @@ namespace CF7Launcher.RagTerminal
         internal int ReadyDeadlineMs { get; set; } = 20000;
         internal int PollIntervalMs { get; set; } = 500;
         internal int RequestTimeoutMs { get; set; } = 5000;
+        internal int ShutdownRequestTimeoutMs { get; set; } = 1500;
 
         internal RagTerminalService(
             string projectRoot,
@@ -158,6 +159,19 @@ namespace CF7Launcher.RagTerminal
             });
         }
 
+        /// <summary>
+        /// Host 退出链调用：请求 7077 上的 exe 优雅退出。后端只接受由 --embedded 拉起的
+        /// 实例（standalone 回 409），用户手动启动的进程不会被误杀；服务未运行时静默返回。
+        /// </summary>
+        internal void ShutdownEmbeddedOnExit()
+        {
+            JObject response = PostJsonAsync("/api/integration/shutdown", "{}",
+                ShutdownRequestTimeoutMs).GetAwaiter().GetResult();
+            if (response != null)
+                LogManager.Log("[RagTerminal] shutdown acknowledged status="
+                    + response.Value<string>("status"));
+        }
+
         /// <summary>镜像 fscommand/launch_rag.bat：游戏安装根（projectRoot 的父目录）通配 exe。</summary>
         private string ResolveExePath()
         {
@@ -224,11 +238,12 @@ namespace CF7Launcher.RagTerminal
             }
         }
 
-        private async Task<JObject> PostJsonAsync(string path, string json)
+        private async Task<JObject> PostJsonAsync(string path, string json, int timeoutMs = 0)
         {
             try
             {
-                using (var cts = new CancellationTokenSource(RequestTimeoutMs))
+                using (var cts = new CancellationTokenSource(
+                    timeoutMs > 0 ? timeoutMs : RequestTimeoutMs))
                 using (var content = new StringContent(json, Encoding.UTF8, "application/json"))
                 using (HttpResponseMessage response = await _http
                     .PostAsync(LoopbackOrigin + path, content, cts.Token).ConfigureAwait(false))

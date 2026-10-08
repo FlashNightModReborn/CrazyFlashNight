@@ -1,14 +1,23 @@
 #panel-container[data-panel="ragchat"] #panel-content{inset:0}
 #panel-container[data-panel="ragchat"] #panel-backdrop{background:var(--ragchat-bg)}
 .ragchat-panel{position:absolute;inset:0;overflow:hidden;background:var(--ragchat-bg);color:var(--ragchat-text);font-family:"Microsoft YaHei",sans-serif}
-.ragchat-shell{width:1024px;height:576px;overflow:hidden;background:var(--ragchat-bg);box-sizing:border-box;display:flex;flex-direction:column}
-.ragchat-shell *{box-sizing:border-box}
-.ragchat-header{flex:0 0 auto;height:48px;display:flex;align-items:center;gap:12px;padding:0 16px 0 22px;background:var(--ragchat-header-bg);border-bottom:1px solid var(--ragchat-rule)}
-.ragchat-title{font-size:15px;letter-spacing:3px;color:var(--ragchat-title-text)}
-.ragchat-close-btn{margin-left:auto;font:13px "Microsoft YaHei",sans-serif;cursor:pointer;background:var(--ragchat-button-bg);color:var(--ragchat-button-text);border:1px solid var(--ragchat-button-border);padding:6px 18px;border-radius:3px;min-height:30px}
-.ragchat-close-btn:hover{background:var(--ragchat-button-hover)}
+.ragchat-stage{position:absolute;inset:0;background:var(--ragchat-frame-bg)}
+.ragchat-stage *{box-sizing:border-box}
+.ragchat-close-btn{position:absolute;top:19px;right:10px;z-index:3;width:34px;height:34px;padding:0;cursor:pointer;display:flex;align-items:center;justify-content:center;background-color:transparent;border:1px solid var(--ragchat-button-frame);border-radius:0;color:var(--ragchat-button-text);font:500 18px/1 "Segoe UI",sans-serif;transition:var(--ragchat-close-transition);
+  background-origin:border-box;background-repeat:no-repeat;
+  background-image:
+    linear-gradient(var(--ragchat-button-frame),var(--ragchat-button-frame)),
+    linear-gradient(var(--ragchat-button-frame),var(--ragchat-button-frame)),
+    linear-gradient(var(--ragchat-button-frame),var(--ragchat-button-frame)),
+    linear-gradient(var(--ragchat-button-frame),var(--ragchat-button-frame)),
+    linear-gradient(var(--ragchat-button-frame),var(--ragchat-button-frame)),
+    linear-gradient(var(--ragchat-button-frame),var(--ragchat-button-frame)),
+    linear-gradient(var(--ragchat-button-frame),var(--ragchat-button-frame)),
+    linear-gradient(var(--ragchat-button-frame),var(--ragchat-button-frame));
+  background-size:6px 1px,1px 6px,6px 1px,1px 6px,6px 1px,1px 6px,6px 1px,1px 6px;
+  background-position:4px 4px,4px 4px,right 4px top 4px,right 4px top 4px,left 4px bottom 4px,left 4px bottom 4px,right 4px bottom 4px,right 4px bottom 4px}
+.ragchat-close-btn:hover{background-color:var(--ragchat-button-hover)}
 .ragchat-close-btn:focus-visible{outline:2px solid var(--ragchat-focus);outline-offset:2px}
-.ragchat-body{position:relative;flex:1 1 auto;min-height:0;background:var(--ragchat-frame-bg)}
-.ragchat-status{position:absolute;inset:0;margin:0;display:flex;align-items:center;justify-content:center;padding:0 60px;text-align:center;font-size:14px;line-height:1.6;color:var(--ragchat-muted)}
+.ragchat-status{position:absolute;inset:0;margin:0;z-index:2;display:flex;align-items:center;justify-content:center;padding:0 60px;text-align:center;font-size:14px;line-height:1.6;color:var(--ragchat-muted)}
 .ragchat-status[hidden]{display:none}
 .ragchat-frame{position:absolute;inset:0;width:100%;height:100%;border:0;background:var(--ragchat-frame-bg)}

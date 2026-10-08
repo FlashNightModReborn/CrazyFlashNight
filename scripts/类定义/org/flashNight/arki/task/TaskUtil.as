@@ -33,19 +33,34 @@ class org.flashNight.arki.task.TaskUtil{
 
     /** 参数保留给旧 XFL；匹配集合已经由 C# 按当前物理地点投影。 */
     public static function getTasksForNpc(npcName:String, hotspotId:String):Array{
-        var ids:Array = org.flashNight.arki.map.MapDomainBridge.getProjection().npcTasks["$" + npcName]["get"];
+        var ids:Array = npcTaskIds(npcName, "get");
         return ids == undefined ? [] : ids;
     }
 
     public static function taskNpcMatches(taskData:Object, role:String, npcName:String, hotspotId:String):Boolean{
-        var ids:Array = org.flashNight.arki.map.MapDomainBridge.getProjection().npcTasks["$" + npcName][role];
+        var ids:Array = npcTaskIds(npcName, role);
+        if(ids == undefined) return false;
         for(var i:Number = 0; i < ids.length; i++) if(String(ids[i]) == String(taskData.id)) return true;
         return false;
     }
 
+    // 投影尚未安装（未连宿主、任务热重载提交窗口）时返回 undefined，调用方按「没有该任务」处理。
+    private static function npcTaskIds(npcName:String, role:String):Array{
+        var projection:Object = org.flashNight.arki.map.MapDomainBridge.getProjection();
+        if(projection == undefined || projection.npcTasks == undefined) return undefined;
+        var entry:Object = projection.npcTasks["$" + npcName];
+        return entry == undefined ? undefined : entry[role];
+    }
+
+    private static function autoAcceptPair(taskId:String):Object{
+        var projection:Object = org.flashNight.arki.map.MapDomainBridge.getProjection();
+        if(projection == undefined || projection.autoAccept == undefined) return undefined;
+        return projection.autoAccept[taskId];
+    }
+
     public static function canAutoAcceptNextAtFinishNpc(finishedTaskData:Object, nextTaskData:Object):Boolean{
-        var pair:Object = org.flashNight.arki.map.MapDomainBridge.getProjection().autoAccept[String(finishedTaskData.id)];
-        return pair.allowed === true && String(pair.nextTaskId) == String(nextTaskData.id);
+        var pair:Object = autoAcceptPair(String(finishedTaskData.id));
+        return pair != undefined && pair.allowed === true && String(pair.nextTaskId) == String(nextTaskData.id);
     }
 
     /** 奖励提交后再取事实；class 闭包不依附被卸载的 asLoader 帧。 */
@@ -55,8 +70,8 @@ class org.flashNight.arki.task.TaskUtil{
         org.flashNight.arki.map.MapDomainBridge.snapshot(function(ok:Boolean, error:String):Void {
             if (!ok || epoch != org.flashNight.arki.map.MapDomainBridge.getSceneEpoch()
                     || !org.flashNight.arki.map.MapDomainBridge.isCurrent()) return;
-            var pair:Object = org.flashNight.arki.map.MapDomainBridge.getProjection().autoAccept[finishedTaskId];
-            if (pair.allowed !== true || pair.nextTaskId == undefined) return;
+            var pair:Object = autoAcceptPair(finishedTaskId);
+            if (pair == undefined || pair.allowed !== true || pair.nextTaskId == undefined) return;
             var nextId:String = String(pair.nextTaskId);
             if (org.flashNight.arki.task.TaskUtil.canAutoAcceptNextAtFinishNpc(
                     org.flashNight.arki.task.TaskUtil.getRawTaskData(finishedTaskId),
@@ -84,7 +99,8 @@ class org.flashNight.arki.task.TaskUtil{
             taskData.priority = Number(taskData.priority);
             if(isNaN(taskData.priority)) taskData.priority = 0;
             // 分解chain
-            taskData.chain = taskData.chain.split("#");
+            // 增量热重载会拿已解析过的缓存文档再走一遍，chain 此时已是数组。
+            if(typeof taskData.chain == "string") taskData.chain = taskData.chain.split("#");
             var chainName = taskData.chain[0];
             if(taskData.chain[1]){
                 taskData.chain[1] = Number(taskData.chain[1]);

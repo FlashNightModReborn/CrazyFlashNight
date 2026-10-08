@@ -11,9 +11,8 @@ namespace CF7Launcher.Tasks
     {
         public const string Panel = "map-workbench", Domain = "map_workbench";
         private readonly MapAuthoringStore store;
-        private readonly MapRuntimeContent content;
         private readonly MapDomainTask domain;
-        public MapWorkbenchTask(string root, MapRuntimeContent content = null, MapDomainTask domain = null) { store = new MapAuthoringStore(root); this.content = content; this.domain = domain; }
+        public MapWorkbenchTask(string root, MapDomainTask domain = null) { store = new MapAuthoringStore(root); this.domain = domain; }
         public static bool TryReadRequest(string json, string activePanel, string activeInstance, out JObject message, out JObject request)
         {
             message = null; request = null;
@@ -61,7 +60,8 @@ namespace CF7Launcher.Tasks
                     result = new JObject { ["facts"] = await domain.CaptureAsync((JArray)request["taskIds"]).ConfigureAwait(false), ["capturedAtUtc"] = DateTime.UtcNow.ToString("O") };
                 }
                 else result = await Task.Run(() => store.Execute(request)).ConfigureAwait(false);
-                if (content != null) result["runtime"] = new JObject { ["definitionDigest"] = content.DefinitionDigest, ["contentDigest"] = content.ContentDigest, ["taskDigest"] = content.Catalog.Digest };
+                var runtime = domain?.Content;
+                if (runtime != null) result["runtime"] = new JObject { ["definitionDigest"] = runtime.DefinitionDigest, ["contentDigest"] = runtime.ContentDigest, ["taskDigest"] = runtime.Catalog.Digest };
                 return new JObject { ["success"] = true, ["data"] = result };
             }
             catch (Exception ex) { return new JObject { ["success"] = false, ["error"] = ex.Message }; }

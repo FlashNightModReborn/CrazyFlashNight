@@ -55,6 +55,35 @@ namespace CF7Launcher.Tests.Tasks
             Assert.False(domain.Process(Request(second), 2, () => true, _ => false).Value<bool>("success"));
         }
         [Fact]
+        public void TaskSyncHotReloadsCatalogOnlyAndRotatesSession()
+        {
+            using var domain = new MapDomainTask(content, root); var hello = Hello(domain);
+            var idle = domain.Process(JObject.Parse("{version:2,op:'task_sync'}"), 1, () => true);
+            Assert.True(idle.Value<bool>("success"));
+            Assert.False(idle["result"].Value<bool>("changed"));
+            Assert.Equal((string)hello["sessionToken"], (string)Hello(domain)["sessionToken"]);
+            File.WriteAllText(Path.Combine(root, "data/task/test.json"),
+                "{tasks:[{id:1,title:'先交付',chain:'主线#1',get_npc:'甲',finish_npc:'甲',finish_npc_hotspot:'home'}," +
+                "{id:2,title:'后交付',chain:'主线#2',get_npc:'甲',finish_npc:'甲',finish_npc_hotspot:'yard'}," +
+                "{id:3,title:'跟随',chain:'支线#1',get_endpoint:{mode:'followCurrent',npcId:'person'},finish_endpoint:{mode:'followCurrent',npcId:'person'}}," +
+                "{id:4,title:'终端委托',chain:'委托#1',get_npc:'甲',finish_npc:'甲',get_npc_hotspot:'home',finish_npc_hotspot:'home'}]}");
+            var sync = domain.Process(JObject.Parse("{version:2,op:'task_sync'}"), 1, () => true);
+            Assert.True(sync.Value<bool>("success"));
+            Assert.True(sync["result"].Value<bool>("changed"));
+            Assert.False(sync["result"].Value<bool>("listChanged"));
+            Assert.Equal(new[] { "data/task/test.json" }, ((JArray)sync["result"]["changedFiles"]).Select(x => (string)x).ToArray());
+            var bootstrap = (JObject)sync["result"]["bootstrap"];
+            Assert.Equal((string)hello["definitionDigest"], (string)bootstrap["definitionDigest"]);
+            Assert.NotEqual((string)hello["contentDigest"], (string)bootstrap["contentDigest"]);
+            Assert.NotEqual((string)hello["sessionToken"], (string)bootstrap["sessionToken"]);
+            Assert.Contains("4", ((JArray)bootstrap["taskIds"]).Select(x => (string)x));
+            // 旧会话随内容交换作废；用宿主回传的新身份继续投影。
+            Assert.Equal("invalid_session", (string)domain.Process(Request(hello), 1, () => true)["error"]);
+            var next = Request(hello); next["sessionToken"] = bootstrap["sessionToken"]; next["contentDigest"] = bootstrap["contentDigest"];
+            Assert.True(domain.Process(next, 1, () => true).Value<bool>("success"));
+            Assert.Equal(content.DefinitionDigest, domain.Content.DefinitionDigest);
+        }
+        [Fact]
         public void RevisionRejectsOldOrReusedDifferentFactsAndReadyIsPartOfDigest()
         {
             using var domain = new MapDomainTask(content); var hello = Hello(domain); var request = Request(hello, 2, 3);
