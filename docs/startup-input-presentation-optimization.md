@@ -197,3 +197,9 @@ C# 执行门最初未通过：定向回归在测试宿主连接阶段按原 90 �
 新源码已超出首次人验候选，后续正式产物须取得本轮请求和共识。发布前只读观察显示屏幕 Off，不自动唤醒、不改原持续资格断言；旧候选的持续资格继续是其自身证据，不改签给新 identity/closure。完整机器供应链与政策验证可继续无人值守，玩家播报视觉、物理矩阵和 MPO 仍保留人验边界。
 
 合并与修复后的 canonical 全量 Host 为 6810 项通过、11 项条件跳过、0 失败，真实 serial marker 一次。首轮 release prepare 重新派生全部资产后，仅 `launcher/data/save_repair_dict.json` 因远端新增装备/发型而与旧 tree 不符，按原门禁失败关闭；将生成器的语义增量纳入本批，再对最终提交树复跑，不手工改字典或读取玩家存档。prepare 的 npm 审计提示保留，不自动升级依赖或执行强制修复。
+
+首趟 v1 已推送源码 `682c01bef3` 与一次性 tag，取得本地 X509 candidate；final-tree Host 仍为 6810/11/0，测试与候选 Core 字节一致。production policy 47 项中有两项真实失败：材料索引 sidecar 仍绑定旧的 items/crafting list 字节，商店头像凭据仍绑定 CRLF shop list，而 Git canonical source 为 LF。未触发云端、未替换正式 runtime。v1 tag/request/candidate/失败 receipt 与源副本保留，不能覆写或转称成功。
+
+材料 sidecar 由原生成器重生，运行字典 XML 字节未变。商店清单由当前 LF 精确还原 CRLF 后，大小 1519 与旧 SHA-256 完全吻合；新增显式 opt-in 只允许这种逐字节等价证明，默认仍拒绝 list 漂移，身份/顺序/数量/排除项/路径/内容/其他空白/反向与混合换行负例均保留。刷新仍复用完整渲染输入、工具、图片与 receipt validator，按原生成器更新商品来源与凭据，不改验证器或放宽断言。7 组纯字节回归通过，首次夹具将“未变 CRLF”误当成逆向转换的失败记录保留；37 个画像入口/36 个 subject 文件及 runtime manifest 均通过现有资产门，36 张图片和 manifest 的逐项哈希与原件一致。后续使用全新的 v2 tag/request 和政策回执，不借 v1 失败列车代签。
+
+字典构建工具的锁定开发依赖审计另保留 9 项告警（含 2 项 critical），不新增游戏运行依赖；本轮未启测试 UI/dev server，也没有强制依赖升级。该维护债不以本轮供应链门通过宣称已解决。

@@ -41,8 +41,8 @@
   "activeShopSource": {
     "list": {
       "path": "data/shops/list.xml",
-      "sha256": "dcd66ea71b1262f9ef7da54a932c42e92d45b54a899b588dc1b6706015e5a5e0",
-      "bytes": 1519
+      "sha256": "6cb1a2a61c9d45caa8ffd4750707b5e71f2a7357ced955c493040ddca1ded6f0",
+      "bytes": 1478
     },
     "listedCount": 38,
     "activeCount": 37,
@@ -112,8 +112,8 @@
       },
       {
         "path": "data/shops/npcs/前治安官.json",
-        "sha256": "fa97c9cdd112ff560270bf2d54d69377a925fd10f299bf854c50851997f06848",
-        "bytes": 1058
+        "sha256": "773f0abd21ba7b5a94eeac3b1c5091a1c4b1ec0faca12ec1ec142f668a28a8b4",
+        "bytes": 1412
       },
       {
         "path": "data/shops/npcs/学生妹.json",
@@ -1166,6 +1166,22 @@
         },
         "sha256": "a874393fff7c81f38717eb5df9e03c0ac50d74fc311a428bd3e38ac4cf50d32f"
       }
+    }
+  },
+  "shopSourceRefresh": {
+    "mode": "shop-id-metadata-only",
+    "tool": {
+      "path": "tools/refresh-shop-portrait-sources.py",
+      "sha256": "b4c42bf43d7b393fd17a1ee80f33ab8c9b75f3e00840ca24bc61cdab75ca4d6d",
+      "bytes": 9959
+    },
+    "previousActiveSourceSha256": "07bfab034eec6d5154e12ce8bd9054ae3576adb4cc895b88744be5825b2d8cac",
+    "listEolNormalization": {
+      "mode": "crlf-to-lf-byte-equivalence",
+      "previousSha256": "dcd66ea71b1262f9ef7da54a932c42e92d45b54a899b588dc1b6706015e5a5e0",
+      "previousBytes": 1519,
+      "canonicalSha256": "6cb1a2a61c9d45caa8ffd4750707b5e71f2a7357ced955c493040ddca1ded6f0",
+      "canonicalBytes": 1478
     }
   }
 }
