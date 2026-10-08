@@ -2825,15 +2825,6 @@ class Program
             commandRouter.CancelAllPanelNavigationIntents(
                 "host_shutdown");
             sceneTransition.Dispose();
-            // AI 终端 exe：仅当 7077 实例确为本游戏拉起（--embedded）时被后端接受退出；
-            // standalone 实例回 409，用户手动启动的进程不受影响。
-            try { ragTerminalService.ShutdownEmbeddedOnExit(); }
-            catch (Exception ex)
-            {
-                LogManager.Log(
-                    "[RagTerminal] shutdown on exit failed: "
-                    + ex.GetType().Name + ": " + ex.Message);
-            }
             // 顺序敏感: 这两步必须最前。
             // 1) 卸全局低级鼠标 hook —— UI 线程接下来要被 KillFlash WaitForExit 阻塞数秒,
             //    hook 还挂着的话全系统鼠标消息都要排队走它的回调, 光标视觉延迟显著。
@@ -2855,6 +2846,18 @@ class Program
             HideOverlayForm(playerInfoSurface);
             HideOverlayForm(hnOverlay);
             HideOverlayForm(backdrop);
+
+            // AI 终端 exe：仅当 7077 实例确为本游戏拉起（--embedded）时被后端接受退出；
+            // standalone 实例回 409，用户手动启动的进程不受影响。
+            // 必须排在上面「顺序敏感」两步与 overlay Hide 之后：这是最长 1.5 秒的同步 HTTP 等待，
+            // 早于卸鼠标钩子会让全系统鼠标消息多排队 1.5 秒。此处 UI 已全部隐藏，等待不可见。
+            try { ragTerminalService.ShutdownEmbeddedOnExit(); }
+            catch (Exception ex)
+            {
+                LogManager.Log(
+                    "[RagTerminal] shutdown on exit failed: "
+                    + ex.GetType().Name + ": " + ex.Message);
+            }
 
             audioSocketPublisher.Dispose();
             if (audioQualificationStimulusHost != null)

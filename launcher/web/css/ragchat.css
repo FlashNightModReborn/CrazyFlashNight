@@ -3,7 +3,7 @@
 .ragchat-panel{position:absolute;inset:0;overflow:hidden;background:var(--ragchat-bg);color:var(--ragchat-text);font-family:"Microsoft YaHei",sans-serif}
 .ragchat-stage{position:absolute;inset:0;background:var(--ragchat-frame-bg)}
 .ragchat-stage *{box-sizing:border-box}
-.ragchat-close-btn{position:absolute;top:19px;right:10px;z-index:3;width:34px;height:34px;padding:0;cursor:pointer;display:flex;align-items:center;justify-content:center;background-color:transparent;border:1px solid var(--ragchat-button-frame);border-radius:0;color:var(--ragchat-button-text);font:500 18px/1 "Segoe UI",sans-serif;transition:background-color .12s ease;
+.ragchat-close-btn{position:absolute;top:19px;right:10px;z-index:3;width:34px;height:34px;padding:0;cursor:pointer;display:flex;align-items:center;justify-content:center;background-color:transparent;border:1px solid var(--ragchat-button-frame);border-radius:0;color:var(--ragchat-button-text);font:500 18px/1 "Segoe UI",sans-serif;transition:var(--ragchat-close-transition);
   background-origin:border-box;background-repeat:no-repeat;
   background-image:
     linear-gradient(var(--ragchat-button-frame),var(--ragchat-button-frame)),
