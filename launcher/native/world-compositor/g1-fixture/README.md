@@ -3,6 +3,16 @@
 本入口使用生产发送端、生产 Controller 续接、真实 broker/DLL 与 Windows 队列；目标是原生测试窗，**不是实际 Flash 游戏**。
 桌面刺激须串行执行；每轮独立 run/evidence 目录保留，不按进程名杀其他 broker，不删除历史证据。
 
+`G1Host.csproj` 直接引用当前 Core 工程，不再维护生产源码的逐文件副本清单。只检查托管编译和隔离目录依赖时使用：
+
+```powershell
+powershell -NoProfile -ExecutionPolicy Bypass -File launcher/native/world-compositor/g1-fixture/run.ps1 -ManagedBuildOnly
+```
+
+该模式使用 exact SDK，复制完整托管输出并要求 Core DLL 存在；不构建原生模块、不启动夹具、不注入输入。
+`G1_MANAGED_BUILD_ONLY` 给出本轮独立目录。编译和依赖齐备不证明 Windows 队列、捕获或实际输入已通过，历史运行回执也不代签新 Core。
+以下命令会执行桌面刺激，须具备相应运行授权和环境：
+
 ```powershell
 powershell -NoProfile -ExecutionPolicy Bypass -File launcher/native/world-compositor/build-dev.ps1 -Target selftest
 powershell -NoProfile -ExecutionPolicy Bypass -File launcher/native/world-compositor/g1-fixture/run.ps1 -Mode queue

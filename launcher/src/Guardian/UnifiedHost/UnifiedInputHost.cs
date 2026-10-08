@@ -253,6 +253,9 @@ internal sealed partial class UnifiedInputHost : Form
         Log("source_topology", new { source = sourceHwnd, sourcePid = capturePid, flash = child, flashPid = flash.Id, output = Handle, outputPid = Environment.ProcessId, crossProcessParent = !independentSource });
         Send("CANCEL"); await Receive("CANCELLED");
         compositionScene = CompositionSceneHost.Create(Handle); Check("one_composition_scene_created", true);
+        ProbeStartVisual = compositionScene.GetRequiredExport<StartVisualDelegate>("ProbeStartVisual");
+        ProbeStop = compositionScene.GetRequiredExport<StopDelegate>("ProbeStop");
+        ProbeGetStats = compositionScene.GetRequiredExport<ReadDelegate>("ProbeGetStats");
         IntPtr worldVisual = compositionScene.AcquireVisual(0);
         try { capture = ProbeStartVisual(sourceHwnd, capturePid, Handle, worldVisual); }
         finally { if (worldVisual != IntPtr.Zero) Marshal.Release(worldVisual); }
@@ -414,9 +417,12 @@ internal sealed partial class UnifiedInputHost : Form
         stream?.Dispose(); listener.Stop();
         if (flash is { HasExited: false }) { flash.Kill(); flash.WaitForExit(5000); } flash?.Dispose(); sourceRoot.Dispose();
     }
-    [DllImport("FlashCompositorNative.dll", CallingConvention = CallingConvention.Cdecl)] private static extern IntPtr ProbeStartVisual(IntPtr source, uint pid, IntPtr output, IntPtr visual);
-    [DllImport("FlashCompositorNative.dll", CallingConvention = CallingConvention.Cdecl)] private static extern void ProbeStop(IntPtr handle);
-    [DllImport("FlashCompositorNative.dll", CallingConvention = CallingConvention.Cdecl)] private static extern int ProbeGetStats(IntPtr handle, ref NativeCompositorSession.Stats stats);
+    [UnmanagedFunctionPointer(CallingConvention.Cdecl)] private delegate IntPtr StartVisualDelegate(IntPtr source, uint pid, IntPtr output, IntPtr visual);
+    [UnmanagedFunctionPointer(CallingConvention.Cdecl)] private delegate void StopDelegate(IntPtr handle);
+    [UnmanagedFunctionPointer(CallingConvention.Cdecl)] private delegate int ReadDelegate(IntPtr handle, ref NativeCompositorSession.Stats stats);
+    private StartVisualDelegate ProbeStartVisual = null!;
+    private StopDelegate ProbeStop = null!;
+    private ReadDelegate ProbeGetStats = null!;
     [DllImport("user32.dll")] private static extern IntPtr GetForegroundWindow();
     [DllImport("user32.dll")] private static extern bool EnableWindow(IntPtr window, bool enable);
     [DllImport("user32.dll")] private static extern bool IsWindowEnabled(IntPtr window);

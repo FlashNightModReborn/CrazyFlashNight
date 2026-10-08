@@ -41,6 +41,15 @@ struct ProbeWorkStats {
     uint32_t size, reserved;
     uint64_t compositions, lightDraws, lightCacheHits, fxUploads;
 };
+// Last 256 successful submissions. Intervals exclude deliberate idle/hold;
+// submission timestamps are not physical scanout or a measurement of DWM/MPO.
+struct ProbeTimingStats {
+    uint32_t size,count,intervalCount,freshCount;
+    uint64_t presented;
+    double lastPresentQpcMs,intervalP50Ms,intervalP95Ms,intervalP99Ms,intervalMaxMs;
+    double submitP95Ms,presentP95Ms,freshAgeP95Ms;
+};
+static_assert(sizeof(ProbeTimingStats)==88,"Presentation timing diagnostic layout");
 struct ProbeSceneLightStats {
     uint32_t size,count,width,height;
     uint64_t builds,cacheHits,updates;
@@ -59,6 +68,7 @@ __declspec(dllexport) void* __cdecl ProbeStartWorld(HWND source, DWORD sourcePid
 // stop this capture before retiring its scene. This entry's signature is
 // unchanged from ABI 3; new visual style exports require paired ABI 5 binaries.
 __declspec(dllexport) void* __cdecl ProbeStartVisual(HWND source, DWORD sourcePid, HWND output, IUnknown* visual);
+__declspec(dllexport) void* __cdecl ProbeStartWorldVisual(HWND source, DWORD sourcePid, HWND output, uint32_t vendor, int borderless, IUnknown* visual);
 __declspec(dllexport) int __cdecl ProbeRequestBorderless();
 __declspec(dllexport) int __cdecl ProbeSetMatrix(void* handle, const float* settings);
 // lut-set-v1：上传 32^3 RGBA8
@@ -126,6 +136,7 @@ __declspec(dllexport) void __cdecl ProbeRequestContentProof(void* handle);
 __declspec(dllexport) int __cdecl ProbeGetContentStats(void* handle, ProbeContentStats* stats);
 __declspec(dllexport) int __cdecl ProbeGetStats(void* handle, ProbeStats* stats);
 __declspec(dllexport) int __cdecl ProbeGetWorkStats(void* handle, ProbeWorkStats* stats);
+__declspec(dllexport) int __cdecl ProbeGetTimingStats(void* handle, ProbeTimingStats* stats);
 // New paired hosts require actual WGC content size.
 __declspec(dllexport) int __cdecl ProbeGetCaptureSize(void* handle, int32_t* width, int32_t* height, uint64_t* generation);
 // Diagnostic scene geometry: dimensions of the last successfully presented output.

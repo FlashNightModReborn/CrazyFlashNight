@@ -37,6 +37,8 @@ namespace CF7Launcher.Tests.Diagnostic
             int calls = 0;
             FocusTrace.StartConfigured(true, _root);
             string session = FocusTrace.Session;
+            string performance = "{\"phase\":\"fixture.first_startup\"}\n";
+            File.WriteAllText(Path.Combine(_root, "logs", "perf-latest.jsonl"), performance);
             FocusTrace.Record("fixture.before_exit");
             FocusTrace.Shutdown(info => { invocation = info; calls++; });
             FocusTrace.Shutdown(_ => calls++);
@@ -51,12 +53,15 @@ namespace CF7Launcher.Tests.Diagnostic
             Assert.Equal("stopped", (string)context["status"]);
             Assert.Equal(session, (string)context["session"]);
             string frozen = File.ReadAllText(Path.Combine(snapshot, "focus-trace.log"));
+            Assert.Equal(performance, File.ReadAllText(Path.Combine(snapshot, "perf-latest.jsonl")));
             Assert.Contains("fixture.before_exit", frozen);
             Assert.Contains("trace.stop", frozen);
             FocusTrace.StartConfigured(true, _root);
+            File.WriteAllText(Path.Combine(_root, "logs", "perf-latest.jsonl"), "second startup");
             FocusTrace.Record("fixture.next_game");
             FocusTrace.Stop();
             Assert.Equal(frozen, File.ReadAllText(Path.Combine(snapshot, "focus-trace.log")));
+            Assert.Equal(performance, File.ReadAllText(Path.Combine(snapshot, "perf-latest.jsonl")));
         }
 
         [Fact]

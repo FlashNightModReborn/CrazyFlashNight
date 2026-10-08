@@ -1,11 +1,12 @@
 using System;
+using System.Diagnostics;
 
 namespace CF7Launcher.Guardian
 {
     /// <summary>
     /// 线程安全的 FPS 环形缓冲。
     ///
-    /// 写入：socket 线程（FrameTask.HandleRaw），频率 0.25-1 Hz
+    /// 写入：socket 线程（FrameTask.HandleRaw），约 500ms 一个样本
     /// 读取：UI 线程（NativeHud NotchWidget 渲染循环），频率 ~60 Hz
     ///
     /// 使用 lock 保护——写入极低频，竞争可忽略。
@@ -15,6 +16,9 @@ namespace CF7Launcher.Guardian
     {
         private readonly float[] _data;
         private readonly object _lock = new object();
+        private readonly Func<double> _nowMs;
+        private double _lastSampleMs = double.NegativeInfinity;
+        public const double FreshSampleLimitMs = 2000;
         private int _head;
         private int _count;
         private float _sum;
@@ -26,8 +30,12 @@ namespace CF7Launcher.Guardian
         private int _samplesAfterReset; // 场景重置后的有效样本计数
         private int _sceneEpoch;       // AS2 场景计数器（检测变化触发 warmup）
 
-        public FpsRingBuffer(int capacity)
+        public FpsRingBuffer(int capacity) : this(capacity,
+            () => Stopwatch.GetTimestamp() * 1000.0 / Stopwatch.Frequency) { }
+
+        internal FpsRingBuffer(int capacity, Func<double> nowMs)
         {
+            _nowMs = nowMs ?? throw new ArgumentNullException(nameof(nowMs));
             if (capacity <= 0) capacity = 600;
             _data = new float[capacity];
             _head = 0;
@@ -58,6 +66,7 @@ namespace CF7Launcher.Guardian
                 if (_count < _data.Length) _count++;
                 _sum += fps;
                 _hasData = true;
+                _lastSampleMs = _nowMs();
                 _samplesAfterReset++;
 
                 if (wasEmpty)
@@ -100,6 +109,18 @@ namespace CF7Launcher.Guardian
         }
 
         public bool HasData { get { lock (_lock) { return _hasData; } } }
+        public double SampleAgeMs
+        {
+            get
+            {
+                lock (_lock)
+                {
+                    double age = _hasData ? _nowMs() - _lastSampleMs : double.PositiveInfinity;
+                    return age >= 0 ? age : double.PositiveInfinity;
+                }
+            }
+        }
+        public bool HasFreshSample => SampleAgeMs < FreshSampleLimitMs;
         public int Count { get { lock (_lock) { return _count; } } }
         public int Capacity { get { return _data.Length; } }
 
@@ -167,7 +188,7 @@ namespace CF7Launcher.Guardian
         /// </summary>
         public void NotifySceneReset()
         {
-            lock (_lock) { _samplesAfterReset = 0; }
+            lock (_lock) { _samplesAfterReset = 0; _lastSampleMs = double.NegativeInfinity; }
         }
 
         public int SamplesAfterReset

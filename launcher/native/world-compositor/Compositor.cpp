@@ -13,6 +13,7 @@
 #include <winrt/Windows.Graphics.Capture.h>
 #include <winrt/Windows.Graphics.DirectX.Direct3D11.h>
 #include <algorithm>
+#include <array>
 #include <atomic>
 #include <chrono>
 #include <cstring>
@@ -187,6 +188,36 @@ public:
     void RequestContentProof() { contentRequested_=true; proofRequested_=true; }
     void ContentStats(ProbeContentStats& result) { std::lock_guard guard(mutex_); result=contentStats_; }
     void WorkStats(ProbeWorkStats& result) { std::lock_guard guard(mutex_); result=workStats_; }
+    void TimingStats(ProbeTimingStats& result) {
+        std::array<TimingSample,256> samples;
+        size_t count;
+        {
+            std::lock_guard guard(mutex_);
+            samples=timingSamples_;count=timingCount_;
+            result={sizeof(ProbeTimingStats)};
+            result.count=static_cast<uint32_t>(count);result.presented=stats_.presented;
+            result.lastPresentQpcMs=count ? samples[(timingNext_+255)%256].at : 0;
+        }
+        std::array<double,256> values;
+        auto percentile=[&](double TimingSample::* field,double rank) {
+            size_t size=0;
+            for(size_t i=0;i<count;i++)if(samples[i].*field>=0)values[size++]=samples[i].*field;
+            if(size==0)return 0.;
+            std::sort(values.begin(),values.begin()+size);
+            return values[static_cast<size_t>(std::ceil(rank*static_cast<double>(size)))-1];
+        };
+        for(size_t i=0;i<count;i++) {
+            result.intervalCount+=samples[i].interval>=0?1:0;
+            result.freshCount+=samples[i].age>=0?1:0;
+        }
+        result.intervalP50Ms=percentile(&TimingSample::interval,.5);
+        result.intervalP95Ms=percentile(&TimingSample::interval,.95);
+        result.intervalP99Ms=percentile(&TimingSample::interval,.99);
+        result.intervalMaxMs=percentile(&TimingSample::interval,1.);
+        result.submitP95Ms=percentile(&TimingSample::submit,.95);
+        result.presentP95Ms=percentile(&TimingSample::present,.95);
+        result.freshAgeP95Ms=percentile(&TimingSample::age,.95);
+    }
     void SceneLightStats(ProbeSceneLightStats& result) { std::lock_guard guard(mutex_); result=sceneLightStats_; }
     bool SceneLights(const float* lights,int count,float response) {
         if(count<0 || count>SceneLightCap || (count>0 && !lights) || !std::isfinite(response) || response<0 || response>.8f)return false;
@@ -673,6 +704,7 @@ private:
         float atmosphereTime = 0;
         double lastAtmosphereDrawMs = 0;
         auto nextPresent = std::chrono::steady_clock::now();
+        double previousTimingPresent=0;
         bool lightCacheValid=false,fxItemsDirty=true;
         int cachedLightCount=0;
         uint64_t cachedLightGeneration=0;
@@ -680,6 +712,7 @@ private:
         State(1, S_OK, L"GPU display path; optional diagnostic readback");
         while (!stop_) {
             if (!active_) {
+                previousTimingPresent=0;
                 lightCacheValid=false;
                 if (session) { session.Close(); session=nullptr; }
                 arrived.revoke();
@@ -743,6 +776,7 @@ private:
             }
             std::unique_lock presentation(presentationMutex_);
             if (viewportHeld_) {
+                previousTimingPresent=0;
                 // Geometry must remain observable while the host holds pixels
                 // for a resize. Waiting for a released frame here would deadlock
                 // the host's crop selection against Viewport() unholding us.
@@ -765,6 +799,7 @@ private:
                     && !bulletsOn && appliedRay==rayVersion && rayFrame.count==0
                     && appliedFx==fxVersion && appliedFxAtlas==fxAtlasVersion && !fxOn
                     && sceneGpu.version==observedSceneLightVersion))) {
+                previousTimingPresent=0;
                 presentation.unlock();
                 std::unique_lock lock(waitMutex_);
                 wake_.wait_for(lock,std::chrono::milliseconds(100),[this,observedWake] { return stop_.load() || wakeVersion_.load()!=observedWake; });
@@ -1149,7 +1184,14 @@ private:
             {
                 std::lock_guard guard(mutex_);
                 stats_.received += fresh ? 1 + drained : 0; stats_.superseded += drained;
-                if (present == S_OK) { ++stats_.presented; presentedOutputW_=w; presentedOutputH_=h; }
+                if (present == S_OK) {
+                    ++stats_.presented; presentedOutputW_=w; presentedOutputH_=h;
+                    timingSamples_[timingNext_]={previousTimingPresent>0 ? end-previousTimingPresent : -1,
+                        submit-start,end-presentStart,fresh ? std::max(0.,start-frameQpcMs) : -1,end};
+                    timingNext_=(timingNext_+1)%timingSamples_.size();
+                    timingCount_=std::min(timingCount_+1,timingSamples_.size());
+                    previousTimingPresent=end;
+                } else previousTimingPresent=0;
                 stats_.width = textureW; stats_.height = textureH;
                 if (fresh) {
                     stats_.ageMs = start - frameQpcMs;
@@ -1314,6 +1356,9 @@ private:
     uint64_t captureGeneration_=0;
     std::thread worker_; std::mutex mutex_; ProbeStats stats_{};
     ProbeWorkStats workStats_{sizeof(ProbeWorkStats)};
+    struct TimingSample { double interval,submit,present,age,at; };
+    std::array<TimingSample,256> timingSamples_{};
+    size_t timingNext_=0,timingCount_=0;
     SceneLightState sceneLights_{};uint64_t sceneLightVersion_=0;
     ProbeSceneLightStats sceneLightStats_{sizeof(ProbeSceneLightStats)};
     RECT crop_{};
@@ -1359,6 +1404,10 @@ void* __cdecl ProbeStartVisual(HWND source, DWORD sourcePid, HWND output, IUnkno
     if (!visual) return nullptr;
     try { return new Capture(source, sourcePid, output, 0, 30, false, visual); } catch (...) { return nullptr; }
 }
+void* __cdecl ProbeStartWorldVisual(HWND source, DWORD sourcePid, HWND output, uint32_t vendor, int borderless, IUnknown* visual) {
+    if (!visual) return nullptr;
+    try { return new Capture(source, sourcePid, output, vendor, 30, borderless != 0, visual); } catch (...) { return nullptr; }
+}
 void* __cdecl ProbeStart(HWND source, DWORD sourcePid, HWND output, uint32_t vendor) {
     try { return new Capture(source, sourcePid, output, vendor); } catch (...) { return nullptr; }
 }
@@ -1392,6 +1441,10 @@ int __cdecl ProbeGetStats(void* handle, ProbeStats* stats) {
 int __cdecl ProbeGetWorkStats(void* handle, ProbeWorkStats* stats) {
     if(!handle || !stats || stats->size!=sizeof(ProbeWorkStats)) return 0;
     static_cast<Capture*>(handle)->WorkStats(*stats);return 1;
+}
+int __cdecl ProbeGetTimingStats(void* handle, ProbeTimingStats* stats) {
+    if(!handle || !stats || stats->size!=sizeof(ProbeTimingStats))return 0;
+    static_cast<Capture*>(handle)->TimingStats(*stats);return 1;
 }
 int __cdecl ProbeSetSceneLights(void* handle,const float* lights,int count,float response) {
     return handle && static_cast<Capture*>(handle)->SceneLights(lights,count,response)?1:0;

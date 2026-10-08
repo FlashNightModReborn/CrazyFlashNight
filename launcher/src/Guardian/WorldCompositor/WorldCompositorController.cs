@@ -31,6 +31,9 @@ namespace CF7Launcher.Guardian.WorldCompositor
         private readonly bool _bulletCandidateEnabled;
         private readonly Timer _timer = new Timer { Interval=33 };
         private NativeCompositorSession _native;
+        private CompositionSceneHost _compositionScene;
+        internal WorldRasterPresentation DamagePresentation { get; } = new WorldRasterPresentation();
+        private bool _compositionSceneCommitted;
         private WorldCompositionSurface _surface;
         private WorldOverlayOrder _overlayOrder;
         private readonly IEnumerable<OverlayBase> _overlays;
@@ -294,6 +297,7 @@ namespace CF7Launcher.Guardian.WorldCompositor
             }
             _inputEpochLimit=inputEpochLimit;
             _owner=owner; _anchor=anchor; _getFlash=getFlash; _canPresent=canPresent; _notify=notify; _shouldPrepare=shouldPrepare;
+            DamagePresentation.Faulted += error => EnterRenderFault("shared_raster", error);
             _setRenderScale=setRenderScale; _focusFlash=focusFlash;
             _bulletCatalog=bulletCatalog;
             _combatFxCatalog=combatFxCatalog;
@@ -385,7 +389,11 @@ namespace CF7Launcher.Guardian.WorldCompositor
                     _overlayOrder=new WorldOverlayOrder(_owner,_surface,_overlays,CanShow);
                     BindInput(_pointerBridge,_surface);
                     _surface.CreateControl();
-                    _native=new NativeCompositorSession(module,_owner.Handle,(uint)Environment.ProcessId,_surface.Handle,0,_borderless);
+                    _compositionScene=CompositionSceneHost.Create(_surface.Handle,module);
+                    _compositionSceneCommitted=false;
+                    IntPtr worldVisual=_compositionScene.AcquireVisual(0);
+                    try { _native=new NativeCompositorSession(module,_owner.Handle,(uint)Environment.ProcessId,_surface.Handle,0,_borderless,worldVisual); }
+                    finally { Marshal.Release(worldVisual); }
                     _bulletStylesReady=false;
                     _combatFxResourcesReady=false;
                     if (_combatFxCatalog!=null) {
@@ -431,6 +439,7 @@ namespace CF7Launcher.Guardian.WorldCompositor
                     if (!show) _surface.Hide();
                 }
                 if (!_active) {
+                    DamagePresentation.Adopt(_compositionScene, Rectangle.Empty, false);
                     _schedulingAllowed=false;
                     if (_frame==null && NowMs()-_startedMs>10000) throw new TimeoutException("未收到配套 AS2 光照状态，请检查 asLoader 构建");
                     return;
@@ -522,6 +531,12 @@ namespace CF7Launcher.Guardian.WorldCompositor
                     _lighting.WaitingForCapture, _frame?.Scene ?? 0, _lighting.ReadyScene);
                 PublishRayCapability(projectileReady);
                 if (ready && !_surface.Visible) { _surface.Show(); PlaceBelowHud(); PresentationShown?.Invoke(); _surface.RefreshPointer(); }
+                DamagePresentation.Adopt(_compositionScene,
+                    new Rectangle(_surface.PointToScreen(Point.Empty),_surface.ClientSize),ready && _surface.Visible);
+                if (!_compositionSceneCommitted && stats.Received>0) {
+                    _compositionScene.Commit();
+                    _compositionSceneCommitted=true;
+                }
                 if (ready && !_weatherCapabilityAdvertised && NowMs()-_lastWeatherCapAttemptMs>=500) {
                     _lastWeatherCapAttemptMs=NowMs();
                     try { _weatherCapabilityAdvertised=WeatherCapabilityChanged?.Invoke(true)==true; }
@@ -550,6 +565,18 @@ namespace CF7Launcher.Guardian.WorldCompositor
                 if (!ready && NowMs()-Math.Max(_startedMs,_requiredFrameMs)>10000) throw new TimeoutException("世界捕获没有恢复有效画面");
                 if (NowMs()-_lastLogMs>1000) {
                     _lastLogMs=NowMs();
+                    var timing=CF7Launcher.Diagnostic.FocusTrace.Enabled ? _native.ReadTiming() : null;
+                    if(timing.HasValue) {
+                        var sample=timing.Value;
+                        CF7Launcher.Diagnostic.FocusTrace.Record("world.presentation_timing",new {
+                            scene=_frame?.Scene,ready,advancing,sourceFrameAgeMs=stats.LastFrameQpcMs>0 ? NowMs()-stats.LastFrameQpcMs : -1,
+                            presented=sample.Presented,count=sample.Count,intervalCount=sample.IntervalCount,freshCount=sample.FreshCount,
+                            lastPresentAgeMs=sample.LastPresentQpcMs>0 ? NowMs()-sample.LastPresentQpcMs : -1,
+                            intervalP50Ms=sample.IntervalP50Ms,intervalP95Ms=sample.IntervalP95Ms,intervalP99Ms=sample.IntervalP99Ms,
+                            intervalMaxMs=sample.IntervalMaxMs,submitP95Ms=sample.SubmitP95Ms,presentP95Ms=sample.PresentP95Ms,
+                            freshAgeP95Ms=sample.FreshAgeP95Ms,physicalScanoutVerified=false,
+                            rasterUploads=DamagePresentation.Uploads,rasterUploadedBytes=DamagePresentation.UploadedBytes });
+                    }
                     LogManager.Log(string.Format(CultureInfo.InvariantCulture,
                         "event=world_compositor_frame received={0} presented={1} size={2}x{3} ageMs={4:F1} submitMs={5:F3} presentMs={6:F3} cpuReadbacks={7} adapter={8} light={9:F3} scale={10:F2} output={11}x{12} everReady={13} advancing={14} nativeState={15} captureGeneration={16} nativeStage={17}",
                         stats.Received,stats.Presented,stats.Width,stats.Height,stats.LastFrameQpcMs==0 ? -1 : NowMs()-stats.LastFrameQpcMs,stats.SubmitMs,stats.PresentMs,stats.CpuReadbacks,stats.Adapter,_lighting.LastReadyLight,_appliedScale,_surface.ClientSize.Width,_surface.ClientSize.Height,_everReady,_frameAdvancing,stats.State,_native.CaptureGeneration,stats.Message));
@@ -820,6 +847,7 @@ namespace CF7Launcher.Guardian.WorldCompositor
             _lastBulletCapAttemptMs=0;
             _lastBulletFrameLogTicks=0;
             _surface?.Hide();
+            DamagePresentation.Adopt(null, Rectangle.Empty, false);
             if (_weatherCapabilityAdvertised) {
                 _weatherCapabilityAdvertised=false;
                 try { WeatherCapabilityChanged?.Invoke(false); }
@@ -846,13 +874,21 @@ namespace CF7Launcher.Guardian.WorldCompositor
             _transitionGradeScene=0; _transitionPresentedScene=0; _transitionGradeSubmittedAt=0;
             _surface?.Hide();
             try { lock (_weatherCameraLock) { _native?.Dispose(); _native=null; } }
-            finally { _native=null; _overlayOrder?.Dispose(); _overlayOrder=null; _surface?.CancelPointer(); _surface?.Dispose(); _surface=null; if(_pointerBridge!=null)_retiringInput=_pointerBridge.CloseAsync(); _pointerBridge=null; _flash=IntPtr.Zero; }
+            finally {
+                _native=null;
+                try { _compositionScene?.Dispose(); }
+                finally {
+                    _compositionScene=null; _compositionSceneCommitted=false; _overlayOrder?.Dispose(); _overlayOrder=null; _surface?.CancelPointer(); _surface?.Dispose(); _surface=null;
+                    if(_pointerBridge!=null)_retiringInput=_pointerBridge.CloseAsync(); _pointerBridge=null; _flash=IntPtr.Zero;
+                }
+            }
         }
         public void Dispose()
         {
             // Owner teardown ends the game/socket lifetime. Attempt one final
             // synchronous revoke; do not create a detached retry worker.
             if (_disposed) return; _disposed=true; _timer.Stop(); StopCapture(); _timer.Dispose();
+            DamagePresentation.Dispose();
             _owner.LocationChanged-=OnGeometryChanged; _owner.SizeChanged-=OnGeometryChanged;
             _owner.DpiChanged-=OnDpiChanged; _owner.FormClosed-=OnClosed; _owner.Deactivate-=OnOwnerDeactivated;
             _anchor.SizeChanged-=OnGeometryChanged; _anchor.LocationChanged-=OnGeometryChanged;

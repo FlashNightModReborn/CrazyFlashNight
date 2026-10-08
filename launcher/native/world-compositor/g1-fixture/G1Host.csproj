@@ -1,8 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <!-- G1 工单夹具 Host/驱动进程（不进正式 runtime 闭包）。
-       与 perf/tooltip-parity 的 ParityCore 同一模式：直接编译 launcher/src 生产源文件，
-       因此桥发送路径是真实生产代码（NativePointerBridge/WorldCompositionSurface/
-       WorldCompositorController 原样编译），不是发送端替身。 -->
+       通过 ProjectReference 调用当前 Core 的真实输入/呈现实现，
+       不维护会随生产依赖增长而失效的重复源码链接清单。 -->
   <PropertyGroup>
     <TargetFramework>net10.0-windows</TargetFramework>
     <OutputType>Exe</OutputType>
@@ -19,17 +18,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="Program.cs" />
-    <!-- 生产源码（原样编译进夹具程序集；internal 成员同程序集直接可见） -->
-    <Compile Include="..\..\..\src\Guardian\LogManager.cs" />
-    <Compile Include="..\..\..\src\Guardian\RenderSchedule.cs" />
-    <Compile Include="..\..\..\src\Guardian\WorldCompositor\WorldPointerMapper.cs" />
-    <Compile Include="..\..\..\src\Guardian\WorldCompositor\NativePointerBridge.cs" />
-    <Compile Include="..\..\..\src\Guardian\WorldCompositor\WorldCompositionSurface.cs" />
-    <Compile Include="..\..\..\src\Guardian\WorldCompositor\WorldCompositorController.cs" />
-    <Compile Include="..\..\..\src\Guardian\WorldCompositor\NativeCompositorSession.cs" />
-    <Compile Include="..\..\..\src\Guardian\WorldCompositor\WorldColorMatrix.cs" />
-    <Compile Include="..\..\..\src\Guardian\WorldCompositor\WorldLightingFrame.cs" />
-    <Compile Include="..\..\..\src\Guardian\WorldCompositor\WorldLightingTransition.cs" />
+    <ProjectReference Include="..\..\..\CRAZYFLASHER7MercenaryEmpire.csproj" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Newtonsoft.Json" />

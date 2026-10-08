@@ -624,7 +624,7 @@ static bool ComputeFileSha256Hex(const wchar_t* path, char* outHex, size_t cch)
 
     HANDLE file = CreateFileW(path, GENERIC_READ,
         FILE_SHARE_READ,
-        NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
+        NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL | FILE_FLAG_SEQUENTIAL_SCAN, NULL);
     if (file == INVALID_HANDLE_VALUE) {
         Logf("ERROR", L"[manifest] cannot open for hash path=%s GetLastError=%lu", path, GetLastError());
         return false;
@@ -1248,14 +1248,6 @@ int WINAPI wWinMain(HINSTANCE, HINSTANCE, LPWSTR cmdLine, int)
         return ok ? 0 : 2;
     }
 
-    // Fail before runtime installation/UAC if the deployed atomic set is incomplete.
-    // A second check immediately before Core launch narrows the replacement window.
-    if (!PreflightCriticalFiles(exeDir)) {
-        return FatalExit(L"CF7-BOOT-FILE-INTEGRITY",
-            L"启动器关键文件缺失或损坏。\n\n请验证游戏文件完整性，或重新下载完整安装包。",
-            L"请先恢复完整的启动器与 runtime 文件集，再重试。");
-    }
-
     // 1. 检测 runtime（检查 ProgramFiles、LOCALAPPDATA、USERPROFILE\.dotnet、DOTNET_ROOT env）
     wchar_t foundVer[64] = { 0 };
     wchar_t foundRoot[MAX_PATH] = { 0 };
@@ -1263,6 +1255,13 @@ int WINAPI wWinMain(HINSTANCE, HINSTANCE, LPWSTR cmdLine, int)
     bool hasRuntime = IsRuntimeInstalled(foundVer, 64, foundRoot, MAX_PATH, &needSetEnv);
 
     if (!hasRuntime) {
+        // Installation/UAC must never precede full payload verification. An
+        // already-installed runtime needs only the full check before Core launch.
+        if (!PreflightCriticalFiles(exeDir)) {
+            return FatalExit(L"CF7-BOOT-FILE-INTEGRITY",
+                L"启动器关键文件缺失或损坏。\n\n请验证游戏文件完整性，或重新下载完整安装包。",
+                L"请先恢复完整的启动器与 runtime 文件集，再重试。");
+        }
         // 2. 用 glob 扫 tools\dotnet-runtime\windowsdesktop-runtime-10.*-win-x64.exe；
         //    版本 bump（10.0.8 → 10.0.9 → 10.1.x）不需要改源码 + 同步 build.ps1 / pack.config
         wchar_t installerGlob[MAX_PATH];
@@ -1358,8 +1357,6 @@ int WINAPI wWinMain(HINSTANCE, HINSTANCE, LPWSTR cmdLine, int)
         Logf("INFO", L"set DOTNET_ROOT_X64 / DOTNET_ROOT = %s (for Core inheritance)", foundRoot);
     }
 
-    ConfigureCoreCrashDumps(exeDir);
-
     // 运行时和游戏关键文件预检：只做诊断与 fail-fast，不尝试修复。
     if (!PreflightCriticalFiles(exeDir)) {
         return FatalExit(L"CF7-BOOT-FILE-INTEGRITY",
@@ -1368,6 +1365,8 @@ int WINAPI wWinMain(HINSTANCE, HINSTANCE, LPWSTR cmdLine, int)
             L"详细缺失项见 logs\\bootstrap.log 的 [preflight] 行。",
             L"请通过 Steam 验证游戏文件完整性；如果不是 Steam 版本，请重新解压完整安装包。");
     }
+
+    ConfigureCoreCrashDumps(exeDir);
 
     // 6. 启动 Core
     wchar_t corePath[MAX_PATH];

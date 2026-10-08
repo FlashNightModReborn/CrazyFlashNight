@@ -1,24 +1,36 @@
 [CmdletBinding()]
-param([Parameter(Mandatory=$true)][string]$NativeRoot,
+param([string]$NativeRoot,
     [ValidateSet('Raw','Direct','Cooperative')][string]$Mode='Raw',
     [switch]$BoundariesOnly,
-    [switch]$S1NegativeControl)
+    [switch]$S1NegativeControl,
+    [switch]$ManagedBuildOnly)
 $ErrorActionPreference='Stop'
 chcp.com 65001 | Out-Null
 $repo=[IO.Path]::GetFullPath((Join-Path $PSScriptRoot '../../../..'))
-$NativeRoot=[IO.Path]::GetFullPath($NativeRoot)
+if(-not $ManagedBuildOnly -and [string]::IsNullOrWhiteSpace($NativeRoot)){throw 'NativeRoot is required for fixture execution.'}
+if(-not [string]::IsNullOrWhiteSpace($NativeRoot)){$NativeRoot=[IO.Path]::GetFullPath($NativeRoot)}
 $movies=if($Mode -eq 'Cooperative'){@('CooperativeProbe.swf','CooperativeChild.swf')}else{@('HoverProbe.swf')}
-foreach($movie in $movies){if (-not (Test-Path -LiteralPath (Join-Path $PSScriptRoot $movie))) { throw ('Compile the explicit CS6 target first: '+$movie) }}
+if(-not $ManagedBuildOnly){
+    foreach($movie in $movies){if (-not (Test-Path -LiteralPath (Join-Path $PSScriptRoot $movie))) { throw ('Compile the explicit CS6 target first: '+$movie) }}
+}
 if($BoundariesOnly -and $Mode -ne 'Raw'){throw 'BoundariesOnly applies only to the raw oracle.'}
 if($S1NegativeControl -and $Mode -ne 'Cooperative'){throw 'S1NegativeControl requires Cooperative mode.'}
 . (Join-Path $repo 'launcher/resolve-dotnet.ps1')
 $dotnet=Resolve-Cf7Dotnet -ProjectRoot $repo
-$run=Join-Path $repo ('tmp/flash-hover-'+(Get-Date -Format 'yyyyMMdd-HHmmss-fff'))
+$run=Join-Path $repo ('tmp/flash-hover-'+(Get-Date -Format 'yyyyMMdd-HHmmss-fff')+'-'+[Guid]::NewGuid().ToString('N').Substring(0,8))
 $bin=Join-Path $run 'bin'
 $evidence=Join-Path $run 'evidence'
 New-Item -ItemType Directory -Force -Path $bin,$evidence | Out-Null
 & $dotnet build (Join-Path $PSScriptRoot 'FlashHoverHost.csproj') -c Release -o $bin --nologo
 if($LASTEXITCODE -ne 0){throw 'Fixture build failed'}
+if(-not (Test-Path -LiteralPath (Join-Path $bin 'CRAZYFLASHER7MercenaryEmpire.Core.dll') -PathType Leaf)){
+    throw 'Referenced Core is missing from the isolated fixture closure.'
+}
+if($ManagedBuildOnly){
+    Write-Host ('HOVER_MANAGED_BUILD_ONLY='+$bin)
+    Write-Host 'No SWF compilation, fixture execution or input injection was performed.'
+    exit 0
+}
 foreach($name in @('FlashCompositorNative.dll','FlashInputBridge.dll','FlashInputBroker.exe')) {
     Copy-Item -LiteralPath (Join-Path $NativeRoot $name) -Destination $bin
 }

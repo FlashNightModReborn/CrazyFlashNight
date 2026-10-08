@@ -1,4 +1,5 @@
 using System;
+using System.Buffers;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -39,10 +40,41 @@ namespace CF7Launcher
         }
 
         private static readonly Lazy<RuntimeLock> Specification = new Lazy<RuntimeLock>(ReadLock);
+        private static bool _runtimeBundleVerified;
         private static readonly Lazy<Task<string>> Prepared = new Lazy<Task<string>>(
             () => Task.Run(() => Prepare(Path.Combine(AppContext.BaseDirectory, "webview2"),
                 Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
-                    "CF7Launcher", "WebView2", "Fixed"), Specification.Value)));
+                    "CF7Launcher", "WebView2", "Fixed"), Specification.Value,
+                Volatile.Read(ref _runtimeBundleVerified))));
+
+        internal static void AdmitVerifiedRuntime(string runtimeDirectory)
+        {
+            string actual = Path.GetFullPath(AppContext.BaseDirectory).TrimEnd(Path.DirectorySeparatorChar);
+            string verified = Path.GetFullPath(runtimeDirectory).TrimEnd(Path.DirectorySeparatorChar);
+            if (!string.Equals(actual, verified, StringComparison.OrdinalIgnoreCase)
+                || !string.Equals(new DirectoryInfo(verified).Name, "runtime", StringComparison.OrdinalIgnoreCase))
+                throw new InvalidOperationException("Verified runtime admission belongs to another directory.");
+            string manifest = Path.Combine(verified, "cf7-runtime-manifest.tsv");
+            Volatile.Write(ref _runtimeBundleVerified,
+                ManifestCoversPayload(File.ReadLines(manifest), Specification.Value));
+        }
+
+        internal static bool ManifestCoversPayload(IEnumerable<string> lines, RuntimeLock specification)
+        {
+            var expected = specification.Parts.ToDictionary(part => "runtime/webview2/" + part.Path,
+                StringComparer.OrdinalIgnoreCase);
+            var admitted = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+            foreach (string line in lines)
+            {
+                string[] fields = line.Split('\t');
+                if (fields.Length != 4 || fields[0] != "file" || !expected.TryGetValue(fields[1], out Entry part)) continue;
+                if (!long.TryParse(fields[2], System.Globalization.NumberStyles.None,
+                    System.Globalization.CultureInfo.InvariantCulture, out long size)
+                    || size != part.Size || !string.Equals(fields[3], part.Sha256, StringComparison.OrdinalIgnoreCase)
+                    || !admitted.Add(fields[1])) return false;
+            }
+            return admitted.Count == expected.Count;
+        }
 
         internal static string EnsureAvailable()
         {
@@ -158,31 +190,65 @@ namespace CF7Launcher
 
         internal static void VerifyTree(string root, Entry[] entries)
         {
+            long started = Stopwatch.GetTimestamp();
             RejectReparseAncestors(root);
             if (!Directory.Exists(root)) throw new DirectoryNotFoundException(root);
             var expected = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
-            foreach (var item in entries)
+            byte[] buffer = ArrayPool<byte>.Shared.Rent(256 * 1024);
+            long bytes = 0;
+            bool verified = false;
+            try
             {
-                string path = SafePath(root, item.Path);
-                if (!expected.Add(path)) throw new InvalidDataException("Duplicate WebView2 file: " + item.Path);
-                VerifyFile(path, item.Size, item.Sha256);
+                foreach (var item in entries)
+                {
+                    string path = SafePath(root, item.Path);
+                    if (!expected.Add(path)) throw new InvalidDataException("Duplicate WebView2 file: " + item.Path);
+                    VerifyFile(path, item.Size, item.Sha256, buffer);
+                    bytes += item.Size;
+                }
+                foreach (string file in EnumerateFiles(root))
+                    if (!expected.Remove(file)) throw new InvalidDataException("Unexpected WebView2 file: " + file);
+                if (expected.Count != 0) throw new InvalidDataException("Incomplete WebView2 tree.");
+                verified = true;
             }
-            foreach (string file in EnumerateFiles(root))
-                if (!expected.Remove(file)) throw new InvalidDataException("Unexpected WebView2 file: " + file);
-            if (expected.Count != 0) throw new InvalidDataException("Incomplete WebView2 tree.");
+            finally
+            {
+                ArrayPool<byte>.Shared.Return(buffer);
+                PerfTrace.Duration("webview2.verify_tree", started,
+                    "files=" + entries.Length + " bytes=" + bytes + " verified=" + verified
+                    + " tree=" + new DirectoryInfo(root).Name);
+            }
         }
 
         internal static void VerifyFile(string path, long size, string hash)
         {
+            byte[] buffer = ArrayPool<byte>.Shared.Rent(256 * 1024);
+            try { VerifyFile(path, size, hash, buffer); }
+            finally { ArrayPool<byte>.Shared.Return(buffer); }
+        }
+
+        private static void VerifyFile(string path, long size, string hash, byte[] buffer)
+        {
             if (!File.Exists(path) || new FileInfo(path).Length != size
                 || (File.GetAttributes(path) & FileAttributes.ReparsePoint) != 0)
                 throw new InvalidDataException("Missing or invalid WebView2 payload: " + path);
-            using var stream = File.OpenRead(path);
-            if (!string.Equals(Convert.ToHexString(SHA256.HashData(stream)), hash, StringComparison.Ordinal))
+            using var stream = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.Read,
+                4096, FileOptions.SequentialScan);
+            if (stream.Length != size) throw new InvalidDataException("WebView2 payload size changed: " + path);
+            using var digest = IncrementalHash.CreateHash(HashAlgorithmName.SHA256);
+            long readBytes = 0;
+            int read;
+            while ((read = stream.Read(buffer, 0, buffer.Length)) != 0)
+            {
+                digest.AppendData(buffer, 0, read);
+                readBytes += read;
+            }
+            if (readBytes != size || !string.Equals(Convert.ToHexString(digest.GetHashAndReset()), hash, StringComparison.Ordinal))
                 throw new InvalidDataException("WebView2 payload hash mismatch: " + path);
         }
 
-        internal static string Prepare(string payload, string cacheRoot, RuntimeLock specification)
+        internal static string Prepare(string payload, string cacheRoot, RuntimeLock specification,
+            bool runtimeBundleVerified = false)
         {
             RejectReparseAncestors(payload);
             RejectReparseAncestors(cacheRoot);
@@ -190,16 +256,24 @@ namespace CF7Launcher
             string engine = SafePath(entryRoot, "engine");
             using var mutex = new Mutex(false, "Local\\CF7-FixedWebView2-" + specification.CabSha256);
             bool acquired;
+            long waitStarted = Stopwatch.GetTimestamp();
             try { acquired = mutex.WaitOne(TimeSpan.FromMinutes(3)); }
             catch (AbandonedMutexException) { acquired = true; }
+            PerfTrace.Duration("webview2.prepare_mutex", waitStarted, "acquired=" + acquired);
             if (!acquired) throw new TimeoutException("Another process is preparing the fixed WebView2 runtime.");
             try
             {
-                // Validate the shipped source even when an older process already populated the cache.
-                VerifyTree(payload, specification.Parts);
+                // Core's native verifier covers the shipped chunks. Only reuse
+                // that admission when those chunks are not used by this launch.
+                if (!runtimeBundleVerified) VerifyTree(payload, specification.Parts);
                 if (Directory.Exists(entryRoot))
                 {
-                    try { VerifyTree(engine, specification.Files); return engine; }
+                    try
+                    {
+                        VerifyTree(engine, specification.Files);
+                        PerfTrace.Mark("webview2.cache_verified", "bundleAdmissionReused=" + runtimeBundleVerified);
+                        return engine;
+                    }
                     catch (Exception error) when (error is IOException || error is InvalidDataException || error is UnauthorizedAccessException)
                     {
                         // Keep evidence and any active browser's files; never recursively delete a suspect tree.
@@ -208,6 +282,9 @@ namespace CF7Launcher
                         LogManager.Log("[WebView2] quarantined invalid fixed runtime: " + error.Message);
                     }
                 }
+                // Cache creation always revalidates the bytes that will be expanded,
+                // including changes made after the initial bundle verification.
+                if (runtimeBundleVerified) VerifyTree(payload, specification.Parts);
                 Directory.CreateDirectory(cacheRoot);
                 string staging = SafePath(cacheRoot, ".staging-" + Guid.NewGuid().ToString("N"));
                 Directory.CreateDirectory(staging);

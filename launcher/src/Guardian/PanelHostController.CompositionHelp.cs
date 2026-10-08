@@ -22,7 +22,7 @@ namespace CF7Launcher.Guardian
         }
 
         internal void ConfigureCompositionHelp(string webRoot, string profileRoot,
-            Action<bool> panelState, Func<string, bool> restoreFocus)
+            Action<bool> panelState, Func<string, bool> restoreFocus, bool deferPrewarm = false)
         {
             if (_compositionHelp != null) throw new InvalidOperationException("Help surface already configured");
             _compositionPanelState = panelState;
@@ -34,8 +34,10 @@ namespace CF7Launcher.Guardian
                 LogManager.Log("[CompositionHelp] close requested reason=" + reason);
                 TryClosePanelExact("help", _activePanelInstanceId, true, null);
             };
-            PrepareCompositionHelp();
+            if (!deferPrewarm) PrepareCompositionHelp();
         }
+
+        internal void PrewarmCompositionHelp() => PrepareCompositionHelp();
 
         private async void PrepareCompositionHelp()
         {

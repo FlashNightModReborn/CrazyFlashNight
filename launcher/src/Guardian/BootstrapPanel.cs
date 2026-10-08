@@ -26,10 +26,12 @@ namespace CF7Launcher.Guardian
         private WebView2 _webView;
         private bool _disposed;
         private bool _webViewRetired;
+        private bool _initialNavigationCompleted;
         private Func<IDisposable>
             _humanOnlySecurityScopeFactory;
 
         public event Action<string> OnJsMessage;
+        public event Action InitialNavigationCompleted;
 
         /// <summary>
         /// WebView2 引擎初始化失败（fatal）。宿主 Form 订阅此事件调 ForceExit。
@@ -211,6 +213,11 @@ namespace CF7Launcher.Guardian
             if (e.IsSuccess)
             {
                 StartupDiagnostics.Mark("bootstrap.webview2.navigation_completed", detail);
+                if (!_initialNavigationCompleted)
+                {
+                    _initialNavigationCompleted = true;
+                    InitialNavigationCompleted?.Invoke();
+                }
             }
             else
             {

@@ -1,0 +1,193 @@
+# 启动卡顿 输入钩子与统一呈现优化
+
+**文档角色**：本批启动、输入与呈现优化的源码结论、候选验证和后续边界。既有统一输入阶段合同仍归[分阶段施工计划](统一合成与输入归属-分阶段施工计划-2026-09-22.md)。
+**最后核对代码基线**：commit `37552a5974f714a528d0eb9844c3b4e80c2ed307` 加 `main` 未提交集成（2026-10-08）；原隔离阶段基线为 `2331d4a2492af2837614f2c603bf1fe7c2a18439`。
+**授权范围**：用户已明确主工作区让出，授权仅集成本批改动并在 main 继续施工、自动测试及候选构建。不含 commit/push、正式 runtime 部署、真实存档试写或外部付费服务。历史会话与本文件不新增授权。
+
+## 结论与优先级
+
+测试员已确认使用固态硬盘，不能继续用机械盘假设解释卡顿。启动重复读取、低级鼠标钩子与 UI 线程耦合、未完成的呈现统一都值得高优先级处理，但目前不能把同一次事故直接归因为 MPO。平均 FPS、捕获帧率和最终提交节奏不是同一个指标。
+
+| 优先级 | 工作 | 本批范围与后续边界 |
+|---|---|---|
+| P0 | 放轻启动校验 | 消除重复遍历，复用已验证且本次不消费的分块准入，保留实际执行/加载文件的完整性；SSD/HDD 冷热启动体验单独验收 |
+| P0 | 明确鼠标钩子与系统输入风险 | 延后安装到消息泵已处理队列、隔离回调异常、拆分本地/下游耗时；专用线程迁移仍需输入归属合同和物理回归 |
+| P1 | 统一呈现减少独立输出 | 先迁移非交互伤害数字并隐藏旧输出；HUD、PlayerInfo、光标与 Web 逐域迁移，不一次替换整套输入 |
+| P1 | 启动任务错峰 | 帮助预热让出 Bootstrap 首次导航；后续按实测拆分任务初始化与资源准备，不在 UI 上堆积同步工作 |
+| P1 | 端到端诊断与样本新鲜度 | 启动观察、旧 FPS 显示拒绝、256 次呈现环与性能日志归档；统计不充当物理显示回执 |
+| P1 | 输入桥启动与窗口生命周期 | 分开记录本轮源窗口、宿主、root 和 broker 退出；嵌入失败与迟到回调的成功判定另行补门，不按同名进程自动清扫 |
+| P2 | DRS/resize 尾延迟与回压 | 先对齐 HoldViewport、AS2 applied、重绘 fence、捕获与原生提交；有证据后再调整节拍或缓冲，不盲改 Forms.Timer |
+
+AS2 GC、V8、资源首次加载、驱动首次着色器处理、温度/电源与安全软件仍是可能的独立因素。没有现场数据前不一起大改，也不把离线 HLSL 编译当作已经排除驱动开销。
+
+## 启动校验
+
+日常已安装 .NET 且固定 WebView2 缓存有效时，旧链为 Bootstrap 两轮 manifest、Core 独立一轮 manifest、固定引擎分块与完整解包树校验。基线 manifest 共 43 项、370841329 字节，分块 307996323 字节，解包树 701143409 字节。逻辑校验量约从 2121663719 降至 1442826067 字节，减少 678837652 字节，即 32.0%。这是文件字节遍历推导，不是 SSD 物理读取量或启动提速比例；OS 页缓存会改变实际 I/O。
+
+- [bootstrap.cpp](../launcher/native/bootstrap/bootstrap.cpp)：已具备 .NET 时保留启动 Core 前的完整检查；需安装 .NET 时先检查再执行 installer/UAC；完整检查仍在 crash-dump 注册表配置之前。
+- [FixedWebViewRuntime.cs](../launcher/src/FixedWebViewRuntime.cs)：仅从本进程实际 runtime 目录的 native 校验成功路径接收准入，并逐项比对嵌入 lock 的分块路径、大小、哈希和重复项。热缓存仍全量验证实际引擎；冷缓存或损坏缓存重新检查源分块后展开。开发直启没有准入时仍验证分块。
+- 哈希采用顺序读取和复用 256 KiB 缓冲；不缓存文件 mtime、不改为抽样、不用大小代替哈希，不接受“上次通过”。损坏缓存仍保留隔离副本。
+- `webview2.verify_tree`、`webview2.prepare_mutex`、`webview2.cache_verified` 分开记录扫描、互斥等待和准入复用。帮助预热推迟到 Bootstrap 首次成功导航后排队，不承担启动资格判定。
+
+## 钩子调查与边界
+
+[WebOverlayForm](../launcher/src/Guardian/WebOverlayForm.cs) 的 `WH_MOUSE_LL` 仍由主 UI 线程拥有；键盘钩子是另一条独立线程链，不能混称已经隔离。旧构造路径在消息泵开始之前安装鼠标钩子，本机旧日志可见约 2.49 至 3.23 秒窗口，这构成系统输入风险，但不证明测试员整段冻结全由它导致。
+
+本批改为先排一个 UI 回调，实际泵到它后才安装；构造后直接 Dispose 不会安装。回调异常不逃入非托管 hook；错误计数有界，文件日志移到定时器合并写。开启有界诊断后分开 `hook_delivery`、`hook_callback`、`hook_chain`，避免把下游钩子耗时算成我方工作。
+
+这不消除运行中主 UI 阻塞。Microsoft 说明低级 hook 回调投递到安装线程，超时可能被静默摘除，Windows 10 1709 以后最大超时为 1000ms，并建议专用线程或 Raw Input。不能靠非零 HHOOK 证明仍活跃，也不靠周期重装伪装恢复。[LowLevelMouseProc](https://learn.microsoft.com/en-us/windows/win32/winmsg/lowlevelmouseproc)
+
+当前源码的钩子范围还包括：
+
+| 入口 | 所有权与需要保留的边界 |
+|---|---|
+| `WebOverlayForm.CursorHookCallback` | 主 UI 泵；光标观察、菜单外点、tooltip 移动/滚轮与世界指针共同经过这里；滚轮和世界按钮有同步消费返回值 |
+| `InputShieldForm.EnterTelemetryMode` | 原面板期独立鼠标 hook 已撤除；现复用关联 WebOverlay 的按下观察，仍仅统计，不声明消费；活性依赖同一 UI 鼠标 hook |
+| `KeyboardHook.Install` | 独立线程消息泵；这不隔离主 UI 鼠标 hook，也不以线程独立证明从不超时 |
+| `HotkeyGuard.Run` | 匹配父进程路径/MVID 的独立进程消息泵；不是主 UI 鼠标路径 |
+| `Win32NativeInputFacade` | Agent native-input 子系统自己的观测线程和许可边界；本批未启动 actor，不拿其观察/重装能力替换普通游戏输入 |
+
+消费委托并非都只是读取：菜单外点会立即 dismiss/cancel，pinned/dense 滚轮可能滚动并触发 repaint，tooltip 移动会启动 Forms.Timer；世界路径读 `WindowFromPoint`/前台并修改手势队列、geometry 与 epoch。现有“同步 O(1)”注释不是回调预算证明。这些调用不能原样搬到工作线程，也不能简单延后后再决定是否吞掉已经进入系统的事件。
+
+下一阶段须把“同步消费判定”和“UI 执行”拆开：只向专用泵发布不可变的 exact owner/几何/代次快照，按钮边沿有界且不合并，移动 latest-wins；UI 不得被同步等待。世界拖拽、前台丢失、held button、tooltip pinned/dense 滚轮、HUD 透明孔洞、旧手势取消和队列溢出都要同时覆盖。直接把现有 UI 委托搬到后台线程不满足合同。本批没有重写业务输入、合成点击或盲重放未知投递。
+
+## 输入桥启动故障跟进
+
+用户另指定 Kimi Code 会话 `session_9b6040ae-b62d-481e-8c14-21328b13ee05` 后，读取原会话工具输出与当前源码，未执行该会话中的进程结束建议。原始证据可确认：2026-10-08 16:25:50 出现 `Broker exited before READY`，该会话观察到 PID 11976 的 `Flash.exe` 起于 09:28:26，查询路径为空，两种终止尝试均被拒绝。它没有采到该次 broker 退出码、实际 source HWND/PID/root 或进程完整性级别，因而不能把“提权 TestLoader 残留被误选”写成高置信根因。
+
+当前 [ProcessManager](../launcher/src/Guardian/ProcessManager.cs) 保留本轮 `Process.Start` 返回的对象，经 GameLaunchFlow 交给 [WindowManager](../launcher/src/Guardian/WindowManager.cs)；后者在该对象上 Refresh 并读 `MainWindowHandle`，GuardianForm 与世界合成器复用同一 FlashHwnd。不是按名称全局挑任意 Flash 窗口。[Microsoft 的属性合同](https://learn.microsoft.com/en-us/dotnet/api/system.diagnostics.process.mainwindowhandle?view=net-10.0)也将此句柄限定于关联进程。这反驳了原会话所假定的查找机制，但原故障装配与源码没有精确绑定，仍不据此宣称所有句柄复用、嵌入竞态或装配差异都已排除。
+
+另外，`compile_test.ps1` 的 native 任务本就要求 CS6 编辑器 `Flash.exe`，冷启动可复用 `Highest` 的编辑器任务；名称、启动时间和访问拒绝均不足以判定测试播放器残留、确认其提权或授权结束它。当前只读查询已不见旧 PID，这也不是受控的“清除后故障消失”实验。
+
+该 broker 是指定 Flash 线程的 `WH_GETMESSAGE`，不是前述主 UI 的 `WH_MOUSE_LL`；协议使用共享映射与窗口消息，不是 VSTest 的 TCP 回环。静默提前退出可以来自多条分支：code 3 为身份条件组，4 为进程打开，5/6 为映射或属性准备，7 **合并了 DLL 加载、导出查找和 hook 安装**，8/9/12 还有其他前置拒绝。无 stdout 不能推出 code 3，更不能推出唯一的 root 不匹配。[GetAncestor 的 GA_ROOT](https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-getancestor)沿 parent 链查根，并非进程身份或提权检测。
+
+世界控制器在此桥 READY 后才创建世界 scene 与呈现会话。故此事故值得并入启动/输入生命周期治理，但目前不是 MPO 证据，也不能与 testhost 的 Winsock 10013 或测试员 SSD 卡顿直接合并归因。后续日志的另一会话存在 READY，仅证明那次成功，不代签原故障根因或“代码一定无关”。
+
+本轮先补 [NativePointerBridge](../launcher/src/Guardian/WorldCompositor/NativePointerBridge.cs) 的实际消费者诊断：每次启动仅记录一次 source HWND/PID/TID、owner/PID、root、session 与解析后的 broker 路径，明确 `observationOnly=1`；退出时记录一次真实退出码、是否见 stdout 和 READY 行。未知退出码保留 `unknown`，不借哨兵 `-1` 假定 Windows 错误；READY 行不等于 shared mapping 校验或完整游戏验收。记录失败不改变准入、12 秒 deadline、取消、恢复/释放、投递或业务语义，不新增重试、哈希扫描、自动清扫或进程终止。
+
+新增 21 个纯格式断言用例覆盖身份原值、未知/负值/各分支退出码和独立 stdout/READY 状态。最初仅以 exact SDK 10.0.300 编译通过、0 错误，不算通过回归；用户随后打开执行权限后，该组已真实通过，并纳入下文 main 全量回归。证据提取、编译和执行日志与 SHA-256 保存在 main 的 `tmp/startup-input-presentation/`，未更换正式 runtime；权限未变化期间未重复已知失败。
+
+还发现相邻待修风险：`SetParentLogged` 仅落日志，调用方可继续走到 `FireEmbedResult(true)`；排入 UI 的最终嵌入回调也应重新核对 exact attempt/目标身份，而非只靠排队前状态。现阶段只记录源码风险，未证明原事故触发，待当前 main 执行门恢复后用失败与迟到回调夹具修补。诊断补齐不能冒称专用鼠标泵或交互统一已完成。
+
+## 统一呈现不等于消除 MPO
+
+现役世界粒子/天气/光照共享世界输出，不代表 Native HUD、PlayerInfo、伤害数字、光标及全部 Web 面板已经只剩一个呈现根。帮助与部分过场的统一宿主也只是各自试点。DirectComposition 的树仍进入 DWM；单 HWND 多 visual 减少窗口协调，不保证单一交换链、独立翻转或 MPO 消失。这是架构边界，不是对本次事故的 MPO 诊断。[DirectComposition 架构](https://learn.microsoft.com/en-us/windows/win32/directcomp/architecture-and-components)、[呈现与 MPO 术语](https://learn.microsoft.com/en-us/windows/win32/comp_swapchain/comp-swapchain-glossary)
+
+本批在同一世界 HWND 建立 `CompositionSceneHost`，经新增 `ProbeStartWorldVisual` 绑定原生世界 visual，再接入非交互伤害数字。既有 ABI 12 记录和 scene ABI 1 不变。数字只上传可见实际区域，保留原始 DIB stride 和量化增长容量，缩小以 clip 排除旧像素，不构造整屏 CPU 合成。共享路径可用时旧数字窗口不显示；超过原生 extent 上限时有明确 legacy fallback 日志。数字不接受世界调色，AS2 玩法、数值与存档权威不变。
+
+场景释放前先撤数字所有权，停止原生工作线程后释放 scene。清除失败的重入回调不能重新采用已退休场景。原生绑定首次就绪提交一次 scene；数字更新自行提交，空闲 UI tick 不重复提交无变化的树。后续交互 HUD/Web 扩面仍走各域 hit-test、输入和生命周期合同，不能据此宣称全应用统一完成。
+
+后续收紧了原生模块归属：`CompositionSceneHost` 不再按 DLL 基名隐式查找，而是实例持有绝对路径模块及其导出；世界与夹具传同一精确路径，帮助默认使用 app-local 模块，C1 捕获的三个委托也从该 scene 所持模块取得。相对路径、缺失模块、缺少导出均拒绝，不向别处借同名 DLL；先停止捕获、销毁 scene，再释放模块，销毁失败不卸载仍可能拥有对象的代码。已有线程所有权不变。这是加载与生命周期防护，不作为卡顿或 MPO 根因结论。
+
+该跟进的 focused 回归为 17 项通过、1 项亮屏资格跳过，包含同名模块不可借用、错误线程拒绝、快照/呈现委托参数及释放后的调用拒绝。一次扩展夹具误把 `ProbeStartVisual` 的异步构造句柄当作同步出帧资格，失败保留；修正为无论源有效与否都先停止返回的句柄，再释放 visual/scene。该轮使用新 Host 测试装配与旧 `sip3` 原生模块，只证明对应接口；新的 Host 必须另建候选，不能继续把 `sip3` 标成当前源码构建。
+
+模块绑定跟进的普通 Release 全量回归为 6742 项通过、11 项条件跳过、0 失败，串行 runner 标记已核对。其新候选按独立 leaf 构建，不能覆写旧 `sip3` 或由这项防护外推鼠标专用泵、MPO 或完整 C1 旅程已经验收。
+
+跟进候选 `tmp/runtime-candidates/v2/sip4` 已完成构建、43 项 integrity-only 核验、原件/改坏 Core 副本/原件复验，以及同候选原生模块的 17 项 focused 检查；持续资格 1 项仍因熄屏跳过。该阶段收口时运行源码 identity 与候选一致，policy hash 也一致，但没有签名共识或 strict 发布回执。C1 薄外壳 `C1IslandHost.csproj` 另行编译通过（0 错误），未运行 Flash actor 或真实输入。随后输入夹具依赖修补改变了 Core 装配输入，`sip4` 保留为上一阶段证据，不再声称它对应当前源码。
+
+## 输入夹具依赖跟进
+
+准备后续输入施工时重新编译 G1 与 Flash hover，两个旧的生产源码逐文件链接清单均报依赖缺失，包括 `BulletVisualCatalog`、`RayVisualDrawFrame`、`WorldRasterPresentation` 与 `SceneLightSnapshot`。失败日志保留，不用历史成功回执填补。
+
+两工程现改为直接引用当前 Core，与 C1 的薄外壳方式一致；Core 仅授予确切的夹具程序集 internal 访问。G1 runner 同时由筛选少量文件改为复制完整托管输出，避免编译成功却遗漏 Core DLL。两入口新增显式 `ManagedBuildOnly`，使用 exact SDK、每轮唯一目录，并在启动 actor、复制输入代理或改变运行环境之前退出。hover 的该模式不要求 SWF，不触发 CS6。
+
+两个只构建入口均为 0 错误，依赖清单指向 `CRAZYFLASHER7MercenaryEmpire.Core` project，实际 Core 文件哈希相同，未暂存 `FlashInputBroker.exe`。项目引用与精确 friend assembly 新增普通回归。这只恢复了编译和托管依赖基础，不证明 G1/Flash actor、物理输入、专用鼠标泵或现役游戏通过；本轮未执行 actor、注入输入或修改真实存档。
+
+本阶段 focused 为 11 项通过、1 项候选模块条件跳过；普通 Release 全量为 6746 项通过、11 项条件跳过、0 失败，实际串行 marker 已核对。新增 4 项普通回归检查三工程的确切 Core 项目引用、禁止重新链接生产源码和三份精确 friend assembly；只构建 runner 另经 PowerShell 语法解析和实际隔离输出检查。失败原件、编译日志和依赖哈希都留在同一接续目录。
+
+源码冻结后另建 `tmp/runtime-candidates/v2/sip5`，没有覆写 `sip4`。`sip5` 为 `candidate_built`，43 项 integrity-only 核验通过，原件/改坏 Core 副本/原件复验的退出码为 0/2/0；未启动完整游戏。该阶段源码 identity、候选 build identity 与 payload closure 已核对；测试、G1、hover 及候选的 Core 字节哈希均为 `B5A6D2DB7ECD440794959890E3A7C38C383A907197FBA11599C0F6DD30E4C87A`。同候选原生模块的绑定、像素及相关 focused 为 17 项通过、1 项持续资格因 session display Off 跳过，未修改阈值；policy hash 对照一致，runtime 输入分类 94 项通过，但没有 strict 签名共识或部署结论。后续以接续记录的 `continuationCandidate` 和该目录机器 metadata 为准，身份未变化时不重复构建或重跑同一熄屏实验。
+
+## 共享鼠标观察跟进
+
+输入夹具阶段之后，先在未改源码的 `sip5` 上完成亮屏持续资格，结果见下节。随后将 InputShield 的纯观测统计接入既有 `WebOverlayForm.SetInputShield` 所关联实例，撤除第二个 `WH_MOUSE_LL` 的安装、回调、解包和摘除；不新增观察服务或另一条工作线程。原 foreground 精确 HWND/子窗口过滤、anchor/panel 边界及四类 button-down 判定不变；移动、Up 与滚轮不计入。刷新保留本轮计数，退出后不再计数，重新进入清零；已销毁对象不能重开观察。
+
+观察调用在 NativeInteraction 按下回调和世界路由之前，独立隔离异常，不声明消费，不替换滚轮或世界的同步返回值。关闭面板的 mask/capture 清理和原业务输入权威不变。生命周期日志以 `source=shared_cursor_hook` 标识新来源；观察现在依附主鼠标 hook 的注册次序和活性，不保证与历史独立 hook 取得相同事件集合，零计数仍不能证明没有外点或钩子活跃。
+
+新增 8 项普通回归直接调用托管回调，不安装未泵 hook、不移动光标或向 OS 注入输入；覆盖四类按下、非按下拒绝、刷新/退出/重开/解绑、销毁后拒绝和 NativeInteraction 异常不阻断世界路由。结合既有滤镜、tooltip、NativeInteraction、世界指针及 panel close focused 共 182 项通过。主鼠标 hook 仍归 UI 泵，专用泵尚未实施；本次减少重复全局 hook，不宣称运行中 UI 阻塞风险已消失。此阶段改变了运行源码，`sip5` 的持续资格保留为它自身的证据，后续冻结后须另建候选。
+
+该阶段普通 Release 全量回归为 6754 项通过、11 项条件跳过、0 失败，实际串行 marker 已核对。冻结后独立构建 `tmp/runtime-candidates/v2/sip6`，43 项 integrity-only 与原件/改坏副本/原件复验的 0/2/0 正负控通过；测试、G1、hover 与候选 Core 字节一致，当前源码/build identity/policy 对照一致，runtime 输入分类 94 项通过。两个输入夹具仍只运行 `ManagedBuildOnly`，未执行 actor 或注入输入。
+
+`sip6` 精确原生路径的绑定、像素、持续资格及共享观察相关 focused 为 26 项通过、0 跳过、0 失败。资格前后均只读观测 On，原断言未改；UI 停泵期间原生线程继续推进，最终 Presented 275、计时环 Count/IntervalCount 256、FreshCount 205，间隔 P50/P95/P99 为 31.87/45.72/48.07ms，Present 调用 P95 约 0.195ms。实际模块、identity/closure 和 Host 装配路径绑定于 `sip6-qualified-focused.log`。这是同候选的有限原生窗口实验，不是物理 scanout、面板手感、长时战斗、完整游戏或正式 runtime 验收。
+
+## 观测与验证
+
+`InputLatencyProbe` 沿用 `CF7_INPUT_LATENCY=1` 加焦点录制的精确开关，启动窗口至多 30 秒，转场保留既有上限和 2 秒尾窗。UI ping 始终最多单飞，每窗最多 64 条尖刺，其余计数/峰值汇总；不注入输入或自动修复。FPS 样本超过 2 秒或场景重置后，Notch 显示 `--`，历史缓冲不抹掉。
+
+原生 `ProbeGetTimingStats` 是独立可选诊断扩展，固定保留最近 256 次成功提交。连续帧间隔、submit、Present 调用和 fresh-source age 分别统计，主动静止/停捕获/hold 断开连续间隔，不把合法静态画面算作卡死。焦点录制开启时每秒采样一次，附场景、源帧龄、最后提交龄和数字上传量；不触发 GPU 回读。Present 调用返回与 DWM/显示器实际呈现保持区分。
+
+退出冻结快照现在包含 `perf-latest.jsonl`，立即重开不能用新运行覆盖旧包。字段和冻结行为与实际 profiler/ETW 互补；现有采样脚本若只在起点枚举 PID，不能用于证明后启动子进程没有负载。
+
+候选检查必须记录实际 native 模块路径/哈希、Host 测试装配、identity 与 closure。共享 GPU 夹具只创建自己的窗口，像素资格、旧/共享静态源观测、亮屏动态源与计时环资格分别记录；入口见[开发 README](../launcher/perf/flash-compositor/README.md#共享数字层与呈现诊断)。第一次夹具 DPI 不一致及第二次对静态源的错误预期保留为失败记录，修正条件后通过不覆盖失败原件。
+
+2026-10-08 的 `sip3` 已完成候选构建、原生 verifier 正例、独立副本改坏 Core 的拒绝负例和原件复验；正式 runtime 的 45 项快照未变。UHD 630 上共享像素检查通过，原画与清除后的回读哈希一致。扩展持续帧测试曾失败：静态与动态源均观测到约 200 至 250ms 的 Present 等待；停用额外 WGC 观察器、窗口置顶、逐次 scene Commit 都未消除。旧独立世界路径与新共享路径的同条件对照也均出现该等待，不能据此裁定共享回归或 MPO 根因。
+
+随后只读 Windows 电源通知明确给出当前 session 和 console 显示状态均为 Off，未注入输入或唤醒屏幕。持续呈现资格现要求显式 On，像素测试仍可独立运行；本轮为像素/静态观测 2 项通过、持续资格 1 项因熄屏跳过。该条件不把先前失败改写为通过，亦不证明熄屏是全部等待的唯一原因；须亮屏后在同一候选复跑 UI 停泵、动态源及 256 项绕回检查。后续调度保留原始失败和负控，不改变系统电源设置。
+
+显示状态枚举与注册后立即返回当前值的语义分别依据 Microsoft 的[电源设置 GUID](https://learn.microsoft.com/en-us/windows/win32/power/power-setting-guids)与[通知注册 API](https://learn.microsoft.com/en-us/windows/win32/api/powersetting/nf-powersetting-powersettingregisternotification)。未知状态不当作 On，亦不以耗时大推断显示状态。
+
+2026-10-08 08:34 UTC，Windows 只读通知明确返回 session/console display On；未亮屏或注入输入。先复核未改动的 `sip5` 源码 identity、metadata、Core 哈希和 integrity-only，再原样运行 `SharedRoot_AnimatedTimingRingWrapsWithoutUiPresentationPolling`，1 项通过、0 跳过。UI 停泵期间原生线程推进断言通过，动态源 270 轮完成，最终 Presented 275、计时环 Count/IntervalCount 均为 256、FreshCount 224。该样本间隔 P50/P95/P99 为 34.26/42.80/47.39ms，Present 调用 P95 约 0.213ms；不是物理显示延迟或游戏帧率承诺。
+
+同一候选的旧/共享静态对照随后各观察 6 次，均推进；本轮 Present 调用范围分别为 0.107–0.236ms 与 0.100–0.364ms，后续只读观察仍为 On。旧熄屏失败与负控全部保留，亮屏通过不抹除它们，也不把本机条件差异外推为测试员的 MPO 根因。证据为 `sip5-sustained-display-on-01.log` 与 `sip5-legacy-shared-display-on-01.log`；实际模块、identity/closure 与 Host 装配路径均在日志中绑定。没有完整游戏、物理输入或 scanout 验收。
+
+首批普通 Release 回归为 6738 项通过、10 项条件跳过、0 失败，runner 的串行标记已核对；runtime 输入分类 94 项通过且未创建签名或证书。文档巡检通过，历史链接债务和 README 行预算仍为非阻断提示。候选 `tmp/runtime-candidates/v2/sip3` 的运行源码 identity 在该批收口时与构建一致；测试补充改变了 policy hash，不冒认候选已通过当前 strict 发布政策。后续模块绑定改动另建候选，不沿用这一源码一致结论。详细日志、identity 对照和原始失败统一保留于独立 worktree 的 `tmp/startup-input-presentation/`。
+
+本批自动验证不能代签测试员机器、SSD/HDD 冷热启动体验、真实拖拽与滚轮、视觉接受、多显示器/不同 DPI/弱 GPU、驱动 MPO 路径或完整游戏旅程。构建属于 `candidate_built`；隔离 native 夹具不升级为整套游戏 `candidate_executed` 或 `e2e_verified`。没有 `promoted` 或 `standard_entry_verified` 结论。
+
+## 主线集成
+
+用户明确反馈“工作区已经让出，可以迁移到main继续施工了”后，重新读取 main：HEAD 已前进至 `37552a5974f714a528d0eb9844c3b4e80c2ed307`，包含漫画、礼包配给、书架与执行总控四个提交，工作区当时干净。释放依据是这条直接授权，不是干净状态或聊天 idle。
+
+对比原基线、隔离工作树增量与新 main，43 个任务路径中仅 Program、WebOverlay 和 README 与新提交重叠。前两处任务修改不覆盖新加入的 `reducedPresentation` 偏好及其推送接线；README 将启动/呈现诊断说明与新偏好注册表手工合并。其余任务增量按原包应用，应用前文件及三方身份留存在 main 的 `tmp/startup-input-presentation/main-integration-preflight.json` 和同目录备份，未复制整份 Program/WebOverlay 覆盖新提交。
+
+当前 main 集成后的交叉回归与候选资格需重新取得，不能借原 worktree 的 `sip6` 代签新源码。原 worktree、失败记录与候选继续保留，未归档或删除；接续记录迁至 main 的同名 `tmp/startup-input-presentation/`，旧目录是历史源，不再作为当前施工位置。不自动 commit/push 或部署。
+
+迁移后的独立三方重建与实际结果逐文件一致，43 个任务路径之外无修改，index 未暂存。第一次临时比对混用 Git 导出的 LF 与工作区 CRLF，误报冲突；仅将临时输入规范化后，Program、WebOverlay、README 三项重建均为 0 冲突并与实际集成一致，原失败和输入副本保留，未为此重写生产文件的换行。
+
+漫画 player、书架 runtime/original、物品使用、奖励包与 panel contracts 六组脚本交叉检查通过，文档巡检及 whitespace 检查通过。受限执行环境将 `LOCALAPPDATA` 重定向，默认 resolver 仅找到 .NET 8；既有 `C:/Users/fs/AppData/Local/Microsoft/dotnet/dotnet.exe` 实测为 10.0.300，仅对验证进程 PATH/运行时根绑定后，原 exact resolver 与当前源码编译通过，未改 `global.json` 或安装 SDK。
+
+C# 执行门最初未通过：定向回归在测试宿主连接阶段按原 90 秒超时中止，未进入测试执行；保留日志后另做最小诊断，testhost 记录本机 `127.0.0.1` 通信的 `SocketException (10013)` 访问拒绝。这不是某条测试断言失败，也不以增大超时、换测试框架或旧 worktree 绿灯代替当前 full Host。当时自动续接提示的迁移更新也被工具策略拒绝，主接续文件已在 main；用户随后打开权限后，主线回归及提示迁移均已恢复，结果见下一节，旧失败不删除。
+
+`sip7-main` 的首次仅构建尝试在 `sol_parser` 原生阶段失败，保留失败目录及 `candidate-sip7-main.log`，没有完成 metadata/closure，不属于 `candidate_built`。原 producer 会清理临时 job，外层未留下该阶段完整输出；另以相同 pinned 环境单跑失败组件收集输出，捕获 Cargo 创建其临时 target 目录时 `os error 5` 拒绝访问，记录于 `main-sol-stage-diagnostic.log`。该补充诊断不冒认原尝试的全部根因，也未改源码、缓存路径规则或正式 runtime。随后权限恢复后另建新 leaf，没有覆写失败 leaf 或转用旧 `sip6` 代签。runtime 输入分类仍为 94 项通过，未创建签名/证书；主线集成包及其后加入 broker 诊断的增量包均保留，当前范围与哈希读 main 的 integration manifest，未暂存或提交。
+
+## 测试环境恢复与人工准备
+
+用户明确要求先打通测试、推进到人工可测阶段，并打开当前聊天执行权限。只读观察显示命令已从 Low Mandatory Level 与沙盒 TEMP 重定向切换到 Medium Mandatory Level 和正常用户 TEMP；未关闭防火墙、修改 ACL、安装服务或改变全局 SDK 配置。使用原 exact SDK、原 runner 与原 deadline，最小 broker/FPS 回归 23 项真实通过；main canonical 全量为 6792 项通过、11 项条件跳过、0 失败，实际 `parallel test collections = off` marker 恰好一次。日志为 `main-host-unrestricted-focused.log` 与 `main-unrestricted-full-host.log`，旧 10013/90 秒中止记录继续保留。
+
+这是当前执行环境恢复的对照，不是精确指认某条 Windows 防火墙规则、Cargo 原失败的唯一原因或测试员机器根因。新的 native 候选必须独立构建，不能覆写 `sip7-main`、借 `sip6` 或只拷新 Core 到旧 runtime。配套原生构建、identity/closure、完整性正负控、精确模块及显示状态合格的持续资格，以 main 接续记录和该候选 metadata 的实际结果为准；这些门未完成前不报告人工可测。
+
+本阶段的新隔离候选已达到本批人工可测条件：既有开发入口 `BuildOnly` 完成配套原生与 Core 构建、43 项 integrity-only，原件/改坏 Core 副本/原件复验退出码为 0/2/0；源码及 policy identity 与 metadata 一致，测试、G1/hover 只构建输出与候选的 Core 字节一致。精确模块、像素与持续资格为 8 项通过、0 跳过、0 失败，前后只读显示状态均为 On，原断言未改。动态源原生 Presented 275、计时环 Count/IntervalCount 均为 256，像素清除后的哈希回到原画；旧与共享静态对照各 6 次推进。当前候选名和身份归 `state.continuationCandidate` 与 metadata，具体结果见 `human-test-ready.json` 和 `sip8-main-module-pixel-sustained.log`，不作为固定入口配置。
+
+根开发入口的 `-Status` 已实际报告 `ready`，选中该候选且同身份 payload closure 唯一；正式 runtime 未修改。没有启动完整游戏、Flash actor 或注入物理输入，没有真实存档试写，未完成 strict 签名/推广。`candidate_built` 加有限窗口专项资格，只表示可以开始本批人工验收，不升级为完整游戏 `candidate_executed` / `e2e_verified` 或 MPO 已解决。
+
+机器门完成后的人工入口沿用主工作区根 [本地开发启动.cmd](../本地开发启动.cmd)，交付前用同一入口的 `-Status` 核对当前身份与选中候选。需要有界启动/转场输入计时时，复用既有 [diagnose-input.ps1](../automation/diagnose-input.ps1) 的 Native 模式临时启用诊断；不改 `config.toml` 默认值，不新增专用快捷方式，不由 Agent 启动真实存档旅程。
+
+首轮人工只合并为三个短检查：
+
+1. 正常退出旧游戏，再从开发入口启动并进入世界，留意启动时系统鼠标是否卡住、首次画面是否正常；有条件再重复一次热启动，不要求清空引擎缓存制造冷启动。
+2. 在世界进行连续点击、按住/释放和滚轮操作，打开/关闭一个常用 HUD/Web 面板并切出切回，检查外点、滚轮、焦点与取消没有错投或卡住。
+3. 观察有伤害数字的场景，确认无旧像素残留、数字遮挡或画面停住；正常退出。异常时保留时间点及既有日志，可用根 [收集焦点诊断日志.cmd](../收集焦点诊断日志.cmd) 取包，不反复重放失败业务动作。
+
+这轮验收范围是已有启动减负、hook 安装时序/重复观测治理、共享伤害数字与诊断，不是专用鼠标泵、全部 HUD/Web 统一、MPO 根因或消除保证。真实玩家是否进行存档/战斗由其人工操作决定；Agent 不试写真实槽位，机器资格也不代签人类手感、视觉、多显示器或弱机器接受。
+
+## 首次人验日志复核
+
+用户反馈“稍微玩了一圈，未发现明显问题”后，只读核对 2026-10-08 22:03:30 至 22:08:22 的本轮日志，约 4 分 52 秒。实际 Core 和 broker 路径均为当前新候选，原始 launcher/bootstrap/perf 日志已按 SHA-256 稳定复制到 main 的 `tmp/startup-input-presentation/human-smoke-20261008-220330/`；分析结果为同目录 `review.json`。没有再次启动游戏、试写真实存档、修改运行代码或重建候选。
+
+启动、输入桥、呈现与退出链没有失败终态：broker 在约 100ms 内 READY，观测的 sourceRoot 与 owner 同为 `0x4088A`；7 次转场都有 revealed，79 个 render command 均找到对应 applied。Flash 正常退出 code 0，broker code 0、`confirmed=True`。退出时 `returned=0/unhooked=0` 与 `targetExited=1` 同时出现，按现有 exact-target-exit 合同完成关闭，不按两个零值误报残留。最后 consumedSeq/completedSeq 同为 1184，只是序号水位一致，不等于全输入链零丢失；`stale=13/invalid=0` 也不能在没有逐包 trace 时逐项代签。
+
+发现一项明确的展示契约缺口：22:07:27 的 3 条开箱装备播报使用 `source=map_chest`，22:08:13 的 1 条结算材料播报使用 `source=stage_settlement`，均被 [LootFeedTask](../launcher/src/Tasks/LootFeedTask.cs) 的 v1 source 白名单拒收，日志为 `invalid v1 source, dropped`。这两个真实生产来源未列入 `AllowedSources`。该消费者只投影已提交事实到 NativeHud，与地图 `loot_response`/资产写入域不同，合同见[物资事务 ADR](玩家物资事务与双向播报-ADR-2026-08-22.md)；对应业务有 commit/shadow 日志，但本次没有读取或试写 SOL 来代签耐久。不能据播报丢弃推断奖励丢失，也不能盲目补发奖励。该问题未在本轮修复，应以精确来源合同及生产 payload 回归单独处理，不通过接受任意来源或 legacy 降级掩盖。
+
+仍应保留的非阻断性能观察：
+
+- 热引擎全量核验 257 文件/701143409 字节耗时约 2007ms，仍是启动减负空间；没有同条件 A/B，不能据本轮数值宣称确定提速比例。
+- 10 次面板关闭最长约 503ms，map/stage-select/tasks 的较慢个例约 442–503ms；27 次焦点恢复最长约 390ms，是后续 UI/输入交接的实际热点，不把嵌套 scope 耗时相加。
+- 可调度 `gate=ready` 样本的最大 AS2 帧间隔为 529ms；7 次转场约 2.2–5.7 秒，末次为 5696ms，其间有 `gate=surface` 的 2844ms 帧间隔。记录为尾延迟与转场优化线索，不仅因用户未感知就删除，也不将暂停/载入一律算战斗 FPS 或 MPO。
+- 原生世界日志共 227 个抽样，Present 调用 P95 约 0.314ms、最大 1.55ms；未看到先前实验的 200–250ms 级 Present 等待。它不是全帧分布、物理 scanout 延迟或排除 MPO 的证据。源静止/暂停时的 `stalled` 和较大源帧龄需结合场景，不直接判 GPU 卡死。
+
+`cursor.hook_start_queue` 约 1934ms 是安装前等待 UI 消息泵的时长，不是已安装 hook 回调阻塞 1.9 秒。普通 `UiFreezeProbe` 仅记录了启动，没有告警；其 stale 阈值为 2000ms，并不能排除上述亚秒尾延迟。本轮没有详细 FocusTrace/InputLatency 数据，属于用户短实玩正向反馈加日志复核，不替代完整物理输入矩阵、跨显示器/弱机或根因验收。当前候选继续保留，不由这条反馈自动授权发布或额外功能施工。
+
+## 合并发布授权
+
+用户随后明确要求无人值守完成拾取播报，并与完整的云端共识、构建、部署、推送发布列车合并执行。本阶段授权包含本批启动、输入、共享伤害数字及精确 `map_chest` / `stage_settlement` 来源兼容的提交与正式发布；此前各阶段的无提交、无部署记录仍是当时事实。先保留已验证增量，再合并最新远端主线，重新验证最终树并创建新 immutable request，不能借旧候选代签。
+
+授权不包括奖励补发、真实玩家存档试写、凭据导出或安全策略调整。发布和云端共识仍不代签专用鼠标泵、完整 HUD/Web 统一、物理输入矩阵、弱机器体验或 MPO 根因；当前正式列车的身份、请求、失败及晋级状态以 main 的 `tmp/startup-input-presentation/state.json` 和相应机器材料为准。
