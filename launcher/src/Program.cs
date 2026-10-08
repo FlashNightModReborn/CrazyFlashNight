@@ -1736,6 +1736,14 @@ class Program
             });
         webOverlay.SetCommandRouter(commandRouter);
 
+        // === AI 聊天终端（CFN-RAG exe）装配 ===
+        // Host 侧承担 exe 发现/静默拉起/健康轮询与存档绑定；socket 断连时 best-effort 解绑。
+        CF7Launcher.RagTerminal.RagTerminalService ragTerminalService =
+            new CF7Launcher.RagTerminal.RagTerminalService(
+                projectRoot, config.RagTerminalExePath);
+        commandRouter.SetRagTerminalService(ragTerminalService);
+        socketServer.OnClientDisconnected += ragTerminalService.UnbindInBackground;
+
         // === Native HUD + PanelHostController 完整装配（唯一路径）===
         // 所有 panel 打开走 PanelHost.OpenPanel → snapshot/backdrop/EX_STYLE/HUD-suspend 序列。
         NativeHudOverlay nativeHud = null;
@@ -2268,6 +2276,8 @@ class Program
                 nativeGuidanceTask.NotifyHelpAvailabilityChanged();
             if (key == "sfxEnabled" || key == "ambientEnabled")
                 webOverlay.PushAudioPrefs();
+            if (key == "reducedPresentation")
+                webOverlay.PushPresentationPrefs();
             if (key == "mapDisplayPreference" && rightContext != null
                 && value != null && value.Type == JTokenType.String)
             {

@@ -2972,15 +2972,20 @@ namespace CF7Launcher.Guardian
             string lowEffects = _lowEffectsMode ? "true" : "false";
             string noCssAnimations = _disableCssAnimations ? "true" : "false";
             string noVisualizers = _disableVisualizers ? "true" : "false";
+            // 玩家可改的"精简演出"偏好走 UserPrefs（settings.host_set），
+            // 与上面四个 config.toml/环境变量诊断键并列注入，互不替代。
+            string reducedPresentation = _userPrefs != null && _userPrefs.ReducedPresentation ? "true" : "false";
             string frameRateLimit = _frameRateLimit.ToString(CultureInfo.InvariantCulture);
             string frameRateCapped = _frameRateLimit > 0 ? "true" : "false";
             ExecScript("document.documentElement.classList.toggle('perf-low-effects'," + lowEffects + ");"
                 + "document.documentElement.classList.toggle('perf-no-css-animations'," + noCssAnimations + ");"
                 + "document.documentElement.classList.toggle('perf-frame-capped'," + frameRateCapped + ");"
                 + "document.documentElement.classList.toggle('perf-no-visualizers'," + noVisualizers + ");"
+                + "document.documentElement.classList.toggle('perf-reduced-presentation'," + reducedPresentation + ");"
                 + "window.CF7_LOW_EFFECTS=" + lowEffects + ";"
                 + "window.CF7_DISABLE_CSS_ANIMATIONS=" + noCssAnimations + ";"
                 + "window.CF7_DISABLE_VISUALIZERS=" + noVisualizers + ";"
+                + "window.CF7_REDUCED_PRESENTATION=" + reducedPresentation + ";"
                 + "window.CF7_FRAME_RATE_LIMIT=" + frameRateLimit + ";"
                 + "document.documentElement.style.setProperty('--overlay-frame-rate-limit','" + frameRateLimit + "');"
                 + "if(window.CF7FrameLimiter&&window.CF7FrameLimiter.setLimit){window.CF7FrameLimiter.setLimit(" + frameRateLimit + ");}");
@@ -2990,6 +2995,16 @@ namespace CF7Launcher.Guardian
                     + " noCssAnimations=" + _disableCssAnimations
                     + " noVisualizers=" + _disableVisualizers
                     + " frameRateLimit=" + _frameRateLimit);
+        }
+
+        /// <summary>
+        /// UserPrefs→ApplyWebPerfMode 的玩家偏好段：settings.host_set 落盘成功后由
+        /// Program.cs 的 HostPreferenceApplied 订阅调用；初始值仍在 _webReady 置真时
+        /// 随 ApplyWebPerfMode("ready") 一并下发。未注入 UserPrefs 时静默降级为 false。
+        /// </summary>
+        public void PushPresentationPrefs()
+        {
+            ApplyWebPerfMode("prefs:reducedPresentation");
         }
 
         #endregion

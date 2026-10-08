@@ -33,6 +33,24 @@
     --wb-semantic-info: var(--theta-kinetic);
     --wb-semantic-disabled: #646e75;
 
+    /* 档级序数色静态别名层。权威词典是 data/items/equipment_mods/ui_presentation.xml，
+       运行态实例色由 JS 写 inline --mod-grade-color（grade-presentation.js 守护副本）；
+       本层只服务无法走 inline custom property 的静态上下文（如情报 token、
+       fallback），登记见 docs/dls-color-system.md。 */
+    --wb-grade-low: #006600;
+    --wb-grade-medium: #996600;
+    --wb-grade-high: #0099FF;
+    --wb-grade-special: #FFFF00;
+    /* 档级未知/缺省的中性 fallback（inventory / equipment-tuning 共用同一值）。 */
+    --wb-grade-unknown: #58636e;
+    /* 暗底符号芯的派生浅色（inventory grade-* 芯色）；纸质亮底皮肤的金档适配色。
+       均为 canonical 的受控派生，不反向充当权威。 */
+    --wb-grade-core-low: #71c971;
+    --wb-grade-core-medium: #d6ad58;
+    --wb-grade-core-high: #7fc9fb;
+    --wb-grade-core-special: #fff171;
+    --wb-grade-special-on-paper: #8a6d00;
+
     /* 共享组件角色；skin 只覆盖角色值，不重写组件状态结构。 */
     --wb-role-focus: var(--dls-crystal-bright);
     --wb-role-selected: var(--dls-crystal);
@@ -915,4 +933,21 @@
     --book-comic-paper-speaker: #6a5836;
     --book-comic-scroll-thumb: #7d8962;
     --book-comic-scroll-hover: #a3af82;
+}
+
+/* Embedded AI chat terminal keeps the overlay's dark console chrome;
+   the hosted page carries its own palette inside the iframe. */
+#panel-container[data-panel="ragchat"], .ragchat-panel {
+    --ragchat-bg: #05080a;
+    --ragchat-text: #d9e8ee;
+    --ragchat-header-bg: #0b1216;
+    --ragchat-title-text: #bfe8f5;
+    --ragchat-rule: #223239;
+    --ragchat-muted: #8ba3ad;
+    --ragchat-button-bg: #12212a;
+    --ragchat-button-text: #cfe9f2;
+    --ragchat-button-border: #2e4a56;
+    --ragchat-button-hover: #1b3440;
+    --ragchat-focus: #3dd5ff;
+    --ragchat-frame-bg: #05080a;
 }

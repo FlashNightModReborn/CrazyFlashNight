@@ -1,0 +1,145 @@
+{
+  "schema": "bookshelf-shelf-graybox-report/1",
+  "generatorInputs": [
+    {
+      "path": "tools/bookshelf-graybox/generate.js",
+      "sha256": "b847d2630f5d7c7cd458911d094c0ee78cb6fed552722f836599cea4b087d7fe"
+    },
+    {
+      "path": "tools/bookshelf-graybox/glb-writer.js",
+      "sha256": "9e40e709a393a6af56f97d3a4e27485d756b71706212b05f031910284a94aecb"
+    },
+    {
+      "path": "docs/design-data/bookshelf-shelf-draft.json",
+      "sha256": "d9a1d4fe266a15a611581000b352b7b578d6ae4af1a2c69ec0a84a45a056e7f3"
+    },
+    {
+      "path": "data/books/catalog.json",
+      "sha256": "32eac3ef67471ef61d155f9b15489676744067d7b133e12c8bd4aa31d37bffa2"
+    },
+    {
+      "path": "tools/bookshelf-shelf-extract/extract.js",
+      "sha256": "eba49ec744b7a6cd39a9d1c2b4993ca9f6900318bd76a2ed2049fe11edefd26a"
+    },
+    {
+      "path": "tools/bookshelf-shelf-extract/patch-swf.js",
+      "sha256": "4c46ba9da61aef005fae42b4fe43a86dab8f414342ee00882b122857ae11fc60"
+    },
+    {
+      "path": "tools/bookshelf-shelf-extract/extract-ffdec.js",
+      "sha256": "85ddf78624d692ef188ed7b3e320cc4883c5efa92b31bcd1eb2c50ab42f59e1e"
+    },
+    {
+      "path": "tools/bookshelf-shelf-extract/crops.json",
+      "sha256": "50127ae9e6ea20bf9d3e1471edcad9bd4612c605cb9bd0257c6b3ac6a36ca972"
+    },
+    {
+      "path": "tools/bookshelf-shelf-extract/out/extract-report.json",
+      "sha256": "f68fcdc6eae748739dc16189e45c4ae42c692fd41b8ccc84efa6203926d572b8"
+    },
+    {
+      "path": "tools/bookshelf-shelf-extract/out-ffdec/ffdec-report.json",
+      "sha256": "d66694e67163bccc6a1278c22022b3041aeb435073ee9706e3bca78661fc9919"
+    }
+  ],
+  "threeRevision": "180",
+  "artSources": "ffdec vector channel (out-ffdec, shelf body 9-patch + native spines) + Ruffle channel (out, CF1 title logo); see both reports for source identity",
+  "discPalette": [
+    "#4b4889",
+    "#ea3d3d",
+    "#511d1d",
+    "#d4dde4",
+    "#737373",
+    "#1b461b"
+  ],
+  "scene": {
+    "bytes": 930832,
+    "sha256": "189f1a2be759f427168b770cd2095fbd60bfdcfdce5b580edd8883c93e235f88"
+  },
+  "textures": {
+    "spine-sail-twins": {
+      "bytes": 13394,
+      "sha256": "d42a51737ab18435d8fc43b570bdf585a9a4e38111dd34286101801595aa7dc0"
+    },
+    "disc-cf1": {
+      "bytes": 11335,
+      "sha256": "ea80b7c8ea500e753318131c310ce4ac3af99d23f3d22b94b3e814f4e270babc"
+    },
+    "disc-cf2": {
+      "bytes": 11200,
+      "sha256": "7b226643617925fa6f8f35882d5e4d97303fea03ee50a0dc0de7643fc5a948ab"
+    },
+    "disc-cf3": {
+      "bytes": 11898,
+      "sha256": "71cdddcad7991efc7fadf001641a1f97babcd4d3e8c61afe14492303d9b4d27d"
+    },
+    "disc-cf4": {
+      "bytes": 11372,
+      "sha256": "fac1abaa56618308145be2a038cb9c2fb9ca15ae3dcd34375e4f97c077980707"
+    },
+    "disc-cf5": {
+      "bytes": 10284,
+      "sha256": "a5bf0eda2406ba754e07f5dac44fcd075e01f5da3fa45bf49152235c094a5787"
+    },
+    "disc-cf6": {
+      "bytes": 12174,
+      "sha256": "73bbc1209952fd5485aacc4a09eded881436ba0ac8f4a0884eb3a697c0309651"
+    },
+    "box-crazy-flasher": {
+      "bytes": 53112,
+      "sha256": "c87010701279e08363e8ae646c5edf1f716fa1958add546cd8da0b9b2b1f2c27"
+    },
+    "shelf-body": {
+      "bytes": 524028,
+      "sha256": "44ed134f9827443e9f1da09b621d2fb681195352081a5a1b0b32dc2b6a468302"
+    },
+    "spine-dust": {
+      "bytes": 89547,
+      "sha256": "e9ac208e6f0e0fa49d94a3a1682870003438f6784b2385695fc67c1f80fbdb71"
+    },
+    "spine-babylon": {
+      "bytes": 94909,
+      "sha256": "6f77942b033fd5da97a33f2dec773361be1424dcceefe61c7cf9947c479d0d08"
+    },
+    "spine-guardian": {
+      "bytes": 70552,
+      "sha256": "4a465fbceeb31aa9ee6134bbd6eaad3caea9e9586c0224991add3b9bd78e0a78"
+    }
+  },
+  "nodes": [
+    "SHELF_body",
+    "SHELL_left",
+    "SHELL_right",
+    "SHELL_top",
+    "SHELL_bottom",
+    "FLOOR_archives",
+    "FLOOR_boxset",
+    "FLOOR_books_0",
+    "BOOK_dust",
+    "LABEL_dust",
+    "BOOK_babylon",
+    "LABEL_babylon",
+    "BOOK_guardian",
+    "LABEL_guardian",
+    "BOOK_sail-twins",
+    "LABEL_sail-twins",
+    "BOX_crazy-flasher",
+    "LABEL_box_crazy-flasher",
+    "TRAY_base",
+    "TRAY_lip",
+    "TRAY_left",
+    "TRAY_right",
+    "DISC_cf1",
+    "LABEL_cf1",
+    "DISC_cf2",
+    "LABEL_cf2",
+    "DISC_cf3",
+    "LABEL_cf3",
+    "DISC_cf4",
+    "LABEL_cf4",
+    "DISC_cf5",
+    "LABEL_cf5",
+    "DISC_cf6",
+    "LABEL_cf6"
+  ]
+}

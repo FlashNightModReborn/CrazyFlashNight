@@ -1,0 +1,86 @@
+{
+  "schema": "bookshelf-shelf.v1",
+  "camera": {
+    "gltfPosition": [
+      4,
+      22,
+      100
+    ],
+    "gltfTarget": [
+      0,
+      18.5,
+      -1
+    ],
+    "horizontalSpan": 68,
+    "minSpan": 12,
+    "maxSpan": 240
+  },
+  "lighting": {
+    "background": "#221c17"
+  },
+  "hoverPull": 1.2,
+  "archiveZone": {
+    "leftEdge": -22.55,
+    "floorY": 10.5,
+    "gap": 0.6,
+    "width": 4.2,
+    "height": 8.6,
+    "depth": 3.6,
+    "z": -0.9,
+    "max": 3,
+    "color": "#b89b6a",
+    "label": "#efe6cf"
+  },
+  "entries": {
+    "dust": {
+      "kind": "book",
+      "meshes": [
+        "BOOK_dust",
+        "LABEL_dust"
+      ]
+    },
+    "babylon": {
+      "kind": "book",
+      "meshes": [
+        "BOOK_babylon",
+        "LABEL_babylon"
+      ]
+    },
+    "guardian": {
+      "kind": "book",
+      "meshes": [
+        "BOOK_guardian",
+        "LABEL_guardian"
+      ]
+    },
+    "sail-twins": {
+      "kind": "book",
+      "meshes": [
+        "BOOK_sail-twins",
+        "LABEL_sail-twins"
+      ]
+    },
+    "crazy-flasher": {
+      "kind": "box",
+      "meshes": [
+        "BOX_crazy-flasher",
+        "LABEL_box_crazy-flasher",
+        "DISC_cf1",
+        "LABEL_cf1",
+        "DISC_cf2",
+        "LABEL_cf2",
+        "DISC_cf3",
+        "LABEL_cf3",
+        "DISC_cf4",
+        "LABEL_cf4",
+        "DISC_cf5",
+        "LABEL_cf5",
+        "DISC_cf6",
+        "LABEL_cf6"
+      ]
+    }
+  },
+  "assetHashes": {
+    "scene.glb": "189f1a2be759f427168b770cd2095fbd60bfdcfdce5b580edd8883c93e235f88"
+  }
+}

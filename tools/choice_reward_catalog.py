@@ -24,6 +24,11 @@ def words(element, key):
     return {v.strip() for v in element.findtext(key, '').split(',') if v.strip()}
 
 
+# Explicit authoring declaration; the value-axis deriver stays blocked on the
+# exchange-rate adjudication (docs/礼包配给UI精修与档级色彩-施工方案-2026-10-07.md §3).
+GRADES = ('low', 'medium', 'high', 'special')
+
+
 def item_catalog():
     result = {}
     for entry in ET.parse(ROOT / 'data/items/list.xml').findall('items'):
@@ -110,8 +115,9 @@ def validate(data):
             for m in ET.parse(directory / e.text).findall('mod')}
     bundles, pool_ids, item_names, used = {}, set(), set(), set()
     for bundle in data['bundles']:
-        keys = 'id name title description items' if 'items' in bundle else 'id name title description weapon mods consumables'
+        keys = 'id name title description grade items' if 'items' in bundle else 'id name title description grade weapon mods consumables'
         exact(bundle, keys + (' weaponCount' if 'weapon' in bundle and 'weaponCount' in bundle else '') + (' skills' if 'skills' in bundle else '') + (' kCost' if 'kCost' in bundle else ''), 'bundle')
+        if bundle['grade'] not in GRADES: raise ValueError('invalid bundle grade')
         integer(bundle.get('kCost', 0), 0, 1200, 'card K price')
         skills = bundle.get('skills', [])
         if type(skills) is not list or len(skills) > 2: raise ValueError('invalid skill rewards')
@@ -202,7 +208,7 @@ def runtime_catalog(catalog):
                 b = bundles[row['bundleId']]
                 if 'items' in b: entries = copy.deepcopy(b['items'])
                 else: entries = loadout_entries(b)
-                rows.append(dict(id=b['id'], weight=row['weight'], title=b['title'], description=b['description'], entries=entries, skills=copy.deepcopy(b.get('skills', [])), kCost=b.get('kCost', 0)))
+                rows.append(dict(id=b['id'], weight=row['weight'], title=b['title'], description=b['description'], grade=b['grade'], entries=entries, skills=copy.deepcopy(b.get('skills', [])), kCost=b.get('kCost', 0)))
             output['groups'].append(dict(draw=group['draw'], entries=rows))
         result.append(output)
     return result

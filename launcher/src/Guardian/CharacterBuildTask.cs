@@ -86,6 +86,10 @@ namespace CF7Launcher.Guardian
         private static readonly HashSet<string> ItemUseBlockedReasons = Set(
             "", "no_available_lane", "cooldown_unavailable",
             "player_unavailable", "reward_inbox_full", "service_not_ready");
+        // 礼包 mode 的封闭枚举（"" = 非礼包/药剂）。AS2 buildCandidateUseAction 下发，
+        // 纯展示字段：Web 按"结果是否知情"分级呈现，不进任何写协议。
+        private static readonly HashSet<string> ItemUsePackModes = Set(
+            "", "fixed", "independent", "chooseOne", "playerChoice");
 
         private readonly object _gate = new object();
         private readonly object _bindingGate = new object();
@@ -2814,10 +2818,20 @@ namespace CF7Launcher.Guardian
                 action != null ? action["command"] : null);
             string label = ReadString(
                 action != null ? action["label"] : null);
+            string packMode = ReadString(
+                action != null ? action["packMode"] : null);
+            bool hasPackMode = action != null && action["packMode"] != null;
             int sourceSlot;
             int sourceBackpackVersion;
             return IsExactObject(
-                    action, Set("command", "label", "source"))
+                    action,
+                    hasPackMode
+                        ? Set("command", "label", "source", "packMode")
+                        : Set("command", "label", "source"))
+                && (!hasPackMode
+                    || (ItemUsePackModes.Contains(packMode)
+                        && ((command == "consume") == (packMode.Length == 0))
+                        && ((command == "openChoice") == (packMode == "playerChoice"))))
                 && ((command == "open" && label == "打开")
                     || (command == "openChoice" && label == "自选配给")
                     || (command == "consume" && label == "服用"))

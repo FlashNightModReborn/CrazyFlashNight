@@ -56,7 +56,9 @@ function fixture() {
                 activeSlot:inRun?'bookrun_fixture':'fixture_a',role:inRun?'Andy Law':'测试角色',inRun,
                 originSlot:'fixture_a',exitRequired:inRun,canSwitch:true,unlocked:true,
                 pendingRun:qa.pending?'bookrun_fixture':'',lastReward:0,records:qa.records,
-                returningResult:qa.returningResult,slots:[{slot:'fixture_a',name:'测试角色'}]};
+                returningResult:qa.returningResult,slots:scenario==='overview'
+                    ? ['fixture_a','fixture_b','fixture_c','fixture_d','fixture_e'].map((slot,i)=>({slot,name:'测试角色'+'ABCDE'[i]}))
+                    : [{slot:'fixture_a',name:'测试角色'}]};
             if(message.cmd==='snapshot') {
                 qa.reads++;
                 if(scenario==='readfail' && qa.reads===2) Object.assign(base,{success:false,error:'disconnected',phase:undefined});
@@ -156,13 +158,12 @@ async function main(){
         .map(p=>path.join(p,'Microsoft/Edge/Application/msedge.exe')).find(fs.existsSync);
     const browser=await chromium.launch({headless:true,executablePath:edge,ignoreDefaultArgs:['--hide-scrollbars']}),report=[];
     try {
-        for(const [width,height] of [[640,360],[1024,576],[1600,900]]) for(const scenario of ['settle','unknown','readfail','return','series','records','empty']) {
+        for(const [width,height] of [[640,360],[1024,576],[1600,900]]) for(const scenario of ['overview','settle','unknown','readfail','return','series','records','empty']) {
             const page=await browser.newPage({viewport:{width,height},reducedMotion:'reduce'}),errors=[];
             page.on('pageerror',e=>errors.push(e.message));
             await page.goto('http://127.0.0.1:'+server.address().port+'/launcher/web/modules/bookshelf/dev/harness.html?scenario='+scenario);
             const primary=page.locator('.bookshelf-primary'), recover=page.locator('#bookshelf-recover');
             if(scenario==='series') {
-                await page.locator('#bookshelf-reader-tools [data-reader="library"]').click();
                 await page.locator('[data-book="crazy-flasher"]').click();
                 await primary.waitFor();
                 assert.strictEqual(await page.locator('[data-book="crazy-flasher"]').count(),1);
@@ -266,7 +267,6 @@ async function main(){
                 assert(await page.evaluate(()=>__bookQa.sent.filter(m=>m.cmd==='query').every(m=>m.payload.token==='bookshelf.preview.1')));
                 assert.strictEqual(await page.evaluate(()=>__bookQa.sent.filter(m=>m.cmd==='close').length),0);
             } else if(scenario==='records' || scenario==='empty') {
-                await page.locator('#bookshelf-reader-tools [data-reader="library"]').click();
                 await page.locator('[data-book="crazy-flasher"]').click();
                 await page.locator('.bookshelf-run-records').waitFor();
                 await assertEntryFirst(page);
@@ -320,6 +320,87 @@ async function main(){
                     await page.locator('[data-book="crazy-flasher"]').click();
                     assert.strictEqual(await page.locator('.bookshelf-last-run').count(),0);
                 }
+            } else if(scenario==='overview') {
+                await page.waitForFunction(()=>window.__bookshelfShelfQa&&__bookshelfShelfQa.state()==='ready'
+                    &&document.querySelectorAll('[data-book]').length===5);
+                await page.waitForTimeout(100);
+                const stats0=await page.evaluate(()=>__bookshelfShelfQa.stats());
+                assert(stats0.triangles>100&&stats0.triangles<4000&&stats0.calls>10&&stats0.calls<80,'graybox budget: '+JSON.stringify(stats0));
+                assert.deepStrictEqual(stats0.entries.slice(0,5),['dust','babylon','guardian','sail-twins','crazy-flasher']);
+                const archiveEntries=stats0.entries.slice(5);
+                assert.deepStrictEqual(archiveEntries,['slot:fixture_a','slot:fixture_b','slot:fixture_c','slot:__more__'],
+                    'slots capped to 3 folders plus a more-box: '+JSON.stringify(stats0.entries));
+                assert(stats0.loadedHashes['scene.glb'],'scene sha256 fingerprint recorded');
+                const fit=await page.evaluate(()=>{
+                    const canvas=document.querySelector('#bookshelf-overview canvas'),hostEl=document.querySelector('#bookshelf-overview');
+                    const rect=canvas.getBoundingClientRect(),box=hostEl.getBoundingClientRect();
+                    const shell=document.querySelector('.panel-scale-shell');
+                    const scale=parseFloat(shell.style.getPropertyValue('--panel-scale'))||1;
+                    const eff=Math.min(2,Math.max(.5,scale*(window.devicePixelRatio||1)));
+                    return {dw:Math.abs(rect.width-box.width),dh:Math.abs(rect.height-box.height),bw:canvas.width,bh:canvas.height,
+                        ew:Math.round(hostEl.clientWidth*eff),eh:Math.round(hostEl.clientHeight*eff)};
+                });
+                assert(fit.dw<=1&&fit.dh<=1,'canvas CSS matches overview host: '+JSON.stringify(fit));
+                assert(Math.abs(fit.bw-fit.ew)<=1&&Math.abs(fit.bh-fit.eh)<=1,'canvas backing matches display density: '+JSON.stringify(fit));
+                const frames0=stats0.frames;
+                await page.waitForTimeout(250);
+                assert.strictEqual(await page.evaluate(()=>__bookshelfShelfQa.stats().frames),frames0,'idle scene renders nothing within 250ms');
+                await page.waitForTimeout(700);
+                assert.strictEqual(await page.evaluate(()=>__bookshelfShelfQa.stats().frames),frames0,'idle scene renders nothing within 950ms');
+                await page.screenshot({path:path.join(out,'overview-'+width+'x'+height+'.png')});
+                const point=id=>page.evaluate(id=>{
+                    const target=__bookshelfShelfQa.targets()[id],canvas=document.querySelector('#bookshelf-overview canvas'),rect=canvas.getBoundingClientRect();
+                    return {x:rect.left+target.x/canvas.width*rect.width,y:rect.top+target.y/canvas.height*rect.height};
+                },id);
+                const dust=await point('dust');
+                await page.mouse.move(dust.x,dust.y);
+                await page.waitForFunction(()=>__bookshelfShelfQa.stats().highlighted==='dust');
+                assert(await page.evaluate(()=>__bookshelfShelfQa.stats().frames)>frames0,'hover renders on demand');
+                await page.mouse.click(dust.x,dust.y);
+                await page.waitForFunction(()=>document.querySelector('.bookshelf-panel').classList.contains('is-reading'));
+                assert.strictEqual(await page.evaluate(()=>__bookQa.writes),0,'3D spine selection never writes');
+                await page.locator('#bookshelf-reader-tools [data-reader="library"]').click();
+                await page.locator('#bookshelf-nav-overview').click();
+                await page.waitForFunction(()=>!document.querySelector('#bookshelf-overview').hidden);
+                const collection=await point('crazy-flasher');
+                await page.mouse.click(collection.x,collection.y);
+                await page.waitForFunction(()=>!document.querySelector('#bookshelf-detail').hidden);
+                assert.strictEqual(await page.locator('[data-chapter]').count(),6,'disc box opens the six-chapter detail');
+                assert.strictEqual(await page.evaluate(()=>__bookQa.sent.filter(m=>m.cmd==='commit').length),0,'3D picks send no commit');
+                await page.locator('#bookshelf-nav-overview').click();
+                await page.waitForFunction(()=>!document.querySelector('#bookshelf-overview').hidden);
+                const folder=await point('slot:fixture_a');
+                await page.mouse.click(folder.x,folder.y);
+                await page.waitForFunction(()=>!document.querySelector('#bookshelf-detail').hidden);
+                assert((await page.locator('#bookshelf-detail h2').textContent()).includes('测试角色'),'archive folder opens the slot detail');
+                assert.strictEqual(await page.evaluate(()=>__bookQa.writes),0,'archive pick never writes');
+                await page.locator('#bookshelf-nav-overview').click();
+                await page.waitForFunction(()=>!document.querySelector('#bookshelf-overview').hidden);
+                const more=await point('slot:__more__');
+                await page.mouse.click(more.x,more.y);
+                await page.waitForFunction(()=>document.activeElement&&!!document.activeElement.dataset.slot);
+                assert.strictEqual(await page.evaluate(()=>__bookQa.writes),0,'more-archives box never writes');
+                assert((await page.evaluate(()=>document.querySelector('#bookshelf-status').textContent)).includes('左侧'),'more box points at the DOM slot list');
+                await page.evaluate(()=>document.querySelector('#bookshelf-overview canvas').getContext('webgl2').getExtension('WEBGL_lose_context').loseContext());
+                await page.waitForFunction(()=>__bookshelfShelfQa.state()==='failed');
+                await page.locator('#bookshelf-shelf-retry').waitFor();
+                await page.screenshot({path:path.join(out,'overview-fallback-'+width+'x'+height+'.png')});
+                await page.locator('[data-book="crazy-flasher"]').click();
+                await page.waitForFunction(()=>!document.querySelector('#bookshelf-detail').hidden);
+                assert.strictEqual(await page.locator('[data-chapter]').count(),6,'DOM catalog remains the accessible equivalent after context loss');
+                await page.locator('#bookshelf-nav-overview').click();
+                await page.locator('#bookshelf-shelf-retry').click();
+                await page.waitForFunction(()=>__bookshelfShelfQa.state()==='ready');
+                const cycles=[];
+                for(let i=0;i<3;i++){
+                    await page.locator('#bookshelf-close').click();
+                    await page.evaluate(i=>Panels.open('bookshelf',{panelInstanceId:'bookshelf.reopen.s'+i,token:'bookshelf.reopen.s'+i}),i);
+                    await page.waitForFunction(()=>window.__bookshelfShelfQa&&__bookshelfShelfQa.state()==='ready');
+                    const s=await page.evaluate(()=>__bookshelfShelfQa.stats());
+                    cycles.push({geometries:s.geometries,textures:s.textures,calls:s.calls,triangles:s.triangles});
+                }
+                assert.strictEqual(new Set(cycles.map(JSON.stringify)).size,1,'reopen cycles keep stable resources: '+JSON.stringify(cycles));
+                assert.strictEqual(await page.evaluate(()=>__bookQa.writes),0,'overview scenario performs no writes');
             } else {
                 await primary.waitFor(); assert.strictEqual(await primary.textContent(),'核对上次旅程');
                 await primary.click(); await recover.waitFor(); await recover.click();
@@ -358,7 +439,7 @@ async function main(){
             assert.deepStrictEqual(errors,[]);report.push({width,height,scenario,passed:true});await page.close();
         }
         fs.writeFileSync(path.join(out,'report.json'),JSON.stringify(report,null,2)+'\n');
-        console.log('Bookshelf flow browser harness: 21 scenarios passed at 3 viewports.');
+        console.log('Bookshelf flow browser harness: '+report.length+' scenarios passed at 3 viewports.');
     } finally {await browser.close();}
 }
 main().catch(e=>{console.error(e);process.exitCode=1;}).finally(()=>server.close());

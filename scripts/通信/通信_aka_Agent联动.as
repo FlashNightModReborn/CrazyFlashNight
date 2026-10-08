@@ -129,11 +129,35 @@ _root.agent.注册同步轮询 = function():Void {
 };
 _root.agent.启动外部RAG工具 = function():Void {
     _root.最上层发布文字提示("正在启动通讯终端，请稍后……");
-    // 退出全屏模式，确保浏览器窗口能正常弹出
-    fscommand("fullscreen", "false");
-    // 使用fscommand执行fscommand目录下的代理启动器
-    // fscommand("exec")只能在独立Flash Player中工作，且只能执行fscommand子目录中的文件
-    fscommand("exec", "launch_rag.bat");
+    // 游戏内嵌集成（阶段一）：改走 Host panel_request —— Host 负责确保 cfn-rag 就绪并把
+    // 当前存档绑定给终端，随后以外层 ragchat 面板 iframe 承载终端页面；就绪/绑定失败由
+    // Host 经 gameCommand ragChatUnavailable 回 toast，本函数不再直接拉起外部浏览器窗口。
+    if (typeof _root.server.sendSocketMessage != "function") {
+        _root.最上层发布文字提示("通讯终端暂不可用，请稍后重试。");
+        return;
+    }
+    var savePath:String = _root.savePath == undefined ? "" : String(_root.savePath);
+    var sent:Boolean = _root.server.sendSocketMessage(
+        org.flashNight.arki.ui.PanelRequestEnvelope.build(
+            "ragchat", "agent_console", [], [{name:"savePath", value:savePath}]
+        )
+    );
+    if (!sent) {
+        _root.最上层发布文字提示("通讯终端暂不可用，请稍后重试。");
+    }
+    // 旧外部拉起路径（阶段五删除）：
+    // fscommand("fullscreen", "false");
+    // fscommand("exec", "launch_rag.bat");
+};
+
+// Host→AS2 失败回执：面板未开（或前置就绪失败）时给出明确提示；纯提示，不写任何游戏状态。
+if (_root.gameCommands == undefined) _root.gameCommands = {};
+_root.gameCommands["ragChatUnavailable"] = function(params:Object):Void {
+    var message:String = (params == undefined || params.message == undefined) ? "" : String(params.message);
+    if (message == "") {
+        message = "通讯终端暂不可用，请稍后重试。";
+    }
+    _root.最上层发布文字提示(message);
 };
 
 _root.agent.检测npc状态库文件();

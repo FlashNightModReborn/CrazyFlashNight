@@ -2,31 +2,39 @@
  * 怪物标识普查与反推 CLI — 长期复用的数值工具入口。
  *
  * 用法：
- *   npm run monster-census                     清点全部敌人模板，写 reports/monster-flag-census.json
- *     --markdown <路径>                        同时输出人工复核用表格（默认 reports/monster-flag-census.md）
- *     --tier-hints <路径.json>                 读入 spritename → 档次系数 的人工标注
- *     --fallback-tier <n>                      未标注档次时统一按该档次反推
- *     --only 敌人-A,敌人-B                      只反推指定模板
- *     --no-solve                              只清点缺项，不跑反推
- *     --scan-tier                             对未定档的行做档次扫描（慢，仅作人工定档排序参考）
- *   npm run monster-solve -- 敌人-体育老师 --stage 4 --tier 12 --known 速度系数=2.5
- *   npm run monster-solve -- 敌人-XX --stage 3 --scan              只扫描档次候选
+ *   npm run monster-census                     清点全部敌人模板并按面板反推，写 reports/monster-flag-census.json
+ *     --markdown <路径>                         同时输出人工复核用表格（默认 reports/monster-flag-census.md）
+ *     --only 敌人-A,敌人-B                       只反推指定模板
+ *     --free-tier                                 让 档次系数 回到搜索空间（只放开 humanTierFactors 点名的行，人工权威其余格仍钉住）
+ *     --no-solve                                只清点缺项，不跑反推
+ *   npm run monster-solve -- 敌人-体育老师 [--stage 4] [--known 档次系数=9,速度系数=2.5]
  *   npm run monster-flags-apply -- --from reports/monster-flag-census.json [--write]
- *     --only 敌人-A,敌人-B                      只写指定模板，用于小批试点
+ *     --only 敌人-A,敌人-B                       只写指定模板，用于小批试点
+ *
+ * 反推的分工见 core/formulas/monster-solve.ts：档次系数/成长系数/高攻低血防系数/高防低血系数 由面板联立拟合，
+ * 攻速系数/攻击倍率/段数系数/霸体系数 只认攻击与击退元件的实测值。人工权威按 data/monster-flag-ledger.json 判 ——
+ * HEAD 已提交的标识里，台账登记过同值的格是工具上一批自己写的，本次可以重算覆盖；其余（含人工认领格）不覆盖。
  */
 import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 
-import { scanTierFactor, snapMonsterCoefficient, solveMonsterCoefficients, speedFactorFromMoveSpeed } from "@cf7-balance-tool/core";
-import type { MonsterInput } from "@cf7-balance-tool/core";
+import { MONSTER_COEFFICIENT_RANGES, fitMonsterCoefficients, snapMonsterCoefficient } from "@cf7-balance-tool/core";
+import type { MonsterCoefficientName, MonsterInput } from "@cf7-balance-tool/core";
 import {
+  MONSTER_COEFFICIENT_TO_FLAG,
   MONSTER_FLAG_TO_COEFFICIENT,
   applyMonsterFlagUpdates,
   censusMonsterFlags,
+  fitPinnedCoefficients,
   loadMonsterCensusConfig,
+  recordToolWrites,
+  saveMonsterFlagLedger,
+  toolFlagProposal,
 } from "@cf7-balance-tool/xml-io";
 import type { MonsterCensusOptions, MonsterFlagCensus, MonsterFlagRow, MonsterFlagUpdate } from "@cf7-balance-tool/xml-io";
+
+import { LEDGER_PATH, headFlags, humanAuthority, readLedger, repoRelative } from "./monster-flag-provenance.js";
 
 const TOOL_ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "../../..");
 const REPO_ROOT = path.resolve(TOOL_ROOT, "../..");
@@ -34,7 +42,7 @@ const CONFIG_PATH = path.join(TOOL_ROOT, "data", "monster-census.json");
 const CENSUS_PATH = path.join(TOOL_ROOT, "reports", "monster-flag-census.json");
 const CENSUS_MARKDOWN_PATH = path.join(TOOL_ROOT, "reports", "monster-flag-census.md");
 
-const COEFFICIENT_ORDER: Array<keyof MonsterInput> = [
+const COEFFICIENT_ORDER: MonsterCoefficientName[] = [
   "stage",
   "tierFactor",
   "growthFactor",
@@ -82,16 +90,25 @@ function main(argv: string[]): void {
 function runCensus(flags: Record<string, string | boolean>, positional: string[]): void {
   const config = loadMonsterCensusConfig(CONFIG_PATH);
   const options: MonsterCensusOptions = {
-    ...(typeof flags["tier-hints"] === "string" ? { tierHints: readTierHints(path.resolve(TOOL_ROOT, flags["tier-hints"])) } : {}),
-    ...(flags["fallback-tier"] === undefined ? {} : { fallbackTier: Number(flags["fallback-tier"]) }),
     ...(typeof flags.only === "string" ? { only: splitList(flags.only) } : positional.length > 0 ? { only: positional } : {}),
-    ...(flags["no-solve"] === true ? { skipSolve: true } : {}),
-    ...(flags["scan-tier"] === true ? { scanTier: true } : {}),
+    ...(flags["no-solve"] === true ? { skipFit: true } : {}),
+    ...(flags["free-tier"] === true ? { freeTier: true } : {}),
+    humanFlags: humanAuthority(REPO_ROOT, config),
   };
 
   const census = censusMonsterFlags(REPO_ROOT, config, options);
   writeJson(CENSUS_PATH, census);
-  console.log(`普查完成：${census.totals.templates} 个模板，完整 ${census.totals.complete}，残缺 ${census.totals.partial}，无标识 ${census.totals.missing}，阶段可查 ${census.totals.stageResolved}，已反推 ${census.totals.solved}`);
+  console.log(
+    `普查完成：${census.totals.templates} 个模板，完整 ${census.totals.complete}，残缺 ${census.totals.partial}，无标识 ${census.totals.missing}，阶段可查 ${census.totals.stageResolved}，已反推 ${census.totals.fitted}，无需标识 ${census.totals.waived}，阶段 0 排除 ${census.totals.excluded}`,
+  );
+  console.log(`  人工权威：${authorityNote(options.humanFlags ?? {})}`);
+  const estimated = config.estimatedTierTemplates ?? [];
+  if (estimated.length > 0) {
+    console.log(`  HEAD 的 档次系数 按预估处理、本次重算的 ${estimated.length} 行：${estimated.join("、")}（同一行其余人工权威标识照旧钉住）`);
+  }
+  if (options.freeTier === true) {
+    console.log(`  本批放开档次系数进搜索：配置点名的 ${Object.keys(config.humanTierFactors ?? {}).length} 行档次不再钉住，人工权威其余格照旧钉住`);
+  }
   console.log(`JSON → ${CENSUS_PATH}`);
 
   const markdownPath = typeof flags.markdown === "string" ? path.resolve(TOOL_ROOT, flags.markdown) : CENSUS_MARKDOWN_PATH;
@@ -105,53 +122,53 @@ function runCensus(flags: Record<string, string | boolean>, positional: string[]
 function runSolve(flags: Record<string, string | boolean>, positional: string[]): void {
   const [spritename] = positional;
   if (!spritename) throw new Error("solve 需要指定 spritename");
-  if (flags.stage === undefined && flags.tier === undefined) throw new Error("solve 需要 --stage（或同时给 --tier）");
 
   const config = loadMonsterCensusConfig(CONFIG_PATH);
-  const census = censusMonsterFlags(REPO_ROOT, config, { skipSolve: true, only: [spritename] });
+  const census = censusMonsterFlags(REPO_ROOT, config, { skipFit: true, only: [spritename], humanFlags: humanAuthority(REPO_ROOT, config) });
   const row = census.rows.find((entry) => entry.spritename === spritename);
   if (!row) throw new Error(`普查里找不到 ${spritename}`);
 
-  const stage = Number(flags.stage ?? row.stageNumber);
-  if (!Number.isFinite(stage)) throw new Error(`${spritename} 没有阶段，请用 --stage 指定`);
-  const known = parseKnown(flags.known);
-  const moveSpeed = row.moveSpeed === undefined ? {} : { moveSpeed: row.moveSpeed };
+  const stage = flags.stage === undefined ? row.stageNumber : Number(flags.stage);
+  if (stage === undefined || !Number.isFinite(stage)) throw new Error(`${spritename} 没有阶段，请用 --stage 指定`);
 
-  if (flags.scan === true || flags.tier === undefined) {
-    const ranked = scanTierFactor({ stage, panel: row.panel, known, ...moveSpeed });
-    console.log(`${spritename}（阶段 ${stage}）档次候选（按面板拟合误差排序，仅供人工定档参考）：`);
-    for (const candidate of ranked.slice(0, Number(flags.limit ?? 6))) {
-      console.log(`  档次 ${candidate.tierFactor}：拟合误差 ${Math.round(candidate.fitError * 1000) / 10}%`);
-    }
-    console.log("  注意：没有其余标识时档次单独拟合会整体偏低，请结合样貌与招式定档。");
-    if (flags.tier === undefined) return;
-  }
-
-  const result = solveMonsterCoefficients({
+  const known: Partial<MonsterInput> = { ...fitPinnedCoefficients(row), ...parseKnown(flags.known) };
+  const result = fitMonsterCoefficients({
     stage,
-    tierFactor: Number(flags.tier),
     panel: row.panel,
     known,
-    ...moveSpeed,
+    ...(row.moveSpeed === undefined ? {} : { moveSpeed: row.moveSpeed }),
   });
 
-  console.log(`${spritename}（阶段 ${stage}，档次 ${flags.tier}）`);
+  console.log(`${spritename}（阶段 ${stage}）四元联立反推`);
+  console.log(`  面板参与：${result.equations} 项／自由量：${result.freeCoefficients.map((name) => MONSTER_COEFFICIENT_TO_FLAG[name]).join("、") || "无"}`);
+  console.log(`  拟合误差（空手/HP/防御，经验不计入）：${Math.round(result.fitError * 1000) / 10}%`);
   for (const name of COEFFICIENT_ORDER) {
     const estimate = result.estimates.find((entry) => entry.name === name);
-    const flagName = Object.keys(MONSTER_FLAG_TO_COEFFICIENT).find((key) => MONSTER_FLAG_TO_COEFFICIENT[key] === name);
-    console.log(`  ${flagName ?? name}: ${result.coefficients[name]}${estimate ? `（${estimate.confidence}｜${estimate.basis}）` : ""}`);
+    const flag = MONSTER_COEFFICIENT_TO_FLAG[name];
+    const snapped = snapMonsterCoefficient(result.coefficients[name]).value;
+    const range = MONSTER_COEFFICIENT_RANGES[name];
+    const outside = result.coefficients[name] < range[0] || result.coefficients[name] > range[1] ? `｜超参考区间 ${range[0]}~${range[1]}` : "";
+    console.log(`  ${flag}：${result.coefficients[name]}${snapped !== result.coefficients[name] ? `（写盘取 ${snapped}）` : ""}${estimate ? `｜${CONFIDENCE_LABEL[estimate.confidence] ?? estimate.confidence}` : "｜未定"}${outside}`);
   }
-  console.log(`  未定：${result.unresolved.join("、") || "无"}`);
-  if (result.attackTempoTarget !== undefined) console.log(`  攻击节奏乘积目标：${result.attackTempoTarget}`);
+  console.log(`  未定（缺观测或面板定不了）：${result.unresolved.map((name) => MONSTER_COEFFICIENT_TO_FLAG[name]).join("、") || "无"}`);
   for (const residual of result.residuals) {
     console.log(`  ${PANEL_LABELS[residual.field] ?? residual.field}：面板 ${residual.observed} / 复算 ${round(residual.computed, 1)}（差 ${Math.round(residual.relativeError * 1000) / 10}%）`);
+  }
+  for (const residual of result.expResiduals) {
+    console.log(`  ${PANEL_LABELS[residual.field] ?? residual.field}（只对照，不参与拟合）：面板 ${residual.observed} / 复算 ${round(residual.computed, 1)}（差 ${Math.round(residual.relativeError * 1000) / 10}%）`);
   }
   result.notes.forEach((note) => console.log(`  提示：${note}`));
 }
 
+const CONFIDENCE_LABEL: Record<string, string> = {
+  given: "人工或观测钉住",
+  "definition-band": "移动速度定义档",
+  "panel-fit": "面板反推",
+};
+
 function runApply(flags: Record<string, string | boolean>, positional: string[]): void {
   const source = typeof flags.from === "string" ? flags.from : positional[0];
-  if (!source) throw new Error("apply 需要给出候选 JSON 路径（--from <路径>）");
+  if (!source) throw new Error("apply 需要给出普查 JSON 路径（--from <路径>）");
   let updates = readUpdates(path.resolve(TOOL_ROOT, source));
   if (typeof flags.only === "string") {
     const only = new Set(splitList(flags.only));
@@ -167,7 +184,22 @@ function runApply(flags: Record<string, string | boolean>, positional: string[])
     return;
   }
   const written = applyMonsterFlagUpdates(REPO_ROOT, updates, config);
+  // 写盘之后把这批登记进台账：下一批读 HEAD 时才知道这些格是工具自己写的，不是人工打的标
+  saveMonsterFlagLedger(LEDGER_PATH, recordToolWrites(readLedger(), updates));
   console.log(`已写入 ${written.length} 个文件：\n${written.map((file) => `  ${path.relative(REPO_ROOT, file)}`).join("\n")}`);
+  console.log(`  台账已登记工具自写 ${updates.reduce((sum, update) => sum + Object.keys(update.flags).length, 0)} 格 → ${repoRelative(REPO_ROOT, LEDGER_PATH)}`);
+}
+
+/** 人工权威这行日志给口径：HEAD 已提交的格减去台账登记的自写格，再加人工认领的格。 */
+function authorityNote(authority: Record<string, Record<string, number>>): string {
+  const cells = (map: Record<string, Record<string, number>>) =>
+    Object.values(map).reduce((sum, fields) => sum + Object.keys(fields).length, 0);
+  const ledger = readLedger();
+  const committed = headFlags(REPO_ROOT, loadMonsterCensusConfig(CONFIG_PATH));
+  return (
+    `git HEAD 已提交 ${cells(committed)} 格，其中工具上一批自写 ${cells(ledger.writes)} 格、人工认领 ${cells(ledger.claims)} 格，` +
+    `本次算人工权威 ${cells(authority)} 格（${Object.keys(authority).length} 个模板）`
+  );
 }
 
 function writeJson(target: string, value: unknown): void {
@@ -179,96 +211,40 @@ function splitList(value: string): string[] {
   return value.split(",").map((entry) => entry.trim()).filter(Boolean);
 }
 
-function readTierHints(filePath: string): Record<string, number> {
-  const raw = JSON.parse(fs.readFileSync(filePath, "utf8")) as Record<string, unknown>;
-  const hints: Record<string, number> = {};
-  for (const [key, value] of Object.entries(raw)) {
-    const number = typeof value === "number" ? value : Number(value);
-    if (Number.isFinite(number)) hints[key] = number;
-  }
-  return hints;
-}
-
-/** 候选文件既接受普查 JSON 的子集，也接受人工整理的 spritename → 标识 映射。 */
+/** 候选文件既接受普查 JSON，也接受人工整理的 spritename → 标识 映射。 */
 function readUpdates(filePath: string): MonsterFlagUpdate[] {
   const raw = JSON.parse(fs.readFileSync(filePath, "utf8")) as unknown;
   if (Array.isArray(raw)) return raw as MonsterFlagUpdate[];
   if (isRecord(raw) && Array.isArray(raw.rows)) {
     return (raw.rows as MonsterFlagRow[])
-      .map((row) => ({
-        sourceFile: row.sourceFile,
-        spritename: row.spritename,
-        flags: row.solve === undefined ? mechanicalFlags(row) : proposalFlags(row),
-      }))
+      .map((row) => ({ sourceFile: row.sourceFile, spritename: row.spritename, flags: toolFlagProposal(row) }))
       .filter((update) => Object.keys(update.flags).length > 0);
   }
   throw new Error(`候选文件格式不认识：${filePath}`);
 }
 
-function proposalFlags(row: MonsterFlagRow): Record<string, number> {
-  const solve = row.solve;
-  if (!solve) return {};
-  const flags: Record<string, number> = {};
-  for (const [field, name] of Object.entries(MONSTER_FLAG_TO_COEFFICIENT)) {
-    if (row.flags[field] !== undefined) continue;
-    // fallback 档次只是让反推跑起来的假设，不是设计判断，不能写进数据。
-    if (name === "tierFactor" && solve.tierSource === "fallback") continue;
-    if (solve.unresolved.includes(name)) continue;
-    if (name === "atkSpeedFactor" || name === "atkMultiplier" || name === "segmentFactor") continue;
-    // 连续解不能直接进数据：先归到 整数 → 半档 → 十分档 的取值词表上。
-    flags[field] = snapMonsterCoefficient(solve.coefficients[name]).value;
-  }
-  return flags;
-}
-
 /** 展示反推候选：归档后的取值后面括号给出连续解，便于人工判断半档是不是真有必要。 */
 function proposalCells(row: MonsterFlagRow): string[] {
-  const solve = row.solve;
-  if (!solve) return [];
+  const fit = row.fit;
+  if (fit === undefined) return [];
   const cells: string[] = [];
-  for (const [field, value] of Object.entries(proposalFlags(row))) {
+  for (const [field, value] of Object.entries(toolFlagProposal(row))) {
+    if (fit.freeCoefficients.length === 0 && field !== "阶段" && field !== "速度系数") continue;
     const name = MONSTER_FLAG_TO_COEFFICIENT[field];
-    const continuous = name === undefined ? value : solve.coefficients[name];
-    cells.push(`${field} ${value}${Math.abs(continuous - value) > 1e-9 ? `（连续 ${continuous.toFixed(3)}）` : ""}`);
+    const continuous = name === undefined ? value : fit.coefficients[name];
+    if (Math.abs(continuous - value) <= 1e-9) {
+      cells.push(`${field} ${value}`);
+      continue;
+    }
+    cells.push(`${field} ${value}（连续 ${continuous.toFixed(3)}）`);
   }
   return cells;
 }
 
-/** 不需要人工输入就能定的标识：阶段来自首次出场规则，速度系数来自 Excel D15 的移动速度档次。 */
-function mechanicalFlags(row: MonsterFlagRow): Record<string, number> {
-  const flags: Record<string, number> = {};
-  if (row.flags["阶段"] === undefined && row.stageNumber !== undefined) Object.assign(flags, { 阶段: row.stageNumber });
-  if (row.flags["速度系数"] === undefined && row.moveSpeed) {
-    Object.assign(flags, { 速度系数: speedFactorFromMoveSpeed(row.moveSpeed.min, row.moveSpeed.max).value });
-  }
-  return flags;
-}
-
-function autoFillFlags(row: MonsterFlagRow): string[] {
-  return Object.entries(mechanicalFlags(row)).map(([field, value]) => `${field} ${value}`);
-}
-
-function parseKnown(value: string | boolean | undefined): Partial<MonsterInput> {
-  if (typeof value !== "string") return {};
-  const known: Record<string, number> = {};
-  for (const pair of value.split(",")) {
-    const [field, number] = pair.split("=");
-    const name = MONSTER_FLAG_TO_COEFFICIENT[(field ?? "").trim()];
-    const parsed = Number(number);
-    if (name === undefined || !Number.isFinite(parsed)) throw new Error(`--known 需要 标识字段=数值 形式：${pair}`);
-    Object.assign(known, { [name]: parsed });
-  }
-  return known as Partial<MonsterInput>;
-}
-
-/** 备注列把「速度系数定义档与面板/标识不符」这类必须人工回查的报警顶到前面，再附原有首条说明。 */
 function notesCell(row: MonsterFlagRow): string {
-  if (row.skipReason) return row.skipReason;
-  const notes = row.solve?.notes ?? [];
-  const first = notes[0] ?? "";
-  const speed = notes.find((note) => note.includes("速度系数定义档"));
-  if (!speed || speed === first) return first;
-  return `${speed}；${first}`;
+  if (row.waived === true) return "配置认定无需标识";
+  if (row.skipReason !== undefined) return row.skipReason;
+  return row.fit?.notes[0] ?? "";
 }
 
 function renderMarkdown(census: MonsterFlagCensus): string {
@@ -280,15 +256,20 @@ function renderMarkdown(census: MonsterFlagCensus): string {
   lines.push("");
   lines.push(`- 纳入模板：${census.totals.templates}（来源 ${census.sourceFiles.length} 个文件，排除 ${census.excludedSourceFiles.join("、")}）`);
   lines.push(`- 标识完整 ${census.totals.complete}／残缺 ${census.totals.partial}／全无 ${census.totals.missing}`);
-  lines.push(`- 阶段可查 ${census.totals.stageResolved}，已产出反推候选 ${census.totals.solved}，跳过 ${census.totals.skipped}`);
+  lines.push(`- 阶段可查 ${census.totals.stageResolved}，已产出反推候选 ${census.totals.fitted}，跳过 ${census.totals.skipped}，无需标识 ${census.totals.waived}，阶段 0 排除 ${census.totals.excluded}`);
+  lines.push(`- 阶段 0 的 ${census.totals.excluded} 行是制作组写在行内的排除标记：标识里只留实测的攻速/攻击倍率/段数系数/霸体系数，不反推、不写回、不进查验表。`);
   lines.push(`- 无需人工输入即可补：阶段 ${autoStage} 个（首次出场规则）、速度系数 ${autoSpeed} 个（Excel D15 移动速度档次）`);
+  lines.push("- 反推的自由量：档次系数、成长系数、高攻低血防系数、高防低血系数；攻速系数/攻击倍率/段数系数/霸体系数 只认实测值。");
+  lines.push("- 逐行查验与改数都在 `data/monster-flag-table.csv`（`npm run monster-flags-csv` 出，`npm run monster-flags-table-apply` 回写）。");
   lines.push(`- 无出场记录（多为魔神图等被排除关卡）：${census.unreferencedSprites.length}`);
   lines.push("");
 
+  // 阶段 0 的行不进分组：它们有观测标识但不是待反推的账，混在"完整/残缺"里会把统计带偏。
+  const onBoard = census.rows.filter((row) => row.excluded !== true);
   const groups: Array<[string, MonsterFlagRow[]]> = [
-    ["标识完整", census.rows.filter((row) => row.status === "complete")],
-    ["标识残缺", census.rows.filter((row) => row.status === "partial")],
-    ["完全没有标识", census.rows.filter((row) => row.status === "missing")],
+    ["标识完整", onBoard.filter((row) => row.status === "complete")],
+    ["标识残缺", onBoard.filter((row) => row.status === "partial")],
+    ["完全没有标识", onBoard.filter((row) => row.status === "missing")],
   ];
 
   for (const [title, rows] of groups) {
@@ -299,18 +280,31 @@ function renderMarkdown(census: MonsterFlagCensus): string {
       lines.push("");
       continue;
     }
-    lines.push("| 模板 | 来源 | 缺的标识 | 阶段 | 阶段依据 | 可自动补 | 档次候选 | 反推候选 | 复算最大偏差 | 备注 |");
-    lines.push("| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |");
+    lines.push("| 模板 | 来源 | 缺的标识 | 阶段 | 阶段依据 | 反推候选 | 复算最大偏差 | 备注 |");
+    lines.push("| --- | --- | --- | --- | --- | --- | --- | --- |");
     for (const row of rows) {
       const proposal = proposalCells(row).join("；");
-      const worst = row.solve?.residuals[0];
-      const candidates = (row.tierCandidates ?? []).map((entry) => `${entry.tierFactor}(${Math.round(entry.fitError * 100)}%)`).join(" ");
-      const auto = autoFillFlags(row).join("；");
+      const worst = row.fit?.residuals[0];
       const allFlags = row.missingFlags.length >= ALL_FLAG_FIELDS;
       lines.push(
-        `| ${row.spritename} | ${row.sourceFile} | ${row.missingFlags.length === 0 ? "—" : allFlags ? `全部 ${ALL_FLAG_FIELDS} 项` : row.missingFlags.join("、")} | ${row.stageNumber ?? "—"} | ${row.stageSource === "flag" ? "沿用已有标识" : (row.stageBasis ?? "—")} | ${auto || "—"} | ${candidates || "—"} | ${proposal || "—"} | ${worst ? `${PANEL_LABELS[worst.field] ?? worst.field} ${Math.round(worst.relativeError * 100)}%` : "—"} | ${notesCell(row)} |`,
+        `| ${row.spritename} | ${row.sourceFile} | ${row.missingFlags.length === 0 ? "—" : allFlags ? `全部 ${ALL_FLAG_FIELDS} 项` : row.missingFlags.join("、")} | ${row.stageNumber ?? "—"} | ${row.stageSource === "flag" ? "沿用已有标识" : (row.stageBasis ?? "—")} | ${proposal || "—"} | ${worst ? `${PANEL_LABELS[worst.field] ?? worst.field} ${Math.round(worst.relativeError * 100)}%` : "—"} | ${notesCell(row)} |`,
       );
     }
+    lines.push("");
+  }
+
+  const outOfRangeRows = census.rows.filter((row) => row.fit?.outOfRange !== undefined);
+  if (outOfRangeRows.length > 0) {
+    const tally = new Map<string, number>();
+    for (const row of outOfRangeRows) {
+      for (const entry of row.fit?.outOfRange ?? []) {
+        tally.set(MONSTER_COEFFICIENT_TO_FLAG[entry.name], (tally.get(MONSTER_COEFFICIENT_TO_FLAG[entry.name]) ?? 0) + 1);
+      }
+    }
+    lines.push(`## 反推值超出参考区间（${outOfRangeRows.length} 行）`);
+    lines.push("");
+    lines.push(`- 按系数计：${[...tally].map(([flag, count]) => `${flag} ${count} 行`).join("、")}`);
+    lines.push("- 区间是参考区间，取值已按实算登记；明细见 `data/monster-flag-out-of-range.csv`，改数值改 `data/monster-flag-table.csv`。");
     lines.push("");
   }
 
@@ -324,6 +318,19 @@ function renderMarkdown(census: MonsterFlagCensus): string {
   }
 
   return `${lines.join("\n")}\n`;
+}
+
+function parseKnown(value: string | boolean | undefined): Partial<MonsterInput> {
+  if (typeof value !== "string") return {};
+  const known: Record<string, number> = {};
+  for (const pair of value.split(",")) {
+    const [field, number] = pair.split("=");
+    const name = MONSTER_FLAG_TO_COEFFICIENT[(field ?? "").trim()];
+    const parsed = Number(number);
+    if (name === undefined || !Number.isFinite(parsed)) throw new Error(`--known 需要 标识字段=数值 形式：${pair}`);
+    Object.assign(known, { [name]: parsed });
+  }
+  return known as Partial<MonsterInput>;
 }
 
 function parseFlags(argv: string[]): { flags: Record<string, string | boolean>; positional: string[] } {

@@ -37,6 +37,23 @@ namespace CF7Launcher.Tests.Config
             Assert.Equal(JObject.Parse(json).Value<bool?>("introEnabled") ?? false,loaded.IntroEnabled);
         }
 
+        [Fact]
+        public void ReducedPresentationSurvivesRestartAndDefaultsOff()
+        {
+            var first = Reload();
+            Assert.False(first.ReducedPresentation);
+            first.ReducedPresentation = true;
+            Assert.True(first.Save());
+            Assert.Equal(JTokenType.Boolean,
+                JObject.Parse(File.ReadAllText(PreferenceFile))["reducedPresentation"].Type);
+            Assert.True(Reload().ReducedPresentation);
+            Directory.CreateDirectory(PreferenceDirectory);
+            File.WriteAllText(PreferenceFile, "{\"introEnabled\":true}");
+            var legacy = Reload();
+            Assert.False(legacy.ReducedPresentation);
+            Assert.True(legacy.IntroEnabled);
+        }
+
         public void Dispose()
         {
             string target = Path.GetFullPath(_root);

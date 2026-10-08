@@ -30,6 +30,7 @@ var CraftingPanel = (function() {
     var _config = (typeof window !== 'undefined' && window.__CRAFTING_CONFIG__) || {};
     var ORGANIZER_DEPS = [
         'modules/inventory-runtime.js',
+        'modules/grade-presentation.js',
         'modules/inventory-ui.js',
         'modules/inventory-workbench-config.js',
         'modules/inventory-workbench-quick-transfer.js',

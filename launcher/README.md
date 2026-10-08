@@ -227,6 +227,7 @@ Runner 验证 exact SDK resolver 与串行 xUnit 策略，再从仓库根执行 
 | `Fonts/` | 字体投影、来源优先级、完整性、fallback 与重启边界 |
 | `Guardian/` | 窗口、HUD、Panel、焦点、DPI、地图和输入 |
 | `Infrastructure/` | 进程、文件、时间和平台设施 |
+| `RagTerminal/` | 通讯终端 exe 发现/拉起/健康轮询与存档绑定 |
 | `Save/` | Protocol 2、SOL 定位、备份与 repair |
 | `Tasks/` | Flash/Host 领域任务及解析边界 |
 <!-- launcher-test-taxonomy:end -->
@@ -279,6 +280,7 @@ candidate 与正式入口旅程按 [#runtime](../agentsDoc/testing-guide.md#runt
 | `diagEtwDwm` | `false` / `false` | `CF7_DIAG_ETW_DWM` | DWM ETW 计数，需要管理员 |
 | `diagReportIntervalSec` | `5` / `5` | `CF7_DIAG_INTERVAL_SEC` | 诊断报告周期，clamp 1–60 秒 |
 | `webOverlayHotReload` | `false` / `false` | `CF7_WEB_HOTRELOAD` | 开发热重载，玩家版保持关闭 |
+| `ragTerminalExePath` | 空 / 缺省 | `CF7_RAG_EXE` | 通讯终端 exe 路径覆盖；空＝按安装根通配 `CFN-RAG-v*.exe` 自动发现 |
 <!-- launcher-config-registry:end -->
 `CF7_DIAG_FOCUS_PROBE` 是 `UiFreezeProbe` 的独立环境急停，不属于 `AppConfig` key。生产默认值、诊断建议和硬件边界以 `config.toml` 注释为准，README 不复制长注释。用户偏好落在 `%LOCALAPPDATA%/CF7FlashNight/launcher_user_prefs.json`；项目根同名文件只作一次性 legacy 导入。
 
@@ -287,7 +289,7 @@ candidate 与正式入口旅程按 [#runtime](../agentsDoc/testing-guide.md#runt
 记录区分探针线程调度、UI 排队、鼠标钩子分发、光标绘制及同步窗口调用，每个窗口最多 64 条尖刺，汇总保留省略数量与峰值。
 不记录鼠标移动坐标，不注入输入；耗时不是显示器实际呈现延迟。细节见 [U12 记录](../docs/U12过场Web迁移与人力验收-2026-10-01.md)。
 <!-- launcher-user-prefs-registry:start -->
-当前字段为 `lastPlayedSlot`、`introEnabled`、`sfxEnabled`、`ambientEnabled`、`tutorialsAutoOpen`、`uiFontScale`、`suppressedHighDpiWarningRaw`、`mapDisplayPreference`、`hitNumberMode` 和 `hitNumberWorldRowLimit`。
+当前字段为 `lastPlayedSlot`、`introEnabled`、`sfxEnabled`、`ambientEnabled`、`tutorialsAutoOpen`、`uiFontScale`、`suppressedHighDpiWarningRaw`、`mapDisplayPreference`、`hitNumberMode`、`hitNumberWorldRowLimit` 和 `reducedPresentation`。
 <!-- launcher-user-prefs-registry:end -->
 欢迎页的公开 Web 写入必须经过 `config_set` 白名单；游戏设置使用绑定实例的 `settings.host_set` 域白名单，Host-only 字段不得因前端同名而获得写权限。
 `tutorialsAutoOpen` 默认开启，作用于全部自动教程与玩家槽位。自动教程底栏的“关闭教程弹窗”或“设置 → 本机与 Web → 自动打开教程页面”都保存同一本机偏好；失败回滚。关闭后触发教程改为一次刘海屏通知提醒，手动帮助与场景操作图示继续可用。
@@ -378,6 +380,7 @@ Bootstrap 建角遮罩按 `openRequestId` 关联，snapshot 与有效首帧（�
 | `sleep` | [床铺睡眠与拨针闹钟](../docs/U3睡眠面板-Web闹钟迁移-2026-09-19.md)；候选人验通过，发布状态见专项 | `modules/sleep-panel.js` |
 | `bookshelf` | [书架、角色档案与书中历险](../docs/bookshelf-player-context.md)；[系列章节与合集原版接入](../docs/bookshelf-series-integration.md)已正式 promotion 并通过远端部署 Audit，专项验证不代签完整旅程与人验 | `modules/bookshelf-panel.js` |
 | `book-comic` | [修理大学重制版漫画](../docs/bookshelf-series-integration.md#修理大学重制版漫画)；固定比例全屏演出与整页阅读 | `modules/book-comic-panel.js` |
+| `ragchat` | [通讯终端（AI 聊天终端内嵌）](../docs/AI聊天终端-游戏内嵌集成-需求文档-2026-10-07.md)；iframe 承载本机 cfn-rag 页面 | `modules/ragchat.js` |
 | `gym` | 业务 Panel（健身训练、进度与完成结算） | `modules/gym/gym-panel.js` |
 | `settings` | 全屏工具 / Launcher bootstrap shell | `modules/settings-panel.js` |
 | `skills` | 工作台 | `modules/skills.js` |

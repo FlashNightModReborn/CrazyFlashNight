@@ -264,6 +264,14 @@ class BookDefinitionTests(unittest.TestCase):
             budget = sum(stage['experience'] for stage in self.data['maps'][:checkpoint['afterMap'] + 1])
             self.assertGreaterEqual(budget, required_xp)
 
+    def test_runtime_json_carries_grade_once_as2_projection_lands(self):
+        # The compiled BookDefinition.valid() shape-checks the runtime JSON against the
+        # generated fallback; both carry grade since the AS2 projection was wired.
+        runtime = json.loads((ROOT / 'data/stages/books/repair-campus.runtime.json').read_text(encoding='utf-8'))
+        for checkpoint in runtime['buildChoices'] + runtime['minorChoices']:
+            for option in checkpoint['options']:
+                self.assertIn(option['grade'], ('low', 'medium', 'high', 'special'))
+
 
 if __name__ == '__main__':
     unittest.main()

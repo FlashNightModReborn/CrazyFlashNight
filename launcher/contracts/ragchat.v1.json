@@ -1,0 +1,42 @@
+{
+  "schema": "cf7.ragchat.lifecycle.v1",
+  "panel": "ragchat",
+  "domain": "ragchat",
+  "open": {
+    "task": "panel_request",
+    "source": "agent_console",
+    "payload": "initData",
+    "fields": [
+      "savePath"
+    ],
+    "acknowledgement": "none; fire-and-forget (Host returns null to AS2; failures arrive as gameCommand ragChatUnavailable)",
+    "bound": false
+  },
+  "hostOpenChain": {
+    "service": "CF7Launcher.RagTerminal.RagTerminalService",
+    "preflight": "health probe (<=1.5s) -> launch CFN-RAG-v*.exe --embedded -> poll health (<=20s, 500ms) -> POST /api/integration/bind (single retry)",
+    "threading": "runs on ThreadPool off the synchronous panel_request transition lock; OpenPanel marshalled back to the UI thread; navigation-baseline check abandons a stale open",
+    "initData": [
+      "source",
+      "frontend_url",
+      "savePath"
+    ],
+    "frontendOrigin": "http://127.0.0.1:7077"
+  },
+  "webCommands": {},
+  "hostClose": {
+    "message": "{type:'panel',cmd:'close',panel:'ragchat'}",
+    "effects": "generic PanelHost close commit (web lease release, backdrop/HUD resume, pause release)"
+  },
+  "failure": {
+    "gameCommand": "ragChatUnavailable",
+    "fields": [
+      "message"
+    ]
+  },
+  "response": null,
+  "authority": {
+    "chat": "cfn-rag-backend exclusive on http://127.0.0.1:7077, scoped by integration bind slot_key",
+    "gameState": "none; phase 1 terminal holds no game-state write capability (iframe only talks to exe)"
+  }
+}

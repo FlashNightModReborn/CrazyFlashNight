@@ -49,6 +49,7 @@ const IMPORTS = [
     './sleep-panel.css',
     './gym-panel.css',
     './book-comic.css',
+    './ragchat.css',
     './workbench/utilities.css'
 ];
 

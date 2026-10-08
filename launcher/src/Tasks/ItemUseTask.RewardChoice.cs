@@ -6,6 +6,13 @@ namespace CF7Launcher.Tasks
 {
     public sealed partial class ItemUseTask
     {
+        // 配给档级（与 tools/choice_reward_catalog.py 的 GRADES 同源）：
+        // 显式声明枚举封闭；金档永远显式、不可派生。旧冻结候选没有该键，保持缺省合法。
+        private static readonly HashSet<string> ChoiceRewardGrades = new HashSet<string>(StringComparer.Ordinal)
+        {
+            "low", "medium", "high", "special"
+        };
+
         private static bool TrySanitizeChoiceSnapshot(JObject data, out JObject clean)
         {
             clean = null;
@@ -33,8 +40,14 @@ namespace CF7Launcher.Tasks
                 foreach (JToken optionToken in options)
                 {
                     var option = optionToken as JObject;
-                    if (!(modern ? IsExactObject(option, "optionId", "title", "description", "items", "skills", "kCost", "available")
-                            : IsExactObject(option, "optionId", "title", "description", "items"))
+                    bool graded = option != null && option["grade"] != null;
+                    if (!(modern ? IsExactObject(option, graded
+                                    ? new[] { "optionId", "title", "description", "items", "skills", "kCost", "available", "grade" }
+                                    : new[] { "optionId", "title", "description", "items", "skills", "kCost", "available" })
+                            : IsExactObject(option, graded
+                                    ? new[] { "optionId", "title", "description", "items", "grade" }
+                                    : new[] { "optionId", "title", "description", "items" }))
+                        || graded && !ChoiceRewardGrades.Contains(ReadString(option["grade"]))
                         || !TryReadSafeText(option["optionId"], 64, false, out string optionId)
                         || !ValidToken.IsMatch(optionId) || !optionIds.Add(optionId)
                         || !TryReadSafeText(option["title"], 64, false, out string optionTitle)

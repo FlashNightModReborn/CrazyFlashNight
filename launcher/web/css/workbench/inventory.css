@@ -139,10 +139,10 @@
     box-sizing:border-box; background:var(--mod-core-color,#edf3f5);
     filter:drop-shadow(0 0 1px var(--mod-grade-color,#58636e)) drop-shadow(0 0 2px var(--mod-grade-color,#58636e));
 }
-.inventory-equip-slot.grade-low { --mod-core-color:#71c971; }
-.inventory-equip-slot.grade-medium { --mod-core-color:#d6ad58; }
-.inventory-equip-slot.grade-high { --mod-core-color:#7fc9fb; }
-.inventory-equip-slot.grade-special { --mod-core-color:#fff171; }
+.inventory-equip-slot.grade-low { --mod-core-color:var(--wb-grade-core-low); }
+.inventory-equip-slot.grade-medium { --mod-core-color:var(--wb-grade-core-medium); }
+.inventory-equip-slot.grade-high { --mod-core-color:var(--wb-grade-core-high); }
+.inventory-equip-slot.grade-special { --mod-core-color:var(--wb-grade-core-special); }
 .inventory-mod-glyph.symbol-triangle-solid,
 .inventory-mod-glyph.symbol-triangle-outline { clip-path:polygon(50% 4%,96% 94%,4% 94%); }
 .inventory-mod-glyph.symbol-square-solid { clip-path:polygon(7% 7%,93% 7%,93% 93%,7% 93%); }

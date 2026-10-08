@@ -38,6 +38,10 @@
          'modules/asset-workbench.js'], noop);
 
     Panels.registerLazy('book-comic', ['modules/book-comic-content.js', 'modules/book-comic-panel.js'], noop);
+
+    // ── ragchat（通讯终端：iframe 承载本机 cfn-rag 内嵌聊天页面）──
+    Panels.registerLazy('ragchat', ['modules/ragchat.js'], noop);
+
     Panels.registerLazy('bookshelf', ['modules/panel-runtime.js', 'modules/bookshelf-runtime.js', 'modules/bookshelf-media.js', 'modules/bookshelf-reader.js', 'modules/bookshelf-original.js', 'modules/bookshelf-panel.js'], noop);
 
     // ── kshop ──
@@ -52,6 +56,7 @@
          'modules/item-filter.js',
          'modules/kshop-runtime.js',
          'modules/inventory-runtime.js',
+         'modules/grade-presentation.js',
          'modules/inventory-ui.js',
          'modules/kshop-views.js',
          'modules/kshop-cart-controller.js',
@@ -74,6 +79,7 @@
          'modules/workbench-components.js',
          'modules/item-filter.js',
          'modules/inventory-runtime.js',
+         'modules/grade-presentation.js',
          'modules/inventory-ui.js',
          'modules/inventory-workbench-config.js',
          'modules/inventory-workbench-preparation-menu.js',
@@ -102,6 +108,7 @@
          'modules/workbench-profile.js',
          'modules/workbench.js',
           'modules/workbench-components.js',
+          'modules/grade-presentation.js',
           'modules/inventory-ui.js',
           'modules/portrait-resolver.js',
           'modules/inventory-runtime.js',
@@ -123,6 +130,7 @@
          'modules/workbench-components.js',
          'modules/item-filter.js',
          'modules/inventory-runtime.js',
+         'modules/grade-presentation.js',
          'modules/inventory-ui.js',
          'modules/npcshop-runtime.js',
          'modules/npcshop-material-navigation.js',
@@ -221,7 +229,8 @@
     Panels.registerLazy('help',
         ['modules/workbench-lifecycle.js', 'modules/workbench-focus.js',
          'modules/workbench-primitives.js', 'modules/workbench-profile.js',
-         'modules/workbench.js', 'modules/workbench-components.js', 'modules/inventory-ui.js',
+         'modules/workbench.js', 'modules/workbench-components.js', 'modules/grade-presentation.js',
+         'modules/inventory-ui.js',
          'modules/inventory-workbench-quick-transfer.js', 'generated/guidance-catalog.js',
          'generated/tutorial-journeys.js', 'modules/guidance-inventory-demo.js',
          'modules/guidance-tutorials.js', 'modules/help-panel.js'],
@@ -298,6 +307,7 @@
           'modules/stage-select/stage-select-diorama-data.js',
           'modules/stage-select/stage-select-blackiron-data.js',
           'modules/stage-select/stage-select-fallen-data.js',
+          'modules/stage-select/stage-select-desert-data.js',
           'modules/stage-select/stage-select-diorama.js',
          'modules/stage-select/stage-select-view-model.js',
          'modules/stage-select/stage-select-renderer.js',

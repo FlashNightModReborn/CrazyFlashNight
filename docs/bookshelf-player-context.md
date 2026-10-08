@@ -24,7 +24,7 @@
 
 | 部分 | 权威与职责 |
 | --- | --- |
-| 书架目录与阅读 | `launcher/web/modules/bookshelf-panel.js`，复用正式面板注册、懒加载、1024×576 逻辑画布和请求生命周期 |
+| 书架目录与阅读 | `launcher/web/modules/bookshelf-panel.js`，复用正式面板注册、懒加载、1024×576 逻辑画布和请求生命周期；开门默认进入 3D 置物架总览（`bookshelf-shelf-scene.js`，资产归 `assets/bookshelf/shelf/`，提取链 `tools/bookshelf-shelf-extract/`（Ruffle 渲染原版书架 SWF 帧与 CF1 标题）→ `tools/bookshelf-graybox/` → `tools/import-bookshelf-shelf.py`），常驻角色槽动态生成档案夹上架，点选只改 selected、不产生写 |
 | 前作系列与原版播放器 | 一册六章、合集本地资源准入及独立 Ruffle 存储，见[系列接入合同](bookshelf-series-integration.md) |
 | 常驻档案读取 | `launcher/src/Tasks/BookshelfTask.cs`，经现有 SOL/shadow 裁决读取正文；Web 只提交目标身份 |
 | 角色切换 | `scripts/类定义/org/flashNight/arki/ui/BookshelfPanelService.as`，在旧世界销毁后调用 `SaveManager.replacePlayerContext`；书中入场在同一次遮幕内准备首图并直接进入战斗，常驻换档及返回原角色重建房间，到达后确认 |
@@ -101,6 +101,8 @@
 ### 配给选择与枪械转向
 
 配给提供经济上的构筑选择：省下购装与改装金币，可投入强化石、提高毕业装备强化度；也可为新的构筑路线投入金币。转型材料目前充足，不增加强制拆装或放弃旧装备的代价。项链有基础属性收益，流派加成决定后续路线的吸引力；这轮沿用现有装备、强化、安装和买卖价格。
+
+候选卡按显式声明的档级着色（初阶绿/进阶琥珀/高阶蓝，特殊金档暂无边框实例）；颜色只承诺档级、不承诺强度，付费卡以 K 点金色标价与档级色拉开。档级自 2026-10-08 CS6 批次起经 AS2 投影全链贯通（冻结候选携带 grade，快照投影，Web 直读；旧冻结候选缺省无色属合法降级）。技能卡与物品同管线显示技能图标，注释以可见小字行呈现。物品与技能的悬停注释与背包候选走同一富 tooltip 通道（大图+结构化说明）。结果呈现：配给自选 commit 即收回选择页，fixed/随机/批量开包同样一律内联（状态条/通知携带包名与授予清单），零额外交互、无待关闭层；内容物逐项揭晓受协议冻结面阻塞（回包无逐物身份），待协议扩展批量内容投影后以"知情内联、不知情开页"分级恢复。
 
 前六张图末波各有一次选择。背包打开对应包后冻结候选，可从“返回构筑”退出，之后从“自选礼包”继续。选定物资优先进入背包或其所属材料收纳，容量不足的物品进入暂存；技能直接授予指定等级且不花SP，主动技能需在技能页装备。K点价格与内容一同冻结，只在确认选中付费卡时扣除。已有同级或更高技能在抽取前过滤，保存失败全部回退，未知结果仅核对原操作。旧冻结礼包及两套旧凭证四选一配方保留兼容。
 
@@ -209,6 +211,8 @@ python tools/build-book-definition.py --check
 python tools/test-book-definition.py
 python tools/build-bookshelf-pages.py --check
 node tools/test-bookshelf-runtime.js
+node tools/test-bookshelf-shelf.js
+python tools/import-bookshelf-shelf.py --check
 node tools/run-bookshelf-flow-harness.js
 node tools/test-panel-contracts.js
 node tools/validate-npc-shops.js

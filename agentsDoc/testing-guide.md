@@ -90,9 +90,10 @@ Host 命令注册/审计白名单/dispatch 映射一起核对；改源码须跑�
 合成 atlas 不能代替具体业务，media-query 文本存在不等于动效通过。
 **加载变更：** 追加 lazy dependency/失败驱逐/重试/取消；注册表与依赖次序一致，不用 Mock 快照代替真实脚本加载。
 **交互/关闭变更：** 跨层协议与真实 opener/session/Host 场景另验；没有 harness 时按既有约束补充，不绕生产入口。
-**书架：** `node tools/test-bookshelf-runtime.js`、`node tools/test-bookshelf-original.js` 与
-`python tools/import-bookshelf-library.py --check` 检查阅读资源和原版播放器边界；生产 UI harness 位于
-`launcher/web/modules/bookshelf/dev/harness.html`，`?trace=1` 显示模拟操作记录。系列原版使用独立的
+**书架：** `node tools/test-bookshelf-runtime.js`、`node tools/test-bookshelf-original.js`、`node tools/test-bookshelf-shelf.js` 与
+`python tools/import-bookshelf-library.py --check`、`python tools/import-bookshelf-shelf.py --check` 检查阅读资源、原版播放器边界与
+3D 置物架闭包；生产 UI harness 位于 `launcher/web/modules/bookshelf/dev/harness.html`，`?trace=1` 显示模拟操作记录，
+`node tools/run-bookshelf-flow-harness.js` 覆盖总览 3D 拾取零写与 context-loss 回退。系列原版使用独立的
 `cf7-originals.local` 资源 handler；开发仓库豁免、普通安装许可及原生专项见[系列接入合同](../docs/bookshelf-series-integration.md)。原版启动/返回须零 `commit`，重制版保持原 `play/return/settle` 权威链。
 原版仍需 Host 输入/音频验收。
 **正文：** [Web 及工作台](testing-details.md#web)、[业务 suite](testing-details.md#domain-suites)。

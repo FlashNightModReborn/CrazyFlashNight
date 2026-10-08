@@ -11,6 +11,8 @@ let passed = 0;
 function check(value, message) { assert.ok(value, message); passed++; }
 async function main() {
     check(R.books.length === 3 && R.books.filter(b => b.pages === 15).length === 2, 'two preserved books and one playable book');
+    check(R.books.every(b => b.format === 'playable' ? R.safeAsset(b.boxArt) : R.safeAsset(b.spine)), 'built-in books carry safe presentation assets');
+    check(R.books[2].chapters.every(c => R.safeAsset(c.cover)), 'built-in chapters carry safe disc covers');
     for (const id of ['dust','babylon']) {
         for (let page=1;page<=15;page++) check(R.pageUrl(id,page).endsWith(String(page).padStart(2,'0')+'.svg'), 'all original pages reachable');
     }
@@ -64,8 +66,14 @@ async function main() {
     const series = R.books.find(b => b.id === 'crazy-flasher');
     check(series.chapters.length === 6 && R.books.filter(b => b.format === 'playable').length === 1, 'one book and six chapters');
     check(series.chapters[0].remake.id === 'repair-campus' && series.chapters.slice(1).every(c => !c.remake.available), 'stable first remake identity and unfinished future chapters');
+    check(R.books.every(b => b.format === 'playable' ? R.safeAsset(b.boxArt) : R.safeAsset(b.spine))
+        && series.chapters.every(c => R.safeAsset(c.cover)), 'catalog presentation assets pass the safe path boundary');
     const malformed = JSON.parse(JSON.stringify(catalog)); malformed.books[4].chapters[1].original.languages.push('file:/fake.swf');
     assert.throws(() => R.adoptCatalog(malformed)); passed++;
+    const badSpine = JSON.parse(JSON.stringify(catalog)); badSpine.books[0].spine = '../outside.png';
+    assert.throws(() => R.adoptCatalog(badSpine)); passed++;
+    const badCover = JSON.parse(JSON.stringify(catalog)); delete badCover.books[4].chapters[0].cover;
+    assert.throws(() => R.adoptCatalog(badCover)); passed++;
     const transport = new R.RequestMux({domain:'bookshelf-original', panelInstanceId:'bookshelf.original.1',router,send:m=>{sent=m;return true;}});
     let originalReplies = 0;
     check(transport.request('commit', {kind:'play'}, () => {}) === null, 'original transport never sends CF7 business commands');

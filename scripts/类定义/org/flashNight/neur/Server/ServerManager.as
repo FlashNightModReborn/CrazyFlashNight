@@ -747,6 +747,7 @@ class org.flashNight.neur.Server.ServerManager {
                 && action != "openInventoryWorkbench" && action != "inventorySnapshot" && action != "inventoryTooltip"
                 && action != "characterBuildSnapshot" && action != "webPanelUnpause"
                 && action != "bookComicPrepared" && action != "bookComicFinish"
+                && action != "ragChatUnavailable"
                 && action != "itemUseInboxSnapshot" && action != "itemUseCooldownSnapshot") {
             trace("[GameCmd] reward candidate pending: " + action);
             return;

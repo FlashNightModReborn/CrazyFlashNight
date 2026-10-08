@@ -4,7 +4,8 @@ var StageSelectCameraEditor = (function() {
     var S=StageSelectCore.state, panel, note, output, body, presetArea, enabled=false, developer=false, entryCamera=null;
     var toggles=[];
     function refreshButtons() {
-        var available=S._el && S._el.classList.contains('is-diorama');
+        var available=S._el && S._el.classList.contains('is-diorama')
+            && (!S._selectedStageId || StageSelectDiorama.canFocus(S._selectedStageId));
         toggles.forEach(function(el) {
             el.hidden=!available; el.disabled=!available || StageSelectDiorama.stats().state!=='ready';
             el.textContent=enabled ? '结束游览' : el.dataset.tourLabel;
@@ -61,7 +62,8 @@ var StageSelectCameraEditor = (function() {
     }
     function showError(error){note.textContent=error.message;}
     function show(asDeveloper) {
-        if(!S._el || !S._el.classList.contains('is-diorama') || StageSelectDiorama.stats().state!=='ready')return;
+        if(!S._el || !S._el.classList.contains('is-diorama') || StageSelectDiorama.stats().state!=='ready'
+            || !StageSelectDiorama.canFocus(S._selectedStageId))return;
         ensure();
         if(!enabled)entryCamera=StageSelectDiorama.snapshotCamera();
         developer=asDeveloper!==false;enabled=true;

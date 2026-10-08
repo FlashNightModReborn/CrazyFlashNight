@@ -3797,6 +3797,90 @@ namespace CF7Launcher.Tests.Guardian
         }
 
         [Theory]
+        [InlineData("open", "fixed", true)]
+        [InlineData("open", "chooseOne", true)]
+        [InlineData("open", "independent", true)]
+        [InlineData("openChoice", "playerChoice", true)]
+        [InlineData("open", "legendary", false)]
+        [InlineData("open", "playerChoice", false)]
+        [InlineData("openChoice", "fixed", false)]
+        [InlineData("consume", "fixed", false)]
+        public void BackpackOverviewItemUsePackModeIsOptionalClosedAndCoherent(
+            string command,
+            string packMode,
+            bool expected)
+        {
+            using (var harness = OpenProductionHarness())
+            {
+                harness.Flash.Clear();
+                harness.Web.Clear();
+                JObject request = ProductionPayload("candidates");
+                request.Remove("slotKey");
+                request["candidateScope"] = "backpack";
+                harness.Task.HandleWebRequest(
+                    "candidates",
+                    WebRequest(
+                        "candidates",
+                        "prod.candidates.item-use.packmode." + packMode,
+                        request));
+                JObject response = SuccessResponse(
+                    Assert.Single(harness.Flash),
+                    "candidates",
+                    Generation,
+                    3,
+                    3,
+                    InitialDrugRevision,
+                    false);
+                response["payload"]["target"] =
+                    new JObject { ["kind"] = "backpack" };
+                bool isPack = command != "consume";
+                JObject row = CandidateRow(
+                    3,
+                    CandidateItem(
+                        isPack ? "礼包" : "药剂",
+                        "stack",
+                        2),
+                    isPack,
+                    isPack ? "incompatible_item" : "",
+                    new JArray(),
+                    "");
+                row["useBlockedReason"] = "";
+                row["useAction"] = new JObject
+                {
+                    ["command"] = command,
+                    ["label"] = command == "open" ? "打开"
+                        : command == "openChoice" ? "自选配给" : "服用",
+                    ["packMode"] = packMode,
+                    ["source"] = new JObject
+                    {
+                        ["physicalSlot"] = 3,
+                        ["slotLease"] = "inv.candidate.3",
+                        ["itemName"] = command == "consume"
+                            ? "药剂测试物品" : "礼包测试物品",
+                        ["backpackVersion"] = 5
+                    }
+                };
+                response["payload"]["candidates"] = new JArray(row);
+
+                harness.Task.HandleFlashResponse(response, null);
+
+                JObject web = Assert.Single(harness.Web);
+                if (expected)
+                {
+                    Assert.True(web.Value<bool>("success"), web.ToString());
+                    Assert.Equal(
+                        packMode,
+                        web["payload"]["candidates"][0]["useAction"]
+                            .Value<string>("packMode"));
+                }
+                else
+                {
+                    Assert.Equal("malformed_response", web.Value<string>("error"));
+                }
+            }
+        }
+
+        [Theory]
         [InlineData("layout_missing")]
         [InlineData("layout_version")]
         [InlineData("layout_counts")]

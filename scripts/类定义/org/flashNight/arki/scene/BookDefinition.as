@@ -630,6 +630,7 @@ class org.flashNight.arki.scene.BookDefinition {
             choiceItem: "书中初阶自选配给包",
             options: [
                 {
+                    grade: "low",
                     name: "书中冲锋配给包",
                     title: "初阶·冲锋穿透",
                     description: "7级UZI两把、磁稳贯穿弹两份、冲锋枪弹药24份。双持配给，两把各装一份插件；贯穿射击会降低射速。",
@@ -646,6 +647,7 @@ class org.flashNight.arki.scene.BookDefinition {
                     ]
                 },
                 {
+                    grade: "low",
                     name: "书中步榴配给包",
                     title: "初阶·步榴协同",
                     description: "7级AK47、磁稳贯穿弹、M203榴弹发射器、步枪弹药8份、榴弹6份。贯穿射击配合下挂爆发。",
@@ -666,6 +668,7 @@ class org.flashNight.arki.scene.BookDefinition {
                     ]
                 },
                 {
+                    grade: "low",
                     name: "书中霰弹配给包",
                     title: "初阶·集中霰弹",
                     description: "8级雷明登870、霰弹枪口收束器、磁稳贯穿弹、霰弹18份。集中霰弹并获得贯穿；与镇暴弹属于互斥的弹药改装。",
@@ -682,6 +685,7 @@ class org.flashNight.arki.scene.BookDefinition {
                     ]
                 },
                 {
+                    grade: "low",
                     name: "书中军刀配给包",
                     title: "初阶·军刀突进",
                     description: "9级破旧的军刀、绳扣穿孔片、手柄皮、石英磨刀石、中蓝6瓶、手雷4枚。磨刀石提升威力并锁定物理伤害。",
@@ -712,6 +716,7 @@ class org.flashNight.arki.scene.BookDefinition {
             choiceItem: "书中进阶自选配给包",
             options: [
                 {
+                    grade: "medium",
                     name: "书中机枪配给包",
                     title: "进阶·机枪压制",
                     description: "13级M249、水冷机构、磁稳贯穿弹、机枪弹药4份。贯穿火力支持持续压制；插件会增加负重、降低射速，可自行决定是否安装。",
@@ -728,6 +733,7 @@ class org.flashNight.arki.scene.BookDefinition {
                     ]
                 },
                 {
+                    grade: "medium",
                     name: "书中榴弹配给包",
                     title: "进阶·榴弹爆破",
                     description: "12级M79式榴弹发射器两把、榴弹24份、普通手雷6枚。双持爆炸火力适合应对集群，仍需规划换弹和后续弹药。",
@@ -746,6 +752,7 @@ class org.flashNight.arki.scene.BookDefinition {
                     ]
                 },
                 {
+                    grade: "medium",
                     name: "书中镇暴配给包",
                     title: "进阶·霰弹控场",
                     description: "8级雷明登870、霰弹枪口收束器、八门金锁镇暴弹、霰弹18份、手雷6枚。镇暴弹偏向对群控制，与磁稳贯穿弹不能同时安装。",
@@ -766,6 +773,7 @@ class org.flashNight.arki.scene.BookDefinition {
                     ]
                 },
                 {
+                    grade: "medium",
                     name: "书中双刀配给包",
                     title: "进阶·双刀突进",
                     description: "13级战术双刀、绳扣穿孔片、石英磨刀石、大蓝6瓶、手雷6枚。两枚插件适配双刀的两个插槽，强化瞬步斩与物理威力。",

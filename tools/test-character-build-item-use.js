@@ -719,5 +719,140 @@ check('reading choices is read-only and cannot unlock an unknown selection', fun
     assert.strictEqual(run.sent.filter(r => r.cmd === 'stashChoose').length, 1);
 });
 
+check('reveal summarize aggregates quantities and groups by grade', function() {
+    const Reveal = require('../launcher/web/modules/character-build/character-build-item-use-reveal.js');
+    const groups = Reveal.summarize([
+        {itemName:'UZI', displayName:'UZI', quantity:1, level:7},
+        {itemName:'UZI', displayName:'UZI', quantity:1, level:7},
+        {itemName:'复活币', displayName:'复活币', quantity:1, level:0, grade:'medium'},
+        {itemName:'普通手雷', displayName:'普通手雷', quantity:3, level:0}
+    ], 'low');
+    assert.deepStrictEqual(groups.map(g => g.grade), ['medium', 'low']);
+    assert.strictEqual(groups[1].rows.length, 2);
+    assert.strictEqual(groups[1].rows[0].quantity, 2);
+    assert.strictEqual(groups[1].rows[1].quantity, 3);
+    assert.strictEqual(groups[1].label, '低级');
+    const unfallbacked = Reveal.summarize([{itemName:'普通手雷', quantity:3, level:0}]);
+    assert.strictEqual(unfallbacked[0].grade, 'unknown');
+    assert.strictEqual(unfallbacked[0].label, '');
+});
+
+check('reveal payload derivation honors the frozen protocol surfaces', function() {
+    const Reveal = require('../launcher/web/modules/character-build/character-build-item-use-reveal.js');
+    const snapshot = {offers:[{offerId:'o1', options:[
+        {optionId:'p1', title:'闪现特训', grade:'high', kCost:300, items:[], skills:[]}]}]};
+    const chosen = Reveal.fromSettlement(snapshot,
+        {kind:'choiceSelect', offerId:'o1', optionId:'p1'}, {command:'stashChoose'}, null);
+    assert.strictEqual(chosen.grade, 'high');
+    assert.strictEqual(chosen.kCost, 300);
+    const pack = Reveal.fromSettlement(null,
+        {kind:'openMany', consumed:8, packages:[{entryCount:2},{entryCount:3}]},
+        {command:'openMany', candidate:{name:'福袋'}}, {remainingCount:5});
+    assert.strictEqual(pack.count, 8);
+    assert.strictEqual(pack.packages.length, 2);
+    assert.strictEqual(pack.inboxRemaining, 5);
+    assert.strictEqual(pack.packMode, '');
+    const fixedPack = Reveal.fromSettlement(null,
+        {kind:'open', consumed:1, packages:[{entryCount:3}]},
+        {command:'open', candidate:{name:'书中弹药补给包',
+            useAction:{command:'open', label:'打开', packMode:'fixed'}}}, null);
+    assert.strictEqual(fixedPack.packMode, 'fixed');
+    assert.strictEqual(Reveal.fromSettlement(null, {kind:'consume'}, {command:'consume'}, null), null);
+    // 自选配给包开包（pending.command 规范化为 open 但回执是 choiceOpen）走候选页，不出揭晓层。
+    assert.strictEqual(Reveal.fromSettlement(null, {kind:'choiceOpen', offerId:'o1'}, {command:'open'}, null), null);
+    assert.strictEqual(Reveal.fromSettlement(snapshot,
+        {kind:'choiceSelect', offerId:'o1', optionId:'missing'}, {command:'stashChoose'}, null), null);
+});
+
+check('committed settlements stay inline; the reveal layer is dormant pending the protocol extension', function() {
+    const reveals = [];
+    const controller = {
+        _ports:{},
+        _session:{refreshSnapshot:function(callback) {
+            callback({payload:{}}, true);
+            return 'snapshot.reveal';
+        }},
+        _view:{
+            setInboxSummary:function() { return true; },
+            showItemUseResult:function() { return true; }
+        },
+        _applySnapshot:function() {},
+        _candidateCache:null,
+        _rewardAuthority:null,
+        _itemUseInboxChanged:function() {},
+        _itemUse:{
+            requestChoices:function() { return null; },
+            debugState:function() { return {state:'idle', pending:null}; }
+        },
+        _choiceRewards:{snapshot:{offers:[{offerId:'o1', options:[
+            {optionId:'p1', title:'初阶·冲锋穿透', grade:'low', kCost:0,
+                items:[{itemName:'UZI', displayName:'UZI', quantity:2, level:7, icon:'UZI'},
+                    {itemName:'普通手雷', displayName:'普通手雷', quantity:4, level:0}],
+                skills:[]}
+        ]}], kpoints:0}, updateState:function() {}}
+    };
+    ItemUseChannel.install(controller);
+    controller._showItemUseReveal = function(result) { reveals.push(result); return true; };
+    controller._itemUseSettled({
+        success:true, kind:'open', rewardReady:true, consumed:1, remaining:0,
+        packages:[{ordinal:0, batchId:'op.p0', entryCount:2}],
+        inboxSummary:{remainingCount:3}
+    }, true, {
+        command:'open', candidate:{name:'福袋'}
+    });
+    controller._itemUseSettled({
+        success:true, kind:'openMany', rewardReady:true, consumed:4, requestedCount:4, remaining:0,
+        packages:[{ordinal:0, batchId:'op2.p0', entryCount:2},{ordinal:1, batchId:'op2.p1', entryCount:2}]
+    }, true, {
+        command:'openMany', candidate:{name:'福袋'}
+    });
+    controller._itemUseSettled({
+        success:true, kind:'choiceSelect', offerId:'o1', optionId:'p1', rewardReady:true
+    }, true, {command:'stashChoose'});
+    assert.strictEqual(reveals.length, 0);
+    assert.strictEqual(controller._choiceRewards.grantedNote,
+        '已领取「初阶·冲锋穿透」：UZI ×2、普通手雷 ×4。物品优先进入背包，装不下的进入暂存。');
+});
+
+check('inline result messages carry the granted content list', function() {
+    const Reveal = require('../launcher/web/modules/character-build/character-build-item-use-reveal.js');
+    // 内容物揭晓受协议冻结面阻塞：渲染器休眠待协议扩展，期间一切结算内联。
+    assert.strictEqual(typeof Reveal.fromSettlement, 'function');
+    assert.strictEqual(typeof Reveal.summarize, 'function');
+    assert.strictEqual(typeof Reveal.formatGrantMessage, 'function');
+    assert.strictEqual(Reveal.shouldReveal, undefined);
+    assert.strictEqual(Reveal.formatGrantMessage(null), null);
+    assert.strictEqual(Reveal.formatGrantMessage({title:'霸体入门', skills:[{skillKey:'霸体', level:2}]}),
+        '已领取「霸体入门」：霸体 · 2级。技能已直接授予，主动技能请在技能页装备。');
+    assert.strictEqual(Reveal.formatGrantMessage({title:'再战一次',
+        items:[{itemName:'复活币', displayName:'复活币', quantity:1}]}),
+        '已领取「再战一次」：复活币 ×1。物品优先进入背包，装不下的进入暂存。');
+
+    const reveals = [];
+    const controller = {
+        _ports:{},
+        _session:{refreshSnapshot:function(callback) { callback({payload:{}}, true); return 'snapshot.inline'; }},
+        _view:{setInboxSummary:function() { return true; }, showItemUseResult:function() { return true; }},
+        _applySnapshot:function() {},
+        _candidateCache:null,
+        _rewardAuthority:null,
+        _itemUseInboxChanged:function() {},
+        _itemUse:{requestChoices:function() { return null; },
+            debugState:function() { return {state:'idle', pending:null}; }},
+        _choiceRewards:{snapshot:{offers:[{offerId:'o2', options:[
+            {optionId:'s1', title:'霸体入门', grade:'low', kCost:0, items:[],
+                skills:[{skillKey:'霸体', level:2, currentLevel:0, description:'获得霸体。'}]}
+        ]}], kpoints:0}, updateState:function() {}}
+    };
+    ItemUseChannel.install(controller);
+    controller._showItemUseReveal = function(result) { reveals.push(result); return true; };
+    controller._itemUseSettled({
+        success:true, kind:'choiceSelect', offerId:'o2', optionId:'s1', rewardReady:true
+    }, true, {command:'stashChoose'});
+    assert.strictEqual(reveals.length, 0);
+    assert.strictEqual(controller._choiceRewards.grantedNote,
+        '已领取「霸体入门」：霸体 · 2级。技能已直接授予，主动技能请在技能页装备。');
+});
+
 process.stdout.write(
     'Character Build item use: ' + passed + '/' + passed + ' passed\n');

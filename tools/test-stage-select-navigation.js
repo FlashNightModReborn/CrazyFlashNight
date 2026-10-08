@@ -20,6 +20,10 @@ async function main(){
         await page.goto(origin+'/modules/stage-select/dev/harness.html?viewport=1024x576&fixture=allUnlocked');
         await page.evaluate(()=>{document.body.classList.add('stage-select-qa');document.querySelector('#debug-log')?.remove();document.querySelector('#qa-panel')?.remove();StageSelectHarnessHost.open({mode:'runtime',frameLabel:'基地门口'});});await idle();
         const original=await pose(),stored=await page.evaluate(()=>localStorage.getItem('cf7.stage-camera.base-gate.v1'));
+        await page.evaluate(value=>StageSelectDiorama.restoreCamera({...value,span:4.99}),original);near(await pose(),original);
+        await page.evaluate(value=>StageSelectDiorama.restoreCamera({...value,span:5}),original);assert.equal((await pose()).span,5);
+        await page.evaluate(value=>StageSelectDiorama.restoreCamera(value),original);
+        report.checks.push('Existing maps retain the default minimum camera span of 5');
         await page.getByRole('button',{name:'游览地图',exact:true}).click();await movingMode();
         assert.equal(await page.locator('[data-camera="save"]').isVisible(),false);
         assert.equal(await page.locator('.stage-select-button-layer').evaluate(el=>getComputedStyle(el).opacity),'0');

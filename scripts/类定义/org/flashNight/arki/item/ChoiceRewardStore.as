@@ -10,6 +10,10 @@ class org.flashNight.arki.item.ChoiceRewardStore {
         for (var i:Number = 0; i < value.length; i++) if (value.charCodeAt(i) < 32) return false;
         return true;
     }
+    // 档级封闭枚举（与 tools/choice_reward_catalog.py 的 GRADES 同源）；旧冻结候选缺省合法。
+    public static function isGrade(value:Object):Boolean {
+        return value === "low" || value === "medium" || value === "high" || value === "special";
+    }
     public static function normalize(raw:Object, storeId:String, deferredRepairs:Array):Boolean {
         if (raw === undefined) return true;
         if (raw == null || raw.v !== 1 || !RewardStashStore.whole(raw.sequence)) return false;
@@ -38,7 +42,8 @@ class org.flashNight.arki.item.ChoiceRewardStore {
                 var option:Object = o.options[c];
                 if (option == null || !text(option.optionId, 64) || seen["$" + option.optionId] === true
                         || !text(option.title, 64) || !text(option.description, 256)
-                        || (option.kCost !== undefined && (!RewardStashStore.whole(option.kCost) || option.kCost > 1200))) return false;
+                        || (option.kCost !== undefined && (!RewardStashStore.whole(option.kCost) || option.kCost > 1200))
+                        || (option.grade !== undefined && !isGrade(option.grade))) return false;
                 var skills:Object = option.skills === undefined ? [] : option.skills;
                 if (RewardStashStore.emptyObject(skills)) { skills = []; repairs.push({owner:option,key:"skills",value:skills}); }
                 if (!(skills instanceof Array) || skills.length > 2) return false;

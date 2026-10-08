@@ -1,0 +1,970 @@
+{
+  "schema": 1,
+  "coordinateSystem": "gltf-y-up-display/1000",
+  "coordinateTransform": "[source X, source Z, -source Y] * 0.001",
+  "sourceBlendSha256": "438dd15589ace2ee06f514f539356a5ab2dd037759c1e2fa96e0fba5c85d5073",
+  "places": [
+    {
+      "id": "ambush",
+      "placeId": "ambush",
+      "name": "袭杀运输路口",
+      "stageId": "stage_34_7",
+      "formalEntry": true,
+      "worldAnchor": [
+        -7.000000476837158,
+        0.07543677091598511,
+        -15.000000953674316
+      ],
+      "center": [
+        -7.143556594848633,
+        0.2212216854095459,
+        -15.03140640258789
+      ],
+      "bounds": {
+        "min": [
+          -8.23779296875,
+          0.06697852164506912,
+          -15.584349632263184
+        ],
+        "max": [
+          -6.049320220947266,
+          0.37546485662460327,
+          -14.478463172912598
+        ]
+      },
+      "sourceOwner": "evaluated source ancestry/prefix with preserved world transforms",
+      "visibleOccurrences": 244
+    },
+    {
+      "id": "base",
+      "placeId": "base",
+      "name": "A兵团基地",
+      "stageId": "stage_34_3",
+      "formalEntry": true,
+      "worldAnchor": [
+        0.0,
+        0.10239999741315842,
+        -0.0
+      ],
+      "center": [
+        -0.22500014305114746,
+        0.40827029943466187,
+        0.6749999523162842
+      ],
+      "bounds": {
+        "min": [
+          -3.5000009536743164,
+          -0.19422970712184906,
+          -2.200000762939453
+        ],
+        "max": [
+          3.0500006675720215,
+          1.010770320892334,
+          3.5500006675720215
+        ]
+      },
+      "sourceOwner": "evaluated source ancestry/prefix with preserved world transforms",
+      "visibleOccurrences": 2105
+    },
+    {
+      "id": "commune",
+      "placeId": "commune",
+      "name": "蓉都公社",
+      "stageId": null,
+      "formalEntry": false,
+      "worldAnchor": [
+        11.000000953674316,
+        0.06554671376943588,
+        -2.0
+      ],
+      "center": [
+        11.37783432006836,
+        0.6109657883644104,
+        -3.3038406372070312
+      ],
+      "bounds": {
+        "min": [
+          8.59990119934082,
+          -1.525878978725359e-08,
+          -6.565765857696533
+        ],
+        "max": [
+          14.155766487121582,
+          1.2219315767288208,
+          -0.04191552847623825
+        ]
+      },
+      "sourceOwner": "evaluated source ancestry/prefix with preserved world transforms",
+      "visibleOccurrences": 3346
+    },
+    {
+      "id": "communes",
+      "placeId": "communes",
+      "name": "其他公社带",
+      "stageId": null,
+      "formalEntry": false,
+      "worldAnchor": [
+        -37.0,
+        0.09714176505804062,
+        24.000001907348633
+      ],
+      "center": [
+        -37.14125061035156,
+        0.24181009829044342,
+        24.078750610351562
+      ],
+      "bounds": {
+        "min": [
+          -39.3025016784668,
+          0.0757017657160759,
+          21.750001907348633
+        ],
+        "max": [
+          -34.980003356933594,
+          0.40791842341423035,
+          26.407501220703125
+        ]
+      },
+      "sourceOwner": "evaluated source ancestry/prefix with preserved world transforms",
+      "visibleOccurrences": 25
+    },
+    {
+      "id": "constitutional",
+      "placeId": "constitutional",
+      "name": "宪政派总部",
+      "stageId": null,
+      "formalEntry": false,
+      "worldAnchor": [
+        20.0,
+        0.06026902049779892,
+        4.0
+      ],
+      "center": [
+        20.105466842651367,
+        0.34894654154777527,
+        3.9176559448242188
+      ],
+      "bounds": {
+        "min": [
+          19.093433380126953,
+          0.05677596107125282,
+          2.9287428855895996
+        ],
+        "max": [
+          21.11750030517578,
+          0.6411170959472656,
+          4.906569004058838
+        ]
+      },
+      "sourceOwner": "evaluated source ancestry/prefix with preserved world transforms",
+      "visibleOccurrences": 572
+    },
+    {
+      "id": "depot",
+      "placeId": "depot",
+      "name": "临时补给点",
+      "stageId": "stage_34_1",
+      "formalEntry": true,
+      "worldAnchor": [
+        25.000001907348633,
+        0.14906254410743713,
+        -13.000000953674316
+      ],
+      "center": [
+        23.342025756835938,
+        0.2775246202945709,
+        -13.983219146728516
+      ],
+      "bounds": {
+        "min": [
+          20.69293785095215,
+          0.10727596282958984,
+          -16.85095977783203
+        ],
+        "max": [
+          25.99111557006836,
+          0.447773277759552,
+          -11.115478515625
+        ]
+      },
+      "sourceOwner": "evaluated source ancestry/prefix with preserved world transforms",
+      "visibleOccurrences": 1955,
+      "subareas": [
+        {
+          "id": "depot-01",
+          "label": "第1段 · 转运前场",
+          "subStageIndex": 0,
+          "sourceBackground": "flashswf/backgrounds/gk18_1_BG.swf",
+          "worldBounds": {
+            "min": [
+              23.270179748535156,
+              0.12165030837059021,
+              -14.082125663757324
+            ],
+            "max": [
+              25.99943733215332,
+              0.447773277759552,
+              -11.580843925476074
+            ]
+          },
+          "worldCenter": [
+            24.634807586669922,
+            0.2847118079662323,
+            -12.8314847946167
+          ],
+          "sourceObjectCount": 680
+        },
+        {
+          "id": "depot-02",
+          "label": "第2段 · 营帐纵深",
+          "subStageIndex": 1,
+          "sourceBackground": "flashswf/backgrounds/gk18_2_BG.swf",
+          "worldBounds": {
+            "min": [
+              20.714027404785156,
+              0.10727596282958984,
+              -12.915855407714844
+            ],
+            "max": [
+              23.23617935180664,
+              0.30977585911750793,
+              -11.115478515625
+            ]
+          },
+          "worldCenter": [
+            21.9751033782959,
+            0.20852592587471008,
+            -12.015666961669922
+          ],
+          "sourceObjectCount": 669
+        },
+        {
+          "id": "depot-03",
+          "label": "第3段 · 后续驻营区",
+          "subStageIndex": 2,
+          "sourceBackground": "flashswf/backgrounds/gk18_3_BG.swf",
+          "worldBounds": {
+            "min": [
+              20.69293785095215,
+              0.14905408024787903,
+              -16.85095977783203
+            ],
+            "max": [
+              23.386472702026367,
+              0.3855973482131958,
+              -14.161227226257324
+            ]
+          },
+          "worldCenter": [
+            22.039703369140625,
+            0.2673256993293762,
+            -15.506093978881836
+          ],
+          "sourceObjectCount": 606
+        }
+      ]
+    },
+    {
+      "id": "diplomacy",
+      "placeId": "diplomacy",
+      "name": "革命军外交驻地 待定位",
+      "stageId": "stage_34_10",
+      "formalEntry": true,
+      "worldAnchor": [
+        43.000003814697266,
+        0.6842231750488281,
+        -35.0
+      ],
+      "center": [
+        43.0,
+        0.9712213277816772,
+        -35.0
+      ],
+      "bounds": {
+        "min": [
+          41.8953857421875,
+          0.6579552292823792,
+          -36.01517868041992
+        ],
+        "max": [
+          44.104618072509766,
+          1.2844873666763306,
+          -33.984825134277344
+        ]
+      },
+      "sourceOwner": "evaluated source ancestry/prefix with preserved world transforms",
+      "visibleOccurrences": 293
+    },
+    {
+      "id": "fallen",
+      "placeId": "fallen",
+      "name": "堕落城西区",
+      "stageId": null,
+      "formalEntry": false,
+      "worldAnchor": [
+        -14.000000953674316,
+        0.03126722574234009,
+        10.0
+      ],
+      "center": [
+        -15.864797592163086,
+        1.062225341796875,
+        6.440780162811279
+      ],
+      "bounds": {
+        "min": [
+          -20.033597946166992,
+          0.019020192325115204,
+          -0.3904028534889221
+        ],
+        "max": [
+          -11.695998191833496,
+          2.1054306030273438,
+          13.271963119506836
+        ]
+      },
+      "sourceOwner": "evaluated source ancestry/prefix with preserved world transforms",
+      "visibleOccurrences": 427
+    },
+    {
+      "id": "foothill",
+      "placeId": "foothill",
+      "name": "山前接驳区",
+      "stageId": "nav_34_2",
+      "formalEntry": false,
+      "worldAnchor": [
+        -39.0,
+        2.7864830493927,
+        -72.0
+      ],
+      "center": [
+        -39.31050109863281,
+        2.9596619606018066,
+        -72.09425354003906
+      ],
+      "bounds": {
+        "min": [
+          -40.27100372314453,
+          2.7864830493927,
+          -72.8385009765625
+        ],
+        "max": [
+          -38.35000228881836,
+          3.132841110229492,
+          -71.35000610351562
+        ]
+      },
+      "sourceOwner": "evaluated source ancestry/prefix with preserved world transforms",
+      "visibleOccurrences": 6
+    },
+    {
+      "id": "forest",
+      "placeId": "forest",
+      "name": "AVP南方林区",
+      "stageId": null,
+      "formalEntry": false,
+      "worldAnchor": [
+        8.0,
+        0.049863509833812714,
+        44.000003814697266
+      ],
+      "center": [
+        10.693206787109375,
+        0.41041967272758484,
+        46.05693435668945
+      ],
+      "bounds": {
+        "min": [
+          -9.471160888671875,
+          -0.24212197959423065,
+          29.375106811523438
+        ],
+        "max": [
+          30.857574462890625,
+          1.0629613399505615,
+          62.73876190185547
+        ]
+      },
+      "sourceOwner": "evaluated source ancestry/prefix with preserved world transforms",
+      "visibleOccurrences": 3488
+    },
+    {
+      "id": "fort",
+      "placeId": "fort",
+      "name": "军阀大型据点",
+      "stageId": "stage_34_4",
+      "formalEntry": true,
+      "worldAnchor": [
+        36.0,
+        0.38301563262939453,
+        -24.000001907348633
+      ],
+      "center": [
+        36.01827621459961,
+        1.3500032424926758,
+        -24.0
+      ],
+      "bounds": {
+        "min": [
+          30.596328735351562,
+          0.2426082044839859,
+          -29.9923038482666
+        ],
+        "max": [
+          41.440223693847656,
+          2.4573981761932373,
+          -18.00769805908203
+        ]
+      },
+      "sourceOwner": "evaluated source ancestry/prefix with preserved world transforms",
+      "visibleOccurrences": 1873,
+      "subareas": [
+        {
+          "id": "fort-01",
+          "label": "第1段 · 入营空场",
+          "subStageIndex": 0,
+          "sourceBackground": "flashswf/backgrounds/gk21_1_BG.swf",
+          "worldBounds": {
+            "min": [
+              30.596328735351562,
+              0.2426082044839859,
+              -27.569957733154297
+            ],
+            "max": [
+              36.11270523071289,
+              1.3264343738555908,
+              -18.078502655029297
+            ]
+          },
+          "worldCenter": [
+            33.35451889038086,
+            0.7845212817192078,
+            -22.82423210144043
+          ],
+          "sourceObjectCount": 155
+        },
+        {
+          "id": "fort-02",
+          "label": "第2段 · 军需仓配",
+          "subStageIndex": 1,
+          "sourceBackground": "flashswf/backgrounds/gk21_2_BG.swf",
+          "worldBounds": {
+            "min": [
+              32.28282165527344,
+              0.4006160497665405,
+              -29.976329803466797
+            ],
+            "max": [
+              38.332252502441406,
+              1.8435919284820557,
+              -25.57175636291504
+            ]
+          },
+          "worldCenter": [
+            35.30753707885742,
+            1.1221039295196533,
+            -27.774044036865234
+          ],
+          "sourceObjectCount": 305
+        },
+        {
+          "id": "fort-03",
+          "label": "第3段 · 通信营区",
+          "subStageIndex": 2,
+          "sourceBackground": "flashswf/backgrounds/gk21_3_BG.swf",
+          "worldBounds": {
+            "min": [
+              33.18647766113281,
+              0.2797781527042389,
+              -27.113052368164062
+            ],
+            "max": [
+              38.81352615356445,
+              2.4573981761932373,
+              -20.02086067199707
+            ]
+          },
+          "worldCenter": [
+            36.0,
+            1.3685880899429321,
+            -23.56695556640625
+          ],
+          "sourceObjectCount": 849
+        },
+        {
+          "id": "fort-04",
+          "label": "第4段 · 指挥集结",
+          "subStageIndex": 3,
+          "sourceBackground": "flashswf/backgrounds/gk21_4_BG.swf",
+          "worldBounds": {
+            "min": [
+              35.763423919677734,
+              0.2545457184314728,
+              -27.7740421295166
+            ],
+            "max": [
+              41.440223693847656,
+              0.8785748481750488,
+              -18.76386070251465
+            ]
+          },
+          "worldCenter": [
+            38.60182189941406,
+            0.5665602684020996,
+            -23.268949508666992
+          ],
+          "sourceObjectCount": 456
+        }
+      ]
+    },
+    {
+      "id": "front",
+      "placeId": "front",
+      "name": "雪山—禁区战线",
+      "stageId": null,
+      "formalEntry": false,
+      "worldAnchor": [
+        -5.0,
+        1.0045524835586548,
+        -55.000003814697266
+      ],
+      "center": [
+        -5.0,
+        1.273838758468628,
+        -55.345760345458984
+      ],
+      "bounds": {
+        "min": [
+          -6.524262428283691,
+          0.9713222980499268,
+          -55.83000183105469
+        ],
+        "max": [
+          -3.475738048553467,
+          1.576355218887329,
+          -54.86151885986328
+        ]
+      },
+      "sourceOwner": "evaluated source ancestry/prefix with preserved world transforms",
+      "visibleOccurrences": 6
+    },
+    {
+      "id": "frontbase",
+      "placeId": "frontbase",
+      "name": "军阀前线基地",
+      "stageId": "stage_34_5",
+      "formalEntry": true,
+      "worldAnchor": [
+        23.000001907348633,
+        0.7177335619926453,
+        -43.000003814697266
+      ],
+      "center": [
+        23.002395629882812,
+        1.765688419342041,
+        -43.000003814697266
+      ],
+      "bounds": {
+        "min": [
+          18.547473907470703,
+          0.614328920841217,
+          -47.71125411987305
+        ],
+        "max": [
+          27.45731544494629,
+          2.9170479774475098,
+          -38.288753509521484
+        ]
+      },
+      "sourceOwner": "evaluated source ancestry/prefix with preserved world transforms",
+      "visibleOccurrences": 6136,
+      "subareas": [
+        {
+          "id": "frontbase-01",
+          "label": "第1段 · 撤收后勤",
+          "subStageIndex": 0,
+          "sourceBackground": "flashswf/backgrounds/gk22_1_BG.swf",
+          "worldBounds": {
+            "min": [
+              22.554668426513672,
+              0.614328920841217,
+              -45.23899841308594
+            ],
+            "max": [
+              27.45731544494629,
+              1.8308496475219727,
+              -38.29927062988281
+            ]
+          },
+          "worldCenter": [
+            25.005992889404297,
+            1.2225892543792725,
+            -41.769134521484375
+          ],
+          "sourceObjectCount": 355
+        },
+        {
+          "id": "frontbase-02",
+          "label": "第2段 · 防空驻车",
+          "subStageIndex": 1,
+          "sourceBackground": "flashswf/backgrounds/gk22_2_BG.swf",
+          "worldBounds": {
+            "min": [
+              22.667198181152344,
+              0.7448230981826782,
+              -46.99362564086914
+            ],
+            "max": [
+              26.0917911529541,
+              1.1351591348648071,
+              -43.93403625488281
+            ]
+          },
+          "worldCenter": [
+            24.379493713378906,
+            0.9399911165237427,
+            -45.463829040527344
+          ],
+          "sourceObjectCount": 2117
+        },
+        {
+          "id": "frontbase-03",
+          "label": "第3段 · 装甲驻车",
+          "subStageIndex": 2,
+          "sourceBackground": "flashswf/backgrounds/gk22_3_BG.swf",
+          "worldBounds": {
+            "min": [
+              18.547473907470703,
+              0.6526179909706116,
+              -47.69195556640625
+            ],
+            "max": [
+              23.42298698425293,
+              1.128852128982544,
+              -40.505977630615234
+            ]
+          },
+          "worldCenter": [
+            20.985231399536133,
+            0.8907350301742554,
+            -44.098968505859375
+          ],
+          "sourceObjectCount": 1741
+        },
+        {
+          "id": "frontbase-04",
+          "label": "第4段 · 指挥核心",
+          "subStageIndex": 3,
+          "sourceBackground": "flashswf/backgrounds/gk22_4_BG.swf",
+          "worldBounds": {
+            "min": [
+              19.948116302490234,
+              0.6226746439933777,
+              -45.161861419677734
+            ],
+            "max": [
+              25.04134750366211,
+              2.9170479774475098,
+              -39.0103645324707
+            ]
+          },
+          "worldCenter": [
+            22.494731903076172,
+            1.7698613405227661,
+            -42.08611297607422
+          ],
+          "sourceObjectCount": 1840
+        }
+      ]
+    },
+    {
+      "id": "industry",
+      "placeId": "industry",
+      "name": "军事工业腹地",
+      "stageId": null,
+      "formalEntry": false,
+      "worldAnchor": [
+        50.000003814697266,
+        1.1567836999893188,
+        -55.000003814697266
+      ],
+      "center": [
+        50.00177001953125,
+        2.5435500144958496,
+        -55.00000762939453
+      ],
+      "bounds": {
+        "min": [
+          45.50572967529297,
+          1.105934977531433,
+          -58.689292907714844
+        ],
+        "max": [
+          54.4978141784668,
+          3.9811651706695557,
+          -51.31071853637695
+        ]
+      },
+      "sourceOwner": "evaluated source ancestry/prefix with preserved world transforms",
+      "visibleOccurrences": 1036
+    },
+    {
+      "id": "landing",
+      "placeId": "landing",
+      "name": "禁区近城登陆口",
+      "stageId": null,
+      "formalEntry": false,
+      "worldAnchor": [
+        -6.000000476837158,
+        0.06295104324817657,
+        -8.0
+      ],
+      "center": [
+        -6.034000396728516,
+        0.2443217635154724,
+        -8.268500328063965
+      ],
+      "bounds": {
+        "min": [
+          -6.818000316619873,
+          0.05899374559521675,
+          -8.76200008392334
+        ],
+        "max": [
+          -5.250000476837158,
+          0.4296497702598572,
+          -7.77500057220459
+        ]
+      },
+      "sourceOwner": "evaluated source ancestry/prefix with preserved world transforms",
+      "visibleOccurrences": 3
+    },
+    {
+      "id": "refugees",
+      "placeId": "refugees",
+      "name": "难民营地",
+      "stageId": "stage_34_0",
+      "formalEntry": true,
+      "worldAnchor": [
+        28.000001907348633,
+        0.17413145303726196,
+        -12.000000953674316
+      ],
+      "center": [
+        28.09670639038086,
+        0.2206045687198639,
+        -12.06781005859375
+      ],
+      "bounds": {
+        "min": [
+          27.11540412902832,
+          0.16276079416275024,
+          -12.956098556518555
+        ],
+        "max": [
+          29.0780086517334,
+          0.27844834327697754,
+          -11.179521560668945
+        ]
+      },
+      "sourceOwner": "evaluated source ancestry/prefix with preserved world transforms",
+      "visibleOccurrences": 226
+    },
+    {
+      "id": "restricted",
+      "placeId": "restricted",
+      "name": "禁区纵深",
+      "stageId": null,
+      "formalEntry": false,
+      "worldAnchor": [
+        -30.000001907348633,
+        0.3569801151752472,
+        -35.0
+      ],
+      "center": [
+        -30.000001907348633,
+        0.5747957229614258,
+        -35.345760345458984
+      ],
+      "bounds": {
+        "min": [
+          -31.524263381958008,
+          0.2657885253429413,
+          -35.83000183105469
+        ],
+        "max": [
+          -28.475740432739258,
+          0.8838028907775879,
+          -34.86151885986328
+        ]
+      },
+      "sourceOwner": "evaluated source ancestry/prefix with preserved world transforms",
+      "visibleOccurrences": 6
+    },
+    {
+      "id": "ruins",
+      "placeId": "ruins",
+      "name": "残垣断壁",
+      "stageId": "stage_34_2",
+      "formalEntry": true,
+      "worldAnchor": [
+        21.000001907348633,
+        0.07870626449584961,
+        29.000001907348633
+      ],
+      "center": [
+        21.000001907348633,
+        0.35444900393486023,
+        28.900001525878906
+      ],
+      "bounds": {
+        "min": [
+          18.580001831054688,
+          0.06051146239042282,
+          27.250001907348633
+        ],
+        "max": [
+          23.420001983642578,
+          0.648386538028717,
+          30.55000114440918
+        ]
+      },
+      "sourceOwner": "evaluated source ancestry/prefix with preserved world transforms",
+      "visibleOccurrences": 267
+    },
+    {
+      "id": "secret",
+      "placeId": "secret",
+      "name": "西谷秘密基地",
+      "stageId": "stage_34_6",
+      "formalEntry": true,
+      "worldAnchor": [
+        -44.000003814697266,
+        0.13596849143505096,
+        -14.000000953674316
+      ],
+      "center": [
+        -44.894290924072266,
+        0.626762866973877,
+        -14.699039459228516
+      ],
+      "bounds": {
+        "min": [
+          -46.86984634399414,
+          0.13558578491210938,
+          -16.231279373168945
+        ],
+        "max": [
+          -42.91873550415039,
+          1.1179399490356445,
+          -13.166800498962402
+        ]
+      },
+      "sourceOwner": "evaluated source ancestry/prefix with preserved world transforms",
+      "visibleOccurrences": 582
+    },
+    {
+      "id": "snow",
+      "placeId": "snow",
+      "name": "西北雪山",
+      "stageId": null,
+      "formalEntry": false,
+      "worldAnchor": [
+        -65.0,
+        13.463362693786621,
+        -93.00000762939453
+      ],
+      "center": [
+        -65.0,
+        14.114588737487793,
+        -93.41857147216797
+      ],
+      "bounds": {
+        "min": [
+          -69.29232788085938,
+          13.15458869934082,
+          -95.73713684082031
+        ],
+        "max": [
+          -60.707679748535156,
+          15.074588775634766,
+          -91.10000610351562
+        ]
+      },
+      "sourceOwner": "evaluated source ancestry/prefix with preserved world transforms",
+      "visibleOccurrences": 3
+    },
+    {
+      "id": "waste",
+      "placeId": "waste",
+      "name": "废城东区",
+      "stageId": null,
+      "formalEntry": false,
+      "worldAnchor": [
+        13.000000953674316,
+        0.02751076966524124,
+        10.0
+      ],
+      "center": [
+        11.754167556762695,
+        0.6254686713218689,
+        8.243316650390625
+      ],
+      "bounds": {
+        "min": [
+          8.340556144714355,
+          0.015808699652552605,
+          4.6133341789245605
+        ],
+        "max": [
+          15.167778015136719,
+          1.23512864112854,
+          11.873299598693848
+        ]
+      },
+      "sourceOwner": "evaluated source ancestry/prefix with preserved world transforms",
+      "visibleOccurrences": 42
+    }
+  ],
+  "bounds": {
+    "min": [
+      -95.00000762939453,
+      -1.9840000867843628,
+      -110.00000762939453
+    ],
+    "max": [
+      90.00000762939453,
+      15.074588775634766,
+      65.0
+    ]
+  },
+  "overviewBounds": {
+    "min": [
+      -46.86984634399414,
+      -0.24212197959423065,
+      -47.71125411987305
+    ],
+    "max": [
+      44.104618072509766,
+      2.9170479774475098,
+      62.73876190185547
+    ]
+  },
+  "sourceCamera": {
+    "name": "R25_FIXED_HIERARCHY_CAMERA",
+    "type": "ORTHO",
+    "gltfPosition": [
+      -47.96036911010742,
+      81.79660034179688,
+      127.58969116210938
+    ],
+    "gltfTargetReference": [
+      -1.9948047399520874,
+      10.758906364440918,
+      44.01594924926758
+    ],
+    "horizontalSpanReference": 79.2850234375,
+    "note": "Inherited source review camera; production framing uses the landmark bounds."
+  },
+  "scope": "Existing formal stage identities only; display scale is not globally calibrated physical scale."
+}

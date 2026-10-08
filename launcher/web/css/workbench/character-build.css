@@ -64,19 +64,135 @@
     font:inherit;
     cursor:pointer;
 }
-.character-build-choice-card > * { flex-shrink:0; }
+.character-build-choice-card > * { flex-shrink:0; min-width:0; }
 .character-build-choice-card strong { font-size:16px; }
-.character-build-choice-description { color:var(--wb-muted); font-size:12px; line-height:1.6; }
+.character-build-choice-description {
+    color:var(--wb-muted);
+    font-size:12px;
+    line-height:1.6;
+    /* 超长说明行数夹紧：完整文本在卡片 tooltip；夹紧让网格轨道不被内容撑破。 */
+    display:-webkit-box;
+    -webkit-box-orient:vertical;
+    -webkit-line-clamp:4;
+    overflow:hidden;
+}
 .character-build-choice-items { display:grid; gap:8px; font-size:13px; line-height:1.5; }
 .character-build-choice-item { display:flex; align-items:center; gap:8px; padding:5px 0; }
 .character-build-choice-icon { display:flex; align-items:center; justify-content:center; width:44px; height:44px; flex:0 0 44px; background:var(--wb-surface-raised,var(--wb-surface)); border:1px solid var(--wb-line); }
 .character-build-choice-icon .item-icon { max-width:40px; max-height:40px; object-fit:contain; }
 .character-build-choice-item-copy { display:grid; gap:3px; min-width:0; overflow-wrap:anywhere; }
 .character-build-choice-item-copy small { color:var(--wb-muted); font-size:12px; }
-.character-build-choice-tooltip { max-width:440px; }
-.character-build-choice-tooltip p { white-space:pre-wrap; line-height:1.6; margin:8px 0 0; }
+.character-build-choice-tt-context {
+    max-height:min(60vh,540px);
+    overflow:auto;
+    scrollbar-color:var(--wb-scrollbar-thumb) var(--wb-scrollbar-track);
+    scrollbar-width:thin;
+}
+/* 档级显式声明着色：JS 侧写 grade-* class 与 inline --mod-grade-color
+   （canonical 色值见 grade-presentation.js / ui_presentation.xml），CSS 只消费 var()。 */
+.character-build-choice-card.grade-low,
+.character-build-choice-card.grade-medium,
+.character-build-choice-card.grade-high,
+.character-build-choice-card.grade-special { border-color:var(--mod-grade-color); }
+/* 金档是正交类目而非强度顶档：版式级区分用双边框形制，不与三档共用同款换色。 */
+.character-build-choice-card.grade-special { border-style:double; border-width:3px; }
+.character-build-choice-grade {
+    margin-left:8px;
+    padding:1px 6px;
+    border:1px solid var(--mod-grade-color);
+    color:var(--mod-grade-color);
+    font-size:11px;
+    font-weight:400;
+    vertical-align:2px;
+}
+.character-build-choice-price[data-paid="true"] {
+    align-self:flex-start;
+    padding:2px 8px;
+    color:var(--cp-yellow);
+    border:1px solid var(--cp-yellow);
+    font-size:12px;
+}
+/* 精简演出（window.CF7_REDUCED_PRESENTATION）：跳过页级结构淡入，内容同帧到位。 */
+.character-build-choice-page.reduced-presentation,
+.character-build-reveal-page.reduced-presentation { transition:none; }
 .character-build-choice-card[aria-pressed="true"] { border-color:var(--wb-focus); box-shadow:inset 3px 0 0 var(--wb-focus); }
 .character-build-choice-card[aria-pressed="true"] > strong:first-child::after { content:' · 已选'; color:var(--wb-focus); font-size:12px; }
+/* 开箱揭晓层：receipt 到达同帧完整渲染；布局参考 loot 奖励网格，零入场 flourish。 */
+.character-build-reveal-page {
+    inset:0;
+    grid-template-rows:auto minmax(0,1fr) auto;
+    gap:10px;
+    border:1px solid var(--wb-line);
+}
+.character-build-reveal-header,
+.character-build-reveal-footer { display:flex; align-items:center; gap:8px; min-width:0; }
+.character-build-reveal-header h2 { flex:1; margin:0; font-size:19px; }
+.character-build-reveal-grid {
+    display:grid;
+    gap:8px;
+    align-content:start;
+    min-height:0;
+    overflow:auto;
+    padding:3px;
+    scrollbar-color:var(--wb-scrollbar-thumb) var(--wb-scrollbar-track);
+    scrollbar-width:thin;
+    overscroll-behavior:contain;
+}
+.character-build-reveal-group {
+    margin:6px 0 0;
+    padding-bottom:3px;
+    color:var(--mod-grade-color);
+    border-bottom:1px solid var(--mod-grade-color);
+    font-size:12px;
+}
+.character-build-reveal-item {
+    display:flex;
+    align-items:center;
+    gap:10px;
+    padding:6px 8px;
+    background:var(--wb-surface);
+    border:1px solid var(--wb-line);
+}
+.character-build-reveal-item.grade-low,
+.character-build-reveal-item.grade-medium,
+.character-build-reveal-item.grade-high,
+.character-build-reveal-item.grade-special { border-left:3px solid var(--mod-grade-color); }
+.character-build-reveal-item.grade-special { border-style:double; border-width:3px; }
+.character-build-reveal-icon {
+    --tt-icon-size:40px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    width:40px;
+    height:40px;
+    flex:0 0 40px;
+    background:var(--wb-surface-raised,var(--wb-surface));
+    border:1px solid var(--wb-line);
+}
+.character-build-reveal-icon .item-icon { max-width:40px; max-height:40px; object-fit:contain; }
+.character-build-reveal-copy { display:grid; gap:3px; min-width:0; overflow-wrap:anywhere; }
+.character-build-reveal-copy small { color:var(--wb-muted); font-size:12px; }
+.character-build-reveal-hint { flex:1 1 200px; margin:0; font-size:12px; color:var(--wb-muted); }
+.character-build-reveal-page button {
+    min-height:32px;
+    padding:5px 12px;
+    border:1px solid var(--wb-line);
+    color:var(--wb-text);
+    background:var(--wb-surface);
+    font:inherit;
+    cursor:pointer;
+}
+.character-build-reveal-close { border-color:var(--wb-focus); color:var(--wb-focus); }
+.character-build-reveal-page [hidden] { display:none; }
+/* 技能注释可见小字行：速通场景悬停成本高，完整描述仍在 tooltip；卡内夹三行。 */
+.character-build-choice-skill-description,
+.character-build-reveal-skill-description {
+    white-space:pre-wrap;
+    display:-webkit-box;
+    -webkit-box-orient:vertical;
+    -webkit-line-clamp:3;
+    overflow:hidden;
+}
 .character-build-choice-footer { grid-row:4; flex-wrap:wrap; }
 .character-build-choice-footer [data-choice-confirm] { max-width:410px; white-space:normal; overflow-wrap:anywhere; }
 .character-build-choice-footer p { flex:1 1 170px; margin:0; font-size:12px; color:var(--wb-muted); }
