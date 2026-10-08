@@ -19,7 +19,8 @@ var CraftingPanel = (function() {
     var _returnCharacterBuildButton = null, _returnNavigationTimer = null;
     var _returnMaterialsButton = null, _materialRecipeReturn = null;
     var _panelInstanceId = '', _canReturnCharacterBuild = false;
-    var _cookingActive = false, _chemistryActive = false, _communeActive = false;
+    var _cookingActive = false, _chemistryActive = false, _communeActive = false,
+        _bartendingActive = false;
     var _recipeSnapshotGeneration = 0, _recipeSnapshotCallId = '',
         _recipeSnapshotIntent = null;
     var _materialShopNavigation = null, _materialShopNavigationTimer = null,
@@ -30,6 +31,7 @@ var CraftingPanel = (function() {
     var _config = (typeof window !== 'undefined' && window.__CRAFTING_CONFIG__) || {};
     var ORGANIZER_DEPS = [
         'modules/inventory-runtime.js',
+        'modules/grade-presentation.js',
         'modules/inventory-ui.js',
         'modules/inventory-workbench-config.js',
         'modules/inventory-workbench-quick-transfer.js',
@@ -2352,6 +2354,29 @@ var CraftingPanel = (function() {
             });
             return true;
         }
+        // 调酒走独立吧台界面（modules/bartending.js + css/panels/bartending.css），
+        // 调制方式随 preview 请求提交、由 AS2 裁决并冻结进计划。
+        if (_mode === 'recipes' && _category === '调酒'
+                && typeof BartendingPanel !== 'undefined' && BartendingPanel != null) {
+            _bartendingActive = true;
+            if (_scaleHandle) _scaleHandle.detach();
+            _scaleHandle = typeof PanelScale !== 'undefined'
+                ? PanelScale.attach(_shellEl, 1024, 576) : null;
+            if (!_mux.openSession({
+                    ownerPanel:'crafting',
+                    panelInstanceId:_panelInstanceId
+                })) return false;
+            Workbench.clearElement(_shellEl);
+            BartendingPanel.mount(_shellEl, {
+                request:request,
+                toast:toast,
+                cue:cue,
+                iconHtml:iconHtml,
+                formatNumber:formatNumber,
+                requestClose:requestClose
+            });
+            return true;
+        }
         // 公社防具走独立档案界面（modules/commune.js + css/panels/commune.css）。
         if (_mode === 'recipes' && _category === '公社防具'
                 && typeof CommunePanel !== 'undefined' && CommunePanel != null) {
@@ -2416,6 +2441,13 @@ var CraftingPanel = (function() {
                 CommunePanel.unmount();
             }
         }
+        if (_bartendingActive) {
+            _bartendingActive = false;
+            if (typeof BartendingPanel !== 'undefined' && BartendingPanel != null
+                    && typeof BartendingPanel.unmount === 'function') {
+                BartendingPanel.unmount();
+            }
+        }
         retireMaterialShopNavigation(false);
         retireProcurementNavigation();
         retireNestedRecipeNavigation();
@@ -2473,6 +2505,10 @@ var CraftingPanel = (function() {
         if (_communeActive && typeof CommunePanel !== 'undefined' && CommunePanel != null
                 && typeof CommunePanel.isBusy === 'function' && CommunePanel.isBusy()) {
             toast('产线正在处理投产，请稍候。'); return;
+        }
+        if (_bartendingActive && typeof BartendingPanel !== 'undefined' && BartendingPanel != null
+                && typeof BartendingPanel.isBusy === 'function' && BartendingPanel.isBusy()) {
+            toast('吧台正在调制，请稍候。'); return;
         }
         if (reason === 'escape' && _mode === 'materials' && _materials
                 && typeof _materials.consumeEscape === 'function'
@@ -2677,6 +2713,9 @@ var CraftingPanel = (function() {
         communeActive:_communeActive,
         commune:_communeActive && typeof CommunePanel !== 'undefined' && CommunePanel
             && typeof CommunePanel.debugState === 'function' ? CommunePanel.debugState() : null,
+        bartendingActive:_bartendingActive,
+        bartending:_bartendingActive && typeof BartendingPanel !== 'undefined' && BartendingPanel
+            && typeof BartendingPanel.debugState === 'function' ? BartendingPanel.debugState() : null,
         filterPath:_filterPath.slice(), craftableOnly:_craftableOnly,
         craftableCount:_snapshot && _snapshot.recipes ? _snapshot.recipes.filter(function(recipe) { return recipe.canCraftOne === true; }).length : 0,
         busy:_busy, previewBusy:_previewBusy, planBusy:_planBusy,

@@ -96,6 +96,10 @@
 
 > 当前 `crafting` 使用 `#78bc73` 表示可合成，`equipment-tuning` 使用 `#d08b80` 表示卸下，`kshop` 使用 `#c8ff4c` 作为普通交互。建议把 `success/warning/danger/info` 抽成 `--wb-semantic-*`，在皮肤层只覆盖暗部色板，不覆盖语义色。
 
+### 6.0 插件档级序数色（别名层，2026-10-07 登记）
+
+档级四色（绿/琥珀/蓝/金）的权威词典是 `data/items/equipment_mods/ui_presentation.xml`；运行态实例色一律由 JS 写 inline `--mod-grade-color`，全仓唯一 JS 来源是 `modules/grade-presentation.js`（2026-10-08 起 inventory 插件投影、配给卡、揭晓层共同消费；`tools/audit-grade-colors.js` 钉死它与 XML 一致并禁止第二副本）。`tokens.css` 的 `--wb-grade-low/medium/high/special` 只是同一组值的**静态别名**，供无法走 inline custom property 的上下文（情报 token、CSS fallback）引用，不反向充当权威。派生层：`--wb-grade-core-*`（暗底符号芯浅色）、`--wb-grade-unknown`（缺档中性灰 `#58636e`）、`--wb-grade-special-on-paper`（纸质亮底皮肤的金档适配 `#8a6d00`，保持金相、不走紫等四档外色相）。金档是正交类目，只能显式声明；视觉上做版式级区分（双边框形制），不与三档共用同款换色，也不与 K 点价格金 `--cp-yellow` 混用。
+
 ### 6.1 Launcher 黑铁终端族（`--launcher-*` / `--term-*`）
 
 启动外壳（bootstrap/welcome）与复用终端语言的面板（settings 等）共享一套独立于 DLS 面板映射的黑铁色板，真源在 `css/workbench/tokens.css`：
@@ -199,6 +203,8 @@ Character Build 的顶部候选操作、完整/紧凑实体格、个人信息 3�
 
 ## 10. 版本
 
+- **v1.6 · 2026-10-08** canonical 收敛：`inventory-ui.js` 的档级守护副本删除，全仓 Web 消费统一 import `modules/grade-presentation.js`（加载序钉在 inventory-ui 之前）；审计改为 XML↔单一来源两方钉死并禁止第二副本。
+- **v1.5 · 2026-10-07** 登记插件档级序数色静态别名层 `--wb-grade-*`（6.0）：canonical 仍在 `ui_presentation.xml` 与 JS 守护副本，tokens.css 只供静态上下文引用；派生芯色/纸质皮肤金档适配一并登记；情报材料 token 漂移（#007acc/#8a35c9）清零。
 - **v1.4 · 2026-07-27** 确认 Character Build 顶部操作、候选 density、属性抗性图标与单 Canvas 放大预览仍使用 protagonist 档案白 + DLS 晶体青混合皮肤；结构变化不引入新色值，抗性 SVG 统一 `currentColor`。
 - **v1.3 · 2026-07-26** 增加主角 `character-build/profile` 的档案白 + DLS 晶体青混合皮肤；冻结权威负重语义色边界，并规定普通物品筛选保持 inventory 中性。
 - **v1.2 · 2026-07-18** 装备调制界面新增 `--tuning-active-*` 选中态原子与 `--tuning-tier-gold / --tuning-danger / --tuning-convert-arrow / --tuning-delta / --tuning-fast` 局部语义 token，统一 active/selected 视觉语言。

@@ -288,6 +288,7 @@ async function main() {
         'modules/cooking.js',
         'modules/chemistry.js',
         'modules/commune.js',
+        'modules/bartending.js',
         'modules/crafting.js'
     ], 'crafting lazy closure must load exact enemy/shop portrait resolvers before its material consumer');
     assert(!craftingSection.includes('dialogue/dialogue-view.js')

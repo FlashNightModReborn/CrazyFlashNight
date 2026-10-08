@@ -2832,6 +2832,27 @@ def attack_mode_visible_clip_actions(control: dict[str, Any]) -> dict[str, Any] 
     }
 
 
+def initially_hidden_clip_actions(control: dict[str, Any]) -> dict[str, Any] | None:
+    """Static preview of an externally controlled, load-hidden effect.
+
+    Only accept the complete, unconditional load script. Never infer initial
+    visibility from a branch, an enterFrame handler or a larger action body.
+    The production SWF is unchanged; only the temporary raster source differs.
+    """
+    if control.get("frameScripts"):
+        return None
+    actions = control.get("clipActions") or []
+    removals = []
+    for action in actions:
+        script = compact_action_script(action.get("script") or "")
+        if not re.fullmatch(r"onClipEvent\(load\)\{this\._visible=(?:false|0);?\}", script):
+            return None
+        if int(action.get("frame") or 1) != 1 or action.get("characterId") is None or action.get("depth") is None:
+            return None
+        removals.append({"characterId": int(action["characterId"]), "depth": int(action["depth"]), "frame": 1})
+    return {"property": "initialVisibility", "neutralRemovals": removals} if removals else None
+
+
 def playback_metadata(
     controls: dict[int, dict[str, Any]],
     sprite_graph: dict[int, dict[str, Any]],
@@ -3740,6 +3761,8 @@ def export_skin_assets(
             if layer_plans:
                 layer_parent_ids.add(char_id)
             conditional_visibility = attack_mode_visible_clip_actions(timeline_controls.get(char_id) or {})
+            if not conditional_visibility and len(frames) == 1 and not playback.get("nestedAnimation"):
+                conditional_visibility = initially_hidden_clip_actions(timeline_controls.get(char_id) or {})
             if conditional_visibility:
                 conditional_parent_ids.add(char_id)
                 for removal in conditional_visibility.get("neutralRemovals") or []:
@@ -3988,6 +4011,13 @@ def export_skin_assets(
                     }
                     if len(variant_timeline_entries) < len(variant_entries):
                         runtime_variants["neutral"]["timelineFrames"] = variant_timeline_entries
+                    if conditional_visibility.get("property") == "initialVisibility":
+                        # No light-state input exists in static dressup consumers.
+                        # Use the unloaded/off image as the default, including its
+                        # own bounds and registration point, not a runtime variant.
+                        frame_entries = variant_entries
+                        playback["hiddenOnLoadCount"] = len(conditional_visibility["neutralRemovals"])
+                        runtime_variants = {}
                     export_report["conditionalVariantSkinKeys"] += 1
                     export_report["conditionalVariantFrames"] += len(variant_entries)
                     export_report["conditionalVariantSamples"].append(

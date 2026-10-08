@@ -1,0 +1,129 @@
+{
+  "schema": 1,
+  "revision": "R24-R25B-R28-eleven-submap-1",
+  "scope": "Local stage-select candidate; no runtime promotion or Host E2E proof",
+  "generatorInputs": [
+    {
+      "path": "config/stage-select-desert.json",
+      "sha256": "8015185ec39796715b7ae7e73d132eaa4982bb44e0656cb500c38fee52841b73"
+    },
+    {
+      "path": "docs/design-data/desert-spatial-draft.json",
+      "sha256": "40d9adeff5a4688dddd9105ad8c89cc02bc56245c57783d5351ff6f5aa14e87b"
+    },
+    {
+      "path": "docs/design-data/desert-multistage-expansion.json",
+      "sha256": "677a4dbbcc6984300b8927e9a84f492d898169beadfb93cc41aa3d88068b1c44"
+    },
+    {
+      "path": "tools/import-stage-select-desert.py",
+      "sha256": "0cfbf0f34af6554624f5c0eaf4a0ff3d52d3d391022167eb7ea6e0dfd8c46429"
+    },
+    {
+      "path": "tools/desert-runtime/ambush_details.py",
+      "sha256": "c65d3f9928db304e2217e277e345a3db52c70100887dead4f9a31c949ff166dd"
+    },
+    {
+      "path": "tools/desert-runtime/build_local_details.py",
+      "sha256": "363707f9ba3d12f24baec0f0d022b0e6eb8894a0e3e3da10ea98341b6b2983c4"
+    },
+    {
+      "path": "tools/desert-runtime/build_multistage.py",
+      "sha256": "3b624217f5c6716bd6904b15c9d4d9a1d896bcf8a72a45dfb1fc450486f79fe4"
+    },
+    {
+      "path": "tools/desert-runtime/civil_details.py",
+      "sha256": "1c9ae2d76887b1aca5ae93c05f566c90047b6751ed9c18ea2189df5a97bbdf95"
+    },
+    {
+      "path": "tools/desert-runtime/depot_multistage.py",
+      "sha256": "4cd42ee749825a61a8c5475772eaee4b1ad4329300079ad106753de2b8ec6938"
+    },
+    {
+      "path": "tools/desert-runtime/export_blender.py",
+      "sha256": "0be939dff7dcbd4aef4e8445b52e1aa8e6a0043e5ff0a75295268fb16f1102e5"
+    },
+    {
+      "path": "tools/desert-runtime/forest_lod.py",
+      "sha256": "deffe82819c57bc021fcac43ef8fe0e70ad6428edd583d1ac961c5423f1fa69d"
+    },
+    {
+      "path": "tools/desert-runtime/glb_writer.py",
+      "sha256": "f6a0a40da619b9cc2b86f81155f35b0e11444749703832a706addc5987b5cafa"
+    },
+    {
+      "path": "tools/desert-runtime/material_eval.py",
+      "sha256": "9a02ed0c605b9896bf0dfe7b1870fcab54f18b744bc4a5053ad09a147cfafc56"
+    },
+    {
+      "path": "tools/desert-runtime/military_details.py",
+      "sha256": "ae32da9c65a2aca6fa5f490a639b45302c90eff915473e20497df02f3af33465"
+    },
+    {
+      "path": "tools/desert-runtime/military_multistage.py",
+      "sha256": "d03f4ccf197d7c778c8db67e0426c712c10bebdd4e3d5384586bd0f6e6eff368"
+    },
+    {
+      "path": "tools/desert-runtime/road_repairs.py",
+      "sha256": "9185abe6ed04e0057e8bcfb3d840c72bd2059b4bc7591c6df242368c895b5149"
+    }
+  ],
+  "sourceBlendSha256": "438dd15589ace2ee06f514f539356a5ab2dd037759c1e2fa96e0fba5c85d5073",
+  "sourceArchive": {
+    "name": "CF7-desert-source-eleven-submap-20261007-v3.zip",
+    "sha256": "1064f7f2193b20e4c8c16ee6c5fc81c7bf3da2472781d7c25a701b897c020357",
+    "bytes": 160556574,
+    "status": "local-upload-ready; fresh extraction and editable source reopening verified; no cloud copy created"
+  },
+  "sceneTransport": {
+    "path": "scene.glb.gz",
+    "encoding": "gzip",
+    "sha256": "b11c42980cb911bbfdab9a15f7159fd61e70867ec3c9aaf2bb5a3e5291526860",
+    "bytes": 47909246,
+    "decodedBytes": 105993764
+  },
+  "transportAudit": {
+    "decodedSHA256": "e94899a9ee8a6157cf0358fbd6e18aa9707c5a9cf8118398e61bbd90a0736f01",
+    "roundtripByteEqual": true,
+    "gzipLevel": 9,
+    "gzipMtime": 0,
+    "gzipFilename": "",
+    "gzipOSByte": 255,
+    "scope": "Lossless repository transport; original GLB/export report identity is unchanged"
+  },
+  "audit": {
+    "bytes": 105993764,
+    "meshes": 344,
+    "primitives": 344,
+    "triangles": 2814705,
+    "materials": 88,
+    "images": 83
+  },
+  "files": [
+    {
+      "path": "scene.glb.gz",
+      "bytes": 47909246,
+      "sha256": "b11c42980cb911bbfdab9a15f7159fd61e70867ec3c9aaf2bb5a3e5291526860"
+    },
+    {
+      "path": "places.json",
+      "bytes": 24378,
+      "sha256": "263c5d264dda5bcc88415429dd9c02b527f0ff37d2b50373d6ac738cf233b974"
+    },
+    {
+      "path": "export-report.json",
+      "bytes": 339451,
+      "sha256": "41214f63d518a887ebdee0975692f2316e01768f2e24f9432053f76b9da1bbc9"
+    },
+    {
+      "path": "config.json",
+      "bytes": 14335,
+      "sha256": "e2863953f768018ca951a77c813568ea9d5f129edc38ce9dfd5292778e7a22e4"
+    },
+    {
+      "path": "source-object-map.json",
+      "bytes": 3772183,
+      "sha256": "363899d5e6540f301abefccab77bf17673e3a0a7606eb41cb6c0d3cd1788b2c7"
+    }
+  ]
+}

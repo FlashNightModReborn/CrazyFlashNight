@@ -84,6 +84,7 @@ namespace CF7Launcher.Tests.Tasks
                 h.Prefs.MapDisplayPreference = "compact";
                 h.Prefs.HitNumberMode = "detail";
                 h.Prefs.HitNumberWorldRowLimit = 0;
+                h.Prefs.ReducedPresentation = true;
                 JObject sent = h.Send("snapshot", new JObject { ["v"] = 1 });
                 Assert.NotNull(sent);
                 Assert.Equal("cmd", sent.Value<string>("task"));
@@ -103,6 +104,7 @@ namespace CF7Launcher.Tests.Tasks
                 Assert.Equal("compact", web["hostPrefs"].Value<string>("mapDisplayPreference"));
                 Assert.Equal("detail", web["hostPrefs"].Value<string>("hitNumberMode"));
                 Assert.Equal(0, web["hostPrefs"].Value<int>("hitNumberWorldRowLimit"));
+                Assert.True(web["hostPrefs"].Value<bool>("reducedPresentation"));
                 Assert.Equal(2, web.Value<int>("keySchemaVersion"));
                 Assert.Equal(36, ((JArray)web["keys"]).Count);
                 Assert.Equal(string.Empty, web.Value<string>("keyMigrationNotice"));
@@ -270,6 +272,24 @@ namespace CF7Launcher.Tests.Tasks
             h.Send("host_set",new JObject { ["v"]=1,["key"]="tutorialsAutoOpen",["value"]=true },"web.settings.tutorial-rollback");
             Assert.Equal("save_failed",h.Web[2].Value<string>("error"));Assert.False(h.Web[2].Value<bool>("currentValue"));
             Assert.False(h.Prefs.TutorialsAutoOpen);Assert.Equal(1,notifications);Assert.Empty(h.Flash);
+        }
+
+        [Fact]
+        public void ReducedPresentation_IsStrictBooleanObservedAndRolledBackOnSaveFailure()
+        {
+            using var h = new Harness();h.Prefs.ReducedPresentation = false;
+            int notifications = 0;
+            h.Task.SetHostPreferenceApplied((key,value) => {
+                Assert.Equal("reducedPresentation",key);Assert.True(value.Value<bool>());notifications++;
+            });
+            h.Send("host_set",new JObject { ["v"]=1,["key"]="reducedPresentation",["value"]="true" },"web.settings.rp-invalid");
+            Assert.Equal("bad_value",h.Web[0].Value<string>("error"));Assert.False(h.Prefs.ReducedPresentation);
+            h.Send("host_set",new JObject { ["v"]=1,["key"]="reducedPresentation",["value"]=true },"web.settings.rp-enable");
+            Assert.True(h.Prefs.ReducedPresentation);Assert.True(h.Web[1].Value<bool>("currentValue"));Assert.Equal(1,notifications);
+            h.SaveResult = false;
+            h.Send("host_set",new JObject { ["v"]=1,["key"]="reducedPresentation",["value"]=false },"web.settings.rp-rollback");
+            Assert.Equal("save_failed",h.Web[2].Value<string>("error"));Assert.True(h.Web[2].Value<bool>("currentValue"));
+            Assert.True(h.Prefs.ReducedPresentation);Assert.Equal(1,notifications);Assert.Empty(h.Flash);
         }
 
         [Fact]

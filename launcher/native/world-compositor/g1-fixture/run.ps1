@@ -4,29 +4,40 @@
 # → 实跑并把证据写入 <repo>\tmp\g1-evidence-<时间>\，保留历史证据。
 param(
     [string]$OutDir = '',
-    [ValidateSet('queue','renew','failure','geometry','maximize')][string]$Mode = 'queue'
+    [ValidateSet('queue','renew','failure','geometry','maximize')][string]$Mode = 'queue',
+    [switch]$ManagedBuildOnly
 )
 $ErrorActionPreference = 'Stop'
 chcp.com 65001 | Out-Null
 $root = Split-Path -Parent (Split-Path -Parent (Split-Path -Parent (Split-Path -Parent $PSScriptRoot)))
 if (-not $OutDir) { $OutDir = Join-Path $root 'tmp\native-out' }
+. (Join-Path $root 'launcher\resolve-dotnet.ps1')
+$dotnet = Resolve-Cf7Dotnet -ProjectRoot $root
+$runId = (Get-Date -Format 'yyyyMMdd-HHmmss-fff') + '-' + [Guid]::NewGuid().ToString('N').Substring(0,8)
 
 # 1) pinned 原生构建（默认产物 + G1Target.exe）
-& powershell -NoProfile -ExecutionPolicy Bypass -File (Join-Path $PSScriptRoot '..\build-dev.ps1') -Target g1fixture -OutDir $OutDir
-if ($LASTEXITCODE -ne 0) { Write-Host "NATIVE_BUILD_FAIL=$LASTEXITCODE"; exit $LASTEXITCODE }
+if (-not $ManagedBuildOnly) {
+    & powershell -NoProfile -ExecutionPolicy Bypass -File (Join-Path $PSScriptRoot '..\build-dev.ps1') -Target g1fixture -OutDir $OutDir
+    if ($LASTEXITCODE -ne 0) { Write-Host "NATIVE_BUILD_FAIL=$LASTEXITCODE"; exit $LASTEXITCODE }
+}
 
-# 2) G1Host（生产源码混入编译）
-$dotnet = Join-Path $env:LOCALAPPDATA 'Microsoft\dotnet\dotnet.exe'
-$hostOut = Join-Path $root 'tmp\g1host-out'
+# 2) G1Host 与其引用的完整 Core 依赖；输出不复用上一轮目录。
+$hostOut = Join-Path $root "tmp\g1host-out-$runId"
 & $dotnet build (Join-Path $PSScriptRoot 'G1Host.csproj') -c Release -o $hostOut --nologo
 if ($LASTEXITCODE -ne 0) { Write-Host "HOST_BUILD_FAIL=$LASTEXITCODE"; exit $LASTEXITCODE }
 
 # 3) 每轮独立目录；不按名称结束其他实验或实际游戏的 broker。
-$runId = Get-Date -Format 'yyyyMMdd-HHmmss-fff'
 $run = Join-Path $root "tmp\g1-run-$runId"
 New-Item -ItemType Directory -Force -Path $run | Out-Null
-Copy-Item -Force (Join-Path $hostOut 'G1Host.*') $run
-Copy-Item -Force (Join-Path $hostOut 'Newtonsoft.Json.dll') $run -ErrorAction SilentlyContinue
+Copy-Item -Path (Join-Path $hostOut '*') -Destination $run -Recurse
+if (-not (Test-Path -LiteralPath (Join-Path $run 'CRAZYFLASHER7MercenaryEmpire.Core.dll') -PathType Leaf)) {
+    throw 'Referenced Core is missing from the isolated fixture closure.'
+}
+if ($ManagedBuildOnly) {
+    Write-Host "G1_MANAGED_BUILD_ONLY=$run"
+    Write-Host 'No native build, fixture execution or input injection was performed.'
+    exit 0
+}
 Copy-Item -Force (Join-Path $OutDir 'FlashInputBroker.exe') $run
 Copy-Item -Force (Join-Path $OutDir 'FlashInputBridge.dll') $run
 Copy-Item -Force (Join-Path $OutDir 'FlashCompositorNative.dll') $run
@@ -36,7 +47,7 @@ Copy-Item -Force (Join-Path $OutDir 'G1Target.exe') $run
 #    DOTNET_ROOT 指向 pinned 本地 .NET 10，证据目录本轮新建。
 $ev = Join-Path $root "tmp\g1-evidence-$runId"
 New-Item -ItemType Directory -Force -Path $ev | Out-Null
-$env:DOTNET_ROOT = Join-Path $env:LOCALAPPDATA 'Microsoft\dotnet'
+$env:DOTNET_ROOT = Split-Path -Parent $dotnet
 $env:DOTNET_ROOT_X64 = $env:DOTNET_ROOT
 $priorTrace=$env:CF7_FOCUS_TRACE
 try {

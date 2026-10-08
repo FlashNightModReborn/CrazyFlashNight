@@ -691,10 +691,14 @@ class org.flashNight.arki.item.ItemUseService {
         var command:String = "";
         var label:String = "";
         var blocked:String = "";
+        // 礼包 mode 随候选下发（fixed/independent/chooseOne/playerChoice），
+        // 供 Web 按"结果是否知情"分级呈现；药剂恒为空串。纯展示字段，不进任何写协议。
+        var packMode:String = "";
         if (itemData.use === "礼包") {
             var recipe:Object = normalizeRecipe(itemData.data == null
                 ? null : itemData.data.rewardPack);
             if (!recipe.success) return none;
+            packMode = String(recipe.mode);
             command = "open";
             label = "打开";
             if (recipe.mode == "playerChoice") { command = "openChoice"; label = "自选配给"; }
@@ -717,7 +721,7 @@ class org.flashNight.arki.item.ItemUseService {
                 else if (lane.success !== true) blocked = String(lane.error);
             }
         } else return none;
-        return {useAction:{command:command, label:label,
+        return {useAction:{command:command, label:label, packMode:packMode,
             source:{physicalSlot:physicalSlot, slotLease:slotLease,
                 itemName:String(item.name), backpackVersion:backpackVersion}},
             useBlockedReason:blocked};

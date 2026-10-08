@@ -507,7 +507,7 @@ namespace CF7Launcher.Guardian.Hud.Loot
                 return;
             }
 
-            if (source == "quest_reward" || source == "level_reward" || source == "loot_box")
+            if (IsGuaranteedRewardSource(source))
             {
                 retention = RetentionClass.Guaranteed;
                 urgency = UrgencyClass.Prompt;
@@ -547,11 +547,17 @@ namespace CF7Launcher.Guardian.Hud.Loot
         private static int HoldFor(string kind, string source, int eliteLevel)
         {
             if (kind == "kill" && eliteLevel >= 2) return 3000;
-            if (source == "quest_reward" || source == "level_reward" || source == "loot_box") return 2800;
+            if (IsGuaranteedRewardSource(source)) return 2800;
             if (kind == "kill" && eliteLevel == 1) return 2200;
             if (kind == "kill") return 1600;
             if (source == "pickup") return 2200;
             return 2200;
+        }
+
+        private static bool IsGuaranteedRewardSource(string source)
+        {
+            return source == "quest_reward" || source == "level_reward" || source == "loot_box"
+                || source == "map_chest" || source == "stage_settlement";
         }
 
         private static long SaturatingAdd(long left, long right)

@@ -24,6 +24,7 @@ class org.flashNight.arki.item.ChoiceRewardDefinition {
                     weight: 1,
                     title: "步枪·下挂喷火器",
                     description: "免费配给：7级AK47、下挂喷火器与对应弹药。第三图前可成型；插件需自行安装，下挂消耗独立弹药。",
+                    grade: "low",
                     entries: [
                         {
                             itemName: "AK47",
@@ -50,6 +51,7 @@ class org.flashNight.arki.item.ChoiceRewardDefinition {
                     weight: 1,
                     title: "步枪·下挂金属风暴榴弹发射器",
                     description: "免费配给：7级AK47、下挂金属风暴榴弹发射器与对应弹药。第三图前可成型；插件需自行安装，下挂消耗独立弹药。",
+                    grade: "low",
                     entries: [
                         {
                             itemName: "AK47",
@@ -76,6 +78,7 @@ class org.flashNight.arki.item.ChoiceRewardDefinition {
                     weight: 1,
                     title: "步枪·下挂微型导弹发射器",
                     description: "免费配给：7级AK47、下挂微型导弹发射器与对应弹药。第三图前可成型；插件需自行安装，下挂消耗独立弹药。",
+                    grade: "low",
                     entries: [
                         {
                             itemName: "AK47",
@@ -102,6 +105,7 @@ class org.flashNight.arki.item.ChoiceRewardDefinition {
                     weight: 1,
                     title: "步枪·下挂转轮霰弹枪",
                     description: "免费配给：7级AK47、下挂转轮霰弹枪与对应弹药。第三图前可成型；插件需自行安装，下挂消耗独立弹药。",
+                    grade: "low",
                     entries: [
                         {
                             itemName: "AK47",
@@ -133,6 +137,7 @@ class org.flashNight.arki.item.ChoiceRewardDefinition {
                     weight: 1,
                     title: "初阶·冲锋穿透",
                     description: "7级UZI两把、磁稳贯穿弹两份、冲锋枪弹药24份。双持配给，两把各装一份插件；贯穿射击会降低射速。",
+                    grade: "low",
                     entries: [
                         {
                             itemName: "UZI",
@@ -159,6 +164,7 @@ class org.flashNight.arki.item.ChoiceRewardDefinition {
                     weight: 1,
                     title: "初阶·步榴协同",
                     description: "7级AK47、磁稳贯穿弹、M203榴弹发射器、步枪弹药8份、榴弹6份。贯穿射击配合下挂爆发。",
+                    grade: "low",
                     entries: [
                         {
                             itemName: "AK47",
@@ -189,6 +195,7 @@ class org.flashNight.arki.item.ChoiceRewardDefinition {
                     weight: 1,
                     title: "初阶·集中霰弹",
                     description: "8级雷明登870、霰弹枪口收束器、磁稳贯穿弹、霰弹18份。集中霰弹并获得贯穿；与镇暴弹属于互斥的弹药改装。",
+                    grade: "low",
                     entries: [
                         {
                             itemName: "雷明登870",
@@ -215,6 +222,7 @@ class org.flashNight.arki.item.ChoiceRewardDefinition {
                     weight: 1,
                     title: "初阶·军刀突进",
                     description: "9级破旧的军刀、绳扣穿孔片、手柄皮、石英磨刀石、中蓝6瓶、手雷4枚。磨刀石提升威力并锁定物理伤害。",
+                    grade: "low",
                     entries: [
                         {
                             itemName: "破旧的军刀",
@@ -249,6 +257,7 @@ class org.flashNight.arki.item.ChoiceRewardDefinition {
                     weight: 1,
                     title: "初阶·拳脚起手",
                     description: "5级道钉手套、中蓝6瓶。提供拳脚威力，支持空手技能构筑；未抽到时也可在商店购买拳套。",
+                    grade: "low",
                     entries: [
                         {
                             itemName: "道钉手套",
@@ -272,6 +281,7 @@ class org.flashNight.arki.item.ChoiceRewardDefinition {
                     weight: 1,
                     title: "应急储备",
                     description: "中药与手雷，保留现有武器继续成长。",
+                    grade: "low",
                     entries: [
                         {
                             itemName: "加强抗生素药剂",
@@ -294,6 +304,7 @@ class org.flashNight.arki.item.ChoiceRewardDefinition {
                     weight: 1,
                     title: "防护改装",
                     description: "防弹衣与衣服进阶材料。",
+                    grade: "low",
                     entries: [
                         {
                             itemName: "军绿防弹衣",
@@ -316,6 +327,7 @@ class org.flashNight.arki.item.ChoiceRewardDefinition {
                     weight: 1,
                     title: "刀剑项链",
                     description: "1级冷兵器小加成项链。提供生存属性与冷兵器威力加成；可延续现有路线，也可据此转型。",
+                    grade: "low",
                     entries: [
                         {
                             itemName: "冷兵器小加成项链",
@@ -330,6 +342,7 @@ class org.flashNight.arki.item.ChoiceRewardDefinition {
                     weight: 1,
                     title: "枪械项链",
                     description: "1级枪械小加成项链。提供生存属性与枪械威力加成；可延续现有路线，也可据此转型。",
+                    grade: "low",
                     entries: [
                         {
                             itemName: "枪械小加成项链",
@@ -344,6 +357,7 @@ class org.flashNight.arki.item.ChoiceRewardDefinition {
                     weight: 1,
                     title: "空手项链",
                     description: "1级空手小加成项链。提供生存属性与拳脚威力加成；可延续现有路线，也可据此转型。",
+                    grade: "low",
                     entries: [
                         {
                             itemName: "空手小加成项链",
@@ -358,6 +372,7 @@ class org.flashNight.arki.item.ChoiceRewardDefinition {
                     weight: 1,
                     title: "初阶·内力启蒙",
                     description: "月之碎片1枚。安装到上装，将装备的内力加成设为10，覆盖原有内力加成；刀剑与拳脚路线均可使用。",
+                    grade: "low",
                     entries: [
                         {
                             itemName: "月之碎片",
@@ -393,6 +408,7 @@ class org.flashNight.arki.item.ChoiceRewardDefinition {
                     weight: 1,
                     title: "进阶·机枪压制",
                     description: "13级M249、水冷机构、磁稳贯穿弹、机枪弹药4份。贯穿火力支持持续压制；插件会增加负重、降低射速，可自行决定是否安装。",
+                    grade: "medium",
                     entries: [
                         {
                             itemName: "M249",
@@ -419,6 +435,7 @@ class org.flashNight.arki.item.ChoiceRewardDefinition {
                     weight: 1,
                     title: "进阶·榴弹爆破",
                     description: "12级M79式榴弹发射器两把、榴弹24份、普通手雷6枚。双持爆炸火力适合应对集群，仍需规划换弹和后续弹药。",
+                    grade: "medium",
                     entries: [
                         {
                             itemName: "M79式榴弹发射器",
@@ -445,6 +462,7 @@ class org.flashNight.arki.item.ChoiceRewardDefinition {
                     weight: 1,
                     title: "进阶·霰弹控场",
                     description: "8级雷明登870、霰弹枪口收束器、八门金锁镇暴弹、霰弹18份、手雷6枚。镇暴弹偏向对群控制，与磁稳贯穿弹不能同时安装。",
+                    grade: "medium",
                     entries: [
                         {
                             itemName: "雷明登870",
@@ -475,6 +493,7 @@ class org.flashNight.arki.item.ChoiceRewardDefinition {
                     weight: 1,
                     title: "进阶·双刀突进",
                     description: "13级战术双刀、绳扣穿孔片、石英磨刀石、大蓝6瓶、手雷6枚。两枚插件适配双刀的两个插槽，强化瞬步斩与物理威力。",
+                    grade: "medium",
                     entries: [
                         {
                             itemName: "战术双刀",
@@ -505,6 +524,7 @@ class org.flashNight.arki.item.ChoiceRewardDefinition {
                     weight: 1,
                     title: "进阶·重拳出击",
                     description: "13级大型拳套、大蓝6瓶。提升拳脚威力与韧性，需要承担更高负重。",
+                    grade: "medium",
                     entries: [
                         {
                             itemName: "大型拳套",
@@ -528,6 +548,7 @@ class org.flashNight.arki.item.ChoiceRewardDefinition {
                     weight: 1,
                     title: "决战储备",
                     description: "大药和手雷，支撑最后几场战斗。",
+                    grade: "medium",
                     entries: [
                         {
                             itemName: "大HP药剂",
@@ -550,6 +571,7 @@ class org.flashNight.arki.item.ChoiceRewardDefinition {
                     weight: 1,
                     title: "防线强化",
                     description: "战术背心与防御进阶组件。",
+                    grade: "medium",
                     entries: [
                         {
                             itemName: "A兵团制式战术背心",
@@ -568,6 +590,7 @@ class org.flashNight.arki.item.ChoiceRewardDefinition {
                     weight: 1,
                     title: "再战一次",
                     description: "一枚复活币。死亡后可复活一次；仅属于本次旅程。",
+                    grade: "medium",
                     entries: [
                         {
                             itemName: "复活币",
@@ -582,6 +605,7 @@ class org.flashNight.arki.item.ChoiceRewardDefinition {
                     weight: 1,
                     title: "刀剑项链",
                     description: "1级冷兵器小加成项链。提供生存属性与冷兵器威力加成；可延续现有路线，也可据此转型。",
+                    grade: "low",
                     entries: [
                         {
                             itemName: "冷兵器小加成项链",
@@ -596,6 +620,7 @@ class org.flashNight.arki.item.ChoiceRewardDefinition {
                     weight: 1,
                     title: "枪械项链",
                     description: "1级枪械小加成项链。提供生存属性与枪械威力加成；可延续现有路线，也可据此转型。",
+                    grade: "low",
                     entries: [
                         {
                             itemName: "枪械小加成项链",
@@ -610,6 +635,7 @@ class org.flashNight.arki.item.ChoiceRewardDefinition {
                     weight: 1,
                     title: "空手项链",
                     description: "1级空手小加成项链。提供生存属性与拳脚威力加成；可延续现有路线，也可据此转型。",
+                    grade: "low",
                     entries: [
                         {
                             itemName: "空手小加成项链",
@@ -624,6 +650,7 @@ class org.flashNight.arki.item.ChoiceRewardDefinition {
                     weight: 1,
                     title: "进阶·内力精进",
                     description: "月之精华1枚。安装到上装，将装备的内力加成设为35，覆盖原有内力加成；与月之碎片占同一个内力槽。",
+                    grade: "medium",
                     entries: [
                         {
                             itemName: "月之精华",
@@ -643,6 +670,7 @@ class org.flashNight.arki.item.ChoiceRewardDefinition {
                     weight: 1,
                     title: "进阶·燃焰压制",
                     description: "AK47、下挂喷火器、火焰喷射器燃料罐3份。完整转型配给，插件需自行安装；替换同槽下挂。",
+                    grade: "medium",
                     entries: [
                         {
                             itemName: "AK47",
@@ -669,6 +697,7 @@ class org.flashNight.arki.item.ChoiceRewardDefinition {
                     weight: 1,
                     title: "进阶·金属风暴",
                     description: "AK47、下挂金属风暴榴弹发射器、榴弹弹药6份。完整转型配给，插件需自行安装；替换同槽下挂。",
+                    grade: "medium",
                     entries: [
                         {
                             itemName: "AK47",
@@ -695,6 +724,7 @@ class org.flashNight.arki.item.ChoiceRewardDefinition {
                     weight: 1,
                     title: "进阶·导弹爆发",
                     description: "AK47、下挂微型导弹发射器、能量电池1份。完整转型配给，插件需自行安装；替换同槽下挂。",
+                    grade: "medium",
                     entries: [
                         {
                             itemName: "AK47",
@@ -721,6 +751,7 @@ class org.flashNight.arki.item.ChoiceRewardDefinition {
                     weight: 1,
                     title: "进阶·转轮突击",
                     description: "AK47、下挂转轮霰弹枪、00号鹿弹6份。完整转型配给，插件需自行安装；替换同槽下挂。",
+                    grade: "medium",
                     entries: [
                         {
                             itemName: "AK47",
@@ -752,6 +783,7 @@ class org.flashNight.arki.item.ChoiceRewardDefinition {
                     weight: 1,
                     title: "拳脚空中连招特训",
                     description: "支付700 K点，直接获得拳脚空中连招3级。属于额外能力；主动技能需自行装备。",
+                    grade: "high",
                     entries: [],
                     skills: [
                         {
@@ -766,6 +798,7 @@ class org.flashNight.arki.item.ChoiceRewardDefinition {
                     weight: 1,
                     title: "刀剑空中连招特训",
                     description: "支付700 K点，直接获得刀剑空中连招3级。属于额外能力；主动技能需自行装备。",
+                    grade: "high",
                     entries: [],
                     skills: [
                         {
@@ -780,6 +813,7 @@ class org.flashNight.arki.item.ChoiceRewardDefinition {
                     weight: 1,
                     title: "内力爆发特训",
                     description: "支付700 K点，直接获得内力爆发3级。属于额外能力；主动技能需自行装备。",
+                    grade: "high",
                     entries: [],
                     skills: [
                         {
@@ -794,6 +828,7 @@ class org.flashNight.arki.item.ChoiceRewardDefinition {
                     weight: 1,
                     title: "枪械师特训",
                     description: "支付700 K点，直接获得枪械师3级。属于额外能力；主动技能需自行装备。",
+                    grade: "high",
                     entries: [],
                     skills: [
                         {
@@ -808,6 +843,7 @@ class org.flashNight.arki.item.ChoiceRewardDefinition {
                     weight: 1,
                     title: "火舞旋风特训",
                     description: "支付1100 K点，直接获得火舞旋风2级。属于额外能力；主动技能需自行装备。",
+                    grade: "medium",
                     entries: [],
                     skills: [
                         {
@@ -822,6 +858,7 @@ class org.flashNight.arki.item.ChoiceRewardDefinition {
                     weight: 1,
                     title: "旋风腿特训",
                     description: "支付1100 K点，直接获得旋风腿2级。属于额外能力；主动技能需自行装备。",
+                    grade: "medium",
                     entries: [],
                     skills: [
                         {
@@ -836,6 +873,7 @@ class org.flashNight.arki.item.ChoiceRewardDefinition {
                     weight: 1,
                     title: "火力支援特训",
                     description: "支付1100 K点，直接获得火力支援2级。属于额外能力；主动技能需自行装备。",
+                    grade: "medium",
                     entries: [],
                     skills: [
                         {
@@ -871,6 +909,7 @@ class org.flashNight.arki.item.ChoiceRewardDefinition {
                     weight: 1,
                     title: "霸体入门",
                     description: "直接获得霸体2级，不消耗SP。主动技能需在技能页装入快捷栏；已拥有同级或更高等级时不再投放。",
+                    grade: "low",
                     entries: [],
                     skills: [
                         {
@@ -885,6 +924,7 @@ class org.flashNight.arki.item.ChoiceRewardDefinition {
                     weight: 1,
                     title: "迅斩入门",
                     description: "直接获得迅斩2级，不消耗SP。主动技能需在技能页装入快捷栏；已拥有同级或更高等级时不再投放。",
+                    grade: "low",
                     entries: [],
                     skills: [
                         {
@@ -899,6 +939,7 @@ class org.flashNight.arki.item.ChoiceRewardDefinition {
                     weight: 1,
                     title: "踩人入门",
                     description: "直接获得踩人2级，不消耗SP。主动技能需在技能页装入快捷栏；已拥有同级或更高等级时不再投放。",
+                    grade: "low",
                     entries: [],
                     skills: [
                         {
@@ -913,6 +954,7 @@ class org.flashNight.arki.item.ChoiceRewardDefinition {
                     weight: 1,
                     title: "上挑入门",
                     description: "直接获得上挑2级，不消耗SP。主动技能需在技能页装入快捷栏；已拥有同级或更高等级时不再投放。",
+                    grade: "low",
                     entries: [],
                     skills: [
                         {
@@ -927,6 +969,7 @@ class org.flashNight.arki.item.ChoiceRewardDefinition {
                     weight: 1,
                     title: "下劈入门",
                     description: "直接获得下劈2级，不消耗SP。主动技能需在技能页装入快捷栏；已拥有同级或更高等级时不再投放。",
+                    grade: "low",
                     entries: [],
                     skills: [
                         {
@@ -941,6 +984,7 @@ class org.flashNight.arki.item.ChoiceRewardDefinition {
                     weight: 1,
                     title: "裂地拳入门",
                     description: "直接获得裂地拳2级，不消耗SP。主动技能需在技能页装入快捷栏；已拥有同级或更高等级时不再投放。",
+                    grade: "low",
                     entries: [],
                     skills: [
                         {
@@ -955,6 +999,7 @@ class org.flashNight.arki.item.ChoiceRewardDefinition {
                     weight: 1,
                     title: "追猎射击入门",
                     description: "直接获得追猎射击2级，不消耗SP。主动技能需在技能页装入快捷栏；已拥有同级或更高等级时不再投放。",
+                    grade: "low",
                     entries: [],
                     skills: [
                         {
@@ -969,6 +1014,7 @@ class org.flashNight.arki.item.ChoiceRewardDefinition {
                     weight: 1,
                     title: "翻滚换弹入门",
                     description: "直接获得翻滚换弹2级，不消耗SP。主动技能需在技能页装入快捷栏；已拥有同级或更高等级时不再投放。",
+                    grade: "low",
                     entries: [],
                     skills: [
                         {
@@ -1004,6 +1050,7 @@ class org.flashNight.arki.item.ChoiceRewardDefinition {
                     weight: 1,
                     title: "瞬步斩协同",
                     description: "直接获得瞬步斩2级，不消耗SP。可补充已有流派的战斗动作，主动技能需自行装备。",
+                    grade: "medium",
                     entries: [],
                     skills: [
                         {
@@ -1018,6 +1065,7 @@ class org.flashNight.arki.item.ChoiceRewardDefinition {
                     weight: 1,
                     title: "凶斩协同",
                     description: "直接获得凶斩2级，不消耗SP。可补充已有流派的战斗动作，主动技能需自行装备。",
+                    grade: "medium",
                     entries: [],
                     skills: [
                         {
@@ -1032,6 +1080,7 @@ class org.flashNight.arki.item.ChoiceRewardDefinition {
                     weight: 1,
                     title: "日字冲拳协同",
                     description: "直接获得日字冲拳2级，不消耗SP。可补充已有流派的战斗动作，主动技能需自行装备。",
+                    grade: "medium",
                     entries: [],
                     skills: [
                         {
@@ -1046,6 +1095,7 @@ class org.flashNight.arki.item.ChoiceRewardDefinition {
                     weight: 1,
                     title: "组合拳协同",
                     description: "直接获得组合拳2级，不消耗SP。可补充已有流派的战斗动作，主动技能需自行装备。",
+                    grade: "medium",
                     entries: [],
                     skills: [
                         {
@@ -1060,6 +1110,7 @@ class org.flashNight.arki.item.ChoiceRewardDefinition {
                     weight: 1,
                     title: "震地协同",
                     description: "直接获得震地2级，不消耗SP。可补充已有流派的战斗动作，主动技能需自行装备。",
+                    grade: "medium",
                     entries: [],
                     skills: [
                         {
@@ -1074,6 +1125,7 @@ class org.flashNight.arki.item.ChoiceRewardDefinition {
                     weight: 1,
                     title: "追猎射击协同",
                     description: "直接获得追猎射击2级，不消耗SP。可补充已有流派的战斗动作，主动技能需自行装备。",
+                    grade: "medium",
                     entries: [],
                     skills: [
                         {
@@ -1088,6 +1140,7 @@ class org.flashNight.arki.item.ChoiceRewardDefinition {
                     weight: 1,
                     title: "翻滚换弹协同",
                     description: "直接获得翻滚换弹2级，不消耗SP。可补充已有流派的战斗动作，主动技能需自行装备。",
+                    grade: "medium",
                     entries: [],
                     skills: [
                         {
@@ -1102,6 +1155,7 @@ class org.flashNight.arki.item.ChoiceRewardDefinition {
                     weight: 1,
                     title: "霸体协同",
                     description: "直接获得霸体2级，不消耗SP。可补充已有流派的战斗动作，主动技能需自行装备。",
+                    grade: "medium",
                     entries: [],
                     skills: [
                         {
@@ -1121,6 +1175,7 @@ class org.flashNight.arki.item.ChoiceRewardDefinition {
                     weight: 1,
                     title: "内力续航",
                     description: "加强mp药剂6瓶，供主动技能衔接使用。",
+                    grade: "low",
                     entries: [
                         {
                             itemName: "加强mp药剂",
@@ -1135,6 +1190,7 @@ class org.flashNight.arki.item.ChoiceRewardDefinition {
                     weight: 1,
                     title: "爆破协同",
                     description: "普通手雷6枚；补充一次集中爆发。",
+                    grade: "low",
                     entries: [
                         {
                             itemName: "普通手雷",
@@ -1149,6 +1205,7 @@ class org.flashNight.arki.item.ChoiceRewardDefinition {
                     weight: 1,
                     title: "持续火力",
                     description: "一份全类弹药补给包；打开后从暂存领取。",
+                    grade: "low",
                     entries: [
                         {
                             itemName: "书中弹药补给包",
@@ -1168,6 +1225,7 @@ class org.flashNight.arki.item.ChoiceRewardDefinition {
                     weight: 1,
                     title: "闪现特训",
                     description: "支付300 K点，直接获得闪现2级。属于额外能力；主动技能需自行装备。",
+                    grade: "medium",
                     entries: [],
                     skills: [
                         {
@@ -1182,6 +1240,7 @@ class org.flashNight.arki.item.ChoiceRewardDefinition {
                     weight: 1,
                     title: "冲击连携特训",
                     description: "支付300 K点，直接获得冲击连携2级。属于额外能力；主动技能需自行装备。",
+                    grade: "medium",
                     entries: [],
                     skills: [
                         {
@@ -1217,6 +1276,7 @@ class org.flashNight.arki.item.ChoiceRewardDefinition {
                     weight: 1,
                     title: "瞬步斩精进",
                     description: "直接获得瞬步斩3级；已有较低等级时提升至3级，不返还已花费的SP。",
+                    grade: "high",
                     entries: [],
                     skills: [
                         {
@@ -1231,6 +1291,7 @@ class org.flashNight.arki.item.ChoiceRewardDefinition {
                     weight: 1,
                     title: "凶斩精进",
                     description: "直接获得凶斩3级；已有较低等级时提升至3级，不返还已花费的SP。",
+                    grade: "high",
                     entries: [],
                     skills: [
                         {
@@ -1245,6 +1306,7 @@ class org.flashNight.arki.item.ChoiceRewardDefinition {
                     weight: 1,
                     title: "日字冲拳精进",
                     description: "直接获得日字冲拳3级；已有较低等级时提升至3级，不返还已花费的SP。",
+                    grade: "high",
                     entries: [],
                     skills: [
                         {
@@ -1259,6 +1321,7 @@ class org.flashNight.arki.item.ChoiceRewardDefinition {
                     weight: 1,
                     title: "组合拳精进",
                     description: "直接获得组合拳3级；已有较低等级时提升至3级，不返还已花费的SP。",
+                    grade: "high",
                     entries: [],
                     skills: [
                         {
@@ -1273,6 +1336,7 @@ class org.flashNight.arki.item.ChoiceRewardDefinition {
                     weight: 1,
                     title: "震地精进",
                     description: "直接获得震地3级；已有较低等级时提升至3级，不返还已花费的SP。",
+                    grade: "high",
                     entries: [],
                     skills: [
                         {
@@ -1287,6 +1351,7 @@ class org.flashNight.arki.item.ChoiceRewardDefinition {
                     weight: 1,
                     title: "追猎射击精进",
                     description: "直接获得追猎射击3级；已有较低等级时提升至3级，不返还已花费的SP。",
+                    grade: "high",
                     entries: [],
                     skills: [
                         {
@@ -1301,6 +1366,7 @@ class org.flashNight.arki.item.ChoiceRewardDefinition {
                     weight: 1,
                     title: "翻滚换弹精进",
                     description: "直接获得翻滚换弹3级；已有较低等级时提升至3级，不返还已花费的SP。",
+                    grade: "high",
                     entries: [],
                     skills: [
                         {
@@ -1315,6 +1381,7 @@ class org.flashNight.arki.item.ChoiceRewardDefinition {
                     weight: 1,
                     title: "霸体精进",
                     description: "直接获得霸体3级；已有较低等级时提升至3级，不返还已花费的SP。",
+                    grade: "high",
                     entries: [],
                     skills: [
                         {
@@ -1334,6 +1401,7 @@ class org.flashNight.arki.item.ChoiceRewardDefinition {
                     weight: 1,
                     title: "内力续航",
                     description: "加强mp药剂6瓶，供主动技能衔接使用。",
+                    grade: "low",
                     entries: [
                         {
                             itemName: "加强mp药剂",
@@ -1348,6 +1416,7 @@ class org.flashNight.arki.item.ChoiceRewardDefinition {
                     weight: 1,
                     title: "爆破协同",
                     description: "普通手雷6枚；补充一次集中爆发。",
+                    grade: "low",
                     entries: [
                         {
                             itemName: "普通手雷",
@@ -1362,6 +1431,7 @@ class org.flashNight.arki.item.ChoiceRewardDefinition {
                     weight: 1,
                     title: "持续火力",
                     description: "一份全类弹药补给包；打开后从暂存领取。",
+                    grade: "low",
                     entries: [
                         {
                             itemName: "书中弹药补给包",
@@ -1381,6 +1451,7 @@ class org.flashNight.arki.item.ChoiceRewardDefinition {
                     weight: 1,
                     title: "拳脚空中连招特训",
                     description: "支付700 K点，直接获得拳脚空中连招3级。属于额外能力；主动技能需自行装备。",
+                    grade: "high",
                     entries: [],
                     skills: [
                         {
@@ -1395,6 +1466,7 @@ class org.flashNight.arki.item.ChoiceRewardDefinition {
                     weight: 1,
                     title: "刀剑空中连招特训",
                     description: "支付700 K点，直接获得刀剑空中连招3级。属于额外能力；主动技能需自行装备。",
+                    grade: "high",
                     entries: [],
                     skills: [
                         {
@@ -1409,6 +1481,7 @@ class org.flashNight.arki.item.ChoiceRewardDefinition {
                     weight: 1,
                     title: "内力爆发特训",
                     description: "支付700 K点，直接获得内力爆发3级。属于额外能力；主动技能需自行装备。",
+                    grade: "high",
                     entries: [],
                     skills: [
                         {
@@ -1423,6 +1496,7 @@ class org.flashNight.arki.item.ChoiceRewardDefinition {
                     weight: 1,
                     title: "枪械师特训",
                     description: "支付700 K点，直接获得枪械师3级。属于额外能力；主动技能需自行装备。",
+                    grade: "high",
                     entries: [],
                     skills: [
                         {
@@ -1437,6 +1511,7 @@ class org.flashNight.arki.item.ChoiceRewardDefinition {
                     weight: 1,
                     title: "火舞旋风特训",
                     description: "支付1100 K点，直接获得火舞旋风2级。属于额外能力；主动技能需自行装备。",
+                    grade: "medium",
                     entries: [],
                     skills: [
                         {
@@ -1451,6 +1526,7 @@ class org.flashNight.arki.item.ChoiceRewardDefinition {
                     weight: 1,
                     title: "旋风腿特训",
                     description: "支付1100 K点，直接获得旋风腿2级。属于额外能力；主动技能需自行装备。",
+                    grade: "medium",
                     entries: [],
                     skills: [
                         {
@@ -1465,6 +1541,7 @@ class org.flashNight.arki.item.ChoiceRewardDefinition {
                     weight: 1,
                     title: "火力支援特训",
                     description: "支付1100 K点，直接获得火力支援2级。属于额外能力；主动技能需自行装备。",
+                    grade: "medium",
                     entries: [],
                     skills: [
                         {
@@ -1500,6 +1577,7 @@ class org.flashNight.arki.item.ChoiceRewardDefinition {
                     weight: 1,
                     title: "决战内力",
                     description: "大MP药剂6瓶；在最后一战保持技能循环。",
+                    grade: "medium",
                     entries: [
                         {
                             itemName: "大MP药剂",
@@ -1514,6 +1592,7 @@ class org.flashNight.arki.item.ChoiceRewardDefinition {
                     weight: 1,
                     title: "决战爆破",
                     description: "普通手雷8枚与加强mp药剂3瓶。",
+                    grade: "medium",
                     entries: [
                         {
                             itemName: "普通手雷",
@@ -1532,6 +1611,7 @@ class org.flashNight.arki.item.ChoiceRewardDefinition {
                     weight: 1,
                     title: "决战急救",
                     description: "大HP药剂3瓶，用于最后一战。",
+                    grade: "medium",
                     entries: [
                         {
                             itemName: "大HP药剂",
@@ -1551,6 +1631,7 @@ class org.flashNight.arki.item.ChoiceRewardDefinition {
                     weight: 1,
                     title: "决战续战",
                     description: "支付300 K点：大MP药剂10瓶与普通手雷8枚。有限补给，不重复投放。",
+                    grade: "medium",
                     entries: [
                         {
                             itemName: "大MP药剂",

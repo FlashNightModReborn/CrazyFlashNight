@@ -21,7 +21,7 @@
 | 对象 | 字段与限制 |
 | --- | --- |
 | 顶层 | `schema=choice-rewards.v1`，`bundles` 为 1–128 套，`pools` 为 1–32 池 |
-| bundle 公共字段 | `id`、`name`、`title`、`description`；ID 稳定唯一，展示文案不作为领取身份 |
+| bundle 公共字段 | `id`、`name`、`title`、`description`、`grade`；ID 稳定唯一，展示文案不作为领取身份。`grade` 为显式声明的封闭枚举 `low`/`medium`/`high`/`special`（低级/中等/高等/特殊）：初阶 `low`、进阶 `medium`、高阶（3级精进技能）`high`；`special` 金档是正交类目，只能显式声明、不可由价值派生。价值轴派生阈值待汇率口径裁决，落地前全部显式声明 |
 | 武器构筑 bundle | `weapon`、`mods`、`consumables:[{name,count}]`；短枪须附 `weaponCount:2`，其他武器缺省1且只许1；插件按武器数量配齐，消耗品数量是整套总额。检查真实装备等级、插件用途/子类/前置/互斥/槽位容量以及主枪、下挂弹药 |
 | 通用物资 bundle | 用 `items:[{itemName,quantity}]` 替代上述三个构筑字段，最多 16 项；可放药剂、防具、材料等目录中的实体物品，装备数量只能为 1，其他物品为 1–9999 |
 | bundle 可选效果 | `skills:[{skillKey,level}]` 最多两项，名称和等级需在真实技能目录内；含技能时 `items` 可为空。`kCost` 为 0–1200 整数，缺省 0；二者仅允许 book scope |
@@ -43,6 +43,8 @@
 
 候选使用独立单调 offer ID，保存冻结的完整物品实例、技能等级和K点价格；后续配置调整不改已经抽出的候选。书中绑定临时槽、书籍 ID、seed 与 startedAt；换普通存档或开启另一局不可领取。此持久性保护不代表肉鸽支持中途续玩。
 
+`grade` 已全链接线（2026-10-08 CS6 批次）：choice-rewards.json 显式声明 → `ChoiceRewardDefinition.as` 派生目录 → `ChoiceRewardService.open` 冻结进候选（目录非法值按 `invalid_reward_pack` 失败关闭）→ `snapshot` 投影（旧冻结候选无该键时读边省略）→ `ItemUseTask.RewardChoice.cs` 白名单（可选封闭枚举）→ Web 卡片/揭晓层按 `option.grade` 着色。`ChoiceRewardStore.normalize` 拒收非法冻结 grade（`invalid_choice_store`）。编辑源改动后跑 `build-choice-rewards.py`（及书籍生成器，若凭证选项受影响），AS2 源改动须走 CS6 `-Target publish` 并复核 `.as` BOM。
+
 `choiceOffers.v=1`；旧档缺该字段合法，旧选项缺 `skills/kCost` 等价于物品卡且免费。未知版本或畸形非空数据拒绝写入；仅已知 AMF 空数组形状可修复，并报告 changed。未选物品不算玩家持有量，选定时才记 gain，领取到背包时不重复记收益。
 
 ## 修改与验证
@@ -58,6 +60,7 @@ python -X utf8 tools/build-book-definition.py --check
 python -X utf8 tools/test-choice-rewards.py
 python -X utf8 tools/test-book-definition.py
 node tools/validate-reward-packs.js
+node tools/audit-grade-colors.js
 node tools/test-character-build-item-use.js
 node tools/run-choice-rewards-harness.js
 powershell -NoProfile -ExecutionPolicy Bypass -File scripts/run-choice-rewards-tests.ps1

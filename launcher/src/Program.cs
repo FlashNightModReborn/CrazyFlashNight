@@ -604,7 +604,9 @@ class Program
                     try { probe.Kill(true); } catch { }
                     return false;
                 }
-                return probe.ExitCode == 0;
+                bool verified = probe.ExitCode == 0;
+                if (verified) CF7Launcher.FixedWebViewRuntime.AdmitVerifiedRuntime(runtimeDir.FullName);
+                return verified;
             }
         }
         catch (Exception ex)
@@ -1859,7 +1861,14 @@ class Program
             panelHost.ConfigureCompositionHelp(webDir,
                 Path.Combine(projectRoot, "tmp", "unified-live-entry", "web-profile"),
                 form.HandlePanelStateChanged,
-                reason => windowManager.RestoreFlashInputFocus(reason));
+                reason => windowManager.RestoreFlashInputFocus(reason),
+                deferPrewarm: form.BootstrapPanel != null);
+            if (form.BootstrapPanel != null)
+                form.BootstrapPanel.InitialNavigationCompleted += () =>
+                {
+                    if (!form.IsDisposed)
+                        form.BeginInvoke(new Action(panelHost.PrewarmCompositionHelp));
+                };
             panelHost.ConfigureHelpTutorialPreference(new HelpTutorialPreferenceCommand(userPrefs, userPrefs.Save));
             webOverlay.SetPanelHost(panelHost);
             commandRouter.SetPanelHost(panelHost);
@@ -2038,6 +2047,7 @@ class Program
                 || launchFlow.CurrentState == "WaitingGameReady" || launchFlow.CurrentState == "Ready"),
             windowManager.SetFlashRenderScale, () => windowManager.RestoreFlashInputFocus("world_pointer"),
             bulletCatalog:bulletVisualCatalog,combatFxCatalog:combatFxCatalog,overlays:worldOverlays);
+        hnOverlay.SetSharedPresentation(worldCompositor.DamagePresentation);
         var renderSettings=RenderScheduleSettings.Load(Path.Combine(projectRoot,"launcher","data","world-lighting","render-schedule.json"));
         webOverlay.WorldDragInputRouter=worldCompositor.RouteCapturedPointer;
         perfEngine.ConfigureRenderSchedule(renderSettings,
@@ -2277,6 +2287,8 @@ class Program
                 nativeGuidanceTask.NotifyHelpAvailabilityChanged();
             if (key == "sfxEnabled" || key == "ambientEnabled")
                 webOverlay.PushAudioPrefs();
+            if (key == "reducedPresentation")
+                webOverlay.PushPresentationPrefs();
             if (key == "mapDisplayPreference" && rightContext != null
                 && value != null && value.Type == JTokenType.String)
             {

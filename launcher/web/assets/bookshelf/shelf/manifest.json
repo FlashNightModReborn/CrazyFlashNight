@@ -1,0 +1,350 @@
+{
+  "schema": "bookshelf-shelf.v1",
+  "scope": "Bookshelf overview graybox presentation; no Host, save or gameplay authority",
+  "generatorInputs": [
+    {
+      "path": "tools/bookshelf-graybox/generate.js",
+      "sha256": "b847d2630f5d7c7cd458911d094c0ee78cb6fed552722f836599cea4b087d7fe"
+    },
+    {
+      "path": "tools/bookshelf-graybox/glb-writer.js",
+      "sha256": "9e40e709a393a6af56f97d3a4e27485d756b71706212b05f031910284a94aecb"
+    },
+    {
+      "path": "docs/design-data/bookshelf-shelf-draft.json",
+      "sha256": "d9a1d4fe266a15a611581000b352b7b578d6ae4af1a2c69ec0a84a45a056e7f3"
+    },
+    {
+      "path": "data/books/catalog.json",
+      "sha256": "32eac3ef67471ef61d155f9b15489676744067d7b133e12c8bd4aa31d37bffa2"
+    },
+    {
+      "path": "tools/bookshelf-shelf-extract/extract.js",
+      "sha256": "eba49ec744b7a6cd39a9d1c2b4993ca9f6900318bd76a2ed2049fe11edefd26a"
+    },
+    {
+      "path": "tools/bookshelf-shelf-extract/patch-swf.js",
+      "sha256": "4c46ba9da61aef005fae42b4fe43a86dab8f414342ee00882b122857ae11fc60"
+    },
+    {
+      "path": "tools/bookshelf-shelf-extract/extract-ffdec.js",
+      "sha256": "85ddf78624d692ef188ed7b3e320cc4883c5efa92b31bcd1eb2c50ab42f59e1e"
+    },
+    {
+      "path": "tools/bookshelf-shelf-extract/crops.json",
+      "sha256": "50127ae9e6ea20bf9d3e1471edcad9bd4612c605cb9bd0257c6b3ac6a36ca972"
+    },
+    {
+      "path": "tools/bookshelf-shelf-extract/out/extract-report.json",
+      "sha256": "f68fcdc6eae748739dc16189e45c4ae42c692fd41b8ccc84efa6203926d572b8"
+    },
+    {
+      "path": "tools/bookshelf-shelf-extract/out-ffdec/ffdec-report.json",
+      "sha256": "d66694e67163bccc6a1278c22022b3041aeb435073ee9706e3bca78661fc9919"
+    },
+    {
+      "path": "tools/import-bookshelf-shelf.py",
+      "sha256": "eb04b4506aea8bce7529ac73e14493e2cb49726c43c0d59589a4452dd54470a2"
+    }
+  ],
+  "designSha256": "d9a1d4fe266a15a611581000b352b7b578d6ae4af1a2c69ec0a84a45a056e7f3",
+  "catalogSha256": "32eac3ef67471ef61d155f9b15489676744067d7b133e12c8bd4aa31d37bffa2",
+  "artSources": {
+    "channels": [
+      "tools/bookshelf-shelf-extract/out/extract-report.json",
+      "tools/bookshelf-shelf-extract/out-ffdec/ffdec-report.json"
+    ],
+    "movies": [
+      [
+        {
+          "file": "flashswf/UI/书架界面.swf",
+          "sha256": "2ead6beb02d11fedce2af70a795fba247156db24c7396f0a12b8745a3bfbdf0c",
+          "bytes": 57387,
+          "frameLabels": [
+            {
+              "frame": 2,
+              "label": "空"
+            },
+            {
+              "frame": 8,
+              "label": "光明巴比伦"
+            },
+            {
+              "frame": 18,
+              "label": "无名丝带"
+            },
+            {
+              "frame": 26,
+              "label": "尘都诡谈"
+            },
+            {
+              "frame": 34,
+              "label": "末日异闻录"
+            }
+          ],
+          "note": "labeled frames rendered from in-memory gotoAndStop-patched copies; repo SWF unchanged"
+        },
+        {
+          "file": "flashswf/originals/crazy-flasher-1.swf",
+          "sha256": "aa1cb17a60b9efaffe8e969bb33d77342657728af0203f8bb0b5fcf07b145a00",
+          "bytes": 935674,
+          "note": "unpatched; title captured at its scripted stop frame"
+        }
+      ],
+      [
+        {
+          "file": "flashswf/UI/书架界面.swf",
+          "sha256": "2ead6beb02d11fedce2af70a795fba247156db24c7396f0a12b8745a3bfbdf0c",
+          "bytes": 57387
+        }
+      ]
+    ],
+    "files": [
+      {
+        "path": "tools/bookshelf-shelf-extract/out/cf1-logo.png",
+        "bytes": 145313,
+        "sha256": "a64bf0f05ee1f06dc2cbebf124f9d589a8c4408540e636d23f240e3d3dd2bfaf"
+      },
+      {
+        "path": "tools/bookshelf-shelf-extract/out/cf1-title-a.png",
+        "bytes": 55050,
+        "sha256": "67371149704e45c215f7c272dcedcc0192ba0b0b41324502c46a267240327e14"
+      },
+      {
+        "path": "tools/bookshelf-shelf-extract/out/cf1-title-b.png",
+        "bytes": 55050,
+        "sha256": "67371149704e45c215f7c272dcedcc0192ba0b0b41324502c46a267240327e14"
+      },
+      {
+        "path": "tools/bookshelf-shelf-extract/out/shelf-frame-1.png",
+        "bytes": 70886,
+        "sha256": "c6964ba190552b161e560795f83c226470ec39aed006f5d99a4784dbf7305ae3"
+      },
+      {
+        "path": "tools/bookshelf-shelf-extract/out/shelf-interior.png",
+        "bytes": 2467,
+        "sha256": "dfd8e9bbce53ad5994294664bfabd2488d6be21bab707b7307a03fadf7aff735"
+      },
+      {
+        "path": "tools/bookshelf-shelf-extract/out/shelf-label-光明巴比伦.png",
+        "bytes": 101855,
+        "sha256": "35726bf6a441ee94f545eb54e66f48b4c87e55ece5301de153525224506a3f26"
+      },
+      {
+        "path": "tools/bookshelf-shelf-extract/out/shelf-label-尘都诡谈.png",
+        "bytes": 487397,
+        "sha256": "aea9703f207da364e6b0faf345d63168c343cb751ed50f178c8f0f0e3715d964"
+      },
+      {
+        "path": "tools/bookshelf-shelf-extract/out/shelf-label-无名丝带.png",
+        "bytes": 84674,
+        "sha256": "74ba47c8c1a402b9e3710fab7069d8e9cf1e4d1b52c57e49c307264e31a0c86f"
+      },
+      {
+        "path": "tools/bookshelf-shelf-extract/out/shelf-label-末日异闻录.png",
+        "bytes": 84674,
+        "sha256": "74ba47c8c1a402b9e3710fab7069d8e9cf1e4d1b52c57e49c307264e31a0c86f"
+      },
+      {
+        "path": "tools/bookshelf-shelf-extract/out/shelf-label-空.png",
+        "bytes": 84674,
+        "sha256": "74ba47c8c1a402b9e3710fab7069d8e9cf1e4d1b52c57e49c307264e31a0c86f"
+      },
+      {
+        "path": "tools/bookshelf-shelf-extract/out/shelf-side.png",
+        "bytes": 11755,
+        "sha256": "d8285f519ea602b4a1663b87bb65dd3630f4eca6b86543bb1d57c484fa86fcaa"
+      },
+      {
+        "path": "tools/bookshelf-shelf-extract/out/shelf-top.png",
+        "bytes": 4461,
+        "sha256": "9507691bfebc93a1a29261737b65ad4b2ab836d6ac2775ba47feb12a17e56d4d"
+      },
+      {
+        "path": "tools/bookshelf-shelf-extract/out/spine-apocalypse.png",
+        "bytes": 8335,
+        "sha256": "2943795ee78767ae153293693ae7140e2edb2fd59e3ace45bf9fe64ad8366907"
+      },
+      {
+        "path": "tools/bookshelf-shelf-extract/out/spine-babylon.png",
+        "bytes": 6206,
+        "sha256": "2652fafafa9b746b370fd4864237e076c5b284c21062341c646929bc3546b464"
+      },
+      {
+        "path": "tools/bookshelf-shelf-extract/out/spine-dust.png",
+        "bytes": 7341,
+        "sha256": "20efdc3dfdfee3c313ca73bd39aad653cc3cbdcc2a21f6f5632bd730ed646e00"
+      },
+      {
+        "path": "tools/bookshelf-shelf-extract/out/spine-guardian.png",
+        "bytes": 5188,
+        "sha256": "b1324906453eee250fe76ad3fffa009bbbc0142a46916b10757406d06ae90359"
+      },
+      {
+        "path": "tools/bookshelf-shelf-extract/out/spine-metal.png",
+        "bytes": 8354,
+        "sha256": "2146f97f721b75d33cad5ef20a9c6f52ac2ff7e4c473b231f898c641a16a0bad"
+      },
+      {
+        "path": "tools/bookshelf-shelf-extract/out/spine-ribbon.png",
+        "bytes": 6705,
+        "sha256": "e4dec8fbeed17e17bc653a4a889cf2f4d6e6dac61b94277c4f7e48f4916b4565"
+      },
+      {
+        "path": "tools/bookshelf-shelf-extract/out-ffdec/shelf-body.png",
+        "bytes": 602767,
+        "sha256": "404cdd495c086a5eaaee728ccbc4d5356b2fa34f187c4828dc4f5f00f8dc820d"
+      },
+      {
+        "path": "tools/bookshelf-shelf-extract/out-ffdec/shelf-body.svg",
+        "bytes": 46344,
+        "sha256": "122d23549873c20484ba7547650a7899ccb776f68aa8dc7d212f3e0d4b87827f"
+      },
+      {
+        "path": "tools/bookshelf-shelf-extract/out-ffdec/spine-apocalypse.png",
+        "bytes": 84491,
+        "sha256": "5374ec4749d6651911e9e3d6a5f966786558319322b22131f74fe70e4e0caf5a"
+      },
+      {
+        "path": "tools/bookshelf-shelf-extract/out-ffdec/spine-apocalypse.svg",
+        "bytes": 6280,
+        "sha256": "2bfd9e62c54fce342d1af6ff2ce2e8acca565560b201aa92e74fcd90aeaf06eb"
+      },
+      {
+        "path": "tools/bookshelf-shelf-extract/out-ffdec/spine-babylon.png",
+        "bytes": 94909,
+        "sha256": "6f77942b033fd5da97a33f2dec773361be1424dcceefe61c7cf9947c479d0d08"
+      },
+      {
+        "path": "tools/bookshelf-shelf-extract/out-ffdec/spine-babylon.svg",
+        "bytes": 5051,
+        "sha256": "daef7f5bc7aca071a4a95ad88f0b1819824bf6e1a50c244337867c5b22206ee5"
+      },
+      {
+        "path": "tools/bookshelf-shelf-extract/out-ffdec/spine-dust.png",
+        "bytes": 89547,
+        "sha256": "e9ac208e6f0e0fa49d94a3a1682870003438f6784b2385695fc67c1f80fbdb71"
+      },
+      {
+        "path": "tools/bookshelf-shelf-extract/out-ffdec/spine-dust.svg",
+        "bytes": 9886,
+        "sha256": "ba8798c674dc001f8288b79aa710bed1c7ccddffe6d9c21af055586075849e37"
+      },
+      {
+        "path": "tools/bookshelf-shelf-extract/out-ffdec/spine-guardian.png",
+        "bytes": 70552,
+        "sha256": "4a465fbceeb31aa9ee6134bbd6eaad3caea9e9586c0224991add3b9bd78e0a78"
+      },
+      {
+        "path": "tools/bookshelf-shelf-extract/out-ffdec/spine-guardian.svg",
+        "bytes": 5537,
+        "sha256": "7c18bfb9fd79b046b3b2dd3d2f928f3fc4e47074ad092a22981b9fd1f3d2f6f6"
+      },
+      {
+        "path": "tools/bookshelf-shelf-extract/out-ffdec/spine-metal.png",
+        "bytes": 92674,
+        "sha256": "1db26196a2940fa03bf67b676ecc461bc3b4969b39fc9cc0d42f6f0af8aa05e1"
+      },
+      {
+        "path": "tools/bookshelf-shelf-extract/out-ffdec/spine-metal.svg",
+        "bytes": 11469,
+        "sha256": "92d14c0d83b7c78821f198cf38f06fd2988efebcb2a22c8b4b228215c17a63ae"
+      },
+      {
+        "path": "tools/bookshelf-shelf-extract/out-ffdec/spine-ribbon.png",
+        "bytes": 102317,
+        "sha256": "512b9506ba9dc31ed6431d23881067a3479183ee9a958a8109cf7c22326f70bf"
+      },
+      {
+        "path": "tools/bookshelf-shelf-extract/out-ffdec/spine-ribbon.svg",
+        "bytes": 7297,
+        "sha256": "392493f5b6f70e7c9d673f54a6630551f678c56d2f049376e59a642328f8889a"
+      }
+    ]
+  },
+  "audit": {
+    "bytes": 930832,
+    "meshes": 28,
+    "primitives": 28,
+    "triangles": 216,
+    "materials": 28,
+    "images": 12
+  },
+  "files": [
+    {
+      "path": "config.json",
+      "bytes": 1515,
+      "sha256": "a2d70ac6a3d26f35cd6221a2006767dad3b9d748019d194414272582dea16e8a"
+    },
+    {
+      "path": "report.json",
+      "bytes": 4331,
+      "sha256": "f7e35c1dc614ee9ba2a80bdbbeb94e9517836c50fc3168547d85e6bc3106bebf"
+    },
+    {
+      "path": "scene.glb",
+      "bytes": 930832,
+      "sha256": "189f1a2be759f427168b770cd2095fbd60bfdcfdce5b580edd8883c93e235f88"
+    },
+    {
+      "path": "textures/box-crazy-flasher.png",
+      "bytes": 53112,
+      "sha256": "c87010701279e08363e8ae646c5edf1f716fa1958add546cd8da0b9b2b1f2c27"
+    },
+    {
+      "path": "textures/disc-cf1.png",
+      "bytes": 11335,
+      "sha256": "ea80b7c8ea500e753318131c310ce4ac3af99d23f3d22b94b3e814f4e270babc"
+    },
+    {
+      "path": "textures/disc-cf2.png",
+      "bytes": 11200,
+      "sha256": "7b226643617925fa6f8f35882d5e4d97303fea03ee50a0dc0de7643fc5a948ab"
+    },
+    {
+      "path": "textures/disc-cf3.png",
+      "bytes": 11898,
+      "sha256": "71cdddcad7991efc7fadf001641a1f97babcd4d3e8c61afe14492303d9b4d27d"
+    },
+    {
+      "path": "textures/disc-cf4.png",
+      "bytes": 11372,
+      "sha256": "fac1abaa56618308145be2a038cb9c2fb9ca15ae3dcd34375e4f97c077980707"
+    },
+    {
+      "path": "textures/disc-cf5.png",
+      "bytes": 10284,
+      "sha256": "a5bf0eda2406ba754e07f5dac44fcd075e01f5da3fa45bf49152235c094a5787"
+    },
+    {
+      "path": "textures/disc-cf6.png",
+      "bytes": 12174,
+      "sha256": "73bbc1209952fd5485aacc4a09eded881436ba0ac8f4a0884eb3a697c0309651"
+    },
+    {
+      "path": "textures/shelf-body.png",
+      "bytes": 524028,
+      "sha256": "44ed134f9827443e9f1da09b621d2fb681195352081a5a1b0b32dc2b6a468302"
+    },
+    {
+      "path": "textures/spine-babylon.png",
+      "bytes": 94909,
+      "sha256": "6f77942b033fd5da97a33f2dec773361be1424dcceefe61c7cf9947c479d0d08"
+    },
+    {
+      "path": "textures/spine-dust.png",
+      "bytes": 89547,
+      "sha256": "e9ac208e6f0e0fa49d94a3a1682870003438f6784b2385695fc67c1f80fbdb71"
+    },
+    {
+      "path": "textures/spine-guardian.png",
+      "bytes": 70552,
+      "sha256": "4a465fbceeb31aa9ee6134bbd6eaad3caea9e9586c0224991add3b9bd78e0a78"
+    },
+    {
+      "path": "textures/spine-sail-twins.png",
+      "bytes": 13394,
+      "sha256": "d42a51737ab18435d8fc43b570bdf585a9a4e38111dd34286101801595aa7dc0"
+    }
+  ]
+}

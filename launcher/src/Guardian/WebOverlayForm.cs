@@ -1447,6 +1447,8 @@ namespace CF7Launcher.Guardian
         private string _cursorDiagReason = "init";
         private bool _nativeCursorMissingLogged;
         private IntPtr _cursorHook = IntPtr.Zero;
+        private bool _cursorHookInstallPending;
+        private bool _cursorHookPumpReady;
         private LowLevelMouseProc _cursorHookProc;
         private bool _cursorHookPostPending;
         private CF7Launcher.Diagnostic.InputLatencyProbe.Sample _cursorLatencyQueue;
@@ -1455,13 +1457,16 @@ namespace CF7Launcher.Guardian
         private int _cursorHookLastX = Int32.MinValue;
         private int _cursorHookLastY = Int32.MinValue;
         // native_interaction 探针（SetInteractionInputProbes 注入）：
-        //   buttonProbe(x,y,message) 物理按下观察——只读语义，不得吞事件；
+        //   buttonProbe(x,y,message) 按下观察——不声明消费，可执行 UI 所有者的关闭/取消；
         //   wheelProbe(x,y,delta)→bool 滚轮消费——true 时钩子吞掉该滚轮事件。
-        // 两者在 CursorHookCallback 内同步执行（=本 Form UI 线程），必须 O(1) 且不抛。
+        // 两者仍在本 Form UI 线程同步执行，应保持有界且不得同步等待；异常由钩子隔离。
         private volatile Action<int, int> _interactionMoveProbe;
         private volatile Action<int, int, int> _interactionButtonProbe;
         private volatile Func<int, int, int, bool> _interactionWheelProbe;
         private long _lastCursorHookPostTick;
+        private int _cursorHookErrors;
+        private string _cursorHookLastError;
+        private long _cursorHookLastErrorFlush;
         private string _bgmTitle = ""; // 当前曲目标题（由 UiData bgm: 设置）
         private bool _bgmPaused;        // 暂停标记
 
@@ -2972,15 +2977,20 @@ namespace CF7Launcher.Guardian
             string lowEffects = _lowEffectsMode ? "true" : "false";
             string noCssAnimations = _disableCssAnimations ? "true" : "false";
             string noVisualizers = _disableVisualizers ? "true" : "false";
+            // 玩家可改的"精简演出"偏好走 UserPrefs（settings.host_set），
+            // 与上面四个 config.toml/环境变量诊断键并列注入，互不替代。
+            string reducedPresentation = _userPrefs != null && _userPrefs.ReducedPresentation ? "true" : "false";
             string frameRateLimit = _frameRateLimit.ToString(CultureInfo.InvariantCulture);
             string frameRateCapped = _frameRateLimit > 0 ? "true" : "false";
             ExecScript("document.documentElement.classList.toggle('perf-low-effects'," + lowEffects + ");"
                 + "document.documentElement.classList.toggle('perf-no-css-animations'," + noCssAnimations + ");"
                 + "document.documentElement.classList.toggle('perf-frame-capped'," + frameRateCapped + ");"
                 + "document.documentElement.classList.toggle('perf-no-visualizers'," + noVisualizers + ");"
+                + "document.documentElement.classList.toggle('perf-reduced-presentation'," + reducedPresentation + ");"
                 + "window.CF7_LOW_EFFECTS=" + lowEffects + ";"
                 + "window.CF7_DISABLE_CSS_ANIMATIONS=" + noCssAnimations + ";"
                 + "window.CF7_DISABLE_VISUALIZERS=" + noVisualizers + ";"
+                + "window.CF7_REDUCED_PRESENTATION=" + reducedPresentation + ";"
                 + "window.CF7_FRAME_RATE_LIMIT=" + frameRateLimit + ";"
                 + "document.documentElement.style.setProperty('--overlay-frame-rate-limit','" + frameRateLimit + "');"
                 + "if(window.CF7FrameLimiter&&window.CF7FrameLimiter.setLimit){window.CF7FrameLimiter.setLimit(" + frameRateLimit + ");}");
@@ -2990,6 +3000,16 @@ namespace CF7Launcher.Guardian
                     + " noCssAnimations=" + _disableCssAnimations
                     + " noVisualizers=" + _disableVisualizers
                     + " frameRateLimit=" + _frameRateLimit);
+        }
+
+        /// <summary>
+        /// UserPrefs→ApplyWebPerfMode 的玩家偏好段：settings.host_set 落盘成功后由
+        /// Program.cs 的 HostPreferenceApplied 订阅调用；初始值仍在 _webReady 置真时
+        /// 随 ApplyWebPerfMode("ready") 一并下发。未注入 UserPrefs 时静默降级为 false。
+        /// </summary>
+        public void PushPresentationPrefs()
+        {
+            ApplyWebPerfMode("prefs:reducedPresentation");
         }
 
         #endregion
@@ -3653,7 +3673,7 @@ namespace CF7Launcher.Guardian
             if (_cursorTimer == null)
             {
                 _cursorTimer = new System.Windows.Forms.Timer();
-                _cursorTimer.Tick += delegate { SendCursorPosition(false); };
+                _cursorTimer.Tick += delegate { FlushCursorHookDiagnostics(); SendCursorPosition(false); };
             }
 
             int interval = 16;
@@ -3667,10 +3687,10 @@ namespace CF7Launcher.Guardian
         /// native_interaction 输入探针注入（Program.cs 装配）。复用既有 WH_MOUSE_LL
         /// 全局观察钩子，不新建 hook：
         /// - buttonProbe(screenX, screenY, message)：物理按下（L/R/M/X down）观察，
-        ///   宿主据此做菜单外点击关闭；只读语义，事件照常进入 CallNextHookEx 链。
+        ///   宿主据此做菜单外点击关闭/取消；不声明消费，事件照常进入后续路由。
         /// - wheelProbe(screenX, screenY, wheelDelta) → bool：滚轮消费声明；
         ///   返回 true 时钩子吞掉该滚轮事件（pinned tooltip 框内滚动，防穿透到游戏）。
-        /// 探针在 CursorHookCallback 内同步执行（本 Form UI 线程），实现必须 O(1) 返回；
+        /// 探针在 CursorHookCallback 内同步执行（本 Form UI 线程），实现应有界且不得同步等待；
         /// 抛异常已被钩子侧隔离。传 null 对即摘除。
         /// </summary>
         internal void SetInteractionInputProbes(
@@ -3693,16 +3713,47 @@ namespace CF7Launcher.Guardian
             if (_cursorHook != IntPtr.Zero || _disposed)
                 return;
 
+            // A low-level hook also delays desktop input while its owning thread
+            // cannot pump. Install only after the startup composition returns.
+            if (!_cursorHookPumpReady)
+            {
+                if (_cursorHookInstallPending) return;
+                _cursorHookInstallPending = true;
+                long queued = Stopwatch.GetTimestamp();
+                try
+                {
+                    BeginInvoke(new Action(() =>
+                    {
+                        _cursorHookInstallPending = false;
+                        if (_disposed) return;
+                        _cursorHookPumpReady = true;
+                        PerfTrace.Duration("cursor.hook_start_queue", queued);
+                        EnsureCursorHook();
+                    }));
+                }
+                catch
+                {
+                    _cursorHookInstallPending = false;
+                    throw;
+                }
+                return;
+            }
+
             _cursorHookProc = CursorHookCallback;
             _cursorHook = SetWindowsHookEx(WH_MOUSE_LL, _cursorHookProc, GetModuleHandle(null), 0);
             if (_cursorHook == IntPtr.Zero)
                 LogManager.Log("[Cursor] WH_MOUSE_LL hook install failed: " + Marshal.GetLastWin32Error());
             else
+            {
                 LogManager.Log("[Cursor] WH_MOUSE_LL hook installed");
+                PerfTrace.Mark("cursor.hook_installed", "owner=ui_message_pump");
+            }
         }
 
         private void ReleaseCursorHook()
         {
+            _cursorHookInstallPending = false;
+            _cursorHookPumpReady = false;
             if (_cursorHook == IntPtr.Zero)
                 return;
 
@@ -3711,6 +3762,23 @@ namespace CF7Launcher.Guardian
             _cursorHook = IntPtr.Zero;
             _cursorHookProc = null;
             _cursorHookPostPending = false;
+            PerfTrace.Mark("cursor.hook_released");
+        }
+
+        private void NoteCursorHookFailure(Exception error)
+        {
+            if (_cursorHookErrors < int.MaxValue) _cursorHookErrors++;
+            _cursorHookLastError = error.GetType().Name;
+        }
+
+        private void FlushCursorHookDiagnostics()
+        {
+            long now = Environment.TickCount64;
+            if (_cursorHookErrors == 0 || now - _cursorHookLastErrorFlush < 1000) return;
+            int count = _cursorHookErrors;
+            _cursorHookErrors = 0;
+            _cursorHookLastErrorFlush = now;
+            LogManager.Log("event=cursor_hook_callback_failed count=" + count + " error=" + _cursorHookLastError);
         }
 
         private IntPtr CursorHookCallback(int nCode, IntPtr wParam, IntPtr lParam)
@@ -3718,6 +3786,9 @@ namespace CF7Launcher.Guardian
             string focusMouseId = null;
             int focusMessage = 0;
             long focusObservedAt = 0;
+            using (CF7Launcher.Diagnostic.InputLatencyProbe.Measure("hook_callback"))
+            try
+            {
             if (nCode == HC_ACTION)
             {
                 int message = wParam.ToInt32();
@@ -3747,17 +3818,20 @@ namespace CF7Launcher.Guardian
                     {
                         // 仅投递坐标，布局和绘制由消费者在合并后的 UI 帧执行。
                         try { moveProbe(info.pt.X, info.pt.Y); }
-                        catch (Exception ex) { LogManager.Log("[Cursor] interaction move probe throw: " + ex.Message); }
+                        catch (Exception ex) { NoteCursorHookFailure(ex); }
                     }
-                    Action<int, int, int> btnProbe = _interactionButtonProbe;
-                    if (btnProbe != null
-                        && (message == WM_LBUTTONDOWN || message == WM_RBUTTONDOWN
-                            || message == WM_MBUTTONDOWN || message == WM_XBUTTONDOWN))
+                    if (message == WM_LBUTTONDOWN || message == WM_RBUTTONDOWN
+                        || message == WM_MBUTTONDOWN || message == WM_XBUTTONDOWN)
                     {
-                        try { btnProbe(info.pt.X, info.pt.Y, message); }
-                        catch (Exception ex)
+                        // Pure panel telemetry shares this observation; it must not
+                        // install another desktop hook or prevent other consumers.
+                        try { _inputShield?.ObserveTelemetryButtonDown(info.pt.X, info.pt.Y, message); }
+                        catch (Exception ex) { NoteCursorHookFailure(ex); }
+                        Action<int, int, int> btnProbe = _interactionButtonProbe;
+                        if (btnProbe != null)
                         {
-                            LogManager.Log("[Cursor] interaction button probe throw: " + ex.Message);
+                            try { btnProbe(info.pt.X, info.pt.Y, message); }
+                            catch (Exception ex) { NoteCursorHookFailure(ex); }
                         }
                     }
                     Func<int, int, int, bool> wheelProbe = _interactionWheelProbe;
@@ -3768,7 +3842,7 @@ namespace CF7Launcher.Guardian
                         try { consumed = wheelProbe(info.pt.X, info.pt.Y, wheelDelta); }
                         catch (Exception ex)
                         {
-                            LogManager.Log("[Cursor] interaction wheel probe throw: " + ex.Message);
+                            NoteCursorHookFailure(ex);
                         }
                         if (consumed)
                             return new IntPtr(1);
@@ -3777,9 +3851,13 @@ namespace CF7Launcher.Guardian
                     if (worldDrag!=null && worldDrag(info.pt.X,info.pt.Y,message,info.mouseData)) return new IntPtr(1);
                 }
             }
+            }
+            catch (Exception error) { NoteCursorHookFailure(error); }
 
             long focusStarted = focusMouseId == null ? 0 : Stopwatch.GetTimestamp();
-            IntPtr result = CallNextHookEx(_cursorHook, nCode, wParam, lParam);
+            IntPtr result;
+            using (CF7Launcher.Diagnostic.InputLatencyProbe.Measure("hook_chain"))
+                result = CallNextHookEx(_cursorHook, nCode, wParam, lParam);
             if (focusMouseId != null)
                 CF7Launcher.Diagnostic.FocusTrace.HookChainResult(focusMouseId, focusMessage, result, focusStarted, focusObservedAt);
             return result;

@@ -96,9 +96,12 @@ class org.flashNight.arki.item.ChoiceRewardService {
                         skills.push({skillKey:grant.skillKey,level:grant.level,currentLevel:SkillLoadoutService.committedRewardSkillLevel(grant.skillKey),
                             description:org.flashNight.gesh.string.StringUtils.htmlToPlainTextFast(String(metadata.Description || "")).substr(0,2048)});
                     }
-                    options.push({optionId:option.optionId, title:option.title, description:option.description, items:items,
+                    var projectedOption:Object = {optionId:option.optionId, title:option.title, description:option.description, items:items,
                         skills:skills,kCost:option.kCost == undefined ? 0 : option.kCost,
-                        available:RewardStashService.pendingOperationId() == "" && skillEligible(option.skills == null ? [] : option.skills)});
+                        available:RewardStashService.pendingOperationId() == "" && skillEligible(option.skills == null ? [] : option.skills)};
+                    // 旧冻结候选没有 grade：读边降级省略，不把非法值投给 Host 白名单。
+                    if (ChoiceRewardStore.isGrade(option.grade)) projectedOption.grade = option.grade;
+                    options.push(projectedOption);
                 }
                 offers.push({offerId:offer.offerId, title:offer.title, options:options});
             }
@@ -135,14 +138,18 @@ class org.flashNight.arki.item.ChoiceRewardService {
                     var hit:Number = randomInt(total), index:Number = 0;
                     while (index < available.length - 1 && hit >= available[index].weight) { hit -= available[index].weight; index++; }
                     var chosen:Object = available.splice(index, 1)[0], frozen:Array = [];
+                    // 目录由生成器校验过封闭枚举；编入产物若被改坏，按既有 invalid_reward_pack 失败关闭。
+                    if (chosen.grade !== undefined && !ChoiceRewardStore.isGrade(chosen.grade)) return RewardStashService.cancel("invalid_reward_pack");
                     for (var e:Number = 0; e < chosen.entries.length; e++) {
                         var entry:Object = chosen.entries[e];
                         var item:BaseItem = BaseItem.create(String(entry.itemName), Number(entry.quantity));
                         if (item == null) return RewardStashService.cancel("invalid_reward_pack");
                         frozen.push(item.toObject());
                     }
-                    offer.options.push({optionId:chosen.id, title:chosen.title, description:chosen.description, items:frozen,
-                        skills:chosen.skills == null ? [] : PersistedSnapshot.clone(chosen.skills), kCost:chosen.kCost == undefined ? 0 : chosen.kCost});
+                    var pushedOption:Object = {optionId:chosen.id, title:chosen.title, description:chosen.description, items:frozen,
+                        skills:chosen.skills == null ? [] : PersistedSnapshot.clone(chosen.skills), kCost:chosen.kCost == undefined ? 0 : chosen.kCost};
+                    if (chosen.grade !== undefined) pushedOption.grade = chosen.grade;
+                    offer.options.push(pushedOption);
                 }
             }
             saved.offers.push(offer);

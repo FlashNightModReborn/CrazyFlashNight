@@ -36,6 +36,9 @@
                 <Tag>移动</Tag>
                 <Tag>基础</Tag>
             </Tags>
+            <Requirements>
+                <Skill name="刀剑攻击" minLevel="1"/>
+            </Requirements>
         </Command>
 
         <!-- 飞跃砸击: 双击前 -->
@@ -48,6 +51,9 @@
                 <Tag>移动</Tag>
                 <Tag>基础</Tag>
             </Tags>
+            <Requirements>
+                <Skill name="刀剑攻击" minLevel="1"/>
+            </Requirements>
         </Command>
 
         <!-- 蓄力重劈: Shift + 下 + A -->
@@ -61,6 +67,9 @@
                 <Tag>近战</Tag>
                 <Tag>蓄力</Tag>
             </Tags>
+            <Requirements>
+                <Skill name="下劈" minLevel="1"/>
+            </Requirements>
         </Command>
 
         <!-- 百万突刺: Shift前 + A，要求下劈 Lv1 -->
@@ -138,6 +147,9 @@
                 <Tag>近战</Tag>
                 <Tag>上挑</Tag>
             </Tags>
+            <Requirements>
+                <Skill name="上挑" minLevel="1"/>
+            </Requirements>
         </Command>
 
         <!-- 无双击: 上 + A -->
@@ -151,6 +163,9 @@
                 <Tag>近战</Tag>
                 <Tag>上挑</Tag>
             </Tags>
+            <Requirements>
+                <Skill name="上挑" minLevel="1"/>
+            </Requirements>
         </Command>
 
         <!-- 追地祀: 下 + C -->
@@ -164,6 +179,9 @@
                 <Tag>远程</Tag>
                 <Tag>必杀</Tag>
             </Tags>
+            <Requirements>
+                <Skill name="下劈" minLevel="1"/>
+            </Requirements>
         </Command>
 
         <!-- 粉碎切割: 上 + C，要求上挑 Lv1 -->
@@ -241,6 +259,9 @@
                 <Tag>近战</Tag>
                 <Tag>反击</Tag>
             </Tags>
+            <Requirements>
+                <Skill name="上挑" minLevel="1"/>
+            </Requirements>
         </Command>
 
         <!-- 见切: 后 + C，要求上挑 Lv1 -->

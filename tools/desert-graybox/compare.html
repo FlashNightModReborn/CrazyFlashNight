@@ -1,0 +1,25 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>荒漠与既有三图 · 风格对照</title>
+  <style>
+    :root{color-scheme:dark;font:14px/1.5 "Microsoft YaHei",system-ui,sans-serif;color:#e6decf;background:#171715}*{box-sizing:border-box}body{margin:0;padding:20px}header{display:flex;align-items:baseline;justify-content:space-between;gap:20px;margin-bottom:16px}h1{font-size:21px;font-weight:500;margin:0}p{color:#b7ae9d;margin:5px 0 0;font-size:12px}a{color:#d9bc87}main{display:grid;grid-template-columns:1fr 1fr;gap:16px}figure{margin:0}figcaption{display:flex;justify-content:space-between;gap:10px;padding:7px 2px;color:#ded4c1}figcaption span{color:#a29783;font-size:12px}.frame{width:100%;aspect-ratio:16/9;overflow:hidden;background:#29261f;border:1px solid #504737}img,iframe{display:block;width:100%;height:100%;border:0}img{object-fit:cover;object-position:bottom}iframe{pointer-events:auto}@media(max-width:700px){main{grid-template-columns:1fr}body{padding:12px}header{display:block}}
+  </style>
+  <style>main{grid-template-columns:repeat(2,minmax(0,1fr))}figure{min-width:0}@media(max-width:700px){main{grid-template-columns:minmax(0,1fr)}}</style>
+</head>
+<body>
+  <header><div><h1>荒漠与既有三图 · 风格对照</h1><p>比较地形与建筑轮廓、明暗层次和标签关系。荒漠为实时样板；其余为 9 月 26 日已采用镜头的留存画面。</p></div><a href="/">返回荒漠审阅</a></header>
+  <main>
+    <figure><figcaption>荒漠 · 区域景观样板<span>地理位置保留 · 实时交互</span></figcaption><div class="frame"><iframe title="荒漠实时风格样板" src="/?compare=1"></iframe></div></figure>
+    <figure><figcaption>基地门口<span>斜向街区展开</span></figcaption><div class="frame"><img src="/reference/base.jpg" alt="已有基地门口三维地图"></div></figure>
+    <figure><figcaption>黑铁会总部<span>斜俯园区总览</span></figcaption><div class="frame"><img src="/reference/hq.jpg" alt="已有黑铁会总部三维地图"></div></figure>
+    <figure><figcaption>堕落城<span>城级高差与立面</span></figcaption><div class="frame"><img src="/reference/city.jpg" alt="已有堕落城三维地图"></div></figure>
+  </main>
+  <script>
+    const preview=document.querySelector('iframe'),frame=preview.parentElement;
+    preview.style.width='1024px';preview.style.height='576px';preview.style.transformOrigin='top left';
+    new ResizeObserver(()=>{preview.style.transform='scale('+frame.clientWidth/1024+')';}).observe(frame);
+  </script>
+</body>
+</html>

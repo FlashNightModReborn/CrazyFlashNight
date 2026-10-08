@@ -51,8 +51,8 @@ export interface ArmorBalancePlanRecord {
   category: number;
   damageTypeFactor: number;
   adoptedGoldPrice: number;
-  expectedKPointPrice: number;
-  kpointEvidenceRef: string;
+  expectedKPointPrice?: number;
+  kpointEvidenceRef?: string;
   status: ArmorBalanceAuditStatus;
   budgetBreakdown: ArmorBalanceBudgetEntry[];
   note?: string;
@@ -220,17 +220,21 @@ export function parseArmorBalancePlanRecord(
     category: readRequiredFiniteNumber(source, "category", path),
     damageTypeFactor: readRequiredFiniteNumber(source, "damageTypeFactor", path),
     adoptedGoldPrice: readRequiredFiniteNumber(source, "adoptedGoldPrice", path),
-    expectedKPointPrice: readRequiredFiniteNumber(
-      source,
-      "expectedKPointPrice",
-      path
-    ),
-    kpointEvidenceRef: readRequiredString(source, "kpointEvidenceRef", path),
     status: parseAuditStatus(source, path),
     budgetBreakdown: parseBudgetBreakdown(source, path)
   };
   const note = readOptionalString(source, "note");
   if (note !== undefined) record.note = note;
+  const hasKPrice = readRawValue(source, "expectedKPointPrice") !== undefined;
+  const hasKEvidence = readRawValue(source, "kpointEvidenceRef") !== undefined;
+  const usesKShop = record.budgetBreakdown.some((entry) => entry.code === "acquisition.kshop");
+  if (hasKPrice !== hasKEvidence || (usesKShop && !hasKPrice)) {
+    throw new ArmorBalanceParseError(path, "K 点获取必须提供 expectedKPointPrice 与 kpointEvidenceRef，二者不能单独提供");
+  }
+  if (hasKPrice) {
+    record.expectedKPointPrice = readRequiredFiniteNumber(source, "expectedKPointPrice", path);
+    record.kpointEvidenceRef = readRequiredString(source, "kpointEvidenceRef", path);
+  }
 
   if (!/^data\/items\/防具_[^/]+\.xml$/.test(record.sourceFile)) {
     throw new ArmorBalanceParseError(
@@ -263,8 +267,8 @@ export function parseArmorBalancePlanRecord(
     );
   }
   if (
-    !Number.isInteger(record.expectedKPointPrice) ||
-    record.expectedKPointPrice < 0
+    record.expectedKPointPrice !== undefined &&
+    (!Number.isInteger(record.expectedKPointPrice) || record.expectedKPointPrice < 0)
   ) {
     throw new ArmorBalanceParseError(
       `${path}.expectedKPointPrice`,

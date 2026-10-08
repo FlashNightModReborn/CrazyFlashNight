@@ -1,0 +1,63 @@
+{
+  "source_library": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\resources\\flashswf\\arts\\new\\3XD的素材\\LIBRARY",
+  "source_symbol": "2副武器/沙鹰战术/Symbol 3799",
+  "source_frame": 0,
+  "original_art_matrices_preserved": true,
+  "omitted": [
+    {
+      "symbol": "2副武器/沙鹰战术/其他/Symbol 13",
+      "instance": "枪口位置",
+      "reason": "logic marker"
+    },
+    {
+      "symbol": "2副武器/沙鹰战术/元件 1",
+      "instance": null,
+      "reason": "conditional laser, hidden by original clip action when not firing a pistol"
+    }
+  ],
+  "unsupported": [],
+  "scripts_executed": false,
+  "lore_basis": "Existing item description: modified for piercing, intended for experienced shooters.",
+  "game_item_stats_changed": false,
+  "native_authority": "Existing repository XFL; complete original symbol dependency closure copied for reference",
+  "native_symbols": [
+    {
+      "symbol": "2副武器/沙鹰战术/Symbol 3799",
+      "sha256": "bce7f63610151e886885c7ad34a341c45d19830eafac74a96287ee99c85e6da4"
+    },
+    {
+      "symbol": "2副武器/沙鹰战术/元件 1",
+      "sha256": "1e0fa6e2c9b9247fbc9da3d9a13ad7cf44485f71ab433b8d14355934fd25a098"
+    },
+    {
+      "symbol": "2副武器/沙鹰战术/升级版沙鹰素材/文字",
+      "sha256": "6b106830ad284c7507265956bb8f8c51b286ba82699e139019e822d2a6c654e1"
+    },
+    {
+      "symbol": "2副武器/沙鹰战术/升级版沙鹰素材/沙鹰3",
+      "sha256": "2bc120d91e2e9cfba8b4f8cfbb5673c73d46a79bfc7a09d6733372e367fd0809"
+    },
+    {
+      "symbol": "2副武器/沙鹰战术/升级版沙鹰素材/沙鹰1",
+      "sha256": "ef4816d68343881b1a95ebb98c18937b1cefc95721133fe73db142a8c605c002"
+    },
+    {
+      "symbol": "2副武器/沙鹰战术/升级版沙鹰素材/沙鹰2",
+      "sha256": "d95c600c200b7e1d61c8c7a99ff6bb7a8d197a05aed57f559885fd54cf0d38e3"
+    },
+    {
+      "symbol": "2副武器/沙鹰战术/其他/Symbol 13",
+      "sha256": "0ca781ce49e8a041caaeab36d5a61216e27436fee551f6afbc0ffc5abc5111f2"
+    },
+    {
+      "symbol": "2副武器/沙鹰战术/其他/Symbol 12",
+      "sha256": "55dbf17c6feda8d093327a5a61ba2c95ed4709a658d54c1b3cd7681061b893b4"
+    }
+  ],
+  "svg_roundtrip_for_weapon_reference": false,
+  "roundtrip_limitation": "Scratch SVG writer rejects focal radial gradients; original native gradients preserved without flattening.",
+  "duty_finish_candidate": "07c: fill, stroke and gradient colors only; original geometry and scale unchanged",
+  "duty_geometry_registration_and_gradient_positions_identical": true,
+  "primary_visual_candidate": "07c-desert-eagle-modified-duty.svg",
+  "game_equipment_configuration_changed": false
+}

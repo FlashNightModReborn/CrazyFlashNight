@@ -111,12 +111,14 @@ namespace CF7Launcher.Tasks
         private static readonly HashSet<string> Categories = new HashSet<string>(StringComparer.Ordinal)
         {
             "铁枪会", "属性武器", "烹饪", "化学生产", "武器合成", "饰品合成",
-            "进阶防具", "基础防具", "公社防具", "黑白契约", "插件合成", "大学装备", "书中配给"
+            "进阶防具", "基础防具", "公社防具", "黑白契约", "插件合成", "大学装备", "书中配给",
+            "调酒"
         };
         private static readonly string[] CategoryOrder =
         {
             "铁枪会", "属性武器", "烹饪", "化学生产", "武器合成", "饰品合成",
-            "进阶防具", "基础防具", "公社防具", "黑白契约", "插件合成", "大学装备", "书中配给"
+            "进阶防具", "基础防具", "公社防具", "黑白契约", "插件合成", "大学装备", "书中配给",
+            "调酒"
         };
         private static readonly HashSet<string> AvailabilityCodes = new HashSet<string>(StringComparer.Ordinal)
         {
@@ -695,8 +697,9 @@ namespace CF7Launcher.Tasks
             if (cmd == "snapshot"
                 && !materialNavigationSnapshot
                 && !HasExactKeys(payload, "v", "category")) return false;
-            if (cmd == "preview" && !HasExactKeys(
-                    payload, "v", "category", "recipeIndex", "craftCount")) return false;
+            if (cmd == "preview" && !HasExactKeysWithOptional(
+                    payload, new[] { "v", "category", "recipeIndex", "craftCount" },
+                    "technique")) return false;
             if (cmd == "commit" && !HasExactKeys(
                     payload, "v", "category", "expectedCraftToken")) return false;
             string category = ReadExactString(payload["category"]);
@@ -720,6 +723,15 @@ namespace CF7Launcher.Tasks
                 if (!TryReadInteger(payload["craftCount"], 1, 99, out craftCount)) return false;
                 normalized["recipeIndex"] = recipeIndex;
                 normalized["craftCount"] = craftCount;
+                // 调酒类目的调制方式选择是增量投影：缺省走旧协议，
+                // 出现时必须是完整合法的 {shake, ice, aged, karmotrine}。
+                if (payload["technique"] != null)
+                {
+                    JObject technique;
+                    if (!TrySanitizeTechnique(payload["technique"] as JObject, out technique))
+                        return false;
+                    normalized["technique"] = technique;
+                }
                 return true;
             }
             if (cmd == "commit")
@@ -1001,6 +1013,61 @@ namespace CF7Launcher.Tasks
             return true;
         }
 
+        /// <summary>
+        /// 调制方式选择（调酒类目）：{shake:"light"|"hard"|"none", ice:bool,
+        /// aged:bool, karmotrine:bool}。四个键全必填，不允许增删字段。
+        /// </summary>
+        private static bool IsTechnique(JToken token)
+        {
+            var technique = token as JObject;
+            return technique != null
+                && HasExactKeys(technique, "shake", "ice", "aged", "karmotrine")
+                && HasExactBooleanFields(technique, "ice", "aged", "karmotrine")
+                && IsTechniqueShake(ReadExactString(technique["shake"]));
+        }
+
+        private static bool IsTechniqueShake(string value)
+        {
+            return string.Equals(value, "light", StringComparison.Ordinal)
+                || string.Equals(value, "hard", StringComparison.Ordinal)
+                || string.Equals(value, "none", StringComparison.Ordinal);
+        }
+
+        /// <summary>
+        /// 配方声明的调制方式（snapshot 投影）：{shake, ice, aged,
+        /// karmotrine:"required"|"optional"|"none"}。
+        /// </summary>
+        private static bool IsDeclaredTechnique(JToken token)
+        {
+            var declared = token as JObject;
+            return declared != null
+                && HasExactKeys(declared, "shake", "ice", "aged", "karmotrine")
+                && HasExactBooleanFields(declared, "ice", "aged")
+                && IsTechniqueShake(ReadExactString(declared["shake"]))
+                && IsTechniqueKarmotrine(ReadExactString(declared["karmotrine"]));
+        }
+
+        private static bool IsTechniqueKarmotrine(string value)
+        {
+            return string.Equals(value, "required", StringComparison.Ordinal)
+                || string.Equals(value, "optional", StringComparison.Ordinal)
+                || string.Equals(value, "none", StringComparison.Ordinal);
+        }
+
+        private static bool TrySanitizeTechnique(JObject technique, out JObject sanitized)
+        {
+            sanitized = null;
+            if (technique == null || !IsTechnique(technique)) return false;
+            sanitized = new JObject
+            {
+                ["shake"] = ReadExactString(technique["shake"]),
+                ["ice"] = technique.Value<bool>("ice"),
+                ["aged"] = technique.Value<bool>("aged"),
+                ["karmotrine"] = technique.Value<bool>("karmotrine")
+            };
+            return true;
+        }
+
         private static bool IsAuthoritativeSnapshot(JObject msg, PendingRequest entry)
         {
             var recipes = msg["recipes"] as JArray;
@@ -1028,11 +1095,13 @@ namespace CF7Launcher.Tasks
                         "recipeId", "recipeIndex", "title", "output",
                         "owned", "plannedCrafts", "baseCost", "materialCount",
                         "batchEligible", "canCraftOne", "availability" },
-                        "book", "infrastructure")
+                        "book", "infrastructure", "technique")
                     || (recipe["book"] != null
                         && !IsSafeOptionalText(ReadExactString(recipe["book"]), 256))
                     || (recipe["infrastructure"] != null
                         && !IsInfrastructureRows(recipe["infrastructure"]))
+                    || (recipe["technique"] != null
+                        && !IsDeclaredTechnique(recipe["technique"]))
                     || !ProcurementProjectionValidator.IsRecipeId(recipe["recipeId"])
                     || !seenRecipeIds.Add(ReadExactString(recipe["recipeId"]))
                     || !TryReadInteger(recipe["recipeIndex"], 0, 999, out recipeIndex)
@@ -2097,6 +2166,8 @@ namespace CF7Launcher.Tasks
                 "enoughSpace", "canCommit", "blockingError", "outputDelivery" };
             // infrastructure 为增量投影：旧 asLoader 不回传时允许缺省，出现则严格校验。
             if (msg["infrastructure"] != null) keyList.Add("infrastructure");
+            // technique 同为增量投影（调酒类目调制方式回显）。
+            if (msg["technique"] != null) keyList.Add("technique");
             if (canCommit)
             {
                 keyList.Add("craftToken");
@@ -2118,6 +2189,9 @@ namespace CF7Launcher.Tasks
                 || msg["canCommit"] == null || msg["canCommit"].Type != JTokenType.Boolean
                 || !HasExactBooleanFields(msg, "levelAllowed", "enoughMaterials", "enoughMoney",
                     "enoughKpoints", "enoughSpace")) return false;
+            if ((msg["technique"] != null && !IsTechnique(msg["technique"]))
+                    || !JToken.DeepEquals(msg["technique"], entry.NormalizedPayload["technique"]))
+                return false;
             if (((JObject)msg["outputDelivery"]).Value<bool>("available")
                 != msg.Value<bool>("enoughSpace")) return false;
             foreach (JToken materialToken in (JArray)msg["materials"])
@@ -2329,9 +2403,11 @@ namespace CF7Launcher.Tasks
             return plan != null
                 && HasExactKeysWithOptional(plan, new[] { "category", "recipeIndex",
                     "craftCount", "output", "materials", "outputDelivery",
-                    "outputPrototype", "cost" }, "infrastructure")
+                    "outputPrototype", "cost" }, "infrastructure", "technique")
                 && (plan["infrastructure"] == null || IsInfrastructureRows(plan["infrastructure"]))
                 && JToken.DeepEquals(plan["infrastructure"], preview["infrastructure"])
+                && (plan["technique"] == null || IsTechnique(plan["technique"]))
+                && JToken.DeepEquals(plan["technique"], preview["technique"])
                 && TryReadInteger(plan["recipeIndex"], 0, 999, out recipeIndex)
                 && TryReadInteger(plan["craftCount"], 1, 99, out craftCount)
                 && string.Equals(ReadExactString(plan["category"]),

@@ -21,6 +21,7 @@ namespace CF7Launcher.Config
     ///   MapDisplayPreference — 小地图显示偏好: auto/off/compact/expanded；与 AS2 mm 运行态分离
     ///   HitNumberMode — 打击伤害数字行为: off/balanced/total/classic/detail；默认 balanced
     ///   HitNumberWorldRowLimit — 世界内同时保留的攻击行全局上限；0 表示不设产品上限
+    ///   ReducedPresentation — "精简演出": 跳过漫画运镜与页级结构淡入等装饰性演出，默认 false
     ///
     /// 未来扩展: 往 Load/Save 加字段, 并在 JSON schema 里读容错默认值.
     /// </summary>
@@ -43,6 +44,7 @@ namespace CF7Launcher.Config
         public string MapDisplayPreference { get; set; }
         public string HitNumberMode { get; set; }
         public int HitNumberWorldRowLimit { get; set; }
+        public bool ReducedPresentation { get; set; }
 
         private readonly string _path;
         private readonly string _legacyPath;
@@ -78,6 +80,7 @@ namespace CF7Launcher.Config
             MapDisplayPreference = "auto";
             HitNumberMode = HitNumberModeDefault;
             HitNumberWorldRowLimit = HitNumberWorldRowLimitDefault;
+            ReducedPresentation = false;
             Load();
         }
 
@@ -138,6 +141,8 @@ namespace CF7Launcher.Config
                 int? hitNumberLimit = obj.Value<int?>("hitNumberWorldRowLimit");
                 if (hitNumberLimit.HasValue)
                     HitNumberWorldRowLimit = NormalizeHitNumberWorldRowLimit(hitNumberLimit.Value);
+                if (obj["reducedPresentation"]?.Type == JTokenType.Boolean)
+                    ReducedPresentation = obj.Value<bool>("reducedPresentation");
                 if (readPath == _legacyPath && _path != _legacyPath)
                 {
                     // One-shot migration: stop mutating repo-root prefs after first successful read.
@@ -157,6 +162,7 @@ namespace CF7Launcher.Config
                 MapDisplayPreference = "auto";
                 HitNumberMode = HitNumberModeDefault;
                 HitNumberWorldRowLimit = HitNumberWorldRowLimitDefault;
+                ReducedPresentation = false;
             }
         }
 
@@ -179,6 +185,7 @@ namespace CF7Launcher.Config
                 obj["hitNumberMode"] = NormalizeHitNumberMode(HitNumberMode);
                 obj["hitNumberWorldRowLimit"] =
                     NormalizeHitNumberWorldRowLimit(HitNumberWorldRowLimit);
+                obj["reducedPresentation"] = ReducedPresentation;
                 if (!string.IsNullOrEmpty(SuppressedHighDpiWarningRaw))
                     obj["suppressedHighDpiWarningRaw"] = SuppressedHighDpiWarningRaw;
                 CF7Launcher.Save.DurableFileWriter.WriteAllText(_path,

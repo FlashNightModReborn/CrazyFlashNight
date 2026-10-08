@@ -1369,8 +1369,9 @@ namespace CF7Launcher.Guardian.Hud
                 x += Px(DividerW + DividerMarginX * 2, scale);
             }
 
-            string fpsText = _fpsBuffer.HasData ? ((int)_fpsBuffer.Latest).ToString() : "--";
-            Color fpsColor = GetFpsColor(_fpsBuffer.HasData ? _fpsBuffer.Latest : 0f);
+            bool fpsFresh = _fpsBuffer.HasFreshSample;
+            string fpsText = fpsFresh ? ((int)_fpsBuffer.Latest).ToString() : "--";
+            Color fpsColor = GetFpsColor(fpsFresh ? _fpsBuffer.Latest : 0f);
             int fpsW = Px(CenterFpsMinW, scale);
             Rectangle fpsRect = new Rectangle(x, 0, fpsW, row1H);
             using (SolidBrush fpsBrush = new SolidBrush(fpsColor))

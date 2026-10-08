@@ -77,11 +77,17 @@ def comic_index(source):
 
 def catalog():
     value = json.loads((ROOT / 'data/books/catalog.json').read_text(encoding='utf-8-sig'))
+    for book in value['books']:
+        presentation = book.get('boxArt') if book['format'] == 'playable' else book.get('spine')
+        if not safe_path(presentation) or not presentation.startswith('shelf/textures/'):
+            raise ValueError('invalid book presentation asset: ' + book['id'])
     series = [b for b in value['books'] if b['format'] == 'playable']
     if len(series) != 1 or series[0]['id'] != 'crazy-flasher' or len(series[0]['chapters']) != 6:
         raise ValueError('expected one Crazy Flasher book with six chapters')
     for n, chapter in enumerate(series[0]['chapters'], 1):
-        if (chapter['id'] != f'cf{n}' or chapter['original'] != {
+        if (chapter['id'] != f'cf{n}' or not safe_path(chapter.get('cover'))
+                or chapter['cover'] != f'shelf/textures/disc-cf{n}.png'
+                or chapter['original'] != {
                 'chapter': n, 'languages': ['cn'] if n == 1 else ['cn', 'en']}
                 or chapter['remake'] != {'id': 'repair-campus' if n == 1 else None, 'available': n == 1}):
             raise ValueError('invalid playable chapter')

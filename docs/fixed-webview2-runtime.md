@@ -22,6 +22,18 @@ The initial expansion requires approximately 700 MB of free cache space plus a
 temporary CAB copy, and subsequent startup only validates the existing cache.
 No network download or system WebView2 installation is required at runtime.
 
+The startup optimization reuses Core's successful native bundle verification
+only when its exact runtime directory and manifest part paths, sizes and hashes
+match the embedded lock. A valid hot cache still receives full extracted-file
+verification; unused chunks are not hashed a third time. Missing or invalid
+caches always trigger fresh source-chunk verification before expansion. Direct
+development entry without that admission retains the complete chunk check.
+Sequential, pooled-buffer hashing does not replace any byte check with an
+mtime or size-only shortcut. Bootstrap retains its pre-Core check and the
+pre-install check on machines that need .NET; an already-equipped machine no
+longer performs two identical full bootstrap passes. Scope and outstanding
+field checks are recorded in [startup and presentation optimization](startup-input-presentation-optimization.md).
+
 Every production host uses this explicit engine directory and verifies both the
 loaded version and actual browser executable path. Environment/policy overrides
 that select another engine fail clearly. Windows 10 extraction grants read and
@@ -35,8 +47,10 @@ The publisher must update the lock and rerun the release train for engine securi
 updates. Fixed Version does not update itself. Keep the complete Microsoft and
 third-party license files contained in the original CAB.
 
-World mouse input is initialized on the overlay's UI message-loop thread before
-Web initialization begins. Cursor control requests arriving from the socket read
+World mouse input installation is queued on the overlay's UI message-loop
+thread and cannot run before that thread pumps the queued callback. It does not
+wait for Web initialization. This removes the constructor-to-message-loop hook
+gap, not the remaining risk of later UI blocking. Cursor control requests arriving from the socket read
 thread marshal their state updates to that UI thread. User activation queues an
 idle Flash focus restore only while the Guardian still owns foreground, has no
 panel owner, and has no native control focus to preserve. Every recovery action

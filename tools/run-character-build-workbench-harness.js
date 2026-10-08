@@ -750,6 +750,8 @@ async function runPreparationMenuViewportMatrix(browser, server, viewports) {
         'modules/character-build/character-build-transport.js',
         'modules/character-build/character-build-stash-transport.js',
         'modules/character-build/character-build-item-use.js',
+        'modules/grade-presentation.js',
+        'modules/character-build/character-build-item-use-reveal.js',
         'modules/character-build/character-build-item-use-channel.js',
         'modules/character-build/character-build-candidate-channel.js',
         'modules/character-build.js',

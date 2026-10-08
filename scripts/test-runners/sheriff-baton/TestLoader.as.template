@@ -1,0 +1,15 @@
+﻿import org.flashNight.arki.unit.UnitComponent.Dressup.EquipmentUtil.*;
+if (!_root.主角函数) _root.主角函数 = {};
+if (!_root.装备生命周期函数) _root.装备生命周期函数 = {};
+#include "逻辑/单位函数/单位函数_fs_装备生命周期配置.as"
+#include "逻辑/功能函数/功能函数_fs_兵器攻击检测.as"
+#include "逻辑/装备函数/特勤警棍.as"
+_root.sheriffBatonTestComplete = function():Void {
+    org.flashNight.arki.unit.UnitComponent.Dressup.EquipmentUtil.SheriffArsenalTest.runAllTests();
+};
+_root.sheriffArsenalTestComplete = function():Void {
+    org.flashNight.arki.render.EquipmentLightDefenseTest.runAllTests();
+    trace("FocusedTestRunId sheriff-baton Complete: __FOCUSED_RUN_ID__");
+};
+trace("FocusedTestRunId sheriff-baton Start: __FOCUSED_RUN_ID__");
+org.flashNight.arki.unit.UnitComponent.Dressup.EquipmentUtil.SheriffBatonTest.runAllTests();

@@ -15,16 +15,24 @@
     if (!focusApi && typeof module !== 'undefined' && module.exports) {
         focusApi = require('./workbench-focus.js');
     }
-    var api = factory(workbenchApi, focusApi);
+    var gradeApi = root && root.GradePresentation;
+    if (!gradeApi && typeof module !== 'undefined' && module.exports) {
+        gradeApi = require('./grade-presentation.js');
+    }
+    var api = factory(workbenchApi, focusApi, gradeApi);
     if (typeof module !== 'undefined' && module.exports) module.exports = api;
     if (root) root.InventoryUI = api;
-})(typeof window !== 'undefined' ? window : globalThis, function(WorkbenchApi, WorkbenchFocus) {
+})(typeof window !== 'undefined' ? window : globalThis, function(WorkbenchApi, WorkbenchFocus, GradePresentation) {
     'use strict';
 
     if (!WorkbenchFocus || typeof WorkbenchFocus.RovingGridFocus !== 'function') {
         throw new Error('inventory-ui.js requires workbench-focus.js');
     }
     var RovingGridFocus = WorkbenchFocus.RovingGridFocus;
+    // 档级色/档级枚举的唯一 Web 来源（canonical 词典 ui_presentation.xml 的运行时副本）。
+    if (!GradePresentation || typeof GradePresentation.color !== 'function') {
+        throw new Error('inventory-ui.js requires grade-presentation.js');
+    }
 
     function integerOr(value, fallback) {
         value = Number(value);
@@ -110,9 +118,7 @@
     }
 
     function normalizeModGrade(value) {
-        var grade = String(value || 'unknown');
-        return grade === 'low' || grade === 'medium' || grade === 'high' || grade === 'special'
-            ? grade : 'unknown';
+        return GradePresentation.normalize(value);
     }
 
     function normalizeModSymbol(value) {
@@ -124,9 +130,9 @@
     }
 
     function normalizeModGradeColor(value, grade) {
-        var canonical = {low:'#006600',medium:'#996600',high:'#0099FF',special:'#FFFF00',unknown:'#58636E'};
+        var canonical = GradePresentation.color(grade);
         var color = String(value || '').toUpperCase();
-        return color === canonical[grade] ? color : canonical[grade];
+        return color === canonical ? color : canonical;
     }
 
     function renderTierMarker(item) {

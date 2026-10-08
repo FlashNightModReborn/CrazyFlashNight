@@ -8,6 +8,11 @@
 .stage-focus-surface .workbench-subtitle { display:none; }
 .stage-focus-viewport { position:relative; width:100%; height:100%; overflow:hidden; background:rgb(var(--ss-header-rgb)); }
 .stage-focus-viewport .stage-select-diorama-canvas { width:100%; height:100%; }
+.stage-desert-area-controls { position:absolute; left:12px; bottom:8px; z-index:5; display:flex; flex-wrap:wrap; align-items:center; gap:4px; max-width:calc(100% - 24px); padding:4px; box-sizing:border-box; background:var(--wb-panel); color:var(--wb-text); border:1px solid var(--wb-line); font-size:var(--ss-font-base); }
+.stage-desert-area-controls>span { padding:0 5px; color:var(--wb-muted); }
+.stage-desert-area-controls .stage-focus-action { min-width:48px; min-height:32px; padding:4px 8px; font-size:inherit; }
+.stage-desert-area-controls button[aria-pressed="true"] { border-color:var(--wb-accent); color:var(--wb-accent); }
+.stage-select-panel.is-camera-editing .stage-desert-area-controls { display:none; }
 .stage-focus-panel.stage-select-inspector {
     position:static; transform:none; width:100%; height:100%; padding:14px;
     display:flex; flex-direction:column; gap:8px; border:0; box-shadow:none;

@@ -1,9 +1,11 @@
 (function() {
     'use strict';
     var R = window.BookshelfRuntime;
+    var scriptBase = new URL('./', document.currentScript ? document.currentScript.src : location.href);
     var shell, host, scale, mux, originalMux, token, instance, state, recovery, slotSignature, reader, original, catalogRequest;
-    var selected = 'dust', busy = false, generation = 0, autoReturnAttempted = false, readFailed = false;
+    var selected = null, busy = false, generation = 0, autoReturnAttempted = false, readFailed = false;
     var playingOriginal = false, statusAttention = false;
+    var shelfScene = null, shelfLoading = null, shelfFailed = false, panelScale = 1;
     var selectedChapter = 1, languages = {};
     var returning = false, transition = null, returnPoll = 0, transitionAck = '';
     var transitionEpoch = -1, transitionSequence = -1, transitionRevision = 0, transitionRetired = false;
@@ -13,17 +15,19 @@
         host = element; token = data.token; instance = data.panelInstanceId;
         state = null; recovery = ''; slotSignature = ''; busy = false; autoReturnAttempted = false; readFailed = false; generation++;
         playingOriginal = false; statusAttention = false;
+        selected = null; shelfScene = null; shelfLoading = null; shelfFailed = false;
         returning = false; transition = null; transitionAck = '';
         transitionEpoch = -1; transitionSequence = -1; transitionRevision = 0; transitionRetired = false;
         selectedChapter = 1; languages = {};
         if (selected === 'repair-campus') selected = 'crazy-flasher';
-        host.innerHTML = '<section class="bookshelf-panel"><header><div><span class="bookshelf-eyebrow">基地藏书室</span>'
-            + '<h1 id="bookshelf-title">基地藏书室</h1></div><div id="bookshelf-reader-tools" class="bookshelf-reader-tools" hidden></div>'
+        host.innerHTML = '<section class="bookshelf-panel"><header><div><span class="bookshelf-eyebrow">基地收藏室</span>'
+            + '<h1 id="bookshelf-title">基地收藏室</h1></div><div id="bookshelf-reader-tools" class="bookshelf-reader-tools" hidden></div>'
             + '<div id="bookshelf-original-tools" class="bookshelf-original-tools" hidden></div>'
             + '<button id="bookshelf-close" aria-label="关闭书架">×</button></header>'
-            + '<div class="bookshelf-body"><nav aria-label="书架目录"><h2>藏书</h2><div id="bookshelf-books"></div>'
+            + '<div class="bookshelf-body"><nav aria-label="书架目录"><button id="bookshelf-nav-overview" class="bookshelf-entry" type="button"><strong>置物架总览</strong><small>3D 书架与合集</small></button>'
+            + '<h2>藏书</h2><div id="bookshelf-books"></div>'
             + '<h2>角色档案</h2><div id="bookshelf-slots"></div><p id="bookshelf-role" class="bookshelf-muted"></p></nav>'
-            + '<main><div id="bookshelf-reader"></div><div id="bookshelf-original" hidden></div>'
+            + '<main><div id="bookshelf-overview" hidden></div><div id="bookshelf-reader"></div><div id="bookshelf-original" hidden></div>'
             + '<article id="bookshelf-detail" hidden></article></main></div>'
             + '<footer><p id="bookshelf-status" role="status" aria-live="polite">正在读取书架…</p>'
             + '<button id="bookshelf-transition-retry" hidden>重试返回</button><button id="bookshelf-recover" hidden>核对结果</button></footer></section>';
@@ -47,11 +51,25 @@
         }});
         renderBooks();
         el('close').onclick = close;
+        el('nav-overview').onclick = function() {
+            if (busy || returning) return;
+            selected = null;
+            host.querySelector('.bookshelf-panel').classList.remove('library-open');
+            reader.get('library').setAttribute('aria-expanded', 'false'); render();
+        };
         el('recover').onclick = function() { if (recovery) reconcile(); else read(); };
         el('transition-retry').onclick = function() { sendTransition('transitionAction', 'verb', 'retry'); };
-        scale = PanelScale.attach(shell, 1024, 576);
+        scale = PanelScale.attach(shell, 1024, 576, {onUpdate:function(value) {
+            panelScale = value;
+            if (shelfScene && host && selected === null) renderOverview();
+        }});
         mux = new R.RequestMux({panelInstanceId:instance, send:function(message) { return Bridge.send(message); }});
-        render(); read();
+        window.__bookshelfShelfQa = {
+            state:function() { return shelfScene ? 'ready' : shelfFailed ? 'failed' : shelfLoading ? 'loading' : 'none'; },
+            stats:function() { return shelfScene ? shelfScene.stats() : null; },
+            targets:function() { return shelfScene ? shelfScene.targets() : null; }
+        };
+        render(); read(); ensureShelf();
         var g = generation; catalogRequest = new AbortController();
         fetch('assets/bookshelf/catalog.json', {signal:catalogRequest.signal}).then(function(response) {
             if (!response.ok) throw new Error('catalog_unavailable'); return response.json();
@@ -76,6 +94,88 @@
             };
             el('books').appendChild(b); if (focused === book.id) b.focus({preventScroll:true});
         });
+    }
+    function selectFromShelf(id) {
+        if (!host || busy || returning) return;
+        if (id === 'slot:__more__') {
+            status('更多档案在左侧角色档案列表。', false);
+            var firstSlot = el('slots').querySelector('[data-slot]');
+            if (firstSlot) firstSlot.focus();
+            return;
+        }
+        if (id.indexOf('slot:') === 0) {
+            var slotId = id.slice(5);
+            if (!state || !(state.slots || []).some(function(s) { return s.slot === slotId; })) return;
+            selected = id;
+            host.querySelector('.bookshelf-panel').classList.remove('library-open');
+            reader.get('library').setAttribute('aria-expanded', 'false'); render();
+            var slotButton = el('slots').querySelector('[data-slot="' + slotId + '"]');
+            if (slotButton) slotButton.focus({preventScroll:true});
+            return;
+        }
+        if (!R.books.some(function(b) { return b.id === id; })) return;
+        selected = id;
+        host.querySelector('.bookshelf-panel').classList.remove('library-open');
+        reader.get('library').setAttribute('aria-expanded', 'false'); render();
+        var button = el('books').querySelector('[data-book="' + id + '"]');
+        if (button) button.focus({preventScroll:true});
+    }
+    function ensureShelf() {
+        if (shelfScene || shelfLoading || shelfFailed || !host) return;
+        var g = generation;
+        shelfLoading = import(new URL('bookshelf-shelf-scene.js', scriptBase).href).then(function(module) {
+            return module.createScene(null, function() {
+                if (g !== generation) return;
+                shelfFailed = true;
+                if (shelfScene) { shelfScene.dispose(); shelfScene = null; }
+                if (host) render();
+            }, selectFromShelf, null);
+        }).then(function(scene) {
+            shelfLoading = null;
+            if (!scene) return;
+            if (g !== generation || shelfFailed) { scene.dispose(); return; }
+            shelfScene = scene;
+            if (host) render();
+        }).catch(function(error) {
+            shelfLoading = null;
+            if (g !== generation) return;
+            shelfFailed = true;
+            if (typeof console !== 'undefined' && console.error) console.error(error);
+            if (host) render();
+        });
+    }
+    function renderOverview() {
+        var ov = el('overview');
+        if (shelfFailed) {
+            if (!ov.querySelector('.bookshelf-shelf-fallback')) {
+                ov.textContent = '';
+                var box = document.createElement('div'); box.className = 'bookshelf-shelf-fallback';
+                var text = document.createElement('p');
+                text.textContent = '3D 置物架暂时不可用，请从左侧目录选择。';
+                var retry = document.createElement('button'); retry.id = 'bookshelf-shelf-retry';
+                retry.type = 'button'; retry.textContent = '重试';
+                retry.onclick = function() { shelfFailed = false; ov.textContent = ''; ensureShelf(); render(); };
+                box.append(text, retry); ov.appendChild(box);
+            }
+            return;
+        }
+        if (!shelfScene) {
+            if (!ov.firstChild) {
+                var loading = document.createElement('p'); loading.className = 'bookshelf-shelf-fallback';
+                loading.textContent = '正在载入置物架…'; ov.appendChild(loading);
+            }
+            return;
+        }
+        if (shelfScene.canvas.parentElement !== ov) { ov.textContent = ''; ov.appendChild(shelfScene.canvas); }
+        var w = ov.clientWidth, h = ov.clientHeight;
+        if (w && h) {
+            // Render at the actual display density: the panel shell is upscaled by a
+            // CSS transform (PanelScale), so layout pixels alone blur text textures.
+            var eff = Math.min(2, Math.max(0.5, panelScale * (window.devicePixelRatio || 1)));
+            var rw = Math.round(w * eff), rh = Math.round(h * eff);
+            if (shelfScene.canvas.width !== rw || shelfScene.canvas.height !== rh) shelfScene.view.resize(rw, rh);
+        }
+        shelfScene.render();
     }
     function status(text, attention) {
         statusAttention = attention !== false;
@@ -187,23 +287,42 @@
         el('close').disabled = busy || returning || !!transition || !!(state && state.exitRequired && state.inRun);
         el('transition-retry').hidden = !transition || transition.phase !== 'error';
         el('transition-retry').disabled = !!transition && (transition.actionPending || transition.connected === false);
-        var book = R.books.find(function(b) { return b.id === selected; });
+        var overview = selected === null;
+        var book = overview ? null : R.books.find(function(b) { return b.id === selected; });
         host.querySelectorAll('[data-book]').forEach(function(b) { b.setAttribute('aria-current', String(b.dataset.book === selected)); });
+        el('nav-overview').setAttribute('aria-current', String(overview));
         var reading = book && book.pages > 0;
         if (selected !== 'crazy-flasher' || !state || state.inRun || state.pendingRun || recovery || readFailed) playingOriginal = false;
         var chapter = book && book.format === 'playable' && book.chapters[selectedChapter - 1];
         var panel = host.querySelector('.bookshelf-panel');
         el('reader').hidden = !reading; el('reader-tools').hidden = !reading;
-        el('detail').hidden = reading || playingOriginal;
+        el('overview').hidden = !overview;
+        el('detail').hidden = overview || reading || playingOriginal;
         el('original').hidden = el('original-tools').hidden = !playingOriginal;
+        panel.classList.toggle('is-overview', overview);
         panel.classList.toggle('is-reading', !!reading); panel.classList.toggle('is-original', playingOriginal);
         panel.classList.toggle('needs-attention', statusAttention || busy || !!recovery || readFailed || !state);
-        el('title').textContent = playingOriginal ? '闪客快打 ' + selectedChapter : book ? book.title : '角色档案';
+        el('title').textContent = overview ? '基地收藏室' : playingOriginal ? '闪客快打 ' + selectedChapter : book ? book.title : '角色档案';
+        if (shelfScene) {
+            var archiveSlots = state && state.slots || [];
+            var ordered = archiveSlots.slice().sort(function(a, b) {
+                return (b.slot === state.activeSlot ? 1 : 0) - (a.slot === state.activeSlot ? 1 : 0);
+            });
+            var maxFolders = shelfScene.archiveMax();
+            var items = ordered.slice(0, maxFolders).map(function(s) {
+                return {id: 'slot:' + s.slot, name: s.name, active: !!state && state.activeSlot === s.slot};
+            });
+            if (ordered.length > maxFolders) items.push({id: 'slot:__more__', name: '更多档案', more: true});
+            shelfScene.setArchives(items);
+        }
         if (playingOriginal && chapter) original.show({chapter:selectedChapter, language:languages[selectedChapter] || 'cn'}); else original.hide();
         if (reading) {
             reader.show(book);
         } else if (playingOriginal) {
             reader.hide();
+        } else if (overview) {
+            reader.hide();
+            renderOverview();
         } else {
             reader.hide();
             var detail = el('detail');
@@ -360,6 +479,8 @@
         clearTimeout(returnPoll); returning = false; transition = null; transitionAck = '';
         generation++; if (mux) mux.destroy(); if (scale) scale.detach();
         if (catalogRequest) catalogRequest.abort(); catalogRequest = null;
+        if (shelfScene) shelfScene.dispose(); shelfScene = null; shelfLoading = null; shelfFailed = false;
+        if (window.__bookshelfShelfQa) delete window.__bookshelfShelfQa;
         if (reader) reader.destroy(); reader = null;
         if (original) original.destroy(); original = null; playingOriginal = false;
         if (originalMux) originalMux.destroy(); originalMux = null;

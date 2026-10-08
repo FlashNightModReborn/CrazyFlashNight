@@ -59,6 +59,19 @@ class org.flashNight.arki.item.equipment.EquipmentCalculator {
             data = itemData.data;
         }
 
+        // An optional single-hand profile uses the same upgrade/mod operators.
+        // Snapshot after tier selection; never persist derived values to item saves.
+        var singleSource:Object;
+        var singleValue:Object;
+        if (itemData.use == "手枪" && itemData.singleHand.attackBonusType == "长枪"
+            && Number(itemData.singleHand.power) > 0 && isFinite(Number(itemData.singleHand.power))) {
+            singleSource = ObjectUtil.clone(itemData);
+            singleSource.data.power = Number(itemData.singleHand.power);
+            delete singleSource.singleHand;
+            singleValue = ObjectUtil.clone(value);
+            delete singleValue.tier;
+        }
+
         // Compose after tier replacement and before the no-mod fast path, so removal
         // also retires old projected attrs. Skill/slot rules remain separate.
         var lifecycle:Object = EquipmentLifecyclePolicy.merge(itemData.lifecycle, value.mods, modRegistry);
@@ -68,6 +81,7 @@ class org.flashNight.arki.item.equipment.EquipmentCalculator {
         // 若装备自带副武器，先规范化根层数据，供 tooltip / 初始化读取。
         SubweaponDataUtil.normalizeItemSubweapon(itemData);
         if (value.level < 2 && (!value.mods || value.mods.length <= 0)) {
+            projectSingleHand(itemData, singleSource, singleValue, config, modRegistry);
             return itemData;
         }
 
@@ -94,7 +108,15 @@ class org.flashNight.arki.item.equipment.EquipmentCalculator {
 
         SubweaponDataUtil.normalizeItemSubweapon(itemData);
 
+        projectSingleHand(itemData, singleSource, singleValue, config, modRegistry);
         return itemData;
+    }
+
+    private static function projectSingleHand(itemData:Object, source:Object, value:Object, config:Object, mods:Object):Void {
+        if (!source) return;
+        var single:Object = calculateInPlace(source, value, config, mods);
+        itemData.data.singleHandPowerBonus = Number(single.data.power) - Number(itemData.data.power);
+        itemData.data.singleHandAttackBonusType = "长枪";
     }
 
     /**

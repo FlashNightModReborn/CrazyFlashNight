@@ -5,6 +5,7 @@ from __future__ import annotations
 import copy
 import argparse
 import ast
+import hashlib
 import importlib.util
 import json
 import shutil
@@ -77,7 +78,36 @@ def refresh_dialogue_metadata(previous: dict, updated: dict, baker, baseline_dir
     }
 
 
-def refresh(dialogue_baseline_dir: Path | None = None, dialogue_baker_ref: str = "HEAD") -> None:
+def validate_list_identity(previous: dict, current: dict, raw: bytes,
+                           allow_list_eol_normalization: bool = False) -> dict | None:
+    for key in ("listedCount", "activeCount", "excludedShopIds"):
+        if previous[key] != current[key]:
+            raise RuntimeError("Shop list identity changed; rebuild portraits explicitly.")
+    old, new = previous["list"], current["list"]
+    if old == new:
+        return None
+    if not allow_list_eol_normalization:
+        raise RuntimeError("Shop list artifact changed; rebuild or explicitly prove canonical LF equivalence.")
+    if old["path"] != "data/shops/list.xml" or new["path"] != old["path"]:
+        raise RuntimeError("Shop list path changed.")
+    if b"\r" in raw or b"\n" not in raw:
+        raise RuntimeError("Shop list must use canonical LF bytes.")
+    digest = hashlib.sha256(raw).hexdigest()
+    if new["bytes"] != len(raw) or new["sha256"] != digest:
+        raise RuntimeError("Current shop list artifact does not match its bytes.")
+    # Reconstruct the exact previously attested bytes, not just equivalent XML.
+    reconstructed = raw.replace(b"\n", b"\r\n")
+    if old["bytes"] != len(reconstructed) or old["sha256"] != hashlib.sha256(reconstructed).hexdigest():
+        raise RuntimeError("Shop list changed beyond CRLF-to-LF normalization.")
+    return {
+        "mode": "crlf-to-lf-byte-equivalence",
+        "previousSha256": old["sha256"], "previousBytes": old["bytes"],
+        "canonicalSha256": digest, "canonicalBytes": len(raw),
+    }
+
+
+def refresh(dialogue_baseline_dir: Path | None = None, dialogue_baker_ref: str = "HEAD",
+            allow_list_eol_normalization: bool = False) -> None:
     baker = load("shop_source_baker", "bake-shop-portraits.py")
     validator = load("shop_source_validator", "test-shop-portrait-assets.py")
     active, source = baker.read_active_shops(ROOT)
@@ -88,9 +118,8 @@ def refresh(dialogue_baseline_dir: Path | None = None, dialogue_baker_ref: str =
     previous_source = previous["activeShopSource"]
     # 商店 JSON 在已绑定版本的 read_active_shops 中只贡献 shopId。
     # 身份顺序、清单文件与文档路径不能借刷新入口发生变化。
-    if any(previous_source[key] != source[key] for key in
-           ("list", "listedCount", "activeCount", "excludedShopIds")):
-        raise RuntimeError("Shop list identity changed; rebuild portraits explicitly.")
+    list_eol_proof = validate_list_identity(previous_source, source,
+        (ROOT / "data/shops/list.xml").read_bytes(), allow_list_eol_normalization)
     if [item["path"] for item in previous_source["shopDocuments"]] != [item["path"] for item in source["shopDocuments"]]:
         raise RuntimeError("Shop document paths changed; rebuild portraits explicitly.")
     if previous_source == source and dialogue_baseline_dir is None:
@@ -105,6 +134,8 @@ def refresh(dialogue_baseline_dir: Path | None = None, dialogue_baker_ref: str =
             "tool": baker.artifact(Path(__file__).resolve(), ROOT),
             "previousActiveSourceSha256": baker.sha256_bytes(baker.canonical_json(previous_source)),
         }
+        if list_eol_proof is not None:
+            updated["shopSourceRefresh"]["listEolNormalization"] = list_eol_proof
     if dialogue_baseline_dir is not None:
         refresh_dialogue_metadata(previous, updated, baker, dialogue_baseline_dir, dialogue_baker_ref)
     # 既有商店来源刷新记录继续绑定当前工具；输出与渲染输入仍须通过下面的完整检查。
@@ -139,5 +170,7 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--dialogue-baseline-dir", type=Path)
     parser.add_argument("--dialogue-baker-ref", default="HEAD")
+    parser.add_argument("--allow-list-eol-normalization", action="store_true",
+                        help="Require an exact CRLF reconstruction of the previously bound list bytes.")
     args = parser.parse_args()
-    refresh(args.dialogue_baseline_dir, args.dialogue_baker_ref)
+    refresh(args.dialogue_baseline_dir, args.dialogue_baker_ref, args.allow_list_eol_normalization)

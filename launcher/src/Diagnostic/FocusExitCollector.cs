@@ -56,7 +56,7 @@ namespace CF7Launcher.Diagnostic
                     catch (Exception ex) { warnings.Add(relative + ": " + ex.Message); }
                 }
                 foreach (string name in RollingFocusLog.Names) Copy(Path.Combine("logs", "focus-trace", name));
-                foreach (string relative in new[] { "logs/launcher.log.1", "logs/launcher.log", "logs/bootstrap.log",
+                foreach (string relative in new[] { "logs/launcher.log.1", "logs/launcher.log", "logs/bootstrap.log", "logs/perf-latest.jsonl",
                     "runtime/cf7-runtime-manifest.tsv", "config/build/runtime-release-consensus.json", "config.toml" }) Copy(relative);
                 // WebView 故障元数据 + 有界 Crashpad 报告；单点失败只进 warnings，不拦截退出打包。
                 JObject webviewSummary = null;

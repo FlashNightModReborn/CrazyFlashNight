@@ -32,7 +32,9 @@ class org.flashNight.arki.item.ChoiceRewardServiceTest {
     }
     private static function catalog():Array {
         var options:Array = [];
+        var grades:Array = ["low","medium","high","special"];
         for (var i:Number=0;i<4;i++) options.push({id:"bundle."+i,weight:1,title:"配给"+i,description:"武器与弹药"+i,
+            grade:grades[i],
             entries:[{itemName:"选择测试刀",quantity:1},{itemName:"选择测试弹",quantity:10+i}]});
         return [{id:"test.pool",version:1,title:"测试配给",itemName:"选择测试礼包",scope:{kind:"book",bookId:"test-book"},
             groups:[{draw:1,entries:[options[0]]},{draw:2,entries:options.slice(1)}]}];
@@ -65,6 +67,10 @@ class org.flashNight.arki.item.ChoiceRewardServiceTest {
             _root.物品栏.背包.add(0,BaseItem.create("选择测试礼包",5));
             var capability:Object=ItemUseService.buildCandidateUseAction(_root.物品栏.背包.getItem(0),ItemUtil.itemDataDict["选择测试礼包"],0,"lease",0);
             check(capability.useAction.command=="openChoice","choice pack has a distinct non-bulk capability");
+            check(capability.useAction.packMode=="playerChoice","choice pack capability exposes its declared pack mode");
+            ItemUtil.itemDataDict["选择测试固定包"]={name:"选择测试固定包",displayname:"固定包",icon:"a",type:"消耗品",use:"礼包",data:{level:0,rewardPack:{mode:"fixed",entries:{entry:[{itemName:"选择测试弹",quantityMin:1,quantityMax:1}]}}}};
+            var fixedCapability:Object=ItemUseService.buildCandidateUseAction({name:"选择测试固定包",value:1},ItemUtil.itemDataDict["选择测试固定包"],1,"lease",0);
+            check(fixedCapability.useAction.command=="open"&&fixedCapability.useAction.packMode=="fixed","fixed pack capability exposes its declared pack mode");
             check(snap().offers.length==0&&_root._saveExt.rewardInbox==undefined,"choice snapshot does not create a save feature");
             var many:Object=openRequest(); many.action="itemUseStashOpenMany"; many.count=2;
             check(!ItemUseService.execute("stashOpenMany",many).success&&_root.物品栏.背包.getItem(0).value==5,"bulk opening choices is rejected without consumption");
@@ -96,6 +102,7 @@ class org.flashNight.arki.item.ChoiceRewardServiceTest {
             check(!duplicateOpen.success&&duplicateOpen.error=="stale_stash"&&_root.物品栏.背包.getItem(0).value==4,"initial empty-store write cannot be replayed after creation; exact query owns recovery");
             var offer:Object=snap().offers[0];
             check(offer.options.length==3&&offer.options[0].optionId=="bundle.0"&&offer.options[1].optionId=="bundle.1"&&offer.options[2].optionId=="bundle.3","group guarantee and weighted draw are without replacement");
+            check(offer.options[0].grade=="low"&&offer.options[1].grade=="medium"&&offer.options[2].grade=="special","frozen options project their declared grades");
             check(RewardStashService.peek().entries.length==0,"opening grants no unselected inventory");
             var saved:Object=so.data[SaveManager.SAVE_KEY].ext;
             check(saved.rewardInbox.choiceOffers.offers[0].offerId==offer.offerId,"full-save payload owns the frozen offer");
@@ -112,6 +119,12 @@ class org.flashNight.arki.item.ChoiceRewardServiceTest {
             check(!ItemUseService.execute("stashChoose",choiceRequest(offer,"forged")).success,"unoffered identity is rejected");
             var stale:Object=choiceRequest(offer,"bundle.0");stale.expectedRevision=0;
             check(!ItemUseService.execute("stashChoose",stale).success,"stale store revision cannot select");
+            var badGradePools:Array=catalog();badGradePools[0].groups[0].entries[0].grade="legendary";
+            ChoiceRewardService.setPoolsForTests(badGradePools);
+            var badGradeResult:Object=ItemUseService.execute("stashOpen",openRequest());
+            check(!badGradeResult.success&&badGradeResult.error=="invalid_reward_pack"
+                &&_root.物品栏.背包.getItem(0).value==4&&snap().offers.length==1,"invalid catalog grade fails closed without consuming the pack or shadowing the pending offer");
+            ChoiceRewardService.setPoolsForTests(catalog());
             for(var fill:Number=1;fill<50;fill++) _root.物品栏.背包.add(fill,BaseItem.create("选择测试刀",1));
             sm._configureSaveFlowForTest({flushResult:false});
             check(!ItemUseService.execute("stashChoose",choiceRequest(offer,"bundle.0")).success,"failed selection does not claim success");
@@ -140,6 +153,8 @@ class org.flashNight.arki.item.ChoiceRewardServiceTest {
             check(!RewardStashStore.normalize(corrupt).ok,"future choice versions fail closed");
             corrupt=PersistedSnapshot.clone(RewardStashService.peek());corrupt.choiceOffers.offers[0].options[1].optionId=corrupt.choiceOffers.offers[0].options[0].optionId;
             check(!RewardStashStore.normalize(corrupt).ok,"duplicate candidate identities are rejected on restore");
+            corrupt=PersistedSnapshot.clone(RewardStashService.peek());corrupt.choiceOffers.offers[0].options[0].grade="legendary";
+            check(!RewardStashStore.normalize(corrupt).ok,"corrupt frozen grades fail closed");
             corrupt=PersistedSnapshot.clone(RewardStashService.peek());corrupt.choiceOffers.offers[0].options[0].items[0].value.mods={};
             var repaired:Object=RewardStashStore.normalize(corrupt);
             check(repaired.ok&&repaired.changed&&corrupt.choiceOffers.offers[0].options[0].items[0].value.mods instanceof Array,"known empty AMF arrays are repaired and reported");

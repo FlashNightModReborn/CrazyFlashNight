@@ -6,10 +6,12 @@
         : root && root.CharacterBuildCooldownChannel;
     var choices = typeof module !== 'undefined' && module.exports
         ? require('./character-build-choice-rewards.js') : root && root.CharacterBuildChoiceRewards;
-    var api = factory(cooldown, choices);
+    var reveal = typeof module !== 'undefined' && module.exports
+        ? require('./character-build-item-use-reveal.js') : root && root.CharacterBuildItemUseReveal;
+    var api = factory(cooldown, choices, reveal);
     if (typeof module !== 'undefined' && module.exports) module.exports = api;
     if (root) root.CharacterBuildItemUseChannel = api;
-})(typeof window !== 'undefined' ? window : globalThis, function(Cooldown, Choices) {
+})(typeof window !== 'undefined' ? window : globalThis, function(Cooldown, Choices, Reveal) {
     'use strict';
 
     function finiteWhole(value) {
@@ -17,7 +19,7 @@
         return isFinite(value) && value >= 0 && Math.floor(value) === value
             ? value : null;
     }
-    function resultMessage(response, receipt, pending) {
+    function resultMessage(response, receipt, pending, details) {
         response = response || {};
         receipt = receipt || {};
         pending = pending || {};
@@ -25,7 +27,11 @@
         var itemName = String(candidate.name || '').trim();
         var subject = itemName ? '「' + itemName + '」' : '所选物品';
         if (receipt.kind === 'choiceOpen') return '配给候选已保留，请选择一套；稍后也可从“自选礼包”继续。';
-        if (receipt.kind === 'choiceSelect') return '配给已领取：技能直接授予，主动技能请在技能页装备；物品优先入包，溢出部分留在暂存。';
+        if (receipt.kind === 'choiceSelect') {
+            // 内联结果（简单结果不开揭晓页）：消息本身携带授予内容。
+            return Reveal && typeof Reveal.formatGrantMessage === 'function' && Reveal.formatGrantMessage(details)
+                || '配给已领取：技能直接授予，主动技能请在技能页装备；物品优先入包，溢出部分留在暂存。';
+        }
         if (pending.command === 'open' || pending.command === 'openMany') {
             var summary = response.inboxSummary || receipt.inboxSummary || {};
             var inboxRemaining = finiteWhole(summary.remainingCount);
@@ -80,6 +86,7 @@
     function install(controller) {
         if (!controller) throw new Error('CharacterBuildItemUseChannel requires a controller');
         Choices.install(controller);
+        if (Reveal && typeof Reveal.install === 'function') Reveal.install(controller);
 
         controller._itemUseStateChanged = function(_, reason) {
             this._choiceRewardsStateChanged(this._itemUse.debugState().state);
@@ -194,8 +201,26 @@
                 return;
             }
             var receipt = response && response.receipt || response || {};
-            if (receipt.kind === 'choiceOpen') this._refreshChoiceRewards(receipt.offerId);
-            if (receipt.kind === 'choiceSelect') this._refreshChoiceRewards(null, true);
+            var inbox = this._itemUse && typeof this._itemUse.inbox === 'function'
+                ? this._itemUse.inbox() : null;
+            var revealResult = Reveal && typeof Reveal.fromSettlement === 'function'
+                ? Reveal.fromSettlement(this._choiceRewards && this._choiceRewards.snapshot,
+                    receipt, pending,
+                    response && response.inboxSummary || inbox && inbox.summary || null)
+                : null;
+            if (receipt.kind === 'choiceOpen') {
+                if (this._choiceRewards) this._choiceRewards.grantedNote = '';
+                this._refreshChoiceRewards(receipt.offerId);
+            }
+            if (receipt.kind === 'choiceSelect') {
+                this._refreshChoiceRewards(null, true);
+                // 配给是玩家在卡片上看着选的（完全知情）：commit 即收敛回来源上下文，
+                // 授予内容走内联状态条/toast，无待关闭层。
+                if (this._choiceRewards && this._choiceRewards.page
+                        && this._choiceRewards.page.isActive()) {
+                    this._choiceRewards.page.close('claimed');
+                }
+            }
             if (!pending || pending.command !== 'consume') {
                 this._itemUseResumeSelection = null;
             }
@@ -215,10 +240,16 @@
                 this._rewardAuthority = response.rewardAuthority;
             }
             this._candidateCache = null;
+            // 内容物揭晓受协议冻结面阻塞，且知情结果本就不需要独立页：
+            // 全部结算走内联消息（状态条/toast/配给页 grantedNote），无待关闭层。
+            // 揭晓层渲染器休眠待协议扩展（character-build-item-use-reveal.js 头部）。
+            if (receipt.kind === 'choiceSelect' && this._choiceRewards) {
+                this._choiceRewards.grantedNote = resultMessage(response, receipt, pending, revealResult);
+            }
             var refreshCallId = this._session.refreshSnapshot(function(snapshot, accepted) {
                 if (accepted && self._view) self._applySnapshot(snapshot.payload, false);
                 else self._itemUseResumeSelection = null;
-                var message = resultMessage(response, receipt, pending);
+                var message = resultMessage(response, receipt, pending, revealResult);
                 if (self._view && self._view.showItemUseResult) {
                     self._view.showItemUseResult(message);
                 }
@@ -228,7 +259,7 @@
             });
             if (!refreshCallId) {
                 this._itemUseResumeSelection = null;
-                var fallbackMessage = resultMessage(response, receipt, pending);
+                var fallbackMessage = resultMessage(response, receipt, pending, revealResult);
                 if (this._view && this._view.showItemUseResult) {
                     this._view.showItemUseResult(fallbackMessage);
                 }

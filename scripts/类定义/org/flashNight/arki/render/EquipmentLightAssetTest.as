@@ -44,6 +44,7 @@ class org.flashNight.arki.render.EquipmentLightAssetTest {
         EquipmentLightBridge.disconnect();
         cases = [
             {name:"XM1014战术版", slot:"长枪", mode:"长枪", linkage:"枪-长枪-XM1014战术版", swf:"../flashswf/arts/things.swf"},
+            {name:"特勤霰弹枪", slot:"长枪", mode:"长枪", linkage:"枪-长枪-Codex-特勤霰弹枪", swf:"../flashswf/arts/new/Codex专用素材.swf", lampPort:true},
             {name:"战术版莫斯伯格590", slot:"手枪", mode:"双枪", linkage:"枪-手枪-战术版莫斯伯格590", swf:"../flashswf/arts/things切割.swf"},
             {name:"M4A1", slot:"长枪", mode:"长枪", linkage:"枪-长枪-M4A1", swf:"../flashswf/arts/things.swf", plugin:true}
         ];
@@ -139,8 +140,17 @@ class org.flashNight.arki.render.EquipmentLightAssetTest {
         check(beam._alpha == alpha && beam._rotation == rotation && beam._xscale == scale && beam.getBounds(beam).xMax == bounds.xMax, "authored geometry and transparency preserved");
         configure(true); tick();
         check(count() == 2, "two kinds coexist in complete native snapshot");
-        var origin:Object = {x:0,y:0}; gun.枪口位置.localToGlobal(origin); world.globalToLocal(origin);
-        check(Math.abs(builtin.equipmentLight.x - origin.x) < 0.01 && Math.abs(builtin.equipmentLight.y - origin.y) < 0.01, "missing handlight port falls back to real muzzle");
+        var port:MovieClip = spec.lampPort ? gun.手电口 : gun.枪口位置;
+        var origin:Object = {x:0,y:0}; port.localToGlobal(origin); world.globalToLocal(origin);
+        check(Math.abs(builtin.equipmentLight.x - origin.x) < 0.01 && Math.abs(builtin.equipmentLight.y - origin.y) < 0.01, "authored lamp port or real muzzle matches native origin");
+        if (spec.lampPort) {
+            check(port._parent === gun && Math.abs(port._x - 255.25) < 0.01 && Math.abs(port._y + 7.75) < 0.01, "sheriff lamp uses approved lens registration");
+            gun._xscale = -80; gun._rotation = 25; tick();
+            origin = {x:0,y:0}; port.localToGlobal(origin); world.globalToLocal(origin);
+            check(Math.abs(builtin.equipmentLight.x - origin.x) < 0.01 && Math.abs(builtin.equipmentLight.y - origin.y) < 0.01, "sheriff mirrored rotated lamp stays at lens");
+            check(EquipmentLightDefense.getActiveBonus(actor) == 0, "built-in sheriff lamp gives no flashlight plugin defense");
+            gun._xscale = 100; gun._rotation = 0; tick();
+        }
         actor.状态 = spec.mode + "换弹"; tick();
         check(count() == 2 && beam._visible, "reload keeps both lights");
         configure(false); tick();

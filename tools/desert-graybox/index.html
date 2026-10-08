@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>荒漠灰模 空间审阅</title>
+  <link rel="stylesheet" href="/tools/desert-graybox/viewer.css">
+</head>
+<body>
+  <header>
+    <div><p class="eyebrow">空间设计 · 灰模阶段</p><h1>荒漠与城市北缘</h1></div>
+    <div class="scale-tabs" aria-label="查看尺度">
+      <button type="button" data-mode="region" aria-pressed="true">区域总览</button>
+      <button type="button" data-mode="city" aria-pressed="false">城市接合</button>
+      <button type="button" data-mode="base" aria-pressed="false">基地近区</button>
+    </div>
+  </header>
+  <main>
+    <section class="view-column" aria-label="三维灰模">
+      <div class="toolbar">
+        <label>表现<select id="appearance"><option value="study">风格样板</option><option value="graybox">空间灰模</option></select></label>
+        <label>镜头<select id="projection"><option value="orthographic">倾斜正交</option><option value="perspective">弱透视</option></select></label>
+        <button id="overview" type="button">游戏构图</button>
+        <button id="whole" type="button">完整沙盘</button>
+        <button id="north" type="button">北上俯视</button>
+        <label class="check"><input id="labels" type="checkbox" checked>地点标签</label>
+        <label class="check"><input id="traffic" type="checkbox" checked>交通线</label>
+        <label class="check"><input id="water" type="checkbox">水系参考线</label>
+        <a class="compare-link" href="/tools/desert-graybox/compare.html" target="_blank" rel="noopener">四图对照 ↗</a>
+      </div>
+      <div id="viewport" data-state="loading">
+        <div id="local-bar" hidden>
+          <button id="return-view" type="button">返回总览</button>
+          <span id="local-title"></span>
+          <button id="local-whole" type="button" hidden>地点全景</button>
+          <span class="local-paging"><button id="previous-place" type="button" aria-label="上一关卡">‹</button><span id="local-index"></span><button id="next-place" type="button" aria-label="下一关卡">›</button></span>
+        </div>
+        <div id="label-layer" aria-label="地图地点"></div>
+        <svg id="label-lines" aria-hidden="true"></svg>
+        <div id="local-locator" hidden><span>区域位置 <span>北 ↑</span></span><svg id="locator-map" role="img" aria-label="当前地点在荒漠区域中的位置"></svg></div>
+        <div class="view-note"><span id="scale-note">正在准备灰模</span><span id="north-note">北向随镜头投影</span></div>
+        <div id="loading" role="status">正在构建地形与场景体量…</div>
+      </div>
+      <div class="view-footer"><span>点击地点放大 · 拖动旋转 · 滚轮缩放 · 右键平移</span><span id="view-status" aria-live="polite"></span></div>
+    </section>
+    <aside>
+      <label class="place-picker">关卡与地标<select id="place" aria-label="关卡与地标"></select></label>
+      <div class="selected-place">
+        <p class="eyebrow">当前地点</p><h2 id="place-name">A兵团基地</h2>
+        <p id="place-description"></p>
+        <p id="coordinates" class="coordinates"></p>
+        <button id="focus" type="button">放大地点</button>
+        <div id="subareas" hidden><p class="eyebrow">功能分区</p><div id="subarea-buttons"></div></div>
+      </div>
+      <div class="notes">
+        <p id="study-note">风格样板保留地理位置，试验地貌色域、建筑剪影与接地阴影。可切回空间灰模，比较同一镜头。</p>
+        <p>固定16:9游戏画幅，三层视图共用地理锚点。默认以关卡和地标取景，完整沙盘用于检查范围。</p>
+        <p>河道、旧渠与田界帮助解释地区用途。地下及可选供水线另作参考，不表示已定工程。</p>
+      </div>
+      <details><summary>灰模文件</summary>
+        <p>下载的是空间灰模，保留地点分组和原灰模高程夸张；本页风格样板的材质、阴影与剪影调整暂不写入GLB。</p>
+        <a id="model-link" href="/models/desert-region.glb" download>下载当前尺度 GLB</a>
+      </details>
+    </aside>
+  </main>
+  <script type="module" src="/tools/desert-graybox/viewer.mjs"></script>
+</body>
+</html>

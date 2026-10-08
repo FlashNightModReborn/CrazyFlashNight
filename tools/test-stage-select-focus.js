@@ -50,7 +50,7 @@ async function main() {
         const canvas=await page.locator('.stage-select-diorama-canvas').boundingBox();
         await page.mouse.move(canvas.x+canvas.width/2,canvas.y+100);await page.mouse.down();await page.mouse.move(canvas.x+canvas.width/2+65,canvas.y+130,{steps:12});await page.mouse.up();
         await page.locator('[data-camera="save"]').click();
-        const after=await page.evaluate(()=>JSON.parse(localStorage.getItem('cf7.stage-camera.base-gate.v1'))['stage_0_9']);
+        const after=await page.evaluate(()=>JSON.parse(localStorage.getItem(StageSelectDioramaData.presetKey))['stage_0_9']);
         assert.notDeepEqual(after.position,before.position);
         await page.locator('[data-camera="export"]').click();
         const exported=JSON.parse(await page.locator('.stage-camera-editor textarea').inputValue());assert.deepEqual(exported['stage_0_9'],after);

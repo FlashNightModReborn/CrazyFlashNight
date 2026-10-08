@@ -344,6 +344,7 @@ namespace CF7Launcher.Tasks
             bool oldSfx = _userPrefs.SfxEnabled;
             bool oldAmbient = _userPrefs.AmbientEnabled;
             bool oldTutorials = _userPrefs.TutorialsAutoOpen;
+            bool oldReducedPresentation = _userPrefs.ReducedPresentation;
             double oldScale = _userPrefs.UiFontScale;
             string oldMap = _userPrefs.MapDisplayPreference;
             string oldHitNumberMode = _userPrefs.HitNumberMode;
@@ -362,6 +363,7 @@ namespace CF7Launcher.Tasks
                 _userPrefs.SfxEnabled = oldSfx;
                 _userPrefs.AmbientEnabled = oldAmbient;
                 _userPrefs.TutorialsAutoOpen = oldTutorials;
+                _userPrefs.ReducedPresentation = oldReducedPresentation;
                 _userPrefs.UiFontScale = oldScale;
                 _userPrefs.MapDisplayPreference = oldMap;
                 _userPrefs.HitNumberMode = oldHitNumberMode;
@@ -475,6 +477,11 @@ namespace CF7Launcher.Tasks
                     _userPrefs.TutorialsAutoOpen = value.Value<bool>();
                     normalized = new JValue(_userPrefs.TutorialsAutoOpen);
                     return true;
+                case "reducedPresentation":
+                    if (value == null || value.Type != JTokenType.Boolean) return false;
+                    _userPrefs.ReducedPresentation = value.Value<bool>();
+                    normalized = new JValue(_userPrefs.ReducedPresentation);
+                    return true;
                 case "uiFontScale":
                     double scale;
                     if (!TryFiniteNumber(value, out scale)
@@ -520,6 +527,7 @@ namespace CF7Launcher.Tasks
                 ["sfxEnabled"] = _userPrefs.SfxEnabled,
                 ["ambientEnabled"] = _userPrefs.AmbientEnabled,
                 ["tutorialsAutoOpen"] = _userPrefs.TutorialsAutoOpen,
+                ["reducedPresentation"] = _userPrefs.ReducedPresentation,
                 ["uiFontScale"] = _userPrefs.UiFontScale,
                 ["mapDisplayPreference"] =
                     UserPrefs.NormalizeMapDisplayPreference(_userPrefs.MapDisplayPreference),

@@ -45,6 +45,12 @@ namespace CF7Launcher.Guardian.WorldCompositor
             var start=new ProcessStartInfo(exe) {UseShellExecute=false,CreateNoWindow=true,RedirectStandardOutput=true};
             foreach(var arg in new[]{source.ToInt64().ToString(CultureInfo.InvariantCulture),Environment.ProcessId.ToString(CultureInfo.InvariantCulture),owner.ToInt64().ToString(CultureInfo.InvariantCulture),bridge._cookie.ToString(CultureInfo.InvariantCulture)})start.ArgumentList.Add(arg);
             try {
+                try {
+                    uint sourceThread=GetWindowThreadProcessId(source,out uint sourcePid);
+                    GetWindowThreadProcessId(owner,out uint ownerPid);
+                    LogManager.Log(FormatStartupObservation(source,owner,GetAncestor(source,2),sourcePid,sourceThread,ownerPid,Environment.ProcessId,bridge._cookie)
+                        +" brokerPath=\""+exe+"\"");
+                } catch { } // Observation must not grant or prevent broker admission.
                 bridge._broker=Process.Start(start);
                 _=bridge.ReadCompletion();
                 string ready=await bridge._ready.Task.WaitAsync(TimeSpan.FromSeconds(12));
@@ -61,15 +67,28 @@ namespace CF7Launcher.Guardian.WorldCompositor
         }
         private async Task ReadCompletion()
         {
-            int code=-1;
+            int? code=null;
+            bool stdoutObserved=false,readyLineObserved=false;
             try {
-                string line;while((line=await _broker.StandardOutput.ReadLineAsync())!=null) { _ready.TrySetResult(line);LogManager.Log("event=world_pointer_bridge "+line); }
+                string line;while((line=await _broker.StandardOutput.ReadLineAsync())!=null) {
+                    stdoutObserved=true;
+                    readyLineObserved|=line.StartsWith("READY ",StringComparison.Ordinal);
+                    _ready.TrySetResult(line);LogManager.Log("event=world_pointer_bridge "+line);
+                }
                 _ready.TrySetException(new InvalidOperationException("Broker exited before READY"));
                 await _broker.WaitForExitAsync();code=_broker.ExitCode;
             } catch(Exception e) {LogManager.Log("event=world_pointer_bridge_log "+e.Message);}
             finally { _ready.TrySetException(new InvalidOperationException("Broker stream ended"));
                 try {await _broker.WaitForExitAsync();code=_broker.ExitCode;}catch {}
-                lock(_gate)_ended=true;_exit.TrySetResult(code);}
+                try {LogManager.Log(FormatExitObservation(_cookie,_broker.Id,code,stdoutObserved,readyLineObserved));}catch {}
+                lock(_gate)_ended=true;_exit.TrySetResult(code ?? -1);}
+        }
+        internal static string FormatStartupObservation(IntPtr source,IntPtr owner,IntPtr root,uint sourcePid,uint sourceThread,uint ownerPid,int hostPid,ulong session)
+            => FormattableString.Invariant($"event=world_pointer_bridge_start session={session} hostPid={hostPid} source=0x{source.ToInt64():X} sourcePid={sourcePid} sourceTid={sourceThread} owner=0x{owner.ToInt64():X} ownerPid={ownerPid} sourceRoot=0x{root.ToInt64():X} observationOnly=1");
+        internal static string FormatExitObservation(ulong session,int brokerPid,int? code,bool stdoutObserved,bool readyLineObserved)
+        {
+            string exitCode=code?.ToString(CultureInfo.InvariantCulture) ?? "unknown";
+            return FormattableString.Invariant($"event=world_pointer_bridge_exit session={session} brokerPid={brokerPid} exitCode={exitCode} stdoutObserved={(stdoutObserved ? 1 : 0)} readyLineObserved={(readyLineObserved ? 1 : 0)}");
         }
         public PointerPostStatus Send(in PointerPacket packet,Point point)
         {
@@ -145,6 +164,7 @@ namespace CF7Launcher.Guardian.WorldCompositor
         [DllImport("user32.dll",CharSet=CharSet.Unicode)] private static extern uint RegisterWindowMessage(string name);
         [DllImport("user32.dll")] private static extern bool PostMessage(IntPtr hwnd,uint message,IntPtr wp,IntPtr lp);
         [DllImport("user32.dll")] private static extern uint GetWindowThreadProcessId(IntPtr hwnd,out uint pid);
+        [DllImport("user32.dll")] private static extern IntPtr GetAncestor(IntPtr hwnd,uint flags);
         [DllImport("user32.dll",SetLastError=true)] private static extern IntPtr SendMessageTimeout(IntPtr hwnd,uint message,IntPtr wp,IntPtr lp,uint flags,uint timeout,out IntPtr result);
     }
     // Interlocked operations on aligned shared memory; _gate also prevents

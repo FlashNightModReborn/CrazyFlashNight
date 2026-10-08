@@ -20,7 +20,30 @@ if (!PanelRuntime || typeof PanelRuntime.PanelRequestMux !== "function"
 const CATEGORY_SET = new Set([
   "铁枪会", "属性武器", "烹饪", "化学生产", "武器合成", "饰品合成",
   "进阶防具", "基础防具", "公社防具", "黑白契约", "插件合成", "大学装备",
+  "书中配给", "调酒",
 ]);
+const TECHNIQUE_SHAKES = new Set(["light", "hard", "none"]);
+const TECHNIQUE_KARMOTRINE = new Set(["required", "optional", "none"]);
+
+function validTechniqueChoice(value, phase) {
+  exactKeys(value, ["shake", "ice", "aged", "karmotrine"], [],
+    "technique_keys_invalid", phase);
+  if (!TECHNIQUE_SHAKES.has(value.shake) || typeof value.ice !== "boolean"
+      || typeof value.aged !== "boolean" || typeof value.karmotrine !== "boolean") {
+    fail("technique_invalid", phase, "technique choice is malformed");
+  }
+  return value;
+}
+
+function validDeclaredTechnique(value, phase) {
+  exactKeys(value, ["shake", "ice", "aged", "karmotrine"], [],
+    "technique_keys_invalid", phase);
+  if (!TECHNIQUE_SHAKES.has(value.shake) || typeof value.ice !== "boolean"
+      || typeof value.aged !== "boolean" || !TECHNIQUE_KARMOTRINE.has(value.karmotrine)) {
+    fail("declared_technique_invalid", phase, "declared technique is malformed");
+  }
+  return value;
+}
 const FIRST_COMMANDS = Object.freeze([
   "snapshot", "preview", "preview",
   "snapshot", "snapshot", "preview",
@@ -195,12 +218,15 @@ function validateRequest(message, owner, category, phase) {
       fail("snapshot_selector_invalid", phase, "snapshot selector is not exact");
     }
   } else if (message.cmd === "preview") {
+    const previewKeys = ["category", "craftCount", "recipeIndex", "v"]
+      .concat(own(payload, "technique") ? ["technique"] : []);
     if (canonical(Object.keys(payload).sort())
-        !== canonical(["category", "craftCount", "recipeIndex", "v"])
+        !== canonical(previewKeys)
         || !Number.isInteger(payload.recipeIndex) || payload.recipeIndex < 0 || payload.recipeIndex > 999
         || !Number.isInteger(payload.craftCount) || payload.craftCount < 1 || payload.craftCount > 99) {
       fail("preview_selector_invalid", phase, "preview selector is not exact");
     }
+    if (own(payload, "technique")) validTechniqueChoice(payload.technique, phase);
   } else if (message.cmd === "commit") {
     if (canonical(Object.keys(payload).sort())
         !== canonical(["category", "expectedCraftTokenRef", "v"])
@@ -215,8 +241,15 @@ function validateRequest(message, owner, category, phase) {
 function validateRecipe(value, phase) {
   exactKeys(value, ["recipeId", "recipeIndex", "title", "output", "owned",
     "plannedCrafts", "baseCost", "materialCount", "batchEligible", "canCraftOne",
-    "availability"], [],
+    "availability"], ["book", "infrastructure", "technique"],
   "recipe_projection_keys_invalid", phase);
+  if (own(value, "book") && !boundedText(value.book, 256, true)
+      || own(value, "technique")) {
+    if (own(value, "book") && !boundedText(value.book, 256, true)) {
+      fail("recipe_projection_invalid", phase, "recipe book is malformed");
+    }
+    if (own(value, "technique")) validDeclaredTechnique(value.technique, phase);
+  }
   if (!RECIPE_ID_RE.test(String(value.recipeId || ""))
       || !integerIn(value.recipeIndex, 0, 999)
       || !boundedText(value.title, 256, false)
@@ -466,7 +499,15 @@ function validateOutputReceipt(value, acceptedPlan, crafted, phase) {
 
 function validateAcceptedPlan(value, response, outputField, phase) {
   exactKeys(value, ["category", "recipeIndex", "craftCount", "output", "materials",
-    "outputDelivery", "outputPrototype", "cost"], [], "accepted_plan_keys_invalid", phase);
+    "outputDelivery", "outputPrototype", "cost"], ["infrastructure", "technique"],
+    "accepted_plan_keys_invalid", phase);
+  if (own(value, "technique")) {
+    validTechniqueChoice(value.technique, phase);
+    if (!same(value.technique, response.technique)) {
+      fail("accepted_plan_technique_mismatch", phase,
+        "accepted plan technique differs from the preview echo");
+    }
+  }
   if (value.category !== response.category || value.recipeIndex !== response.recipeIndex
       || value.craftCount !== response.craftCount || !same(value.output, response[outputField])) {
     fail("accepted_plan_selector_invalid", phase,
@@ -514,8 +555,16 @@ function validateResponse(message, request, phase) {
       "success", "v", "category", "recipeIndex", "craftCount", "batchEligible",
       "maxCraftCount", "output", "materials", "cost", "balance", "skills",
       "levelAllowed", "enoughMaterials", "enoughMoney", "enoughKpoints", "enoughSpace",
-      "canCommit", "blockingError", "outputDelivery", "craftTokenRef", "acceptedPlan"], [],
+      "canCommit", "blockingError", "outputDelivery", "craftTokenRef", "acceptedPlan"],
+    ["infrastructure", "technique"],
     "preview_response_keys_invalid", phase);
+    if (own(message, "technique")) {
+      validTechniqueChoice(message.technique, phase);
+      if (!same(message.technique, request.payload.technique)) {
+        fail("preview_technique_echo_invalid", phase,
+          "preview technique does not exactly echo the request choice");
+      }
+    }
     if (message.category !== request.payload.category
         || message.recipeIndex !== request.payload.recipeIndex
         || message.craftCount !== request.payload.craftCount

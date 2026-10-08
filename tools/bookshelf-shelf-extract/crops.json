@@ -1,0 +1,26 @@
+{
+  "schema": "bookshelf-shelf-extract-crops/1",
+  "note": "crop rects are in SWF stage coordinates (shelf 500x460, cf1 400x300); the extractor multiplies by its capture SCALE",
+  "sets": [
+    {
+      "source": "shelf-label-空.png",
+      "rects": {
+        "spine-babylon": {"x": 122.3, "y": 55, "w": 9.4, "h": 53.4},
+        "spine-ribbon": {"x": 132.3, "y": 55, "w": 9.4, "h": 53.4},
+        "spine-metal": {"x": 122.3, "y": 120, "w": 9.4, "h": 55},
+        "spine-guardian": {"x": 132.3, "y": 120, "w": 9.4, "h": 55},
+        "spine-dust": {"x": 122.3, "y": 186.7, "w": 9.4, "h": 53.4},
+        "spine-apocalypse": {"x": 132.3, "y": 186.7, "w": 9.4, "h": 53.4},
+        "shelf-interior": {"x": 300, "y": 56.7, "w": 73.4, "h": 50},
+        "shelf-side": {"x": 85, "y": 33.3, "w": 33.4, "h": 400},
+        "shelf-top": {"x": 120, "y": 15, "w": 300, "h": 36.7}
+      }
+    },
+    {
+      "source": "cf1-title-b.png",
+      "rects": {
+        "cf1-logo": {"x": 75, "y": 11.7, "w": 253.4, "h": 225}
+      }
+    }
+  ]
+}
