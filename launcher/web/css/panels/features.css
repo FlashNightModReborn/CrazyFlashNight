@@ -3692,10 +3692,10 @@ html.perf-low-effects .map-panel-close-btn::before {
 .intel-h5-token-info { color: #0070c8; font-weight: 800; }
 .intel-h5-token-success { color: #177c25; font-weight: 800; }
 .intel-h5-token-muted { color: #666; }
-.intel-h5-token-material-basic { color: #006600; font-weight: 800; }
-.intel-h5-token-material-mid { color: #996600; font-weight: 800; }
-.intel-h5-token-material-high { color: #007acc; font-weight: 800; }
-.intel-h5-token-material-rare { color: #8a35c9; font-weight: 800; }
+.intel-h5-token-material-basic { color: var(--wb-grade-low); font-weight: 800; }
+.intel-h5-token-material-mid { color: var(--wb-grade-medium); font-weight: 800; }
+.intel-h5-token-material-high { color: var(--wb-grade-high); font-weight: 800; }
+.intel-h5-token-material-rare { color: var(--wb-grade-special-on-paper); font-weight: 800; }
 .intel-h5-token-biohazard { color: #9a1111; font-weight: 900; }
 .intel-h5-token-faction-army { color: #203d8a; font-weight: 900; }
 .intel-h5-token-faction-noah { color: #006f83; font-weight: 900; }

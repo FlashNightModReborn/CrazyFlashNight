@@ -2276,6 +2276,8 @@ class Program
                 nativeGuidanceTask.NotifyHelpAvailabilityChanged();
             if (key == "sfxEnabled" || key == "ambientEnabled")
                 webOverlay.PushAudioPrefs();
+            if (key == "reducedPresentation")
+                webOverlay.PushPresentationPrefs();
             if (key == "mapDisplayPreference" && rightContext != null
                 && value != null && value.Type == JTokenType.String)
             {

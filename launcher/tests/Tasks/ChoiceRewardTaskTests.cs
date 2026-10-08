@@ -149,6 +149,30 @@ namespace CF7Launcher.Tests.Tasks
             Assert.Equal("idle", h.Task.WriteState); Assert.True(h.Web[h.Web.Count - 1].Value<bool>("success"));
             Assert.False(h.Task.TryArmRewardNavigation(Panel, 1));
         }
+        [Theory]
+        [InlineData("low", true)]
+        [InlineData("medium", true)]
+        [InlineData("high", true)]
+        [InlineData("special", true)]
+        [InlineData("legendary", false)]
+        [InlineData("", false)]
+        public void OptionGradeIsAnOptionalClosedEnum(string grade, bool expected)
+        {
+            using var h = new Harness(); h.Task.HandleWebRequest("stashChoices", Request("stashChoices"));
+            var data = Snapshot();
+            data["offers"][0]["options"][0]["grade"] = grade;
+            h.Reply("stashChoices", data);
+            Assert.Equal(expected, h.Web[h.Web.Count - 1].Value<bool>("success"));
+        }
+        [Fact]
+        public void OptionGradeRejectsNonStringAndStaysOptional()
+        {
+            using var h = new Harness(); h.Task.HandleWebRequest("stashChoices", Request("stashChoices"));
+            var data = Snapshot();
+            data["offers"][0]["options"][1]["grade"] = 7;
+            h.Reply("stashChoices", data);
+            Assert.False(h.Web[h.Web.Count - 1].Value<bool>("success"));
+        }
         [Fact]
         public void WrongSelectedIdentityRequiresExactQueryEvenAfterRead()
         {

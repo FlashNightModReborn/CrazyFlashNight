@@ -907,7 +907,14 @@ var moduleThresholds = {
     'launcher/web/modules/character-build/character-build-item-use.js':360,
     'launcher/web/modules/character-build/character-build-stash-transport.js':180,
     // 2026-08-31 奖励/物品使用迁移的有限增长：保留单一通道事务与选择恢复语义，避免制造碎片化加载依赖。
-    'launcher/web/modules/character-build/character-build-item-use-channel.js':260,
+    // 2026-10-08 结果分级接线（shouldReveal 门 + 内联授予消息 + grantedNote 生命周期）：通道再放宽至 280。
+    'launcher/web/modules/character-build/character-build-item-use-channel.js':280,
+    // 2026-10-08 档级着色/技能图标行/富 tooltip 通道统一后的实测基线；自选卡视图继续承载候选呈现。
+    'launcher/web/modules/character-build/character-build-choice-rewards.js':420,
+    // 2026-10-07 档级着色与开箱揭晓层：揭晓网格/聚合为独立模块；档级词典守护副本单文件。
+    // 2026-10-08 技能行图标/描述与结果分级判定（shouldReveal/formatGrantMessage）并入本模块。
+    'launcher/web/modules/character-build/character-build-item-use-reveal.js':340,
+    'launcher/web/modules/grade-presentation.js':80,
     'launcher/web/modules/character-build/character-build-candidate-channel.js':360,
     'launcher/web/modules/character-build-session.js':740,
     // openMany 按钮生命周期拆出：view 回落至 760 阈值内，本模块只承载按钮同步/构造。

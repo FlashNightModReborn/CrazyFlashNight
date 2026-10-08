@@ -516,6 +516,7 @@ function(SessionModule, ViewModule, TuningModule, Mutation, Pose, Projection,
         this._renderer = null;
         this._rendererState = null;
         this._destroyChoiceRewards();
+        if (this._destroyItemUseReveal) this._destroyItemUseReveal();
         if (this._view) this._view.destroy();
         this._view = null;
         return true;

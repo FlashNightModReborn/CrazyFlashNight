@@ -289,7 +289,7 @@ candidate 与正式入口旅程按 [#runtime](../agentsDoc/testing-guide.md#runt
 记录区分探针线程调度、UI 排队、鼠标钩子分发、光标绘制及同步窗口调用，每个窗口最多 64 条尖刺，汇总保留省略数量与峰值。
 不记录鼠标移动坐标，不注入输入；耗时不是显示器实际呈现延迟。细节见 [U12 记录](../docs/U12过场Web迁移与人力验收-2026-10-01.md)。
 <!-- launcher-user-prefs-registry:start -->
-当前字段为 `lastPlayedSlot`、`introEnabled`、`sfxEnabled`、`ambientEnabled`、`tutorialsAutoOpen`、`uiFontScale`、`suppressedHighDpiWarningRaw`、`mapDisplayPreference`、`hitNumberMode` 和 `hitNumberWorldRowLimit`。
+当前字段为 `lastPlayedSlot`、`introEnabled`、`sfxEnabled`、`ambientEnabled`、`tutorialsAutoOpen`、`uiFontScale`、`suppressedHighDpiWarningRaw`、`mapDisplayPreference`、`hitNumberMode`、`hitNumberWorldRowLimit` 和 `reducedPresentation`。
 <!-- launcher-user-prefs-registry:end -->
 欢迎页的公开 Web 写入必须经过 `config_set` 白名单；游戏设置使用绑定实例的 `settings.host_set` 域白名单，Host-only 字段不得因前端同名而获得写权限。
 `tutorialsAutoOpen` 默认开启，作用于全部自动教程与玩家槽位。自动教程底栏的“关闭教程弹窗”或“设置 → 本机与 Web → 自动打开教程页面”都保存同一本机偏好；失败回滚。关闭后触发教程改为一次刘海屏通知提醒，手动帮助与场景操作图示继续可用。

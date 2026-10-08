@@ -343,7 +343,7 @@
     position:relative; min-height:50px; padding:5px; display:grid; grid-template-columns:38px minmax(0,1fr); align-items:center; gap:6px;
     border:1px solid #333b40; border-radius:0; background:#11171b; color:#cdd4d8; text-align:left; cursor:pointer;
 }
-.equipment-tuning-candidate.available { border-left:3px solid var(--equipment-mod-grade-color,#b78938); }
+.equipment-tuning-candidate.available { border-left:3px solid var(--equipment-mod-grade-color,var(--wb-grade-unknown)); }
 .equipment-tuning-candidate.is-intent-pending,
 .equipment-tuning-installed-entry.is-intent-pending > .equipment-tuning-installed-card,
 .equipment-tuning-installed-entry.is-intent-pending > .equipment-tuning-installed-empty {

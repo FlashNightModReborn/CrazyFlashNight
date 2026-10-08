@@ -3,17 +3,30 @@
     'use strict';
     var components = typeof module !== 'undefined' && module.exports
         ? require('../workbench-components.js') : root.WorkbenchComponents;
-    var api = factory(components);
+    var grades = typeof module !== 'undefined' && module.exports
+        ? require('../grade-presentation.js') : root && root.GradePresentation;
+    var api = factory(components, grades);
     if (typeof module !== 'undefined' && module.exports) module.exports = api;
     if (root) root.CharacterBuildChoiceRewards = api;
-})(typeof window !== 'undefined' ? window : globalThis, function(Components) {
+})(typeof window !== 'undefined' ? window : globalThis, function(Components, Grades) {
     'use strict';
+    if (!Grades || typeof Grades.normalize !== 'function') {
+        throw new Error('character-build-choice-rewards.js requires grade-presentation.js');
+    }
     function element(document, tag, text, className) {
         var node = document.createElement(tag);
         if (text) node.textContent = text;
         if (className) node.className = className;
         if (tag === 'button') node.type = 'button';
         return node;
+    }
+    function escapeHtml(value) {
+        return String(value == null ? '' : value)
+            .replace(/&/g, '&amp;').replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+    }
+    function plainToHtml(value) {
+        return escapeHtml(value).replace(/\r?\n/g, '<br>');
     }
     function ChoiceView(options) {
         var self = this;
@@ -68,9 +81,13 @@
         this.page.root.appendChild(footer);
         this.updateState('idle');
     }
+    ChoiceView.prototype.syncPresentationMode = function() {
+        this.page.root.classList.toggle('reduced-presentation', Grades.isReducedPresentation());
+    };
     ChoiceView.prototype.open = function() {
         var shell = this.options.view.root.closest('.inventory-workbench-panel');
         var header = shell && shell.querySelector('.workbench-header');
+        this.syncPresentationMode();
         this.renderCards();
         return this.page.open({opener:this.button, initialFocus:this.back,
             underlay:header ? [this.options.view._underlay, header] : this.options.view._underlay});
@@ -128,7 +145,18 @@
             var card = element(self.document, 'button', '', 'character-build-choice-card');
             card.setAttribute('data-choice-option', option.optionId);
             card.setAttribute('aria-pressed', String(self.selected === option.optionId));
-            card.appendChild(element(self.document, 'strong', option.title));
+            var grade = Grades.normalize(option.grade);
+            var gradeLabel = Grades.label(grade);
+            if (grade !== 'unknown') {
+                card.classList.add('grade-' + grade);
+                card.style.setProperty('--mod-grade-color', Grades.color(grade));
+            }
+            var title = element(self.document, 'strong', option.title);
+            if (gradeLabel) {
+                title.appendChild(element(self.document, 'span', gradeLabel,
+                    'character-build-choice-grade'));
+            }
+            card.appendChild(title);
             card.appendChild(element(self.document, 'span', option.description, 'character-build-choice-description'));
             var items = element(self.document, 'span', '', 'character-build-choice-items');
             option.items.forEach(function(item) {
@@ -145,21 +173,40 @@
                 copy.appendChild(element(self.document, 'small', '数量 ' + item.quantity + (item.level > 0 ? ' · 需要等级 ' + item.level : '')));
                 row.append(icon, copy); items.appendChild(row);
                 if (self.icons) self.icons.load(function() { Promise.resolve().then(paintIcon); });
-                if (self.tooltipScope && item.details) self.bindPreview(row, item.displayName, item.details);
+                if (self.tooltipScope) self.bindItemPreview(row, item);
 
             });
             (option.skills || []).forEach(function(skill) {
-                var row = element(self.document, 'span', '', 'character-build-choice-item-copy');
-                row.appendChild(element(self.document, 'strong', skill.skillKey + ' · ' + skill.level + '级'));
-                row.appendChild(element(self.document, 'small', skill.currentLevel ? '现有 ' + skill.currentLevel + '级 → ' + skill.level + '级' : '直接学会，不消耗SP'));
-                items.appendChild(row);
-                if (self.tooltipScope) self.bindPreview(row, skill.skillKey, skill.description || option.description);
+                var row = element(self.document, 'span', '', 'character-build-choice-item');
+                var icon = element(self.document, 'span', '', 'character-build-choice-icon');
+                icon.setAttribute('aria-hidden', 'true');
+                function paintSkillIcon() {
+                    if (self.destroyed || !row.isConnected) return;
+                    // 与物品同一图标管线：iconKey 缺省回退 skillKey（图标清单按技能名烘焙）。
+                    icon.innerHTML = self.icons.html(skill.skillKey, 'item-icon');
+                    if (!icon.firstChild) icon.textContent = '·';
+                }
+                var copy = element(self.document, 'span', '', 'character-build-choice-item-copy');
+                copy.appendChild(element(self.document, 'strong', skill.skillKey + ' · ' + skill.level + '级'));
+                copy.appendChild(element(self.document, 'small', skill.currentLevel ? '现有 ' + skill.currentLevel + '级 → ' + skill.level + '级' : '直接学会，不消耗SP'));
+                // 技能注释可见性优先（速通场景悬停成本高）：完整描述留在 tooltip，卡内放可见小字行。
+                if (skill.description) {
+                    copy.appendChild(element(self.document, 'small', skill.description,
+                        'character-build-choice-skill-description'));
+                }
+                row.append(icon, copy); items.appendChild(row);
+                if (self.icons) self.icons.load(function() { Promise.resolve().then(paintSkillIcon); });
+                if (self.tooltipScope) self.bindSkillPreview(row, skill, option.description);
             });
             card.appendChild(items);
-            card.appendChild(element(self.document, 'strong', option.kCost ? option.kCost + ' K点' : '免费配给'));
+            var price = element(self.document, 'strong', option.kCost ? option.kCost + ' K点' : '免费配给',
+                'character-build-choice-price');
+            price.setAttribute('data-paid', option.kCost ? 'true' : 'false');
+            card.appendChild(price);
             card.onclick = function() {
                 if (self.state !== 'idle' || self.snapshot.pendingOperationId) return;
                 self.selected = option.optionId;
+                self.grantedNote = '';
                 self.cards.querySelectorAll('[data-choice-option]').forEach(function(node) {
                     node.setAttribute('aria-pressed', String(node.getAttribute('data-choice-option') === self.selected));
                 });
@@ -167,19 +214,73 @@
             };
             self.cards.appendChild(card);
             if (focusOption === option.optionId) card.focus({preventScroll:true});
-            if (self.tooltipScope) self.bindPreview(card, option.title, option.description + '\n\n'
-                + option.items.map(function(item) { return item.details || item.displayName + ' ×' + item.quantity; }).join('\n\n'));
+            if (self.tooltipScope) self.bindPreview(card, option);
         });
         this.cards.scrollTop = scrollTop;
         this.updateState(this.state);
     };
-    ChoiceView.prototype.bindPreview = function(node, title, details) {
-        var doc = this.document;
+    ChoiceView.prototype.bindItemPreview = function(row, item) {
+        // 与背包候选对比同一富 tooltip 通道：kshop-tt 富模板 + dynamicIconHtml 大图，
+        // 内容由快照冻结的 icon/details 直供，无新增读取。
+        if (!this.tooltipScope || !this.tooltip
+                || typeof this.tooltip.buildItemRichHtml !== 'function') return;
+        var tooltip = this.tooltip;
+        this.tooltipScope.bindAsync(row, {key:item.itemName + '\n' + item.quantity + '\n' + (item.details || ''),
+            item:item,
+            renderBasic:function() {
+                var iconKey = item.icon || item.itemName;
+                var intro = '<div class="kshop-tt-header"><b>' + escapeHtml(item.displayName) + '</b></div>'
+                    + '<span class="kshop-tt-dim">数量</span> ' + escapeHtml(item.quantity)
+                    + (item.level > 0 ? '<br><span class="kshop-tt-dim">等级</span> ' + escapeHtml(item.level) : '');
+                return tooltip.buildItemRichHtml({
+                    iconHtml:tooltip.dynamicIconHtml(iconKey),
+                    iconUrl:typeof tooltip.staticIconUrl === 'function' ? tooltip.staticIconUrl(iconKey) : '',
+                    introWebHTML:intro,
+                    descHTML:plainToHtml(item.details || ''),
+                    rootClass:'kshop-tt-rich-context character-build-choice-tt-context',
+                    layoutType:'wide'
+                });
+            }});
+    };
+    ChoiceView.prototype.bindSkillPreview = function(row, skill, fallbackDescription) {
+        // 与技能页同一样式：skills-tooltip 模板 + 技能图标 + 注释。
+        if (!this.tooltipScope || !this.tooltip
+                || typeof this.tooltip.buildItemRichHtml !== 'function') return;
+        var tooltip = this.tooltip;
+        this.tooltipScope.bindAsync(row, {key:'skill\n' + skill.skillKey + '\n' + skill.level,
+            item:skill,
+            renderBasic:function() {
+                var intro = '<div class="skills-tt-title"><b>' + escapeHtml(skill.skillKey) + '</b></div>'
+                    + '<div class="skills-tt-meta">' + escapeHtml('奖励等级 Lv.' + skill.level
+                        + (skill.currentLevel ? ' · 现有 Lv.' + skill.currentLevel : '')) + '</div>';
+                return tooltip.buildItemRichHtml({
+                    iconHtml:tooltip.dynamicIconHtml(skill.skillKey, 'skills-tt-icon'),
+                    introWebHTML:intro,
+                    descHTML:plainToHtml(skill.description || fallbackDescription || ''),
+                    rootClass:'skills-tooltip',
+                    layoutType:'wide',
+                    splitMode:'auto'
+                });
+            }});
+    };
+    ChoiceView.prototype.bindPreview = function(node, option) {
+        // 卡级 tooltip 也走富模板（窄版）：标题+整包说明；逐项明细由行级富 tooltip 承担，
+        // 不再把全部物品细节堆进一个灰盒。
+        if (!this.tooltip || typeof this.tooltip.buildItemRichHtml !== 'function') return;
+        var tooltip = this.tooltip;
+        var title = option.title;
+        var details = option.description;
         this.tooltipScope.bindAsync(node, {key:title + '\n' + details, item:{},
             renderBasic:function() {
-                var box = element(doc, 'div', '', 'character-build-choice-tooltip');
-                box.appendChild(element(doc, 'strong', title)); box.appendChild(element(doc, 'p', details));
-                return box.outerHTML;
+                var intro = '<div class="kshop-tt-header"><b>' + escapeHtml(title) + '</b></div>'
+                    + '<span class="kshop-tt-dim">配给卡 · 点选后在底部确认</span>';
+                return tooltip.buildItemRichHtml({
+                    iconHtml:'',
+                    introWebHTML:intro,
+                    descHTML:plainToHtml(details || ''),
+                    rootClass:'kshop-tt-rich-context character-build-choice-tt-context',
+                    layoutType:'wide'
+                });
             }});
     };
     ChoiceView.prototype.updateState = function(state) {
@@ -206,10 +307,12 @@
         var affordable = !chosen || (chosen.kCost || 0) <= balance;
         this.confirm.disabled = this.confirm.disabled || !affordable || !!chosen && chosen.available === false;
         this.confirm.textContent = chosen ? (chosen.kCost ? '支付 ' + chosen.kCost + ' K点领取「' : '领取「') + chosen.title + '」' : '领取这套配给';
+        if (state !== 'idle') this.grantedNote = '';
         this.status.textContent = this.loadFailed ? '配给列表暂时无法读取，请刷新重试。'
             : state === 'write_pending' ? '正在保存你的选择…'
             : state === 'query_pending' ? '正在核对领取结果…'
             : state === 'needs_reconcile' || pending ? '上次操作结果待确认，请先核对。'
+            : this.grantedNote ? this.grantedNote
             : chosen && chosen.available === false ? '该技能已达到奖励等级，或当前状态不可领取，请改选其他配给。'
             : !affordable ? 'K点不足，可选择免费配给，或保留候选稍后领取。'
             : this.selected ? '确认后其余候选将放弃；只支付这一张卡片的价格。' : count ? '点选一套配给，再确认领取。' : '';

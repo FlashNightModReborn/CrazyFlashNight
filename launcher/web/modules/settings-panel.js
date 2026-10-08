@@ -594,6 +594,8 @@
         hgrid.appendChild(hostBoolean('ambientEnabled', 'Web 环境音'));
         hgrid.appendChild(annotate(hostBoolean('tutorialsAutoOpen', '自动打开教程页面'),
             '关闭后，所有自动教程改为顶部通知提醒；仍可从帮助页查看全部教程，场景操作图示继续显示。'));
+        hgrid.appendChild(annotate(hostBoolean('reducedPresentation', '精简演出'),
+            '开启后跳过漫画运镜与界面结构淡入等装饰性演出；开箱与配给结果始终同帧完整呈现，不影响任何操作耗时。'));
         hgrid.appendChild(hostSelect('mapDisplayPreference', '地图显示',
             [['auto','自动'],['off','关闭'],['compact','紧凑'],['expanded','展开']]));
         hgrid.appendChild(hostRange());

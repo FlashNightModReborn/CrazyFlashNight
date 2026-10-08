@@ -861,7 +861,7 @@ async function exerciseAuthorityRefresh(name,error){
   ok(name+' refreshes authoritative snapshot',__sent.filter(function(x){return x.cmd==='snapshot'}).length===snapshots+1&&!state.needsReconcile&&!state.needsRefresh&&state.previewCheckpoint&&state.previewCheckpoint.craftCount===before+1,JSON.stringify(state));
 }
 var pgOrganizerDeps=[
-  'modules/inventory-runtime.js','modules/inventory-ui.js','modules/inventory-workbench-config.js',
+  'modules/inventory-runtime.js','modules/grade-presentation.js','modules/inventory-ui.js','modules/inventory-workbench-config.js',
   'modules/inventory-workbench-quick-transfer.js','modules/inventory-workbench-owned-view.js',
   'modules/inventory-storage-workbench.js','modules/crafting-inventory-organizer.js'
 ];
@@ -986,9 +986,9 @@ async function runPgCraftCurrentCoverage(){
   var organizerState=typeof CraftingInventoryOrganizer!=='undefined'&&CraftingInventoryOrganizer.debugState
     ?CraftingInventoryOrganizer.debugState():null;
   var dependencyNodes=document.querySelectorAll('script[data-pg-craft-dependency]');
-  ok('PG current coverage loads the exact seven production organizer dependencies in order',
+  ok('PG current coverage loads the exact eight production organizer dependencies in order',
     mounted&&__organizerDeps.join('|')===pgOrganizerDeps.join('|')
-      &&__organizerLoadedDeps.join('|')===pgOrganizerDeps.join('|')&&dependencyNodes.length===7
+      &&__organizerLoadedDeps.join('|')===pgOrganizerDeps.join('|')&&dependencyNodes.length===8
       &&typeof CraftingInventoryOrganizer.debugState==='function'
       &&typeof InventoryStorageWorkbench.debugState==='function',
     JSON.stringify({requested:__organizerDeps,loaded:__organizerLoadedDeps,nodes:dependencyNodes.length}));
