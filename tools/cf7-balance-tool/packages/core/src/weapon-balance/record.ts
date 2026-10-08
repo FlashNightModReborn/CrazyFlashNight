@@ -34,6 +34,7 @@ export const WEAPON_BALANCE_BUDGET_CODES = [
   "acquisition.crafting",
   "acquisition.kshop",
   "acquisition.high-price",
+  "mechanic.early-unlock",
   "acquisition.unverified"
 ] as const;
 

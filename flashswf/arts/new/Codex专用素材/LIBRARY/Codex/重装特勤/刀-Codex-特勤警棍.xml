@@ -1,0 +1,234 @@
+<DOMSymbolItem xmlns="http://ns.adobe.com/xfl/2008/" name="Codex/重装特勤/刀-Codex-特勤警棍" linkageExportForAS="true" linkageExportInFirstFrame="true" linkageIdentifier="刀-Codex-特勤警棍">
+  <timeline>
+    <DOMTimeline name="刀-Codex-特勤警棍">
+      <layers>
+        <DOMLayer name="停止 / 外部生命周期按Q驱动" color="#4FFF4F">
+          <frames>
+            <DOMFrame index="0" duration="15" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[stop();]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="原短兵判定接口" color="#4FFF4F">
+          <frames>
+            <DOMFrame index="0" duration="15" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/重装特勤/接口/透明判定" symbolType="movie clip" name="刀口位置1">
+                  <matrix>
+                    <Matrix a="0.720000000" b="0.000000000" c="0.000000000" d="2.640000000" tx="-9.000000000" ty="-27.000000000"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="Codex/重装特勤/接口/透明判定" symbolType="movie clip" name="刀口位置2">
+                  <matrix>
+                    <Matrix a="0.720000000" b="0.000000000" c="0.000000000" d="2.640000000" tx="-9.000000000" ty="39.000000000"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="Codex/重装特勤/接口/透明判定" symbolType="movie clip" name="刀口位置3">
+                  <matrix>
+                    <Matrix a="0.720000000" b="0.000000000" c="0.000000000" d="2.640000000" tx="-9.000000000" ty="105.000000000"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Q变形 / 固定握点侧柄折回" color="#4FFF4F">
+          <frames>
+            <DOMFrame index="0" duration="1" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/重装特勤/武器/警棍变形/帧00" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="1.000000000" b="0.000000000" c="0.000000000" d="1.000000000" tx="0.000000000" ty="0.000000000"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="1" duration="1" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/重装特勤/武器/警棍变形/帧02" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="1.000000000" b="0.000000000" c="0.000000000" d="1.000000000" tx="0.000000000" ty="0.000000000"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="2" duration="1" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/重装特勤/武器/警棍变形/帧04" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="1.000000000" b="0.000000000" c="0.000000000" d="1.000000000" tx="0.000000000" ty="0.000000000"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="3" duration="1" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/重装特勤/武器/警棍变形/帧06" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="1.000000000" b="0.000000000" c="0.000000000" d="1.000000000" tx="0.000000000" ty="0.000000000"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="4" duration="1" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/重装特勤/武器/警棍变形/帧09" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="1.000000000" b="0.000000000" c="0.000000000" d="1.000000000" tx="0.000000000" ty="0.000000000"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="5" duration="1" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/重装特勤/武器/警棍变形/帧11" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="1.000000000" b="0.000000000" c="0.000000000" d="1.000000000" tx="0.000000000" ty="0.000000000"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="6" duration="1" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/重装特勤/武器/警棍变形/帧13" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="1.000000000" b="0.000000000" c="0.000000000" d="1.000000000" tx="0.000000000" ty="0.000000000"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="7" duration="1" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/重装特勤/武器/警棍变形/帧15" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="1.000000000" b="0.000000000" c="0.000000000" d="1.000000000" tx="0.000000000" ty="0.000000000"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="8" duration="1" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/重装特勤/武器/警棍变形/帧17" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="1.000000000" b="0.000000000" c="0.000000000" d="1.000000000" tx="0.000000000" ty="0.000000000"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="9" duration="1" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/重装特勤/武器/警棍变形/帧19" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="1.000000000" b="0.000000000" c="0.000000000" d="1.000000000" tx="0.000000000" ty="0.000000000"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="10" duration="1" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/重装特勤/武器/警棍变形/帧21" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="1.000000000" b="0.000000000" c="0.000000000" d="1.000000000" tx="0.000000000" ty="0.000000000"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="11" duration="1" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/重装特勤/武器/警棍变形/帧24" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="1.000000000" b="0.000000000" c="0.000000000" d="1.000000000" tx="0.000000000" ty="0.000000000"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="12" duration="1" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/重装特勤/武器/警棍变形/帧26" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="1.000000000" b="0.000000000" c="0.000000000" d="1.000000000" tx="0.000000000" ty="0.000000000"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="13" duration="1" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/重装特勤/武器/警棍变形/帧28" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="1.000000000" b="0.000000000" c="0.000000000" d="1.000000000" tx="0.000000000" ty="0.000000000"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="14" duration="1" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/重装特勤/武器/警棍变形/帧30" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="1.000000000" b="0.000000000" c="0.000000000" d="1.000000000" tx="0.000000000" ty="0.000000000"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

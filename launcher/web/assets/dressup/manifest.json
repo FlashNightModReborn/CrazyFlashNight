@@ -1,6 +1,6 @@
 {
   "schema": "cf7-dressup-manifest-v1",
-  "generatedAt": "2026-10-02T22:28:43+0800",
+  "generatedAt": "2026-10-08T20:27:17+0800",
   "genders": [
     "男",
     "女"
@@ -87,7 +87,8 @@
       "73": "发型-男式-茜红卷发",
       "74": "发型-男式-亚麻短发",
       "75": "发型-男式-苍紫短辫",
-      "76": "发型-女式-猫妖发型"
+      "76": "发型-女式-猫妖发型",
+      "77": "发型-男式-Codex-治安官"
     }
   },
   "femaleFallbacks": {
@@ -2198,6 +2199,23 @@
         "女": {
           "刀_装扮": "刀-应援棒",
           "刀1_装扮": "刀-应援棒"
+        }
+      },
+      "sourceFile": "武器_刀_短兵.xml"
+    },
+    "特勤警棍": {
+      "use": "刀",
+      "icon": "Codex-特勤警棍",
+      "dressup": "刀-Codex-特勤警棍",
+      "helmet": false,
+      "fieldsByGender": {
+        "男": {
+          "刀_装扮": "刀-Codex-特勤警棍",
+          "刀1_装扮": "刀-Codex-特勤警棍"
+        },
+        "女": {
+          "刀_装扮": "刀-Codex-特勤警棍",
+          "刀1_装扮": "刀-Codex-特勤警棍"
         }
       },
       "sourceFile": "武器_刀_短兵.xml"
@@ -5444,6 +5462,23 @@
         "女": {
           "手枪_装扮": "枪-手枪-大赦",
           "手枪2_装扮": "枪-手枪-大赦"
+        }
+      },
+      "sourceFile": "武器_手枪_大威力手枪.xml"
+    },
+    "特勤沙鹰": {
+      "use": "手枪",
+      "icon": "Codex-特勤沙鹰",
+      "dressup": "枪-手枪-Codex-特勤沙鹰",
+      "helmet": false,
+      "fieldsByGender": {
+        "男": {
+          "手枪_装扮": "枪-手枪-Codex-特勤沙鹰",
+          "手枪2_装扮": "枪-手枪-Codex-特勤沙鹰"
+        },
+        "女": {
+          "手枪_装扮": "枪-手枪-Codex-特勤沙鹰",
+          "手枪2_装扮": "枪-手枪-Codex-特勤沙鹰"
         }
       },
       "sourceFile": "武器_手枪_大威力手枪.xml"
@@ -9629,6 +9664,93 @@
       },
       "sourceFile": "武器_长枪_霰弹枪.xml"
     },
+    "特勤霰弹枪": {
+      "use": "长枪",
+      "icon": "Codex-特勤霰弹枪",
+      "dressup": "枪-长枪-Codex-特勤霰弹枪",
+      "helmet": false,
+      "fieldsByGender": {
+        "男": {
+          "长枪_装扮": "枪-长枪-Codex-特勤霰弹枪"
+        },
+        "女": {
+          "长枪_装扮": "枪-长枪-Codex-特勤霰弹枪"
+        }
+      },
+      "sourceFile": "武器_长枪_霰弹枪.xml"
+    },
+    "书中冲锋配给包": {
+      "use": "礼包",
+      "icon": "材料盒子",
+      "dressup": "",
+      "helmet": false,
+      "fieldsByGender": {},
+      "sourceFile": "消耗品_书中配给.xml"
+    },
+    "书中步榴配给包": {
+      "use": "礼包",
+      "icon": "材料盒子",
+      "dressup": "",
+      "helmet": false,
+      "fieldsByGender": {},
+      "sourceFile": "消耗品_书中配给.xml"
+    },
+    "书中霰弹配给包": {
+      "use": "礼包",
+      "icon": "材料盒子",
+      "dressup": "",
+      "helmet": false,
+      "fieldsByGender": {},
+      "sourceFile": "消耗品_书中配给.xml"
+    },
+    "书中军刀配给包": {
+      "use": "礼包",
+      "icon": "材料盒子",
+      "dressup": "",
+      "helmet": false,
+      "fieldsByGender": {},
+      "sourceFile": "消耗品_书中配给.xml"
+    },
+    "书中机枪配给包": {
+      "use": "礼包",
+      "icon": "材料盒子",
+      "dressup": "",
+      "helmet": false,
+      "fieldsByGender": {},
+      "sourceFile": "消耗品_书中配给.xml"
+    },
+    "书中榴弹配给包": {
+      "use": "礼包",
+      "icon": "材料盒子",
+      "dressup": "",
+      "helmet": false,
+      "fieldsByGender": {},
+      "sourceFile": "消耗品_书中配给.xml"
+    },
+    "书中镇暴配给包": {
+      "use": "礼包",
+      "icon": "材料盒子",
+      "dressup": "",
+      "helmet": false,
+      "fieldsByGender": {},
+      "sourceFile": "消耗品_书中配给.xml"
+    },
+    "书中双刀配给包": {
+      "use": "礼包",
+      "icon": "材料盒子",
+      "dressup": "",
+      "helmet": false,
+      "fieldsByGender": {},
+      "sourceFile": "消耗品_书中配给.xml"
+    },
+    "书中弹药补给包": {
+      "use": "礼包",
+      "icon": "材料盒子",
+      "dressup": "",
+      "helmet": false,
+      "fieldsByGender": {},
+      "sourceFile": "消耗品_书中配给.xml"
+    },
     "战场医疗包": {
       "use": "战场补给",
       "icon": "普通hp药剂",
@@ -10413,6 +10535,54 @@
       "helmet": false,
       "fieldsByGender": {},
       "sourceFile": "消耗品_礼包.xml"
+    },
+    "书中初阶自选配给包": {
+      "use": "礼包",
+      "icon": "材料盒子",
+      "dressup": "",
+      "helmet": false,
+      "fieldsByGender": {},
+      "sourceFile": "消耗品_自选配给.xml"
+    },
+    "书中进阶自选配给包": {
+      "use": "礼包",
+      "icon": "材料盒子",
+      "dressup": "",
+      "helmet": false,
+      "fieldsByGender": {},
+      "sourceFile": "消耗品_自选配给.xml"
+    },
+    "书中入学特训自选包": {
+      "use": "礼包",
+      "icon": "材料盒子",
+      "dressup": "",
+      "helmet": false,
+      "fieldsByGender": {},
+      "sourceFile": "消耗品_自选配给.xml"
+    },
+    "书中流派协同自选包": {
+      "use": "礼包",
+      "icon": "材料盒子",
+      "dressup": "",
+      "helmet": false,
+      "fieldsByGender": {},
+      "sourceFile": "消耗品_自选配给.xml"
+    },
+    "书中战技精进自选包": {
+      "use": "礼包",
+      "icon": "材料盒子",
+      "dressup": "",
+      "helmet": false,
+      "fieldsByGender": {},
+      "sourceFile": "消耗品_自选配给.xml"
+    },
+    "书中决战补给自选包": {
+      "use": "礼包",
+      "icon": "材料盒子",
+      "dressup": "",
+      "helmet": false,
+      "fieldsByGender": {},
+      "sourceFile": "消耗品_自选配给.xml"
     },
     "普通hp药剂": {
       "use": "药剂",
@@ -19014,6 +19184,95 @@
       },
       "sourceFile": "防具_20-39级.xml"
     },
+    "重装特勤头盔": {
+      "use": "头部装备",
+      "icon": "Codex-重装特勤头盔",
+      "dressup": "变装-Codex-重装特勤头盔",
+      "helmet": true,
+      "fieldsByGender": {
+        "男": {
+          "面具": "变装-Codex-重装特勤头盔"
+        },
+        "女": {
+          "面具": "变装-Codex-重装特勤头盔"
+        }
+      },
+      "sourceFile": "防具_20-39级.xml"
+    },
+    "重装特勤背心": {
+      "use": "上装装备",
+      "icon": "Codex-重装特勤背心",
+      "dressup": "变装-Codex-重装特勤",
+      "helmet": false,
+      "fieldsByGender": {
+        "男": {
+          "身体": "男变装-Codex-重装特勤身体",
+          "上臂": "男变装-Codex-重装特勤上臂",
+          "左下臂": "男变装-Codex-重装特勤左下臂",
+          "右下臂": "男变装-Codex-重装特勤右下臂"
+        },
+        "女": {
+          "身体": "女变装-Codex-重装特勤身体",
+          "上臂": "女变装-Codex-重装特勤上臂",
+          "左下臂": "女变装-Codex-重装特勤左下臂",
+          "右下臂": "女变装-Codex-重装特勤右下臂"
+        }
+      },
+      "sourceFile": "防具_20-39级.xml"
+    },
+    "重装特勤手套": {
+      "use": "手部装备",
+      "icon": "Codex-重装特勤手套",
+      "dressup": "变装-Codex-重装特勤",
+      "helmet": false,
+      "fieldsByGender": {
+        "男": {
+          "左手": "变装-Codex-重装特勤左手",
+          "右手": "变装-Codex-重装特勤右手"
+        },
+        "女": {
+          "左手": "变装-Codex-重装特勤左手",
+          "右手": "变装-Codex-重装特勤右手"
+        }
+      },
+      "sourceFile": "防具_20-39级.xml"
+    },
+    "重装特勤战术裤": {
+      "use": "下装装备",
+      "icon": "Codex-重装特勤战术裤",
+      "dressup": "变装-Codex-重装特勤",
+      "helmet": false,
+      "fieldsByGender": {
+        "男": {
+          "屁股": "男变装-Codex-重装特勤屁股",
+          "左大腿": "男变装-Codex-重装特勤左大腿",
+          "右大腿": "男变装-Codex-重装特勤右大腿",
+          "小腿": "男变装-Codex-重装特勤小腿"
+        },
+        "女": {
+          "屁股": "女变装-Codex-重装特勤屁股",
+          "左大腿": "女变装-Codex-重装特勤左大腿",
+          "右大腿": "女变装-Codex-重装特勤右大腿",
+          "小腿": "女变装-Codex-重装特勤小腿"
+        }
+      },
+      "sourceFile": "防具_20-39级.xml"
+    },
+    "重装特勤战靴": {
+      "use": "脚部装备",
+      "icon": "Codex-重装特勤战靴",
+      "dressup": "变装-Codex-重装特勤战靴",
+      "helmet": false,
+      "fieldsByGender": {
+        "男": {
+          "脚": "变装-Codex-重装特勤战靴"
+        },
+        "女": {
+          "脚": "变装-Codex-重装特勤战靴"
+        }
+      },
+      "sourceFile": "防具_20-39级.xml"
+    },
     "炎魔鞋": {
       "use": "脚部装备",
       "icon": "炎魔鞋",
@@ -22154,6 +22413,52 @@
           "height": 576,
           "originX": 94,
           "originY": 142.2
+        }
+      ]
+    },
+    "刀-Codex-特勤警棍": {
+      "covered": true,
+      "asset": {
+        "swf": "flashswf/arts/new/Codex专用素材.swf",
+        "symbolName": "Codex/重装特勤/刀-Codex-特勤警棍",
+        "conflict": false,
+        "matches": null
+      },
+      "uses": [
+        "刀"
+      ],
+      "items": [
+        "特勤警棍"
+      ],
+      "sourceFiles": [
+        "武器_刀_短兵.xml"
+      ],
+      "export": {
+        "format": "png",
+        "zoom": 2,
+        "fps": 24.0,
+        "frameCount": 1,
+        "uri": "skins/f9f8221f_1.png",
+        "width": 105,
+        "height": 396,
+        "playback": "static-first-frame",
+        "sourceFrameCount": 15,
+        "timelineScriptFrames": [
+          1
+        ],
+        "hasFrame1Stop": true,
+        "staticReason": "frame1_plain_stop",
+        "collapsedFrameCount": 14
+      },
+      "frames": [
+        {
+          "uri": "skins/f9f8221f_1.png",
+          "frame": 1,
+          "sourceFrame": 1,
+          "width": 105,
+          "height": 396,
+          "originX": 25.5,
+          "originY": 54.0
         }
       ]
     },
@@ -39390,6 +39695,46 @@
         }
       ]
     },
+    "发型-男式-Codex-治安官": {
+      "covered": true,
+      "asset": {
+        "swf": "flashswf/arts/new/Codex专用素材.swf",
+        "symbolName": "Codex/重装特勤/发型-男式-Codex-治安官",
+        "conflict": false,
+        "matches": null
+      },
+      "uses": [
+        "发型"
+      ],
+      "items": [
+        "发型-男式-Codex-治安官"
+      ],
+      "sourceFiles": [
+        "hairstyle.xml"
+      ],
+      "export": {
+        "format": "png",
+        "zoom": 2,
+        "fps": 24.0,
+        "frameCount": 1,
+        "uri": "skins/2e3d9923_1.png",
+        "width": 123,
+        "height": 170,
+        "playback": "static",
+        "sourceFrameCount": 1
+      },
+      "frames": [
+        {
+          "uri": "skins/2e3d9923_1.png",
+          "frame": 1,
+          "sourceFrame": 1,
+          "width": 123,
+          "height": 170,
+          "originX": 53.1,
+          "originY": 88.6
+        }
+      ]
+    },
     "发型-男式-bob自由爆炸头": {
       "covered": true,
       "asset": {
@@ -41347,6 +41692,166 @@
           "height": 187,
           "originX": 94.3,
           "originY": 111.9
+        }
+      ]
+    },
+    "变装-Codex-重装特勤右手": {
+      "covered": true,
+      "asset": {
+        "swf": "flashswf/arts/new/Codex专用素材.swf",
+        "symbolName": "Codex/重装特勤/变装-Codex-重装特勤右手",
+        "conflict": false,
+        "matches": null
+      },
+      "uses": [
+        "手部装备"
+      ],
+      "items": [
+        "重装特勤手套"
+      ],
+      "sourceFiles": [
+        "防具_20-39级.xml"
+      ],
+      "export": {
+        "format": "png",
+        "zoom": 2,
+        "fps": 24.0,
+        "frameCount": 1,
+        "uri": "skins/3533b083_1.png",
+        "width": 131,
+        "height": 93,
+        "playback": "static",
+        "sourceFrameCount": 1
+      },
+      "frames": [
+        {
+          "uri": "skins/3533b083_1.png",
+          "frame": 1,
+          "sourceFrame": 1,
+          "width": 131,
+          "height": 93,
+          "originX": 65.7,
+          "originY": 46.7
+        }
+      ]
+    },
+    "变装-Codex-重装特勤头盔": {
+      "covered": true,
+      "asset": {
+        "swf": "flashswf/arts/new/Codex专用素材.swf",
+        "symbolName": "Codex/重装特勤/变装-Codex-重装特勤头盔",
+        "conflict": false,
+        "matches": null
+      },
+      "uses": [
+        "头部装备"
+      ],
+      "items": [
+        "重装特勤头盔"
+      ],
+      "sourceFiles": [
+        "防具_20-39级.xml"
+      ],
+      "export": {
+        "format": "png",
+        "zoom": 2,
+        "fps": 24.0,
+        "frameCount": 1,
+        "uri": "skins/eacb813e_1.png",
+        "width": 157,
+        "height": 189,
+        "playback": "static",
+        "sourceFrameCount": 1
+      },
+      "frames": [
+        {
+          "uri": "skins/eacb813e_1.png",
+          "frame": 1,
+          "sourceFrame": 1,
+          "width": 157,
+          "height": 189,
+          "originX": 66.6,
+          "originY": 86.1
+        }
+      ]
+    },
+    "变装-Codex-重装特勤左手": {
+      "covered": true,
+      "asset": {
+        "swf": "flashswf/arts/new/Codex专用素材.swf",
+        "symbolName": "Codex/重装特勤/变装-Codex-重装特勤左手",
+        "conflict": false,
+        "matches": null
+      },
+      "uses": [
+        "手部装备"
+      ],
+      "items": [
+        "重装特勤手套"
+      ],
+      "sourceFiles": [
+        "防具_20-39级.xml"
+      ],
+      "export": {
+        "format": "png",
+        "zoom": 2,
+        "fps": 24.0,
+        "frameCount": 1,
+        "uri": "skins/c3a5e469_1.png",
+        "width": 126,
+        "height": 90,
+        "playback": "static",
+        "sourceFrameCount": 1
+      },
+      "frames": [
+        {
+          "uri": "skins/c3a5e469_1.png",
+          "frame": 1,
+          "sourceFrame": 1,
+          "width": 126,
+          "height": 90,
+          "originX": 63.3,
+          "originY": 45.4
+        }
+      ]
+    },
+    "变装-Codex-重装特勤战靴": {
+      "covered": true,
+      "asset": {
+        "swf": "flashswf/arts/new/Codex专用素材.swf",
+        "symbolName": "Codex/重装特勤/变装-Codex-重装特勤战靴",
+        "conflict": false,
+        "matches": null
+      },
+      "uses": [
+        "脚部装备"
+      ],
+      "items": [
+        "重装特勤战靴"
+      ],
+      "sourceFiles": [
+        "防具_20-39级.xml"
+      ],
+      "export": {
+        "format": "png",
+        "zoom": 2,
+        "fps": 24.0,
+        "frameCount": 1,
+        "uri": "skins/e5208b57_1.png",
+        "width": 177,
+        "height": 114,
+        "playback": "static",
+        "sourceFrameCount": 1
+      },
+      "frames": [
+        {
+          "uri": "skins/e5208b57_1.png",
+          "frame": 1,
+          "sourceFrame": 1,
+          "width": 177,
+          "height": 114,
+          "originX": 80.9,
+          "originY": 37.0
         }
       ]
     },
@@ -44378,6 +44883,326 @@
           "height": 352,
           "originX": 87.3,
           "originY": 160
+        }
+      ]
+    },
+    "女变装-Codex-重装特勤上臂": {
+      "covered": true,
+      "asset": {
+        "swf": "flashswf/arts/new/Codex专用素材.swf",
+        "symbolName": "Codex/重装特勤/女变装-Codex-重装特勤上臂",
+        "conflict": false,
+        "matches": null
+      },
+      "uses": [
+        "上装装备"
+      ],
+      "items": [
+        "重装特勤背心"
+      ],
+      "sourceFiles": [
+        "防具_20-39级.xml"
+      ],
+      "export": {
+        "format": "png",
+        "zoom": 2,
+        "fps": 24.0,
+        "frameCount": 1,
+        "uri": "skins/c1075f5f_1.png",
+        "width": 130,
+        "height": 289,
+        "playback": "static",
+        "sourceFrameCount": 1
+      },
+      "frames": [
+        {
+          "uri": "skins/c1075f5f_1.png",
+          "frame": 1,
+          "sourceFrame": 1,
+          "width": 130,
+          "height": 289,
+          "originX": 58.9,
+          "originY": 142.2
+        }
+      ]
+    },
+    "女变装-Codex-重装特勤右下臂": {
+      "covered": true,
+      "asset": {
+        "swf": "flashswf/arts/new/Codex专用素材.swf",
+        "symbolName": "Codex/重装特勤/女变装-Codex-重装特勤右下臂",
+        "conflict": false,
+        "matches": null
+      },
+      "uses": [
+        "上装装备"
+      ],
+      "items": [
+        "重装特勤背心"
+      ],
+      "sourceFiles": [
+        "防具_20-39级.xml"
+      ],
+      "export": {
+        "format": "png",
+        "zoom": 2,
+        "fps": 24.0,
+        "frameCount": 1,
+        "uri": "skins/675007fe_1.png",
+        "width": 95,
+        "height": 279,
+        "playback": "static",
+        "sourceFrameCount": 1
+      },
+      "frames": [
+        {
+          "uri": "skins/675007fe_1.png",
+          "frame": 1,
+          "sourceFrame": 1,
+          "width": 95,
+          "height": 279,
+          "originX": 49.0,
+          "originY": 138.6
+        }
+      ]
+    },
+    "女变装-Codex-重装特勤右大腿": {
+      "covered": true,
+      "asset": {
+        "swf": "flashswf/arts/new/Codex专用素材.swf",
+        "symbolName": "Codex/重装特勤/女变装-Codex-重装特勤右大腿",
+        "conflict": false,
+        "matches": null
+      },
+      "uses": [
+        "下装装备"
+      ],
+      "items": [
+        "重装特勤战术裤"
+      ],
+      "sourceFiles": [
+        "防具_20-39级.xml"
+      ],
+      "export": {
+        "format": "png",
+        "zoom": 2,
+        "fps": 24.0,
+        "frameCount": 1,
+        "uri": "skins/89a690cd_1.png",
+        "width": 158,
+        "height": 312,
+        "playback": "static",
+        "sourceFrameCount": 1
+      },
+      "frames": [
+        {
+          "uri": "skins/89a690cd_1.png",
+          "frame": 1,
+          "sourceFrame": 1,
+          "width": 158,
+          "height": 312,
+          "originX": 76.9,
+          "originY": 155.6
+        }
+      ]
+    },
+    "女变装-Codex-重装特勤小腿": {
+      "covered": true,
+      "asset": {
+        "swf": "flashswf/arts/new/Codex专用素材.swf",
+        "symbolName": "Codex/重装特勤/女变装-Codex-重装特勤小腿",
+        "conflict": false,
+        "matches": null
+      },
+      "uses": [
+        "下装装备"
+      ],
+      "items": [
+        "重装特勤战术裤"
+      ],
+      "sourceFiles": [
+        "防具_20-39级.xml"
+      ],
+      "export": {
+        "format": "png",
+        "zoom": 2,
+        "fps": 24.0,
+        "frameCount": 1,
+        "uri": "skins/67ab199a_1.png",
+        "width": 141,
+        "height": 321,
+        "playback": "static",
+        "sourceFrameCount": 1
+      },
+      "frames": [
+        {
+          "uri": "skins/67ab199a_1.png",
+          "frame": 1,
+          "sourceFrame": 1,
+          "width": 141,
+          "height": 321,
+          "originX": 57.0,
+          "originY": 154.5
+        }
+      ]
+    },
+    "女变装-Codex-重装特勤屁股": {
+      "covered": true,
+      "asset": {
+        "swf": "flashswf/arts/new/Codex专用素材.swf",
+        "symbolName": "Codex/重装特勤/女变装-Codex-重装特勤屁股",
+        "conflict": false,
+        "matches": null
+      },
+      "uses": [
+        "下装装备"
+      ],
+      "items": [
+        "重装特勤战术裤"
+      ],
+      "sourceFiles": [
+        "防具_20-39级.xml"
+      ],
+      "export": {
+        "format": "png",
+        "zoom": 2,
+        "fps": 24.0,
+        "frameCount": 1,
+        "uri": "skins/0f5aecbd_1.png",
+        "width": 227,
+        "height": 170,
+        "playback": "static",
+        "sourceFrameCount": 1
+      },
+      "frames": [
+        {
+          "uri": "skins/0f5aecbd_1.png",
+          "frame": 1,
+          "sourceFrame": 1,
+          "width": 227,
+          "height": 170,
+          "originX": 111.3,
+          "originY": 91.4
+        }
+      ]
+    },
+    "女变装-Codex-重装特勤左下臂": {
+      "covered": true,
+      "asset": {
+        "swf": "flashswf/arts/new/Codex专用素材.swf",
+        "symbolName": "Codex/重装特勤/女变装-Codex-重装特勤左下臂",
+        "conflict": false,
+        "matches": null
+      },
+      "uses": [
+        "上装装备"
+      ],
+      "items": [
+        "重装特勤背心"
+      ],
+      "sourceFiles": [
+        "防具_20-39级.xml"
+      ],
+      "export": {
+        "format": "png",
+        "zoom": 2,
+        "fps": 24.0,
+        "frameCount": 1,
+        "uri": "skins/049efc5f_1.png",
+        "width": 116,
+        "height": 286,
+        "playback": "static",
+        "sourceFrameCount": 1
+      },
+      "frames": [
+        {
+          "uri": "skins/049efc5f_1.png",
+          "frame": 1,
+          "sourceFrame": 1,
+          "width": 116,
+          "height": 286,
+          "originX": 74.5,
+          "originY": 138.4
+        }
+      ]
+    },
+    "女变装-Codex-重装特勤左大腿": {
+      "covered": true,
+      "asset": {
+        "swf": "flashswf/arts/new/Codex专用素材.swf",
+        "symbolName": "Codex/重装特勤/女变装-Codex-重装特勤左大腿",
+        "conflict": false,
+        "matches": null
+      },
+      "uses": [
+        "下装装备"
+      ],
+      "items": [
+        "重装特勤战术裤"
+      ],
+      "sourceFiles": [
+        "防具_20-39级.xml"
+      ],
+      "export": {
+        "format": "png",
+        "zoom": 2,
+        "fps": 24.0,
+        "frameCount": 1,
+        "uri": "skins/ea686b6c_1.png",
+        "width": 161,
+        "height": 311,
+        "playback": "static",
+        "sourceFrameCount": 1
+      },
+      "frames": [
+        {
+          "uri": "skins/ea686b6c_1.png",
+          "frame": 1,
+          "sourceFrame": 1,
+          "width": 161,
+          "height": 311,
+          "originX": 80.8,
+          "originY": 156.1
+        }
+      ]
+    },
+    "女变装-Codex-重装特勤身体": {
+      "covered": true,
+      "asset": {
+        "swf": "flashswf/arts/new/Codex专用素材.swf",
+        "symbolName": "Codex/重装特勤/女变装-Codex-重装特勤身体",
+        "conflict": false,
+        "matches": null
+      },
+      "uses": [
+        "上装装备"
+      ],
+      "items": [
+        "重装特勤背心"
+      ],
+      "sourceFiles": [
+        "防具_20-39级.xml"
+      ],
+      "export": {
+        "format": "png",
+        "zoom": 2,
+        "fps": 24.0,
+        "frameCount": 1,
+        "uri": "skins/928803f0_1.png",
+        "width": 285,
+        "height": 429,
+        "playback": "static",
+        "sourceFrameCount": 1
+      },
+      "frames": [
+        {
+          "uri": "skins/928803f0_1.png",
+          "frame": 1,
+          "sourceFrame": 1,
+          "width": 285,
+          "height": 429,
+          "originX": 146.8,
+          "originY": 216.6
         }
       ]
     },
@@ -79607,6 +80432,46 @@
         }
       ]
     },
+    "枪-手枪-Codex-特勤沙鹰": {
+      "covered": true,
+      "asset": {
+        "swf": "flashswf/arts/new/Codex专用素材.swf",
+        "symbolName": "Codex/重装特勤/枪-手枪-Codex-特勤沙鹰",
+        "conflict": false,
+        "matches": null
+      },
+      "uses": [
+        "手枪"
+      ],
+      "items": [
+        "特勤沙鹰"
+      ],
+      "sourceFiles": [
+        "武器_手枪_大威力手枪.xml"
+      ],
+      "export": {
+        "format": "png",
+        "zoom": 2,
+        "fps": 24.0,
+        "frameCount": 1,
+        "uri": "skins/915d75cd_1.png",
+        "width": 385,
+        "height": 183,
+        "playback": "static",
+        "sourceFrameCount": 1
+      },
+      "frames": [
+        {
+          "uri": "skins/915d75cd_1.png",
+          "frame": 1,
+          "sourceFrame": 1,
+          "width": 385,
+          "height": 183,
+          "originX": 58.2,
+          "originY": 89.8
+        }
+      ]
+    },
     "枪-手枪-Codex-钛合金P90": {
       "covered": true,
       "asset": {
@@ -85382,6 +86247,48 @@
           "height": 709,
           "originX": 635.6,
           "originY": 300.0
+        }
+      ]
+    },
+    "枪-长枪-Codex-特勤霰弹枪": {
+      "covered": true,
+      "asset": {
+        "swf": "flashswf/arts/new/Codex专用素材.swf",
+        "symbolName": "Codex/重装特勤/枪-长枪-Codex-特勤霰弹枪",
+        "conflict": false,
+        "matches": null
+      },
+      "uses": [
+        "长枪"
+      ],
+      "items": [
+        "特勤霰弹枪"
+      ],
+      "sourceFiles": [
+        "武器_长枪_霰弹枪.xml"
+      ],
+      "export": {
+        "format": "png",
+        "zoom": 2,
+        "fps": 24.0,
+        "frameCount": 1,
+        "uri": "skins/05428e57_neutral_1.png",
+        "width": 847,
+        "height": 162,
+        "playback": "static",
+        "sourceFrameCount": 1,
+        "hasClipActions": true,
+        "hiddenOnLoadCount": 1
+      },
+      "frames": [
+        {
+          "uri": "skins/05428e57_neutral_1.png",
+          "frame": 1,
+          "sourceFrame": 1,
+          "width": 847,
+          "height": 162,
+          "originX": 203.3,
+          "originY": 97.5
         }
       ]
     },
@@ -99299,6 +100206,326 @@
           "height": 173,
           "originX": 70,
           "originY": 88.8
+        }
+      ]
+    },
+    "男变装-Codex-重装特勤上臂": {
+      "covered": true,
+      "asset": {
+        "swf": "flashswf/arts/new/Codex专用素材.swf",
+        "symbolName": "Codex/重装特勤/男变装-Codex-重装特勤上臂",
+        "conflict": false,
+        "matches": null
+      },
+      "uses": [
+        "上装装备"
+      ],
+      "items": [
+        "重装特勤背心"
+      ],
+      "sourceFiles": [
+        "防具_20-39级.xml"
+      ],
+      "export": {
+        "format": "png",
+        "zoom": 2,
+        "fps": 24.0,
+        "frameCount": 1,
+        "uri": "skins/7e57757d_1.png",
+        "width": 130,
+        "height": 289,
+        "playback": "static",
+        "sourceFrameCount": 1
+      },
+      "frames": [
+        {
+          "uri": "skins/7e57757d_1.png",
+          "frame": 1,
+          "sourceFrame": 1,
+          "width": 130,
+          "height": 289,
+          "originX": 58.9,
+          "originY": 142.2
+        }
+      ]
+    },
+    "男变装-Codex-重装特勤右下臂": {
+      "covered": true,
+      "asset": {
+        "swf": "flashswf/arts/new/Codex专用素材.swf",
+        "symbolName": "Codex/重装特勤/男变装-Codex-重装特勤右下臂",
+        "conflict": false,
+        "matches": null
+      },
+      "uses": [
+        "上装装备"
+      ],
+      "items": [
+        "重装特勤背心"
+      ],
+      "sourceFiles": [
+        "防具_20-39级.xml"
+      ],
+      "export": {
+        "format": "png",
+        "zoom": 2,
+        "fps": 24.0,
+        "frameCount": 1,
+        "uri": "skins/58990813_1.png",
+        "width": 95,
+        "height": 279,
+        "playback": "static",
+        "sourceFrameCount": 1
+      },
+      "frames": [
+        {
+          "uri": "skins/58990813_1.png",
+          "frame": 1,
+          "sourceFrame": 1,
+          "width": 95,
+          "height": 279,
+          "originX": 49.0,
+          "originY": 138.6
+        }
+      ]
+    },
+    "男变装-Codex-重装特勤右大腿": {
+      "covered": true,
+      "asset": {
+        "swf": "flashswf/arts/new/Codex专用素材.swf",
+        "symbolName": "Codex/重装特勤/男变装-Codex-重装特勤右大腿",
+        "conflict": false,
+        "matches": null
+      },
+      "uses": [
+        "下装装备"
+      ],
+      "items": [
+        "重装特勤战术裤"
+      ],
+      "sourceFiles": [
+        "防具_20-39级.xml"
+      ],
+      "export": {
+        "format": "png",
+        "zoom": 2,
+        "fps": 24.0,
+        "frameCount": 1,
+        "uri": "skins/b66f9f20_1.png",
+        "width": 158,
+        "height": 312,
+        "playback": "static",
+        "sourceFrameCount": 1
+      },
+      "frames": [
+        {
+          "uri": "skins/b66f9f20_1.png",
+          "frame": 1,
+          "sourceFrame": 1,
+          "width": 158,
+          "height": 312,
+          "originX": 76.9,
+          "originY": 155.6
+        }
+      ]
+    },
+    "男变装-Codex-重装特勤小腿": {
+      "covered": true,
+      "asset": {
+        "swf": "flashswf/arts/new/Codex专用素材.swf",
+        "symbolName": "Codex/重装特勤/男变装-Codex-重装特勤小腿",
+        "conflict": false,
+        "matches": null
+      },
+      "uses": [
+        "下装装备"
+      ],
+      "items": [
+        "重装特勤战术裤"
+      ],
+      "sourceFiles": [
+        "防具_20-39级.xml"
+      ],
+      "export": {
+        "format": "png",
+        "zoom": 2,
+        "fps": 24.0,
+        "frameCount": 1,
+        "uri": "skins/d8fb33b8_1.png",
+        "width": 141,
+        "height": 321,
+        "playback": "static",
+        "sourceFrameCount": 1
+      },
+      "frames": [
+        {
+          "uri": "skins/d8fb33b8_1.png",
+          "frame": 1,
+          "sourceFrame": 1,
+          "width": 141,
+          "height": 321,
+          "originX": 57.0,
+          "originY": 154.5
+        }
+      ]
+    },
+    "男变装-Codex-重装特勤屁股": {
+      "covered": true,
+      "asset": {
+        "swf": "flashswf/arts/new/Codex专用素材.swf",
+        "symbolName": "Codex/重装特勤/男变装-Codex-重装特勤屁股",
+        "conflict": false,
+        "matches": null
+      },
+      "uses": [
+        "下装装备"
+      ],
+      "items": [
+        "重装特勤战术裤"
+      ],
+      "sourceFiles": [
+        "防具_20-39级.xml"
+      ],
+      "export": {
+        "format": "png",
+        "zoom": 2,
+        "fps": 24.0,
+        "frameCount": 1,
+        "uri": "skins/b00ac69f_1.png",
+        "width": 227,
+        "height": 170,
+        "playback": "static",
+        "sourceFrameCount": 1
+      },
+      "frames": [
+        {
+          "uri": "skins/b00ac69f_1.png",
+          "frame": 1,
+          "sourceFrame": 1,
+          "width": 227,
+          "height": 170,
+          "originX": 111.3,
+          "originY": 91.4
+        }
+      ]
+    },
+    "男变装-Codex-重装特勤左下臂": {
+      "covered": true,
+      "asset": {
+        "swf": "flashswf/arts/new/Codex专用素材.swf",
+        "symbolName": "Codex/重装特勤/男变装-Codex-重装特勤左下臂",
+        "conflict": false,
+        "matches": null
+      },
+      "uses": [
+        "上装装备"
+      ],
+      "items": [
+        "重装特勤背心"
+      ],
+      "sourceFiles": [
+        "防具_20-39级.xml"
+      ],
+      "export": {
+        "format": "png",
+        "zoom": 2,
+        "fps": 24.0,
+        "frameCount": 1,
+        "uri": "skins/3b57f3b2_1.png",
+        "width": 116,
+        "height": 286,
+        "playback": "static",
+        "sourceFrameCount": 1
+      },
+      "frames": [
+        {
+          "uri": "skins/3b57f3b2_1.png",
+          "frame": 1,
+          "sourceFrame": 1,
+          "width": 116,
+          "height": 286,
+          "originX": 74.5,
+          "originY": 138.4
+        }
+      ]
+    },
+    "男变装-Codex-重装特勤左大腿": {
+      "covered": true,
+      "asset": {
+        "swf": "flashswf/arts/new/Codex专用素材.swf",
+        "symbolName": "Codex/重装特勤/男变装-Codex-重装特勤左大腿",
+        "conflict": false,
+        "matches": null
+      },
+      "uses": [
+        "下装装备"
+      ],
+      "items": [
+        "重装特勤战术裤"
+      ],
+      "sourceFiles": [
+        "防具_20-39级.xml"
+      ],
+      "export": {
+        "format": "png",
+        "zoom": 2,
+        "fps": 24.0,
+        "frameCount": 1,
+        "uri": "skins/d5a16481_1.png",
+        "width": 161,
+        "height": 311,
+        "playback": "static",
+        "sourceFrameCount": 1
+      },
+      "frames": [
+        {
+          "uri": "skins/d5a16481_1.png",
+          "frame": 1,
+          "sourceFrame": 1,
+          "width": 161,
+          "height": 311,
+          "originX": 80.8,
+          "originY": 156.1
+        }
+      ]
+    },
+    "男变装-Codex-重装特勤身体": {
+      "covered": true,
+      "asset": {
+        "swf": "flashswf/arts/new/Codex专用素材.swf",
+        "symbolName": "Codex/重装特勤/男变装-Codex-重装特勤身体",
+        "conflict": false,
+        "matches": null
+      },
+      "uses": [
+        "上装装备"
+      ],
+      "items": [
+        "重装特勤背心"
+      ],
+      "sourceFiles": [
+        "防具_20-39级.xml"
+      ],
+      "export": {
+        "format": "png",
+        "zoom": 2,
+        "fps": 24.0,
+        "frameCount": 1,
+        "uri": "skins/2dd829d2_1.png",
+        "width": 285,
+        "height": 429,
+        "playback": "static",
+        "sourceFrameCount": 1
+      },
+      "frames": [
+        {
+          "uri": "skins/2dd829d2_1.png",
+          "frame": 1,
+          "sourceFrame": 1,
+          "width": 285,
+          "height": 429,
+          "originX": 146.8,
+          "originY": 216.6
         }
       ]
     },

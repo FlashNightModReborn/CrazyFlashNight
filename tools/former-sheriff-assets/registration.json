@@ -1,0 +1,135 @@
+{
+  "items": [
+    {
+      "name": "重装特勤头盔",
+      "file": "data/items/防具_20-39级.xml",
+      "level": "21",
+      "dressup": "变装-Codex-重装特勤头盔",
+      "artDonor": "特战队员头部装备"
+    },
+    {
+      "name": "重装特勤背心",
+      "file": "data/items/防具_20-39级.xml",
+      "level": "21",
+      "dressup": "变装-Codex-重装特勤",
+      "artDonor": "特战队员战术背心"
+    },
+    {
+      "name": "重装特勤手套",
+      "file": "data/items/防具_20-39级.xml",
+      "level": "21",
+      "dressup": "变装-Codex-重装特勤",
+      "artDonor": "特战队员手套"
+    },
+    {
+      "name": "重装特勤战术裤",
+      "file": "data/items/防具_20-39级.xml",
+      "level": "21",
+      "dressup": "变装-Codex-重装特勤",
+      "artDonor": "特战队员战术裤"
+    },
+    {
+      "name": "重装特勤战靴",
+      "file": "data/items/防具_20-39级.xml",
+      "level": "21",
+      "dressup": "变装-Codex-重装特勤战靴",
+      "artDonor": "特战队员鞋子"
+    },
+    {
+      "name": "特勤警棍",
+      "file": "data/items/武器_刀_短兵.xml",
+      "level": "21",
+      "dressup": "刀-Codex-特勤警棍",
+      "artDonor": "美式警棍"
+    },
+    {
+      "name": "特勤霰弹枪",
+      "file": "data/items/武器_长枪_霰弹枪.xml",
+      "level": "21",
+      "dressup": "枪-长枪-Codex-特勤霰弹枪",
+      "artDonor": "XM1014"
+    },
+    {
+      "name": "特勤沙鹰",
+      "file": "data/items/武器_手枪_大威力手枪.xml",
+      "level": "21",
+      "dressup": "枪-手枪-Codex-特勤沙鹰",
+      "artDonor": "Desert Eagle改装版"
+    }
+  ],
+  "hairId": 77,
+  "hairIdentifier": "发型-男式-Codex-治安官",
+  "deferred": [
+    "shield transformation",
+    "new skills and effects",
+    "real gameplay balance acceptance"
+  ],
+  "noInventoryGrant": true,
+  "armorDesignBrief": {
+    "status": "stats_and_acquisition_configured_gameplay_pending",
+    "level": 21,
+    "series": [
+      "防暴",
+      "特战",
+      "重装特勤"
+    ],
+    "weightLayers": 2,
+    "priceLayers": 0,
+    "budget": {
+      "highPrice": 1,
+      "crafting": 1
+    },
+    "rule": "tools/cf7-balance-tool/docs/armor-balance-rulebook.md",
+    "note": "2026-10-08：21级M=2，合成专属；E=0，防具无购买途径系数0.5。配方在公社防具，前置物由前治安官出售。",
+    "category": 0.5
+  },
+  "balanceModel": "tools/cf7-balance-tool/models/former-sheriff/model.ts",
+  "weaponDesignBrief": {
+    "level": 21,
+    "weightLayers": 2,
+    "priceLayers": 0,
+    "shotgunFlashlight": "active",
+    "pistolEarlyPenalty": 1,
+    "meleeModes": {
+      "status": "active",
+      "key": "weaponTransform",
+      "frames": 15,
+      "baton": {
+        "power": 220,
+        "conditionalDefence": 165,
+        "actionType": "棍棒"
+      },
+      "dagger": {
+        "power": 330,
+        "conditionalDefence": 0,
+        "actionType": "短兵"
+      }
+    },
+    "shotgunBuiltins": [
+      "八门金锁镇暴弹",
+      "战术手电",
+      "矢量偏转枪盾",
+      "汲丝虹吸匣"
+    ],
+    "shotgunModSlots": 0,
+    "pistolSingleHand": {
+      "power": 430,
+      "attackBonusType": "长枪",
+      "fixed": {
+        "level": 21,
+        "shootInterval": 250,
+        "magSize": 8,
+        "magPrice": 300,
+        "weight": 3,
+        "dualWieldFactor": 1,
+        "pierceFactor": 2,
+        "damageTypeFactor": 1,
+        "shotgunValue": 1,
+        "impact": 10,
+        "extraWeightLayers": 1,
+        "categoryFactor": 2
+      },
+      "residual": -0.004185906363438074
+    }
+  }
+}

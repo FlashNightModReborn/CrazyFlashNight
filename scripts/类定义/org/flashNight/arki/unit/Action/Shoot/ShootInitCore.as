@@ -447,12 +447,23 @@ class org.flashNight.arki.unit.Action.Shoot.ShootInitCore {
      * @param isRay       可选，是否为射线子弹（默认 false）
      * @return 返回计算后的最终威力（不含伤害加成）
      */
-    public static function calculateWeaponPower(parentRef:Object, weaponType:String, basePower:Number, isRay:Boolean):Number {
+    public static function calculateWeaponPower(parentRef:Object, weaponType:String, basePower:Number, isRay:Boolean, attackMode:String):Number {
         var passiveSkills:Object = parentRef.被动技能;
 
         // 预生成武器类型判断结果
         var isLongGun:Boolean = (weaponType == "长枪");
         var isPistol:Boolean = (weaponType == "手枪" || weaponType == "手枪2");
+        // The slot stays a pistol. Only the declared single-wield profile borrows
+        // long-gun firepower/bonuses; dual wield and off-hand shots stay ordinary.
+        if (attackMode == undefined) attackMode = parentRef.攻击模式;
+        var profile:Object = parentRef[weaponType + "属性"];
+        if (weaponType == "手枪" && attackMode == "手枪"
+            && profile.singleHandAttackBonusType == "长枪"
+            && isFinite(Number(profile.singleHandPowerBonus))) {
+            basePower += Number(profile.singleHandPowerBonus);
+            isLongGun = true;
+            isPistol = false;
+        }
 
         // 收集所有倍率加成（加法叠加）
         var totalMultiplier:Number = 0;
@@ -483,7 +494,7 @@ class org.flashNight.arki.unit.Action.Shoot.ShootInitCore {
 
         // 冲击连携被动技能的手枪火力加成：10%→20% 线性插值
         if (passiveSkills && passiveSkills.冲击连携 && passiveSkills.冲击连携.启用) {
-            if (weaponType == "手枪") {
+            if (isPistol && weaponType == "手枪") {
                 var impactLv:Number = passiveSkills.冲击连携.等级 || 1;
                 // 1级10%, 10级20%
                 var pistolBonus:Number = 0.10 + (impactLv - 1) * (0.20 - 0.10) / 9;

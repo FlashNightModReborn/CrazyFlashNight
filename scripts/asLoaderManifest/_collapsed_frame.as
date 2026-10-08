@@ -235,6 +235,7 @@ _root.__boot.f37_1 = function() {
     #include "../逻辑/装备函数/双面雷神.as"
 
     #include "../逻辑/装备函数/雷铁斩斧.as"
+    #include "../逻辑/装备函数/特勤警棍.as"
     #include "../逻辑/装备函数/牙狼剑.as"
 };
 _root.__boot.f37_2 = function() {

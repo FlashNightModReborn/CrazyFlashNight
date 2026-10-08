@@ -46,5 +46,30 @@
         <entry code="level-band.40plus-float" delta="1" ruleRef="ABR-LAYER-004" />
       </budgetBreakdown>
     </record>
+    <record itemName="重装特勤头盔" sourceFile="data/items/防具_20-39级.xml" weightLayers="2" priceLayers="0" category="0.5" damageTypeFactor="1" adoptedGoldPrice="27300" status="unresolved" note="21级，沿特战套配比；合成表成本D33低价合成1+高价1合并计2层。无成品购买途径，装备价格D22系数0.5、D27价格层0。每件折算成本33600；原战斗数值不变，实战验收待完成。">
+  <budgetBreakdown>
+    <entry code="acquisition.crafting" delta="2" ruleRef="ABR-LAYER-001" evidenceRef="data/crafting/公社防具.json#craft.commune-armor.011"/>
+  </budgetBreakdown>
+</record>
+    <record itemName="重装特勤背心" sourceFile="data/items/防具_20-39级.xml" weightLayers="2" priceLayers="0" category="0.5" damageTypeFactor="1" adoptedGoldPrice="27300" status="unresolved" note="21级，沿特战套配比；合成表成本D33低价合成1+高价1合并计2层。无成品购买途径，装备价格D22系数0.5、D27价格层0。每件折算成本33600；原战斗数值不变，实战验收待完成。">
+  <budgetBreakdown>
+    <entry code="acquisition.crafting" delta="2" ruleRef="ABR-LAYER-001" evidenceRef="data/crafting/公社防具.json#craft.commune-armor.012"/>
+  </budgetBreakdown>
+</record>
+    <record itemName="重装特勤手套" sourceFile="data/items/防具_20-39级.xml" weightLayers="2" priceLayers="0" category="0.5" damageTypeFactor="1" adoptedGoldPrice="27300" status="unresolved" note="21级，沿特战套配比；合成表成本D33低价合成1+高价1合并计2层。无成品购买途径，装备价格D22系数0.5、D27价格层0。每件折算成本33600；原战斗数值不变，实战验收待完成。">
+  <budgetBreakdown>
+    <entry code="acquisition.crafting" delta="2" ruleRef="ABR-LAYER-001" evidenceRef="data/crafting/公社防具.json#craft.commune-armor.013"/>
+  </budgetBreakdown>
+</record>
+    <record itemName="重装特勤战术裤" sourceFile="data/items/防具_20-39级.xml" weightLayers="2" priceLayers="0" category="0.5" damageTypeFactor="1" adoptedGoldPrice="27300" status="unresolved" note="21级，沿特战套配比；合成表成本D33低价合成1+高价1合并计2层。无成品购买途径，装备价格D22系数0.5、D27价格层0。每件折算成本33600；原战斗数值不变，实战验收待完成。">
+  <budgetBreakdown>
+    <entry code="acquisition.crafting" delta="2" ruleRef="ABR-LAYER-001" evidenceRef="data/crafting/公社防具.json#craft.commune-armor.014"/>
+  </budgetBreakdown>
+</record>
+    <record itemName="重装特勤战靴" sourceFile="data/items/防具_20-39级.xml" weightLayers="2" priceLayers="0" category="0.5" damageTypeFactor="1" adoptedGoldPrice="27300" status="unresolved" note="21级，沿特战套配比；合成表成本D33低价合成1+高价1合并计2层。无成品购买途径，装备价格D22系数0.5、D27价格层0。每件折算成本33600；原战斗数值不变，实战验收待完成。">
+  <budgetBreakdown>
+    <entry code="acquisition.crafting" delta="2" ruleRef="ABR-LAYER-001" evidenceRef="data/crafting/公社防具.json#craft.commune-armor.015"/>
+  </budgetBreakdown>
+</record>
   </records>
 </armorBalancePlan>

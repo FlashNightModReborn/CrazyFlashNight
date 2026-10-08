@@ -58,6 +58,8 @@ Host 在标准用户 Python 安装目录和 PATH 中寻找 `python.exe`，排除
 
 dressup 导出器增加可选 `--asset-map <索引快照>` 和 `--skip-basic-assets`。前者同时控制索引构建和实际导出查找；后者只跳过基础人体重复导出，仍导出所选装扮。原有调用的默认行为保持不变。
 
+单帧素材中仅有 `onClipEvent(load){this._visible=false;}`（或 `0`）的效果，在静态装扮中按初始隐藏状态导出，避免内置手电撑大装备预览。只改临时栅格化输入，并重算图片边界和注册点，正式 SWF 不变；存在其他脚本、条件分支或嵌套动画时不猜测。回归入口为 `python tools/test-dressup-initial-visibility.py` 与既有装扮完整性检查。
+
 ## 验证与本地体验
 
 快速事务测试：`python -X utf8 -B tools/asset-workbench/test_core.py`。覆盖选择幂等、来源/输出/候选漂移、并发排斥、技能和嵌套引用保留、完整撤回、写入失败和中断恢复。原生请求边界测试为 `AssetWorkbenchTaskTests`，使用 Launcher 的 SDK 解析器运行。
