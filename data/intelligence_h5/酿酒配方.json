@@ -1,0 +1,41 @@
+{
+  "schemaVersion": 1,
+  "itemName": "酿酒配方",
+  "skin": "blueprint",
+  "pages": [
+    {
+      "pageKey": "1",
+      "blocks": [
+        {
+          "type": "blueprint",
+          "title": [
+            {
+              "type": "text",
+              "text": "酿酒配方"
+            }
+          ],
+          "materials": [],
+          "steps": []
+        },
+        {
+          "type": "paragraph",
+          "content": [
+            {
+              "type": "text",
+              "text": "调酒师手记：五种基酒原料是全部酒谱的根基——艾德海德、布朗森提取物、粉末德尔塔、弗拉内吉与卡莫特林，其中卡莫特林只决定酒精度，按配方可放可不放。"
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "content": [
+            {
+              "type": "text",
+              "text": "调制方式必须与配方一致：摇和的力度、是否加冰、是否陈化，一步错了就不是那杯酒了。先从简单的「糖分冲击」练手。"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

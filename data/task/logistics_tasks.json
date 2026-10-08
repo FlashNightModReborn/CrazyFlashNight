@@ -141,6 +141,134 @@
             ],
             
             "chain":"后勤#7"
+        },
+        {
+            "id": 50008,
+            "title": "$SIDE_TITLE_50008",
+            "description": "$SIDE_DESCRIPTION_50008",
+
+            "get_requirements": [50007],
+            "get_conversation": "$SIDE_GET_50008",
+            "get_npc": "The Girl",
+
+            "finish_requirements": [],
+            "finish_conversation": "$SIDE_FINISH_50008",
+            "finish_npc": "调酒师",
+            "rewards": [
+                "金币#1000",
+                "经验值#1000"
+            ],
+            
+            "chain":"后勤#8"
+        },
+        {
+            "id": 50009,
+            "title": "$SIDE_TITLE_50009",
+            "description": "$SIDE_DESCRIPTION_50009",
+
+            "get_requirements": [50008],
+            "get_conversation": "$SIDE_GET_50009",
+            "get_npc": "调酒师",
+
+            "finish_requirements": [],
+            "conditions": [
+                {
+                    "type": "taskFinished",
+                    "params": {
+                        "taskId": 10016
+                    },
+                    "target": 1,
+                    "label": "完成支线「科学造物？」"
+                }
+            ],
+            "finish_conversation": "$SIDE_FINISH_50009",
+            "finish_npc": "幸存老兵",
+            "rewards": [
+                "金币#5000",
+                "经验值#2000"
+            ],
+            
+            "chain":"后勤#9"
+        },
+        {
+            "id": 50010,
+            "title": "$SIDE_TITLE_50010",
+            "description": "$SIDE_DESCRIPTION_50010",
+
+            "get_requirements": [50009],
+            "get_conversation": "$SIDE_GET_50010",
+            "get_npc": "幸存老兵",
+
+            "finish_requirements": [],
+            "finish_conversation": "$SIDE_FINISH_50010",
+            "finish_npc": "调酒师",
+            "rewards": [
+                "金币#5000",
+                "经验值#5000",
+                "酿酒配方#1"
+            ],
+            
+            "chain":"后勤#10"
+        },
+        {
+            "id": 50011,
+            "title": "$SIDE_TITLE_50011",
+            "description": "$SIDE_DESCRIPTION_50011",
+
+            "get_requirements": [50010],
+            "get_conversation": "$SIDE_GET_50011",
+            "get_npc": "调酒师",
+
+            "finish_requirements": [],
+            "finish_submit_items": [
+                "糖分冲击#1"
+            ],
+            "finish_conversation": "$SIDE_FINISH_50011",
+            "finish_npc": "酒保",
+            "rewards": [
+                "金币#2000",
+                "经验值#2000"
+            ],
+            
+            "chain":"后勤#11"
+        },
+        {
+            "id": 50012,
+            "title": "$SIDE_TITLE_50012",
+            "description": "$SIDE_DESCRIPTION_50012",
+
+            "get_requirements": [50011],
+            "get_conversation": "$SIDE_GET_50012",
+            "get_npc": "酒保",
+
+            "finish_requirements": [],
+            "finish_conversation": "$SIDE_FINISH_50012",
+            "finish_npc": "The Girl",
+            "rewards": [
+                "金币#2000",
+                "经验值#2000"
+            ],
+            
+            "chain":"后勤#12"
+        },
+        {
+            "id": 50013,
+            "title": "$SIDE_TITLE_50013",
+            "description": "$SIDE_DESCRIPTION_50013",
+
+            "get_requirements": [50012],
+            "get_conversation": "$SIDE_GET_50013",
+            "get_npc": "The Girl",
+
+            "finish_requirements": [],
+            "finish_conversation": "$SIDE_FINISH_50013",
+            "finish_npc": "Andy Law",
+            "rewards": [
+                "金币#2000",
+                "经验值#2000"
+            ],
+            
+            "chain":"后勤#13"
         }
     ]
 }
