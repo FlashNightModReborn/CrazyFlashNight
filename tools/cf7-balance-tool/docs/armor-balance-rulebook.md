@@ -62,13 +62,13 @@ plan 的 `priceLayers` 必须等于 `acquisition.high-price` 条目的 `delta`�
 
 | 条款 ID | 判据 |
 |---|---|
-| `ABR-PRICE-004` | **取整采用规则**：确认价（`adoptedGoldPrice`）可偏离推荐价取整，但必须落在 `[0.8, 1.25]` 带内，并在 plan `note` 记录偏差幅度、取整基准与确认人/确认日期。K 点实售价对公式值偏差不超过 5%，且必须有 K 点商店 JSON 的实售证据（`kpointEvidenceRef`）。 |
+| `ABR-PRICE-004` | **取整采用规则**：确认价（`adoptedGoldPrice`）可偏离推荐价取整，但必须落在 `[0.8, 1.25]` 带内，并在 plan `note` 记录偏差幅度、取整基准与确认人/确认日期。有 K 点获取层时必须提供 K 点实售价及商店 JSON 证据（`expectedKPointPrice` / `kpointEvidenceRef`），相对公式值偏差不超过 5%；无 K 点渠道时两字段可同时省略，不伪造实售价。提供时必须成对且仍验证。 |
 
 ## 5. 绿 / 黄 / 红分流
 
 | 条款 ID | 状态 | 判据 |
 |---|---|---|
-| `ABR-TRIAGE-001` | `confirmed`（绿） | M/E 层预算闭合且每层有可复查证据；数值与双价格硬门全部通过；note 记录取整偏差与确认人。 |
+| `ABR-TRIAGE-001` | `confirmed`（绿） | M/E 层预算闭合且每层有可复查证据；数值与适用的价格硬门全部通过；note 记录取整偏差与确认人。 |
 | `ABR-TRIAGE-002` | `unresolved`（黄） | 存在缺失、冲突或需设计取舍的证据（如获取路径层级不一致、套装部件偏差待量化）。保留审计记录并请求人类裁定；不得调系数伪装成绿。非 confirmed 记录同样落盘，但 check 仍须全链自洽。 |
 | `ABR-TRIAGE-003` | `invalid`（红） | 记录与客观配置或权威条款直接矛盾，或使用无依据系数凑目标。不得落盘为有效标定；先纠正证据链或数值。 |
 

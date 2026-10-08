@@ -24,7 +24,7 @@
           <DOMFolderItem name="发型" itemID="68423071-00000b24"/>
           <DOMFolderItem name="无AS链接" itemID="6690f257-00002761"/>
           <DOMFolderItem name="重复项目文件夹" itemID="67c95243-000006a0"/>
-     </folders>
+     <DOMFolderItem name="Codex" isExpanded="false"/><DOMFolderItem name="Codex/重装特勤" isExpanded="false"/><DOMFolderItem name="Codex/重装特勤/NPC" isExpanded="false"/><DOMFolderItem name="Codex/重装特勤/沙鹰原生" isExpanded="false"/><DOMFolderItem name="Codex/重装特勤/沙鹰原生/升级版沙鹰素材" isExpanded="false"/><DOMFolderItem name="Codex/重装特勤/部件" isExpanded="false"/></folders>
      <media>
           <DOMBitmapItem name="bitmap1.jpg" itemID="67c94ec9-00000267" sourceExternalFilepath="./LIBRARY/bitmap1.jpg" sourceLastImported="1741246153" externalFileCRC32="4039099594" externalFileSize="28662" quality="50" href="bitmap1.jpg" bitmapDataHRef="M 1 1699960314.dat" frameRight="6480" frameBottom="6000" isJPEG="true"/>
           <DOMBitmapItem name="bitmap36.png" itemID="67c94ec9-00000285" sourceExternalFilepath="./LIBRARY/bitmap36.png" sourceLastImported="1741246153" externalFileCRC32="2815534010" externalFileSize="2829" useImportedJPEGData="false" compressionType="lossless" originalCompressionType="lossless" quality="50" href="bitmap36.png" bitmapDataHRef="M 7 1699960314.dat" frameRight="1140" frameBottom="1480"/>
@@ -218,7 +218,7 @@
           <Include href="重复项目文件夹/元件 49.xml" itemIcon="1" loadImmediate="false" itemID="666185d0-0000033e" lastModified="1717667210"/>
           <Include href="重复项目文件夹/元件 50.xml" itemIcon="1" loadImmediate="false" itemID="666185d0-0000033c" lastModified="1717667260"/>
           <Include href="桌子.xml" loadImmediate="false" itemID="67c95429-000006f1" lastModified="1741247562"/>
-     </symbols>
+     <Include href="Codex/重装特勤/NPC/呼吸姿态0.xml" loadImmediate="false"/><Include href="Codex/重装特勤/NPC/呼吸姿态1.xml" loadImmediate="false"/><Include href="Codex/重装特勤/NPC/呼吸姿态2.xml" loadImmediate="false"/><Include href="Codex/重装特勤/NPC/呼吸姿态3.xml" loadImmediate="false"/><Include href="Codex/重装特勤/沙鹰原生/Symbol 3799.xml" loadImmediate="false"/><Include href="Codex/重装特勤/沙鹰原生/升级版沙鹰素材/文字.xml" loadImmediate="false"/><Include href="Codex/重装特勤/沙鹰原生/升级版沙鹰素材/沙鹰1.xml" loadImmediate="false"/><Include href="Codex/重装特勤/沙鹰原生/升级版沙鹰素材/沙鹰2.xml" loadImmediate="false"/><Include href="Codex/重装特勤/沙鹰原生/升级版沙鹰素材/沙鹰3.xml" loadImmediate="false"/><Include href="Codex/重装特勤/部件/NPC头部.xml" loadImmediate="false"/><Include href="Codex/重装特勤/部件/NPC警棍.xml" loadImmediate="false"/><Include href="Codex/重装特勤/部件/上臂.xml" loadImmediate="false"/><Include href="Codex/重装特勤/部件/原霰弹枪.xml" loadImmediate="false"/><Include href="Codex/重装特勤/部件/右下臂.xml" loadImmediate="false"/><Include href="Codex/重装特勤/部件/右大腿.xml" loadImmediate="false"/><Include href="Codex/重装特勤/部件/右手.xml" loadImmediate="false"/><Include href="Codex/重装特勤/部件/小腿.xml" loadImmediate="false"/><Include href="Codex/重装特勤/部件/屁股.xml" loadImmediate="false"/><Include href="Codex/重装特勤/部件/左下臂.xml" loadImmediate="false"/><Include href="Codex/重装特勤/部件/左大腿.xml" loadImmediate="false"/><Include href="Codex/重装特勤/部件/左手.xml" loadImmediate="false"/><Include href="Codex/重装特勤/部件/持物头盔.xml" loadImmediate="false"/><Include href="Codex/重装特勤/部件/脚.xml" loadImmediate="false"/><Include href="Codex/重装特勤/部件/身体.xml" loadImmediate="false"/></symbols>
      <timelines>
           <DOMTimeline name="Scene 1">
                <layers>

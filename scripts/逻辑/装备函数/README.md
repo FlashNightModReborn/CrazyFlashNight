@@ -155,7 +155,7 @@ _root.装备生命周期函数.XXX周期   = function(ref:Object, param:Object) 
 
 战术手电插件可声明 `evasionBonus` 与 `electricEvasionBonus`（现役为 20/5），电力资格经 `TagManager` 的真实结构标签计算。`EquipmentLightDefense` 只接受来源明确的手电插件；当前持用并开灯时，同单位取最高加成，经一个独立 BuffManager Pod 修正反向躲闪率，保留原装备基值与其他 Buff。收枪、死亡、换装、卸载均移除；native 能力、屏外裁剪和灯预算不改变该玩法加成。内置手电不因此获赠插件数值，仍使用 `independent` 分类。
 
-回归入口：`scripts/run-equipment-lifecycle-policy-tests.ps1`、`scripts/run-equipment-light-tests.ps1`、`scripts/run-equipment-light-defense-tests.ps1`；实际 XML、两把手电枪、M4A1 插件安装与生产接线跑 `scripts/run-equipment-light-asset-tests.ps1`，已接入的钛合金激光仍跑 `scripts/run-weapon-laser-tests.ps1`。
+回归入口：`scripts/run-equipment-lifecycle-policy-tests.ps1`、`scripts/run-equipment-light-tests.ps1`、`scripts/run-equipment-light-defense-tests.ps1`；实际 XML、三把手电枪（含特勤霰弹枪的独立灯口、镜像与旋转）、M4A1 插件安装与生产接线跑 `scripts/run-equipment-light-asset-tests.ps1`，已接入的钛合金激光仍跑 `scripts/run-weapon-laser-tests.ps1`。
 
 ### 4.3 防具与兵器自发光
 
@@ -299,6 +299,7 @@ AS2 原始贡献安全上限为 256，角色/用途组使用稳定 id，输出�
 - `铁枪.as` — 铁枪（长枪）· BFG/UNMAYKR 形态切换 + 枪身零件/轮盘旋转
 - `键盘镰刀.as` — 键盘镰刀（刀）· 镰刀/键盘双形态 + 空中跳砍追踪充能 + 多层子弹特效
 - `雷铁斩斧.as` — 雷铁斩斧 · 变形键切两种斧头形态 + 视觉帧动画
+- `特勤警棍.as` — 特勤警棍 · 沿用武器变形键（默认 Q），31 帧往返切换棍／匕首，棍形持用条件防御；控制器负责收纳、死亡、换装与同路径角色重建清理，回归入口 `scripts/run-sheriff-baton-tests.ps1`
 
 ### E. 长枪·弹匣 / 弹容显示同步
 - `AR57.as` — AR57步枪 · 弹匣容量与枪口动画帧同步（`MagazineFrameSync`）

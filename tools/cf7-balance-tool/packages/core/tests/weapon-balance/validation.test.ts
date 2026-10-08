@@ -112,6 +112,19 @@ function validateFixture(fixture = createFixture()) {
 }
 
 describe("validateWeaponBalanceRecord strict v1", () => {
+  it("records an early-unlock cost as exactly minus one layer", () => {
+    const fixture = createFixture("unresolved");
+    fixture.audit.budgetBreakdown = [
+      {code:"acquisition.crafting",delta:1,ruleRef:"WBR-WL-001"},
+      {code:"mechanic.early-unlock",delta:-1,ruleRef:"WBR-WL-008"}
+    ];
+    expect(validateFixture(fixture).valid).toBe(true);
+    fixture.audit.budgetBreakdown[1]!.delta = 1;
+    expect(validateFixture(fixture).issues.some(i => i.code === "early_unlock_budget_invalid")).toBe(true);
+    fixture.audit.budgetBreakdown[1]!.delta = -1;
+    fixture.audit.budgetBreakdown[1]!.ruleRef = "WBR-WL-001";
+    expect(validateFixture(fixture).issues.some(i => i.code === "early_unlock_budget_invalid")).toBe(true);
+  });
   it("accepts a closed confirmed ledger record without requiring a note", () => {
     const result = validateFixture();
     expect(result.valid).toBe(true);

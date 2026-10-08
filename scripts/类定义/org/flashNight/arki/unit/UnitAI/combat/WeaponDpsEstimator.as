@@ -151,7 +151,7 @@ class org.flashNight.arki.unit.UnitAI.combat.WeaponDpsEstimator {
         if (wd == null || wd.power == null) return 0;
 
         var capacity:Number = self[attrSrc + "弹匣容量"] || wd.capacity || 30;
-        var main:Number = gunMainPerShot(self, attrSrc);
+        var main:Number = gunMainPerShot(self, attrSrc, mode);
         var poison:Number = gunPoisonPerShot(self, attrSrc);
         var interval_s:Number = wd.interval / 1000;
         var reload_s:Number = reloadSecondsFor(self, attrSrc);
@@ -196,10 +196,10 @@ class org.flashNight.arki.unit.UnitAI.combat.WeaponDpsEstimator {
     }
 
     // 主伤每发（含 basePow + 伤害加成；不含毒）
-    private static function gunMainPerShot(self:MovieClip, attrSrc:String):Number {
+    private static function gunMainPerShot(self:MovieClip, attrSrc:String, mode:String):Number {
         var wd:Object = self[attrSrc + "属性"];
         var isRay:Boolean = BulletTypeUtil.isRay(wd.bullet);
-        var basePow:Number = ShootInitCore.calculateWeaponPower(self, attrSrc, wd.power, isRay);
+        var basePow:Number = ShootInitCore.calculateWeaponPower(self, attrSrc, wd.power, isRay, mode);
         var split:Number = wd.split || 1;
         var scatter:Number = scatterCap(split);
         return (basePow + bonusPerBullet(self)) * scatter;
@@ -227,9 +227,9 @@ class org.flashNight.arki.unit.UnitAI.combat.WeaponDpsEstimator {
 
     private static function dualGunDPS(self:MovieClip):Number {
         if (self.手枪 == null || self.手枪2 == null) return 0;
-        var mMain:Number = gunMainPerShot(self, "手枪");
+        var mMain:Number = gunMainPerShot(self, "手枪", "双枪");
         var mPoi:Number  = gunPoisonPerShot(self, "手枪");
-        var oMain:Number = gunMainPerShot(self, "手枪2");
+        var oMain:Number = gunMainPerShot(self, "手枪2", "双枪");
         var oPoi:Number  = gunPoisonPerShot(self, "手枪2");
         var mInt_s:Number = (self.手枪属性.interval | 0) / 1000;
         var oInt_s:Number = (self.手枪2属性.interval | 0) / 1000;
