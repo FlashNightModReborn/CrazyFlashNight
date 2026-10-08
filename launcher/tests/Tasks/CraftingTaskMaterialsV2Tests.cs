@@ -890,8 +890,8 @@ namespace Launcher.Tests.Tasks
         }
 
         [Theory]
-        [InlineData(986, true)]
-        [InlineData(987, false)]
+        [InlineData(985, true)]
+        [InlineData(986, false)]
         public void V2Catalog_EnforcesTaxonomyEntryBoundary(
             int directRegistryCount, bool accepted)
         {
