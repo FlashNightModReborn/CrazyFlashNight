@@ -23,6 +23,17 @@ html,body{margin:0;width:100%;height:100%}
 <script>
 window.Panels = {register: (id, spec) => window.spec = spec};
 window.messages = [];
+window.cameras = [];
+{
+  const original = CanvasRenderingContext2D.prototype.drawImage;
+  CanvasRenderingContext2D.prototype.drawImage = function(...args) {
+    if (args.length === 9) {
+      const s = args[8] / args[4];
+      cameras.push({x:args[5] - args[1] * s, y:args[6] - args[2] * s, s});
+    } else cameras.push({whole:true});
+    return original.apply(this, args);
+  };
+}
 window.Bridge = {
   on: (name, handler) => window.reply = handler,
   off: () => {},
@@ -187,6 +198,62 @@ async function checkReadingAndKeyboard(page, pageId, viewport) {
   await page.screenshot({path:path.join(output, `${pageId}-focus-${viewport}.png`)});
 }
 
+async function checkBeatCamera(page, viewport) {
+  // 节拍相机：跳到 p1③（push 0.7 ease-out）播放，采样派生相机确认节拍内位移与字幕同步。
+  await page.goto(`http://127.0.0.1:${server.address().port}/fixture`);
+  await page.waitForFunction(() => messages.some(message => message.cmd === 'prepared'));
+  await page.waitForFunction(() => document.querySelector('[data-comic=play]').textContent === '暂停');
+  await page.locator('[data-comic=next]').click();
+  await page.locator('[data-comic=next]').click();
+  assert.equal(await page.locator('[data-comic=speech]').innerText(),
+    await page.evaluate(() => BOOK_COMIC_CONTENT.pages[0].panels[0].lines[2].text));
+  await page.locator('[data-comic=play]').click();
+  await page.evaluate(() => cameras.length = 0);
+  const samples = [];
+  for (let i = 0; i < 3; i++) {
+    await page.waitForTimeout(400);
+    samples.push(await page.evaluate(() => cameras.at(-1)));
+  }
+  assert(samples.every(sample => sample && !sample.whole), 'beat playback keeps focus draws');
+  assert(samples[1].s > samples[0].s && samples[2].s > samples[1].s,
+    'push beat zooms in progressively: ' + samples.map(sample => sample.s).join(' -> '));
+  assert.equal(await page.locator('[data-comic=speech]').innerText(),
+    await page.evaluate(() => BOOK_COMIC_CONTENT.pages[0].panels[0].lines[2].text),
+    'subtitle stays on the same beat while the camera moves');
+  await page.screenshot({path:path.join(output, `prologue-beat-push-${viewport}.png`)});
+  // 过渡中帧：播过 p8（4.6s 单句短格）进入 p9 的 350ms smooth 过渡。
+  await page.locator('[data-comic=play]').click();
+  for (let i = 0; i < 15; i++) await page.locator('[data-comic=next]').click();
+  assert((await page.locator('[data-comic=tag]').innerText()).startsWith('08'));
+  await page.locator('[data-comic=play]').click();
+  await page.waitForFunction(() => document.querySelector('[data-comic=tag]').textContent.startsWith('09'), null, {timeout:8000});
+  assert.equal(await page.locator('[data-comic=speech]').innerText(),
+    await page.evaluate(() => BOOK_COMIC_CONTENT.pages[0].panels[8].lines[0].text),
+    'subtitle lands on the new panel while the camera is still travelling');
+  await page.screenshot({path:path.join(output, `prologue-transition-p9-${viewport}.png`)});
+}
+
+async function checkReducedMotion(browser, viewport) {
+  const reducedPage = await browser.newPage({reducedMotion:'reduce', viewport:{width:1024, height:576}});
+  const errors = [];
+  reducedPage.on('pageerror', error => errors.push(error.message));
+  try {
+    await reducedPage.goto(`http://127.0.0.1:${server.address().port}/fixture`);
+    await reducedPage.waitForFunction(() => messages.some(message => message.cmd === 'prepared'));
+    await reducedPage.waitForFunction(() => document.querySelector('[data-comic=play]').textContent === '暂停');
+    await reducedPage.waitForTimeout(1200);
+    const frames = await reducedPage.evaluate(() => cameras.filter(camera => !camera.whole));
+    assert(frames.length > 5, 'reduced playback still paints frames');
+    assert(frames.every(frame => frame.x === frames[0].x && frame.y === frames[0].y && frame.s === frames[0].s),
+      'every motion frozen under reduced-motion');
+    await reducedPage.locator('[data-comic=next]').click();
+    await reducedPage.screenshot({path:path.join(output, `prologue-reduced-${viewport}.png`)});
+    assert.deepEqual(errors, []);
+  } finally {
+    await reducedPage.close();
+  }
+}
+
 async function main() {
   assert(!fs.readFileSync(path.join(web, 'modules/panels-lazy-registry.js'), 'utf8')
     .includes("'css/book-comic.css'"));
@@ -216,8 +283,11 @@ async function main() {
         await checkReadingAndKeyboard(page, pageId, viewport);
       }
     }
+    await page.setViewportSize({width:1024, height:576});
+    await checkBeatCamera(page, '1024x576');
+    await checkReducedMotion(browser, '1024x576');
     assert.deepEqual(errors, []);
-    console.log(`PASS: ${checkedLines} real playback subtitle checks; both pages, 4 fixed-ratio viewports, CSS, themed scrollbars, wheel/keyboard scrolling, zoom, reading and keyboard. Screenshots: ${output}`);
+    console.log(`PASS: ${checkedLines} real playback subtitle checks; both pages, 4 fixed-ratio viewports, CSS, themed scrollbars, wheel/keyboard scrolling, zoom, reading and keyboard; beat camera motion, panel transition frame, reduced-motion freeze. Screenshots: ${output}`);
   } finally {
     await browser.close();
     server.close();

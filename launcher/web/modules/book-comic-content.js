@@ -19,22 +19,44 @@ window.BOOK_COMIC_CONTENT = {
             0.17
           ],
           "duration": 31.8,
+          "transition": {
+            "type": "smooth",
+            "durationMs": 350
+          },
           "lines": [
             {
               "speaker": "ANDY LAW",
-              "text": "当学生、闪客……没有钱……连吃饭都要父母给钱……钱钱钱，命相连……"
+              "text": "当学生、闪客……没有钱……连吃饭都要父母给钱……钱钱钱，命相连……",
+              "camera": {
+                "motion": "hold"
+              }
             },
             {
               "speaker": "ANDY LAW",
-              "text": "以为做flash可以赚钱，结果还是一分钱没有，算了，我还是另外想办法。"
+              "text": "以为做flash可以赚钱，结果还是一分钱没有，算了，我还是另外想办法。",
+              "camera": {
+                "motion": "pull",
+                "intensity": 0.2,
+                "easing": "smoothstep"
+              }
             },
             {
               "speaker": "ANDY LAW",
-              "text": "我需要钱……月薪200太少了！！离小康标准还差得远啊……55555：（"
+              "text": "我需要钱……月薪200太少了！！离小康标准还差得远啊……55555：（",
+              "camera": {
+                "motion": "push",
+                "intensity": 0.7,
+                "easing": "ease-out"
+              }
             },
             {
               "speaker": "ANDY LAW",
-              "text": "我总有一天我会成为和小小、倒吊男Dead一样的“专家”。"
+              "text": "我总有一天我会成为和小小、倒吊男Dead一样的“专家”。",
+              "camera": {
+                "motion": "push",
+                "intensity": 0.35,
+                "easing": "smoothstep"
+              }
             }
           ]
         },
@@ -48,14 +70,28 @@ window.BOOK_COMIC_CONTENT = {
             0.117
           ],
           "duration": 11.8,
+          "transition": {
+            "type": "smooth",
+            "durationMs": 350
+          },
           "lines": [
             {
               "speaker": "ANDY LAW",
-              "text": "不过现在……哼哼哼……"
+              "text": "不过现在……哼哼哼……",
+              "camera": {
+                "motion": "push",
+                "intensity": 0.25,
+                "easing": "ease-in"
+              }
             },
             {
               "speaker": "ANDY LAW",
-              "text": "还是去做些高付出，高回报的事……哼哼哼！！！运气好时一次能赚5元呢"
+              "text": "还是去做些高付出，高回报的事……哼哼哼！！！运气好时一次能赚5元呢",
+              "camera": {
+                "motion": "push",
+                "intensity": 0.5,
+                "easing": "ease-out"
+              }
             }
           ]
         },
@@ -69,14 +105,26 @@ window.BOOK_COMIC_CONTENT = {
             0.117
           ],
           "duration": 10.4,
+          "transition": {
+            "type": "smooth",
+            "durationMs": 350
+          },
           "lines": [
             {
               "speaker": "音效",
-              "text": "“嘟——嘟——……”"
+              "text": "“嘟——嘟——……”",
+              "camera": {
+                "motion": "hold"
+              }
             },
             {
               "speaker": "ANDY LAW",
-              "text": "喂，是我，Andy Law.我缺钱用，有“定单”吗？"
+              "text": "喂，是我，Andy Law.我缺钱用，有“定单”吗？",
+              "camera": {
+                "motion": "push",
+                "intensity": 0.3,
+                "easing": "smoothstep"
+              }
             }
           ]
         },
@@ -90,18 +138,35 @@ window.BOOK_COMIC_CONTENT = {
             0.123
           ],
           "duration": 17,
+          "transition": {
+            "type": "smooth",
+            "durationMs": 350
+          },
           "lines": [
             {
               "speaker": "ANDY LAW",
-              "text": "什么？“去修理成都理工大学附近的流氓”？"
+              "text": "什么？“去修理成都理工大学附近的流氓”？",
+              "camera": {
+                "motion": "push",
+                "intensity": 0.5,
+                "easing": "ease-out"
+              }
             },
             {
               "speaker": "ANDY LAW",
-              "text": "恩？这次怎么是修理流氓了。上次你不是让我修理电脑吗？"
+              "text": "恩？这次怎么是修理流氓了。上次你不是让我修理电脑吗？",
+              "camera": {
+                "motion": "hold"
+              }
             },
             {
               "speaker": "ANDY LAW",
-              "text": "虽然都是“修理”，但好像性质不同吧？"
+              "text": "虽然都是“修理”，但好像性质不同吧？",
+              "camera": {
+                "motion": "pull",
+                "intensity": 0.2,
+                "easing": "smoothstep"
+              }
             }
           ]
         },
@@ -115,14 +180,29 @@ window.BOOK_COMIC_CONTENT = {
             0.123
           ],
           "duration": 12.6,
+          "transition": {
+            "type": "smooth",
+            "durationMs": 350
+          },
           "lines": [
             {
               "speaker": "ANDY LAW",
-              "text": "什么？？酬劳300元人民币？！定金是50元？爽性"
+              "text": "什么？？酬劳300元人民币？！定金是50元？爽性",
+              "camera": {
+                "motion": "push",
+                "intensity": 0.75,
+                "easing": "ease-out",
+                "shake": 0.4
+              }
             },
             {
               "speaker": "ANDY LAW",
-              "text": "后果自负？……没关系没关系，我接了我接了……哈哈哈"
+              "text": "后果自负？……没关系没关系，我接了我接了……哈哈哈",
+              "camera": {
+                "motion": "push",
+                "intensity": 0.3,
+                "easing": "smoothstep"
+              }
             }
           ]
         },
@@ -136,14 +216,28 @@ window.BOOK_COMIC_CONTENT = {
             0.135
           ],
           "duration": 16,
+          "transition": {
+            "type": "smooth",
+            "durationMs": 350
+          },
           "lines": [
             {
               "speaker": "ANDY LAW",
-              "text": "这样以来。我就可以去荷花池批发市场买颜料了！~~~哈哈哈，谢谢你啦！"
+              "text": "这样以来。我就可以去荷花池批发市场买颜料了！~~~哈哈哈，谢谢你啦！",
+              "camera": {
+                "motion": "push",
+                "intensity": 0.45,
+                "easing": "ease-out"
+              }
             },
             {
               "speaker": "ANDY LAW",
-              "text": "钱入我的帐就行了，其他具体的E-mail给我就好了。886！：）"
+              "text": "钱入我的帐就行了，其他具体的E-mail给我就好了。886！：）",
+              "camera": {
+                "motion": "pull",
+                "intensity": 0.25,
+                "easing": "smoothstep"
+              }
             }
           ]
         },
@@ -157,14 +251,26 @@ window.BOOK_COMIC_CONTENT = {
             0.135
           ],
           "duration": 9.4,
+          "transition": {
+            "type": "cut"
+          },
           "lines": [
             {
               "speaker": "音效",
-              "text": "“喀嗒！”"
+              "text": "“喀嗒！”",
+              "camera": {
+                "motion": "shake",
+                "intensity": 0.5
+              }
             },
             {
               "speaker": "ANDY LAW",
-              "text": "呼……修理人我可没有经验啊……我真是疯了。"
+              "text": "呼……修理人我可没有经验啊……我真是疯了。",
+              "camera": {
+                "motion": "pull",
+                "intensity": 0.4,
+                "easing": "smoothstep"
+              }
             }
           ]
         },
@@ -178,10 +284,19 @@ window.BOOK_COMIC_CONTENT = {
             0.138
           ],
           "duration": 4.6,
+          "transition": {
+            "type": "smooth",
+            "durationMs": 350
+          },
           "lines": [
             {
               "speaker": "ANDY LAW",
-              "text": "接下来，我要……练习一下怎么打人"
+              "text": "接下来，我要……练习一下怎么打人",
+              "camera": {
+                "motion": "push",
+                "intensity": 0.5,
+                "easing": "smoothstep"
+              }
             }
           ]
         },
@@ -195,30 +310,88 @@ window.BOOK_COMIC_CONTENT = {
             0.138
           ],
           "duration": 34.8,
+          "transition": {
+            "type": "smooth",
+            "durationMs": 350
+          },
           "lines": [
             {
               "speaker": "ANDY LAW",
-              "text": "……恩？好像有新邮件了。一定是“定单”。我来看看^_^"
+              "text": "……恩？好像有新邮件了。一定是“定单”。我来看看^_^",
+              "camera": {
+                "motion": "hold"
+              }
             },
             {
               "speaker": "邮件",
-              "text": "任务：修理流氓地点：四川成都理工大学附近"
+              "text": "任务：修理流氓地点：四川成都理工大学附近",
+              "camera": {
+                "motion": "pan",
+                "intensity": 0.6,
+                "easing": "linear",
+                "panTo": [
+                  0.38,
+                  0.5
+                ]
+              }
             },
             {
               "speaker": "邮件",
-              "text": "细则：这些流氓常常剪短供电线，敲断供水管，使全校常常没水没电。"
+              "text": "细则：这些流氓常常剪短供电线，敲断供水管，使全校常常没水没电。",
+              "camera": {
+                "motion": "pan",
+                "intensity": 0.6,
+                "easing": "linear",
+                "anchor": [
+                  0.428,
+                  0.5
+                ],
+                "panTo": [
+                  0.8,
+                  0.5
+                ]
+              }
             },
             {
               "speaker": "邮件",
-              "text": "这些流氓有政治靠山，所以一切后果自负。"
+              "text": "这些流氓有政治靠山，所以一切后果自负。",
+              "camera": {
+                "motion": "pan",
+                "intensity": 0.5,
+                "easing": "ease-out",
+                "anchor": [
+                  0.651,
+                  0.5
+                ],
+                "panTo": [
+                  0.8,
+                  0.5
+                ]
+              }
             },
             {
               "speaker": "邮件",
-              "text": "*本故事纯属虚构，如有雷同，纯属民愤"
+              "text": "*本故事纯属虚构，如有雷同，纯属民愤",
+              "camera": {
+                "motion": "hold",
+                "anchor": [
+                  0.7255,
+                  0.5
+                ]
+              }
             },
             {
               "speaker": "ANDY LAW",
-              "text": "恩？这么可恶的流氓？看我来收拾！！"
+              "text": "恩？这么可恶的流氓？看我来收拾！！",
+              "camera": {
+                "motion": "push",
+                "intensity": 0.65,
+                "easing": "ease-out",
+                "anchor": [
+                  0.7255,
+                  0.5
+                ]
+              }
             }
           ]
         },
@@ -232,10 +405,19 @@ window.BOOK_COMIC_CONTENT = {
             0.232
           ],
           "duration": 3.8,
+          "transition": {
+            "type": "smooth",
+            "durationMs": 350
+          },
           "lines": [
             {
               "speaker": "旁白",
-              "text": "第二天"
+              "text": "第二天",
+              "camera": {
+                "motion": "pull",
+                "intensity": 0.3,
+                "easing": "smoothstep"
+              }
             }
           ]
         }
@@ -259,14 +441,28 @@ window.BOOK_COMIC_CONTENT = {
             0.181
           ],
           "duration": 10.4,
+          "transition": {
+            "type": "smooth",
+            "durationMs": 350
+          },
           "lines": [
             {
               "speaker": "体育老师",
-              "text": "不错，真让你一路打到这儿了。今天这课，总算没白上。"
+              "text": "不错，真让你一路打到这儿了。今天这课，总算没白上。",
+              "camera": {
+                "motion": "push",
+                "intensity": 0.3,
+                "easing": "smoothstep"
+              }
             },
             {
               "speaker": "ANDY LAW",
-              "text": "上课？什么上课？我是来修理流氓的！"
+              "text": "上课？什么上课？我是来修理流氓的！",
+              "camera": {
+                "motion": "push",
+                "intensity": 0.4,
+                "easing": "smoothstep"
+              }
             }
           ]
         },
@@ -280,14 +476,26 @@ window.BOOK_COMIC_CONTENT = {
             0.13
           ],
           "duration": 9.2,
+          "transition": {
+            "type": "smooth",
+            "durationMs": 350
+          },
           "lines": [
             {
               "speaker": "体育老师",
-              "text": "五十定金，事成三百。中间人都跟你说了吧？"
+              "text": "五十定金，事成三百。中间人都跟你说了吧？",
+              "camera": {
+                "motion": "hold"
+              }
             },
             {
               "speaker": "ANDY LAW",
-              "text": "搞了半天，出钱的是你？！"
+              "text": "搞了半天，出钱的是你？！",
+              "camera": {
+                "motion": "push",
+                "intensity": 0.65,
+                "easing": "ease-out"
+              }
             }
           ]
         },
@@ -301,14 +509,28 @@ window.BOOK_COMIC_CONTENT = {
             0.13
           ],
           "duration": 12.2,
+          "transition": {
+            "type": "smooth",
+            "durationMs": 350
+          },
           "lines": [
             {
               "speaker": "体育老师",
-              "text": "我的学生，总得见见真本事。出了校门，别人可不会先看成绩单。"
+              "text": "我的学生，总得见见真本事。出了校门，别人可不会先看成绩单。",
+              "camera": {
+                "motion": "push",
+                "intensity": 0.3,
+                "easing": "smoothstep"
+              }
             },
             {
               "speaker": "ANDY LAW",
-              "text": "我靠！叫我修理流氓，原来是拿我给学生练手？！"
+              "text": "我靠！叫我修理流氓，原来是拿我给学生练手？！",
+              "camera": {
+                "motion": "push",
+                "intensity": 0.6,
+                "easing": "ease-out"
+              }
             }
           ]
         },
@@ -322,18 +544,35 @@ window.BOOK_COMIC_CONTENT = {
             0.165
           ],
           "duration": 14.4,
+          "transition": {
+            "type": "smooth",
+            "durationMs": 350
+          },
           "lines": [
             {
               "speaker": "ANDY LAW",
-              "text": "那水电呢？也是你学生弄断的？"
+              "text": "那水电呢？也是你学生弄断的？",
+              "camera": {
+                "motion": "push",
+                "intensity": 0.35,
+                "easing": "smoothstep"
+              }
             },
             {
               "speaker": "体育老师",
-              "text": "几个学生闹过了头，水电的事学校会处理。"
+              "text": "几个学生闹过了头，水电的事学校会处理。",
+              "camera": {
+                "motion": "hold"
+              }
             },
             {
               "speaker": "体育老师",
-              "text": "找你来收拾他们，正好让他们长点记性。"
+              "text": "找你来收拾他们，正好让他们长点记性。",
+              "camera": {
+                "motion": "push",
+                "intensity": 0.3,
+                "easing": "smoothstep"
+              }
             }
           ]
         },
@@ -347,14 +586,26 @@ window.BOOK_COMIC_CONTENT = {
             0.165
           ],
           "duration": 11.6,
+          "transition": {
+            "type": "smooth",
+            "durationMs": 350
+          },
           "lines": [
             {
               "speaker": "体育老师",
-              "text": "他们长本事，你挣外快。有什么不好？"
+              "text": "他们长本事，你挣外快。有什么不好？",
+              "camera": {
+                "motion": "hold"
+              }
             },
             {
               "speaker": "ANDY LAW",
-              "text": "他们挨打有人管，我呢？三百块，还要倒贴医药费？！"
+              "text": "他们挨打有人管，我呢？三百块，还要倒贴医药费？！",
+              "camera": {
+                "motion": "push",
+                "intensity": 0.65,
+                "easing": "ease-out"
+              }
             }
           ]
         },
@@ -368,14 +619,28 @@ window.BOOK_COMIC_CONTENT = {
             0.139
           ],
           "duration": 10.6,
+          "transition": {
+            "type": "smooth",
+            "durationMs": 350
+          },
           "lines": [
             {
               "speaker": "ANDY LAW",
-              "text": "找陪练你就直说嘛！骗我来挨打，还有理了？"
+              "text": "找陪练你就直说嘛！骗我来挨打，还有理了？",
+              "camera": {
+                "motion": "push",
+                "intensity": 0.5,
+                "easing": "smoothstep"
+              }
             },
             {
               "speaker": "体育老师",
-              "text": "钱不会少你。可这堂课怎么上，还轮不到你来定。"
+              "text": "钱不会少你。可这堂课怎么上，还轮不到你来定。",
+              "camera": {
+                "motion": "push",
+                "intensity": 0.35,
+                "easing": "ease-in"
+              }
             }
           ]
         },
@@ -389,14 +654,26 @@ window.BOOK_COMIC_CONTENT = {
             0.139
           ],
           "duration": 9,
+          "transition": {
+            "type": "smooth",
+            "durationMs": 350
+          },
           "lines": [
             {
               "speaker": "体育老师",
-              "text": "都退后。"
+              "text": "都退后。",
+              "camera": {
+                "motion": "hold"
+              }
             },
             {
               "speaker": "体育老师",
-              "text": "打赢了我的学生，现在连老师也想教训了？"
+              "text": "打赢了我的学生，现在连老师也想教训了？",
+              "camera": {
+                "motion": "push",
+                "intensity": 0.4,
+                "easing": "ease-in"
+              }
             }
           ]
         },
@@ -410,10 +687,19 @@ window.BOOK_COMIC_CONTENT = {
             0.312
           ],
           "duration": 4.6,
+          "transition": {
+            "type": "smooth",
+            "durationMs": 350
+          },
           "lines": [
             {
               "speaker": "ANDY LAW",
-              "text": "好嘛，还带老师撑腰的！那就一起修理！"
+              "text": "好嘛，还带老师撑腰的！那就一起修理！",
+              "camera": {
+                "motion": "push",
+                "intensity": 0.9,
+                "easing": "ease-out"
+              }
             }
           ]
         }
