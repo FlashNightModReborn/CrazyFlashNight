@@ -68,6 +68,43 @@ namespace CF7Launcher.Tests.Guardian.Hud.Loot
             Assert.Equal(2, unknown.ActiveCount);
         }
 
+        [Theory]
+        [InlineData("map_chest")]
+        [InlineData("stage_settlement")]
+        public void StashReward_UsesGuaranteedPolicyAndOnlyMergesWithEqualPolicy(string source)
+        {
+            var model = NewModel();
+            model.Add("material", "螺丝套件", "螺丝套件", 4, source);
+            var card = Assert.Single(model.Cards);
+            Assert.Equal(LootFeedModel.RetentionClass.Guaranteed, card.Retention);
+            Assert.Equal(LootFeedModel.UrgencyClass.Prompt, card.Urgency);
+            Assert.Equal(3, card.Priority);
+            Assert.Equal(2800, card.BaseHoldMs);
+
+            model.Add("material", "螺丝套件", "螺丝套件", 1, "loot_box");
+            Assert.Equal(5, Assert.Single(model.Cards).Count);
+            model.Add("material", "螺丝套件", "螺丝套件", 1, "pickup");
+            model.Add("material", "螺丝套件", "螺丝套件", 1, "reload");
+            model.Add("material", "螺丝套件", "螺丝套件", 1, "unknown");
+            Assert.Equal(4, model.ActiveCount);
+        }
+
+        [Theory]
+        [InlineData("map_chest")]
+        [InlineData("stage_settlement")]
+        public void StashReward_SaturatedImmediateCardsPreserveReceiptInPendingQueue(string source)
+        {
+            var model = NewModel();
+            for (int i = 0; i < LootFeedModel.MaxVisibleCards; i++)
+                model.Add("kill", "boss-" + i, "boss-" + i, 1, "kill", 2);
+            model.Add("equip", "红外夜视仪", "红外夜视仪", 1, source);
+            var pending = Assert.Single(model.PendingCards);
+            Assert.Equal(LootFeedModel.RetentionClass.Guaranteed, pending.Retention);
+            Assert.Equal(1, pending.Count);
+            for (int i = 0; i < 100; i++) model.Tick(50);
+            Assert.Contains(model.Cards, card => card.Name == "红外夜视仪");
+        }
+
         [Fact]
         public void VisualMerge_SeparatesDirectionAndTier()
         {

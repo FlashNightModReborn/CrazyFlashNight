@@ -44,7 +44,8 @@ namespace CF7Launcher.Tasks
         {
             "pickup", "level_reward", "quest_reward", "achievement_reward",
             "quest_turn_in", "inventory_discard", "equipment_tuning",
-            "loot_box", "npc_shop_purchase", "npc_shop_sale", "kshop_purchase",
+            "loot_box", "map_chest", "stage_settlement",
+            "npc_shop_purchase", "npc_shop_sale", "kshop_purchase",
             "kshop_claim", "crafting", "consumable_effect", "pet_service",
             "mercenary_service", "reload", "skill_cost", "weapon_cost",
             "item_use", "task_entry", "arena_entry", "arena_reward",
