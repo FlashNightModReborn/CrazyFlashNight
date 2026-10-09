@@ -31,6 +31,27 @@
       <reloadType>tube</reloadType>
       <reloadPenalty>33</reloadPenalty>
     </data>
+    <balance>
+      <formulaFamily>weapon</formulaFamily>
+      <schemaVersion>1</schemaVersion>
+      <workbookVersion>1</workbookVersion>
+      <profiles>
+        <data>
+          <dualWield>1</dualWield>
+          <pierce>1</pierce>
+          <damageType>1</damageType>
+          <shotgun>1</shotgun>
+          <magPrice>200</magPrice>
+          <weightLayers>0</weightLayers>
+          <category>1</category>
+          <formula>1</formula>
+          <status>unresolved</status>
+          <displayEligible>false</displayEligible>
+          <inputDigest>fnv1a32:bfaa3fad</inputDigest>
+          <auditRef>weapon:单管步枪:data</auditRef>
+        </data>
+      </profiles>
+    </balance>
   </item>
   <item weapontype="狙击步枪">
     <name>53式步骑枪</name>
@@ -63,6 +84,55 @@
       <reloadType>tube</reloadType>
       <reloadPenalty>33</reloadPenalty>
     </data>
+    <balance>
+      <formulaFamily>weapon</formulaFamily>
+      <schemaVersion>1</schemaVersion>
+      <workbookVersion>1</workbookVersion>
+      <profiles>
+        <data>
+          <dualWield>1</dualWield>
+          <pierce>1</pierce>
+          <damageType>1</damageType>
+          <shotgun>1</shotgun>
+          <magPrice>200</magPrice>
+          <weightLayers>0</weightLayers>
+          <category>1</category>
+          <formula>1</formula>
+          <status>unresolved</status>
+          <displayEligible>false</displayEligible>
+          <inputDigest>fnv1a32:e52f1193</inputDigest>
+          <auditRef>weapon:53式步骑枪:data</auditRef>
+        </data>
+        <data_fire>
+          <dualWield>1</dualWield>
+          <pierce>1</pierce>
+          <damageType>2</damageType>
+          <shotgun>1</shotgun>
+          <magPrice>8000</magPrice>
+          <weightLayers>0</weightLayers>
+          <category>1</category>
+          <formula>1</formula>
+          <status>unresolved</status>
+          <displayEligible>false</displayEligible>
+          <inputDigest>fnv1a32:59b2c2d4</inputDigest>
+          <auditRef>weapon:53式步骑枪:data_fire</auditRef>
+        </data_fire>
+        <data_ice>
+          <dualWield>1</dualWield>
+          <pierce>1</pierce>
+          <damageType>2</damageType>
+          <shotgun>1</shotgun>
+          <magPrice>8000</magPrice>
+          <weightLayers>0</weightLayers>
+          <category>1</category>
+          <formula>1</formula>
+          <status>unresolved</status>
+          <displayEligible>false</displayEligible>
+          <inputDigest>fnv1a32:4459dc5f</inputDigest>
+          <auditRef>weapon:53式步骑枪:data_ice</auditRef>
+        </data_ice>
+      </profiles>
+    </balance>
     <data_ice>
       <level>42</level>
       <dressup>枪-长枪-53式步骑枪墨冰</dressup>
@@ -119,6 +189,55 @@
       <criticalhit>满血暴击</criticalhit>
       <reloadPenalty>33</reloadPenalty>
     </data>
+    <balance>
+      <formulaFamily>weapon</formulaFamily>
+      <schemaVersion>1</schemaVersion>
+      <workbookVersion>1</workbookVersion>
+      <profiles>
+        <data>
+          <dualWield>1</dualWield>
+          <pierce>2</pierce>
+          <damageType>1</damageType>
+          <shotgun>1</shotgun>
+          <magPrice>1000</magPrice>
+          <weightLayers>0</weightLayers>
+          <category>1</category>
+          <formula>1</formula>
+          <status>unresolved</status>
+          <displayEligible>false</displayEligible>
+          <inputDigest>fnv1a32:561fdf48</inputDigest>
+          <auditRef>weapon:Sniper:data</auditRef>
+        </data>
+        <data_fire>
+          <dualWield>1</dualWield>
+          <pierce>2</pierce>
+          <damageType>2</damageType>
+          <shotgun>1</shotgun>
+          <magPrice>8000</magPrice>
+          <weightLayers>0</weightLayers>
+          <category>1</category>
+          <formula>1</formula>
+          <status>unresolved</status>
+          <displayEligible>false</displayEligible>
+          <inputDigest>fnv1a32:314b348b</inputDigest>
+          <auditRef>weapon:Sniper:data_fire</auditRef>
+        </data_fire>
+        <data_ice>
+          <dualWield>1</dualWield>
+          <pierce>2</pierce>
+          <damageType>2</damageType>
+          <shotgun>1</shotgun>
+          <magPrice>8000</magPrice>
+          <weightLayers>0</weightLayers>
+          <category>1</category>
+          <formula>1</formula>
+          <status>unresolved</status>
+          <displayEligible>false</displayEligible>
+          <inputDigest>fnv1a32:bd53af63</inputDigest>
+          <auditRef>weapon:Sniper:data_ice</auditRef>
+        </data_ice>
+      </profiles>
+    </balance>
     <data_ice>
       <level>41</level>
       <dressup>枪-长枪-Sniper墨冰</dressup>
@@ -173,6 +292,27 @@
       <reloadType>tube</reloadType>
       <reloadPenalty>33</reloadPenalty>
     </data>
+    <balance>
+      <formulaFamily>weapon</formulaFamily>
+      <schemaVersion>1</schemaVersion>
+      <workbookVersion>1</workbookVersion>
+      <profiles>
+        <data>
+          <dualWield>1</dualWield>
+          <pierce>2</pierce>
+          <damageType>1</damageType>
+          <shotgun>1</shotgun>
+          <magPrice>1000</magPrice>
+          <weightLayers>0</weightLayers>
+          <category>1</category>
+          <formula>1</formula>
+          <status>unresolved</status>
+          <displayEligible>false</displayEligible>
+          <inputDigest>fnv1a32:6afeba52</inputDigest>
+          <auditRef>weapon:M24SWS:data</auditRef>
+        </data>
+      </profiles>
+    </balance>
   </item>
   <item weapontype="狙击步枪">
     <name>Marlin1895</name>
@@ -206,6 +346,27 @@
       <reloadType>tube</reloadType>
       <reloadPenalty>33</reloadPenalty>
     </data>
+    <balance>
+      <formulaFamily>weapon</formulaFamily>
+      <schemaVersion>1</schemaVersion>
+      <workbookVersion>1</workbookVersion>
+      <profiles>
+        <data>
+          <dualWield>1</dualWield>
+          <pierce>1</pierce>
+          <damageType>1</damageType>
+          <shotgun>1</shotgun>
+          <magPrice>1000</magPrice>
+          <weightLayers>0</weightLayers>
+          <category>1</category>
+          <formula>1</formula>
+          <status>unresolved</status>
+          <displayEligible>false</displayEligible>
+          <inputDigest>fnv1a32:0aafd83b</inputDigest>
+          <auditRef>weapon:Marlin1895:data</auditRef>
+        </data>
+      </profiles>
+    </balance>
   </item>
   <item weapontype="狙击步枪">
     <name>芬兰之星</name>
@@ -239,6 +400,27 @@
       <criticalhit>满血暴击</criticalhit>
       <reloadPenalty>33</reloadPenalty>
     </data>
+    <balance>
+      <formulaFamily>weapon</formulaFamily>
+      <schemaVersion>1</schemaVersion>
+      <workbookVersion>1</workbookVersion>
+      <profiles>
+        <data>
+          <dualWield>1</dualWield>
+          <pierce>2</pierce>
+          <damageType>1</damageType>
+          <shotgun>1</shotgun>
+          <magPrice>1000</magPrice>
+          <weightLayers>0</weightLayers>
+          <category>1</category>
+          <formula>1</formula>
+          <status>unresolved</status>
+          <displayEligible>false</displayEligible>
+          <inputDigest>fnv1a32:80aa647c</inputDigest>
+          <auditRef>weapon:芬兰之星:data</auditRef>
+        </data>
+      </profiles>
+    </balance>
   </item>
   <item weapontype="狙击步枪">
     <name>AWM狙击步枪</name>
@@ -272,6 +454,27 @@
       <criticalhit>满血暴击</criticalhit>
       <reloadPenalty>33</reloadPenalty>
     </data>
+    <balance>
+      <formulaFamily>weapon</formulaFamily>
+      <schemaVersion>1</schemaVersion>
+      <workbookVersion>1</workbookVersion>
+      <profiles>
+        <data>
+          <dualWield>1</dualWield>
+          <pierce>2</pierce>
+          <damageType>1</damageType>
+          <shotgun>1</shotgun>
+          <magPrice>1000</magPrice>
+          <weightLayers>0</weightLayers>
+          <category>1</category>
+          <formula>1</formula>
+          <status>unresolved</status>
+          <displayEligible>false</displayEligible>
+          <inputDigest>fnv1a32:c0560044</inputDigest>
+          <auditRef>weapon:AWM狙击步枪:data</auditRef>
+        </data>
+      </profiles>
+    </balance>
   </item>
   <item weapontype="狙击步枪">
     <name>AWP</name>
@@ -304,6 +507,27 @@
       <criticalhit>满血暴击</criticalhit>
       <reloadPenalty>33</reloadPenalty>
     </data>
+    <balance>
+      <formulaFamily>weapon</formulaFamily>
+      <schemaVersion>1</schemaVersion>
+      <workbookVersion>1</workbookVersion>
+      <profiles>
+        <data>
+          <dualWield>1</dualWield>
+          <pierce>2</pierce>
+          <damageType>1</damageType>
+          <shotgun>1</shotgun>
+          <magPrice>1000</magPrice>
+          <weightLayers>0</weightLayers>
+          <category>1</category>
+          <formula>1</formula>
+          <status>unresolved</status>
+          <displayEligible>false</displayEligible>
+          <inputDigest>fnv1a32:ff079005</inputDigest>
+          <auditRef>weapon:AWP:data</auditRef>
+        </data>
+      </profiles>
+    </balance>
   </item>
   <item weapontype="狙击步枪">
     <name>HSR10S</name>
@@ -336,6 +560,27 @@
       <criticalhit>满血暴击</criticalhit>
       <reloadPenalty>33</reloadPenalty>
     </data>
+    <balance>
+      <formulaFamily>weapon</formulaFamily>
+      <schemaVersion>1</schemaVersion>
+      <workbookVersion>1</workbookVersion>
+      <profiles>
+        <data>
+          <dualWield>1</dualWield>
+          <pierce>2</pierce>
+          <damageType>1</damageType>
+          <shotgun>1</shotgun>
+          <magPrice>1000</magPrice>
+          <weightLayers>0</weightLayers>
+          <category>1</category>
+          <formula>1</formula>
+          <status>unresolved</status>
+          <displayEligible>false</displayEligible>
+          <inputDigest>fnv1a32:a5c7c9c7</inputDigest>
+          <auditRef>weapon:HSR10S:data</auditRef>
+        </data>
+      </profiles>
+    </balance>
   </item>
   <item weapontype="狙击步枪">
     <name>WA2000</name>
@@ -368,6 +613,27 @@
       <criticalhit>满血暴击</criticalhit>
       <reloadPenalty>33</reloadPenalty>
     </data>
+    <balance>
+      <formulaFamily>weapon</formulaFamily>
+      <schemaVersion>1</schemaVersion>
+      <workbookVersion>1</workbookVersion>
+      <profiles>
+        <data>
+          <dualWield>1</dualWield>
+          <pierce>2</pierce>
+          <damageType>1</damageType>
+          <shotgun>1</shotgun>
+          <magPrice>1000</magPrice>
+          <weightLayers>2</weightLayers>
+          <category>1</category>
+          <formula>1</formula>
+          <status>unresolved</status>
+          <displayEligible>false</displayEligible>
+          <inputDigest>fnv1a32:1fb82444</inputDigest>
+          <auditRef>weapon:WA2000:data</auditRef>
+        </data>
+      </profiles>
+    </balance>
   </item>
   <item weapontype="狙击步枪">
     <name>DTA SRS</name>
@@ -400,6 +666,27 @@
       <criticalhit>满血暴击</criticalhit>
       <reloadPenalty>33</reloadPenalty>
     </data>
+    <balance>
+      <formulaFamily>weapon</formulaFamily>
+      <schemaVersion>1</schemaVersion>
+      <workbookVersion>1</workbookVersion>
+      <profiles>
+        <data>
+          <dualWield>1</dualWield>
+          <pierce>2</pierce>
+          <damageType>1</damageType>
+          <shotgun>1</shotgun>
+          <magPrice>1000</magPrice>
+          <weightLayers>1</weightLayers>
+          <category>1</category>
+          <formula>1</formula>
+          <status>unresolved</status>
+          <displayEligible>false</displayEligible>
+          <inputDigest>fnv1a32:3224d871</inputDigest>
+          <auditRef>weapon:DTA SRS:data</auditRef>
+        </data>
+      </profiles>
+    </balance>
   </item>
   <item weapontype="狙击步枪">
     <name>诺亚方舟护士狙击步枪</name>
@@ -433,6 +720,27 @@
       <criticalhit>满血暴击</criticalhit>
       <reloadPenalty>33</reloadPenalty>
     </data>
+    <balance>
+      <formulaFamily>weapon</formulaFamily>
+      <schemaVersion>1</schemaVersion>
+      <workbookVersion>1</workbookVersion>
+      <profiles>
+        <data>
+          <dualWield>1</dualWield>
+          <pierce>2</pierce>
+          <damageType>2</damageType>
+          <shotgun>1</shotgun>
+          <magPrice>1000</magPrice>
+          <weightLayers>0</weightLayers>
+          <category>1</category>
+          <formula>1</formula>
+          <status>unresolved</status>
+          <displayEligible>false</displayEligible>
+          <inputDigest>fnv1a32:670c0694</inputDigest>
+          <auditRef>weapon:诺亚方舟护士狙击步枪:data</auditRef>
+        </data>
+      </profiles>
+    </balance>
   </item>
   <item weapontype="狙击步枪">
     <name>能量狙击枪</name>
@@ -466,6 +774,27 @@
       <criticalhit>满血暴击</criticalhit>
       <reloadPenalty>33</reloadPenalty>
     </data>
+    <balance>
+      <formulaFamily>weapon</formulaFamily>
+      <schemaVersion>1</schemaVersion>
+      <workbookVersion>1</workbookVersion>
+      <profiles>
+        <data>
+          <dualWield>1</dualWield>
+          <pierce>2</pierce>
+          <damageType>2</damageType>
+          <shotgun>1</shotgun>
+          <magPrice>8000</magPrice>
+          <weightLayers>1</weightLayers>
+          <category>1</category>
+          <formula>1</formula>
+          <status>unresolved</status>
+          <displayEligible>false</displayEligible>
+          <inputDigest>fnv1a32:de3cd737</inputDigest>
+          <auditRef>weapon:能量狙击枪:data</auditRef>
+        </data>
+      </profiles>
+    </balance>
   </item>
   <item weapontype="狙击步枪">
     <name>NA45</name>
@@ -499,5 +828,26 @@
       <criticalhit>满血暴击</criticalhit>
       <reloadPenalty>33</reloadPenalty>
     </data>
+    <balance>
+      <formulaFamily>weapon</formulaFamily>
+      <schemaVersion>1</schemaVersion>
+      <workbookVersion>1</workbookVersion>
+      <profiles>
+        <data>
+          <dualWield>1</dualWield>
+          <pierce>1</pierce>
+          <damageType>1</damageType>
+          <shotgun>1</shotgun>
+          <magPrice>2000</magPrice>
+          <weightLayers>0</weightLayers>
+          <category>1</category>
+          <formula>1</formula>
+          <status>unresolved</status>
+          <displayEligible>false</displayEligible>
+          <inputDigest>fnv1a32:ff9a5135</inputDigest>
+          <auditRef>weapon:NA45:data</auditRef>
+        </data>
+      </profiles>
+    </balance>
   </item>
 </root>

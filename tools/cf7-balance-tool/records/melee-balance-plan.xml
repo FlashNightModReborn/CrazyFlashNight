@@ -1,0 +1,281 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  人工维护的近战（刀类）平衡方案真源。audit 与物品内 balance 均由 melee-balance-sync 派生。
+  近战公式已登记在权威工作簿「刀」页。门线：锋利度残差 ±5%、金币价 [0.8,1.25] 带、K 点 ±5%。
+  存量 231 件大面积偏离公式基线，分批迁移期间以 exceptionCode/异常说明如实分流，
+  不允许为绕开覆盖门删除物品或排除文件。coverageFiles 为空表示整文件覆盖门尚未开启。
+-->
+<meleeBalancePlan>
+  <formulaFamily>melee</formulaFamily>
+  <schemaVersion>1</schemaVersion>
+  <formulaVersion>1</formulaVersion>
+  <workbookVersion>1</workbookVersion>
+  <workbookSha256>357E07955281D4CB3884902B58165E19E97852216AE5A76965D3EBD04FB4E107</workbookSha256>
+  <coverageFiles>
+    <file>data/items/武器_刀_刀剑.xml</file>
+    <file>data/items/武器_刀_双刀.xml</file>
+    <file>data/items/武器_刀_棍棒.xml</file>
+    <file>data/items/武器_刀_狂野.xml</file>
+    <file>data/items/武器_刀_疾影.xml</file>
+    <file>data/items/武器_刀_直剑.xml</file>
+    <file>data/items/武器_刀_短兵.xml</file>
+    <file>data/items/武器_刀_短柄.xml</file>
+    <file>data/items/武器_刀_迅捷.xml</file>
+    <file>data/items/武器_刀_重斩.xml</file>
+    <file>data/items/武器_刀_镰刀.xml</file>
+    <file>data/items/武器_刀_长刀.xml</file>
+    <file>data/items/武器_刀_长枪.xml</file>
+    <file>data/items/武器_刀_长柄.xml</file>
+    <file>data/items/武器_刀_长棍.xml</file>
+    <file>data/items/武器_刀_默认.xml</file>
+  </coverageFiles>
+  <records>
+    <record itemName="巨尸长斧" sourceFile="data/items/武器_刀_狂野.xml" weightLayers="-2" categoryFactor="1" damageTypeFactor="1" status="unresolved" note="首批机械登记：锋利度残差0%、价格比0.98均在门内；weightLayers=-2为公式反推拟合值，获取渠道与层级证据待人工裁定" />
+    <!-- 武器_刀_刀剑.xml：25 条 exception 机械登记 -->
+    <record itemName="破旧的军刀" sourceFile="data/items/武器_刀_刀剑.xml" balanceMode="exception" status="unresolved" exceptionCode="legacy-off-formula" note="存量数值偏离近战公式基线，待裁定改值或改层数口径" />
+    <record itemName="砍刀" sourceFile="data/items/武器_刀_刀剑.xml" balanceMode="exception" status="unresolved" exceptionCode="legacy-off-formula" note="存量数值偏离近战公式基线，待裁定改值或改层数口径" />
+    <record itemName="秋月" sourceFile="data/items/武器_刀_刀剑.xml" balanceMode="exception" status="unresolved" exceptionCode="legacy-off-formula" note="存量数值偏离近战公式基线，待裁定改值或改层数口径" />
+    <record itemName="单刀" sourceFile="data/items/武器_刀_刀剑.xml" balanceMode="exception" status="unresolved" exceptionCode="legacy-off-formula" note="存量数值偏离近战公式基线，待裁定改值或改层数口径" />
+    <record itemName="战术黑刀" sourceFile="data/items/武器_刀_刀剑.xml" balanceMode="exception" status="unresolved" exceptionCode="legacy-off-formula" note="存量数值偏离近战公式基线，待裁定改值或改层数口径" />
+    <record itemName="电感切割刃" sourceFile="data/items/武器_刀_刀剑.xml" balanceMode="exception" status="unresolved" exceptionCode="legacy-off-formula" note="存量数值偏离近战公式基线，待裁定改值或改层数口径" />
+    <record itemName="古制砍刀" sourceFile="data/items/武器_刀_刀剑.xml" balanceMode="exception" status="unresolved" exceptionCode="legacy-off-formula" note="存量数值偏离近战公式基线，待裁定改值或改层数口径" />
+    <record itemName="忍者佩剑" sourceFile="data/items/武器_刀_刀剑.xml" balanceMode="exception" status="unresolved" exceptionCode="legacy-off-formula" note="存量数值偏离近战公式基线，待裁定改值或改层数口径" />
+    <record itemName="血刀" sourceFile="data/items/武器_刀_刀剑.xml" balanceMode="exception" status="unresolved" exceptionCode="legacy-off-formula" note="存量数值偏离近战公式基线，待裁定改值或改层数口径" />
+    <record itemName="曲孔刃" sourceFile="data/items/武器_刀_刀剑.xml" balanceMode="exception" status="unresolved" exceptionCode="legacy-off-formula" note="存量数值偏离近战公式基线，待裁定改值或改层数口径" />
+    <record itemName="龍一文字" sourceFile="data/items/武器_刀_刀剑.xml" balanceMode="exception" status="unresolved" exceptionCode="legacy-off-formula" note="存量数值偏离近战公式基线，待裁定改值或改层数口径" />
+    <record itemName="剑刃加农" sourceFile="data/items/武器_刀_刀剑.xml" balanceMode="exception" status="unresolved" exceptionCode="legacy-off-formula" note="存量数值偏离近战公式基线，待裁定改值或改层数口径" />
+    <record itemName="激光剑" sourceFile="data/items/武器_刀_刀剑.xml" balanceMode="exception" status="unresolved" exceptionCode="legacy-off-formula" note="存量数值偏离近战公式基线，待裁定改值或改层数口径" />
+    <record itemName="龍劍" sourceFile="data/items/武器_刀_刀剑.xml" balanceMode="exception" status="unresolved" exceptionCode="legacy-off-formula" note="存量数值偏离近战公式基线，待裁定改值或改层数口径" />
+    <record itemName="魔刀千刃" sourceFile="data/items/武器_刀_刀剑.xml" balanceMode="exception" status="unresolved" exceptionCode="legacy-off-formula" note="存量数值偏离近战公式基线，待裁定改值或改层数口径" />
+    <record itemName="夜刃青霓刀" sourceFile="data/items/武器_刀_刀剑.xml" balanceMode="exception" status="unresolved" exceptionCode="legacy-off-formula" note="存量数值偏离近战公式基线，待裁定改值或改层数口径" />
+    <record itemName="忍者执剑" sourceFile="data/items/武器_刀_刀剑.xml" balanceMode="exception" status="unresolved" exceptionCode="legacy-off-formula" note="存量数值偏离近战公式基线，待裁定改值或改层数口径" />
+    <record itemName="血能源刃" sourceFile="data/items/武器_刀_刀剑.xml" balanceMode="exception" status="unresolved" exceptionCode="legacy-off-formula" note="存量数值偏离近战公式基线，待裁定改值或改层数口径" />
+    <record itemName="死者之手" sourceFile="data/items/武器_刀_刀剑.xml" balanceMode="exception" status="unresolved" exceptionCode="legacy-off-formula" note="存量数值偏离近战公式基线，待裁定改值或改层数口径" />
+    <record itemName="绝地武士佩剑" sourceFile="data/items/武器_刀_刀剑.xml" balanceMode="exception" status="unresolved" exceptionCode="legacy-off-formula" note="存量数值偏离近战公式基线，待裁定改值或改层数口径" />
+    <record itemName="审判日夜闪" sourceFile="data/items/武器_刀_刀剑.xml" balanceMode="exception" status="unresolved" exceptionCode="legacy-off-formula" note="存量数值偏离近战公式基线，待裁定改值或改层数口径" />
+    <record itemName="阎魔刀" sourceFile="data/items/武器_刀_刀剑.xml" balanceMode="exception" status="unresolved" exceptionCode="legacy-off-formula" note="存量数值偏离近战公式基线，待裁定改值或改层数口径" />
+    <record itemName="舞" sourceFile="data/items/武器_刀_刀剑.xml" balanceMode="exception" status="unresolved" exceptionCode="legacy-off-formula" note="存量数值偏离近战公式基线，待裁定改值或改层数口径" />
+    <record itemName="超硬质钢刀" sourceFile="data/items/武器_刀_刀剑.xml" balanceMode="exception" status="unresolved" exceptionCode="legacy-off-formula" note="存量数值偏离近战公式基线，待裁定改值或改层数口径" />
+    <record itemName="远古诛神剑" sourceFile="data/items/武器_刀_刀剑.xml" balanceMode="exception" status="unresolved" exceptionCode="legacy-off-formula" note="存量数值偏离近战公式基线，待裁定改值或改层数口径" />
+    <!-- 武器_刀_双刀.xml：9 条 exception 机械登记 -->
+    <record itemName="輪舞" sourceFile="data/items/武器_刀_双刀.xml" balanceMode="exception" status="unresolved" exceptionCode="legacy-off-formula" note="存量数值偏离近战公式基线，待裁定改值或改层数口径" />
+    <record itemName="超硬质双刀" sourceFile="data/items/武器_刀_双刀.xml" balanceMode="exception" status="unresolved" exceptionCode="legacy-off-formula" note="存量数值偏离近战公式基线，待裁定改值或改层数口径" />
+    <record itemName="黑煞" sourceFile="data/items/武器_刀_双刀.xml" balanceMode="exception" status="unresolved" exceptionCode="legacy-off-formula" note="存量数值偏离近战公式基线，待裁定改值或改层数口径" />
+    <record itemName="炎寒对剑" sourceFile="data/items/武器_刀_双刀.xml" balanceMode="exception" status="unresolved" exceptionCode="legacy-off-formula" note="存量数值偏离近战公式基线，待裁定改值或改层数口径" />
+    <record itemName="战术双刀" sourceFile="data/items/武器_刀_双刀.xml" balanceMode="exception" status="unresolved" exceptionCode="legacy-off-formula" note="存量数值偏离近战公式基线，待裁定改值或改层数口径" />
+    <record itemName="国风双剑" sourceFile="data/items/武器_刀_双刀.xml" balanceMode="exception" status="unresolved" exceptionCode="legacy-off-formula" note="存量数值偏离近战公式基线，待裁定改值或改层数口径" />
+    <record itemName="双持中国战刀" sourceFile="data/items/武器_刀_双刀.xml" balanceMode="exception" status="unresolved" exceptionCode="legacy-off-formula" note="存量数值偏离近战公式基线，待裁定改值或改层数口径" />
+    <record itemName="血十字刀剑" sourceFile="data/items/武器_刀_双刀.xml" balanceMode="exception" status="unresolved" exceptionCode="legacy-off-formula" note="存量数值偏离近战公式基线，待裁定改值或改层数口径" />
+    <record itemName="烬灭裁决双刀" sourceFile="data/items/武器_刀_双刀.xml" balanceMode="exception" status="unresolved" exceptionCode="legacy-off-formula" note="存量数值偏离近战公式基线，待裁定改值或改层数口径" />
+    <!-- 武器_刀_棍棒.xml：8 条 exception 机械登记 -->
+    <record itemName="水管" sourceFile="data/items/武器_刀_棍棒.xml" balanceMode="exception" status="unresolved" exceptionCode="legacy-off-formula" note="存量数值偏离近战公式基线，待裁定改值或改层数口径" />
+    <record itemName="锤子" sourceFile="data/items/武器_刀_棍棒.xml" balanceMode="exception" status="unresolved" exceptionCode="legacy-off-formula" note="存量数值偏离近战公式基线，待裁定改值或改层数口径" />
+    <record itemName="木制球棒" sourceFile="data/items/武器_刀_棍棒.xml" balanceMode="exception" status="unresolved" exceptionCode="legacy-off-formula" note="存量数值偏离近战公式基线，待裁定改值或改层数口径" />
+    <record itemName="铁钉球棒" sourceFile="data/items/武器_刀_棍棒.xml" balanceMode="exception" status="unresolved" exceptionCode="legacy-off-formula" note="存量数值偏离近战公式基线，待裁定改值或改层数口径" />
+    <record itemName="诺亚镇暴棍" sourceFile="data/items/武器_刀_棍棒.xml" balanceMode="exception" status="unresolved" exceptionCode="legacy-off-formula" note="存量数值偏离近战公式基线，待裁定改值或改层数口径" />
+    <record itemName="精钢锏" sourceFile="data/items/武器_刀_棍棒.xml" balanceMode="exception" status="unresolved" exceptionCode="legacy-off-formula" note="存量数值偏离近战公式基线，待裁定改值或改层数口径" />
+    <record itemName="电子音乐键盘" sourceFile="data/items/武器_刀_棍棒.xml" balanceMode="exception" status="unresolved" exceptionCode="legacy-off-formula" note="存量数值偏离近战公式基线，待裁定改值或改层数口径" />
+    <record itemName="红色电子吉他" sourceFile="data/items/武器_刀_棍棒.xml" balanceMode="exception" status="unresolved" exceptionCode="legacy-off-formula" note="存量数值偏离近战公式基线，待裁定改值或改层数口径" />
+    <!-- 武器_刀_狂野.xml：15 条 exception 机械登记 -->
+    <record itemName="天王剑" sourceFile="data/items/武器_刀_狂野.xml" balanceMode="exception" status="unresolved" exceptionCode="legacy-off-formula" note="存量数值偏离近战公式基线，待裁定改值或改层数口径" />
+    <record itemName="单刃斧头" sourceFile="data/items/武器_刀_狂野.xml" balanceMode="exception" status="unresolved" exceptionCode="legacy-off-formula" note="存量数值偏离近战公式基线，待裁定改值或改层数口径" />
+    <record itemName="消防斧" sourceFile="data/items/武器_刀_狂野.xml" balanceMode="exception" status="unresolved" exceptionCode="legacy-off-formula" note="存量数值偏离近战公式基线，待裁定改值或改层数口径" />
+    <record itemName="拆迁铁锤" sourceFile="data/items/武器_刀_狂野.xml" balanceMode="exception" status="unresolved" exceptionCode="legacy-off-formula" note="存量数值偏离近战公式基线，待裁定改值或改层数口径" />
+    <record itemName="黑暗吉他" sourceFile="data/items/武器_刀_狂野.xml" balanceMode="exception" status="unresolved" exceptionCode="legacy-off-formula" note="存量数值偏离近战公式基线，待裁定改值或改层数口径" />
+    <record itemName="白金石斧" sourceFile="data/items/武器_刀_狂野.xml" balanceMode="exception" status="unresolved" exceptionCode="legacy-off-formula" note="存量数值偏离近战公式基线，待裁定改值或改层数口径" />
+    <record itemName="方钢锤" sourceFile="data/items/武器_刀_狂野.xml" balanceMode="exception" status="unresolved" exceptionCode="legacy-off-formula" note="存量数值偏离近战公式基线，待裁定改值或改层数口径" />
+    <record itemName="黑铁巨斧" sourceFile="data/items/武器_刀_狂野.xml" balanceMode="exception" status="unresolved" exceptionCode="legacy-off-formula" note="存量数值偏离近战公式基线，待裁定改值或改层数口径" />
+    <record itemName="光斧金牛" sourceFile="data/items/武器_刀_狂野.xml" balanceMode="exception" status="unresolved" exceptionCode="legacy-off-formula" note="存量数值偏离近战公式基线，待裁定改值或改层数口径" />
+    <record itemName="光刀狮子" sourceFile="data/items/武器_刀_狂野.xml" balanceMode="exception" status="unresolved" exceptionCode="legacy-off-formula" note="存量数值偏离近战公式基线，待裁定改值或改层数口径" />
+    <record itemName="BULLOVA DAIDALOS" sourceFile="data/items/武器_刀_狂野.xml" balanceMode="exception" status="unresolved" exceptionCode="legacy-off-formula" note="存量数值偏离近战公式基线，待裁定改值或改层数口径" />
+    <record itemName="方天画戟二型" sourceFile="data/items/武器_刀_狂野.xml" balanceMode="exception" status="unresolved" exceptionCode="legacy-off-formula" note="存量数值偏离近战公式基线，待裁定改值或改层数口径" />
+    <record itemName="狼牙长棒" sourceFile="data/items/武器_刀_狂野.xml" balanceMode="exception" status="unresolved" exceptionCode="legacy-off-formula" note="存量数值偏离近战公式基线，待裁定改值或改层数口径" />
+    <record itemName="猎杀巨物大锤" sourceFile="data/items/武器_刀_狂野.xml" balanceMode="exception" status="unresolved" exceptionCode="legacy-off-formula" note="存量数值偏离近战公式基线，待裁定改值或改层数口径" />
+    <record itemName="骨肉破碎锤" sourceFile="data/items/武器_刀_狂野.xml" balanceMode="exception" status="unresolved" exceptionCode="legacy-off-formula" note="存量数值偏离近战公式基线，待裁定改值或改层数口径" />
+    <!-- 武器_刀_疾影.xml：9 条 exception 机械登记 -->
+    <record itemName="虎彻配鞘版" sourceFile="data/items/武器_刀_疾影.xml" balanceMode="exception" status="unresolved" exceptionCode="legacy-off-formula" note="存量数值偏离近战公式基线，待裁定改值或改层数口径" />
+    <record itemName="黑铁武士的刀带鞘" sourceFile="data/items/武器_刀_疾影.xml" balanceMode="exception" status="unresolved" exceptionCode="legacy-off-formula" note="存量数值偏离近战公式基线，待裁定改值或改层数口径" />
+    <record itemName="血刀配鞘版" sourceFile="data/items/武器_刀_疾影.xml" balanceMode="exception" status="unresolved" exceptionCode="legacy-off-formula" note="存量数值偏离近战公式基线，待裁定改值或改层数口径" />
+    <record itemName="寒潭黑蛟-入鞘" sourceFile="data/items/武器_刀_疾影.xml" balanceMode="exception" status="unresolved" exceptionCode="legacy-off-formula" note="存量数值偏离近战公式基线，待裁定改值或改层数口径" />
+    <record itemName="梁上青-入鞘" sourceFile="data/items/武器_刀_疾影.xml" balanceMode="exception" status="unresolved" exceptionCode="legacy-off-formula" note="存量数值偏离近战公式基线，待裁定改值或改层数口径" />
+    <record itemName="黑铁剑配鞘" sourceFile="data/items/武器_刀_疾影.xml" balanceMode="exception" status="unresolved" exceptionCode="legacy-off-formula" note="存量数值偏离近战公式基线，待裁定改值或改层数口径" />
+    <record itemName="黑金古刀配鞘" sourceFile="data/items/武器_刀_疾影.xml" balanceMode="exception" status="unresolved" exceptionCode="legacy-off-formula" note="存量数值偏离近战公式基线，待裁定改值或改层数口径" />
+    <record itemName="血能源刃配鞘版" sourceFile="data/items/武器_刀_疾影.xml" balanceMode="exception" status="unresolved" exceptionCode="legacy-off-formula" note="存量数值偏离近战公式基线，待裁定改值或改层数口径" />
+    <record itemName="阎魔刀带鞘版" sourceFile="data/items/武器_刀_疾影.xml" balanceMode="exception" status="unresolved" exceptionCode="legacy-off-formula" note="存量数值偏离近战公式基线，待裁定改值或改层数口径" />
+    <!-- 武器_刀_直剑.xml：28 条 exception 机械登记 -->
+    <record itemName="白金剑刃" sourceFile="data/items/武器_刀_直剑.xml" balanceMode="exception" status="unresolved" exceptionCode="legacy-off-formula" note="存量数值偏离近战公式基线，待裁定改值或改层数口径" />
+    <record itemName="唐朝直刀" sourceFile="data/items/武器_刀_直剑.xml" balanceMode="exception" status="unresolved" exceptionCode="legacy-off-formula" note="存量数值偏离近战公式基线，待裁定改值或改层数口径" />
+    <record itemName="唐朝七星剑" sourceFile="data/items/武器_刀_直剑.xml" balanceMode="exception" status="unresolved" exceptionCode="legacy-off-formula" note="存量数值偏离近战公式基线，待裁定改值或改层数口径" />
+    <record itemName="主唱光剑" sourceFile="data/items/武器_刀_直剑.xml" balanceMode="exception" status="unresolved" exceptionCode="legacy-off-formula" note="存量数值偏离近战公式基线，待裁定改值或改层数口径" />
+    <record itemName="校制式剑" sourceFile="data/items/武器_刀_直剑.xml" balanceMode="exception" status="unresolved" exceptionCode="legacy-off-formula" note="存量数值偏离近战公式基线，待裁定改值或改层数口径" />
+    <record itemName="汉剑" sourceFile="data/items/武器_刀_直剑.xml" balanceMode="exception" status="unresolved" exceptionCode="legacy-off-formula" note="存量数值偏离近战公式基线，待裁定改值或改层数口径" />
+    <record itemName="四锥剑" sourceFile="data/items/武器_刀_直剑.xml" balanceMode="exception" status="unresolved" exceptionCode="legacy-off-formula" note="存量数值偏离近战公式基线，待裁定改值或改层数口径" />
+    <record itemName="上古青萍元气剑" sourceFile="data/items/武器_刀_直剑.xml" balanceMode="exception" status="unresolved" exceptionCode="legacy-off-formula" note="存量数值偏离近战公式基线，待裁定改值或改层数口径" />
+    <record itemName="暗金阔剑" sourceFile="data/items/武器_刀_直剑.xml" balanceMode="exception" status="unresolved" exceptionCode="legacy-off-formula" note="存量数值偏离近战公式基线，待裁定改值或改层数口径" />
+    <record itemName="玳瑁长柄剑" sourceFile="data/items/武器_刀_直剑.xml" balanceMode="exception" status="unresolved" exceptionCode="legacy-off-formula" note="存量数值偏离近战公式基线，待裁定改值或改层数口径" />
+    <record itemName="石中剑" sourceFile="data/items/武器_刀_直剑.xml" balanceMode="exception" status="unresolved" exceptionCode="legacy-off-formula" note="存量数值偏离近战公式基线，待裁定改值或改层数口径" />
+    <record itemName="重力操纵之剑" sourceFile="data/items/武器_刀_直剑.xml" balanceMode="exception" status="unresolved" exceptionCode="legacy-off-formula" note="存量数值偏离近战公式基线，待裁定改值或改层数口径" />
+    <record itemName="杜兰达尔" sourceFile="data/items/武器_刀_直剑.xml" balanceMode="exception" status="unresolved" exceptionCode="legacy-off-formula" note="存量数值偏离近战公式基线，待裁定改值或改层数口径" />
+    <record itemName="风魔" sourceFile="data/items/武器_刀_直剑.xml" balanceMode="exception" status="unresolved" exceptionCode="legacy-off-formula" note="存量数值偏离近战公式基线，待裁定改值或改层数口径" />
+    <record itemName="玉碧毒剑" sourceFile="data/items/武器_刀_直剑.xml" balanceMode="exception" status="unresolved" exceptionCode="legacy-off-formula" note="存量数值偏离近战公式基线，待裁定改值或改层数口径" />
+    <record itemName="炎玉剑" sourceFile="data/items/武器_刀_直剑.xml" balanceMode="exception" status="unresolved" exceptionCode="legacy-off-formula" note="存量数值偏离近战公式基线，待裁定改值或改层数口径" />
+    <record itemName="寒玉剑" sourceFile="data/items/武器_刀_直剑.xml" balanceMode="exception" status="unresolved" exceptionCode="legacy-off-formula" note="存量数值偏离近战公式基线，待裁定改值或改层数口径" />
+    <record itemName="大剑" sourceFile="data/items/武器_刀_直剑.xml" balanceMode="exception" status="unresolved" exceptionCode="legacy-off-formula" note="存量数值偏离近战公式基线，待裁定改值或改层数口径" />
+    <record itemName="光剑天秤" sourceFile="data/items/武器_刀_直剑.xml" balanceMode="exception" status="unresolved" exceptionCode="legacy-off-formula" note="存量数值偏离近战公式基线，待裁定改值或改层数口径" />
+    <record itemName="金蛇剑" sourceFile="data/items/武器_刀_直剑.xml" balanceMode="exception" status="unresolved" exceptionCode="legacy-off-formula" note="存量数值偏离近战公式基线，待裁定改值或改层数口径" />
+    <record itemName="血色光剑天秤" sourceFile="data/items/武器_刀_直剑.xml" balanceMode="exception" status="unresolved" exceptionCode="legacy-off-formula" note="存量数值偏离近战公式基线，待裁定改值或改层数口径" />
+    <record itemName="鼎纹阔剑" sourceFile="data/items/武器_刀_直剑.xml" balanceMode="exception" status="unresolved" exceptionCode="legacy-off-formula" note="存量数值偏离近战公式基线，待裁定改值或改层数口径" />
+    <record itemName="黑铁的剑" sourceFile="data/items/武器_刀_直剑.xml" balanceMode="exception" status="unresolved" exceptionCode="legacy-off-formula" note="存量数值偏离近战公式基线，待裁定改值或改层数口径" />
+    <record itemName="光玉的剑" sourceFile="data/items/武器_刀_直剑.xml" balanceMode="exception" status="unresolved" exceptionCode="legacy-off-formula" note="存量数值偏离近战公式基线，待裁定改值或改层数口径" />
+    <record itemName="龙型环首唐刀" sourceFile="data/items/武器_刀_直剑.xml" balanceMode="exception" status="unresolved" exceptionCode="legacy-off-formula" note="存量数值偏离近战公式基线，待裁定改值或改层数口径" />
+    <record itemName="超合金战刀刃" sourceFile="data/items/武器_刀_直剑.xml" balanceMode="exception" status="unresolved" exceptionCode="legacy-off-formula" note="存量数值偏离近战公式基线，待裁定改值或改层数口径" />
+    <record itemName="烬灭裁决主剑" sourceFile="data/items/武器_刀_直剑.xml" balanceMode="exception" status="unresolved" exceptionCode="legacy-off-formula" note="存量数值偏离近战公式基线，待裁定改值或改层数口径" />
+    <record itemName="烬灭裁决副剑" sourceFile="data/items/武器_刀_直剑.xml" balanceMode="exception" status="unresolved" exceptionCode="legacy-off-formula" note="存量数值偏离近战公式基线，待裁定改值或改层数口径" />
+    <!-- 武器_刀_短兵.xml：24 条 exception 机械登记 -->
+    <record itemName="pencil" sourceFile="data/items/武器_刀_短兵.xml" balanceMode="exception" status="unresolved" exceptionCode="legacy-off-formula" note="存量数值偏离近战公式基线，待裁定改值或改层数口径" />
+    <record itemName="折叠小刀" sourceFile="data/items/武器_刀_短兵.xml" balanceMode="exception" status="unresolved" exceptionCode="legacy-off-formula" note="存量数值偏离近战公式基线，待裁定改值或改层数口径" />
+    <record itemName="匕首" sourceFile="data/items/武器_刀_短兵.xml" balanceMode="exception" status="unresolved" exceptionCode="legacy-off-formula" note="存量数值偏离近战公式基线，待裁定改值或改层数口径" />
+    <record itemName="扳手" sourceFile="data/items/武器_刀_短兵.xml" balanceMode="exception" status="unresolved" exceptionCode="legacy-off-formula" note="存量数值偏离近战公式基线，待裁定改值或改层数口径" />
+    <record itemName="爪刀" sourceFile="data/items/武器_刀_短兵.xml" balanceMode="exception" status="unresolved" exceptionCode="legacy-off-formula" note="存量数值偏离近战公式基线，待裁定改值或改层数口径" />
+    <record itemName="快开小折刀" sourceFile="data/items/武器_刀_短兵.xml" balanceMode="exception" status="unresolved" exceptionCode="legacy-off-formula" note="存量数值偏离近战公式基线，待裁定改值或改层数口径" />
+    <record itemName="美式警棍" sourceFile="data/items/武器_刀_短兵.xml" balanceMode="exception" status="unresolved" exceptionCode="legacy-off-formula" note="存量数值偏离近战公式基线，待裁定改值或改层数口径" />
+    <record itemName="maddog疯狗刀" sourceFile="data/items/武器_刀_短兵.xml" balanceMode="exception" status="unresolved" exceptionCode="legacy-off-formula" note="存量数值偏离近战公式基线，待裁定改值或改层数口径" />
+    <record itemName="超声波战刃" sourceFile="data/items/武器_刀_短兵.xml" balanceMode="exception" status="unresolved" exceptionCode="legacy-off-formula" note="存量数值偏离近战公式基线，待裁定改值或改层数口径" />
+    <record itemName="战术狗腿刀" sourceFile="data/items/武器_刀_短兵.xml" balanceMode="exception" status="unresolved" exceptionCode="legacy-off-formula" note="存量数值偏离近战公式基线，待裁定改值或改层数口径" />
+    <record itemName="stridermantrack匕首" sourceFile="data/items/武器_刀_短兵.xml" balanceMode="exception" status="unresolved" exceptionCode="legacy-off-formula" note="存量数值偏离近战公式基线，待裁定改值或改层数口径" />
+    <record itemName="兰博2" sourceFile="data/items/武器_刀_短兵.xml" balanceMode="exception" status="unresolved" exceptionCode="legacy-off-formula" note="存量数值偏离近战公式基线，待裁定改值或改层数口径" />
+    <record itemName="永恒之刃" sourceFile="data/items/武器_刀_短兵.xml" balanceMode="exception" status="unresolved" exceptionCode="legacy-off-formula" note="存量数值偏离近战公式基线，待裁定改值或改层数口径" />
+    <record itemName="光刃摩羯" sourceFile="data/items/武器_刀_短兵.xml" balanceMode="exception" status="unresolved" exceptionCode="legacy-off-formula" note="存量数值偏离近战公式基线，待裁定改值或改层数口径" />
+    <record itemName="剧毒银刃" sourceFile="data/items/武器_刀_短兵.xml" balanceMode="exception" status="unresolved" exceptionCode="legacy-off-formula" note="存量数值偏离近战公式基线，待裁定改值或改层数口径" />
+    <record itemName="黄鹂短刀" sourceFile="data/items/武器_刀_短兵.xml" balanceMode="exception" status="unresolved" exceptionCode="legacy-off-formula" note="存量数值偏离近战公式基线，待裁定改值或改层数口径" />
+    <record itemName="朱雀短刀" sourceFile="data/items/武器_刀_短兵.xml" balanceMode="exception" status="unresolved" exceptionCode="legacy-off-formula" note="存量数值偏离近战公式基线，待裁定改值或改层数口径" />
+    <record itemName="诛神短剑" sourceFile="data/items/武器_刀_短兵.xml" balanceMode="exception" status="unresolved" exceptionCode="legacy-off-formula" note="存量数值偏离近战公式基线，待裁定改值或改层数口径" />
+    <record itemName="夜刃青霓锥" sourceFile="data/items/武器_刀_短兵.xml" balanceMode="exception" status="unresolved" exceptionCode="legacy-off-formula" note="存量数值偏离近战公式基线，待裁定改值或改层数口径" />
+    <record itemName="周波匕首" sourceFile="data/items/武器_刀_短兵.xml" balanceMode="exception" status="unresolved" exceptionCode="legacy-off-formula" note="存量数值偏离近战公式基线，待裁定改值或改层数口径" />
+    <record itemName="周波剑棍" sourceFile="data/items/武器_刀_短兵.xml" balanceMode="exception" status="unresolved" exceptionCode="legacy-off-formula" note="存量数值偏离近战公式基线，待裁定改值或改层数口径" />
+    <record itemName="远古诛神短剑" sourceFile="data/items/武器_刀_短兵.xml" balanceMode="exception" status="unresolved" exceptionCode="legacy-off-formula" note="存量数值偏离近战公式基线，待裁定改值或改层数口径" />
+    <record itemName="应援棒" sourceFile="data/items/武器_刀_短兵.xml" balanceMode="exception" status="unresolved" exceptionCode="unobtainable-novelty" note="描述声明正常流程无法获取/使用，免平衡标定" />
+    <record itemName="特勤警棍" sourceFile="data/items/武器_刀_短兵.xml" balanceMode="exception" status="unresolved" exceptionCode="legacy-off-formula" note="存量数值偏离近战公式基线，待裁定改值或改层数口径" />
+    <!-- 武器_刀_短柄.xml：9 条 exception 机械登记 -->
+    <record itemName="砖头" sourceFile="data/items/武器_刀_短柄.xml" balanceMode="exception" status="unresolved" exceptionCode="legacy-off-formula" note="存量数值偏离近战公式基线，待裁定改值或改层数口径" />
+    <record itemName="CF手斧" sourceFile="data/items/武器_刀_短柄.xml" balanceMode="exception" status="unresolved" exceptionCode="legacy-off-formula" note="存量数值偏离近战公式基线，待裁定改值或改层数口径" />
+    <record itemName="甩棍" sourceFile="data/items/武器_刀_短柄.xml" balanceMode="exception" status="unresolved" exceptionCode="legacy-off-formula" note="存量数值偏离近战公式基线，待裁定改值或改层数口径" />
+    <record itemName="短棒" sourceFile="data/items/武器_刀_短柄.xml" balanceMode="exception" status="unresolved" exceptionCode="legacy-off-formula" note="存量数值偏离近战公式基线，待裁定改值或改层数口径" />
+    <record itemName="工兵铲" sourceFile="data/items/武器_刀_短柄.xml" balanceMode="exception" status="unresolved" exceptionCode="legacy-off-formula" note="存量数值偏离近战公式基线，待裁定改值或改层数口径" />
+    <record itemName="短斧" sourceFile="data/items/武器_刀_短柄.xml" balanceMode="exception" status="unresolved" exceptionCode="legacy-off-formula" note="存量数值偏离近战公式基线，待裁定改值或改层数口径" />
+    <record itemName="雷神之锤" sourceFile="data/items/武器_刀_短柄.xml" balanceMode="exception" status="unresolved" exceptionCode="legacy-off-formula" note="存量数值偏离近战公式基线，待裁定改值或改层数口径" />
+    <record itemName="棒球棒" sourceFile="data/items/武器_刀_短柄.xml" balanceMode="exception" status="unresolved" exceptionCode="legacy-off-formula" note="存量数值偏离近战公式基线，待裁定改值或改层数口径" />
+    <record itemName="3XF电棍" sourceFile="data/items/武器_刀_短柄.xml" balanceMode="exception" status="unresolved" exceptionCode="legacy-off-formula" note="存量数值偏离近战公式基线，待裁定改值或改层数口径" />
+    <!-- 武器_刀_迅捷.xml：6 条 exception 机械登记 -->
+    <record itemName="校制式刀" sourceFile="data/items/武器_刀_迅捷.xml" balanceMode="exception" status="unresolved" exceptionCode="legacy-off-formula" note="存量数值偏离近战公式基线，待裁定改值或改层数口径" />
+    <record itemName="合家欢" sourceFile="data/items/武器_刀_迅捷.xml" balanceMode="exception" status="unresolved" exceptionCode="legacy-off-formula" note="存量数值偏离近战公式基线，待裁定改值或改层数口径" />
+    <record itemName="嗜血夜鸦" sourceFile="data/items/武器_刀_迅捷.xml" balanceMode="exception" status="unresolved" exceptionCode="legacy-off-formula" note="存量数值偏离近战公式基线，待裁定改值或改层数口径" />
+    <record itemName="六羽刀" sourceFile="data/items/武器_刀_迅捷.xml" balanceMode="exception" status="unresolved" exceptionCode="legacy-off-formula" note="存量数值偏离近战公式基线，待裁定改值或改层数口径" />
+    <record itemName="Z军刀" sourceFile="data/items/武器_刀_迅捷.xml" balanceMode="exception" status="unresolved" exceptionCode="legacy-off-formula" note="存量数值偏离近战公式基线，待裁定改值或改层数口径" />
+    <record itemName="斯帕德隆剑" sourceFile="data/items/武器_刀_迅捷.xml" balanceMode="exception" status="unresolved" exceptionCode="legacy-off-formula" note="存量数值偏离近战公式基线，待裁定改值或改层数口径" />
+    <!-- 武器_刀_重斩.xml：27 条 exception 机械登记 -->
+    <record itemName="风暴" sourceFile="data/items/武器_刀_重斩.xml" balanceMode="exception" status="unresolved" exceptionCode="legacy-off-formula" note="存量数值偏离近战公式基线，待裁定改值或改层数口径" />
+    <record itemName="中国战刀" sourceFile="data/items/武器_刀_重斩.xml" balanceMode="exception" status="unresolved" exceptionCode="legacy-off-formula" note="存量数值偏离近战公式基线，待裁定改值或改层数口径" />
+    <record itemName="龙破军霜" sourceFile="data/items/武器_刀_重斩.xml" balanceMode="exception" status="unresolved" exceptionCode="legacy-off-formula" note="存量数值偏离近战公式基线，待裁定改值或改层数口径" />
+    <record itemName="西洋重剑" sourceFile="data/items/武器_刀_重斩.xml" balanceMode="exception" status="unresolved" exceptionCode="legacy-off-formula" note="存量数值偏离近战公式基线，待裁定改值或改层数口径" />
+    <record itemName="鬼剑士的巨剑" sourceFile="data/items/武器_刀_重斩.xml" balanceMode="exception" status="unresolved" exceptionCode="legacy-off-formula" note="存量数值偏离近战公式基线，待裁定改值或改层数口径" />
+    <record itemName="黑铁重剑" sourceFile="data/items/武器_刀_重斩.xml" balanceMode="exception" status="unresolved" exceptionCode="legacy-off-formula" note="存量数值偏离近战公式基线，待裁定改值或改层数口径" />
+    <record itemName="十文字大剑" sourceFile="data/items/武器_刀_重斩.xml" balanceMode="exception" status="unresolved" exceptionCode="legacy-off-formula" note="存量数值偏离近战公式基线，待裁定改值或改层数口径" />
+    <record itemName="斩马刀" sourceFile="data/items/武器_刀_重斩.xml" balanceMode="exception" status="unresolved" exceptionCode="legacy-off-formula" note="存量数值偏离近战公式基线，待裁定改值或改层数口径" />
+    <record itemName="西风大剑" sourceFile="data/items/武器_刀_重斩.xml" balanceMode="exception" status="unresolved" exceptionCode="legacy-off-formula" note="存量数值偏离近战公式基线，待裁定改值或改层数口径" />
+    <record itemName="大斩刀" sourceFile="data/items/武器_刀_重斩.xml" balanceMode="exception" status="unresolved" exceptionCode="legacy-off-formula" note="存量数值偏离近战公式基线，待裁定改值或改层数口径" />
+    <record itemName="勇气灵剑" sourceFile="data/items/武器_刀_重斩.xml" balanceMode="exception" status="unresolved" exceptionCode="legacy-off-formula" note="存量数值偏离近战公式基线，待裁定改值或改层数口径" />
+    <record itemName="斩月" sourceFile="data/items/武器_刀_重斩.xml" balanceMode="exception" status="unresolved" exceptionCode="legacy-off-formula" note="存量数值偏离近战公式基线，待裁定改值或改层数口径" />
+    <record itemName="烈焰斩马刀" sourceFile="data/items/武器_刀_重斩.xml" balanceMode="exception" status="unresolved" exceptionCode="legacy-off-formula" note="存量数值偏离近战公式基线，待裁定改值或改层数口径" />
+    <record itemName="指令意志" sourceFile="data/items/武器_刀_重斩.xml" balanceMode="exception" status="unresolved" exceptionCode="legacy-off-formula" note="存量数值偏离近战公式基线，待裁定改值或改层数口径" />
+    <record itemName="血瀑大剑" sourceFile="data/items/武器_刀_重斩.xml" balanceMode="exception" status="unresolved" exceptionCode="legacy-off-formula" note="存量数值偏离近战公式基线，待裁定改值或改层数口径" />
+    <record itemName="烈焰斩" sourceFile="data/items/武器_刀_重斩.xml" balanceMode="exception" status="unresolved" exceptionCode="legacy-off-formula" note="存量数值偏离近战公式基线，待裁定改值或改层数口径" />
+    <record itemName="斩龙剑" sourceFile="data/items/武器_刀_重斩.xml" balanceMode="exception" status="unresolved" exceptionCode="legacy-off-formula" note="存量数值偏离近战公式基线，待裁定改值或改层数口径" />
+    <record itemName="月光大剑" sourceFile="data/items/武器_刀_重斩.xml" balanceMode="exception" status="unresolved" exceptionCode="legacy-off-formula" note="存量数值偏离近战公式基线，待裁定改值或改层数口径" />
+    <record itemName="玄铁重剑" sourceFile="data/items/武器_刀_重斩.xml" balanceMode="exception" status="unresolved" exceptionCode="legacy-off-formula" note="存量数值偏离近战公式基线，待裁定改值或改层数口径" />
+    <record itemName="炎魔斩new" sourceFile="data/items/武器_刀_重斩.xml" balanceMode="exception" status="unresolved" exceptionCode="legacy-off-formula" note="存量数值偏离近战公式基线，待裁定改值或改层数口径" />
+    <record itemName="炎魔斩alter" sourceFile="data/items/武器_刀_重斩.xml" balanceMode="exception" status="unresolved" exceptionCode="legacy-off-formula" note="存量数值偏离近战公式基线，待裁定改值或改层数口径" />
+    <record itemName="轮盘重工" sourceFile="data/items/武器_刀_重斩.xml" balanceMode="exception" status="unresolved" exceptionCode="legacy-off-formula" note="存量数值偏离近战公式基线，待裁定改值或改层数口径" />
+    <record itemName="狼的末路" sourceFile="data/items/武器_刀_重斩.xml" balanceMode="exception" status="unresolved" exceptionCode="legacy-off-formula" note="存量数值偏离近战公式基线，待裁定改值或改层数口径" />
+    <record itemName="逸龙剑·抉择" sourceFile="data/items/武器_刀_重斩.xml" balanceMode="exception" status="unresolved" exceptionCode="legacy-off-formula" note="存量数值偏离近战公式基线，待裁定改值或改层数口径" />
+    <record itemName="魔剑但丁" sourceFile="data/items/武器_刀_重斩.xml" balanceMode="exception" status="unresolved" exceptionCode="legacy-off-formula" note="存量数值偏离近战公式基线，待裁定改值或改层数口径" />
+    <record itemName="天狼的大剑" sourceFile="data/items/武器_刀_重斩.xml" balanceMode="exception" status="unresolved" exceptionCode="legacy-off-formula" note="存量数值偏离近战公式基线，待裁定改值或改层数口径" />
+    <record itemName="雷铁斩斧" sourceFile="data/items/武器_刀_重斩.xml" balanceMode="exception" status="unresolved" exceptionCode="legacy-off-formula" note="存量数值偏离近战公式基线，待裁定改值或改层数口径" />
+    <!-- 武器_刀_镰刀.xml：11 条 exception 机械登记 -->
+    <record itemName="键盘镰刀" sourceFile="data/items/武器_刀_镰刀.xml" balanceMode="exception" status="unresolved" exceptionCode="legacy-off-formula" note="存量数值偏离近战公式基线，待裁定改值或改层数口径" />
+    <record itemName="紫钢镰刀" sourceFile="data/items/武器_刀_镰刀.xml" balanceMode="exception" status="unresolved" exceptionCode="legacy-off-formula" note="存量数值偏离近战公式基线，待裁定改值或改层数口径" />
+    <record itemName="斩红镰刃" sourceFile="data/items/武器_刀_镰刀.xml" balanceMode="exception" status="unresolved" exceptionCode="legacy-off-formula" note="存量数值偏离近战公式基线，待裁定改值或改层数口径" />
+    <record itemName="三戈戟一型" sourceFile="data/items/武器_刀_镰刀.xml" balanceMode="exception" status="unresolved" exceptionCode="legacy-off-formula" note="存量数值偏离近战公式基线，待裁定改值或改层数口径" />
+    <record itemName="三戈戟二型" sourceFile="data/items/武器_刀_镰刀.xml" balanceMode="exception" status="unresolved" exceptionCode="legacy-off-formula" note="存量数值偏离近战公式基线，待裁定改值或改层数口径" />
+    <record itemName="复瞳赤枭" sourceFile="data/items/武器_刀_镰刀.xml" balanceMode="exception" status="unresolved" exceptionCode="legacy-off-formula" note="存量数值偏离近战公式基线，待裁定改值或改层数口径" />
+    <record itemName="杀戮风暴" sourceFile="data/items/武器_刀_镰刀.xml" balanceMode="exception" status="unresolved" exceptionCode="legacy-off-formula" note="存量数值偏离近战公式基线，待裁定改值或改层数口径" />
+    <record itemName="狂械脉冲" sourceFile="data/items/武器_刀_镰刀.xml" balanceMode="exception" status="unresolved" exceptionCode="legacy-off-formula" note="存量数值偏离近战公式基线，待裁定改值或改层数口径" />
+    <record itemName="M.REAPER LAVAS" sourceFile="data/items/武器_刀_镰刀.xml" balanceMode="exception" status="unresolved" exceptionCode="legacy-off-formula" note="存量数值偏离近战公式基线，待裁定改值或改层数口径" />
+    <record itemName="SCYTHE SERPENTINE" sourceFile="data/items/武器_刀_镰刀.xml" balanceMode="exception" status="unresolved" exceptionCode="legacy-off-formula" note="存量数值偏离近战公式基线，待裁定改值或改层数口径" />
+    <record itemName="光镰天蝎" sourceFile="data/items/武器_刀_镰刀.xml" balanceMode="exception" status="unresolved" exceptionCode="legacy-off-formula" note="存量数值偏离近战公式基线，待裁定改值或改层数口径" />
+    <!-- 武器_刀_长刀.xml：17 条 exception 机械登记 -->
+    <record itemName="冰魄斩" sourceFile="data/items/武器_刀_长刀.xml" balanceMode="exception" status="unresolved" exceptionCode="legacy-off-formula" note="存量数值偏离近战公式基线，待裁定改值或改层数口径" />
+    <record itemName="冰魄神斩" sourceFile="data/items/武器_刀_长刀.xml" balanceMode="exception" status="unresolved" exceptionCode="legacy-off-formula" note="存量数值偏离近战公式基线，待裁定改值或改层数口径" />
+    <record itemName="虎彻" sourceFile="data/items/武器_刀_长刀.xml" balanceMode="exception" status="unresolved" exceptionCode="legacy-off-formula" note="存量数值偏离近战公式基线，待裁定改值或改层数口径" />
+    <record itemName="铉龙尺" sourceFile="data/items/武器_刀_长刀.xml" balanceMode="exception" status="unresolved" exceptionCode="legacy-off-formula" note="存量数值偏离近战公式基线，待裁定改值或改层数口径" />
+    <record itemName="镜之虎彻" sourceFile="data/items/武器_刀_长刀.xml" balanceMode="exception" status="unresolved" exceptionCode="legacy-off-formula" note="存量数值偏离近战公式基线，待裁定改值或改层数口径" />
+    <record itemName="上古饮血大太刀" sourceFile="data/items/武器_刀_长刀.xml" balanceMode="exception" status="unresolved" exceptionCode="legacy-off-formula" note="存量数值偏离近战公式基线，待裁定改值或改层数口径" />
+    <record itemName="热能武士刀" sourceFile="data/items/武器_刀_长刀.xml" balanceMode="exception" status="unresolved" exceptionCode="legacy-off-formula" note="存量数值偏离近战公式基线，待裁定改值或改层数口径" />
+    <record itemName="樱舞" sourceFile="data/items/武器_刀_长刀.xml" balanceMode="exception" status="unresolved" exceptionCode="legacy-off-formula" note="存量数值偏离近战公式基线，待裁定改值或改层数口径" />
+    <record itemName="超合金战刀修复版" sourceFile="data/items/武器_刀_长刀.xml" balanceMode="exception" status="unresolved" exceptionCode="legacy-off-formula" note="存量数值偏离近战公式基线，待裁定改值或改层数口径" />
+    <record itemName="仿·唐菖蒲Di Sword" sourceFile="data/items/武器_刀_长刀.xml" balanceMode="exception" status="unresolved" exceptionCode="legacy-off-formula" note="存量数值偏离近战公式基线，待裁定改值或改层数口径" />
+    <record itemName="唐菖蒲Di Sword" sourceFile="data/items/武器_刀_长刀.xml" balanceMode="exception" status="unresolved" exceptionCode="legacy-off-formula" note="存量数值偏离近战公式基线，待裁定改值或改层数口径" />
+    <record itemName="武神之刃" sourceFile="data/items/武器_刀_长刀.xml" balanceMode="exception" status="unresolved" exceptionCode="legacy-off-formula" note="存量数值偏离近战公式基线，待裁定改值或改层数口径" />
+    <record itemName="绯红女皇" sourceFile="data/items/武器_刀_长刀.xml" balanceMode="exception" status="unresolved" exceptionCode="legacy-off-formula" note="存量数值偏离近战公式基线，待裁定改值或改层数口径" />
+    <record itemName="叛逆之刃" sourceFile="data/items/武器_刀_长刀.xml" balanceMode="exception" status="unresolved" exceptionCode="legacy-off-formula" note="存量数值偏离近战公式基线，待裁定改值或改层数口径" />
+    <record itemName="高频村雨" sourceFile="data/items/武器_刀_长刀.xml" balanceMode="exception" status="unresolved" exceptionCode="legacy-off-formula" note="存量数值偏离近战公式基线，待裁定改值或改层数口径" />
+    <record itemName="輪" sourceFile="data/items/武器_刀_长刀.xml" balanceMode="exception" status="unresolved" exceptionCode="legacy-off-formula" note="存量数值偏离近战公式基线，待裁定改值或改层数口径" />
+    <record itemName="黑金古刀" sourceFile="data/items/武器_刀_长刀.xml" balanceMode="exception" status="unresolved" exceptionCode="legacy-off-formula" note="存量数值偏离近战公式基线，待裁定改值或改层数口径" />
+    <!-- 武器_刀_长枪.xml：13 条 exception 机械登记 -->
+    <record itemName="硬木长矛" sourceFile="data/items/武器_刀_长枪.xml" balanceMode="exception" status="unresolved" exceptionCode="legacy-off-formula" note="存量数值偏离近战公式基线，待裁定改值或改层数口径" />
+    <record itemName="铁杆长矛" sourceFile="data/items/武器_刀_长枪.xml" balanceMode="exception" status="unresolved" exceptionCode="legacy-off-formula" note="存量数值偏离近战公式基线，待裁定改值或改层数口径" />
+    <record itemName="公社打桩矛" sourceFile="data/items/武器_刀_长枪.xml" balanceMode="exception" status="unresolved" exceptionCode="legacy-off-formula" note="存量数值偏离近战公式基线，待裁定改值或改层数口径" />
+    <record itemName="黑铁重剑枪" sourceFile="data/items/武器_刀_长枪.xml" balanceMode="exception" status="unresolved" exceptionCode="legacy-off-formula" note="存量数值偏离近战公式基线，待裁定改值或改层数口径" />
+    <record itemName="西洋重剑枪" sourceFile="data/items/武器_刀_长枪.xml" balanceMode="exception" status="unresolved" exceptionCode="legacy-off-formula" note="存量数值偏离近战公式基线，待裁定改值或改层数口径" />
+    <record itemName="蛇矛一型" sourceFile="data/items/武器_刀_长枪.xml" balanceMode="exception" status="unresolved" exceptionCode="legacy-off-formula" note="存量数值偏离近战公式基线，待裁定改值或改层数口径" />
+    <record itemName="公社爆燃钻矛" sourceFile="data/items/武器_刀_长枪.xml" balanceMode="exception" status="unresolved" exceptionCode="legacy-off-formula" note="存量数值偏离近战公式基线，待裁定改值或改层数口径" />
+    <record itemName="马槊" sourceFile="data/items/武器_刀_长枪.xml" balanceMode="exception" status="unresolved" exceptionCode="legacy-off-formula" note="存量数值偏离近战公式基线，待裁定改值或改层数口径" />
+    <record itemName="方天画戟一型" sourceFile="data/items/武器_刀_长枪.xml" balanceMode="exception" status="unresolved" exceptionCode="legacy-off-formula" note="存量数值偏离近战公式基线，待裁定改值或改层数口径" />
+    <record itemName="剧毒蛇矛" sourceFile="data/items/武器_刀_长枪.xml" balanceMode="exception" status="unresolved" exceptionCode="legacy-off-formula" note="存量数值偏离近战公式基线，待裁定改值或改层数口径" />
+    <record itemName="冰锋翼枪" sourceFile="data/items/武器_刀_长枪.xml" balanceMode="exception" status="unresolved" exceptionCode="legacy-off-formula" note="存量数值偏离近战公式基线，待裁定改值或改层数口径" />
+    <record itemName="斩血乱刃戟" sourceFile="data/items/武器_刀_长枪.xml" balanceMode="exception" status="unresolved" exceptionCode="legacy-off-formula" note="存量数值偏离近战公式基线，待裁定改值或改层数口径" />
+    <record itemName="流星枪" sourceFile="data/items/武器_刀_长枪.xml" balanceMode="exception" status="unresolved" exceptionCode="legacy-off-formula" note="存量数值偏离近战公式基线，待裁定改值或改层数口径" />
+    <!-- 武器_刀_长柄.xml：12 条 exception 机械登记 -->
+    <record itemName="狸灰直刃" sourceFile="data/items/武器_刀_长柄.xml" balanceMode="exception" status="unresolved" exceptionCode="legacy-off-formula" note="存量数值偏离近战公式基线，待裁定改值或改层数口径" />
+    <record itemName="苍面银牙" sourceFile="data/items/武器_刀_长柄.xml" balanceMode="exception" status="unresolved" exceptionCode="legacy-off-formula" note="存量数值偏离近战公式基线，待裁定改值或改层数口径" />
+    <record itemName="长墨白铁" sourceFile="data/items/武器_刀_长柄.xml" balanceMode="exception" status="unresolved" exceptionCode="legacy-off-formula" note="存量数值偏离近战公式基线，待裁定改值或改层数口径" />
+    <record itemName="凤嘴刀" sourceFile="data/items/武器_刀_长柄.xml" balanceMode="exception" status="unresolved" exceptionCode="legacy-off-formula" note="存量数值偏离近战公式基线，待裁定改值或改层数口径" />
+    <record itemName="金龙刃一型" sourceFile="data/items/武器_刀_长柄.xml" balanceMode="exception" status="unresolved" exceptionCode="legacy-off-formula" note="存量数值偏离近战公式基线，待裁定改值或改层数口径" />
+    <record itemName="三戈戟二型" sourceFile="data/items/武器_刀_长柄.xml" balanceMode="exception" status="unresolved" exceptionCode="legacy-off-formula" note="存量数值偏离近战公式基线，待裁定改值或改层数口径" />
+    <record itemName="蛇矛二型" sourceFile="data/items/武器_刀_长柄.xml" balanceMode="exception" status="unresolved" exceptionCode="legacy-off-formula" note="存量数值偏离近战公式基线，待裁定改值或改层数口径" />
+    <record itemName="金龙刃二型" sourceFile="data/items/武器_刀_长柄.xml" balanceMode="exception" status="unresolved" exceptionCode="legacy-off-formula" note="存量数值偏离近战公式基线，待裁定改值或改层数口径" />
+    <record itemName="三尖两刃刀" sourceFile="data/items/武器_刀_长柄.xml" balanceMode="exception" status="unresolved" exceptionCode="legacy-off-formula" note="存量数值偏离近战公式基线，待裁定改值或改层数口径" />
+    <record itemName="寒天画戟" sourceFile="data/items/武器_刀_长柄.xml" balanceMode="exception" status="unresolved" exceptionCode="legacy-off-formula" note="存量数值偏离近战公式基线，待裁定改值或改层数口径" />
+    <record itemName="青龙偃月刀" sourceFile="data/items/武器_刀_长柄.xml" balanceMode="exception" status="unresolved" exceptionCode="legacy-off-formula" note="存量数值偏离近战公式基线，待裁定改值或改层数口径" />
+    <record itemName="烬灭裁决" sourceFile="data/items/武器_刀_长柄.xml" balanceMode="exception" status="unresolved" exceptionCode="legacy-off-formula" note="存量数值偏离近战公式基线，待裁定改值或改层数口径" />
+    <!-- 武器_刀_长棍.xml：8 条 exception 机械登记 -->
+    <record itemName="螺纹钢筋" sourceFile="data/items/武器_刀_长棍.xml" balanceMode="exception" status="unresolved" exceptionCode="legacy-off-formula" note="存量数值偏离近战公式基线，待裁定改值或改层数口径" />
+    <record itemName="铜头棍" sourceFile="data/items/武器_刀_长棍.xml" balanceMode="exception" status="unresolved" exceptionCode="legacy-off-formula" note="存量数值偏离近战公式基线，待裁定改值或改层数口径" />
+    <record itemName="金铁杖" sourceFile="data/items/武器_刀_长棍.xml" balanceMode="exception" status="unresolved" exceptionCode="legacy-off-formula" note="存量数值偏离近战公式基线，待裁定改值或改层数口径" />
+    <record itemName="无想新月棍" sourceFile="data/items/武器_刀_长棍.xml" balanceMode="exception" status="unresolved" exceptionCode="legacy-off-formula" note="存量数值偏离近战公式基线，待裁定改值或改层数口径" />
+    <record itemName="终极战斗仪" sourceFile="data/items/武器_刀_长棍.xml" balanceMode="exception" status="unresolved" exceptionCode="legacy-off-formula" note="存量数值偏离近战公式基线，待裁定改值或改层数口径" />
+    <record itemName="架海金梁" sourceFile="data/items/武器_刀_长棍.xml" balanceMode="exception" status="unresolved" exceptionCode="legacy-off-formula" note="存量数值偏离近战公式基线，待裁定改值或改层数口径" />
+    <record itemName="如意金箍棒（仿）" sourceFile="data/items/武器_刀_长棍.xml" balanceMode="exception" status="unresolved" exceptionCode="legacy-off-formula" note="存量数值偏离近战公式基线，待裁定改值或改层数口径" />
+    <record itemName="如意金箍棒" sourceFile="data/items/武器_刀_长棍.xml" balanceMode="exception" status="unresolved" exceptionCode="legacy-off-formula" note="存量数值偏离近战公式基线，待裁定改值或改层数口径" />
+    <!-- 武器_刀_默认.xml：9 条 exception 机械登记 -->
+    <record itemName="双面斧" sourceFile="data/items/武器_刀_默认.xml" balanceMode="exception" status="unresolved" exceptionCode="legacy-off-formula" note="存量数值偏离近战公式基线，待裁定改值或改层数口径" />
+    <record itemName="眼Di Sword (未Real boot)" sourceFile="data/items/武器_刀_默认.xml" balanceMode="exception" status="unresolved" exceptionCode="legacy-off-formula" note="存量数值偏离近战公式基线，待裁定改值或改层数口径" />
+    <record itemName="眼Di Sword (Real boot)" sourceFile="data/items/武器_刀_默认.xml" balanceMode="exception" status="unresolved" exceptionCode="legacy-off-formula" note="存量数值偏离近战公式基线，待裁定改值或改层数口径" />
+    <record itemName="桔色电子吉他" sourceFile="data/items/武器_刀_默认.xml" balanceMode="exception" status="unresolved" exceptionCode="legacy-off-formula" note="存量数值偏离近战公式基线，待裁定改值或改层数口径" />
+    <record itemName="异形毒刺" sourceFile="data/items/武器_刀_默认.xml" balanceMode="exception" status="unresolved" exceptionCode="legacy-off-formula" note="存量数值偏离近战公式基线，待裁定改值或改层数口径" />
+    <record itemName="异形女王毒刺" sourceFile="data/items/武器_刀_默认.xml" balanceMode="exception" status="unresolved" exceptionCode="legacy-off-formula" note="存量数值偏离近战公式基线，待裁定改值或改层数口径" />
+    <record itemName="诛神剑" sourceFile="data/items/武器_刀_默认.xml" balanceMode="exception" status="unresolved" exceptionCode="legacy-off-formula" note="存量数值偏离近战公式基线，待裁定改值或改层数口径" />
+    <record itemName="光子粉碎刃" sourceFile="data/items/武器_刀_默认.xml" balanceMode="exception" status="unresolved" exceptionCode="npc-only" note="NPC 专用装备，无玩家获取渠道" />
+    <record itemName="一把奇怪的尤克里里" sourceFile="data/items/武器_刀_默认.xml" balanceMode="exception" status="unresolved" exceptionCode="unobtainable-novelty" note="描述声明正常流程无法获取/使用，免平衡标定" />
+  </records>
+</meleeBalancePlan>

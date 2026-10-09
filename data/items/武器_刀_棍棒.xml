@@ -31,6 +31,24 @@
       </skillmultipliers>
       <bladeCount>3</bladeCount>
     </data>
+    <balance>
+      <formulaFamily>melee</formulaFamily>
+      <schemaVersion>1</schemaVersion>
+      <formulaVersion>1</formulaVersion>
+      <workbookVersion>1</workbookVersion>
+      <weightLayers>0</weightLayers>
+      <damageTypeFactor>1</damageTypeFactor>
+      <categoryFactor>1</categoryFactor>
+      <balanceMode>exception</balanceMode>
+      <recommendedSharpness>23</recommendedSharpness>
+      <recommendedGoldPrice>7800</recommendedGoldPrice>
+      <recommendedKPointPrice>240</recommendedKPointPrice>
+      <marketPrice>8200</marketPrice>
+      <status>unresolved</status>
+      <inputDigest>fnv1a32:a98fca72</inputDigest>
+      <sourceDigest>sha256:eea3a2afadaac4d2c69a687760eade9a21286407bc35bac17836ba235f0059ff</sourceDigest>
+      <auditRef>melee:水管</auditRef>
+    </balance>
   </item>
  <item>
       <name>锤子</name>
@@ -58,6 +76,24 @@
         <defence>0</defence>
         <bladeCount>2</bladeCount>
       </data>
+      <balance>
+        <formulaFamily>melee</formulaFamily>
+        <schemaVersion>1</schemaVersion>
+        <formulaVersion>1</formulaVersion>
+        <workbookVersion>1</workbookVersion>
+        <weightLayers>0</weightLayers>
+        <damageTypeFactor>1</damageTypeFactor>
+        <categoryFactor>1</categoryFactor>
+        <balanceMode>exception</balanceMode>
+        <recommendedSharpness>42</recommendedSharpness>
+        <recommendedGoldPrice>11700</recommendedGoldPrice>
+        <recommendedKPointPrice>360</recommendedKPointPrice>
+        <marketPrice>16800</marketPrice>
+        <status>unresolved</status>
+        <inputDigest>fnv1a32:54c9a02f</inputDigest>
+        <sourceDigest>sha256:8029f148163fef12ab466a37d0bbb000eb75b81e23dcb51b9c6052f4ed429354</sourceDigest>
+        <auditRef>melee:锤子</auditRef>
+      </balance>
     </item>
     <item>
       <name>木制球棒</name>
@@ -81,6 +117,24 @@
         <power>45</power>
         <bladeCount>3</bladeCount>
       </data>
+      <balance>
+        <formulaFamily>melee</formulaFamily>
+        <schemaVersion>1</schemaVersion>
+        <formulaVersion>1</formulaVersion>
+        <workbookVersion>1</workbookVersion>
+        <weightLayers>0</weightLayers>
+        <damageTypeFactor>1</damageTypeFactor>
+        <categoryFactor>1</categoryFactor>
+        <balanceMode>exception</balanceMode>
+        <recommendedSharpness>56</recommendedSharpness>
+        <recommendedGoldPrice>19500</recommendedGoldPrice>
+        <recommendedKPointPrice>600</recommendedKPointPrice>
+        <marketPrice>12000</marketPrice>
+        <status>unresolved</status>
+        <inputDigest>fnv1a32:577e448e</inputDigest>
+        <sourceDigest>sha256:52dc088fa3a43989bbc457879ef34c03f35bc3c527ec372dda534a237d8031c5</sourceDigest>
+        <auditRef>melee:木制球棒</auditRef>
+      </balance>
     </item>
     <item>
       <name>铁钉球棒</name>
@@ -107,6 +161,24 @@
         <defence>0</defence>
         <bladeCount>3</bladeCount>
       </data>
+      <balance>
+        <formulaFamily>melee</formulaFamily>
+        <schemaVersion>1</schemaVersion>
+        <formulaVersion>1</formulaVersion>
+        <workbookVersion>1</workbookVersion>
+        <weightLayers>0</weightLayers>
+        <damageTypeFactor>1</damageTypeFactor>
+        <categoryFactor>1</categoryFactor>
+        <balanceMode>exception</balanceMode>
+        <recommendedSharpness>109</recommendedSharpness>
+        <recommendedGoldPrice>39000</recommendedGoldPrice>
+        <recommendedKPointPrice>1200</recommendedKPointPrice>
+        <marketPrice>21600</marketPrice>
+        <status>unresolved</status>
+        <inputDigest>fnv1a32:ed590113</inputDigest>
+        <sourceDigest>sha256:012d0e3a6ed9668eced723758fa290d420758340d8510b9aacab7b625b4f110e</sourceDigest>
+        <auditRef>melee:铁钉球棒</auditRef>
+      </balance>
     </item>
    <item>
     <name>诺亚镇暴棍</name>
@@ -132,6 +204,24 @@
       <magictype>电</magictype>
       <bladeCount>3</bladeCount>
     </data>
+    <balance>
+      <formulaFamily>melee</formulaFamily>
+      <schemaVersion>1</schemaVersion>
+      <formulaVersion>1</formulaVersion>
+      <workbookVersion>1</workbookVersion>
+      <weightLayers>0</weightLayers>
+      <damageTypeFactor>1</damageTypeFactor>
+      <categoryFactor>1</categoryFactor>
+      <balanceMode>exception</balanceMode>
+      <recommendedSharpness>380</recommendedSharpness>
+      <recommendedGoldPrice>136500</recommendedGoldPrice>
+      <recommendedKPointPrice>4200</recommendedKPointPrice>
+      <marketPrice>218400</marketPrice>
+      <status>unresolved</status>
+      <inputDigest>fnv1a32:f08c350c</inputDigest>
+      <sourceDigest>sha256:1fa1122af8d0f652028bd9549a211ffd2451070a89bdf9d93c985c1f995abf2b</sourceDigest>
+      <auditRef>melee:诺亚镇暴棍</auditRef>
+    </balance>
   </item>
    <item>
     <name>精钢锏</name>
@@ -161,6 +251,24 @@
       <evasion>10</evasion>
       <bladeCount>3</bladeCount>
     </data>
+    <balance>
+      <formulaFamily>melee</formulaFamily>
+      <schemaVersion>1</schemaVersion>
+      <formulaVersion>1</formulaVersion>
+      <workbookVersion>1</workbookVersion>
+      <weightLayers>0</weightLayers>
+      <damageTypeFactor>1</damageTypeFactor>
+      <categoryFactor>1</categoryFactor>
+      <balanceMode>exception</balanceMode>
+      <recommendedSharpness>201</recommendedSharpness>
+      <recommendedGoldPrice>70200</recommendedGoldPrice>
+      <recommendedKPointPrice>2160</recommendedKPointPrice>
+      <marketPrice>70000</marketPrice>
+      <status>unresolved</status>
+      <inputDigest>fnv1a32:7eb6ac22</inputDigest>
+      <sourceDigest>sha256:402e76aa80d6270715cb0c69b635515a39aa7874552dc77529ced3a636be7a7c</sourceDigest>
+      <auditRef>melee:精钢锏</auditRef>
+    </balance>
   </item>
   <item>
     <name>电子音乐键盘</name>
@@ -188,6 +296,24 @@
       </skillmultipliers>
       <bladeCount>3</bladeCount>
     </data>
+    <balance>
+      <formulaFamily>melee</formulaFamily>
+      <schemaVersion>1</schemaVersion>
+      <formulaVersion>1</formulaVersion>
+      <workbookVersion>1</workbookVersion>
+      <weightLayers>0</weightLayers>
+      <damageTypeFactor>1</damageTypeFactor>
+      <categoryFactor>1</categoryFactor>
+      <balanceMode>exception</balanceMode>
+      <recommendedSharpness>138</recommendedSharpness>
+      <recommendedGoldPrice>46800</recommendedGoldPrice>
+      <recommendedKPointPrice>1440</recommendedKPointPrice>
+      <marketPrice>23400</marketPrice>
+      <status>unresolved</status>
+      <inputDigest>fnv1a32:177cd653</inputDigest>
+      <sourceDigest>sha256:06a3a627ffc4091875f240a36f6e5d5958008a017add2436d68e5b8a2b1cd866</sourceDigest>
+      <auditRef>melee:电子音乐键盘</auditRef>
+    </balance>
   </item>
   <item>
     <name>红色电子吉他</name>
@@ -215,5 +341,23 @@
       </skillmultipliers>
       <bladeCount>3</bladeCount>
     </data>
+    <balance>
+      <formulaFamily>melee</formulaFamily>
+      <schemaVersion>1</schemaVersion>
+      <formulaVersion>1</formulaVersion>
+      <workbookVersion>1</workbookVersion>
+      <weightLayers>0</weightLayers>
+      <damageTypeFactor>1</damageTypeFactor>
+      <categoryFactor>1</categoryFactor>
+      <balanceMode>exception</balanceMode>
+      <recommendedSharpness>138</recommendedSharpness>
+      <recommendedGoldPrice>46800</recommendedGoldPrice>
+      <recommendedKPointPrice>1440</recommendedKPointPrice>
+      <marketPrice>23400</marketPrice>
+      <status>unresolved</status>
+      <inputDigest>fnv1a32:d1d98a89</inputDigest>
+      <sourceDigest>sha256:09abdcd1a615ca9c382cb6a3cf3b83ada4a81283c92bbe19723c52666e084d45</sourceDigest>
+      <auditRef>melee:红色电子吉他</auditRef>
+    </balance>
   </item>
 </root>

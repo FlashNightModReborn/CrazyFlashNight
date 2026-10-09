@@ -69,14 +69,28 @@ const parser = new XMLParser({
   trimValues: true
 });
 
-/** 从 XML 中发现所有带 balance 的 item，并逐有效 data profile 严格解析。 */
+/** item 根的 balance 归属家族；无 balance 或非 weapon 家族均不属于武器审计域。 */
+function weaponBalanceFamily(item: Record<string, unknown>): "weapon" | "none" | "foreign" {
+  const balance = item.balance;
+  if (balance === undefined) return "none";
+  if (isObject(balance)) {
+    const family = balance.formulaFamily;
+    if (typeof family === "string" && family.trim() !== "") {
+      return family === "weapon" ? "weapon" : "foreign";
+    }
+  }
+  // 无 formulaFamily 的残缺 balance 视为武器域待解析，交给严格解析报错
+  return "weapon";
+}
+
+/** 从 XML 中发现所有带 weapon 家族 balance 的 item，并逐有效 data profile 严格解析。 */
 export function parseWeaponBalanceItemsFromXml(
   source: string
 ): ParsedWeaponBalanceItem[] {
   const parsed = parser.parse(source) as unknown;
   const items: ParsedWeaponBalanceItem[] = [];
   for (const item of collectWeaponItemObjects(parsed)) {
-    if (item.balance === undefined) continue;
+    if (weaponBalanceFamily(item) !== "weapon") continue;
     items.push(...parseWeaponBalanceItemObject(item));
   }
   return items;
@@ -347,7 +361,8 @@ export function buildWeaponBalanceSyncPlansFromXml(
   return collectWeaponItemObjects(parsed)
     .filter((item) => {
       const itemName = normalizeItemName(item.name);
-      return item.balance !== undefined || ledgerItems.has(itemName);
+      // 其他家族（melee/explosives…）的 balance 不属于武器账本管辖
+      return weaponBalanceFamily(item) === "weapon" || ledgerItems.has(itemName);
     })
     .map((item) => buildWeaponBalanceSyncPlanForItemObject(item, ledger));
 }
@@ -532,7 +547,7 @@ export function applyWeaponBalanceSyncPlansToXml(
       `item (${itemBlock.slice(0, 80).replace(/\s+/g, " ").trim()})`
     );
     const itemName = normalizeItemName(item.name);
-    if (item.balance === undefined && !ledgerItems.has(itemName)) return itemBlock;
+    if (weaponBalanceFamily(item) !== "weapon" && !ledgerItems.has(itemName)) return itemBlock;
 
     const balancePattern = /^([ \t]*)<balance\b[^>]*>[\s\S]*?^[ \t]*<\/balance>/m;
     const existingBalance = balancePattern.exec(itemBlock);

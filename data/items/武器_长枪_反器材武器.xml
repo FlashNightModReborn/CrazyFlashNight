@@ -45,6 +45,27 @@
       <criticalhit>满血暴击</criticalhit>
       <reloadPenalty>50</reloadPenalty>
     </data>
+    <balance>
+      <formulaFamily>weapon</formulaFamily>
+      <schemaVersion>1</schemaVersion>
+      <workbookVersion>1</workbookVersion>
+      <profiles>
+        <data>
+          <dualWield>1</dualWield>
+          <pierce>1</pierce>
+          <damageType>1</damageType>
+          <shotgun>1</shotgun>
+          <magPrice>1000</magPrice>
+          <weightLayers>0</weightLayers>
+          <category>1</category>
+          <formula>1</formula>
+          <status>unresolved</status>
+          <displayEligible>false</displayEligible>
+          <inputDigest>fnv1a32:4c77df7c</inputDigest>
+          <auditRef>weapon:061ABSR:data</auditRef>
+        </data>
+      </profiles>
+    </balance>
   </item>
   <item weapontype="反器材武器">
     <name>GM6_LYNX</name>
@@ -82,6 +103,27 @@
       <criticalhit>12</criticalhit>
       <reloadPenalty>50</reloadPenalty>
     </data>
+    <balance>
+      <formulaFamily>weapon</formulaFamily>
+      <schemaVersion>1</schemaVersion>
+      <workbookVersion>1</workbookVersion>
+      <profiles>
+        <data>
+          <dualWield>1</dualWield>
+          <pierce>1</pierce>
+          <damageType>2</damageType>
+          <shotgun>1</shotgun>
+          <magPrice>1000</magPrice>
+          <weightLayers>1</weightLayers>
+          <category>1</category>
+          <formula>1</formula>
+          <status>unresolved</status>
+          <displayEligible>false</displayEligible>
+          <inputDigest>fnv1a32:1f44019c</inputDigest>
+          <auditRef>weapon:GM6_LYNX:data</auditRef>
+        </data>
+      </profiles>
+    </balance>
     <lifecycle>
       <attr_0>
         <skillInteraction>independent</skillInteraction>
@@ -133,6 +175,27 @@
       <criticalhit>满血暴击</criticalhit>
       <reloadPenalty>50</reloadPenalty>
     </data>
+    <balance>
+      <formulaFamily>weapon</formulaFamily>
+      <schemaVersion>1</schemaVersion>
+      <workbookVersion>1</workbookVersion>
+      <profiles>
+        <data>
+          <dualWield>1</dualWield>
+          <pierce>2</pierce>
+          <damageType>1</damageType>
+          <shotgun>1</shotgun>
+          <magPrice>1000</magPrice>
+          <weightLayers>0</weightLayers>
+          <category>1</category>
+          <formula>1</formula>
+          <status>unresolved</status>
+          <displayEligible>false</displayEligible>
+          <inputDigest>fnv1a32:ce4cc5a1</inputDigest>
+          <auditRef>weapon:巴雷特:data</auditRef>
+        </data>
+      </profiles>
+    </balance>
   </item>
   <item weapontype="反器材武器">
     <name>ASH12.7</name>
@@ -165,6 +228,27 @@
       <impact>5</impact>
       <reloadPenalty>50</reloadPenalty>
     </data>
+    <balance>
+      <formulaFamily>weapon</formulaFamily>
+      <schemaVersion>1</schemaVersion>
+      <workbookVersion>1</workbookVersion>
+      <profiles>
+        <data>
+          <dualWield>1</dualWield>
+          <pierce>1</pierce>
+          <damageType>1</damageType>
+          <shotgun>1</shotgun>
+          <magPrice>1000</magPrice>
+          <weightLayers>0</weightLayers>
+          <category>1</category>
+          <formula>1</formula>
+          <status>unresolved</status>
+          <displayEligible>false</displayEligible>
+          <inputDigest>fnv1a32:f01f3561</inputDigest>
+          <auditRef>weapon:ASH12.7:data</auditRef>
+        </data>
+      </profiles>
+    </balance>
   </item>
   <item weapontype="反器材武器">
     <name>T181</name>
@@ -199,6 +283,27 @@
       <mp>-200</mp>
       <reloadPenalty>50</reloadPenalty>
     </data>
+    <balance>
+      <formulaFamily>weapon</formulaFamily>
+      <schemaVersion>1</schemaVersion>
+      <workbookVersion>1</workbookVersion>
+      <profiles>
+        <data>
+          <dualWield>1</dualWield>
+          <pierce>1</pierce>
+          <damageType>1</damageType>
+          <shotgun>1</shotgun>
+          <magPrice>1000</magPrice>
+          <weightLayers>0</weightLayers>
+          <category>1</category>
+          <formula>1</formula>
+          <status>unresolved</status>
+          <displayEligible>false</displayEligible>
+          <inputDigest>fnv1a32:b478e753</inputDigest>
+          <auditRef>weapon:T181:data</auditRef>
+        </data>
+      </profiles>
+    </balance>
   </item>
   <item weapontype="反器材武器">
     <name>T181C</name>
@@ -234,6 +339,27 @@
       <mp>-150</mp>
       <reloadPenalty>50</reloadPenalty>
     </data>
+    <balance>
+      <formulaFamily>weapon</formulaFamily>
+      <schemaVersion>1</schemaVersion>
+      <workbookVersion>1</workbookVersion>
+      <profiles>
+        <data>
+          <dualWield>1</dualWield>
+          <pierce>1</pierce>
+          <damageType>1</damageType>
+          <shotgun>1</shotgun>
+          <magPrice>1000</magPrice>
+          <weightLayers>0</weightLayers>
+          <category>1</category>
+          <formula>1</formula>
+          <status>unresolved</status>
+          <displayEligible>false</displayEligible>
+          <inputDigest>fnv1a32:862f08d8</inputDigest>
+          <auditRef>weapon:T181C:data</auditRef>
+        </data>
+      </profiles>
+    </balance>
   </item>
   <item weapontype="反器材武器">
     <name>巴雷特印花集</name>
@@ -270,6 +396,27 @@
       <criticalhit>满血暴击</criticalhit>
       <reloadPenalty>50</reloadPenalty>
     </data>
+    <balance>
+      <formulaFamily>weapon</formulaFamily>
+      <schemaVersion>1</schemaVersion>
+      <workbookVersion>1</workbookVersion>
+      <profiles>
+        <data>
+          <dualWield>1</dualWield>
+          <pierce>1</pierce>
+          <damageType>1</damageType>
+          <shotgun>1</shotgun>
+          <magPrice>1000</magPrice>
+          <weightLayers>1</weightLayers>
+          <category>1</category>
+          <formula>1</formula>
+          <status>unresolved</status>
+          <displayEligible>false</displayEligible>
+          <inputDigest>fnv1a32:0fdf98e7</inputDigest>
+          <auditRef>weapon:巴雷特印花集:data</auditRef>
+        </data>
+      </profiles>
+    </balance>
   </item>
   <item weapontype="反器材武器">
     <name>M82A1加强版</name>
@@ -305,6 +452,27 @@
       <criticalhit>满血暴击</criticalhit>
       <reloadPenalty>50</reloadPenalty>
     </data>
+    <balance>
+      <formulaFamily>weapon</formulaFamily>
+      <schemaVersion>1</schemaVersion>
+      <workbookVersion>1</workbookVersion>
+      <profiles>
+        <data>
+          <dualWield>1</dualWield>
+          <pierce>1</pierce>
+          <damageType>1</damageType>
+          <shotgun>1</shotgun>
+          <magPrice>1000</magPrice>
+          <weightLayers>1</weightLayers>
+          <category>1</category>
+          <formula>1</formula>
+          <status>unresolved</status>
+          <displayEligible>false</displayEligible>
+          <inputDigest>fnv1a32:4655c91b</inputDigest>
+          <auditRef>weapon:M82A1加强版:data</auditRef>
+        </data>
+      </profiles>
+    </balance>
   </item>
   <item weapontype="反器材武器">
     <name>战术巴雷特</name>
@@ -343,6 +511,27 @@
       <criticalhit>满血暴击</criticalhit>
       <reloadPenalty>50</reloadPenalty>
     </data>
+    <balance>
+      <formulaFamily>weapon</formulaFamily>
+      <schemaVersion>1</schemaVersion>
+      <workbookVersion>1</workbookVersion>
+      <profiles>
+        <data>
+          <dualWield>1</dualWield>
+          <pierce>1</pierce>
+          <damageType>1</damageType>
+          <shotgun>1</shotgun>
+          <magPrice>1000</magPrice>
+          <weightLayers>2</weightLayers>
+          <category>1</category>
+          <formula>1</formula>
+          <status>unresolved</status>
+          <displayEligible>false</displayEligible>
+          <inputDigest>fnv1a32:94f455d3</inputDigest>
+          <auditRef>weapon:战术巴雷特:data</auditRef>
+        </data>
+      </profiles>
+    </balance>
     <lifecycle>
       <attr_0>
         <skillInteraction>independent</skillInteraction>
@@ -396,5 +585,26 @@
       <criticalhit>满血暴击</criticalhit>
       <reloadPenalty>50</reloadPenalty>
     </data>
+    <balance>
+      <formulaFamily>weapon</formulaFamily>
+      <schemaVersion>1</schemaVersion>
+      <workbookVersion>1</workbookVersion>
+      <profiles>
+        <data>
+          <dualWield>1</dualWield>
+          <pierce>1</pierce>
+          <damageType>1</damageType>
+          <shotgun>1</shotgun>
+          <magPrice>8000</magPrice>
+          <weightLayers>1</weightLayers>
+          <category>1</category>
+          <formula>1</formula>
+          <status>unresolved</status>
+          <displayEligible>false</displayEligible>
+          <inputDigest>fnv1a32:e6588427</inputDigest>
+          <auditRef>weapon:高斯枪:data</auditRef>
+        </data>
+      </profiles>
+    </balance>
   </item>
 </root>

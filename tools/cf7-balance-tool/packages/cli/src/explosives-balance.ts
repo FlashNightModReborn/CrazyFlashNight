@@ -3,24 +3,25 @@ import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { XMLParser } from "fast-xml-parser";
-import {
-  computePotionV2Row,
-  type PotionV2Input,
-  type PotionV2Output,
-} from "@cf7-balance-tool/core";
+import { computeExplosivesRow, type ExplosivesInput, type ExplosivesOutput } from "@cf7-balance-tool/core";
 
-const FORMULA_FAMILY = "potion";
+const FORMULA_FAMILY = "explosives";
 const SCHEMA_VERSION = 1;
-const FORMULA_VERSION = 2;
+const FORMULA_VERSION = 1;
+const WORKBOOK_VERSION = 1;
 const TOOL_ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "../../..");
 const REPO_ROOT = path.resolve(TOOL_ROOT, "../..");
-const PLAN_PATH = path.join(TOOL_ROOT, "records", "potion-balance-plan.xml");
-const AUDIT_PATH = path.join(TOOL_ROOT, "records", "potion-balance-audit.xml");
+const PLAN_PATH = path.join(TOOL_ROOT, "records", "explosives-balance-plan.xml");
+const AUDIT_PATH = path.join(TOOL_ROOT, "records", "explosives-balance-audit.xml");
 const WORKBOOK_PATH = path.join(
   REPO_ROOT,
   "0.说明文件与教程",
   "武器-技能数值-价格-合成表填写的参考公式（修改后请勿上传git）.xlsx",
 );
+
+const POWER_FIT_TOLERANCE = 0.05;
+const ADOPTED_PRICE_BAND = { min: 0.8, max: 1.25 };
+const KPOINT_PRICE_TOLERANCE = 0.05;
 
 const parser = new XMLParser({
   ignoreAttributes: false,
@@ -32,31 +33,39 @@ const parser = new XMLParser({
 interface PlanRecord {
   itemName: string;
   sourceFile: string;
-  sourceLevel: number;
-  domain: string;
+  weightLayers: number;
   balanceMode: "formula" | "exception";
-  status: "proposed" | "runtime-test-pending";
+  status: "confirmed" | "unresolved" | "proposed";
+  adoptedGoldPrice?: number;
+  expectedKPointPrice?: number;
+  kpointEvidenceRef?: string;
   exceptionCode?: string;
   note?: string;
 }
 
 interface Plan {
-  authorityStatus: string;
-  sourceWorkbookSha256: string;
+  workbookVersion: number;
+  workbookSha256: string;
+  coverageFiles: string[];
   records: PlanRecord[];
+}
+
+interface ExplosiveItemStats {
+  level: number;
+  magPrice: number;
+  magSize: number;
+  power: number;
 }
 
 interface ItemSnapshot {
   itemName: string;
   sourceFile: string;
   marketPrice: number;
-  itemBlock: string;
   cleanItemBlock: string;
-  input: PotionV2Input;
-  output: PotionV2Output;
+  stats: ExplosiveItemStats;
+  output: ExplosivesOutput;
   inputDigest: string;
   sourceDigest: string;
-  hasUnsupportedFormulaEffect: boolean;
 }
 
 interface AuditRecord extends PlanRecord, ItemSnapshot {
@@ -66,7 +75,7 @@ interface AuditRecord extends PlanRecord, ItemSnapshot {
 function main(): void {
   const command = process.argv[2] ?? "check";
   if (command !== "check" && command !== "sync") {
-    throw new Error("用法: potion-balance.ts [check|sync]");
+    throw new Error("用法: explosives-balance.ts [check|sync]");
   }
 
   const plan = readPlan();
@@ -74,14 +83,14 @@ function main(): void {
   const records = buildAuditRecords(plan);
   verifyCoverage(plan, records);
   const auditXml = buildAuditXml(plan, records);
-  const syncedFiles = buildSyncedItemFiles(plan, records);
+  const syncedFiles = buildSyncedItemFiles(records);
 
   if (command === "sync") {
     fs.writeFileSync(AUDIT_PATH, auditXml, "utf8");
     for (const [absolutePath, source] of syncedFiles) {
       fs.writeFileSync(absolutePath, source, "utf8");
     }
-    console.log(`potion-balance-sync: ${records.length} records, ${syncedFiles.size} item files`);
+    console.log(`explosives-balance-sync: ${records.length} records, ${syncedFiles.size} item files`);
     return;
   }
 
@@ -92,92 +101,102 @@ function main(): void {
   if (currentAudit !== normalizeNewlines(auditXml)) {
     errors.push("审计账本不是 plan 与当前物品数据的最新派生结果");
   }
-
   for (const [absolutePath, expected] of syncedFiles) {
     const current = normalizeNewlines(fs.readFileSync(absolutePath, "utf8"));
     if (current !== normalizeNewlines(expected)) {
       errors.push(`${path.relative(REPO_ROOT, absolutePath)} 的 <balance> 摘要已漂移`);
     }
   }
-
   if (errors.length > 0) {
-    throw new Error(`${errors.join("\n")}\n请运行 npm run potion-balance-sync`);
+    throw new Error(`${errors.join("\n")}\n请运行 npm run explosives-balance-sync`);
   }
-  console.log(`potion-balance-check: ${records.length}/${records.length} records verified`);
+  console.log(`explosives-balance-check: ${records.length}/${records.length} records verified`);
 }
 
 function readPlan(): Plan {
   const parsed = parser.parse(fs.readFileSync(PLAN_PATH, "utf8")) as Record<string, unknown>;
-  const root = requireObject(parsed.potionBalancePlan, "potionBalancePlan");
-  const recordsContainer = requireObject(root.records, "potionBalancePlan.records");
-  const rawRecords = asArray(recordsContainer.record);
+  const root = requireObject(parsed.explosivesBalancePlan, "explosivesBalancePlan");
+  if (String(root.formulaFamily ?? "") !== FORMULA_FAMILY) {
+    throw new Error("explosivesBalancePlan.formulaFamily 必须为 explosives");
+  }
+  if (readNumber(root.schemaVersion, "schemaVersion") !== SCHEMA_VERSION) {
+    throw new Error("explosivesBalancePlan.schemaVersion 不受支持");
+  }
+  if (readNumber(root.formulaVersion, "formulaVersion") !== FORMULA_VERSION) {
+    throw new Error("explosivesBalancePlan.formulaVersion 不受支持");
+  }
+  const workbookVersion = readNumber(root.workbookVersion, "workbookVersion");
+  const workbookSha256 = String(root.workbookSha256 ?? "");
+  if (!/^[0-9A-F]{64}$/.test(workbookSha256)) {
+    throw new Error("workbookSha256 必须是大写 SHA-256");
+  }
+  const coverageContainer = root.coverageFiles;
+  const coverageFiles =
+    coverageContainer === undefined || coverageContainer === null || coverageContainer === ""
+      ? []
+      : asArray(requireObject(coverageContainer, "coverageFiles").file).map((entry) =>
+          readText(entry, "coverageFiles.file"),
+        );
+  const rawRecords = asArray(requireObject(root.records, "records").record);
   const records = rawRecords.map((raw, index) => parsePlanRecord(raw, index));
-
-  const formulaFamily = String(root.formulaFamily ?? "");
-  const schemaVersion = readNumber(root.schemaVersion, "schemaVersion");
-  const formulaVersion = readNumber(root.formulaVersion, "formulaVersion");
-  if (formulaFamily !== FORMULA_FAMILY || schemaVersion !== SCHEMA_VERSION || formulaVersion !== FORMULA_VERSION) {
-    throw new Error("potionBalancePlan 的公式族或版本不受当前实现支持");
-  }
-
-  const authorityStatus = String(root.authorityStatus ?? "");
-  const sourceWorkbookSha256 = String(root.sourceWorkbookSha256 ?? "");
-  if (authorityStatus !== "workbook-registration-pending") {
-    throw new Error("当前只允许显式的 workbook-registration-pending 提案状态");
-  }
-  if (!/^[0-9A-F]{64}$/.test(sourceWorkbookSha256)) {
-    throw new Error("sourceWorkbookSha256 必须是大写 SHA-256");
-  }
-
   const identities = new Set<string>();
   for (const record of records) {
-    if (identities.has(record.itemName)) throw new Error(`重复的药剂记录: ${record.itemName}`);
+    if (identities.has(record.itemName)) throw new Error(`重复的爆炸类记录: ${record.itemName}`);
     identities.add(record.itemName);
   }
-  return { authorityStatus, sourceWorkbookSha256, records };
+  return { workbookVersion, workbookSha256, coverageFiles, records };
 }
 
 function parsePlanRecord(raw: unknown, index: number): PlanRecord {
   const source = requireObject(raw, `records.record[${index}]`);
-  const balanceMode = String(source.balanceMode ?? "") as PlanRecord["balanceMode"];
+  const balanceMode = String(source.balanceMode ?? "formula") as PlanRecord["balanceMode"];
   const status = String(source.status ?? "") as PlanRecord["status"];
   if (balanceMode !== "formula" && balanceMode !== "exception") {
     throw new Error(`records.record[${index}].balanceMode 无效`);
   }
-  if (status !== "proposed" && status !== "runtime-test-pending") {
+  if (status !== "confirmed" && status !== "unresolved" && status !== "proposed") {
     throw new Error(`records.record[${index}].status 无效`);
   }
-
   const record: PlanRecord = {
     itemName: readText(source.itemName, `records.record[${index}].itemName`),
     sourceFile: readText(source.sourceFile, `records.record[${index}].sourceFile`),
-    sourceLevel: readNumber(source.sourceLevel, `records.record[${index}].sourceLevel`),
-    domain: readText(source.domain, `records.record[${index}].domain`),
+    weightLayers: readNumber(source.weightLayers ?? 0, `records.record[${index}].weightLayers`),
     balanceMode,
     status,
   };
+  if (source.adoptedGoldPrice !== undefined) {
+    record.adoptedGoldPrice = readNumber(source.adoptedGoldPrice, `${record.itemName}.adoptedGoldPrice`);
+  }
+  if (source.expectedKPointPrice !== undefined) {
+    record.expectedKPointPrice = readNumber(
+      source.expectedKPointPrice,
+      `${record.itemName}.expectedKPointPrice`,
+    );
+  }
+  if (source.kpointEvidenceRef !== undefined) record.kpointEvidenceRef = String(source.kpointEvidenceRef);
   if (source.exceptionCode !== undefined) record.exceptionCode = String(source.exceptionCode);
   if (source.note !== undefined) record.note = String(source.note);
-  if (!Number.isInteger(record.sourceLevel) || record.sourceLevel < 0) {
-    throw new Error(`${record.itemName}: sourceLevel 必须是非负整数`);
-  }
   if (record.balanceMode === "exception" && !record.exceptionCode) {
     throw new Error(`${record.itemName}: exception 记录缺少 exceptionCode`);
+  }
+  if ((record.expectedKPointPrice === undefined) !== (record.kpointEvidenceRef === undefined)) {
+    throw new Error(`${record.itemName}: expectedKPointPrice 与 kpointEvidenceRef 必须成对出现`);
   }
   return record;
 }
 
 function verifyWorkbookSnapshot(plan: Plan): void {
   const actual = crypto.createHash("sha256").update(fs.readFileSync(WORKBOOK_PATH)).digest("hex").toUpperCase();
-  if (actual !== plan.sourceWorkbookSha256) {
-    throw new Error(`工作簿快照漂移: plan=${plan.sourceWorkbookSha256}, actual=${actual}`);
+  if (actual !== plan.workbookSha256) {
+    throw new Error(`工作簿快照漂移: plan=${plan.workbookSha256}, actual=${actual}`);
   }
 }
 
 function buildAuditRecords(plan: Plan): AuditRecord[] {
   const fileCache = new Map<string, Map<string, string>>();
+  const kshopCache = new Map<string, Map<string, number>>();
   return plan.records.map((record) => {
-    const absolutePath = path.join(REPO_ROOT, "data", "items", record.sourceFile);
+    const absolutePath = path.join(REPO_ROOT, record.sourceFile);
     let blocks = fileCache.get(absolutePath);
     if (!blocks) {
       blocks = indexItemBlocks(fs.readFileSync(absolutePath, "utf8"), record.sourceFile);
@@ -186,15 +205,13 @@ function buildAuditRecords(plan: Plan): AuditRecord[] {
     const itemBlock = blocks.get(record.itemName);
     if (!itemBlock) throw new Error(`${record.sourceFile}: 找不到 ${record.itemName}`);
     const snapshot = createItemSnapshot(record, itemBlock);
-    if (record.balanceMode === "formula" && snapshot.hasUnsupportedFormulaEffect) {
-      throw new Error(`${record.itemName}: formula 记录包含尚未定价的特殊效果`);
+    if (record.balanceMode === "formula") {
+      verifyPowerFit(record, snapshot);
+      // 投掷消耗品不套用武器定价公式；仅声明 adoptedGoldPrice 的记录接受价格带校验
+      if (record.adoptedGoldPrice !== undefined) verifyGoldPrice(record, snapshot);
+      verifyKPointPrice(record, snapshot, kshopCache);
     }
-    if (record.balanceMode === "formula" && snapshot.output.currentValue > snapshot.output.valueCap + 1e-6) {
-      throw new Error(
-        `${record.itemName}: currentValue ${formatNumber(snapshot.output.currentValue)} 超过 cap ${snapshot.output.valueCap}`,
-      );
-    }
-    return { ...record, ...snapshot, auditRef: `potion:${record.itemName}` };
+    return { ...record, ...snapshot, auditRef: `explosives:${record.itemName}` };
   });
 }
 
@@ -206,153 +223,114 @@ function createItemSnapshot(record: PlanRecord, itemBlock: string): ItemSnapshot
   const itemName = readText(item.name, `${record.itemName}.name`);
   const marketPrice = readNumber(item.price, `${record.itemName}.price`);
   const data = requireObject(item.data, `${record.itemName}.data`);
-  const effectsContainer = requireObject(data.effects, `${record.itemName}.effects`);
-  const effects = asArray(effectsContainer.effect).map((effect, index) =>
-    requireObject(effect, `${record.itemName}.effect[${index}]`),
-  );
-  const { input, hasUnsupportedFormulaEffect } = deriveFormulaInput(record.sourceLevel, effects);
-  const output = computePotionV2Row(input);
-  const canonical = JSON.stringify({
-    formulaFamily: FORMULA_FAMILY,
-    formulaVersion: FORMULA_VERSION,
-    itemName,
-    sourceLevel: record.sourceLevel,
-    domain: record.domain,
-    balanceMode: record.balanceMode,
-    marketPrice,
-    input,
-  });
-  const inputDigest = `fnv1a32:${fnv1a32Utf16(canonical)}`;
+  // 手雷语义：单件即"弹夹"——magPrice 取物品售价，magSize 取弹容量
+  const stats: ExplosiveItemStats = {
+    level: readNumber(data.level, `${record.itemName}.data.level`),
+    magPrice: marketPrice,
+    magSize: readNumber(data.capacity ?? 1, `${record.itemName}.data.capacity`),
+    power: readNumber(data.power, `${record.itemName}.data.power`),
+  };
+  const formulaInput: ExplosivesInput = {
+    magPrice: stats.magPrice,
+    magSize: stats.magSize,
+    level: stats.level,
+    weightLayers: record.weightLayers,
+  };
+  const output = computeExplosivesRow(formulaInput);
+  const inputDigest = `fnv1a32:${fnv1a32Utf16(
+    JSON.stringify({
+      formulaFamily: FORMULA_FAMILY,
+      formulaVersion: FORMULA_VERSION,
+      itemName,
+      ...stats,
+      weightLayers: record.weightLayers,
+      marketPrice,
+      balanceMode: record.balanceMode,
+      adoptedGoldPrice: record.adoptedGoldPrice ?? null,
+    }),
+  )}`;
   const sourceDigest = `sha256:${crypto
     .createHash("sha256")
     .update(normalizeNewlines(cleanItemBlock).trim(), "utf8")
     .digest("hex")}`;
-  return {
-    itemName,
-    sourceFile: record.sourceFile,
-    marketPrice,
-    itemBlock,
-    cleanItemBlock,
-    input,
-    output,
-    inputDigest,
-    sourceDigest,
-    hasUnsupportedFormulaEffect,
-  };
+  return { itemName, sourceFile: record.sourceFile, marketPrice, cleanItemBlock, stats, output, inputDigest, sourceDigest };
 }
 
-function deriveFormulaInput(sourceLevel: number, effects: Array<Record<string, unknown>>): {
-  input: PotionV2Input;
-  hasUnsupportedFormulaEffect: boolean;
-} {
-  const input: PotionV2Input = {
-    instantHp: 0,
-    instantMp: 0,
-    regenHp: 0,
-    regenMp: 0,
-    regenFrames: 0,
-    playerLevel: sourceLevel,
-    isGroup: 0,
-    purifyValue: 0,
-    toxicity: 0,
-    buffHp: 0,
-    buffMp: 0,
-    buffDefence: 0,
-    buffMagicResist: 0,
-    buffDamage: 0,
-    buffPunch: 0,
-    buffSpeed: 0,
-    buffToughness: 0,
-    buffCritRate: 0,
-    buffDuration: 0,
-  };
-  let hasUnsupportedFormulaEffect = false;
-
-  for (const effect of effects) {
-    const type = String(effect.type ?? "");
-    switch (type) {
-      case "heal":
-        input.instantHp += readOptionalNumber(effect.hp);
-        input.instantMp += readOptionalNumber(effect.mp);
-        if (String(effect.target ?? "self") === "group") input.isGroup = 1;
-        break;
-      case "regen": {
-        if (String(effect.mode ?? "perTick") !== "total") {
-          hasUnsupportedFormulaEffect = true;
-          break;
-        }
-        input.regenHp += readOptionalNumber(effect.hp);
-        input.regenMp += readOptionalNumber(effect.mp);
-        const duration = readNumber(effect.duration, "regen.duration");
-        if (input.regenFrames !== 0 && input.regenFrames !== duration) {
-          hasUnsupportedFormulaEffect = true;
-        }
-        input.regenFrames = Math.max(input.regenFrames, duration);
-        break;
-      }
-      case "purify":
-        input.purifyValue += readOptionalNumber(effect.value);
-        break;
-      case "state":
-        if (String(effect.key ?? "") === "淬毒") input.toxicity += readOptionalNumber(effect.value);
-        else hasUnsupportedFormulaEffect = true;
-        break;
-      case "buff": {
-        const property = String(effect.property ?? "");
-        const value = readOptionalNumber(effect.value);
-        setBuffDuration(input, readOptionalNumber(effect.duration));
-        if (property === "hp满血值") input.buffHp += value;
-        else if (property === "mp满血值") input.buffMp += value;
-        else if (property === "防御力") input.buffDefence += value;
-        else if (property === "伤害加成") input.buffDamage += value;
-        else if (property === "空手攻击力") input.buffPunch += value;
-        else if (property === "行走X速度") input.buffSpeed += (value - 1) * 50;
-        else if (property === "暴击率") input.buffCritRate += value;
-        else hasUnsupportedFormulaEffect = true;
-        break;
-      }
-      case "resistanceBuff":
-        input.buffMagicResist += readOptionalNumber(effect.value) * 2;
-        setBuffDuration(input, readOptionalNumber(effect.duration));
-        break;
-      case "toughnessBuff":
-        input.buffToughness += readOptionalNumber(effect.value);
-        setBuffDuration(input, readOptionalNumber(effect.duration));
-        break;
-      case "buffDomain":
-      case "playEffect":
-      case "message":
-        break;
-      case "restoreToughness":
-      case "grantItem":
-      case "global":
-        hasUnsupportedFormulaEffect = true;
-        break;
-      default:
-        hasUnsupportedFormulaEffect = true;
-        break;
-    }
+function verifyPowerFit(record: PlanRecord, snapshot: ItemSnapshot): void {
+  const recommended = snapshot.output.recommendedPower;
+  if (recommended <= 0) {
+    throw new Error(`${record.itemName}: recommendedPower 必须为正`);
   }
-  return { input, hasUnsupportedFormulaEffect };
+  const residual = snapshot.stats.power / recommended - 1;
+  if (Math.abs(residual) > POWER_FIT_TOLERANCE) {
+    throw new Error(
+      `${record.itemName}: power 残差 ${formatNumber(residual * 100)}% 超出 ±${POWER_FIT_TOLERANCE * 100}% 带`,
+    );
+  }
 }
 
-function setBuffDuration(input: PotionV2Input, duration: number): void {
-  if (duration <= 0) return;
-  if (input.buffDuration !== 0 && input.buffDuration !== duration) {
-    throw new Error(`同一物品的 Buff 持续时间不一致: ${input.buffDuration}/${duration}`);
+function verifyGoldPrice(record: PlanRecord, snapshot: ItemSnapshot): void {
+  const adopted = record.adoptedGoldPrice ?? snapshot.marketPrice;
+  if (adopted !== snapshot.marketPrice) {
+    throw new Error(`${record.itemName}: adoptedGoldPrice 与市场价不一致`);
   }
-  input.buffDuration = duration;
+  const recommended = snapshot.output.recommendedGoldPrice;
+  if (recommended <= 0) return;
+  const ratio = adopted / recommended;
+  if (ratio < ADOPTED_PRICE_BAND.min || ratio > ADOPTED_PRICE_BAND.max) {
+    throw new Error(
+      `${record.itemName}: adoptedGoldPrice/recommendedGoldPrice=${formatNumber(ratio)} 超出 [${ADOPTED_PRICE_BAND.min}, ${ADOPTED_PRICE_BAND.max}] 带`,
+    );
+  }
+}
+
+function verifyKPointPrice(
+  record: PlanRecord,
+  snapshot: ItemSnapshot,
+  kshopCache: Map<string, Map<string, number>>,
+): void {
+  if (record.kpointEvidenceRef === undefined) return;
+  const evidencePath = path.join(REPO_ROOT, record.kpointEvidenceRef);
+  let prices = kshopCache.get(evidencePath);
+  if (!prices) {
+    prices = readKshopPrices(evidencePath, record.kpointEvidenceRef);
+    kshopCache.set(evidencePath, prices);
+  }
+  const actual = prices.get(record.itemName);
+  if (actual === undefined) {
+    throw new Error(`${record.kpointEvidenceRef}: 找不到 ${record.itemName} 的 K 点售价`);
+  }
+  if (actual !== record.expectedKPointPrice) {
+    throw new Error(`${record.itemName}: K 点实售 ${actual} 与 expectedKPointPrice ${record.expectedKPointPrice} 不一致`);
+  }
+  const deviation = Math.abs(actual / snapshot.output.recommendedKPointPrice - 1);
+  if (deviation > KPOINT_PRICE_TOLERANCE) {
+    throw new Error(`${record.itemName}: K 点实售对公式值偏差 ${formatNumber(deviation)} 超出 ${KPOINT_PRICE_TOLERANCE}`);
+  }
+}
+
+function readKshopPrices(absolutePath: string, evidenceRef: string): Map<string, number> {
+  const parsed = JSON.parse(fs.readFileSync(absolutePath, "utf8")) as unknown;
+  if (!Array.isArray(parsed)) throw new Error(`${evidenceRef}: 需要条目数组`);
+  const result = new Map<string, number>();
+  for (const [index, raw] of parsed.entries()) {
+    const entry = requireObject(raw, `${evidenceRef}[${index}]`);
+    const itemName = readText(entry.item, `${evidenceRef}[${index}].item`);
+    const price = readNumber(entry.price, `${evidenceRef}[${index}].price`);
+    if (result.has(itemName)) throw new Error(`${evidenceRef}: 重复条目 ${itemName}`);
+    result.set(itemName, price);
+  }
+  return result;
 }
 
 function verifyCoverage(plan: Plan, records: AuditRecord[]): void {
   const planned = new Set(records.map((record) => `${record.sourceFile}\u0000${record.itemName}`));
-  const sourceFiles = [...new Set(plan.records.map((record) => record.sourceFile))];
-  for (const sourceFile of sourceFiles) {
-    const absolutePath = path.join(REPO_ROOT, "data", "items", sourceFile);
+  for (const sourceFile of plan.coverageFiles) {
+    const absolutePath = path.join(REPO_ROOT, sourceFile);
     const blocks = indexItemBlocks(fs.readFileSync(absolutePath, "utf8"), sourceFile);
     for (const itemName of blocks.keys()) {
       if (!planned.has(`${sourceFile}\u0000${itemName}`)) {
-        throw new Error(`${sourceFile}: ${itemName} 未进入全量药剂审计计划`);
+        throw new Error(`${sourceFile}: ${itemName} 未进入爆炸类审计计划`);
       }
     }
   }
@@ -361,12 +339,12 @@ function verifyCoverage(plan: Plan, records: AuditRecord[]): void {
 function buildAuditXml(plan: Plan, records: AuditRecord[]): string {
   const lines: string[] = [
     '<?xml version="1.0" encoding="UTF-8"?>',
-    "<potionBalanceAudit>",
+    "<explosivesBalanceAudit>",
     `  <formulaFamily>${FORMULA_FAMILY}</formulaFamily>`,
     `  <schemaVersion>${SCHEMA_VERSION}</schemaVersion>`,
     `  <formulaVersion>${FORMULA_VERSION}</formulaVersion>`,
-    `  <authorityStatus>${escapeXml(plan.authorityStatus)}</authorityStatus>`,
-    `  <sourceWorkbookSha256>${plan.sourceWorkbookSha256}</sourceWorkbookSha256>`,
+    `  <workbookVersion>${plan.workbookVersion}</workbookVersion>`,
+    `  <workbookSha256>${plan.workbookSha256}</workbookSha256>`,
     "  <records>",
   ];
   for (const record of records) {
@@ -375,35 +353,27 @@ function buildAuditXml(plan: Plan, records: AuditRecord[]): string {
       `      <auditRef>${escapeXml(record.auditRef)}</auditRef>`,
       `      <itemName>${escapeXml(record.itemName)}</itemName>`,
       `      <sourceFile>${escapeXml(record.sourceFile)}</sourceFile>`,
-      `      <sourceLevel>${record.sourceLevel}</sourceLevel>`,
-      `      <domain>${escapeXml(record.domain)}</domain>`,
+      `      <weightLayers>${record.weightLayers}</weightLayers>`,
       `      <balanceMode>${record.balanceMode}</balanceMode>`,
       `      <status>${record.status}</status>`,
-      `      <marketPrice>${record.marketPrice}</marketPrice>`,
+      `      <marketPrice>${formatNumber(record.marketPrice)}</marketPrice>`,
+      `      <recommendedPower>${formatNumber(record.output.recommendedPower)}</recommendedPower>`,
+      `      <powerResidual>${formatNumber(record.output.recommendedPower > 0 ? record.stats.power / record.output.recommendedPower - 1 : 0)}</powerResidual>`,
+      `      <recommendedGoldPrice>${formatNumber(record.output.recommendedGoldPrice)}</recommendedGoldPrice>`,
+      `      <recommendedKPointPrice>${formatNumber(record.output.recommendedKPointPrice)}</recommendedKPointPrice>`,
+      `      <inputs ${serializeAttributes({ ...record.stats })} />`,
       `      <inputDigest>${record.inputDigest}</inputDigest>`,
       `      <sourceDigest>${record.sourceDigest}</sourceDigest>`,
-      `      <inputs ${serializeAttributes({ ...record.input })} />`,
-      `      <outputs ${serializeAttributes({
-        recoveryStrength: record.output.recoveryStrength,
-        purifyStrength: record.output.purifyStrength,
-        toxicStrength: record.output.toxicStrength,
-        buffStrength: record.output.buffStrength,
-        toughnessStrength: record.output.toughnessStrength,
-        currentValue: record.output.currentValue,
-        valueCap: record.output.valueCap,
-        rawPrice: record.output.rawPrice,
-        recommendedPrice: record.output.recommendedPrice,
-      })} />`,
     );
     if (record.exceptionCode) lines.push(`      <exceptionCode>${escapeXml(record.exceptionCode)}</exceptionCode>`);
     if (record.note) lines.push(`      <note>${escapeXml(record.note)}</note>`);
     lines.push("    </record>");
   }
-  lines.push("  </records>", "</potionBalanceAudit>", "");
+  lines.push("  </records>", "</explosivesBalanceAudit>", "");
   return lines.join("\n");
 }
 
-function buildSyncedItemFiles(plan: Plan, records: AuditRecord[]): Map<string, string> {
+function buildSyncedItemFiles(records: AuditRecord[]): Map<string, string> {
   const byFile = new Map<string, Map<string, AuditRecord>>();
   for (const record of records) {
     let items = byFile.get(record.sourceFile);
@@ -413,44 +383,41 @@ function buildSyncedItemFiles(plan: Plan, records: AuditRecord[]): Map<string, s
     }
     items.set(record.itemName, record);
   }
-
   const result = new Map<string, string>();
   for (const [sourceFile, fileRecords] of byFile) {
-    const absolutePath = path.join(REPO_ROOT, "data", "items", sourceFile);
+    const absolutePath = path.join(REPO_ROOT, sourceFile);
     const source = fs.readFileSync(absolutePath, "utf8");
     const itemRegex = /(^[ \t]*<item(?:\s[^>]*)?>[\s\S]*?^[ \t]*<\/item>)/gm;
     const replaced = source.replace(itemRegex, (block) => {
       const itemName = extractItemName(block, sourceFile);
       const record = fileRecords.get(itemName);
       if (!record) return block;
-      return insertBalance(stripBalance(block), buildInlineBalance(record, plan.authorityStatus));
+      return insertBalance(stripBalance(block), buildInlineBalance(record));
     });
     result.set(absolutePath, replaced);
   }
   return result;
 }
 
-function buildInlineBalance(record: AuditRecord, authorityStatus: string): string {
+function buildInlineBalance(record: AuditRecord): string {
   const lines = [
     "<balance>",
     `  <formulaFamily>${FORMULA_FAMILY}</formulaFamily>`,
     `  <schemaVersion>${SCHEMA_VERSION}</schemaVersion>`,
     `  <formulaVersion>${FORMULA_VERSION}</formulaVersion>`,
-    `  <authorityStatus>${authorityStatus}</authorityStatus>`,
-    `  <sourceLevel>${record.sourceLevel}</sourceLevel>`,
-    `  <domain>${escapeXml(record.domain)}</domain>`,
+    `  <workbookVersion>${WORKBOOK_VERSION}</workbookVersion>`,
+    `  <weightLayers>${record.weightLayers}</weightLayers>`,
     `  <balanceMode>${record.balanceMode}</balanceMode>`,
+    `  <recommendedPower>${formatNumber(record.output.recommendedPower)}</recommendedPower>`,
+    `  <recommendedGoldPrice>${formatNumber(record.output.recommendedGoldPrice)}</recommendedGoldPrice>`,
+    `  <recommendedKPointPrice>${formatNumber(record.output.recommendedKPointPrice)}</recommendedKPointPrice>`,
+    `  <marketPrice>${formatNumber(record.marketPrice)}</marketPrice>`,
     `  <status>${record.status}</status>`,
-    `  <currentValue>${formatNumber(record.output.currentValue)}</currentValue>`,
-    `  <valueCap>${formatNumber(record.output.valueCap)}</valueCap>`,
-    `  <formulaPrice>${formatNumber(record.output.recommendedPrice)}</formulaPrice>`,
-    `  <marketPrice>${record.marketPrice}</marketPrice>`,
     `  <inputDigest>${record.inputDigest}</inputDigest>`,
     `  <sourceDigest>${record.sourceDigest}</sourceDigest>`,
     `  <auditRef>${escapeXml(record.auditRef)}</auditRef>`,
+    "</balance>",
   ];
-  if (record.exceptionCode) lines.push(`  <exceptionCode>${escapeXml(record.exceptionCode)}</exceptionCode>`);
-  lines.push("</balance>");
   return lines.join("\n");
 }
 
@@ -480,8 +447,10 @@ function insertBalance(cleanBlock: string, balance: string): string {
   const match = cleanBlock.match(/\r?\n([ \t]*)<\/item>\s*$/);
   if (!match) throw new Error("item block 缺少结束标签");
   const itemIndent = match[1];
-  const balanceIndent = `${itemIndent}  `;
-  const indented = balance.split("\n").map((line) => `${balanceIndent}${line}`).join("\n");
+  const indented = balance
+    .split("\n")
+    .map((line) => `${itemIndent}  ${line}`)
+    .join("\n");
   return cleanBlock.replace(/\r?\n[ \t]*<\/item>\s*$/, `\n${indented}\n${itemIndent}</item>`);
 }
 
@@ -500,21 +469,18 @@ function fnv1a32Utf16(value: string): string {
   return hash.toString(16).padStart(8, "0");
 }
 
+function asArray<T>(value: T | T[] | undefined): T[] {
+  if (value === undefined) return [];
+  return Array.isArray(value) ? value : [value];
+}
+
 function formatNumber(value: number): string {
   if (!Number.isFinite(value)) throw new Error(`非有限数值: ${value}`);
   const rounded = Math.round(value * 1_000_000) / 1_000_000;
   return String(Object.is(rounded, -0) ? 0 : rounded);
 }
 
-function readOptionalNumber(value: unknown): number {
-  if (value === undefined || value === null || value === "") return 0;
-  return readNumber(value, "number");
-}
-
 function readNumber(value: unknown, field: string): number {
-  if (typeof value === "string" && value.includes("%")) {
-    throw new Error(`${field}: 百分比输入尚未进入药剂 v2 公式`);
-  }
   const parsed = Number(value);
   if (!Number.isFinite(parsed)) throw new Error(`${field}: 需要有限数值`);
   return parsed;
@@ -531,11 +497,6 @@ function requireObject(value: unknown, field: string): Record<string, unknown> {
     throw new Error(`${field}: 需要对象`);
   }
   return value as Record<string, unknown>;
-}
-
-function asArray(value: unknown): unknown[] {
-  if (value === undefined || value === null) return [];
-  return Array.isArray(value) ? value : [value];
 }
 
 function normalizeNewlines(value: string): string {

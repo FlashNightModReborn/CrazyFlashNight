@@ -32,6 +32,27 @@
         <reloadType>tube</reloadType>
         <reloadPenalty>17</reloadPenalty>
       </data>
+      <balance>
+        <formulaFamily>weapon</formulaFamily>
+        <schemaVersion>1</schemaVersion>
+        <workbookVersion>1</workbookVersion>
+        <profiles>
+          <data>
+            <dualWield>2</dualWield>
+            <pierce>1</pierce>
+            <damageType>1</damageType>
+            <shotgun>1</shotgun>
+            <magPrice>300</magPrice>
+            <weightLayers>0</weightLayers>
+            <category>1</category>
+            <formula>1</formula>
+            <status>unresolved</status>
+            <displayEligible>false</displayEligible>
+            <inputDigest>fnv1a32:7853b324</inputDigest>
+            <auditRef>weapon:Webley:data</auditRef>
+          </data>
+        </profiles>
+      </balance>
     </item>
   <item weapontype="大威力手枪">
       <name>韦森686</name>
@@ -66,6 +87,55 @@
         <reloadType>tube</reloadType>
         <reloadPenalty>17</reloadPenalty>
       </data>
+      <balance>
+        <formulaFamily>weapon</formulaFamily>
+        <schemaVersion>1</schemaVersion>
+        <workbookVersion>1</workbookVersion>
+        <profiles>
+          <data>
+            <dualWield>2</dualWield>
+            <pierce>1</pierce>
+            <damageType>1</damageType>
+            <shotgun>1</shotgun>
+            <magPrice>300</magPrice>
+            <weightLayers>0</weightLayers>
+            <category>1</category>
+            <formula>1</formula>
+            <status>unresolved</status>
+            <displayEligible>false</displayEligible>
+            <inputDigest>fnv1a32:753076c0</inputDigest>
+            <auditRef>weapon:韦森686:data</auditRef>
+          </data>
+          <data_fire>
+            <dualWield>2</dualWield>
+            <pierce>1</pierce>
+            <damageType>2</damageType>
+            <shotgun>1</shotgun>
+            <magPrice>8000</magPrice>
+            <weightLayers>0</weightLayers>
+            <category>1</category>
+            <formula>1</formula>
+            <status>unresolved</status>
+            <displayEligible>false</displayEligible>
+            <inputDigest>fnv1a32:a0cce4cd</inputDigest>
+            <auditRef>weapon:韦森686:data_fire</auditRef>
+          </data_fire>
+          <data_ice>
+            <dualWield>2</dualWield>
+            <pierce>1</pierce>
+            <damageType>2</damageType>
+            <shotgun>1</shotgun>
+            <magPrice>8000</magPrice>
+            <weightLayers>0</weightLayers>
+            <category>1</category>
+            <formula>1</formula>
+            <status>unresolved</status>
+            <displayEligible>false</displayEligible>
+            <inputDigest>fnv1a32:3a811724</inputDigest>
+            <auditRef>weapon:韦森686:data_ice</auditRef>
+          </data_ice>
+        </profiles>
+      </balance>
       <data_ice>
         <level>50</level>
         <dressup>枪-手枪-韦森686墨冰</dressup>
@@ -124,6 +194,27 @@
         <slay>5</slay>
         <reloadPenalty>17</reloadPenalty>
       </data>
+      <balance>
+        <formulaFamily>weapon</formulaFamily>
+        <schemaVersion>1</schemaVersion>
+        <workbookVersion>1</workbookVersion>
+        <profiles>
+          <data>
+            <dualWield>2</dualWield>
+            <pierce>1</pierce>
+            <damageType>1</damageType>
+            <shotgun>1</shotgun>
+            <magPrice>300</magPrice>
+            <weightLayers>0</weightLayers>
+            <category>1</category>
+            <formula>1</formula>
+            <status>unresolved</status>
+            <displayEligible>false</displayEligible>
+            <inputDigest>fnv1a32:aec214bc</inputDigest>
+            <auditRef>weapon:N99:data</auditRef>
+          </data>
+        </profiles>
+      </balance>
     </item>
   <item weapontype="大威力手枪">
       <name>COLT PYTHON</name>
@@ -156,6 +247,27 @@
         <reloadType>tube</reloadType>
         <reloadPenalty>17</reloadPenalty>
       </data>
+      <balance>
+        <formulaFamily>weapon</formulaFamily>
+        <schemaVersion>1</schemaVersion>
+        <workbookVersion>1</workbookVersion>
+        <profiles>
+          <data>
+            <dualWield>2</dualWield>
+            <pierce>1</pierce>
+            <damageType>1</damageType>
+            <shotgun>1</shotgun>
+            <magPrice>300</magPrice>
+            <weightLayers>0</weightLayers>
+            <category>1</category>
+            <formula>1</formula>
+            <status>unresolved</status>
+            <displayEligible>false</displayEligible>
+            <inputDigest>fnv1a32:cee024bc</inputDigest>
+            <auditRef>weapon:COLT PYTHON:data</auditRef>
+          </data>
+        </profiles>
+      </balance>
     </item>
   <item weapontype="大威力手枪">
       <name>Desert Eagle</name>
@@ -190,6 +302,27 @@
         <slay>6</slay>
         <reloadPenalty>17</reloadPenalty>
       </data>
+      <balance>
+        <formulaFamily>weapon</formulaFamily>
+        <schemaVersion>1</schemaVersion>
+        <workbookVersion>1</workbookVersion>
+        <profiles>
+          <data>
+            <dualWield>2</dualWield>
+            <pierce>1</pierce>
+            <damageType>1</damageType>
+            <shotgun>1</shotgun>
+            <magPrice>300</magPrice>
+            <weightLayers>0</weightLayers>
+            <category>1</category>
+            <formula>1</formula>
+            <status>unresolved</status>
+            <displayEligible>false</displayEligible>
+            <inputDigest>fnv1a32:57202dd1</inputDigest>
+            <auditRef>weapon:Desert Eagle:data</auditRef>
+          </data>
+        </profiles>
+      </balance>
     </item>
   <item weapontype="大威力手枪">
       <name>恒宇银星</name>
@@ -218,6 +351,27 @@
         <impact>30</impact>
         <reloadPenalty>17</reloadPenalty>
       </data>
+      <balance>
+        <formulaFamily>weapon</formulaFamily>
+        <schemaVersion>1</schemaVersion>
+        <workbookVersion>1</workbookVersion>
+        <profiles>
+          <data>
+            <dualWield>2</dualWield>
+            <pierce>1</pierce>
+            <damageType>1</damageType>
+            <shotgun>1</shotgun>
+            <magPrice>300</magPrice>
+            <weightLayers>0</weightLayers>
+            <category>1</category>
+            <formula>1</formula>
+            <status>unresolved</status>
+            <displayEligible>false</displayEligible>
+            <inputDigest>fnv1a32:5f8c2ac4</inputDigest>
+            <auditRef>weapon:恒宇银星:data</auditRef>
+          </data>
+        </profiles>
+      </balance>
     </item>
   <item weapontype="大威力手枪">
       <name>恒宇红星</name>
@@ -246,6 +400,27 @@
         <impact>30</impact>
         <reloadPenalty>17</reloadPenalty>
       </data>
+      <balance>
+        <formulaFamily>weapon</formulaFamily>
+        <schemaVersion>1</schemaVersion>
+        <workbookVersion>1</workbookVersion>
+        <profiles>
+          <data>
+            <dualWield>2</dualWield>
+            <pierce>1</pierce>
+            <damageType>1</damageType>
+            <shotgun>1</shotgun>
+            <magPrice>300</magPrice>
+            <weightLayers>0</weightLayers>
+            <category>1</category>
+            <formula>1</formula>
+            <status>unresolved</status>
+            <displayEligible>false</displayEligible>
+            <inputDigest>fnv1a32:4ccf82a8</inputDigest>
+            <auditRef>weapon:恒宇红星:data</auditRef>
+          </data>
+        </profiles>
+      </balance>
     </item>
   <item weapontype="大威力手枪">
       <name>韦森686改装版</name>
@@ -334,6 +509,27 @@
         <slay>6</slay>
         <reloadPenalty>17</reloadPenalty>
       </data>
+      <balance>
+        <formulaFamily>weapon</formulaFamily>
+        <schemaVersion>1</schemaVersion>
+        <workbookVersion>1</workbookVersion>
+        <profiles>
+          <data>
+            <dualWield>2</dualWield>
+            <pierce>1</pierce>
+            <damageType>1</damageType>
+            <shotgun>1</shotgun>
+            <magPrice>300</magPrice>
+            <weightLayers>0</weightLayers>
+            <category>1</category>
+            <formula>1</formula>
+            <status>unresolved</status>
+            <displayEligible>false</displayEligible>
+            <inputDigest>fnv1a32:c464987f</inputDigest>
+            <auditRef>weapon:STI2011:data</auditRef>
+          </data>
+        </profiles>
+      </balance>
     </item>
   <item weapontype="大威力手枪">
       <name>AMTAutomagIII</name>
@@ -364,6 +560,27 @@
         <slay>6</slay>
         <reloadPenalty>17</reloadPenalty>
       </data>
+      <balance>
+        <formulaFamily>weapon</formulaFamily>
+        <schemaVersion>1</schemaVersion>
+        <workbookVersion>1</workbookVersion>
+        <profiles>
+          <data>
+            <dualWield>2</dualWield>
+            <pierce>1</pierce>
+            <damageType>1</damageType>
+            <shotgun>1</shotgun>
+            <magPrice>1000</magPrice>
+            <weightLayers>0</weightLayers>
+            <category>1</category>
+            <formula>1</formula>
+            <status>unresolved</status>
+            <displayEligible>false</displayEligible>
+            <inputDigest>fnv1a32:e1aa9bc8</inputDigest>
+            <auditRef>weapon:AMTAutomagIII:data</auditRef>
+          </data>
+        </profiles>
+      </balance>
     </item>
   <item weapontype="大威力手枪">
       <name>FKBRNO</name>
@@ -395,6 +612,27 @@
         <slay>6</slay>
         <reloadPenalty>17</reloadPenalty>
       </data>
+      <balance>
+        <formulaFamily>weapon</formulaFamily>
+        <schemaVersion>1</schemaVersion>
+        <workbookVersion>1</workbookVersion>
+        <profiles>
+          <data>
+            <dualWield>2</dualWield>
+            <pierce>1.5</pierce>
+            <damageType>1</damageType>
+            <shotgun>1</shotgun>
+            <magPrice>300</magPrice>
+            <weightLayers>0</weightLayers>
+            <category>1</category>
+            <formula>1</formula>
+            <status>unresolved</status>
+            <displayEligible>false</displayEligible>
+            <inputDigest>fnv1a32:ccb14940</inputDigest>
+            <auditRef>weapon:FKBRNO:data</auditRef>
+          </data>
+        </profiles>
+      </balance>
     </item>
   <item weapontype="大威力手枪">
       <name>牛仔的左轮</name>
@@ -428,6 +666,27 @@
         <reloadType>tube</reloadType>
         <reloadPenalty>17</reloadPenalty>
       </data>
+      <balance>
+        <formulaFamily>weapon</formulaFamily>
+        <schemaVersion>1</schemaVersion>
+        <workbookVersion>1</workbookVersion>
+        <profiles>
+          <data>
+            <dualWield>2</dualWield>
+            <pierce>2</pierce>
+            <damageType>1</damageType>
+            <shotgun>1</shotgun>
+            <magPrice>300</magPrice>
+            <weightLayers>0</weightLayers>
+            <category>1</category>
+            <formula>1</formula>
+            <status>unresolved</status>
+            <displayEligible>false</displayEligible>
+            <inputDigest>fnv1a32:93d4ff4b</inputDigest>
+            <auditRef>weapon:牛仔的左轮:data</auditRef>
+          </data>
+        </profiles>
+      </balance>
     </item>
   <item weapontype="大威力手枪">
       <name>FR506</name>
@@ -460,6 +719,27 @@
         <reloadType>tube</reloadType>
         <reloadPenalty>17</reloadPenalty>
       </data>
+      <balance>
+        <formulaFamily>weapon</formulaFamily>
+        <schemaVersion>1</schemaVersion>
+        <workbookVersion>1</workbookVersion>
+        <profiles>
+          <data>
+            <dualWield>2</dualWield>
+            <pierce>1</pierce>
+            <damageType>1</damageType>
+            <shotgun>1</shotgun>
+            <magPrice>300</magPrice>
+            <weightLayers>0</weightLayers>
+            <category>1</category>
+            <formula>1</formula>
+            <status>unresolved</status>
+            <displayEligible>false</displayEligible>
+            <inputDigest>fnv1a32:ee68870e</inputDigest>
+            <auditRef>weapon:FR506:data</auditRef>
+          </data>
+        </profiles>
+      </balance>
     </item>
   <item weapontype="大威力手枪">
       <name>SIGP220Elite</name>
@@ -491,6 +771,27 @@
         <slay>6</slay>
         <reloadPenalty>17</reloadPenalty>
       </data>
+      <balance>
+        <formulaFamily>weapon</formulaFamily>
+        <schemaVersion>1</schemaVersion>
+        <workbookVersion>1</workbookVersion>
+        <profiles>
+          <data>
+            <dualWield>2</dualWield>
+            <pierce>1</pierce>
+            <damageType>1</damageType>
+            <shotgun>1</shotgun>
+            <magPrice>300</magPrice>
+            <weightLayers>0</weightLayers>
+            <category>1</category>
+            <formula>1</formula>
+            <status>unresolved</status>
+            <displayEligible>false</displayEligible>
+            <inputDigest>fnv1a32:84e1be90</inputDigest>
+            <auditRef>weapon:SIGP220Elite:data</auditRef>
+          </data>
+        </profiles>
+      </balance>
     </item>
   <item weapontype="大威力手枪">
       <name>Colt Anaconda</name>
@@ -523,6 +824,27 @@
         <reloadType>tube</reloadType>
         <reloadPenalty>17</reloadPenalty>
       </data>
+      <balance>
+        <formulaFamily>weapon</formulaFamily>
+        <schemaVersion>1</schemaVersion>
+        <workbookVersion>1</workbookVersion>
+        <profiles>
+          <data>
+            <dualWield>2</dualWield>
+            <pierce>2</pierce>
+            <damageType>1</damageType>
+            <shotgun>1</shotgun>
+            <magPrice>300</magPrice>
+            <weightLayers>1</weightLayers>
+            <category>1</category>
+            <formula>1</formula>
+            <status>unresolved</status>
+            <displayEligible>false</displayEligible>
+            <inputDigest>fnv1a32:45f194fe</inputDigest>
+            <auditRef>weapon:Colt Anaconda:data</auditRef>
+          </data>
+        </profiles>
+      </balance>
     </item>
   <item weapontype="大威力手枪">
       <name>S&amp;W M500</name>
@@ -555,6 +877,27 @@
         <reloadType>tube</reloadType>
         <reloadPenalty>17</reloadPenalty>
       </data>
+      <balance>
+        <formulaFamily>weapon</formulaFamily>
+        <schemaVersion>1</schemaVersion>
+        <workbookVersion>1</workbookVersion>
+        <profiles>
+          <data>
+            <dualWield>2</dualWield>
+            <pierce>1</pierce>
+            <damageType>1</damageType>
+            <shotgun>1</shotgun>
+            <magPrice>300</magPrice>
+            <weightLayers>0</weightLayers>
+            <category>1</category>
+            <formula>1</formula>
+            <status>unresolved</status>
+            <displayEligible>false</displayEligible>
+            <inputDigest>fnv1a32:ca625cf4</inputDigest>
+            <auditRef>weapon:S&amp;W M500:data</auditRef>
+          </data>
+        </profiles>
+      </balance>
     </item>
   <item weapontype="大威力手枪">
       <name>Podbyrin</name>
@@ -586,6 +929,27 @@
         <slay>8</slay>
         <reloadPenalty>17</reloadPenalty>
       </data>
+      <balance>
+        <formulaFamily>weapon</formulaFamily>
+        <schemaVersion>1</schemaVersion>
+        <workbookVersion>1</workbookVersion>
+        <profiles>
+          <data>
+            <dualWield>2</dualWield>
+            <pierce>2</pierce>
+            <damageType>1</damageType>
+            <shotgun>1</shotgun>
+            <magPrice>300</magPrice>
+            <weightLayers>0</weightLayers>
+            <category>1</category>
+            <formula>1</formula>
+            <status>unresolved</status>
+            <displayEligible>false</displayEligible>
+            <inputDigest>fnv1a32:f784088b</inputDigest>
+            <auditRef>weapon:Podbyrin:data</auditRef>
+          </data>
+        </profiles>
+      </balance>
     </item>
   <item weapontype="大威力手枪">
       <name>Glock40</name>
@@ -616,6 +980,27 @@
         <impact>100</impact>
         <reloadPenalty>17</reloadPenalty>
       </data>
+      <balance>
+        <formulaFamily>weapon</formulaFamily>
+        <schemaVersion>1</schemaVersion>
+        <workbookVersion>1</workbookVersion>
+        <profiles>
+          <data>
+            <dualWield>2</dualWield>
+            <pierce>2</pierce>
+            <damageType>1</damageType>
+            <shotgun>1</shotgun>
+            <magPrice>300</magPrice>
+            <weightLayers>1</weightLayers>
+            <category>1</category>
+            <formula>1</formula>
+            <status>unresolved</status>
+            <displayEligible>false</displayEligible>
+            <inputDigest>fnv1a32:04feee59</inputDigest>
+            <auditRef>weapon:Glock40:data</auditRef>
+          </data>
+        </profiles>
+      </balance>
     </item>
   <item weapontype="大威力手枪">
       <name>BOUNCER LEONE</name>
@@ -648,6 +1033,27 @@
         <magictype>热</magictype>
         <reloadPenalty>17</reloadPenalty>
       </data>
+      <balance>
+        <formulaFamily>weapon</formulaFamily>
+        <schemaVersion>1</schemaVersion>
+        <workbookVersion>1</workbookVersion>
+        <profiles>
+          <data>
+            <dualWield>2</dualWield>
+            <pierce>2</pierce>
+            <damageType>2</damageType>
+            <shotgun>1</shotgun>
+            <magPrice>300</magPrice>
+            <weightLayers>0</weightLayers>
+            <category>1</category>
+            <formula>1</formula>
+            <status>unresolved</status>
+            <displayEligible>false</displayEligible>
+            <inputDigest>fnv1a32:a4b399a3</inputDigest>
+            <auditRef>weapon:BOUNCER LEONE:data</auditRef>
+          </data>
+        </profiles>
+      </balance>
     </item>
   <item weapontype="大威力手枪">
       <name>Desert Eagle改装版</name>
@@ -682,6 +1088,27 @@
         <slay>8</slay>
         <reloadPenalty>17</reloadPenalty>
       </data>
+      <balance>
+        <formulaFamily>weapon</formulaFamily>
+        <schemaVersion>1</schemaVersion>
+        <workbookVersion>1</workbookVersion>
+        <profiles>
+          <data>
+            <dualWield>2</dualWield>
+            <pierce>2</pierce>
+            <damageType>1</damageType>
+            <shotgun>1</shotgun>
+            <magPrice>300</magPrice>
+            <weightLayers>1</weightLayers>
+            <category>1</category>
+            <formula>1</formula>
+            <status>unresolved</status>
+            <displayEligible>false</displayEligible>
+            <inputDigest>fnv1a32:ab7c9444</inputDigest>
+            <auditRef>weapon:Desert Eagle改装版:data</auditRef>
+          </data>
+        </profiles>
+      </balance>
     </item>
   <item weapontype="大威力手枪">
       <name>湛蓝玫瑰</name>
@@ -712,6 +1139,27 @@
         <reloadType>tube</reloadType>
         <reloadPenalty>17</reloadPenalty>
       </data>
+      <balance>
+        <formulaFamily>weapon</formulaFamily>
+        <schemaVersion>1</schemaVersion>
+        <workbookVersion>1</workbookVersion>
+        <profiles>
+          <data>
+            <dualWield>2</dualWield>
+            <pierce>2</pierce>
+            <damageType>1</damageType>
+            <shotgun>1</shotgun>
+            <magPrice>300</magPrice>
+            <weightLayers>0</weightLayers>
+            <category>1</category>
+            <formula>1</formula>
+            <status>unresolved</status>
+            <displayEligible>false</displayEligible>
+            <inputDigest>fnv1a32:703fc63a</inputDigest>
+            <auditRef>weapon:湛蓝玫瑰:data</auditRef>
+          </data>
+        </profiles>
+      </balance>
     </item>
   <item weapontype="大威力手枪">
       <name>土制转管手枪</name>
@@ -742,6 +1190,27 @@
         <reloadType>tube</reloadType>
         <reloadPenalty>17</reloadPenalty>
       </data>
+      <balance>
+        <formulaFamily>weapon</formulaFamily>
+        <schemaVersion>1</schemaVersion>
+        <workbookVersion>1</workbookVersion>
+        <profiles>
+          <data>
+            <dualWield>2</dualWield>
+            <pierce>1</pierce>
+            <damageType>1</damageType>
+            <shotgun>1</shotgun>
+            <magPrice>300</magPrice>
+            <weightLayers>0</weightLayers>
+            <category>1</category>
+            <formula>1</formula>
+            <status>unresolved</status>
+            <displayEligible>false</displayEligible>
+            <inputDigest>fnv1a32:8e7ef874</inputDigest>
+            <auditRef>weapon:土制转管手枪:data</auditRef>
+          </data>
+        </profiles>
+      </balance>
     </item>
   <item weapontype="大威力手枪">
       <name>ashcore</name>
@@ -776,6 +1245,27 @@
         <magictype>能</magictype>
         <reloadPenalty>17</reloadPenalty>
       </data>
+      <balance>
+        <formulaFamily>weapon</formulaFamily>
+        <schemaVersion>1</schemaVersion>
+        <workbookVersion>1</workbookVersion>
+        <profiles>
+          <data>
+            <dualWield>2</dualWield>
+            <pierce>2</pierce>
+            <damageType>2</damageType>
+            <shotgun>1</shotgun>
+            <magPrice>8000</magPrice>
+            <weightLayers>0</weightLayers>
+            <category>1</category>
+            <formula>1</formula>
+            <status>unresolved</status>
+            <displayEligible>false</displayEligible>
+            <inputDigest>fnv1a32:5aa62dfc</inputDigest>
+            <auditRef>weapon:ashcore:data</auditRef>
+          </data>
+        </profiles>
+      </balance>
     </item>
   <item weapontype="大威力手枪">
       <name>Ultrasonic wave</name>
@@ -805,6 +1295,27 @@
         <impact>2</impact>
         <reloadPenalty>17</reloadPenalty>
       </data>
+      <balance>
+        <formulaFamily>weapon</formulaFamily>
+        <schemaVersion>1</schemaVersion>
+        <workbookVersion>1</workbookVersion>
+        <profiles>
+          <data>
+            <dualWield>2</dualWield>
+            <pierce>1</pierce>
+            <damageType>1</damageType>
+            <shotgun>1</shotgun>
+            <magPrice>8000</magPrice>
+            <weightLayers>0</weightLayers>
+            <category>1</category>
+            <formula>1</formula>
+            <status>unresolved</status>
+            <displayEligible>false</displayEligible>
+            <inputDigest>fnv1a32:d238c4c7</inputDigest>
+            <auditRef>weapon:Ultrasonic wave:data</auditRef>
+          </data>
+        </profiles>
+      </balance>
     </item>
   <item weapontype="大威力手枪">
       <name>Ball Lightning</name>
@@ -835,6 +1346,27 @@
         <impact>2</impact>
         <reloadPenalty>17</reloadPenalty>
       </data>
+      <balance>
+        <formulaFamily>weapon</formulaFamily>
+        <schemaVersion>1</schemaVersion>
+        <workbookVersion>1</workbookVersion>
+        <profiles>
+          <data>
+            <dualWield>2</dualWield>
+            <pierce>1</pierce>
+            <damageType>1</damageType>
+            <shotgun>1</shotgun>
+            <magPrice>8000</magPrice>
+            <weightLayers>0</weightLayers>
+            <category>1</category>
+            <formula>1</formula>
+            <status>unresolved</status>
+            <displayEligible>false</displayEligible>
+            <inputDigest>fnv1a32:9af7c255</inputDigest>
+            <auditRef>weapon:Ball Lightning:data</auditRef>
+          </data>
+        </profiles>
+      </balance>
     </item>
     <item weapontype="大威力手枪">
       <name>大赦</name>
@@ -866,6 +1398,27 @@
         <slay>6</slay>
         <reloadPenalty>17</reloadPenalty>
       </data>
+      <balance>
+        <formulaFamily>weapon</formulaFamily>
+        <schemaVersion>1</schemaVersion>
+        <workbookVersion>1</workbookVersion>
+        <profiles>
+          <data>
+            <dualWield>2</dualWield>
+            <pierce>1.5</pierce>
+            <damageType>1</damageType>
+            <shotgun>1</shotgun>
+            <magPrice>300</magPrice>
+            <weightLayers>0</weightLayers>
+            <category>1</category>
+            <formula>1</formula>
+            <status>unresolved</status>
+            <displayEligible>false</displayEligible>
+            <inputDigest>fnv1a32:b01451a4</inputDigest>
+            <auditRef>weapon:大赦:data</auditRef>
+          </data>
+        </profiles>
+      </balance>
     </item>
   <item weapontype="大威力手枪">
   <name>特勤沙鹰</name>

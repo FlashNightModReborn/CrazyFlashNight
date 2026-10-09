@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  人工维护的爆炸类（手雷/投掷爆炸物）平衡方案真源。audit 与物品内 balance 均由 explosives-balance-sync 派生。
+  爆炸类公式已登记在权威工作簿「爆炸类」页。门线：威力残差 ±5%；金币价带仅对声明 adoptedGoldPrice 的武器型记录启用
+  （投掷消耗品不套用武器定价公式）；K 点 ±5%。magPrice 取物品售价、magSize 取弹容量。
+  消耗品_手雷.xml 已开启整文件覆盖门：召唤投影、玩笑投掷物、非爆炸投掷体与空袭信标以 exceptionCode 分流，
+  存量偏离公式的真实爆炸物挂 legacy-off-formula 待人工裁定，不为凑覆盖伪装拟合。
+-->
+<explosivesBalancePlan>
+  <formulaFamily>explosives</formulaFamily>
+  <schemaVersion>1</schemaVersion>
+  <formulaVersion>1</formulaVersion>
+  <workbookVersion>1</workbookVersion>
+  <workbookSha256>357E07955281D4CB3884902B58165E19E97852216AE5A76965D3EBD04FB4E107</workbookSha256>
+  <coverageFiles>
+    <file>data/items/消耗品_手雷.xml</file>
+  </coverageFiles>
+  <records>
+    <record itemName="BBPLAYER手雷" sourceFile="data/items/消耗品_手雷.xml" weightLayers="-2" balanceMode="formula" status="unresolved" note="首批机械登记：威力残差1.3%在门内；weightLayers=-2为公式反推拟合值，获取渠道证据待人工裁定" />
+
+    <!-- 召唤投影类：bullet 产生实体投影而非爆炸，不适用爆炸公式 -->
+    <record itemName="压缩胶囊之驯化僵尸" sourceFile="data/items/消耗品_手雷.xml" balanceMode="exception" status="unresolved" exceptionCode="summon-projection" />
+    <record itemName="压缩胶囊之盗贼" sourceFile="data/items/消耗品_手雷.xml" balanceMode="exception" status="unresolved" exceptionCode="summon-projection" />
+    <record itemName="压缩胶囊之军阀" sourceFile="data/items/消耗品_手雷.xml" balanceMode="exception" status="unresolved" exceptionCode="summon-projection" />
+    <record itemName="压缩胶囊之A兵团士兵" sourceFile="data/items/消耗品_手雷.xml" balanceMode="exception" status="unresolved" exceptionCode="summon-projection" />
+    <record itemName="压缩胶囊之boss大僵尸" sourceFile="data/items/消耗品_手雷.xml" balanceMode="exception" status="unresolved" exceptionCode="summon-projection" />
+    <record itemName="压缩胶囊之摇滚公园" sourceFile="data/items/消耗品_手雷.xml" balanceMode="exception" status="unresolved" exceptionCode="summon-projection" />
+    <record itemName="压缩胶囊之李小龙" sourceFile="data/items/消耗品_手雷.xml" balanceMode="exception" status="unresolved" exceptionCode="summon-projection" />
+    <record itemName="压缩胶囊之硬化僵尸" sourceFile="data/items/消耗品_手雷.xml" balanceMode="exception" status="unresolved" exceptionCode="summon-projection" />
+    <record itemName="压缩胶囊之武士铁血" sourceFile="data/items/消耗品_手雷.xml" balanceMode="exception" status="unresolved" exceptionCode="summon-projection" />
+    <record itemName="压缩胶囊之魔女" sourceFile="data/items/消耗品_手雷.xml" balanceMode="exception" status="unresolved" exceptionCode="summon-projection" />
+    <record itemName="压缩胶囊之浮士德" sourceFile="data/items/消耗品_手雷.xml" balanceMode="exception" status="unresolved" exceptionCode="summon-projection" />
+    <record itemName="压缩胶囊之牛仔" sourceFile="data/items/消耗品_手雷.xml" balanceMode="exception" status="unresolved" exceptionCode="summon-projection" />
+    <record itemName="压缩胶囊之61套士兵" sourceFile="data/items/消耗品_手雷.xml" balanceMode="exception" status="unresolved" exceptionCode="summon-projection" />
+    <record itemName="压缩胶囊之赤虎" sourceFile="data/items/消耗品_手雷.xml" balanceMode="exception" status="unresolved" exceptionCode="summon-projection" />
+    <record itemName="压缩胶囊之火凤" sourceFile="data/items/消耗品_手雷.xml" balanceMode="exception" status="unresolved" exceptionCode="summon-projection" />
+    <record itemName="压缩胶囊之黑龙" sourceFile="data/items/消耗品_手雷.xml" balanceMode="exception" status="unresolved" exceptionCode="summon-projection" />
+    <record itemName="压缩胶囊之黑铁" sourceFile="data/items/消耗品_手雷.xml" balanceMode="exception" status="unresolved" exceptionCode="summon-projection" />
+    <record itemName="压缩胶囊之兽王" sourceFile="data/items/消耗品_手雷.xml" balanceMode="exception" status="unresolved" exceptionCode="summon-projection" />
+    <record itemName="上海人形" sourceFile="data/items/消耗品_手雷.xml" balanceMode="exception" status="unresolved" exceptionCode="summon-projection" />
+    <record itemName="谜之胶囊" sourceFile="data/items/消耗品_手雷.xml" balanceMode="exception" status="unresolved" exceptionCode="summon-projection" note="映射交易百宝箱而非战斗实体" />
+
+    <!-- 玩笑投掷物：非爆炸战斗品 -->
+    <record itemName="鞭炮" sourceFile="data/items/消耗品_手雷.xml" balanceMode="exception" status="unresolved" exceptionCode="novelty-throwable" />
+    <record itemName="屎块" sourceFile="data/items/消耗品_手雷.xml" balanceMode="exception" status="unresolved" exceptionCode="novelty-throwable" />
+    <record itemName="砖" sourceFile="data/items/消耗品_手雷.xml" balanceMode="exception" status="unresolved" exceptionCode="novelty-throwable" />
+    <record itemName="足球" sourceFile="data/items/消耗品_手雷.xml" balanceMode="exception" status="unresolved" exceptionCode="novelty-throwable" />
+    <record itemName="普通足球" sourceFile="data/items/消耗品_手雷.xml" balanceMode="exception" status="unresolved" exceptionCode="novelty-throwable" />
+
+    <!-- 非爆炸投掷体（bullet 走"中转"弹道，无爆炸） -->
+    <record itemName="十字螺旋手里剑" sourceFile="data/items/消耗品_手雷.xml" balanceMode="exception" status="unresolved" exceptionCode="non-explosive-projectile" />
+    <record itemName="寒铁镖" sourceFile="data/items/消耗品_手雷.xml" balanceMode="exception" status="unresolved" exceptionCode="non-explosive-projectile" />
+    <record itemName="翼炎钉针" sourceFile="data/items/消耗品_手雷.xml" balanceMode="exception" status="unresolved" exceptionCode="non-explosive-projectile" />
+    <record itemName="鎏金雀翎" sourceFile="data/items/消耗品_手雷.xml" balanceMode="exception" status="unresolved" exceptionCode="non-explosive-projectile" />
+
+    <!-- 空袭信标：呼叫导弹打击，公式不建模 -->
+    <record itemName="导弹信标" sourceFile="data/items/消耗品_手雷.xml" balanceMode="exception" status="unresolved" exceptionCode="airstrike-beacon" />
+    <record itemName="量子爆弹信标" sourceFile="data/items/消耗品_手雷.xml" balanceMode="exception" status="unresolved" exceptionCode="airstrike-beacon" />
+
+    <!-- 存量真实爆炸物：数值偏离公式基线，待人工裁定是改数值还是改层数口径 -->
+    <record itemName="普通手雷" sourceFile="data/items/消耗品_手雷.xml" balanceMode="exception" status="unresolved" exceptionCode="legacy-off-formula" note="power1000@lv1显著高于公式基线，存量数值待裁定" />
+    <record itemName="M24手榴弹" sourceFile="data/items/消耗品_手雷.xml" balanceMode="exception" status="unresolved" exceptionCode="legacy-off-formula" note="power1000@lv1显著高于公式基线，存量数值待裁定" />
+    <record itemName="满是划痕的手雷" sourceFile="data/items/消耗品_手雷.xml" balanceMode="exception" status="unresolved" exceptionCode="legacy-off-formula" note="power1000@lv1显著高于公式基线，存量数值待裁定" />
+    <record itemName="地瓜手雷" sourceFile="data/items/消耗品_手雷.xml" balanceMode="exception" status="unresolved" exceptionCode="legacy-off-formula" note="power3000@lv15残差+54.7%，存量数值待裁定" />
+    <record itemName="燃烧弹" sourceFile="data/items/消耗品_手雷.xml" balanceMode="exception" status="unresolved" exceptionCode="legacy-off-formula" note="power3500@lv20残差+33.9%，存量数值待裁定" />
+    <record itemName="高爆手雷" sourceFile="data/items/消耗品_手雷.xml" balanceMode="exception" status="unresolved" exceptionCode="legacy-off-formula" note="power6000@lv25残差+19.8%，存量数值待裁定" />
+    <record itemName="战术核弹手雷" sourceFile="data/items/消耗品_手雷.xml" balanceMode="exception" status="unresolved" exceptionCode="legacy-off-formula" note="power100000@lv50残差+317%，彩蛋级存量数值待裁定" />
+  </records>
+</explosivesBalancePlan>

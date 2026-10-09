@@ -942,19 +942,43 @@ function runBalanceCheck(args: string[]): void {
   const checked: string[] = [];
   const auditRefJoinCounts = new Map<string, number>();
   const summaries: Array<Record<string, unknown>> = [];
+  // 武器覆盖域 = 枪械文件（手枪/长枪）；武器_刀_* 归 melee 家族管辖
+  const coverageFiles = files.filter((file) => /武器_(?:手枪|长枪)_.*\.xml$/.test(file.absolutePath));
+  const coverageByFile: Array<Record<string, unknown>> = [];
 
   for (const file of files) {
     const base = path.basename(file.absolutePath);
+    const fileSource = fs.readFileSync(file.absolutePath, "utf8");
     let parsedItems;
     try {
-      parsedItems = parseWeaponBalanceItemsFromXml(
-        fs.readFileSync(file.absolutePath, "utf8")
-      );
+      parsedItems = parseWeaponBalanceItemsFromXml(fileSource);
     } catch (error) {
       errors.push(
         `${base}: balance parse failed: ${error instanceof Error ? error.message : String(error)}`
       );
       continue;
+    }
+
+    if (coverageFiles.includes(file)) {
+      const coveredNames = new Set(parsedItems.map((item) => item.itemName));
+      const uncovered: string[] = [];
+      for (const block of fileSource.matchAll(/<item\b[^>]*>[\s\S]*?<\/item>/g)) {
+        const nameMatch = block[0].match(/<name>([\s\S]*?)<\/name>/);
+        const itemName = nameMatch?.[1]?.trim().replace(/&apos;/g, "'").replace(/&quot;/g, '"')
+          .replace(/&gt;/g, ">").replace(/&lt;/g, "<").replace(/&amp;/g, "&");
+        if (itemName && !coveredNames.has(itemName)) uncovered.push(itemName);
+      }
+      coverageByFile.push({
+        file: base,
+        totalItems: coveredNames.size + uncovered.length,
+        coveredItems: coveredNames.size,
+        uncoveredItems: uncovered
+      });
+      if (uncovered.length > 0) {
+        errors.push(
+          `${base}: coverage_gap: ${uncovered.length} weapon items lack <balance>/audit records: ${uncovered.join(", ")}`
+        );
+      }
     }
 
     for (const item of parsedItems) {
@@ -1058,6 +1082,14 @@ function runBalanceCheck(args: string[]): void {
       displayEligibleCount: summaries.filter(
         (summary) => summary.displayEligible === true
       ).length,
+      coverage: {
+        domainFiles: coverageFiles.map((file) => path.basename(file.absolutePath)),
+        uncoveredItemCount: coverageByFile.reduce(
+          (total, entry) => total + (entry.uncoveredItems as string[]).length,
+          0
+        ),
+        files: coverageByFile
+      },
       summaries,
       failures: errors,
       warnings,

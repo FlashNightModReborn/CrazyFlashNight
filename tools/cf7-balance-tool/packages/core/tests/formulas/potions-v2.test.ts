@@ -22,6 +22,7 @@ const EMPTY: PotionV2Input = {
   buffPunch: 0,
   buffSpeed: 0,
   buffToughness: 0,
+  buffCritRate: 0,
   buffDuration: 0,
 };
 
@@ -114,6 +115,23 @@ describe("potion formula v2", () => {
           buffDuration: duration,
         }).currentValue,
       ).toBeLessThanOrEqual(100 + level * 100);
+    },
+  );
+
+  it.each([
+    [8, 12.5 * 8],
+    [15, 12.5 * 15],
+    [25, 12.5 * 25],
+  ])(
+    "暴击率 %i%% 按等效攻击力折算（1.5 倍暴伤 → 净权重 12.5）",
+    (critRate, expectedBase) => {
+      const output = computePotionV2Row({
+        ...EMPTY,
+        buffCritRate: critRate,
+        buffDuration: 1800,
+      });
+
+      expect(output.buffStrength).toBeCloseTo(expectedBase * (0.1 + 1800 / 300), 6);
     },
   );
 });

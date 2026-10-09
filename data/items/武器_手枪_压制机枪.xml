@@ -32,6 +32,27 @@
         <accuracy>-20</accuracy>
         <reloadPenalty>67</reloadPenalty>
       </data>
+      <balance>
+        <formulaFamily>weapon</formulaFamily>
+        <schemaVersion>1</schemaVersion>
+        <workbookVersion>1</workbookVersion>
+        <profiles>
+          <data>
+            <dualWield>2</dualWield>
+            <pierce>1</pierce>
+            <damageType>1</damageType>
+            <shotgun>5</shotgun>
+            <magPrice>8000</magPrice>
+            <weightLayers>0</weightLayers>
+            <category>1</category>
+            <formula>1</formula>
+            <status>unresolved</status>
+            <displayEligible>false</displayEligible>
+            <inputDigest>fnv1a32:831f297a</inputDigest>
+            <auditRef>weapon:XM556-OC-Overlord:data</auditRef>
+          </data>
+        </profiles>
+      </balance>
       <lifecycle>
         <attr_0>
           <skillInteraction>independent</skillInteraction>
@@ -91,5 +112,26 @@
         <evasion>-20</evasion>
         <accuracy>-20</accuracy>
       </data>
+      <balance>
+        <formulaFamily>weapon</formulaFamily>
+        <schemaVersion>1</schemaVersion>
+        <workbookVersion>1</workbookVersion>
+        <profiles>
+          <data>
+            <dualWield>2</dualWield>
+            <pierce>1</pierce>
+            <damageType>1</damageType>
+            <shotgun>5</shotgun>
+            <magPrice>1000</magPrice>
+            <weightLayers>1</weightLayers>
+            <category>1</category>
+            <formula>1</formula>
+            <status>unresolved</status>
+            <displayEligible>false</displayEligible>
+            <inputDigest>fnv1a32:5a44bfdb</inputDigest>
+            <auditRef>weapon:XM556-H-Stinger:data</auditRef>
+          </data>
+        </profiles>
+      </balance>
     </item>
 </root>

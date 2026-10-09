@@ -83,6 +83,27 @@
       <accuracy>-5</accuracy>
       <reloadPenalty>50</reloadPenalty>
     </data>
+    <balance>
+      <formulaFamily>weapon</formulaFamily>
+      <schemaVersion>1</schemaVersion>
+      <workbookVersion>1</workbookVersion>
+      <profiles>
+        <data>
+          <dualWield>1</dualWield>
+          <pierce>1</pierce>
+          <damageType>1</damageType>
+          <shotgun>1</shotgun>
+          <magPrice>1000</magPrice>
+          <weightLayers>0</weightLayers>
+          <category>1</category>
+          <formula>1</formula>
+          <status>unresolved</status>
+          <displayEligible>false</displayEligible>
+          <inputDigest>fnv1a32:934020e9</inputDigest>
+          <auditRef>weapon:M249:data</auditRef>
+        </data>
+      </profiles>
+    </balance>
     <lifecycle>
       <attr_0>
         <skillInteraction>independent</skillInteraction>
@@ -131,6 +152,27 @@
       <accuracy>-10</accuracy>
       <reloadPenalty>50</reloadPenalty>
     </data>
+    <balance>
+      <formulaFamily>weapon</formulaFamily>
+      <schemaVersion>1</schemaVersion>
+      <workbookVersion>1</workbookVersion>
+      <profiles>
+        <data>
+          <dualWield>1</dualWield>
+          <pierce>1</pierce>
+          <damageType>1</damageType>
+          <shotgun>1</shotgun>
+          <magPrice>1000</magPrice>
+          <weightLayers>0</weightLayers>
+          <category>1</category>
+          <formula>1</formula>
+          <status>unresolved</status>
+          <displayEligible>false</displayEligible>
+          <inputDigest>fnv1a32:8300c4a0</inputDigest>
+          <auditRef>weapon:HK23:data</auditRef>
+        </data>
+      </profiles>
+    </balance>
   </item>
   <item weapontype="机枪">
     <name>MK48</name>
@@ -161,6 +203,27 @@
       <accuracy>-5</accuracy>
       <reloadPenalty>50</reloadPenalty>
     </data>
+    <balance>
+      <formulaFamily>weapon</formulaFamily>
+      <schemaVersion>1</schemaVersion>
+      <workbookVersion>1</workbookVersion>
+      <profiles>
+        <data>
+          <dualWield>1</dualWield>
+          <pierce>1</pierce>
+          <damageType>1</damageType>
+          <shotgun>1</shotgun>
+          <magPrice>1000</magPrice>
+          <weightLayers>1</weightLayers>
+          <category>1</category>
+          <formula>1</formula>
+          <status>unresolved</status>
+          <displayEligible>false</displayEligible>
+          <inputDigest>fnv1a32:bc5d495e</inputDigest>
+          <auditRef>weapon:MK48:data</auditRef>
+        </data>
+      </profiles>
+    </balance>
   </item>
   <item weapontype="机枪">
     <name>PKM机枪</name>
@@ -191,6 +254,27 @@
       <impact>5</impact>
       <reloadPenalty>50</reloadPenalty>
     </data>
+    <balance>
+      <formulaFamily>weapon</formulaFamily>
+      <schemaVersion>1</schemaVersion>
+      <workbookVersion>1</workbookVersion>
+      <profiles>
+        <data>
+          <dualWield>1</dualWield>
+          <pierce>1</pierce>
+          <damageType>1</damageType>
+          <shotgun>1</shotgun>
+          <magPrice>1000</magPrice>
+          <weightLayers>1</weightLayers>
+          <category>1</category>
+          <formula>1</formula>
+          <status>unresolved</status>
+          <displayEligible>false</displayEligible>
+          <inputDigest>fnv1a32:819b3666</inputDigest>
+          <auditRef>weapon:PKM机枪:data</auditRef>
+        </data>
+      </profiles>
+    </balance>
     <lifecycle>
       <attr_0>
         <skillInteraction>independent</skillInteraction>
@@ -232,6 +316,27 @@
       <impact>5</impact>
       <reloadPenalty>50</reloadPenalty>
     </data>
+    <balance>
+      <formulaFamily>weapon</formulaFamily>
+      <schemaVersion>1</schemaVersion>
+      <workbookVersion>1</workbookVersion>
+      <profiles>
+        <data>
+          <dualWield>1</dualWield>
+          <pierce>1</pierce>
+          <damageType>1</damageType>
+          <shotgun>1</shotgun>
+          <magPrice>1000</magPrice>
+          <weightLayers>0</weightLayers>
+          <category>1</category>
+          <formula>1</formula>
+          <status>unresolved</status>
+          <displayEligible>false</displayEligible>
+          <inputDigest>fnv1a32:c510e4fb</inputDigest>
+          <auditRef>weapon:M1918A2:data</auditRef>
+        </data>
+      </profiles>
+    </balance>
   </item>
   <item weapontype="机枪">
     <name>NEGEV</name>
@@ -266,6 +371,27 @@
       <accuracy>20</accuracy>
       <reloadPenalty>50</reloadPenalty>
     </data>
+    <balance>
+      <formulaFamily>weapon</formulaFamily>
+      <schemaVersion>1</schemaVersion>
+      <workbookVersion>1</workbookVersion>
+      <profiles>
+        <data>
+          <dualWield>1</dualWield>
+          <pierce>1</pierce>
+          <damageType>1</damageType>
+          <shotgun>1</shotgun>
+          <magPrice>1000</magPrice>
+          <weightLayers>1</weightLayers>
+          <category>1</category>
+          <formula>1</formula>
+          <status>unresolved</status>
+          <displayEligible>false</displayEligible>
+          <inputDigest>fnv1a32:00c3c258</inputDigest>
+          <auditRef>weapon:NEGEV:data</auditRef>
+        </data>
+      </profiles>
+    </balance>
     <lifecycle>
       <attr_0>
         <skillInteraction>independent</skillInteraction>
@@ -306,6 +432,27 @@
       <criticalhit>5</criticalhit>
       <reloadPenalty>50</reloadPenalty>
     </data>
+    <balance>
+      <formulaFamily>weapon</formulaFamily>
+      <schemaVersion>1</schemaVersion>
+      <workbookVersion>1</workbookVersion>
+      <profiles>
+        <data>
+          <dualWield>1</dualWield>
+          <pierce>1</pierce>
+          <damageType>1</damageType>
+          <shotgun>1</shotgun>
+          <magPrice>1000</magPrice>
+          <weightLayers>0</weightLayers>
+          <category>1</category>
+          <formula>1</formula>
+          <status>unresolved</status>
+          <displayEligible>false</displayEligible>
+          <inputDigest>fnv1a32:e8dad9cd</inputDigest>
+          <auditRef>weapon:ValmetM78:data</auditRef>
+        </data>
+      </profiles>
+    </balance>
   </item>
   <item weapontype="机枪">
     <name>QJZ171</name>
@@ -521,6 +668,27 @@
       <impact>4</impact>
       <reloadPenalty>50</reloadPenalty>
     </data>
+    <balance>
+      <formulaFamily>weapon</formulaFamily>
+      <schemaVersion>1</schemaVersion>
+      <workbookVersion>1</workbookVersion>
+      <profiles>
+        <data>
+          <dualWield>1</dualWield>
+          <pierce>1</pierce>
+          <damageType>1</damageType>
+          <shotgun>1</shotgun>
+          <magPrice>1000</magPrice>
+          <weightLayers>0</weightLayers>
+          <category>1</category>
+          <formula>1</formula>
+          <status>unresolved</status>
+          <displayEligible>false</displayEligible>
+          <inputDigest>fnv1a32:283d4d40</inputDigest>
+          <auditRef>weapon:ZB-26:data</auditRef>
+        </data>
+      </profiles>
+    </balance>
   </item>
   <item weapontype="机枪">
     <name>M60E3</name>
@@ -552,6 +720,27 @@
       <accuracy>-15</accuracy>
       <reloadPenalty>50</reloadPenalty>
     </data>
+    <balance>
+      <formulaFamily>weapon</formulaFamily>
+      <schemaVersion>1</schemaVersion>
+      <workbookVersion>1</workbookVersion>
+      <profiles>
+        <data>
+          <dualWield>1</dualWield>
+          <pierce>2</pierce>
+          <damageType>1</damageType>
+          <shotgun>1</shotgun>
+          <magPrice>8000</magPrice>
+          <weightLayers>0</weightLayers>
+          <category>1</category>
+          <formula>1</formula>
+          <status>unresolved</status>
+          <displayEligible>false</displayEligible>
+          <inputDigest>fnv1a32:8abaf3cf</inputDigest>
+          <auditRef>weapon:M60E3:data</auditRef>
+        </data>
+      </profiles>
+    </balance>
   </item>
   <item weapontype="机枪">
     <name>PKM战术版</name>
@@ -585,6 +774,27 @@
       <impact>35</impact>
       <reloadPenalty>50</reloadPenalty>
     </data>
+    <balance>
+      <formulaFamily>weapon</formulaFamily>
+      <schemaVersion>1</schemaVersion>
+      <workbookVersion>1</workbookVersion>
+      <profiles>
+        <data>
+          <dualWield>1</dualWield>
+          <pierce>2</pierce>
+          <damageType>1</damageType>
+          <shotgun>1</shotgun>
+          <magPrice>8000</magPrice>
+          <weightLayers>0</weightLayers>
+          <category>1</category>
+          <formula>1</formula>
+          <status>unresolved</status>
+          <displayEligible>false</displayEligible>
+          <inputDigest>fnv1a32:020daa62</inputDigest>
+          <auditRef>weapon:PKM战术版:data</auditRef>
+        </data>
+      </profiles>
+    </balance>
     <lifecycle>
       <attr_0>
         <skillInteraction>independent</skillInteraction>

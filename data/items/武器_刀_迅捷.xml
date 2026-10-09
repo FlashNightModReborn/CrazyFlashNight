@@ -30,6 +30,24 @@
         <evasion>20</evasion>
         <bladeCount>3</bladeCount>
       </data>
+      <balance>
+        <formulaFamily>melee</formulaFamily>
+        <schemaVersion>1</schemaVersion>
+        <formulaVersion>1</formulaVersion>
+        <workbookVersion>1</workbookVersion>
+        <weightLayers>0</weightLayers>
+        <damageTypeFactor>1</damageTypeFactor>
+        <categoryFactor>1</categoryFactor>
+        <balanceMode>exception</balanceMode>
+        <recommendedSharpness>176</recommendedSharpness>
+        <recommendedGoldPrice>66300</recommendedGoldPrice>
+        <recommendedKPointPrice>2040</recommendedKPointPrice>
+        <marketPrice>66300</marketPrice>
+        <status>unresolved</status>
+        <inputDigest>fnv1a32:53af8f26</inputDigest>
+        <sourceDigest>sha256:b5e3c073b45e8267d4ac51a8c2999b65bb24a126ad9299c3240dd3d955a9c2da</sourceDigest>
+        <auditRef>melee:校制式刀</auditRef>
+      </balance>
     </item>
     <item>
       <name>合家欢</name>
@@ -57,6 +75,24 @@
         <criticalhit>10</criticalhit>
         <bladeCount>3</bladeCount>
       </data>
+      <balance>
+        <formulaFamily>melee</formulaFamily>
+        <schemaVersion>1</schemaVersion>
+        <formulaVersion>1</formulaVersion>
+        <workbookVersion>1</workbookVersion>
+        <weightLayers>0</weightLayers>
+        <damageTypeFactor>1</damageTypeFactor>
+        <categoryFactor>1</categoryFactor>
+        <balanceMode>exception</balanceMode>
+        <recommendedSharpness>159</recommendedSharpness>
+        <recommendedGoldPrice>58500</recommendedGoldPrice>
+        <recommendedKPointPrice>1800</recommendedKPointPrice>
+        <marketPrice>93600</marketPrice>
+        <status>unresolved</status>
+        <inputDigest>fnv1a32:7893e60a</inputDigest>
+        <sourceDigest>sha256:2ce76ccf9fb7b189551c6f0c391304b951710bae1f9ddeb5da4f808305b90d5e</sourceDigest>
+        <auditRef>melee:合家欢</auditRef>
+      </balance>
     </item>
     <item>
       <name>嗜血夜鸦</name>
@@ -90,6 +126,24 @@
         <criticalhit>15</criticalhit>
         <bladeCount>4</bladeCount>
       </data>
+      <balance>
+        <formulaFamily>melee</formulaFamily>
+        <schemaVersion>1</schemaVersion>
+        <formulaVersion>1</formulaVersion>
+        <workbookVersion>1</workbookVersion>
+        <weightLayers>0</weightLayers>
+        <damageTypeFactor>1</damageTypeFactor>
+        <categoryFactor>1</categoryFactor>
+        <balanceMode>exception</balanceMode>
+        <recommendedSharpness>296</recommendedSharpness>
+        <recommendedGoldPrice>113100</recommendedGoldPrice>
+        <recommendedKPointPrice>3480</recommendedKPointPrice>
+        <marketPrice>290000</marketPrice>
+        <status>unresolved</status>
+        <inputDigest>fnv1a32:57911e42</inputDigest>
+        <sourceDigest>sha256:b1d28b1bf7fb4e6e224f851e866c185cc30f2eeb7b795b9461f33e3459c11aa4</sourceDigest>
+        <auditRef>melee:嗜血夜鸦</auditRef>
+      </balance>
     </item>
       <item>
       <name>六羽刀</name>
@@ -119,6 +173,24 @@
         <criticalhit>10</criticalhit>
         <bladeCount>3</bladeCount>
       </data>
+      <balance>
+        <formulaFamily>melee</formulaFamily>
+        <schemaVersion>1</schemaVersion>
+        <formulaVersion>1</formulaVersion>
+        <workbookVersion>1</workbookVersion>
+        <weightLayers>0</weightLayers>
+        <damageTypeFactor>1</damageTypeFactor>
+        <categoryFactor>1</categoryFactor>
+        <balanceMode>exception</balanceMode>
+        <recommendedSharpness>196</recommendedSharpness>
+        <recommendedGoldPrice>74100</recommendedGoldPrice>
+        <recommendedKPointPrice>2280</recommendedKPointPrice>
+        <marketPrice>120000</marketPrice>
+        <status>unresolved</status>
+        <inputDigest>fnv1a32:76a3d457</inputDigest>
+        <sourceDigest>sha256:2cb1f36581398da6b677f21b7671529a1b7f35e1c61c6807c8f77d54ac3b4a4c</sourceDigest>
+        <auditRef>melee:六羽刀</auditRef>
+      </balance>
     </item>
     <item>
     <name>Z军刀</name>
@@ -141,6 +213,24 @@
       <damagetype>魔法</damagetype>
       <bladeCount>3</bladeCount>
     </data>
+    <balance>
+      <formulaFamily>melee</formulaFamily>
+      <schemaVersion>1</schemaVersion>
+      <formulaVersion>1</formulaVersion>
+      <workbookVersion>1</workbookVersion>
+      <weightLayers>0</weightLayers>
+      <damageTypeFactor>1</damageTypeFactor>
+      <categoryFactor>1</categoryFactor>
+      <balanceMode>exception</balanceMode>
+      <recommendedSharpness>603</recommendedSharpness>
+      <recommendedGoldPrice>234000</recommendedGoldPrice>
+      <recommendedKPointPrice>7200</recommendedKPointPrice>
+      <marketPrice>958500</marketPrice>
+      <status>unresolved</status>
+      <inputDigest>fnv1a32:1cc1b170</inputDigest>
+      <sourceDigest>sha256:c173cab6ef65b6b92f696874766ee2722f10bf80bf6c280a6b99c51a7ee7f164</sourceDigest>
+      <auditRef>melee:Z军刀</auditRef>
+    </balance>
   </item>
   <item>
     <name>斯帕德隆剑</name>
@@ -173,5 +263,23 @@
       </skillmultipliers>
       <bladeCount>3</bladeCount>
     </data>
+    <balance>
+      <formulaFamily>melee</formulaFamily>
+      <schemaVersion>1</schemaVersion>
+      <formulaVersion>1</formulaVersion>
+      <workbookVersion>1</workbookVersion>
+      <weightLayers>0</weightLayers>
+      <damageTypeFactor>1</damageTypeFactor>
+      <categoryFactor>1</categoryFactor>
+      <balanceMode>exception</balanceMode>
+      <recommendedSharpness>166</recommendedSharpness>
+      <recommendedGoldPrice>62400</recommendedGoldPrice>
+      <recommendedKPointPrice>1920</recommendedKPointPrice>
+      <marketPrice>99000</marketPrice>
+      <status>unresolved</status>
+      <inputDigest>fnv1a32:e92ba130</inputDigest>
+      <sourceDigest>sha256:80f8605f622db801f6d77834e3effcfb608038c89c7177c8907c352c491004f5</sourceDigest>
+      <auditRef>melee:斯帕德隆剑</auditRef>
+    </balance>
   </item>
 </root>

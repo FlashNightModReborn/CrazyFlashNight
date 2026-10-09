@@ -29,17 +29,18 @@
 
 | 家族 | 人工源 | 门 | 覆盖现状 | 覆盖门状态 |
 |---|---|---|---|---|
-| weapon v1 | `records/weapon-balance-audit.xml` | `balance-check` | 40 条记录 | 仅校验已有记录；**全量覆盖门待开启**（本契约收口 design §8 的 deferred 项） |
-| armor v1 | `records/armor-balance-plan.xml` | `armor-balance-check` | 钛合金61式五件 confirmed | 按 plan 登记项校验，不强制整文件 |
+| weapon v1 | `records/weapon-balance-audit.xml` | `balance-check` | 365 个 profile 全量校验；存量 285 项经 `scripts/weapon-seed-migration.ts` 机械派生登记为 unresolved（获取渠道/弹药价/pierce/split 语义逐项标注 UNRESOLVED） | **整文件覆盖门已开启**（coverage_gap 转 error） |
+| armor v1 | `records/armor-balance-plan.xml` | `armor-balance-check` | 钛合金61式五件 confirmed；重装特勤五件 unresolved；存量 645 条按 exception 机械登记（legacy-off-formula/npc-only） | 四个防具文件整文件覆盖门已开启 |
 | potion v2 | `records/potion-balance-plan.xml` | `potion-balance-check` | 三文件 77 项；#101 缺口已于 2026-09-22 清零（`51e2ebb981`，77/77） | 已有整文件 coverage 门（家族先例） |
-| melee / explosives | — | — | 公式引擎在（`formulas/melee.ts`、`explosives.ts`），家族未注册 | 先注册家族再谈覆盖 |
+| melee v1 | `records/melee-balance-plan.xml` | `melee-balance-check` | 家族已注册；存量 230 条按 exception 机械登记（legacy-off-formula/npc-only/unobtainable-novelty），1 条 formula（巨尸长斧，unresolved） | 16 个近战文件整文件覆盖门已开启 |
+| explosives v1 | `records/explosives-balance-plan.xml` | `explosives-balance-check` | 家族已注册（`explosives-balance-rulebook.md`），`消耗品_手雷.xml` 39 项全量登记（formula 1 + exception 38） | 手雷文件覆盖门已开启 |
 
 覆盖门演进顺序（每步落卡、机器门验收）：
 
 1. ~~potion 缺口清零（#101），确认既有 coverage 门常绿；~~ **已完成（2026-09-22，`51e2ebb981`，77/77）。**
-2. melee、explosives 家族注册（仿 armor 的 potion 式轻量路径）；
-3. armor 按部件/等级带分批补录，随后开启整文件 coverage 门；
-4. weapon 定义并开启全量覆盖门（design §8 预留），存量分批迁移；
+2. ~~melee、explosives 家族注册（仿 armor 的 potion 式轻量路径）；~~ **已注册（2026-10-09，`ced7287a51`；explosives 手雷文件覆盖门同步开启）。**
+3. ~~armor 按部件/等级带分批补录，随后开启整文件 coverage 门；~~ **覆盖门已开（2026-10-09，`df286673c6`）：存量 645 条以 exception 机械登记，逐件裁定是后续工作。**
+4. ~~weapon 存量分批迁移（coverage_gap 队列已出，285 项），随后开启硬门；~~ **机械迁移已落（2026-10-09）：285 项全部以 unresolved + UNRESOLVED 证据标注登记，硬门已开；逐件复核裁定是后续工作。**
 5. 全部家族覆盖门常绿后，本契约进入维持态：check 红即腐败，按治理流程处理。
 
 > #101 只清零 potion coverage 缺口；本批 9 条 exception 记录仍按各自 `runtime-test-pending` / 数值确认边界处理，不因 coverage 变绿而升级为全量数值确认。

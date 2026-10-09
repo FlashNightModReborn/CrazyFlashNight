@@ -74,6 +74,7 @@ function main(): void {
   const plan = readPlan();
   verifyWorkbookSnapshot(plan);
   const records = buildAuditRecords(plan);
+  verifyCoverage(plan, records);
   const auditXml = buildAuditXml(plan, records);
   const syncedFiles = buildSyncedItemFiles(records);
 
@@ -122,6 +123,10 @@ function verifyWorkbookSnapshot(plan: ArmorBalancePlan): void {
 function buildAuditRecords(plan: ArmorBalancePlan): AuditRecord[] {
   const fileCache = new Map<string, Map<string, string>>();
   const kshopCache = new Map<string, Map<string, number>>();
+  const nameCounts = new Map<string, number>();
+  for (const record of plan.records) {
+    nameCounts.set(record.itemName, (nameCounts.get(record.itemName) ?? 0) + 1);
+  }
   return plan.records.map((record) => {
     const absolutePath = path.join(REPO_ROOT, record.sourceFile);
     let blocks = fileCache.get(absolutePath);
@@ -132,10 +137,16 @@ function buildAuditRecords(plan: ArmorBalancePlan): AuditRecord[] {
     const itemBlock = blocks.get(record.itemName);
     if (!itemBlock) throw new Error(`${record.sourceFile}: 找不到 ${record.itemName}`);
     const snapshot = createItemSnapshot(record, itemBlock);
-    verifyScoreFit(record, snapshot);
-    verifyGoldPrice(record, snapshot);
-    verifyKPointPrice(record, snapshot, kshopCache);
-    return { ...record, ...snapshot, auditRef: `armor:${record.itemName}` };
+    if (record.balanceMode !== "exception") {
+      verifyScoreFit(record, snapshot);
+      verifyGoldPrice(record, snapshot);
+      verifyKPointPrice(record, snapshot, kshopCache);
+    }
+    const auditRef =
+      (nameCounts.get(record.itemName) ?? 0) > 1
+        ? `armor:${record.itemName}@${path.basename(record.sourceFile, ".xml")}`
+        : `armor:${record.itemName}`;
+    return { ...record, ...snapshot, auditRef };
   });
 }
 
@@ -299,6 +310,19 @@ function readKshopPrices(absolutePath: string, evidenceRef: string): Map<string,
   return result;
 }
 
+function verifyCoverage(plan: ArmorBalancePlan, records: AuditRecord[]): void {
+  const planned = new Set(records.map((record) => `${record.sourceFile} ${record.itemName}`));
+  for (const sourceFile of plan.coverageFiles) {
+    const absolutePath = path.join(REPO_ROOT, sourceFile);
+    const blocks = indexItemBlocks(fs.readFileSync(absolutePath, "utf8"), sourceFile);
+    for (const itemName of blocks.keys()) {
+      if (!planned.has(`${sourceFile} ${itemName}`)) {
+        throw new Error(`${sourceFile}: ${itemName} 未进入防具审计计划`);
+      }
+    }
+  }
+}
+
 function buildAuditXml(plan: ArmorBalancePlan, records: AuditRecord[]): string {
   const lines: string[] = [
     '<?xml version="1.0" encoding="UTF-8"?>',
@@ -326,6 +350,10 @@ function buildAuditXml(plan: ArmorBalancePlan, records: AuditRecord[]): string {
         `      <kpointEvidenceRef>${escapeXml(record.kpointEvidenceRef)}</kpointEvidenceRef>`,
       ]),
       `      <status>${record.status}</status>`,
+      `      <balanceMode>${record.balanceMode ?? "formula"}</balanceMode>`,
+      ...(record.exceptionCode === undefined ? [] : [
+        `      <exceptionCode>${escapeXml(record.exceptionCode)}</exceptionCode>`,
+      ]),
       `      <marketPrice>${formatNumber(record.marketPrice)}</marketPrice>`,
       `      <currentScore>${formatNumber(record.scoreOutput.currentScore)}</currentScore>`,
       `      <balanceScore>${formatNumber(record.scoreOutput.balanceScore)}</balanceScore>`,
@@ -390,6 +418,10 @@ function buildInlineBalance(record: AuditRecord): string {
     `  <priceLayers>${record.priceLayers}</priceLayers>`,
     `  <category>${formatNumber(record.category)}</category>`,
     `  <damageTypeFactor>${formatNumber(record.damageTypeFactor)}</damageTypeFactor>`,
+    `  <balanceMode>${record.balanceMode ?? "formula"}</balanceMode>`,
+    ...(record.exceptionCode === undefined ? [] : [
+      `  <exceptionCode>${escapeXml(record.exceptionCode)}</exceptionCode>`,
+    ]),
     `  <currentScore>${formatNumber(record.scoreOutput.currentScore)}</currentScore>`,
     `  <balanceScore>${formatNumber(record.scoreOutput.balanceScore)}</balanceScore>`,
     `  <weightedScore>${formatNumber(record.scoreOutput.weightedScore)}</weightedScore>`,
@@ -411,8 +443,8 @@ function indexItemBlocks(source: string, sourceFile: string): Map<string, string
   for (const match of source.matchAll(itemRegex)) {
     const block = match[0];
     const itemName = extractItemName(block, sourceFile);
-    if (result.has(itemName)) throw new Error(`${sourceFile}: 重复 item ${itemName}`);
-    result.set(itemName, block);
+    // 同一文件内可能存在完全相同的同名块（NPC 装扮复制体）：保留首个，sync 按名命中所有同名片段
+    if (!result.has(itemName)) result.set(itemName, block);
   }
   return result;
 }

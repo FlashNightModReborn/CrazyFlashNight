@@ -277,6 +277,33 @@ class org.flashNight.arki.bullet.BulletComponent.Init.BulletInitializer {
         if (!Obj.暴击 && shooter.暴击) {
             Obj.暴击 = shooter.暴击;
         }
+        // 暴击率加成（药剂/酒水 buff 写入 shooter.暴击率）：与子弹既有暴击判定并行，
+        // 原判定未暴击时按加成概率追加一次独立的 1.5 倍判定
+        var critRateBonus:Number = Number(shooter.暴击率);
+        if (critRateBonus > 0) {
+            var baseCritFunc:Function = null;
+            var baseCritRate:Number = 0;
+            if (typeof Obj.暴击 == "function") {
+                baseCritFunc = Obj.暴击;
+            } else if (Obj.暴击 == "满血暴击") {
+                baseCritFunc = function(当前子弹) {
+                    return (当前子弹.hitTarget.hp >= 当前子弹.hitTarget.hp满血值) ? 1.5 : 1;
+                };
+            } else {
+                var parsedCritRate:Number = Number(Obj.暴击);
+                if (!isNaN(parsedCritRate)) baseCritRate = parsedCritRate;
+            }
+            Obj.暴击 = function(当前子弹) {
+                var baseMult:Number = 1;
+                if (baseCritFunc != null) {
+                    baseMult = baseCritFunc(当前子弹);
+                } else if (baseCritRate > 0 && _root.成功率(baseCritRate)) {
+                    baseMult = 1.5;
+                }
+                if (baseMult > 1) return baseMult;
+                return _root.成功率(critRateBonus) ? 1.5 : 1;
+            };
+        }
     }
     
     /**

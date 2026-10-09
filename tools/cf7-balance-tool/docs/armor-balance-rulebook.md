@@ -75,3 +75,14 @@ plan 的 `priceLayers` 必须等于 `acquisition.high-price` 条目的 `delta`�
 ## 6. 钛合金61式五件标定（首批 confirmed）
 
 五件（头部装甲/胸甲/手甲/腿甲/装甲鞋）均 Lv45，`M=3`（K 点购买 1 + 高价 1 + 40 级浮动 1，`ABR-LAYER-001/004`），`E=1`（高价 1，`ABR-PRICE-002`），`G=1`、`H=1`。金币公式值 187200，整十万取整 200000（+6.8%，`ABR-PRICE-004`）；K 点实售 6000 ≈ 公式 6075（-1.2%），证据 `data/kshop/A兵团官方周边直营店.json`。2026-09-19 经济权威确认（issue #62）。
+
+## 7. exception 分流与整文件覆盖门
+
+存量 646 个防具块（去重后 645 条记录；`TheGirl头-NPC` 在同文件内为两份完全相同块、`小F头部` 为 lv10/lv20 跨文件变体）经机械扫描**全部偏离 v1 公式基线**（分数带 ±5% 无一件可过，`weightLayers` 又不允许负层），一律按 `balanceMode="exception"` 机械登记：
+
+- `legacy-off-formula`：存量低于公式基线，待裁定改值还是改层数口径；
+- `npc-only`：名称/dressup 含 NPC 的专用装扮，无玩家获取渠道。
+
+exception 记录跳过分数拟合、价格带与预算闭合硬门，但仍参与 digest 漂移检测与 `<balance>` 投影；audit 里保留公式输出（currentScore/weightedScore/推荐价）作逐件裁定依据。身份键为 `sourceFile + itemName`（跨文件同名变体分别登记）；同文件内完全相同的同名块共享一条记录。
+
+`coverageFiles` 已开启四个防具文件的整文件覆盖门：`防具_0-19级.xml`、`防具_20-39级.xml`、`防具_40+级.xml`、`防具_颈部装备.xml`——新增防具必须进 plan，按 `formula`（带证据链）或 `exception`（带 exceptionCode）登记。

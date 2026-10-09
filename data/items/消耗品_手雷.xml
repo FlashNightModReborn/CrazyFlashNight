@@ -28,6 +28,22 @@
       <power>100</power>
       <impact>1</impact>
     </data>
+    <balance>
+      <formulaFamily>explosives</formulaFamily>
+      <schemaVersion>1</schemaVersion>
+      <formulaVersion>1</formulaVersion>
+      <workbookVersion>1</workbookVersion>
+      <weightLayers>0</weightLayers>
+      <balanceMode>exception</balanceMode>
+      <recommendedPower>0</recommendedPower>
+      <recommendedGoldPrice>0</recommendedGoldPrice>
+      <recommendedKPointPrice>0</recommendedKPointPrice>
+      <marketPrice>100</marketPrice>
+      <status>unresolved</status>
+      <inputDigest>fnv1a32:2746c358</inputDigest>
+      <sourceDigest>sha256:e4c41280c2fd602cf4af0e343f5d983081fbfdd6ee9857ed5a029dea96f4f0f8</sourceDigest>
+      <auditRef>explosives:鞭炮</auditRef>
+    </balance>
   </item>
   <item>
     <name>屎块</name>
@@ -60,6 +76,22 @@
       <damagetype>魔法</damagetype>
       <magictype>毒</magictype>
     </data>
+    <balance>
+      <formulaFamily>explosives</formulaFamily>
+      <schemaVersion>1</schemaVersion>
+      <formulaVersion>1</formulaVersion>
+      <workbookVersion>1</workbookVersion>
+      <weightLayers>0</weightLayers>
+      <balanceMode>exception</balanceMode>
+      <recommendedPower>0</recommendedPower>
+      <recommendedGoldPrice>3900</recommendedGoldPrice>
+      <recommendedKPointPrice>120</recommendedKPointPrice>
+      <marketPrice>0</marketPrice>
+      <status>unresolved</status>
+      <inputDigest>fnv1a32:1d32827f</inputDigest>
+      <sourceDigest>sha256:4aece7c06f4f9d82a1ef16f7ac2d2f5eed8f05d26141ad3cfe40199a720d9f99</sourceDigest>
+      <auditRef>explosives:屎块</auditRef>
+    </balance>
   </item>
   <item>
     <name>砖</name>
@@ -88,6 +120,22 @@
       <power>70</power>
       <impact>1</impact>
     </data>
+    <balance>
+      <formulaFamily>explosives</formulaFamily>
+      <schemaVersion>1</schemaVersion>
+      <formulaVersion>1</formulaVersion>
+      <workbookVersion>1</workbookVersion>
+      <weightLayers>0</weightLayers>
+      <balanceMode>exception</balanceMode>
+      <recommendedPower>13.041933</recommendedPower>
+      <recommendedGoldPrice>3900</recommendedGoldPrice>
+      <recommendedKPointPrice>120</recommendedKPointPrice>
+      <marketPrice>50</marketPrice>
+      <status>unresolved</status>
+      <inputDigest>fnv1a32:d24c6dde</inputDigest>
+      <sourceDigest>sha256:3e33aa170454dca4bf92758c718d5208ca714a0aa725a997fd56e433f8dfb7d2</sourceDigest>
+      <auditRef>explosives:砖</auditRef>
+    </balance>
   </item>
   <item>
     <name>足球</name>
@@ -116,6 +164,22 @@
       <power>5000</power>
       <impact>1</impact>
     </data>
+    <balance>
+      <formulaFamily>explosives</formulaFamily>
+      <schemaVersion>1</schemaVersion>
+      <formulaVersion>1</formulaVersion>
+      <workbookVersion>1</workbookVersion>
+      <weightLayers>0</weightLayers>
+      <balanceMode>exception</balanceMode>
+      <recommendedPower>260.838666</recommendedPower>
+      <recommendedGoldPrice>3900</recommendedGoldPrice>
+      <recommendedKPointPrice>120</recommendedKPointPrice>
+      <marketPrice>1000</marketPrice>
+      <status>unresolved</status>
+      <inputDigest>fnv1a32:ca4bf74e</inputDigest>
+      <sourceDigest>sha256:9bd3975193023177b4c8766540ee08944c87d1aae6efe13fc4d5a5c60794af2a</sourceDigest>
+      <auditRef>explosives:足球</auditRef>
+    </balance>
   </item>
   <item>
     <name>普通足球</name>
@@ -144,6 +208,22 @@
       <power>800</power>
       <impact>1</impact>
     </data>
+    <balance>
+      <formulaFamily>explosives</formulaFamily>
+      <schemaVersion>1</schemaVersion>
+      <formulaVersion>1</formulaVersion>
+      <workbookVersion>1</workbookVersion>
+      <weightLayers>0</weightLayers>
+      <balanceMode>exception</balanceMode>
+      <recommendedPower>52.167733</recommendedPower>
+      <recommendedGoldPrice>3900</recommendedGoldPrice>
+      <recommendedKPointPrice>120</recommendedKPointPrice>
+      <marketPrice>200</marketPrice>
+      <status>unresolved</status>
+      <inputDigest>fnv1a32:0c662f21</inputDigest>
+      <sourceDigest>sha256:5930ae9a37236b59ff7e456a5aab34d0655fd2589327a7459f6726661803e1f7</sourceDigest>
+      <auditRef>explosives:普通足球</auditRef>
+    </balance>
   </item>
   <item>
     <name>普通手雷</name>
@@ -171,6 +251,22 @@
       <power>1000</power>
       <impact>1</impact>
     </data>
+    <balance>
+      <formulaFamily>explosives</formulaFamily>
+      <schemaVersion>1</schemaVersion>
+      <formulaVersion>1</formulaVersion>
+      <workbookVersion>1</workbookVersion>
+      <weightLayers>0</weightLayers>
+      <balanceMode>exception</balanceMode>
+      <recommendedPower>260.838666</recommendedPower>
+      <recommendedGoldPrice>3900</recommendedGoldPrice>
+      <recommendedKPointPrice>120</recommendedKPointPrice>
+      <marketPrice>1000</marketPrice>
+      <status>unresolved</status>
+      <inputDigest>fnv1a32:2c1d1f32</inputDigest>
+      <sourceDigest>sha256:4dfeb08a59da5a2691b23f243e5b245a9671bc468220b00212971ef7b981d7fa</sourceDigest>
+      <auditRef>explosives:普通手雷</auditRef>
+    </balance>
   </item>
   <item>
     <name>压缩胶囊之驯化僵尸</name>
@@ -202,6 +298,22 @@
       <power>100</power>
       <impact>100</impact>
     </data>
+    <balance>
+      <formulaFamily>explosives</formulaFamily>
+      <schemaVersion>1</schemaVersion>
+      <formulaVersion>1</formulaVersion>
+      <workbookVersion>1</workbookVersion>
+      <weightLayers>0</weightLayers>
+      <balanceMode>exception</balanceMode>
+      <recommendedPower>260.838666</recommendedPower>
+      <recommendedGoldPrice>3900</recommendedGoldPrice>
+      <recommendedKPointPrice>120</recommendedKPointPrice>
+      <marketPrice>1000</marketPrice>
+      <status>unresolved</status>
+      <inputDigest>fnv1a32:8d2e1d93</inputDigest>
+      <sourceDigest>sha256:6b8daa22a3a7c907c344f650b046a588466db1f7f6f49af0b43c6f86254649cc</sourceDigest>
+      <auditRef>explosives:压缩胶囊之驯化僵尸</auditRef>
+    </balance>
   </item>
   <item>
     <name>M24手榴弹</name>
@@ -229,6 +341,22 @@
       <power>1000</power>
       <impact>0</impact>
     </data>
+    <balance>
+      <formulaFamily>explosives</formulaFamily>
+      <schemaVersion>1</schemaVersion>
+      <formulaVersion>1</formulaVersion>
+      <workbookVersion>1</workbookVersion>
+      <weightLayers>0</weightLayers>
+      <balanceMode>exception</balanceMode>
+      <recommendedPower>260.838666</recommendedPower>
+      <recommendedGoldPrice>3900</recommendedGoldPrice>
+      <recommendedKPointPrice>120</recommendedKPointPrice>
+      <marketPrice>1000</marketPrice>
+      <status>unresolved</status>
+      <inputDigest>fnv1a32:c08526eb</inputDigest>
+      <sourceDigest>sha256:2312ab87fbc92abcdd6b1839cde2e390803a3d555cfe4ac8f010f18188e769d6</sourceDigest>
+      <auditRef>explosives:M24手榴弹</auditRef>
+    </balance>
   </item>
   <item>
     <name>满是划痕的手雷</name>
@@ -259,6 +387,22 @@
       <power>1000</power>
       <impact>1</impact>
     </data>
+    <balance>
+      <formulaFamily>explosives</formulaFamily>
+      <schemaVersion>1</schemaVersion>
+      <formulaVersion>1</formulaVersion>
+      <workbookVersion>1</workbookVersion>
+      <weightLayers>0</weightLayers>
+      <balanceMode>exception</balanceMode>
+      <recommendedPower>260.838666</recommendedPower>
+      <recommendedGoldPrice>3900</recommendedGoldPrice>
+      <recommendedKPointPrice>120</recommendedKPointPrice>
+      <marketPrice>1000</marketPrice>
+      <status>unresolved</status>
+      <inputDigest>fnv1a32:750a4e3d</inputDigest>
+      <sourceDigest>sha256:235eb0326107ab8c4a9e1aa66d0a6e03469deaa23d952e3919f3a52e5a60b286</sourceDigest>
+      <auditRef>explosives:满是划痕的手雷</auditRef>
+    </balance>
   </item>
   <item>
     <name>压缩胶囊之盗贼</name>
@@ -289,6 +433,22 @@
       <power>100</power>
       <impact>100</impact>
     </data>
+    <balance>
+      <formulaFamily>explosives</formulaFamily>
+      <schemaVersion>1</schemaVersion>
+      <formulaVersion>1</formulaVersion>
+      <workbookVersion>1</workbookVersion>
+      <weightLayers>0</weightLayers>
+      <balanceMode>exception</balanceMode>
+      <recommendedPower>463.983171</recommendedPower>
+      <recommendedGoldPrice>3900</recommendedGoldPrice>
+      <recommendedKPointPrice>120</recommendedKPointPrice>
+      <marketPrice>4000</marketPrice>
+      <status>unresolved</status>
+      <inputDigest>fnv1a32:5be75110</inputDigest>
+      <sourceDigest>sha256:9c5b6186196e84ca0b6c24aefd18044da5c59aeb1c4eb85869b4aebeba4fb644</sourceDigest>
+      <auditRef>explosives:压缩胶囊之盗贼</auditRef>
+    </balance>
   </item>
   <item>
     <name>上海人形</name>
@@ -316,6 +476,22 @@
       <power>10000</power>
       <impact>100</impact>
     </data>
+    <balance>
+      <formulaFamily>explosives</formulaFamily>
+      <schemaVersion>1</schemaVersion>
+      <formulaVersion>1</formulaVersion>
+      <workbookVersion>1</workbookVersion>
+      <weightLayers>0</weightLayers>
+      <balanceMode>exception</balanceMode>
+      <recommendedPower>471.655995</recommendedPower>
+      <recommendedGoldPrice>3900</recommendedGoldPrice>
+      <recommendedKPointPrice>120</recommendedKPointPrice>
+      <marketPrice>5000</marketPrice>
+      <status>unresolved</status>
+      <inputDigest>fnv1a32:9d8a21eb</inputDigest>
+      <sourceDigest>sha256:ba8aec664db61996e6845c238a398a239f019e87d9b729d8ffbeb8b036ad025b</sourceDigest>
+      <auditRef>explosives:上海人形</auditRef>
+    </balance>
   </item>
   <item>
     <name>谜之胶囊</name>
@@ -344,6 +520,22 @@
       <power>100</power>
       <impact>100</impact>
     </data>
+    <balance>
+      <formulaFamily>explosives</formulaFamily>
+      <schemaVersion>1</schemaVersion>
+      <formulaVersion>1</formulaVersion>
+      <workbookVersion>1</workbookVersion>
+      <weightLayers>0</weightLayers>
+      <balanceMode>exception</balanceMode>
+      <recommendedPower>478.820308</recommendedPower>
+      <recommendedGoldPrice>3900</recommendedGoldPrice>
+      <recommendedKPointPrice>120</recommendedKPointPrice>
+      <marketPrice>8000</marketPrice>
+      <status>unresolved</status>
+      <inputDigest>fnv1a32:ef5ccaad</inputDigest>
+      <sourceDigest>sha256:829c206aad953c66cdf6a66a1caf98c843065cb6ac9a5b172ccc067248cbbfd7</sourceDigest>
+      <auditRef>explosives:谜之胶囊</auditRef>
+    </balance>
   </item>
   <item>
     <name>压缩胶囊之军阀</name>
@@ -372,6 +564,22 @@
       <power>100</power>
       <impact>100</impact>
     </data>
+    <balance>
+      <formulaFamily>explosives</formulaFamily>
+      <schemaVersion>1</schemaVersion>
+      <formulaVersion>1</formulaVersion>
+      <workbookVersion>1</workbookVersion>
+      <weightLayers>0</weightLayers>
+      <balanceMode>exception</balanceMode>
+      <recommendedPower>4168.975117</recommendedPower>
+      <recommendedGoldPrice>39000</recommendedGoldPrice>
+      <recommendedKPointPrice>1200</recommendedKPointPrice>
+      <marketPrice>6000</marketPrice>
+      <status>unresolved</status>
+      <inputDigest>fnv1a32:38238b04</inputDigest>
+      <sourceDigest>sha256:d967d5d553a55b65d97fe3f637ced15c13ee8ffcd3f9b540cb1ddff8c514624a</sourceDigest>
+      <auditRef>explosives:压缩胶囊之军阀</auditRef>
+    </balance>
   </item>
   <item>
     <name>压缩胶囊之A兵团士兵</name>
@@ -401,6 +609,22 @@
       <power>100</power>
       <impact>100</impact>
     </data>
+    <balance>
+      <formulaFamily>explosives</formulaFamily>
+      <schemaVersion>1</schemaVersion>
+      <formulaVersion>1</formulaVersion>
+      <workbookVersion>1</workbookVersion>
+      <weightLayers>0</weightLayers>
+      <balanceMode>exception</balanceMode>
+      <recommendedPower>4382.233296</recommendedPower>
+      <recommendedGoldPrice>39000</recommendedGoldPrice>
+      <recommendedKPointPrice>1200</recommendedKPointPrice>
+      <marketPrice>8000</marketPrice>
+      <status>unresolved</status>
+      <inputDigest>fnv1a32:2a095fad</inputDigest>
+      <sourceDigest>sha256:5816f7dcd3c433e4db8d00dd4c529fef6fdfe3777e1c02146e9b5b680f62930e</sourceDigest>
+      <auditRef>explosives:压缩胶囊之A兵团士兵</auditRef>
+    </balance>
   </item>
   <item>
     <name>压缩胶囊之boss大僵尸</name>
@@ -432,6 +656,22 @@
       <power>100</power>
       <impact>100</impact>
     </data>
+    <balance>
+      <formulaFamily>explosives</formulaFamily>
+      <schemaVersion>1</schemaVersion>
+      <formulaVersion>1</formulaVersion>
+      <workbookVersion>1</workbookVersion>
+      <weightLayers>0</weightLayers>
+      <balanceMode>exception</balanceMode>
+      <recommendedPower>4701.363079</recommendedPower>
+      <recommendedGoldPrice>39000</recommendedGoldPrice>
+      <recommendedKPointPrice>1200</recommendedKPointPrice>
+      <marketPrice>15000</marketPrice>
+      <status>unresolved</status>
+      <inputDigest>fnv1a32:5266b2a0</inputDigest>
+      <sourceDigest>sha256:27e72e6a84484daf8a1e105cc9d2947624f1bfb8ef03bc647a1f2d1285ee2b9e</sourceDigest>
+      <auditRef>explosives:压缩胶囊之boss大僵尸</auditRef>
+    </balance>
   </item>
   <item>
     <name>压缩胶囊之摇滚公园</name>
@@ -462,6 +702,22 @@
       <power>100</power>
       <impact>100</impact>
     </data>
+    <balance>
+      <formulaFamily>explosives</formulaFamily>
+      <schemaVersion>1</schemaVersion>
+      <formulaVersion>1</formulaVersion>
+      <workbookVersion>1</workbookVersion>
+      <weightLayers>0</weightLayers>
+      <balanceMode>exception</balanceMode>
+      <recommendedPower>5699.535802</recommendedPower>
+      <recommendedGoldPrice>46800</recommendedGoldPrice>
+      <recommendedKPointPrice>1440</recommendedKPointPrice>
+      <marketPrice>20000</marketPrice>
+      <status>unresolved</status>
+      <inputDigest>fnv1a32:c29c9a29</inputDigest>
+      <sourceDigest>sha256:bc915eff850b512251cab269fe52810a3df9d8790926fde4b713a2d5a620e5a7</sourceDigest>
+      <auditRef>explosives:压缩胶囊之摇滚公园</auditRef>
+    </balance>
   </item>
   <item>
     <name>地瓜手雷</name>
@@ -489,6 +745,22 @@
       <power>3000</power>
       <impact>1</impact>
     </data>
+    <balance>
+      <formulaFamily>explosives</formulaFamily>
+      <schemaVersion>1</schemaVersion>
+      <formulaVersion>1</formulaVersion>
+      <workbookVersion>1</workbookVersion>
+      <weightLayers>0</weightLayers>
+      <balanceMode>exception</balanceMode>
+      <recommendedPower>3030.671434</recommendedPower>
+      <recommendedGoldPrice>58500</recommendedGoldPrice>
+      <recommendedKPointPrice>1800</recommendedKPointPrice>
+      <marketPrice>3000</marketPrice>
+      <status>unresolved</status>
+      <inputDigest>fnv1a32:b8aeade7</inputDigest>
+      <sourceDigest>sha256:da2608228f877603b337e575b9505d611d152f42032f1bce00935d5fae31a14a</sourceDigest>
+      <auditRef>explosives:地瓜手雷</auditRef>
+    </balance>
   </item>
   <item>
     <name>压缩胶囊之李小龙</name>
@@ -519,6 +791,22 @@
       <power>100</power>
       <impact>100</impact>
     </data>
+    <balance>
+      <formulaFamily>explosives</formulaFamily>
+      <schemaVersion>1</schemaVersion>
+      <formulaVersion>1</formulaVersion>
+      <workbookVersion>1</workbookVersion>
+      <weightLayers>0</weightLayers>
+      <balanceMode>exception</balanceMode>
+      <recommendedPower>8245.411592</recommendedPower>
+      <recommendedGoldPrice>78000</recommendedGoldPrice>
+      <recommendedKPointPrice>2400</recommendedKPointPrice>
+      <marketPrice>8000</marketPrice>
+      <status>unresolved</status>
+      <inputDigest>fnv1a32:0ab8f94a</inputDigest>
+      <sourceDigest>sha256:8723ffdbd4c36a88add07054bac4efdbd3a22ef93b192e3ec03886c90d850220</sourceDigest>
+      <auditRef>explosives:压缩胶囊之李小龙</auditRef>
+    </balance>
   </item>
   <item>
     <name>压缩胶囊之硬化僵尸</name>
@@ -550,6 +838,22 @@
       <power>100</power>
       <impact>100</impact>
     </data>
+    <balance>
+      <formulaFamily>explosives</formulaFamily>
+      <schemaVersion>1</schemaVersion>
+      <formulaVersion>1</formulaVersion>
+      <workbookVersion>1</workbookVersion>
+      <weightLayers>0</weightLayers>
+      <balanceMode>exception</balanceMode>
+      <recommendedPower>5832.529895</recommendedPower>
+      <recommendedGoldPrice>78000</recommendedGoldPrice>
+      <recommendedKPointPrice>2400</recommendedKPointPrice>
+      <marketPrice>5000</marketPrice>
+      <status>unresolved</status>
+      <inputDigest>fnv1a32:98a83d91</inputDigest>
+      <sourceDigest>sha256:66631afa88d72e685d5a7d2e6a917149f20acd0855935578aa50f73b822168f4</sourceDigest>
+      <auditRef>explosives:压缩胶囊之硬化僵尸</auditRef>
+    </balance>
   </item>
   <item>
     <name>压缩胶囊之武士铁血</name>
@@ -581,6 +885,22 @@
       <power>100</power>
       <impact>100</impact>
     </data>
+    <balance>
+      <formulaFamily>explosives</formulaFamily>
+      <schemaVersion>1</schemaVersion>
+      <formulaVersion>1</formulaVersion>
+      <workbookVersion>1</workbookVersion>
+      <weightLayers>0</weightLayers>
+      <balanceMode>exception</balanceMode>
+      <recommendedPower>8245.411592</recommendedPower>
+      <recommendedGoldPrice>78000</recommendedGoldPrice>
+      <recommendedKPointPrice>2400</recommendedKPointPrice>
+      <marketPrice>8000</marketPrice>
+      <status>unresolved</status>
+      <inputDigest>fnv1a32:07a36ba2</inputDigest>
+      <sourceDigest>sha256:09fc9ca22cea38f96d943d96ccbf9e8817f4ff30782e8b56035f3e2453218175</sourceDigest>
+      <auditRef>explosives:压缩胶囊之武士铁血</auditRef>
+    </balance>
   </item>
   <item>
     <name>压缩胶囊之魔女</name>
@@ -613,6 +933,22 @@
       <power>100</power>
       <impact>100</impact>
     </data>
+    <balance>
+      <formulaFamily>explosives</formulaFamily>
+      <schemaVersion>1</schemaVersion>
+      <formulaVersion>1</formulaVersion>
+      <workbookVersion>1</workbookVersion>
+      <weightLayers>0</weightLayers>
+      <balanceMode>exception</balanceMode>
+      <recommendedPower>8245.411592</recommendedPower>
+      <recommendedGoldPrice>78000</recommendedGoldPrice>
+      <recommendedKPointPrice>2400</recommendedKPointPrice>
+      <marketPrice>8000</marketPrice>
+      <status>unresolved</status>
+      <inputDigest>fnv1a32:226afe03</inputDigest>
+      <sourceDigest>sha256:b0fe0fc8f38633aeeab3c8b72e1accc5fc95a3376e5341b189b599bf0c39c858</sourceDigest>
+      <auditRef>explosives:压缩胶囊之魔女</auditRef>
+    </balance>
   </item>
   <item>
     <name>压缩胶囊之浮士德</name>
@@ -646,6 +982,22 @@
       <power>100</power>
       <impact>100</impact>
     </data>
+    <balance>
+      <formulaFamily>explosives</formulaFamily>
+      <schemaVersion>1</schemaVersion>
+      <formulaVersion>1</formulaVersion>
+      <workbookVersion>1</workbookVersion>
+      <weightLayers>0</weightLayers>
+      <balanceMode>exception</balanceMode>
+      <recommendedPower>5832.529895</recommendedPower>
+      <recommendedGoldPrice>78000</recommendedGoldPrice>
+      <recommendedKPointPrice>2400</recommendedKPointPrice>
+      <marketPrice>5000</marketPrice>
+      <status>unresolved</status>
+      <inputDigest>fnv1a32:09fa9ac4</inputDigest>
+      <sourceDigest>sha256:7551eed2203ceb567e430b02c09dc8090d19c8e3ac7099a9e9d990ca2fedb6b9</sourceDigest>
+      <auditRef>explosives:压缩胶囊之浮士德</auditRef>
+    </balance>
   </item>
   <item>
     <name>压缩胶囊之牛仔</name>
@@ -677,6 +1029,22 @@
       <power>100</power>
       <impact>100</impact>
     </data>
+    <balance>
+      <formulaFamily>explosives</formulaFamily>
+      <schemaVersion>1</schemaVersion>
+      <formulaVersion>1</formulaVersion>
+      <workbookVersion>1</workbookVersion>
+      <weightLayers>0</weightLayers>
+      <balanceMode>exception</balanceMode>
+      <recommendedPower>5832.529895</recommendedPower>
+      <recommendedGoldPrice>78000</recommendedGoldPrice>
+      <recommendedKPointPrice>2400</recommendedKPointPrice>
+      <marketPrice>5000</marketPrice>
+      <status>unresolved</status>
+      <inputDigest>fnv1a32:459fb85d</inputDigest>
+      <sourceDigest>sha256:439bd0462739c6c98821a6db7e7787d3959cae62befebe676185f87fd293aa0b</sourceDigest>
+      <auditRef>explosives:压缩胶囊之牛仔</auditRef>
+    </balance>
   </item>
   <item>
     <name>燃烧弹</name>
@@ -707,6 +1075,22 @@
       <damagetype>破击</damagetype>
       <magictype>热</magictype>
     </data>
+    <balance>
+      <formulaFamily>explosives</formulaFamily>
+      <schemaVersion>1</schemaVersion>
+      <formulaVersion>1</formulaVersion>
+      <workbookVersion>1</workbookVersion>
+      <weightLayers>0</weightLayers>
+      <balanceMode>exception</balanceMode>
+      <recommendedPower>4082.770926</recommendedPower>
+      <recommendedGoldPrice>78000</recommendedGoldPrice>
+      <recommendedKPointPrice>2400</recommendedKPointPrice>
+      <marketPrice>3500</marketPrice>
+      <status>unresolved</status>
+      <inputDigest>fnv1a32:d9b268f5</inputDigest>
+      <sourceDigest>sha256:c711bfbc59f146964e89126986bbaaf13c902650aa61a8db7ca3355d539e3ce7</sourceDigest>
+      <auditRef>explosives:燃烧弹</auditRef>
+    </balance>
   </item>
   <item>
     <name>压缩胶囊之61套士兵</name>
@@ -736,6 +1120,22 @@
       <power>100</power>
       <impact>100</impact>
     </data>
+    <balance>
+      <formulaFamily>explosives</formulaFamily>
+      <schemaVersion>1</schemaVersion>
+      <formulaVersion>1</formulaVersion>
+      <workbookVersion>1</workbookVersion>
+      <weightLayers>0</weightLayers>
+      <balanceMode>exception</balanceMode>
+      <recommendedPower>9577.160717</recommendedPower>
+      <recommendedGoldPrice>78000</recommendedGoldPrice>
+      <recommendedKPointPrice>2400</recommendedKPointPrice>
+      <marketPrice>36000</marketPrice>
+      <status>unresolved</status>
+      <inputDigest>fnv1a32:db359f20</inputDigest>
+      <sourceDigest>sha256:63a6678711c759187313700958bb233c48abb6f5ddee8d12ebf0b7e4f2310300</sourceDigest>
+      <auditRef>explosives:压缩胶囊之61套士兵</auditRef>
+    </balance>
   </item>
   <item>
     <name>压缩胶囊之赤虎</name>
@@ -766,6 +1166,22 @@
       <power>100</power>
       <impact>100</impact>
     </data>
+    <balance>
+      <formulaFamily>explosives</formulaFamily>
+      <schemaVersion>1</schemaVersion>
+      <formulaVersion>1</formulaVersion>
+      <workbookVersion>1</workbookVersion>
+      <weightLayers>0</weightLayers>
+      <balanceMode>exception</balanceMode>
+      <recommendedPower>6389.216381</recommendedPower>
+      <recommendedGoldPrice>93600</recommendedGoldPrice>
+      <recommendedKPointPrice>2880</recommendedKPointPrice>
+      <marketPrice>5000</marketPrice>
+      <status>unresolved</status>
+      <inputDigest>fnv1a32:9e64925a</inputDigest>
+      <sourceDigest>sha256:6175dc85d7945af5e4339eab62a88188fb35eb48f0c07b02f071d950752eee94</sourceDigest>
+      <auditRef>explosives:压缩胶囊之赤虎</auditRef>
+    </balance>
   </item>
   <item>
     <name>压缩胶囊之火凤</name>
@@ -797,6 +1213,22 @@
       <power>100</power>
       <impact>100</impact>
     </data>
+    <balance>
+      <formulaFamily>explosives</formulaFamily>
+      <schemaVersion>1</schemaVersion>
+      <formulaVersion>1</formulaVersion>
+      <workbookVersion>1</workbookVersion>
+      <weightLayers>0</weightLayers>
+      <balanceMode>exception</balanceMode>
+      <recommendedPower>6389.216381</recommendedPower>
+      <recommendedGoldPrice>93600</recommendedGoldPrice>
+      <recommendedKPointPrice>2880</recommendedKPointPrice>
+      <marketPrice>5000</marketPrice>
+      <status>unresolved</status>
+      <inputDigest>fnv1a32:2d2bffe1</inputDigest>
+      <sourceDigest>sha256:02cba1c4d7f06674a955d1b8490df70c943723c7c4096fd6eb2417a02b3625b1</sourceDigest>
+      <auditRef>explosives:压缩胶囊之火凤</auditRef>
+    </balance>
   </item>
   <item>
     <name>高爆手雷</name>
@@ -824,6 +1256,22 @@
       <power>6000</power>
       <impact>1</impact>
     </data>
+    <balance>
+      <formulaFamily>explosives</formulaFamily>
+      <schemaVersion>1</schemaVersion>
+      <formulaVersion>1</formulaVersion>
+      <workbookVersion>1</workbookVersion>
+      <weightLayers>0</weightLayers>
+      <balanceMode>exception</balanceMode>
+      <recommendedPower>7825.159995</recommendedPower>
+      <recommendedGoldPrice>97500</recommendedGoldPrice>
+      <recommendedKPointPrice>3000</recommendedKPointPrice>
+      <marketPrice>6000</marketPrice>
+      <status>unresolved</status>
+      <inputDigest>fnv1a32:fb71c0cb</inputDigest>
+      <sourceDigest>sha256:5babf880132bc43440801a6b6cafa5fdab3d4a3f81fd6230ccf838075b8cc1e6</sourceDigest>
+      <auditRef>explosives:高爆手雷</auditRef>
+    </balance>
   </item>
   <item>
     <name>压缩胶囊之黑龙</name>
@@ -856,6 +1304,22 @@
       <power>100</power>
       <impact>100</impact>
     </data>
+    <balance>
+      <formulaFamily>explosives</formulaFamily>
+      <schemaVersion>1</schemaVersion>
+      <formulaVersion>1</formulaVersion>
+      <workbookVersion>1</workbookVersion>
+      <weightLayers>0</weightLayers>
+      <balanceMode>exception</balanceMode>
+      <recommendedPower>11664.416677</recommendedPower>
+      <recommendedGoldPrice>109200</recommendedGoldPrice>
+      <recommendedKPointPrice>3360</recommendedKPointPrice>
+      <marketPrice>10000</marketPrice>
+      <status>unresolved</status>
+      <inputDigest>fnv1a32:3dc99f10</inputDigest>
+      <sourceDigest>sha256:18c7fb1ba7c62dfdf89a65af685fde6553e89aeda5144f064655a698bb060d2a</sourceDigest>
+      <auditRef>explosives:压缩胶囊之黑龙</auditRef>
+    </balance>
   </item>
   <item>
     <name>压缩胶囊之黑铁</name>
@@ -887,6 +1351,22 @@
       <power>100</power>
       <impact>100</impact>
     </data>
+    <balance>
+      <formulaFamily>explosives</formulaFamily>
+      <schemaVersion>1</schemaVersion>
+      <formulaVersion>1</formulaVersion>
+      <workbookVersion>1</workbookVersion>
+      <weightLayers>0</weightLayers>
+      <balanceMode>exception</balanceMode>
+      <recommendedPower>13796.887553</recommendedPower>
+      <recommendedGoldPrice>117000</recommendedGoldPrice>
+      <recommendedKPointPrice>3600</recommendedKPointPrice>
+      <marketPrice>20000</marketPrice>
+      <status>unresolved</status>
+      <inputDigest>fnv1a32:fd017d15</inputDigest>
+      <sourceDigest>sha256:0691fd48322fceba0562de4d8f9c84b9a3892421d78e3377a8247171a93ba65d</sourceDigest>
+      <auditRef>explosives:压缩胶囊之黑铁</auditRef>
+    </balance>
   </item>
   <item>
     <name>十字螺旋手里剑</name>
@@ -917,6 +1397,22 @@
       <impact>1</impact>
       <criticalhit>15</criticalhit>
     </data>
+    <balance>
+      <formulaFamily>explosives</formulaFamily>
+      <schemaVersion>1</schemaVersion>
+      <formulaVersion>1</formulaVersion>
+      <workbookVersion>1</workbookVersion>
+      <weightLayers>0</weightLayers>
+      <balanceMode>exception</balanceMode>
+      <recommendedPower>428.601665</recommendedPower>
+      <recommendedGoldPrice>117000</recommendedGoldPrice>
+      <recommendedKPointPrice>3600</recommendedKPointPrice>
+      <marketPrice>300</marketPrice>
+      <status>unresolved</status>
+      <inputDigest>fnv1a32:0d002d29</inputDigest>
+      <sourceDigest>sha256:3b72df370ac0e0405a052820ad0278c5c6069d6b08fea06d91354ef21fc3706c</sourceDigest>
+      <auditRef>explosives:十字螺旋手里剑</auditRef>
+    </balance>
   </item>
   <item>
     <name>导弹信标</name>
@@ -944,6 +1440,22 @@
       <power>8000</power>
       <impact>0</impact>
     </data>
+    <balance>
+      <formulaFamily>explosives</formulaFamily>
+      <schemaVersion>1</schemaVersion>
+      <formulaVersion>1</formulaVersion>
+      <workbookVersion>1</workbookVersion>
+      <weightLayers>0</weightLayers>
+      <balanceMode>exception</balanceMode>
+      <recommendedPower>11429.377721</recommendedPower>
+      <recommendedGoldPrice>117000</recommendedGoldPrice>
+      <recommendedKPointPrice>3600</recommendedKPointPrice>
+      <marketPrice>8000</marketPrice>
+      <status>unresolved</status>
+      <inputDigest>fnv1a32:bb335270</inputDigest>
+      <sourceDigest>sha256:4a4466816926455b2af0505213a6aa6ad84bf5fdf786622f9d4284a60d3d3e80</sourceDigest>
+      <auditRef>explosives:导弹信标</auditRef>
+    </balance>
   </item>
     <item>
     <name>量子爆弹信标</name>
@@ -971,6 +1483,22 @@
       <power>8000</power>
       <impact>0</impact>
     </data>
+    <balance>
+      <formulaFamily>explosives</formulaFamily>
+      <schemaVersion>1</schemaVersion>
+      <formulaVersion>1</formulaVersion>
+      <workbookVersion>1</workbookVersion>
+      <weightLayers>0</weightLayers>
+      <balanceMode>exception</balanceMode>
+      <recommendedPower>11429.377721</recommendedPower>
+      <recommendedGoldPrice>117000</recommendedGoldPrice>
+      <recommendedKPointPrice>3600</recommendedKPointPrice>
+      <marketPrice>8000</marketPrice>
+      <status>unresolved</status>
+      <inputDigest>fnv1a32:8f5b8059</inputDigest>
+      <sourceDigest>sha256:87d8261de6635d4ffb1e2e0b15720fb2eba78731c58358073764ba3dded88c87</sourceDigest>
+      <auditRef>explosives:量子爆弹信标</auditRef>
+    </balance>
   </item>
   <item>
     <name>寒铁镖</name>
@@ -1004,6 +1532,22 @@
       <magictype>冷</magictype>
       <criticalhit>15</criticalhit>
     </data>
+    <balance>
+      <formulaFamily>explosives</formulaFamily>
+      <schemaVersion>1</schemaVersion>
+      <formulaVersion>1</formulaVersion>
+      <workbookVersion>1</workbookVersion>
+      <weightLayers>0</weightLayers>
+      <balanceMode>exception</balanceMode>
+      <recommendedPower>1234.513889</recommendedPower>
+      <recommendedGoldPrice>136500</recommendedGoldPrice>
+      <recommendedKPointPrice>4200</recommendedKPointPrice>
+      <marketPrice>800</marketPrice>
+      <status>unresolved</status>
+      <inputDigest>fnv1a32:9186c51e</inputDigest>
+      <sourceDigest>sha256:f67bcb508f7cb78d17a2991f91edf592bb8180ee87ae13b6a263d490881fe337</sourceDigest>
+      <auditRef>explosives:寒铁镖</auditRef>
+    </balance>
   </item>
   <item>
     <name>翼炎钉针</name>
@@ -1035,6 +1579,22 @@
       <damagetype>魔法</damagetype>
       <magictype>热</magictype>
     </data>
+    <balance>
+      <formulaFamily>explosives</formulaFamily>
+      <schemaVersion>1</schemaVersion>
+      <formulaVersion>1</formulaVersion>
+      <workbookVersion>1</workbookVersion>
+      <weightLayers>0</weightLayers>
+      <balanceMode>exception</balanceMode>
+      <recommendedPower>1319.750861</recommendedPower>
+      <recommendedGoldPrice>156000</recommendedGoldPrice>
+      <recommendedKPointPrice>4800</recommendedKPointPrice>
+      <marketPrice>800</marketPrice>
+      <status>unresolved</status>
+      <inputDigest>fnv1a32:7ef887ae</inputDigest>
+      <sourceDigest>sha256:a6dedfcc73ea0026f98376581abaaecca52fb299dc473c65a0e7f4d78f427bd0</sourceDigest>
+      <auditRef>explosives:翼炎钉针</auditRef>
+    </balance>
   </item>
   <item>
     <name>鎏金雀翎</name>
@@ -1065,6 +1625,22 @@
       <impact>1</impact>
       <criticalhit>满血暴击</criticalhit>
     </data>
+    <balance>
+      <formulaFamily>explosives</formulaFamily>
+      <schemaVersion>1</schemaVersion>
+      <formulaVersion>1</formulaVersion>
+      <workbookVersion>1</workbookVersion>
+      <weightLayers>0</weightLayers>
+      <balanceMode>exception</balanceMode>
+      <recommendedPower>925.885417</recommendedPower>
+      <recommendedGoldPrice>136500</recommendedGoldPrice>
+      <recommendedKPointPrice>4200</recommendedKPointPrice>
+      <marketPrice>600</marketPrice>
+      <status>unresolved</status>
+      <inputDigest>fnv1a32:e71658b1</inputDigest>
+      <sourceDigest>sha256:7aaa2b96d75d11e7f93da80c81da7f9229f040c90108d2c8236fca140e873681</sourceDigest>
+      <auditRef>explosives:鎏金雀翎</auditRef>
+    </balance>
   </item>
   <item>
     <name>BBPLAYER手雷</name>
@@ -1093,6 +1669,22 @@
       <power>10000</power>
       <impact>1</impact>
     </data>
+    <balance>
+      <formulaFamily>explosives</formulaFamily>
+      <schemaVersion>1</schemaVersion>
+      <formulaVersion>1</formulaVersion>
+      <workbookVersion>1</workbookVersion>
+      <weightLayers>-2</weightLayers>
+      <balanceMode>formula</balanceMode>
+      <recommendedPower>9876.111114</recommendedPower>
+      <recommendedGoldPrice>53320.3125</recommendedGoldPrice>
+      <recommendedKPointPrice>1866.666667</recommendedKPointPrice>
+      <marketPrice>10000</marketPrice>
+      <status>unresolved</status>
+      <inputDigest>fnv1a32:0ef30382</inputDigest>
+      <sourceDigest>sha256:2902f153e46ef05b9c026717c5e902eecf7fbc9f1dbdf6b96d11c87819e943f0</sourceDigest>
+      <auditRef>explosives:BBPLAYER手雷</auditRef>
+    </balance>
   </item>
   <item>
     <name>压缩胶囊之兽王</name>
@@ -1124,6 +1716,22 @@
       <power>100</power>
       <impact>100</impact>
     </data>
+    <balance>
+      <formulaFamily>explosives</formulaFamily>
+      <schemaVersion>1</schemaVersion>
+      <formulaVersion>1</formulaVersion>
+      <workbookVersion>1</workbookVersion>
+      <weightLayers>0</weightLayers>
+      <balanceMode>exception</balanceMode>
+      <recommendedPower>18805.452314</recommendedPower>
+      <recommendedGoldPrice>156000</recommendedGoldPrice>
+      <recommendedKPointPrice>4800</recommendedKPointPrice>
+      <marketPrice>30000</marketPrice>
+      <status>unresolved</status>
+      <inputDigest>fnv1a32:37407350</inputDigest>
+      <sourceDigest>sha256:652126399c3b87bb89a6f5b8811cb51dd23a0aee7b2baa46e60d0f34f0baed32</sourceDigest>
+      <auditRef>explosives:压缩胶囊之兽王</auditRef>
+    </balance>
   </item>
   <item>
     <name>战术核弹手雷</name>
@@ -1155,5 +1763,21 @@
       <impact>1</impact>
       <accuracy>200</accuracy>
     </data>
+    <balance>
+      <formulaFamily>explosives</formulaFamily>
+      <schemaVersion>1</schemaVersion>
+      <formulaVersion>1</formulaVersion>
+      <workbookVersion>1</workbookVersion>
+      <weightLayers>0</weightLayers>
+      <balanceMode>exception</balanceMode>
+      <recommendedPower>23998.925334</recommendedPower>
+      <recommendedGoldPrice>195000</recommendedGoldPrice>
+      <recommendedKPointPrice>6000</recommendedKPointPrice>
+      <marketPrice>100000</marketPrice>
+      <status>unresolved</status>
+      <inputDigest>fnv1a32:6d70b9d8</inputDigest>
+      <sourceDigest>sha256:b3ad14bb9088364df86d4b90bc0e64ff9ed435e640911b44320f83bf2cf26827</sourceDigest>
+      <auditRef>explosives:战术核弹手雷</auditRef>
+    </balance>
   </item>
 </root>
