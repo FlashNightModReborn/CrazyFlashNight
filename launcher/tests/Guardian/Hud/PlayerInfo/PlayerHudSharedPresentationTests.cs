@@ -69,7 +69,7 @@ public sealed class PlayerHudSharedPresentationTests
                 // output, a smaller source crop, and a frame fence not yet met.
                 foreach(double scale in new[]{.85,.75,.67})
                 {
-                    world.ApplyRenderSelection(new RenderSelection(0,scale,"MEDIUM"),0);
+                    world.ApplyRenderSelection(new RenderSelection(0,(int)(576*scale),"MEDIUM",0),0);
                     Set(world,"_viewportHeld",true);Set(world,"_requiredFrameMs",double.MaxValue);
                     Set(world,"_crop",new Rectangle(0,0,(int)(1024*scale),(int)(576*scale)));
                     world.RefreshHudPresentations();

@@ -1,261 +1,117 @@
 ﻿import org.flashNight.neur.PerformanceOptimizer.PerformanceScheduler;
 
-/**
- * PerformanceSchedulerTest - 薄壳调度器回归测试（mock actuator）
- *
- * 决策逻辑已迁移到 C# PerfDecisionEngine，本测试覆盖：
- * - 远程模式（applyFromLauncher / 短路幂等 / 超时回退）
- * - 本地后备（极简阈值降级/升级）
- * - 场景切换重置
- * - 前馈控制接口
- */
+/** Host 唯一控制权、命令身份与执行确认的 AS2 行为测试。 */
 class org.flashNight.neur.PerformanceOptimizer.test.PerformanceSchedulerTest {
+    private static var passed:Number;
+    private static var failed:Number;
+    private static var report:String;
+
+    private static function check(value:Boolean, name:String):Void {
+        if (value) passed++; else failed++;
+        report += (value ? "  ✓ " : "  ✗ ") + name + "\n";
+    }
+    public static function getPassedCount():Number { return passed; }
+    public static function getFailedCount():Number { return failed; }
 
     public static function runAllTests():String {
-        var out:String = "=== PerformanceSchedulerTest ===\n";
-        out += test_applyFromLauncher();
-        out += test_applyFromLauncherShortCircuit();
-        out += test_remoteTimeoutFallback();
-        out += test_onSceneChanged();
-        out += test_localFallbackDowngrade();
-        out += test_localFallbackUpgrade();
-        out += test_setPerformanceLevel();
-        out += test_holdBlocksRemoteApply();
-        out += test_holdDisconnectClearsWasRemote();
-        out += test_sceneEpochChangeTrigger();
-        return out + "\n";
-    }
-
-    // ===== 工具 =====
-
-    private static function line(ok:Boolean, desc:String):String {
-        return (ok ? "  \u2713 " : "  \u2717 ") + desc + "\n";
-    }
-
-    private static function makeScheduler(host:Object):PerformanceScheduler {
-        if (host == undefined) {
-            host = { 性能等级上限: 0, offsetTolerance: 10 };
-        }
-        var mockRoot:Object = { _quality: "HIGH", 天气系统: undefined };
-        mockRoot.面积系数 = 300000;
-        mockRoot.发射效果上限 = 15;
-        mockRoot.显示列表 = { 预设任务ID: 0, 继续播放: function() {}, 暂停播放: function() {} };
-        var env:Object = { root: mockRoot };
-        var s:PerformanceScheduler = new PerformanceScheduler(host, 30, 26, "HIGH", env);
-        // 注入 mock actuator
-        var mockActuator:Object = {
-            _lastTier: -1, _lastSoftU: -1, _callCount: 0,
-            apply: function(tier, softU) { this._lastTier = tier; this._lastSoftU = softU; this._callCount++; },
-            setPresetQuality: function(q) {}
+        passed = 0; failed = 0; report = "=== PerformanceSchedulerTest ===\n";
+        var root:Object = {_quality:"MEDIUM", 暂停:false};
+        var host:Object = {性能等级上限:1, offsetTolerance:10};
+        var scheduler:PerformanceScheduler = new PerformanceScheduler(host,30,26,"MEDIUM",{root:root});
+        var actuator:Object = {
+            root:root, scheduler:scheduler, count:0, fail:false, wrongQuality:false,
+            apply:function(t:Number,u:Number,q:String):Boolean {
+                this.count++;
+                this.ackBefore = this.scheduler.getAppliedCommand();
+                if (this.fail) return false;
+                if (!this.wrongQuality) this.root._quality = q;
+                return true;
+            }
         };
-        s.setActuator(mockActuator);
-        return s;
-    }
-
-    // ===== 测试用例 =====
-
-    private static function test_applyFromLauncher():String {
-        var out:String = "-- applyFromLauncher --\n";
-        var s:PerformanceScheduler = makeScheduler();
-
-        // 首次调用: 隐式激活远程模式
-        s.applyFromLauncher(1, 0.75);
-        out += line(s.isRemoteControlled(), "首条 P 指令激活远程模式");
-        out += line(s.getPerformanceLevel() == 1, "tier 设为 1");
-        out += line(s.getLastAppliedSoftU() == 0.75, "softU 设为 0.75");
-
-        var act:Object = s.getActuator();
-        out += line(act._lastTier == 1, "actuator 收到 tier=1");
-        out += line(act._lastSoftU == 0.75, "actuator 收到 softU=0.75");
-
-        return out;
-    }
-
-    private static function test_applyFromLauncherShortCircuit():String {
-        var out:String = "-- applyFromLauncher 短路幂等 --\n";
-        var s:PerformanceScheduler = makeScheduler();
-
-        s.applyFromLauncher(1, 0.5);
-        var act:Object = s.getActuator();
-        var countAfterFirst:Number = act._callCount;
-
-        // 同 tier + 同 softU → 短路，actuator 不再调用
-        s.applyFromLauncher(1, 0.5);
-        out += line(act._callCount == countAfterFirst, "相同指令不重复 apply");
-
-        // 不同 softU → 不短路
-        s.applyFromLauncher(1, 0.8);
-        out += line(act._callCount == countAfterFirst + 1, "不同 softU 触发 apply");
-
-        return out;
-    }
-
-    private static function test_remoteTimeoutFallback():String {
-        var out:String = "-- 远程超时回退 --\n";
-        var s:PerformanceScheduler = makeScheduler();
-
-        s.applyFromLauncher(1, 1.0);
-        out += line(s.isRemoteControlled(), "进入远程模式");
-
-        // 模拟超时: setRemoteControlled(false)
-        s.setRemoteControlled(false);
-        out += line(!s.isRemoteControlled(), "回退到本地模式");
-
-        // 再次进入
-        s.applyFromLauncher(0, 0);
-        out += line(s.isRemoteControlled(), "P 指令重新激活远程模式");
-
-        return out;
-    }
-
-    private static function test_onSceneChanged():String {
-        var out:String = "-- onSceneChanged --\n";
-        var host:Object = { 性能等级上限: 0, offsetTolerance: 10 };
-        var s:PerformanceScheduler = makeScheduler(host);
-
-        // 先设到 tier=1
-        s.applyFromLauncher(1, 1.0);
-        s.onSceneChanged();
-        out += line(s.getPerformanceLevel() == 1, "场景切换后保留 tier=1");
-        out += line(s.getLastAppliedSoftU() == 1, "场景切换后保留 softU=1");
-
-        // 尊重 性能等级上限=1
-        host.性能等级上限 = 1;
-        s.onSceneChanged();
-        out += line(s.getPerformanceLevel() == 1, "场景切换尊重性能等级上限=1");
-
-        return out;
-    }
-
-    private static function test_localFallbackDowngrade():String {
-        var out:String = "-- 本地后备降级 --\n";
-        var s:PerformanceScheduler = makeScheduler();
-        // 确保不在远程模式
-        out += line(!s.isRemoteControlled(), "初始为本地模式");
-
-        // 模拟 FPS < 15 的 evaluate
-        // 手动设置采样器到即将触发的状态
-        var sampler:Object = s.getSampler();
-        sampler.setFramesLeft(1);
-        sampler.setFrameStartTime(getTimer() - 2000); // 2秒前 → FPS ≈ 15
-
-        s.evaluate(getTimer());
-        // 由于 mock 环境无法精确控制 FPS，验证结构完整性
-        out += line(s.getPerformanceLevel() >= 0, "evaluate 执行无异常");
-
-        return out;
-    }
-
-    private static function test_localFallbackUpgrade():String {
-        var out:String = "-- 本地后备升级 --\n";
-        var s:PerformanceScheduler = makeScheduler();
-
-        // 设到 tier=1，模拟本地后备升级路径
-        s.applyFromLauncher(1, 1.0);
-        s.setRemoteControlled(false); // 退出远程模式
-
-        out += line(s.getPerformanceLevel() == 1, "初始 tier=1");
-        out += line(!s.isRemoteControlled(), "本地模式");
-
-        return out;
-    }
-
-    private static function test_setPerformanceLevel():String {
-        var out:String = "-- setPerformanceLevel 前馈 --\n";
-        var s:PerformanceScheduler = makeScheduler();
-
-        s.setPerformanceLevel(1, 5);
-        out += line(s.getPerformanceLevel() == 1, "前馈设置 tier=1");
-
-        var act:Object = s.getActuator();
-        out += line(act._lastTier == 1, "actuator 执行 tier=1");
-        out += line(act._lastSoftU == 1.0, "tier=1 时 softU=1.0");
-
-        s.setPerformanceLevel(0, 5);
-        out += line(s.getPerformanceLevel() == 0, "前馈恢复 tier=0");
-        out += line(act._lastSoftU == 0, "tier=0 时 softU=0");
-
-        return out;
-    }
-
-    // --- hold 期间 P 指令不穿透 ---
-    private static function test_holdBlocksRemoteApply():String {
-        var out:String = "-- hold 阻止 P 指令穿透 --\n";
-        var s:PerformanceScheduler = makeScheduler();
-
-        // 先进入远程模式
-        s.applyFromLauncher(0, 0);
-        out += line(s.isRemoteControlled(), "初始远程模式");
-
-        // 前馈: tier=1, hold=10秒 → 挂起远程
-        s.setPerformanceLevel(1, 10);
-        out += line(!s.isRemoteControlled(), "hold 期间远程模式挂起");
-        out += line(s.getPerformanceLevel() == 1, "前馈设为 tier=1");
-
-        // hold 期间 C# 发来 P0|0 → 应被拦截
-        var act:Object = s.getActuator();
-        var countBefore:Number = act._callCount;
-        s.applyFromLauncher(0, 0);
-        out += line(!s.isRemoteControlled(), "P 指令未恢复远程模式");
-        out += line(s.getPerformanceLevel() == 1, "tier 未被 P 指令覆盖");
-        out += line(act._callCount == countBefore, "actuator 未被调用");
-
-        return out;
-    }
-
-    // --- hold + 断线: 不伪恢复远程，但 hold 保护继续生效 ---
-    private static function test_holdDisconnectClearsWasRemote():String {
-        var out:String = "-- hold + 断线 --\n";
-        var s:PerformanceScheduler = makeScheduler();
-
-        // 进入远程模式
-        s.applyFromLauncher(0, 0);
-        out += line(s.isRemoteControlled(), "初始远程模式");
-
-        // 前馈 hold: tier=1, 10秒
-        s.setPerformanceLevel(1, 10);
-        out += line(!s.isRemoteControlled(), "hold 挂起远程");
-        out += line(s.getPerformanceLevel() == 1, "前馈 tier=1");
-
-        // 模拟断连: onSocketClose → setRemoteControlled(false)
-        s.setRemoteControlled(false);
-        out += line(!s.isRemoteControlled(), "断连后本地模式");
-
-        // 关键1: hold 保护窗口仍然存在（tier 不被本地后备改写）
-        // hold 期间 P 指令被拦截，applyFromLauncher 不会改 tier
-        var act:Object = s.getActuator();
-        var countBefore:Number = act._callCount;
-        s.applyFromLauncher(0, 0);
-        out += line(s.getPerformanceLevel() == 1, "hold 中断连后 tier 仍被保护");
-        out += line(act._callCount == countBefore, "hold 中 P 指令仍被拦截");
-
-        // 关键2: 推进时间越过 hold 窗口，验证到期后不会伪恢复远程
-        // setPerformanceLevel 用 getTimer() 设置 holdUntilMs，所以传一个足够大的 currentTime
-        var futureTime:Number = getTimer() + 20000; // 20秒后，超过 10秒 hold
-        s.getSampler().setFramesLeft(1); // 确保到达采样点
-        s.getSampler().setFrameStartTime(futureTime - 1000); // 1秒前，使 FPS 测量合理
-        s.evaluate(futureTime);
-        // hold 到期 + _wasRemoteBeforeHold 已清 → 不应恢复远程
-        out += line(!s.isRemoteControlled(), "hold 到期后未伪恢复远程");
-
-        return out;
-    }
-
-    // --- sceneEpoch 概念验证（AS2 端只测 _sceneEpoch 递增）---
-    private static function test_sceneEpochChangeTrigger():String {
-        var out:String = "-- sceneEpoch 递增 --\n";
-        var s:PerformanceScheduler = makeScheduler();
-
-        // 场景切换递增 epoch
-        s.onSceneChanged();
-        s.onSceneChanged();
-        // 无法直接读 _sceneEpoch，但验证 onSceneChanged 执行无异常
-        out += line(s.getPerformanceLevel() == 0, "两次 onSceneChanged 后 tier=0");
-
-        // sceneEpoch 嵌入在 FPS payload 中，由 C# 端 FrameTask 解析检测
-        // 此处仅验证 AS2 端状态一致性
-        out += line(s.getLastAppliedSoftU() == 0, "onSceneChanged 后 softU=0");
-
-        return out;
+        scheduler.setActuator(actuator);
+        scheduler.applyFromLauncher(1,1,"LOW",1,0);
+        check(actuator.count == 0,"连接之前不接收性能命令");
+        scheduler.onTransportConnected();
+        var epoch:Number = scheduler.getSceneEpoch();
+        check(epoch == 1 && scheduler.getAppliedCommand() == 0,"连接建立新 epoch 且不虚构确认");
+        scheduler.onTransportConnected();
+        check(scheduler.getSceneEpoch() == epoch,"重复连接通知幂等");
+        scheduler.applyFromLauncher(1,1);
+        check(actuator.count == 0,"拒绝缺少身份的旧命令");
+        scheduler.applyFromLauncher(0,0,"HIGH",7,epoch);
+        check(root._quality == "HIGH" && scheduler.getPerformanceLevel() == 0,"显式 HIGH 不受旧 preset 或 cap 限制");
+        check(actuator.ackBefore == 0 && scheduler.getAppliedCommand() == 7,"仅在执行后记录确认");
+        var count:Number = actuator.count;
+        scheduler.applyFromLauncher(0,0,"HIGH",7,epoch);
+        check(actuator.count == count,"完全相同命令幂等");
+        scheduler.applyFromLauncher(0,0.5,"HIGH",7,epoch);
+        scheduler.applyFromLauncher(0,0,"BEST",7,epoch);
+        check(actuator.count == count,"同一 command 不得改预算或画质");
+        scheduler.applyFromLauncher(1,1,"LOW",6,epoch);
+        check(actuator.count == count,"迟到命令不能覆盖新目标");
+        scheduler.applyFromLauncher(0,0,"INVALID",8,epoch);
+        scheduler.applyFromLauncher(2,0,"HIGH",8,epoch);
+        scheduler.applyFromLauncher(0,0,"LOW",8,epoch);
+        check(actuator.count == count,"拒绝非法画质或不一致 tier");
+        scheduler.applyFromLauncher(0,0,"BEST",7.5,epoch);
+        scheduler.applyFromLauncher(0,0,"BEST",Number("bad"),epoch);
+        scheduler.applyFromLauncher(0,0,"BEST",Infinity,epoch);
+        check(actuator.count == count,"命令编号必须是正有限整数");
+        scheduler.applyFromLauncher(0,0,"BEST",8,epoch+1);
+        check(actuator.count == count,"不同 epoch 的命令被拒绝");
+        scheduler.applyFromLauncher(0,-0.1,"BEST",8,epoch);
+        scheduler.applyFromLauncher(0,1.1,"BEST",8,epoch);
+        scheduler.applyFromLauncher(0,Number("bad"),"BEST",8,epoch);
+        scheduler.applyFromLauncher(0,Infinity,"BEST",8,epoch);
+        check(actuator.count == count,"拒绝非法表现预算");
+        scheduler.applyFromLauncher(1,1,"LOW",8,epoch);
+        check(root._quality == "LOW" && scheduler.getLastAppliedSoftU() == 1,"完整降载目标执行");
+        scheduler.onTransportDisconnected();
+        count = actuator.count;
+        check(!scheduler.isRemoteControlled() && root._quality == "LOW","断连保持最后有效画质");
+        scheduler.applyFromLauncher(0,0,"BEST",9,epoch);
+        check(actuator.count == count,"断连不接收命令");
+        scheduler.getSampler().resetInterval(0,1);
+        scheduler.evaluate(100000);
+        check(actuator.count == count && scheduler.getPerformanceLevel() == 1,"极低 FPS 不触发 AS2 自主调档");
+        scheduler.getSampler().resetInterval(0,1);
+        for (var frame:Number=1; frame<100; frame++) scheduler.evaluate(frame*33);
+        check(actuator.count == count && scheduler.getPerformanceLevel() == 1,"稳定高 FPS 不触发 AS2 自主恢复");
+        check(scheduler.getActualFPS() > 29,"断连仍保留实测帧率采样");
+        scheduler.onTransportConnected();
+        check(scheduler.getSceneEpoch() == epoch+1 && scheduler.getAppliedCommand() == 0,"重连重置命令身份并推进 epoch");
+        scheduler.applyFromLauncher(0,0,"HIGH",100,epoch);
+        check(actuator.count == count,"重连后拒绝上个连接命令");
+        epoch = scheduler.getSceneEpoch();
+        scheduler.applyFromLauncher(0,0,"HIGH",1,epoch);
+        check(scheduler.getAppliedCommand() == 1 && root._quality == "HIGH","新连接允许从 command 1 开始");
+        scheduler.onSceneChanged();
+        check(scheduler.getSceneEpoch() == epoch+1 && scheduler.getAppliedCommand() == 0,"换场隔离旧身份");
+        check(scheduler.getPerformanceLevel() == 0 && root._quality == "HIGH","换场保留目标且不读旧 cap");
+        count = actuator.count;
+        scheduler.applyFromLauncher(1,1,"LOW",2,epoch);
+        check(actuator.count == count,"换场后拒绝旧场景命令");
+        epoch = scheduler.getSceneEpoch();
+        scheduler.applyFromLauncher(0,0.5,"BEST",1,epoch);
+        check(scheduler.getAppliedCommand() == 1 && root._quality == "BEST","当前场景完整目标可执行");
+        actuator.fail = true;
+        scheduler.applyFromLauncher(1,1,"LOW",2,epoch);
+        check(scheduler.getAppliedCommand() == 1,"执行失败不确认新 command");
+        count = actuator.count;
+        actuator.fail = false;
+        scheduler.applyFromLauncher(0,0,"HIGH",2,epoch);
+        check(actuator.count == count,"失败身份也不能改成不同载荷");
+        scheduler.applyFromLauncher(1,1,"LOW",2,epoch);
+        check(scheduler.getAppliedCommand() == 2 && root._quality == "LOW","失败后只重试相同完整目标");
+        actuator.wrongQuality = true;
+        scheduler.applyFromLauncher(0,0,"HIGH",3,epoch);
+        check(scheduler.getAppliedCommand() == 2,"执行器返回成功但真实画质不符时不确认");
+        actuator.wrongQuality = false;
+        scheduler.applyFromLauncher(0,0,"HIGH",3,epoch);
+        check(scheduler.getAppliedCommand() == 3 && root._quality == "HIGH","真实画质就绪后确认");
+        root._quality = "MEDIUM";
+        scheduler.applyFromLauncher(0,0,"HIGH",3,epoch);
+        check(root._quality == "HIGH","相同命令可修复执行后外部画质漂移");
+        return report;
     }
 }

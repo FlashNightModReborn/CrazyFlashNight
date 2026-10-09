@@ -32,7 +32,7 @@ namespace CF7Launcher.Guardian
     /// <summary>
     /// 窗口管理：追踪 Flash 窗口句柄 + 嵌入到宿主 Panel。
     /// </summary>
-    public class WindowManager
+    public partial class WindowManager
     {
         [DllImport("user32.dll")]
         private static extern IntPtr GetForegroundWindow();
@@ -743,29 +743,21 @@ namespace CF7Launcher.Guardian
             _watchdog.Start();
         }
 
-        private double _flashRenderScale = 1;
-
-        // UI thread only. Stage logical coordinates stay unchanged (showAll); only its
-        // raster viewport changes. Native HUD and the host panel retain display size.
-        public void SetFlashRenderScale(double scale)
-        {
-            if (!double.IsFinite(scale) || scale < 0.5 || scale > 1) throw new ArgumentOutOfRangeException(nameof(scale));
-            if (_flashRenderScale == scale) return;
-            _flashRenderScale = scale;
-            // Keep Win32's normal repaint/invalidation of the parent capture tree.
-            // A later child-only repaint cannot replace it on every WGC path.
-            ResizeFlashToPanel();
-        }
-
         public void ResizeFlashToPanel()
         {
-            if (_flashHwnd == IntPtr.Zero || _hostPanel == null)
-                return;
+            ResizeFlashToPanelCore();
+        }
 
-            int width = Math.Max(1, (int)Math.Round(_hostPanel.Width * _flashRenderScale));
-            int height = Math.Max(1, (int)Math.Round(_hostPanel.Height * _flashRenderScale));
-            if (!MoveWindow(_flashHwnd, 0, 0, width, height, true))
+        private bool ResizeFlashToPanelCore()
+        {
+            if (_flashHwnd == IntPtr.Zero || _hostPanel == null)
+                return false;
+            var physical = ResolveFlashRenderSize();
+            if (!MoveWindow(_flashHwnd, 0, 0, physical.Width, physical.Height, true)) {
                 LogWin32Failure("MoveWindow(resize)", _flashHwnd);
+                return false;
+            }
+            return UpdateFlashRenderSize();
         }
 
         /// <summary>停止嵌入看门狗定时器。退出时在 DetachFlash 前调用。</summary>

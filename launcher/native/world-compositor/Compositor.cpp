@@ -1000,7 +1000,14 @@ private:
             uint64_t lightCaptureGeneration=0;
             { std::lock_guard guard(mutex_);
                 lightCaptureGeneration=captureGeneration_;
+                // Keep the weather state/style and their version together. This
+                // snapshot follows capture selection under presentationMutex_, so
+                // a host repaint fence cannot present a new frame with a weather
+                // budget copied before the host submitted that complete target.
+                weather=weather_;weatherStyle=weatherStyle_;
                 weatherCamera=weatherCamera_; weatherVersion=weatherVersion_;
+                weatherOn=weather.type!=0 && weather.intensity>0.f && weather.quality<3
+                    && weatherStyle.type==weather.type && weatherStyle.count>0 && texture;
                 // Snapshot copies move metadata + count live records only. Draws
                 // index params[0..count) and uploads zero-pad the last cbuffer
                 // batch, so stale tail bytes need no clearing.

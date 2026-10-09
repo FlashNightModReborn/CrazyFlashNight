@@ -266,6 +266,8 @@ AS2 必跑 `scripts/run-character-creation-tests.ps1`（机器钉死 40/40）、
 <a id="suite-settings"></a>
 ### 设置面板
 
+本机性能组新增覆盖：独立草稿、三预设与自动/固定、手填高度保留、只写 Host current/previous、保存失败/一次撤销、超时先读取，以及性能回读/其他偏好的迟到响应不覆盖另一份未提交草稿。Host 档位测试另覆盖 AS2 ACK 不代签尺寸、同高度质量/预算重绘、实际生效后计时、窗口缩小恢复不绕过升档等待、断连保持及坏命令/旧回调。预算/固定目标/DPI 与最终观感仍按同一人验单验证，不增加日常人工回执。
+
 **设置 Web Panel 门**：固定运行 `node tools/run-settings-panel-harness.js`、`node tools/run-settings-panel-visual-harness.js`、`node tools/run-kshop-harness.js`、两项 panel-contract 门、`launcher/tests/run_tests.ps1`、`scripts/run-settings-tests.ps1`（机器钉死 GameSettingsPanelServiceTest 47/47；
 文本中 42/42 为历史）与 `scripts/run-player-manual-input-tests.ps1`；设置样式还必须跑 `node tools/audit-workbench-ui.js` 与 `node tools/check-workbench-css-bundle.js`。Settings AS2 focused 必须为当前钉值 + `Compiler 0/0 + 32K retry=0`，再精确 publish/verify `scripts/asLoader.swf`。
 真机按 [设置面板人工验收单](../docs/设置-Web-Panel-人工体验验收-2026-08-21.md) 覆盖双入口、启动前 Launcher 壳视觉、真实 Flash 原分辨率静态预览与全屏缩放模拟、键位迁移/冲突/Esc/订阅跟随、试听与 cancel/close/断线恢复、性能、偏好重开/重启、首页及作弊帮助、尝试复活/返回基地和保存重启读回。自动门不代签物理 WebView2、真实 socket/存档或听感。

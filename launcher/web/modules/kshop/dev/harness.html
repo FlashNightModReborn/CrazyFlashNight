@@ -7,6 +7,7 @@
 <base href="../../../">
 <link rel="stylesheet" href="css/game-ui-behavior.css">
 <link rel="stylesheet" href="css/panels.css">
+<link rel="stylesheet" href="css/guidance.css">
 <style>
 html,body { margin:0; width:100%; height:100%; overflow:hidden; background:#05070b; color:#ddd; font-family:"Microsoft YaHei",sans-serif; }
 #panel-container,#panel-backdrop { position:absolute; inset:0; }
@@ -134,6 +135,7 @@ if (window.Icons && typeof window.Icons.deferMs === 'number') window.Icons.defer
 <script src="modules/equipment-tuning-decision-presenter.js"></script>
 <script src="modules/equipment-tuning-render.js"></script>
 <script src="modules/inventory-workbench-config.js"></script>
+<script src="modules/inventory-workbench-preparation-menu.js"></script>
 <script src="modules/equipment-tuning-confirmation.js"></script>
 <script src="modules/equipment-tuning-interaction.js"></script>
 <script src="modules/equipment-tuning-write-lifecycle.js"></script>
@@ -151,8 +153,16 @@ if (window.Icons && typeof window.Icons.deferMs === 'number') window.Icons.defer
 <script src="modules/inventory-workbench-navigation.js"></script>
 <script src="modules/inventory-workbench-header.js"></script>
 <script src="modules/inventory-workbench-quick-transfer.js"></script>
+<script src="generated/guidance-catalog.js"></script>
+<script src="generated/tutorial-journeys.js"></script>
+<script src="modules/guidance-inventory-demo.js"></script>
+<script src="modules/guidance-tutorials.js"></script>
 <script src="modules/inventory-workbench-owned-view.js"></script>
+<script src="modules/inventory-workbench-stash-source.js"></script>
+<script src="modules/inventory-workbench-storage-source.js"></script>
+<script src="modules/inventory-workbench-storage-controls.js"></script>
 <script src="modules/inventory-workbench-feature-loader.js"></script>
+<script src="modules/inventory-workbench-stash-navigation.js"></script>
 <script src="modules/inventory-tuning-scope.js"></script>
 <script src="modules/inventory-storage-workbench.js"></script>
 <script src="modules/crafting-inventory-organizer.js"></script>
@@ -3465,19 +3475,42 @@ if (window.Icons && typeof window.Icons.deferMs === 'number') window.Icons.defer
                 + ' compactMetrics=' + JSON.stringify(standaloneCompactMetrics)
                 + ' tuning=' + normalTuningButtons.length + '/' + !!normalTuningSwitch);
         click('.inventory-page-jump');
-        var battleboxHelpButton=document.querySelector('.inventory-workbench-panel .workbench-help-btn');
+        var battleboxHelpShell=storageProfileShell;
+        var battleboxHelpButton=battleboxHelpShell.querySelector(':scope > .workbench-header .workbench-help-btn');
         battleboxHelpButton.focus();battleboxHelpButton.click();
-        var battleboxHelpModal=document.querySelector('.workbench-modal[data-modal-kind="inventory-storage-help"]');
+        var battleboxHelpPages=battleboxHelpShell.querySelectorAll(':scope > .guidance-secondary.active[aria-hidden="false"]');
+        var battleboxHelpPage=battleboxHelpPages.length===1?battleboxHelpPages[0]:null;
+        var battleboxHelpDetails=battleboxHelpPage&&battleboxHelpPage.querySelector('details');
+        if(battleboxHelpDetails&&!battleboxHelpDetails.open)battleboxHelpDetails.querySelector('summary').click();
+        var battleboxHelpCopy=battleboxHelpDetails&&battleboxHelpDetails.querySelector('.guidance-copy');
         assert('workbench-ui1help','战备箱标准帮助解释拖拽、Ctrl 快移与批量暂存/执行流程',
-            battleboxHelpButton&&!battleboxHelpButton.disabled&&battleboxHelpModal
-                &&battleboxHelpModal.textContent.indexOf('Ctrl')>=0
-                &&battleboxHelpModal.textContent.indexOf('批量存入')>=0
-                &&battleboxHelpModal.textContent.indexOf('重复点击可取消')>=0
-                &&battleboxHelpModal.textContent.indexOf('执行转移')>=0
-                &&document.querySelector('.inventory-workbench-panel .workbench-body').inert);
-        click('.workbench-modal-action[data-action="close"]');
+            battleboxHelpButton&&!battleboxHelpButton.disabled&&battleboxHelpPage
+                &&battleboxHelpPage.getAttribute('role')==='dialog'
+                &&battleboxHelpPage.getAttribute('aria-label')==='物品与战备箱教程'
+                &&battleboxHelpDetails.open&&battleboxHelpCopy
+                &&battleboxHelpCopy.textContent.indexOf('拖拽')>=0
+                &&battleboxHelpCopy.textContent.indexOf('Ctrl')>=0
+                &&battleboxHelpCopy.textContent.indexOf('批量模式')>=0
+                &&battleboxHelpCopy.textContent.indexOf('重复点击取消')>=0
+                &&battleboxHelpCopy.textContent.indexOf('执行转移')>=0
+                &&battleboxHelpShell.querySelector('.workbench-body').inert);
+        if(!battleboxHelpPage)throw new Error('Current workbench must own one active guidance help page');
+        battleboxHelpPage.querySelector('.guidance-secondary-close').click();
         assert('workbench-ui1help-focus','关闭战备箱帮助后焦点返回标准帮助入口',
-            !document.querySelector('.workbench-modal[data-modal-kind="inventory-storage-help"]')
+            battleboxHelpPage.getAttribute('aria-hidden')==='true'
+                &&!battleboxHelpPage.classList.contains('active')
+                &&!battleboxHelpShell.querySelector('.workbench-body').inert
+                &&document.activeElement===battleboxHelpButton);
+        battleboxHelpButton.click();
+        assert('workbench-ui1help-reopen','缓存的战备箱帮助仅在当前工作台内重新激活',
+            battleboxHelpShell.querySelector(':scope > .guidance-secondary.active[aria-hidden="false"]')===battleboxHelpPage
+                &&battleboxHelpShell.querySelectorAll(':scope > .guidance-secondary').length===1
+                &&battleboxHelpShell.querySelector('.workbench-body').inert);
+        battleboxHelpPage.querySelector('.guidance-secondary-close').click();
+        assert('workbench-ui1help-reopen-focus','再次返回物品后解除底层禁用并归还帮助入口焦点',
+            battleboxHelpPage.getAttribute('aria-hidden')==='true'
+                &&!battleboxHelpPage.classList.contains('active')
+                &&!battleboxHelpShell.querySelector('.workbench-body').inert
                 &&document.activeElement===battleboxHelpButton);
 
         var battleboxTooltipBefore = countInventoryCmd('tooltip');

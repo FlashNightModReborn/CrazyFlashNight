@@ -74,7 +74,7 @@ powershell -ExecutionPolicy Bypass -File scripts/compile_test.ps1 -Target 'flash
 
 `test`|`testloader` → `scripts/TestLoader`（`doc.testMovie()`）；`publish`|`asloader` → `scripts/asLoader`（隐式 **publish-only** + 自动 `-VerifySwf scripts/asLoader.swf`）；`main`|`mainfile`|`empire` → `CRAZYFLASHER7MercenaryEmpire/CRAZYFLASHER7MercenaryEmpire.xfl`（隐式 **publish-only** + 自动 `-VerifySwf CRAZYFLASHER7MercenaryEmpire.swf`）。因此 `publish/asloader/main` 别名都可省略 `-PublishOnly`；只有任意显式 FLA/XFL 路径需要禁止 testMovie 时才额外传该开关。`-Target` 决定编哪个，无需手动切到前台；publish-only 在诊断落盘后自动以“不保存”关闭本轮目标，避免批量发布大型 XFL 时撞 Flash CS6 32 位地址空间，TestLoader/testMovie 则保持打开供调试。
 
-`run-focused-testloader.ps1` 对异步XML/SWF加载和后续帧检查，在子编译成功后最多额外等待`min(30, TimeoutSeconds)`秒，从原始Flash日志补读本轮domain/runId的后续记录。取第一个本轮Start或Complete起的完整后缀，随后仍严格要求单Start、单Complete、顺序正确、期望断言唯一、无失败哨兵和零32K重试；不接受其他runId或从多个重复块中挑一段通过。无GUI回归入口为 `powershell -File tools/test-focused-testloader-trace.ps1`（10个正确/错误run、顺序、重复和失败哨兵夹具）。超时未闭合仍保留原有不确定状态恢复门。
+`run-focused-testloader.ps1` 对异步 XML/SWF 加载和后续帧检查，在子编译成功后最多额外等待 `min(AsyncBehaviorTimeoutSeconds, TimeoutSeconds)` 秒，从原始 Flash 日志补读本轮 domain/runId 的后续记录。`AsyncBehaviorTimeoutSeconds` 默认 30 秒，和 `TimeoutSeconds` 均接受 1 至 3600 秒；专用 runner 可明确覆盖异步等待值，例如盾冲入口为 600 秒，实际等待仍受 `TimeoutSeconds` 限制。延长等待不改变用例、帧数 watchdog 或结果判据。取第一个本轮 Start 或 Complete 起的完整后缀，随后仍严格要求单 Start、单 Complete、顺序正确、期望断言唯一、无失败哨兵和零 32K 重试；不接受其他 runId 或从多个重复块中挑一段通过。无 GUI 回归入口为 `powershell -File tools/test-focused-testloader-trace.ps1`（10 个正确/错误 run、顺序、重复和失败哨兵夹具）。超时未闭合仍保留原有不确定状态恢复门。
 
 批量发布大 XFL 时可额外传 `-QuitFlashAfterPublish`。该开关只接受 publish-only：JSFL 必须先完成 `doc.publish()`、保存 Compiler Errors、关闭目标并写 terminal marker，之后才 `fl.quit(false)`；调用方看到成功返回后再用既有 `FlashCS6Task` 启动干净实例。测试模式、畸形/残留 cfg 或 terminal 前退出都 fail-closed，不能用进程退出替代 SWF 刷新与 Compiler `0/0`。
 

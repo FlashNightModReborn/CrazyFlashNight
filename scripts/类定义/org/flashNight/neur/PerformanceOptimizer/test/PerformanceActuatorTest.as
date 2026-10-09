@@ -1,178 +1,72 @@
 ﻿import org.flashNight.neur.PerformanceOptimizer.PerformanceActuator;
 
-/**
- * PerformanceActuatorTest - 执行器单元测试（使用依赖注入mock）
- */
+/** 显式画质、表现预算和业务参数隔离。 */
 class org.flashNight.neur.PerformanceOptimizer.test.PerformanceActuatorTest {
-
-    public static function runAllTests():String {
-        var out:String = "=== PerformanceActuatorTest ===\n";
-        out += test_tier0_softU0();
-        out += test_tier0_softU03();
-        out += test_tier1_softU05();
-        out += test_tier1_softU1();
-        out += test_rendererLevelMapping();
-        out += test_booleanThresholds();
-        return out + "\n";
+    private static var passed:Number;
+    private static var failed:Number;
+    private static var report:String;
+    private static function check(value:Boolean,name:String):Void {
+        if (value) passed++; else failed++;
+        report += (value ? "  ✓ " : "  ✗ ") + name + "\n";
     }
-
-    // --- shared mock factory ---
+    public static function getPassedCount():Number { return passed; }
+    public static function getFailedCount():Number { return failed; }
 
     private static function makeMocks():Object {
-        var displayList:Object = {
-            预设任务ID: "TASK",
-            continueCalled: false,
-            pauseCalled: false,
-            继续播放: function(id):Void { this.continueCalled = true; },
-            暂停播放: function(id):Void { this.pauseCalled = true; }
-        };
-
-        var root:Object = {
-            _quality: "HIGH",
-            面积系数: null,
-            发射效果上限: null,
-            天气系统: { lightUpdateThreshold: null },
-            显示列表: displayList
-        };
-
-        var effectSystem:Object = {};
-        var deathRenderer:Object = { isEnabled: null, enableCulling: null };
-        var shellSystem:Object = { limit: null, setMaxShellCountLimit: function(v):Void { this.limit = v; } };
-        var trailInstance:Object = { q: null, setQuality: function(v):Void { this.q = v; } };
-        var trailRenderer:Object = { getInstance: function():Object { return trailInstance; } };
-        var clipFrameRenderer:Object = { level: null, setPerformanceLevel: function(v):Void { this.level = v; } };
-        var bladeRenderer:Object = { level: null, setPerformanceLevel: function(v):Void { this.level = v; } };
-        var weatherParticleRenderer:Object = { level: null, setPerformanceLevel: function(v):Void { this.level = v; } };
-        var skyboxRenderer:Object = { level: null, setPerformanceLevel: function(v):Void { this.level = v; } };
-        var gwOverlayRenderer:Object = { level: null, setPerformanceLevel: function(v):Void { this.level = v; } };
-
-        var env:Object = {
-            root: root,
-            EffectSystem: effectSystem,
-            DeathEffectRenderer: deathRenderer,
-            ShellSystem: shellSystem,
-            TrailRenderer: trailRenderer,
-            ClipFrameRenderer: clipFrameRenderer,
-            BladeMotionTrailsRenderer: bladeRenderer,
-            WeatherParticleRenderer: weatherParticleRenderer,
-            SkyboxRenderer: skyboxRenderer,
-            GameWorldOverlayRenderer: gwOverlayRenderer
-        };
-
-        var host:Object = { offsetTolerance: null };
-        var a:PerformanceActuator = new PerformanceActuator(host, "HIGH", env);
-        return { a: a, root: root, es: effectSystem, dr: deathRenderer, ss: shellSystem,
-                 host: host, dl: displayList, trail: trailInstance,
-                 clip: clipFrameRenderer, blade: bladeRenderer,
-                 wp: weatherParticleRenderer, sky: skyboxRenderer, gw: gwOverlayRenderer };
+        var displayList:Object = {预设任务ID:"TASK", playing:false,
+            继续播放:function(id):Void {this.playing=true;},
+            暂停播放:function(id):Void {this.playing=false;}};
+        var root:Object = {_quality:"MEDIUM",面积系数:543210,发射效果上限:15,
+            天气系统:{lightUpdateThreshold:0.1},显示列表:displayList};
+        var es:Object = {};
+        var dr:Object = {};
+        var shell:Object = {limit:0,setMaxShellCountLimit:function(v):Void {this.limit=v;}};
+        var trail:Object = {q:0,setQuality:function(v):Void {this.q=v;}};
+        var trailFactory:Object = {instance:trail,getInstance:function():Object {return this.instance;}};
+        var clip:Object = {level:0,setPerformanceLevel:function(v):Void {this.level=v;}};
+        var blade:Object = {level:0,setPerformanceLevel:function(v):Void {this.level=v;}};
+        var weather:Object = {level:0,setPerformanceLevel:function(v):Void {this.level=v;}};
+        var sky:Object = {level:0,setPerformanceLevel:function(v):Void {this.level=v;}};
+        var host:Object = {offsetTolerance:23};
+        var actuator:PerformanceActuator = new PerformanceActuator(host,"LOW",{
+            root:root,EffectSystem:es,DeathEffectRenderer:dr,ShellSystem:shell,
+            TrailRenderer:trailFactory,ClipFrameRenderer:clip,BladeMotionTrailsRenderer:blade,
+            WeatherParticleRenderer:weather,SkyboxRenderer:sky});
+        return {actuator:actuator,root:root,host:host,display:displayList,es:es,dr:dr,
+            shell:shell,trail:trail,clip:clip,blade:blade,weather:weather,sky:sky};
     }
 
-    // --- tier 0, softU=0: 全质量 ---
-    private static function test_tier0_softU0():String {
-        var out:String = "[tier0_softU0]\n";
+    public static function runAllTests():String {
+        passed=0; failed=0; report="=== PerformanceActuatorTest ===\n";
         var m:Object = makeMocks();
-        m.a.apply(0, 0.0);
-        out += line(m.root._quality == "HIGH", "quality=HIGH（预设）");
-        out += line(m.dl.continueCalled, "显示列表继续播放");
-        out += line(m.es.maxEffectCount == 20, "maxEffectCount=20");
-        out += line(m.es.maxScreenEffectCount == 20, "maxScreenEffectCount=20");
-        out += line(m.es.isDeathEffect == true, "isDeathEffect=true");
-        out += line(m.root.面积系数 == 300000, "面积系数=300000");
-        out += line(m.dr.isEnabled == true, "DeathEffectRenderer启用");
-        out += line(m.dr.enableCulling == false, "enableCulling=false");
-        out += line(m.ss.limit == 25, "shellLimit=25");
-        out += line(m.root.发射效果上限 == 15, "发射效果上限=15");
-        out += line(m.host.offsetTolerance == 10, "offsetTolerance=10");
-        out += line(m.trail.q == 0, "渲染器档位=0");
-        return out;
-    }
-
-    // --- tier 0, softU=0.3: 微降 ---
-    private static function test_tier0_softU03():String {
-        var out:String = "[tier0_softU03]\n";
-        var m:Object = makeMocks();
-        m.a.apply(0, 0.3);
-        out += line(m.root._quality == "HIGH", "quality=HIGH（tier0始终预设）");
-        out += line(m.dl.continueCalled, "显示列表继续播放");
-        out += line(m.es.maxEffectCount == 14, "maxEffectCount≈14");
-        out += line(m.es.isDeathEffect == true, "isDeathEffect=true（softU<0.5）");
-        out += line(m.dr.isEnabled == true, "DeathEffectRenderer启用（softU<0.5）");
-        out += line(m.dr.enableCulling == true, "enableCulling=true（softU>=0.25）");
-        out += line(m.trail.q == 1, "渲染器档位=1（softU=0.3→rl=1）");
-        return out;
-    }
-
-    // --- tier 1, softU=0.5: LOW + 中等降载 ---
-    private static function test_tier1_softU05():String {
-        var out:String = "[tier1_softU05]\n";
-        var m:Object = makeMocks();
-        m.a.apply(1, 0.5);
-        out += line(m.root._quality == "LOW", "quality=LOW");
-        out += line(m.dl.pauseCalled, "显示列表暂停播放");
-        out += line(m.es.maxEffectCount == 10, "maxEffectCount=10");
-        out += line(m.es.isDeathEffect == false, "isDeathEffect=false（softU>=0.5）");
-        out += line(m.dr.isEnabled == false, "DeathEffectRenderer禁用（softU>=0.5）");
-        out += line(m.trail.q == 2, "渲染器档位=2（softU=0.5→rl=2）");
-        return out;
-    }
-
-    // --- tier 1, softU=1.0: 满降载 ---
-    private static function test_tier1_softU1():String {
-        var out:String = "[tier1_softU1]\n";
-        var m:Object = makeMocks();
-        m.a.apply(1, 1.0);
-        out += line(m.root._quality == "LOW", "quality=LOW");
-        out += line(m.es.maxEffectCount == 0, "maxEffectCount=0");
-        out += line(m.es.maxScreenEffectCount == 5, "maxScreenEffectCount=5");
-        out += line(m.root.面积系数 == 3000000, "面积系数=3000000");
-        out += line(m.ss.limit == 10, "shellLimit=10");
-        out += line(m.root.发射效果上限 == 0, "发射效果上限=0");
-        out += line(m.host.offsetTolerance == 80, "offsetTolerance=80");
-        out += line(m.trail.q == 3, "渲染器档位=3");
-        return out;
-    }
-
-    // --- 渲染器档位映射: softU → rendererLevel ---
-    private static function test_rendererLevelMapping():String {
-        var out:String = "[rendererLevel]\n";
-        var m:Object = makeMocks();
-        // softU=0 → rl=0
-        m.a.apply(0, 0.0);
-        out += line(m.trail.q == 0, "softU=0.0→rl=0");
-        // softU=0.25 → rl=1
-        m.a.apply(0, 0.25);
-        out += line(m.trail.q == 1, "softU=0.25→rl=1");
-        // softU=0.5 → rl=2
-        m.a.apply(1, 0.5);
-        out += line(m.trail.q == 2, "softU=0.5→rl=2");
-        // softU=0.75 → rl=3
-        m.a.apply(1, 0.75);
-        out += line(m.trail.q == 3, "softU=0.75→rl=3");
-        // softU=1.0 → rl=3 (clamped)
-        m.a.apply(1, 1.0);
-        out += line(m.trail.q == 3, "softU=1.0→rl=3（clamp）");
-        return out;
-    }
-
-    // --- 布尔阈值边界 ---
-    private static function test_booleanThresholds():String {
-        var out:String = "[boolThreshold]\n";
-        var m:Object = makeMocks();
-        m.a.apply(0, 0.49);
-        out += line(m.es.isDeathEffect == true, "softU=0.49: isDeathEffect=true");
-        out += line(m.dr.isEnabled == true, "softU=0.49: deathRenderer启用");
-        m.a.apply(1, 0.51);
-        out += line(m.es.isDeathEffect == false, "softU=0.51: isDeathEffect=false");
-        out += line(m.dr.isEnabled == false, "softU=0.51: deathRenderer禁用");
-        // enableCulling threshold at 0.25
-        m.a.apply(0, 0.24);
-        out += line(m.dr.enableCulling == false, "softU=0.24: enableCulling=false");
-        m.a.apply(0, 0.26);
-        out += line(m.dr.enableCulling == true, "softU=0.26: enableCulling=true");
-        return out;
-    }
-
-    private static function line(ok:Boolean, msg:String):String {
-        return "  " + (ok ? "✓ " : "✗ ") + msg + "\n";
+        var qualities:Array = ["LOW","MEDIUM","HIGH","BEST"];
+        for(var i:Number=0;i<qualities.length;i++) {
+            var quality:String = qualities[i];
+            var tier:Number = quality == "LOW" ? 1 : 0;
+            check(m.actuator.apply(tier,0,quality) === true && m.root._quality == quality,
+                "显式画质不受旧 LOW 预设限制："+quality);
+        }
+        check(m.display.playing && m.root.__nativeHudDecorations,"非 LOW 继续播放并启用既有 HUD 装饰");
+        m.actuator.apply(1,0,"LOW");
+        check(!m.display.playing && !m.root.__nativeHudDecorations,"LOW 使用既有显示列表与装饰预算");
+        m.actuator.apply(0,0,"HIGH");
+        check(m.es.maxEffectCount==20 && m.es.maxScreenEffectCount==20 && m.shell.limit==25
+            && m.root.发射效果上限==15 && m.trail.q==0,"完整表现预算");
+        m.actuator.apply(0,0.5,"MEDIUM");
+        check(m.es.maxEffectCount==10 && m.es.maxScreenEffectCount==13 && m.shell.limit==18
+            && m.root.发射效果上限==8 && m.trail.q==2,"中等表现预算");
+        m.actuator.apply(1,1,"LOW");
+        check(m.es.maxEffectCount==0 && m.es.maxScreenEffectCount==5 && m.shell.limit==10
+            && m.root.发射效果上限==0 && m.trail.q==3,"最低表现预算");
+        check(m.clip.level==3 && m.blade.level==3 && m.weather.level==3 && m.sky.level==3,"剩余 Flash 渲染器接收同一预算");
+        check(m.es.isDeathEffect && m.dr.isEnabled && m.dr.enableCulling,"死亡表现与离屏剔除始终保留");
+        check(m.root.面积系数==543210 && m.host.offsetTolerance==23,"表现预算不改 NPC 密度或镜头业务参数");
+        check(m.actuator.apply(0,0,"INVALID") === false && m.root._quality=="LOW","非法画质不写运行态");
+        check(m.actuator.apply(0,0) === false && m.root._quality=="LOW","不接受缺失显式画质的旧调用");
+        check(m.actuator.apply(0,0,"LOW") === false && m.root._quality=="LOW","画质与 tier 不一致时拒绝");
+        check(m.actuator.apply(0,Number("bad"),"HIGH") === false && m.root._quality=="LOW","非法预算不写运行态");
+        m.root.addProperty("_quality",function():String {return "MEDIUM";},function(value:String):Void {});
+        check(m.actuator.apply(0,0,"HIGH") === false && m.es.maxEffectCount==0,"Flash 未接受画质时不假报成功或继续写预算");
+        return report;
     }
 }

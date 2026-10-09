@@ -47,6 +47,8 @@
   var allowed=Object.keys(keyNames).map(function(code){return{code:Number(code),name:keyNames[code]}});
   var handlers={},sent=[],durable=true,previewBaseline=null;
   var dropNextResponseFor='',failNextSnapshot=false,holdNextSnapshotForReconcile=false;
+  var failNextPerformanceSave=false,malformNextPerformanceResponse=false;
+  var holdNextHostResponse=false,heldHostResponse=null;
   function buildEntryPreview(){
     var canvas=document.createElement('canvas');canvas.width=1024;canvas.height=576;
     var ctx=canvas.getContext('2d');ctx.scale(2,2);
@@ -74,7 +76,8 @@
       jukeboxTrueRandom:false,jukeboxPlayMode:'albumLoop'
     },
     keys:ids.map(function(id,index){return{id:id,label:index===0?'undefined':id,keyCode:codes[index],keyName:keyNames[codes[index]]||String(codes[index])}}),
-    hostPrefs:{introEnabled:true,sfxEnabled:true,ambientEnabled:true,tutorialsAutoOpen:true,uiFontScale:1,mapDisplayPreference:'auto',hitNumberMode:'balanced',hitNumberWorldRowLimit:24}
+    hostPrefs:{introEnabled:true,sfxEnabled:true,ambientEnabled:true,tutorialsAutoOpen:true,uiFontScale:1,mapDisplayPreference:'auto',hitNumberMode:'balanced',hitNumberWorldRowLimit:24,
+      performance:{v:1,current:{preset:'balanced',mode:'auto',maxRenderHeight:0},previous:null}}
   };
   function clone(value){return JSON.parse(JSON.stringify(value))}
   function help(){
@@ -113,6 +116,11 @@
     if(dropNextResponseFor===message.cmd){dropNextResponseFor='';return}
     var data=Object.assign({type:'panel_resp',panel:'settings',domain:'settings',
       cmd:message.cmd,callId:message.callId,panelInstanceId:message.panelInstanceId},response);
+    if(message.cmd==='host_set'&&malformNextPerformanceResponse
+      &&/^performance/.test(message.payload.key)){
+      malformNextPerformanceResponse=false;data.currentValue={v:1,current:{preset:'unknown'},previous:null};
+    }
+    if(message.cmd==='host_set'&&holdNextHostResponse){holdNextHostResponse=false;heldHostResponse=data;return}
     setTimeout(function(){(handlers.panel_resp||[]).slice().forEach(function(handler){handler(data)})},35)
   }
   window.__SETTINGS_CONFIG__={requestTimeoutMs:1200,sessionNonce:'settings.harness',
@@ -144,7 +152,18 @@
         emit(message,Object.assign(snapshot(),{success:durable,applied:true,durable:durable,operation:'apply',error:durable?undefined:'save_failed',needsSaveRetry:!durable}));
       }else if(message.cmd==='save')emit(message,{success:durable,v:1,operation:'save',durable:durable,revision:model.revision,error:durable?undefined:'save_failed'});
       else if(message.cmd==='host_set'){
-        model.hostPrefs[payload.key]=payload.value;emit(message,{success:true,v:1,operation:'host_set',key:payload.key,currentValue:payload.value,hostPrefs:clone(model.hostPrefs)});
+        if(payload.key==='performance'||payload.key==='performanceUndo'){
+          if(failNextPerformanceSave){
+            failNextPerformanceSave=false;emit(message,{success:false,v:1,key:payload.key,error:'save_failed',currentValue:clone(model.hostPrefs.performance)});return true;
+          }
+          if(payload.key==='performanceUndo'){
+            if(!model.hostPrefs.performance.previous){emit(message,{success:false,v:1,key:payload.key,error:'performance_undo_unavailable',currentValue:clone(model.hostPrefs.performance)});return true}
+            model.hostPrefs.performance={v:1,current:clone(model.hostPrefs.performance.previous),previous:null};
+          }else model.hostPrefs.performance={v:1,current:clone(payload.value),previous:clone(model.hostPrefs.performance.current)};
+          emit(message,{success:true,v:1,key:payload.key,currentValue:clone(model.hostPrefs.performance)});
+        }else{
+          model.hostPrefs[payload.key]=payload.value;emit(message,{success:true,v:1,operation:'host_set',key:payload.key,currentValue:payload.value,hostPrefs:clone(model.hostPrefs)});
+        }
       }else if(message.cmd==='hit_number_ledger'){
         var sampleBursts=[
           {targetId:'Lee_1_1_1',burstId:'94',totalDamage:795,hitCount:1,expectedHitCount:1,ageMs:184,
@@ -193,7 +212,11 @@
   window.__settingsHarness={model:model,sent:sent,reopen:function(){Panels.open('settings')},
     dropNextResponse:function(cmd){dropNextResponseFor=String(cmd||'')},
     failNextSnapshot:function(){failNextSnapshot=true},
-    holdNextSnapshotForReconcile:function(){holdNextSnapshotForReconcile=true}};
+    holdNextSnapshotForReconcile:function(){holdNextSnapshotForReconcile=true},
+    failNextPerformanceSave:function(){failNextPerformanceSave=true},
+    malformNextPerformanceResponse:function(){malformNextPerformanceResponse=true},
+    holdNextHostResponse:function(){holdNextHostResponse=true},
+    releaseHostResponse:function(){var data=heldHostResponse;heldHostResponse=null;if(data)(handlers.panel_resp||[]).slice().forEach(function(handler){handler(data)})}};
   document.getElementById('toggle-mode').onclick=function(){model.challengeMode=!model.challengeMode;this.textContent=model.challengeMode?'切到普通模式':'切到挑战模式';Panels.open('settings')};
   document.getElementById('toggle-save').onclick=function(){durable=!durable;this.textContent=durable?'模拟保存失败':'恢复保存成功'};
   document.getElementById('toggle-revive').onclick=function(){model.reviveAvailable=!model.reviveAvailable;this.textContent='复活入口：'+(model.reviveAvailable?'可用':'不可用');Panels.open('settings')};

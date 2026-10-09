@@ -2,6 +2,9 @@ using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
+using System.Reflection;
+using System.Windows.Forms;
+using CF7Launcher.Guardian;
 using CF7Launcher.Guardian.WorldCompositor;
 using CF7Launcher.Tasks;
 using Newtonsoft.Json.Linq;
@@ -45,6 +48,109 @@ namespace CF7Launcher.Tests.Guardian {
             Assert.False(WorldCompositorController.TryCalculateCrop(
                 new Rectangle(139,66,1600,900),captured,out _));
         }
+        [Theory]
+        [InlineData("LOW",2)]
+        [InlineData("MEDIUM",0)]
+        public void SameHeightQualityOrEffectsChangeNeedsItsOwnFreshCapture(string quality,int effects) {
+            using var owner=new Form();
+            using var controller=RenderController(owner);
+            SetRenderField(controller,"_appliedHeight",720);
+            int first=0,second=0;
+            controller.ApplyRenderSelection(new RenderSelection(2,720,"MEDIUM",1),.15f,_=>first++);
+            object initial=PendingRender(controller);
+            Assert.True(RecordPaint(controller,initial,100));
+            Assert.True(CompleteRender(controller,initial,100));
+            Assert.Equal(1,first);
+
+            controller.ApplyRenderSelection(new RenderSelection(3,720,quality,effects),.15f,_=>second++);
+            object changed=PendingRender(controller);
+            // A native animation may have presented repeatedly using the old capture.
+            Assert.False(CompleteRender(controller,changed,150));
+            Assert.Equal(0,second);
+            Assert.True(RecordPaint(controller,changed,200));
+            Assert.False(CompleteRender(controller,changed,199));
+            Assert.True(CompleteRender(controller,changed,200));
+            Assert.Equal(1,second);
+        }
+        [Fact] public void RepaintReturningAfterAnotherSelectionCannotCompleteTheNewTarget() {
+            using var owner=new Form();
+            using var controller=RenderController(owner);
+            SetRenderField(controller,"_appliedHeight",720);
+            int oldCalls=0,newCalls=0;
+            controller.ApplyRenderSelection(new RenderSelection(2,720,"MEDIUM",1),.15f,_=>oldCalls++);
+            object old=PendingRender(controller);
+            // ApplyRenderSelection runs on the UI while the first RepaintAsync awaits.
+            controller.ApplyRenderSelection(new RenderSelection(3,720,"LOW",2),.15f,_=>newCalls++);
+            object current=PendingRender(controller);
+            Assert.False(RecordPaint(controller,old,200));
+            Assert.False(CompleteRender(controller,old,250));
+            Assert.False(CompleteRender(controller,current,250));
+            Assert.Same(current,PendingRender(controller));
+            Assert.True(RecordPaint(controller,current,300));
+            Assert.True(CompleteRender(controller,current,300));
+            Assert.Equal(0,oldCalls);Assert.Equal(1,newCalls);
+        }
+        [Fact] public void SourceResetCancelsAPaintAlreadyInFlight() {
+            using var owner=new Form();
+            using var controller=RenderController(owner);
+            SetRenderField(controller,"_appliedHeight",720);
+            int calls=0;
+            controller.ApplyRenderSelection(new RenderSelection(2,720,"MEDIUM",1),.15f,_=>calls++);
+            object old=PendingRender(controller);
+            controller.ResetSource();
+            Assert.False(RecordPaint(controller,old,200));
+            Assert.False(CompleteRender(controller,old,250));
+            Assert.Null(PendingRender(controller));
+            Assert.Equal(0,calls);
+        }
+        [Fact] public void CompletionCallbackCanReenterWithoutLosingTheNextFence() {
+            using var owner=new Form();
+            using var controller=RenderController(owner);
+            SetRenderField(controller,"_appliedHeight",720);
+            int firstCalls=0,nextCalls=0;
+            controller.ApplyRenderSelection(new RenderSelection(2,720,"MEDIUM",1),.15f,_=> {
+                firstCalls++;
+                controller.ApplyRenderSelection(new RenderSelection(3,720,"LOW",2),.15f,_=>nextCalls++);
+            });
+            object first=PendingRender(controller);
+            Assert.True(RecordPaint(controller,first,100));
+            Assert.True(CompleteRender(controller,first,100));
+            object next=PendingRender(controller);
+            Assert.NotNull(next);Assert.NotSame(first,next);
+            Assert.False(CompleteRender(controller,first,200));
+            Assert.False(CompleteRender(controller,next,200));
+            Assert.True(RecordPaint(controller,next,250));
+            Assert.True(CompleteRender(controller,next,250));
+            Assert.Equal(1,firstCalls);Assert.Equal(1,nextCalls);
+        }
+        [Fact] public void FreshCaptureWithAnotherAppliedHeightCannotCompleteTheTarget() {
+            using var owner=new Form();
+            using var controller=RenderController(owner);
+            int calls=0;
+            controller.ApplyRenderSelection(new RenderSelection(4,540,"LOW",2),.15f,_=>calls++);
+            object request=PendingRender(controller);
+            Assert.True(RecordPaint(controller,request,100));
+            SetRenderField(controller,"_appliedHeight",720);
+            Assert.False(CompleteRender(controller,request,150));
+            Assert.Same(request,PendingRender(controller));
+            SetRenderField(controller,"_appliedHeight",540);
+            Assert.True(CompleteRender(controller,request,150));
+            Assert.Equal(1,calls);
+        }
+        private static WorldCompositorController RenderController(Form owner) {
+            string root=Path.GetFullPath(Path.Combine(AppContext.BaseDirectory,"..","..","..",".."));
+            return new WorldCompositorController(owner,owner,()=>IntPtr.Zero,()=>false,_=>{},root,()=>false,_=>{},()=>{});
+        }
+        private static object PendingRender(WorldCompositorController controller)=>
+            typeof(WorldCompositorController).GetField("_renderCompletion",BindingFlags.NonPublic|BindingFlags.Instance).GetValue(controller);
+        private static void SetRenderField(WorldCompositorController controller,string name,object value)=>
+            typeof(WorldCompositorController).GetField(name,BindingFlags.NonPublic|BindingFlags.Instance).SetValue(controller,value);
+        private static bool RecordPaint(WorldCompositorController controller,object request,double painted)=>
+            (bool)typeof(WorldCompositorController).GetMethod("RecordRenderPaint",BindingFlags.NonPublic|BindingFlags.Instance)
+                .Invoke(controller,new object[]{request,painted});
+        private static bool CompleteRender(WorldCompositorController controller,object request,double captured)=>
+            (bool)typeof(WorldCompositorController).GetMethod("CompleteRenderSelection",BindingFlags.NonPublic|BindingFlags.Instance)
+                .Invoke(controller,new object[]{request,captured,new Size(960,540)});
         [Fact] public void LegacyNeutralMatrixIsIdentity() {
             Assert.Equal(WorldColorMatrix.Identity(),WorldColorMatrix.Generate(new double[]{1,1,1,1,0,0,0,0}));
         }

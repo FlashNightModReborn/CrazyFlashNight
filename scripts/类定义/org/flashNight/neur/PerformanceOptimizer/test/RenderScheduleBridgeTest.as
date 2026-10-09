@@ -1,9 +1,13 @@
 ﻿import org.flashNight.neur.PerformanceOptimizer.*;
+import org.flashNight.neur.PerformanceOptimizer.test.*;
+import org.flashNight.arki.scene.StageEvent;
+
+/** Host 性能桥 focused suite：实测采样、执行确认与旧关卡入口退休。 */
 class org.flashNight.neur.PerformanceOptimizer.test.RenderScheduleBridgeTest {
     private static var passed:Number;
     private static var failed:Number;
     private static function check(value:Boolean,name:String):Void {
-        if(value) passed++; else { failed++; trace("FAIL RenderScheduleBridgeTest: "+name); }
+        if(value) passed++; else {failed++;trace("FAIL RenderScheduleBridgeTest: "+name);}
     }
     public static function runAllTests():Void {
         passed=0; failed=0;
@@ -11,7 +15,7 @@ class org.flashNight.neur.PerformanceOptimizer.test.RenderScheduleBridgeTest {
         sampler.resetInterval(0,1);
         check(!sampler.observe(100),"window not due before 500ms");
         sampler.observe(200); sampler.observe(300); sampler.observe(400);
-        check(sampler.observe(500),"5fps-like pressure does not wait 60 frames");
+        check(sampler.observe(500),"low FPS does not wait 60 frames");
         check(sampler.sampleFrames==5 && sampler.sampleDurationMs==500,"actual count and elapsed time");
         check(sampler.longFrames==0,"100ms is not greater than long-frame boundary");
         sampler.resetInterval(500,0);
@@ -20,35 +24,37 @@ class org.flashNight.neur.PerformanceOptimizer.test.RenderScheduleBridgeTest {
         sampler.resetInterval(0,0);
         sampler.observe(40); sampler.observe(80);
         check(!sampler.observe(1) && sampler.sampleFrames==0,"clock rollback resets observation");
-        var root:Object={_quality:"MEDIUM", 暂停:false};
-        var scheduler:PerformanceScheduler=new PerformanceScheduler({},30,26,"MEDIUM",{root:root});
-        var mock:Object={count:0,setPresetQuality:function(q:String):Void {},apply:function(t:Number,u:Number,q:String):Void {this.count++;this.lastTier=t;this.lastQuality=q;}};
-        scheduler.setActuator(mock);
-        scheduler.applyFromLauncher(1,0.5,"LOW",1,0);
-        check(scheduler.isRemoteControlled() && scheduler.getPerformanceLevel()==1,"extended command applied");
-        scheduler.applyFromLauncher(0,0,"MEDIUM",2,9);
-        check(mock.count==1,"other scene rejected");
-        scheduler.applyFromLauncher(0,0,"MEDIUM",0,0);
-        check(mock.count==1,"invalid command identity rejected");
-        scheduler.applyFromLauncher(0,0,"MEDIUM",2,0);
-        check(mock.count==2 && scheduler.getPerformanceLevel()==0,"new command applies");
-        scheduler.applyFromLauncher(1,1,"LOW",1,0);
-        check(mock.count==2,"late command rejected");
-        scheduler.applyFromLauncher(0,0,"MEDIUM",2,0);
-        check(mock.count==2,"same command idempotent");
-        scheduler.applyFromLauncher(1,1,"LOW",3,0);
-        scheduler.onSceneChanged();
-        check(scheduler.getPerformanceLevel()==1,"scene retains current performance level");
-        scheduler.applyFromLauncher(0,0,"MEDIUM",4,0);
-        check(scheduler.getPerformanceLevel()==1,"pre-scene command cannot restore quality");
-        scheduler.applyFromLauncher(0,0,"MEDIUM",4,1);
-        check(scheduler.getPerformanceLevel()==0,"current-scene command accepted");
-        scheduler.applyFromLauncher(1,2,"LOW",5,1);
-        check(scheduler.getPerformanceLevel()==0,"out of range soft budget rejected");
-        var legacy:String = org.flashNight.neur.PerformanceOptimizer.test.PerformanceSchedulerTest.runAllTests();
-        check(legacy.indexOf(String.fromCharCode(10007)) < 0, "legacy remote/fallback/hold compatibility");
-        trace(legacy);
+
+        trace(PerformanceSchedulerTest.runAllTests());
+        passed+=PerformanceSchedulerTest.getPassedCount(); failed+=PerformanceSchedulerTest.getFailedCount();
+        trace(PerformanceActuatorTest.runAllTests());
+        passed+=PerformanceActuatorTest.getPassedCount(); failed+=PerformanceActuatorTest.getFailedCount();
+        testLegacyStageMessages();
         trace("RenderScheduleBridgeTest Tests Passed: "+passed);
         trace("RenderScheduleBridgeTest Tests Failed: "+failed);
+    }
+
+    private static function testLegacyStageMessages():Void {
+        var previousTimer:Object=_root.帧计时器;
+        var previousMessage:Function=_root.最上层发布文字提示;
+        var previousTestMessage:Object=_root.__performanceTestMessage;
+        var timer:Object={count:0,
+            手动设置性能等级:function():Void {this.count++;},
+            降低性能等级:function():Void {this.count++;},
+            提升性能等级:function():Void {this.count++;}};
+        _root.帧计时器=timer;
+        _root.最上层发布文字提示=function(value:String):Void {this.__performanceTestMessage=value;};
+        var actions:Array=["SetLevel","Decrease","Increase"];
+        for(var i:Number=0;i<actions.length;i++) {
+            var event:StageEvent=new StageEvent({EventName:"Start",PerformanceControl:{
+                Action:actions[i],Level:1,Steps:1,Duration:10,Message:"保留关卡提示"}});
+            _root.__performanceTestMessage=null;
+            event.execute();
+            check(timer.count==0 && _root.__performanceTestMessage=="保留关卡提示",
+                "legacy "+actions[i]+" retains message without scheduling");
+        }
+        _root.帧计时器=previousTimer;
+        _root.最上层发布文字提示=previousMessage;
+        _root.__performanceTestMessage=previousTestMessage;
     }
 }

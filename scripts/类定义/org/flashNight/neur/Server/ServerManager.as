@@ -500,6 +500,7 @@ class org.flashNight.neur.Server.ServerManager {
             // Transport ready is not audio ready. Clear any prior tuple and wait for
             // an exact audio_ready from this live socket.
             AudioBridge.onTransportConnected();
+            _root.帧计时器.scheduler.onTransportConnected();
         } else {
             trace("Failed to connect XMLSocket to server on port: " + socketPort);
             _retryCount++;
@@ -533,18 +534,17 @@ class org.flashNight.neur.Server.ServerManager {
             return;
         }
 
-        // 性能调度快车道：P{tier}|{softU_x100}（绕过 JSON 解析）
+        // 性能目标快车道：P{tier}|{softU100}|{quality}|{command}|{scene}。
         if (prefix == "P") {
             var payload:String = data.substring(1);
             var perfParts:Array = payload.split("|");
-            if (perfParts.length == 2 || perfParts.length == 5) {
+            if (perfParts.length == 5) {
                 var tier:Number = Number(perfParts[0]);
                 var softU100:Number = Number(perfParts[1]);
                 if (!isNaN(tier) && !isNaN(softU100)) {
                     var sched:Object = _root.帧计时器.scheduler;
                     if (sched != null) {
-                        if (perfParts.length == 5) sched.applyFromLauncher(tier, softU100 / 100, String(perfParts[2]), Number(perfParts[3]), Number(perfParts[4]));
-                        else sched.applyFromLauncher(tier, softU100 / 100);
+                        sched.applyFromLauncher(tier, softU100 / 100, String(perfParts[2]), Number(perfParts[3]), Number(perfParts[4]));
                     }
                 }
             }
@@ -825,10 +825,10 @@ class org.flashNight.neur.Server.ServerManager {
         }
         _pendingCallbacks = {};
 
-        // 性能调度: 断连回退到本地模式（幂等，已是 local 时空操作）
+        // 断连只关闭性能命令入口；保持最后有效表现目标。
         var sched:Object = _root.帧计时器.scheduler;
         if (sched != null) {
-            sched.setRemoteControlled(false);
+            sched.onTransportDisconnected();
         }
 
         // 关键：回到 FETCHING_PORT 重新发现端口（launcher 可能重启在不同端口）

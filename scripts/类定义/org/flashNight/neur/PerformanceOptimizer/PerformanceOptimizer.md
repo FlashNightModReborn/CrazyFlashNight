@@ -1,246 +1,34 @@
-﻿trace(org.flashNight.neur.PerformanceOptimizer.test.PerformanceOptimizerTestSuite.run());
+# Flash 性能采样与执行桥
 
+C# `PerfDecisionEngine` / `RenderSchedule` 独占预设、预算、自动升降档和生效观察期。AS2 只测量实际 Flash 帧时间、执行完整表现目标并报告执行结果。断连保持最后有效状态，不运行本地后备调度。
 
-╔══════════════════════════════════════════════════╗
-║   PerformanceOptimizer Test Suite                ║
-╚══════════════════════════════════════════════════╝
+## 运行闭包
 
-── IntervalSampler ── PASS (8/8, 0ms)
-=== IntervalSamplerTest ===
-[tick]
-  ✓ 倒计时29次不触发，第30次触发
-[measure/reset]
-  ✓ level0: dt=1s → FPS=30.0
-  ✓ dtSec=1.0
-  ✓ PID deltaFrames: level3→120
-  ✓ resetInterval: frameStartTime更新
-  ✓ resetInterval: level2→90帧
-  ✓ protection: max(30*1, 30*(1+2))=90
-  ✓ protection: max(30*10, 90)=300
+- `IntervalSampler.as` 每帧累积实际时间，以 500 ms 窗口报告帧数、耗时、长帧数和最大帧耗时。
+- `PerformanceScheduler.as` 管理观察 epoch、单调命令编号和执行确认。`ServerManager.as` 只从当前连接转交性能指令。
+- `PerformanceActuator.as` 设置显式 Flash 画质，以及尚未迁入 native 的表现预算。它不读取旧画质预设上限，不改变 NPC 密度或镜头容差。
+- `通信_fs_帧计时器.as` 初始化稳定的业务默认值：NPC 面积系数 300000、镜头死区容差 10；场景提示仍由 `StageEvent` 保留。
 
+## Wire 与确认
 
-── AdaptiveKalmanStage ── PASS (4/4, 0ms)
-=== AdaptiveKalmanStageTest ===
-[Q scaling]
-  ✓ dt=0.5 → Q=0.05
-  ✓ dt=0.001 → Q clamp到0.01
-  ✓ dt=100 → Q clamp到2.0
-[estimate]
-  ✓ 估计值向测量值移动（10 < est < 30）
+命令沿用 `P{tier}|{softU100}|{quality}|{command}|{scene}`。只接收完整的五字段格式；旧二字段命令已退休。`quality` 允许 LOW、MEDIUM、HIGH、BEST，LOW 必须配 tier 1，其余配 tier 0。`softU100` 是 C# 档位指定的表现预算编码，不是 AS2 反馈控制量。
 
+`scene` 是观察 epoch，场景切换或新连接时递增。每个 epoch 的命令编号为正整数；迟到命令被拒绝，同编号不能改变载荷。新连接允许命令编号重新从 1 开始。断连不改画质和表现预算；当前 XMLSocket 的对象身份守卫阻止旧连接回调进入桥。
 
-── HysteresisQuantizer ── PASS (26/26, 0ms)
-=== HysteresisQuantizerTest ===
-[downgrade_2step]
-  ✓ 降级第1次：不切换，进入等待
-  ✓ 确认计数=1，方向=降级(+1)
-  ✓ 降级第2次：达到阈值，切换到1
-  ✓ 切换后确认计数归零
-  ✓ 候选等于当前：确认状态清空
-[upgrade_3step]
-  ✓ 升级第1次：不切换，计数=1
-  ✓ 升级第2次：不切换（需3次），计数=2
-  ✓ 方向=升级(-1)
-  ✓ 升级第3次：达到阈值，切换到1
-[directionReversal]
-  ✓ 升级方向积累2次
-  ✓ 方向反转：计数重置为1，方向=降级(+1)
-  ✓ 降级第2次（含反转的1次）：达到阈值，切换到3
-[clamp]
-  ✓ 候选被clamp到minLevel=2（第1次等待）
-  ✓ 升级第2次：需3次确认，继续等待
-  ✓ 升级第3次：达到阈值，切换到2
-[strictEquality]
-  ✓ 严格比较: Number(1) !== String('1') 检测为变化
-  ✓ Number(1) === Number(1) 不触发变化
-[clearConfirmation]
-  ✓ process后有待确认
-  ✓ clearConfirmation 清空所有状态
-  ✓ setConfirmState(2, -1) 精确设置
-  ✓ setAwaitingConfirmation(true) 兼容模式：count=1, direction=降级
-  ✓ setAwaitingConfirmation(false) 清空
-[customThresholds]
-  ✓ 自定义阈值：降级=1, 升级=4
-  ✓ 降级阈值=1：首次即切换
-  ✓ 升级阈值=4：第4次切换
-  ✓ 默认阈值：降级=2, 升级=3
+只有执行器成功返回、实际 `_quality` 与目标一致后，才更新 `appliedCommand`。重发相同命令幂等；执行失败时不确认，允许重试同一个完整目标。执行窗口重置采样，避免把修改前后的帧时间混合为新目标收益。
 
+采样沿用 v2 的 15 字段形状：
 
-── PerformanceActuator ── PASS (47/47, 3ms)
-=== PerformanceActuatorTest ===
-[apply]
-  ✓ L0 maxEffectCount=20
-  ✓ L0 maxScreenEffectCount=20
-  ✓ L0 isDeathEffect=true
-  ✓ L0 面积系数=300000
-  ✓ L0 DeathEffectRenderer启用且不剔除
-  ✓ L0 quality恢复预设(HIGH)
-  ✓ L0 光照阈值=0.1
-  ✓ L0 shellLimit=25
-  ✓ L0 发射效果上限=15
-  ✓ L0 显示列表继续播放
-  ✓ L0 UI动效=true
-  ✓ L0 offsetTolerance=10
-  ✓ L0 渲染器档位=0
-  ✓ L1 maxEffectCount=12
-  ✓ L1 maxScreenEffectCount=12
-  ✓ L1 isDeathEffect=true
-  ✓ L1 面积系数=450000
-  ✓ L1 DeathEffectRenderer启用且剔除
-  ✓ L1 quality=MEDIUM(预设非LOW)
-  ✓ L1 光照阈值=0.2
-  ✓ L1 shellLimit=12
-  ✓ L1 发射效果上限=10
-  ✓ L1 显示列表继续播放
-  ✓ L1 UI动效=true
-  ✓ L1 offsetTolerance=30
-  ✓ L1 渲染器档位=1
-  ✓ L2 maxEffectCount=10
-  ✓ L2 isDeathEffect=false
-  ✓ L2 面积系数=600000
-  ✓ L2 quality=LOW
-  ✓ L2 光照阈值=0.5
-  ✓ L2 shellLimit=12
-  ✓ L2 显示列表暂停播放
-  ✓ L2 UI动效=false
-  ✓ L2 offsetTolerance=50
-  ✓ L2 渲染器档位=2
-  ✓ L3 maxEffectCount=0
-  ✓ L3 maxScreenEffectCount=5
-  ✓ L3 面积系数=3000000
-  ✓ L3 光照阈值=1
-  ✓ L3 shellLimit=10
-  ✓ L3 发射效果上限=0
-  ✓ L3 显示列表暂停播放
-  ✓ L3 offsetTolerance=80
-  ✓ L3 渲染器档位=3
+```text
+fps|hour|tier|scene|v2|frames|ms|longFrames|maxMs|preset|quality|held|paused|seq|appliedCommand
+```
 
+`preset` 只保留格式兼容，不是 Host 策略权威；`held` 固定为 0。`quality` 与 `appliedCommand` 是 AS2 执行状态，仍不能证明 Host 尺寸交接已完成。
 
-── FPSVisualization ── PASS (4/4, 0ms)
-=== FPSVisualizationTest ===
-[viz]
-  ✓ buffer min/max 合法
-  ✓ fpsDiff >= 最小差异5
-  ✓ level0 线条颜色=0x00FF00
-  ✓ level2 线条颜色=0xFFFF00
+旧存档的 `性能等级上限` 保留原读写 schema，但性能桥不消费它。旧关卡 `PerformanceControl` 只展示 Message，Action/Level/Steps/Duration 不再调档。
 
+## 验证入口
 
-── PerformanceScheduler ── PASS (83/83, 7ms)
-=== PerformanceSchedulerTest ===
-[evaluate]
-  ✓ 两次确认后只执行一次切档
-  ✓ 低FPS下切到level3（clamp后）
-  ✓ scheduler.performanceLevel更新为3
-  ✓ 切到level3后采样周期=120帧
-[onSceneChanged]
-  ✓ performanceLevel重置为0
-  ✓ 执行器收到apply(0)
-  ✓ PID已重置（无异常抛出）
-  ✓ 迟滞确认状态已清除
-  ✓ 采样周期重置为30帧（level0）
-  ✓ frameStartTime更新为当前时间（>0）
-[onSceneChanged_levelCap]
-  ✓ onSceneChanged尊重性能等级上限: level=2（非0）
-  ✓ 执行器收到apply(2)（非0）
-  ✓ 采样周期=90帧（level2: 30*(1+2)）
-[setPerformanceLevel]
-  ✓ performanceLevel设为2
-  ✓ 执行器收到apply(2)
-  ✓ quantizer确认状态已清除
-  ✓ 采样间隔=90帧（level2正常间隔）
-  ✓ holdUntilMs=6000（1000+5*1000）
-  ✓ frameStartTime更新为传入时间
-  ✓ 估算帧率=26（30-2*2）
-  ✓ 相同等级不重复执行
-[holdSuppressesQuantizer]
-  ✓ hold期间无apply调用（量化器被抑制）
-  ✓ hold期间FPS仍在测量
-  ✓ hold期间等级不变
-  ✓ t=10000仍在hold，无apply
-  ✓ hold过期后量化器恢复工作
-[emergencyBypass]
-  ✓ 默认panicFPS=5
-  ✓ 紧急降级: 0→1
-  ✓ 执行器收到apply(1)
-  ✓ 紧急降级后迟滞状态已清除
-  ✓ 紧急降级后hold已清除
-  ✓ 10FPS不触发紧急降级（走正常通道）
-  ✓ setPanicFPS(3)生效
-  ✓ level3不再紧急降级（已到底）
-[presetQuality动态同步]
-  ✓ 初始presetQuality=HIGH
-  ✓ apply前presetQuality同步为LOW
-  ✓ L1 在预设为LOW时 quality=LOW（而非MEDIUM）
-[logger]
-  ✓ 采样点日志 sample 调用2次
-  ✓ PID分量日志 pidDetail 调用2次（与sample同步）
-  ✓ 切档日志 levelChanged 调用1次
-  ✓ 前馈日志 manualSet 调用1次
-  ✓ 场景切换日志 sceneChanged 调用1次
-  ✓ sceneChanged快照: level=2（重置前）
-  ✓ sceneChanged快照: targetFPS=26
-  ✓ sceneChanged快照: quality=HIGH
-[pidDetail+tag]
-  ✓ setLoggerTag设置标签
-  ✓ sample携带tag='OL:test'
-  ✓ pidDetail被调用
-  ✓ 纯比例PID: iTerm=0
-  ✓ 纯比例PID: dTerm=0
-  ✓ P+I+D=pidOutput（冗余校验通过）
-  ✓ setLoggerTag(null)清除标签
-  ✓ 无logger时getLoggerTag返回null
-  ✓ PIDController.getLastP()可用
-  ✓ PIDController.getLastI()可用
-  ✓ PIDController.getLastD()可用
-  ✓ reset后getLastP()=0
-  ✓ reset后getLastI()=0
-  ✓ reset后getLastD()=0
-[forceLevel]
-  ✓ forceLevel(2)设置等级为2
-  ✓ 执行器收到apply(2)
-  ✓ 采样间隔=90帧（level2），无保护窗口
-  ✓ PID已重置（无异常抛出）
-  ✓ 迟滞确认状态已清除
-  ✓ forceLevel(-1)被clamp到0
-  ✓ forceLevel(5)被clamp到3
-  ✓ forceLevel: 60帧采样间隔, 无hold窗口
-  ✓ setPerformanceLevel: 30帧采样间隔, hold=55000ms
-[trendGate_suppressUpgrade]
-  ✓ 默认trendThreshold=0.2 FPS/sec
-  ✓ 窗口1后仍为level2（门控生效）
-  ✓ 窗口1: 首次建立升级方向（confirmCount=1，门控从窗口2起生效）
-  ✓ 窗口2后仍为level2（门控持续生效）
-  ✓ 窗口2: 门控清除后process重建，confirmCount≤1（无法累积到阈值3）
-  ✓ 3个窗口后未过早恢复（level>=2）
-  ✓ 执行器未收到升级方向的apply
-[trendGate_allowDowngrade]
-  ✓ 降级方向不受趋势门控影响: 切档正常执行
-  ✓ 降级到level3
-[trendGate_sceneReset]
-  ✓ onSceneChanged后prevDenoisedFPS重置为frameRate(30)
-[trendGate_accessor]
-  ✓ 默认值0.2 FPS/sec
-  ✓ setTrendThreshold(1.0)生效
-  ✓ setTrendThreshold(0)允许（极保守模式）
-  ✓ 负值回退到默认0.2
-  ✓ NaN回退到默认0.2
+运行 [render-schedule focused runner](../../../../../run-render-schedule-tests.ps1)，取得当前 `RenderScheduleBridgeTest` 新鲜行为、Compiler 0/0 和零 32K 重试。断言数由 runner 维护。套件覆盖采样、断连不调档、重连/换场隔离、命令重复与迟到、执行失败不确认、四种画质、业务参数隔离及旧关卡提示。
 
-
-── PerformanceHotPathBenchmark ── BENCH (2283ms)
-=== PerformanceHotPathBenchmark ===
-  note: same-machine comparison only
-  IntervalSampler.tick: 178 ms / 100000 (1.78 us/op, checksum=0)
-  IntervalSampler.measure+resetInterval: 64 ms / 20000 (3.2 us/op, checksum=83601000)
-  AdaptiveKalmanStage.filter: 71 ms / 20000 (3.55 us/op, checksum=459997.492)
-  HysteresisQuantizer.process: 334 ms / 100000 (3.34 us/op, checksum=200000)
-  PerformanceActuator.apply: 338 ms / 20000 (16.9 us/op, checksum=850000)
-  FPSVisualization.updateData+drawCurve: 896 ms / 5000 (179.2 us/op, checksum=45023)
-  PerformanceScheduler.evaluate(fast-path): 266 ms / 100000 (2.66 us/op, checksum=5000050000)
-  PerformanceScheduler.evaluate(sample-path): 134 ms / 5000 (26.8 us/op, checksum=0)
-
-
-══════════════════════════════════════════════════
-ALL PASSED
-  Total : 172  |  Pass : 172  |  Fail : 0  |  Time : 2293 ms
-══════════════════════════════════════════════════
-
+随后用 `scripts/compile_test.ps1 -Target publish` 编译逻辑注入产物，部署前按 [Flash 验证合同](../../../../../../agentsDoc/testing-guide.md#as2) 核对单一类归属。真实尺寸交接、实际预设观感与实机性能必须由 Host 候选验证和人力验收补齐。

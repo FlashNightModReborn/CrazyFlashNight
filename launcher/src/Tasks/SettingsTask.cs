@@ -339,7 +339,10 @@ namespace CF7Launcher.Tasks
             }
             key = payload.Value<string>("key");
             value = payload["value"];
-
+            JToken normalized;
+            lock (_lock) {
+            // Snapshot readers must not observe half a performance/undo group,
+            // including the interval while its local durable write can still fail.
             bool oldIntro = _userPrefs.IntroEnabled;
             bool oldSfx = _userPrefs.SfxEnabled;
             bool oldAmbient = _userPrefs.AmbientEnabled;
@@ -349,7 +352,8 @@ namespace CF7Launcher.Tasks
             string oldMap = _userPrefs.MapDisplayPreference;
             string oldHitNumberMode = _userPrefs.HitNumberMode;
             int oldHitNumberWorldRowLimit = _userPrefs.HitNumberWorldRowLimit;
-            JToken normalized;
+            var oldPerformance = _userPrefs.Performance;
+            var oldPreviousPerformance = _userPrefs.PreviousPerformance;
             if (!TryApplyHostPreference(key, value, out normalized))
             {
                 RespondError(callId, "host_set", instanceId, "bad_value");
@@ -368,11 +372,14 @@ namespace CF7Launcher.Tasks
                 _userPrefs.MapDisplayPreference = oldMap;
                 _userPrefs.HitNumberMode = oldHitNumberMode;
                 _userPrefs.HitNumberWorldRowLimit = oldHitNumberWorldRowLimit;
+                _userPrefs.Performance = oldPerformance;
+                _userPrefs.PreviousPerformance = oldPreviousPerformance;
                 RespondError(callId, "host_set", instanceId, "save_failed",
                     CurrentHostPreference(key));
                 return;
             }
 
+            }
             var response = new JObject
             {
                 ["type"] = "panel_resp",
@@ -457,6 +464,21 @@ namespace CF7Launcher.Tasks
             normalized = null;
             switch (key)
             {
+                case "performance":
+                    if (!PerformancePolicy.TryParse(value, out var policy)) return false;
+                    if (policy != _userPrefs.Performance) {
+                        _userPrefs.PreviousPerformance = _userPrefs.Performance;
+                        _userPrefs.Performance = policy;
+                    }
+                    normalized = BuildPerformanceState();
+                    return true;
+                case "performanceUndo":
+                    if (value?.Type != JTokenType.Boolean || !value.Value<bool>()
+                        || _userPrefs.PreviousPerformance == null) return false;
+                    _userPrefs.Performance = _userPrefs.PreviousPerformance;
+                    _userPrefs.PreviousPerformance = null;
+                    normalized = BuildPerformanceState();
+                    return true;
                 case "introEnabled":
                     if (value == null || value.Type != JTokenType.Boolean) return false;
                     _userPrefs.IntroEnabled = value.Value<bool>();
@@ -518,11 +540,20 @@ namespace CF7Launcher.Tasks
             }
         }
 
+        private JObject BuildPerformanceState()
+        {
+            lock (_lock) return new JObject {
+                ["v"] = 1, ["current"] = _userPrefs.Performance.ToJson(),
+                ["previous"] = _userPrefs.PreviousPerformance?.ToJson()
+            };
+        }
+
         private JObject BuildHostPrefs()
         {
             if (_userPrefs == null) return null;
             return new JObject
             {
+                ["performance"] = BuildPerformanceState(),
                 ["introEnabled"] = _userPrefs.IntroEnabled,
                 ["sfxEnabled"] = _userPrefs.SfxEnabled,
                 ["ambientEnabled"] = _userPrefs.AmbientEnabled,
@@ -541,6 +572,8 @@ namespace CF7Launcher.Tasks
 
         private JToken CurrentHostPreference(string key)
         {
+            if (_userPrefs != null && (key == "performance" || key == "performanceUndo"))
+                return BuildPerformanceState();
             JObject prefs = BuildHostPrefs();
             return prefs != null && prefs[key] != null
                 ? prefs[key].DeepClone() : JValue.CreateNull();

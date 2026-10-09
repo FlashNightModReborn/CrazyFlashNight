@@ -45,6 +45,8 @@ namespace CF7Launcher.Config
         public string HitNumberMode { get; set; }
         public int HitNumberWorldRowLimit { get; set; }
         public bool ReducedPresentation { get; set; }
+        public PerformancePolicy Performance { get; set; } = PerformancePolicy.Default;
+        public PerformancePolicy PreviousPerformance { get; set; }
 
         private readonly string _path;
         private readonly string _legacyPath;
@@ -124,6 +126,10 @@ namespace CF7Launcher.Config
             {
                 string text = File.ReadAllText(readPath);
                 JObject obj = JObject.Parse(text);
+                Performance = PerformancePolicy.TryParse(obj["performance"], out var performance)
+                    ? performance : PerformancePolicy.Default;
+                PreviousPerformance = PerformancePolicy.TryParse(obj["previousPerformance"], out var previousPerformance)
+                    ? previousPerformance : null;
                 LastPlayedSlot = obj.Value<string>("lastPlayedSlot");
                 bool? intro = obj.Value<bool?>("introEnabled");
                 if (intro.HasValue) IntroEnabled = intro.Value;
@@ -163,6 +169,8 @@ namespace CF7Launcher.Config
                 HitNumberMode = HitNumberModeDefault;
                 HitNumberWorldRowLimit = HitNumberWorldRowLimitDefault;
                 ReducedPresentation = false;
+                Performance = PerformancePolicy.Default;
+                PreviousPerformance = null;
             }
         }
 
@@ -186,6 +194,8 @@ namespace CF7Launcher.Config
                 obj["hitNumberWorldRowLimit"] =
                     NormalizeHitNumberWorldRowLimit(HitNumberWorldRowLimit);
                 obj["reducedPresentation"] = ReducedPresentation;
+                obj["performance"] = Performance.ToJson();
+                obj["previousPerformance"] = PreviousPerformance?.ToJson();
                 if (!string.IsNullOrEmpty(SuppressedHighDpiWarningRaw))
                     obj["suppressedHighDpiWarningRaw"] = SuppressedHighDpiWarningRaw;
                 CF7Launcher.Save.DurableFileWriter.WriteAllText(_path,

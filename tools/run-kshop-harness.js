@@ -78,6 +78,20 @@ function auditArchitectureBoundaries() {
     const kshopSource = fs.readFileSync(KSHOP_SOURCE, 'utf8');
     const kshopRuntimeSource = fs.readFileSync(KSHOP_RUNTIME_SOURCE, 'utf8');
     const kshopHarnessSource = fs.readFileSync(KSHOP_HARNESS_SOURCE, 'utf8');
+    if (!kshopHarnessSource.includes('<link rel="stylesheet" href="css/guidance.css">'))
+        throw new Error('KShop harness must load the production guidance secondary-page stylesheet');
+    let previousStorageDependency = -1;
+    ['generated/guidance-catalog.js', 'generated/tutorial-journeys.js',
+        'modules/guidance-inventory-demo.js', 'modules/guidance-tutorials.js',
+        'modules/inventory-workbench-owned-view.js', 'modules/inventory-workbench-stash-source.js',
+        'modules/inventory-workbench-storage-source.js', 'modules/inventory-workbench-storage-controls.js',
+        'modules/inventory-workbench-feature-loader.js', 'modules/inventory-workbench-stash-navigation.js',
+        'modules/inventory-storage-workbench.js', 'modules/inventory-workbench.js'].forEach(module => {
+        const index = kshopHarnessSource.indexOf('<script src="' + module + '"></script>');
+        if (index <= previousStorageDependency)
+            throw new Error('KShop harness storage closure missing or reordered: ' + module);
+        previousStorageDependency = index;
+    });
     if (!kshopSource.includes('onRebind: onRebind')
             || !kshopHarnessSource.includes("assert('kshop-owner2'")
             || !kshopHarnessSource.includes('商城 same-name rebind 丢弃旧业务/Inventory 回包')) {
@@ -301,11 +315,35 @@ function auditArchitectureBoundaries() {
             || !npcshopUiSource.includes('workbench.ItemCard.renderCatalog')) {
         throw new Error('KShop/NpcShop must render catalog cards via Workbench.ItemCard');
     }
+    const storageTooltipStart = storageWorkbenchSource.indexOf('function bindSlotTooltip(');
+    const storageTooltipEnd = storageWorkbenchSource.indexOf('function activate(', storageTooltipStart);
+    const storageTooltipSource = storageTooltipStart >= 0 && storageTooltipEnd > storageTooltipStart
+        ? storageWorkbenchSource.slice(storageTooltipStart, storageTooltipEnd) : '';
     if (!kshopUiSource.includes('PanelTooltip.bindAsyncHover') || !npcshopUiSource.includes('.bindAsyncHover(node,')
-            || !inventoryWorkbenchUiSource.includes("PanelTooltip.createScope('inventory-storage', {profile:'dense-inspect'})")
-            || !inventoryWorkbenchUiSource.includes('(_tooltipScope || PanelTooltip).bindAsyncHover(node,')) {
+            || !storageWorkbenchSource.includes("PanelTooltip.createScope('inventory-storage', {profile:'dense-inspect'})")
+            || !storageWorkbenchSource.includes('_tooltipScope.dispose(); _tooltipScope = null;')
+            || !/return InventoryWorkbenchOwnedView\.bindTooltip\(\{node:node, containerId:containerId, slot:slot,\s*tooltip:_tooltipScope \|\| PanelTooltip,/.test(storageTooltipSource)) {
         throw new Error('Panel async tooltip binding is not shared across shop and workbench panels');
     }
+    // The storage owner passes its session scope through OwnedView. Exercise the real
+    // delegate so a global binder, wrong node or dropped scope return cannot pass on text alone.
+    const ownedView = require(path.join(WEB_ROOT, 'modules', 'inventory-workbench-owned-view.js'));
+    const tooltipNode = {}, tooltipBinding = {}, tooltipItem = {}, tooltipSuppression = () => false;
+    let scopedTooltipCalls = 0;
+    const tooltipScope = {bindAsyncHover:function(node, options) {
+        if (this !== tooltipScope || node !== tooltipNode || options.profile !== 'dense-inspect'
+                || options.item !== tooltipItem || options.isSuppressed !== tooltipSuppression
+                || options.key !== '背包:owned.fixture:7') {
+            throw new Error('OwnedView tooltip delegate must preserve its owner scope and exact slot identity');
+        }
+        scopedTooltipCalls++;
+        return tooltipBinding;
+    }};
+    const delegatedBinding = ownedView.bindTooltip({node:tooltipNode, containerId:'背包',
+        slot:{entryId:'owned.fixture',revision:7,item:tooltipItem}, tooltip:tooltipScope,
+        isSuppressed:tooltipSuppression,cache:{},fetch:function() {}});
+    if (delegatedBinding !== tooltipBinding || scopedTooltipCalls !== 1)
+        throw new Error('OwnedView must bind exactly once through the supplied tooltip scope');
     if (!kshopSource.includes("PanelTooltip.createScope('kshop', {profile:'dense-inspect'})")
             || !kshopSource.includes('_tooltipScope.dispose()')
             || !kshopUiSource.includes('this._intent.bindAsyncHover(node, options)')) {
@@ -333,6 +371,7 @@ function auditArchitectureBoundaries() {
         standaloneBattleboxWorkbench:true,
         explicitCraftingReturnOnly:true,
         sharedIconManifestGate:true,
+        scopedStorageTooltipDelegate:true,
         inspectionViewportLoadOrder:true,
         workbenchFullAnchor:true,
         nativeBehaviorGuard:behaviorEvents

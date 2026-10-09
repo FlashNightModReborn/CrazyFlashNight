@@ -60,12 +60,13 @@ namespace CF7Launcher.Guardian.Hud
 
         private const int SparklinePoints = 30;
         private const int SparklineW = 70;
+        private const int RenderStatusW = 108;
         private const int SparklineH = 16;
         private const int ExpandedChartW = 400;
         private const int ExpandedChartCanvasH = 120;
         private const int ExpandedChartPad = 6;
         private const int ExpandedChartHintGap = 3;
-        private const int ExpandedChartHintH = 9;
+        private const int ExpandedChartHintH = 28;
         private const int ExpandedChartMaxHistory = 300;
         private const int ExpandedChartDangerFps = 18;
         private const int ExpandedChartTargetFps = 26;
@@ -1376,7 +1377,9 @@ namespace CF7Launcher.Guardian.Hud
                 x += Px(DividerW + DividerMarginX * 2, scale);
             }
 
-            bool fpsFresh = _fpsBuffer.HasFreshSample;
+            var performance=_fpsBuffer.Performance;
+            bool fpsFresh = _fpsBuffer.HasFreshSample && performance.Status!="paused"
+                && performance.Status!="inactive" && performance.Status!="disconnected";
             string fpsText = fpsFresh ? ((int)_fpsBuffer.Latest).ToString() : "--";
             Color fpsColor = GetFpsColor(fpsFresh ? _fpsBuffer.Latest : 0f);
             int fpsW = Px(CenterFpsMinW, scale);
@@ -1386,15 +1389,18 @@ namespace CF7Launcher.Guardian.Hud
                 g.DrawString(fpsText, fpsFont, fpsBrush, fpsRect, sf);
             x += fpsW + Px(CenterGap, scale);
 
-            int sparkW = Px(SparklineW, scale);
-            int sparkH = Px(SparklineH, scale);
-            int sparkY = (row1H - sparkH) / 2;
-            _sparklineRect = new Rectangle(x, sparkY, sparkW, sparkH);
-            DrawLightBackground(g, x, sparkY, sparkW, sparkH);
-            DrawAudioEnvelope(g, _sparklineRect);
-            DrawSparkline(g, x, sparkY, sparkW, sparkH, fpsColor);
-            x += sparkW + Px(CenterGap + 1, scale);
-
+            int statusW=Px(RenderStatusW,scale);
+            Rectangle curveRect=new Rectangle(x,row1H-Px(8,scale),statusW,Px(7,scale));
+            _sparklineRect=new Rectangle(x,0,statusW,row1H);
+            DrawLightBackground(g,curveRect.X,curveRect.Y,curveRect.Width,curveRect.Height);
+            DrawAudioEnvelope(g,curveRect);
+            DrawSparkline(g,curveRect.X,curveRect.Y,curveRect.Width,curveRect.Height,fpsColor);
+            Rectangle renderRect=new Rectangle(x,0,statusW,row1H-Px(8,scale));
+            using(var renderBrush=new SolidBrush(NativeHudTheme.Cyan))
+            using(var sf=new StringFormat {Alignment=StringAlignment.Center,LineAlignment=StringAlignment.Center,
+                Trimming=StringTrimming.EllipsisCharacter,FormatFlags=StringFormatFlags.NoWrap})
+                g.DrawString(performance.Compact,textFont,renderBrush,renderRect,sf);
+            x+=statusW+Px(CenterGap+1,scale);
             int clockSize = Px(16, scale);
             DrawClock(g, x + clockSize / 2, centerY, clockSize / 2, _fpsBuffer.GameHour);
             x += clockSize + Px(CenterGap, scale);
@@ -1600,7 +1606,7 @@ namespace CF7Launcher.Guardian.Hud
 
         private int ComputeCollapsedWidth(float scale)
         {
-            int center = Px(CenterFpsMinW + CenterGap + SparklineW + CenterGap + 1 + 16 + CenterGap + ArrowW, scale);
+            int center = Px(CenterFpsMinW + CenterGap + RenderStatusW + CenterGap + 1 + 16 + CenterGap + ArrowW, scale);
             int w = Px(RowPadX * 2, scale) + center;
             if (_gameReady)
             {
@@ -1924,9 +1930,9 @@ namespace CF7Launcher.Guardian.Hud
 
                 DrawAnnotation(g, canvas, chartScale, stats.Avg, "avg " + stats.Avg.ToString("0.0", System.Globalization.CultureInfo.InvariantCulture),
                     Color.FromArgb(150, 180, 180, 180), new float[] { 4f, 4f }, labelFont);
-                DrawAnnotation(g, canvas, chartScale, stats.P5Low, "5% low " + stats.P5Low.ToString("0.0", System.Globalization.CultureInfo.InvariantCulture),
+                DrawAnnotation(g, canvas, chartScale, stats.P5Low, "低位5%采样 " + stats.P5Low.ToString("0.0", System.Globalization.CultureInfo.InvariantCulture),
                     Color.FromArgb(140, 255, 180, 0), new float[] { 3f, 3f }, labelFont);
-                DrawAnnotation(g, canvas, chartScale, stats.P1Low, "1% low " + stats.P1Low.ToString("0.0", System.Globalization.CultureInfo.InvariantCulture),
+                DrawAnnotation(g, canvas, chartScale, stats.P1Low, "低位1%采样 " + stats.P1Low.ToString("0.0", System.Globalization.CultureInfo.InvariantCulture),
                     Color.FromArgb(140, 255, 80, 80), new float[] { 2f, 2f }, labelFont);
 
                 string statText = history.Length.ToString(System.Globalization.CultureInfo.InvariantCulture)
@@ -1941,7 +1947,7 @@ namespace CF7Launcher.Guardian.Hud
             Rectangle hintRect = new Rectangle(panel.X, canvas.Bottom + hintGap, panel.Width, hintH);
             using (SolidBrush hintBrush = new SolidBrush(Color.FromArgb(90, 255, 255, 255)))
             using (StringFormat sf = new StringFormat { Alignment = StringAlignment.Center, LineAlignment = StringAlignment.Center })
-                g.DrawString("点击关闭", hintFont, hintBrush, hintRect, sf);
+                g.DrawString(_fpsBuffer.Performance.Details, hintFont, hintBrush, hintRect, sf);
         }
 
         private float[] GetExpandedHistory()

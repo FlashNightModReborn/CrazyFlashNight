@@ -101,26 +101,22 @@ Remove-Item Env:CF7_TEST_SHARED_WORLD_CANDIDATE
 
 夹具核对模块实际路径、哈希与候选 identity/closure，检查源/输出像素、padded stride、缩小后残影、清除与无源回灌；另有旧/共享路径的静态源观测，以及亮屏条件下 UI 停泵期间原生设置提交和动态源计时环绕回检查。只有 Windows `GUID_SESSION_DISPLAY_STATUS` 明确为 On 才运行持续呈现资格；Off、Dim 或未知单独跳过，不自动亮屏、不以跳过充当通过。夹具进程显式使用 PMv2 DPI；失败日志保留，不能通过放宽颜色断言或把静止源当成持续帧源修绿。Host 测试装配与真实游戏入口分开记录，GPU 回读不代表物理 scanout 或测试员机器验收。未设置候选环境变量时全部跳过。
 
-## 首版动态分辨率调度
+<a id="首版动态分辨率调度"></a>
+## 动态分辨率与性能方案
 
-`launcher/data/world-lighting/render-schedule.json` 是版本 1 的启动期配置。默认 `fixedStage=-1` 自动调度；非负值用于固定档位采样，按当前用户 quality 的档位表钳制，不是玩家必须设置的开关。MEDIUM 路径为 `100% MEDIUM → 85% MEDIUM → 75% MEDIUM → 75% LOW → 67% LOW`；HIGH/BEST 在顶部保留原画质 100% 档，LOW 用户只走 `100% → 85% → 75% → 67% LOW`。倍率只改变实际绘制视口；逻辑视野、输出窗口和 Native HUD 尺寸不变。
+2026-10-09 当前开发批：C# 是唯一策略与本机配置权威，AS2 只测量 Flash 实际帧时间、执行完整表现目标并回报；断连保持末次有效状态。AS2 自主后备、前馈 hold、旧两字段 P 指令及 Host 旧两档控制器已退役。旧存档“性能等级上限”仅保留 schema 兼容，不再约束调度，Web 不再展示该控制。维护者已反馈“可行”并授权合并上游、提交推送；本批仍为 `NOT_DEPLOYED`，具体回归范围见[本机性能方案验收记录](../../../docs/设置-Web-Panel-人工体验验收-2026-08-21.md#2026-10-09-本机性能方案开发批)，不将该反馈扩大为全部战斗、弱机收益或跨屏 DPI 证明。
 
-普通降级：约 1 秒窗口均值低于 23 FPS 持续 1.5 秒；严重卡顿：低于 12 FPS 持续 1 秒跳到 75% LOW，仍不足再到最低档。恢复要求高于 28 FPS、窗口没有超过 100 ms 的长帧，累计 6 秒才上一档；正常帧数窗口的小幅起伏不清零，短暂低于 28 FPS 按等时扣减进度，低于降级阈值或出现长帧才清零。每次换档静置 1 秒；恢复后 10 秒内再次降级，将恢复再推迟 20 秒。进入场景、数据间断、失焦、最小化、暂停、前馈 hold 和捕获尺寸未就绪期间清理观测，不把等待时间累计成降级确认。鼠标按住仍采样，实际改尺寸延后到松手，避免连续操作饿死恢复计时。转场保留当前档位。数字是首版起点，不是已标定的最优参数。
+`PerformancePolicy` 持有 `通用/性能/画质`、`自动/固定` 与可选绝对绘制高度上限，存于 Host `UserPrefs`，只保留当前与上一组；相同方案重应用不覆盖撤销点，撤销后消耗上一组。固定模式采用所选预设最高允许的完整目标；它不固定一个随 AS2 preset 改义的数组序号。内部档位唯一来源为 `RenderSchedule.Stages`，首版参数为起点，不声称全硬件最优。配置界面先不开放档位编辑、任意策略或学习系统。
 
-`IntervalSampler.observe` 用实际推进帧数/耗时组成约 500 ms 窗口，只汇总计数、超过 100 ms 的帧数与最长帧。FPS 载荷扩展为 `fps|hour|tier|scene|v2|frames|ms|longFrames|maxMs|preset|quality|held|paused|seq|appliedCommand`；`P{tier}|{softU100}|{quality}|{command}|{scene}` 带场景与单调命令号，AS2 拒绝迟到场景/命令。C# 看到采用回报后才安排源窗口缩放：先与原生 copy/Present 线程同步并冻结旧完整帧，再改 Flash 窗口尺寸；输入桥在 Flash UI 线程确认本次对应尺寸的 WM_PAINT 已完成并刷新 GDI 队列，返回重绘 QPC 时间；优先复用窗口缩放已完成的重绘，只有缺少有效完成记录时才补画，最后提交新裁剪并等待达到重绘时间门槛的捕获帧。旧帧不会在窗口已缩放时仍按旧裁剪更新，锐化也等有效尺寸就绪后才改变。这是重绘和捕获时间的交接，不是像素内容带语义 scene 标签的原子提交。旧两字段 P 指令保持兼容；本构建配置新调度器后不再让旧格式或合成器 FPS 同时驱动第二套策略。
+每个目标含 Flash 原始栅格高度、显式 LOW/MEDIUM/HIGH/BEST 画质与离散效果级。先取预设最高高度、手填上限和当前可用源尺寸的最小值，再在这个绝对预算内部按档位比例降载；小窗口仍有降低尺寸的余地，固定模式使用预算顶部。高度按当前窗口和 Flash DPI virtualization 换算物理子窗口尺寸，不上采样；窗口/全屏/DPI 变化重新计算，允许高分辨率下低于 50% 的倍率。尺寸重建保留逻辑压力档，决策跳过当前窗口下完整目标相同的邻档，不因窗口缩小/恢复绕过恢复计时升档。刘海屏显示测得的源尺寸与实际画质，并区分换档、暂停、后台、断连和过期；旧“1% low”已明确为低位 FPS 采样，不能解释成逐帧尾部帧时间。
 
-GPU 使用双线性放大；仅缩放后的 LOW 默认叠加固定 0.15 强度、局部色值范围钳制的锐化，同一次 shader 绘制完成，配置为 0 可关闭。它不是 CAS，也不能恢复已丢失的抗锯齿或细节。原生 ABI 3 结构未变，开发 Host 额外要求 `ProbeHoldViewport` / `ProbeSetViewport` / `ProbeSetSharpness` 导出，仍须配套构建。
+效果级 0/1/2 对应 AS2 既有纯表现预算的 0/50/100% 降载量，并同时给原生天气 quality 0/1/2 与新弹壳上限 256/128/64。天气顶点实际消费该 quality；新弹壳额度下降时不删除既存生命周期，既存粒子自然沉降/确认，因此活跃数可暂高于新额度。光照、弹道、枪口和命中原生容量不缩减。NPC 面积系数与镜头容差归回初始化稳定默认，均不随画质切换；本方案不把它们迁成 C# 业务权威。
 
-验证入口：`scripts/run-render-schedule-tests.ps1`（含既有远程/断连/hold 回归）、Host `RenderScheduleTests`。固定档与自动档的斗兽采样复用既有 `arena_calibration` 任务及 manifest 生成器：
+唯一换档器保留阈值、持续确认、严重卡顿到允许底档、慢恢复及固定失败冷却，不再另外运行连续 softU 反馈。默认阈值仍来自 `launcher/data/world-lighting/render-schedule.json`；已去掉它的 benchmark `fixedStage` 开关。暂停、转场、失焦、过期样本及捕获未就绪时不积累压力。实际目标完整生效后才启动静置期和升档失败观察期，失败降回后再起冷却，交接等待不消耗这段保护。
 
-```powershell
-powershell -File launcher/perf/flash-compositor/run-game.ps1 -ArenaAutomation
-# 正常进入已有角色，保持游戏前台；另一个终端运行：
-node launcher/perf/flash-compositor/arena-sample.cjs fixed-low75 2
-```
+P wire 保留五字段并要求显式 quality、正整数 command 和当前 scene；scene 隔离连接与转场。旧回调由连接身份屏障拒绝，同 command 不得改载荷。AS2 执行成功才回显 command；Host 随后等待同高度画质变化也适用的重绘/新捕获及原生预算提交屏障，最后确认档位。尺寸失败进入现有呈现错误路径，不能只改 HUD 目标值。GPU 锐化仍复用现有有界参数，不新增算法平台。
 
-采样器核对本地开发配对哈希与实际 Core 进程路径，生成近战/远程/混合三组阵容，记录原始结果与渲染日志到 `tmp/flash-compositor/render-*`。它不创建存档、不改数值目录、不冒充斗兽平衡性资格；短逻辑帧预算下自然 `timeout` 是性能观察截止，`bridge_lost`/异常仍是失败。性能比较需相同前台尺寸，关闭其他编译/图形探针；没有新鲜 admitted 样本的后台区间不能作为性能收益证据。所有固定档实验完成后将配置恢复 `fixedStage=-1` 并重启。
-
+验证入口：`scripts/run-render-schedule-tests.ps1`、Host `RenderScheduleTests` / `RenderApplicationTests` / `PerformancePolicyTests` / `NativeVisualBudgetTests` / `WorldCompositorTests`，以及设置面板既有完整门。固定开发入口沿用根 `本地开发启动.cmd`。人验合并为三项：设置保存/撤销和重启读回；自动/固定下实际尺寸与画质变化；全屏、窗口缩放、DPI 与连续鼠标操作期间的清晰度和交接观感。下面保留首版历史实验，旧倍率和固定档编号不再代表当前设置入口。
 ### 2026-09-21 首版斗兽粗对照
 
 同一开发配对（含 x64 输入桥）、现有角色 `fs`、1600×900 输出、Intel UHD 630 合成；近战/远程/混合各两场，所有批次均完成六次运行。以下是新鲜 admitted AS2 样本的推进帧数/耗时加权 FPS，长帧定义为超过 100 ms：

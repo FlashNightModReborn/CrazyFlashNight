@@ -1,347 +1,128 @@
 ﻿import org.flashNight.arki.render.FrameBroadcaster;
 
 /**
- * PerformanceScheduler - 性能调度薄壳（采样 + 广播 + 远程/本地执行）
- *
- * 决策逻辑已迁移到 C# PerfDecisionEngine（launcher/src/Guardian/PerfDecisionEngine.cs）。
- * AS2 端仅负责：
- * 1. 帧计数 + 区间平均 FPS 测量（IntervalSampler）
- * 2. FPS 载荷广播（FrameBroadcaster → C# FrameTask）
- * 3. 接收 C# P 指令并执行（applyFromLauncher → PerformanceActuator）
- * 4. 本地后备：Socket 断连时的极简阈值降级
- *
- * 【数据流】
- *   evaluate() 每帧调用 → 采样计数器递减 → 到达采样点 → 测量 FPS → 广播
- *   C# PerfDecisionEngine 收到 FPS → 统计决策 → P{tier}|{softU100}
- *   ServerManager P 前缀 → applyFromLauncher() → PerformanceActuator.apply()
- *
- * 【本地后备（Socket 断连时）】
- *   极简阈值：FPS < 15 → tier=1, FPS > 24 连续 3 次 → tier=0
- *   不使用 Kalman/PID，仅保证不冻屏
+ * Flash 性能桥：只采集实际帧时间并执行 C# 的完整表现目标。
+ * C# 独占预设、预算、升降档与冷却；断连时保持最后有效状态。
+ * P 指令：tier|softU100|quality|command|scene，scene 同时隔离场景与连接。
  */
 class org.flashNight.neur.PerformanceOptimizer.PerformanceScheduler {
-
-    private var _host:Object;
     private var _env:Object;
-
-    private var _frameRate:Number;
-    private var _targetFPS:Number;
     private var _presetQuality:String;
     private var _performanceLevel:Number;
     private var _actualFPS:Number;
-
+    private var _targetFPS:Number;
     private var _sampler:org.flashNight.neur.PerformanceOptimizer.IntervalSampler;
     private var _actuator:Object;
     private var _lastAppliedSoftU:Number;
-
-    // --- 远程控制 (C# 决策引擎) ---
-    private var _remoteControlled:Boolean;
-    private var _lastRemoteMs:Number;
-    private static var REMOTE_TIMEOUT_MS:Number = 10000;
-
-    // --- 前馈 hold 窗口（关卡脚本 setPerformanceLevel 用）---
-    // hold 期间挂起远程模式，到期后自动恢复
-    private var _holdUntilMs:Number;
-    private var _wasRemoteBeforeHold:Boolean;  // hold 开始时是否处于远程模式
-
-    // --- 场景计数器（嵌入 FPS payload，C# 端检测变化触发 warmup）---
-    private var _sceneEpoch:Number;
-
-    // --- 本地后备（断连时使用）---
-    private var _fallbackUpgradeCount:Number;
-    private var _panicFPS:Number;
-    private var _sampleSequence:Number;
-    private var _appliedCommand:Number;
     private var _renderQuality:String;
+    private var _transportConnected:Boolean;
+    private var _sceneEpoch:Number;
+    private var _sampleSequence:Number;
+    private var _receivedCommand:Number;
+    private var _receivedTier:Number;
+    private var _receivedSoftU:Number;
+    private var _receivedQuality:String;
+    private var _appliedCommand:Number;
 
-    /**
-     * 构造函数
-     * @param host:Object       宿主对象（_root.帧计时器）
-     * @param frameRate:Number  标称帧率（默认30）
-     * @param targetFPS:Number  目标帧率（默认26）
-     * @param presetQuality:String 预设画质（默认 _root._quality）
-     * @param env:Object        （可选）依赖注入，至少应包含 {root}
-     */
     public function PerformanceScheduler(host:Object, frameRate:Number, targetFPS:Number, presetQuality:String, env:Object) {
-        this._host = host;
-
-        if (env == undefined) {
-            env = { root: _root };
-        }
+        if (env == undefined) env = {root:_root};
         this._env = env;
-
-        this._frameRate = (frameRate != undefined) ? frameRate : 30;
-        this._targetFPS = (targetFPS != undefined) ? targetFPS : 26;
-        this._presetQuality = (presetQuality != undefined) ? presetQuality : this._env.root._quality;
-        this._performanceLevel = 0;
-        this._actualFPS = 0;
-
-        this._sampler = new org.flashNight.neur.PerformanceOptimizer.IntervalSampler(this._frameRate);
-        this._actuator = new org.flashNight.neur.PerformanceOptimizer.PerformanceActuator(host, this._presetQuality, this._env);
-
-        this._lastAppliedSoftU = 0;
-        this._remoteControlled = false;
-        this._lastRemoteMs = 0;
-        this._holdUntilMs = 0;
-        this._wasRemoteBeforeHold = false;
-        this._sceneEpoch = 0;
-        this._fallbackUpgradeCount = 0;
-        this._panicFPS = 5;
-        this._sampleSequence = 0;
-        this._appliedCommand = 0;
+        this._presetQuality = presetQuality != undefined ? presetQuality : env.root._quality;
         this._renderQuality = this._presetQuality;
+        this._performanceLevel = this._renderQuality == "LOW" ? 1 : 0;
+        this._actualFPS = 0;
+        this._targetFPS = targetFPS != undefined ? targetFPS : 26;
+        this._sampler = new org.flashNight.neur.PerformanceOptimizer.IntervalSampler(frameRate);
+        this._actuator = new org.flashNight.neur.PerformanceOptimizer.PerformanceActuator(host, this._presetQuality, env);
+        this._lastAppliedSoftU = 0;
+        this._transportConnected = false;
+        this._sceneEpoch = 0;
+        this._sampleSequence = 0;
+        this._receivedCommand = 0;
+        this._appliedCommand = 0;
     }
 
-    /**
-     * 每帧调用。采样计数→测量→广播→（远程: 等待 P 指令 / 本地后备: 极简阈值）
-     */
+    /** 固定的启动表现默认值，不形成调度或虚构执行确认。 */
+    public function applyInitialState():Void {
+        this._actuator.apply(this._performanceLevel, this._lastAppliedSoftU, this._renderQuality);
+    }
+
+    /** 每帧只累积实测时间；断连、低帧率或旧存档上限均不触发本地调档。 */
     public function evaluate(currentTime:Number):Void {
+        if (currentTime == undefined) currentTime = getTimer();
         var sampler:Object = this._sampler;
-        if (currentTime == undefined) {
-            currentTime = getTimer();
-        }
         if (!sampler.observe(currentTime)) return;
-
-        var root:Object = this._env.root;
-        var currentLevel:Number = this._performanceLevel;
-
-        // 测量：区间平均 FPS
-        var actualFPS:Number = sampler.sampleFrames * 1000 / sampler.sampleDurationMs;
-        this._actualFPS = actualFPS;
-        // Build the measured payload before resetting the sampler. No synthetic FPS
-        // is admitted into the dynamic-resolution controller.
-        var measuredPayload:String = this.buildMeasuredPayload(actualFPS, currentLevel);
-
-        // ── hold 窗口到期检查（前馈 setPerformanceLevel 挂起了远程模式）──
-        if (this._holdUntilMs > 0 && currentTime >= this._holdUntilMs) {
-            this._holdUntilMs = 0;
-            // hold 到期: 如果之前是远程模式，恢复它（下一条 P 指令会接管）
-            if (this._wasRemoteBeforeHold) {
-                this._remoteControlled = true;
-                this._lastRemoteMs = currentTime;
-            }
-        }
-
-        // ── hold 窗口期间: 只采样+广播，不决策（远程和本地都不干预）──
-        if (this._holdUntilMs > 0) {
-            sampler.resetInterval(currentTime, currentLevel);
-            FrameBroadcaster.setFpsPayload(measuredPayload);
-            return;
-        }
-
-        // ── 远程控制模式 ──────────────────────────
-        if (this._remoteControlled) {
-            if (currentTime - this._lastRemoteMs > REMOTE_TIMEOUT_MS) {
-                this.setRemoteControlled(false);
-                // 落入本地后备
-            } else {
-                sampler.resetInterval(currentTime, currentLevel);
-                FrameBroadcaster.setFpsPayload(measuredPayload);
-                return;
-            }
-        }
-
-        // ── 本地后备（Socket 断连或超时时运行）──────
-        var actuator:Object = this._actuator;
-
-        // 紧急降级
-        if (actualFPS < this._panicFPS && currentLevel < 1) {
-            actuator.setPresetQuality(this._presetQuality);
-            actuator.apply(1, 1.0);
-            this._performanceLevel = 1;
-            this._lastAppliedSoftU = 1.0;
-            this._fallbackUpgradeCount = 0;
-            currentLevel = 1;
-        } else if (currentLevel < 1 && actualFPS < 15) {
-            // 简单降级: FPS < 15 → tier=1
-            actuator.setPresetQuality(this._presetQuality);
-            actuator.apply(1, 1.0);
-            this._performanceLevel = 1;
-            this._lastAppliedSoftU = 1.0;
-            this._fallbackUpgradeCount = 0;
-            currentLevel = 1;
-        } else if (currentLevel > 0 && actualFPS > 24) {
-            // 升级候选: FPS > 24 连续 3 次
-            this._fallbackUpgradeCount++;
-            if (this._fallbackUpgradeCount >= 3) {
-                var host:Object = this._host;
-                var cap:Number = (host && !isNaN(host.性能等级上限)) ? host.性能等级上限 : 0;
-                if (cap < 1) {
-                    actuator.setPresetQuality(this._presetQuality);
-                    actuator.apply(0, 0);
-                    this._performanceLevel = 0;
-                    this._lastAppliedSoftU = 0;
-                    currentLevel = 0;
-                }
-                this._fallbackUpgradeCount = 0;
-            }
-        } else {
-            this._fallbackUpgradeCount = 0;
-        }
-
-        // 重置采样窗口 + 广播
-        sampler.resetInterval(currentTime, currentLevel);
+        this._actualFPS = sampler.sampleFrames * 1000 / sampler.sampleDurationMs;
+        var measuredPayload:String = this.buildMeasuredPayload();
+        sampler.resetInterval(currentTime, this._performanceLevel);
         FrameBroadcaster.setFpsPayload(measuredPayload);
     }
 
-    private function buildMeasuredPayload(fps:Number, tier:Number):String {
+    private function buildMeasuredPayload():String {
         var root:Object = this._env.root;
         var sampler:Object = this._sampler;
-        var hour:Number = (root.天气系统 != undefined) ? root.天气系统.getCurrentTime() : 6;
-        return String(Math.round(fps * 10) / 10) + "|" + hour + "|" + tier + "|" + this._sceneEpoch
+        var hour:Number = root.天气系统 != undefined ? root.天气系统.getCurrentTime() : 6;
+        // preset 仅保留 v2 格式兼容；Host 不再把它当作策略或最高画质权威。
+        return String(Math.round(this._actualFPS * 10) / 10) + "|" + hour + "|" + this._performanceLevel + "|" + this._sceneEpoch
             + "|v2|" + sampler.sampleFrames + "|" + sampler.sampleDurationMs + "|" + sampler.longFrames + "|" + sampler.maxFrameMs
-            + "|" + this._presetQuality + "|" + root._quality + "|" + (this._holdUntilMs > 0 ? "1" : "0")
+            + "|" + this._presetQuality + "|" + root._quality + "|0"
             + "|" + (root.暂停 ? "1" : "0") + "|" + (++this._sampleSequence) + "|" + this._appliedCommand;
     }
 
-    // ------------------------------------------------------------------
-    // 前馈控制接口
-    // ------------------------------------------------------------------
-
-    /**
-     * 前馈控制（关卡脚本调用）。
-     * 在远程主控模式下: 挂起远程模式 holdSec 秒，期间 C# P 指令被 applyFromLauncher 接收
-     * 但 evaluate() 的 hold 分支会阻止远程模式重新生效，hold 到期后自动恢复。
-     */
-    public function setPerformanceLevel(level:Number, holdSec:Number, currentTime:Number):Void {
-        level = Math.round(level);
-        var host:Object = this._host;
-        var cap:Number = (host && !isNaN(host.性能等级上限)) ? host.性能等级上限 : 0;
-        level = Math.max(cap, Math.min(level, 1));
-
-        if (holdSec == undefined || holdSec <= 0) {
-            holdSec = 5;
-        }
-
-        if (currentTime == undefined) {
-            currentTime = getTimer();
-        }
-
-        // 挂起远程模式（如果当前是远程主控）
-        this._wasRemoteBeforeHold = this._remoteControlled;
-        this._remoteControlled = false;
-
-        // 应用前馈指令
-        var appliedSoftU:Number = (level > 0) ? 1.0 : 0.0;
-        this._actuator.setPresetQuality(this._presetQuality);
-        this._actuator.apply(level, appliedSoftU);
-        this._performanceLevel = level;
-        this._lastAppliedSoftU = appliedSoftU;
-
-        // 建立 hold 保护窗口
-        this._holdUntilMs = currentTime + holdSec * 1000;
-        this._sampler.resetInterval(currentTime, level);
-        this._fallbackUpgradeCount = 0;
-
-        // FPS 载荷广播
-        var root:Object = this._env.root;
-        var estimatedFPS:Number = this._frameRate - level * 2;
-        this._actualFPS = estimatedFPS;
-        var fpsStr2:String = String(Math.round(estimatedFPS * 10) / 10);
-        var hourStr2:String = (root.天气系统 != undefined) ? String(root.天气系统.getCurrentTime()) : "6";
-        fpsStr2 += "|" + hourStr2 + "|" + String(level) + "|" + String(this._sceneEpoch);
-        FrameBroadcaster.setFpsPayload(fpsStr2);
+    /** 新连接从新的观察 epoch 开始，Host 命令编号可从 1 重新开始。 */
+    public function onTransportConnected():Void {
+        if (this._transportConnected) return;
+        this._transportConnected = true;
+        this.resetObservationEpoch();
     }
 
-    public function decreaseLevel(steps:Number, holdSec:Number, currentTime:Number):Void {
-        steps = steps || 1;
-        this.setPerformanceLevel(this._performanceLevel + steps, holdSec, currentTime);
+    public function onTransportDisconnected():Void {
+        this._transportConnected = false;
     }
 
-    public function increaseLevel(steps:Number, holdSec:Number, currentTime:Number):Void {
-        steps = steps || 1;
-        this.setPerformanceLevel(this._performanceLevel - steps, holdSec, currentTime);
-    }
-
-    /**
-     * 场景切换重置
-     */
     public function onSceneChanged():Void {
-        var now:Number = getTimer();
+        this.resetObservationEpoch();
+        // 新世界中的表现消费者只重放末次有效目标，不读取旧存档 cap。
+        this._actuator.apply(this._performanceLevel, this._lastAppliedSoftU, this._renderQuality);
+    }
 
-        // 清除 hold 窗口（场景切换后不延续旧 hold）
-        this._holdUntilMs = 0;
-        this._wasRemoteBeforeHold = false;
+    private function resetObservationEpoch():Void {
         this._sceneEpoch++;
-
-        var host:Object = this._host;
-        var cap:Number = (host && !isNaN(host.性能等级上限)) ? host.性能等级上限 : 0;
-        var resetLevel:Number = Math.max(cap, this._performanceLevel);
-        var resetSoftU:Number = this._lastAppliedSoftU;
-        this._actuator.setPresetQuality(this._presetQuality);
-        this._actuator.apply(resetLevel, resetSoftU, this._renderQuality);
-        this._performanceLevel = resetLevel;
-        this._lastAppliedSoftU = resetSoftU;
-        this._fallbackUpgradeCount = 0;
-        this._sampler.resetInterval(now, resetLevel);
-    }
-
-    // ------------------------------------------------------------------
-    // 远程控制接口（C# 决策引擎）
-    // ------------------------------------------------------------------
-
-    public function setRemoteControlled(enabled:Boolean):Void {
-        if (!enabled) {
-            // 清除"hold 到期后恢复远程"的标记，防止断线后伪恢复。
-            // 但保留 _holdUntilMs：hold 保护窗口独立于连接状态，
-            // 关卡脚本的"强制维持 N 秒"语义在断线时仍应生效。
-            this._wasRemoteBeforeHold = false;
-            if (this._remoteControlled) {
-                this._fallbackUpgradeCount = 0;
-                this._sampler.resetInterval(getTimer(), this._performanceLevel);
-            }
-        }
-        this._remoteControlled = enabled;
-        if (enabled) {
-            this._lastRemoteMs = getTimer();
-        }
-    }
-
-    public function isRemoteControlled():Boolean {
-        return this._remoteControlled;
+        this._receivedCommand = 0;
+        this._appliedCommand = 0;
+        this._sampler.resetInterval(getTimer(), this._performanceLevel);
+        FrameBroadcaster.setFpsPayload(null);
     }
 
     public function applyFromLauncher(tier:Number, softU:Number, quality:String, command:Number, scene:Number):Void {
-        if (tier != 0 && tier != 1) return;
+        if (!this._transportConnected || (tier != 0 && tier != 1)) return;
         if ((softU - softU) != 0 || softU < 0 || softU > 1) return;
-        if (quality != undefined) {
-            if (quality != "LOW" && quality != "MEDIUM" && quality != "HIGH" && quality != "BEST") return;
-            if ((command - command) != 0 || command < 1 || command < this._appliedCommand || scene != this._sceneEpoch) return;
-        }
-        var now:Number = getTimer();
-        this._lastRemoteMs = now;
+        if (quality != "LOW" && quality != "MEDIUM" && quality != "HIGH" && quality != "BEST") return;
+        if ((quality == "LOW") != (tier == 1)) return;
+        if ((command - command) != 0 || command < 1 || command % 1 != 0
+                || command < this._receivedCommand || scene != this._sceneEpoch) return;
 
-        // hold 窗口期间: 只刷新心跳时间戳，不 apply、不恢复远程模式。
-        // hold 到期后 evaluate() 会根据 _wasRemoteBeforeHold 自动恢复远程模式，
-        // 届时下一条 P 指令才会真正生效。
-        if (this._holdUntilMs > 0 && now < this._holdUntilMs) {
-            return;
-        }
-
-        this._remoteControlled = true;
-        if (quality == undefined) quality = this._presetQuality;
-        if (command != undefined) this._appliedCommand = command;
-
-        if (tier == this._performanceLevel && softU == this._lastAppliedSoftU && quality == this._renderQuality) {
-            return;
+        if (command == this._receivedCommand) {
+            // 同一身份只能表示同一个完整目标，包含失败后重发的情况。
+            if (tier != this._receivedTier || softU != this._receivedSoftU || quality != this._receivedQuality) return;
+            if (command == this._appliedCommand && this._env.root._quality == quality) return;
+        } else {
+            this._receivedCommand = command;
+            this._receivedTier = tier;
+            this._receivedSoftU = softU;
+            this._receivedQuality = quality;
         }
 
-        if (tier != this._performanceLevel) {
-            this._sampler.resetInterval(now, tier);
-        }
-
-        this._actuator.setPresetQuality(this._presetQuality);
-        this._actuator.apply(tier, softU, quality);
+        // 先执行再确认。未执行/实际画质不一致时保留未确认身份，允许同目标重试。
+        if (this._actuator.apply(tier, softU, quality) !== true || this._env.root._quality != quality) return;
         this._renderQuality = quality;
         this._performanceLevel = tier;
         this._lastAppliedSoftU = softU;
+        this._appliedCommand = command;
+        this._sampler.resetInterval(getTimer(), tier);
     }
 
-    // ------------------------------------------------------------------
-    // Accessors
-    // ------------------------------------------------------------------
-
-    public function setPresetQuality(q:String):Void { this._presetQuality = q; }
+    public function isRemoteControlled():Boolean { return this._transportConnected; }
     public function getPresetQuality():String { return this._presetQuality; }
     public function getActuator():Object { return this._actuator; }
     public function setActuator(actuator:Object):Void { this._actuator = actuator; }
@@ -350,4 +131,6 @@ class org.flashNight.neur.PerformanceOptimizer.PerformanceScheduler {
     public function getActualFPS():Number { return this._actualFPS; }
     public function getTargetFPS():Number { return this._targetFPS; }
     public function getLastAppliedSoftU():Number { return this._lastAppliedSoftU; }
+    public function getSceneEpoch():Number { return this._sceneEpoch; }
+    public function getAppliedCommand():Number { return this._appliedCommand; }
 }

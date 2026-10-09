@@ -17,6 +17,13 @@ namespace CF7Launcher.Guardian
         private readonly float[] _data;
         private readonly object _lock = new object();
         private readonly Func<double> _nowMs;
+        private PerformanceDisplayState _performance=PerformanceDisplayState.Initial;
+        public PerformanceDisplayState Performance
+        {
+            get { lock (_lock) return _performance.Status!="disconnected" && _performance.Status!="unavailable" && _hasData
+                && _nowMs()-_lastSampleMs>=FreshSampleLimitMs ? _performance with {Status="stale"} : _performance; }
+        }
+        internal void SetPerformance(PerformanceDisplayState state) { lock (_lock) _performance=state; }
         private double _lastSampleMs = double.NegativeInfinity;
         public const double FreshSampleLimitMs = 2000;
         private int _head;
