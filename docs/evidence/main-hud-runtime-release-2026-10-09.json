@@ -1,7 +1,7 @@
 {
   "schema": "cf7-main-hud-runtime-release.v1",
   "date": "2026-10-09",
-  "status": "promoted_pending_deployment_audit",
+  "status": "v4_promoted_pending_v5_data_policy_requalification",
   "scope": "Complete native main HUD + PlayerInfo opaque world composition and pistol recoil owner repair",
   "candidate": {
     "candidateRelativePath": "tmp/runtime-candidates/v2/hmm1",
@@ -531,5 +531,33 @@
       "newMergedArtifactHumanAccepted": false,
       "evidenceDirectory": "tmp/hud-main-unit/release/as2-upstream"
     }
+  },
+  "pendingRelease": {
+    "sourceTag": "runtime-build-v2/20261009-main-hud-pistol-v5",
+    "reason": "Remote food/drink data and potion formula advanced again before fast-forward deployment push",
+    "upstreamCommit": "ed52834315ff39b733867f08ec282102152c351a",
+    "mergedHead": "b62c57481948029de022324916f81f0bb274ce2d",
+    "stableWindowConfirmedByUser": true,
+    "buildInputsExpectedUnchanged": true,
+    "as2SourceAndArtifactHashesUnchanged": true,
+    "asLoaderSha256": "a689480f6f6a3d16b729bb4f20bbdee87d6ca59438cb714b6efaf52aa226f232",
+    "as2RerunRequired": false,
+    "validation": {
+      "typecheck": "passed",
+      "balanceTestsPassed": 861,
+      "balanceTestsFailed": 0,
+      "potionRecordsVerified": 106,
+      "prepareOutputsMatched": 22,
+      "materialSidecarCheck": "passed; dictionary body unchanged"
+    },
+    "potionSyncObservation": {
+      "invocation": "potion-balance-sync -- --check",
+      "readOnly": false,
+      "checkFlagSupported": false,
+      "actualOperation": "canonical sync",
+      "trackedDataOrAuditDelta": 0,
+      "subsequentReadOnlyCheck": "106/106 passed"
+    },
+    "humanBusinessAcceptanceClaimed": false
   }
 }
