@@ -1145,3 +1145,16 @@ strict production policy 42/42，receipt SHA-256 `0C612DBA8C5CB91E481E2386A5E124
 - 唯一 writer 已原子推广并保留 previous bundle；安装入口 `--verify-only` exit **0**。部署提交 `a281cc0401366de89df724a68d03054f092a88c9` 已普通快进推送；[远端 Runtime native audit 37504061645](https://github.com/FlashNightModReborn/CrazyFlashNight/actions/runs/37504061645) success，独立重放 `state=promoted / deploymentChanged=true`、双 signer / 双 faultDomain 与 43 文件闭包。原生引擎字节沿用上一发布基线，发布身份绑定本批冻结源。
 - 真实 CS6 **0 错误 / 0 警告**；当前编译素材原生回归 **691/691**、70 个实际时间轴案例、52 份完整 BitmapData，覆盖军阀起身/死亡及黑仔技能/生命周期。此前 MP=0 / 影子夹具 **3105/3105** 单独保留；最新空手迭代没有改变其根控制器。[资产证据](evidence/black-military-assets-2026-10-07.json) 记录来源、哈希与证据边界。
 - 维护者已接受本轮动画进入发布；完整标准入口战斗、玩家物理输入、存档重启及取消 MP 限制后的同级斗兽仍未在本次列车复验。历史 90 场有限 MP 斗兽不能代替现行强度标定。自动接续 `automation-2` 保持暂停。
+
+<a id="battle-records-release-20261010"></a>
+
+### 2026-10-10 友军损失、人形个体战报与敌我播报发布
+
+维护者授权无人值守完成施工，并明确要求先提交推送、取得云端共识、构建部署和推送。结算新增友军最终损失、倒地及复活记录；人形模板逐实例保留首次击杀／倒地时的装备快照，固定外观怪仍聚合。紧凑模式维持 48×48 方块，以序号、次数和状态角标及共享注释呈现差异。即时播报用明确的击杀／我方标签、青色框底和琥珀警告三角区分我方倒地，物资扣减和精英／首领等级语义保留。兼容旧 v1 pending，不重写既有报告或资产收据。主线性能更新已保留并从合并源码重新生成 asLoader。
+
+- 冻结源码 `99fc18a7c865160ff270ff36fda1d0dcb411c46a`，不可变 tag `refs/tags/runtime-build-v2/20261010-battle-records-feed-v1`，release tree `c7daad4764675b7575ab0c3e2130ea0e57a82c5e`，request `DD18973470B7A1DB5133A5C72A9329332320192702245A7D6398EDD50268E46B`。
+- 本机注册 X509 `builder-local-b / physical-host-b` 与 [GitHub hosted OIDC 独立构建 38001331100](https://github.com/FlashNightModReborn/CrazyFlashNight/actions/runs/38001331100) 对 build identity `F852BCCE1DFC56A24C2E0AD69657118AC8EFF052197793928663192A92404411`、43 文件 payload closure `0683F820F20328E45C8BC3B10DA19C027BF709ACF8EAF4A84472E45F7AEFCBA3` 达成双 signer / 双 faultDomain 共识。正式 Core SHA-256 `26562A5F00EE9D8F75071F120A35E2B7ECF497C423B1FB688896EC97A38B2A08`。
+- production policy **47/47**，receipt SHA-256 `B5A6398133805F693F04EB392832133C3CA1DE4DF24ABB70CBCF8FAD28891D53`；receipt 精确绑定本机 signed CAS。唯一 writer 完成 strict preflight 和原子 promotion，根安装入口 `--verify-only` exit **0**。previous bundle 保留于 `C:\Program Files (x86)\Steam\steamapps\common\CRAZYFLASHER7StandAloneStarter\resources\tmp\runtime-promotions\20261009T230729811Z-ecd5af90b4124154aab7df6040c914c8\previous`。
+- 合并后 Host 全量 **6911 passed / 19 policy skipped**，map/loot **1031/1031**；新鲜 CS6 Compiler **0/0**，asLoader **1,501,463** 字节、SHA-256 `9EF57B80320539A116A0DE20805959B849D4D5A412656A22A17BB86904A4B255`，类归属、生成闭包、函数体门通过。Web 浏览器 **123/123**、lazy-cancel **6/6**。同一正式 CAS 生产 Native renderer **75/75**、旧／新数量字样像素 **16/16**，实际窗口 / WebView2 **61/61** 与屏幕像素核对通过；测试不触及玩家槽位。
+- CAS 的实窗组件驱动与受跟踪 fixture 保持同一 61 项断言，仅把报告的开发 metadata 读取适配为实际 runtime manifest；生产程序集与 CAS 未变，适配源及哈希随本地验收包保存。这是隔离组件执行证据，真人 PVE、标准入口业务旅程、真实存档保存重启和视觉签收仍为 **PENDING**；不由 promotion 反向代签。
+- 部署提交和推送后的云端 Audit 结果在本节后续补记；没有把源码 `source-ahead` 审计当作部署审计。

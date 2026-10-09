@@ -20,7 +20,10 @@
 
 详情上限为固定怪 96 类、人形 128 个、友军 64 个；`omittedKillTypes / omittedIndividualKills / omittedAllies` 分别显示未展开类型、未展开的人形击杀次数和未展开的友军个数。总击杀、倒地与最终损失在上限外仍准确；未展开友军的复活也可扣回最终损失。界面不因溢出把人形重新聚合，完整/紧凑密度沿用同一左栏纵向滚屏，紧凑模式所有单位保留原 48×48 方块体型，以记录序号、击杀次数、亡/撤/复及主角角标呈现差异，图例解释状态；悬停或键盘聚焦通过共享 PanelTooltip 只读展示姓名、等级及冻结配置，完整模式保留可展开记录。
 
-自动门：map/loot focused 1031 项（StageRunSession 830、Loot 189、Planner 12；另有 BoxInteraction 53 项），播报区分修订后的 Host battle/loot focused 469 项、合并主线后的全量 6911 passed / 19 既有 skipped，Loot Node 93 项，1024×576 真实浏览器 123 项＋lazy-cancel 6 项。最终 asLoader 经 CS6 新鲜编译器 0/0 与 SWF 刷新门；紧凑调整前的隔离候选实际窗口 / WebView2 59 项及屏幕像素核对通过。最新修订使用生产 Native renderer 完成 75 项离屏断言及 16 项旧／新数量字样逐像素一致核对，覆盖击杀、我方倒地、精英、Boss、物资消耗和四档缩放。最新实窗复验受系统前台焦点阻挡，新增方块与键盘注释实窗断言尚未执行，列入人工验收；未放宽前台准入门。fixture 及候选组件运行不代签真人 PVE、标准入口、真实存档重启与正式 promotion。
+自动门：合并主线后 map/loot focused 1031 项（StageRunSession 830、Loot 189、Planner 12；另有 BoxInteraction 53 项），Host 全量 6911 passed / 19 既有 skipped；播报区分修订的 battle/loot focused 469 项，Loot Node 93 项，1024×576 浏览器 123 项＋lazy-cancel 6 项。最终 asLoader 经 CS6 新鲜编译器 0/0、SWF 刷新、单一类归属、生成闭包与函数体门。正式 CAS 的生产 Native renderer 75 项及 16 项旧／新数量字样逐像素核对通过，最新实际窗口 / WebView2 61 项和屏幕像素核对全部通过，含紧凑方块与键盘注释。此前前台焦点阻挡的失败样本保留，未放宽前台准入门。CAS 不保留开发构建 metadata，隔离实窗驱动只将报告身份的读取改为实际 manifest，61 项断言及生产程序集均保持原样；适配源与来源哈希随验收包归档。fixture 不代签真人 PVE、标准入口业务旅程或真实存档重启。
+
+
+**2026-10-10 正式发布**：维护者明确授权先完成发布列车。冻结源码 `99fc18a7c865160ff270ff36fda1d0dcb411c46a`、不可变标签 `runtime-build-v2/20261010-battle-records-feed-v1`；本地 X509 与 [GitHub hosted OIDC 构建 38001331100](https://github.com/FlashNightModReborn/CrazyFlashNight/actions/runs/38001331100) 对 identity `F852BCCE1DFC56A24C2E0AD69657118AC8EFF052197793928663192A92404411`、closure `0683F820F20328E45C8BC3B10DA19C027BF709ACF8EAF4A84472E45F7AEFCBA3` 达成双 signer / 双 faultDomain 共识，production policy 47/47。唯一 writer 已原子部署，安装入口 `--verify-only` exit 0；正式 Core SHA-256 `26562A5F00EE9D8F75071F120A35E2B7ECF497C423B1FB688896EC97A38B2A08`。发布供应链成立，真人战斗、视觉与旧／新结算保存重启验收仍为 `PENDING`。完整发布身份和部署推送审计回执见 [runtime 发布记录](runtime-build-reproducibility.md#battle-records-release-20261010)。
 
 人工验收：同名人形逐个展开配置；友军倒地→复活→再次倒地→撤退；战宠/剧情友军与中立单位；紧凑/完整布局、长名和滚动；确认 loss 播报立即出现且不重复。至少一轮由正式生产战斗链返回结算，核对主角倒地不算友军损失，并读回一份旧 v1 pending 结算。
 
