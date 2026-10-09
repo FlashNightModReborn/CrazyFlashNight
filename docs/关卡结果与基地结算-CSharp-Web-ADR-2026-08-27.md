@@ -6,6 +6,24 @@
 **决策日期**：2026-08-27
 **既有发布基线**：2026-08-27 A3 正式列车保留为历史基线；下述 2026-08-29 增量现已由独立 release source、双 signer / 双 faultDomain、原子 promotion、部署推送与远端 Audit 取代其“未部署”状态。两轮部署后的正式入口证据都没有重跑关卡业务，因此均不称本功能业务 `standard_entry_verified`。
 
+## 0F. 2026-10-09 友军损失与人形个体战报（待人工验收）
+
+本增量已完成源码和专项验证；最终候选及证据见本轮交接记录。尚未正式部署，不沿用本文件历史列车的人验或发布状态。
+
+新生成的冻结战报独立升级为 `report.v=2`；stage outcome、loot admission、持久化 store/pending 仍保留各自的 v1 协议。旧 v1 pending 战报原版本恢复，不改其 fingerprint，也不把未记录的友军损失解释为零。AS2 存档解码和 admission 共用同一 v1/v2 规范化入口；Host、SceneTransition 和 Web 严格接受对应版本的封闭字段。AMF0 空对象修复仅对 v2 的新增 `allies` 扩展，非空对象及未知版本继续拒绝。
+
+`UnitBattleRecord` 在单位初始化分配普通数据实例标识，每条生命独立 down/kill guard。近战 death、kill 状态切换前、模板死亡检测及九命猫妖直接恢复 HP 均闭合同一生命期；保留原 DeathEvent 的清理订阅。enemyKilled 在回调时检查当前 PLAYER 阵营，所以中立单位被我方击杀可计入，第三方互杀不计入。当前 PLAYER 的佣兵、战宠、剧情友军均可记录，不用 mercenary 名单或初始阵营筛选友军死亡。
+
+友军首次倒地立刻发布 `loot v1 / loss / casualty / source=ally_casualty`，priority 4、Guaranteed、Immediate，优先于 Boss，且不等待 400ms 最低可见时间。operationId 与 itemKey 均为实例＋生命标识，重入不重复播报，同名单位不合并。头像仍按同一外观元组缓存复用。该消息是战斗事实，不进入资产 receipt，也不增加物资消耗。主角倒地由 `heroDowns` 单独计数；`totalAllyDowns` 与 `totalAllyLosses` 不包含主角。结算按单位列出 `dead / retreated / revived`（阵亡／撤退／已复活）；复活移除当前损失，再次倒地增加次数但最终只算一个单位。冻结时仍处于死亡且未复活的单位列为阵亡；返回冻结后不接收生命期回流。每个单位的姓名、等级、精英、外观及装备/武器文本分别来自首次倒地或首次击杀时快照，后续生命不改写首次配置；展开操作只读，不发 inventory 命令。
+
+可换装的人形（`hasDressup===true` 或主角模板）在结算按 unitId 独立保留；相同兵种、姓名、外观和装备也不合并。固定外观怪继续按类型 ×N 聚合。同一实例复活后被再次击杀，保留一个实例记录及其击杀次数。v2 kill 在原六字段上增加 `individual / unitId / level / loadout`；友军记录使用 `unitId / key / displayName / iconName / doll / eliteLevel / level / loadout / status / downs / isHero`。loadout 为十一固定字符串槽：head/body/leg/hand/foot/neck/primary/secondary1/secondary2/melee/grenade；每槽最多 128 字符，等级 0–9999。
+
+详情上限为固定怪 96 类、人形 128 个、友军 64 个；`omittedKillTypes / omittedIndividualKills / omittedAllies` 分别显示未展开类型、未展开的人形击杀次数和未展开的友军个数。总击杀、倒地与最终损失在上限外仍准确；未展开友军的复活也可扣回最终损失。界面不因溢出把人形重新聚合，完整/紧凑密度沿用同一左栏纵向滚屏，紧凑模式所有单位保留原 48×48 方块体型，以记录序号、击杀次数、亡/撤/复及主角角标呈现差异，图例解释状态；悬停或键盘聚焦通过共享 PanelTooltip 只读展示姓名、等级及冻结配置，完整模式保留可展开记录。
+
+自动门：map/loot focused 1031 项（StageRunSession 830、Loot 189、Planner 12；另有 BoxInteraction 53 项），播报区分修订后的 Host battle/loot focused 469 项、全量 6866 passed / 19 既有 skipped，Loot Node 93 项，1024×576 真实浏览器 123 项＋lazy-cancel 6 项。最终 asLoader 经 CS6 新鲜编译器 0/0 与 SWF 刷新门；紧凑调整前的隔离候选实际窗口 / WebView2 59 项及屏幕像素核对通过。最新修订使用生产 Native renderer 完成 75 项离屏断言及 16 项旧／新数量字样逐像素一致核对，覆盖击杀、我方倒地、精英、Boss、物资消耗和四档缩放。最新实窗复验受系统前台焦点阻挡，新增方块与键盘注释实窗断言尚未执行，列入人工验收；未放宽前台准入门。fixture 及候选组件运行不代签真人 PVE、标准入口、真实存档重启与正式 promotion。
+
+人工验收：同名人形逐个展开配置；友军倒地→复活→再次倒地→撤退；战宠/剧情友军与中立单位；紧凑/完整布局、长名和滚动；确认 loss 播报立即出现且不重复。至少一轮由正式生产战斗链返回结算，核对主角倒地不算友军损失，并读回一份旧 v1 pending 结算。
+
 ## 0E. 2026-09-11 明确任务选择、单次返回与到达确认（隔离候选）
 
 **正式发布收尾**：本节隔离候选现已完成双故障域共识、40/40 发布检查与原子部署，部署提交为 `70220aecee920299347226e9509809ca2d2681e4`。当前状态 `HUMAN_ACCEPTANCE_PASSED / promoted`；后文候选／未部署描述属于历史时点。正式程序与验收候选字节一致，部署后的业务旅程未重复执行。完整发布身份与证明见 [runtime 发布记录](runtime-build-reproducibility.md#2026-09-11-当前正式发布任务交付选择单次返回与走门保护)。
@@ -307,7 +325,7 @@ dead + exact current hero
 
 视觉与关卡内原生卡分属两套已有真源：原生卡复用常驻 `NativeHudTheme`；返回基地后的 Web 结算复用 Launcher 首页与 Settings 的黑铁终端语言。`stage_settlement` 根单独挂 terminal skin，直接消费 `tokens.css` 的 `--launcher-* / --dls-* / --term-*` 及 `terminal.css` 的品牌铭牌/切角构件；黑底栅格、扫描线、锈红结构线、DLS 青主操作与骨金数字与启动器/设置保持同源。该 skin 不作用于 `map_chest`、普通库存或其他 Workbench。
 
-- 左栏“行动报告”：在同一纵向滚屏里依次展示关卡、难度、outcome、关卡帧时、总击杀、最多 96 类敌人，以及物资获得/消耗；极端类型数由这一滚屏承接，不再用击杀/物资页签切断上下文；
+- 左栏“行动报告”：在同一纵向滚屏里依次展示关卡、难度、outcome、关卡帧时、总击杀、最多 96 类固定敌人、128 个可换装人形、友军个体损失，以及物资获得/消耗；极端类型数由这一滚屏承接，不再用击杀/物资页签切断上下文；
 - 物资记录复用领域提交后的现役物资播报投影，按 gain/loss 展示拾取、奖励、消耗等最多 96 种聚合事实及遗漏计数；断开 Native feed 不影响 `StageRunSession` 本地记录；
 - “完整/紧凑”：复用一个 `GridDensityController`，全新偏好默认紧凑并同时作用于左栏敌人/物资卡、右栏奖励格和材料存量；紧凑档保留头像/图标、数量和 tooltip/ARIA 名称，完整档显示名称与明细；玩家选择按既有工作台偏好持久化；
 - 敌人头像：有 doll tuple 时复用 `DollBake.renderTupleDataUrl`，并发上限 2、同 tuple promise 缓存；否则复用 `EnemyPortraits` 的 manifest/variant/fallback 链。头像内部不再放敌人名称首字作为 fallback；加载失败只显示中性占位，避免透明画像与文字叠印；

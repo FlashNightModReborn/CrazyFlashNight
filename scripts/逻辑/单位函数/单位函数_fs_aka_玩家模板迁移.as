@@ -1593,6 +1593,8 @@ _root.主角函数.死亡检测 = function() {
         return;
     }
 
+    org.flashNight.arki.unit.UnitBattleRecord.onDown(this);
+
     // _root.服务器.发布服务器消息("角色 " + this._name + " 死亡");
 
     // 只在已经进入血腥死状态时才停止man动画
@@ -1641,6 +1643,7 @@ _root.主角函数.死亡检测 = function() {
             }else{
                 _root.add2map(this, 2);
             }
+            org.flashNight.arki.unit.UnitBattleRecord.onRetire(this);
             this.removeMovieClip();
             return;
         }
@@ -1665,6 +1668,7 @@ _root.主角函数.死亡检测 = function() {
         }else{
             _root.add2map(this, 2);
         }
+        org.flashNight.arki.unit.UnitBattleRecord.onRetire(this);
         this.removeMovieClip();
         return;
     }
@@ -1680,6 +1684,7 @@ _root.主角函数.死亡检测 = function() {
         }else{
             _root.add2map(this, 2);
         }
+        org.flashNight.arki.unit.UnitBattleRecord.onRetire(this);
         this.removeMovieClip();
     }
 }

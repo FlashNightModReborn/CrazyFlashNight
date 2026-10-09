@@ -233,51 +233,12 @@ _root.singleSubmit = function(name,value,context):Boolean{
 //  （AS2 只做字段搬运，C# 单点算键，web 侧 dressup 渲染器烘焙；无 脸型 字段走占位块）。
 _root.发布击杀播报 = function(unit:MovieClip):Void{
 	if (unit == null) return;
-	var killKey:String = org.flashNight.arki.unit.UnitUtil.getUnitTypeKey(unit);
-	if (killKey == null || killKey.length == 0) return;
-	var killName:String = null;
-	var iconName:String = null;
-	var dollTuple:Object = null;
-	var eliteLevel:Number = org.flashNight.arki.unit.UnitUtil.getEliteLevel(unit);
-	var enemyInfo:Object = (_root.敌人属性表 != undefined) ? _root.敌人属性表[killKey] : null;
-	if (enemyInfo != null && enemyInfo.displayname != undefined && String(enemyInfo.displayname).length > 0) {
-		killName = String(enemyInfo.displayname);
-		iconName = killKey;
-	} else if (killKey.indexOf("敌人-") == 0) {
-		killName = killKey;
-		iconName = killKey;
-	} else {
-		// 其余敌方单位（角斗场 主角-男 系斗士等）：显示名用单位 名字；
-		// 头像不预计算键，只把外观元组（undefined/null 归一为 ""）透传给 C#——
-		// 禁止在此做任何光栅化/哈希，烘焙由 web 侧渲染器异步完成。
-		if (unit.名字 != undefined && String(unit.名字).length > 0) {
-			killName = String(unit.名字);
-		} else {
-			killName = killKey;
-		}
-		if (unit.脸型 != undefined) {
-			var dollField:Function = function(v):String { return v == null ? "" : String(v); };
-			dollTuple = {
-				face: dollField(unit.脸型),
-				hair: dollField(unit.发型),
-				mask: dollField(unit.面具),
-				head: dollField(unit.头部装备),
-				body: dollField(unit.上装装备),
-				leg: dollField(unit.下装装备),
-				hand: dollField(unit.手部装备),
-				foot: dollField(unit.脚部装备),
-				neck: dollField(unit.颈部装备),
-				gender: dollField(unit.性别)
-			};
-		}
-	}
-	org.flashNight.arki.scene.StageRunSession.recordKillProjection({
-		key:killKey,
-		displayName:killName,
-		iconName:iconName == null ? "" : iconName,
-		doll:dollTuple,
-		eliteLevel:eliteLevel
-	});
+	var projection:Object = org.flashNight.arki.unit.UnitBattleRecord.snapshotAtDeath(unit);
+	var killName:String = projection.displayName;
+	var iconName:String = projection.iconName;
+	var dollTuple:Object = projection.doll;
+	var eliteLevel:Number = projection.eliteLevel;
+	org.flashNight.arki.scene.StageRunSession.recordKillProjection(projection);
 	if (typeof _root.发布战利品消息 != "function") return;
 	_root.发布战利品消息("kill", killName, 1, "kill", null, iconName, dollTuple, eliteLevel);
 }
@@ -357,7 +318,7 @@ _root.结算健身金币消耗 = function(rawCost):Boolean {
 _root.发布物资变更消息 = function(direction:String, kind:String, name:String, count:Number,
 		source:String, tier:String, icon:String, operationId:String,
 		mergeScope:String, reason:String, doll:Object, eliteLevel:Number,
-		protocolVersion:Number):Void{
+		protocolVersion:Number, frozenDisplayName:String):Void{
 	if (name == undefined || count == undefined) return;
 	if (isNaN(Number(count)) || Number(count) <= 0) return;
 	if (direction != "gain" && direction != "loss" && direction != "neutral") return;
@@ -371,7 +332,8 @@ _root.发布物资变更消息 = function(direction:String, kind:String, name:St
 		else kind = "item";
 	}
 
-	var displayName:String = name;
+	var displayName:String = kind == "casualty" && frozenDisplayName != undefined
+		? String(frozenDisplayName) : name;
 	var iconName:String = null;
 	var itemData:Object = org.flashNight.arki.item.ItemUtil.getRawItemData(name);
 	if (tier != undefined && tier != null && String(tier).length > 0) {

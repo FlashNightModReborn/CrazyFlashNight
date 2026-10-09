@@ -20,26 +20,28 @@ class org.flashNight.arki.unit.UnitComponent.Initializer.EventComponent.EnemyKil
         var dispatcher:EventDispatcher = target.dispatcher;
         if (!dispatcher) return;
 
-        // 只在主角阵营单位上订阅 enemyKilled
-        var faction:String = FactionManager.getFactionFromUnit(target);
-        if (faction != FactionManager.FACTION_PLAYER) {
-            return;
-        }
-
-        // 订阅 enemyKilled 事件，回调 scope 绑定为 shooter（即 target 本身）
-        dispatcher.subscribe("enemyKilled", EnemyKilledEventComponent.onEnemyKilled, target);
+        // 阵营在加载后仍可能变化；在回调时核对当前主角阵营。
+        // 静态方法不能访问 this；闭包显式传入订阅所属的射手。
+        var callback:Function = function(hitTarget:MovieClip, bullet:MovieClip):Void {
+            EnemyKilledEventComponent.onEnemyKilled(target, hitTarget, bullet);
+        };
+        dispatcher.subscribe("enemyKilled", callback, target);
     }
 
     /**
      * enemyKilled 事件回调
+     * @param shooter {MovieClip} 本次击杀的射手
      * @param hitTarget {MovieClip} 被击杀的单位
      * @param bullet {MovieClip} 造成击杀的子弹/攻击体
      */
-    public static function onEnemyKilled(hitTarget:MovieClip, bullet:MovieClip):Void {
+    public static function onEnemyKilled(shooter:MovieClip, hitTarget:MovieClip, bullet:MovieClip):Void {
 
         // 判断被击杀目标的阵营，只统计敌对目标
         var targetFaction:String = FactionManager.getFactionFromUnit(hitTarget);
         if (targetFaction == FactionManager.FACTION_PLAYER) return;
+        // 订阅建立后阵营仍可能变化；只认本次击杀时的主角阵营。
+        if (FactionManager.getFactionFromUnit(shooter) != FactionManager.FACTION_PLAYER) return;
+        if (!org.flashNight.arki.unit.UnitBattleRecord.claimPlayerKill(hitTarget)) return;
 
         // 计算兵种标识（使用 UnitUtil 中的通用方法）
         var typeKey:String = UnitUtil.getUnitTypeKey(hitTarget);

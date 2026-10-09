@@ -499,6 +499,13 @@ namespace CF7Launcher.Guardian.Hud.Loot
             string kind, string source, int eliteLevel,
             out RetentionClass retention, out UrgencyClass urgency, out int priority)
         {
+            if (kind == "casualty")
+            {
+                retention = RetentionClass.Guaranteed;
+                urgency = UrgencyClass.Immediate;
+                priority = 4;
+                return;
+            }
             if (kind == "kill" && eliteLevel >= 2)
             {
                 retention = RetentionClass.Guaranteed;
@@ -546,6 +553,7 @@ namespace CF7Launcher.Guardian.Hud.Loot
 
         private static int HoldFor(string kind, string source, int eliteLevel)
         {
+            if (kind == "casualty") return 3000;
             if (kind == "kill" && eliteLevel >= 2) return 3000;
             if (IsGuaranteedRewardSource(source)) return 2800;
             if (kind == "kill" && eliteLevel == 1) return 2200;

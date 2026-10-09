@@ -4,6 +4,7 @@ import org.flashNight.arki.item.RewardStashService;
 import org.flashNight.aven.test.*;
 
 import org.flashNight.arki.scene.StageRunSession;
+import org.flashNight.arki.unit.UnitBattleRecord;
 import org.flashNight.arki.component.Effect.EffectSystem;
 import org.flashNight.arki.item.EquipmentUtil;
 import org.flashNight.arki.item.ItemUtil;
@@ -23,6 +24,7 @@ import org.flashNight.arki.stageSelect.StageSelectPanelService;
 import org.flashNight.arki.stageSelect.StageClearHistory;
 import org.flashNight.arki.task.TaskPanelService;
 import org.flashNight.arki.task.TaskUtil;
+import org.flashNight.arki.unit.UnitComponent.Initializer.EventComponent.EnemyKilledEventComponent;
 import org.flashNight.arki.unit.UnitComponent.Initializer.EventComponent.KillEventComponent;
 import org.flashNight.arki.unit.UnitComponent.Initializer.EventComponent.RespawnEventComponent;
 import org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheManager;
@@ -49,6 +51,10 @@ class org.flashNight.arki.scene.StageRunSessionTest {
         testStageClearHistory();
         testOutcomeLifeAndFrameClock();
         testKillReportAndRewardFreeze();
+        testBattleUnitLifecycle();
+        testRealEnemyKilledCurrentFaction();
+        testIndividualBattleReportFreezeAndRestore();
+        testBattleReportBounds();
         testAssetFlowReportAndBoundedTypes();
         testVictoryThenDeathCanReviveExactlyOnce();
         testRealDispatcherReceivesHeroArgument();
@@ -306,6 +312,218 @@ class org.flashNight.arki.scene.StageRunSessionTest {
             "reward random spans above AVM1 int range fail closed");
         assertFalse(StageRunSession.begin("覆盖关卡", "简单"),
             "a frozen unclaimed reward blocks run overwrite");
+    }
+
+    private static function battleUnit(name:String, faction):MovieClip {
+        var unit:MovieClip = _root.createEmptyMovieClip(name, _root.getNextHighestDepth());
+        unit.兵种 = "主角-男";
+        unit.hasDressup = true;
+        unit.名字 = "同名斗士";
+        unit.是否为敌人 = faction;
+        unit.等级 = 24;
+        unit.脸型 = "男变装-基本脸型";
+        unit.性别 = "男";
+        unit.长枪 = "第一把长枪";
+        unit.hp = 0;
+        unit.dispatcher = new EventDispatcher();
+        UnitBattleRecord.initialize(unit);
+        return unit;
+    }
+
+    private static function testBattleUnitLifecycle():Void {
+        resetWorld(0);
+        StageRunSession.begin("友军生命期", "挑战");
+        var oldFeed:Function = _root.发布物资变更消息;
+        _root.__battleRecordFeeds = [];
+        _root.发布物资变更消息 = function(direction,kind,key,count,source,tier,icon,operationId):Void {
+            _root.__battleRecordFeeds.push({kind:kind,key:key,direction:direction,operationId:operationId});
+        };
+        var ally:MovieClip = battleUnit("__brAlly", false);
+        ally.dispatcher.subscribe("death", function():Void { _root.__brDeathProbe++; }, ally);
+        _root.__brDeathProbe = 0;
+        ally.dispatcher.publish("death", ally);
+        ally.dispatcher.publish("death", ally);
+        UnitBattleRecord.onDown(ally);
+        var report:Object = StageRunSession.testOnlyBattleReport();
+        assertEquals(2, _root.__brDeathProbe, "battle subscriber retains unrelated death handlers");
+        assertEquals(1, report.totalAllyDowns, "death event and fallback deduplicate one life");
+        assertEquals(1, report.totalAllyLosses, "down ally counts as one current loss");
+        assertEquals(1, report.allies.length, "one unit has one ally record");
+        assertEquals(1, _root.__battleRecordFeeds.length, "reentrant death emits one casualty fact");
+        assertEquals("casualty", _root.__battleRecordFeeds[0].kind, "casualty has a dedicated kind");
+        assertEquals("loss", _root.__battleRecordFeeds[0].direction, "casualty is a loss fact");
+        ally.hp = 100;
+        UnitBattleRecord.onRevive(ally);
+        UnitBattleRecord.onRevive(ally);
+        report = StageRunSession.testOnlyBattleReport();
+        assertEquals(0, report.totalAllyLosses, "revival removes the current loss exactly once");
+        assertEquals("revived", report.allies[0].status, "revival retains the individual record");
+        ally.hp = 0;
+        UnitBattleRecord.onDown(ally);
+        ally.死亡撤退 = true;
+        UnitBattleRecord.onRetire(ally);
+        report = StageRunSession.testOnlyBattleReport();
+        assertEquals(2, report.allies[0].downs, "second life increments downs on the same unit");
+        assertEquals(1, report.totalAllyLosses, "two lives still yield one final lost unit");
+        assertEquals("retreated", report.allies[0].status, "terminal retreat replaces dead status");
+        assertTrue(_root.__battleRecordFeeds[0].operationId !== _root.__battleRecordFeeds[1].operationId,
+            "each life has a distinct feed identity");
+        var hero:MovieClip = battleUnit("hero", false);
+        UnitBattleRecord.onDown(hero);
+        var neutral:MovieClip = battleUnit("__brNeutral", null);
+        UnitBattleRecord.onDown(neutral);
+        report = StageRunSession.testOnlyBattleReport();
+        assertEquals(1, report.heroDowns, "controlled hero is counted separately");
+        assertEquals(1, report.totalAllyLosses, "hero down never increases allied final loss");
+        assertEquals(2, report.allies.length, "hostile neutral is excluded from allied records");
+        var enemy:MovieClip = battleUnit("__brEnemy", true);
+        assertTrue(UnitBattleRecord.claimPlayerKill(enemy), "a dead enemy grants one kill fact");
+        assertFalse(UnitBattleRecord.claimPlayerKill(enemy), "duplicate enemyKilled cannot grant a second kill");
+        enemy.hp = 100; UnitBattleRecord.onRevive(enemy); enemy.hp = 0;
+        assertTrue(UnitBattleRecord.claimPlayerKill(enemy), "a genuinely revived enemy grants its next life kill");
+        var identity:String = String(report.allies[0].unitId);
+        ally.removeMovieClip();
+        ally = battleUnit("__brAlly", false);
+        UnitBattleRecord.onDown(ally);
+        report = StageRunSession.testOnlyBattleReport();
+        assertEquals(3, report.allies.length, "reused MovieClip path creates a new unit record");
+        assertTrue(identity !== report.allies[2].unitId, "unit identity survives AVM1 path reuse");
+        ally.removeMovieClip(); hero.removeMovieClip(); neutral.removeMovieClip(); enemy.removeMovieClip();
+        _root.发布物资变更消息 = oldFeed;
+        delete _root.__battleRecordFeeds; delete _root.__brDeathProbe;
+    }
+
+    private static function testRealEnemyKilledCurrentFaction():Void {
+        resetWorld(0);
+        StageRunSession.begin("真实击杀事件", "挑战");
+        var oldStats:Object = _root.killStats;
+        var oldFeed:Function = _root.发布击杀播报;
+        _root.killStats = {total:0,byType:{}};
+        _root.__brKillFeeds = 0;
+        _root.发布击杀播报 = function(unit:MovieClip):Void {
+            _root.__brKillFeeds++;
+            StageRunSession.recordKillProjection(UnitBattleRecord.snapshotAtDeath(unit));
+        };
+        var shooter:MovieClip = battleUnit("__brShooter", true);
+        shooter.hp = 100;
+        EnemyKilledEventComponent.initialize(shooter);
+        var enemy:MovieClip = battleUnit("__brShotEnemy", true);
+        shooter.dispatcher.publish("enemyKilled", enemy, undefined);
+        assertEquals(0, _root.killStats.total, "enemy shooter cannot claim a player kill");
+        assertEquals(0, _root.__brKillFeeds, "third-party kill does not emit the player feed");
+        shooter.是否为敌人 = false;
+        shooter.dispatcher.publish("enemyKilled", enemy, undefined);
+        assertEquals(1, _root.killStats.total, "callback reads the shooter's current faction after initialization");
+        assertEquals(1, StageRunSession.testOnlyBattleReport().totalKills, "real dispatcher reaches the stage report");
+        shooter.dispatcher.publish("enemyKilled", enemy, undefined);
+        assertEquals(1, _root.killStats.total, "duplicate real event cannot grant another kill");
+        var ally:MovieClip = battleUnit("__brShotAlly", false);
+        shooter.dispatcher.publish("enemyKilled", ally, undefined);
+        assertEquals(1, _root.killStats.total, "allied target is excluded before the kill claim");
+        var neutral:MovieClip = battleUnit("__brShotNeutral", null);
+        shooter.是否为敌人 = null;
+        shooter.dispatcher.publish("enemyKilled", neutral, undefined);
+        assertEquals(1, _root.killStats.total, "hostile neutral shooter does not receive player credit");
+        shooter.是否为敌人 = false;
+        shooter.dispatcher.publish("enemyKilled", neutral, undefined);
+        assertEquals(2, _root.killStats.total, "player kill of hostile neutral remains eligible");
+        assertEquals(2, StageRunSession.testOnlyBattleReport().totalKills, "hostile neutral kill enters the settlement");
+        enemy.hp = 100;
+        UnitBattleRecord.onRevive(enemy);
+        enemy.长枪 = "复活后换枪";
+        enemy.hp = 0;
+        shooter.dispatcher.publish("enemyKilled", enemy, undefined);
+        var report:Object = StageRunSession.testOnlyBattleReport();
+        assertEquals(3, _root.killStats.total, "true revival grants the next real-event kill");
+        assertEquals(2, report.kills.length, "same unit's next life retains one individual card");
+        assertEquals(2, report.kills[0].count, "individual card counts kills across its lives");
+        assertEquals("第一把长枪", report.kills[0].loadout.primary, "individual card retains its first-kill equipment");
+        var other:MovieClip = battleUnit("__brShotOther", true);
+        shooter.是否为敌人 = true;
+        shooter.dispatcher.publish("enemyKilled", other, undefined);
+        assertEquals(3, _root.killStats.total, "switching away from player faction stops future credit");
+        shooter.是否为敌人 = false;
+        other.element = true;
+        shooter.dispatcher.publish("enemyKilled", other, undefined);
+        assertEquals(3, _root.killStats.total, "map element never becomes a battle unit kill");
+        other.element = false;
+        other.hp = 100;
+        shooter.dispatcher.publish("enemyKilled", other, undefined);
+        assertEquals(3, _root.killStats.total, "live target cannot grant a premature kill");
+        shooter.removeMovieClip(); enemy.removeMovieClip(); ally.removeMovieClip();
+        neutral.removeMovieClip(); other.removeMovieClip();
+        _root.killStats = oldStats;
+        _root.发布击杀播报 = oldFeed;
+        delete _root.__brKillFeeds;
+    }
+
+    private static function testIndividualBattleReportFreezeAndRestore():Void {
+        resetWorld(0);
+        StageRunSession.begin("人形配置快照", "挑战");
+        var first:MovieClip = battleUnit("__brFirst", true);
+        var second:MovieClip = battleUnit("__brSecond", true);
+        var a:Object = UnitBattleRecord.snapshot(first);
+        var b:Object = UnitBattleRecord.snapshot(second);
+        second.长枪 = "之后换装";
+        StageRunSession.recordKillProjection(a);
+        StageRunSession.recordKillProjection(b);
+        StageRunSession.recordKillProjection({key:"enemy.fixed",displayName:"固定敌人",iconName:"",doll:null,eliteLevel:0});
+        StageRunSession.recordKillProjection({key:"enemy.fixed",displayName:"固定敌人",iconName:"",doll:null,eliteLevel:0});
+        var ally:MovieClip = battleUnit("__brFrozenAlly", false);
+        UnitBattleRecord.onDown(ally);
+        StageRunSession.finish("victory");
+        assertTrue(StageRunSession.prepareSettlement(), "new battle report freezes before durable settlement");
+        var report:Object = StageRunSession.testOnlyBattleReport();
+        assertEquals(2, report.v, "new report has its own v2 schema");
+        assertEquals(3, report.kills.length, "two same-name humanoids and one fixed group stay distinct");
+        assertEquals(1, report.kills[0].count, "first humanoid is not merged with its sibling");
+        assertEquals(1, report.kills[1].count, "second humanoid remains independent");
+        assertEquals(2, report.kills[2].count, "fixed monsters retain type aggregation");
+        assertEquals("第一把长枪", report.kills[1].loadout.primary, "weapon summary freezes before later changes");
+        assertTrue(report.kills[0].unitId !== report.kills[1].unitId, "appearance sharing does not alias unit identity");
+        assertEquals(24, report.kills[0].level, "individual level is frozen");
+        assertTrue(StageRunSession.persistPreparedSettlement().success, "v2 report passes the AS2 persisted decoder");
+        var pending:Object = _root._saveExt.stageSettlement.pending;
+        var savedRunId:String = String(report.runId);
+        first.长枪 = "新枪";
+        assertEquals("第一把长枪", pending.report.kills[0].loadout.primary, "persisted equipment is independent of live units");
+        StageRunSession.testOnlyReset();
+        assertTrue(StageRunSession.restorePendingSettlement().success, "v2 report restores without reroll");
+        report = StageRunSession.testOnlyBattleReport();
+        assertEquals(savedRunId, report.runId, "restart retains the report identity");
+        assertEquals(2, report.v, "restart retains report version");
+        assertEquals(1, report.allies.length, "restart retains ally loss facts");
+        assertEquals("第一把长枪", report.kills[0].loadout.primary, "restart retains frozen weapons");
+        first.removeMovieClip(); second.removeMovieClip(); ally.removeMovieClip();
+    }
+
+    private static function testBattleReportBounds():Void {
+        resetWorld(0);
+        StageRunSession.begin("战报上限", "挑战");
+        var unit:MovieClip = battleUnit("__brBound", true);
+        var snapshot:Object = UnitBattleRecord.snapshot(unit);
+        for (var i:Number = 0; i < 130; i++) {
+            snapshot.unitId = "unit.bound." + i;
+            StageRunSession.recordKillProjection(snapshot);
+        }
+        for (i = 0; i < 66; i++) {
+            snapshot.unitId = "ally.bound." + i;
+            var token:Object = StageRunSession.recordAllyDown(snapshot, false, null);
+            if (i == 65) StageRunSession.recordAllyRevive(token);
+        }
+        var report:Object = StageRunSession.testOnlyBattleReport();
+        assertEquals(130, report.totalKills, "individual overflow does not lose kill totals");
+        assertEquals(128, report.kills.length, "individual records have an independent bound");
+        assertEquals(2, report.omittedIndividualKills, "omitted individual kill facts are explicit");
+        assertEquals(0, report.omittedKillTypes, "individual overflow never becomes a merged type");
+        assertEquals(64, report.allies.length, "allied detail list is bounded");
+        assertEquals(2, report.omittedAllies, "omitted allied units are explicit");
+        assertEquals(66, report.totalAllyDowns, "allied overflow retains all downs");
+        assertEquals(65, report.totalAllyLosses, "revival beyond detail cap still corrects final losses");
+        StageRunSession.finish("retreat");
+        assertTrue(StageRunSession.prepareSettlement(), "bounded v2 report freezes");
+        assertTrue(StageRunSession.persistPreparedSettlement().success, "bounded v2 report persists without recombination");
+        unit.removeMovieClip();
     }
 
     private static function testLifecycleAdmissionAndReservation():Void {

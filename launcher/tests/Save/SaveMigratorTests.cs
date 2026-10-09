@@ -496,7 +496,7 @@ namespace CF7Launcher.Tests.Save
             Assert.IsType<JObject>(pending["manifest"]);
             Assert.IsType<JObject>(pending["report"]["kills"]);
 
-            JObject futureReport = BuildStageSettlementSnapshot(1, 1, 2, false);
+            JObject futureReport = BuildStageSettlementSnapshot(1, 1, 3, false);
             SaveMigrator.NormalizeResolvedSnapshot(futureReport);
             JObject reportPending = (JObject)futureReport["ext"]["stageSettlement"]["pending"];
             Assert.IsType<JArray>(reportPending["manifest"]);

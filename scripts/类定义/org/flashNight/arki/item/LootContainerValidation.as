@@ -120,6 +120,14 @@ class org.flashNight.arki.item.LootContainerValidation {
 
     /** 关卡结算报告是随 panel admission 冻结的只读投影；奖励写仍只认 loot authority。 */
     public static function validateSettlementReport(report:Object):Boolean {
+        if (report != null && report.v === 2) {
+            if (report.rewardStashed !== undefined && typeof report.rewardStashed != "boolean") return false;
+            var base:Object = {};
+            for (var field:String in report) {
+                if (field != "rewardStashed") base[field] = report[field];
+            }
+            return org.flashNight.arki.scene.StageRunSession.normalizeSettlementReport(base) != null;
+        }
         var keys:Array = ["v", "runId", "stageName", "difficulty", "outcome",
             "activeFrames", "totalKills", "omittedKillTypes", "totalItemGains",
             "totalItemLosses", "omittedItemFlowTypes", "rewardRollOmissions",

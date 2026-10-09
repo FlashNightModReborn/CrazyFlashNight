@@ -9,6 +9,8 @@
     <Reference Include="CRAZYFLASHER7MercenaryEmpire.Core"><HintPath>$(U12CandidateRoot)/runtime/CRAZYFLASHER7MercenaryEmpire.Core.dll</HintPath></Reference>
     <Reference Include="Newtonsoft.Json"><HintPath>$(U12CandidateRoot)/runtime/Newtonsoft.Json.dll</HintPath></Reference>
     <Content Include="$(U12CandidateRoot)/runtime/WebView2Loader.dll" Link="WebView2Loader.dll" CopyToOutputDirectory="PreserveNewest" />
+    <Content Include="$(U12CandidateRoot)/runtime/FlashCompositorNative.dll" Link="FlashCompositorNative.dll" CopyToOutputDirectory="PreserveNewest" />
+    <Content Include="$(U12CandidateRoot)/runtime/webview2/*.cabpart" Link="webview2/%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
   </ItemGroup>
   <Target Name="RequireU12Candidate" BeforeTargets="ResolveReferences" Condition="'$(U12CandidateRoot)' == ''">
     <Error Text="Pass U12CandidateRoot: this smoke must execute an integrity-verified candidate." />

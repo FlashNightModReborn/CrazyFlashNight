@@ -1824,4 +1824,53 @@ test('report asset summary emits interrupted when the view dies mid-load', () =>
     assert.strictEqual(records[0].requested,1);
 });
 
+
+function battleTuple(keys) { return Object.fromEntries(keys.map(key=>[key,''])); }
+function battleUnit(id) { return {key:'主角-男',displayName:'同名斗士',iconName:'',eliteLevel:0,count:1,
+    doll:battleTuple(['face','hair','mask','head','body','leg','hand','foot','neck','gender']),
+    individual:true,unitId:id,level:24,
+    loadout:battleTuple(['head','body','leg','hand','foot','neck','primary','secondary1','secondary2','melee','grenade'])}; }
+function battleReport() { return {v:2,runId:'run.battle.1',stageName:'人形战报',difficulty:'挑战',outcome:'victory',
+    activeFrames:930,totalKills:2,omittedKillTypes:0,totalItemGains:0,totalItemLosses:0,
+    omittedItemFlowTypes:0,rewardRollOmissions:0,kills:[battleUnit('unit.1'),battleUnit('unit.2')],itemFlows:[],
+    omittedIndividualKills:0,totalAllyDowns:0,totalAllyLosses:0,heroDowns:0,omittedAllies:0,allies:[]}; }
+function battleAlly(id,status,hero) {const unit=battleUnit(id);delete unit.individual;delete unit.count;
+    return Object.assign(unit,{status,downs:1,isHero:!!hero});}
+test('v2 preserves same-name unit identities and deep frozen weapon summaries',()=>{
+    const source=battleReport();source.kills[0].loadout.primary='旧枪';
+    const result=LootView.normalizeSettlementReport(source);
+    assert.ok(result);assert.strictEqual(result.kills.length,2);
+    assert.notStrictEqual(result.kills[0].unitId,result.kills[1].unitId);
+    source.kills[0].loadout.primary='新枪';assert.strictEqual(result.kills[0].loadout.primary,'旧枪');
+});
+test('v2 rejects duplicate identities and malformed equipment snapshots',()=>{
+    const source=battleReport();source.kills[1].unitId='unit.1';
+    assert.strictEqual(LootView.normalizeSettlementReport(source),null);
+    source.kills[1].unitId='unit.2';delete source.kills[0].loadout.primary;
+    assert.strictEqual(LootView.normalizeSettlementReport(source),null);
+    source.kills[0].loadout.primary='x'.repeat(129);assert.strictEqual(LootView.normalizeSettlementReport(source),null);
+});
+test('v2 loss totals exclude revived friends and controlled hero',()=>{
+    const source=battleReport();source.allies=[battleAlly('ally.1','dead'),battleAlly('ally.2','retreated'),
+        battleAlly('ally.3','revived'),battleAlly('hero.1','dead',true)];
+    source.totalAllyDowns=3;source.totalAllyLosses=2;source.heroDowns=1;
+    const result=LootView.normalizeSettlementReport(source);assert.ok(result);
+    assert.strictEqual(result.totalAllyLosses,2);assert.strictEqual(result.totalItemLosses,0);
+    source.totalAllyLosses=3;assert.strictEqual(LootView.normalizeSettlementReport(source),null);
+    source.totalAllyLosses=2;source.allies[1].status='dismissed';assert.strictEqual(LootView.normalizeSettlementReport(source),null);
+});
+test('v2 caps individual lists without synthesizing merged humanoids',()=>{
+    const source=battleReport();source.kills=Array.from({length:128},(_,i)=>battleUnit('unit.'+i));
+    source.totalKills=130;source.omittedIndividualKills=2;assert.ok(LootView.normalizeSettlementReport(source));
+    source.kills.push(battleUnit('unit.128'));assert.strictEqual(LootView.normalizeSettlementReport(source),null);
+});
+test('old v1 reports keep their original shape and do not imply ally zero losses',()=>{
+    const source=battleReport();source.v=1;
+    ['omittedIndividualKills','totalAllyDowns','totalAllyLosses','heroDowns','omittedAllies','allies'].forEach(key=>delete source[key]);
+    source.kills.forEach(unit=>['individual','unitId','level','loadout'].forEach(key=>delete unit[key]));
+    const result=LootView.normalizeSettlementReport(source);assert.ok(result);
+    assert.strictEqual(result.v,1);assert.strictEqual(result.allies,undefined);
+    source.v=2;assert.strictEqual(LootView.normalizeSettlementReport(source),null);
+});
+
 console.log('loot state ' + checks.length + '/' + checks.length + ' passed');

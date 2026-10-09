@@ -222,7 +222,10 @@ _root.装备生命周期函数.九命猫妖周期 = function(反射对象, 参�
    {
         自机.复活累计时间 ++;
         if(自机.复活累计时间 < 3 && 自机.重生次数 < 复活上限 && _root.成功率(概率)){
+            // 该装备直接回满 HP，必须闭合与通用 respawn 相同的战报生命期。
+            org.flashNight.arki.unit.UnitBattleRecord.onDown(自机);
             自机.hp = 自机.hp满血值;
+            org.flashNight.arki.unit.UnitBattleRecord.onRevive(自机);
             自机.重生次数 ++;
             自机.技能等级 = Math.min(Math.ceil(自机.等级 / 10), 10);
             _root.技能路由.技能标签跳转_旧(自机, "扭转乾坤");

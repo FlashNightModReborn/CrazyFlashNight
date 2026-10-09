@@ -291,13 +291,19 @@ internal sealed class Probe : Form
             await (Task<string>)reportCore.GetType().GetMethod("ExecuteScriptAsync").Invoke(reportCore,new object[]{
                 "window.fixtureErrors=[];window.addEventListener('unhandledrejection',e=>fixtureErrors.push(String(e.reason)));window.addEventListener('error',e=>fixtureErrors.push(e.message));"});
             sceneReady=false;
-            var report=new JObject { ["v"]=1,["runId"]="run.parallel.1",["stageName"]="联合大学 · 并行返回",
+            var report=new JObject { ["v"]=2,["runId"]="run.parallel.1",["stageName"]="联合大学 · 并行返回",
                 ["difficulty"]="简单",["outcome"]="victory",["activeFrames"]=900,["totalKills"]=0,["omittedKillTypes"]=0,
                 ["totalItemGains"]=2,["totalItemLosses"]=0,["omittedItemFlowTypes"]=0,["rewardRollOmissions"]=0,
                 ["kills"]=new JArray(),["itemFlows"]=new JArray(new JObject {
                     ["direction"]="gain",["kind"]="item",["itemKey"]="强化石",["displayName"]="强化石",
                     ["iconName"]="强化石",["tier"]="",["source"]="stage_settlement",["reason"]="stage_reward_stashed",["count"]=2
                 }),["rewardStashed"]=true };
+            report["omittedIndividualKills"]=0;report["totalAllyDowns"]=1;report["totalAllyLosses"]=1;
+            report["heroDowns"]=0;report["omittedAllies"]=0;
+            report["allies"]=new JArray(new JObject {
+                ["unitId"]="ally.smoke.1",["key"]="固定友军",["displayName"]="候选验收友军",["iconName"]="",
+                ["doll"]=JValue.CreateNull(),["eliteLevel"]=0,["level"]=24,["loadout"]=JValue.CreateNull(),
+                ["status"]="dead",["downs"]=1,["isHero"]=false });
             JObject parallel(string id,string phase,int revision,bool opening=false) {
                 var p=Snapshot(phase,revision);p["version"]=2;p["requestId"]=id;p["report"]=report.DeepClone();
                 p["targetScene"]=phase is "cover" or "loading" ? 1 : 2;
@@ -354,6 +360,13 @@ internal sealed class Probe : Form
             await waitScript("LootPanel.reportPresentation().density==='compact'&&document.querySelectorAll('[data-settlement-stashed-rewards] .loot-settlement-flow-card').length===1&&document.querySelector('[data-settlement-stashed-rewards] strong').textContent==='+2'",
                 "isolated profile starts compact and shows committed rewards without another claim");
             using(var pixels=Capture("parallel-report-compact-rewards.png")) { }
+            await waitScript("(function(){var card=document.querySelector('[data-unit-id=\"ally.smoke.1\"]');var style=getComputedStyle(card);return parseFloat(style.width)===48&&parseFloat(style.height)===48&&card.querySelector('.loot-settlement-unit-badge').textContent==='亡';})()",
+                "compact v2 ally keeps the original 48px square with a status badge");
+            await js("document.dispatchEvent(new KeyboardEvent('keydown',{key:'Tab',bubbles:true}));document.querySelector('[data-unit-id=\"ally.smoke.1\"] summary').focus();");
+            await waitScript("PanelTooltip.isVisible()&&PanelTooltip.getElement().textContent.includes('候选验收友军')&&PanelTooltip.getElement().textContent.includes('等级 24')",
+                "compact v2 record opens its shared readonly keyboard annotation");
+            using(var pixels=Capture("parallel-report-compact-record-note.png")) { }
+            await js("document.querySelector('[data-unit-id=\"ally.smoke.1\"] summary').blur();PanelTooltip.hide();");
             await js("document.querySelector('.item-grid-mode-option[data-layout-mode=full]').click();document.querySelector('[data-settlement-side-tab=materials]').click();document.querySelector('.loot-settlement-material-toolbar input').value='金属';");
             await waitScript("fixtureHeldReportCount===1&&fixtureHeldReport.revision===1","real page issues one report intent before display advancement");
             project(parallel("tr:4","loading",2));
@@ -373,6 +386,8 @@ internal sealed class Probe : Form
                 throw new Exception("current report could not admit its exact business session");
             if(!post(new JObject{["type"]="panel_cmd",["cmd"]="open",["panel"]="loot",["initData"]=init}))throw new Exception("early reward bind post rejected");
             await waitScript("LootPanel.debugState().phase==='active'","production Loot session binds while scene is still loading");
+            await waitScript("document.querySelector('[data-settlement-ally-loss]').textContent==='1'&&document.querySelectorAll('[data-settlement-allies] [data-ally-state=dead]').length===1",
+                "candidate Host and production WebView2 render the same v2 allied loss during return");
             await waitScript("LootPanel.debugState().remainingCount===0&&document.querySelector('[data-settlement-stashed-rewards] strong').textContent==='+2'&&!document.querySelector('.loot-source-grid')",
                 "bound authority stays empty while committed reward history remains visible");
             await waitScript("sameReport===document.querySelector('.loot-settlement-report')&&sameShell===document.querySelector('.loot-stage-settlement')&&LootPanel.reportPresentation().density==='full'&&LootPanel.reportPresentation().materialSearch==='金属'",

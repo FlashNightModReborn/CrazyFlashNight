@@ -35,6 +35,7 @@ class org.flashNight.arki.unit.UnitComponent.Initializer.EventComponent.RespawnE
         var wasDead:Boolean = !(target.hp > 0) || target._killed === true;
         target.hp = target.hp满血值;
         target.mp = target.mp满血值;
+        org.flashNight.arki.unit.UnitBattleRecord.onRevive(target);
 
         // 复活是同一个 MovieClip 从 dead 回到 alive，不能继续依赖死亡 man 的
         // onUnload 帧脚本代替权威状态恢复。角色可能在倒地帧死亡，或该 onUnload

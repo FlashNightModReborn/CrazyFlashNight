@@ -30,7 +30,8 @@ function server(){return new Promise(resolve=>{const instance=http.createServer(
       page.on('pageerror',error=>errors.push(error.message));page.on('requestfailed',request=>failed.push(request.url()));
       try{
         await page.goto('http://127.0.0.1:'+instance.address().port+'/modules/loot/dev/'+file,{waitUntil:'load'});
-        await page.waitForFunction(()=>window.__qaDone===true,null,{timeout:20000});
+        try{await page.waitForFunction(()=>window.__qaDone===true,null,{timeout:40000});}
+        catch(error){throw new Error(label+' timed out: '+await page.evaluate(()=>JSON.stringify({last:window.__qaLast,error:window.__qaError,done:window.__qaDone})));}
         const value=await page.evaluate(()=>({result:window.__qaResult,error:window.__qaError}));
         if(value.error)throw new Error(value.error);if(errors.length)throw new Error('page errors: '+errors.join(' | '));
         if(failed.length)throw new Error('failed requests: '+failed.join(' | '));
@@ -39,8 +40,22 @@ function server(){return new Promise(resolve=>{const instance=http.createServer(
           fs.mkdirSync(CAPTURE_DIR,{recursive:true});
           await page.evaluate(()=>{const qa=document.getElementById('qa-output');if(qa)qa.style.display='none'});
           await page.screenshot({path:path.join(CAPTURE_DIR,'web-settlement-report-compact-1024x576.png')});
+          await page.hover('[data-unit-id="enemy.2"] summary');
+          await page.waitForFunction(()=>PanelTooltip.isVisible()&&PanelTooltip.getElement().textContent.includes('M4A1'));
+          await page.screenshot({path:path.join(CAPTURE_DIR,'web-settlement-compact-record-note-1024x576.png')});
+          await page.mouse.move(1010,570);
+          await page.waitForFunction(()=>!PanelTooltip.isVisible());
           await page.click('.item-grid-mode-toggle[aria-label="关卡结算布局"] [data-layout-mode="full"]');
           await page.screenshot({path:path.join(CAPTURE_DIR,'web-settlement-report-full-1024x576.png')});
+          await page.locator('[data-unit-id="enemy.2"] summary').click();
+          await page.screenshot({path:path.join(CAPTURE_DIR,'web-settlement-unit-details-1024x576.png')});
+          await page.locator('[data-unit-id="enemy.2"] summary').click();
+          await page.evaluate(()=>{
+            const scroll=document.querySelector('.loot-settlement-report-scroll');
+            scroll.scrollTop=document.querySelector('[data-settlement-section="allies"]').offsetTop-scroll.offsetTop;
+          });
+          await page.screenshot({path:path.join(CAPTURE_DIR,'web-settlement-ally-losses-1024x576.png')});
+          await page.evaluate(()=>{document.querySelector('.loot-settlement-report-scroll').scrollTop=0;});
           await page.click('.item-grid-mode-toggle[aria-label="关卡结算布局"] [data-layout-mode="compact"]');
           await page.screenshot({path:path.join(CAPTURE_DIR,'web-settlement-action-report-1024x576.png')});
           await page.click('[data-settlement-side-tab="materials"]');

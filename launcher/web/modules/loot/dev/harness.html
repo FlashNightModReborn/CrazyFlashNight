@@ -14,6 +14,7 @@
 <body>
 <div id="panel-container"><div id="panel-backdrop"></div><div id="panel-content"></div></div>
 <pre id="qa-output">running…</pre>
+<div id="panel-tooltip"></div>
 <script>
 (function(NativeResizeObserver){
   var stats=window.__resizeObserverStats={created:0,disconnected:0,active:0};
@@ -318,7 +319,7 @@ function activeResponse(message){var response=common(message);response.snapshots
 <script src="../loot-panel.js"></script>
 <script>
 (async function(){
-  var checks=[];function ok(name,value,detail){checks.push({name:name,ok:!!value,detail:detail||''})}
+  var checks=[];function ok(name,value,detail){window.__qaLast=name;checks.push({name:name,ok:!!value,detail:detail||''})}
   function delay(ms){return new Promise(function(resolve){setTimeout(resolve,ms||25)})}
   async function waitFor(test,timeout){var end=Date.now()+(timeout||1200);while(Date.now()<end){if(test())return true;await delay(15)}return false}
   function tasks(cmd){return __sent.filter(function(x){return x.type==='task'&&(!cmd||x.cmd===cmd)})}
@@ -1395,6 +1396,90 @@ function activeResponse(message){var response=common(message);response.snapshots
     restoreHandlers.forEach(function(fn){fn(restoreMessage)});await delay(50);
     ok('a closed settlement cannot restore presentation or announce another handoff',
       __sent.filter(function(x){return x.type==='scene_transition_report_presented'}).length===2);
+    resetAuthority(false);__mode='normal';
+    var battleInit=settlementInit('battle-v2');
+    var doll=JSON.parse(JSON.stringify(battleInit.report.kills[1].doll));
+    function frozenUnit(id,name) { return {key:'主角-男',displayName:name,iconName:'',doll:JSON.parse(JSON.stringify(doll)),
+      eliteLevel:0,count:1,individual:true,unitId:id,level:24,
+      loadout:{head:'真猫妖头套',body:'军阀重装兵衣服',leg:'军阀装甲裤',hand:'战术手套',foot:'军阀棕色皮靴',neck:'防护围巾',
+        primary:'AK47',secondary1:'沙漠之鹰',secondary2:'未携带',melee:'武士刀',grenade:'手雷'}}; }
+    function frozenAlly(id,name,status,downs,hero) {var unit=frozenUnit(id,name);delete unit.individual;delete unit.count;
+      unit.status=status;unit.downs=downs;unit.isHero=!!hero;return unit;}
+    battleInit.report.v=2;battleInit.report.stageName='DEATH MATCH角斗场';battleInit.report.difficulty='地狱';
+    battleInit.report.activeFrames=930;battleInit.report.totalKills=8;battleInit.report.omittedKillTypes=0;
+    battleInit.report.rewardRollOmissions=0;battleInit.report.rewardStashed=true;
+    var fixed=JSON.parse(JSON.stringify(battleInit.report.kills[0]));fixed.count=4;
+    fixed.individual=false;fixed.unitId='';fixed.level=0;fixed.loadout=null;
+    battleInit.report.kills=[fixed,frozenUnit('enemy.1','同名斗士'),frozenUnit('enemy.2','同名斗士'),
+      frozenUnit('enemy.3','军阀近卫 · 极长中文配置名称测试'),frozenUnit('enemy.4','人形斗士')];
+    battleInit.report.kills[2].loadout.primary='M4A1';
+    battleInit.report.omittedIndividualKills=0;battleInit.report.totalAllyDowns=5;
+    battleInit.report.totalAllyLosses=2;battleInit.report.heroDowns=1;battleInit.report.omittedAllies=0;
+    battleInit.report.allies=[frozenAlly('ally.1','虎妙','dead',2),frozenAlly('ally.2','雇佣队员','retreated',1),
+      frozenAlly('ally.3','九命猫妖','revived',2),frozenAlly('hero.1','主角','revived',1,true)];
+    Object.keys(battleInit.report.kills[4].loadout).forEach(function(key){
+      battleInit.report.kills[4].loadout[key]=Array(23).join('轻装护甲')});
+    authority.loot=[empty(0),empty(1),empty(2)];
+    var rendersBefore=__portraitStats.dollRenders;
+    Panels.open('loot',battleInit);
+    await waitFor(function(){return document.querySelectorAll('[data-settlement-allies] article').length===4});
+    var battleRoot=document.querySelector('.loot-workbench');
+    var battleDensity=battleRoot.querySelector('.item-grid-mode-toggle[aria-label="关卡结算布局"]');
+    battleDensity.querySelector('[data-layout-mode="compact"]').click();await delay();
+    ok('v2 same-name humanoids remain independent alongside fixed monster aggregation',
+      battleRoot.querySelectorAll('[data-settlement-kills] article').length===5
+      &&battleRoot.querySelectorAll('[data-settlement-kills] [data-unit-id]').length===4
+      &&battleRoot.querySelector('[data-unit-id="enemy.1"]')!==battleRoot.querySelector('[data-unit-id="enemy.2"]')
+      &&battleRoot.querySelector('[data-settlement-kills] article > strong').textContent==='×4');
+    ok('v2 allied final loss and hero down metrics reflect frozen authority',
+      battleRoot.querySelector('[data-settlement-ally-loss]').textContent==='2'
+      &&battleRoot.querySelector('[data-settlement-hero-downs]').textContent==='1'
+      &&battleRoot.querySelectorAll('[data-ally-state="dead"]').length===1
+      &&battleRoot.querySelectorAll('[data-ally-state="retreated"]').length===1
+      &&battleRoot.querySelectorAll('[data-ally-state="revived"]').length===2);
+    await waitFor(function(){return battleRoot.querySelectorAll('[data-unit-id] .loot-settlement-kill-avatar[data-portrait-source="doll"]').length===8});
+    ok('individual identities reuse the existing appearance cache',__portraitStats.dollRenders-rendersBefore===1);
+    var unitCard=battleRoot.querySelector('[data-unit-id="enemy.2"]'),summary=unitCard.querySelector('summary');
+    var tasksBeforeRecord=tasks().length;
+    document.dispatchEvent(new KeyboardEvent('keydown',{key:'Tab',bubbles:true}));
+    summary.focus();await delay();
+    var recordTooltip=PanelTooltip.getElement();
+    var compactCards=battleRoot.querySelectorAll('[data-settlement-kills] article,[data-settlement-allies] article');
+    ok('compact keeps every enemy and ally on the original square icon footprint',
+      Array.prototype.every.call(compactCards,function(card){var rect=card.getBoundingClientRect();
+        return Math.abs(rect.width-48)<1&&Math.abs(rect.height-48)<1})
+      &&battleRoot.querySelector('[data-ally-state="dead"] .loot-settlement-unit-badge').textContent==='亡'
+      &&battleRoot.querySelector('[data-ally-state="retreated"] .loot-settlement-unit-badge').textContent==='撤'
+      &&battleRoot.querySelector('[data-ally-state="revived"] .loot-settlement-unit-badge').textContent==='复');
+    ok('compact keyboard annotation shows frozen equipment without issuing a task',
+      document.activeElement===summary&&PanelTooltip.isVisible()&&recordTooltip.textContent.indexOf('M4A1')>=0
+      &&recordTooltip.textContent.indexOf('同名斗士')>=0&&tasks().length===tasksBeforeRecord
+      &&summary.getBoundingClientRect().height>=44,JSON.stringify({active:document.activeElement===summary,visible:PanelTooltip.isVisible(),text:recordTooltip&&recordTooltip.textContent,tasks:tasks().length-tasksBeforeRecord,binding:!!summary.__panelTooltipBinding,debug:PanelTooltip.debugState(),rect:summary.getBoundingClientRect()}));
+    summary.click();await delay();
+    ok('opening a compact record never expands its square icon',
+      unitCard.querySelector('details').open&&Math.abs(unitCard.getBoundingClientRect().height-48)<1);
+    summary.blur();PanelTooltip.hide();
+    battleDensity.querySelector('[data-layout-mode="full"]').click();await delay();
+    var reportScroll=battleRoot.querySelector('.loot-settlement-report-scroll');
+    reportScroll.scrollTop=reportScroll.scrollHeight;await delay();
+    ok('full density preserves readonly expanded records in the existing scroll',
+      battleRoot.querySelectorAll('.loot-settlement-unit-card').length===8&&unitCard.querySelector('details').open
+      &&reportScroll.scrollHeight>reportScroll.clientHeight&&reportScroll.scrollTop>0
+      &&battleRoot.getBoundingClientRect().right<=1025&&document.documentElement.scrollWidth<=1024
+      &&tasks().length===tasksBeforeRecord);
+    summary.click();battleDensity.querySelector('[data-layout-mode="compact"]').click();reportScroll.scrollTop=0;await delay();
+    var longCard=battleRoot.querySelector('[data-unit-id="enemy.4"]'),longSummary=longCard.querySelector('summary');
+    document.dispatchEvent(new KeyboardEvent('keydown',{key:'Tab',bubbles:true}));longSummary.focus();await delay();
+    longSummary.dispatchEvent(new KeyboardEvent('keydown',{key:'Enter',bubbles:true,cancelable:true}));
+    longSummary.dispatchEvent(new KeyboardEvent('keydown',{key:'PageDown',bubbles:true,cancelable:true}));await delay();
+    var longDescription=PanelTooltip.getElement().querySelector('.kshop-tt-desc');
+    ok('long frozen configurations scroll in the shared annotation without changing square geometry or issuing a task',
+      longDescription.scrollHeight>longDescription.clientHeight&&longDescription.scrollTop>0
+      &&Math.abs(longCard.getBoundingClientRect().height-48)<1&&tasks().length===tasksBeforeRecord);
+    Panels.forceClose();await delay();
+    ok('battle record annotations release input owners and bindings on close',
+      !PanelTooltip.isVisible()&&PanelTooltip.debugState().activeBindingCount===0&&PanelTooltip.debugState().bindingCount===0);
+    Panels.open('loot',battleInit);await waitFor(function(){return document.querySelectorAll('[data-settlement-allies] article').length===4});
     var result={passed:checks.filter(function(x){return x.ok}).length,total:checks.length,checks:checks};window.__qaResult=result;window.__qaDone=true;document.getElementById('qa-output').textContent=JSON.stringify(result,null,2)
   }catch(error){window.__qaError=error.stack||String(error);window.__qaDone=true;document.getElementById('qa-output').textContent=window.__qaError}
 })();

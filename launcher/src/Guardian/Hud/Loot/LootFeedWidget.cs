@@ -30,6 +30,10 @@ namespace CF7Launcher.Guardian.Hud.Loot
         private const int IconAnimationMs = 450;
         private const int BossEmphasisMs = 360;
         private const int VisualSampleMs = 32; // 与 NativeHud 33 ms 合成上限对齐，实际不超过约 30 fps
+        private const int BattleTagW = 30;
+        private static readonly Color AllyAccent = Color.FromArgb(0x68, 0xDF, 0xFF);
+        private static readonly Color DownAccent = Color.FromArgb(0xFF, 0xC4, 0x61);
+        private static readonly string[] DownNameSuffixes = { " 被击倒", " 倒地" };
 
         private static readonly string[] CountColumnSamples =
         {
@@ -417,12 +421,16 @@ namespace CF7Launcher.Guardian.Hud.Loot
         {
             Color accent = AccentColor(card);
             byte fullAlpha = ToAlpha(255f * alpha);
+            bool isCasualty = card.Kind == "casualty";
 
             // 直角低透明底 + 文本区局部加深。静态对比度由底色承担，不依赖脉冲。
-            using (SolidBrush baseBrush = new SolidBrush(Color.FromArgb(ToAlpha(108f * alpha), 8, 10, 14)))
+            using (SolidBrush baseBrush = new SolidBrush(isCasualty
+                ? Color.FromArgb(ToAlpha(174f * alpha), 5, 22, 31)
+                : Color.FromArgb(ToAlpha(108f * alpha), 8, 10, 14)))
                 g.FillRectangle(baseBrush, rect);
-            using (Pen hairline = new Pen(Color.FromArgb(
-                ToAlpha(70f * alpha), 0xB8, 0xBE, 0xC8), 1f))
+            using (Pen hairline = new Pen(isCasualty
+                ? Color.FromArgb(ToAlpha(175f * alpha), accent.R, accent.G, accent.B)
+                : Color.FromArgb(ToAlpha(70f * alpha), 0xB8, 0xBE, 0xC8), 1f))
                 g.DrawRectangle(hairline, rect.X, rect.Y, rect.Width - 1, rect.Height - 1);
 
             int iconX = rect.X + railWidth + padX;
@@ -451,10 +459,23 @@ namespace CF7Launcher.Guardian.Hud.Loot
             }
 
             DrawRankIconBorder(g, card, new Rectangle(iconX, iconY, iconSize, iconSize), accent, alpha);
+            if (isCasualty)
+                DrawDownWarning(g, new Rectangle(iconX, iconY, iconSize, iconSize), scale, alpha);
+
+            string battleTag = BattleTagFor(card.Kind);
+            if (battleTag.Length > 0)
+            {
+                int tagWidth = Px(BattleTagW, scale);
+                DrawBattleTag(g, battleTag,
+                    new Rectangle(textX, rect.Y, tagWidth, rect.Height), accent, scale, alpha);
+                textX += tagWidth + Px(4, scale);
+            }
 
             string countSample = CountColumnSample(card);
-            int countColumnWidth = countSample.Length > 0 ? MeasureTextCached(countSample) : 0;
             int rightPad = padX;
+            int countColumnWidth = countSample.Length > 0
+                ? Math.Min(MeasureTextCached(countSample),
+                    Math.Max(0, rect.Right - rightPad - textX - Px(12, scale))) : 0;
             int countGap = countColumnWidth > 0 ? Px(4, scale) : 0;
             RectangleF countRect = new RectangleF(
                 rect.Right - rightPad - countColumnWidth,
@@ -468,9 +489,44 @@ namespace CF7Launcher.Guardian.Hud.Loot
                 rect.Height);
 
             using (SolidBrush nameBrush = new SolidBrush(Color.FromArgb(fullAlpha, 0xF4, 0xF6, 0xF8)))
-                g.DrawString(card.Name ?? string.Empty, _nameFont, nameBrush, nameRect, _nameFormat);
+                g.DrawString(BattleNameFor(card.Kind, card.Name), _nameFont, nameBrush, nameRect, _nameFormat);
 
             DrawCount(g, card, countRect, accent, alpha);
+        }
+
+        private void DrawBattleTag(Graphics g, string label, Rectangle rect,
+            Color accent, float scale, float alpha)
+        {
+            int height = Px(16, scale);
+            Rectangle tag = new Rectangle(rect.X, rect.Y + (rect.Height - height) / 2,
+                rect.Width, height);
+            using (SolidBrush backing = new SolidBrush(Color.FromArgb(
+                ToAlpha(46f * alpha), accent.R, accent.G, accent.B)))
+                g.FillRectangle(backing, tag);
+            using (Pen border = new Pen(Color.FromArgb(
+                ToAlpha(175f * alpha), accent.R, accent.G, accent.B), 1f))
+                g.DrawRectangle(border, tag.X, tag.Y, tag.Width - 1, tag.Height - 1);
+            using (SolidBrush text = new SolidBrush(Color.FromArgb(
+                ToAlpha(255f * alpha), accent.R, accent.G, accent.B)))
+                g.DrawString(label, _metaFont, text, tag, _centerFormat);
+        }
+
+        private static void DrawDownWarning(Graphics g, Rectangle iconRect, float scale, float alpha)
+        {
+            int size = Px(10, scale);
+            int x = iconRect.Right - size + Px(1, scale);
+            int y = iconRect.Bottom - size + Px(1, scale);
+            Point[] triangle = { new Point(x + size / 2, y),
+                new Point(x, y + size - 1), new Point(x + size - 1, y + size - 1) };
+            using (SolidBrush backing = new SolidBrush(Color.FromArgb(ToAlpha(250f * alpha),
+                DownAccent.R, DownAccent.G, DownAccent.B)))
+                g.FillPolygon(backing, triangle);
+            using (SolidBrush mark = new SolidBrush(Color.FromArgb(ToAlpha(255f * alpha), 8, 10, 14)))
+            {
+                int markX = x + size / 2;
+                g.FillRectangle(mark, markX, y + Px(3, scale), Px(1, scale), Px(3, scale));
+                g.FillRectangle(mark, markX, y + Px(7, scale), Px(1, scale), Px(1, scale));
+            }
         }
 
         private void DrawRankRail(
@@ -525,6 +581,13 @@ namespace CF7Launcher.Guardian.Hud.Loot
             Color accent, float alpha)
         {
             string current = CountText(card);
+            if (card.Kind == "casualty")
+            {
+                using (SolidBrush status = new SolidBrush(Color.FromArgb(ToAlpha(255f * alpha),
+                    DownAccent.R, DownAccent.G, DownAccent.B)))
+                    g.DrawString(current, _nameFont, status, rect, _countFormat);
+                return;
+            }
             int transitionAge = _model.NowMs - card.CountTransitionStartedMs;
             bool transitioning = card.PreviousDisplayCount != card.DisplayCount
                 && transitionAge >= 0 && transitionAge < CountTransitionMs;
@@ -643,8 +706,10 @@ namespace CF7Launcher.Guardian.Hud.Loot
             string countSample = CountColumnSample(card);
             int countReserve = countSample.Length > 0 ? MeasureTextCached(countSample) : 0;
             int countGap = countReserve > 0 ? Px(4, scale) : 0;
+            int battleTagReserve = BattleTagFor(card.Kind).Length > 0
+                ? Px(BattleTagW, scale) + Px(4, scale) : 0;
             int required = railWidth + padX + iconSize + padX
-                + MeasureTextCached(card.Name ?? string.Empty)
+                + battleTagReserve + MeasureTextCached(BattleNameFor(card.Kind, card.Name))
                 + countGap + countReserve + padX;
 
             int minimum = _mapper.ScaleW(MinCardW);
@@ -680,6 +745,7 @@ namespace CF7Launcher.Guardian.Hud.Loot
 
         private static string CountText(string direction, string kind, long count)
         {
+            if (kind == "casualty") return "倒地";
             if (direction == "loss") return "−" + count;
             if (kind == "experience" || kind == "skillpoint") return "+" + count;
             return count > 1 ? "×" + count : string.Empty;
@@ -692,6 +758,7 @@ namespace CF7Launcher.Guardian.Hud.Loot
 
         internal static string CountColumnSample(string direction, string kind, long count)
         {
+            if (kind == "casualty") return "倒地";
             bool progress = kind == "experience" || kind == "skillpoint";
             if (direction != "loss" && !progress) return CountColumnSample(count);
             int digits = Math.Max(1,
@@ -708,6 +775,23 @@ namespace CF7Launcher.Guardian.Hud.Loot
         internal static string CountTextForTest(string direction, string kind, long count)
         {
             return CountText(direction, kind, count);
+        }
+
+        internal static string BattleTagFor(string kind)
+        {
+            if (kind == "casualty") return "我方";
+            return kind == "kill" ? "击杀" : string.Empty;
+        }
+
+        internal static string BattleNameFor(string kind, string name)
+        {
+            name = name ?? string.Empty;
+            if (kind != "casualty") return name;
+            // 兼容已存在的冻结展示名；状态由独立列承担，不改事件或战报的姓名。
+            foreach (string suffix in DownNameSuffixes)
+                if (name.Length > suffix.Length && name.EndsWith(suffix, StringComparison.Ordinal))
+                    return name.Substring(0, name.Length - suffix.Length);
+            return name;
         }
 
         internal static int QuantizeWidthPx(int required, int minimum, int maximum, int quantum)
@@ -731,6 +815,7 @@ namespace CF7Launcher.Guardian.Hud.Loot
 
         private static Color AccentColor(LootFeedModel.LootCard card)
         {
+            if (card.Kind == "casualty") return AllyAccent;
             if (card.EliteLevel >= 2) return Color.FromArgb(0xFF, 0xD1, 0x66);
             if (card.EliteLevel == 1) return Color.FromArgb(0xFF, 0xB5, 0x47);
             if (card.Direction == "loss") return Color.FromArgb(0xFF, 0x78, 0x68);
