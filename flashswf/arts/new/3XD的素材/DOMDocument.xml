@@ -1,12 +1,16 @@
 <DOMDocument xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" backgroundColor="#666666" currentTimeline="1" xflVersion="2.2" creatorInfo="Adobe Flash Professional CS6" platform="Windows" versionInfo="Saved by Adobe Flash Windows 12.0 build 481" majorVersion="12" buildNumber="481" snapAlign="false" nextSceneIdentifier="2" playOptionsPlayLoop="false" playOptionsPlayPages="false" playOptionsPlayFrameActions="false" autoSaveHasPrompted="true">
      <folders>
-          <DOMFolderItem name="1主武器" itemID="6976ca22-00000cb7"/>
+          <DOMFolderItem name="1主武器" itemID="6976ca22-00000cb7" isExpanded="true"/>
+          <DOMFolderItem name="1主武器/AA12普通" itemID="6ac866f8-0000072e"/>
+          <DOMFolderItem name="1主武器/AA12普通/aa12素材" itemID="6ac8670d-00000756"/>
           <DOMFolderItem name="1主武器/AA12丧尸" itemID="6973017c-00000429"/>
+          <DOMFolderItem name="1主武器/AA12战术版" itemID="6ac866fe-00000730" isExpanded="true"/>
+          <DOMFolderItem name="1主武器/AA12战术版/aa12素材" itemID="6ac863ef-00000108"/>
           <DOMFolderItem name="1主武器/ak74金线" itemID="672b77ae-000000e8"/>
           <DOMFolderItem name="1主武器/ak74金线/部件1" itemID="6705dd3a-00000215"/>
           <DOMFolderItem name="1主武器/ak74金线/部件3" itemID="6705dd41-00000217"/>
           <DOMFolderItem name="1主武器/ak74金线/部件4" itemID="6705de59-000002e6"/>
-          <DOMFolderItem name="1主武器/ak74金线/长枪" itemID="672b7827-00000105"/>
+          <DOMFolderItem name="1主武器/ak74金线/长枪" itemID="672b7827-00000105" isExpanded="true"/>
           <DOMFolderItem name="1主武器/AWM狙击步枪" itemID="672ccb46-00000159"/>
           <DOMFolderItem name="1主武器/AWM狙击步枪/未命名文件夹 1" itemID="672ccbb3-000004a3"/>
           <DOMFolderItem name="1主武器/AWM狙击步枪/长枪" itemID="672cc992-00000111"/>
@@ -25,7 +29,7 @@
           <DOMFolderItem name="1主武器/Milkor MGL榴弹发射器" itemID="672b755b-000000fe"/>
           <DOMFolderItem name="1主武器/Milkor MGL榴弹发射器/部件" itemID="672b7aa3-000000ee"/>
           <DOMFolderItem name="1主武器/Milkor MGL榴弹发射器/长枪" itemID="672b7510-000000e9"/>
-          <DOMFolderItem name="1主武器/mini14" itemID="6a9b89bf-000000e3" isExpanded="true"/>
+          <DOMFolderItem name="1主武器/mini14" itemID="6a9b89bf-000000e3"/>
           <DOMFolderItem name="1主武器/NA45" itemID="69730052-00000427"/>
           <DOMFolderItem name="1主武器/NA45/na 45素材" itemID="6972eb56-0000022c"/>
           <DOMFolderItem name="1主武器/rpg武器" itemID="686ce11c-00001295"/>
@@ -98,9 +102,14 @@
           <DOMFolderItem name="1主武器/众神之力" itemID="69e74df6-000009a3"/>
           <DOMFolderItem name="1主武器/众神之力/众神之力素材" itemID="69e74d8b-000008f0"/>
           <DOMFolderItem name="2副武器" itemID="6976d736-00001fef" isExpanded="true"/>
+          <DOMFolderItem name="2副武器/Origin12" itemID="6ac866b3-0000024b"/>
+          <DOMFolderItem name="2副武器/Origin12/origin12素材" itemID="6ac865bb-000001fa"/>
+          <DOMFolderItem name="2副武器/Origin12战术版" itemID="6ac866a8-00000247" isExpanded="true"/>
+          <DOMFolderItem name="2副武器/Origin12战术版/origin12素材" itemID="6ac86722-00000784"/>
+          <DOMFolderItem name="2副武器/Origin12战术版/origin12素材/红外" itemID="6ac8661e-0000021c"/>
           <DOMFolderItem name="2副武器/沧蓝陨铁手炮" itemID="69e73845-00000426"/>
           <DOMFolderItem name="2副武器/沧蓝陨铁手炮/沧蓝陨铁手炮文件" itemID="69e7381b-00000417"/>
-          <DOMFolderItem name="2副武器/大赦" itemID="6a9b8c1f-0000052d" isExpanded="true"/>
+          <DOMFolderItem name="2副武器/大赦" itemID="6a9b8c1f-0000052d"/>
           <DOMFolderItem name="2副武器/短剑印花集" itemID="67225fe2-00000128"/>
           <DOMFolderItem name="2副武器/短剑印花集/部件1" itemID="67225fe2-00000129"/>
           <DOMFolderItem name="2副武器/短剑印花集/其他" itemID="6976d5a3-000019ad"/>
@@ -323,6 +332,13 @@
           <DOMBitmapItem name="6消耗品/罐头/位图 2" itemID="66a90d3b-00000148" sourceExternalFilepath="./LIBRARY/6消耗品/罐头/位图 2" sourceLastImported="1722355003" allowSmoothing="true" originalCompressionType="lossless" quality="50" href="6消耗品/罐头/位图 2" bitmapDataHRef="M 4 1769395925.dat" frameRight="4340" frameBottom="1680"/>
      </media>
      <symbols>
+          <Include href="1主武器/AA12普通/aa12素材/aa12普通.xml" itemIcon="1" loadImmediate="false" itemID="6ac8670d-0000075f" lastModified="1791517511"/>
+          <Include href="1主武器/AA12普通/Symbol 4.xml" itemIcon="1" loadImmediate="false" itemID="6ac8670d-00000762" lastModified="1720533000"/>
+          <Include href="1主武器/AA12普通/Symbol 12.xml" itemIcon="1" loadImmediate="false" itemID="6ac8670d-00000761" lastModified="1720533000"/>
+          <Include href="1主武器/AA12普通/Symbol 13.xml" loadImmediate="false" itemID="6ac8670d-00000760" lastModified="1720533000"/>
+          <Include href="1主武器/AA12普通/Symbol 16.xml" itemIcon="1" loadImmediate="false" itemID="6ac8670d-00000763" lastModified="1720533000"/>
+          <Include href="1主武器/AA12普通/枪-长枪-AA12.xml" itemID="6ac86464-00000126" lastModified="1791517803"/>
+          <Include href="1主武器/AA12普通/图标-AA12.xml" itemID="6ac8646b-00000127" lastModified="1791518074"/>
           <Include href="1主武器/AA12丧尸/aa12丧尸.xml" itemIcon="1" loadImmediate="false" itemID="6972eac0-00000209" lastModified="1769138944"/>
           <Include href="1主武器/AA12丧尸/Symbol 4.xml" itemIcon="1" loadImmediate="false" itemID="6972ec06-00000449" lastModified="1720533000"/>
           <Include href="1主武器/AA12丧尸/Symbol 12.xml" itemIcon="1" loadImmediate="false" itemID="6972ec06-0000044b" lastModified="1720533000"/>
@@ -330,6 +346,15 @@
           <Include href="1主武器/AA12丧尸/Symbol 16.xml" itemIcon="1" loadImmediate="false" itemID="6972ec06-0000044c" lastModified="1720533000"/>
           <Include href="1主武器/AA12丧尸/枪-长枪-AA12丧尸.xml" itemID="6972e9f9-00000200" lastModified="1769144977"/>
           <Include href="1主武器/AA12丧尸/图标-AA12丧尸.xml" itemID="6972ea02-00000201" lastModified="1769400478"/>
+          <Include href="1主武器/AA12战术版/aa12素材/aa12普通.xml" itemIcon="1" loadImmediate="false" itemID="6ac60ebb-000001d7" lastModified="1791519988"/>
+          <Include href="1主武器/AA12战术版/aa12素材/光.xml" itemIcon="1" loadImmediate="false" itemID="6ac79c38-00001037" lastModified="1791466557"/>
+          <Include href="1主武器/AA12战术版/aa12素材/手电筒.xml" itemIcon="1" loadImmediate="false" itemID="6ac79c35-00001036" lastModified="1791466557"/>
+          <Include href="1主武器/AA12战术版/Symbol 4.xml" itemIcon="1" loadImmediate="false" itemID="6ac86704-00000747" lastModified="1720533000"/>
+          <Include href="1主武器/AA12战术版/Symbol 12.xml" itemIcon="1" loadImmediate="false" itemID="6ac86704-00000746" lastModified="1720533000"/>
+          <Include href="1主武器/AA12战术版/Symbol 13.xml" loadImmediate="false" itemID="6ac86704-00000745" lastModified="1720533000"/>
+          <Include href="1主武器/AA12战术版/Symbol 16.xml" itemIcon="1" loadImmediate="false" itemID="6ac86704-00000748" lastModified="1720533000"/>
+          <Include href="1主武器/AA12战术版/枪-长枪-AA12战术版.xml" itemID="6ac864c7-00000168" lastModified="1791517897"/>
+          <Include href="1主武器/AA12战术版/图标-AA12战术版.xml" itemID="6ac864cc-00000169" lastModified="1791517900"/>
           <Include href="1主武器/ak74金线/部件1/元件 1.xml" itemID="6705dc79-0000020b" lastModified="1730989456"/>
           <Include href="1主武器/ak74金线/部件1/元件 4.xml" loadImmediate="false" itemID="670569cc-000001d6" lastModified="1728437503"/>
           <Include href="1主武器/ak74金线/部件1/元件 6.xml" loadImmediate="false" itemID="67057d1f-000001be" lastModified="1728413160"/>
@@ -346,7 +371,7 @@
           <Include href="1主武器/ak74金线/长枪/Symbol 12.xml" itemIcon="1" loadImmediate="false" itemID="672b7827-00000117" lastModified="1720533000"/>
           <Include href="1主武器/ak74金线/长枪/Symbol 13.xml" loadImmediate="false" itemID="672b7827-00000116" lastModified="1720533000"/>
           <Include href="1主武器/ak74金线/长枪/Symbol 16.xml" itemIcon="1" loadImmediate="false" itemID="672b7827-00000114" lastModified="1731210501"/>
-          <Include href="1主武器/ak74金线/长枪/枪-长枪-AK74.xml" itemID="672b7827-00000115" lastModified="1730993874"/>
+          <Include href="1主武器/ak74金线/长枪/枪-长枪-AK74.xml" itemID="672b7827-00000115" lastModified="1791519625"/>
           <Include href="1主武器/ak74金线/长枪/图标-AK74.xml" itemID="672b7827-0000010f" lastModified="1731210353"/>
           <Include href="1主武器/AWM狙击步枪/未命名文件夹 1/元件 8.xml" loadImmediate="false" itemID="67053855-00000f62" lastModified="1728397419"/>
           <Include href="1主武器/AWM狙击步枪/未命名文件夹 1/元件 9.xml" loadImmediate="false" itemID="67053a38-00000f77" lastModified="1730987793"/>
@@ -591,6 +616,20 @@
           <Include href="1主武器/众神之力/众神之力素材/小光效.xml" loadImmediate="false" itemID="69847dae-000002f2" lastModified="1770290606"/>
           <Include href="1主武器/众神之力/众神之力素材/众神之力本体.xml" itemIcon="1" loadImmediate="false" itemID="69846b08-0000039c" lastModified="1770285841"/>
           <Include href="1主武器/众神之力/众神之力素材/众神之力动画.xml" itemIcon="1" loadImmediate="false" itemID="69846afe-00000397" lastModified="1776766115"/>
+          <Include href="2副武器/Origin12/origin12素材/origin12.xml" itemIcon="1" loadImmediate="false" itemID="6ac76f52-000001b0" lastModified="1791517502"/>
+          <Include href="2副武器/Origin12/origin12素材/弹夹.xml" itemIcon="1" loadImmediate="false" itemID="6ac76f0b-000001ac" lastModified="1791466567"/>
+          <Include href="2副武器/Origin12/判定使用.xml" loadImmediate="false" itemID="6ac86718-00000772" lastModified="1791518530"/>
+          <Include href="2副武器/Origin12/枪-手枪-Origin12.xml" itemID="6ac866b7-0000024e" lastModified="1791518393"/>
+          <Include href="2副武器/Origin12/图标-Origin12.xml" itemID="6ac866b5-0000024d" lastModified="1791518396"/>
+          <Include href="2副武器/Origin12/阴影所用.xml" itemIcon="1" loadImmediate="false" itemID="6ac86718-00000774" lastModified="1791518562"/>
+          <Include href="2副武器/Origin12战术版/origin12素材/origin12.xml" itemIcon="1" loadImmediate="false" itemID="6ac86722-00000789" lastModified="1791519975"/>
+          <Include href="2副武器/Origin12战术版/origin12素材/弹鼓.xml" itemIcon="1" loadImmediate="false" itemID="6ac76f05-000001a7" lastModified="1791466567"/>
+          <Include href="2副武器/Origin12战术版/origin12素材/弹夹.xml" itemIcon="1" loadImmediate="false" itemID="6ac86722-0000078d" lastModified="1791466567"/>
+          <Include href="2副武器/Origin12战术版/origin12素材/红外/Symbol 3721.xml" itemIcon="1" loadImmediate="false" itemID="668e7c1e-00000f2b" lastModified="1791466567"/>
+          <Include href="2副武器/Origin12战术版/判定使用.xml" loadImmediate="false" itemID="6ac86722-0000078a" lastModified="1791518527"/>
+          <Include href="2副武器/Origin12战术版/枪-手枪-Origin12战术版.xml" itemID="6ac866ad-0000024a" lastModified="1791518381"/>
+          <Include href="2副武器/Origin12战术版/图标-Origin12战术版.xml" itemID="6ac866ab-00000249" lastModified="1791518379"/>
+          <Include href="2副武器/Origin12战术版/阴影所用.xml" itemIcon="1" loadImmediate="false" itemID="6ac86722-0000078c" lastModified="1791518562"/>
           <Include href="2副武器/沧蓝陨铁手炮/沧蓝陨铁手炮文件/部件1.xml" itemIcon="1" loadImmediate="false" itemID="69874aea-00000142" lastModified="1770474218"/>
           <Include href="2副武器/沧蓝陨铁手炮/沧蓝陨铁手炮文件/沧蓝陨铁手炮素材.xml" itemIcon="1" loadImmediate="false" itemID="6987e4a3-000001f5" lastModified="1770513571"/>
           <Include href="2副武器/沧蓝陨铁手炮/沧蓝陨铁手炮文件/元件 1.xml" itemIcon="1" loadImmediate="false" itemID="69874af9-00000144" lastModified="1770474233"/>
@@ -620,7 +659,7 @@
           <Include href="2副武器/加农手炮/枪-手枪-加农手炮.xml" itemID="69e73898-00000442" lastModified="1776761014"/>
           <Include href="2副武器/加农手炮/图标-加农手炮.xml" itemID="69e738a3-00000443" lastModified="1776915125"/>
           <Include href="2副武器/加农手炮/阴影所用.xml" itemIcon="1" loadImmediate="false" itemID="69e73865-00000433" lastModified="1776915141"/>
-          <Include href="2副武器/沙鹰战术/Symbol 3799.xml" itemID="668e7c1e-00000f64" lastModified="1762002043"/>
+          <Include href="2副武器/沙鹰战术/Symbol 3799.xml" itemID="668e7c1e-00000f64" lastModified="1791519591"/>
           <Include href="2副武器/沙鹰战术/Symbol 3819.xml" itemID="668e7c1e-00000f73" lastModified="1762002058"/>
           <Include href="2副武器/沙鹰战术/其他/Symbol 12.xml" itemIcon="1" loadImmediate="false" itemID="668e7c1e-000005be" lastModified="1720533000"/>
           <Include href="2副武器/沙鹰战术/其他/Symbol 13.xml" loadImmediate="false" itemID="668e7c1e-000005bf" lastModified="1720533000"/>
@@ -1268,6 +1307,11 @@
      </persistentData>
      <PrinterSettings/>
      <publishHistory>
+          <PublishItem publishSize="1959417" publishTime="1791519662"/>
+          <PublishItem publishSize="1959200" publishTime="1791518600"/>
+          <PublishItem publishSize="1959201" publishTime="1791518580"/>
+          <PublishItem publishSize="1959214" publishTime="1791518547"/>
+          <PublishItem publishSize="1959182" publishTime="1791518517"/>
           <PublishItem publishSize="1912488" publishTime="1788581712"/>
           <PublishItem publishSize="1912488" publishTime="1788580130"/>
           <PublishItem publishSize="1888977" publishTime="1777874534"/>
@@ -1283,10 +1327,5 @@
           <PublishItem publishSize="1886960" publishTime="1777217741"/>
           <PublishItem publishSize="1886944" publishTime="1777217676"/>
           <PublishItem publishSize="1887033" publishTime="1777217190"/>
-          <PublishItem publishSize="1887191" publishTime="1777216906"/>
-          <PublishItem publishSize="1886322" publishTime="1777216865"/>
-          <PublishItem publishSize="1886987" publishTime="1777216776"/>
-          <PublishItem publishSize="1886326" publishTime="1777216705"/>
-          <PublishItem publishSize="1886964" publishTime="1777216220"/>
      </publishHistory>
 </DOMDocument>
