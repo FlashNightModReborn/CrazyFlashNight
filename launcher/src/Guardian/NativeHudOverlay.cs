@@ -29,7 +29,7 @@ namespace CF7Launcher.Guardian
 
         protected override bool CanShowOverlayNow
         {
-            get { return base.CanShowOverlayNow || IsOwnerSessionForeground(); }
+            get { return _sharedPresentation == null && (base.CanShowOverlayNow || IsOwnerSessionForeground()); }
         }
 
         protected virtual bool IsOwnerSessionForeground()
@@ -144,7 +144,7 @@ namespace CF7Launcher.Guardian
             _lastTickMs = 0;
             if (_renderCoalesceTimer != null) _renderCoalesceTimer.Stop();
             _renderPending = false;
-            DismissOverlay();
+            DismissHudPresentation();
         }
 
         /// <summary>Panel 关闭后调用：重新评估 widget union 决定可见性。</summary>
@@ -403,7 +403,7 @@ namespace CF7Launcher.Guardian
             if (!padded.HasValue)
             {
                 if (_animTick != null) _animTick.Stop();
-                DismissOverlay();
+                DismissHudPresentation();
                 return;
             }
             Rectangle hudRect = padded.Value;
@@ -534,9 +534,14 @@ namespace CF7Launcher.Guardian
                 }
             }
 
+            if(_sharedPresentation!=null && painted==0)
+            {
+                DismissHudPresentation();
+                return;
+            }
             // 焦点观察只读取原有提交的结果，不切换 DC/提交实现。
             var commitStart = observer == null ? 0 : System.Diagnostics.Stopwatch.GetTimestamp();
-            CommitBitmap(_composedBitmap, _hudOrigin.X, _hudOrigin.Y, 255);
+            if (!TryCommitSharedBitmap()) CommitBitmap(_composedBitmap, _hudOrigin.X, _hudOrigin.Y, 255);
             if (observer != null)
             {
                 try { observer(System.Diagnostics.Stopwatch.GetElapsedTime(renderStart, commitStart).TotalMilliseconds,
@@ -544,7 +549,7 @@ namespace CF7Launcher.Guardian
                 catch (Exception ex) { RenderTimingObserver = null; LogManager.Log("[NativeHud] timing observer disabled: " + ex.Message); }
             }
             _lastCommitTick = Environment.TickCount;
-            PerfTrace.Counter("nativeHud.commit");
+            PerfTrace.Counter(_sharedPresentation==null?"nativeHud.commit":"nativeHud.sharedRasterSubmit");
             if (painted > 0)
                 PerfTrace.Counter("nativeHud.paintWidget", painted);
         }
@@ -878,9 +883,11 @@ namespace CF7Launcher.Guardian
 
         private string _focusGesture;
         private uint? _pointerBoundary;
+        private long _pointerInputGeneration;
 
         internal void CancelPointerGesture(string reason = "explicit", bool advanceBoundary = true)
         {
+            ++_pointerInputGeneration;
             if (advanceBoundary) _pointerBoundary = unchecked((uint)Environment.TickCount);
             if (FocusTrace.Enabled && _leftDownWidget != null)
                 FocusTrace.Record("hud.cancel", new { reason, widget = _leftDownWidget.GetType().Name }, _focusGesture);
@@ -913,6 +920,11 @@ namespace CF7Launcher.Guardian
                 NotifySuppressed("owner_hidden");
             }
             NotifyResumableState();
+            if(_sharedPresentation!=null)
+            {
+                if(!ownerVisible)DismissHudPresentation();
+                else OnSharedPresentationChanged();
+            }
         }
 
         private void SetResumableState(INativeHudWidget widget)
@@ -966,6 +978,7 @@ namespace CF7Launcher.Guardian
 
         protected override void OnMouseMove(MouseEventArgs e)
         {
+            if(_sharedPresentation!=null)return;
             base.OnMouseMove(e);
             Point screenPt = this.PointToScreen(e.Location);
             INativeHudWidget hit = HitTestScreen(screenPt);
@@ -1003,6 +1016,7 @@ namespace CF7Launcher.Guardian
 
         protected override void OnMouseDown(MouseEventArgs e)
         {
+            if(_sharedPresentation!=null)return;
             base.OnMouseDown(e);
             Point screenPt = this.PointToScreen(e.Location);
             INativeHudWidget hit = HitTestScreen(screenPt);
@@ -1023,6 +1037,7 @@ namespace CF7Launcher.Guardian
 
         protected override void OnMouseUp(MouseEventArgs e)
         {
+            if(_sharedPresentation!=null)return;
             _handlingMouseUp = true;
             try
             {
@@ -1259,6 +1274,7 @@ namespace CF7Launcher.Guardian
         {
             if (disposing)
             {
+                DisposeSharedPresentation();
                 DisposeFocusInputProbe();
                 if (_animTick != null) { _animTick.Stop(); _animTick.Dispose(); _animTick = null; }
                 if (_renderCoalesceTimer != null) { _renderCoalesceTimer.Stop(); _renderCoalesceTimer.Dispose(); _renderCoalesceTimer = null; }

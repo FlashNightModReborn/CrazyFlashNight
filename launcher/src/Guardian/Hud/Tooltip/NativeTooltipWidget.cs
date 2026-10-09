@@ -32,7 +32,7 @@ namespace CF7Launcher.Guardian.Hud.Tooltip
     /// 宿主压隐：实现 INativeHudSuppressionAware——panel_suspend/owner_hidden 时
     /// 就地终结会话（pinned 先报 DismissRequested 再清，simple/dense 直接清）。
     /// </summary>
-    public sealed class NativeTooltipWidget : INativeHudWidget,
+    public sealed class NativeTooltipWidget : INativeHudWidget, INativeHudPointerSnapshot,
         INativeHudSuppressionAware, INativeHudWheelConsumer,
         ITooltipInspectionProjection, IDisposable
     {
@@ -455,6 +455,13 @@ namespace CF7Launcher.Guardian.Hud.Tooltip
             if (_doc == null || _doc.Profile != NativeTooltipProfile.Pinned) return false;
             return _placedRect.Contains(screenPt);
         }
+
+        public object CapturePointerTarget(Point screen) => TryHitTest(screen)
+            ? (_doc,_doc.Revision,CloseHit(new Point(screen.X-_placedRect.X,screen.Y-_placedRect.Y))) : null;
+        // Floating inspection scroll keeps its existing controller-owned probe;
+        // it is not promoted to a clickable/scrollable world rectangle here.
+        public object CaptureWheelTarget(Point screen) => TryHitTest(screen)?(_doc,_doc.Revision):null;
+        public bool NeedsPointerClick => false;
 
         public void OnMouseEvent(MouseEventArgs e, MouseEventKind kind)
         {

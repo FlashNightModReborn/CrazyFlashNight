@@ -1851,7 +1851,7 @@ class Program
                     form, form.FlashHostPanel, playerHudController.State);
             playerHudRuntime = new CF7Launcher.Guardian.Hud.PlayerInfo.PlayerHudRuntime(
                 form, form.FlashHostPanel, playerInfoSurface, playerHudController,
-                Path.Combine(projectRoot, "launcher", "web", "icons"), nativeHud);
+                Path.Combine(projectRoot, "launcher", "web", "icons"), nativeHud, shareMainHud: playerInfoFixtureCase==null);
             IPanelHudCompanion panelHudCompanion = playerHudRuntime;
             panelHost = new PanelHostController(form, webOverlay, nativeHud, backdrop,
                 inputShield, hnOverlay, cursorOverlay, form.GetPanelEscapeSource(), flashHwndProvider,
@@ -2046,8 +2046,10 @@ class Program
             () => launchFlow != null && (launchFlow.CurrentState == "Embedding"
                 || launchFlow.CurrentState == "WaitingGameReady" || launchFlow.CurrentState == "Ready"),
             windowManager.SetFlashRenderScale, () => windowManager.RestoreFlashInputFocus("world_pointer"),
-            bulletCatalog:bulletVisualCatalog,combatFxCatalog:combatFxCatalog,overlays:worldOverlays);
+            bulletCatalog:bulletVisualCatalog,combatFxCatalog:combatFxCatalog,overlays:worldOverlays,
+            opaqueHudEnabled:playerInfoFixtureCase==null);
         hnOverlay.SetSharedPresentation(worldCompositor.DamagePresentation);
+        if(playerInfoFixtureCase==null)playerHudRuntime?.SetSharedWorld(worldCompositor);
         var renderSettings=RenderScheduleSettings.Load(Path.Combine(projectRoot,"launcher","data","world-lighting","render-schedule.json"));
         webOverlay.WorldDragInputRouter=worldCompositor.RouteCapturedPointer;
         perfEngine.ConfigureRenderSchedule(renderSettings,

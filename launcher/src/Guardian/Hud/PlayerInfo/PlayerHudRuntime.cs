@@ -1,6 +1,7 @@
 #nullable enable
 using System;
 using System.Windows.Forms;
+using CF7Launcher.Guardian.WorldCompositor;
 
 namespace CF7Launcher.Guardian.Hud.PlayerInfo;
 
@@ -16,12 +17,19 @@ internal sealed class PlayerHudRuntime : IPanelHudCompanion, IDisposable
     private bool _disposed;
     private bool _suspended, _restoringOrder;
     private readonly NativeHudOverlay _existingHud;
+    private readonly PlayerHudBottomWidget _bottomWidget;
+    private readonly PlayerHudPointerInput _sharedInput;
+    private readonly IWorldHudInput? _mainInput;
+    private readonly bool _shareMainHud;
+    private WorldCompositorController? _world;
+    private bool _sharedActive,_changingBackend,_backendChanged;
 
     internal OverlayBase[] PresentationSurfaces => new OverlayBase[] { _buffs, _resources, _bottom };
 
     internal PlayerHudRuntime(Form owner, Control anchor, PlayerInfoSplitSurface resources,
-        PlayerHudController controller, string iconsRoot, NativeHudOverlay existingHud)
+        PlayerHudController controller, string iconsRoot, NativeHudOverlay existingHud,bool shareMainHud=false)
     {
+        _shareMainHud=shareMainHud;
         _resources = resources; _controller = controller; _existingHud = existingHud;
         _bottom = new NativeHudOverlay(owner, anchor);
         _buffs = new NativeHudOverlay(owner, anchor);
@@ -34,7 +42,10 @@ internal sealed class PlayerHudRuntime : IPanelHudCompanion, IDisposable
         try
         {
             _resourceTooltip=new PlayerHudResourceTooltip(anchor,controller);
-            _bottom.AddWidget(new PlayerHudBottomWidget(anchor, controller, iconsRoot));
+            _bottomWidget=new PlayerHudBottomWidget(anchor, controller, iconsRoot);
+            _sharedInput=new PlayerHudPointerInput(_bottomWidget,()=>_sharedActive && _bottom.SharedInputAvailable);
+            _mainInput=shareMainHud?existingHud.CreateWorldInput(anchor):null;
+            _bottom.AddWidget(_bottomWidget);
             _bottom.AddWidget(_resourceTooltip.Widget);
             _buffs.AddWidget(new PlayerHudBuffWidget(anchor, controller));
             _buffs.SetZOrderInsertAfter(existingHud.Handle);
@@ -57,6 +68,70 @@ internal sealed class PlayerHudRuntime : IPanelHudCompanion, IDisposable
         }
     }
     private void OnTick(object? sender, EventArgs args) => _controller.Tick(Environment.TickCount64);
+    internal void SetSharedWorld(WorldCompositorController? world)
+    {
+        if(ReferenceEquals(_world,world))return;
+        if(_world!=null)
+        {
+            _world.ResourcePresentation.Changed-=ReconcileBackend;
+            _world.BottomPresentation.Changed-=ReconcileBackend;
+            _world.BuffPresentation.Changed-=ReconcileBackend;
+            if(_shareMainHud)_world.MainHudPresentation.Changed-=ReconcileBackend;
+            _world.SetHudInput(null);
+            if(_shareMainHud)_world.SetMainHudInput(null);
+        }
+        _world=null;
+        ReconcileBackend();
+        _world=world;
+        if(world!=null)
+        {
+            world.ResourcePresentation.Changed+=ReconcileBackend;
+            world.BottomPresentation.Changed+=ReconcileBackend;
+            world.BuffPresentation.Changed+=ReconcileBackend;
+            if(_shareMainHud)world.MainHudPresentation.Changed+=ReconcileBackend;
+        }
+        ReconcileBackend();
+    }
+    private void ReconcileBackend()
+    {
+        if(_changingBackend) { _backendChanged=true;return; }
+        _changingBackend=true;
+        try
+        {
+            do
+            {
+                _backendChanged=false;
+                bool shared=!_disposed && !_suspended && _world!=null && _world.ResourcePresentation.IsAvailable
+                    && _world.BottomPresentation.IsAvailable && _world.BuffPresentation.IsAvailable
+                    && (!_shareMainHud || _world.MainHudPresentation.IsAvailable);
+                if(shared==_sharedActive)continue;
+                // Only a gesture actually owned by the legacy HUD transfers this
+                // release barrier. A held Flash gesture must retain its own release.
+                if(shared && (_bottom.HasLegacyPointerGesture || (_shareMainHud && _existingHud.HasLegacyPointerGesture)))_world!.RetireLegacyHudGesture();
+                _sharedActive=shared;
+                _sharedInput.Cancel();
+                _mainInput?.Cancel();
+                _world?.SetHudInput(null);
+                if(_shareMainHud)_world?.SetMainHudInput(null);
+                // These three surfaces switch as a unit. An unavailable/failed
+                // member cannot leave native resources under a legacy bottom HWND.
+                _bottom.SetSharedPresentation(shared?_world!.BottomPresentation:null);
+                _buffs.SetSharedPresentation(shared?_world!.BuffPresentation:null);
+                _resources.SetSharedPresentation(shared?_world!.ResourcePresentation:null);
+                // Main HUD must remain above PlayerInfo. If any member returns
+                // to a legacy HWND, retire the complete unit before restoring it.
+                if(_shareMainHud && !_existingHud.IsDisposed)_existingHud.SetSharedPresentation(shared?_world!.MainHudPresentation:null);
+                if(shared)
+                {
+                    _world!.SetHudInput(_sharedInput);
+                    if(_shareMainHud)_world.SetMainHudInput(_mainInput);
+                }
+                else RestoreStack();
+                LogManager.Log("event=player_hud_backend shared="+shared+" layers=bottom,resources,buffs"+(_shareMainHud?",main":""));
+            } while(_backendChanged);
+        }
+        finally { _changingBackend=false; }
+    }
     private void RestoreStack()
     {
         if (_disposed || _suspended || _restoringOrder) return;
@@ -85,18 +160,21 @@ internal sealed class PlayerHudRuntime : IPanelHudCompanion, IDisposable
     public void Suspend()
     {
         _suspended = true;
+        ReconcileBackend();
         _controller.HideTooltip(); _resources.Suspend(); _bottom.Suspend(); _buffs.Suspend();
     }
     public void Resume()
     {
         if (_disposed) return;
         _suspended = false;
+        ReconcileBackend();
         _resources.Resume(); _bottom.Resume(); _buffs.Resume();
         RestoreStack();
     }
     public void Dispose()
     {
         if (_disposed) return; _disposed = true;
+        SetSharedWorld(null);
         _existingHud.PresentationChanged -= RestoreStack;
         _bottom.PresentationChanged -= RestoreStack; _buffs.PresentationChanged -= RestoreStack; _resources.PresentationChanged -= RestoreStack;
         _queryTimer.Stop(); _queryTimer.Tick -= OnTick; _queryTimer.Dispose();

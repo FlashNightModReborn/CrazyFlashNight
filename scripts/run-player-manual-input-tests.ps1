@@ -26,23 +26,26 @@ $focusedRun = @{
     TemplateRelativePath = 'scripts\test-runners\player-manual-input\TestLoader.as.template'
     SuiteRelativePaths = @(
         'scripts\类定义\org\flashNight\arki\unit\Action\Shoot\LongGunSubWeaponCoreTest.as'
+        'scripts\类定义\org\flashNight\arki\unit\Action\Shoot\PistolRecoilCoreTest.as'
         'scripts\类定义\org\flashNight\arki\unit\Action\Skill\ManualCooldownServiceTest.as'
         'scripts\类定义\org\flashNight\arki\unit\Action\Skill\DrugInputServiceTest.as'
         'scripts\类定义\org\flashNight\arki\key\KeyManagerTest.as'
     )
     SuiteFqns = @(
         'org.flashNight.arki.unit.Action.Shoot.LongGunSubWeaponCoreTest'
+        'org.flashNight.arki.unit.Action.Shoot.PistolRecoilCoreTest'
         'org.flashNight.arki.unit.Action.Skill.ManualCooldownServiceTest'
         'org.flashNight.arki.unit.Action.Skill.DrugInputServiceTest'
         'org.flashNight.arki.key.KeyManagerTest'
     )
     ExpectedTracePatterns = @(
         '(?m)^--- LongGunSubWeaponCoreTest: 511/511 passed, 0 failed ---\r?$'
+        '(?m)^--- PistolRecoilCoreTest: (?<pistol>[1-9][0-9]*)/\k<pistol> passed, 0 failed ---\r?$'
         '(?m)^--- ManualCooldownServiceTest: 57/57 passed, 0 failed ---\r?$'
         '(?m)^--- DrugInputServiceTest: 58/58 passed, 0 failed ---\r?$'
         '(?m)^--- KeyManagerMigrationTest: 14/14 passed, 0 failed ---\r?$'
     )
-    SuccessSummary = 'LongGun 511/511, ManualCooldown 57/57, DrugInput 58/58, KeyManagerMigration 14/14'
+    SuccessSummary = 'PistolRecoil all passed, LongGun 511/511, ManualCooldown 57/57, DrugInput 58/58, KeyManagerMigration 14/14'
     TimeoutSeconds = $TimeoutSeconds
     SkipCompile = $SkipCompile
 }

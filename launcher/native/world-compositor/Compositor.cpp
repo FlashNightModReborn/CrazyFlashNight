@@ -134,6 +134,76 @@ struct CombatFxState {
     float cameraX=0,cameraY=0,cameraScale=1;float params[CombatFxCap*16]{},lights[PointLightCap*16]{};
 };
 
+struct HudRasterFrame {
+    std::shared_ptr<std::vector<uint8_t>> pixels;
+    int width=0,height=0,x=0,y=0;
+    uint64_t version=0;
+};
+// Fixed slots: damage, resources, bottom, buffs. Keep raster/cache ownership split;
+// only the final backbuffer is shared. No additional HWND or readback is created.
+constexpr size_t HudRasterLayerCount=5;
+class HudRasterGpu {
+public:
+    void Draw(ID3D11Device* device,ID3D11DeviceContext* context,
+        const std::array<HudRasterFrame,HudRasterLayerCount>& frames,int outputWidth,int outputHeight,ProbeHudRasterStats& stats) {
+        stats.visibleLayers=0;
+        for(const auto& frame:frames)if(frame.pixels)++stats.visibleLayers;
+        if(!stats.visibleLayers)return;
+        if(!vertex) {
+            check_hresult(device->CreateVertexShader(CompositorShaders::HVS.data,CompositorShaders::HVS.size,nullptr,vertex.put()));
+            check_hresult(device->CreatePixelShader(CompositorShaders::HPS.data,CompositorShaders::HPS.size,nullptr,pixel.put()));
+            D3D11_BUFFER_DESC buffer{};buffer.ByteWidth=32;buffer.BindFlags=D3D11_BIND_CONSTANT_BUFFER;
+            check_hresult(device->CreateBuffer(&buffer,nullptr,parameters.put()));
+            D3D11_BLEND_DESC blend{};auto& target=blend.RenderTarget[0];
+            target.BlendEnable=TRUE;target.SrcBlend=D3D11_BLEND_ONE;target.DestBlend=D3D11_BLEND_INV_SRC_ALPHA;
+            target.BlendOp=D3D11_BLEND_OP_ADD;target.SrcBlendAlpha=D3D11_BLEND_ONE;
+            target.DestBlendAlpha=D3D11_BLEND_INV_SRC_ALPHA;target.BlendOpAlpha=D3D11_BLEND_OP_ADD;
+            target.RenderTargetWriteMask=D3D11_COLOR_WRITE_ENABLE_ALL;
+            check_hresult(device->CreateBlendState(&blend,blending.put()));
+        }
+        D3D11_VIEWPORT viewport{0,0,static_cast<float>(outputWidth),static_cast<float>(outputHeight),0,1};
+        context->RSSetViewports(1,&viewport);
+        context->VSSetShader(vertex.get(),nullptr,0);context->PSSetShader(pixel.get(),nullptr,0);
+        auto constant=parameters.get();context->VSSetConstantBuffers(0,1,&constant);
+        context->OMSetBlendState(blending.get(),nullptr,0xffffffff);
+        // The opaque bottom chassis must stay behind the resource gauges.
+        for(size_t i:std::array<size_t,HudRasterLayerCount>{0,2,1,3,4}) {
+            const auto& frame=frames[i];if(!frame.pixels)continue;
+            auto& layer=layers[i];
+            if(!layer.texture || frame.width>layer.width || frame.height>layer.height) {
+                layer.width=std::max(layer.width,(frame.width+63)&~63);
+                layer.height=std::max(layer.height,(frame.height+63)&~63);
+                D3D11_TEXTURE2D_DESC description{};description.Width=layer.width;description.Height=layer.height;
+                description.MipLevels=1;description.ArraySize=1;description.Format=DXGI_FORMAT_B8G8R8A8_UNORM;
+                description.SampleDesc.Count=1;description.BindFlags=D3D11_BIND_SHADER_RESOURCE;
+                layer.resource=nullptr;layer.texture=nullptr;
+                check_hresult(device->CreateTexture2D(&description,nullptr,layer.texture.put()));
+                check_hresult(device->CreateShaderResourceView(layer.texture.get(),nullptr,layer.resource.put()));
+                layer.version=0;
+            }
+            if(layer.version!=frame.version) {
+                D3D11_BOX region{0,0,0,static_cast<UINT>(frame.width),static_cast<UINT>(frame.height),1};
+                context->UpdateSubresource(layer.texture.get(),0,&region,frame.pixels->data(),frame.width*4,0);
+                layer.version=frame.version;++stats.uploads;stats.uploadedBytes+=frame.pixels->size();
+            }
+            float values[8]{static_cast<float>(frame.x),static_cast<float>(frame.y),
+                static_cast<float>(frame.width),static_cast<float>(frame.height),
+                static_cast<float>(outputWidth),static_cast<float>(outputHeight),0,0};
+            context->UpdateSubresource(parameters.get(),0,nullptr,values,0,0);
+            auto resource=layer.resource.get();context->PSSetShaderResources(0,1,&resource);
+            context->Draw(6,0);++stats.draws;
+        }
+        ID3D11ShaderResourceView* empty=nullptr;context->PSSetShaderResources(0,1,&empty);
+        context->OMSetBlendState(nullptr,nullptr,0xffffffff);
+    }
+private:
+    struct Layer { com_ptr<ID3D11Texture2D> texture;com_ptr<ID3D11ShaderResourceView> resource;
+        int width=0,height=0;uint64_t version=0; };
+    std::array<Layer,HudRasterLayerCount> layers;
+    com_ptr<ID3D11VertexShader> vertex;com_ptr<ID3D11PixelShader> pixel;
+    com_ptr<ID3D11Buffer> parameters;com_ptr<ID3D11BlendState> blending;
+};
+
 class Capture {
 public:
     Capture(HWND source, DWORD pid, HWND output, uint32_t vendor, int fps = 0, bool borderless = false, IUnknown* target = nullptr)
@@ -188,6 +258,22 @@ public:
     void RequestContentProof() { contentRequested_=true; proofRequested_=true; }
     void ContentStats(ProbeContentStats& result) { std::lock_guard guard(mutex_); result=contentStats_; }
     void WorkStats(ProbeWorkStats& result) { std::lock_guard guard(mutex_); result=workStats_; }
+    bool HudRaster(int layer,const void* pixels,int width,int height,int stride,int x,int y) {
+        if(layer<0 || layer>=static_cast<int>(HudRasterLayerCount) || stop_)return false;
+        HudRasterFrame frame;
+        if(pixels) {
+            if(width<1 || height<1 || width>4096 || height>4096 || stride<width*4 || stride>16384
+                || stride%4!=0 || x<0 || y<0 || x>16384 || y>16384)return false;
+            frame.width=width;frame.height=height;frame.x=x;frame.y=y;
+            frame.pixels=std::make_shared<std::vector<uint8_t>>(static_cast<size_t>(width)*height*4);
+            for(int row=0;row<height;++row)std::memcpy(frame.pixels->data()+static_cast<size_t>(row)*width*4,
+                static_cast<const uint8_t*>(pixels)+static_cast<size_t>(row)*stride,static_cast<size_t>(width)*4);
+        } else if(width || height || stride || x || y)return false;
+        { std::lock_guard guard(mutex_);frame.version=++hudVersion_;hudFrames_[layer]=frame;
+            ++hudStats_.accepted;if(frame.pixels)hudStats_.copiedBytes+=frame.pixels->size(); }
+        Signal();return true;
+    }
+    void HudRasterStats(ProbeHudRasterStats& result) {std::lock_guard guard(mutex_);result=hudStats_;}
     void TimingStats(ProbeTimingStats& result) {
         std::array<TimingSample,256> samples;
         size_t count;
@@ -705,6 +791,8 @@ private:
         double lastAtmosphereDrawMs = 0;
         auto nextPresent = std::chrono::steady_clock::now();
         double previousTimingPresent=0;
+        HudRasterGpu hudGpu;
+        uint64_t appliedHudVersion=0;
         bool lightCacheValid=false,fxItemsDirty=true;
         int cachedLightCount=0;
         uint64_t cachedLightGeneration=0;
@@ -746,7 +834,12 @@ private:
             uint64_t observedSceneLightVersion;{std::lock_guard guard(mutex_);observedSceneLightVersion=sceneLightVersion_;}
             // Weather animates per presented frame; keep a 30fps floor even on
             // unpaced probe sessions so motion stays at the worker cadence.
+            uint64_t observedHudVersion;bool hudVisible;
+            {std::lock_guard guard(mutex_);observedHudVersion=hudVersion_;
+                hudVisible=std::any_of(hudFrames_.begin(),hudFrames_.end(),[](const auto& frame){return static_cast<bool>(frame.pixels);});}
             int paceFps = fps_>0 ? fps_ : ((weatherOn || atmosphereOn || bulletsOn || fxOn || rayFrame.count>0) ? 30 : 0);
+            // Preserve independent HUD animation responsiveness; static HUD does not force redraw.
+            if(hudVisible && observedHudVersion!=appliedHudVersion)paceFps=60;
             if (paceFps>0) {
                 std::unique_lock lock(waitMutex_);
                 wake_.wait_until(lock,nextPresent,[this] { return stop_.load() || !active_.load() || grabRequested_.load(); });
@@ -798,7 +891,7 @@ private:
                     && appliedBullet==bulletVersion && appliedBulletAtlas==bulletAtlasObserved
                     && !bulletsOn && appliedRay==rayVersion && rayFrame.count==0
                     && appliedFx==fxVersion && appliedFxAtlas==fxAtlasVersion && !fxOn
-                    && sceneGpu.version==observedSceneLightVersion))) {
+                    && sceneGpu.version==observedSceneLightVersion && appliedHudVersion==observedHudVersion))) {
                 previousTimingPresent=0;
                 presentation.unlock();
                 std::unique_lock lock(waitMutex_);
@@ -1162,6 +1255,12 @@ private:
             appliedWeather = weatherVersion;
             appliedAtmosphere = atmosphereVersion;
             context->PSSetShaderResources(1,1,&empty);
+            std::array<HudRasterFrame,HudRasterLayerCount> hudFrames;
+            {std::lock_guard guard(mutex_);hudFrames=hudFrames_;appliedHudVersion=hudVersion_;}
+            ProbeHudRasterStats hudDraw{sizeof(ProbeHudRasterStats)};
+            if(!proof)hudGpu.Draw(device.get(),context.get(),hudFrames,w,h,hudDraw);
+            {std::lock_guard guard(mutex_);hudStats_.visibleLayers=hudDraw.visibleLayers;
+                hudStats_.uploads+=hudDraw.uploads;hudStats_.uploadedBytes+=hudDraw.uploadedBytes;hudStats_.draws+=hudDraw.draws;}
             double submit = QpcMs();
             if (proof) {
                 VerifyPixels(device.get(), context.get(), swap.get(), texture.get(), viewport, textureW, textureH, mode,
@@ -1356,6 +1455,9 @@ private:
     uint64_t captureGeneration_=0;
     std::thread worker_; std::mutex mutex_; ProbeStats stats_{};
     ProbeWorkStats workStats_{sizeof(ProbeWorkStats)};
+    std::array<HudRasterFrame,HudRasterLayerCount> hudFrames_;
+    uint64_t hudVersion_=0;
+    ProbeHudRasterStats hudStats_{sizeof(ProbeHudRasterStats)};
     struct TimingSample { double interval,submit,present,age,at; };
     std::array<TimingSample,256> timingSamples_{};
     size_t timingNext_=0,timingCount_=0;
@@ -1445,6 +1547,15 @@ int __cdecl ProbeGetWorkStats(void* handle, ProbeWorkStats* stats) {
 int __cdecl ProbeGetTimingStats(void* handle, ProbeTimingStats* stats) {
     if(!handle || !stats || stats->size!=sizeof(ProbeTimingStats))return 0;
     static_cast<Capture*>(handle)->TimingStats(*stats);return 1;
+}
+int __cdecl ProbeSetHudRaster(void* handle,int layer,const void* pixels,int width,int height,int stride,int x,int y) {
+    if(!handle)return 0;
+    try {return static_cast<Capture*>(handle)->HudRaster(layer,pixels,width,height,stride,x,y)?1:0;}
+    catch (...) {return 0;}
+}
+int __cdecl ProbeGetHudRasterStats(void* handle,ProbeHudRasterStats* stats) {
+    if(!handle || !stats || stats->size!=sizeof(ProbeHudRasterStats))return 0;
+    static_cast<Capture*>(handle)->HudRasterStats(*stats);return 1;
 }
 int __cdecl ProbeSetSceneLights(void* handle,const float* lights,int count,float response) {
     return handle && static_cast<Capture*>(handle)->SceneLights(lights,count,response)?1:0;

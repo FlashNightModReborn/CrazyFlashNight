@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using CF7Launcher.Diagnostic;
 using CF7Launcher.Guardian.Hud;
+using CF7Launcher.Guardian.WorldCompositor;
 
 namespace CF7Launcher.Guardian.Hud.PlayerInfo;
 
@@ -74,6 +75,9 @@ internal sealed class PlayerInfoSplitSurface :
     private readonly List<double> _commitMilliseconds = [];
 
     private PlayerInfoLayeredDibSurface? _composedSurface;
+    private WorldRasterPresentation? _sharedPresentation;
+    private bool _sharedSubmitted;
+    private bool _sharedFallbackLogged;
     private string? _desiredBatchKey;
     private Rectangle _tightPhysicalBounds;
     private Point _committedOrigin;
@@ -90,6 +94,8 @@ internal sealed class PlayerInfoSplitSurface :
     private bool _shutdown;
     private bool _disposed;
     private bool _qualificationClockOwned;
+    [DllImport("gdi32.dll")] [return:MarshalAs(UnmanagedType.Bool)]
+    private static extern bool GdiFlush();
     private long _repaintRequestCount;
     private long _paintCount;
     private long _commitCount;
@@ -113,6 +119,30 @@ internal sealed class PlayerInfoSplitSurface :
         return surface;
     }
 
+    internal void SetSharedPresentation(WorldRasterPresentation? presentation)
+    {
+        if(InvokeRequired)throw new InvalidOperationException("Resource presentation belongs to its UI thread.");
+        if(_sharedPresentation!=null)_sharedPresentation.Changed-=OnSharedPresentationChanged;
+        DismissResource();
+        _sharedPresentation=presentation;
+        if(presentation!=null)presentation.Changed+=OnSharedPresentationChanged;
+        OnSharedPresentationChanged();
+    }
+
+    private void OnSharedPresentationChanged()
+    {
+        if(_disposed || _shutdown)return;
+        if(_sharedPresentation==null || _sharedPresentation.IsAvailable)ScheduleRender();
+        else DismissResource();
+    }
+
+    private void DismissResource()
+    {
+        _sharedPresentation?.Hide();
+        _sharedSubmitted=false;
+        base.DismissOverlay();
+    }
+
     private void OnLiveStateChanged()
     {
         if (_disposed || _shutdown) return;
@@ -120,7 +150,7 @@ internal sealed class PlayerInfoSplitSurface :
         if (snapshot == null)
         {
             _liveEpoch = 0; _liveVitals = null; Widget.LiveVitals = null; Widget.ResetLiveClock(); Animation.ResetProduction();
-            _animationTimer?.Stop(); DismissOverlay(); return;
+            _animationTimer?.Stop(); DismissResource(); return;
         }
         if (_liveEpoch != snapshot.Epoch) { Animation.ResetProduction(); Widget.ResetLiveClock(); }
         var denialChanged = Widget.Denial.Observe(snapshot, !_suspended && !_shutdown && !snapshot.Vitals.Paused);
@@ -343,7 +373,7 @@ internal sealed class PlayerInfoSplitSurface :
         }
         try
         {
-            DismissOverlay();
+            DismissResource();
         }
         catch (Exception ex)
         {
@@ -391,7 +421,7 @@ internal sealed class PlayerInfoSplitSurface :
         {
             _pipeline.BatchPublished -= OnBatchPublished;
         }
-        DismissOverlay();
+        DismissResource();
         if (_pipeline is not null)
         {
             _pipeline.Dispose();
@@ -466,7 +496,7 @@ internal sealed class PlayerInfoSplitSurface :
 
     protected override void OnPositionChanged()
     {
-        if (_liveState != null && _liveState.Snapshot == null) { DismissOverlay(); return; }
+        if (_liveState != null && _liveState.Snapshot == null) { DismissResource(); return; }
         if (!_ready ||
             !_ownerVisible ||
             _suspended ||
@@ -478,7 +508,7 @@ internal sealed class PlayerInfoSplitSurface :
         var viewport = RightHudLayout.GetViewportRect(_anchor, _mapper);
         if (viewport.Width <= 0 || viewport.Height <= 0)
         {
-            DismissOverlay();
+            DismissResource();
             return;
         }
 
@@ -495,7 +525,7 @@ internal sealed class PlayerInfoSplitSurface :
         {
             LogBestEffort(
                 "[PlayerInfoSplitSurface] placement rejected: " + ex.Message);
-            DismissOverlay();
+            DismissResource();
             return;
         }
 
@@ -518,19 +548,27 @@ internal sealed class PlayerInfoSplitSurface :
         }
         catch (ObjectDisposedException)
         {
-            DismissOverlay();
+            DismissResource();
         }
         catch (Exception ex)
         {
             LogBestEffort(
                 "[PlayerInfoSplitSurface] raster request rejected: " +
                 ex.Message);
-            DismissOverlay();
+            DismissResource();
         }
     }
 
     private void FollowWithCommittedFrame(Rectangle desired)
     {
+        if(_sharedSubmitted && _sharedPresentation?.IsAvailable==true && _composedSurface!=null)
+        {
+            var sharedOrigin=new Point(desired.Left,desired.Bottom-_committedSize.Height);
+            _sharedPresentation.TryPresent(_composedSurface.Pixels,_committedSize.Width,_committedSize.Height,
+                checked(_composedSurface.Width*4),sharedOrigin);
+            _committedOrigin=sharedOrigin;
+            return;
+        }
         if (!_shown || _committedSize.Width<=0 || _committedSize.Height<=0) return;
         // Pure translation retains exactly the submitted DIB. During a size/DPI
         // change retain that frame at the new bottom anchor until the new raster
@@ -568,7 +606,7 @@ internal sealed class PlayerInfoSplitSurface :
                 // bitmap immediately after activation. This asynchronous
                 // surface invalidates that image while hidden and shows only
                 // after the current state has been rendered and committed.
-                DismissOverlay();
+                DismissResource();
             }
             catch (Exception ex)
             {
@@ -590,6 +628,7 @@ internal sealed class PlayerInfoSplitSurface :
         if (disposing && _liveState != null) { _liveState.Changed -= OnLiveStateChanged; _liveState = null; }
         if (disposing && !_disposed)
         {
+            if(_sharedPresentation!=null)_sharedPresentation.Changed-=OnSharedPresentationChanged;
             _disposed = true;
             try
             {
@@ -669,7 +708,8 @@ internal sealed class PlayerInfoSplitSurface :
 
     private void RenderCurrentOnUiThread()
     {
-        if (_liveState != null && _liveState.Snapshot == null) { DismissOverlay(); return; }
+        if(_sharedPresentation!=null && !_sharedPresentation.IsAvailable) { DismissResource();return; }
+        if (_liveState != null && _liveState.Snapshot == null) { DismissResource(); return; }
         if (_disposed ||
             _shutdown ||
             !_ready ||
@@ -712,12 +752,12 @@ internal sealed class PlayerInfoSplitSurface :
         {
             LogBestEffort(
                 "[PlayerInfoSplitSurface] paint rejected: " + ex.Message);
-            DismissOverlay();
+            DismissResource();
             return;
         }
         if (!painted || composed is null || tight.Width <= 0 || tight.Height <= 0)
         {
-            DismissOverlay();
+            DismissResource();
             return;
         }
 
@@ -734,6 +774,36 @@ internal sealed class PlayerInfoSplitSurface :
         {
             throw new InvalidOperationException(
                 "PlayerInfo prepared DIB changed during its UI-thread paint transaction.");
+        }
+        if(_sharedPresentation!=null)
+        {
+            var presentation=_sharedPresentation;
+            var uploadStart=Stopwatch.GetTimestamp();
+            if(!GdiFlush())throw new InvalidOperationException("Resource raster flush failed.");
+            bool handled=presentation.TryPresent(preparedSurface.Pixels,
+                tight.Width,tight.Height,checked(preparedSurface.Width*4),tight.Location);
+            if(!ReferenceEquals(presentation,_sharedPresentation))return;
+            if(handled || !presentation.IsAvailable)
+            {
+                _sharedSubmitted=handled && presentation.IsAvailable;
+                _committedOrigin=tight.Location;_committedSize=tight.Size;
+                base.DismissOverlay();_sharedFallbackLogged=false;
+                // Submission acceptance is measured here; actual presentation is observed by the native fixture.
+                var uploadMs=ElapsedMilliseconds(uploadStart);
+                if(RenderTimingObserver is {} uploadObserver) {
+                    try {uploadObserver(paintMs,uploadMs,tight.Width,tight.Height);}
+                    catch {RenderTimingObserver=null;}
+                }
+                RecordSurfaceMilliseconds(surfaceStart);
+                return;
+            }
+            presentation.Reject(new InvalidOperationException("Resource raster extent is unsupported."));
+            _sharedSubmitted=false;
+            if(!_sharedFallbackLogged) {
+                _sharedFallbackLogged=true;
+                LogBestEffort("event=world_raster_fallback kind=player_info reason=unsupported_extent");
+            }
+            return;
         }
         var commit = CommitPreparedDibObserved(
             preparedSurface.MemoryDc,
@@ -765,7 +835,7 @@ internal sealed class PlayerInfoSplitSurface :
         if (!commit.Succeeded)
         {
             RecordSurfaceMilliseconds(surfaceStart);
-            DismissOverlay();
+            DismissResource();
             return;
         }
 
@@ -807,7 +877,7 @@ internal sealed class PlayerInfoSplitSurface :
                 if (firstShow)
                 {
                     RecordSurfaceMilliseconds(surfaceStart);
-                    DismissOverlay();
+                    DismissResource();
                     return;
                 }
             }
@@ -830,6 +900,7 @@ internal sealed class PlayerInfoSplitSurface :
             return _composedSurface.Bitmap;
         }
         var replacement = new PlayerInfoLayeredDibSurface(width, height);
+        _sharedSubmitted=false;
         Interlocked.Exchange(ref _composedSurface, replacement)?.Dispose();
         return replacement.Bitmap;
     }

@@ -654,6 +654,25 @@ try {
     fs.rmSync(fixtureRoot, {recursive:true, force:true});
 }
 
+var longLexicalProbe = childProcess.spawnSync(
+    process.execPath,
+    ['-e', [
+        "var r=require(process.argv[1]);",
+        "var prefix='var sum='+ '1+'.repeat(20000) + '1;var label=\"space split\";';",
+        "var source=prefix+'var ratio=sum/2;'.repeat(100)",
+        "+'function ignored(){return /new DualPaneShell/;} '",
+        "+'new DualPaneShell({profile:\"inventory\"});new DualPaneShell({});';",
+        "var masked=r.maskJavaScriptCode(source);",
+        "var calls=r.scanDualPaneCalls(source,'minified-fixture.js');",
+        "if(masked.indexOf('sum/2')<0 || calls.length!==2 || calls[0].literalProfile!=='inventory' || calls[1].valid || calls[1].hasProfile)process.exit(1);",
+        "console.log('bounded lexical scan passed');"
+    ].join('\n'), path.join(__dirname, 'lib/workbench-ui-ratchet.js')],
+    {encoding:'utf8', timeout:5000}
+);
+check('long minified division prefixes remain bounded without hiding constructor violations',
+    longLexicalProbe.status === 0
+    && /bounded lexical scan passed/.test(longLexicalProbe.stdout || ''));
+
 var auditExit = childProcess.spawnSync(
     process.execPath,
     [path.join(__dirname, 'audit-workbench-ui.js'), '--release-tree', '--text', '--strict-warnings'],

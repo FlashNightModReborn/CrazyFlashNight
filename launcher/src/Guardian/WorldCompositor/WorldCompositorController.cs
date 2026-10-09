@@ -33,6 +33,30 @@ namespace CF7Launcher.Guardian.WorldCompositor
         private NativeCompositorSession _native;
         private CompositionSceneHost _compositionScene;
         internal WorldRasterPresentation DamagePresentation { get; } = new WorldRasterPresentation();
+        internal WorldRasterPresentation ResourcePresentation { get; } = new WorldRasterPresentation();
+        internal WorldRasterPresentation BottomPresentation { get; } = new WorldRasterPresentation();
+        internal WorldRasterPresentation BuffPresentation { get; } = new WorldRasterPresentation();
+        internal WorldRasterPresentation MainHudPresentation { get; } = new WorldRasterPresentation();
+        private readonly bool _opaqueHudEnabled;
+        private bool _playerHudFaulted;
+        private IWorldRasterScene _damageRasterScene,_resourceRasterScene,_bottomRasterScene,_buffRasterScene,_mainHudRasterScene;
+        private IWorldHudInput _hudInput,_mainHudInput,_combinedHudInput;
+        internal void SetHudInput(IWorldHudInput input)
+        {
+            if(ReferenceEquals(input,_hudInput))return;
+            _hudInput=input;RebindHudInput();
+        }
+        internal void SetMainHudInput(IWorldHudInput input)
+        {
+            if(ReferenceEquals(input,_mainHudInput))return;
+            _mainHudInput=input;RebindHudInput();
+        }
+        private void RebindHudInput()
+        {
+            _combinedHudInput=_mainHudInput==null?_hudInput:_hudInput==null?_mainHudInput:new WorldHudInputLayers(_mainHudInput,_hudInput);
+            _surface?.SetHudInput(_combinedHudInput);
+        }
+        internal void RetireLegacyHudGesture() => _surface?.RetireLegacyHudGesture();
         private bool _compositionSceneCommitted;
         private WorldCompositionSurface _surface;
         private WorldOverlayOrder _overlayOrder;
@@ -285,7 +309,7 @@ namespace CF7Launcher.Guardian.WorldCompositor
             Func<bool> canPresent, Action<string> notify, string projectRoot, Func<bool> shouldPrepare,
             Action<double> setRenderScale,Action focusFlash,uint inputEpochLimit=WorldPointerMapper.EpochLimit,
             BulletVisualCatalog bulletCatalog=null,CombatFxCatalog combatFxCatalog=null,
-            IEnumerable<OverlayBase> overlays=null)
+            IEnumerable<OverlayBase> overlays=null,bool opaqueHudEnabled=false)
         {
             string tempRoot=Path.GetFullPath(Path.Combine(projectRoot,"tmp"))+Path.DirectorySeparatorChar;
             string testCap=Environment.GetEnvironmentVariable("CF7_INPUT_SESSION_TEST_CAP");
@@ -298,6 +322,11 @@ namespace CF7Launcher.Guardian.WorldCompositor
             _inputEpochLimit=inputEpochLimit;
             _owner=owner; _anchor=anchor; _getFlash=getFlash; _canPresent=canPresent; _notify=notify; _shouldPrepare=shouldPrepare;
             DamagePresentation.Faulted += error => EnterRenderFault("shared_raster", error);
+            ResourcePresentation.Faulted += error => RejectPlayerHud("resource_raster", error);
+            BottomPresentation.Faulted += error => RejectPlayerHud("bottom_raster", error);
+            BuffPresentation.Faulted += error => RejectPlayerHud("buff_raster", error);
+            MainHudPresentation.Faulted += error => RejectPlayerHud("main_hud_raster", error);
+            _opaqueHudEnabled=opaqueHudEnabled;
             _setRenderScale=setRenderScale; _focusFlash=focusFlash;
             _bulletCatalog=bulletCatalog;
             _combatFxCatalog=combatFxCatalog;
@@ -386,6 +415,7 @@ namespace CF7Launcher.Guardian.WorldCompositor
                     _flash=_getFlash(); _pointerBridge=await NativePointerBridge.Start(_flash,_owner.Handle);
                     if(_disposed || _flash!=_getFlash()) { _pointerBridge.Dispose(); return; }
                     _surface=new WorldCompositionSurface(_getFlash,_focusFlash,_pointerBridge,_inputEpochLimit) { Owner=_owner };
+                    _surface.SetHudInput(_combinedHudInput);
                     _overlayOrder=new WorldOverlayOrder(_owner,_surface,_overlays,CanShow);
                     BindInput(_pointerBridge,_surface);
                     _surface.CreateControl();
@@ -394,6 +424,12 @@ namespace CF7Launcher.Guardian.WorldCompositor
                     IntPtr worldVisual=_compositionScene.AcquireVisual(0);
                     try { _native=new NativeCompositorSession(module,_owner.Handle,(uint)Environment.ProcessId,_surface.Handle,0,_borderless,worldVisual); }
                     finally { Marshal.Release(worldVisual); }
+                    _damageRasterScene=_opaqueHudEnabled ? new OpaqueHudRasterScene(_native,0) : _compositionScene;
+                    _resourceRasterScene=_opaqueHudEnabled && !_playerHudFaulted ? new OpaqueHudRasterScene(_native,1) : null;
+                    _bottomRasterScene=_opaqueHudEnabled && !_playerHudFaulted ? new OpaqueHudRasterScene(_native,2) : null;
+                    _buffRasterScene=_opaqueHudEnabled && !_playerHudFaulted ? new OpaqueHudRasterScene(_native,3) : null;
+                    _mainHudRasterScene=_opaqueHudEnabled && !_playerHudFaulted ? new OpaqueHudRasterScene(_native,4) : null;
+                    LogManager.Log("event=world_hud_backend opaque="+_opaqueHudEnabled+" layers=damage,bottom,resources,buffs");
                     _bulletStylesReady=false;
                     _combatFxResourcesReady=false;
                     if (_combatFxCatalog!=null) {
@@ -439,7 +475,7 @@ namespace CF7Launcher.Guardian.WorldCompositor
                     if (!show) _surface.Hide();
                 }
                 if (!_active) {
-                    DamagePresentation.Adopt(_compositionScene, Rectangle.Empty, false);
+                    RefreshHudPresentations();
                     _schedulingAllowed=false;
                     if (_frame==null && NowMs()-_startedMs>10000) throw new TimeoutException("未收到配套 AS2 光照状态，请检查 asLoader 构建");
                     return;
@@ -463,7 +499,7 @@ namespace CF7Launcher.Guardian.WorldCompositor
                         +" resizeMs="+(resizedAt-heldAt).ToString("F1",CultureInfo.InvariantCulture)
                         +" repaintMs="+(NowMs()-resizedAt).ToString("F1",CultureInfo.InvariantCulture)
                         +" handoffMs="+(NowMs()-resizeStarted).ToString("F1",CultureInfo.InvariantCulture));
-                    if (!CanShow()) { _native.Active(false); _active=false; _surface.Hide(); return; }
+                    if (!CanShow()) { _native.Active(false); _active=false; _surface.Hide(); RefreshHudPresentations(); return; }
                 }
                 NativeCompositorSession.Stats stats;
                 using (CF7Launcher.Diagnostic.InputLatencyProbe.Measure("world_read")) stats=_native.Read();
@@ -531,8 +567,7 @@ namespace CF7Launcher.Guardian.WorldCompositor
                     _lighting.WaitingForCapture, _frame?.Scene ?? 0, _lighting.ReadyScene);
                 PublishRayCapability(projectileReady);
                 if (ready && !_surface.Visible) { _surface.Show(); PlaceBelowHud(); PresentationShown?.Invoke(); _surface.RefreshPointer(); }
-                DamagePresentation.Adopt(_compositionScene,
-                    new Rectangle(_surface.PointToScreen(Point.Empty),_surface.ClientSize),ready && _surface.Visible);
+                RefreshHudPresentations();
                 if (!_compositionSceneCommitted && stats.Received>0) {
                     _compositionScene.Commit();
                     _compositionSceneCommitted=true;
@@ -774,11 +809,29 @@ namespace CF7Launcher.Guardian.WorldCompositor
         {
             _overlayOrder?.RestoreNow("world_show");
         }
+        internal void RefreshHudPresentations()
+        {
+            // A viewport handoff retains P and its last composed image. Waiting
+            // for a fresh source frame is not loss of the HUD's output endpoint:
+            // withdrawing it here briefly re-created three legacy HUD windows.
+            // Initial capture, hidden output, session retirement and actual
+            // faults still gate ownership; scheduling continues to require ready.
+            bool available=!_disposed && !_faulted && _active && _everReady
+                && _surface!=null && !_surface.IsDisposed && _surface.Visible;
+            Rectangle bounds=available
+                ? new Rectangle(_surface.PointToScreen(Point.Empty),_surface.ClientSize)
+                : Rectangle.Empty;
+            DamagePresentation.Adopt(_damageRasterScene,bounds,available);
+            ResourcePresentation.Adopt(_resourceRasterScene,bounds,available);
+            BottomPresentation.Adopt(_bottomRasterScene,bounds,available);
+            BuffPresentation.Adopt(_buffRasterScene,bounds,available);
+            MainHudPresentation.Adopt(_mainHudRasterScene,bounds,available);
+        }
         private void OnGeometryChanged(object sender,EventArgs e)
         {
             _schedulingAllowed=false;
             if (_surface==null || _surface.IsDisposed) return;
-            if (!CanShow()) { _surface.Hide(); return; }
+            if (!CanShow()) { _surface.Hide(); RefreshHudPresentations(); return; }
             Rectangle screen=_anchor.RectangleToScreen(_anchor.ClientRectangle);
             if (screen.Width<1 || screen.Height<1 || _surface.Bounds==screen) return;
             // Windows' modal move loop can delay the render timer. Move P in the
@@ -786,6 +839,9 @@ namespace CF7Launcher.Guardian.WorldCompositor
             // HWND. Hiding it here exposed the 67% DRS child and black remainder.
             _surface.CancelPointer("geometry_changed");
             _surface.Bounds=screen;
+            // HUD coordinates are output pixels. Follow P immediately even if
+            // WGC is still reporting the previous source extent during the move.
+            RefreshHudPresentations();
             LogManager.Log("event=world_compositor_follow P="+screen+" visible="+_surface.Visible);
         }
         internal static bool TryResolveCaptureFrame(Rectangle extended,Rectangle window,Size content,out Rectangle frame)
@@ -836,6 +892,22 @@ namespace CF7Launcher.Guardian.WorldCompositor
             catch(Exception error) { LogManager.Log("event=combat_fx_cap_revoke_failed "+error.Message); }
             LogManager.Log("event=combat_fx_cap_revoke reason="+reason+" sent="+sent);
         }
+        private void RejectPlayerHud(string reason,Exception error)
+        {
+            if(_disposed || _playerHudFaulted)return;
+            if(_owner.InvokeRequired) { _owner.BeginInvoke(new Action(()=>RejectPlayerHud(reason,error)));return; }
+            _playerHudFaulted=true;
+            // Clear every native member before re-enabling legacy windows. A HUD
+            // upload fault does not reset its command owner or unknown-write lock.
+            try { if(_native!=null)for(int layer=1;layer<=4;layer++)_native.SetHudRaster(layer,IntPtr.Zero,0,0,0,0,0); }
+            catch(Exception clearError) { EnterRenderFault("player_hud_retirement_failed",clearError);return; }
+            _resourceRasterScene=null;_bottomRasterScene=null;_buffRasterScene=null;_mainHudRasterScene=null;
+            ResourcePresentation.Adopt(null,Rectangle.Empty,false);
+            BottomPresentation.Adopt(null,Rectangle.Empty,false);
+            BuffPresentation.Adopt(null,Rectangle.Empty,false);
+            MainHudPresentation.Adopt(null,Rectangle.Empty,false);
+            LogManager.Log("event=player_hud_legacy_fallback reason="+reason+" error="+error.GetType().Name);
+        }
         private void StopCapture()
         {
             _sentSceneLightVersion=-1;
@@ -848,6 +920,11 @@ namespace CF7Launcher.Guardian.WorldCompositor
             _lastBulletFrameLogTicks=0;
             _surface?.Hide();
             DamagePresentation.Adopt(null, Rectangle.Empty, false);
+            ResourcePresentation.Adopt(null, Rectangle.Empty, false);
+            BottomPresentation.Adopt(null, Rectangle.Empty, false);
+            BuffPresentation.Adopt(null, Rectangle.Empty, false);
+            MainHudPresentation.Adopt(null, Rectangle.Empty, false);
+            _damageRasterScene=null;_resourceRasterScene=null;_bottomRasterScene=null;_buffRasterScene=null;_mainHudRasterScene=null;
             if (_weatherCapabilityAdvertised) {
                 _weatherCapabilityAdvertised=false;
                 try { WeatherCapabilityChanged?.Invoke(false); }
@@ -889,6 +966,10 @@ namespace CF7Launcher.Guardian.WorldCompositor
             // synchronous revoke; do not create a detached retry worker.
             if (_disposed) return; _disposed=true; _timer.Stop(); StopCapture(); _timer.Dispose();
             DamagePresentation.Dispose();
+            ResourcePresentation.Dispose();
+            BottomPresentation.Dispose();
+            BuffPresentation.Dispose();
+            MainHudPresentation.Dispose();
             _owner.LocationChanged-=OnGeometryChanged; _owner.SizeChanged-=OnGeometryChanged;
             _owner.DpiChanged-=OnDpiChanged; _owner.FormClosed-=OnClosed; _owner.Deactivate-=OnOwnerDeactivated;
             _anchor.SizeChanged-=OnGeometryChanged; _anchor.LocationChanged-=OnGeometryChanged;

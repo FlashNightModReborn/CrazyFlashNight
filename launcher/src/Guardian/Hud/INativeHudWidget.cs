@@ -5,6 +5,19 @@ using System.Windows.Forms;
 
 namespace CF7Launcher.Guardian.Hud
 {
+    // Immutable identity of the exact action seen at pointer intake. Painting
+    // and animation may continue while an edge is queued; delivery must not
+    // reinterpret that edge as a new session, revision, row or command.
+    public interface INativeHudPointerSnapshot
+    {
+        object CapturePointerTarget(Point screen);
+        object CaptureWheelTarget(Point screen) => null;
+        bool NeedsPointerClick => true;
+        // Only an actual drag handle opts in. It still checks session identity,
+        // while the host separately checks the output viewport and lifecycle.
+        bool IsCapturedPointerCurrent(object target) => false;
+    }
+
     /// <summary>
     /// 鼠标事件类型。NativeHudOverlay 接收 WM_NCHITTEST 命中后通过 OnMouseEvent 派发给 widget。
     /// </summary>

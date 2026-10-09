@@ -1,4 +1,18 @@
 #pragma once
+// Physical output pixels; HUD is already premultiplied and never receives world grading.
+constexpr char HudRasterShader[] = R"hlsl(
+Texture2D hudPixels : register(t0);
+cbuffer HudRasterParams : register(b0) { float4 hudRect; float4 hudOutput; };
+struct HVertex { float4 pos:SV_POSITION; float2 pixel:TEXCOORD0; };
+HVertex HVS(uint id:SV_VertexID) {
+    float2 q=float2((id==1u || id==2u || id==4u)?1.0:0.0,
+        (id==2u || id==4u || id==5u)?1.0:0.0);
+    float2 position=hudRect.xy+q*hudRect.zw;
+    HVertex v; v.pos=float4(position.x*2.0/hudOutput.x-1.0,
+        1.0-position.y*2.0/hudOutput.y,0,1); v.pixel=q*hudRect.zw; return v;
+}
+float4 HPS(HVertex v):SV_TARGET { return hudPixels.Load(int3(int2(v.pixel),0)); }
+)hlsl";
 // HLSL authority, compiled by ShaderBake during the native build, never at game startup.
 
 // World, weather, bullets and sprites sample one bounded 256x144 HDR light field.

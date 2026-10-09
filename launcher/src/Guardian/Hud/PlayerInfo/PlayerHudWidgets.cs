@@ -536,6 +536,7 @@ internal sealed class PlayerHudBottomWidget : PlayerHudWidgetBase
         return null;
     }
     public override bool TryHitTest(Point screenPt) => Hit(screenPt) != null;
+    internal PlayerHudTarget? CapturePointerTarget(Point screenPt) => Hit(screenPt);
     public override void OnMouseEvent(MouseEventArgs e, MouseEventKind kind)
     {
         var hit = Hit(new Point(e.X, e.Y));

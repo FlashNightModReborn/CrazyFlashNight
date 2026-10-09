@@ -1,0 +1,242 @@
+{
+  "schema": "cf7-main-hud-runtime-release.v1",
+  "date": "2026-10-09",
+  "status": "authorized_release_in_progress",
+  "scope": "Complete native main HUD + PlayerInfo opaque world composition and pistol recoil owner repair",
+  "candidate": {
+    "candidateRelativePath": "tmp/runtime-candidates/v2/hmm1",
+    "buildIdentityHash": "0973C41361F88AA690FB170A40DCC91D272EC3C0B6D129824C0682DA4C8EB3E8",
+    "payloadClosureHash": "C9C6293ED5A77A3DC7FB4F9363A44ADA02D0E21880CB04C6CE8EAD4D6E0204C6",
+    "coreSha256": "E67EE612BC565EF01DA4149E20272E62989BD93A5286F479C527642176ACA9C2",
+    "nativeSha256": "8AF6B49DFF3D2D15DDB4743F49CB4B983F48E649E5C75F766314A0BC79B459DF",
+    "asLoaderSha256": "8d2d95167d3cdd4d2b936e4d8955ddb01ef5ffeb5b39c1d88da0d8cba6269f6b"
+  },
+  "machineChecks": {
+    "fullHostPassed": 6845,
+    "fullHostSkipped": 19,
+    "fullHostFailed": 0,
+    "gpuCorrectnessPassed": 8,
+    "gpuComparisonPassed": 1,
+    "gpuSamples": 35,
+    "inputClassificationChecks": 94,
+    "as2Passed": 670,
+    "as2Failed": 0,
+    "as2CompilerErrors": 0,
+    "as2CompilerWarnings": 0
+  },
+  "fieldReview": {
+    "schema": "cf7-main-hud-field-review.v1",
+    "sessionStartLocal": "2026-10-09T15:32:20+08:00",
+    "sessionEndLocal": "2026-10-09T15:37:06+08:00",
+    "hostPid": 5152,
+    "flashPid": 10212,
+    "candidateRelativePath": "tmp/runtime-candidates/v2/hmm1",
+    "buildIdentityHash": "0973C41361F88AA690FB170A40DCC91D272EC3C0B6D129824C0682DA4C8EB3E8",
+    "payloadClosureHash": "C9C6293ED5A77A3DC7FB4F9363A44ADA02D0E21880CB04C6CE8EAD4D6E0204C6",
+    "coreSha256": "E67EE612BC565EF01DA4149E20272E62989BD93A5286F479C527642176ACA9C2",
+    "asLoaderSha256": "8d2d95167d3cdd4d2b936e4d8955ddb01ef5ffeb5b39c1d88da0d8cba6269f6b",
+    "sourceFreezeMatch": {
+      "files": 45,
+      "mismatches": 0
+    },
+    "userStatement": "粗略玩了一圈，没看到明确的阻断问题；核日志后无阻断则走发布列车",
+    "humanAcceptanceScope": "rough_combined_candidate_playthrough_no_reported_blocker",
+    "completePhysicalInputMatrixExecuted": false,
+    "render": {
+      "requests": 96,
+      "actualResizes": [
+        {
+          "event": "world_render_resize",
+          "scale": "0.85",
+          "paintFenceMs": "79485274.9",
+          "waitGpuMs": "0.1",
+          "resizeMs": "143.6",
+          "repaintMs": "53.3",
+          "handoffMs": "197.1",
+          "line": 8244,
+          "time": "15:33:25.009",
+          "timestamp": 56005.009
+        },
+        {
+          "event": "world_render_resize",
+          "scale": "0.75",
+          "paintFenceMs": "79487923.5",
+          "waitGpuMs": "0.0",
+          "resizeMs": "17.4",
+          "repaintMs": "119.5",
+          "handoffMs": "136.9",
+          "line": 8281,
+          "time": "15:33:27.611",
+          "timestamp": 56007.611
+        },
+        {
+          "event": "world_render_resize",
+          "scale": "0.67",
+          "paintFenceMs": "79493090.3",
+          "waitGpuMs": "0.0",
+          "resizeMs": "9.1",
+          "repaintMs": "28.3",
+          "handoffMs": "37.4",
+          "line": 8339,
+          "time": "15:33:32.773",
+          "timestamp": 56012.773
+        }
+      ],
+      "hudBackendWithdrawalsNearResize": 0,
+      "criticalFaults": [],
+      "backendWithdrawals": 5,
+      "withdrawalContexts": [
+        "skills",
+        "map",
+        "stage-select",
+        "settlement loot panel",
+        "shutdown"
+      ]
+    },
+    "persistenceObservations": {
+      "flashFlushTrue": 13,
+      "shadowConfirmTrue": 13,
+      "flushFalse": 0,
+      "shadowConfirmFalse": 0,
+      "deliveryUnknown": 0,
+      "settlementCommitted": 1,
+      "readbackAuditPerformed": false,
+      "agentWrotePlayerSave": false
+    },
+    "inputRetirement": {
+      "confirmed": true,
+      "brokerExitCode": 0,
+      "targetExited": true,
+      "invalidRejected": 0,
+      "staleRejected": 11,
+      "staleMeaning": "epoch-gate rejection of retired input; consumed/completed sequence are diagnostics, not business acknowledgements"
+    },
+    "retainedFindings": [
+      {
+        "kind": "ui_timer_gap",
+        "startLocal": "15:36:00.781",
+        "recoveredLocal": "15:36:03.813",
+        "maxTickAgeMs": 4484,
+        "flashMaxFrameMs": 4684,
+        "context": "settlement loot panel and window restore; HUD shared backend already suspended",
+        "rootCause": "not established; no stack capture",
+        "blocking": false,
+        "reason": "recovered; subsequent panel close, HUD resume, normal input and confirmed process exit; no corruption or persistent failure observed"
+      },
+      {
+        "kind": "shutdown_http_cancellation",
+        "component": "RagTerminal",
+        "blocking": false,
+        "context": "shutdown cancellation; application and input broker both exited normally"
+      }
+    ],
+    "logHashes": {
+      "launcher.log": "C17C3B3B03779399BBC2FD8DB0041FB3A1AB71DC2EFAC7364AF0F118D031BB41",
+      "bootstrap.log": "1AF1281E81D74C2BAAD7943903CFB763D9A9522CD8E30866810D6FD12C7A637C",
+      "perf-latest.jsonl": "D90F1320D242926F913803F49D890DC3941D722158056332C2CA556800CE55B5"
+    },
+    "decision": "no_observed_release_blocker; retain transition latency for later diagnosis",
+    "limitations": [
+      "No full J/K loadout matrix recorded by user",
+      "No physical scanout capture",
+      "No save durability re-open audit",
+      "Old HWND-based NativeHud automation endpoint remains unavailable while shared HUD is active"
+    ]
+  },
+  "mainlineUpdate": {
+    "from": "668961af03513647ea664c13f8ad6337419c857a",
+    "to": "7fbf2a4018d8f8ff9306983a013d3d5e83a96226",
+    "scope": "Preserved upstream bartending and shotgun additions; no overlap with the 45 checked delivery files; their human acceptance is not implied"
+  },
+  "formalRelease": {
+    "promoted": false,
+    "standardEntryBusinessVerified": false
+  },
+  "releaseRepairs": {
+    "supersededSource": "503de9fdecafec22f7dc2827a2ce3317e13128c6",
+    "supersededTag": "runtime-build-v2/20261009-main-hud-pistol-v1",
+    "supersededRequestId": "F8242110E3A3EB8A7B0ED59311B5AF6E37D819BC1C21DB5F6868E96531818247",
+    "firstPolicyResult": "failed checks plus interrupted repeated slow UI audit; no successful production receipt issued",
+    "firstCloudBuildDispatched": false,
+    "changes": [
+      {
+        "path": "data/items/收集品_情报.xml",
+        "change": "酿酒配方 missing icon now uses existing 烹饪指南; name, rewards, costs and gate unchanged; task catalog derived",
+        "introducedBy": "ced8e4e1e34f4b09456ed0d064c68f9f2e495e30"
+      },
+      {
+        "path": "tools/lib/workbench-ui-ratchet.js",
+        "change": "preserve regex-literal heuristic using reverse trailing-token scan instead of quadratic full-prefix regex search; no input paths or validators skipped"
+      },
+      {
+        "path": "launcher/web/css/panels/bartending.css",
+        "change": "two new player text declarations 9px -> 10px; immutable debt ceiling unchanged"
+      }
+    ],
+    "validation": {
+      "itemIconClosure": "passed",
+      "ratchetPassed": 68,
+      "ratchetFailed": 0,
+      "longInputChildTimeoutMs": 5000,
+      "actualBrowserViewport": "1024x576",
+      "actualBrowserChangedRows": 6,
+      "horizontalOverflowRows": 0,
+      "browserOperations": [
+        "mock materials read",
+        "mock snapshot read"
+      ],
+      "gameplayOrTransactionExecuted": false
+    },
+    "retainedLocalEvidence": "tmp/hud-main-unit/release/",
+    "localProducerReusable": "artifact/recipe/toolchain unchanged; final request and full production receipt must be new",
+    "secondPolicy": {
+      "sourceCommit": "bd66a568e2786a1a15e556bf7a2737fe9fcb3a9c",
+      "tag": "runtime-build-v2/20261009-main-hud-pistol-v2",
+      "requestId": "741823ACBB71AF1021BA6AEA7B023F1601C53022AD436D03D5E37D4B3954A084",
+      "passedChecks": 45,
+      "totalChecks": 47,
+      "failedChecks": [
+        "material-catalog-current",
+        "shop-portrait-assets"
+      ],
+      "receiptSha256": "82018F894CFE69E970F3FAD68280DC54A44F63CCF783C4613AA8A9C89F0F0463",
+      "cloudBuildDispatched": false
+    },
+    "materialCatalog": {
+      "sourceSidecarRefreshed": true,
+      "materialCount": 234,
+      "legacyCount": 58,
+      "dictionaryBodyChanged": false,
+      "dictionarySha256": "012D1415B7DA4E78F05E06D5728B1F33EF6E767A627DB35993E91A8EAEC3DDC8",
+      "check": "passed"
+    },
+    "shopPortraits": {
+      "addedExactShopId": "调酒师",
+      "source": "flashswf/portraits/调酒师.swf",
+      "expression": "普通",
+      "frame": 1,
+      "listedShops": 39,
+      "activeShops": 38,
+      "subjects": 37,
+      "subjectBytes": 1907550,
+      "assetTreeBytes": 1962209,
+      "supersample": 1,
+      "oldRenderingSourcesChanged": false,
+      "existingBoundsChanged": false,
+      "existingSubjectsWithPixelDifferences": 7,
+      "maxChangedPixelsPerSubject": 300,
+      "maxPremultipliedChannelDelta": 14,
+      "oldClosureRetained": "tmp/hud-main-unit/release/shop-portraits-before",
+      "freshFullReplay": "passed; exact bytes against isolated output",
+      "productionCopyEqualsReplayedTree": true,
+      "writer": "tools/bake-shop-portraits.py::promote_stage",
+      "fastAssetValidation": "passed",
+      "runtimeResolverCases": 15,
+      "shopResolverCases": 13,
+      "lazyClosure": "passed",
+      "materialEnemyCoverage": "78/78, 210 occurrences, 156 exact bindings",
+      "humanShopVisualAcceptancePerformed": false,
+      "note": "Complete rebake from unchanged authored sources; small extraction-environment pixel differences retained as measured facts, not represented as identical old pixels. No source artwork or alias was changed."
+    }
+  }
+}

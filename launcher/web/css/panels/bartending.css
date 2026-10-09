@@ -184,7 +184,7 @@
 }
 .bart-slot-icon img { width:100%; height:100%; object-fit:contain; display:block; }
 .bart-slot-name { font-size:10px; color:var(--bt-ink); letter-spacing:.04em; }
-.bart-slot-stock { font-size:9px; color:var(--bt-muted); font-family:Consolas,monospace; }
+.bart-slot-stock { font-size:10px; color:var(--bt-muted); font-family:Consolas,monospace; }
 .bart-slot-count {
     display:flex; align-items:center; gap:0;
 }
@@ -256,7 +256,7 @@
 .bart-shaker-state { font-size:16px; font-weight:700; letter-spacing:.3em; }
 .bart-shaker.state-light .bart-shaker-state { color:var(--wb-bartending-bart-tech-btn-active-color); }
 .bart-shaker.state-hard .bart-shaker-state { color:var(--wb-bartending-bart-confirm-color); }
-.bart-shaker-hint { font-size:9px; color:var(--bt-muted); letter-spacing:.15em; }
+.bart-shaker-hint { font-size:10px; color:var(--bt-muted); letter-spacing:.15em; }
 .bart-shaker:disabled { opacity:.5; cursor:default; }
 
 /* 底部出杯栏 */

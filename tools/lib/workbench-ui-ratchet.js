@@ -796,14 +796,20 @@ function trimLeadingComments(segment) {
 }
 
 function canStartJavaScriptRegex(source, index) {
-    var before = String(source || '').slice(0, index);
-    var match = /(\S+)\s*$/.exec(before);
-    if (!match) return true;
-    var token = match[1];
-    var last = token[token.length - 1];
+    var value = String(source || '');
+    var cursor = index - 1;
+    // Inspect only the preceding token. Searching the entire prefix with
+    // /(\S+)\s*$/ repeatedly backtracks across long minified lines.
+    while (cursor >= 0 && /\s/.test(value[cursor])) cursor--;
+    if (cursor < 0) return true;
+    var last = value[cursor];
     if (/[\(\[\{=,:;!?\|&+\-*%^~<>]/.test(last)) return true;
-    var word = /([A-Za-z_$][\w$]*)$/.exec(token);
-    return !!(word && /^(?:return|case|throw|typeof|instanceof|in|of|delete|void|new|yield|await)$/.test(word[1]));
+    var end = cursor + 1;
+    while (cursor >= 0 && /[\w$]/.test(value[cursor])) cursor--;
+    var start = cursor + 1;
+    while (start < end && !/[A-Za-z_$]/.test(value[start])) start++;
+    return start < end
+        && /^(?:return|case|throw|typeof|instanceof|in|of|delete|void|new|yield|await)$/.test(value.slice(start, end));
 }
 
 function maskJavaScriptCode(source) {

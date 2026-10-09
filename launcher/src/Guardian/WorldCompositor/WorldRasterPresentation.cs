@@ -7,6 +7,21 @@ namespace CF7Launcher.Guardian.WorldCompositor
     internal interface IWorldRasterScene
     {
         void UploadHud(IntPtr pixels, int width, int height, int stride, int x, int y);
+        void ClearHud(IntPtr transparent) => UploadHud(transparent,1,1,4,0,0);
+    }
+
+    internal sealed class OpaqueHudRasterScene : IWorldRasterScene
+    {
+        private readonly NativeCompositorSession _native;
+        private readonly int _layer;
+        internal OpaqueHudRasterScene(NativeCompositorSession native,int layer)
+        {
+            if(layer<0 || layer>4)throw new ArgumentOutOfRangeException(nameof(layer));
+            _native=native ?? throw new ArgumentNullException(nameof(native));_layer=layer;
+        }
+        public void UploadHud(IntPtr pixels,int width,int height,int stride,int x,int y)
+            => _native.SetHudRaster(_layer,pixels,width,height,stride,x,y);
+        public void ClearHud(IntPtr transparent) => _native.SetHudRaster(_layer,IntPtr.Zero,0,0,0,0,0);
     }
 
     internal readonly record struct WorldRasterRegion(int Width, int Height, int X, int Y, int OffsetBytes)
@@ -73,21 +88,30 @@ namespace CF7Launcher.Guardian.WorldCompositor
         internal void Hide()
         {
             if (!_hasContent || _scene == null) return;
-            Upload(_transparent, 1, 1, 4, 0, 0);
+            Upload(_transparent, 1, 1, 4, 0, 0,clear:true);
             _hasContent = false;
         }
 
-        private bool Upload(IntPtr pixels, int width, int height, int stride, int x, int y)
+        private bool Upload(IntPtr pixels, int width, int height, int stride, int x, int y,bool clear=false)
         {
-            try { _scene.UploadHud(pixels, width, height, stride, x, y); return true; }
+            try {
+                if(clear)_scene.ClearHud(_transparent);
+                else _scene.UploadHud(pixels, width, height, stride, x, y);
+                return true;
+            }
             catch (Exception error)
             {
-                _scene = null; _available = false; _hasContent = false;
-                _faultVersion++;
-                Faulted?.Invoke(error);
-                Changed?.Invoke();
+                Reject(error);
                 return false;
             }
+        }
+
+        internal void Reject(Exception error)
+        {
+            if(_disposed)return;
+            _scene=null;_available=false;_hasContent=false;_faultVersion++;
+            Faulted?.Invoke(error);
+            Changed?.Invoke();
         }
 
         public void Dispose()

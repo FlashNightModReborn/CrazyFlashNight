@@ -49,6 +49,12 @@ struct ProbeTimingStats {
     double lastPresentQpcMs,intervalP50Ms,intervalP95Ms,intervalP99Ms,intervalMaxMs;
     double submitP95Ms,presentP95Ms,freshAgeP95Ms;
 };
+// Fixed damage/resource/bottom/Buff slots, copied on submission; GPU work stays on Capture's worker.
+struct ProbeHudRasterStats {
+    uint32_t size, visibleLayers;
+    uint64_t accepted, copiedBytes, uploads, uploadedBytes, draws;
+};
+static_assert(sizeof(ProbeHudRasterStats)==48,"HUD raster diagnostic layout");
 static_assert(sizeof(ProbeTimingStats)==88,"Presentation timing diagnostic layout");
 struct ProbeSceneLightStats {
     uint32_t size,count,width,height;
@@ -58,6 +64,9 @@ static_assert(sizeof(ProbeSceneLightStats)==40,"Scene light diagnostic layout");
 static_assert(sizeof(ProbeWorkStats)==40, "Diagnostic work layout");
 static_assert(sizeof(ProbeContentStats)==40, "Diagnostic content layout");
 extern "C" {
+__declspec(dllexport) int __cdecl ProbeSetHudRaster(void* handle, int layer, const void* pixels,
+    int width, int height, int stride, int x, int y);
+__declspec(dllexport) int __cdecl ProbeGetHudRasterStats(void* handle, ProbeHudRasterStats* stats);
 // Required scene-light-v1 extension; existing ABI12 record layouts are unchanged.
 // Up to 128 cached world lights, rendered in bounded batches of 16. No camera
 // in this snapshot: panning/zooming samples the existing world-space field.

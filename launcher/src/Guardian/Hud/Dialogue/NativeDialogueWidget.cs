@@ -53,7 +53,7 @@ namespace CF7Launcher.Guardian.Hud.Dialogue
     /// 线程模型：同 NpcMenuWidget——Show/Hide/Set* 可从 socket worker 线程调用
     /// （_gate 保护），Paint/Tick/OnMouseEvent 在 UI 线程；事件回调锁外 fire。
     /// </summary>
-    public sealed class NativeDialogueWidget : INativeHudWidget, INativeHudWheelConsumer, INativeHudResumable, IDisposable
+    public sealed class NativeDialogueWidget : INativeHudWidget, INativeHudPointerSnapshot, INativeHudWheelConsumer, INativeHudResumable, IDisposable
     {
         // ── 版面常量的权威在 DialogueUiSkin（XFL 实测，与 layout.json 同源）。
         //    这里只保留排版行为参数。──
@@ -598,6 +598,30 @@ namespace CF7Launcher.Guardian.Hud.Dialogue
                 if (!L.Portrait.IsEmpty && L.Portrait.Contains(screenPt)) return true;
                 if (!L.Scene.IsEmpty && L.Scene.Contains(screenPt)) return true;
                 return false;
+            }
+        }
+
+        private sealed record PointerTarget(string Request,int Revision,int Zone);
+        public bool NeedsPointerClick => false;
+        public object CapturePointerTarget(Point screen)
+        {
+            lock(_gate)return TryHitTest(screen)?new PointerTarget(_frame.RequestId,_frame.Revision,ZoneAtLocked(screen)):null;
+        }
+        public bool IsCapturedPointerCurrent(object target)
+        {
+            lock(_gate)return target is PointerTarget hit && hit.Zone==ZONE_DRAG && _frame!=null && !_suppressed && !_disposed
+                && hit.Request==_frame.RequestId && hit.Revision==_frame.Revision;
+        }
+        public object CaptureWheelTarget(Point screen)
+        {
+            lock(_gate)
+            {
+                if(_frame==null || _suppressed || _disposed)return null;
+                Layout layout=ComputeLayoutLocked();
+                if(!layout.Viewport.Contains(screen) || !layout.Panel.Contains(screen))return null;
+                EnsurePlanLocked();
+                return _plan!=null && NativeDialogueTextLayout.LastNeededLine(_plan,_visibleChars)-BodyCapacityLines+1>0
+                    ? (_frame.RequestId,_frame.Revision) : null;
             }
         }
 

@@ -16,7 +16,7 @@ namespace CF7Launcher.Guardian.Hud
     /// 收敛后的右侧组合 HUD：六入口常驻动作行 + 条件状态槽 + 可选地图预览。
     /// 业务命令仍全部通过 LauncherCommandRouter.Dispatch，不在 widget 内复制业务分支。
     /// </summary>
-    public partial class RightContextWidget : INativeHudWidget, INativeHudCompositeBoundsProvider, IUiDataConsumer, IUiDataLegacyConsumer, IStageOutcomePresenter, IDisposable
+    public partial class RightContextWidget : INativeHudWidget, INativeHudPointerSnapshot, INativeHudCompositeBoundsProvider, IUiDataConsumer, IUiDataLegacyConsumer, IStageOutcomePresenter, IDisposable
     {
         private const int NOTICE_MS = 5000;
         private const int ICON_W_BASE = 28;
@@ -1115,6 +1115,15 @@ namespace CF7Launcher.Guardian.Hud
         public bool TryHitTest(Point screenPt)
         {
             return Visible && HitTest(screenPt).Kind != HitKind.None;
+        }
+
+        public object CapturePointerTarget(Point screen)
+        {
+            HitInfo hit=HitTest(screen);
+            if(!Visible || hit.Kind==HitKind.None)return null;
+            string action=hit.Kind==HitKind.StageAction && hit.Index>=0 && hit.Index<_stageActions.Count?_stageActions[hit.Index].Id:null;
+            return (hit,InputBoundaryTick,action,_stageOutcomeState?.RunId,_stageOutcomeState?.Revision,
+                ReturnGestureSignature(hit),hit.Kind==HitKind.Notice?CurrentNoticeGestureToken():default);
         }
 
         public void OnMouseEvent(MouseEventArgs e, MouseEventKind kind)
