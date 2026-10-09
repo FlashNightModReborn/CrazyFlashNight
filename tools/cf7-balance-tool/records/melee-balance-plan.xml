@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  人工维护的近战（刀类）平衡方案真源。audit 与物品内 balance 均由 melee-balance-sync 派生。
+  近战公式已登记在权威工作簿「刀」页。门线：锋利度残差 ±5%、金币价 [0.8,1.25] 带、K 点 ±5%。
+  存量 231 件大面积偏离公式基线，分批迁移期间以 exceptionCode/异常说明如实分流，
+  不允许为绕开覆盖门删除物品或排除文件。coverageFiles 为空表示整文件覆盖门尚未开启。
+-->
+<meleeBalancePlan>
+  <formulaFamily>melee</formulaFamily>
+  <schemaVersion>1</schemaVersion>
+  <formulaVersion>1</formulaVersion>
+  <workbookVersion>1</workbookVersion>
+  <workbookSha256>357E07955281D4CB3884902B58165E19E97852216AE5A76965D3EBD04FB4E107</workbookSha256>
+  <coverageFiles>
+  </coverageFiles>
+  <records>
+    <record itemName="巨尸长斧" sourceFile="data/items/武器_刀_狂野.xml" weightLayers="-2" categoryFactor="1" damageTypeFactor="1" status="unresolved" note="首批机械登记：锋利度残差0%、价格比0.98均在门内；weightLayers=-2为公式反推拟合值，获取渠道与层级证据待人工裁定" />
+  </records>
+</meleeBalancePlan>

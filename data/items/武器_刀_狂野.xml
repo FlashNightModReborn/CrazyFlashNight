@@ -147,6 +147,24 @@
         <accuracy>-10</accuracy>
         <bladeCount>4</bladeCount>
       </data>
+      <balance>
+        <formulaFamily>melee</formulaFamily>
+        <schemaVersion>1</schemaVersion>
+        <formulaVersion>1</formulaVersion>
+        <workbookVersion>1</workbookVersion>
+        <weightLayers>-2</weightLayers>
+        <damageTypeFactor>1</damageTypeFactor>
+        <categoryFactor>1</categoryFactor>
+        <balanceMode>formula</balanceMode>
+        <recommendedSharpness>100</recommendedSharpness>
+        <recommendedGoldPrice>15234.375</recommendedGoldPrice>
+        <recommendedKPointPrice>533.333333</recommendedKPointPrice>
+        <marketPrice>15000</marketPrice>
+        <status>unresolved</status>
+        <inputDigest>fnv1a32:8eede2f3</inputDigest>
+        <sourceDigest>sha256:e0165c3af679f9a94a1613af1e30b694abb4d7e9cb6421e0d992bb7d8ec4c870</sourceDigest>
+        <auditRef>melee:巨尸长斧</auditRef>
+      </balance>
     </item>
   <item>
       <name>黑暗吉他</name>

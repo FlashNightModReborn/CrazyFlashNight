@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<meleeBalanceAudit>
+  <formulaFamily>melee</formulaFamily>
+  <schemaVersion>1</schemaVersion>
+  <formulaVersion>1</formulaVersion>
+  <workbookVersion>1</workbookVersion>
+  <workbookSha256>357E07955281D4CB3884902B58165E19E97852216AE5A76965D3EBD04FB4E107</workbookSha256>
+  <records>
+    <record>
+      <auditRef>melee:巨尸长斧</auditRef>
+      <itemName>巨尸长斧</itemName>
+      <sourceFile>data/items/武器_刀_狂野.xml</sourceFile>
+      <weightLayers>-2</weightLayers>
+      <damageTypeFactor>1</damageTypeFactor>
+      <categoryFactor>1</categoryFactor>
+      <balanceMode>formula</balanceMode>
+      <status>unresolved</status>
+      <marketPrice>15000</marketPrice>
+      <recommendedSharpness>100</recommendedSharpness>
+      <sharpnessResidual>0</sharpnessResidual>
+      <recommendedGoldPrice>15234.375</recommendedGoldPrice>
+      <recommendedKPointPrice>533.333333</recommendedKPointPrice>
+      <inputs level="10" weight="12" sharpness="100" />
+      <inputDigest>fnv1a32:8eede2f3</inputDigest>
+      <sourceDigest>sha256:e0165c3af679f9a94a1613af1e30b694abb4d7e9cb6421e0d992bb7d8ec4c870</sourceDigest>
+      <note>首批机械登记：锋利度残差0%、价格比0.98均在门内；weightLayers=-2为公式反推拟合值，获取渠道与层级证据待人工裁定</note>
+    </record>
+  </records>
+</meleeBalanceAudit>
