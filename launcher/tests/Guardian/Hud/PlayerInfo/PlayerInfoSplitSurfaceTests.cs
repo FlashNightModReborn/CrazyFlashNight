@@ -12,12 +12,48 @@ using System.Windows.Forms;
 using CF7Launcher.Guardian;
 using CF7Launcher.Guardian.Hud;
 using CF7Launcher.Guardian.Hud.PlayerInfo;
+using CF7Launcher.Guardian.WorldCompositor;
 using Xunit;
 
 namespace CF7Launcher.Tests.Guardian.Hud.PlayerInfo;
 
 public sealed class PlayerInfoSplitSurfaceTests
 {
+    private sealed class RasterSink : IWorldRasterScene
+    {
+        internal int Uploads,Clears;internal bool HasVisiblePixel;
+        public void UploadHud(IntPtr pixels,int width,int height,int stride,int x,int y)
+        {
+            Uploads++;
+            for(int row=0;row<height;row++)for(int column=0;column<width;column++)
+                HasVisiblePixel|=Marshal.ReadByte(pixels,row*stride+column*4+3)>0;
+        }
+        public void ClearHud(IntPtr transparent) {Clears++;}
+    }
+    [Fact]
+    public void SharedResourceBackendUsesRealRasterAndRetiresOnlyItsOwnPresentation()
+    {
+        RunOnSta(()=>
+        {
+            using Form owner=CreateHost(out Panel anchor);
+            using var surface=PlayerInfoSplitSurface.CreateFixture(owner,anchor,"full");
+            using var presenter=new WorldRasterPresentation();
+            var sink=new RasterSink();
+            presenter.Adopt(sink,new Rectangle(anchor.PointToScreen(Point.Empty),anchor.ClientSize),true);
+            surface.SetSharedPresentation(presenter);surface.SetReady();
+            PumpUntil(()=>sink.Uploads>0,TimeSpan.FromSeconds(10),"shared production resource pixels");
+            Assert.True(sink.HasVisiblePixel);
+            Assert.False(surface.Visible);
+            Assert.Equal(0,surface.Counters.CommitCount); // no second layered-window submission
+            surface.Suspend();
+            Assert.Equal(1,sink.Clears);
+            int uploads=sink.Uploads;
+            surface.Resume();
+            PumpUntil(()=>sink.Uploads>uploads,TimeSpan.FromSeconds(10),"resource resume");
+            surface.BeginShutdown().GetAwaiter().GetResult();
+            Assert.Equal(2,sink.Clears);
+        });
+    }
     private const int GwlExStyle = -20;
     private const long WsExTransparent = 0x00000020L;
     private const long WsExLayered = 0x00080000L;

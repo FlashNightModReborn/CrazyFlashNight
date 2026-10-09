@@ -26,7 +26,7 @@ namespace CF7Launcher.Guardian.Hud
     /// 线程模型：Show/Hide/Dismiss 可从 socket worker 线程调用（task 经 UI 派发，但 widget
     /// 自身用 _gate 保护状态），OnMouseEvent 在 UI 线程。事件在锁外 fire。
     /// </summary>
-    public class NpcMenuWidget : INativeHudWidget, INativeHudSuppressionAware
+    public class NpcMenuWidget : INativeHudWidget, INativeHudPointerSnapshot, INativeHudSuppressionAware
     {
         /// <summary>单个菜单行。Id 为 AS2 定义的动作 id（原样回传），Enabled=false 渲染但不激活。</summary>
         public sealed class Entry
@@ -301,6 +301,18 @@ namespace CF7Launcher.Guardian.Hud
         public bool TryHitTest(Point screenPt)
         {
             return ScreenBounds.Contains(screenPt);
+        }
+
+        public object CapturePointerTarget(Point screen)
+        {
+            lock(_gate)
+            {
+                Rectangle bounds=ScreenBounds;
+                if(_session==null || !bounds.Contains(screen))return null;
+                int row=HitRowIndex(bounds,Pad,TitleH,RowH,_session.Entries.Length,screen.X,screen.Y);
+                Entry entry=row>=0 && row<_session.Entries.Length?_session.Entries[row]:null;
+                return (_session,_session.RequestId,_session.SceneId,row,entry?.Id,entry?.Enabled);
+            }
         }
 
         public void OnMouseEvent(MouseEventArgs e, MouseEventKind kind)

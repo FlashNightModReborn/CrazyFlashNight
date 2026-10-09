@@ -18,6 +18,31 @@ namespace CF7Launcher.Tests.Guardian.Hud.PlayerInfo;
 
 public sealed class PlayerHudPresentationTests
 {
+    [Fact]
+    public void ResourceOnlyFlatteningWouldPutMpUnderUnmigratedOpaqueBottomChrome()
+    {
+        Sta(()=>
+        {
+            string root=Root();RuntimeFontCatalog.Configure(root);
+            using var form=new Form {ClientSize=new Size(1024,576),AutoScaleMode=AutoScaleMode.None};
+            using var anchor=new Panel {Dock=DockStyle.Fill};
+            form.Controls.Add(anchor);form.CreateControl();anchor.CreateControl();
+            using var controller=new PlayerHudController(_=>true,()=>true,a=>a());
+            Assert.True(controller.State.Receive(PlayerHudStateTests.Encode(PlayerHudStateTests.Full()),1));
+            using var bottom=new PlayerHudBottomWidget(anchor,controller,Path.Combine(root,"launcher","web","icons"));
+            using var bitmap=new Bitmap(1024,576,PixelFormat.Format32bppPArgb);
+            using(var graphics=Graphics.FromImage(bitmap)) {
+                graphics.Clear(Color.Transparent);
+                bottom.Paint(graphics,1,anchor.PointToScreen(Point.Empty));
+            }
+            var mp=PlayerHudResourceLayout.MpBar;
+            int x=(int)(mp.X+mp.Width/2),y=(int)(mp.Y+mp.Height/2);
+            Color chrome=bitmap.GetPixel(x,y);
+            Assert.Equal(255,(int)chrome.A);
+            Assert.InRange(chrome.R,0,70);Assert.InRange(chrome.G,0,70);Assert.InRange(chrome.B,0,70);
+            Console.WriteLine("resource_z_dependency mp="+mp+" bottom_pixel="+chrome+" alpha=255");
+        });
+    }
     private static string Root()
     {
         var d=new DirectoryInfo(AppContext.BaseDirectory);

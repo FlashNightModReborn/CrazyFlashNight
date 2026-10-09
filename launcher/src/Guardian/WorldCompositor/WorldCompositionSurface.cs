@@ -34,10 +34,14 @@ namespace CF7Launcher.Guardian.WorldCompositor
         private readonly Func<IntPtr> _getFlash;
         private readonly Action _focus;
         private readonly PointerQueue _queue=new PointerQueue();
+        private readonly WorldHudPointerRouter _hudPointer;
+        internal void SetHudInput(IWorldHudInput input) => _hudPointer.SetInput(input);
+        internal void RetireLegacyHudGesture() => _hudPointer.RequireRelease(_readPhysicalButtons());
         private IWorldPointerSink _bridge;
         private readonly uint _epochLimit;
         private readonly long _sequenceLimit;
         private readonly Func<int> _readPhysicalButtons;
+        private readonly Func<IntPtr> _readCapture;
         private bool _renewing,_awaitRelease,_awaitFreshDown;
         internal event Action RenewalRequested;
         internal bool InputRenewing => _renewing;
@@ -51,12 +55,19 @@ namespace CF7Launcher.Guardian.WorldCompositor
         private uint _inputEpoch=1, _gestureSeed, _openGesture, _geometryVersion;
         private Size _geometryOutput, _geometrySource;
         private long _sequence,_workGeneration;
-        internal bool IsDragging => _physicalButtons!=0 || _postedButtons!=0 || _queue.Count!=0;
-        internal WorldCompositionSurface(Func<IntPtr> getFlash,Action focus,IWorldPointerSink bridge,uint epochLimit=WorldPointerMapper.EpochLimit,long sequenceLimit=WorldPointerMapper.SequenceLimit,Func<int> physicalButtons=null)
+        internal bool IsDragging => _physicalButtons!=0 || _postedButtons!=0 || _queue.Count!=0 || _hudPointer.IsDragging;
+        internal WorldCompositionSurface(Func<IntPtr> getFlash,Action focus,IWorldPointerSink bridge,uint epochLimit=WorldPointerMapper.EpochLimit,long sequenceLimit=WorldPointerMapper.SequenceLimit,Func<int> physicalButtons=null,Func<IntPtr> captureWindow=null)
         {
             if(epochLimit<8 || epochLimit>WorldPointerMapper.EpochLimit || sequenceLimit<16 || sequenceLimit>WorldPointerMapper.SequenceLimit)throw new ArgumentOutOfRangeException(nameof(epochLimit));
             _epochLimit=epochLimit;_sequenceLimit=sequenceLimit;_readPhysicalButtons=physicalButtons ?? ReadPhysicalButtons;
+            _readCapture=captureWindow ?? GetCapture;
             _getFlash=getFlash; _focus=focus; _bridge=bridge;
+            _hudPointer=new WorldHudPointerRouter(callback=> {
+                if(IsHandleCreated && !IsDisposed)BeginInvoke(new Action(()=> {
+                    if(IsDisposed)return;
+                    FlushMove();callback();
+                }));
+            });
             Text="CF7 world composition"; FormBorderStyle=FormBorderStyle.None;
             ShowInTaskbar=false; StartPosition=FormStartPosition.Manual; BackColor=Color.Black;
         }
@@ -74,13 +85,21 @@ namespace CF7Launcher.Guardian.WorldCompositor
         internal bool RouteCapturedPointer(int x,int y,int message,uint mouseData)
         {
             if (!Visible || IsDisposed || !IsHandleCreated) return false;
+            IntPtr capture=_readCapture();
+            if(_physicalButtons==0 && !_hudPointer.IsDragging && capture!=IntPtr.Zero && capture!=Handle)
+            {
+                // An unmigrated Native HUD/window can still own a real capture.
+                // Crossing the new bottom raster must not steal its button release.
+                _hudPointer.Leave();LeaveFlashForHud();return false;
+            }
             Point screen=new Point(x,y);
             bool owned=WindowFromPoint(screen)==Handle;
-            if (_physicalButtons!=0) {
+            if (_physicalButtons!=0 || _hudPointer.IsDragging) {
                 GetWindowThreadProcessId(GetForegroundWindow(),out uint pid);
                 GetWindowThreadProcessId(_getFlash(),out uint flashPid);
                 if (pid!=(uint)Environment.ProcessId && pid!=flashPid) { CancelPointer("foreground_lost"); return false; }
             } else if (!owned) {
+                _hudPointer.Leave();
                 if (_inside) { _inside=false; Enqueue(new PointerPacket(0x2A3,Point.Empty,Point.Empty,0,0,_inputEpoch,0,_geometryVersion,NextSequence())); }
                 return false;
             }
@@ -90,7 +109,6 @@ namespace CF7Launcher.Guardian.WorldCompositor
         // tests can drive the envelope path without a topmost physical window.
         internal bool IntakePointer(int message,Point screen,uint mouseData)
         {
-            _inside=true;
             int bit=ButtonBit(message,mouseData);
             if(_renewing || _awaitRelease) {
                 if(IsDown(message))_physicalButtons|=bit;
@@ -99,6 +117,13 @@ namespace CF7Launcher.Guardian.WorldCompositor
                 return message!=0x200;
             }
             if(_awaitFreshDown && !IsDown(message) && message!=0x200)return message!=0x200;
+            if(_hudPointer.TryRoute(message,screen,mouseData,_physicalButtons!=0))
+            {
+                if(IsDown(message))_awaitFreshDown=false;
+                LeaveFlashForHud();
+                return message!=0x200;
+            }
+            _inside=true;
             // Soft boundary waits for an old gesture's release. The hard bound
             // cancels explicitly; no packet can be encoded by masking overflow.
             if((_physicalButtons==0 && (_inputEpoch>=_epochLimit-2 || _sequence>=_sequenceLimit-8))
@@ -123,6 +148,7 @@ namespace CF7Launcher.Guardian.WorldCompositor
         private void BeginRenewal()
         {
             if(_renewing)return;
+            _hudPointer.Cancel();
             GracefulRenewal=_postedButtons==0;
             _workGeneration++;_posted=false;
             _renewing=true;_queue.Clear();_openGesture=0;_postedButtons=0;_inputTarget=IntPtr.Zero;
@@ -175,6 +201,7 @@ namespace CF7Launcher.Guardian.WorldCompositor
         }
         internal void FlushMove()
         {
+            _hudPointer.ObserveReleased(_readPhysicalButtons());
             if (_draining || _renewing) return;
             // A render tick can precede the posted Drain callback. Tail motion
             // is newer than queued edges; never deliver it ahead of Down/Up.
@@ -258,14 +285,22 @@ namespace CF7Launcher.Guardian.WorldCompositor
         {
             if(!Visible || IsDisposed || _renewing) return;
             Point screen=Cursor.Position;
-            if(WindowFromPoint(screen)==Handle)
+            if(WindowFromPoint(screen)==Handle && _hudPointer.TryRoute(0x200,screen,0,_physicalButtons!=0))LeaveFlashForHud();
+            else if(WindowFromPoint(screen)==Handle)
                 Enqueue(new PointerPacket(0x200,screen,PointToClient(screen),_physicalButtons,0,_inputEpoch,_openGesture,_geometryVersion,NextSequence()));
+        }
+        private void LeaveFlashForHud()
+        {
+            if(!_inside)return;
+            _inside=false;
+            Enqueue(new PointerPacket(0x2A3,Point.Empty,Point.Empty,0,0,_inputEpoch,0,_geometryVersion,NextSequence()));
         }
         // Publish the atomic floor and a persistent release ticket before the
         // advisory cancel data packet. Broker control wakes the endpoint after
         // post failure. Already-admitted original calls are retired separately.
         internal void CancelPointer(string reason="explicit")
         {
+            _hudPointer.Cancel();
             if(_renewing)return;
             _workGeneration++;_posted=false;_queue.Clear();
             if(_inputEpoch>=_epochLimit || _sequence>=_sequenceLimit){BeginRenewal();return;}
@@ -296,6 +331,7 @@ namespace CF7Launcher.Guardian.WorldCompositor
         [StructLayout(LayoutKind.Sequential)] private struct Rect { public int Left,Top,Right,Bottom; }
         [DllImport("user32.dll")] private static extern IntPtr WindowFromPoint(Point point);
         [DllImport("user32.dll")] private static extern IntPtr GetForegroundWindow();
+        [DllImport("user32.dll")] private static extern IntPtr GetCapture();
         [DllImport("user32.dll")] private static extern uint GetWindowThreadProcessId(IntPtr hwnd,out uint pid);
         [DllImport("user32.dll")] private static extern short GetKeyState(int key);
         [DllImport("user32.dll")] private static extern short GetAsyncKeyState(int key);

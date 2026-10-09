@@ -7,7 +7,7 @@ using System.Windows.Forms;
 namespace CF7Launcher.Guardian.Hud.Guidance
 {
     /// <summary>Passive scene hints pass all input through; tutorial buttons own only their bounds.</summary>
-    public sealed class NativeGuidanceWidget : INativeHudWidget, INativeHudResumable, IDisposable
+    public sealed class NativeGuidanceWidget : INativeHudWidget, INativeHudPointerSnapshot, INativeHudResumable, IDisposable
     {
         private readonly Control _anchor;
         private readonly FlashCoordinateMapper _mapper;
@@ -102,6 +102,9 @@ namespace CF7Launcher.Guardian.Hud.Guidance
         }
         private Rectangle Button(int index) => ToScreen(NativeGuidancePainter.Button(index));
         public bool TryHitTest(Point p) => Visible && _guide.Tutorial && (Button(0).Contains(p) || Button(1).Contains(p));
+        public object CapturePointerTarget(Point screen) => TryHitTest(screen)
+            ? (_request,_scene,_revision,_page,Button(0).Contains(screen)?0:1) : null;
+        public bool NeedsPointerClick => false;
         public void OnMouseEvent(MouseEventArgs e, MouseEventKind kind)
         {
             if (kind == MouseEventKind.Cancel) { _pressed = -1; return; }

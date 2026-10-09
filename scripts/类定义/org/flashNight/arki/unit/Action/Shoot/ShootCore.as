@@ -71,6 +71,9 @@ class org.flashNight.arki.unit.Action.Shoot.ShootCore {
     /** 枪械师半自动：连射链任务属性名前缀（存储在 core 上，避免污染 keepshooting/keepshooting2） */
     private static var GUNSLINGER_CHAIN_PREFIX:String = "_gunslingerChain_";
 
+    /** 各射击通道的后摇 owner；普通对象身份不会随同路径 MovieClip 重建而重绑定。 */
+    private static var RECOIL_LANE_PREFIX:String = "_shootRecoil_";
+
     /** 枪械师技能：点按间隔倍率（奖励） - 已废弃，使用动态计算方法 */
     public static var GUNSLINGER_TAP_MULTIPLIER:Number = 0.85;
     /** 枪械师技能：按住间隔倍率（惩罚） - 已废弃，使用动态计算方法 */
@@ -160,7 +163,37 @@ class org.flashNight.arki.unit.Action.Shoot.ShootCore {
     }
 
     private static function updateAggregateRecoil(core:Object):Void {
-        core.射击最大后摇中 = ShootCore.isAnyShooting(core);
+        core.射击最大后摇中 = !!(
+            core[RECOIL_LANE_PREFIX + primaryParams.taskName].active ||
+            core[RECOIL_LANE_PREFIX + secondaryParams.taskName].active ||
+            core[RECOIL_LANE_PREFIX + subweaponParams.taskName].active
+        );
+    }
+
+    private static function setLaneRecoil(core:Object, taskName:String, active:Boolean):Void {
+        var laneProp:String = RECOIL_LANE_PREFIX + taskName;
+        var lane:Object = core[laneProp];
+        if (active) {
+            if (lane == null) {
+                lane = {taskName: taskName};
+                core[laneProp] = lane;
+            }
+            lane.active = true;
+        } else if (lane != null) {
+            lane.active = false;
+            EnhancedCooldownWheel.I().removeTaskByLabel(lane, "结束射击后摇");
+        }
+        ShootCore.updateAggregateRecoil(core);
+    }
+
+    /** 两手/副武器各持有自己的任务；null 状态名仅解除后摇，不提前释放全自动射速门。 */
+    public static function scheduleRecoil(core:Object, taskName:String, delayMs:Number, shootingStateName:String):Void {
+        ShootCore.setLaneRecoil(core, taskName, true);
+        var lane:Object = core[RECOIL_LANE_PREFIX + taskName];
+        EnhancedCooldownWheel.I().addOrUpdateTask(
+            lane, "结束射击后摇", ShootCore._endSemiRecoil,
+            delayMs, false, 0, [core, shootingStateName, lane]
+        );
     }
 
     private static function resolveMagazineShot(core:Object, weaponType:String, context:Object):Number {
@@ -221,7 +254,7 @@ class org.flashNight.arki.unit.Action.Shoot.ShootCore {
         // 防御：换弹期间不允许射击任务抢时间轴
         if (man.换弹标签) {
             core[params.shootingStateName] = false;
-            core.射击最大后摇中 = false;
+            ShootCore.setLaneRecoil(core, params.taskName, false);
             ShootCore.removeStoredTask(core, params.taskName);
             return false;
         }
@@ -252,8 +285,8 @@ class org.flashNight.arki.unit.Action.Shoot.ShootCore {
         var bulletAttrKeys:Array = config.bulletAttrKeys;
         var len:Number = bulletAttrKeys.length;
 
-        // 初始状态设定
-        core.射击最大后摇中 = false;
+        // 只重置当前通道，不能释放另一只手的后摇。
+        ShootCore.setLaneRecoil(core, config.taskName, false);
         if (!man.射击许可标签) {
             // _root.发布消息("主角函数.射击许可", "不允许射击");
             core[shootStateName] = false;
@@ -316,19 +349,14 @@ class org.flashNight.arki.unit.Action.Shoot.ShootCore {
 
             // 射击成功时设置后摇状态
             if (core[shootStateName]) {
-                core.射击最大后摇中 = true;
+                ShootCore.setLaneRecoil(core, config.taskName, true);
             }
 
             // 更新弹匣剩余子弹数量
             var magazineRemaining:Number = bulletAttr.ammoCost * (core[magazineCapName] - core[attackMode].value.shot);
             dispatcher.publish("updateBullet", core, shootStateName, magazineRemaining, config.playerBulletField, attackMode);
-            if (shootSpeed > 300) {
-                // [v1.3] 使用生命周期 API 自动管理后摇任务
-                EnhancedCooldownWheel.I().addOrUpdateTask(
-                    core, "结束射击后摇",
-                    function(target:Object):Void { target.射击最大后摇中 = false; },
-                    300, false, 0, [core]
-                );
+            if (core[shootStateName] && shootSpeed > 300) {
+                ShootCore.scheduleRecoil(core, config.taskName, 300, null);
             }
         }
 
@@ -362,17 +390,11 @@ class org.flashNight.arki.unit.Action.Shoot.ShootCore {
         if (man.换弹标签) {
             core[shootStateName] = false;
             ShootCore.removeStoredTask(core, config.taskName);
-            if (context.recoilPolicy == "aggregate") {
-                ShootCore.updateAggregateRecoil(core);
-            } else {
-                core.射击最大后摇中 = false;
-            }
+            ShootCore.setLaneRecoil(core, config.taskName, false);
             return false;
         }
 
-        if (context.recoilPolicy != "aggregate") {
-            core.射击最大后摇中 = false;
-        }
+        ShootCore.setLaneRecoil(core, config.taskName, false);
 
         if (!man.射击许可标签) {
             core[shootStateName] = false;
@@ -422,7 +444,7 @@ class org.flashNight.arki.unit.Action.Shoot.ShootCore {
             core[shootStateName] = core[context.fireMethodName](gunRef, bulletAttr);
 
             if (core[shootStateName]) {
-                core.射击最大后摇中 = true;
+                ShootCore.setLaneRecoil(core, config.taskName, true);
                 if (context.postShotEventName != null) {
                     dispatcher.publish(context.postShotEventName, core, weaponType, bulletAttr, context);
                 }
@@ -431,26 +453,14 @@ class org.flashNight.arki.unit.Action.Shoot.ShootCore {
                 // 清 shootingState，让移动射击转向与最大后摇恢复。
                 var shootingStateCapMs:Number = Number(context.shootingStateCapMs);
                 if (!isNaN(shootingStateCapMs) && shootingStateCapMs > 0 && interval > shootingStateCapMs) {
-                    EnhancedCooldownWheel.I().addOrUpdateTask(
-                        core,
-                        "结束射击后摇_" + config.taskName,
-                        ShootCore._endLaneRecoil,
-                        shootingStateCapMs,
-                        false,
-                        0,
-                        [core, shootStateName]
-                    );
+                    ShootCore.scheduleRecoil(core, config.taskName, shootingStateCapMs, shootStateName);
                 }
             }
 
             var magazineRemaining:Number = ShootCore.resolveMagazineRemaining(core, weaponType, bulletAttr, context);
             dispatcher.publish("updateBullet", core, shootStateName, magazineRemaining, config.playerBulletField, weaponType);
-            if (context.useGlobalRecoilTask && interval > 300) {
-                EnhancedCooldownWheel.I().addOrUpdateTask(
-                    core, "结束射击后摇",
-                    function(target:Object):Void { target.射击最大后摇中 = false; },
-                    300, false, 0, [core]
-                );
+            if (core[shootStateName] && context.useGlobalRecoilTask && interval > 300) {
+                ShootCore.scheduleRecoil(core, config.taskName, 300, null);
             }
         }
 
@@ -570,11 +580,7 @@ class org.flashNight.arki.unit.Action.Shoot.ShootCore {
                 // 枪械师后摇控制：后摇时间根据等级折扣（1级100%，10级85%）
                 var recoilMultiplier:Number = calcGunslingerRecoilMultiplier(gunslingerLevel);
                 var recoilTime:Number = Math.min(interval, 300) * recoilMultiplier;
-                EnhancedCooldownWheel.I().addOrUpdateTask(
-                    core, "结束射击后摇",
-                    ShootCore._endSemiRecoil,
-                    recoilTime, false, 0, [core, params.shootingStateName]
-                );
+                ShootCore.scheduleRecoil(core, params.taskName, recoilTime, params.shootingStateName);
 
                 // 2) 按住自动：注册连射链（固定 1.25x 间隔）
                 core[chainProp] = EnhancedCooldownWheel.I().addTask(
@@ -615,11 +621,7 @@ class org.flashNight.arki.unit.Action.Shoot.ShootCore {
 
                 // 普通半自动后摇控制：与全自动对等
                 var semiRecoilTime:Number = Math.min(interval, 300);
-                EnhancedCooldownWheel.I().addOrUpdateTask(
-                    core, "结束射击后摇",
-                    ShootCore._endSemiRecoil,
-                    semiRecoilTime, false, 0, [core, params.shootingStateName]
-                );
+                ShootCore.scheduleRecoil(core, params.taskName, semiRecoilTime, params.shootingStateName);
 
                 EnhancedCooldownWheel.I().addTask(
                     ShootCore._onSemiCooldownDone,
@@ -645,12 +647,7 @@ class org.flashNight.arki.unit.Action.Shoot.ShootCore {
 
                 // 全自动后摇控制：若射击间隔较长，添加后摇解除任务
                 if (interval > 300) {
-                    // [v1.3] 使用生命周期 API 自动管理后摇任务
-                    EnhancedCooldownWheel.I().addOrUpdateTask(
-                        core, "结束射击后摇",
-                        function(自机:MovieClip):Void { 自机.射击最大后摇中 = false; },
-                        300, false, 0, [core]
-                    );
+                    ShootCore.scheduleRecoil(core, params.taskName, 300, null);
                 }
             }
         }
@@ -726,16 +723,23 @@ class org.flashNight.arki.unit.Action.Shoot.ShootCore {
      * @param core 自机对象
      * @param shootingStateName 射击状态属性名（如"主手射击中"）
      */
-    public static function _endSemiRecoil(core:Object, shootingStateName:String):Void {
-        core.射击最大后摇中 = false;
-        core[shootingStateName] = false;
+    public static function _endSemiRecoil(core:Object, shootingStateName:String, lane:Object):Void {
+        if (!core) return;
+        // 保留旧两参数入口；当前定时回调必须携带注册时捕获的普通对象 owner。
+        if (lane == null) {
+            var taskName:String = shootingStateName == primaryParams.shootingStateName ? primaryParams.taskName
+                : (shootingStateName == secondaryParams.shootingStateName ? secondaryParams.taskName : subweaponParams.taskName);
+            lane = core[RECOIL_LANE_PREFIX + taskName];
+        }
+        if (lane != null && core[RECOIL_LANE_PREFIX + lane.taskName] !== lane) return;
+        if (shootingStateName != null) core[shootingStateName] = false;
+        if (lane != null) ShootCore.setLaneRecoil(core, lane.taskName, false);
+        else ShootCore.updateAggregateRecoil(core);
     }
 
     /** 长间隔独立 lane 的动作后摇结束；保留完整射速门禁与下一发调度。 */
-    public static function _endLaneRecoil(core:Object, shootingStateName:String):Void {
-        if (!core) return;
-        core[shootingStateName] = false;
-        ShootCore.updateAggregateRecoil(core);
+    public static function _endLaneRecoil(core:Object, shootingStateName:String, lane:Object):Void {
+        ShootCore._endSemiRecoil(core, shootingStateName, lane);
     }
 
     /**
@@ -876,11 +880,7 @@ class org.flashNight.arki.unit.Action.Shoot.ShootCore {
             // 枪械师连射后摇控制：后摇时间根据等级折扣
             var recoilMultiplier:Number = calcGunslingerRecoilMultiplier(gunslingerLevel);
             var recoilTime:Number = Math.min(baseInterval, 300) * recoilMultiplier;
-            EnhancedCooldownWheel.I().addOrUpdateTask(
-                core, "结束射击后摇",
-                ShootCore._endSemiRecoil,
-                recoilTime, false, 0, [core, params.shootingStateName]
-            );
+            ShootCore.scheduleRecoil(core, params.taskName, recoilTime, params.shootingStateName);
 
             // 连射链：固定 1.25x 间隔
             core[chainProp] = EnhancedCooldownWheel.I().addTask(
@@ -956,11 +956,7 @@ class org.flashNight.arki.unit.Action.Shoot.ShootCore {
             // 枪械师双枪连射后摇控制：后摇时间根据等级折扣
             var recoilMultiplier:Number = calcGunslingerRecoilMultiplier(gunslingerLevel);
             var recoilTime:Number = Math.min(baseInterval, 300) * recoilMultiplier;
-            EnhancedCooldownWheel.I().addOrUpdateTask(
-                core, "结束射击后摇",
-                ShootCore._endSemiRecoil,
-                recoilTime, false, 0, [core, shootingFlagProp]
-            );
+            ShootCore.scheduleRecoil(core, timerProp, recoilTime, shootingFlagProp);
 
             // 连射链：固定 hold 间隔
             core[chainProp] = EnhancedCooldownWheel.I().addTask(
@@ -1066,6 +1062,8 @@ class org.flashNight.arki.unit.Action.Shoot.ShootCore {
         delete _lastShotTimes[core._name + "_" + params.taskName];
         delete core[SEMI_RELEASED_PREFIX + params.taskName];
         core[params.shootingStateName] = false;
+        ShootCore.setLaneRecoil(core, params.taskName, false);
+        delete core[RECOIL_LANE_PREFIX + params.taskName];
     }
 
     /**

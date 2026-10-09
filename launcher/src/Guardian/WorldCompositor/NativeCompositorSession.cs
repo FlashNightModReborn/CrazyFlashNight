@@ -14,6 +14,8 @@ namespace CF7Launcher.Guardian.WorldCompositor
         private readonly ReadDelegate _read;
         private readonly WorkReadDelegate _readWork;
         private readonly TimingReadDelegate _readTiming;
+        private readonly HudRasterDelegate _hudRaster;
+        private readonly HudRasterReadDelegate _readHudRaster;
         private readonly CaptureSizeDelegate _captureSize;
         private readonly CropDelegate _crop;
         private readonly ModeDelegate _mode;
@@ -55,6 +57,8 @@ namespace CF7Launcher.Guardian.WorldCompositor
                 _stop = Export<StopDelegate>("ProbeStop"); _read = Export<ReadDelegate>("ProbeGetStats");
                 _readWork=TryExport<WorkReadDelegate>("ProbeGetWorkStats");
                 _readTiming=TryExport<TimingReadDelegate>("ProbeGetTimingStats");
+                _hudRaster=TryExport<HudRasterDelegate>("ProbeSetHudRaster");
+                _readHudRaster=TryExport<HudRasterReadDelegate>("ProbeGetHudRasterStats");
                 _captureSize=Export<CaptureSizeDelegate>("ProbeGetCaptureSize"); // reject an old unpaired DLL
                 _crop = Export<CropDelegate>("ProbeSetCrop"); _mode = Export<ModeDelegate>("ProbeSetMode");
                 _matrix=Export<MatrixDelegate>("ProbeSetMatrix"); _active=Export<ActiveDelegate>("ProbeSetActive");
@@ -131,6 +135,20 @@ namespace CF7Launcher.Guardian.WorldCompositor
             if (_readTiming==null || _session==IntPtr.Zero) return null;
             var value=new TimingStats { Size=(uint)Marshal.SizeOf<TimingStats>() };
             return _readTiming(_session,ref value)==1 ? value : null;
+        }
+        internal void SetHudRaster(int layer,IntPtr pixels,int width,int height,int stride,int x,int y)
+        {
+            if (_session==IntPtr.Zero) throw new ObjectDisposedException(nameof(NativeCompositorSession));
+            if (_hudRaster==null) throw new NotSupportedException("Paired opaque HUD raster export is required.");
+            if (_hudRaster(_session,layer,pixels,width,height,stride,x,y)!=1)
+                throw new ArgumentException("Opaque HUD raster rejected.");
+        }
+        internal HudRasterStats ReadHudRaster()
+        {
+            var value=new HudRasterStats {Size=(uint)Marshal.SizeOf<HudRasterStats>()};
+            if (_session==IntPtr.Zero || _readHudRaster==null || _readHudRaster(_session,ref value)!=1)
+                throw new InvalidOperationException("Opaque HUD raster statistics unavailable.");
+            return value;
         }
         internal System.Drawing.Size ReadCaptureSize()
         {
@@ -345,6 +363,16 @@ namespace CF7Launcher.Guardian.WorldCompositor
             public double LastPresentQpcMs, IntervalP50Ms, IntervalP95Ms, IntervalP99Ms, IntervalMaxMs;
             public double SubmitP95Ms, PresentP95Ms, FreshAgeP95Ms;
         }
+        [StructLayout(LayoutKind.Sequential)]
+        internal struct HudRasterStats
+        {
+            public uint Size,VisibleLayers;
+            public ulong Accepted,CopiedBytes,Uploads,UploadedBytes,Draws;
+        }
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)] private delegate int HudRasterDelegate(
+            IntPtr handle,int layer,IntPtr pixels,int width,int height,int stride,int x,int y);
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)] private delegate int HudRasterReadDelegate(
+            IntPtr handle,ref HudRasterStats stats);
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)] private delegate uint VersionDelegate();
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)] private delegate int ViewportDelegate(IntPtr handle,int x,int y,int width,int height,double notBefore);
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)] private delegate int SharpnessDelegate(IntPtr handle,float value);

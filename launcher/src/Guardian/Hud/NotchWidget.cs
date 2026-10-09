@@ -21,7 +21,7 @@ namespace CF7Launcher.Guardian.Hud
     /// - 自身 Tick 由 NativeHud anim tick 驱动；33ms render coalesce 由 NativeHud 控制
     /// - 局部坐标（widget-local，原点 0,0）；Paint 时加 (ScreenBounds.X - hudOrigin.X, ScreenBounds.Y - hudOrigin.Y) 偏移
     /// </summary>
-    public sealed class NotchWidget : INativeHudWidget, INativeHudCompositeBoundsProvider, IUiDataConsumer, IUiDataLegacyConsumer, IDisposable
+    public sealed class NotchWidget : INativeHudWidget, INativeHudPointerSnapshot, INativeHudCompositeBoundsProvider, IUiDataConsumer, IUiDataLegacyConsumer, IDisposable
     {
         #region 状态机
 
@@ -1044,6 +1044,13 @@ namespace CF7Launcher.Guardian.Hud
                 return token;
             }
             return token;
+        }
+
+        public object CapturePointerTarget(Point screen)
+        {
+            if(!Visible || !TryHitTest(screen))return null;
+            Rectangle bounds=ScreenBounds;
+            return ResolvePointerAction(screen.X-bounds.X,screen.Y-bounds.Y);
         }
 
         private static bool PointerActionMatches(

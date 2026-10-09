@@ -334,6 +334,8 @@ class org.flashNight.arki.unit.Action.Shoot.ShootInitCore {
                     ShootCore._lastShotTimes[rateKey] = true;
                     EnhancedCooldownWheel.I().addTask(ShootCore._clearRateLimit, tapInterval, false, rateKey);
                     parentRef[shootingFlagProp] = false;
+                    var recoilTime:Number = Math.min(interval, 300) * ShootCore.calcGunslingerRecoilMultiplier(parentRef.被动技能.枪械师.等级 || 1);
+                    ShootCore.scheduleRecoil(parentRef, timerProp, recoilTime, shootingFlagProp);
 
                     // 2) 按住自动：注册连射链（固定 holdInterval 间隔）
                     parentRef[gunslingerChainProp] = EnhancedCooldownWheel.I().addTask(
@@ -372,6 +374,7 @@ class org.flashNight.arki.unit.Action.Shoot.ShootInitCore {
                     ShootCore._lastShotTimes[rateKey] = true;
                     EnhancedCooldownWheel.I().addTask(ShootCore._clearRateLimit, interval, false, rateKey);
                     parentRef[shootingFlagProp] = false;
+                    ShootCore.scheduleRecoil(parentRef, timerProp, Math.min(interval, 300), shootingFlagProp);
                     parentRef[semiLockProp] = true;
                     EnhancedCooldownWheel.I().addTask(
                         ShootCore._onSemiCooldownDone,

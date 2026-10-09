@@ -23,7 +23,7 @@ namespace CF7Launcher.Guardian.Hud
     /// Done 状态在同一 252×32 行内展开为“状态 / 取消 / 退出”，不向下新增一行；
     /// 无操作 5 秒后按安全取消语义自动收起，悬停任一确认按钮时暂停倒计时。
     /// </summary>
-    public class SafeExitPanelWidget : INativeHudWidget, IUiDataConsumer
+    public class SafeExitPanelWidget : INativeHudWidget, INativeHudPointerSnapshot, IUiDataConsumer
     {
         private const int STATUS_H_BASE = RightHudLayout.StatusSlotHeightBase;
         private const int DONE_AUTO_DISMISS_MS = 5000;
@@ -50,6 +50,7 @@ namespace CF7Launcher.Guardian.Hud
             new object();
         private int _hoverIndex = -1;
         private int _downIndex = -1;         // Down 命中按钮 idx；Click 时若 idx 不匹配则忽略（destructive 操作必需）
+        private long _inputGeneration;
         private int _doneAutoDismissRemainingMs;
 
         public event EventHandler BoundsOrVisibilityChanged;
@@ -96,6 +97,7 @@ namespace CF7Launcher.Guardian.Hud
         /// </summary>
         public void Arm()
         {
+            ++_inputGeneration;
             _armed = true;
             _sawSv1AfterArm = false;
             _dismissed = false;
@@ -331,6 +333,8 @@ namespace CF7Launcher.Guardian.Hud
         }
 
         public bool TryHitTest(Point screenPt) { return ScreenBounds.Contains(screenPt); }
+        public object CapturePointerTarget(Point screen) => Visible && TryHitTest(screen)
+            ? (_inputGeneration,_armed,_state,_slotOwner,HitButton(screen.X,screen.Y,ScreenBounds)) : null;
 
         public void OnMouseEvent(MouseEventArgs e, MouseEventKind kind)
         {
@@ -445,6 +449,7 @@ namespace CF7Launcher.Guardian.Hud
                 else next = SaveState.Idle;
                 if (next != _state)
                 {
+                    ++_inputGeneration;
                     _state = next;
                     _downIndex = -1;
                     _hoverIndex = -1;
