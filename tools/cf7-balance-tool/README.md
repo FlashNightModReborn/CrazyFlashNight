@@ -13,6 +13,10 @@
 |------|------|--------|
 | [docs/agent-balance-record-design.md](./docs/agent-balance-record-design.md) | **当前契约** - 武器 `<balance>` schema、权威边界、施工与验证 | 必读 |
 | [docs/weapon-balance-rulebook.md](./docs/weapon-balance-rulebook.md) | **当前规则** - 武器平衡业务判据与稳定条款 ID | 必读 |
+| [docs/balance-coverage-contract.md](./docs/balance-coverage-contract.md) | **覆盖契约** - 各家族 plan/audit 检查门与 #102 覆盖批次 | 必读 |
+| [docs/potion-balance-rulebook.md](./docs/potion-balance-rulebook.md) | **当前规则** - 药剂/食品/酒水平衡判据 | 必读 |
+| [docs/armor-balance-rulebook.md](./docs/armor-balance-rulebook.md) | **当前规则** - 防具平衡判据、exception 分流与覆盖门 | 必读 |
+| [docs/melee-balance-rulebook.md](./docs/melee-balance-rulebook.md) / [docs/explosives-balance-rulebook.md](./docs/explosives-balance-rulebook.md) | **当前规则** - 近战/爆炸类平衡判据（轻量路径） | 必读 |
 | [docs/monster-flag-rulebook.md](./docs/monster-flag-rulebook.md) | **当前规则** - 怪物面板公式、`<标识>` 反推可辨识性与阶段反查 | 数值/关卡相关必读 |
 | [CF7-BalanceTool-DevSpec-v3.md](./CF7-BalanceTool-DevSpec-v3.md) | 历史开发规格；与当前契约冲突时不得采用 | 历史 |
 | [CF7-BalanceTool-Investigation-Report.md](./CF7-BalanceTool-Investigation-Report.md) | 历史调研报告 | 历史 |
@@ -158,6 +162,14 @@ npm run balance-sync -- --check
 
 # 严格检查仓库内已有的 weapon balance v1 记录
 npm run balance-check
+
+# 各家族 plan→audit→内联 balance 同步与检查（tsx 经 import 条件解析 dist，
+# 改 packages/core 或 packages/xml-io 源码后必须先 `npm run build -w <pkg>`，
+# 否则 check/sync 跑的是过期编译产物）
+npm run potion-balance-sync && npm run potion-balance-check       # 药剂/食品/酒水
+npm run armor-balance-sync && npm run armor-balance-check         # 防具（4 文件覆盖门已开）
+npm run melee-balance-sync && npm run melee-balance-check         # 近战（输出未登记队列）
+npm run explosives-balance-sync && npm run explosives-balance-check  # 爆炸类（手雷文件覆盖门已开）
 
 # 生成字段扫描报告
 npm run field-scan -- --project ./project.json --output ./reports/field-usage-report.json
