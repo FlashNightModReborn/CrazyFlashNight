@@ -1,7 +1,7 @@
 {
   "schema": "cf7-main-hud-runtime-release.v1",
   "date": "2026-10-09",
-  "status": "v4_promoted_pending_v5_data_policy_requalification",
+  "status": "promoted_pending_deployment_audit",
   "scope": "Complete native main HUD + PlayerInfo opaque world composition and pistol recoil owner repair",
   "candidate": {
     "candidateRelativePath": "tmp/runtime-candidates/v2/hmm1",
@@ -150,24 +150,24 @@
   },
   "formalRelease": {
     "promoted": true,
-    "sourceCommit": "f7d86a57b43177acb4896263f9324823bf2808ba",
-    "sourceTag": "runtime-build-v2/20261009-main-hud-pistol-v4",
-    "requestId": "A5412385EC69E21D82F90FC0841C161DC0908E676661548F0117E77FABA65A2A",
-    "releaseTreeOid": "66ca46f603a13c8c5f3c4cf7f68bef3d034ae0be",
+    "sourceCommit": "b13cea03affcdb2050a3b51eba09cc969b75687b",
+    "sourceTag": "runtime-build-v2/20261009-main-hud-pistol-v5",
+    "requestId": "C387616E166AA4375AB3BB4ADCAE59488F3F12E5F92AF28586228FBB80DDDE71",
+    "releaseTreeOid": "e52338c361545b904796bf03d959ba72a8508591",
     "buildIdentityHash": "0973C41361F88AA690FB170A40DCC91D272EC3C0B6D129824C0682DA4C8EB3E8",
     "payloadClosureHash": "C9C6293ED5A77A3DC7FB4F9363A44ADA02D0E21880CB04C6CE8EAD4D6E0204C6",
-    "policyHash": "8293C7FD5CCF6992A8546EE039264A3C7A1F105B4399886E01B167744037FD06",
-    "promotedAtUtc": "2026-10-09T11:07:24.6565918Z",
+    "policyHash": "71D454E2245C694DDC149B7BBEFE05EE28C0241944A99E933C825BBBF478032B",
+    "promotedAtUtc": "2026-10-09T11:41:58.1408715Z",
     "manifestSha256": "5781222692561E1FA701D3823A8F7AD32DE392558DE44F414F8FC6CF9708AD44",
-    "policyReceiptSha256": "FC685878E8C8677AB4DF86CFD15772ADBF065A2EC116AC9C6ACEB3BCE5B76B34",
-    "consensusSha256": "6E230336AE0EBD8B4D8A60719969D9EB77124EC27F4037F49FEC89EF902A0AF3",
+    "policyReceiptSha256": "BC5809CF7272576EFFB7D14831BE58A66A31D983C397A5CE6CA255C51591D18C",
+    "consensusSha256": "AD2BEC65FEB2A859718FE5F819E03E4A527629C9A47B7E76F187683D291799FE",
     "asLoaderSha256": "A689480F6F6A3D16B729BB4F20BBDEE87D6CA59438CB714B6EFAF52AA226F232",
     "policyPassed": 47,
     "policyTotal": 47,
     "signers": [
       {
         "builderKind": "github-oidc",
-        "builderIdentityHash": "8CB4B52446461A89ACD7977033F603173DBF114499E40234CB80DEBE91B990A1",
+        "builderIdentityHash": "5B98FD750F10BBFE8C6BB96215B64BBBD0F2AC4C1A188B6D771995EBB98B0084",
         "faultDomain": "github-hosted-windows",
         "buildIdentityHash": "0973C41361F88AA690FB170A40DCC91D272EC3C0B6D129824C0682DA4C8EB3E8",
         "payloadClosureHash": "C9C6293ED5A77A3DC7FB4F9363A44ADA02D0E21880CB04C6CE8EAD4D6E0204C6"
@@ -181,8 +181,8 @@
     ],
     "signerCount": 2,
     "faultDomainCount": 2,
-    "cloudRunId": 37920684182,
-    "cloudRunUrl": "https://github.com/FlashNightModReborn/CrazyFlashNight/actions/runs/37920684182",
+    "cloudRunId": 37924290619,
+    "cloudRunUrl": "https://github.com/FlashNightModReborn/CrazyFlashNight/actions/runs/37924290619",
     "cloudRunAttempt": 1,
     "cloudArtifactScope": "attestation-only",
     "localProofReusedAcrossPolicyOnlyChanges": true,
@@ -191,11 +191,11 @@
       "exitCode": 0,
       "verifiedBy": "tools/promote-runtime-bundle.ps1"
     },
-    "rollbackArchive": "tmp/runtime-promotions/20261009T110639869Z-557e50ac5fb342f4b95b106a844e1ff6/previous",
+    "rollbackArchive": "tmp/runtime-promotions/20261009T114117261Z-89c93546974b42649256cc268ce69046/previous",
     "frontdoor": {
       "schema": "cf7-main-hud-formal-frontdoor.v1",
       "runtimeMode": "formal_runtime",
-      "guardianPid": 16968,
+      "guardianPid": 7200,
       "processPath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\runtime\\CRAZYFLASHER7MercenaryEmpire.Core.exe",
       "identityMatched": true,
       "frontdoorNavigationReady": true,
@@ -214,23 +214,11 @@
       "businessJourneyExecuted": false,
       "formalBusinessStandardEntryVerified": false,
       "asLoaderSha256": "A689480F6F6A3D16B729BB4F20BBDEE87D6CA59438CB714B6EFAF52AA226F232",
-      "sourceCommitOid": "f7d86a57b43177acb4896263f9324823bf2808ba"
+      "sourceCommitOid": "b13cea03affcdb2050a3b51eba09cc969b75687b"
     },
-    "frontdoorReportSha256": "4FFFF940948A715FFAAEB6CBDD2173DEBA80488EAF9FA61F860E4817F84F20A2",
+    "frontdoorReportSha256": "914BFC33EEDE3B70DC9DDE1DFBB196DE24022180076313494875B4EAB2771516",
     "standardEntryBusinessVerified": false,
-    "transportRecovery": "Initial GitHub status query returned EOF; resumed the same run at attempt 1 without another dispatch or signature bypass",
-    "stagedPayloadIntegrity": {
-      "schema": "v2",
-      "files": 43,
-      "passed": true
-    },
-    "retainedValidationFailures": [
-      {
-        "kind": "wrong_verifier_entrypoint",
-        "result": "Legacy v1 verifier rejected the v2 manifest header; no artifact was changed; the correct v2 staged verifier then passed all 43 payload files",
-        "log": "tmp/hud-main-unit/release/staged-v4-integrity.log"
-      }
-    ]
+    "transportRecovery": "No transport recovery needed"
   },
   "releaseRepairs": {
     "supersededSource": "503de9fdecafec22f7dc2827a2ce3317e13128c6",
@@ -396,6 +384,90 @@
         "First close probe lacked a retained OS process handle and could not report its exit code; a fresh run retained the handle and obtained exit 0"
       ],
       "transportRecovery": "The same successful run was resumed after API EOF/timeouts; the existing system proxy was applied only to the release process; no duplicate cloud dispatch or signature bypass"
+    },
+    {
+      "promoted": true,
+      "sourceCommit": "f7d86a57b43177acb4896263f9324823bf2808ba",
+      "sourceTag": "runtime-build-v2/20261009-main-hud-pistol-v4",
+      "requestId": "A5412385EC69E21D82F90FC0841C161DC0908E676661548F0117E77FABA65A2A",
+      "releaseTreeOid": "66ca46f603a13c8c5f3c4cf7f68bef3d034ae0be",
+      "buildIdentityHash": "0973C41361F88AA690FB170A40DCC91D272EC3C0B6D129824C0682DA4C8EB3E8",
+      "payloadClosureHash": "C9C6293ED5A77A3DC7FB4F9363A44ADA02D0E21880CB04C6CE8EAD4D6E0204C6",
+      "policyHash": "8293C7FD5CCF6992A8546EE039264A3C7A1F105B4399886E01B167744037FD06",
+      "promotedAtUtc": "2026-10-09T11:07:24.6565918Z",
+      "manifestSha256": "5781222692561E1FA701D3823A8F7AD32DE392558DE44F414F8FC6CF9708AD44",
+      "policyReceiptSha256": "FC685878E8C8677AB4DF86CFD15772ADBF065A2EC116AC9C6ACEB3BCE5B76B34",
+      "consensusSha256": "6E230336AE0EBD8B4D8A60719969D9EB77124EC27F4037F49FEC89EF902A0AF3",
+      "asLoaderSha256": "A689480F6F6A3D16B729BB4F20BBDEE87D6CA59438CB714B6EFAF52AA226F232",
+      "policyPassed": 47,
+      "policyTotal": 47,
+      "signers": [
+        {
+          "builderKind": "github-oidc",
+          "builderIdentityHash": "8CB4B52446461A89ACD7977033F603173DBF114499E40234CB80DEBE91B990A1",
+          "faultDomain": "github-hosted-windows",
+          "buildIdentityHash": "0973C41361F88AA690FB170A40DCC91D272EC3C0B6D129824C0682DA4C8EB3E8",
+          "payloadClosureHash": "C9C6293ED5A77A3DC7FB4F9363A44ADA02D0E21880CB04C6CE8EAD4D6E0204C6"
+        },
+        {
+          "builderKeyId": "CFB70E2D339ACB25E9B6C2873DF4F1AEEBA8EA75AD23B825724B27FCA70C0B86",
+          "faultDomain": "physical-host-c",
+          "buildIdentityHash": "0973C41361F88AA690FB170A40DCC91D272EC3C0B6D129824C0682DA4C8EB3E8",
+          "payloadClosureHash": "C9C6293ED5A77A3DC7FB4F9363A44ADA02D0E21880CB04C6CE8EAD4D6E0204C6"
+        }
+      ],
+      "signerCount": 2,
+      "faultDomainCount": 2,
+      "cloudRunId": 37920684182,
+      "cloudRunUrl": "https://github.com/FlashNightModReborn/CrazyFlashNight/actions/runs/37920684182",
+      "cloudRunAttempt": 1,
+      "cloudArtifactScope": "attestation-only",
+      "localProofReusedAcrossPolicyOnlyChanges": true,
+      "sameLocalCandidateUsedForPolicyAndPromotion": true,
+      "installedBootstrapVerifyOnly": {
+        "exitCode": 0,
+        "verifiedBy": "tools/promote-runtime-bundle.ps1"
+      },
+      "rollbackArchive": "tmp/runtime-promotions/20261009T110639869Z-557e50ac5fb342f4b95b106a844e1ff6/previous",
+      "frontdoor": {
+        "schema": "cf7-main-hud-formal-frontdoor.v1",
+        "runtimeMode": "formal_runtime",
+        "guardianPid": 16968,
+        "processPath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\runtime\\CRAZYFLASHER7MercenaryEmpire.Core.exe",
+        "identityMatched": true,
+        "frontdoorNavigationReady": true,
+        "prewarmStarted": true,
+        "prewarmRetiredToIdle": true,
+        "selectedPlayerSlot": false,
+        "observedSaveWrites": 0,
+        "normalCloseRequested": true,
+        "exitCode": 0,
+        "forcedCleanup": false,
+        "saveJsonCount": 11,
+        "saveJsonHashesUnchanged": true,
+        "excludedOperationalFiles": [
+          ".launcher-version-marker.json"
+        ],
+        "businessJourneyExecuted": false,
+        "formalBusinessStandardEntryVerified": false,
+        "asLoaderSha256": "A689480F6F6A3D16B729BB4F20BBDEE87D6CA59438CB714B6EFAF52AA226F232",
+        "sourceCommitOid": "f7d86a57b43177acb4896263f9324823bf2808ba"
+      },
+      "frontdoorReportSha256": "4FFFF940948A715FFAAEB6CBDD2173DEBA80488EAF9FA61F860E4817F84F20A2",
+      "standardEntryBusinessVerified": false,
+      "transportRecovery": "Initial GitHub status query returned EOF; resumed the same run at attempt 1 without another dispatch or signature bypass",
+      "stagedPayloadIntegrity": {
+        "schema": "v2",
+        "files": 43,
+        "passed": true
+      },
+      "retainedValidationFailures": [
+        {
+          "kind": "wrong_verifier_entrypoint",
+          "result": "Legacy v1 verifier rejected the v2 manifest header; no artifact was changed; the correct v2 staged verifier then passed all 43 payload files",
+          "log": "tmp/hud-main-unit/release/staged-v4-integrity.log"
+        }
+      ]
     }
   ],
   "upstreamIntegration": {
@@ -532,7 +604,7 @@
       "evidenceDirectory": "tmp/hud-main-unit/release/as2-upstream"
     }
   },
-  "pendingRelease": {
+  "latestDataIntegration": {
     "sourceTag": "runtime-build-v2/20261009-main-hud-pistol-v5",
     "reason": "Remote food/drink data and potion formula advanced again before fast-forward deployment push",
     "upstreamCommit": "ed52834315ff39b733867f08ec282102152c351a",
