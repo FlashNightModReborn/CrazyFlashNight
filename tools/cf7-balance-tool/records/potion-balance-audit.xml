@@ -405,10 +405,10 @@
       <balanceMode>formula</balanceMode>
       <status>proposed</status>
       <marketPrice>300</marketPrice>
-      <inputDigest>fnv1a32:6763b688</inputDigest>
-      <sourceDigest>sha256:ee46f49ec6a8f378212c0bdc29c49fb667f61473c1b15efd9504671c16d52cda</sourceDigest>
-      <inputs instantHp="100" instantMp="100" regenHp="0" regenMp="0" regenFrames="0" playerLevel="5" isGroup="0" purifyValue="0" toxicity="0" buffHp="0" buffMp="0" buffDefence="0" buffMagicResist="0" buffDamage="5" buffPunch="0" buffSpeed="0" buffToughness="0" buffCritRate="0" buffDuration="1500" />
-      <outputs recoveryStrength="200" purifyStrength="0" toxicStrength="0" buffStrength="76.5" toughnessStrength="0" currentValue="276.5" valueCap="600" rawPrice="196.270031" recommendedPrice="200" />
+      <inputDigest>fnv1a32:10fcef26</inputDigest>
+      <sourceDigest>sha256:4e9e747d58d4a7c1092bb7e41c5ae9834ae31ccdcf13c699ff72145bbfa5322e</sourceDigest>
+      <inputs instantHp="100" instantMp="100" regenHp="0" regenMp="0" regenFrames="0" playerLevel="5" isGroup="0" purifyValue="0" toxicity="0" buffHp="0" buffMp="0" buffDefence="25" buffMagicResist="0" buffDamage="8" buffPunch="0" buffSpeed="0" buffToughness="0" buffCritRate="0" buffDuration="1500" />
+      <outputs recoveryStrength="200" purifyStrength="0" toxicStrength="0" buffStrength="377.4" toughnessStrength="0" currentValue="577.4" valueCap="600" rawPrice="547.851129" recommendedPrice="550" />
     </record>
     <record>
       <auditRef>potion:白菜</auditRef>
@@ -475,10 +475,10 @@
       <balanceMode>formula</balanceMode>
       <status>proposed</status>
       <marketPrice>800</marketPrice>
-      <inputDigest>fnv1a32:cf3006b1</inputDigest>
-      <sourceDigest>sha256:82add926376ba5d6dd52e5b61616e1bc4c09a3ca89b47d26618b887629a8183c</sourceDigest>
-      <inputs instantHp="150" instantMp="150" regenHp="0" regenMp="0" regenFrames="0" playerLevel="10" isGroup="0" purifyValue="0" toxicity="0" buffHp="0" buffMp="0" buffDefence="6" buffMagicResist="0" buffDamage="6" buffPunch="0" buffSpeed="0" buffToughness="0" buffCritRate="0" buffDuration="1800" />
-      <outputs recoveryStrength="300" purifyStrength="0" toxicStrength="0" buffStrength="183" toughnessStrength="0" currentValue="483" valueCap="1100" rawPrice="386.556618" recommendedPrice="400" />
+      <inputDigest>fnv1a32:6bbcecac</inputDigest>
+      <sourceDigest>sha256:e420e3d825b7b9a46327fcc67d2931cc88896c10e6463bd89404e6685d779710</sourceDigest>
+      <inputs instantHp="150" instantMp="150" regenHp="0" regenMp="0" regenFrames="0" playerLevel="10" isGroup="0" purifyValue="0" toxicity="0" buffHp="0" buffMp="0" buffDefence="0" buffMagicResist="0" buffDamage="0" buffPunch="14" buffSpeed="1.2" buffToughness="0" buffCritRate="0" buffDuration="1800" />
+      <outputs recoveryStrength="300" purifyStrength="0" toxicStrength="0" buffStrength="707.6" toughnessStrength="0" currentValue="1007.6" valueCap="1100" rawPrice="1095.831997" recommendedPrice="1100" />
     </record>
     <record>
       <auditRef>potion:白米饭罐头</auditRef>
@@ -489,10 +489,10 @@
       <balanceMode>formula</balanceMode>
       <status>proposed</status>
       <marketPrice>1000</marketPrice>
-      <inputDigest>fnv1a32:25100888</inputDigest>
-      <sourceDigest>sha256:9565d221dc15cefc4b7cbbc4cd10ef16c41f35b372cd62a10395fad4d8fac0fe</sourceDigest>
-      <inputs instantHp="150" instantMp="150" regenHp="400" regenMp="0" regenFrames="600" playerLevel="5" isGroup="0" purifyValue="0" toxicity="0" buffHp="0" buffMp="0" buffDefence="0" buffMagicResist="0" buffDamage="0" buffPunch="0" buffSpeed="0" buffToughness="0" buffCritRate="0" buffDuration="0" />
-      <outputs recoveryStrength="700" purifyStrength="0" toxicStrength="0" buffStrength="0" toughnessStrength="0" currentValue="500" valueCap="600" rawPrice="330.141686" recommendedPrice="350" />
+      <inputDigest>fnv1a32:26250b8f</inputDigest>
+      <sourceDigest>sha256:92214682ffa8956017c69e56a50838f8cf4180a85a21c117b29348309f21a4e7</sourceDigest>
+      <inputs instantHp="150" instantMp="150" regenHp="400" regenMp="0" regenFrames="600" playerLevel="5" isGroup="0" purifyValue="0" toxicity="0" buffHp="0" buffMp="0" buffDefence="6" buffMagicResist="0" buffDamage="0" buffPunch="0" buffSpeed="0" buffToughness="0" buffCritRate="0" buffDuration="1800" />
+      <outputs recoveryStrength="700" purifyStrength="0" toxicStrength="0" buffStrength="73.2" toughnessStrength="0" currentValue="573.2" valueCap="600" rawPrice="405.222467" recommendedPrice="400" />
     </record>
     <record>
       <auditRef>potion:奶</auditRef>
@@ -517,10 +517,10 @@
       <balanceMode>formula</balanceMode>
       <status>proposed</status>
       <marketPrice>700</marketPrice>
-      <inputDigest>fnv1a32:f76410e9</inputDigest>
-      <sourceDigest>sha256:ec083800d66670bcacb80f4cf95114d05eb94b8ad50ead4bad920babdfddf3a1</sourceDigest>
-      <inputs instantHp="80" instantMp="80" regenHp="120" regenMp="120" regenFrames="90" playerLevel="10" isGroup="0" purifyValue="0" toxicity="0" buffHp="0" buffMp="0" buffDefence="5" buffMagicResist="0" buffDamage="8" buffPunch="0" buffSpeed="3" buffToughness="0" buffCritRate="0" buffDuration="600" />
-      <outputs recoveryStrength="400" purifyStrength="0" toxicStrength="0" buffStrength="386.4" toughnessStrength="0" currentValue="712.229546" valueCap="1100" rawPrice="649.828535" recommendedPrice="650" />
+      <inputDigest>fnv1a32:95d9989f</inputDigest>
+      <sourceDigest>sha256:a4c03a507c319d5a4364f7e70f7d264cf98e2dc732a74c5a108ecd3ab1f4f836</sourceDigest>
+      <inputs instantHp="80" instantMp="80" regenHp="120" regenMp="120" regenFrames="90" playerLevel="10" isGroup="0" purifyValue="0" toxicity="0" buffHp="0" buffMp="0" buffDefence="0" buffMagicResist="0" buffDamage="0" buffPunch="18" buffSpeed="1.5" buffToughness="0" buffCritRate="0" buffDuration="600" />
+      <outputs recoveryStrength="400" purifyStrength="0" toxicStrength="0" buffStrength="308.7" toughnessStrength="0" currentValue="634.529546" valueCap="1100" rawPrice="551.617074" recommendedPrice="550" />
     </record>
     <record>
       <auditRef>potion:进口香烟</auditRef>
@@ -531,10 +531,10 @@
       <balanceMode>formula</balanceMode>
       <status>proposed</status>
       <marketPrice>2000</marketPrice>
-      <inputDigest>fnv1a32:5a653c26</inputDigest>
-      <sourceDigest>sha256:dc7dab5260e133c71d7ee7b3a452d2b0ac6879e925e0943c1efd4bfa7f785641</sourceDigest>
-      <inputs instantHp="50" instantMp="100" regenHp="0" regenMp="200" regenFrames="900" playerLevel="20" isGroup="0" purifyValue="0" toxicity="0" buffHp="0" buffMp="0" buffDefence="0" buffMagicResist="0" buffDamage="12" buffPunch="0" buffSpeed="4" buffToughness="0" buffCritRate="0" buffDuration="1800" />
-      <outputs recoveryStrength="350" purifyStrength="0" toxicStrength="0" buffStrength="1439.6" toughnessStrength="0" currentValue="1689.6" valueCap="2100" rawPrice="2514.570568" recommendedPrice="2500" />
+      <inputDigest>fnv1a32:3c4f9a0d</inputDigest>
+      <sourceDigest>sha256:498071a7da7567cb1411c932223569d811bfe01a4b9745c9835094ece36f0f38</sourceDigest>
+      <inputs instantHp="50" instantMp="100" regenHp="0" regenMp="200" regenFrames="900" playerLevel="20" isGroup="0" purifyValue="0" toxicity="0" buffHp="0" buffMp="0" buffDefence="-28" buffMagicResist="0" buffDamage="56" buffPunch="0" buffSpeed="2" buffToughness="0" buffCritRate="0" buffDuration="1800" />
+      <outputs recoveryStrength="350" purifyStrength="0" toxicStrength="0" buffStrength="1293.2" toughnessStrength="0" currentValue="1543.2" valueCap="2100" rawPrice="2168.08763" recommendedPrice="2150" />
     </record>
     <record>
       <auditRef>potion:番茄炒蛋</auditRef>
@@ -544,11 +544,11 @@
       <domain>meal</domain>
       <balanceMode>formula</balanceMode>
       <status>proposed</status>
-      <marketPrice>1550</marketPrice>
-      <inputDigest>fnv1a32:709221d9</inputDigest>
-      <sourceDigest>sha256:104b5a2e0e64c6417c93fff715661083b3e2ec72077a0751801da012a9b7877e</sourceDigest>
-      <inputs instantHp="200" instantMp="200" regenHp="0" regenMp="0" regenFrames="0" playerLevel="15" isGroup="0" purifyValue="0" toxicity="0" buffHp="0" buffMp="0" buffDefence="20" buffMagicResist="0" buffDamage="20" buffPunch="0" buffSpeed="1" buffToughness="0" buffCritRate="0" buffDuration="1800" />
-      <outputs recoveryStrength="400" purifyStrength="0" toxicStrength="0" buffStrength="915" toughnessStrength="0" currentValue="1315" valueCap="1600" rawPrice="1533.576496" recommendedPrice="1550" />
+      <marketPrice>1300</marketPrice>
+      <inputDigest>fnv1a32:13446ea8</inputDigest>
+      <sourceDigest>sha256:38cc4947eab6bbe67b5a6823390d74083a647d0f79a145e04a161b1f467b14c2</sourceDigest>
+      <inputs instantHp="200" instantMp="200" regenHp="0" regenMp="0" regenFrames="0" playerLevel="15" isGroup="0" purifyValue="0" toxicity="0" buffHp="0" buffMp="0" buffDefence="30" buffMagicResist="0" buffDamage="35" buffPunch="0" buffSpeed="0.5" buffToughness="0" buffCritRate="0" buffDuration="1800" />
+      <outputs recoveryStrength="400" purifyStrength="0" toxicStrength="0" buffStrength="1159" toughnessStrength="0" currentValue="1559" valueCap="1600" rawPrice="2009.064802" recommendedPrice="2000" />
     </record>
     <record>
       <auditRef>potion:土豆炒肉丝</auditRef>
@@ -558,11 +558,11 @@
       <domain>meal</domain>
       <balanceMode>formula</balanceMode>
       <status>proposed</status>
-      <marketPrice>1600</marketPrice>
-      <inputDigest>fnv1a32:e111730c</inputDigest>
-      <sourceDigest>sha256:ce746206a1e1bd67a8ae0d14a468015e95497f49b49f17e290c27ec7e7fcd188</sourceDigest>
-      <inputs instantHp="200" instantMp="200" regenHp="0" regenMp="0" regenFrames="0" playerLevel="15" isGroup="0" purifyValue="0" toxicity="0" buffHp="0" buffMp="0" buffDefence="30" buffMagicResist="0" buffDamage="15" buffPunch="0" buffSpeed="1" buffToughness="0" buffCritRate="0" buffDuration="1800" />
-      <outputs recoveryStrength="400" purifyStrength="0" toxicStrength="0" buffStrength="945.5" toughnessStrength="0" currentValue="1345.5" valueCap="1600" rawPrice="1589.254591" recommendedPrice="1600" />
+      <marketPrice>1650</marketPrice>
+      <inputDigest>fnv1a32:a335229e</inputDigest>
+      <sourceDigest>sha256:b941b4a118f9aaae4678d271cc38d0abcba2377223449c978f445015ab56f883</sourceDigest>
+      <inputs instantHp="200" instantMp="200" regenHp="0" regenMp="0" regenFrames="0" playerLevel="15" isGroup="0" purifyValue="0" toxicity="0" buffHp="0" buffMp="0" buffDefence="30" buffMagicResist="0" buffDamage="35" buffPunch="0" buffSpeed="0.5" buffToughness="0" buffCritRate="0" buffDuration="1800" />
+      <outputs recoveryStrength="400" purifyStrength="0" toxicStrength="0" buffStrength="1159" toughnessStrength="0" currentValue="1559" valueCap="1600" rawPrice="2009.064802" recommendedPrice="2000" />
     </record>
     <record>
       <auditRef>potion:黄瓜炒肉片</auditRef>
@@ -572,11 +572,11 @@
       <domain>meal</domain>
       <balanceMode>formula</balanceMode>
       <status>proposed</status>
-      <marketPrice>1550</marketPrice>
-      <inputDigest>fnv1a32:9ce6878f</inputDigest>
-      <sourceDigest>sha256:829e4c6647fa3c4d7545f5e61d188c8fe3da9bc42ba3aceb3c60528e37103ed1</sourceDigest>
-      <inputs instantHp="200" instantMp="200" regenHp="0" regenMp="0" regenFrames="0" playerLevel="15" isGroup="0" purifyValue="0" toxicity="0" buffHp="0" buffMp="0" buffDefence="0" buffMagicResist="0" buffDamage="25" buffPunch="0" buffSpeed="1.5" buffToughness="0" buffCritRate="0" buffDuration="1800" />
-      <outputs recoveryStrength="400" purifyStrength="0" toxicStrength="0" buffStrength="915" toughnessStrength="0" currentValue="1315" valueCap="1600" rawPrice="1533.576496" recommendedPrice="1550" />
+      <marketPrice>1650</marketPrice>
+      <inputDigest>fnv1a32:44b8e4e9</inputDigest>
+      <sourceDigest>sha256:f900a4fc7bd1110a6bac7f5c599729d0749793b6492d832eba6eb9f3734c07af</sourceDigest>
+      <inputs instantHp="200" instantMp="200" regenHp="0" regenMp="0" regenFrames="0" playerLevel="15" isGroup="0" purifyValue="0" toxicity="0" buffHp="0" buffMp="0" buffDefence="30" buffMagicResist="0" buffDamage="35" buffPunch="0" buffSpeed="0.5" buffToughness="0" buffCritRate="0" buffDuration="1800" />
+      <outputs recoveryStrength="400" purifyStrength="0" toxicStrength="0" buffStrength="1159" toughnessStrength="0" currentValue="1559" valueCap="1600" rawPrice="2009.064802" recommendedPrice="2000" />
     </record>
     <record>
       <auditRef>potion:蒜蓉炒空心菜</auditRef>
@@ -586,11 +586,11 @@
       <domain>meal</domain>
       <balanceMode>formula</balanceMode>
       <status>proposed</status>
-      <marketPrice>1600</marketPrice>
-      <inputDigest>fnv1a32:9d026557</inputDigest>
-      <sourceDigest>sha256:8004f4f5f804c22f0f02f3bda7619da7d0f43d04f97e7bc6aa9e6171472eb986</sourceDigest>
-      <inputs instantHp="200" instantMp="200" regenHp="0" regenMp="0" regenFrames="0" playerLevel="15" isGroup="0" purifyValue="5" toxicity="0" buffHp="0" buffMp="0" buffDefence="0" buffMagicResist="0" buffDamage="15" buffPunch="0" buffSpeed="1" buffToughness="0" buffCritRate="0" buffDuration="1800" />
-      <outputs recoveryStrength="400" purifyStrength="300" toxicStrength="0" buffStrength="579.5" toughnessStrength="0" currentValue="1279.5" valueCap="1600" rawPrice="1585.532142" recommendedPrice="1600" />
+      <marketPrice>3600</marketPrice>
+      <inputDigest>fnv1a32:a66d586a</inputDigest>
+      <sourceDigest>sha256:2b9a426ab8dab99703c79552a80966299193999cfcbf075c6491f8d676ac641f</sourceDigest>
+      <inputs instantHp="200" instantMp="200" regenHp="0" regenMp="0" regenFrames="0" playerLevel="15" isGroup="0" purifyValue="5" toxicity="0" buffHp="0" buffMp="0" buffDefence="41" buffMagicResist="0" buffDamage="7" buffPunch="0" buffSpeed="0.7" buffToughness="0" buffCritRate="0" buffDuration="1800" />
+      <outputs recoveryStrength="400" purifyStrength="300" toxicStrength="0" buffStrength="841.8" toughnessStrength="0" currentValue="1541.8" valueCap="1600" rawPrice="2004.105105" recommendedPrice="2000" />
     </record>
     <record>
       <auditRef>potion:清炒白菜</auditRef>
@@ -600,11 +600,11 @@
       <domain>meal</domain>
       <balanceMode>formula</balanceMode>
       <status>proposed</status>
-      <marketPrice>1300</marketPrice>
-      <inputDigest>fnv1a32:bbfd6a94</inputDigest>
-      <sourceDigest>sha256:87ed356a205c80604935c0d11a2143d40407ca105bf70a93bad76ae9f202d0bf</sourceDigest>
-      <inputs instantHp="150" instantMp="150" regenHp="300" regenMp="300" regenFrames="900" playerLevel="15" isGroup="0" purifyValue="0" toxicity="0" buffHp="0" buffMp="0" buffDefence="30" buffMagicResist="0" buffDamage="18" buffPunch="0" buffSpeed="0" buffToughness="0" buffCritRate="0" buffDuration="1800" />
-      <outputs recoveryStrength="900" purifyStrength="0" toxicStrength="0" buffStrength="695.4" toughnessStrength="0" currentValue="1295.4" valueCap="1600" rawPrice="1321.163113" recommendedPrice="1300" />
+      <marketPrice>1900</marketPrice>
+      <inputDigest>fnv1a32:ed3fc7c2</inputDigest>
+      <sourceDigest>sha256:b842534faf8299276962af0830ef03d2d5fab1dc40deaf62e8c16799aab323f4</sourceDigest>
+      <inputs instantHp="150" instantMp="150" regenHp="300" regenMp="300" regenFrames="900" playerLevel="15" isGroup="0" purifyValue="0" toxicity="0" buffHp="0" buffMp="0" buffDefence="45" buffMagicResist="0" buffDamage="8" buffPunch="0" buffSpeed="0.8" buffToughness="0" buffCritRate="0" buffDuration="1800" />
+      <outputs recoveryStrength="900" purifyStrength="0" toxicStrength="0" buffStrength="939.4" toughnessStrength="0" currentValue="1539.4" valueCap="1600" rawPrice="1737.146839" recommendedPrice="1750" />
     </record>
     <record>
       <auditRef>potion:清炒花菜</auditRef>
@@ -614,11 +614,11 @@
       <domain>meal</domain>
       <balanceMode>formula</balanceMode>
       <status>proposed</status>
-      <marketPrice>1500</marketPrice>
-      <inputDigest>fnv1a32:e9797e1e</inputDigest>
-      <sourceDigest>sha256:c9116af5c1dce9234edace12b96461f57c5fb2dfaf9ef340f208a22a15539f18</sourceDigest>
-      <inputs instantHp="200" instantMp="200" regenHp="0" regenMp="0" regenFrames="0" playerLevel="15" isGroup="0" purifyValue="0" toxicity="0" buffHp="0" buffMp="0" buffDefence="25" buffMagicResist="0" buffDamage="15" buffPunch="0" buffSpeed="1" buffToughness="0" buffCritRate="0" buffDuration="1800" />
-      <outputs recoveryStrength="400" purifyStrength="0" toxicStrength="0" buffStrength="884.5" toughnessStrength="0" currentValue="1284.5" valueCap="1600" rawPrice="1478.924223" recommendedPrice="1500" />
+      <marketPrice>2450</marketPrice>
+      <inputDigest>fnv1a32:f4878233</inputDigest>
+      <sourceDigest>sha256:5e44658a063e5e30b2304d0a928d49aa78c40bbe010352ce4ab5775f5efa1c03</sourceDigest>
+      <inputs instantHp="200" instantMp="200" regenHp="0" regenMp="0" regenFrames="0" playerLevel="15" isGroup="0" purifyValue="0" toxicity="0" buffHp="0" buffMp="0" buffDefence="55" buffMagicResist="0" buffDamage="10" buffPunch="0" buffSpeed="1" buffToughness="0" buffCritRate="0" buffDuration="1800" />
+      <outputs recoveryStrength="400" purifyStrength="0" toxicStrength="0" buffStrength="1159" toughnessStrength="0" currentValue="1559" valueCap="1600" rawPrice="2009.064802" recommendedPrice="2000" />
     </record>
     <record>
       <auditRef>potion:清炒土豆丝</auditRef>
@@ -628,11 +628,11 @@
       <domain>meal</domain>
       <balanceMode>formula</balanceMode>
       <status>proposed</status>
-      <marketPrice>1350</marketPrice>
-      <inputDigest>fnv1a32:ba723e92</inputDigest>
-      <sourceDigest>sha256:61355c80bdd085fe590ddaa50e43fc1b769b0714536173af033b311c58d23702</sourceDigest>
-      <inputs instantHp="200" instantMp="200" regenHp="300" regenMp="0" regenFrames="600" playerLevel="15" isGroup="0" purifyValue="0" toxicity="0" buffHp="0" buffMp="0" buffDefence="40" buffMagicResist="0" buffDamage="15" buffPunch="0" buffSpeed="0" buffToughness="0" buffCritRate="0" buffDuration="1800" />
-      <outputs recoveryStrength="700" purifyStrength="0" toxicStrength="0" buffStrength="762.5" toughnessStrength="0" currentValue="1312.5" valueCap="1600" rawPrice="1366.055271" recommendedPrice="1350" />
+      <marketPrice>1900</marketPrice>
+      <inputDigest>fnv1a32:8672038f</inputDigest>
+      <sourceDigest>sha256:1a371287d8d01b2782e8b2486dd5ec4f2a18d0d606392c771df1d0298af093b0</sourceDigest>
+      <inputs instantHp="200" instantMp="200" regenHp="300" regenMp="0" regenFrames="600" playerLevel="15" isGroup="0" purifyValue="0" toxicity="0" buffHp="0" buffMp="0" buffDefence="45" buffMagicResist="0" buffDamage="8" buffPunch="0" buffSpeed="0.8" buffToughness="0" buffCritRate="0" buffDuration="1800" />
+      <outputs recoveryStrength="700" purifyStrength="0" toxicStrength="0" buffStrength="939.4" toughnessStrength="0" currentValue="1489.4" valueCap="1600" rawPrice="1673.823285" recommendedPrice="1650" />
     </record>
     <record>
       <auditRef>potion:葱花炒蛋</auditRef>
@@ -642,11 +642,11 @@
       <domain>meal</domain>
       <balanceMode>formula</balanceMode>
       <status>proposed</status>
-      <marketPrice>1500</marketPrice>
-      <inputDigest>fnv1a32:230d2239</inputDigest>
-      <sourceDigest>sha256:fd7b48a0136a338fde665fbd929f4b2eebca01a8f3653f064c4dcf4516285cd6</sourceDigest>
-      <inputs instantHp="200" instantMp="200" regenHp="0" regenMp="0" regenFrames="0" playerLevel="15" isGroup="0" purifyValue="0" toxicity="0" buffHp="0" buffMp="0" buffDefence="22" buffMagicResist="0" buffDamage="18" buffPunch="0" buffSpeed="1" buffToughness="0" buffCritRate="0" buffDuration="1800" />
-      <outputs recoveryStrength="400" purifyStrength="0" toxicStrength="0" buffStrength="902.8" toughnessStrength="0" currentValue="1302.8" valueCap="1600" rawPrice="1511.593357" recommendedPrice="1500" />
+      <marketPrice>2450</marketPrice>
+      <inputDigest>fnv1a32:719d3bf6</inputDigest>
+      <sourceDigest>sha256:372bb671134aa30a78835b57627ec93b262a947e1a08699fd596ed7286f754e1</sourceDigest>
+      <inputs instantHp="200" instantMp="200" regenHp="0" regenMp="0" regenFrames="0" playerLevel="15" isGroup="0" purifyValue="0" toxicity="0" buffHp="0" buffMp="0" buffDefence="55" buffMagicResist="0" buffDamage="10" buffPunch="0" buffSpeed="1" buffToughness="0" buffCritRate="0" buffDuration="1800" />
+      <outputs recoveryStrength="400" purifyStrength="0" toxicStrength="0" buffStrength="1159" toughnessStrength="0" currentValue="1559" valueCap="1600" rawPrice="2009.064802" recommendedPrice="2000" />
     </record>
     <record>
       <auditRef>potion:蒜蓉烤茄子</auditRef>
@@ -656,11 +656,11 @@
       <domain>meal</domain>
       <balanceMode>formula</balanceMode>
       <status>proposed</status>
-      <marketPrice>1800</marketPrice>
-      <inputDigest>fnv1a32:7736e3cf</inputDigest>
-      <sourceDigest>sha256:512a5c27572232c821b0284b6f75749dcca50d249203db907ce5b8fc092b34c1</sourceDigest>
-      <inputs instantHp="230" instantMp="230" regenHp="0" regenMp="0" regenFrames="0" playerLevel="18" isGroup="0" purifyValue="0" toxicity="0" buffHp="0" buffMp="0" buffDefence="24" buffMagicResist="0" buffDamage="24" buffPunch="0" buffSpeed="1" buffToughness="0" buffCritRate="0" buffDuration="1800" />
-      <outputs recoveryStrength="460" purifyStrength="0" toxicStrength="0" buffStrength="1037" toughnessStrength="0" currentValue="1497" valueCap="1900" rawPrice="1820.152812" recommendedPrice="1800" />
+      <marketPrice>2500</marketPrice>
+      <inputDigest>fnv1a32:ad6eb6f7</inputDigest>
+      <sourceDigest>sha256:ef21bce271b42ac074b89a834f375b4866044252a3e1846ae91f34afc1674b75</sourceDigest>
+      <inputs instantHp="230" instantMp="230" regenHp="0" regenMp="0" regenFrames="0" playerLevel="18" isGroup="0" purifyValue="0" toxicity="0" buffHp="0" buffMp="0" buffDefence="-25" buffMagicResist="0" buffDamage="38" buffPunch="0" buffSpeed="1" buffToughness="0" buffCritRate="18" buffDuration="1800" />
+      <outputs recoveryStrength="460" purifyStrength="0" toxicStrength="0" buffStrength="1244.4" toughnessStrength="0" currentValue="1704.4" valueCap="1900" rawPrice="2250.092592" recommendedPrice="2250" />
     </record>
     <record>
       <auditRef>potion:蜜汁烤鸡</auditRef>
@@ -670,11 +670,11 @@
       <domain>meal</domain>
       <balanceMode>formula</balanceMode>
       <status>proposed</status>
-      <marketPrice>2200</marketPrice>
-      <inputDigest>fnv1a32:e9ce9202</inputDigest>
-      <sourceDigest>sha256:587e5fafb14ec7a285df89632a04ffeacbe1ca096c3b335ddb37b9d9b2204f06</sourceDigest>
-      <inputs instantHp="270" instantMp="270" regenHp="0" regenMp="0" regenFrames="0" playerLevel="22" isGroup="0" purifyValue="0" toxicity="0" buffHp="0" buffMp="0" buffDefence="28" buffMagicResist="0" buffDamage="30" buffPunch="0" buffSpeed="1.5" buffToughness="0" buffCritRate="0" buffDuration="1800" />
-      <outputs recoveryStrength="540" purifyStrength="0" toxicStrength="0" buffStrength="1348.1" toughnessStrength="0" currentValue="1888.1" valueCap="2300" rawPrice="2570.333942" recommendedPrice="2550" />
+      <marketPrice>4250</marketPrice>
+      <inputDigest>fnv1a32:56d7692f</inputDigest>
+      <sourceDigest>sha256:7002ec8a803f80ffcf591859d5ca900c7af911156146f4104133b91499b59f69</sourceDigest>
+      <inputs instantHp="270" instantMp="270" regenHp="0" regenMp="0" regenFrames="0" playerLevel="22" isGroup="0" purifyValue="0" toxicity="0" buffHp="0" buffMp="0" buffDefence="-31" buffMagicResist="0" buffDamage="46" buffPunch="0" buffSpeed="1" buffToughness="0" buffCritRate="22" buffDuration="1800" />
+      <outputs recoveryStrength="540" purifyStrength="0" toxicStrength="0" buffStrength="1439.6" toughnessStrength="0" currentValue="1979.6" valueCap="2300" rawPrice="2790.333231" recommendedPrice="2800" />
     </record>
     <record>
       <auditRef>potion:酥炸大虾</auditRef>
@@ -684,11 +684,11 @@
       <domain>meal</domain>
       <balanceMode>formula</balanceMode>
       <status>proposed</status>
-      <marketPrice>2600</marketPrice>
-      <inputDigest>fnv1a32:e7429563</inputDigest>
-      <sourceDigest>sha256:a67170b3099ac3beaef051d588730dbf4a0366adf655096c1149201e61ba4201</sourceDigest>
-      <inputs instantHp="310" instantMp="310" regenHp="0" regenMp="0" regenFrames="0" playerLevel="26" isGroup="0" purifyValue="0" toxicity="0" buffHp="0" buffMp="0" buffDefence="36" buffMagicResist="0" buffDamage="32" buffPunch="0" buffSpeed="1.5" buffToughness="0" buffCritRate="0" buffDuration="1800" />
-      <outputs recoveryStrength="620" purifyStrength="0" toxicStrength="0" buffStrength="1482.3" toughnessStrength="0" currentValue="2102.3" valueCap="2700" rawPrice="2991.644376" recommendedPrice="3000" />
+      <marketPrice>2800</marketPrice>
+      <inputDigest>fnv1a32:e0cea3fa</inputDigest>
+      <sourceDigest>sha256:18e9a0892c57b516f05b548ffc10d549a1254ec89f30a14e8c8da5c087f71ca4</sourceDigest>
+      <inputs instantHp="310" instantMp="310" regenHp="0" regenMp="0" regenFrames="0" playerLevel="26" isGroup="0" purifyValue="0" toxicity="0" buffHp="0" buffMp="0" buffDefence="-36" buffMagicResist="0" buffDamage="55" buffPunch="0" buffSpeed="1.5" buffToughness="0" buffCritRate="25" buffDuration="1800" />
+      <outputs recoveryStrength="620" purifyStrength="0" toxicStrength="0" buffStrength="1787.3" toughnessStrength="0" currentValue="2407.3" valueCap="2700" rawPrice="3834.540586" recommendedPrice="3850" />
     </record>
     <record>
       <auditRef>potion:瑶柱蒸蛋</auditRef>
@@ -698,11 +698,11 @@
       <domain>meal</domain>
       <balanceMode>formula</balanceMode>
       <status>proposed</status>
-      <marketPrice>2000</marketPrice>
-      <inputDigest>fnv1a32:d2504cdb</inputDigest>
-      <sourceDigest>sha256:17bcd615ab81e1d9cdce4a4ac1e631f528f7f5b56897e412e8c7baf8bff548b5</sourceDigest>
-      <inputs instantHp="340" instantMp="340" regenHp="0" regenMp="0" regenFrames="0" playerLevel="30" isGroup="0" purifyValue="0" toxicity="0" buffHp="0" buffMp="0" buffDefence="30" buffMagicResist="0" buffDamage="28" buffPunch="0" buffSpeed="2" buffToughness="0" buffCritRate="0" buffDuration="1800" />
-      <outputs recoveryStrength="680" purifyStrength="0" toxicStrength="0" buffStrength="1488.4" toughnessStrength="0" currentValue="2168.4" valueCap="3100" rawPrice="3085.111613" recommendedPrice="3100" />
+      <marketPrice>3000</marketPrice>
+      <inputDigest>fnv1a32:5f0052b5</inputDigest>
+      <sourceDigest>sha256:d6fd06afcfe3d764a6a8048b77d91e750b3a194a10b69410caf997512c97bc94</sourceDigest>
+      <inputs instantHp="340" instantMp="340" regenHp="0" regenMp="0" regenFrames="0" playerLevel="30" isGroup="0" purifyValue="0" toxicity="0" buffHp="0" buffMp="0" buffDefence="55" buffMagicResist="0" buffDamage="70" buffPunch="0" buffSpeed="1" buffToughness="0" buffCritRate="0" buffDuration="1800" />
+      <outputs recoveryStrength="680" purifyStrength="0" toxicStrength="0" buffStrength="2257" toughnessStrength="0" currentValue="2937" valueCap="3100" rawPrice="5526.482971" recommendedPrice="5550" />
     </record>
     <record>
       <auditRef>potion:情报鸡尾酒</auditRef>
@@ -728,10 +728,10 @@
       <balanceMode>formula</balanceMode>
       <status>proposed</status>
       <marketPrice>4000</marketPrice>
-      <inputDigest>fnv1a32:5d357c69</inputDigest>
-      <sourceDigest>sha256:4863f3a62e4fea91d8bd1be6a5692e7ffd75a891a8ed1c351acedc2f26e9b1ce</sourceDigest>
-      <inputs instantHp="600" instantMp="600" regenHp="0" regenMp="0" regenFrames="0" playerLevel="45" isGroup="0" purifyValue="0" toxicity="0" buffHp="0" buffMp="0" buffDefence="20" buffMagicResist="0" buffDamage="30" buffPunch="0" buffSpeed="7.5" buffToughness="0" buffCritRate="0" buffDuration="1800" />
-      <outputs recoveryStrength="1200" purifyStrength="0" toxicStrength="0" buffStrength="3080.5" toughnessStrength="0" currentValue="4280.5" valueCap="4600" rawPrice="10555.851574" recommendedPrice="10550" />
+      <inputDigest>fnv1a32:ee8e5b2a</inputDigest>
+      <sourceDigest>sha256:2b72db7e49f889d6eb479d823acb2a0dd9cd1ec7fa15d50df1a842fd4a761b4e</sourceDigest>
+      <inputs instantHp="600" instantMp="600" regenHp="0" regenMp="0" regenFrames="0" playerLevel="45" isGroup="0" purifyValue="0" toxicity="0" buffHp="0" buffMp="0" buffDefence="150" buffMagicResist="0" buffDamage="40" buffPunch="0" buffSpeed="0" buffToughness="0" buffCritRate="0" buffDuration="1800" />
+      <outputs recoveryStrength="1200" purifyStrength="0" toxicStrength="0" buffStrength="2562" toughnessStrength="0" currentValue="3762" valueCap="4600" rawPrice="7822.222992" recommendedPrice="7800" />
     </record>
     <record>
       <auditRef>potion:巧克力板</auditRef>
@@ -742,10 +742,10 @@
       <balanceMode>formula</balanceMode>
       <status>proposed</status>
       <marketPrice>5000</marketPrice>
-      <inputDigest>fnv1a32:ccc6f714</inputDigest>
-      <sourceDigest>sha256:bd99afbab6e1c79ff55585877009f1033c42abb14051d5a2e227a8447cd7a847</sourceDigest>
-      <inputs instantHp="300" instantMp="600" regenHp="0" regenMp="0" regenFrames="0" playerLevel="35" isGroup="0" purifyValue="0" toxicity="0" buffHp="0" buffMp="0" buffDefence="0" buffMagicResist="0" buffDamage="28" buffPunch="0" buffSpeed="6" buffToughness="0" buffCritRate="0" buffDuration="1800" />
-      <outputs recoveryStrength="900" purifyStrength="0" toxicStrength="0" buffStrength="2342.4" toughnessStrength="0" currentValue="3242.4" valueCap="3600" rawPrice="6212.514246" recommendedPrice="6200" />
+      <inputDigest>fnv1a32:e3ac7837</inputDigest>
+      <sourceDigest>sha256:538350461436a5b0cf7ceaa52ce54dc3737442bad35b4c9097c49e9fd25783ea</sourceDigest>
+      <inputs instantHp="300" instantMp="600" regenHp="0" regenMp="0" regenFrames="0" playerLevel="35" isGroup="0" purifyValue="0" toxicity="0" buffHp="0" buffMp="0" buffDefence="0" buffMagicResist="0" buffDamage="0" buffPunch="50" buffSpeed="4" buffToughness="0" buffCritRate="0" buffDuration="1800" />
+      <outputs recoveryStrength="900" purifyStrength="0" toxicStrength="0" buffStrength="2440" toughnessStrength="0" currentValue="3340" valueCap="3600" rawPrice="6621.354312" recommendedPrice="6600" />
     </record>
     <record>
       <auditRef>potion:番茄炒鸡蛋罐头</auditRef>
@@ -756,10 +756,10 @@
       <balanceMode>formula</balanceMode>
       <status>proposed</status>
       <marketPrice>5000</marketPrice>
-      <inputDigest>fnv1a32:4c219392</inputDigest>
-      <sourceDigest>sha256:8f71714c5f93db06f7c4414746b3620637404d42bd2db052d675f713e9d2f477</sourceDigest>
-      <inputs instantHp="600" instantMp="800" regenHp="0" regenMp="0" regenFrames="0" playerLevel="50" isGroup="0" purifyValue="0" toxicity="0" buffHp="0" buffMp="0" buffDefence="35" buffMagicResist="0" buffDamage="40" buffPunch="0" buffSpeed="7.5" buffToughness="0" buffCritRate="0" buffDuration="1800" />
-      <outputs recoveryStrength="1400" purifyStrength="0" toxicStrength="0" buffStrength="3446.5" toughnessStrength="0" currentValue="4846.5" valueCap="5100" rawPrice="13571.993549" recommendedPrice="13550" />
+      <inputDigest>fnv1a32:2999fe1a</inputDigest>
+      <sourceDigest>sha256:3a5436e5b31e5608ac1c836db8f2844885205eae752a1d0a4c1d940201c0cb9f</sourceDigest>
+      <inputs instantHp="600" instantMp="800" regenHp="0" regenMp="0" regenFrames="0" playerLevel="50" isGroup="0" purifyValue="0" toxicity="0" buffHp="0" buffMp="0" buffDefence="160" buffMagicResist="0" buffDamage="45" buffPunch="0" buffSpeed="0" buffToughness="0" buffCritRate="0" buffDuration="1800" />
+      <outputs recoveryStrength="1400" purifyStrength="0" toxicStrength="0" buffStrength="2775.5" toughnessStrength="0" currentValue="4175.5" valueCap="5100" rawPrice="9455.01966" recommendedPrice="9450" />
     </record>
     <record>
       <auditRef>potion:啤酒</auditRef>
@@ -770,10 +770,10 @@
       <balanceMode>formula</balanceMode>
       <status>proposed</status>
       <marketPrice>6000</marketPrice>
-      <inputDigest>fnv1a32:f4e5450b</inputDigest>
-      <sourceDigest>sha256:6bb9891bfb8bf633de56211a4a49d45f4781363d516c483787e3f9fe600ebddb</sourceDigest>
-      <inputs instantHp="300" instantMp="800" regenHp="0" regenMp="0" regenFrames="0" playerLevel="35" isGroup="0" purifyValue="0" toxicity="0" buffHp="0" buffMp="0" buffDefence="-15" buffMagicResist="0" buffDamage="50" buffPunch="0" buffSpeed="5" buffToughness="0" buffCritRate="0" buffDuration="1800" />
-      <outputs recoveryStrength="1100" purifyStrength="0" toxicStrength="0" buffStrength="2257" toughnessStrength="0" currentValue="3357" valueCap="3600" rawPrice="6283.256916" recommendedPrice="6300" />
+      <inputDigest>fnv1a32:b258ee42</inputDigest>
+      <sourceDigest>sha256:1af1355b29a86672921db017a93172dd59a36d1fd3ea552e3430d9acaf2b2005</sourceDigest>
+      <inputs instantHp="300" instantMp="800" regenHp="0" regenMp="0" regenFrames="0" playerLevel="35" isGroup="0" purifyValue="0" toxicity="0" buffHp="0" buffMp="0" buffDefence="-49" buffMagicResist="0" buffDamage="106" buffPunch="0" buffSpeed="3.5" buffToughness="0" buffCritRate="0" buffDuration="1800" />
+      <outputs recoveryStrength="1100" purifyStrength="0" toxicStrength="0" buffStrength="2409.5" toughnessStrength="0" currentValue="3509.5" valueCap="3600" rawPrice="6902.581343" recommendedPrice="6900" />
     </record>
     <record>
       <auditRef>potion:超级棒棒糖</auditRef>
@@ -784,10 +784,10 @@
       <balanceMode>formula</balanceMode>
       <status>proposed</status>
       <marketPrice>7000</marketPrice>
-      <inputDigest>fnv1a32:03f3ff36</inputDigest>
-      <sourceDigest>sha256:774c409b014e534b7c60902601df02511007f7bee28d4a11ef8873e707e86ef8</sourceDigest>
-      <inputs instantHp="400" instantMp="400" regenHp="200" regenMp="200" regenFrames="900" playerLevel="35" isGroup="0" purifyValue="0" toxicity="0" buffHp="0" buffMp="0" buffDefence="18" buffMagicResist="0" buffDamage="30" buffPunch="0" buffSpeed="6" buffToughness="0" buffCritRate="0" buffDuration="1800" />
-      <outputs recoveryStrength="1200" purifyStrength="0" toxicStrength="0" buffStrength="2598.6" toughnessStrength="0" currentValue="3598.6" valueCap="3600" rawPrice="7302.004708" recommendedPrice="7300" />
+      <inputDigest>fnv1a32:ba34f4b1</inputDigest>
+      <sourceDigest>sha256:f00a5428e1c410d680ebc20b379cf552794a82b96243621508b99f81bda5329b</sourceDigest>
+      <inputs instantHp="400" instantMp="400" regenHp="200" regenMp="200" regenFrames="900" playerLevel="35" isGroup="0" purifyValue="0" toxicity="0" buffHp="0" buffMp="0" buffDefence="0" buffMagicResist="0" buffDamage="0" buffPunch="50" buffSpeed="4" buffToughness="0" buffCritRate="0" buffDuration="1800" />
+      <outputs recoveryStrength="1200" purifyStrength="0" toxicStrength="0" buffStrength="2440" toughnessStrength="0" currentValue="3440" valueCap="3600" rawPrice="6590.504685" recommendedPrice="6600" />
     </record>
     <record>
       <auditRef>potion:红酒</auditRef>
@@ -798,10 +798,10 @@
       <balanceMode>formula</balanceMode>
       <status>proposed</status>
       <marketPrice>10000</marketPrice>
-      <inputDigest>fnv1a32:d22a6d01</inputDigest>
-      <sourceDigest>sha256:24c1660a87ca662db3b8fd79543b4d1226b6c906cc3552efb9dc4152724db11e</sourceDigest>
-      <inputs instantHp="700" instantMp="1200" regenHp="0" regenMp="0" regenFrames="0" playerLevel="65" isGroup="0" purifyValue="0" toxicity="0" buffHp="0" buffMp="0" buffDefence="-25" buffMagicResist="0" buffDamage="95" buffPunch="0" buffSpeed="10" buffToughness="0" buffCritRate="0" buffDuration="1800" />
-      <outputs recoveryStrength="1900" purifyStrength="0" toxicStrength="0" buffStrength="4483.5" toughnessStrength="0" currentValue="6383.5" valueCap="6600" rawPrice="19113.499506" recommendedPrice="19100" />
+      <inputDigest>fnv1a32:6f6ae7fc</inputDigest>
+      <sourceDigest>sha256:89f9daea9498949c8bf5a8d727cc94b1c9249425f358ffdf8b21a8b83cd6809f</sourceDigest>
+      <inputs instantHp="700" instantMp="1200" regenHp="0" regenMp="0" regenFrames="0" playerLevel="65" isGroup="0" purifyValue="0" toxicity="0" buffHp="0" buffMp="0" buffDefence="-91" buffMagicResist="0" buffDamage="197" buffPunch="0" buffSpeed="6.5" buffToughness="0" buffCritRate="0" buffDuration="1800" />
+      <outputs recoveryStrength="1900" purifyStrength="0" toxicStrength="0" buffStrength="4477.4" toughnessStrength="0" currentValue="6377.4" valueCap="6600" rawPrice="19091.886778" recommendedPrice="19100" />
     </record>
     <record>
       <auditRef>potion:狻猊·一型</auditRef>
@@ -1169,71 +1169,71 @@
       <domain>meal</domain>
       <balanceMode>formula</balanceMode>
       <status>runtime-test-pending</status>
-      <marketPrice>1200</marketPrice>
-      <inputDigest>fnv1a32:1efb324c</inputDigest>
-      <sourceDigest>sha256:171ca7e018185b672b0b45e42b22f9405f07172e362729e296f577298e2e4f9d</sourceDigest>
-      <inputs instantHp="100" instantMp="160" regenHp="0" regenMp="0" regenFrames="0" playerLevel="10" isGroup="0" purifyValue="0" toxicity="0" buffHp="0" buffMp="0" buffDefence="-8" buffMagicResist="0" buffDamage="15" buffPunch="0" buffSpeed="0" buffToughness="0" buffCritRate="8" buffDuration="1800" />
-      <outputs recoveryStrength="260" purifyStrength="0" toxicStrength="0" buffStrength="786.9" toughnessStrength="0" currentValue="1046.9" valueCap="1100" rawPrice="1194.320044" recommendedPrice="1200" />
+      <marketPrice>3750</marketPrice>
+      <inputDigest>fnv1a32:8f2e7c68</inputDigest>
+      <sourceDigest>sha256:24598ee175f8a53b27d973890530678c4496f30a278321a3110f0d92e421bc11</sourceDigest>
+      <inputs instantHp="100" instantMp="160" regenHp="0" regenMp="0" regenFrames="0" playerLevel="10" isGroup="0" purifyValue="0" toxicity="0" buffHp="0" buffMp="0" buffDefence="-13" buffMagicResist="0" buffDamage="22" buffPunch="0" buffSpeed="0" buffToughness="0" buffCritRate="13" buffDuration="1800" />
+      <outputs recoveryStrength="260" purifyStrength="0" toxicStrength="0" buffStrength="640.5" toughnessStrength="0" currentValue="900.5" valueCap="1100" rawPrice="960.39696" recommendedPrice="950" />
       <note>暴击率buff为新增运行时输入，实机验证待完成</note>
     </record>
     <record>
       <auditRef>potion:蓝色妖精</auditRef>
       <itemName>蓝色妖精</itemName>
       <sourceFile>消耗品_酒水.xml</sourceFile>
-      <sourceLevel>14</sourceLevel>
+      <sourceLevel>12</sourceLevel>
       <domain>meal</domain>
       <balanceMode>formula</balanceMode>
       <status>runtime-test-pending</status>
-      <marketPrice>1800</marketPrice>
-      <inputDigest>fnv1a32:b928ee66</inputDigest>
-      <sourceDigest>sha256:7d2356c03ea33a01b7d52f2bc10e42b7a790d175773998827bbcb4b9812d5b06</sourceDigest>
-      <inputs instantHp="140" instantMp="240" regenHp="0" regenMp="0" regenFrames="0" playerLevel="14" isGroup="0" purifyValue="0" toxicity="0" buffHp="0" buffMp="0" buffDefence="-8" buffMagicResist="0" buffDamage="20" buffPunch="0" buffSpeed="0" buffToughness="0" buffCritRate="10" buffDuration="1800" />
-      <outputs recoveryStrength="380" purifyStrength="0" toxicStrength="0" buffStrength="1030.9" toughnessStrength="0" currentValue="1410.9" valueCap="1500" rawPrice="1732.628686" recommendedPrice="1750" />
+      <marketPrice>6250</marketPrice>
+      <inputDigest>fnv1a32:179ab041</inputDigest>
+      <sourceDigest>sha256:3c095fb86b67aef6f7dd37cec67423b00d180477fafe1fa148fbf5d663d221f5</sourceDigest>
+      <inputs instantHp="140" instantMp="240" regenHp="0" regenMp="0" regenFrames="0" playerLevel="12" isGroup="0" purifyValue="0" toxicity="0" buffHp="0" buffMp="0" buffDefence="-16" buffMagicResist="0" buffDamage="26" buffPunch="0" buffSpeed="0" buffToughness="0" buffCritRate="16" buffDuration="1800" />
+      <outputs recoveryStrength="380" purifyStrength="0" toxicStrength="0" buffStrength="768.6" toughnessStrength="0" currentValue="1148.6" valueCap="1300" rawPrice="1262.216016" recommendedPrice="1250" />
       <note>暴击率buff为新增运行时输入，实机验证待完成</note>
     </record>
     <record>
       <auditRef>potion:白兰提尼</auditRef>
       <itemName>白兰提尼</itemName>
       <sourceFile>消耗品_酒水.xml</sourceFile>
-      <sourceLevel>22</sourceLevel>
+      <sourceLevel>18</sourceLevel>
       <domain>meal</domain>
       <balanceMode>formula</balanceMode>
       <status>runtime-test-pending</status>
-      <marketPrice>3000</marketPrice>
-      <inputDigest>fnv1a32:2bf68526</inputDigest>
-      <sourceDigest>sha256:29b685d23b07cae1d2de5546319633453c4c0fe3f0a57fd0c96e70fad3a82abd</sourceDigest>
-      <inputs instantHp="220" instantMp="400" regenHp="0" regenMp="0" regenFrames="0" playerLevel="22" isGroup="0" purifyValue="0" toxicity="0" buffHp="0" buffMp="0" buffDefence="-10" buffMagicResist="0" buffDamage="30" buffPunch="0" buffSpeed="0" buffToughness="0" buffCritRate="15" buffDuration="1800" />
-      <outputs recoveryStrength="620" purifyStrength="0" toxicStrength="0" buffStrength="1570.75" toughnessStrength="0" currentValue="2190.75" valueCap="2300" rawPrice="3221.219379" recommendedPrice="3200" />
+      <marketPrice>13250</marketPrice>
+      <inputDigest>fnv1a32:0c0d93ea</inputDigest>
+      <sourceDigest>sha256:4173aac401b34e3d58fb67f4b6089434afe0c215433b20d8d41758e78f4176b8</sourceDigest>
+      <inputs instantHp="220" instantMp="400" regenHp="0" regenMp="0" regenFrames="0" playerLevel="18" isGroup="0" purifyValue="0" toxicity="0" buffHp="0" buffMp="0" buffDefence="-23" buffMagicResist="0" buffDamage="39" buffPunch="0" buffSpeed="0" buffToughness="0" buffCritRate="23" buffDuration="1800" />
+      <outputs recoveryStrength="620" purifyStrength="0" toxicStrength="0" buffStrength="1134.6" toughnessStrength="0" currentValue="1754.6" valueCap="1900" rawPrice="2195.159666" recommendedPrice="2200" />
       <note>暴击率buff为新增运行时输入，实机验证待完成</note>
     </record>
     <record>
       <auditRef>potion:月爆</auditRef>
       <itemName>月爆</itemName>
       <sourceFile>消耗品_酒水.xml</sourceFile>
-      <sourceLevel>22</sourceLevel>
+      <sourceLevel>18</sourceLevel>
       <domain>meal</domain>
       <balanceMode>formula</balanceMode>
       <status>runtime-test-pending</status>
-      <marketPrice>3000</marketPrice>
-      <inputDigest>fnv1a32:5ae22555</inputDigest>
-      <sourceDigest>sha256:e89b0432b3f1255b58e775431042cc4944cef997930d27e75eeaa372b4b15f8c</sourceDigest>
-      <inputs instantHp="220" instantMp="400" regenHp="0" regenMp="0" regenFrames="0" playerLevel="22" isGroup="0" purifyValue="0" toxicity="0" buffHp="0" buffMp="0" buffDefence="-10" buffMagicResist="0" buffDamage="30" buffPunch="0" buffSpeed="0" buffToughness="0" buffCritRate="15" buffDuration="1800" />
-      <outputs recoveryStrength="620" purifyStrength="0" toxicStrength="0" buffStrength="1570.75" toughnessStrength="0" currentValue="2190.75" valueCap="2300" rawPrice="3221.219379" recommendedPrice="3200" />
+      <marketPrice>14000</marketPrice>
+      <inputDigest>fnv1a32:65548e4f</inputDigest>
+      <sourceDigest>sha256:cd07bbbb14c60ddf448bf88d7e10b1eadb4754c11ec72d85ffad142dda3be5d6</sourceDigest>
+      <inputs instantHp="220" instantMp="400" regenHp="0" regenMp="0" regenFrames="0" playerLevel="18" isGroup="0" purifyValue="0" toxicity="0" buffHp="0" buffMp="0" buffDefence="-23" buffMagicResist="0" buffDamage="39" buffPunch="0" buffSpeed="0" buffToughness="0" buffCritRate="23" buffDuration="1800" />
+      <outputs recoveryStrength="620" purifyStrength="0" toxicStrength="0" buffStrength="1134.6" toughnessStrength="0" currentValue="1754.6" valueCap="1900" rawPrice="2195.159666" recommendedPrice="2200" />
       <note>暴击率buff为新增运行时输入，实机验证待完成</note>
     </record>
     <record>
       <auditRef>potion:钢琴女郎</auditRef>
       <itemName>钢琴女郎</itemName>
       <sourceFile>消耗品_酒水.xml</sourceFile>
-      <sourceLevel>34</sourceLevel>
+      <sourceLevel>26</sourceLevel>
       <domain>meal</domain>
       <balanceMode>formula</balanceMode>
       <status>runtime-test-pending</status>
-      <marketPrice>5200</marketPrice>
-      <inputDigest>fnv1a32:b178550d</inputDigest>
-      <sourceDigest>sha256:a0845b855d0750de37149e2e818fff67c2e9159516ebeaf42aee89427d68603d</sourceDigest>
-      <inputs instantHp="380" instantMp="720" regenHp="0" regenMp="0" regenFrames="0" playerLevel="34" isGroup="0" purifyValue="0" toxicity="0" buffHp="0" buffMp="0" buffDefence="-15" buffMagicResist="0" buffDamage="45" buffPunch="0" buffSpeed="0" buffToughness="0" buffCritRate="22" buffDuration="1800" />
-      <outputs recoveryStrength="1100" purifyStrength="0" toxicStrength="0" buffStrength="2318" toughnessStrength="0" currentValue="3418" valueCap="3500" rawPrice="6524.902419" recommendedPrice="6500" />
+      <marketPrice>24750</marketPrice>
+      <inputDigest>fnv1a32:b7340b88</inputDigest>
+      <sourceDigest>sha256:6f93ccbb70be5e622cdd8606de7bbd630c7dfdef25ceed59a905ce7248a528f2</sourceDigest>
+      <inputs instantHp="380" instantMp="720" regenHp="0" regenMp="0" regenFrames="0" playerLevel="26" isGroup="0" purifyValue="0" toxicity="0" buffHp="0" buffMp="0" buffDefence="-30" buffMagicResist="0" buffDamage="50" buffPunch="0" buffSpeed="0" buffToughness="0" buffCritRate="30" buffDuration="1800" />
+      <outputs recoveryStrength="1100" purifyStrength="0" toxicStrength="0" buffStrength="1464" toughnessStrength="0" currentValue="2564" valueCap="2700" rawPrice="3780.364558" recommendedPrice="3800" />
       <note>暴击率buff为新增运行时输入，实机验证待完成</note>
     </record>
     <record>
@@ -1244,206 +1244,206 @@
       <domain>meal</domain>
       <balanceMode>formula</balanceMode>
       <status>runtime-test-pending</status>
-      <marketPrice>1200</marketPrice>
-      <inputDigest>fnv1a32:bc50fc2e</inputDigest>
-      <sourceDigest>sha256:91988ea57b39c9f249589cbbaefa06395b969e720e199844a520d0cee57e23cd</sourceDigest>
-      <inputs instantHp="100" instantMp="160" regenHp="0" regenMp="0" regenFrames="0" playerLevel="10" isGroup="0" purifyValue="0" toxicity="0" buffHp="0" buffMp="0" buffDefence="-8" buffMagicResist="0" buffDamage="15" buffPunch="0" buffSpeed="0" buffToughness="0" buffCritRate="8" buffDuration="1800" />
-      <outputs recoveryStrength="260" purifyStrength="0" toxicStrength="0" buffStrength="786.9" toughnessStrength="0" currentValue="1046.9" valueCap="1100" rawPrice="1194.320044" recommendedPrice="1200" />
+      <marketPrice>3750</marketPrice>
+      <inputDigest>fnv1a32:cafd85b6</inputDigest>
+      <sourceDigest>sha256:414e27f2b41754bebed64f7ae858c254ccc94b2bf4317590326f6d28e0d5c2e3</sourceDigest>
+      <inputs instantHp="100" instantMp="160" regenHp="0" regenMp="0" regenFrames="0" playerLevel="10" isGroup="0" purifyValue="0" toxicity="0" buffHp="0" buffMp="0" buffDefence="-13" buffMagicResist="0" buffDamage="22" buffPunch="0" buffSpeed="0" buffToughness="0" buffCritRate="13" buffDuration="1800" />
+      <outputs recoveryStrength="260" purifyStrength="0" toxicStrength="0" buffStrength="640.5" toughnessStrength="0" currentValue="900.5" valueCap="1100" rawPrice="960.39696" recommendedPrice="950" />
       <note>暴击率buff为新增运行时输入，实机验证待完成</note>
     </record>
     <record>
       <auditRef>potion:滴血简</auditRef>
       <itemName>滴血简</itemName>
       <sourceFile>消耗品_酒水.xml</sourceFile>
-      <sourceLevel>14</sourceLevel>
+      <sourceLevel>12</sourceLevel>
       <domain>meal</domain>
       <balanceMode>formula</balanceMode>
       <status>runtime-test-pending</status>
-      <marketPrice>2100</marketPrice>
-      <inputDigest>fnv1a32:296577d3</inputDigest>
-      <sourceDigest>sha256:9c0ab4e76d19ce0d0537b3cd2ceaef51bec07ce14bfaac4bcd8469f15d0b57c0</sourceDigest>
-      <inputs instantHp="160" instantMp="280" regenHp="0" regenMp="0" regenFrames="0" playerLevel="14" isGroup="0" purifyValue="0" toxicity="0" buffHp="0" buffMp="0" buffDefence="-8" buffMagicResist="0" buffDamage="20" buffPunch="0" buffSpeed="0" buffToughness="0" buffCritRate="10" buffDuration="1800" />
-      <outputs recoveryStrength="440" purifyStrength="0" toxicStrength="0" buffStrength="1030.9" toughnessStrength="0" currentValue="1470.9" valueCap="1500" rawPrice="1788.565692" recommendedPrice="1800" />
+      <marketPrice>8750</marketPrice>
+      <inputDigest>fnv1a32:1bfa20b5</inputDigest>
+      <sourceDigest>sha256:68bef04b3628ea70841f5a73ae2b4ee9257f57d9605ff6b1d679701a4f2e09fc</sourceDigest>
+      <inputs instantHp="160" instantMp="280" regenHp="0" regenMp="0" regenFrames="0" playerLevel="12" isGroup="0" purifyValue="0" toxicity="0" buffHp="0" buffMp="0" buffDefence="-16" buffMagicResist="0" buffDamage="26" buffPunch="0" buffSpeed="0" buffToughness="0" buffCritRate="16" buffDuration="1800" />
+      <outputs recoveryStrength="440" purifyStrength="0" toxicStrength="0" buffStrength="768.6" toughnessStrength="0" currentValue="1208.6" valueCap="1300" rawPrice="1318.153023" recommendedPrice="1300" />
       <note>暴击率buff为新增运行时输入，实机验证待完成</note>
     </record>
     <record>
       <auditRef>potion:火星爆</auditRef>
       <itemName>火星爆</itemName>
       <sourceFile>消耗品_酒水.xml</sourceFile>
-      <sourceLevel>26</sourceLevel>
+      <sourceLevel>22</sourceLevel>
       <domain>meal</domain>
       <balanceMode>formula</balanceMode>
       <status>runtime-test-pending</status>
-      <marketPrice>3900</marketPrice>
-      <inputDigest>fnv1a32:65bca2e1</inputDigest>
-      <sourceDigest>sha256:fd85437cfd08f48281f282b2903fd7c35c8e648294b60e96ae006fd860e08348</sourceDigest>
-      <inputs instantHp="280" instantMp="520" regenHp="0" regenMp="0" regenFrames="0" playerLevel="26" isGroup="0" purifyValue="0" toxicity="0" buffHp="0" buffMp="0" buffDefence="-12" buffMagicResist="0" buffDamage="35" buffPunch="0" buffSpeed="0" buffToughness="0" buffCritRate="18" buffDuration="1800" />
-      <outputs recoveryStrength="800" purifyStrength="0" toxicStrength="0" buffStrength="1866.6" toughnessStrength="0" currentValue="2666.6" valueCap="2700" rawPrice="4332.569666" recommendedPrice="4350" />
+      <marketPrice>17750</marketPrice>
+      <inputDigest>fnv1a32:d30467f9</inputDigest>
+      <sourceDigest>sha256:3a84a0b4bf5d1dfb7df8992f0a0c7a5e59c2068953cdb6c17971cbea1a26e98a</sourceDigest>
+      <inputs instantHp="280" instantMp="520" regenHp="0" regenMp="0" regenFrames="0" playerLevel="22" isGroup="0" purifyValue="0" toxicity="0" buffHp="0" buffMp="0" buffDefence="-29" buffMagicResist="0" buffDamage="43" buffPunch="0" buffSpeed="0" buffToughness="0" buffCritRate="31" buffDuration="1800" />
+      <outputs recoveryStrength="800" purifyStrength="0" toxicStrength="0" buffStrength="1378.6" toughnessStrength="0" currentValue="2178.6" valueCap="2300" rawPrice="2991.031143" recommendedPrice="3000" />
       <note>暴击率buff为新增运行时输入，实机验证待完成</note>
     </record>
     <record>
       <auditRef>potion:绽放之光</auditRef>
       <itemName>绽放之光</itemName>
       <sourceFile>消耗品_酒水.xml</sourceFile>
-      <sourceLevel>22</sourceLevel>
+      <sourceLevel>18</sourceLevel>
       <domain>meal</domain>
       <balanceMode>formula</balanceMode>
       <status>runtime-test-pending</status>
-      <marketPrice>3000</marketPrice>
-      <inputDigest>fnv1a32:16f84ddc</inputDigest>
-      <sourceDigest>sha256:84b0c9f0ade11edecf88336252e9fe41fb4a32f9679f81b7d7139197eac3a8c6</sourceDigest>
-      <inputs instantHp="220" instantMp="400" regenHp="0" regenMp="0" regenFrames="0" playerLevel="22" isGroup="0" purifyValue="0" toxicity="0" buffHp="0" buffMp="0" buffDefence="-10" buffMagicResist="0" buffDamage="30" buffPunch="0" buffSpeed="0" buffToughness="0" buffCritRate="15" buffDuration="1800" />
-      <outputs recoveryStrength="620" purifyStrength="0" toxicStrength="0" buffStrength="1570.75" toughnessStrength="0" currentValue="2190.75" valueCap="2300" rawPrice="3221.219379" recommendedPrice="3200" />
+      <marketPrice>14750</marketPrice>
+      <inputDigest>fnv1a32:95d9d1fc</inputDigest>
+      <sourceDigest>sha256:0abb5336a80996356b139810e2a6020dd44f1892bd6d699f64ab7138bc4ab5a9</sourceDigest>
+      <inputs instantHp="220" instantMp="400" regenHp="0" regenMp="0" regenFrames="0" playerLevel="18" isGroup="0" purifyValue="0" toxicity="0" buffHp="0" buffMp="0" buffDefence="-23" buffMagicResist="0" buffDamage="39" buffPunch="0" buffSpeed="0" buffToughness="0" buffCritRate="23" buffDuration="1800" />
+      <outputs recoveryStrength="620" purifyStrength="0" toxicStrength="0" buffStrength="1134.6" toughnessStrength="0" currentValue="1754.6" valueCap="1900" rawPrice="2195.159666" recommendedPrice="2200" />
       <note>暴击率buff为新增运行时输入，实机验证待完成</note>
     </record>
     <record>
       <auditRef>potion:咸猪手</auditRef>
       <itemName>咸猪手</itemName>
       <sourceFile>消耗品_酒水.xml</sourceFile>
-      <sourceLevel>22</sourceLevel>
+      <sourceLevel>18</sourceLevel>
       <domain>meal</domain>
       <balanceMode>formula</balanceMode>
       <status>runtime-test-pending</status>
-      <marketPrice>3000</marketPrice>
-      <inputDigest>fnv1a32:5e3773ae</inputDigest>
-      <sourceDigest>sha256:b288dfe71e82a0457dc613f145606a1f52a7942ed81e17e81fac7465a1864cb7</sourceDigest>
-      <inputs instantHp="220" instantMp="400" regenHp="0" regenMp="0" regenFrames="0" playerLevel="22" isGroup="0" purifyValue="0" toxicity="0" buffHp="0" buffMp="0" buffDefence="-10" buffMagicResist="0" buffDamage="30" buffPunch="0" buffSpeed="0" buffToughness="0" buffCritRate="15" buffDuration="1800" />
-      <outputs recoveryStrength="620" purifyStrength="0" toxicStrength="0" buffStrength="1570.75" toughnessStrength="0" currentValue="2190.75" valueCap="2300" rawPrice="3221.219379" recommendedPrice="3200" />
+      <marketPrice>15500</marketPrice>
+      <inputDigest>fnv1a32:aca155ec</inputDigest>
+      <sourceDigest>sha256:0b9d363bd56ef027b1107ae40cc65d42b0a96808cb8a7c89aa68468442610341</sourceDigest>
+      <inputs instantHp="220" instantMp="400" regenHp="0" regenMp="0" regenFrames="0" playerLevel="18" isGroup="0" purifyValue="0" toxicity="0" buffHp="0" buffMp="0" buffDefence="-23" buffMagicResist="0" buffDamage="39" buffPunch="0" buffSpeed="0" buffToughness="0" buffCritRate="23" buffDuration="1800" />
+      <outputs recoveryStrength="620" purifyStrength="0" toxicStrength="0" buffStrength="1134.6" toughnessStrength="0" currentValue="1754.6" valueCap="1900" rawPrice="2195.159666" recommendedPrice="2200" />
       <note>暴击率buff为新增运行时输入，实机验证待完成</note>
     </record>
     <record>
       <auditRef>potion:钢琴师</auditRef>
       <itemName>钢琴师</itemName>
       <sourceFile>消耗品_酒水.xml</sourceFile>
-      <sourceLevel>33</sourceLevel>
+      <sourceLevel>26</sourceLevel>
       <domain>meal</domain>
       <balanceMode>formula</balanceMode>
       <status>runtime-test-pending</status>
-      <marketPrice>5100</marketPrice>
-      <inputDigest>fnv1a32:bcfe05b8</inputDigest>
-      <sourceDigest>sha256:49a36b8d237f65390b16cce170b43af2e1976aad93d61d312297f642a710f9c3</sourceDigest>
-      <inputs instantHp="360" instantMp="680" regenHp="0" regenMp="0" regenFrames="0" playerLevel="33" isGroup="0" purifyValue="0" toxicity="0" buffHp="0" buffMp="0" buffDefence="-15" buffMagicResist="0" buffDamage="45" buffPunch="0" buffSpeed="0" buffToughness="0" buffCritRate="22" buffDuration="1800" />
-      <outputs recoveryStrength="1040" purifyStrength="0" toxicStrength="0" buffStrength="2318" toughnessStrength="0" currentValue="3358" valueCap="3400" rawPrice="6390.444032" recommendedPrice="6400" />
+      <marketPrice>22750</marketPrice>
+      <inputDigest>fnv1a32:a932e03c</inputDigest>
+      <sourceDigest>sha256:05c2353e1d84eb0aa3f75d967e0cfda0e0e6a882001e14e637f202bf7e8814ac</sourceDigest>
+      <inputs instantHp="360" instantMp="680" regenHp="0" regenMp="0" regenFrames="0" playerLevel="26" isGroup="0" purifyValue="0" toxicity="0" buffHp="0" buffMp="0" buffDefence="-30" buffMagicResist="0" buffDamage="50" buffPunch="0" buffSpeed="0" buffToughness="0" buffCritRate="30" buffDuration="1800" />
+      <outputs recoveryStrength="1040" purifyStrength="0" toxicStrength="0" buffStrength="1464" toughnessStrength="0" currentValue="2504" valueCap="2700" rawPrice="3645.906171" recommendedPrice="3650" />
       <note>暴击率buff为新增运行时输入，实机验证待完成</note>
     </record>
     <record>
       <auditRef>potion:禅星</auditRef>
       <itemName>禅星</itemName>
       <sourceFile>消耗品_酒水.xml</sourceFile>
-      <sourceLevel>38</sourceLevel>
+      <sourceLevel>26</sourceLevel>
       <domain>meal</domain>
       <balanceMode>formula</balanceMode>
       <status>runtime-test-pending</status>
-      <marketPrice>6000</marketPrice>
-      <inputDigest>fnv1a32:64966f08</inputDigest>
-      <sourceDigest>sha256:9ca6f056644095a976467e8ca9fbe0d330f7316576b5ac8d4a0f45446eb08ce9</sourceDigest>
-      <inputs instantHp="400" instantMp="800" regenHp="0" regenMp="0" regenFrames="0" playerLevel="38" isGroup="0" purifyValue="0" toxicity="0" buffHp="0" buffMp="0" buffDefence="-15" buffMagicResist="0" buffDamage="50" buffPunch="0" buffSpeed="0" buffToughness="0" buffCritRate="25" buffDuration="1800" />
-      <outputs recoveryStrength="1200" purifyStrength="0" toxicStrength="0" buffStrength="2638.25" toughnessStrength="0" currentValue="3838.25" valueCap="3900" rawPrice="8179.196893" recommendedPrice="8200" />
+      <marketPrice>28000</marketPrice>
+      <inputDigest>fnv1a32:7c05d1b3</inputDigest>
+      <sourceDigest>sha256:fe07b1e661eca768c22b3bc73663fd1409c04d556536286e37393a78a30f2f83</sourceDigest>
+      <inputs instantHp="400" instantMp="800" regenHp="0" regenMp="0" regenFrames="0" playerLevel="26" isGroup="0" purifyValue="0" toxicity="0" buffHp="0" buffMp="0" buffDefence="-30" buffMagicResist="0" buffDamage="50" buffPunch="0" buffSpeed="0" buffToughness="0" buffCritRate="30" buffDuration="1800" />
+      <outputs recoveryStrength="1200" purifyStrength="0" toxicStrength="0" buffStrength="1464" toughnessStrength="0" currentValue="2664" valueCap="2700" rawPrice="4027.9907" recommendedPrice="4050" />
       <note>暴击率buff为新增运行时输入，实机验证待完成</note>
     </record>
     <record>
       <auditRef>potion:水星爆</auditRef>
       <itemName>水星爆</itemName>
       <sourceFile>消耗品_酒水.xml</sourceFile>
-      <sourceLevel>22</sourceLevel>
+      <sourceLevel>18</sourceLevel>
       <domain>meal</domain>
       <balanceMode>formula</balanceMode>
       <status>runtime-test-pending</status>
-      <marketPrice>3000</marketPrice>
-      <inputDigest>fnv1a32:cd28ae2c</inputDigest>
-      <sourceDigest>sha256:d72d055f118446dc772e4f5d112dc090d7812efb3e561cc7cc1d8fe3c9229651</sourceDigest>
-      <inputs instantHp="220" instantMp="400" regenHp="0" regenMp="0" regenFrames="0" playerLevel="22" isGroup="0" purifyValue="0" toxicity="0" buffHp="0" buffMp="0" buffDefence="-10" buffMagicResist="0" buffDamage="30" buffPunch="0" buffSpeed="0" buffToughness="0" buffCritRate="15" buffDuration="1800" />
-      <outputs recoveryStrength="620" purifyStrength="0" toxicStrength="0" buffStrength="1570.75" toughnessStrength="0" currentValue="2190.75" valueCap="2300" rawPrice="3221.219379" recommendedPrice="3200" />
+      <marketPrice>14000</marketPrice>
+      <inputDigest>fnv1a32:6cf4b300</inputDigest>
+      <sourceDigest>sha256:7bfe750592d912a86169f93627acc9fe731cea0239ec5569f18e641cfbb1389b</sourceDigest>
+      <inputs instantHp="220" instantMp="400" regenHp="0" regenMp="0" regenFrames="0" playerLevel="18" isGroup="0" purifyValue="0" toxicity="0" buffHp="0" buffMp="0" buffDefence="-23" buffMagicResist="0" buffDamage="39" buffPunch="0" buffSpeed="0" buffToughness="0" buffCritRate="23" buffDuration="1800" />
+      <outputs recoveryStrength="620" purifyStrength="0" toxicStrength="0" buffStrength="1134.6" toughnessStrength="0" currentValue="1754.6" valueCap="1900" rawPrice="2195.159666" recommendedPrice="2200" />
       <note>暴击率buff为新增运行时输入，实机验证待完成</note>
     </record>
     <record>
       <auditRef>potion:烈焰摩艾</auditRef>
       <itemName>烈焰摩艾</itemName>
       <sourceFile>消耗品_酒水.xml</sourceFile>
-      <sourceLevel>25</sourceLevel>
+      <sourceLevel>18</sourceLevel>
       <domain>meal</domain>
       <balanceMode>formula</balanceMode>
       <status>runtime-test-pending</status>
-      <marketPrice>3600</marketPrice>
-      <inputDigest>fnv1a32:6350dd28</inputDigest>
-      <sourceDigest>sha256:0676d70c98ecaf7e5a7bf234fd3e7bf7e3bc4dc74f4ea65c0eda20817692e530</sourceDigest>
-      <inputs instantHp="240" instantMp="440" regenHp="0" regenMp="0" regenFrames="0" playerLevel="25" isGroup="0" purifyValue="0" toxicity="0" buffHp="0" buffMp="0" buffDefence="-12" buffMagicResist="0" buffDamage="35" buffPunch="0" buffSpeed="0" buffToughness="0" buffCritRate="18" buffDuration="1800" />
-      <outputs recoveryStrength="680" purifyStrength="0" toxicStrength="0" buffStrength="1866.6" toughnessStrength="0" currentValue="2546.6" valueCap="2600" rawPrice="4156.5067" recommendedPrice="4150" />
+      <marketPrice>18750</marketPrice>
+      <inputDigest>fnv1a32:707f5dfc</inputDigest>
+      <sourceDigest>sha256:a26bd6fb8f5ed06944a09e95d779979179face23122a1b28d2388151becc7bd9</sourceDigest>
+      <inputs instantHp="240" instantMp="440" regenHp="0" regenMp="0" regenFrames="0" playerLevel="18" isGroup="0" purifyValue="0" toxicity="0" buffHp="0" buffMp="0" buffDefence="-23" buffMagicResist="0" buffDamage="35" buffPunch="0" buffSpeed="0" buffToughness="0" buffCritRate="25" buffDuration="1800" />
+      <outputs recoveryStrength="680" purifyStrength="0" toxicStrength="0" buffStrength="1122.4" toughnessStrength="0" currentValue="1802.4" valueCap="1900" rawPrice="2248.071082" recommendedPrice="2250" />
       <note>暴击率buff为新增运行时输入，实机验证待完成</note>
     </record>
     <record>
       <auditRef>potion:裂谷尖刺</auditRef>
       <itemName>裂谷尖刺</itemName>
       <sourceFile>消耗品_酒水.xml</sourceFile>
-      <sourceLevel>14</sourceLevel>
+      <sourceLevel>12</sourceLevel>
       <domain>meal</domain>
       <balanceMode>formula</balanceMode>
       <status>runtime-test-pending</status>
-      <marketPrice>1800</marketPrice>
-      <inputDigest>fnv1a32:2a2a716a</inputDigest>
-      <sourceDigest>sha256:33fb11007854b22828a6b986be5552d3c4653d436dd0f04f2311ce1888e2fcdf</sourceDigest>
-      <inputs instantHp="140" instantMp="240" regenHp="0" regenMp="0" regenFrames="0" playerLevel="14" isGroup="0" purifyValue="0" toxicity="0" buffHp="0" buffMp="0" buffDefence="-8" buffMagicResist="0" buffDamage="20" buffPunch="0" buffSpeed="0" buffToughness="0" buffCritRate="10" buffDuration="1800" />
-      <outputs recoveryStrength="380" purifyStrength="0" toxicStrength="0" buffStrength="1030.9" toughnessStrength="0" currentValue="1410.9" valueCap="1500" rawPrice="1732.628686" recommendedPrice="1750" />
+      <marketPrice>7500</marketPrice>
+      <inputDigest>fnv1a32:e96b76ce</inputDigest>
+      <sourceDigest>sha256:de205030f3d2e55897a685c90d9255bb57c5891f8953bd40af49b735eb59c5e3</sourceDigest>
+      <inputs instantHp="140" instantMp="240" regenHp="0" regenMp="0" regenFrames="0" playerLevel="12" isGroup="0" purifyValue="0" toxicity="0" buffHp="0" buffMp="0" buffDefence="-16" buffMagicResist="0" buffDamage="26" buffPunch="0" buffSpeed="0" buffToughness="0" buffCritRate="16" buffDuration="1800" />
+      <outputs recoveryStrength="380" purifyStrength="0" toxicStrength="0" buffStrength="768.6" toughnessStrength="0" currentValue="1148.6" valueCap="1300" rawPrice="1262.216016" recommendedPrice="1250" />
       <note>暴击率buff为新增运行时输入，实机验证待完成</note>
     </record>
     <record>
       <auditRef>potion:蓬松梦境</auditRef>
       <itemName>蓬松梦境</itemName>
       <sourceFile>消耗品_酒水.xml</sourceFile>
-      <sourceLevel>14</sourceLevel>
+      <sourceLevel>12</sourceLevel>
       <domain>meal</domain>
       <balanceMode>formula</balanceMode>
       <status>runtime-test-pending</status>
-      <marketPrice>1800</marketPrice>
-      <inputDigest>fnv1a32:7c76b1a4</inputDigest>
-      <sourceDigest>sha256:85028b967a2c61aed60298b161cdc07d131e28f2ef62458b7a06813086d60d9d</sourceDigest>
-      <inputs instantHp="140" instantMp="240" regenHp="0" regenMp="0" regenFrames="0" playerLevel="14" isGroup="0" purifyValue="0" toxicity="0" buffHp="0" buffMp="0" buffDefence="-8" buffMagicResist="0" buffDamage="20" buffPunch="0" buffSpeed="0" buffToughness="0" buffCritRate="10" buffDuration="1800" />
-      <outputs recoveryStrength="380" purifyStrength="0" toxicStrength="0" buffStrength="1030.9" toughnessStrength="0" currentValue="1410.9" valueCap="1500" rawPrice="1732.628686" recommendedPrice="1750" />
+      <marketPrice>7500</marketPrice>
+      <inputDigest>fnv1a32:4e7e13d4</inputDigest>
+      <sourceDigest>sha256:7e8f338f9c062a3fc98eefbb561e2f6890bd1375fd01a816c4b619907b92382d</sourceDigest>
+      <inputs instantHp="140" instantMp="240" regenHp="0" regenMp="0" regenFrames="0" playerLevel="12" isGroup="0" purifyValue="0" toxicity="0" buffHp="0" buffMp="0" buffDefence="-16" buffMagicResist="0" buffDamage="26" buffPunch="0" buffSpeed="0" buffToughness="0" buffCritRate="16" buffDuration="1800" />
+      <outputs recoveryStrength="380" purifyStrength="0" toxicStrength="0" buffStrength="768.6" toughnessStrength="0" currentValue="1148.6" valueCap="1300" rawPrice="1262.216016" recommendedPrice="1250" />
       <note>暴击率buff为新增运行时输入，实机验证待完成</note>
     </record>
     <record>
       <auditRef>potion:钴蓝天鹅绒</auditRef>
       <itemName>钴蓝天鹅绒</itemName>
       <sourceFile>消耗品_酒水.xml</sourceFile>
-      <sourceLevel>22</sourceLevel>
+      <sourceLevel>18</sourceLevel>
       <domain>meal</domain>
       <balanceMode>formula</balanceMode>
       <status>runtime-test-pending</status>
-      <marketPrice>3000</marketPrice>
-      <inputDigest>fnv1a32:b8403768</inputDigest>
-      <sourceDigest>sha256:94e6d9b3fa94e74e3a881c0472814f5a2bc697b94f31fdb7c55bf1a64c982267</sourceDigest>
-      <inputs instantHp="220" instantMp="400" regenHp="0" regenMp="0" regenFrames="0" playerLevel="22" isGroup="0" purifyValue="0" toxicity="0" buffHp="0" buffMp="0" buffDefence="-10" buffMagicResist="0" buffDamage="30" buffPunch="0" buffSpeed="0" buffToughness="0" buffCritRate="15" buffDuration="1800" />
-      <outputs recoveryStrength="620" purifyStrength="0" toxicStrength="0" buffStrength="1570.75" toughnessStrength="0" currentValue="2190.75" valueCap="2300" rawPrice="3221.219379" recommendedPrice="3200" />
+      <marketPrice>16250</marketPrice>
+      <inputDigest>fnv1a32:62aed793</inputDigest>
+      <sourceDigest>sha256:6f61197655210362b70f8c4e1c8097e9021462a1d637a68b415f9adb69c8e626</sourceDigest>
+      <inputs instantHp="220" instantMp="400" regenHp="0" regenMp="0" regenFrames="0" playerLevel="18" isGroup="0" purifyValue="0" toxicity="0" buffHp="0" buffMp="0" buffDefence="-23" buffMagicResist="0" buffDamage="39" buffPunch="0" buffSpeed="0" buffToughness="0" buffCritRate="23" buffDuration="1800" />
+      <outputs recoveryStrength="620" purifyStrength="0" toxicStrength="0" buffStrength="1134.6" toughnessStrength="0" currentValue="1754.6" valueCap="1900" rawPrice="2195.159666" recommendedPrice="2200" />
       <note>暴击率buff为新增运行时输入，实机验证待完成</note>
     </record>
     <record>
       <auditRef>potion:边缘织者</auditRef>
       <itemName>边缘织者</itemName>
       <sourceFile>消耗品_酒水.xml</sourceFile>
-      <sourceLevel>22</sourceLevel>
+      <sourceLevel>18</sourceLevel>
       <domain>meal</domain>
       <balanceMode>formula</balanceMode>
       <status>runtime-test-pending</status>
-      <marketPrice>3000</marketPrice>
-      <inputDigest>fnv1a32:041c0c8e</inputDigest>
-      <sourceDigest>sha256:55fe1b73479d321bd7b206e79e65db3623a9e41e8bbd5729e556559288bb250e</sourceDigest>
-      <inputs instantHp="220" instantMp="400" regenHp="0" regenMp="0" regenFrames="0" playerLevel="22" isGroup="0" purifyValue="0" toxicity="0" buffHp="0" buffMp="0" buffDefence="-10" buffMagicResist="0" buffDamage="30" buffPunch="0" buffSpeed="0" buffToughness="0" buffCritRate="15" buffDuration="1800" />
-      <outputs recoveryStrength="620" purifyStrength="0" toxicStrength="0" buffStrength="1570.75" toughnessStrength="0" currentValue="2190.75" valueCap="2300" rawPrice="3221.219379" recommendedPrice="3200" />
+      <marketPrice>19250</marketPrice>
+      <inputDigest>fnv1a32:67cc8f74</inputDigest>
+      <sourceDigest>sha256:bfb83da04fa61f3d789808b57ae9ffbcffcd9ce9982556585da3bceeeb339d26</sourceDigest>
+      <inputs instantHp="220" instantMp="400" regenHp="0" regenMp="0" regenFrames="0" playerLevel="18" isGroup="0" purifyValue="0" toxicity="0" buffHp="0" buffMp="0" buffDefence="-23" buffMagicResist="0" buffDamage="39" buffPunch="0" buffSpeed="0" buffToughness="0" buffCritRate="23" buffDuration="1800" />
+      <outputs recoveryStrength="620" purifyStrength="0" toxicStrength="0" buffStrength="1134.6" toughnessStrength="0" currentValue="1754.6" valueCap="1900" rawPrice="2195.159666" recommendedPrice="2200" />
       <note>暴击率buff为新增运行时输入，实机验证待完成</note>
     </record>
     <record>
       <auditRef>potion:扎啤</auditRef>
       <itemName>扎啤</itemName>
       <sourceFile>消耗品_酒水.xml</sourceFile>
-      <sourceLevel>22</sourceLevel>
+      <sourceLevel>18</sourceLevel>
       <domain>meal</domain>
       <balanceMode>formula</balanceMode>
       <status>runtime-test-pending</status>
-      <marketPrice>3000</marketPrice>
-      <inputDigest>fnv1a32:8a834441</inputDigest>
-      <sourceDigest>sha256:a8d29d1c5557519d39be4fc0b31c956274187782bae55b3af68968b938d95202</sourceDigest>
-      <inputs instantHp="220" instantMp="400" regenHp="0" regenMp="0" regenFrames="0" playerLevel="22" isGroup="0" purifyValue="0" toxicity="0" buffHp="0" buffMp="0" buffDefence="-10" buffMagicResist="0" buffDamage="30" buffPunch="0" buffSpeed="0" buffToughness="0" buffCritRate="15" buffDuration="1800" />
-      <outputs recoveryStrength="620" purifyStrength="0" toxicStrength="0" buffStrength="1570.75" toughnessStrength="0" currentValue="2190.75" valueCap="2300" rawPrice="3221.219379" recommendedPrice="3200" />
+      <marketPrice>15500</marketPrice>
+      <inputDigest>fnv1a32:4ee554c1</inputDigest>
+      <sourceDigest>sha256:5ad41ce1a3c8de9b738f05bb5c4903ed5f24def6e90087f05eedfb482cb77aa9</sourceDigest>
+      <inputs instantHp="220" instantMp="400" regenHp="0" regenMp="0" regenFrames="0" playerLevel="18" isGroup="0" purifyValue="0" toxicity="0" buffHp="0" buffMp="0" buffDefence="-23" buffMagicResist="0" buffDamage="39" buffPunch="0" buffSpeed="0" buffToughness="0" buffCritRate="23" buffDuration="1800" />
+      <outputs recoveryStrength="620" purifyStrength="0" toxicStrength="0" buffStrength="1134.6" toughnessStrength="0" currentValue="1754.6" valueCap="1900" rawPrice="2195.159666" recommendedPrice="2200" />
       <note>暴击率buff为新增运行时输入，实机验证待完成</note>
     </record>
     <record>
@@ -1454,71 +1454,71 @@
       <domain>meal</domain>
       <balanceMode>formula</balanceMode>
       <status>runtime-test-pending</status>
-      <marketPrice>1200</marketPrice>
-      <inputDigest>fnv1a32:96be36f5</inputDigest>
-      <sourceDigest>sha256:71079a2d574f2445c3a0774ca85d14844710a4d21210fcc06c8e18d687106f6b</sourceDigest>
-      <inputs instantHp="100" instantMp="160" regenHp="0" regenMp="0" regenFrames="0" playerLevel="10" isGroup="0" purifyValue="0" toxicity="0" buffHp="0" buffMp="0" buffDefence="-8" buffMagicResist="0" buffDamage="15" buffPunch="0" buffSpeed="0" buffToughness="0" buffCritRate="8" buffDuration="1800" />
-      <outputs recoveryStrength="260" purifyStrength="0" toxicStrength="0" buffStrength="786.9" toughnessStrength="0" currentValue="1046.9" valueCap="1100" rawPrice="1194.320044" recommendedPrice="1200" />
+      <marketPrice>5000</marketPrice>
+      <inputDigest>fnv1a32:ff4d85b7</inputDigest>
+      <sourceDigest>sha256:28febd738e4af59e08ac91db3416b7f74b4c661cdc468be9d1395833c1218dc0</sourceDigest>
+      <inputs instantHp="100" instantMp="160" regenHp="0" regenMp="0" regenFrames="0" playerLevel="10" isGroup="0" purifyValue="0" toxicity="0" buffHp="0" buffMp="0" buffDefence="-13" buffMagicResist="0" buffDamage="22" buffPunch="0" buffSpeed="0" buffToughness="0" buffCritRate="13" buffDuration="1800" />
+      <outputs recoveryStrength="260" purifyStrength="0" toxicStrength="0" buffStrength="640.5" toughnessStrength="0" currentValue="900.5" valueCap="1100" rawPrice="960.39696" recommendedPrice="950" />
       <note>暴击率buff为新增运行时输入，实机验证待完成</note>
     </record>
     <record>
       <auditRef>potion:过肩摔</auditRef>
       <itemName>过肩摔</itemName>
       <sourceFile>消耗品_酒水.xml</sourceFile>
-      <sourceLevel>22</sourceLevel>
+      <sourceLevel>18</sourceLevel>
       <domain>meal</domain>
       <balanceMode>formula</balanceMode>
       <status>runtime-test-pending</status>
-      <marketPrice>3000</marketPrice>
-      <inputDigest>fnv1a32:7af4e16d</inputDigest>
-      <sourceDigest>sha256:d64c5cc5a23df86aca10e2ef73347c7de27f8be89a71f3803398267764c24604</sourceDigest>
-      <inputs instantHp="220" instantMp="400" regenHp="0" regenMp="0" regenFrames="0" playerLevel="22" isGroup="0" purifyValue="0" toxicity="0" buffHp="0" buffMp="0" buffDefence="-10" buffMagicResist="0" buffDamage="30" buffPunch="0" buffSpeed="0" buffToughness="0" buffCritRate="15" buffDuration="1800" />
-      <outputs recoveryStrength="620" purifyStrength="0" toxicStrength="0" buffStrength="1570.75" toughnessStrength="0" currentValue="2190.75" valueCap="2300" rawPrice="3221.219379" recommendedPrice="3200" />
+      <marketPrice>14750</marketPrice>
+      <inputDigest>fnv1a32:7e22b313</inputDigest>
+      <sourceDigest>sha256:7c5b6cd78379928cd212ce3de0183ca6b615bb861c3ac20c1a8dd5de28b151f4</sourceDigest>
+      <inputs instantHp="220" instantMp="400" regenHp="0" regenMp="0" regenFrames="0" playerLevel="18" isGroup="0" purifyValue="0" toxicity="0" buffHp="0" buffMp="0" buffDefence="-23" buffMagicResist="0" buffDamage="39" buffPunch="0" buffSpeed="0" buffToughness="0" buffCritRate="23" buffDuration="1800" />
+      <outputs recoveryStrength="620" purifyStrength="0" toxicStrength="0" buffStrength="1134.6" toughnessStrength="0" currentValue="1754.6" valueCap="1900" rawPrice="2195.159666" recommendedPrice="2200" />
       <note>暴击率buff为新增运行时输入，实机验证待完成</note>
     </record>
     <record>
       <auditRef>potion:打桩机</auditRef>
       <itemName>打桩机</itemName>
       <sourceFile>消耗品_酒水.xml</sourceFile>
-      <sourceLevel>22</sourceLevel>
+      <sourceLevel>18</sourceLevel>
       <domain>meal</domain>
       <balanceMode>formula</balanceMode>
       <status>runtime-test-pending</status>
-      <marketPrice>3000</marketPrice>
-      <inputDigest>fnv1a32:858fa697</inputDigest>
-      <sourceDigest>sha256:a62b395a9067b0fa799bfc3700f0fa1038d49756395580e4ccd3f4355d0e0022</sourceDigest>
-      <inputs instantHp="220" instantMp="400" regenHp="0" regenMp="0" regenFrames="0" playerLevel="22" isGroup="0" purifyValue="0" toxicity="0" buffHp="0" buffMp="0" buffDefence="-10" buffMagicResist="0" buffDamage="30" buffPunch="0" buffSpeed="0" buffToughness="0" buffCritRate="15" buffDuration="1800" />
-      <outputs recoveryStrength="620" purifyStrength="0" toxicStrength="0" buffStrength="1570.75" toughnessStrength="0" currentValue="2190.75" valueCap="2300" rawPrice="3221.219379" recommendedPrice="3200" />
+      <marketPrice>15500</marketPrice>
+      <inputDigest>fnv1a32:2c8f9ca7</inputDigest>
+      <sourceDigest>sha256:7609c5d35525ccf2296bbadbc0b1fadb37c7e608e4de1fad2767a7b60e84b535</sourceDigest>
+      <inputs instantHp="220" instantMp="400" regenHp="0" regenMp="0" regenFrames="0" playerLevel="18" isGroup="0" purifyValue="0" toxicity="0" buffHp="0" buffMp="0" buffDefence="-23" buffMagicResist="0" buffDamage="39" buffPunch="0" buffSpeed="0" buffToughness="0" buffCritRate="23" buffDuration="1800" />
+      <outputs recoveryStrength="620" purifyStrength="0" toxicStrength="0" buffStrength="1134.6" toughnessStrength="0" currentValue="1754.6" valueCap="1900" rawPrice="2195.159666" recommendedPrice="2200" />
       <note>暴击率buff为新增运行时输入，实机验证待完成</note>
     </record>
     <record>
       <auditRef>potion:灰熊圣殿</auditRef>
       <itemName>灰熊圣殿</itemName>
       <sourceFile>消耗品_酒水.xml</sourceFile>
-      <sourceLevel>22</sourceLevel>
+      <sourceLevel>18</sourceLevel>
       <domain>meal</domain>
       <balanceMode>formula</balanceMode>
       <status>runtime-test-pending</status>
-      <marketPrice>3000</marketPrice>
-      <inputDigest>fnv1a32:7b8b3f57</inputDigest>
-      <sourceDigest>sha256:0e306f7d321a537e0886d73e8b5ef1a700462057614108f2b7333c3ebeac1db9</sourceDigest>
-      <inputs instantHp="220" instantMp="400" regenHp="0" regenMp="0" regenFrames="0" playerLevel="22" isGroup="0" purifyValue="0" toxicity="0" buffHp="0" buffMp="0" buffDefence="-10" buffMagicResist="0" buffDamage="30" buffPunch="0" buffSpeed="0" buffToughness="0" buffCritRate="15" buffDuration="1800" />
-      <outputs recoveryStrength="620" purifyStrength="0" toxicStrength="0" buffStrength="1570.75" toughnessStrength="0" currentValue="2190.75" valueCap="2300" rawPrice="3221.219379" recommendedPrice="3200" />
+      <marketPrice>13250</marketPrice>
+      <inputDigest>fnv1a32:d51c49ed</inputDigest>
+      <sourceDigest>sha256:d8f102c4ea7218c35c3e80b0625db2cbf292991fe50a2bc7fba9e71a0adce0f0</sourceDigest>
+      <inputs instantHp="220" instantMp="400" regenHp="0" regenMp="0" regenFrames="0" playerLevel="18" isGroup="0" purifyValue="0" toxicity="0" buffHp="0" buffMp="0" buffDefence="-23" buffMagicResist="0" buffDamage="39" buffPunch="0" buffSpeed="0" buffToughness="0" buffCritRate="23" buffDuration="1800" />
+      <outputs recoveryStrength="620" purifyStrength="0" toxicStrength="0" buffStrength="1134.6" toughnessStrength="0" currentValue="1754.6" valueCap="1900" rawPrice="2195.159666" recommendedPrice="2200" />
       <note>暴击率buff为新增运行时输入，实机验证待完成</note>
     </record>
     <record>
       <auditRef>potion:击腹重拳</auditRef>
       <itemName>击腹重拳</itemName>
       <sourceFile>消耗品_酒水.xml</sourceFile>
-      <sourceLevel>14</sourceLevel>
+      <sourceLevel>12</sourceLevel>
       <domain>meal</domain>
       <balanceMode>formula</balanceMode>
       <status>runtime-test-pending</status>
-      <marketPrice>1800</marketPrice>
-      <inputDigest>fnv1a32:419184b3</inputDigest>
-      <sourceDigest>sha256:2082837d48bb597b31145b843a587c73014f6e4303a1a36788ed1b832b63d4a0</sourceDigest>
-      <inputs instantHp="140" instantMp="240" regenHp="0" regenMp="0" regenFrames="0" playerLevel="14" isGroup="0" purifyValue="0" toxicity="0" buffHp="0" buffMp="0" buffDefence="-8" buffMagicResist="0" buffDamage="20" buffPunch="0" buffSpeed="0" buffToughness="0" buffCritRate="10" buffDuration="1800" />
-      <outputs recoveryStrength="380" purifyStrength="0" toxicStrength="0" buffStrength="1030.9" toughnessStrength="0" currentValue="1410.9" valueCap="1500" rawPrice="1732.628686" recommendedPrice="1750" />
+      <marketPrice>7500</marketPrice>
+      <inputDigest>fnv1a32:01339a69</inputDigest>
+      <sourceDigest>sha256:e60f8e3454bcb938c1c74afe3e5c31bf87b6e84faadb69b7521fa1677a73beaf</sourceDigest>
+      <inputs instantHp="140" instantMp="240" regenHp="0" regenMp="0" regenFrames="0" playerLevel="12" isGroup="0" purifyValue="0" toxicity="0" buffHp="0" buffMp="0" buffDefence="-16" buffMagicResist="0" buffDamage="26" buffPunch="0" buffSpeed="0" buffToughness="0" buffCritRate="16" buffDuration="1800" />
+      <outputs recoveryStrength="380" purifyStrength="0" toxicStrength="0" buffStrength="768.6" toughnessStrength="0" currentValue="1148.6" valueCap="1300" rawPrice="1262.216016" recommendedPrice="1250" />
       <note>暴击率buff为新增运行时输入，实机验证待完成</note>
     </record>
     <record>
@@ -1529,11 +1529,11 @@
       <domain>meal</domain>
       <balanceMode>formula</balanceMode>
       <status>runtime-test-pending</status>
-      <marketPrice>1200</marketPrice>
-      <inputDigest>fnv1a32:8c766e96</inputDigest>
-      <sourceDigest>sha256:167959422980690d21065a1c2594fb5c173e68aa34073d723da37b9f5e6482da</sourceDigest>
-      <inputs instantHp="100" instantMp="160" regenHp="0" regenMp="0" regenFrames="0" playerLevel="10" isGroup="0" purifyValue="0" toxicity="0" buffHp="0" buffMp="0" buffDefence="-8" buffMagicResist="0" buffDamage="15" buffPunch="0" buffSpeed="0" buffToughness="0" buffCritRate="8" buffDuration="1800" />
-      <outputs recoveryStrength="260" purifyStrength="0" toxicStrength="0" buffStrength="786.9" toughnessStrength="0" currentValue="1046.9" valueCap="1100" rawPrice="1194.320044" recommendedPrice="1200" />
+      <marketPrice>5000</marketPrice>
+      <inputDigest>fnv1a32:c8f9e544</inputDigest>
+      <sourceDigest>sha256:1aea6c74e5c3e6e311a6a0b4a1242ce48fb1cbace71eb473b0a25f71422284a9</sourceDigest>
+      <inputs instantHp="100" instantMp="160" regenHp="0" regenMp="0" regenFrames="0" playerLevel="10" isGroup="0" purifyValue="0" toxicity="0" buffHp="0" buffMp="0" buffDefence="-13" buffMagicResist="0" buffDamage="22" buffPunch="0" buffSpeed="0" buffToughness="0" buffCritRate="13" buffDuration="1800" />
+      <outputs recoveryStrength="260" purifyStrength="0" toxicStrength="0" buffStrength="640.5" toughnessStrength="0" currentValue="900.5" valueCap="1100" rawPrice="960.39696" recommendedPrice="950" />
       <note>暴击率buff为新增运行时输入，实机验证待完成</note>
     </record>
   </records>

@@ -131,9 +131,9 @@ export function computePotionV2Row(input: PotionV2Input): PotionV2Output {
 
   // 用户约定 5 toughness = 1 防御；防御权重为 2，因此 toughness 权重为 0.4。
   const toughnessBase = input.buffToughness * 0.4;
-  // 暴击率按固定 1.5 倍暴伤折算：1% 暴击 ≈ 0.5% 等效攻击力提升；
-  // 等效百分比沿用速度轴口径（实际百分比 ÷ 2 输入、权重 50），净权重为 12.5/暴击率%。
-  const critBase = input.buffCritRate * 12.5;
+  // 暴击率定价按非独立乘区口径：实战暴击收益约 0.2% 等效攻击/1%（早期按 1.5 倍暴伤
+  // 估的 0.5% 高估）。净权重 5/暴击率%，对应调酒暴击数值较首版上提约 2 档。
+  const critBase = input.buffCritRate * 5;
   const buffBase =
     input.buffHp + input.buffMp +
     input.buffDefence * 2 +

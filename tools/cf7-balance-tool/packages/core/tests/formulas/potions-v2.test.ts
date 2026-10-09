@@ -119,11 +119,11 @@ describe("potion formula v2", () => {
   );
 
   it.each([
-    [8, 12.5 * 8],
-    [15, 12.5 * 15],
-    [25, 12.5 * 25],
+    [8, 5 * 8],
+    [15, 5 * 15],
+    [25, 5 * 25],
   ])(
-    "暴击率 %i%% 按等效攻击力折算（1.5 倍暴伤 → 净权重 12.5）",
+    "暴击率 %i%% 按非独立乘区折算（约 0.2% 等效攻击 → 净权重 5）",
     (critRate, expectedBase) => {
       const output = computePotionV2Row({
         ...EMPTY,
