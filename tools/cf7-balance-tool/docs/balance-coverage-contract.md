@@ -30,7 +30,7 @@
 | 家族 | 人工源 | 门 | 覆盖现状 | 覆盖门状态 |
 |---|---|---|---|---|
 | weapon v1 | `records/weapon-balance-audit.xml` | `balance-check` | 40 条记录 | 仅校验已有记录；**全量覆盖门待开启**（本契约收口 design §8 的 deferred 项） |
-| armor v1 | `records/armor-balance-plan.xml` | `armor-balance-check` | 钛合金61式五件 confirmed | 按 plan 登记项校验，不强制整文件 |
+| armor v1 | `records/armor-balance-plan.xml` | `armor-balance-check` | 钛合金61式五件 confirmed；重装特勤五件 unresolved；存量 645 条按 exception 机械登记（legacy-off-formula/npc-only） | 四个防具文件整文件覆盖门已开启 |
 | potion v2 | `records/potion-balance-plan.xml` | `potion-balance-check` | 三文件 77 项；#101 缺口已于 2026-09-22 清零（`51e2ebb981`，77/77） | 已有整文件 coverage 门（家族先例） |
 | melee v1 | `records/melee-balance-plan.xml` | `melee-balance-check` | 家族已注册（`melee-balance-rulebook.md`），首批 1 条机械登记；存量 231 件大面积偏离公式基线 | 覆盖门按 `coverageFiles` 逐文件开启 |
 | explosives v1 | `records/explosives-balance-plan.xml` | `explosives-balance-check` | 家族已注册（`explosives-balance-rulebook.md`），`消耗品_手雷.xml` 39 项全量登记（formula 1 + exception 38） | 手雷文件覆盖门已开启 |
