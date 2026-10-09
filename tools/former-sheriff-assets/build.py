@@ -271,6 +271,9 @@ def weapons(refs):
             light.attrib.pop('centerPoint3DX', None)
             light.attrib.pop('centerPoint3DY', None)
             light.find('x:matrix/x:Matrix', NS).attrib.update({'tx': '255.25', 'ty': '-10.75'})
+            # Placement callbacks can claim the beam before its deferred load.
+            # Preserve that valid claim on the first return-from-skill frame.
+            light.find('x:Actionscript/x:script', NS).text = E.CDATA('onClipEvent(load) { this._visible = false; _root.装备生命周期函数.装备光源载入(this,"长枪"); }')
             layers.append(layer('持枪照明', [light]))
         symbol(PREFIX + export, layers, export)
     # Three transparent collision boxes follow the shaft in the approved grip registration.
@@ -450,7 +453,7 @@ def finish():
     for old in list(layers):
         if old.get('name') == '重装特勤 R26':
             layers.remove(old)
-    layers.append(layer('重装特勤 R26', [instance(name, clip=True) for name in EXPORTS.values()]))
+    layers.append(layer('重装特勤 R26', [instance(name, clip=True) for key, name in EXPORTS.items() if key != "战技容器-特勤盾冲"]))
     write_xml(anchor_path, anchor)
     REPORT['exports'] = EXPORTS
     REPORT['generatedSymbols'] = len(GENERATED)
@@ -472,4 +475,7 @@ if __name__ == '__main__':
     weapons(refs)
     icons(refs)
     npcs(refs)
+    import shield_rush
+    shield_rush.b = __import__(__name__)
+    shield_rush.build()
     finish()

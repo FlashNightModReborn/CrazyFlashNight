@@ -47,7 +47,19 @@ def main():
         item=matches[0]
         assert item.findtext('data/dressup')==dressup
         assert item.findtext('icon')=='Codex-'+name
-        assert not item.findall('skill')
+        if name == '特勤霰弹枪':
+            assert item.findtext('skill/skillname') == '特勤盾冲'
+            assert item.findtext('skill/skillLocked') == 'true'
+            assert item.findtext('skill/parameters/speedBonus') == '2'
+            assert item.findtext('skill/parameters/maxRushLoops') == '3'
+            assert item.findtext('skill/parameters/laneSpeedRatio') == '0.5'
+            assert item.findtext('skill/parameters/powerMultiplier') == '0.6'
+            assert item.findtext('skill/parameters/chargedPower') == '0.8'
+            assert '每次撞击以施放时防御力为基底' in item.findtext('skill/description')
+            assert item.find('skill/parameters/rushFrames') is None and item.find('skill/parameters/chargedFrames') is None
+            assert item.find('skill/parameters/speed') is None and item.find('skill/parameters/chargedSpeed') is None
+        else:
+            assert not item.findall('skill')
         if name == '特勤霰弹枪':
             light = item.find('lifecycle/attr_equipmentLight')
             assert light is not None and light.findtext('skillInteraction') == 'independent'
@@ -87,10 +99,28 @@ def main():
     assert struct.unpack_from('<H',raw,2)[0] == 15, 'published Q animation frame count'
     for key in ['刀口位置1','刀口位置2','刀口位置3']:
         assert key.encode() in raw,key
+    action='战技容器-特勤盾冲'
+    assert action in public
+    raw=sprites[public[action]]
+    assert struct.unpack_from('<H',raw,2)[0]==152,'published shield rush timeline including 16 six-frame brake branches'
+    for name in ['盾具','冲撞区域','肢体10','接地阴影']:
+        assert name.encode() in raw,name
+    # The runtime imports the library anchor, so a standalone exported action
+    # is insufficient. Read its actual PlaceObject character reference too.
+    anchor=sprites[public['Codex专用素材']];pos=4;placed=[]
+    while pos<len(anchor):
+        h=struct.unpack_from('<H',anchor,pos)[0];pos+=2
+        code,length=h>>6,h&63
+        if length==63:length=struct.unpack_from('<I',anchor,pos)[0];pos+=4
+        payload=anchor[pos:pos+length];pos+=length
+        if code==4:placed.append(struct.unpack_from('<H',payload)[0])
+        elif code==26 and payload[0]&2:placed.append(struct.unpack_from('<H',payload,3)[0])
+    assert public[action] in placed,'shield rush missing from actual RSL anchor'
+    report['checks'].append('56 base poses plus 16 six-frame stride brakes, real shield/hit-area/dressup interfaces and actual RSL anchor placement')
     for name,*_ in data.SPECS:
         raw=sprites[public['图标-Codex-'+name]]
         assert struct.unpack_from('<H',raw,2)[0]==2,name
-    report['checks'].append('32 new exports exist in actual CS6 SWF; gun/melee interfaces and 2-frame icons present')
+    report['checks'].append('registered exports exist in actual CS6 SWF; gun/melee interfaces and 2-frame icons present')
     report['librarySha256']=hashlib.sha256(swf.read_bytes()).hexdigest()
     owned=ROOT/'flashswf/arts/new/Codex专用素材'
     inputs=[owned/'DOMDocument.xml',owned/'LIBRARY/Codex专用素材.xml']

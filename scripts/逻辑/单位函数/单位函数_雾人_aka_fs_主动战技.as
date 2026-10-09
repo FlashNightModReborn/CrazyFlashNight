@@ -2171,3 +2171,6 @@ _root.主动战技函数.长枪.天启大封印.撤法阵 = function(引用:Movi
 
     施术者["天启大封印索敌"] = null;
 };
+
+// 特勤霰弹枪：F 按住蓄力、松开盾冲，沿标准战技容器收尾。
+org.flashNight.arki.unit.Action.Skill.SheriffShieldRush.install(_root);

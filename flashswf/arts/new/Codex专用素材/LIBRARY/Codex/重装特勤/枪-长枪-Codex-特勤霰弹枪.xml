@@ -53,10 +53,7 @@
                     <Point/>
                   </transformationPoint>
                   <Actionscript>
-                    <script><![CDATA[onClipEvent(load){
-   this._visible = false;
-}
-]]></script>
+                    <script><![CDATA[onClipEvent(load) { this._visible = false; _root.装备生命周期函数.装备光源载入(this,"长枪"); }]]></script>
                   </Actionscript>
                   <filters>
                     <BlurFilter blurX="28" blurY="28"/>

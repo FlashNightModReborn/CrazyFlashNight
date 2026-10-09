@@ -1,0 +1,32 @@
+<DOMSymbolItem xmlns="http://ns.adobe.com/xfl/2008/" name="Codex/重装特勤/战技/挂点/身体">
+  <timeline>
+    <DOMTimeline name="身体">
+      <layers>
+        <DOMLayer name="保留标准三层引用" color="#4FFF4F">
+          <frames>
+            <DOMFrame index="0" duration="1" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/重装特勤/战技/挂点/身体内层" symbolType="movie clip" name="挂点">
+                  <matrix>
+                    <Matrix a="1.000000000" b="0.000000000" c="0.000000000" d="1.000000000" tx="0.000000000" ty="0.000000000"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load) {
+var u = _parent._parent._parent;
+var skin = u.身体;
+if (!skin) skin = (u.性别 == "女" ? "女" : "男") + "变装-裸体身体";
+_root.装备引用配置.配置装扮(this,skin,"装扮","身体_引用");
+}]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

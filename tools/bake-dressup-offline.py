@@ -2835,8 +2835,9 @@ def attack_mode_visible_clip_actions(control: dict[str, Any]) -> dict[str, Any] 
 def initially_hidden_clip_actions(control: dict[str, Any]) -> dict[str, Any] | None:
     """Static preview of an externally controlled, load-hidden effect.
 
-    Only accept the complete, unconditional load script. Never infer initial
-    visibility from a branch, an enterFrame handler or a larger action body.
+    Accept the complete unconditional load script, optionally waking the known
+    equipment-light hook (no lifecycle is attached in a neutral preview).
+    Never evaluate arbitrary branches, enterFrame handlers or larger bodies.
     The production SWF is unchanged; only the temporary raster source differs.
     """
     if control.get("frameScripts"):
@@ -2845,7 +2846,8 @@ def initially_hidden_clip_actions(control: dict[str, Any]) -> dict[str, Any] | N
     removals = []
     for action in actions:
         script = compact_action_script(action.get("script") or "")
-        if not re.fullmatch(r"onClipEvent\(load\)\{this\._visible=(?:false|0);?\}", script):
+        wake = r'_root\.装备生命周期函数\.装备光源载入\(this,"长枪"\);?'
+        if not re.fullmatch(rf"onClipEvent\(load\)\{{this\._visible=(?:false|0);?(?:{wake})?\}}", script):
             return None
         if int(action.get("frame") or 1) != 1 or action.get("characterId") is None or action.get("depth") is None:
             return None

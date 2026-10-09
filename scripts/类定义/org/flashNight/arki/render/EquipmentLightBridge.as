@@ -256,10 +256,18 @@ class org.flashNight.arki.render.EquipmentLightBridge {
         entries.push(entry); return true;
     }
 
-    public static function sample(ref:Object, outlet:MovieClip, strength:Number):Boolean {
+    public static function sample(ref:Object, outlet:MovieClip, strength:Number, visual:MovieClip):Boolean {
         var entry:Object = ref.equipmentLight;
+        if (visual == undefined) visual = entry.actor[entry.slot + "_引用"];
         if (!valid(entry) || entry.kind == 0 || !drawn(entry) || !outlet._parent || !ensureEntry(entry)
-            || !visible(entry.actor[entry.slot + "_引用"])) { hide(ref); return false; }
+            || !visible(visual)) { hide(ref); return false; }
+        // An action prop must still be a visible descendant of the equipped
+        // actor. A light cannot sample a detached or another actor's marker.
+        var ancestor:MovieClip = outlet;
+        while (ancestor && ancestor !== visual) ancestor = ancestor._parent;
+        if (ancestor !== visual) { hide(ref); return false; }
+        while (ancestor && ancestor !== entry.actor) ancestor = ancestor._parent;
+        if (ancestor !== entry.actor) { hide(ref); return false; }
         var origin:Object = entry.origin, forward:Object = entry.forward;
         origin.x = 0; origin.y = 0; forward.x = 100; forward.y = 0;
         outlet.localToGlobal(origin); outlet.localToGlobal(forward);

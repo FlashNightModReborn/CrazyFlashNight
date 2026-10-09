@@ -980,15 +980,17 @@ _root.主角函数.方向改变 = function(新方向) {
     if (this.飞行浮空)
         return;
 
-    旧方向 = 方向;
+    // This function is installed on each unit from asLoader. Qualify instance
+    // fields so direction changes cannot resolve into the loader/root scope.
+    this.旧方向 = this.方向;
     if (新方向 === "右") {
-        方向 = "右";
-        this._xscale = myxscale;
-        新版人物文字信息._xscale = 100;
+        this.方向 = "右";
+        this._xscale = this.myxscale;
+        this.新版人物文字信息._xscale = 100;
     } else if (新方向 === "左") {
-        方向 = "左";
-        this._xscale = -myxscale;
-        新版人物文字信息._xscale = -100;
+        this.方向 = "左";
+        this._xscale = -this.myxscale;
+        this.新版人物文字信息._xscale = -100;
     }
 };
 

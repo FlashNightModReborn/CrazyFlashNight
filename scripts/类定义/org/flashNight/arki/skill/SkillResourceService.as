@@ -50,7 +50,7 @@ class org.flashNight.arki.skill.SkillResourceService {
     public static function weapon(unit:Object, skill:Object, readItems:Object):Object {
         if (!skill || skill.isSubweaponControl === true) return state("unknown", "");
         // 猩红天秤等原子战技按缺口付款，零 MP 合法。不可套用配置中的固定消耗。
-        if (skill.战技函数.原子释放 === true) return state("ready", "");
+        if (skill.战技函数.原子释放 === true && skill.战技函数.固定资源消耗 !== true) return state("ready", "");
         var cost:Number = Number(skill.消耗mp);
         var minimum:Number = cost;
         var payment:Number = cost;

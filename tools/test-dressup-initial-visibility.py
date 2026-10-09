@@ -19,11 +19,17 @@ off = action("onClipEvent(load) { // External lifecycle owns visibility.\n this.
 result = bake.initially_hidden_clip_actions({"clipActions": [off]})
 assert result["neutralRemovals"] == [{"characterId": 17, "depth": 3, "frame": 1}]
 assert bake.initially_hidden_clip_actions({"clipActions": [action("onClipEvent(load){this._visible=0}")]})
+assert bake.initially_hidden_clip_actions({"clipActions": [action('onClipEvent(load){this._visible=false;_root.装备生命周期函数.装备光源载入(this,"长枪");}')]})
 for script in [
     "onClipEvent(load){if(_parent.active){this._visible=false;}}",
     "onClipEvent(enterFrame){this._visible=false;}",
     "onClipEvent(load){this._visible=false;this._visible=true;}",
     'onClipEvent(load){trace("this._visible=false;");}',
+    'onClipEvent(load){this._visible=(this.anyOtherOwner!=undefined);}',
+    'onClipEvent(load){this._cf7EquipmentLightOwner={};this._visible=(this._cf7EquipmentLightOwner!=undefined);}',
+    'onClipEvent(load){this._visible=(this._cf7EquipmentLightOwner!=undefined;}',
+    'onClipEvent(load){this._visible=this._cf7EquipmentLightOwner!=undefined);}',
+    'onClipEvent(load){this._visible=false;_root.anyOtherFunction(this,"长枪");}',
 ]:
     assert bake.initially_hidden_clip_actions({"clipActions": [action(script)]}) is None
 assert bake.initially_hidden_clip_actions({"clipActions": [dict(off, frame=2)]}) is None

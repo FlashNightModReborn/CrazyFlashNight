@@ -30,9 +30,10 @@ _root.战技路由 = {};
  *
  * @param unit:MovieClip 执行战技的单位（需要有man子剪辑）
  * @param skillName:String 战技名称（对应man时间轴上的帧标签）
+ * @return MovieClip 本次实际装入的动作；缺失时 undefined，避免重名旧 man 延迟卸载造成误判
  * @param playbackMode:String 可选，由战技定义声明container；缺省沿用角色模板
  */
-_root.战技路由.战技标签跳转_旧 = function(unit:MovieClip, skillName:String, playbackMode:String):Void {
+_root.战技路由.战技标签跳转_旧 = function(unit:MovieClip, skillName:String, playbackMode:String):MovieClip {
     unit.技能名 = skillName;
     RoutingLifecycle.ensureTempY(unit);
 
@@ -54,8 +55,7 @@ _root.战技路由.战技标签跳转_旧 = function(unit:MovieClip, skillName:S
 
     // 战技可声明容器播放；没有声明时沿用角色模板默认值。
     if (playbackMode == "container" || unit.兵种 === "主角-男") {
-        _root.战技路由.载入后跳转战技容器(unit.container, unit);
-        return;
+        return _root.战技路由.载入后跳转战技容器(unit.container, unit);
     }
 
     // 回退：传统man跳帧逻辑
@@ -63,6 +63,7 @@ _root.战技路由.战技标签跳转_旧 = function(unit:MovieClip, skillName:S
     RoutingLifecycle.bindMovement(newMan);
     RoutingLifecycle.bindEndCleanup(newMan, unit, undefined, "技能结束", "技能浮空");
     _root.战技路由.战技man载入后跳转_旧(newMan, unit);
+    return newMan;
 };
 
 /**
@@ -84,7 +85,7 @@ _root.战技路由.战技man载入后跳转_旧 = function(man:MovieClip, unit:M
  * @param container:MovieClip 战技容器状态下的占位容器（保持不可见）
  * @param unit:MovieClip 执行战技的单位
  */
-_root.战技路由.载入后跳转战技容器 = function(container:MovieClip, unit:MovieClip):Void {
+_root.战技路由.载入后跳转战技容器 = function(container:MovieClip, unit:MovieClip):MovieClip {
     var 技能名:String = unit.技能名;
     var initObj:Object = RoutingLifecycle.buildPublicContainerInit(container);
     var attachResult:Object = ContainerAttachAction.attach(unit, ContainerSpec.KIND_BATTLE_SKILL, 技能名, initObj);
@@ -97,6 +98,7 @@ _root.战技路由.载入后跳转战技容器 = function(container:MovieClip, u
 
     RoutingLifecycle.handleFloat(newMan, unit, "技能浮空");
     RoutingLifecycle.bindEndCleanup(newMan, unit, undefined, "技能结束", "技能浮空");
+    return newMan;
 };
 
 // ============================================================================

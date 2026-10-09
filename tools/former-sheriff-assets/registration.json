@@ -60,8 +60,7 @@
   "hairId": 77,
   "hairIdentifier": "发型-男式-Codex-治安官",
   "deferred": [
-    "shield transformation",
-    "new skills and effects",
+    "NPC deathrattle and second phase",
     "real gameplay balance acceptance"
   ],
   "noInventoryGrant": true,
@@ -130,6 +129,52 @@
         "categoryFactor": 2
       },
       "residual": -0.004185906363438074
+    }
+  },
+  "shieldRush": {
+    "status": "player_enabled_balance_placeholder",
+    "skill": "特勤盾冲",
+    "weapon": "特勤霰弹枪",
+    "key": "weaponSkill",
+    "defaultKey": "F",
+    "linkage": "战技容器-特勤盾冲",
+    "transformFrames": 15,
+    "balanceSource": "data/items/武器_长枪_霰弹枪.xml#特勤霰弹枪/skill",
+    "npcPhaseLogic": false,
+    "temporaryShield": {
+      "capacity": "floor(defenseBeforeCast * skill.parameters.shieldDefenseRatio)",
+      "ratio": 1,
+      "recharge": false,
+      "retire": "gun return or interruption",
+      "coexistsWithOtherShields": true
+    },
+    "damage": {
+      "base": "defenseBeforeCast",
+      "chargeMultipliers": [0.6, 1.0, 1.4],
+      "snapshotAtCast": true,
+      "gunPowerBonuses": false,
+      "shieldRemainingCapacityAffectsDamage": false,
+      "invalidOrNonpositiveDefense": "movement and reduction remain; no damaging impact",
+      "settlement": "existing melee hit pipeline; not total skill damage"
+    },
+    "lifesteal": {
+      "weaponBase": "finite positive long-gun lifesteal captured before skill routing",
+      "impact": "current non-weapon base lifesteal + captured weapon lifesteal",
+      "inheritance": "standard initializer max merge; no duplicate base and no loss of stronger actor effects",
+      "settlement": "existing LifeStealDamageHandle and HealApplier, including shield-strength and overflow rules"
+    },
+    "artRevision": "R41 native aiming stance at entry, hand-pivot grip transfer; R40 player shadow and existing R39 recovery",
+    "movement": {
+      "speed": "runningSpeedBeforeCast + speedBonus",
+      "speedBonus": 2,
+      "cycleFrames": 16,
+      "chargeLoops": [1, 2, 3],
+      "chargeThresholdFrames": [0, 18, 36],
+      "laneSpeedRatio": 0.5,
+      "steering": "left/right throughout open, hold, rush, brake and close; up/down during rush",
+      "hitIntervalMaxFrames": 3,
+      "sweep": "travel-triggered same-facing bounds, split at turns; swept lane interval; at most one impact per frame",
+      "terrainStepMax": 8
     }
   }
 }

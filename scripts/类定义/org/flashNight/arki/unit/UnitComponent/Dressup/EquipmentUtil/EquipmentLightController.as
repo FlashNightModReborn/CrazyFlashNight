@@ -25,8 +25,46 @@ class org.flashNight.arki.unit.UnitComponent.Dressup.EquipmentUtil.EquipmentLigh
         }
         if (!registered) ref.生命周期函数列表.push(ref.lightCleanup);
         ref.lightPlacement = PlacementVisual.hookVisualUpdate(ref.自机, ref.lightContainer, ref, update, ref);
+        ref.lightActionChannel = ref.lightContainer + ":light";
+        ref.自机.dispatcher.subscribe(ref.lightActionChannel, ref.lightPlacement, ref);
         update(ref);
         return true;
+    }
+
+    // A routed action can move the SAME equipped light onto its authored prop.
+    // Keep firearm/dressup references untouched; the lease belongs to this man
+    // and a plain cast token, so an old unload cannot retarget a replacement.
+    public static function setActionVisual(actor:MovieClip, slot:String, owner:Object, visual:MovieClip, sync:Function):Void {
+        var man:MovieClip = actor.man;
+        if (!owner || !man._parent || visual._parent !== man) return;
+        if (!man.__equipmentLightVisuals) man.__equipmentLightVisuals = {};
+        var lease:Object = man.__equipmentLightVisuals[slot];
+        if (!lease || lease.owner !== owner) {
+            lease = {owner:owner, item:actor[slot], visual:visual, sync:sync};
+            man.__equipmentLightVisuals[slot] = lease;
+        }
+        if (lease.item !== actor[slot]) return;
+        lease.visual = visual;
+        visual.__equipmentLightVisualOwner = owner;
+        actor.dispatcher.publish(slot + "_引用:light");
+    }
+
+    public static function clearActionVisual(actor:MovieClip, slot:String, owner:Object):Void {
+        var leases:Object = actor.man.__equipmentLightVisuals;
+        var lease:Object = leases[slot];
+        if (!lease || lease.owner !== owner) return;
+        if (lease.visual.__equipmentLightVisualOwner === owner) delete lease.visual.__equipmentLightVisualOwner;
+        delete leases[slot];
+        actor.dispatcher.publish(slot + "_引用:light");
+    }
+
+    public static function beamLoaded(beam:MovieClip, slot:String):Void {
+        // A replacement man can expose its named clips before their complete
+        // parent transform chain is live. Resample in the authored load flush,
+        // in the same render frame, without retaining a stale MovieClip path.
+        var actor:MovieClip = beam._parent;
+        while (actor && !actor.dispatcher) actor = actor._parent;
+        if (actor._parent) actor.dispatcher.publish(slot + "_引用:light");
     }
 
     private static function resolve(container:MovieClip, path:Array):MovieClip {
@@ -54,6 +92,13 @@ class org.flashNight.arki.unit.UnitComponent.Dressup.EquipmentUtil.EquipmentLigh
         if (!EquipmentLightBridge.isValid(ref)) { dispose(ref); return; }
         var actor:MovieClip = ref.自机;
         var gun:MovieClip = actor[ref.lightContainer];
+        var lease:Object = actor.man.__equipmentLightVisuals[ref.装备类型];
+        if (lease && lease.item === ref.equipmentLight.equipment
+                && lease.visual._parent === actor.man
+                && lease.visual.__equipmentLightVisualOwner === lease.owner) {
+            gun = lease.visual;
+            if (lease.sync != undefined) lease.sync(lease.owner);
+        }
         if (!EquipmentLightBridge.isDrawn(ref) || !gun._parent || !visible(gun, actor)) {
             EquipmentLightDefense.setActive(ref, false);
             EquipmentLightBridge.hide(ref); hideBeam(ref); return;
@@ -61,7 +106,7 @@ class org.flashNight.arki.unit.UnitComponent.Dressup.EquipmentUtil.EquipmentLigh
         var outlet:MovieClip = resolve(gun, ref.lightAnchorPath);
         if (!outlet._parent) outlet = gun.枪口位置;
         EquipmentLightDefense.setActive(ref, outlet._parent != undefined);
-        if (!EquipmentLightBridge.sample(ref, outlet, 1)) { hideBeam(ref); return; }
+        if (!EquipmentLightBridge.sample(ref, outlet, 1, gun)) { hideBeam(ref); return; }
         var beam:MovieClip = resolve(gun, ref.lightBeamPath);
         if (!beam._parent && ref.lightFallback) {
             if (!ref.lightGenerated._parent || ref.lightGenerated._cf7EquipmentLightOwner !== ref) {
@@ -128,6 +173,7 @@ class org.flashNight.arki.unit.UnitComponent.Dressup.EquipmentUtil.EquipmentLigh
         if (ref.lightGenerated._parent && ref.lightGenerated._cf7EquipmentLightOwner === ref) ref.lightGenerated.removeMovieClip();
         ref.lightGenerated = null;
         if (ref.lightPlacement) ref.自机.dispatcher.unsubscribe(ref.lightContainer, ref.lightPlacement, ref);
+        if (ref.lightPlacement) ref.自机.dispatcher.unsubscribe(ref.lightActionChannel, ref.lightPlacement, ref);
         ref.lightPlacement = null;
         // Teardown iterates the shared callback array. Never splice it from a callback.
     }

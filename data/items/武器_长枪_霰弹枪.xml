@@ -1827,5 +1827,26 @@
       </cycle>
     </attr_equipmentLight>
   </lifecycle>
+  <skill>
+    <skillname>特勤盾冲</skillname>
+    <description>将霰弹枪展开为枪盾。按住战技键蓄力，松开后冲撞；蓄力分为三档，对应一至三轮冲刺，蓄满自动发动。全程可左右转向，冲刺中可上下调整路线。持盾期间获得减伤、抗打断与等于施放时防御力的临时护盾；护盾不回充，收盾或中断时消失。每次撞击以施放时防御力为基底，三档倍率为60%、100%、140%，不受枪械威力与长枪攻击加成影响；撞击继承长枪吸血，与角色基础吸血相加。沿途持续撞击，结束后收盾还枪。</description>
+    <cd>8000</cd>
+    <mp>30</mp>
+    <skillLocked>true</skillLocked>
+    <parameters>
+      <maxChargeFrames>36</maxChargeFrames>
+      <reduction>50</reduction>
+      <shieldDefenseRatio>1</shieldDefenseRatio>
+      <maxRushLoops>3</maxRushLoops>
+      <speedBonus>2</speedBonus>
+      <laneSpeedRatio>0.5</laneSpeedRatio>
+      <hitInterval>3</hitInterval>
+      <powerMultiplier>0.6</powerMultiplier>
+      <chargedPower>0.8</chargedPower>
+      <knockback>6</knockback>
+      <chargedKnockback>8</chargedKnockback>
+      <zRange>30</zRange>
+    </parameters>
+  </skill>
 </item>
 </root>

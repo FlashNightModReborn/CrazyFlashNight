@@ -1,7 +1,7 @@
 {
   "schema": "cf7-dressup-report-v1",
   "counts": {
-    "items": 1372,
+    "items": 1397,
     "skinKeys": 2933,
     "coveredSkinKeys": 2792,
     "aliasCoveredSkinKeys": 9,
@@ -14,15 +14,15 @@
     "compatAliasSkinKeys": 9,
     "manualCompatAliasSkinKeys": 9,
     "autoOppositeGenderCompatAliasSkinKeys": 0,
-    "exportedSkinKeys": 24,
+    "exportedSkinKeys": 1,
     "exportedFrames": 3065,
     "exportedBasicKeys": 0,
     "exportedBasicFrames": 0,
     "metadataErrors": 0,
     "timelineScriptErrors": 0,
     "spriteGraphErrors": 0,
-    "staticStopSkinKeys": 1,
-    "staticStopCollapsedFrames": 14,
+    "staticStopSkinKeys": 0,
+    "staticStopCollapsedFrames": 0,
     "purgedStaleFrames": 1,
     "nestedAnimationSkinKeys": 25,
     "nestedLayerUnsupportedDescendants": 0,
@@ -43,7 +43,7 @@
     "missingExpressionFrame": 0,
     "animatedSkinKeys": 17,
     "staticCollapsedSkinKeys": 25,
-    "preservedSkinKeyExports": 2768,
+    "preservedSkinKeyExports": 2791,
     "preservedBasicHolderExports": 231
   },
   "missingSummary": {
@@ -6528,10 +6528,10 @@
     }
   },
   "assetExport": {
-    "selectedSkinKeys": 24,
-    "resolvedSkinKeys": 24,
-    "exportedSkinKeys": 24,
-    "exportedFrames": 24,
+    "selectedSkinKeys": 1,
+    "resolvedSkinKeys": 1,
+    "exportedSkinKeys": 1,
+    "exportedFrames": 1,
     "resolvedBasicKeys": 0,
     "exportedBasicKeys": 0,
     "exportedBasicFrames": 0,
@@ -6545,18 +6545,10 @@
     "missingBasicFrame": [],
     "timelineScriptErrors": [],
     "spriteGraphErrors": [],
-    "staticStopSkinKeys": 1,
-    "staticStopCollapsedFrames": 14,
+    "staticStopSkinKeys": 0,
+    "staticStopCollapsedFrames": 0,
     "purgedStaleFrames": 1,
-    "staticStopSamples": [
-      {
-        "skinKey": "刀-Codex-特勤警棍",
-        "characterId": 350,
-        "sourceFrameCount": 15,
-        "playback": "static-first-frame",
-        "reason": "frame1_plain_stop"
-      }
-    ],
+    "staticStopSamples": [],
     "nestedAnimationSkinKeys": 0,
     "nestedAnimationSamples": [],
     "nestedLayerUnsupportedDescendants": 0,
@@ -6564,10 +6556,10 @@
     "exportedNestedLayerKeys": 0,
     "exportedNestedLayerFrames": 0,
     "missingNestedLayerFrame": [],
-    "uniqueFrameImages": 25,
+    "uniqueFrameImages": 2,
     "duplicateFrameRefs": 0,
-    "timelineLogicalFrames": 25,
-    "timelineFrameEntries": 25,
+    "timelineLogicalFrames": 2,
+    "timelineFrameEntries": 2,
     "timelineCompressedFrameRefs": 0,
     "timelineCompressionSamples": [],
     "conditionalVariantSkinKeys": 1,
@@ -6591,7 +6583,7 @@
     "expressionFrames": 0,
     "expressionFrameImages": 0,
     "missingExpressionFrame": [],
-    "preservedSkinKeyExports": 2768,
+    "preservedSkinKeyExports": 2791,
     "preservedBasicHolderExports": 231
   },
   "animatedSkinKeys": [
