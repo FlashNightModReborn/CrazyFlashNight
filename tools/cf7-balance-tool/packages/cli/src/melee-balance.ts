@@ -83,6 +83,7 @@ function main(): void {
   verifyWorkbookSnapshot(plan);
   const records = buildAuditRecords(plan);
   verifyCoverage(plan, records);
+  reportCoverageGaps(plan, records);
   const auditXml = buildAuditXml(plan, records);
   const syncedFiles = buildSyncedItemFiles(records);
 
@@ -336,6 +337,25 @@ function verifyCoverage(plan: Plan, records: AuditRecord[]): void {
       if (!planned.has(`${sourceFile}\u0000${itemName}`)) {
         throw new Error(`${sourceFile}: ${itemName} 未进入近战审计计划`);
       }
+    }
+  }
+}
+
+/** 非门限覆盖报告：统计 melee 域全部文件中未登记的 item，作为分批迁移的队列视图。 */
+function reportCoverageGaps(plan: Plan, records: AuditRecord[]): void {
+  const gated = new Set(plan.coverageFiles);
+  const planned = new Set(records.map((record) => `${record.sourceFile} ${record.itemName}`));
+  const meleeDir = path.join(REPO_ROOT, "data", "items");
+  for (const fileName of fs.readdirSync(meleeDir)) {
+    if (!/^武器_刀_.*\.xml$/.test(fileName)) continue;
+    const sourceFile = `data/items/${fileName}`;
+    if (gated.has(sourceFile)) continue;
+    const blocks = indexItemBlocks(fs.readFileSync(path.join(meleeDir, fileName), "utf8"), sourceFile);
+    const uncovered = [...blocks.keys()].filter(
+      (itemName) => !planned.has(`${sourceFile} ${itemName}`),
+    );
+    if (uncovered.length > 0) {
+      console.log(`melee-balance coverage_gap: ${sourceFile}: ${uncovered.length} 项未登记`);
     }
   }
 }
