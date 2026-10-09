@@ -1,0 +1,40 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="1主武器/AA12战术版/枪-长枪-AA12战术版" itemID="6ac864c7-00000168" linkageExportForAS="true" linkageIdentifier="枪-长枪-AA12战术版" lastModified="1791517897">
+  <timeline>
+    <DOMTimeline name="枪-长枪-AA12战术版">
+      <layers>
+        <DOMLayer name="图层_2" color="#9933CC" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1主武器/AA12战术版/aa12素材/aa12普通" selected="true" symbolType="graphic" centerPoint3DX="42.2" centerPoint3DY="-19.9" loop="loop">
+                  <matrix>
+                    <Matrix a="0.549789428710938" b="-0.0125579833984375" c="0.0125579833984375" d="0.549789428710938" tx="-114.35" ty="-78.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="202.55" y="127.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 1" color="#8FF6A0" outline="true" useOutlineView="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1主武器/AA12战术版/Symbol 13" name="枪口位置" centerPoint3DX="215.4" centerPoint3DY="-36">
+                  <matrix>
+                    <Matrix tx="202.9" ty="-48.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>
