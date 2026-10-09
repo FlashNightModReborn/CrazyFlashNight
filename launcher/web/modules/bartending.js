@@ -1,40 +1,47 @@
-/** 调酒吧台 — 赛博朋克酒保风格界面，独立于合成工作台。
- *  左列：酒单纸条（按配方 book 分组）；中间：酒品名录；
- *  右侧：吧台操作区——选中酒品后展示配方要求与调制控制台
- *  （摇法三选一 轻摇/猛摇/直接调制，加冰/陈化/卡莫特林开关），
- *  调制方式随 preview 请求提交，由 AS2 逐项比对裁决并冻结进计划。
- *  协议仍走 CraftingRuntime mux，snapshot/preview/commit 语义与其他品类一致。 */
+/** 调酒吧台 — 赛博朋克酒保风格界面（VA-11 式自由调配），独立于合成工作台。
+ *  左列：酒品名录——按口味/类型/瓶装饮料筛选浏览，卡片载配方规格，
+ *        顶部「当前调配」栏实时显示玩家投放组合命中的酒品；
+ *  右列：吧台操作区——五种原料槽（固定顺序、含剩余数目与投放计数）、
+ *        加冰/陈化开关、中央摇壶（未摇制→轻摇→猛摇→轻摇…）与「重做」「完成」。
+ *  配方结构来自 build 派生 bartending-spec.json（web 直读）；
+ *  命中后仍走 CraftingRuntime preview/commit，调制方式与材料裁决
+ *  由 AS2 逐项比对并冻结进计划——本地匹配只负责呈现与门控按钮。 */
 var BartendingPanel = (function() {
     'use strict';
     var _host = null;
-    var _el = null, _statusEl = null, _booksEl = null, _listEl = null, _stationEl = null,
-        _closeButton = null, _moneyEl = null, _kpointsEl = null;
-    var _snapshot = null, _books = [], _selectedBook = '', _selectedIndex = -1,
-        _selectedRecipe = null,
-        _preview = null, _craftCount = 1;
-    var _technique = {shake:'none', ice:false, aged:false, karmotrine:false};
+    var _el = null, _statusEl = null, _listEl = null, _stationEl = null,
+        _closeButton = null, _moneyEl = null, _kpointsEl = null,
+        _tabsEl = null, _chipsEl = null, _resultEl = null;
+    var _snapshot = null, _spec = null, _specFailed = false,
+        _materials = null, _materialsBusy = false;
+    var _filter = {tab:'all', value:''};
+    var _mix = null;
+    var _matched = null, _preview = null;
     var _busy = false, _previewBusy = false, _generation = 0;
     var _commitFeedback = null;
+    var SLOT_MAX = 9;
 
     function mount(shellEl, deps) {
         _host = deps;
         _generation++;
-        _snapshot = null; _books = []; _selectedBook = '';
-        _selectedIndex = -1; _selectedRecipe = null;
-        _preview = null;
-        _craftCount = 1; _busy = false; _previewBusy = false; _commitFeedback = null;
-        _technique = {shake:'none', ice:false, aged:false, karmotrine:false};
+        _snapshot = null; _spec = null; _specFailed = false;
+        _materials = null; _materialsBusy = false;
+        _filter = {tab:'all', value:''};
+        _matched = null; _preview = null;
+        _busy = false; _previewBusy = false; _commitFeedback = null;
+        resetMix();
         buildDOM();
         if (shellEl) shellEl.appendChild(_el);
+        loadSpec();
         refresh();
     }
 
     function unmount() {
         _generation++;
         if (_el && _el.parentNode) _el.parentNode.removeChild(_el);
-        _el = null; _host = null; _snapshot = null; _preview = null;
-        _selectedBook = ''; _selectedIndex = -1; _selectedRecipe = null;
-        _busy = false; _previewBusy = false;
+        _el = null; _host = null; _snapshot = null; _spec = null; _preview = null;
+        _materials = null; _matched = null; _mix = null;
+        _busy = false; _previewBusy = false; _materialsBusy = false;
     }
 
     function buildDOM() {
@@ -70,16 +77,66 @@ var BartendingPanel = (function() {
 
         var body = document.createElement('div');
         body.className = 'bart-body';
-        _booksEl = document.createElement('nav');
-        _booksEl.className = 'bart-books';
-        _booksEl.setAttribute('aria-label', '酒单');
+
+        var browser = document.createElement('div');
+        browser.className = 'bart-browser';
+        _tabsEl = document.createElement('nav');
+        _tabsEl.className = 'bart-tabs';
+        _tabsEl.setAttribute('aria-label', '名录筛选');
+        _chipsEl = document.createElement('div');
+        _chipsEl.className = 'bart-chips';
+        _resultEl = document.createElement('div');
+        _resultEl.className = 'bart-result';
         _listEl = document.createElement('div');
         _listEl.className = 'bart-list';
+        browser.appendChild(_tabsEl); browser.appendChild(_chipsEl);
+        browser.appendChild(_resultEl); browser.appendChild(_listEl);
+
         _stationEl = document.createElement('section');
         _stationEl.className = 'bart-station';
-        body.appendChild(_booksEl); body.appendChild(_listEl); body.appendChild(_stationEl);
+
+        body.appendChild(browser); body.appendChild(_stationEl);
         _el.appendChild(header); _el.appendChild(body);
-        renderBooks(); renderList(); renderStation();
+        renderAll();
+    }
+
+    function renderAll() {
+        renderTabs(); renderChips(); renderResult(); renderList(); renderStation();
+    }
+
+    /* ── 数据装载 ── */
+
+    function slotNames() {
+        return _spec && _spec.ingredientSlots ? _spec.ingredientSlots : [];
+    }
+
+    function resetMix() {
+        _mix = {counts:{}, ice:false, aged:false, shake:'none'};
+        var names = slotNames();
+        for (var i = 0; i < names.length; i++) _mix.counts[names[i]] = 0;
+    }
+
+    function loadSpec() {
+        var generation = _generation;
+        fetch('modules/bartending-spec.json').then(function(response) {
+            if (!response.ok) throw new Error('spec http ' + response.status);
+            return response.json();
+        }).then(function(spec) {
+            if (generation !== _generation || !_el) return;
+            if (!spec || spec.version !== 1 || !Array.isArray(spec.recipes)
+                    || !Array.isArray(spec.ingredientSlots)) {
+                _specFailed = true;
+            } else {
+                _spec = spec;
+                if (!_mix) resetMix();
+            }
+            renderAll();
+            rematch();
+        }).catch(function() {
+            if (generation !== _generation || !_el) return;
+            _specFailed = true;
+            renderAll();
+        });
     }
 
     function refresh() {
@@ -87,6 +144,7 @@ var BartendingPanel = (function() {
             _statusEl.textContent = '同步中';
             _statusEl.setAttribute('data-state', 'loading');
         }
+        loadMaterials();
         var generation = _generation;
         var callId = _host.request('snapshot', {category:'调酒'}, function(response) {
             if (generation !== _generation || !_el) return;
@@ -98,20 +156,8 @@ var BartendingPanel = (function() {
             _snapshot = response;
             applyBalance(response.balance);
             setStatus(response.note || '就绪', 'ready');
-            groupBooks(response.recipes || []);
-            if (_selectedBook && !_books.some(function(book) { return book.name === _selectedBook; })) {
-                _selectedBook = '';
-                _selectedIndex = -1; _selectedRecipe = null; _preview = null;
-            }
-            if (_selectedRecipe) {
-                var found = findRecipe(_selectedRecipe.recipeIndex);
-                if (!found) {
-                    _selectedRecipe = null; _selectedIndex = -1; _preview = null;
-                }
-                else _selectedRecipe = found;
-            }
-            renderBooks(); renderList(); renderStation();
-            if (_selectedRecipe) requestPreview();
+            renderAll();
+            rematch();
         });
         if (!callId) {
             setStatus('发送失败', 'error');
@@ -119,22 +165,38 @@ var BartendingPanel = (function() {
         }
     }
 
-    function groupBooks(recipes) {
-        var order = [], index = {};
-        _books = [];
-        for (var i = 0; i < recipes.length; i++) {
-            var recipe = recipes[i];
-            var name = String(recipe.book || '散页酒单');
-            if (index[name] == null) {
-                index[name] = _books.length;
-                order.push(name);
-                _books.push({name:name, recipes:[]});
+    function loadMaterials() {
+        if (_materialsBusy) return;
+        _materialsBusy = true;
+        var generation = _generation;
+        _host.request('materials', {v:1}, function(response) {
+            if (generation !== _generation || !_el) return;
+            _materialsBusy = false;
+            if (response && response.success && Array.isArray(response.materials)) {
+                var index = {};
+                for (var i = 0; i < response.materials.length; i++) {
+                    var row = response.materials[i];
+                    index[row.name] = row;
+                }
+                _materials = index;
             }
-            _books[index[name]].recipes.push(recipe);
-        }
+            renderStation();
+        });
     }
 
-    function findRecipe(recipeIndex) {
+    /* ── 配方匹配（本地投影，裁决仍以 AS2 preview 为准）── */
+
+    function specByIndex(recipeIndex) {
+        if (!_spec) return null;
+        for (var i = 0; i < _spec.recipes.length; i++) {
+            if (Number(_spec.recipes[i].recipeIndex) === Number(recipeIndex)) {
+                return _spec.recipes[i];
+            }
+        }
+        return null;
+    }
+
+    function snapshotByIndex(recipeIndex) {
         if (!_snapshot || !_snapshot.recipes) return null;
         for (var i = 0; i < _snapshot.recipes.length; i++) {
             if (Number(_snapshot.recipes[i].recipeIndex) === Number(recipeIndex)) {
@@ -144,83 +206,95 @@ var BartendingPanel = (function() {
         return null;
     }
 
-    function bookRecipes() {
-        for (var i = 0; i < _books.length; i++) {
-            if (_books[i].name === _selectedBook) return _books[i].recipes;
+    function mixHasAnyPour() {
+        var names = slotNames();
+        for (var i = 0; i < names.length; i++) {
+            if ((_mix.counts[names[i]] || 0) > 0) return true;
         }
-        return [];
+        return false;
     }
 
-    function selectBook(name) {
-        if (_selectedBook === name) {
-            _selectedBook = '';
-            _selectedIndex = -1; _selectedRecipe = null;
-            _preview = null; _commitFeedback = null;
-            renderBooks(); renderList(); renderStation();
-            return;
+    /** 返回 {recipe, technique} 或 null；technique.karmotrine 为实际可选投放。 */
+    function matchMix() {
+        if (!_spec) return null;
+        var slots = slotNames();
+        var karmotrineName = '卡莫特林';
+        for (var r = 0; r < _spec.recipes.length; r++) {
+            var recipe = _spec.recipes[r];
+            var need = recipe.ingredients || {};
+            var ok = true;
+            for (var i = 0; i < slots.length; i++) {
+                var name = slots[i];
+                if (name === karmotrineName) continue;
+                if ((_mix.counts[name] || 0) !== (need[name] || 0)) { ok = false; break; }
+            }
+            if (!ok) continue;
+            var declared = recipe.technique || null;
+            if (declared) {
+                if (_mix.shake !== declared.shake) continue;
+                if (_mix.ice !== declared.ice) continue;
+                if (_mix.aged !== declared.aged) continue;
+            }
+            var authoredK = need[karmotrineName] || 0;
+            var kCount = _mix.counts[karmotrineName] || 0;
+            var kind = declared ? declared.karmotrine : 'none';
+            var sendKarmotrine = false;
+            if (kind === 'required') {
+                if (kCount !== authoredK) continue;
+            } else if (kind === 'optional') {
+                if (authoredK !== 0 || kCount > 1) continue;
+                sendKarmotrine = kCount === 1;
+            } else {
+                if (kCount !== 0 || authoredK !== 0) continue;
+            }
+            return {recipe:recipe,
+                technique:declared ? {
+                    shake:declared.shake, ice:declared.ice,
+                    aged:declared.aged, karmotrine:sendKarmotrine
+                } : null};
         }
-        _selectedBook = name;
-        _selectedIndex = -1; _selectedRecipe = null;
-        _preview = null; _commitFeedback = null;
-        renderBooks(); renderList(); renderStation();
+        return null;
     }
 
-    function selectRecipe(recipeIndex) {
-        var recipe = findRecipe(recipeIndex);
-        if (!recipe) return;
-        _selectedIndex = Number(recipeIndex);
-        _selectedRecipe = recipe;
-        _craftCount = 1; _preview = null; _commitFeedback = null;
-        // 控制台默认回放配方要求的调制方式；玩家仍可改动，
-        // 不匹配时 AS2 以 technique_mismatch 阻断并提示。
-        var declared = recipe.technique || null;
-        _technique = declared
-            ? {shake:declared.shake, ice:declared.ice === true,
-                aged:declared.aged === true, karmotrine:false}
-            : {shake:'none', ice:false, aged:false, karmotrine:false};
-        renderList(); renderStation(); requestPreview();
+    function rematch() {
+        _matched = matchMix();
+        _preview = null;
+        renderResult(); renderList(); renderStation();
+        if (_matched) requestPreview();
     }
+
+    /* ── 请求：preview / commit ── */
 
     function requestPreview() {
-        if (!_selectedRecipe || _busy) return;
+        if (!_matched || _busy) return;
         _previewBusy = true; renderStation();
         var generation = _generation;
-        var recipeIndex = _selectedIndex, craftCount = _craftCount;
-        var payload = {category:'调酒', recipeIndex:recipeIndex, craftCount:craftCount};
-        if (_selectedRecipe.technique) {
-            payload.technique = {shake:_technique.shake, ice:_technique.ice === true,
-                aged:_technique.aged === true,
-                karmotrine:_selectedRecipe.technique.karmotrine === 'optional'
-                    && _technique.karmotrine === true};
-        }
-        var sentTechnique = payload.technique ? JSON.stringify(payload.technique) : '';
+        var recipeIndex = _matched.recipe.recipeIndex;
+        var techniqueSig = _matched.technique ? JSON.stringify(_matched.technique) : '';
+        var payload = {category:'调酒', recipeIndex:recipeIndex, craftCount:1};
+        if (_matched.technique) payload.technique = _matched.technique;
         _host.request('preview', payload, function(response) {
             if (generation !== _generation || !_el) return;
             _previewBusy = false;
-            if (_selectedIndex !== recipeIndex || _craftCount !== craftCount) return;
-            var current = _selectedRecipe && _selectedRecipe.technique
-                ? JSON.stringify({shake:_technique.shake, ice:_technique.ice === true,
-                    aged:_technique.aged === true,
-                    karmotrine:_selectedRecipe.technique.karmotrine === 'optional'
-                        && _technique.karmotrine === true})
-                : '';
-            if (current !== sentTechnique) return;
+            if (!_matched || Number(_matched.recipe.recipeIndex) !== Number(recipeIndex)) return;
+            var current = _matched.technique ? JSON.stringify(_matched.technique) : '';
+            if (current !== techniqueSig) return;
             if (!response || !response.success) {
                 _preview = null;
                 _commitFeedback = errorMessage(response && response.error);
             } else {
                 _preview = response; _commitFeedback = null;
             }
-            renderStation();
+            renderResult(); renderStation();
         });
     }
 
     function commit() {
-        if (_busy || _previewBusy || !_preview || !_preview.canCommit
-                || !_preview.craftToken || !_selectedRecipe) return;
+        if (_busy || _previewBusy || !_matched || !_preview
+                || !_preview.canCommit || !_preview.craftToken) return;
         _busy = true; _commitFeedback = null; renderStation();
         var generation = _generation;
-        var craftedName = _selectedRecipe.title;
+        var craftedName = _matched.recipe.title;
         _host.request('commit', {category:'调酒',
             expectedCraftToken:_preview.craftToken}, function(response) {
             if (generation !== _generation || !_el) return;
@@ -231,41 +305,138 @@ var BartendingPanel = (function() {
                 cue('success');
                 _commitFeedback = null;
                 _preview = null;
+                resetMix(); _matched = null;
                 refresh(); return;
             }
             cue('rejected');
             toast(errorMessage(response && response.error));
             _commitFeedback = errorMessage(response && response.error);
             _preview = null;
-            renderStation();
-            requestPreview();
+            renderResult(); renderStation();
+            if (_matched) requestPreview();
         });
     }
 
-    function renderBooks() {
-        if (!_booksEl) return;
-        _booksEl.innerHTML = '';
-        for (var i = 0; i < _books.length; i++) {
-            var book = _books[i];
-            var slip = document.createElement('button');
-            slip.type = 'button';
-            slip.className = 'bart-slip'
-                + (book.name === _selectedBook ? ' active' : '');
-            slip.setAttribute('data-audio-cue', 'activate');
-            slip.setAttribute('aria-pressed', book.name === _selectedBook ? 'true' : 'false');
-            var nameEl = document.createElement('span');
-            nameEl.className = 'bart-slip-name';
-            nameEl.textContent = book.name;
-            var count = document.createElement('span');
-            count.className = 'bart-slip-count';
-            count.textContent = book.recipes.length + ' 款';
-            slip.appendChild(nameEl); slip.appendChild(count);
-            slip.addEventListener('click', bindBook(book.name));
-            _booksEl.appendChild(slip);
+    /* ── 交互 ── */
+
+    function setCount(name, next) {
+        var value = Math.floor(Number(next));
+        if (isNaN(value) || value < 0) value = 0;
+        if (value > SLOT_MAX) value = SLOT_MAX;
+        if (_mix.counts[name] === value) { renderStation(); return; }
+        _mix.counts[name] = value;
+        _commitFeedback = null;
+        rematch();
+    }
+
+    function setShake() {
+        if (_busy) return;
+        _mix.shake = _mix.shake === 'light' ? 'hard' : 'light';
+        _commitFeedback = null;
+        rematch();
+    }
+
+    function toggleOption(field) {
+        if (_busy) return;
+        _mix[field] = _mix[field] !== true;
+        _commitFeedback = null;
+        rematch();
+    }
+
+    function resetAll() {
+        if (_busy) return;
+        resetMix();
+        _matched = null; _preview = null; _commitFeedback = null;
+        renderResult(); renderList(); renderStation();
+    }
+
+    function loadRecipe(recipeIndex) {
+        var recipe = specByIndex(recipeIndex);
+        if (!recipe || _busy) return;
+        resetMix();
+        var need = recipe.ingredients || {};
+        for (var name in need) {
+            if (Object.prototype.hasOwnProperty.call(need, name)) {
+                _mix.counts[name] = need[name];
+            }
         }
-        function bindBook(name) {
-            return function() { selectBook(name); };
+        if (recipe.technique) {
+            _mix.shake = recipe.technique.shake;
+            _mix.ice = recipe.technique.ice === true;
+            _mix.aged = recipe.technique.aged === true;
         }
+        _commitFeedback = null;
+        rematch();
+    }
+
+    /* ── 渲染：左侧名录 ── */
+
+    var TABS = [
+        {id:'all', label:'全部'},
+        {id:'flavor', label:'按口味'},
+        {id:'style', label:'按类型'},
+        {id:'bottled', label:'瓶装饮料'}
+    ];
+
+    function renderTabs() {
+        if (!_tabsEl) return;
+        _tabsEl.innerHTML = '';
+        for (var i = 0; i < TABS.length; i++) {
+            var tab = TABS[i];
+            var button = document.createElement('button');
+            button.type = 'button';
+            button.className = 'bart-tab' + (_filter.tab === tab.id ? ' active' : '');
+            button.textContent = tab.label;
+            button.setAttribute('data-audio-cue', 'activate');
+            button.setAttribute('aria-pressed', _filter.tab === tab.id ? 'true' : 'false');
+            button.addEventListener('click', bindTab(tab.id));
+            _tabsEl.appendChild(button);
+        }
+        function bindTab(id) {
+            return function() {
+                _filter.tab = id;
+                _filter.value = '';
+                renderTabs(); renderChips(); renderList();
+            };
+        }
+    }
+
+    function renderChips() {
+        if (!_chipsEl) return;
+        _chipsEl.innerHTML = '';
+        var options = _filter.tab === 'flavor' ? (_spec ? _spec.flavors : [])
+            : _filter.tab === 'style' ? (_spec ? _spec.styles : []) : null;
+        if (!options) { _chipsEl.classList.add('hidden'); return; }
+        _chipsEl.classList.remove('hidden');
+        for (var i = 0; i < options.length; i++) {
+            var value = options[i];
+            var chip = document.createElement('button');
+            chip.type = 'button';
+            chip.className = 'bart-chip' + (_filter.value === value ? ' active' : '');
+            chip.textContent = value;
+            chip.setAttribute('data-audio-cue', 'activate');
+            chip.addEventListener('click', bindChip(value));
+            _chipsEl.appendChild(chip);
+        }
+        function bindChip(value) {
+            return function() {
+                _filter.value = _filter.value === value ? '' : value;
+                renderChips(); renderList();
+            };
+        }
+    }
+
+    function filteredRecipes() {
+        if (!_spec) return [];
+        var out = [];
+        for (var i = 0; i < _spec.recipes.length; i++) {
+            var recipe = _spec.recipes[i];
+            if (_filter.tab === 'flavor' && _filter.value && recipe.flavor !== _filter.value) continue;
+            if (_filter.tab === 'style' && _filter.value && recipe.style !== _filter.value) continue;
+            if (_filter.tab === 'bottled' && recipe.bottled !== true) continue;
+            out.push(recipe);
+        }
+        return out;
     }
 
     function availabilityLabel(recipe) {
@@ -281,8 +452,68 @@ var BartendingPanel = (function() {
         }
     }
 
-    function availabilityClass(availability) {
-        return availability === 'ready' ? 'is-ready' : 'is-blocked';
+    function shakeLabel(shake) {
+        switch (shake) {
+            case 'light': return '轻摇';
+            case 'hard': return '猛摇';
+            default: return '不摇';
+        }
+    }
+
+    function specLine(recipe) {
+        var parts = [];
+        var slots = slotNames();
+        for (var i = 0; i < slots.length; i++) {
+            var count = recipe.ingredients && recipe.ingredients[slots[i]];
+            if (count > 0) parts.push(slots[i] + '×' + count);
+        }
+        if (recipe.technique) {
+            if (recipe.technique.aged) parts.push('陈化');
+            if (recipe.technique.ice) parts.push('加冰');
+            parts.push(shakeLabel(recipe.technique.shake));
+            if (recipe.technique.karmotrine === 'optional') parts.push('卡莫特林可选');
+        }
+        for (var e = 0; e < (recipe.extras || []).length; e++) {
+            parts.push('需「' + recipe.extras[e].name + '」');
+        }
+        return parts.join(' · ');
+    }
+
+    function renderResult() {
+        if (!_resultEl) return;
+        _resultEl.innerHTML = '';
+        var head = document.createElement('div');
+        head.className = 'bart-result-head';
+        head.textContent = '当前调配';
+        var body = document.createElement('div');
+        body.className = 'bart-result-body';
+        if (_matched) {
+            var snap = snapshotByIndex(_matched.recipe.recipeIndex);
+            var thumb = document.createElement('span');
+            thumb.className = 'bart-drink-thumb';
+            if (snap) thumb.innerHTML = _host.iconHtml(snap.output.icon, 'bart-icon');
+            var info = document.createElement('div');
+            info.className = 'bart-result-info';
+            var name = document.createElement('b');
+            name.textContent = _matched.recipe.title;
+            var state = document.createElement('small');
+            state.textContent = _previewBusy ? '核算中…'
+                : _preview && _preview.canCommit ? '配方成立，可出杯'
+                : _preview ? errorMessage(_preview.blockingError)
+                : _commitFeedback || '核算中…';
+            info.appendChild(name); info.appendChild(state);
+            body.appendChild(thumb); body.appendChild(info);
+            _resultEl.classList.add('matched');
+        } else {
+            var hint = document.createElement('div');
+            hint.className = 'bart-result-hint';
+            hint.textContent = !_spec ? (_specFailed ? '酒单规格缺失，无法调配。' : '载入酒单中…')
+                : mixHasAnyPour() ? '该组合不出任何酒——调整原料或手法。'
+                : '按配方投放原料，或直接点选左侧酒品。';
+            body.appendChild(hint);
+            _resultEl.classList.remove('matched');
+        }
+        _resultEl.appendChild(head); _resultEl.appendChild(body);
     }
 
     function renderList() {
@@ -290,299 +521,193 @@ var BartendingPanel = (function() {
         _listEl.innerHTML = '';
         var grid = document.createElement('div');
         grid.className = 'bart-drink-grid';
-        if (!_selectedBook) {
-            grid.classList.add('empty');
-            _listEl.appendChild(grid);
-            return;
-        }
-        var recipes = bookRecipes();
-        if (!recipes.length) {
+        var recipes = filteredRecipes();
+        if (!_spec) {
             var empty = document.createElement('div');
             empty.className = 'bart-empty';
-            empty.textContent = _snapshot ? '这份酒单还没有可调的酒。' : '同步中…';
+            empty.textContent = _specFailed ? '酒单规格缺失。' : '载入中…';
             grid.appendChild(empty);
+        } else if (!recipes.length) {
+            var none = document.createElement('div');
+            none.className = 'bart-empty';
+            none.textContent = '该分类下没有酒品。';
+            grid.appendChild(none);
         }
         for (var i = 0; i < recipes.length; i++) {
             var recipe = recipes[i];
+            var snap = snapshotByIndex(recipe.recipeIndex);
             var card = document.createElement('button');
             card.type = 'button';
-            card.className = 'bart-drink ' + availabilityClass(recipe.availability)
-                + (_selectedRecipe && _selectedRecipe.recipeIndex === recipe.recipeIndex
-                    ? ' active' : '');
+            var classes = 'bart-drink'
+                + (snap && snap.availability === 'ready' ? ' is-ready' : ' is-blocked')
+                + (_matched && _matched.recipe.recipeIndex === recipe.recipeIndex
+                    ? ' matched' : '');
+            card.className = classes;
             card.setAttribute('data-audio-cue', 'activate');
             var thumb = document.createElement('span');
             thumb.className = 'bart-drink-thumb';
-            thumb.innerHTML = _host.iconHtml(recipe.output.icon, 'bart-icon');
+            if (snap) thumb.innerHTML = _host.iconHtml(snap.output.icon, 'bart-icon');
             var name = document.createElement('span');
             name.className = 'bart-drink-name';
             name.textContent = recipe.title;
+            var spec = document.createElement('span');
+            spec.className = 'bart-drink-spec';
+            spec.textContent = specLine(recipe);
             var state = document.createElement('span');
             state.className = 'bart-drink-state';
-            state.textContent = availabilityLabel(recipe);
-            card.appendChild(thumb); card.appendChild(name); card.appendChild(state);
+            state.textContent = snap ? availabilityLabel(snap) : '同步中';
+            card.appendChild(thumb); card.appendChild(name);
+            card.appendChild(spec); card.appendChild(state);
             card.addEventListener('click', bindDrink(recipe.recipeIndex));
             grid.appendChild(card);
         }
         _listEl.appendChild(grid);
         function bindDrink(recipeIndex) {
-            return function() { selectRecipe(recipeIndex); };
+            return function() { loadRecipe(recipeIndex); };
         }
     }
 
-    function shakeLabel(shake) {
-        switch (shake) {
-            case 'light': return '轻摇';
-            case 'hard': return '猛摇';
-            default: return '直接调制';
-        }
-    }
+    /* ── 渲染：右侧吧台 ── */
 
-    function declaredTechniqueText(declared) {
-        if (!declared) return '';
-        var parts = [];
-        if (declared.aged === true) parts.push('陈化');
-        if (declared.ice === true) parts.push('加冰');
-        parts.push(shakeLabel(declared.shake));
-        return parts.join('·');
-    }
-
-    function techniqueMismatch() {
-        var declared = _selectedRecipe && _selectedRecipe.technique;
-        if (!declared) return false;
-        if (_technique.shake !== declared.shake) return true;
-        if (_technique.ice !== declared.ice) return true;
-        if (_technique.aged !== declared.aged) return true;
-        return false;
+    function materialMeta(name) {
+        return _materials && _materials[name] ? _materials[name] : null;
     }
 
     function renderStation() {
         if (!_stationEl) return;
         _stationEl.innerHTML = '';
-        var recipe = _selectedRecipe;
-        if (!recipe) {
-            var idle = document.createElement('div');
-            idle.className = 'bart-idle';
-            idle.textContent = _selectedBook ? '点选一款酒开始调制。' : '先翻开一份酒单。';
-            _stationEl.appendChild(idle);
-            return;
+        var board = document.createElement('div');
+        board.className = 'bart-board';
+
+        var slotsRow = document.createElement('div');
+        slotsRow.className = 'bart-slots';
+        var slots = slotNames();
+        for (var i = 0; i < slots.length; i++) {
+            slotsRow.appendChild(renderSlot(slots[i]));
         }
-        var station = document.createElement('div');
-        station.className = 'bart-card';
+        board.appendChild(slotsRow);
 
-        var head = document.createElement('div');
-        head.className = 'bart-card-head';
-        var thumb = document.createElement('span');
-        thumb.className = 'bart-drink-thumb lg';
-        thumb.innerHTML = _host.iconHtml(recipe.output.icon, 'bart-icon');
-        var titleBlock = document.createElement('div');
-        titleBlock.className = 'bart-card-title';
-        var title = document.createElement('b');
-        title.textContent = recipe.title;
-        var owned = document.createElement('small');
-        owned.textContent = '现有 ' + recipe.owned.total + ' 份';
-        titleBlock.appendChild(title); titleBlock.appendChild(owned);
-        head.appendChild(thumb); head.appendChild(titleBlock);
-        station.appendChild(head);
+        var console_ = document.createElement('div');
+        console_.className = 'bart-console';
 
-        var declared = recipe.technique || null;
-        if (declared) {
-            var spec = document.createElement('div');
-            spec.className = 'bart-spec';
-            spec.textContent = '配方要求：' + declaredTechniqueText(declared)
-                + (declared.karmotrine === 'optional' ? '（卡莫特林可选）' : '');
-            station.appendChild(spec);
-        }
+        var options = document.createElement('div');
+        options.className = 'bart-options';
+        options.appendChild(optionButton('ice', '加冰'));
+        options.appendChild(optionButton('aged', '陈化'));
+        console_.appendChild(options);
 
-        renderConsole(station, recipe, declared);
-        renderRequirementRows(station, recipe);
+        var shaker = document.createElement('button');
+        shaker.type = 'button';
+        shaker.className = 'bart-shaker state-' + _mix.shake;
+        shaker.disabled = _busy;
+        shaker.setAttribute('data-audio-cue', 'activate');
+        var shakeState = document.createElement('span');
+        shakeState.className = 'bart-shaker-state';
+        shakeState.textContent = _mix.shake === 'none' ? '未摇制'
+            : _mix.shake === 'light' ? '轻摇' : '猛摇';
+        var shakeHint = document.createElement('span');
+        shakeHint.className = 'bart-shaker-hint';
+        shakeHint.textContent = '点击切换';
+        shaker.appendChild(shakeState); shaker.appendChild(shakeHint);
+        shaker.addEventListener('click', setShake);
+        console_.appendChild(shaker);
+
+        var redo = document.createElement('button');
+        redo.type = 'button';
+        redo.className = 'bart-tech-btn redo';
+        redo.textContent = '重做';
+        redo.disabled = _busy;
+        redo.setAttribute('data-audio-cue', 'activate');
+        redo.addEventListener('click', resetAll);
+        console_.appendChild(redo);
+
+        board.appendChild(console_);
 
         var footer = document.createElement('div');
         footer.className = 'bart-card-footer';
-        if (recipe.batchEligible) {
-            var stepper = document.createElement('div');
-            stepper.className = 'bart-count';
-            var minus = document.createElement('button');
-            minus.type = 'button'; minus.textContent = '−';
-            minus.setAttribute('aria-label', '减少一杯');
-            minus.disabled = _craftCount <= 1 || _busy || _previewBusy;
-            minus.addEventListener('click', function() { setCraftCount(_craftCount - 1); });
-            var input = document.createElement('input');
-            input.className = 'bart-count-input';
-            input.type = 'text'; input.inputMode = 'numeric';
-            input.value = String(_craftCount);
-            input.setAttribute('aria-label', '调制杯数');
-            input.addEventListener('change', function() {
-                setCraftCount(Number(input.value));
-            });
-            input.addEventListener('keydown', function(event) {
-                if (event.key === 'Enter') { input.blur(); }
-                else if (event.key === 'Escape') {
-                    input.value = String(_craftCount); input.blur();
-                }
-            });
-            var plus = document.createElement('button');
-            plus.type = 'button'; plus.textContent = '+';
-            plus.setAttribute('aria-label', '增加一杯');
-            plus.disabled = _craftCount >= maxCount() || _busy || _previewBusy;
-            plus.addEventListener('click', function() { setCraftCount(_craftCount + 1); });
-            stepper.appendChild(minus); stepper.appendChild(input); stepper.appendChild(plus);
-            footer.appendChild(stepper);
-        }
-        var cost = document.createElement('div');
-        cost.className = 'bart-cost';
-        cost.textContent = costText(recipe);
-        footer.appendChild(cost);
+        var note = document.createElement('div');
+        note.className = 'bart-foot-note';
+        note.textContent = footerNote();
+        footer.appendChild(note);
         var confirm = document.createElement('button');
         confirm.type = 'button';
         confirm.className = 'bart-confirm';
-        confirm.textContent = _busy ? '调制中…' : '调制出品';
+        confirm.textContent = _busy ? '调制中…' : '完成';
         var committable = !!_preview && _preview.canCommit && !_busy && !_previewBusy;
         confirm.disabled = !committable;
         if (!committable) confirm.setAttribute('aria-disabled', 'true');
         confirm.setAttribute('data-audio-cue', 'activate');
         confirm.addEventListener('click', commit);
         footer.appendChild(confirm);
-        station.appendChild(footer);
-        _stationEl.appendChild(station);
+        board.appendChild(footer);
+
+        _stationEl.appendChild(board);
     }
 
-    function renderConsole(station, recipe, declared) {
-        if (!declared) return;
-        var consoleEl = document.createElement('div');
-        consoleEl.className = 'bart-console';
-
-        var shakeRow = document.createElement('div');
-        shakeRow.className = 'bart-technique';
-        var shakes = ['light', 'hard', 'none'];
-        for (var i = 0; i < shakes.length; i++) {
-            var value = shakes[i];
-            var button = document.createElement('button');
-            button.type = 'button';
-            button.className = 'bart-tech-btn'
-                + (_technique.shake === value ? ' active' : '');
-            button.textContent = shakeLabel(value);
-            button.setAttribute('data-audio-cue', 'activate');
-            button.disabled = _busy;
-            button.addEventListener('click', bindShake(value));
-            shakeRow.appendChild(button);
-        }
-        consoleEl.appendChild(shakeRow);
-
-        var toggleRow = document.createElement('div');
-        toggleRow.className = 'bart-technique toggles';
-        toggleRow.appendChild(buildToggle('ice', '加冰'));
-        toggleRow.appendChild(buildToggle('aged', '陈化'));
-        if (declared.karmotrine === 'optional') {
-            toggleRow.appendChild(buildToggle('karmotrine', '卡莫特林'));
-        }
-        consoleEl.appendChild(toggleRow);
-
-        if (techniqueMismatch()) {
-            var warn = document.createElement('div');
-            warn.className = 'bart-tech-warn';
-            warn.textContent = '调制方式与配方不符';
-            consoleEl.appendChild(warn);
-        }
-        station.appendChild(consoleEl);
-
-        function bindShake(value) {
-            return function() {
-                if (_busy || _technique.shake === value) return;
-                _technique.shake = value;
-                _commitFeedback = null;
-                renderStation(); requestPreview();
-            };
-        }
-        function buildToggle(field, label) {
-            var button = document.createElement('button');
-            button.type = 'button';
-            button.className = 'bart-tech-btn toggle'
-                + (_technique[field] === true ? ' active' : '');
-            button.textContent = label;
-            button.setAttribute('data-audio-cue', 'activate');
-            button.setAttribute('aria-pressed', _technique[field] === true ? 'true' : 'false');
-            button.disabled = _busy;
-            button.addEventListener('click', function() {
-                if (_busy) return;
-                _technique[field] = _technique[field] !== true;
-                _commitFeedback = null;
-                renderStation(); requestPreview();
-            });
-            return button;
-        }
+    function footerNote() {
+        if (!_spec) return _specFailed ? '酒单规格缺失。' : '载入中…';
+        if (!_matched) return mixHasAnyPour()
+            ? '配方不成立——原料与手法须与某款酒完全一致。' : '投放原料开始调配。';
+        if (_previewBusy) return '正在核算…';
+        if (_commitFeedback) return _commitFeedback;
+        if (_preview && _preview.canCommit) return '将出品「' + _matched.recipe.title + '」。';
+        if (_preview) return errorMessage(_preview.blockingError);
+        return '正在核算…';
     }
 
-    function renderRequirementRows(station, recipe) {
-        var body = document.createElement('div');
-        body.className = 'bart-reqs';
-        if (_preview) {
-            var materials = _preview.materials || [];
-            for (var m = 0; m < materials.length; m++) {
-                var material = materials[m];
-                var line = document.createElement('div');
-                line.className = 'bart-req ' + (material.enough ? 'met' : 'unmet');
-                var iconNode = document.createElement('span');
-                iconNode.className = 'bart-req-icon';
-                iconNode.innerHTML = _host.iconHtml(material.icon, 'bart-icon-sm');
-                var nameNode = document.createElement('span');
-                nameNode.className = 'bart-req-name';
-                nameNode.textContent = material.displayName
-                    + (material.consumed ? '' : '（不消耗）');
-                var count = document.createElement('span');
-                count.className = 'bart-req-value';
-                count.textContent = material.owned + '/' + material.required;
-                var mark = document.createElement('span');
-                mark.className = 'bart-req-mark ' + (material.enough ? 'ok' : 'no');
-                mark.textContent = material.enough ? '✓' : '✗';
-                line.appendChild(iconNode); line.appendChild(nameNode);
-                line.appendChild(count); line.appendChild(mark);
-                body.appendChild(line);
-            }
-            if (_previewBusy) {
-                var recalc = document.createElement('div');
-                recalc.className = 'bart-note';
-                recalc.textContent = '正在核算…';
-                body.appendChild(recalc);
-            }
-        } else {
-            var wait = document.createElement('div');
-            wait.className = 'bart-note';
-            wait.textContent = _previewBusy ? '正在核算…'
-                : (recipe.canCraftOne ? '等待核算结果…' : availabilityLabel(recipe));
-            body.appendChild(wait);
-        }
-        if (_commitFeedback) {
-            var feedback = document.createElement('div');
-            feedback.className = 'bart-note warn';
-            feedback.textContent = _commitFeedback;
-            body.appendChild(feedback);
-        }
-        station.appendChild(body);
+    function renderSlot(name) {
+        var meta = materialMeta(name);
+        var count = _mix.counts[name] || 0;
+        var owned = meta ? Number(meta.owned) : null;
+        var slot = document.createElement('div');
+        slot.className = 'bart-slot' + (count > 0 ? ' filled' : '')
+            + (owned !== null && count > owned ? ' over' : '');
+
+        var icon = document.createElement('span');
+        icon.className = 'bart-slot-icon';
+        if (meta && meta.icon) icon.innerHTML = _host.iconHtml(meta.icon, 'bart-icon-sm');
+        var label = document.createElement('span');
+        label.className = 'bart-slot-name';
+        label.textContent = name;
+        var stock = document.createElement('span');
+        stock.className = 'bart-slot-stock';
+        stock.textContent = owned === null ? '…' : '剩余 ' + owned;
+        slot.appendChild(icon); slot.appendChild(label); slot.appendChild(stock);
+
+        var stepper = document.createElement('div');
+        stepper.className = 'bart-slot-count';
+        var minus = document.createElement('button');
+        minus.type = 'button'; minus.textContent = '−';
+        minus.setAttribute('aria-label', '减少一份' + name);
+        minus.disabled = _busy || count <= 0;
+        minus.addEventListener('click', function() { setCount(name, count - 1); });
+        var value = document.createElement('span');
+        value.className = 'bart-slot-value';
+        value.textContent = String(count);
+        var plus = document.createElement('button');
+        plus.type = 'button'; plus.textContent = '+';
+        plus.setAttribute('aria-label', '增加一份' + name);
+        plus.disabled = _busy || count >= SLOT_MAX;
+        plus.addEventListener('click', function() { setCount(name, count + 1); });
+        stepper.appendChild(minus); stepper.appendChild(value); stepper.appendChild(plus);
+        slot.appendChild(stepper);
+        return slot;
     }
 
-    function maxCount() {
-        if (_preview && Number.isInteger(_preview.maxCraftCount)
-                && _preview.maxCraftCount > 0) return _preview.maxCraftCount;
-        return 99;
+    function optionButton(field, label) {
+        var button = document.createElement('button');
+        button.type = 'button';
+        button.className = 'bart-tech-btn toggle'
+            + (_mix[field] === true ? ' active' : '');
+        button.textContent = label;
+        button.setAttribute('data-audio-cue', 'activate');
+        button.setAttribute('aria-pressed', _mix[field] === true ? 'true' : 'false');
+        button.disabled = _busy;
+        button.addEventListener('click', function() { toggleOption(field); });
+        return button;
     }
 
-    function setCraftCount(next) {
-        var value = Math.floor(Number(next));
-        if (isNaN(value)) value = 1;
-        value = Math.max(1, Math.min(99, value));
-        if (value === _craftCount) { renderStation(); return; }
-        _craftCount = value;
-        renderStation(); requestPreview();
-    }
-
-    function costText(recipe) {
-        var money = Number(recipe.baseCost && recipe.baseCost.money || 0);
-        var kpoints = Number(recipe.baseCost && recipe.baseCost.kpoints || 0);
-        var parts = [];
-        if (money > 0) parts.push('金币 ' + _host.formatNumber(money * _craftCount));
-        if (kpoints > 0) parts.push('K点 ' + _host.formatNumber(kpoints * _craftCount));
-        return parts.length ? '费用：' + parts.join('　') : '免加工费';
-    }
+    /* ── 杂项 ── */
 
     function applyBalance(balance) {
         if (!balance) return;
@@ -620,13 +745,13 @@ var BartendingPanel = (function() {
         refresh:refresh,
         isBusy:function() { return _busy || _previewBusy; },
         debugState:function() { return {
-            book:_selectedBook, selectedIndex:_selectedIndex,
-            craftCount:_craftCount, technique:{
-                shake:_technique.shake, ice:_technique.ice,
-                aged:_technique.aged, karmotrine:_technique.karmotrine
-            },
-            busy:_busy, previewBusy:_previewBusy,
-            books:_books.map(function(book) { return book.name; })
+            filter:{tab:_filter.tab, value:_filter.value},
+            mix:_mix ? {counts:_mix.counts, ice:_mix.ice, aged:_mix.aged,
+                shake:_mix.shake} : null,
+            matched:_matched ? _matched.recipe.recipeIndex : null,
+            specLoaded:!!_spec, specFailed:_specFailed,
+            materialsLoaded:!!_materials,
+            busy:_busy, previewBusy:_previewBusy
         }; }
     };
 })();
