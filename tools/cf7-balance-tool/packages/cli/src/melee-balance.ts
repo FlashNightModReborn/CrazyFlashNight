@@ -143,8 +143,10 @@ function readPlan(): Plan {
   const records = rawRecords.map((raw, index) => parsePlanRecord(raw, index));
   const identities = new Set<string>();
   for (const record of records) {
-    if (identities.has(record.itemName)) throw new Error(`重复的近战记录: ${record.itemName}`);
-    identities.add(record.itemName);
+    // 身份键为 sourceFile+itemName：同名近战可能作为不同变体跨文件登记
+    const identity = `${record.sourceFile} ${record.itemName}`;
+    if (identities.has(identity)) throw new Error(`重复的近战记录: ${identity}`);
+    identities.add(identity);
   }
   return { workbookVersion, workbookSha256, coverageFiles, records };
 }
@@ -202,6 +204,10 @@ function verifyWorkbookSnapshot(plan: Plan): void {
 function buildAuditRecords(plan: Plan): AuditRecord[] {
   const fileCache = new Map<string, Map<string, string>>();
   const kshopCache = new Map<string, Map<string, number>>();
+  const nameCounts = new Map<string, number>();
+  for (const record of plan.records) {
+    nameCounts.set(record.itemName, (nameCounts.get(record.itemName) ?? 0) + 1);
+  }
   return plan.records.map((record) => {
     const absolutePath = path.join(REPO_ROOT, record.sourceFile);
     let blocks = fileCache.get(absolutePath);
@@ -217,7 +223,11 @@ function buildAuditRecords(plan: Plan): AuditRecord[] {
       verifyGoldPrice(record, snapshot);
       verifyKPointPrice(record, snapshot, kshopCache);
     }
-    return { ...record, ...snapshot, auditRef: `melee:${record.itemName}` };
+    const auditRef =
+      (nameCounts.get(record.itemName) ?? 0) > 1
+        ? `melee:${record.itemName}@${path.basename(record.sourceFile, ".xml")}`
+        : `melee:${record.itemName}`;
+    return { ...record, ...snapshot, auditRef };
   });
 }
 
@@ -455,8 +465,8 @@ function indexItemBlocks(source: string, sourceFile: string): Map<string, string
   for (const match of source.matchAll(itemRegex)) {
     const block = match[0];
     const itemName = extractItemName(block, sourceFile);
-    if (result.has(itemName)) throw new Error(`${sourceFile}: 重复 item ${itemName}`);
-    result.set(itemName, block);
+    // 同一文件内可能存在完全相同的同名块：保留首个，sync 按名命中所有同名片段
+    if (!result.has(itemName)) result.set(itemName, block);
   }
   return result;
 }

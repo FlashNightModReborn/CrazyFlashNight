@@ -36,5 +36,6 @@
 
 ## 4. 现状
 
-- 存量 231 件（16 个文件）经机械扫描大面积偏离 v1 公式基线（锋利度与价格双带同时满足的仅 1 件），分批迁移须逐件取得获取渠道证据后由 `unresolved` 推进。
-- 首批登记：`巨尸长斧`（`武器_刀_狂野.xml`，机械拟合通过，层数为公式反推，待裁定）。
+- 存量 230 件（16 个文件）经机械扫描大面积偏离 v1 公式基线（锋利度与价格双带同时满足的仅 1 件），已全部按 `balanceMode="exception"` 机械登记：NPC 专用挂 `npc-only`、声明不可获取的挂 `unobtainable-novelty`、其余挂 `legacy-off-formula`，待逐件裁定。
+- 首个公式域登记：`巨尸长斧`（`武器_刀_狂野.xml`，机械拟合通过，层数为公式反推，待裁定）。
+- `coverageFiles` 已开启全部 16 个近战文件的整文件覆盖门——新增近战武器必须进 plan（formula 或带 exceptionCode 的 exception）。同名跨文件变体以 `sourceFile+itemName` 为身份键（如 `三戈戟二型`），auditRef 自动以文件名消歧。
