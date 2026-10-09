@@ -94,7 +94,9 @@ describe("strict armor balance plan parsing", () => {
     expect(() => parseArmorBalancePlan(wrongSha)).toThrow(/workbookSha256/);
     const duplicate = plan();
     duplicate.armorBalancePlan.records.record.push(record());
-    expect(() => parseArmorBalancePlan(duplicate)).toThrow(/duplicate itemName/);
+    expect(() => parseArmorBalancePlan(duplicate)).toThrow(
+      "armorBalancePlan.records: duplicate record data/items/防具_40+级.xml / 钛合金61式头部装甲"
+    );
     const badStatus = plan();
     badStatus.armorBalancePlan.records.record[0]!.status = "proposed";
     expect(() => parseArmorBalancePlan(badStatus)).toThrow(/status/);

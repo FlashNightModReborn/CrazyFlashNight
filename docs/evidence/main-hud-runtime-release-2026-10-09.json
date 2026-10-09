@@ -1,7 +1,7 @@
 {
   "schema": "cf7-main-hud-runtime-release.v1",
   "date": "2026-10-09",
-  "status": "promoted_pending_deployment_audit",
+  "status": "v4_source_ready_pending_frozen_release_proofs",
   "scope": "Complete native main HUD + PlayerInfo opaque world composition and pistol recoil owner repair",
   "candidate": {
     "candidateRelativePath": "tmp/runtime-candidates/v2/hmm1",
@@ -311,5 +311,139 @@
   },
   "remoteAudit": {
     "status": "pending_deployment_push"
+  },
+  "pendingRelease": {
+    "sourceTag": "runtime-build-v2/20261009-main-hud-pistol-v4",
+    "reason": "Upstream advanced before deployment push; preserve normal merge history and rebind current policy",
+    "observedUpstream": "1177f742e9ea8dbb726c00b65c5093936cb50560",
+    "buildInputsExpectedUnchanged": true,
+    "reuseLocalProducerOnlyIfArtifactRecipeToolchainEqual": true,
+    "newImmutableRequestRequired": true,
+    "newProductionPolicyReceiptRequired": true,
+    "newIndependentCloudProofRequired": true,
+    "newAsLoaderPublishRequired": true,
+    "balance": {
+      "typecheck": "passed after rebuilding stale local declarations",
+      "testsPassed": 861,
+      "testsFailed": 0,
+      "weaponRecords": 365,
+      "potionRecords": 106,
+      "armorRecords": 655,
+      "meleeRecords": 231,
+      "explosivesRecords": 39,
+      "balanceSyncCheck": "passed",
+      "existingDpsResidualsRetained": true,
+      "repair": "Existing duplicate-record assertion now checks the sourceFile + itemName diagnostic; rejection behavior unchanged",
+      "generatedBuildCachesRestoredBeforeLatestUpstreamMerge": true
+    },
+    "humanAcceptanceBoundary": "Earlier rough playthrough predates merged critical-rate, balance and enemy-label changes; no new human business acceptance is claimed",
+    "mergedMainHead": "796ee780b935acbd052f18848e39f5b441a71c2e",
+    "prepareOutputsVerified": 22,
+    "materialSidecarCheck": "passed; dictionary body unchanged",
+    "as2": {
+      "handoffSha256": "975B159AAD2D2B68CFD04E14639D4FF6AC86749F94FE484ECFD17F2E08EECD21",
+      "readyToFreeze": true,
+      "sourceHashMismatchesAfterMerge": 0,
+      "sources": [
+        {
+          "path": "scripts/类定义/org/flashNight/arki/bullet/BulletComponent/Init/BulletInitializer.as",
+          "sha256": "7a31a55fe924858b5cb3d45fc561347a60edbad676d802cbd8d834a00424921c"
+        },
+        {
+          "path": "scripts/类定义/org/flashNight/arki/unit/Action/Shoot/ShootCore.as",
+          "sha256": "e4f1f467642ad066b0c902e21352a217be1bbb180bdd0f5d1a28afa9a88fc1c1"
+        },
+        {
+          "path": "scripts/类定义/org/flashNight/arki/unit/Action/Shoot/ShootInitCore.as",
+          "sha256": "a2c10abe1a8c6047633179e175ee869ac22c21f3eac9dbe550b0422ceba13beb"
+        },
+        {
+          "path": "scripts/run-player-manual-input-tests.ps1",
+          "sha256": "5f2106399df48b2149f409bb5af34620e452b2b69f2f8577e225d2fd169d8d31"
+        },
+        {
+          "path": "scripts/test-runners/player-manual-input/TestLoader.as.template",
+          "sha256": "b0a18257a40705e77863aa37834253dbb9ebfc6fde4ea10c306fc6097330be3c"
+        },
+        {
+          "path": "scripts/TestLoader.as",
+          "sha256": "e38e2151bf619814a0ea65bf2b19d11d8f78a7704787c47c046666acee2f090b"
+        },
+        {
+          "path": "scripts/类定义/org/flashNight/arki/unit/UnitComponent/Initializer/test/TitaniumSetRuntimeTest.as",
+          "sha256": "aa390eed142f563082d0429f5baeeeaf11624649664d89a59fd072a689c31dc8"
+        },
+        {
+          "path": "scripts/test-runners/titanium-set/TestLoader.as.template",
+          "sha256": "cf0ad568c78b865e79dfc7f244fcaaeafdffc47a37ccb958dab23062b27061bc"
+        },
+        {
+          "path": "scripts/test-runners/run-focused-testloader.ps1",
+          "sha256": "15a9225afa7eeb8c6e0825cb64ad52056a97d9d290b40a6c2f63bb4be690f9e9"
+        },
+        {
+          "path": "scripts/类定义/org/flashNight/arki/bullet/BulletComponent/macros/STATE_LOCK_SHOOTER.as",
+          "sha256": "42e0c4360f0fdbf2d7053f6a94a43bcf5560facd49fa13f2aa8f7f6e0a8b435e"
+        },
+        {
+          "path": "tmp/hud-main-unit/release/as2-upstream/bullet-critical.TestLoader.as.template",
+          "sha256": "5de43eb7e4da971319b78ceb786d0a3053e2bbd2d45b84e9f6a4049915b39bda"
+        }
+      ],
+      "actualChecks": [
+        {
+          "domain": "player-manual-input",
+          "runId": "b93a18d3db824c369abca838aa933731",
+          "passed": 670,
+          "failed": 0,
+          "suites": {
+            "DrugInput": 58,
+            "KeyManagerMigration": 14,
+            "ManualCooldown": 57,
+            "LongGunSubWeapon": 511,
+            "PistolRecoil": 30
+          },
+          "compilerErrors": 0,
+          "compilerWarnings": 0,
+          "swfSha256": "5d1c0345a35d850c8b0e6d2a2683a3323afaddf2ccada9956e11fa61ff03b0b3"
+        },
+        {
+          "domain": "bullet-critical-upstream",
+          "runId": "5c5de74eda504b51b9b242af4d82de57",
+          "passed": 259,
+          "failed": 0,
+          "suites": {
+            "TitaniumSetRuntime": 241,
+            "UpstreamCriticalProbe": 18
+          },
+          "compilerErrors": 0,
+          "compilerWarnings": 0,
+          "swfSha256": "89f5a36cada1a784c5ffe652b138492abac77052d1528639dffcc8a086320b3c"
+        }
+      ],
+      "totalPassed": 929,
+      "totalFailed": 0,
+      "asLoaderSha256": "a689480f6f6a3d16b729bb4f20bbdee87d6ca59438cb714b6efaf52aa226f232",
+      "asLoaderBytes": 1492349,
+      "publishCompilerErrors": 0,
+      "publishCompilerWarnings": 0,
+      "maxFunctionBytes": 51684,
+      "singleOwnership": {
+        "mainClasses": 0,
+        "loaderClasses": 710,
+        "intersection": 0
+      },
+      "testImplementationEmbedded": false,
+      "scratchRestored": true,
+      "cfgConsumedAndCleared": true,
+      "uncertainMarkersRemain": false,
+      "compilerFileLockReleased": true,
+      "flashExitedAtHandoff": false,
+      "flashHandoffNote": "Publish-only requested QuitFlashAfterPublish; CS6 remains responsive with TestLoader open. All compiler cfg/markers are clear, trigger is Ready, and exclusive asLoader read/write open succeeded. No process was forcibly terminated; the next owner can use the standard explicit-target compile transaction.",
+      "productionAs2SourceEditedForIntegration": false,
+      "standardGameEntryExecuted": false,
+      "newMergedArtifactHumanAccepted": false,
+      "evidenceDirectory": "tmp/hud-main-unit/release/as2-upstream"
+    }
   }
 }

@@ -23,7 +23,9 @@
 
 v2 完整政策门保留 45/47 失败回执：材料 sidecar 尚未随枪械 XML / 情报图标变化刷新，商店头像集合尚缺新增“调酒师”。材料生成器已更新来源摘要并通过 `--check`，字典主体字节不变。商店头像按 exact shopId 从现有 `调酒师.swf` 的普通帧完整重烘焙，保留原 supersample=1；既有来源与 alpha 边界未变，7 幅旧图有少量可见像素差异，最多一图 300 像素、预乘通道最大差 14，旧闭包及逐图差异已保留。当前环境第二次完整 `--check` 与隔离产物逐字节一致，再由原 baker 的 subjects-first/manifest-last writer 接入，生产树与重放树一致；最终 38 家活动商店 / 37 份图像 / 1,962,209B 闭包、消费者和懒加载门通过。没有改原画，也没有把重烘焙说成真人视觉验收。v3 重新冻结请求及全量政策门，两轮旧请求/标签/失败证据均保留且未 dispatch 云构建。
 
-最终 v3 source `5a1c92bec573ba660bfe36720f57b7e9b73ff193` 已完成本地 X509 / 独立 GitHub OIDC 双故障域共识、47/47 production policy 与唯一 promotion writer 的完整安装校验。云端 [run 37911235276](https://github.com/FlashNightModReborn/CrazyFlashNight/actions/runs/37911235276) 始终为 attempt 1；API 断连后接续同一运行并使用既有代理取回证明，未重复 dispatch。正式 runtime 的 Core/native 与用户粗测候选逐字节一致，asLoader 独立哈希仍匹配联合交付。旧运行包、失败请求/回执、头像原件与探针失败都已保留。
+v3 source `5a1c92bec573ba660bfe36720f57b7e9b73ff193` 已完成本地 X509 / 独立 GitHub OIDC 双故障域共识、47/47 production policy 与唯一 promotion writer 的完整安装校验。云端 [run 37911235276](https://github.com/FlashNightModReborn/CrazyFlashNight/actions/runs/37911235276) 始终为 attempt 1；API 断连后接续同一运行并使用既有代理取回证明，未重复 dispatch。该轮正式 runtime 的 Core/native 与用户粗测候选逐字节一致，asLoader 独立哈希匹配当轮联合交付。旧运行包、失败请求/回执、头像原件与探针失败都已保留。
+
+部署推送时远端先行推进，普通推送被拒后保留本地部署与上游历史，正常合并数值登记、成品酒暴击率包装及后续敌人标签/药剂草案。本批不改上游数值设计；防具重复记录断言对齐现行 `sourceFile + itemName` 身份，数值工具 861/861、枪械 365、药剂 106、防具 655、近战 231、爆炸物 39 条及派生同步检查通过，原有已登记 DPS 偏差不被改写为全量校准完成。合并后的 AS2 由射击会话重新执行真实 CS6：玩家输入 670/670、钛合金 241/241、隔离暴击包装探针 18/18；新 publish Compiler 0/0，710 个 loader 类与 main 交集为 0，测试实现未进入生产 SWF。新 asLoader 为 `A689480F6F6A3D16B729BB4F20BBDEE87D6CA59438CB714B6EFAF52AA226F232`，scratch/cfg 恢复且文件独占打开成功；CS6 留有响应正常的 TestLoader 窗口，并未冒称进程已退出。旧 asLoader 不覆盖上游。Host/native 输入未变，但政策域已变，故 v4 必须使用新不可变请求、全量政策回执、独立云端证明与唯一 promotion writer；v3 成功不代签合并后的最终树。源冻结、AS2 哈希与最终推广结果仍以联合发布证据为准；用户此前粗测不覆盖新合入的暴击率、数值或敌人标签业务体验。
 
 无 candidate selector 的正式前门确认同一 `formal_runtime` identity/closure，未选择玩家槽位；受控 Flash 预热到期退回 Idle，再普通关闭，持有 OS 进程句柄取得 exit 0，11 份存档 JSON 前后哈希一致（正常启动版本标记单列排除）。首轮探针曾把预热误判为选槽，后续退出码采集也缺少持有句柄；两项探针失败原样保留，不当作游戏故障或成功回执，最终新鲜运行单独闭合。这里只覆盖正式前门与生命周期，不称完整 HUD、外部枪械配装或性能业务 `standard_entry_verified`。部署提交/远端 Audit 的最终结果以联合发布证据为准。
 
