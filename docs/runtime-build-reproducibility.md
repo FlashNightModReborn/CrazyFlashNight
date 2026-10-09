@@ -336,7 +336,7 @@ push 红灯发生时提交已经进入 `main`；workflow 只能报警，不能�
 
 promotion 后，无 candidate selector 的 `automation/start.ps1` 实际加载 `formal_runtime`，正式 Core 路径、文件哈希、build identity 与 closure 全部吻合；启动页就绪、预热回到 Idle、正常关闭 `exit 0`，11 个存档 JSON 与本机偏好共 12 个受保护文件哈希不变。本轮只证明正式入口启动/关闭，未选角色、未执行真实游戏设置业务旅程，不称该功能的 `standard_entry_verified`；窗口/DPI、连续操作和弱机收益仍按[专项回归清单](设置-Web-Panel-人工体验验收-2026-08-21.md#2026-10-09-本机性能方案开发批)登记。
 
-本节在部署提交的事后 Audit 完成后补齐其提交与结果链接。本次更新当前开发运行库，不创建新的稳定整包或变更 2.718 DEV / UNSTABLE 版本号。
+部署提交 [cf72ab78a4](https://github.com/FlashNightModReborn/CrazyFlashNight/commit/cf72ab78a4ecd9d1772075b949f1133f4a4c0cc4) 已快进推送 `main`；[事后 Audit 37956033641](https://github.com/FlashNightModReborn/CrazyFlashNight/actions/runs/37956033641) 成功，独立复验 43 个运行文件与 2 signer / 2 faultDomain，明确输出 `state=promoted / deploymentChanged=true`。本次更新当前开发运行库，不创建新的稳定整包或变更 2.718 DEV / UNSTABLE 版本号。
 
 ## 2026-09-13 当前正式发布：PM19 启动加载叙事链
 
