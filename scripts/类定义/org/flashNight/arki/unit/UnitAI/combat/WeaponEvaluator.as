@@ -228,6 +228,10 @@ class org.flashNight.arki.unit.UnitAI.combat.WeaponEvaluator {
         applyWeaponRanges(self, data);
         _stanceMgr.syncStance(self.攻击模式);
 
+        // 模式切换会清空 DPS 缓存。旧默认 debug 分支在本帧重新填充；
+        // 保留这一时点，避免关闭诊断后把 30 帧 TTL 和下次评分推迟到下一次决策。
+        if (self.估算 == null) warmDpsAfterSwitch(self, modes);
+
         // ── Debug 武器评估输出 ──
         // 调用同一个 finalModeScore，确保显示分数与决策分数一致
         if (AIEnvironment.isAIDebug()) {
@@ -474,6 +478,16 @@ class org.flashNight.arki.unit.UnitAI.combat.WeaponEvaluator {
     }
 
     // ═══════ DPS 查询辅助 ═══════
+
+    private function warmDpsAfterSwitch(self:MovieClip, modes:Array):Void {
+        // 对齐旧 debug 中 finalModeScore + 显示 DPS 的读取顺序，不重复评分或格式化。
+        for (var i:Number = 0; i < modes.length; i++) {
+            var mode:String = modes[i];
+            var dps:Number = lookupDpsForMode(self, mode);
+            if (dps > 0) PlayerInfoProvider.getReferenceDPS(self, listCandidateModes(self));
+            lookupDpsForMode(self, mode);
+        }
+    }
 
     private function lookupDpsForMode(self:MovieClip, mode:String):Number {
         if (mode == "空手") return PlayerInfoProvider.getUnarmedDPS(self);

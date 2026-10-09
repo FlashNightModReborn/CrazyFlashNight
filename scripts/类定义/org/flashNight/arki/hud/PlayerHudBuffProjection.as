@@ -16,9 +16,10 @@ class org.flashNight.arki.hud.PlayerHudBuffProjection {
         manager.eventDispatcher.subscribe("remove", removeIcon, this);
     }
     public function deinitialize():Void {
-        if (manager != null && manager.eventDispatcher != null && !manager.eventDispatcher.isDestroyed()) {
-            manager.eventDispatcher.unsubscribe("add", addIcon, this);
-            manager.eventDispatcher.unsubscribe("remove", removeIcon, this);
+        var dispatcher:Object = manager.eventDispatcher;
+        if (dispatcher != null && !dispatcher.isDestroyed()) {
+            dispatcher.unsubscribe("add", addIcon, this);
+            dispatcher.unsubscribe("remove", removeIcon, this);
         }
         manager = null;
         entries.length = 0;

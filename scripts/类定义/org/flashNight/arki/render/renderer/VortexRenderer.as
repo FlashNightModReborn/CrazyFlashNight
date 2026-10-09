@@ -161,7 +161,7 @@ class org.flashNight.arki.render.renderer.VortexRenderer {
         // pierce 命中点三层爆破波纹
         // ─────────────────────────────────────────────────────────────
 
-        if (enableRipple && meta != null && meta.segmentKind == "pierce" && meta.hitPoints != null) {
+        if (enableRipple && meta.segmentKind == "pierce" && meta.hitPoints != null) {
             var hitPoints:Array = meta.hitPoints;
             for (var i:Number = 0; i < hitPoints.length; i++) {
                 var hp:Object = hitPoints[i];

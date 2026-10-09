@@ -340,7 +340,8 @@ class org.flashNight.arki.map.MapDomainBridgeTest {
             var tokenA:String = hex(32,"a"), contentA:String = hex(64,"c"), definition:String = hex(64,"d");
             bridge._installed = true; bridge._bootstrap = bootOf(tokenA, contentA, definition, ["1","2"]);
             bridge._sessionToken = tokenA; bridge._loadedDigest = contentA; bridge._loadedDefinitionDigest = definition;
-            bridge._knownTasks = {"$1":true,"$2":true}; bridge._interests = ["1"]; bridge._waiters = [];
+            bridge._knownTasks = {}; bridge._knownTasks["$1"] = true; bridge._knownTasks["$2"] = true;
+            bridge._interests = ["1"]; bridge._waiters = [];
             bridge._flight = undefined; bridge._navigationFlight = undefined; bridge._helloFlight = false;
             bridge._syncFlight = undefined; bridge._syncBootstrap = undefined;
             bridge._projection = {snapshot:{version:4}}; bridge._force = false;
@@ -445,7 +446,7 @@ class org.flashNight.arki.map.MapDomainBridgeTest {
         var server:Object = ServerManager.getInstance();
         var fields:Array = ["_installed","_bootstrap","_projection","_json","_loadedDigest","_sessionToken","_helloFlight","_flight",
             "_navigationFlight","_waiters","_interests","_knownTasks","_revision","_acceptedRevision","_sceneEpoch",
-            "_lastWorld","_sceneStamp","_signature","_confirmedSignature","_lastAttempt","_helloAttempt","_navigationBusyUntil","_force",
+            "_lastWorld","_sceneCurrent","_scenePrevious","_signature","_confirmedSignature","_lastAttempt","_helloAttempt","_navigationBusyUntil","_force",
             "_loadedDefinitionDigest","_syncFlight","_syncBootstrap"];
         var saved:Object = snapshotFields(bridge,fields);
         var rootFields:Array = ["淡出动画","关卡结束界面","场景进入位置名","__pushMapHudState","gameworld","初始化NPC"];

@@ -3,9 +3,18 @@
  */
 class org.flashNight.arki.map.MapFactsSampler {
     public static function scene():Object {
-        return {stageFlag:String(_root.关卡标志 || ""), frameLabel:String(_root._currentlabel || ""),
-            entrance:String(_root.场景进入位置名 || ""), mapFrame:String(_root.关卡地图帧值 || ""),
-            inCombat:_root.当前为战斗地图 == true};
+        // 保留原对象字段的建立顺序，既有 facts JSON 签名不因改写而漂移。
+        var result:Object = {stageFlag:"", frameLabel:"", entrance:"", mapFrame:"", inCombat:false};
+        writeScene(_root, result);
+        return result;
+    }
+    /** 归一化规则与事实快照共用；同步观察可复用自己的普通 Object scratch。 */
+    public static function writeScene(source:Object, result:Object):Void {
+        result.stageFlag = String(source.关卡标志 || "");
+        result.frameLabel = String(source._currentlabel || "");
+        result.entrance = String(source.场景进入位置名 || "");
+        result.mapFrame = String(source.关卡地图帧值 || "");
+        result.inCombat = source.当前为战斗地图 == true;
     }
     public static function capture(bootstrap:Object, interests:Array):Object {
         var hero:Object = _root.gameworld[_root.控制目标];

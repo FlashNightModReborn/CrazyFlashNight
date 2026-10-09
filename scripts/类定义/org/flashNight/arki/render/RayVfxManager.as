@@ -236,7 +236,7 @@ class org.flashNight.arki.render.RayVfxManager {
         var delay:Number = computeSegmentDelay(config, meta);
 
         if (delay > 0) {
-            var delayedStyle:String = (config != null && config.vfxStyle != null) ? config.vfxStyle : "tesla";
+            var delayedStyle:String = (config.vfxStyle != null) ? config.vfxStyle : "tesla";
             _delayedSegments.push({
                 startX: startX,
                 startY: startY,
@@ -375,13 +375,13 @@ class org.flashNight.arki.render.RayVfxManager {
                                        config:TeslaRayConfig, meta:Object):Void {
         // 应用场景坐标偏移
         var offset:Object = SceneCoordinateManager.effectOffset;
-        var offsetX:Number = (offset != null && offset.x != undefined) ? Number(offset.x) : 0;
-        var offsetY:Number = (offset != null && offset.y != undefined) ? Number(offset.y) : 0;
+        var offsetX:Number = (offset.x != undefined) ? Number(offset.x) : 0;
+        var offsetY:Number = (offset.y != undefined) ? Number(offset.y) : 0;
         if (!isFiniteNumber(offsetX)) offsetX = 0;
         if (!isFiniteNumber(offsetY)) offsetY = 0;
 
         // 获取 vfxStyle
-        var vfxStyle:String = (config != null && config.vfxStyle != null) ? config.vfxStyle : "tesla";
+        var vfxStyle:String = (config.vfxStyle != null) ? config.vfxStyle : "tesla";
 
         var arcId:Number = _arcIdCounter++;
         var arcMc:MovieClip = _container.createEmptyMovieClip("arc_" + arcId, _container.getNextHighestDepth());
@@ -416,7 +416,7 @@ class org.flashNight.arki.render.RayVfxManager {
         arc.totalDuration = arc.visualDuration + arc.fadeDuration;
 
         // 预缓存 flicker 参数（避免 updateActiveArcs 每帧 cfgNum 函数调用）
-        arc.flickerEnabled = (config != null && config.flickerEnabled === true);
+        arc.flickerEnabled = (config.flickerEnabled === true);
         if (arc.flickerEnabled) {
             arc.flickerMin = cfgNum(config, "flickerMin", 70);
             arc.flickerRange = cfgNum(config, "flickerMax", 100) - arc.flickerMin;
@@ -447,7 +447,7 @@ class org.flashNight.arki.render.RayVfxManager {
                                                         config:TeslaRayConfig, meta:Object):Boolean {
         if (meta == null || meta.segmentKind != "flame" || meta.flameVfxKey == undefined) return false;
 
-        var vfxStyle:String = (config != null && config.vfxStyle != null) ? config.vfxStyle : "tesla";
+        var vfxStyle:String = (config.vfxStyle != null) ? config.vfxStyle : "tesla";
         if (vfxStyle != "flame_stream") return false;
 
         var key:String = String(meta.flameVfxKey);
@@ -459,8 +459,8 @@ class org.flashNight.arki.render.RayVfxManager {
         if (arc.vfxStyle != vfxStyle) return false;
 
         var offset:Object = SceneCoordinateManager.effectOffset;
-        var offsetX:Number = (offset != null && offset.x != undefined) ? Number(offset.x) : 0;
-        var offsetY:Number = (offset != null && offset.y != undefined) ? Number(offset.y) : 0;
+        var offsetX:Number = (offset.x != undefined) ? Number(offset.x) : 0;
+        var offsetY:Number = (offset.y != undefined) ? Number(offset.y) : 0;
         if (!isFiniteNumber(offsetX)) offsetX = 0;
         if (!isFiniteNumber(offsetY)) offsetY = 0;
 
@@ -511,7 +511,7 @@ class org.flashNight.arki.render.RayVfxManager {
 
         // 新发射的短起始长度不应在无新阻挡时截短上一束已经展开的视觉。
         var newTarget:Number = (meta.targetLength != undefined) ? Number(meta.targetLength) : 0;
-        var oldTarget:Number = (arc.meta != null && arc.meta.targetLength != undefined) ? Number(arc.meta.targetLength) : 0;
+        var oldTarget:Number = (arc.meta.targetLength != undefined) ? Number(arc.meta.targetLength) : 0;
         if (newLen < oldLen && (!(newTarget > 0) || !(oldTarget > 0) || newTarget >= oldTarget - 1)) {
             ex = sx + ndx / newLen * oldLen;
             ey = sy + ndy / newLen * oldLen;
@@ -542,7 +542,7 @@ class org.flashNight.arki.render.RayVfxManager {
         arc.fadeDuration = cfgNum(config, "fadeOutDuration", 3);
         arc.totalDuration = arc.visualDuration + arc.fadeDuration;
 
-        arc.flickerEnabled = (config != null && config.flickerEnabled === true);
+        arc.flickerEnabled = (config.flickerEnabled === true);
         if (arc.flickerEnabled) {
             arc.flickerMin = cfgNum(config, "flickerMin", 70);
             arc.flickerRange = cfgNum(config, "flickerMax", 100) - arc.flickerMin;

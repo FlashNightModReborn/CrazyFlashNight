@@ -109,6 +109,32 @@ class org.flashNight.arki.unit.Action.Skill.ManualCooldownService {
         };
     }
 
+    /**
+     * HUD 专用批量只读投影。输出为调用方独占的平铺 [ready, current, total] 数组。
+     * 不暴露权威 state 引用，也不计算旧 XFL/物品面板需要的进度与动画字段。
+     * 缺失通道仍按 getSnapshot 的规则惰性初始化；原 getSnapshot 合同保持不变。
+     */
+    public static function writeHudSnapshot(keys:Array, output:Array):Void {
+        var source:Object = states;
+        var count:Number = keys.length;
+        var offset:Number = 0;
+        var state:Object;
+        var key:String;
+        var current:Number;
+        var total:Number;
+        for (var i:Number = 0; i < count; i++) {
+            key = keys[i];
+            state = source[key];
+            if (!state) state = getState(key);
+            current = Number(state.currentStep);
+            total = Number(state.totalSteps);
+            output[offset++] = state.ready === true ? 1 : 0;
+            output[offset++] = (current - current) == 0 ? current : 0;
+            output[offset++] = (total - total) == 0 ? total : 0;
+        }
+        output.length = offset;
+    }
+
     /** 测试夹具注入：生产代码不得调用。 */
     public static function setSchedulerForTests(scheduler:Function):Void {
         schedulerForTests = scheduler;
