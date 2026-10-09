@@ -151,5 +151,43 @@
   "formalRelease": {
     "promoted": false,
     "standardEntryBusinessVerified": false
+  },
+  "releaseRepairs": {
+    "supersededSource": "503de9fdecafec22f7dc2827a2ce3317e13128c6",
+    "supersededTag": "runtime-build-v2/20261009-main-hud-pistol-v1",
+    "supersededRequestId": "F8242110E3A3EB8A7B0ED59311B5AF6E37D819BC1C21DB5F6868E96531818247",
+    "firstPolicyResult": "failed checks plus interrupted repeated slow UI audit; no successful production receipt issued",
+    "firstCloudBuildDispatched": false,
+    "changes": [
+      {
+        "path": "data/items/收集品_情报.xml",
+        "change": "酿酒配方 missing icon now uses existing 烹饪指南; name, rewards, costs and gate unchanged; task catalog derived",
+        "introducedBy": "ced8e4e1e34f4b09456ed0d064c68f9f2e495e30"
+      },
+      {
+        "path": "tools/lib/workbench-ui-ratchet.js",
+        "change": "preserve regex-literal heuristic using reverse trailing-token scan instead of quadratic full-prefix regex search; no input paths or validators skipped"
+      },
+      {
+        "path": "launcher/web/css/panels/bartending.css",
+        "change": "two new player text declarations 9px -> 10px; immutable debt ceiling unchanged"
+      }
+    ],
+    "validation": {
+      "itemIconClosure": "passed",
+      "ratchetPassed": 68,
+      "ratchetFailed": 0,
+      "longInputChildTimeoutMs": 5000,
+      "actualBrowserViewport": "1024x576",
+      "actualBrowserChangedRows": 6,
+      "horizontalOverflowRows": 0,
+      "browserOperations": [
+        "mock materials read",
+        "mock snapshot read"
+      ],
+      "gameplayOrTransactionExecuted": false
+    },
+    "retainedLocalEvidence": "tmp/hud-main-unit/release/",
+    "localProducerReusable": "artifact/recipe/toolchain unchanged; final request and full production receipt must be new"
   }
 }
