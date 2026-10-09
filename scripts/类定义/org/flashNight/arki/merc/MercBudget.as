@@ -7,8 +7,7 @@
  * MercSpawner 做赤字门控。**与现有 spawn 链并行**，不替换 areaFactor / 0.5 / NaN
  * 链路（那是 C 阶段的事）。
  *
- * 暂不接 PerformanceActuator 的 softU——baseDensityPxPerMerc 是常量。
- * D 阶段（独立项目）把 _root.面积系数 切到这里时，再让 baseDensity 跟 softU 联动。
+ * 驻留密度属于游戏业务，不随 Host 表现预算改变。
  *
  * Kill switch：MercBudget.enabled = false 立即恢复旧路径行为（shouldSpawn 始终 true）。
  *

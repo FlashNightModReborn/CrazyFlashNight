@@ -1,7 +1,8 @@
 ﻿
 // _root.玩家与佣兵区分装扮刷新 = false;
-_root.AI调试模式 = true;
-_root.AI日志级别 = 3;
+// 诊断按需开启；武器评分的缓存维护独立于这两个开关。
+_root.AI调试模式 = false;
+_root.AI日志级别 = 0;
 _root.主角函数 = new Object();
 
 /*防止被自动格式折叠

@@ -12,6 +12,7 @@
 
     var COMMAND = /^(snapshot|preview|apply|cancel|save|cheat|return_base|try_revive|host_set|hit_number_ledger)$/;
     var CONTROL_CHARACTERS = /[\u0000-\u001f\u007f-\u009f]/;
+    var PERFORMANCE_HEIGHTS = [0,360,540,720,900,1080,1440,2160];
     var KEY_IDS = [
         '上键','下键','左键','右键','A键','B键','C键','键1','键2','键3','键4','键5',
         '药剂组切换键',
@@ -37,6 +38,38 @@
         if (!label || label.toLowerCase() === 'undefined' || label.toLowerCase() === 'null')
             return String(fallback || '');
         return label;
+    }
+
+    function exactProperties(value, names) {
+        if (!value || typeof value !== 'object' || Array.isArray(value)) return false;
+        var keys = Object.keys(value);
+        return keys.length === names.length && names.every(function(name) {
+            return Object.prototype.hasOwnProperty.call(value, name);
+        });
+    }
+    function normalizePerformanceConfig(value) {
+        if (!exactProperties(value, ['preset','mode','maxRenderHeight'])
+            || ['balanced','performance','quality'].indexOf(value.preset) < 0
+            || ['auto','fixed'].indexOf(value.mode) < 0
+            || PERFORMANCE_HEIGHTS.indexOf(value.maxRenderHeight) < 0) return null;
+        return {preset:value.preset, mode:value.mode, maxRenderHeight:value.maxRenderHeight};
+    }
+    function normalizePerformanceState(value) {
+        if (!exactProperties(value, ['v','current','previous']) || value.v !== 1) return null;
+        var current = normalizePerformanceConfig(value.current);
+        var previous = value.previous === null ? null : normalizePerformanceConfig(value.previous);
+        if (!current || (value.previous !== null && !previous)) return null;
+        return {v:1, current:current, previous:previous};
+    }
+    function hasPerformanceChanges(state, draft) {
+        return !!(state && draft && (state.current.preset !== draft.preset
+            || state.current.mode !== draft.mode
+            || state.current.maxRenderHeight !== draft.maxRenderHeight));
+    }
+    function recommendedPerformanceConfig(draft) {
+        var value = normalizePerformanceConfig(draft);
+        if (value) value.mode = 'auto';
+        return value;
     }
 
     function normalizeFlashPreview(value) {
@@ -211,10 +244,11 @@
                 || typeof allowedRow.name !== 'string') return null;
         }
         var settings = copy(response.settings);
-        settings['性能等级上限'] = Number(settings['性能等级上限']) <= 0 ? 0 : 1;
+        var hostPrefs = copy(response.hostPrefs);
+        hostPrefs.performance = normalizePerformanceState(response.hostPrefs.performance);
         return {revision:response.revision, settings:settings, keys:keys,
             defaultKeys:copy(response.defaultKeys), allowedKeyCodes:copy(response.allowedKeyCodes),
-            hostPrefs:copy(response.hostPrefs), challengeMode:response.challengeMode === true,
+            hostPrefs:hostPrefs, challengeMode:response.challengeMode === true,
             modeLabel:String(response.modeLabel || '未知'),
             cheatHelp:Array.isArray(response.cheatHelp) ? copy(response.cheatHelp) : [],
             forceControls:response.forceControls && typeof response.forceControls === 'object'
@@ -245,6 +279,11 @@
     return {RequestMux:RequestMux, KEY_IDS:KEY_IDS.slice(), isReservedKey:isReserved,
         validateKeyDraft:validateKeyDraft, validateKeyCandidate:validateKeyCandidate,
         normalizeSnapshot:normalizeSnapshot, normalizeFlashPreview:normalizeFlashPreview,
+        normalizePerformanceConfig:normalizePerformanceConfig,
+        normalizePerformanceState:normalizePerformanceState,
+        hasPerformanceChanges:hasPerformanceChanges,
+        recommendedPerformanceConfig:recommendedPerformanceConfig,
+        PERFORMANCE_HEIGHTS:PERFORMANCE_HEIGHTS.slice(),
         selectCheatHelpMarkdown:selectCheatHelpMarkdown,
         gameDraft:gameDraft, applyPayload:applyPayload, hasGameChanges:hasGameChanges,
         keyLabel:keyLabel, copy:copy};

@@ -1,4 +1,4 @@
-/** 游戏设置：AS2 权威草稿提交 + Host 即时偏好 + Web 本机偏好聚合。 */
+/** 游戏设置：AS2 游戏草稿、Host 性能方案与即时偏好、Web 本机偏好聚合。 */
 (function() {
     'use strict';
     var DESIGN_W = 1024, DESIGN_H = 576;
@@ -6,6 +6,9 @@
     var _shell, _root, _content, _status, _apply, _discard, _saveRetry;
     var _init, _instance = '', _snapshot, _draft, _scale;
     var _busy = false, _requiresReconcile = false;
+    var _performanceDraft = null, _performanceBusy = false;
+    var _performanceMessage = '', _performanceMessageState = 'ready';
+    var _hostReconcileDraft = null;
     var _previewActive = false, _previewTimer = null, _closeTimer = null;
     var _capturing = -1, _activeTab = 'game', _confirmAction = '', _confirmTimer = null;
     var _flashPreview = null, _cameraPreviewImage = null, _entryCameraScale = null;
@@ -21,7 +24,7 @@
         '流程救援':'RECOVERY LINK', '声音试听':'AUDIO BUS', '画面与性能':'DISPLAY CORE',
         '36 项权威键位':'INPUT MAP', '移动与操作':'MOVEMENT', '攻击模式':'COMBAT MODE',
         '快捷物品':'QUICK ITEMS', '快捷技能':'SKILL CHANNEL', '战斗扩展':'COMBAT AUX',
-        'Launcher 本机偏好':'LAUNCHER LOCAL', '打击伤害数字':'HIT NUMBER',
+        '性能方案':'PERFORMANCE', 'Launcher 本机偏好':'LAUNCHER LOCAL', '打击伤害数字':'HIT NUMBER',
         '点歌器运行规则':'JUKEBOX RULES',
         'Web Panel 偏好':'WEB LOCAL'
     };
@@ -90,6 +93,11 @@
         _entryCameraScale = null;
         _snapshot = null;
         _draft = null;
+        _performanceDraft = null;
+        _performanceBusy = false;
+        _performanceMessage = '';
+        _performanceMessageState = 'ready';
+        _hostReconcileDraft = null;
         _busy = false;
         _requiresReconcile = false;
         _previewActive = false;
@@ -131,6 +139,9 @@
         if (_scale) { _scale.detach(); _scale = null; }
         _snapshot = null;
         _draft = null;
+        _performanceDraft = null;
+        _performanceBusy = false;
+        _hostReconcileDraft = null;
         _capturing = -1;
         _busy = false;
         _requiresReconcile = false;
@@ -171,7 +182,7 @@
         header.appendChild(_status);
         header.appendChild(annotate(
             button('×', 'settings-terminal-close settings-close', requestClose),
-            '关闭设置；尚未应用的游戏改动会被放弃。',
+            '关闭设置；尚未应用的游戏改动与性能方案会被放弃。',
             'left'));
         _root.appendChild(header);
         _content = node('main', 'settings-content');
@@ -217,7 +228,19 @@
             }
             _requiresReconcile = false;
             _snapshot = model;
-            _draft = SettingsRuntime.gameDraft(model);
+            var keepGameDraft = _hostReconcileDraft
+                && _hostReconcileDraft.revision === model.revision
+                && JSON.stringify(_hostReconcileDraft.settings) === JSON.stringify(model.settings)
+                && JSON.stringify(_hostReconcileDraft.keys) === JSON.stringify(model.keys);
+            _draft = keepGameDraft ? _hostReconcileDraft.draft : SettingsRuntime.gameDraft(model);
+            var keepPerformanceDraft = _hostReconcileDraft && model.hostPrefs.performance
+                && _hostReconcileDraft.performanceDraft
+                && JSON.stringify(_hostReconcileDraft.performance) === JSON.stringify(model.hostPrefs.performance);
+            _performanceDraft = keepPerformanceDraft ? _hostReconcileDraft.performanceDraft
+                : model.hostPrefs.performance ? SettingsRuntime.copy(model.hostPrefs.performance.current) : null;
+            _hostReconcileDraft = null;
+            _performanceMessage = '';
+            _performanceMessageState = 'ready';
             if (_entryCameraScale === null) {
                 _entryCameraScale = Number(model.settings.basicZoomScale);
                 if (!isFinite(_entryCameraScale) || _entryCameraScale < 0.5 || _entryCameraScale > 3)
@@ -251,7 +274,14 @@
         }
     }
 
-    function reconcileUnknownWrite(message) {
+    function reconcileUnknownWrite(message, preserveDrafts) {
+        if (preserveDrafts && !_hostReconcileDraft && _snapshot && _draft) {
+            _hostReconcileDraft = {revision:_snapshot.revision,
+                settings:SettingsRuntime.copy(_snapshot.settings),
+                keys:SettingsRuntime.copy(_snapshot.keys), draft:SettingsRuntime.copy(_draft),
+                performance:SettingsRuntime.copy(_snapshot.hostPrefs.performance),
+                performanceDraft:SettingsRuntime.copy(_performanceDraft)};
+        }
         _requiresReconcile = true;
         cue('unknown');
         renderCurrentTab();
@@ -367,16 +397,14 @@
         common.appendChild(gameBand('声音试听', 'AUDIO BUS', audioControls));
 
         var fields = node('div', 'settings-grid three settings-common-display-grid');
-        fields.appendChild(field('性能等级上限',
-            selectControl('性能等级上限', [[0,'0 · 保守'],[1,'1 · 完整']]),
-            '保守模式减少部分画面效果；完整模式启用全部现役效果。'));
+        // The retired performance cap remains an untouched compatibility field in the AS2 payload.
         fields.appendChild(field('立绘类型', selectControl('立绘类型', [[1,'类型 1'],[2,'类型 2']])));
         fields.appendChild(checkbox('是否阴影', '角色阴影'));
         fields.appendChild(checkbox('是否视觉元素', '视觉元素'));
         // World lighting now uses the native compositor; legacy filter preference is retained only in stored settings.
         fields.appendChild(checkbox('开启昼夜系统', '昼夜循环'));
         fields.appendChild(checkbox('暂停昼夜系统', '暂停昼夜变化'));
-        common.appendChild(gameBand('画面与性能', 'DISPLAY CORE', fields));
+        common.appendChild(gameBand('画面', 'DISPLAY CORE', fields));
         var homeCheat = cheatCommandForm();
         common.appendChild(gameBand('作弊码', 'COMMAND LINK', homeCheat));
         _content.appendChild(common);
@@ -587,6 +615,7 @@
     }
 
     function renderLocal() {
+        renderPerformance();
         var host = section('Launcher 本机偏好', '每一项在修改后立即由 Host 落盘；失败会回滚到权威值。');
         var hgrid = node('div', 'settings-grid two');
         hgrid.appendChild(hostBoolean('introEnabled', '下次启动播放片头动画'));
@@ -647,6 +676,137 @@
         });
         local.appendChild(list); _content.appendChild(local);
     }
+    function performanceLabel(value) {
+        if (!value) return '暂不可用';
+        var preset = {balanced:'通用',performance:'性能',quality:'画质'}[value.preset];
+        return preset + ' · ' + (value.mode === 'fixed' ? '固定' : '自动') + ' · '
+            + (value.maxRenderHeight === 0 ? '方案默认上限' : '最高 ' + value.maxRenderHeight + 'p');
+    }
+    function renderPerformance() {
+        var group = section('性能方案', '性能方案保存在这台电脑。修改选项后点击“应用方案”；底部“应用并保存”只处理游戏设置与键位。');
+        group.classList.add('settings-performance');
+        var state = _snapshot.hostPrefs.performance;
+        if (!state || !_performanceDraft) {
+            group.appendChild(node('p', 'settings-performance-message', '性能方案暂不可用，请重新打开设置。'));
+            _content.appendChild(group);
+            return;
+        }
+        var fields = node('div', 'settings-grid three settings-performance-fields');
+        fields.appendChild(performanceSelect('preset', '推荐方案',
+            [['balanced','通用'],['performance','性能'],['quality','画质']],
+            '通用兼顾流畅与清晰，性能优先减少绘制负担，画质优先保留清晰度。切换方案不会清除手动分辨率上限。'));
+        fields.appendChild(performanceSelect('mode', '调节方式', [['auto','自动'],['fixed','固定']],
+            '自动按游戏运行速度调整。固定保持该方案允许的最高完整档位，绘制尺寸仍受手动上限、当前窗口与显示缩放限制。'));
+        fields.appendChild(performanceSelect('maxRenderHeight', '绘制高度上限',
+            SettingsRuntime.PERFORMANCE_HEIGHTS.map(function(value) {
+                return [value, value === 0 ? '方案默认上限' : '最高 ' + value + 'p'];
+            }), '只限制游戏内部绘制高度，不改变窗口大小。实际绘制状态可查看顶部性能显示。'));
+        group.appendChild(fields);
+        group.appendChild(node('p', 'settings-performance-saved', '已保存：' + performanceLabel(state.current)));
+        var actions = node('div', 'settings-inline-actions settings-performance-actions');
+        actions.appendChild(annotate(button('恢复推荐值', 'settings-button secondary settings-performance-reset', function() {
+            if (_busy || _requiresReconcile) return;
+            _performanceDraft = SettingsRuntime.recommendedPerformanceConfig(_performanceDraft);
+            _performanceMessage = '已恢复自动调节；所选方案和分辨率上限保留，应用后保存。';
+            _performanceMessageState = 'ready';
+            refreshPerformanceControls();
+        }), '将当前方案的调节方式恢复为自动，保留所选方案和手动分辨率上限；尚未保存。', 'top'));
+        actions.appendChild(annotate(button('撤销上次应用', 'settings-button secondary settings-performance-undo', function() {
+            savePerformance(true);
+        }), '恢复上一次保存前的整组性能方案，只影响本机性能设置。', 'top'));
+        actions.appendChild(button('应用方案', 'settings-button primary settings-performance-apply', function() {
+            savePerformance(false);
+        }));
+        group.appendChild(actions);
+        var message = node('p', 'settings-performance-message');
+        message.setAttribute('role', 'status');
+        group.appendChild(message);
+        _content.appendChild(group);
+        refreshPerformanceControls();
+    }
+    function performanceSelect(key, label, values, note) {
+        var select = document.createElement('select');
+        select.className = 'settings-select';
+        select.setAttribute('data-performance-key', key);
+        values.forEach(function(row) {
+            var option = node('option', '', row[1]); option.value = String(row[0]); select.appendChild(option);
+        });
+        select.value = String(_performanceDraft[key]);
+        select.addEventListener('change', function() {
+            if (_busy || _requiresReconcile) {
+                select.value = String(_performanceDraft[key]);
+                return;
+            }
+            _performanceDraft[key] = key === 'maxRenderHeight' ? Number(select.value) : select.value;
+            _performanceMessage = '';
+            _performanceMessageState = 'ready';
+            refreshPerformanceControls();
+        });
+        return field(label, select, note);
+    }
+    function refreshPerformanceControls() {
+        var group = _content && _content.querySelector('.settings-performance');
+        var state = _snapshot && _snapshot.hostPrefs.performance;
+        if (!group || !state || !_performanceDraft) return;
+        var locked = _busy || _requiresReconcile || _performanceBusy;
+        var dirty = SettingsRuntime.hasPerformanceChanges(state, _performanceDraft);
+        var controls = group.querySelectorAll('[data-performance-key]');
+        for (var i = 0; i < controls.length; i++) {
+            var control = controls[i];
+            control.disabled = locked;
+            control.value = String(_performanceDraft[control.getAttribute('data-performance-key')]);
+        }
+        group.querySelector('.settings-performance-apply').disabled = locked || !dirty;
+        group.querySelector('.settings-performance-undo').disabled = locked || !state.previous;
+        group.querySelector('.settings-performance-reset').disabled = locked || _performanceDraft.mode === 'auto';
+        group.querySelector('.settings-performance-saved').textContent = '已保存：' + performanceLabel(state.current);
+        var message = group.querySelector('.settings-performance-message');
+        message.textContent = _performanceMessage || (dirty ? '性能方案有未应用的改动。'
+            : _performanceDraft.mode === 'fixed'
+                ? '固定使用方案允许的最高档；实际绘制尺寸受分辨率上限、窗口与显示缩放限制。'
+                : '自动调节流畅度与清晰度，实际状态见顶部性能显示。');
+        message.setAttribute('data-state', _performanceMessageState);
+    }
+    function savePerformance(undo) {
+        var state = _snapshot && _snapshot.hostPrefs.performance;
+        if (!state || !_performanceDraft || _busy || _requiresReconcile || _performanceBusy) return;
+        if (undo ? !state.previous : !SettingsRuntime.hasPerformanceChanges(state, _performanceDraft)) return;
+        var key = undo ? 'performanceUndo' : 'performance';
+        var value = undo ? true : SettingsRuntime.normalizePerformanceConfig(_performanceDraft);
+        if (!value) return;
+        _busy = true;
+        _performanceBusy = true;
+        _performanceMessage = undo ? '正在恢复上次性能方案…' : '正在保存性能方案…';
+        _performanceMessageState = 'loading';
+        refreshFooter();
+        var id = _mux.request('host_set', {v:1,key:key,value:value}, {kind:'host.performance'}, function(response) {
+            _busy = false;
+            _performanceBusy = false;
+            var authoritative = response && SettingsRuntime.normalizePerformanceState(response.currentValue);
+            if (response && (response.requiresReconcile === true
+                || response.error === 'malformed_response'
+                || (response.success === true && (!authoritative || response.key !== key)))) {
+                reconcileUnknownWrite('性能方案结果未知，正在重新读取当前配置；不会自动重试。', true);
+                return;
+            }
+            if (authoritative) _snapshot.hostPrefs.performance = authoritative;
+            var ok = response && response.success === true && authoritative;
+            if (ok) _performanceDraft = SettingsRuntime.copy(authoritative.current);
+            _performanceMessage = ok
+                ? (undo ? '已保存上次性能方案；关闭设置后按方案运行。' : '方案已保存；关闭设置后按方案运行。')
+                : '性能方案未保存：' + errorText(response && response.error || 'malformed_response');
+            _performanceMessageState = ok ? 'ready' : 'error';
+            setStatus(ok ? '性能方案已保存。' : _performanceMessage, _performanceMessageState);
+            refreshFooter();
+        });
+        if (!id) {
+            _busy = false;
+            _performanceBusy = false;
+            _performanceMessage = '性能方案请求未发出，改动已保留。';
+            _performanceMessageState = 'error';
+            refreshFooter();
+        }
+    }
     function hostBoolean(key, label) {
         var input = document.createElement('input'); input.type = 'checkbox';
         input.checked = _snapshot.hostPrefs[key] === true;
@@ -703,11 +863,20 @@
             var authoritative = hasAuthority ? response.currentValue : previous;
             _snapshot.hostPrefs[key] = authoritative;
             applyHostControlValue(control, key, authoritative);
-            if (response && response.requiresReconcile === true) {
-                reconcileUnknownWrite('本机偏好结果未知，正在重新读取权威状态；不会自动重试。');
+            if (response && (response.requiresReconcile === true
+                || response.error === 'malformed_response'
+                || (response.success === true && (!hasAuthority || response.key !== key)))) {
+                reconcileUnknownWrite('本机偏好结果未知，正在重新读取权威状态；不会自动重试。', true);
                 return;
             }
             control.disabled = false;
+            var liveControls = _content ? _content.querySelectorAll('[data-host-key]') : [];
+            for (var i = 0; i < liveControls.length; i++) {
+                if (liveControls[i].getAttribute('data-host-key') === key) {
+                    applyHostControlValue(liveControls[i], key, authoritative);
+                    liveControls[i].disabled = false;
+                }
+            }
             var ok = response && response.success === true && hasAuthority;
             setStatus(ok ? '本机偏好已保存。'
                 : '本机偏好未保存：' + errorText(response && response.error || 'malformed_response'),
@@ -1305,7 +1474,8 @@
         if(_requiresReconcile){closeExact();return true;}
         var dirty=_snapshot&&_draft&&(SettingsRuntime.hasGameChanges(_snapshot,_draft)
             || _snapshot.migrationPending===true);
-        if(dirty&&!window.confirm('有未应用的游戏设置或键位改动。放弃并关闭吗？'))return false;
+        var performanceDirty=_snapshot&&SettingsRuntime.hasPerformanceChanges(_snapshot.hostPrefs.performance,_performanceDraft);
+        if((dirty||performanceDirty)&&!window.confirm('有未应用的设置改动。放弃并关闭吗？'))return false;
         if(dirty||_previewActive){
             _busy=true;refreshFooter();
             _mux.request('cancel',{v:1},{},function(response){
@@ -1339,6 +1509,7 @@
         var manualChanged=_snapshot&&_draft&&SettingsRuntime.hasGameChanges(_snapshot,_draft);
         _discard.disabled=_busy||_requiresReconcile||(!manualChanged&&!_previewActive);
         _saveRetry.disabled=_busy||_requiresReconcile;
+        refreshPerformanceControls();
     }
     function setStatus(text,state) {
         if(!_status)return;_status.textContent=text;_status.setAttribute('data-state',state||'ready');
@@ -1351,6 +1522,7 @@
         return {reconcile_required:'必须先重新读取游戏权威状态',disconnected:'游戏连接已断开',timeout:'等待游戏响应超时',client_timeout:'等待响应超时',
             not_sent:'请求未发出',delivery_unknown:'请求投递结果未知',invalid_payload:'请求格式无效',invalid_settings:'设置值无效',invalid_keys:'键位表无效',
             key_conflict:'键位冲突',reserved_key:'按键被保留',stale_state:'状态已变化',save_failed:'保存失败',
+            bad_value:'设置值无效',performance_undo_unavailable:'没有可撤销的性能方案',
             save_unavailable:'当前不可保存',settings_unavailable:'设置尚未初始化',revive_unavailable:'当前没有可恢复的复活流程',
             actor_alive:'角色尚未死亡',resurrection_restricted:'本关禁止复活',no_revive_coin:'没有复活币',
             revive_asset_failed:'复活币扣除未被确认，请重试',revive_asset_ambiguous:'复活币状态不明确，请重新同步后核对',

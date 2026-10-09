@@ -21,7 +21,8 @@ class org.flashNight.arki.map.MapDomainBridge {
     private static var _acceptedRevision:Number = -1;
     private static var _sceneEpoch:Number = 0;
     private static var _lastWorld:Object;
-    private static var _sceneStamp:String = "";
+    private static var _sceneCurrent:Object = {};
+    private static var _scenePrevious:Object;
     private static var _signature:String = "";
     private static var _confirmedSignature:String = "";
     private static var _lastAttempt:Number = 0;
@@ -96,10 +97,18 @@ class org.flashNight.arki.map.MapDomainBridge {
 
     private static function observeScene():Void {
         if (!_installed) return;
-        var scene:Object = org.flashNight.arki.map.MapFactsSampler.scene();
-        var stamp:String = _json.stringifySafe(scene);
-        if (_lastWorld !== _root.gameworld || stamp != _sceneStamp) {
-            _lastWorld = _root.gameworld; _sceneStamp = stamp; _sceneEpoch++;
+        var scene:Object = _sceneCurrent;
+        org.flashNight.arki.map.MapFactsSampler.writeScene(_root, scene);
+        var previous:Object = _scenePrevious;
+        if (_lastWorld !== _root.gameworld || previous == null
+                || scene.stageFlag !== previous.stageFlag || scene.frameLabel !== previous.frameLabel
+                || scene.entrance !== previous.entrance || scene.mapFrame !== previous.mapFrame
+                || scene.inCombat !== previous.inCombat) {
+            _lastWorld = _root.gameworld;
+            // current 会被下次观察重写；previous 只在场景实际变化时更新，禁止共用引用。
+            _scenePrevious = {stageFlag:scene.stageFlag, frameLabel:scene.frameLabel,
+                entrance:scene.entrance, mapFrame:scene.mapFrame, inCombat:scene.inCombat};
+            _sceneEpoch++;
             _projection = undefined; _confirmedSignature = ""; _force = true;
         }
     }

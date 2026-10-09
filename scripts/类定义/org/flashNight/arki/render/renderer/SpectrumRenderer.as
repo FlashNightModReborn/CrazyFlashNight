@@ -73,7 +73,7 @@ class org.flashNight.arki.render.renderer.SpectrumRenderer {
         var intensity:Number = VM.cfgIntensity(meta);
         var baseThickness:Number = thickness * intensity;
 
-        var isFork:Boolean = (meta != null && meta.segmentKind == "fork");
+        var isFork:Boolean = (meta.segmentKind == "fork");
 
         // LOD 降级（上限 4 条，保证色条间镂空不糊白）
         var effectiveStripeCount:Number = Math.min(stripeCount, 4);

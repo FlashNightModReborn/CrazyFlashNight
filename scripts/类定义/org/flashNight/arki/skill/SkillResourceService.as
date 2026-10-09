@@ -37,10 +37,51 @@ class org.flashNight.arki.skill.SkillResourceService {
         var grenade:Object = _root.物品栏.装备栏.getItem("手雷");
         if (grenadeFallback && grenade && grenade.name == name)
             fallback = isNaN(Number(grenade.value)) ? 1 : Math.max(0, Number(grenade.value));
-        if (fallback >= 2 || ItemUtil.singleContain(name, Math.max(0, 2 - fallback)) != null)
-            return state("ready", "");
+        if (fallback >= 2) return state("ready", "");
+        var threshold:Number = 2 - fallback;
+        var quantity:Number = readQuantityCount(name, threshold);
+        if ((quantity - quantity) == 0) {
+            if (quantity >= threshold) return state("ready", "");
+            if (fallback >= 1 || quantity >= 1) return state("last", "item");
+            return state("blocked", "item");
+        }
+        // 装备强化度/异常值继续使用原 contain 语义；显示优化不重新定义资产校验。
+        if (ItemUtil.singleContain(name, threshold) != null) return state("ready", "");
         if (fallback >= 1 || ItemUtil.singleContain(name, 1) != null) return state("last", "item");
         return state("blocked", "item");
+    }
+    /** 同一次显示采样只遍历一次每个容器，不构建可提交的位置映射。 */
+    private static function readQuantityCount(name:String, limit:Number):Number {
+        var quantity:Number;
+        if (ItemUtil.isMaterial(name)) {
+            quantity = _root.收集品栏.材料.getValue(name);
+        } else if (ItemUtil.isInformation(name)) {
+            quantity = _root.收集品栏.情报.getValue(name);
+        } else {
+            if (ItemUtil.isEquipment(name)) return Number.NaN;
+            var total:Number = 0;
+            var inventory:Object;
+            var indexes:Array;
+            var item:Object;
+            for (var group:Number = 0; group < 2; group++) {
+                inventory = group == 0 ? _root.物品栏.背包 : _root.物品栏.药剂栏;
+                indexes = inventory.getIndexes();
+                for (var i:Number = 0; i < indexes.length; i++) {
+                    item = inventory.getItem(indexes[i]);
+                    if (item.name != name) continue;
+                    quantity = item.value;
+                    // 非整数数量保留 contain 的逐项减法；浮点加总可能改变临界就绪状态。
+                    if (typeof item.value != "number" || (quantity - quantity) != 0 || quantity < 0 || quantity % 1 != 0)
+                        return Number.NaN;
+                    // 背包满足后仍检查药剂栏首个同名项，保持旧 contain 的异常值边界。
+                    if (total < limit) total += quantity;
+                    if (total >= limit) break;
+                }
+            }
+            return total < limit ? total : limit;
+        }
+        if ((quantity - quantity) != 0 || quantity < 0) return Number.NaN;
+        return quantity < limit ? quantity : limit;
     }
     public static function quick(unit:Object, name:String, cost:Number, readItems:Object):Object {
         var result:Object = fixedCost(Number(unit.mp), cost, cost, "mp");

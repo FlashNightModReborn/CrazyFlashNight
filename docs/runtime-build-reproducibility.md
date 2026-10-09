@@ -324,6 +324,20 @@ push 红灯发生时提交已经进入 `main`；workflow 只能报警，不能�
 
 **阅读口径**：以下各节是按对象 / 日期 / 范围留存的历史证据快照，记录各列车当时的身份、证明与验收边界。节标题与正文中的「当前正式发布」「上一正式发布」「顶部当前段」等字样均为该次发布当时的相对称呼，不代表当前部署状态；查询当前部署身份与状态一律以上文「当前机器真值读取说明」列出的机器真源为准。本节内容由原文件前部整体迁移至此，历史记录未删改。
 
+## 2026-10-09 本机性能方案与统一画面调度正式发布
+
+维护者在开发候选反馈“可行”后，明确授权正式发布，使测试员通过普通启动入口使用本机性能方案。范围包括通用/性能/画质三预设、自动/固定、绘制高度上限、一次撤销与实际画质状态；C# 统一策略，AS2 保留采样和执行，原生天气与新弹壳消费离散表现预算。实现与回归边界见[性能方案合同](../launcher/perf/flash-compositor/README.md#动态分辨率与性能方案)。
+
+- 功能源 `a4bfdae5e1622909655e8b3a64f5a747866a1b9e` 已合并上游盾冲；正式冻结源 `9ad77c515ed9a78798d2046f797ee094699d12ad`、tag `runtime-build-v2/20261009-performance-policy-v1`、release tree `01fbfda64bd8883dedd0f319897c76842f9926a9`、request `EA3CC813F61E1121A0DDAC2550749FF67B44D7BFE2F6F2FEC6084BCC22C89964`。
+- 本地 X509 `builder-local-c / physical-host-c` 与 [GitHub OIDC/Sigstore 构建 37951895539](https://github.com/FlashNightModReborn/CrazyFlashNight/actions/runs/37951895539) 独立生成相同的 43 个运行文件；production policy `47/47`，strict v2 确认 2 signer / 2 faultDomain。构建身份 `6AA1A05B6DFA6AE23CC5D35E94ECB6B5BF1131D3627EEDD6A036C9694573AEE7`，payload closure `A1CD4F77103938F93B5DB5F1E7E743B92502848E902655A4C6836C8ADDC72776`。
+- `2026-10-09T15:41:06.6016582Z` 完成唯一 writer 的原子 promotion、完整安装校验与 live consensus 复核；上一版保留于 `tmp/runtime-promotions/20261009T154034920Z-fa558451dade46d69c918bb64da00d2a/previous`。运行文件与验收候选一致，Core DLL SHA-256 为 `AE0D1E9634BBD14636AB9E8F6A8CB2878A92933A7F80E31DEC2648C8346D281C`。
+
+合并后的 AS2 性能桥接 58 项、盾冲 2069 项、装备光源 34 项、手动输入 670 项通过，均为本轮新鲜 Compiler `0/0`、零重试；最终 asLoader SHA-256 为 `DF7056B013993107CDA0F2C85E25F66AA4F465E9D4C6221ADC571E39C9FB5565`，711 类单归属，七类关键字节码分别与两侧已验证实现一致。盾冲首轮等待超时及迟到输出保留为失败记录；随后同源、同断言、同帧数限制的新轮在延长等待后完整通过。Host 6890 通过、19 跳过，GPU 11 通过及设置/面板回归按未变源码与实际 payload 绑定。
+
+promotion 后，无 candidate selector 的 `automation/start.ps1` 实际加载 `formal_runtime`，正式 Core 路径、文件哈希、build identity 与 closure 全部吻合；启动页就绪、预热回到 Idle、正常关闭 `exit 0`，11 个存档 JSON 与本机偏好共 12 个受保护文件哈希不变。本轮只证明正式入口启动/关闭，未选角色、未执行真实游戏设置业务旅程，不称该功能的 `standard_entry_verified`；窗口/DPI、连续操作和弱机收益仍按[专项回归清单](设置-Web-Panel-人工体验验收-2026-08-21.md#2026-10-09-本机性能方案开发批)登记。
+
+部署提交 [cf72ab78a4](https://github.com/FlashNightModReborn/CrazyFlashNight/commit/cf72ab78a4ecd9d1772075b949f1133f4a4c0cc4) 已快进推送 `main`；[事后 Audit 37956033641](https://github.com/FlashNightModReborn/CrazyFlashNight/actions/runs/37956033641) 成功，独立复验 43 个运行文件与 2 signer / 2 faultDomain，明确输出 `state=promoted / deploymentChanged=true`。本次更新当前开发运行库，不创建新的稳定整包或变更 2.718 DEV / UNSTABLE 版本号。
+
 ## 2026-09-13 当前正式发布：PM19 启动加载叙事链
 
 完成启动背景 V3 等待叙事链（lore 双音区事件流、前景阶段文字、Ready 门控方环同心收束、cue 优先级与 pendingSync、压暗玻璃遮罩、FIFO 队列渲染与自适应过渡）与列车 C（[BootstrapAS] logBatch 转发、state 捎带 socketPort/httpPort/flashConnected、启动 FATAL 端口占用者实名、web→host log 回写 cmd、reveal watchdog 降级开门标志、about 面板轨道读数）。发布时真机业务复验仍待测试员；2026-09-19 的限定收口见下文。范围见[设计文档 V3 节与列车 C 节](启动引导-PM19质数幻方背景-设计与施工-2026-08-05.md)，机器身份见[发布证据](evidence/pm19-lore-chain-runtime-release-2026-09-13.json)。

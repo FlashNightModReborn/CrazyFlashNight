@@ -198,7 +198,7 @@ test 会按当前配方、物品 XML、icon/dressup manifest、renderer/inspecto
 <a id="suite-dialogue"></a>
 ### 现场对白与原生交互
 
-**现场对白门**：运行 `node tools/test-server-callback-timeouts.js`，再顺序运行 `scripts/run-native-dialogue-tests.ps1`、`scripts/run-map-domain-tests.ps1`（机器钉死 MapDomainBridgeTest 60/60）、`scripts/run-map-loot-tests.ps1`（机器钉死 Loot 189 + Planner 12 + StageRunSession 638，见 [持久写与恢复](#save)），最后 `scripts/compile_test.ps1 -Target publish`。
+**现场对白门**：运行 `node tools/test-server-callback-timeouts.js`，再顺序运行 `scripts/run-native-dialogue-tests.ps1`、`scripts/run-map-domain-tests.ps1`（suite 与断言门以该 runner 为准）、`scripts/run-map-loot-tests.ps1`（机器钉死 Loot 189 + Planner 12 + StageRunSession 638，见 [持久写与恢复](#save)），最后 `scripts/compile_test.ps1 -Target publish`。
 覆盖握手/地图/面板毫秒期限、查询发送范围、同时超时托管、旧行数保护、新 rid 回退及 4096 行窗口的内容/暂停/事件移交。人力执行 [三组游戏旅程](../docs/对白v2审阅修复-人力验收单-2026-09-16.md)。Host/绘制改动继续跑 Launcher `NativeDialogue|NativeHudInputRoutingTests`、`tools/run-native-dialogue-webview2-smoke.ps1` 与 [SVG 工具](../tools/xfl-ui-svg/README.md) 只读 `--verify`，覆盖属性解析、富文本、时钟、作者窗口/按钮与缓存失效；
 smoke 复用 exact SDK resolver。hidden WebView2/位图是 fixture，机器通过不代签实际游戏体验；历史发布与人验边界见 [专项交接](../docs/对话框迁移与高清立绘治理-调研与施工准备-2026-09-12.md#114-已有验证与准确边界)。
 
@@ -266,12 +266,14 @@ AS2 必跑 `scripts/run-character-creation-tests.ps1`（机器钉死 40/40）、
 <a id="suite-settings"></a>
 ### 设置面板
 
+本机性能组新增覆盖：独立草稿、三预设与自动/固定、手填高度保留、只写 Host current/previous、保存失败/一次撤销、超时先读取，以及性能回读/其他偏好的迟到响应不覆盖另一份未提交草稿。Host 档位测试另覆盖 AS2 ACK 不代签尺寸、同高度质量/预算重绘、实际生效后计时、窗口缩小恢复不绕过升档等待、断连保持及坏命令/旧回调。预算/固定目标/DPI 与最终观感仍按同一人验单验证，不增加日常人工回执。
+
 **设置 Web Panel 门**：固定运行 `node tools/run-settings-panel-harness.js`、`node tools/run-settings-panel-visual-harness.js`、`node tools/run-kshop-harness.js`、两项 panel-contract 门、`launcher/tests/run_tests.ps1`、`scripts/run-settings-tests.ps1`（机器钉死 GameSettingsPanelServiceTest 47/47；
 文本中 42/42 为历史）与 `scripts/run-player-manual-input-tests.ps1`；设置样式还必须跑 `node tools/audit-workbench-ui.js` 与 `node tools/check-workbench-css-bundle.js`。Settings AS2 focused 必须为当前钉值 + `Compiler 0/0 + 32K retry=0`，再精确 publish/verify `scripts/asLoader.swf`。
 真机按 [设置面板人工验收单](../docs/设置-Web-Panel-人工体验验收-2026-08-21.md) 覆盖双入口、启动前 Launcher 壳视觉、真实 Flash 原分辨率静态预览与全屏缩放模拟、键位迁移/冲突/Esc/订阅跟随、试听与 cancel/close/断线恢复、性能、偏好重开/重启、首页及作弊帮助、尝试复活/返回基地和保存重启读回。自动门不代签物理 WebView2、真实 socket/存档或听感。
 
 **双药剂组门（现役规则）**：当前 authority 固定为 `2 组 × 4 lane = 8` 个物理槽，`6` 只在上升沿切换，`7/8/9/0` 继续使用四条 `drug:0..3` 冷却，上下同列共享；`drug:switch` 独立冷却，切换不得重置 lane，成功切换同帧抑制用药并锁存四键到松开。存档保持 `3.0`，以 `ext.drugLoadout.version=2` 区分布局；无标记旧档只保留 `0..3` 并清除 ghost，v2 保留 `0..7`，future fail-closed，活动组不落盘。
-Settings 必须是 36 行、`keySchemaVersion=2`，保留历史占用 `6` 的动作并为切换键选择无冲突 fallback；Character Build 顶层仍 v1，但严格携 `drugLayout.v=2` 与 8 行 `slot/bank/lane/active`，Web 两排四列且没有第九假槽。AS2 手动输入 runner 现役机器钉死：LongGun 486/486 + ManualCooldown 57/57 + DrugInput 58/58 + KeyManagerMigration 14/14（`scripts/run-player-manual-input-tests.ps1`；
+Settings 必须是 36 行、`keySchemaVersion=2`，保留历史占用 `6` 的动作并为切换键选择无冲突 fallback；Character Build 顶层仍 v1，但严格携 `drugLayout.v=2` 与 8 行 `slot/bank/lane/active`，Web 两排四列且没有第九假槽。AS2 手动输入 runner 现役机器钉死：LongGun 511/511 + ManualCooldown 57/57 + DrugInput 58/58 + KeyManagerMigration 14/14（`scripts/run-player-manual-input-tests.ps1`；
 文本中 474/474+50/50+28/28 与 486+57+55+14 为历史）。机器门不代签 `6 | 7 | 8 | 9 | 0` 观感、切换手感、旧档/重启读回或键位冲突迁移。下方文本若再出现 `4 槽`、`11+4`、17 路冷却及更旧计数只作历史。
 
 Settings 写锁存/迟到 snapshot 的持久写合同见 [持久写与恢复](#save)。
@@ -445,7 +447,7 @@ Native 绘制变更检查 `NativeGuidanceVisualTests` 的实际像素、原场�
 ### 地图面板与地图内容工作台
 
 **审计与 harness**：`node tools/audit-map-taskmarkers.js` + `node tools/audit-map-avatar-visibility.js`（同一 C# 只读内容检查）+ `node tools/audit-map-webp-assets.js` + `node tools/audit-map-layout.js` + `node tools/audit-map-scale-experience.js`；
-C# 地图／作者／HUD 测试、`scripts/run-map-domain-tests.ps1`（机器钉死 60/60，含主动撤退、关注容量回收、自动接链与采样分批）、`scripts/run-settings-tests.ps1`；地图 Web `run-qa.js --browser=edge` 含 `map-return/map-return-stale-read`，Host `MapTaskResponseTests` 守当前实例与未知返回；
+C# 地图／作者／HUD 测试、`scripts/run-map-domain-tests.ps1`（含主动撤退、关注容量回收、自动接链、采样分批与真实场景标量观察；suite 门以该 runner 为准）、`scripts/run-settings-tests.ps1`；地图 Web `run-qa.js --browser=edge` 含 `map-return/map-return-stale-read`，Host `MapTaskResponseTests` 守当前实例与未知返回；
 独立候选与人类入口见 [地图主动撤退](../docs/关卡结果与基地结算-CSharp-Web-ADR-2026-08-27.md#0c-2026-09-08-地图主动撤退入口)、`scripts/run-map-loot-tests.ps1`、`scripts/run-boot-sequencer-tests.ps1`，再单独发布 asLoader。独立彩蛋场景不创建公开热点，完成任务的受控交付例外由 `MapDomainSessionTests` 与 `tools/quest-return/verify-coverage.js` 覆盖。
 
 **合并前 gate（缺一不得合并）**：改 `map-panel.js` / `map-canvas-stage-renderer.js` / `map-panel-data.js` / `panels.js` / `地图系统_WebView.as` 的 PR 必须在合并前跑通：1. `node tools/audit-map-taskmarkers.js`；2. `node tools/audit-map-scale-experience.js` 输出 `errors=0` 且明示 capability debt；
@@ -936,6 +938,17 @@ AS2 只发送逐段结算事实，C# `HitNumberRuntime` / `HitNumberOverlay` 是
 以及 1200 段/秒和固定 32,768 段环形账本溢出后的资源稳定；
 中心样本提交 surface 外沿必须零非透明像素，精确历史只从暂停态 Web 设置按需分页物化，不占用 `Alt` 或其他战斗键。真机继续覆盖高 hit 下的目标归属与打击感、设置内对账日志、四色板/全语义、total 与 balanced 瞬态闪色/回落、状态比例/计数追赶、零伤、逐发长值、`Alt` 喷气背包不受影响、边缘/屏外、reset/断连、五状态、24/0 与设置后立即重排；合成门不代签真机、candidate、promotion 或标准入口。
 
+<a id="as2-hotpath-suites"></a>
+### AS2 只读热点与诊断 runner
+
+改 HUD 冷却跑 `scripts/run-player-hud-tests.ps1` 与手动输入 runner；改资源提示另跑 `scripts/run-skill-resource-tests.ps1`。后者使用实际 ArrayInventory/DrugInventory/DictCollection，对照原 contain，并检查隐藏药剂槽、手雷 fallback、异常与非整数数量、同次采样去重、跨次变化和零内容/版本写入。两套独立 TestLoader 避免把 HUD 与库存的类注册图混成一个测试入口。
+
+改 AI 诊断跑 `scripts/run-ai-diagnostics-tests.ps1`：真实 UtilityEvaluator、ScoringPipeline、DecisionTrace 与 WeaponEvaluator，覆盖日志级别/调试开关组合、评分与候选顺序、随机数消耗、8 帧决策准入、30 帧 DPS 缓存时点、切换和失效。受控 estimator 与随机源只用于等价性，不证明战斗效果或 AI 频率收益。
+
+改冗余判空跑 `scripts/run-as2-guard-tests.ps1`；涉及射线还跑 `scripts/run-ray-visual-tests.ps1`。后者保留 ownership/lifecycle 门，并以固定表现 RNG 转发实际 MovieClip 绘制调用，输出各风格、LOD、缺失/存在 meta 的计数、双指纹及边界，供改前/改后比较；这不代签真人视觉验收。
+
+地图场景采样由 `scripts/run-map-domain-tests.ps1` 同时覆盖原协议 suite 与 MapSceneObservationTest：逐字段变化、同帧变化、归一化、独立快照、world/epoch、断线重连及零观察 JSON。所有 runner 都须 fresh CS6 Compiler 0/0、唯一闭合 runId、32K retry=0；局部 A/B 使用交换顺序、多轮批量计时，不能据此报整局帧率或 asLoader 编译提升。
+
 ### AS2 战斗与输入 runner
 
 按 [Flash 编译核心](#flash-core) 三层先选 `-Target publish|test|main`。
@@ -945,7 +958,7 @@ AS2 只发送逐段结算事实，C# `HitNumberRuntime` / `HitNumberOverlay` 是
   现役 `delete/world_adopt` 分别只撤目标 slot、只部署新 slot，禁止同栈全场 remove 后按旧 canonical 名全量 attach。
 - HP/击溃/护盾/冲击衰减：`scripts/run-combat-hp-impact-tests.ps1`（机器钉死 ToughnessVulnerabilityPipelineTest `passed=159 failed=0`；文本 153/153、140/140 为历史）。settlement 门固定普通/联弹全段 MISS 只保留数字，不发布 hit/kill/death/enemyKilled，也不触发仇恨、翻面、血效、血条或击中特效；
   `DamageResult.NULL` 的旧几何命中合同保持：小跳/闪现等无敌期 `DamageResult.NULL` 继续允许几何命中 FX，但 `ImpactStateHandler` 必须零冲击/位移/状态副作用，不得重置 `lastHitTime` 或韧性恢复基线。正常 actual 热路必须内联分类，不得新增 `DamageResult` 静态分类调用、`ActionTry` 或临时对象分配；极低频 resolved MISS 仍可能触发护盾 `absorbDamage(0)`/回充延迟重置，作为性能优先的显式注释兼容误差，不列入拒收门。
-- 玩家手动输入/冷却：`powershell -ExecutionPolicy Bypass -File scripts/run-player-manual-input-tests.ps1 -TimeoutSeconds 240`，机器钉死 `LongGunSubWeaponCoreTest` 486/486 + `ManualCooldownServiceTest` 57/57 + `DrugInputServiceTest` 58/58 + `KeyManagerMigrationTest` 14/14，覆盖 12+4+1 通道、毫秒取整/拒绝重入、暂停/跨场景调度、缺 renderer/rebind、按住等冷却、
+- 玩家手动输入/冷却：`powershell -ExecutionPolicy Bypass -File scripts/run-player-manual-input-tests.ps1 -TimeoutSeconds 240`，机器钉死 `LongGunSubWeaponCoreTest` 511/511 + `ManualCooldownServiceTest` 57/57 + `DrugInputServiceTest` 58/58 + `KeyManagerMigrationTest` 14/14，覆盖 12+4+1 通道、毫秒取整/拒绝重入、暂停/跨场景调度、缺 renderer/rebind、按住等冷却、
   战技共享/副武器绕过、死亡/空格/零数量/最后一瓶/同帧多药键/旧第 5 格隔离，以及存档系统缺失时首写前失败、ItemRemoved listener fault 后的精确 loss、索引/EventBus/事务恢复与下一独立扣药，再发布 `asLoader.swf`；
   若改 `flashswf/UI/玩家信息界面/LIBRARY`，还须独立发布该 XFL、FFDec 检索关键脚本并真机核对键位/动画/扣药。
 

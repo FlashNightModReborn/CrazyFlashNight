@@ -102,7 +102,7 @@ class org.flashNight.arki.render.renderer.BaguaRodRenderer {
         var linkerStride:Number   = VM.cfgNum(config, "linkerStride",   DEFAULT_LINKER_STRIDE);
         var visualDuration:Number = VM.cfgNum(config, "visualDuration", DEFAULT_VISUAL_DURATION);
         var fadeDuration:Number   = VM.cfgNum(config, "fadeOutDuration", DEFAULT_FADE_DURATION);
-        var counterRotate:Boolean = (config != null && config.counterRotate === true);
+        var counterRotate:Boolean = (config.counterRotate === true);
 
         // ─── 计算 burst_frame 与 cycle_alpha (爆发→淡出二阶段) ───
         var burstFrame:Number;

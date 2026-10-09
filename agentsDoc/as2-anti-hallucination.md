@@ -78,8 +78,9 @@
 ## 2. AS2 vs JavaScript 易混淆点
 
 ### 空值访问与判空
-- AS2 `undefined.prop` 返回 `undefined` 不崩溃。链式 `a.b.c.d` 直接访问，**禁止逐级判空**
-- **禁止**：`if (a != undefined && a.b != undefined && a.b.c != undefined)`
+- AS2 `undefined.prop` 返回 `undefined` 不崩溃。普通对象的纯字段读取可直接用 `a.b.c.d`，不要仅为防崩溃逐级判空。
+- 末端正向条件已拒绝缺失值时可去掉重复祖先检查，例如 `meta.segmentKind == "fork"` 或 `typeof view.refresh == "function"`。
+- 不能机械删除存在性门：`obj != null && obj.disabled !== true`、双缺失值相等、NaN 比较、proto-null 字典，以及身份/权限/epoch、一次性动作、带副作用调用须逐点保留语义；函数调用仍须保持 receiver。性能与回归边界见 [判空分类](as2-performance.md#null-guards)。
 
 ### 作用域与 this
 - AS2 `var` 有函数作用域（类似 JS），无 `let`/`const`

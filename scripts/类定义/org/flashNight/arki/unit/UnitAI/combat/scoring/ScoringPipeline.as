@@ -157,9 +157,11 @@ class org.flashNight.arki.unit.UnitAI.combat.scoring.ScoringPipeline {
         }
 
         // ═══ trace recording（所有候选，最终分数）═══
-        for (var tr:Number = 0; tr < len; tr++) {
-            var tc:Object = candidates[tr];
-            trace.scored(tc, tc._dimScores, tc._modStr, tc._postStr);
+        if (trace.isEnabled()) {
+            for (var tr:Number = 0; tr < len; tr++) {
+                var tc:Object = candidates[tr];
+                trace.scored(tc, tc._dimScores, tc._modStr, tc._postStr);
+            }
         }
     }
 }

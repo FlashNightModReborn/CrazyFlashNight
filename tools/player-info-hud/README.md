@@ -752,7 +752,12 @@ node tools/check-bom.js
 ```
 
 AS2 behavior uses `scripts/run-player-hud-tests.ps1` plus the existing manual
-input and native interaction runners, all through real CS6. The focused
+input and native interaction runners, all through real CS6. The HUD runner also
+checks fixed-key cooldown sampling, detached snapshots and forced full updates.
+Resource hints have a separate `scripts/run-skill-resource-tests.ps1` runner with
+real inventory containers, a frozen contain oracle and read-only mutation checks.
+See the [AS2 hotspot validation](../../docs/AS2热点采样与判空优化验证-2026-10-10.md)
+for local timing and acceptance boundaries. The focused
 C# set is `PlayerHudStateTests`, `PlayerHudVisualTests`,
 `PlayerInfoAnimationModelTests` and `RuntimeFontCatalogTests`, using the exact
 SDK from `launcher/resolve-dotnet.ps1`. An actual AVM1-produced JSON fixture

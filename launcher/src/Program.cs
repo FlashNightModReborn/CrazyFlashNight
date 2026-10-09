@@ -2045,16 +2045,27 @@ class Program
             message => toastSink.AddMessage(message), projectRoot,
             () => launchFlow != null && (launchFlow.CurrentState == "Embedding"
                 || launchFlow.CurrentState == "WaitingGameReady" || launchFlow.CurrentState == "Ready"),
-            windowManager.SetFlashRenderScale, () => windowManager.RestoreFlashInputFocus("world_pointer"),
+            windowManager.SetFlashRenderHeight, () => windowManager.RestoreFlashInputFocus("world_pointer"),
             bulletCatalog:bulletVisualCatalog,combatFxCatalog:combatFxCatalog,overlays:worldOverlays,
             opaqueHudEnabled:playerInfoFixtureCase==null);
         hnOverlay.SetSharedPresentation(worldCompositor.DamagePresentation);
         if(playerInfoFixtureCase==null)playerHudRuntime?.SetSharedWorld(worldCompositor);
         var renderSettings=RenderScheduleSettings.Load(Path.Combine(projectRoot,"launcher","data","world-lighting","render-schedule.json"));
         webOverlay.WorldDragInputRouter=worldCompositor.RouteCapturedPointer;
+        worldCompositor.ReadFlashSourceSize=() => windowManager.ActualFlashSourceSize;
+        worldCompositor.PerformanceUnavailable=perfEngine.NotifyRenderUnavailable;
+        var initialRender=RenderSchedule.Stages(userPrefs.Performance,windowManager.AvailableFlashSourceHeight)[0];
+        worldCompositor.ApplyRenderSelection(initialRender,renderSettings.Sharpness);
+        windowManager.SetFlashRenderHeight(initialRender.Height);
         perfEngine.ConfigureRenderSchedule(renderSettings,
-            selection => { if (!form.IsDisposed) form.BeginInvoke(new Action(() => worldCompositor.ApplyRenderSelection(selection,renderSettings.Sharpness))); },
-            () => worldCompositor.SchedulingAllowed);
+            (command,selection) => { if (!form.IsDisposed) form.BeginInvoke(new Action(() => {
+                if(!perfEngine.IsCurrentRenderRequest(command)) return;
+                frameTask.ConfigureNativeVisualBudget(selection.EffectLevel);
+                worldCompositor.ApplyRenderSelection(selection,
+                    selection.Height<windowManager.AvailableFlashSourceHeight ? renderSettings.Sharpness : 0,
+                    size => perfEngine.ConfirmRenderApplied(command,selection,size));
+            })); },
+            () => worldCompositor.SchedulingAllowed,() => windowManager.AvailableFlashSourceHeight,userPrefs.Performance);
         socketServer.OnClientDisconnected += perfEngine.ResetRenderSource;
         Action<Action> dispatchToUi = action =>
         {
@@ -2285,6 +2296,8 @@ class Program
         settingsTask.SetHitNumberLedgerProvider(frameTask.BuildHitNumberLedgerPage);
         settingsTask.SetHostPreferenceApplied(delegate(string key, JToken value)
         {
+            if (key == "performance" || key == "performanceUndo")
+                perfEngine.ConfigurePerformancePolicy(userPrefs.Performance);
             if (key == "tutorialsAutoOpen" && nativeGuidanceTask != null)
                 nativeGuidanceTask.NotifyHelpAvailabilityChanged();
             if (key == "sfxEnabled" || key == "ambientEnabled")

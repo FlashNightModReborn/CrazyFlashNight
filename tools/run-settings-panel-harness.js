@@ -59,7 +59,7 @@ test("legacy conflicts can be repaired one candidate at a time", () => {
   assert.deepStrictEqual(runtime.validateKeyDraft(legacy, extended).indexes, [2, 3]);
 });
 
-test("snapshot adopts exact authority and normalizes legacy performance display", () => {
+test("snapshot adopts exact authority and leaves the retired performance field untouched", () => {
   const response = {
     success:true, v:1, keySchemaVersion:2, revision:4,
     keyMigrationNotice:"", migrationPending:false,
@@ -71,7 +71,7 @@ test("snapshot adopts exact authority and normalizes legacy performance display"
   };
   const model = runtime.normalizeSnapshot(response);
   assert(model);
-  assert.strictEqual(model.settings["性能等级上限"], 1);
+  assert.strictEqual(model.settings["性能等级上限"], 3);
   assert.strictEqual(model.keys[12].keyCode, 54);
   assert.strictEqual(model.keyMigrationNotice, "");
   assert.strictEqual(model.hostPrefs.tutorialsAutoOpen, true);
@@ -80,6 +80,8 @@ test("snapshot adopts exact authority and normalizes legacy performance display"
   assert.strictEqual(runtime.hasGameChanges(model, draft), true);
   assert.strictEqual(runtime.applyPayload(model, draft).keySchemaVersion, 2);
   assert.strictEqual(runtime.applyPayload(model, draft).keys.length, 36);
+  assert.strictEqual(runtime.applyPayload(model, draft).settings["性能等级上限"], 3);
+  assert.strictEqual(model.hostPrefs.performance, null);
   assert.strictEqual(runtime.normalizeSnapshot(Object.assign({}, response,
     {keySchemaVersion:1})), null);
   const missingNotice = Object.assign({}, response);
@@ -89,6 +91,51 @@ test("snapshot adopts exact authority and normalizes legacy performance display"
     {keyMigrationNotice:"x".repeat(161)})), null);
   assert.strictEqual(runtime.normalizeSnapshot(Object.assign({}, response,
     {keyMigrationNotice:"保留绑定\n切换键已迁移"})), null);
+});
+
+test("performance state rejects malformed choices without manufacturing a saved default", () => {
+  const current = {preset:"balanced",mode:"auto",maxRenderHeight:0};
+  const previous = {preset:"quality",mode:"fixed",maxRenderHeight:540};
+  const state = {v:1,current,previous};
+  assert.deepStrictEqual(runtime.normalizePerformanceState(state), state);
+  runtime.PERFORMANCE_HEIGHTS.forEach(height => {
+    assert(runtime.normalizePerformanceConfig(Object.assign({}, current, {maxRenderHeight:height})));
+  });
+  [null, [], {}, Object.assign({}, current, {preset:"custom"}),
+    Object.assign({}, current, {mode:"adaptive"}),
+    Object.assign({}, current, {maxRenderHeight:"540"}),
+    Object.assign({}, current, {maxRenderHeight:541}),
+    Object.assign({}, current, {maxRenderHeight:NaN}),
+    Object.assign({}, current, {extra:true})].forEach(value => {
+    assert.strictEqual(runtime.normalizePerformanceConfig(value), null);
+  });
+  [null, {v:1,current}, {v:2,current,previous}, {v:1,current,previous:{}},
+    {v:1,current,previous,extra:true}].forEach(value => {
+    assert.strictEqual(runtime.normalizePerformanceState(value), null);
+  });
+  const copied = runtime.normalizePerformanceState(state);
+  copied.current.preset = "performance";
+  copied.previous.maxRenderHeight = 720;
+  assert.strictEqual(current.preset, "balanced");
+  assert.strictEqual(previous.maxRenderHeight, 540);
+});
+
+test("performance recommendations retain the selected preset and manual cap without touching game drafts", () => {
+  const state = {v:1,current:{preset:"balanced",mode:"auto",maxRenderHeight:540},previous:null};
+  const draft = runtime.copy(state.current);
+  assert.strictEqual(runtime.hasPerformanceChanges(state, draft), false);
+  draft.preset = "quality";
+  draft.mode = "fixed";
+  const restored = runtime.recommendedPerformanceConfig(draft);
+  assert.deepStrictEqual(restored, {preset:"quality",mode:"auto",maxRenderHeight:540});
+  assert.strictEqual(draft.mode, "fixed");
+  assert.strictEqual(runtime.hasPerformanceChanges(state, restored), true);
+  const game = {revision:8,settings:runtime.copy(settings),keys:runtime.copy(keys)};
+  const gameDraft = runtime.gameDraft(game);
+  const payload = runtime.applyPayload(game, gameDraft);
+  assert.strictEqual(payload.performance, undefined);
+  assert.deepStrictEqual(payload.settings, settings);
+  assert.strictEqual(runtime.hasGameChanges(game, gameDraft), false);
 });
 
 test("placeholder key labels fall back to stable logical ids", () => {
@@ -264,7 +311,7 @@ test("panel keeps cheat bridge internal and exposes only agreed rescue controls"
   assert(!panel.includes("confirmThen('return_base'"));
   assert(!panel.includes("Panels.close()"));
   assert(panel.includes("正在等待 Host 确认关闭"));
-  assert(panel.includes("function reconcileUnknownWrite(message)"));
+  assert(panel.includes("function reconcileUnknownWrite(message, preserveDrafts)"));
   assert(panel.includes("_requiresReconcile = true"));
   assert(panel.includes("写入状态等待权威核对"));
   assert(panel.includes("权威状态读取失败，写入仍保持锁定"));

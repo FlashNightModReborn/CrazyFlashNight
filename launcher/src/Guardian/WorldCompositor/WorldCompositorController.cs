@@ -18,7 +18,7 @@ namespace CF7Launcher.Guardian.WorldCompositor
         private readonly Func<bool> _canPresent;
         private readonly Func<bool> _shouldPrepare;
         private readonly Action<string> _notify;
-        private readonly Action<double> _setRenderScale;
+        private readonly Action<int> _setRenderHeight;
         private readonly Action _focusFlash;
         private readonly WorldLightingPreset _preset;
         private readonly WorldPresentationCatalog _presentationCatalog;
@@ -28,6 +28,7 @@ namespace CF7Launcher.Guardian.WorldCompositor
         private double _lastCombatFxCapAttemptMs;
         internal Func<bool,bool> CombatFxCapabilityChanged;
         internal event Action PresentationShown;
+        internal Action PerformanceUnavailable;
         private readonly bool _bulletCandidateEnabled;
         private readonly Timer _timer = new Timer { Interval=33 };
         private NativeCompositorSession _native;
@@ -123,7 +124,17 @@ namespace CF7Launcher.Guardian.WorldCompositor
         private double _lastBulletCapAttemptMs;
         private double _bulletCaptureNotReadyMs;
         private long _lastBulletFrameLogTicks;
-        private double _targetScale=1, _appliedScale=1;
+        private int _targetHeight=1080, _appliedHeight=-1, _effectLevel;
+        private RenderPresentationRequest _renderCompletion;
+        private sealed class RenderPresentationRequest
+        {
+            internal readonly RenderSelection Selection;
+            internal readonly Action<Size> Completed;
+            internal double CaptureAfter=double.PositiveInfinity;
+            internal RenderPresentationRequest(RenderSelection selection,Action<Size> completed)
+            { Selection=selection;Completed=completed; }
+        }
+        internal Func<Size> ReadFlashSourceSize;
         private float _targetSharpness;
         private float _appliedSharpness=float.NaN;
         private bool _viewportHeld;
@@ -138,12 +149,32 @@ namespace CF7Launcher.Guardian.WorldCompositor
         internal bool SchedulingAllowed => _schedulingAllowed && !_transitionInputHeld;
         internal bool RouteCapturedPointer(int x,int y,int message,uint mouseData) =>
             !_disposed && !_transitionInputHeld && _active && _surface!=null && _surface.RouteCapturedPointer(x,y,message,mouseData);
-        internal void ApplyRenderSelection(RenderSelection selection,float sharpness)
+        internal void ApplyRenderSelection(RenderSelection selection,float sharpness,Action<Size> completed=null)
         {
             if (_disposed) return;
-            _targetScale=selection.Scale;
-            _targetSharpness=selection.Quality=="LOW" && selection.Scale<1 ? sharpness : 0;
-            if (_targetScale!=_appliedScale) _schedulingAllowed=false;
+            _targetHeight=selection.Height;
+            _effectLevel=selection.EffectLevel;
+            _renderCompletion=completed==null ? null : new RenderPresentationRequest(selection,completed);
+            _targetSharpness=selection.Quality=="LOW" ? sharpness : 0;
+            _schedulingAllowed=false;
+        }
+        private bool RecordRenderPaint(RenderPresentationRequest request,double painted)
+        {
+            if (_disposed || request==null || !ReferenceEquals(request,_renderCompletion)) return false;
+            if (!double.IsFinite(painted) || painted<=0) throw new InvalidOperationException("Invalid render repaint fence");
+            request.CaptureAfter=painted;
+            return true;
+        }
+        private bool CompleteRenderSelection(RenderPresentationRequest request,double capturedAt,Size source)
+        {
+            if (_disposed || request==null || !ReferenceEquals(request,_renderCompletion)
+                || !double.IsFinite(request.CaptureAfter) || !double.IsFinite(capturedAt)
+                || capturedAt<request.CaptureAfter || request.Selection.Height!=_appliedHeight) return false;
+            // Clear only this request before invoking external code: the callback may
+            // synchronously choose another target, which must retain its own fence.
+            _renderCompletion=null;
+            request.Completed(source);
+            return true;
         }
         // The F packet already drives hit numbers on the socket thread. Forward its
         // camera to the native visual state on that path as well: waiting for the
@@ -214,6 +245,7 @@ namespace CF7Launcher.Guardian.WorldCompositor
             }
             if (_faulted) return;
             _faulted=true;
+            PerformanceUnavailable?.Invoke();
             // The failure dialog runs a nested UI loop. Keep only bounded
             // ownership-revoke retries alive while it awaits closure.
             _faultedRevokeDeadlineMs=NowMs()+10000;
@@ -307,7 +339,7 @@ namespace CF7Launcher.Guardian.WorldCompositor
 
         internal WorldCompositorController(Form owner, Control anchor, Func<IntPtr> getFlash,
             Func<bool> canPresent, Action<string> notify, string projectRoot, Func<bool> shouldPrepare,
-            Action<double> setRenderScale,Action focusFlash,uint inputEpochLimit=WorldPointerMapper.EpochLimit,
+            Action<int> setRenderHeight,Action focusFlash,uint inputEpochLimit=WorldPointerMapper.EpochLimit,
             BulletVisualCatalog bulletCatalog=null,CombatFxCatalog combatFxCatalog=null,
             IEnumerable<OverlayBase> overlays=null,bool opaqueHudEnabled=false)
         {
@@ -327,7 +359,7 @@ namespace CF7Launcher.Guardian.WorldCompositor
             BuffPresentation.Faulted += error => RejectPlayerHud("buff_raster", error);
             MainHudPresentation.Faulted += error => RejectPlayerHud("main_hud_raster", error);
             _opaqueHudEnabled=opaqueHudEnabled;
-            _setRenderScale=setRenderScale; _focusFlash=focusFlash;
+            _setRenderHeight=setRenderHeight; _focusFlash=focusFlash;
             _bulletCatalog=bulletCatalog;
             _combatFxCatalog=combatFxCatalog;
             var sceneCatalog=SceneLightCatalog.Load(projectRoot);
@@ -371,7 +403,7 @@ namespace CF7Launcher.Guardian.WorldCompositor
         {
             ResetSceneLights();
             _lighting=new WorldLightingTransition(); _reportedPendingScene=0; _frame=null; _schedulingAllowed=false; StopCapture();
-            _targetScale=_appliedScale=1; _setRenderScale(1);
+            _appliedHeight=-1; _renderCompletion=null;
         }
         private async void OnTick(object sender,EventArgs args)
         {
@@ -481,19 +513,27 @@ namespace CF7Launcher.Guardian.WorldCompositor
                     return;
                 }
                 _surface.FlushMove();
-                if (!_transitionInputHeld && !_inputClosed && !_surface.InputRenewing && _targetScale!=_appliedScale && !_surface.IsDragging) {
+                if (!_transitionInputHeld && !_inputClosed && !_surface.InputRenewing && _targetHeight!=_appliedHeight && !_surface.IsDragging) {
                     _starting=true; _schedulingAllowed=false;
                     var resizingNative=_native; var resizingSource=_flash;
                     double resizeStarted=NowMs();
                     _native.HoldViewport(); _viewportHeld=true;
                     double heldAt=NowMs();
-                    _setRenderScale(_targetScale); _appliedScale=_targetScale;
+                    _setRenderHeight(_targetHeight); _appliedHeight=_targetHeight;
+                    var resizeRequest=_renderCompletion;
+                    bool budgetBeforePaint=resizeRequest!=null && _frame?.Ready==true
+                        && !_lighting.WaitingForCapture && _lighting.ReadyScene==_frame.Scene;
+                    if(budgetBeforePaint) {
+                        _native.Sharpness(_targetSharpness); _appliedSharpness=_targetSharpness;
+                        ApplyWeatherCamera(true); ApplyWeather(true);
+                    }
                     double resizedAt=NowMs();
                     double painted=await _pointerBridge.RepaintAsync(heldAt);
                     if (_disposed || _native!=resizingNative || _getFlash()!=resizingSource) return;
                     _paintFenceMs=painted;
                     _requiredFrameMs=Math.Max(_requiredFrameMs,painted);
-                    LogManager.Log("event=world_render_resize scale="+_appliedScale.ToString("F2",CultureInfo.InvariantCulture)
+                    if(budgetBeforePaint) RecordRenderPaint(resizeRequest,painted);
+                    LogManager.Log("event=world_render_resize sourceHeight="+_appliedHeight.ToString(CultureInfo.InvariantCulture)
                         +" paintFenceMs="+painted.ToString("F1",CultureInfo.InvariantCulture)
                         +" waitGpuMs="+(heldAt-resizeStarted).ToString("F1",CultureInfo.InvariantCulture)
                         +" resizeMs="+(resizedAt-heldAt).ToString("F1",CultureInfo.InvariantCulture)
@@ -523,7 +563,7 @@ namespace CF7Launcher.Guardian.WorldCompositor
                 }
                 // Observe healthy FPS during a gesture; only the actual resize waits
                 // for release. Frequent clicks must not reset the recovery timer.
-                _schedulingAllowed=!_inputClosed && !_surface.InputRenewing && ready && _frame?.Ready==true && _targetScale==_appliedScale;
+                _schedulingAllowed=!_inputClosed && !_surface.InputRenewing && ready && _frame?.Ready==true && _targetHeight==_appliedHeight && _renderCompletion==null;
                 if (ready && _appliedSharpness!=_targetSharpness) { _native.Sharpness(_targetSharpness); _appliedSharpness=_targetSharpness; }
                 // Read() reports a captured frame after its Present submission. This is a
                 // timestamp freshness fence, not proof of the pixels' semantic scene identity.
@@ -550,8 +590,36 @@ namespace CF7Launcher.Guardian.WorldCompositor
                     for (int i=0;!changed && i<settings.Length;i++) if (Math.Abs(settings[i]-_lastSettings[i])>0.000001f) changed=true;
                     if (changed) { _native.Matrix(settings); _lastSettings=settings; }
                 }
-                ApplyWeatherCamera(ready);
-                ApplyWeather(ready);
+                // Read can still report the pre-paint capture while Synchronize
+                // releases our held viewport. Keep the submitted target during
+                // that wait; clearing weather here would invalidate the fence.
+                // Scene readiness inside both setters continues to gate ownership.
+                bool waitingForBudgetCapture=_renderCompletion!=null && double.IsFinite(_renderCompletion.CaptureAfter);
+                ApplyWeatherCamera(ready || waitingForBudgetCapture);
+                ApplyWeather(ready || waitingForBudgetCapture);
+                if (ready && _frame?.Ready==true && !_lighting.WaitingForCapture && _lighting.ReadyScene==_frame.Scene
+                    && !_transitionInputHeld && !_inputClosed && !_surface.InputRenewing
+                    && !_surface.IsDragging && _targetHeight==_appliedHeight && _renderCompletion!=null) {
+                    var request=_renderCompletion;
+                    if (!double.IsFinite(request.CaptureAfter)) {
+                        // Height may be unchanged while quality/effects change. A
+                        // native-only Present can reuse the old Flash texture, so
+                        // every complete target needs its own post-setter repaint.
+                        _starting=true;
+                        var paintingNative=_native; var paintingSource=_flash;
+                        _native.HoldViewport(); _viewportHeld=true;
+                        double painted=await _pointerBridge.RepaintAsync(NowMs());
+                        if (_disposed || _native!=paintingNative || _getFlash()!=paintingSource) return;
+                        _paintFenceMs=painted;
+                        _requiredFrameMs=Math.Max(_requiredFrameMs,painted);
+                        // An ApplyRenderSelection/ResetSource during the await may
+                        // supersede the target. Its callback cannot inherit this paint.
+                        RecordRenderPaint(request,painted);
+                        return;
+                    }
+                    CompleteRenderSelection(request,stats.LastFrameQpcMs,
+                        ReadFlashSourceSize?.Invoke() ?? _crop.Size);
+                }
                 ApplyAtmosphere(ready);
                 // The grade is submitted after Read's Present. Require a subsequent fresh
                 // capture before granting U12 reveal; this is still not a physical pixel receipt.
@@ -613,8 +681,8 @@ namespace CF7Launcher.Guardian.WorldCompositor
                             rasterUploads=DamagePresentation.Uploads,rasterUploadedBytes=DamagePresentation.UploadedBytes });
                     }
                     LogManager.Log(string.Format(CultureInfo.InvariantCulture,
-                        "event=world_compositor_frame received={0} presented={1} size={2}x{3} ageMs={4:F1} submitMs={5:F3} presentMs={6:F3} cpuReadbacks={7} adapter={8} light={9:F3} scale={10:F2} output={11}x{12} everReady={13} advancing={14} nativeState={15} captureGeneration={16} nativeStage={17}",
-                        stats.Received,stats.Presented,stats.Width,stats.Height,stats.LastFrameQpcMs==0 ? -1 : NowMs()-stats.LastFrameQpcMs,stats.SubmitMs,stats.PresentMs,stats.CpuReadbacks,stats.Adapter,_lighting.LastReadyLight,_appliedScale,_surface.ClientSize.Width,_surface.ClientSize.Height,_everReady,_frameAdvancing,stats.State,_native.CaptureGeneration,stats.Message));
+                        "event=world_compositor_frame received={0} presented={1} size={2}x{3} ageMs={4:F1} submitMs={5:F3} presentMs={6:F3} cpuReadbacks={7} adapter={8} light={9:F3} sourceHeight={10} output={11}x{12} everReady={13} advancing={14} nativeState={15} captureGeneration={16} nativeStage={17}",
+                        stats.Received,stats.Presented,stats.Width,stats.Height,stats.LastFrameQpcMs==0 ? -1 : NowMs()-stats.LastFrameQpcMs,stats.SubmitMs,stats.PresentMs,stats.CpuReadbacks,stats.Adapter,_lighting.LastReadyLight,_appliedHeight,_surface.ClientSize.Width,_surface.ClientSize.Height,_everReady,_frameAdvancing,stats.State,_native.CaptureGeneration,stats.Message));
                 }
             } catch (Exception error) {
                 EnterRenderFault("tick", error);
@@ -731,9 +799,8 @@ namespace CF7Launcher.Guardian.WorldCompositor
                 && _lighting.ReadyScene==frame.Scene && !_lighting.WaitingForCapture;
             int type=show ? frame.WeatherType : 0;
             float intensity=show ? frame.WeatherIntensity : 0;
-            // Flash's adaptive quality governs only its fallback drawing. Native
-            // weather has a separate fixed and bounded GPU budget.
-            int quality=show ? 0 : 3;
+            // The same Host target owns both Flash and the native weather budget.
+            int quality=show ? NativeVisualBudget.FromEffectLevel(_effectLevel).WeatherQuality : 3;
             uint seed=show ? unchecked((uint)frame.Scene) : 0;
             if (show && type!=0 && type!=_appliedWeatherStyleType) {
                 WeatherLook look=_presentationCatalog.Weather(type);

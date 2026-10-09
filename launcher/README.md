@@ -289,9 +289,12 @@ candidate 与正式入口旅程按 [#runtime](../agentsDoc/testing-guide.md#runt
 记录区分探针线程调度、UI 排队、鼠标钩子分发、本地回调与下游 hook 链、光标绘制及同步窗口调用，每个窗口最多 64 条尖刺，汇总保留省略数量与峰值。
 焦点录制还每秒采集一次原生呈现的最近 256 次提交摘要；主动静止/hold 不计入连续帧间隔，统计不触发 GPU 回读。不记录鼠标移动坐标，不注入输入；提交耗时不是显示器实际呈现延迟。细节见 [U12 记录](../docs/U12过场Web迁移与人力验收-2026-10-01.md)及[启动与呈现优化](../docs/startup-input-presentation-optimization.md)。
 <!-- launcher-user-prefs-registry:start -->
-当前字段为 `lastPlayedSlot`、`introEnabled`、`sfxEnabled`、`ambientEnabled`、`tutorialsAutoOpen`、`uiFontScale`、`suppressedHighDpiWarningRaw`、`mapDisplayPreference`、`hitNumberMode`、`hitNumberWorldRowLimit` 和 `reducedPresentation`。
+当前字段为 `lastPlayedSlot`、`introEnabled`、`sfxEnabled`、`ambientEnabled`、`tutorialsAutoOpen`、`uiFontScale`、`suppressedHighDpiWarningRaw`、`mapDisplayPreference`、`hitNumberMode`、`hitNumberWorldRowLimit` 、`reducedPresentation`、`performance` 和 `previousPerformance`。
 <!-- launcher-user-prefs-registry:end -->
 欢迎页的公开 Web 写入必须经过 `config_set` 白名单；游戏设置使用绑定实例的 `settings.host_set` 域白名单，Host-only 字段不得因前端同名而获得写权限。
+本机性能方案仅经绑定实例的 `settings.host_set` 写入：`performance={preset,mode,maxRenderHeight}`，预设为 `balanced/performance/quality`，模式为 `auto/fixed`；允许的高度集合以 `PerformancePolicy` 为准。
+`performanceUndo=true` 只撤销一次，是命令而非持久字段。snapshot 与这两种成功回包携同一 `{v:1,current,previous}` 状态；失败回滚两份本机配置，不写 Flash 存档，也不扩大欢迎页 `config_set` 白名单。
+切预设保留手填高度；配置保存与实际呈现确认分开，当前运行值见刘海屏。执行与验证见[动态分辨率与性能方案](perf/flash-compositor/README.md#动态分辨率与性能方案)。
 `tutorialsAutoOpen` 默认开启，作用于全部自动教程与玩家槽位。自动教程底栏的“关闭教程弹窗”或“设置 → 本机与 Web → 自动打开教程页面”都保存同一本机偏好；失败回滚。关闭后触发教程改为一次刘海屏通知提醒，手动帮助与场景操作图示继续可用。
 Help composition 端点仅新增 `tutorial_preference:disable_auto_open` / `tutorial_preference_result` 窄协议：version 1、callId 与当前 exact panelInstanceId。只允许关闭自动弹窗，不能调用 Settings RPC、修改其他偏好或游戏状态；保存确认后关闭当前教程，结果未知不重发。
 

@@ -98,7 +98,10 @@ namespace CF7Launcher.Tasks
 
         internal void ConfigureCombatFx(CombatFxCatalog catalog)
         {
-            lock(_combatFxLock) { _combatFxCatalog=catalog;_combatFxEngine=catalog==null?null:new CombatFxEngine(catalog); }
+            lock(_combatFxLock) {
+                _combatFxCatalog=catalog;_combatFxEngine=catalog==null?null:new CombatFxEngine(catalog);
+                _combatFxEngine?.ConfigureVisualBudget(_nativeVisualBudget);
+            }
         }
         internal void ResetCombatFxForGeneration(int generation)
         {
@@ -269,52 +272,7 @@ namespace CF7Launcher.Tasks
                 }
 
                 if (!string.IsNullOrEmpty(fps))
-                {
-                    // 格式：fps|hour|level|epoch
-                    string[] parts = fps.Split('|');
-                    float fpsVal;
-                    if (parts.Length > 0 && float.TryParse(parts[0], out fpsVal))
-                        _fpsBuffer.Push(fpsVal);
-                    if (parts.Length > 1)
-                    {
-                        float hour;
-                        if (float.TryParse(parts[1], out hour))
-                            _fpsBuffer.SetGameHour(hour);
-                    }
-                    if (parts.Length > 2)
-                    {
-                        int level;
-                        if (int.TryParse(parts[2], out level))
-                            _fpsBuffer.SetPerfLevel(level);
-                    }
-                    if (parts.Length > 3)
-                    {
-                        int epoch;
-                        if (int.TryParse(parts[3], out epoch))
-                        {
-                            if (_fpsBuffer.SetSceneEpoch(epoch))
-                            {
-                                // epoch 变化 = 场景切换，触发 warmup
-                                _fpsBuffer.NotifySceneReset();
-                                if (_decisionEngine != null)
-                                    _decisionEngine.OnSceneReset();
-                            }
-                        }
-                    }
-
-                    // 决策引擎：影子模式记录对比，主控模式发送 P 指令
-                    if (_decisionEngine != null && !_decisionEngine.EvaluateRenderSample(parts))
-                    {
-                        PerfDecision? decision = _decisionEngine.Evaluate();
-                        if (decision.HasValue)
-                        {
-                            if (_decisionEngine.IsActive)
-                                _decisionEngine.SendCommand(decision.Value);
-                            else
-                                _decisionEngine.LogShadowComparison(decision.Value);
-                        }
-                    }
-                }
+                    _decisionEngine?.EvaluateRenderSample(fps.Split('|'));
             }
             catch (Exception ex)
             {

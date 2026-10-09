@@ -3,4 +3,5 @@
  */
 trace("FocusedTestRunId map-domain Start: __FOCUSED_RUN_ID__");
 org.flashNight.arki.map.MapDomainBridgeTest.runAllTests();
+org.flashNight.arki.map.MapSceneObservationTest.runAllTests();
 trace("FocusedTestRunId map-domain Complete: __FOCUSED_RUN_ID__");

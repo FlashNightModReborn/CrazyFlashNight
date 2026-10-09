@@ -1,0 +1,3 @@
+﻿trace("FocusedTestRunId skill-resource Start: __FOCUSED_RUN_ID__");
+org.flashNight.arki.skill.SkillResourceServiceTest.runAllTests();
+trace("FocusedTestRunId skill-resource Complete: __FOCUSED_RUN_ID__");

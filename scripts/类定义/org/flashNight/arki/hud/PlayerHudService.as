@@ -45,6 +45,8 @@ class org.flashNight.arki.hud.PlayerHudService {
     private static var profileBytes:Number = 0;
     private static var tickCount:Number = 0;
     private static var rawGroups:Object = {};
+    private static var cooldownKeys:Array;
+    private static var cooldownValues:Array = [];
     private static var loadout:Object;
     private static var drugRevision:Number = 0;
     private static var drugSignature:String = "";
@@ -229,12 +231,12 @@ class org.flashNight.arki.hud.PlayerHudService {
         return count == 0;
     }
     private static function finiteValue(value):Number { var n:Number = Number(value); return (n - n) == 0 ? n : 0; }
-    private static function text(value):String { return value == undefined || value == null ? "" : String(value); }
+    private static function text(value):String { return value == null ? "" : String(value); }
     /** 资源展示的纯读入口；不安装 HUD 动作、帧监听或持久写服务。 */
     public static function readVitalsSnapshot(unit:Object):Object { return readVitals(unit); }
     private static function readVitals(unit:Object):Object {
         var shield:Object = unit.shield;
-        var shieldReady:Boolean = shield != null && typeof shield.getMaxCapacity == "function";
+        var shieldReady:Boolean = typeof shield.getMaxCapacity == "function";
         var shieldCapacity:Number = shieldReady ? Number(shield.getCapacity()) : 0;
         var shieldMaximum:Number = shieldReady ? Number(shield.getMaxCapacity()) : 0;
         if (!isFinite(shieldCapacity) || !isFinite(shieldMaximum)) shieldReady = false;
@@ -331,15 +333,37 @@ class org.flashNight.arki.hud.PlayerHudService {
             bank:bank, drugs:drugs, switchKey:keyLabel(DrugInputService.getSwitchKeyName())};
     }
     private static function readCooldowns():Array {
-        var result:Array = [];
-        var keys:Array = [ManualCooldownService.WEAPON_SKILL_KEY];
         var i:Number;
-        for (i = 1; i < 13; i++) keys.push(ManualCooldownService.quickSkillKey(i));
-        for (i = 0; i < 4; i++) keys.push(ManualCooldownService.drugKey(i));
-        keys.push(ManualCooldownService.drugSwitchKey());
-        for (i = 0; i < keys.length; i++) {
-            var state:Object = ManualCooldownService.getSnapshot(keys[i]);
-            result.push([state.ready === true ? 1 : 0, finiteValue(state.currentStep), finiteValue(state.totalSteps)]);
+        // 首次实际读取时再引用其他类，避免类注册期跨类初始化。
+        if (cooldownKeys == null) {
+            cooldownKeys = [ManualCooldownService.WEAPON_SKILL_KEY];
+            for (i = 1; i < 13; i++) cooldownKeys.push(ManualCooldownService.quickSkillKey(i));
+            for (i = 0; i < 4; i++) cooldownKeys.push(ManualCooldownService.drugKey(i));
+            cooldownKeys.push(ManualCooldownService.drugSwitchKey());
+        }
+        var values:Array = cooldownValues;
+        ManualCooldownService.writeHudSnapshot(cooldownKeys, values);
+        var previous:Array = rawGroups.cooldowns;
+        var count:Number = cooldownKeys.length;
+        var unchanged:Boolean = previous != null && previous.length == count;
+        var offset:Number = 0;
+        if (unchanged) {
+            for (i = 0; i < count; i++) {
+                var old:Array = previous[i];
+                if (old[0] !== values[offset] || old[1] !== values[offset + 1] || old[2] !== values[offset + 2]) {
+                    unchanged = false;
+                    break;
+                }
+                offset += 3;
+            }
+        }
+        // previous 是上次独立 DTO；scratch 永远不写入它。full 仍由 addGroup 强制发送。
+        if (unchanged) return previous;
+        var result:Array = [];
+        offset = 0;
+        for (i = 0; i < count; i++) {
+            result.push([values[offset], values[offset + 1], values[offset + 2]]);
+            offset += 3;
         }
         return result;
     }
@@ -464,6 +488,11 @@ class org.flashNight.arki.hud.PlayerHudService {
     public static function testOnlyReadVitals(unit:Object):Object { return readVitals(unit); }
     public static function testOnlyPoise(unit:Object):Object { return readPoiseDetail(unit); }
     public static function testOnlyConfigure(p:Object):Void { configureProjection(p); }
+    public static function testOnlyCooldownGroup(full:Boolean):Object {
+        var groups:Object = {};
+        addGroup(groups, "cooldowns", readCooldowns(), full);
+        return groups;
+    }
     public static function testOnlySameProjection(previous, current):Boolean { return sameProjection(previous, current); }
     public static function testOnlyContext(unit:Object):Number {
         if (compat == null) compat = createCompatibility();

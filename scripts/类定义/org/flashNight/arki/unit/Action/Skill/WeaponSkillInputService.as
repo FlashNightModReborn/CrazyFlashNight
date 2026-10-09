@@ -26,8 +26,7 @@ class org.flashNight.arki.unit.Action.Skill.WeaponSkillInputService {
         var rootRef:Object = root;
         var cooldownPort:Object = {};
         cooldownPort.bindRenderer = function():Void {
-            var info:Object = rootRef.玩家信息界面 ? rootRef.玩家信息界面.玩家必要信息界面 : null;
-            var bar:Object = info ? info.战技进度条 : null;
+            var bar:Object = rootRef.玩家信息界面.玩家必要信息界面.战技进度条;
             if (bar) ManualCooldownService.bindRenderer(ManualCooldownService.WEAPON_SKILL_KEY, bar);
         };
         cooldownPort.getCooldownTime = function(skill:Object):Number {
@@ -39,7 +38,7 @@ class org.flashNight.arki.unit.Action.Skill.WeaponSkillInputService {
             var inputEnabled:Boolean = !rootRef.暂停 && rootRef.当前玩家总数 === 1;
             var inputFrame:Number = rootRef.帧计时器 ? Number(rootRef.帧计时器.当前帧数) : 0;
             var result:Object = WeaponSkillInputService.updateUnit(unit, keyDown, inputEnabled, cooldownPort, inputFrame);
-            if (result && result.refreshMp && rootRef.玩家信息界面 && rootRef.玩家信息界面.刷新mp显示) {
+            if (result.refreshMp && rootRef.玩家信息界面.刷新mp显示) {
                 rootRef.玩家信息界面.刷新mp显示();
             }
             return result;

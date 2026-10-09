@@ -454,6 +454,26 @@
 .settings-button.audition { margin: 0; }
 .settings-inline-actions { display: flex; align-items: center; justify-content: flex-end; }
 
+.settings-performance-fields .settings-field {
+    align-items: stretch;
+    flex-direction: column;
+    gap: var(--settings-sp-2);
+    padding: var(--settings-sp-3) var(--settings-sp-4);
+}
+.settings-performance-fields .settings-select { width: 100%; min-width: 0; }
+.settings-performance-saved,
+.settings-performance-message {
+    margin: var(--settings-sp-3) 0 0;
+    color: var(--term-ink-md);
+    font-size: var(--settings-fs-label);
+    line-height: 1.5;
+    overflow-wrap: anywhere;
+}
+.settings-performance-saved { color: var(--settings-bone); }
+.settings-performance-actions { gap: var(--settings-sp-3); margin-top: var(--settings-sp-3); }
+.settings-performance-message { min-height: 17px; }
+.settings-performance-message[data-state="error"] { color: var(--wb-semantic-danger); }
+
 /* ── 游戏 tab: 常用设置聚合卡 ── */
 .settings-game-common { padding: var(--settings-sp-3) var(--settings-sp-5) var(--settings-sp-4); }
 .settings-game-common > .settings-section-heading { margin-bottom: 2px; padding-bottom: 5px; }

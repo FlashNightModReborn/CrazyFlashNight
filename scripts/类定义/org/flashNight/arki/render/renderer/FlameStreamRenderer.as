@@ -138,7 +138,7 @@ class org.flashNight.arki.render.renderer.FlameStreamRenderer {
         var perpX:Number = -dy / dist;
         var perpY:Number = dx / dist;
 
-        var blocked:Boolean = (meta != null && meta.isBlocked == true);
+        var blocked:Boolean = (meta.isBlocked == true);
         var pulseFactor:Number = 1.0 + pulseAmp * Math.sin(age * pulseRate * 2 * PI);
         var currentThick:Number = thickness * pulseFactor;
 

@@ -14,6 +14,7 @@ namespace CF7Launcher.Guardian.WorldCompositor
         private readonly FlashLight[] _lights=new FlashLight[LightLimit];
         private readonly CombatFxEquipmentLight[] _resident=new CombatFxEquipmentLight[LightLimit];
         private readonly CombatFxDrawFrame _draw=new CombatFxDrawFrame(TotalLimit);
+        private NativeVisualBudget _visualBudget;
         private int _generation=-1,_epoch=-1,_sequence=-1,_tick,_nextId,_eventSequence;
         private long _nextLightId;
         private readonly List<CombatFxSettlement> _settled=new List<CombatFxSettlement>(StampBatchLimit);
@@ -23,6 +24,10 @@ namespace CF7Launcher.Guardian.WorldCompositor
         internal int LightDropped { get; private set; }
         internal int Epoch => _epoch;
         internal CombatFxEngine(CombatFxCatalog catalog) { _catalog=catalog ?? throw new ArgumentNullException(nameof(catalog)); }
+
+        // Existing particles keep their motion, settlement and acknowledgement
+        // lifecycle. A lower budget only prevents new decorative casings.
+        internal void ConfigureVisualBudget(NativeVisualBudget budget) { _visualBudget=budget; }
 
         private struct Particle
         {
@@ -73,8 +78,9 @@ namespace CF7Launcher.Guardian.WorldCompositor
                     }
             ApplyEquipmentLights(frame.EquipmentLights);
             for (int step=0;step<elapsed;step++) Advance();
+            int availableCasings=-1;
             if (!frame.Paused)
-                foreach (CombatFxSpawn spawn in frame.Spawns) Spawn(spawn);
+                foreach (CombatFxSpawn spawn in frame.Spawns) Spawn(spawn,ref availableCasings);
             if (!frame.Paused)
                 for (int i=0;i<CasingLimit && _settled.Count<StampBatchLimit;i++)
                     if (_particles[i].Phase==2)
@@ -85,21 +91,35 @@ namespace CF7Launcher.Guardian.WorldCompositor
             return true;
         }
 
-        private void Spawn(CombatFxSpawn spawn)
+        private void Spawn(CombatFxSpawn spawn,ref int availableCasings)
         {
             CombatFxStyle style=_catalog.Styles[spawn.Style];
             if (style.SkipOriginYZero && spawn.Y==0) return;
             // A muzzle flash can have an authored empty visual variant. The shot still
             // emits its light; neither sprite capacity nor chosen frame controls lighting.
             if(style.IsMuzzle) SpawnLight(spawn,style.Light);
+            int count=spawn.Count;
+            if (style.IsCasing) {
+                // Count at most once per frame with casing spawns. Older particles
+                // above a reduced limit must drain before admitting replacements.
+                if (availableCasings<0) {
+                    availableCasings=_visualBudget.CasingLimit;
+                    for (int i=0;i<CasingLimit;i++)
+                        if (_particles[i].Phase!=0) availableCasings--;
+                    availableCasings=Math.Max(0,availableCasings);
+                }
+                count=Math.Min(count,availableCasings);
+                availableCasings-=count;
+                Dropped+=spawn.Count-count;
+            }
             uint random=spawn.Seed;
             int start=style.IsCasing?0:(style.IsImpact?CasingLimit+MuzzleLimit:CasingLimit);
             int end=style.IsCasing?CasingLimit:(style.IsImpact?TotalLimit:CasingLimit+MuzzleLimit);
             int cursor=start;
-            for (int n=0;n<spawn.Count;n++)
+            for (int n=0;n<count;n++)
             {
                 while (cursor<end && _particles[cursor].Phase!=0) cursor++;
-                if (cursor==end) { Dropped+=spawn.Count-n;if(style.IsImpact)ImpactDropped+=spawn.Count-n;break; }
+                if (cursor==end) { Dropped+=count-n;if(style.IsImpact)ImpactDropped+=count-n;break; }
                 ref Particle p=ref _particles[cursor++];
                 _nextId=_nextId==int.MaxValue?1:_nextId+1;
                 p=default;p.Phase=1;p.Id=_nextId;p.Style=spawn.Style;

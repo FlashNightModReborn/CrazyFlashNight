@@ -216,6 +216,7 @@ namespace CF7Launcher.Tests.Guardian
             Assert.False(controller.SchedulingAllowed);
             uint floor=sink.Floor;int calls=sink.Calls.Count;
             var schedule=new RenderSchedule(new RenderScheduleSettings());
+            schedule.ConfirmApplied(schedule.Current,0);
             for(int i=0;i<8;i++) {
                 controller.HoldTransitionInput(true);
                 schedule.Observe(new RenderSample {Frames=2,DurationMs=750,LongFrames=2,MaxFrameMs=556,

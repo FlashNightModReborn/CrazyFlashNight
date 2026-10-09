@@ -5,8 +5,8 @@ chcp.com 65001 | Out-Null
 $mapFocusedRun = @{
     DomainId = 'map-domain'
     TemplateRelativePath = 'scripts/test-runners/map-domain/TestLoader.as.template'
-    SuiteRelativePaths = @('scripts/类定义/org/flashNight/arki/map/MapDomainBridgeTest.as')
-    SuiteFqns = @('org.flashNight.arki.map.MapDomainBridgeTest')
+    SuiteRelativePaths = @('scripts/类定义/org/flashNight/arki/map/MapDomainBridgeTest.as','scripts/类定义/org/flashNight/arki/map/MapSceneObservationTest.as')
+    SuiteFqns = @('org.flashNight.arki.map.MapDomainBridgeTest','org.flashNight.arki.map.MapSceneObservationTest')
     AdditionalAsRelativePaths = @(
         'scripts/类定义/org/flashNight/arki/map/MapDomainBridge.as'
         'scripts/类定义/org/flashNight/arki/map/MapFactsSampler.as'
@@ -17,8 +17,10 @@ $mapFocusedRun = @{
     ExpectedTracePatterns = @(
         '(?m)^MapDomainBridgeTest Tests Passed: 75\r?$'
         '(?m)^MapDomainBridgeTest Tests Failed: 0\r?$'
+        '(?m)^MapSceneObservationTest Tests Passed: [1-9][0-9]*\r?$'
+        '(?m)^MapSceneObservationTest Tests Failed: 0\r?$'
     )
-    SuccessSummary = 'MapDomainBridgeTest 75/75'
+    SuccessSummary = 'MapDomainBridgeTest 75/75 plus normalized scene observation, freshness and A/B'
     TimeoutSeconds = $TimeoutSeconds
     SkipCompile = $SkipCompile
 }

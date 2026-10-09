@@ -66,7 +66,7 @@ class org.flashNight.arki.render.renderer.RadianceRenderer {
         thickness *= intensity;
 
         // 判断是否为折射线
-        var isFork:Boolean = (meta != null && meta.segmentKind == "fork");
+        var isFork:Boolean = (meta.segmentKind == "fork");
         if (isFork) {
             thickness *= forkThicknessMul;
             // 折射线色相偏移（模拟棱镜色散）

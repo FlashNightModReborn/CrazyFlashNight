@@ -7,7 +7,8 @@ const http = require('http');
 const path = require('path');
 
 const root = path.resolve(__dirname, '..');
-const playwrightPath = path.join(root, 'launcher', 'perf', 'node_modules', 'playwright');
+const playwrightPath = process.env.CF7_PLAYWRIGHT_PATH
+  || path.join(root, 'launcher', 'perf', 'node_modules', 'playwright');
 
 function edgeExecutable() {
   const candidates = [
@@ -52,6 +53,227 @@ function near(actual, expected, label, tolerance) {
   tolerance = tolerance == null ? 1 : tolerance;
   assert(Math.abs(actual - expected) <= tolerance,
     label + ': expected ' + expected + ', got ' + actual);
+}
+
+async function runPerformanceControls(page, viewport, screenshotDir) {
+  let checked = 0;
+  const selector = key => '[data-performance-key="' + key + '"]';
+  const performanceWrites = () => page.evaluate(() => window.__settingsHarness.sent.filter(message =>
+    message.cmd === 'host_set' && /^performance/.test(message.payload.key)));
+  const savedState = () => page.evaluate(() => window.__settingsHarness.model.hostPrefs.performance);
+  const waitSaved = () => page.waitForFunction(() => {
+    const message = document.querySelector('.settings-performance-message');
+    return message && message.textContent.includes('关闭设置后按方案运行');
+  });
+  await page.click('.settings-tab[data-tab="local"]');
+  const layout = await page.evaluate(() => {
+    const group = document.querySelector('.settings-performance');
+    const content = document.querySelector('.settings-content');
+    const box = group.getBoundingClientRect();
+    const main = content.getBoundingClientRect();
+    return {first:content.firstElementChild === group, top:box.top, bottom:box.bottom,
+      mainTop:main.top,mainBottom:main.bottom,clientWidth:content.clientWidth,scrollWidth:content.scrollWidth,
+      controls:Array.from(group.querySelectorAll('select,button')).map(node => {
+        const rect=node.getBoundingClientRect();
+        return {left:rect.left,right:rect.right,width:rect.width,height:rect.height};
+      }),left:box.left,right:box.right};
+  });
+  assert(layout.first && layout.top >= layout.mainTop && layout.bottom <= layout.mainBottom + 1);
+  assert(layout.scrollWidth <= layout.clientWidth + 1, 'performance fields must not add horizontal overflow');
+  assert(layout.controls.every(control => control.left >= layout.left && control.right <= layout.right
+    && control.height >= 20 && control.width >= 20));
+  assert.strictEqual(await page.locator('.settings-performance-undo').isDisabled(), true);
+  assert.strictEqual(await page.locator('.settings-performance-apply').isDisabled(), true);
+  checked++;
+
+  const beforeDraft = await page.evaluate(() => window.__settingsHarness.sent.length);
+  await page.selectOption(selector('preset'), 'performance');
+  await page.selectOption(selector('maxRenderHeight'), '540');
+  await page.selectOption(selector('mode'), 'fixed');
+  await page.locator('.settings-performance-reset').click();
+  assert.strictEqual(await page.inputValue(selector('preset')), 'performance');
+  assert.strictEqual(await page.inputValue(selector('maxRenderHeight')), '540');
+  assert.strictEqual(await page.inputValue(selector('mode')), 'auto');
+  assert.strictEqual(await page.evaluate(() => window.__settingsHarness.sent.length), beforeDraft,
+    'editing and restoring performance recommendations must remain a local draft');
+  assert.strictEqual(await page.locator('.settings-footer .primary').isDisabled(), true,
+    'performance drafts must not make the AS2 save action dirty');
+  checked++;
+
+  await page.locator(selector('preset')).focus();
+  await page.keyboard.press('Tab');
+  assert.strictEqual(await page.evaluate(() => document.activeElement.getAttribute('data-performance-key')), 'mode');
+  await page.keyboard.press('Tab');
+  assert.strictEqual(await page.evaluate(() => document.activeElement.getAttribute('data-performance-key')), 'maxRenderHeight');
+  checked++;
+
+  await page.selectOption(selector('preset'), 'quality');
+  await page.selectOption(selector('mode'), 'fixed');
+  const untouched = await page.evaluate(() => ({settings:window.__settingsHarness.model.settings,
+    tutorial:window.__settingsHarness.model.hostPrefs.tutorialsAutoOpen}));
+  await page.evaluate(() => window.__settingsHarness.failNextPerformanceSave());
+  await page.locator('.settings-performance-apply').click();
+  await page.waitForSelector('.settings-performance-message[data-state="error"]');
+  assert.deepStrictEqual((await savedState()).current, {preset:'balanced',mode:'auto',maxRenderHeight:0});
+  assert.strictEqual(await page.inputValue(selector('preset')), 'quality');
+  assert.strictEqual(await page.inputValue(selector('mode')), 'fixed');
+  assert.strictEqual(await page.inputValue(selector('maxRenderHeight')), '540');
+  assert.strictEqual(await page.locator('.settings-performance-apply').isEnabled(), true);
+  checked++;
+
+  await page.locator('.settings-performance-apply').click();
+  await waitSaved();
+  const write = (await performanceWrites()).pop();
+  assert.deepStrictEqual(write.payload, {v:1,key:'performance',value:{preset:'quality',mode:'fixed',maxRenderHeight:540}});
+  assert.deepStrictEqual(await savedState(), {v:1,current:write.payload.value,
+    previous:{preset:'balanced',mode:'auto',maxRenderHeight:0}});
+  assert.deepStrictEqual(await page.evaluate(() => ({settings:window.__settingsHarness.model.settings,
+    tutorial:window.__settingsHarness.model.hostPrefs.tutorialsAutoOpen})), untouched);
+  assert.strictEqual(await page.locator('.settings-performance-apply').isDisabled(), true);
+  if (screenshotDir) await page.screenshot({path:path.join(screenshotDir,
+    viewport.width + 'x' + viewport.height + '-performance.png')});
+  checked++;
+
+  await page.selectOption(selector('maxRenderHeight'), '720');
+  await page.evaluate(() => window.__settingsHarness.failNextPerformanceSave());
+  await page.locator('.settings-performance-apply').click();
+  await page.waitForSelector('.settings-performance-message[data-state="error"]');
+  assert.deepStrictEqual(await savedState(), {v:1,current:{preset:'quality',mode:'fixed',maxRenderHeight:540},
+    previous:{preset:'balanced',mode:'auto',maxRenderHeight:0}});
+  assert.strictEqual(await page.locator('.settings-performance-undo').isEnabled(), true,
+    'save rollback must retain the last successful undo point');
+  checked++;
+
+  await page.selectOption(selector('mode'), 'auto');
+  await page.selectOption(selector('maxRenderHeight'), '720');
+  await page.locator('.settings-performance-undo').click();
+  await waitSaved();
+  assert.deepStrictEqual((await performanceWrites()).pop().payload, {v:1,key:'performanceUndo',value:true});
+  assert.deepStrictEqual(await savedState(), {v:1,current:{preset:'balanced',mode:'auto',maxRenderHeight:0},previous:null});
+  assert.strictEqual(await page.locator('.settings-performance-undo').isDisabled(), true);
+  assert.deepStrictEqual(await page.evaluate(() => window.__settingsHarness.model.settings), untouched.settings);
+  checked++;
+
+  await page.selectOption(selector('preset'), 'quality');
+  await page.selectOption(selector('maxRenderHeight'), '540');
+  await page.selectOption(selector('mode'), 'fixed');
+  await page.locator('.settings-performance-apply').click();
+  await waitSaved();
+  await page.evaluate(() => window.__settingsHarness.reopen());
+  await page.waitForFunction(() => document.querySelector('.settings-status[data-state="ready"]'));
+  await page.click('.settings-tab[data-tab="local"]');
+  assert.strictEqual(await page.inputValue(selector('preset')), 'quality');
+  assert.strictEqual(await page.inputValue(selector('mode')), 'fixed');
+  assert.strictEqual(await page.inputValue(selector('maxRenderHeight')), '540');
+  assert.strictEqual(await page.locator('.settings-performance-undo').isEnabled(), true);
+  checked++;
+
+  // A malformed success may already have saved. Reconcile once, retain unrelated game drafts.
+  await page.click('.settings-tab[data-tab="game"]');
+  await page.locator('.settings-audio-grid input[type="range"]').first().evaluate(input => {
+    input.value = '42'; input.dispatchEvent(new Event('input', {bubbles:true}));
+  });
+  await page.click('.settings-tab[data-tab="local"]');
+  await page.selectOption(selector('mode'), 'auto');
+  const beforeMalformed = (await performanceWrites()).length;
+  await page.evaluate(() => window.__settingsHarness.malformNextPerformanceResponse());
+  await page.locator('.settings-performance-apply').click();
+  await page.waitForFunction(() => {
+    const control=document.querySelector('[data-performance-key="mode"]');
+    return control && control.value === 'auto' && !control.disabled
+      && document.querySelector('.settings-status').textContent.includes('已与游戏状态同步');
+  });
+  assert.strictEqual((await performanceWrites()).length, beforeMalformed + 1);
+  assert.strictEqual((await savedState()).current.mode, 'auto');
+  await page.click('.settings-tab[data-tab="game"]');
+  assert.strictEqual(await page.locator('.settings-audio-grid input[type="range"]').first().inputValue(), '42');
+  assert.strictEqual(await page.locator('.settings-footer .primary').isEnabled(), true);
+  assert.strictEqual(await page.evaluate(() => window.__settingsHarness.model.settings.setGlobalVolume), 80);
+  checked++;
+
+  // Timeout plus failed snapshot keeps the latch and draft until a fresh successful read.
+  await page.click('.settings-tab[data-tab="local"]');
+  await page.selectOption(selector('mode'), 'fixed');
+  const beforeTimeout = (await performanceWrites()).length;
+  await page.evaluate(() => {
+    window.__settingsHarness.dropNextResponse('host_set');
+    window.__settingsHarness.failNextSnapshot();
+  });
+  await page.locator('.settings-performance-apply').click();
+  await page.waitForFunction(() => document.querySelector('.settings-status').textContent.includes('写入仍保持锁定'));
+  assert.strictEqual(await page.locator('.settings-performance').count(), 0);
+  assert.strictEqual((await performanceWrites()).length, beforeTimeout + 1);
+  await page.locator('.settings-empty button').click();
+  await page.waitForFunction(() => document.querySelector('.settings-status[data-state="ready"]'));
+  assert.strictEqual(await page.inputValue(selector('mode')), 'fixed');
+  await page.click('.settings-tab[data-tab="game"]');
+  assert.strictEqual(await page.locator('.settings-audio-grid input[type="range"]').first().inputValue(), '42');
+  assert.strictEqual((await performanceWrites()).length, beforeTimeout + 1);
+  checked++;
+
+  // A replaced document must reject an old successful write response.
+  await page.click('.settings-tab[data-tab="local"]');
+  await page.selectOption(selector('mode'), 'auto');
+  await page.evaluate(() => window.__settingsHarness.holdNextHostResponse());
+  await page.locator('.settings-performance-apply').click();
+  await page.evaluate(() => window.__settingsHarness.reopen());
+  await page.waitForFunction(() => document.querySelector('.settings-status[data-state="ready"]'));
+  await page.click('.settings-tab[data-tab="local"]');
+  await page.selectOption(selector('preset'), 'performance');
+  await page.evaluate(() => window.__settingsHarness.releaseHostResponse());
+  assert.strictEqual(await page.inputValue(selector('preset')), 'performance');
+  assert.strictEqual(await page.locator('.settings-performance-apply').isEnabled(), true);
+  checked++;
+
+  const validState = await savedState();
+  await page.evaluate(() => {
+    window.__settingsHarness.model.hostPrefs.performance.current.maxRenderHeight = '540';
+    window.__settingsHarness.reopen();
+  });
+  await page.waitForFunction(() => document.querySelector('.settings-status[data-state="ready"]'));
+  await page.click('.settings-tab[data-tab="local"]');
+  assert.strictEqual(await page.locator('[data-performance-key]').count(), 0);
+  assert((await page.locator('.settings-performance-message').textContent()).includes('暂不可用'));
+  assert.strictEqual(await page.locator('[data-host-key="tutorialsAutoOpen"]').isEnabled(), true);
+  await page.evaluate(state => {
+    window.__settingsHarness.model.hostPrefs.performance = state;
+    window.__settingsHarness.reopen();
+  }, validState);
+  await page.waitForFunction(() => document.querySelector('.settings-status[data-state="ready"]'));
+  await page.click('.settings-tab[data-tab="local"]');
+  checked++;
+
+  // Other Host preferences can finish after a tab change without replacing this draft.
+  await page.selectOption(selector('preset'), 'performance');
+  await page.selectOption(selector('maxRenderHeight'), '720');
+  const beforeOtherHost = (await performanceWrites()).length;
+  await page.evaluate(() => window.__settingsHarness.holdNextHostResponse());
+  await page.locator('[data-host-key="introEnabled"]').click();
+  await page.click('.settings-tab[data-tab="keys"]');
+  await page.click('.settings-tab[data-tab="local"]');
+  await page.evaluate(() => window.__settingsHarness.releaseHostResponse());
+  assert.strictEqual(await page.locator('[data-host-key="introEnabled"]').isChecked(), false);
+  assert.strictEqual(await page.inputValue(selector('preset')), 'performance');
+  assert.strictEqual(await page.inputValue(selector('maxRenderHeight')), '720');
+  assert.strictEqual((await performanceWrites()).length, beforeOtherHost);
+  checked++;
+
+  await page.evaluate(() => window.__settingsHarness.dropNextResponse('host_set'));
+  await page.locator('[data-host-key="introEnabled"]').click();
+  await page.waitForFunction(() => {
+    const checkbox=document.querySelector('[data-host-key="introEnabled"]');
+    return checkbox && checkbox.checked
+      && document.querySelector('.settings-status').textContent.includes('已与游戏状态同步');
+  });
+  assert.strictEqual(await page.inputValue(selector('preset')), 'performance');
+  assert.strictEqual(await page.inputValue(selector('maxRenderHeight')), '720');
+  assert.strictEqual(await page.locator('.settings-performance-apply').isEnabled(), true);
+  assert.strictEqual((await performanceWrites()).length, beforeOtherHost);
+  checked++;
+  await page.evaluate(() => window.__settingsHarness.reopen());
+  await page.waitForFunction(() => document.querySelector('.settings-status[data-state="ready"]'));
+  await page.click('.settings-tab[data-tab="local"]');
+  return checked;
 }
 
 async function runViewport(browser, baseUrl, viewport, screenshotDir) {
@@ -116,8 +338,9 @@ async function runViewport(browser, baseUrl, viewport, screenshotDir) {
   assert(layout.cameraEntry.y >= layout.common.bottom,
     'camera simulator entry must follow the common-control surface');
   // 打击数字已经迁为 Launcher 本机偏好，不再占用 AS2 游戏常用设置行：
-  // 世界光照改由原生合成；2 个音量字段 + 6 个画面字段 = 8。
-  assert.strictEqual(await page.locator('.settings-game-common .settings-field').count(), 8);
+  // 世界光照与性能方案由 Host 接管；2 个音量字段 + 5 个画面字段 = 7。
+  assert.strictEqual(await page.locator('.settings-game-common .settings-field').count(), 7);
+  assert.strictEqual(await page.getByText('性能等级上限', {exact:true}).count(), 0);
   assert.strictEqual(await page.getByRole('button', {name:'试听界面音效'}).count(), 1);
   assert.strictEqual(await page.locator('#settings-home-cheat-input').count(), 1);
   assert.strictEqual(await page.locator('.settings-home-cheat .settings-cheat-help-open').count(), 1);
@@ -316,6 +539,7 @@ async function runViewport(browser, baseUrl, viewport, screenshotDir) {
   });
   assert.deepStrictEqual(rescuePayload, {v:1});
 
+  const performanceChecked = await runPerformanceControls(page, viewport, screenshotDir);
   await page.click('.settings-tab[data-tab="local"]');
   const tutorialToggle = page.locator('[data-host-key="tutorialsAutoOpen"]');
   assert.strictEqual(await tutorialToggle.isChecked(), true);
@@ -363,7 +587,7 @@ async function runViewport(browser, baseUrl, viewport, screenshotDir) {
   assert.deepStrictEqual(pageErrors, []);
   assert.deepStrictEqual(failedRequests, []);
   await page.close();
-  return 61;
+  return 61 + performanceChecked;
 }
 
 async function main() {
