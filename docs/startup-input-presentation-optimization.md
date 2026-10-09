@@ -2,7 +2,7 @@
 
 ## 2026-10-09 战斗 HUD 不透明输出迁移
 
-**当前完整主 HUD 包（v5 已正式提升，部署 Audit 待回执）：** 用户已授权完整主 HUD，并指定“排查手枪射击后K键失效”会话处理外部射击反馈。2026-10-09 用户完成联合候选粗测，未见明确阻断，明确要求核对日志后走发布列车；本轮已完成源码提交、双构建共识与正式 promotion，部署推送与远端 Audit 状态归[联合发布证据](evidence/main-hud-runtime-release-2026-10-09.json)。主 HUD 包持有 Host/native、相关 C# 回归及本节；射击会话持有 AS2 射击核心、对应测试/编译与 asLoader，交接文件归 `tmp/hud-main-unit/pistol-fix-handoff.json`。两边源码和产物均稳定后才冻结候选，避免构建中修改输入。
+**当前完整主 HUD 包（v5 已正式提升，部署推送及远端 Audit 通过）：** 用户已授权完整主 HUD，并指定“排查手枪射击后K键失效”会话处理外部射击反馈。2026-10-09 用户完成联合候选粗测，未见明确阻断，明确要求核对日志后走发布列车；本轮已完成源码提交、双构建共识与正式 promotion，部署推送与远端 Audit 状态归[联合发布证据](evidence/main-hud-runtime-release-2026-10-09.json)。主 HUD 包持有 Host/native、相关 C# 回归及本节；射击会话持有 AS2 射击核心、对应测试/编译与 asLoader，交接文件归 `tmp/hud-main-unit/pistol-fix-handoff.json`。两边源码和产物均稳定后才冻结候选，避免构建中修改输入。
 
 完整主 HUD 复用全部 10 类 widget 的现役绘制器，增加第五个 native 图面槽，顺序为伤害数字 → 底栏 → 资源 → Buff → 主 HUD；槽内各 widget 的绘制顺序不变。资源/底栏/Buff/主 HUD 按完整显示单元切换，任何成员必须回退时一并恢复原窗口层序，不能把仍在世界图面内的主 HUD 压到旧底栏窗口下面。显隐、暂停/恢复、会话死亡及未知写权威仍归原 controller/task；不靠换呈现后端清除业务状态或重放操作。此前修复的 DRS 等待期保留输出归属同样覆盖第五槽。
 
@@ -33,7 +33,7 @@ v4 source `f7d86a57b43177acb4896263f9324823bf2808ba` 与 tag `runtime-build-v2/2
 
 v4 部署推送再次遇到上游 `ed52834315` 的食物/饮品数据及药剂定价公式更新，普通推送拒绝后正常合并，保留作者的设计与工作簿权威。Host/native 与全部已验 AS2 输入、A689 asLoader 未变；数值工具重新 typecheck、861/861、药剂 106/106 和材料 sidecar 检查通过。药剂 CLI 的 `sync --check` 实际执行同步、并非只读模式；本次同步未产生受跟踪物品/账本差异，随后正确的 `check` 再次通过，原调用与观察均保留。用户已协调暂停其他 main 推送，v5 从最终合并树重新冻结请求、政策和云端证明，未覆盖上游或沿用旧树回执。
 
-v5 source `b13cea03affcdb2050a3b51eba09cc969b75687b` 与 tag `runtime-build-v2/20261009-main-hud-pistol-v5` 已完成最终树的 47/47 政策、双 signer / 双 faultDomain 共识及唯一 writer 正式提升。独立[云端 run 37924290619](https://github.com/FlashNightModReborn/CrazyFlashNight/actions/runs/37924290619) 绑定本轮 source/tree，本地与云端 build identity 和完整 payload closure 全等；本地 producer 与 CAS 仅因前三域不变而复用，旧云端证明未代签新树。正式 bootstrap 完整安装核验通过，previous 回滚包和此前各轮证据保留。本轮正式前门重新确认实际运行路径、identity/closure 和 A689 asLoader；未选玩家槽位，预热退回 Idle 后普通关闭 exit 0，11 份存档 JSON 哈希未变。该结果不代签完整枪械配装、上游食物/酒水/药剂业务或结算/窗口还原约 4.5 秒停顿的根因验收；部署提交和远端 Audit 尚待后续回执。
+v5 source `b13cea03affcdb2050a3b51eba09cc969b75687b` 与 tag `runtime-build-v2/20261009-main-hud-pistol-v5` 已完成最终树的 47/47 政策、双 signer / 双 faultDomain 共识及唯一 writer 正式提升。独立[云端 run 37924290619](https://github.com/FlashNightModReborn/CrazyFlashNight/actions/runs/37924290619) 绑定本轮 source/tree，本地与云端 build identity 和完整 payload closure 全等；本地 producer 与 CAS 仅因前三域不变而复用，旧云端证明未代签新树。正式 bootstrap 完整安装核验通过，previous 回滚包和此前各轮证据保留。本轮正式前门重新确认实际运行路径、identity/closure 和 A689 asLoader；未选玩家槽位，预热退回 Idle 后普通关闭 exit 0，11 份存档 JSON 哈希未变。该结果不代签完整枪械配装、上游食物/酒水/药剂业务或结算/窗口还原约 4.5 秒停顿的根因验收；部署提交 `d6ce570f8b033b0d55ddf00a0c1225f5ac67413f` 已正常快进推送 main；[远端 Audit 37926078825](https://github.com/FlashNightModReborn/CrazyFlashNight/actions/runs/37926078825) 成功，`state=promoted`、`deploymentChanged=true`、双 signer / 双 faultDomain 均由该提交的审计日志确认。
 
 以下保留先前资源/底栏/Buff 包、现场反馈及追加授权前的投入评估，旧计数和候选不代签完整主 HUD 包。
 

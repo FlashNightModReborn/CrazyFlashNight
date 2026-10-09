@@ -1,7 +1,7 @@
 {
   "schema": "cf7-main-hud-runtime-release.v1",
   "date": "2026-10-09",
-  "status": "promoted_pending_deployment_audit",
+  "status": "promoted_and_remote_audit_passed",
   "scope": "Complete native main HUD + PlayerInfo opaque world composition and pistol recoil owner repair",
   "candidate": {
     "candidateRelativePath": "tmp/runtime-candidates/v2/hmm1",
@@ -308,7 +308,19 @@
     }
   },
   "remoteAudit": {
-    "status": "pending_deployment_push"
+    "runId": 37926078825,
+    "url": "https://github.com/FlashNightModReborn/CrazyFlashNight/actions/runs/37926078825",
+    "commit": "d6ce570f8b033b0d55ddf00a0c1225f5ac67413f",
+    "status": "completed",
+    "conclusion": "success",
+    "releaseState": "promoted",
+    "deploymentChanged": true,
+    "signerCount": 2,
+    "faultDomainCount": 2,
+    "logSha256": "34AEC879C778F52626D60E5CE242162CF8E000208139CE471C57A8C0388D7A96",
+    "stateEvidence": "audit-native-runtime\tAudit native/runtime release state\t2026-10-09T11:57:21.1230145Z [RuntimeReleaseState] OK state=promoted mode=Audit manifest=cf7-runtime-manifest-v2 deploymentChanged=true forcedDeploymentVerification=false base=ed52834315ff39b733867f08ec282102152c351a head=d6ce570f8b033b0d55ddf00a0c1225f5ac67413f",
+    "consensusEvidence": "audit-native-runtime\tAudit native/runtime release state\t2026-10-09T11:57:21.1177173Z [RuntimeConsensus] OK schema=v2 mode=Index signers=2 faultDomains=2 payload=C9C6293ED5A77A3DC7FB4F9363A44ADA02D0E21880CB04C6CE8EAD4D6E0204C6",
+    "businessStandardEntryVerified": false
   },
   "previousPromotions": [
     {
