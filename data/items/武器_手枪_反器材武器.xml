@@ -37,5 +37,26 @@
         <mp>-100</mp>
         <reloadPenalty>50</reloadPenalty>
       </data>
+      <balance>
+        <formulaFamily>weapon</formulaFamily>
+        <schemaVersion>1</schemaVersion>
+        <workbookVersion>1</workbookVersion>
+        <profiles>
+          <data>
+            <dualWield>2</dualWield>
+            <pierce>1</pierce>
+            <damageType>1</damageType>
+            <shotgun>1</shotgun>
+            <magPrice>1000</magPrice>
+            <weightLayers>0</weightLayers>
+            <category>1</category>
+            <formula>1</formula>
+            <status>unresolved</status>
+            <displayEligible>false</displayEligible>
+            <inputDigest>fnv1a32:ebf9f3c5</inputDigest>
+            <auditRef>weapon:T181S:data</auditRef>
+          </data>
+        </profiles>
+      </balance>
     </item>
 </root>

@@ -34,6 +34,27 @@
       <accuracy>-20</accuracy>
       <reloadPenalty>67</reloadPenalty>
     </data>
+    <balance>
+      <formulaFamily>weapon</formulaFamily>
+      <schemaVersion>1</schemaVersion>
+      <workbookVersion>1</workbookVersion>
+      <profiles>
+        <data>
+          <dualWield>1</dualWield>
+          <pierce>1</pierce>
+          <damageType>1</damageType>
+          <shotgun>5</shotgun>
+          <magPrice>1000</magPrice>
+          <weightLayers>0</weightLayers>
+          <category>1</category>
+          <formula>1</formula>
+          <status>unresolved</status>
+          <displayEligible>false</displayEligible>
+          <inputDigest>fnv1a32:3c2ae0a9</inputDigest>
+          <auditRef>weapon:XM556-Preview:data</auditRef>
+        </data>
+      </profiles>
+    </balance>
     <lifecycle>
       <attr_0>
         <skillInteraction>independent</skillInteraction>
@@ -77,6 +98,27 @@
       <impact>5</impact>
       <reloadPenalty>67</reloadPenalty>
     </data>
+    <balance>
+      <formulaFamily>weapon</formulaFamily>
+      <schemaVersion>1</schemaVersion>
+      <workbookVersion>1</workbookVersion>
+      <profiles>
+        <data>
+          <dualWield>1</dualWield>
+          <pierce>1</pierce>
+          <damageType>1</damageType>
+          <shotgun>5</shotgun>
+          <magPrice>1000</magPrice>
+          <weightLayers>0</weightLayers>
+          <category>1</category>
+          <formula>1</formula>
+          <status>unresolved</status>
+          <displayEligible>false</displayEligible>
+          <inputDigest>fnv1a32:57effd8b</inputDigest>
+          <auditRef>weapon:XM556-Microgun:data</auditRef>
+        </data>
+      </profiles>
+    </balance>
     <lifecycle>
       <attr_0>
         <skillInteraction>independent</skillInteraction>
@@ -120,6 +162,27 @@
       <accuracy>-10</accuracy>
       <reloadPenalty>67</reloadPenalty>
     </data>
+    <balance>
+      <formulaFamily>weapon</formulaFamily>
+      <schemaVersion>1</schemaVersion>
+      <workbookVersion>1</workbookVersion>
+      <profiles>
+        <data>
+          <dualWield>1</dualWield>
+          <pierce>1</pierce>
+          <damageType>1</damageType>
+          <shotgun>3</shotgun>
+          <magPrice>1000</magPrice>
+          <weightLayers>0</weightLayers>
+          <category>1</category>
+          <formula>1</formula>
+          <status>unresolved</status>
+          <displayEligible>false</displayEligible>
+          <inputDigest>fnv1a32:acd694d2</inputDigest>
+          <auditRef>weapon:MG42:data</auditRef>
+        </data>
+      </profiles>
+    </balance>
   </item>
   <item weapontype="压制机枪">
     <name>XM214-CageFrame</name>
@@ -158,6 +221,27 @@
       <magictype>电子体</magictype>
       <reloadPenalty>67</reloadPenalty>
     </data>
+    <balance>
+      <formulaFamily>weapon</formulaFamily>
+      <schemaVersion>1</schemaVersion>
+      <workbookVersion>1</workbookVersion>
+      <profiles>
+        <data>
+          <dualWield>1</dualWield>
+          <pierce>1</pierce>
+          <damageType>2</damageType>
+          <shotgun>1</shotgun>
+          <magPrice>1000</magPrice>
+          <weightLayers>1</weightLayers>
+          <category>1</category>
+          <formula>1</formula>
+          <status>unresolved</status>
+          <displayEligible>false</displayEligible>
+          <inputDigest>fnv1a32:62248a10</inputDigest>
+          <auditRef>weapon:XM214-CageFrame:data</auditRef>
+        </data>
+      </profiles>
+    </balance>
     <lifecycle>
       <attr_0>
         <skillInteraction>independent</skillInteraction>
@@ -237,6 +321,27 @@
       <accuracy>-15</accuracy>
       <reloadPenalty>67</reloadPenalty>
     </data>
+    <balance>
+      <formulaFamily>weapon</formulaFamily>
+      <schemaVersion>1</schemaVersion>
+      <workbookVersion>1</workbookVersion>
+      <profiles>
+        <data>
+          <dualWield>1</dualWield>
+          <pierce>1</pierce>
+          <damageType>1</damageType>
+          <shotgun>5</shotgun>
+          <magPrice>1000</magPrice>
+          <weightLayers>1</weightLayers>
+          <category>1</category>
+          <formula>1</formula>
+          <status>unresolved</status>
+          <displayEligible>false</displayEligible>
+          <inputDigest>fnv1a32:95601898</inputDigest>
+          <auditRef>weapon:M134:data</auditRef>
+        </data>
+      </profiles>
+    </balance>
   </item>
   <item weapontype="压制机枪">
     <name>M134暴力版</name>
@@ -292,6 +397,27 @@
       <impact>2</impact>
       <reloadPenalty>67</reloadPenalty>
     </data>
+    <balance>
+      <formulaFamily>weapon</formulaFamily>
+      <schemaVersion>1</schemaVersion>
+      <workbookVersion>1</workbookVersion>
+      <profiles>
+        <data>
+          <dualWield>1</dualWield>
+          <pierce>2</pierce>
+          <damageType>1</damageType>
+          <shotgun>5</shotgun>
+          <magPrice>8000</magPrice>
+          <weightLayers>1</weightLayers>
+          <category>1</category>
+          <formula>1</formula>
+          <status>unresolved</status>
+          <displayEligible>false</displayEligible>
+          <inputDigest>fnv1a32:f6c0d325</inputDigest>
+          <auditRef>weapon:M134暴力版:data</auditRef>
+        </data>
+      </profiles>
+    </balance>
   </item>
   <item weapontype="压制机枪">
     <name>MG42战术版</name>
@@ -326,6 +452,27 @@
       <accuracy>-10</accuracy>
       <reloadPenalty>67</reloadPenalty>
     </data>
+    <balance>
+      <formulaFamily>weapon</formulaFamily>
+      <schemaVersion>1</schemaVersion>
+      <workbookVersion>1</workbookVersion>
+      <profiles>
+        <data>
+          <dualWield>1</dualWield>
+          <pierce>2</pierce>
+          <damageType>1</damageType>
+          <shotgun>1</shotgun>
+          <magPrice>8000</magPrice>
+          <weightLayers>0</weightLayers>
+          <category>1</category>
+          <formula>1</formula>
+          <status>unresolved</status>
+          <displayEligible>false</displayEligible>
+          <inputDigest>fnv1a32:ddd6df08</inputDigest>
+          <auditRef>weapon:MG42战术版:data</auditRef>
+        </data>
+      </profiles>
+    </balance>
   </item>
   <item weapontype="压制机枪">
     <name>M134暴力版的PIG版</name>
@@ -359,6 +506,27 @@
       <impact>2</impact>
       <reloadPenalty>67</reloadPenalty>
     </data>
+    <balance>
+      <formulaFamily>weapon</formulaFamily>
+      <schemaVersion>1</schemaVersion>
+      <workbookVersion>1</workbookVersion>
+      <profiles>
+        <data>
+          <dualWield>1</dualWield>
+          <pierce>2</pierce>
+          <damageType>1</damageType>
+          <shotgun>6</shotgun>
+          <magPrice>8000</magPrice>
+          <weightLayers>0</weightLayers>
+          <category>1</category>
+          <formula>1</formula>
+          <status>unresolved</status>
+          <displayEligible>false</displayEligible>
+          <inputDigest>fnv1a32:7f6e958a</inputDigest>
+          <auditRef>weapon:M134暴力版的PIG版:data</auditRef>
+        </data>
+      </profiles>
+    </balance>
     <lifecycle>
       <attr_0>
         <skillInteraction>bound</skillInteraction>

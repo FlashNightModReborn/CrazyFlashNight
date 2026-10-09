@@ -31,6 +31,27 @@
         <impact>1000</impact>
         <reloadPenalty>-15</reloadPenalty>
       </data>
+      <balance>
+        <formulaFamily>weapon</formulaFamily>
+        <schemaVersion>1</schemaVersion>
+        <workbookVersion>1</workbookVersion>
+        <profiles>
+          <data>
+            <dualWield>2</dualWield>
+            <pierce>1</pierce>
+            <damageType>1</damageType>
+            <shotgun>1</shotgun>
+            <magPrice>50</magPrice>
+            <weightLayers>0</weightLayers>
+            <category>1</category>
+            <formula>1</formula>
+            <status>unresolved</status>
+            <displayEligible>false</displayEligible>
+            <inputDigest>fnv1a32:f55d3c79</inputDigest>
+            <auditRef>weapon:鲁格MK3:data</auditRef>
+          </data>
+        </profiles>
+      </balance>
     </item>
   <item weapontype="手枪">
       <name>PPK</name>
@@ -63,6 +84,27 @@
         <silence>300</silence>
         <reloadPenalty>-15</reloadPenalty>
       </data>
+      <balance>
+        <formulaFamily>weapon</formulaFamily>
+        <schemaVersion>1</schemaVersion>
+        <workbookVersion>1</workbookVersion>
+        <profiles>
+          <data>
+            <dualWield>2</dualWield>
+            <pierce>1</pierce>
+            <damageType>1</damageType>
+            <shotgun>1</shotgun>
+            <magPrice>50</magPrice>
+            <weightLayers>0</weightLayers>
+            <category>1</category>
+            <formula>1</formula>
+            <status>unresolved</status>
+            <displayEligible>false</displayEligible>
+            <inputDigest>fnv1a32:29cbe25d</inputDigest>
+            <auditRef>weapon:PPK:data</auditRef>
+          </data>
+        </profiles>
+      </balance>
     </item>
   <item weapontype="手枪">
       <name>LugerP08</name>
@@ -92,6 +134,27 @@
         <impact>100</impact>
         <reloadPenalty>-15</reloadPenalty>
       </data>
+      <balance>
+        <formulaFamily>weapon</formulaFamily>
+        <schemaVersion>1</schemaVersion>
+        <workbookVersion>1</workbookVersion>
+        <profiles>
+          <data>
+            <dualWield>2</dualWield>
+            <pierce>1</pierce>
+            <damageType>1</damageType>
+            <shotgun>1</shotgun>
+            <magPrice>50</magPrice>
+            <weightLayers>0</weightLayers>
+            <category>1</category>
+            <formula>1</formula>
+            <status>unresolved</status>
+            <displayEligible>false</displayEligible>
+            <inputDigest>fnv1a32:a82ef4f8</inputDigest>
+            <auditRef>weapon:LugerP08:data</auditRef>
+          </data>
+        </profiles>
+      </balance>
     </item>
   <item weapontype="手枪">
       <name>毛瑟手枪</name>
@@ -120,6 +183,27 @@
         <impact>100</impact>
         <reloadPenalty>-15</reloadPenalty>
       </data>
+      <balance>
+        <formulaFamily>weapon</formulaFamily>
+        <schemaVersion>1</schemaVersion>
+        <workbookVersion>1</workbookVersion>
+        <profiles>
+          <data>
+            <dualWield>2</dualWield>
+            <pierce>1</pierce>
+            <damageType>1</damageType>
+            <shotgun>1</shotgun>
+            <magPrice>50</magPrice>
+            <weightLayers>0</weightLayers>
+            <category>1</category>
+            <formula>1</formula>
+            <status>unresolved</status>
+            <displayEligible>false</displayEligible>
+            <inputDigest>fnv1a32:5a1469f8</inputDigest>
+            <auditRef>weapon:毛瑟手枪:data</auditRef>
+          </data>
+        </profiles>
+      </balance>
     </item>
   <item weapontype="手枪">
       <name>PMM</name>
@@ -149,6 +233,27 @@
         <impact>200</impact>
         <reloadPenalty>-15</reloadPenalty>
       </data>
+      <balance>
+        <formulaFamily>weapon</formulaFamily>
+        <schemaVersion>1</schemaVersion>
+        <workbookVersion>1</workbookVersion>
+        <profiles>
+          <data>
+            <dualWield>2</dualWield>
+            <pierce>1</pierce>
+            <damageType>1</damageType>
+            <shotgun>1</shotgun>
+            <magPrice>50</magPrice>
+            <weightLayers>0</weightLayers>
+            <category>1</category>
+            <formula>1</formula>
+            <status>unresolved</status>
+            <displayEligible>false</displayEligible>
+            <inputDigest>fnv1a32:e86fd06f</inputDigest>
+            <auditRef>weapon:PMM:data</auditRef>
+          </data>
+        </profiles>
+      </balance>
     </item>
   <item weapontype="手枪">
       <name>MK23手枪</name>
@@ -178,6 +283,55 @@
         <silence>300</silence>
         <reloadPenalty>-15</reloadPenalty>
       </data>
+      <balance>
+        <formulaFamily>weapon</formulaFamily>
+        <schemaVersion>1</schemaVersion>
+        <workbookVersion>1</workbookVersion>
+        <profiles>
+          <data>
+            <dualWield>2</dualWield>
+            <pierce>1</pierce>
+            <damageType>1</damageType>
+            <shotgun>1</shotgun>
+            <magPrice>50</magPrice>
+            <weightLayers>0</weightLayers>
+            <category>1</category>
+            <formula>1</formula>
+            <status>unresolved</status>
+            <displayEligible>false</displayEligible>
+            <inputDigest>fnv1a32:bc6ae39c</inputDigest>
+            <auditRef>weapon:MK23手枪:data</auditRef>
+          </data>
+          <data_fire>
+            <dualWield>2</dualWield>
+            <pierce>1</pierce>
+            <damageType>2</damageType>
+            <shotgun>1</shotgun>
+            <magPrice>8000</magPrice>
+            <weightLayers>0</weightLayers>
+            <category>1</category>
+            <formula>1</formula>
+            <status>unresolved</status>
+            <displayEligible>false</displayEligible>
+            <inputDigest>fnv1a32:955fc779</inputDigest>
+            <auditRef>weapon:MK23手枪:data_fire</auditRef>
+          </data_fire>
+          <data_ice>
+            <dualWield>2</dualWield>
+            <pierce>1</pierce>
+            <damageType>2</damageType>
+            <shotgun>1</shotgun>
+            <magPrice>8000</magPrice>
+            <weightLayers>0</weightLayers>
+            <category>1</category>
+            <formula>1</formula>
+            <status>unresolved</status>
+            <displayEligible>false</displayEligible>
+            <inputDigest>fnv1a32:f9b644a0</inputDigest>
+            <auditRef>weapon:MK23手枪:data_ice</auditRef>
+          </data_ice>
+        </profiles>
+      </balance>
       <data_ice>
         <level>41</level>
         <dressup>枪-手枪-MK23墨冰</dressup>
@@ -234,6 +388,27 @@
         <impact>100</impact>
         <reloadPenalty>-15</reloadPenalty>
       </data>
+      <balance>
+        <formulaFamily>weapon</formulaFamily>
+        <schemaVersion>1</schemaVersion>
+        <workbookVersion>1</workbookVersion>
+        <profiles>
+          <data>
+            <dualWield>2</dualWield>
+            <pierce>1</pierce>
+            <damageType>1</damageType>
+            <shotgun>1</shotgun>
+            <magPrice>50</magPrice>
+            <weightLayers>0</weightLayers>
+            <category>1</category>
+            <formula>1</formula>
+            <status>unresolved</status>
+            <displayEligible>false</displayEligible>
+            <inputDigest>fnv1a32:3884aefd</inputDigest>
+            <auditRef>weapon:m9:data</auditRef>
+          </data>
+        </profiles>
+      </balance>
     </item>
   <item weapontype="手枪">
       <name>M1911</name>
@@ -263,6 +438,27 @@
         <impact>100</impact>
         <reloadPenalty>-15</reloadPenalty>
       </data>
+      <balance>
+        <formulaFamily>weapon</formulaFamily>
+        <schemaVersion>1</schemaVersion>
+        <workbookVersion>1</workbookVersion>
+        <profiles>
+          <data>
+            <dualWield>2</dualWield>
+            <pierce>1</pierce>
+            <damageType>1</damageType>
+            <shotgun>1</shotgun>
+            <magPrice>50</magPrice>
+            <weightLayers>0</weightLayers>
+            <category>1</category>
+            <formula>1</formula>
+            <status>unresolved</status>
+            <displayEligible>false</displayEligible>
+            <inputDigest>fnv1a32:90a33e31</inputDigest>
+            <auditRef>weapon:M1911:data</auditRef>
+          </data>
+        </profiles>
+      </balance>
     </item>
   <item weapontype="手枪">
       <name>鲁格LCR</name>
@@ -293,6 +489,27 @@
         <reloadType>tube</reloadType>
         <reloadPenalty>-15</reloadPenalty>
       </data>
+      <balance>
+        <formulaFamily>weapon</formulaFamily>
+        <schemaVersion>1</schemaVersion>
+        <workbookVersion>1</workbookVersion>
+        <profiles>
+          <data>
+            <dualWield>2</dualWield>
+            <pierce>1</pierce>
+            <damageType>1</damageType>
+            <shotgun>1</shotgun>
+            <magPrice>50</magPrice>
+            <weightLayers>0</weightLayers>
+            <category>1</category>
+            <formula>1</formula>
+            <status>unresolved</status>
+            <displayEligible>false</displayEligible>
+            <inputDigest>fnv1a32:493a37ba</inputDigest>
+            <auditRef>weapon:鲁格LCR:data</auditRef>
+          </data>
+        </profiles>
+      </balance>
     </item>
   <item weapontype="手枪">
       <name>BergmannM1910</name>
@@ -323,6 +540,27 @@
         <impact>100</impact>
         <reloadPenalty>-15</reloadPenalty>
       </data>
+      <balance>
+        <formulaFamily>weapon</formulaFamily>
+        <schemaVersion>1</schemaVersion>
+        <workbookVersion>1</workbookVersion>
+        <profiles>
+          <data>
+            <dualWield>2</dualWield>
+            <pierce>1</pierce>
+            <damageType>1</damageType>
+            <shotgun>1</shotgun>
+            <magPrice>50</magPrice>
+            <weightLayers>0</weightLayers>
+            <category>1</category>
+            <formula>1</formula>
+            <status>unresolved</status>
+            <displayEligible>false</displayEligible>
+            <inputDigest>fnv1a32:d3915f34</inputDigest>
+            <auditRef>weapon:BergmannM1910:data</auditRef>
+          </data>
+        </profiles>
+      </balance>
     </item>
   <item weapontype="手枪">
       <name>HKUSP9</name>
@@ -405,6 +643,27 @@
         <impact>100</impact>
         <reloadPenalty>-15</reloadPenalty>
       </data>
+      <balance>
+        <formulaFamily>weapon</formulaFamily>
+        <schemaVersion>1</schemaVersion>
+        <workbookVersion>1</workbookVersion>
+        <profiles>
+          <data>
+            <dualWield>2</dualWield>
+            <pierce>1</pierce>
+            <damageType>1</damageType>
+            <shotgun>1</shotgun>
+            <magPrice>50</magPrice>
+            <weightLayers>0</weightLayers>
+            <category>1</category>
+            <formula>1</formula>
+            <status>unresolved</status>
+            <displayEligible>false</displayEligible>
+            <inputDigest>fnv1a32:2d0bf97d</inputDigest>
+            <auditRef>weapon:中国54式手枪:data</auditRef>
+          </data>
+        </profiles>
+      </balance>
     </item>
   <item weapontype="手枪">
       <name>M92F</name>
@@ -434,6 +693,27 @@
         <impact>50</impact>
         <reloadPenalty>-15</reloadPenalty>
       </data>
+      <balance>
+        <formulaFamily>weapon</formulaFamily>
+        <schemaVersion>1</schemaVersion>
+        <workbookVersion>1</workbookVersion>
+        <profiles>
+          <data>
+            <dualWield>2</dualWield>
+            <pierce>1</pierce>
+            <damageType>1</damageType>
+            <shotgun>1</shotgun>
+            <magPrice>50</magPrice>
+            <weightLayers>0</weightLayers>
+            <category>1</category>
+            <formula>1</formula>
+            <status>unresolved</status>
+            <displayEligible>false</displayEligible>
+            <inputDigest>fnv1a32:cedccb50</inputDigest>
+            <auditRef>weapon:M92F:data</auditRef>
+          </data>
+        </profiles>
+      </balance>
     </item>
   <item weapontype="手枪">
       <name>WaltherP99</name>
@@ -511,6 +791,27 @@
         <impact>150</impact>
         <reloadPenalty>-15</reloadPenalty>
       </data>
+      <balance>
+        <formulaFamily>weapon</formulaFamily>
+        <schemaVersion>1</schemaVersion>
+        <workbookVersion>1</workbookVersion>
+        <profiles>
+          <data>
+            <dualWield>2</dualWield>
+            <pierce>1</pierce>
+            <damageType>1</damageType>
+            <shotgun>1</shotgun>
+            <magPrice>50</magPrice>
+            <weightLayers>0</weightLayers>
+            <category>1</category>
+            <formula>1</formula>
+            <status>unresolved</status>
+            <displayEligible>false</displayEligible>
+            <inputDigest>fnv1a32:0af49f54</inputDigest>
+            <auditRef>weapon:WaltherP99C:data</auditRef>
+          </data>
+        </profiles>
+      </balance>
     </item>
   <item weapontype="手枪">
       <name>Beretta90TWO</name>
@@ -540,6 +841,55 @@
         <impact>100</impact>
         <reloadPenalty>-15</reloadPenalty>
       </data>
+      <balance>
+        <formulaFamily>weapon</formulaFamily>
+        <schemaVersion>1</schemaVersion>
+        <workbookVersion>1</workbookVersion>
+        <profiles>
+          <data>
+            <dualWield>2</dualWield>
+            <pierce>1</pierce>
+            <damageType>1</damageType>
+            <shotgun>1</shotgun>
+            <magPrice>50</magPrice>
+            <weightLayers>0</weightLayers>
+            <category>1</category>
+            <formula>1</formula>
+            <status>unresolved</status>
+            <displayEligible>false</displayEligible>
+            <inputDigest>fnv1a32:b02b16f3</inputDigest>
+            <auditRef>weapon:Beretta90TWO:data</auditRef>
+          </data>
+          <data_fire>
+            <dualWield>2</dualWield>
+            <pierce>1</pierce>
+            <damageType>2</damageType>
+            <shotgun>1</shotgun>
+            <magPrice>8000</magPrice>
+            <weightLayers>0</weightLayers>
+            <category>1</category>
+            <formula>1</formula>
+            <status>unresolved</status>
+            <displayEligible>false</displayEligible>
+            <inputDigest>fnv1a32:a6043e74</inputDigest>
+            <auditRef>weapon:Beretta90TWO:data_fire</auditRef>
+          </data_fire>
+          <data_ice>
+            <dualWield>2</dualWield>
+            <pierce>1</pierce>
+            <damageType>2</damageType>
+            <shotgun>1</shotgun>
+            <magPrice>8000</magPrice>
+            <weightLayers>0</weightLayers>
+            <category>1</category>
+            <formula>1</formula>
+            <status>unresolved</status>
+            <displayEligible>false</displayEligible>
+            <inputDigest>fnv1a32:b6479d7b</inputDigest>
+            <auditRef>weapon:Beretta90TWO:data_ice</auditRef>
+          </data_ice>
+        </profiles>
+      </balance>
       <data_ice>
         <level>45</level>
         <dressup>枪-手枪-Beretta90TWO墨冰</dressup>
@@ -597,6 +947,55 @@
         <impact>5</impact>
         <reloadPenalty>-15</reloadPenalty>
       </data>
+      <balance>
+        <formulaFamily>weapon</formulaFamily>
+        <schemaVersion>1</schemaVersion>
+        <workbookVersion>1</workbookVersion>
+        <profiles>
+          <data>
+            <dualWield>2</dualWield>
+            <pierce>1</pierce>
+            <damageType>1</damageType>
+            <shotgun>1</shotgun>
+            <magPrice>50</magPrice>
+            <weightLayers>0</weightLayers>
+            <category>1</category>
+            <formula>1</formula>
+            <status>unresolved</status>
+            <displayEligible>false</displayEligible>
+            <inputDigest>fnv1a32:2186a8e7</inputDigest>
+            <auditRef>weapon:TTI 2011 Combat Master:data</auditRef>
+          </data>
+          <data_fire>
+            <dualWield>2</dualWield>
+            <pierce>1</pierce>
+            <damageType>2</damageType>
+            <shotgun>1</shotgun>
+            <magPrice>8000</magPrice>
+            <weightLayers>0</weightLayers>
+            <category>1</category>
+            <formula>1</formula>
+            <status>unresolved</status>
+            <displayEligible>false</displayEligible>
+            <inputDigest>fnv1a32:a86123de</inputDigest>
+            <auditRef>weapon:TTI 2011 Combat Master:data_fire</auditRef>
+          </data_fire>
+          <data_ice>
+            <dualWield>2</dualWield>
+            <pierce>1</pierce>
+            <damageType>2</damageType>
+            <shotgun>1</shotgun>
+            <magPrice>8000</magPrice>
+            <weightLayers>0</weightLayers>
+            <category>1</category>
+            <formula>1</formula>
+            <status>unresolved</status>
+            <displayEligible>false</displayEligible>
+            <inputDigest>fnv1a32:d8d1baef</inputDigest>
+            <auditRef>weapon:TTI 2011 Combat Master:data_ice</auditRef>
+          </data_ice>
+        </profiles>
+      </balance>
       <data_ice>
         <level>48</level>
         <dressup>枪-手枪-TTI2011墨冰</dressup>
@@ -651,6 +1050,27 @@
         <impact>10</impact>
         <reloadPenalty>-15</reloadPenalty>
       </data>
+      <balance>
+        <formulaFamily>weapon</formulaFamily>
+        <schemaVersion>1</schemaVersion>
+        <workbookVersion>1</workbookVersion>
+        <profiles>
+          <data>
+            <dualWield>2</dualWield>
+            <pierce>1</pierce>
+            <damageType>1</damageType>
+            <shotgun>1</shotgun>
+            <magPrice>50</magPrice>
+            <weightLayers>0</weightLayers>
+            <category>1</category>
+            <formula>1</formula>
+            <status>unresolved</status>
+            <displayEligible>false</displayEligible>
+            <inputDigest>fnv1a32:5f474786</inputDigest>
+            <auditRef>weapon:TTI Glock 19:data</auditRef>
+          </data>
+        </profiles>
+      </balance>
     </item>
   <item weapontype="手枪">
       <name>PMR3</name>
@@ -832,5 +1252,26 @@
         <impact>10</impact>
         <reloadPenalty>-15</reloadPenalty>
       </data>
+      <balance>
+        <formulaFamily>weapon</formulaFamily>
+        <schemaVersion>1</schemaVersion>
+        <workbookVersion>1</workbookVersion>
+        <profiles>
+          <data>
+            <dualWield>2</dualWield>
+            <pierce>1</pierce>
+            <damageType>1</damageType>
+            <shotgun>2</shotgun>
+            <magPrice>50</magPrice>
+            <weightLayers>0</weightLayers>
+            <category>1</category>
+            <formula>1</formula>
+            <status>unresolved</status>
+            <displayEligible>false</displayEligible>
+            <inputDigest>fnv1a32:a79f06e9</inputDigest>
+            <auditRef>weapon:御天敌V-1:data</auditRef>
+          </data>
+        </profiles>
+      </balance>
     </item>
 </root>

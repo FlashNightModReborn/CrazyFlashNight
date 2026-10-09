@@ -34,6 +34,27 @@
       <impact>500</impact>
       <reloadPenalty>-17</reloadPenalty>
     </data>
+    <balance>
+      <formulaFamily>weapon</formulaFamily>
+      <schemaVersion>1</schemaVersion>
+      <workbookVersion>1</workbookVersion>
+      <profiles>
+        <data>
+          <dualWield>1</dualWield>
+          <pierce>1</pierce>
+          <damageType>1</damageType>
+          <shotgun>1</shotgun>
+          <magPrice>150</magPrice>
+          <weightLayers>0</weightLayers>
+          <category>1</category>
+          <formula>1</formula>
+          <status>unresolved</status>
+          <displayEligible>false</displayEligible>
+          <inputDigest>fnv1a32:2dc8b8be</inputDigest>
+          <auditRef>weapon:TYPE79:data</auditRef>
+        </data>
+      </profiles>
+    </balance>
   </item>
   <item weapontype="冲锋枪">
     <name>PPSh41</name>
@@ -163,6 +184,27 @@
       <criticalhit>10</criticalhit>
       <reloadPenalty>-17</reloadPenalty>
     </data>
+    <balance>
+      <formulaFamily>weapon</formulaFamily>
+      <schemaVersion>1</schemaVersion>
+      <workbookVersion>1</workbookVersion>
+      <profiles>
+        <data>
+          <dualWield>1</dualWield>
+          <pierce>1</pierce>
+          <damageType>1</damageType>
+          <shotgun>1</shotgun>
+          <magPrice>1000</magPrice>
+          <weightLayers>0</weightLayers>
+          <category>1</category>
+          <formula>1</formula>
+          <status>unresolved</status>
+          <displayEligible>false</displayEligible>
+          <inputDigest>fnv1a32:c6d66bd7</inputDigest>
+          <auditRef>weapon:UMP:data</auditRef>
+        </data>
+      </profiles>
+    </balance>
   </item>
   <item weapontype="冲锋枪">
     <name>M1A1SMG</name>
@@ -191,6 +233,27 @@
       <impact>500</impact>
       <reloadPenalty>-17</reloadPenalty>
     </data>
+    <balance>
+      <formulaFamily>weapon</formulaFamily>
+      <schemaVersion>1</schemaVersion>
+      <workbookVersion>1</workbookVersion>
+      <profiles>
+        <data>
+          <dualWield>1</dualWield>
+          <pierce>1</pierce>
+          <damageType>1</damageType>
+          <shotgun>1</shotgun>
+          <magPrice>150</magPrice>
+          <weightLayers>0</weightLayers>
+          <category>1</category>
+          <formula>1</formula>
+          <status>unresolved</status>
+          <displayEligible>false</displayEligible>
+          <inputDigest>fnv1a32:aeec1927</inputDigest>
+          <auditRef>weapon:M1A1SMG:data</auditRef>
+        </data>
+      </profiles>
+    </balance>
   </item>
   <item weapontype="冲锋枪">
     <name>TYPE79TAPSII</name>
@@ -220,6 +283,27 @@
       <impact>500</impact>
       <reloadPenalty>-17</reloadPenalty>
     </data>
+    <balance>
+      <formulaFamily>weapon</formulaFamily>
+      <schemaVersion>1</schemaVersion>
+      <workbookVersion>1</workbookVersion>
+      <profiles>
+        <data>
+          <dualWield>1</dualWield>
+          <pierce>1</pierce>
+          <damageType>1</damageType>
+          <shotgun>1</shotgun>
+          <magPrice>1000</magPrice>
+          <weightLayers>1</weightLayers>
+          <category>1</category>
+          <formula>1</formula>
+          <status>unresolved</status>
+          <displayEligible>false</displayEligible>
+          <inputDigest>fnv1a32:ad50e30c</inputDigest>
+          <auditRef>weapon:TYPE79TAPSII:data</auditRef>
+        </data>
+      </profiles>
+    </balance>
   </item>
   <item weapontype="冲锋枪">
     <name>MP40BLACK</name>
@@ -248,6 +332,27 @@
       <impact>50</impact>
       <reloadPenalty>-17</reloadPenalty>
     </data>
+    <balance>
+      <formulaFamily>weapon</formulaFamily>
+      <schemaVersion>1</schemaVersion>
+      <workbookVersion>1</workbookVersion>
+      <profiles>
+        <data>
+          <dualWield>1</dualWield>
+          <pierce>1</pierce>
+          <damageType>1</damageType>
+          <shotgun>1</shotgun>
+          <magPrice>150</magPrice>
+          <weightLayers>0</weightLayers>
+          <category>1</category>
+          <formula>1</formula>
+          <status>unresolved</status>
+          <displayEligible>false</displayEligible>
+          <inputDigest>fnv1a32:cd0aaa17</inputDigest>
+          <auditRef>weapon:MP40BLACK:data</auditRef>
+        </data>
+      </profiles>
+    </balance>
   </item>
   <item weapontype="冲锋枪">
     <name>KRISS突击版</name>
@@ -280,6 +385,27 @@
       <silence>300</silence>
       <reloadPenalty>-17</reloadPenalty>
     </data>
+    <balance>
+      <formulaFamily>weapon</formulaFamily>
+      <schemaVersion>1</schemaVersion>
+      <workbookVersion>1</workbookVersion>
+      <profiles>
+        <data>
+          <dualWield>1</dualWield>
+          <pierce>1</pierce>
+          <damageType>1</damageType>
+          <shotgun>1</shotgun>
+          <magPrice>1000</magPrice>
+          <weightLayers>0</weightLayers>
+          <category>1</category>
+          <formula>1</formula>
+          <status>unresolved</status>
+          <displayEligible>false</displayEligible>
+          <inputDigest>fnv1a32:bcef77e1</inputDigest>
+          <auditRef>weapon:KRISS突击版:data</auditRef>
+        </data>
+      </profiles>
+    </balance>
   </item>
   <item weapontype="冲锋枪">
     <name>TTI MPX</name>
@@ -312,6 +438,27 @@
       <impact>25</impact>
       <reloadPenalty>-17</reloadPenalty>
     </data>
+    <balance>
+      <formulaFamily>weapon</formulaFamily>
+      <schemaVersion>1</schemaVersion>
+      <workbookVersion>1</workbookVersion>
+      <profiles>
+        <data>
+          <dualWield>1</dualWield>
+          <pierce>1</pierce>
+          <damageType>1</damageType>
+          <shotgun>1</shotgun>
+          <magPrice>50</magPrice>
+          <weightLayers>0</weightLayers>
+          <category>1</category>
+          <formula>1</formula>
+          <status>unresolved</status>
+          <displayEligible>false</displayEligible>
+          <inputDigest>fnv1a32:10bd0d7f</inputDigest>
+          <auditRef>weapon:TTI MPX:data</auditRef>
+        </data>
+      </profiles>
+    </balance>
   </item>
   <item weapontype="冲锋枪">
     <name>PP1901</name>
@@ -394,6 +541,27 @@
       <criticalhit>20</criticalhit>
       <reloadPenalty>-17</reloadPenalty>
     </data>
+    <balance>
+      <formulaFamily>weapon</formulaFamily>
+      <schemaVersion>1</schemaVersion>
+      <workbookVersion>1</workbookVersion>
+      <profiles>
+        <data>
+          <dualWield>1</dualWield>
+          <pierce>1</pierce>
+          <damageType>1</damageType>
+          <shotgun>1</shotgun>
+          <magPrice>1000</magPrice>
+          <weightLayers>0</weightLayers>
+          <category>1</category>
+          <formula>1</formula>
+          <status>unresolved</status>
+          <displayEligible>false</displayEligible>
+          <inputDigest>fnv1a32:9eb7adbf</inputDigest>
+          <auditRef>weapon:MP5A3:data</auditRef>
+        </data>
+      </profiles>
+    </balance>
   </item>
   <item weapontype="冲锋枪">
     <name>MP510</name>
@@ -427,6 +595,27 @@
       <criticalhit>20</criticalhit>
       <reloadPenalty>-17</reloadPenalty>
     </data>
+    <balance>
+      <formulaFamily>weapon</formulaFamily>
+      <schemaVersion>1</schemaVersion>
+      <workbookVersion>1</workbookVersion>
+      <profiles>
+        <data>
+          <dualWield>1</dualWield>
+          <pierce>1</pierce>
+          <damageType>1</damageType>
+          <shotgun>1</shotgun>
+          <magPrice>1000</magPrice>
+          <weightLayers>1</weightLayers>
+          <category>1</category>
+          <formula>1</formula>
+          <status>unresolved</status>
+          <displayEligible>false</displayEligible>
+          <inputDigest>fnv1a32:b21086cc</inputDigest>
+          <auditRef>weapon:MP510:data</auditRef>
+        </data>
+      </profiles>
+    </balance>
   </item>
   <item weapontype="冲锋枪">
     <name>MMP80</name>
@@ -489,6 +678,27 @@
       <silence>300</silence>
       <reloadPenalty>-17</reloadPenalty>
     </data>
+    <balance>
+      <formulaFamily>weapon</formulaFamily>
+      <schemaVersion>1</schemaVersion>
+      <workbookVersion>1</workbookVersion>
+      <profiles>
+        <data>
+          <dualWield>1</dualWield>
+          <pierce>1</pierce>
+          <damageType>1</damageType>
+          <shotgun>1</shotgun>
+          <magPrice>1000</magPrice>
+          <weightLayers>0</weightLayers>
+          <category>1</category>
+          <formula>1</formula>
+          <status>unresolved</status>
+          <displayEligible>false</displayEligible>
+          <inputDigest>fnv1a32:7e7c7c3c</inputDigest>
+          <auditRef>weapon:MMP80:data</auditRef>
+        </data>
+      </profiles>
+    </balance>
   </item>
   <item weapontype="冲锋枪">
     <name>AR57</name>
@@ -523,6 +733,27 @@
       <magictype>装甲</magictype>
       <reloadPenalty>-17</reloadPenalty>
     </data>
+    <balance>
+      <formulaFamily>weapon</formulaFamily>
+      <schemaVersion>1</schemaVersion>
+      <workbookVersion>1</workbookVersion>
+      <profiles>
+        <data>
+          <dualWield>1</dualWield>
+          <pierce>2</pierce>
+          <damageType>2</damageType>
+          <shotgun>1</shotgun>
+          <magPrice>400</magPrice>
+          <weightLayers>0</weightLayers>
+          <category>1</category>
+          <formula>1</formula>
+          <status>unresolved</status>
+          <displayEligible>false</displayEligible>
+          <inputDigest>fnv1a32:007bb077</inputDigest>
+          <auditRef>weapon:AR57:data</auditRef>
+        </data>
+      </profiles>
+    </balance>
     <lifecycle>
       <attr_0>
         <skillInteraction>independent</skillInteraction>
@@ -566,6 +797,27 @@
       <impact>100</impact>
       <reloadPenalty>-17</reloadPenalty>
     </data>
+    <balance>
+      <formulaFamily>weapon</formulaFamily>
+      <schemaVersion>1</schemaVersion>
+      <workbookVersion>1</workbookVersion>
+      <profiles>
+        <data>
+          <dualWield>1</dualWield>
+          <pierce>1</pierce>
+          <damageType>1</damageType>
+          <shotgun>1</shotgun>
+          <magPrice>1000</magPrice>
+          <weightLayers>0</weightLayers>
+          <category>1</category>
+          <formula>1</formula>
+          <status>unresolved</status>
+          <displayEligible>false</displayEligible>
+          <inputDigest>fnv1a32:44e3b688</inputDigest>
+          <auditRef>weapon:CAR冲锋枪:data</auditRef>
+        </data>
+      </profiles>
+    </balance>
   </item>
   <item weapontype="冲锋枪">
       <name>OPDW17EXL</name>
@@ -595,5 +847,26 @@
         <impact>50</impact>
         <reloadPenalty>-17</reloadPenalty>
       </data>
+      <balance>
+        <formulaFamily>weapon</formulaFamily>
+        <schemaVersion>1</schemaVersion>
+        <workbookVersion>1</workbookVersion>
+        <profiles>
+          <data>
+            <dualWield>1</dualWield>
+            <pierce>1</pierce>
+            <damageType>1</damageType>
+            <shotgun>1</shotgun>
+            <magPrice>12000</magPrice>
+            <weightLayers>0</weightLayers>
+            <category>1</category>
+            <formula>1</formula>
+            <status>unresolved</status>
+            <displayEligible>false</displayEligible>
+            <inputDigest>fnv1a32:631f3f9b</inputDigest>
+            <auditRef>weapon:OPDW17EXL:data</auditRef>
+          </data>
+        </profiles>
+      </balance>
     </item>
 </root>

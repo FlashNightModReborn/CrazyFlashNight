@@ -38,6 +38,27 @@
       <accuracy>10000</accuracy>
       <reloadPenalty>0</reloadPenalty>
     </data>
+    <balance>
+      <formulaFamily>weapon</formulaFamily>
+      <schemaVersion>1</schemaVersion>
+      <workbookVersion>1</workbookVersion>
+      <profiles>
+        <data>
+          <dualWield>1</dualWield>
+          <pierce>1</pierce>
+          <damageType>2</damageType>
+          <shotgun>1</shotgun>
+          <magPrice>0</magPrice>
+          <weightLayers>0</weightLayers>
+          <category>1</category>
+          <formula>1</formula>
+          <status>unresolved</status>
+          <displayEligible>false</displayEligible>
+          <inputDigest>fnv1a32:64d8d63c</inputDigest>
+          <auditRef>weapon:天使铳:data</auditRef>
+        </data>
+      </profiles>
+    </balance>
   </item>
   <item weapontype="特殊">
     <name>双面雷神</name>
@@ -70,6 +91,27 @@
       <silence>300</silence>
       <reloadPenalty>0</reloadPenalty>
     </data>
+    <balance>
+      <formulaFamily>weapon</formulaFamily>
+      <schemaVersion>1</schemaVersion>
+      <workbookVersion>1</workbookVersion>
+      <profiles>
+        <data>
+          <dualWield>1</dualWield>
+          <pierce>1</pierce>
+          <damageType>1</damageType>
+          <shotgun>1</shotgun>
+          <magPrice>200</magPrice>
+          <weightLayers>0</weightLayers>
+          <category>1</category>
+          <formula>1</formula>
+          <status>unresolved</status>
+          <displayEligible>false</displayEligible>
+          <inputDigest>fnv1a32:35c75d1b</inputDigest>
+          <auditRef>weapon:双面雷神:data</auditRef>
+        </data>
+      </profiles>
+    </balance>
     <lifecycle>
       <attr_0>
         <skillInteraction>independent</skillInteraction>
@@ -119,6 +161,27 @@
       <impact>0</impact>
       <reloadPenalty>0</reloadPenalty>
     </data>
+    <balance>
+      <formulaFamily>weapon</formulaFamily>
+      <schemaVersion>1</schemaVersion>
+      <workbookVersion>1</workbookVersion>
+      <profiles>
+        <data>
+          <dualWield>1</dualWield>
+          <pierce>1</pierce>
+          <damageType>1</damageType>
+          <shotgun>1</shotgun>
+          <magPrice>5000</magPrice>
+          <weightLayers>0</weightLayers>
+          <category>1</category>
+          <formula>1</formula>
+          <status>unresolved</status>
+          <displayEligible>false</displayEligible>
+          <inputDigest>fnv1a32:cffd43a5</inputDigest>
+          <auditRef>weapon:光子破坏炮:data</auditRef>
+        </data>
+      </profiles>
+    </balance>
   </item>
   <item weapontype="特殊">
     <name>吉他喷火器</name>
@@ -156,6 +219,27 @@
       <impact>10000</impact>
       <reloadPenalty>0</reloadPenalty>
     </data>
+    <balance>
+      <formulaFamily>weapon</formulaFamily>
+      <schemaVersion>1</schemaVersion>
+      <workbookVersion>1</workbookVersion>
+      <profiles>
+        <data>
+          <dualWield>1</dualWield>
+          <pierce>1</pierce>
+          <damageType>1</damageType>
+          <shotgun>1</shotgun>
+          <magPrice>2000</magPrice>
+          <weightLayers>0</weightLayers>
+          <category>1</category>
+          <formula>1</formula>
+          <status>unresolved</status>
+          <displayEligible>false</displayEligible>
+          <inputDigest>fnv1a32:1834927c</inputDigest>
+          <auditRef>weapon:吉他喷火器:data</auditRef>
+        </data>
+      </profiles>
+    </balance>
     <lifecycle>
       <attr_0>
         <skillInteraction>managed</skillInteraction>
@@ -288,6 +372,27 @@
       <impact>100</impact>
       <reloadPenalty>0</reloadPenalty>
     </data>
+    <balance>
+      <formulaFamily>weapon</formulaFamily>
+      <schemaVersion>1</schemaVersion>
+      <workbookVersion>1</workbookVersion>
+      <profiles>
+        <data>
+          <dualWield>1</dualWield>
+          <pierce>1</pierce>
+          <damageType>1</damageType>
+          <shotgun>1</shotgun>
+          <magPrice>2000</magPrice>
+          <weightLayers>0</weightLayers>
+          <category>1</category>
+          <formula>1</formula>
+          <status>unresolved</status>
+          <displayEligible>false</displayEligible>
+          <inputDigest>fnv1a32:689953af</inputDigest>
+          <auditRef>weapon:Fire Gun:data</auditRef>
+        </data>
+      </profiles>
+    </balance>
   </item>
   <item weapontype="特殊">
     <name>毒蛛</name>
@@ -322,6 +427,27 @@
       <magictype>毒</magictype>
       <reloadPenalty>0</reloadPenalty>
     </data>
+    <balance>
+      <formulaFamily>weapon</formulaFamily>
+      <schemaVersion>1</schemaVersion>
+      <workbookVersion>1</workbookVersion>
+      <profiles>
+        <data>
+          <dualWield>1</dualWield>
+          <pierce>1</pierce>
+          <damageType>2</damageType>
+          <shotgun>1</shotgun>
+          <magPrice>1000</magPrice>
+          <weightLayers>0</weightLayers>
+          <category>1</category>
+          <formula>1</formula>
+          <status>unresolved</status>
+          <displayEligible>false</displayEligible>
+          <inputDigest>fnv1a32:ac39245b</inputDigest>
+          <auditRef>weapon:毒蛛:data</auditRef>
+        </data>
+      </profiles>
+    </balance>
   </item>
   <item weapontype="特殊">
     <name>怒海狂鲨</name>
@@ -351,6 +477,27 @@
       <impact>30</impact>
       <reloadPenalty>0</reloadPenalty>
     </data>
+    <balance>
+      <formulaFamily>weapon</formulaFamily>
+      <schemaVersion>1</schemaVersion>
+      <workbookVersion>1</workbookVersion>
+      <profiles>
+        <data>
+          <dualWield>1</dualWield>
+          <pierce>1</pierce>
+          <damageType>1</damageType>
+          <shotgun>3</shotgun>
+          <magPrice>8000</magPrice>
+          <weightLayers>0</weightLayers>
+          <category>1</category>
+          <formula>1</formula>
+          <status>unresolved</status>
+          <displayEligible>false</displayEligible>
+          <inputDigest>fnv1a32:b6ce2a81</inputDigest>
+          <auditRef>weapon:怒海狂鲨:data</auditRef>
+        </data>
+      </profiles>
+    </balance>
   </item>
   <item weapontype="特殊">
     <name>铁枪</name>
@@ -380,6 +527,27 @@
       <impact>5</impact>
       <reloadPenalty>0</reloadPenalty>
     </data>
+    <balance>
+      <formulaFamily>weapon</formulaFamily>
+      <schemaVersion>1</schemaVersion>
+      <workbookVersion>1</workbookVersion>
+      <profiles>
+        <data>
+          <dualWield>1</dualWield>
+          <pierce>1</pierce>
+          <damageType>1</damageType>
+          <shotgun>2</shotgun>
+          <magPrice>8000</magPrice>
+          <weightLayers>0</weightLayers>
+          <category>1</category>
+          <formula>1</formula>
+          <status>unresolved</status>
+          <displayEligible>false</displayEligible>
+          <inputDigest>fnv1a32:0f34b171</inputDigest>
+          <auditRef>weapon:铁枪:data</auditRef>
+        </data>
+      </profiles>
+    </balance>
     <lifecycle>
       <attr_0>
         <skillInteraction>independent</skillInteraction>
@@ -427,6 +595,27 @@
       <magictype>热</magictype>
       <reloadPenalty>0</reloadPenalty>
     </data>
+    <balance>
+      <formulaFamily>weapon</formulaFamily>
+      <schemaVersion>1</schemaVersion>
+      <workbookVersion>1</workbookVersion>
+      <profiles>
+        <data>
+          <dualWield>1</dualWield>
+          <pierce>1</pierce>
+          <damageType>2</damageType>
+          <shotgun>1</shotgun>
+          <magPrice>1000</magPrice>
+          <weightLayers>0</weightLayers>
+          <category>1</category>
+          <formula>1</formula>
+          <status>unresolved</status>
+          <displayEligible>false</displayEligible>
+          <inputDigest>fnv1a32:23e141a1</inputDigest>
+          <auditRef>weapon:龙炎:data</auditRef>
+        </data>
+      </profiles>
+    </balance>
   </item>
   <item weapontype="特殊">
     <name>wa90变形款</name>
@@ -458,6 +647,27 @@
       <impact>10</impact>
       <reloadPenalty>0</reloadPenalty>
     </data>
+    <balance>
+      <formulaFamily>weapon</formulaFamily>
+      <schemaVersion>1</schemaVersion>
+      <workbookVersion>1</workbookVersion>
+      <profiles>
+        <data>
+          <dualWield>1</dualWield>
+          <pierce>2</pierce>
+          <damageType>1</damageType>
+          <shotgun>3</shotgun>
+          <magPrice>1000</magPrice>
+          <weightLayers>0</weightLayers>
+          <category>1</category>
+          <formula>1</formula>
+          <status>unresolved</status>
+          <displayEligible>false</displayEligible>
+          <inputDigest>fnv1a32:dffc6b8e</inputDigest>
+          <auditRef>weapon:wa90变形款:data</auditRef>
+        </data>
+      </profiles>
+    </balance>
     <lifecycle>
       <attr_0>
         <skillInteraction>independent</skillInteraction>
@@ -537,6 +747,27 @@
       <impact>2</impact>
       <reloadPenalty>0</reloadPenalty>
     </data>
+    <balance>
+      <formulaFamily>weapon</formulaFamily>
+      <schemaVersion>1</schemaVersion>
+      <workbookVersion>1</workbookVersion>
+      <profiles>
+        <data>
+          <dualWield>1</dualWield>
+          <pierce>1</pierce>
+          <damageType>1</damageType>
+          <shotgun>1</shotgun>
+          <magPrice>8000</magPrice>
+          <weightLayers>1</weightLayers>
+          <category>1</category>
+          <formula>1</formula>
+          <status>unresolved</status>
+          <displayEligible>false</displayEligible>
+          <inputDigest>fnv1a32:7bc336cb</inputDigest>
+          <auditRef>weapon:诛神枪:data</auditRef>
+        </data>
+      </profiles>
+    </balance>
   </item>
   <item weapontype="特殊">
     <name>紫色幻想</name>
@@ -568,6 +799,27 @@
       <poison>200</poison>
       <reloadPenalty>0</reloadPenalty>
     </data>
+    <balance>
+      <formulaFamily>weapon</formulaFamily>
+      <schemaVersion>1</schemaVersion>
+      <workbookVersion>1</workbookVersion>
+      <profiles>
+        <data>
+          <dualWield>1</dualWield>
+          <pierce>2</pierce>
+          <damageType>2</damageType>
+          <shotgun>1</shotgun>
+          <magPrice>8000</magPrice>
+          <weightLayers>1</weightLayers>
+          <category>1</category>
+          <formula>1</formula>
+          <status>unresolved</status>
+          <displayEligible>false</displayEligible>
+          <inputDigest>fnv1a32:39796474</inputDigest>
+          <auditRef>weapon:紫色幻想:data</auditRef>
+        </data>
+      </profiles>
+    </balance>
   </item>
   <item weapontype="特殊">
     <name>远古诛神枪</name>
@@ -596,6 +848,27 @@
       <impact>60</impact>
       <reloadPenalty>0</reloadPenalty>
     </data>
+    <balance>
+      <formulaFamily>weapon</formulaFamily>
+      <schemaVersion>1</schemaVersion>
+      <workbookVersion>1</workbookVersion>
+      <profiles>
+        <data>
+          <dualWield>1</dualWield>
+          <pierce>2</pierce>
+          <damageType>1</damageType>
+          <shotgun>1</shotgun>
+          <magPrice>500</magPrice>
+          <weightLayers>1</weightLayers>
+          <category>1</category>
+          <formula>1</formula>
+          <status>unresolved</status>
+          <displayEligible>false</displayEligible>
+          <inputDigest>fnv1a32:79f43aca</inputDigest>
+          <auditRef>weapon:远古诛神枪:data</auditRef>
+        </data>
+      </profiles>
+    </balance>
   </item>
   <item weapontype="特殊">
     <name>战术版喷火器</name>
@@ -627,5 +900,26 @@
       <impact>100</impact>
       <reloadPenalty>0</reloadPenalty>
     </data>
+    <balance>
+      <formulaFamily>weapon</formulaFamily>
+      <schemaVersion>1</schemaVersion>
+      <workbookVersion>1</workbookVersion>
+      <profiles>
+        <data>
+          <dualWield>1</dualWield>
+          <pierce>1</pierce>
+          <damageType>1</damageType>
+          <shotgun>1</shotgun>
+          <magPrice>2000</magPrice>
+          <weightLayers>1</weightLayers>
+          <category>1</category>
+          <formula>1</formula>
+          <status>unresolved</status>
+          <displayEligible>false</displayEligible>
+          <inputDigest>fnv1a32:ffd15336</inputDigest>
+          <auditRef>weapon:战术版喷火器:data</auditRef>
+        </data>
+      </profiles>
+    </balance>
   </item>
 </root>

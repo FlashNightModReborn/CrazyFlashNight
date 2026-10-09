@@ -30,6 +30,27 @@
       <impact>0</impact>
       <reloadPenalty>0</reloadPenalty>
     </data>
+    <balance>
+      <formulaFamily>weapon</formulaFamily>
+      <schemaVersion>1</schemaVersion>
+      <workbookVersion>1</workbookVersion>
+      <profiles>
+        <data>
+          <dualWield>1</dualWield>
+          <pierce>1</pierce>
+          <damageType>1</damageType>
+          <shotgun>4</shotgun>
+          <magPrice>5000</magPrice>
+          <weightLayers>0</weightLayers>
+          <category>1</category>
+          <formula>1</formula>
+          <status>unresolved</status>
+          <displayEligible>false</displayEligible>
+          <inputDigest>fnv1a32:dac8d2f8</inputDigest>
+          <auditRef>weapon:RPG:data</auditRef>
+        </data>
+      </profiles>
+    </balance>
     <lifecycle>
       <attr_0>
         <skillInteraction>independent</skillInteraction>
@@ -74,6 +95,27 @@
       <reloadType>tube</reloadType>
       <reloadPenalty>0</reloadPenalty>
     </data>
+    <balance>
+      <formulaFamily>weapon</formulaFamily>
+      <schemaVersion>1</schemaVersion>
+      <workbookVersion>1</workbookVersion>
+      <profiles>
+        <data>
+          <dualWield>1</dualWield>
+          <pierce>1</pierce>
+          <damageType>1</damageType>
+          <shotgun>4</shotgun>
+          <magPrice>2500</magPrice>
+          <weightLayers>0</weightLayers>
+          <category>1</category>
+          <formula>1</formula>
+          <status>unresolved</status>
+          <displayEligible>false</displayEligible>
+          <inputDigest>fnv1a32:6326037f</inputDigest>
+          <auditRef>weapon:土豆炮:data</auditRef>
+        </data>
+      </profiles>
+    </balance>
   </item>
   <item weapontype="发射器">
     <name>M3 Rocket Launcher</name>
@@ -104,6 +146,27 @@
       <impact>0</impact>
       <reloadPenalty>0</reloadPenalty>
     </data>
+    <balance>
+      <formulaFamily>weapon</formulaFamily>
+      <schemaVersion>1</schemaVersion>
+      <workbookVersion>1</workbookVersion>
+      <profiles>
+        <data>
+          <dualWield>1</dualWield>
+          <pierce>1</pierce>
+          <damageType>1</damageType>
+          <shotgun>4</shotgun>
+          <magPrice>5000</magPrice>
+          <weightLayers>0</weightLayers>
+          <category>1</category>
+          <formula>1</formula>
+          <status>unresolved</status>
+          <displayEligible>false</displayEligible>
+          <inputDigest>fnv1a32:02356cd9</inputDigest>
+          <auditRef>weapon:M3 Rocket Launcher:data</auditRef>
+        </data>
+      </profiles>
+    </balance>
   </item>
   <item weapontype="发射器">
     <name>RPG7V2</name>
@@ -135,6 +198,27 @@
       <impact>0</impact>
       <reloadPenalty>0</reloadPenalty>
     </data>
+    <balance>
+      <formulaFamily>weapon</formulaFamily>
+      <schemaVersion>1</schemaVersion>
+      <workbookVersion>1</workbookVersion>
+      <profiles>
+        <data>
+          <dualWield>1</dualWield>
+          <pierce>1</pierce>
+          <damageType>1</damageType>
+          <shotgun>4</shotgun>
+          <magPrice>5000</magPrice>
+          <weightLayers>1</weightLayers>
+          <category>1</category>
+          <formula>1</formula>
+          <status>unresolved</status>
+          <displayEligible>false</displayEligible>
+          <inputDigest>fnv1a32:9560d181</inputDigest>
+          <auditRef>weapon:RPG7V2:data</auditRef>
+        </data>
+      </profiles>
+    </balance>
     <lifecycle>
       <attr_0>
         <skillInteraction>independent</skillInteraction>
@@ -178,6 +262,27 @@
       <impact>0</impact>
       <reloadPenalty>0</reloadPenalty>
     </data>
+    <balance>
+      <formulaFamily>weapon</formulaFamily>
+      <schemaVersion>1</schemaVersion>
+      <workbookVersion>1</workbookVersion>
+      <profiles>
+        <data>
+          <dualWield>1</dualWield>
+          <pierce>1</pierce>
+          <damageType>1</damageType>
+          <shotgun>4</shotgun>
+          <magPrice>5000</magPrice>
+          <weightLayers>1</weightLayers>
+          <category>1</category>
+          <formula>1</formula>
+          <status>unresolved</status>
+          <displayEligible>false</displayEligible>
+          <inputDigest>fnv1a32:ca5f95fe</inputDigest>
+          <auditRef>weapon:M202火箭发射器:data</auditRef>
+        </data>
+      </profiles>
+    </balance>
   </item>
   <item weapontype="发射器">
     <name>Milkor MGL榴弹发射器</name>
@@ -210,6 +315,27 @@
       <reloadType>tube</reloadType>
       <reloadPenalty>0</reloadPenalty>
     </data>
+    <balance>
+      <formulaFamily>weapon</formulaFamily>
+      <schemaVersion>1</schemaVersion>
+      <workbookVersion>1</workbookVersion>
+      <profiles>
+        <data>
+          <dualWield>1</dualWield>
+          <pierce>1</pierce>
+          <damageType>1</damageType>
+          <shotgun>4</shotgun>
+          <magPrice>2500</magPrice>
+          <weightLayers>0</weightLayers>
+          <category>1</category>
+          <formula>1</formula>
+          <status>unresolved</status>
+          <displayEligible>false</displayEligible>
+          <inputDigest>fnv1a32:0bc39b8c</inputDigest>
+          <auditRef>weapon:Milkor MGL榴弹发射器:data</auditRef>
+        </data>
+      </profiles>
+    </balance>
   </item>
   <item weapontype="发射器">
     <name>PF98A</name>
@@ -242,6 +368,27 @@
       <magictype>巨体</magictype>
       <reloadPenalty>0</reloadPenalty>
     </data>
+    <balance>
+      <formulaFamily>weapon</formulaFamily>
+      <schemaVersion>1</schemaVersion>
+      <workbookVersion>1</workbookVersion>
+      <profiles>
+        <data>
+          <dualWield>1</dualWield>
+          <pierce>1</pierce>
+          <damageType>2</damageType>
+          <shotgun>4</shotgun>
+          <magPrice>5000</magPrice>
+          <weightLayers>0</weightLayers>
+          <category>1</category>
+          <formula>1</formula>
+          <status>unresolved</status>
+          <displayEligible>false</displayEligible>
+          <inputDigest>fnv1a32:e578653c</inputDigest>
+          <auditRef>weapon:PF98A:data</auditRef>
+        </data>
+      </profiles>
+    </balance>
     <lifecycle>
       <attr_0>
         <skillInteraction>independent</skillInteraction>
@@ -286,6 +433,27 @@
       <impact>0</impact>
       <reloadPenalty>0</reloadPenalty>
     </data>
+    <balance>
+      <formulaFamily>weapon</formulaFamily>
+      <schemaVersion>1</schemaVersion>
+      <workbookVersion>1</workbookVersion>
+      <profiles>
+        <data>
+          <dualWield>1</dualWield>
+          <pierce>1</pierce>
+          <damageType>1</damageType>
+          <shotgun>4</shotgun>
+          <magPrice>12000</magPrice>
+          <weightLayers>0</weightLayers>
+          <category>1</category>
+          <formula>1</formula>
+          <status>unresolved</status>
+          <displayEligible>false</displayEligible>
+          <inputDigest>fnv1a32:bc00a1c6</inputDigest>
+          <auditRef>weapon:NLAW:data</auditRef>
+        </data>
+      </profiles>
+    </balance>
   </item>
   <item weapontype="发射器">
     <name>中国湖榴弹发射器</name>
@@ -319,6 +487,27 @@
       <reloadType>tube</reloadType>
       <reloadPenalty>0</reloadPenalty>
     </data>
+    <balance>
+      <formulaFamily>weapon</formulaFamily>
+      <schemaVersion>1</schemaVersion>
+      <workbookVersion>1</workbookVersion>
+      <profiles>
+        <data>
+          <dualWield>1</dualWield>
+          <pierce>1</pierce>
+          <damageType>1</damageType>
+          <shotgun>4</shotgun>
+          <magPrice>2500</magPrice>
+          <weightLayers>0</weightLayers>
+          <category>1</category>
+          <formula>1</formula>
+          <status>unresolved</status>
+          <displayEligible>false</displayEligible>
+          <inputDigest>fnv1a32:65fae49b</inputDigest>
+          <auditRef>weapon:中国湖榴弹发射器:data</auditRef>
+        </data>
+      </profiles>
+    </balance>
   </item>
   <item weapontype="发射器">
     <name>M202FLASH</name>
@@ -353,6 +542,27 @@
       <magictype>热</magictype>
       <reloadPenalty>0</reloadPenalty>
     </data>
+    <balance>
+      <formulaFamily>weapon</formulaFamily>
+      <schemaVersion>1</schemaVersion>
+      <workbookVersion>1</workbookVersion>
+      <profiles>
+        <data>
+          <dualWield>1</dualWield>
+          <pierce>1</pierce>
+          <damageType>2</damageType>
+          <shotgun>4</shotgun>
+          <magPrice>5000</magPrice>
+          <weightLayers>0</weightLayers>
+          <category>1</category>
+          <formula>1</formula>
+          <status>unresolved</status>
+          <displayEligible>false</displayEligible>
+          <inputDigest>fnv1a32:64271a17</inputDigest>
+          <auditRef>weapon:M202FLASH:data</auditRef>
+        </data>
+      </profiles>
+    </balance>
   </item>
   <item weapontype="发射器">
     <name>轰天巨炮</name>
@@ -384,6 +594,27 @@
       <impact>0</impact>
       <reloadPenalty>0</reloadPenalty>
     </data>
+    <balance>
+      <formulaFamily>weapon</formulaFamily>
+      <schemaVersion>1</schemaVersion>
+      <workbookVersion>1</workbookVersion>
+      <profiles>
+        <data>
+          <dualWield>1</dualWield>
+          <pierce>1</pierce>
+          <damageType>1</damageType>
+          <shotgun>4</shotgun>
+          <magPrice>5000</magPrice>
+          <weightLayers>1</weightLayers>
+          <category>1</category>
+          <formula>1</formula>
+          <status>unresolved</status>
+          <displayEligible>false</displayEligible>
+          <inputDigest>fnv1a32:e472f705</inputDigest>
+          <auditRef>weapon:轰天巨炮:data</auditRef>
+        </data>
+      </profiles>
+    </balance>
   </item>
   <item weapontype="发射器">
     <name>RPG28</name>
@@ -418,6 +649,27 @@
       <magictype>装甲</magictype>
       <reloadPenalty>0</reloadPenalty>
     </data>
+    <balance>
+      <formulaFamily>weapon</formulaFamily>
+      <schemaVersion>1</schemaVersion>
+      <workbookVersion>1</workbookVersion>
+      <profiles>
+        <data>
+          <dualWield>1</dualWield>
+          <pierce>1</pierce>
+          <damageType>2</damageType>
+          <shotgun>4</shotgun>
+          <magPrice>12000</magPrice>
+          <weightLayers>0</weightLayers>
+          <category>1</category>
+          <formula>1</formula>
+          <status>unresolved</status>
+          <displayEligible>false</displayEligible>
+          <inputDigest>fnv1a32:ff278f81</inputDigest>
+          <auditRef>weapon:RPG28:data</auditRef>
+        </data>
+      </profiles>
+    </balance>
     <lifecycle>
       <attr_0>
         <skillInteraction>independent</skillInteraction>
@@ -462,6 +714,27 @@
       <reloadType>tube</reloadType>
       <reloadPenalty>0</reloadPenalty>
     </data>
+    <balance>
+      <formulaFamily>weapon</formulaFamily>
+      <schemaVersion>1</schemaVersion>
+      <workbookVersion>1</workbookVersion>
+      <profiles>
+        <data>
+          <dualWield>1</dualWield>
+          <pierce>1</pierce>
+          <damageType>1</damageType>
+          <shotgun>4</shotgun>
+          <magPrice>8000</magPrice>
+          <weightLayers>0</weightLayers>
+          <category>1</category>
+          <formula>1</formula>
+          <status>unresolved</status>
+          <displayEligible>false</displayEligible>
+          <inputDigest>fnv1a32:7d98c66c</inputDigest>
+          <auditRef>weapon:XM25:data</auditRef>
+        </data>
+      </profiles>
+    </balance>
     <skill>
       <skillname>投影召唤</skillname>
       <description>召唤自机的投影，嘲讽敌人。</description>
@@ -517,6 +790,27 @@
       <impact>0</impact>
       <reloadPenalty>0</reloadPenalty>
     </data>
+    <balance>
+      <formulaFamily>weapon</formulaFamily>
+      <schemaVersion>1</schemaVersion>
+      <workbookVersion>1</workbookVersion>
+      <profiles>
+        <data>
+          <dualWield>1</dualWield>
+          <pierce>1</pierce>
+          <damageType>1</damageType>
+          <shotgun>4</shotgun>
+          <magPrice>12000</magPrice>
+          <weightLayers>1</weightLayers>
+          <category>1</category>
+          <formula>1</formula>
+          <status>unresolved</status>
+          <displayEligible>false</displayEligible>
+          <inputDigest>fnv1a32:2cc50b5a</inputDigest>
+          <auditRef>weapon:战术版FIM92:data</auditRef>
+        </data>
+      </profiles>
+    </balance>
   </item>
   <item weapontype="发射器">
     <name>RShG4</name>
@@ -550,6 +844,27 @@
       <magictype>装甲</magictype>
       <reloadPenalty>0</reloadPenalty>
     </data>
+    <balance>
+      <formulaFamily>weapon</formulaFamily>
+      <schemaVersion>1</schemaVersion>
+      <workbookVersion>1</workbookVersion>
+      <profiles>
+        <data>
+          <dualWield>1</dualWield>
+          <pierce>1</pierce>
+          <damageType>2</damageType>
+          <shotgun>4</shotgun>
+          <magPrice>12000</magPrice>
+          <weightLayers>0</weightLayers>
+          <category>1</category>
+          <formula>1</formula>
+          <status>unresolved</status>
+          <displayEligible>false</displayEligible>
+          <inputDigest>fnv1a32:59214281</inputDigest>
+          <auditRef>weapon:RShG4:data</auditRef>
+        </data>
+      </profiles>
+    </balance>
     <lifecycle>
       <attr_0>
         <skillInteraction>independent</skillInteraction>
@@ -611,6 +926,27 @@
       <magictype>立场</magictype>
       <reloadPenalty>0</reloadPenalty>
     </data>
+    <balance>
+      <formulaFamily>weapon</formulaFamily>
+      <schemaVersion>1</schemaVersion>
+      <workbookVersion>1</workbookVersion>
+      <profiles>
+        <data>
+          <dualWield>1</dualWield>
+          <pierce>1</pierce>
+          <damageType>2</damageType>
+          <shotgun>4</shotgun>
+          <magPrice>12000</magPrice>
+          <weightLayers>0</weightLayers>
+          <category>1</category>
+          <formula>1</formula>
+          <status>unresolved</status>
+          <displayEligible>false</displayEligible>
+          <inputDigest>fnv1a32:0557206e</inputDigest>
+          <auditRef>weapon:RShG4Я:data</auditRef>
+        </data>
+      </profiles>
+    </balance>
     <lifecycle>
       <attr_0>
         <skillInteraction>independent</skillInteraction>
@@ -656,6 +992,27 @@
       <magictype>冲</magictype>
       <reloadPenalty>0</reloadPenalty>
     </data>
+    <balance>
+      <formulaFamily>weapon</formulaFamily>
+      <schemaVersion>1</schemaVersion>
+      <workbookVersion>1</workbookVersion>
+      <profiles>
+        <data>
+          <dualWield>1</dualWield>
+          <pierce>1</pierce>
+          <damageType>2</damageType>
+          <shotgun>4</shotgun>
+          <magPrice>5000</magPrice>
+          <weightLayers>0</weightLayers>
+          <category>1</category>
+          <formula>1</formula>
+          <status>unresolved</status>
+          <displayEligible>false</displayEligible>
+          <inputDigest>fnv1a32:afe915a9</inputDigest>
+          <auditRef>weapon:FSC7:data</auditRef>
+        </data>
+      </profiles>
+    </balance>
     <lifecycle>
       <attr_0>
         <skillInteraction>independent</skillInteraction>
@@ -731,6 +1088,27 @@
       <reloadType>tube</reloadType>
       <reloadPenalty>0</reloadPenalty>
     </data>
+    <balance>
+      <formulaFamily>weapon</formulaFamily>
+      <schemaVersion>1</schemaVersion>
+      <workbookVersion>1</workbookVersion>
+      <profiles>
+        <data>
+          <dualWield>1</dualWield>
+          <pierce>1</pierce>
+          <damageType>2</damageType>
+          <shotgun>4</shotgun>
+          <magPrice>2500</magPrice>
+          <weightLayers>0</weightLayers>
+          <category>1</category>
+          <formula>1</formula>
+          <status>unresolved</status>
+          <displayEligible>false</displayEligible>
+          <inputDigest>fnv1a32:d5bd1d53</inputDigest>
+          <auditRef>weapon:FM92刺弹炮:data</auditRef>
+        </data>
+      </profiles>
+    </balance>
   </item>
    <item weapontype="发射器">
     <name>反坦克炮</name>
@@ -762,5 +1140,26 @@
       <magictype>装甲</magictype>
       <reloadPenalty>0</reloadPenalty>
     </data>
+    <balance>
+      <formulaFamily>weapon</formulaFamily>
+      <schemaVersion>1</schemaVersion>
+      <workbookVersion>1</workbookVersion>
+      <profiles>
+        <data>
+          <dualWield>1</dualWield>
+          <pierce>1</pierce>
+          <damageType>2</damageType>
+          <shotgun>4</shotgun>
+          <magPrice>5000</magPrice>
+          <weightLayers>0</weightLayers>
+          <category>1</category>
+          <formula>1</formula>
+          <status>unresolved</status>
+          <displayEligible>false</displayEligible>
+          <inputDigest>fnv1a32:d25ad8fd</inputDigest>
+          <auditRef>weapon:反坦克炮:data</auditRef>
+        </data>
+      </profiles>
+    </balance>
   </item>
 </root>

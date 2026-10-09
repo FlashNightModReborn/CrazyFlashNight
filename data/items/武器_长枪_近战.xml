@@ -40,6 +40,27 @@
       <magictype>生化</magictype>
       <reloadPenalty>0</reloadPenalty>
     </data>
+    <balance>
+      <formulaFamily>weapon</formulaFamily>
+      <schemaVersion>1</schemaVersion>
+      <workbookVersion>1</workbookVersion>
+      <profiles>
+        <data>
+          <dualWield>1</dualWield>
+          <pierce>1</pierce>
+          <damageType>2</damageType>
+          <shotgun>3</shotgun>
+          <magPrice>2000</magPrice>
+          <weightLayers>0</weightLayers>
+          <category>1</category>
+          <formula>1</formula>
+          <status>unresolved</status>
+          <displayEligible>false</displayEligible>
+          <inputDigest>fnv1a32:7fd6b8fe</inputDigest>
+          <auditRef>weapon:僵尸割草机:data</auditRef>
+        </data>
+      </profiles>
+    </balance>
     <lifecycle>
       <attr_0>
         <skillInteraction>independent</skillInteraction>
@@ -120,6 +141,27 @@
       <magictype>生化</magictype>
       <reloadPenalty>0</reloadPenalty>
     </data>
+    <balance>
+      <formulaFamily>weapon</formulaFamily>
+      <schemaVersion>1</schemaVersion>
+      <workbookVersion>1</workbookVersion>
+      <profiles>
+        <data>
+          <dualWield>1</dualWield>
+          <pierce>1</pierce>
+          <damageType>2</damageType>
+          <shotgun>3</shotgun>
+          <magPrice>2000</magPrice>
+          <weightLayers>1</weightLayers>
+          <category>1</category>
+          <formula>1</formula>
+          <status>unresolved</status>
+          <displayEligible>false</displayEligible>
+          <inputDigest>fnv1a32:965f1e73</inputDigest>
+          <auditRef>weapon:暴君收割机:data</auditRef>
+        </data>
+      </profiles>
+    </balance>
     <lifecycle>
       <attr_0>
         <skillInteraction>independent</skillInteraction>
@@ -173,6 +215,41 @@
       <magictype>装甲</magictype>
       <reloadPenalty>0</reloadPenalty>
     </data>
+    <balance>
+      <formulaFamily>weapon</formulaFamily>
+      <schemaVersion>1</schemaVersion>
+      <workbookVersion>1</workbookVersion>
+      <profiles>
+        <data>
+          <dualWield>1</dualWield>
+          <pierce>1</pierce>
+          <damageType>2</damageType>
+          <shotgun>3</shotgun>
+          <magPrice>2000</magPrice>
+          <weightLayers>0</weightLayers>
+          <category>1</category>
+          <formula>1</formula>
+          <status>unresolved</status>
+          <displayEligible>false</displayEligible>
+          <inputDigest>fnv1a32:eb26ba42</inputDigest>
+          <auditRef>weapon:混凝土切割机:data</auditRef>
+        </data>
+        <data_fire_gold_stolen>
+          <dualWield>1</dualWield>
+          <pierce>1</pierce>
+          <damageType>2</damageType>
+          <shotgun>3</shotgun>
+          <magPrice>2000</magPrice>
+          <weightLayers>0</weightLayers>
+          <category>1</category>
+          <formula>1</formula>
+          <status>unresolved</status>
+          <displayEligible>false</displayEligible>
+          <inputDigest>fnv1a32:25d2186a</inputDigest>
+          <auditRef>weapon:混凝土切割机:data_fire_gold_stolen</auditRef>
+        </data_fire_gold_stolen>
+      </profiles>
+    </balance>
     <data_fire_gold_stolen>
       <level>29</level>
       <weight>29</weight>
@@ -279,6 +356,27 @@
       <toughness>30</toughness>
       <reloadPenalty>0</reloadPenalty>
     </data>
+    <balance>
+      <formulaFamily>weapon</formulaFamily>
+      <schemaVersion>1</schemaVersion>
+      <workbookVersion>1</workbookVersion>
+      <profiles>
+        <data>
+          <dualWield>1</dualWield>
+          <pierce>1</pierce>
+          <damageType>1</damageType>
+          <shotgun>1</shotgun>
+          <magPrice>8000</magPrice>
+          <weightLayers>0</weightLayers>
+          <category>1</category>
+          <formula>1</formula>
+          <status>unresolved</status>
+          <displayEligible>false</displayEligible>
+          <inputDigest>fnv1a32:85a363c4</inputDigest>
+          <auditRef>weapon:生命收割者:data</auditRef>
+        </data>
+      </profiles>
+    </balance>
   </item>
   <item weapontype="近战">
     <name>MACSIII</name>
@@ -318,6 +416,41 @@
       <magictype>热</magictype>
       <reloadPenalty>0</reloadPenalty>
     </data>
+    <balance>
+      <formulaFamily>weapon</formulaFamily>
+      <schemaVersion>1</schemaVersion>
+      <workbookVersion>1</workbookVersion>
+      <profiles>
+        <data>
+          <dualWield>1</dualWield>
+          <pierce>1</pierce>
+          <damageType>2</damageType>
+          <shotgun>4</shotgun>
+          <magPrice>2000</magPrice>
+          <weightLayers>0</weightLayers>
+          <category>1</category>
+          <formula>1</formula>
+          <status>unresolved</status>
+          <displayEligible>false</displayEligible>
+          <inputDigest>fnv1a32:cfd6bd4e</inputDigest>
+          <auditRef>weapon:MACSIII:data</auditRef>
+        </data>
+        <data_ice_gold_stolen>
+          <dualWield>1</dualWield>
+          <pierce>1</pierce>
+          <damageType>2</damageType>
+          <shotgun>4</shotgun>
+          <magPrice>8000</magPrice>
+          <weightLayers>0</weightLayers>
+          <category>1</category>
+          <formula>1</formula>
+          <status>unresolved</status>
+          <displayEligible>false</displayEligible>
+          <inputDigest>fnv1a32:3ba9d9ed</inputDigest>
+          <auditRef>weapon:MACSIII:data_ice_gold_stolen</auditRef>
+        </data_ice_gold_stolen>
+      </profiles>
+    </balance>
     <data_ice_gold_stolen>
       <level>39</level>
       <dressup>枪-长枪-MACSIV</dressup>

@@ -37,6 +37,27 @@
       <impact>10</impact>
       <reloadPenalty>17</reloadPenalty>
     </data>
+    <balance>
+      <formulaFamily>weapon</formulaFamily>
+      <schemaVersion>1</schemaVersion>
+      <workbookVersion>1</workbookVersion>
+      <profiles>
+        <data>
+          <dualWield>1</dualWield>
+          <pierce>1</pierce>
+          <damageType>1</damageType>
+          <shotgun>1</shotgun>
+          <magPrice>200</magPrice>
+          <weightLayers>0</weightLayers>
+          <category>1</category>
+          <formula>1</formula>
+          <status>unresolved</status>
+          <displayEligible>false</displayEligible>
+          <inputDigest>fnv1a32:db2dbd28</inputDigest>
+          <auditRef>weapon:HKSL8:data</auditRef>
+        </data>
+      </profiles>
+    </balance>
   </item>
   <item weapontype="战斗步枪">
     <name>SteyrScout</name>
@@ -73,6 +94,27 @@
       <criticalhit>满血暴击</criticalhit>
       <reloadPenalty>17</reloadPenalty>
     </data>
+    <balance>
+      <formulaFamily>weapon</formulaFamily>
+      <schemaVersion>1</schemaVersion>
+      <workbookVersion>1</workbookVersion>
+      <profiles>
+        <data>
+          <dualWield>1</dualWield>
+          <pierce>1.5</pierce>
+          <damageType>1</damageType>
+          <shotgun>1</shotgun>
+          <magPrice>1000</magPrice>
+          <weightLayers>0</weightLayers>
+          <category>1</category>
+          <formula>1</formula>
+          <status>unresolved</status>
+          <displayEligible>false</displayEligible>
+          <inputDigest>fnv1a32:fe715384</inputDigest>
+          <auditRef>weapon:SteyrScout:data</auditRef>
+        </data>
+      </profiles>
+    </balance>
   </item>
   <item weapontype="战斗步枪">
     <name>Type56R</name>
@@ -102,6 +144,27 @@
       <impact>10</impact>
       <reloadPenalty>17</reloadPenalty>
     </data>
+    <balance>
+      <formulaFamily>weapon</formulaFamily>
+      <schemaVersion>1</schemaVersion>
+      <workbookVersion>1</workbookVersion>
+      <profiles>
+        <data>
+          <dualWield>1</dualWield>
+          <pierce>1</pierce>
+          <damageType>1</damageType>
+          <shotgun>1</shotgun>
+          <magPrice>200</magPrice>
+          <weightLayers>0</weightLayers>
+          <category>1</category>
+          <formula>1</formula>
+          <status>unresolved</status>
+          <displayEligible>false</displayEligible>
+          <inputDigest>fnv1a32:9867b857</inputDigest>
+          <auditRef>weapon:Type56R:data</auditRef>
+        </data>
+      </profiles>
+    </balance>
   </item>
   <item weapontype="战斗步枪">
     <name>毛瑟98k</name>
@@ -137,6 +200,27 @@
       <reloadType>tube</reloadType>
       <reloadPenalty>17</reloadPenalty>
     </data>
+    <balance>
+      <formulaFamily>weapon</formulaFamily>
+      <schemaVersion>1</schemaVersion>
+      <workbookVersion>1</workbookVersion>
+      <profiles>
+        <data>
+          <dualWield>1</dualWield>
+          <pierce>1</pierce>
+          <damageType>1</damageType>
+          <shotgun>1</shotgun>
+          <magPrice>1000</magPrice>
+          <weightLayers>0</weightLayers>
+          <category>1</category>
+          <formula>1</formula>
+          <status>unresolved</status>
+          <displayEligible>false</displayEligible>
+          <inputDigest>fnv1a32:053f451d</inputDigest>
+          <auditRef>weapon:毛瑟98k:data</auditRef>
+        </data>
+      </profiles>
+    </balance>
   </item>
   <item weapontype="战斗步枪">
     <name>G3SG1</name>
@@ -173,6 +257,27 @@
       <criticalhit>满血暴击</criticalhit>
       <reloadPenalty>17</reloadPenalty>
     </data>
+    <balance>
+      <formulaFamily>weapon</formulaFamily>
+      <schemaVersion>1</schemaVersion>
+      <workbookVersion>1</workbookVersion>
+      <profiles>
+        <data>
+          <dualWield>1</dualWield>
+          <pierce>1.5</pierce>
+          <damageType>1</damageType>
+          <shotgun>1</shotgun>
+          <magPrice>1000</magPrice>
+          <weightLayers>1</weightLayers>
+          <category>1</category>
+          <formula>1</formula>
+          <status>unresolved</status>
+          <displayEligible>false</displayEligible>
+          <inputDigest>fnv1a32:7ef11b35</inputDigest>
+          <auditRef>weapon:G3SG1:data</auditRef>
+        </data>
+      </profiles>
+    </balance>
   </item>
   <item weapontype="战斗步枪">
     <name>SteyrScout10</name>
@@ -207,6 +312,27 @@
       <criticalhit>满血暴击</criticalhit>
       <reloadPenalty>17</reloadPenalty>
     </data>
+    <balance>
+      <formulaFamily>weapon</formulaFamily>
+      <schemaVersion>1</schemaVersion>
+      <workbookVersion>1</workbookVersion>
+      <profiles>
+        <data>
+          <dualWield>1</dualWield>
+          <pierce>1.5</pierce>
+          <damageType>1</damageType>
+          <shotgun>1</shotgun>
+          <magPrice>1000</magPrice>
+          <weightLayers>1</weightLayers>
+          <category>1</category>
+          <formula>1</formula>
+          <status>unresolved</status>
+          <displayEligible>false</displayEligible>
+          <inputDigest>fnv1a32:83fabd8f</inputDigest>
+          <auditRef>weapon:SteyrScout10:data</auditRef>
+        </data>
+      </profiles>
+    </balance>
   </item>
   <item weapontype="战斗步枪">
     <name>KaiShek</name>
@@ -238,6 +364,27 @@
       <reloadType>tube</reloadType>
       <reloadPenalty>17</reloadPenalty>
     </data>
+    <balance>
+      <formulaFamily>weapon</formulaFamily>
+      <schemaVersion>1</schemaVersion>
+      <workbookVersion>1</workbookVersion>
+      <profiles>
+        <data>
+          <dualWield>1</dualWield>
+          <pierce>1</pierce>
+          <damageType>1</damageType>
+          <shotgun>1</shotgun>
+          <magPrice>200</magPrice>
+          <weightLayers>0</weightLayers>
+          <category>1</category>
+          <formula>1</formula>
+          <status>unresolved</status>
+          <displayEligible>false</displayEligible>
+          <inputDigest>fnv1a32:bc4a4e38</inputDigest>
+          <auditRef>weapon:KaiShek:data</auditRef>
+        </data>
+      </profiles>
+    </balance>
   </item>
   <item weapontype="战斗步枪">
     <name>HKSL8BLACK</name>
@@ -268,6 +415,27 @@
       <criticalhit>满血暴击</criticalhit>
       <reloadPenalty>17</reloadPenalty>
     </data>
+    <balance>
+      <formulaFamily>weapon</formulaFamily>
+      <schemaVersion>1</schemaVersion>
+      <workbookVersion>1</workbookVersion>
+      <profiles>
+        <data>
+          <dualWield>1</dualWield>
+          <pierce>2</pierce>
+          <damageType>1</damageType>
+          <shotgun>1</shotgun>
+          <magPrice>1000</magPrice>
+          <weightLayers>1</weightLayers>
+          <category>1</category>
+          <formula>1</formula>
+          <status>unresolved</status>
+          <displayEligible>false</displayEligible>
+          <inputDigest>fnv1a32:05fa490b</inputDigest>
+          <auditRef>weapon:HKSL8BLACK:data</auditRef>
+        </data>
+      </profiles>
+    </balance>
   </item>
   <item weapontype="战斗步枪">
     <name>中国88式狙击步枪</name>
@@ -298,6 +466,55 @@
       <criticalhit>满血暴击</criticalhit>
       <reloadPenalty>17</reloadPenalty>
     </data>
+    <balance>
+      <formulaFamily>weapon</formulaFamily>
+      <schemaVersion>1</schemaVersion>
+      <workbookVersion>1</workbookVersion>
+      <profiles>
+        <data>
+          <dualWield>1</dualWield>
+          <pierce>2</pierce>
+          <damageType>1</damageType>
+          <shotgun>1</shotgun>
+          <magPrice>1000</magPrice>
+          <weightLayers>0</weightLayers>
+          <category>1</category>
+          <formula>1</formula>
+          <status>unresolved</status>
+          <displayEligible>false</displayEligible>
+          <inputDigest>fnv1a32:19379a83</inputDigest>
+          <auditRef>weapon:中国88式狙击步枪:data</auditRef>
+        </data>
+        <data_fire>
+          <dualWield>1</dualWield>
+          <pierce>2</pierce>
+          <damageType>2</damageType>
+          <shotgun>1</shotgun>
+          <magPrice>8000</magPrice>
+          <weightLayers>0</weightLayers>
+          <category>1</category>
+          <formula>1</formula>
+          <status>unresolved</status>
+          <displayEligible>false</displayEligible>
+          <inputDigest>fnv1a32:2f8b146a</inputDigest>
+          <auditRef>weapon:中国88式狙击步枪:data_fire</auditRef>
+        </data_fire>
+        <data_ice>
+          <dualWield>1</dualWield>
+          <pierce>2</pierce>
+          <damageType>2</damageType>
+          <shotgun>1</shotgun>
+          <magPrice>8000</magPrice>
+          <weightLayers>0</weightLayers>
+          <category>1</category>
+          <formula>1</formula>
+          <status>unresolved</status>
+          <displayEligible>false</displayEligible>
+          <inputDigest>fnv1a32:1acc44e2</inputDigest>
+          <auditRef>weapon:中国88式狙击步枪:data_ice</auditRef>
+        </data_ice>
+      </profiles>
+    </balance>
     <data_ice>
       <level>50</level>
       <dressup>枪-长枪-墨冰88式狙击枪</dressup>
@@ -352,6 +569,55 @@
       <criticalhit>满血暴击</criticalhit>
       <reloadPenalty>17</reloadPenalty>
     </data>
+    <balance>
+      <formulaFamily>weapon</formulaFamily>
+      <schemaVersion>1</schemaVersion>
+      <workbookVersion>1</workbookVersion>
+      <profiles>
+        <data>
+          <dualWield>1</dualWield>
+          <pierce>2</pierce>
+          <damageType>1</damageType>
+          <shotgun>1</shotgun>
+          <magPrice>1000</magPrice>
+          <weightLayers>0</weightLayers>
+          <category>1</category>
+          <formula>1</formula>
+          <status>unresolved</status>
+          <displayEligible>false</displayEligible>
+          <inputDigest>fnv1a32:fede4ee1</inputDigest>
+          <auditRef>weapon:m14:data</auditRef>
+        </data>
+        <data_fire>
+          <dualWield>1</dualWield>
+          <pierce>2</pierce>
+          <damageType>2</damageType>
+          <shotgun>1</shotgun>
+          <magPrice>8000</magPrice>
+          <weightLayers>0</weightLayers>
+          <category>1</category>
+          <formula>1</formula>
+          <status>unresolved</status>
+          <displayEligible>false</displayEligible>
+          <inputDigest>fnv1a32:bb050c21</inputDigest>
+          <auditRef>weapon:m14:data_fire</auditRef>
+        </data_fire>
+        <data_ice>
+          <dualWield>1</dualWield>
+          <pierce>2</pierce>
+          <damageType>2</damageType>
+          <shotgun>1</shotgun>
+          <magPrice>8000</magPrice>
+          <weightLayers>0</weightLayers>
+          <category>1</category>
+          <formula>1</formula>
+          <status>unresolved</status>
+          <displayEligible>false</displayEligible>
+          <inputDigest>fnv1a32:bb2cee49</inputDigest>
+          <auditRef>weapon:m14:data_ice</auditRef>
+        </data_ice>
+      </profiles>
+    </balance>
     <data_ice>
       <level>48</level>
       <dressup>枪-长枪-M14墨冰</dressup>
@@ -405,6 +671,27 @@
       <criticalhit>满血暴击</criticalhit>
       <reloadPenalty>17</reloadPenalty>
     </data>
+    <balance>
+      <formulaFamily>weapon</formulaFamily>
+      <schemaVersion>1</schemaVersion>
+      <workbookVersion>1</workbookVersion>
+      <profiles>
+        <data>
+          <dualWield>1</dualWield>
+          <pierce>2</pierce>
+          <damageType>1</damageType>
+          <shotgun>1</shotgun>
+          <magPrice>1000</magPrice>
+          <weightLayers>0</weightLayers>
+          <category>1</category>
+          <formula>1</formula>
+          <status>unresolved</status>
+          <displayEligible>false</displayEligible>
+          <inputDigest>fnv1a32:b52e1d7c</inputDigest>
+          <auditRef>weapon:中国88式狙击步枪改造版:data</auditRef>
+        </data>
+      </profiles>
+    </balance>
   </item>
   <item weapontype="战斗步枪">
     <name>QBU-191</name>
@@ -436,6 +723,27 @@
       <criticalhit>满血暴击</criticalhit>
       <reloadPenalty>17</reloadPenalty>
     </data>
+    <balance>
+      <formulaFamily>weapon</formulaFamily>
+      <schemaVersion>1</schemaVersion>
+      <workbookVersion>1</workbookVersion>
+      <profiles>
+        <data>
+          <dualWield>1</dualWield>
+          <pierce>2</pierce>
+          <damageType>1</damageType>
+          <shotgun>1</shotgun>
+          <magPrice>500</magPrice>
+          <weightLayers>0</weightLayers>
+          <category>1</category>
+          <formula>1</formula>
+          <status>unresolved</status>
+          <displayEligible>false</displayEligible>
+          <inputDigest>fnv1a32:0cf74605</inputDigest>
+          <auditRef>weapon:QBU-191:data</auditRef>
+        </data>
+      </profiles>
+    </balance>
   </item>
   <item weapontype="战斗步枪">
     <name>SVD</name>
@@ -469,6 +777,55 @@
       <criticalhit>满血暴击</criticalhit>
       <reloadPenalty>17</reloadPenalty>
     </data>
+    <balance>
+      <formulaFamily>weapon</formulaFamily>
+      <schemaVersion>1</schemaVersion>
+      <workbookVersion>1</workbookVersion>
+      <profiles>
+        <data>
+          <dualWield>1</dualWield>
+          <pierce>2</pierce>
+          <damageType>1</damageType>
+          <shotgun>1</shotgun>
+          <magPrice>1000</magPrice>
+          <weightLayers>1</weightLayers>
+          <category>1</category>
+          <formula>1</formula>
+          <status>unresolved</status>
+          <displayEligible>false</displayEligible>
+          <inputDigest>fnv1a32:1ef02902</inputDigest>
+          <auditRef>weapon:SVD:data</auditRef>
+        </data>
+        <data_fire>
+          <dualWield>1</dualWield>
+          <pierce>2</pierce>
+          <damageType>2</damageType>
+          <shotgun>1</shotgun>
+          <magPrice>8000</magPrice>
+          <weightLayers>1</weightLayers>
+          <category>1</category>
+          <formula>1</formula>
+          <status>unresolved</status>
+          <displayEligible>false</displayEligible>
+          <inputDigest>fnv1a32:2ffc5c8a</inputDigest>
+          <auditRef>weapon:SVD:data_fire</auditRef>
+        </data_fire>
+        <data_ice>
+          <dualWield>1</dualWield>
+          <pierce>2</pierce>
+          <damageType>2</damageType>
+          <shotgun>1</shotgun>
+          <magPrice>8000</magPrice>
+          <weightLayers>1</weightLayers>
+          <category>1</category>
+          <formula>1</formula>
+          <status>unresolved</status>
+          <displayEligible>false</displayEligible>
+          <inputDigest>fnv1a32:b8bc37d8</inputDigest>
+          <auditRef>weapon:SVD:data_ice</auditRef>
+        </data_ice>
+      </profiles>
+    </balance>
     <data_ice>
       <level>45</level>
       <dressup>枪-长枪-SVD墨冰</dressup>
@@ -520,6 +877,27 @@
       <criticalhit>20</criticalhit>
       <reloadPenalty>17</reloadPenalty>
     </data>
+    <balance>
+      <formulaFamily>weapon</formulaFamily>
+      <schemaVersion>1</schemaVersion>
+      <workbookVersion>1</workbookVersion>
+      <profiles>
+        <data>
+          <dualWield>1</dualWield>
+          <pierce>2</pierce>
+          <damageType>1</damageType>
+          <shotgun>1</shotgun>
+          <magPrice>1000</magPrice>
+          <weightLayers>1</weightLayers>
+          <category>1</category>
+          <formula>1</formula>
+          <status>unresolved</status>
+          <displayEligible>false</displayEligible>
+          <inputDigest>fnv1a32:ad9ed26b</inputDigest>
+          <auditRef>weapon:HKSL8EX:data</auditRef>
+        </data>
+      </profiles>
+    </balance>
   </item>
   <item weapontype="战斗步枪">
     <name>HKSL8GOLD</name>
@@ -550,6 +928,27 @@
       <criticalhit>满血暴击</criticalhit>
       <reloadPenalty>17</reloadPenalty>
     </data>
+    <balance>
+      <formulaFamily>weapon</formulaFamily>
+      <schemaVersion>1</schemaVersion>
+      <workbookVersion>1</workbookVersion>
+      <profiles>
+        <data>
+          <dualWield>1</dualWield>
+          <pierce>2</pierce>
+          <damageType>1</damageType>
+          <shotgun>1</shotgun>
+          <magPrice>1000</magPrice>
+          <weightLayers>1</weightLayers>
+          <category>1</category>
+          <formula>1</formula>
+          <status>unresolved</status>
+          <displayEligible>false</displayEligible>
+          <inputDigest>fnv1a32:6d2a5b41</inputDigest>
+          <auditRef>weapon:HKSL8GOLD:data</auditRef>
+        </data>
+      </profiles>
+    </balance>
   </item>
   <item weapontype="战斗步枪">
     <name>战术-QBU-191</name>
@@ -583,6 +982,27 @@
       <criticalhit>满血暴击</criticalhit>
       <reloadPenalty>17</reloadPenalty>
     </data>
+    <balance>
+      <formulaFamily>weapon</formulaFamily>
+      <schemaVersion>1</schemaVersion>
+      <workbookVersion>1</workbookVersion>
+      <profiles>
+        <data>
+          <dualWield>1</dualWield>
+          <pierce>2</pierce>
+          <damageType>1</damageType>
+          <shotgun>1</shotgun>
+          <magPrice>500</magPrice>
+          <weightLayers>0</weightLayers>
+          <category>1</category>
+          <formula>1</formula>
+          <status>unresolved</status>
+          <displayEligible>false</displayEligible>
+          <inputDigest>fnv1a32:f2287bda</inputDigest>
+          <auditRef>weapon:战术-QBU-191:data</auditRef>
+        </data>
+      </profiles>
+    </balance>
   </item>
   <item weapontype="战斗步枪">
     <name>G1111</name>
@@ -621,6 +1041,27 @@
       <magictype>能</magictype>
       <reloadPenalty>17</reloadPenalty>
     </data>
+    <balance>
+      <formulaFamily>weapon</formulaFamily>
+      <schemaVersion>1</schemaVersion>
+      <workbookVersion>1</workbookVersion>
+      <profiles>
+        <data>
+          <dualWield>1</dualWield>
+          <pierce>1</pierce>
+          <damageType>2</damageType>
+          <shotgun>1</shotgun>
+          <magPrice>8000</magPrice>
+          <weightLayers>0</weightLayers>
+          <category>1</category>
+          <formula>1</formula>
+          <status>unresolved</status>
+          <displayEligible>false</displayEligible>
+          <inputDigest>fnv1a32:2ede9b39</inputDigest>
+          <auditRef>weapon:G1111:data</auditRef>
+        </data>
+      </profiles>
+    </balance>
     <lifecycle>
       <attr_0>
         <skillInteraction>bound</skillInteraction>
@@ -693,5 +1134,26 @@
       <criticalhit>满血暴击</criticalhit>
       <reloadPenalty>17</reloadPenalty>
     </data>
+    <balance>
+      <formulaFamily>weapon</formulaFamily>
+      <schemaVersion>1</schemaVersion>
+      <workbookVersion>1</workbookVersion>
+      <profiles>
+        <data>
+          <dualWield>1</dualWield>
+          <pierce>1.5</pierce>
+          <damageType>1</damageType>
+          <shotgun>1</shotgun>
+          <magPrice>1000</magPrice>
+          <weightLayers>0</weightLayers>
+          <category>1</category>
+          <formula>1</formula>
+          <status>unresolved</status>
+          <displayEligible>false</displayEligible>
+          <inputDigest>fnv1a32:dec5c451</inputDigest>
+          <auditRef>weapon:mini14:data</auditRef>
+        </data>
+      </profiles>
+    </balance>
   </item>
 </root>

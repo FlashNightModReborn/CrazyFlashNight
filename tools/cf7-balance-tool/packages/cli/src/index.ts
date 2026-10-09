@@ -964,7 +964,8 @@ function runBalanceCheck(args: string[]): void {
       const uncovered: string[] = [];
       for (const block of fileSource.matchAll(/<item\b[^>]*>[\s\S]*?<\/item>/g)) {
         const nameMatch = block[0].match(/<name>([\s\S]*?)<\/name>/);
-        const itemName = nameMatch?.[1]?.trim();
+        const itemName = nameMatch?.[1]?.trim().replace(/&apos;/g, "'").replace(/&quot;/g, '"')
+          .replace(/&gt;/g, ">").replace(/&lt;/g, "<").replace(/&amp;/g, "&");
         if (itemName && !coveredNames.has(itemName)) uncovered.push(itemName);
       }
       coverageByFile.push({
@@ -974,8 +975,8 @@ function runBalanceCheck(args: string[]): void {
         uncoveredItems: uncovered
       });
       if (uncovered.length > 0) {
-        warnings.push(
-          `${base}: coverage_gap: ${uncovered.length} weapon items lack <balance>/audit records`
+        errors.push(
+          `${base}: coverage_gap: ${uncovered.length} weapon items lack <balance>/audit records: ${uncovered.join(", ")}`
         );
       }
     }

@@ -32,6 +32,27 @@
         <reloadType>tube</reloadType>
         <reloadPenalty>0</reloadPenalty>
       </data>
+      <balance>
+        <formulaFamily>weapon</formulaFamily>
+        <schemaVersion>1</schemaVersion>
+        <workbookVersion>1</workbookVersion>
+        <profiles>
+          <data>
+            <dualWield>2</dualWield>
+            <pierce>1</pierce>
+            <damageType>1</damageType>
+            <shotgun>4</shotgun>
+            <magPrice>2500</magPrice>
+            <weightLayers>0</weightLayers>
+            <category>1</category>
+            <formula>1</formula>
+            <status>unresolved</status>
+            <displayEligible>false</displayEligible>
+            <inputDigest>fnv1a32:c36d181b</inputDigest>
+            <auditRef>weapon:M79式榴弹发射器:data</auditRef>
+          </data>
+        </profiles>
+      </balance>
     </item>
   <item weapontype="发射器">
       <name>战术版MGL</name>
@@ -66,6 +87,27 @@
         <impact>0</impact>
         <reloadPenalty>0</reloadPenalty>
       </data>
+      <balance>
+        <formulaFamily>weapon</formulaFamily>
+        <schemaVersion>1</schemaVersion>
+        <workbookVersion>1</workbookVersion>
+        <profiles>
+          <data>
+            <dualWield>2</dualWield>
+            <pierce>1</pierce>
+            <damageType>1</damageType>
+            <shotgun>4</shotgun>
+            <magPrice>5000</magPrice>
+            <weightLayers>1</weightLayers>
+            <category>1</category>
+            <formula>1</formula>
+            <status>unresolved</status>
+            <displayEligible>false</displayEligible>
+            <inputDigest>fnv1a32:50cf3a07</inputDigest>
+            <auditRef>weapon:战术版MGL:data</auditRef>
+          </data>
+        </profiles>
+      </balance>
     </item>
      <item weapontype="发射器">
       <name>沧蓝陨铁手炮</name>
@@ -101,6 +143,27 @@
         <magictype>装甲</magictype>
         <reloadPenalty>0</reloadPenalty>
       </data>
+      <balance>
+        <formulaFamily>weapon</formulaFamily>
+        <schemaVersion>1</schemaVersion>
+        <workbookVersion>1</workbookVersion>
+        <profiles>
+          <data>
+            <dualWield>2</dualWield>
+            <pierce>1</pierce>
+            <damageType>2</damageType>
+            <shotgun>4</shotgun>
+            <magPrice>5000</magPrice>
+            <weightLayers>0</weightLayers>
+            <category>1</category>
+            <formula>1</formula>
+            <status>unresolved</status>
+            <displayEligible>false</displayEligible>
+            <inputDigest>fnv1a32:accdf7ae</inputDigest>
+            <auditRef>weapon:沧蓝陨铁手炮:data</auditRef>
+          </data>
+        </profiles>
+      </balance>
     </item>
      <item weapontype="发射器">
       <name>加农手炮</name>
@@ -136,5 +199,26 @@
         <magictype>热</magictype>
         <reloadPenalty>0</reloadPenalty>
       </data>
+      <balance>
+        <formulaFamily>weapon</formulaFamily>
+        <schemaVersion>1</schemaVersion>
+        <workbookVersion>1</workbookVersion>
+        <profiles>
+          <data>
+            <dualWield>2</dualWield>
+            <pierce>1</pierce>
+            <damageType>2</damageType>
+            <shotgun>4</shotgun>
+            <magPrice>5000</magPrice>
+            <weightLayers>0</weightLayers>
+            <category>1</category>
+            <formula>1</formula>
+            <status>unresolved</status>
+            <displayEligible>false</displayEligible>
+            <inputDigest>fnv1a32:e2c0e1e0</inputDigest>
+            <auditRef>weapon:加农手炮:data</auditRef>
+          </data>
+        </profiles>
+      </balance>
     </item>
 </root>
