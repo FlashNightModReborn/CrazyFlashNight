@@ -31,7 +31,7 @@
 |---|---|---|---|---|
 | weapon v1 | `records/weapon-balance-audit.xml` | `balance-check` | 365 个 profile 全量校验；存量 285 项经 `scripts/weapon-seed-migration.ts` 机械派生登记为 unresolved（获取渠道/弹药价/pierce/split 语义逐项标注 UNRESOLVED） | **整文件覆盖门已开启**（coverage_gap 转 error） |
 | armor v1 | `records/armor-balance-plan.xml` | `armor-balance-check` | 钛合金61式五件 confirmed；重装特勤五件 unresolved；存量 645 条按 exception 机械登记（legacy-off-formula/npc-only） | 四个防具文件整文件覆盖门已开启 |
-| potion v2 | `records/potion-balance-plan.xml` | `potion-balance-check` | 三文件 77 项；#101 缺口已于 2026-09-22 清零（`51e2ebb981`，77/77） | 已有整文件 coverage 门（家族先例） |
+| potion v2 | `records/potion-balance-plan.xml` | `potion-balance-check` | 106/106（四文件含成品酒 25 项、暴击率轴）；authorityStatus=workbook-registration-pending；v2 公式 Excel 草案已备（`0.说明文件与教程/药剂v2公式_工具草案.xlsx`，与 computePotionV2Row 同口径，制作组并入药剂面板后翻转 authorityStatus） | 已有整文件 coverage 门（家族先例）；新增药剂食品必须进 plan |
 | melee v1 | `records/melee-balance-plan.xml` | `melee-balance-check` | 家族已注册；存量 230 条按 exception 机械登记（legacy-off-formula/npc-only/unobtainable-novelty），1 条 formula（巨尸长斧，unresolved） | 16 个近战文件整文件覆盖门已开启 |
 | explosives v1 | `records/explosives-balance-plan.xml` | `explosives-balance-check` | 家族已注册（`explosives-balance-rulebook.md`），`消耗品_手雷.xml` 39 项全量登记（formula 1 + exception 38） | 手雷文件覆盖门已开启 |
 
