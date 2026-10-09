@@ -10,16 +10,34 @@
     <use>药剂</use>
     <price>1200</price>
     <description>堕落城酒吧特调 Sugar Rush。甜得发腻的能量饮料风格鸡尾酒，一口下去血糖与胆量一起飙升。
-    微醺状态下攻击更加凶猛，但防御意识也会下降。</description>
+    微醺状态下攻击更加凶猛、出手更易暴击，但防御意识也会下降。</description>
     <data>
       <effects>
         <effect type="buffDomain" domain="meal" />
         <effect type="heal" hp="100" mp="160" target="self" scaleWithAlchemy="true" />
         <effect type="buff" property="伤害加成" calc="add_positive" value="15" duration="1800" buffId="药剂_伤害加成" />
+        <effect type="buff" property="暴击率" calc="add_positive" value="8" duration="1800" buffId="药剂_暴击率" />
         <effect type="buff" property="防御力" calc="add_negative" value="-8" duration="1800" buffId="debuff_药剂_防御力" />
         <effect type="playEffect" name="药剂动画" />
       </effects>
     </data>
+    <balance>
+      <formulaFamily>potion</formulaFamily>
+      <schemaVersion>1</schemaVersion>
+      <formulaVersion>2</formulaVersion>
+      <authorityStatus>workbook-registration-pending</authorityStatus>
+      <sourceLevel>10</sourceLevel>
+      <domain>meal</domain>
+      <balanceMode>formula</balanceMode>
+      <status>runtime-test-pending</status>
+      <currentValue>1046.9</currentValue>
+      <valueCap>1100</valueCap>
+      <formulaPrice>1200</formulaPrice>
+      <marketPrice>1200</marketPrice>
+      <inputDigest>fnv1a32:1efb324c</inputDigest>
+      <sourceDigest>sha256:171ca7e018185b672b0b45e42b22f9405f07172e362729e296f577298e2e4f9d</sourceDigest>
+      <auditRef>potion:糖分冲击</auditRef>
+    </balance>
   </item>
   <item>
     <name>蓝色妖精</name>
@@ -29,16 +47,34 @@
     <use>药剂</use>
     <price>1800</price>
     <description>堕落城酒吧特调 Blue Fairy。泛着幽蓝光泽的甜美酒液，像极了只在霓虹下出没的妖精。
-    微醺状态下攻击更加凶猛，但防御意识也会下降。</description>
+    微醺状态下攻击更加凶猛、出手更易暴击，但防御意识也会下降。</description>
     <data>
       <effects>
         <effect type="buffDomain" domain="meal" />
         <effect type="heal" hp="140" mp="240" target="self" scaleWithAlchemy="true" />
         <effect type="buff" property="伤害加成" calc="add_positive" value="20" duration="1800" buffId="药剂_伤害加成" />
+        <effect type="buff" property="暴击率" calc="add_positive" value="10" duration="1800" buffId="药剂_暴击率" />
         <effect type="buff" property="防御力" calc="add_negative" value="-8" duration="1800" buffId="debuff_药剂_防御力" />
         <effect type="playEffect" name="药剂动画" />
       </effects>
     </data>
+    <balance>
+      <formulaFamily>potion</formulaFamily>
+      <schemaVersion>1</schemaVersion>
+      <formulaVersion>2</formulaVersion>
+      <authorityStatus>workbook-registration-pending</authorityStatus>
+      <sourceLevel>14</sourceLevel>
+      <domain>meal</domain>
+      <balanceMode>formula</balanceMode>
+      <status>runtime-test-pending</status>
+      <currentValue>1410.9</currentValue>
+      <valueCap>1500</valueCap>
+      <formulaPrice>1750</formulaPrice>
+      <marketPrice>1800</marketPrice>
+      <inputDigest>fnv1a32:b928ee66</inputDigest>
+      <sourceDigest>sha256:7d2356c03ea33a01b7d52f2bc10e42b7a790d175773998827bbcb4b9812d5b06</sourceDigest>
+      <auditRef>potion:蓝色妖精</auditRef>
+    </balance>
   </item>
   <item>
     <name>白兰提尼</name>
@@ -48,16 +84,34 @@
     <use>药剂</use>
     <price>3000</price>
     <description>堕落城酒吧特调 Brandtini。以陈年白兰地风格调配的醇厚马提尼，是懂酒之人才会点的老派选择。
-    微醺状态下攻击更加凶猛，但防御意识也会下降。</description>
+    微醺状态下攻击更加凶猛、出手更易暴击，但防御意识也会下降。</description>
     <data>
       <effects>
         <effect type="buffDomain" domain="meal" />
         <effect type="heal" hp="220" mp="400" target="self" scaleWithAlchemy="true" />
         <effect type="buff" property="伤害加成" calc="add_positive" value="30" duration="1800" buffId="药剂_伤害加成" />
+        <effect type="buff" property="暴击率" calc="add_positive" value="15" duration="1800" buffId="药剂_暴击率" />
         <effect type="buff" property="防御力" calc="add_negative" value="-10" duration="1800" buffId="debuff_药剂_防御力" />
         <effect type="playEffect" name="药剂动画" />
       </effects>
     </data>
+    <balance>
+      <formulaFamily>potion</formulaFamily>
+      <schemaVersion>1</schemaVersion>
+      <formulaVersion>2</formulaVersion>
+      <authorityStatus>workbook-registration-pending</authorityStatus>
+      <sourceLevel>22</sourceLevel>
+      <domain>meal</domain>
+      <balanceMode>formula</balanceMode>
+      <status>runtime-test-pending</status>
+      <currentValue>2190.75</currentValue>
+      <valueCap>2300</valueCap>
+      <formulaPrice>3200</formulaPrice>
+      <marketPrice>3000</marketPrice>
+      <inputDigest>fnv1a32:2bf68526</inputDigest>
+      <sourceDigest>sha256:29b685d23b07cae1d2de5546319633453c4c0fe3f0a57fd0c96e70fad3a82abd</sourceDigest>
+      <auditRef>potion:白兰提尼</auditRef>
+    </balance>
   </item>
   <item>
     <name>月爆</name>
@@ -67,16 +121,34 @@
     <use>药剂</use>
     <price>3000</price>
     <description>堕落城酒吧特调 Moonblast。月光般的银蓝泡沫在杯口炸开，名字直白，劲儿也直白。
-    微醺状态下攻击更加凶猛，但防御意识也会下降。</description>
+    微醺状态下攻击更加凶猛、出手更易暴击，但防御意识也会下降。</description>
     <data>
       <effects>
         <effect type="buffDomain" domain="meal" />
         <effect type="heal" hp="220" mp="400" target="self" scaleWithAlchemy="true" />
         <effect type="buff" property="伤害加成" calc="add_positive" value="30" duration="1800" buffId="药剂_伤害加成" />
+        <effect type="buff" property="暴击率" calc="add_positive" value="15" duration="1800" buffId="药剂_暴击率" />
         <effect type="buff" property="防御力" calc="add_negative" value="-10" duration="1800" buffId="debuff_药剂_防御力" />
         <effect type="playEffect" name="药剂动画" />
       </effects>
     </data>
+    <balance>
+      <formulaFamily>potion</formulaFamily>
+      <schemaVersion>1</schemaVersion>
+      <formulaVersion>2</formulaVersion>
+      <authorityStatus>workbook-registration-pending</authorityStatus>
+      <sourceLevel>22</sourceLevel>
+      <domain>meal</domain>
+      <balanceMode>formula</balanceMode>
+      <status>runtime-test-pending</status>
+      <currentValue>2190.75</currentValue>
+      <valueCap>2300</valueCap>
+      <formulaPrice>3200</formulaPrice>
+      <marketPrice>3000</marketPrice>
+      <inputDigest>fnv1a32:5ae22555</inputDigest>
+      <sourceDigest>sha256:e89b0432b3f1255b58e775431042cc4944cef997930d27e75eeaa372b4b15f8c</sourceDigest>
+      <auditRef>potion:月爆</auditRef>
+    </balance>
   </item>
   <item>
     <name>钢琴女郎</name>
@@ -86,16 +158,34 @@
     <use>药剂</use>
     <price>5200</price>
     <description>堕落城酒吧特调 Piano Woman。十八种原料层层叠叠的华丽之作，如同指尖在琴键上倾泻的华彩。
-    微醺状态下攻击更加凶猛，但防御意识也会下降。</description>
+    微醺状态下攻击更加凶猛、出手更易暴击，但防御意识也会下降。</description>
     <data>
       <effects>
         <effect type="buffDomain" domain="meal" />
         <effect type="heal" hp="380" mp="720" target="self" scaleWithAlchemy="true" />
         <effect type="buff" property="伤害加成" calc="add_positive" value="45" duration="1800" buffId="药剂_伤害加成" />
+        <effect type="buff" property="暴击率" calc="add_positive" value="22" duration="1800" buffId="药剂_暴击率" />
         <effect type="buff" property="防御力" calc="add_negative" value="-15" duration="1800" buffId="debuff_药剂_防御力" />
         <effect type="playEffect" name="药剂动画" />
       </effects>
     </data>
+    <balance>
+      <formulaFamily>potion</formulaFamily>
+      <schemaVersion>1</schemaVersion>
+      <formulaVersion>2</formulaVersion>
+      <authorityStatus>workbook-registration-pending</authorityStatus>
+      <sourceLevel>34</sourceLevel>
+      <domain>meal</domain>
+      <balanceMode>formula</balanceMode>
+      <status>runtime-test-pending</status>
+      <currentValue>3418</currentValue>
+      <valueCap>3500</valueCap>
+      <formulaPrice>6500</formulaPrice>
+      <marketPrice>5200</marketPrice>
+      <inputDigest>fnv1a32:b178550d</inputDigest>
+      <sourceDigest>sha256:a0845b855d0750de37149e2e818fff67c2e9159516ebeaf42aee89427d68603d</sourceDigest>
+      <auditRef>potion:钢琴女郎</auditRef>
+    </balance>
   </item>
   <item>
     <name>闪耀星</name>
@@ -105,16 +195,34 @@
     <use>药剂</use>
     <price>1200</price>
     <description>堕落城酒吧特调 Sparkle Star。杯底沉着一粒会发光的星形糖浆，少女心杀手。
-    微醺状态下攻击更加凶猛，但防御意识也会下降。</description>
+    微醺状态下攻击更加凶猛、出手更易暴击，但防御意识也会下降。</description>
     <data>
       <effects>
         <effect type="buffDomain" domain="meal" />
         <effect type="heal" hp="100" mp="160" target="self" scaleWithAlchemy="true" />
         <effect type="buff" property="伤害加成" calc="add_positive" value="15" duration="1800" buffId="药剂_伤害加成" />
+        <effect type="buff" property="暴击率" calc="add_positive" value="8" duration="1800" buffId="药剂_暴击率" />
         <effect type="buff" property="防御力" calc="add_negative" value="-8" duration="1800" buffId="debuff_药剂_防御力" />
         <effect type="playEffect" name="药剂动画" />
       </effects>
     </data>
+    <balance>
+      <formulaFamily>potion</formulaFamily>
+      <schemaVersion>1</schemaVersion>
+      <formulaVersion>2</formulaVersion>
+      <authorityStatus>workbook-registration-pending</authorityStatus>
+      <sourceLevel>10</sourceLevel>
+      <domain>meal</domain>
+      <balanceMode>formula</balanceMode>
+      <status>runtime-test-pending</status>
+      <currentValue>1046.9</currentValue>
+      <valueCap>1100</valueCap>
+      <formulaPrice>1200</formulaPrice>
+      <marketPrice>1200</marketPrice>
+      <inputDigest>fnv1a32:bc50fc2e</inputDigest>
+      <sourceDigest>sha256:91988ea57b39c9f249589cbbaefa06395b969e720e199844a520d0cee57e23cd</sourceDigest>
+      <auditRef>potion:闪耀星</auditRef>
+    </balance>
   </item>
   <item>
     <name>滴血简</name>
@@ -124,16 +232,34 @@
     <use>药剂</use>
     <price>2100</price>
     <description>堕落城酒吧特调 Bleeding Jane。红得发黑的重口味酒，据说名字来自某位常客的一段旧事。
-    微醺状态下攻击更加凶猛，但防御意识也会下降。</description>
+    微醺状态下攻击更加凶猛、出手更易暴击，但防御意识也会下降。</description>
     <data>
       <effects>
         <effect type="buffDomain" domain="meal" />
         <effect type="heal" hp="160" mp="280" target="self" scaleWithAlchemy="true" />
         <effect type="buff" property="伤害加成" calc="add_positive" value="20" duration="1800" buffId="药剂_伤害加成" />
+        <effect type="buff" property="暴击率" calc="add_positive" value="10" duration="1800" buffId="药剂_暴击率" />
         <effect type="buff" property="防御力" calc="add_negative" value="-8" duration="1800" buffId="debuff_药剂_防御力" />
         <effect type="playEffect" name="药剂动画" />
       </effects>
     </data>
+    <balance>
+      <formulaFamily>potion</formulaFamily>
+      <schemaVersion>1</schemaVersion>
+      <formulaVersion>2</formulaVersion>
+      <authorityStatus>workbook-registration-pending</authorityStatus>
+      <sourceLevel>14</sourceLevel>
+      <domain>meal</domain>
+      <balanceMode>formula</balanceMode>
+      <status>runtime-test-pending</status>
+      <currentValue>1470.9</currentValue>
+      <valueCap>1500</valueCap>
+      <formulaPrice>1800</formulaPrice>
+      <marketPrice>2100</marketPrice>
+      <inputDigest>fnv1a32:296577d3</inputDigest>
+      <sourceDigest>sha256:9c0ab4e76d19ce0d0537b3cd2ceaef51bec07ce14bfaac4bcd8469f15d0b57c0</sourceDigest>
+      <auditRef>potion:滴血简</auditRef>
+    </balance>
   </item>
   <item>
     <name>火星爆</name>
@@ -143,16 +269,34 @@
     <use>药剂</use>
     <price>3900</price>
     <description>堕落城酒吧特调 Marsblast。猛摇之后气泡直冲杯口，像火星表面炸开的尘暴，又冲又烈。
-    微醺状态下攻击更加凶猛，但防御意识也会下降。</description>
+    微醺状态下攻击更加凶猛、出手更易暴击，但防御意识也会下降。</description>
     <data>
       <effects>
         <effect type="buffDomain" domain="meal" />
         <effect type="heal" hp="280" mp="520" target="self" scaleWithAlchemy="true" />
         <effect type="buff" property="伤害加成" calc="add_positive" value="35" duration="1800" buffId="药剂_伤害加成" />
+        <effect type="buff" property="暴击率" calc="add_positive" value="18" duration="1800" buffId="药剂_暴击率" />
         <effect type="buff" property="防御力" calc="add_negative" value="-12" duration="1800" buffId="debuff_药剂_防御力" />
         <effect type="playEffect" name="药剂动画" />
       </effects>
     </data>
+    <balance>
+      <formulaFamily>potion</formulaFamily>
+      <schemaVersion>1</schemaVersion>
+      <formulaVersion>2</formulaVersion>
+      <authorityStatus>workbook-registration-pending</authorityStatus>
+      <sourceLevel>26</sourceLevel>
+      <domain>meal</domain>
+      <balanceMode>formula</balanceMode>
+      <status>runtime-test-pending</status>
+      <currentValue>2666.6</currentValue>
+      <valueCap>2700</valueCap>
+      <formulaPrice>4350</formulaPrice>
+      <marketPrice>3900</marketPrice>
+      <inputDigest>fnv1a32:65bca2e1</inputDigest>
+      <sourceDigest>sha256:fd85437cfd08f48281f282b2903fd7c35c8e648294b60e96ae006fd860e08348</sourceDigest>
+      <auditRef>potion:火星爆</auditRef>
+    </balance>
   </item>
   <item>
     <name>绽放之光</name>
@@ -162,16 +306,34 @@
     <use>药剂</use>
     <price>3000</price>
     <description>堕落城酒吧特调 Bloom Light。冰块间透出柔和的花色光晕，是酒单上最好看的一杯。
-    微醺状态下攻击更加凶猛，但防御意识也会下降。</description>
+    微醺状态下攻击更加凶猛、出手更易暴击，但防御意识也会下降。</description>
     <data>
       <effects>
         <effect type="buffDomain" domain="meal" />
         <effect type="heal" hp="220" mp="400" target="self" scaleWithAlchemy="true" />
         <effect type="buff" property="伤害加成" calc="add_positive" value="30" duration="1800" buffId="药剂_伤害加成" />
+        <effect type="buff" property="暴击率" calc="add_positive" value="15" duration="1800" buffId="药剂_暴击率" />
         <effect type="buff" property="防御力" calc="add_negative" value="-10" duration="1800" buffId="debuff_药剂_防御力" />
         <effect type="playEffect" name="药剂动画" />
       </effects>
     </data>
+    <balance>
+      <formulaFamily>potion</formulaFamily>
+      <schemaVersion>1</schemaVersion>
+      <formulaVersion>2</formulaVersion>
+      <authorityStatus>workbook-registration-pending</authorityStatus>
+      <sourceLevel>22</sourceLevel>
+      <domain>meal</domain>
+      <balanceMode>formula</balanceMode>
+      <status>runtime-test-pending</status>
+      <currentValue>2190.75</currentValue>
+      <valueCap>2300</valueCap>
+      <formulaPrice>3200</formulaPrice>
+      <marketPrice>3000</marketPrice>
+      <inputDigest>fnv1a32:16f84ddc</inputDigest>
+      <sourceDigest>sha256:84b0c9f0ade11edecf88336252e9fe41fb4a32f9679f81b7d7139197eac3a8c6</sourceDigest>
+      <auditRef>potion:绽放之光</auditRef>
+    </balance>
   </item>
   <item>
     <name>咸猪手</name>
@@ -181,16 +343,34 @@
     <use>药剂</use>
     <price>3000</price>
     <description>堕落城酒吧特调 Bad Touch。名字很不正经，味道却很正——咸甜交织，回味带劲。
-    微醺状态下攻击更加凶猛，但防御意识也会下降。</description>
+    微醺状态下攻击更加凶猛、出手更易暴击，但防御意识也会下降。</description>
     <data>
       <effects>
         <effect type="buffDomain" domain="meal" />
         <effect type="heal" hp="220" mp="400" target="self" scaleWithAlchemy="true" />
         <effect type="buff" property="伤害加成" calc="add_positive" value="30" duration="1800" buffId="药剂_伤害加成" />
+        <effect type="buff" property="暴击率" calc="add_positive" value="15" duration="1800" buffId="药剂_暴击率" />
         <effect type="buff" property="防御力" calc="add_negative" value="-10" duration="1800" buffId="debuff_药剂_防御力" />
         <effect type="playEffect" name="药剂动画" />
       </effects>
     </data>
+    <balance>
+      <formulaFamily>potion</formulaFamily>
+      <schemaVersion>1</schemaVersion>
+      <formulaVersion>2</formulaVersion>
+      <authorityStatus>workbook-registration-pending</authorityStatus>
+      <sourceLevel>22</sourceLevel>
+      <domain>meal</domain>
+      <balanceMode>formula</balanceMode>
+      <status>runtime-test-pending</status>
+      <currentValue>2190.75</currentValue>
+      <valueCap>2300</valueCap>
+      <formulaPrice>3200</formulaPrice>
+      <marketPrice>3000</marketPrice>
+      <inputDigest>fnv1a32:5e3773ae</inputDigest>
+      <sourceDigest>sha256:b288dfe71e82a0457dc613f145606a1f52a7942ed81e17e81fac7465a1864cb7</sourceDigest>
+      <auditRef>potion:咸猪手</auditRef>
+    </balance>
   </item>
   <item>
     <name>钢琴师</name>
@@ -200,16 +380,34 @@
     <use>药剂</use>
     <price>5100</price>
     <description>堕落城酒吧特调 Piano Man。十七种原料谱成的复调，老酒鬼们的保留曲目。
-    微醺状态下攻击更加凶猛，但防御意识也会下降。</description>
+    微醺状态下攻击更加凶猛、出手更易暴击，但防御意识也会下降。</description>
     <data>
       <effects>
         <effect type="buffDomain" domain="meal" />
         <effect type="heal" hp="360" mp="680" target="self" scaleWithAlchemy="true" />
         <effect type="buff" property="伤害加成" calc="add_positive" value="45" duration="1800" buffId="药剂_伤害加成" />
+        <effect type="buff" property="暴击率" calc="add_positive" value="22" duration="1800" buffId="药剂_暴击率" />
         <effect type="buff" property="防御力" calc="add_negative" value="-15" duration="1800" buffId="debuff_药剂_防御力" />
         <effect type="playEffect" name="药剂动画" />
       </effects>
     </data>
+    <balance>
+      <formulaFamily>potion</formulaFamily>
+      <schemaVersion>1</schemaVersion>
+      <formulaVersion>2</formulaVersion>
+      <authorityStatus>workbook-registration-pending</authorityStatus>
+      <sourceLevel>33</sourceLevel>
+      <domain>meal</domain>
+      <balanceMode>formula</balanceMode>
+      <status>runtime-test-pending</status>
+      <currentValue>3358</currentValue>
+      <valueCap>3400</valueCap>
+      <formulaPrice>6400</formulaPrice>
+      <marketPrice>5100</marketPrice>
+      <inputDigest>fnv1a32:bcfe05b8</inputDigest>
+      <sourceDigest>sha256:49a36b8d237f65390b16cce170b43af2e1976aad93d61d312297f642a710f9c3</sourceDigest>
+      <auditRef>potion:钢琴师</auditRef>
+    </balance>
   </item>
   <item>
     <name>禅星</name>
@@ -219,16 +417,34 @@
     <use>药剂</use>
     <price>6000</price>
     <description>堕落城酒吧特调 Zen Star。五种原料均分的完美对称，喝下的是一整片平静的星空。
-    微醺状态下攻击更加凶猛，但防御意识也会下降。</description>
+    微醺状态下攻击更加凶猛、出手更易暴击，但防御意识也会下降。</description>
     <data>
       <effects>
         <effect type="buffDomain" domain="meal" />
         <effect type="heal" hp="400" mp="800" target="self" scaleWithAlchemy="true" />
         <effect type="buff" property="伤害加成" calc="add_positive" value="50" duration="1800" buffId="药剂_伤害加成" />
+        <effect type="buff" property="暴击率" calc="add_positive" value="25" duration="1800" buffId="药剂_暴击率" />
         <effect type="buff" property="防御力" calc="add_negative" value="-15" duration="1800" buffId="debuff_药剂_防御力" />
         <effect type="playEffect" name="药剂动画" />
       </effects>
     </data>
+    <balance>
+      <formulaFamily>potion</formulaFamily>
+      <schemaVersion>1</schemaVersion>
+      <formulaVersion>2</formulaVersion>
+      <authorityStatus>workbook-registration-pending</authorityStatus>
+      <sourceLevel>38</sourceLevel>
+      <domain>meal</domain>
+      <balanceMode>formula</balanceMode>
+      <status>runtime-test-pending</status>
+      <currentValue>3838.25</currentValue>
+      <valueCap>3900</valueCap>
+      <formulaPrice>8200</formulaPrice>
+      <marketPrice>6000</marketPrice>
+      <inputDigest>fnv1a32:64966f08</inputDigest>
+      <sourceDigest>sha256:9ca6f056644095a976467e8ca9fbe0d330f7316576b5ac8d4a0f45446eb08ce9</sourceDigest>
+      <auditRef>potion:禅星</auditRef>
+    </balance>
   </item>
   <item>
     <name>水星爆</name>
@@ -238,16 +454,34 @@
     <use>药剂</use>
     <price>3000</price>
     <description>堕落城酒吧特调 Mercuryblast。加冰猛摇出的冷冽一击，像水星表面昼夜的温差。
-    微醺状态下攻击更加凶猛，但防御意识也会下降。</description>
+    微醺状态下攻击更加凶猛、出手更易暴击，但防御意识也会下降。</description>
     <data>
       <effects>
         <effect type="buffDomain" domain="meal" />
         <effect type="heal" hp="220" mp="400" target="self" scaleWithAlchemy="true" />
         <effect type="buff" property="伤害加成" calc="add_positive" value="30" duration="1800" buffId="药剂_伤害加成" />
+        <effect type="buff" property="暴击率" calc="add_positive" value="15" duration="1800" buffId="药剂_暴击率" />
         <effect type="buff" property="防御力" calc="add_negative" value="-10" duration="1800" buffId="debuff_药剂_防御力" />
         <effect type="playEffect" name="药剂动画" />
       </effects>
     </data>
+    <balance>
+      <formulaFamily>potion</formulaFamily>
+      <schemaVersion>1</schemaVersion>
+      <formulaVersion>2</formulaVersion>
+      <authorityStatus>workbook-registration-pending</authorityStatus>
+      <sourceLevel>22</sourceLevel>
+      <domain>meal</domain>
+      <balanceMode>formula</balanceMode>
+      <status>runtime-test-pending</status>
+      <currentValue>2190.75</currentValue>
+      <valueCap>2300</valueCap>
+      <formulaPrice>3200</formulaPrice>
+      <marketPrice>3000</marketPrice>
+      <inputDigest>fnv1a32:cd28ae2c</inputDigest>
+      <sourceDigest>sha256:d72d055f118446dc772e4f5d112dc090d7812efb3e561cc7cc1d8fe3c9229651</sourceDigest>
+      <auditRef>potion:水星爆</auditRef>
+    </balance>
   </item>
   <item>
     <name>烈焰摩艾</name>
@@ -257,16 +491,34 @@
     <use>药剂</use>
     <price>3600</price>
     <description>堕落城酒吧隐藏特调 Flaming Moai。不在酒单上的传说之作，杯口腾起的火光像摩艾石像的凝视。
-    微醺状态下攻击更加凶猛，但防御意识也会下降。</description>
+    微醺状态下攻击更加凶猛、出手更易暴击，但防御意识也会下降。</description>
     <data>
       <effects>
         <effect type="buffDomain" domain="meal" />
         <effect type="heal" hp="240" mp="440" target="self" scaleWithAlchemy="true" />
         <effect type="buff" property="伤害加成" calc="add_positive" value="35" duration="1800" buffId="药剂_伤害加成" />
+        <effect type="buff" property="暴击率" calc="add_positive" value="18" duration="1800" buffId="药剂_暴击率" />
         <effect type="buff" property="防御力" calc="add_negative" value="-12" duration="1800" buffId="debuff_药剂_防御力" />
         <effect type="playEffect" name="药剂动画" />
       </effects>
     </data>
+    <balance>
+      <formulaFamily>potion</formulaFamily>
+      <schemaVersion>1</schemaVersion>
+      <formulaVersion>2</formulaVersion>
+      <authorityStatus>workbook-registration-pending</authorityStatus>
+      <sourceLevel>25</sourceLevel>
+      <domain>meal</domain>
+      <balanceMode>formula</balanceMode>
+      <status>runtime-test-pending</status>
+      <currentValue>2546.6</currentValue>
+      <valueCap>2600</valueCap>
+      <formulaPrice>4150</formulaPrice>
+      <marketPrice>3600</marketPrice>
+      <inputDigest>fnv1a32:6350dd28</inputDigest>
+      <sourceDigest>sha256:0676d70c98ecaf7e5a7bf234fd3e7bf7e3bc4dc74f4ea65c0eda20817692e530</sourceDigest>
+      <auditRef>potion:烈焰摩艾</auditRef>
+    </balance>
   </item>
   <item>
     <name>裂谷尖刺</name>
@@ -276,16 +528,34 @@
     <use>药剂</use>
     <price>1800</price>
     <description>堕落城酒吧特调 Crevice Spike。酸冽如峡谷裂缝般的口感，猛摇之后更加锋利。
-    微醺状态下攻击更加凶猛，但防御意识也会下降。</description>
+    微醺状态下攻击更加凶猛、出手更易暴击，但防御意识也会下降。</description>
     <data>
       <effects>
         <effect type="buffDomain" domain="meal" />
         <effect type="heal" hp="140" mp="240" target="self" scaleWithAlchemy="true" />
         <effect type="buff" property="伤害加成" calc="add_positive" value="20" duration="1800" buffId="药剂_伤害加成" />
+        <effect type="buff" property="暴击率" calc="add_positive" value="10" duration="1800" buffId="药剂_暴击率" />
         <effect type="buff" property="防御力" calc="add_negative" value="-8" duration="1800" buffId="debuff_药剂_防御力" />
         <effect type="playEffect" name="药剂动画" />
       </effects>
     </data>
+    <balance>
+      <formulaFamily>potion</formulaFamily>
+      <schemaVersion>1</schemaVersion>
+      <formulaVersion>2</formulaVersion>
+      <authorityStatus>workbook-registration-pending</authorityStatus>
+      <sourceLevel>14</sourceLevel>
+      <domain>meal</domain>
+      <balanceMode>formula</balanceMode>
+      <status>runtime-test-pending</status>
+      <currentValue>1410.9</currentValue>
+      <valueCap>1500</valueCap>
+      <formulaPrice>1750</formulaPrice>
+      <marketPrice>1800</marketPrice>
+      <inputDigest>fnv1a32:2a2a716a</inputDigest>
+      <sourceDigest>sha256:33fb11007854b22828a6b986be5552d3c4653d436dd0f04f2311ce1888e2fcdf</sourceDigest>
+      <auditRef>potion:裂谷尖刺</auditRef>
+    </balance>
   </item>
   <item>
     <name>蓬松梦境</name>
@@ -295,16 +565,34 @@
     <use>药剂</use>
     <price>1800</price>
     <description>堕落城酒吧特调 Fluffy Dream。绵密泡沫堆得像一朵云，软绵绵地劝你再喝一杯。
-    微醺状态下攻击更加凶猛，但防御意识也会下降。</description>
+    微醺状态下攻击更加凶猛、出手更易暴击，但防御意识也会下降。</description>
     <data>
       <effects>
         <effect type="buffDomain" domain="meal" />
         <effect type="heal" hp="140" mp="240" target="self" scaleWithAlchemy="true" />
         <effect type="buff" property="伤害加成" calc="add_positive" value="20" duration="1800" buffId="药剂_伤害加成" />
+        <effect type="buff" property="暴击率" calc="add_positive" value="10" duration="1800" buffId="药剂_暴击率" />
         <effect type="buff" property="防御力" calc="add_negative" value="-8" duration="1800" buffId="debuff_药剂_防御力" />
         <effect type="playEffect" name="药剂动画" />
       </effects>
     </data>
+    <balance>
+      <formulaFamily>potion</formulaFamily>
+      <schemaVersion>1</schemaVersion>
+      <formulaVersion>2</formulaVersion>
+      <authorityStatus>workbook-registration-pending</authorityStatus>
+      <sourceLevel>14</sourceLevel>
+      <domain>meal</domain>
+      <balanceMode>formula</balanceMode>
+      <status>runtime-test-pending</status>
+      <currentValue>1410.9</currentValue>
+      <valueCap>1500</valueCap>
+      <formulaPrice>1750</formulaPrice>
+      <marketPrice>1800</marketPrice>
+      <inputDigest>fnv1a32:7c76b1a4</inputDigest>
+      <sourceDigest>sha256:85028b967a2c61aed60298b161cdc07d131e28f2ef62458b7a06813086d60d9d</sourceDigest>
+      <auditRef>potion:蓬松梦境</auditRef>
+    </balance>
   </item>
   <item>
     <name>钴蓝天鹅绒</name>
@@ -314,16 +602,34 @@
     <use>药剂</use>
     <price>3000</price>
     <description>堕落城酒吧特调 Cobalt Velvet。钴蓝色酒体滑过舌尖如天鹅绒拂过，优雅而危险。
-    微醺状态下攻击更加凶猛，但防御意识也会下降。</description>
+    微醺状态下攻击更加凶猛、出手更易暴击，但防御意识也会下降。</description>
     <data>
       <effects>
         <effect type="buffDomain" domain="meal" />
         <effect type="heal" hp="220" mp="400" target="self" scaleWithAlchemy="true" />
         <effect type="buff" property="伤害加成" calc="add_positive" value="30" duration="1800" buffId="药剂_伤害加成" />
+        <effect type="buff" property="暴击率" calc="add_positive" value="15" duration="1800" buffId="药剂_暴击率" />
         <effect type="buff" property="防御力" calc="add_negative" value="-10" duration="1800" buffId="debuff_药剂_防御力" />
         <effect type="playEffect" name="药剂动画" />
       </effects>
     </data>
+    <balance>
+      <formulaFamily>potion</formulaFamily>
+      <schemaVersion>1</schemaVersion>
+      <formulaVersion>2</formulaVersion>
+      <authorityStatus>workbook-registration-pending</authorityStatus>
+      <sourceLevel>22</sourceLevel>
+      <domain>meal</domain>
+      <balanceMode>formula</balanceMode>
+      <status>runtime-test-pending</status>
+      <currentValue>2190.75</currentValue>
+      <valueCap>2300</valueCap>
+      <formulaPrice>3200</formulaPrice>
+      <marketPrice>3000</marketPrice>
+      <inputDigest>fnv1a32:b8403768</inputDigest>
+      <sourceDigest>sha256:94e6d9b3fa94e74e3a881c0472814f5a2bc697b94f31fdb7c55bf1a64c982267</sourceDigest>
+      <auditRef>potion:钴蓝天鹅绒</auditRef>
+    </balance>
   </item>
   <item>
     <name>边缘织者</name>
@@ -333,16 +639,34 @@
     <use>药剂</use>
     <price>3000</price>
     <description>堕落城酒吧特调 Fringe Weaver。九份卡莫特林织出的浅蓝旋涡，酒鬼的极限挑战。
-    微醺状态下攻击更加凶猛，但防御意识也会下降。</description>
+    微醺状态下攻击更加凶猛、出手更易暴击，但防御意识也会下降。</description>
     <data>
       <effects>
         <effect type="buffDomain" domain="meal" />
         <effect type="heal" hp="220" mp="400" target="self" scaleWithAlchemy="true" />
         <effect type="buff" property="伤害加成" calc="add_positive" value="30" duration="1800" buffId="药剂_伤害加成" />
+        <effect type="buff" property="暴击率" calc="add_positive" value="15" duration="1800" buffId="药剂_暴击率" />
         <effect type="buff" property="防御力" calc="add_negative" value="-10" duration="1800" buffId="debuff_药剂_防御力" />
         <effect type="playEffect" name="药剂动画" />
       </effects>
     </data>
+    <balance>
+      <formulaFamily>potion</formulaFamily>
+      <schemaVersion>1</schemaVersion>
+      <formulaVersion>2</formulaVersion>
+      <authorityStatus>workbook-registration-pending</authorityStatus>
+      <sourceLevel>22</sourceLevel>
+      <domain>meal</domain>
+      <balanceMode>formula</balanceMode>
+      <status>runtime-test-pending</status>
+      <currentValue>2190.75</currentValue>
+      <valueCap>2300</valueCap>
+      <formulaPrice>3200</formulaPrice>
+      <marketPrice>3000</marketPrice>
+      <inputDigest>fnv1a32:041c0c8e</inputDigest>
+      <sourceDigest>sha256:55fe1b73479d321bd7b206e79e65db3623a9e41e8bbd5729e556559288bb250e</sourceDigest>
+      <auditRef>potion:边缘织者</auditRef>
+    </balance>
   </item>
   <item>
     <name>扎啤</name>
@@ -352,16 +676,34 @@
     <use>药剂</use>
     <price>3000</price>
     <description>堕落城酒吧特调 Beer。泡沫厚得能立住硬币的大杯生啤，最朴实也最难出错的选择。
-    微醺状态下攻击更加凶猛，但防御意识也会下降。</description>
+    微醺状态下攻击更加凶猛、出手更易暴击，但防御意识也会下降。</description>
     <data>
       <effects>
         <effect type="buffDomain" domain="meal" />
         <effect type="heal" hp="220" mp="400" target="self" scaleWithAlchemy="true" />
         <effect type="buff" property="伤害加成" calc="add_positive" value="30" duration="1800" buffId="药剂_伤害加成" />
+        <effect type="buff" property="暴击率" calc="add_positive" value="15" duration="1800" buffId="药剂_暴击率" />
         <effect type="buff" property="防御力" calc="add_negative" value="-10" duration="1800" buffId="debuff_药剂_防御力" />
         <effect type="playEffect" name="药剂动画" />
       </effects>
     </data>
+    <balance>
+      <formulaFamily>potion</formulaFamily>
+      <schemaVersion>1</schemaVersion>
+      <formulaVersion>2</formulaVersion>
+      <authorityStatus>workbook-registration-pending</authorityStatus>
+      <sourceLevel>22</sourceLevel>
+      <domain>meal</domain>
+      <balanceMode>formula</balanceMode>
+      <status>runtime-test-pending</status>
+      <currentValue>2190.75</currentValue>
+      <valueCap>2300</valueCap>
+      <formulaPrice>3200</formulaPrice>
+      <marketPrice>3000</marketPrice>
+      <inputDigest>fnv1a32:8a834441</inputDigest>
+      <sourceDigest>sha256:a8d29d1c5557519d39be4fc0b31c956274187782bae55b3af68968b938d95202</sourceDigest>
+      <auditRef>potion:扎啤</auditRef>
+    </balance>
   </item>
   <item>
     <name>泡沫水</name>
@@ -371,16 +713,34 @@
     <use>药剂</use>
     <price>1200</price>
     <description>堕落城酒吧特调 Frothy Water。没有酒精的“啤酒平替”，泡沫倒是货真价实地丰厚。
-    微醺状态下攻击更加凶猛，但防御意识也会下降。</description>
+    微醺状态下攻击更加凶猛、出手更易暴击，但防御意识也会下降。</description>
     <data>
       <effects>
         <effect type="buffDomain" domain="meal" />
         <effect type="heal" hp="100" mp="160" target="self" scaleWithAlchemy="true" />
         <effect type="buff" property="伤害加成" calc="add_positive" value="15" duration="1800" buffId="药剂_伤害加成" />
+        <effect type="buff" property="暴击率" calc="add_positive" value="8" duration="1800" buffId="药剂_暴击率" />
         <effect type="buff" property="防御力" calc="add_negative" value="-8" duration="1800" buffId="debuff_药剂_防御力" />
         <effect type="playEffect" name="药剂动画" />
       </effects>
     </data>
+    <balance>
+      <formulaFamily>potion</formulaFamily>
+      <schemaVersion>1</schemaVersion>
+      <formulaVersion>2</formulaVersion>
+      <authorityStatus>workbook-registration-pending</authorityStatus>
+      <sourceLevel>10</sourceLevel>
+      <domain>meal</domain>
+      <balanceMode>formula</balanceMode>
+      <status>runtime-test-pending</status>
+      <currentValue>1046.9</currentValue>
+      <valueCap>1100</valueCap>
+      <formulaPrice>1200</formulaPrice>
+      <marketPrice>1200</marketPrice>
+      <inputDigest>fnv1a32:96be36f5</inputDigest>
+      <sourceDigest>sha256:71079a2d574f2445c3a0774ca85d14844710a4d21210fcc06c8e18d687106f6b</sourceDigest>
+      <auditRef>potion:泡沫水</auditRef>
+    </balance>
   </item>
   <item>
     <name>过肩摔</name>
@@ -390,16 +750,34 @@
     <use>药剂</use>
     <price>3000</price>
     <description>堕落城酒吧特调 Suplex。入口先礼后兵，后劲像被一整记过肩摔砸在吧台上。
-    微醺状态下攻击更加凶猛，但防御意识也会下降。</description>
+    微醺状态下攻击更加凶猛、出手更易暴击，但防御意识也会下降。</description>
     <data>
       <effects>
         <effect type="buffDomain" domain="meal" />
         <effect type="heal" hp="220" mp="400" target="self" scaleWithAlchemy="true" />
         <effect type="buff" property="伤害加成" calc="add_positive" value="30" duration="1800" buffId="药剂_伤害加成" />
+        <effect type="buff" property="暴击率" calc="add_positive" value="15" duration="1800" buffId="药剂_暴击率" />
         <effect type="buff" property="防御力" calc="add_negative" value="-10" duration="1800" buffId="debuff_药剂_防御力" />
         <effect type="playEffect" name="药剂动画" />
       </effects>
     </data>
+    <balance>
+      <formulaFamily>potion</formulaFamily>
+      <schemaVersion>1</schemaVersion>
+      <formulaVersion>2</formulaVersion>
+      <authorityStatus>workbook-registration-pending</authorityStatus>
+      <sourceLevel>22</sourceLevel>
+      <domain>meal</domain>
+      <balanceMode>formula</balanceMode>
+      <status>runtime-test-pending</status>
+      <currentValue>2190.75</currentValue>
+      <valueCap>2300</valueCap>
+      <formulaPrice>3200</formulaPrice>
+      <marketPrice>3000</marketPrice>
+      <inputDigest>fnv1a32:7af4e16d</inputDigest>
+      <sourceDigest>sha256:d64c5cc5a23df86aca10e2ef73347c7de27f8be89a71f3803398267764c24604</sourceDigest>
+      <auditRef>potion:过肩摔</auditRef>
+    </balance>
   </item>
   <item>
     <name>打桩机</name>
@@ -409,16 +787,34 @@
     <use>药剂</use>
     <price>3000</price>
     <description>堕落城酒吧特调 Pile Driver。一拳接一拳的重锤口感，喝完感觉能徒手拆一台机甲。
-    微醺状态下攻击更加凶猛，但防御意识也会下降。</description>
+    微醺状态下攻击更加凶猛、出手更易暴击，但防御意识也会下降。</description>
     <data>
       <effects>
         <effect type="buffDomain" domain="meal" />
         <effect type="heal" hp="220" mp="400" target="self" scaleWithAlchemy="true" />
         <effect type="buff" property="伤害加成" calc="add_positive" value="30" duration="1800" buffId="药剂_伤害加成" />
+        <effect type="buff" property="暴击率" calc="add_positive" value="15" duration="1800" buffId="药剂_暴击率" />
         <effect type="buff" property="防御力" calc="add_negative" value="-10" duration="1800" buffId="debuff_药剂_防御力" />
         <effect type="playEffect" name="药剂动画" />
       </effects>
     </data>
+    <balance>
+      <formulaFamily>potion</formulaFamily>
+      <schemaVersion>1</schemaVersion>
+      <formulaVersion>2</formulaVersion>
+      <authorityStatus>workbook-registration-pending</authorityStatus>
+      <sourceLevel>22</sourceLevel>
+      <domain>meal</domain>
+      <balanceMode>formula</balanceMode>
+      <status>runtime-test-pending</status>
+      <currentValue>2190.75</currentValue>
+      <valueCap>2300</valueCap>
+      <formulaPrice>3200</formulaPrice>
+      <marketPrice>3000</marketPrice>
+      <inputDigest>fnv1a32:858fa697</inputDigest>
+      <sourceDigest>sha256:a62b395a9067b0fa799bfc3700f0fa1038d49756395580e4ccd3f4355d0e0022</sourceDigest>
+      <auditRef>potion:打桩机</auditRef>
+    </balance>
   </item>
   <item>
     <name>灰熊圣殿</name>
@@ -428,16 +824,34 @@
     <use>药剂</use>
     <price>3000</price>
     <description>堕落城酒吧特调 Grizzly Temple。沉稳厚重的山野气息，是只献给耐心饮者的圣殿。
-    微醺状态下攻击更加凶猛，但防御意识也会下降。</description>
+    微醺状态下攻击更加凶猛、出手更易暴击，但防御意识也会下降。</description>
     <data>
       <effects>
         <effect type="buffDomain" domain="meal" />
         <effect type="heal" hp="220" mp="400" target="self" scaleWithAlchemy="true" />
         <effect type="buff" property="伤害加成" calc="add_positive" value="30" duration="1800" buffId="药剂_伤害加成" />
+        <effect type="buff" property="暴击率" calc="add_positive" value="15" duration="1800" buffId="药剂_暴击率" />
         <effect type="buff" property="防御力" calc="add_negative" value="-10" duration="1800" buffId="debuff_药剂_防御力" />
         <effect type="playEffect" name="药剂动画" />
       </effects>
     </data>
+    <balance>
+      <formulaFamily>potion</formulaFamily>
+      <schemaVersion>1</schemaVersion>
+      <formulaVersion>2</formulaVersion>
+      <authorityStatus>workbook-registration-pending</authorityStatus>
+      <sourceLevel>22</sourceLevel>
+      <domain>meal</domain>
+      <balanceMode>formula</balanceMode>
+      <status>runtime-test-pending</status>
+      <currentValue>2190.75</currentValue>
+      <valueCap>2300</valueCap>
+      <formulaPrice>3200</formulaPrice>
+      <marketPrice>3000</marketPrice>
+      <inputDigest>fnv1a32:7b8b3f57</inputDigest>
+      <sourceDigest>sha256:0e306f7d321a537e0886d73e8b5ef1a700462057614108f2b7333c3ebeac1db9</sourceDigest>
+      <auditRef>potion:灰熊圣殿</auditRef>
+    </balance>
   </item>
   <item>
     <name>击腹重拳</name>
@@ -447,16 +861,34 @@
     <use>药剂</use>
     <price>1800</price>
     <description>堕落城酒吧特调 Gut Punch。六份布朗森提取物的直球重击，落胃就是一记闷拳。
-    微醺状态下攻击更加凶猛，但防御意识也会下降。</description>
+    微醺状态下攻击更加凶猛、出手更易暴击，但防御意识也会下降。</description>
     <data>
       <effects>
         <effect type="buffDomain" domain="meal" />
         <effect type="heal" hp="140" mp="240" target="self" scaleWithAlchemy="true" />
         <effect type="buff" property="伤害加成" calc="add_positive" value="20" duration="1800" buffId="药剂_伤害加成" />
+        <effect type="buff" property="暴击率" calc="add_positive" value="10" duration="1800" buffId="药剂_暴击率" />
         <effect type="buff" property="防御力" calc="add_negative" value="-8" duration="1800" buffId="debuff_药剂_防御力" />
         <effect type="playEffect" name="药剂动画" />
       </effects>
     </data>
+    <balance>
+      <formulaFamily>potion</formulaFamily>
+      <schemaVersion>1</schemaVersion>
+      <formulaVersion>2</formulaVersion>
+      <authorityStatus>workbook-registration-pending</authorityStatus>
+      <sourceLevel>14</sourceLevel>
+      <domain>meal</domain>
+      <balanceMode>formula</balanceMode>
+      <status>runtime-test-pending</status>
+      <currentValue>1410.9</currentValue>
+      <valueCap>1500</valueCap>
+      <formulaPrice>1750</formulaPrice>
+      <marketPrice>1800</marketPrice>
+      <inputDigest>fnv1a32:419184b3</inputDigest>
+      <sourceDigest>sha256:2082837d48bb597b31145b843a587c73014f6e4303a1a36788ed1b832b63d4a0</sourceDigest>
+      <auditRef>potion:击腹重拳</auditRef>
+    </balance>
   </item>
   <item>
     <name>阳光云</name>
@@ -466,15 +898,33 @@
     <use>药剂</use>
     <price>1200</price>
     <description>堕落城酒吧特调 Sunshine Cloud。加冰猛摇出的明黄色泡沫云，颓废街区里少有的一抹亮色。
-    微醺状态下攻击更加凶猛，但防御意识也会下降。</description>
+    微醺状态下攻击更加凶猛、出手更易暴击，但防御意识也会下降。</description>
     <data>
       <effects>
         <effect type="buffDomain" domain="meal" />
         <effect type="heal" hp="100" mp="160" target="self" scaleWithAlchemy="true" />
         <effect type="buff" property="伤害加成" calc="add_positive" value="15" duration="1800" buffId="药剂_伤害加成" />
+        <effect type="buff" property="暴击率" calc="add_positive" value="8" duration="1800" buffId="药剂_暴击率" />
         <effect type="buff" property="防御力" calc="add_negative" value="-8" duration="1800" buffId="debuff_药剂_防御力" />
         <effect type="playEffect" name="药剂动画" />
       </effects>
     </data>
+    <balance>
+      <formulaFamily>potion</formulaFamily>
+      <schemaVersion>1</schemaVersion>
+      <formulaVersion>2</formulaVersion>
+      <authorityStatus>workbook-registration-pending</authorityStatus>
+      <sourceLevel>10</sourceLevel>
+      <domain>meal</domain>
+      <balanceMode>formula</balanceMode>
+      <status>runtime-test-pending</status>
+      <currentValue>1046.9</currentValue>
+      <valueCap>1100</valueCap>
+      <formulaPrice>1200</formulaPrice>
+      <marketPrice>1200</marketPrice>
+      <inputDigest>fnv1a32:8c766e96</inputDigest>
+      <sourceDigest>sha256:167959422980690d21065a1c2594fb5c173e68aa34073d723da37b9f5e6482da</sourceDigest>
+      <auditRef>potion:阳光云</auditRef>
+    </balance>
   </item>
 </root>

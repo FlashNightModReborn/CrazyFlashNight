@@ -34,6 +34,7 @@ buffBase = buffHp + buffMp
          + 4 * punch
          + 50 * speedInput
          + 0.4 * toughness
+         + 12.5 * critRate
 
 buffStrength = buffBase * (0.1 + buffFrames / 300)
 currentValue = (instant + regenDiscounted) * 2 ^ isGroup
@@ -51,6 +52,7 @@ valueCap = 100 + sourceLevel * 100
 - 速度输入为“实际加速百分比 ÷ 2”；`+35%/+55%/+75%` 对应 `17.5/27.5/37.5`。
 - 按本批约定 `5 toughness = 1 防御`；防御权重为 2，因此装备 `toughness` 的公式权重为 `0.4`。
 - `toughness` 的运行时增量必须按 `基础韧性系数 × value / 100` 加到最终韧性系数，不能对已含装备值的结果再做百分比乘算。
+- 暴击率 buff（`property="暴击率"`）按固定 1.5 倍暴伤折算：`暴击率% × 0.5` 即等效攻击力提升百分比；等效百分比沿用速度轴口径（百分比 ÷ 2、权重 50），净权重 `12.5/暴击率%`。运行时由 `BulletInitializer.inheritShooterAttributes` 在子弹合并时读取 `shooter.暴击率`，原暴击判定未触发时追加一次独立 1.5 倍判定。
 - `currentValue <= valueCap` 是硬检查；市场价可以因为渠道、叙事和合成门槛偏离公式价，但两者必须分别记录。
 
 ## 3. 产品域

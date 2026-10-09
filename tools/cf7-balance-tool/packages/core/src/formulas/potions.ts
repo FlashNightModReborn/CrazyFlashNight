@@ -52,6 +52,7 @@ export interface PotionV2Input {
   buffPunch: number;
   buffSpeed: number;
   buffToughness: number;
+  buffCritRate: number;    // 暴击率百分比（如 +15 填 15）
   buffDuration: number;
 }
 
@@ -130,6 +131,9 @@ export function computePotionV2Row(input: PotionV2Input): PotionV2Output {
 
   // 用户约定 5 toughness = 1 防御；防御权重为 2，因此 toughness 权重为 0.4。
   const toughnessBase = input.buffToughness * 0.4;
+  // 暴击率按固定 1.5 倍暴伤折算：1% 暴击 ≈ 0.5% 等效攻击力提升；
+  // 等效百分比沿用速度轴口径（实际百分比 ÷ 2 输入、权重 50），净权重为 12.5/暴击率%。
+  const critBase = input.buffCritRate * 12.5;
   const buffBase =
     input.buffHp + input.buffMp +
     input.buffDefence * 2 +
@@ -137,7 +141,8 @@ export function computePotionV2Row(input: PotionV2Input): PotionV2Output {
     input.buffDamage * 3 +
     input.buffSpeed * 50 +
     input.buffPunch * 4 +
-    toughnessBase;
+    toughnessBase +
+    critBase;
   const buffMult = input.buffDuration > 0 ? 0.1 + input.buffDuration / 300 : 12;
   const buffStrength = buffBase * buffMult;
   const toughnessStrength = toughnessBase * buffMult;

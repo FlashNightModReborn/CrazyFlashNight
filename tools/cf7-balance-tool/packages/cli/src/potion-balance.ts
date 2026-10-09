@@ -263,6 +263,7 @@ function deriveFormulaInput(sourceLevel: number, effects: Array<Record<string, u
     buffPunch: 0,
     buffSpeed: 0,
     buffToughness: 0,
+    buffCritRate: 0,
     buffDuration: 0,
   };
   let hasUnsupportedFormulaEffect = false;
@@ -306,6 +307,7 @@ function deriveFormulaInput(sourceLevel: number, effects: Array<Record<string, u
         else if (property === "伤害加成") input.buffDamage += value;
         else if (property === "空手攻击力") input.buffPunch += value;
         else if (property === "行走X速度") input.buffSpeed += (value - 1) * 50;
+        else if (property === "暴击率") input.buffCritRate += value;
         else hasUnsupportedFormulaEffect = true;
         break;
       }
