@@ -80,6 +80,8 @@
 
 情报名词页的出处注记和解锁提示沿用档案墨金与纸色：`--intel-archive-note-*`、`--intel-archive-requirement-*` 统一归属 `css/workbench/tokens.css`，消费处只引用变量；颜色、透明度和已有布局保持一致。
 
+武器库工业材质与铁枪会工契文书分别使用同文件的 `--wb-armory-*`、`--wb-ironspear-*` 角色色板，保留现有黑灰军工红、暗钢铜金与朱印配色；两类入口和开发 harness 均须先加载该真源，不在消费样式附加裸色 fallback。武器库与情报插图共用 `--wb-blueprint-*` 蓝图材质。既有动效值也集中到各角色 token，reduced-motion 下由各面板关闭过渡或印章动画并保留静态终态。
+
 ---
 
 ## 6. UI 语义色（跨面板统一）

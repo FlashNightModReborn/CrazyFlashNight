@@ -1105,8 +1105,88 @@
     --wb-armory-arm-panel-2: #191b1f;
     --wb-armory-arm-red: #c0272d;
     --wb-armory-arm-red-soft: rgba(192,39,45,.35);
-    --wb-armory-arm-bp: #233447;
-    --wb-armory-arm-bp-line: rgba(160,190,225,.14);
+    --wb-armory-arm-bp: var(--wb-blueprint-background);
+    --wb-armory-arm-bp-line: var(--wb-blueprint-grid);
     --wb-armory-arm-ready: #58e6a8;
     --wb-armory-arm-blocked: #e05560;
+}
+
+/* 武器库与情报插图共享蓝图材质；保留现役 RGB、透明度和网格。 */
+:root {
+    --wb-blueprint-background: #233447;
+    --wb-blueprint-grid: rgba(160,190,225,.14);
+    --wb-blueprint-glow: rgba(160,200,240,.35);
+    --wb-blueprint-border: rgba(30,42,58,.55);
+    --wb-blueprint-caption: rgba(200,220,245,.72);
+}
+
+/* 武器库工业材质的角色色与动效；入口统一加载，不再保留裸色 fallback。 */
+.arm-panel {
+    --wb-armory-scroll-track: #0c0d0f;
+    --wb-armory-scroll-thumb: #2e3136;
+    --wb-armory-scroll-frame: #3a3d44;
+    --wb-armory-header-edge: #1e2024;
+    --wb-armory-header-center: #141518;
+    --wb-armory-header-stripe: rgba(255,255,255,.028);
+    --wb-armory-insignia: #d8dce2;
+    --wb-armory-credit: #9db4d8;
+    --wb-armory-list-background: #101114;
+    --wb-armory-item-top: #1b1d21;
+    --wb-armory-item-bottom: #141517;
+    --wb-armory-hover-line: #4a4e55;
+    --wb-armory-hover-background: #1f2126;
+    --wb-armory-item-selected-background: rgba(192,39,45,.14);
+    --wb-armory-icon-background: #0b0c0e;
+    --wb-armory-veil: rgba(14,15,17,.82);
+    --wb-armory-shadow: rgba(0,0,0,.4);
+    --wb-armory-print-line: rgba(255,255,255,.10);
+    --wb-armory-print-outline: rgba(255,255,255,.25);
+    --wb-armory-print-background: rgba(12,14,18,.55);
+    --wb-armory-print-ink: rgba(200,220,245,.55);
+    --wb-armory-requirement-line: rgba(150,155,165,.5);
+    --wb-armory-requirement-background: rgba(255,255,255,.02);
+    --wb-armory-confirm-top: rgba(192,39,45,.28);
+    --wb-armory-confirm-bottom: rgba(192,39,45,.16);
+    --wb-armory-confirm-ink: #f2d9da;
+    --wb-armory-confirm-glow: rgba(192,39,45,.4);
+    --wb-armory-raised-shadow: rgba(0,0,0,.5);
+    --wb-armory-close-transition: color .12s, border-color .12s;
+    --wb-armory-item-transition: border-color .15s, background .15s;
+    --wb-armory-confirm-transition: box-shadow .15s, transform .12s;
+}
+
+/* 铁枪会工契文书：暗钢、铜金与朱印，保留既有派系配色。 */
+.isp-panel {
+    --wb-ironspear-background: #1c2126;
+    --wb-ironspear-surface: #232a31;
+    --wb-ironspear-line: #3a434d;
+    --wb-ironspear-bronze: #b08d57;
+    --wb-ironspear-bronze-dim: #7d6744;
+    --wb-ironspear-ink: #d7dde3;
+    --wb-ironspear-ink-dim: #8d98a3;
+    --wb-ironspear-seal: #b03430;
+    --wb-ironspear-ready: #7fb98a;
+    --wb-ironspear-warning: #c9635a;
+    --wb-ironspear-panel-glow: rgba(176,141,87,.07);
+    --wb-ironspear-panel-top: #22282f;
+    --wb-ironspear-header-background: rgba(0,0,0,.18);
+    --wb-ironspear-totem-glow: rgba(176,141,87,.35);
+    --wb-ironspear-ready-line: rgba(127,185,138,.4);
+    --wb-ironspear-warning-line: rgba(201,99,90,.5);
+    --wb-ironspear-hover-background: rgba(176,141,87,.08);
+    --wb-ironspear-selected-background: rgba(176,141,87,.14);
+    --wb-ironspear-paper-glow: rgba(176,141,87,.05);
+    --wb-ironspear-detail-background: rgba(0,0,0,.22);
+    --wb-ironspear-requirement-background: rgba(0,0,0,.15);
+    --wb-ironspear-stamp-ink: #d8443a;
+    --wb-ironspear-stamp-glow: rgba(216,68,58,.8);
+    --wb-ironspear-image-light: #fff;
+    --wb-ironspear-image-glow: rgba(176,141,87,.75);
+    --wb-ironspear-scrollbar: rgba(176,141,87,.45);
+    --wb-ironspear-scroll-track: rgba(0,0,0,.25);
+    --wb-ironspear-scroll-thumb: rgba(176,141,87,.32);
+    --wb-ironspear-scroll-frame: rgba(176,141,87,.5);
+    --wb-ironspear-scroll-hover: rgba(176,141,87,.55);
+    --wb-ironspear-veil: rgba(28,33,38,.55);
+    --wb-ironspear-stamp-animation: isp-stamp-in 0.5s cubic-bezier(0.2, 0.8, 0.35, 1.15);
 }

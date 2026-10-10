@@ -1,0 +1,70 @@
+{
+  "schema": "cf7-shared-hud-playtest-acceptance.v1",
+  "implementationCommit": "2f7b839d83fdf46c78300e1015c0f5541e8438e7",
+  "humanFeedback": "玩了一圈感觉没问题",
+  "authorization": "看看日志还有没有什么值得注意的地方，如果没有那就走发布列车吧",
+  "releaseDecision": "No blocking regression identified for the scoped shared-HUD changes; proceed with the authorized RuntimeBundleV2 release",
+  "sessionStartedLocal": "2026-10-10T20:26:06+08:00",
+  "sessionEndedLocal": "2026-10-10T20:31:14.344+08:00",
+  "sessionLogSha256": "873BAE7ADA8C1530230D4ACAE80854A96D9CD0BA2AC3DF4E5966833E7C734C3C",
+  "perfLogSha256": "47A162F7A599CBADE9337AA5B19C2FB638DD9BA36743E9C9888CA4236BCE6338",
+  "candidateRelativePath": "tmp/runtime-candidates/v2/hud-work-1010-final",
+  "candidateBuildIdentity": "9E5A7FFD14A82D47C9C0197196BF51A715B46D75D727C440067B6F832649DA4B",
+  "candidatePayloadClosure": "B435D4135AA68731FDA1823D54003E1F2CBFC7C89E6450C615C1F85D340284FC",
+  "candidateCoreSha256": "511E77AC5C5554946F25BF80BAEF88B1FA0A8782FEFE4D06C0D93A6DCD563F5B",
+  "identityEvidence": "Actual Core apphost path in fresh DPI log; retained immutable candidate metadata, bytes and selected index agree. Old September focus recording excluded.",
+  "criticalEventCounts": {
+    "hudPaintException": 0,
+    "worldRenderFault": 0,
+    "hudBackendFault": 0,
+    "unhandledException": 0,
+    "saveFailure": 0
+  },
+  "transitions": {
+    "begun": 9,
+    "revealed": 9,
+    "allBegunIdsRevealed": true
+  },
+  "input": {
+    "consumedSeq": 806,
+    "completedSeq": 806,
+    "stale": 4,
+    "invalid": 0,
+    "brokerExitCode": 0,
+    "closeConfirmed": true
+  },
+  "exit": {
+    "flashExitCode": 0,
+    "flashUptimeSeconds": 300.2,
+    "shutdownCompleted": true
+  },
+  "save": {
+    "flushTrueObserved": true,
+    "shadowConfirmationTrueObserved": true,
+    "saveFailureObserved": false,
+    "note": "User-operated real save journey; read-only review did not inject save operations"
+  },
+  "retainedObservations": [
+    {
+      "kind": "flash-long-frame",
+      "durationMs": 3719,
+      "reportedLocalTime": "20:31:10.556",
+      "context": "Loot/materials panel and return transition; main HUD suspended until 20:31:10.374; Host continued emitting world status during the gap; reveal completed at 20:31:11.335",
+      "causality": "Not established; not attributed to the shared-HUD optimization"
+    },
+    {
+      "kind": "shutdown-request-cancelled",
+      "localTime": "20:31:13.170",
+      "message": "RagTerminal shutdown request cancelled after user close; Flash and broker subsequently exited 0"
+    }
+  ],
+  "performanceBoundary": {
+    "readySampleCount": 458,
+    "minimumSampleFps": 13.38,
+    "medianSampleFps": 26.79,
+    "scope": "Uncontrolled single playtest; not an A/B benefit measurement or stable 30 FPS qualification"
+  },
+  "rawEvidenceRoot": "tmp/hud-cost-release-20261010",
+  "formalPromotionProvenByThisRecord": false,
+  "standardEntryBusinessVerified": false
+}

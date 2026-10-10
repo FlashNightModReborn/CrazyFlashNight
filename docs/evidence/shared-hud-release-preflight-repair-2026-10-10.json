@@ -1,0 +1,89 @@
+{
+  "schema": "cf7-shared-hud-release-preflight-repair.v1",
+  "failedSourceCommit": "5ea687e2a7730ac35209d17b77b8c6bd47528c8a",
+  "failedSourceTag": "runtime-build-v2/20261010-shared-hud-cost-v1",
+  "failedRequestId": "B7543DC2D5F79A73B1C389CA72CC47252AAB5FC8F9F7AF7005F645FE23090738",
+  "failedPolicyReceiptSha256": "D8AD79D7430D4A09A5ED6B489877567352FEEDD848B12D5F441488B5A547D3A6",
+  "failedPolicyChecks": [
+    "material-catalog-current",
+    "combat-bullet-assets-current",
+    "workbench-lazy-portrait-closure",
+    "workbench-ui-ratchet-regression",
+    "workbench-ui-release-tree-audit"
+  ],
+  "passedPolicyChecks": 42,
+  "totalPolicyChecks": 47,
+  "failedAttemptDisposition": "retained; supersede with a new immutable v2 request after repair",
+  "cloudDispatchedForFailedSource": false,
+  "failedSourcePromoted": false,
+  "generatedAssets": {
+    "materialCommand": "python -B -X utf8 tools/derive-material-catalog.py derive; --check",
+    "bulletCommand": "python -B -X utf8 tools/combat-bullet-visuals/build.py; --check",
+    "onlySourceProvenanceChanged": true,
+    "materialDictionaryUnchanged": true,
+    "materialDictionarySha256": "012D1415B7DA4E78F05E06D5728B1F33EF6E767A627DB35993E91A8EAEC3DDC8",
+    "bulletAtlasUnchanged": true,
+    "bulletAtlasSha256": "8D74AB776151FE69A322FCD2DCABED76023C7690C6934A972DFA4F5E2BE82A74"
+  },
+  "lazyClosure": {
+    "passed": true,
+    "exactOrderedDependenciesAdded": [
+      "modules/armory.js",
+      "modules/ironspear.js"
+    ],
+    "productionRegistryChanged": false
+  },
+  "css": {
+    "strictErrors": 0,
+    "strictWarnings": 0,
+    "ratchetPassed": 68,
+    "ratchetTotal": 68,
+    "ceilingsRaised": false,
+    "currentCounts": {
+      "rawColor": 2031,
+      "fontBelow9": 0,
+      "font9PlayerText": 31,
+      "rawDuration": 105,
+      "rawEasing": 91,
+      "transitionAll": 12
+    },
+    "browserCases": 38,
+    "colorAndExistingMotionParityCases": 34,
+    "reducedMotionCases": 4,
+    "viewports": [
+      {
+        "width": 1024,
+        "height": 576
+      },
+      {
+        "width": 1280,
+        "height": 720
+      }
+    ],
+    "fontChange": {
+      "selectors": [
+        ".arm-item-idx",
+        ".arm-item-state",
+        ".arm-doc-sign small"
+      ],
+      "before": "9px",
+      "after": "10px"
+    },
+    "fixtureScope": "production panel DOM and CSS; existing fixture host transport, no game business journey",
+    "fixtureModuleUrlCorrection": "Served harness ../armory.js and ../ironspear.js as ../../armory.js and ../../ironspear.js to load production files",
+    "browserReportSha256": "CFC715887B90ED546C841111675BB942E11B7D45354EC29C4C051C87171100F3"
+  },
+  "materialRecipeBrowser": {
+    "passedPerViewport": 26,
+    "totalPerViewport": 26,
+    "viewports": [
+      "1024x576",
+      "1366x768",
+      "1920x1080"
+    ]
+  },
+  "productionCoreOrNativeChanged": false,
+  "realPlayerSaveWrites": false,
+  "gameBusinessE2e": false,
+  "rawEvidenceRoot": "tmp/hud-cost-release-20261010"
+}
