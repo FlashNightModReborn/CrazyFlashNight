@@ -67,4 +67,4 @@ Phase 1 强制要求 WebView2 Runtime 可用。启动时预检 `CoreWebView2Envi
 - [x] close-policy 表六状态在 BootstrapForm.OnFormClosingGuard 实装
 - [x] WebView2 预检在 Run() 入口前置；`--force-webview-fail` 生效
 - [x] TrayIcon 初始 Visible=false，readyWiring 中 `form.ShowTrayIcon()` 触发
-- [ ] ExitGuard 覆盖测试 (`OnShutdownEarly` 注入 10s sleep 验证 8s Environment.Exit(1) 仍生效) — **待 11b-β 收尾**
+- [x] ExitGuard 覆盖测试（`OnShutdownEarly` 注入 10s sleep 验证 8s `Environment.Exit(1)` 仍生效）— `tests/Guardian/ExitGuardBehaviorTests.cs`：子进程跑真实构建产物 `CRAZYFLASHER7MercenaryEmpire.Core.exe` + `CF7_EXITGUARD_PROBE=<ms>` 探针；10s 阻塞→exit 1@8s，500ms→exit 0 不误杀。探针实装 `src/Guardian/ExitGuardProbe.cs` + `Program.cs` 最早门控。

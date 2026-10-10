@@ -514,6 +514,18 @@ class Program
         // 独立输入进程复用同一不可变 Core，先验证父进程路径和模块身份，不触达存档/游戏启动。
         if (HotkeyGuard.IsInvocation(args)) return HotkeyGuard.Run(args[1..]);
 
+        // ExitGuard 覆盖测试探针（phase1 矩阵最后一行）：仅 CF7_EXITGUARD_PROBE=<毫秒>
+        // 显式门控时激活，早于 diagnostics/启动组件，不触达存档/游戏启动。
+        // 真实 GuardianForm + ForceExit 走完整 DoExit；OnShutdownEarly 注入
+        // Thread.Sleep(ms) 阻塞，验证 ExitGuard 8s 强杀仍生效（exit code 1）。
+        string exitGuardProbe = Environment.GetEnvironmentVariable("CF7_EXITGUARD_PROBE");
+        if (exitGuardProbe != null)
+        {
+            int earlySleepMs;
+            if (!int.TryParse(exitGuardProbe, out earlySleepMs)) earlySleepMs = 10000;
+            return CF7Launcher.Guardian.ExitGuardProbe.Run(earlySleepMs);
+        }
+
         // candidate runtime-only 是显式的人类验收能力，不能让目录 walk-up 隐式触发。
         string explicitProjectRoot = TryGetProjectRootFromArgs(args);
         string earlyProjectRoot = explicitProjectRoot
