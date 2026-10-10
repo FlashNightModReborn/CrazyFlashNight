@@ -19,7 +19,7 @@ this._rotation = 0;]]></script>
                 <script><![CDATA[this.Z轴攻击范围 = 60;
 this.子弹威力 *= 0.5;
 this.水平击退速度 = 10;
-this.水平击退反向 = true;]]></script>
+this.stateFlags |= 2;  // STATE_REVERSE_KNOCKBACK（原 this.水平击退反向 = true，帧脚本无宏可含，直接位运算）]]></script>
               </Actionscript>
               <elements/>
             </DOMFrame>

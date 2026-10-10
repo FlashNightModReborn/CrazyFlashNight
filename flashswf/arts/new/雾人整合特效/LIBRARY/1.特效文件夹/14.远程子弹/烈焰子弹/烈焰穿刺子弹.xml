@@ -39,7 +39,7 @@ this.removeMovieClip();
             </DOMFrame>
             <DOMFrame index="1" keyMode="9728">
               <Actionscript>
-                <script><![CDATA[if(击中地图){
+                <script><![CDATA[if((stateFlags & 32) != 0){ // STATE_HIT_MAP
 	this.removeMovieClip();
 }]]></script>
               </Actionscript>

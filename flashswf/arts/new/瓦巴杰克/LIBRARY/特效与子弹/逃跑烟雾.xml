@@ -44,7 +44,7 @@
             <DOMFrame index="26" duration="6" keyMode="9728">
               <Actionscript>
                 <script><![CDATA[stop();
-this.击中地图 = true;
+this.stateFlags |= 32;  // STATE_HIT_MAP
 this.removeMovieClip();]]></script>
               </Actionscript>
               <elements/>

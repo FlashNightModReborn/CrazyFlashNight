@@ -21,13 +21,15 @@ class org.flashNight.arki.unit.UnitComponent.Initializer.EventComponent.HitEvent
     }
 
     public static function onMapElementHit(target:MovieClip, shooter:MovieClip, bullet:MovieClip):Void {
+        // === 宏展开：实例状态标志位 ===
+        #include "../macros/STATE_REVERSE_KNOCKBACK.as"
 
         target.hitPoint--;
 
 
         if(target.hitPoint <= 0) {
             var dispatcher:EventDispatcher = target.dispatcher;
-            var hitDirection:Boolean = Boolean((target._x < shooter._x) ^ bullet.水平击退反向);
+            var hitDirection:Boolean = Boolean((target._x < shooter._x) ^ ((bullet.stateFlags & STATE_REVERSE_KNOCKBACK) != 0));
             target._xscale = (hitDirection ? 100 : -100);
 
             target.hp = 0;

@@ -159,7 +159,9 @@ class org.flashNight.arki.bullet.BulletComponent.Lifecycle.PierceBulletLifecycle
         else if (mode == "miss") hit(target, true, 1);
         else if (mode == "vanish") target.gotoAndPlay("消失");
         else if (mode == "map" || mode == "custom-map") {
-            target.击中地图 = true;
+            // === 宏展开：实例状态标志位 ===
+            #include "../macros/STATE_HIT_MAP.as"
+            target.stateFlags |= STATE_HIT_MAP;
             if (target.击中地图时触发函数) target.击中地图时触发函数();
             if (target._parent) target.gotoAndPlay("消失");
         }

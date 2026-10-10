@@ -183,13 +183,13 @@ onClipEvent (enterFrame) {
 			子弹属性.子弹敌我属性 = 子弹属性.子弹敌我属性;
 			*/
 			_root.子弹区域shoot传递(子弹属性);
-			_parent.击中地图 = true;
+			_parent.stateFlags |= 32;  // STATE_HIT_MAP
 			_parent.removeMovieClip();
 		}
 	}
 	if (持续帧 > 38)
 	{
-		_parent.击中地图 = true;
+		_parent.stateFlags |= 32;  // STATE_HIT_MAP
 		_parent.removeMovieClip();
 
 	}

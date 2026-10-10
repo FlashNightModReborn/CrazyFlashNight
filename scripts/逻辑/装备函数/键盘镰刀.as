@@ -181,7 +181,9 @@
         ref.__兵器跳浮空维持Hooked = true;
 
         var 兵器跳浮空维持硬直触发:Function = function():Void {
-            if (this.击中地图) return;
+            // === 宏展开：实例状态标志位 ===
+            #include "../macros/STATE_HIT_MAP.as"
+            if ((this.stateFlags & STATE_HIT_MAP) != 0) return;
 
             var shooter:MovieClip = this.shooter;
             if (!shooter) return;

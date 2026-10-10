@@ -293,12 +293,33 @@ _root.联弹系统.联弹消失 = function(clip:MovieClip):Void {
 
 当满足以下条件时，可以移除 `installStateFlagsAccessors`：
 
-- [ ] 核弹爆炸.xml:128 改为位运算
-- [ ] 裂地拳.xml:22 改为位运算
-- [ ] HitEventComponent.as:30 改为位运算
-- [ ] 战斗系统_fs_联弹管理.as:77 改为位运算
-- [ ] 所有子弹XML中的 `击中地图` 读取改为位运算
+- [x] 核弹爆炸.xml:138 改为位运算（`this.stateFlags |= 4`，帧脚本无宏含 → 字面量+注释，2026-10-10）
+- [x] 裂地拳.xml:22 改为位运算（`this.stateFlags |= 2`，同上）
+- [x] HitEventComponent.as:30 改为位运算（`#include "../macros/STATE_REVERSE_KNOCKBACK.as"` + `(bullet.stateFlags & STATE_REVERSE_KNOCKBACK) != 0`）
+- [x] 战斗系统_fs_联弹管理.as 改为位运算（两处：联弹消失 `clip` 读 + 对象联弹消失 `bullet` 读，均 `#include` 宏）
+- [x] 所有子弹XML中的 `击中地图` 读取改为位运算（原版素材库-子弹 10 个 + 雾人整合特效 3 个，`(stateFlags & 32) != 0`；次级穿刺子弹已被重写为 `击中地图时触发函数` 回调，无裸读）
 - [ ] 所有技能脚本中的 `不硬直` 设置确认被框架正确处理
+
+### 2026-10-10 补充迁移（原审计清单外，同一全仓扫描发现）
+
+| 位置 | 类型 | 迁移后 |
+|------|------|--------|
+| 瓦巴杰克/登上明星子弹.xml:186,192 | `_parent.击中地图 = true` 写入×2 | `_parent.stateFlags |= 32` |
+| 瓦巴杰克/能量盾.xml:38 | `this.击中地图 = true` 写入 | `this.stateFlags |= 32` |
+| 瓦巴杰克/蜘蛛王2.xml:53 | 同上 | 同上 |
+| 瓦巴杰克/逃跑烟雾.xml:47 | 同上 | 同上 |
+| 瓦巴杰克/震血.xml:23 | 同上 | 同上 |
+| 雾人整合特效/冰冷穿刺子弹.xml:43 | `if(击中地图)` 读 | `if((stateFlags & 32) != 0)` |
+| 雾人整合特效/巨型穿刺能量子弹.xml:64 | 同上 | 同上 |
+| 雾人整合特效/烈焰穿刺子弹.xml:42 | 同上 | 同上 |
+| 键盘镰刀.as:184（兵器跳浮空维持硬直触发） | `this.击中地图` 读 | `#include` + `(this.stateFlags & STATE_HIT_MAP) != 0` |
+| PierceBulletLifecycleTest.as:162 | 测试夹具 `target.击中地图 = true` | `target.stateFlags |= STATE_HIT_MAP` |
+
+### 验证状态
+
+- .as 改动（4 文件，含 BOM 保持）需 `scripts/asLoader` `-Target publish` 编译证据。
+- XFL 帧脚本改动（19 文件）需 瓦巴杰克.xfl / 原版素材库-子弹.xfl / 雾人整合特效.xfl publish + 对应 SWF 刷新 + ffdec 导出脚本核对标志串。
+- 语义不变式：访问器 setter/getter 即同名位运算，迁移前后 `stateFlags` 读写等价；初始化期写入（核弹爆炸帧0、上帝之杖帧0、各 `不硬直` 初始化）仍走访问器，属兼容期设计。
 
 ---
 

@@ -236,13 +236,15 @@ _root.联弹系统.爆炸联弹预处理 = function(clip:MovieClip):Void {
  * ===================================================================== */
 
 _root.联弹系统.联弹消失 = function(clip:MovieClip):Void {
+    // === 宏展开：实例状态标志位 ===
+    #include "../macros/STATE_HIT_MAP.as"
     // 停止当前播放，防止继续播放后续帧动画
     clip.stop();
     // 设置标记为 true，表示联弹处于消失状态
     clip.flag = true;
 
     // 判断条件：如果霰弹值小于等于1，或者已经击中地图，则直接移除该 MovieClip
-    if (clip.霰弹值 <= 1 || clip.击中地图) {
+    if (clip.霰弹值 <= 1 || (clip.stateFlags & STATE_HIT_MAP) != 0) {
         // 先显式回收单元体组，再移除子弹本体
         ChainUnitManager.removeGroupByBullet(clip);
         clip.removeMovieClip();
@@ -1069,8 +1071,10 @@ _root.联弹系统.对象联弹初始化 = function(bullet:Object):Void {
 // 霰弹值耗尽或击中地图 → 销毁（removeMovieClip 垫片回收碰撞器与单元体组）；
 // 否则仅置 flag，剩余单元体继续由统一 tick 驱动飞行
 _root.联弹系统.对象联弹消失 = function(bullet:Object):Void {
+    // === 宏展开：实例状态标志位 ===
+    #include "../macros/STATE_HIT_MAP.as"
     bullet.flag = true;
-    if (bullet.霰弹值 <= 1 || bullet.击中地图) {
+    if (bullet.霰弹值 <= 1 || (bullet.stateFlags & STATE_HIT_MAP) != 0) {
         bullet.removeMovieClip();
     }
 };
