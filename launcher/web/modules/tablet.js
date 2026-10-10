@@ -17,14 +17,29 @@
   var ASSETS = (typeof window !== 'undefined' && window.CF7_TABLET_ASSET_ROOT) || 'assets/tablet/';
   var VIEW_ORDER = ['hub', 'infrastructure', 'contacts', 'encyclopedia', 'materials'];
 
-  var shell = null, stage = null, bg = null, overlay = null, tipEl = null;
-  var backBtn = null, closeBtn = null, statusEl = null;
+  var shell = null, stage = null, bg = null, bgAlt = null, overlay = null, hoverImg = null;
+  var iconLayer = null, statusEl = null;
+  var navIcons = {};                // DOM 化图标层（原 XFL 按钮与图标分离，迁移后同样分离才能复现位移/淡入）
+  var ambientImgs = {};             // 常驻动画层（帧序列：退出乱码闪变 / 无人机）
+  var ambientTimer = null;
   var manifest = null, initData = {}, mux = null;
   var disposers = [];
   var currentView = 'hub';
+  var switching = false;            // 转场在途（原 XFL 按钮占用）
+  var closingOnce = false;
+  var NAV_KEYS = ['infrastructure', 'contacts', 'encyclopedia'];
+  // 子视图里仅当前页图标保留（左上 = 重按返回），其余图标淡出；材料页图鉴图标作面包屑
+  var VIEW_ACTIVE_ICON = {
+    infrastructure: 'infrastructure', contacts: 'contacts',
+    encyclopedia: 'encyclopedia', materials: 'encyclopedia'
+  };
+  var AMBIENT_KEYS = ['exitGlow', 'drone'];
+  var TRANS_MS = 380;               // 原 XFL 进入/返回约 15 帧@30fps ≈ 0.5s，取 0.38s 近似
   var data = { contacts: [], materials: [], infrastructure: [] };
   var infraLevels = {};           // name→level；{} = 未同步快照
   var infraSynced = false;        // 是否已收到 AS2 基建快照
+  var infraAssets = null;         // AS2 权威物资快照 {money, materials{name→n}, skills{name→lv}}
+  var ragAvailable = false;       // AS2 快照的 npc_state_db_exists（原 XFL 终端通信显隐条件）
   var upgradeBusy = false;        // 升级命令在途（防重发）
   var selectedContact = -1, selectedInfra = -1, selectedMaterial = -1;
 
@@ -53,19 +68,36 @@
       + (box.w / v.w * 100).toFixed(3) + '%;height:'
       + (box.h / v.h * 100).toFixed(3) + '%;';
   }
-  function hotspot(view, box, label, fn, disabled) {
+  // hoverKey：hub 三入口悬停时显示烘焙的悬停说明浮层（原 XFL 悬停说明 sprite，
+  // 烘成 hover-*.svg 单件按烘焙包围盒盖在图标旁），其余热点无悬停说明
+  function hotspot(view, box, label, fn, disabled, hoverKey) {
     var b = el('button', 'tablet-hotspot' + (disabled ? ' disabled' : ''));
     b.type = 'button';
     b.style.cssText = hsStyle(view, box);
     b.setAttribute('aria-label', label);
-    b.title = label;
-    listen(b, 'mouseenter', function () { tip(label); });
-    listen(b, 'mouseleave', function () { tip(''); });
+    if (hoverKey) {
+      listen(b, 'mouseenter', function () { showHover(hoverKey); });
+      listen(b, 'mouseleave', hideHover);
+    }
     if (disabled) { b.setAttribute('aria-disabled', 'true'); }
     else listen(b, 'click', fn);
     return b;
   }
-  function tip(text) { if (tipEl) { tipEl.textContent = text || ''; tipEl.hidden = !text; } }
+  function showHover(key) {
+    var hb = manifest && manifest.hovers && manifest.hovers[key];
+    if (!hb || !hoverImg) return;
+    hoverImg.src = ASSETS + 'hover-' + key + '.svg';
+    hoverImg.style.cssText = hsStyle('hub', hb);
+    hoverImg.hidden = false;
+    // 引导线遮罩扫入的近似：clip-path 左→右展开
+    hoverImg.classList.remove('on');
+    requestAnimationFrame(function () { hoverImg.classList.add('on'); });
+  }
+  function hideHover() {
+    if (!hoverImg) return;
+    hoverImg.classList.remove('on');
+    hoverImg.hidden = true;
+  }
 
   // ── 受管域信封（domain:'tablet'）──
   function createMux() {
@@ -120,49 +152,142 @@
     currentView = name;
     shell.setAttribute('data-view', name);
     bg.src = ASSETS + (name === 'hub' ? 'hub.svg' : 'view-' + name + '.svg');
-    backBtn.hidden = name === 'hub';
+    hideHover();
     render();
+  }
+
+  // ── 转场动画：复现原 XFL"图标飞到左上 + 内容淡入"——
+  //    图标是独立 DOM 层（烘焙已把图标从背景剥离），切视图时先动图标位置，
+  //    同时背景交叉淡化，转场结束才提交新视图的热点/内容 ──
+  function viewBgSrc(name) { return ASSETS + (name === 'hub' ? 'hub.svg' : 'view-' + name + '.svg'); }
+  function iconBoxCss(box) { return hsStyle('hub', box); } // 各视图共用同一 viewBox
+
+  function applyIconPlaces(view) {
+    var pl = (manifest.iconPlaces || {})[view] || {};
+    NAV_KEYS.forEach(function (k) {
+      var img = navIcons[k];
+      if (!img || !pl[k]) return;
+      img.style.cssText = iconBoxCss(pl[k]);
+      if (img.hidden) return;   // 唤起交错未完成前只定位，点亮交给 onOpen 的 stagger
+      // 子页中非当前图标淡出（原版这些图标在子视图 _visible=0 / 不可见）
+      img.classList.toggle('shown', !VIEW_ACTIVE_ICON[view] || VIEW_ACTIVE_ICON[view] === k);
+    });
+  }
+
+  // ── 常驻动画：帧序列按视图摆放（叉的「退出」乱码闪变、联络页无人机飞行），
+  //    单一计时器驱动全部在屏图层，原速 = SWF 帧率 ──
+  function applyAmbient(view) {
+    var amb = (manifest && manifest.ambient) || {};
+    AMBIENT_KEYS.forEach(function (key) {
+      var meta = amb[key];
+      var pl = meta && meta.places && meta.places[view];
+      var img = ambientImgs[key];
+      if (!pl) { if (img) img.hidden = true; return; }
+      if (!img) {
+        img = el('img', 'tablet-ambient');
+        img.alt = ''; img.draggable = false;
+        stage.insertBefore(img, overlay);
+        ambientImgs[key] = img;
+        for (var i = 1; i <= meta.frames; i++) {  // 预载，免首轮逐张取图
+          var pre = new Image();
+          pre.src = ASSETS + 'ambient/' + key + '/f' + (i < 10 ? '0' : '') + i + '.png';
+        }
+      }
+      img.style.cssText = hsStyle(view, pl);
+      img.src = ASSETS + 'ambient/' + key + '/f01.png';
+      img.hidden = false;
+    });
+  }
+  function startAmbient() {
+    if (ambientTimer) return;
+    ambientTimer = setInterval(function () {
+      var now = Date.now();
+      for (var key in ambientImgs) {
+        var img = ambientImgs[key];
+        var meta = manifest && manifest.ambient && manifest.ambient[key];
+        if (!img || img.hidden || !meta || !meta.frames) continue;
+        var fi = Math.floor(now * meta.fps / 1000) % meta.frames;
+        if (img._fi !== fi) {
+          img._fi = fi;
+          img.src = ASSETS + 'ambient/' + key + '/f' + (fi + 1 < 10 ? '0' : '') + (fi + 1) + '.png';
+        }
+      }
+    }, 40);
+  }
+  function crossfadeBg(name) {
+    var src = viewBgSrc(name);
+    if (!bgAlt) { bg.src = src; return; }
+    bgAlt.classList.remove('on');
+    bgAlt.src = src;
+    bgAlt.hidden = false;
+    requestAnimationFrame(function () { bgAlt.classList.add('on'); });
+    setTimeout(function () {
+      bg.src = src;
+      bgAlt.classList.remove('on');
+      bgAlt.hidden = true;
+    }, TRANS_MS + 60);
+  }
+  function goTo(name) {
+    if (switching || name === currentView) return;
+    switching = true;
+    stage.classList.add('switching', 'entered');
+    applyIconPlaces(name);   // 图标位移先行，正是原版的飞行效果
+    crossfadeBg(name);
+    setTimeout(function () {
+      setView(name);
+      switching = false;
+      stage.classList.remove('switching');
+    }, TRANS_MS);
+    // entered 保留到 DOM 淡入播完再摘，避免选行重渲染也重播入场
+    setTimeout(function () { stage.classList.remove('entered'); }, TRANS_MS + 350);
+  }
+  // 关闭动画：原 XFL 按来源页播收起动画；近似为整体缩小淡出
+  function exitWithAnim() {
+    if (shell && !closingOnce) {
+      closingOnce = true;
+      shell.classList.add('closing');
+      setTimeout(requestClose, 280);
+    } else {
+      requestClose();
+    }
   }
 
   // ── 各视图 ──
   function render() {
     clearStage(); status('');
+    applyIconPlaces(currentView);
+    applyAmbient(currentView);
     ({ hub: renderHub, infrastructure: renderInfra, contacts: renderContacts,
        encyclopedia: renderEnc, materials: renderMaterials })[currentView]();
   }
 
   function renderHub() {
     var h = manifest.hotspots || {};
-    overlay.appendChild(hotspot('hub', h.nav_infrastructure, '基建', function () { setView('infrastructure'); }));
-    overlay.appendChild(hotspot('hub', h.nav_contacts, '联络', function () { setView('contacts'); }));
-    overlay.appendChild(hotspot('hub', h.nav_encyclopedia, '图鉴', function () { setView('encyclopedia'); }));
-    overlay.appendChild(hotspot('hub', h.exit, '退出', requestClose));
+    overlay.appendChild(hotspot('hub', h.nav_infrastructure, '基建', function () { goTo('infrastructure'); }, false, 'nav_infrastructure'));
+    overlay.appendChild(hotspot('hub', h.nav_contacts, '联络', function () { goTo('contacts'); }, false, 'nav_contacts'));
+    overlay.appendChild(hotspot('hub', h.nav_encyclopedia, '图鉴', function () { goTo('encyclopedia'); }, false, 'nav_encyclopedia'));
+    overlay.appendChild(hotspot('hub', h.exit, '退出', exitWithAnim));
   }
 
-  function renderEnc() { renderEncHotspots(null); }
-
-  // 图鉴六分类热点：在 encyclopedia 与 materials 视图共用（背景帧同版心）
-  function renderEncHotspots(activeKey) {
-    var h = manifest.encHotspots || {};
-    var items = [
-      ['sidequests', '支线查询'], ['materials', '材料大全'], ['characters', '角色信息'],
-      ['texts', '文本收集'], ['units', '单位说明'], ['factions', '阵营信息']
-    ];
-    items.forEach(function (it) {
-      var key = it[0], label = it[1];
-      if (!h[key]) return;
-      var ready = key === 'materials';
-      var node = hotspot('encyclopedia', h[key], label + (ready ? '' : '（暂未接入）'),
-        key === activeKey ? function () {}
-          : ready ? function () { setView('materials'); }
-          : function () { status(label + ' 档案尚未数字化'); });
-      if (key === activeKey) node.classList.add('active');
-      overlay.appendChild(node);
-    });
+  // 子视图导航与原版一致（XFL 透明按钮层）：
+  // 当前页图标移到左上充当"重按返回上一层"（材料页图鉴图标作面包屑返回图鉴页），
+  // 叉除材料页外保留为退出；其余烘进背景的图标只作展示，不响应点击
+  function wireSubNav() {
+    var back = (manifest.viewBack || {})[currentView];
+    if (back) {
+      overlay.appendChild(hotspot(currentView, back, '重按按钮以返回选择界面', function () {
+        goTo(currentView === 'materials' ? 'encyclopedia' : 'hub');
+      }));
+    }
+    var exit = (manifest.exits || {})[currentView];
+    if (exit) overlay.appendChild(hotspot(currentView, exit, '退出', exitWithAnim));
   }
+
+  // 图鉴六分类按键暂不接入（用户要求先移除）：图鉴页只保留左上返回与退出
+  function renderEnc() { wireSubNav(); }
 
   function renderMaterials() {
-    renderEncHotspots('materials');
+    wireSubNav();
     var list = el('div', 'tablet-dom tablet-mat-list');
     list.style.cssText = 'left:6%;top:18%;width:34%;bottom:14%;';
     var detail = el('div', 'tablet-dom tablet-mat-detail');
@@ -193,135 +318,204 @@
     if (selectedMaterial < 0 && data.materials.length) { selectedMaterial = 0; render(); return; }
   }
 
+  // 联络页（原 XFL 联络列表）：行点击只换 NPC头像；进入商店/终端通信是
+  // 两个固定透明按钮盖在烘焙文字上（无 web 外框、无侧栏按钮）
   function renderContacts() {
+    wireSubNav();
     var cb = (manifest.contactBounds || {});
     var rows = cb.rows || [];
-    // 行名覆盖在烘焙行槽位上（原版 列表0-7 位置精确还原）
-    var list = el('div', 'tablet-dom tablet-contact-list');
+    // 行直接挂 overlay：% 定位以舞台为锚（空容器会塌成 0×0 导致行不可见）
     data.contacts.forEach(function (c, i) {
-      var row = el('button', 'tablet-row tablet-contact-row' + (i === selectedContact ? ' selected' : ''));
+      var row = el('button', 'tablet-dom tablet-contact-row' + (i === selectedContact ? ' selected' : ''));
       row.type = 'button'; row.textContent = c.name;
       if (rows[i]) row.style.cssText = hsStyle('contacts', rows[i]);
       listen(row, 'click', function () { selectedContact = i; render(); });
-      list.appendChild(row);
+      overlay.appendChild(row);
     });
-    overlay.appendChild(list);
-    var side = el('div', 'tablet-dom tablet-contact-side');
-    var px = cb.portrait;
-    if (px) {
-      side.style.cssText = hsStyle('contacts', px);
-    } else {
-      side.style.cssText = 'left:42%;top:16%;width:46%;bottom:16%;';
-    }
-    overlay.appendChild(side);
-
+    if (selectedContact < 0 && data.contacts.length) selectedContact = 0;
     var c = data.contacts[selectedContact];
-    if (!c) { side.appendChild(el('p', 'tablet-dim', '← 选择联络对象')); return; }
-    var face = el('div', 'tablet-contact-face');
-    var img = el('img'); img.alt = c.name;
-    face.appendChild(img);
-    if (typeof ShopPortraits !== 'undefined' && ShopPortraits.mount) {
-      ShopPortraits.mount(face, img, c.name);
+    if (!c) return;
+    var face = el('div', 'tablet-dom tablet-contact-face');
+    if (cb.portrait) face.style.cssText = hsStyle('contacts', cb.portrait);
+    if (c.portrait) {
+      // 原 XFL：loadMovie 原图 + 头像框 overflow 裁剪（不压缩原图）。
+      // PNG 是 400×400 原尺寸，天然比例 1:1，等比 cover 铺满 200×200 框。
+      var img = el('img'); img.alt = c.name; img.draggable = false;
+      img.src = ASSETS + c.portrait;
+      face.appendChild(img);
     }
-    side.appendChild(face);
-    side.appendChild(el('h3', '', c.name));
-    var actions = el('div', 'tablet-contact-actions');
-    var shop = el('button', 'tablet-btn', '进入商店');
-    shop.type = 'button';
-    listen(shop, 'click', function () {
-      status('正在呼叫商店…');
-      // domain 'tablet' → AS2 tabletOpenNpcShop → openNpcShop(source='tablet_contacts')
-      domainRequest('open_npc_shop', { shopId: c.shopId }, {}, function (resp) {
-        status(resp && resp.ok === false || resp && resp.success === false
-          ? '商店链路：' + respErrorText(resp) : '商店面板已受理');
-      });
-    });
-    var rag = el('button', 'tablet-btn', '终端通信');
-    rag.type = 'button';
-    listen(rag, 'click', function () {
-      status('正在接通终端…');
-      domainRequest('open_ragchat', {}, {}, function (resp) {
-        status(resp && resp.success === false
-          ? '终端链路：' + respErrorText(resp) : '通信终端已受理');
-      });
-    });
-    actions.appendChild(shop); actions.appendChild(rag);
-    side.appendChild(actions);
-    if (selectedContact < 0) { selectedContact = 0; render(); }
+    overlay.appendChild(face);
+    // domain 'tablet' → AS2 tabletOpenNpcShop → openNpcShop(source='tablet_contacts')
+    // 按钮字形在原版是 EditText（ffdec 帧导出不产 text def，烘焙只剩边框），
+    // 用 DOM 文字盖在烘焙边框上补回标签
+    if (cb.shop) {
+      overlay.appendChild(hotspot('contacts', cb.shop, '进入商店', function () {
+        status('正在呼叫商店…');
+        domainRequest('open_npc_shop', { shopId: c.shopId }, {}, function (resp) {
+          status(resp && resp.success === false
+            ? '商店链路：' + respErrorText(resp) : '商店面板已受理');
+        });
+      }));
+      var shopText = el('div', 'tablet-dom tablet-contact-btnlabel', '进入商店');
+      shopText.style.cssText = hsStyle('contacts', cb.shop);
+      overlay.appendChild(shopText);
+    }
+    // domain 'tablet' → AS2 openRagTerminal → agent.启动外部RAG工具
+    // 原 XFL 按 npc_state_db_exists 显隐：快照未给出可用信号时不渲染按钮
+    if (cb.ragchat && ragAvailable) {
+      overlay.appendChild(hotspot('contacts', cb.ragchat, '终端通信', function () {
+        status('正在接通终端…');
+        domainRequest('open_ragchat', {}, {}, function (resp) {
+          status(resp && resp.success === false
+            ? '终端链路：' + respErrorText(resp) : '通信终端已受理');
+        });
+      }));
+      var ragText = el('div', 'tablet-dom tablet-contact-btnlabel', '终端通信');
+      ragText.style.cssText = hsStyle('contacts', cb.ragchat);
+      overlay.appendChild(ragText);
+    }
   }
 
+  // 升级需求文本（原 XFL 打印基建升级需求：当前等级数据=Level[当前等级]，即升到下一级的成本）
+  // 附带 所需/拥有 显示（参考合成界面惯例），拥有数来自权威 assets 快照
+  function upgradeReqText(it, lv) {
+    var t = '当前等级：' + (lv == null ? 0 : lv);
+    if (lv == null || lv >= it.maxLevel) return t + '，已达到最大等级。';
+    var d = it.levels[lv] || {};
+    t += '，升到下一级需要：';
+    if (d.price > 0) {
+      t += '\n金币 * ' + d.price;
+      if (infraAssets) t += '（拥有 ' + (infraAssets.money || 0) + '）';
+    }
+    if (d.materials && d.materials.length) {
+      t += '\n' + d.materials.map(function (m) {
+        var own = infraAssets && infraAssets.materials ? (infraAssets.materials[m.name] || 0) : null;
+        return m.name + '#' + m.count + (own == null ? '' : '（拥有 ' + own + '）');
+      }).join(', ');
+    }
+    (d.skills || []).forEach(function (s) {
+      var cur = infraAssets && infraAssets.skills ? infraAssets.skills[s.name] : null;
+      t += '\n技能[' + s.name + ']达到 ' + s.level + ' 级'
+        + (cur == null ? '' : '（当前 ' + cur + ' 级）');
+    });
+    return t;
+  }
+  // 写权走 AS2 tabletInfraUpgrade 回环；unknown 结果不乐观显示
+  function doUpgrade(it) {
+    if (!it || upgradeBusy) return;
+    upgradeBusy = true;
+    domainRequest('upgrade', { name: it.name },
+      { kind: 'upgrade', write: true, singleFlight: true },
+      function (resp) {
+        upgradeBusy = false;
+        if (resp && resp.infrastructure && typeof resp.infrastructure === 'object') {
+          infraLevels = resp.infrastructure; infraSynced = true;
+        }
+        if (resp && resp.assets && typeof resp.assets === 'object') infraAssets = resp.assets;
+        if (resp && resp.ragAvailable === true) ragAvailable = true;
+        if (resp && resp.ragAvailable === false) ragAvailable = false;
+        if (resp && resp.success) {
+          status((resp.name || it.name) + ' 已升级' + (resp.level != null ? '至 LV ' + resp.level : ''));
+        } else {
+          status(resp && resp.unknown
+            ? '升级结果未知——以基地实际状态为准'
+            : '升级失败：' + respErrorText(resp));
+        }
+        if (currentView === 'infrastructure') render();
+      });
+    render();
+    status('升级请求已发送…');
+  }
+
+  // 基建页（原 XFL 基建内容整体）：左 = 滑动按钮栏行覆盖槽位，
+  // 右 = 名字/简介/升级需求对准烘焙文本框，升级 = 透明按钮盖在烘焙按钮上
   function renderInfra() {
-    var list = el('div', 'tablet-dom tablet-infra-list');
-    list.style.cssText = 'left:6%;top:18%;width:26%;bottom:14%;';
-    var detail = el('div', 'tablet-dom tablet-infra-detail');
-    detail.style.cssText = 'left:36%;top:18%;width:52%;bottom:14%;';
+    wireSubNav();
+    var ib = manifest.infraBounds || {};
+    var rowBoxes = manifest.infraRows || [];
     var entries = infraSynced
       ? data.infrastructure.filter(function (it) { return infraLevels[it.name] != null; })
       : data.infrastructure;
-    if (!entries.length && infraSynced) {
-      detail.appendChild(el('p', 'tablet-dim', '尚未发现任何基建项目'));
-      overlay.appendChild(list); overlay.appendChild(detail);
-      return;
+    var list = el('div', 'tablet-dom tablet-infra-list');
+    if (ib.list) list.style.cssText = hsStyle('infrastructure', ib.list);
+    // 行高/行距沿用烘焙槽位几何（% 相对列表容器高），超出 8 项在槽位容器内滚动
+    if (rowBoxes.length > 1 && ib.list) {
+      list.style.setProperty('--row-h', (rowBoxes[0].h / ib.list.h * 100).toFixed(3) + '%');
+      list.style.setProperty('--row-gap',
+        ((rowBoxes[1].y - rowBoxes[0].y - rowBoxes[0].h) / ib.list.h * 100).toFixed(3) + '%');
     }
     entries.forEach(function (it, i) {
-      var lv = infraLevels[it.name];
-      var row = el('button', 'tablet-row' + (i === selectedInfra ? ' selected' : ''));
-      row.type = 'button';
-      row.appendChild(el('span', '', it.name));
-      row.appendChild(el('em', 'tablet-dim', lv == null ? '未解锁' : 'LV ' + lv + '/' + it.maxLevel));
+      var row = el('button', 'tablet-infra-row' + (i === selectedInfra ? ' selected' : ''));
+      row.type = 'button'; row.textContent = it.name;
       listen(row, 'click', function () { selectedInfra = i; render(); });
       list.appendChild(row);
     });
-    overlay.appendChild(list); overlay.appendChild(detail);
-    var it = entries[selectedInfra];
-    if (!it) { detail.appendChild(el('p', 'tablet-dim', '← 选择设施查看')); return; }
-    var lv = infraLevels[it.name];
-    var cur = it.levels[lv] || it.levels[0];
-    var next = lv == null ? null : it.levels[lv + 1];
-    detail.appendChild(el('h3', '', it.name + '　' + (lv == null ? '未解锁' : 'LV ' + lv + '/' + it.maxLevel)));
-    detail.appendChild(el('p', 'tablet-infra-desc', cur && cur.description || ''));
-    if (lv != null && next) {
-      var req = el('div', 'tablet-infra-req');
-      req.appendChild(el('h4', '', '下一级需求'));
-      if (next.price > 0) req.appendChild(el('p', '', '金币 × ' + next.price));
-      next.materials.forEach(function (m) { req.appendChild(el('p', '', m.name + ' × ' + m.count)); });
-      next.skills.forEach(function (s) { req.appendChild(el('p', '', '技能「' + s.name + '」≥ ' + s.level)); });
-      detail.appendChild(req);
+    overlay.appendChild(list);
+
+    // 烘焙滚动条（rail/thumb）只作视觉底；在其上叠透明拖拽热点驱动 list.scrollTop——
+    // 原版 scrollbutton 拖动语义；无内容可滚时拖拽自然无位移
+    if (ib.thumb && ib.rail) {
+      var maxScrollTop = function () { return Math.max(0, list.scrollHeight - list.clientHeight); };
+      // 可见滑块：烘焙 thumb 只是初始帧，滚动时需要跟随 thumb 位置的可视层
+      var thumbEl = el('div', 'tablet-dom tablet-infra-thumb');
+      var vbInfra = vb('infrastructure');
+      var railY = (ib.rail.y - vbInfra.y) / vbInfra.h * 100;
+      var thumbH = ib.thumb.h / vbInfra.h * 100;
+      thumbEl.style.left = ((ib.thumb.x - vbInfra.x) / vbInfra.w * 100).toFixed(3) + '%';
+      thumbEl.style.width = (ib.thumb.w / vbInfra.w * 100).toFixed(3) + '%';
+      thumbEl.style.height = thumbH.toFixed(3) + '%';
+      var railRange = ib.rail.h - ib.thumb.h;
+      var syncThumb = function () {
+        var frac = maxScrollTop() > 0 ? list.scrollTop / maxScrollTop() : 0;
+        thumbEl.style.top = ((ib.rail.y + railRange * frac - vbInfra.y) / vbInfra.h * 100).toFixed(3) + '%';
+      };
+      syncThumb();
+      listen(list, 'scroll', syncThumb);
+      overlay.appendChild(thumbEl);
+      var drag = hotspot('infrastructure', ib.rail, '滚动条', function () {});
+      drag.style.cursor = 'ns-resize';
+      var dragStartY = 0, dragStartScroll = 0, dragging = false;
+      var onMove = function (ev) {
+        if (!dragging) return;
+        var scrollable = maxScrollTop();
+        var trackPx = Math.max(1, drag.clientHeight - thumbEl.clientHeight);
+        list.scrollTop = dragStartScroll + (ev.clientY - dragStartY) / trackPx * scrollable;
+      };
+      var onUp = function () { dragging = false; };
+      listen(drag, 'mousedown', function (ev) {
+        dragging = true; dragStartY = ev.clientY; dragStartScroll = list.scrollTop;
+        ev.preventDefault();
+      });
+      listen(document, 'mousemove', onMove);
+      listen(document, 'mouseup', onUp);
+      overlay.appendChild(drag);
     }
-    var btn = el('button', 'tablet-btn tablet-upgrade', '升级');
-    btn.type = 'button';
-    // 写权走 AS2 tabletInfraUpgrade 回环；无快照/未解锁/满级/在途均禁点
-    btn.disabled = !infraSynced || lv == null || next == null || upgradeBusy;
-    btn.title = btn.disabled
-      ? (!infraSynced ? '等待基建快照…' : lv == null ? '尚未解锁' : next == null ? '已达最大等级' : '升级中…')
-      : '提交升级请求（经 AS2 权威执行）';
-    listen(btn, 'click', function () {
-      if (upgradeBusy) return;
-      upgradeBusy = true;
-      status('升级请求已发送…');
-      domainRequest('upgrade', { name: it.name },
-        { kind: 'upgrade', write: true, singleFlight: true },
-        function (resp) {
-          upgradeBusy = false;
-          if (resp && resp.infrastructure && typeof resp.infrastructure === 'object') {
-            infraLevels = resp.infrastructure; infraSynced = true;
-          }
-          if (resp && resp.success) {
-            status((resp.name || it.name) + ' 已升级' + (resp.level != null ? '至 LV ' + resp.level : ''));
-          } else {
-            // unknown 结果（超时/送达未知）禁止乐观显示，提示重读快照
-            status(resp && resp.unknown
-              ? '升级结果未知——以基地实际状态为准'
-              : '升级失败：' + respErrorText(resp));
-          }
-          if (currentView === 'infrastructure') render();
-        });
-      render();
-    });
-    detail.appendChild(btn);
-    detail.appendChild(el('p', 'tablet-dim',
-      !infraSynced ? '等待 AS2 基建快照…' : ''));
-    if (selectedInfra < 0) { selectedInfra = 0; render(); }
+
+    if (selectedInfra < 0) selectedInfra = 0;
+    var it = entries[selectedInfra];
+    var lv = it ? infraLevels[it.name] : null;
+    var nameEl = el('div', 'tablet-dom tablet-infra-name', it ? it.name : '');
+    if (ib.name) nameEl.style.cssText = hsStyle('infrastructure', ib.name);
+    overlay.appendChild(nameEl);
+    var descEl = el('div', 'tablet-dom tablet-infra-desc');
+    if (ib.desc) descEl.style.cssText = hsStyle('infrastructure', ib.desc);
+    overlay.appendChild(descEl);
+    var reqEl = el('div', 'tablet-dom tablet-infra-req');
+    if (ib.req) reqEl.style.cssText = hsStyle('infrastructure', ib.req);
+    overlay.appendChild(reqEl);
+    if (it) {
+      var cur = it.levels[lv] || it.levels[0];
+      descEl.textContent = (cur && cur.description) || '';
+      reqEl.textContent = upgradeReqText(it, lv);
+    } else {
+      descEl.textContent = infraSynced ? '尚未发现任何基建项目' : '点击左侧列表查看基建内容';
+    }
+    // 升级：透明热点盖烘焙的基建升级按钮；无快照/未解锁/满级/在途禁点
+    if (ib.upgrade) {
+      var canUp = !!(it && infraSynced && lv != null && lv < it.maxLevel && !upgradeBusy);
+      overlay.appendChild(hotspot('infrastructure', ib.upgrade, '升级',
+        function () { doUpgrade(it); }, !canUp));
+    }
   }
 
   // domain snapshot：向 AS2 拉取权威基建等级快照
@@ -330,10 +524,15 @@
       if (resp && resp.infrastructure && typeof resp.infrastructure === 'object') {
         infraLevels = resp.infrastructure;
         infraSynced = true;
-      } else if (resp && resp.success === false) {
+      }
+      if (resp && resp.assets && typeof resp.assets === 'object') infraAssets = resp.assets;
+      if (resp && resp.ragAvailable === true) ragAvailable = true;
+      if (resp && resp.ragAvailable === false) ragAvailable = false;
+      if (resp && resp.success === false) {
         status('基建快照：' + respErrorText(resp));
       }
-      if (currentView === 'infrastructure') render();
+      // 基建页刷新需求行；联络页按 ragAvailable 补/撤终端通信按钮
+      if (currentView === 'infrastructure' || currentView === 'contacts') render();
     });
   }
 
@@ -347,18 +546,20 @@
     shell = el('div', 'panel-scale-shell tablet-shell');
     stage = el('div', 'tablet-stage');
     bg = el('img', 'tablet-bg'); bg.alt = ''; bg.draggable = false;
-    overlay = el('div', 'tablet-overlay');
-    tipEl = el('div', 'tablet-tip'); tipEl.hidden = true;
-    statusEl = el('div', 'tablet-status');
-    backBtn = el('button', 'tablet-back', '◀ 返回'); backBtn.type = 'button'; backBtn.hidden = true;
-    listen(backBtn, 'click', function () {
-      setView(currentView === 'materials' ? 'encyclopedia' : 'hub');
+    bgAlt = el('img', 'tablet-bg tablet-bg-alt'); bgAlt.alt = ''; bgAlt.draggable = false; bgAlt.hidden = true;
+    iconLayer = el('div', 'tablet-icons');
+    NAV_KEYS.forEach(function (k) {
+      var img = el('img', 'tablet-icon');
+      img.alt = ''; img.draggable = false; img.hidden = true;
+      img.src = ASSETS + 'nav-' + k + '.svg';
+      navIcons[k] = img;
+      iconLayer.appendChild(img);
     });
-    closeBtn = el('button', 'tablet-close', '×'); closeBtn.type = 'button';
-    closeBtn.setAttribute('aria-label', '关闭');
-    listen(closeBtn, 'click', requestClose);
-    stage.appendChild(bg); stage.appendChild(overlay);
-    stage.appendChild(tipEl); stage.appendChild(backBtn); stage.appendChild(closeBtn); stage.appendChild(statusEl);
+    overlay = el('div', 'tablet-overlay');
+    hoverImg = el('img', 'tablet-hoverdesc'); hoverImg.alt = ''; hoverImg.draggable = false; hoverImg.hidden = true;
+    statusEl = el('div', 'tablet-status');
+    stage.appendChild(bg); stage.appendChild(bgAlt); stage.appendChild(iconLayer);
+    stage.appendChild(overlay); stage.appendChild(hoverImg); stage.appendChild(statusEl);
     shell.appendChild(stage);
     return shell;
   }
@@ -386,6 +587,20 @@
       if (!shell.isConnected) return;
       status('');
       setView('hub');
+      // 唤起动画近似：原 XFL"轻按屏幕→中心展开→三图标依次淡入"
+      shell.classList.add('entering');
+      NAV_KEYS.forEach(function (k, i) {
+        var img = navIcons[k];
+        if (!img) return;
+        img.hidden = false;
+        img.style.transitionDelay = (160 + i * 70) + 'ms';
+        requestAnimationFrame(function () { img.classList.add('shown'); });
+      });
+      requestAnimationFrame(function () { shell.classList.remove('entering'); });
+      setTimeout(function () {
+        NAV_KEYS.forEach(function (k) { if (navIcons[k]) navIcons[k].style.transitionDelay = '0ms'; });
+      }, 900);
+      startAmbient();
       // 始终向 AS2 拉一次权威快照：initData 注入仅作打开前乐观投影
       requestSnapshot();
     }).catch(function () { status('平板数据载入失败'); });
@@ -397,6 +612,18 @@
     disposers.splice(0).forEach(function (f) { try { f(); } catch (e) {} });
     manifest = null; selectedContact = selectedInfra = selectedMaterial = -1; currentView = 'hub';
     infraLevels = {}; infraSynced = false; upgradeBusy = false;
+    switching = false; closingOnce = false;
+    if (ambientTimer) { clearInterval(ambientTimer); ambientTimer = null; }
+    for (var key in ambientImgs) { try { ambientImgs[key].remove(); } catch (e) {} }
+    ambientImgs = {};
+    if (shell) shell.classList.remove('entering', 'closing');
+    if (stage) stage.classList.remove('switching');
+    NAV_KEYS.forEach(function (k) {
+      var img = navIcons[k];
+      if (img) { img.classList.remove('shown'); img.hidden = true; }
+    });
+    if (bgAlt) { bgAlt.classList.remove('on'); bgAlt.hidden = true; }
+    if (hoverImg) hoverImg.classList.remove('on');
   }
 
   Panels.register('tablet', {

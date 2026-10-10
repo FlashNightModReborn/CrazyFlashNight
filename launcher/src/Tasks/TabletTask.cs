@@ -232,7 +232,44 @@ namespace CF7Launcher.Tasks
                 web["level"] = msg["level"];
             JObject infra = ParseInfrastructure(msg["infrastructure"]);
             if (infra != null) web["infrastructure"] = infra;
+            JObject assets = ParseAssets(msg["assets"]);
+            if (assets != null) web["assets"] = assets;
+            if (msg["ragAvailable"] != null && msg["ragAvailable"].Type == JTokenType.Boolean)
+                web["ragAvailable"] = msg["ragAvailable"].Value<bool>();
             Post(web.ToString(Formatting.None));
+        }
+
+        /// <summary>assets 透传：money + materials/skills 名称→整数映射，供"所需/拥有"展示。</summary>
+        private static JObject ParseAssets(JToken token)
+        {
+            JObject src = token as JObject;
+            if (src == null) return null;
+            JObject map = new JObject();
+            if (src["money"] != null)
+            {
+                if (src["money"].Type != JTokenType.Integer) return null;
+                long money = src["money"].Value<long>();
+                if (money < 0 || money > 9007199254740991L) return null;
+                map["money"] = money;
+            }
+            foreach (string key in new[] { "materials", "skills" })
+            {
+                JObject dict = src[key] as JObject;
+                if (dict == null) continue;
+                if (dict.Count > MaxInfraEntries) return null;
+                JObject clean = new JObject();
+                foreach (var p in dict.Properties())
+                {
+                    if (string.IsNullOrEmpty(p.Name) || p.Name.Length > MaxInfraName
+                        || p.Name != p.Name.Trim()) return null;
+                    if (p.Value.Type != JTokenType.Integer) return null;
+                    long v = p.Value.Value<long>();
+                    if (v < 0 || v > 9007199254740991L) return null;
+                    clean[p.Name] = v;
+                }
+                map[key] = clean;
+            }
+            return map;
         }
 
         private static JObject ParseInfrastructure(JToken token)

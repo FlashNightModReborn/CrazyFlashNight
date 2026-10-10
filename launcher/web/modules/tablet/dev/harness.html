@@ -22,12 +22,18 @@ var logEl = document.getElementById('log');
 function log(m){ logEl.textContent += m + '\n'; }
 // 模拟 Host+AS2：domain 'tablet' 域命令 → 300ms 后回 panel_resp
 window.__fakeInfra = { '铁枪图腾': 1, '自行车': 1, '停机坪梯子': 0 };
+window.__fakeAssets = { money: 54321, materials: {
+  '可塑式钢板': 3, '螺丝套件': 1, '高级木料': 0, '不锈钢材': 12, '可充锂电池': 2,
+  '传感器': 0, '铝粉': 5, '上色涂料': 9, '弹簧': 30, '小型液晶屏': 1,
+  '高耐力橡胶': 8, '强化金属管': 0, '透镜': 4, '高强度合金': 6, '强力胶': 2,
+  '电脑芯片': 0, '玻璃': 15 }, skills: {} };
 function fakeResp(msg){
   var resp = {type:'panel_resp', panel:'tablet', domain:'tablet',
     cmd:msg.cmd, callId:msg.callId};
   if (msg.cmd === 'snapshot') {
     resp.success = true;
     resp.infrastructure = Object.assign({}, window.__fakeInfra);
+    resp.assets = JSON.parse(JSON.stringify(window.__fakeAssets));
   } else if (msg.cmd === 'upgrade') {
     var name = msg.payload && msg.payload.name;
     if (window.__fakeInfra[name] == null) { resp.success = false; resp.error = 'not_unlocked'; }
@@ -35,6 +41,7 @@ function fakeResp(msg){
       var lv = ++window.__fakeInfra[name];
       resp.success = true; resp.name = name; resp.level = lv;
       resp.infrastructure = Object.assign({}, window.__fakeInfra);
+      resp.assets = JSON.parse(JSON.stringify(window.__fakeAssets));
     }
   } else if (msg.cmd === 'open_npc_shop' || msg.cmd === 'open_ragchat') {
     resp.success = true;

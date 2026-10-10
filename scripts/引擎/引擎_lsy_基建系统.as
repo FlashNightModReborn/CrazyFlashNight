@@ -95,12 +95,53 @@ _root.平板回执 = function(params:Object, body:Object):Void{
 	_root.server.sendSocketMessage(_root.__tabletLiteJson.stringifySafe(resp));
 };
 
+// 基建升级需求的权威持有量快照：只覆盖 dict 内实际引用的材料/技能，
+// 供 Web 面板"所需/拥有"展示；写判定仍走 tabletInfraUpgrade 原语。
+_root.平板基建资产快照 = function():Object{
+	var out:Object = {money:0, materials:{}, skills:{}};
+	var money:Number = Number(_root.金钱);
+	out.money = (isNaN(money) || !isFinite(money)) ? 0 : money;
+	var dict:Object = (_root.基建系统 != undefined) ? _root.基建系统.dict : undefined;
+	if(dict == undefined) return out;
+	var mats:Object = (_root.收集品栏 != undefined) ? _root.收集品栏.材料 : undefined;
+	for(var key:String in dict){
+		var proj:Object = dict[key];
+		if(proj == undefined || proj.Level == undefined) continue;
+		for(var li:Number = 0; li < proj.Level.length; li++){
+			var lv:Object = proj.Level[li];
+			if(lv == undefined) continue;
+			if(lv.Material != undefined){
+				for(var mi:Number = 0; mi < lv.Material.length; mi++){
+					var mname:String = String(lv.Material[mi].Name);
+					if(mname.length > 0 && mname.length <= 80 && out.materials[mname] == undefined){
+						var cnt = (mats != undefined) ? mats.getValue(mname) : undefined;
+						var n:Number = Number(cnt);
+						out.materials[mname] = (isNaN(n) || n < 0) ? 0 : n;
+					}
+				}
+			}
+			if(lv.Skill != undefined){
+				for(var si:Number = 0; si < lv.Skill.length; si++){
+					var sname:String = String(lv.Skill[si].Name);
+					if(sname.length > 0 && sname.length <= 80 && out.skills[sname] == undefined){
+						var sl:Number = Number(_root.根据技能名查找主角技能等级(sname));
+						out.skills[sname] = (isNaN(sl) || sl < 0) ? 0 : sl;
+					}
+				}
+			}
+		}
+	}
+	return out;
+};
+
 // 本文件随 __boot.f2_3 早于通信批(f3)执行，gameCommands 表此时尚未创建；
 // 必须先自建，否则登记被写进 undefined 静默丢弃（实机 tabletInfra* 无响应超时）。
 if (_root.gameCommands == undefined) _root.gameCommands = {};
 _root.gameCommands["tabletInfraSync"] = function(params:Object):Void{
 	_root.平板回执(params, {task:"tablet_response", ok:true,
-		infrastructure:_root.平板基建等级快照()});
+		infrastructure:_root.平板基建等级快照(),
+		assets:_root.平板基建资产快照(),
+		ragAvailable:(_root.agent != undefined && _root.agent.npc_state_db_exists == true)});
 };
 
 _root.gameCommands["tabletInfraUpgrade"] = function(params:Object):Void{
@@ -213,5 +254,6 @@ _root.gameCommands["tabletInfraUpgrade"] = function(params:Object):Void{
 	}
 	_root.发布消息(name + " 升级至 " + infraMap[name] + " 级");
 	_root.平板回执(params, {task:"tablet_response", success:true, name:name, level:infraMap[name],
-		infrastructure:_root.平板基建等级快照()});
+		infrastructure:_root.平板基建等级快照(),
+		assets:_root.平板基建资产快照()});
 };

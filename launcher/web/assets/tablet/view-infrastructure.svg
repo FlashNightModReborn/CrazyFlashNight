@@ -8,18 +8,19 @@
     
     
     
-    <use height="25.0" transform="matrix(1.0, 0.0, 0.0, 1.0, 198.9, 266.2)" width="54.05" xlink:href="#sprite49"/>
-    <use height="37.65" id="基建按钮" transform="matrix(1.0, 0.0, 0.0, 1.0, 23.3, 17.8)" width="90.35" xlink:href="#sprite51"/>
-    <use height="54.7" id="联络按钮" transform="matrix(1.0, 0.0, 0.0, 1.0, 67.75, 163.2)" width="86.5" xlink:href="#sprite57"/>
-    <use height="34.9" id="图鉴按钮" transform="matrix(1.0, 0.0, 0.0, 1.0, 292.35, 91.7)" width="92.75" xlink:href="#sprite63"/>
+    
+    
+    
+    
     <clipPath id="clipPath6" transform="matrix(1.0, 0.0, 0.0, 1.0, 0.0, 0.0)">
-      <path d="M14.7 34.15 L14.7 74.4 241.95 74.4 241.95 34.15 14.7 34.15" fill="#000000" fill-rule="evenodd" stroke="none"/>
-      <path d="M14.7 34.15 L241.95 34.15 241.95 74.4 14.7 74.4 14.7 34.15 Z" fill="none" stroke="#000000" stroke-linecap="round" stroke-linejoin="round" stroke-opacity="0.0" stroke-width="0.0"/>
+      <path d="M23.45 34.15 L23.45 74.4 250.7 74.4 250.7 34.15 23.45 34.15" fill="#000000" fill-rule="evenodd" stroke="none"/>
+      <path d="M23.45 34.15 L250.7 34.15 250.7 74.4 23.45 74.4 23.45 34.15 Z" fill="none" stroke="#000000" stroke-linecap="round" stroke-linejoin="round" stroke-opacity="0.0" stroke-width="0.0"/>
     </clipPath>
     <g clip-path="url(#clipPath6)">
       <use height="18.75" transform="matrix(1.0, 0.0, 0.0, 1.0, 24.25, 39.9)" width="226.25" xlink:href="#sprite70"/>
     </g>
     <use height="13.75" transform="matrix(0.708, 0.0, 0.0, 0.708, 133.1, 28.4)" width="163.5" xlink:href="#sprite71"/>
+    
     <use height="238.65" transform="matrix(0.8786, 0.0, 0.0, 0.8786, 14.1983, 45.8687)" width="456.0" xlink:href="#sprite72"/>
   </g>
   <defs>
@@ -510,7 +511,7 @@
       
       
       
-      <use height="89.5" id="基建升级按钮" transform="matrix(1.0, 0.0, 0.0, 1.0, 397.85, 145.55)" width="30.15" xlink:href="#button2"/>
+      <use height="89.5" id="基建升级按钮" transform="matrix(1.0, 0.0, 0.0, 1.0, 397.85, 145.55)" width="30.15" xlink:href="#button3"/>
     </g>
     <g id="sprite73" transform="matrix(1.0, 0.0, 0.0, 1.0, 0.0, 1.5)">
       <use height="74.45" transform="matrix(1.0, 0.0, 0.0, 1.0, 0.85, 21.4)" width="210.35" xlink:href="#sprite74"/>
@@ -564,7 +565,7 @@
       <path d="M3.75 17.5 L-3.75 17.5 -3.75 2.5 3.75 2.5 3.75 17.5" fill="#ccffff" fill-rule="evenodd" stroke="none"/>
       <path d="M3.75 17.5 L3.75 2.5 -3.75 2.5 -3.75 17.5 3.75 17.5 M5.0 20.0 L-5.0 20.0 -5.0 0.0 5.0 0.0 5.0 20.0" fill="#0099ff" fill-rule="evenodd" stroke="none"/>
     </g>
-    <g id="button2" transform="matrix(1.0, 0.0, 0.0, 1.0, 0.0, 0.0)">
+    <g id="button3" transform="matrix(1.0, 0.0, 0.0, 1.0, 0.0, 0.0)">
       <use height="89.5" transform="matrix(1.0, 0.0, 0.0, 1.0, 0.0, 0.0)" width="30.15" xlink:href="#shape59"/>
     </g>
     <g id="shape59" transform="matrix(1.0, 0.0, 0.0, 1.0, 0.0, 0.0)">
