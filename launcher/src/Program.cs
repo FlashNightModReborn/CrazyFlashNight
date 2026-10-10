@@ -2282,6 +2282,7 @@ class Program
             webOverlay.TryOpenKShopForMaterialNavigation,
             webOverlay.CloseKShopForMaterialNavigationNoFail);
         HairdresserTask hairdresserTask = new HairdresserTask(socketServer);
+        TabletTask tabletTask = new TabletTask(socketServer);
         PlasticSurgeryTask plasticSurgeryTask = new PlasticSurgeryTask(socketServer);
         GaragePurchaseTask garagePurchaseTask = new GaragePurchaseTask(socketServer);
         BookComicTask bookComicTask = new BookComicTask(socketServer);
@@ -2725,7 +2726,7 @@ class Program
 
         using (PerfTrace.Scope("task.registry_register_all"))
         {
-            TaskRegistry.RegisterAll(router, gomokuTask, toastTask, frameTask, stageOutcomeTask, warlordStageTask, warlordBattleTask, dataQueryTask, audioTask, dollBakeTask, shopTask, inventoryTask, lootTask, lootFeedTask, lootPanelCoordinator, npcShopTask, craftingTask, materialShopAccessTask, hairdresserTask, plasticSurgeryTask, garagePurchaseTask, sleepTask, bookshelfTask, gymTrainingTask, settingsTask, equipmentTuningTask, characterBuildTask, itemUseTask, skillTask, mapTask, stageSelectTask, arenaTask, arenaCalibrationTask, agentControlTask, petTask, mercTask, taskTask, intelligenceTask, blackMarketTask, archiveTask, benchTask, fontPackTask, webOverlay, commandRouter, mapDomainTask, nativeInteractionTask, nativeDialogueTask, worldLightingTask, lutLabTask, nativeGuidanceTask, sceneTransition.Task, bookComicTask);
+            TaskRegistry.RegisterAll(router, gomokuTask, toastTask, frameTask, stageOutcomeTask, warlordStageTask, warlordBattleTask, dataQueryTask, audioTask, dollBakeTask, shopTask, inventoryTask, lootTask, lootFeedTask, lootPanelCoordinator, npcShopTask, craftingTask, materialShopAccessTask, hairdresserTask, plasticSurgeryTask, garagePurchaseTask, sleepTask, bookshelfTask, gymTrainingTask, settingsTask, equipmentTuningTask, characterBuildTask, itemUseTask, skillTask, mapTask, stageSelectTask, arenaTask, arenaCalibrationTask, agentControlTask, petTask, mercTask, taskTask, intelligenceTask, blackMarketTask, archiveTask, benchTask, fontPackTask, webOverlay, commandRouter, mapDomainTask, nativeInteractionTask, nativeDialogueTask, worldLightingTask, lutLabTask, nativeGuidanceTask, sceneTransition.Task, bookComicTask, tabletTask);
         }
         StartupDiagnostics.Mark("task.registry_register_all_ok");
 
@@ -2738,6 +2739,7 @@ class Program
         webOverlay.SetLootTask(lootTask);
         webOverlay.SetLootPanelCoordinator(lootPanelCoordinator);
         webOverlay.SetNpcShopTask(npcShopTask);
+        webOverlay.SetTabletTask(tabletTask);
         webOverlay.SetCraftingTask(craftingTask);
         webOverlay.SetMaterialShopNavigationCoordinator(
             materialShopNavigationCoordinator);

@@ -3024,7 +3024,9 @@ namespace CF7Launcher.Guardian
                     else
                         PostToWeb("{\"type\":\"toast\",\"text\":\"战队面板暂时不可用\"}");
                     break;
-                case "TABLET": SendGameCommand("toggleTablet"); break;
+                // 平板 Web 化：AS2 openTabletWeb 快照基建等级 → panel_request "tablet" → OpenTabletPanel。
+                // 旧 Flash 平板的 AS2 toggleTablet 保留注册作为回退命令。
+                case "TABLET": SendGameCommand("openTabletWeb"); break;
                 case "GAMESETTINGS": OpenSettingsPanel("nativehud_settings"); break;
                 case "JUKEBOX": SendGameCommand("openJukebox"); break;
                 case "JUKEBOX_EXPAND":
@@ -3399,6 +3401,11 @@ namespace CF7Launcher.Guardian
             if (string.Equals(panelName, "ragchat", StringComparison.Ordinal))
             {
                 RequestOpenRagChatPanel(safeSource, initDataExtrasJson);
+                return;
+            }
+            if (string.Equals(panelName, "tablet", StringComparison.Ordinal))
+            {
+                OpenTabletPanel(safeSource, initDataExtrasJson);
                 return;
             }
             LogManager.Log("[Router] RequestOpenPanel unsupported panel=" + panelName);
@@ -3940,6 +3947,57 @@ namespace CF7Launcher.Guardian
             {
                 LogManager.Log("[Router] OpenNpcShopPanel extras parse failed: " + ex.Message);
             }
+        }
+
+        /// 平板 Web 面板：AS2 openTabletWeb 快照基建等级后进 panel_request。
+        /// extras 白名单只收 {infrastructure: "<name→level JSON map>"}，
+        /// 校验失败降级为无快照打开（面板显示"未同步"而非拒绝）。
+        private void OpenTabletPanel(string source, string initDataExtrasJson)
+        {
+            JObject initData = new JObject { ["source"] = source };
+            if (!string.IsNullOrEmpty(initDataExtrasJson))
+            {
+                try
+                {
+                    JObject extras = JObject.Parse(initDataExtrasJson);
+                    if (extras.Count == 1
+                        && extras.Property("infrastructure") != null
+                        && extras["infrastructure"].Type == JTokenType.String)
+                    {
+                        string infraJson = extras.Value<string>("infrastructure");
+                        if (!string.IsNullOrEmpty(infraJson) && infraJson.Length <= 8192)
+                        {
+                            JObject map = JObject.Parse(infraJson);
+                            JObject clean = new JObject();
+                            bool valid = map.Count <= 128;
+                            if (valid)
+                            {
+                                foreach (var p in map.Properties())
+                                {
+                                    if (string.IsNullOrEmpty(p.Name)
+                                        || p.Name.Length > 80
+                                        || p.Name != p.Name.Trim()
+                                        || p.Value.Type != JTokenType.Integer)
+                                    {
+                                        valid = false;
+                                        break;
+                                    }
+                                    int level = p.Value.Value<int>();
+                                    if (level < 0 || level > 99) { valid = false; break; }
+                                    clean[p.Name] = level;
+                                }
+                            }
+                            if (valid) initData["infrastructure"] = clean;
+                            else LogManager.Log("[Router] tablet rejected malformed infrastructure snapshot");
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    LogManager.Log("[Router] tablet extras parse failed: " + ex.Message);
+                }
+            }
+            OpenPanel("tablet", initData.ToString(Formatting.None));
         }
 
         private void OpenCraftingPanel(

@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <title>Tablet Panel Harness — 平板电脑</title>
+  <link rel="stylesheet" href="../../../css/panels/tablet.css">
+  <style>
+    html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#04080d}
+    #panel-content{position:absolute;inset:0}
+    #log{position:fixed;right:8px;bottom:8px;z-index:99;max-width:400px;font:11px Consolas;color:#9fd4f2;white-space:pre-wrap;pointer-events:none}
+    .panel-scale-shell{width:1024px;height:576px;transform-origin:0 0;position:absolute;left:0;top:0}
+  </style>
+</head>
+<body>
+<div id="panel-content"></div>
+<pre id="log"></pre>
+<script>
+window.CF7_TABLET_ASSET_ROOT = '../../../assets/tablet/';
+window.CF7_SHOP_PORTRAIT_ROOT = '../../../assets/shop-portraits/';
+window.__sent = [];
+var logEl = document.getElementById('log');
+function log(m){ logEl.textContent += m + '\n'; }
+// 模拟 Host+AS2：domain 'tablet' 域命令 → 300ms 后回 panel_resp
+window.__fakeInfra = { '铁枪图腾': 1, '自行车': 1, '停机坪梯子': 0 };
+function fakeResp(msg){
+  var resp = {type:'panel_resp', panel:'tablet', domain:'tablet',
+    cmd:msg.cmd, callId:msg.callId};
+  if (msg.cmd === 'snapshot') {
+    resp.success = true;
+    resp.infrastructure = Object.assign({}, window.__fakeInfra);
+  } else if (msg.cmd === 'upgrade') {
+    var name = msg.payload && msg.payload.name;
+    if (window.__fakeInfra[name] == null) { resp.success = false; resp.error = 'not_unlocked'; }
+    else {
+      var lv = ++window.__fakeInfra[name];
+      resp.success = true; resp.name = name; resp.level = lv;
+      resp.infrastructure = Object.assign({}, window.__fakeInfra);
+    }
+  } else if (msg.cmd === 'open_npc_shop' || msg.cmd === 'open_ragchat') {
+    resp.success = true;
+  }
+  (window.Bridge._h['panel_resp'] || []).slice().forEach(function (f) {
+    try { f(resp); } catch (e) { log('resp err ' + e); }
+  });
+}
+window.Bridge = {
+  _h: {},
+  on: function (t, f) { (this._h[t] = this._h[t] || []).push(f); },
+  off: function (t, f) { var a = this._h[t] || []; var i = a.indexOf(f); if (i >= 0) a.splice(i, 1); },
+  send: function (msg) {
+    window.__sent.push(msg); log('send ' + JSON.stringify(msg));
+    if (msg.domain === 'tablet') setTimeout(function () { fakeResp(msg); }, 250);
+    return true;
+  }
+};
+window.Toast = { add:function(m){ log('toast ' + m); } };
+window.Icons = { resolveStatic:function(){ return null; } };
+window.PanelScale = { attach:function(el,w,h){
+  function fit(){ var s = Math.min(document.documentElement.clientWidth/w, document.documentElement.clientHeight/h); el.style.transform = 'scale('+s+')'; }
+  fit(); window.addEventListener('resize', fit);
+  return { detach:function(){ window.removeEventListener('resize', fit); } };
+}};
+window.Panels = {
+  _p: {},
+  register: function(id, api){ this._p[id] = api; },
+  open: function(id, data){
+    var api = this._p[id];
+    var el = api.create();
+    document.getElementById('panel-content').appendChild(el);
+    api.onOpen(el, data || {});
+    return el;
+  },
+  close: function(){ log('Panels.close'); }
+};
+</script>
+<script src="../../panel-runtime.js"></script>
+<script src="../../shop-portrait-resolver.js"></script>
+<script src="../tablet.js"></script>
+<script>
+Panels.open('tablet', {
+  panelInstanceId: 'harness.tablet.1',
+  infrastructure: { '铁枪图腾': 1, '自行车': 1, '停机坪梯子': 0 }
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,219 @@
+/* ── 平板电脑面板（Flash「平板电脑界面」Web 化）──
+   素材：assets/tablet/*.svg 由 tools/bake-tablet-assets.js 从原 SWF 烘焙。
+   版心按烘焙 viewBox ~470×325 等比缩放，DOM 覆盖层按 % 定位。 */
+
+.tablet-shell {
+  /* PanelScale 画布沿用家族 1024×576 */
+}
+.tablet-stage {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: 78%;
+  aspect-ratio: 469.9 / 324.6;
+  background: #0a1420;
+  border-radius: 3.2%;
+  box-shadow: 0 0 0 1px rgba(120, 200, 255, 0.15),
+              0 0 42px rgba(60, 150, 220, 0.18);
+  overflow: hidden;
+}
+.tablet-bg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  user-select: none;
+}
+.tablet-overlay {
+  position: absolute;
+  inset: 0;
+}
+
+/* 热区：透明按钮，悬停扫光 */
+.tablet-hotspot {
+  position: absolute;
+  background: transparent;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background 0.12s ease, box-shadow 0.12s ease;
+  padding: 0;
+}
+.tablet-hotspot:hover,
+.tablet-hotspot:focus-visible {
+  background: rgba(120, 200, 255, 0.14);
+  box-shadow: inset 0 0 0 1px rgba(140, 220, 255, 0.55),
+              0 0 14px rgba(90, 180, 240, 0.35);
+  outline: none;
+}
+.tablet-hotspot.disabled { cursor: default; opacity: 0.55; }
+.tablet-hotspot.disabled:hover { background: rgba(120, 200, 255, 0.05); box-shadow: none; }
+.tablet-hotspot.active {
+  background: rgba(120, 200, 255, 0.18);
+  box-shadow: inset 0 0 0 1px rgba(150, 225, 255, 0.7), 0 0 10px rgba(90, 180, 240, 0.4);
+}
+
+.tablet-back {
+  position: absolute;
+  left: 2.5%;
+  top: 3%;
+  z-index: 3;
+  background: rgba(10, 30, 50, 0.7);
+  color: #9fd4f2;
+  border: 1px solid rgba(120, 200, 255, 0.35);
+  border-radius: 4px;
+  font-size: 13px;
+  padding: 4px 10px;
+  cursor: pointer;
+}
+.tablet-back:hover { background: rgba(30, 70, 105, 0.85); color: #d5efff; }
+
+.tablet-close {
+  position: absolute;
+  right: 2.2%;
+  top: 3%;
+  z-index: 3;
+  width: 30px;
+  height: 30px;
+  background: rgba(10, 30, 50, 0.7);
+  color: #9fd4f2;
+  border: 1px solid rgba(120, 200, 255, 0.35);
+  border-radius: 4px;
+  font-size: 16px;
+  cursor: pointer;
+}
+.tablet-close:hover { background: rgba(120, 30, 40, 0.85); color: #ffd9dd; }
+
+.tablet-tip {
+  position: absolute;
+  left: 50%;
+  bottom: 3.5%;
+  transform: translateX(-50%);
+  z-index: 4;
+  pointer-events: none;
+  background: rgba(8, 24, 40, 0.9);
+  border: 1px solid rgba(120, 200, 255, 0.4);
+  border-radius: 4px;
+  color: #cfe9fb;
+  font-size: 12px;
+  padding: 3px 12px;
+  letter-spacing: 0.08em;
+}
+.tablet-status {
+  position: absolute;
+  right: 3%;
+  bottom: 3.2%;
+  z-index: 4;
+  color: #7fb8dd;
+  font-size: 11px;
+  letter-spacing: 0.06em;
+}
+
+/* ── DOM 内容层 ── */
+.tablet-dom {
+  position: absolute;
+  z-index: 2;
+  font-family: 'Microsoft YaHei', 'Segoe UI', sans-serif;
+  color: #d8ecf9;
+}
+.tablet-dom::-webkit-scrollbar { width: 6px; }
+.tablet-dom::-webkit-scrollbar-thumb { background: rgba(110, 190, 240, 0.4); border-radius: 3px; }
+.tablet-dom::-webkit-scrollbar-track { background: rgba(20, 45, 70, 0.4); }
+
+.tablet-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  width: 100%;
+  text-align: left;
+  background: rgba(14, 34, 54, 0.55);
+  border: 1px solid rgba(120, 200, 255, 0.18);
+  border-radius: 3px;
+  color: #cfe7f7;
+  font-size: 12px;
+  padding: 5px 8px;
+  margin-bottom: 4px;
+  cursor: pointer;
+  transition: background 0.1s ease;
+}
+.tablet-row:hover { background: rgba(40, 85, 125, 0.7); }
+.tablet-row.selected {
+  background: rgba(60, 120, 170, 0.75);
+  border-color: rgba(150, 225, 255, 0.6);
+}
+.tablet-row em { margin-left: auto; font-style: normal; font-size: 11px; color: #8fc4e8; }
+
+.tablet-mat-list, .tablet-infra-list, .tablet-contact-list { overflow-y: auto; }
+/* 联络行：绝对定位贴在烘焙行槽位上（hsStyle 写入 % 坐标） */
+.tablet-contact-row {
+  position: absolute;
+  margin-bottom: 0;
+  padding: 0 10px;
+  background: rgba(14, 34, 54, 0.25);
+  border-color: transparent;
+}
+.tablet-contact-row:hover { background: rgba(60, 120, 175, 0.45); }
+.tablet-contact-row.selected {
+  background: rgba(80, 150, 205, 0.5);
+  border-color: rgba(150, 225, 255, 0.7);
+}
+.tablet-mat-icon { width: 18px; height: 18px; object-fit: contain; flex: none; }
+.tablet-mat-tag {
+  margin-left: auto; font-style: normal; font-size: 10px;
+  color: #ffd98a; border: 1px solid rgba(255, 200, 120, 0.4);
+  border-radius: 2px; padding: 0 4px;
+}
+.tablet-mat-detail, .tablet-infra-detail { overflow-y: auto; padding: 6px 10px; }
+.tablet-mat-detail h3, .tablet-infra-detail h3 {
+  margin: 4px 0 8px; color: #eaf6ff; font-size: 16px; letter-spacing: 0.06em;
+}
+.tablet-mat-info {
+  white-space: pre-wrap;
+  font-family: inherit;
+  font-size: 12px;
+  line-height: 1.7;
+  color: #b8d8ec;
+  background: rgba(10, 26, 42, 0.5);
+  border-left: 2px solid rgba(120, 200, 255, 0.4);
+  padding: 8px 10px;
+  border-radius: 0 4px 4px 0;
+}
+.tablet-infra-desc { font-size: 12.5px; line-height: 1.8; color: #cfe6f5; white-space: pre-wrap; }
+.tablet-infra-req h4 { margin: 10px 0 4px; font-size: 12px; color: #9fd4f2; letter-spacing: 0.12em; }
+.tablet-infra-req p { margin: 2px 0; font-size: 12px; color: #e8c890; }
+
+.tablet-btn {
+  background: rgba(20, 55, 85, 0.85);
+  border: 1px solid rgba(130, 210, 255, 0.5);
+  color: #e3f4ff;
+  border-radius: 4px;
+  font-size: 13px;
+  letter-spacing: 0.1em;
+  padding: 6px 20px;
+  cursor: pointer;
+  transition: background 0.12s ease;
+}
+.tablet-btn:hover:not(:disabled) { background: rgba(50, 105, 150, 0.9); }
+.tablet-btn:disabled { opacity: 0.45; cursor: default; }
+.tablet-upgrade { margin-top: 10px; }
+/* 联络侧栏叠加在原「NPC头像」框位置：头像占满框体，姓名与动作压在框下沿 */
+.tablet-contact-side {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-end;
+}
+.tablet-contact-side h3 { margin: 4px 0 2px; font-size: 14px; letter-spacing: 0.1em; }
+.tablet-contact-actions { display: flex; gap: 10px; margin-top: 6px; }
+.tablet-contact-face {
+  position: absolute;
+  left: 8%; top: 6%;
+  width: 84%; height: 62%;
+  border: none;
+  overflow: hidden;
+  background: transparent;
+}
+.tablet-contact-face img { width: 100%; height: 100%; object-fit: contain; }
+.tablet-dim { color: #7ba9c8; font-size: 11.5px; }

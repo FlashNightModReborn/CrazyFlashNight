@@ -42,6 +42,13 @@
     // ── ragchat（通讯终端：iframe 承载本机 cfn-rag 内嵌聊天页面）──
     Panels.registerLazy('ragchat', ['modules/ragchat.js'], noop);
 
+    // ── tablet（平板电脑：基建/联络/图鉴 Hub；素材由 tools/bake-tablet-assets.js 烘焙）──
+    // panel-runtime 供 domain 信封 mux；shop-portrait-resolver 供联络视图解析 NPC 头像；
+    // icons 供材料大全条目图标。
+    Panels.registerLazy('tablet',
+        ['modules/panel-runtime.js', 'modules/icons.js',
+         'modules/shop-portrait-resolver.js', 'modules/tablet.js'], noop);
+
     Panels.registerLazy('bookshelf', ['modules/panel-runtime.js', 'modules/bookshelf-runtime.js', 'modules/bookshelf-media.js', 'modules/bookshelf-reader.js', 'modules/bookshelf-original.js', 'modules/bookshelf-panel.js'], noop);
 
     // ── kshop ──

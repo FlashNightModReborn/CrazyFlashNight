@@ -1,0 +1,163 @@
+{
+  "schema": "cf7-tablet-assets-v1",
+  "source": "flashswf/UI/平板电脑界面.swf",
+  "views": {
+    "infrastructure": "view-infrastructure.svg",
+    "contacts": "view-contacts.svg",
+    "encyclopedia": "view-encyclopedia.svg",
+    "materials": "view-materials.svg"
+  },
+  "navIcons": {
+    "infrastructure": "155",
+    "contacts": "165",
+    "encyclopedia": "176"
+  },
+  "encIcons": {
+    "sidequests": "249",
+    "materials": "259",
+    "characters": "269",
+    "texts": "279",
+    "units": "294",
+    "factions": "304"
+  },
+  "hotspots": {
+    "nav_infrastructure": {
+      "x": 272.9,
+      "y": 94.15,
+      "w": 90.35,
+      "h": 37.65
+    },
+    "nav_contacts": {
+      "x": 275.03,
+      "y": 169.71,
+      "w": 84.26,
+      "h": 52.9
+    },
+    "nav_encyclopedia": {
+      "x": 497.4,
+      "y": 96.9,
+      "w": 92.75,
+      "h": 34.9
+    },
+    "exit": {
+      "x": 410.25,
+      "y": 273.35,
+      "w": 37.2,
+      "h": 18
+    }
+  },
+  "encHotspots": {
+    "sidequests": {
+      "x": 229.3,
+      "y": 79.6,
+      "w": 142.45,
+      "h": 43.5
+    },
+    "materials": {
+      "x": 228.7,
+      "y": 161.1,
+      "w": 142.47,
+      "h": 28.15
+    },
+    "characters": {
+      "x": 221.93,
+      "y": 219.47,
+      "w": 148.57,
+      "h": 40.78
+    },
+    "texts": {
+      "x": 475.48,
+      "y": 92.5,
+      "w": 149.37,
+      "h": 30.62
+    },
+    "units": {
+      "x": 472.35,
+      "y": 153.85,
+      "w": 149.25,
+      "h": 36.25
+    },
+    "factions": {
+      "x": 474.15,
+      "y": 225.3,
+      "w": 150.7,
+      "h": 35.8
+    },
+    "crumb": {
+      "x": 233.45,
+      "y": 27.65,
+      "w": 92.75,
+      "h": 34.9
+    }
+  },
+  "contactBounds": {
+    "rows": [
+      {
+        "x": 255.05,
+        "y": 70.2,
+        "w": 150,
+        "h": 20
+      },
+      {
+        "x": 255.05,
+        "y": 95.2,
+        "w": 150,
+        "h": 20
+      },
+      {
+        "x": 255.05,
+        "y": 120.2,
+        "w": 150,
+        "h": 20
+      },
+      {
+        "x": 255.05,
+        "y": 145.2,
+        "w": 150,
+        "h": 20
+      },
+      {
+        "x": 255.05,
+        "y": 170.2,
+        "w": 150,
+        "h": 20
+      },
+      {
+        "x": 255.05,
+        "y": 195.2,
+        "w": 150,
+        "h": 20
+      },
+      {
+        "x": 255.05,
+        "y": 220.2,
+        "w": 150,
+        "h": 20
+      },
+      {
+        "x": 255.05,
+        "y": 245.2,
+        "w": 150,
+        "h": 20
+      }
+    ],
+    "portrait": {
+      "x": 420.05,
+      "y": 55.2,
+      "w": 199.99,
+      "h": 200
+    }
+  },
+  "viewBoxes": {
+    "hub": "195.75 -7.20 467.45 324.61",
+    "infrastructure": "195.75 -7.20 467.45 324.61",
+    "contacts": "195.75 -7.20 467.45 324.61",
+    "encyclopedia": "195.75 -7.20 467.45 324.61",
+    "materials": "195.75 -7.20 467.45 324.61"
+  },
+  "counts": {
+    "infrastructure": 8,
+    "materials": 58,
+    "contacts": 8
+  }
+}
