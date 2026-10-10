@@ -93,6 +93,14 @@ CPU 进程数据包括夹具驱动、自建窗口与原生工作线程，是一�
 
 ## 诊断与复现
 
+### 2026-10-10 试玩日志复核与发布授权
+
+维护者试玩后反馈“玩了一圈感觉没问题”，并授权日志无阻断项时走正式发布列车。20:26:06–20:31:14 的新鲜日志指向 `hud-work-1010-final` 的实际 Core 路径，与保留候选的身份和字节一致；不使用 9 月的旧 focus recording 代签。未见 HUD Paint 异常、世界渲染故障、未处理异常或保存失败，面板关闭后共享主 HUD 恢复，Flash 与输入 broker 正常退出，输入 consumed/completed 同为 806、invalid=0。
+
+保留两项观察：结算材料面板与返场交接出现 3719 ms 的 Flash 长帧，期间主 HUD 处于暂停、Host 仍持续记录状态，随后转场完成；退出阶段有一次终端 shutdown 请求被取消，随后进程正常退出。当前没有将其归因为本批 HUD 改动，也没有以这次试玩证明稳定 30 FPS、弱机或全部业务旅程。具体计数与日志摘要见[试玩复核证据](evidence/shared-hud-playtest-2026-10-10.json)。本段是发布准入依据，正式部署状态仍以对应 promotion/consensus 为准。
+
+### 计时入口
+
 日常诊断仍用现有 `CF7_PLAYER_HUD_PROFILE=1` 开关：新增主 HUD 的 paint/commit 统计与 `[WorldHudCost]` 累计记录。Native GPU query 默认关闭，开启后异步轮询且使用 DONOTFLUSH；环满只丢测量、不丢渲染帧。统计为累计值，跨日志行比较须按 profile id 和计数差值计算。
 
 可选 native 导出为 `ProbeSetHudCostSampling`、`ProbeGetHudCostStats`；本轮配对结构为 168 字节。旧 ABI 12 和既有 HUD 统计结构未改变。`AllocationCpuMs` 表示缓冲获取成本，包含缓存查询或新分配；`CopyCpuMs` 仅表示逐行复制，`CachedBytes` 是当前缓存持有字节数。字段缺失的旧模块仍可正常呈现，不能用于本专项计时。
