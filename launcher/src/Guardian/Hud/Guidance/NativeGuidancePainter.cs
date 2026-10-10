@@ -159,7 +159,7 @@ namespace CF7Launcher.Guardian.Hud.Guidance
             g.DrawEllipse(outline, r);
             // The filled upper-left quarter indicates the left mouse button, as in the original FLA.
             var state = g.Save();
-            g.SetClip(new RectangleF(r.Left, r.Top, r.Width / 2, r.Height * .36f));
+            g.SetClip(new RectangleF(r.Left, r.Top, r.Width / 2, r.Height * .36f), CombineMode.Intersect);
             g.FillEllipse(fill, r); g.Restore(state);
             g.DrawLine(outline, r.Left, r.Top + r.Height * .36f, r.Right, r.Top + r.Height * .36f);
             g.DrawLine(outline, r.Left + r.Width / 2, r.Top, r.Left + r.Width / 2, r.Top + r.Height * .36f);

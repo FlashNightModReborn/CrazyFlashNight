@@ -1,0 +1,4580 @@
+{
+  "schema": "cf7-shared-hud-cost-evidence.v1",
+  "role": "Historical controlled render experiment; not a live registry or formal release receipt",
+  "recordedUtc": "2026-10-10T12:16:26.321708+00:00",
+  "sourceBaseline": "b5d7592b66db7e17314f6c4edc88c590c93a0f0c",
+  "method": {
+    "order": [
+      "A1",
+      "B1",
+      "B2",
+      "A2"
+    ],
+    "A": "Instrumented baseline b3; no paint or pixel-cache optimization",
+    "B": "p2; partial main-HUD repaint plus bounded immutable pixel cache",
+    "resolution": [
+      1024,
+      576
+    ],
+    "repetitionsPerProcess": 2,
+    "warmupSecondsPerWorkload": 2,
+    "measuredSecondsPerWorkload": 8,
+    "mainHudTickHz": 30,
+    "frozenTestAssemblyPerVariant": true,
+    "testCoreMatchesCandidateCore": true,
+    "primaryStatistic": "Median of four per-trial means, except explicitly named per-trial quantiles",
+    "gpuQuantiles": "Per-trial retained ring of at most 256 completed query pairs; GPU means use epoch totals",
+    "cpuScope": "Whole fixture process, expressed as percent of one CPU core; not live game Host or total-machine percent",
+    "gpuScope": "Asynchronous timestamp intervals around world/effects and HUD upload/draw; excludes WGC capture, atlas upload, Present, DWM and scanout",
+    "workloads": {
+      "static": "Frozen source and all visual clocks; zero repaint/copy/upload/composition required",
+      "hud_only": "Real main-HUD painters at 30Hz and resource animation timer; no new WGC source frames",
+      "mixed": "Same HUD plus 30Hz source, production bullet/effect atlases, 192 deterministic bullets, 8 dynamic lights and 160 snow particles"
+    }
+  },
+  "selectedChanges": [
+    "Damage-clipped main-HUD repaint with full repaint for geometry/lifecycle/unknown invalidations",
+    "Native pixel buffers reused only with exclusive cache ownership; three entries per layer, 32 MiB total cap"
+  ],
+  "unimplemented": [
+    "Partial GPU upload",
+    "Retained world render cache",
+    "InputShield removal",
+    "Legacy presentation retirement"
+  ],
+  "aggregates": {
+    "A": {
+      "static": {
+        "trials": 4,
+        "mainPaintMeanMs": {
+          "median": 0.0,
+          "min": 0.0,
+          "max": 0.0
+        },
+        "mainPaintP95Ms": {
+          "median": 0.0,
+          "min": 0.0,
+          "max": 0.0
+        },
+        "mainPaintP99Ms": {
+          "median": 0.0,
+          "min": 0.0,
+          "max": 0.0
+        },
+        "mainCommitMeanMs": {
+          "median": 0.0,
+          "min": 0.0,
+          "max": 0.0
+        },
+        "mainCommitP95Ms": {
+          "median": 0.0,
+          "min": 0.0,
+          "max": 0.0
+        },
+        "mainCommitP99Ms": {
+          "median": 0.0,
+          "min": 0.0,
+          "max": 0.0
+        },
+        "fixtureCpuCorePercent": {
+          "median": 0.8785415462962016,
+          "min": 0.39079852920191044,
+          "max": 0.9783596488389523
+        },
+        "copiedMiBPerSecond": {
+          "median": 0.0,
+          "min": 0.0,
+          "max": 0.0
+        },
+        "uploadedMiBPerSecond": {
+          "median": 0.0,
+          "min": 0.0,
+          "max": 0.0
+        },
+        "bufferAcquireCpuMsPerSecond": {
+          "median": 0.0,
+          "min": 0.0,
+          "max": 0.0
+        },
+        "rowCopyCpuMsPerSecond": {
+          "median": 0.0,
+          "min": 0.0,
+          "max": 0.0
+        },
+        "acquireAndCopyCpuMsPerSecond": {
+          "median": 0.0,
+          "min": 0.0,
+          "max": 0.0
+        },
+        "worldGpuMeanMs": {
+          "median": 0.0,
+          "min": 0.0,
+          "max": 0.0
+        },
+        "hudGpuMeanMs": {
+          "median": 0.0,
+          "min": 0.0,
+          "max": 0.0
+        },
+        "worldGpuP95Ms": {
+          "median": 0.0,
+          "min": 0.0,
+          "max": 0.0
+        },
+        "hudGpuP95Ms": {
+          "median": 0.0,
+          "min": 0.0,
+          "max": 0.0
+        },
+        "compositionsPerSecond": {
+          "median": 0.0,
+          "min": 0.0,
+          "max": 0.0
+        },
+        "receivedPerSecond": {
+          "median": 0.0,
+          "min": 0.0,
+          "max": 0.0
+        },
+        "paintedPixelsPerRender": {
+          "median": 0.0,
+          "min": 0.0,
+          "max": 0.0
+        },
+        "mainRendersPerSecond": {
+          "median": 0.0,
+          "min": 0.0,
+          "max": 0.0
+        }
+      },
+      "hud_only": {
+        "trials": 4,
+        "mainPaintMeanMs": {
+          "median": 1.9132102083333327,
+          "min": 1.8620395833333343,
+          "max": 2.0454149999999998
+        },
+        "mainPaintP95Ms": {
+          "median": 2.855,
+          "min": 2.2233,
+          "max": 3.1074
+        },
+        "mainPaintP99Ms": {
+          "median": 3.5105500000000003,
+          "min": 3.2206,
+          "max": 4.238
+        },
+        "mainCommitMeanMs": {
+          "median": 0.5772945833333334,
+          "min": 0.5621350000000002,
+          "max": 0.6617587500000003
+        },
+        "mainCommitP95Ms": {
+          "median": 0.77885,
+          "min": 0.6979,
+          "max": 1.1159
+        },
+        "mainCommitP99Ms": {
+          "median": 0.9848000000000001,
+          "min": 0.7873,
+          "max": 2.0701
+        },
+        "fixtureCpuCorePercent": {
+          "median": 17.77580816764926,
+          "min": 14.439955940681548,
+          "max": 24.640626398453332
+        },
+        "copiedMiBPerSecond": {
+          "median": 55.2487678489252,
+          "min": 55.18410351782628,
+          "max": 55.42717492007678
+        },
+        "uploadedMiBPerSecond": {
+          "median": 55.2487678489252,
+          "min": 55.18410351782628,
+          "max": 55.42717492007678
+        },
+        "bufferAcquireCpuMsPerSecond": {
+          "median": 9.844399421752787,
+          "min": 9.771338677867414,
+          "max": 11.67257526906459
+        },
+        "rowCopyCpuMsPerSecond": {
+          "median": 3.8694043287377697,
+          "min": 3.687874154515505,
+          "max": 4.245464710288724
+        },
+        "acquireAndCopyCpuMsPerSecond": {
+          "median": 13.713803750490555,
+          "min": 13.459212832382919,
+          "max": 15.918039979353313
+        },
+        "worldGpuMeanMs": {
+          "median": 0.9197657749305213,
+          "min": 0.8300136650833434,
+          "max": 1.1259086831784548
+        },
+        "hudGpuMeanMs": {
+          "median": 0.45548546746009366,
+          "min": 0.42722475960768447,
+          "max": 0.5313561163337764
+        },
+        "worldGpuP95Ms": {
+          "median": 4.868230527077893,
+          "min": 2.22374110503558,
+          "max": 6.104558915097673
+        },
+        "hudGpuP95Ms": {
+          "median": 1.233620065519738,
+          "min": 1.1094122290177506,
+          "max": 1.3544112490216706
+        },
+        "compositionsPerSecond": {
+          "median": 58.030805252759194,
+          "min": 56.89496657733323,
+          "max": 58.94976525039502
+        },
+        "receivedPerSecond": {
+          "median": 0.0,
+          "min": 0.0,
+          "max": 0.0
+        },
+        "paintedPixelsPerRender": {
+          "median": 467908.0,
+          "min": 467908.0,
+          "max": 467908.0
+        },
+        "mainRendersPerSecond": {
+          "median": 30.002712595207395,
+          "min": 29.972665303901163,
+          "max": 30.03809694287644
+        }
+      },
+      "mixed": {
+        "trials": 4,
+        "mainPaintMeanMs": {
+          "median": 1.9194910416666666,
+          "min": 1.8662312500000007,
+          "max": 2.0301704166666656
+        },
+        "mainPaintP95Ms": {
+          "median": 2.6909,
+          "min": 2.1861,
+          "max": 3.0026
+        },
+        "mainPaintP99Ms": {
+          "median": 3.5019,
+          "min": 2.996,
+          "max": 4.102
+        },
+        "mainCommitMeanMs": {
+          "median": 0.5751210416666666,
+          "min": 0.5690224999999997,
+          "max": 0.6177045833333332
+        },
+        "mainCommitP95Ms": {
+          "median": 0.7381,
+          "min": 0.68,
+          "max": 0.8441
+        },
+        "mainCommitP99Ms": {
+          "median": 0.8652500000000001,
+          "min": 0.7781,
+          "max": 1.004
+        },
+        "fixtureCpuCorePercent": {
+          "median": 17.9729273657969,
+          "min": 15.420264369197287,
+          "max": 19.1301698839042
+        },
+        "copiedMiBPerSecond": {
+          "median": 55.27971931504241,
+          "min": 55.17423642625501,
+          "max": 55.317955495212445
+        },
+        "uploadedMiBPerSecond": {
+          "median": 53.26403582214019,
+          "min": 43.81421193459547,
+          "max": 54.8258855489526
+        },
+        "bufferAcquireCpuMsPerSecond": {
+          "median": 9.779077504995094,
+          "min": 9.661083688902579,
+          "max": 10.263703607148168
+        },
+        "rowCopyCpuMsPerSecond": {
+          "median": 3.8711914468872095,
+          "min": 3.673346468218363,
+          "max": 4.340672401494283
+        },
+        "acquireAndCopyCpuMsPerSecond": {
+          "median": 13.634899681621715,
+          "min": 13.365168697642119,
+          "max": 14.60437600864245
+        },
+        "worldGpuMeanMs": {
+          "median": 1.1754317566063073,
+          "min": 1.0295944927331395,
+          "max": 1.2325207643613871
+        },
+        "hudGpuMeanMs": {
+          "median": 0.4834550106244017,
+          "min": 0.43994407355703957,
+          "max": 0.4963396813079415
+        },
+        "worldGpuP95Ms": {
+          "median": 1.866992532029872,
+          "min": 1.53874384502462,
+          "max": 2.2149078070354387
+        },
+        "hudGpuP95Ms": {
+          "median": 0.5417894995086687,
+          "min": 0.5311645420084987,
+          "max": 0.5601644260089627
+        },
+        "compositionsPerSecond": {
+          "median": 30.006974384634823,
+          "min": 29.9836132057927,
+          "max": 30.106602231708727
+        },
+        "receivedPerSecond": {
+          "median": 29.93697105024556,
+          "min": 29.733749762411097,
+          "max": 29.996613007433794
+        },
+        "paintedPixelsPerRender": {
+          "median": 467908.0,
+          "min": 467908.0,
+          "max": 467908.0
+        },
+        "mainRendersPerSecond": {
+          "median": 29.990113106613247,
+          "min": 29.981678570996245,
+          "max": 30.017335761835856
+        }
+      }
+    },
+    "B": {
+      "static": {
+        "trials": 4,
+        "mainPaintMeanMs": {
+          "median": 0.0,
+          "min": 0.0,
+          "max": 0.0
+        },
+        "mainPaintP95Ms": {
+          "median": 0.0,
+          "min": 0.0,
+          "max": 0.0
+        },
+        "mainPaintP99Ms": {
+          "median": 0.0,
+          "min": 0.0,
+          "max": 0.0
+        },
+        "mainCommitMeanMs": {
+          "median": 0.0,
+          "min": 0.0,
+          "max": 0.0
+        },
+        "mainCommitP95Ms": {
+          "median": 0.0,
+          "min": 0.0,
+          "max": 0.0
+        },
+        "mainCommitP99Ms": {
+          "median": 0.0,
+          "min": 0.0,
+          "max": 0.0
+        },
+        "fixtureCpuCorePercent": {
+          "median": 1.563143109736379,
+          "min": 0.39095486327895584,
+          "max": 1.7580619030567224
+        },
+        "copiedMiBPerSecond": {
+          "median": 0.0,
+          "min": 0.0,
+          "max": 0.0
+        },
+        "uploadedMiBPerSecond": {
+          "median": 0.0,
+          "min": 0.0,
+          "max": 0.0
+        },
+        "bufferAcquireCpuMsPerSecond": {
+          "median": 0.0,
+          "min": 0.0,
+          "max": 0.0
+        },
+        "rowCopyCpuMsPerSecond": {
+          "median": 0.0,
+          "min": 0.0,
+          "max": 0.0
+        },
+        "acquireAndCopyCpuMsPerSecond": {
+          "median": 0.0,
+          "min": 0.0,
+          "max": 0.0
+        },
+        "worldGpuMeanMs": {
+          "median": 0.0,
+          "min": 0.0,
+          "max": 0.0
+        },
+        "hudGpuMeanMs": {
+          "median": 0.0,
+          "min": 0.0,
+          "max": 0.0
+        },
+        "worldGpuP95Ms": {
+          "median": 0.0,
+          "min": 0.0,
+          "max": 0.0
+        },
+        "hudGpuP95Ms": {
+          "median": 0.0,
+          "min": 0.0,
+          "max": 0.0
+        },
+        "compositionsPerSecond": {
+          "median": 0.0,
+          "min": 0.0,
+          "max": 0.0
+        },
+        "receivedPerSecond": {
+          "median": 0.0,
+          "min": 0.0,
+          "max": 0.0
+        },
+        "paintedPixelsPerRender": {
+          "median": 0.0,
+          "min": 0.0,
+          "max": 0.0
+        },
+        "mainRendersPerSecond": {
+          "median": 0.0,
+          "min": 0.0,
+          "max": 0.0
+        }
+      },
+      "hud_only": {
+        "trials": 4,
+        "mainPaintMeanMs": {
+          "median": 1.229025416666667,
+          "min": 1.1679454166666658,
+          "max": 1.3058274999999993
+        },
+        "mainPaintP95Ms": {
+          "median": 1.7669,
+          "min": 1.4797,
+          "max": 2.0433
+        },
+        "mainPaintP99Ms": {
+          "median": 2.40915,
+          "min": 1.8753,
+          "max": 3.0334
+        },
+        "mainCommitMeanMs": {
+          "median": 0.20939458333333333,
+          "min": 0.20702666666666664,
+          "max": 0.2193524999999999
+        },
+        "mainCommitP95Ms": {
+          "median": 0.29755,
+          "min": 0.2741,
+          "max": 0.3449
+        },
+        "mainCommitP99Ms": {
+          "median": 0.41285,
+          "min": 0.3623,
+          "max": 0.4479
+        },
+        "fixtureCpuCorePercent": {
+          "median": 14.153724618926677,
+          "min": 11.724929917436235,
+          "max": 18.537668992980997
+        },
+        "copiedMiBPerSecond": {
+          "median": 55.30280689065173,
+          "min": 55.24440038251717,
+          "max": 55.357916671850845
+        },
+        "uploadedMiBPerSecond": {
+          "median": 55.30824720398651,
+          "min": 55.24440038251717,
+          "max": 55.357916671850845
+        },
+        "bufferAcquireCpuMsPerSecond": {
+          "median": 0.04686678984590467,
+          "min": 0.043948143833462024,
+          "max": 0.05458850830531032
+        },
+        "rowCopyCpuMsPerSecond": {
+          "median": 5.925793949694702,
+          "min": 5.8427985431995575,
+          "max": 6.174244764557601
+        },
+        "acquireAndCopyCpuMsPerSecond": {
+          "median": 5.975062275764088,
+          "min": 5.8917660707272015,
+          "max": 6.2190108167217675
+        },
+        "worldGpuMeanMs": {
+          "median": 0.9641887642385611,
+          "min": 0.855856803041294,
+          "max": 1.0449204579993276
+        },
+        "hudGpuMeanMs": {
+          "median": 0.46887301880063026,
+          "min": 0.4549422708183194,
+          "max": 0.5015974501319383
+        },
+        "worldGpuP95Ms": {
+          "median": 4.167816662066685,
+          "min": 3.286736853052588,
+          "max": 5.550561131088809
+        },
+        "hudGpuP95Ms": {
+          "median": 1.2827865355205248,
+          "min": 1.236995052019792,
+          "max": 1.3204113850211268
+        },
+        "compositionsPerSecond": {
+          "median": 58.879927737735116,
+          "min": 57.53032279488713,
+          "max": 59.001107745797924
+        },
+        "receivedPerSecond": {
+          "median": 0.0,
+          "min": 0.0,
+          "max": 0.0
+        },
+        "paintedPixelsPerRender": {
+          "median": 24024.0,
+          "min": 24024.0,
+          "max": 24024.0
+        },
+        "mainRendersPerSecond": {
+          "median": 29.98652351092909,
+          "min": 29.968909878280893,
+          "max": 30.01582058863676
+        }
+      },
+      "mixed": {
+        "trials": 4,
+        "mainPaintMeanMs": {
+          "median": 1.2502158333333333,
+          "min": 1.2079879166666667,
+          "max": 1.2774474999999998
+        },
+        "mainPaintP95Ms": {
+          "median": 1.7081499999999998,
+          "min": 1.4437,
+          "max": 1.9672
+        },
+        "mainPaintP99Ms": {
+          "median": 2.08195,
+          "min": 1.8872,
+          "max": 2.2753
+        },
+        "mainCommitMeanMs": {
+          "median": 0.21924791666666665,
+          "min": 0.2048641666666667,
+          "max": 0.2351916666666666
+        },
+        "mainCommitP95Ms": {
+          "median": 0.31000000000000005,
+          "min": 0.2679,
+          "max": 0.3563
+        },
+        "mainCommitP99Ms": {
+          "median": 0.38525,
+          "min": 0.3265,
+          "max": 0.4565
+        },
+        "fixtureCpuCorePercent": {
+          "median": 15.73191431820102,
+          "min": 13.866940668456099,
+          "max": 17.98205402266867
+        },
+        "copiedMiBPerSecond": {
+          "median": 55.32239846612829,
+          "min": 55.29197603917571,
+          "max": 55.359015540880584
+        },
+        "uploadedMiBPerSecond": {
+          "median": 55.17049935552663,
+          "min": 48.11006257632802,
+          "max": 55.246974787137354
+        },
+        "bufferAcquireCpuMsPerSecond": {
+          "median": 0.04547265784506957,
+          "min": 0.044047922192766334,
+          "max": 0.046483600860382994
+        },
+        "rowCopyCpuMsPerSecond": {
+          "median": 6.16177283657229,
+          "min": 5.784871995476686,
+          "max": 6.578360879963586
+        },
+        "acquireAndCopyCpuMsPerSecond": {
+          "median": 6.207737700252271,
+          "min": 5.8303711846672455,
+          "max": 6.622408802156353
+        },
+        "worldGpuMeanMs": {
+          "median": 1.182072181433496,
+          "min": 1.1045174569301723,
+          "max": 1.258604687803471
+        },
+        "hudGpuMeanMs": {
+          "median": 0.4960264881162697,
+          "min": 0.45019368533636966,
+          "max": 0.5115837175540188
+        },
+        "worldGpuP95Ms": {
+          "median": 1.8182427270290922,
+          "min": 1.523493906024376,
+          "max": 2.1208248500339333
+        },
+        "hudGpuP95Ms": {
+          "median": 0.5381228475086101,
+          "min": 0.5316645400085067,
+          "max": 0.5440811570087053
+        },
+        "compositionsPerSecond": {
+          "median": 30.02601708729693,
+          "min": 29.999466009505024,
+          "max": 30.132092341234817
+        },
+        "receivedPerSecond": {
+          "median": 30.02601708729693,
+          "min": 29.882033483631208,
+          "max": 30.12446378454463
+        },
+        "paintedPixelsPerRender": {
+          "median": 24024.0,
+          "min": 24024.0,
+          "max": 24024.0
+        },
+        "mainRendersPerSecond": {
+          "median": 30.014637422966004,
+          "min": 29.999466009505024,
+          "max": 30.029822241094855
+        }
+      }
+    }
+  },
+  "reports": [
+    {
+      "reportPath": "tmp/hud-work-cost-20261010/runs/cost-final-A1.json",
+      "reportSha256": "1D3440A8F08D02BEC7384107B11037EE5DA6C6D2535D081C439E4C14CE17B317",
+      "recordedUtc": "2026-10-10T11:56:24.4640811+00:00",
+      "variant": "baseline-A1",
+      "candidateDirectory": "tmp/runtime-candidates/v2/hud-work-1010-b3",
+      "buildIdentity": "06A50E44CBD3A7B29AF6D527227CFE6439B3C5A659FF5E0686FBD1C141B2D1FB",
+      "payloadClosure": "E64BF9F6AE5815F144AD6B1955C4F0978ACE805E052021EA61C222303FCA7BBB",
+      "testCoreSha256": "04CF70BB83C2649BF6A6B44316EA9DDE280AFC72253700DDA06D17991EA412A1",
+      "candidateCoreSha256": "04CF70BB83C2649BF6A6B44316EA9DDE280AFC72253700DDA06D17991EA412A1",
+      "nativeSha256": "1623C02DF76C63654C58C271AC994DEF34D2BC969B80349F22CE987BBC9B5FC0",
+      "rows": [
+        {
+          "repeat": 0,
+          "workload": "static",
+          "seconds": 7.994195500000001,
+          "requestedFrames": 240,
+          "mainRenders": 0,
+          "paint": {
+            "count": 0,
+            "sumMs": 0.0,
+            "meanMs": 0.0,
+            "p50Ms": 0.0,
+            "p95Ms": 0.0,
+            "p99Ms": 0.0,
+            "maxMs": 0.0
+          },
+          "commit": {
+            "count": 0,
+            "sumMs": 0.0,
+            "meanMs": 0.0,
+            "p50Ms": 0.0,
+            "p95Ms": 0.0,
+            "p99Ms": 0.0,
+            "maxMs": 0.0
+          },
+          "driverCpu": {
+            "count": 240,
+            "sumMs": 26.603,
+            "meanMs": 0.11084583333333334,
+            "p50Ms": 0.0473,
+            "p95Ms": 0.4283,
+            "p99Ms": 0.7593,
+            "maxMs": 0.8281
+          },
+          "meanRasterPixels": 0.0,
+          "maxRasterPixels": 0,
+          "mainPixelBytes": 0,
+          "cpuCorePercent": 0.7818172572837379,
+          "driverThreadAllocatedBytes": 198112,
+          "received": 0,
+          "presented": 0,
+          "compositions": 0,
+          "lightDraws": 0,
+          "lightCacheHits": 0,
+          "fxUploads": 0,
+          "hudAccepted": 0,
+          "copiedBytes": 0,
+          "uploads": 0,
+          "uploadedBytes": 0,
+          "hudDraws": 0,
+          "submitCpuMs": {
+            "count": 0,
+            "sumMs": 0.0,
+            "meanMs": 0.0,
+            "p50Ms": 0.0,
+            "p95Ms": 0.0,
+            "p99Ms": 0.0,
+            "maxMs": 0.0
+          },
+          "presentCallMs": {
+            "count": 0,
+            "sumMs": 0.0,
+            "meanMs": 0.0,
+            "p50Ms": 0.0,
+            "p95Ms": 0.0,
+            "p99Ms": 0.0,
+            "maxMs": 0.0
+          },
+          "gpuAndCopyCosts": {
+            "Size": 144,
+            "Enabled": 0,
+            "Retained": 0,
+            "Started": 0,
+            "Completed": 0,
+            "Disjoint": 0,
+            "Dropped": 0,
+            "Errors": 0,
+            "WorldMsTotal": 0.0,
+            "HudMsTotal": 0.0,
+            "WorldP50Ms": 0.0,
+            "WorldP95Ms": 0.0,
+            "WorldP99Ms": 0.0,
+            "HudP50Ms": 0.0,
+            "HudP95Ms": 0.0,
+            "HudP99Ms": 0.0,
+            "CopySamples": 0,
+            "CopyBytes": 0,
+            "AllocationCpuMs": 0.0,
+            "CopyCpuMs": 0.0
+          },
+          "companions": []
+        },
+        {
+          "repeat": 0,
+          "workload": "hud_only",
+          "seconds": 7.997192500000001,
+          "requestedFrames": 240,
+          "mainRenders": 240,
+          "paint": {
+            "count": 240,
+            "sumMs": 461.61420000000004,
+            "meanMs": 1.9233925,
+            "p50Ms": 1.7621,
+            "p95Ms": 3.0281,
+            "p99Ms": 3.7607,
+            "maxMs": 4.2626
+          },
+          "commit": {
+            "count": 240,
+            "sumMs": 140.84590000000003,
+            "meanMs": 0.5868579166666668,
+            "p50Ms": 0.5543,
+            "p95Ms": 0.8201,
+            "p99Ms": 1.0295,
+            "maxMs": 1.0804
+          },
+          "driverCpu": {
+            "count": 240,
+            "sumMs": 1285.461,
+            "meanMs": 5.3560875,
+            "p50Ms": 5.2639,
+            "p95Ms": 7.2907,
+            "p99Ms": 9.7911,
+            "maxMs": 10.7053
+          },
+          "meanRasterPixels": 467908.0,
+          "maxRasterPixels": 467908,
+          "mainPixelBytes": 449191680,
+          "cpuCorePercent": 20.710393053562232,
+          "driverThreadAllocatedBytes": 8445304,
+          "received": 0,
+          "presented": 455,
+          "compositions": 455,
+          "lightDraws": 0,
+          "lightCacheHits": 0,
+          "fxUploads": 0,
+          "hudAccepted": 457,
+          "copiedBytes": 462905256,
+          "uploads": 457,
+          "uploadedBytes": 462905256,
+          "hudDraws": 1820,
+          "submitCpuMs": {
+            "count": 240,
+            "sumMs": 71.6609999537468,
+            "meanMs": 0.29858749980727833,
+            "p50Ms": 0.28509998321533203,
+            "p95Ms": 0.4941999912261963,
+            "p99Ms": 0.5812000036239624,
+            "maxMs": 0.8199999928474426
+          },
+          "presentCallMs": {
+            "count": 240,
+            "sumMs": 31.515400052070618,
+            "meanMs": 0.13131416688362757,
+            "p50Ms": 0.12380000948905945,
+            "p95Ms": 0.21399998664855957,
+            "p99Ms": 0.2929999828338623,
+            "maxMs": 0.3164999783039093
+          },
+          "gpuAndCopyCosts": {
+            "Size": 144,
+            "Enabled": 0,
+            "Retained": 256,
+            "Started": 455,
+            "Completed": 455,
+            "Disjoint": 0,
+            "Dropped": 0,
+            "Errors": 0,
+            "WorldMsTotal": 512.288450846197,
+            "HudMsTotal": 241.7670329318683,
+            "WorldP50Ms": 0.5133312800082134,
+            "WorldP95Ms": 6.104558915097673,
+            "WorldP99Ms": 7.910718357126572,
+            "HudP50Ms": 0.43441492900695067,
+            "HudP95Ms": 1.3544112490216706,
+            "HudP99Ms": 1.5983269400255733,
+            "CopySamples": 457,
+            "CopyBytes": 462905256,
+            "AllocationCpuMs": 79.30730006098747,
+            "CopyCpuMs": 31.875600069761276
+          },
+          "companions": [
+            {
+              "layer": "resources",
+              "renders": 217,
+              "paint": {
+                "count": 217,
+                "sumMs": 317.2530999999999,
+                "meanMs": 1.4619958525345618,
+                "p50Ms": 1.3052,
+                "p95Ms": 2.0467,
+                "p99Ms": 3.4245,
+                "maxMs": 5.5448
+              },
+              "commit": {
+                "count": 217,
+                "sumMs": 7.813800000000005,
+                "meanMs": 0.0360082949308756,
+                "p50Ms": 0.0317,
+                "p95Ms": 0.0623,
+                "p99Ms": 0.0796,
+                "maxMs": 0.0846
+              },
+              "pixelBytes": 19826856
+            }
+          ]
+        },
+        {
+          "repeat": 0,
+          "workload": "mixed",
+          "seconds": 7.995379799999999,
+          "requestedFrames": 240,
+          "mainRenders": 240,
+          "paint": {
+            "count": 240,
+            "sumMs": 447.89550000000014,
+            "meanMs": 1.8662312500000007,
+            "p50Ms": 1.7781,
+            "p95Ms": 2.4009,
+            "p99Ms": 2.996,
+            "maxMs": 3.9601
+          },
+          "commit": {
+            "count": 240,
+            "sumMs": 136.56539999999993,
+            "meanMs": 0.5690224999999997,
+            "p50Ms": 0.5529,
+            "p95Ms": 0.7068,
+            "p99Ms": 0.7781,
+            "maxMs": 0.9398
+          },
+          "driverCpu": {
+            "count": 240,
+            "sumMs": 1210.3617,
+            "meanMs": 5.043173749999999,
+            "p50Ms": 5.153,
+            "p95Ms": 6.5682,
+            "p99Ms": 7.6969,
+            "maxMs": 8.2907
+          },
+          "meanRasterPixels": 467908.0,
+          "maxRasterPixels": 467908,
+          "mainPixelBytes": 449191680,
+          "cpuCorePercent": 17.979133399016266,
+          "driverThreadAllocatedBytes": 8672424,
+          "received": 239,
+          "presented": 240,
+          "compositions": 240,
+          "lightDraws": 221,
+          "lightCacheHits": 19,
+          "fxUploads": 0,
+          "hudAccepted": 465,
+          "copiedBytes": 463636200,
+          "uploads": 431,
+          "uploadedBytes": 437717392,
+          "hudDraws": 960,
+          "submitCpuMs": {
+            "count": 221,
+            "sumMs": 131.08049991726875,
+            "meanMs": 0.5931244340147908,
+            "p50Ms": 0.5640999972820282,
+            "p95Ms": 1.0022999942302704,
+            "p99Ms": 1.2714000046253204,
+            "maxMs": 1.5133000016212463
+          },
+          "presentCallMs": {
+            "count": 221,
+            "sumMs": 26.42120012640953,
+            "meanMs": 0.11955294174845942,
+            "p50Ms": 0.0900999903678894,
+            "p95Ms": 0.28360000252723694,
+            "p99Ms": 0.398499995470047,
+            "maxMs": 0.42730000615119934
+          },
+          "gpuAndCopyCosts": {
+            "Size": 144,
+            "Enabled": 0,
+            "Retained": 240,
+            "Started": 240,
+            "Completed": 240,
+            "Disjoint": 0,
+            "Dropped": 0,
+            "Errors": 0,
+            "WorldMsTotal": 291.04791914165685,
+            "HudMsTotal": 115.04495648684063,
+            "WorldP50Ms": 1.094495622017512,
+            "WorldP95Ms": 1.7901595060286426,
+            "WorldP99Ms": 2.781905539044511,
+            "HudP50Ms": 0.48833138000781334,
+            "HudP95Ms": 0.5330812010085293,
+            "HudP99Ms": 0.6035809190096574,
+            "CopySamples": 465,
+            "CopyBytes": 463636200,
+            "AllocationCpuMs": 77.48979967832565,
+            "CopyCpuMs": 29.36980015039444
+          },
+          "companions": [
+            {
+              "layer": "resources",
+              "renders": 225,
+              "paint": {
+                "count": 225,
+                "sumMs": 302.5409999999998,
+                "meanMs": 1.344626666666666,
+                "p50Ms": 1.2461,
+                "p95Ms": 1.9242,
+                "p99Ms": 2.2718,
+                "maxMs": 2.3967
+              },
+              "commit": {
+                "count": 225,
+                "sumMs": 6.6568,
+                "meanMs": 0.029585777777777777,
+                "p50Ms": 0.0273,
+                "p95Ms": 0.0441,
+                "p99Ms": 0.0684,
+                "maxMs": 0.1156
+              },
+              "pixelBytes": 20557800
+            }
+          ]
+        },
+        {
+          "repeat": 1,
+          "workload": "mixed",
+          "seconds": 8.0043722,
+          "requestedFrames": 240,
+          "mainRenders": 240,
+          "paint": {
+            "count": 240,
+            "sumMs": 472.2894000000001,
+            "meanMs": 1.9678725000000006,
+            "p50Ms": 1.8369,
+            "p95Ms": 2.9809,
+            "p99Ms": 3.9909,
+            "maxMs": 4.2973
+          },
+          "commit": {
+            "count": 240,
+            "sumMs": 139.05019999999993,
+            "meanMs": 0.5793758333333331,
+            "p50Ms": 0.5587,
+            "p95Ms": 0.7694,
+            "p99Ms": 0.8745,
+            "maxMs": 1.0247
+          },
+          "driverCpu": {
+            "count": 240,
+            "sumMs": 1231.8986000000007,
+            "meanMs": 5.132910833333336,
+            "p50Ms": 5.1083,
+            "p95Ms": 7.2997,
+            "p99Ms": 9.5552,
+            "maxMs": 10.3535
+          },
+          "meanRasterPixels": 467908.0,
+          "maxRasterPixels": 467908,
+          "mainPixelBytes": 449191680,
+          "cpuCorePercent": 19.1301698839042,
+          "driverThreadAllocatedBytes": 8545264,
+          "received": 238,
+          "presented": 240,
+          "compositions": 240,
+          "lightDraws": 238,
+          "lightCacheHits": 2,
+          "fxUploads": 0,
+          "hudAccepted": 459,
+          "copiedBytes": 463087992,
+          "uploads": 427,
+          "uploadedBytes": 460164216,
+          "hudDraws": 960,
+          "submitCpuMs": {
+            "count": 237,
+            "sumMs": 128.77120032906532,
+            "meanMs": 0.5433383980129338,
+            "p50Ms": 0.5130000114440918,
+            "p95Ms": 0.8364999890327454,
+            "p99Ms": 1.1286999881267548,
+            "maxMs": 1.3088000118732452
+          },
+          "presentCallMs": {
+            "count": 237,
+            "sumMs": 22.55949991941452,
+            "meanMs": 0.09518776337305705,
+            "p50Ms": 0.08130002021789551,
+            "p95Ms": 0.1687999963760376,
+            "p99Ms": 0.3061000108718872,
+            "maxMs": 0.3646000027656555
+          },
+          "gpuAndCopyCosts": {
+            "Size": 144,
+            "Enabled": 0,
+            "Retained": 240,
+            "Started": 240,
+            "Completed": 240,
+            "Disjoint": 0,
+            "Dropped": 0,
+            "Errors": 0,
+            "WorldMsTotal": 273.1593240293706,
+            "HudMsTotal": 119.12152351390596,
+            "WorldP50Ms": 0.969246123015508,
+            "WorldP95Ms": 1.9438255580311015,
+            "WorldP99Ms": 2.673822638042781,
+            "HudP50Ms": 0.4683314600074933,
+            "HudP95Ms": 0.5601644260089627,
+            "HudP99Ms": 1.466744133023468,
+            "CopySamples": 459,
+            "CopyBytes": 463087992,
+            "AllocationCpuMs": 78.97379982471466,
+            "CopyCpuMs": 31.19939997792244
+          },
+          "companions": [
+            {
+              "layer": "resources",
+              "renders": 219,
+              "paint": {
+                "count": 219,
+                "sumMs": 320.26720000000006,
+                "meanMs": 1.4624073059360734,
+                "p50Ms": 1.2892,
+                "p95Ms": 2.3547,
+                "p99Ms": 2.8977,
+                "maxMs": 3.0873
+              },
+              "commit": {
+                "count": 219,
+                "sumMs": 6.983700000000001,
+                "meanMs": 0.031889041095890414,
+                "p50Ms": 0.0289,
+                "p95Ms": 0.0513,
+                "p99Ms": 0.0656,
+                "maxMs": 0.1395
+              },
+              "pixelBytes": 20009592
+            }
+          ]
+        },
+        {
+          "repeat": 1,
+          "workload": "hud_only",
+          "seconds": 8.001362,
+          "requestedFrames": 240,
+          "mainRenders": 240,
+          "paint": {
+            "count": 240,
+            "sumMs": 490.8995999999999,
+            "meanMs": 2.0454149999999998,
+            "p50Ms": 1.8748,
+            "p95Ms": 3.1074,
+            "p99Ms": 4.238,
+            "maxMs": 4.7647
+          },
+          "commit": {
+            "count": 240,
+            "sumMs": 158.82210000000006,
+            "meanMs": 0.6617587500000003,
+            "p50Ms": 0.5774,
+            "p95Ms": 1.1159,
+            "p99Ms": 2.0701,
+            "maxMs": 2.2158
+          },
+          "driverCpu": {
+            "count": 240,
+            "sumMs": 1309.0449,
+            "meanMs": 5.45435375,
+            "p50Ms": 5.4084,
+            "p95Ms": 8.0443,
+            "p99Ms": 9.7365,
+            "maxMs": 11.5866
+          },
+          "meanRasterPixels": 467908.0,
+          "maxRasterPixels": 467908,
+          "mainPixelBytes": 449191680,
+          "cpuCorePercent": 14.841223281736285,
+          "driverThreadAllocatedBytes": 8511760,
+          "received": 0,
+          "presented": 458,
+          "compositions": 458,
+          "lightDraws": 0,
+          "lightCacheHits": 0,
+          "fxUploads": 0,
+          "hudAccepted": 458,
+          "copiedBytes": 462996624,
+          "uploads": 458,
+          "uploadedBytes": 462996624,
+          "hudDraws": 1832,
+          "submitCpuMs": {
+            "count": 240,
+            "sumMs": 65.35680013895035,
+            "meanMs": 0.2723200005789598,
+            "p50Ms": 0.2565000057220459,
+            "p95Ms": 0.4148000180721283,
+            "p99Ms": 0.49300000071525574,
+            "maxMs": 0.8885999917984009
+          },
+          "presentCallMs": {
+            "count": 240,
+            "sumMs": 29.333399921655655,
+            "meanMs": 0.12222249967356523,
+            "p50Ms": 0.12110000848770142,
+            "p95Ms": 0.18799999356269836,
+            "p99Ms": 0.26340001821517944,
+            "maxMs": 0.3993000090122223
+          },
+          "gpuAndCopyCosts": {
+            "Size": 144,
+            "Enabled": 0,
+            "Retained": 256,
+            "Started": 458,
+            "Completed": 458,
+            "Disjoint": 0,
+            "Dropped": 0,
+            "Errors": 0,
+            "WorldMsTotal": 442.77431223608494,
+            "HudMsTotal": 210.51257461636823,
+            "WorldP50Ms": 0.410998356006576,
+            "WorldP95Ms": 4.858147234077731,
+            "WorldP99Ms": 7.6016362601216265,
+            "HudP50Ms": 0.4319149390069107,
+            "HudP95Ms": 1.241745033019868,
+            "HudP99Ms": 1.475994096023616,
+            "CopySamples": 458,
+            "CopyBytes": 462996624,
+            "AllocationCpuMs": 93.39650020003319,
+            "CopyCpuMs": 33.96950000524521
+          },
+          "companions": [
+            {
+              "layer": "resources",
+              "renders": 218,
+              "paint": {
+                "count": 218,
+                "sumMs": 335.13969999999995,
+                "meanMs": 1.5373380733944952,
+                "p50Ms": 1.3459,
+                "p95Ms": 2.5021,
+                "p99Ms": 3.1378,
+                "maxMs": 4.4419
+              },
+              "commit": {
+                "count": 218,
+                "sumMs": 7.917600000000001,
+                "meanMs": 0.03631926605504587,
+                "p50Ms": 0.0315,
+                "p95Ms": 0.0742,
+                "p99Ms": 0.1113,
+                "maxMs": 0.1175
+              },
+              "pixelBytes": 19918224
+            }
+          ]
+        },
+        {
+          "repeat": 1,
+          "workload": "static",
+          "seconds": 7.9853048,
+          "requestedFrames": 240,
+          "mainRenders": 0,
+          "paint": {
+            "count": 0,
+            "sumMs": 0.0,
+            "meanMs": 0.0,
+            "p50Ms": 0.0,
+            "p95Ms": 0.0,
+            "p99Ms": 0.0,
+            "maxMs": 0.0
+          },
+          "commit": {
+            "count": 0,
+            "sumMs": 0.0,
+            "meanMs": 0.0,
+            "p50Ms": 0.0,
+            "p95Ms": 0.0,
+            "p99Ms": 0.0,
+            "maxMs": 0.0
+          },
+          "driverCpu": {
+            "count": 240,
+            "sumMs": 22.70900000000001,
+            "meanMs": 0.09462083333333338,
+            "p50Ms": 0.0424,
+            "p95Ms": 0.3425,
+            "p99Ms": 0.5143,
+            "maxMs": 0.6359
+          },
+          "meanRasterPixels": 0.0,
+          "maxRasterPixels": 0,
+          "mainPixelBytes": 0,
+          "cpuCorePercent": 0.9783596488389523,
+          "driverThreadAllocatedBytes": 195168,
+          "received": 0,
+          "presented": 0,
+          "compositions": 0,
+          "lightDraws": 0,
+          "lightCacheHits": 0,
+          "fxUploads": 0,
+          "hudAccepted": 0,
+          "copiedBytes": 0,
+          "uploads": 0,
+          "uploadedBytes": 0,
+          "hudDraws": 0,
+          "submitCpuMs": {
+            "count": 0,
+            "sumMs": 0.0,
+            "meanMs": 0.0,
+            "p50Ms": 0.0,
+            "p95Ms": 0.0,
+            "p99Ms": 0.0,
+            "maxMs": 0.0
+          },
+          "presentCallMs": {
+            "count": 0,
+            "sumMs": 0.0,
+            "meanMs": 0.0,
+            "p50Ms": 0.0,
+            "p95Ms": 0.0,
+            "p99Ms": 0.0,
+            "maxMs": 0.0
+          },
+          "gpuAndCopyCosts": {
+            "Size": 144,
+            "Enabled": 0,
+            "Retained": 0,
+            "Started": 0,
+            "Completed": 0,
+            "Disjoint": 0,
+            "Dropped": 0,
+            "Errors": 0,
+            "WorldMsTotal": 0.0,
+            "HudMsTotal": 0.0,
+            "WorldP50Ms": 0.0,
+            "WorldP95Ms": 0.0,
+            "WorldP99Ms": 0.0,
+            "HudP50Ms": 0.0,
+            "HudP95Ms": 0.0,
+            "HudP99Ms": 0.0,
+            "CopySamples": 0,
+            "CopyBytes": 0,
+            "AllocationCpuMs": 0.0,
+            "CopyCpuMs": 0.0
+          },
+          "companions": []
+        }
+      ]
+    },
+    {
+      "reportPath": "tmp/hud-work-cost-20261010/runs/cost-final-B1.json",
+      "reportSha256": "43B8B4EB273775196B9A670C51038D671028CFAAA3D422AFB19A5EE1FE9590A1",
+      "recordedUtc": "2026-10-10T11:57:30.7376278+00:00",
+      "variant": "partial-paint-and-pixel-cache-B1",
+      "candidateDirectory": "tmp/runtime-candidates/v2/hud-work-1010-p2",
+      "buildIdentity": "CBA95108FAC72F7437548B449A3A1F8ED89B678BEFDF0F769BA208B329107F87",
+      "payloadClosure": "B435D4135AA68731FDA1823D54003E1F2CBFC7C89E6450C615C1F85D340284FC",
+      "testCoreSha256": "511E77AC5C5554946F25BF80BAEF88B1FA0A8782FEFE4D06C0D93A6DCD563F5B",
+      "candidateCoreSha256": "511E77AC5C5554946F25BF80BAEF88B1FA0A8782FEFE4D06C0D93A6DCD563F5B",
+      "nativeSha256": "19EEA1F5F0BF7FB6586B5FE6B4952B2E590F169E272118EB3EAC0692D9C23482",
+      "rows": [
+        {
+          "repeat": 0,
+          "workload": "static",
+          "seconds": 7.9919232,
+          "requestedFrames": 240,
+          "mainRenders": 0,
+          "paint": {
+            "count": 0,
+            "sumMs": 0.0,
+            "meanMs": 0.0,
+            "p50Ms": 0.0,
+            "p95Ms": 0.0,
+            "p99Ms": 0.0,
+            "maxMs": 0.0
+          },
+          "commit": {
+            "count": 0,
+            "sumMs": 0.0,
+            "meanMs": 0.0,
+            "p50Ms": 0.0,
+            "p95Ms": 0.0,
+            "p99Ms": 0.0,
+            "maxMs": 0.0
+          },
+          "driverCpu": {
+            "count": 240,
+            "sumMs": 24.5863,
+            "meanMs": 0.10244291666666668,
+            "p50Ms": 0.0419,
+            "p95Ms": 0.361,
+            "p99Ms": 0.6916,
+            "maxMs": 0.7494
+          },
+          "meanRasterPixels": 0.0,
+          "maxRasterPixels": 0,
+          "meanPaintedPixels": 0.0,
+          "meanPaintedWidgets": 0.0,
+          "mainPixelBytes": 0,
+          "cpuCorePercent": 1.5640790942535585,
+          "driverThreadAllocatedBytes": 197024,
+          "received": 0,
+          "presented": 0,
+          "compositions": 0,
+          "lightDraws": 0,
+          "lightCacheHits": 0,
+          "fxUploads": 0,
+          "hudAccepted": 0,
+          "copiedBytes": 0,
+          "uploads": 0,
+          "uploadedBytes": 0,
+          "hudDraws": 0,
+          "submitCpuMs": {
+            "count": 0,
+            "sumMs": 0.0,
+            "meanMs": 0.0,
+            "p50Ms": 0.0,
+            "p95Ms": 0.0,
+            "p99Ms": 0.0,
+            "maxMs": 0.0
+          },
+          "presentCallMs": {
+            "count": 0,
+            "sumMs": 0.0,
+            "meanMs": 0.0,
+            "p50Ms": 0.0,
+            "p95Ms": 0.0,
+            "p99Ms": 0.0,
+            "maxMs": 0.0
+          },
+          "gpuAndCopyCosts": {
+            "Size": 168,
+            "Enabled": 0,
+            "Retained": 0,
+            "Started": 0,
+            "Completed": 0,
+            "Disjoint": 0,
+            "Dropped": 0,
+            "Errors": 0,
+            "WorldMsTotal": 0.0,
+            "HudMsTotal": 0.0,
+            "WorldP50Ms": 0.0,
+            "WorldP95Ms": 0.0,
+            "WorldP99Ms": 0.0,
+            "HudP50Ms": 0.0,
+            "HudP95Ms": 0.0,
+            "HudP99Ms": 0.0,
+            "CopySamples": 0,
+            "CopyBytes": 0,
+            "AllocationCpuMs": 0.0,
+            "CopyCpuMs": 0.0,
+            "PoolReuses": 0,
+            "PoolAllocations": 0,
+            "CachedBytes": 4528016
+          },
+          "companions": []
+        },
+        {
+          "repeat": 0,
+          "workload": "hud_only",
+          "seconds": 8.0073444,
+          "requestedFrames": 240,
+          "mainRenders": 240,
+          "paint": {
+            "count": 240,
+            "sumMs": 280.3068999999998,
+            "meanMs": 1.1679454166666658,
+            "p50Ms": 1.1448,
+            "p95Ms": 1.4797,
+            "p99Ms": 1.8753,
+            "maxMs": 2.0073
+          },
+          "commit": {
+            "count": 240,
+            "sumMs": 49.68639999999999,
+            "meanMs": 0.20702666666666664,
+            "p50Ms": 0.1971,
+            "p95Ms": 0.2741,
+            "p99Ms": 0.4125,
+            "maxMs": 0.4727
+          },
+          "driverCpu": {
+            "count": 240,
+            "sumMs": 923.5265000000003,
+            "meanMs": 3.8480270833333345,
+            "p50Ms": 3.9637,
+            "p95Ms": 5.1351,
+            "p99Ms": 6.2253,
+            "maxMs": 7.284
+          },
+          "meanRasterPixels": 467908.0,
+          "maxRasterPixels": 467908,
+          "meanPaintedPixels": 24024.0,
+          "meanPaintedWidgets": 3.4,
+          "mainPixelBytes": 449191680,
+          "cpuCorePercent": 18.537668992980997,
+          "driverThreadAllocatedBytes": 8924200,
+          "received": 0,
+          "presented": 471,
+          "compositions": 471,
+          "lightDraws": 0,
+          "lightCacheHits": 0,
+          "fxUploads": 0,
+          "hudAccepted": 474,
+          "copiedBytes": 464458512,
+          "uploads": 474,
+          "uploadedBytes": 464458512,
+          "hudDraws": 1884,
+          "submitCpuMs": {
+            "count": 240,
+            "sumMs": 71.86830005049706,
+            "meanMs": 0.2994512502104044,
+            "p50Ms": 0.2971000075340271,
+            "p95Ms": 0.5196999907493591,
+            "p99Ms": 0.5993000268936157,
+            "maxMs": 0.657399982213974
+          },
+          "presentCallMs": {
+            "count": 240,
+            "sumMs": 31.788500368595123,
+            "meanMs": 0.13245208486914634,
+            "p50Ms": 0.0900999903678894,
+            "p95Ms": 0.314300000667572,
+            "p99Ms": 0.40880000591278076,
+            "maxMs": 1.1491999924182892
+          },
+          "gpuAndCopyCosts": {
+            "Size": 168,
+            "Enabled": 0,
+            "Retained": 256,
+            "Started": 471,
+            "Completed": 471,
+            "Disjoint": 0,
+            "Dropped": 0,
+            "Errors": 0,
+            "WorldMsTotal": 460.0870763183612,
+            "HudMsTotal": 221.16511533953846,
+            "WorldP50Ms": 0.5131646140082107,
+            "WorldP95Ms": 5.550561131088809,
+            "WorldP99Ms": 8.148550739130377,
+            "HudP50Ms": 0.432748269006924,
+            "HudP95Ms": 1.3204113850211268,
+            "HudP99Ms": 1.5585770990249375,
+            "CopySamples": 474,
+            "CopyBytes": 464458512,
+            "AllocationCpuMs": 0.39209985733032227,
+            "CopyCpuMs": 46.78530019521713,
+            "PoolReuses": 474,
+            "PoolAllocations": 0,
+            "CachedBytes": 4528016
+          },
+          "companions": [
+            {
+              "layer": "resources",
+              "renders": 234,
+              "paint": {
+                "count": 234,
+                "sumMs": 316.94139999999993,
+                "meanMs": 1.354450427350427,
+                "p50Ms": 1.2532,
+                "p95Ms": 1.8715,
+                "p99Ms": 2.5117,
+                "maxMs": 5.4218
+              },
+              "commit": {
+                "count": 234,
+                "sumMs": 7.266500000000002,
+                "meanMs": 0.031053418803418813,
+                "p50Ms": 0.0279,
+                "p95Ms": 0.0555,
+                "p99Ms": 0.0745,
+                "maxMs": 0.0768
+              },
+              "pixelBytes": 21380112
+            }
+          ]
+        },
+        {
+          "repeat": 0,
+          "workload": "mixed",
+          "seconds": 7.9920553,
+          "requestedFrames": 240,
+          "mainRenders": 240,
+          "paint": {
+            "count": 240,
+            "sumMs": 299.3738,
+            "meanMs": 1.2473908333333334,
+            "p50Ms": 1.2098,
+            "p95Ms": 1.6197,
+            "p99Ms": 2.0195,
+            "maxMs": 3.3902
+          },
+          "commit": {
+            "count": 240,
+            "sumMs": 54.36010000000001,
+            "meanMs": 0.2265004166666667,
+            "p50Ms": 0.2073,
+            "p95Ms": 0.3284,
+            "p99Ms": 0.4191,
+            "maxMs": 0.5339
+          },
+          "driverCpu": {
+            "count": 240,
+            "sumMs": 987.9243000000004,
+            "meanMs": 4.116351250000002,
+            "p50Ms": 4.2524,
+            "p95Ms": 5.3481,
+            "p99Ms": 6.0565,
+            "maxMs": 7.0522
+          },
+          "meanRasterPixels": 467908.0,
+          "maxRasterPixels": 467908,
+          "meanPaintedPixels": 24024.0,
+          "meanPaintedWidgets": 3.4,
+          "mainPixelBytes": 449191680,
+          "cpuCorePercent": 14.662999141159597,
+          "driverThreadAllocatedBytes": 8784312,
+          "received": 240,
+          "presented": 240,
+          "compositions": 240,
+          "lightDraws": 240,
+          "lightCacheHits": 0,
+          "fxUploads": 0,
+          "hudAccepted": 462,
+          "copiedBytes": 463362096,
+          "uploads": 447,
+          "uploadedBytes": 461991576,
+          "hudDraws": 960,
+          "submitCpuMs": {
+            "count": 239,
+            "sumMs": 151.270499676466,
+            "meanMs": 0.6329309609893975,
+            "p50Ms": 0.5724999904632568,
+            "p95Ms": 1.2030999958515167,
+            "p99Ms": 1.3113999962806702,
+            "maxMs": 1.3813999891281128
+          },
+          "presentCallMs": {
+            "count": 239,
+            "sumMs": 29.13859996199608,
+            "meanMs": 0.12191882829287062,
+            "p50Ms": 0.08059999346733093,
+            "p95Ms": 0.2857999801635742,
+            "p99Ms": 0.41429999470710754,
+            "maxMs": 0.5364000201225281
+          },
+          "gpuAndCopyCosts": {
+            "Size": 168,
+            "Enabled": 0,
+            "Retained": 240,
+            "Started": 240,
+            "Completed": 240,
+            "Disjoint": 0,
+            "Dropped": 0,
+            "Errors": 0,
+            "WorldMsTotal": 295.4900680397277,
+            "HudMsTotal": 116.0042859828561,
+            "WorldP50Ms": 1.133995464018144,
+            "WorldP95Ms": 1.835242659029364,
+            "WorldP99Ms": 2.051491794032824,
+            "HudP50Ms": 0.47733142400763734,
+            "HudP95Ms": 0.5316645400085067,
+            "HudP99Ms": 0.5880809810094093,
+            "CopySamples": 462,
+            "CopyBytes": 463362096,
+            "AllocationCpuMs": 0.37149950861930847,
+            "CopyCpuMs": 50.590600699186325,
+            "PoolReuses": 462,
+            "PoolAllocations": 0,
+            "CachedBytes": 4528016
+          },
+          "companions": [
+            {
+              "layer": "resources",
+              "renders": 222,
+              "paint": {
+                "count": 222,
+                "sumMs": 293.45180000000016,
+                "meanMs": 1.3218549549549556,
+                "p50Ms": 1.237,
+                "p95Ms": 1.858,
+                "p99Ms": 2.3895,
+                "maxMs": 3.5533
+              },
+              "commit": {
+                "count": 222,
+                "sumMs": 5.780100000000004,
+                "meanMs": 0.0260364864864865,
+                "p50Ms": 0.0228,
+                "p95Ms": 0.0405,
+                "p99Ms": 0.0626,
+                "maxMs": 0.0854
+              },
+              "pixelBytes": 20283696
+            }
+          ]
+        },
+        {
+          "repeat": 1,
+          "workload": "mixed",
+          "seconds": 8.000142400000001,
+          "requestedFrames": 240,
+          "mainRenders": 240,
+          "paint": {
+            "count": 240,
+            "sumMs": 300.7298,
+            "meanMs": 1.2530408333333334,
+            "p50Ms": 1.2042,
+            "p95Ms": 1.7966,
+            "p99Ms": 2.1444,
+            "maxMs": 3.1163
+          },
+          "commit": {
+            "count": 240,
+            "sumMs": 49.16740000000001,
+            "meanMs": 0.2048641666666667,
+            "p50Ms": 0.1961,
+            "p95Ms": 0.2679,
+            "p99Ms": 0.3265,
+            "maxMs": 0.4214
+          },
+          "driverCpu": {
+            "count": 240,
+            "sumMs": 952.2252000000002,
+            "meanMs": 3.9676050000000007,
+            "p50Ms": 4.0689,
+            "p95Ms": 5.4851,
+            "p99Ms": 6.4352,
+            "maxMs": 6.8669
+          },
+          "meanRasterPixels": 467908.0,
+          "maxRasterPixels": 467908,
+          "meanPaintedPixels": 24024.0,
+          "meanPaintedWidgets": 3.4,
+          "mainPixelBytes": 449191680,
+          "cpuCorePercent": 13.866940668456099,
+          "driverThreadAllocatedBytes": 8880192,
+          "received": 241,
+          "presented": 240,
+          "compositions": 240,
+          "lightDraws": 239,
+          "lightCacheHits": 1,
+          "fxUploads": 0,
+          "hudAccepted": 468,
+          "copiedBytes": 463910304,
+          "uploads": 463,
+          "uploadedBytes": 463453464,
+          "hudDraws": 960,
+          "submitCpuMs": {
+            "count": 237,
+            "sumMs": 130.10730016231537,
+            "meanMs": 0.5489759500519635,
+            "p50Ms": 0.5389999747276306,
+            "p95Ms": 0.8264999985694885,
+            "p99Ms": 1.058899998664856,
+            "maxMs": 1.5482999980449677
+          },
+          "presentCallMs": {
+            "count": 237,
+            "sumMs": 21.483500510454178,
+            "meanMs": 0.09064768147870961,
+            "p50Ms": 0.07830002903938293,
+            "p95Ms": 0.15349999070167542,
+            "p99Ms": 0.19030001759529114,
+            "maxMs": 0.32109999656677246
+          },
+          "gpuAndCopyCosts": {
+            "Size": 168,
+            "Enabled": 0,
+            "Retained": 240,
+            "Started": 240,
+            "Completed": 240,
+            "Disjoint": 0,
+            "Dropped": 0,
+            "Errors": 0,
+            "WorldMsTotal": 271.9045790483504,
+            "HudMsTotal": 122.08842831295335,
+            "WorldP50Ms": 1.0544124490168707,
+            "WorldP95Ms": 1.8012427950288201,
+            "WorldP99Ms": 2.336490654037384,
+            "HudP50Ms": 0.491498034007864,
+            "HudP95Ms": 0.538497846008616,
+            "HudP99Ms": 1.295994816020736,
+            "CopySamples": 468,
+            "CopyBytes": 463910304,
+            "AllocationCpuMs": 0.36399999260902405,
+            "CopyCpuMs": 46.27979972958565,
+            "PoolReuses": 468,
+            "PoolAllocations": 0,
+            "CachedBytes": 4528016
+          },
+          "companions": [
+            {
+              "layer": "resources",
+              "renders": 228,
+              "paint": {
+                "count": 228,
+                "sumMs": 313.4219999999999,
+                "meanMs": 1.3746578947368417,
+                "p50Ms": 1.2632,
+                "p95Ms": 2.1035,
+                "p99Ms": 2.4514,
+                "maxMs": 2.5987
+              },
+              "commit": {
+                "count": 228,
+                "sumMs": 6.3141000000000025,
+                "meanMs": 0.02769342105263159,
+                "p50Ms": 0.0241,
+                "p95Ms": 0.0504,
+                "p99Ms": 0.0673,
+                "maxMs": 0.0871
+              },
+              "pixelBytes": 20831904
+            }
+          ]
+        },
+        {
+          "repeat": 1,
+          "workload": "hud_only",
+          "seconds": 7.995783399999999,
+          "requestedFrames": 240,
+          "mainRenders": 240,
+          "paint": {
+            "count": 240,
+            "sumMs": 298.6758000000001,
+            "meanMs": 1.2444825000000004,
+            "p50Ms": 1.1918,
+            "p95Ms": 1.7728,
+            "p99Ms": 2.4208,
+            "maxMs": 2.9167
+          },
+          "commit": {
+            "count": 240,
+            "sumMs": 50.11789999999999,
+            "meanMs": 0.20882458333333329,
+            "p50Ms": 0.1935,
+            "p95Ms": 0.3061,
+            "p99Ms": 0.3623,
+            "maxMs": 0.4462
+          },
+          "driverCpu": {
+            "count": 240,
+            "sumMs": 999.9404999999998,
+            "meanMs": 4.166418749999999,
+            "p50Ms": 4.1079,
+            "p95Ms": 5.9183,
+            "p99Ms": 7.3794,
+            "maxMs": 25.5759
+          },
+          "meanRasterPixels": 467908.0,
+          "maxRasterPixels": 467908,
+          "meanPaintedPixels": 24024.0,
+          "meanPaintedWidgets": 3.4,
+          "mainPixelBytes": 449191680,
+          "cpuCorePercent": 11.724929917436235,
+          "driverThreadAllocatedBytes": 8697240,
+          "received": 0,
+          "presented": 460,
+          "compositions": 460,
+          "lightDraws": 0,
+          "lightCacheHits": 0,
+          "fxUploads": 0,
+          "hudAccepted": 460,
+          "copiedBytes": 463179360,
+          "uploads": 460,
+          "uploadedBytes": 463179360,
+          "hudDraws": 1840,
+          "submitCpuMs": {
+            "count": 240,
+            "sumMs": 70.70669984817505,
+            "meanMs": 0.294611249367396,
+            "p50Ms": 0.3024999797344208,
+            "p95Ms": 0.47209998965263367,
+            "p99Ms": 0.5640999972820282,
+            "maxMs": 0.6738000214099884
+          },
+          "presentCallMs": {
+            "count": 240,
+            "sumMs": 25.65100008249283,
+            "meanMs": 0.10687916701038679,
+            "p50Ms": 0.08219999074935913,
+            "p95Ms": 0.2182999849319458,
+            "p99Ms": 0.34369999170303345,
+            "maxMs": 0.37699997425079346
+          },
+          "gpuAndCopyCosts": {
+            "Size": 168,
+            "Enabled": 0,
+            "Retained": 256,
+            "Started": 460,
+            "Completed": 460,
+            "Disjoint": 0,
+            "Dropped": 0,
+            "Errors": 0,
+            "WorldMsTotal": 480.6634106796907,
+            "HudMsTotal": 230.73482706069163,
+            "WorldP50Ms": 0.43041494500688665,
+            "WorldP95Ms": 4.63373146507414,
+            "WorldP99Ms": 7.245887683115935,
+            "HudP50Ms": 0.4329149350069267,
+            "HudP95Ms": 1.236995052019792,
+            "HudP99Ms": 1.522743909024364,
+            "CopySamples": 460,
+            "CopyBytes": 463179360,
+            "AllocationCpuMs": 0.35139983892440796,
+            "CopyCpuMs": 47.236399829387665,
+            "PoolReuses": 460,
+            "PoolAllocations": 0,
+            "CachedBytes": 4528016
+          },
+          "companions": [
+            {
+              "layer": "resources",
+              "renders": 220,
+              "paint": {
+                "count": 220,
+                "sumMs": 300.34599999999995,
+                "meanMs": 1.3652090909090906,
+                "p50Ms": 1.2449,
+                "p95Ms": 2.1542,
+                "p99Ms": 2.9518,
+                "maxMs": 3.7978
+              },
+              "commit": {
+                "count": 220,
+                "sumMs": 7.167799999999999,
+                "meanMs": 0.032580909090909084,
+                "p50Ms": 0.028,
+                "p95Ms": 0.0601,
+                "p99Ms": 0.078,
+                "maxMs": 0.2536
+              },
+              "pixelBytes": 20100960
+            }
+          ]
+        },
+        {
+          "repeat": 1,
+          "workload": "static",
+          "seconds": 7.9932501,
+          "requestedFrames": 240,
+          "mainRenders": 0,
+          "paint": {
+            "count": 0,
+            "sumMs": 0.0,
+            "meanMs": 0.0,
+            "p50Ms": 0.0,
+            "p95Ms": 0.0,
+            "p99Ms": 0.0,
+            "maxMs": 0.0
+          },
+          "commit": {
+            "count": 0,
+            "sumMs": 0.0,
+            "meanMs": 0.0,
+            "p50Ms": 0.0,
+            "p95Ms": 0.0,
+            "p99Ms": 0.0,
+            "maxMs": 0.0
+          },
+          "driverCpu": {
+            "count": 240,
+            "sumMs": 31.769000000000013,
+            "meanMs": 0.13237083333333338,
+            "p50Ms": 0.0414,
+            "p95Ms": 0.4893,
+            "p99Ms": 1.2319,
+            "maxMs": 1.6743
+          },
+          "meanRasterPixels": 0.0,
+          "maxRasterPixels": 0,
+          "meanPaintedPixels": 0.0,
+          "meanPaintedWidgets": 0.0,
+          "mainPixelBytes": 0,
+          "cpuCorePercent": 0.39095486327895584,
+          "driverThreadAllocatedBytes": 193664,
+          "received": 0,
+          "presented": 0,
+          "compositions": 0,
+          "lightDraws": 0,
+          "lightCacheHits": 0,
+          "fxUploads": 0,
+          "hudAccepted": 0,
+          "copiedBytes": 0,
+          "uploads": 0,
+          "uploadedBytes": 0,
+          "hudDraws": 0,
+          "submitCpuMs": {
+            "count": 0,
+            "sumMs": 0.0,
+            "meanMs": 0.0,
+            "p50Ms": 0.0,
+            "p95Ms": 0.0,
+            "p99Ms": 0.0,
+            "maxMs": 0.0
+          },
+          "presentCallMs": {
+            "count": 0,
+            "sumMs": 0.0,
+            "meanMs": 0.0,
+            "p50Ms": 0.0,
+            "p95Ms": 0.0,
+            "p99Ms": 0.0,
+            "maxMs": 0.0
+          },
+          "gpuAndCopyCosts": {
+            "Size": 168,
+            "Enabled": 0,
+            "Retained": 0,
+            "Started": 0,
+            "Completed": 0,
+            "Disjoint": 0,
+            "Dropped": 0,
+            "Errors": 0,
+            "WorldMsTotal": 0.0,
+            "HudMsTotal": 0.0,
+            "WorldP50Ms": 0.0,
+            "WorldP95Ms": 0.0,
+            "WorldP99Ms": 0.0,
+            "HudP50Ms": 0.0,
+            "HudP95Ms": 0.0,
+            "HudP99Ms": 0.0,
+            "CopySamples": 0,
+            "CopyBytes": 0,
+            "AllocationCpuMs": 0.0,
+            "CopyCpuMs": 0.0,
+            "PoolReuses": 0,
+            "PoolAllocations": 0,
+            "CachedBytes": 4528016
+          },
+          "companions": []
+        }
+      ]
+    },
+    {
+      "reportPath": "tmp/hud-work-cost-20261010/runs/cost-final-B2.json",
+      "reportSha256": "55166D300C3BE6C6C37B5F1DF610945E39883089CE587AF0A2590A43025B54D2",
+      "recordedUtc": "2026-10-10T11:58:34.9552086+00:00",
+      "variant": "partial-paint-and-pixel-cache-B2",
+      "candidateDirectory": "tmp/runtime-candidates/v2/hud-work-1010-p2",
+      "buildIdentity": "CBA95108FAC72F7437548B449A3A1F8ED89B678BEFDF0F769BA208B329107F87",
+      "payloadClosure": "B435D4135AA68731FDA1823D54003E1F2CBFC7C89E6450C615C1F85D340284FC",
+      "testCoreSha256": "511E77AC5C5554946F25BF80BAEF88B1FA0A8782FEFE4D06C0D93A6DCD563F5B",
+      "candidateCoreSha256": "511E77AC5C5554946F25BF80BAEF88B1FA0A8782FEFE4D06C0D93A6DCD563F5B",
+      "nativeSha256": "19EEA1F5F0BF7FB6586B5FE6B4952B2E590F169E272118EB3EAC0692D9C23482",
+      "rows": [
+        {
+          "repeat": 0,
+          "workload": "static",
+          "seconds": 8.0014998,
+          "requestedFrames": 240,
+          "mainRenders": 0,
+          "paint": {
+            "count": 0,
+            "sumMs": 0.0,
+            "meanMs": 0.0,
+            "p50Ms": 0.0,
+            "p95Ms": 0.0,
+            "p99Ms": 0.0,
+            "maxMs": 0.0
+          },
+          "commit": {
+            "count": 0,
+            "sumMs": 0.0,
+            "meanMs": 0.0,
+            "p50Ms": 0.0,
+            "p95Ms": 0.0,
+            "p99Ms": 0.0,
+            "maxMs": 0.0
+          },
+          "driverCpu": {
+            "count": 240,
+            "sumMs": 24.657699999999988,
+            "meanMs": 0.10274041666666661,
+            "p50Ms": 0.0431,
+            "p95Ms": 0.4093,
+            "p99Ms": 0.6441,
+            "maxMs": 0.7751
+          },
+          "meanRasterPixels": 0.0,
+          "maxRasterPixels": 0,
+          "meanPaintedPixels": 0.0,
+          "meanPaintedWidgets": 0.0,
+          "mainPixelBytes": 0,
+          "cpuCorePercent": 1.5622071252191996,
+          "driverThreadAllocatedBytes": 198752,
+          "received": 0,
+          "presented": 0,
+          "compositions": 0,
+          "lightDraws": 0,
+          "lightCacheHits": 0,
+          "fxUploads": 0,
+          "hudAccepted": 0,
+          "copiedBytes": 0,
+          "uploads": 0,
+          "uploadedBytes": 0,
+          "hudDraws": 0,
+          "submitCpuMs": {
+            "count": 0,
+            "sumMs": 0.0,
+            "meanMs": 0.0,
+            "p50Ms": 0.0,
+            "p95Ms": 0.0,
+            "p99Ms": 0.0,
+            "maxMs": 0.0
+          },
+          "presentCallMs": {
+            "count": 0,
+            "sumMs": 0.0,
+            "meanMs": 0.0,
+            "p50Ms": 0.0,
+            "p95Ms": 0.0,
+            "p99Ms": 0.0,
+            "maxMs": 0.0
+          },
+          "gpuAndCopyCosts": {
+            "Size": 168,
+            "Enabled": 0,
+            "Retained": 0,
+            "Started": 0,
+            "Completed": 0,
+            "Disjoint": 0,
+            "Dropped": 0,
+            "Errors": 0,
+            "WorldMsTotal": 0.0,
+            "HudMsTotal": 0.0,
+            "WorldP50Ms": 0.0,
+            "WorldP95Ms": 0.0,
+            "WorldP99Ms": 0.0,
+            "HudP50Ms": 0.0,
+            "HudP95Ms": 0.0,
+            "HudP99Ms": 0.0,
+            "CopySamples": 0,
+            "CopyBytes": 0,
+            "AllocationCpuMs": 0.0,
+            "CopyCpuMs": 0.0,
+            "PoolReuses": 0,
+            "PoolAllocations": 0,
+            "CachedBytes": 4528016
+          },
+          "companions": []
+        },
+        {
+          "repeat": 0,
+          "workload": "hud_only",
+          "seconds": 7.999849800000001,
+          "requestedFrames": 240,
+          "mainRenders": 240,
+          "paint": {
+            "count": 240,
+            "sumMs": 291.2564000000001,
+            "meanMs": 1.2135683333333338,
+            "p50Ms": 1.1332,
+            "p95Ms": 1.761,
+            "p99Ms": 2.3975,
+            "maxMs": 5.7851
+          },
+          "commit": {
+            "count": 240,
+            "sumMs": 50.391500000000015,
+            "meanMs": 0.2099645833333334,
+            "p50Ms": 0.1982,
+            "p95Ms": 0.289,
+            "p99Ms": 0.4132,
+            "maxMs": 0.4454
+          },
+          "driverCpu": {
+            "count": 240,
+            "sumMs": 936.6936000000006,
+            "meanMs": 3.9028900000000024,
+            "p50Ms": 4.0411,
+            "p95Ms": 5.4932,
+            "p99Ms": 6.4502,
+            "maxMs": 9.4077
+          },
+          "meanRasterPixels": 467908.0,
+          "maxRasterPixels": 467908,
+          "meanPaintedPixels": 24024.0,
+          "meanPaintedWidgets": 3.4,
+          "mainPixelBytes": 449191680,
+          "cpuCorePercent": 15.625293364882925,
+          "driverThreadAllocatedBytes": 8905800,
+          "received": 0,
+          "presented": 472,
+          "compositions": 472,
+          "lightDraws": 0,
+          "lightCacheHits": 0,
+          "fxUploads": 0,
+          "hudAccepted": 473,
+          "copiedBytes": 464367144,
+          "uploads": 473,
+          "uploadedBytes": 464367144,
+          "hudDraws": 1888,
+          "submitCpuMs": {
+            "count": 240,
+            "sumMs": 66.38910013437271,
+            "meanMs": 0.2766212505598863,
+            "p50Ms": 0.28780001401901245,
+            "p95Ms": 0.45210000872612,
+            "p99Ms": 0.5399999916553497,
+            "maxMs": 0.5612999796867371
+          },
+          "presentCallMs": {
+            "count": 240,
+            "sumMs": 29.453200310468674,
+            "meanMs": 0.12272166796028613,
+            "p50Ms": 0.08520001173019409,
+            "p95Ms": 0.29930001497268677,
+            "p99Ms": 0.41999998688697815,
+            "maxMs": 0.4627000093460083
+          },
+          "gpuAndCopyCosts": {
+            "Size": 168,
+            "Enabled": 0,
+            "Retained": 256,
+            "Started": 472,
+            "Completed": 472,
+            "Disjoint": 0,
+            "Dropped": 0,
+            "Errors": 0,
+            "WorldMsTotal": 449.1302868121858,
+            "HudMsTotal": 220.98144940753562,
+            "WorldP50Ms": 0.510997956008176,
+            "WorldP95Ms": 3.7019018590592307,
+            "WorldP99Ms": 6.734556395107753,
+            "HudP50Ms": 0.4314149410069027,
+            "HudP95Ms": 1.2939114910207028,
+            "HudP99Ms": 1.522993908024368,
+            "CopySamples": 473,
+            "CopyBytes": 464367144,
+            "AllocationCpuMs": 0.43669986724853516,
+            "CopyCpuMs": 47.550500333309174,
+            "PoolReuses": 473,
+            "PoolAllocations": 0,
+            "CachedBytes": 4528016
+          },
+          "companions": [
+            {
+              "layer": "resources",
+              "renders": 233,
+              "paint": {
+                "count": 233,
+                "sumMs": 326.70319999999987,
+                "meanMs": 1.40215965665236,
+                "p50Ms": 1.296,
+                "p95Ms": 2.0889,
+                "p99Ms": 2.5444,
+                "maxMs": 2.5631
+              },
+              "commit": {
+                "count": 233,
+                "sumMs": 7.425899999999999,
+                "meanMs": 0.03187081545064377,
+                "p50Ms": 0.0283,
+                "p95Ms": 0.0558,
+                "p99Ms": 0.0835,
+                "maxMs": 0.0958
+              },
+              "pixelBytes": 21288744
+            }
+          ]
+        },
+        {
+          "repeat": 0,
+          "workload": "mixed",
+          "seconds": 7.998117000000001,
+          "requestedFrames": 240,
+          "mainRenders": 240,
+          "paint": {
+            "count": 240,
+            "sumMs": 289.9171,
+            "meanMs": 1.2079879166666667,
+            "p50Ms": 1.1782,
+            "p95Ms": 1.4437,
+            "p99Ms": 1.8872,
+            "maxMs": 3.669
+          },
+          "commit": {
+            "count": 240,
+            "sumMs": 56.445999999999984,
+            "meanMs": 0.2351916666666666,
+            "p50Ms": 0.2138,
+            "p95Ms": 0.3563,
+            "p99Ms": 0.4565,
+            "maxMs": 0.5894
+          },
+          "driverCpu": {
+            "count": 240,
+            "sumMs": 986.9399000000001,
+            "meanMs": 4.112249583333334,
+            "p50Ms": 4.2552,
+            "p95Ms": 5.2615,
+            "p99Ms": 6.3019,
+            "maxMs": 7.2461
+          },
+          "meanRasterPixels": 467908.0,
+          "maxRasterPixels": 467908,
+          "meanPaintedPixels": 24024.0,
+          "meanPaintedWidgets": 3.4,
+          "mainPixelBytes": 449191680,
+          "cpuCorePercent": 16.800829495242443,
+          "driverThreadAllocatedBytes": 8970800,
+          "received": 239,
+          "presented": 241,
+          "compositions": 241,
+          "lightDraws": 227,
+          "lightCacheHits": 14,
+          "fxUploads": 0,
+          "hudAccepted": 472,
+          "copiedBytes": 464275776,
+          "uploads": 402,
+          "uploadedBytes": 403481464,
+          "hudDraws": 964,
+          "submitCpuMs": {
+            "count": 234,
+            "sumMs": 157.604699999094,
+            "meanMs": 0.6735243589704872,
+            "p50Ms": 0.6741000115871429,
+            "p95Ms": 1.1297000050544739,
+            "p99Ms": 1.285500019788742,
+            "maxMs": 1.6590999960899353
+          },
+          "presentCallMs": {
+            "count": 234,
+            "sumMs": 35.88739991188049,
+            "meanMs": 0.15336495688837817,
+            "p50Ms": 0.13269999623298645,
+            "p95Ms": 0.3285999894142151,
+            "p99Ms": 0.438400000333786,
+            "maxMs": 0.5544999837875366
+          },
+          "gpuAndCopyCosts": {
+            "Size": 168,
+            "Enabled": 0,
+            "Retained": 240,
+            "Started": 240,
+            "Completed": 240,
+            "Disjoint": 0,
+            "Dropped": 0,
+            "Errors": 0,
+            "WorldMsTotal": 265.0841896632414,
+            "HudMsTotal": 108.04648448072872,
+            "WorldP50Ms": 1.065745737017052,
+            "WorldP95Ms": 1.523493906024376,
+            "WorldP99Ms": 1.7436596920278986,
+            "HudP50Ms": 0.46558147100744934,
+            "HudP95Ms": 0.5377478490086041,
+            "HudP99Ms": 0.612997548009808,
+            "CopySamples": 472,
+            "CopyBytes": 464275776,
+            "AllocationCpuMs": 0.3523004353046417,
+            "CopyCpuMs": 52.61449998617172,
+            "PoolReuses": 472,
+            "PoolAllocations": 0,
+            "CachedBytes": 4528016
+          },
+          "companions": [
+            {
+              "layer": "resources",
+              "renders": 232,
+              "paint": {
+                "count": 232,
+                "sumMs": 310.74599999999987,
+                "meanMs": 1.3394224137931028,
+                "p50Ms": 1.268,
+                "p95Ms": 1.781,
+                "p99Ms": 2.4298,
+                "maxMs": 3.5403
+              },
+              "commit": {
+                "count": 232,
+                "sumMs": 6.4925000000000015,
+                "meanMs": 0.027984913793103455,
+                "p50Ms": 0.0258,
+                "p95Ms": 0.0479,
+                "p99Ms": 0.0651,
+                "maxMs": 0.1591
+              },
+              "pixelBytes": 21197376
+            }
+          ]
+        },
+        {
+          "repeat": 1,
+          "workload": "mixed",
+          "seconds": 7.9940812,
+          "requestedFrames": 240,
+          "mainRenders": 240,
+          "paint": {
+            "count": 240,
+            "sumMs": 306.58739999999995,
+            "meanMs": 1.2774474999999998,
+            "p50Ms": 1.2098,
+            "p95Ms": 1.9672,
+            "p99Ms": 2.2753,
+            "maxMs": 3.7914
+          },
+          "commit": {
+            "count": 240,
+            "sumMs": 50.87889999999999,
+            "meanMs": 0.2119954166666666,
+            "p50Ms": 0.2015,
+            "p95Ms": 0.2916,
+            "p99Ms": 0.3514,
+            "maxMs": 0.4712
+          },
+          "driverCpu": {
+            "count": 240,
+            "sumMs": 964.1025000000006,
+            "meanMs": 4.017093750000003,
+            "p50Ms": 4.0862,
+            "p95Ms": 5.5216,
+            "p99Ms": 6.4332,
+            "maxMs": 7.8372
+          },
+          "meanRasterPixels": 467908.0,
+          "maxRasterPixels": 467908,
+          "meanPaintedPixels": 24024.0,
+          "meanPaintedWidgets": 3.4,
+          "mainPixelBytes": 449191680,
+          "cpuCorePercent": 17.98205402266867,
+          "driverThreadAllocatedBytes": 8878816,
+          "received": 240,
+          "presented": 240,
+          "compositions": 240,
+          "lightDraws": 239,
+          "lightCacheHits": 1,
+          "fxUploads": 0,
+          "hudAccepted": 468,
+          "copiedBytes": 463910304,
+          "uploads": 456,
+          "uploadedBytes": 462813888,
+          "hudDraws": 960,
+          "submitCpuMs": {
+            "count": 238,
+            "sumMs": 127.173200070858,
+            "meanMs": 0.5343411767683109,
+            "p50Ms": 0.5065000057220459,
+            "p95Ms": 0.8305000066757202,
+            "p99Ms": 1.1462000012397766,
+            "maxMs": 1.3001999855041504
+          },
+          "presentCallMs": {
+            "count": 238,
+            "sumMs": 21.860000282526016,
+            "meanMs": 0.09184874068288242,
+            "p50Ms": 0.08000001311302185,
+            "p95Ms": 0.16390001773834229,
+            "p99Ms": 0.2150000035762787,
+            "maxMs": 0.21970000863075256
+          },
+          "gpuAndCopyCosts": {
+            "Size": 168,
+            "Enabled": 0,
+            "Retained": 240,
+            "Started": 240,
+            "Completed": 240,
+            "Disjoint": 0,
+            "Dropped": 0,
+            "Errors": 0,
+            "WorldMsTotal": 302.06512507283304,
+            "HudMsTotal": 122.7800922129645,
+            "WorldP50Ms": 1.095245619017524,
+            "WorldP95Ms": 2.1208248500339333,
+            "WorldP99Ms": 3.022987908048368,
+            "HudP50Ms": 0.48691471900779065,
+            "HudP95Ms": 0.5440811570087053,
+            "HudP99Ms": 1.5114106210241827,
+            "CopySamples": 468,
+            "CopyBytes": 463910304,
+            "AllocationCpuMs": 0.36330002546310425,
+            "CopyCpuMs": 47.91199991106987,
+            "PoolReuses": 468,
+            "PoolAllocations": 0,
+            "CachedBytes": 4528016
+          },
+          "companions": [
+            {
+              "layer": "resources",
+              "renders": 228,
+              "paint": {
+                "count": 228,
+                "sumMs": 330.8642,
+                "meanMs": 1.4511587719298245,
+                "p50Ms": 1.3239,
+                "p95Ms": 2.3198,
+                "p99Ms": 2.8568,
+                "maxMs": 2.8932
+              },
+              "commit": {
+                "count": 228,
+                "sumMs": 6.340900000000005,
+                "meanMs": 0.027810964912280724,
+                "p50Ms": 0.0246,
+                "p95Ms": 0.0425,
+                "p99Ms": 0.0838,
+                "maxMs": 0.1279
+              },
+              "pixelBytes": 20831904
+            }
+          ]
+        },
+        {
+          "repeat": 1,
+          "workload": "hud_only",
+          "seconds": 8.008299300000001,
+          "requestedFrames": 240,
+          "mainRenders": 240,
+          "paint": {
+            "count": 240,
+            "sumMs": 313.3985999999998,
+            "meanMs": 1.3058274999999993,
+            "p50Ms": 1.2036,
+            "p95Ms": 2.0433,
+            "p99Ms": 3.0334,
+            "maxMs": 3.3958
+          },
+          "commit": {
+            "count": 240,
+            "sumMs": 52.644599999999976,
+            "meanMs": 0.2193524999999999,
+            "p50Ms": 0.2002,
+            "p95Ms": 0.3449,
+            "p99Ms": 0.4479,
+            "maxMs": 0.6021
+          },
+          "driverCpu": {
+            "count": 240,
+            "sumMs": 957.9646000000001,
+            "meanMs": 3.9915191666666674,
+            "p50Ms": 4.0543,
+            "p95Ms": 5.5374,
+            "p99Ms": 7.6616,
+            "maxMs": 8.2723
+          },
+          "meanRasterPixels": 467908.0,
+          "maxRasterPixels": 467908,
+          "meanPaintedPixels": 24024.0,
+          "meanPaintedWidgets": 3.4,
+          "mainPixelBytes": 449191680,
+          "cpuCorePercent": 12.68215587297043,
+          "driverThreadAllocatedBytes": 8926216,
+          "received": 0,
+          "presented": 472,
+          "compositions": 472,
+          "lightDraws": 0,
+          "lightCacheHits": 0,
+          "fxUploads": 0,
+          "hudAccepted": 472,
+          "copiedBytes": 464275776,
+          "uploads": 473,
+          "uploadedBytes": 464367144,
+          "hudDraws": 1888,
+          "submitCpuMs": {
+            "count": 240,
+            "sumMs": 68.24949997663498,
+            "meanMs": 0.2843729165693124,
+            "p50Ms": 0.29159998893737793,
+            "p95Ms": 0.4731000065803528,
+            "p99Ms": 0.5224999785423279,
+            "maxMs": 0.7726999819278717
+          },
+          "presentCallMs": {
+            "count": 240,
+            "sumMs": 29.4975004196167,
+            "meanMs": 0.12290625174840292,
+            "p50Ms": 0.08390000462532043,
+            "p95Ms": 0.29159998893737793,
+            "p99Ms": 0.3815999925136566,
+            "maxMs": 0.5843999981880188
+          },
+          "gpuAndCopyCosts": {
+            "Size": 168,
+            "Enabled": 0,
+            "Retained": 256,
+            "Started": 471,
+            "Completed": 471,
+            "Disjoint": 0,
+            "Dropped": 0,
+            "Errors": 0,
+            "WorldMsTotal": 403.1085542324495,
+            "HudMsTotal": 214.27780955542843,
+            "WorldP50Ms": 0.522997908008368,
+            "WorldP95Ms": 3.286736853052588,
+            "WorldP99Ms": 7.591302968121462,
+            "HudP50Ms": 0.4312482750069,
+            "HudP95Ms": 1.2716615800203468,
+            "HudP99Ms": 1.4823274040237173,
+            "CopySamples": 472,
+            "CopyBytes": 464275776,
+            "AllocationCpuMs": 0.3584999442100525,
+            "CopyCpuMs": 49.44520002603531,
+            "PoolReuses": 472,
+            "PoolAllocations": 0,
+            "CachedBytes": 4528016
+          },
+          "companions": [
+            {
+              "layer": "resources",
+              "renders": 232,
+              "paint": {
+                "count": 232,
+                "sumMs": 326.70869999999996,
+                "meanMs": 1.4082271551724137,
+                "p50Ms": 1.2966,
+                "p95Ms": 2.2382,
+                "p99Ms": 2.9141,
+                "maxMs": 3.1667
+              },
+              "commit": {
+                "count": 232,
+                "sumMs": 7.475999999999999,
+                "meanMs": 0.03222413793103448,
+                "p50Ms": 0.0284,
+                "p95Ms": 0.0544,
+                "p99Ms": 0.07,
+                "maxMs": 0.1139
+              },
+              "pixelBytes": 21197376
+            }
+          ]
+        },
+        {
+          "repeat": 1,
+          "workload": "static",
+          "seconds": 7.9988651,
+          "requestedFrames": 240,
+          "mainRenders": 0,
+          "paint": {
+            "count": 0,
+            "sumMs": 0.0,
+            "meanMs": 0.0,
+            "p50Ms": 0.0,
+            "p95Ms": 0.0,
+            "p99Ms": 0.0,
+            "maxMs": 0.0
+          },
+          "commit": {
+            "count": 0,
+            "sumMs": 0.0,
+            "meanMs": 0.0,
+            "p50Ms": 0.0,
+            "p95Ms": 0.0,
+            "p99Ms": 0.0,
+            "maxMs": 0.0
+          },
+          "driverCpu": {
+            "count": 240,
+            "sumMs": 29.280400000000007,
+            "meanMs": 0.1220016666666667,
+            "p50Ms": 0.0476,
+            "p95Ms": 0.436,
+            "p99Ms": 0.7634,
+            "maxMs": 1.0795
+          },
+          "meanRasterPixels": 0.0,
+          "maxRasterPixels": 0,
+          "meanPaintedPixels": 0.0,
+          "meanPaintedWidgets": 0.0,
+          "mainPixelBytes": 0,
+          "cpuCorePercent": 1.7580619030567224,
+          "driverThreadAllocatedBytes": 194088,
+          "received": 0,
+          "presented": 0,
+          "compositions": 0,
+          "lightDraws": 0,
+          "lightCacheHits": 0,
+          "fxUploads": 0,
+          "hudAccepted": 0,
+          "copiedBytes": 0,
+          "uploads": 0,
+          "uploadedBytes": 0,
+          "hudDraws": 0,
+          "submitCpuMs": {
+            "count": 0,
+            "sumMs": 0.0,
+            "meanMs": 0.0,
+            "p50Ms": 0.0,
+            "p95Ms": 0.0,
+            "p99Ms": 0.0,
+            "maxMs": 0.0
+          },
+          "presentCallMs": {
+            "count": 0,
+            "sumMs": 0.0,
+            "meanMs": 0.0,
+            "p50Ms": 0.0,
+            "p95Ms": 0.0,
+            "p99Ms": 0.0,
+            "maxMs": 0.0
+          },
+          "gpuAndCopyCosts": {
+            "Size": 168,
+            "Enabled": 0,
+            "Retained": 0,
+            "Started": 0,
+            "Completed": 0,
+            "Disjoint": 0,
+            "Dropped": 0,
+            "Errors": 0,
+            "WorldMsTotal": 0.0,
+            "HudMsTotal": 0.0,
+            "WorldP50Ms": 0.0,
+            "WorldP95Ms": 0.0,
+            "WorldP99Ms": 0.0,
+            "HudP50Ms": 0.0,
+            "HudP95Ms": 0.0,
+            "HudP99Ms": 0.0,
+            "CopySamples": 0,
+            "CopyBytes": 0,
+            "AllocationCpuMs": 0.0,
+            "CopyCpuMs": 0.0,
+            "PoolReuses": 0,
+            "PoolAllocations": 0,
+            "CachedBytes": 4528016
+          },
+          "companions": []
+        }
+      ]
+    },
+    {
+      "reportPath": "tmp/hud-work-cost-20261010/runs/cost-final-A2.json",
+      "reportSha256": "C7CB2B1AA5272BEE87E1F01AB0DF6D22EEB2A3054A54CB53545019A109FE9776",
+      "recordedUtc": "2026-10-10T11:59:39.1612381+00:00",
+      "variant": "baseline-A2",
+      "candidateDirectory": "tmp/runtime-candidates/v2/hud-work-1010-b3",
+      "buildIdentity": "06A50E44CBD3A7B29AF6D527227CFE6439B3C5A659FF5E0686FBD1C141B2D1FB",
+      "payloadClosure": "E64BF9F6AE5815F144AD6B1955C4F0978ACE805E052021EA61C222303FCA7BBB",
+      "testCoreSha256": "04CF70BB83C2649BF6A6B44316EA9DDE280AFC72253700DDA06D17991EA412A1",
+      "candidateCoreSha256": "04CF70BB83C2649BF6A6B44316EA9DDE280AFC72253700DDA06D17991EA412A1",
+      "nativeSha256": "1623C02DF76C63654C58C271AC994DEF34D2BC969B80349F22CE987BBC9B5FC0",
+      "rows": [
+        {
+          "repeat": 0,
+          "workload": "static",
+          "seconds": 8.0106364,
+          "requestedFrames": 240,
+          "mainRenders": 0,
+          "paint": {
+            "count": 0,
+            "sumMs": 0.0,
+            "meanMs": 0.0,
+            "p50Ms": 0.0,
+            "p95Ms": 0.0,
+            "p99Ms": 0.0,
+            "maxMs": 0.0
+          },
+          "commit": {
+            "count": 0,
+            "sumMs": 0.0,
+            "meanMs": 0.0,
+            "p50Ms": 0.0,
+            "p95Ms": 0.0,
+            "p99Ms": 0.0,
+            "maxMs": 0.0
+          },
+          "driverCpu": {
+            "count": 240,
+            "sumMs": 25.655399999999997,
+            "meanMs": 0.10689749999999999,
+            "p50Ms": 0.0422,
+            "p95Ms": 0.3891,
+            "p99Ms": 0.4642,
+            "maxMs": 0.7251
+          },
+          "meanRasterPixels": 0.0,
+          "maxRasterPixels": 0,
+          "mainPixelBytes": 0,
+          "cpuCorePercent": 0.9752658353086654,
+          "driverThreadAllocatedBytes": 197280,
+          "received": 0,
+          "presented": 0,
+          "compositions": 0,
+          "lightDraws": 0,
+          "lightCacheHits": 0,
+          "fxUploads": 0,
+          "hudAccepted": 0,
+          "copiedBytes": 0,
+          "uploads": 0,
+          "uploadedBytes": 0,
+          "hudDraws": 0,
+          "submitCpuMs": {
+            "count": 0,
+            "sumMs": 0.0,
+            "meanMs": 0.0,
+            "p50Ms": 0.0,
+            "p95Ms": 0.0,
+            "p99Ms": 0.0,
+            "maxMs": 0.0
+          },
+          "presentCallMs": {
+            "count": 0,
+            "sumMs": 0.0,
+            "meanMs": 0.0,
+            "p50Ms": 0.0,
+            "p95Ms": 0.0,
+            "p99Ms": 0.0,
+            "maxMs": 0.0
+          },
+          "gpuAndCopyCosts": {
+            "Size": 144,
+            "Enabled": 0,
+            "Retained": 0,
+            "Started": 0,
+            "Completed": 0,
+            "Disjoint": 0,
+            "Dropped": 0,
+            "Errors": 0,
+            "WorldMsTotal": 0.0,
+            "HudMsTotal": 0.0,
+            "WorldP50Ms": 0.0,
+            "WorldP95Ms": 0.0,
+            "WorldP99Ms": 0.0,
+            "HudP50Ms": 0.0,
+            "HudP95Ms": 0.0,
+            "HudP99Ms": 0.0,
+            "CopySamples": 0,
+            "CopyBytes": 0,
+            "AllocationCpuMs": 0.0,
+            "CopyCpuMs": 0.0
+          },
+          "companions": []
+        },
+        {
+          "repeat": 0,
+          "workload": "hud_only",
+          "seconds": 7.989853699999999,
+          "requestedFrames": 240,
+          "mainRenders": 240,
+          "paint": {
+            "count": 240,
+            "sumMs": 446.8895000000002,
+            "meanMs": 1.8620395833333343,
+            "p50Ms": 1.7816,
+            "p95Ms": 2.2233,
+            "p99Ms": 3.2604,
+            "maxMs": 5.6546
+          },
+          "commit": {
+            "count": 240,
+            "sumMs": 134.91240000000005,
+            "meanMs": 0.5621350000000002,
+            "p50Ms": 0.5472,
+            "p95Ms": 0.6979,
+            "p99Ms": 0.7873,
+            "maxMs": 0.8108
+          },
+          "driverCpu": {
+            "count": 240,
+            "sumMs": 1160.9106999999992,
+            "meanMs": 4.837127916666663,
+            "p50Ms": 4.959,
+            "p95Ms": 6.5199,
+            "p99Ms": 7.8654,
+            "maxMs": 9.57
+          },
+          "meanRasterPixels": 467908.0,
+          "maxRasterPixels": 467908,
+          "mainPixelBytes": 449191680,
+          "cpuCorePercent": 24.640626398453332,
+          "driverThreadAllocatedBytes": 8747208,
+          "received": 0,
+          "presented": 471,
+          "compositions": 471,
+          "lightDraws": 0,
+          "lightCacheHits": 0,
+          "fxUploads": 0,
+          "hudAccepted": 473,
+          "copiedBytes": 464367144,
+          "uploads": 473,
+          "uploadedBytes": 464367144,
+          "hudDraws": 1884,
+          "submitCpuMs": {
+            "count": 240,
+            "sumMs": 63.724300026893616,
+            "meanMs": 0.2655179167787234,
+            "p50Ms": 0.25690001249313354,
+            "p95Ms": 0.47850000858306885,
+            "p99Ms": 0.6001000106334686,
+            "maxMs": 0.7753000259399414
+          },
+          "presentCallMs": {
+            "count": 240,
+            "sumMs": 36.18420022726059,
+            "meanMs": 0.15076750094691913,
+            "p50Ms": 0.12220001220703125,
+            "p95Ms": 0.3156000077724457,
+            "p99Ms": 0.3693999946117401,
+            "maxMs": 0.44599997997283936
+          },
+          "gpuAndCopyCosts": {
+            "Size": 144,
+            "Enabled": 0,
+            "Retained": 256,
+            "Started": 471,
+            "Completed": 471,
+            "Disjoint": 0,
+            "Dropped": 0,
+            "Errors": 0,
+            "WorldMsTotal": 390.9364362542547,
+            "HudMsTotal": 201.22286177521937,
+            "WorldP50Ms": 0.48999804000784003,
+            "WorldP95Ms": 2.22374110503558,
+            "WorldP99Ms": 7.4868867191197905,
+            "HudP50Ms": 0.430498278006888,
+            "HudP95Ms": 1.1094122290177506,
+            "HudP99Ms": 1.424244303022788,
+            "CopySamples": 473,
+            "CopyBytes": 464367144,
+            "AllocationCpuMs": 78.07610031962395,
+            "CopyCpuMs": 29.985600262880325
+          },
+          "companions": [
+            {
+              "layer": "resources",
+              "renders": 233,
+              "paint": {
+                "count": 233,
+                "sumMs": 324.9131,
+                "meanMs": 1.3944768240343346,
+                "p50Ms": 1.2913,
+                "p95Ms": 2.0517,
+                "p99Ms": 2.5621,
+                "maxMs": 3.3747
+              },
+              "commit": {
+                "count": 233,
+                "sumMs": 8.531899999999998,
+                "meanMs": 0.0366175965665236,
+                "p50Ms": 0.0305,
+                "p95Ms": 0.0536,
+                "p99Ms": 0.0938,
+                "maxMs": 0.8584
+              },
+              "pixelBytes": 21288744
+            }
+          ]
+        },
+        {
+          "repeat": 0,
+          "workload": "mixed",
+          "seconds": 8.000903300000001,
+          "requestedFrames": 240,
+          "mainRenders": 240,
+          "paint": {
+            "count": 240,
+            "sumMs": 487.2408999999998,
+            "meanMs": 2.0301704166666656,
+            "p50Ms": 1.8811,
+            "p95Ms": 3.0026,
+            "p99Ms": 4.102,
+            "maxMs": 4.6607
+          },
+          "commit": {
+            "count": 240,
+            "sumMs": 148.24909999999997,
+            "meanMs": 0.6177045833333332,
+            "p50Ms": 0.5819,
+            "p95Ms": 0.8441,
+            "p99Ms": 1.004,
+            "maxMs": 1.0086
+          },
+          "driverCpu": {
+            "count": 240,
+            "sumMs": 1279.1133000000004,
+            "meanMs": 5.329638750000002,
+            "p50Ms": 5.2436,
+            "p95Ms": 8.2322,
+            "p99Ms": 10.8295,
+            "maxMs": 11.2524
+          },
+          "meanRasterPixels": 467908.0,
+          "maxRasterPixels": 467908,
+          "mainPixelBytes": 449191680,
+          "cpuCorePercent": 17.966721332577535,
+          "driverThreadAllocatedBytes": 8781384,
+          "received": 240,
+          "presented": 240,
+          "compositions": 240,
+          "lightDraws": 214,
+          "lightCacheHits": 26,
+          "fxUploads": 0,
+          "hudAccepted": 470,
+          "copiedBytes": 464093040,
+          "uploads": 455,
+          "uploadedBytes": 455703352,
+          "hudDraws": 960,
+          "submitCpuMs": {
+            "count": 210,
+            "sumMs": 117.92029973864555,
+            "meanMs": 0.5615252368506931,
+            "p50Ms": 0.5351999998092651,
+            "p95Ms": 0.9352000057697296,
+            "p99Ms": 1.23089998960495,
+            "maxMs": 1.2861000001430511
+          },
+          "presentCallMs": {
+            "count": 210,
+            "sumMs": 20.32910007238388,
+            "meanMs": 0.09680523843992324,
+            "p50Ms": 0.08640000224113464,
+            "p95Ms": 0.157399982213974,
+            "p99Ms": 0.18470001220703125,
+            "maxMs": 0.23569998145103455
+          },
+          "gpuAndCopyCosts": {
+            "Size": 144,
+            "Enabled": 0,
+            "Retained": 240,
+            "Started": 240,
+            "Completed": 240,
+            "Disjoint": 0,
+            "Dropped": 0,
+            "Errors": 0,
+            "WorldMsTotal": 295.80498344673293,
+            "HudMsTotal": 117.01344861287218,
+            "WorldP50Ms": 1.0720790450171533,
+            "WorldP95Ms": 2.2149078070354387,
+            "WorldP99Ms": 2.694572555043113,
+            "HudP50Ms": 0.4714147810075427,
+            "HudP95Ms": 0.5311645420084987,
+            "HudP99Ms": 1.1851619260189628,
+            "CopySamples": 470,
+            "CopyBytes": 464093040,
+            "AllocationCpuMs": 82.11890006065369,
+            "CopyCpuMs": 34.729300141334534
+          },
+          "companions": [
+            {
+              "layer": "resources",
+              "renders": 230,
+              "paint": {
+                "count": 230,
+                "sumMs": 364.33720000000005,
+                "meanMs": 1.5840747826086958,
+                "p50Ms": 1.391,
+                "p95Ms": 2.9204,
+                "p99Ms": 3.4312,
+                "maxMs": 4.0995
+              },
+              "commit": {
+                "count": 230,
+                "sumMs": 8.6278,
+                "meanMs": 0.037512173913043484,
+                "p50Ms": 0.0324,
+                "p95Ms": 0.0662,
+                "p99Ms": 0.1367,
+                "maxMs": 0.2405
+              },
+              "pixelBytes": 21014640
+            }
+          ]
+        },
+        {
+          "repeat": 1,
+          "workload": "mixed",
+          "seconds": 8.0048887,
+          "requestedFrames": 240,
+          "mainRenders": 240,
+          "paint": {
+            "count": 240,
+            "sumMs": 449.06629999999984,
+            "meanMs": 1.8711095833333327,
+            "p50Ms": 1.8068,
+            "p95Ms": 2.1861,
+            "p99Ms": 3.0129,
+            "maxMs": 3.9997
+          },
+          "commit": {
+            "count": 240,
+            "sumMs": 137.00789999999998,
+            "meanMs": 0.5708662499999999,
+            "p50Ms": 0.5565,
+            "p95Ms": 0.68,
+            "p99Ms": 0.856,
+            "maxMs": 0.8977
+          },
+          "driverCpu": {
+            "count": 240,
+            "sumMs": 1225.1419999999994,
+            "meanMs": 5.104758333333331,
+            "p50Ms": 5.2466,
+            "p95Ms": 6.3934,
+            "p99Ms": 7.2671,
+            "maxMs": 8.1329
+          },
+          "meanRasterPixels": 467908.0,
+          "maxRasterPixels": 467908,
+          "mainPixelBytes": 449191680,
+          "cpuCorePercent": 15.420264369197287,
+          "driverThreadAllocatedBytes": 8702656,
+          "received": 240,
+          "presented": 241,
+          "compositions": 241,
+          "lightDraws": 208,
+          "lightCacheHits": 33,
+          "fxUploads": 0,
+          "hudAccepted": 467,
+          "copiedBytes": 463818936,
+          "uploads": 376,
+          "uploadedBytes": 367764848,
+          "hudDraws": 964,
+          "submitCpuMs": {
+            "count": 210,
+            "sumMs": 129.97690039873123,
+            "meanMs": 0.6189376209463392,
+            "p50Ms": 0.6186000108718872,
+            "p95Ms": 0.949400007724762,
+            "p99Ms": 1.1756000220775604,
+            "maxMs": 1.366899996995926
+          },
+          "presentCallMs": {
+            "count": 210,
+            "sumMs": 32.55829992890358,
+            "meanMs": 0.15503952347096941,
+            "p50Ms": 0.12599998712539673,
+            "p95Ms": 0.3203999996185303,
+            "p99Ms": 0.4129999876022339,
+            "maxMs": 0.5308000147342682
+          },
+          "gpuAndCopyCosts": {
+            "Size": 144,
+            "Enabled": 0,
+            "Retained": 240,
+            "Started": 240,
+            "Completed": 240,
+            "Disjoint": 0,
+            "Dropped": 0,
+            "Errors": 0,
+            "WorldMsTotal": 247.1026782559535,
+            "HudMsTotal": 105.5865776536895,
+            "WorldP50Ms": 0.941996232015072,
+            "WorldP95Ms": 1.53874384502462,
+            "WorldP99Ms": 1.8346593280293546,
+            "HudP50Ms": 0.462998148007408,
+            "HudP95Ms": 0.550497798008808,
+            "HudP99Ms": 1.2870781850205935,
+            "CopySamples": 467,
+            "CopyBytes": 463818936,
+            "AllocationCpuMs": 77.33589965105057,
+            "CopyCpuMs": 30.775500148534775
+          },
+          "companions": [
+            {
+              "layer": "resources",
+              "renders": 227,
+              "paint": {
+                "count": 227,
+                "sumMs": 300.2756,
+                "meanMs": 1.3228,
+                "p50Ms": 1.2561,
+                "p95Ms": 1.7499,
+                "p99Ms": 2.1146,
+                "maxMs": 2.6527
+              },
+              "commit": {
+                "count": 227,
+                "sumMs": 7.058199999999999,
+                "meanMs": 0.031093392070484577,
+                "p50Ms": 0.0294,
+                "p95Ms": 0.0493,
+                "p99Ms": 0.0878,
+                "maxMs": 0.1067
+              },
+              "pixelBytes": 20740536
+            }
+          ]
+        },
+        {
+          "repeat": 1,
+          "workload": "hud_only",
+          "seconds": 8.007295899999999,
+          "requestedFrames": 240,
+          "mainRenders": 240,
+          "paint": {
+            "count": 240,
+            "sumMs": 456.7266999999997,
+            "meanMs": 1.9030279166666655,
+            "p50Ms": 1.7835,
+            "p95Ms": 2.6819,
+            "p99Ms": 3.2206,
+            "maxMs": 4.307
+          },
+          "commit": {
+            "count": 240,
+            "sumMs": 136.2555,
+            "meanMs": 0.56773125,
+            "p50Ms": 0.545,
+            "p95Ms": 0.7376,
+            "p99Ms": 0.9401,
+            "maxMs": 1.0395
+          },
+          "driverCpu": {
+            "count": 240,
+            "sumMs": 1256.0846999999999,
+            "meanMs": 5.23368625,
+            "p50Ms": 5.2698,
+            "p95Ms": 6.6486,
+            "p99Ms": 8.1798,
+            "maxMs": 9.7398
+          },
+          "meanRasterPixels": 467908.0,
+          "maxRasterPixels": 467908,
+          "mainPixelBytes": 449191680,
+          "cpuCorePercent": 14.439955940681548,
+          "driverThreadAllocatedBytes": 8772888,
+          "received": 0,
+          "presented": 471,
+          "compositions": 471,
+          "lightDraws": 0,
+          "lightCacheHits": 0,
+          "fxUploads": 0,
+          "hudAccepted": 472,
+          "copiedBytes": 464275776,
+          "uploads": 472,
+          "uploadedBytes": 464275776,
+          "hudDraws": 1880,
+          "submitCpuMs": {
+            "count": 240,
+            "sumMs": 71.29970046877861,
+            "meanMs": 0.29708208528657754,
+            "p50Ms": 0.27580001950263977,
+            "p95Ms": 0.5005999803543091,
+            "p99Ms": 0.6035000085830688,
+            "maxMs": 0.8328000009059906
+          },
+          "presentCallMs": {
+            "count": 240,
+            "sumMs": 29.385300308465958,
+            "meanMs": 0.12243875128527483,
+            "p50Ms": 0.1112000048160553,
+            "p95Ms": 0.2159000039100647,
+            "p99Ms": 0.26250001788139343,
+            "maxMs": 0.35899999737739563
+          },
+          "gpuAndCopyCosts": {
+            "Size": 144,
+            "Enabled": 0,
+            "Retained": 256,
+            "Started": 470,
+            "Completed": 470,
+            "Disjoint": 0,
+            "Dropped": 0,
+            "Errors": 0,
+            "WorldMsTotal": 410.2044425155635,
+            "HudMsTotal": 212.128151487394,
+            "WorldP50Ms": 0.41166502000658667,
+            "WorldP95Ms": 4.878313820078054,
+            "WorldP99Ms": 7.009721961112156,
+            "HudP50Ms": 0.4309149430068947,
+            "HudP95Ms": 1.225495098019608,
+            "HudP99Ms": 1.4584108330233347,
+            "CopySamples": 472,
+            "CopyBytes": 464275776,
+            "AllocationCpuMs": 78.24200013279915,
+            "CopyCpuMs": 29.52989959716797
+          },
+          "companions": [
+            {
+              "layer": "resources",
+              "renders": 232,
+              "paint": {
+                "count": 232,
+                "sumMs": 323.9750999999999,
+                "meanMs": 1.3964443965517237,
+                "p50Ms": 1.2996,
+                "p95Ms": 2.0238,
+                "p99Ms": 2.5281,
+                "maxMs": 4.684
+              },
+              "commit": {
+                "count": 232,
+                "sumMs": 8.483199999999997,
+                "meanMs": 0.0365655172413793,
+                "p50Ms": 0.0312,
+                "p95Ms": 0.0682,
+                "p99Ms": 0.1196,
+                "maxMs": 0.1908
+              },
+              "pixelBytes": 21197376
+            }
+          ]
+        },
+        {
+          "repeat": 1,
+          "workload": "static",
+          "seconds": 7.996447700000001,
+          "requestedFrames": 240,
+          "mainRenders": 0,
+          "paint": {
+            "count": 0,
+            "sumMs": 0.0,
+            "meanMs": 0.0,
+            "p50Ms": 0.0,
+            "p95Ms": 0.0,
+            "p99Ms": 0.0,
+            "maxMs": 0.0
+          },
+          "commit": {
+            "count": 0,
+            "sumMs": 0.0,
+            "meanMs": 0.0,
+            "p50Ms": 0.0,
+            "p95Ms": 0.0,
+            "p99Ms": 0.0,
+            "maxMs": 0.0
+          },
+          "driverCpu": {
+            "count": 240,
+            "sumMs": 23.877800000000004,
+            "meanMs": 0.09949083333333335,
+            "p50Ms": 0.0392,
+            "p95Ms": 0.382,
+            "p99Ms": 0.7581,
+            "maxMs": 0.8904
+          },
+          "meanRasterPixels": 0.0,
+          "maxRasterPixels": 0,
+          "mainPixelBytes": 0,
+          "cpuCorePercent": 0.39079852920191044,
+          "driverThreadAllocatedBytes": 194984,
+          "received": 0,
+          "presented": 0,
+          "compositions": 0,
+          "lightDraws": 0,
+          "lightCacheHits": 0,
+          "fxUploads": 0,
+          "hudAccepted": 0,
+          "copiedBytes": 0,
+          "uploads": 0,
+          "uploadedBytes": 0,
+          "hudDraws": 0,
+          "submitCpuMs": {
+            "count": 0,
+            "sumMs": 0.0,
+            "meanMs": 0.0,
+            "p50Ms": 0.0,
+            "p95Ms": 0.0,
+            "p99Ms": 0.0,
+            "maxMs": 0.0
+          },
+          "presentCallMs": {
+            "count": 0,
+            "sumMs": 0.0,
+            "meanMs": 0.0,
+            "p50Ms": 0.0,
+            "p95Ms": 0.0,
+            "p99Ms": 0.0,
+            "maxMs": 0.0
+          },
+          "gpuAndCopyCosts": {
+            "Size": 144,
+            "Enabled": 0,
+            "Retained": 0,
+            "Started": 0,
+            "Completed": 0,
+            "Disjoint": 0,
+            "Dropped": 0,
+            "Errors": 0,
+            "WorldMsTotal": 0.0,
+            "HudMsTotal": 0.0,
+            "WorldP50Ms": 0.0,
+            "WorldP95Ms": 0.0,
+            "WorldP99Ms": 0.0,
+            "HudP50Ms": 0.0,
+            "HudP95Ms": 0.0,
+            "HudP99Ms": 0.0,
+            "CopySamples": 0,
+            "CopyBytes": 0,
+            "AllocationCpuMs": 0.0,
+            "CopyCpuMs": 0.0
+          },
+          "companions": []
+        }
+      ]
+    }
+  ],
+  "intermediatePaintOnly": {
+    "reportPath": "tmp/hud-work-cost-20261010/runs/cost-p1-01.json",
+    "reportSha256": "043CC7189B191864B408075CFB71BD8B4423C481FB95F8641AB1D3514B5F5C49",
+    "recordedUtc": "2026-10-10T11:46:16.7652091+00:00",
+    "variant": "partial-main-paint",
+    "candidateDirectory": "tmp/runtime-candidates/v2/hud-work-1010-p1",
+    "buildIdentity": "6C1E22081C9BA2E1A89F986245EE296DF6004A2E3BFE3260BFB30DB8B66BE670",
+    "payloadClosure": "90947E7197D8C61B0AFE6A6D164F465652659584E9FE408E30BBA3F2F4AF27FD",
+    "testCoreSha256": "E7AB3C50ECD07C8ABAB5ED040A95C2597DDA8AB4A84EA8D39C7F7E9D83336190",
+    "candidateCoreSha256": "E7AB3C50ECD07C8ABAB5ED040A95C2597DDA8AB4A84EA8D39C7F7E9D83336190",
+    "nativeSha256": "1623C02DF76C63654C58C271AC994DEF34D2BC969B80349F22CE987BBC9B5FC0",
+    "rows": [
+      {
+        "repeat": 0,
+        "workload": "static",
+        "seconds": 8.000630600000001,
+        "requestedFrames": 240,
+        "mainRenders": 0,
+        "paint": {
+          "count": 0,
+          "sumMs": 0.0,
+          "meanMs": 0.0,
+          "p50Ms": 0.0,
+          "p95Ms": 0.0,
+          "p99Ms": 0.0,
+          "maxMs": 0.0
+        },
+        "commit": {
+          "count": 0,
+          "sumMs": 0.0,
+          "meanMs": 0.0,
+          "p50Ms": 0.0,
+          "p95Ms": 0.0,
+          "p99Ms": 0.0,
+          "maxMs": 0.0
+        },
+        "driverCpu": {
+          "count": 240,
+          "sumMs": 24.877700000000004,
+          "meanMs": 0.10365708333333336,
+          "p50Ms": 0.0474,
+          "p95Ms": 0.3699,
+          "p99Ms": 0.48,
+          "maxMs": 0.5411
+        },
+        "meanRasterPixels": 0.0,
+        "maxRasterPixels": 0,
+        "meanPaintedPixels": 0.0,
+        "meanPaintedWidgets": 0.0,
+        "mainPixelBytes": 0,
+        "cpuCorePercent": 1.1717826342338564,
+        "driverThreadAllocatedBytes": 198896,
+        "received": 0,
+        "presented": 0,
+        "compositions": 0,
+        "lightDraws": 0,
+        "lightCacheHits": 0,
+        "fxUploads": 0,
+        "hudAccepted": 0,
+        "copiedBytes": 0,
+        "uploads": 0,
+        "uploadedBytes": 0,
+        "hudDraws": 0,
+        "submitCpuMs": {
+          "count": 0,
+          "sumMs": 0.0,
+          "meanMs": 0.0,
+          "p50Ms": 0.0,
+          "p95Ms": 0.0,
+          "p99Ms": 0.0,
+          "maxMs": 0.0
+        },
+        "presentCallMs": {
+          "count": 0,
+          "sumMs": 0.0,
+          "meanMs": 0.0,
+          "p50Ms": 0.0,
+          "p95Ms": 0.0,
+          "p99Ms": 0.0,
+          "maxMs": 0.0
+        },
+        "gpuAndCopyCosts": {
+          "Size": 144,
+          "Enabled": 0,
+          "Retained": 0,
+          "Started": 0,
+          "Completed": 0,
+          "Disjoint": 0,
+          "Dropped": 0,
+          "Errors": 0,
+          "WorldMsTotal": 0.0,
+          "HudMsTotal": 0.0,
+          "WorldP50Ms": 0.0,
+          "WorldP95Ms": 0.0,
+          "WorldP99Ms": 0.0,
+          "HudP50Ms": 0.0,
+          "HudP95Ms": 0.0,
+          "HudP99Ms": 0.0,
+          "CopySamples": 0,
+          "CopyBytes": 0,
+          "AllocationCpuMs": 0.0,
+          "CopyCpuMs": 0.0
+        },
+        "companions": []
+      },
+      {
+        "repeat": 0,
+        "workload": "hud_only",
+        "seconds": 8.001519700000001,
+        "requestedFrames": 240,
+        "mainRenders": 240,
+        "paint": {
+          "count": 240,
+          "sumMs": 292.68769999999995,
+          "meanMs": 1.2195320833333332,
+          "p50Ms": 1.1622,
+          "p95Ms": 1.6698,
+          "p99Ms": 2.1634,
+          "maxMs": 5.7415
+        },
+        "commit": {
+          "count": 240,
+          "sumMs": 150.9720000000001,
+          "meanMs": 0.6290500000000004,
+          "p50Ms": 0.5836,
+          "p95Ms": 0.9744,
+          "p99Ms": 1.2253,
+          "maxMs": 1.336
+        },
+        "driverCpu": {
+          "count": 240,
+          "sumMs": 1098.8046000000002,
+          "meanMs": 4.5783525,
+          "p50Ms": 4.6585,
+          "p95Ms": 5.974,
+          "p99Ms": 6.5643,
+          "maxMs": 9.5212
+        },
+        "meanRasterPixels": 467908.0,
+        "maxRasterPixels": 467908,
+        "meanPaintedPixels": 24024.0,
+        "meanPaintedWidgets": 3.4,
+        "mainPixelBytes": 449191680,
+        "cpuCorePercent": 18.94171428460021,
+        "driverThreadAllocatedBytes": 8868672,
+        "received": 0,
+        "presented": 470,
+        "compositions": 470,
+        "lightDraws": 0,
+        "lightCacheHits": 0,
+        "fxUploads": 0,
+        "hudAccepted": 471,
+        "copiedBytes": 464184408,
+        "uploads": 471,
+        "uploadedBytes": 464184408,
+        "hudDraws": 1880,
+        "submitCpuMs": {
+          "count": 240,
+          "sumMs": 68.3597002029419,
+          "meanMs": 0.2848320841789246,
+          "p50Ms": 0.2678000032901764,
+          "p95Ms": 0.44110000133514404,
+          "p99Ms": 0.6228000223636627,
+          "maxMs": 0.7937000095844269
+        },
+        "presentCallMs": {
+          "count": 240,
+          "sumMs": 31.013399958610535,
+          "meanMs": 0.12922249982754389,
+          "p50Ms": 0.1151999831199646,
+          "p95Ms": 0.2523999810218811,
+          "p99Ms": 0.3412000238895416,
+          "maxMs": 0.37860000133514404
+        },
+        "gpuAndCopyCosts": {
+          "Size": 144,
+          "Enabled": 0,
+          "Retained": 256,
+          "Started": 470,
+          "Completed": 470,
+          "Disjoint": 0,
+          "Dropped": 0,
+          "Errors": 0,
+          "WorldMsTotal": 436.14292209497825,
+          "HudMsTotal": 225.38968177460617,
+          "WorldP50Ms": 0.49133136800786137,
+          "WorldP95Ms": 3.396653080054347,
+          "WorldP99Ms": 7.329387349117271,
+          "HudP50Ms": 0.436498254006984,
+          "HudP95Ms": 1.507743969024124,
+          "HudP99Ms": 1.80999276002896,
+          "CopySamples": 471,
+          "CopyBytes": 464184408,
+          "AllocationCpuMs": 88.02720007300377,
+          "CopyCpuMs": 35.07939958572388
+        },
+        "companions": [
+          {
+            "layer": "resources",
+            "renders": 231,
+            "paint": {
+              "count": 231,
+              "sumMs": 312.80749999999995,
+              "meanMs": 1.3541450216450215,
+              "p50Ms": 1.2887,
+              "p95Ms": 1.792,
+              "p99Ms": 2.0661,
+              "maxMs": 3.3085
+            },
+            "commit": {
+              "count": 231,
+              "sumMs": 8.257799999999998,
+              "meanMs": 0.03574805194805194,
+              "p50Ms": 0.0314,
+              "p95Ms": 0.0661,
+              "p99Ms": 0.1008,
+              "maxMs": 0.1118
+            },
+            "pixelBytes": 21106008
+          }
+        ]
+      },
+      {
+        "repeat": 0,
+        "workload": "mixed",
+        "seconds": 8.0047924,
+        "requestedFrames": 240,
+        "mainRenders": 240,
+        "paint": {
+          "count": 240,
+          "sumMs": 343.55729999999994,
+          "meanMs": 1.4314887499999998,
+          "p50Ms": 1.2934,
+          "p95Ms": 2.1645,
+          "p99Ms": 2.961,
+          "maxMs": 3.9964
+        },
+        "commit": {
+          "count": 240,
+          "sumMs": 166.83619999999993,
+          "meanMs": 0.695150833333333,
+          "p50Ms": 0.6485,
+          "p95Ms": 1.0467,
+          "p99Ms": 1.4675,
+          "maxMs": 1.5921
+        },
+        "driverCpu": {
+          "count": 240,
+          "sumMs": 1203.2044000000003,
+          "meanMs": 5.013351666666668,
+          "p50Ms": 4.937,
+          "p95Ms": 7.3507,
+          "p99Ms": 8.8301,
+          "maxMs": 10.4357
+        },
+        "meanRasterPixels": 467908.0,
+        "maxRasterPixels": 467908,
+        "meanPaintedPixels": 24024.0,
+        "meanPaintedWidgets": 3.4,
+        "mainPixelBytes": 449191680,
+        "cpuCorePercent": 15.030058743309821,
+        "driverThreadAllocatedBytes": 8841696,
+        "received": 241,
+        "presented": 241,
+        "compositions": 241,
+        "lightDraws": 211,
+        "lightCacheHits": 30,
+        "fxUploads": 0,
+        "hudAccepted": 465,
+        "copiedBytes": 463636200,
+        "uploads": 360,
+        "uploadedBytes": 362793376,
+        "hudDraws": 964,
+        "submitCpuMs": {
+          "count": 213,
+          "sumMs": 134.75669991970062,
+          "meanMs": 0.6326605630032893,
+          "p50Ms": 0.5830999910831451,
+          "p95Ms": 1.12049999833107,
+          "p99Ms": 1.3956000208854675,
+          "maxMs": 1.5196999907493591
+        },
+        "presentCallMs": {
+          "count": 213,
+          "sumMs": 33.865099638700485,
+          "meanMs": 0.15899107811596472,
+          "p50Ms": 0.12190002202987671,
+          "p95Ms": 0.3643999993801117,
+          "p99Ms": 0.503600001335144,
+          "maxMs": 0.613400012254715
+        },
+        "gpuAndCopyCosts": {
+          "Size": 144,
+          "Enabled": 0,
+          "Retained": 241,
+          "Started": 241,
+          "Completed": 241,
+          "Disjoint": 0,
+          "Dropped": 0,
+          "Errors": 0,
+          "WorldMsTotal": 265.39385509124634,
+          "HudMsTotal": 105.78457686169261,
+          "WorldP50Ms": 1.061745753016988,
+          "WorldP95Ms": 1.4115776870225853,
+          "WorldP99Ms": 1.8631592140298108,
+          "HudP50Ms": 0.470748117007532,
+          "HudP95Ms": 0.559497762008952,
+          "HudP99Ms": 0.671747313010748,
+          "CopySamples": 465,
+          "CopyBytes": 463636200,
+          "AllocationCpuMs": 93.16849970817566,
+          "CopyCpuMs": 40.14479994773865
+        },
+        "companions": [
+          {
+            "layer": "resources",
+            "renders": 225,
+            "paint": {
+              "count": 225,
+              "sumMs": 375.8708000000002,
+              "meanMs": 1.6705368888888898,
+              "p50Ms": 1.4649,
+              "p95Ms": 2.6543,
+              "p99Ms": 3.4415,
+              "maxMs": 3.9882
+            },
+            "commit": {
+              "count": 225,
+              "sumMs": 8.746800000000004,
+              "meanMs": 0.03887466666666668,
+              "p50Ms": 0.0337,
+              "p95Ms": 0.0666,
+              "p99Ms": 0.1292,
+              "maxMs": 0.1744
+            },
+            "pixelBytes": 20557800
+          }
+        ]
+      },
+      {
+        "repeat": 1,
+        "workload": "mixed",
+        "seconds": 8.0008207,
+        "requestedFrames": 240,
+        "mainRenders": 240,
+        "paint": {
+          "count": 240,
+          "sumMs": 300.14050000000003,
+          "meanMs": 1.2505854166666668,
+          "p50Ms": 1.2133,
+          "p95Ms": 1.6658,
+          "p99Ms": 2.0071,
+          "maxMs": 2.4031
+        },
+        "commit": {
+          "count": 240,
+          "sumMs": 145.43600000000006,
+          "meanMs": 0.6059833333333337,
+          "p50Ms": 0.5796,
+          "p95Ms": 0.7717,
+          "p99Ms": 0.9108,
+          "maxMs": 1.344
+        },
+        "driverCpu": {
+          "count": 240,
+          "sumMs": 1091.0197999999996,
+          "meanMs": 4.545915833333331,
+          "p50Ms": 4.6651,
+          "p95Ms": 5.8606,
+          "p99Ms": 6.532,
+          "maxMs": 6.6488
+        },
+        "meanRasterPixels": 467908.0,
+        "maxRasterPixels": 467908,
+        "meanPaintedPixels": 24024.0,
+        "meanPaintedWidgets": 3.4,
+        "mainPixelBytes": 449191680,
+        "cpuCorePercent": 14.646934907565171,
+        "driverThreadAllocatedBytes": 8819024,
+        "received": 240,
+        "presented": 242,
+        "compositions": 242,
+        "lightDraws": 224,
+        "lightCacheHits": 18,
+        "fxUploads": 0,
+        "hudAccepted": 465,
+        "copiedBytes": 463636200,
+        "uploads": 444,
+        "uploadedBytes": 458207888,
+        "hudDraws": 968,
+        "submitCpuMs": {
+          "count": 223,
+          "sumMs": 133.5160998404026,
+          "meanMs": 0.598726905113913,
+          "p50Ms": 0.587799996137619,
+          "p95Ms": 0.9740000069141388,
+          "p99Ms": 1.1814999878406525,
+          "maxMs": 1.4690000116825104
+        },
+        "presentCallMs": {
+          "count": 223,
+          "sumMs": 24.59149980545044,
+          "meanMs": 0.11027578388094368,
+          "p50Ms": 0.08699998259544373,
+          "p95Ms": 0.2360999882221222,
+          "p99Ms": 0.3264000117778778,
+          "maxMs": 0.3684999942779541
+        },
+        "gpuAndCopyCosts": {
+          "Size": 144,
+          "Enabled": 0,
+          "Retained": 242,
+          "Started": 242,
+          "Completed": 242,
+          "Disjoint": 0,
+          "Dropped": 0,
+          "Errors": 0,
+          "WorldMsTotal": 282.4271202915187,
+          "HudMsTotal": 125.44416489000709,
+          "WorldP50Ms": 1.0437458250167,
+          "WorldP95Ms": 1.8986590720303786,
+          "WorldP99Ms": 2.790405505044647,
+          "HudP50Ms": 0.4944146890079107,
+          "HudP95Ms": 0.5654144050090467,
+          "HudP99Ms": 1.9793254160316693,
+          "CopySamples": 465,
+          "CopyBytes": 463636200,
+          "AllocationCpuMs": 79.26460012793541,
+          "CopyCpuMs": 36.5557998418808
+        },
+        "companions": [
+          {
+            "layer": "resources",
+            "renders": 225,
+            "paint": {
+              "count": 225,
+              "sumMs": 302.4529,
+              "meanMs": 1.344235111111111,
+              "p50Ms": 1.2607,
+              "p95Ms": 1.7637,
+              "p99Ms": 2.405,
+              "maxMs": 3.372
+            },
+            "commit": {
+              "count": 225,
+              "sumMs": 6.821400000000001,
+              "meanMs": 0.030317333333333335,
+              "p50Ms": 0.0272,
+              "p95Ms": 0.0581,
+              "p99Ms": 0.0782,
+              "maxMs": 0.0996
+            },
+            "pixelBytes": 20557800
+          }
+        ]
+      },
+      {
+        "repeat": 1,
+        "workload": "hud_only",
+        "seconds": 8.0110821,
+        "requestedFrames": 240,
+        "mainRenders": 240,
+        "paint": {
+          "count": 240,
+          "sumMs": 309.1786,
+          "meanMs": 1.2882441666666666,
+          "p50Ms": 1.2214,
+          "p95Ms": 1.8327,
+          "p99Ms": 2.7805,
+          "maxMs": 3.5999
+        },
+        "commit": {
+          "count": 240,
+          "sumMs": 144.27030000000002,
+          "meanMs": 0.6011262500000001,
+          "p50Ms": 0.574,
+          "p95Ms": 0.8138,
+          "p99Ms": 0.9551,
+          "maxMs": 1.1007
+        },
+        "driverCpu": {
+          "count": 240,
+          "sumMs": 1117.5546,
+          "meanMs": 4.656477499999999,
+          "p50Ms": 4.7265,
+          "p95Ms": 6.57,
+          "p99Ms": 7.6372,
+          "maxMs": 8.5693
+        },
+        "meanRasterPixels": 467908.0,
+        "maxRasterPixels": 467908,
+        "meanPaintedPixels": 24024.0,
+        "meanPaintedWidgets": 3.4,
+        "mainPixelBytes": 449191680,
+        "cpuCorePercent": 13.652962063639318,
+        "driverThreadAllocatedBytes": 8833544,
+        "received": 0,
+        "presented": 466,
+        "compositions": 466,
+        "lightDraws": 0,
+        "lightCacheHits": 0,
+        "fxUploads": 0,
+        "hudAccepted": 467,
+        "copiedBytes": 463818936,
+        "uploads": 467,
+        "uploadedBytes": 463818936,
+        "hudDraws": 1864,
+        "submitCpuMs": {
+          "count": 240,
+          "sumMs": 70.40030005574226,
+          "meanMs": 0.2933345835655928,
+          "p50Ms": 0.27970001101493835,
+          "p95Ms": 0.4771000146865845,
+          "p99Ms": 0.5683000087738037,
+          "maxMs": 0.700799971818924
+        },
+        "presentCallMs": {
+          "count": 240,
+          "sumMs": 31.652999937534332,
+          "meanMs": 0.13188749973972638,
+          "p50Ms": 0.11490002274513245,
+          "p95Ms": 0.26429998874664307,
+          "p99Ms": 0.3093999922275543,
+          "maxMs": 0.37709999084472656
+        },
+        "gpuAndCopyCosts": {
+          "Size": 144,
+          "Enabled": 0,
+          "Retained": 256,
+          "Started": 466,
+          "Completed": 466,
+          "Disjoint": 0,
+          "Dropped": 0,
+          "Errors": 0,
+          "WorldMsTotal": 400.8143967424133,
+          "HudMsTotal": 225.63709745161,
+          "WorldP50Ms": 0.43016494600688265,
+          "WorldP95Ms": 4.9498135340791976,
+          "WorldP99Ms": 7.339720641117436,
+          "HudP50Ms": 0.4376649160070027,
+          "HudP95Ms": 1.4555775110232894,
+          "HudP99Ms": 1.8525759230296415,
+          "CopySamples": 467,
+          "CopyBytes": 463818936,
+          "AllocationCpuMs": 78.51239985227585,
+          "CopyCpuMs": 36.371599584817886
+        },
+        "companions": [
+          {
+            "layer": "resources",
+            "renders": 227,
+            "paint": {
+              "count": 227,
+              "sumMs": 323.60939999999977,
+              "meanMs": 1.4255920704845804,
+              "p50Ms": 1.3091,
+              "p95Ms": 2.2783,
+              "p99Ms": 3.0492,
+              "maxMs": 3.2575
+            },
+            "commit": {
+              "count": 227,
+              "sumMs": 8.706399999999995,
+              "meanMs": 0.03835418502202641,
+              "p50Ms": 0.0309,
+              "p95Ms": 0.0615,
+              "p99Ms": 0.1457,
+              "maxMs": 0.6282
+            },
+            "pixelBytes": 20740536
+          }
+        ]
+      },
+      {
+        "repeat": 1,
+        "workload": "static",
+        "seconds": 8.002271799999999,
+        "requestedFrames": 240,
+        "mainRenders": 0,
+        "paint": {
+          "count": 0,
+          "sumMs": 0.0,
+          "meanMs": 0.0,
+          "p50Ms": 0.0,
+          "p95Ms": 0.0,
+          "p99Ms": 0.0,
+          "maxMs": 0.0
+        },
+        "commit": {
+          "count": 0,
+          "sumMs": 0.0,
+          "meanMs": 0.0,
+          "p50Ms": 0.0,
+          "p95Ms": 0.0,
+          "p99Ms": 0.0,
+          "maxMs": 0.0
+        },
+        "driverCpu": {
+          "count": 240,
+          "sumMs": 23.977199999999996,
+          "meanMs": 0.09990499999999998,
+          "p50Ms": 0.0448,
+          "p95Ms": 0.3644,
+          "p99Ms": 0.6337,
+          "maxMs": 1.0827
+        },
+        "meanRasterPixels": 0.0,
+        "maxRasterPixels": 0,
+        "meanPaintedPixels": 0.0,
+        "meanPaintedWidgets": 0.0,
+        "mainPixelBytes": 0,
+        "cpuCorePercent": 0.5857711556360783,
+        "driverThreadAllocatedBytes": 194728,
+        "received": 0,
+        "presented": 0,
+        "compositions": 0,
+        "lightDraws": 0,
+        "lightCacheHits": 0,
+        "fxUploads": 0,
+        "hudAccepted": 0,
+        "copiedBytes": 0,
+        "uploads": 0,
+        "uploadedBytes": 0,
+        "hudDraws": 0,
+        "submitCpuMs": {
+          "count": 0,
+          "sumMs": 0.0,
+          "meanMs": 0.0,
+          "p50Ms": 0.0,
+          "p95Ms": 0.0,
+          "p99Ms": 0.0,
+          "maxMs": 0.0
+        },
+        "presentCallMs": {
+          "count": 0,
+          "sumMs": 0.0,
+          "meanMs": 0.0,
+          "p50Ms": 0.0,
+          "p95Ms": 0.0,
+          "p99Ms": 0.0,
+          "maxMs": 0.0
+        },
+        "gpuAndCopyCosts": {
+          "Size": 144,
+          "Enabled": 0,
+          "Retained": 0,
+          "Started": 0,
+          "Completed": 0,
+          "Disjoint": 0,
+          "Dropped": 0,
+          "Errors": 0,
+          "WorldMsTotal": 0.0,
+          "HudMsTotal": 0.0,
+          "WorldP50Ms": 0.0,
+          "WorldP95Ms": 0.0,
+          "WorldP99Ms": 0.0,
+          "HudP50Ms": 0.0,
+          "HudP95Ms": 0.0,
+          "HudP99Ms": 0.0,
+          "CopySamples": 0,
+          "CopyBytes": 0,
+          "AllocationCpuMs": 0.0,
+          "CopyCpuMs": 0.0
+        },
+        "companions": []
+      },
+      {
+        "repeat": 2,
+        "workload": "static",
+        "seconds": 8.0049289,
+        "requestedFrames": 240,
+        "mainRenders": 0,
+        "paint": {
+          "count": 0,
+          "sumMs": 0.0,
+          "meanMs": 0.0,
+          "p50Ms": 0.0,
+          "p95Ms": 0.0,
+          "p99Ms": 0.0,
+          "maxMs": 0.0
+        },
+        "commit": {
+          "count": 0,
+          "sumMs": 0.0,
+          "meanMs": 0.0,
+          "p50Ms": 0.0,
+          "p95Ms": 0.0,
+          "p99Ms": 0.0,
+          "maxMs": 0.0
+        },
+        "driverCpu": {
+          "count": 240,
+          "sumMs": 24.088000000000005,
+          "meanMs": 0.10036666666666669,
+          "p50Ms": 0.0409,
+          "p95Ms": 0.4405,
+          "p99Ms": 0.6139,
+          "maxMs": 0.7719
+        },
+        "meanRasterPixels": 0.0,
+        "maxRasterPixels": 0,
+        "meanPaintedPixels": 0.0,
+        "meanPaintedWidgets": 0.0,
+        "mainPixelBytes": 0,
+        "cpuCorePercent": 0.9759611981063318,
+        "driverThreadAllocatedBytes": 194728,
+        "received": 0,
+        "presented": 0,
+        "compositions": 0,
+        "lightDraws": 0,
+        "lightCacheHits": 0,
+        "fxUploads": 0,
+        "hudAccepted": 0,
+        "copiedBytes": 0,
+        "uploads": 0,
+        "uploadedBytes": 0,
+        "hudDraws": 0,
+        "submitCpuMs": {
+          "count": 0,
+          "sumMs": 0.0,
+          "meanMs": 0.0,
+          "p50Ms": 0.0,
+          "p95Ms": 0.0,
+          "p99Ms": 0.0,
+          "maxMs": 0.0
+        },
+        "presentCallMs": {
+          "count": 0,
+          "sumMs": 0.0,
+          "meanMs": 0.0,
+          "p50Ms": 0.0,
+          "p95Ms": 0.0,
+          "p99Ms": 0.0,
+          "maxMs": 0.0
+        },
+        "gpuAndCopyCosts": {
+          "Size": 144,
+          "Enabled": 0,
+          "Retained": 0,
+          "Started": 0,
+          "Completed": 0,
+          "Disjoint": 0,
+          "Dropped": 0,
+          "Errors": 0,
+          "WorldMsTotal": 0.0,
+          "HudMsTotal": 0.0,
+          "WorldP50Ms": 0.0,
+          "WorldP95Ms": 0.0,
+          "WorldP99Ms": 0.0,
+          "HudP50Ms": 0.0,
+          "HudP95Ms": 0.0,
+          "HudP99Ms": 0.0,
+          "CopySamples": 0,
+          "CopyBytes": 0,
+          "AllocationCpuMs": 0.0,
+          "CopyCpuMs": 0.0
+        },
+        "companions": []
+      },
+      {
+        "repeat": 2,
+        "workload": "hud_only",
+        "seconds": 7.992825799999999,
+        "requestedFrames": 240,
+        "mainRenders": 241,
+        "paint": {
+          "count": 241,
+          "sumMs": 295.4238,
+          "meanMs": 1.2258248962655602,
+          "p50Ms": 1.1916,
+          "p95Ms": 1.5461,
+          "p99Ms": 2.3188,
+          "maxMs": 2.9006
+        },
+        "commit": {
+          "count": 241,
+          "sumMs": 143.18889999999993,
+          "meanMs": 0.594144813278008,
+          "p50Ms": 0.5718,
+          "p95Ms": 0.7331,
+          "p99Ms": 0.8054,
+          "maxMs": 0.9788
+        },
+        "driverCpu": {
+          "count": 240,
+          "sumMs": 1091.5544999999995,
+          "meanMs": 4.548143749999998,
+          "p50Ms": 4.6568,
+          "p95Ms": 5.8928,
+          "p99Ms": 7.0602,
+          "maxMs": 8.5241
+        },
+        "meanRasterPixels": 467908.0,
+        "maxRasterPixels": 467908,
+        "meanPaintedPixels": 25964.43153526971,
+        "meanPaintedWidgets": 3.4024896265560165,
+        "mainPixelBytes": 451063312,
+        "cpuCorePercent": 12.902195366249568,
+        "driverThreadAllocatedBytes": 8583432,
+        "received": 0,
+        "presented": 454,
+        "compositions": 454,
+        "lightDraws": 0,
+        "lightCacheHits": 0,
+        "fxUploads": 0,
+        "hudAccepted": 456,
+        "copiedBytes": 464568680,
+        "uploads": 456,
+        "uploadedBytes": 464568680,
+        "hudDraws": 1816,
+        "submitCpuMs": {
+          "count": 240,
+          "sumMs": 72.72899943590164,
+          "meanMs": 0.30303749764959015,
+          "p50Ms": 0.29490000009536743,
+          "p95Ms": 0.48080000281333923,
+          "p99Ms": 0.5961999893188477,
+          "maxMs": 0.6545999944210052
+        },
+        "presentCallMs": {
+          "count": 240,
+          "sumMs": 31.17410010099411,
+          "meanMs": 0.12989208375414213,
+          "p50Ms": 0.1226000189781189,
+          "p95Ms": 0.22339999675750732,
+          "p99Ms": 0.2896000146865845,
+          "maxMs": 0.304999977350235
+        },
+        "gpuAndCopyCosts": {
+          "Size": 144,
+          "Enabled": 0,
+          "Retained": 256,
+          "Started": 454,
+          "Completed": 454,
+          "Disjoint": 0,
+          "Dropped": 0,
+          "Errors": 0,
+          "WorldMsTotal": 512.7496156682041,
+          "HudMsTotal": 236.39222109778208,
+          "WorldP50Ms": 0.4491648700071867,
+          "WorldP95Ms": 5.8568099060937096,
+          "WorldP99Ms": 7.753802318124062,
+          "HudP50Ms": 0.440498238007048,
+          "HudP95Ms": 1.7176597960274826,
+          "HudP99Ms": 1.9501588660312028,
+          "CopySamples": 456,
+          "CopyBytes": 464568680,
+          "AllocationCpuMs": 77.90840008854866,
+          "CopyCpuMs": 36.272200137376785
+        },
+        "companions": [
+          {
+            "layer": "resources",
+            "renders": 215,
+            "paint": {
+              "count": 215,
+              "sumMs": 280.9878,
+              "meanMs": 1.3069199999999999,
+              "p50Ms": 1.2441,
+              "p95Ms": 1.6003,
+              "p99Ms": 2.0443,
+              "maxMs": 4.1334
+            },
+            "commit": {
+              "count": 215,
+              "sumMs": 7.3304000000000045,
+              "meanMs": 0.03409488372093025,
+              "p50Ms": 0.0299,
+              "p95Ms": 0.0618,
+              "p99Ms": 0.1109,
+              "maxMs": 0.1592
+            },
+            "pixelBytes": 19644120
+          }
+        ]
+      },
+      {
+        "repeat": 2,
+        "workload": "mixed",
+        "seconds": 8.000511499999998,
+        "requestedFrames": 240,
+        "mainRenders": 240,
+        "paint": {
+          "count": 240,
+          "sumMs": 304.09350000000035,
+          "meanMs": 1.2670562500000015,
+          "p50Ms": 1.2172,
+          "p95Ms": 1.7042,
+          "p99Ms": 2.6031,
+          "maxMs": 3.076
+        },
+        "commit": {
+          "count": 240,
+          "sumMs": 144.64089999999996,
+          "meanMs": 0.6026704166666665,
+          "p50Ms": 0.5781,
+          "p95Ms": 0.771,
+          "p99Ms": 0.9198,
+          "maxMs": 0.9477
+        },
+        "driverCpu": {
+          "count": 240,
+          "sumMs": 1120.1074999999998,
+          "meanMs": 4.6671145833333325,
+          "p50Ms": 4.7744,
+          "p95Ms": 6.0155,
+          "p99Ms": 7.8267,
+          "maxMs": 9.5065
+        },
+        "meanRasterPixels": 467908.0,
+        "maxRasterPixels": 467908,
+        "meanPaintedPixels": 24168.0,
+        "meanPaintedWidgets": 3.4,
+        "mainPixelBytes": 449191680,
+        "cpuCorePercent": 16.405201092455155,
+        "driverThreadAllocatedBytes": 9036048,
+        "received": 240,
+        "presented": 240,
+        "compositions": 240,
+        "lightDraws": 190,
+        "lightCacheHits": 50,
+        "fxUploads": 0,
+        "hudAccepted": 476,
+        "copiedBytes": 464641248,
+        "uploads": 390,
+        "uploadedBytes": 376063168,
+        "hudDraws": 964,
+        "submitCpuMs": {
+          "count": 193,
+          "sumMs": 113.36340016126633,
+          "meanMs": 0.5873751303692556,
+          "p50Ms": 0.5480000078678131,
+          "p95Ms": 1.1158000230789185,
+          "p99Ms": 1.3118999898433685,
+          "maxMs": 1.3702999949455261
+        },
+        "presentCallMs": {
+          "count": 193,
+          "sumMs": 27.610899835824966,
+          "meanMs": 0.14306165718044023,
+          "p50Ms": 0.10280001163482666,
+          "p95Ms": 0.34940001368522644,
+          "p99Ms": 0.43950000405311584,
+          "maxMs": 0.48649999499320984
+        },
+        "gpuAndCopyCosts": {
+          "Size": 144,
+          "Enabled": 0,
+          "Retained": 240,
+          "Started": 240,
+          "Completed": 240,
+          "Disjoint": 0,
+          "Dropped": 0,
+          "Errors": 0,
+          "WorldMsTotal": 245.36726853092603,
+          "HudMsTotal": 107.89006843972628,
+          "WorldP50Ms": 0.9050797130144813,
+          "WorldP95Ms": 1.5068273060241093,
+          "WorldP99Ms": 2.3483239400375733,
+          "HudP50Ms": 0.473998104007584,
+          "HudP95Ms": 0.573247707009172,
+          "HudP99Ms": 0.722997108011568,
+          "CopySamples": 476,
+          "CopyBytes": 464641248,
+          "AllocationCpuMs": 78.54449999332428,
+          "CopyCpuMs": 36.42510029673576
+        },
+        "companions": [
+          {
+            "layer": "resources",
+            "renders": 236,
+            "paint": {
+              "count": 236,
+              "sumMs": 328.99079999999987,
+              "meanMs": 1.3940288135593215,
+              "p50Ms": 1.2706,
+              "p95Ms": 1.8968,
+              "p99Ms": 3.2049,
+              "maxMs": 4.4076
+            },
+            "commit": {
+              "count": 236,
+              "sumMs": 7.539800000000001,
+              "meanMs": 0.03194830508474577,
+              "p50Ms": 0.0301,
+              "p95Ms": 0.0531,
+              "p99Ms": 0.0908,
+              "maxMs": 0.121
+            },
+            "pixelBytes": 21562848
+          }
+        ]
+      }
+    ]
+  },
+  "boundary": [
+    "Controlled production-painter fixture, not real battle FPS",
+    "No DWM/MPO, total GPU power, thermals, weak-machine or physical-input qualification",
+    "No formal runtime promotion; isolated candidates only"
+  ],
+  "validation": {
+    "fullHost": {
+      "passed": 6923,
+      "skipped": 22,
+      "failed": 0,
+      "logPath": "tmp/hud-work-cost-20261010/runs/full-host-01.log",
+      "logSha256": "BF2D2C1E1E26435BB650834FA82F3505BBC8191873DE9F221E6F4132789E215E",
+      "serialPolicyConfirmed": true,
+      "sourceBaseAtRun": "9155c16059acbfcbffe439e8cc9dc20e1765e699",
+      "exactSdk": "10.0.300",
+      "resolverTestsPassed": 7
+    },
+    "focusedGpu": [
+      {
+        "run": "p2-gpu-02",
+        "counters": {
+          "total": "6",
+          "executed": "6",
+          "passed": "6",
+          "failed": "0",
+          "error": "0",
+          "timeout": "0",
+          "aborted": "0",
+          "inconclusive": "0",
+          "passedButRunAborted": "0",
+          "notRunnable": "0",
+          "notExecuted": "0",
+          "disconnected": "0",
+          "warning": "0",
+          "completed": "0",
+          "inProgress": "0",
+          "pending": "0"
+        },
+        "reportPath": "tmp/hud-work-cost-20261010/runs/p2-gpu-02.trx",
+        "reportSha256": "54B8A091A2843D6CF76DC1347344A2FB3587F4FD18582C69972995DF0459B3CD"
+      },
+      {
+        "run": "p2-diagnostics-01",
+        "counters": {
+          "total": "1",
+          "executed": "1",
+          "passed": "1",
+          "failed": "0",
+          "error": "0",
+          "timeout": "0",
+          "aborted": "0",
+          "inconclusive": "0",
+          "passedButRunAborted": "0",
+          "notRunnable": "0",
+          "notExecuted": "0",
+          "disconnected": "0",
+          "warning": "0",
+          "completed": "0",
+          "inProgress": "0",
+          "pending": "0"
+        },
+        "reportPath": "tmp/hud-work-cost-20261010/runs/p2-diagnostics-01.trx",
+        "reportSha256": "4C50130AE9C1871DEF85CF47B4E0E25CFB7F68A9D97915AE4963130DE70B5155"
+      }
+    ]
+  },
+  "liveRuns": [
+    {
+      "outcome": {
+        "label": "arena-baseline-01",
+        "exitCode": 1,
+        "failure": null,
+        "runnerStatus": "needs_rerun",
+        "error": null,
+        "coreExited": true,
+        "protectedSaveCount": 26,
+        "protectedSavesUnchanged": true,
+        "costRows": 76,
+        "nativeRows": 61,
+        "hostRows": 9,
+        "boundary": "Actual isolated candidate and dedicated cloned save; explicit mixed arena roster. Not balance, fully seeded battle or weak-machine/physical-input acceptance."
+      },
+      "buildIdentity": "06A50E44CBD3A7B29AF6D527227CFE6439B3C5A659FF5E0686FBD1C141B2D1FB",
+      "payloadClosure": "E64BF9F6AE5815F144AD6B1955C4F0978ACE805E052021EA61C222303FCA7BBB",
+      "asLoaderSha256": "8178B889FE87C7E3F07E5AB73DC4C3066DB6A323BFB40925B233E87A3CDE3F20",
+      "manifestSha256": "F6FBB29D020369FCD9D37DFF71F05322A0CE7981C47DBE2626511C1D14A757A3",
+      "reportPath": "tmp/hud-work-cost-20261010/live/arena-baseline-01/report.json",
+      "reportSha256": "7A0DB6AD37B2CDFF491CCC7AC9F554FCFFB09462E3FD5B6D652D81CE38897799",
+      "costEventsPath": "tmp/hud-work-cost-20261010/live/arena-baseline-01/cost-events.json",
+      "costEventsSha256": "2E4F0586262DB9D61931018D5898B2BDD4C7E0E548388F9616A40F1EDCBBE397",
+      "protectedBeforeSha256": "C68261D8EC0F08ACF615D5AFE898C8A8E4DEFEE2AC2439D4CA3598C931BA69C9",
+      "protectedAfterSha256": "FA371046395F81DCDA0D87B57F554E3838E786E917B1AE60C0658FBD387DBCAD"
+    },
+    {
+      "outcome": {
+        "label": "arena-final-01",
+        "exitCode": 1,
+        "failure": null,
+        "runnerStatus": "needs_rerun",
+        "error": null,
+        "coreExited": true,
+        "protectedSaveCount": 26,
+        "protectedSavesUnchanged": true,
+        "costRows": 76,
+        "nativeRows": 61,
+        "hostRows": 9,
+        "boundary": "Actual isolated candidate and dedicated cloned save; explicit mixed arena roster. Not balance, fully seeded battle or weak-machine/physical-input acceptance."
+      },
+      "buildIdentity": "CBA95108FAC72F7437548B449A3A1F8ED89B678BEFDF0F769BA208B329107F87",
+      "payloadClosure": "B435D4135AA68731FDA1823D54003E1F2CBFC7C89E6450C615C1F85D340284FC",
+      "asLoaderSha256": "8178B889FE87C7E3F07E5AB73DC4C3066DB6A323BFB40925B233E87A3CDE3F20",
+      "manifestSha256": "7E9A7D40F84B958B93F0B6D2F73C5E5E9506C23E5D22A9E21A26EF1BDEF55C7E",
+      "reportPath": "tmp/hud-work-cost-20261010/live/arena-final-01/report.json",
+      "reportSha256": "125D481F0AD784CCA181F35F5E47901AD1949755E02308AF487125DF39CFBDB0",
+      "costEventsPath": "tmp/hud-work-cost-20261010/live/arena-final-01/cost-events.json",
+      "costEventsSha256": "B539D0089D5515A4201D1756EC4008B3ECF0A23458D5103882077D25C335E657",
+      "protectedBeforeSha256": "C68261D8EC0F08ACF615D5AFE898C8A8E4DEFEE2AC2439D4CA3598C931BA69C9",
+      "protectedAfterSha256": "FA371046395F81DCDA0D87B57F554E3838E786E917B1AE60C0658FBD387DBCAD"
+    }
+  ],
+  "finalCandidate": {
+    "directory": "tmp/runtime-candidates/v2/hud-work-1010-final",
+    "sourceBase": "39b0d15488f47762c569dc7758234f4ab4ed4359",
+    "metadata": {
+      "schema": "cf7-runtime-candidate-metadata.v2",
+      "builderLabel": "local-dev",
+      "artifactSourceHash": "54399F8A1177491824CB68F731941E78960FA35CB9C9AB1FD817E01E3B717463",
+      "producerRecipeHash": "05AA73475D685FB8E8BB7F028449B3EA539DD8E7110C2AAE3395661EC18EEA64",
+      "toolchainLockHash": "DFA769829F9740196DEF63351A00AAC309E50A2CA0A768759334EB2A2161DD36",
+      "policyHash": "D95B23FF2963EB967E7C09BC1DFCC88D2B075C1DE5E3A51760FF09EB5651A56F",
+      "buildIdentityHash": "9E5A7FFD14A82D47C9C0197196BF51A715B46D75D727C440067B6F832649DA4B",
+      "payloadClosureHash": "B435D4135AA68731FDA1823D54003E1F2CBFC7C89E6450C615C1F85D340284FC",
+      "stageSeconds": {
+        "environmentGate": 0.641,
+        "identityBefore": 2.53,
+        "miniaudio": 189.041,
+        "solParser": 20.339,
+        "bootstrap": 4.1,
+        "worldCompositor": 34.837,
+        "dotnetPublish": 24.336,
+        "assemble": 11.093,
+        "identityAfter": 2.486,
+        "bootstrapVerify": 1.082
+      },
+      "totalSeconds": 290.491,
+      "createdAtUtc": "2026-10-10T12:12:37.445522Z"
+    },
+    "payloadFiles": 43,
+    "payloadEntriesEqualToMeasuredP2": true,
+    "binaryComparisons": [
+      {
+        "name": "CRAZYFLASHER7MercenaryEmpire.Core.dll",
+        "finalSha256": "511E77AC5C5554946F25BF80BAEF88B1FA0A8782FEFE4D06C0D93A6DCD563F5B",
+        "measuredSha256": "511E77AC5C5554946F25BF80BAEF88B1FA0A8782FEFE4D06C0D93A6DCD563F5B",
+        "equal": true
+      },
+      {
+        "name": "FlashCompositorNative.dll",
+        "finalSha256": "19EEA1F5F0BF7FB6586B5FE6B4952B2E590F169E272118EB3EAC0692D9C23482",
+        "measuredSha256": "19EEA1F5F0BF7FB6586B5FE6B4952B2E590F169E272118EB3EAC0692D9C23482",
+        "equal": true
+      }
+    ],
+    "manifestDifference": "producerRecipeHash and buildIdentityHash changed after main integration",
+    "gpuExecution": {
+      "counters": {
+        "total": "7",
+        "executed": "7",
+        "passed": "7",
+        "failed": "0",
+        "error": "0",
+        "timeout": "0",
+        "aborted": "0",
+        "inconclusive": "0",
+        "passedButRunAborted": "0",
+        "notRunnable": "0",
+        "notExecuted": "0",
+        "disconnected": "0",
+        "warning": "0",
+        "completed": "0",
+        "inProgress": "0",
+        "pending": "0"
+      },
+      "reportPath": "tmp/hud-work-cost-20261010/runs/final-gpu-01.trx",
+      "reportSha256": "60650FD4A36D3E81C678649C2075B5D7A893D2D570ED8E74B710B542AA54B408"
+    },
+    "state": "candidate_executed",
+    "executionScope": "Owned WGC/D3D fixture; prior p2 live-game entry is recorded separately",
+    "promoted": false,
+    "standardEntryVerified": false
+  },
+  "protectionChecks": [
+    {
+      "path": "scripts/asLoader.swf",
+      "expected": "8178B889FE87C7E3F07E5AB73DC4C3066DB6A323BFB40925B233E87A3CDE3F20",
+      "actual": "8178B889FE87C7E3F07E5AB73DC4C3066DB6A323BFB40925B233E87A3CDE3F20",
+      "unchanged": true
+    },
+    {
+      "path": "runtime/cf7-runtime-manifest.tsv",
+      "expected": "B09F977C530237E13084AEDE9D59E38FF61A20F03D320B93D413CB24C30F1D63",
+      "actual": "B09F977C530237E13084AEDE9D59E38FF61A20F03D320B93D413CB24C30F1D63",
+      "unchanged": true
+    },
+    {
+      "path": "runtime/CRAZYFLASHER7MercenaryEmpire.Core.dll",
+      "expected": "26562A5F00EE9D8F75071F120A35E2B7ECF497C423B1FB688896EC97A38B2A08",
+      "actual": "26562A5F00EE9D8F75071F120A35E2B7ECF497C423B1FB688896EC97A38B2A08",
+      "unchanged": true
+    },
+    {
+      "path": "runtime/FlashCompositorNative.dll",
+      "expected": "3C1F3F486498A24A09D1955E577965B21471C09CD5FEDE5A14805F464EB3AA57",
+      "actual": "3C1F3F486498A24A09D1955E577965B21471C09CD5FEDE5A14805F464EB3AA57",
+      "unchanged": true
+    },
+    {
+      "path": "config/build/runtime-release-consensus.json",
+      "expected": "BC4B08F139AFF2550C5D4F6C34FD3A8B80EDE37ADF025A23176D06C34138569D",
+      "actual": "BC4B08F139AFF2550C5D4F6C34FD3A8B80EDE37ADF025A23176D06C34138569D",
+      "unchanged": true
+    }
+  ],
+  "worktreeCheck": {
+    "beforeCount": 12,
+    "afterCount": 12,
+    "pathsUnchanged": true,
+    "createdByThisTask": 0,
+    "removedByThisTask": 0
+  }
+}

@@ -429,7 +429,7 @@ namespace CF7Launcher.Guardian.Hud
             GraphicsState clipState = g.Save();
             try
             {
-                g.SetClip(barRect);
+                g.SetClip(barRect, CombineMode.Intersect);
                 if (mode == BarMode.Hit)
                 {
                     PaintHitSweep(g, barRect, _hitIsDFA ? COLOR_HIT_DFA : COLOR_HIT_SYNC, alpha);

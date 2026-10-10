@@ -26,9 +26,11 @@ public sealed partial class OpaqueHudGpuTests
     [SharedWorldGpuFact(requireDisplayOn:true)]
     public void CompleteMainHudSharesPixelsAndFallbackWithPlayerInfo()
     {
+        foreach(var fixtureSize in new[]{new Size(1024,576),new Size(1280,720),new Size(1536,864)})
         Run((world,scene,output,source)=>
         {
-            string root=Path.GetFullPath(Path.Combine(AppContext.BaseDirectory,"..","..","..",".."));
+            string root=Path.GetFullPath(Environment.GetEnvironmentVariable("CF7_HUD_COST_PROJECT")
+                ?? Path.Combine(AppContext.BaseDirectory,"..","..","..",".."));
             RuntimeFontCatalog.Configure(root);
             using var icons=new LootIconCatalog(Path.Combine(root,"launcher","web","icons"));
             using var commands=new PlayerHudController(_=>true,()=>true,a=>a());
@@ -73,16 +75,54 @@ public sealed partial class OpaqueHudGpuTests
             // This is a pixel/submit oracle; gameplay animation has separate gates.
             FreezeHudTimers(main);Application.DoEvents();FreezeHudTimers(main);
             Raster[] layers={bottom.Current,resource.Current,buff.Current,top.Current};
-            byte[] expected=ComposeRasters(1024,576,layers);
+            byte[] expected=ComposeRasters(fixtureSize.Width,fixtureSize.Height,layers);
             var frame=PixelsUntil(world,scene,p=>SamePixels(p,expected),"complete HUD composition");
-            Assert.False(SamePixels(frame,ComposeRasters(1024,576,top.Current,bottom.Current,resource.Current,buff.Current)),"Main dialogue must remain above resources and bottom.");
+            Assert.False(SamePixels(frame,ComposeRasters(fixtureSize.Width,fixtureSize.Height,top.Current,bottom.Current,resource.Current,buff.Current)),"Main dialogue must remain above resources and bottom.");
             Assert.Equal(4u,world.ReadHudRaster().VisibleLayers);Assert.False(main.Visible);
             Assert.All(runtime.PresentationSurfaces,p=>Assert.False(p.Visible));Assert.Equal(0,observed.Count);Assert.Equal(0,resources.Counters.CommitCount);
             var captured=Grab(world,false);Assert.True(Pixel(captured,50,50,140,80,30));
-            string directory=Path.Combine(root,"tmp","hud-main-unit");Directory.CreateDirectory(directory);
-            File.WriteAllText(Path.Combine(directory,"rasters.json"),JsonConvert.SerializeObject(new {
-                candidate=Environment.GetEnvironmentVariable("CF7_TEST_SHARED_WORLD_CANDIDATE"),width=1024,height=576,layers,
+            string directory=Environment.GetEnvironmentVariable("CF7_HUD_PIXEL_REPORT_DIRECTORY")
+                ?? Path.Combine(root,"tmp","hud-main-unit");Directory.CreateDirectory(directory);
+            File.WriteAllText(Path.Combine(directory,fixtureSize.Width==1024?"rasters.json":$"rasters-{fixtureSize.Width}x{fixtureSize.Height}.json"),JsonConvert.SerializeObject(new {
+                candidate=Environment.GetEnvironmentVariable("CF7_TEST_SHARED_WORLD_CANDIDATE"),width=fixtureSize.Width,height=fixtureSize.Height,layers,
                 registeredWidgets=widgets.Select(w=>w.GetType().Name),frozenAnimation=true},Formatting.Indented));
+
+            // Compare actual partial painter bytes with a forced full repaint of
+            // the exact same state, before testing the complete native output.
+            var render=(Action)Delegate.CreateDelegate(typeof(Action),main,typeof(NativeHudOverlay)
+                .GetMethod("RenderToBitmapAndCommit",BindingFlags.Instance|BindingFlags.NonPublic));
+            int reducedFrames=0;
+            void CheckDamage(string label)
+            {
+                render();FreezeHudTimers(main);
+                Raster partial=top.Current;
+                if(main.LastPaintedWidgetCount<widgets.Count(w=>w.Visible))reducedFrames++;
+                main.PartialRepaintEnabled=false;render();FreezeHudTimers(main);
+                Assert.Equal((partial.Width,partial.Height,partial.X,partial.Y),
+                    (top.Current.Width,top.Current.Height,top.Current.X,top.Current.Y));
+                Assert.True(partial.Pixels.SequenceEqual(top.Current.Pixels),"partial/full pixels differ: "+label);
+                main.PartialRepaintEnabled=true;render();FreezeHudTimers(main);
+            }
+            for(int step=0;step<18;step++)
+            {
+                combo.Tick(33);loot.Tick(33);toast.Tick(33);
+                if(step%3==0)notch.Tick(33);
+                CheckDamage("animated main "+step);
+            }
+            Assert.True(reducedFrames>0,"The pixel oracle must exercise actual partial frames.");
+            Assert.True(tooltip.Show(JObject.Parse(@"{'version':1,'kind':'tooltip','op':'show','requestId':'damage-tip',
+                'sceneId':'fixture-scene','owner':'fixture','revision':1,'x':550,'y':190,
+                'document':{'version':1,'title':'裁剪与重叠','profile':'pinned','sections':[
+                    {'role':'intro','runs':[{'text':'半透明提示与已有 HUD 重叠'}]},
+                    {'role':'description','runs':[{'text':'保持完整像素和原有交互范围。'}]}]}}")));
+            CheckDamage("tooltip appears");
+            guidance.Show("damage-guide","fixture-scene",1,"combat",.7f,new Dictionary<string,string>());
+            CheckDamage("scene guidance appears");
+            for(int step=0;step<6;step++) {combo.Tick(33);notch.Tick(33);CheckDamage("overlapping widgets "+step);}
+            foreach(var widget in widgets.Where(w=>w.Visible))VerifyPainterKeepsCallerClip(widget,output);
+            tooltip.Hide("damage-tip");CheckDamage("tooltip disappears");
+            var current=ComposeRasters(fixtureSize.Width,fixtureSize.Height,bottom.Current,resource.Current,buff.Current,top.Current);
+            PixelsUntil(world,scene,p=>SamePixels(p,current),"partial main HUD native composition");FreezeHudTimers(main);
 
             // A failed lower member cannot leave main HUD underneath legacy HWNDs.
             coordinator.ResourcePresentation.Adopt(null,Rectangle.Empty,false);
@@ -100,7 +140,42 @@ public sealed partial class OpaqueHudGpuTests
             Console.WriteLine(JsonConvert.SerializeObject(new {phase="complete_main_hud",registeredWidgets=widgets.Length,visibleNativeLayers=4,
                 allLegacyDisplaysHidden=true,exactRgbTolerance=2,sourceFeedback=false,physicalInputVerified=false,gameplayExecuted=false}));
             resources.BeginShutdown().GetAwaiter().GetResult();
-        },new Size(1024,576));
+        },fixtureSize);
+    }
+    private static void VerifyPainterKeepsCallerClip(INativeHudWidget widget,Form output)
+    {
+        var origin=output.PointToScreen(Point.Empty);var bounds=widget.ScreenBounds;
+        bounds.Offset(-origin.X,-origin.Y);bounds.Intersect(output.ClientRectangle);
+        if(bounds.Width<4 || bounds.Height<4)return;
+        var clip=Rectangle.FromLTRB(bounds.Left+bounds.Width/3,bounds.Top+bounds.Height/3,bounds.Right,bounds.Bottom);
+        byte[] Paint(bool clipped)
+        {
+            using var bitmap=new Bitmap(output.ClientSize.Width,output.ClientSize.Height,System.Drawing.Imaging.PixelFormat.Format32bppPArgb);
+            using(var graphics=Graphics.FromImage(bitmap))
+            {
+                graphics.Clear(Color.Transparent);
+                graphics.SmoothingMode=System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
+                graphics.TextRenderingHint=System.Drawing.Text.TextRenderingHint.ClearTypeGridFit;
+                if(clipped)graphics.SetClip(clip);
+                widget.Paint(graphics,1,origin);
+            }
+            var pixels=bitmap.LockBits(new Rectangle(Point.Empty,bitmap.Size),System.Drawing.Imaging.ImageLockMode.ReadOnly,
+                System.Drawing.Imaging.PixelFormat.Format32bppPArgb);
+            try
+            {
+                var result=new byte[bitmap.Width*bitmap.Height*4];
+                for(int y=0;y<bitmap.Height;y++)System.Runtime.InteropServices.Marshal.Copy(pixels.Scan0+y*pixels.Stride,result,y*bitmap.Width*4,bitmap.Width*4);
+                return result;
+            }
+            finally{bitmap.UnlockBits(pixels);}
+        }
+        byte[] full=Paint(false),partial=Paint(true);
+        for(int y=0;y<output.ClientSize.Height;y++)for(int x=0;x<output.ClientSize.Width;x++)
+        {
+            int p=(y*output.ClientSize.Width+x)*4;
+            if(!clip.Contains(x,y))for(int c=0;c<4;c++)full[p+c]=0;
+        }
+        Assert.True(full.SequenceEqual(partial),widget.GetType().Name+" changed caller clip pixels at "+output.ClientSize);
     }
     private static void FreezeHudTimers(NativeHudOverlay hud)
     {

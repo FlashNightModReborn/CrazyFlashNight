@@ -87,7 +87,9 @@ powershell -NoProfile -ExecutionPolicy Bypass -File launcher/perf/flash-composit
 
 ## 共享数字层与呈现诊断
 
-2026-10-08 工作区增量将世界和非交互伤害数字接入同一 HWND 的 DirectComposition 树。数字仍按实际范围绘制和上传，沿用量化增长缓存；旧数字窗口在共享路径可用时不显示。Native HUD、PlayerInfo、光标和大多数 Web 面板尚未迁移，多个 visual 也不等于单一交换链或绕过 DWM/MPO。实施边界、诊断与待办见[启动与统一呈现优化](../../../docs/startup-input-presentation-optimization.md)。
+当前世界、伤害数字、PlayerInfo 资源/底栏/Buff 和完整主 HUD 已接入共享呈现，HUD 槽保留原层序与成组回退。光标和多数 Web 面板仍有独立呈现归属，共享输出不等于绕过 DWM/MPO。实施与部署边界见[启动与统一呈现优化](../../../docs/startup-input-presentation-optimization.md)。
+
+2026-10-10 共享主 HUD 脏区域重绘和 Native 有界像素缓冲复用已形成隔离候选；成本分解、测量入口、候选哈希与 GPU/CPU 证据边界见[专项记录](../../../docs/shared-hud-render-cost-2026-10-10.md)。现有 `CF7_PLAYER_HUD_PROFILE=1` 可记录主 HUD 绘制/提交及异步 Native GPU 区间，默认关闭。它不测 DWM、物理扫描或真实战斗 FPS。
 
 只在已构建且完成清单核验的隔离候选上运行共享像素夹具，不启动真实游戏或注入物理输入：
 

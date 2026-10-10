@@ -452,7 +452,7 @@ namespace CF7Launcher.Guardian.Hud
             GraphicsState state = g.Save();
             try
             {
-                g.SetClip(body);
+                g.SetClip(body, CombineMode.Intersect);
                 bool paintedVisuals = PaintVisuals(g, outline, currentId, theme, vp, originX, originY, s, scale);
                 if (!paintedVisuals)
                     PaintFallbackBlocks(g, outline, currentId, theme, vp, originX, originY, s, minBlockPx);

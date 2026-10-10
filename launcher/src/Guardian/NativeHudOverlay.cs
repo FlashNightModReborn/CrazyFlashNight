@@ -78,6 +78,20 @@ namespace CF7Launcher.Guardian
         private Bitmap _composedBitmap;
         private int _composedW;
         private int _composedH;
+        private readonly List<Rectangle> _dirtyRectangles = new List<Rectangle>();
+        private bool _fullRepaint = true;
+        private bool _partialRepaintEnabled;
+
+        // Opt in only for the shared main HUD. Geometry/backend/lifecycle changes
+        // still rebuild the complete bitmap; the legacy presentation stays full.
+        [System.ComponentModel.DesignerSerializationVisibility(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
+        internal bool PartialRepaintEnabled
+        {
+            get { return _partialRepaintEnabled; }
+            set { _partialRepaintEnabled = value; InvalidateWholeBitmap(); }
+        }
+        internal int LastPaintedWidgetCount { get; private set; }
+        internal long LastPaintedPixels { get; private set; }
 
         private Timer _animTick;
         private Timer _renderCoalesceTimer;
@@ -292,10 +306,10 @@ namespace CF7Launcher.Guardian
             string source = GetWidgetCounterName(sender);
             if (this.IsHandleCreated && this.InvokeRequired)
             {
-                try { this.BeginInvoke(new Action(delegate { RequestRenderFromUi(source); })); } catch { }
+                try { this.BeginInvoke(new Action(delegate { RequestRenderFromUi(source, sender as INativeHudWidget); })); } catch { }
                 return;
             }
-            RequestRenderFromUi(source);
+            RequestRenderFromUi(source, sender as INativeHudWidget);
         }
 
         private void OnWidgetAnimationStateChanged(object sender, EventArgs e)
@@ -391,6 +405,7 @@ namespace CF7Launcher.Guardian
 
         private void RecomputeBounds()
         {
+            InvalidateWholeBitmap();
             ReconcileRightContextSlotOwner();
             if (FocusTrace.Enabled && _rightContextWidget != null)
                 FocusTrace.SetTarget(_rightContextWidget.ScreenBounds);
@@ -513,12 +528,20 @@ namespace CF7Launcher.Guardian
             INativeHudWidget[] snapshot;
             lock (_widgetsLock) { snapshot = _widgets.ToArray(); }
 
-            int painted = 0;
+            int painted = 0, visible = 0;
+            using var dirty = TakeDirtyRegion();
             if (FocusTrace.Enabled) _focusPaintGeneration++;
             using (Graphics g = Graphics.FromImage(_composedBitmap))
             {
                 g.CompositingMode = CompositingMode.SourceCopy;
-                g.Clear(Color.FromArgb(0, 0, 0, 0));
+                if (dirty == null) g.Clear(Color.FromArgb(0, 0, 0, 0));
+                else
+                {
+                    // Graphics.Clear ignores the clip. SourceCopy fill clears
+                    // only damaged pixels, including formerly translucent ones.
+                    g.SetClip(dirty, CombineMode.Intersect);
+                    g.FillRectangle(Brushes.Transparent, 0, 0, _composedW, _composedH);
+                }
                 g.CompositingMode = CompositingMode.SourceOver;
                 g.SmoothingMode = SmoothingMode.AntiAlias;
                 g.TextRenderingHint = System.Drawing.Text.TextRenderingHint.ClearTypeGridFit;
@@ -527,14 +550,19 @@ namespace CF7Launcher.Guardian
                 {
                     INativeHudWidget w = snapshot[i];
                     if (!w.Visible) continue;
+                    visible++;
+                    if (dirty != null && !dirty.IsVisible(LocalPaintBounds(w))) continue;
                     painted++;
                     CounterByWidget("nativeHud.paintSource", w);
+                    GraphicsState state = g.Save();
                     try { w.Paint(g, 1.0f, _hudOrigin); }
-                    catch (Exception ex) { LogManager.Log("[NativeHud] widget Paint throw: " + ex.Message); }
+                    catch (Exception ex) { InvalidateWholeBitmap(); LogManager.Log("[NativeHud] widget Paint throw: " + ex.Message); }
+                    finally { g.Restore(state); }
                 }
             }
+            LastPaintedWidgetCount = painted;
 
-            if(_sharedPresentation!=null && painted==0)
+            if(_sharedPresentation!=null && visible==0)
             {
                 DismissHudPresentation();
                 return;
@@ -554,10 +582,61 @@ namespace CF7Launcher.Guardian
                 PerfTrace.Counter("nativeHud.paintWidget", painted);
         }
 
-        private void RequestRenderFromUi(string source)
+        private void InvalidateWholeBitmap()
+        {
+            _fullRepaint = true;
+            _dirtyRectangles.Clear();
+        }
+
+        private Rectangle LocalPaintBounds(INativeHudWidget widget)
+        {
+            Rectangle bounds = widget is INativeHudCompositeBoundsProvider provider
+                ? provider.CompositeBounds : widget.ScreenBounds;
+            bounds.Inflate(_padding, _padding);
+            bounds.Offset(-_hudOrigin.X, -_hudOrigin.Y);
+            return Rectangle.Intersect(bounds, new Rectangle(0, 0, _composedW, _composedH));
+        }
+
+        private void InvalidateWidget(INativeHudWidget widget)
+        {
+            if (_fullRepaint) return;
+            bool member;
+            lock (_widgetsLock) { member = widget != null && _widgets.Contains(widget); }
+            if (!_partialRepaintEnabled || _sharedPresentation == null || !member || !widget.Visible)
+            { InvalidateWholeBitmap(); return; }
+            Rectangle bounds = LocalPaintBounds(widget);
+            if (bounds.Width < 1 || bounds.Height < 1 || _dirtyRectangles.Count >= 16)
+            { InvalidateWholeBitmap(); return; }
+            if (!_dirtyRectangles.Contains(bounds)) _dirtyRectangles.Add(bounds);
+        }
+
+        private Region TakeDirtyRegion()
+        {
+            Region dirty = null;
+            LastPaintedPixels = (long)_composedW * _composedH;
+            if (_partialRepaintEnabled && _sharedPresentation != null && !_fullRepaint && _dirtyRectangles.Count > 0)
+            {
+                dirty = new Region(Rectangle.Empty);
+                foreach (Rectangle rect in _dirtyRectangles) dirty.Union(rect);
+                if (RenderTimingObserver != null)
+                {
+                    LastPaintedPixels = 0;
+                    using var matrix = new Matrix();
+                    foreach (RectangleF rect in dirty.GetRegionScans(matrix))
+                        LastPaintedPixels += (long)(rect.Width * rect.Height);
+                }
+            }
+            // Consume before Paint: a painter may request the following frame.
+            _fullRepaint = false;
+            _dirtyRectangles.Clear();
+            return dirty;
+        }
+
+        private void RequestRenderFromUi(string source, INativeHudWidget widget)
         {
             if (!_ready || _suspendedForPanel) return;
             if (_composedBitmap == null) return;
+            InvalidateWidget(widget);
             if (!string.IsNullOrEmpty(source))
                 PerfTrace.Counter("nativeHud.renderQueued." + source);
 
