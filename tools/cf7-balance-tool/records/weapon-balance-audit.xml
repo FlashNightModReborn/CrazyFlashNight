@@ -109,8 +109,8 @@
       <weightLayers>1</weightLayers>
       <category>2</category>
       <formula>1</formula>
-      <status>unresolved</status>
-      <displayEligible>false</displayEligible>
+      <status>confirmed</status>
+      <displayEligible>true</displayEligible>
       <inputDigest>fnv1a32:eaf370b0</inputDigest>
       <sourceDigest>sha256:7b60b4c65a0e25ab67152226e9182b8a402a5959c396537071252bc6769d3907</sourceDigest>
       <budgetBreakdown>
@@ -155,7 +155,7 @@
         <ref>
           <id>WBR-CAT-002</id>
           <target>input.category</target>
-          <evidenceRef>UNRESOLVED: data/items/武器_手枪_大威力手枪.xml#item=韦森686改装版/balance/category=2；缺少 WBR-CAT-002 要求的权威工作簿品类示例或策划裁定。</evidenceRef>
+          <evidenceRef>0.说明文件与教程/武器-技能数值-价格-合成表填写的参考公式（修改后请勿上传git）.xlsx#装备价格!D13;穿刺类=2（QJZ171 注册先例）；枪械!B11/C11 具名示例=示例韦森改装</evidenceRef>
         </ref>
         <ref>
           <id>WBR-AUTH-001</id>
@@ -188,12 +188,11 @@
           <evidenceRef>data/items/武器_手枪_大威力手枪.xml#item=韦森686改装版;data_variants=absent;lifecycle=absent</evidenceRef>
         </ref>
         <ref>
-          <id>WBR-TRIAGE-002</id>
+          <id>WBR-TRIAGE-001</id>
           <target>audit.status</target>
-          <evidenceRef>UNRESOLVED: category=2 缺少 WBR-CAT-002 要求的精确权威品类证据；不以“示例韦森改装”的近名类比替代裁定。</evidenceRef>
+          <evidenceRef>docs/武器数值台账-未决裁定与先例适用-2026-10-10.md#一（category=2 由穿刺类=2 注册先例覆盖，非近名示例类比；获取=武器合成）</evidenceRef>
         </ref>
       </ruleRefs>
-      <note>category=2 缺少精确权威品类证据；不接受近名示例类比。</note>
     </record>
     <record>
       <auditRef>weapon:蝎式冲锋枪弹鼓版:data</auditRef>
@@ -308,7 +307,7 @@
           <code>acquisition.unverified</code>
           <delta>0</delta>
           <ruleRef>WBR-WL-003</ruleRef>
-          <evidenceRef>UNRESOLVED: data/shops/npcs/、data/kshop/、data/crafting/ 的现役索引未找到玄鸦弩；旧 rationale 的“商店货”缺精确路径。</evidenceRef>
+          <evidenceRef>UNRESOLVED: shops/kshop/crafting/quests 全扫描无获取路径；物品自述“占位待完善”，属未投放占位物品；wl0 残差 +1.94% 带内自洽。</evidenceRef>
         </entry>
       </budgetBreakdown>
       <ruleRefs>
@@ -320,7 +319,7 @@
         <ref>
           <id>WBR-PIERCE-001</id>
           <target>input.pierce</target>
-          <evidenceRef>UNRESOLVED: data/items/bullets_cases.xml 未发现普通弩箭条目；候选仅见 data/items/武器_长枪_弓弩.xml#item=玄鸦弩/data/bullet=普通弩箭。</evidenceRef>
+          <evidenceRef>data/items/asset_source_map.xml#asset=普通弩箭→原版素材库-子弹.swf；flashswf/arts/原版素材库-子弹/LIBRARY/子弹-普通与穿刺组/普通弩箭.xml 与普通子弹同构（stop+removeMovieClip、单帧 area、无击中地图存活门）→ 非穿透 pierce=1</evidenceRef>
         </ref>
         <ref>
           <id>WBR-DMG-001</id>
@@ -340,7 +339,7 @@
         <ref>
           <id>WBR-WL-003</id>
           <target>input.weightLayers</target>
-          <evidenceRef>UNRESOLVED: data/shops/npcs/、data/kshop/、data/crafting/ 的现役索引未找到玄鸦弩；旧 rationale 的“商店货”缺精确路径。</evidenceRef>
+          <evidenceRef>UNRESOLVED: shops/kshop/crafting/quests 全扫描无获取路径；物品自述“占位待完善”，属未投放占位物品；wl0 残差 +1.94% 带内自洽。</evidenceRef>
         </ref>
         <ref>
           <id>WBR-CAT-001</id>
@@ -380,10 +379,10 @@
         <ref>
           <id>WBR-TRIAGE-002</id>
           <target>audit.status</target>
-          <evidenceRef>UNRESOLVED: 旧 rationale 明确以 averageDPS≈balanceDPS 求解 power，且“商店货”未命中现役金币/K点/合成索引；是否按 weightedDPS 重标及获取层均需人类裁定。</evidenceRef>
+          <evidenceRef>UNRESOLVED: 现役无获取路径（占位未投放）→ wl0 与残差 +1.94% 自洽；接入获取链时重审层数，见裁定请求 R4。</evidenceRef>
         </ref>
       </ruleRefs>
-      <note>旧 power 以 balanceDPS 而非 weightedDPS 为目标，且现役玩家获取来源未找到。</note>
+      <note>占位物品无现役获取路径（shops/kshop/crafting/quests 全扫描空）；普通弩箭 pierce=1 已按 SWF XFL 结构补证；wl0 残差 +1.94% 带内；获取链接入后重审（裁定请求 R4）。</note>
     </record>
     <record>
       <auditRef>weapon:战术-QBZ-191:data</auditRef>
@@ -406,7 +405,7 @@
           <code>acquisition.high-price</code>
           <delta>1</delta>
           <ruleRef>WBR-WL-001</ruleRef>
-          <evidenceRef>UNRESOLVED: data/items/武器_长枪_突击步枪.xml#item=战术-QBZ-191/price=650000 只能证明现价，WBR-MAP-002 映射待裁定。</evidenceRef>
+          <evidenceRef>UNRESOLVED: 获取= Boy.json#catalog.21 金币限定唯一路径；现价 650000 与 pl=1×cat=2 推荐价 661440 比值 0.983 入带（WBR-PRICE-002）；仍缺独立 priceLayers=1 裁定（WBR-MAP-002），见裁定请求 R1。</evidenceRef>
         </entry>
       </budgetBreakdown>
       <ruleRefs>
@@ -438,12 +437,12 @@
         <ref>
           <id>WBR-WL-001</id>
           <target>input.weightLayers</target>
-          <evidenceRef>UNRESOLVED: data/items/武器_长枪_突击步枪.xml#item=战术-QBZ-191/price=650000 只能证明现价，WBR-MAP-002 映射待裁定。</evidenceRef>
+          <evidenceRef>UNRESOLVED: 获取= Boy.json#catalog.21 金币限定唯一路径；现价 650000 与 pl=1×cat=2 推荐价 661440 比值 0.983 入带（WBR-PRICE-002）；仍缺独立 priceLayers=1 裁定（WBR-MAP-002），见裁定请求 R1。</evidenceRef>
         </ref>
         <ref>
           <id>WBR-CAT-002</id>
           <target>input.category</target>
-          <evidenceRef>UNRESOLVED: data/items/武器_长枪_突击步枪.xml#item=战术-QBZ-191/balance/category=2；缺少 WBR-CAT-002 要求的权威工作簿品类示例或策划裁定。</evidenceRef>
+          <evidenceRef>0.说明文件与教程/武器-技能数值-价格-合成表填写的参考公式（修改后请勿上传git）.xlsx#装备价格!D13;穿刺类=2（QJZ171 注册先例）</evidenceRef>
         </ref>
         <ref>
           <id>WBR-AUTH-001</id>
@@ -473,15 +472,15 @@
         <ref>
           <id>WBR-TRIAGE-002</id>
           <target>audit.status</target>
-          <evidenceRef>UNRESOLVED: category=2 缺少 WBR-CAT-002 权威品类证据，weightLayers=1 又仅由现价反推；priceLayers 映射须按 WBR-MAP-002 由人类裁定。</evidenceRef>
+          <evidenceRef>UNRESOLVED: category=2 已由穿刺类=2 注册先例覆盖；仅剩 priceLayers=1 高价金币购买层待裁定（裁定请求 R1，佐证 priceRatio=0.983）。</evidenceRef>
         </ref>
         <ref>
           <id>WBR-MAP-002</id>
           <target>pricing.priceLayers</target>
-          <evidenceRef>UNRESOLVED: category=2 缺少 WBR-CAT-002 权威品类证据，weightLayers=1 又仅由现价反推；priceLayers 映射须按 WBR-MAP-002 由人类裁定。</evidenceRef>
+          <evidenceRef>UNRESOLVED: category=2 已由穿刺类=2 注册先例覆盖；仅剩 priceLayers=1 高价金币购买层待裁定（裁定请求 R1，佐证 priceRatio=0.983）。</evidenceRef>
         </ref>
       </ruleRefs>
-      <note>category=2 缺少权威证据，weightLayers=1 又仅由现价反推，层域映射待裁定。</note>
+      <note>仅剩 priceLayers=1 裁定请求 R1：Boy#21 金币限定唯一路径，现价 650000 与 pl=1/cat=2 推荐价 661440 比值 0.983 入带；签署即 confirmed。category=2 已由穿刺类=2 先例覆盖。</note>
     </record>
     <record>
       <auditRef>weapon:战术-QBZ-192:data</auditRef>
@@ -712,7 +711,7 @@
         <ref>
           <id>WBR-PIERCE-001</id>
           <target>input.pierce</target>
-          <evidenceRef>UNRESOLVED: data/items/bullets_cases.xml 未发现普通弩箭条目；候选仅见 data/items/武器_长枪_弓弩.xml#item=追风邀月弩/data/bullet=普通弩箭。</evidenceRef>
+          <evidenceRef>data/items/asset_source_map.xml#asset=普通弩箭→原版素材库-子弹.swf；flashswf/arts/原版素材库-子弹/LIBRARY/子弹-普通与穿刺组/普通弩箭.xml 与普通子弹同构（stop+removeMovieClip、单帧 area、无击中地图存活门）→ 非穿透 pierce=1</evidenceRef>
         </ref>
         <ref>
           <id>WBR-DMG-001</id>
@@ -772,15 +771,15 @@
         <ref>
           <id>WBR-TRIAGE-002</id>
           <target>audit.status</target>
-          <evidenceRef>UNRESOLVED: 旧 rationale 以 averageDPS≈balanceDPS 求解 power，并声称“K点高价合成”，但现役 K点与合成索引均未找到同名物品；高价层还缺 WBR-MAP-002 映射裁定。</evidenceRef>
+          <evidenceRef>UNRESOLVED: 物品自述“占位待完善（K点高价合成）”；K+高价+合成=3 层声明意图成立需获取链接入；wl3 残差 -24.67% 显示 power=3603 不足以支撑 3 层预算，接入时裁定提 power≈4.8k 或降层（裁定请求 R4）。</evidenceRef>
         </ref>
         <ref>
           <id>WBR-MAP-002</id>
           <target>pricing.priceLayers</target>
-          <evidenceRef>UNRESOLVED: 旧 rationale 以 averageDPS≈balanceDPS 求解 power，并声称“K点高价合成”，但现役 K点与合成索引均未找到同名物品；高价层还缺 WBR-MAP-002 映射裁定。</evidenceRef>
+          <evidenceRef>UNRESOLVED: 物品自述“占位待完善（K点高价合成）”；K+高价+合成=3 层声明意图成立需获取链接入；wl3 残差 -24.67% 显示 power=3603 不足以支撑 3 层预算，接入时裁定提 power≈4.8k 或降层（裁定请求 R4）。</evidenceRef>
         </ref>
       </ruleRefs>
-      <note>旧称 K 点/合成来源均未找到，高价层映射未裁定，当前残差超出 ±5%。</note>
+      <note>占位物品无现役获取路径；描述声明意图 K点1+高价1+合成1=3 层；wl3 残差 -24.67%（power=3603 撑不起 3 层，需提 power≈4.8k 或降层），裁定请求 R4。</note>
     </record>
     <record>
       <auditRef>weapon:追月连弩:data</auditRef>
@@ -1082,8 +1081,8 @@
       <weightLayers>0</weightLayers>
       <category>2</category>
       <formula>1</formula>
-      <status>unresolved</status>
-      <displayEligible>false</displayEligible>
+      <status>confirmed</status>
+      <displayEligible>true</displayEligible>
       <inputDigest>fnv1a32:2553a3ed</inputDigest>
       <sourceDigest>sha256:b33c713404bda53264b6025f6a4b010bf1ccf76cda9e34d59b1f3a0eeefcdeed</sourceDigest>
       <budgetBreakdown>
@@ -1128,7 +1127,7 @@
         <ref>
           <id>WBR-CAT-002</id>
           <target>input.category</target>
-          <evidenceRef>UNRESOLVED: data/items/武器_长枪_突击步枪.xml#item=AK74M/balance/category=2；缺少 WBR-CAT-002 要求的权威工作簿品类示例或策划裁定。</evidenceRef>
+          <evidenceRef>0.说明文件与教程/武器-技能数值-价格-合成表填写的参考公式（修改后请勿上传git）.xlsx#装备价格!D13;穿刺类=2（QJZ171 注册先例）</evidenceRef>
         </ref>
         <ref>
           <id>WBR-AUTH-001</id>
@@ -1156,12 +1155,11 @@
           <evidenceRef>data/items/武器_长枪_突击步枪.xml#item=AK74M;data_variants=absent;lifecycle=absent</evidenceRef>
         </ref>
         <ref>
-          <id>WBR-TRIAGE-002</id>
+          <id>WBR-TRIAGE-001</id>
           <target>audit.status</target>
-          <evidenceRef>UNRESOLVED: category=2 缺少 WBR-CAT-002 要求的权威品类示例或策划裁定。</evidenceRef>
+          <evidenceRef>docs/武器数值台账-未决裁定与先例适用-2026-10-10.md#一（category=2 由穿刺类=2 注册先例覆盖；获取=Boy#18 金币标准）</evidenceRef>
         </ref>
       </ruleRefs>
-      <note>category=2 缺少权威品类示例或策划裁定。</note>
     </record>
     <record>
       <auditRef>weapon:AKS74U:data</auditRef>
@@ -1957,7 +1955,7 @@
         <ref>
           <id>WBR-CAT-002</id>
           <target>input.category</target>
-          <evidenceRef>UNRESOLVED: data/items/武器_长枪_突击步枪.xml#item=MK17/balance/category=1.5；缺少 WBR-CAT-002 要求的权威工作簿品类示例或策划裁定。</evidenceRef>
+          <evidenceRef>UNRESOLVED: category=1.5 无注册品类映射；候选裁定=次级穿刺类=1.5（bullet=次级穿刺子弹 pierce=1.5 已实证；现价 87000 仅在 cat=1.5/pl=0 下自洽 0.991），裁定请求 R3。</evidenceRef>
         </ref>
         <ref>
           <id>WBR-AUTH-001</id>
@@ -1987,10 +1985,10 @@
         <ref>
           <id>WBR-TRIAGE-002</id>
           <target>audit.status</target>
-          <evidenceRef>UNRESOLVED: category=1.5 缺少 WBR-CAT-002 要求的权威品类示例或策划裁定。</evidenceRef>
+          <evidenceRef>UNRESOLVED: category=1.5 候选=次级穿刺类=1.5（对应穿刺类=2 先例）；价格一致性 0.991 佐证；裁定请求 R3。</evidenceRef>
         </ref>
       </ruleRefs>
-      <note>category=1.5 缺少权威品类示例或策划裁定。</note>
+      <note>category=1.5 待裁：候选=次级穿刺类=1.5（bullet=次级穿刺子弹；现价 87000≈15级 pl0/cat1.5 推荐价 87750，比值 0.991 仅 cat=1.5 自洽），裁定请求 R3。</note>
     </record>
     <record>
       <auditRef>weapon:Mp5 pdw:data</auditRef>
@@ -2234,7 +2232,7 @@
         <ref>
           <id>WBR-CAT-002</id>
           <target>input.category</target>
-          <evidenceRef>UNRESOLVED: data/items/武器_手枪_冲锋枪.xml#item=OPDW17/balance/category=1.5；缺少 WBR-CAT-002 要求的权威工作簿品类示例或策划裁定。</evidenceRef>
+          <evidenceRef>UNRESOLVED: category=1.5 无注册品类映射；候选裁定=次级穿刺类=1.5（bullet=次级穿刺子弹 pierce=1.5 已实证；现价 96000 仅在 cat=1.5/pl=0 下自洽 0.985），裁定请求 R3。</evidenceRef>
         </ref>
         <ref>
           <id>WBR-AUTH-001</id>
@@ -2264,10 +2262,10 @@
         <ref>
           <id>WBR-TRIAGE-002</id>
           <target>audit.status</target>
-          <evidenceRef>UNRESOLVED: category=1.5 缺少 WBR-CAT-002 要求的权威品类示例或策划裁定。</evidenceRef>
+          <evidenceRef>UNRESOLVED: category=1.5 候选=次级穿刺类=1.5（对应穿刺类=2 先例）；价格一致性 0.985 佐证；裁定请求 R3。</evidenceRef>
         </ref>
       </ruleRefs>
-      <note>category=1.5 缺少权威品类示例或策划裁定。</note>
+      <note>category=1.5 待裁：候选=次级穿刺类=1.5（bullet=次级穿刺子弹；现价 96000≈25级 pl0/cat1.5/1.5双枪 推荐价 97500，比值 0.985 仅 cat=1.5 自洽），裁定请求 R3。</note>
     </record>
     <record>
       <auditRef>weapon:P90:data</auditRef>
@@ -2649,8 +2647,8 @@
       <weightLayers>0</weightLayers>
       <category>2</category>
       <formula>1</formula>
-      <status>unresolved</status>
-      <displayEligible>false</displayEligible>
+      <status>confirmed</status>
+      <displayEligible>true</displayEligible>
       <inputDigest>fnv1a32:d1d3bce0</inputDigest>
       <sourceDigest>sha256:a17a34fcf7dc55c9cb081030e8b755f9ff0fa087c70f9864d7862d9aae0dc474</sourceDigest>
       <budgetBreakdown>
@@ -2695,7 +2693,7 @@
         <ref>
           <id>WBR-CAT-002</id>
           <target>input.category</target>
-          <evidenceRef>UNRESOLVED: data/items/武器_长枪_突击步枪.xml#item=QBZ-191/balance/category=2；缺少 WBR-CAT-002 要求的权威工作簿品类示例或策划裁定。</evidenceRef>
+          <evidenceRef>0.说明文件与教程/武器-技能数值-价格-合成表填写的参考公式（修改后请勿上传git）.xlsx#装备价格!D13;穿刺类=2（QJZ171 注册先例）</evidenceRef>
         </ref>
         <ref>
           <id>WBR-AUTH-001</id>
@@ -2723,12 +2721,11 @@
           <evidenceRef>data/items/武器_长枪_突击步枪.xml#item=QBZ-191;data_variants=absent;lifecycle=absent</evidenceRef>
         </ref>
         <ref>
-          <id>WBR-TRIAGE-002</id>
+          <id>WBR-TRIAGE-001</id>
           <target>audit.status</target>
-          <evidenceRef>UNRESOLVED: category=2 缺少 WBR-CAT-002 要求的权威品类示例或策划裁定。</evidenceRef>
+          <evidenceRef>docs/武器数值台账-未决裁定与先例适用-2026-10-10.md#一（category=2 由穿刺类=2 注册先例覆盖；获取=Boy#14 金币标准）</evidenceRef>
         </ref>
       </ruleRefs>
-      <note>category=2 缺少权威品类示例或策划裁定。</note>
     </record>
     <record>
       <auditRef>weapon:QBZ-192:data</auditRef>
@@ -3211,7 +3208,7 @@
           <code>acquisition.high-price</code>
           <delta>1</delta>
           <ruleRef>WBR-WL-001</ruleRef>
-          <evidenceRef>UNRESOLVED: data/items/武器_手枪_冲锋枪.xml#item=vactorPP-7400U长枪托/price=83000 只能证明现价，不能证明 WBR-MAP-002 的 priceLayers 映射。</evidenceRef>
+          <evidenceRef>UNRESOLVED: 获取= King.json#catalog.49 金币限定唯一路径；现价 83000 与 pl=1×cat=1÷1.5双枪 推荐价 83200 比值 0.998 入带（WBR-PRICE-002）；仍缺独立 priceLayers=1 裁定（WBR-MAP-002），见裁定请求 R2。</evidenceRef>
         </entry>
       </budgetBreakdown>
       <ruleRefs>
@@ -3243,7 +3240,7 @@
         <ref>
           <id>WBR-WL-001</id>
           <target>input.weightLayers</target>
-          <evidenceRef>UNRESOLVED: data/items/武器_手枪_冲锋枪.xml#item=vactorPP-7400U长枪托/price=83000 只能证明现价，不能证明 WBR-MAP-002 的 priceLayers 映射。</evidenceRef>
+          <evidenceRef>UNRESOLVED: 获取= King.json#catalog.49 金币限定唯一路径；现价 83000 与 pl=1×cat=1÷1.5双枪 推荐价 83200 比值 0.998 入带（WBR-PRICE-002）；仍缺独立 priceLayers=1 裁定（WBR-MAP-002），见裁定请求 R2。</evidenceRef>
         </ref>
         <ref>
           <id>WBR-CAT-001</id>
@@ -3278,15 +3275,15 @@
         <ref>
           <id>WBR-TRIAGE-002</id>
           <target>audit.status</target>
-          <evidenceRef>UNRESOLVED: weightLayers=1 的旧解释只由 price=83000 反推；WBR-MAP-002 所需的独立 priceLayers 映射或策划裁定缺失。</evidenceRef>
+          <evidenceRef>UNRESOLVED: weightLayers=1 在 DPS 域自洽（残差 -1.49% 带内；wl0 则 +10.45% 出带）；King#49 金币限定购买形态满足 WL-001 高价层前提；仍缺独立 priceLayers=1 裁定（裁定请求 R2）。</evidenceRef>
         </ref>
         <ref>
           <id>WBR-MAP-002</id>
           <target>pricing.priceLayers</target>
-          <evidenceRef>UNRESOLVED: weightLayers=1 的旧解释只由 price=83000 反推；WBR-MAP-002 所需的独立 priceLayers 映射或策划裁定缺失。</evidenceRef>
+          <evidenceRef>UNRESOLVED: weightLayers=1 在 DPS 域自洽（残差 -1.49% 带内；wl0 则 +10.45% 出带）；King#49 金币限定购买形态满足 WL-001 高价层前提；仍缺独立 priceLayers=1 裁定（裁定请求 R2）。</evidenceRef>
         </ref>
       </ruleRefs>
-      <note>weightLayers=1 仅由现价反推，缺少独立 priceLayers 映射或策划裁定。</note>
+      <note>仅剩 priceLayers=1 裁定请求 R2：King#49 金币限定唯一路径，现价 83000 与 pl=1 推荐价 83200 比值 0.998 入带；签署即 confirmed。</note>
     </record>
     <record>
       <auditRef>weapon:WaltherP99:data</auditRef>
