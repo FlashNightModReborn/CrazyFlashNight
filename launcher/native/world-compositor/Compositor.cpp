@@ -142,6 +142,34 @@ struct HudRasterFrame {
 // Fixed slots: damage, resources, bottom, buffs. Keep raster/cache ownership split;
 // only the final backbuffer is shared. No additional HWND or readback is created.
 constexpr size_t HudRasterLayerCount=5;
+// Capture::mutex_ protects this cache. A buffer can be borrowed only when the
+// cache is its sole owner: published frames and worker snapshots stay immutable.
+// Busy/oversized submissions allocate normally; the cache never waits or drops.
+class HudPixelCache {
+public:
+    static constexpr size_t Limit=32u*1024u*1024u;
+    std::shared_ptr<std::vector<uint8_t>> Take(size_t layer,size_t bytes) {
+        for(auto& entry:layers_[layer]) {
+            if(!entry || entry.use_count()!=1)continue;
+            if(entry->size()==bytes)return entry;
+            retained_-=entry->size();entry.reset();
+        }
+        return nullptr;
+    }
+    void Keep(size_t layer,const std::shared_ptr<std::vector<uint8_t>>& pixels) {
+        if(pixels->size()>Limit-retained_)return;
+        for(auto& entry:layers_[layer])if(!entry) {
+            entry=pixels;retained_+=pixels->size();return;
+        }
+    }
+    void Clear(size_t layer) {
+        for(auto& entry:layers_[layer])if(entry) {retained_-=entry->size();entry.reset();}
+    }
+    size_t Bytes() const {return retained_;}
+private:
+    std::array<std::array<std::shared_ptr<std::vector<uint8_t>>,3>,HudRasterLayerCount> layers_{};
+    size_t retained_=0;
+};
 class HudRasterGpu {
 public:
     void Draw(ID3D11Device* device,ID3D11DeviceContext* context,
@@ -204,6 +232,70 @@ private:
     com_ptr<ID3D11Buffer> parameters;com_ptr<ID3D11BlendState> blending;
 };
 
+// Opt-in worker-only GPU intervals. Query polling never flushes or waits for
+// GPU completion. A full ring drops a measurement, never a rendering frame.
+class HudCostSampler {
+public:
+    bool Started() const {return initialized_;}
+    template<class Report>
+    void Poll(ID3D11DeviceContext* context,Report report) {
+        for(auto& slot:slots_) {
+            if(!slot.pending)continue;
+            D3D11_QUERY_DATA_TIMESTAMP_DISJOINT clock{};
+            HRESULT status=context->GetData(slot.disjoint.get(),&clock,sizeof(clock),D3D11_ASYNC_GETDATA_DONOTFLUSH);
+            if(status==S_FALSE)continue;
+            if(FAILED(status)) {slot.pending=false;report(slot.epoch,2,0.,0.);continue;}
+            if(clock.Disjoint || clock.Frequency==0) {slot.pending=false;report(slot.epoch,1,0.,0.);continue;}
+            uint64_t stamps[3]{};bool complete=true;
+            for(size_t i=0;i<3;i++) {
+                status=context->GetData(slot.stamps[i].get(),&stamps[i],sizeof(uint64_t),D3D11_ASYNC_GETDATA_DONOTFLUSH);
+                if(status==S_FALSE) {complete=false;break;}
+                if(FAILED(status)) {slot.pending=false;report(slot.epoch,2,0.,0.);complete=false;break;}
+            }
+            if(!complete)continue;
+            slot.pending=false;
+            if(stamps[0]>stamps[1] || stamps[1]>stamps[2]) {report(slot.epoch,2,0.,0.);continue;}
+            double scale=1000./static_cast<double>(clock.Frequency);
+            report(slot.epoch,0,static_cast<double>(stamps[1]-stamps[0])*scale,
+                static_cast<double>(stamps[2]-stamps[1])*scale);
+        }
+    }
+    template<class Report>
+    bool Begin(ID3D11Device* device,ID3D11DeviceContext* context,uint64_t epoch,Report report) {
+        if(failed_) {report(epoch,2,0.,0.);return false;}
+        if(!initialized_) {
+            for(auto& slot:slots_) {
+                D3D11_QUERY_DESC description{D3D11_QUERY_TIMESTAMP_DISJOINT,0};
+                if(FAILED(device->CreateQuery(&description,slot.disjoint.put()))) {failed_=true;report(epoch,2,0.,0.);return false;}
+                description.Query=D3D11_QUERY_TIMESTAMP;
+                for(auto& stamp:slot.stamps)
+                    if(FAILED(device->CreateQuery(&description,stamp.put()))) {failed_=true;report(epoch,2,0.,0.);return false;}
+            }
+            initialized_=true;
+        }
+        for(size_t i=0;i<slots_.size();i++) {
+            size_t index=(next_+i)%slots_.size();auto& slot=slots_[index];
+            if(slot.pending)continue;
+            current_=index;next_=(index+1)%slots_.size();slot.epoch=epoch;
+            context->Begin(slot.disjoint.get());context->End(slot.stamps[0].get());return true;
+        }
+        report(epoch,3,0.,0.);return false;
+    }
+    void WorldComplete(ID3D11DeviceContext* context) {context->End(slots_[current_].stamps[1].get());}
+    void Finish(ID3D11DeviceContext* context) {
+        auto& slot=slots_[current_];context->End(slot.stamps[2].get());context->End(slot.disjoint.get());slot.pending=true;
+    }
+private:
+    struct Slot {
+        winrt::com_ptr<ID3D11Query> disjoint;
+        std::array<winrt::com_ptr<ID3D11Query>,3> stamps;
+        uint64_t epoch=0;bool pending=false;
+    };
+    std::array<Slot,8> slots_;
+    size_t current_=0,next_=0;
+    bool initialized_=false,failed_=false;
+};
+
 class Capture {
 public:
     Capture(HWND source, DWORD pid, HWND output, uint32_t vendor, int fps = 0, bool borderless = false, IUnknown* target = nullptr)
@@ -258,19 +350,73 @@ public:
     void RequestContentProof() { contentRequested_=true; proofRequested_=true; }
     void ContentStats(ProbeContentStats& result) { std::lock_guard guard(mutex_); result=contentStats_; }
     void WorkStats(ProbeWorkStats& result) { std::lock_guard guard(mutex_); result=workStats_; }
+    void HudCostSampling(bool enabled) {
+        {
+            std::lock_guard guard(mutex_);
+            if(enabled) {
+                ++hudCostEpoch_;hudCostStats_=ProbeHudCostStats{sizeof(ProbeHudCostStats)};
+                hudCostNext_=0;
+            }
+            hudCostSampling_=enabled;hudCostStats_.enabled=enabled?1u:0u;
+        }
+        Signal();
+    }
+    void HudCostStats(ProbeHudCostStats& result) {
+        std::array<double,256> world{},hud{};
+        {
+            std::lock_guard guard(mutex_);result=hudCostStats_;result.cachedBytes=hudPixelCache_.Bytes();
+            for(size_t i=0;i<result.retained;i++) {world[i]=hudCostValues_[i][0];hud[i]=hudCostValues_[i][1];}
+        }
+        if(result.retained) {
+            std::sort(world.begin(),world.begin()+result.retained);std::sort(hud.begin(),hud.begin()+result.retained);
+            auto index=[&](double percentile) {return static_cast<size_t>(std::ceil((result.retained-1)*percentile));};
+            result.worldP50Ms=world[index(.5)];result.worldP95Ms=world[index(.95)];result.worldP99Ms=world[index(.99)];
+            result.hudP50Ms=hud[index(.5)];result.hudP95Ms=hud[index(.95)];result.hudP99Ms=hud[index(.99)];
+        }
+        Signal(); // Wake an idle worker to retire available queries without a GPU flush.
+    }
+    void RecordHudGpuCost(uint64_t epoch,unsigned status,double world,double hud) {
+        std::lock_guard guard(mutex_);
+        if(epoch!=hudCostEpoch_)return;
+        if(status==1) {++hudCostStats_.disjoint;return;}
+        if(status==2) {++hudCostStats_.errors;return;}
+        if(status==3) {++hudCostStats_.dropped;return;}
+        ++hudCostStats_.completed;hudCostStats_.worldMsTotal+=world;hudCostStats_.hudMsTotal+=hud;
+        hudCostValues_[hudCostNext_]={world,hud};hudCostNext_=(hudCostNext_+1)%hudCostValues_.size();
+        hudCostStats_.retained=std::min(256u,hudCostStats_.retained+1);
+    }
     bool HudRaster(int layer,const void* pixels,int width,int height,int stride,int x,int y) {
         if(layer<0 || layer>=static_cast<int>(HudRasterLayerCount) || stop_)return false;
         HudRasterFrame frame;
+        bool measure=hudCostSampling_.load();uint64_t costEpoch=measure?hudCostEpoch_.load():0;
+        double allocated=0,copied=0;bool reused=false;
         if(pixels) {
             if(width<1 || height<1 || width>4096 || height>4096 || stride<width*4 || stride>16384
                 || stride%4!=0 || x<0 || y<0 || x>16384 || y>16384)return false;
             frame.width=width;frame.height=height;frame.x=x;frame.y=y;
-            frame.pixels=std::make_shared<std::vector<uint8_t>>(static_cast<size_t>(width)*height*4);
+            double start=measure?QpcMs():0;
+            const size_t bytes=static_cast<size_t>(width)*height*4;
+            {std::lock_guard guard(mutex_);frame.pixels=hudPixelCache_.Take(layer,bytes);}
+            reused=static_cast<bool>(frame.pixels);
+            if(!frame.pixels) {
+                frame.pixels=std::make_shared<std::vector<uint8_t>>(bytes);
+                std::lock_guard guard(mutex_);hudPixelCache_.Keep(layer,frame.pixels);
+            }
+            double copyStart=measure?QpcMs():0;
             for(int row=0;row<height;++row)std::memcpy(frame.pixels->data()+static_cast<size_t>(row)*width*4,
                 static_cast<const uint8_t*>(pixels)+static_cast<size_t>(row)*stride,static_cast<size_t>(width)*4);
+            if(measure) {allocated=copyStart-start;copied=QpcMs()-copyStart;}
         } else if(width || height || stride || x || y)return false;
         { std::lock_guard guard(mutex_);frame.version=++hudVersion_;hudFrames_[layer]=frame;
-            ++hudStats_.accepted;if(frame.pixels)hudStats_.copiedBytes+=frame.pixels->size(); }
+            if(!frame.pixels)hudPixelCache_.Clear(layer);
+            ++hudStats_.accepted;if(frame.pixels) {
+                hudStats_.copiedBytes+=frame.pixels->size();
+                if(measure && costEpoch==hudCostEpoch_) {
+                    ++hudCostStats_.copySamples;hudCostStats_.copyBytes+=frame.pixels->size();
+                    hudCostStats_.allocationCpuMs+=allocated;hudCostStats_.copyCpuMs+=copied;
+                    if(reused)++hudCostStats_.poolReuses;else ++hudCostStats_.poolAllocations;
+                }
+            } }
         Signal();return true;
     }
     void HudRasterStats(ProbeHudRasterStats& result) {std::lock_guard guard(mutex_);result=hudStats_;}
@@ -792,6 +938,8 @@ private:
         auto nextPresent = std::chrono::steady_clock::now();
         double previousTimingPresent=0;
         HudRasterGpu hudGpu;
+        HudCostSampler hudCostSampler;
+        auto recordHudGpuCost=[this](uint64_t epoch,unsigned status,double world,double hud) {RecordHudGpuCost(epoch,status,world,hud);};
         uint64_t appliedHudVersion=0;
         bool lightCacheValid=false,fxItemsDirty=true;
         int cachedLightCount=0;
@@ -799,6 +947,7 @@ private:
         float cachedLightParams[16]{},cachedLights[PointLightCap*16]{};
         State(1, S_OK, L"GPU display path; optional diagnostic readback");
         while (!stop_) {
+            if(hudCostSampler.Started())hudCostSampler.Poll(context.get(),recordHudGpuCost);
             if (!active_) {
                 previousTimingPresent=0;
                 lightCacheValid=false;
@@ -1057,6 +1206,14 @@ private:
                 check_hresult(device->CreateShaderResourceView(bulletTexture.get(),nullptr,bulletSrv.put()));
                 appliedBulletAtlas=bulletAtlasVersion;bulletAtlasReady_=appliedBulletAtlas;
             }
+            uint64_t measuredHudEpoch=0;bool measureHudGpu=false;
+            if(hudCostSampling_.load()) {
+                // Admit the sample before creating/issuing queries. Disabling
+                // diagnostics can then drain every already-admitted sample.
+                std::lock_guard guard(mutex_);
+                if(hudCostSampling_) {measuredHudEpoch=hudCostEpoch_;++hudCostStats_.started;measureHudGpu=true;}
+            }
+            if(measureHudGpu)measureHudGpu=hudCostSampler.Begin(device.get(),context.get(),measuredHudEpoch,recordHudGpuCost);
             float scale = std::min(static_cast<float>(w)/textureW, static_cast<float>(h)/textureH);
             D3D11_VIEWPORT viewport{(w-textureW*scale)/2, (h-textureH*scale)/2, textureW*scale, textureH*scale, 0, 1};
             bool proof = proofRequested_.exchange(false);
@@ -1265,7 +1422,9 @@ private:
             std::array<HudRasterFrame,HudRasterLayerCount> hudFrames;
             {std::lock_guard guard(mutex_);hudFrames=hudFrames_;appliedHudVersion=hudVersion_;}
             ProbeHudRasterStats hudDraw{sizeof(ProbeHudRasterStats)};
+            if(measureHudGpu)hudCostSampler.WorldComplete(context.get());
             if(!proof)hudGpu.Draw(device.get(),context.get(),hudFrames,w,h,hudDraw);
+            if(measureHudGpu)hudCostSampler.Finish(context.get());
             {std::lock_guard guard(mutex_);hudStats_.visibleLayers=hudDraw.visibleLayers;
                 hudStats_.uploads+=hudDraw.uploads;hudStats_.uploadedBytes+=hudDraw.uploadedBytes;hudStats_.draws+=hudDraw.draws;}
             double submit = QpcMs();
@@ -1463,8 +1622,14 @@ private:
     std::thread worker_; std::mutex mutex_; ProbeStats stats_{};
     ProbeWorkStats workStats_{sizeof(ProbeWorkStats)};
     std::array<HudRasterFrame,HudRasterLayerCount> hudFrames_;
+    HudPixelCache hudPixelCache_;
     uint64_t hudVersion_=0;
     ProbeHudRasterStats hudStats_{sizeof(ProbeHudRasterStats)};
+    std::atomic<bool> hudCostSampling_{false};
+    std::atomic<uint64_t> hudCostEpoch_{0};
+    ProbeHudCostStats hudCostStats_{sizeof(ProbeHudCostStats)};
+    std::array<std::array<double,2>,256> hudCostValues_{};
+    size_t hudCostNext_=0;
     struct TimingSample { double interval,submit,present,age,at; };
     std::array<TimingSample,256> timingSamples_{};
     size_t timingNext_=0,timingCount_=0;
@@ -1563,6 +1728,14 @@ int __cdecl ProbeSetHudRaster(void* handle,int layer,const void* pixels,int widt
 int __cdecl ProbeGetHudRasterStats(void* handle,ProbeHudRasterStats* stats) {
     if(!handle || !stats || stats->size!=sizeof(ProbeHudRasterStats))return 0;
     static_cast<Capture*>(handle)->HudRasterStats(*stats);return 1;
+}
+int __cdecl ProbeSetHudCostSampling(void* handle,int enabled) {
+    if(!handle || (enabled!=0 && enabled!=1))return 0;
+    static_cast<Capture*>(handle)->HudCostSampling(enabled!=0);return 1;
+}
+int __cdecl ProbeGetHudCostStats(void* handle,ProbeHudCostStats* stats) {
+    if(!handle || !stats || stats->size!=sizeof(ProbeHudCostStats))return 0;
+    static_cast<Capture*>(handle)->HudCostStats(*stats);return 1;
 }
 int __cdecl ProbeSetSceneLights(void* handle,const float* lights,int count,float response) {
     return handle && static_cast<Capture*>(handle)->SceneLights(lights,count,response)?1:0;

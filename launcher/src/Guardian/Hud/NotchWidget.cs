@@ -558,7 +558,8 @@ namespace CF7Launcher.Guardian.Hud
                                 g.DrawRectangle(border, 0, rowY, w - 1, scaledRowH - 1);
                         }
 
-                        g.SetClip(new Rectangle(textPadX, rowY, textInnerW, scaledRowH));
+                        GraphicsState rowClip = g.Save();
+                        g.SetClip(new Rectangle(textPadX, rowY, textInnerW, scaledRowH), CombineMode.Intersect);
 
                         SizeF textSize = g.MeasureString(row.Text, rowFont);
                         float textW = textSize.Width;
@@ -600,7 +601,7 @@ namespace CF7Launcher.Guardian.Hud
                             using (SolidBrush rb = new SolidBrush(rc))
                                 g.DrawString(row.Text, rowFont, rb, textX, textY);
                         }
-                        g.ResetClip();
+                        g.Restore(rowClip);
                     }
                 }
 
