@@ -39,7 +39,16 @@ function server(){return new Promise(resolve=>{const instance=http.createServer(
         if(CAPTURE_SETTLEMENT&&file==='harness.html'){
           fs.mkdirSync(CAPTURE_DIR,{recursive:true});
           await page.evaluate(()=>{const qa=document.getElementById('qa-output');if(qa)qa.style.display='none'});
+          await page.click('.item-grid-mode-toggle[aria-label="关卡结算布局"] [data-layout-mode="compact"]');
           await page.screenshot({path:path.join(CAPTURE_DIR,'web-settlement-report-compact-1024x576.png')});
+          await page.locator('[data-ally-count="14"] summary').scrollIntoViewIfNeeded();
+          await page.screenshot({path:path.join(CAPTURE_DIR,'web-settlement-ally-grouped-compact-1024x576.png')});
+          await page.keyboard.press('Tab');
+          await page.locator('[data-ally-count="14"] summary').focus();
+          await page.waitForFunction(()=>PanelTooltip.isVisible());
+          await page.screenshot({path:path.join(CAPTURE_DIR,'web-settlement-ally-grouped-note-1024x576.png')});
+          await page.locator('[data-ally-count="14"] summary').evaluate(node=>node.blur());
+          await page.evaluate(()=>{PanelTooltip.hide();document.querySelector('.loot-settlement-report-scroll').scrollTop=0;});
           await page.hover('[data-unit-id="enemy.2"] summary');
           await page.waitForFunction(()=>PanelTooltip.isVisible()&&PanelTooltip.getElement().textContent.includes('M4A1'));
           await page.screenshot({path:path.join(CAPTURE_DIR,'web-settlement-compact-record-note-1024x576.png')});

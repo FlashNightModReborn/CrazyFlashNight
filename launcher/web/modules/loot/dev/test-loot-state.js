@@ -1836,6 +1836,8 @@ function battleReport() { return {v:2,runId:'run.battle.1',stageName:'人形战�
     omittedIndividualKills:0,totalAllyDowns:0,totalAllyLosses:0,heroDowns:0,omittedAllies:0,allies:[]}; }
 function battleAlly(id,status,hero) {const unit=battleUnit(id);delete unit.individual;delete unit.count;
     return Object.assign(unit,{status,downs:1,isHero:!!hero});}
+function fixedBattleAlly(id,status) {return Object.assign(battleAlly(id,status||'dead'),{
+    key:'enemy.tank',displayName:'支援坦克',iconName:'支援坦克',doll:null,loadout:null});}
 test('v2 preserves same-name unit identities and deep frozen weapon summaries',()=>{
     const source=battleReport();source.kills[0].loadout.primary='旧枪';
     const result=LootView.normalizeSettlementReport(source);
@@ -1871,6 +1873,73 @@ test('old v1 reports keep their original shape and do not imply ally zero losses
     const result=LootView.normalizeSettlementReport(source);assert.ok(result);
     assert.strictEqual(result.v,1);assert.strictEqual(result.allies,undefined);
     source.v=2;assert.strictEqual(LootView.normalizeSettlementReport(source),null);
+});
+
+test('ally projection combines fourteen fixed units and preserves two identical humanoids',()=>{
+    const allies=Array.from({length:14},(_,i)=>fixedBattleAlly('tank.'+i));
+    allies.push(battleAlly('human.1','dead'),battleAlly('human.2','dead'));
+    const before=JSON.stringify(allies);
+    allies.forEach(Object.freeze);Object.freeze(allies);
+    const records=LootView.projectAllyRecords(allies);
+    assert.strictEqual(records.length,3);
+    assert.strictEqual(records[0].count,14);assert.strictEqual(records[0].downs,14);
+    assert.strictEqual(records[0].individual,false);
+    assert.strictEqual(records[1].individual,true);assert.strictEqual(records[2].individual,true);
+    assert.notStrictEqual(records[1].unitId,records[2].unitId);
+    assert.strictEqual(JSON.stringify(allies),before);
+});
+
+test('ally grouping separates final states and counts units independently of repeated downs',()=>{
+    const allies=[fixedBattleAlly('dead.1'),fixedBattleAlly('revived.1','revived'),
+        fixedBattleAlly('retreated.1','retreated'),fixedBattleAlly('dead.2')];
+    allies[0].downs=3;allies[3].downs=2;
+    const records=LootView.projectAllyRecords(allies);
+    assert.strictEqual(JSON.stringify(records.map(r=>[r.status,r.count,r.downs])),
+        JSON.stringify([['dead',2,5],['revived',1,1],['retreated',1,1]]));
+    assert.strictEqual(records[0].members[1].unitId,'dead.2');
+});
+
+test('hero and every available dressup signal keep separate ally identities',()=>{
+    const allies=[];
+    for (const signal of ['isHero','doll','loadout','key']) {
+        for (let i=0;i<2;i++) {
+            const unit=fixedBattleAlly(signal+'.'+i);
+            if (signal==='key') unit.key='主角-女';
+            else if (signal==='isHero') unit.isHero=true;
+            else unit[signal]=battleUnit('snapshot')[signal];
+            allies.push(unit);
+        }
+    }
+    const records=LootView.projectAllyRecords(allies);
+    assert.strictEqual(records.length,8);
+    assert.ok(records.every(r=>r.individual&&r.count===1));
+});
+
+test('different ally types portraits and elite marks cannot be combined',()=>{
+    const allies=Array.from({length:5},(_,i)=>fixedBattleAlly('fixed.'+i));
+    allies[1].key='enemy.other';allies[2].iconName='另一头像';allies[3].eliteLevel=1;
+    const records=LootView.projectAllyRecords(allies);
+    assert.strictEqual(records.length,4);assert.strictEqual(records[0].count,2);
+});
+
+test('fixed ally groups retain every original name level and down count for inspection',()=>{
+    const first=fixedBattleAlly('named.1'),second=fixedBattleAlly('named.2');
+    second.displayName='我的支援坦克';second.level=80;second.downs=3;
+    const record=LootView.projectAllyRecords([first,second])[0];
+    assert.strictEqual(record.count,2);assert.strictEqual(record.downs,4);
+    assert.strictEqual(record.members[0],first);assert.strictEqual(record.members[1],second);
+    assert.strictEqual(second.level,80);assert.strictEqual(second.downs,3);
+});
+
+test('display grouping does not count omitted ally records or rewrite frozen totals',()=>{
+    const source=battleReport();source.allies=Array.from({length:64},(_,i)=>fixedBattleAlly('tank.'+i));
+    source.totalAllyDowns=65;source.totalAllyLosses=65;source.omittedAllies=1;
+    const report=LootView.normalizeSettlementReport(source);assert.ok(report);
+    const before=JSON.stringify(report),records=LootView.projectAllyRecords(report.allies);
+    assert.strictEqual(records.length,1);assert.strictEqual(records[0].count,64);
+    assert.strictEqual(report.totalAllyLosses,65);assert.strictEqual(report.omittedAllies,1);
+    assert.strictEqual(JSON.stringify(report),before);
+    assert.strictEqual(LootView.projectAllyRecords([]).length,0);
 });
 
 console.log('loot state ' + checks.length + '/' + checks.length + ' passed');

@@ -1479,7 +1479,77 @@ function activeResponse(message){var response=common(message);response.snapshots
     Panels.forceClose();await delay();
     ok('battle record annotations release input owners and bindings on close',
       !PanelTooltip.isVisible()&&PanelTooltip.debugState().activeBindingCount===0&&PanelTooltip.debugState().bindingCount===0);
-    Panels.open('loot',battleInit);await waitFor(function(){return document.querySelectorAll('[data-settlement-allies] article').length===4});
+    var groupedInit=settlementInit('ally-grouped-v2');
+    groupedInit.report=JSON.parse(JSON.stringify(battleInit.report));groupedInit.report.runId='run.ally.grouped';
+    function fixedAlly(id,status,downs,hero) {
+      var unit=frozenAlly(id,'支援机器人',status,downs,hero);
+      unit.key='enemy.support-robot';unit.iconName='支援机器人';unit.doll=null;unit.loadout=null;return unit;
+    }
+    groupedInit.report.allies=Array.from({length:14},function(_,i){return fixedAlly('robot.'+i,'dead',1)});
+    groupedInit.report.allies.push(frozenAlly('human.1','同名队员','dead',1),frozenAlly('human.2','同名队员','dead',1));
+    groupedInit.report.totalAllyDowns=16;groupedInit.report.totalAllyLosses=16;groupedInit.report.heroDowns=0;
+    var groupedSource=JSON.stringify(groupedInit.report);
+    Panels.open('loot',groupedInit);await waitFor(function(){return document.querySelectorAll('[data-settlement-allies] article').length===3});
+    var groupedRoot=document.querySelector('.loot-workbench');
+    var groupedDensity=groupedRoot.querySelector('.item-grid-mode-toggle[aria-label="关卡结算布局"]');
+    groupedDensity.querySelector('[data-layout-mode="compact"]').click();await delay();
+    var robotCard=groupedRoot.querySelector('[data-ally-count="14"]'),robotSummary=robotCard.querySelector('summary');
+    var groupTasks=tasks().length;
+    ok('fourteen fixed allies collapse to one group while identical humanoids keep separate cards',
+      groupedRoot.querySelectorAll('[data-settlement-allies] article').length===3
+      &&robotCard.querySelector('strong').textContent.indexOf('×14')>=0
+      &&robotCard.querySelector('.loot-settlement-unit-badge').textContent==='亡'
+      &&!robotCard.hasAttribute('data-unit-id')&&!robotCard.querySelector('.loot-settlement-unit-index')
+      &&groupedRoot.querySelector('[data-unit-id="human.1"] .loot-settlement-unit-index').textContent==='1'
+      &&groupedRoot.querySelector('[data-unit-id="human.2"] .loot-settlement-unit-index').textContent==='2');
+    ok('ally display grouping preserves authority totals and the per-unit frozen source',
+      groupedRoot.querySelector('[data-settlement-ally-loss]').textContent==='16'
+      &&groupedRoot.querySelector('[data-settlement-hero-downs]').textContent==='0'
+      &&groupedRoot.querySelector('[data-settlement-ally-status]').textContent.indexOf('16')>=0
+      &&JSON.stringify(groupedInit.report)===groupedSource);
+    var robotRect=robotCard.getBoundingClientRect(),robotCountRect=robotCard.querySelector('strong').getBoundingClientRect();
+    ok('fixed ally group count and state fit the original compact square',
+      Math.abs(robotRect.width-48)<1&&Math.abs(robotRect.height-48)<1
+      &&robotCountRect.left>=robotRect.left&&robotCountRect.right<=robotRect.right+1);
+    document.dispatchEvent(new KeyboardEvent('keydown',{key:'Tab',bubbles:true}));robotSummary.focus();await delay();
+    ok('grouped ally keyboard annotation retains every member without a business request',
+      PanelTooltip.isVisible()&&PanelTooltip.getElement().textContent.indexOf('14 个单位')>=0
+      &&PanelTooltip.getElement().querySelectorAll('.loot-settlement-unit-details p').length===3
+      &&PanelTooltip.getElement().textContent.indexOf('Lv.24 · 倒地 1 次 ×14')>=0
+      &&tasks().length===groupTasks);
+    robotSummary.blur();PanelTooltip.hide();
+    groupedDensity.querySelector('[data-layout-mode="full"]').click();await delay();robotSummary.click();await delay();
+    ok('full density expands the same fixed group and preserves all original member records',
+      groupedRoot.querySelector('[data-ally-count="14"]')===robotCard&&robotCard.querySelector('details').open
+      &&robotCard.querySelectorAll('details p').length===2
+      &&robotCard.textContent.indexOf('14 个单位')>=0
+      &&groupedRoot.querySelectorAll('[data-settlement-allies] article').length===3
+      &&document.documentElement.scrollWidth<=1024&&tasks().length===groupTasks);
+    Panels.forceClose();await delay();
+    var mixedInit=settlementInit('ally-grouped-status');mixedInit.report=JSON.parse(JSON.stringify(groupedInit.report));
+    mixedInit.report.runId='run.ally.mixed';mixedInit.report.allies=[fixedAlly('dead.1','dead',3),
+      fixedAlly('revived.1','revived',2),fixedAlly('retreated.1','retreated',1),
+      fixedAlly('dead.2','dead',1),fixedAlly('revived.2','revived',1),fixedAlly('hero.fixed','dead',1,true)];
+    mixedInit.report.totalAllyDowns=8;mixedInit.report.totalAllyLosses=3;mixedInit.report.heroDowns=1;
+    Panels.open('loot',mixedInit);await waitFor(function(){return document.querySelectorAll('[data-settlement-allies] article').length===4});
+    var mixedRoot=document.querySelector('.loot-workbench');
+    var deadGroup=mixedRoot.querySelector('[data-ally-state="dead"][data-ally-count="2"]');
+    ok('fixed ally grouping separates dead retreated and revived states without merging the hero',
+      deadGroup&&mixedRoot.querySelector('[data-ally-state="retreated"][data-ally-count="1"]')
+      &&mixedRoot.querySelector('[data-ally-state="revived"][data-ally-count="2"]')
+      &&mixedRoot.querySelector('[data-unit-id="hero.fixed"] .loot-settlement-unit-hero').textContent==='主');
+    ok('group quantity counts units while annotation retains repeated downs and hero exclusion',
+      deadGroup.querySelector('strong').getAttribute('aria-label').indexOf('2 个单位 · 倒地 4 次')>=0
+      &&deadGroup.querySelectorAll('details p').length===3
+      &&deadGroup.querySelector('details').textContent.indexOf('倒地 3 次')>=0
+      &&deadGroup.querySelector('details').textContent.indexOf('倒地 1 次')>=0
+      &&mixedRoot.querySelector('[data-settlement-ally-loss]').textContent==='3'
+      &&mixedRoot.querySelector('[data-settlement-hero-downs]').textContent==='1');
+    Panels.forceClose();await delay();
+    ok('grouped records release all shared tooltip owners on close',
+      !PanelTooltip.isVisible()&&PanelTooltip.debugState().bindingCount===0);
+    Panels.open('loot',groupedInit);await waitFor(function(){return document.querySelectorAll('[data-settlement-allies] article').length===3});
+    window.__qaGroupedAllyInit=groupedInit;
     var result={passed:checks.filter(function(x){return x.ok}).length,total:checks.length,checks:checks};window.__qaResult=result;window.__qaDone=true;document.getElementById('qa-output').textContent=JSON.stringify(result,null,2)
   }catch(error){window.__qaError=error.stack||String(error);window.__qaDone=true;document.getElementById('qa-output').textContent=window.__qaError}
 })();

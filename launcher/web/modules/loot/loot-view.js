@@ -246,6 +246,29 @@ var LootView = (function() {
         return result;
     }
 
+    /** Display grouping only; the frozen per-unit report remains the authority. */
+    function projectAllyRecords(allies) {
+        var records=[],groups=Object.create(null);
+        for (var i=0;i<allies.length;i++) {
+            var unit=allies[i];
+            // v2 allies retain doll/loadout snapshots instead of the kill-side individual flag.
+            var individual=unit.isHero||unit.doll!==null||unit.loadout!==null
+                ||unit.key.indexOf('主角-')===0;
+            var key=JSON.stringify([unit.key,unit.iconName,unit.eliteLevel,unit.status]);
+            var record=individual?null:groups[key];
+            if (record) {
+                record.count++;
+                record.downs+=unit.downs;
+                record.members.push(unit);
+            } else {
+                record=Object.assign({},unit,{individual:individual,count:1,members:[unit]});
+                records.push(record);
+                if (!individual) groups[key]=record;
+            }
+        }
+        return records;
+    }
+
     function exactKeys(value, expected) {
         if (!value||typeof value!=='object'||Array.isArray(value)) return false;
         var keys=Object.keys(value),expectedKeys=Object.keys(expected);
@@ -779,7 +802,9 @@ var LootView = (function() {
             allyEmpty.textContent=report.v===2?'本次行动没有记录到我方单位倒地。':'旧战报没有友军记录。';
             this.allyList.appendChild(allyEmpty);
         }
-        for (i=0;i<allies.length;i++) this.allyList.appendChild(this._createBattleUnitCard(allies[i], true, i+1));
+        var allyRecords=projectAllyRecords(allies),allyOrdinal=0;
+        for (i=0;i<allyRecords.length;i++) this.allyList.appendChild(this._createBattleUnitCard(
+            allyRecords[i], true, allyRecords[i].individual ? ++allyOrdinal : 0));
         this._bindBattleRecordNotes();
 
         this.flowGainTotal.textContent='+'+String(report.totalItemGains);
@@ -848,31 +873,39 @@ var LootView = (function() {
 
     View.prototype._createBattleUnitCard = function(unit, ally, ordinal) {
         var card=document.createElement('article');
-        var individual=ally||unit.individual===true;
-        card.className='loot-settlement-kill-card'+(individual?' loot-settlement-unit-card':'');
+        var individual=unit.individual===true;
+        card.className='loot-settlement-kill-card'+(ally||individual?' loot-settlement-unit-card':'');
         var state=ally?({dead:'阵亡',retreated:'撤退',revived:'已复活'}[unit.status]):'击杀';
         var rank=unit.eliteLevel>=2?'首领':unit.eliteLevel>0?'精英':'普通';
         card.title=unit.displayName+' · '+(individual?'等级 '+unit.level+' · ':'')+state
-            +(ally?' · 倒地 '+unit.downs+' 次':' ×'+unit.count);
+            +(ally?(!individual?' ×'+unit.count:'')+' · 倒地 '+unit.downs+' 次':' ×'+unit.count);
         if (individual) card.title='记录 #'+ordinal+' · '+card.title+(ally&&unit.isHero?' · 主角':'');
         card.setAttribute('aria-label',card.title);
         if (individual) card.setAttribute('data-unit-id',unit.unitId);
-        if (ally) card.setAttribute('data-ally-state',unit.status);
+        if (ally) {
+            card.setAttribute('data-ally-state',unit.status);
+            card.setAttribute('data-ally-count',String(unit.count));
+        }
         if (unit.eliteLevel>0) card.setAttribute('data-elite',String(unit.eliteLevel));
         var avatar=document.createElement('div');avatar.className='loot-settlement-kill-avatar';
         avatar.setAttribute('aria-hidden','true');this._mountKillPortrait(avatar,unit);
         var copy=document.createElement('div');copy.className='loot-settlement-kill-copy';
         var name=document.createElement('b');name.textContent=unit.displayName;
         var detail=document.createElement('small');
-        detail.textContent=individual?'Lv.'+unit.level+' · '+rank+(ally&&unit.isHero?' · 主角':''):rank+'敌人';
+        detail.textContent=individual?'Lv.'+unit.level+' · '+rank+(ally&&unit.isHero?' · 主角':'')
+            :rank+(ally?'友军 · '+unit.count+' 个单位':'敌人');
         copy.appendChild(name);copy.appendChild(detail);
         var count=document.createElement('strong');
         if (ally) {
             var stateText=document.createElement('span');stateText.className='loot-settlement-unit-state';stateText.textContent=state;
             var badge=document.createElement('span');badge.className='loot-settlement-unit-badge';
             badge.textContent={dead:'亡',retreated:'撤',revived:'复'}[unit.status];badge.setAttribute('aria-hidden','true');
-            count.setAttribute('aria-label',state+' · 倒地 '+unit.downs+' 次');
+            count.setAttribute('aria-label',state+' · '+unit.count+' 个单位 · 倒地 '+unit.downs+' 次');
             count.appendChild(stateText);count.appendChild(badge);
+            if (!individual) {
+                var quantity=document.createElement('span');quantity.textContent=' ×'+unit.count;
+                count.appendChild(quantity);
+            }
         } else count.textContent='×'+unit.count;
         card.appendChild(avatar);card.appendChild(copy);card.appendChild(count);
         if (individual) {
@@ -883,14 +916,28 @@ var LootView = (function() {
                 heroMark.textContent='主';heroMark.setAttribute('aria-hidden','true');card.appendChild(heroMark);
             }
         }
-        if (individual) {
+        if (ally||individual) {
             var details=document.createElement('details');details.className='loot-settlement-unit-details';
             var summary=document.createElement('summary');summary.textContent='查看记录';
-            summary.setAttribute('aria-label','查看 '+unit.displayName+' 的记录与配置');
+            summary.setAttribute('aria-label','查看 '+unit.displayName+' 的记录'+(individual?'与配置':' · '+unit.count+' 个单位'));
             summary.setAttribute('tabindex','0');details.appendChild(summary);
             var info=document.createElement('p');
-            info.textContent=unit.displayName+' · '+(ally?state+' · 倒地 '+unit.downs+' 次':'击杀 '+unit.count+' 次');
+            info.textContent=unit.displayName+' · '+(ally?state+(!individual?' · '+unit.count+' 个单位':'')
+                +' · 倒地 '+unit.downs+' 次':'击杀 '+unit.count+' 次');
             details.appendChild(info);
+            if (ally&&!individual) {
+                var memberNotes=Object.create(null);
+                unit.members.forEach(function(member){
+                    var key=JSON.stringify([member.displayName,member.level,member.downs]);
+                    var text=member.displayName+' · Lv.'+member.level+' · 倒地 '+member.downs+' 次';
+                    var note=memberNotes[key];
+                    if (note) note.node.textContent=text+' ×'+(++note.count);
+                    else {
+                        var memberInfo=document.createElement('p');memberInfo.textContent=text;
+                        memberNotes[key]={node:memberInfo,count:1};details.appendChild(memberInfo);
+                    }
+                });
+            }
             if (unit.loadout) {
                 var frozenNote=document.createElement('p');
                 frozenNote.textContent=ally?'首次倒地时的装备与武器':'首次击杀时的装备与武器';
@@ -2046,6 +2093,7 @@ var LootView = (function() {
     return {
         View:View,
         normalizeSettlementReport:normalizeSettlementReport,
+        projectAllyRecords:projectAllyRecords,
         normalizeReportPresentation:normalizeReportPresentation,
         normalizeInitData:normalizeInitData,
         commitPresentation:commitPresentation,
