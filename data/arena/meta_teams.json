@@ -4,16 +4,16 @@
   "note": "竞技场元战队目录。teams[]=逐组真实组合(provenance/真实小队); rosters{}=按势力聚合的兵种池(按等级带采样K体用); mercenaries[]=混编人形侧优先池(来自 data/merc/mercenaries.json，排除 hidden)。请勿手改——改采集规则后重跑。",
   "stageFilesScanned": 216,
   "stagesWithTeams": 198,
-  "teamCount": 2081,
+  "teamCount": 2093,
   "mercenaryCount": 199,
   "factionBreakdown": {
     "日本军": 126,
-    "unknown": 101,
-    "亡灵/僵尸": 605,
-    "天网": 227,
+    "unknown": 103,
+    "亡灵/僵尸": 607,
+    "天网": 233,
     "异形": 262,
     "联合大学": 1,
-    "黑铁会": 70,
+    "黑铁会": 71,
     "铁血": 101,
     "波斯军": 94,
     "不死军团": 26,
@@ -22,7 +22,7 @@
     "雪山": 6,
     "军阀势力": 57,
     "摇滚公园": 14,
-    "狂野玫瑰": 44,
+    "狂野玫瑰": 45,
     "堕落城": 37,
     "虫群": 35,
     "凤凰眷属": 38,
@@ -118,7 +118,7 @@
       "unitCount": 9
     },
     "亡灵/僵尸": {
-      "teamCount": 605,
+      "teamCount": 607,
       "units": [
         {
           "type": "兵种72",
@@ -145,7 +145,7 @@
           "isHostile": true,
           "minLevel": 30,
           "maxLevel": 60,
-          "weight": 368
+          "weight": 371
         },
         {
           "type": "兵种74",
@@ -154,16 +154,7 @@
           "isHostile": true,
           "minLevel": 37,
           "maxLevel": 60,
-          "weight": 342
-        },
-        {
-          "type": "兵种10",
-          "name": "兽化僵尸",
-          "spritename": "敌人-裸体兽化僵尸1",
-          "isHostile": true,
-          "minLevel": 15,
-          "maxLevel": 35,
-          "weight": 166
+          "weight": 345
         },
         {
           "type": "兵种7",
@@ -173,6 +164,15 @@
           "minLevel": 2,
           "maxLevel": 40,
           "weight": 159
+        },
+        {
+          "type": "兵种10",
+          "name": "兽化僵尸",
+          "spritename": "敌人-裸体兽化僵尸1",
+          "isHostile": true,
+          "minLevel": 15,
+          "maxLevel": 35,
+          "weight": 156
         },
         {
           "type": "兵种39",
@@ -316,7 +316,7 @@
           "isHostile": true,
           "minLevel": 42,
           "maxLevel": 60,
-          "weight": 67
+          "weight": 69
         },
         {
           "type": "兵种11",
@@ -436,6 +436,15 @@
           "weight": 32
         },
         {
+          "type": "兵种76",
+          "name": "僵尸蛆",
+          "spritename": "敌人-普通僵尸蛆",
+          "isHostile": true,
+          "minLevel": 10,
+          "maxLevel": 44,
+          "weight": 32
+        },
+        {
           "type": "兵种287",
           "name": "蛙型仿生僵尸",
           "spritename": "敌人-蛙型仿生僵尸",
@@ -443,6 +452,15 @@
           "minLevel": 40,
           "maxLevel": 44,
           "weight": 32
+        },
+        {
+          "type": "兵种80",
+          "name": "重型改造僵尸",
+          "spritename": "敌人-重型改造僵尸",
+          "isHostile": true,
+          "minLevel": 42,
+          "maxLevel": 60,
+          "weight": 30
         },
         {
           "type": "兵种182",
@@ -454,11 +472,11 @@
           "weight": 29
         },
         {
-          "type": "兵种80",
-          "name": "重型改造僵尸",
-          "spritename": "敌人-重型改造僵尸",
+          "type": "兵种372",
+          "name": "克隆兽",
+          "spritename": "敌人-诺亚克隆兽",
           "isHostile": true,
-          "minLevel": 42,
+          "minLevel": 30,
           "maxLevel": 60,
           "weight": 28
         },
@@ -473,6 +491,15 @@
           "Parameters": {
             "登场动画": "坠落"
           }
+        },
+        {
+          "type": "兵种373",
+          "name": "克隆人",
+          "spritename": "敌人-闪6特工",
+          "isHostile": true,
+          "minLevel": 30,
+          "maxLevel": 60,
+          "weight": 27
         },
         {
           "type": "兵种84",
@@ -509,33 +536,6 @@
           "minLevel": 35,
           "maxLevel": 50,
           "weight": 22
-        },
-        {
-          "type": "兵种76",
-          "name": "僵尸蛆",
-          "spritename": "敌人-普通僵尸蛆",
-          "isHostile": true,
-          "minLevel": 10,
-          "maxLevel": 44,
-          "weight": 20
-        },
-        {
-          "type": "兵种372",
-          "name": "克隆兽",
-          "spritename": "敌人-诺亚克隆兽",
-          "isHostile": true,
-          "minLevel": 30,
-          "maxLevel": 45,
-          "weight": 20
-        },
-        {
-          "type": "兵种373",
-          "name": "克隆人",
-          "spritename": "敌人-闪6特工",
-          "isHostile": true,
-          "minLevel": 30,
-          "maxLevel": 45,
-          "weight": 19
         },
         {
           "type": "兵种42",
@@ -857,15 +857,6 @@
           "weight": 7
         },
         {
-          "type": "兵种90",
-          "name": "黑铁死士",
-          "spritename": "敌人-黑铁会死士",
-          "isHostile": false,
-          "minLevel": 35,
-          "maxLevel": 40,
-          "weight": 6
-        },
-        {
           "type": "兵种184",
           "name": "亚种方舟兽王",
           "spritename": "敌人-方舟兽王",
@@ -1015,6 +1006,15 @@
           "weight": 5
         },
         {
+          "type": "兵种90",
+          "name": "黑铁死士",
+          "spritename": "敌人-黑铁会死士",
+          "isHostile": false,
+          "minLevel": 35,
+          "maxLevel": 40,
+          "weight": 4
+        },
+        {
           "type": "兵种204",
           "name": "远古方舟克隆白虎",
           "spritename": "敌人-方舟白虎兵",
@@ -1140,15 +1140,6 @@
           "Parameters": {
             "登场动画": "下落"
           }
-        },
-        {
-          "type": "兵种101",
-          "name": "黑铁刺客",
-          "spritename": "敌人-黑铁会刺客",
-          "isHostile": false,
-          "minLevel": 35,
-          "maxLevel": 40,
-          "weight": 4
         },
         {
           "type": "兵种162",
@@ -1636,6 +1627,15 @@
           "weight": 2
         },
         {
+          "type": "兵种101",
+          "name": "黑铁刺客",
+          "spritename": "敌人-黑铁会刺客",
+          "isHostile": false,
+          "minLevel": 40,
+          "maxLevel": 40,
+          "weight": 2
+        },
+        {
           "type": "兵种102",
           "name": "黑铁行刑者",
           "spritename": "敌人-黑铁会大叔",
@@ -1920,6 +1920,15 @@
           }
         },
         {
+          "type": "兵种381",
+          "name": "虚拟向导",
+          "spritename": "敌人-虚拟向导",
+          "isHostile": false,
+          "minLevel": 30,
+          "maxLevel": 30,
+          "weight": 1
+        },
+        {
           "type": "兵种78",
           "name": "方舟兽王",
           "spritename": "敌人-方舟兽王",
@@ -2193,10 +2202,10 @@
           }
         }
       ],
-      "unitCount": 184
+      "unitCount": 185
     },
     "天网": {
-      "teamCount": 227,
+      "teamCount": 233,
       "units": [
         {
           "type": "兵种108",
@@ -2213,8 +2222,8 @@
           "spritename": "敌人-闪6特工",
           "isHostile": true,
           "minLevel": 40,
-          "maxLevel": 45,
-          "weight": 142
+          "maxLevel": 50,
+          "weight": 145
         },
         {
           "type": "兵种372",
@@ -2222,8 +2231,8 @@
           "spritename": "敌人-诺亚克隆兽",
           "isHostile": true,
           "minLevel": 40,
-          "maxLevel": 45,
-          "weight": 140
+          "maxLevel": 50,
+          "weight": 143
         },
         {
           "type": "兵种170",
@@ -2284,9 +2293,9 @@
           "name": "终结者T900",
           "spritename": "敌人-终结者T800",
           "isHostile": true,
-          "minLevel": 60,
+          "minLevel": 55,
           "maxLevel": 60,
-          "weight": 42
+          "weight": 43
         },
         {
           "type": "兵种113",
@@ -2343,6 +2352,15 @@
           "weight": 32
         },
         {
+          "type": "兵种177",
+          "name": "终结者",
+          "spritename": "敌人-终结者T800",
+          "isHostile": true,
+          "minLevel": 55,
+          "maxLevel": 60,
+          "weight": 28
+        },
+        {
           "type": "兵种114",
           "name": "稀有渗透者",
           "spritename": "敌人-渗透者",
@@ -2352,11 +2370,11 @@
           "weight": 28
         },
         {
-          "type": "兵种177",
-          "name": "终结者",
+          "type": "兵种167",
+          "name": "终结者T950",
           "spritename": "敌人-终结者T800",
           "isHostile": true,
-          "minLevel": 60,
+          "minLevel": 45,
           "maxLevel": 60,
           "weight": 27
         },
@@ -2390,13 +2408,22 @@
           "weight": 25
         },
         {
-          "type": "兵种167",
-          "name": "终结者T950",
+          "type": "兵种168",
+          "name": "终结者T1000",
           "spritename": "敌人-终结者T800",
           "isHostile": true,
-          "minLevel": 60,
+          "minLevel": 45,
           "maxLevel": 60,
-          "weight": 24
+          "weight": 25
+        },
+        {
+          "type": "兵种175",
+          "name": "终结者T1000",
+          "spritename": "敌人-终结者T800",
+          "isHostile": true,
+          "minLevel": 40,
+          "maxLevel": 60,
+          "weight": 25
         },
         {
           "type": "兵种373",
@@ -2428,27 +2455,9 @@
           "weight": 24
         },
         {
-          "type": "兵种168",
-          "name": "终结者T1000",
-          "spritename": "敌人-终结者T800",
-          "isHostile": true,
-          "minLevel": 60,
-          "maxLevel": 60,
-          "weight": 22
-        },
-        {
           "type": "兵种191",
           "name": "远古方舟无人机",
           "spritename": "敌人-方舟无人机",
-          "isHostile": true,
-          "minLevel": 60,
-          "maxLevel": 60,
-          "weight": 22
-        },
-        {
-          "type": "兵种175",
-          "name": "终结者T1000",
-          "spritename": "敌人-终结者T800",
           "isHostile": true,
           "minLevel": 60,
           "maxLevel": 60,
@@ -2602,6 +2611,15 @@
           "spritename": "敌人-忍者BOSS",
           "isHostile": true,
           "minLevel": 60,
+          "maxLevel": 60,
+          "weight": 9
+        },
+        {
+          "type": "兵种363",
+          "name": "EXUSIAI支援型",
+          "spritename": "敌人-EXUSIAI支援型",
+          "isHostile": true,
+          "minLevel": 45,
           "maxLevel": 60,
           "weight": 9
         },
@@ -2763,6 +2781,15 @@
           "weight": 6
         },
         {
+          "type": "兵种176",
+          "name": "终结者T1000",
+          "spritename": "敌人-终结者T800",
+          "isHostile": true,
+          "minLevel": 40,
+          "maxLevel": 60,
+          "weight": 6
+        },
+        {
           "type": "兵种84",
           "name": "暴走尸母",
           "spritename": "敌人-普通尸母",
@@ -2854,6 +2881,24 @@
           }
         },
         {
+          "type": "兵种364",
+          "name": "EXUSIAI突击型",
+          "spritename": "敌人-EXUSIAI突击型",
+          "isHostile": true,
+          "minLevel": 45,
+          "maxLevel": 60,
+          "weight": 5
+        },
+        {
+          "type": "兵种362",
+          "name": "EXUSIAI素体",
+          "spritename": "敌人-EXUSIAI素体",
+          "isHostile": true,
+          "minLevel": 60,
+          "maxLevel": 60,
+          "weight": 5
+        },
+        {
           "type": "兵种197",
           "name": "暴走克隆僵尸武士",
           "spritename": "敌人-武士大僵尸",
@@ -2930,6 +2975,15 @@
             "threatThreshold": 15,
             "超时空传送": true
           }
+        },
+        {
+          "type": "兵种228",
+          "name": "牛仔",
+          "spritename": "敌人-牛仔boss",
+          "isHostile": false,
+          "minLevel": 50,
+          "maxLevel": 55,
+          "weight": 4
         },
         {
           "type": "兵种107",
@@ -3036,12 +3090,12 @@
           "weight": 3
         },
         {
-          "type": "兵种363",
-          "name": "EXUSIAI支援型",
-          "spritename": "敌人-EXUSIAI支援型",
-          "isHostile": true,
-          "minLevel": 45,
-          "maxLevel": 45,
+          "type": "兵种257",
+          "name": "Lee",
+          "spritename": "敌人-李小龙",
+          "isHostile": false,
+          "minLevel": 55,
+          "maxLevel": 55,
           "weight": 3
         },
         {
@@ -3079,15 +3133,6 @@
           "isHostile": true,
           "minLevel": 47,
           "maxLevel": 47,
-          "weight": 3
-        },
-        {
-          "type": "兵种176",
-          "name": "终结者T1000",
-          "spritename": "敌人-终结者T800",
-          "isHostile": true,
-          "minLevel": 60,
-          "maxLevel": 60,
           "weight": 3
         },
         {
@@ -3221,15 +3266,6 @@
           "weight": 2
         },
         {
-          "type": "兵种364",
-          "name": "EXUSIAI突击型",
-          "spritename": "敌人-EXUSIAI突击型",
-          "isHostile": true,
-          "minLevel": 45,
-          "maxLevel": 45,
-          "weight": 2
-        },
-        {
           "type": "兵种354",
           "name": "精锐掠夺少女",
           "spritename": "敌人-刀狙少女",
@@ -3240,6 +3276,15 @@
           "Parameters": {
             "登场动画": "索降"
           }
+        },
+        {
+          "type": "兵种378",
+          "name": "浮士德兄弟",
+          "spritename": "敌人-黑白无常",
+          "isHostile": false,
+          "minLevel": 55,
+          "maxLevel": 55,
+          "weight": 2
         },
         {
           "type": "兵种70",
@@ -3765,13 +3810,28 @@
           }
         },
         {
-          "type": "兵种228",
-          "name": "牛仔",
-          "spritename": "敌人-牛仔boss",
+          "type": "兵种381",
+          "name": "虚拟向导",
+          "spritename": "敌人-虚拟向导",
           "isHostile": false,
-          "minLevel": 50,
-          "maxLevel": 50,
-          "weight": 1
+          "minLevel": 30,
+          "maxLevel": 30,
+          "weight": 1,
+          "Parameters": {
+            "方向": "左"
+          }
+        },
+        {
+          "type": "兵种381",
+          "name": "虚拟向导",
+          "spritename": "敌人-虚拟向导",
+          "isHostile": false,
+          "minLevel": 55,
+          "maxLevel": 55,
+          "weight": 1,
+          "Parameters": {
+            "变身": true
+          }
         },
         {
           "type": "兵种12",
@@ -3812,7 +3872,7 @@
           }
         }
       ],
-      "unitCount": 133
+      "unitCount": 138
     },
     "异形": {
       "teamCount": 262,
@@ -4650,7 +4710,7 @@
       "unitCount": 1
     },
     "黑铁会": {
-      "teamCount": 70,
+      "teamCount": 71,
       "units": [
         {
           "type": "兵种47",
@@ -5195,6 +5255,15 @@
           "weight": 3
         },
         {
+          "type": "兵种90",
+          "name": "黑铁死士",
+          "spritename": "敌人-黑铁会死士",
+          "isHostile": false,
+          "minLevel": 30,
+          "maxLevel": 40,
+          "weight": 3
+        },
+        {
           "type": "兵种47",
           "name": "黑铁死士",
           "spritename": "敌人-黑铁会死士",
@@ -5378,6 +5447,15 @@
           "isHostile": true,
           "minLevel": 20,
           "maxLevel": 20,
+          "weight": 2
+        },
+        {
+          "type": "兵种377",
+          "name": "黑铁游侠",
+          "spritename": "敌人-黑铁死士精英",
+          "isHostile": false,
+          "minLevel": 30,
+          "maxLevel": 30,
           "weight": 2
         },
         {
@@ -5609,13 +5687,28 @@
           "weight": 1
         },
         {
-          "type": "兵种90",
-          "name": "黑铁死士",
-          "spritename": "敌人-黑铁会死士",
-          "isHostile": false,
-          "minLevel": 40,
-          "maxLevel": 40,
-          "weight": 1
+          "type": "兵种12",
+          "name": "？？？",
+          "spritename": "敌人-忍者BOSS",
+          "isHostile": true,
+          "minLevel": 30,
+          "maxLevel": 30,
+          "weight": 1,
+          "Parameters": {
+            "extra": {
+              "add": {
+                "hp": 15000,
+                "hp满血值": 15000
+              },
+              "muti": {
+                "空手攻击力": 2,
+                "防御力": 3
+              }
+            },
+            "hpEmergency": 0.5,
+            "名字": "方舟武士",
+            "狂暴": true
+          }
         },
         {
           "type": "兵种101",
@@ -5781,7 +5874,7 @@
           }
         }
       ],
-      "unitCount": 84
+      "unitCount": 86
     },
     "铁血": {
       "teamCount": 101,
@@ -7485,7 +7578,7 @@
       "unitCount": 13
     },
     "狂野玫瑰": {
-      "teamCount": 44,
+      "teamCount": 45,
       "units": [
         {
           "type": "兵种46",
@@ -7522,6 +7615,15 @@
           "minLevel": 40,
           "maxLevel": 40,
           "weight": 28
+        },
+        {
+          "type": "兵种260",
+          "name": "精英战术少女",
+          "spritename": "敌人-精英战术少女",
+          "isHostile": true,
+          "minLevel": 20,
+          "maxLevel": 55,
+          "weight": 20
         },
         {
           "type": "兵种354",
@@ -7562,15 +7664,6 @@
           }
         },
         {
-          "type": "兵种260",
-          "name": "精英战术少女",
-          "spritename": "敌人-精英战术少女",
-          "isHostile": true,
-          "minLevel": 20,
-          "maxLevel": 40,
-          "weight": 17
-        },
-        {
           "type": "兵种354",
           "name": "精锐掠夺少女",
           "spritename": "敌人-刀狙少女",
@@ -7581,6 +7674,15 @@
           "Parameters": {
             "登场动画": "索降"
           }
+        },
+        {
+          "type": "兵种354",
+          "name": "精锐掠夺少女",
+          "spritename": "敌人-刀狙少女",
+          "isHostile": true,
+          "minLevel": 40,
+          "maxLevel": 55,
+          "weight": 16
         },
         {
           "type": "兵种259",
@@ -7608,22 +7710,13 @@
           }
         },
         {
-          "type": "兵种354",
-          "name": "精锐掠夺少女",
-          "spritename": "敌人-刀狙少女",
-          "isHostile": true,
-          "minLevel": 40,
-          "maxLevel": 40,
-          "weight": 13
-        },
-        {
           "type": "兵种259",
           "name": "摇滚学姐",
           "spritename": "敌人-双喷少女",
           "isHostile": true,
           "minLevel": 20,
-          "maxLevel": 40,
-          "weight": 11
+          "maxLevel": 55,
+          "weight": 13
         },
         {
           "type": "兵种45",
@@ -7728,6 +7821,33 @@
           "weight": 3
         },
         {
+          "type": "兵种50",
+          "name": "吉他",
+          "spritename": "敌人-摇滚公园萝莉",
+          "isHostile": true,
+          "minLevel": 50,
+          "maxLevel": 55,
+          "weight": 2
+        },
+        {
+          "type": "兵种51",
+          "name": "键盘",
+          "spritename": "敌人-摇滚公园少女",
+          "isHostile": true,
+          "minLevel": 50,
+          "maxLevel": 55,
+          "weight": 2
+        },
+        {
+          "type": "兵种52",
+          "name": "主唱",
+          "spritename": "敌人-摇滚公园御姐",
+          "isHostile": true,
+          "minLevel": 50,
+          "maxLevel": 55,
+          "weight": 2
+        },
+        {
           "type": "兵种58",
           "name": "牛仔",
           "spritename": "敌人-牛仔boss",
@@ -7827,15 +7947,6 @@
           "name": "吉他",
           "spritename": "敌人-摇滚公园萝莉",
           "isHostile": true,
-          "minLevel": 50,
-          "maxLevel": 50,
-          "weight": 1
-        },
-        {
-          "type": "兵种50",
-          "name": "吉他",
-          "spritename": "敌人-摇滚公园萝莉",
-          "isHostile": true,
           "minLevel": 35,
           "maxLevel": 35,
           "weight": 1,
@@ -7850,15 +7961,6 @@
           "name": "键盘",
           "spritename": "敌人-摇滚公园少女",
           "isHostile": true,
-          "minLevel": 50,
-          "maxLevel": 50,
-          "weight": 1
-        },
-        {
-          "type": "兵种51",
-          "name": "键盘",
-          "spritename": "敌人-摇滚公园少女",
-          "isHostile": true,
           "minLevel": 35,
           "maxLevel": 35,
           "weight": 1,
@@ -7867,15 +7969,6 @@
               "弹射弧光斩": true
             }
           }
-        },
-        {
-          "type": "兵种52",
-          "name": "主唱",
-          "spritename": "敌人-摇滚公园御姐",
-          "isHostile": true,
-          "minLevel": 50,
-          "maxLevel": 50,
-          "weight": 1
         },
         {
           "type": "兵种52",
@@ -8011,9 +8104,18 @@
               "广域裂空斩": true
             }
           }
+        },
+        {
+          "type": "兵种381",
+          "name": "虚拟向导",
+          "spritename": "敌人-虚拟向导",
+          "isHostile": false,
+          "minLevel": 30,
+          "maxLevel": 30,
+          "weight": 1
         }
       ],
-      "unitCount": 51
+      "unitCount": 52
     },
     "堕落城": {
       "teamCount": 37,
@@ -88506,11 +88608,715 @@
       "powerRating": 725
     },
     {
+      "id": "试炼场深处/电子战接入设备间.xml#0.1",
+      "sourceStage": "试炼场深处/电子战接入设备间.xml",
+      "sourceName": "电子战接入设备间",
+      "group": "0.1",
+      "faction": "天网",
+      "factionConfidence": "rule",
+      "members": [
+        {
+          "type": "兵种378",
+          "id": 378,
+          "name": "浮士德兄弟",
+          "spritename": "敌人-黑白无常",
+          "level": 55,
+          "count": 1,
+          "random": false,
+          "isHostile": false,
+          "humanoid": false
+        },
+        {
+          "type": "兵种167",
+          "id": 167,
+          "name": "终结者T950",
+          "spritename": "敌人-终结者T800",
+          "level": 45,
+          "count": 3,
+          "random": false,
+          "isHostile": true,
+          "humanoid": false
+        },
+        {
+          "type": "兵种168",
+          "id": 168,
+          "name": "终结者T1000",
+          "spritename": "敌人-终结者T800",
+          "level": 45,
+          "count": 3,
+          "random": false,
+          "isHostile": true,
+          "humanoid": false
+        },
+        {
+          "type": "兵种166",
+          "id": 166,
+          "name": "终结者T900",
+          "spritename": "敌人-终结者T800",
+          "level": 55,
+          "count": 1,
+          "random": false,
+          "isHostile": true,
+          "humanoid": false
+        }
+      ],
+      "unitCount": 8,
+      "distinctTypes": 4,
+      "avgLevel": 47.5,
+      "levelMin": 45,
+      "levelMax": 55,
+      "powerRating": 380
+    },
+    {
+      "id": "试炼场深处/电子战接入设备间.xml#1.0",
+      "sourceStage": "试炼场深处/电子战接入设备间.xml",
+      "sourceName": "电子战接入设备间",
+      "group": "1.0",
+      "faction": "天网",
+      "factionConfidence": "rule",
+      "members": [
+        {
+          "type": "兵种228",
+          "id": 228,
+          "name": "牛仔",
+          "spritename": "敌人-牛仔boss",
+          "level": 55,
+          "count": 1,
+          "random": false,
+          "isHostile": false,
+          "humanoid": false
+        },
+        {
+          "type": "兵种378",
+          "id": 378,
+          "name": "浮士德兄弟",
+          "spritename": "敌人-黑白无常",
+          "level": 55,
+          "count": 1,
+          "random": false,
+          "isHostile": false,
+          "humanoid": false
+        },
+        {
+          "type": "兵种175",
+          "id": 175,
+          "name": "终结者T1000",
+          "spritename": "敌人-终结者T800",
+          "level": 40,
+          "count": 3,
+          "random": false,
+          "isHostile": true,
+          "humanoid": false
+        },
+        {
+          "type": "兵种176",
+          "id": 176,
+          "name": "终结者T1000",
+          "spritename": "敌人-终结者T800",
+          "level": 40,
+          "count": 3,
+          "random": false,
+          "isHostile": true,
+          "humanoid": false
+        },
+        {
+          "type": "兵种177",
+          "id": 177,
+          "name": "终结者",
+          "spritename": "敌人-终结者T800",
+          "level": 55,
+          "count": 1,
+          "random": false,
+          "isHostile": true,
+          "humanoid": false
+        }
+      ],
+      "unitCount": 9,
+      "distinctTypes": 5,
+      "avgLevel": 45,
+      "levelMin": 40,
+      "levelMax": 55,
+      "powerRating": 405
+    },
+    {
+      "id": "试炼场深处/电子战接入设备间.xml#1.1",
+      "sourceStage": "试炼场深处/电子战接入设备间.xml",
+      "sourceName": "电子战接入设备间",
+      "group": "1.1",
+      "faction": "天网",
+      "factionConfidence": "rule",
+      "members": [
+        {
+          "type": "兵种257",
+          "id": 257,
+          "name": "Lee",
+          "spritename": "敌人-李小龙",
+          "level": 55,
+          "count": 1,
+          "random": false,
+          "isHostile": false,
+          "humanoid": false
+        },
+        {
+          "type": "兵种362",
+          "id": 362,
+          "name": "EXUSIAI素体",
+          "spritename": "敌人-EXUSIAI素体",
+          "level": 60,
+          "count": 3,
+          "random": false,
+          "isHostile": true,
+          "humanoid": false
+        },
+        {
+          "type": "兵种363",
+          "id": 363,
+          "name": "EXUSIAI支援型",
+          "spritename": "敌人-EXUSIAI支援型",
+          "level": 60,
+          "count": 2,
+          "random": false,
+          "isHostile": true,
+          "humanoid": false
+        }
+      ],
+      "unitCount": 6,
+      "distinctTypes": 3,
+      "avgLevel": 59.2,
+      "levelMin": 55,
+      "levelMax": 60,
+      "powerRating": 355
+    },
+    {
+      "id": "试炼场深处/电子战接入设备间.xml#2.0",
+      "sourceStage": "试炼场深处/电子战接入设备间.xml",
+      "sourceName": "电子战接入设备间",
+      "group": "2.0",
+      "faction": "天网",
+      "factionConfidence": "rule-weak",
+      "members": [
+        {
+          "type": "兵种228",
+          "id": 228,
+          "name": "牛仔",
+          "spritename": "敌人-牛仔boss",
+          "level": 55,
+          "count": 1,
+          "random": false,
+          "isHostile": false,
+          "humanoid": false
+        },
+        {
+          "type": "兵种257",
+          "id": 257,
+          "name": "Lee",
+          "spritename": "敌人-李小龙",
+          "level": 55,
+          "count": 1,
+          "random": false,
+          "isHostile": false,
+          "humanoid": false
+        },
+        {
+          "type": "兵种381",
+          "id": 381,
+          "name": "虚拟向导",
+          "spritename": "敌人-虚拟向导",
+          "level": 30,
+          "count": 1,
+          "random": false,
+          "isHostile": false,
+          "humanoid": false,
+          "parameters": {
+            "方向": "左"
+          }
+        },
+        {
+          "type": "兵种372",
+          "id": 372,
+          "name": "克隆兽",
+          "spritename": "敌人-诺亚克隆兽",
+          "level": 50,
+          "count": 3,
+          "random": false,
+          "isHostile": true,
+          "humanoid": false
+        },
+        {
+          "type": "兵种373",
+          "id": 373,
+          "name": "克隆人",
+          "spritename": "敌人-闪6特工",
+          "level": 50,
+          "count": 3,
+          "random": false,
+          "isHostile": true,
+          "humanoid": false
+        }
+      ],
+      "unitCount": 9,
+      "distinctTypes": 5,
+      "avgLevel": 48.9,
+      "levelMin": 30,
+      "levelMax": 55,
+      "powerRating": 440
+    },
+    {
+      "id": "试炼场深处/电子战接入设备间.xml#2.1",
+      "sourceStage": "试炼场深处/电子战接入设备间.xml",
+      "sourceName": "电子战接入设备间",
+      "group": "2.1",
+      "faction": "亡灵/僵尸",
+      "factionConfidence": "rule-weak",
+      "members": [
+        {
+          "type": "兵种74",
+          "id": 74,
+          "name": "爆炸僵尸",
+          "spritename": "敌人-普通爆炸僵尸",
+          "level": 55,
+          "count": 3,
+          "random": false,
+          "isHostile": true,
+          "humanoid": false
+        },
+        {
+          "type": "兵种70",
+          "id": 70,
+          "name": "重型改造僵尸",
+          "spritename": "敌人-重型改造僵尸",
+          "level": 55,
+          "count": 3,
+          "random": false,
+          "isHostile": true,
+          "humanoid": false
+        },
+        {
+          "type": "兵种372",
+          "id": 372,
+          "name": "克隆兽",
+          "spritename": "敌人-诺亚克隆兽",
+          "level": 60,
+          "count": 3,
+          "random": false,
+          "isHostile": true,
+          "humanoid": false
+        },
+        {
+          "type": "兵种373",
+          "id": 373,
+          "name": "克隆人",
+          "spritename": "敌人-闪6特工",
+          "level": 60,
+          "count": 3,
+          "random": false,
+          "isHostile": true,
+          "humanoid": false
+        }
+      ],
+      "unitCount": 12,
+      "distinctTypes": 4,
+      "avgLevel": 57.5,
+      "levelMin": 55,
+      "levelMax": 60,
+      "powerRating": 690
+    },
+    {
+      "id": "试炼场深处/电子战接入设备间.xml#2.2",
+      "sourceStage": "试炼场深处/电子战接入设备间.xml",
+      "sourceName": "电子战接入设备间",
+      "group": "2.2",
+      "faction": "亡灵/僵尸",
+      "factionConfidence": "rule-weak",
+      "members": [
+        {
+          "type": "兵种80",
+          "id": 80,
+          "name": "重型改造僵尸",
+          "spritename": "敌人-重型改造僵尸",
+          "level": 60,
+          "count": 2,
+          "random": false,
+          "isHostile": true,
+          "humanoid": false
+        },
+        {
+          "type": "兵种83",
+          "id": 83,
+          "name": "爆炸僵尸",
+          "spritename": "敌人-普通爆炸僵尸",
+          "level": 60,
+          "count": 2,
+          "random": false,
+          "isHostile": true,
+          "humanoid": false
+        },
+        {
+          "type": "兵种372",
+          "id": 372,
+          "name": "克隆兽",
+          "spritename": "敌人-诺亚克隆兽",
+          "level": 60,
+          "count": 2,
+          "random": false,
+          "isHostile": true,
+          "humanoid": false
+        },
+        {
+          "type": "兵种373",
+          "id": 373,
+          "name": "克隆人",
+          "spritename": "敌人-闪6特工",
+          "level": 60,
+          "count": 2,
+          "random": false,
+          "isHostile": true,
+          "humanoid": false
+        }
+      ],
+      "unitCount": 8,
+      "distinctTypes": 4,
+      "avgLevel": 60,
+      "levelMin": 60,
+      "levelMax": 60,
+      "powerRating": 480
+    },
+    {
+      "id": "试炼场深处/电子战接入设备间.xml#2.3",
+      "sourceStage": "试炼场深处/电子战接入设备间.xml",
+      "sourceName": "电子战接入设备间",
+      "group": "2.3",
+      "faction": "天网",
+      "factionConfidence": "rule",
+      "members": [
+        {
+          "type": "兵种363",
+          "id": 363,
+          "name": "EXUSIAI支援型",
+          "spritename": "敌人-EXUSIAI支援型",
+          "level": 60,
+          "count": 2,
+          "random": false,
+          "isHostile": true,
+          "humanoid": false
+        },
+        {
+          "type": "兵种364",
+          "id": 364,
+          "name": "EXUSIAI突击型",
+          "spritename": "敌人-EXUSIAI突击型",
+          "level": 60,
+          "count": 1,
+          "random": false,
+          "isHostile": true,
+          "humanoid": false
+        }
+      ],
+      "unitCount": 3,
+      "distinctTypes": 2,
+      "avgLevel": 60,
+      "levelMin": 60,
+      "levelMax": 60,
+      "powerRating": 180
+    },
+    {
+      "id": "试炼场深处/电子战接入设备间.xml#3.0",
+      "sourceStage": "试炼场深处/电子战接入设备间.xml",
+      "sourceName": "电子战接入设备间",
+      "group": "3.0",
+      "faction": "unknown",
+      "factionConfidence": "unknown",
+      "members": [
+        {
+          "type": "兵种381",
+          "id": 381,
+          "name": "虚拟向导",
+          "spritename": "敌人-虚拟向导",
+          "level": 30,
+          "count": 1,
+          "random": false,
+          "isHostile": false,
+          "humanoid": false
+        }
+      ],
+      "unitCount": 1,
+      "distinctTypes": 1,
+      "avgLevel": 30,
+      "levelMin": 30,
+      "levelMax": 30,
+      "powerRating": 30
+    },
+    {
+      "id": "试炼场深处/电子战接入设备间.xml#4.0",
+      "sourceStage": "试炼场深处/电子战接入设备间.xml",
+      "sourceName": "电子战接入设备间",
+      "group": "4.0",
+      "faction": "亡灵/僵尸",
+      "factionConfidence": "rule",
+      "members": [
+        {
+          "type": "兵种381",
+          "id": 381,
+          "name": "虚拟向导",
+          "spritename": "敌人-虚拟向导",
+          "level": 30,
+          "count": 1,
+          "random": false,
+          "isHostile": false,
+          "humanoid": false
+        },
+        {
+          "type": "兵种76",
+          "id": 76,
+          "name": "僵尸蛆",
+          "spritename": "敌人-普通僵尸蛆",
+          "level": 30,
+          "count": 12,
+          "random": false,
+          "isHostile": true,
+          "humanoid": false
+        },
+        {
+          "type": "兵种372",
+          "id": 372,
+          "name": "克隆兽",
+          "spritename": "敌人-诺亚克隆兽",
+          "level": 30,
+          "count": 3,
+          "random": false,
+          "isHostile": true,
+          "humanoid": false
+        },
+        {
+          "type": "兵种373",
+          "id": 373,
+          "name": "克隆人",
+          "spritename": "敌人-闪6特工",
+          "level": 30,
+          "count": 3,
+          "random": false,
+          "isHostile": true,
+          "humanoid": false
+        }
+      ],
+      "unitCount": 19,
+      "distinctTypes": 4,
+      "avgLevel": 30,
+      "levelMin": 30,
+      "levelMax": 30,
+      "powerRating": 570
+    },
+    {
+      "id": "试炼场深处/电子战接入设备间.xml#5.0",
+      "sourceStage": "试炼场深处/电子战接入设备间.xml",
+      "sourceName": "电子战接入设备间",
+      "group": "5.0",
+      "faction": "狂野玫瑰",
+      "factionConfidence": "rule",
+      "members": [
+        {
+          "type": "兵种381",
+          "id": 381,
+          "name": "虚拟向导",
+          "spritename": "敌人-虚拟向导",
+          "level": 30,
+          "count": 1,
+          "random": false,
+          "isHostile": false,
+          "humanoid": false
+        },
+        {
+          "type": "兵种50",
+          "id": 50,
+          "name": "吉他",
+          "spritename": "敌人-摇滚公园萝莉",
+          "level": 55,
+          "count": 1,
+          "random": false,
+          "isHostile": true,
+          "humanoid": false
+        },
+        {
+          "type": "兵种51",
+          "id": 51,
+          "name": "键盘",
+          "spritename": "敌人-摇滚公园少女",
+          "level": 55,
+          "count": 1,
+          "random": false,
+          "isHostile": true,
+          "humanoid": false
+        },
+        {
+          "type": "兵种52",
+          "id": 52,
+          "name": "主唱",
+          "spritename": "敌人-摇滚公园御姐",
+          "level": 55,
+          "count": 1,
+          "random": false,
+          "isHostile": true,
+          "humanoid": false
+        },
+        {
+          "type": "兵种259",
+          "id": 259,
+          "name": "摇滚学姐",
+          "spritename": "敌人-双喷少女",
+          "level": 55,
+          "count": 2,
+          "random": false,
+          "isHostile": true,
+          "humanoid": false
+        },
+        {
+          "type": "兵种260",
+          "id": 260,
+          "name": "精英战术少女",
+          "spritename": "敌人-精英战术少女",
+          "level": 55,
+          "count": 3,
+          "random": false,
+          "isHostile": true,
+          "humanoid": false
+        },
+        {
+          "type": "兵种354",
+          "id": 354,
+          "name": "精锐掠夺少女",
+          "spritename": "敌人-刀狙少女",
+          "level": 55,
+          "count": 3,
+          "random": false,
+          "isHostile": true,
+          "humanoid": false
+        }
+      ],
+      "unitCount": 12,
+      "distinctTypes": 7,
+      "avgLevel": 52.9,
+      "levelMin": 30,
+      "levelMax": 55,
+      "powerRating": 635
+    },
+    {
+      "id": "试炼场深处/电子战接入设备间.xml#6.0",
+      "sourceStage": "试炼场深处/电子战接入设备间.xml",
+      "sourceName": "电子战接入设备间",
+      "group": "6.0",
+      "faction": "unknown",
+      "factionConfidence": "unknown",
+      "members": [
+        {
+          "type": "兵种381",
+          "id": 381,
+          "name": "虚拟向导",
+          "spritename": "敌人-虚拟向导",
+          "level": 30,
+          "count": 1,
+          "random": false,
+          "isHostile": false,
+          "humanoid": false
+        }
+      ],
+      "unitCount": 1,
+      "distinctTypes": 1,
+      "avgLevel": 30,
+      "levelMin": 30,
+      "levelMax": 30,
+      "powerRating": 30
+    },
+    {
+      "id": "试炼场深处/电子战接入设备间.xml#7.0",
+      "sourceStage": "试炼场深处/电子战接入设备间.xml",
+      "sourceName": "电子战接入设备间",
+      "group": "7.0",
+      "faction": "天网",
+      "factionConfidence": "rule",
+      "members": [
+        {
+          "type": "兵种228",
+          "id": 228,
+          "name": "牛仔",
+          "spritename": "敌人-牛仔boss",
+          "level": 55,
+          "count": 1,
+          "random": false,
+          "isHostile": false,
+          "humanoid": false
+        },
+        {
+          "type": "兵种257",
+          "id": 257,
+          "name": "Lee",
+          "spritename": "敌人-李小龙",
+          "level": 55,
+          "count": 1,
+          "random": false,
+          "isHostile": false,
+          "humanoid": false
+        },
+        {
+          "type": "兵种381",
+          "id": 381,
+          "name": "虚拟向导",
+          "spritename": "敌人-虚拟向导",
+          "level": 55,
+          "count": 1,
+          "random": false,
+          "isHostile": false,
+          "humanoid": false,
+          "parameters": {
+            "变身": true
+          }
+        },
+        {
+          "type": "兵种362",
+          "id": 362,
+          "name": "EXUSIAI素体",
+          "spritename": "敌人-EXUSIAI素体",
+          "level": 60,
+          "count": 2,
+          "random": false,
+          "isHostile": true,
+          "humanoid": false
+        },
+        {
+          "type": "兵种363",
+          "id": 363,
+          "name": "EXUSIAI支援型",
+          "spritename": "敌人-EXUSIAI支援型",
+          "level": 60,
+          "count": 2,
+          "random": false,
+          "isHostile": true,
+          "humanoid": false
+        },
+        {
+          "type": "兵种364",
+          "id": 364,
+          "name": "EXUSIAI突击型",
+          "spritename": "敌人-EXUSIAI突击型",
+          "level": 60,
+          "count": 2,
+          "random": false,
+          "isHostile": true,
+          "humanoid": false
+        }
+      ],
+      "unitCount": 9,
+      "distinctTypes": 6,
+      "avgLevel": 58.3,
+      "levelMin": 55,
+      "levelMax": 60,
+      "powerRating": 525
+    },
+    {
       "id": "试炼场深处/试炼场深处入口.xml#0.0",
       "sourceStage": "试炼场深处/试炼场深处入口.xml",
       "sourceName": "试炼场深处入口",
       "group": "0.0",
-      "faction": "亡灵/僵尸",
+      "faction": "黑铁会",
       "factionConfidence": "rule",
       "members": [
         {
@@ -88518,41 +89324,56 @@
           "id": 90,
           "name": "黑铁死士",
           "spritename": "敌人-黑铁会死士",
-          "level": 35,
+          "level": 30,
           "count": 2,
           "random": false,
           "isHostile": false,
           "humanoid": false
         },
         {
-          "type": "兵种101",
-          "id": 101,
-          "name": "黑铁刺客",
-          "spritename": "敌人-黑铁会刺客",
-          "level": 35,
+          "type": "兵种377",
+          "id": 377,
+          "name": "黑铁游侠",
+          "spritename": "敌人-黑铁死士精英",
+          "level": 30,
           "count": 2,
           "random": false,
           "isHostile": false,
           "humanoid": false
         },
         {
-          "type": "兵种10",
-          "id": 10,
-          "name": "兽化僵尸",
-          "spritename": "敌人-裸体兽化僵尸1",
-          "level": 35,
-          "count": 10,
+          "type": "兵种12",
+          "id": 12,
+          "name": "？？？",
+          "spritename": "敌人-忍者BOSS",
+          "level": 30,
+          "count": 1,
           "random": false,
           "isHostile": true,
-          "humanoid": false
+          "humanoid": false,
+          "parameters": {
+            "extra": {
+              "add": {
+                "hp": 15000,
+                "hp满血值": 15000
+              },
+              "muti": {
+                "空手攻击力": 2,
+                "防御力": 3
+              }
+            },
+            "hpEmergency": 0.5,
+            "名字": "方舟武士",
+            "狂暴": true
+          }
         }
       ],
-      "unitCount": 14,
+      "unitCount": 5,
       "distinctTypes": 3,
-      "avgLevel": 35,
-      "levelMin": 35,
-      "levelMax": 35,
-      "powerRating": 490
+      "avgLevel": 30,
+      "levelMin": 30,
+      "levelMax": 30,
+      "powerRating": 150
     },
     {
       "id": "试炼场深处/锯刺陷阱.xml#0.0",
