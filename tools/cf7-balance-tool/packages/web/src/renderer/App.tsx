@@ -1,4 +1,4 @@
-﻿import {
+import {
   startTransition,
   useDeferredValue,
   useEffect,
@@ -31,6 +31,7 @@ import { DataGrid, sortRows, type SortDir, type SortKey } from "./data-grid";
 import { ChangelogPanel } from "./changelog-panel";
 import { FormulaBar } from "./formula-bar";
 import { HistoryPanel } from "./history-panel";
+import { MonsterPanel } from "./monster-panel";
 import { OutputPathPanel } from "./output-path-panel";
 import type { ReportHistoryEntry } from "./report-history";
 import { Sidebar } from "./sidebar";
@@ -1265,6 +1266,10 @@ export function App() {
             <p className="panel-caption">{TEXT.exportNote}</p>
           </section>
         </article>
+      </section>
+
+      <section className="content-grid">
+        <MonsterPanel />
       </section>
 
       <section className="content-grid content-grid-lower">

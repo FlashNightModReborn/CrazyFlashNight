@@ -1,4 +1,4 @@
-﻿import type { OutputPathSettings } from "../shared/output-path-settings";
+import type { OutputPathSettings } from "../shared/output-path-settings";
 
 export {};
 
@@ -45,7 +45,34 @@ declare global {
       runValidation?: () => Promise<ValidationReport>;
       getFieldConfig?: () => Promise<FieldRegistryData>;
       saveFieldConfig?: (config: FieldRegistryData) => Promise<{ saved: boolean }>;
+      monsterGetTables?: () => Promise<MonsterTablesResult>;
+      monsterSaveTable?: (payload: { headers: string[]; rows: string[][] }) => Promise<{
+        savedTo: string;
+        tables: MonsterTablesResult;
+      }>;
+      monsterRefresh?: () => Promise<{ output: string; tables: MonsterTablesResult }>;
+      monsterTableApply?: (options?: { write?: boolean }) => Promise<{
+        output: string;
+        write: boolean;
+        tables: MonsterTablesResult;
+      }>;
+      monsterSolve?: (options: { template: string }) => Promise<{ output: string }>;
     };
+  }
+
+  interface MonsterTablePayload {
+    path: string;
+    exists: boolean;
+    updatedAt?: string;
+    headers: string[];
+    rows: string[][];
+  }
+
+  interface MonsterTablesResult {
+    full: MonsterTablePayload;
+    outOfRange: MonsterTablePayload;
+    highError: MonsterTablePayload;
+    human: MonsterTablePayload;
   }
 
   interface FieldRegistryData {

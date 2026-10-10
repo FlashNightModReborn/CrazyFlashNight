@@ -1,4 +1,4 @@
-﻿import { app, BrowserWindow, dialog, ipcMain, shell, type OpenDialogOptions } from "electron";
+import { app, BrowserWindow, dialog, ipcMain, shell, type OpenDialogOptions } from "electron";
 import { spawn } from "node:child_process";
 import fs from "node:fs";
 import path from "node:path";
@@ -141,6 +141,33 @@ function registerIpcHandlers(): void {
     saveBatchUpdates(updates)
   );
 
+  // ── 怪物标识（monster-flag 工作流） ────────────────────────────────
+  ipcMain.handle("cf7:monster-get-tables", () => getMonsterTables());
+
+  ipcMain.handle("cf7:monster-save-table", async (_event, payload: { headers: string[]; rows: string[][] }) => {
+    writeMonsterTableCsv(payload.headers, payload.rows);
+    return { savedTo: MONSTER_TABLE_FILES.full, tables: getMonsterTables() };
+  });
+
+  ipcMain.handle("cf7:monster-refresh", async () => {
+    // ⚠ 规则书 §4 硬约束：本机现役口径是 --free-tier（盘上档次由放开档次解出），
+    // census 与 csv 必须用同一模式，否则表上误差失真。
+    const censusOutput = await runToolScript("packages/cli/src/monster-flags.ts", ["census", "--free-tier"]);
+    const csvOutput = await runToolScript("packages/cli/src/monster-flags-csv.ts", []);
+    return { output: censusOutput + csvOutput, tables: getMonsterTables() };
+  });
+
+  ipcMain.handle("cf7:monster-table-apply", async (_event, options?: { write?: boolean }) => {
+    const args = options?.write ? ["--write"] : [];
+    const output = await runToolScript("packages/cli/src/monster-flags-table-apply.ts", args);
+    return { output, write: !!options?.write, tables: getMonsterTables() };
+  });
+
+  ipcMain.handle("cf7:monster-solve", async (_event, options: { template: string }) => {
+    const output = await runToolScript("packages/cli/src/monster-flags.ts", ["solve", options.template]);
+    return { output };
+  });
+
   ipcMain.handle("cf7:run-batch-preview", async (_event, updates: BatchUpdatePayload[]) => {
     const saveResult = await saveBatchUpdates(updates);
     const outputPaths = getResolvedOutputPathSettings();
@@ -237,6 +264,139 @@ async function runCliCommand(args: string[]): Promise<void> {
       );
     });
   });
+}
+
+// ── 怪物标识工作流支撑 ──────────────────────────────────────────────
+
+const MONSTER_TABLE_FILES = {
+  full: path.join(toolRoot, "data", "monster-flag-table.csv"),
+  outOfRange: path.join(toolRoot, "data", "monster-flag-out-of-range.csv"),
+  highError: path.join(toolRoot, "data", "monster-flag-high-error.csv"),
+  human: path.join(toolRoot, "data", "monster-flag-human.csv")
+} as const;
+
+interface MonsterTablePayload {
+  path: string;
+  exists: boolean;
+  updatedAt?: string;
+  headers: string[];
+  rows: string[][];
+}
+
+interface MonsterTablesResult {
+  full: MonsterTablePayload;
+  outOfRange: MonsterTablePayload;
+  highError: MonsterTablePayload;
+  human: MonsterTablePayload;
+}
+
+/**
+ * 跑 CLI 侧独立入口脚本（monster-flags.ts / monster-flags-csv.ts /
+ * monster-flags-table-apply.ts），与 index.ts 不同入口。
+ * 返回合并的 stdout+stderr 供面板日志区展示。
+ */
+async function runToolScript(scriptRelPath: string, args: string[]): Promise<string> {
+  const tsxCliEntry = path.join(toolRoot, "node_modules", "tsx", "dist", "cli.mjs");
+  const scriptAbs = path.join(toolRoot, scriptRelPath);
+  const distAbs = scriptAbs.replace(/[\\/]src[\\/]/, path.sep + "dist" + path.sep).replace(/\.ts$/, ".js");
+
+  let command = "node";
+  let spawnArgs: string[];
+  if (fs.existsSync(distAbs)) {
+    spawnArgs = [distAbs, ...args];
+  } else if (fs.existsSync(tsxCliEntry) && fs.existsSync(scriptAbs)) {
+    spawnArgs = [tsxCliEntry, scriptAbs, ...args];
+  } else {
+    throw new Error(`Monster CLI entry not found: ${scriptRelPath}. Build the workspace or install deps first.`);
+  }
+
+  return new Promise<string>((resolve, reject) => {
+    const child = spawn(command, spawnArgs, { cwd: toolRoot, windowsHide: true });
+    let stdout = "";
+    let stderr = "";
+    child.stdout.on("data", (c) => { stdout += c.toString("utf8"); });
+    child.stderr.on("data", (c) => { stderr += c.toString("utf8"); });
+    child.on("error", reject);
+    child.on("close", (code) => {
+      if (code === 0) {
+        resolve(stdout + (stderr ? `\n[stderr]\n${stderr}` : ""));
+        return;
+      }
+      reject(new Error((stderr.trim() || stdout.trim() || `CLI exited with code ${code ?? "unknown"}.`)));
+    });
+  });
+}
+
+/** 读取一张 CSV 为 headers+rows（容忍 BOM/CRLF/引号）。 */
+function readMonsterTableCsv(filePath: string): MonsterTablePayload {
+  const payload: MonsterTablePayload = { path: filePath, exists: false, headers: [], rows: [] };
+  if (!fs.existsSync(filePath)) return payload;
+  const raw = fs.readFileSync(filePath);
+  const text = raw.toString("utf8").replace(/^﻿/, "").replace(/^\uFEFF/, "");
+  const stats = fs.statSync(filePath);
+  payload.exists = true;
+  payload.updatedAt = stats.mtime.toISOString();
+  const parsed = parseSimpleCsv(text);
+  payload.headers = parsed.headers;
+  payload.rows = parsed.rows;
+  return payload;
+}
+
+function getMonsterTables(): MonsterTablesResult {
+  return {
+    full: readMonsterTableCsv(MONSTER_TABLE_FILES.full),
+    outOfRange: readMonsterTableCsv(MONSTER_TABLE_FILES.outOfRange),
+    highError: readMonsterTableCsv(MONSTER_TABLE_FILES.highError),
+    human: readMonsterTableCsv(MONSTER_TABLE_FILES.human)
+  };
+}
+
+/** 写回全量表：UTF-8 BOM + CRLF（与 monster-flags-csv 生成器输出同形）。 */
+function writeMonsterTableCsv(headers: string[], rows: string[][]): void {
+  const text = [headers, ...rows]
+    .map((cells) => cells.map(escapeCsvCell).join(","))
+    .join("\r\n") + "\r\n";
+  fs.writeFileSync(MONSTER_TABLE_FILES.full, "\uFEFF" + text, "utf8");
+}
+
+function escapeCsvCell(cell: string): string {
+  const text = cell ?? "";
+  if (/[",\r\n]/.test(text)) return `"${text.replace(/"/g, '""')}"`;
+  return text;
+}
+
+function parseSimpleCsv(text: string): { headers: string[]; rows: string[][] } {
+  const records: string[][] = [];
+  let field = "";
+  let row: string[] = [];
+  let inQuotes = false;
+  let sawAny = false;
+  const pushField = () => { row.push(field); field = ""; };
+  const pushRow = () => {
+    if (row.length > 0 || field !== "" || sawAny) { pushField(); records.push(row); }
+    row = [];
+    sawAny = false;
+  };
+  for (let i = 0; i < text.length; i++) {
+    const ch = text[i];
+    if (inQuotes) {
+      if (ch === '"') {
+        if (text[i + 1] === '"') { field += '"'; i++; } else inQuotes = false;
+      } else field += ch;
+      continue;
+    }
+    if (ch === '"') { inQuotes = true; sawAny = true; continue; }
+    if (ch === ",") { sawAny = true; pushField(); continue; }
+    if (ch === "\r") { if (text[i + 1] === "\n") i++; pushRow(); continue; }
+    if (ch === "\n") { pushRow(); continue; }
+    sawAny = true;
+    field += ch;
+  }
+  pushRow();
+  const headers = records[0];
+  if (!headers || headers.length === 0) return { headers: [], rows: [] };
+  const rows = records.slice(1);
+  return { headers, rows: rows.filter((r) => !(r.length === 1 && r[0] === "")) };
 }
 
 function getArtifactState(): ArtifactState {

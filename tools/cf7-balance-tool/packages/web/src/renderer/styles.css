@@ -1,4 +1,4 @@
-﻿:root {
+:root {
   color-scheme: dark;
   font-family: Bahnschrift, "Microsoft YaHei UI", "Trebuchet MS", sans-serif;
   background:
@@ -1394,4 +1394,159 @@ pre {
   gap: 0.4rem;
   padding: 0.3rem 0;
   align-items: center;
+}
+
+/* ── 怪物标识面板 ─────────────────────────────────────────── */
+
+.monster-tabs {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin: 12px 0;
+}
+
+.monster-tab {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 14px;
+  border-radius: 12px;
+  border: 1px solid rgba(255, 227, 194, 0.16);
+  background: rgba(255, 227, 194, 0.05);
+  color: inherit;
+  cursor: pointer;
+}
+
+.monster-tab-active {
+  border-color: rgba(214, 120, 35, 0.7);
+  background: rgba(214, 120, 35, 0.14);
+}
+
+.monster-tab-count {
+  font-size: 0.78rem;
+  opacity: 0.7;
+}
+
+.monster-table-wrap {
+  max-height: 420px;
+  overflow: auto;
+  border: 1px solid rgba(255, 227, 194, 0.12);
+  border-radius: 12px;
+}
+
+.monster-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.82rem;
+}
+
+.monster-table th,
+.monster-table td {
+  padding: 4px 6px;
+  border-bottom: 1px solid rgba(255, 227, 194, 0.08);
+  text-align: left;
+  white-space: nowrap;
+}
+
+.monster-table thead th {
+  position: sticky;
+  top: 0;
+  background: #1c1815;
+  z-index: 1;
+}
+
+.monster-col-edit {
+  color: #e8b477;
+}
+
+.monster-rownum {
+  color: rgba(244, 234, 223, 0.45);
+  width: 2.4rem;
+}
+
+.monster-row-changed {
+  background: rgba(214, 120, 35, 0.08);
+}
+
+.monster-cell-changed .monster-cell-input {
+  border-color: rgba(214, 120, 35, 0.75);
+  background: rgba(214, 120, 35, 0.12);
+}
+
+.monster-cell-input {
+  width: 4.6rem;
+  padding: 2px 4px;
+  border: 1px solid rgba(255, 227, 194, 0.18);
+  border-radius: 6px;
+  background: rgba(0, 0, 0, 0.3);
+  color: inherit;
+}
+
+.monster-cell-read {
+  opacity: 0.9;
+}
+
+.monster-revert {
+  font-size: 0.75rem;
+  padding: 2px 8px;
+  border-radius: 8px;
+  border: 1px solid rgba(255, 227, 194, 0.2);
+  background: transparent;
+  color: inherit;
+  cursor: pointer;
+}
+
+.monster-actions {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  align-items: center;
+  margin-top: 14px;
+}
+
+.monster-actions button {
+  padding: 8px 16px;
+  border-radius: 12px;
+  border: 1px solid rgba(255, 227, 194, 0.2);
+  background: rgba(255, 227, 194, 0.07);
+  color: inherit;
+  cursor: pointer;
+}
+
+.monster-actions button:disabled {
+  opacity: 0.45;
+  cursor: default;
+}
+
+.monster-write-armed {
+  border-color: #d67823 !important;
+  background: rgba(214, 120, 35, 0.25) !important;
+}
+
+.monster-solve-group {
+  display: inline-flex;
+  gap: 6px;
+  align-items: center;
+}
+
+.monster-solve-group input {
+  width: 220px;
+  padding: 7px 10px;
+  border-radius: 10px;
+  border: 1px solid rgba(255, 227, 194, 0.18);
+  background: rgba(0, 0, 0, 0.3);
+  color: inherit;
+}
+
+.monster-log {
+  margin-top: 12px;
+  max-height: 220px;
+  overflow: auto;
+  padding: 12px;
+  border-radius: 12px;
+  border: 1px solid rgba(255, 227, 194, 0.12);
+  background: rgba(0, 0, 0, 0.35);
+  font-size: 0.78rem;
+  white-space: pre-wrap;
+  word-break: break-all;
 }
