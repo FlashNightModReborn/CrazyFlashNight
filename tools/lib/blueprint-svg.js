@@ -131,6 +131,76 @@ function parseSvgTree(svg) {
   return root;
 }
 
+// 收集渲染点云：与 svgRenderBounds 同一套 use/transform 遍历，
+// 返回实际渲染的 path 顶点数组 [{x,y}]（供 PCA/统计用）。
+function svgRenderPoints(svg) {
+  const root = parseSvgTree(svg);
+  const idMap = {};
+  (function collect(node) {
+    const id = /id="([^"]+)"/.exec(node.attrs || '');
+    if (id) idMap[id[1]] = node;
+    node.children.forEach(collect);
+  })(root);
+  const pts = [];
+  function addPath(d, M) {
+    const toks = d.match(/[MLQCAZmlqcz]|-?\d*\.?\d+(?:e-?\d+)?/g) || [];
+    for (let i = 0; i < toks.length; i++) {
+      if (/^-?\d/.test(toks[i]) && i + 1 < toks.length && /^-?\d/.test(toks[i + 1])) {
+        const x = +toks[i], y = +toks[i + 1]; i++;
+        pts.push({ x: M.a * x + M.c * y + M.tx, y: M.b * x + M.d * y + M.ty });
+      }
+    }
+  }
+  function walk(node, M) {
+    if (node.tag === 'defs' || node.tag === 'clipPath' || node.tag === 'filter'
+        || /Gradient$/.test(node.tag)) return;
+    const local = parseMatrix(node.attrs);
+    const M2 = local ? matMul(M, local) : M;
+    if (node.tag === 'path') {
+      const d = /d="([^"]*)"/.exec(node.attrs || '');
+      if (d) addPath(d[1], M2);
+      return;
+    }
+    if (node.tag === 'use') {
+      const href = /xlink:href="#([^"]+)"/.exec(node.attrs || '');
+      const t = href && idMap[href[1]];
+      if (t) {
+        const ux = parseFloat((/[^t]x="(-?[\d.]+)"/.exec(node.attrs) || [])[1] || 0);
+        const uy = parseFloat((/y="(-?[\d.]+)"/.exec(node.attrs) || [])[1] || 0);
+        walk(t, matMul(M2, { a: 1, b: 0, c: 0, d: 1, tx: ux, ty: uy }));
+      }
+      return;
+    }
+    node.children.forEach(c => walk(c, M2));
+  }
+  walk(root.children.find(c => c.tag === 'svg') || root, IDENTITY_M);
+  return pts;
+}
+
+// 点云主轴角（度，相对 x 轴，SVG y 向下坐标系）
+function principalAxisDeg(pts) {
+  if (pts.length < 3) return 0;
+  let mx = 0, my = 0;
+  pts.forEach(p => { mx += p.x; my += p.y; });
+  mx /= pts.length; my /= pts.length;
+  let sxx = 0, syy = 0, sxy = 0;
+  pts.forEach(p => {
+    const dx = p.x - mx, dy = p.y - my;
+    sxx += dx * dx; syy += dy * dy; sxy += dx * dy;
+  });
+  // 协方差主轴取向：θ = ½·atan2(2sxy, sxx-syy)（sxy=0 时正确回落 0°/90°）
+  return Math.atan2(2 * sxy, sxx - syy) / 2 * 180 / Math.PI;
+}
+
+// 按内容主轴转正：点云主成分转到水平。素材本体歪（keytar 斜持姿态）时，
+// 视觉横置比按 viewBox 转正更准。
+function alignToPrincipalAxis(svgText) {
+  const deg = principalAxisDeg(svgRenderPoints(svgText));
+  // 把主轴角归零：逆角旋转（deg>0 内容下行右倾 → 逆时针抬正）
+  const target = deg > 90 ? deg - 180 : (deg < -90 ? deg + 180 : deg);
+  return { deg, svg: rotateByDeg(svgText, -target) };
+}
+
 function svgRenderBounds(svg) {
   const root = parseSvgTree(svg);
   const idMap = {};
@@ -471,5 +541,6 @@ module.exports = {
   isAxisRectPath, renderedPathCount,
   matMul, parseMatrix, parseSvgTree, svgRenderBounds,
   extractGroup, groupRenderBounds,
+  svgRenderPoints, principalAxisDeg, alignToPrincipalAxis,
   toBlueprint, rotateIfTall, rotateByDeg, composeBlueprints,
 };

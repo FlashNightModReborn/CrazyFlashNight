@@ -9,7 +9,8 @@
 const fs = require('fs');
 const path = require('path');
 const {
-  exportFirstFrameSvg, toBlueprint, rotateIfTall, rotateByDeg, renderedPathCount,
+  exportFirstFrameSvg, toBlueprint, rotateIfTall, rotateByDeg,
+  alignToPrincipalAxis, renderedPathCount,
 } = require('./lib/blueprint-svg');
 
 const ROOT = path.resolve(__dirname, '..');
@@ -17,16 +18,17 @@ const OUT_DIR = path.join(ROOT, 'launcher', 'web', 'assets', 'intel-illustration
 const TMP = path.join(ROOT, 'tmp', 'intel-bp-bake');
 const DRY = process.argv.includes('--dry-run');
 
-// 注册表：{name, swf, spriteId, out, alt, rotateDeg}
+// 注册表：{name, swf, spriteId, out, alt, rotateDeg|alignAxis}
 // spriteId 是 SWF 内 DefineSprite characterId；换素材源时重枚举核对。
-// rotateDeg：源姿态斜置的按姿态角转正（负角=逆时针），与话筒一样横放展示。
+// rotateDeg：按姿态角转正（负角=逆时针），与话筒一样横放展示。
+// alignAxis：素材本体歪（keytar 斜持）时按点云主轴水平化，比手调角度可靠。
 const JOBS = [
   { name: '话筒', out: 'rock-park-mic.svg', swf: 'flashswf/摇滚武器临时存放.swf', spriteId: 3,
     alt: '定向声波话筒·白线稿' },
   { name: '吉他', out: 'rock-park-guitar.svg', swf: 'flashswf/摇滚武器临时存放.swf', spriteId: 9,
     alt: '电能吉他·白线稿', rotateDeg: -30 },
   { name: '键盘', out: 'rock-park-keyboard.svg', swf: 'flashswf/摇滚武器临时存放.swf', spriteId: 14,
-    alt: '键盘合成器·白线稿', rotateDeg: -70 },
+    alt: '键盘合成器·白线稿', alignAxis: true },
 ];
 
 const work = path.join(TMP);
@@ -39,8 +41,10 @@ for (const job of JOBS) {
   fs.copyFileSync(path.join(ROOT, job.swf), local); // 中文路径→临时副本
   const r = exportFirstFrameSvg(job.spriteId, path.join(work, 'svg'), local, null);
   if (!r) { failed.push(job.name + ' export'); continue; }
-  const svg = job.rotateDeg ? rotateByDeg(toBlueprint(r.svg), job.rotateDeg)
-    : rotateIfTall(toBlueprint(r.svg));
+  const bp = toBlueprint(r.svg);
+  const svg = job.alignAxis ? alignToPrincipalAxis(bp).svg
+    : job.rotateDeg ? rotateByDeg(bp, job.rotateDeg)
+    : rotateIfTall(bp);
   if (renderedPathCount(svg) < 2) { failed.push(job.name + ' no-vector'); continue; }
   if (!DRY) {
     fs.mkdirSync(OUT_DIR, { recursive: true });
