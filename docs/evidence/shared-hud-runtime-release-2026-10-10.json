@@ -111,7 +111,26 @@
   },
   "standardEntryBusinessVerified": false,
   "postPushAudit": {
-    "status": "pending"
+    "status": "completed",
+    "conclusion": "success",
+    "runId": 38056871777,
+    "url": "https://github.com/FlashNightModReborn/CrazyFlashNight/actions/runs/38056871777",
+    "headSha": "e46aaef55681e01096c1474d385bace384559092",
+    "state": "promoted",
+    "deploymentChanged": true,
+    "signers": 2,
+    "faultDomains": 2,
+    "payloadFiles": 43,
+    "logSha256": "315C7C67C8C4CD0896CA4F20D25C212CA9CA2AEDD89D60F2C5C26EBB6CC27638",
+    "verifiedAtUtc": "2026-10-10T13:50:57.469063+00:00",
+    "evidenceLines": [
+      "audit-native-runtime\tAudit native/runtime release state\t2026-10-10T13:50:33.9507659Z [RuntimeReleaseState] OK state=promoted mode=Audit manifest=cf7-runtime-manifest-v2 deploymentChanged=true forcedDeploymentVerification=false base=c0cb5c17b6835762c3f9af90b68a190cb968366d head=e46aaef55681e01096c1474d385bace384559092",
+      "audit-native-runtime\tAudit native/runtime release state\t2026-10-10T13:50:33.9454247Z [RuntimeConsensus] OK schema=v2 mode=Index signers=2 faultDomains=2 payload=B435D4135AA68731FDA1823D54003E1F2CBFC7C89E6450C615C1F85D340284FC",
+      "audit-native-runtime\tAudit native/runtime release state\t2026-10-10T13:47:24.0485959Z [RuntimeBundleV2] OK state=integrity-only mode=staged files=43 payload=B435D4135AA68731FDA1823D54003E1F2CBFC7C89E6450C615C1F85D340284FC",
+      "audit-native-runtime\tAudit native/runtime release state\t2026-10-10T13:47:50.4722424Z [RuntimeBundleV2] OK state=coherent mode=staged files=43 payload=B435D4135AA68731FDA1823D54003E1F2CBFC7C89E6450C615C1F85D340284FC",
+      "audit-native-runtime\tAudit native/runtime release state\t2026-10-10T13:50:33.9434714Z [RuntimeBundleV2] OK state=coherent mode=staged files=43 payload=B435D4135AA68731FDA1823D54003E1F2CBFC7C89E6450C615C1F85D340284FC"
+    ]
   },
-  "rawEvidenceRoot": "tmp/hud-cost-release-20261010"
+  "rawEvidenceRoot": "tmp/hud-cost-release-20261010",
+  "deploymentCommit": "e46aaef55681e01096c1474d385bace384559092"
 }

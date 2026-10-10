@@ -334,7 +334,7 @@ push 红灯发生时提交已经进入 `main`；workflow 只能报警，不能�
 
 正式入口无 candidate 参数启动，确认 `formal_runtime`、正式 Core 路径/哈希/identity/closure；启动页就绪、预热回 Idle、正常关闭 exit 0。等待发布期间另有一轮旧正式入口运行更新了 1 号槽 JSON/SOL（本任务未启动，操作者未建立）；保留该更新，以最新状态为基线的 29 个保护文件在 promotion 与入口检查前后哈希一致。未进入角色槽位、未重跑本批真实战斗业务，故不称业务 `standard_entry_verified`。试玩日志中的 3719 ms Flash 长帧与退出终端取消仍按原观察保留，未归因为 HUD 优化。
 
-部署提交与远端事后 Audit 待本轮推送后补记。本次更新 2.718 DEV / UNSTABLE 开发运行库，不创建新的稳定整包。
+部署提交 [e46aaef556](https://github.com/FlashNightModReborn/CrazyFlashNight/commit/e46aaef55681e01096c1474d385bace384559092) 已快进推送 `main`；[事后 Audit 38056871777](https://github.com/FlashNightModReborn/CrazyFlashNight/actions/runs/38056871777) 成功，独立重放最终 GitHub 证明并核验 Index 中 43 个文件、2 signer / 2 faultDomain，明确输出 `state=promoted / deploymentChanged=true`。本次更新 2.718 DEV / UNSTABLE 开发运行库，不创建新的稳定整包。
 
 ## 2026-10-09 本机性能方案与统一画面调度正式发布
 
