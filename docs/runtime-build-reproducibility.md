@@ -324,6 +324,18 @@ push 红灯发生时提交已经进入 `main`；workflow 只能报警，不能�
 
 **阅读口径**：以下各节是按对象 / 日期 / 范围留存的历史证据快照，记录各列车当时的身份、证明与验收边界。节标题与正文中的「当前正式发布」「上一正式发布」「顶部当前段」等字样均为该次发布当时的相对称呼，不代表当前部署状态；查询当前部署身份与状态一律以上文「当前机器真值读取说明」列出的机器真源为准。本节内容由原文件前部整体迁移至此，历史记录未删改。
 
+## 2026-10-10 共享 HUD 绘制成本优化正式发布
+
+共享主 HUD 改用脏区域重绘，Native 五路 HUD 图面复用有界像素缓冲，降低持续动画与通知更新时的 CPU 工作量。维护者完成候选试玩并授权检查日志后发布；实现、受控 ABBA 收益与实战边界见[成本记录](shared-hud-render-cost-2026-10-10.md)，机器身份与本轮回执见[发布证据](evidence/shared-hud-runtime-release-2026-10-10.json)。
+
+- 冻结 source `c0cb5c17b6835762c3f9af90b68a190cb968366d`，tag `runtime-build-v2/20261010-shared-hud-cost-v2`，request `57CF2E55A486384C13232F6397EB05157463AE8B174E71A1B136CF42C1531FF3`。原 v1 因 production policy 42/47 被阻断，未 dispatch 云端、未部署；派生来源记录、现役加载断言及 CSS 治理经[限定修复](evidence/shared-hud-release-preflight-repair-2026-10-10.json)后，由 v2 原子 supersede。原失败 tag/request/receipt 保留。
+- 注册本地 X509 `builder-local-c / physical-host-c` 与 [GitHub OIDC/Sigstore run 38055726655](https://github.com/FlashNightModReborn/CrazyFlashNight/actions/runs/38055726655) 达成 2 signer / 2 faultDomain、43 文件一致闭包；最终 production policy **47/47**。本地 proof/CAS 按未变前三域与 payload 复用，最终政策 receipt 和云端证明绑定 v2 source；没有重复使用失败政策回执。build identity `9E5A7FFD14A82D47C9C0197196BF51A715B46D75D727C440067B6F832649DA4B`，payload closure `B435D4135AA68731FDA1823D54003E1F2CBFC7C89E6450C615C1F85D340284FC`。
+- `2026-10-10T13:38:33.5732481Z` 由唯一 writer 完成原子 promotion、strict live consensus 与完整安装自检。上一版保留于 `tmp/runtime-promotions/20261010T133753998Z-0aaad62df9c44f3696863bfb6af61eaf/previous`。Core DLL 与维护者试玩候选完全相同；Host 6923 passed / 22 skipped、GPU 7 passed / 0 skipped 的产品字节绑定继续成立。
+
+正式入口无 candidate 参数启动，确认 `formal_runtime`、正式 Core 路径/哈希/identity/closure；启动页就绪、预热回 Idle、正常关闭 exit 0。等待发布期间另有一轮旧正式入口运行更新了 1 号槽 JSON/SOL（本任务未启动，操作者未建立）；保留该更新，以最新状态为基线的 29 个保护文件在 promotion 与入口检查前后哈希一致。未进入角色槽位、未重跑本批真实战斗业务，故不称业务 `standard_entry_verified`。试玩日志中的 3719 ms Flash 长帧与退出终端取消仍按原观察保留，未归因为 HUD 优化。
+
+部署提交 [e46aaef556](https://github.com/FlashNightModReborn/CrazyFlashNight/commit/e46aaef55681e01096c1474d385bace384559092) 已快进推送 `main`；[事后 Audit 38056871777](https://github.com/FlashNightModReborn/CrazyFlashNight/actions/runs/38056871777) 成功，独立重放最终 GitHub 证明并核验 Index 中 43 个文件、2 signer / 2 faultDomain，明确输出 `state=promoted / deploymentChanged=true`。本次更新 2.718 DEV / UNSTABLE 开发运行库，不创建新的稳定整包。
+
 ## 2026-10-09 本机性能方案与统一画面调度正式发布
 
 维护者在开发候选反馈“可行”后，明确授权正式发布，使测试员通过普通启动入口使用本机性能方案。范围包括通用/性能/画质三预设、自动/固定、绘制高度上限、一次撤销与实际画质状态；C# 统一策略，AS2 保留采样和执行，原生天气与新弹壳消费离散表现预算。实现与回归边界见[性能方案合同](../launcher/perf/flash-compositor/README.md#动态分辨率与性能方案)。

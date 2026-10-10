@@ -13,7 +13,7 @@
   ],
   "passedPolicyChecks": 42,
   "totalPolicyChecks": 47,
-  "failedAttemptDisposition": "retained; supersede with a new immutable v2 request after repair",
+  "failedAttemptDisposition": "superseded / NOT_DEPLOYED; original tag, request and failed receipt retained",
   "cloudDispatchedForFailedSource": false,
   "failedSourcePromoted": false,
   "generatedAssets": {
@@ -85,5 +85,6 @@
   "productionCoreOrNativeChanged": false,
   "realPlayerSaveWrites": false,
   "gameBusinessE2e": false,
-  "rawEvidenceRoot": "tmp/hud-cost-release-20261010"
+  "rawEvidenceRoot": "tmp/hud-cost-release-20261010",
+  "supersededByRequestId": "57CF2E55A486384C13232F6397EB05157463AE8B174E71A1B136CF42C1531FF3"
 }
