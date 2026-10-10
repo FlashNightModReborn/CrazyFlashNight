@@ -386,6 +386,31 @@ function rotateIfTall(svgText) {
     + svgText.slice(open, close) + '</g></svg>';
 }
 
+// 任意角转正：绕包围盒中心旋转 deg（SVG rotate 正角=顺时针），
+// 重算 viewBox 覆盖旋转后内容。用于把斜置素材（乐器等）按姿态角转正。
+function rotateByDeg(svgText, deg) {
+  const m = /<svg[^>]*viewBox="(-?[\d.]+) (-?[\d.]+) ([\d.]+) ([\d.]+)"/.exec(svgText);
+  if (!m || !deg) return svgText;
+  const bx = +m[1], by = +m[2], bw = +m[3], bh = +m[4];
+  if (!bw || !bh) return svgText;
+  const cx = bx + bw / 2, cy = by + bh / 2;
+  const rad = deg * Math.PI / 180, c = Math.cos(rad), s = Math.sin(rad);
+  const pts = [[bx, by], [bx + bw, by], [bx, by + bh], [bx + bw, by + bh]]
+    .map(p => {
+      const dx = p[0] - cx, dy = p[1] - cy;
+      return [cx + dx * c - dy * s, cy + dx * s + dy * c];
+    });
+  const xs = pts.map(p => p[0]), ys = pts.map(p => p[1]);
+  const nx = Math.min.apply(null, xs), ny = Math.min.apply(null, ys);
+  const nw = Math.max.apply(null, xs) - nx, nh = Math.max.apply(null, ys) - ny;
+  const open = svgText.indexOf('>', svgText.indexOf('<svg')) + 1;
+  const close = svgText.lastIndexOf('</svg>');
+  const head = svgText.slice(0, open).replace(/viewBox="[^"]*"/,
+    `viewBox="${nx.toFixed(2)} ${ny.toFixed(2)} ${nw.toFixed(2)} ${nh.toFixed(2)}"`);
+  return head + `<g transform="rotate(${deg} ${cx.toFixed(2)} ${cy.toFixed(2)})">`
+    + svgText.slice(open, close) + '</g></svg>';
+}
+
 // 拼合多个源素材。mode：
 //   'stack'   每件各自横置 90° 后上下排（双持/入鞘=本体+鞘）——统一缩放保相对尺寸
 //   'row'     多件原姿态横排（变装套装爆炸图）——统一缩放、逐件垂直居中
@@ -446,5 +471,5 @@ module.exports = {
   isAxisRectPath, renderedPathCount,
   matMul, parseMatrix, parseSvgTree, svgRenderBounds,
   extractGroup, groupRenderBounds,
-  toBlueprint, rotateIfTall, composeBlueprints,
+  toBlueprint, rotateIfTall, rotateByDeg, composeBlueprints,
 };
