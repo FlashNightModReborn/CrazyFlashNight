@@ -24,7 +24,7 @@
 
 | 部分 | 权威与职责 |
 | --- | --- |
-| 书架目录与阅读 | `launcher/web/modules/bookshelf-panel.js`，复用正式面板注册、懒加载、1024×576 逻辑画布和请求生命周期；开门默认进入 3D 置物架总览（`bookshelf-shelf-scene.js`，资产归 `assets/bookshelf/shelf/`，提取链 `tools/bookshelf-shelf-extract/`（Ruffle 渲染原版书架 SWF 帧与 CF1 标题）→ `tools/bookshelf-graybox/` → `tools/import-bookshelf-shelf.py`），常驻角色槽动态生成档案夹上架，点选只改 selected、不产生写 |
+| 书架目录与阅读 | `launcher/web/modules/bookshelf-panel.js`，复用正式面板注册、懒加载、1024×576 逻辑画布和请求生命周期；开门默认进入交互 3D 置物架总览（`bookshelf-shelf-scene.js`），支持抽出、旋转、合集选代、目录收起和档案抽屉。维护源归 [tools/bookshelf-v4](../tools/bookshelf-v4/README.md)，运行资产由 `tools/import-bookshelf-shelf.py` 装配；书脊/封面保留旧提取溯源，角色标签与全部档案列表使用当前权威快照，检视及详情导航零写 |
 | 前作系列与原版播放器 | 一册六章、合集本地资源准入及独立 Ruffle 存储，见[系列接入合同](bookshelf-series-integration.md) |
 | 常驻档案读取 | `launcher/src/Tasks/BookshelfTask.cs`，经现有 SOL/shadow 裁决读取正文；Web 只提交目标身份 |
 | 角色切换 | `scripts/类定义/org/flashNight/arki/ui/BookshelfPanelService.as`，在旧世界销毁后调用 `SaveManager.replacePlayerContext`；书中入场在同一次遮幕内准备首图并直接进入战斗，常驻换档及返回原角色重建房间，到达后确认 |

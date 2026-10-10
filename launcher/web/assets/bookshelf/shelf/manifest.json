@@ -44,7 +44,7 @@
     },
     {
       "path": "tools/import-bookshelf-shelf.py",
-      "sha256": "eb04b4506aea8bce7529ac73e14493e2cb49726c43c0d59589a4452dd54470a2"
+      "sha256": "f45015b2cea3d4f35cb14f619e166cb737c1df6f41585d197275e813f29edc65"
     }
   ],
   "designSha256": "d9a1d4fe266a15a611581000b352b7b578d6ae4af1a2c69ec0a84a45a056e7f3",
@@ -345,6 +345,16 @@
       "path": "textures/spine-sail-twins.png",
       "bytes": 13394,
       "sha256": "d42a51737ab18435d8fc43b570bdf585a9a4e38111dd34286101801595aa7dc0"
+    },
+    {
+      "path": "v3.glb",
+      "bytes": 1287644,
+      "sha256": "45f0520e7788947664dd618423614e1ebafd96b66001036773a4185a90f45e10"
+    },
+    {
+      "path": "v4-manifest.json",
+      "bytes": 11231,
+      "sha256": "a791c2b496a474fc29f2c91f1fbdd5eacd5ef893445f96123c001a7f9d5d52c2"
     }
   ]
 }

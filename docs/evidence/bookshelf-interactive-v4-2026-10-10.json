@@ -1,0 +1,180 @@
+{
+  "scope": "Production bookshelf Web presentation and paired maintenance sources; no native promotion or real-save writes",
+  "sourceCommit": "8f94bafe7a102b66aae1e46f51f9bee83a089be8",
+  "baseCommit": "55418e73b29affa89013fe1e9acd9335b46ba374",
+  "modelSha256": "45f0520e7788947664dd618423614e1ebafd96b66001036773a4185a90f45e10",
+  "blendSha256": "5ae5ce22307ed50d27c451dd310cc62d3994204f3112f91b37f85b66b99fb472",
+  "checks": {
+    "runtimeAssertions": 134,
+    "originalLifecycleAssertions": 34,
+    "sceneChecks": 19,
+    "layouts": [
+      "wide",
+      "medium",
+      "narrow"
+    ],
+    "cameraSamples": 135,
+    "browserScenarios": [
+      {
+        "width": 640,
+        "height": 360,
+        "scenario": "overview",
+        "passed": true
+      },
+      {
+        "width": 640,
+        "height": 360,
+        "scenario": "settle",
+        "passed": true
+      },
+      {
+        "width": 640,
+        "height": 360,
+        "scenario": "unknown",
+        "passed": true
+      },
+      {
+        "width": 640,
+        "height": 360,
+        "scenario": "readfail",
+        "passed": true
+      },
+      {
+        "width": 640,
+        "height": 360,
+        "scenario": "return",
+        "passed": true
+      },
+      {
+        "width": 640,
+        "height": 360,
+        "scenario": "series",
+        "passed": true
+      },
+      {
+        "width": 640,
+        "height": 360,
+        "scenario": "records",
+        "passed": true
+      },
+      {
+        "width": 640,
+        "height": 360,
+        "scenario": "empty",
+        "passed": true
+      },
+      {
+        "width": 1024,
+        "height": 576,
+        "scenario": "overview",
+        "passed": true
+      },
+      {
+        "width": 1024,
+        "height": 576,
+        "scenario": "settle",
+        "passed": true
+      },
+      {
+        "width": 1024,
+        "height": 576,
+        "scenario": "unknown",
+        "passed": true
+      },
+      {
+        "width": 1024,
+        "height": 576,
+        "scenario": "readfail",
+        "passed": true
+      },
+      {
+        "width": 1024,
+        "height": 576,
+        "scenario": "return",
+        "passed": true
+      },
+      {
+        "width": 1024,
+        "height": 576,
+        "scenario": "series",
+        "passed": true
+      },
+      {
+        "width": 1024,
+        "height": 576,
+        "scenario": "records",
+        "passed": true
+      },
+      {
+        "width": 1024,
+        "height": 576,
+        "scenario": "empty",
+        "passed": true
+      },
+      {
+        "width": 1600,
+        "height": 900,
+        "scenario": "overview",
+        "passed": true
+      },
+      {
+        "width": 1600,
+        "height": 900,
+        "scenario": "settle",
+        "passed": true
+      },
+      {
+        "width": 1600,
+        "height": 900,
+        "scenario": "unknown",
+        "passed": true
+      },
+      {
+        "width": 1600,
+        "height": 900,
+        "scenario": "readfail",
+        "passed": true
+      },
+      {
+        "width": 1600,
+        "height": 900,
+        "scenario": "return",
+        "passed": true
+      },
+      {
+        "width": 1600,
+        "height": 900,
+        "scenario": "series",
+        "passed": true
+      },
+      {
+        "width": 1600,
+        "height": 900,
+        "scenario": "records",
+        "passed": true
+      },
+      {
+        "width": 1600,
+        "height": 900,
+        "scenario": "empty",
+        "passed": true
+      }
+    ],
+    "readingLibraryFiles": 896,
+    "sourceHashesVerifiedAgainstGitIndex": 58,
+    "browserConsoleErrors": 0,
+    "normalMotionSmoke": [
+      "extract",
+      "rotate",
+      "open_real_reader",
+      "fifth_archive_detail"
+    ]
+  },
+  "notExecuted": [
+    "Blender rebuild on this machine",
+    "real Host/Flash gameplay journey",
+    "real-save mutation or save/restart E2E"
+  ],
+  "localDeployment": "Existing main construction checkout preserved; complete Web deployment bytes published through Git main",
+  "maintenance": "tools/bookshelf-v4/README.md"
+}

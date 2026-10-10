@@ -5,7 +5,7 @@
     var shell, host, scale, mux, originalMux, token, instance, state, recovery, slotSignature, reader, original, catalogRequest;
     var selected = null, busy = false, generation = 0, autoReturnAttempted = false, readFailed = false;
     var playingOriginal = false, statusAttention = false;
-    var shelfScene = null, shelfLoading = null, shelfFailed = false, panelScale = 1;
+    var shelfScene = null, shelfLoading = null, shelfFailed = false, panelScale = 1, shelfAbort = null;
     var selectedChapter = 1, languages = {};
     var returning = false, transition = null, returnPoll = 0, transitionAck = '';
     var transitionEpoch = -1, transitionSequence = -1, transitionRevision = 0, transitionRetired = false;
@@ -23,8 +23,9 @@
         host.innerHTML = '<section class="bookshelf-panel"><header><div><span class="bookshelf-eyebrow">基地收藏室</span>'
             + '<h1 id="bookshelf-title">基地收藏室</h1></div><div id="bookshelf-reader-tools" class="bookshelf-reader-tools" hidden></div>'
             + '<div id="bookshelf-original-tools" class="bookshelf-original-tools" hidden></div>'
+            + '<button id="bookshelf-toggle-nav" aria-expanded="true" aria-controls="bookshelf-directory">目录</button>'
             + '<button id="bookshelf-close" aria-label="关闭书架">×</button></header>'
-            + '<div class="bookshelf-body"><nav aria-label="书架目录"><button id="bookshelf-nav-overview" class="bookshelf-entry" type="button"><strong>置物架总览</strong><small>3D 书架与合集</small></button>'
+            + '<div class="bookshelf-body"><nav id="bookshelf-directory" aria-label="书架目录"><button id="bookshelf-nav-overview" class="bookshelf-entry" type="button"><strong>置物架总览</strong><small>3D 书架与合集</small></button>'
             + '<h2>藏书</h2><div id="bookshelf-books"></div>'
             + '<h2>角色档案</h2><div id="bookshelf-slots"></div><p id="bookshelf-role" class="bookshelf-muted"></p></nav>'
             + '<main><div id="bookshelf-overview" hidden></div><div id="bookshelf-reader"></div><div id="bookshelf-original" hidden></div>'
@@ -51,9 +52,16 @@
         }});
         renderBooks();
         el('close').onclick = close;
+        el('toggle-nav').onclick = function() {
+            if (shelfScene) shelfScene.lockLayout();
+            var collapsed = host.querySelector('.bookshelf-panel').classList.toggle('bookshelf-nav-collapsed');
+            this.setAttribute('aria-expanded', String(!collapsed));
+            if (selected === null) renderOverview();
+        };
         el('nav-overview').onclick = function() {
             if (busy || returning) return;
             selected = null;
+            if (shelfScene) shelfScene.home();
             host.querySelector('.bookshelf-panel').classList.remove('library-open');
             reader.get('library').setAttribute('aria-expanded', 'false'); render();
         };
@@ -95,8 +103,9 @@
             el('books').appendChild(b); if (focused === book.id) b.focus({preventScroll:true});
         });
     }
-    function selectFromShelf(id) {
+    function selectFromShelf(id, disc) {
         if (!host || busy || returning) return;
+        if (id === 'crazy-flasher' && /^cf[1-6]$/.test(disc)) selectedChapter = Number(disc.slice(2));
         if (id === 'slot:__more__') {
             status('更多档案在左侧角色档案列表。', false);
             var firstSlot = el('slots').querySelector('[data-slot]');
@@ -123,22 +132,24 @@
     function ensureShelf() {
         if (shelfScene || shelfLoading || shelfFailed || !host) return;
         var g = generation;
+        shelfAbort = new AbortController(); var loadSignal = shelfAbort.signal;
         shelfLoading = import(new URL('bookshelf-shelf-scene.js', scriptBase).href).then(function(module) {
-            return module.createScene(null, function() {
+            if (g !== generation || !host || loadSignal.aborted) return null;
+            return module.createScene({width:el('overview').clientWidth || 802, height:el('overview').clientHeight || 481}, function() {
                 if (g !== generation) return;
                 shelfFailed = true;
                 if (shelfScene) { shelfScene.dispose(); shelfScene = null; }
                 if (host) render();
-            }, selectFromShelf, null);
+            }, selectFromShelf, loadSignal);
         }).then(function(scene) {
-            shelfLoading = null;
+            if (g === generation) shelfLoading = null;
             if (!scene) return;
             if (g !== generation || shelfFailed) { scene.dispose(); return; }
             shelfScene = scene;
             if (host) render();
         }).catch(function(error) {
-            shelfLoading = null;
             if (g !== generation) return;
+            shelfLoading = null;
             shelfFailed = true;
             if (typeof console !== 'undefined' && console.error) console.error(error);
             if (host) render();
@@ -166,7 +177,9 @@
             }
             return;
         }
-        if (shelfScene.canvas.parentElement !== ov) { ov.textContent = ''; ov.appendChild(shelfScene.canvas); }
+        if (shelfScene.canvas.parentElement !== ov) {
+            ov.textContent = ''; ov.appendChild(shelfScene.canvas); ov.appendChild(shelfScene.ui);
+        }
         var w = ov.clientWidth, h = ov.clientHeight;
         if (w && h) {
             // Render at the actual display density: the panel shell is upscaled by a
@@ -308,11 +321,9 @@
             var ordered = archiveSlots.slice().sort(function(a, b) {
                 return (b.slot === state.activeSlot ? 1 : 0) - (a.slot === state.activeSlot ? 1 : 0);
             });
-            var maxFolders = shelfScene.archiveMax();
-            var items = ordered.slice(0, maxFolders).map(function(s) {
+            var items = ordered.map(function(s) {
                 return {id: 'slot:' + s.slot, name: s.name, active: !!state && state.activeSlot === s.slot};
             });
-            if (ordered.length > maxFolders) items.push({id: 'slot:__more__', name: '更多档案', more: true});
             shelfScene.setArchives(items);
         }
         if (playingOriginal && chapter) original.show({chapter:selectedChapter, language:languages[selectedChapter] || 'cn'}); else original.hide();
@@ -471,11 +482,16 @@
         }
     }
     function close(transitionAccepted) {
+        if (transitionAccepted === 'escape' && selected === null && shelfScene
+            && shelfScene.stats().mode !== 'overview') {
+            shelfScene.returnToOverview(); return false;
+        }
         if (!host || busy || returning || transition || (transitionAccepted !== true && state && state.exitRequired && state.inRun)) return false;
         if (Bridge.send({type:'panel', panel:'bookshelf', cmd:'close', panelInstanceId:instance}) === false) return false;
         Panels.close(); return true;
     }
     function cleanup() {
+        if (shelfAbort) { shelfAbort.abort(); shelfAbort = null; }
         clearTimeout(returnPoll); returning = false; transition = null; transitionAck = '';
         generation++; if (mux) mux.destroy(); if (scale) scale.detach();
         if (catalogRequest) catalogRequest.abort(); catalogRequest = null;
