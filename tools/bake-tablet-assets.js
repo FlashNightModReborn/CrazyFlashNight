@@ -22,6 +22,16 @@ const REUSE = process.argv.includes('--reuse');
 // 唤起动画/触摸区/三条悬停说明（Web 用 DOM 实现）
 const HUB_DROP = new Set(['90', '91', '93', '109', '116', '137']);
 const VIEW_DROP = HUB_DROP; // 子视图同件剔除
+// 图标淡入动画：帧1 alpha=0 → 提亮到接近终态的可见值
+const ICON_ALPHA = '0.55';
+/** sprite 全帧导出目录中取编号最大的帧（淡入动画的完成态） */
+function lastFrameFile(dir) {
+  const files = fs.readdirSync(dir)
+    .filter(f => /^\d+\.svg$/.test(f))
+    .sort((a, b) => parseInt(a) - parseInt(b));
+  if (!files.length) throw new Error('no frames in ' + dir);
+  return path.join(dir, files[files.length - 1]);
+}
 // sprite334 静止帧 → 各页背景
 const VIEW_FRAMES = { infrastructure: '24', contacts: '54', encyclopedia: '84', materials: '99' };
 // 图标整件 → 文件名
@@ -47,8 +57,10 @@ function exportSpriteAllFrames(characterId, cacheDir) {
   return path.join(cacheDir, dir);
 }
 
-/** 剔除指定 characterId 的 <use>，去掉 ffdec 元数据与位图元素，按内容重算 viewBox */
-function cleanFrameSvg(svg, dropCids) {
+/** 剔除指定 characterId 的 <use>，去掉 ffdec 元数据与位图元素，按内容重算 viewBox。
+ *  iconAlpha：图标 sprite 都是淡入动画，帧导出固定取第 1 帧（fill-opacity=0）；
+ *  把这些全透明路径提亮到设计终态附近，否则按钮图标整批不可见（实机症状）。 */
+function cleanFrameSvg(svg, dropCids, iconAlpha) {
   let s = svg;
   for (const cid of dropCids) {
     s = s.replace(new RegExp(`<use [^>]*ffdec:characterId="${cid}"[^>]*/>`, 'g'), '');
@@ -57,6 +69,9 @@ function cleanFrameSvg(svg, dropCids) {
   s = s.replace(/\s+xmlns:ffdec="[^"]*"/, '');
   s = s.replace(/<image[^>]*\/?>(?:<\/image>)?/g, '');
   s = s.replace(/\s+width="[^"]*"/, (m, o) => o === 0 ? m : m); // 不动外层声明，viewBox 单独补
+  if (iconAlpha != null) {
+    s = s.replace(/fill-opacity="0(?:\.0+)?"/g, 'fill-opacity="' + iconAlpha + '"');
+  }
   // 悬空 use（引用了被剔元件的 defs 仍留着无害）
   const liveIds = new Set((s.match(/id="([^"]+)"/g) || []).map(x => x.slice(4, -1)));
   s = s.replace(/<use [^>]*xlink:href="#([^"]+)"[^>]*\/>/g,
@@ -250,7 +265,7 @@ function main() {
     const b = hotspotBounds(hubRaw, cid);
     if (b) hotspots[key] = b;
   }
-  const hubClean = cleanFrameSvg(hubRaw, HUB_DROP);
+  const hubClean = cleanFrameSvg(hubRaw, HUB_DROP, ICON_ALPHA);
   fs.writeFileSync(path.join(OUT, 'hub.svg'), hubClean);
   const viewBoxes = { hub: (/viewBox="([^"]+)"/.exec(hubClean) || [])[1] };
 
@@ -268,7 +283,7 @@ function main() {
         if (b) encHotspots[key] = b;
       }
     }
-    const clean = cleanFrameSvg(raw, VIEW_DROP);
+    const clean = cleanFrameSvg(raw, VIEW_DROP, ICON_ALPHA);
     fs.writeFileSync(path.join(OUT, 'view-' + view + '.svg'), clean);
     if (view === 'contacts') {
       const vbStr = (/viewBox="([^"]+)"/.exec(clean) || [])[1];
@@ -282,16 +297,16 @@ function main() {
     viewBoxes[view] = (/viewBox="([^"]+)"/.exec(clean) || [])[1];
   }
 
-  // ── 图标单件 ──
+  // ── 图标单件：取末帧（淡入完成态），帧1 alpha=0 不可用 ──
   for (const [name, cid] of Object.entries(NAV_ICONS)) {
     const d = exportSpriteAllFrames(cid, TMP);
     fs.writeFileSync(path.join(OUT, 'nav-' + name + '.svg'),
-      cleanFrameSvg(fs.readFileSync(path.join(d, '1.svg'), 'utf8'), new Set()));
+      cleanFrameSvg(fs.readFileSync(lastFrameFile(d), 'utf8'), new Set()));
   }
   for (const [name, cid] of Object.entries(ENC_ICONS)) {
     const d = exportSpriteAllFrames(cid, TMP);
     fs.writeFileSync(path.join(OUT, 'enc-' + name + '.svg'),
-      cleanFrameSvg(fs.readFileSync(path.join(d, '1.svg'), 'utf8'), new Set()));
+      cleanFrameSvg(fs.readFileSync(lastFrameFile(d), 'utf8'), new Set()));
   }
 
   // ── 数据 ──
