@@ -95,6 +95,9 @@ _root.平板回执 = function(params:Object, body:Object):Void{
 	_root.server.sendSocketMessage(_root.__tabletLiteJson.stringifySafe(resp));
 };
 
+// 本文件随 __boot.f2_3 早于通信批(f3)执行，gameCommands 表此时尚未创建；
+// 必须先自建，否则登记被写进 undefined 静默丢弃（实机 tabletInfra* 无响应超时）。
+if (_root.gameCommands == undefined) _root.gameCommands = {};
 _root.gameCommands["tabletInfraSync"] = function(params:Object):Void{
 	_root.平板回执(params, {task:"tablet_response", ok:true,
 		infrastructure:_root.平板基建等级快照()});
