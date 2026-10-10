@@ -5,6 +5,7 @@
  *        首帧 SVG 后处理成白线稿（去填充/去滤镜/统一描边）→ launcher/web/assets/armory-blueprints/
  *  产出：blueprints/*.svg + manifest.json（图标名 → 文件名）
  *  用法：node tools/bake-armory-blueprints.js [--dry-run]
+ *  方案与踩坑：docs/武器库蓝图描线-Flash素材烘焙与引用解析方案-2026-10-10.md
  */
 const fs = require('fs');
 const path = require('path');
