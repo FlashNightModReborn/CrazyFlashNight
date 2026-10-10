@@ -115,6 +115,10 @@ var IntelligenceComponentRenderer = (function() {
         ? String(window.CF7_INTEL_FIGURE_ROOT) : 'assets/';
     if (FIGURE_ROOT.charAt(FIGURE_ROOT.length - 1) !== '/') FIGURE_ROOT += '/';
 
+    // 蓝图图的基线高度（px）；figure.scale 在此基线上做缩放，
+    // 卡片高度随缩放后图片自适应（不改画布本身）。与 CSS 的 max-height 190px 对应。
+    var FIGURE_BASE_MAX_H = 190;
+
     function renderFigure(block, context) {
         var src = typeof block.src === 'string' ? block.src : '';
         if (!FIGURE_SRC.test(src) || src.indexOf('..') >= 0) return null;
@@ -123,6 +127,8 @@ var IntelligenceComponentRenderer = (function() {
         el.className = 'intel-h5-figure intel-h5-figure-' + variant;
         var img = document.createElement('img');
         img.src = FIGURE_ROOT + src.slice('assets/'.length);
+        var scale = clampNumber(block.scale, 0.2, 5, 1);
+        if (scale !== 1) img.style.maxHeight = Math.round(FIGURE_BASE_MAX_H * scale) + 'px';
         img.alt = typeof block.alt === 'string' ? block.alt : '';
         img.draggable = false;
         img.loading = 'lazy';
