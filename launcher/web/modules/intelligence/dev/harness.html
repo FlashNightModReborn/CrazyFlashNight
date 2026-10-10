@@ -6,6 +6,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <link rel="stylesheet" href="../../../css/panels.css">
 <link rel="stylesheet" href="../../minigames/shared/dev/harness-base.css">
+<script>window.CF7_INTEL_FIGURE_ROOT = '../../../assets/';</script>
 <style>
     html,
     body {
@@ -607,7 +608,10 @@ window.Icons = {
                 ] },
                 { type: 'hardwareExtract', label: '门禁芯片提取', status: '可测试', steps: ['握手', '校验', '读取'], reveal: [
                     { type: 'note', content: [{ type: 'text', text: '这是 harness 的 H5 组件示例。' }] }
-                ] }
+                ] },
+                { type: 'figure', src: 'assets/intel-illustrations/rock-park-guitar.svg',
+                  alt: '电能吉他拆解线稿', variant: 'blueprint',
+                  caption: [{ type: 'text', text: '附图·电能吉他 — 蓝图底白线稿（figure 组件样例）' }] }
             ];
         }
         if (pageIndex === 2) {

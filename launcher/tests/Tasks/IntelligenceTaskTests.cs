@@ -442,6 +442,79 @@ namespace CF7Launcher.Tests.Tasks
         }
 
         [Fact]
+        public void Snapshot_AcceptsFigureWithAssetsRelativeSrc()
+        {
+            WriteDictionary("<root><Item><Name>资料</Name><Index>0</Index><Information Value=\"1\" PageKey=\"1\"/></Item></root>");
+            WriteH5("资料",
+                "{\"schemaVersion\":1,\"itemName\":\"资料\",\"skin\":\"dossier\",\"pages\":[" +
+                "{\"pageKey\":\"1\",\"blocks\":[" +
+                "{\"type\":\"figure\",\"src\":\"assets/intel-illustrations/rock-park-guitar.svg\"," +
+                "\"alt\":\"电能吉他线稿\",\"variant\":\"blueprint\"," +
+                "\"caption\":[{\"type\":\"text\",\"text\":\"附图\"}]}" +
+                "]}]}");
+
+            var posted = new List<string>();
+            var task = new IntelligenceTask(_root);
+            task.SetPostToWeb(delegate(string json) { posted.Add(json); });
+
+            task.HandleWebRequest("snapshot", JObject.Parse("{\"callId\":\"fig-1\",\"itemName\":\"资料\",\"value\":1,\"decryptLevel\":0,\"pcName\":\"测试\"}"));
+
+            JObject resp = JObject.Parse(posted[0]);
+            Assert.True((bool)resp["success"]);
+            JObject fig = (JObject)resp["pages"][0]["blocks"][0];
+            Assert.Equal("figure", (string)fig["type"]);
+            Assert.Equal("assets/intel-illustrations/rock-park-guitar.svg", (string)fig["src"]);
+            Assert.Equal("blueprint", (string)fig["variant"]);
+        }
+
+        [Theory]
+        [InlineData("https://evil.example/x.svg")]
+        [InlineData("/etc/passwd.svg")]
+        [InlineData("../outside.svg")]
+        [InlineData("assets/../../launcher/bin/x.svg")]
+        [InlineData("assets/script.js")]
+        [InlineData("C:\\abs\\x.svg")]
+        public void Snapshot_H5StrictRejectsUnsafeFigureSrc(string badSrc)
+        {
+            WriteDictionary("<root><Item><Name>资料</Name><Index>0</Index><Information Value=\"1\" PageKey=\"1\"/></Item></root>");
+            WriteH5("资料",
+                "{\"schemaVersion\":1,\"itemName\":\"资料\",\"skin\":\"dossier\",\"pages\":[" +
+                "{\"pageKey\":\"1\",\"blocks\":[" +
+                "{\"type\":\"figure\",\"src\":\"" + badSrc.Replace("\\", "\\\\") + "\"}" +
+                "]}]}");
+
+            var posted = new List<string>();
+            var task = new IntelligenceTask(_root);
+            task.SetPostToWeb(delegate(string json) { posted.Add(json); });
+
+            task.HandleWebRequest("snapshot", JObject.Parse("{\"callId\":\"fig-bad\",\"itemName\":\"资料\",\"value\":1}"));
+
+            JObject resp = JObject.Parse(posted[0]);
+            Assert.False((bool)resp["success"]);
+            Assert.Equal("h5_invalid_figure_src", (string)resp["error"]);
+        }
+
+        [Fact]
+        public void Snapshot_H5StrictRejectsFigureWithoutSrc()
+        {
+            WriteDictionary("<root><Item><Name>资料</Name><Index>0</Index><Information Value=\"1\" PageKey=\"1\"/></Item></root>");
+            WriteH5("资料",
+                "{\"schemaVersion\":1,\"itemName\":\"资料\",\"skin\":\"dossier\",\"pages\":[" +
+                "{\"pageKey\":\"1\",\"blocks\":[{\"type\":\"figure\",\"alt\":\"无图\"}]}" +
+                "]}");
+
+            var posted = new List<string>();
+            var task = new IntelligenceTask(_root);
+            task.SetPostToWeb(delegate(string json) { posted.Add(json); });
+
+            task.HandleWebRequest("snapshot", JObject.Parse("{\"callId\":\"fig-nosrc\",\"itemName\":\"资料\",\"value\":1}"));
+
+            JObject resp = JObject.Parse(posted[0]);
+            Assert.False((bool)resp["success"]);
+            Assert.Equal("h5_invalid_figure_src", (string)resp["error"]);
+        }
+
+        [Fact]
         public void Snapshot_StripsLockedDecryptTextContentButKeepsEncryptedPlaceholder()
         {
             WriteDictionary("<root><Item><Name>资料</Name><Index>0</Index><Information Value=\"1\" PageKey=\"1\"/></Item></root>");

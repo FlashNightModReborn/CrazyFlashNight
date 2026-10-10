@@ -28,7 +28,11 @@ const BLOCK_TYPES = new Set([
   'surfaceMark',
   'paperFragment',
   'paperStage',
+  'figure',
 ]);
+
+// figure src：仅 assets/ 下相对路径，禁 .. / 协议 / 绝对路径
+const FIGURE_SRC = /^assets\/(?:[\w.-]+\/)*[\w.-]+\.(?:svg|png|webp)$/i;
 
 const INLINE_TYPES = new Set([
   'text',
@@ -256,6 +260,12 @@ function validateBlock(block, loc, errors) {
   }
   if (block.type === 'note' && block.tone && !NOTE_TONES.has(block.tone)) {
     errors.push(`${loc}: unknown note tone "${block.tone}"`);
+  }
+  if (block.type === 'figure') {
+    const src = typeof block.src === 'string' ? block.src : '';
+    if (!FIGURE_SRC.test(src) || src.includes('..')) {
+      errors.push(`${loc}: invalid figure src "${src}" (must be assets/**/*.svg|png|webp, no "..")`);
+    }
   }
   ['content', 'title', 'caption', 'label', 'note'].forEach((key) => {
     if (Array.isArray(block[key])) validateInlineArray(block[key], `${loc}.${key}`, errors);

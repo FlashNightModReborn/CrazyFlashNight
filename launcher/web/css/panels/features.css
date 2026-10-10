@@ -4800,6 +4800,52 @@ html.perf-low-effects .map-panel-close-btn::before {
     margin: 10px 0 0 22px;
 }
 
+/* figure：插图块。plain = 透明底普通图；
+   blueprint = 深蓝网格底白线稿卡（与武器库 .arm-blueprint 同一套网格配方）。 */
+.intel-h5-figure {
+    margin: 10px 0;
+    padding: 0;
+}
+.intel-h5-figure img {
+    display: block;
+    max-width: 100%;
+    height: auto;
+    margin: 0 auto;
+}
+.intel-h5-figure-caption {
+    margin-top: 6px;
+    font-size: 0.78em;
+    text-align: center;
+    letter-spacing: 0.04em;
+}
+.intel-h5-figure-blueprint {
+    position: relative;
+    overflow: hidden;
+    padding: 14px 16px;
+    border: 1px solid rgba(30, 42, 58, 0.55);
+    background: #233447;
+}
+/* 蓝图网格底纹（同 .arm-blueprint::before 配方） */
+.intel-h5-figure-blueprint::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background:
+        repeating-linear-gradient(0deg, rgba(160, 190, 225, 0.14) 0 1px, transparent 1px 24px),
+        repeating-linear-gradient(90deg, rgba(160, 190, 225, 0.14) 0 1px, transparent 1px 24px);
+}
+.intel-h5-figure-blueprint img {
+    position: relative;
+    max-height: 190px;
+    filter: drop-shadow(0 0 6px rgba(160, 200, 240, 0.35));
+}
+.intel-h5-figure-blueprint .intel-h5-figure-caption {
+    position: relative;
+    color: rgba(200, 220, 245, 0.72);
+    font-family: Consolas, "Microsoft YaHei", monospace;
+}
+
 .intel-h5-hardware {
     border: 1px solid rgba(40,40,40,0.34);
     background: rgba(0,0,0,0.08);
