@@ -756,7 +756,14 @@ input and native interaction runners, all through real CS6. The HUD runner also
 checks fixed-key cooldown sampling, detached snapshots and forced full updates.
 Resource hints have a separate `scripts/run-skill-resource-tests.ps1` runner with
 real inventory containers, a frozen contain oracle and read-only mutation checks.
-See the [AS2 hotspot validation](../../docs/AS2热点采样与判空优化验证-2026-10-10.md)
+Snapshot reuse also runs `scripts/run-player-hud-snapshot-tests.ps1` and
+`scripts/run-hud-loadout-resource-tests.ps1`; skill display inputs run
+`scripts/run-skill-hud-input-tests.ps1`. These keep raw edits, exact wire shape,
+getter order, forced full packets and prior DTO ownership observable. Buff
+scheduling has its own `run-buff-manager-tests.ps1` / `run-buff-hotpath-tests.ps1`
+pair, including existing lifecycle/path regressions and frequent mutation cost.
+See the [HUD/Buff validation](../../docs/AS2界面快照与Buff调度优化验证-2026-10-10.md) and the
+[earlier hotspot validation](../../docs/AS2热点采样与判空优化验证-2026-10-10.md)
 for local timing and acceptance boundaries. The focused
 C# set is `PlayerHudStateTests`, `PlayerHudVisualTests`,
 `PlayerInfoAnimationModelTests` and `RuntimeFontCatalogTests`, using the exact

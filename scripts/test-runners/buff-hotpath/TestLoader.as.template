@@ -1,0 +1,3 @@
+﻿trace("FocusedTestRunId buff-hotpath Start: __FOCUSED_RUN_ID__");
+org.flashNight.arki.component.Buff.test.BuffManagerHotPathTest.runAllTests();
+trace("FocusedTestRunId buff-hotpath Complete: __FOCUSED_RUN_ID__");

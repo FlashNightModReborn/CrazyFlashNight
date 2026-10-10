@@ -1,0 +1,3 @@
+﻿trace("FocusedTestRunId skill-hud-input Start: __FOCUSED_RUN_ID__");
+org.flashNight.arki.skill.SkillHudInputTest.runAllTests();
+trace("FocusedTestRunId skill-hud-input Complete: __FOCUSED_RUN_ID__");

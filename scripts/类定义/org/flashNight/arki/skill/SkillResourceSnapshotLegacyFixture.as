@@ -1,21 +1,21 @@
-﻿import org.flashNight.arki.item.ItemUtil;
+﻿/** Frozen 0c36a08a resource reader, isolated test oracle. */
+import org.flashNight.arki.item.ItemUtil;
 import org.flashNight.arki.unit.Action.Skill.DrugInputService;
 import org.flashNight.arki.scene.StageReturnFlow;
 
 /** 只读资源预检与真实输入拒绝反馈。不得调用释放许可函数（旧战技中含扣物品）。 */
-class org.flashNight.arki.skill.SkillResourceService {
+class org.flashNight.arki.skill.SkillResourceSnapshotLegacyFixture {
     private static var serial:Number = 0;
     private static var lastSound:Number = -10000;
 
-    public static function state(value:String, reason:String, previous:Object):Object {
-        if (previous != null && previous.state === value && previous.reason === reason) return previous;
+    public static function state(value:String, reason:String):Object {
         return {state:value, reason:reason};
     }
-    public static function fixedCost(available:Number, minimum:Number, payment:Number, reason:String, previous:Object):Object {
+    public static function fixedCost(available:Number, minimum:Number, payment:Number, reason:String):Object {
         if (!isFinite(available) || !isFinite(minimum) || !isFinite(payment) || minimum < 0 || payment < 0)
-            return state("unknown", "", previous);
-        if (available < minimum) return state("blocked", reason, previous);
-        return minimum > 0 && available - payment < minimum ? state("last", reason, previous) : state("ready", "", previous);
+            return state("unknown", "");
+        if (available < minimum) return state("blocked", reason);
+        return minimum > 0 && available - payment < minimum ? state("last", reason) : state("ready", "");
     }
     private static function combine(first:Object, second:Object):Object {
         if (first.state == "blocked") return first;
@@ -84,15 +84,15 @@ class org.flashNight.arki.skill.SkillResourceService {
         if ((quantity - quantity) != 0 || quantity < 0) return Number.NaN;
         return quantity < limit ? quantity : limit;
     }
-    public static function quick(unit:Object, name:String, cost:Number, readItems:Object, previous:Object):Object {
-        var result:Object = fixedCost(Number(unit.mp), cost, cost, "mp", previous);
+    public static function quick(unit:Object, name:String, cost:Number, readItems:Object):Object {
+        var result:Object = fixedCost(Number(unit.mp), cost, cost, "mp");
         if (name == "能量盾" && unit._name == _root.控制目标) result = combine(result, itemState("能量电池", false, readItems));
         return result;
     }
-    public static function weapon(unit:Object, skill:Object, readItems:Object, previous:Object):Object {
-        if (!skill || skill.isSubweaponControl === true) return state("unknown", "", previous);
+    public static function weapon(unit:Object, skill:Object, readItems:Object):Object {
+        if (!skill || skill.isSubweaponControl === true) return state("unknown", "");
         // 猩红天秤等原子战技按缺口付款，零 MP 合法。不可套用配置中的固定消耗。
-        if (skill.战技函数.原子释放 === true && skill.战技函数.固定资源消耗 !== true) return state("ready", "", previous);
+        if (skill.战技函数.原子释放 === true && skill.战技函数.固定资源消耗 !== true) return state("ready", "");
         var cost:Number = Number(skill.消耗mp);
         var minimum:Number = cost;
         var payment:Number = cost;
@@ -105,41 +105,27 @@ class org.flashNight.arki.skill.SkillResourceService {
             // 旧业务先扣基础费用，之后要求剩余 >= 300，再扣 200；保持原规则。
             if (selected == "回归枢机之光" && !(unit.回归枢机之光发射数 >= 5)) { minimum += 300; payment += 200; }
         }
-        var result:Object = fixedCost(Number(unit.mp), minimum, payment, "mp", previous);
+        var result:Object = fixedCost(Number(unit.mp), minimum, payment, "mp");
         if (skill.战技函数 != undefined && skill.战技函数 === _root.主动战技函数.长枪.调用射击发射其他弹药)
             result = combine(result, itemState(unit.其他消耗物品, true, readItems));
         // 通过技能路由调用能量盾的战技沿用相同材料门槛。
         if (skill.名字 == "能量盾" && unit._name == _root.控制目标) result = combine(result, itemState("能量电池", false, readItems));
         return result;
     }
-    /** Previous is a detached display DTO; live stock and notices are always reread. */
-    public static function snapshot(unit:Object, loadout:Object, previous:Object):Object {
+    public static function snapshot(unit:Object, loadout:Object):Object {
         var readItems:Object = {};
-        var oldSkills:Array = previous.skills, oldDrugs:Array = previous.drugs;
-        var skills:Array = oldSkills.length == 12 ? null : [];
-        var drugs:Array = oldDrugs.length == 4 ? null : [];
+        var skills:Array = [];
+        var drugs:Array = [];
         var i:Number;
-        var oldHint:Object;
-        var hint:Object;
         for (i = 0; i < 12; i++) {
             var slot:Object = loadout.skills[i];
-            oldHint = oldSkills[i];
-            hint = slot.equipped === true && slot.writeBlocked !== true
-                ? quick(unit, slot.skillKey, Number(slot.mp), readItems, oldHint) : state("unknown", "", oldHint);
-            // combine() may select the shared same-snapshot item result instead.
-            if (oldHint != null && oldHint.state === hint.state && oldHint.reason === hint.reason) hint = oldHint;
-            if (skills == null && hint !== oldHint) skills = oldSkills.slice(0, i);
-            if (skills != null) skills.push(hint);
+            skills.push(slot.equipped === true && slot.writeBlocked !== true
+                ? quick(unit, slot.skillKey, Number(slot.mp), readItems) : state("unknown", ""));
         }
         for (i = 0; i < 4; i++) {
             var drug:Object = loadout.drugs[i];
-            oldHint = oldDrugs[i];
-            hint = drug.name == "" ? state("unknown", "", oldHint) : fixedCost(Number(drug.count), 1, 1, "item", oldHint);
-            if (drugs == null && hint !== oldHint) drugs = oldDrugs.slice(0, i);
-            if (drugs != null) drugs.push(hint);
+            drugs.push(drug.name == "" ? state("unknown", "") : fixedCost(Number(drug.count), 1, 1, "item"));
         }
-        if (skills == null) skills = oldSkills;
-        if (drugs == null) drugs = oldDrugs;
         var notice:Object = unit.__skillResourceNotice;
         if (_root.暂停 || !(unit.hp > 0) || notice == null || getTimer() - notice.at > 600
                 || notice.world !== StageReturnFlow.worldIdentity(_root.gameworld)) {
@@ -148,20 +134,10 @@ class org.flashNight.arki.skill.SkillResourceService {
             delete unit.__skillResourceNotice;
             notice = null;
         }
-        var oldWeapon:Object = previous.weapon;
-        var weaponHint:Object = weapon(unit, unit.主动战技[unit.攻击模式], readItems, oldWeapon);
-        if (oldWeapon != null && oldWeapon.state === weaponHint.state && oldWeapon.reason === weaponHint.reason) weaponHint = oldWeapon;
-        var switchBlocked:Boolean = !DrugInputService.hasBankStock(_root, 1 - Number(loadout.bank));
-        var feedback:Object = null;
-        if (notice != null) {
-            var oldFeedback:Object = previous.feedback;
-            feedback = oldFeedback != null && oldFeedback.serial === notice.serial && oldFeedback.kind === notice.kind
-                && oldFeedback.slot === notice.slot && oldFeedback.reason === notice.reason ? oldFeedback
-                : {serial:notice.serial, kind:notice.kind, slot:notice.slot, reason:notice.reason};
-        }
-        if (previous != null && previous.skills === skills && previous.drugs === drugs && previous.weapon === weaponHint
-                && previous.switchBlocked === switchBlocked && previous.feedback === feedback) return previous;
-        return {skills:skills, drugs:drugs, weapon:weaponHint, switchBlocked:switchBlocked, feedback:feedback};
+        var weaponHint:Object = weapon(unit, unit.主动战技[unit.攻击模式], readItems);
+        return {skills:skills, drugs:drugs, weapon:weaponHint,
+            switchBlocked:!DrugInputService.hasBankStock(_root, 1 - Number(loadout.bank)),
+            feedback:notice == null ? null : {serial:notice.serial, kind:notice.kind, slot:notice.slot, reason:notice.reason}};
     }
     public static function begin(unit:Object, kind:String, slot:Number):Void {
         if (unit) unit.__skillResourceAttempt = {kind:kind, slot:slot, reason:""};

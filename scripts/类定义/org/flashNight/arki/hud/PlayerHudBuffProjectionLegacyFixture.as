@@ -1,10 +1,10 @@
-﻿/** Headless owner of the existing detailed Buff bar order and primary timers. */
-class org.flashNight.arki.hud.PlayerHudBuffProjection {
+﻿/** Frozen 0c36a08a projection oracle; test-only, never imported by production. */
+/** Headless owner of the existing detailed Buff bar order and primary timers. */
+class org.flashNight.arki.hud.PlayerHudBuffProjectionLegacyFixture {
     private var manager:Object;
     private var entries:Array;
     private var generation:Number;
-    private var snapshotRows:Array;
-    public function PlayerHudBuffProjection() { entries = []; generation = 0; snapshotRows = []; }
+    public function PlayerHudBuffProjectionLegacyFixture() { entries = []; generation = 0; }
     public function initialize(value:Object):Void {
         if (value === manager) return;
         deinitialize();
@@ -24,12 +24,11 @@ class org.flashNight.arki.hud.PlayerHudBuffProjection {
         }
         manager = null;
         entries.length = 0;
-        snapshotRows = [];
     }
     public function update():Void { }
     public function addIcon(id:String, buff:Object):Void {
         for (var i:Number = 0; i < entries.length; i++) if (entries[i].id == id) return;
-        entries.push({id:id, wireId:generation + ":" + id, buff:buff});
+        entries.push({id:id, buff:buff});
     }
     public function removeIcon(id:String):Void {
         for (var i:Number = 0; i < entries.length; i++) {
@@ -37,8 +36,7 @@ class org.flashNight.arki.hud.PlayerHudBuffProjection {
         }
     }
     public function snapshot():Array {
-        var previous:Array = snapshotRows;
-        var rows:Array = previous.length == entries.length ? null : [];
+        var rows:Array = [];
         for (var i:Number = 0; i < entries.length; i++) {
             var entry:Object = entries[i];
             var timer:Object = entry.buff.getPrimaryTimer();
@@ -46,18 +44,9 @@ class org.flashNight.arki.hud.PlayerHudBuffProjection {
             var remain:Number = timer == null ? 0 : Number(timer.getRemaining());
             if (!isFinite(total) || total < 0) total = 0;
             if (!isFinite(remain)) remain = 0;
-            remain = Math.max(0, remain);
-            var timed:Boolean = timer != null;
-            var row:Object = previous[i];
-            if (row == null || row.id !== entry.wireId || row.timed !== timed || row.total !== total || row.remaining !== remain) {
-                // Copy only after the first changed row. The old array and its rows
-                // stay immutable for pending packets and forced resynchronization.
-                if (rows == null) rows = previous.slice(0, i);
-                row = {id:entry.wireId, timed:timed, total:total, remaining:remain};
-            }
-            if (rows != null) rows.push(row);
+            rows.push({id:generation + ":" + entry.id, timed:timer != null,
+                total:total, remaining:Math.max(0, remain)});
         }
-        if (rows != null) snapshotRows = rows;
-        return snapshotRows;
+        return rows;
     }
 }

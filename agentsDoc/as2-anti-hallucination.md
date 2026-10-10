@@ -111,6 +111,7 @@
 - **`for...in` 遍历顺序是稳定的**（Ruffle 项目验证）：原型链属性优先 → 自身属性按 reverse insertion order → DisplayObject 子对象按 depth 降序。删除属性后顺序仍稳定
 
 ### 对象字面量与键名
+- 不用 JavaScript 直觉推定字面量内表达式的求值顺序；将数组拆成标量前用真实 CS6 或字节码核对。HUD 的护盾数组实测先读 maximum 再读 capacity；涉及属性访问器时保持当次值与调用顺序，见 [只读展示采样](as2-performance.md#display-sampling)。
 - 键名**不加引号**：`{name: "sword", damage: 10}`（`{"name": ...}` 虽不报错但非惯用风格）
 - 保留字/特殊字符键名用括号记法：`obj["lt"] = 5`（点记法 `obj.lt` 会被解析为运算符而报错，详见「Flash 4 遗留保留字」）
 

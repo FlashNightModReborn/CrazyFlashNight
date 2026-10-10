@@ -1,8 +1,8 @@
 # BuffManager 使用与设计说明
 
-> **文档版本**: 3.0
-> **最后更新**: 2026-01-26
-> **运行环境**: ActionScript 2.0 / Flash Player 32
+> **文档角色**: BuffManager 对外契约与内部调度说明。
+> **最后核对代码基线**: commit `0c36a08a32732bc7d533bcb106097d1c66935cdc` 及本轮调度改动（2026-10-10）。
+> **运行环境**: ActionScript 2.0 / AVM1
 > **状态**: 核心引擎稳定可用
 
 本文档描述 `BuffManager.as` 的对外契约、运行阶段、以及与 `PropertyContainer` / `MetaBuff` 的协作方式。
@@ -253,7 +253,9 @@ manager.notifyPathRootChanged("长枪属性");  // 必须调用！
 
 ## 5. update() 内部阶段
 
-理解这个流程对于调试"为何本帧不生效"非常重要。
+`_buffs` 是完整成员列表，继续拥有属性分发顺序。`_metaBuffs` 与 `_standalonePodBuffs` 是由注册／移除路径维护的调度索引；注入 Pod 仍归父 Meta 的生命周期，不进入独立过期扫描。Buff 类型与其注册身份保持稳定，不能绕开管理 API 改写私有列表。
+
+只有成员、dirty 和两类延迟队列均为空且路径版本已同步时，`update` 才计数后直接返回；否则保留以下事务。空阶段可跳过调用，阶段顺序不变。
 
 ```
 BuffManager.update(deltaFrames)
@@ -280,10 +282,10 @@ BuffManager.update(deltaFrames)
     │       ├─► _redistributeDirtyProps() 或 _redistributePodBuffs()
     │       └─► PropertyContainer.forceRecalculate()
     │
-    ├─► 5. _inUpdate = false
+    ├─► 5. _flushPendingAdds()  ← 双缓冲队列
+    │       处理 update 期间收集的延迟添加请求，仍持有重入保护
     │
-    └─► 6. _flushPendingAdds()  ← v2.3 双缓冲队列
-            处理 update 期间收集的延迟添加请求
+    └─► 6. finally: _inUpdate = false
 ```
 
 **关键结论**：
@@ -412,7 +414,7 @@ MetaBuff 组件可能在 update 中触发回调：
 
 ## 10. 性能建议
 
-1. **每帧只调用一次 update**
+1. **保持既有更新节奏**：单位更新链仍每四帧传入对应 delta；不要靠降频获得本轮收益，立即重算继续使用 `update(0)`。
 2. **避免滥用 addBuffImmediate**：会导致同帧强制重分发
 3. **优先用 PodBuff** 处理纯数值修改（热路径友好）
 4. **MetaBuff 只用于需要生命周期管理的场景**
@@ -511,6 +513,15 @@ var buff:IBuff = mgr.getBuffById("my_buff");
 
 ### 14.1 运行测试
 
+从仓库根运行受控入口，不手工覆盖 TestLoader：
+
+```powershell
+powershell -NoProfile -ExecutionPolicy Bypass -File scripts/run-buff-manager-tests.ps1
+powershell -NoProfile -ExecutionPolicy Bypass -File scripts/run-buff-hotpath-tests.ps1
+```
+
+第一项一次运行现有 BuffManager、Bugfix 与 PathBinding suites；第二项对照旧调度的事件、队列、时间和属性结果，并测空载、混合负载和频繁增删。都要求新鲜 CS6 Compiler 0/0、唯一闭合 runId 和函数尺寸门。下列类入口用于了解 suite 组成，不能代替受控 runner 的恢复与证据门。
+
 ```actionscript
 // 核心功能测试（67 个用例）
 org.flashNight.arki.component.Buff.test.BuffManagerTest.runAllTests();
@@ -528,6 +539,8 @@ org.flashNight.arki.component.Buff.test.Tier2ComponentTest.runAllTests();
 ```
 
 ### 14.2 测试覆盖状态
+
+下表与附录日志是历史记录；当前通过数以受控 runner 的本轮输出为准。
 
 | 测试类别 | 通过/总数 | 状态 |
 |----------|-----------|------|
@@ -547,6 +560,8 @@ org.flashNight.arki.component.Buff.test.Tier2ComponentTest.runAllTests();
 | **Bugfix 回归测试** | **30/30** | ✅ |
 
 ### 14.3 性能基准
+
+以下为历史单次测量，不与新版本直接计算加速比。当前交换顺序、多轮的更新及增删对照见 [HUD/Buff 验证](../../../../../../../docs/AS2界面快照与Buff调度优化验证-2026-10-10.md)；局部 update 耗时不等于战斗帧率。
 
 ```
 100 Buffs + 100 Updates = 57ms

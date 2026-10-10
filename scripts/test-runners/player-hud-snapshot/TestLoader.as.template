@@ -1,0 +1,3 @@
+﻿trace("FocusedTestRunId player-hud-snapshot Start: __FOCUSED_RUN_ID__");
+org.flashNight.arki.hud.PlayerHudSnapshotTest.runAllTests();
+trace("FocusedTestRunId player-hud-snapshot Complete: __FOCUSED_RUN_ID__");

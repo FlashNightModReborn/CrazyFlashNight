@@ -941,6 +941,14 @@ AS2 只发送逐段结算事实，C# `HitNumberRuntime` / `HitNumberOverlay` 是
 <a id="as2-hotpath-suites"></a>
 ### AS2 只读热点与诊断 runner
 
+本节 HUD/Buff 扩展最后核对代码基线：commit `1aeb1867696e82135844da4624ef4f9aa30d5603` 及本轮改动（2026-10-10）。
+
+改 HUD 分组快照时，追加 `scripts/run-player-hud-snapshot-tests.ps1` 和 `scripts/run-hud-loadout-resource-tests.ps1`：冻结旧读路径，检查实际 wire 字节／字段顺序、getter 调用顺序、强制全量、独立快照、药剂写版本、原位修改、通知退休，以及未变化／持续变化／每四帧变化的局部对照。资源查询仍用上一段独立真实库存 runner 验证，不能用展示层 stub 代替库存权威。
+
+改技能显示缓存时跑 `scripts/run-skill-hud-input-tests.ps1`，并保留 `scripts/run-skill-migration-tests.ps1` 的业务校验；前者覆盖逐项原位修改、80 行边界、尾部／异常输入、键位显示和零存档写入。
+
+改 Buff 调度跑 `scripts/run-buff-manager-tests.ps1` 与 `scripts/run-buff-hotpath-tests.ps1`。前者调用现有计算、Bugfix 和 PathBinding suites，后者使用实际 BuffManager/MetaBuff/PodBuff/TimeLimitComponent 与冻结旧更新路径作逐帧对照，保留回调顺序、延迟队列、换装路径、计时、重入、增删和销毁。通过数由本轮 runner 输出，不从历史日志推定。
+
 改 HUD 冷却跑 `scripts/run-player-hud-tests.ps1` 与手动输入 runner；改资源提示另跑 `scripts/run-skill-resource-tests.ps1`。后者使用实际 ArrayInventory/DrugInventory/DictCollection，对照原 contain，并检查隐藏药剂槽、手雷 fallback、异常与非整数数量、同次采样去重、跨次变化和零内容/版本写入。两套独立 TestLoader 避免把 HUD 与库存的类注册图混成一个测试入口。
 
 改 AI 诊断跑 `scripts/run-ai-diagnostics-tests.ps1`：真实 UtilityEvaluator、ScoringPipeline、DecisionTrace 与 WeaponEvaluator，覆盖日志级别/调试开关组合、评分与候选顺序、随机数消耗、8 帧决策准入、30 帧 DPS 缓存时点、切换和失效。受控 estimator 与随机源只用于等价性，不证明战斗效果或 AI 频率收益。

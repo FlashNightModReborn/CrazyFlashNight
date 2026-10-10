@@ -1,0 +1,4074 @@
+{
+  "schema": "cf7-as2-hud-buff-evidence.v2",
+  "date": "2026-10-10",
+  "recordedAtStage": "pre_commit_validation",
+  "sourceBaseCommit": "0c36a08a32732bc7d533bcb106097d1c66935cdc",
+  "sourceBindings": [
+    {
+      "path": "scripts/run-buff-hotpath-tests.ps1",
+      "sha256": "17864571D6C714D97FA1E5D0EF4FD10A885FB9A1273CDF4C0C920A64A35B6A0E",
+      "bytes": 1084
+    },
+    {
+      "path": "scripts/run-buff-manager-tests.ps1",
+      "sha256": "7FA022A8994B505BFB84816E519C54535AE6D44C6D176949B27763AB914A2B8B",
+      "bytes": 1380
+    },
+    {
+      "path": "scripts/run-hud-loadout-resource-tests.ps1",
+      "sha256": "48D0E80662665E7F20FB836C893B8445211AEFFC3C7BBC5F249A04389C83754B",
+      "bytes": 1256
+    },
+    {
+      "path": "scripts/run-player-hud-snapshot-tests.ps1",
+      "sha256": "09880F97ABACE23CE77DB6F5082BF81DB33DB06DFAE96B9FCB1B6614EE5CE01E",
+      "bytes": 1396
+    },
+    {
+      "path": "scripts/run-skill-hud-input-tests.ps1",
+      "sha256": "BA8150C0C759DB2E35BA914CBFA48BDE5EDED9583CB0A17637E24983315DF849",
+      "bytes": 931
+    },
+    {
+      "path": "scripts/test-runners/buff-hotpath/TestLoader.as.template",
+      "sha256": "3435426D61C3481DB3055F37DC368F99DC25709577B27BB9E0B79A2532A459BC",
+      "bytes": 219
+    },
+    {
+      "path": "scripts/test-runners/buff-manager/TestLoader.as.template",
+      "sha256": "77C12661D9BB13494B37912BE968A5F3505257E9A125AC0D1AC1A0CFA112974A",
+      "bytes": 889
+    },
+    {
+      "path": "scripts/test-runners/hud-loadout-resources/TestLoader.as.template",
+      "sha256": "2EDFECAE66E71F7E452B5A7AA8800DD700C23B7796AF0DBECB6D74C4A88128AE",
+      "bytes": 227
+    },
+    {
+      "path": "scripts/test-runners/player-hud-snapshot/TestLoader.as.template",
+      "sha256": "67530C3D54A9C99107235D9A371638ABF490979189073695FA34319FA6E011D1",
+      "bytes": 216
+    },
+    {
+      "path": "scripts/test-runners/skill-hud-input/TestLoader.as.template",
+      "sha256": "C7B5B72F2D5928A95F8210503678E55FA4E8DDC4E48217097D665F3CF45385E3",
+      "bytes": 206
+    },
+    {
+      "path": "scripts/类定义/org/flashNight/arki/component/Buff/BuffManager.as",
+      "sha256": "3420DC78557B2C8FB9B28CF3FBB42B54C8AE853912E2D0E5D85014E776CD863E",
+      "bytes": 80383
+    },
+    {
+      "path": "scripts/类定义/org/flashNight/arki/component/Buff/test/BuffManagerHotPathTest.as",
+      "sha256": "9BBEF5433F66951B7B294BB7D0397324FAD9959236801F81E2472F57A59D9A6B",
+      "bytes": 12497
+    },
+    {
+      "path": "scripts/类定义/org/flashNight/arki/component/Buff/test/BuffManagerLegacyUpdateFixture.as",
+      "sha256": "E7488D186D9CDCAAF395787CE42264C1DBD291F4C887A517F9960C837D983B46",
+      "bytes": 15327
+    },
+    {
+      "path": "scripts/类定义/org/flashNight/arki/hud/PlayerHudBuffProjection.as",
+      "sha256": "2C37C9865E4F65D9A8B975AC5DCCA61DFB53E1B2B4A9088823493DC517964B26",
+      "bytes": 3089
+    },
+    {
+      "path": "scripts/类定义/org/flashNight/arki/hud/PlayerHudBuffProjectionLegacyFixture.as",
+      "sha256": "80F2D4BA65F3A9B319D917AECD9DB92006181BFEE3FF799DD61C986C02333F46",
+      "bytes": 2432
+    },
+    {
+      "path": "scripts/类定义/org/flashNight/arki/hud/PlayerHudLoadoutResourceTest.as",
+      "sha256": "3B9CEA4380D216EDE64295EC648620D6A2D6F40AC8698FC40CFE69EBF91A8F5E",
+      "bytes": 13085
+    },
+    {
+      "path": "scripts/类定义/org/flashNight/arki/hud/PlayerHudService.as",
+      "sha256": "34327E7F5F9EEB50EDEB4A107D9F66D310E71566F5B7E6EF92684C202E3F11D7",
+      "bytes": 37701
+    },
+    {
+      "path": "scripts/类定义/org/flashNight/arki/hud/PlayerHudShieldProjectionLegacyFixture.as",
+      "sha256": "73A97A6CB938E713EE3B85395CB7F40A791FC1CF73263DC1BA2285DEDA6F4113",
+      "bytes": 6154
+    },
+    {
+      "path": "scripts/类定义/org/flashNight/arki/hud/PlayerHudSnapshotLegacyFixture.as",
+      "sha256": "0ABCA374D859464622F3468AC9AB259CEEC767ADB8CFBA6E3054AC922B9A2623",
+      "bytes": 8484
+    },
+    {
+      "path": "scripts/类定义/org/flashNight/arki/hud/PlayerHudSnapshotTest.as",
+      "sha256": "276DA855C4F49E856324CAED1870C7CE5F90069FA0C4A898DC03BAC214E3D26F",
+      "bytes": 18060
+    },
+    {
+      "path": "scripts/类定义/org/flashNight/arki/skill/SkillHudInputTest.as",
+      "sha256": "0D417386E1C4705A45FC6059C772581E2C4EAED6C9281D4EAA3C9A48AF4A073F",
+      "bytes": 9422
+    },
+    {
+      "path": "scripts/类定义/org/flashNight/arki/skill/SkillLoadoutService.as",
+      "sha256": "028814C6EC7568929328EA4DC7DA48F4C3224EC672F1E473F934AF9634C164AB",
+      "bytes": 62788
+    },
+    {
+      "path": "scripts/类定义/org/flashNight/arki/skill/SkillResourceService.as",
+      "sha256": "D0A3F88732E59AAC3624DC40D79C0BA4F7279C32ED0417C8E84828F8DEC51CEE",
+      "bytes": 12803
+    },
+    {
+      "path": "scripts/类定义/org/flashNight/arki/skill/SkillResourceSnapshotLegacyFixture.as",
+      "sha256": "99CF9B106D26CCF965B0D2FDBF9F7CA9709F0693ACFA6037363A74DDCA8E7437",
+      "bytes": 10833
+    }
+  ],
+  "states": {
+    "compiled": true,
+    "localAvm1SuitesExecuted": true,
+    "candidateExecuted": true,
+    "equipmentWorkbenchE2eVerified": false,
+    "newRuntimePromoted": false,
+    "standardEntryVerified": false
+  },
+  "publication": {
+    "name": "publish-merged-final",
+    "script": "scripts/compile_test.ps1",
+    "target": "publish",
+    "head": "1aeb1867696e82135844da4624ef4f9aa30d5603",
+    "startedUtc": "2026-10-10T00:06:18.8883738Z",
+    "finishedUtc": "2026-10-10T00:09:32.9596587Z",
+    "exitCode": 0,
+    "wallMs": 194017.48,
+    "sources": [
+      {
+        "sha256": "3420DC78557B2C8FB9B28CF3FBB42B54C8AE853912E2D0E5D85014E776CD863E",
+        "path": "scripts/类定义/org/flashNight/arki/component/Buff/BuffManager.as"
+      },
+      {
+        "sha256": "9BBEF5433F66951B7B294BB7D0397324FAD9959236801F81E2472F57A59D9A6B",
+        "path": "scripts/类定义/org/flashNight/arki/component/Buff/test/BuffManagerHotPathTest.as"
+      },
+      {
+        "sha256": "A24B24E3AC00B8011ADA4DD8D795CAA8110DD121F2167C142E4FA8D4E3F3A073",
+        "path": "scripts/类定义/org/flashNight/arki/component/Buff/test/BuffManagerLegacyUpdateFixture.as"
+      },
+      {
+        "sha256": "2C37C9865E4F65D9A8B975AC5DCCA61DFB53E1B2B4A9088823493DC517964B26",
+        "path": "scripts/类定义/org/flashNight/arki/hud/PlayerHudBuffProjection.as"
+      },
+      {
+        "sha256": "80F2D4BA65F3A9B319D917AECD9DB92006181BFEE3FF799DD61C986C02333F46",
+        "path": "scripts/类定义/org/flashNight/arki/hud/PlayerHudBuffProjectionLegacyFixture.as"
+      },
+      {
+        "sha256": "3B9CEA4380D216EDE64295EC648620D6A2D6F40AC8698FC40CFE69EBF91A8F5E",
+        "path": "scripts/类定义/org/flashNight/arki/hud/PlayerHudLoadoutResourceTest.as"
+      },
+      {
+        "sha256": "34327E7F5F9EEB50EDEB4A107D9F66D310E71566F5B7E6EF92684C202E3F11D7",
+        "path": "scripts/类定义/org/flashNight/arki/hud/PlayerHudService.as"
+      },
+      {
+        "sha256": "73A97A6CB938E713EE3B85395CB7F40A791FC1CF73263DC1BA2285DEDA6F4113",
+        "path": "scripts/类定义/org/flashNight/arki/hud/PlayerHudShieldProjectionLegacyFixture.as"
+      },
+      {
+        "sha256": "0ABCA374D859464622F3468AC9AB259CEEC767ADB8CFBA6E3054AC922B9A2623",
+        "path": "scripts/类定义/org/flashNight/arki/hud/PlayerHudSnapshotLegacyFixture.as"
+      },
+      {
+        "sha256": "276DA855C4F49E856324CAED1870C7CE5F90069FA0C4A898DC03BAC214E3D26F",
+        "path": "scripts/类定义/org/flashNight/arki/hud/PlayerHudSnapshotTest.as"
+      },
+      {
+        "sha256": "0D417386E1C4705A45FC6059C772581E2C4EAED6C9281D4EAA3C9A48AF4A073F",
+        "path": "scripts/类定义/org/flashNight/arki/skill/SkillHudInputTest.as"
+      },
+      {
+        "sha256": "028814C6EC7568929328EA4DC7DA48F4C3224EC672F1E473F934AF9634C164AB",
+        "path": "scripts/类定义/org/flashNight/arki/skill/SkillLoadoutService.as"
+      },
+      {
+        "sha256": "D0A3F88732E59AAC3624DC40D79C0BA4F7279C32ED0417C8E84828F8DEC51CEE",
+        "path": "scripts/类定义/org/flashNight/arki/skill/SkillResourceService.as"
+      },
+      {
+        "sha256": "99CF9B106D26CCF965B0D2FDBF9F7CA9709F0693ACFA6037363A74DDCA8E7437",
+        "path": "scripts/类定义/org/flashNight/arki/skill/SkillResourceSnapshotLegacyFixture.as"
+      }
+    ],
+    "swf": {
+      "path": "scripts/asLoader.swf",
+      "sha256": "8178B889FE87C7E3F07E5AB73DC4C3066DB6A323BFB40925B233E87A3CDE3F20",
+      "size": 1503004
+    },
+    "compilerEvidence": {
+      "path": "tmp/as2-perf-round2-20261010/runs/publish-merged-final.compiler_errors.txt",
+      "sha256": "6D64657E843CFA06C243B6B51F8732C1B5910EBD29940AA7F6F9342B38034FD3",
+      "bytes": 27
+    },
+    "compilerErrors": 0,
+    "compilerWarnings": 0
+  },
+  "publicationReceipt": {
+    "path": "tmp/as2-perf-round2-20261010/runs/publish-merged-final.json",
+    "sha256": "374EED728033122DD7097F155B754326D72DC7F7A604ABBC4879C147C790ACF0",
+    "bytes": 4235
+  },
+  "bytecode": {
+    "baseline": {
+      "path": "tmp/as2-perf-round2-20261010/integration/baseline/asLoader.swf",
+      "sha256": "9EF57B80320539A116A0DE20805959B849D4D5A412656A22A17BB86904A4B255",
+      "compressedBytes": 1501463,
+      "uncompressedBytes": 5932206,
+      "classCount": 719
+    },
+    "candidate": {
+      "path": "tmp/as2-perf-round2-20261010/integration/candidate/asLoader.swf",
+      "sha256": "8178B889FE87C7E3F07E5AB73DC4C3066DB6A323BFB40925B233E87A3CDE3F20",
+      "compressedBytes": 1503004,
+      "uncompressedBytes": 5937873,
+      "classCount": 719
+    },
+    "changedClasses": [
+      {
+        "class": "__Packages.org.flashNight.arki.component.Buff.BuffManager",
+        "beforeBytes": 19578,
+        "afterBytes": 20394,
+        "beforeSha256": "FB13CD1076A7A65303E0F64272B607FE0E341B32FFF97DF92A8276CDC46AC6AF",
+        "afterSha256": "CBACE9EDACF5C869D45CB87D4066D9D5925710DC4E09D6FC7E8825239228E86E"
+      },
+      {
+        "class": "__Packages.org.flashNight.arki.skill.SkillResourceService",
+        "beforeBytes": 7564,
+        "afterBytes": 8491,
+        "beforeSha256": "95C1EDFF5ECB95F743B60316BB86520C08AB5A6EF70C6FF6F044F886AA8406A2",
+        "afterSha256": "21028B5E8FE46709805500D35D9678103FEBF790D93EA989F01367A8C741222D"
+      },
+      {
+        "class": "__Packages.org.flashNight.arki.skill.SkillLoadoutService",
+        "beforeBytes": 45285,
+        "afterBytes": 46402,
+        "beforeSha256": "15D6677FF975DDC22EA1DC817F10CDA37120DE5D0FA8ED1C8B67D0902F732B2C",
+        "afterSha256": "E1A5432263B44623C2B6E938F4576FAE550BF6A3D2CBA45F00222B58085B90F4"
+      },
+      {
+        "class": "__Packages.org.flashNight.arki.hud.PlayerHudService",
+        "beforeBytes": 32660,
+        "afterBytes": 35127,
+        "beforeSha256": "599ADC1E7BFE81D6ED8F5DDA80CAE08450EF6D3201DC5B9399FB234FCCF880EE",
+        "afterSha256": "737322B3DC9C14ED2FDC4849F4B661A91E8D4DFAC32AC070E825B1044569D3F0"
+      },
+      {
+        "class": "__Packages.org.flashNight.arki.hud.PlayerHudBuffProjection",
+        "beforeBytes": 2033,
+        "afterBytes": 2373,
+        "beforeSha256": "4709C1D8A4133349DA0B06FE3278641A1FB6C3BDC5F5C8EE740AF303CED923AE",
+        "afterSha256": "6DCC4020DBE9C68B2C352C63068C035598D336FD854308622F862C58041CFCAF"
+      }
+    ],
+    "unexpectedChangedClasses": [],
+    "compressedDeltaBytes": 1541,
+    "uncompressedDeltaBytes": 5667,
+    "testFixturesEmbedded": false
+  },
+  "functionSizeGate": {
+    "functionCount": 12721,
+    "maxCodeSize": 51684,
+    "limit": 60000,
+    "log": {
+      "path": "tmp/as2-perf-round2-20261010/integration/function-sizes.log",
+      "sha256": "2CE9F3D97D2A9F9CABC04A06C754FD09F85FAEBACC30C303AE09823062C97918",
+      "bytes": 853
+    }
+  },
+  "ownershipGate": {
+    "mainOrgClasses": 0,
+    "loaderOrgClasses": 712,
+    "intersection": 0,
+    "log": {
+      "path": "tmp/as2-perf-round2-20261010/integration/class-ownership.log",
+      "sha256": "A4A68151F42C4260A4DC4679C21C5B8B530E19F746F6F13FE673E6248CCE0AF5",
+      "bytes": 269
+    }
+  },
+  "suites": [
+    {
+      "name": "hud-snapshot-final",
+      "script": "scripts/run-player-hud-snapshot-tests.ps1",
+      "startedUtc": "2026-10-09T23:00:57.1089277Z",
+      "wallMs": 79164.10620000001,
+      "passed": true,
+      "compilerErrors": 0,
+      "compilerWarnings": 0,
+      "reportedCounts": [
+        {
+          "suite": "PlayerHudSnapshotTest",
+          "passed": 167
+        }
+      ],
+      "freshRunIdClosed": true,
+      "receipt": {
+        "path": "tmp/as2-perf-round2-20261010/runs/hud-snapshot-final.json",
+        "sha256": "28019AFA253CD61FEE5B014589FA393899632404A0A72A4C9C6F0B7DDE74586B",
+        "bytes": 4253
+      },
+      "trace": {
+        "path": "tmp/as2-perf-round2-20261010/runs/hud-snapshot-final.flashlog.txt",
+        "sha256": "CC4F832C413AC1AFE247382412DB342E5CEDF3B8026B8E7128CEAC9E08E1D616",
+        "bytes": 1809
+      },
+      "compiler": {
+        "path": "tmp/as2-perf-round2-20261010/runs/hud-snapshot-final.compiler_errors.txt",
+        "sha256": "6D64657E843CFA06C243B6B51F8732C1B5910EBD29940AA7F6F9342B38034FD3",
+        "bytes": 27
+      },
+      "swf": {
+        "path": "tmp/as2-perf-round2-20261010/runs/hud-snapshot-final.swf",
+        "sha256": "2954B3B8445ACF49A1C1F68ADFD0A109F2D376C8C11EB29D5DD9F38A6A08B7E4",
+        "bytes": 881959
+      },
+      "recordedSourceHashes": [
+        {
+          "sha256": "A3F8D009C69CF3269358D45682A190A2CE4C372E2091FAE995CA7A0D08FCF1EE",
+          "path": "scripts/类定义/org/flashNight/arki/component/Buff/BuffManager.as"
+        },
+        {
+          "sha256": "9BBEF5433F66951B7B294BB7D0397324FAD9959236801F81E2472F57A59D9A6B",
+          "path": "scripts/类定义/org/flashNight/arki/component/Buff/test/BuffManagerHotPathTest.as"
+        },
+        {
+          "sha256": "A24B24E3AC00B8011ADA4DD8D795CAA8110DD121F2167C142E4FA8D4E3F3A073",
+          "path": "scripts/类定义/org/flashNight/arki/component/Buff/test/BuffManagerLegacyUpdateFixture.as"
+        },
+        {
+          "sha256": "2C37C9865E4F65D9A8B975AC5DCCA61DFB53E1B2B4A9088823493DC517964B26",
+          "path": "scripts/类定义/org/flashNight/arki/hud/PlayerHudBuffProjection.as"
+        },
+        {
+          "sha256": "80F2D4BA65F3A9B319D917AECD9DB92006181BFEE3FF799DD61C986C02333F46",
+          "path": "scripts/类定义/org/flashNight/arki/hud/PlayerHudBuffProjectionLegacyFixture.as"
+        },
+        {
+          "sha256": "3B9CEA4380D216EDE64295EC648620D6A2D6F40AC8698FC40CFE69EBF91A8F5E",
+          "path": "scripts/类定义/org/flashNight/arki/hud/PlayerHudLoadoutResourceTest.as"
+        },
+        {
+          "sha256": "BEAE10A250E6A76DBA06CBC523C37E821AE4F522C82AD392AEB3D38A8F2454F6",
+          "path": "scripts/类定义/org/flashNight/arki/hud/PlayerHudService.as"
+        },
+        {
+          "sha256": "73A97A6CB938E713EE3B85395CB7F40A791FC1CF73263DC1BA2285DEDA6F4113",
+          "path": "scripts/类定义/org/flashNight/arki/hud/PlayerHudShieldProjectionLegacyFixture.as"
+        },
+        {
+          "sha256": "0ABCA374D859464622F3468AC9AB259CEEC767ADB8CFBA6E3054AC922B9A2623",
+          "path": "scripts/类定义/org/flashNight/arki/hud/PlayerHudSnapshotLegacyFixture.as"
+        },
+        {
+          "sha256": "276DA855C4F49E856324CAED1870C7CE5F90069FA0C4A898DC03BAC214E3D26F",
+          "path": "scripts/类定义/org/flashNight/arki/hud/PlayerHudSnapshotTest.as"
+        },
+        {
+          "sha256": "0D417386E1C4705A45FC6059C772581E2C4EAED6C9281D4EAA3C9A48AF4A073F",
+          "path": "scripts/类定义/org/flashNight/arki/skill/SkillHudInputTest.as"
+        },
+        {
+          "sha256": "028814C6EC7568929328EA4DC7DA48F4C3224EC672F1E473F934AF9634C164AB",
+          "path": "scripts/类定义/org/flashNight/arki/skill/SkillLoadoutService.as"
+        },
+        {
+          "sha256": "D0A3F88732E59AAC3624DC40D79C0BA4F7279C32ED0417C8E84828F8DEC51CEE",
+          "path": "scripts/类定义/org/flashNight/arki/skill/SkillResourceService.as"
+        },
+        {
+          "sha256": "99CF9B106D26CCF965B0D2FDBF9F7CA9709F0693ACFA6037363A74DDCA8E7437",
+          "path": "scripts/类定义/org/flashNight/arki/skill/SkillResourceSnapshotLegacyFixture.as"
+        }
+      ],
+      "phase": "before_upstream_integration"
+    },
+    {
+      "name": "hud-existing-final",
+      "script": "scripts/run-player-hud-tests.ps1",
+      "startedUtc": "2026-10-09T23:02:18.2349915Z",
+      "wallMs": 62510.226500000004,
+      "passed": true,
+      "compilerErrors": 0,
+      "compilerWarnings": 0,
+      "reportedCounts": [
+        {
+          "suite": "PlayerHudHotPathTest",
+          "passed": 19
+        },
+        {
+          "suite": "PlayerHudServiceTest",
+          "passed": 117,
+          "total": 117
+        }
+      ],
+      "freshRunIdClosed": true,
+      "receipt": {
+        "path": "tmp/as2-perf-round2-20261010/runs/hud-existing-final.json",
+        "sha256": "62B70387E9A850F277D3BFF54F5A39D3C9580054022FBB9C3BCD47477B07BDF5",
+        "bytes": 4244
+      },
+      "trace": {
+        "path": "tmp/as2-perf-round2-20261010/runs/hud-existing-final.flashlog.txt",
+        "sha256": "FA6A77CBBCBB2BEE64A613FC3817CA417029554B7B99A2CA9503A3EF8D6CCBFB",
+        "bytes": 13474
+      },
+      "compiler": {
+        "path": "tmp/as2-perf-round2-20261010/runs/hud-existing-final.compiler_errors.txt",
+        "sha256": "6D64657E843CFA06C243B6B51F8732C1B5910EBD29940AA7F6F9342B38034FD3",
+        "bytes": 27
+      },
+      "swf": {
+        "path": "tmp/as2-perf-round2-20261010/runs/hud-existing-final.swf",
+        "sha256": "9E62C4D723734BD4285D5D63648866B6BFE6D4647FAC8DABAB35DE71FBF0E451",
+        "bytes": 884625
+      },
+      "recordedSourceHashes": [
+        {
+          "sha256": "A3F8D009C69CF3269358D45682A190A2CE4C372E2091FAE995CA7A0D08FCF1EE",
+          "path": "scripts/类定义/org/flashNight/arki/component/Buff/BuffManager.as"
+        },
+        {
+          "sha256": "9BBEF5433F66951B7B294BB7D0397324FAD9959236801F81E2472F57A59D9A6B",
+          "path": "scripts/类定义/org/flashNight/arki/component/Buff/test/BuffManagerHotPathTest.as"
+        },
+        {
+          "sha256": "A24B24E3AC00B8011ADA4DD8D795CAA8110DD121F2167C142E4FA8D4E3F3A073",
+          "path": "scripts/类定义/org/flashNight/arki/component/Buff/test/BuffManagerLegacyUpdateFixture.as"
+        },
+        {
+          "sha256": "2C37C9865E4F65D9A8B975AC5DCCA61DFB53E1B2B4A9088823493DC517964B26",
+          "path": "scripts/类定义/org/flashNight/arki/hud/PlayerHudBuffProjection.as"
+        },
+        {
+          "sha256": "80F2D4BA65F3A9B319D917AECD9DB92006181BFEE3FF799DD61C986C02333F46",
+          "path": "scripts/类定义/org/flashNight/arki/hud/PlayerHudBuffProjectionLegacyFixture.as"
+        },
+        {
+          "sha256": "3B9CEA4380D216EDE64295EC648620D6A2D6F40AC8698FC40CFE69EBF91A8F5E",
+          "path": "scripts/类定义/org/flashNight/arki/hud/PlayerHudLoadoutResourceTest.as"
+        },
+        {
+          "sha256": "BEAE10A250E6A76DBA06CBC523C37E821AE4F522C82AD392AEB3D38A8F2454F6",
+          "path": "scripts/类定义/org/flashNight/arki/hud/PlayerHudService.as"
+        },
+        {
+          "sha256": "73A97A6CB938E713EE3B85395CB7F40A791FC1CF73263DC1BA2285DEDA6F4113",
+          "path": "scripts/类定义/org/flashNight/arki/hud/PlayerHudShieldProjectionLegacyFixture.as"
+        },
+        {
+          "sha256": "0ABCA374D859464622F3468AC9AB259CEEC767ADB8CFBA6E3054AC922B9A2623",
+          "path": "scripts/类定义/org/flashNight/arki/hud/PlayerHudSnapshotLegacyFixture.as"
+        },
+        {
+          "sha256": "276DA855C4F49E856324CAED1870C7CE5F90069FA0C4A898DC03BAC214E3D26F",
+          "path": "scripts/类定义/org/flashNight/arki/hud/PlayerHudSnapshotTest.as"
+        },
+        {
+          "sha256": "0D417386E1C4705A45FC6059C772581E2C4EAED6C9281D4EAA3C9A48AF4A073F",
+          "path": "scripts/类定义/org/flashNight/arki/skill/SkillHudInputTest.as"
+        },
+        {
+          "sha256": "028814C6EC7568929328EA4DC7DA48F4C3224EC672F1E473F934AF9634C164AB",
+          "path": "scripts/类定义/org/flashNight/arki/skill/SkillLoadoutService.as"
+        },
+        {
+          "sha256": "D0A3F88732E59AAC3624DC40D79C0BA4F7279C32ED0417C8E84828F8DEC51CEE",
+          "path": "scripts/类定义/org/flashNight/arki/skill/SkillResourceService.as"
+        },
+        {
+          "sha256": "99CF9B106D26CCF965B0D2FDBF9F7CA9709F0693ACFA6037363A74DDCA8E7437",
+          "path": "scripts/类定义/org/flashNight/arki/skill/SkillResourceSnapshotLegacyFixture.as"
+        }
+      ],
+      "phase": "before_upstream_integration"
+    },
+    {
+      "name": "resource-existing-final",
+      "script": "scripts/run-skill-resource-tests.ps1",
+      "startedUtc": "2026-10-09T23:03:22.7611263Z",
+      "wallMs": 53928.0636,
+      "passed": true,
+      "compilerErrors": 0,
+      "compilerWarnings": 0,
+      "reportedCounts": [
+        {
+          "suite": "SkillResourceServiceTest",
+          "passed": 479
+        }
+      ],
+      "freshRunIdClosed": true,
+      "receipt": {
+        "path": "tmp/as2-perf-round2-20261010/runs/resource-existing-final.json",
+        "sha256": "DFD304BBE77F00236932EFBA974557CB2BA3E8143D798ECD9CB9B7A1791568B1",
+        "bytes": 4245
+      },
+      "trace": {
+        "path": "tmp/as2-perf-round2-20261010/runs/resource-existing-final.flashlog.txt",
+        "sha256": "EECFED3F9C2E16C704C6E532F24AF3662F10A9E9FBCCD9BF545AE08EB54A970F",
+        "bytes": 928
+      },
+      "compiler": {
+        "path": "tmp/as2-perf-round2-20261010/runs/resource-existing-final.compiler_errors.txt",
+        "sha256": "6D64657E843CFA06C243B6B51F8732C1B5910EBD29940AA7F6F9342B38034FD3",
+        "bytes": 27
+      },
+      "swf": {
+        "path": "tmp/as2-perf-round2-20261010/runs/resource-existing-final.swf",
+        "sha256": "2F0435B4E596ED6837EEB74472BA9B32E47CFCB838822E8B7A2AD08D2CF15CDE",
+        "bytes": 848273
+      },
+      "recordedSourceHashes": [
+        {
+          "sha256": "A3F8D009C69CF3269358D45682A190A2CE4C372E2091FAE995CA7A0D08FCF1EE",
+          "path": "scripts/类定义/org/flashNight/arki/component/Buff/BuffManager.as"
+        },
+        {
+          "sha256": "9BBEF5433F66951B7B294BB7D0397324FAD9959236801F81E2472F57A59D9A6B",
+          "path": "scripts/类定义/org/flashNight/arki/component/Buff/test/BuffManagerHotPathTest.as"
+        },
+        {
+          "sha256": "A24B24E3AC00B8011ADA4DD8D795CAA8110DD121F2167C142E4FA8D4E3F3A073",
+          "path": "scripts/类定义/org/flashNight/arki/component/Buff/test/BuffManagerLegacyUpdateFixture.as"
+        },
+        {
+          "sha256": "2C37C9865E4F65D9A8B975AC5DCCA61DFB53E1B2B4A9088823493DC517964B26",
+          "path": "scripts/类定义/org/flashNight/arki/hud/PlayerHudBuffProjection.as"
+        },
+        {
+          "sha256": "80F2D4BA65F3A9B319D917AECD9DB92006181BFEE3FF799DD61C986C02333F46",
+          "path": "scripts/类定义/org/flashNight/arki/hud/PlayerHudBuffProjectionLegacyFixture.as"
+        },
+        {
+          "sha256": "3B9CEA4380D216EDE64295EC648620D6A2D6F40AC8698FC40CFE69EBF91A8F5E",
+          "path": "scripts/类定义/org/flashNight/arki/hud/PlayerHudLoadoutResourceTest.as"
+        },
+        {
+          "sha256": "BEAE10A250E6A76DBA06CBC523C37E821AE4F522C82AD392AEB3D38A8F2454F6",
+          "path": "scripts/类定义/org/flashNight/arki/hud/PlayerHudService.as"
+        },
+        {
+          "sha256": "73A97A6CB938E713EE3B85395CB7F40A791FC1CF73263DC1BA2285DEDA6F4113",
+          "path": "scripts/类定义/org/flashNight/arki/hud/PlayerHudShieldProjectionLegacyFixture.as"
+        },
+        {
+          "sha256": "0ABCA374D859464622F3468AC9AB259CEEC767ADB8CFBA6E3054AC922B9A2623",
+          "path": "scripts/类定义/org/flashNight/arki/hud/PlayerHudSnapshotLegacyFixture.as"
+        },
+        {
+          "sha256": "276DA855C4F49E856324CAED1870C7CE5F90069FA0C4A898DC03BAC214E3D26F",
+          "path": "scripts/类定义/org/flashNight/arki/hud/PlayerHudSnapshotTest.as"
+        },
+        {
+          "sha256": "0D417386E1C4705A45FC6059C772581E2C4EAED6C9281D4EAA3C9A48AF4A073F",
+          "path": "scripts/类定义/org/flashNight/arki/skill/SkillHudInputTest.as"
+        },
+        {
+          "sha256": "028814C6EC7568929328EA4DC7DA48F4C3224EC672F1E473F934AF9634C164AB",
+          "path": "scripts/类定义/org/flashNight/arki/skill/SkillLoadoutService.as"
+        },
+        {
+          "sha256": "D0A3F88732E59AAC3624DC40D79C0BA4F7279C32ED0417C8E84828F8DEC51CEE",
+          "path": "scripts/类定义/org/flashNight/arki/skill/SkillResourceService.as"
+        },
+        {
+          "sha256": "99CF9B106D26CCF965B0D2FDBF9F7CA9709F0693ACFA6037363A74DDCA8E7437",
+          "path": "scripts/类定义/org/flashNight/arki/skill/SkillResourceSnapshotLegacyFixture.as"
+        }
+      ],
+      "phase": "before_upstream_integration"
+    },
+    {
+      "name": "skill-migration-final",
+      "script": "scripts/run-skill-migration-tests.ps1",
+      "startedUtc": "2026-10-09T23:04:18.5008280Z",
+      "wallMs": 58069.423800000004,
+      "passed": true,
+      "compilerErrors": 0,
+      "compilerWarnings": 0,
+      "reportedCounts": [
+        {
+          "suite": "SkillLoadoutServiceTest",
+          "passed": 58
+        },
+        {
+          "suite": "SkillPanelServiceTest",
+          "passed": 48
+        }
+      ],
+      "freshRunIdClosed": true,
+      "receipt": {
+        "path": "tmp/as2-perf-round2-20261010/runs/skill-migration-final.json",
+        "sha256": "34FD7A107BB01ABF256B89A97593D3B16A65F6E9F330486959E1C140599E49DB",
+        "bytes": 4252
+      },
+      "trace": {
+        "path": "tmp/as2-perf-round2-20261010/runs/skill-migration-final.flashlog.txt",
+        "sha256": "1E344EB027B0146C4D1B88F8FA08E79391D0932DDE63A39B3CC07A1B22E32CC3",
+        "bytes": 8788
+      },
+      "compiler": {
+        "path": "tmp/as2-perf-round2-20261010/runs/skill-migration-final.compiler_errors.txt",
+        "sha256": "6D64657E843CFA06C243B6B51F8732C1B5910EBD29940AA7F6F9342B38034FD3",
+        "bytes": 27
+      },
+      "swf": {
+        "path": "tmp/as2-perf-round2-20261010/runs/skill-migration-final.swf",
+        "sha256": "07B780038682E7D04D15E28A772C714B7BDA39F1086F1921AEF3BAC0A65B2376",
+        "bytes": 865782
+      },
+      "recordedSourceHashes": [
+        {
+          "sha256": "A3F8D009C69CF3269358D45682A190A2CE4C372E2091FAE995CA7A0D08FCF1EE",
+          "path": "scripts/类定义/org/flashNight/arki/component/Buff/BuffManager.as"
+        },
+        {
+          "sha256": "9BBEF5433F66951B7B294BB7D0397324FAD9959236801F81E2472F57A59D9A6B",
+          "path": "scripts/类定义/org/flashNight/arki/component/Buff/test/BuffManagerHotPathTest.as"
+        },
+        {
+          "sha256": "A24B24E3AC00B8011ADA4DD8D795CAA8110DD121F2167C142E4FA8D4E3F3A073",
+          "path": "scripts/类定义/org/flashNight/arki/component/Buff/test/BuffManagerLegacyUpdateFixture.as"
+        },
+        {
+          "sha256": "2C37C9865E4F65D9A8B975AC5DCCA61DFB53E1B2B4A9088823493DC517964B26",
+          "path": "scripts/类定义/org/flashNight/arki/hud/PlayerHudBuffProjection.as"
+        },
+        {
+          "sha256": "80F2D4BA65F3A9B319D917AECD9DB92006181BFEE3FF799DD61C986C02333F46",
+          "path": "scripts/类定义/org/flashNight/arki/hud/PlayerHudBuffProjectionLegacyFixture.as"
+        },
+        {
+          "sha256": "3B9CEA4380D216EDE64295EC648620D6A2D6F40AC8698FC40CFE69EBF91A8F5E",
+          "path": "scripts/类定义/org/flashNight/arki/hud/PlayerHudLoadoutResourceTest.as"
+        },
+        {
+          "sha256": "BEAE10A250E6A76DBA06CBC523C37E821AE4F522C82AD392AEB3D38A8F2454F6",
+          "path": "scripts/类定义/org/flashNight/arki/hud/PlayerHudService.as"
+        },
+        {
+          "sha256": "73A97A6CB938E713EE3B85395CB7F40A791FC1CF73263DC1BA2285DEDA6F4113",
+          "path": "scripts/类定义/org/flashNight/arki/hud/PlayerHudShieldProjectionLegacyFixture.as"
+        },
+        {
+          "sha256": "0ABCA374D859464622F3468AC9AB259CEEC767ADB8CFBA6E3054AC922B9A2623",
+          "path": "scripts/类定义/org/flashNight/arki/hud/PlayerHudSnapshotLegacyFixture.as"
+        },
+        {
+          "sha256": "276DA855C4F49E856324CAED1870C7CE5F90069FA0C4A898DC03BAC214E3D26F",
+          "path": "scripts/类定义/org/flashNight/arki/hud/PlayerHudSnapshotTest.as"
+        },
+        {
+          "sha256": "0D417386E1C4705A45FC6059C772581E2C4EAED6C9281D4EAA3C9A48AF4A073F",
+          "path": "scripts/类定义/org/flashNight/arki/skill/SkillHudInputTest.as"
+        },
+        {
+          "sha256": "028814C6EC7568929328EA4DC7DA48F4C3224EC672F1E473F934AF9634C164AB",
+          "path": "scripts/类定义/org/flashNight/arki/skill/SkillLoadoutService.as"
+        },
+        {
+          "sha256": "D0A3F88732E59AAC3624DC40D79C0BA4F7279C32ED0417C8E84828F8DEC51CEE",
+          "path": "scripts/类定义/org/flashNight/arki/skill/SkillResourceService.as"
+        },
+        {
+          "sha256": "99CF9B106D26CCF965B0D2FDBF9F7CA9709F0693ACFA6037363A74DDCA8E7437",
+          "path": "scripts/类定义/org/flashNight/arki/skill/SkillResourceSnapshotLegacyFixture.as"
+        }
+      ],
+      "phase": "before_upstream_integration"
+    },
+    {
+      "name": "manual-input-final",
+      "script": "scripts/run-player-manual-input-tests.ps1",
+      "startedUtc": "2026-10-09T23:05:18.3659528Z",
+      "wallMs": 62273.4265,
+      "passed": true,
+      "compilerErrors": 0,
+      "compilerWarnings": 0,
+      "reportedCounts": [
+        {
+          "suite": "LongGunSubWeaponCoreTest",
+          "passed": 511,
+          "total": 511
+        },
+        {
+          "suite": "PistolRecoilCoreTest",
+          "passed": 30,
+          "total": 30
+        },
+        {
+          "suite": "ManualCooldownServiceTest",
+          "passed": 57,
+          "total": 57
+        },
+        {
+          "suite": "DrugInputServiceTest",
+          "passed": 58,
+          "total": 58
+        },
+        {
+          "suite": "KeyManagerMigrationTest",
+          "passed": 14,
+          "total": 14
+        }
+      ],
+      "freshRunIdClosed": true,
+      "receipt": {
+        "path": "tmp/as2-perf-round2-20261010/runs/manual-input-final.json",
+        "sha256": "3EDE566240B8BFBA50E9CAC41589EAAB7DE6361607D2127222D97E6CC383C8D8",
+        "bytes": 4245
+      },
+      "trace": {
+        "path": "tmp/as2-perf-round2-20261010/runs/manual-input-final.flashlog.txt",
+        "sha256": "C88DBC2A2F9D17E75D3F06DF2C49824B3F076D148B337F2F886ED0B86EDD78B4",
+        "bytes": 45028
+      },
+      "compiler": {
+        "path": "tmp/as2-perf-round2-20261010/runs/manual-input-final.compiler_errors.txt",
+        "sha256": "6D64657E843CFA06C243B6B51F8732C1B5910EBD29940AA7F6F9342B38034FD3",
+        "bytes": 27
+      },
+      "swf": {
+        "path": "tmp/as2-perf-round2-20261010/runs/manual-input-final.swf",
+        "sha256": "451875977BF9A8BA514834F098ADDF758D2BB14E1C544BDE8D88CA40B62D18F1",
+        "bytes": 888786
+      },
+      "recordedSourceHashes": [
+        {
+          "sha256": "A3F8D009C69CF3269358D45682A190A2CE4C372E2091FAE995CA7A0D08FCF1EE",
+          "path": "scripts/类定义/org/flashNight/arki/component/Buff/BuffManager.as"
+        },
+        {
+          "sha256": "9BBEF5433F66951B7B294BB7D0397324FAD9959236801F81E2472F57A59D9A6B",
+          "path": "scripts/类定义/org/flashNight/arki/component/Buff/test/BuffManagerHotPathTest.as"
+        },
+        {
+          "sha256": "A24B24E3AC00B8011ADA4DD8D795CAA8110DD121F2167C142E4FA8D4E3F3A073",
+          "path": "scripts/类定义/org/flashNight/arki/component/Buff/test/BuffManagerLegacyUpdateFixture.as"
+        },
+        {
+          "sha256": "2C37C9865E4F65D9A8B975AC5DCCA61DFB53E1B2B4A9088823493DC517964B26",
+          "path": "scripts/类定义/org/flashNight/arki/hud/PlayerHudBuffProjection.as"
+        },
+        {
+          "sha256": "80F2D4BA65F3A9B319D917AECD9DB92006181BFEE3FF799DD61C986C02333F46",
+          "path": "scripts/类定义/org/flashNight/arki/hud/PlayerHudBuffProjectionLegacyFixture.as"
+        },
+        {
+          "sha256": "3B9CEA4380D216EDE64295EC648620D6A2D6F40AC8698FC40CFE69EBF91A8F5E",
+          "path": "scripts/类定义/org/flashNight/arki/hud/PlayerHudLoadoutResourceTest.as"
+        },
+        {
+          "sha256": "BEAE10A250E6A76DBA06CBC523C37E821AE4F522C82AD392AEB3D38A8F2454F6",
+          "path": "scripts/类定义/org/flashNight/arki/hud/PlayerHudService.as"
+        },
+        {
+          "sha256": "73A97A6CB938E713EE3B85395CB7F40A791FC1CF73263DC1BA2285DEDA6F4113",
+          "path": "scripts/类定义/org/flashNight/arki/hud/PlayerHudShieldProjectionLegacyFixture.as"
+        },
+        {
+          "sha256": "0ABCA374D859464622F3468AC9AB259CEEC767ADB8CFBA6E3054AC922B9A2623",
+          "path": "scripts/类定义/org/flashNight/arki/hud/PlayerHudSnapshotLegacyFixture.as"
+        },
+        {
+          "sha256": "276DA855C4F49E856324CAED1870C7CE5F90069FA0C4A898DC03BAC214E3D26F",
+          "path": "scripts/类定义/org/flashNight/arki/hud/PlayerHudSnapshotTest.as"
+        },
+        {
+          "sha256": "0D417386E1C4705A45FC6059C772581E2C4EAED6C9281D4EAA3C9A48AF4A073F",
+          "path": "scripts/类定义/org/flashNight/arki/skill/SkillHudInputTest.as"
+        },
+        {
+          "sha256": "028814C6EC7568929328EA4DC7DA48F4C3224EC672F1E473F934AF9634C164AB",
+          "path": "scripts/类定义/org/flashNight/arki/skill/SkillLoadoutService.as"
+        },
+        {
+          "sha256": "D0A3F88732E59AAC3624DC40D79C0BA4F7279C32ED0417C8E84828F8DEC51CEE",
+          "path": "scripts/类定义/org/flashNight/arki/skill/SkillResourceService.as"
+        },
+        {
+          "sha256": "99CF9B106D26CCF965B0D2FDBF9F7CA9709F0693ACFA6037363A74DDCA8E7437",
+          "path": "scripts/类定义/org/flashNight/arki/skill/SkillResourceSnapshotLegacyFixture.as"
+        }
+      ],
+      "phase": "before_upstream_integration"
+    },
+    {
+      "name": "character-build-final",
+      "script": "scripts/run-character-build-tests.ps1",
+      "startedUtc": "2026-10-09T23:06:22.6272728Z",
+      "wallMs": 84009.7871,
+      "passed": true,
+      "compilerErrors": 0,
+      "compilerWarnings": 0,
+      "reportedCounts": [
+        {
+          "suite": "EquipmentInventoryTest",
+          "passed": 28
+        },
+        {
+          "suite": "InventoryPanelServiceTest",
+          "passed": 194
+        },
+        {
+          "suite": "CharacterBuildTransactionSpikeTest",
+          "passed": 19
+        },
+        {
+          "suite": "RuntimeEquipmentProjectionTest",
+          "passed": 27
+        },
+        {
+          "suite": "CharacterBuildServiceTest",
+          "passed": 219
+        },
+        {
+          "suite": "PlayerInfoProviderTest",
+          "passed": 27
+        }
+      ],
+      "freshRunIdClosed": true,
+      "receipt": {
+        "path": "tmp/as2-perf-round2-20261010/runs/character-build-final.json",
+        "sha256": "2DDEBD902B98F3EF424938926B1751FB3E2D78C544DE3125939A2CAD8C12FDB2",
+        "bytes": 4244
+      },
+      "trace": {
+        "path": "tmp/as2-perf-round2-20261010/runs/character-build-final.flashlog.txt",
+        "sha256": "37D5525DA697B71B4283AB93D1D20783B592EB42B5E35311672AD5B7A4C171A5",
+        "bytes": 73573
+      },
+      "compiler": {
+        "path": "tmp/as2-perf-round2-20261010/runs/character-build-final.compiler_errors.txt",
+        "sha256": "6D64657E843CFA06C243B6B51F8732C1B5910EBD29940AA7F6F9342B38034FD3",
+        "bytes": 27
+      },
+      "swf": {
+        "path": "tmp/as2-perf-round2-20261010/runs/character-build-final.swf",
+        "sha256": "FA82903A9BBA2D9BD9CFC6120724163775ECD9E174BFC8CEE65752803C5BCCB7",
+        "bytes": 951495
+      },
+      "recordedSourceHashes": [
+        {
+          "sha256": "A3F8D009C69CF3269358D45682A190A2CE4C372E2091FAE995CA7A0D08FCF1EE",
+          "path": "scripts/类定义/org/flashNight/arki/component/Buff/BuffManager.as"
+        },
+        {
+          "sha256": "9BBEF5433F66951B7B294BB7D0397324FAD9959236801F81E2472F57A59D9A6B",
+          "path": "scripts/类定义/org/flashNight/arki/component/Buff/test/BuffManagerHotPathTest.as"
+        },
+        {
+          "sha256": "A24B24E3AC00B8011ADA4DD8D795CAA8110DD121F2167C142E4FA8D4E3F3A073",
+          "path": "scripts/类定义/org/flashNight/arki/component/Buff/test/BuffManagerLegacyUpdateFixture.as"
+        },
+        {
+          "sha256": "2C37C9865E4F65D9A8B975AC5DCCA61DFB53E1B2B4A9088823493DC517964B26",
+          "path": "scripts/类定义/org/flashNight/arki/hud/PlayerHudBuffProjection.as"
+        },
+        {
+          "sha256": "80F2D4BA65F3A9B319D917AECD9DB92006181BFEE3FF799DD61C986C02333F46",
+          "path": "scripts/类定义/org/flashNight/arki/hud/PlayerHudBuffProjectionLegacyFixture.as"
+        },
+        {
+          "sha256": "3B9CEA4380D216EDE64295EC648620D6A2D6F40AC8698FC40CFE69EBF91A8F5E",
+          "path": "scripts/类定义/org/flashNight/arki/hud/PlayerHudLoadoutResourceTest.as"
+        },
+        {
+          "sha256": "BEAE10A250E6A76DBA06CBC523C37E821AE4F522C82AD392AEB3D38A8F2454F6",
+          "path": "scripts/类定义/org/flashNight/arki/hud/PlayerHudService.as"
+        },
+        {
+          "sha256": "73A97A6CB938E713EE3B85395CB7F40A791FC1CF73263DC1BA2285DEDA6F4113",
+          "path": "scripts/类定义/org/flashNight/arki/hud/PlayerHudShieldProjectionLegacyFixture.as"
+        },
+        {
+          "sha256": "0ABCA374D859464622F3468AC9AB259CEEC767ADB8CFBA6E3054AC922B9A2623",
+          "path": "scripts/类定义/org/flashNight/arki/hud/PlayerHudSnapshotLegacyFixture.as"
+        },
+        {
+          "sha256": "276DA855C4F49E856324CAED1870C7CE5F90069FA0C4A898DC03BAC214E3D26F",
+          "path": "scripts/类定义/org/flashNight/arki/hud/PlayerHudSnapshotTest.as"
+        },
+        {
+          "sha256": "0D417386E1C4705A45FC6059C772581E2C4EAED6C9281D4EAA3C9A48AF4A073F",
+          "path": "scripts/类定义/org/flashNight/arki/skill/SkillHudInputTest.as"
+        },
+        {
+          "sha256": "028814C6EC7568929328EA4DC7DA48F4C3224EC672F1E473F934AF9634C164AB",
+          "path": "scripts/类定义/org/flashNight/arki/skill/SkillLoadoutService.as"
+        },
+        {
+          "sha256": "D0A3F88732E59AAC3624DC40D79C0BA4F7279C32ED0417C8E84828F8DEC51CEE",
+          "path": "scripts/类定义/org/flashNight/arki/skill/SkillResourceService.as"
+        },
+        {
+          "sha256": "99CF9B106D26CCF965B0D2FDBF9F7CA9709F0693ACFA6037363A74DDCA8E7437",
+          "path": "scripts/类定义/org/flashNight/arki/skill/SkillResourceSnapshotLegacyFixture.as"
+        }
+      ],
+      "phase": "before_upstream_integration"
+    },
+    {
+      "name": "buff-existing-candidate-01",
+      "script": "scripts/run-buff-manager-tests.ps1",
+      "startedUtc": "2026-10-09T22:53:27.1781195Z",
+      "wallMs": 10600.692200000001,
+      "passed": true,
+      "compilerErrors": 0,
+      "compilerWarnings": 0,
+      "reportedCounts": [
+        {
+          "suite": "BuffManagerTest",
+          "passed": 67
+        },
+        {
+          "suite": "BuffManagerBugfix",
+          "passed": 30
+        },
+        {
+          "suite": "BuffManagerPathBinding",
+          "passed": 89
+        }
+      ],
+      "freshRunIdClosed": true,
+      "receipt": {
+        "path": "tmp/as2-perf-round2-20261010/runs/buff-existing-candidate-01.json",
+        "sha256": "E180C9479D23D6D9C93B585354BD029B0543A634042F0B078F878527721B315C",
+        "bytes": 4253
+      },
+      "trace": {
+        "path": "tmp/as2-perf-round2-20261010/runs/buff-existing-candidate-01.flashlog.txt",
+        "sha256": "354BEB393FF54E3827C8D8D0785915A694D6E44F8AD627D21F34C94A8043E514",
+        "bytes": 68939
+      },
+      "compiler": {
+        "path": "tmp/as2-perf-round2-20261010/runs/buff-existing-candidate-01.compiler_errors.txt",
+        "sha256": "6D64657E843CFA06C243B6B51F8732C1B5910EBD29940AA7F6F9342B38034FD3",
+        "bytes": 27
+      },
+      "swf": {
+        "path": "tmp/as2-perf-round2-20261010/runs/buff-existing-candidate-01.swf",
+        "sha256": "DACE343012C061F92B5A9FDDCDA9B4A4489FBE0A1815379B20F081B22E72B106",
+        "bytes": 55589
+      },
+      "recordedSourceHashes": [
+        {
+          "sha256": "A3F8D009C69CF3269358D45682A190A2CE4C372E2091FAE995CA7A0D08FCF1EE",
+          "path": "scripts/类定义/org/flashNight/arki/component/Buff/BuffManager.as"
+        },
+        {
+          "sha256": "628AFD688A9A904D507C4E1DEF38DD4693BC2809FA8ACC38A8463BECD672C39F",
+          "path": "scripts/类定义/org/flashNight/arki/component/Buff/test/BuffManagerHotPathTest.as"
+        },
+        {
+          "sha256": "A24B24E3AC00B8011ADA4DD8D795CAA8110DD121F2167C142E4FA8D4E3F3A073",
+          "path": "scripts/类定义/org/flashNight/arki/component/Buff/test/BuffManagerLegacyUpdateFixture.as"
+        },
+        {
+          "sha256": "2C37C9865E4F65D9A8B975AC5DCCA61DFB53E1B2B4A9088823493DC517964B26",
+          "path": "scripts/类定义/org/flashNight/arki/hud/PlayerHudBuffProjection.as"
+        },
+        {
+          "sha256": "80F2D4BA65F3A9B319D917AECD9DB92006181BFEE3FF799DD61C986C02333F46",
+          "path": "scripts/类定义/org/flashNight/arki/hud/PlayerHudBuffProjectionLegacyFixture.as"
+        },
+        {
+          "sha256": "3B9CEA4380D216EDE64295EC648620D6A2D6F40AC8698FC40CFE69EBF91A8F5E",
+          "path": "scripts/类定义/org/flashNight/arki/hud/PlayerHudLoadoutResourceTest.as"
+        },
+        {
+          "sha256": "9BB8174A437997E2614C1A281DFD39F6C6899583C6D7E0E61CBCB87E2494F619",
+          "path": "scripts/类定义/org/flashNight/arki/hud/PlayerHudService.as"
+        },
+        {
+          "sha256": "73A97A6CB938E713EE3B85395CB7F40A791FC1CF73263DC1BA2285DEDA6F4113",
+          "path": "scripts/类定义/org/flashNight/arki/hud/PlayerHudShieldProjectionLegacyFixture.as"
+        },
+        {
+          "sha256": "0ABCA374D859464622F3468AC9AB259CEEC767ADB8CFBA6E3054AC922B9A2623",
+          "path": "scripts/类定义/org/flashNight/arki/hud/PlayerHudSnapshotLegacyFixture.as"
+        },
+        {
+          "sha256": "DBADEAB9AEA848C77B039312F4A84A5993CEB52060272342DFD1BF1E7E4FCC94",
+          "path": "scripts/类定义/org/flashNight/arki/hud/PlayerHudSnapshotTest.as"
+        },
+        {
+          "sha256": "0D417386E1C4705A45FC6059C772581E2C4EAED6C9281D4EAA3C9A48AF4A073F",
+          "path": "scripts/类定义/org/flashNight/arki/skill/SkillHudInputTest.as"
+        },
+        {
+          "sha256": "028814C6EC7568929328EA4DC7DA48F4C3224EC672F1E473F934AF9634C164AB",
+          "path": "scripts/类定义/org/flashNight/arki/skill/SkillLoadoutService.as"
+        },
+        {
+          "sha256": "D0A3F88732E59AAC3624DC40D79C0BA4F7279C32ED0417C8E84828F8DEC51CEE",
+          "path": "scripts/类定义/org/flashNight/arki/skill/SkillResourceService.as"
+        },
+        {
+          "sha256": "99CF9B106D26CCF965B0D2FDBF9F7CA9709F0693ACFA6037363A74DDCA8E7437",
+          "path": "scripts/类定义/org/flashNight/arki/skill/SkillResourceSnapshotLegacyFixture.as"
+        }
+      ],
+      "phase": "before_upstream_integration"
+    },
+    {
+      "name": "buff-hotpath-candidate-02",
+      "script": "scripts/run-buff-hotpath-tests.ps1",
+      "startedUtc": "2026-10-09T22:59:24.2231529Z",
+      "wallMs": 18711.097400000002,
+      "passed": true,
+      "compilerErrors": 0,
+      "compilerWarnings": 0,
+      "reportedCounts": [
+        {
+          "suite": "BuffManagerHotPathTest",
+          "passed": 134
+        }
+      ],
+      "freshRunIdClosed": true,
+      "receipt": {
+        "path": "tmp/as2-perf-round2-20261010/runs/buff-hotpath-candidate-02.json",
+        "sha256": "BED71876868394A6C0536ACE68411C16CCA9DDC3EE8E6D7942DF9C95A288112D",
+        "bytes": 4252
+      },
+      "trace": {
+        "path": "tmp/as2-perf-round2-20261010/runs/buff-hotpath-candidate-02.flashlog.txt",
+        "sha256": "A95122939612576D53F2A7B007DE29718ADF9573DF84D6A67F33E67D7CAADF8C",
+        "bytes": 13578
+      },
+      "compiler": {
+        "path": "tmp/as2-perf-round2-20261010/runs/buff-hotpath-candidate-02.compiler_errors.txt",
+        "sha256": "6D64657E843CFA06C243B6B51F8732C1B5910EBD29940AA7F6F9342B38034FD3",
+        "bytes": 27
+      },
+      "swf": {
+        "path": "tmp/as2-perf-round2-20261010/runs/buff-hotpath-candidate-02.swf",
+        "sha256": "1B931337DAE80298BD376B685892D630843433070B33B9EC341969282BC60849",
+        "bytes": 30260
+      },
+      "recordedSourceHashes": [
+        {
+          "sha256": "A3F8D009C69CF3269358D45682A190A2CE4C372E2091FAE995CA7A0D08FCF1EE",
+          "path": "scripts/类定义/org/flashNight/arki/component/Buff/BuffManager.as"
+        },
+        {
+          "sha256": "9BBEF5433F66951B7B294BB7D0397324FAD9959236801F81E2472F57A59D9A6B",
+          "path": "scripts/类定义/org/flashNight/arki/component/Buff/test/BuffManagerHotPathTest.as"
+        },
+        {
+          "sha256": "A24B24E3AC00B8011ADA4DD8D795CAA8110DD121F2167C142E4FA8D4E3F3A073",
+          "path": "scripts/类定义/org/flashNight/arki/component/Buff/test/BuffManagerLegacyUpdateFixture.as"
+        },
+        {
+          "sha256": "2C37C9865E4F65D9A8B975AC5DCCA61DFB53E1B2B4A9088823493DC517964B26",
+          "path": "scripts/类定义/org/flashNight/arki/hud/PlayerHudBuffProjection.as"
+        },
+        {
+          "sha256": "80F2D4BA65F3A9B319D917AECD9DB92006181BFEE3FF799DD61C986C02333F46",
+          "path": "scripts/类定义/org/flashNight/arki/hud/PlayerHudBuffProjectionLegacyFixture.as"
+        },
+        {
+          "sha256": "3B9CEA4380D216EDE64295EC648620D6A2D6F40AC8698FC40CFE69EBF91A8F5E",
+          "path": "scripts/类定义/org/flashNight/arki/hud/PlayerHudLoadoutResourceTest.as"
+        },
+        {
+          "sha256": "BEAE10A250E6A76DBA06CBC523C37E821AE4F522C82AD392AEB3D38A8F2454F6",
+          "path": "scripts/类定义/org/flashNight/arki/hud/PlayerHudService.as"
+        },
+        {
+          "sha256": "73A97A6CB938E713EE3B85395CB7F40A791FC1CF73263DC1BA2285DEDA6F4113",
+          "path": "scripts/类定义/org/flashNight/arki/hud/PlayerHudShieldProjectionLegacyFixture.as"
+        },
+        {
+          "sha256": "0ABCA374D859464622F3468AC9AB259CEEC767ADB8CFBA6E3054AC922B9A2623",
+          "path": "scripts/类定义/org/flashNight/arki/hud/PlayerHudSnapshotLegacyFixture.as"
+        },
+        {
+          "sha256": "276DA855C4F49E856324CAED1870C7CE5F90069FA0C4A898DC03BAC214E3D26F",
+          "path": "scripts/类定义/org/flashNight/arki/hud/PlayerHudSnapshotTest.as"
+        },
+        {
+          "sha256": "0D417386E1C4705A45FC6059C772581E2C4EAED6C9281D4EAA3C9A48AF4A073F",
+          "path": "scripts/类定义/org/flashNight/arki/skill/SkillHudInputTest.as"
+        },
+        {
+          "sha256": "028814C6EC7568929328EA4DC7DA48F4C3224EC672F1E473F934AF9634C164AB",
+          "path": "scripts/类定义/org/flashNight/arki/skill/SkillLoadoutService.as"
+        },
+        {
+          "sha256": "D0A3F88732E59AAC3624DC40D79C0BA4F7279C32ED0417C8E84828F8DEC51CEE",
+          "path": "scripts/类定义/org/flashNight/arki/skill/SkillResourceService.as"
+        },
+        {
+          "sha256": "99CF9B106D26CCF965B0D2FDBF9F7CA9709F0693ACFA6037363A74DDCA8E7437",
+          "path": "scripts/类定义/org/flashNight/arki/skill/SkillResourceSnapshotLegacyFixture.as"
+        }
+      ],
+      "phase": "before_upstream_integration"
+    },
+    {
+      "name": "skill-hud-candidate-01",
+      "script": "scripts/run-skill-hud-input-tests.ps1",
+      "startedUtc": "2026-10-09T22:38:23.8953134Z",
+      "wallMs": 66309.03300000001,
+      "passed": true,
+      "compilerErrors": 0,
+      "compilerWarnings": 0,
+      "reportedCounts": [
+        {
+          "suite": "SkillHudInputTest",
+          "passed": 244
+        }
+      ],
+      "freshRunIdClosed": true,
+      "receipt": {
+        "path": "tmp/as2-perf-round2-20261010/runs/skill-hud-candidate-01.json",
+        "sha256": "71F7F1314B80E1A08747971025818E6064176E31AA47013888BBE67689231BDF",
+        "bytes": 2662
+      },
+      "trace": {
+        "path": "tmp/as2-perf-round2-20261010/runs/skill-hud-candidate-01.flashlog.txt",
+        "sha256": "5883C85F01932B8D28FC2F920D25DF55583090E9D9E454BE30EB6077C7CC9C6D",
+        "bytes": 1178
+      },
+      "compiler": {
+        "path": "tmp/as2-perf-round2-20261010/runs/skill-hud-candidate-01.compiler_errors.txt",
+        "sha256": "6D64657E843CFA06C243B6B51F8732C1B5910EBD29940AA7F6F9342B38034FD3",
+        "bytes": 27
+      },
+      "swf": {
+        "path": "tmp/as2-perf-round2-20261010/runs/skill-hud-candidate-01.swf",
+        "sha256": "F932A39B5CEEF8DAB77687042FD198DA9E7A624E81395A51C6751E395854534B",
+        "bytes": 858784
+      },
+      "recordedSourceHashes": [
+        {
+          "sha256": "2C37C9865E4F65D9A8B975AC5DCCA61DFB53E1B2B4A9088823493DC517964B26",
+          "path": "scripts/类定义/org/flashNight/arki/hud/PlayerHudBuffProjection.as"
+        },
+        {
+          "sha256": "80F2D4BA65F3A9B319D917AECD9DB92006181BFEE3FF799DD61C986C02333F46",
+          "path": "scripts/类定义/org/flashNight/arki/hud/PlayerHudBuffProjectionLegacyFixture.as"
+        },
+        {
+          "sha256": "1CF09139F9E225B2A93FFB362E88072BF10C9598D6E5C9F3066CB8566B3DFFAB",
+          "path": "scripts/类定义/org/flashNight/arki/hud/PlayerHudService.as"
+        },
+        {
+          "sha256": "73A97A6CB938E713EE3B85395CB7F40A791FC1CF73263DC1BA2285DEDA6F4113",
+          "path": "scripts/类定义/org/flashNight/arki/hud/PlayerHudShieldProjectionLegacyFixture.as"
+        },
+        {
+          "sha256": "0ABCA374D859464622F3468AC9AB259CEEC767ADB8CFBA6E3054AC922B9A2623",
+          "path": "scripts/类定义/org/flashNight/arki/hud/PlayerHudSnapshotLegacyFixture.as"
+        },
+        {
+          "sha256": "DBADEAB9AEA848C77B039312F4A84A5993CEB52060272342DFD1BF1E7E4FCC94",
+          "path": "scripts/类定义/org/flashNight/arki/hud/PlayerHudSnapshotTest.as"
+        },
+        {
+          "sha256": "0D417386E1C4705A45FC6059C772581E2C4EAED6C9281D4EAA3C9A48AF4A073F",
+          "path": "scripts/类定义/org/flashNight/arki/skill/SkillHudInputTest.as"
+        },
+        {
+          "sha256": "028814C6EC7568929328EA4DC7DA48F4C3224EC672F1E473F934AF9634C164AB",
+          "path": "scripts/类定义/org/flashNight/arki/skill/SkillLoadoutService.as"
+        }
+      ],
+      "phase": "before_upstream_integration"
+    },
+    {
+      "name": "hud-loadout-resource-candidate-01",
+      "script": "scripts/run-hud-loadout-resource-tests.ps1",
+      "startedUtc": "2026-10-09T22:48:39.9317364Z",
+      "wallMs": 66340.354,
+      "passed": true,
+      "compilerErrors": 0,
+      "compilerWarnings": 0,
+      "reportedCounts": [
+        {
+          "suite": "PlayerHudLoadoutResourceTest",
+          "passed": 107
+        }
+      ],
+      "freshRunIdClosed": true,
+      "receipt": {
+        "path": "tmp/as2-perf-round2-20261010/runs/hud-loadout-resource-candidate-01.json",
+        "sha256": "4F0949C99DB77A350E05428DB15808DE0A75CB7BADF400608E85BE7CFA89F92C",
+        "bytes": 4260
+      },
+      "trace": {
+        "path": "tmp/as2-perf-round2-20261010/runs/hud-loadout-resource-candidate-01.flashlog.txt",
+        "sha256": "E3EC9EE5FF909BA322B9759AD94942D28D2838E1FE54BB52AADC141A3CC27AC2",
+        "bytes": 1051
+      },
+      "compiler": {
+        "path": "tmp/as2-perf-round2-20261010/runs/hud-loadout-resource-candidate-01.compiler_errors.txt",
+        "sha256": "6D64657E843CFA06C243B6B51F8732C1B5910EBD29940AA7F6F9342B38034FD3",
+        "bytes": 27
+      },
+      "swf": {
+        "path": "tmp/as2-perf-round2-20261010/runs/hud-loadout-resource-candidate-01.swf",
+        "sha256": "0A3D7CA697A4920D30FB0960C32E62592FB62F5C50080A9583EE095CE0F3C204",
+        "bytes": 865375
+      },
+      "recordedSourceHashes": [
+        {
+          "sha256": "A3F8D009C69CF3269358D45682A190A2CE4C372E2091FAE995CA7A0D08FCF1EE",
+          "path": "scripts/类定义/org/flashNight/arki/component/Buff/BuffManager.as"
+        },
+        {
+          "sha256": "628AFD688A9A904D507C4E1DEF38DD4693BC2809FA8ACC38A8463BECD672C39F",
+          "path": "scripts/类定义/org/flashNight/arki/component/Buff/test/BuffManagerHotPathTest.as"
+        },
+        {
+          "sha256": "A24B24E3AC00B8011ADA4DD8D795CAA8110DD121F2167C142E4FA8D4E3F3A073",
+          "path": "scripts/类定义/org/flashNight/arki/component/Buff/test/BuffManagerLegacyUpdateFixture.as"
+        },
+        {
+          "sha256": "2C37C9865E4F65D9A8B975AC5DCCA61DFB53E1B2B4A9088823493DC517964B26",
+          "path": "scripts/类定义/org/flashNight/arki/hud/PlayerHudBuffProjection.as"
+        },
+        {
+          "sha256": "80F2D4BA65F3A9B319D917AECD9DB92006181BFEE3FF799DD61C986C02333F46",
+          "path": "scripts/类定义/org/flashNight/arki/hud/PlayerHudBuffProjectionLegacyFixture.as"
+        },
+        {
+          "sha256": "3B9CEA4380D216EDE64295EC648620D6A2D6F40AC8698FC40CFE69EBF91A8F5E",
+          "path": "scripts/类定义/org/flashNight/arki/hud/PlayerHudLoadoutResourceTest.as"
+        },
+        {
+          "sha256": "9BB8174A437997E2614C1A281DFD39F6C6899583C6D7E0E61CBCB87E2494F619",
+          "path": "scripts/类定义/org/flashNight/arki/hud/PlayerHudService.as"
+        },
+        {
+          "sha256": "73A97A6CB938E713EE3B85395CB7F40A791FC1CF73263DC1BA2285DEDA6F4113",
+          "path": "scripts/类定义/org/flashNight/arki/hud/PlayerHudShieldProjectionLegacyFixture.as"
+        },
+        {
+          "sha256": "0ABCA374D859464622F3468AC9AB259CEEC767ADB8CFBA6E3054AC922B9A2623",
+          "path": "scripts/类定义/org/flashNight/arki/hud/PlayerHudSnapshotLegacyFixture.as"
+        },
+        {
+          "sha256": "DBADEAB9AEA848C77B039312F4A84A5993CEB52060272342DFD1BF1E7E4FCC94",
+          "path": "scripts/类定义/org/flashNight/arki/hud/PlayerHudSnapshotTest.as"
+        },
+        {
+          "sha256": "0D417386E1C4705A45FC6059C772581E2C4EAED6C9281D4EAA3C9A48AF4A073F",
+          "path": "scripts/类定义/org/flashNight/arki/skill/SkillHudInputTest.as"
+        },
+        {
+          "sha256": "028814C6EC7568929328EA4DC7DA48F4C3224EC672F1E473F934AF9634C164AB",
+          "path": "scripts/类定义/org/flashNight/arki/skill/SkillLoadoutService.as"
+        },
+        {
+          "sha256": "D0A3F88732E59AAC3624DC40D79C0BA4F7279C32ED0417C8E84828F8DEC51CEE",
+          "path": "scripts/类定义/org/flashNight/arki/skill/SkillResourceService.as"
+        },
+        {
+          "sha256": "99CF9B106D26CCF965B0D2FDBF9F7CA9709F0693ACFA6037363A74DDCA8E7437",
+          "path": "scripts/类定义/org/flashNight/arki/skill/SkillResourceSnapshotLegacyFixture.as"
+        }
+      ],
+      "phase": "before_upstream_integration"
+    },
+    {
+      "name": "merged-map-loot",
+      "phase": "after_upstream_integration",
+      "sourceBaseCommit": "1aeb1867696e82135844da4624ef4f9aa30d5603",
+      "script": "scripts/run-map-loot-tests.ps1",
+      "startedUtc": "2026-10-10T00:02:52.3982905Z",
+      "wallMs": 120291.3747,
+      "passed": true,
+      "compilerErrors": 0,
+      "compilerWarnings": 0,
+      "reportedCounts": [
+        {
+          "suite": "LootContainerServiceTest",
+          "passed": 189
+        },
+        {
+          "suite": "LootMaterializationPlannerTest",
+          "passed": 12
+        },
+        {
+          "suite": "StageRunSessionTest",
+          "passed": 830
+        }
+      ],
+      "freshRunIdClosed": true,
+      "receipt": {
+        "path": "tmp/as2-perf-round2-20261010/runs/merged-map-loot.json",
+        "sha256": "035984BCFEBE50AD2732A41F2DA032A21185F93A34DB68813F9D2B9175A6C4BC",
+        "bytes": 4233
+      },
+      "trace": {
+        "path": "tmp/as2-perf-round2-20261010/runs/merged-map-loot.flashlog.txt",
+        "sha256": "3917A7DFE1F3F4B82FC78AC1CA6E4447E883E097AFFBEAD02FE037C2E9C2E1BD",
+        "bytes": 96944
+      },
+      "compiler": {
+        "path": "tmp/as2-perf-round2-20261010/runs/merged-map-loot.compiler_errors.txt",
+        "sha256": "6D64657E843CFA06C243B6B51F8732C1B5910EBD29940AA7F6F9342B38034FD3",
+        "bytes": 27
+      },
+      "swf": {
+        "path": "tmp/as2-perf-round2-20261010/runs/merged-map-loot.swf",
+        "sha256": "CFA5DEEBB8DFBB1B374786A150AEBAD6E71A8D9A5F430E37659B0F8B63059370",
+        "bytes": 1014123
+      },
+      "recordedSourceHashes": [
+        {
+          "sha256": "3420DC78557B2C8FB9B28CF3FBB42B54C8AE853912E2D0E5D85014E776CD863E",
+          "path": "scripts/类定义/org/flashNight/arki/component/Buff/BuffManager.as"
+        },
+        {
+          "sha256": "9BBEF5433F66951B7B294BB7D0397324FAD9959236801F81E2472F57A59D9A6B",
+          "path": "scripts/类定义/org/flashNight/arki/component/Buff/test/BuffManagerHotPathTest.as"
+        },
+        {
+          "sha256": "A24B24E3AC00B8011ADA4DD8D795CAA8110DD121F2167C142E4FA8D4E3F3A073",
+          "path": "scripts/类定义/org/flashNight/arki/component/Buff/test/BuffManagerLegacyUpdateFixture.as"
+        },
+        {
+          "sha256": "2C37C9865E4F65D9A8B975AC5DCCA61DFB53E1B2B4A9088823493DC517964B26",
+          "path": "scripts/类定义/org/flashNight/arki/hud/PlayerHudBuffProjection.as"
+        },
+        {
+          "sha256": "80F2D4BA65F3A9B319D917AECD9DB92006181BFEE3FF799DD61C986C02333F46",
+          "path": "scripts/类定义/org/flashNight/arki/hud/PlayerHudBuffProjectionLegacyFixture.as"
+        },
+        {
+          "sha256": "3B9CEA4380D216EDE64295EC648620D6A2D6F40AC8698FC40CFE69EBF91A8F5E",
+          "path": "scripts/类定义/org/flashNight/arki/hud/PlayerHudLoadoutResourceTest.as"
+        },
+        {
+          "sha256": "34327E7F5F9EEB50EDEB4A107D9F66D310E71566F5B7E6EF92684C202E3F11D7",
+          "path": "scripts/类定义/org/flashNight/arki/hud/PlayerHudService.as"
+        },
+        {
+          "sha256": "73A97A6CB938E713EE3B85395CB7F40A791FC1CF73263DC1BA2285DEDA6F4113",
+          "path": "scripts/类定义/org/flashNight/arki/hud/PlayerHudShieldProjectionLegacyFixture.as"
+        },
+        {
+          "sha256": "0ABCA374D859464622F3468AC9AB259CEEC767ADB8CFBA6E3054AC922B9A2623",
+          "path": "scripts/类定义/org/flashNight/arki/hud/PlayerHudSnapshotLegacyFixture.as"
+        },
+        {
+          "sha256": "276DA855C4F49E856324CAED1870C7CE5F90069FA0C4A898DC03BAC214E3D26F",
+          "path": "scripts/类定义/org/flashNight/arki/hud/PlayerHudSnapshotTest.as"
+        },
+        {
+          "sha256": "0D417386E1C4705A45FC6059C772581E2C4EAED6C9281D4EAA3C9A48AF4A073F",
+          "path": "scripts/类定义/org/flashNight/arki/skill/SkillHudInputTest.as"
+        },
+        {
+          "sha256": "028814C6EC7568929328EA4DC7DA48F4C3224EC672F1E473F934AF9634C164AB",
+          "path": "scripts/类定义/org/flashNight/arki/skill/SkillLoadoutService.as"
+        },
+        {
+          "sha256": "D0A3F88732E59AAC3624DC40D79C0BA4F7279C32ED0417C8E84828F8DEC51CEE",
+          "path": "scripts/类定义/org/flashNight/arki/skill/SkillResourceService.as"
+        },
+        {
+          "sha256": "99CF9B106D26CCF965B0D2FDBF9F7CA9709F0693ACFA6037363A74DDCA8E7437",
+          "path": "scripts/类定义/org/flashNight/arki/skill/SkillResourceSnapshotLegacyFixture.as"
+        }
+      ]
+    },
+    {
+      "name": "merged-hud",
+      "phase": "after_upstream_integration",
+      "sourceBaseCommit": "1aeb1867696e82135844da4624ef4f9aa30d5603",
+      "script": "scripts/run-player-hud-tests.ps1",
+      "startedUtc": "2026-10-10T00:04:54.9858952Z",
+      "wallMs": 67648.06180000001,
+      "passed": true,
+      "compilerErrors": 0,
+      "compilerWarnings": 0,
+      "reportedCounts": [
+        {
+          "suite": "PlayerHudHotPathTest",
+          "passed": 19
+        },
+        {
+          "suite": "PlayerHudServiceTest",
+          "passed": 117,
+          "total": 117
+        }
+      ],
+      "freshRunIdClosed": true,
+      "receipt": {
+        "path": "tmp/as2-perf-round2-20261010/runs/merged-hud.json",
+        "sha256": "DD0D3A36CC0459D5735B484379E80378B28706A80E9327186FCF57EB5D8F6FF1",
+        "bytes": 4235
+      },
+      "trace": {
+        "path": "tmp/as2-perf-round2-20261010/runs/merged-hud.flashlog.txt",
+        "sha256": "6DB19A7ABF0C2AB11B0BCC3FF582B83D9BABDAFF0AA3ECE03008A1D058765D87",
+        "bytes": 13474
+      },
+      "compiler": {
+        "path": "tmp/as2-perf-round2-20261010/runs/merged-hud.compiler_errors.txt",
+        "sha256": "6D64657E843CFA06C243B6B51F8732C1B5910EBD29940AA7F6F9342B38034FD3",
+        "bytes": 27
+      },
+      "swf": {
+        "path": "tmp/as2-perf-round2-20261010/runs/merged-hud.swf",
+        "sha256": "17191E353F3F283CF80145D6A4F035A02376507108FFE3AF5BFE719BBE578E6E",
+        "bytes": 886736
+      },
+      "recordedSourceHashes": [
+        {
+          "sha256": "3420DC78557B2C8FB9B28CF3FBB42B54C8AE853912E2D0E5D85014E776CD863E",
+          "path": "scripts/类定义/org/flashNight/arki/component/Buff/BuffManager.as"
+        },
+        {
+          "sha256": "9BBEF5433F66951B7B294BB7D0397324FAD9959236801F81E2472F57A59D9A6B",
+          "path": "scripts/类定义/org/flashNight/arki/component/Buff/test/BuffManagerHotPathTest.as"
+        },
+        {
+          "sha256": "A24B24E3AC00B8011ADA4DD8D795CAA8110DD121F2167C142E4FA8D4E3F3A073",
+          "path": "scripts/类定义/org/flashNight/arki/component/Buff/test/BuffManagerLegacyUpdateFixture.as"
+        },
+        {
+          "sha256": "2C37C9865E4F65D9A8B975AC5DCCA61DFB53E1B2B4A9088823493DC517964B26",
+          "path": "scripts/类定义/org/flashNight/arki/hud/PlayerHudBuffProjection.as"
+        },
+        {
+          "sha256": "80F2D4BA65F3A9B319D917AECD9DB92006181BFEE3FF799DD61C986C02333F46",
+          "path": "scripts/类定义/org/flashNight/arki/hud/PlayerHudBuffProjectionLegacyFixture.as"
+        },
+        {
+          "sha256": "3B9CEA4380D216EDE64295EC648620D6A2D6F40AC8698FC40CFE69EBF91A8F5E",
+          "path": "scripts/类定义/org/flashNight/arki/hud/PlayerHudLoadoutResourceTest.as"
+        },
+        {
+          "sha256": "34327E7F5F9EEB50EDEB4A107D9F66D310E71566F5B7E6EF92684C202E3F11D7",
+          "path": "scripts/类定义/org/flashNight/arki/hud/PlayerHudService.as"
+        },
+        {
+          "sha256": "73A97A6CB938E713EE3B85395CB7F40A791FC1CF73263DC1BA2285DEDA6F4113",
+          "path": "scripts/类定义/org/flashNight/arki/hud/PlayerHudShieldProjectionLegacyFixture.as"
+        },
+        {
+          "sha256": "0ABCA374D859464622F3468AC9AB259CEEC767ADB8CFBA6E3054AC922B9A2623",
+          "path": "scripts/类定义/org/flashNight/arki/hud/PlayerHudSnapshotLegacyFixture.as"
+        },
+        {
+          "sha256": "276DA855C4F49E856324CAED1870C7CE5F90069FA0C4A898DC03BAC214E3D26F",
+          "path": "scripts/类定义/org/flashNight/arki/hud/PlayerHudSnapshotTest.as"
+        },
+        {
+          "sha256": "0D417386E1C4705A45FC6059C772581E2C4EAED6C9281D4EAA3C9A48AF4A073F",
+          "path": "scripts/类定义/org/flashNight/arki/skill/SkillHudInputTest.as"
+        },
+        {
+          "sha256": "028814C6EC7568929328EA4DC7DA48F4C3224EC672F1E473F934AF9634C164AB",
+          "path": "scripts/类定义/org/flashNight/arki/skill/SkillLoadoutService.as"
+        },
+        {
+          "sha256": "D0A3F88732E59AAC3624DC40D79C0BA4F7279C32ED0417C8E84828F8DEC51CEE",
+          "path": "scripts/类定义/org/flashNight/arki/skill/SkillResourceService.as"
+        },
+        {
+          "sha256": "99CF9B106D26CCF965B0D2FDBF9F7CA9709F0693ACFA6037363A74DDCA8E7437",
+          "path": "scripts/类定义/org/flashNight/arki/skill/SkillResourceSnapshotLegacyFixture.as"
+        }
+      ]
+    },
+    {
+      "name": "merged-buff",
+      "phase": "after_upstream_integration",
+      "sourceBaseCommit": "1aeb1867696e82135844da4624ef4f9aa30d5603",
+      "script": "scripts/run-buff-manager-tests.ps1",
+      "startedUtc": "2026-10-10T00:06:04.6562702Z",
+      "wallMs": 12045.1397,
+      "passed": true,
+      "compilerErrors": 0,
+      "compilerWarnings": 0,
+      "reportedCounts": [
+        {
+          "suite": "BuffManagerTest",
+          "passed": 67
+        },
+        {
+          "suite": "BuffManagerBugfix",
+          "passed": 30
+        },
+        {
+          "suite": "BuffManagerPathBinding",
+          "passed": 89
+        }
+      ],
+      "freshRunIdClosed": true,
+      "receipt": {
+        "path": "tmp/as2-perf-round2-20261010/runs/merged-buff.json",
+        "sha256": "B4EB9172497757AD32D53B04A8989638D82F072D5F0AFB27DFE8E9DEF91DD2FC",
+        "bytes": 4230
+      },
+      "trace": {
+        "path": "tmp/as2-perf-round2-20261010/runs/merged-buff.flashlog.txt",
+        "sha256": "0E8B0F7769EDBC06316D9EE76CD052810556F2EA05B4118F650F571D4E1D8BCB",
+        "bytes": 68939
+      },
+      "compiler": {
+        "path": "tmp/as2-perf-round2-20261010/runs/merged-buff.compiler_errors.txt",
+        "sha256": "6D64657E843CFA06C243B6B51F8732C1B5910EBD29940AA7F6F9342B38034FD3",
+        "bytes": 27
+      },
+      "swf": {
+        "path": "tmp/as2-perf-round2-20261010/runs/merged-buff.swf",
+        "sha256": "1D0CF62E2CA8FC08E53D01CF87E2A263A1A014C239EFA700677FB2E1800A8B68",
+        "bytes": 55586
+      },
+      "recordedSourceHashes": [
+        {
+          "sha256": "3420DC78557B2C8FB9B28CF3FBB42B54C8AE853912E2D0E5D85014E776CD863E",
+          "path": "scripts/类定义/org/flashNight/arki/component/Buff/BuffManager.as"
+        },
+        {
+          "sha256": "9BBEF5433F66951B7B294BB7D0397324FAD9959236801F81E2472F57A59D9A6B",
+          "path": "scripts/类定义/org/flashNight/arki/component/Buff/test/BuffManagerHotPathTest.as"
+        },
+        {
+          "sha256": "A24B24E3AC00B8011ADA4DD8D795CAA8110DD121F2167C142E4FA8D4E3F3A073",
+          "path": "scripts/类定义/org/flashNight/arki/component/Buff/test/BuffManagerLegacyUpdateFixture.as"
+        },
+        {
+          "sha256": "2C37C9865E4F65D9A8B975AC5DCCA61DFB53E1B2B4A9088823493DC517964B26",
+          "path": "scripts/类定义/org/flashNight/arki/hud/PlayerHudBuffProjection.as"
+        },
+        {
+          "sha256": "80F2D4BA65F3A9B319D917AECD9DB92006181BFEE3FF799DD61C986C02333F46",
+          "path": "scripts/类定义/org/flashNight/arki/hud/PlayerHudBuffProjectionLegacyFixture.as"
+        },
+        {
+          "sha256": "3B9CEA4380D216EDE64295EC648620D6A2D6F40AC8698FC40CFE69EBF91A8F5E",
+          "path": "scripts/类定义/org/flashNight/arki/hud/PlayerHudLoadoutResourceTest.as"
+        },
+        {
+          "sha256": "34327E7F5F9EEB50EDEB4A107D9F66D310E71566F5B7E6EF92684C202E3F11D7",
+          "path": "scripts/类定义/org/flashNight/arki/hud/PlayerHudService.as"
+        },
+        {
+          "sha256": "73A97A6CB938E713EE3B85395CB7F40A791FC1CF73263DC1BA2285DEDA6F4113",
+          "path": "scripts/类定义/org/flashNight/arki/hud/PlayerHudShieldProjectionLegacyFixture.as"
+        },
+        {
+          "sha256": "0ABCA374D859464622F3468AC9AB259CEEC767ADB8CFBA6E3054AC922B9A2623",
+          "path": "scripts/类定义/org/flashNight/arki/hud/PlayerHudSnapshotLegacyFixture.as"
+        },
+        {
+          "sha256": "276DA855C4F49E856324CAED1870C7CE5F90069FA0C4A898DC03BAC214E3D26F",
+          "path": "scripts/类定义/org/flashNight/arki/hud/PlayerHudSnapshotTest.as"
+        },
+        {
+          "sha256": "0D417386E1C4705A45FC6059C772581E2C4EAED6C9281D4EAA3C9A48AF4A073F",
+          "path": "scripts/类定义/org/flashNight/arki/skill/SkillHudInputTest.as"
+        },
+        {
+          "sha256": "028814C6EC7568929328EA4DC7DA48F4C3224EC672F1E473F934AF9634C164AB",
+          "path": "scripts/类定义/org/flashNight/arki/skill/SkillLoadoutService.as"
+        },
+        {
+          "sha256": "D0A3F88732E59AAC3624DC40D79C0BA4F7279C32ED0417C8E84828F8DEC51CEE",
+          "path": "scripts/类定义/org/flashNight/arki/skill/SkillResourceService.as"
+        },
+        {
+          "sha256": "99CF9B106D26CCF965B0D2FDBF9F7CA9709F0693ACFA6037363A74DDCA8E7437",
+          "path": "scripts/类定义/org/flashNight/arki/skill/SkillResourceSnapshotLegacyFixture.as"
+        }
+      ]
+    }
+  ],
+  "localBenchmarks": [
+    {
+      "run": "hud-snapshot-final",
+      "label": "vitals_base_unchanged",
+      "iterations": 150,
+      "baselineMs": [
+        25,
+        24,
+        24,
+        22,
+        23
+      ],
+      "candidateMs": [
+        9,
+        9,
+        10,
+        9,
+        8
+      ],
+      "baselineMedianMs": 24,
+      "candidateMedianMs": 9,
+      "medianReductionPercent": 62.5
+    },
+    {
+      "run": "hud-snapshot-final",
+      "label": "vitals_rich_unchanged",
+      "iterations": 150,
+      "baselineMs": [
+        49,
+        51,
+        53,
+        50,
+        58
+      ],
+      "candidateMs": [
+        30,
+        28,
+        26,
+        27,
+        34
+      ],
+      "baselineMedianMs": 51,
+      "candidateMedianMs": 28,
+      "medianReductionPercent": 45.1
+    },
+    {
+      "run": "hud-snapshot-final",
+      "label": "vitals_rich_changing",
+      "iterations": 150,
+      "baselineMs": [
+        43,
+        44,
+        42,
+        43,
+        42
+      ],
+      "candidateMs": [
+        38,
+        38,
+        38,
+        38,
+        38
+      ],
+      "baselineMedianMs": 43,
+      "candidateMedianMs": 38,
+      "medianReductionPercent": 11.63
+    },
+    {
+      "run": "hud-snapshot-final",
+      "label": "combat_unchanged",
+      "iterations": 150,
+      "baselineMs": [
+        24,
+        22,
+        22,
+        23,
+        22
+      ],
+      "candidateMs": [
+        14,
+        14,
+        15,
+        13,
+        13
+      ],
+      "baselineMedianMs": 22,
+      "candidateMedianMs": 14,
+      "medianReductionPercent": 36.36
+    },
+    {
+      "run": "hud-snapshot-final",
+      "label": "combat_changing",
+      "iterations": 150,
+      "baselineMs": [
+        21,
+        21,
+        21,
+        21,
+        22
+      ],
+      "candidateMs": [
+        22,
+        23,
+        23,
+        22,
+        22
+      ],
+      "baselineMedianMs": 21,
+      "candidateMedianMs": 22,
+      "medianReductionPercent": -4.76
+    },
+    {
+      "run": "hud-snapshot-final",
+      "label": "buffs_empty",
+      "iterations": 150,
+      "baselineMs": [
+        2,
+        3,
+        2,
+        3,
+        2
+      ],
+      "candidateMs": [
+        2,
+        2,
+        3,
+        1,
+        2
+      ],
+      "baselineMedianMs": 2,
+      "candidateMedianMs": 2,
+      "medianReductionPercent": 0.0
+    },
+    {
+      "run": "hud-snapshot-final",
+      "label": "buffs_12_unchanged",
+      "iterations": 150,
+      "baselineMs": [
+        66,
+        71,
+        73,
+        72,
+        64
+      ],
+      "candidateMs": [
+        21,
+        20,
+        20,
+        23,
+        17
+      ],
+      "baselineMedianMs": 71,
+      "candidateMedianMs": 20,
+      "medianReductionPercent": 71.83
+    },
+    {
+      "run": "hud-snapshot-final",
+      "label": "buffs_12_changing",
+      "iterations": 150,
+      "baselineMs": [
+        25,
+        24,
+        25,
+        25,
+        25
+      ],
+      "candidateMs": [
+        37,
+        26,
+        26,
+        26,
+        32
+      ],
+      "baselineMedianMs": 25,
+      "candidateMedianMs": 26,
+      "medianReductionPercent": -4.0
+    },
+    {
+      "run": "hud-snapshot-final",
+      "label": "buffs12_change_every_1",
+      "iterations": 160,
+      "baselineMs": [
+        39,
+        32,
+        32,
+        31,
+        31
+      ],
+      "candidateMs": [
+        37,
+        38,
+        35,
+        35,
+        34
+      ],
+      "baselineMedianMs": 32,
+      "candidateMedianMs": 35,
+      "medianReductionPercent": -9.38
+    },
+    {
+      "run": "hud-snapshot-final",
+      "label": "buffs12_change_every_4",
+      "iterations": 160,
+      "baselineMs": [
+        59,
+        64,
+        67,
+        57,
+        58
+      ],
+      "candidateMs": [
+        23,
+        24,
+        22,
+        23,
+        22
+      ],
+      "baselineMedianMs": 59,
+      "candidateMedianMs": 23,
+      "medianReductionPercent": 61.02
+    },
+    {
+      "run": "buff-hotpath-candidate-02",
+      "label": "buff_update_meta0_pod0",
+      "iterations": 800,
+      "baselineMs": [
+        10,
+        10,
+        11,
+        11,
+        10
+      ],
+      "candidateMs": [
+        4,
+        5,
+        4,
+        4,
+        4
+      ],
+      "baselineMedianMs": 10,
+      "candidateMedianMs": 4,
+      "medianReductionPercent": 60.0
+    },
+    {
+      "run": "buff-hotpath-candidate-02",
+      "label": "buff_update_meta0_pod12",
+      "iterations": 800,
+      "baselineMs": [
+        103,
+        136,
+        133,
+        138,
+        145
+      ],
+      "candidateMs": [
+        60,
+        71,
+        79,
+        60,
+        61
+      ],
+      "baselineMedianMs": 136,
+      "candidateMedianMs": 61,
+      "medianReductionPercent": 55.15
+    },
+    {
+      "run": "buff-hotpath-candidate-02",
+      "label": "buff_update_meta1_pod8",
+      "iterations": 800,
+      "baselineMs": [
+        182,
+        162,
+        122,
+        143,
+        135
+      ],
+      "candidateMs": [
+        94,
+        75,
+        98,
+        82,
+        76
+      ],
+      "baselineMedianMs": 143,
+      "candidateMedianMs": 82,
+      "medianReductionPercent": 42.66
+    },
+    {
+      "run": "buff-hotpath-candidate-02",
+      "label": "buff_update_meta8_pod0",
+      "iterations": 800,
+      "baselineMs": [
+        364,
+        365,
+        363,
+        361,
+        447
+      ],
+      "candidateMs": [
+        224,
+        235,
+        192,
+        216,
+        242
+      ],
+      "baselineMedianMs": 364,
+      "candidateMedianMs": 224,
+      "medianReductionPercent": 38.46
+    },
+    {
+      "run": "buff-hotpath-candidate-02",
+      "label": "buff_update_meta8_pod24",
+      "iterations": 800,
+      "baselineMs": [
+        565,
+        501,
+        519,
+        564,
+        524
+      ],
+      "candidateMs": [
+        298,
+        287,
+        290,
+        317,
+        282
+      ],
+      "baselineMedianMs": 524,
+      "candidateMedianMs": 290,
+      "medianReductionPercent": 44.66
+    },
+    {
+      "run": "buff-hotpath-candidate-02",
+      "label": "buff_churn_meta2_pod4",
+      "iterations": 30,
+      "baselineMs": [
+        63,
+        63,
+        63,
+        64,
+        65
+      ],
+      "candidateMs": [
+        52,
+        54,
+        55,
+        55,
+        54
+      ],
+      "baselineMedianMs": 63,
+      "candidateMedianMs": 54,
+      "medianReductionPercent": 14.29
+    },
+    {
+      "run": "skill-hud-candidate-01",
+      "label": "skill_hud_0_0_unchanged",
+      "iterations": 70,
+      "baselineMs": [
+        56,
+        57,
+        51,
+        50,
+        53
+      ],
+      "candidateMs": [
+        33,
+        34,
+        29,
+        31,
+        31
+      ],
+      "baselineMedianMs": 53,
+      "candidateMedianMs": 31,
+      "medianReductionPercent": 41.51
+    },
+    {
+      "run": "skill-hud-candidate-01",
+      "label": "skill_hud_80_0_unchanged",
+      "iterations": 70,
+      "baselineMs": [
+        194,
+        213,
+        182,
+        170,
+        166
+      ],
+      "candidateMs": [
+        76,
+        84,
+        81,
+        84,
+        70
+      ],
+      "baselineMedianMs": 182,
+      "candidateMedianMs": 81,
+      "medianReductionPercent": 55.49
+    },
+    {
+      "run": "skill-hud-candidate-01",
+      "label": "skill_hud_80_12_unchanged",
+      "iterations": 70,
+      "baselineMs": [
+        218,
+        235,
+        221,
+        228,
+        205
+      ],
+      "candidateMs": [
+        102,
+        89,
+        88,
+        92,
+        99
+      ],
+      "baselineMedianMs": 221,
+      "candidateMedianMs": 92,
+      "medianReductionPercent": 58.37
+    },
+    {
+      "run": "skill-hud-candidate-01",
+      "label": "skill_hud_80_80_unchanged",
+      "iterations": 70,
+      "baselineMs": [
+        427,
+        434,
+        483,
+        441,
+        429
+      ],
+      "candidateMs": [
+        220,
+        200,
+        205,
+        204,
+        204
+      ],
+      "baselineMedianMs": 434,
+      "candidateMedianMs": 204,
+      "medianReductionPercent": 53.0
+    },
+    {
+      "run": "skill-hud-candidate-01",
+      "label": "skill_hud_80_12_changing",
+      "iterations": 15,
+      "baselineMs": [
+        129,
+        127,
+        126,
+        128,
+        116
+      ],
+      "candidateMs": [
+        124,
+        116,
+        123,
+        122,
+        135
+      ],
+      "baselineMedianMs": 127,
+      "candidateMedianMs": 123,
+      "medianReductionPercent": 3.15
+    },
+    {
+      "run": "hud-loadout-resource-candidate-01",
+      "label": "loadout_unchanged",
+      "iterations": 100,
+      "baselineMs": [
+        102,
+        103,
+        101,
+        121,
+        120
+      ],
+      "candidateMs": [
+        71,
+        70,
+        67,
+        75,
+        83
+      ],
+      "baselineMedianMs": 103,
+      "candidateMedianMs": 71,
+      "medianReductionPercent": 31.07
+    },
+    {
+      "run": "hud-loadout-resource-candidate-01",
+      "label": "loadout_changing",
+      "iterations": 100,
+      "baselineMs": [
+        95,
+        103,
+        95,
+        88,
+        92
+      ],
+      "candidateMs": [
+        83,
+        82,
+        70,
+        78,
+        75
+      ],
+      "baselineMedianMs": 95,
+      "candidateMedianMs": 78,
+      "medianReductionPercent": 17.89
+    },
+    {
+      "run": "hud-loadout-resource-candidate-01",
+      "label": "resources_unchanged",
+      "iterations": 100,
+      "baselineMs": [
+        64,
+        77,
+        69,
+        72,
+        74
+      ],
+      "candidateMs": [
+        38,
+        39,
+        42,
+        43,
+        45
+      ],
+      "baselineMedianMs": 72,
+      "candidateMedianMs": 42,
+      "medianReductionPercent": 41.67
+    },
+    {
+      "run": "hud-loadout-resource-candidate-01",
+      "label": "resources_changing",
+      "iterations": 100,
+      "baselineMs": [
+        39,
+        40,
+        41,
+        38,
+        39
+      ],
+      "candidateMs": [
+        41,
+        43,
+        41,
+        47,
+        46
+      ],
+      "baselineMedianMs": 39,
+      "candidateMedianMs": 43,
+      "medianReductionPercent": -10.26
+    }
+  ],
+  "hostConsumers": {
+    "filter": "FullyQualifiedName~PlayerHud|FullyQualifiedName~BattleSettlement|FullyQualifiedName~LootFeed|FullyQualifiedName~SaveMigrator",
+    "counters": {
+      "total": "490",
+      "executed": "490",
+      "passed": "490",
+      "failed": "0",
+      "error": "0",
+      "timeout": "0",
+      "aborted": "0",
+      "inconclusive": "0",
+      "passedButRunAborted": "0",
+      "notRunnable": "0",
+      "notExecuted": "0",
+      "disconnected": "0",
+      "warning": "0",
+      "completed": "0",
+      "inProgress": "0",
+      "pending": "0"
+    },
+    "trx": {
+      "path": "tmp/as2-perf-round2-20261010/integration/host-tests/integrated-consumers.trx",
+      "sha256": "377B8C1ABA8FBD2AFE52D93383F1567A417C12E8642B236A4BE61181C404C9D2",
+      "bytes": 755233
+    },
+    "sdkVersion": "10.0.300",
+    "phase": "after_upstream_integration"
+  },
+  "liveRuns": [
+    {
+      "name": "live-baseline-01",
+      "variant": "baseline",
+      "asLoaderSha256": "9EF57B80320539A116A0DE20805959B849D4D5A412656A22A17BB86904A4B255",
+      "startedAt": "2026-10-10T00:11:12.054Z",
+      "finishedAt": "2026-10-10T00:13:11.496Z",
+      "openerExitCode": 1,
+      "openerStatus": "failed",
+      "openerError": {
+        "code": "snapshot_gate_timeout",
+        "phase": "snapshot_gate",
+        "message": "active workbench and first equipment-tuning snapshot were not both confirmed within 60000ms",
+        "details": {
+          "watermarkTotal": 6043,
+          "lastLogTotal": 6314,
+          "requiredMarkers": [
+            "event=equipment_tuning_panel_bound",
+            "event=equipment_tuning_snapshot_confirmed"
+          ]
+        }
+      },
+      "runtimeIdentity": {
+        "runtimeMode": "isolated_candidate",
+        "processPath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\runtime-candidates\\v2\\hud-buff-1010-u1\\runtime\\CRAZYFLASHER7MercenaryEmpire.Core.exe",
+        "coreSha256": "26562A5F00EE9D8F75071F120A35E2B7ECF497C423B1FB688896EC97A38B2A08",
+        "buildIdentity": "F852BCCE1DFC56A24C2E0AD69657118AC8EFF052197793928663192A92404411",
+        "payloadClosure": "0683F820F20328E45C8BC3B10DA19C027BF709ACF8EAF4A84472E45F7AEFCBA3",
+        "pid": 22252,
+        "verified": true
+      },
+      "attemptId": "f108cef55bc9407591d617c3d91f3987",
+      "gameEntered": true,
+      "enterRequestCount": 1,
+      "shutdownSuccess": true,
+      "coreExited": true,
+      "protectedSaveCount": 24,
+      "protectedSavesUnchanged": true,
+      "candidateRestored": true,
+      "profile": {
+        "profileId": "php:c06542ea1cd34285abfac7e92773e2ee",
+        "windows": [
+          {
+            "id": "php:c06542ea1cd34285abfac7e92773e2ee",
+            "source": "as2",
+            "samples": 300,
+            "windowMs": 9946,
+            "meanMs": 4.35,
+            "p50Ms": 3,
+            "p95Ms": 9,
+            "maxMs": 67,
+            "packets": 6,
+            "encodedBytes": 20416
+          },
+          {
+            "id": "php:c06542ea1cd34285abfac7e92773e2ee",
+            "source": "as2",
+            "samples": 300,
+            "windowMs": 10002,
+            "meanMs": 3.87333333333333,
+            "p50Ms": 2,
+            "p95Ms": 6,
+            "maxMs": 70,
+            "packets": 5,
+            "encodedBytes": 19680
+          },
+          {
+            "id": "php:c06542ea1cd34285abfac7e92773e2ee",
+            "source": "as2",
+            "samples": 300,
+            "windowMs": 9998,
+            "meanMs": 3.77666666666667,
+            "p50Ms": 2,
+            "p95Ms": 6,
+            "maxMs": 54,
+            "packets": 5,
+            "encodedBytes": 19680
+          },
+          {
+            "id": "php:c06542ea1cd34285abfac7e92773e2ee",
+            "source": "as2",
+            "samples": 300,
+            "windowMs": 9998,
+            "meanMs": 3.8,
+            "p50Ms": 2,
+            "p95Ms": 6,
+            "maxMs": 63,
+            "packets": 5,
+            "encodedBytes": 19680
+          },
+          {
+            "id": "php:c06542ea1cd34285abfac7e92773e2ee",
+            "source": "as2",
+            "samples": 300,
+            "windowMs": 9995,
+            "meanMs": 4.71666666666667,
+            "p50Ms": 3,
+            "p95Ms": 9,
+            "maxMs": 80,
+            "packets": 5,
+            "encodedBytes": 19680
+          },
+          {
+            "id": "php:c06542ea1cd34285abfac7e92773e2ee",
+            "source": "as2",
+            "samples": 300,
+            "windowMs": 9995,
+            "meanMs": 3.78666666666667,
+            "p50Ms": 2,
+            "p95Ms": 6,
+            "maxMs": 52,
+            "packets": 5,
+            "encodedBytes": 19680
+          }
+        ],
+        "firstWindowExcluded": true,
+        "steadySamples": 1500,
+        "steadyMeanMs": 3.9906666666666677,
+        "steadyPackets": [
+          5,
+          5,
+          5,
+          5,
+          5
+        ],
+        "steadyEncodedBytes": [
+          19680,
+          19680,
+          19680,
+          19680,
+          19680
+        ],
+        "projectionErrors": 0,
+        "wire": {
+          "groups": [
+            "buffs",
+            "combat",
+            "cooldowns",
+            "loadout",
+            "resources",
+            "vitals"
+          ],
+          "full": true,
+          "cooldownRows": 18,
+          "cooldownsNumericTriples": true,
+          "observationScope": "Complete decoded frame packet at game entry; paused steady packets are not fully logged"
+        }
+      },
+      "evidenceScope": "Real isolated runtime, cloned save and paused workbench wait; no business clicks/writes; not combat FPS or full workbench E2E",
+      "failure": null,
+      "report": {
+        "path": "tmp/as2-perf-round2-20261010/integration/live-baseline-01.json",
+        "sha256": "291BBDFA78D2D716878F19A85FEC25AAEBEB294276CDA4EF0698C595111F2624",
+        "bytes": 13121
+      },
+      "launcherLog": {
+        "path": "tmp/as2-perf-round2-20261010/integration/runs/live-baseline-01.launcher.log",
+        "sha256": "5FEDE5CB3B0D6723044434F2B5B1F8132ED918E4075F89D8D5163D6F9DFAF25B",
+        "bytes": 98881
+      },
+      "saveProtection": {
+        "path": "tmp/as2-perf-round2-20261010/integration/live-baseline-01.protected-after.json",
+        "sha256": "62F7A3DB641E17A662D7AC9D1F130E9D01DFCE1B929A520FC04A5A7BA28DC225",
+        "bytes": 124
+      }
+    },
+    {
+      "name": "live-candidate-01",
+      "variant": "candidate",
+      "asLoaderSha256": "8178B889FE87C7E3F07E5AB73DC4C3066DB6A323BFB40925B233E87A3CDE3F20",
+      "startedAt": "2026-10-10T00:13:42.178Z",
+      "finishedAt": "2026-10-10T00:15:39.675Z",
+      "openerExitCode": 1,
+      "openerStatus": "failed",
+      "openerError": {
+        "code": "snapshot_gate_timeout",
+        "phase": "snapshot_gate",
+        "message": "active workbench and first equipment-tuning snapshot were not both confirmed within 60000ms",
+        "details": {
+          "watermarkTotal": 6655,
+          "lastLogTotal": 6954,
+          "requiredMarkers": [
+            "event=equipment_tuning_panel_bound",
+            "event=equipment_tuning_snapshot_confirmed"
+          ]
+        }
+      },
+      "runtimeIdentity": {
+        "runtimeMode": "isolated_candidate",
+        "processPath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\runtime-candidates\\v2\\hud-buff-1010-u1\\runtime\\CRAZYFLASHER7MercenaryEmpire.Core.exe",
+        "coreSha256": "26562A5F00EE9D8F75071F120A35E2B7ECF497C423B1FB688896EC97A38B2A08",
+        "buildIdentity": "F852BCCE1DFC56A24C2E0AD69657118AC8EFF052197793928663192A92404411",
+        "payloadClosure": "0683F820F20328E45C8BC3B10DA19C027BF709ACF8EAF4A84472E45F7AEFCBA3",
+        "pid": 10388,
+        "verified": true
+      },
+      "attemptId": "6b74c3b17e314eca8a9fdd5299af08fd",
+      "gameEntered": true,
+      "enterRequestCount": 1,
+      "shutdownSuccess": true,
+      "coreExited": true,
+      "protectedSaveCount": 24,
+      "protectedSavesUnchanged": true,
+      "candidateRestored": true,
+      "profile": {
+        "profileId": "php:ac2f1bd767ab4a8a9f8fb0390a1c2238",
+        "windows": [
+          {
+            "id": "php:ac2f1bd767ab4a8a9f8fb0390a1c2238",
+            "source": "as2",
+            "samples": 300,
+            "windowMs": 9973,
+            "meanMs": 2.64333333333333,
+            "p50Ms": 1,
+            "p95Ms": 5,
+            "maxMs": 55,
+            "packets": 6,
+            "encodedBytes": 20416
+          },
+          {
+            "id": "php:ac2f1bd767ab4a8a9f8fb0390a1c2238",
+            "source": "as2",
+            "samples": 300,
+            "windowMs": 9997,
+            "meanMs": 2.5,
+            "p50Ms": 1,
+            "p95Ms": 4,
+            "maxMs": 62,
+            "packets": 5,
+            "encodedBytes": 19680
+          },
+          {
+            "id": "php:ac2f1bd767ab4a8a9f8fb0390a1c2238",
+            "source": "as2",
+            "samples": 300,
+            "windowMs": 9992,
+            "meanMs": 2.25,
+            "p50Ms": 1,
+            "p95Ms": 4,
+            "maxMs": 37,
+            "packets": 5,
+            "encodedBytes": 19680
+          },
+          {
+            "id": "php:ac2f1bd767ab4a8a9f8fb0390a1c2238",
+            "source": "as2",
+            "samples": 300,
+            "windowMs": 10003,
+            "meanMs": 2.30333333333333,
+            "p50Ms": 1,
+            "p95Ms": 4,
+            "maxMs": 47,
+            "packets": 5,
+            "encodedBytes": 19680
+          },
+          {
+            "id": "php:ac2f1bd767ab4a8a9f8fb0390a1c2238",
+            "source": "as2",
+            "samples": 300,
+            "windowMs": 10003,
+            "meanMs": 2.60666666666667,
+            "p50Ms": 1,
+            "p95Ms": 5,
+            "maxMs": 67,
+            "packets": 5,
+            "encodedBytes": 19680
+          },
+          {
+            "id": "php:ac2f1bd767ab4a8a9f8fb0390a1c2238",
+            "source": "as2",
+            "samples": 300,
+            "windowMs": 9986,
+            "meanMs": 2.35333333333333,
+            "p50Ms": 1,
+            "p95Ms": 4,
+            "maxMs": 45,
+            "packets": 5,
+            "encodedBytes": 19680
+          }
+        ],
+        "firstWindowExcluded": true,
+        "steadySamples": 1500,
+        "steadyMeanMs": 2.402666666666666,
+        "steadyPackets": [
+          5,
+          5,
+          5,
+          5,
+          5
+        ],
+        "steadyEncodedBytes": [
+          19680,
+          19680,
+          19680,
+          19680,
+          19680
+        ],
+        "projectionErrors": 0,
+        "wire": {
+          "groups": [
+            "buffs",
+            "combat",
+            "cooldowns",
+            "loadout",
+            "resources",
+            "vitals"
+          ],
+          "full": true,
+          "cooldownRows": 18,
+          "cooldownsNumericTriples": true,
+          "observationScope": "Complete decoded frame packet at game entry; paused steady packets are not fully logged"
+        }
+      },
+      "evidenceScope": "Real isolated runtime, cloned save and paused workbench wait; no business clicks/writes; not combat FPS or full workbench E2E",
+      "failure": null,
+      "report": {
+        "path": "tmp/as2-perf-round2-20261010/integration/live-candidate-01.json",
+        "sha256": "B415493A13674C005F496DF55A9453BDD0E576AF293D8298CD8E7E4F14DFB1AC",
+        "bytes": 13123
+      },
+      "launcherLog": {
+        "path": "tmp/as2-perf-round2-20261010/integration/runs/live-candidate-01.launcher.log",
+        "sha256": "CBF2183272268FF568C22E0DF8F26EE8BE4A47DB06FF9143EED3BCCCF8716942",
+        "bytes": 116052
+      },
+      "saveProtection": {
+        "path": "tmp/as2-perf-round2-20261010/integration/live-candidate-01.protected-after.json",
+        "sha256": "F182428DA4DFD5B9A6B76CC7B218752C0C48653AB155DB14D84B2158C8BA20BB",
+        "bytes": 124
+      }
+    },
+    {
+      "name": "live-candidate-02",
+      "variant": "candidate",
+      "asLoaderSha256": "8178B889FE87C7E3F07E5AB73DC4C3066DB6A323BFB40925B233E87A3CDE3F20",
+      "startedAt": "2026-10-10T00:16:11.525Z",
+      "finishedAt": "2026-10-10T00:18:09.507Z",
+      "openerExitCode": 1,
+      "openerStatus": "failed",
+      "openerError": {
+        "code": "snapshot_gate_timeout",
+        "phase": "snapshot_gate",
+        "message": "active workbench and first equipment-tuning snapshot were not both confirmed within 60000ms",
+        "details": {
+          "watermarkTotal": 7277,
+          "lastLogTotal": 7555,
+          "requiredMarkers": [
+            "event=equipment_tuning_panel_bound",
+            "event=equipment_tuning_snapshot_confirmed"
+          ]
+        }
+      },
+      "runtimeIdentity": {
+        "runtimeMode": "isolated_candidate",
+        "processPath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\runtime-candidates\\v2\\hud-buff-1010-u1\\runtime\\CRAZYFLASHER7MercenaryEmpire.Core.exe",
+        "coreSha256": "26562A5F00EE9D8F75071F120A35E2B7ECF497C423B1FB688896EC97A38B2A08",
+        "buildIdentity": "F852BCCE1DFC56A24C2E0AD69657118AC8EFF052197793928663192A92404411",
+        "payloadClosure": "0683F820F20328E45C8BC3B10DA19C027BF709ACF8EAF4A84472E45F7AEFCBA3",
+        "pid": 11404,
+        "verified": true
+      },
+      "attemptId": "2988ebc530764c08be2a64955c069689",
+      "gameEntered": true,
+      "enterRequestCount": 1,
+      "shutdownSuccess": true,
+      "coreExited": true,
+      "protectedSaveCount": 24,
+      "protectedSavesUnchanged": true,
+      "candidateRestored": true,
+      "profile": {
+        "profileId": "php:36776826e6f04673b514a85aa93d5ff4",
+        "windows": [
+          {
+            "id": "php:36776826e6f04673b514a85aa93d5ff4",
+            "source": "as2",
+            "samples": 300,
+            "windowMs": 9968,
+            "meanMs": 2.88333333333333,
+            "p50Ms": 1,
+            "p95Ms": 5,
+            "maxMs": 96,
+            "packets": 6,
+            "encodedBytes": 20416
+          },
+          {
+            "id": "php:36776826e6f04673b514a85aa93d5ff4",
+            "source": "as2",
+            "samples": 300,
+            "windowMs": 10001,
+            "meanMs": 2.33666666666667,
+            "p50Ms": 1,
+            "p95Ms": 4,
+            "maxMs": 46,
+            "packets": 5,
+            "encodedBytes": 19680
+          },
+          {
+            "id": "php:36776826e6f04673b514a85aa93d5ff4",
+            "source": "as2",
+            "samples": 300,
+            "windowMs": 9994,
+            "meanMs": 2.38,
+            "p50Ms": 1,
+            "p95Ms": 4,
+            "maxMs": 53,
+            "packets": 5,
+            "encodedBytes": 19680
+          },
+          {
+            "id": "php:36776826e6f04673b514a85aa93d5ff4",
+            "source": "as2",
+            "samples": 300,
+            "windowMs": 10001,
+            "meanMs": 2.29,
+            "p50Ms": 1,
+            "p95Ms": 4,
+            "maxMs": 42,
+            "packets": 5,
+            "encodedBytes": 19680
+          },
+          {
+            "id": "php:36776826e6f04673b514a85aa93d5ff4",
+            "source": "as2",
+            "samples": 300,
+            "windowMs": 9999,
+            "meanMs": 2.65666666666667,
+            "p50Ms": 1,
+            "p95Ms": 5,
+            "maxMs": 62,
+            "packets": 5,
+            "encodedBytes": 19680
+          },
+          {
+            "id": "php:36776826e6f04673b514a85aa93d5ff4",
+            "source": "as2",
+            "samples": 300,
+            "windowMs": 9999,
+            "meanMs": 2.64333333333333,
+            "p50Ms": 1,
+            "p95Ms": 4,
+            "maxMs": 71,
+            "packets": 5,
+            "encodedBytes": 19680
+          }
+        ],
+        "firstWindowExcluded": true,
+        "steadySamples": 1500,
+        "steadyMeanMs": 2.461333333333334,
+        "steadyPackets": [
+          5,
+          5,
+          5,
+          5,
+          5
+        ],
+        "steadyEncodedBytes": [
+          19680,
+          19680,
+          19680,
+          19680,
+          19680
+        ],
+        "projectionErrors": 0,
+        "wire": {
+          "groups": [
+            "buffs",
+            "combat",
+            "cooldowns",
+            "loadout",
+            "resources",
+            "vitals"
+          ],
+          "full": true,
+          "cooldownRows": 18,
+          "cooldownsNumericTriples": true,
+          "observationScope": "Complete decoded frame packet at game entry; paused steady packets are not fully logged"
+        }
+      },
+      "evidenceScope": "Real isolated runtime, cloned save and paused workbench wait; no business clicks/writes; not combat FPS or full workbench E2E",
+      "failure": null,
+      "report": {
+        "path": "tmp/as2-perf-round2-20261010/integration/live-candidate-02.json",
+        "sha256": "9A2C2ED8A5ADDDAB4BDA9DCA8C822A2E0F1F960DD212300ED0A856DBDA120D48",
+        "bytes": 13123
+      },
+      "launcherLog": {
+        "path": "tmp/as2-perf-round2-20261010/integration/runs/live-candidate-02.launcher.log",
+        "sha256": "8C052F200BD42800DFC64D950548FCDF458118F74B5C9A18F2E549E5EF765C58",
+        "bytes": 97657
+      },
+      "saveProtection": {
+        "path": "tmp/as2-perf-round2-20261010/integration/live-candidate-02.protected-after.json",
+        "sha256": "C74CD263C4146992C58678267008F9032CDED5452DAC0B510153FE2459300109",
+        "bytes": 124
+      }
+    },
+    {
+      "name": "live-baseline-02",
+      "variant": "baseline",
+      "asLoaderSha256": "9EF57B80320539A116A0DE20805959B849D4D5A412656A22A17BB86904A4B255",
+      "startedAt": "2026-10-10T00:18:20.011Z",
+      "finishedAt": "2026-10-10T00:20:17.473Z",
+      "openerExitCode": 1,
+      "openerStatus": "failed",
+      "openerError": {
+        "code": "snapshot_gate_timeout",
+        "phase": "snapshot_gate",
+        "message": "active workbench and first equipment-tuning snapshot were not both confirmed within 60000ms",
+        "details": {
+          "watermarkTotal": 7897,
+          "lastLogTotal": 8199,
+          "requiredMarkers": [
+            "event=equipment_tuning_panel_bound",
+            "event=equipment_tuning_snapshot_confirmed"
+          ]
+        }
+      },
+      "runtimeIdentity": {
+        "runtimeMode": "isolated_candidate",
+        "processPath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\runtime-candidates\\v2\\hud-buff-1010-u1\\runtime\\CRAZYFLASHER7MercenaryEmpire.Core.exe",
+        "coreSha256": "26562A5F00EE9D8F75071F120A35E2B7ECF497C423B1FB688896EC97A38B2A08",
+        "buildIdentity": "F852BCCE1DFC56A24C2E0AD69657118AC8EFF052197793928663192A92404411",
+        "payloadClosure": "0683F820F20328E45C8BC3B10DA19C027BF709ACF8EAF4A84472E45F7AEFCBA3",
+        "pid": 19644,
+        "verified": true
+      },
+      "attemptId": "8f0a39ca899e44deb93ca42658992711",
+      "gameEntered": true,
+      "enterRequestCount": 1,
+      "shutdownSuccess": true,
+      "coreExited": true,
+      "protectedSaveCount": 24,
+      "protectedSavesUnchanged": true,
+      "candidateRestored": true,
+      "profile": {
+        "profileId": "php:521f102bdc3d4f41810a83c60a97fe71",
+        "windows": [
+          {
+            "id": "php:521f102bdc3d4f41810a83c60a97fe71",
+            "source": "as2",
+            "samples": 300,
+            "windowMs": 9957,
+            "meanMs": 4.48,
+            "p50Ms": 3,
+            "p95Ms": 9,
+            "maxMs": 58,
+            "packets": 6,
+            "encodedBytes": 20416
+          },
+          {
+            "id": "php:521f102bdc3d4f41810a83c60a97fe71",
+            "source": "as2",
+            "samples": 300,
+            "windowMs": 10009,
+            "meanMs": 3.78333333333333,
+            "p50Ms": 2,
+            "p95Ms": 7,
+            "maxMs": 53,
+            "packets": 5,
+            "encodedBytes": 19680
+          },
+          {
+            "id": "php:521f102bdc3d4f41810a83c60a97fe71",
+            "source": "as2",
+            "samples": 300,
+            "windowMs": 9990,
+            "meanMs": 3.75333333333333,
+            "p50Ms": 2,
+            "p95Ms": 6,
+            "maxMs": 62,
+            "packets": 5,
+            "encodedBytes": 19680
+          },
+          {
+            "id": "php:521f102bdc3d4f41810a83c60a97fe71",
+            "source": "as2",
+            "samples": 300,
+            "windowMs": 10008,
+            "meanMs": 3.75666666666667,
+            "p50Ms": 2,
+            "p95Ms": 6,
+            "maxMs": 62,
+            "packets": 5,
+            "encodedBytes": 19680
+          },
+          {
+            "id": "php:521f102bdc3d4f41810a83c60a97fe71",
+            "source": "as2",
+            "samples": 300,
+            "windowMs": 9993,
+            "meanMs": 4.15666666666667,
+            "p50Ms": 2,
+            "p95Ms": 9,
+            "maxMs": 51,
+            "packets": 5,
+            "encodedBytes": 19680
+          },
+          {
+            "id": "php:521f102bdc3d4f41810a83c60a97fe71",
+            "source": "as2",
+            "samples": 300,
+            "windowMs": 9993,
+            "meanMs": 3.84333333333333,
+            "p50Ms": 2,
+            "p95Ms": 6,
+            "maxMs": 65,
+            "packets": 5,
+            "encodedBytes": 19680
+          }
+        ],
+        "firstWindowExcluded": true,
+        "steadySamples": 1500,
+        "steadyMeanMs": 3.8586666666666662,
+        "steadyPackets": [
+          5,
+          5,
+          5,
+          5,
+          5
+        ],
+        "steadyEncodedBytes": [
+          19680,
+          19680,
+          19680,
+          19680,
+          19680
+        ],
+        "projectionErrors": 0,
+        "wire": {
+          "groups": [
+            "buffs",
+            "combat",
+            "cooldowns",
+            "loadout",
+            "resources",
+            "vitals"
+          ],
+          "full": true,
+          "cooldownRows": 18,
+          "cooldownsNumericTriples": true,
+          "observationScope": "Complete decoded frame packet at game entry; paused steady packets are not fully logged"
+        }
+      },
+      "evidenceScope": "Real isolated runtime, cloned save and paused workbench wait; no business clicks/writes; not combat FPS or full workbench E2E",
+      "failure": null,
+      "report": {
+        "path": "tmp/as2-perf-round2-20261010/integration/live-baseline-02.json",
+        "sha256": "A5BE630939F233B7088EF044E5611D693B69644068DD82F351D2A9E818162206",
+        "bytes": 13121
+      },
+      "launcherLog": {
+        "path": "tmp/as2-perf-round2-20261010/integration/runs/live-baseline-02.launcher.log",
+        "sha256": "F603600371845D96AFA7D937E28739A43A23E64B14338DC8A7EE4FA56F186196",
+        "bytes": 116664
+      },
+      "saveProtection": {
+        "path": "tmp/as2-perf-round2-20261010/integration/live-baseline-02.protected-after.json",
+        "sha256": "AE872929F8AC22AD118FF11D82D465D4E6C6804F35B217D62602894A6B9BA8FB",
+        "bytes": 124
+      }
+    }
+  ],
+  "liveAggregate": {
+    "baseline": {
+      "runs": 2,
+      "steadySamples": 3000,
+      "meanMs": 3.9246666666666674,
+      "runMeansMs": [
+        3.9906666666666677,
+        3.8586666666666662
+      ],
+      "windowMeansMs": [
+        3.87333333333333,
+        3.77666666666667,
+        3.8,
+        4.71666666666667,
+        3.78666666666667,
+        3.78333333333333,
+        3.75333333333333,
+        3.75666666666667,
+        4.15666666666667,
+        3.84333333333333
+      ],
+      "packets": 50,
+      "encodedBytes": 196800
+    },
+    "candidate": {
+      "runs": 2,
+      "steadySamples": 3000,
+      "meanMs": 2.432,
+      "runMeansMs": [
+        2.402666666666666,
+        2.461333333333334
+      ],
+      "windowMeansMs": [
+        2.5,
+        2.25,
+        2.30333333333333,
+        2.60666666666667,
+        2.35333333333333,
+        2.33666666666667,
+        2.38,
+        2.29,
+        2.65666666666667,
+        2.64333333333333
+      ],
+      "packets": 50,
+      "encodedBytes": 196800
+    },
+    "observedMeanReductionPercent": 38.032953966366584,
+    "method": "ABBA after upstream integration, identical F852 native candidate, incoming upstream SWF versus the merged CS6 SWF; discard only the predefined first 300-capture warmup window and retain all later complete windows.",
+    "limits": [
+      "Paused workbench wait, cloned level-1 role with no Buff icons, skills or drugs. Not combat FPS, weak-machine or full business E2E evidence.",
+      "Periodic full packets use the unchanged getTimer()-lastFull>2000 gate; packet counts and timing are reported, not assumed equal.",
+      "Both variants reproduce snapshot_gate_timeout. Only candidate boot, cloned role entry, HUD transport/profiling and normal shutdown are verified."
+    ]
+  },
+  "preservedFiles": {
+    "runtime/cf7-runtime-manifest.tsv": true,
+    "runtime/CRAZYFLASHER7MercenaryEmpire.Core.dll": true,
+    "config/build/runtime-release-consensus.json": true,
+    "scripts/TestLoader.as": true
+  },
+  "rejectedRuns": [
+    {
+      "run": "hud-snapshot-baseline-01",
+      "reason": "Test-only frozen helper lacked an explicit AS2 class import; compiler 1/0, corrected before baseline measurement."
+    },
+    {
+      "run": "hud-snapshot-candidate-02",
+      "reason": "Added accessor characterization proved that collapsing the second shield read changed visible values; restored original call order and revalidated in candidate-03/final."
+    },
+    {
+      "run": "integration/host-tests.log",
+      "reason": "Default PATH resolved an older SDK host. No tests executed; reran with the repository resolver and pinned SDK 10.0.300."
+    }
+  ],
+  "knownMeasurementLimit": "Frozen local callers share unchanged/current dependencies; Buff oracle installs old update/mutation methods on isolated real managers. Whole-SWF observations are the separate ABBA runs.",
+  "optionalCombatQueryWork": "Not entered: no measured combat-query hotspot in the admitted workload.",
+  "rawEvidenceRetention": "tmp/as2-perf-round2-20261010 retains source backups, failed receipts and all fresh compiler/trace/SWF/log artifacts.",
+  "integratedBaseCommit": "1aeb1867696e82135844da4624ef4f9aa30d5603",
+  "preIntegration": {
+    "publication": {
+      "name": "publish-final-01",
+      "script": "scripts/compile_test.ps1",
+      "target": "publish",
+      "head": "0c36a08a32732bc7d533bcb106097d1c66935cdc",
+      "startedUtc": "2026-10-09T23:09:37.6507946Z",
+      "finishedUtc": "2026-10-09T23:12:47.9249405Z",
+      "exitCode": 0,
+      "wallMs": 190219.07580000002,
+      "sources": [
+        {
+          "sha256": "A3F8D009C69CF3269358D45682A190A2CE4C372E2091FAE995CA7A0D08FCF1EE",
+          "path": "scripts/类定义/org/flashNight/arki/component/Buff/BuffManager.as"
+        },
+        {
+          "sha256": "9BBEF5433F66951B7B294BB7D0397324FAD9959236801F81E2472F57A59D9A6B",
+          "path": "scripts/类定义/org/flashNight/arki/component/Buff/test/BuffManagerHotPathTest.as"
+        },
+        {
+          "sha256": "A24B24E3AC00B8011ADA4DD8D795CAA8110DD121F2167C142E4FA8D4E3F3A073",
+          "path": "scripts/类定义/org/flashNight/arki/component/Buff/test/BuffManagerLegacyUpdateFixture.as"
+        },
+        {
+          "sha256": "2C37C9865E4F65D9A8B975AC5DCCA61DFB53E1B2B4A9088823493DC517964B26",
+          "path": "scripts/类定义/org/flashNight/arki/hud/PlayerHudBuffProjection.as"
+        },
+        {
+          "sha256": "80F2D4BA65F3A9B319D917AECD9DB92006181BFEE3FF799DD61C986C02333F46",
+          "path": "scripts/类定义/org/flashNight/arki/hud/PlayerHudBuffProjectionLegacyFixture.as"
+        },
+        {
+          "sha256": "3B9CEA4380D216EDE64295EC648620D6A2D6F40AC8698FC40CFE69EBF91A8F5E",
+          "path": "scripts/类定义/org/flashNight/arki/hud/PlayerHudLoadoutResourceTest.as"
+        },
+        {
+          "sha256": "BEAE10A250E6A76DBA06CBC523C37E821AE4F522C82AD392AEB3D38A8F2454F6",
+          "path": "scripts/类定义/org/flashNight/arki/hud/PlayerHudService.as"
+        },
+        {
+          "sha256": "73A97A6CB938E713EE3B85395CB7F40A791FC1CF73263DC1BA2285DEDA6F4113",
+          "path": "scripts/类定义/org/flashNight/arki/hud/PlayerHudShieldProjectionLegacyFixture.as"
+        },
+        {
+          "sha256": "0ABCA374D859464622F3468AC9AB259CEEC767ADB8CFBA6E3054AC922B9A2623",
+          "path": "scripts/类定义/org/flashNight/arki/hud/PlayerHudSnapshotLegacyFixture.as"
+        },
+        {
+          "sha256": "276DA855C4F49E856324CAED1870C7CE5F90069FA0C4A898DC03BAC214E3D26F",
+          "path": "scripts/类定义/org/flashNight/arki/hud/PlayerHudSnapshotTest.as"
+        },
+        {
+          "sha256": "0D417386E1C4705A45FC6059C772581E2C4EAED6C9281D4EAA3C9A48AF4A073F",
+          "path": "scripts/类定义/org/flashNight/arki/skill/SkillHudInputTest.as"
+        },
+        {
+          "sha256": "028814C6EC7568929328EA4DC7DA48F4C3224EC672F1E473F934AF9634C164AB",
+          "path": "scripts/类定义/org/flashNight/arki/skill/SkillLoadoutService.as"
+        },
+        {
+          "sha256": "D0A3F88732E59AAC3624DC40D79C0BA4F7279C32ED0417C8E84828F8DEC51CEE",
+          "path": "scripts/类定义/org/flashNight/arki/skill/SkillResourceService.as"
+        },
+        {
+          "sha256": "99CF9B106D26CCF965B0D2FDBF9F7CA9709F0693ACFA6037363A74DDCA8E7437",
+          "path": "scripts/类定义/org/flashNight/arki/skill/SkillResourceSnapshotLegacyFixture.as"
+        }
+      ],
+      "swf": {
+        "path": "scripts/asLoader.swf",
+        "sha256": "F0A48509AD5652644B35310A8F6BA42B73C90595A394E56386A1223B514791DB",
+        "size": 1499037
+      }
+    },
+    "publicationReceipt": {
+      "path": "tmp/as2-perf-round2-20261010/runs/publish-final-01.json",
+      "sha256": "1D0F0894204111E46DCB4ADB0F99211CEDA1C6829FD82AF26399E1FFC4CBC616",
+      "bytes": 4240
+    },
+    "bytecode": {
+      "baseline": {
+        "path": "tmp/as2-perf-round2-20261010/baseline/asLoader.swf",
+        "sha256": "F18791C84CF969D4F359EF01201777EDF81DB9DD661984036237A5482D886C75",
+        "compressedBytes": 1497478,
+        "uncompressedBytes": 5916398,
+        "classCount": 718
+      },
+      "candidate": {
+        "path": "tmp/as2-perf-round2-20261010/candidate/asLoader.swf",
+        "sha256": "F0A48509AD5652644B35310A8F6BA42B73C90595A394E56386A1223B514791DB",
+        "compressedBytes": 1499037,
+        "uncompressedBytes": 5922065,
+        "classCount": 718
+      },
+      "changedClasses": [
+        {
+          "class": "__Packages.org.flashNight.arki.component.Buff.BuffManager",
+          "beforeBytes": 19578,
+          "afterBytes": 20394,
+          "beforeSha256": "FB13CD1076A7A65303E0F64272B607FE0E341B32FFF97DF92A8276CDC46AC6AF",
+          "afterSha256": "CBACE9EDACF5C869D45CB87D4066D9D5925710DC4E09D6FC7E8825239228E86E"
+        },
+        {
+          "class": "__Packages.org.flashNight.arki.skill.SkillResourceService",
+          "beforeBytes": 7564,
+          "afterBytes": 8491,
+          "beforeSha256": "95C1EDFF5ECB95F743B60316BB86520C08AB5A6EF70C6FF6F044F886AA8406A2",
+          "afterSha256": "21028B5E8FE46709805500D35D9678103FEBF790D93EA989F01367A8C741222D"
+        },
+        {
+          "class": "__Packages.org.flashNight.arki.skill.SkillLoadoutService",
+          "beforeBytes": 45285,
+          "afterBytes": 46402,
+          "beforeSha256": "15D6677FF975DDC22EA1DC817F10CDA37120DE5D0FA8ED1C8B67D0902F732B2C",
+          "afterSha256": "E1A5432263B44623C2B6E938F4576FAE550BF6A3D2CBA45F00222B58085B90F4"
+        },
+        {
+          "class": "__Packages.org.flashNight.arki.hud.PlayerHudService",
+          "beforeBytes": 32660,
+          "afterBytes": 35127,
+          "beforeSha256": "599ADC1E7BFE81D6ED8F5DDA80CAE08450EF6D3201DC5B9399FB234FCCF880EE",
+          "afterSha256": "737322B3DC9C14ED2FDC4849F4B661A91E8D4DFAC32AC070E825B1044569D3F0"
+        },
+        {
+          "class": "__Packages.org.flashNight.arki.hud.PlayerHudBuffProjection",
+          "beforeBytes": 2033,
+          "afterBytes": 2373,
+          "beforeSha256": "4709C1D8A4133349DA0B06FE3278641A1FB6C3BDC5F5C8EE740AF303CED923AE",
+          "afterSha256": "6DCC4020DBE9C68B2C352C63068C035598D336FD854308622F862C58041CFCAF"
+        }
+      ],
+      "unexpectedChangedClasses": [],
+      "compressedDeltaBytes": 1559,
+      "uncompressedDeltaBytes": 5667,
+      "testFixturesEmbedded": false
+    },
+    "functionSizeGate": {
+      "functionCount": 12701,
+      "maxCodeSize": 51684,
+      "limit": 60000,
+      "log": {
+        "path": "tmp/as2-perf-round2-20261010/function-sizes.log",
+        "sha256": "BCAAD8F4DD43C748708E8431B642AA84938E0E3918D6F6DB96A236D7822AA7BF",
+        "bytes": 492
+      }
+    },
+    "ownershipGate": {
+      "mainOrgClasses": 0,
+      "loaderOrgClasses": 711,
+      "intersection": 0,
+      "log": {
+        "path": "tmp/as2-perf-round2-20261010/class-ownership.log",
+        "sha256": "A72496815811A708D029DD3F47A0E297D722286C20260B92CAF7DBFB8786872B",
+        "bytes": 226
+      }
+    },
+    "hostConsumers": {
+      "filter": "FullyQualifiedName~PlayerHud",
+      "counters": {
+        "total": "202",
+        "executed": "202",
+        "passed": "202",
+        "failed": "0",
+        "error": "0",
+        "timeout": "0",
+        "aborted": "0",
+        "inconclusive": "0",
+        "passedButRunAborted": "0",
+        "notRunnable": "0",
+        "notExecuted": "0",
+        "disconnected": "0",
+        "warning": "0",
+        "completed": "0",
+        "inProgress": "0",
+        "pending": "0"
+      },
+      "trx": {
+        "path": "tmp/as2-perf-round2-20261010/host-tests/player-hud-consumers.trx",
+        "sha256": "87E1EC3D83926118621459600911C4100FC3F4772E642A134965AED6943DC405",
+        "bytes": 323252
+      }
+    },
+    "preservedFiles": {
+      "scripts/TestLoader.as": true,
+      "runtime/cf7-runtime-manifest.tsv": true,
+      "config/build/runtime-release-consensus.json": true
+    },
+    "liveRuns": [
+      {
+        "name": "live-baseline-01",
+        "variant": "baseline",
+        "asLoaderSha256": "F18791C84CF969D4F359EF01201777EDF81DB9DD661984036237A5482D886C75",
+        "startedAt": "2026-10-09T23:19:26.067Z",
+        "finishedAt": "2026-10-09T23:21:25.632Z",
+        "openerExitCode": 1,
+        "openerStatus": "failed",
+        "openerError": {
+          "code": "snapshot_gate_timeout",
+          "phase": "snapshot_gate",
+          "message": "active workbench and first equipment-tuning snapshot were not both confirmed within 60000ms",
+          "details": {
+            "watermarkTotal": 3515,
+            "lastLogTotal": 3819,
+            "requiredMarkers": [
+              "event=equipment_tuning_panel_bound",
+              "event=equipment_tuning_snapshot_confirmed"
+            ]
+          }
+        },
+        "runtimeIdentity": {
+          "runtimeMode": "isolated_candidate",
+          "processPath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\runtime-candidates\\v2\\perf-policy-1009-u1\\runtime\\CRAZYFLASHER7MercenaryEmpire.Core.exe",
+          "coreSha256": "AE0D1E9634BBD14636AB9E8F6A8CB2878A92933A7F80E31DEC2648C8346D281C",
+          "buildIdentity": "6AA1A05B6DFA6AE23CC5D35E94ECB6B5BF1131D3627EEDD6A036C9694573AEE7",
+          "payloadClosure": "A1CD4F77103938F93B5DB5F1E7E743B92502848E902655A4C6836C8ADDC72776",
+          "pid": 20384,
+          "verified": true
+        },
+        "attemptId": "6693f79c71a643f68502759961900881",
+        "gameEntered": true,
+        "enterRequestCount": 1,
+        "shutdownSuccess": true,
+        "coreExited": true,
+        "protectedSaveCount": 24,
+        "protectedSavesUnchanged": true,
+        "candidateRestored": true,
+        "profile": {
+          "profileId": "php:e13ce9ea41f745f1a5e5adc1ddc8b244",
+          "windows": [
+            {
+              "id": "php:e13ce9ea41f745f1a5e5adc1ddc8b244",
+              "source": "as2",
+              "samples": 300,
+              "windowMs": 9963,
+              "meanMs": 4.66,
+              "p50Ms": 3,
+              "p95Ms": 12,
+              "maxMs": 48,
+              "packets": 6,
+              "encodedBytes": 20416
+            },
+            {
+              "id": "php:e13ce9ea41f745f1a5e5adc1ddc8b244",
+              "source": "as2",
+              "samples": 300,
+              "windowMs": 10002,
+              "meanMs": 3.58,
+              "p50Ms": 2,
+              "p95Ms": 5,
+              "maxMs": 52,
+              "packets": 5,
+              "encodedBytes": 19680
+            },
+            {
+              "id": "php:e13ce9ea41f745f1a5e5adc1ddc8b244",
+              "source": "as2",
+              "samples": 300,
+              "windowMs": 10004,
+              "meanMs": 3.58666666666667,
+              "p50Ms": 2,
+              "p95Ms": 6,
+              "maxMs": 59,
+              "packets": 5,
+              "encodedBytes": 19680
+            },
+            {
+              "id": "php:e13ce9ea41f745f1a5e5adc1ddc8b244",
+              "source": "as2",
+              "samples": 300,
+              "windowMs": 9990,
+              "meanMs": 3.68666666666667,
+              "p50Ms": 2,
+              "p95Ms": 6,
+              "maxMs": 61,
+              "packets": 5,
+              "encodedBytes": 19680
+            },
+            {
+              "id": "php:e13ce9ea41f745f1a5e5adc1ddc8b244",
+              "source": "as2",
+              "samples": 300,
+              "windowMs": 10001,
+              "meanMs": 3.95,
+              "p50Ms": 2,
+              "p95Ms": 7,
+              "maxMs": 42,
+              "packets": 5,
+              "encodedBytes": 19680
+            },
+            {
+              "id": "php:e13ce9ea41f745f1a5e5adc1ddc8b244",
+              "source": "as2",
+              "samples": 300,
+              "windowMs": 10002,
+              "meanMs": 3.65666666666667,
+              "p50Ms": 2,
+              "p95Ms": 6,
+              "maxMs": 48,
+              "packets": 5,
+              "encodedBytes": 19680
+            }
+          ],
+          "firstWindowExcluded": true,
+          "steadySamples": 1500,
+          "steadyMeanMs": 3.692000000000002,
+          "steadyPackets": [
+            5,
+            5,
+            5,
+            5,
+            5
+          ],
+          "steadyEncodedBytes": [
+            19680,
+            19680,
+            19680,
+            19680,
+            19680
+          ],
+          "projectionErrors": 0,
+          "wire": {
+            "groups": [
+              "buffs",
+              "combat",
+              "cooldowns",
+              "loadout",
+              "resources",
+              "vitals"
+            ],
+            "full": true,
+            "cooldownRows": 18,
+            "cooldownsNumericTriples": true,
+            "observationScope": "Complete decoded frame packet at game entry; paused steady packets are not fully logged"
+          }
+        },
+        "evidenceScope": "Real isolated runtime, cloned save and paused workbench wait; no business clicks/writes; not combat FPS or full workbench E2E",
+        "failure": null,
+        "report": {
+          "path": "tmp/as2-perf-round2-20261010/live-baseline-01.json",
+          "sha256": "98797DB177AC8A11DFAEB9C57D41ACC8F33D40842C11447F3B75EAF69873DC7D",
+          "bytes": 13107
+        },
+        "launcherLog": {
+          "path": "tmp/as2-perf-round2-20261010/runs/live-baseline-01.launcher.log",
+          "sha256": "C455B05E9CC5CF3C4F1A98A8F3A0BCCBDF7E65C4DF7E02BE682BE3CAC2A97C18",
+          "bytes": 117639
+        },
+        "saveProtection": {
+          "path": "tmp/as2-perf-round2-20261010/live-baseline-01.protected-after.json",
+          "sha256": "7F9D54622CA52921FEFDC1637EED8927B2A25B015C5FF8CF0C0FAEEE45524328",
+          "bytes": 124
+        }
+      },
+      {
+        "name": "live-candidate-01",
+        "variant": "candidate",
+        "asLoaderSha256": "F0A48509AD5652644B35310A8F6BA42B73C90595A394E56386A1223B514791DB",
+        "startedAt": "2026-10-09T23:22:59.051Z",
+        "finishedAt": "2026-10-09T23:24:56.710Z",
+        "openerExitCode": 1,
+        "openerStatus": "failed",
+        "openerError": {
+          "code": "snapshot_gate_timeout",
+          "phase": "snapshot_gate",
+          "message": "active workbench and first equipment-tuning snapshot were not both confirmed within 60000ms",
+          "details": {
+            "watermarkTotal": 4167,
+            "lastLogTotal": 4467,
+            "requiredMarkers": [
+              "event=equipment_tuning_panel_bound",
+              "event=equipment_tuning_snapshot_confirmed"
+            ]
+          }
+        },
+        "runtimeIdentity": {
+          "runtimeMode": "isolated_candidate",
+          "processPath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\runtime-candidates\\v2\\perf-policy-1009-u1\\runtime\\CRAZYFLASHER7MercenaryEmpire.Core.exe",
+          "coreSha256": "AE0D1E9634BBD14636AB9E8F6A8CB2878A92933A7F80E31DEC2648C8346D281C",
+          "buildIdentity": "6AA1A05B6DFA6AE23CC5D35E94ECB6B5BF1131D3627EEDD6A036C9694573AEE7",
+          "payloadClosure": "A1CD4F77103938F93B5DB5F1E7E743B92502848E902655A4C6836C8ADDC72776",
+          "pid": 17740,
+          "verified": true
+        },
+        "attemptId": "07738605f4514c1693830461ad68adee",
+        "gameEntered": true,
+        "enterRequestCount": 1,
+        "shutdownSuccess": true,
+        "coreExited": true,
+        "protectedSaveCount": 24,
+        "protectedSavesUnchanged": true,
+        "candidateRestored": true,
+        "profile": {
+          "profileId": "php:6161c58d75ed4d75b448a47b34034e91",
+          "windows": [
+            {
+              "id": "php:6161c58d75ed4d75b448a47b34034e91",
+              "source": "as2",
+              "samples": 300,
+              "windowMs": 9953,
+              "meanMs": 2.53666666666667,
+              "p50Ms": 1,
+              "p95Ms": 5,
+              "maxMs": 58,
+              "packets": 6,
+              "encodedBytes": 20416
+            },
+            {
+              "id": "php:6161c58d75ed4d75b448a47b34034e91",
+              "source": "as2",
+              "samples": 300,
+              "windowMs": 10002,
+              "meanMs": 2.18666666666667,
+              "p50Ms": 1,
+              "p95Ms": 3,
+              "maxMs": 53,
+              "packets": 5,
+              "encodedBytes": 19680
+            },
+            {
+              "id": "php:6161c58d75ed4d75b448a47b34034e91",
+              "source": "as2",
+              "samples": 300,
+              "windowMs": 9991,
+              "meanMs": 2.18,
+              "p50Ms": 1,
+              "p95Ms": 3,
+              "maxMs": 47,
+              "packets": 5,
+              "encodedBytes": 19680
+            },
+            {
+              "id": "php:6161c58d75ed4d75b448a47b34034e91",
+              "source": "as2",
+              "samples": 300,
+              "windowMs": 10007,
+              "meanMs": 2.10666666666667,
+              "p50Ms": 1,
+              "p95Ms": 3,
+              "maxMs": 35,
+              "packets": 5,
+              "encodedBytes": 19680
+            },
+            {
+              "id": "php:6161c58d75ed4d75b448a47b34034e91",
+              "source": "as2",
+              "samples": 300,
+              "windowMs": 10002,
+              "meanMs": 4.32,
+              "p50Ms": 2,
+              "p95Ms": 9,
+              "maxMs": 136,
+              "packets": 5,
+              "encodedBytes": 19680
+            },
+            {
+              "id": "php:6161c58d75ed4d75b448a47b34034e91",
+              "source": "as2",
+              "samples": 300,
+              "windowMs": 9997,
+              "meanMs": 5.97666666666667,
+              "p50Ms": 3,
+              "p95Ms": 10,
+              "maxMs": 119,
+              "packets": 4,
+              "encodedBytes": 15744
+            }
+          ],
+          "firstWindowExcluded": true,
+          "steadySamples": 1500,
+          "steadyMeanMs": 3.354000000000002,
+          "steadyPackets": [
+            5,
+            5,
+            5,
+            5,
+            4
+          ],
+          "steadyEncodedBytes": [
+            19680,
+            19680,
+            19680,
+            19680,
+            15744
+          ],
+          "projectionErrors": 0,
+          "wire": {
+            "groups": [
+              "buffs",
+              "combat",
+              "cooldowns",
+              "loadout",
+              "resources",
+              "vitals"
+            ],
+            "full": true,
+            "cooldownRows": 18,
+            "cooldownsNumericTriples": true,
+            "observationScope": "Complete decoded frame packet at game entry; paused steady packets are not fully logged"
+          }
+        },
+        "evidenceScope": "Real isolated runtime, cloned save and paused workbench wait; no business clicks/writes; not combat FPS or full workbench E2E",
+        "failure": null,
+        "report": {
+          "path": "tmp/as2-perf-round2-20261010/live-candidate-01.json",
+          "sha256": "A9A5FCCED9D46A04028457D91E5252500D9D9E3263664B56732860DB2407539E",
+          "bytes": 13108
+        },
+        "launcherLog": {
+          "path": "tmp/as2-perf-round2-20261010/runs/live-candidate-01.launcher.log",
+          "sha256": "F7FE155DC1FC686D62F4B584A5F70B97425DCD1722BE1E07448F0A2A6F67D584",
+          "bytes": 115836
+        },
+        "saveProtection": {
+          "path": "tmp/as2-perf-round2-20261010/live-candidate-01.protected-after.json",
+          "sha256": "F18B84CF9EE02F4C31833D0A5DAAF11759DABA236BA1FA115EDA4A7DACEC5B7E",
+          "bytes": 124
+        }
+      },
+      {
+        "name": "live-candidate-02",
+        "variant": "candidate",
+        "asLoaderSha256": "F0A48509AD5652644B35310A8F6BA42B73C90595A394E56386A1223B514791DB",
+        "startedAt": "2026-10-09T23:28:06.741Z",
+        "finishedAt": "2026-10-09T23:30:03.848Z",
+        "openerExitCode": 1,
+        "openerStatus": "failed",
+        "openerError": {
+          "code": "snapshot_gate_timeout",
+          "phase": "snapshot_gate",
+          "message": "active workbench and first equipment-tuning snapshot were not both confirmed within 60000ms",
+          "details": {
+            "watermarkTotal": 4788,
+            "lastLogTotal": 5067,
+            "requiredMarkers": [
+              "event=equipment_tuning_panel_bound",
+              "event=equipment_tuning_snapshot_confirmed"
+            ]
+          }
+        },
+        "runtimeIdentity": {
+          "runtimeMode": "isolated_candidate",
+          "processPath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\runtime-candidates\\v2\\perf-policy-1009-u1\\runtime\\CRAZYFLASHER7MercenaryEmpire.Core.exe",
+          "coreSha256": "AE0D1E9634BBD14636AB9E8F6A8CB2878A92933A7F80E31DEC2648C8346D281C",
+          "buildIdentity": "6AA1A05B6DFA6AE23CC5D35E94ECB6B5BF1131D3627EEDD6A036C9694573AEE7",
+          "payloadClosure": "A1CD4F77103938F93B5DB5F1E7E743B92502848E902655A4C6836C8ADDC72776",
+          "pid": 15276,
+          "verified": true
+        },
+        "attemptId": "7a50c8938508438b934d961e369fce6f",
+        "gameEntered": true,
+        "enterRequestCount": 1,
+        "shutdownSuccess": true,
+        "coreExited": true,
+        "protectedSaveCount": 24,
+        "protectedSavesUnchanged": true,
+        "candidateRestored": true,
+        "profile": {
+          "profileId": "php:b78aa9bba12449ed86d5eff5994bd645",
+          "windows": [
+            {
+              "id": "php:b78aa9bba12449ed86d5eff5994bd645",
+              "source": "as2",
+              "samples": 300,
+              "windowMs": 9965,
+              "meanMs": 2.61,
+              "p50Ms": 1,
+              "p95Ms": 5,
+              "maxMs": 69,
+              "packets": 6,
+              "encodedBytes": 20416
+            },
+            {
+              "id": "php:b78aa9bba12449ed86d5eff5994bd645",
+              "source": "as2",
+              "samples": 300,
+              "windowMs": 10001,
+              "meanMs": 2.32333333333333,
+              "p50Ms": 1,
+              "p95Ms": 4,
+              "maxMs": 47,
+              "packets": 5,
+              "encodedBytes": 19680
+            },
+            {
+              "id": "php:b78aa9bba12449ed86d5eff5994bd645",
+              "source": "as2",
+              "samples": 300,
+              "windowMs": 9993,
+              "meanMs": 2.23666666666667,
+              "p50Ms": 1,
+              "p95Ms": 4,
+              "maxMs": 42,
+              "packets": 5,
+              "encodedBytes": 19680
+            },
+            {
+              "id": "php:b78aa9bba12449ed86d5eff5994bd645",
+              "source": "as2",
+              "samples": 300,
+              "windowMs": 10008,
+              "meanMs": 2.24666666666667,
+              "p50Ms": 1,
+              "p95Ms": 3,
+              "maxMs": 62,
+              "packets": 5,
+              "encodedBytes": 19680
+            },
+            {
+              "id": "php:b78aa9bba12449ed86d5eff5994bd645",
+              "source": "as2",
+              "samples": 300,
+              "windowMs": 10003,
+              "meanMs": 2.65666666666667,
+              "p50Ms": 1,
+              "p95Ms": 5,
+              "maxMs": 64,
+              "packets": 5,
+              "encodedBytes": 19680
+            },
+            {
+              "id": "php:b78aa9bba12449ed86d5eff5994bd645",
+              "source": "as2",
+              "samples": 300,
+              "windowMs": 9988,
+              "meanMs": 2.39333333333333,
+              "p50Ms": 1,
+              "p95Ms": 4,
+              "maxMs": 48,
+              "packets": 5,
+              "encodedBytes": 19680
+            }
+          ],
+          "firstWindowExcluded": true,
+          "steadySamples": 1500,
+          "steadyMeanMs": 2.3713333333333337,
+          "steadyPackets": [
+            5,
+            5,
+            5,
+            5,
+            5
+          ],
+          "steadyEncodedBytes": [
+            19680,
+            19680,
+            19680,
+            19680,
+            19680
+          ],
+          "projectionErrors": 0,
+          "wire": {
+            "groups": [
+              "buffs",
+              "combat",
+              "cooldowns",
+              "loadout",
+              "resources",
+              "vitals"
+            ],
+            "full": true,
+            "cooldownRows": 18,
+            "cooldownsNumericTriples": true,
+            "observationScope": "Complete decoded frame packet at game entry; paused steady packets are not fully logged"
+          }
+        },
+        "evidenceScope": "Real isolated runtime, cloned save and paused workbench wait; no business clicks/writes; not combat FPS or full workbench E2E",
+        "failure": null,
+        "report": {
+          "path": "tmp/as2-perf-round2-20261010/live-candidate-02.json",
+          "sha256": "E130D96FA091F345FB2995630AAA35911CD5F79323214CF47CF6826087D76B84",
+          "bytes": 13108
+        },
+        "launcherLog": {
+          "path": "tmp/as2-perf-round2-20261010/runs/live-candidate-02.launcher.log",
+          "sha256": "3876969755A1FB479AB1A2D5862C4EEA4AD48AB2DD94F0EBF6E80639F42396A9",
+          "bytes": 97746
+        },
+        "saveProtection": {
+          "path": "tmp/as2-perf-round2-20261010/live-candidate-02.protected-after.json",
+          "sha256": "468BBC624F08111640B3F3C535AA96FD4C7B230CE0F7CF5DE2625172EF41D649",
+          "bytes": 124
+        }
+      },
+      {
+        "name": "live-baseline-02",
+        "variant": "baseline",
+        "asLoaderSha256": "F18791C84CF969D4F359EF01201777EDF81DB9DD661984036237A5482D886C75",
+        "startedAt": "2026-10-09T23:33:17.299Z",
+        "finishedAt": "2026-10-09T23:35:15.457Z",
+        "openerExitCode": 1,
+        "openerStatus": "failed",
+        "openerError": {
+          "code": "snapshot_gate_timeout",
+          "phase": "snapshot_gate",
+          "message": "active workbench and first equipment-tuning snapshot were not both confirmed within 60000ms",
+          "details": {
+            "watermarkTotal": 5409,
+            "lastLogTotal": 5708,
+            "requiredMarkers": [
+              "event=equipment_tuning_panel_bound",
+              "event=equipment_tuning_snapshot_confirmed"
+            ]
+          }
+        },
+        "runtimeIdentity": {
+          "runtimeMode": "isolated_candidate",
+          "processPath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\runtime-candidates\\v2\\perf-policy-1009-u1\\runtime\\CRAZYFLASHER7MercenaryEmpire.Core.exe",
+          "coreSha256": "AE0D1E9634BBD14636AB9E8F6A8CB2878A92933A7F80E31DEC2648C8346D281C",
+          "buildIdentity": "6AA1A05B6DFA6AE23CC5D35E94ECB6B5BF1131D3627EEDD6A036C9694573AEE7",
+          "payloadClosure": "A1CD4F77103938F93B5DB5F1E7E743B92502848E902655A4C6836C8ADDC72776",
+          "pid": 14300,
+          "verified": true
+        },
+        "attemptId": "cfcc332622ac4d3dbcec40320ddc01df",
+        "gameEntered": true,
+        "enterRequestCount": 1,
+        "shutdownSuccess": true,
+        "coreExited": true,
+        "protectedSaveCount": 24,
+        "protectedSavesUnchanged": true,
+        "candidateRestored": true,
+        "profile": {
+          "profileId": "php:1fc8590a6e2444929ef65c0dff7332be",
+          "windows": [
+            {
+              "id": "php:1fc8590a6e2444929ef65c0dff7332be",
+              "source": "as2",
+              "samples": 300,
+              "windowMs": 9979,
+              "meanMs": 4.23666666666667,
+              "p50Ms": 3,
+              "p95Ms": 8,
+              "maxMs": 66,
+              "packets": 6,
+              "encodedBytes": 20416
+            },
+            {
+              "id": "php:1fc8590a6e2444929ef65c0dff7332be",
+              "source": "as2",
+              "samples": 300,
+              "windowMs": 10004,
+              "meanMs": 3.82,
+              "p50Ms": 2,
+              "p95Ms": 6,
+              "maxMs": 59,
+              "packets": 5,
+              "encodedBytes": 19680
+            },
+            {
+              "id": "php:1fc8590a6e2444929ef65c0dff7332be",
+              "source": "as2",
+              "samples": 300,
+              "windowMs": 9995,
+              "meanMs": 3.7,
+              "p50Ms": 2,
+              "p95Ms": 6,
+              "maxMs": 38,
+              "packets": 5,
+              "encodedBytes": 19680
+            },
+            {
+              "id": "php:1fc8590a6e2444929ef65c0dff7332be",
+              "source": "as2",
+              "samples": 300,
+              "windowMs": 10001,
+              "meanMs": 3.79333333333333,
+              "p50Ms": 2,
+              "p95Ms": 6,
+              "maxMs": 58,
+              "packets": 5,
+              "encodedBytes": 19680
+            },
+            {
+              "id": "php:1fc8590a6e2444929ef65c0dff7332be",
+              "source": "as2",
+              "samples": 300,
+              "windowMs": 10003,
+              "meanMs": 4.21,
+              "p50Ms": 2,
+              "p95Ms": 9,
+              "maxMs": 51,
+              "packets": 5,
+              "encodedBytes": 19680
+            },
+            {
+              "id": "php:1fc8590a6e2444929ef65c0dff7332be",
+              "source": "as2",
+              "samples": 300,
+              "windowMs": 10005,
+              "meanMs": 3.94666666666667,
+              "p50Ms": 2,
+              "p95Ms": 6,
+              "maxMs": 52,
+              "packets": 5,
+              "encodedBytes": 19680
+            }
+          ],
+          "firstWindowExcluded": true,
+          "steadySamples": 1500,
+          "steadyMeanMs": 3.894,
+          "steadyPackets": [
+            5,
+            5,
+            5,
+            5,
+            5
+          ],
+          "steadyEncodedBytes": [
+            19680,
+            19680,
+            19680,
+            19680,
+            19680
+          ],
+          "projectionErrors": 0,
+          "wire": {
+            "groups": [
+              "buffs",
+              "combat",
+              "cooldowns",
+              "loadout",
+              "resources",
+              "vitals"
+            ],
+            "full": true,
+            "cooldownRows": 18,
+            "cooldownsNumericTriples": true,
+            "observationScope": "Complete decoded frame packet at game entry; paused steady packets are not fully logged"
+          }
+        },
+        "evidenceScope": "Real isolated runtime, cloned save and paused workbench wait; no business clicks/writes; not combat FPS or full workbench E2E",
+        "failure": null,
+        "report": {
+          "path": "tmp/as2-perf-round2-20261010/live-baseline-02.json",
+          "sha256": "D7AF1260962324BA6E52472AD96EB5C8B8254A0E2505ECD411848B0487A568DD",
+          "bytes": 13106
+        },
+        "launcherLog": {
+          "path": "tmp/as2-perf-round2-20261010/runs/live-baseline-02.launcher.log",
+          "sha256": "BDC8CE1BE5A92BFDD7655649D2A9777A2DD8B24C4A7EE869EE82CC471C9A3B17",
+          "bytes": 115967
+        },
+        "saveProtection": {
+          "path": "tmp/as2-perf-round2-20261010/live-baseline-02.protected-after.json",
+          "sha256": "6C6655DC306A1BE03AB0493576785431CC85DDA587C81D846AEF084DCC2EF4BC",
+          "bytes": 124
+        }
+      }
+    ],
+    "liveAggregate": {
+      "baseline": {
+        "runs": 2,
+        "steadySamples": 3000,
+        "meanMs": 3.793000000000001,
+        "runMeansMs": [
+          3.692000000000002,
+          3.894
+        ],
+        "windowMeansMs": [
+          3.58,
+          3.58666666666667,
+          3.68666666666667,
+          3.95,
+          3.65666666666667,
+          3.82,
+          3.7,
+          3.79333333333333,
+          4.21,
+          3.94666666666667
+        ],
+        "packets": 50,
+        "encodedBytes": 196800
+      },
+      "candidate": {
+        "runs": 2,
+        "steadySamples": 3000,
+        "meanMs": 2.862666666666668,
+        "runMeansMs": [
+          3.354000000000002,
+          2.3713333333333337
+        ],
+        "windowMeansMs": [
+          2.18666666666667,
+          2.18,
+          2.10666666666667,
+          4.32,
+          5.97666666666667,
+          2.32333333333333,
+          2.23666666666667,
+          2.24666666666667,
+          2.65666666666667,
+          2.39333333333333
+        ],
+        "packets": 49,
+        "encodedBytes": 192864
+      },
+      "observedMeanReductionPercent": 24.527638632568753,
+      "method": "ABBA, one cloned level-1 role, 1500 steady captures per run after dropping the predefined first 300-capture warmup window; all remaining windows retained",
+      "limits": [
+        "Paused workbench wait, no equipped skills/drugs and no Buff icons; not combat FPS or a weak-machine qualification.",
+        "Candidate run 1 includes late windows at 4.32 and 5.9767 ms; cause was not established and neither window was excluded.",
+        "One candidate window has four periodic full packets, the other windows have five. The unchanged getTimer()-lastFull>2000 gate is time-based, so sample-window phase does not force identical packet counts.",
+        "Both SWFs reproduce the equipment snapshot timeout. Boot/clone/HUD execution is verified, equipment-workbench E2E is not."
+      ]
+    },
+    "sourceBindings": [
+      {
+        "path": "scripts/run-buff-hotpath-tests.ps1",
+        "sha256": "17864571D6C714D97FA1E5D0EF4FD10A885FB9A1273CDF4C0C920A64A35B6A0E",
+        "bytes": 1084
+      },
+      {
+        "path": "scripts/run-buff-manager-tests.ps1",
+        "sha256": "7FA022A8994B505BFB84816E519C54535AE6D44C6D176949B27763AB914A2B8B",
+        "bytes": 1380
+      },
+      {
+        "path": "scripts/run-hud-loadout-resource-tests.ps1",
+        "sha256": "48D0E80662665E7F20FB836C893B8445211AEFFC3C7BBC5F249A04389C83754B",
+        "bytes": 1256
+      },
+      {
+        "path": "scripts/run-player-hud-snapshot-tests.ps1",
+        "sha256": "09880F97ABACE23CE77DB6F5082BF81DB33DB06DFAE96B9FCB1B6614EE5CE01E",
+        "bytes": 1396
+      },
+      {
+        "path": "scripts/run-skill-hud-input-tests.ps1",
+        "sha256": "BA8150C0C759DB2E35BA914CBFA48BDE5EDED9583CB0A17637E24983315DF849",
+        "bytes": 931
+      },
+      {
+        "path": "scripts/test-runners/buff-hotpath/TestLoader.as.template",
+        "sha256": "3435426D61C3481DB3055F37DC368F99DC25709577B27BB9E0B79A2532A459BC",
+        "bytes": 219
+      },
+      {
+        "path": "scripts/test-runners/buff-manager/TestLoader.as.template",
+        "sha256": "77C12661D9BB13494B37912BE968A5F3505257E9A125AC0D1AC1A0CFA112974A",
+        "bytes": 889
+      },
+      {
+        "path": "scripts/test-runners/hud-loadout-resources/TestLoader.as.template",
+        "sha256": "2EDFECAE66E71F7E452B5A7AA8800DD700C23B7796AF0DBECB6D74C4A88128AE",
+        "bytes": 227
+      },
+      {
+        "path": "scripts/test-runners/player-hud-snapshot/TestLoader.as.template",
+        "sha256": "67530C3D54A9C99107235D9A371638ABF490979189073695FA34319FA6E011D1",
+        "bytes": 216
+      },
+      {
+        "path": "scripts/test-runners/skill-hud-input/TestLoader.as.template",
+        "sha256": "C7B5B72F2D5928A95F8210503678E55FA4E8DDC4E48217097D665F3CF45385E3",
+        "bytes": 206
+      },
+      {
+        "path": "scripts/类定义/org/flashNight/arki/component/Buff/BuffManager.as",
+        "sha256": "A3F8D009C69CF3269358D45682A190A2CE4C372E2091FAE995CA7A0D08FCF1EE",
+        "bytes": 80375
+      },
+      {
+        "path": "scripts/类定义/org/flashNight/arki/component/Buff/test/BuffManagerHotPathTest.as",
+        "sha256": "9BBEF5433F66951B7B294BB7D0397324FAD9959236801F81E2472F57A59D9A6B",
+        "bytes": 12497
+      },
+      {
+        "path": "scripts/类定义/org/flashNight/arki/component/Buff/test/BuffManagerLegacyUpdateFixture.as",
+        "sha256": "A24B24E3AC00B8011ADA4DD8D795CAA8110DD121F2167C142E4FA8D4E3F3A073",
+        "bytes": 15355
+      },
+      {
+        "path": "scripts/类定义/org/flashNight/arki/hud/PlayerHudBuffProjection.as",
+        "sha256": "2C37C9865E4F65D9A8B975AC5DCCA61DFB53E1B2B4A9088823493DC517964B26",
+        "bytes": 3089
+      },
+      {
+        "path": "scripts/类定义/org/flashNight/arki/hud/PlayerHudBuffProjectionLegacyFixture.as",
+        "sha256": "80F2D4BA65F3A9B319D917AECD9DB92006181BFEE3FF799DD61C986C02333F46",
+        "bytes": 2432
+      },
+      {
+        "path": "scripts/类定义/org/flashNight/arki/hud/PlayerHudLoadoutResourceTest.as",
+        "sha256": "3B9CEA4380D216EDE64295EC648620D6A2D6F40AC8698FC40CFE69EBF91A8F5E",
+        "bytes": 13085
+      },
+      {
+        "path": "scripts/类定义/org/flashNight/arki/hud/PlayerHudService.as",
+        "sha256": "BEAE10A250E6A76DBA06CBC523C37E821AE4F522C82AD392AEB3D38A8F2454F6",
+        "bytes": 37105
+      },
+      {
+        "path": "scripts/类定义/org/flashNight/arki/hud/PlayerHudShieldProjectionLegacyFixture.as",
+        "sha256": "73A97A6CB938E713EE3B85395CB7F40A791FC1CF73263DC1BA2285DEDA6F4113",
+        "bytes": 6154
+      },
+      {
+        "path": "scripts/类定义/org/flashNight/arki/hud/PlayerHudSnapshotLegacyFixture.as",
+        "sha256": "0ABCA374D859464622F3468AC9AB259CEEC767ADB8CFBA6E3054AC922B9A2623",
+        "bytes": 8484
+      },
+      {
+        "path": "scripts/类定义/org/flashNight/arki/hud/PlayerHudSnapshotTest.as",
+        "sha256": "276DA855C4F49E856324CAED1870C7CE5F90069FA0C4A898DC03BAC214E3D26F",
+        "bytes": 18060
+      },
+      {
+        "path": "scripts/类定义/org/flashNight/arki/skill/SkillHudInputTest.as",
+        "sha256": "0D417386E1C4705A45FC6059C772581E2C4EAED6C9281D4EAA3C9A48AF4A073F",
+        "bytes": 9422
+      },
+      {
+        "path": "scripts/类定义/org/flashNight/arki/skill/SkillLoadoutService.as",
+        "sha256": "028814C6EC7568929328EA4DC7DA48F4C3224EC672F1E473F934AF9634C164AB",
+        "bytes": 62788
+      },
+      {
+        "path": "scripts/类定义/org/flashNight/arki/skill/SkillResourceService.as",
+        "sha256": "D0A3F88732E59AAC3624DC40D79C0BA4F7279C32ED0417C8E84828F8DEC51CEE",
+        "bytes": 12803
+      },
+      {
+        "path": "scripts/类定义/org/flashNight/arki/skill/SkillResourceSnapshotLegacyFixture.as",
+        "sha256": "99CF9B106D26CCF965B0D2FDBF9F7CA9709F0693ACFA6037363A74DDCA8E7437",
+        "bytes": 10833
+      }
+    ],
+    "description": "Historical validation against 0c36a08a and the former 6AA1 native identity; retained without treating it as proof for the later integrated artifacts."
+  },
+  "postIntegrationSourceContinuity": [
+    {
+      "path": "scripts/类定义/org/flashNight/arki/component/Buff/BuffManager.as",
+      "preIntegrationSourceRef": "0e79cebbdb69750f537bf372020573c909f6f5e9",
+      "sourceLogicUnchanged": true,
+      "normalization": "UTF-8 BOM, CRLF and trailing whitespace; BuffManager expiry comment corrected without code changes"
+    },
+    {
+      "path": "scripts/类定义/org/flashNight/arki/component/Buff/test/BuffManagerHotPathTest.as",
+      "preIntegrationSourceRef": "0e79cebbdb69750f537bf372020573c909f6f5e9^3",
+      "sourceLogicUnchanged": true,
+      "normalization": "UTF-8 BOM, CRLF and trailing whitespace; BuffManager expiry comment corrected without code changes"
+    },
+    {
+      "path": "scripts/类定义/org/flashNight/arki/component/Buff/test/BuffManagerLegacyUpdateFixture.as",
+      "preIntegrationSourceRef": "0e79cebbdb69750f537bf372020573c909f6f5e9^3",
+      "sourceLogicUnchanged": true,
+      "normalization": "UTF-8 BOM, CRLF and trailing whitespace; BuffManager expiry comment corrected without code changes"
+    },
+    {
+      "path": "scripts/类定义/org/flashNight/arki/hud/PlayerHudBuffProjection.as",
+      "preIntegrationSourceRef": "0e79cebbdb69750f537bf372020573c909f6f5e9",
+      "sourceLogicUnchanged": true,
+      "normalization": "UTF-8 BOM, CRLF and trailing whitespace; BuffManager expiry comment corrected without code changes"
+    },
+    {
+      "path": "scripts/类定义/org/flashNight/arki/hud/PlayerHudBuffProjectionLegacyFixture.as",
+      "preIntegrationSourceRef": "0e79cebbdb69750f537bf372020573c909f6f5e9^3",
+      "sourceLogicUnchanged": true,
+      "normalization": "UTF-8 BOM, CRLF and trailing whitespace; BuffManager expiry comment corrected without code changes"
+    },
+    {
+      "path": "scripts/类定义/org/flashNight/arki/hud/PlayerHudLoadoutResourceTest.as",
+      "preIntegrationSourceRef": "0e79cebbdb69750f537bf372020573c909f6f5e9^3",
+      "sourceLogicUnchanged": true,
+      "normalization": "UTF-8 BOM, CRLF and trailing whitespace; BuffManager expiry comment corrected without code changes"
+    },
+    {
+      "path": "scripts/类定义/org/flashNight/arki/hud/PlayerHudService.as",
+      "preIntegrationSourceRef": "0e79cebbdb69750f537bf372020573c909f6f5e9",
+      "sourceLogicUnchanged": true,
+      "normalization": "UTF-8 BOM, CRLF and trailing whitespace; BuffManager expiry comment corrected without code changes"
+    },
+    {
+      "path": "scripts/类定义/org/flashNight/arki/hud/PlayerHudShieldProjectionLegacyFixture.as",
+      "preIntegrationSourceRef": "0e79cebbdb69750f537bf372020573c909f6f5e9^3",
+      "sourceLogicUnchanged": true,
+      "normalization": "UTF-8 BOM, CRLF and trailing whitespace; BuffManager expiry comment corrected without code changes"
+    },
+    {
+      "path": "scripts/类定义/org/flashNight/arki/hud/PlayerHudSnapshotLegacyFixture.as",
+      "preIntegrationSourceRef": "0e79cebbdb69750f537bf372020573c909f6f5e9^3",
+      "sourceLogicUnchanged": true,
+      "normalization": "UTF-8 BOM, CRLF and trailing whitespace; BuffManager expiry comment corrected without code changes"
+    },
+    {
+      "path": "scripts/类定义/org/flashNight/arki/hud/PlayerHudSnapshotTest.as",
+      "preIntegrationSourceRef": "0e79cebbdb69750f537bf372020573c909f6f5e9^3",
+      "sourceLogicUnchanged": true,
+      "normalization": "UTF-8 BOM, CRLF and trailing whitespace; BuffManager expiry comment corrected without code changes"
+    },
+    {
+      "path": "scripts/类定义/org/flashNight/arki/skill/SkillHudInputTest.as",
+      "preIntegrationSourceRef": "0e79cebbdb69750f537bf372020573c909f6f5e9^3",
+      "sourceLogicUnchanged": true,
+      "normalization": "UTF-8 BOM, CRLF and trailing whitespace; BuffManager expiry comment corrected without code changes"
+    },
+    {
+      "path": "scripts/类定义/org/flashNight/arki/skill/SkillLoadoutService.as",
+      "preIntegrationSourceRef": "0e79cebbdb69750f537bf372020573c909f6f5e9",
+      "sourceLogicUnchanged": true,
+      "normalization": "UTF-8 BOM, CRLF and trailing whitespace; BuffManager expiry comment corrected without code changes"
+    },
+    {
+      "path": "scripts/类定义/org/flashNight/arki/skill/SkillResourceService.as",
+      "preIntegrationSourceRef": "0e79cebbdb69750f537bf372020573c909f6f5e9",
+      "sourceLogicUnchanged": true,
+      "normalization": "UTF-8 BOM, CRLF and trailing whitespace; BuffManager expiry comment corrected without code changes"
+    },
+    {
+      "path": "scripts/类定义/org/flashNight/arki/skill/SkillResourceSnapshotLegacyFixture.as",
+      "preIntegrationSourceRef": "0e79cebbdb69750f537bf372020573c909f6f5e9^3",
+      "sourceLogicUnchanged": true,
+      "normalization": "UTF-8 BOM, CRLF and trailing whitespace; BuffManager expiry comment corrected without code changes"
+    }
+  ],
+  "postValidationFormattingChanges": [
+    {
+      "path": "scripts/类定义/org/flashNight/arki/component/Buff/test/BuffManagerLegacyUpdateFixture.as",
+      "beforeSha256": "A24B24E3AC00B8011ADA4DD8D795CAA8110DD121F2167C142E4FA8D4E3F3A073",
+      "afterSha256": "E7488D186D9CDCAAF395787CE42264C1DBD291F4C887A517F9960C837D983B46",
+      "reason": "Removed trailing spaces only in the test-only frozen fixture after validation; line count and all non-whitespace tokens unchanged. No production SWF source changed."
+    }
+  ],
+  "integration": {
+    "upstreamCommits": [
+      "97ce6bc748",
+      "99fc18a7c8",
+      "e199371923",
+      "1aeb186769"
+    ],
+    "upstreamBase": {
+      "path": "tmp/as2-perf-round2-20261010/pre-integration/upstream-baseline.json",
+      "sha256": "6C6174238AA0E6DEBD3767D9F9587312B495484E20D85DFE5CBF6D712DADC1A9",
+      "bytes": 697
+    },
+    "description": "Fast-forwarded upstream battle-record changes and its already-promoted native runtime, reapplied the owned source changes, republished merged AS2 through CS6 and built an isolated matching native candidate. No formal runtime promotion performed by this task.",
+    "candidateStatus": {
+      "schema": "cf7-local-dev-runtime-status.v1",
+      "selectionState": "ready",
+      "pointerState": "ready",
+      "pointerReason": "",
+      "pointerPath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\runtime-dev\\active.v1.json",
+      "currentBuildIdentityHash": "F852BCCE1DFC56A24C2E0AD69657118AC8EFF052197793928663192A92404411",
+      "matchingCandidateCount": 1,
+      "matchingPayloadClosureCount": 1,
+      "matchingPayloadClosureHashes": [
+        "0683F820F20328E45C8BC3B10DA19C027BF709ACF8EAF4A84472E45F7AEFCBA3"
+      ],
+      "candidateRoot": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\runtime-candidates\\v2\\hud-buff-1010-u1",
+      "candidateCorePath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\runtime-candidates\\v2\\hud-buff-1010-u1\\runtime\\CRAZYFLASHER7MercenaryEmpire.Core.dll",
+      "candidateCoreSha256": "26562A5F00EE9D8F75071F120A35E2B7ECF497C423B1FB688896EC97A38B2A08",
+      "payloadClosureHash": "0683F820F20328E45C8BC3B10DA19C027BF709ACF8EAF4A84472E45F7AEFCBA3",
+      "deploymentStatus": "NOT_DEPLOYED"
+    },
+    "buildLog": {
+      "path": "tmp/as2-perf-round2-20261010/integration/dev-build.log",
+      "sha256": "D718A77754515BF80E32B56D6275DAD15A32895F087572FD2A443865D9296E0D",
+      "bytes": 5762
+    }
+  }
+}

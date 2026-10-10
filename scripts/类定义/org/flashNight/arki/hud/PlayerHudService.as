@@ -189,7 +189,7 @@ class org.flashNight.arki.hud.PlayerHudService {
         if (addGroup(groups, "loadout", loadout, full)) count++;
         if (addGroup(groups, "cooldowns", readCooldowns(), full)) count++;
         if (addGroup(groups, "buffs", buffProjection.snapshot(), full)) count++;
-        if (resourceHintsEnabled && addGroup(groups, "resources", SkillResourceService.snapshot(unit, loadout), full)) count++;
+        if (resourceHintsEnabled && addGroup(groups, "resources", SkillResourceService.snapshot(unit, loadout, rawGroups.resources), full)) count++;
         compat._pendingHpDisplayRefresh = false;
         if (count == 0) return;
         var packet:Object = {v:1, epoch:epoch, seq:++sequence, full:full, visible:true, groups:groups};
@@ -235,36 +235,73 @@ class org.flashNight.arki.hud.PlayerHudService {
     /** 资源展示的纯读入口；不安装 HUD 动作、帧监听或持久写服务。 */
     public static function readVitalsSnapshot(unit:Object):Object { return readVitals(unit); }
     private static function readVitals(unit:Object):Object {
+        var previous:Object = rawGroups.vitals;
         var shield:Object = unit.shield;
         var shieldReady:Boolean = typeof shield.getMaxCapacity == "function";
         var shieldCapacity:Number = shieldReady ? Number(shield.getCapacity()) : 0;
         var shieldMaximum:Number = shieldReady ? Number(shield.getMaxCapacity()) : 0;
         if (!isFinite(shieldCapacity) || !isFinite(shieldMaximum)) shieldReady = false;
         var shieldPresent:Boolean = shieldReady && shieldMaximum > 0;
-        var result:Object = {hp:[finiteValue(unit.hp), finiteValue(unit.hp满血值)], mp:[finiteValue(unit.mp), finiteValue(unit.mp满血值)],
-            shield:[shieldPresent ? finiteValue(shield.getCapacity()) : 0, shieldPresent ? finiteValue(shield.getMaxCapacity()) : 0],
-            shieldPresent:shieldPresent, shieldReady:shieldReady, poise:finiteValue(unit.nonlinearMappingResilience),
-            experience:[finiteValue(_root.经验值), finiteValue(_root.上次升级需要经验值), finiteValue(_root.升级需要经验值)],
-            level:finiteValue(_root.等级), name:text(_root.角色名), sp:finiteValue(_root.技能点数),
-            paused:!!_root.暂停, decorations:_root.__nativeHudDecorations !== false};
-        if (poiseDetailsEnabled) result.poiseDetail = readPoiseDetail(unit);
-        if (poiseVisualsEnabled) result.poiseVisual = {airborne:!!unit.浮空, rigid:!!(unit.刚体 || unit.man.刚体标签), down:!!unit.倒地};
-        if (shieldDetailsEnabled) result.shieldDetail = PlayerHudShieldProjection.read(unit);
+        // Preserve the old AVM1 read order, including right-to-left array values.
+        // Property accessors may refresh derived state: the second shield sample
+        // must stay after HP/MP reads, even when the first readiness read was valid.
+        var hpMax:Number = finiteValue(unit.hp满血值), hp:Number = finiteValue(unit.hp);
+        var mpMax:Number = finiteValue(unit.mp满血值), mp:Number = finiteValue(unit.mp);
+        shieldMaximum = shieldPresent ? finiteValue(shield.getMaxCapacity()) : 0;
+        shieldCapacity = shieldPresent ? finiteValue(shield.getCapacity()) : 0;
+        var poise:Number = finiteValue(unit.nonlinearMappingResilience);
+        var experienceEnd:Number = finiteValue(_root.升级需要经验值);
+        var experienceStart:Number = finiteValue(_root.上次升级需要经验值);
+        var experience:Number = finiteValue(_root.经验值);
+        var level:Number = finiteValue(_root.等级), name:String = text(_root.角色名), sp:Number = finiteValue(_root.技能点数);
+        var paused:Boolean = !!_root.暂停, decorations:Boolean = _root.__nativeHudDecorations !== false;
+        var poiseDetail:Object;
+        var poiseVisual:Object;
+        var shieldDetail:Object;
+        if (poiseDetailsEnabled) poiseDetail = readPoiseDetail(unit, previous.poiseDetail);
+        if (poiseVisualsEnabled) {
+            var airborne:Boolean = !!unit.浮空, rigid:Boolean = !!(unit.刚体 || unit.man.刚体标签), down:Boolean = !!unit.倒地;
+            var oldVisual:Object = previous.poiseVisual;
+            poiseVisual = oldVisual != null && oldVisual.airborne === airborne && oldVisual.rigid === rigid && oldVisual.down === down
+                ? oldVisual : {airborne:airborne, rigid:rigid, down:down};
+        }
+        if (shieldDetailsEnabled) {
+            shieldDetail = PlayerHudShieldProjection.read(unit);
+            if (sameProjection(previous.shieldDetail, shieldDetail)) shieldDetail = previous.shieldDetail;
+        }
+        // Compare normalized live facts before allocating arrays. Every returned DTO
+        // remains detached; no scratch array ever aliases an already-sent snapshot.
+        if (previous != null && previous.hp[0] === hp && previous.hp[1] === hpMax
+                && previous.mp[0] === mp && previous.mp[1] === mpMax
+                && previous.shield[0] === shieldCapacity && previous.shield[1] === shieldMaximum
+                && previous.shieldPresent === shieldPresent && previous.shieldReady === shieldReady && previous.poise === poise
+                && previous.experience[0] === experience && previous.experience[1] === experienceStart && previous.experience[2] === experienceEnd
+                && previous.level === level && previous.name === name && previous.sp === sp
+                && previous.paused === paused && previous.decorations === decorations
+                && previous.poiseDetail === poiseDetail && previous.poiseVisual === poiseVisual && previous.shieldDetail === shieldDetail) return previous;
+        var result:Object = {hp:[hp, hpMax], mp:[mp, mpMax], shield:[shieldCapacity, shieldMaximum],
+            shieldPresent:shieldPresent, shieldReady:shieldReady, poise:poise,
+            experience:[experience, experienceStart, experienceEnd], level:level, name:name, sp:sp, paused:paused, decorations:decorations};
+        if (poiseDetailsEnabled) result.poiseDetail = poiseDetail;
+        if (poiseVisualsEnabled) result.poiseVisual = poiseVisual;
+        if (shieldDetailsEnabled) result.shieldDetail = shieldDetail;
         return result;
     }
-    private static function readPoiseDetail(unit:Object):Object {
+    private static function readPoiseDetail(unit:Object, previous:Object):Object {
         // Consume ImpactHandler's authoritative derived values. Never refresh gameplay
         // attributes, advance decay, or infer a threshold from the rounded HUD percent.
         var cap:Number = Number(unit.韧性上限);
         var boundary:Number = Number(unit.impactStaggerBoundary);
         var impact:Number = Number(unit.remainingImpactForce);
-        if (!(cap > 0) || !isFinite(cap) || !isFinite(boundary) || boundary < 0 || !isFinite(impact) || impact < 0)
-            return {threshold:0, hasStaggerBand:false, phase:"unavailable"};
-        var threshold:Number = Math.max(0, Math.min(1, 1 - Math.sqrt(boundary / cap)));
-        var phase:String = unit.浮空 ? "air" : unit.倒地 ? "down" :
-            (unit.刚体 || unit.man.刚体标签) ? "rigid" : impact > cap ? "break" :
-            impact > boundary ? "stagger" : "buffer";
-        return {threshold:threshold, hasStaggerBand:boundary < cap, phase:phase};
+        var threshold:Number = 0, hasStaggerBand:Boolean = false, phase:String = "unavailable";
+        if (cap > 0 && isFinite(cap) && isFinite(boundary) && !(boundary < 0) && isFinite(impact) && !(impact < 0)) {
+            threshold = Math.max(0, Math.min(1, 1 - Math.sqrt(boundary / cap)));
+            hasStaggerBand = boundary < cap;
+            phase = unit.浮空 ? "air" : unit.倒地 ? "down" :
+                (unit.刚体 || unit.man.刚体标签) ? "rigid" : impact > cap ? "break" : impact > boundary ? "stagger" : "buffer";
+        }
+        if (previous != null && previous.threshold === threshold && previous.hasStaggerBand === hasStaggerBand && previous.phase === phase) return previous;
+        return {threshold:threshold, hasStaggerBand:hasStaggerBand, phase:phase};
     }
     private static function readCombat(unit:Object):Object {
         var mode:String = text(unit.攻击模式);
@@ -278,10 +315,18 @@ class org.flashNight.arki.hud.PlayerHudService {
             weapon:{visible:false, name:"", mp:0, cooldownMs:0, key:keyLabel("武器技能键")}};
         compat.玩家必要信息界面.mode = mode;
         synchronizeAmmoOwners(unit);
-        lastCombat = {mode:mode, ammo:[text(ammo[0]), text(ammo[1]), text(ammo[2]), text(ammo[3])],
-            weapon:{visible:skill != null && skill.isSubweaponControl !== true,
-            name:weaponName(skill), mp:finiteValue(skill.消耗mp), cooldownMs:finiteValue(skill.冷却时间),
-            key:keyLabel("武器技能键")}};
+        var secondMagazine:String = text(ammo[3]), secondAmmo:String = text(ammo[2]);
+        var firstMagazine:String = text(ammo[1]), firstAmmo:String = text(ammo[0]);
+        var visible:Boolean = skill != null && skill.isSubweaponControl !== true;
+        var name:String = weaponName(skill), mp:Number = finiteValue(skill.消耗mp);
+        var cooldownMs:Number = finiteValue(skill.冷却时间), key:String = keyLabel("武器技能键");
+        var oldWeapon:Object = lastCombat.weapon;
+        if (lastCombat != null && lastCombat.mode === mode && lastCombat.ammo[0] === firstAmmo
+                && lastCombat.ammo[1] === firstMagazine && lastCombat.ammo[2] === secondAmmo && lastCombat.ammo[3] === secondMagazine
+                && oldWeapon.visible === visible && oldWeapon.name === name && oldWeapon.mp === mp
+                && oldWeapon.cooldownMs === cooldownMs && oldWeapon.key === key) return lastCombat;
+        lastCombat = {mode:mode, ammo:[firstAmmo, firstMagazine, secondAmmo, secondMagazine],
+            weapon:{visible:visible, name:name, mp:mp, cooldownMs:cooldownMs, key:key}};
         return lastCombat;
     }
     private static function synchronizeAmmoOwners(unit:Object):Void {
@@ -321,16 +366,33 @@ class org.flashNight.arki.hud.PlayerHudService {
             signature += ";" + text(item.name) + ":" + count;
         }
         if (changed || signature !== drugSignature) { drugSignature = signature; drugRevision++; }
-        var drugs:Array = [];
+        var previous:Object = rawGroups.loadout;
+        var oldDrugs:Array = previous.drugs;
+        var drugs:Array = oldDrugs.length == 4 ? null : [];
         for (i = 0; i < 4; i++) {
             var slot:Number = bank * 4 + i;
             var current:Object = drugItems[slot];
-            var data:Object = current == null ? null : ItemUtil.getItemData(current.name);
-            drugs.push({slot:slot, name:text(current.name), icon:text(data.icon), count:drugCounts[slot],
-                key:keyLabel(DrugInputService.getKeyName(i))});
+            // Only the icon scalar is projected. Reading the raw catalog avoids a
+            // deep clone while the returned row still owns strings/numbers only.
+            var data:Object = current == null ? null : ItemUtil.getRawItemData(current.name);
+            var name:String = text(current.name), icon:String = text(data.icon);
+            var key:String = keyLabel(DrugInputService.getKeyName(i));
+            var row:Object = oldDrugs[i];
+            if (row == null || row.slot !== slot || row.name !== name || row.icon !== icon
+                    || row.count !== drugCounts[slot] || row.key !== key) {
+                if (drugs == null) drugs = oldDrugs.slice(0, i);
+                row = {slot:slot, name:name, icon:icon, count:drugCounts[slot], key:key};
+            }
+            if (drugs != null) drugs.push(row);
         }
-        return {revision:finiteValue(skills.revision), skills:skills.slots, drugRevision:drugRevision,
-            bank:bank, drugs:drugs, switchKey:keyLabel(DrugInputService.getSwitchKeyName())};
+        if (drugs == null) drugs = oldDrugs;
+        var revision:Number = finiteValue(skills.revision);
+        var switchKey:String = keyLabel(DrugInputService.getSwitchKeyName());
+        if (previous != null && previous.revision === revision && previous.skills === skills.slots
+                && previous.drugRevision === drugRevision && previous.bank === bank
+                && previous.drugs === drugs && previous.switchKey === switchKey) return previous;
+        return {revision:revision, skills:skills.slots, drugRevision:drugRevision,
+            bank:bank, drugs:drugs, switchKey:switchKey};
     }
     private static function readCooldowns():Array {
         var i:Number;
