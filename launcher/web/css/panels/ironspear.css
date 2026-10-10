@@ -1,0 +1,374 @@
+/* ══ 铁枪会·远程商业点 ══════════════════════════════════════════════
+   现代科技 + 古板行会：暗钢工艺底 + 铜金描边 + 朱印文书。
+   图腾（assets/ironspear/totem.svg 白线稿）做头标与工契水印。 */
+
+.isp-panel {
+    --isp-bg: #1c2126;
+    --isp-bg-2: #232a31;
+    --isp-line: #3a434d;
+    --isp-bronze: #b08d57;
+    --isp-bronze-dim: #7d6744;
+    --isp-ink: #d7dde3;
+    --isp-ink-dim: #8d98a3;
+    --isp-seal: #b03430;
+    --isp-good: #7fb98a;
+    --isp-warn: #c9635a;
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    background:
+        radial-gradient(1200px 500px at 50% -10%, rgba(176, 141, 87, 0.07), transparent 60%),
+        linear-gradient(180deg, #22282f 0%, var(--isp-bg) 100%);
+    color: var(--isp-ink);
+    font-family: "Microsoft YaHei", "PingFang SC", sans-serif;
+    overflow: hidden;
+}
+
+/* ── 顶栏 ── */
+.isp-header {
+    flex: none;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 12px 18px 10px;
+    border-bottom: 1px solid var(--isp-line);
+    background: rgba(0, 0, 0, 0.18);
+}
+.isp-totem {
+    width: 44px;
+    height: 60px;
+    object-fit: contain;
+    opacity: 0.9;
+    filter: drop-shadow(0 0 6px rgba(176, 141, 87, 0.35));
+    flex: none;
+}
+.isp-brand { flex: none; }
+.isp-kicker {
+    display: block;
+    font-size: 11px;
+    letter-spacing: 3px;
+    color: var(--isp-bronze);
+    font-family: "SimSun", serif;
+}
+.isp-brand h1 {
+    margin: 1px 0 0;
+    font-size: 20px;
+    font-weight: 700;
+    letter-spacing: 6px;
+    color: var(--isp-ink);
+    font-family: "STKaiti", "KaiTi", "SimSun", serif;
+}
+.isp-sub {
+    display: block;
+    font-size: 10px;
+    letter-spacing: 1.5px;
+    color: var(--isp-ink-dim);
+    margin-top: 2px;
+}
+.isp-status {
+    margin-left: auto;
+    font-size: 11px;
+    letter-spacing: 1px;
+    color: var(--isp-ink-dim);
+    padding: 3px 10px;
+    border: 1px solid var(--isp-line);
+    border-radius: 2px;
+}
+.isp-status[data-state="ready"] { color: var(--isp-good); border-color: rgba(127, 185, 138, 0.4); }
+.isp-status[data-state="loading"] { color: var(--isp-bronze); border-color: var(--isp-bronze-dim); }
+.isp-status[data-state="error"] { color: var(--isp-warn); border-color: rgba(201, 99, 90, 0.5); }
+.isp-metrics { display: flex; gap: 14px; font-size: 12px; color: var(--isp-ink); }
+.isp-metric { font-variant-numeric: tabular-nums; }
+.isp-metric.kpoints { color: var(--isp-bronze); }
+.isp-close {
+    flex: none;
+    width: 30px; height: 30px;
+    border: 1px solid var(--isp-line);
+    background: transparent;
+    color: var(--isp-ink-dim);
+    font-size: 18px;
+    line-height: 1;
+    cursor: pointer;
+}
+.isp-close:hover { color: var(--isp-ink); border-color: var(--isp-bronze); }
+
+/* ── 主体两栏 ── */
+.isp-body {
+    flex: 1;
+    display: flex;
+    gap: 14px;
+    padding: 14px 18px 16px;
+    min-height: 0;
+}
+
+/* 左：订单簿 */
+.isp-book {
+    flex: 0 0 300px;
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+    border: 1px solid var(--isp-line);
+    background: var(--isp-bg-2);
+}
+.isp-book-head {
+    flex: none;
+    padding: 10px 14px 8px;
+    border-bottom: 1px solid var(--isp-line);
+}
+.isp-book-head b {
+    display: block;
+    font-size: 15px;
+    letter-spacing: 4px;
+    color: var(--isp-bronze);
+    font-family: "STKaiti", "KaiTi", "SimSun", serif;
+}
+.isp-book-head small {
+    font-size: 10px;
+    letter-spacing: 1px;
+    color: var(--isp-ink-dim);
+}
+.isp-book-lead {
+    flex: none;
+    margin: 0;
+    padding: 8px 14px;
+    font-size: 11px;
+    line-height: 1.7;
+    color: var(--isp-ink-dim);
+    border-bottom: 1px dashed var(--isp-line);
+    font-family: "SimSun", serif;
+}
+.isp-book-list {
+    flex: 1;
+    overflow-y: auto;
+    padding: 6px;
+}
+.isp-empty { padding: 18px; font-size: 12px; color: var(--isp-ink-dim); text-align: center; }
+.isp-item {
+    display: flex;
+    align-items: baseline;
+    gap: 8px;
+    width: 100%;
+    padding: 7px 9px;
+    margin-bottom: 2px;
+    border: none;
+    border-left: 2px solid transparent;
+    background: transparent;
+    color: var(--isp-ink);
+    font-size: 12.5px;
+    text-align: left;
+    cursor: pointer;
+}
+.isp-item:hover { background: rgba(176, 141, 87, 0.08); }
+.isp-item.active {
+    background: rgba(176, 141, 87, 0.14);
+    border-left-color: var(--isp-bronze);
+}
+.isp-item.is-blocked { opacity: 0.55; }
+.isp-item.is-blocked.active { opacity: 0.85; }
+.isp-item-num {
+    flex: none;
+    font-size: 10.5px;
+    color: var(--isp-bronze);
+    font-variant-numeric: tabular-nums;
+    letter-spacing: 0.5px;
+}
+.isp-item-name { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.isp-item-state {
+    flex: none;
+    font-size: 10px;
+    color: var(--isp-ink-dim);
+}
+.isp-item.is-ready .isp-item-state { color: var(--isp-good); }
+.isp-item.is-blocked .isp-item-state { color: var(--isp-warn); }
+
+/* 右：工契 */
+.isp-doc {
+    position: relative;
+    flex: 1;
+    min-width: 0;
+    min-height: 0;
+}
+.isp-paper {
+    position: relative;
+    height: 100%;
+    overflow-y: auto;
+    padding: 20px 26px 18px;
+    border: 1px solid var(--isp-bronze-dim);
+    background:
+        linear-gradient(180deg, rgba(176, 141, 87, 0.05), transparent 120px),
+        var(--isp-bg-2);
+    font-family: "SimSun", "Songti SC", serif;
+}
+.isp-doc-watermark {
+    position: absolute;
+    left: 50%; top: 42%;
+    transform: translate(-50%, -50%);
+    width: 240px;
+    opacity: 0.05;
+    pointer-events: none;
+}
+.isp-doc-watermark.in-doc { opacity: 0.045; }
+.isp-doc-idle {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+}
+.isp-doc-idle .isp-doc-watermark { position: static; transform: none; opacity: 0.12; }
+.isp-doc-idle p { font-size: 13px; letter-spacing: 2px; color: var(--isp-ink-dim); }
+
+.isp-doc-head {
+    padding-bottom: 10px;
+    border-bottom: 2px solid var(--isp-bronze-dim);
+}
+.isp-doc-head b {
+    display: block;
+    font-size: 19px;
+    letter-spacing: 8px;
+    color: var(--isp-bronze);
+    font-family: "STKaiti", "KaiTi", "SimSun", serif;
+}
+.isp-doc-head small {
+    display: block;
+    margin-top: 5px;
+    font-size: 11px;
+    letter-spacing: 1.5px;
+    color: var(--isp-ink-dim);
+}
+.isp-doc-intro {
+    margin: 14px 0;
+    overflow: hidden;
+    font-size: 13px;
+    line-height: 1.9;
+}
+.isp-doc-intro p { margin: 0; }
+.isp-doc-figure {
+    float: left;
+    margin: 4px 16px 8px 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 96px;
+    padding: 10px 8px 6px;
+    border: 1px solid var(--isp-line);
+    background: rgba(0, 0, 0, 0.22);
+}
+.isp-doc-figcap {
+    margin-top: 6px;
+    font-size: 10px;
+    color: var(--isp-ink-dim);
+    letter-spacing: 0.5px;
+}
+.isp-iconwrap { display: inline-flex; align-items: center; justify-content: center; }
+.isp-iconwrap.pending::after { content: '…'; color: var(--isp-ink-dim); }
+.isp-iconwrap.empty { border: 1px dashed var(--isp-line); }
+.isp-iconwrap img { max-width: 100%; max-height: 100%; }
+.isp-icon-lg img { width: 64px; height: 64px; }
+.isp-icon-sm img { width: 18px; height: 18px; }
+
+.isp-doc-list-title {
+    margin: 12px 0 6px;
+    font-size: 13px;
+    letter-spacing: 2px;
+    color: var(--isp-bronze);
+}
+.isp-doc-list { display: flex; flex-direction: column; gap: 4px; }
+.isp-doc-note { margin: 6px 0; font-size: 12px; color: var(--isp-ink-dim); }
+.isp-doc-note.warn { color: var(--isp-warn); }
+.isp-req {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    padding: 5px 9px;
+    font-size: 12.5px;
+    border: 1px solid var(--isp-line);
+    background: rgba(0, 0, 0, 0.15);
+}
+.isp-req.infra { border-style: dashed; }
+.isp-req-icon { flex: none; width: 18px; height: 18px; }
+.isp-req-name { flex: 1; min-width: 0; }
+.isp-req-mark { flex: none; font-size: 10.5px; letter-spacing: 1px; }
+.isp-req.met .isp-req-mark { color: var(--isp-good); }
+.isp-req.unmet .isp-req-mark { color: var(--isp-warn); }
+.isp-req.unmet .isp-req-name { color: var(--isp-ink-dim); }
+
+.isp-doc-foot {
+    margin-top: 18px;
+    padding-top: 12px;
+    border-top: 1px solid var(--isp-line);
+    display: flex;
+    align-items: flex-end;
+    gap: 14px;
+}
+.isp-doc-sign { display: flex; flex-direction: column; gap: 2px; }
+.isp-doc-sign b {
+    font-size: 13px;
+    letter-spacing: 2px;
+    color: var(--isp-ink);
+    font-family: "STKaiti", "KaiTi", "SimSun", serif;
+}
+.isp-doc-sign small { font-size: 10px; color: var(--isp-ink-dim); letter-spacing: 1px; }
+.isp-seal { flex: none; opacity: 0.9; transform: rotate(-6deg); }
+.isp-doc-actions {
+    margin-left: auto;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+.isp-cost { font-size: 12px; color: var(--isp-ink-dim); font-variant-numeric: tabular-nums; }
+.isp-count { display: flex; align-items: stretch; border: 1px solid var(--isp-line); }
+.isp-count button {
+    width: 26px;
+    border: none;
+    background: var(--isp-bg);
+    color: var(--isp-ink);
+    font-size: 15px;
+    cursor: pointer;
+}
+.isp-count button:disabled { opacity: 0.35; cursor: default; }
+.isp-count-input {
+    width: 40px;
+    border: none;
+    border-left: 1px solid var(--isp-line);
+    border-right: 1px solid var(--isp-line);
+    background: transparent;
+    color: var(--isp-ink);
+    text-align: center;
+    font-size: 13px;
+}
+.isp-confirm {
+    padding: 8px 22px;
+    border: 1px solid var(--isp-bronze);
+    background: rgba(176, 141, 87, 0.12);
+    color: var(--isp-bronze);
+    font-size: 13.5px;
+    letter-spacing: 4px;
+    font-family: "STKaiti", "KaiTi", "SimSun", serif;
+    cursor: pointer;
+}
+.isp-confirm:hover:not(:disabled) { background: rgba(176, 141, 87, 0.22); }
+.isp-confirm:disabled { opacity: 0.4; cursor: default; }
+
+/* 忙碌遮罩 */
+.isp-veil {
+    position: absolute;
+    inset: 0;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    background: rgba(28, 33, 38, 0.55);
+    z-index: 5;
+}
+.isp-veil.on { display: flex; }
+.isp-veil-note {
+    padding: 10px 22px;
+    border: 1px solid var(--isp-bronze-dim);
+    background: var(--isp-bg-2);
+    color: var(--isp-bronze);
+    font-size: 13px;
+    letter-spacing: 2px;
+    font-family: "SimSun", serif;
+}
