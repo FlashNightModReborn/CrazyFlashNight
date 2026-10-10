@@ -261,13 +261,17 @@ var IronspearPanel = (function() {
             var num = document.createElement('span');
             num.className = 'isp-item-num';
             num.textContent = orderNo(recipe, i);
+            var icon = document.createElement('span');
+            icon.className = 'isp-item-icon';
+            mountIcon(icon, recipe.output.icon, 'isp-icon-xs');
             var name = document.createElement('span');
             name.className = 'isp-item-name';
             name.textContent = recipe.output.displayName || recipe.title;
             var state = document.createElement('span');
             state.className = 'isp-item-state';
             state.textContent = availabilityLabel(recipe);
-            item.appendChild(num); item.appendChild(name); item.appendChild(state);
+            item.appendChild(num); item.appendChild(icon);
+            item.appendChild(name); item.appendChild(state);
             item.addEventListener('click', bindRecipe(recipe.recipeIndex));
             list.appendChild(item);
         }
@@ -384,7 +388,6 @@ var IronspearPanel = (function() {
         sign.className = 'isp-doc-sign';
         sign.innerHTML = '<b>铁枪会·远程商业点</b><small>旧世遗线·图腾节点核讫</small>';
         foot.appendChild(sign);
-        foot.appendChild(buildSeal());
         var actions = document.createElement('div');
         actions.className = 'isp-doc-actions';
         if (recipe.batchEligible) {
@@ -406,27 +409,14 @@ var IronspearPanel = (function() {
         actions.appendChild(confirm);
         foot.appendChild(actions);
         paper.appendChild(foot);
-    }
-
-    // 铁枪印：菱形外框 + 「铁枪」篆意双字 + 环形文字
-    function buildSeal() {
-        var seal = document.createElement('div');
-        seal.className = 'isp-seal';
-        seal.setAttribute('aria-hidden', 'true');
-        seal.innerHTML =
-            '<svg viewBox="0 0 100 100" width="88" height="88">'
-            + '<defs><path id="isp-seal-arc" '
-            + 'd="M 50 50 m -30 0 a 30 30 0 1 1 60 0 a 30 30 0 1 1 -60 0"/></defs>'
-            + '<rect x="26" y="26" width="48" height="48" fill="none" '
-            + 'stroke="#b03430" stroke-width="2.5" transform="rotate(45 50 50)"/>'
-            + '<text fill="#b03430" font-size="8.5" font-family="SimSun,serif" '
-            + 'letter-spacing="1.2"><textPath href="#isp-seal-arc" startOffset="2%">'
-            + '铁枪会·图腾节点·核验</textPath></text>'
-            + '<text x="50" y="57" text-anchor="middle" fill="#b03430" '
-            + 'font-size="17" font-family="STKaiti,KaiTi,SimSun,serif" '
-            + 'letter-spacing="1">铁枪</text>'
-            + '</svg>';
-        return seal;
+        // 点击=盖章：commit 在途时落朱砂「落印执行」印
+        if (_busy) {
+            var stamp = document.createElement('div');
+            stamp.className = 'isp-stamp';
+            stamp.setAttribute('aria-hidden', 'true');
+            stamp.textContent = '落印执行';
+            paper.appendChild(stamp);
+        }
     }
 
     function buildStepper() {
