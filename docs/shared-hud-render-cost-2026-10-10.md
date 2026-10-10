@@ -99,6 +99,14 @@ CPU 进程数据包括夹具驱动、自建窗口与原生工作线程，是一�
 
 保留两项观察：结算材料面板与返场交接出现 3719 ms 的 Flash 长帧，期间主 HUD 处于暂停、Host 仍持续记录状态，随后转场完成；退出阶段有一次终端 shutdown 请求被取消，随后进程正常退出。当前没有将其归因为本批 HUD 改动，也没有以这次试玩证明稳定 30 FPS、弱机或全部业务旅程。具体计数与日志摘要见[试玩复核证据](evidence/shared-hud-playtest-2026-10-10.json)。本段是发布准入依据，正式部署状态仍以对应 promotion/consensus 为准。
 
+### 发布预检修复
+
+v1 冻结源的 production policy 为 42/47，阻断项是材料 sidecar 与子弹目录的来源记录过期、合成 lazy closure 断言未包含已上线的武器库/铁枪会模块，以及新面板与情报蓝图的 CSS 债务超限（同时导致 ratchet 元断言失败）。本地 X509 构建已完成，未 dispatch 云端、未 promotion；原 tag、request 和失败 receipt 保留，由新的不可变 v2 请求接续。
+
+两份派生记录由原生成器再生并通过 `--check`；材料字典正文和子弹图集 PNG 字节不变。加载断言继续逐项约束真实注册顺序，仅补入两个现役模块。配色与既有动效值归入 `tokens.css`，武器库与情报图共用蓝图材质，保持实际 RGB/透明度；武器库三处 9px 辅助文字改为 10px，新增的 reduced-motion 分支关闭过渡/印章动画并保留静态状态。没有提高债务上限或修改 HUD/native 实现。
+
+严格工作台审计为 0 error / 0 warning，ratchet 68/68；真实浏览器在 1024×576 与 1280×720 的 34 组生产 DOM 状态上验证配色和原动效计算值等价，另有 4 组 reduced-motion 检查。既有开发 harness 的相对模块 URL 在本轮临时服务器中修正后加载真实生产文件，Host 回包仍为夹具，不冒称真实交易 E2E。材料到配方的现役浏览器门在 1024×576、1366×768、1920×1080 各通过 26/26。失败与修复摘要见[发布预检证据](evidence/shared-hud-release-preflight-repair-2026-10-10.json)。
+
 ### 计时入口
 
 日常诊断仍用现有 `CF7_PLAYER_HUD_PROFILE=1` 开关：新增主 HUD 的 paint/commit 统计与 `[WorldHudCost]` 累计记录。Native GPU query 默认关闭，开启后异步轮询且使用 DONOTFLUSH；环满只丢测量、不丢渲染帧。统计为累计值，跨日志行比较须按 profile id 和计数差值计算。

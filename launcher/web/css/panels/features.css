@@ -4822,8 +4822,8 @@ html.perf-low-effects .map-panel-close-btn::before {
     position: relative;
     overflow: hidden;
     padding: 14px 16px;
-    border: 1px solid rgba(30, 42, 58, 0.55);
-    background: #233447;
+    border: 1px solid var(--wb-blueprint-border);
+    background: var(--wb-blueprint-background);
 }
 /* 蓝图网格底纹（同 .arm-blueprint::before 配方） */
 .intel-h5-figure-blueprint::before {
@@ -4832,17 +4832,17 @@ html.perf-low-effects .map-panel-close-btn::before {
     inset: 0;
     pointer-events: none;
     background:
-        repeating-linear-gradient(0deg, rgba(160, 190, 225, 0.14) 0 1px, transparent 1px 24px),
-        repeating-linear-gradient(90deg, rgba(160, 190, 225, 0.14) 0 1px, transparent 1px 24px);
+        repeating-linear-gradient(0deg, var(--wb-blueprint-grid) 0 1px, transparent 1px 24px),
+        repeating-linear-gradient(90deg, var(--wb-blueprint-grid) 0 1px, transparent 1px 24px);
 }
 .intel-h5-figure-blueprint img {
     position: relative;
     max-height: 190px;
-    filter: drop-shadow(0 0 6px rgba(160, 200, 240, 0.35));
+    filter: drop-shadow(0 0 6px var(--wb-blueprint-glow));
 }
 .intel-h5-figure-blueprint .intel-h5-figure-caption {
     position: relative;
-    color: rgba(200, 220, 245, 0.72);
+    color: var(--wb-blueprint-caption);
     font-family: Consolas, "Microsoft YaHei", monospace;
 }
 

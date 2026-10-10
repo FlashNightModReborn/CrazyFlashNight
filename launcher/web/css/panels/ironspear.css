@@ -3,23 +3,23 @@
    图腾（assets/ironspear/totem.svg 白线稿）做头标与工契水印。 */
 
 .isp-panel {
-    --isp-bg: #1c2126;
-    --isp-bg-2: #232a31;
-    --isp-line: #3a434d;
-    --isp-bronze: #b08d57;
-    --isp-bronze-dim: #7d6744;
-    --isp-ink: #d7dde3;
-    --isp-ink-dim: #8d98a3;
-    --isp-seal: #b03430;
-    --isp-good: #7fb98a;
-    --isp-warn: #c9635a;
+    --isp-bg: var(--wb-ironspear-background);
+    --isp-bg-2: var(--wb-ironspear-surface);
+    --isp-line: var(--wb-ironspear-line);
+    --isp-bronze: var(--wb-ironspear-bronze);
+    --isp-bronze-dim: var(--wb-ironspear-bronze-dim);
+    --isp-ink: var(--wb-ironspear-ink);
+    --isp-ink-dim: var(--wb-ironspear-ink-dim);
+    --isp-seal: var(--wb-ironspear-seal);
+    --isp-good: var(--wb-ironspear-ready);
+    --isp-warn: var(--wb-ironspear-warning);
     position: absolute;
     inset: 0;
     display: flex;
     flex-direction: column;
     background:
-        radial-gradient(1200px 500px at 50% -10%, rgba(176, 141, 87, 0.07), transparent 60%),
-        linear-gradient(180deg, #22282f 0%, var(--isp-bg) 100%);
+        radial-gradient(1200px 500px at 50% -10%, var(--wb-ironspear-panel-glow), transparent 60%),
+        linear-gradient(180deg, var(--wb-ironspear-panel-top) 0%, var(--isp-bg) 100%);
     color: var(--isp-ink);
     font-family: "STKaiti", "KaiTi", "FangSong", "SimSun", serif;
     overflow: hidden;
@@ -33,14 +33,14 @@
     gap: 14px;
     padding: 12px 18px 10px;
     border-bottom: 1px solid var(--isp-line);
-    background: rgba(0, 0, 0, 0.18);
+    background: var(--wb-ironspear-header-background);
 }
 .isp-totem {
     width: 44px;
     height: 60px;
     object-fit: contain;
     opacity: 0.9;
-    filter: drop-shadow(0 0 6px rgba(176, 141, 87, 0.35));
+    filter: drop-shadow(0 0 6px var(--wb-ironspear-totem-glow));
     flex: none;
 }
 .isp-brand { flex: none; }
@@ -75,9 +75,9 @@
     border: 1px solid var(--isp-line);
     border-radius: 4px;
 }
-.isp-status[data-state="ready"] { color: var(--isp-good); border-color: rgba(127, 185, 138, 0.4); }
+.isp-status[data-state="ready"] { color: var(--isp-good); border-color: var(--wb-ironspear-ready-line); }
 .isp-status[data-state="loading"] { color: var(--isp-bronze); border-color: var(--isp-bronze-dim); }
-.isp-status[data-state="error"] { color: var(--isp-warn); border-color: rgba(201, 99, 90, 0.5); }
+.isp-status[data-state="error"] { color: var(--isp-warn); border-color: var(--wb-ironspear-warning-line); }
 .isp-metrics { display: flex; gap: 14px; font-size: 12px; color: var(--isp-ink); }
 .isp-metric { font-variant-numeric: tabular-nums; }
 .isp-metric.kpoints { color: var(--isp-bronze); }
@@ -163,9 +163,9 @@
     text-align: left;
     cursor: pointer;
 }
-.isp-item:hover { background: rgba(176, 141, 87, 0.08); }
+.isp-item:hover { background: var(--wb-ironspear-hover-background); }
 .isp-item.active {
-    background: rgba(176, 141, 87, 0.14);
+    background: var(--wb-ironspear-selected-background);
     border-left-color: var(--isp-bronze);
 }
 .isp-item.is-blocked { opacity: 0.55; }
@@ -209,7 +209,7 @@
     border: 1px solid var(--isp-bronze-dim);
     border-radius: 6px;
     background:
-        linear-gradient(180deg, rgba(176, 141, 87, 0.05), transparent 120px),
+        linear-gradient(180deg, var(--wb-ironspear-paper-glow), transparent 120px),
         var(--isp-bg-2);
     font-family: "STKaiti", "KaiTi", "FangSong", "SimSun", "Songti SC", serif;
 }
@@ -268,7 +268,7 @@
     padding: 10px 8px 6px;
     border: 1px solid var(--isp-line);
     border-radius: 4px;
-    background: rgba(0, 0, 0, 0.22);
+    background: var(--wb-ironspear-detail-background);
 }
 .isp-doc-figcap {
     margin-top: 6px;
@@ -300,7 +300,7 @@
     font-size: 12.5px;
     border: 1px solid var(--isp-line);
     border-radius: 3px;
-    background: rgba(0, 0, 0, 0.15);
+    background: var(--wb-ironspear-requirement-background);
 }
 .isp-req.infra { border-style: dashed; }
 .isp-req-icon { flex: none; width: 18px; height: 18px; }
@@ -341,16 +341,16 @@
     bottom: 26px;
     z-index: 6;
     padding: 4px 12px;
-    border: 2.5px solid #d8443a;
-    color: #d8443a;
+    border: 2.5px solid var(--wb-ironspear-stamp-ink);
+    color: var(--wb-ironspear-stamp-ink);
     font-size: 26px;
     letter-spacing: 6px;
     font-family: "STKaiti", "KaiTi", "FZXiaoZhuanTi", "SimSun", serif;
     transform: rotate(-9deg);
     opacity: 0.92;
     pointer-events: none;
-    animation: isp-stamp-in 0.5s cubic-bezier(0.2, 0.8, 0.35, 1.15);
-    text-shadow: 0 0 2px rgba(216, 68, 58, 0.8);
+    animation: var(--wb-ironspear-stamp-animation);
+    text-shadow: 0 0 2px var(--wb-ironspear-stamp-glow);
 }
 @keyframes isp-stamp-in {
     from { opacity: 0; transform: rotate(-16deg) scale(2.2); }
@@ -407,8 +407,8 @@
     cursor: pointer;
 }
 .isp-confirm:hover:not(:disabled) {
-    color: #fff;
-    text-shadow: 0 0 9px rgba(176, 141, 87, 0.75);
+    color: var(--wb-ironspear-image-light);
+    text-shadow: 0 0 9px var(--wb-ironspear-image-glow);
 }
 .isp-confirm:disabled { opacity: 0.4; cursor: default; }
 
@@ -416,24 +416,24 @@
 .isp-book-list,
 .isp-paper {
     scrollbar-width: thin;
-    scrollbar-color: rgba(176, 141, 87, 0.45) rgba(0, 0, 0, 0.25);
+    scrollbar-color: var(--wb-ironspear-scrollbar) var(--wb-ironspear-scroll-track);
 }
 .isp-book-list::-webkit-scrollbar,
 .isp-paper::-webkit-scrollbar { width: 7px; height: 7px; }
 .isp-book-list::-webkit-scrollbar-track,
-.isp-paper::-webkit-scrollbar-track { background: rgba(0, 0, 0, 0.25); }
+.isp-paper::-webkit-scrollbar-track { background: var(--wb-ironspear-scroll-track); }
 .isp-book-list::-webkit-scrollbar-thumb,
 .isp-paper::-webkit-scrollbar-thumb {
-    background: rgba(176, 141, 87, 0.32);
-    border: 1px solid rgba(176, 141, 87, 0.5);
+    background: var(--wb-ironspear-scroll-thumb);
+    border: 1px solid var(--wb-ironspear-scroll-frame);
     border-radius: 2px;
 }
 .isp-book-list::-webkit-scrollbar-thumb:hover,
-.isp-paper::-webkit-scrollbar-thumb:hover { background: rgba(176, 141, 87, 0.55); }
+.isp-paper::-webkit-scrollbar-thumb:hover { background: var(--wb-ironspear-scroll-hover); }
 .isp-book-list::-webkit-scrollbar-button,
 .isp-paper::-webkit-scrollbar-button { display: none; width: 0; height: 0; }
 .isp-book-list::-webkit-scrollbar-corner,
-.isp-paper::-webkit-scrollbar-corner { background: rgba(0, 0, 0, 0.25); }
+.isp-paper::-webkit-scrollbar-corner { background: var(--wb-ironspear-scroll-track); }
 
 /* 忙碌遮罩 */
 .isp-veil {
@@ -442,7 +442,7 @@
     display: none;
     align-items: center;
     justify-content: center;
-    background: rgba(28, 33, 38, 0.55);
+    background: var(--wb-ironspear-veil);
     z-index: 5;
 }
 .isp-veil.on { display: flex; }
@@ -455,4 +455,8 @@
     font-size: 13px;
     letter-spacing: 2px;
     font-family: "STKaiti", "KaiTi", "FangSong", "SimSun", serif;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .isp-stamp { animation: none; }
 }
