@@ -20,7 +20,7 @@ var CraftingPanel = (function() {
     var _returnMaterialsButton = null, _materialRecipeReturn = null;
     var _panelInstanceId = '', _canReturnCharacterBuild = false;
     var _cookingActive = false, _chemistryActive = false, _communeActive = false,
-        _bartendingActive = false, _armoryActive = false;
+        _bartendingActive = false, _armoryActive = false, _ironspearActive = false;
     var _recipeSnapshotGeneration = 0, _recipeSnapshotCallId = '',
         _recipeSnapshotIntent = null;
     var _materialShopNavigation = null, _materialShopNavigationTimer = null,
@@ -2403,6 +2403,28 @@ var CraftingPanel = (function() {
             });
             return true;
         }
+        // 铁枪会走独立图腾商业点界面（modules/ironspear.js + css/panels/ironspear.css）。
+        if (_mode === 'recipes' && _category === '铁枪会'
+                && typeof IronspearPanel !== 'undefined' && IronspearPanel != null) {
+            _ironspearActive = true;
+            if (_scaleHandle) _scaleHandle.detach();
+            _scaleHandle = typeof PanelScale !== 'undefined'
+                ? PanelScale.attach(_shellEl, 1024, 576) : null;
+            if (!_mux.openSession({
+                    ownerPanel:'crafting',
+                    panelInstanceId:_panelInstanceId
+                })) return false;
+            Workbench.clearElement(_shellEl);
+            IronspearPanel.mount(_shellEl, {
+                request:request,
+                toast:toast,
+                cue:cue,
+                iconHtml:iconHtml,
+                formatNumber:formatNumber,
+                requestClose:requestClose
+            });
+            return true;
+        }
         // 公社防具走独立档案界面（modules/commune.js + css/panels/commune.css）。
         if (_mode === 'recipes' && _category === '公社防具'
                 && typeof CommunePanel !== 'undefined' && CommunePanel != null) {
@@ -2481,6 +2503,13 @@ var CraftingPanel = (function() {
                 ArmoryPanel.unmount();
             }
         }
+        if (_ironspearActive) {
+            _ironspearActive = false;
+            if (typeof IronspearPanel !== 'undefined' && IronspearPanel != null
+                    && typeof IronspearPanel.unmount === 'function') {
+                IronspearPanel.unmount();
+            }
+        }
         retireMaterialShopNavigation(false);
         retireProcurementNavigation();
         retireNestedRecipeNavigation();
@@ -2546,6 +2575,10 @@ var CraftingPanel = (function() {
         if (_armoryActive && typeof ArmoryPanel !== 'undefined' && ArmoryPanel != null
                 && typeof ArmoryPanel.isBusy === 'function' && ArmoryPanel.isBusy()) {
             toast('产线正在处理投产，请稍候。'); return;
+        }
+        if (_ironspearActive && typeof IronspearPanel !== 'undefined' && IronspearPanel != null
+                && typeof IronspearPanel.isBusy === 'function' && IronspearPanel.isBusy()) {
+            toast('工位正在处理订单，请稍候。'); return;
         }
         if (reason === 'escape' && _mode === 'materials' && _materials
                 && typeof _materials.consumeEscape === 'function'
@@ -2756,6 +2789,9 @@ var CraftingPanel = (function() {
         armoryActive:_armoryActive,
         armory:_armoryActive && typeof ArmoryPanel !== 'undefined' && ArmoryPanel
             && typeof ArmoryPanel.debugState === 'function' ? ArmoryPanel.debugState() : null,
+        ironspearActive:_ironspearActive,
+        ironspear:_ironspearActive && typeof IronspearPanel !== 'undefined' && IronspearPanel
+            && typeof IronspearPanel.debugState === 'function' ? IronspearPanel.debugState() : null,
         filterPath:_filterPath.slice(), craftableOnly:_craftableOnly,
         craftableCount:_snapshot && _snapshot.recipes ? _snapshot.recipes.filter(function(recipe) { return recipe.canCraftOne === true; }).length : 0,
         busy:_busy, previewBusy:_previewBusy, planBusy:_planBusy,

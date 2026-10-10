@@ -164,6 +164,7 @@
          'modules/commune.js',
          'modules/bartending.js',
          'modules/armory.js',
+         'modules/ironspear.js',
          'modules/crafting.js'],
         noop);
 
