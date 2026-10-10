@@ -1,0 +1,21 @@
+{
+  "scope": "Source packaging, read-only .blend inspection, isolated no-render rebuild, and merge/dependency validation; no browser or render rerun.",
+  "pairedRuntimeFilename": "bookshelf-interactive-v4-light.zip",
+  "pairedRuntimeSHA256": "4b393fbf9a4b075c952a400bc4d309ce233f25d34aff77681487e94bac72d2a7",
+  "sourceRuntimePathConflicts": [],
+  "blendDependenciesPassed": true,
+  "pngFilesVerified": 26,
+  "pythonSyntaxPassed": true,
+  "mergedLayoutSnapshotMatches": true,
+  "layoutSourceSHA256": "803600bc8ab87174e3a515f2b3c3e50a3803b99afac12ff56a1bc058dea5a0c1",
+  "isolatedRebuild": {
+    "blenderVersion": "4.3.2",
+    "rendered": false,
+    "resultExitCode": 0,
+    "exportedGLBSHA256": "45f0520e7788947664dd618423614e1ebafd96b66001036773a4185a90f45e10",
+    "identicalToRuntimeGLB": true
+  },
+  "originalInputFilesChecked": 171,
+  "originalInputsUnchanged": true,
+  "allPassed": true
+}

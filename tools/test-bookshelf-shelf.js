@@ -163,7 +163,27 @@ async function main() {
         const file = fs.readFileSync(path.join(assets, 'textures', name + '.png'));
         assert.ok(png.equals(file), 'embedded texture equals closure file: ' + name);
     }
-    console.log('Bookshelf shelf contract: config/catalog/manifest/GLB aligned; '
+    const v4 = JSON.parse(fs.readFileSync(path.join(assets, 'v4-manifest.json'), 'utf8'));
+    const activeModel = fs.readFileSync(path.join(assets, v4.model));
+    assert.equal(v4.schema, 'bookshelf-interactive.v4');
+    assert.equal(v4.model, 'v3.glb');
+    assert.equal(sha(activeModel), v4.sha256, 'active model fingerprint');
+    assert.deepEqual(audit(activeModel), v4.audit, 'active model audit');
+    assert(v4.audit.bytes < 2 * 1024 * 1024 && v4.audit.triangles < 12000 && v4.audit.images === 26);
+    const activeDoc = glb(activeModel).doc, activeNames = new Set(activeDoc.nodes.map(node => node.name));
+    for (const book of adopted) assert(activeNames.has(book.format === 'playable' ? 'COLLECTION_CF1_6' : 'BOOK_' + book.id));
+    for (let i = 1; i <= 6; i++) assert(activeNames.has('DISC_CF' + i), 'active chapter mesh: ' + i);
+    assert(activeNames.has('ARCHIVE_ALL_DRAWER'), 'authoritative archive directory');
+    const sourcePaths = new Set();
+    for (const source of v4.sources) {
+        assert(!sourcePaths.has(source.path), 'unique v4 source path'); sourcePaths.add(source.path);
+        const data = fs.readFileSync(path.join(root, source.path));
+        assert.equal(data.length, source.bytes, 'v4 source bytes: ' + source.path);
+        assert.equal(sha(data), source.sha256, 'v4 source hash: ' + source.path);
+    }
+    console.log('Bookshelf v4 contract: active model and ' + sourcePaths.size + ' sources aligned; '
+        + v4.audit.triangles + ' triangles, ' + v4.audit.images + ' embedded images, ' + v4.audit.bytes + ' bytes.');
+    console.log('Bookshelf catalog presentation contract: config/catalog/manifest/GLB aligned; '
         + manifest.audit.triangles + ' triangles, ' + manifest.audit.images + ' embedded images, '
         + manifest.audit.bytes + ' bytes; no renderer or Host claim.');
 }

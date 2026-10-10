@@ -3,7 +3,8 @@
 // Production panel and mux, simulated Host/AS2 receipts; never reads or writes saves.
 const fs = require('fs'), path = require('path'), http = require('http'), assert = require('assert');
 const ROOT = path.resolve(__dirname, '..');
-const {chromium} = require(path.join(ROOT, 'launcher/perf/node_modules/playwright'));
+const serveOnly = process.argv.includes('--serve-only');
+const chromium = serveOnly ? null : require(process.env.CF7_PLAYWRIGHT_MODULE || path.join(ROOT, 'launcher/perf/node_modules/playwright')).chromium;
 const out = path.resolve((process.argv.find(a => a.startsWith('--shot-dir=')) || '--shot-dir=tmp/bookshelf-flow-ui').slice(11));
 fs.mkdirSync(out, {recursive:true});
 function fixture() {
@@ -98,7 +99,7 @@ const server = http.createServer((req,res)=>{
     fs.readFile(file,(err,data)=>{
         if(err){res.writeHead(404);res.end();return;}
         if(url.pathname.endsWith('/bookshelf/dev/harness.html')) data=Buffer.from(data.toString('utf8').replace(/<script>[\s\S]*?<\/script>/,'<script>('+fixture.toString()+')();</script>'));
-        const type={'.html':'text/html','.js':'text/javascript','.css':'text/css','.svg':'image/svg+xml'}[path.extname(file)];
+        const type={'.html':'text/html','.js':'text/javascript','.mjs':'text/javascript','.json':'application/json','.css':'text/css','.svg':'image/svg+xml'}[path.extname(file)];
         res.setHeader('Content-Type',(type||'application/octet-stream')+'; charset=utf-8');res.end(data);
     });
 });
@@ -153,7 +154,12 @@ async function assertPrimaryReadability(page, enabled) {
     assert.strictEqual(hovered.text,normal.text,'hover preserves readable primary text');
 }
 async function main(){
-    await new Promise(resolve=>server.listen(0,'127.0.0.1',resolve));
+    const port = serveOnly ? Number((process.argv.find(a=>a.startsWith('--port=')) || '--port=8765').slice(7)) : 0;
+    await new Promise(resolve=>server.listen(port,'127.0.0.1',resolve));
+    if (serveOnly) {
+        console.log('Bookshelf fixture server: http://127.0.0.1:' + server.address().port + '/launcher/web/modules/bookshelf/dev/harness.html?scenario=overview&trace=1');
+        return;
+    }
     const edge=[process.env['ProgramFiles(x86)'],process.env.ProgramFiles].filter(Boolean)
         .map(p=>path.join(p,'Microsoft/Edge/Application/msedge.exe')).find(fs.existsSync);
     const browser=await chromium.launch({headless:true,executablePath:edge,ignoreDefaultArgs:['--hide-scrollbars']}),report=[];
@@ -325,12 +331,12 @@ async function main(){
                     &&document.querySelectorAll('[data-book]').length===5);
                 await page.waitForTimeout(100);
                 const stats0=await page.evaluate(()=>__bookshelfShelfQa.stats());
-                assert(stats0.triangles>100&&stats0.triangles<4000&&stats0.calls>10&&stats0.calls<80,'graybox budget: '+JSON.stringify(stats0));
+                assert(stats0.triangles>100&&stats0.triangles<12000&&stats0.calls>10&&stats0.calls<220,'v4 shelf budget: '+JSON.stringify(stats0));
                 assert.deepStrictEqual(stats0.entries.slice(0,5),['dust','babylon','guardian','sail-twins','crazy-flasher']);
                 const archiveEntries=stats0.entries.slice(5);
                 assert.deepStrictEqual(archiveEntries,['slot:fixture_a','slot:fixture_b','slot:fixture_c','slot:__more__'],
                     'slots capped to 3 folders plus a more-box: '+JSON.stringify(stats0.entries));
-                assert(stats0.loadedHashes['scene.glb'],'scene sha256 fingerprint recorded');
+                assert(stats0.loadedHashes['v3.glb'],'active model sha256 fingerprint recorded');
                 const fit=await page.evaluate(()=>{
                     const canvas=document.querySelector('#bookshelf-overview canvas'),hostEl=document.querySelector('#bookshelf-overview');
                     const rect=canvas.getBoundingClientRect(),box=hostEl.getBoundingClientRect();
@@ -354,9 +360,11 @@ async function main(){
                 },id);
                 const dust=await point('dust');
                 await page.mouse.move(dust.x,dust.y);
-                await page.waitForFunction(()=>__bookshelfShelfQa.stats().highlighted==='dust');
-                assert(await page.evaluate(()=>__bookshelfShelfQa.stats().frames)>frames0,'hover renders on demand');
+                await page.waitForFunction(()=>document.querySelector('#bookshelf-overview canvas').style.cursor==='pointer');
                 await page.mouse.click(dust.x,dust.y);
+                await page.locator('.v4-selection').filter({hasText:'尘都诡谈'}).waitFor();
+                assert.strictEqual(await page.evaluate(()=>__bookQa.writes),0,'inspection sends no commit');
+                await page.locator('.v4-scene-ui [data-cmd="open"]').click();
                 await page.waitForFunction(()=>document.querySelector('.bookshelf-panel').classList.contains('is-reading'));
                 assert.strictEqual(await page.evaluate(()=>__bookQa.writes),0,'3D spine selection never writes');
                 await page.locator('#bookshelf-reader-tools [data-reader="library"]').click();
@@ -364,13 +372,17 @@ async function main(){
                 await page.waitForFunction(()=>!document.querySelector('#bookshelf-overview').hidden);
                 const collection=await point('crazy-flasher');
                 await page.mouse.click(collection.x,collection.y);
+                await page.locator('.v4-disc-list [data-disc="cf6"]').click();
+                await page.locator('.v4-scene-ui [data-cmd="open"]').click();
                 await page.waitForFunction(()=>!document.querySelector('#bookshelf-detail').hidden);
                 assert.strictEqual(await page.locator('[data-chapter]').count(),6,'disc box opens the six-chapter detail');
+                assert.strictEqual(await page.locator('[data-chapter="6"]').getAttribute('aria-pressed'),'true','CF6 inspection opens chapter six');
                 assert.strictEqual(await page.evaluate(()=>__bookQa.sent.filter(m=>m.cmd==='commit').length),0,'3D picks send no commit');
                 await page.locator('#bookshelf-nav-overview').click();
                 await page.waitForFunction(()=>!document.querySelector('#bookshelf-overview').hidden);
                 const folder=await point('slot:fixture_a');
                 await page.mouse.click(folder.x,folder.y);
+                await page.locator('.v4-scene-ui [data-cmd="open"]').click();
                 await page.waitForFunction(()=>!document.querySelector('#bookshelf-detail').hidden);
                 assert((await page.locator('#bookshelf-detail h2').textContent()).includes('测试角色'),'archive folder opens the slot detail');
                 assert.strictEqual(await page.evaluate(()=>__bookQa.writes),0,'archive pick never writes');
@@ -378,9 +390,12 @@ async function main(){
                 await page.waitForFunction(()=>!document.querySelector('#bookshelf-overview').hidden);
                 const more=await point('slot:__more__');
                 await page.mouse.click(more.x,more.y);
-                await page.waitForFunction(()=>document.activeElement&&!!document.activeElement.dataset.slot);
+                await page.waitForFunction(()=>__bookshelfShelfQa.stats().drawOpen);
                 assert.strictEqual(await page.evaluate(()=>__bookQa.writes),0,'more-archives box never writes');
-                assert((await page.evaluate(()=>document.querySelector('#bookshelf-status').textContent)).includes('左侧'),'more box points at the DOM slot list');
+                assert.strictEqual(await page.locator('.v4-archive-detail [data-archive]').count(),5,'drawer contains all authoritative archives');
+                await page.locator('.v4-archive-detail [data-archive="slot:fixture_e"]').click();
+                assert((await page.locator('#bookshelf-detail h2').textContent()).includes('测试角色E'),'fifth archive opens its exact detail');
+                await page.locator('#bookshelf-nav-overview').click();
                 await page.evaluate(()=>document.querySelector('#bookshelf-overview canvas').getContext('webgl2').getExtension('WEBGL_lose_context').loseContext());
                 await page.waitForFunction(()=>__bookshelfShelfQa.state()==='failed');
                 await page.locator('#bookshelf-shelf-retry').waitFor();
@@ -442,4 +457,4 @@ async function main(){
         console.log('Bookshelf flow browser harness: '+report.length+' scenarios passed at 3 viewports.');
     } finally {await browser.close();}
 }
-main().catch(e=>{console.error(e);process.exitCode=1;}).finally(()=>server.close());
+main().catch(e=>{console.error(e);process.exitCode=1;}).finally(()=>{if(!serveOnly)server.close();});

@@ -67,7 +67,8 @@ CF1 保留原有从头进入的行为。CF3–6 的 SharedObject 由原作自身
 - `node tools/build-book-comic-content.js --check`、`node tools/test-book-comic-player.js`：漫画资产摘要、内容派生和播放器生命周期。
 - `node tools/test-book-comic-browser.js`：隔离浏览器中的生产 CSS、固定比例、字幕容纳和整页视图；不代替游戏窗口的点击、前后台切换验收。
 - `scripts/run-bookshelf-tests.ps1`：覆盖换档中首图准备、普通入场拒绝、保存失败/重试、加载幕到漫画的交接、暂停计时和迟到回调；存储夹具不代替真实落盘。
-- `node tools/run-bookshelf-flow-harness.js`：生产面板与模拟 Host/AS2 回执，置物架总览（3D 拾取零写、静止零出帧、context loss 回退与重试、重开资源稳定）、章节选择、待制作状态、许可失败、对账和三视口布局；不证明 Steam 许可或真实玩家旅程。
+- `node tools/run-bookshelf-flow-harness.js`：生产面板与模拟 Host/AS2 回执，v4 置物架总览（抽出/打开零写、合集选代、全部档案详情、静止零出帧、context loss 回退与重试、重开资源稳定）、章节选择、待制作状态、许可失败、对账和三视口布局；不证明 Steam 许可或真实玩家旅程。
+- v4 的 Blender 配对源、布局/相机与生命周期检查见 [维护源说明](../tools/bookshelf-v4/README.md)。场景关闭取消载入和动画，过期快照不保留旧角色拾取身份；只在详情页沿用原角色切换命令。
 - `DevelopmentCollectionAccessTests` / `BookshelfOriginalContentTests` / `BookshelfTaskTests`：复用 Git 豁免且不调用 Steam、普通安装仍校验、跨库发现、开发存档稳定及隔离、缺失内容提示，以及许可缺失不读文件、巨大整数、篡改字段、切账号、内容租约、边界范围与准入撤销。
 - `node tools/probe-bookshelf-original-runtime.js --collection-root=<本机合集目录> --out=<临时输出>`：明确 opt-in 的只读本机资产探针，以隔离 Chromium profile 执行生产 wrapper / CSP。11 个变体加载，外部请求封锁，以及 CF4/CF5 原版 SharedObject flush、旋转 session 后稳定键和实际读取。不会建立 Steam/Host 准入结论，不启动原 EXE，不导出 SWF。
 - `CF7_TEST_BOOKSHELF_WEBVIEW=1`、`CF7_TEST_BOOKSHELF_ROOT=<仓库>` 后运行 `BookshelfOriginalWebViewTests`；`CF7_TEST_BOOKSHELF_CHAPTER=5` 可验证本机合集中的第 5 章，默认第 1 章。使用隔离 WebView2 profile 和不激活的离屏窗口，准入由夹具提供，内容选择、读取与资源 handler 均走生产实现；默认全量跳过，不与依赖窗口顺序的测试并跑。

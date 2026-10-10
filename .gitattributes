@@ -110,6 +110,24 @@ launcher/app.manifest text eol=lf
 /launcher/web/assets/bookshelf/**/*.jpeg -text
 /launcher/web/assets/bookshelf/**/*.webm -text
 /launcher/web/assets/bookshelf/**/*.webp -text
+
+# Bookshelf v4 manifests bind the editable source and active presentation bytes.
+/tools/bookshelf-v4/** -text
+# Retain the delivered generator's exact bytes, including its final blank line.
+/tools/bookshelf-v4/model-source/build.py whitespace=-blank-at-eof
+/launcher/web/modules/bookshelf/shelf/** text eol=lf
+/launcher/web/modules/bookshelf-panel.js text eol=lf
+/launcher/web/modules/bookshelf-shelf-scene.js text eol=lf
+/launcher/web/css/bookshelf.css text eol=lf
+/launcher/web/assets/bookshelf/shelf/** -text
+/tools/bookshelf-graybox/*.js text eol=lf
+/docs/design-data/bookshelf-shelf-draft.json text eol=lf
+/data/books/catalog.json text eol=lf
+/tools/bookshelf-shelf-extract/*.js text eol=lf
+/tools/bookshelf-shelf-extract/crops.json text eol=lf
+/tools/bookshelf-shelf-extract/out/extract-report.json text eol=lf
+/tools/bookshelf-shelf-extract/out-ffdec/ffdec-report.json text eol=lf
+/tools/import-bookshelf-shelf.py text eol=lf
 /data/books/sources/** -text
 
 # Sheriff source snapshots carry byte-exact SHA-256 provenance.

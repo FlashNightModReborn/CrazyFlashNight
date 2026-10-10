@@ -1,0 +1,3861 @@
+{
+  "wide": {
+    "key": "wide",
+    "width": 23.8,
+    "height": 17.15,
+    "depth": 4.935,
+    "cabinetDepth": 4.65,
+    "boardThickness": 0.3,
+    "clearHeight": 6.8,
+    "maxItemHeight": 6.55,
+    "bookTierCount": 2,
+    "archiveRowCount": 1,
+    "archivePitch": 2.65,
+    "placements": {
+      "ARCHIVE_BANK": [
+        0,
+        0,
+        0
+      ],
+      "BOOK_sail-twins": [
+        -8.5,
+        2.95,
+        0.1
+      ],
+      "BOOK_dust": [
+        -8.5,
+        10.05,
+        0.1
+      ],
+      "BOOK_babylon": [
+        -6.2,
+        10.05,
+        0.1
+      ],
+      "BOOK_guardian": [
+        -3.9,
+        10.05,
+        0.1
+      ],
+      "COLLECTION_CF1_6": [
+        3,
+        2.95,
+        0.05
+      ],
+      "DISC_CF1": [
+        -2.21,
+        0.23,
+        0
+      ],
+      "DISC_CF2": [
+        -1.33,
+        0.23,
+        0
+      ],
+      "DISC_CF3": [
+        -0.45,
+        0.23,
+        0
+      ],
+      "DISC_CF4": [
+        0.43,
+        0.23,
+        0
+      ],
+      "DISC_CF5": [
+        1.31,
+        0.23,
+        0
+      ],
+      "DISC_CF6": [
+        2.19,
+        0.23,
+        0
+      ],
+      "ARCHIVE_SHORTCUT_current": [
+        -8.55,
+        0.38,
+        0.05
+      ],
+      "ARCHIVE_SHORTCUT_recent02": [
+        -3.15,
+        0.38,
+        0.05
+      ],
+      "ARCHIVE_SHORTCUT_recent03": [
+        2.25,
+        0.38,
+        0.05
+      ],
+      "ARCHIVE_ALL_DRAWER": [
+        8.2,
+        0.39,
+        0
+      ]
+    },
+    "tiers": [
+      {
+        "index": 0,
+        "floorY": 2.95,
+        "ceilingY": 9.75,
+        "clearHeight": 6.8
+      },
+      {
+        "index": 1,
+        "floorY": 10.05,
+        "ceilingY": 16.85,
+        "clearHeight": 6.8
+      }
+    ],
+    "boards": [
+      {
+        "name": "MODULAR_SHELF_0",
+        "kind": "shelf",
+        "position": [
+          0,
+          0.15,
+          0
+        ],
+        "size": [
+          23.5,
+          0.3,
+          4.65
+        ],
+        "aabb": {
+          "min": [
+            -11.75,
+            0,
+            -2.325
+          ],
+          "max": [
+            11.75,
+            0.3,
+            2.325
+          ]
+        }
+      },
+      {
+        "name": "MODULAR_SHELF_1",
+        "kind": "shelf",
+        "position": [
+          0,
+          2.8,
+          0
+        ],
+        "size": [
+          23.5,
+          0.3,
+          4.65
+        ],
+        "aabb": {
+          "min": [
+            -11.75,
+            2.65,
+            -2.325
+          ],
+          "max": [
+            11.75,
+            2.95,
+            2.325
+          ]
+        }
+      },
+      {
+        "name": "MODULAR_LIP_1",
+        "kind": "lip",
+        "position": [
+          0,
+          2.79,
+          2.36
+        ],
+        "size": [
+          23.5,
+          0.3,
+          0.12
+        ],
+        "aabb": {
+          "min": [
+            -11.75,
+            2.64,
+            2.3
+          ],
+          "max": [
+            11.75,
+            2.94,
+            2.42
+          ]
+        }
+      },
+      {
+        "name": "MODULAR_SHELF_2",
+        "kind": "shelf",
+        "position": [
+          0,
+          9.9,
+          0
+        ],
+        "size": [
+          23.5,
+          0.3,
+          4.65
+        ],
+        "aabb": {
+          "min": [
+            -11.75,
+            9.75,
+            -2.325
+          ],
+          "max": [
+            11.75,
+            10.05,
+            2.325
+          ]
+        }
+      },
+      {
+        "name": "MODULAR_LIP_2",
+        "kind": "lip",
+        "position": [
+          0,
+          9.89,
+          2.36
+        ],
+        "size": [
+          23.5,
+          0.3,
+          0.12
+        ],
+        "aabb": {
+          "min": [
+            -11.75,
+            9.74,
+            2.3
+          ],
+          "max": [
+            11.75,
+            10.04,
+            2.42
+          ]
+        }
+      },
+      {
+        "name": "MODULAR_SHELF_3",
+        "kind": "shelf",
+        "position": [
+          0,
+          17,
+          0
+        ],
+        "size": [
+          23.5,
+          0.3,
+          4.65
+        ],
+        "aabb": {
+          "min": [
+            -11.75,
+            16.85,
+            -2.325
+          ],
+          "max": [
+            11.75,
+            17.15,
+            2.325
+          ]
+        }
+      },
+      {
+        "name": "MODULAR_LIP_3",
+        "kind": "lip",
+        "position": [
+          0,
+          16.99,
+          2.36
+        ],
+        "size": [
+          23.5,
+          0.3,
+          0.12
+        ],
+        "aabb": {
+          "min": [
+            -11.75,
+            16.84,
+            2.3
+          ],
+          "max": [
+            11.75,
+            17.14,
+            2.42
+          ]
+        }
+      },
+      {
+        "name": "MODULAR_SIDE_LEFT",
+        "kind": "side",
+        "position": [
+          -11.75,
+          8.575,
+          0
+        ],
+        "size": [
+          0.3,
+          17.15,
+          4.65
+        ],
+        "aabb": {
+          "min": [
+            -11.9,
+            0,
+            -2.325
+          ],
+          "max": [
+            -11.6,
+            17.15,
+            2.325
+          ]
+        }
+      },
+      {
+        "name": "MODULAR_FOOT_LEFT",
+        "kind": "foot",
+        "position": [
+          -10.6,
+          -0.14,
+          0
+        ],
+        "size": [
+          1.2,
+          0.28,
+          3.8
+        ],
+        "aabb": {
+          "min": [
+            -11.2,
+            -0.28,
+            -1.9
+          ],
+          "max": [
+            -10,
+            0,
+            1.9
+          ]
+        }
+      },
+      {
+        "name": "MODULAR_SIDE_RIGHT",
+        "kind": "side",
+        "position": [
+          11.75,
+          8.575,
+          0
+        ],
+        "size": [
+          0.3,
+          17.15,
+          4.65
+        ],
+        "aabb": {
+          "min": [
+            11.6,
+            0,
+            -2.325
+          ],
+          "max": [
+            11.9,
+            17.15,
+            2.325
+          ]
+        }
+      },
+      {
+        "name": "MODULAR_FOOT_RIGHT",
+        "kind": "foot",
+        "position": [
+          10.6,
+          -0.14,
+          0
+        ],
+        "size": [
+          1.2,
+          0.28,
+          3.8
+        ],
+        "aabb": {
+          "min": [
+            10,
+            -0.28,
+            -1.9
+          ],
+          "max": [
+            11.2,
+            0,
+            1.9
+          ]
+        }
+      },
+      {
+        "name": "MODULAR_BACK",
+        "kind": "back",
+        "position": [
+          0,
+          8.575,
+          -2.22
+        ],
+        "size": [
+          23.2,
+          16.55,
+          0.16
+        ],
+        "aabb": {
+          "min": [
+            -11.6,
+            0.3,
+            -2.3
+          ],
+          "max": [
+            11.6,
+            16.85,
+            -2.14
+          ]
+        }
+      }
+    ],
+    "shelves": [
+      {
+        "name": "MODULAR_SHELF_0",
+        "kind": "shelf",
+        "position": [
+          0,
+          0.15,
+          0
+        ],
+        "size": [
+          23.5,
+          0.3,
+          4.65
+        ],
+        "aabb": {
+          "min": [
+            -11.75,
+            0,
+            -2.325
+          ],
+          "max": [
+            11.75,
+            0.3,
+            2.325
+          ]
+        }
+      },
+      {
+        "name": "MODULAR_SHELF_1",
+        "kind": "shelf",
+        "position": [
+          0,
+          2.8,
+          0
+        ],
+        "size": [
+          23.5,
+          0.3,
+          4.65
+        ],
+        "aabb": {
+          "min": [
+            -11.75,
+            2.65,
+            -2.325
+          ],
+          "max": [
+            11.75,
+            2.95,
+            2.325
+          ]
+        }
+      },
+      {
+        "name": "MODULAR_SHELF_2",
+        "kind": "shelf",
+        "position": [
+          0,
+          9.9,
+          0
+        ],
+        "size": [
+          23.5,
+          0.3,
+          4.65
+        ],
+        "aabb": {
+          "min": [
+            -11.75,
+            9.75,
+            -2.325
+          ],
+          "max": [
+            11.75,
+            10.05,
+            2.325
+          ]
+        }
+      },
+      {
+        "name": "MODULAR_SHELF_3",
+        "kind": "shelf",
+        "position": [
+          0,
+          17,
+          0
+        ],
+        "size": [
+          23.5,
+          0.3,
+          4.65
+        ],
+        "aabb": {
+          "min": [
+            -11.75,
+            16.85,
+            -2.325
+          ],
+          "max": [
+            11.75,
+            17.15,
+            2.325
+          ]
+        }
+      }
+    ],
+    "items": [
+      {
+        "name": "BOOK_sail-twins",
+        "id": "sail-twins",
+        "kind": "book",
+        "tier": 0,
+        "position": [
+          -8.5,
+          2.95,
+          0.1
+        ],
+        "size": [
+          1.24,
+          6.32,
+          3.8
+        ],
+        "yaw": 0.17453292519943295,
+        "aabb": {
+          "min": [
+            -9.444854,
+            2.95,
+            -1.903417
+          ],
+          "max": [
+            -7.558098,
+            9.27,
+            2.086675
+          ]
+        }
+      },
+      {
+        "name": "BOOK_dust",
+        "id": "dust",
+        "kind": "book",
+        "tier": 1,
+        "position": [
+          -8.5,
+          10.05,
+          0.1
+        ],
+        "size": [
+          1.23,
+          6.42,
+          3.75
+        ],
+        "yaw": 0.17453292519943295,
+        "aabb": {
+          "min": [
+            -9.435588,
+            10.05,
+            -1.877928
+          ],
+          "max": [
+            -7.567364,
+            16.47,
+            2.061187
+          ]
+        }
+      },
+      {
+        "name": "BOOK_babylon",
+        "id": "babylon",
+        "kind": "book",
+        "tier": 1,
+        "position": [
+          -6.2,
+          10.05,
+          0.1
+        ],
+        "size": [
+          1.3,
+          6.5,
+          3.9
+        ],
+        "yaw": 0.17453292519943295,
+        "aabb": {
+          "min": [
+            -7.18308,
+            10.05,
+            -1.957867
+          ],
+          "max": [
+            -5.219872,
+            16.55,
+            2.141125
+          ]
+        }
+      },
+      {
+        "name": "BOOK_guardian",
+        "id": "guardian",
+        "kind": "book",
+        "tier": 1,
+        "position": [
+          -3.9,
+          10.05,
+          0.1
+        ],
+        "size": [
+          1.38,
+          6.55,
+          3.8
+        ],
+        "yaw": 0.17453292519943295,
+        "aabb": {
+          "min": [
+            -4.91379,
+            10.05,
+            -1.915572
+          ],
+          "max": [
+            -2.889162,
+            16.6,
+            2.09883
+          ]
+        }
+      },
+      {
+        "name": "COLLECTION_CF1_6",
+        "id": "crazy-flasher",
+        "kind": "collection",
+        "tier": 0,
+        "position": [
+          3,
+          2.95,
+          0.05
+        ],
+        "size": [
+          5.65,
+          6.55,
+          4.04
+        ],
+        "yaw": 0,
+        "aabb": {
+          "min": [
+            0.175,
+            2.95,
+            -1.925
+          ],
+          "max": [
+            5.825,
+            9.5,
+            2.115
+          ]
+        }
+      },
+      {
+        "name": "ARCHIVE_SHORTCUT_current",
+        "id": "archive:current",
+        "kind": "archiveShortcut",
+        "row": 0,
+        "position": [
+          -8.55,
+          0.38,
+          0.05
+        ],
+        "size": [
+          5.05,
+          2.05,
+          4.4
+        ],
+        "aabb": {
+          "min": [
+            -11.075,
+            0.38,
+            -2
+          ],
+          "max": [
+            -6.025,
+            2.43,
+            2.4
+          ]
+        }
+      },
+      {
+        "name": "ARCHIVE_SHORTCUT_recent02",
+        "id": "archive:recent02",
+        "kind": "archiveShortcut",
+        "row": 0,
+        "position": [
+          -3.15,
+          0.38,
+          0.05
+        ],
+        "size": [
+          5.05,
+          2.05,
+          4.4
+        ],
+        "aabb": {
+          "min": [
+            -5.675,
+            0.38,
+            -2
+          ],
+          "max": [
+            -0.625,
+            2.43,
+            2.4
+          ]
+        }
+      },
+      {
+        "name": "ARCHIVE_SHORTCUT_recent03",
+        "id": "archive:recent03",
+        "kind": "archiveShortcut",
+        "row": 0,
+        "position": [
+          2.25,
+          0.38,
+          0.05
+        ],
+        "size": [
+          5.05,
+          2.05,
+          4.4
+        ],
+        "aabb": {
+          "min": [
+            -0.275,
+            0.38,
+            -2
+          ],
+          "max": [
+            4.775,
+            2.43,
+            2.4
+          ]
+        }
+      },
+      {
+        "name": "ARCHIVE_ALL_DRAWER",
+        "id": "archive:all",
+        "kind": "archiveDirectory",
+        "row": 0,
+        "position": [
+          8.2,
+          0.39,
+          0
+        ],
+        "size": [
+          5.1,
+          2.035,
+          4.67
+        ],
+        "aabb": {
+          "min": [
+            5.65,
+            0.39,
+            -2.06
+          ],
+          "max": [
+            10.75,
+            2.425,
+            2.61
+          ]
+        }
+      }
+    ],
+    "archiveSlots": [
+      {
+        "name": "ARCHIVE_SHORTCUT_current",
+        "id": "archive:current",
+        "kind": "archiveShortcut",
+        "row": 0,
+        "position": [
+          -8.55,
+          0.38,
+          0.05
+        ],
+        "size": [
+          5.05,
+          2.05,
+          4.4
+        ],
+        "aabb": {
+          "min": [
+            -11.075,
+            0.38,
+            -2
+          ],
+          "max": [
+            -6.025,
+            2.43,
+            2.4
+          ]
+        }
+      },
+      {
+        "name": "ARCHIVE_SHORTCUT_recent02",
+        "id": "archive:recent02",
+        "kind": "archiveShortcut",
+        "row": 0,
+        "position": [
+          -3.15,
+          0.38,
+          0.05
+        ],
+        "size": [
+          5.05,
+          2.05,
+          4.4
+        ],
+        "aabb": {
+          "min": [
+            -5.675,
+            0.38,
+            -2
+          ],
+          "max": [
+            -0.625,
+            2.43,
+            2.4
+          ]
+        }
+      },
+      {
+        "name": "ARCHIVE_SHORTCUT_recent03",
+        "id": "archive:recent03",
+        "kind": "archiveShortcut",
+        "row": 0,
+        "position": [
+          2.25,
+          0.38,
+          0.05
+        ],
+        "size": [
+          5.05,
+          2.05,
+          4.4
+        ],
+        "aabb": {
+          "min": [
+            -0.275,
+            0.38,
+            -2
+          ],
+          "max": [
+            4.775,
+            2.43,
+            2.4
+          ]
+        }
+      },
+      {
+        "name": "ARCHIVE_ALL_DRAWER",
+        "id": "archive:all",
+        "kind": "archiveDirectory",
+        "row": 0,
+        "position": [
+          8.2,
+          0.39,
+          0
+        ],
+        "size": [
+          5.1,
+          2.035,
+          4.67
+        ],
+        "aabb": {
+          "min": [
+            5.65,
+            0.39,
+            -2.06
+          ],
+          "max": [
+            10.75,
+            2.425,
+            2.61
+          ]
+        }
+      }
+    ],
+    "reserveSlots": [
+      {
+        "id": "reserve:wide:1",
+        "tier": 0,
+        "position": [
+          -5.8,
+          2.95,
+          0.1
+        ],
+        "size": [
+          2.2,
+          6.55,
+          4.26
+        ],
+        "maxBookWidth": 1.5,
+        "maxBookDepth": 4,
+        "maxBookHeight": 6.55,
+        "aabb": {
+          "min": [
+            -6.9,
+            2.95,
+            -2.03
+          ],
+          "max": [
+            -4.7,
+            9.5,
+            2.23
+          ]
+        }
+      },
+      {
+        "id": "reserve:wide:2",
+        "tier": 0,
+        "position": [
+          -3.2,
+          2.95,
+          0.1
+        ],
+        "size": [
+          2.2,
+          6.55,
+          4.26
+        ],
+        "maxBookWidth": 1.5,
+        "maxBookDepth": 4,
+        "maxBookHeight": 6.55,
+        "aabb": {
+          "min": [
+            -4.3,
+            2.95,
+            -2.03
+          ],
+          "max": [
+            -2.1,
+            9.5,
+            2.23
+          ]
+        }
+      },
+      {
+        "id": "reserve:wide:3",
+        "tier": 0,
+        "position": [
+          8.5,
+          2.95,
+          0.1
+        ],
+        "size": [
+          2.2,
+          6.55,
+          4.26
+        ],
+        "maxBookWidth": 1.5,
+        "maxBookDepth": 4,
+        "maxBookHeight": 6.55,
+        "aabb": {
+          "min": [
+            7.4,
+            2.95,
+            -2.03
+          ],
+          "max": [
+            9.6,
+            9.5,
+            2.23
+          ]
+        }
+      },
+      {
+        "id": "reserve:wide:4",
+        "tier": 1,
+        "position": [
+          -0.9,
+          10.05,
+          0.1
+        ],
+        "size": [
+          2.2,
+          6.55,
+          4.26
+        ],
+        "maxBookWidth": 1.5,
+        "maxBookDepth": 4,
+        "maxBookHeight": 6.55,
+        "aabb": {
+          "min": [
+            -2,
+            10.05,
+            -2.03
+          ],
+          "max": [
+            0.2,
+            16.6,
+            2.23
+          ]
+        }
+      },
+      {
+        "id": "reserve:wide:5",
+        "tier": 1,
+        "position": [
+          1.7,
+          10.05,
+          0.1
+        ],
+        "size": [
+          2.2,
+          6.55,
+          4.26
+        ],
+        "maxBookWidth": 1.5,
+        "maxBookDepth": 4,
+        "maxBookHeight": 6.55,
+        "aabb": {
+          "min": [
+            0.6,
+            10.05,
+            -2.03
+          ],
+          "max": [
+            2.8,
+            16.6,
+            2.23
+          ]
+        }
+      },
+      {
+        "id": "reserve:wide:6",
+        "tier": 1,
+        "position": [
+          4.3,
+          10.05,
+          0.1
+        ],
+        "size": [
+          2.2,
+          6.55,
+          4.26
+        ],
+        "maxBookWidth": 1.5,
+        "maxBookDepth": 4,
+        "maxBookHeight": 6.55,
+        "aabb": {
+          "min": [
+            3.2,
+            10.05,
+            -2.03
+          ],
+          "max": [
+            5.4,
+            16.6,
+            2.23
+          ]
+        }
+      },
+      {
+        "id": "reserve:wide:7",
+        "tier": 1,
+        "position": [
+          6.9,
+          10.05,
+          0.1
+        ],
+        "size": [
+          2.2,
+          6.55,
+          4.26
+        ],
+        "maxBookWidth": 1.5,
+        "maxBookDepth": 4,
+        "maxBookHeight": 6.55,
+        "aabb": {
+          "min": [
+            5.8,
+            10.05,
+            -2.03
+          ],
+          "max": [
+            8,
+            16.6,
+            2.23
+          ]
+        }
+      },
+      {
+        "id": "reserve:wide:8",
+        "tier": 1,
+        "position": [
+          9.5,
+          10.05,
+          0.1
+        ],
+        "size": [
+          2.2,
+          6.55,
+          4.26
+        ],
+        "maxBookWidth": 1.5,
+        "maxBookDepth": 4,
+        "maxBookHeight": 6.55,
+        "aabb": {
+          "min": [
+            8.4,
+            10.05,
+            -2.03
+          ],
+          "max": [
+            10.6,
+            16.6,
+            2.23
+          ]
+        }
+      }
+    ],
+    "bounds": {
+      "min": [
+        -11.9,
+        -0.28,
+        -2.325
+      ],
+      "max": [
+        11.9,
+        17.15,
+        2.61
+      ]
+    },
+    "interactionBounds": {
+      "min": [
+        -11.9,
+        -0.28,
+        -2.325
+      ],
+      "max": [
+        11.9,
+        17.15,
+        5.76
+      ]
+    }
+  },
+  "medium": {
+    "key": "medium",
+    "width": 16,
+    "height": 26.9,
+    "depth": 4.935,
+    "cabinetDepth": 4.65,
+    "boardThickness": 0.3,
+    "clearHeight": 6.8,
+    "maxItemHeight": 6.55,
+    "bookTierCount": 3,
+    "archiveRowCount": 2,
+    "archivePitch": 2.65,
+    "placements": {
+      "ARCHIVE_BANK": [
+        0,
+        0,
+        0
+      ],
+      "BOOK_sail-twins": [
+        -5.85,
+        12.7,
+        0.1
+      ],
+      "BOOK_guardian": [
+        -3.45,
+        12.7,
+        0.1
+      ],
+      "BOOK_dust": [
+        -5.85,
+        19.8,
+        0.1
+      ],
+      "BOOK_babylon": [
+        -3.55,
+        19.8,
+        0.1
+      ],
+      "COLLECTION_CF1_6": [
+        -3.5,
+        5.6,
+        0.05
+      ],
+      "DISC_CF1": [
+        -2.21,
+        0.23,
+        0
+      ],
+      "DISC_CF2": [
+        -1.33,
+        0.23,
+        0
+      ],
+      "DISC_CF3": [
+        -0.45,
+        0.23,
+        0
+      ],
+      "DISC_CF4": [
+        0.43,
+        0.23,
+        0
+      ],
+      "DISC_CF5": [
+        1.31,
+        0.23,
+        0
+      ],
+      "DISC_CF6": [
+        2.19,
+        0.23,
+        0
+      ],
+      "ARCHIVE_SHORTCUT_current": [
+        -2.75,
+        0.38,
+        0.05
+      ],
+      "ARCHIVE_SHORTCUT_recent02": [
+        2.75,
+        0.38,
+        0.05
+      ],
+      "ARCHIVE_SHORTCUT_recent03": [
+        -2.75,
+        3.03,
+        0.05
+      ],
+      "ARCHIVE_ALL_DRAWER": [
+        2.75,
+        3.04,
+        0
+      ]
+    },
+    "tiers": [
+      {
+        "index": 0,
+        "floorY": 5.6,
+        "ceilingY": 12.4,
+        "clearHeight": 6.8
+      },
+      {
+        "index": 1,
+        "floorY": 12.7,
+        "ceilingY": 19.5,
+        "clearHeight": 6.8
+      },
+      {
+        "index": 2,
+        "floorY": 19.8,
+        "ceilingY": 26.6,
+        "clearHeight": 6.8
+      }
+    ],
+    "boards": [
+      {
+        "name": "MODULAR_SHELF_0",
+        "kind": "shelf",
+        "position": [
+          0,
+          0.15,
+          0
+        ],
+        "size": [
+          15.7,
+          0.3,
+          4.65
+        ],
+        "aabb": {
+          "min": [
+            -7.85,
+            0,
+            -2.325
+          ],
+          "max": [
+            7.85,
+            0.3,
+            2.325
+          ]
+        }
+      },
+      {
+        "name": "MODULAR_SHELF_1",
+        "kind": "shelf",
+        "position": [
+          0,
+          2.8,
+          0
+        ],
+        "size": [
+          15.7,
+          0.3,
+          4.65
+        ],
+        "aabb": {
+          "min": [
+            -7.85,
+            2.65,
+            -2.325
+          ],
+          "max": [
+            7.85,
+            2.95,
+            2.325
+          ]
+        }
+      },
+      {
+        "name": "MODULAR_LIP_1",
+        "kind": "lip",
+        "position": [
+          0,
+          2.79,
+          2.36
+        ],
+        "size": [
+          15.7,
+          0.3,
+          0.12
+        ],
+        "aabb": {
+          "min": [
+            -7.85,
+            2.64,
+            2.3
+          ],
+          "max": [
+            7.85,
+            2.94,
+            2.42
+          ]
+        }
+      },
+      {
+        "name": "MODULAR_SHELF_2",
+        "kind": "shelf",
+        "position": [
+          0,
+          5.45,
+          0
+        ],
+        "size": [
+          15.7,
+          0.3,
+          4.65
+        ],
+        "aabb": {
+          "min": [
+            -7.85,
+            5.3,
+            -2.325
+          ],
+          "max": [
+            7.85,
+            5.6,
+            2.325
+          ]
+        }
+      },
+      {
+        "name": "MODULAR_LIP_2",
+        "kind": "lip",
+        "position": [
+          0,
+          5.44,
+          2.36
+        ],
+        "size": [
+          15.7,
+          0.3,
+          0.12
+        ],
+        "aabb": {
+          "min": [
+            -7.85,
+            5.29,
+            2.3
+          ],
+          "max": [
+            7.85,
+            5.59,
+            2.42
+          ]
+        }
+      },
+      {
+        "name": "MODULAR_SHELF_3",
+        "kind": "shelf",
+        "position": [
+          0,
+          12.55,
+          0
+        ],
+        "size": [
+          15.7,
+          0.3,
+          4.65
+        ],
+        "aabb": {
+          "min": [
+            -7.85,
+            12.4,
+            -2.325
+          ],
+          "max": [
+            7.85,
+            12.7,
+            2.325
+          ]
+        }
+      },
+      {
+        "name": "MODULAR_LIP_3",
+        "kind": "lip",
+        "position": [
+          0,
+          12.54,
+          2.36
+        ],
+        "size": [
+          15.7,
+          0.3,
+          0.12
+        ],
+        "aabb": {
+          "min": [
+            -7.85,
+            12.39,
+            2.3
+          ],
+          "max": [
+            7.85,
+            12.69,
+            2.42
+          ]
+        }
+      },
+      {
+        "name": "MODULAR_SHELF_4",
+        "kind": "shelf",
+        "position": [
+          0,
+          19.65,
+          0
+        ],
+        "size": [
+          15.7,
+          0.3,
+          4.65
+        ],
+        "aabb": {
+          "min": [
+            -7.85,
+            19.5,
+            -2.325
+          ],
+          "max": [
+            7.85,
+            19.8,
+            2.325
+          ]
+        }
+      },
+      {
+        "name": "MODULAR_LIP_4",
+        "kind": "lip",
+        "position": [
+          0,
+          19.64,
+          2.36
+        ],
+        "size": [
+          15.7,
+          0.3,
+          0.12
+        ],
+        "aabb": {
+          "min": [
+            -7.85,
+            19.49,
+            2.3
+          ],
+          "max": [
+            7.85,
+            19.79,
+            2.42
+          ]
+        }
+      },
+      {
+        "name": "MODULAR_SHELF_5",
+        "kind": "shelf",
+        "position": [
+          0,
+          26.75,
+          0
+        ],
+        "size": [
+          15.7,
+          0.3,
+          4.65
+        ],
+        "aabb": {
+          "min": [
+            -7.85,
+            26.6,
+            -2.325
+          ],
+          "max": [
+            7.85,
+            26.9,
+            2.325
+          ]
+        }
+      },
+      {
+        "name": "MODULAR_LIP_5",
+        "kind": "lip",
+        "position": [
+          0,
+          26.74,
+          2.36
+        ],
+        "size": [
+          15.7,
+          0.3,
+          0.12
+        ],
+        "aabb": {
+          "min": [
+            -7.85,
+            26.59,
+            2.3
+          ],
+          "max": [
+            7.85,
+            26.89,
+            2.42
+          ]
+        }
+      },
+      {
+        "name": "MODULAR_SIDE_LEFT",
+        "kind": "side",
+        "position": [
+          -7.85,
+          13.45,
+          0
+        ],
+        "size": [
+          0.3,
+          26.9,
+          4.65
+        ],
+        "aabb": {
+          "min": [
+            -8,
+            0,
+            -2.325
+          ],
+          "max": [
+            -7.7,
+            26.9,
+            2.325
+          ]
+        }
+      },
+      {
+        "name": "MODULAR_FOOT_LEFT",
+        "kind": "foot",
+        "position": [
+          -6.7,
+          -0.14,
+          0
+        ],
+        "size": [
+          1.2,
+          0.28,
+          3.8
+        ],
+        "aabb": {
+          "min": [
+            -7.3,
+            -0.28,
+            -1.9
+          ],
+          "max": [
+            -6.1,
+            0,
+            1.9
+          ]
+        }
+      },
+      {
+        "name": "MODULAR_SIDE_RIGHT",
+        "kind": "side",
+        "position": [
+          7.85,
+          13.45,
+          0
+        ],
+        "size": [
+          0.3,
+          26.9,
+          4.65
+        ],
+        "aabb": {
+          "min": [
+            7.7,
+            0,
+            -2.325
+          ],
+          "max": [
+            8,
+            26.9,
+            2.325
+          ]
+        }
+      },
+      {
+        "name": "MODULAR_FOOT_RIGHT",
+        "kind": "foot",
+        "position": [
+          6.7,
+          -0.14,
+          0
+        ],
+        "size": [
+          1.2,
+          0.28,
+          3.8
+        ],
+        "aabb": {
+          "min": [
+            6.1,
+            -0.28,
+            -1.9
+          ],
+          "max": [
+            7.3,
+            0,
+            1.9
+          ]
+        }
+      },
+      {
+        "name": "MODULAR_BACK",
+        "kind": "back",
+        "position": [
+          0,
+          13.45,
+          -2.22
+        ],
+        "size": [
+          15.4,
+          26.3,
+          0.16
+        ],
+        "aabb": {
+          "min": [
+            -7.7,
+            0.3,
+            -2.3
+          ],
+          "max": [
+            7.7,
+            26.6,
+            -2.14
+          ]
+        }
+      }
+    ],
+    "shelves": [
+      {
+        "name": "MODULAR_SHELF_0",
+        "kind": "shelf",
+        "position": [
+          0,
+          0.15,
+          0
+        ],
+        "size": [
+          15.7,
+          0.3,
+          4.65
+        ],
+        "aabb": {
+          "min": [
+            -7.85,
+            0,
+            -2.325
+          ],
+          "max": [
+            7.85,
+            0.3,
+            2.325
+          ]
+        }
+      },
+      {
+        "name": "MODULAR_SHELF_1",
+        "kind": "shelf",
+        "position": [
+          0,
+          2.8,
+          0
+        ],
+        "size": [
+          15.7,
+          0.3,
+          4.65
+        ],
+        "aabb": {
+          "min": [
+            -7.85,
+            2.65,
+            -2.325
+          ],
+          "max": [
+            7.85,
+            2.95,
+            2.325
+          ]
+        }
+      },
+      {
+        "name": "MODULAR_SHELF_2",
+        "kind": "shelf",
+        "position": [
+          0,
+          5.45,
+          0
+        ],
+        "size": [
+          15.7,
+          0.3,
+          4.65
+        ],
+        "aabb": {
+          "min": [
+            -7.85,
+            5.3,
+            -2.325
+          ],
+          "max": [
+            7.85,
+            5.6,
+            2.325
+          ]
+        }
+      },
+      {
+        "name": "MODULAR_SHELF_3",
+        "kind": "shelf",
+        "position": [
+          0,
+          12.55,
+          0
+        ],
+        "size": [
+          15.7,
+          0.3,
+          4.65
+        ],
+        "aabb": {
+          "min": [
+            -7.85,
+            12.4,
+            -2.325
+          ],
+          "max": [
+            7.85,
+            12.7,
+            2.325
+          ]
+        }
+      },
+      {
+        "name": "MODULAR_SHELF_4",
+        "kind": "shelf",
+        "position": [
+          0,
+          19.65,
+          0
+        ],
+        "size": [
+          15.7,
+          0.3,
+          4.65
+        ],
+        "aabb": {
+          "min": [
+            -7.85,
+            19.5,
+            -2.325
+          ],
+          "max": [
+            7.85,
+            19.8,
+            2.325
+          ]
+        }
+      },
+      {
+        "name": "MODULAR_SHELF_5",
+        "kind": "shelf",
+        "position": [
+          0,
+          26.75,
+          0
+        ],
+        "size": [
+          15.7,
+          0.3,
+          4.65
+        ],
+        "aabb": {
+          "min": [
+            -7.85,
+            26.6,
+            -2.325
+          ],
+          "max": [
+            7.85,
+            26.9,
+            2.325
+          ]
+        }
+      }
+    ],
+    "items": [
+      {
+        "name": "BOOK_sail-twins",
+        "id": "sail-twins",
+        "kind": "book",
+        "tier": 1,
+        "position": [
+          -5.85,
+          12.7,
+          0.1
+        ],
+        "size": [
+          1.24,
+          6.32,
+          3.8
+        ],
+        "yaw": 0.17453292519943295,
+        "aabb": {
+          "min": [
+            -6.794854,
+            12.7,
+            -1.903417
+          ],
+          "max": [
+            -4.908098,
+            19.02,
+            2.086675
+          ]
+        }
+      },
+      {
+        "name": "BOOK_guardian",
+        "id": "guardian",
+        "kind": "book",
+        "tier": 1,
+        "position": [
+          -3.45,
+          12.7,
+          0.1
+        ],
+        "size": [
+          1.38,
+          6.55,
+          3.8
+        ],
+        "yaw": 0.17453292519943295,
+        "aabb": {
+          "min": [
+            -4.46379,
+            12.7,
+            -1.915572
+          ],
+          "max": [
+            -2.439162,
+            19.25,
+            2.09883
+          ]
+        }
+      },
+      {
+        "name": "BOOK_dust",
+        "id": "dust",
+        "kind": "book",
+        "tier": 2,
+        "position": [
+          -5.85,
+          19.8,
+          0.1
+        ],
+        "size": [
+          1.23,
+          6.42,
+          3.75
+        ],
+        "yaw": 0.17453292519943295,
+        "aabb": {
+          "min": [
+            -6.785588,
+            19.8,
+            -1.877928
+          ],
+          "max": [
+            -4.917364,
+            26.22,
+            2.061187
+          ]
+        }
+      },
+      {
+        "name": "BOOK_babylon",
+        "id": "babylon",
+        "kind": "book",
+        "tier": 2,
+        "position": [
+          -3.55,
+          19.8,
+          0.1
+        ],
+        "size": [
+          1.3,
+          6.5,
+          3.9
+        ],
+        "yaw": 0.17453292519943295,
+        "aabb": {
+          "min": [
+            -4.53308,
+            19.8,
+            -1.957867
+          ],
+          "max": [
+            -2.569872,
+            26.3,
+            2.141125
+          ]
+        }
+      },
+      {
+        "name": "COLLECTION_CF1_6",
+        "id": "crazy-flasher",
+        "kind": "collection",
+        "tier": 0,
+        "position": [
+          -3.5,
+          5.6,
+          0.05
+        ],
+        "size": [
+          5.65,
+          6.55,
+          4.04
+        ],
+        "yaw": 0,
+        "aabb": {
+          "min": [
+            -6.325,
+            5.6,
+            -1.925
+          ],
+          "max": [
+            -0.675,
+            12.15,
+            2.115
+          ]
+        }
+      },
+      {
+        "name": "ARCHIVE_SHORTCUT_current",
+        "id": "archive:current",
+        "kind": "archiveShortcut",
+        "row": 0,
+        "position": [
+          -2.75,
+          0.38,
+          0.05
+        ],
+        "size": [
+          5.05,
+          2.05,
+          4.4
+        ],
+        "aabb": {
+          "min": [
+            -5.275,
+            0.38,
+            -2
+          ],
+          "max": [
+            -0.225,
+            2.43,
+            2.4
+          ]
+        }
+      },
+      {
+        "name": "ARCHIVE_SHORTCUT_recent02",
+        "id": "archive:recent02",
+        "kind": "archiveShortcut",
+        "row": 0,
+        "position": [
+          2.75,
+          0.38,
+          0.05
+        ],
+        "size": [
+          5.05,
+          2.05,
+          4.4
+        ],
+        "aabb": {
+          "min": [
+            0.225,
+            0.38,
+            -2
+          ],
+          "max": [
+            5.275,
+            2.43,
+            2.4
+          ]
+        }
+      },
+      {
+        "name": "ARCHIVE_SHORTCUT_recent03",
+        "id": "archive:recent03",
+        "kind": "archiveShortcut",
+        "row": 1,
+        "position": [
+          -2.75,
+          3.03,
+          0.05
+        ],
+        "size": [
+          5.05,
+          2.05,
+          4.4
+        ],
+        "aabb": {
+          "min": [
+            -5.275,
+            3.03,
+            -2
+          ],
+          "max": [
+            -0.225,
+            5.08,
+            2.4
+          ]
+        }
+      },
+      {
+        "name": "ARCHIVE_ALL_DRAWER",
+        "id": "archive:all",
+        "kind": "archiveDirectory",
+        "row": 1,
+        "position": [
+          2.75,
+          3.04,
+          0
+        ],
+        "size": [
+          5.1,
+          2.035,
+          4.67
+        ],
+        "aabb": {
+          "min": [
+            0.2,
+            3.04,
+            -2.06
+          ],
+          "max": [
+            5.3,
+            5.075,
+            2.61
+          ]
+        }
+      }
+    ],
+    "archiveSlots": [
+      {
+        "name": "ARCHIVE_SHORTCUT_current",
+        "id": "archive:current",
+        "kind": "archiveShortcut",
+        "row": 0,
+        "position": [
+          -2.75,
+          0.38,
+          0.05
+        ],
+        "size": [
+          5.05,
+          2.05,
+          4.4
+        ],
+        "aabb": {
+          "min": [
+            -5.275,
+            0.38,
+            -2
+          ],
+          "max": [
+            -0.225,
+            2.43,
+            2.4
+          ]
+        }
+      },
+      {
+        "name": "ARCHIVE_SHORTCUT_recent02",
+        "id": "archive:recent02",
+        "kind": "archiveShortcut",
+        "row": 0,
+        "position": [
+          2.75,
+          0.38,
+          0.05
+        ],
+        "size": [
+          5.05,
+          2.05,
+          4.4
+        ],
+        "aabb": {
+          "min": [
+            0.225,
+            0.38,
+            -2
+          ],
+          "max": [
+            5.275,
+            2.43,
+            2.4
+          ]
+        }
+      },
+      {
+        "name": "ARCHIVE_SHORTCUT_recent03",
+        "id": "archive:recent03",
+        "kind": "archiveShortcut",
+        "row": 1,
+        "position": [
+          -2.75,
+          3.03,
+          0.05
+        ],
+        "size": [
+          5.05,
+          2.05,
+          4.4
+        ],
+        "aabb": {
+          "min": [
+            -5.275,
+            3.03,
+            -2
+          ],
+          "max": [
+            -0.225,
+            5.08,
+            2.4
+          ]
+        }
+      },
+      {
+        "name": "ARCHIVE_ALL_DRAWER",
+        "id": "archive:all",
+        "kind": "archiveDirectory",
+        "row": 1,
+        "position": [
+          2.75,
+          3.04,
+          0
+        ],
+        "size": [
+          5.1,
+          2.035,
+          4.67
+        ],
+        "aabb": {
+          "min": [
+            0.2,
+            3.04,
+            -2.06
+          ],
+          "max": [
+            5.3,
+            5.075,
+            2.61
+          ]
+        }
+      }
+    ],
+    "reserveSlots": [
+      {
+        "id": "reserve:medium:1",
+        "tier": 0,
+        "position": [
+          1,
+          5.6,
+          0.1
+        ],
+        "size": [
+          2.2,
+          6.55,
+          4.26
+        ],
+        "maxBookWidth": 1.5,
+        "maxBookDepth": 4,
+        "maxBookHeight": 6.55,
+        "aabb": {
+          "min": [
+            -0.1,
+            5.6,
+            -2.03
+          ],
+          "max": [
+            2.1,
+            12.15,
+            2.23
+          ]
+        }
+      },
+      {
+        "id": "reserve:medium:2",
+        "tier": 0,
+        "position": [
+          3.6,
+          5.6,
+          0.1
+        ],
+        "size": [
+          2.2,
+          6.55,
+          4.26
+        ],
+        "maxBookWidth": 1.5,
+        "maxBookDepth": 4,
+        "maxBookHeight": 6.55,
+        "aabb": {
+          "min": [
+            2.5,
+            5.6,
+            -2.03
+          ],
+          "max": [
+            4.7,
+            12.15,
+            2.23
+          ]
+        }
+      },
+      {
+        "id": "reserve:medium:3",
+        "tier": 0,
+        "position": [
+          6.2,
+          5.6,
+          0.1
+        ],
+        "size": [
+          2.2,
+          6.55,
+          4.26
+        ],
+        "maxBookWidth": 1.5,
+        "maxBookDepth": 4,
+        "maxBookHeight": 6.55,
+        "aabb": {
+          "min": [
+            5.1,
+            5.6,
+            -2.03
+          ],
+          "max": [
+            7.3,
+            12.15,
+            2.23
+          ]
+        }
+      },
+      {
+        "id": "reserve:medium:4",
+        "tier": 1,
+        "position": [
+          -0.75,
+          12.7,
+          0.1
+        ],
+        "size": [
+          2.2,
+          6.55,
+          4.26
+        ],
+        "maxBookWidth": 1.5,
+        "maxBookDepth": 4,
+        "maxBookHeight": 6.55,
+        "aabb": {
+          "min": [
+            -1.85,
+            12.7,
+            -2.03
+          ],
+          "max": [
+            0.35,
+            19.25,
+            2.23
+          ]
+        }
+      },
+      {
+        "id": "reserve:medium:5",
+        "tier": 1,
+        "position": [
+          1.85,
+          12.7,
+          0.1
+        ],
+        "size": [
+          2.2,
+          6.55,
+          4.26
+        ],
+        "maxBookWidth": 1.5,
+        "maxBookDepth": 4,
+        "maxBookHeight": 6.55,
+        "aabb": {
+          "min": [
+            0.75,
+            12.7,
+            -2.03
+          ],
+          "max": [
+            2.95,
+            19.25,
+            2.23
+          ]
+        }
+      },
+      {
+        "id": "reserve:medium:6",
+        "tier": 1,
+        "position": [
+          4.45,
+          12.7,
+          0.1
+        ],
+        "size": [
+          2.2,
+          6.55,
+          4.26
+        ],
+        "maxBookWidth": 1.5,
+        "maxBookDepth": 4,
+        "maxBookHeight": 6.55,
+        "aabb": {
+          "min": [
+            3.35,
+            12.7,
+            -2.03
+          ],
+          "max": [
+            5.55,
+            19.25,
+            2.23
+          ]
+        }
+      },
+      {
+        "id": "reserve:medium:7",
+        "tier": 2,
+        "position": [
+          -0.75,
+          19.8,
+          0.1
+        ],
+        "size": [
+          2.2,
+          6.55,
+          4.26
+        ],
+        "maxBookWidth": 1.5,
+        "maxBookDepth": 4,
+        "maxBookHeight": 6.55,
+        "aabb": {
+          "min": [
+            -1.85,
+            19.8,
+            -2.03
+          ],
+          "max": [
+            0.35,
+            26.35,
+            2.23
+          ]
+        }
+      },
+      {
+        "id": "reserve:medium:8",
+        "tier": 2,
+        "position": [
+          1.85,
+          19.8,
+          0.1
+        ],
+        "size": [
+          2.2,
+          6.55,
+          4.26
+        ],
+        "maxBookWidth": 1.5,
+        "maxBookDepth": 4,
+        "maxBookHeight": 6.55,
+        "aabb": {
+          "min": [
+            0.75,
+            19.8,
+            -2.03
+          ],
+          "max": [
+            2.95,
+            26.35,
+            2.23
+          ]
+        }
+      },
+      {
+        "id": "reserve:medium:9",
+        "tier": 2,
+        "position": [
+          4.45,
+          19.8,
+          0.1
+        ],
+        "size": [
+          2.2,
+          6.55,
+          4.26
+        ],
+        "maxBookWidth": 1.5,
+        "maxBookDepth": 4,
+        "maxBookHeight": 6.55,
+        "aabb": {
+          "min": [
+            3.35,
+            19.8,
+            -2.03
+          ],
+          "max": [
+            5.55,
+            26.35,
+            2.23
+          ]
+        }
+      }
+    ],
+    "bounds": {
+      "min": [
+        -8,
+        -0.28,
+        -2.325
+      ],
+      "max": [
+        8,
+        26.9,
+        2.61
+      ]
+    },
+    "interactionBounds": {
+      "min": [
+        -8,
+        -0.28,
+        -2.325
+      ],
+      "max": [
+        8,
+        26.9,
+        5.76
+      ]
+    }
+  },
+  "narrow": {
+    "key": "narrow",
+    "width": 11.6,
+    "height": 34,
+    "depth": 4.935,
+    "cabinetDepth": 4.65,
+    "boardThickness": 0.3,
+    "clearHeight": 6.8,
+    "maxItemHeight": 6.55,
+    "bookTierCount": 4,
+    "archiveRowCount": 2,
+    "archivePitch": 2.65,
+    "placements": {
+      "ARCHIVE_BANK": [
+        0,
+        0,
+        0
+      ],
+      "BOOK_sail-twins": [
+        -3.2,
+        12.7,
+        0.1
+      ],
+      "BOOK_guardian": [
+        -0.8,
+        12.7,
+        0.1
+      ],
+      "BOOK_dust": [
+        -3.2,
+        19.8,
+        0.1
+      ],
+      "BOOK_babylon": [
+        -3.2,
+        26.9,
+        0.1
+      ],
+      "COLLECTION_CF1_6": [
+        -0.7,
+        5.6,
+        0.05
+      ],
+      "DISC_CF1": [
+        -2.21,
+        0.23,
+        0
+      ],
+      "DISC_CF2": [
+        -1.33,
+        0.23,
+        0
+      ],
+      "DISC_CF3": [
+        -0.45,
+        0.23,
+        0
+      ],
+      "DISC_CF4": [
+        0.43,
+        0.23,
+        0
+      ],
+      "DISC_CF5": [
+        1.31,
+        0.23,
+        0
+      ],
+      "DISC_CF6": [
+        2.19,
+        0.23,
+        0
+      ],
+      "ARCHIVE_SHORTCUT_current": [
+        -2.72,
+        0.38,
+        0.05
+      ],
+      "ARCHIVE_SHORTCUT_recent02": [
+        2.72,
+        0.38,
+        0.05
+      ],
+      "ARCHIVE_SHORTCUT_recent03": [
+        -2.72,
+        3.03,
+        0.05
+      ],
+      "ARCHIVE_ALL_DRAWER": [
+        2.72,
+        3.04,
+        0
+      ]
+    },
+    "tiers": [
+      {
+        "index": 0,
+        "floorY": 5.6,
+        "ceilingY": 12.4,
+        "clearHeight": 6.8
+      },
+      {
+        "index": 1,
+        "floorY": 12.7,
+        "ceilingY": 19.5,
+        "clearHeight": 6.8
+      },
+      {
+        "index": 2,
+        "floorY": 19.8,
+        "ceilingY": 26.6,
+        "clearHeight": 6.8
+      },
+      {
+        "index": 3,
+        "floorY": 26.9,
+        "ceilingY": 33.7,
+        "clearHeight": 6.8
+      }
+    ],
+    "boards": [
+      {
+        "name": "MODULAR_SHELF_0",
+        "kind": "shelf",
+        "position": [
+          0,
+          0.15,
+          0
+        ],
+        "size": [
+          11.3,
+          0.3,
+          4.65
+        ],
+        "aabb": {
+          "min": [
+            -5.65,
+            0,
+            -2.325
+          ],
+          "max": [
+            5.65,
+            0.3,
+            2.325
+          ]
+        }
+      },
+      {
+        "name": "MODULAR_SHELF_1",
+        "kind": "shelf",
+        "position": [
+          0,
+          2.8,
+          0
+        ],
+        "size": [
+          11.3,
+          0.3,
+          4.65
+        ],
+        "aabb": {
+          "min": [
+            -5.65,
+            2.65,
+            -2.325
+          ],
+          "max": [
+            5.65,
+            2.95,
+            2.325
+          ]
+        }
+      },
+      {
+        "name": "MODULAR_LIP_1",
+        "kind": "lip",
+        "position": [
+          0,
+          2.79,
+          2.36
+        ],
+        "size": [
+          11.3,
+          0.3,
+          0.12
+        ],
+        "aabb": {
+          "min": [
+            -5.65,
+            2.64,
+            2.3
+          ],
+          "max": [
+            5.65,
+            2.94,
+            2.42
+          ]
+        }
+      },
+      {
+        "name": "MODULAR_SHELF_2",
+        "kind": "shelf",
+        "position": [
+          0,
+          5.45,
+          0
+        ],
+        "size": [
+          11.3,
+          0.3,
+          4.65
+        ],
+        "aabb": {
+          "min": [
+            -5.65,
+            5.3,
+            -2.325
+          ],
+          "max": [
+            5.65,
+            5.6,
+            2.325
+          ]
+        }
+      },
+      {
+        "name": "MODULAR_LIP_2",
+        "kind": "lip",
+        "position": [
+          0,
+          5.44,
+          2.36
+        ],
+        "size": [
+          11.3,
+          0.3,
+          0.12
+        ],
+        "aabb": {
+          "min": [
+            -5.65,
+            5.29,
+            2.3
+          ],
+          "max": [
+            5.65,
+            5.59,
+            2.42
+          ]
+        }
+      },
+      {
+        "name": "MODULAR_SHELF_3",
+        "kind": "shelf",
+        "position": [
+          0,
+          12.55,
+          0
+        ],
+        "size": [
+          11.3,
+          0.3,
+          4.65
+        ],
+        "aabb": {
+          "min": [
+            -5.65,
+            12.4,
+            -2.325
+          ],
+          "max": [
+            5.65,
+            12.7,
+            2.325
+          ]
+        }
+      },
+      {
+        "name": "MODULAR_LIP_3",
+        "kind": "lip",
+        "position": [
+          0,
+          12.54,
+          2.36
+        ],
+        "size": [
+          11.3,
+          0.3,
+          0.12
+        ],
+        "aabb": {
+          "min": [
+            -5.65,
+            12.39,
+            2.3
+          ],
+          "max": [
+            5.65,
+            12.69,
+            2.42
+          ]
+        }
+      },
+      {
+        "name": "MODULAR_SHELF_4",
+        "kind": "shelf",
+        "position": [
+          0,
+          19.65,
+          0
+        ],
+        "size": [
+          11.3,
+          0.3,
+          4.65
+        ],
+        "aabb": {
+          "min": [
+            -5.65,
+            19.5,
+            -2.325
+          ],
+          "max": [
+            5.65,
+            19.8,
+            2.325
+          ]
+        }
+      },
+      {
+        "name": "MODULAR_LIP_4",
+        "kind": "lip",
+        "position": [
+          0,
+          19.64,
+          2.36
+        ],
+        "size": [
+          11.3,
+          0.3,
+          0.12
+        ],
+        "aabb": {
+          "min": [
+            -5.65,
+            19.49,
+            2.3
+          ],
+          "max": [
+            5.65,
+            19.79,
+            2.42
+          ]
+        }
+      },
+      {
+        "name": "MODULAR_SHELF_5",
+        "kind": "shelf",
+        "position": [
+          0,
+          26.75,
+          0
+        ],
+        "size": [
+          11.3,
+          0.3,
+          4.65
+        ],
+        "aabb": {
+          "min": [
+            -5.65,
+            26.6,
+            -2.325
+          ],
+          "max": [
+            5.65,
+            26.9,
+            2.325
+          ]
+        }
+      },
+      {
+        "name": "MODULAR_LIP_5",
+        "kind": "lip",
+        "position": [
+          0,
+          26.74,
+          2.36
+        ],
+        "size": [
+          11.3,
+          0.3,
+          0.12
+        ],
+        "aabb": {
+          "min": [
+            -5.65,
+            26.59,
+            2.3
+          ],
+          "max": [
+            5.65,
+            26.89,
+            2.42
+          ]
+        }
+      },
+      {
+        "name": "MODULAR_SHELF_6",
+        "kind": "shelf",
+        "position": [
+          0,
+          33.85,
+          0
+        ],
+        "size": [
+          11.3,
+          0.3,
+          4.65
+        ],
+        "aabb": {
+          "min": [
+            -5.65,
+            33.7,
+            -2.325
+          ],
+          "max": [
+            5.65,
+            34,
+            2.325
+          ]
+        }
+      },
+      {
+        "name": "MODULAR_LIP_6",
+        "kind": "lip",
+        "position": [
+          0,
+          33.84,
+          2.36
+        ],
+        "size": [
+          11.3,
+          0.3,
+          0.12
+        ],
+        "aabb": {
+          "min": [
+            -5.65,
+            33.69,
+            2.3
+          ],
+          "max": [
+            5.65,
+            33.99,
+            2.42
+          ]
+        }
+      },
+      {
+        "name": "MODULAR_SIDE_LEFT",
+        "kind": "side",
+        "position": [
+          -5.65,
+          17,
+          0
+        ],
+        "size": [
+          0.3,
+          34,
+          4.65
+        ],
+        "aabb": {
+          "min": [
+            -5.8,
+            0,
+            -2.325
+          ],
+          "max": [
+            -5.5,
+            34,
+            2.325
+          ]
+        }
+      },
+      {
+        "name": "MODULAR_FOOT_LEFT",
+        "kind": "foot",
+        "position": [
+          -4.5,
+          -0.14,
+          0
+        ],
+        "size": [
+          1.2,
+          0.28,
+          3.8
+        ],
+        "aabb": {
+          "min": [
+            -5.1,
+            -0.28,
+            -1.9
+          ],
+          "max": [
+            -3.9,
+            0,
+            1.9
+          ]
+        }
+      },
+      {
+        "name": "MODULAR_SIDE_RIGHT",
+        "kind": "side",
+        "position": [
+          5.65,
+          17,
+          0
+        ],
+        "size": [
+          0.3,
+          34,
+          4.65
+        ],
+        "aabb": {
+          "min": [
+            5.5,
+            0,
+            -2.325
+          ],
+          "max": [
+            5.8,
+            34,
+            2.325
+          ]
+        }
+      },
+      {
+        "name": "MODULAR_FOOT_RIGHT",
+        "kind": "foot",
+        "position": [
+          4.5,
+          -0.14,
+          0
+        ],
+        "size": [
+          1.2,
+          0.28,
+          3.8
+        ],
+        "aabb": {
+          "min": [
+            3.9,
+            -0.28,
+            -1.9
+          ],
+          "max": [
+            5.1,
+            0,
+            1.9
+          ]
+        }
+      },
+      {
+        "name": "MODULAR_BACK",
+        "kind": "back",
+        "position": [
+          0,
+          17,
+          -2.22
+        ],
+        "size": [
+          11,
+          33.4,
+          0.16
+        ],
+        "aabb": {
+          "min": [
+            -5.5,
+            0.3,
+            -2.3
+          ],
+          "max": [
+            5.5,
+            33.7,
+            -2.14
+          ]
+        }
+      }
+    ],
+    "shelves": [
+      {
+        "name": "MODULAR_SHELF_0",
+        "kind": "shelf",
+        "position": [
+          0,
+          0.15,
+          0
+        ],
+        "size": [
+          11.3,
+          0.3,
+          4.65
+        ],
+        "aabb": {
+          "min": [
+            -5.65,
+            0,
+            -2.325
+          ],
+          "max": [
+            5.65,
+            0.3,
+            2.325
+          ]
+        }
+      },
+      {
+        "name": "MODULAR_SHELF_1",
+        "kind": "shelf",
+        "position": [
+          0,
+          2.8,
+          0
+        ],
+        "size": [
+          11.3,
+          0.3,
+          4.65
+        ],
+        "aabb": {
+          "min": [
+            -5.65,
+            2.65,
+            -2.325
+          ],
+          "max": [
+            5.65,
+            2.95,
+            2.325
+          ]
+        }
+      },
+      {
+        "name": "MODULAR_SHELF_2",
+        "kind": "shelf",
+        "position": [
+          0,
+          5.45,
+          0
+        ],
+        "size": [
+          11.3,
+          0.3,
+          4.65
+        ],
+        "aabb": {
+          "min": [
+            -5.65,
+            5.3,
+            -2.325
+          ],
+          "max": [
+            5.65,
+            5.6,
+            2.325
+          ]
+        }
+      },
+      {
+        "name": "MODULAR_SHELF_3",
+        "kind": "shelf",
+        "position": [
+          0,
+          12.55,
+          0
+        ],
+        "size": [
+          11.3,
+          0.3,
+          4.65
+        ],
+        "aabb": {
+          "min": [
+            -5.65,
+            12.4,
+            -2.325
+          ],
+          "max": [
+            5.65,
+            12.7,
+            2.325
+          ]
+        }
+      },
+      {
+        "name": "MODULAR_SHELF_4",
+        "kind": "shelf",
+        "position": [
+          0,
+          19.65,
+          0
+        ],
+        "size": [
+          11.3,
+          0.3,
+          4.65
+        ],
+        "aabb": {
+          "min": [
+            -5.65,
+            19.5,
+            -2.325
+          ],
+          "max": [
+            5.65,
+            19.8,
+            2.325
+          ]
+        }
+      },
+      {
+        "name": "MODULAR_SHELF_5",
+        "kind": "shelf",
+        "position": [
+          0,
+          26.75,
+          0
+        ],
+        "size": [
+          11.3,
+          0.3,
+          4.65
+        ],
+        "aabb": {
+          "min": [
+            -5.65,
+            26.6,
+            -2.325
+          ],
+          "max": [
+            5.65,
+            26.9,
+            2.325
+          ]
+        }
+      },
+      {
+        "name": "MODULAR_SHELF_6",
+        "kind": "shelf",
+        "position": [
+          0,
+          33.85,
+          0
+        ],
+        "size": [
+          11.3,
+          0.3,
+          4.65
+        ],
+        "aabb": {
+          "min": [
+            -5.65,
+            33.7,
+            -2.325
+          ],
+          "max": [
+            5.65,
+            34,
+            2.325
+          ]
+        }
+      }
+    ],
+    "items": [
+      {
+        "name": "BOOK_sail-twins",
+        "id": "sail-twins",
+        "kind": "book",
+        "tier": 1,
+        "position": [
+          -3.2,
+          12.7,
+          0.1
+        ],
+        "size": [
+          1.24,
+          6.32,
+          3.8
+        ],
+        "yaw": 0.17453292519943295,
+        "aabb": {
+          "min": [
+            -4.144854,
+            12.7,
+            -1.903417
+          ],
+          "max": [
+            -2.258098,
+            19.02,
+            2.086675
+          ]
+        }
+      },
+      {
+        "name": "BOOK_guardian",
+        "id": "guardian",
+        "kind": "book",
+        "tier": 1,
+        "position": [
+          -0.8,
+          12.7,
+          0.1
+        ],
+        "size": [
+          1.38,
+          6.55,
+          3.8
+        ],
+        "yaw": 0.17453292519943295,
+        "aabb": {
+          "min": [
+            -1.81379,
+            12.7,
+            -1.915572
+          ],
+          "max": [
+            0.210838,
+            19.25,
+            2.09883
+          ]
+        }
+      },
+      {
+        "name": "BOOK_dust",
+        "id": "dust",
+        "kind": "book",
+        "tier": 2,
+        "position": [
+          -3.2,
+          19.8,
+          0.1
+        ],
+        "size": [
+          1.23,
+          6.42,
+          3.75
+        ],
+        "yaw": 0.17453292519943295,
+        "aabb": {
+          "min": [
+            -4.135588,
+            19.8,
+            -1.877928
+          ],
+          "max": [
+            -2.267364,
+            26.22,
+            2.061187
+          ]
+        }
+      },
+      {
+        "name": "BOOK_babylon",
+        "id": "babylon",
+        "kind": "book",
+        "tier": 3,
+        "position": [
+          -3.2,
+          26.9,
+          0.1
+        ],
+        "size": [
+          1.3,
+          6.5,
+          3.9
+        ],
+        "yaw": 0.17453292519943295,
+        "aabb": {
+          "min": [
+            -4.18308,
+            26.9,
+            -1.957867
+          ],
+          "max": [
+            -2.219872,
+            33.4,
+            2.141125
+          ]
+        }
+      },
+      {
+        "name": "COLLECTION_CF1_6",
+        "id": "crazy-flasher",
+        "kind": "collection",
+        "tier": 0,
+        "position": [
+          -0.7,
+          5.6,
+          0.05
+        ],
+        "size": [
+          5.65,
+          6.55,
+          4.04
+        ],
+        "yaw": 0,
+        "aabb": {
+          "min": [
+            -3.525,
+            5.6,
+            -1.925
+          ],
+          "max": [
+            2.125,
+            12.15,
+            2.115
+          ]
+        }
+      },
+      {
+        "name": "ARCHIVE_SHORTCUT_current",
+        "id": "archive:current",
+        "kind": "archiveShortcut",
+        "row": 0,
+        "position": [
+          -2.72,
+          0.38,
+          0.05
+        ],
+        "size": [
+          5.05,
+          2.05,
+          4.4
+        ],
+        "aabb": {
+          "min": [
+            -5.245,
+            0.38,
+            -2
+          ],
+          "max": [
+            -0.195,
+            2.43,
+            2.4
+          ]
+        }
+      },
+      {
+        "name": "ARCHIVE_SHORTCUT_recent02",
+        "id": "archive:recent02",
+        "kind": "archiveShortcut",
+        "row": 0,
+        "position": [
+          2.72,
+          0.38,
+          0.05
+        ],
+        "size": [
+          5.05,
+          2.05,
+          4.4
+        ],
+        "aabb": {
+          "min": [
+            0.195,
+            0.38,
+            -2
+          ],
+          "max": [
+            5.245,
+            2.43,
+            2.4
+          ]
+        }
+      },
+      {
+        "name": "ARCHIVE_SHORTCUT_recent03",
+        "id": "archive:recent03",
+        "kind": "archiveShortcut",
+        "row": 1,
+        "position": [
+          -2.72,
+          3.03,
+          0.05
+        ],
+        "size": [
+          5.05,
+          2.05,
+          4.4
+        ],
+        "aabb": {
+          "min": [
+            -5.245,
+            3.03,
+            -2
+          ],
+          "max": [
+            -0.195,
+            5.08,
+            2.4
+          ]
+        }
+      },
+      {
+        "name": "ARCHIVE_ALL_DRAWER",
+        "id": "archive:all",
+        "kind": "archiveDirectory",
+        "row": 1,
+        "position": [
+          2.72,
+          3.04,
+          0
+        ],
+        "size": [
+          5.1,
+          2.035,
+          4.67
+        ],
+        "aabb": {
+          "min": [
+            0.17,
+            3.04,
+            -2.06
+          ],
+          "max": [
+            5.27,
+            5.075,
+            2.61
+          ]
+        }
+      }
+    ],
+    "archiveSlots": [
+      {
+        "name": "ARCHIVE_SHORTCUT_current",
+        "id": "archive:current",
+        "kind": "archiveShortcut",
+        "row": 0,
+        "position": [
+          -2.72,
+          0.38,
+          0.05
+        ],
+        "size": [
+          5.05,
+          2.05,
+          4.4
+        ],
+        "aabb": {
+          "min": [
+            -5.245,
+            0.38,
+            -2
+          ],
+          "max": [
+            -0.195,
+            2.43,
+            2.4
+          ]
+        }
+      },
+      {
+        "name": "ARCHIVE_SHORTCUT_recent02",
+        "id": "archive:recent02",
+        "kind": "archiveShortcut",
+        "row": 0,
+        "position": [
+          2.72,
+          0.38,
+          0.05
+        ],
+        "size": [
+          5.05,
+          2.05,
+          4.4
+        ],
+        "aabb": {
+          "min": [
+            0.195,
+            0.38,
+            -2
+          ],
+          "max": [
+            5.245,
+            2.43,
+            2.4
+          ]
+        }
+      },
+      {
+        "name": "ARCHIVE_SHORTCUT_recent03",
+        "id": "archive:recent03",
+        "kind": "archiveShortcut",
+        "row": 1,
+        "position": [
+          -2.72,
+          3.03,
+          0.05
+        ],
+        "size": [
+          5.05,
+          2.05,
+          4.4
+        ],
+        "aabb": {
+          "min": [
+            -5.245,
+            3.03,
+            -2
+          ],
+          "max": [
+            -0.195,
+            5.08,
+            2.4
+          ]
+        }
+      },
+      {
+        "name": "ARCHIVE_ALL_DRAWER",
+        "id": "archive:all",
+        "kind": "archiveDirectory",
+        "row": 1,
+        "position": [
+          2.72,
+          3.04,
+          0
+        ],
+        "size": [
+          5.1,
+          2.035,
+          4.67
+        ],
+        "aabb": {
+          "min": [
+            0.17,
+            3.04,
+            -2.06
+          ],
+          "max": [
+            5.27,
+            5.075,
+            2.61
+          ]
+        }
+      }
+    ],
+    "reserveSlots": [
+      {
+        "id": "reserve:narrow:1",
+        "tier": 0,
+        "position": [
+          4,
+          5.6,
+          0.1
+        ],
+        "size": [
+          2.2,
+          6.55,
+          4.26
+        ],
+        "maxBookWidth": 1.5,
+        "maxBookDepth": 4,
+        "maxBookHeight": 6.55,
+        "aabb": {
+          "min": [
+            2.9,
+            5.6,
+            -2.03
+          ],
+          "max": [
+            5.1,
+            12.15,
+            2.23
+          ]
+        }
+      },
+      {
+        "id": "reserve:narrow:2",
+        "tier": 1,
+        "position": [
+          2.3,
+          12.7,
+          0.1
+        ],
+        "size": [
+          2.2,
+          6.55,
+          4.26
+        ],
+        "maxBookWidth": 1.5,
+        "maxBookDepth": 4,
+        "maxBookHeight": 6.55,
+        "aabb": {
+          "min": [
+            1.2,
+            12.7,
+            -2.03
+          ],
+          "max": [
+            3.4,
+            19.25,
+            2.23
+          ]
+        }
+      },
+      {
+        "id": "reserve:narrow:3",
+        "tier": 2,
+        "position": [
+          0,
+          19.8,
+          0.1
+        ],
+        "size": [
+          2.2,
+          6.55,
+          4.26
+        ],
+        "maxBookWidth": 1.5,
+        "maxBookDepth": 4,
+        "maxBookHeight": 6.55,
+        "aabb": {
+          "min": [
+            -1.1,
+            19.8,
+            -2.03
+          ],
+          "max": [
+            1.1,
+            26.35,
+            2.23
+          ]
+        }
+      },
+      {
+        "id": "reserve:narrow:4",
+        "tier": 2,
+        "position": [
+          2.6,
+          19.8,
+          0.1
+        ],
+        "size": [
+          2.2,
+          6.55,
+          4.26
+        ],
+        "maxBookWidth": 1.5,
+        "maxBookDepth": 4,
+        "maxBookHeight": 6.55,
+        "aabb": {
+          "min": [
+            1.5,
+            19.8,
+            -2.03
+          ],
+          "max": [
+            3.7,
+            26.35,
+            2.23
+          ]
+        }
+      },
+      {
+        "id": "reserve:narrow:5",
+        "tier": 3,
+        "position": [
+          0,
+          26.9,
+          0.1
+        ],
+        "size": [
+          2.2,
+          6.55,
+          4.26
+        ],
+        "maxBookWidth": 1.5,
+        "maxBookDepth": 4,
+        "maxBookHeight": 6.55,
+        "aabb": {
+          "min": [
+            -1.1,
+            26.9,
+            -2.03
+          ],
+          "max": [
+            1.1,
+            33.45,
+            2.23
+          ]
+        }
+      },
+      {
+        "id": "reserve:narrow:6",
+        "tier": 3,
+        "position": [
+          2.6,
+          26.9,
+          0.1
+        ],
+        "size": [
+          2.2,
+          6.55,
+          4.26
+        ],
+        "maxBookWidth": 1.5,
+        "maxBookDepth": 4,
+        "maxBookHeight": 6.55,
+        "aabb": {
+          "min": [
+            1.5,
+            26.9,
+            -2.03
+          ],
+          "max": [
+            3.7,
+            33.45,
+            2.23
+          ]
+        }
+      }
+    ],
+    "bounds": {
+      "min": [
+        -5.8,
+        -0.28,
+        -2.325
+      ],
+      "max": [
+        5.8,
+        34,
+        2.61
+      ]
+    },
+    "interactionBounds": {
+      "min": [
+        -5.8,
+        -0.28,
+        -2.325
+      ],
+      "max": [
+        5.8,
+        34,
+        5.76
+      ]
+    }
+  }
+}
