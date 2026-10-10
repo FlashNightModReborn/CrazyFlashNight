@@ -410,13 +410,17 @@ var IronspearPanel = (function() {
         confirm.addEventListener('click', commit);
         foot.appendChild(confirm);
         paper.appendChild(foot);
-        // 点击=盖章：commit 在途时落朱砂「落印执行」印
+        // 点击=盖章：commit 在途时落朱砂「落印执行」印。
+        // 放大动画会撑出滚动条，故包一层 overflow:hidden 裁切。
         if (_busy) {
+            var clip = document.createElement('div');
+            clip.className = 'isp-stamp-clip';
+            clip.setAttribute('aria-hidden', 'true');
             var stamp = document.createElement('div');
             stamp.className = 'isp-stamp';
-            stamp.setAttribute('aria-hidden', 'true');
             stamp.textContent = '落印执行';
-            paper.appendChild(stamp);
+            clip.appendChild(stamp);
+            paper.appendChild(clip);
         }
     }
 
