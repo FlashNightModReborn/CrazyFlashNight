@@ -397,6 +397,8 @@ var IronspearPanel = (function() {
         cost.className = 'isp-cost';
         cost.textContent = costText(recipe);
         actions.appendChild(cost);
+        foot.appendChild(actions);
+        // 落印位：契约右下落款处，按钮即"盖印"语义
         var confirm = document.createElement('button');
         confirm.type = 'button';
         confirm.className = 'isp-confirm';
@@ -406,8 +408,7 @@ var IronspearPanel = (function() {
         if (!committable) confirm.setAttribute('aria-disabled', 'true');
         confirm.setAttribute('data-audio-cue', 'activate');
         confirm.addEventListener('click', commit);
-        actions.appendChild(confirm);
-        foot.appendChild(actions);
+        foot.appendChild(confirm);
         paper.appendChild(foot);
         // 点击=盖章：commit 在途时落朱砂「落印执行」印
         if (_busy) {

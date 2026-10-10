@@ -21,7 +21,7 @@
         radial-gradient(1200px 500px at 50% -10%, rgba(176, 141, 87, 0.07), transparent 60%),
         linear-gradient(180deg, #22282f 0%, var(--isp-bg) 100%);
     color: var(--isp-ink);
-    font-family: "Microsoft YaHei", "PingFang SC", sans-serif;
+    font-family: "STKaiti", "KaiTi", "FangSong", "SimSun", serif;
     overflow: hidden;
 }
 
@@ -135,11 +135,11 @@
     flex: none;
     margin: 0;
     padding: 8px 14px;
-    font-size: 11px;
+    font-size: 12px;
     line-height: 1.7;
     color: var(--isp-ink-dim);
     border-bottom: 1px dashed var(--isp-line);
-    font-family: "SimSun", serif;
+    font-family: "STKaiti", "KaiTi", "FangSong", "SimSun", serif;
 }
 .isp-book-list {
     flex: 1;
@@ -211,7 +211,7 @@
     background:
         linear-gradient(180deg, rgba(176, 141, 87, 0.05), transparent 120px),
         var(--isp-bg-2);
-    font-family: "SimSun", "Songti SC", serif;
+    font-family: "STKaiti", "KaiTi", "FangSong", "SimSun", "Songti SC", serif;
 }
 .isp-doc-watermark {
     position: absolute;
@@ -329,30 +329,36 @@
 /* 朱砂印：点击落印时盖在工契上 */
 .isp-stamp {
     position: absolute;
-    right: 34px;
-    bottom: 30px;
+    right: 32px;
+    bottom: 26px;
     z-index: 6;
-    padding: 3px 10px;
-    border: 2px solid var(--isp-seal);
-    color: var(--isp-seal);
-    font-size: 20px;
-    letter-spacing: 5px;
+    padding: 4px 12px;
+    border: 2.5px solid #d8443a;
+    color: #d8443a;
+    font-size: 26px;
+    letter-spacing: 6px;
     font-family: "STKaiti", "KaiTi", "FZXiaoZhuanTi", "SimSun", serif;
-    transform: rotate(-8deg);
-    opacity: 0.88;
+    transform: rotate(-9deg);
+    opacity: 0.92;
     pointer-events: none;
-    animation: isp-stamp-in 0.26s cubic-bezier(0.2, 0.8, 0.35, 1.2);
-    text-shadow: 0 0 1px var(--isp-seal);
+    animation: isp-stamp-in 0.5s cubic-bezier(0.2, 0.8, 0.35, 1.15);
+    text-shadow: 0 0 2px rgba(216, 68, 58, 0.8);
 }
 @keyframes isp-stamp-in {
-    from { opacity: 0; transform: rotate(-14deg) scale(2.1); }
-    to   { opacity: 0.88; transform: rotate(-8deg) scale(1); }
+    from { opacity: 0; transform: rotate(-16deg) scale(2.2); }
+    60%  { opacity: 0.92; transform: rotate(-8.2deg) scale(0.97); }
+    to   { opacity: 0.92; transform: rotate(-9deg) scale(1); }
 }
 .isp-doc-actions {
     margin-left: auto;
     display: flex;
     align-items: center;
     gap: 12px;
+}
+.isp-doc-foot .isp-confirm {
+    align-self: flex-end;
+    margin-left: 14px;
+    margin-top: 10px;
 }
 .isp-cost { font-size: 12px; color: var(--isp-ink-dim); font-variant-numeric: tabular-nums; }
 .isp-count {
@@ -439,5 +445,5 @@
     color: var(--isp-bronze);
     font-size: 13px;
     letter-spacing: 2px;
-    font-family: "SimSun", serif;
+    font-family: "STKaiti", "KaiTi", "FangSong", "SimSun", serif;
 }
