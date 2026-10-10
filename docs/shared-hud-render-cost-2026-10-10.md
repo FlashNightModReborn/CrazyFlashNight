@@ -2,15 +2,15 @@
 
 **文档角色**：2026-10-10 成本分解、两项优化的选择依据与候选验证记录。持续绘制合同归源码接口，开发诊断入口归 [flash-compositor README](../launcher/perf/flash-compositor/README.md)。
 
-**最后核对代码基线**：commit `39b0d15488`；本次增量基于 `b5d7592b66db7e17314f6c4edc88c590c93a0f0c` 开始，期间接入的结算友军、书架和其他 Web 提交不涉及被测 HUD 绘制器或 Native 合成器。
+**最后核对代码基线**：正式发布冻结源 `c0cb5c17b6835762c3f9af90b68a190cb968366d`；本次增量基于 `b5d7592b66db7e17314f6c4edc88c590c93a0f0c` 开始，期间接入的结算友军、书架和其他 Web 提交不涉及被测 HUD 绘制器或 Native 合成器。
 
 ## 结论与交付边界
 
 选定并实现两项：共享主 HUD 的脏区域重绘，以及 Native HUD 像素缓冲复用。最终 ABBA 对照中，主 HUD 绘制均值下降约 35%–36%，提交均值下降约 62%–64%；混合负载的夹具进程 CPU 中位数下降约 12%。这证明本机受控呈现负载的 CPU 收益，不是实际战斗 FPS、弱机或功耗收益。
 
-隔离候选已构建并在实际 WGC/D3D 路径执行。此次没有正式 runtime promotion；玩家普通入口继续使用原部署。候选 identity、closure、测试 Core 与候选 Core 的相同哈希，以及每轮完整采样见 [机器证据](evidence/shared-hud-cost-2026-10-10.json)。
+隔离候选已构建并在实际 WGC/D3D 路径执行，后续按维护者授权完成 RuntimeBundleV2 正式 promotion。普通入口已核对正式 Core、身份与闭包，启动页就绪并正常关闭；未在新正式入口进入玩家槽位或重跑战斗业务。发布身份、双签名与入口边界见[正式发布证据](evidence/shared-hud-runtime-release-2026-10-10.json)。原候选绑定与每轮完整采样仍见[成本机器证据](evidence/shared-hud-cost-2026-10-10.json)。
 
-最新主线重新封装后的可用候选为 `tmp/runtime-candidates/v2/hud-work-1010-final`。主线的构建配方变化使 build identity 更新，但 43 个 payload 条目与被测 p2 全等，Core 和 Native DLL 的实际字节也相同；最终候选另行通过同一组 7 项 GPU 检查、0 跳过。manifest 的配方/identity 头部随之变化，不能把整个 manifest 称为字节相同。正式 runtime、consensus 和 asLoader 未改；本轮没有新建或删除 worktree。
+最新主线重新封装后的可用候选为 `tmp/runtime-candidates/v2/hud-work-1010-final`。主线的构建配方变化使 build identity 更新，但 43 个 payload 条目与被测 p2 全等，Core 和 Native DLL 的实际字节也相同；最终候选另行通过同一组 7 项 GPU 检查、0 跳过。manifest 的配方/identity 头部随之变化，不能把整个 manifest 称为字节相同。该候选构建阶段没有修改正式 runtime、consensus 或 asLoader；后续正式 runtime 与 consensus 由唯一 promotion writer 更新，部署的 43 个 payload 条目仍与试玩候选一致。asLoader 本轮未重新编译、字节未改；本轮没有新建或删除 worktree。
 
 ## 三组成本分解
 

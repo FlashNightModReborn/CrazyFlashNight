@@ -1,0 +1,117 @@
+{
+  "schema": "cf7-shared-hud-cost-runtime-release.v1",
+  "deploymentStatus": "promoted",
+  "implementationCommit": "2f7b839d83fdf46c78300e1015c0f5541e8438e7",
+  "sourceCommitOid": "c0cb5c17b6835762c3f9af90b68a190cb968366d",
+  "sourceTag": "runtime-build-v2/20261010-shared-hud-cost-v2",
+  "requestId": "57CF2E55A486384C13232F6397EB05157463AE8B174E71A1B136CF42C1531FF3",
+  "releaseTreeOid": "582799a15a4ab0e67c423317651f26ed66bc7e9b",
+  "buildIdentityHash": "9E5A7FFD14A82D47C9C0197196BF51A715B46D75D727C440067B6F832649DA4B",
+  "payloadClosureHash": "B435D4135AA68731FDA1823D54003E1F2CBFC7C89E6450C615C1F85D340284FC",
+  "coreDllSha256": "511E77AC5C5554946F25BF80BAEF88B1FA0A8782FEFE4D06C0D93A6DCD563F5B",
+  "nativeCompositorSha256": "19EEA1F5F0BF7FB6586B5FE6B4952B2E590F169E272118EB3EAC0692D9C23482",
+  "payloadFiles": 43,
+  "signerCount": 2,
+  "faultDomainCount": 2,
+  "signers": [
+    {
+      "kind": "cf7-runtime-github-build-attestation.v2",
+      "identity": "608E4F712AC6054EC9DC28393D9863CF8B38F61CA2D26E7BE658FAA567FF9BC0",
+      "faultDomain": "github-hosted-windows"
+    },
+    {
+      "kind": "cf7-runtime-build-attestation.v2",
+      "identity": "CFB70E2D339ACB25E9B6C2873DF4F1AEEBA8EA75AD23B825724B27FCA70C0B86",
+      "faultDomain": "physical-host-c"
+    }
+  ],
+  "cloud": {
+    "runId": 38055726655,
+    "url": "https://github.com/FlashNightModReborn/CrazyFlashNight/actions/runs/38055726655",
+    "artifactScope": "attestation-only",
+    "artifactArchiveSha256": "498f061f060c6936582c69c40d674a33abea7b3fec1924e1ea8e0dc0245d4082"
+  },
+  "policy": {
+    "passed": true,
+    "checksPassed": 47,
+    "checksTotal": 47,
+    "policyHash": "2F662E81DA81C0883668683A8204804599C94F41F55202AC065B4C570780EE3F",
+    "receiptSha256": "022AC8A280E3A2A0D5E5F3F3163162D4DD16E37D0BA67DCFD6E97FC53E73E724"
+  },
+  "promotedAtUtc": "2026-10-10T13:38:33.5732481Z",
+  "manifestSha256": "C6A902870A217EA06B6FA426B774B9C49466549123973A1ECBDB6E99DD09D05E",
+  "consensusSha256": "F92999813C20BA1B66AA9BED46044825DFCC6B4FCF702F61DAC4E81C19C55104",
+  "rollbackRelativePath": "tmp/runtime-promotions/20261010T133753998Z-0aaad62df9c44f3696863bfb6af61eaf/previous",
+  "humanTestedPayloadMatched": true,
+  "originalLocalProducerRequestId": "B7543DC2D5F79A73B1C389CA72CC47252AAB5FC8F9F7AF7005F645FE23090738",
+  "localProducerReuseReason": "artifact source, producer recipe, toolchain lock and complete payload are unchanged; final policy and cloud proof bind the new source",
+  "humanPlaytestEvidence": "docs/evidence/shared-hud-playtest-2026-10-10.json",
+  "preflightRepairEvidence": "docs/evidence/shared-hud-release-preflight-repair-2026-10-10.json",
+  "verification": {
+    "hostPassed": 6923,
+    "hostSkipped": 22,
+    "hostFailed": 0,
+    "gpuPassed": 7,
+    "gpuSkipped": 0,
+    "scope": "Existing scoped tests bind the unchanged product bytes; full production policy is fresh for the final source"
+  },
+  "formalEntry": {
+    "schema": "cf7-shared-hud-cost-formal-frontdoor.v1",
+    "state": "formal-entry-smoke-passed",
+    "scope": "formal-frontdoor-only",
+    "runtimeMode": "formal_runtime",
+    "guardianPid": 7112,
+    "processStartUtc": "2026-10-10T13:41:06.4212646Z",
+    "processPath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\runtime\\CRAZYFLASHER7MercenaryEmpire.Core.exe",
+    "coreExeSha256": "3988B5F22F00880270BB2B8329F2E690C623887E6E0767483AE2D0EBF11621FE",
+    "coreDllSha256": "511E77AC5C5554946F25BF80BAEF88B1FA0A8782FEFE4D06C0D93A6DCD563F5B",
+    "buildIdentity": "9E5A7FFD14A82D47C9C0197196BF51A715B46D75D727C440067B6F832649DA4B",
+    "payloadClosure": "B435D4135AA68731FDA1823D54003E1F2CBFC7C89E6450C615C1F85D340284FC",
+    "originalLocalProducerRequestId": "B7543DC2D5F79A73B1C389CA72CC47252AAB5FC8F9F7AF7005F645FE23090738",
+    "identityMatched": true,
+    "frontdoorNavigationReady": true,
+    "prewarmObserved": true,
+    "prewarmReturnedToIdle": true,
+    "normalCloseRequested": true,
+    "exitCode": 0,
+    "gameLaunched": false,
+    "businessJourneyExecuted": false,
+    "trustedShutdownVerified": false,
+    "forcedCleanup": false,
+    "protectedFileCount": 29,
+    "protectedHashesUnchanged": true,
+    "changedProtectedPaths": [],
+    "excludedOperationalFiles": [
+      ".launcher-version-marker.json"
+    ],
+    "deploymentStatus": "promoted",
+    "standardEntryBusinessVerified": false
+  },
+  "saveProtection": {
+    "initialFileCount": 29,
+    "initialFilesChangedByInterveningOldFormalSession": 2,
+    "initialOtherFilesUnchanged": 27,
+    "interveningSessionStartedLocal": "2026-10-10T20:51:16+08:00",
+    "interveningSessionEndedLocal": "2026-10-10T20:52:36+08:00",
+    "interveningSessionRuntimeMode": "formal_runtime",
+    "interveningSessionActor": "not established",
+    "interveningSessionStartedByThisReleaseTask": false,
+    "interveningSessionLogSha256": "4D8D7D9533DA3399BBBEBC33250547C54BF100F0838AC3A0CE5F0BC3ACCBB15A",
+    "interveningSessionFlashExitCode": 0,
+    "interveningSessionNewHudAcceptance": false,
+    "updatedSlotPreserved": true,
+    "latestBaselineFileCount": 29,
+    "promotionAndFrontdoorHashesUnchanged": true,
+    "initialHashRecordSha256": "952F45072A0D32A7ED59F9D0C0A6E59061F4EFF4409F1CB672817B462FA68E9B",
+    "beforePromotionHashRecordSha256": "F635FB4E6BF2F4E8E5044B87193EFE66AF9C0AC11C3EFA67763E56A2B7C88C6A",
+    "afterPromotionHashRecordSha256": "F635FB4E6BF2F4E8E5044B87193EFE66AF9C0AC11C3EFA67763E56A2B7C88C6A",
+    "excludedOperationalFiles": [
+      ".launcher-version-marker.json"
+    ]
+  },
+  "standardEntryBusinessVerified": false,
+  "postPushAudit": {
+    "status": "pending"
+  },
+  "rawEvidenceRoot": "tmp/hud-cost-release-20261010"
+}
