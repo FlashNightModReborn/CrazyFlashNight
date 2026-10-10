@@ -1,0 +1,106 @@
+# 武器库蓝图描线烘焙方案（bake-armory-blueprints.js）
+
+生成 `launcher/web/assets/armory-blueprints/`：四个合成类目（武器合成/进阶防具/基础防具）
+产物的白描线稿 SVG，供 `launcher/web/modules/armory.js` 蓝图卡背景层使用。
+重跑：`node tools/bake-armory-blueprints.js`（ffdec 导出缓存于 `tmp/armory-bp-bake/`，增量复用）。
+
+## 数据流
+
+```
+data/crafting/{武器合成,进阶防具,基础防具}.json      ← 产物清单（饰品合成不出图）
+  → data/items/asset_source_map.xml                ← 图标 linkageId → swf/symbol
+  → tools/ffdec/ffdec-cli.exe
+      - 每 swf 一次 symbolClass CSV（id ↔ linkage 名映射）
+      - -selectid 导出 sprite 首帧 SVG / -format shape:svg 导出 shape
+  → tools/bake-armory-blueprints.js
+      1) 按引用链选源件（见「取件优先级」）
+      2) toBlueprint：剥 fill/filter/image/pattern，统一 stroke 白线
+      3) composeBlueprints：单件 / stack / row 拼合
+  → manifest.json（sources/sourceIds 供审计回溯）
+```
+
+## 关键结论（踩坑记录，复用时直接引用）
+
+### 1. 变装部件是独立紧凑画布，不存在共享骨架坐标系
+
+`男/女变装-*` 各部位 sprite 的画布尺寸互不相同（如剑圣胸甲四件
+127×216 / 92×153 / 56×127 / 50×113），每件以自己的关节点为原点。
+**任何「同套件部件原点叠加」都必然错位**——游戏内是靠人偶肢体 holder
+各自 attach 装配的，关节坐标在 unit 人偶 timeline（XFL 挂点），不在
+部件素材里。
+
+含义：套装类蓝图只能做「爆炸图」（逐件平铺），不能假装装配。
+当前实现：多件变装 → `row` 模式横排爆炸图（原姿态、统一行高、垂直居中）。
+
+若以后要做「真正装配好的人偶线稿」，需要到 XFL/unit sprite 里读
+holder 摆放矩阵（`flashswf/**/挂点/*.xml` 是各肢体挂点，组合它们的
+人偶 sprite 才有坐标），这是另一条数据链，勿用部件坐标系硬拼。
+
+### 2. 取件优先级（图标不是唯一权威）
+
+```
+命名引用 collectSourceRefs        图标 <use> 引到的有 linkage 名元件
+  → findSourceByName             symbolClass 按名找组装本体
+  → collectIconUses              图标实际显示件（clip 组内 use）
+  → 裸图标                        最后的兜底
+```
+
+- **命名引用优先**：icon clip 组里可能是裁剪用的无名 shape 碎片，
+  而完整命名素材（`刀-輪舞`）在别处被引用。
+- **按名找本体先于图标显示件**：有的图标把产品拆段摆放（
+  `图标-异形女王毒刺` 拆 7 个无名段片），组装版 wrapper
+  （`刀-异形女王毒刺`）反而不被图标直接引用。
+- **同名双持**：同一 sprite 在图标内被摆放 ≥2 次 → 补第二份拼进 stack。
+- 图标 refs 扫描含 defs 内 use；`图标-*`/`判定|参考|测试|特效|代码|辅助|
+  阴影|背景|占位|mask` 名一律排除。
+
+### 3. 图标显示件的判别（collectIconUses）
+
+新式图标结构：窗口底形 + `clipPath` + `<g clip-path>` 产品 use 组 —
+clip 组内的每个 use 就是被显示的产品（sprite 或 shape，可无 linkage 名）。
+
+老式图标（无 clip 组，如黑铁长裤）顶层 use 里：
+- `scale≈1 且 translate≈(-12,-12)` → 共享窗口底形（**只丢第一个**，
+  战斗狂人军牌的产品也摆在该位，不能全丢）
+- `scale≈1 且 |tx| 或 |ty| > 20` → 画板外停放的原始素材
+- 其余缩放摆放的 → 产品件
+
+### 4. 拼合模式（composeBlueprints）
+
+| mode    | 用途 | 行为 |
+|---------|------|------|
+| 单件    | 武器/独立穿戴件 | `rotateIfTall`：高宽比 >1.35 横置 90° |
+| `stack` | 双持/配鞘等 | 每件先横置，统一宽度缩放，上下竖排 |
+| `row`   | 变装套装爆炸图 | 原姿态，统一行高缩放，左右横排 |
+
+`noRotate`（全部件为变装名）时 stack/单件不横置——穿戴件已是穿戴姿态。
+多 part 的 defs id 会撞（都是 shape0），拼合前按 `p{i}_` 前缀做命名空间。
+
+### 5. 不出图的情形
+
+- `饰品合成` 类目产物（项链/军牌等）——设计上该类目不挂蓝图层；
+- 剥完 fill/pattern 后 renderedPathCount < 2 的位图源；
+- `BP_TUNE` skip 名单（纯位图/无可读线稿者，如大圣全套）。
+
+### 6. 源素材里要剔除的层
+
+- `BP_TUNE.dropCids`：源 sprite 内底衬/标记层（般若面具的 cid=3 底形）；
+- `刀口位置\d` 等标记 MC（`.*位置` 已在 AUX_NAME 排除）；
+- `<use>` 上挂 `id=` 的是 timeline 实例名，不代表内容。
+
+### 7. 调试工具
+
+- `tmp/audit-bp.js` + `filter-audit.js`：manifest 全量体检（空图/极端长宽比/
+  路径数/图标回退）；
+- `tmp/render-all.js`（无浏览器环境的迷你栅格化器，支持 path/use/g/matrix）：
+  `node tmp\render-all.js 关键字` 渲染子集到 `tmp/bp-png/`；
+- `tmp/inspect-by-id.js` / `survey-icons*.js`：查看缓存里某 cid 导出的
+  帧结构、use/transform 分布。
+- ffdec 直出 PNG 看素材真貌：`tmp\ff-real.js`（png 格式导出），
+  判断"线是乱的还是素材本来就密"先看彩图。
+
+## 验证边界
+
+本工具只证明「生成产物结构成立 + 自定义渲染可见」。线稿在真实
+WebView/launcher 里的观感（网格底纹适配、透明度、缩放裁切）需要
+人工看图验收；发布走独立授权路径，烘焙产物不自动进入 runtime。

@@ -20,7 +20,7 @@ var CraftingPanel = (function() {
     var _returnMaterialsButton = null, _materialRecipeReturn = null;
     var _panelInstanceId = '', _canReturnCharacterBuild = false;
     var _cookingActive = false, _chemistryActive = false, _communeActive = false,
-        _bartendingActive = false;
+        _bartendingActive = false, _armoryActive = false;
     var _recipeSnapshotGeneration = 0, _recipeSnapshotCallId = '',
         _recipeSnapshotIntent = null;
     var _materialShopNavigation = null, _materialShopNavigationTimer = null,
@@ -2377,6 +2377,32 @@ var CraftingPanel = (function() {
             });
             return true;
         }
+        // A兵团武器库四个类目走独立军工界面（modules/armory.js + css/panels/armory.css），
+        // 类目由 initData.category 传入，协议与通用工作台一致。
+        if (_mode === 'recipes'
+                && (_category === '武器合成' || _category === '饰品合成'
+                    || _category === '进阶防具' || _category === '基础防具')
+                && typeof ArmoryPanel !== 'undefined' && ArmoryPanel != null) {
+            _armoryActive = true;
+            if (_scaleHandle) _scaleHandle.detach();
+            _scaleHandle = typeof PanelScale !== 'undefined'
+                ? PanelScale.attach(_shellEl, 1024, 576) : null;
+            if (!_mux.openSession({
+                    ownerPanel:'crafting',
+                    panelInstanceId:_panelInstanceId
+                })) return false;
+            Workbench.clearElement(_shellEl);
+            ArmoryPanel.mount(_shellEl, {
+                request:request,
+                toast:toast,
+                cue:cue,
+                iconHtml:iconHtml,
+                formatNumber:formatNumber,
+                requestClose:requestClose,
+                category:_category
+            });
+            return true;
+        }
         // 公社防具走独立档案界面（modules/commune.js + css/panels/commune.css）。
         if (_mode === 'recipes' && _category === '公社防具'
                 && typeof CommunePanel !== 'undefined' && CommunePanel != null) {
@@ -2448,6 +2474,13 @@ var CraftingPanel = (function() {
                 BartendingPanel.unmount();
             }
         }
+        if (_armoryActive) {
+            _armoryActive = false;
+            if (typeof ArmoryPanel !== 'undefined' && ArmoryPanel != null
+                    && typeof ArmoryPanel.unmount === 'function') {
+                ArmoryPanel.unmount();
+            }
+        }
         retireMaterialShopNavigation(false);
         retireProcurementNavigation();
         retireNestedRecipeNavigation();
@@ -2509,6 +2542,10 @@ var CraftingPanel = (function() {
         if (_bartendingActive && typeof BartendingPanel !== 'undefined' && BartendingPanel != null
                 && typeof BartendingPanel.isBusy === 'function' && BartendingPanel.isBusy()) {
             toast('吧台正在调制，请稍候。'); return;
+        }
+        if (_armoryActive && typeof ArmoryPanel !== 'undefined' && ArmoryPanel != null
+                && typeof ArmoryPanel.isBusy === 'function' && ArmoryPanel.isBusy()) {
+            toast('产线正在处理投产，请稍候。'); return;
         }
         if (reason === 'escape' && _mode === 'materials' && _materials
                 && typeof _materials.consumeEscape === 'function'
@@ -2716,6 +2753,9 @@ var CraftingPanel = (function() {
         bartendingActive:_bartendingActive,
         bartending:_bartendingActive && typeof BartendingPanel !== 'undefined' && BartendingPanel
             && typeof BartendingPanel.debugState === 'function' ? BartendingPanel.debugState() : null,
+        armoryActive:_armoryActive,
+        armory:_armoryActive && typeof ArmoryPanel !== 'undefined' && ArmoryPanel
+            && typeof ArmoryPanel.debugState === 'function' ? ArmoryPanel.debugState() : null,
         filterPath:_filterPath.slice(), craftableOnly:_craftableOnly,
         craftableCount:_snapshot && _snapshot.recipes ? _snapshot.recipes.filter(function(recipe) { return recipe.canCraftOne === true; }).length : 0,
         busy:_busy, previewBusy:_previewBusy, planBusy:_planBusy,

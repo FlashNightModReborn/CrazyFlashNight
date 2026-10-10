@@ -1094,3 +1094,19 @@
     --ragchat-frame-bg: #05080a;
     --ragchat-close-transition: background-color .12s ease;
 }
+
+/* A兵团武器库：黑白灰工业机能底 + 军工红点缀。 */
+.arm-panel {
+    --wb-armory-arm-panel-color: #d9dce1;
+    --wb-armory-arm-panel-background: repeating-linear-gradient(135deg,rgba(255,255,255,.015) 0 6px,transparent 6px 14px),linear-gradient(180deg,#1a1c20,#131417 55%,#0e0f11);
+    --wb-armory-arm-ink: #e4e7eb;
+    --wb-armory-arm-muted: #7d8289;
+    --wb-armory-arm-line: #33363c;
+    --wb-armory-arm-panel-2: #191b1f;
+    --wb-armory-arm-red: #c0272d;
+    --wb-armory-arm-red-soft: rgba(192,39,45,.35);
+    --wb-armory-arm-bp: #233447;
+    --wb-armory-arm-bp-line: rgba(160,190,225,.14);
+    --wb-armory-arm-ready: #58e6a8;
+    --wb-armory-arm-blocked: #e05560;
+}

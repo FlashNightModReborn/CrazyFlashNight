@@ -163,6 +163,7 @@
          'modules/chemistry.js',
          'modules/commune.js',
          'modules/bartending.js',
+         'modules/armory.js',
          'modules/crafting.js'],
         noop);
 
