@@ -17,7 +17,7 @@
   var ASSETS = (typeof window !== 'undefined' && window.CF7_TABLET_ASSET_ROOT) || 'assets/tablet/';
   var VIEW_ORDER = ['hub', 'infrastructure', 'contacts', 'encyclopedia', 'materials'];
 
-  var shell = null, stage = null, bg = null, bgAlt = null, overlay = null, hoverImg = null;
+  var shell = null, stage = null, bg = null, bgView = null, bgAlt = null, overlay = null, hoverImg = null;
   var introWrap = null;             // 启动动画层（原版「平板初始化」逐元件 DOM 重放）
   var iconLayer = null, statusEl = null;
   var navIcons = {};                // DOM 化图标层（原 XFL 按钮与图标分离，迁移后同样分离才能复现位移/淡入）
@@ -174,7 +174,9 @@
   function setView(name) {
     currentView = name;
     shell.setAttribute('data-view', name);
-    bg.src = ASSETS + (name === 'hub' ? 'hub.svg' : 'view-' + name + '.svg');
+    // 背景帧是各视图共享的同一幅（烘焙时已从视图里拆出为 frame.svg），
+    // 常驻不动；换的只有内容层
+    bgView.src = ASSETS + (name === 'hub' ? 'hub.svg' : 'view-' + name + '.svg');
     hideHover();
     render();
   }
@@ -240,14 +242,12 @@
   }
   function crossfadeBg(name) {
     var src = viewBgSrc(name);
-    if (!bgAlt) { bg.src = src; return; }
+    if (!bgAlt) { bgView.src = src; return; }
     bgAlt.classList.remove('on');
     bgAlt.src = src;
     bgAlt.hidden = false;
     requestAnimationFrame(function () { bgAlt.classList.add('on'); });
-    // bgAlt 的撤下统一在 goTo 的提交点做——bg 同帧换 src 并瞬回不透明，
-    // 若多留 bgAlt 一段余量，两幅同图叠加烘焙 SVG 的半透明区会二次混合
-    // （转场收尾瞬间整体变亮）
+    // 只交叉内容层：共享背景帧不参与淡化
   }
   function goTo(name) {
     if (switching || name === currentView) return;
@@ -258,7 +258,7 @@
     applyIconPlaces(name);   // 图标位移先行，正是原版的飞行效果
     crossfadeBg(name);
     setTimeout(function () {
-      setView(name);           // bg.src 同帧切为新视图
+      setView(name);           // bgView.src 同帧切为新视图内容
       switching = false;
       stage.classList.remove('switching');
       // bgAlt 同步 hidden 撤下（display:none 无过渡），不留叠印窗口
@@ -600,16 +600,19 @@
     introAnims.length = 0;
     var els = wrap.querySelectorAll('.tablet-intro-el');
     for (var i = 0; i < els.length; i++) {
-      if (els[i].src && els[i].src.indexOf('intro/bg.png') >= 0) continue; // 背景不动
+      if (els[i].src && els[i].src.indexOf('frame.svg') >= 0) continue; // 背景不动
       (function (e2) {
+        if (getComputedStyle(e2).display === 'none') return;
         try {
-          e2.animate([{ opacity: 1 }, { opacity: 0 }],
+          // 从当前透明度起播——强制 1 起点会把已淡出的元件拉回再闪
+          e2.animate([{ opacity: getComputedStyle(e2).opacity }, { opacity: 0 }],
             { duration: 300, fill: 'forwards', easing: 'ease-out' });
         } catch (e) { e2.style.opacity = '0'; }
       })(els[i]);
     }
     setTimeout(function () {
-      bg.style.visibility = '';                 // 一次性换上 hub.svg
+      bg.style.visibility = '';                 // frame + hub 内容一次性就位
+      if (bgView) bgView.style.visibility = '';
       if (wrap.parentNode) wrap.parentNode.removeChild(wrap);
       if (introWrap === wrap) introWrap = null;
       NAV_KEYS.forEach(function (k, i) {        // 图标交错淡入（也是淡入）
@@ -639,10 +642,16 @@
         img.alt = ''; img.draggable = false;
         img.src = ASSETS + e2.img;
       }
+      // 元件坐标是 XFL sprite 局部空间；hub.svg 的 viewBox 里该 sprite 偏置
+      // (+205.05,+5.2)，viewBox 本体 (195.75,-7.20,467.45,324.61)——不换算
+      // 则 intro 元件整体偏大且与 hub 底图面板错位
       var r = e2.rect;
-      img.style.cssText = 'left:' + (r[0] / 450 * 100) + '%;top:' + (r[1] / 300 * 100)
-        + '%;width:' + (r[2] / 450 * 100) + '%;height:' + (r[3] / 300 * 100) + '%;'
-        + (e2.blend ? 'mix-blend-mode:' + e2.blend + ';' : '');
+      img.style.cssText = e2.full
+        ? 'inset:0;width:100%;height:100%;object-fit:contain;'   // 整幅 viewBox 画布
+        : 'left:' + ((r[0] + 9.3) / 467.45 * 100) + '%;top:'
+        + ((r[1] + 12.4) / 324.61 * 100) + '%;width:' + (r[2] / 467.45 * 100)
+        + '%;height:' + (r[3] / 324.61 * 100) + '%;';
+      if (e2.blend) img.style.cssText += 'mix-blend-mode:' + e2.blend + ';';
       var keys = e2.keys.map(function (k) {
         return { offset: k.o, opacity: (k.a != null ? k.a : 1), transform: keyTransform(k) };
       });
@@ -669,8 +678,13 @@
           }).catch(function () {});
         }
       } catch (e) {}
-      // gone：只在一阶段露面的元件，组装段播完兜底隐藏（不受动画失败影响）
-      if (e2.gone) setTimeout(function () { img.style.display = 'none'; }, dur + 60);
+      // gone：只在一阶段露面的元件——动画结束即把 opacity 钉 0 再隐藏，
+      // 否则 fill 落地与 setTimeout 隐藏之间的窗口会回闪一帧
+      if (e2.gone) {
+        var hide = function () { img.style.opacity = '0'; img.style.display = 'none'; };
+        if (a) a.finished.then(hide).catch(function () {});
+        setTimeout(hide, dur + 60);
+      }
       wrap.appendChild(img);
     });
     stage.appendChild(wrap);
@@ -687,8 +701,11 @@
   function createDOM() {
     shell = el('div', 'panel-scale-shell tablet-shell');
     stage = el('div', 'tablet-stage');
-    bg = el('img', 'tablet-bg'); bg.alt = ''; bg.draggable = false;
-    bgAlt = el('img', 'tablet-bg tablet-bg-alt'); bgAlt.alt = ''; bgAlt.draggable = false; bgAlt.hidden = true;
+    // 三层底图：frame=共享背景常驻 / bgView=当前视图内容 / bgAlt=淡入中内容
+    bg = el('img', 'tablet-frame'); bg.alt = ''; bg.draggable = false;
+    bg.src = ASSETS + 'frame.svg';
+    bgView = el('img', 'tablet-view'); bgView.alt = ''; bgView.draggable = false;
+    bgAlt = el('img', 'tablet-view tablet-view-alt'); bgAlt.alt = ''; bgAlt.draggable = false; bgAlt.hidden = true;
     iconLayer = el('div', 'tablet-icons');
     NAV_KEYS.forEach(function (k) {
       var img = el('img', 'tablet-icon');
@@ -700,7 +717,7 @@
     overlay = el('div', 'tablet-overlay');
     hoverImg = el('img', 'tablet-hoverdesc'); hoverImg.alt = ''; hoverImg.draggable = false; hoverImg.hidden = true;
     statusEl = el('div', 'tablet-status');
-    stage.appendChild(bg); stage.appendChild(bgAlt); stage.appendChild(iconLayer);
+    stage.appendChild(bg); stage.appendChild(bgView); stage.appendChild(bgAlt); stage.appendChild(iconLayer);
     stage.appendChild(overlay); stage.appendChild(hoverImg); stage.appendChild(statusEl);
     shell.appendChild(stage);
     return shell;
@@ -737,6 +754,7 @@
       sfx('intro1.wav');
       setTimeout(function () { sfx('expand.wav'); }, 2330);
       bg.style.visibility = 'hidden';
+      if (bgView) bgView.style.visibility = 'hidden';  // 内容层（hub 环件）同样藏住
       playIntro();
       // 第二阶段常驻等待点按：introDone 里才恢复 hub 底图并淡入图标
       // 始终向 AS2 拉一次权威快照：initData 注入仅作打开前乐观投影
@@ -760,6 +778,7 @@
     introAnims.forEach(function (a) { try { a.cancel(); } catch (e) {} });
     introAnims.length = 0;
     if (bg) bg.style.visibility = '';
+    if (bgView) bgView.style.visibility = '';
     NAV_KEYS.forEach(function (k) {
       var img = navIcons[k];
       if (img) { img.classList.remove('shown'); img.hidden = true; }

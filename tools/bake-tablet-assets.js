@@ -500,6 +500,25 @@ function main() {
     viewBoxes[view] = (/viewBox="([^"]+)"/.exec(clean) || [])[1];
   }
 
+  // ── 共享背景拆层：五个视图的硬光背景 use（宽 447.55 高 310.2）内容完全一致，
+  //    拆成常驻 frame.svg 后各视图只留专属内容——转场只交叉内容层，背景不动 ──
+  const SHARED_BG_RE = /\s*<use\b[^>]*width="447\.55"[^>]*\/>/;
+  for (const f of ['hub.svg', 'view-infrastructure.svg', 'view-contacts.svg',
+                   'view-encyclopedia.svg', 'view-materials.svg']) {
+    const p = path.join(OUT, f);
+    fs.writeFileSync(p, fs.readFileSync(p, 'utf8').replace(SHARED_BG_RE, ''));
+  }
+  {
+    const src = fs.readFileSync(path.join(OUT, 'view-infrastructure.svg'), 'utf8');
+    const rawInfra = fs.readFileSync(path.join(d334, VIEW_FRAMES.infrastructure + '.svg'), 'utf8');
+    const bgUse = rawInfra.match(SHARED_BG_RE)[0];
+    const rootStart = src.indexOf('<g transform="matrix(1.0, 0.0, 0.0, 1.0, 205.05, 5.2)">');
+    const defsStart = src.indexOf('<defs>');
+    const frame = src.slice(0, src.indexOf('>', rootStart) + 1)
+      + bgUse + '\n</g>\n' + src.slice(defsStart);
+    fs.writeFileSync(path.join(OUT, 'frame.svg'), frame);
+  }
+
   // ── 图标单件：取末帧（淡入完成态），帧1 alpha=0 不可用 ──
   for (const [name, cid] of Object.entries(NAV_ICONS)) {
     const d = exportSpriteAllFrames(cid, TMP);
@@ -574,8 +593,10 @@ function main() {
   manifest.intro = {
     fps: 30, duration: 3000,
     elements: [
-      // 空面板背景（hardlight 混合）帧1-19 淡入到 0.898
-      { img: 'intro/bg.png', rect: [0.65, -5.2, 447.55, 310.2], blend: 'hard-light',
+      // 空面板背景帧1-19 淡入到 0.898——直接引用常驻 frame.svg（整幅 viewBox
+      // 画布，full 整铺），与转场后底图同一份像素，点击换层零跳变；
+      // SVG 内 use 的 hard-light 在透明背景下是空操作，元素级不再加 blend
+      { img: 'frame.svg', full: true,
         keys: [{ o: F(1), a: 0 }, { o: F(19), a: 0.898 }, { o: 1, a: 0.898 }] },
       // 半透明膜：帧69 起淡入到 0.05，常驻不旋
       { img: 'intro/ringBig.png', rect: [104.6, 65.9, 239.8, 168.0], blend: 'plus-lighter',
@@ -612,19 +633,19 @@ function main() {
       { text: '点击画面任意处解锁', rect: [136, 244, 178, 14], cls: 'tablet-intro-wake',
         keys: [{ o: F(69), a: 0, ty: 60 }, { o: 1, a: 1, ty: 0 }] },
       // WP logo：P 两片 20-34 淡入；west 自左、paradise 自右滑入（40-54）；
-      // 59-64 整体淡出；gone 兜底组装段结束 display:none（只在一阶段露面）
+      // 保持到 0.84（组装段末），0.84-0.98 缓出；gone 兜底 display:none
       { img: 'intro/logoP1.png', rect: [134.75, 119.15, 178.55, 50.25], gone: true,
         keys: [{ o: F(20), a: 0 }, { o: F(34), a: 1 },
-               { o: F(59), a: 1 }, { o: F(64), a: 0 }] },
+               { o: 0.84, a: 1 }, { o: 0.98, a: 0 }] },
       { img: 'intro/logoP2.png', rect: [136.25, 122.55, 178.55, 50.25], gone: true,
         keys: [{ o: F(20), a: 0 }, { o: F(34), a: 1 },
-               { o: F(59), a: 1 }, { o: F(64), a: 0 }] },
+               { o: 0.84, a: 1 }, { o: 0.98, a: 0 }] },
       { img: 'intro/logoWest.png', rect: [180.9, 116.85, 123.15, 20.3], gone: true,
         keys: [{ o: F(40), a: 0, tx: -112 }, { o: F(54), a: 1, tx: 0 },
-               { o: F(59), a: 1 }, { o: F(64), a: 0 }] },
+               { o: 0.84, a: 1 }, { o: 0.98, a: 0 }] },
       { img: 'intro/logoPara.png', rect: [159.2, 160.8, 181.05, 20], gone: true,
         keys: [{ o: F(40), a: 0, tx: 92 }, { o: F(54), a: 1, tx: 0 },
-               { o: F(59), a: 1 }, { o: F(64), a: 0 }] },
+               { o: 0.84, a: 1 }, { o: 0.98, a: 0 }] },
     ]
   };
 
