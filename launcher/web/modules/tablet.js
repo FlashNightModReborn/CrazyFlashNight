@@ -20,7 +20,7 @@
   var shell = null, stage = null, bg = null, bgAlt = null, overlay = null, hoverImg = null;
   var iconLayer = null, statusEl = null;
   var navIcons = {};                // DOM 化图标层（原 XFL 按钮与图标分离，迁移后同样分离才能复现位移/淡入）
-  var ambientImgs = {};             // 常驻动画层（帧序列：退出乱码闪变 / 无人机）
+  var ambientImgs = {};             // 常驻动画层（帧序列：退出乱码闪变；无人机单帧+CSS摆动）
   var ambientTimer = null;
   var manifest = null, initData = {}, mux = null;
   var disposers = [];
@@ -54,6 +54,19 @@
     disposers.push(function () { node.removeEventListener(ev, fn); });
   }
   function status(text) { if (statusEl) statusEl.textContent = text || ''; }
+
+  // ── 原版音效：从 SWF LIBRARY/音效 恢复（button_01 按下进入、button_02 返回/退出、
+  //    intro1+expand 唤起）；Audio 元素复用，播放失败静默忽略 ──
+  var sfxCache = {};
+  function sfx(name) {
+    try {
+      var a = sfxCache[name];
+      if (!a) { a = new Audio(ASSETS + 'sounds/' + name); sfxCache[name] = a; }
+      a.currentTime = 0;
+      var p = a.play();
+      if (p && typeof p.catch === 'function') p.catch(function () {});
+    } catch (e) {}
+  }
 
   function vb(view) {
     var raw = manifest && manifest.viewBoxes && manifest.viewBoxes[view];
@@ -174,8 +187,9 @@
     });
   }
 
-  // ── 常驻动画：帧序列按视图摆放（叉的「退出」乱码闪变、联络页无人机飞行），
-  //    单一计时器驱动全部在屏图层，原速 = SWF 帧率 ──
+  // ── 常驻动画：帧序列按视图摆放（叉的「退出」乱码闪变、联络页无人机），
+  //    单一计时器驱动全部在屏图层，原速 = SWF 帧率；meta.anim 标记的单帧件
+  //    （原版旋翼补间）交给 CSS transform 摆动，不走帧序列 ──
   function applyAmbient(view) {
     var amb = (manifest && manifest.ambient) || {};
     AMBIENT_KEYS.forEach(function (key) {
@@ -184,7 +198,7 @@
       var img = ambientImgs[key];
       if (!pl) { if (img) img.hidden = true; return; }
       if (!img) {
-        img = el('img', 'tablet-ambient');
+        img = el('img', 'tablet-ambient' + (meta.anim ? ' tablet-ambient-' + meta.anim : ''));
         img.alt = ''; img.draggable = false;
         stage.insertBefore(img, overlay);
         ambientImgs[key] = img;
@@ -205,7 +219,7 @@
       for (var key in ambientImgs) {
         var img = ambientImgs[key];
         var meta = manifest && manifest.ambient && manifest.ambient[key];
-        if (!img || img.hidden || !meta || !meta.frames) continue;
+        if (!img || img.hidden || !meta || !meta.frames || meta.anim) continue;
         var fi = Math.floor(now * meta.fps / 1000) % meta.frames;
         if (img._fi !== fi) {
           img._fi = fi;
@@ -229,6 +243,8 @@
   }
   function goTo(name) {
     if (switching || name === currentView) return;
+    // 原 XFL 背景时间线按钮音：进入子页 button_01，返回主屏 button_02
+    sfx(name === 'hub' ? 'button_02.wav' : 'button_01.wav');
     switching = true;
     stage.classList.add('switching', 'entered');
     applyIconPlaces(name);   // 图标位移先行，正是原版的飞行效果
@@ -244,6 +260,7 @@
   // 关闭动画：原 XFL 按来源页播收起动画；近似为整体缩小淡出
   function exitWithAnim() {
     if (shell && !closingOnce) {
+      sfx('button_02.wav');
       closingOnce = true;
       shell.classList.add('closing');
       setTimeout(requestClose, 280);
@@ -302,7 +319,7 @@
       row.appendChild(ic);
       row.appendChild(el('span', '', m.name));
       if (m.infra) row.appendChild(el('em', 'tablet-mat-tag', '基建'));
-      listen(row, 'click', function () { selectedMaterial = i; render(); });
+      listen(row, 'click', function () { sfx('button_01.wav'); selectedMaterial = i; render(); });
       list.appendChild(row);
     });
     overlay.appendChild(list); overlay.appendChild(detail);
@@ -329,7 +346,7 @@
       var row = el('button', 'tablet-dom tablet-contact-row' + (i === selectedContact ? ' selected' : ''));
       row.type = 'button'; row.textContent = c.name;
       if (rows[i]) row.style.cssText = hsStyle('contacts', rows[i]);
-      listen(row, 'click', function () { selectedContact = i; render(); });
+      listen(row, 'click', function () { sfx('button_01.wav'); selectedContact = i; render(); });
       overlay.appendChild(row);
     });
     if (selectedContact < 0 && data.contacts.length) selectedContact = 0;
@@ -350,6 +367,7 @@
     // 用 DOM 文字盖在烘焙边框上补回标签
     if (cb.shop) {
       overlay.appendChild(hotspot('contacts', cb.shop, '进入商店', function () {
+        sfx('button_01.wav');
         status('正在呼叫商店…');
         domainRequest('open_npc_shop', { shopId: c.shopId }, {}, function (resp) {
           status(resp && resp.success === false
@@ -364,6 +382,7 @@
     // 原 XFL 按 npc_state_db_exists 显隐：快照未给出可用信号时不渲染按钮
     if (cb.ragchat && ragAvailable) {
       overlay.appendChild(hotspot('contacts', cb.ragchat, '终端通信', function () {
+        sfx('button_01.wav');
         status('正在接通终端…');
         domainRequest('open_ragchat', {}, {}, function (resp) {
           status(resp && resp.success === false
@@ -447,7 +466,7 @@
     entries.forEach(function (it, i) {
       var row = el('button', 'tablet-infra-row' + (i === selectedInfra ? ' selected' : ''));
       row.type = 'button'; row.textContent = it.name;
-      listen(row, 'click', function () { selectedInfra = i; render(); });
+      listen(row, 'click', function () { sfx('button_01.wav'); selectedInfra = i; render(); });
       list.appendChild(row);
     });
     overlay.appendChild(list);
@@ -514,7 +533,7 @@
     if (ib.upgrade) {
       var canUp = !!(it && infraSynced && lv != null && lv < it.maxLevel && !upgradeBusy);
       overlay.appendChild(hotspot('infrastructure', ib.upgrade, '升级',
-        function () { doUpgrade(it); }, !canUp));
+        function () { sfx('button_01.wav'); doUpgrade(it); }, !canUp));
     }
   }
 
@@ -588,6 +607,9 @@
       status('');
       setView('hub');
       // 唤起动画近似：原 XFL"轻按屏幕→中心展开→三图标依次淡入"
+      // 唤起音 = XFL 初始化时间线 soundlayer（intro1 → 展开段 expand）
+      sfx('intro1.wav');
+      setTimeout(function () { sfx('expand.wav'); }, 800);
       shell.classList.add('entering');
       NAV_KEYS.forEach(function (k, i) {
         var img = navIcons[k];

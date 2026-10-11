@@ -84,9 +84,17 @@
    switching 期间旧 DOM 快速淡出（original 两栏内容淡出语义），转场提交后
    新 DOM 由 entered 动画淡入 */
 .tablet-stage.switching .tablet-overlay { pointer-events: none; }
+/* 旧视图烘焙底图随转场整体淡出（bgAlt 同步承载新视图淡入）：
+   面板图形不再残留到转场最后一刻才瞬切；ambient 装饰层同隐同现 */
+.tablet-bg { transition: var(--wb-tablet-background-transition); }
+.tablet-stage.switching .tablet-bg:not(.tablet-bg-alt) { opacity: 0; }
 .tablet-dom { transition: var(--wb-tablet-content-transition); }
-.tablet-stage.switching .tablet-dom { opacity: 0; }
-.tablet-stage.entered .tablet-dom { animation: var(--wb-tablet-content-enter); }
+.tablet-ambient { transition: var(--wb-tablet-content-transition); }
+.tablet-stage.switching .tablet-dom,
+.tablet-stage.switching .tablet-ambient { opacity: 0; }
+/* entered 只在转场提交后作用于新 DOM：switching 同帧叠加时若照旧播放入场动画，
+   animation 会覆盖 switching 的 opacity:0，导致旧内容"消失→闪现→再消失" */
+.tablet-stage.entered:not(.switching) .tablet-dom { animation: var(--wb-tablet-content-enter); }
 @keyframes tablet-in {
   from { opacity: 0; transform: translateY(5px); }
   to { opacity: 1; transform: none; }
@@ -112,8 +120,16 @@
 .tablet-dom::-webkit-scrollbar-thumb { background: var(--wb-semantic-tablet-scroll-thumb); border-radius: 3px; }
 .tablet-dom::-webkit-scrollbar-track { background: var(--wb-semantic-tablet-scroll-track); }
 
-/* 常驻动画层（退出乱码闪变/无人机帧序列） */
+/* 常驻动画层（退出乱码闪变帧序列；无人机单帧 + CSS 摆动模拟原旋翼补间） */
 .tablet-ambient { position: absolute; z-index: 2; pointer-events: none; }
+.tablet-ambient-drone-wiggle {
+  transform-origin: 50% 45%;
+  animation: tablet-drone-wiggle 1.7s ease-in-out infinite alternate;
+}
+@keyframes tablet-drone-wiggle {
+  from { transform: rotate(-1.1deg) scaleY(0.985); }
+  to { transform: rotate(1.1deg) scaleY(1.015); }
+}
 
 /* 联络行：名字文字盖在烘焙行槽位上（原版 = 蓝色名字 + 透明按钮） */
 .tablet-contact-row {

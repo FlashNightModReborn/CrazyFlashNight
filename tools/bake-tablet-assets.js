@@ -25,7 +25,7 @@ const HIDE_ALWAYS = ['90', '91', '93', '109', '116', '137'];
 // 常驻动画件从背景剥离：叉整体(145→内部143乱码循环)与无人机(217)改由 DOM 帧序列驱动
 const VIEW_DROP = {
   hub: [...HIDE_ALWAYS, '155', '165', '176', '145'],
-  infrastructure: [...HIDE_ALWAYS, '155', '165', '176', '145'],
+  infrastructure: [...HIDE_ALWAYS, '155', '165', '176', '145', '197'],
   contacts: [...HIDE_ALWAYS, '155', '165', '176', '145', '217'],
   encyclopedia: [...HIDE_ALWAYS, '155', '165', '176', '145', '249', '259', '269', '279', '294', '304'],
   materials: [...HIDE_ALWAYS, '155', '165', '176', '145', '249', '259', '269', '279', '294', '304'],
@@ -68,9 +68,11 @@ const INFRA_SCROLL = { rail: '199', thumb: '201' };
 const INFRA_ROW = { w: 120, h: 20, pitch: 25, rows: 8 };
 // 常驻动画：自包含 sprite 帧导出（内部无运行时 _visible 元件，帧序列干净）
 // exit-glow = 叉整体(145)内部的「退出」乱码闪变循环；drone = 联络视图的无人机飞行循环
+// css 标记：原版是旋翼摆动补间而非帧序列，80 帧位图冗余——只取第 1 帧，
+// Web 侧以 CSS transform 模拟摆动（tablet.css .tablet-ambient-drone-wiggle）
 const AMBIENT_EXPORTS = [
   { key: 'exitGlow', cid: '143', zoom: 1 },
-  { key: 'drone', cid: '217', zoom: 0.15 },
+  { key: 'drone', cid: '217', zoom: 0.15, css: 'drone-wiggle' },
 ];
 
 function exportSpriteAllFrames(characterId, cacheDir) {
@@ -536,10 +538,25 @@ function main() {
       .sort((x, y) => parseInt(x) - parseInt(y));
     const od = path.join(OUT, 'ambient', a.key);
     fs.mkdirSync(od, { recursive: true });
-    frames.forEach((f, i) => fs.copyFileSync(
+    const pick = a.css ? frames.slice(0, 1) : frames;
+    pick.forEach((f, i) => fs.copyFileSync(
       path.join(d, f),
       path.join(od, 'f' + String(i + 1).padStart(2, '0') + '.png')));
-    ambient[a.key].frames = frames.length;
+    ambient[a.key].frames = pick.length;
+    if (a.css) ambient[a.key].anim = a.css;
+  }
+
+  // ── 原版音效：LIBRARY/音效 里实际引用的 4 个 wav → sounds/
+  //    （switch/humloop 在该 UI 未引用，不带出）──
+  const SOUND_FILES = ['button_01.wav', 'button_02.wav', 'intro1.wav', 'expand.wav'];
+  const sndSrc = path.join(ROOT, 'flashswf', 'UI', '平板电脑界面', 'LIBRARY', '音效');
+  const sndOut = path.join(OUT, 'sounds');
+  if (fs.existsSync(sndSrc)) {
+    fs.mkdirSync(sndOut, { recursive: true });
+    for (const f of SOUND_FILES) {
+      const p = path.join(sndSrc, f);
+      if (fs.existsSync(p)) fs.copyFileSync(p, path.join(sndOut, f));
+    }
   }
 
   // ── 数据 ──
