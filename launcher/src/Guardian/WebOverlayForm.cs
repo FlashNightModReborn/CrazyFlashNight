@@ -7306,12 +7306,17 @@ namespace CF7Launcher.Guardian
             string messagePanel = parsed.Value<string>("panel");
             string messagePanelInstanceId =
                 parsed.Value<string>("panelInstanceId");
+            // flat 导航信封是 crafting↔npcshop 的无 domain 专用通道（crafting-runtime.js
+            // 不携带 domain）。tablet 等受管域的同名域命令（如 tablet 联络页的
+            // open_npc_shop → tabletOpenNpcShop）带 domain 字段，必须放行去各自
+            // domain 路由，否则被此分支吞掉后无回包（Web 侧 client_timeout）。
             bool materialShopFlatNavigation =
-                cmd == "open_npc_shop"
+                parsed["domain"] == null
+                && (cmd == "open_npc_shop"
                 || cmd == "open_procurement_shop"
                 || cmd == "open_procurement_kshop"
                 || cmd == "return_crafting_materials"
-                || cmd == "return_crafting_recipe";
+                || cmd == "return_crafting_recipe");
             if (cmd != "close"
                 && !materialShopFlatNavigation
                 && IsInventoryOwnerPanel(messagePanel)
@@ -7402,8 +7407,10 @@ namespace CF7Launcher.Guardian
                 }
             }
             LogManager.Log(FormatPanelEnvelopeLog(cmd, json));
-            if (cmd == "open_npc_shop" || cmd == "open_procurement_shop"
-                || cmd == "open_procurement_kshop")
+            // 同 materialShopFlatNavigation 的 domain 豁免：受管域同名命令放行
+            if (parsed["domain"] == null
+                && (cmd == "open_npc_shop" || cmd == "open_procurement_shop"
+                || cmd == "open_procurement_kshop"))
             {
                 if (_materialShopNavigationCoordinator != null)
                 {
@@ -7428,7 +7435,8 @@ namespace CF7Launcher.Guardian
                 }
                 return;
             }
-            if (cmd == "return_crafting_materials" || cmd == "return_crafting_recipe")
+            if (parsed["domain"] == null
+                && (cmd == "return_crafting_materials" || cmd == "return_crafting_recipe"))
             {
                 if (_materialShopNavigationCoordinator != null)
                 {

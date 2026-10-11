@@ -2615,15 +2615,6 @@
           "weight": 9
         },
         {
-          "type": "兵种363",
-          "name": "EXUSIAI支援型",
-          "spritename": "敌人-EXUSIAI支援型",
-          "isHostile": true,
-          "minLevel": 45,
-          "maxLevel": 60,
-          "weight": 9
-        },
-        {
           "type": "兵种198",
           "name": "暴走克隆软化僵尸",
           "spritename": "敌人-软化僵尸",
@@ -2705,6 +2696,15 @@
           "spritename": "敌人-忍者BOSS",
           "isHostile": true,
           "minLevel": 60,
+          "maxLevel": 60,
+          "weight": 7
+        },
+        {
+          "type": "兵种363",
+          "name": "EXUSIAI支援型",
+          "spritename": "敌人-EXUSIAI支援型",
+          "isHostile": true,
+          "minLevel": 45,
           "maxLevel": 60,
           "weight": 7
         },
@@ -2881,24 +2881,6 @@
           }
         },
         {
-          "type": "兵种364",
-          "name": "EXUSIAI突击型",
-          "spritename": "敌人-EXUSIAI突击型",
-          "isHostile": true,
-          "minLevel": 45,
-          "maxLevel": 60,
-          "weight": 5
-        },
-        {
-          "type": "兵种362",
-          "name": "EXUSIAI素体",
-          "spritename": "敌人-EXUSIAI素体",
-          "isHostile": true,
-          "minLevel": 60,
-          "maxLevel": 60,
-          "weight": 5
-        },
-        {
           "type": "兵种197",
           "name": "暴走克隆僵尸武士",
           "spritename": "敌人-武士大僵尸",
@@ -2983,7 +2965,10 @@
           "isHostile": false,
           "minLevel": 50,
           "maxLevel": 55,
-          "weight": 4
+          "weight": 4,
+          "Parameters": {
+            "hpEmergency": 0.5
+          }
         },
         {
           "type": "兵种107",
@@ -3090,12 +3075,33 @@
           "weight": 3
         },
         {
+          "type": "兵种364",
+          "name": "EXUSIAI突击型",
+          "spritename": "敌人-EXUSIAI突击型",
+          "isHostile": true,
+          "minLevel": 45,
+          "maxLevel": 60,
+          "weight": 3
+        },
+        {
           "type": "兵种257",
           "name": "Lee",
           "spritename": "敌人-李小龙",
           "isHostile": false,
           "minLevel": 55,
           "maxLevel": 55,
+          "weight": 3,
+          "Parameters": {
+            "hpEmergency": 0.5
+          }
+        },
+        {
+          "type": "兵种362",
+          "name": "EXUSIAI素体",
+          "spritename": "敌人-EXUSIAI素体",
+          "isHostile": true,
+          "minLevel": 60,
+          "maxLevel": 60,
           "weight": 3
         },
         {
@@ -3284,7 +3290,46 @@
           "isHostile": false,
           "minLevel": 55,
           "maxLevel": 55,
-          "weight": 2
+          "weight": 2,
+          "Parameters": {
+            "hpEmergency": 0.5
+          }
+        },
+        {
+          "type": "兵种362",
+          "name": "EXUSIAI素体",
+          "spritename": "敌人-EXUSIAI素体",
+          "isHostile": true,
+          "minLevel": 60,
+          "maxLevel": 60,
+          "weight": 2,
+          "Parameters": {
+            "方向": "左"
+          }
+        },
+        {
+          "type": "兵种363",
+          "name": "EXUSIAI支援型",
+          "spritename": "敌人-EXUSIAI支援型",
+          "isHostile": true,
+          "minLevel": 60,
+          "maxLevel": 60,
+          "weight": 2,
+          "Parameters": {
+            "方向": "左"
+          }
+        },
+        {
+          "type": "兵种364",
+          "name": "EXUSIAI突击型",
+          "spritename": "敌人-EXUSIAI突击型",
+          "isHostile": true,
+          "minLevel": 60,
+          "maxLevel": 60,
+          "weight": 2,
+          "Parameters": {
+            "方向": "左"
+          }
         },
         {
           "type": "兵种70",
@@ -3872,7 +3917,7 @@
           }
         }
       ],
-      "unitCount": 138
+      "unitCount": 141
     },
     "异形": {
       "teamCount": 262,
@@ -88564,7 +88609,10 @@
           "count": 1,
           "random": false,
           "isHostile": false,
-          "humanoid": false
+          "humanoid": false,
+          "parameters": {
+            "hpEmergency": 0.5
+          }
         },
         {
           "type": "兵种162",
@@ -88624,7 +88672,10 @@
           "count": 1,
           "random": false,
           "isHostile": false,
-          "humanoid": false
+          "humanoid": false,
+          "parameters": {
+            "hpEmergency": 0.5
+          }
         },
         {
           "type": "兵种167",
@@ -88684,7 +88735,10 @@
           "count": 1,
           "random": false,
           "isHostile": false,
-          "humanoid": false
+          "humanoid": false,
+          "parameters": {
+            "hpEmergency": 0.5
+          }
         },
         {
           "type": "兵种378",
@@ -88695,7 +88749,10 @@
           "count": 1,
           "random": false,
           "isHostile": false,
-          "humanoid": false
+          "humanoid": false,
+          "parameters": {
+            "hpEmergency": 0.5
+          }
         },
         {
           "type": "兵种175",
@@ -88755,7 +88812,10 @@
           "count": 1,
           "random": false,
           "isHostile": false,
-          "humanoid": false
+          "humanoid": false,
+          "parameters": {
+            "hpEmergency": 0.5
+          }
         },
         {
           "type": "兵种362",
@@ -88804,7 +88864,10 @@
           "count": 1,
           "random": false,
           "isHostile": false,
-          "humanoid": false
+          "humanoid": false,
+          "parameters": {
+            "hpEmergency": 0.5
+          }
         },
         {
           "type": "兵种257",
@@ -88815,7 +88878,10 @@
           "count": 1,
           "random": false,
           "isHostile": false,
-          "humanoid": false
+          "humanoid": false,
+          "parameters": {
+            "hpEmergency": 0.5
+          }
         },
         {
           "type": "兵种381",
@@ -89243,7 +89309,10 @@
           "count": 1,
           "random": false,
           "isHostile": false,
-          "humanoid": false
+          "humanoid": false,
+          "parameters": {
+            "hpEmergency": 0.5
+          }
         },
         {
           "type": "兵种257",
@@ -89254,7 +89323,10 @@
           "count": 1,
           "random": false,
           "isHostile": false,
-          "humanoid": false
+          "humanoid": false,
+          "parameters": {
+            "hpEmergency": 0.5
+          }
         },
         {
           "type": "兵种381",
@@ -89279,7 +89351,10 @@
           "count": 2,
           "random": false,
           "isHostile": true,
-          "humanoid": false
+          "humanoid": false,
+          "parameters": {
+            "方向": "左"
+          }
         },
         {
           "type": "兵种363",
@@ -89290,7 +89365,10 @@
           "count": 2,
           "random": false,
           "isHostile": true,
-          "humanoid": false
+          "humanoid": false,
+          "parameters": {
+            "方向": "左"
+          }
         },
         {
           "type": "兵种364",
@@ -89301,7 +89379,10 @@
           "count": 2,
           "random": false,
           "isHostile": true,
-          "humanoid": false
+          "humanoid": false,
+          "parameters": {
+            "方向": "左"
+          }
         }
       ],
       "unitCount": 9,

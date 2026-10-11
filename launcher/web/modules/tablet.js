@@ -18,6 +18,7 @@
   var VIEW_ORDER = ['hub', 'infrastructure', 'contacts', 'encyclopedia', 'materials'];
 
   var shell = null, stage = null, bg = null, bgAlt = null, overlay = null, hoverImg = null;
+  var introWrap = null;             // 启动动画层（原版「平板初始化」逐元件 DOM 重放）
   var iconLayer = null, statusEl = null;
   var navIcons = {};                // DOM 化图标层（原 XFL 按钮与图标分离，迁移后同样分离才能复现位移/淡入）
   var ambientImgs = {};             // 常驻动画层（帧序列：退出乱码闪变；无人机单帧+CSS摆动）
@@ -35,6 +36,7 @@
   };
   var AMBIENT_KEYS = ['exitGlow', 'drone'];
   var TRANS_MS = 380;               // 原 XFL 进入/返回约 15 帧@30fps ≈ 0.5s，取 0.38s 近似
+  var INTRO_MS = 3000;              // 原版初始化组装段 90 帧@30fps（spin 等待段由点击结束）
   var data = { contacts: [], materials: [], infrastructure: [] };
   var infraLevels = {};           // name→level；{} = 未同步快照
   var infraSynced = false;        // 是否已收到 AS2 基建快照
@@ -144,6 +146,14 @@
     if (payload) for (var k in payload) if (payload.hasOwnProperty(k)) body[k] = payload[k];
     return mux.request(cmd, body, options, callback);
   }
+  // 看门狗：受理类命令（商店/终端）若 Host 真开了新面板，本 webview 会被替换，
+  // 计时器随文档一起死；6s 后仍活着说明没开出来，才补提示
+  function armSwitchWatchdog(failText) {
+    setTimeout(function () {
+      if (!shell || !shell.isConnected) return;
+      status(failText);
+    }, 6000);
+  }
   function respErrorText(resp) {
     var err = resp && resp.error;
     return ({
@@ -235,11 +245,9 @@
     bgAlt.src = src;
     bgAlt.hidden = false;
     requestAnimationFrame(function () { bgAlt.classList.add('on'); });
-    setTimeout(function () {
-      bg.src = src;
-      bgAlt.classList.remove('on');
-      bgAlt.hidden = true;
-    }, TRANS_MS + 60);
+    // bgAlt 的撤下统一在 goTo 的提交点做——bg 同帧换 src 并瞬回不透明，
+    // 若多留 bgAlt 一段余量，两幅同图叠加烘焙 SVG 的半透明区会二次混合
+    // （转场收尾瞬间整体变亮）
   }
   function goTo(name) {
     if (switching || name === currentView) return;
@@ -250,9 +258,11 @@
     applyIconPlaces(name);   // 图标位移先行，正是原版的飞行效果
     crossfadeBg(name);
     setTimeout(function () {
-      setView(name);
+      setView(name);           // bg.src 同帧切为新视图
       switching = false;
       stage.classList.remove('switching');
+      // bgAlt 同步 hidden 撤下（display:none 无过渡），不留叠印窗口
+      if (bgAlt) { bgAlt.hidden = true; bgAlt.classList.remove('on'); }
     }, TRANS_MS);
     // entered 保留到 DOM 淡入播完再摘，避免选行重渲染也重播入场
     setTimeout(function () { stage.classList.remove('entered'); }, TRANS_MS + 350);
@@ -319,7 +329,7 @@
       row.appendChild(ic);
       row.appendChild(el('span', '', m.name));
       if (m.infra) row.appendChild(el('em', 'tablet-mat-tag', '基建'));
-      listen(row, 'click', function () { sfx('button_01.wav'); selectedMaterial = i; render(); });
+      listen(row, 'click', function () { selectedMaterial = i; render(); });
       list.appendChild(row);
     });
     overlay.appendChild(list); overlay.appendChild(detail);
@@ -346,7 +356,7 @@
       var row = el('button', 'tablet-dom tablet-contact-row' + (i === selectedContact ? ' selected' : ''));
       row.type = 'button'; row.textContent = c.name;
       if (rows[i]) row.style.cssText = hsStyle('contacts', rows[i]);
-      listen(row, 'click', function () { sfx('button_01.wav'); selectedContact = i; render(); });
+      listen(row, 'click', function () { selectedContact = i; render(); });
       overlay.appendChild(row);
     });
     if (selectedContact < 0 && data.contacts.length) selectedContact = 0;
@@ -370,8 +380,14 @@
         sfx('button_01.wav');
         status('正在呼叫商店…');
         domainRequest('open_npc_shop', { shopId: c.shopId }, {}, function (resp) {
-          status(resp && resp.success === false
-            ? '商店链路：' + respErrorText(resp) : '商店面板已受理');
+          if (resp && resp.success === false) {
+            status('商店链路：' + respErrorText(resp));
+            return;
+          }
+          status('商店面板已受理');
+          // 回执只证明 AS2 已发出 panel_request；受理成功后本 webview 会被
+          // npcshop 面板换掉。6s 后本文档仍活着 = 未开出来，给真实原因提示
+          armSwitchWatchdog('商店面板未打开：商店不存在或入口被占用');
         });
       }));
       var shopText = el('div', 'tablet-dom tablet-contact-btnlabel', '进入商店');
@@ -385,8 +401,14 @@
         sfx('button_01.wav');
         status('正在接通终端…');
         domainRequest('open_ragchat', {}, {}, function (resp) {
-          status(resp && resp.success === false
-            ? '终端链路：' + respErrorText(resp) : '通信终端已受理');
+          if (resp && resp.success === false) {
+            status('终端链路：' + respErrorText(resp));
+            return;
+          }
+          status('通信终端已受理');
+          // 就绪失败（CFN-RAG-v*.exe 缺失/未就绪）原本只回 AS2 toast，
+          // 被 WebView 挡住不可见——6s 未换面板即在状态栏给出可执行提示
+          armSwitchWatchdog('终端未响应：请确认 CFN-RAG 通讯终端程序已就绪');
         });
       }));
       var ragText = el('div', 'tablet-dom tablet-contact-btnlabel', '终端通信');
@@ -466,7 +488,7 @@
     entries.forEach(function (it, i) {
       var row = el('button', 'tablet-infra-row' + (i === selectedInfra ? ' selected' : ''));
       row.type = 'button'; row.textContent = it.name;
-      listen(row, 'click', function () { sfx('button_01.wav'); selectedInfra = i; render(); });
+      listen(row, 'click', function () { selectedInfra = i; render(); });
       list.appendChild(row);
     });
     overlay.appendChild(list);
@@ -555,6 +577,107 @@
     });
   }
 
+  // ── 启动动画：manifest.intro 逐元件 WAAPI 重放原版「平板初始化」──
+  //    两段式：①组装补间（bg 淡入 → WP logo 扫入淡出 → 环件组装）播完 3s；
+  //    ②带 spin 标记的元件转入绕心自旋常驻等待，点击屏幕才整体淡出 →
+  //    hub 底图与三图标淡入（原 XFL"轻按屏幕唤起按键"语义）。
+  //    keys: o=时间占比 a=透明度 tx/ty=自身%位移 s=缩放 r=旋转度 c=裁剪窗
+  var introAnims = [];
+  function keyTransform(k) {
+    return 'translate(' + (k.tx || 0) + '%,' + (k.ty || 0) + '%)'
+      + ' scale(' + (k.s != null ? k.s : 1) + ') rotate(' + (k.r || 0) + 'deg)';
+  }
+  function introDone(wrap) {
+    if (wrap._done) return;
+    wrap._done = true;
+    // 点击屏幕：只去掉动画元件——环件/膜/红字各自淡出；bg.png 保持原位
+    // 作背景不动，淡出结束才一次性换 hub.svg（同一帧艺术单次切图）。
+    // 旧做法是 bg.png 淡出与 hub.svg 淡入双层交叉，两幅近似但不重合的
+    // 面板边框错位重影 → 明显闪烁/位置跳变
+    sfx('button_01.wav');
+    startAmbient();
+    introAnims.forEach(function (a) { try { a.cancel(); } catch (e) {} });
+    introAnims.length = 0;
+    var els = wrap.querySelectorAll('.tablet-intro-el');
+    for (var i = 0; i < els.length; i++) {
+      if (els[i].src && els[i].src.indexOf('intro/bg.png') >= 0) continue; // 背景不动
+      (function (e2) {
+        try {
+          e2.animate([{ opacity: 1 }, { opacity: 0 }],
+            { duration: 300, fill: 'forwards', easing: 'ease-out' });
+        } catch (e) { e2.style.opacity = '0'; }
+      })(els[i]);
+    }
+    setTimeout(function () {
+      bg.style.visibility = '';                 // 一次性换上 hub.svg
+      if (wrap.parentNode) wrap.parentNode.removeChild(wrap);
+      if (introWrap === wrap) introWrap = null;
+      NAV_KEYS.forEach(function (k, i) {        // 图标交错淡入（也是淡入）
+        var img = navIcons[k];
+        if (!img) return;
+        img.hidden = false;
+        img.style.transitionDelay = (i * 70) + 'ms';
+        requestAnimationFrame(function () { img.classList.add('shown'); });
+      });
+      setTimeout(function () {
+        NAV_KEYS.forEach(function (k) { if (navIcons[k]) navIcons[k].style.transitionDelay = '0ms'; });
+      }, 900);
+    }, 340);
+  }
+  function playIntro() {
+    var spec = manifest && manifest.intro;
+    if (!spec || !spec.elements || !stage || !stage.isConnected) return;
+    if (introWrap) { try { introWrap.remove(); } catch (e) {} }
+    var wrap = el('div', 'tablet-intro-wrap');
+    var dur = spec.duration || 3000;
+    spec.elements.forEach(function (e2) {
+      var img;
+      if (e2.text != null) {
+        img = el('div', 'tablet-intro-el' + (e2.cls ? ' ' + e2.cls : ''), e2.text);
+      } else {
+        img = el('img', 'tablet-intro-el');
+        img.alt = ''; img.draggable = false;
+        img.src = ASSETS + e2.img;
+      }
+      var r = e2.rect;
+      img.style.cssText = 'left:' + (r[0] / 450 * 100) + '%;top:' + (r[1] / 300 * 100)
+        + '%;width:' + (r[2] / 450 * 100) + '%;height:' + (r[3] / 300 * 100) + '%;'
+        + (e2.blend ? 'mix-blend-mode:' + e2.blend + ';' : '');
+      var keys = e2.keys.map(function (k) {
+        return { offset: k.o, opacity: (k.a != null ? k.a : 1), transform: keyTransform(k) };
+      });
+      try {
+        var a = img.animate(keys, {
+          duration: dur, fill: 'both',
+          easing: 'cubic-bezier(.22,.61,.36,1)'   // 原 XFL CustomEase ≈ 缓出
+        });
+        introAnims.push(a);
+        // 第二阶段：组装落位后绕心自旋常驻（等待点按）
+        if (e2.spin) {
+          var lastK = e2.keys[e2.keys.length - 1];
+          var fromT = keyTransform(lastK);
+          var toT = keyTransform({ tx: lastK.tx, ty: lastK.ty, s: lastK.s,
+            r: (lastK.r || 0) + e2.spin.r });
+          var loopSpec = { duration: e2.spin.ms, iterations: Infinity, easing: 'linear' };
+          a.finished.then(function () {
+            if (!img.isConnected) return;
+            try {
+              var loop = img.animate(
+                [{ transform: fromT }, { transform: toT }], loopSpec);
+              introAnims.push(loop);
+            } catch (e) {}
+          }).catch(function () {});
+        }
+      } catch (e) {}
+      // gone：只在一阶段露面的元件，组装段播完兜底隐藏（不受动画失败影响）
+      if (e2.gone) setTimeout(function () { img.style.display = 'none'; }, dur + 60);
+      wrap.appendChild(img);
+    });
+    stage.appendChild(wrap);
+    introWrap = wrap;
+    listen(wrap, 'click', function () { introDone(wrap); });
+  }
+
   // ── 生命周期 ──
   function requestClose() {
     try { Panels.close(); } catch (e) {}
@@ -606,23 +729,16 @@
       if (!shell.isConnected) return;
       status('');
       setView('hub');
-      // 唤起动画近似：原 XFL"轻按屏幕→中心展开→三图标依次淡入"
-      // 唤起音 = XFL 初始化时间线 soundlayer（intro1 → 展开段 expand）
+      // 启动动画 = 原版「平板初始化」(cid88) 逐元件重建：manifest.intro 各元件
+      // 按原 XFL 关键帧重放透明度/位移/旋转/裁剪扫入（WAAPI）。开场舞台应全透
+      // ——intro 自带的空面板背景从 alpha0 淡入，期间藏起 hub 底图，INTRO_MS 后
+      // 撤层归位
+      // 唤起音 = XFL 初始化时间线 soundlayer（帧1 intro1、帧70 expand≈2333ms）
       sfx('intro1.wav');
-      setTimeout(function () { sfx('expand.wav'); }, 800);
-      shell.classList.add('entering');
-      NAV_KEYS.forEach(function (k, i) {
-        var img = navIcons[k];
-        if (!img) return;
-        img.hidden = false;
-        img.style.transitionDelay = (160 + i * 70) + 'ms';
-        requestAnimationFrame(function () { img.classList.add('shown'); });
-      });
-      requestAnimationFrame(function () { shell.classList.remove('entering'); });
-      setTimeout(function () {
-        NAV_KEYS.forEach(function (k) { if (navIcons[k]) navIcons[k].style.transitionDelay = '0ms'; });
-      }, 900);
-      startAmbient();
+      setTimeout(function () { sfx('expand.wav'); }, 2330);
+      bg.style.visibility = 'hidden';
+      playIntro();
+      // 第二阶段常驻等待点按：introDone 里才恢复 hub 底图并淡入图标
       // 始终向 AS2 拉一次权威快照：initData 注入仅作打开前乐观投影
       requestSnapshot();
     }).catch(function () { status('平板数据载入失败'); });
@@ -638,8 +754,12 @@
     if (ambientTimer) { clearInterval(ambientTimer); ambientTimer = null; }
     for (var key in ambientImgs) { try { ambientImgs[key].remove(); } catch (e) {} }
     ambientImgs = {};
-    if (shell) shell.classList.remove('entering', 'closing');
+    if (shell) shell.classList.remove('closing');
     if (stage) stage.classList.remove('switching');
+    if (introWrap) { try { introWrap.remove(); } catch (e) {} introWrap = null; }
+    introAnims.forEach(function (a) { try { a.cancel(); } catch (e) {} });
+    introAnims.length = 0;
+    if (bg) bg.style.visibility = '';
     NAV_KEYS.forEach(function (k) {
       var img = navIcons[k];
       if (img) { img.classList.remove('shown'); img.hidden = true; }

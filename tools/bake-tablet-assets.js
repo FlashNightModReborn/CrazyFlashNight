@@ -546,6 +546,88 @@ function main() {
     if (a.css) ambient[a.key].anim = a.css;
   }
 
+  // ── 启动动画：「平板初始化」(cid88) 逐元件拆解重建。
+  //    各动画件独立导出 PNG（intro/<key>.png），关键帧按 XFL 时间线写进
+  //    manifest.intro（offset=f/90）：面板按变换/透明度/裁剪重放原版
+  //    透明开场 → 空面板淡入 → WP logo 遮罩扫入 → 环件组装 → 空闲 ──
+  const INTRO_ELEMENTS = {
+    bg: '41', logoP1: '45', logoP2: '47', logoWest: '53', logoPara: '58',
+    ringBig: '60', ring1: '62', ring7l: '64', ring7r: '66', ball: '67',
+    ring2: '72', ring3: '77', ring5: '84', ring6: '86', ring4: '87'
+  };
+  const introElemsTmp = path.join(TMP, 'intro-elems');
+  const introOut = path.join(OUT, 'intro');
+  fs.mkdirSync(introElemsTmp, { recursive: true });
+  fs.mkdirSync(introOut, { recursive: true });
+  for (const [key, cid] of Object.entries(INTRO_ELEMENTS)) {
+    const d = exportSpritePngFrames(cid, introElemsTmp, 1);
+    const frames = fs.readdirSync(d).filter(f => /^\d+\.png$/.test(f))
+      .sort((a, b) => parseInt(a) - parseInt(b));
+    if (frames.length) fs.copyFileSync(path.join(d, frames[0]), path.join(introOut, key + '.png'));
+  }
+  // rect = 末帧摆放矩形（sprite 局部 450×300 坐标系）；blend：XFL add→plus-lighter。
+  // keys: o=offset(帧/90) a=透明度 tx/ty=自身%位移 s=缩放 r=旋转度
+  // spin: 组装落位后的常驻自旋（deg/圈, ms/圈）——第二阶段环件绕心自旋
+  //   等待点按，点按后整体淡出才进空闲主屏；膜/七环括号不旋
+  // gone: 只在一阶段露面的元件，组装段播完兜底 display:none
+  const F = n => +(n / 90).toFixed(3);
+  manifest.intro = {
+    fps: 30, duration: 3000,
+    elements: [
+      // 空面板背景（hardlight 混合）帧1-19 淡入到 0.898
+      { img: 'intro/bg.png', rect: [0.65, -5.2, 447.55, 310.2], blend: 'hard-light',
+        keys: [{ o: F(1), a: 0 }, { o: F(19), a: 0.898 }, { o: 1, a: 0.898 }] },
+      // 半透明膜：帧69 起淡入到 0.05，常驻不旋
+      { img: 'intro/ringBig.png', rect: [104.6, 65.9, 239.8, 168.0], blend: 'plus-lighter',
+        keys: [{ o: F(69), a: 0 }, { o: 1, a: 0.05 }] },
+      // 内环一~六 + 中心球：帧69/77 起组装落位，随后绕心自旋常驻（顺逆交替、异速）
+      { img: 'intro/ring1.png', rect: [203.3, 128.5, 42.57, 40.0], blend: 'plus-lighter',
+        spin: { r: 360, ms: 6000 },
+        keys: [{ o: F(69), a: 1, s: 1, r: 0 }, { o: F(77), s: 1, r: 360 },
+               { o: F(77), s: 0.09, r: 360 }, { o: 1, s: 1, r: 0 }] },
+      { img: 'intro/ring2.png', rect: [173.35, 98.65, 93.5, 102.5], blend: 'plus-lighter',
+        spin: { r: -360, ms: 9000 },
+        keys: [{ o: F(77), a: 0, s: 0.055, r: 0, tx: 4.7 }, { o: 1, a: 1, s: 1, r: -360, tx: 0 }] },
+      { img: 'intro/ring3.png', rect: [170.4, 95.7, 108.4, 108.4], blend: 'plus-lighter',
+        spin: { r: 360, ms: 7500 },
+        keys: [{ o: F(77), a: 0, s: 0.071, r: 0 }, { o: 1, a: 1, s: 1, r: -360 }] },
+      { img: 'intro/ring4.png', rect: [157.06, 82.08, 136.0, 135.9], blend: 'plus-lighter',
+        spin: { r: -360, ms: 11000 },
+        keys: [{ o: F(77), a: 0, s: 0.068, r: 0 }, { o: 1, a: 1, s: 1, r: -360 }] },
+      { img: 'intro/ring5.png', rect: [150.95, 76.1, 147.5, 147.5], blend: 'plus-lighter',
+        spin: { r: 360, ms: 8500 },
+        keys: [{ o: F(77), a: 0, s: 0.056, r: 0 }, { o: 1, a: 1, s: 1, r: -360 }] },
+      { img: 'intro/ring6.png', rect: [110.15, 69.6, 228.8, 160.6], blend: 'plus-lighter',
+        spin: { r: -360, ms: 14000 },
+        keys: [{ o: F(77), a: 0, s: 0.054, r: 0 }, { o: 1, a: 1, s: 1, r: -360 }] },
+      // 两端括号状元件（七环左右片）69 帧起滑开，常驻不旋
+      { img: 'intro/ring7l.png', rect: [84, 63, 58.15, 172.9], blend: 'plus-lighter',
+        keys: [{ o: F(69), a: 0.05, tx: 140 }, { o: 1, a: 1, tx: 0 }] },
+      { img: 'intro/ring7r.png', rect: [306.9, 62.9, 58.2, 173], blend: 'plus-lighter',
+        keys: [{ o: F(69), a: 0.05, tx: -138 }, { o: 1, a: 1, tx: 0 }] },
+      { img: 'intro/ball.png', rect: [222.55, 147.85, 4.17, 4.14], blend: 'plus-lighter',
+        spin: { r: 360, ms: 8000 },
+        keys: [{ o: F(69), a: 0, r: 0 }, { o: 1, a: 1, r: 360 }] },
+      // 二阶段红字提示（原版"轻按屏幕唤起按键"文案位）
+      { text: '点击画面任意处解锁', rect: [136, 244, 178, 14], cls: 'tablet-intro-wake',
+        keys: [{ o: F(69), a: 0, ty: 60 }, { o: 1, a: 1, ty: 0 }] },
+      // WP logo：P 两片 20-34 淡入；west 自左、paradise 自右滑入（40-54）；
+      // 59-64 整体淡出；gone 兜底组装段结束 display:none（只在一阶段露面）
+      { img: 'intro/logoP1.png', rect: [134.75, 119.15, 178.55, 50.25], gone: true,
+        keys: [{ o: F(20), a: 0 }, { o: F(34), a: 1 },
+               { o: F(59), a: 1 }, { o: F(64), a: 0 }] },
+      { img: 'intro/logoP2.png', rect: [136.25, 122.55, 178.55, 50.25], gone: true,
+        keys: [{ o: F(20), a: 0 }, { o: F(34), a: 1 },
+               { o: F(59), a: 1 }, { o: F(64), a: 0 }] },
+      { img: 'intro/logoWest.png', rect: [180.9, 116.85, 123.15, 20.3], gone: true,
+        keys: [{ o: F(40), a: 0, tx: -112 }, { o: F(54), a: 1, tx: 0 },
+               { o: F(59), a: 1 }, { o: F(64), a: 0 }] },
+      { img: 'intro/logoPara.png', rect: [159.2, 160.8, 181.05, 20], gone: true,
+        keys: [{ o: F(40), a: 0, tx: 92 }, { o: F(54), a: 1, tx: 0 },
+               { o: F(59), a: 1 }, { o: F(64), a: 0 }] },
+    ]
+  };
+
   // ── 原版音效：LIBRARY/音效 里实际引用的 4 个 wav → sounds/
   //    （switch/humloop 在该 UI 未引用，不带出）──
   const SOUND_FILES = ['button_01.wav', 'button_02.wav', 'intro1.wav', 'expand.wav'];
