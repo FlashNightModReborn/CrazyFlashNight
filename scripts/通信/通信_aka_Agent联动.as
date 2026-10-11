@@ -206,14 +206,323 @@ _root.agent.同步任务热更新 = function(fileVer:Number):Void {
     });
 };
 
-// G2-1 载荷投影：ragchat initData 与 rag_bind_refresh 共用的三键形状。
-// Host 白名单（LauncherCommandRouter.TryParseRagChatProjection）只收 savePath/character/progress，
-// 且 tasks_finished 必须是整数数组、task_chains_progress 必须是对象——违反任何一条整包被拒。
-// 数据来源：_root 存档键（角色名；tasks_finished 是「任务id→完成次数」表，投影为完成 id 的整数数组）。
-_root.agent.构建存档投影 = function(savePath:String):Object {
-    var character:Object = {
+// G2-1 载荷投影：ragchat initData 与 rag_bind_refresh 共用的五键形状。
+// Host 白名单（LauncherCommandRouter.TryParseRagChatProjection）只收
+// savePath/character/progress/scene/player，且 tasks_finished/tasks_active 必须是整数数组、
+// task_chains_progress 必须是对象——违反任何一条整包被拒。
+// 全部只读投影：缺数据回落空值，不写任何游戏状态，不依赖面板上下文。
+
+// 剥掉称号可能携带的受限 font 标签，仅留纯文本；未闭合的 "<" 按字面保留。
+_root.agent.投影剥除标签 = function(raw):String {
+    if (raw == undefined || raw == null) return "";
+    var s:String = String(raw);
+    var out:String = "";
+    var i:Number = 0;
+    while (i < s.length) {
+        var lt:Number = s.indexOf("<", i);
+        if (lt < 0) {
+            out += s.substr(i);
+            break;
+        }
+        var gt:Number = s.indexOf(">", lt + 1);
+        if (gt < 0) {
+            out += s.substr(i);
+            break;
+        }
+        out += s.substr(i, lt - i);
+        i = gt + 1;
+    }
+    return out;
+};
+
+// 数字安全化：非有限数回落默认值。
+_root.agent.投影数字 = function(raw, dflt:Number):Number {
+    var n:Number = Number(raw);
+    return isFinite(n) ? n : dflt;
+};
+
+// 布尔归一化（对齐 SkillLoadoutService.parseLegacyBoolean 的已知取值；未知按 false）。
+_root.agent.投影布尔 = function(raw):Boolean {
+    if (typeof raw == "boolean") return raw;
+    if (typeof raw == "number") return raw == 1;
+    if (typeof raw == "string") {
+        var s:String = String(raw).toLowerCase();
+        return s == "true" || s == "1";
+    }
+    return false;
+};
+
+// 杀敌数达标称号：与 HeroUtil.getTitleByKillCount 同口径（降序表首匹配）。
+_root.agent.投影杀敌称号 = function(killTotal:Number):String {
+    var ranks:Array = org.flashNight.arki.unit.HeroUtil.getAllTitleRanks();
+    if (!(ranks instanceof Array)) return "";
+    for (var i:Number = 0; i < ranks.length; i++) {
+        var rank:Object = ranks[i];
+        if (rank != undefined && killTotal >= Number(rank.kills)) return String(rank.title);
+    }
+    return "";
+};
+
+// 场景段：关卡标志（对齐 map_definition sceneName）/ 当前关卡名 / 场景进入位置名 / 是否战斗地图。
+// stageName 在非战斗场景是上一次战斗关卡的残留值，消费方需用 inCombat 门控。
+_root.agent.投影场景段 = function():Object {
+    return {
+        stageFlag: (_root.关卡标志 == undefined || _root.关卡标志 == null)
+            ? "" : String(_root.关卡标志),
+        stageName: (_root.当前关卡名 == undefined || _root.当前关卡名 == null)
+            ? "" : String(_root.当前关卡名),
+        entrance: (_root.场景进入位置名 == undefined || _root.场景进入位置名 == null)
+            ? "" : String(_root.场景进入位置名),
+        inCombat: _root.当前为战斗地图 == true
+    };
+};
+
+// 称号段：三来源——颈部装备称号 / 杀敌数达标称号 / 最终显示称号（HeroUtil.getHeroTitle 口径）。
+_root.agent.投影称号段 = function():Object {
+    var equipTitle:String = "";
+    var hero:MovieClip = org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheManager.findHero();
+    if (hero != null && hero.颈部装备数据 != undefined && hero.颈部装备数据.data != undefined
+            && hero.颈部装备数据.data.title != undefined) {
+        equipTitle = String(hero.颈部装备数据.data.title);
+    }
+    var killStats:Object = _root.killStats;
+    var byKills:String = "";
+    if (killStats != undefined && killStats != null
+            && isFinite(Number(killStats.total)) && Number(killStats.total) >= 0) {
+        byKills = _root.agent.投影杀敌称号(Number(killStats.total));
+    }
+    return {
+        equip: _root.agent.投影剥除标签(equipTitle),
+        byKills: _root.agent.投影剥除标签(byKills),
+        final: _root.agent.投影剥除标签(org.flashNight.arki.unit.HeroUtil.getHeroTitle())
+    };
+};
+
+// 难度段：0=困难 1=简单 2=挑战（与 引擎_aka_作弊码 的显示口径一致）。
+_root.agent.投影难度段 = function():Object {
+    var mode:Number = _root.agent.投影数字(_root.difficultyMode, 0);
+    var labels:Array = ["困难", "简单", "挑战"];
+    var label:String = (mode >= 0 && mode < labels.length) ? String(labels[mode]) : String(labels[0]);
+    return {mode: mode, label: label};
+};
+
+// 击杀段：总击杀 + 按兵种细分（数量降序、同类按名升序，最多 100 类）。
+_root.agent.投影击杀段 = function():Object {
+    var total:Number = 0;
+    var byType:Array = [];
+    var stats:Object = _root.killStats;
+    if (stats != undefined && stats != null) {
+        total = _root.agent.投影数字(stats.total, 0);
+        var map:Object = stats.byType;
+        if (map != undefined && map != null) {
+            for (var key in map) {
+                var count:Number = Number(map[key]);
+                if (!isFinite(count) || count < 1) continue;
+                byType.push({name: String(key), count: count});
+            }
+        }
+    }
+    byType.sort(function(a:Object, b:Object):Number {
+        if (b.count != a.count) return b.count - a.count;
+        if (a.name < b.name) return -1;
+        if (a.name > b.name) return 1;
+        return 0;
+    });
+    if (byType.length > 100) byType.length = 100;
+    return {total: total, byType: byType};
+};
+
+// 成就段：AchievementService 只读投影；未就绪/异常降级为空段形状。
+_root.agent.投影成就段 = function():Object {
+    var empty:Object = {items: [], unlockedCount: 0, total: 0};
+    var projection:Object = null;
+    try {
+        projection = org.flashNight.arki.achievement.AchievementService.buildAgentProjection();
+    } catch (achievementProjectionError) {
+        return empty;
+    }
+    if (projection == undefined || projection == null) return empty;
+    return projection;
+};
+
+// 技能段：主角技能表 [名字, 等级, 快捷栏标志, 类型, 启用标志]；被动口径对齐 SkillLoadoutService.isPassive。
+_root.agent.投影技能列表 = function():Array {
+    var out:Array = [];
+    var table = _root.主角技能表;
+    if (!(table instanceof Array)) return out;
+    var meta:Object = _root.技能表对象;
+    for (var i:Number = 0; i < table.length; i++) {
+        var row = table[i];
+        if (!(row instanceof Array) || row.length < 1) continue;
+        var name:String = (row[0] == undefined || row[0] == null) ? "" : String(row[0]);
+        if (name == "" || name == "undefined") continue;
+        var m:Object = (meta == undefined || meta == null) ? null : meta[name];
+        var passive:Boolean = (m != null)
+            && (m.Passive === true || String(m.Type).indexOf("被动") >= 0);
+        out.push({
+            name: name,
+            level: _root.agent.投影数字(row[1], 0),
+            passive: passive,
+            enabled: _root.agent.投影布尔(row[4])
+        });
+    }
+    return out;
+};
+
+// 装备段：主角 11 槽（与 CharacterBuildService.SLOT_ALLOWLIST 同集），读 物品栏.装备栏 权威。
+_root.agent.投影装备列表 = function():Array {
+    var out:Array = [];
+    var inventory:Object = _root.物品栏;
+    var bar:Object = (inventory == null) ? null : inventory.装备栏;
+    if (bar == null) return out;
+    var slots:Array = ["头部装备", "上装装备", "下装装备", "手部装备", "脚部装备", "颈部装备",
+        "长枪", "手枪", "手枪2", "刀", "手雷"];
+    var dict:Object = _root.物品属性列表;
+    for (var i:Number = 0; i < slots.length; i++) {
+        var slot:String = slots[i];
+        var name:String = "";
+        if (typeof bar.getNameString == "function") {
+            var rawName = bar.getNameString(slot);
+            if (rawName != undefined && rawName != null) name = String(rawName);
+        }
+        if ((name == "" || name == "undefined") && typeof bar.getItem == "function") {
+            var item:Object = bar.getItem(slot);
+            if (item != null && item.name != undefined && item.name != null) name = String(item.name);
+        }
+        if (name == "" || name == "undefined") continue;
+        var displayname:String = name;
+        if (dict != undefined && dict != null
+                && dict[name] != undefined && dict[name] != null
+                && dict[name].displayname != undefined
+                && String(dict[name].displayname) != "") {
+            displayname = String(dict[name].displayname);
+        }
+        var level:Number = 1;
+        if (typeof bar.getLevel == "function") {
+            var lv:Number = Number(bar.getLevel(slot));
+            if (isFinite(lv) && lv >= 1) level = lv;
+        }
+        out.push({slot: slot, name: name, displayname: displayname, level: level});
+    }
+    return out;
+};
+
+// 宠物段：宠物信息槽 [宠物id, 等级, 体力, , 出战标志]；显示名走 战宠UI函数（自定义名权威）。
+_root.agent.投影宠物列表 = function():Array {
+    var out:Array = [];
+    var pets:Array = _root.宠物信息;
+    if (!(pets instanceof Array)) return out;
+    var lib:Object = _root.宠物库;
+    for (var i:Number = 0; i < pets.length; i++) {
+        var info:Array = pets[i];
+        if (info == undefined || !(info instanceof Array) || info.length < 5) continue;
+        var def:Object = (lib == undefined || lib == null) ? undefined : lib[info[0]];
+        if (def == undefined || def == null) continue;
+        var name:String = String(def.Name);
+        if (_root.战宠UI函数 != undefined
+                && typeof _root.战宠UI函数.获取宠物显示名 == "function") {
+            var shown = _root.战宠UI函数.获取宠物显示名(i);
+            if (shown != undefined && shown != null && String(shown) != "") name = String(shown);
+        }
+        out.push({
+            name: name,
+            identifier: String(def.Identifier),
+            level: _root.agent.投影数字(info[1], 0),
+            stamina: _root.agent.投影数字(info[2], 0),
+            deployed: Number(info[4]) == 1
+        });
+    }
+    return out;
+};
+
+// 佣兵段：同伴数据全列 [等级, 名字, id, 身高, 脸型, 发型, ...装备..., 性别, 价格, 元数据]；
+// 出战与 佣兵是否出战信息 同下标（MercSpawner 严格并行压实）。人格/对话为旧档缺列时降级空值。
+_root.agent.投影佣兵列表 = function():Array {
+    var out:Array = [];
+    var data:Array = _root.同伴数据;
+    if (!(data instanceof Array)) return out;
+    var deploy:Array = _root.佣兵是否出战信息;
+    for (var i:Number = 0; i < data.length; i++) {
+        var merc:Array = data[i];
+        if (merc == undefined || !(merc instanceof Array) || merc[0] == undefined) continue;
+        var name:String = (merc[1] == undefined || merc[1] == null) ? "" : String(merc[1]);
+        if (name == "" || name == "undefined") continue;
+        var level:Number = _root.agent.投影数字(merc[0], 0);
+        var gender:String = String(merc[17]);
+        gender = (gender == "男" || gender == "主角-男" || gender == "1" || merc[17] == 1)
+            ? "男" : "女";
+        var personality:Object = {};
+        if (typeof _root.生成随机人格 == "function") {
+            try {
+                var p:Object = org.flashNight.arki.merc.MercPanelService
+                    .buildPersonality(merc, name, level);
+                if (p != undefined && p != null) personality = p;
+            } catch (personalityError) {
+            }
+        }
+        var dialogues:Array = [];
+        var meta:Object = merc[19];
+        if (meta != undefined && meta != null && meta.对话 instanceof Array) {
+            var lines:Array = meta.对话;
+            for (var j:Number = 0; j < lines.length; j++) {
+                var line:Object = lines[j];
+                if (line == undefined || line == null) continue;
+                var text:String = (line.文本 != undefined) ? String(line.文本) : String(line);
+                if (text != "" && text != "undefined") dialogues.push(text);
+            }
+        }
+        out.push({
+            name: name,
+            id: (merc[2] == undefined || merc[2] == null) ? "" : String(merc[2]),
+            level: level,
+            gender: gender,
+            personality: personality,
+            dialogues: dialogues,
+            deployed: (deploy instanceof Array) && (Number(deploy[i]) == 1)
+        });
+    }
+    return out;
+};
+
+// 基建段：复用平板权威快照（名称→等级），不另立第二套读法。
+_root.agent.投影基建段 = function():Object {
+    if (typeof _root.平板基建等级快照 == "function") {
+        var snapshot:Object = _root.平板基建等级快照();
+        if (snapshot != undefined && snapshot != null) return snapshot;
+    }
+    return {};
+};
+
+// 玩家段：基础身份、货币、称号、难度、击杀、成就、技能、装备、宠物、佣兵、基建。
+_root.agent.投影玩家段 = function():Object {
+    return {
+        gender: (_root.性别 == undefined || _root.性别 == null) ? "" : String(_root.性别),
+        level: _root.agent.投影数字(_root.等级, 0),
+        height: _root.agent.投影数字(_root.身高, 0),
+        title: _root.agent.投影称号段(),
+        difficulty: _root.agent.投影难度段(),
+        money: _root.agent.投影数字(_root.金钱, 0),
+        kpoint: _root.agent.投影数字(_root.虚拟币, 0),
+        kills: _root.agent.投影击杀段(),
+        achievements: _root.agent.投影成就段(),
+        skills: _root.agent.投影技能列表(),
+        equipment: _root.agent.投影装备列表(),
+        pets: _root.agent.投影宠物列表(),
+        mercs: _root.agent.投影佣兵列表(),
+        infrastructure: _root.agent.投影基建段()
+    };
+};
+
+// 角色段：存档键 _root.角色名。
+_root.agent.投影角色段 = function():Object {
+    return {
         name: (_root.角色名 == undefined || _root.角色名 == null) ? "" : String(_root.角色名)
     };
+};
+
+// 进度段：tasks_finished 是「任务id→完成次数」表，投影为完成 id 的整数数组；
+// tasks_active 取当前任务列表 tasks_to_do 的同口径过滤 id。
+_root.agent.投影进度段 = function():Object {
     var finished:Array = [];
     var finishedMap:Object = _root.tasks_finished;
     if (finishedMap != undefined && finishedMap != null) {
@@ -225,6 +534,17 @@ _root.agent.构建存档投影 = function(savePath:String):Object {
             finished.push(id);
         }
     }
+    var active:Array = [];
+    var activeList:Array = _root.tasks_to_do;
+    if (activeList instanceof Array) {
+        for (var i:Number = 0; i < activeList.length; i++) {
+            var entry:Object = activeList[i];
+            if (entry == undefined || entry == null) continue;
+            var activeId:Number = Number(entry.id);
+            if (!isFinite(activeId) || activeId != Math.floor(activeId) || activeId < 0) continue;
+            active.push(activeId);
+        }
+    }
     var chains:Object = {};
     var chainMap:Object = _root.task_chains_progress;
     if (chainMap != undefined && chainMap != null) {
@@ -234,10 +554,16 @@ _root.agent.构建存档投影 = function(savePath:String):Object {
             chains[chain] = progress;
         }
     }
+    return {tasks_finished: finished, task_chains_progress: chains, tasks_active: active};
+};
+
+_root.agent.构建存档投影 = function(savePath:String):Object {
     return {
         savePath: savePath,
-        character: character,
-        progress: {tasks_finished: finished, task_chains_progress: chains}
+        character: _root.agent.投影角色段(),
+        progress: _root.agent.投影进度段(),
+        scene: _root.agent.投影场景段(),
+        player: _root.agent.投影玩家段()
     };
 };
 
@@ -351,6 +677,8 @@ _root.agent.启动外部RAG工具 = function():Void {
         var json:LiteJSON = new LiteJSON();
         initFields.push({name:"character", value:json.stringifySafe(projection.character), raw:true});
         initFields.push({name:"progress", value:json.stringifySafe(projection.progress), raw:true});
+        initFields.push({name:"scene", value:json.stringifySafe(projection.scene), raw:true});
+        initFields.push({name:"player", value:json.stringifySafe(projection.player), raw:true});
     }
     var sent:Boolean = _root.server.sendSocketMessage(
         org.flashNight.arki.ui.PanelRequestEnvelope.build(

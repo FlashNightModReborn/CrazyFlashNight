@@ -4681,9 +4681,10 @@ namespace CF7Launcher.Guardian
                 LogManager.Log("[Router] ragchat initData parse failed: " + ex.Message);
             }
             string slotKey;
-            JObject character, progress;
+            JObject character, progress, scene, player;
             string rejectReason;
-            if (!TryParseRagChatProjection(data, out slotKey, out character, out progress, out rejectReason))
+            if (!TryParseRagChatProjection(data, out slotKey, out character, out progress,
+                out scene, out player, out rejectReason))
             {
                 LogManager.Log("[Router] ragchat open rejected reason=" + rejectReason);
                 NotifyRagChatUnavailable("终端请求载荷无效，请稍后重试。");
@@ -4700,25 +4701,30 @@ namespace CF7Launcher.Guardian
             if (marshal == null)
             {
                 // 测试缝线：无 UI marshal 时同步跑完链路，保持单测同步断言语义。
-                CompleteRagChatOpen(service, slotKey, character, progress, source, baselinePanel, null);
+                CompleteRagChatOpen(service, slotKey, character, progress, scene, player, source, baselinePanel, null);
                 return;
             }
             System.Threading.ThreadPool.QueueUserWorkItem(delegate
             {
-                CompleteRagChatOpen(service, slotKey, character, progress, source, baselinePanel, marshal);
+                CompleteRagChatOpen(service, slotKey, character, progress, scene, player, source, baselinePanel, marshal);
             });
         }
 
         /// <summary>ragchat 载荷白名单（panel_request initData 与 rag_bind_refresh 共用）：
-        /// savePath 必填非空字符串；character/progress 可选、形状受限；未知键拒收。</summary>
+        /// savePath 必填非空字符串；character/progress/scene/player 可选、浅层形状受限
+        /// （深层形状归后端）；未知键拒收。</summary>
         internal static bool TryParseRagChatProjection(JObject data, out string slotKey,
-            out JObject character, out JObject progress, out string rejectReason)
+            out JObject character, out JObject progress, out JObject scene, out JObject player,
+            out string rejectReason)
         {
-            slotKey = null; character = null; progress = null; rejectReason = null;
+            slotKey = null; character = null; progress = null; scene = null; player = null;
+            rejectReason = null;
             if (data == null) { rejectReason = "missing_payload"; return false; }
             foreach (JProperty property in data.Properties())
             {
-                if (property.Name != "savePath" && property.Name != "character" && property.Name != "progress")
+                if (property.Name != "savePath" && property.Name != "character"
+                    && property.Name != "progress" && property.Name != "scene"
+                    && property.Name != "player")
                 {
                     rejectReason = "unknown_field:" + property.Name;
                     return false;
@@ -4761,6 +4767,17 @@ namespace CF7Launcher.Guardian
                             return false;
                         }
                 }
+                JToken active = progress["tasks_active"];
+                if (active != null)
+                {
+                    if (active.Type != JTokenType.Array) { rejectReason = "progress_tasks_active_invalid"; return false; }
+                    foreach (JToken id in active)
+                        if (id.Type != JTokenType.Integer)
+                        {
+                            rejectReason = "progress_tasks_active_invalid";
+                            return false;
+                        }
+                }
                 JToken chains = progress["task_chains_progress"];
                 if (chains != null && chains.Type != JTokenType.Object)
                 {
@@ -4768,7 +4785,71 @@ namespace CF7Launcher.Guardian
                     return false;
                 }
             }
+
+            JToken sceneToken = data["scene"];
+            if (sceneToken != null && sceneToken.Type != JTokenType.Null)
+            {
+                scene = sceneToken as JObject;
+                if (scene == null
+                    || !RagChatStringField(scene, "stageFlag")
+                    || !RagChatStringField(scene, "stageName")
+                    || !RagChatStringField(scene, "entrance"))
+                {
+                    rejectReason = "scene_invalid";
+                    return false;
+                }
+                JToken inCombat = scene["inCombat"];
+                if (inCombat != null && inCombat.Type != JTokenType.Boolean)
+                {
+                    rejectReason = "scene_invalid";
+                    return false;
+                }
+            }
+
+            JToken playerToken = data["player"];
+            if (playerToken != null && playerToken.Type != JTokenType.Null)
+            {
+                player = playerToken as JObject;
+                if (player == null
+                    || !RagChatStringField(player, "gender")
+                    || !RagChatNumberField(player, "level") || !RagChatNumberField(player, "height")
+                    || !RagChatNumberField(player, "money") || !RagChatNumberField(player, "kpoint")
+                    || !RagChatObjectField(player, "title") || !RagChatObjectField(player, "difficulty")
+                    || !RagChatObjectField(player, "kills") || !RagChatObjectField(player, "achievements")
+                    || !RagChatObjectField(player, "infrastructure")
+                    || !RagChatArrayField(player, "skills") || !RagChatArrayField(player, "equipment")
+                    || !RagChatArrayField(player, "pets") || !RagChatArrayField(player, "mercs"))
+                {
+                    rejectReason = "player_invalid";
+                    return false;
+                }
+            }
             return true;
+        }
+
+        /// <summary>可选字段类型核对：缺省放行，出现即须为指定 JSON 类型。</summary>
+        private static bool RagChatStringField(JObject section, string name)
+        {
+            JToken token = section[name];
+            return token == null || token.Type == JTokenType.String;
+        }
+
+        private static bool RagChatNumberField(JObject section, string name)
+        {
+            JToken token = section[name];
+            return token == null || token.Type == JTokenType.Integer || token.Type == JTokenType.Float;
+        }
+
+        private static bool RagChatObjectField(JObject section, string name)
+        {
+            JToken token = section[name];
+            return token == null || token.Type == JTokenType.Object;
+        }
+
+        private static bool RagChatArrayField(JObject section, string name)
+        {
+            JToken token = section[name];
+            return token == null || token.Type == JTokenType.Array;
         }
 
         /// <summary>rag_bind_refresh（G2-3②③④）：存档投影的静默刷新通道，复用 bind 端点。
@@ -4776,9 +4857,10 @@ namespace CF7Launcher.Guardian
         internal void HandleRagBindRefresh(JObject data)
         {
             string slotKey;
-            JObject character, progress;
+            JObject character, progress, scene, player;
             string rejectReason;
-            if (!TryParseRagChatProjection(data, out slotKey, out character, out progress, out rejectReason))
+            if (!TryParseRagChatProjection(data, out slotKey, out character, out progress,
+                out scene, out player, out rejectReason))
             {
                 LogManager.Log("[Router] rag_bind_refresh rejected reason=" + rejectReason);
                 return;
@@ -4789,16 +4871,18 @@ namespace CF7Launcher.Guardian
                 LogManager.Log("[Router] rag_bind_refresh skipped: service not wired");
                 return;
             }
-            service.RefreshBindingInBackground(slotKey, character, progress);
+            service.RefreshBindingInBackground(slotKey, character, progress, scene, player);
         }
 
         private void CompleteRagChatOpen(RagTerminal.RagTerminalService service, string slotKey,
-            JObject character, JObject progress, string source, string baselinePanel, Action<Action> marshal)
+            JObject character, JObject progress, JObject scene, JObject player,
+            string source, string baselinePanel, Action<Action> marshal)
         {
             RagTerminal.RagTerminalPrepareResult result;
             try
             {
-                result = service.PrepareForPanelAsync(slotKey, character, progress).GetAwaiter().GetResult();
+                result = service.PrepareForPanelAsync(slotKey, character, progress, scene, player)
+                    .GetAwaiter().GetResult();
             }
             catch (Exception ex)
             {

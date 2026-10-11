@@ -9,7 +9,9 @@
     "fields": [
       "savePath",
       "character",
-      "progress"
+      "progress",
+      "scene",
+      "player"
     ],
     "acknowledgement": "none; fire-and-forget (Host returns null to AS2; failures arrive as gameCommand ragChatUnavailable)",
     "bound": false
@@ -27,7 +29,7 @@
   },
   "binding": {
     "endpoint": "POST http://127.0.0.1:7077/api/integration/bind",
-    "payload": "{slot_key, character?: {name: string, ...}, progress?: {tasks_finished: number[], task_chains_progress: object}}",
+    "payload": "{slot_key, character?: {name: string, ...}, progress?: {tasks_finished: number[], task_chains_progress: object, tasks_active?: number[]}, scene?: {stageFlag: string, stageName: string, entrance: string, inCombat: boolean}, player?: object}",
     "semantics": "idempotent; same slot_key = projection refresh; absent section clears it (replace, not merge) — refresh senders must carry every projection section they know",
     "transaction": true,
     "writeState": "exe memory only (never the game save)",
@@ -37,7 +39,7 @@
   "projectionRefresh": {
     "task": "rag_bind_refresh",
     "transport": "json_sync, AS2->C#, httpCallable=false, fire-and-forget",
-    "payload": "{savePath, character?, progress?} — same whitelist as open initData",
+    "payload": "{savePath, character?, progress?, scene?, player?} — same whitelist as open initData",
     "points": [
       "boot handshake savePath commit (bind refresh only; boot loaders read the slot overlay directly)",
       "SaveManager.replacePlayerContext slot switch (bind refresh + _root.重新加载任务数据)",
