@@ -11,13 +11,18 @@
   top: 50%;
   transform: translate(-50%, -50%);
   width: 78%;
-  aspect-ratio: 469.9 / 324.6;
+  /* 必须与烘焙 SVG viewBox 精确一致：contain 下任何偏差都会 letterbox，
+     而 intro 元件/热区均按 viewBox% 定位——不一致即整体错位 */
+  aspect-ratio: 467.45 / 324.61;
   background: var(--wb-semantic-tablet-stage-surface);
   border-radius: 3.2%;
   box-shadow: var(--wb-semantic-tablet-frame-shadow);
   overflow: hidden;
 }
-.tablet-bg {
+/* 底图分三层：.tablet-frame = 各视图共享背景（常驻不动），
+   .tablet-view = 当前视图专属内容，.tablet-view-alt = 转场淡入中内容 */
+.tablet-frame,
+.tablet-view {
   position: absolute;
   inset: 0;
   width: 100%;
@@ -52,14 +57,14 @@
 }
 .tablet-icon.shown { opacity: 1; }
 
-/* 背景交叉淡化层（转场用，结束后隐藏） */
-.tablet-bg-alt {
+/* 内容交叉淡化层（转场用，结束后隐藏） */
+.tablet-view-alt {
   z-index: 1;
   opacity: 0;
   transition: var(--wb-tablet-background-transition);
   pointer-events: none;
 }
-.tablet-bg-alt.on { opacity: 1; }
+.tablet-view-alt.on { opacity: 1; }
 
 /* 悬停说明：引导线遮罩扫入的近似（左→右 clip 揭示 + 微淡入） */
 .tablet-hoverdesc {
@@ -77,17 +82,33 @@
 .tablet-stage {
   transition: var(--wb-tablet-stage-transition);
 }
-.tablet-shell.entering .tablet-stage { scale: .5; rotate: -6deg; opacity: 0; }
 .tablet-shell.closing .tablet-stage { scale: .7; opacity: 0; }
+/* 启动动画覆盖层：原版「平板初始化」逐元件 DOM 重放，盖在 hub 上播完即撤 */
+/* 播片期间吞掉点击（原版初始化时间线里按钮尚不存在） */
+.tablet-intro-wrap { position: absolute; inset: 0; z-index: 6; pointer-events: auto; }
+.tablet-intro-el { position: absolute; user-select: none; }
+/* 二阶段红字提示（原版"轻按屏幕唤起按键"文案位）；
+   ChillGSans = 寒蝉高黑体（工业窄黑，偏机械感），face weight 500 */
+.tablet-intro-wake { color: #ff2a2a; font-size: 1.5em; font-weight: 500;
+  font-family: 'ChillGSans', 'Source Han Sans CN', 'Microsoft YaHei', sans-serif;
+  letter-spacing: .08em;
+  text-align: center; line-height: 1.2; text-shadow: 0 0 6px rgba(255,42,42,.55); }
 
 /* 转场期间禁点（原 XFL 按钮占用）与新视图 DOM 内容淡入/淡出：
    switching 期间旧 DOM 快速淡出（original 两栏内容淡出语义），转场提交后
    新 DOM 由 entered 动画淡入 */
 .tablet-stage.switching .tablet-overlay { pointer-events: none; }
-/* 旧视图烘焙底图随转场整体淡出（bgAlt 同步承载新视图淡入）：
-   面板图形不再残留到转场最后一刻才瞬切；ambient 装饰层同隐同现 */
-.tablet-bg { transition: var(--wb-tablet-background-transition); }
-.tablet-stage.switching .tablet-bg:not(.tablet-bg-alt) { opacity: 0; }
+/* 转场只作用于内容层：旧内容先全淡出（前 190ms），新内容 bgAlt 延迟 170ms
+   再淡入（后 210ms）——共享背景帧常驻不参与，杜绝整幅互叠的泛浅/提亮。
+   transition 只在 switching 期间挂——摘除瞬间内容层已换为新图，瞬回 opacity 1
+   而不是再淡入一遍 */
+.tablet-stage.switching .tablet-view:not(.tablet-view-alt) {
+  opacity: 0;
+  transition: opacity .19s ease;
+}
+.tablet-stage.switching .tablet-view-alt.on {
+  transition: opacity .21s ease .17s;
+}
 .tablet-dom { transition: var(--wb-tablet-content-transition); }
 .tablet-ambient { transition: var(--wb-tablet-content-transition); }
 .tablet-stage.switching .tablet-dom,

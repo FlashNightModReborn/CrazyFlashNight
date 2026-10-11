@@ -65,6 +65,15 @@ function audit(){
   if(!panel.includes('ItemFilter.build(')||!panel.includes('ItemFilter.manualSections(')||!panel.includes('ItemFilter.branchTree(')
       ||!itemFilter.includes('function FilterNavigator(')||!itemFilter.includes('item.weaponType || item.actionType'))throw new Error('shared hierarchical grouping or manual override missing');
   if(itemFilter.includes('npcshop-category-row'))throw new Error('shared navigator leaked an NPC-shop skin class');
+  const keeperSource=fs.readFileSync(path.join(WEB,'modules','npcshop-keeper.js'),'utf8');
+  if(!panel.includes('NpcShopKeeper.create({shopId:_shopId, shell:_shell})')
+      ||!css.includes('.npcshop-backdrop')||!css.includes('.npcshop-frame')
+      ||!keeperSource.includes('assets/dialogue-portraits/manifest.json')
+      ||!keeperSource.includes('warmIcons')
+      ||!panel.includes('warmIcons(function()')
+      ||!panel.includes("renderCatalog({forceItemRender:true})")
+      ||!fs.existsSync(path.join(WEB,'modules','npcshop-themes.js'))
+      ||!harness.includes('npcshop-keeper.js'))throw new Error('npcshop independent keeper visual or faction theme contract missing');
   if(!panel.includes('new InventoryUI.InventoryFilterControl(')||!panel.includes("setFilterSpec('背包'")
       ||!panelUi.includes('workbench-secondary-page npcshop-help-page')
       ||!css.includes('inset:var(--wb-header-height,48px) 0 0'))throw new Error('shop bag authority tree or shared secondary-page coverage contract missing');
@@ -120,7 +129,7 @@ function audit(){
   if(!panel.includes('.bindAsyncHover(node,')||!panel.includes("PanelTooltip.createScope('npcshop', {profile:'dense-inspect'})")
       ||!tooltip.includes('function createScope(')||!tooltip.includes('function releaseTree(')
       ||!inventoryWorkbench.includes("PanelTooltip.createScope('inventory-storage', {profile:'dense-inspect'})")
-      ||!inventoryWorkbench.includes('(_tooltipScope || PanelTooltip).bindAsyncHover(node,'))throw new Error('Panel async tooltip ownership scope is not shared');
+      ||!inventoryWorkbench.includes('options.tooltip.bindAsyncHover(options.node,'))throw new Error('Panel async tooltip ownership scope is not shared');
   if(!css.includes('.item-grid-compact'))throw new Error('Compact item-grid modifier styles missing');
   if(!harness.includes("__npcshopHarnessScenario==='pg-material-navigation'")
       ||!runtime.includes('SHOP_CATALOG_INDEX_MAX = 10000')

@@ -38,10 +38,10 @@
     <VersionInfo>12,0,0,0;11,2,0,0;11,1,0,0;10,3,0,0;10,2,153,0;10,1,52,0;9,0,124,0;8,0,24,0;7,0,14,0;6,0,79,0;5,0,58,0;4,0,32,0;3,0,8,0;2,0,1,12;1,0,0,1;</VersionInfo>
     <UsingDefaultContentFilename>1</UsingDefaultContentFilename>
     <UsingDefaultAlternateFilename>1</UsingDefaultAlternateFilename>
-    <ContentFilename>大学人员_content.html</ContentFilename>
-    <AlternateFilename>大学人员_alternate.html</AlternateFilename>
+    <ContentFilename>大学人员.xfl_content.html</ContentFilename>
+    <AlternateFilename>大学人员.xfl_alternate.html</AlternateFilename>
     <UsingOwnAlternateFile>0</UsingOwnAlternateFile>
-    <OwnAlternateFilename/>
+    <OwnAlternateFilename></OwnAlternateFilename>
     <Width>550</Width>
     <Height>400</Height>
     <Align>0</Align>
@@ -60,8 +60,8 @@
     <showTagWarnMsg>1</showTagWarnMsg>
   </PublishHtmlProperties>
   <PublishFlashProperties enabled="true">
-    <TopDown/>
-    <FireFox/>
+    <TopDown></TopDown>
+    <FireFox></FireFox>
     <Report>0</Report>
     <Protect>0</Protect>
     <OmitTraceActions>0</OmitTraceActions>
@@ -76,11 +76,11 @@
     <ExternalPlayer>FlashPlayer11.2</ExternalPlayer>
     <ActionScriptVersion>2</ActionScriptVersion>
     <PackageExportFrame>1</PackageExportFrame>
-    <PackagePaths/>
+    <PackagePaths></PackagePaths>
     <AS3PackagePaths>.</AS3PackagePaths>
-    <AS3ConfigConst>CONFIG::FLASH_AUTHORING="true";</AS3ConfigConst>
+    <AS3ConfigConst>CONFIG::FLASH_AUTHORING=&quot;true&quot;;</AS3ConfigConst>
     <DebuggingPermitted>0</DebuggingPermitted>
-    <DebuggingPassword/>
+    <DebuggingPassword></DebuggingPassword>
     <CompressMovie>1</CompressMovie>
     <CompressionType>0</CompressionType>
     <InvisibleLayer>1</InvisibleLayer>
@@ -88,7 +88,7 @@
     <StreamUse8kSampleRate>0</StreamUse8kSampleRate>
     <EventUse8kSampleRate>0</EventUse8kSampleRate>
     <UseNetwork>0</UseNetwork>
-    <DocumentClass/>
+    <DocumentClass></DocumentClass>
     <AS3Strict>2</AS3Strict>
     <AS3Coach>4</AS3Coach>
     <AS3AutoDeclare>4096</AS3AutoDeclare>
@@ -158,18 +158,18 @@
     <Animated>0</Animated>
     <MatchMovieDim>1</MatchMovieDim>
     <Loop>1</Loop>
-    <LoopCount/>
+    <LoopCount></LoopCount>
     <OptimizeColors>1</OptimizeColors>
     <Interlace>0</Interlace>
     <Smooth>1</Smooth>
     <DitherSolids>0</DitherSolids>
     <RemoveGradients>0</RemoveGradients>
-    <TransparentOption/>
+    <TransparentOption></TransparentOption>
     <TransparentAlpha>128</TransparentAlpha>
-    <DitherOption/>
-    <PaletteOption/>
+    <DitherOption></DitherOption>
+    <PaletteOption></PaletteOption>
     <MaxColors>255</MaxColors>
-    <PaletteName/>
+    <PaletteName></PaletteName>
   </PublishGifProperties>
   <PublishPNGProperties enabled="true">
     <Width>550</Width>
@@ -181,20 +181,20 @@
     <DitherSolids>0</DitherSolids>
     <RemoveGradients>0</RemoveGradients>
     <MatchMovieDim>1</MatchMovieDim>
-    <DitherOption/>
-    <FilterOption/>
-    <PaletteOption/>
+    <DitherOption></DitherOption>
+    <FilterOption></FilterOption>
+    <PaletteOption></PaletteOption>
     <BitDepth>24-bit with Alpha</BitDepth>
     <MaxColors>255</MaxColors>
-    <PaletteName/>
+    <PaletteName></PaletteName>
   </PublishPNGProperties>
   <PublishQTProperties enabled="true">
     <Width>550</Width>
     <Height>400</Height>
     <MatchMovieDim>1</MatchMovieDim>
     <UseQTSoundCompression>0</UseQTSoundCompression>
-    <AlphaOption/>
-    <LayerOption/>
+    <AlphaOption></AlphaOption>
+    <LayerOption></LayerOption>
     <QTSndSettings>00000000</QTSndSettings>
     <ControllerOption>0</ControllerOption>
     <Looping>0</Looping>
