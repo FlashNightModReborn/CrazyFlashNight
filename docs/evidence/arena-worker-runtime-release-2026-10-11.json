@@ -1,6 +1,6 @@
 {
   "schema": "cf7-arena-worker-runtime-release-evidence.v1",
-  "recordedAtUtc": "2026-10-11T09:10:38.3554898Z",
+  "recordedAtUtc": "2026-10-11T09:22:08.8809561Z",
   "state": "promoted",
   "authorization": "2026-10-11 用户明确授权提交推送、云端共识、构建部署与推送；范围为 Arena Worker P0/P1。",
   "source": {
@@ -9,7 +9,7 @@
     "tag": "refs/tags/runtime-build-v2/20261011-arena-worker-p0p1-v1",
     "upstreamIntegrated": "07ef4d1429d704973453dd501e08ad750c362374",
     "scopedSourceFileCount": 79,
-    "deploymentCommit": null
+    "deploymentCommit": "5dd7d23f3dbdea0db52912e6db7f51132f631327"
   },
   "request": {
     "schema": "cf7-runtime-build-request.v2",
@@ -104,10 +104,18 @@
     "deploymentChanged": false
   },
   "remoteAudit": {
-    "status": "pending",
-    "runId": null,
-    "url": null,
-    "conclusion": null
+    "runId": 38127546260,
+    "url": "https://github.com/FlashNightModReborn/CrazyFlashNight/actions/runs/38127546260",
+    "status": "completed",
+    "conclusion": "success",
+    "headSha": "5dd7d23f3dbdea0db52912e6db7f51132f631327",
+    "replayedState": "promoted",
+    "deploymentChanged": true,
+    "signerCount": 2,
+    "faultDomainCount": 2,
+    "fileCount": 43,
+    "payloadClosureHash": "DED864E04FCF8339DC6B73AF78FB4EB63D9C613D85C155F4F1256CC73834E92E",
+    "logSha256": "2538EE30C891FFAF0B68118027C94275BA51D4AEB2BC12386EFDA6CB575707EC"
   },
   "experienceEvidence": {
     "privateCandidateP0P1AndFaultVerified": true,

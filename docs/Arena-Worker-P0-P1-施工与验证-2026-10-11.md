@@ -182,7 +182,7 @@ node tools/arena-calibration/measure-worker-p0.js --plan <frozen-plan.json> --ou
 
 捕获恢复草案没有进入产品代码。失败后只读采样在 06:51 UTC 观察到会话显示状态为 0；两次失败本身没有同期连续显示记录，不能反推其根因。随后保持同一 5DB 候选与原新帧、裁剪、场景围栏及超时判据，在实际亮屏条件下完成下述 v6 验证，没有新增原生重采样或放宽准入。
 
-Node / Host fixture、AS2 Compiler 0/0、真实候选、双实例运行与人类感官验收分别记录。没有当前候选的 P0 后台时钟与 P1 实例隔离实测，不宣布“安全双开”。48–72 小时四开长测、完整恢复调度、AI A/B、Stage Trial 和正式发布均不属于本轮完成条件。
+Node / Host fixture、AS2 Compiler 0/0、真实候选、双实例运行与人类感官验收分别记录。没有当前候选的 P0 后台时钟与 P1 实例隔离实测，不宣布“安全双开”。48–72 小时四开长测、完整恢复调度、AI A/B 和 Stage Trial 不属于本轮 P0–P1 完成条件；后续正式发布按文末独立授权及回执记录。
 
 验证入口与继承门按 [testing guide](../agentsDoc/testing-guide.md) 和 [Arena campaign 验证](../agentsDoc/testing-details.md#竞技场斗兽标定campaign-门) 执行；AS2 编译必须遵守 [CS6 操作与恢复](../scripts/FlashCS6自动化编译.md)。新工具落地后登记其准确命令与验证证据，不提前把拟议接口写成已可运行。
 
@@ -214,4 +214,4 @@ Worker 最终保护快照与普通入口回归后的 55 项共享 / 正式入口
 
 合并后的 main 真实 CS6 Worker protocol **52/52**、技能缓存 **21/21**，三轮 Compiler 均为 **0/0**；重新发布的 asLoader 为 **6,007,550** 字节、SHA-256 `601CD42C51FF8CC1156E0CA7D4A688DC15E7CA65384F9F537E04136C05FA3B4D`。Node 检查、文档巡检与 22 项冻结派生资源检查通过。首次 prepare 发现前治安官缺失于生成的存档修复字典，原失败日志保留，生成器补齐后随源码提交；未放宽门禁。
 
-唯一 writer 于 **2026-10-11 09:06:34 UTC** 完成正式推广，双 signer / 双 faultDomain、43 文件安装闭包和根 bootstrap `--verify-only` exit **0**。previous bundle 保留于 `tmp/runtime-promotions/20261011T090603919Z-6d91ba38dbb740baa3310bca6f65dd6e/previous`；完整身份与回执见 [发布证据](evidence/arena-worker-runtime-release-2026-10-11.json)。部署提交与远端 Audit 等待本次推送后的独立结果。原 v6 运行、显示、故障及负面证据保持原范围；本次未执行合并资源后的标准入口业务旅程，不宣称人类视觉、实体输入、弱机或长时热稳态验收。
+唯一 writer 于 **2026-10-11 09:06:34 UTC** 完成正式推广，双 signer / 双 faultDomain、43 文件安装闭包和根 bootstrap `--verify-only` exit **0**。previous bundle 保留于 `tmp/runtime-promotions/20261011T090603919Z-6d91ba38dbb740baa3310bca6f65dd6e/previous`；完整身份与回执见 [发布证据](evidence/arena-worker-runtime-release-2026-10-11.json)。部署提交 `5dd7d23f3dbdea0db52912e6db7f51132f631327` 已普通快进推送；[远端 Runtime native audit 38127546260](https://github.com/FlashNightModReborn/CrazyFlashNight/actions/runs/38127546260) **success**，独立重放 `state=promoted / deploymentChanged=true`、`mode=Index / signers=2 / faultDomains=2` 及相同 43 文件闭包。原 v6 运行、显示、故障及负面证据保持原范围；本次未执行合并资源后的标准入口业务旅程，不宣称人类视觉、实体输入、弱机或长时热稳态验收。
