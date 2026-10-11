@@ -14,6 +14,7 @@
 <div id="panel-content"></div><pre id="qa-output">running…</pre>
 <script>
 window.__NPCSHOP_CONFIG__={requestTimeoutMs:300,sessionNonce:'harness'};
+window.CF7_NPCSHOP_ASSET_BASE='../../../';
 window.__npcshopHarnessScenario=new URLSearchParams(location.search).get('scenario')||'';
 window.__contractPurchaseProbe=Number(new URLSearchParams(location.search).get('contractQuantity'))||4549;
 window.__sent=[];window.__toasts=[];window.__handlers={};window.__tradeSeq=0;window.__lastTrade=null;window.__malformedCommit=false;
@@ -73,7 +74,9 @@ window.Bridge={
   }
 };
 window.Toast={add:function(message){__toasts.push(message)}};
+if(!new URLSearchParams(location.search).get('realicons')){
 window.Icons={html:function(name,cls){return '<span class="'+(cls||'')+'" data-icon="'+String(name).replace(/"/g,'')+'"></span>'}};
+}else{window.CF7_ICON_ROOT='../../../icons/';document.write('<script src="../../asset-timeline.js"><\/script><script src="../../icons.js"><\/script>');}
 window.PanelScale={attach:function(el,w,h){el.style.setProperty('--pss-w',w+'px');el.style.setProperty('--pss-h',h+'px');return{detach:function(){}}}};
 window.PanelTooltip={
   _visible:false,lastHTML:'',lastRichOptions:null,showAtMouse:function(html){this._visible=true;this.lastHTML=html||''},followMouse:function(){},hide:function(){this._visible=false},isVisible:function(){return this._visible},updateContent:function(html){this.lastHTML=html||''},
@@ -287,6 +290,9 @@ function respond(message){var result={type:'panel_resp',domain:message.domain,pa
 <script src="../../grade-presentation.js"></script>
 <script src="../../inventory-ui.js"></script>
 <script src="../../npcshop-runtime.js"></script>
+<script src="../../npcshop-themes.js"></script>
+<script src="../../shop-portrait-resolver.js"></script>
+<script src="../../npcshop-keeper.js"></script>
 <script src="../../npcshop-material-navigation.js"></script>
 <script src="../../npcshop-secondary-pages.js"></script>
 <script src="../../npcshop.js"></script>
@@ -647,6 +653,21 @@ function respond(message){var result={type:'panel_resp',domain:message.domain,pa
     }
     await wait();
     window.__visualReady=true;document.getElementById('qa-output').style.display='none';return;
+  }
+  if(harnessVisualMode==='keeper'){
+    document.getElementById('qa-output').style.display='none';
+    var keeperShop=new URLSearchParams(location.search).get('shopId')||'前治安官';
+    var realiconsMode=new URLSearchParams(location.search).get('realicons');
+    var openKeeperShop=function(){Panels.open('npcshop',{shopId:keeperShop});};
+    if(realiconsMode==='2'&&typeof Icons!=='undefined'&&Icons.load){
+      Icons.load(function(){openKeeperShop();});
+    }else if(realiconsMode&&typeof Icons!=='undefined'&&Icons.load){
+      Icons.load(function(){});openKeeperShop();
+    }else openKeeperShop();
+    await waitForCondition(function(){return NpcShop.debugState().inventory.ready&&document.querySelector('.npcshop-catalog-card')},'keeper visual shop');
+    try{await waitForCondition(function(){var s=document.querySelector('.npcshop-backdrop');return s&&s.getAttribute('data-portrait-source')!=='none'},'keeper portrait')}catch(keeperError){}
+    await wait();
+    window.__visualReady=true;return;
   }
   if(window.__npcshopHarnessScenario==='pg-material-navigation'){
     await runMaterialNavigationScenario();

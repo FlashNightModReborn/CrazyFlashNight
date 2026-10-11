@@ -11,6 +11,7 @@ var NpcShop = (function() {
     var _layoutMode = 'full', _densityController = null, _layoutToggle = null;
     var _spacePresenter = null, _spaceBusy = false, _spaceMutated = false;
     var _helpPresenter = null, _bagFilterControl = null;
+    var _keeper = null;
     var _config = (typeof window !== 'undefined' && window.__NPCSHOP_CONFIG__) || {};
     var _runtimeConfig = {};
     for (var _configKey in _config) {
@@ -72,7 +73,10 @@ var NpcShop = (function() {
         var root = _shell.getRoot();
         root.classList.add('kshop-workbench', 'npcshop-panel');
         root.setAttribute('data-workbench-skin', 'npcshop');
-        _shellEl.appendChild(root);
+        // 独立视觉（烹饪式路线）：frame 携带阵营主题变量，立绘底板压入商品目录槽；壳宽仍为 1024 设计画布
+        _keeper = typeof NpcShopKeeper !== 'undefined' ? NpcShopKeeper.create({shopId:_shopId, shell:_shell}) : null;
+        if (_keeper) _keeper.root.appendChild(root);
+        _shellEl.appendChild(_keeper ? _keeper.root : root);
         _viewChoiceGroup = new WorkbenchComponents.ChoiceGroup({
             document:document,
             ariaLabel:'NPC 商店右栏视图',
@@ -388,6 +392,7 @@ var NpcShop = (function() {
         var filtered = catalog.filter(matchesCategory); _catalogRenderer.render(filtered, renderOptions);
         if (_catalogView) _catalogView.chrome.setMeta(_state ? filtered.length + ' / ' + catalog.length + ' 件商品' : '同步中');
         _materialNavigation.applyPresentation();
+        if (_keeper) _keeper.warmIcons(function() { if (_catalogRenderer && _state) { renderCatalog({forceItemRender:true}); renderOwnedViews(); refreshControls(); } });
     }
 
     function matchesCategory(item) {
@@ -865,7 +870,7 @@ var NpcShop = (function() {
             _categoryInitialized = true;
         }
         var title = response.layout && response.layout.title ? response.layout.title : _shopId;
-        _shell.setTitle(title, 'NPC 物品商店'); _shell.setMetric('money', '金币', Number(response.balance || 0).toLocaleString());
+        _shell.setTitle(title, (_keeper && _keeper.faction ? _keeper.faction + ' · ' : '') + 'NPC 物品商店'); _shell.setMetric('money', '金币', Number(response.balance || 0).toLocaleString());
         renderCategoryToolbar(); renderCatalog(); renderOwnedViews(); refreshControls();
     }
 
@@ -941,7 +946,7 @@ var NpcShop = (function() {
     function cleanup() {
         _materialNavigation.cleanup();
         if (_scaleHandle) { _scaleHandle.detach(); _scaleHandle = null; }
-        _inventoryAdapter.close(); _owner.close();
+        _inventoryAdapter.close(); _owner.close(); if (_keeper) { _keeper.destroy(); _keeper = null; }
         if (_shell) _shell.closeModal();
         disposeSharedComponents();
         _busy = false; resetPreviewCycle(); _state = null;
