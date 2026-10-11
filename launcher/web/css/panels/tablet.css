@@ -124,7 +124,7 @@
 .tablet-ambient { position: absolute; z-index: 2; pointer-events: none; }
 .tablet-ambient-drone-wiggle {
   transform-origin: 50% 45%;
-  animation: tablet-drone-wiggle 1.7s ease-in-out infinite alternate;
+  animation: var(--wb-tablet-drone-wiggle);
 }
 @keyframes tablet-drone-wiggle {
   from { transform: rotate(-1.1deg) scaleY(0.985); }
