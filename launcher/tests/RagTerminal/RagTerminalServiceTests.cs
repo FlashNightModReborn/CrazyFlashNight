@@ -9,6 +9,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using CF7Launcher.Guardian;
 using CF7Launcher.RagTerminal;
+using Newtonsoft.Json.Linq;
 using Xunit;
 
 namespace CF7Launcher.Tests.RagTerminal
@@ -72,6 +73,8 @@ namespace CF7Launcher.Tests.RagTerminal
             RagTerminalPrepareResult bound = await service.BindAsync("");
             Assert.False(bound.Success);
             Assert.Equal("rag_slot_invalid", bound.Error);
+
+            await service.RefreshBindingBestEffortAsync("bad/slot", new JObject { ["name"] = "x" }, null);
 
             Assert.Empty(handler.Requests);
         }
@@ -338,6 +341,63 @@ namespace CF7Launcher.Tests.RagTerminal
             Assert.Equal(2, handler.Requests.Count);
             Assert.Equal("/api/health", handler.Requests[0].RequestUri.AbsolutePath);
             Assert.Equal("/api/integration/bind", handler.Requests[1].RequestUri.AbsolutePath);
+        }
+
+        [Fact]
+        public async Task ProjectionSectionsRideTheBindPayload()
+        {
+            var handler = new RagHttpStub(request => RagHttpStub.Json(
+                "{\"ok\":true,\"frontend_url\":\"http://127.0.0.1:7077/?embedded=1\",\"mode\":\"embedded\"}"));
+            using var service = new RagTerminalService(@"C:\x\CrazyFlashNight", null, handler, path => { });
+            var character = new JObject { ["name"] = "张三" };
+            var progress = new JObject
+            {
+                ["tasks_finished"] = new JArray(21),
+                ["task_chains_progress"] = new JObject { ["主线"] = 77 }
+            };
+
+            RagTerminalPrepareResult result = await service.BindAsync("save1", character, progress);
+
+            Assert.True(result.Success);
+            Assert.Equal(
+                "{\"slot_key\":\"save1\",\"character\":{\"name\":\"张三\"},"
+                + "\"progress\":{\"tasks_finished\":[21],\"task_chains_progress\":{\"主线\":77}}}",
+                handler.Bodies[0]);
+        }
+
+        [Fact]
+        public async Task RefreshSkipsSilentlyWhenExeOffline()
+        {
+            var handler = new RagHttpStub(request => RagHttpStub.Json("{\"status\":\"booting\"}"));
+            var started = new List<string>();
+            using var service = new RagTerminalService(@"C:\x\CrazyFlashNight", null, handler, started.Add);
+
+            await service.RefreshBindingBestEffortAsync(
+                "save1", new JObject { ["name"] = "张三" }, null);
+
+            Assert.Empty(started);
+            HttpRequestMessage probe = Assert.Single(handler.Requests);
+            Assert.Equal("/api/health", probe.RequestUri.AbsolutePath);
+        }
+
+        [Fact]
+        public async Task RefreshPostsSingleBindAndToleratesFailure()
+        {
+            var handler = new RagHttpStub(request => request.RequestUri.AbsolutePath == "/api/health"
+                ? RagHttpStub.Json("{\"status\":\"ok\",\"mode\":\"embedded\"}")
+                : RagHttpStub.Json("{\"ok\":false}", HttpStatusCode.BadGateway));
+            var started = new List<string>();
+            using var service = new RagTerminalService(@"C:\x\CrazyFlashNight", null, handler, started.Add);
+
+            await service.RefreshBindingBestEffortAsync(
+                "save1", null, new JObject { ["tasks_finished"] = new JArray(21) });
+
+            Assert.Empty(started);
+            Assert.Equal(2, handler.Requests.Count);
+            Assert.Equal("/api/health", handler.Requests[0].RequestUri.AbsolutePath);
+            Assert.Equal("/api/integration/bind", handler.Requests[1].RequestUri.AbsolutePath);
+            Assert.Equal("{\"slot_key\":\"save1\",\"progress\":{\"tasks_finished\":[21]}}",
+                handler.Bodies[1]);
         }
     }
 

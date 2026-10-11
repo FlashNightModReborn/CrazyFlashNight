@@ -4613,25 +4613,21 @@ namespace CF7Launcher.Guardian
         // 回 AS2 toast，不开半开面板（open/admission 仍归 Host）。
         private void RequestOpenRagChatPanel(string source, string initDataExtrasJson)
         {
-            string slotKey = null;
+            JObject data = null;
             try
             {
-                JObject data = string.IsNullOrEmpty(initDataExtrasJson)
-                    ? null
-                    : JObject.Parse(initDataExtrasJson);
-                if (data != null && data.Count == 1
-                    && data.Property("savePath") != null
-                    && data["savePath"].Type == JTokenType.String)
-                {
-                    slotKey = data.Value<string>("savePath");
-                }
+                if (!string.IsNullOrEmpty(initDataExtrasJson)) data = JObject.Parse(initDataExtrasJson);
             }
             catch (Exception ex)
             {
                 LogManager.Log("[Router] ragchat initData parse failed: " + ex.Message);
             }
-            if (slotKey == null)
+            string slotKey;
+            JObject character, progress;
+            string rejectReason;
+            if (!TryParseRagChatProjection(data, out slotKey, out character, out progress, out rejectReason))
             {
+                LogManager.Log("[Router] ragchat open rejected reason=" + rejectReason);
                 NotifyRagChatUnavailable("终端请求载荷无效，请稍后重试。");
                 return;
             }
@@ -4646,22 +4642,105 @@ namespace CF7Launcher.Guardian
             if (marshal == null)
             {
                 // 测试缝线：无 UI marshal 时同步跑完链路，保持单测同步断言语义。
-                CompleteRagChatOpen(service, slotKey, source, baselinePanel, null);
+                CompleteRagChatOpen(service, slotKey, character, progress, source, baselinePanel, null);
                 return;
             }
             System.Threading.ThreadPool.QueueUserWorkItem(delegate
             {
-                CompleteRagChatOpen(service, slotKey, source, baselinePanel, marshal);
+                CompleteRagChatOpen(service, slotKey, character, progress, source, baselinePanel, marshal);
             });
         }
 
+        /// <summary>ragchat 载荷白名单（panel_request initData 与 rag_bind_refresh 共用）：
+        /// savePath 必填非空字符串；character/progress 可选、形状受限；未知键拒收。</summary>
+        internal static bool TryParseRagChatProjection(JObject data, out string slotKey,
+            out JObject character, out JObject progress, out string rejectReason)
+        {
+            slotKey = null; character = null; progress = null; rejectReason = null;
+            if (data == null) { rejectReason = "missing_payload"; return false; }
+            foreach (JProperty property in data.Properties())
+            {
+                if (property.Name != "savePath" && property.Name != "character" && property.Name != "progress")
+                {
+                    rejectReason = "unknown_field:" + property.Name;
+                    return false;
+                }
+            }
+            JToken savePath = data["savePath"];
+            if (savePath == null || savePath.Type != JTokenType.String
+                || string.IsNullOrEmpty(savePath.Value<string>()))
+            {
+                rejectReason = "savePath_invalid";
+                return false;
+            }
+            slotKey = savePath.Value<string>();
+
+            JToken characterToken = data["character"];
+            if (characterToken != null && characterToken.Type != JTokenType.Null)
+            {
+                character = characterToken as JObject;
+                if (character == null || character["name"] == null
+                    || character["name"].Type != JTokenType.String)
+                {
+                    rejectReason = "character_invalid";
+                    return false;
+                }
+            }
+
+            JToken progressToken = data["progress"];
+            if (progressToken != null && progressToken.Type != JTokenType.Null)
+            {
+                progress = progressToken as JObject;
+                if (progress == null) { rejectReason = "progress_invalid"; return false; }
+                JToken finished = progress["tasks_finished"];
+                if (finished != null)
+                {
+                    if (finished.Type != JTokenType.Array) { rejectReason = "progress_tasks_finished_invalid"; return false; }
+                    foreach (JToken id in finished)
+                        if (id.Type != JTokenType.Integer)
+                        {
+                            rejectReason = "progress_tasks_finished_invalid";
+                            return false;
+                        }
+                }
+                JToken chains = progress["task_chains_progress"];
+                if (chains != null && chains.Type != JTokenType.Object)
+                {
+                    rejectReason = "progress_chains_invalid";
+                    return false;
+                }
+            }
+            return true;
+        }
+
+        /// <summary>rag_bind_refresh（G2-3②③④）：存档投影的静默刷新通道，复用 bind 端点。
+        /// 载荷畸形或 exe 不在线都只在 Host 侧留痕——刷新是 best-effort，绝不回 toast。</summary>
+        internal void HandleRagBindRefresh(JObject data)
+        {
+            string slotKey;
+            JObject character, progress;
+            string rejectReason;
+            if (!TryParseRagChatProjection(data, out slotKey, out character, out progress, out rejectReason))
+            {
+                LogManager.Log("[Router] rag_bind_refresh rejected reason=" + rejectReason);
+                return;
+            }
+            RagTerminal.RagTerminalService service = _ragTerminalService;
+            if (service == null)
+            {
+                LogManager.Log("[Router] rag_bind_refresh skipped: service not wired");
+                return;
+            }
+            service.RefreshBindingInBackground(slotKey, character, progress);
+        }
+
         private void CompleteRagChatOpen(RagTerminal.RagTerminalService service, string slotKey,
-            string source, string baselinePanel, Action<Action> marshal)
+            JObject character, JObject progress, string source, string baselinePanel, Action<Action> marshal)
         {
             RagTerminal.RagTerminalPrepareResult result;
             try
             {
-                result = service.PrepareForPanelAsync(slotKey).GetAwaiter().GetResult();
+                result = service.PrepareForPanelAsync(slotKey, character, progress).GetAwaiter().GetResult();
             }
             catch (Exception ex)
             {

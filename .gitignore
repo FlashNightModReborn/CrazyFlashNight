@@ -105,6 +105,8 @@ flashswf/portraits/illustration/
 data/task/agent_tasks.json
 data/task/text/agent_text.json
 data/rag/sync_state.json
+# 按存档的 Agent 增量目录（data/rag/agent_saves/<slotKey>/，后端 bind 后按需生成，整目录不入库）
+data/rag/agent_saves/
 
 # Node modules (npm install restores)
 node_modules/

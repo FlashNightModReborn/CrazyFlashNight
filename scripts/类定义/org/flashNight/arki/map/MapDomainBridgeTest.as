@@ -330,7 +330,7 @@ class org.flashNight.arki.map.MapDomainBridgeTest {
             "_force","_acceptedRevision","_confirmedSignature","_helloFlight"];
         var savedBridge:Object = snapshotFields(bridge, bridgeFields);
         var oldObserve:Function = bridge.observeScene, oldRefresh:Function = world.refresh;
-        var oldConnected:Boolean = server.isSocketConnected, oldBoot:Object = _root.__boot;
+        var oldConnected:Boolean = server.isSocketConnected, oldBoot:Object = _root.__boot, oldSavePath:Object = _root.savePath;
         try {
             bridge.observeScene = function():Void {};
             world.refresh = function():Void {};
@@ -352,12 +352,14 @@ class org.flashNight.arki.map.MapDomainBridgeTest {
                 "task sync refuses to reach the wire without an installed session");
             bridge._sessionToken = tokenA;
 
+            _root.savePath = "";
             MapDomainBridge.syncTasks(captureSync);
             var request:Object = _wire[base].request;
             var keyCount:Number = 0;
             for (var key:String in request) keyCount++;
-            check(_wire.length == base + 1 && request.op == "task_sync" && request.version === 2 && keyCount == 2,
-                "task sync submits exactly the versioned operation and no sampled game facts");
+            check(_wire.length == base + 1 && request.op == "task_sync" && request.version === 2
+                && keyCount == 3 && request.savePath == "",
+                "task sync reports the versioned operation, an empty savePath without a slot and no sampled game facts");
             MapDomainBridge.syncTasks(captureSync);
             check(_wire.length == base + 1 && _lastSync.ok === false && _lastSync.error == "task_sync_busy",
                 "a second task sync is rejected while the first is still in flight");
@@ -366,6 +368,14 @@ class org.flashNight.arki.map.MapDomainBridgeTest {
             check(_lastSync.ok === true && _syncCalls == 3 && bridge._syncBootstrap == undefined
                 && bridge._sessionToken == tokenA && bridge._loadedDigest == contentA,
                 "an unchanged task catalog leaves the running session and content alone");
+
+            _root.savePath = "slot_test_a";
+            MapDomainBridge.syncTasks(captureSync);
+            check(_wire[_wire.length - 1].request.savePath == "slot_test_a",
+                "task sync reports the current save slot for the overlay source switch");
+            _wire[_wire.length - 1].callback({success:true, result:{version:2, changed:false}});
+            check(_lastSync.ok === true && bridge._syncBootstrap == undefined,
+                "a slot change without host-side deltas keeps the running session");
 
             var staged:Object = bootOf(hex(32,"b"), hex(64,"e"), definition, ["1","2","3"]);
             bridge._flight = {stale:true};
@@ -433,7 +443,7 @@ class org.flashNight.arki.map.MapDomainBridgeTest {
         finally {
             restoreFields(bridge, bridgeFields, savedBridge);
             bridge.observeScene = oldObserve; world.refresh = oldRefresh;
-            server.isSocketConnected = oldConnected; _root.__boot = oldBoot;
+            server.isSocketConnected = oldConnected; _root.__boot = oldBoot; _root.savePath = oldSavePath;
         }
     }
     public static function runAllTests():Void {

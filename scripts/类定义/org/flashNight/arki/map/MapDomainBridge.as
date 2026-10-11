@@ -285,7 +285,10 @@ class org.flashNight.arki.map.MapDomainBridge {
         if (_syncFlight != undefined || _syncBootstrap != undefined) { callback(false, "task_sync_busy", undefined); return; }
         var flight:Object = {callback:callback};
         _syncFlight = flight;
-        ServerManager.getInstance().sendTaskWithCallback("map_domain", {version:2, op:"task_sync"}, null, function(response:Object):Void {
+        // savePath 一并上报：宿主据此把当前存档的覆盖层增量（data/rag/agent_saves/<slot>/）
+        // 纳入变化清单；无存档或形态非法时传空串，宿主按无覆盖层处理。
+        var savePath:String = (_root.savePath == undefined || _root.savePath == null) ? "" : String(_root.savePath);
+        ServerManager.getInstance().sendTaskWithCallback("map_domain", {version:2, op:"task_sync", savePath:savePath}, null, function(response:Object):Void {
             org.flashNight.arki.map.MapDomainBridge.onTaskSync(flight, response);
         }, 5000);
     }

@@ -3,7 +3,8 @@
 
  //从磁盘重新读取 data/task 与 data/task/text，并写回 TaskUtil。可选 onSuccess / onError。若正在执行中会忽略新的请求（避免重复点击叠加载）。
  //changedFiles 给出宿主判定变化的文件清单时只重读这些文件；缺省即整目录重载（ExternalInterface 入口保持不变）。
-_root.重新加载任务数据 = function(onSuccess:Function, onError:Function, changedFiles:Array):Void {
+ //silent=true 供 Agent 槽位对齐等后台链路使用：不弹加载完成/失败提示，只留 trace。
+_root.重新加载任务数据 = function(onSuccess:Function, onError:Function, changedFiles:Array, silent:Boolean):Void {
     if (_root._taskReloadBusy == true) {
         _root.发布消息("重新加载任务数据：已在执行中，跳过");
         return;
@@ -29,7 +30,11 @@ _root.重新加载任务数据 = function(onSuccess:Function, onError:Function, 
         }
         TaskUtil.ParseTaskData(taskData, textData);
         _root.检查任务数据完整性();
-        _root.发布消息("任务数据已重新加载");
+        if (silent == true) {
+            trace("任务数据已重新加载（静默）");
+        } else {
+            _root.发布消息("任务数据已重新加载");
+        }
         doneBusy();
         if (onSuccess != undefined) {
             onSuccess();
@@ -42,7 +47,9 @@ _root.重新加载任务数据 = function(onSuccess:Function, onError:Function, 
         }
         failed = true;
         trace("重新加载任务数据失败");
-        _root.发布消息("任务数据重新加载失败");
+        if (silent != true) {
+            _root.发布消息("任务数据重新加载失败");
+        }
         doneBusy();
         if (onError != undefined) {
             onError();
@@ -397,6 +404,11 @@ _root.提交任务完成状态 = function(id, chain) {
         }
     }
     _root.存档系统.dirtyMark = true;
+    // G2-3④：任务完成即推一次存档投影刷新（best-effort，exe 不在线静默跳过）。
+    if (_root.agent != undefined && _root.agent != null
+            && typeof _root.agent.推送绑定刷新 == "function") {
+        _root.agent.推送绑定刷新();
+    }
 }
 
 _root.UpdateTaskProgress = function(id) {

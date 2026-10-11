@@ -60,14 +60,16 @@ namespace CF7Launcher.RagTerminal
             return !string.IsNullOrEmpty(value) && SlotKeyPattern.IsMatch(value);
         }
 
-        /// <summary>健康轮询 + 按需拉起 + bind 的完整前置链；任一步失败都不开面板。</summary>
-        internal async Task<RagTerminalPrepareResult> PrepareForPanelAsync(string slotKey)
+        /// <summary>健康轮询 + 按需拉起 + bind 的完整前置链；任一步失败都不开面板。
+        /// character/progress 是 AS2 存档投影（G2-1），可空；缺省时载荷保持只带 slot_key。</summary>
+        internal async Task<RagTerminalPrepareResult> PrepareForPanelAsync(string slotKey,
+            JObject character = null, JObject progress = null)
         {
             if (!IsValidSlotKey(slotKey))
                 return RagTerminalPrepareResult.Fail("rag_slot_invalid", "当前存档信息无效，无法打开通讯终端。");
             RagTerminalPrepareResult ready = await EnsureReadyAsync().ConfigureAwait(false);
             if (!ready.Success) return ready;
-            return await BindAsync(slotKey).ConfigureAwait(false);
+            return await BindAsync(slotKey, character, progress).ConfigureAwait(false);
         }
 
         /// <summary>先探测既有实例（standalone 复用），未就绪才静默拉起 exe 并轮询健康。</summary>
@@ -113,7 +115,8 @@ namespace CF7Launcher.RagTerminal
         }
 
         /// <summary>bind 幂等，写失败允许有限重试一次；绝不无限重放。</summary>
-        internal async Task<RagTerminalPrepareResult> BindAsync(string slotKey)
+        internal async Task<RagTerminalPrepareResult> BindAsync(string slotKey,
+            JObject character = null, JObject progress = null)
         {
             if (!IsValidSlotKey(slotKey))
                 return RagTerminalPrepareResult.Fail("rag_slot_invalid", "当前存档信息无效，无法打开通讯终端。");
@@ -122,7 +125,7 @@ namespace CF7Launcher.RagTerminal
             {
                 JObject response = await PostJsonAsync(
                     "/api/integration/bind",
-                    new JObject { ["slot_key"] = slotKey }.ToString(Formatting.None)).ConfigureAwait(false);
+                    BuildBindPayload(slotKey, character, progress).ToString(Formatting.None)).ConfigureAwait(false);
                 if (response != null && response.Value<bool?>("ok") == true)
                 {
                     string frontendUrl = response.Value<string>("frontend_url");
@@ -157,6 +160,50 @@ namespace CF7Launcher.RagTerminal
                 try { UnbindAsync().GetAwaiter().GetResult(); }
                 catch (Exception ex) { LogManager.Log("[RagTerminal] unbind threw: " + ex.Message); }
             });
+        }
+
+        /// <summary>存档投影刷新的异步落点（G2-3②③④）：绝不拉花 exe，exe 不在线静默跳过；
+        /// 单次 POST，失败仅记日志（best-effort、幂等，复用 bind 端点）。</summary>
+        internal void RefreshBindingInBackground(string slotKey,
+            JObject character = null, JObject progress = null)
+        {
+            System.Threading.ThreadPool.QueueUserWorkItem(delegate
+            {
+                try { RefreshBindingBestEffortAsync(slotKey, character, progress).GetAwaiter().GetResult(); }
+                catch (Exception ex) { LogManager.Log("[RagTerminal] refresh threw: " + ex.Message); }
+            });
+        }
+
+        internal async Task RefreshBindingBestEffortAsync(string slotKey,
+            JObject character = null, JObject progress = null)
+        {
+            if (!IsValidSlotKey(slotKey))
+            {
+                LogManager.Log("[RagTerminal] refresh skipped: invalid slot");
+                return;
+            }
+            JObject health = await ProbeHealthAsync().ConfigureAwait(false);
+            if (health == null)
+            {
+                LogManager.Log("[RagTerminal] refresh skipped: exe offline");
+                return;
+            }
+            JObject response = await PostJsonAsync(
+                "/api/integration/bind",
+                BuildBindPayload(slotKey, character, progress).ToString(Formatting.None)).ConfigureAwait(false);
+            if (response == null || response.Value<bool?>("ok") != true)
+                LogManager.Log("[RagTerminal] refresh bind failed (ignored) slot=" + slotKey);
+        }
+
+        /// <summary>bind 载荷：slot_key 恒在；投影段仅在 AS2 提供时携带。后端覆盖式语义下，
+        /// 缺省段＝该段置空（非保留旧值），所以刷新点必须带齐自己已知的全部投影。</summary>
+        internal static JObject BuildBindPayload(string slotKey,
+            JObject character = null, JObject progress = null)
+        {
+            JObject payload = new JObject { ["slot_key"] = slotKey };
+            if (character != null) payload["character"] = character.DeepClone();
+            if (progress != null) payload["progress"] = progress.DeepClone();
+            return payload;
         }
 
         /// <summary>

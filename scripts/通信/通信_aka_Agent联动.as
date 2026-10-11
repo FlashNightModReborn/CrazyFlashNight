@@ -12,6 +12,9 @@ _root.agent.REL_SYNC_STATE = "data/rag/sync_state.json";
 _root.agent.REL_NPC_STATE_DB = "data/rag/npc_state_db.json";
 _root.agent.REL_LAUNCH_BAT = "data/rag/launch_cfn_rag.bat";
 _root.agent.KEY_TASK_PUBLISH_VERSION = "task_publish_version";
+// 槽位目录同步（G2-3②）：已对齐槽位与防重入。null＝从未对齐。
+_root.agent.slot_catalog_aligned = null;
+_root.agent.slot_catalog_busy = false;
 
 _root.agent.读取任务发布版本号 = function(raw:String):Number {
     if (raw == undefined || raw.length == 0) {
@@ -85,6 +88,12 @@ _root.agent.轮询同步状态 = function():Void {
     if (_root.agent.sync_apply_busy == true) {
         return;
     }
+    // 槽位对齐检查（G2-3②）：当前槽位与宿主侧目录投影未对齐时先补对齐，本轮不再进行版本轮询。
+    var slot:String = (_root.savePath == undefined || _root.savePath == null) ? "" : String(_root.savePath);
+    if (slot != "" && _root.agent.slot_catalog_aligned !== slot) {
+        _root.agent.请求槽位目录同步();
+        return;
+    }
     if (!PathManager.isEnvironmentValid()) {
         return;
     }
@@ -125,7 +134,7 @@ _root.agent.轮询同步状态 = function():Void {
 // finish 与 giveUp 合计恰好执行一次，绝不把桥留在提交窗口里；版本号只在真正收敛后推进。
 _root.agent.同步任务热更新 = function(fileVer:Number):Void {
     var r:Object = _root.agent;
-    if (r.sync_apply_busy == true || _root._taskReloadBusy == true) {
+    if (r.sync_apply_busy == true || _root._taskReloadBusy == true || r.slot_catalog_busy == true) {
         return;
     }
     r.sync_apply_busy = true;
@@ -197,6 +206,128 @@ _root.agent.同步任务热更新 = function(fileVer:Number):Void {
     });
 };
 
+// G2-1 载荷投影：ragchat initData 与 rag_bind_refresh 共用的三键形状。
+// Host 白名单（LauncherCommandRouter.TryParseRagChatProjection）只收 savePath/character/progress，
+// 且 tasks_finished 必须是整数数组、task_chains_progress 必须是对象——违反任何一条整包被拒。
+// 数据来源：_root 存档键（角色名；tasks_finished 是「任务id→完成次数」表，投影为完成 id 的整数数组）。
+_root.agent.构建存档投影 = function(savePath:String):Object {
+    var character:Object = {
+        name: (_root.角色名 == undefined || _root.角色名 == null) ? "" : String(_root.角色名)
+    };
+    var finished:Array = [];
+    var finishedMap:Object = _root.tasks_finished;
+    if (finishedMap != undefined && finishedMap != null) {
+        for (var taskKey in finishedMap) {
+            var id:Number = Number(taskKey);
+            var count:Number = Number(finishedMap[taskKey]);
+            if (!isFinite(id) || id != Math.floor(id) || id < 0) continue;
+            if (!isFinite(count) || count < 1) continue;
+            finished.push(id);
+        }
+    }
+    var chains:Object = {};
+    var chainMap:Object = _root.task_chains_progress;
+    if (chainMap != undefined && chainMap != null) {
+        for (var chain in chainMap) {
+            var progress:Number = Number(chainMap[chain]);
+            if (!isFinite(progress)) continue;
+            chains[chain] = progress;
+        }
+    }
+    return {
+        savePath: savePath,
+        character: character,
+        progress: {tasks_finished: finished, task_chains_progress: chains}
+    };
+};
+
+// G2-3③④：durable 落盘与任务完成时的投影刷新出口。经 Host 转发 rag_bind_refresh，
+// exe 不在线由 Host 侧静默跳过；本函数不弹任何提示（best-effort）。
+_root.agent.推送绑定刷新 = function():Void {
+    if (_root.server == undefined || _root.server == null) return;
+    if (typeof _root.server.sendTaskToNode != "function") return;
+    if (_root.server.isSocketConnected !== true) return;
+    var savePath:String = (_root.savePath == undefined || _root.savePath == null) ? "" : String(_root.savePath);
+    if (savePath == "") return;
+    _root.server.sendTaskToNode("rag_bind_refresh", _root.agent.构建存档投影(savePath), null);
+};
+
+// G2-3②：换槽位后的任务目录对齐。宿主按新 savePath 重读覆盖层并回变化清单，
+// 游戏侧只重载真正变化的文件（silent=true 不弹提示、不推进任务发布版本号）。
+// 失败 trace-only；下一轮 7 秒轮询的对齐检查会重试，task_reload_owed 防止
+// 「宿主已换内容而游戏侧没落地」被一个 changed=false 的答复抹掉。
+_root.agent.请求槽位目录同步 = function():Void {
+    var r:Object = _root.agent;
+    var slot:String = (_root.savePath == undefined || _root.savePath == null) ? "" : String(_root.savePath);
+    if (slot == "" || r.slot_catalog_busy == true) return;
+    if (r.sync_apply_busy == true || _root._taskReloadBusy == true) return;
+    if (r.slot_catalog_aligned === slot) return;
+    r.slot_catalog_busy = true;
+    var done:Boolean = false;
+
+    function finish():Void {
+        if (done) return;
+        done = true;
+        r.slot_catalog_busy = false;
+        r.task_reload_owed = false;
+        org.flashNight.arki.map.MapDomainBridge.commitTaskSync();
+        r.slot_catalog_aligned = slot;
+    }
+
+    function giveUp(reason:String):Void {
+        if (done) return;
+        done = true;
+        r.slot_catalog_busy = false;
+        trace("[Agent] 槽位目录同步未收敛：" + reason);
+    }
+
+    function reload(changedFiles:Array):Void {
+        if (_root._taskReloadBusy == true) {
+            giveUp("任务重载已在执行中");
+            return;
+        }
+        _root.重新加载任务数据(
+            function():Void {
+                finish();
+            },
+            function():Void {
+                if (changedFiles == null) {
+                    giveUp("任务数据重载失败");
+                    return;
+                }
+                reload(null);
+            },
+            changedFiles,
+            true
+        );
+    }
+
+    org.flashNight.arki.map.MapDomainBridge.syncTasks(function(ok:Boolean, error:String, result:Object):Void {
+        if (ok != true) {
+            giveUp(String(error));
+            return;
+        }
+        // 欠账优先：上一轮宿主已换内容而游戏侧没落地，这轮无论宿主怎么答都整目录重载。
+        if (r.task_reload_owed == true) {
+            reload(null);
+            return;
+        }
+        if (result == undefined || result.changed != true) {
+            finish();
+            return;
+        }
+        r.task_reload_owed = true;
+        reload((result.listChanged == true || !(result.changedFiles instanceof Array)) ? null : result.changedFiles);
+    });
+};
+
+// 读档完成点（通信_fs_bootstrap / SaveManager.replacePlayerContext）：
+// 换槽位＝向终端重推绑定 + 任务目录按新槽位对齐，两者都 best-effort。
+_root.agent.槽位已切换 = function():Void {
+    _root.agent.推送绑定刷新();
+    _root.agent.请求槽位目录同步();
+};
+
 _root.agent.注册同步轮询 = function():Void {
     if(_root.agent.npc_state_db_exists){
         _root.帧计时器.添加循环任务(_root.agent.轮询同步状态, 7000);
@@ -211,10 +342,19 @@ _root.agent.启动外部RAG工具 = function():Void {
         _root.最上层发布文字提示("通讯终端暂不可用，请稍后重试。");
         return;
     }
-    var savePath:String = _root.savePath == undefined ? "" : String(_root.savePath);
+    var savePath:String = (_root.savePath == undefined || _root.savePath == null) ? "" : String(_root.savePath);
+    var initFields:Array = [{name:"savePath", value:savePath}];
+    if (savePath != "") {
+        // G2-1：非空槽位才带全量投影；raw=true 让 PanelRequestEnvelope 原样内联
+        // stringifySafe 的输出（对象投影不能走字符串字段的二次转义）。
+        var projection:Object = _root.agent.构建存档投影(savePath);
+        var json:LiteJSON = new LiteJSON();
+        initFields.push({name:"character", value:json.stringifySafe(projection.character), raw:true});
+        initFields.push({name:"progress", value:json.stringifySafe(projection.progress), raw:true});
+    }
     var sent:Boolean = _root.server.sendSocketMessage(
         org.flashNight.arki.ui.PanelRequestEnvelope.build(
-            "ragchat", "agent_console", [], [{name:"savePath", value:savePath}]
+            "ragchat", "agent_console", [], initFields
         )
     );
     if (!sent) {

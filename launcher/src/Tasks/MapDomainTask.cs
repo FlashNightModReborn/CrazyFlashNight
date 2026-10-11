@@ -83,10 +83,13 @@ namespace CF7Launcher.Tasks
                 }
                 if (op == "task_sync")
                 {
-                    MapRuleEvaluator.Keys(payload, "version", "op");
+                    MapRuleEvaluator.Keys(payload, "version", "op", "savePath");
                     MapRuleEvaluator.Need(projectRoot != null, "宿主没有项目根，无法热重载任务目录。");
+                    MapRuleEvaluator.Need(payload["savePath"] == null || payload["savePath"].Type == JTokenType.Null || payload["savePath"].Type == JTokenType.String, "存档标识不正确。");
+                    // 非槽位键形态＝该存档不可能有覆盖层（绑定与写盘两侧只接受同一形态），按无增量重载，不阻断任务热更新。
+                    _ = CF7Launcher.Save.SaveSlotKey.TryValidateExisting(payload.Value<string>("savePath") ?? "", out string slotKey);
                     // 磁盘重读与校验在会话锁外完成；失败直接抛出，旧内容原样保留，不半应用。
-                    MapRuntimeContent reloaded = snapshot.ReloadTasks(projectRoot);
+                    MapRuntimeContent reloaded = snapshot.ReloadTasks(projectRoot, slotKey);
                     JObject sync = null;
                     bool Sync()
                     {

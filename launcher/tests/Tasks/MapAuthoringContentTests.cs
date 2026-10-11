@@ -214,6 +214,41 @@ namespace CF7Launcher.Tests.Tasks
             Assert.True((double)moved["pages"]["base"]["filters"][0]["buttonRect"]["y"] < (double)moved["pages"]["base"]["filters"][1]["buttonRect"]["y"]);
             Assert.Equal("图块副本", (string)moved["pages"]["base"]["sceneVisuals"][1]["label"]);
         }
+        [Fact]
+        public void ExtraSourcesMergeOverlayTasksAndTextsWithOverlayPriority()
+        {
+            var baseline = MapTaskCatalog.Load(root);
+            Put("data/rag/agent_saves/slotA/agent_tasks.json",
+                "{\"tasks\":[{\"id\":200001,\"title\":\"$AGENT_T1\",\"chain\":\"委托#1\",\"get_npc\":\"甲\",\"get_npc_hotspot\":\"home\"},{\"id\":1,\"title\":\"覆盖后的甲任务\",\"chain\":\"主线#1\",\"get_npc\":\"甲\"}]}");
+            Put("data/rag/agent_saves/slotA/agent_text.json", "{\"$AGENT_T1\":\"终端委托\"}");
+            var sources = new[] { MapTaskCatalog.AgentSaveTaskSource("slotA") };
+            var texts = new[] { MapTaskCatalog.AgentSaveTextSource("slotA") };
+            var catalog = MapTaskCatalog.Load(root, null, sources, texts);
+            Assert.Equal("终端委托", catalog.Title((JObject)catalog.Tasks["200001"]));
+            Assert.Equal("覆盖后的甲任务", (string)catalog.Tasks["1"]["title"]);
+            Assert.Equal("data/rag/agent_saves/slotA/agent_tasks.json", catalog.TaskFiles["1"]);
+            Assert.Contains("data/rag/agent_saves/slotA/agent_text.json", catalog.SourceBytes.Keys);
+            Assert.Contains("委托", catalog.Chains);
+            Assert.NotEqual(baseline.Digest, catalog.Digest);
+            // ChangedSources 覆盖额外源：内容一致不列入，改动的文件才列入。
+            Assert.Empty(MapTaskCatalog.ChangedSources(catalog, MapTaskCatalog.Load(root, null, sources, texts)));
+            Put("data/rag/agent_saves/slotA/agent_text.json", "{\"$AGENT_T1\":\"终端委托·改\"}");
+            Assert.Equal(new[] { "data/rag/agent_saves/slotA/agent_text.json" },
+                MapTaskCatalog.ChangedSources(catalog, MapTaskCatalog.Load(root, null, sources, texts)));
+        }
+        [Fact]
+        public void ExtraSourcesAreOptionalAndFailClosed()
+        {
+            var baseline = MapTaskCatalog.Load(root);
+            Assert.Equal(baseline.Digest, MapTaskCatalog.Load(root, null,
+                new[] { MapTaskCatalog.AgentSaveTaskSource("ghost") }, new[] { MapTaskCatalog.AgentSaveTextSource("ghost") }).Digest);
+            Put("data/rag/agent_saves/slotA/agent_tasks.json", "{\"tasks\":[{\"id\":\"bad\"}]}");
+            string source = MapTaskCatalog.AgentSaveTaskSource("slotA");
+            Assert.Throws<InvalidDataException>(() => MapTaskCatalog.Load(root, null, new[] { source }, null));
+            Put("data/rag/agent_saves/slotA/agent_tasks.json", "{\"tasks\":[]}");
+            Assert.Throws<InvalidDataException>(() => MapTaskCatalog.Load(root, null, new[] { source, source }, null));
+            Assert.Throws<InvalidDataException>(() => MapTaskCatalog.Load(root, null, new[] { "data/rag/agent_saves/../secret/agent_tasks.json" }, null));
+        }
         public void Dispose()
         {
             string expected = Path.Combine(Path.GetTempPath(), "cf7-map-content-test-");

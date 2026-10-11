@@ -7,7 +7,9 @@ using Newtonsoft.Json.Linq;
 
 namespace CF7Launcher.Data
 {
-    /// <summary>读取既有任务制作源。这里只维护地图端点，任务玩法字段从不成为地图工作台的写入面。</summary>
+    /// <summary>读取既有任务制作源。这里只维护地图端点，任务玩法字段从不成为地图工作台的写入面。
+    /// extraTaskSources / extraTextSources 是 list.xml 之外的显式额外源（相对路径清单，按存档覆盖层），
+    /// 在 list.xml 条目之后读取并同样进 SourceBytes，于是 ChangedSources 自然覆盖它们。</summary>
     public sealed class MapTaskCatalog
     {
         public readonly JObject Tasks = new JObject(), Texts = new JObject();
@@ -17,7 +19,8 @@ namespace CF7Launcher.Data
         public readonly JObject Infrastructure = new JObject();
         public string Digest => MapDefinition.Hash(MapDefinition.Utf8.GetBytes(string.Join("\n", SourceBytes.OrderBy(p => p.Key, StringComparer.Ordinal).Select(p => p.Key + " " + MapDefinition.Hash(p.Value)))));
 
-        public static MapTaskCatalog Load(string root, IReadOnlyDictionary<string, byte[]> overrides = null)
+        public static MapTaskCatalog Load(string root, IReadOnlyDictionary<string, byte[]> overrides = null,
+            IReadOnlyList<string> extraTaskSources = null, IReadOnlyList<string> extraTextSources = null)
         {
             var catalog = new MapTaskCatalog();
             const string infrastructureFile = "data/infrastructure/infrastructure.xml";
@@ -59,8 +62,37 @@ namespace CF7Launcher.Data
                     }
                 }
             }
+            // 额外源在 list.xml 条目之后读取：缺失＝该存档没有增量，静默跳过；存在但损坏则整次加载失败，
+            // 调用方保留旧内容（fail-closed）。任务同 id 时覆盖层优先，与游戏侧合并语义一致。
+            void ReadExtra(string file, bool text)
+            {
+                byte[] replacement = null;
+                bool hasOverride = overrides != null && overrides.TryGetValue(file, out replacement);
+                if (!hasOverride && !File.Exists(MapProjectFiles.Resolve(root, file))) return;
+                MapRuleEvaluator.Need(!catalog.SourceBytes.ContainsKey(file), "任务目录重复引用源文件。");
+                byte[] bytes = hasOverride ? replacement : MapProjectFiles.Read(root, file); catalog.SourceBytes[file] = bytes;
+                var document = MapProjectFiles.Json(bytes);
+                if (text)
+                {
+                    foreach (var p in document.Properties()) catalog.Texts[p.Name] = p.Value.DeepClone();
+                    return;
+                }
+                MapRuleEvaluator.Need(document["tasks"] is JArray taskList && taskList.Count <= 4096, "任务源列表缺失或过大。");
+                foreach (JObject task in (JArray)document["tasks"])
+                {
+                    string id = MapRuleEvaluator.Integer(task["id"], "任务 ID").ToString(System.Globalization.CultureInfo.InvariantCulture);
+                    catalog.Tasks[id] = task.DeepClone(); catalog.TaskFiles[id] = file;
+                    string chain = (task.Value<string>("chain") ?? "").Split('#')[0];
+                    if (chain != "") catalog.Chains.Add(chain);
+                }
+            }
+            foreach (string file in extraTaskSources ?? (IReadOnlyList<string>)Array.Empty<string>()) ReadExtra(file, false);
+            foreach (string file in extraTextSources ?? (IReadOnlyList<string>)Array.Empty<string>()) ReadExtra(file, true);
             return catalog;
         }
+        /// <summary>按存档任务覆盖层落点（data/rag/agent_saves/&lt;slotKey&gt;/）的两个源文件相对路径，与后端写盘同名。</summary>
+        public static string AgentSaveTaskSource(string slotKey) => "data/rag/agent_saves/" + slotKey + "/agent_tasks.json";
+        public static string AgentSaveTextSource(string slotKey) => "data/rag/agent_saves/" + slotKey + "/agent_text.json";
         /// <summary>逐文件比对任务源字节，返回变化清单（含 list.xml 与基建目录）。热重载据此只让游戏侧重读真正变化的文件。</summary>
         public static List<string> ChangedSources(MapTaskCatalog before, MapTaskCatalog after)
         {

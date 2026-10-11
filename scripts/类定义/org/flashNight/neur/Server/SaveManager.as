@@ -1254,6 +1254,11 @@ class org.flashNight.neur.Server.SaveManager {
             _drugLoadoutMigrationPending = false;
             _rewardInboxMigrationPending = false;
             KeyManager.clearPendingKeySettingsMigration();
+            // G2-3③：durable 落盘完成后推一次存档投影刷新（best-effort，exe 不在线静默跳过）。
+            if (_root.agent != undefined && _root.agent != null
+                    && typeof _root.agent.推送绑定刷新 == "function") {
+                _root.agent.推送绑定刷新();
+            }
         }
 
         _root.mydata = mydata;
@@ -2108,6 +2113,8 @@ class org.flashNight.neur.Server.SaveManager {
         org.flashNight.arki.scene.StageManager.getInstance().clear();
         resetPerCharacterMemory();
         org.flashNight.arki.scene.StageRunSession.resetForRestart();
+        // G2-3②：只有真正换槽位才刷新终端绑定与任务目录；play/return/失败恢复的同槽位重入天然跳过。
+        var previousSlot:String = _root.savePath == undefined ? "" : String(_root.savePath);
         _root.savePath = slot;
         _root.转场景数据 = [0, 0, "空手"];
         _root.转场景记录数据第一次记录 = false;
@@ -2143,6 +2150,10 @@ class org.flashNight.neur.Server.SaveManager {
             if (typeof _root.是否达成任务检测 == "function") _root.是否达成任务检测();
         }
         _root.允许存档 = true;
+        if (String(slot) != previousSlot && _root.agent != undefined && _root.agent != null
+                && typeof _root.agent.槽位已切换 == "function") {
+            _root.agent.槽位已切换();
+        }
         return true;
     }
 
