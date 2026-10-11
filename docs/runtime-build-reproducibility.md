@@ -1170,3 +1170,15 @@ strict production policy 42/42，receipt SHA-256 `0C612DBA8C5CB91E481E2386A5E124
 - 合并后 Host 全量 **6911 passed / 19 policy skipped**，map/loot **1031/1031**；新鲜 CS6 Compiler **0/0**，asLoader **1,501,463** 字节、SHA-256 `9EF57B80320539A116A0DE20805959B849D4D5A412656A22A17BB86904A4B255`，类归属、生成闭包、函数体门通过。Web 浏览器 **123/123**、lazy-cancel **6/6**。同一正式 CAS 生产 Native renderer **75/75**、旧／新数量字样像素 **16/16**，实际窗口 / WebView2 **61/61** 与屏幕像素核对通过；测试不触及玩家槽位。
 - CAS 的实窗组件驱动与受跟踪 fixture 保持同一 61 项断言，仅把报告的开发 metadata 读取适配为实际 runtime manifest；生产程序集与 CAS 未变，适配源及哈希随本地验收包保存。这是隔离组件执行证据，真人 PVE、标准入口业务旅程、真实存档保存重启和视觉签收仍为 **PENDING**；不由 promotion 反向代签。
 - 部署提交 `e1993719231d8eb6411caa65e83c9372e407e8d1` 已普通快进推送；[云端 Runtime native audit 38003306191](https://github.com/FlashNightModReborn/CrazyFlashNight/actions/runs/38003306191) **success**，独立重放 `state=promoted / deploymentChanged=true`、`mode=Index / signers=2 / faultDomains=2` 及同一 closure `0683F820F20328E45C8BC3B10DA19C027BF709ACF8EAF4A84472E45F7AEFCBA3`。源码 `source-ahead` 审计单独保留，未被当作部署审计。
+<a id="arena-worker-release-20261011"></a>
+
+### 2026-10-11 Arena Worker P0/P1 正式发布
+
+用户明确授权提交推送、云端共识和正式构建部署。本次交付专用 Worker 隔离入口、一次性实验、技能缓存与双实例 P1 工具，普通单例及显式 Legacy 行为保留；先无冲突合入前治安官上游，再由 main 重新编译 AS2 并补齐生成字典。施工与私有实机证据见 [P0/P1 记录](Arena-Worker-P0-P1-施工与验证-2026-10-11.md)。
+
+- 冻结源码 `2b1fb74477a57b27a712a483b6eaee73fbc3a15f`，不可变标签 `refs/tags/runtime-build-v2/20261011-arena-worker-p0p1-v1`，request `058416A0F489E502BF53860820FA58D7E3248C5A3BCD3AEAC09A22B8D55ABB19`。
+- 本机 `builder-local-c / physical-host-c` 与 [GitHub hosted OIDC 构建 38126520046](https://github.com/FlashNightModReborn/CrazyFlashNight/actions/runs/38126520046) 对 identity `5DBDD55B4E41A99954F2E96B3437DE3FFC06DEFC6773677BE26CC93BBE41E45B`、43 文件 closure `DED864E04FCF8339DC6B73AF78FB4EB63D9C613D85C155F4F1256CC73834E92E` 达成共识。正式 Core SHA-256 `D184F369AB1A106EC161ACA093FE44C5908EA5DBAE6AE3FC5D9ADA2CAD3F1068` 与私有实测候选相同。
+- production policy **47/47**，receipt SHA-256 `7B49954BD5CA13D8549092B3EC069834896F62CDF78A818F9DB3932ACB723FE5`，精确绑定本机 signed CAS；云端仅下载并验证 attestation。唯一 writer 于 `2026-10-11T09:06:34.9860651Z` 完成原子推广，双 signer / 双 faultDomain、完整安装闭包和根 bootstrap `--verify-only` exit **0**。回滚包及全部身份见 [发布回执](evidence/arena-worker-runtime-release-2026-10-11.json)。
+- 合并后新鲜 CS6 Worker protocol **52/52**、技能缓存 **21/21**、Compiler **0/0**；asLoader **6,007,550** 字节 / SHA-256 `601CD42C51FF8CC1156E0CA7D4A688DC15E7CA65384F9F537E04136C05FA3B4D`。Node、文档巡检和 22 项冻结派生资源检查通过；首次 prepare 的字典缺项日志保留，生成器补齐后重新冻结。
+- 私有候选的 P0/P1、单侧 Flash 故障隔离、普通单例和 Legacy 回归成立；P1 吞吐比 **1.4343**，低于 1.6 扩展参考线，未扩展 P2。原显示及包装失败证据保留；合并资源后的标准入口业务、人类视觉/实体输入、弱机及长时热稳态仍 **PENDING**。
+- 源码推送 Audit `38125503809` 为 `source-ahead / deploymentChanged=false`；部署提交与独立远端部署 Audit 将在推送完成后补记。

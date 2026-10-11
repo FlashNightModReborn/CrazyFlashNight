@@ -4,9 +4,9 @@
 **源码起点**：`61b477298854afcdcea54970c07e7818f9d3b5e4`。
 **私有候选验证基线**：工作树 HEAD 为 `ed64e139aeca9e2bda12691743a5cadc1c7ec4be`；已精确同步上游至 `155160229b280ead5c53bc7f79761ce845febc8a` 的 6 文件差异，再叠加本次未提交施工。
 **发布交接**：`main/origin/main` 已在 `34e312a14cfd820331724fbf083c328d2b9e7e08` 干净交接；正式入口 Core / identity / closure 已读回匹配其发布回执，随后才开始本任务的私有编译。
-**状态**：最低表现候选 5DB 的 P0 六局、P1 串行六局与并行六局、单侧 Flash 原子故障隔离以及普通入口回归均已取得本轮实际证据。并行完整墙钟吞吐为串行的 1.4343 倍，仍低于 1.6 倍扩展参考线；本次在 P0–P1 收口。Host 7023 通过、22 项既有专项跳过，Node 84 项及 Index 策略 47 项通过。源码迁入阶段交付 76 个文件，未含 SWF、正式 runtime 或 bootstrap。后续提交推送与正式发布已获授权，结果另按下述发布记录更新；原候选证据不自动升级为人类视觉、输入或标准入口验收。
+**状态**：最低表现候选 5DB 的 P0 六局、P1 串行六局与并行六局、单侧 Flash 原子故障隔离以及普通入口回归均已取得本轮实际证据。并行完整墙钟吞吐为串行的 1.4343 倍，仍低于 1.6 倍扩展参考线；本次在 P0–P1 收口。Host 7023 通过、22 项既有专项跳过，Node 84 项及 Index 策略 47 项通过。源码迁入阶段交付 76 个文件，未含 SWF、正式 runtime 或 bootstrap。正式推广已完成，部署推送与远端审计结果见下述发布记录；原候选证据不自动升级为人类视觉、输入或标准入口验收。
 
-用户授权主代理与两个常驻子代理无人值守完成 P0–P1。加载与面板长尾发布会话持有 main、CS6 和实机窗口；本任务先在隔离工作树施工，待该列车完成并交接最终 main 身份后集成、联调，再将已验证改动迁入 main 供人类监督测试。上述施工阶段最初不含 commit / push / runtime promotion；2026-10-11 用户后续明确授权“提交推送，走获取云端共识，构建部署推送的发布列车”，现按独立正式发布合同推进。
+用户授权主代理与两个常驻子代理无人值守完成 P0–P1。加载与面板长尾发布会话持有 main、CS6 和实机窗口；本任务先在隔离工作树施工，待该列车完成并交接最终 main 身份后集成、联调，再将已验证改动迁入 main 供人类监督测试。上述施工阶段最初不含 commit / push / runtime promotion；2026-10-11 用户后续明确授权“提交推送，走获取云端共识，构建部署推送的发布列车”，正式发布结果见本文末尾，原实机证据仍按私有候选范围保留。
 
 ## 施工归属
 
@@ -204,10 +204,14 @@ Node / Host fixture、AS2 Compiler 0/0、真实候选、双实例运行与人类
 
 Worker 最终保护快照与普通入口回归后的 55 项共享 / 正式入口记录、GPU 偏好摘要完全相同；无残留 Host、Flash 或测试进程。汇总为 `tmp/arena-worker-live-validation/20261011-final-v6/display-and-normal-boundaries.json`。源码迁入使用最终 76 文件字节清单、main `34e312a` / `1551602` 前像核对与逐文件备份，仅复制源文件；正式 SWF、runtime、bootstrap、Index 和 Git 提交不在迁入操作内，记录归 `tmp/arena-worker-main-migration/20261011-final-v6`。
 
-供人类监督的一份全新、尚未执行输入为 `tmp/arena-worker-p0-inputs/20261011-human-supervision-v1/live-human-supervision-minimum180.json`，SHA-256 `4871A00DCD901407535AA3D3418E56DEA1405649CC5E0DEE0E38A70FA6D4A3BD`。它绑定上述私有候选与 W1 资源，不能在 main 旧正式 SWF 上替代运行；既有 v6 显示包装的白名单不包含此新输入。人类监督时在亮屏环境使用 W1 下的 `node tools/arena-calibration/run-worker-experiment.js --plan tmp/arena-worker-p0-inputs/20261011-human-supervision-v1/live-human-supervision-minimum180.json`，该命令会建立一次新的实验，已消费的实验身份不重放。人类视觉、实体输入、长时热稳态与标准入口验收仍独立保留。
+供人类监督的一份全新、尚未执行输入为 `tmp/arena-worker-p0-inputs/20261011-human-supervision-v1/live-human-supervision-minimum180.json`，SHA-256 `4871A00DCD901407535AA3D3418E56DEA1405649CC5E0DEE0E38A70FA6D4A3BD`。它绑定上述私有候选与 W1 资源，不能直接改指向 main 的合并发布资源；既有 v6 显示包装的白名单不包含此新输入。人类监督时在亮屏环境使用 W1 下的 `node tools/arena-calibration/run-worker-experiment.js --plan tmp/arena-worker-p0-inputs/20261011-human-supervision-v1/live-human-supervision-minimum180.json`，该命令会建立一次新的实验，已消费的实验身份不重放。人类视觉、实体输入、长时热稳态与标准入口验收仍独立保留。
 
 ## 正式发布列车（2026-10-11）
 
 用户已明确授权本次提交、推送、云端共识与正式构建部署。发布前无冲突合入远端 `07ef4d1429d704973453dd501e08ad750c362374` 的前治安官源码、资产与原发布设置；原 76 个交付文件字节保持不变，随后仅更新发布说明及受控 source tag。合并后的 AS2 必须由 main 的真实 CS6 重新验证与发布，不能用旧私有 SWF 覆盖上游。此前 v6 的运行资源范围与实测倍率仍按原 cohort 保留，不给新增前治安官业务或合并后的标准入口代签。
 
-本列车使用受保护 source tag `runtime-build-v2/20261011-arena-worker-p0p1-v1`，最终机器身份、双生产者证明、政策回执和 promotion 状态以本轮 immutable request 与现役 consensus 为准。实际结果完成后补记；不复用旧 Index 政策回执进行部署。
+本列车冻结源码 `2b1fb74477a57b27a712a483b6eaee73fbc3a15f`，受保护 source tag `runtime-build-v2/20261011-arena-worker-p0p1-v1`，immutable request `058416A0F489E502BF53860820FA58D7E3248C5A3BCD3AEAC09A22B8D55ABB19`。本机 X509 `builder-local-c / physical-host-c` 与 [GitHub hosted OIDC 独立构建 38126520046](https://github.com/FlashNightModReborn/CrazyFlashNight/actions/runs/38126520046) 的 build identity / 43 文件 payload closure 全等；完整 production policy **47/47**，receipt 精确绑定本次 signed CAS。正式 Core 与上述私有实测候选逐字节相同，AS2 则已包含新合入的上游资源范围。
+
+合并后的 main 真实 CS6 Worker protocol **52/52**、技能缓存 **21/21**，三轮 Compiler 均为 **0/0**；重新发布的 asLoader 为 **6,007,550** 字节、SHA-256 `601CD42C51FF8CC1156E0CA7D4A688DC15E7CA65384F9F537E04136C05FA3B4D`。Node 检查、文档巡检与 22 项冻结派生资源检查通过。首次 prepare 发现前治安官缺失于生成的存档修复字典，原失败日志保留，生成器补齐后随源码提交；未放宽门禁。
+
+唯一 writer 于 **2026-10-11 09:06:34 UTC** 完成正式推广，双 signer / 双 faultDomain、43 文件安装闭包和根 bootstrap `--verify-only` exit **0**。previous bundle 保留于 `tmp/runtime-promotions/20261011T090603919Z-6d91ba38dbb740baa3310bca6f65dd6e/previous`；完整身份与回执见 [发布证据](evidence/arena-worker-runtime-release-2026-10-11.json)。部署提交与远端 Audit 等待本次推送后的独立结果。原 v6 运行、显示、故障及负面证据保持原范围；本次未执行合并资源后的标准入口业务旅程，不宣称人类视觉、实体输入、弱机或长时热稳态验收。
