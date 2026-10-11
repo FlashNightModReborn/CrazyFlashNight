@@ -33,6 +33,8 @@ function Test-Case([string]$Name, [string]$Local, [string]$Raw, [bool]$Expected)
 }
 $results += Test-Case 'complete-local' $good '' $true
 $results += Test-Case 'late-complete' "$startLine`n" $good $true
+$results += Test-Case 'empty-local-late-complete' '' $good $true
+$results += Test-Case 'empty-local-no-evidence' '' '' $false
 $results += Test-Case 'wrong-run' "$startLine`n" $foreign $false
 $results += Test-Case 'duplicate-start' "$startLine`n" ("$startLine`n" + $good) $false
 $results += Test-Case 'duplicate-complete' "$startLine`n" ($good + "$endLine`n") $false

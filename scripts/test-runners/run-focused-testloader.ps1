@@ -18,6 +18,10 @@ param(
     [int]$TimeoutSeconds = 240,
     [ValidateRange(1, 3600)]
     [int]$AsyncBehaviorTimeoutSeconds = 30,
+    # Native-art suites may own an XFL with explicit shared-library imports.
+    # It still includes the same transactional scripts/TestLoader.as entry.
+    [string]$CompileTargetRelativePath = '',
+    [string]$CompileSwfRelativePath = '',
     [switch]$SkipCompile
 )
 
@@ -72,6 +76,20 @@ if ($SuiteRelativePaths.Count -ne $SuiteFqns.Count) {
 $suitePaths = @($SuiteRelativePaths | ForEach-Object { Join-Path $projectDir $_ })
 $additionalPaths = @($AdditionalAsRelativePaths | ForEach-Object { Join-Path $projectDir $_ })
 $requiredPaths = @($templatePath) + $suitePaths + $additionalPaths
+if ([string]::IsNullOrEmpty($CompileTargetRelativePath) -ne [string]::IsNullOrEmpty($CompileSwfRelativePath)) {
+    throw 'A dedicated focused XFL requires both its target and output paths.'
+}
+if ($CompileTargetRelativePath) {
+    foreach ($relativePath in @($CompileTargetRelativePath, $CompileSwfRelativePath)) {
+        $fullPath = [System.IO.Path]::GetFullPath((Join-Path $projectDir $relativePath))
+        if (-not $fullPath.StartsWith($projectDir + [System.IO.Path]::DirectorySeparatorChar, [StringComparison]::OrdinalIgnoreCase)) {
+            throw 'Focused native target and output must stay within the repository.'
+        }
+    }
+    if (-not (Test-Path -LiteralPath (Join-Path $projectDir $CompileTargetRelativePath))) {
+        throw 'Focused native XFL is missing.'
+    }
+}
 foreach ($path in $requiredPaths) {
     if (-not (Test-Path -LiteralPath $path)) {
         throw "Required AS2 source is missing: $path"
@@ -169,8 +187,12 @@ try {
         $previousCompileLease = $env:CF7_FLASH_COMPILE_LEASE
         try {
             $env:CF7_FLASH_COMPILE_LEASE = $compileLease
+            $targetArgs = @('-Target', 'test')
+            if ($CompileTargetRelativePath) {
+                $targetArgs = @('-Target', $CompileTargetRelativePath, '-VerifySwf', $CompileSwfRelativePath)
+            }
             & powershell -NoProfile -ExecutionPolicy Bypass -File $compilePath `
-                -Target test -TimeoutSeconds $TimeoutSeconds
+                @targetArgs -TimeoutSeconds $TimeoutSeconds
         } finally {
             if ($null -eq $previousCompileLease) {
                 Remove-Item Env:CF7_FLASH_COMPILE_LEASE -ErrorAction SilentlyContinue
@@ -180,6 +202,10 @@ try {
         }
         if ($LASTEXITCODE -ne 0) {
             throw "$DomainId TestLoader exited $LASTEXITCODE."
+        }
+        if ($CompileTargetRelativePath) {
+            & node (Join-Path $projectDir 'tools/swf-function-sizes.js') (Join-Path $projectDir $CompileSwfRelativePath) --max 60000
+            if ($LASTEXITCODE -ne 0) { throw 'Focused native host exceeds the AVM1 function-size gate.' }
         }
         $childCompileSucceeded = $true
 
@@ -195,7 +221,10 @@ try {
             }
         }
 
+        # Shared-library loading may leave a fresh, empty trace until frame 1.
+        # Treat that as pending asynchronous evidence, never as a successful run.
         $trace = Get-Content -LiteralPath $tracePath -Raw -Encoding UTF8
+        $trace = [string]$trace
         $escapedDomain = [regex]::Escape($DomainId)
         $escapedRunId = [regex]::Escape($runId)
         $startPattern = "(?m)^FocusedTestRunId $escapedDomain Start: $escapedRunId\r?$"

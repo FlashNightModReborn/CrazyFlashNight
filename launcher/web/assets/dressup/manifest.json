@@ -1,6 +1,6 @@
 {
   "schema": "cf7-dressup-manifest-v1",
-  "generatedAt": "2026-10-09T12:39:58+0800",
+  "generatedAt": "2026-10-10T08:33:28+0800",
   "genders": [
     "男",
     "女"
@@ -6326,6 +6326,40 @@
       },
       "sourceFile": "武器_手枪_霰弹枪.xml"
     },
+    "Origin12": {
+      "use": "手枪",
+      "icon": "Origin12",
+      "dressup": "枪-手枪-Origin12",
+      "helmet": false,
+      "fieldsByGender": {
+        "男": {
+          "手枪_装扮": "枪-手枪-Origin12",
+          "手枪2_装扮": "枪-手枪-Origin12"
+        },
+        "女": {
+          "手枪_装扮": "枪-手枪-Origin12",
+          "手枪2_装扮": "枪-手枪-Origin12"
+        }
+      },
+      "sourceFile": "武器_手枪_霰弹枪.xml"
+    },
+    "Origin12战术版": {
+      "use": "手枪",
+      "icon": "Origin12战术版",
+      "dressup": "枪-手枪-Origin12战术版",
+      "helmet": false,
+      "fieldsByGender": {
+        "男": {
+          "手枪_装扮": "枪-手枪-Origin12战术版",
+          "手枪2_装扮": "枪-手枪-Origin12战术版"
+        },
+        "女": {
+          "手枪_装扮": "枪-手枪-Origin12战术版",
+          "手枪2_装扮": "枪-手枪-Origin12战术版"
+        }
+      },
+      "sourceFile": "武器_手枪_霰弹枪.xml"
+    },
     "TYPE79": {
       "use": "长枪",
       "icon": "TYPE79",
@@ -9615,6 +9649,36 @@
         },
         "女": {
           "长枪_装扮": "枪-长枪-SHRAPNEL"
+        }
+      },
+      "sourceFile": "武器_长枪_霰弹枪.xml"
+    },
+    "AA12": {
+      "use": "长枪",
+      "icon": "AA12",
+      "dressup": "枪-长枪-AA12",
+      "helmet": false,
+      "fieldsByGender": {
+        "男": {
+          "长枪_装扮": "枪-长枪-AA12"
+        },
+        "女": {
+          "长枪_装扮": "枪-长枪-AA12"
+        }
+      },
+      "sourceFile": "武器_长枪_霰弹枪.xml"
+    },
+    "AA12战术版": {
+      "use": "长枪",
+      "icon": "AA12战术版",
+      "dressup": "枪-长枪-AA12战术版",
+      "helmet": false,
+      "fieldsByGender": {
+        "男": {
+          "长枪_装扮": "枪-长枪-AA12战术版"
+        },
+        "女": {
+          "长枪_装扮": "枪-长枪-AA12战术版"
         }
       },
       "sourceFile": "武器_长枪_霰弹枪.xml"
@@ -82258,6 +82322,32 @@
         }
       ]
     },
+    "枪-手枪-Origin12": {
+      "covered": false,
+      "asset": null,
+      "uses": [
+        "手枪"
+      ],
+      "items": [
+        "Origin12"
+      ],
+      "sourceFiles": [
+        "武器_手枪_霰弹枪.xml"
+      ]
+    },
+    "枪-手枪-Origin12战术版": {
+      "covered": false,
+      "asset": null,
+      "uses": [
+        "手枪"
+      ],
+      "items": [
+        "Origin12战术版"
+      ],
+      "sourceFiles": [
+        "武器_手枪_霰弹枪.xml"
+      ]
+    },
     "枪-手枪-P90": {
       "covered": true,
       "asset": {
@@ -85518,6 +85608,19 @@
         }
       ]
     },
+    "枪-长枪-AA12": {
+      "covered": false,
+      "asset": null,
+      "uses": [
+        "长枪"
+      ],
+      "items": [
+        "AA12"
+      ],
+      "sourceFiles": [
+        "武器_长枪_霰弹枪.xml"
+      ]
+    },
     "枪-长枪-AA12丧尸": {
       "covered": true,
       "asset": {
@@ -85556,6 +85659,19 @@
           "originX": 238.6,
           "originY": 140.7
         }
+      ]
+    },
+    "枪-长枪-AA12战术版": {
+      "covered": false,
+      "asset": null,
+      "uses": [
+        "长枪"
+      ],
+      "items": [
+        "AA12战术版"
+      ],
+      "sourceFiles": [
+        "武器_长枪_霰弹枪.xml"
       ]
     },
     "枪-长枪-AK200": {

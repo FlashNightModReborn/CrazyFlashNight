@@ -1,0 +1,24 @@
+<DOMSymbolItem xmlns="http://ns.adobe.com/xfl/2008/" name="Codex/前治安官/飞盔" linkageExportForAS="true" linkageExportInFirstFrame="true" linkageIdentifier="特勤飞盔">
+  <timeline>
+    <DOMTimeline name="飞盔">
+      <layers>
+        <DOMLayer name="盔壳" color="#4FFF4F">
+          <frames>
+            <DOMFrame index="0" duration="1" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/重装特勤/部件/头盔" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.240000000" b="0.000000000" c="0.000000000" d="0.240000000" tx="0.000000000" ty="0.000000000"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

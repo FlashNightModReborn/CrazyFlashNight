@@ -1,0 +1,39 @@
+<DOMSymbolItem xmlns="http://ns.adobe.com/xfl/2008/" name="Codex/前治安官二阶段/匕首">
+  <timeline>
+    <DOMTimeline name="匕首">
+      <layers>
+        <DOMLayer name="攻击定位 / 未接伤害" color="#4FFF4F">
+          <frames>
+            <DOMFrame index="0" duration="1" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/前治安官二阶段/接口" symbolType="movie clip" name="刀口位置">
+                  <matrix>
+                    <Matrix a="1.000000000" b="0.000000000" c="0.000000000" d="1.000000000" tx="0.000000000" ty="164.160000000"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Q变形 / 固定握点侧柄折回" color="#4FFF4F">
+          <frames>
+            <DOMFrame index="0" duration="1" keyMode="9728">
+              <elements><DOMSymbolInstance libraryItemName="Codex/重装特勤/武器/警棍变形/帧30" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="1.000000000" b="0.000000000" c="0.000000000" d="1.000000000" tx="0.000000000" ty="0.000000000"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

@@ -6,7 +6,8 @@ import org.flashNight.arki.unit.UnitComponent.Dressup.EquipmentUtil.EquipmentLig
 /**
  * Special shotgun F skill. Gun/shield art and the player dressup rig live in
  * 战技容器-特勤盾冲; the ordinary weapon and its first-frame icon stay unchanged.
- * All balance values come from the item's skill.parameters. No NPC phase logic.
+ * Player balance comes from the item's skill.parameters. Explicit NPC control
+ * can select charge/release and a held-shield handoff without using player input.
  */
 class org.flashNight.arki.unit.Action.Skill.SheriffShieldRush {
     public static var NAME:String = "特勤盾冲";
@@ -64,10 +65,29 @@ class org.flashNight.arki.unit.Action.Skill.SheriffShieldRush {
 
     public static function release(u:MovieClip):Boolean {
         if (!canRelease(u)) return false;
+        return begin(u,null);
+    }
+
+    /** Explicit independent-NPC entry. Never impersonates the player or pays MP. */
+    public static function releaseNPC(u:MovieClip,control:Object):Boolean {
+        if (!u.__formerSheriff || !(u.hp>0) || u.__sheriffShieldRush ||
+                u.攻击模式!="长枪" || u.长枪数据.name!="特勤霰弹枪") return false;
+        return begin(u,control);
+    }
+
+    private static function begin(u:MovieClip,npc:Object):Boolean {
         var skill:Object = u.主动战技.长枪;
-        var mp:Number = skill.消耗mp > 0 ? Number(skill.消耗mp) : 0;
+        var mp:Number = npc!=null ? 0 : (skill.消耗mp > 0 ? Number(skill.消耗mp) : 0);
         if (u.mp < mp) return org.flashNight.arki.skill.SkillResourceService.reject(u,"mp");
-        var p:Object = tuning(u.长枪数据.skill.parameters);
+        var parameters:Object = u.长枪数据.skill.parameters;
+        if(npc!=null && npc.parameters!=null) {
+            // Copy overrides; NPC tuning must never mutate shared item data.
+            var npcParameters:Object={};
+            for(var parameterKey:String in parameters)npcParameters[parameterKey]=parameters[parameterKey];
+            for(parameterKey in npc.parameters)npcParameters[parameterKey]=npc.parameters[parameterKey];
+            parameters=npcParameters;
+        }
+        var p:Object = tuning(parameters);
         // Snapshot the real derived running speed, including weight and buffs.
         // This is an additive bonus; fast builds must never be multiplied or
         // silently capped back to the old 9/15 fixed-speed placeholders.
@@ -90,10 +110,11 @@ class org.flashNight.arki.unit.Action.Skill.SheriffShieldRush {
             emittedTick:-1, tickId:0, pending:false,
             speed:runSpeed+p.speedBonus,
             shieldCapacity:Math.floor(defense*p.shieldDefenseRatio), shieldContainer:u.shield,
-            defenseAtCast:defense, weaponVampirism:weaponVampirism
+            defenseAtCast:defense, weaponVampirism:weaponVampirism, npc:npc
         };
         u.__sheriffShieldRush = ctx;
-        var man:MovieClip = _root.战技路由.战技标签跳转_旧(u,NAME,"container");
+        var man:MovieClip = npc!=null && typeof u.装载固定盾冲=="function" ?
+            u.装载固定盾冲() : _root.战技路由.战技标签跳转_旧(u,NAME,"container");
         // Timeline length is synchronous. On repeated attachMovie, named child
         // instances may not register until frame 1, so do not reject on them here.
         if (man._totalframes != ART_FRAMES) {
@@ -126,7 +147,7 @@ class org.flashNight.arki.unit.Action.Skill.SheriffShieldRush {
             if (oldUnload != undefined) oldUnload.apply(this);
         };
         man.onEnterFrame = function():Void {
-            SheriffShieldRush.tick(this,Key.isDown(_root.武器技能键));
+            SheriffShieldRush.tick(this,ctx.npc!=null ? ctx.charge<ctx.npc.chargeFrames : Key.isDown(_root.武器技能键));
         };
     }
 
@@ -153,6 +174,7 @@ class org.flashNight.arki.unit.Action.Skill.SheriffShieldRush {
         // Like 拔刀术, consume the player's mapped movement intent throughout
         // the action. Only the rush phase translates; other phases can face.
         steer(ctx);
+        if(ctx.npc!=null && ctx.npc.startHeld && ctx.phase=="open")guard(ctx);
         if (!keyDown && (ctx.phase == "open" || ctx.phase == "hold")) ctx.released = true;
         var p:Object = ctx.tune;
         if (ctx.phase == "open") {
@@ -179,7 +201,8 @@ class org.flashNight.arki.unit.Action.Skill.SheriffShieldRush {
             // needs finer terrain checks even at +2 on a 30-40 speed build.
             var steps:Number = Math.max(1,Math.ceil(ctx.speed/8));
             var direction:Number = ctx.direction=="左" ? -1 : 1;
-            var lane:Number = u._name!=_root.控制目标 ? 0 : (u.上行 ? -1 : (u.下行 ? 1 : 0));
+            var lane:Number = ctx.npc!=null ? (ctx.npc.lane<0 ? -1 : (ctx.npc.lane>0 ? 1 : 0)) :
+                (u._name!=_root.控制目标 ? 0 : (u.上行 ? -1 : (u.下行 ? 1 : 0)));
             var wall:Boolean = false;
             var laneBlocked:Boolean = false;
             for (var moveIndex:Number=0;moveIndex<steps;moveIndex++) {
@@ -226,7 +249,13 @@ class org.flashNight.arki.unit.Action.Skill.SheriffShieldRush {
             ctx.age++;
             if (ctx.age == BRAKE_FRAMES) {
                 removeGuard(ctx);
-                ctx.phase = "close";ctx.age = 0;
+                if(ctx.npc!=null && ctx.npc.holdAtEnd) {
+                    ctx.phase="held";ctx.age=0;
+                    pose(ctx,16,15);
+                    if(typeof ctx.npc.onHeld=="function")ctx.npc.onHeld(u);
+                } else {
+                    ctx.phase = "close";ctx.age = 0;
+                }
             }
         } else if (ctx.phase == "close") {
             if (ctx.age == TRANSFORM_FRAMES) {

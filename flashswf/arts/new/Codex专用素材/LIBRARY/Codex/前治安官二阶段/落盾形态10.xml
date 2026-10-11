@@ -1,0 +1,67 @@
+<DOMSymbolItem xmlns="http://ns.adobe.com/xfl/2008/" name="Codex/前治安官二阶段/落盾形态10">
+  <timeline>
+    <DOMTimeline name="落盾形态10">
+      <layers>
+        <DOMLayer name="同源灯头 / 持续出光" color="#4FFF4F">
+          <frames>
+            <DOMFrame index="0" duration="1" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="内侧 / 15帧实体遮挡" color="#4FFF4F">
+          <frames>
+            <DOMFrame index="0" duration="1" keyMode="9728">
+              <elements><DOMSymbolInstance libraryItemName="Codex/重装特勤/战技/枪盾内侧/帧04" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="1.000000000" b="0.000000000" c="0.000000000" d="1.000000000" tx="0.000000000" ty="0.000000000"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="枪灯沿滑轨转移" color="#4FFF4F">
+          <frames>
+            <DOMFrame index="0" duration="1" keyMode="9728">
+              <elements><DOMSymbolInstance libraryItemName="Codex/重装特勤/战技/同源枪灯" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.306402567" b="0.951902026" c="-0.951902026" d="0.306402567" tx="48.766694606" ty="317.176384840"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="滑座与连接臂" color="#4FFF4F">
+          <frames>
+            <DOMFrame index="0" duration="1" keyMode="9728">
+              <elements><DOMSymbolInstance libraryItemName="Codex/重装特勤/战技/枪灯滑轨/帧04" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="1.000000000" b="0.000000000" c="0.000000000" d="1.000000000" tx="0.000000000" ty="0.000000000"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="沿用战术手电光束" color="#4FFF4F">
+          <frames>
+            <DOMFrame index="0" duration="1" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

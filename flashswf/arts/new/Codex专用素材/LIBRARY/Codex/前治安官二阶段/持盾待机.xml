@@ -1,0 +1,325 @@
+<DOMSymbolItem xmlns="http://ns.adobe.com/xfl/2008/" name="Codex/前治安官二阶段/持盾待机" linkageExportForAS="true" linkageExportInFirstFrame="true" linkageIdentifier="前治安官动作-持盾待机">
+  <timeline>
+    <DOMTimeline name="持盾待机">
+      <layers>
+        <DOMLayer name="动作节点 / 不执行战斗">
+          <frames>
+            <DOMFrame index="0" duration="1" keyMode="9728" name="持盾结束" labelType="name">
+              <Actionscript>
+                <script><![CDATA[stop();]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="小腿 / 19">
+          <frames>
+            <DOMFrame index="0" duration="1" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/重装特勤/部件/小腿" symbolType="graphic" loop="single frame" name="肢体19" firstFrame="0">
+                  <matrix>
+                    <Matrix a="0.738648508" b="0.424351049" c="-0.418458361" d="0.729355013" tx="-48.202056349" ty="168.280838520"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="脚 / 18">
+          <frames>
+            <DOMFrame index="0" duration="1" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/重装特勤/部件/脚" symbolType="graphic" loop="single frame" name="肢体18" firstFrame="0">
+                  <matrix>
+                    <Matrix a="0.850193549" b="-0.051106688" c="0.051072915" d="0.850755753" tx="-80.841808470" ty="232.393321210"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="右大腿 / 17">
+          <frames>
+            <DOMFrame index="0" duration="1" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/重装特勤/部件/右大腿" symbolType="graphic" loop="single frame" name="肢体17" firstFrame="0">
+                  <matrix>
+                    <Matrix a="0.851714077" b="-0.004546666" c="0.004620673" d="0.866722664" tx="-20.047231577" ty="62.347724422"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="flash">
+          <frames>
+            <DOMFrame index="0" duration="1" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="magazine">
+          <frames>
+            <DOMFrame index="0" duration="1" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="右手 / 16">
+          <frames>
+            <DOMFrame index="0" duration="1" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/重装特勤/部件/右手" symbolType="graphic" loop="single frame" name="肢体16" firstFrame="0">
+                  <matrix>
+                    <Matrix a="0.787616438" b="-0.314792049" c="0.314584025" d="0.788137263" tx="99.008475672" ty="-74.356670318"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="hand_prop">
+          <frames>
+            <DOMFrame index="0" duration="1" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="spent_magazine">
+          <frames>
+            <DOMFrame index="0" duration="1" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="右下臂 / 15">
+          <frames>
+            <DOMFrame index="0" duration="1" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/重装特勤/部件/右下臂" symbolType="graphic" loop="single frame" name="肢体15" firstFrame="0">
+                  <matrix>
+                    <Matrix a="-0.054541653" b="-0.843302359" c="0.865886471" d="-0.056076398" tx="48.928387339" ty="-69.915381692"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="上臂 / 14">
+          <frames>
+            <DOMFrame index="0" duration="1" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/重装特勤/部件/上臂" symbolType="graphic" loop="single frame" name="肢体14" firstFrame="0">
+                  <matrix>
+                    <Matrix a="0.782333691" b="-0.318248132" c="0.326770996" d="0.804347750" tx="-7.126513613" ty="-105.084135215"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="脸型 / 12">
+          <frames>
+            <DOMFrame index="0" duration="1" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/前治安官二阶段/头部" symbolType="graphic" loop="single frame" name="肢体12" firstFrame="0">
+                  <matrix>
+                    <Matrix a="0.907206236" b="0.332987616" c="-0.332864771" d="0.907500309" tx="49.599274314" ty="-191.703354032"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="屁股 / 11">
+          <frames>
+            <DOMFrame index="0" duration="1" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/重装特勤/部件/屁股" symbolType="graphic" loop="single frame" name="肢体11" firstFrame="0">
+                  <matrix>
+                    <Matrix a="0.847664396" b="0.111666231" c="-0.111590750" d="0.847942666" tx="-13.275957275" ty="10.895700374"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="身体 / 10">
+          <frames>
+            <DOMFrame index="0" duration="1" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/重装特勤/部件/身体" symbolType="graphic" loop="single frame" name="肢体10" firstFrame="0">
+                  <matrix>
+                    <Matrix a="0.825827966" b="0.210219926" c="-0.210112224" d="0.826096728" tx="7.091030362" ty="-101.394719252"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="左手 / 7">
+          <frames>
+            <DOMFrame index="0" duration="1" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/重装特勤/部件/左手" symbolType="graphic" loop="single frame" name="肢体7" firstFrame="0">
+                  <matrix>
+                    <Matrix a="0.842018068" b="-0.101597119" c="0.101529981" d="0.842574866" tx="114.883929527" ty="-94.349609848"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="左下臂 / 6">
+          <frames>
+            <DOMFrame index="0" duration="1" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/重装特勤/部件/左下臂" symbolType="graphic" loop="single frame" name="肢体6" firstFrame="0">
+                  <matrix>
+                    <Matrix a="-0.470999644" b="-0.701429571" c="0.720214250" d="-0.484253085" tx="71.650435585" ty="-69.784016929"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="上臂 / 5">
+          <frames>
+            <DOMFrame index="0" duration="1" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/重装特勤/部件/上臂" symbolType="graphic" loop="single frame" name="肢体5" firstFrame="0">
+                  <matrix>
+                    <Matrix a="0.835765642" b="0.121281856" c="-0.124529853" d="0.859283220" tx="43.653268918" ty="-87.410433250"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="小腿 / 3">
+          <frames>
+            <DOMFrame index="0" duration="1" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/重装特勤/部件/小腿" symbolType="graphic" loop="single frame" name="肢体3" firstFrame="0">
+                  <matrix>
+                    <Matrix a="0.845154552" b="0.105669527" c="-0.104202163" d="0.834521025" tx="68.037323189" ty="145.632306321"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="脚 / 2">
+          <frames>
+            <DOMFrame index="0" duration="1" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/重装特勤/部件/脚" symbolType="graphic" loop="single frame" name="肢体2" firstFrame="0">
+                  <matrix>
+                    <Matrix a="0.851726196" b="0.000000000" c="0.000000000" d="0.852289414" tx="59.909554491" ty="217.947737918"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="左大腿 / 1">
+          <frames>
+            <DOMFrame index="0" duration="1" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/重装特勤/部件/左大腿" symbolType="graphic" loop="single frame" name="肢体1" firstFrame="0">
+                  <matrix>
+                    <Matrix a="0.743674181" b="-0.415468757" c="0.422231393" d="0.756778930" tx="47.678029733" ty="39.694246177"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="occluded_prop">
+          <frames>
+            <DOMFrame index="0" duration="1" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="左手盾牌 / 全部肢体之后">
+          <frames>
+            <DOMFrame index="0" duration="1" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/前治安官二阶段/盾牌" symbolType="movie clip" name="盾具">
+                  <matrix>
+                    <Matrix a="0.649223823" b="0.022747149" c="-0.029678041" d="0.848158256" tx="95.999647558" ty="-229.865344134"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="原生接地阴影">
+          <frames>
+            <DOMFrame index="0" duration="1" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/重装特勤/战技/接地阴影" symbolType="graphic" loop="single frame" firstFrame="0">
+                  <matrix>
+                    <Matrix a="1.375061035" b="0.000000000" c="0.000000000" d="0.559984283" tx="-15.200000000" ty="233.307623850"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

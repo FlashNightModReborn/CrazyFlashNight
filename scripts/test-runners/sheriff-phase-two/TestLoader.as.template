@@ -1,0 +1,6 @@
+﻿_root.phaseTwoCapture=false;
+_root.phaseTwoTestComplete=function():Void {
+    trace("FocusedTestRunId sheriff-phase-two Complete: __FOCUSED_RUN_ID__");
+};
+trace("FocusedTestRunId sheriff-phase-two Start: __FOCUSED_RUN_ID__");
+org.flashNight.arki.unit.UnitAI.Custom.SheriffPhaseTwoActionTest.runAllTests();
