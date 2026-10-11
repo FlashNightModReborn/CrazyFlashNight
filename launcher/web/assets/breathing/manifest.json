@@ -1,0 +1,264 @@
+{
+ "id": "intro-breathing",
+ "provenance": {
+  "sprite": "sprite/标题画面/Symbol 988",
+  "note": "旧封面人物呼吸动画，8 分件+徽标矢量，121 帧 30fps；封面实例于 95019c7e63 撤下，源素材仍在主 XFL",
+  "archive": "intro-breathing-archive-2026-10-11.zip",
+  "archiveSha256": "209544deb824dc4a02422d592088c5e5484bbdbf1a17819c69a65d993243fb10"
+ },
+ "frameRate": 30,
+ "frameCount": 121,
+ "layers": [
+  {
+   "file": "part-0.png",
+   "s": 1.695068,
+   "tx": -21.6,
+   "ty": 0.0,
+   "symbol": "sprite/标题画面/Symbol 987",
+   "bitmap": "image/bitmap985.png",
+   "sha256": "1446ec0b8204c7494750edaa9711acd36ef9096f4e930ba51049ef8f4eb8d766"
+  },
+  {
+   "file": "part-1.png",
+   "s": 1.690292,
+   "tx": -0.25,
+   "ty": 0.0,
+   "symbol": "sprite/标题画面/Symbol 984",
+   "bitmap": "image/bitmap982.png",
+   "sha256": "2b6c1af55d8793d62ec3d6a449c610622fd39e0a8e36e0b006f84f4be0065d8d"
+  },
+  {
+   "file": "part-2.png",
+   "s": 1.691788,
+   "tx": -0.75,
+   "ty": 0.0,
+   "symbol": "sprite/标题画面/Symbol 981",
+   "bitmap": "image/bitmap979.png",
+   "sha256": "8a6b595ec2ab8fc6a4c71f0c597db7165d114565cc8d1965392cdd2287c306af"
+  },
+  {
+   "file": "part-3.png",
+   "s": 1.688354,
+   "tx": -1.35,
+   "ty": 0.0,
+   "symbol": "sprite/标题画面/Symbol 978",
+   "bitmap": "image/bitmap975.png",
+   "sha256": "6d3bd778d1b81ba1fd1e8b786a32195272ad0256bbd7c29453189a7f5cd72924"
+  },
+  {
+   "file": "part-4.png",
+   "s": 1.680237,
+   "tx": 2.1,
+   "ty": 0.0,
+   "symbol": "sprite/标题画面/Symbol 974",
+   "bitmap": "image/bitmap972.png",
+   "sha256": "85293dbfb132c61480cbea05ec60b516696534472b01756f35584cffc6fee917"
+  },
+  {
+   "file": "part-5.png",
+   "s": 1.698227,
+   "tx": -0.8,
+   "ty": 0.0,
+   "symbol": "sprite/标题画面/Symbol 971",
+   "bitmap": "image/bitmap969.png",
+   "sha256": "c5e60e448df861b20f5afd7bd578ea0fb489be8f01edc140c99f285505d84a0b"
+  },
+  {
+   "file": "part-6.png",
+   "s": 1.697754,
+   "tx": -43.8,
+   "ty": 0.0,
+   "symbol": "sprite/标题画面/Symbol 968",
+   "bitmap": "image/bitmap966.png",
+   "sha256": "8e025f433c713848e22af8dfc4037eeefefba644e20bb183e544ddf48d357579"
+  },
+  {
+   "file": "part-7.png",
+   "s": 1.69989,
+   "tx": -0.35,
+   "ty": 2.45,
+   "symbol": "sprite/标题画面/Symbol 965",
+   "bitmap": "image/bitmap963.png",
+   "sha256": "1b77549a63993aed3b6da5dfe166871470315eeb1bbc8eb60486667a8ff269e4"
+  }
+ ],
+ "badge": {
+  "layer": 3,
+  "m": [
+   1.79997253417969,
+   0,
+   0,
+   1.79997253417969,
+   162.45,
+   24.35
+  ],
+  "color": "#660000",
+  "polys": [
+   [
+    [
+     3.15,
+     2.85
+    ],
+    [
+     -1.2,
+     -4.7
+    ]
+   ],
+   [
+    [
+     -1.2,
+     -4.7
+    ],
+    [
+     -8.1,
+     7.0
+    ]
+   ],
+   [
+    [
+     -8.1,
+     7.0
+    ],
+    [
+     8.2,
+     7.05
+    ]
+   ],
+   [
+    [
+     8.2,
+     7.05
+    ],
+    [
+     7.25,
+     5.45
+    ]
+   ],
+   [
+    [
+     7.25,
+     5.45
+    ],
+    [
+     -5.0,
+     5.4
+    ]
+   ],
+   [
+    [
+     -5.0,
+     5.4
+    ],
+    [
+     -1.15,
+     -1.4
+    ]
+   ],
+   [
+    [
+     -1.15,
+     -1.4
+    ],
+    [
+     1.15,
+     2.85
+    ]
+   ],
+   [
+    [
+     1.15,
+     2.85
+    ],
+    [
+     3.15,
+     2.85
+    ]
+   ],
+   [
+    [
+     6.95,
+     4.85
+    ],
+    [
+     -3.8,
+     4.75
+    ]
+   ],
+   [
+    [
+     -3.8,
+     4.75
+    ],
+    [
+     -2.85,
+     3.2
+    ]
+   ],
+   [
+    [
+     -2.85,
+     3.2
+    ],
+    [
+     4.2,
+     3.25
+    ]
+   ],
+   [
+    [
+     4.2,
+     3.25
+    ],
+    [
+     -0.8,
+     -5.4
+    ]
+   ],
+   [
+    [
+     -0.8,
+     -5.4
+    ],
+    [
+     0.15,
+     -7.05
+    ]
+   ],
+   [
+    [
+     0.15,
+     -7.05
+    ],
+    [
+     6.95,
+     4.85
+    ]
+   ]
+  ]
+ },
+ "framing": {
+  "m": [
+   0.770034790039063,
+   0,
+   0,
+   0.770172119140625,
+   151.7,
+   8.2
+  ],
+  "note": "旧封面取景：Symbol 988 在 1024×576 舞台上的原始矩阵（含容器偏移 424,170.65）"
+ },
+ "backdrop": {
+  "file": "cover-bg.jpg",
+  "m": [
+   1.27999877929688,
+   0,
+   0,
+   1.27996826171875,
+   0,
+   -99.35
+  ],
+  "dim": 0.35,
+  "sha256": "82e0f6550f244fa7b3aeec12fe7519c1fb154eb30dc2df51efc856ac33cde637",
+  "note": "旧封面背景 bitmap961.jpg 的原始舞台矩阵"
+ }
+}

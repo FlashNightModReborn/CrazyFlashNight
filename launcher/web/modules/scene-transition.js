@@ -9,6 +9,31 @@
     var reportView=null,reportKey='',reportFingerprint='';
     var reportRejected=false,automaticAttempt='',autoTimer=null,presentationSignature='';
     var current=null,epoch=0,loadedId='',actionRequest=null,covered=false,revealed=false,animation=null,rendering=0;
+    // 「像素传输」呼吸人物是随机过场呈现之一：每个新过场请求按 1/(背景目录数+1) 的概率选用本呈现，
+    // 其余请求展示 Host 随机选定的加载背景。随机按请求 key 稳定；测试用 window.__BREATHING_ROLL__ 钉住
+    // （返回值小于概率即选用，否则不选用）。
+    var breathing=window.TransitionBreathing||null;
+    var figureCanvas=document.getElementById('transition-figure');
+    if(breathing&&figureCanvas)breathing.attach(figureCanvas);
+    var breathingRollKey='',breathingRollOn=false;
+    function breathingChosen(p){
+        var key=p.generation+':'+p.requestId;
+        if(key!==breathingRollKey){
+            breathingRollKey=key;
+            var roll=window.__BREATHING_ROLL__?Number(window.__BREATHING_ROLL__(p)):Math.random();
+            breathingRollOn=roll<1/(Object.keys(SceneTransitionCatalog).length+1);
+        }
+        return breathingRollOn;
+    }
+    function breathingSync(p,showingReport){
+        if(!breathing)return;
+        // reveal 相位保持叠层到淡出完成，否则 210ms 撤幕会露出底下的随机背景图
+        if(p&&breathingChosen(p)&&(p.phase==='cover'||p.phase==='loading'||p.phase==='reveal'||p.phase==='error')&&!showingReport){
+            breathing.sync({active:true,key:p.generation+':'+p.requestId,phase:p.phase,connected:p.connected,revealAllowed:p.revealAllowed});
+        }else{
+            breathing.sync({active:false});
+        }
+    }
     var scale=PanelScale.attach(shell,1024,576,{onUpdate:function(s){
         shell.style.transform='translate('+((root.clientWidth-1024*s)/2)+'px,'+((root.clientHeight-576*s)/2)+'px) scale('+s+')';
     }});
@@ -49,6 +74,7 @@
             || p.requestId===current.requestId && p.revision<current.revision))return;
         if(p.phase==='hide'){
             epoch++;if(animation)animation.cancel();animation=null;rendering=0;covered=false;current=null;
+            breathingSync(null,false);
             if (Panels.getActive()==='loot' && !LootPanel.isPreview()) { LootPanel.sceneReady();return; }
             root.hidden=true;destroyReport();return;
         }
@@ -78,6 +104,7 @@
         } else destroyReport();
         var wasVisible=!report.hidden;
         report.hidden=!showingReport;copy.hidden=showingReport;
+        breathingSync(p,showingReport);
         if(wasVisible!==showingReport && reportView) LootPanel.setVisible(showingReport);
         tip.textContent=p.tip;title.textContent=p.phase==='error'?'场景加载失败':'正在加载场景';
         actions.hidden=p.phase!=='error';activity.hidden=p.phase==='error';
@@ -106,7 +133,7 @@
         } else if (!showingReport && loadedId!==p.imageId) await prepareImage(p.imageId,generation);
         if(generation!==epoch)return;
         if(!showingReport && p.phase==='reveal' && p.revealAllowed===true && p.connected!==false){
-            if(await fade(0,generation)){revealed=true;root.hidden=true;receipt('revealed');}
+            if(await fade(0,generation)){revealed=true;root.hidden=true;breathingSync(null,false);receipt('revealed');}
         } else {
             if(await fade(1,generation)) {
                 if(showingReport || p.phase==='cover'||p.phase==='loading'||p.phase==='error')receipt('covered');
@@ -157,12 +184,14 @@
     report.addEventListener('input',publishPresentation);
     report.addEventListener('click',function(){requestAnimationFrame(publishPresentation);});
     Bridge.on('scene_transition_complete',function(){
+        breathingSync(null,false);
         LootPanel.sceneReady();current=null;covered=false;
         if(Panels.getActive()!=='loot'){root.hidden=true;destroyReport();}
     });
     Bridge.on('panel_cmd',function(p){
         if(p.panel!=='loot'||p.cmd!=='close'||Panels.getActive()==='loot')return;
         report.hidden=true;copy.hidden=false;
+        breathingSync(current,false);
         if(!current)root.hidden=true;
     });
     window.addEventListener('keydown',function(event){
