@@ -360,10 +360,12 @@ namespace CF7Launcher.Guardian
             bool takeForeground,
             bool sessionForeground,
             Func<string, bool> restorer,
-            string reason)
+            string reason,
+            bool curtainOwnsFocus = false,
+            bool transitionConnected = false)
         {
             if (disposed || panelMode || !takeForeground || !sessionForeground
-                || restorer == null)
+                || restorer == null || curtainOwnsFocus && transitionConnected)
                 return false;
             return restorer(reason);
         }
@@ -6261,19 +6263,23 @@ namespace CF7Launcher.Guardian
             try
             {
                 PerfTrace.Mark(perfEvent, panelTag);
+                bool curtainOwnsFocus = _panelHost?.SceneTransition?.OwnsCurtain == true;
+                bool transitionConnected = _panelHost?.SceneTransition?.Task.Connected == true;
                 bool restored = TryInvokePanelCloseFocusRestore(
                     _disposed,
                     _panelMode,
                     _panelTakeForeground,
                     currentSessionForeground,
                     _flashFocusRestorer,
-                    reason);
+                    reason,
+                    curtainOwnsFocus,
+                    transitionConnected);
                 LogPanelCloseFocusTrace(
                     trace,
                     "restore_result",
                     currentForeground,
                     "attempt=" + attempt + " result="
-                        + (restored ? "success" : "failed"));
+                        + (restored ? "success" : curtainOwnsFocus && transitionConnected ? "deferred_to_curtain" : "failed"));
                 return restored;
             }
             catch (Exception ex)

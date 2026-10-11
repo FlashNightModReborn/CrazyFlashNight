@@ -2,6 +2,7 @@ using System;
 using System.ComponentModel;
 using System.Drawing;
 using System.Drawing.Imaging;
+using System.Diagnostics;
 using System.Runtime.InteropServices;
 using System.Threading;
 
@@ -106,6 +107,7 @@ namespace CF7Launcher.Guardian
         /// </summary>
         public static SnapshotResult Capture(IntPtr flashHwnd)
         {
+            long geometryStarted = PerfTrace.PanelTimingEnabled ? Stopwatch.GetTimestamp() : 0;
             if (flashHwnd == IntPtr.Zero)
                 throw new ArgumentException("flashHwnd is Zero", "flashHwnd");
 
@@ -151,9 +153,14 @@ namespace CF7Launcher.Guardian
                     + " virtualizedScale=" + virtualizedScale);
             }
 
-            Bitmap bmp = new Bitmap(physicalW, physicalH, PixelFormat.Format32bppArgb);
+            if (PerfTrace.PanelTimingEnabled)
+                PerfTrace.Duration("snapshot.geometry", geometryStarted);
+            Bitmap bmp;
+            using (PerfTrace.PanelScope("snapshot.allocate"))
+                bmp = new Bitmap(physicalW, physicalH, PixelFormat.Format32bppArgb);
             try
             {
+                using (PerfTrace.PanelScope("snapshot.blit"))
                 using (Graphics g = Graphics.FromImage(bmp))
                 {
                     IntPtr srcDC = GetDC(flashHwnd);
@@ -235,7 +242,8 @@ namespace CF7Launcher.Guardian
                     finally { ReleaseDC(flashHwnd, srcDC); }
                 }
 
-                ForceAlphaOpaque(bmp);
+                using (PerfTrace.PanelScope("snapshot.alpha"))
+                    ForceAlphaOpaque(bmp);
 
                 Rectangle contentRect = ComputeContentRectByAspectRatio(physicalW, physicalH);
                 SnapshotResult result = new SnapshotResult();

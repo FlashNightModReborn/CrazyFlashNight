@@ -1670,8 +1670,10 @@ class org.flashNight.arki.item.LootContainerService {
         }
         if (!validExpectedAuthority(params, record)) return failureFor(record, "stale_state");
         var projected:Object;
-        try { projected = MaterialArchiveProjector.executeMaterials(); }
+        var projectionStarted:Number = org.flashNight.dev.PanelTiming.start();
+        try { projected = MaterialArchiveProjector.executeMaterialStocks(); }
         catch (materialError) { projected = null; }
+        org.flashNight.dev.PanelTiming.finish("loot.materials.project",projectionStarted,Number(params.callId));
         if (projected == null || projected.success !== true
                 || !(projected.materials instanceof Array)
                 || projected.materials.length > 4096) {

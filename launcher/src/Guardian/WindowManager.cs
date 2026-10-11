@@ -962,23 +962,26 @@ namespace CF7Launcher.Guardian
             bool sfwOk1 = false;
             try
             {
-                sfwOk1 = _focusApi.SetForegroundWindow(
-                    flashHwnd);
+                using (PerfTrace.PanelScope("focus_restore.set_foreground", reason))
+                    sfwOk1 = _focusApi.SetForegroundWindow(
+                        flashHwnd);
             }
             catch (Exception ex)
             {
                 LogManager.Log("[FocusRestore] " + reason + " pass1 SetForegroundWindow threw: " + ex.Message);
             }
             if(stillEligible!=null && !stillEligible())return false;
-            try { _focusApi.SetFocus(flashHwnd); } catch { }
+            try { using (PerfTrace.PanelScope("focus_restore.set_focus", reason)) _focusApi.SetFocus(flashHwnd); } catch { }
 
             IntPtr fgAfter1 =
                 _focusApi.GetForegroundWindow();
             // 三个事实分开判定：SFW 返回值 / 前台根匹配 / Flash 线程内部焦点。
-            bool rootMatch1 =
-                IsFlashForegroundRoot(flashHwnd, fgAfter1);
-            bool innerMatch1 =
-                IsFlashInnerFocusHeld(flashHwnd);
+            bool rootMatch1;
+            using (PerfTrace.PanelScope("focus_restore.verify_root", reason))
+                rootMatch1 = IsFlashForegroundRoot(flashHwnd, fgAfter1);
+            bool innerMatch1;
+            using (PerfTrace.PanelScope("focus_restore.verify_inner", reason))
+                innerMatch1 = IsFlashInnerFocusHeld(flashHwnd);
             double pass1Ms = ElapsedMs(pass1Start);
             PerfTrace.Duration("focus_restore.pass1", pass1Start, reason);
             if ((!requireSetForegroundSuccess || sfwOk1)

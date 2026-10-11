@@ -6,8 +6,8 @@ $focusedRun=@{
     SuiteRelativePaths=@('scripts/类定义/org/flashNight/arki/ui/SceneTransitionServiceTest.as')
     SuiteFqns=@('org.flashNight.arki.ui.SceneTransitionServiceTest')
     AdditionalAsRelativePaths=@('scripts/类定义/org/flashNight/arki/ui/SceneTransitionService.as')
-    ExpectedTracePatterns=@('(?m)^SceneTransitionServiceTest Tests Passed: 48\r?$','(?m)^SceneTransitionServiceTest Tests Failed: 0\r?$')
-    SuccessSummary='U12 scene-transition AS2 guards passed (48 checks).'
+    ExpectedTracePatterns=@('(?m)^SceneTransitionServiceTest Tests Passed: 61\r?$','(?m)^SceneTransitionServiceTest Tests Failed: 0\r?$')
+    SuccessSummary='U12 scene-transition AS2 guards passed (61 checks).'
     TimeoutSeconds=$TimeoutSeconds
     SkipCompile=$SkipCompile
 }

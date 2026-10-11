@@ -261,6 +261,9 @@ function main() {
 		fl.closeDocument(doc, false);
 	}
 	if (quitAfterPublish) {
+		// testMovie 的播放器可继续持有 CS6 进程和前台；显式退出时也结束这些播放器。
+		compileRuntimeState.phase = "close_test_players_for_quit";
+		fl.closeAllPlayerDocuments();
 		fl.trace("[compile] quit Flash after completed publish");
 	}
 	fl.trace("[compile] done");

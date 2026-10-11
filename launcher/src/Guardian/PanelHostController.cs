@@ -299,6 +299,7 @@ namespace CF7Launcher.Guardian
             public string InitDataJson;          // 可空；OpenPanel 序列化进 panel_cmd
             public string ReturnToName;          // 可空；非空 = 关闭本 panel 时自动 reopen 之
             public string ReturnInitDataJson;    // 可空；reopen returnTo 时用作 initData
+            internal long TimingQueuedAt;
             public bool IsTrackedOpen;
             public bool IsTrackedClose;
             public bool IsExactClose;
@@ -330,6 +331,7 @@ namespace CF7Launcher.Guardian
                 InitDataJson = initDataJson;
                 ReturnToName = returnToName;
                 ReturnInitDataJson = returnInitDataJson;
+                TimingQueuedAt = 0;
                 IsTrackedOpen = false;
                 IsTrackedClose = false;
                 IsExactClose = false;
@@ -1124,6 +1126,8 @@ namespace CF7Launcher.Guardian
             string expectedActivePanel,
             string expectedActiveInstance)
         {
+            if (PerfTrace.PanelTimingEnabled && cmd.TimingQueuedAt == 0)
+                cmd.TimingQueuedAt = System.Diagnostics.Stopwatch.GetTimestamp();
             if (_disposed) return false;
             lock (_queueLock)
             {
@@ -1381,6 +1385,8 @@ namespace CF7Launcher.Guardian
 
         private void ExecuteCommand(PanelCommand cmd)
         {
+            if (PerfTrace.PanelTimingEnabled && cmd.TimingQueuedAt > 0)
+                PerfTrace.Duration("panel.queue", cmd.TimingQueuedAt, cmd.Kind + ":" + cmd.Name);
             if (cmd.IsExactReplace)
             {
                 ExecuteExactReplace(cmd);
@@ -2307,7 +2313,8 @@ namespace CF7Launcher.Guardian
             FlashSnapshot.SnapshotResult snap = null;
             try
             {
-                snap = FlashSnapshot.Capture(flashHwnd);
+                using (PerfTrace.PanelScope("panel.backdrop.capture"))
+                    snap = FlashSnapshot.Capture(flashHwnd);
             }
             catch (Exception ex)
             {
@@ -2316,8 +2323,9 @@ namespace CF7Launcher.Guardian
             }
             try
             {
-                FlashSnapshot.FrameSampleStats sample =
-                    FlashSnapshot.AnalyzeFrame(snap.FullSnapshot, snap.ContentRect);
+                FlashSnapshot.FrameSampleStats sample;
+                using (PerfTrace.PanelScope("panel.backdrop.analyze"))
+                    sample = FlashSnapshot.AnalyzeFrame(snap.FullSnapshot, snap.ContentRect);
                 bool isBlack = sample.IsLikelyBlack;
                 if (captureSettingsPreview)
                 {
@@ -2333,11 +2341,12 @@ namespace CF7Launcher.Guardian
                 {
                     try
                     {
-                        settingsPreviewDataUrl = EncodePanelPreviewDataUri(
-                            snap.FullSnapshot,
-                            snap.ContentRect,
-                            out settingsPreviewWidth,
-                            out settingsPreviewHeight);
+                        using (PerfTrace.PanelScope("panel.backdrop.preview_encode"))
+                            settingsPreviewDataUrl = EncodePanelPreviewDataUri(
+                                snap.FullSnapshot,
+                                snap.ContentRect,
+                                out settingsPreviewWidth,
+                                out settingsPreviewHeight);
                         LogManager.Log(
                             "[PanelHost] settings entry preview encoded: size="
                             + settingsPreviewWidth + "x" + settingsPreviewHeight
@@ -2350,7 +2359,8 @@ namespace CF7Launcher.Guardian
                     }
                 }
                 byte dimAlpha = isBlack ? (byte)220 : (byte)160;
-                return FlashSnapshot.ComposeBackdrop(snap.FullSnapshot, snap.ContentRect, dimAlpha);
+                using (PerfTrace.PanelScope("panel.backdrop.compose"))
+                    return FlashSnapshot.ComposeBackdrop(snap.FullSnapshot, snap.ContentRect, dimAlpha);
             }
             finally
             {
@@ -2647,8 +2657,11 @@ namespace CF7Launcher.Guardian
                 Rectangle panelRect = provisional.PanelRect;
 
                 // valid admission 后才能暂停独立 surface/HUD；这些调用不得早于 geometry。
-                SuspendHudCompanion();
-                _hud.Suspend();
+                using (PerfTrace.PanelScope("panel.open.hud_suspend", name))
+                {
+                    SuspendHudCompanion();
+                    _hud.Suspend();
+                }
 
                 string settingsPreviewDataUrl;
                 int settingsPreviewWidth;
@@ -2670,11 +2683,14 @@ namespace CF7Launcher.Guardian
                     ClearActiveSettingsPreview();
                 }
 
-                _backdrop.SetComposedAndShow(composed, anchor);
-                _backdrop.SetPanelRect(panelRect);
-                if (!ResumePanelSurface(panelRect))
-                    throw new InvalidOperationException(
-                        "WebOverlay rejected panel presentation");
+                using (PerfTrace.PanelScope("panel.open.present", name))
+                {
+                    _backdrop.SetComposedAndShow(composed, anchor);
+                    _backdrop.SetPanelRect(panelRect);
+                    if (!ResumePanelSurface(panelRect))
+                        throw new InvalidOperationException(
+                            "WebOverlay rejected panel presentation");
+                }
                 int focusGeneration = PanelSurfaceGeneration;
                 if (_shield != null)
                 {
@@ -3290,10 +3306,10 @@ namespace CF7Launcher.Guardian
                 catch (Exception ex) { LogManager.Log("[PanelHost] ExitTelemetryMode failed: " + ex.Message); }
             }
             // Step 4: backdrop 隐藏
-            try { _backdrop.Hide(); }
+            try { using (PerfTrace.PanelScope("panel.close.backdrop", closingName)) _backdrop.Hide(); }
             catch (Exception ex) { LogManager.Log("[PanelHost] backdrop.Hide failed: " + ex.Message); }
             // Step 5: HUD 复活（NativeHud 复显）
-            try { _hud.Resume(); }
+            try { using (PerfTrace.PanelScope("panel.close.hud_resume", closingName)) _hud.Resume(); }
             catch (Exception ex) { LogManager.Log("[PanelHost] hud.Resume failed: " + ex.Message); }
             ResumeHudCompanion();
             // Step 6: ESC 禁用

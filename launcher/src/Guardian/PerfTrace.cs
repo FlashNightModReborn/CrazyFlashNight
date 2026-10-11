@@ -20,6 +20,8 @@ namespace CF7Launcher.Guardian
         private static StreamWriter _writer;
         private static string _tracePath;
         private static bool _enabled;
+        public static bool PanelTimingEnabled { get; } =
+            Environment.GetEnvironmentVariable("CF7_PANEL_TIMING") == "1";
 
         public static string TracePath { get { return _tracePath; } }
 
@@ -63,6 +65,11 @@ namespace CF7Launcher.Guardian
         public static IDisposable Scope(string name)
         {
             return new PerfScope(name);
+        }
+
+        public static IDisposable PanelScope(string name, string detail = null)
+        {
+            return PanelTimingEnabled ? new PerfScope(name, detail) : null;
         }
 
         public static void Mark(string name)
@@ -241,12 +248,14 @@ namespace CF7Launcher.Guardian
         private sealed class PerfScope : IDisposable
         {
             private readonly string _name;
+            private readonly string _detail;
             private readonly long _start;
             private bool _disposed;
 
-            public PerfScope(string name)
+            public PerfScope(string name, string detail = null)
             {
                 _name = name ?? "scope";
+                _detail = detail;
                 _start = Stopwatch.GetTimestamp();
             }
 
@@ -254,7 +263,7 @@ namespace CF7Launcher.Guardian
             {
                 if (_disposed) return;
                 _disposed = true;
-                Duration(_name, _start);
+                Duration(_name, _start, _detail);
             }
         }
     }

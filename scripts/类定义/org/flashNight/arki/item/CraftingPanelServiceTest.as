@@ -26,6 +26,7 @@ class org.flashNight.arki.item.CraftingPanelServiceTest {
         testOpenRequestWire();
         testMaterialsProjection();
         testMaterialsV2SnapshotProjection();
+        testMaterialsV2RecipeProjectionReuse();
         testMaterialBoundaryProbe();
         testDropOccurrenceProjection();
         testStaticSourceOccurrenceIdentity();
@@ -508,9 +509,30 @@ class org.flashNight.arki.item.CraftingPanelServiceTest {
                 && mineral.dropVariantCount == 5,
             "v2 catalog separates mod facets, recipe occurrences, purposes and source counts");
 
+        var stocks:Object = MaterialArchiveProjector.executeMaterialStocks();
+        check(stocks.success && stocks.materials.length == catalog.materials.length
+            && stocks.materials[0].name == mineral.name && stocks.materials[1].name == mod.name,
+            "settlement stocks preserve validated authored catalog order");
+        check(stocks.materials[0].displayName == mineral.displayName
+            && stocks.materials[0].icon == mineral.icon && stocks.materials[0].owned == mineral.owned
+            && stocks.materials[0].sourceCount == undefined && stocks.materials[0].useCount == undefined,
+            "settlement stocks contain only current stock presentation, without archive work");
+        stocks.materials[0].owned = 999;
+        var freshStocks:Object = MaterialArchiveProjector.executeMaterialStocks();
+        check(freshStocks.success && freshStocks.materials[0].owned == 5,
+            "caller mutation cannot alter current stock projection");
+
         // Caller mutation and later owned mutation cannot alter the frozen detail snapshot.
         catalog.materials[0].owned = 999;
         _root.收集品栏.材料.addValue("测试矿石", 10);
+        freshStocks = MaterialArchiveProjector.executeMaterialStocks();
+        check(freshStocks.success && freshStocks.materials[0].owned == 15,
+            "settlement stocks read fresh quantity after a material mutation");
+        var previousCatalogName:String = _root.材料档案目录.Material[0].Name;
+        _root.材料档案目录.Material[0].Name = "不存在的材料";
+        check(!MaterialArchiveProjector.executeMaterialStocks().success,
+            "settlement stock projection rejects malformed catalog identity");
+        _root.材料档案目录.Material[0].Name = previousCatalogName;
         // BootSequencer hands off by deleting the transient __boot object.
         // Runtime shop authority must therefore come only from the persistent
         // index, raw shop table and live NPC catalog service below.
@@ -792,6 +814,115 @@ class org.flashNight.arki.item.CraftingPanelServiceTest {
             _root.UI系统 = previousUi;
             _root.UI系统.NPC商店WebView = previousNpcService;
         }
+        resetOwned();
+    }
+
+    /** 同一配方涉及多个材料时，保持数量、出现顺序与快照隔离合同。 */
+    private static function testMaterialsV2RecipeProjectionReuse():Void {
+        resetOwned();
+        var previousCatalog:Object = _root.材料档案目录;
+        var previousModDict:Object = EquipmentUtil.modDict;
+        var previousModList:Array = EquipmentUtil.modList;
+        EquipmentUtil.modDict = {};
+        EquipmentUtil.modList = [];
+        ItemUtil.itemDataDict["测试辅材"] = itemData("测试辅材", "收集品", "材料", 0);
+        ItemUtil.materialDict["测试辅材"] = true;
+        _root.材料档案目录 = {schemaVersion:1,
+            DirectPurpose:{id:"system:equipment_tuning", label:"装备改装",
+                order:0, consumerEvidence:"EquipmentTuningService"},
+            Material:[{Name:"测试矿石", typeId:"general", legacyVisible:false},
+                {Name:"测试辅材", typeId:"general", legacyVisible:false}]};
+        // 完整 v2 档案要求全部 mod taxonomy 展示来源，即使待测配方只有普通材料。
+        var taxonomyMods:Array = materialTaxonomyModFixtures();
+        for (var t:Number = 0; t < taxonomyMods.length; t++) {
+            var taxonomyMod:Object = taxonomyMods[t];
+            var taxonomyName:String = String(taxonomyMod.name);
+            ItemUtil.itemDataDict[taxonomyName] = itemData(taxonomyName, "收集品", "材料", 0);
+            ItemUtil.materialDict[taxonomyName] = true;
+            EquipmentUtil.modDict[taxonomyName] = taxonomyMod;
+            EquipmentUtil.modList.push(taxonomyName);
+            _root.材料档案目录.Material.push(
+                {Name:taxonomyName, typeId:"equipment_mod", legacyVisible:false});
+        }
+        var recipes:Array = _root.改装清单["武器合成"];
+        recipes[0].materials = ["测试矿石#2", "测试矿石#3", "测试辅材#7"];
+        recipes[1].name = recipes[0].name;
+        recipes[1].materials = ["测试矿石#11", "测试辅材#13", "旧测试枪#3"];
+        // 本夹具只验证配方；不把其他夹具的商店来源带入 exact live-shop join。
+        _root.shops = {};
+        _root.kshop_list = [];
+        var obtainIndex:ItemObtainIndex = ItemObtainIndex.getInstance();
+        obtainIndex.reset(true);
+        obtainIndex.buildIndex(_root.改装清单, _root.shops, _root.kshop_list);
+        SynthesisIndex.reset();
+        var catalog:Object = MaterialArchiveProjector.executeMaterials();
+        if (!catalog.success) trace("[RECIPE_REUSE_FIXTURE] catalog error=" + catalog.error);
+        check(catalog.success && catalog.materials[0].useCount == 2
+            && catalog.materials[1].useCount == 2,
+            "same-product recipe occurrences remain distinct for every material");
+        var ore:Object = MaterialArchiveProjector.executeMaterialDetail(
+            {snapshotId:catalog.snapshotId, itemName:"测试矿石"});
+        var aux:Object = MaterialArchiveProjector.executeMaterialDetail(
+            {snapshotId:catalog.snapshotId, itemName:"测试辅材"});
+        if (!ore.success || !aux.success) trace("[RECIPE_REUSE_FIXTURE] detail errors=" + ore.error + "/" + aux.error);
+        check(ore.success && aux.success && ore.uses[0].required == 5
+            && aux.uses[0].required == 7 && ore.uses[0].ingredients.length == 3
+            && ore.uses[0].ingredients[0].required == 2
+            && ore.uses[0].ingredients[1].required == 3,
+            "duplicate ingredient occurrences retain order while per-material quantities sum exactly");
+        check(ore.uses[1].required == 11 && aux.uses[1].required == 13
+            && ore.uses[1].ingredients[2].isQuantity === false,
+            "same-product recipes keep separate ingredient requirements and equipment semantics");
+        ore.uses[0].ingredients[0].required = 999;
+        ore = MaterialArchiveProjector.executeMaterialDetail(
+            {snapshotId:catalog.snapshotId, itemName:"测试矿石"});
+        aux = MaterialArchiveProjector.executeMaterialDetail(
+            {snapshotId:catalog.snapshotId, itemName:"测试辅材"});
+        check(ore.uses[0].ingredients[0].required == 2
+            && aux.uses[0].ingredients[0].required == 2,
+            "detail callers cannot mutate reused ingredients in their own or another material snapshot");
+
+        recipes[0].materials = ["测试矿石#4", "测试矿石#6", "测试辅材#8"];
+        var oldDisplayName = ItemUtil.itemDataDict[recipes[0].name].displayname;
+        ItemUtil.itemDataDict[recipes[0].name].displayname = "刷新后的产品名";
+        SynthesisIndex.reset();
+        catalog = MaterialArchiveProjector.executeMaterials();
+        ore = MaterialArchiveProjector.executeMaterialDetail(
+            {snapshotId:catalog.snapshotId, itemName:"测试矿石"});
+        aux = MaterialArchiveProjector.executeMaterialDetail(
+            {snapshotId:catalog.snapshotId, itemName:"测试辅材"});
+        check(catalog.success && ore.uses[0].required == 10 && aux.uses[0].required == 8
+            && ore.uses[0].displayName == "刷新后的产品名",
+            "each catalog refresh rereads recipe quantities and product presentation");
+        ItemUtil.itemDataDict[recipes[0].name].displayname = oldDisplayName;
+        var lastSnapshotId:String = String(catalog.snapshotId);
+        // 先投影辅材使同一配方被复用，后续矿石仍须拒绝原始零数量。
+        _root.材料档案目录.Material.reverse();
+        recipes[0].materials = ["测试矿石#0", "测试辅材#8"];
+        SynthesisIndex.reset();
+        var invalidQuantity:Object = MaterialArchiveProjector.executeMaterials();
+        check(!invalidQuantity.success && invalidQuantity.error == "invalid_recipe_use",
+            "reused ingredient presentation cannot turn a zero authoritative quantity into one");
+        check(MaterialArchiveProjector.executeMaterialDetail(
+            {snapshotId:lastSnapshotId, itemName:"测试矿石"}).error == "stale_snapshot",
+            "failed recipe refresh retires the previous material snapshot");
+        recipes[0].materials = ["测试矿石#2", "测试辅材#8"];
+        SynthesisIndex.reset();
+        SynthesisIndex.getRecipeUses("测试辅材");
+        recipes[0].name = "测试药剂";
+        var staleRecipe:Object = MaterialArchiveProjector.executeMaterials();
+        check(!staleRecipe.success && staleRecipe.error == "stale_recipe_use",
+            "each exact recipe reference is rechecked against current identity before reuse");
+        delete ItemUtil.itemDataDict["测试辅材"];
+        delete ItemUtil.materialDict["测试辅材"];
+        for (var cleanupIndex:Number = 0; cleanupIndex < taxonomyMods.length; cleanupIndex++) {
+            var cleanupName:String = String(taxonomyMods[cleanupIndex].name);
+            delete ItemUtil.itemDataDict[cleanupName];
+            delete ItemUtil.materialDict[cleanupName];
+        }
+        EquipmentUtil.modDict = previousModDict;
+        EquipmentUtil.modList = previousModList;
+        _root.材料档案目录 = previousCatalog;
         resetOwned();
     }
 

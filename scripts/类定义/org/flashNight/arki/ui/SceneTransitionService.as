@@ -16,6 +16,7 @@ class org.flashNight.arki.ui.SceneTransitionService {
         if (_installed) return;
         _installed = true;
         if (_root.gameCommands == undefined) _root.gameCommands = {};
+        org.flashNight.dev.PanelTiming.install();
         _root.gameCommands["sceneTransitionPresented"] = function(p:Object):Void {
             org.flashNight.arki.ui.SceneTransitionService.presented(p);
         };
@@ -27,6 +28,8 @@ class org.flashNight.arki.ui.SceneTransitionService {
         _root.设置Web过场提示 = function(fade:Object,text:String):Void { org.flashNight.arki.ui.SceneTransitionService.setTip(fade,text); };
         _root.等待Web过场遮罩 = function(fade:Object):Void { org.flashNight.arki.ui.SceneTransitionService.awaitCovered(fade); };
         _root.等待Web过场揭幕 = function(fade:Object):Void { org.flashNight.arki.ui.SceneTransitionService.awaitReveal(fade); };
+        _root.完成Web清场 = function(fade:Object):Boolean { return org.flashNight.arki.ui.SceneTransitionService.cleanupCompleted(fade); };
+        _root.完成Web场景初始化 = function(fade:Object):Void { org.flashNight.arki.ui.SceneTransitionService.initializationCompleted(fade); };
         _root.显示Web加载失败 = function(fade:Object):Void { org.flashNight.arki.ui.SceneTransitionService.failed(fade); };
         _root.清理Web过场 = function():Void { org.flashNight.arki.ui.SceneTransitionService.clear(); };
         EventBus.getInstance().subscribe("SceneReady", onSceneReady, null);
@@ -80,6 +83,7 @@ class org.flashNight.arki.ui.SceneTransitionService {
             worldReady:false,worldPresented:false,covered:false,revealed:false,actionSent:false,lastSend:-1000,
             report:org.flashNight.arki.scene.StageRunSession.parallelReturnReport(fade.__stageReturnToken),
             reportVisible:true,reportHandoff:false};
+        _session.timingStarted = org.flashNight.dev.PanelTiming.start();
         // A retry carries the existing business session; it cannot create another
         // report or reset a write whose outcome is still unknown.
         if (_session.report != null && org.flashNight.arki.item.LootContainerService.hasActiveStashedReport(String(_session.report.runId)))
@@ -113,6 +117,31 @@ class org.flashNight.arki.ui.SceneTransitionService {
         if (!s.revealed) fade.stop();
         requestReveal();
     }
+    // Web 已接管淡出；保留至少一次 EnterFrame 边界，然后越过纯等待帧。
+    // 只有原清场成功/第 17 帧业务收尾能够安排跳帧，Web 回执不能替代这些步骤。
+    public static function cleanupCompleted(fade:Object):Boolean {
+        if (queueAdvance(fade,6,13)) {
+            org.flashNight.dev.PanelTiming.finish("transition.cleanup_complete",_session.timingStarted,_sequence);
+            return true;
+        }
+        // 重复完成回调仍由已安排的帧边界接管，不能误触发旧时间线续播。
+        return owns(_session,fade) && _session.advance != null
+            && _session.advance.fromFrame == 6;
+    }
+    public static function initializationCompleted(fade:Object):Void {
+        if (queueAdvance(fade,17,30))
+            org.flashNight.dev.PanelTiming.finish("transition.initialization_complete",_session.timingStarted,_sequence);
+    }
+    private static function queueAdvance(fade:Object, fromFrame:Number, toFrame:Number):Boolean {
+        var s:Object = _session;
+        if (!owns(s,fade) || !s.covered || fade._currentframe != fromFrame
+                || s.phase == "error" || s.phase == "reveal" || s.advance != null
+                || typeof fade.gotoAndPlay != "function") return false;
+        // 第一次 tick 可能属于当前帧，第二次 tick 必定经过下一次帧边界。
+        s.advance = {fromFrame:fromFrame,toFrame:toFrame,ticks:2};
+        fade.stop();
+        return true;
+    }
     private static function onSceneReady(world:Object, token:String, identity:Object):Void {
         var s:Object = _session;
         if (!owns(s,_root.淡出动画) || world != _root.gameworld || identity == null
@@ -120,6 +149,7 @@ class org.flashNight.arki.ui.SceneTransitionService {
         if (s.worldReady && (s.readyIdentity !== identity || s.targetScene != WorldLightingBridge.sceneNumber())) {
             s.worldPresented = false; s.revision++;
         }
+        if (!s.worldReady) org.flashNight.dev.PanelTiming.finish("transition.scene_ready",s.timingStarted,_sequence);
         s.worldReady = true;
         s.readyWorld = world;
         s.readyIdentity = identity;
@@ -131,6 +161,7 @@ class org.flashNight.arki.ui.SceneTransitionService {
         var s:Object = _session;
         if (s == null || !owns(s,s.fade) || !s.worldReady || s.fade._currentframe != 30
             || s.phase == "error" || s.phase == "reveal") return;
+        org.flashNight.dev.PanelTiming.finish("transition.reveal_requested",s.timingStarted,_sequence);
         s.phase = "reveal"; s.revision++; publish();
     }
     public static function failed(fade:Object):Void {
@@ -146,6 +177,7 @@ class org.flashNight.arki.ui.SceneTransitionService {
             || typeof p.revision != "number" || p.revision < 1 || p.revision > s.revision
             || p.revision != Math.floor(p.revision)) return;
         if (p.kind == "covered" && !s.covered && s.phase != "error" && s.phase != "reveal") {
+            org.flashNight.dev.PanelTiming.finish("transition.covered",s.timingStarted,_sequence);
             s.covered = true;
             if (s.fade._currentframe == 5) s.fade.play();
         } else if (p.kind == "prepared" && s.report != null && s.phase == "reveal" && p.revision === s.revision
@@ -212,6 +244,14 @@ class org.flashNight.arki.ui.SceneTransitionService {
         if (s.phase == "cover" && s.covered && s.fade._currentframe >= 6) {
             s.phase = "loading"; s.revision++;
         }
+        if (s.advance != null) {
+            var advance:Object = s.advance;
+            if (s.phase == "error" || s.fade._currentframe != advance.fromFrame) s.advance = null;
+            else if (--advance.ticks <= 0) {
+                s.advance = null;
+                s.fade.gotoAndPlay(advance.toFrame);
+            }
+        }
         if (s.reportHandoff === true && org.flashNight.arki.scene.StageRunSession.parallelReportHandoffState(String(s.report.runId)) == "rejected") {
             s.reportHandoff = false; s.actionSent = false; s.revision++;
             s.tip = "奖励界面暂未能打开，可以先返回基地。";
@@ -248,7 +288,10 @@ class org.flashNight.arki.ui.SceneTransitionService {
             if (s.report != null) { _retired.report = s.report; _retired.reportVisible = false; _retired.reportHandoff = false; }
             _lastRetiredSend = getTimer(); send(_retired);
             // hide 先于任何会暂停世界的报告开窗；重复 clear 或取消都不发布成功交接。
-            if (released) EventBus.getInstance().publish("SceneTransitionReleased",s.readyWorld,s.arrivalToken,s.readyIdentity);
+            if (released) {
+                org.flashNight.dev.PanelTiming.finish("transition.released",s.timingStarted,_sequence);
+                EventBus.getInstance().publish("SceneTransitionReleased",s.readyWorld,s.arrivalToken,s.readyIdentity);
+            }
         }
     }
 }

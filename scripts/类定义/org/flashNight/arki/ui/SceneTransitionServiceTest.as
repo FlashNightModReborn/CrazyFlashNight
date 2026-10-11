@@ -13,9 +13,10 @@ class org.flashNight.arki.ui.SceneTransitionServiceTest {
         if (ok) passed++; else {failed++; trace("[SceneTransition FAIL] "+label);}
     }
     private static function fixture(frame:Number):Object {
-        counters = {plays:0,stops:0,retries:0,returns:0};
+        counters = {plays:0,stops:0,retries:0,returns:0,jumps:0};
         return {_currentframe:frame,
             play:function():Void {counters.plays++;},stop:function():Void {counters.stops++;},
+            gotoAndPlay:function(frame:Number):Void {counters.jumps++;counters.target=frame;this._currentframe=frame;},
             淡出跳转帧:function(frame:String,token:String):Void {counters.retries++;}};
     }
     public static function runAllTests():Void {
@@ -154,6 +155,46 @@ class org.flashNight.arki.ui.SceneTransitionServiceTest {
         check(counters.returns==1 && _root.场景进入位置名=="出生地","return uses existing authority and spawn");
         SceneTransitionService.clear();
         check(sent[sent.length-1].phase=="hide","terminal identity tombstone emitted");
+        fade=fixture(6); _root.淡出动画=fade; SceneTransitionService.begin(fade);
+        var managedCleanup:Boolean=SceneTransitionService.cleanupCompleted(fade);
+        SceneTransitionService.tick(); SceneTransitionService.tick();
+        check(!managedCleanup && counters.jumps==0,"cleanup advancement cannot substitute for curtain coverage");
+        cover=sent[sent.length-1];
+        SceneTransitionService.presented({requestId:cover.requestId,revision:cover.revision,kind:"covered"});
+        managedCleanup=SceneTransitionService.cleanupCompleted({_currentframe:6});
+        check(!managedCleanup && counters.stops==0,"foreign fade cannot schedule timeline advancement");
+        SceneTransitionService.cleanupCompleted(fade);
+        check(counters.stops==1 && counters.jumps==0,"successful cleanup pins only the waiting frame");
+        managedCleanup=SceneTransitionService.cleanupCompleted(fade);
+        check(managedCleanup && counters.stops==1,"duplicate cleanup completion retains frame ownership without resetting its fence");
+        SceneTransitionService.tick();
+        check(counters.jumps==0,"cleanup preserves an EnterFrame boundary");
+        SceneTransitionService.tick();
+        check(counters.jumps==1 && counters.target==13,"cleanup crosses only blank frames and still enters original load frame");
+        fade._currentframe=15; SceneTransitionService.initializationCompleted(fade);
+        SceneTransitionService.tick(); SceneTransitionService.tick();
+        check(counters.jumps==1,"task checks and frame-17 save guard cannot be skipped");
+        fade._currentframe=17; SceneTransitionService.initializationCompleted(fade);
+        SceneTransitionService.tick();
+        check(counters.jumps==1,"initialization preserves its own frame boundary");
+        SceneTransitionService.tick();
+        check(counters.jumps==2 && counters.target==30,"initialization advances to original reveal gate");
+        SceneTransitionService.awaitReveal(fade);
+        check(sent[sent.length-1].phase!="reveal","shortened wait still requires new-world SceneReady");
+        SceneTransitionService.clear();
+        fade=fixture(6); _root.淡出动画=fade; SceneTransitionService.begin(fade); cover=sent[sent.length-1];
+        SceneTransitionService.presented({requestId:cover.requestId,revision:cover.revision,kind:"covered"});
+        SceneTransitionService.cleanupCompleted(fade); SceneTransitionService.clear();
+        SceneTransitionService.tick(); SceneTransitionService.tick();
+        check(counters.jumps==0,"retired session cannot perform a scheduled jump");
+        SceneTransitionService.begin(fade); cover=sent[sent.length-1];
+        SceneTransitionService.presented({requestId:cover.requestId,revision:cover.revision,kind:"covered"});
+        SceneTransitionService.cleanupCompleted(fade); fade._currentframe=37; SceneTransitionService.failed(fade);
+        SceneTransitionService.tick(); SceneTransitionService.tick();
+        check(counters.jumps==0,"load failure cancels a pending blank-frame skip");
+        SceneTransitionService.clear();
+        check(!SceneTransitionService.cleanupCompleted(fade),
+            "unmanaged legacy cleanup can resume its original fade timeline");
         _root.淡出动画=old.fade; _root.gameworld=old.world; _root.加载背景列表=old.data;
         _root.初期关卡列表=old.stages; _root.关卡标志=old.flag; _root.主线任务进度=old.progress;
         _root.从加载失败返回=old.returned; _root.场景进入位置名=old.entry;

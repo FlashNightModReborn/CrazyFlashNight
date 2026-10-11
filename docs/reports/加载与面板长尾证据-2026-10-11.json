@@ -1,0 +1,1550 @@
+{
+  "schema": "cf7-panel-loading-investigation.v1",
+  "capturedAtUtc": "2026-10-11T00:17:57.245604+00:00",
+  "sourceHead": "61b477298854afcdcea54970c07e7818f9d3b5e4",
+  "state": "candidate_verified_pending_human_acceptance",
+  "authorization": {
+    "investigationImplementationRegression": true,
+    "commitPush": false,
+    "promotion": false
+  },
+  "pairedPanelsAndBaseTransitions": [
+    {
+      "run": "baseline-paired-01",
+      "inputs": {
+        "label": "baseline-paired-01",
+        "slot": "cf7_agent_panelload_1010",
+        "candidateLeaf": "panelbase-1010",
+        "asLoaderSha256": "6C37D050D814FB601D942B637D6B728B05C10AC6FD591E633744EA39BE3CCA42",
+        "mainSwfSha256": "F0BDD31048055BAF47EA582D71896190998D563AFB7B2CC8E9F67E06E67436B6",
+        "startedAt": "2026-10-10T23:31:30.305Z",
+        "coreBinding": {
+          "pid": 6976,
+          "processPath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\runtime-candidates\\v2\\panelbase-1010\\runtime\\CRAZYFLASHER7MercenaryEmpire.Core.exe",
+          "buildIdentity": "A35E2AA432B833EB6B7CFC0B8C8908944EBB3A47F02677C9F9CFE013D9AF0C3B",
+          "payloadClosure": "3976D4A6A6EC1C342FD8F943B1DCE2B4D4B5818C7EB4B59418CFAE294E75A789",
+          "coreSha256": "6D747E2260922BA78F3F34C4E68F9B24762E974482212912364FF12F4E548D50"
+        }
+      },
+      "profiles": [
+        "pt:23955273d08a4312b65899fe635a39b3"
+      ],
+      "panels": {
+        "arena": {
+          "openToMountedFramesMs": {
+            "samples": [
+              2130.1659999999974,
+              1646.4174000000057,
+              1023.3873000000021,
+              852.0478000000003,
+              1014.29270000002
+            ],
+            "median": 1023.3873000000021,
+            "min": 852.0478000000003,
+            "max": 2130.1659999999974
+          },
+          "openToObservedAuthorityFramesMs": {
+            "samples": [
+              2476.8313999999955,
+              1799.7407999999996,
+              1097.8947000000044,
+              935.5962,
+              1079.0033000000112
+            ],
+            "median": 1097.8947000000044,
+            "min": 935.5962,
+            "max": 2476.8313999999955
+          },
+          "closeToWebIdleMs": {
+            "samples": [
+              362.141100000008,
+              627.6884999999893,
+              548.5381000000052,
+              716.906399999978,
+              694.8646000000008
+            ],
+            "median": 627.6884999999893,
+            "min": 362.141100000008,
+            "max": 716.906399999978
+          }
+        },
+        "crafting": {
+          "openToMountedFramesMs": {
+            "samples": [
+              1021.0736000000034,
+              734.0293999999994,
+              598.9474000000046,
+              705.4664000000048,
+              700.1755999999878
+            ],
+            "median": 705.4664000000048,
+            "min": 598.9474000000046,
+            "max": 1021.0736000000034
+          },
+          "openToObservedAuthorityFramesMs": {
+            "samples": [
+              5487.22100000002,
+              3936.2643999999855,
+              3685.909400000004,
+              3538.814100000018,
+              3465.3603000000003
+            ],
+            "median": 3685.909400000004,
+            "min": 3465.3603000000003,
+            "max": 5487.22100000002
+          },
+          "closeToWebIdleMs": {
+            "samples": [
+              242.54549999997835,
+              245.63180000000284,
+              248.96980000002077,
+              223.22160000001895,
+              202.1137999999919
+            ],
+            "median": 242.54549999997835,
+            "min": 202.1137999999919,
+            "max": 248.96980000002077
+          }
+        },
+        "gym": {
+          "openToMountedFramesMs": {
+            "samples": [
+              1319.2184999999881,
+              933.8600999999908,
+              795.3526000000129,
+              788.1749000000127,
+              721.8708000000042
+            ],
+            "median": 795.3526000000129,
+            "min": 721.8708000000042,
+            "max": 1319.2184999999881
+          },
+          "openToObservedAuthorityFramesMs": {
+            "samples": [
+              1358.9070999999822,
+              989.7972000000009,
+              849.2632000000158,
+              849.5330000000249,
+              762.8080000000191
+            ],
+            "median": 849.5330000000249,
+            "min": 762.8080000000191,
+            "max": 1358.9070999999822
+          },
+          "closeToWebIdleMs": {
+            "samples": [
+              298.59210000000894,
+              237.62629999997444,
+              229.75179999999818,
+              232.16870000000927,
+              219.27699999997276
+            ],
+            "median": 232.16870000000927,
+            "min": 219.27699999997276,
+            "max": 298.59210000000894
+          }
+        },
+        "map": {
+          "openToMountedFramesMs": {
+            "samples": [
+              2141.6026999999885,
+              1004.25900000002,
+              714.7243999999773,
+              774.2392000000109,
+              742.8652000000002
+            ],
+            "median": 774.2392000000109,
+            "min": 714.7243999999773,
+            "max": 2141.6026999999885
+          },
+          "openToObservedAuthorityFramesMs": {
+            "samples": [
+              3241.6281000000017,
+              3157.7744999999995,
+              1775.478599999973,
+              1812.9092999999993,
+              1767.6670999999915
+            ],
+            "median": 1812.9092999999993,
+            "min": 1767.6670999999915,
+            "max": 3241.6281000000017
+          },
+          "closeToWebIdleMs": {
+            "samples": [
+              246.46849999998813,
+              241.09169999998994,
+              233.65909999998985,
+              232.60489999997662,
+              228.13039999999455
+            ],
+            "median": 233.65909999998985,
+            "min": 228.13039999999455,
+            "max": 246.46849999998813
+          }
+        },
+        "settings": {
+          "openToMountedFramesMs": {
+            "samples": [
+              1004.4679000000178,
+              779.270600000018,
+              949.1886000000231,
+              782.3652000000002,
+              719.5760000000009
+            ],
+            "median": 782.3652000000002,
+            "min": 719.5760000000009,
+            "max": 1004.4679000000178
+          },
+          "openToObservedAuthorityFramesMs": {
+            "samples": [
+              1233.7897999999986,
+              834.0555000000168,
+              994.9815999999992,
+              832.6624000000011,
+              761.1690000000235
+            ],
+            "median": 834.0555000000168,
+            "min": 761.1690000000235,
+            "max": 1233.7897999999986
+          },
+          "closeToWebIdleMs": {
+            "samples": [
+              264.55409999997937,
+              241.30980000001728,
+              250.36129999998957,
+              239.09249999999884,
+              234.26910000000498
+            ],
+            "median": 241.30980000001728,
+            "min": 234.26910000000498,
+            "max": 264.55409999997937
+          }
+        },
+        "stage-select": {
+          "openToMountedFramesMs": {
+            "samples": [
+              704.4429000000237,
+              792.9786999999778,
+              663.8132000000041,
+              713.4402999999875,
+              691.5908000000054
+            ],
+            "median": 704.4429000000237,
+            "min": 663.8132000000041,
+            "max": 792.9786999999778
+          },
+          "openToObservedAuthorityFramesMs": {
+            "samples": [
+              973.5804000000062,
+              1050.3898999999801,
+              921.3418999999994,
+              977.4835999999777,
+              933.7798999999941
+            ],
+            "median": 973.5804000000062,
+            "min": 921.3418999999994,
+            "max": 1050.3898999999801
+          },
+          "closeToWebIdleMs": {
+            "samples": [
+              169.882099999988,
+              235.89630000002217,
+              237.6087000000116,
+              274.1860999999917,
+              226.40669999999227
+            ],
+            "median": 235.89630000002217,
+            "min": 169.882099999988,
+            "max": 274.1860999999917
+          }
+        },
+        "transition": {
+          "openToReleaseMs": {
+            "samples": [
+              2493.196499999991,
+              2441.9404000000213,
+              2187.255999999994,
+              2934.7951000000467,
+              2262.3003000000026
+            ],
+            "median": 2441.9404000000213,
+            "min": 2187.255999999994,
+            "max": 2934.7951000000467
+          }
+        },
+        "workbench": {
+          "openToMountedFramesMs": {
+            "samples": [
+              1347.189400000003,
+              929.5205000000133,
+              791.3747000000149,
+              646.5717000000004,
+              838.4787999999826
+            ],
+            "median": 838.4787999999826,
+            "min": 646.5717000000004,
+            "max": 1347.189400000003
+          },
+          "openToObservedAuthorityFramesMs": {
+            "samples": [
+              3425.459900000016,
+              1120.1860999999917,
+              882.619399999996,
+              797.9218999999866,
+              880.5610999999917
+            ],
+            "median": 882.619399999996,
+            "min": 797.9218999999866,
+            "max": 3425.459900000016
+          },
+          "closeToWebIdleMs": {
+            "samples": [
+              231.30999999999767,
+              259.68539999998757,
+              238.11939999999595,
+              258.8949999999895,
+              242.6582000000053
+            ],
+            "median": 242.6582000000053,
+            "min": 231.30999999999767,
+            "max": 259.68539999998757
+          }
+        }
+      },
+      "as2MaterialMs": {
+        "materials.full_snapshot": {
+          "samples": [
+            3338,
+            2647,
+            2415,
+            2379,
+            2320
+          ],
+          "median": 2415
+        }
+      }
+    },
+    {
+      "run": "optimized-paired-01",
+      "inputs": {
+        "label": "optimized-paired-01",
+        "slot": "cf7_agent_panelload_1010",
+        "candidateLeaf": "panelopt-1011-a",
+        "asLoaderSha256": "9F2520610B2DE732BF460EC732B810B9113E91E652CCF6B44B4DA882076D13C0",
+        "mainSwfSha256": "E5696C8AFE2217B1D1E6F59E9519A557E52D70BE6EC6739814AF930026960975",
+        "startedAt": "2026-10-10T23:36:14.004Z",
+        "coreBinding": {
+          "pid": 27884,
+          "processPath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\runtime-candidates\\v2\\panelopt-1011-a\\runtime\\CRAZYFLASHER7MercenaryEmpire.Core.exe",
+          "buildIdentity": "9C2B640BC5CCF56DBC9D829A698E21AB0E41A2DFB2C2481B07BB50CF90E0E064",
+          "payloadClosure": "781C03C37CC34A5EBBC2FE455AABA7EF9E9F9619E51B8DD4B142D913A8DECF12",
+          "coreSha256": "3A3D24FB335D3AD54CAB9BDED717ACEDEA92F0B446F392D0580576DA5B65FA1B"
+        }
+      },
+      "profiles": [
+        "pt:6c4270e7bb1a4f68bf9d5463eddd5c9e"
+      ],
+      "panels": {
+        "arena": {
+          "openToMountedFramesMs": {
+            "samples": [
+              1227.676299999992,
+              1171.7609999999986,
+              916.4200999999885,
+              916.6493000000191,
+              953.3349999999919
+            ],
+            "median": 953.3349999999919,
+            "min": 916.4200999999885,
+            "max": 1227.676299999992
+          },
+          "openToObservedAuthorityFramesMs": {
+            "samples": [
+              1494.2801000000036,
+              1312.0088000000105,
+              1009.2084999999788,
+              975.711100000015,
+              1022.3540999999968
+            ],
+            "median": 1022.3540999999968,
+            "min": 975.711100000015,
+            "max": 1494.2801000000036
+          },
+          "closeToWebIdleMs": {
+            "samples": [
+              315.9277000000002,
+              760.7059000000008,
+              733.3550999999861,
+              757.3829999999725,
+              637.4870999999985
+            ],
+            "median": 733.3550999999861,
+            "min": 315.9277000000002,
+            "max": 760.7059000000008
+          }
+        },
+        "crafting": {
+          "openToMountedFramesMs": {
+            "samples": [
+              806.589799999987,
+              705.3252999999968,
+              677.8665999999794,
+              629.4435999999987,
+              701.832699999999
+            ],
+            "median": 701.832699999999,
+            "min": 629.4435999999987,
+            "max": 806.589799999987
+          },
+          "openToObservedAuthorityFramesMs": {
+            "samples": [
+              2649.367499999993,
+              2310.4290000000037,
+              2307.1445999999996,
+              2296.194199999998,
+              2278.498900000006
+            ],
+            "median": 2307.1445999999996,
+            "min": 2278.498900000006,
+            "max": 2649.367499999993
+          },
+          "closeToWebIdleMs": {
+            "samples": [
+              231.29360000000452,
+              230.71060000002035,
+              232.7896999999939,
+              233.00749999997788,
+              264.68979999999283
+            ],
+            "median": 232.7896999999939,
+            "min": 230.71060000002035,
+            "max": 264.68979999999283
+          }
+        },
+        "gym": {
+          "openToMountedFramesMs": {
+            "samples": [
+              1330.4002999999793,
+              766.1472999999824,
+              757.2675000000163,
+              761.1661000000022,
+              724.5314000000071
+            ],
+            "median": 761.1661000000022,
+            "min": 724.5314000000071,
+            "max": 1330.4002999999793
+          },
+          "openToObservedAuthorityFramesMs": {
+            "samples": [
+              1372.3125999999756,
+              817.5205999999889,
+              810.2756999999983,
+              809.4452999999921,
+              764.9909000000043
+            ],
+            "median": 810.2756999999983,
+            "min": 764.9909000000043,
+            "max": 1372.3125999999756
+          },
+          "closeToWebIdleMs": {
+            "samples": [
+              238.02060000001802,
+              243.055400000012,
+              221.87020000000484,
+              234.04409999999916,
+              228.75660000002244
+            ],
+            "median": 234.04409999999916,
+            "min": 221.87020000000484,
+            "max": 243.055400000012
+          }
+        },
+        "map": {
+          "openToMountedFramesMs": {
+            "samples": [
+              2210.1937000000034,
+              832.6327000000019,
+              730.6618999999919,
+              731.7446000000054,
+              744.4542000000074
+            ],
+            "median": 744.4542000000074,
+            "min": 730.6618999999919,
+            "max": 2210.1937000000034
+          },
+          "openToObservedAuthorityFramesMs": {
+            "samples": [
+              3205.566500000001,
+              2118.382500000007,
+              2203.094100000002,
+              1822.9900999999954,
+              1874.972299999994
+            ],
+            "median": 2118.382500000007,
+            "min": 1822.9900999999954,
+            "max": 3205.566500000001
+          },
+          "closeToWebIdleMs": {
+            "samples": [
+              221.72000000000116,
+              255.15920000000915,
+              235.2943999999843,
+              237.00239999999758,
+              253.9997999999905
+            ],
+            "median": 237.00239999999758,
+            "min": 221.72000000000116,
+            "max": 255.15920000000915
+          }
+        },
+        "settings": {
+          "openToMountedFramesMs": {
+            "samples": [
+              829.8087000000232,
+              746.2885999999999,
+              730.5125999999873,
+              730.9623000000138,
+              763.3891000000003
+            ],
+            "median": 746.2885999999999,
+            "min": 730.5125999999873,
+            "max": 829.8087000000232
+          },
+          "openToObservedAuthorityFramesMs": {
+            "samples": [
+              1007.602200000023,
+              790.0946999999869,
+              780.385099999985,
+              787.4205000000075,
+              808.5065000000177
+            ],
+            "median": 790.0946999999869,
+            "min": 780.385099999985,
+            "max": 1007.602200000023
+          },
+          "closeToWebIdleMs": {
+            "samples": [
+              256.70490000001155,
+              244.43679999999586,
+              252.08879999999772,
+              227.27629999999772,
+              204.87210000000778
+            ],
+            "median": 244.43679999999586,
+            "min": 204.87210000000778,
+            "max": 256.70490000001155
+          }
+        },
+        "stage-select": {
+          "openToMountedFramesMs": {
+            "samples": [
+              770.1958999999915,
+              752.0351000000082,
+              773.6083999999973,
+              756.949099999998,
+              780.5429000000004
+            ],
+            "median": 770.1958999999915,
+            "min": 752.0351000000082,
+            "max": 780.5429000000004
+          },
+          "openToObservedAuthorityFramesMs": {
+            "samples": [
+              1033.175099999993,
+              998.8899000000092,
+              938.7130000000179,
+              1010.0322999999917,
+              1031.0293999999994
+            ],
+            "median": 1010.0322999999917,
+            "min": 938.7130000000179,
+            "max": 1033.175099999993
+          },
+          "closeToWebIdleMs": {
+            "samples": [
+              240.45799999998417,
+              267.7471000000078,
+              170.24239999998827,
+              237.53669999999693,
+              293.4402999999875
+            ],
+            "median": 240.45799999998417,
+            "min": 170.24239999998827,
+            "max": 293.4402999999875
+          }
+        },
+        "transition": {
+          "openToReleaseMs": {
+            "samples": [
+              1909.0714000000153,
+              2334.6034999999974,
+              2039.019500000024,
+              2432.7764000000025,
+              1522.3638999999966
+            ],
+            "median": 2039.019500000024,
+            "min": 1522.3638999999966,
+            "max": 2432.7764000000025
+          }
+        },
+        "workbench": {
+          "openToMountedFramesMs": {
+            "samples": [
+              985.3355000000156,
+              802.10070000001,
+              737.1122000000032,
+              630.144100000005,
+              734.044900000008
+            ],
+            "median": 737.1122000000032,
+            "min": 630.144100000005,
+            "max": 985.3355000000156
+          },
+          "openToObservedAuthorityFramesMs": {
+            "samples": [
+              1508.8465999999898,
+              872.7534999999916,
+              818.6410000000033,
+              798.5146999999997,
+              886.7643000000098
+            ],
+            "median": 872.7534999999916,
+            "min": 798.5146999999997,
+            "max": 1508.8465999999898
+          },
+          "closeToWebIdleMs": {
+            "samples": [
+              243.83710000000428,
+              233.28729999999632,
+              231.07809999998426,
+              239.53369999999995,
+              241.86089999999967
+            ],
+            "median": 239.53369999999995,
+            "min": 231.07809999998426,
+            "max": 243.83710000000428
+          }
+        }
+      },
+      "as2MaterialMs": {
+        "materials.catalog_validation": {
+          "samples": [
+            91,
+            95,
+            96,
+            104,
+            87
+          ],
+          "median": 95
+        },
+        "materials.header": {
+          "samples": [
+            189,
+            195,
+            193,
+            161,
+            144
+          ],
+          "median": 189
+        },
+        "materials.full_snapshot": {
+          "samples": [
+            1172,
+            1119,
+            1117,
+            1137,
+            1107
+          ],
+          "median": 1119
+        },
+        "materials.recipe_uses": {
+          "samples": [
+            652,
+            621,
+            618,
+            636,
+            663
+          ],
+          "median": 636
+        },
+        "materials.direct_purposes": {
+          "samples": [
+            8,
+            10,
+            11,
+            10,
+            9
+          ],
+          "median": 10
+        },
+        "materials.sources": {
+          "samples": [
+            68,
+            61,
+            58,
+            57,
+            57
+          ],
+          "median": 58
+        }
+      }
+    }
+  ],
+  "pairedSettlements": {
+    "baseline": {
+      "runs": [
+        {
+          "run": "baseline-settlement-paired-04",
+          "materialsCallId": 2,
+          "as2ProjectionMs": 3353,
+          "exactFidHostRoundTripMs": 3441.933,
+          "transitionReleasedMs": 6294,
+          "returnToObservedMaterialsMs": 5898.959500000012,
+          "seedSlot": "crazyflasher7_saves1"
+        },
+        {
+          "run": "baseline-settlement-paired-05",
+          "materialsCallId": 2,
+          "as2ProjectionMs": 2784,
+          "exactFidHostRoundTripMs": 2845.314,
+          "transitionReleasedMs": 5682,
+          "returnToObservedMaterialsMs": 5299.047900000005,
+          "seedSlot": "crazyflasher7_saves1"
+        },
+        {
+          "run": "baseline-settlement-paired-06",
+          "materialsCallId": 2,
+          "as2ProjectionMs": 2605,
+          "exactFidHostRoundTripMs": 2662.8,
+          "transitionReleasedMs": 5386,
+          "returnToObservedMaterialsMs": 5011.731800000009,
+          "seedSlot": "crazyflasher7_saves1"
+        }
+      ],
+      "as2ProjectionMs": {
+        "samples": [
+          3353,
+          2784,
+          2605
+        ],
+        "n": 3,
+        "median": 2784,
+        "min": 2605,
+        "max": 3353
+      },
+      "exactFidHostRoundTripMs": {
+        "samples": [
+          3441.933,
+          2845.314,
+          2662.8
+        ],
+        "n": 3,
+        "median": 2845.314,
+        "min": 2662.8,
+        "max": 3441.933
+      },
+      "transitionReleasedMs": {
+        "samples": [
+          6294,
+          5682,
+          5386
+        ],
+        "n": 3,
+        "median": 5682,
+        "min": 5386,
+        "max": 6294
+      },
+      "returnToObservedMaterialsMs": {
+        "samples": [
+          5898.959500000012,
+          5299.047900000005,
+          5011.731800000009
+        ],
+        "n": 3,
+        "median": 5299.047900000005,
+        "min": 5011.731800000009,
+        "max": 5898.959500000012
+      }
+    },
+    "optimized": {
+      "runs": [
+        {
+          "run": "optimized-settlement-paired-01",
+          "materialsCallId": 2,
+          "as2ProjectionMs": 216,
+          "exactFidHostRoundTripMs": 306.789,
+          "transitionReleasedMs": 3518,
+          "returnToObservedMaterialsMs": 2900.9698999999964,
+          "seedSlot": "crazyflasher7_saves1"
+        },
+        {
+          "run": "optimized-settlement-paired-02",
+          "materialsCallId": 2,
+          "as2ProjectionMs": 159,
+          "exactFidHostRoundTripMs": 237.923,
+          "transitionReleasedMs": 3201,
+          "returnToObservedMaterialsMs": 3151.800199999998,
+          "seedSlot": "crazyflasher7_saves1"
+        },
+        {
+          "run": "optimized-settlement-paired-03",
+          "materialsCallId": 2,
+          "as2ProjectionMs": 198,
+          "exactFidHostRoundTripMs": 279.958,
+          "transitionReleasedMs": 2701,
+          "returnToObservedMaterialsMs": 2564.4949999999953,
+          "seedSlot": "crazyflasher7_saves1"
+        }
+      ],
+      "as2ProjectionMs": {
+        "samples": [
+          216,
+          159,
+          198
+        ],
+        "n": 3,
+        "median": 198,
+        "min": 159,
+        "max": 216
+      },
+      "exactFidHostRoundTripMs": {
+        "samples": [
+          306.789,
+          237.923,
+          279.958
+        ],
+        "n": 3,
+        "median": 279.958,
+        "min": 237.923,
+        "max": 306.789
+      },
+      "transitionReleasedMs": {
+        "samples": [
+          3518,
+          3201,
+          2701
+        ],
+        "n": 3,
+        "median": 3201,
+        "min": 2701,
+        "max": 3518
+      },
+      "returnToObservedMaterialsMs": {
+        "samples": [
+          2900.9698999999964,
+          3151.800199999998,
+          2564.4949999999953
+        ],
+        "n": 3,
+        "median": 2900.9698999999964,
+        "min": 2564.4949999999953,
+        "max": 3151.800199999998
+      }
+    }
+  },
+  "settlementBoundary": "Three separate fresh-clone runs per version, same seed and eligible production stage; victory facade is fixture-triggered. Exact authority and same business return/loot path, not natural-combat or physical-pixel acceptance.",
+  "foregroundBoundary": "Supported Window activation bound to actual Core; production transition/reveal fences passed. Physical input and scanout remain human acceptance.",
+  "validation": {
+    "host": {
+      "passed": 6925,
+      "skipped": 22,
+      "failed": 0
+    },
+    "flashCrafting": 181,
+    "flashSynthesis": 18,
+    "flashScene": 61,
+    "flashLoot": 1031,
+    "webPanelRuntime": 41,
+    "webSceneTransition": 366,
+    "productionSourceStageAndCleanupFixture": 38,
+    "staticMapLootWiring": 215,
+    "compilerJsfl": 5,
+    "nativeCompositionFixture": {
+      "state": "failed",
+      "cause": "foreground admission",
+      "reportPixelsVerified": false,
+      "gameE2e": false
+    }
+  },
+  "protected": {
+    "originalSaveAndPreferenceFiles": 28,
+    "originalSaveAndPreferenceChanges": 0,
+    "formalFiles": 45,
+    "formalChanges": 0,
+    "excludedMetadata": "saves/.launcher-version-marker.json records candidate launch identity, not player progress"
+  },
+  "binaries": [
+    {
+      "path": "scripts/asLoader.swf",
+      "sha256": "9F2520610B2DE732BF460EC732B810B9113E91E652CCF6B44B4DA882076D13C0",
+      "bytes": 1504499
+    },
+    {
+      "path": "CRAZYFLASHER7MercenaryEmpire.swf",
+      "sha256": "E5696C8AFE2217B1D1E6F59E9519A557E52D70BE6EC6739814AF930026960975",
+      "bytes": 207353
+    }
+  ],
+  "candidates": [
+    {
+      "path": "tmp/runtime-candidates/v2/panelbase-1010",
+      "metadata": {
+        "schema": "cf7-runtime-candidate-metadata.v2",
+        "builderLabel": "local-dev",
+        "artifactSourceHash": "F33A3337378142835D234427E7F80A2F6063EF7655C112745B30F6D0AA724C32",
+        "producerRecipeHash": "05AA73475D685FB8E8BB7F028449B3EA539DD8E7110C2AAE3395661EC18EEA64",
+        "toolchainLockHash": "DFA769829F9740196DEF63351A00AAC309E50A2CA0A768759334EB2A2161DD36",
+        "policyHash": "ED9E19791F8F1D3858BF5D68E45FCAB810FC17D661A53F0532D7ECF87B0A1AA3",
+        "buildIdentityHash": "A35E2AA432B833EB6B7CFC0B8C8908944EBB3A47F02677C9F9CFE013D9AF0C3B",
+        "payloadClosureHash": "3976D4A6A6EC1C342FD8F943B1DCE2B4D4B5818C7EB4B59418CFAE294E75A789",
+        "stageSeconds": {
+          "environmentGate": 0.821,
+          "identityBefore": 3.805,
+          "miniaudio": 194.332,
+          "solParser": 24.961,
+          "bootstrap": 4.343,
+          "worldCompositor": 41.949,
+          "dotnetPublish": 25.106,
+          "assemble": 13.462,
+          "identityAfter": 2.894,
+          "bootstrapVerify": 1.266
+        },
+        "totalSeconds": 312.946,
+        "createdAtUtc": "2026-10-10T14:59:55.8664191Z"
+      },
+      "coreSha256": "6D747E2260922BA78F3F34C4E68F9B24762E974482212912364FF12F4E548D50",
+      "deploymentStatus": "NOT_DEPLOYED"
+    },
+    {
+      "path": "tmp/runtime-candidates/v2/panelopt-1011-a",
+      "metadata": {
+        "schema": "cf7-runtime-candidate-metadata.v2",
+        "builderLabel": "local-dev",
+        "artifactSourceHash": "D70BC6376D172A1AA7DF9D4B5FC6BE3B89FE0866005A3044F9736FC25CA4A207",
+        "producerRecipeHash": "05AA73475D685FB8E8BB7F028449B3EA539DD8E7110C2AAE3395661EC18EEA64",
+        "toolchainLockHash": "DFA769829F9740196DEF63351A00AAC309E50A2CA0A768759334EB2A2161DD36",
+        "policyHash": "59E8170D66D25A44B234C6BB1A3864C2B91FAD864FB24CA90D256FDA807F8A65",
+        "buildIdentityHash": "9C2B640BC5CCF56DBC9D829A698E21AB0E41A2DFB2C2481B07BB50CF90E0E064",
+        "payloadClosureHash": "781C03C37CC34A5EBBC2FE455AABA7EF9E9F9619E51B8DD4B142D913A8DECF12",
+        "stageSeconds": {
+          "environmentGate": 0.696,
+          "identityBefore": 2.477,
+          "miniaudio": 179.082,
+          "solParser": 19.45,
+          "bootstrap": 3.765,
+          "worldCompositor": 37.81,
+          "dotnetPublish": 23.317,
+          "assemble": 14.234,
+          "identityAfter": 2.767,
+          "bootstrapVerify": 1.289
+        },
+        "totalSeconds": 284.897,
+        "createdAtUtc": "2026-10-10T17:31:42.8667367Z"
+      },
+      "coreSha256": "3A3D24FB335D3AD54CAB9BDED717ACEDEA92F0B446F392D0580576DA5B65FA1B",
+      "deploymentStatus": "NOT_DEPLOYED"
+    }
+  ],
+  "mainCompileRecovery": {
+    "kind": "late-main-publish-recovery",
+    "humanConfirmed": true,
+    "checkedUtc": "2026-10-10T23:12:19.8305473Z",
+    "token": "7212666a3b92467387b886ca6a4da628",
+    "target": "main",
+    "editorPid": 19632,
+    "triggerState": "Ready",
+    "compilerErrors": 0,
+    "compilerWarnings": 0,
+    "swfSha256": "E5696C8AFE2217B1D1E6F59E9519A557E52D70BE6EC6739814AF930026960975",
+    "swfBytes": 207353,
+    "importsUnchanged": true,
+    "criticalFrameActionsPresent": true,
+    "testLoaderSha256": "E38E2151BF619814A0EA65BF2B19D11D8F78A7704787C47C046666ACEE2F090B",
+    "gameE2e": false
+  },
+  "mainSwfAudit": {
+    "path": "tmp/scene-loading-investigation-20261010/main-late-02-swf-audit.json",
+    "sha256": "91A5023FBADAB74115B4FFC8B66E16E57AC4E919699A3D4EB002CE968E19FD36"
+  },
+  "historicalPlaytest": {
+    "observedSession": {
+      "sourceCommit": "2f7b839d83fdf46c78300e1015c0f5541e8438e7",
+      "sessionStartedLocal": "2026-10-10T20:26:06+08:00",
+      "sessionEndedLocal": "2026-10-10T20:31:14.344+08:00",
+      "candidateRelativePath": "tmp/runtime-candidates/v2/hud-work-1010-final",
+      "buildIdentity": "9E5A7FFD14A82D47C9C0197196BF51A715B46D75D727C440067B6F832649DA4B",
+      "payloadClosure": "B435D4135AA68731FDA1823D54003E1F2CBFC7C89E6450C615C1F85D340284FC",
+      "coreSha256": "511E77AC5C5554946F25BF80BAEF88B1FA0A8782FEFE4D06C0D93A6DCD563F5B"
+    },
+    "regularTransitions": {
+      "n": 8,
+      "minMs": 1915,
+      "maxMs": 2981,
+      "medianMs": 2448.5,
+      "scope": "One user playtest; no new execution or A/B measurement."
+    },
+    "logPath": "tmp/hud-cost-release-20261010/playtest-session.log",
+    "logSha256": "873BAE7ADA8C1530230D4ACAE80854A96D9CD0BA2AC3DF4E5966833E7C734C3C"
+  },
+  "failedAttemptsRetained": [
+    {
+      "run": "baseline-full-01",
+      "completedRows": 35,
+      "reason": "Condition timed out: null",
+      "coreExited": true,
+      "protectedSavesUnchanged": true
+    },
+    {
+      "run": "baseline-owned-01",
+      "completedRows": 0,
+      "reason": "Command failed: powershell.exe -NoProfile -ExecutionPolicy Bypass -File C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\scene-loading-investigation-20261010\\focus-owned-runtime.ps1 -RuntimePid 27148 -ExpectedPath C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\runtime-candidates\\v2\\panelbase-1010\\runtime\\CRAZYFLASHER7MercenaryEmpire.Core.exe\nOwned runtime did not acquire foreground; live presentation timing cannot proceed\r\n����λ�� C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\scene-loading-inv\r\nestigation-20261010\\focus-owned-runtime.ps1:29 �ַ�: 37\r\n+ ... reground) { throw 'Owned runtime did not acquire foreground; live pre ...\r\n+                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\r\n    + CategoryInfo          : OperationStopped: (Owned runtime d... cannot proceed:String) [], RuntimeException\r\n    + FullyQualifiedErrorId : Owned runtime did not acquire foreground; live presentation timing cannot proceed\r\n \r\n",
+      "coreExited": true,
+      "protectedSavesUnchanged": true
+    },
+    {
+      "run": "baseline-owned-02",
+      "completedRows": 0,
+      "reason": "Command failed: powershell.exe -NoProfile -ExecutionPolicy Bypass -File C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\scene-loading-investigation-20261010\\focus-owned-runtime.ps1 -RuntimePid 7120 -ExpectedPath C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\runtime-candidates\\v2\\panelbase-1010\\runtime\\CRAZYFLASHER7MercenaryEmpire.Core.exe -ReceiptPath C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\workbench-live-e2e\\panel-loading\\baseline-owned-02\\owned-foreground.json\nOwned runtime did not acquire foreground; live presentation timing cannot proceed\r\n����λ�� C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\scene-loading-inv\r\nestigation-20261010\\focus-owned-runtime.ps1:40 �ַ�: 37\r\n+ ... reground) { throw 'Owned runtime did not acquire foreground; live pre ...\r\n+                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\r\n    + CategoryInfo          : OperationStopped: (Owned runtime d... cannot proceed:String) [], RuntimeException\r\n    + FullyQualifiedErrorId : Owned runtime did not acquire foreground; live presentation timing cannot proceed\r\n \r\n",
+      "coreExited": true,
+      "protectedSavesUnchanged": true
+    },
+    {
+      "run": "baseline-owned-03",
+      "completedRows": 0,
+      "reason": "Command failed: powershell.exe -NoProfile -ExecutionPolicy Bypass -File C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\scene-loading-investigation-20261010\\focus-owned-runtime.ps1 -RuntimePid 29376 -ExpectedPath C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\runtime-candidates\\v2\\panelbase-1010\\runtime\\CRAZYFLASHER7MercenaryEmpire.Core.exe -ReceiptPath C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\workbench-live-e2e\\panel-loading\\baseline-owned-03\\owned-foreground.json\nOwned runtime did not acquire foreground; live presentation timing cannot proceed\r\n����λ�� C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\scene-loading-inv\r\nestigation-20261010\\focus-owned-runtime.ps1:44 �ַ�: 37\r\n+ ... reground) { throw 'Owned runtime did not acquire foreground; live pre ...\r\n+                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\r\n    + CategoryInfo          : OperationStopped: (Owned runtime d... cannot proceed:String) [], RuntimeException\r\n    + FullyQualifiedErrorId : Owned runtime did not acquire foreground; live presentation timing cannot proceed\r\n \r\n",
+      "coreExited": true,
+      "protectedSavesUnchanged": true
+    },
+    {
+      "run": "baseline-owned-04",
+      "completedRows": 40,
+      "reason": "Condition timed out: false",
+      "coreExited": true,
+      "protectedSavesUnchanged": true
+    },
+    {
+      "run": "baseline-probe-01",
+      "completedRows": 0,
+      "reason": "--client-instance-id must be an opaque protocol ID",
+      "coreExited": false,
+      "protectedSavesUnchanged": false
+    },
+    {
+      "run": "baseline-probe-02",
+      "completedRows": 0,
+      "reason": "Developer credential file was not found",
+      "coreExited": true,
+      "protectedSavesUnchanged": true
+    },
+    {
+      "run": "baseline-probe-03",
+      "completedRows": 0,
+      "reason": "CDP endpoint is not causally bound to the authenticated runtime PID",
+      "coreExited": true,
+      "protectedSavesUnchanged": true
+    },
+    {
+      "run": "baseline-probe-04",
+      "completedRows": 0,
+      "reason": "CDP listener is not an authenticated runtime descendant with the exact launch arguments",
+      "coreExited": true,
+      "protectedSavesUnchanged": true
+    },
+    {
+      "run": "baseline-probe-05",
+      "completedRows": 0,
+      "reason": "CDP listener is not an authenticated runtime descendant with the exact launch arguments",
+      "coreExited": true,
+      "protectedSavesUnchanged": true
+    },
+    {
+      "run": "baseline-probe-06",
+      "completedRows": 0,
+      "reason": "CDP endpoint is not causally bound to the authenticated runtime PID",
+      "coreExited": true,
+      "protectedSavesUnchanged": true
+    },
+    {
+      "run": "baseline-probe-07",
+      "completedRows": 0,
+      "reason": "Probe HTTP 400",
+      "coreExited": true,
+      "protectedSavesUnchanged": true
+    },
+    {
+      "run": "baseline-probe-08",
+      "completedRows": 0,
+      "reason": "Condition timed out: false",
+      "coreExited": true,
+      "protectedSavesUnchanged": true
+    },
+    {
+      "run": "baseline-probe-09",
+      "completedRows": 5,
+      "reason": "Condition timed out: null",
+      "coreExited": true,
+      "protectedSavesUnchanged": true
+    },
+    {
+      "run": "baseline-scenes-01",
+      "completedRows": 0,
+      "reason": "exact Overlay CDP target was unavailable",
+      "coreExited": true,
+      "protectedSavesUnchanged": true
+    },
+    {
+      "run": "baseline-scenes-02",
+      "completedRows": 0,
+      "reason": "Condition timed out: null",
+      "coreExited": true,
+      "protectedSavesUnchanged": true
+    },
+    {
+      "run": "baseline-settlement-01",
+      "completedRows": 0,
+      "reason": "Command failed: powershell.exe -NoProfile -ExecutionPolicy Bypass -File C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\scene-loading-investigation-20261010\\focus-owned-runtime.ps1 -RuntimePid 12820 -ExpectedPath C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\runtime-candidates\\v2\\panelbase-1010\\runtime\\CRAZYFLASHER7MercenaryEmpire.Core.exe -ReceiptPath C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\workbench-live-e2e\\panel-loading\\baseline-settlement-01\\owned-foreground.json\nOwned runtime did not acquire foreground; live presentation timing cannot proceed\r\n����λ�� C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\scene-loading-inv\r\nestigation-20261010\\focus-owned-runtime.ps1:53 �ַ�: 37\r\n+ ... reground) { throw 'Owned runtime did not acquire foreground; live pre ...\r\n+                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\r\n    + CategoryInfo          : OperationStopped: (Owned runtime d... cannot proceed:String) [], RuntimeException\r\n    + FullyQualifiedErrorId : Owned runtime did not acquire foreground; live presentation timing cannot proceed\r\n \r\n",
+      "coreExited": true,
+      "protectedSavesUnchanged": true
+    },
+    {
+      "run": "baseline-settlement-02",
+      "completedRows": 0,
+      "reason": "Command failed: powershell.exe -NoProfile -ExecutionPolicy Bypass -File C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\scene-loading-investigation-20261010\\focus-owned-runtime.ps1 -RuntimePid 7060 -ExpectedPath C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\runtime-candidates\\v2\\panelbase-1010\\runtime\\CRAZYFLASHER7MercenaryEmpire.Core.exe -ReceiptPath C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\workbench-live-e2e\\panel-loading\\baseline-settlement-02\\owned-foreground.json\nOwned runtime did not acquire foreground; live presentation timing cannot proceed\r\n����λ�� C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\scene-loading-inv\r\nestigation-20261010\\focus-owned-runtime.ps1:59 �ַ�: 37\r\n+ ... reground) { throw 'Owned runtime did not acquire foreground; live pre ...\r\n+                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\r\n    + CategoryInfo          : OperationStopped: (Owned runtime d... cannot proceed:String) [], RuntimeException\r\n    + FullyQualifiedErrorId : Owned runtime did not acquire foreground; live presentation timing cannot proceed\r\n \r\n",
+      "coreExited": true,
+      "protectedSavesUnchanged": true
+    },
+    {
+      "run": "baseline-settlement-03",
+      "completedRows": 0,
+      "reason": "Command failed: powershell.exe -NoProfile -ExecutionPolicy Bypass -File C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\scene-loading-investigation-20261010\\focus-owned-runtime.ps1 -RuntimePid 19780 -ExpectedPath C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\runtime-candidates\\v2\\panelbase-1010\\runtime\\CRAZYFLASHER7MercenaryEmpire.Core.exe -ReceiptPath C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\workbench-live-e2e\\panel-loading\\baseline-settlement-03\\owned-foreground.json\nOwned runtime did not acquire foreground; live presentation timing cannot proceed\r\n����λ�� C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\scene-loading-inv\r\nestigation-20261010\\focus-owned-runtime.ps1:49 �ַ�: 37\r\n+ ... reground) { throw 'Owned runtime did not acquire foreground; live pre ...\r\n+                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\r\n    + CategoryInfo          : OperationStopped: (Owned runtime d... cannot proceed:String) [], RuntimeException\r\n    + FullyQualifiedErrorId : Owned runtime did not acquire foreground; live presentation timing cannot proceed\r\n \r\n",
+      "coreExited": true,
+      "protectedSavesUnchanged": true
+    },
+    {
+      "run": "baseline-settlement-04",
+      "completedRows": 0,
+      "reason": "Command failed: powershell.exe -NoProfile -ExecutionPolicy Bypass -File C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\scene-loading-investigation-20261010\\focus-owned-runtime.ps1 -RuntimePid 19876 -ExpectedPath C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\runtime-candidates\\v2\\panelbase-1010\\runtime\\CRAZYFLASHER7MercenaryEmpire.Core.exe -ReceiptPath C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\workbench-live-e2e\\panel-loading\\baseline-settlement-04\\owned-foreground.json\nOwned runtime did not acquire foreground; live presentation timing cannot proceed\r\n����λ�� C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\scene-loading-inv\r\nestigation-20261010\\focus-owned-runtime.ps1:49 �ַ�: 37\r\n+ ... reground) { throw 'Owned runtime did not acquire foreground; live pre ...\r\n+                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\r\n    + CategoryInfo          : OperationStopped: (Owned runtime d... cannot proceed:String) [], RuntimeException\r\n    + FullyQualifiedErrorId : Owned runtime did not acquire foreground; live presentation timing cannot proceed\r\n \r\n",
+      "coreExited": true,
+      "protectedSavesUnchanged": true
+    },
+    {
+      "run": "baseline-settlement-05",
+      "completedRows": 0,
+      "reason": "Command failed: powershell.exe -NoProfile -ExecutionPolicy Bypass -File C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\scene-loading-investigation-20261010\\focus-owned-runtime.ps1 -RuntimePid 27740 -ExpectedPath C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\runtime-candidates\\v2\\panelbase-1010\\runtime\\CRAZYFLASHER7MercenaryEmpire.Core.exe -ReceiptPath C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\workbench-live-e2e\\panel-loading\\baseline-settlement-05\\owned-foreground.json\nOwned runtime did not acquire foreground; live presentation timing cannot proceed\r\n����λ�� C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\scene-loading-inv\r\nestigation-20261010\\focus-owned-runtime.ps1:49 �ַ�: 37\r\n+ ... reground) { throw 'Owned runtime did not acquire foreground; live pre ...\r\n+                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\r\n    + CategoryInfo          : OperationStopped: (Owned runtime d... cannot proceed:String) [], RuntimeException\r\n    + FullyQualifiedErrorId : Owned runtime did not acquire foreground; live presentation timing cannot proceed\r\n \r\n",
+      "coreExited": true,
+      "protectedSavesUnchanged": true
+    },
+    {
+      "run": "baseline-settlement-06",
+      "completedRows": 0,
+      "reason": "Condition timed out: false",
+      "coreExited": true,
+      "protectedSavesUnchanged": true
+    },
+    {
+      "run": "baseline-settlement-paired-01",
+      "completedRows": 0,
+      "reason": "No currently unlocked production difficulty stage",
+      "coreExited": true,
+      "protectedSavesUnchanged": true
+    },
+    {
+      "run": "baseline-settlement-paired-02",
+      "completedRows": 0,
+      "reason": "No currently unlocked production difficulty stage",
+      "coreExited": true,
+      "protectedSavesUnchanged": true
+    },
+    {
+      "run": "baseline-settlement-paired-03",
+      "completedRows": 0,
+      "reason": "Production finish facade was not executed: eval(root[\"关卡结束\"]()) = [eval error]",
+      "coreExited": true,
+      "protectedSavesUnchanged": true
+    },
+    {
+      "run": "optimized-panels-01",
+      "completedRows": 1,
+      "reason": "Condition timed out: null",
+      "coreExited": true,
+      "protectedSavesUnchanged": true
+    }
+  ],
+  "wrapperNote": "optimized-paired-01 produced 40 valid rows and clean Core exit; the outer wrapper rejected an unnecessary same-bytes SWF overwrite due to a transient mapped-file lock. Hashes stayed correct; wrapper now skips identical copies.",
+  "artifacts": [
+    {
+      "path": "tmp/workbench-live-e2e/panel-loading/baseline-paired-01/inputs.json",
+      "sha256": "247760F87497289E5AC462428836D3D87B1C0C817E086AC48DFA95A71C9DD3AF"
+    },
+    {
+      "path": "tmp/workbench-live-e2e/panel-loading/baseline-paired-01/result.json",
+      "sha256": "36647196CD5CF1B6DEADB7ACA58648835E59206491138EFB688E0348BAFF455F"
+    },
+    {
+      "path": "tmp/workbench-live-e2e/panel-loading/baseline-paired-01/measurements.json",
+      "sha256": "1578512E4898C35BBD17893E04F484AAE4F0A3165A2DCF7BF56E47884E309D01"
+    },
+    {
+      "path": "tmp/workbench-live-e2e/panel-loading/baseline-paired-01/perf.jsonl",
+      "sha256": "0C13BB16075DBBA29010F7DE5DD00EF96485C1AC4710586CE9D1F524C2B847A3"
+    },
+    {
+      "path": "tmp/workbench-live-e2e/panel-loading/baseline-paired-01/launcher.log",
+      "sha256": "1A25284E7C5F61856E738376516F9CB2641439E7F30F71191708736CAE77FE1A"
+    },
+    {
+      "path": "tmp/workbench-live-e2e/panel-loading/baseline-paired-01/activation-completed.json",
+      "sha256": "ED86323729B82EE796659A6396480FB0709FA63B06EBBF18856FE303C6912C45"
+    },
+    {
+      "path": "tmp/workbench-live-e2e/panel-loading/baseline-paired-01/clone-release.json",
+      "sha256": "7A9687A4F35BAE0CD5EFA6FC8477C53AF907892612A518BA62764B9360E3A63A"
+    },
+    {
+      "path": "tmp/workbench-live-e2e/panel-loading/optimized-paired-01/inputs.json",
+      "sha256": "95F97C16C3314482A78D2D97B7A785CFBD25490D2C8BFA1DBC3059E481071DE0"
+    },
+    {
+      "path": "tmp/workbench-live-e2e/panel-loading/optimized-paired-01/result.json",
+      "sha256": "958322658112C32D8A74CE3F0D05A4024F7FB9C6A45EB8718925070022F11318"
+    },
+    {
+      "path": "tmp/workbench-live-e2e/panel-loading/optimized-paired-01/measurements.json",
+      "sha256": "C07C60C9C7CC62126444D6331FDBC104727D65D8877C77DFA27D239C474200DB"
+    },
+    {
+      "path": "tmp/workbench-live-e2e/panel-loading/optimized-paired-01/perf.jsonl",
+      "sha256": "A512023399E8144066523B7B32EE2DC54564FDBFB8EBD2F381039A75E3C93042"
+    },
+    {
+      "path": "tmp/workbench-live-e2e/panel-loading/optimized-paired-01/launcher.log",
+      "sha256": "2B81A3CD67355A26F46447CC1BA40715B5142DD5DE7E8575E0422D8DD0A0E6F1"
+    },
+    {
+      "path": "tmp/workbench-live-e2e/panel-loading/optimized-paired-01/activation-completed.json",
+      "sha256": "CC35905A63226B48A6923A13FC9C8317EDFBAE40C88456BCD7B55F74799E6136"
+    },
+    {
+      "path": "tmp/workbench-live-e2e/panel-loading/optimized-paired-01/clone-release.json",
+      "sha256": "7085457B64A9D8CFC56510B10002BBB8B53A6BC663BD12BCEF4269C832EE6D8B"
+    },
+    {
+      "path": "tmp/workbench-live-e2e/panel-loading/baseline-settlement-paired-04/inputs.json",
+      "sha256": "2A8E3F7E798D18A35C0AE962E749BB485B4C86EB628BAF13F4FF3A225EF46128"
+    },
+    {
+      "path": "tmp/workbench-live-e2e/panel-loading/baseline-settlement-paired-04/result.json",
+      "sha256": "773E04491DA8512B3F7138585EB6CFBBD2ED58077513AFC71C0E372510BD5406"
+    },
+    {
+      "path": "tmp/workbench-live-e2e/panel-loading/baseline-settlement-paired-04/measurements.json",
+      "sha256": "64628E51EA494F158E219E579061436C722DAE622FA50029470C5172F2FC8A6B"
+    },
+    {
+      "path": "tmp/workbench-live-e2e/panel-loading/baseline-settlement-paired-04/perf.jsonl",
+      "sha256": "28D454C26536779ABD6201645B05F650D04B9C66A97760024F038E26C5E7978A"
+    },
+    {
+      "path": "tmp/workbench-live-e2e/panel-loading/baseline-settlement-paired-04/launcher.log",
+      "sha256": "52F4BC8035A1A80DE506A1F9311238A011C1BFA0D6CCD3DCACF29752EA47E902"
+    },
+    {
+      "path": "tmp/workbench-live-e2e/panel-loading/baseline-settlement-paired-04/activation-completed.json",
+      "sha256": "33F7D05EA2CB20FBB683BB8042C83574E4B8F3915F3373E685B0B04441EEBE4B"
+    },
+    {
+      "path": "tmp/workbench-live-e2e/panel-loading/baseline-settlement-paired-04/clone-release.json",
+      "sha256": "12F9522755C19CA21D8325F661925B84AA3FBE4F5C503713F5BA74234B057368"
+    },
+    {
+      "path": "tmp/workbench-live-e2e/panel-loading/baseline-settlement-paired-05/inputs.json",
+      "sha256": "C36DD88469CF7CD4E3B2EC0A37094AD78840F11A781BCAB2109D78380B3ECB2A"
+    },
+    {
+      "path": "tmp/workbench-live-e2e/panel-loading/baseline-settlement-paired-05/result.json",
+      "sha256": "9C113D567E64AE9C94224BFD44414283C203D51EDF98BECCFB70DF9055C9EDEA"
+    },
+    {
+      "path": "tmp/workbench-live-e2e/panel-loading/baseline-settlement-paired-05/measurements.json",
+      "sha256": "7E295C4A70D6410895BA70BE0CF484F1912CEC221266FBA8BDBF8A1FA18B32A7"
+    },
+    {
+      "path": "tmp/workbench-live-e2e/panel-loading/baseline-settlement-paired-05/perf.jsonl",
+      "sha256": "9885E815325054463C19E7556CCBABA1F5B29F2D4F9EA75AA87798BD1FA07AD9"
+    },
+    {
+      "path": "tmp/workbench-live-e2e/panel-loading/baseline-settlement-paired-05/launcher.log",
+      "sha256": "10B006A5D80E9096F58B75A5C941CB3CB2F515BB781BBB1D0AEA51306770A0A3"
+    },
+    {
+      "path": "tmp/workbench-live-e2e/panel-loading/baseline-settlement-paired-05/activation-completed.json",
+      "sha256": "40CFA09420E09D97F7B6247E8D0AE67FC1E36D2AF28230931D21CD56B0CFE139"
+    },
+    {
+      "path": "tmp/workbench-live-e2e/panel-loading/baseline-settlement-paired-05/clone-release.json",
+      "sha256": "CC1316783CC134160A41FE76DAE965810EED631F5AA0A52CDCE07BC94DD4089E"
+    },
+    {
+      "path": "tmp/workbench-live-e2e/panel-loading/baseline-settlement-paired-06/inputs.json",
+      "sha256": "92E9126C9EB531777A8AA73C66331AADB101FCEE6ECD8D9645A7B85A4239793A"
+    },
+    {
+      "path": "tmp/workbench-live-e2e/panel-loading/baseline-settlement-paired-06/result.json",
+      "sha256": "039A8474B442FC90B32DC6DBC4654CD68019649323793F28259899AC0570741F"
+    },
+    {
+      "path": "tmp/workbench-live-e2e/panel-loading/baseline-settlement-paired-06/measurements.json",
+      "sha256": "CFE96BA02FDFEBCA844FD1D1F2A061D859636E2D4F5EBAD746626DF505569E9A"
+    },
+    {
+      "path": "tmp/workbench-live-e2e/panel-loading/baseline-settlement-paired-06/perf.jsonl",
+      "sha256": "A66789772F0FE74425E79EF35FFD0FAC06F9E2D2682B5D14D4DA3CC861113A3D"
+    },
+    {
+      "path": "tmp/workbench-live-e2e/panel-loading/baseline-settlement-paired-06/launcher.log",
+      "sha256": "252D5C43FDC3E17790B33779763DF7B0F86D123CDAB9500059C5EF12D2F20D31"
+    },
+    {
+      "path": "tmp/workbench-live-e2e/panel-loading/baseline-settlement-paired-06/activation-completed.json",
+      "sha256": "BEDBB4D99AAB3FD317D9CFDCF99773EDD3F9C30A1F7E986FBC2C98D12BD16324"
+    },
+    {
+      "path": "tmp/workbench-live-e2e/panel-loading/baseline-settlement-paired-06/clone-release.json",
+      "sha256": "0F53842C39539541ED9ED49C4D2B3385990DF4253B7F321D085A7E11E28BC9D6"
+    },
+    {
+      "path": "tmp/workbench-live-e2e/panel-loading/optimized-settlement-paired-01/inputs.json",
+      "sha256": "EAF2278A61C9F3AC326092577A54A9EEA6A9526A066CE53078E9A5A11313291B"
+    },
+    {
+      "path": "tmp/workbench-live-e2e/panel-loading/optimized-settlement-paired-01/result.json",
+      "sha256": "2AB1F8D068C72BBE1D38847CEB52A203502AC0B1797B0D2D892DFD4BD1AB6579"
+    },
+    {
+      "path": "tmp/workbench-live-e2e/panel-loading/optimized-settlement-paired-01/measurements.json",
+      "sha256": "30D774738D0DB537A873354701CB54222226A6824C9A79A4A416DD0FAFB10FC8"
+    },
+    {
+      "path": "tmp/workbench-live-e2e/panel-loading/optimized-settlement-paired-01/perf.jsonl",
+      "sha256": "5E63BC5DE945520CB4E85146E33FD486493C9DBB22D5D17E6557BBA04788A286"
+    },
+    {
+      "path": "tmp/workbench-live-e2e/panel-loading/optimized-settlement-paired-01/launcher.log",
+      "sha256": "155179E6EC848DF7D0596EC10B0E1044B862634F1F42E72D5039EF1C31C99D82"
+    },
+    {
+      "path": "tmp/workbench-live-e2e/panel-loading/optimized-settlement-paired-01/activation-completed.json",
+      "sha256": "5889352CB2506A48B995A4DDA0C9B7E119ED7C6074FE0BB2081627B7D911B8AC"
+    },
+    {
+      "path": "tmp/workbench-live-e2e/panel-loading/optimized-settlement-paired-01/clone-release.json",
+      "sha256": "C8EE2A79485FFC40C9BCA7C33FC26C6F0023EC3C3DED93503FBA8F10B0C56D2C"
+    },
+    {
+      "path": "tmp/workbench-live-e2e/panel-loading/optimized-settlement-paired-02/inputs.json",
+      "sha256": "001E7C25674E9121BC7AA6ADC8BB1B8FB823E12D623309BEE6EE2E35690B9E8F"
+    },
+    {
+      "path": "tmp/workbench-live-e2e/panel-loading/optimized-settlement-paired-02/result.json",
+      "sha256": "AD0F01A8762413931128A7EC7FC6D70552B9F914716D54B04FB50E5C32867198"
+    },
+    {
+      "path": "tmp/workbench-live-e2e/panel-loading/optimized-settlement-paired-02/measurements.json",
+      "sha256": "5E4D4A9933370D68E80A09CC96254DF18A11CF2F42479D74EC2A92F3976B143B"
+    },
+    {
+      "path": "tmp/workbench-live-e2e/panel-loading/optimized-settlement-paired-02/perf.jsonl",
+      "sha256": "E935AAE0A65B978A06D06BA47E7B23401CB478828CD606E5689B71B61C207347"
+    },
+    {
+      "path": "tmp/workbench-live-e2e/panel-loading/optimized-settlement-paired-02/launcher.log",
+      "sha256": "0743B3CA0382F5E96078E3BD4DED6C11BF1B9F1DE0352D4FAFBD3EE4DA42EA97"
+    },
+    {
+      "path": "tmp/workbench-live-e2e/panel-loading/optimized-settlement-paired-02/activation-completed.json",
+      "sha256": "29EFCD8633053E0E33B0EB50940825A3D86DF05BAF147C2A85992B854A913E23"
+    },
+    {
+      "path": "tmp/workbench-live-e2e/panel-loading/optimized-settlement-paired-02/clone-release.json",
+      "sha256": "D49032BD2FBE8B0CAF48843B8D45E84F73F42B62C52EA280644380DF580302D6"
+    },
+    {
+      "path": "tmp/workbench-live-e2e/panel-loading/optimized-settlement-paired-03/inputs.json",
+      "sha256": "DACB64F0536BB8BE808605D1431B23638EDD8091D2ACA2D3AEA39A4528AF73A1"
+    },
+    {
+      "path": "tmp/workbench-live-e2e/panel-loading/optimized-settlement-paired-03/result.json",
+      "sha256": "F6626078819C0FA5BF0C71DD2902BD60E1D48F252894A0D0CF6AC5314F1DBCA9"
+    },
+    {
+      "path": "tmp/workbench-live-e2e/panel-loading/optimized-settlement-paired-03/measurements.json",
+      "sha256": "8036F7CCCC93FC23572CA5D1AE624494BFAF0D1959E8828874575E50B54D45AA"
+    },
+    {
+      "path": "tmp/workbench-live-e2e/panel-loading/optimized-settlement-paired-03/perf.jsonl",
+      "sha256": "FE4C81DBDF961D693C2DF3E0D46482A2ED93CE613DAEC11F43CDB537BD3DD619"
+    },
+    {
+      "path": "tmp/workbench-live-e2e/panel-loading/optimized-settlement-paired-03/launcher.log",
+      "sha256": "74E40965A2B9E89304678E22252794D8262A5EEF6E4FE3EF8F7083DBD00F7966"
+    },
+    {
+      "path": "tmp/workbench-live-e2e/panel-loading/optimized-settlement-paired-03/activation-completed.json",
+      "sha256": "3653D3B4339587CC2ABE92A0B202EDD7D6830B29A1B8FA4C5C9EE9FD6676551F"
+    },
+    {
+      "path": "tmp/workbench-live-e2e/panel-loading/optimized-settlement-paired-03/clone-release.json",
+      "sha256": "049F09CBBA639E1EEAFC93AFD0D7F47F4F831887D6BC1A746CB4D3CAD59FAA01"
+    },
+    {
+      "path": "tmp/scene-loading-investigation-20261010/host-tests-01.log",
+      "sha256": "A190918A16F129A8DE6F3A2162164F12D5E6D78784E0C839ED5CD6D763BAB4E1"
+    },
+    {
+      "path": "tmp/scene-loading-investigation-20261010/crafting-tests-04.log",
+      "sha256": "090878C321FB6E7420F5FC31016F68A97B056BD0F85CD0F7CEDC84B905F68E9C"
+    },
+    {
+      "path": "tmp/scene-loading-investigation-20261010/scene-tests-02.log",
+      "sha256": "DE50462913A4B5E11E4AB186249D0573BFCB9188E9E63A3E0081A1916B3DC96D"
+    },
+    {
+      "path": "tmp/scene-loading-investigation-20261010/loot-tests-01.log",
+      "sha256": "CC981EE818E30D0DE6B7887A391871AD463CC639B6CE63591373CFC0C6C72A97"
+    },
+    {
+      "path": "tmp/scene-loading-investigation-20261010/web-panel-tests-01.log",
+      "sha256": "65572B1921E2FC3274487381A51F64C4E102D926A49BD09CB96D096532CB6E08"
+    },
+    {
+      "path": "tmp/scene-loading-investigation-20261010/web-scene-tests-01.log",
+      "sha256": "BE7A6DCC3A07942F5234D61AA89EA62A7B5D05C55347DDDA1CD4137F86C11DF3"
+    },
+    {
+      "path": "tmp/scene-loading-investigation-20261010/stage-entry-test-02.log",
+      "sha256": "DE31D3D4797A76A8B8FB1C4D3457BECFDEB9B7A22A85062221BC959E1141D7C0"
+    },
+    {
+      "path": "tmp/scene-loading-investigation-20261010/optimized-asloader-publish-03.log",
+      "sha256": "F55E03A645086617C80FD738A7C48DD48523C461ADA234A73A63448B41B27C64"
+    },
+    {
+      "path": "tmp/scene-loading-investigation-20261010/doc-governance-03.log",
+      "sha256": "23E0521025309E24E7716071DAB9FA3FFB463F90C26A6AE369F0431BD76AFCCC"
+    },
+    {
+      "path": "tmp/scene-loading-investigation-20261010/final-dev-candidate-reverify.log",
+      "sha256": "24EB51A455DA6AFDA22DB82A87249074AD20732AD9C88437CB11F0669FB00052"
+    }
+  ],
+  "sourceFiles": [
+    {
+      "path": "CRAZYFLASHER7MercenaryEmpire.swf",
+      "sha256": "E5696C8AFE2217B1D1E6F59E9519A557E52D70BE6EC6739814AF930026960975"
+    },
+    {
+      "path": "CRAZYFLASHER7MercenaryEmpire/LIBRARY/sprite/淡出动画.xml",
+      "sha256": "A53F8D18DB4E6D2B38344FD8EDE7DD308FD6A37D41E8C350742B5ABCDBCC9FD9"
+    },
+    {
+      "path": "agentsDoc/as2-web-panel-migration.md",
+      "sha256": "F4AA071F46F9C7BEC9612004653DD38C51AB17870CC6BCB52A609895D5B09AAC"
+    },
+    {
+      "path": "launcher/src/Guardian/FlashSnapshot.cs",
+      "sha256": "D5492912B601C93F69E996377A4D0BBC5D3BBCDB01B29E012E1865DF54725B64"
+    },
+    {
+      "path": "launcher/src/Guardian/Hud/PlayerInfo/PlayerHudController.cs",
+      "sha256": "D40AFD673106B62620310C48347F4CEC4FA764EE746916C7F6E8EE6DAE48FF9A"
+    },
+    {
+      "path": "launcher/src/Guardian/PanelHostController.cs",
+      "sha256": "2A8CE209785ACE0A9852BDF576B57D91D3460498082DD43DE62650220F5F8F0C"
+    },
+    {
+      "path": "launcher/src/Guardian/PerfTrace.cs",
+      "sha256": "E67255DB4036D6F4EC1E8B1D87B44BDDB271B54B8673A2B17BD2E63B7E976076"
+    },
+    {
+      "path": "launcher/src/Guardian/WebOverlayForm.cs",
+      "sha256": "FDB3CBFB8CDBE66C61172EF3215D2971DBBC261CD65E906605B2B08EAA71209E"
+    },
+    {
+      "path": "launcher/src/Guardian/WindowManager.cs",
+      "sha256": "E58D8EDF385E86578EA8497F0A7B3325E01C3A51DE227B3CCBCF7CB095866D02"
+    },
+    {
+      "path": "launcher/src/Tasks/LootTask.cs",
+      "sha256": "10B6A05E97C192614692F0A1ECC67CCBF86B06FA753068D794DE72BC0E4E0D00"
+    },
+    {
+      "path": "launcher/tests/Guardian/WebOverlayFormPanelCloseTests.cs",
+      "sha256": "DB77B68E8EE718F13C052D744E1C1B926B677047F418723FDEB64B68C155E9B6"
+    },
+    {
+      "path": "scripts/FlashCS6自动化编译.md",
+      "sha256": "D6C8C084387E72070901914580522AE724CB2C249BA5FF0A353E5E3A62ED1863"
+    },
+    {
+      "path": "scripts/asLoader.swf",
+      "sha256": "9F2520610B2DE732BF460EC732B810B9113E91E652CCF6B44B4DA882076D13C0"
+    },
+    {
+      "path": "scripts/compile_action.jsfl",
+      "sha256": "8328241893A82A83C0E75AC849541DE001C449929E30EC599466FFD7C729D15F"
+    },
+    {
+      "path": "scripts/run-item-panel-tests.ps1",
+      "sha256": "1CDA8F948BEAA410985754735A80E9C718AAAF7370F1F80B5B67008DF612FFD9"
+    },
+    {
+      "path": "scripts/run-scene-transition-tests.ps1",
+      "sha256": "B89A7290366850AAC9A513ADF2E0A29F0253FF5895F84FCB5E9491DDD4F934C3"
+    },
+    {
+      "path": "scripts/类定义/org/flashNight/arki/item/CraftingPanelServiceTest.as",
+      "sha256": "B07EB5104BF8E52579967D3DAFD8A3D08E46653F55F8B29E5EBF3DCF893DFAEE"
+    },
+    {
+      "path": "scripts/类定义/org/flashNight/arki/item/LootContainerService.as",
+      "sha256": "E2A3B6D7EE3F430EB529A9F535D41B1F7C91E0723065E7001556AA3681FDED8D"
+    },
+    {
+      "path": "scripts/类定义/org/flashNight/arki/item/MaterialArchiveProjector.as",
+      "sha256": "D4C5F450DB8666E12F1ECD2102F85D43067413D1E60C83B04C789393848D9CFB"
+    },
+    {
+      "path": "scripts/类定义/org/flashNight/arki/ui/SceneTransitionService.as",
+      "sha256": "DD3C9B9DCE222632AB0D729A7110449883F2633792EC7E382E689CFE182B24DA"
+    },
+    {
+      "path": "scripts/类定义/org/flashNight/arki/ui/SceneTransitionServiceTest.as",
+      "sha256": "81E95E67D06DBF5084DCF253AD82155876EB83F1BBEC73101C6C87EE69192C57"
+    },
+    {
+      "path": "scripts/逻辑/关卡系统/关卡系统_lsy_场景转换.as",
+      "sha256": "8AEDE19BA4DCAF40A5EFE6BE113C21A037CF5240E2E3014F9C9D8B0E656D7ABD"
+    },
+    {
+      "path": "tools/test-flash-compile-jsfl.js",
+      "sha256": "D069C61303A26ED45A795197EC6ECCFB4587CA9B2A594B1D3D657AF759F86C59"
+    },
+    {
+      "path": "tools/test-map-loot-wiring.ps1",
+      "sha256": "090DE5EEB9F0D094D29650FD0110F8C200E814EFAC209A28F69D322330D39F2B"
+    },
+    {
+      "path": "tools/test-scene-transition-stage-entry.js",
+      "sha256": "4FBCFF784E6D0274AB0D486F1ABB03B21C6A58D11E1D0491D4103FF10FC34E31"
+    },
+    {
+      "path": "scripts/类定义/org/flashNight/dev/PanelTiming.as",
+      "sha256": "51C410C8CE7B94A3DA4DDAD3AD8DC441414FF5C4EABE7A3D8801FCB44AAEE886"
+    }
+  ],
+  "pending": [
+    "human experience acceptance",
+    "release train after user acceptance, within the agreed authorization"
+  ]
+}

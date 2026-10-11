@@ -49,6 +49,26 @@ class org.flashNight.arki.item.MaterialArchiveProjector {
         };
     }
 
+    /** 结算只读存量：沿用目录与身份校验，不构建来源/配方，也不替换档案详情快照。 */
+    public static function executeMaterialStocks():Object {
+        _buildError = "";
+        var normalized:Object = normalizeCatalog(_root.材料档案目录, categoryOrder());
+        if (normalized == null) return fail(_buildError == "" ? "invalid_catalog" : _buildError);
+        var stocks:Array = [];
+        for (var i:Number = 0; i < normalized.materials.length; i++) {
+            var name:String = String(normalized.materials[i].Name);
+            var data:Object = ItemUtil.getRawItemData(name);
+            if (data == null || !ItemUtil.isMaterial(name)) return fail("invalid_catalog_item");
+            var owned:Number = ownedQuantity(name);
+            var displayName:String = presentation(data.displayname, name, 256);
+            var icon:String = presentation(data.icon, name, 256);
+            if (!validNni(owned) || displayName == null || icon == null)
+                return fail("invalid_material_projection");
+            stocks.push({name:name, displayName:displayName, icon:icon, owned:owned});
+        }
+        return {success:true, materials:stocks};
+    }
+
     public static function executeMaterialDetail(params:Object):Object {
         if (_snapshot == null) return fail("stale_snapshot");
         var snapshotId:String = params == null ? "" : String(params.snapshotId || "");
@@ -407,8 +427,11 @@ class org.flashNight.arki.item.MaterialArchiveProjector {
     }
 
     private static function buildSnapshot(rawCatalog:Object, categories:Array):Object {
+        var projectionStarted:Number = org.flashNight.dev.PanelTiming.start();
         var normalized:Object = normalizeCatalog(rawCatalog, categories);
         if (normalized == null) return null;
+        org.flashNight.dev.PanelTiming.finish("materials.catalog_validation",projectionStarted,0);
+        var headerStarted:Number = org.flashNight.dev.PanelTiming.start();
         var taxonomy:Object = buildTaxonomy(categories, normalized.directPurposes);
         if (taxonomy == null) return null;
         var infrastructureByMaterial:Object = null;
@@ -426,6 +449,12 @@ class org.flashNight.arki.item.MaterialArchiveProjector {
             byName:{}
         };
         var index:ItemObtainIndex = ItemObtainIndex.getInstance();
+        // 只在本轮同步构建内复用配方投影；刷新重新读取配方与物品展示数据。
+        var recipeProjections:Object = {};
+        org.flashNight.dev.PanelTiming.finish("materials.header",headerStarted,0);
+        var measure:Boolean = org.flashNight.dev.PanelTiming.enabled;
+        var usesElapsed:Number=0, purposesElapsed:Number=0, sourcesElapsed:Number=0;
+        var sectionStarted:Number;
         for (var archiveOrder:Number = 0;
                 archiveOrder < normalized.materials.length; archiveOrder++) {
             var authored:Object = normalized.materials[archiveOrder];
@@ -433,12 +462,18 @@ class org.flashNight.arki.item.MaterialArchiveProjector {
             var data:Object = ItemUtil.getRawItemData(name);
             if (data == null || !ItemUtil.isMaterial(name)) return invalid("invalid_catalog_item");
 
-            var uses:Array = buildUses(name, categories);
+            if (measure) sectionStarted=getTimer();
+            var uses:Array = buildUses(name, categories, recipeProjections);
+            if (measure) usesElapsed+=getTimer()-sectionStarted;
             if (uses == null) return null;
+            if (measure) sectionStarted=getTimer();
             var directPurposes:Array = buildDirectPurposes(name, authored,
                 normalized.directPurposeById, normalized.directPurposes);
+            if (measure) purposesElapsed+=getTimer()-sectionStarted;
             if (directPurposes == null) return null;
+            if (measure) sectionStarted=getTimer();
             var sources:Array = buildSources(name, index, categories);
+            if (measure) sourcesElapsed+=getTimer()-sectionStarted;
             if (sources == null) return null;
 
             var recipePurposeIds:Array = recipePurposeIdsFor(uses, categories);
@@ -506,6 +541,10 @@ class org.flashNight.arki.item.MaterialArchiveProjector {
             }
             result.byName[name] = frozenDetail;
         }
+        org.flashNight.dev.PanelTiming.finish("materials.full_snapshot",projectionStarted,0);
+        org.flashNight.dev.PanelTiming.record("materials.recipe_uses",usesElapsed,0);
+        org.flashNight.dev.PanelTiming.record("materials.direct_purposes",purposesElapsed,0);
+        org.flashNight.dev.PanelTiming.record("materials.sources",sourcesElapsed,0);
         return result;
     }
 
@@ -826,7 +865,8 @@ class org.flashNight.arki.item.MaterialArchiveProjector {
         return result;
     }
 
-    private static function buildUses(inputName:String, categories:Array):Array {
+    private static function buildUses(inputName:String, categories:Array,
+            recipeProjections:Object):Array {
         var indexedUses = SynthesisIndex.getRecipeUses(inputName);
         if (!(indexedUses instanceof Array)) return invalid("invalid_recipe_uses");
         var raw:Array = indexedUses.slice(0);
@@ -854,34 +894,53 @@ class org.flashNight.arki.item.MaterialArchiveProjector {
                     || !(recipe.materials instanceof Array)) {
                 return invalid("stale_recipe_use");
             }
-            var required:Number = requiredQuantity(recipe, inputName);
-            var ingredients:Array = buildIngredients(recipe);
-            if (ingredients == null) return null;
-            var data:Object = ItemUtil.getRawItemData(productName);
-            var displayName:String = data == null ? null
-                : presentation(data.displayname, productName, 256);
-            var icon:String = data == null ? null
-                : presentation(data.icon, productName, 256);
-            if (!validPi(required) || data == null
-                    || displayName == null || icon == null) {
+            var projection:Object = recipeProjections[identity];
+            if (projection == undefined) {
+                var requirements:Array = ItemUtil.getRequirementFromTask(recipe.materials);
+                var ingredients:Array = buildIngredients(requirements);
+                if (ingredients == null) return null;
+                var requiredByName:Object = {};
+                for (var r:Number = 0; r < requirements.length; r++) {
+                    var quantityKey:String = "n:" + String(requirements[r].name);
+                    var previousQuantity:Number = requiredByName[quantityKey] == undefined
+                        ? 0 : Number(requiredByName[quantityKey]);
+                    // 使用原始数量累加，不能拿展示层对非法数量的兜底值作权威。
+                    requiredByName[quantityKey] = previousQuantity + Number(requirements[r].value);
+                }
+                var data:Object = ItemUtil.getRawItemData(productName);
+                var displayName:String = data == null ? null
+                    : presentation(data.displayname, productName, 256);
+                var icon:String = data == null ? null
+                    : presentation(data.icon, productName, 256);
+                if (data == null || displayName == null || icon == null) {
+                    return invalid("invalid_recipe_use");
+                }
+                projection = {requiredByName:requiredByName, ingredients:ingredients,
+                    displayName:displayName, icon:icon,
+                    itemKind:ItemUtil.isEquipment(productName) ? "equipment" : "stack"};
+                recipeProjections[identity] = projection;
+            }
+            var inputKey:String = "n:" + inputName;
+            var required:Number = projection.requiredByName[inputKey] == undefined
+                ? 0 : Number(projection.requiredByName[inputKey]);
+            if (!validPi(required)) {
                 return invalid("invalid_recipe_use");
             }
             result.push({
                 category:category,
                 recipeIndex:recipeIndex,
                 productName:productName,
-                displayName:displayName,
-                icon:icon,
-                itemKind:ItemUtil.isEquipment(productName) ? "equipment" : "stack",
+                displayName:projection.displayName,
+                icon:projection.icon,
+                itemKind:projection.itemKind,
                 required:required,
-                ingredients:ingredients
+                ingredients:projection.ingredients
             });
         }
         return result;
     }
 
-    private static function buildIngredients(recipe:Object):Array {
-        var requirements:Array = ItemUtil.getRequirementFromTask(recipe.materials || []);
+    private static function buildIngredients(requirements:Array):Array {
         if (!(requirements instanceof Array)
                 || !validCollectionCount(requirements.length, 1, MAX_RECIPE_INGREDIENTS)) {
             return invalid("invalid_recipe_ingredients");
@@ -910,17 +969,6 @@ class org.flashNight.arki.item.MaterialArchiveProjector {
             });
         }
         return result;
-    }
-
-    private static function requiredQuantity(recipe:Object, inputName:String):Number {
-        var requirements:Array = ItemUtil.getRequirementFromTask(recipe.materials || []);
-        var required:Number = 0;
-        for (var i:Number = 0; i < requirements.length; i++) {
-            if (String(requirements[i].name) == inputName) {
-                required += Number(requirements[i].value);
-            }
-        }
-        return required;
     }
 
     private static function recipePurposeIdsFor(uses:Array, categories:Array):Array {
