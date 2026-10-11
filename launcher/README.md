@@ -387,6 +387,7 @@ Bootstrap 建角遮罩按 `openRequestId` 关联，snapshot 与有效首帧（�
 | `gym` | 业务 Panel（健身训练、进度与完成结算） | `modules/gym/gym-panel.js` |
 | `settings` | 全屏工具 / Launcher bootstrap shell | `modules/settings-panel.js` |
 | `skills` | 工作台 | `modules/skills.js` |
+| `tablet` | 平板联络与基建 Panel；当前实例经 Host 转发到 AS2 权威 | `modules/tablet.js` |
 | `help` | 工具 Panel；[共享教程目录与轨迹](../docs/U8引导迁移与共享教程基座-2026-09-30.md)，工作台帮助使用内部 SecondaryPage | `modules/help-panel.js` |
 | `jukebox` | 工具 Panel | `modules/jukebox/jukebox-panel.js` |
 | `cutscene-test` | 开发 Panel | `modules/cutscene-test.js` |
