@@ -22,7 +22,7 @@ const snapshot=(phase='cover',revision=1,extra={})=>({type:'scene_transition',ve
             const page=await browser.newPage({viewport:{width:1024,height:576},reducedMotion:reduced?'reduce':'no-preference'});
             let releaseImage;const imageGate=new Promise(resolve=>{releaseImage=resolve;});
             await page.route('**/assets/bg/remake-andy.png',async route=>{await imageGate;await route.continue();});
-            await page.addInitScript(()=>{window.outbox=[];window.hostListeners=[];window.chrome={webview:{
+            await page.addInitScript(()=>{window.__BREATHING_ROLL__=()=>1;window.outbox=[];window.hostListeners=[];window.chrome={webview:{
                 postMessage:m=>outbox.push(m),addEventListener:(type,cb)=>{if(type==='message')hostListeners.push(cb);}}};
                 window.host=p=>hostListeners.forEach(cb=>cb({data:p}));});
             await page.goto('http://127.0.0.1:'+server.address().port+'/scene-transition.html');
@@ -72,7 +72,7 @@ const snapshot=(phase='cover',revision=1,extra={})=>({type:'scene_transition',ve
         }
         // Decode failure keeps an opaque curtain and readable copy; no indefinite asset gate.
         const page=await browser.newPage();await page.route('**/assets/bg/remake-andy.png',r=>r.abort());
-        await page.addInitScript(()=>{window.outbox=[];window.chrome={webview:{postMessage:m=>outbox.push(m),addEventListener:(type,cb)=>(window.hostHandlers||(window.hostHandlers=[])).push(cb)}};window.host=p=>hostHandlers.forEach(cb=>cb({data:p}));});
+        await page.addInitScript(()=>{window.__BREATHING_ROLL__=()=>1;window.outbox=[];window.chrome={webview:{postMessage:m=>outbox.push(m),addEventListener:(type,cb)=>(window.hostHandlers||(window.hostHandlers=[])).push(cb)}};window.host=p=>hostHandlers.forEach(cb=>cb({data:p}));});
         await page.goto('http://127.0.0.1:'+server.address().port+'/scene-transition.html');
         await page.evaluate(p=>host(p),snapshot());await page.waitForFunction(()=>outbox.some(m=>m.kind==='covered'));
         assert.equal(await page.locator('#transition').isVisible(),true);checks++;
@@ -82,7 +82,7 @@ const snapshot=(phase='cover',revision=1,extra={})=>({type:'scene_transition',ve
             const p=await browser.newPage({viewport:{width:1024,height:576},reducedMotion:reduced?'reduce':'no-preference'});
             let releaseImage;const gate=new Promise(resolve=>{releaseImage=resolve;});
             await p.route('**/assets/bg/remake-andy.png',async route=>{await gate;await route.continue();});
-            await p.addInitScript(()=>{window.outbox=[];window.chrome={webview:{postMessage:m=>outbox.push(m),
+            await p.addInitScript(()=>{window.__BREATHING_ROLL__=()=>1;window.outbox=[];window.chrome={webview:{postMessage:m=>outbox.push(m),
                 addEventListener:(type,cb)=>(window.hostHandlers||(window.hostHandlers=[])).push(cb)}};window.host=p=>hostHandlers.forEach(cb=>cb({data:p}));});
             await p.goto('http://127.0.0.1:'+server.address().port+'/scene-transition.html');
             const frozen={v:1,runId:'run:1',stageName:'联合大学 · 返回战报',difficulty:'简单',outcome:'victory',activeFrames:900,
@@ -182,7 +182,7 @@ const snapshot=(phase='cover',revision=1,extra={})=>({type:'scene_transition',ve
         for(const viewport of [{width:1600,height:900},{width:1024,height:576},{width:1366,height:768},
             {width:1920,height:1080},{width:960,height:540},{width:1280,height:800}]) {
             const p=await browser.newPage({viewport});
-            await p.addInitScript(()=>{window.outbox=[];window.chrome={webview:{postMessage:m=>outbox.push(m),
+            await p.addInitScript(()=>{window.__BREATHING_ROLL__=()=>1;window.outbox=[];window.chrome={webview:{postMessage:m=>outbox.push(m),
                 addEventListener:(type,cb)=>(window.hostHandlers||(window.hostHandlers=[])).push(cb)}};window.host=p=>hostHandlers.forEach(cb=>cb({data:p}));});
             await p.goto('http://127.0.0.1:'+server.address().port+'/scene-transition.html');
             const frozen={v:1,runId:'run:scale',stageName:'DEATH MATCH入门赛',difficulty:'简单',outcome:'victory',
@@ -237,6 +237,7 @@ const snapshot=(phase='cover',revision=1,extra={})=>({type:'scene_transition',ve
             const p=await browser.newPage({viewport:{width:1600,height:900}});
             const errors=[];p.on('pageerror',e=>errors.push(String(e)));
             await p.addInitScript(()=>{
+                window.__BREATHING_ROLL__=()=>1;
                 window.outbox=[];window.hostHandlers=[];window.fixtureRevision=1;
                 window.fixtureLastOperation='';window.fixtureStock=0;window.dropWrite=false;
                 window.chrome={webview:{postMessage:m=>{
@@ -386,6 +387,51 @@ const snapshot=(phase='cover',revision=1,extra={})=>({type:'scene_transition',ve
                 }
             }
             assert.deepEqual(errors,[]);checks++;
+            await p.close();
+        }
+        // 「像素传输」呼吸叠层：随机钉开时接管过场呈现、撤幕淡出期间补完传输并退场；
+        // 钉关时同一消息序列下永不出场；reduced-motion 下定格不爬行。资产仅仓内 assets/breathing 本地副本。
+        for (const pinned of [0,1]) {
+            const p=await browser.newPage({viewport:{width:1024,height:576}});
+            await p.addInitScript(roll=>{window.outbox=[];window.hostListeners=[];window.__BREATHING_ROLL__=()=>roll;
+                window.chrome={webview:{postMessage:m=>outbox.push(m),addEventListener:(type,cb)=>{if(type==='message')hostListeners.push(cb);}}};
+                window.host=p=>hostListeners.forEach(cb=>cb({data:p}));},pinned);
+            await p.goto('http://127.0.0.1:'+server.address().port+'/scene-transition.html');
+            const post=x=>p.evaluate(x=>host(x),x);
+            await post(snapshot());
+            if (pinned===0) {
+                await p.waitForFunction(()=>window.TransitionBreathing&&(window.TransitionBreathing.status().ready||window.TransitionBreathing.status().failed),null,{timeout:10000});
+                assert.equal(await p.evaluate(()=>window.TransitionBreathing.status().failed),false,'breathing assets must load from the bundle');checks++;
+                assert.equal(await p.locator('#transition-figure').isVisible(),true);checks++;
+                const creep=await p.evaluate(()=>new Promise(r=>setTimeout(()=>r(window.TransitionBreathing.status().txP),700)));
+                assert.ok(creep>0.05,'transmission must creep while covered, got '+creep);checks++;
+                await p.screenshot({path:path.join(artifacts,'breathing-cover.png')});
+                await post(snapshot('reveal',2,{revealAllowed:true}));
+                await p.waitForFunction(()=>outbox.some(m=>m.kind==='revealed'));checks++;
+                const done=await p.evaluate(()=>window.TransitionBreathing.status());
+                assert.ok(done.txP>=0.99,'transmission must complete during the reveal fade, got '+done.txP);checks++;
+                assert.equal(done.active,false);checks++;
+                assert.equal(await p.locator('#transition-figure').isVisible(),false);checks++;
+            } else {
+                await p.waitForTimeout(600);
+                const idle=await p.evaluate(()=>window.TransitionBreathing.status());
+                assert.equal(idle.active,false,'roll-off must never present the overlay');checks++;
+                assert.equal(await p.locator('#transition-figure').isVisible(),false);checks++;
+            }
+            await p.close();
+        }
+        {
+            const p=await browser.newPage({viewport:{width:1024,height:576},reducedMotion:'reduce'});
+            await p.addInitScript(()=>{window.outbox=[];window.hostListeners=[];window.__BREATHING_ROLL__=()=>0;
+                window.chrome={webview:{postMessage:m=>outbox.push(m),addEventListener:(type,cb)=>{if(type==='message')hostListeners.push(cb);}}};
+                window.host=p=>hostListeners.forEach(cb=>cb({data:p}));});
+            await p.goto('http://127.0.0.1:'+server.address().port+'/scene-transition.html');
+            await p.evaluate(x=>host(x),snapshot());
+            await p.waitForFunction(()=>window.TransitionBreathing&&window.TransitionBreathing.status().ready,null,{timeout:10000});
+            await p.waitForTimeout(600);
+            const frozen=await p.evaluate(()=>window.TransitionBreathing.status());
+            assert.equal(frozen.txP,0,'reduced-motion must stay a static figure without transmission creep');checks++;
+            assert.equal(await p.locator('#transition-figure').isVisible(),true);checks++;
             await p.close();
         }
         const report={kind:'browser-fixture',checks,reducedMotion:true,physicalGameAcceptance:false,artifacts};
