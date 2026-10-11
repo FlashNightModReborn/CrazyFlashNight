@@ -1190,3 +1190,45 @@
     --wb-ironspear-veil: rgba(28,33,38,.55);
     --wb-ironspear-stamp-animation: isp-stamp-in 0.5s cubic-bezier(0.2, 0.8, 0.35, 1.15);
 }
+
+/* 平板原 Flash 材质与动效：保留既有值，feature 只消费角色。 */
+:root {
+    --wb-semantic-tablet-stage-surface: #0a1420;
+    --wb-semantic-tablet-frame-shadow: 0 0 0 1px rgba(120, 200, 255, 0.15), 0 0 42px rgba(60, 150, 220, 0.18);
+    --wb-semantic-tablet-status-text: #7fb8dd;
+    --wb-semantic-tablet-body-text: #d8ecf9;
+    --wb-semantic-tablet-scroll-thumb: rgba(110, 190, 240, 0.4);
+    --wb-semantic-tablet-scroll-track: rgba(20, 45, 70, 0.4);
+    --wb-semantic-tablet-contact-text: #03a6ff;
+    --wb-semantic-tablet-contact-glow: 0 0 4px rgba(3, 166, 255, 0.35);
+    --wb-semantic-tablet-contact-hover: #6fd0ff;
+    --wb-semantic-tablet-contact-selected: #bfeeff;
+    --wb-semantic-tablet-contact-button-glow: 0 0 4px rgba(3, 166, 255, 0.45);
+    --wb-semantic-tablet-row-text: #cfe7f7;
+    --wb-semantic-tablet-strong-text: #ffffff;
+    --wb-semantic-tablet-infra-hover: rgba(0, 153, 255, 0.28);
+    --wb-semantic-tablet-infra-selected: rgba(0, 153, 255, 0.42);
+    --wb-semantic-tablet-infra-selected-glow: 0 0 6px rgba(120, 210, 255, 0.7);
+    --wb-semantic-tablet-infra-thumb-surface: rgba(3, 166, 255, 0.55);
+    --wb-semantic-tablet-infra-thumb-border: 1px solid rgba(3, 166, 255, 0.8);
+    --wb-semantic-tablet-row-surface: rgba(14, 34, 54, 0.55);
+    --wb-semantic-tablet-row-border: 1px solid rgba(120, 200, 255, 0.18);
+    --wb-semantic-tablet-row-hover: rgba(40, 85, 125, 0.7);
+    --wb-semantic-tablet-row-selected: rgba(60, 120, 170, 0.75);
+    --wb-semantic-tablet-row-selected-line: rgba(150, 225, 255, 0.6);
+    --wb-semantic-tablet-row-hint: #8fc4e8;
+    --wb-semantic-tablet-material-tag-text: #ffd98a;
+    --wb-semantic-tablet-material-tag-border: 1px solid rgba(255, 200, 120, 0.4);
+    --wb-semantic-tablet-material-heading: #eaf6ff;
+    --wb-semantic-tablet-material-info-text: #b8d8ec;
+    --wb-semantic-tablet-material-info-surface: rgba(10, 26, 42, 0.5);
+    --wb-semantic-tablet-material-info-border: 2px solid rgba(120, 200, 255, 0.4);
+    --wb-semantic-tablet-muted-text: #7ba9c8;
+    --wb-tablet-icons-transition: left .38s ease, top .38s ease, width .38s ease, height .38s ease, opacity .28s ease;
+    --wb-tablet-background-transition: opacity .38s ease;
+    --wb-tablet-description-transition: clip-path .26s ease-out, opacity .14s ease;
+    --wb-tablet-stage-transition: scale .35s cubic-bezier(.18,.9,.3,1.15), rotate .35s ease, opacity .26s ease;
+    --wb-tablet-content-transition: opacity .14s ease-out;
+    --wb-tablet-content-enter: tablet-in .3s ease-out both;
+    --wb-tablet-row-transition: background 0.1s ease;
+}

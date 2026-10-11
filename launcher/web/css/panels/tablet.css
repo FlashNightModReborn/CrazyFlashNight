@@ -12,10 +12,9 @@
   transform: translate(-50%, -50%);
   width: 78%;
   aspect-ratio: 469.9 / 324.6;
-  background: #0a1420;
+  background: var(--wb-semantic-tablet-stage-surface);
   border-radius: 3.2%;
-  box-shadow: 0 0 0 1px rgba(120, 200, 255, 0.15),
-              0 0 42px rgba(60, 150, 220, 0.18);
+  box-shadow: var(--wb-semantic-tablet-frame-shadow);
   overflow: hidden;
 }
 .tablet-bg {
@@ -49,7 +48,7 @@
 .tablet-icon {
   position: absolute;
   opacity: 0;
-  transition: left .38s ease, top .38s ease, width .38s ease, height .38s ease, opacity .28s ease;
+  transition: var(--wb-tablet-icons-transition);
 }
 .tablet-icon.shown { opacity: 1; }
 
@@ -57,7 +56,7 @@
 .tablet-bg-alt {
   z-index: 1;
   opacity: 0;
-  transition: opacity .38s ease;
+  transition: var(--wb-tablet-background-transition);
   pointer-events: none;
 }
 .tablet-bg-alt.on { opacity: 1; }
@@ -69,14 +68,14 @@
   pointer-events: none;
   opacity: 0;
   clip-path: inset(0 100% 0 0);
-  transition: clip-path .26s ease-out, opacity .14s ease;
+  transition: var(--wb-tablet-description-transition);
 }
 .tablet-hoverdesc.on { opacity: 1; clip-path: inset(0 0 0 0); }
 
 /* 唤起/关闭：原 XFL 初始化"中心展开"与各页收起动画的整体近似
    （用独立 scale/rotate 属性，不与 stage 的 translate 居中冲突） */
 .tablet-stage {
-  transition: scale .35s cubic-bezier(.18,.9,.3,1.15), rotate .35s ease, opacity .26s ease;
+  transition: var(--wb-tablet-stage-transition);
 }
 .tablet-shell.entering .tablet-stage { scale: .5; rotate: -6deg; opacity: 0; }
 .tablet-shell.closing .tablet-stage { scale: .7; opacity: 0; }
@@ -85,9 +84,9 @@
    switching 期间旧 DOM 快速淡出（original 两栏内容淡出语义），转场提交后
    新 DOM 由 entered 动画淡入 */
 .tablet-stage.switching .tablet-overlay { pointer-events: none; }
-.tablet-dom { transition: opacity .14s ease-out; }
+.tablet-dom { transition: var(--wb-tablet-content-transition); }
 .tablet-stage.switching .tablet-dom { opacity: 0; }
-.tablet-stage.entered .tablet-dom { animation: tablet-in .3s ease-out both; }
+.tablet-stage.entered .tablet-dom { animation: var(--wb-tablet-content-enter); }
 @keyframes tablet-in {
   from { opacity: 0; transform: translateY(5px); }
   to { opacity: 1; transform: none; }
@@ -97,7 +96,7 @@
   right: 3%;
   bottom: 3.2%;
   z-index: 4;
-  color: #7fb8dd;
+  color: var(--wb-semantic-tablet-status-text);
   font-size: 11px;
   letter-spacing: 0.06em;
 }
@@ -107,11 +106,11 @@
   position: absolute;
   z-index: 2;
   font-family: 'Microsoft YaHei', 'Segoe UI', sans-serif;
-  color: #d8ecf9;
+  color: var(--wb-semantic-tablet-body-text);
 }
 .tablet-dom::-webkit-scrollbar { width: 6px; }
-.tablet-dom::-webkit-scrollbar-thumb { background: rgba(110, 190, 240, 0.4); border-radius: 3px; }
-.tablet-dom::-webkit-scrollbar-track { background: rgba(20, 45, 70, 0.4); }
+.tablet-dom::-webkit-scrollbar-thumb { background: var(--wb-semantic-tablet-scroll-thumb); border-radius: 3px; }
+.tablet-dom::-webkit-scrollbar-track { background: var(--wb-semantic-tablet-scroll-track); }
 
 /* 常驻动画层（退出乱码闪变/无人机帧序列） */
 .tablet-ambient { position: absolute; z-index: 2; pointer-events: none; }
@@ -124,24 +123,24 @@
   padding: 0 4%;
   background: transparent;
   border: none;
-  color: #03a6ff;
+  color: var(--wb-semantic-tablet-contact-text);
   font-size: 11px;
   text-align: left;
   cursor: pointer;
-  text-shadow: 0 0 4px rgba(3, 166, 255, 0.35);
+  text-shadow: var(--wb-semantic-tablet-contact-glow);
 }
-.tablet-contact-row:hover { color: #6fd0ff; }
-.tablet-contact-row.selected { color: #bfeeff; }
+.tablet-contact-row:hover { color: var(--wb-semantic-tablet-contact-hover); }
+.tablet-contact-row.selected { color: var(--wb-semantic-tablet-contact-selected); }
 
 /* 联络动作按钮文字：原字形是 EditText（烘焙不出），DOM 文字盖烘焙边框 */
 .tablet-contact-btnlabel {
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #03a6ff;
+  color: var(--wb-semantic-tablet-contact-text);
   font-size: 11px;
   letter-spacing: 0.05em;
-  text-shadow: 0 0 4px rgba(3, 166, 255, 0.45);
+  text-shadow: var(--wb-semantic-tablet-contact-button-glow);
   pointer-events: none;
 }
 
@@ -165,23 +164,23 @@
   padding: 0 4%;
   background: transparent;
   border: none;
-  color: #cfe7f7;
+  color: var(--wb-semantic-tablet-row-text);
   font-size: 11px;
   text-align: left;
   cursor: pointer;
 }
-.tablet-infra-row:hover { color: #ffffff; background: rgba(0, 153, 255, 0.28); }
+.tablet-infra-row:hover { color: var(--wb-semantic-tablet-strong-text); background: var(--wb-semantic-tablet-infra-hover); }
 .tablet-infra-row.selected {
-  color: #ffffff;
-  background: rgba(0, 153, 255, 0.42);
-  text-shadow: 0 0 6px rgba(120, 210, 255, 0.7);
+  color: var(--wb-semantic-tablet-strong-text);
+  background: var(--wb-semantic-tablet-infra-selected);
+  text-shadow: var(--wb-semantic-tablet-infra-selected-glow);
 }
 
 /* 基建滚动滑块：跟随 scrollTop 的可视层，配合烘焙 rail 底图 */
 .tablet-infra-thumb {
   position: absolute;
-  background: rgba(3, 166, 255, 0.55);
-  border: 1px solid rgba(3, 166, 255, 0.8);
+  background: var(--wb-semantic-tablet-infra-thumb-surface);
+  border: var(--wb-semantic-tablet-infra-thumb-border);
   border-radius: 2px;
   pointer-events: none;
   box-sizing: border-box;
@@ -193,19 +192,19 @@
   align-items: center;
   font-size: 12px;
   font-weight: 600;
-  color: #ffffff;
+  color: var(--wb-semantic-tablet-strong-text);
 }
 .tablet-infra-desc {
   font-size: 11px;
   line-height: 1.65;
-  color: #ffffff;
+  color: var(--wb-semantic-tablet-strong-text);
   white-space: pre-wrap;
   overflow-y: auto;
 }
 .tablet-infra-req {
   font-size: 11px;
   line-height: 1.6;
-  color: #ffffff;
+  color: var(--wb-semantic-tablet-strong-text);
   white-space: pre-wrap;
   overflow-y: auto;
 }
@@ -216,44 +215,44 @@
   gap: 6px;
   width: 100%;
   text-align: left;
-  background: rgba(14, 34, 54, 0.55);
-  border: 1px solid rgba(120, 200, 255, 0.18);
+  background: var(--wb-semantic-tablet-row-surface);
+  border: var(--wb-semantic-tablet-row-border);
   border-radius: 3px;
-  color: #cfe7f7;
+  color: var(--wb-semantic-tablet-row-text);
   font-size: 12px;
   padding: 5px 8px;
   margin-bottom: 4px;
   cursor: pointer;
-  transition: background 0.1s ease;
+  transition: var(--wb-tablet-row-transition);
 }
-.tablet-row:hover { background: rgba(40, 85, 125, 0.7); }
+.tablet-row:hover { background: var(--wb-semantic-tablet-row-hover); }
 .tablet-row.selected {
-  background: rgba(60, 120, 170, 0.75);
-  border-color: rgba(150, 225, 255, 0.6);
+  background: var(--wb-semantic-tablet-row-selected);
+  border-color: var(--wb-semantic-tablet-row-selected-line);
 }
-.tablet-row em { margin-left: auto; font-style: normal; font-size: 11px; color: #8fc4e8; }
+.tablet-row em { margin-left: auto; font-style: normal; font-size: 11px; color: var(--wb-semantic-tablet-row-hint); }
 
 .tablet-mat-list { overflow-y: auto; }
 .tablet-mat-icon { width: 18px; height: 18px; object-fit: contain; flex: none; }
 .tablet-mat-tag {
   margin-left: auto; font-style: normal; font-size: 10px;
-  color: #ffd98a; border: 1px solid rgba(255, 200, 120, 0.4);
+  color: var(--wb-semantic-tablet-material-tag-text); border: var(--wb-semantic-tablet-material-tag-border);
   border-radius: 2px; padding: 0 4px;
 }
 .tablet-mat-detail { overflow-y: auto; padding: 6px 10px; }
 .tablet-mat-detail h3 {
-  margin: 4px 0 8px; color: #eaf6ff; font-size: 16px; letter-spacing: 0.06em;
+  margin: 4px 0 8px; color: var(--wb-semantic-tablet-material-heading); font-size: 16px; letter-spacing: 0.06em;
 }
 .tablet-mat-info {
   white-space: pre-wrap;
   font-family: inherit;
   font-size: 12px;
   line-height: 1.7;
-  color: #b8d8ec;
-  background: rgba(10, 26, 42, 0.5);
-  border-left: 2px solid rgba(120, 200, 255, 0.4);
+  color: var(--wb-semantic-tablet-material-info-text);
+  background: var(--wb-semantic-tablet-material-info-surface);
+  border-left: var(--wb-semantic-tablet-material-info-border);
   padding: 8px 10px;
   border-radius: 0 4px 4px 0;
 }
 
-.tablet-dim { color: #7ba9c8; font-size: 11.5px; }
+.tablet-dim { color: var(--wb-semantic-tablet-muted-text); font-size: 11.5px; }
