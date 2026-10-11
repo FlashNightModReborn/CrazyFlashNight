@@ -1182,3 +1182,16 @@ strict production policy 42/42，receipt SHA-256 `0C612DBA8C5CB91E481E2386A5E124
 - 合并后新鲜 CS6 Worker protocol **52/52**、技能缓存 **21/21**、Compiler **0/0**；asLoader **6,007,550** 字节 / SHA-256 `601CD42C51FF8CC1156E0CA7D4A688DC15E7CA65384F9F537E04136C05FA3B4D`。Node、文档巡检和 22 项冻结派生资源检查通过；首次 prepare 的字典缺项日志保留，生成器补齐后重新冻结。
 - 私有候选的 P0/P1、单侧 Flash 故障隔离、普通单例和 Legacy 回归成立；P1 吞吐比 **1.4343**，低于 1.6 扩展参考线，未扩展 P2。原显示及包装失败证据保留；合并资源后的标准入口业务、人类视觉/实体输入、弱机及长时热稳态仍 **PENDING**。
 - 部署提交 `5dd7d23f3dbdea0db52912e6db7f51132f631327` 已普通快进推送；[远端 Runtime native audit 38127546260](https://github.com/FlashNightModReborn/CrazyFlashNight/actions/runs/38127546260) **success**，独立重放 `state=promoted / deploymentChanged=true`、`mode=Index / signers=2 / faultDomains=2` 和相同 43 文件闭包。源码推送 Audit `38125503809` 单独保留为 `source-ahead / deploymentChanged=false`。
+
+<a id="cas-low-release-20261011"></a>
+
+### 2026-10-11 分档 CAS 与独立画面开关正式推广
+
+维护者明确授权“可行，走完整的发布列车”。普通游戏清晰度增强默认开启，按 H/M/L 与实际倍率适配，LOW 使用源像素邻域以改善低分辨率文字和轮廓；两个开关独立保存，短时历史反馈继续默认关闭并暂停迭代。产品行为与测量边界见[CAS 与短时反馈](世界画面-CAS与短时反馈候选-2026-10-11.md)，完整结构化身份见[发布回执](evidence/cas-low-runtime-release-2026-10-11.json)。
+
+- 冻结源码 `adbd8244848a9fac28874ac6226ccf2db2e32e0b`，标签 `refs/tags/runtime-build-v2/20261011-cas-low-v1`，request `DB864DCED0CB144090B992272124747CCFAEBAEFA31F4A3525F389BA2ED57C0C`。先无冲突快进合入远端 AI 终端和平板改动，再审阅冻结本批；没有重编或改写本批之外的 Flash 产物。
+- 本地 `builder-local-c / physical-host-c` 与 [GitHub OIDC 构建 38144219719](https://github.com/FlashNightModReborn/CrazyFlashNight/actions/runs/38144219719) 对 identity `CCF387A18CCAEF61F776AC886A81F36E0CA8F9B7F2AF1FE59EDD23506FEB2E6D`、43 文件 closure `AE180F634AD01352FD11C9C13AF68E7FFECB286F447BF681177CC113402EA039` 达成共识。网络查询超时后使用同一 run 恢复，云端只下载并验证 attestation。
+- production policy **47/47**，receipt SHA-256 `F9E9B606F635C83D1B9227706D73C2C531C189D190C724C01A05EDAAC9DB650B`。唯一 writer 于 `2026-10-11T13:54:49.4895551Z` 原子推广，双 signer / 双 faultDomain、安装校验通过；previous 保留在 `tmp/runtime-promotions/20261011T135418066Z-f96fd1a047024edd97123aabf3dd8f3f/previous`。
+- 合并后 Host **7043 passed / 27 skipped**、设置 Node **20/20**、Edge **150/150**、构建输入契约 **285/285**。交付 Core 与 Host 回归程序集逐字节一致，原生 DLL 与此前通过三项 GPU 用例的候选逐字节一致；未对新 release identity 重跑 GPU 用例，不把旧候选身份升级为新领域 E2E。
+- 部署提交 `9a0b716f92c6b9531e70aaa0765179bb4e90fd73` 已快进推送；[部署 Audit 38145275218](https://github.com/FlashNightModReborn/CrazyFlashNight/actions/runs/38145275218) **success**，独立重放 `state=promoted / deploymentChanged=true`、`mode=Index / signers=2 / faultDomains=2` 及相同闭包。
+- 无 candidate selector 的普通 `automation/start.ps1` 确认 `formal_runtime`、新 Core SHA/identity/closure，精确自有进程的窗口关闭与 exit **0** 通过；31 份存档/偏好指纹不变。可信无人值守路径另观察 Flash 握手与 reveal，但三次退出检查未通过（两次 `trusted_runner_shutdown_capture_failed`，一次 `trusted_runner_protocol_shutdown_exit_code_invalid`），负向原始记录保留；普通窗口关闭不代签该链。实战 CAS、真人画质/舒适度、弱机和完整业务 `standard_entry_verified` 仍 **PENDING**。

@@ -1,0 +1,112 @@
+{
+  "schema": "cf7-cas-low-runtime-release.v1",
+  "authorization": "用户明确授权：可行，走完整的发布列车。",
+  "state": "promoted",
+  "sourceCommit": "adbd8244848a9fac28874ac6226ccf2db2e32e0b",
+  "sourceTag": "refs/tags/runtime-build-v2/20261011-cas-low-v1",
+  "releaseTreeOid": "7cdf791791f160be01c4a90e791cdf5eada8a3d1",
+  "requestId": "DB864DCED0CB144090B992272124747CCFAEBAEFA31F4A3525F389BA2ED57C0C",
+  "buildIdentityHash": "CCF387A18CCAEF61F776AC886A81F36E0CA8F9B7F2AF1FE59EDD23506FEB2E6D",
+  "payloadClosureHash": "AE180F634AD01352FD11C9C13AF68E7FFECB286F447BF681177CC113402EA039",
+  "payloadFiles": 43,
+  "policyHash": "6668BC5804D26863E292616C3898D1AA3C1696EF26423DE022A27D2D0541DF63",
+  "policyReceiptSha256": "F9E9B606F635C83D1B9227706D73C2C531C189D190C724C01A05EDAAC9DB650B",
+  "productionPolicy": {
+    "profile": "production",
+    "passed": true,
+    "checksPassed": 47,
+    "checksTotal": 47
+  },
+  "producers": [
+    {
+      "builder": "builder-local-c",
+      "faultDomain": "physical-host-c"
+    },
+    {
+      "builder": "github-hosted-windows",
+      "faultDomain": "github-hosted-windows",
+      "runId": 38144219719,
+      "url": "https://github.com/FlashNightModReborn/CrazyFlashNight/actions/runs/38144219719"
+    }
+  ],
+  "signers": 2,
+  "faultDomains": 2,
+  "promotedAtUtc": "2026-10-11T13:54:49.4895551Z",
+  "deploymentCommit": "9a0b716f92c6b9531e70aaa0765179bb4e90fd73",
+  "coreDllSha256": "8BCE80AD0465934DF4D1FC038CB289673C3B3E4DFF2EBC225DB00C5E1C61BC7F",
+  "nativeDllSha256": "CDCC785269748B6DDD0400F7A76FD7CED827C0C9616E77335F90CA0D94E6BAB8",
+  "deploymentAudit": {
+    "runId": 38145275218,
+    "url": "https://github.com/FlashNightModReborn/CrazyFlashNight/actions/runs/38145275218",
+    "conclusion": "success",
+    "state": "promoted",
+    "deploymentChanged": true,
+    "mode": "Index"
+  },
+  "validation": {
+    "hostPassed": 7043,
+    "hostSkipped": 27,
+    "settingsNodePassed": 20,
+    "settingsEdgePassed": 150,
+    "runtimeInputChecksPassed": 285,
+    "coreMatchesHostRegression": true,
+    "nativeMatchesPreviouslyGpuValidatedCandidate": true,
+    "priorGpuCasesPassed": 3,
+    "gpuCasesRerunForNewReleaseIdentity": false
+  },
+  "defaults": {
+    "casEnabled": true,
+    "motionFeedbackEnabled": false,
+    "independentSavedSwitches": true
+  },
+  "casPolicy": {
+    "H": 0.1,
+    "M": 0.25,
+    "L": 0.27,
+    "inputScaleIncrement": 0.08,
+    "sourcePassThreshold": 1.5
+  },
+  "standardEntry": {
+    "runtimeMode": "formal_runtime",
+    "identityVerified": true,
+    "ordinaryStartupAndWindowClosePassed": true,
+    "exitCode": 0,
+    "playerSlotSelected": false,
+    "businessJourneyExecuted": false,
+    "casGameplayVerified": false,
+    "humanVisualAcceptance": "pending",
+    "weakMachineAcceptance": "pending",
+    "trustedUnattendedShutdownVerified": false
+  },
+  "retainedNegativeSmoke": [
+    {
+      "attempt": "formal-entry",
+      "reason": "trusted_runner_shutdown_capture_failed"
+    },
+    {
+      "attempt": "formal-launcher-phase",
+      "reason": "trusted_runner_protocol_shutdown_exit_code_invalid"
+    },
+    {
+      "attempt": "formal-settled-entry",
+      "reason": "trusted_runner_shutdown_capture_failed"
+    },
+    {
+      "attempt": "ordinary-entry-first",
+      "reason": "exit code not retained by probe; corrected probe passed without production changes"
+    }
+  ],
+  "protectedFiles": {
+    "count": 31,
+    "changed": 0,
+    "rollbackAppliedToPlayerData": false
+  },
+  "rollbackDirectory": "tmp/runtime-promotions/20261011T135418066Z-f96fd1a047024edd97123aabf3dd8f3f/previous",
+  "localEvidenceDirectory": "tmp/world-postprocess/release-cas-20261011-v1",
+  "limitations": [
+    "Frozen replay reference is a previously rendered screenshot, not original Flash source.",
+    "GPU costs measure world draw on this UHD 630 and exclude full game FPS, WGC/DWM and physical scanout.",
+    "Ordinary startup/close and supply-chain verification do not prove CAS gameplay acceptance.",
+    "Trusted unattended shutdown failed in this environment; preserve the distinct negative evidence."
+  ]
+}
