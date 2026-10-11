@@ -49,6 +49,9 @@ class org.flashNight.neur.Server.ServerManager {
     private var _state:Number;
     private var _stateEnteredFrame:Number;
     private var _retryCount:Number;
+    private var _workerMode:Boolean;
+    private var _workerOrigin:String;
+    private var _workerRetired:Boolean;
 
     private static var S_DISCONNECTED:Number      = 0;
     private static var S_HTTP_PROBING:Number       = 1;
@@ -122,8 +125,20 @@ class org.flashNight.neur.Server.ServerManager {
         _stateEnteredFrame = 0;
         _retryCount = 0;
 
+        _workerMode = String(_root.cf7ArenaWorker || "") == "1"
+            || readWorkerLaunchField("cf7ArenaWorker") == "1";
+        if (_workerMode) {
+            _root.cf7ArenaWorker = "1";
+            if (_root.cf7ArenaWorkerId == undefined)
+                _root.cf7ArenaWorkerId = readWorkerLaunchField("cf7ArenaWorkerId");
+            if (_root.cf7ArenaSessionEpoch == undefined)
+                _root.cf7ArenaSessionEpoch = readWorkerLaunchField("cf7ArenaSessionEpoch");
+        }
+        _workerRetired = false;
+        _workerOrigin = String(_root._url || "").split("?")[0];
+        _workerOrigin = _workerOrigin.split("\\").join("/");
         eventBus = EventBus.getInstance();
-        extractPorts();
+        if (!_workerMode) extractPorts();
         initFrameClip();
 
         // Subscribe internal functions to frameUpdate event
@@ -150,7 +165,9 @@ class org.flashNight.neur.Server.ServerManager {
         if (!PathManager.isEnvironmentValid()) {
             PathManager.initialize(null);
         }
-        var base:String = PathManager.getBasePath();
+        var base:String = _workerMode
+            ? _workerOrigin.substring(0, _workerOrigin.lastIndexOf("/") + 1)
+            : PathManager.getBasePath();
         if (base == null || base.length == 0) {
             trace("[ServerManager] No basePath, fallback to blind scan");
             transitionTo(S_HTTP_PROBING);
@@ -165,6 +182,14 @@ class org.flashNight.neur.Server.ServerManager {
             if (rawData == null || rawData == undefined) {
                 trace("[ServerManager] Ports file not found, fallback to blind scan");
                 ServerManager.instance.transitionTo(ServerManager.S_HTTP_PROBING);
+                return;
+            }
+
+            if (ServerManager.instance._workerMode || rawData.indexOf("\"arenaWorker\"") >= 0) {
+                // A Worker descriptor can never silently become legacy discovery,
+                // even if a projector failed to expose the launch query variables.
+                ServerManager.instance._workerMode = true;
+                ServerManager.instance.acceptWorkerPorts(rawData);
                 return;
             }
 
@@ -219,6 +244,44 @@ class org.flashNight.neur.Server.ServerManager {
         return Number(json.substring(idx, end));
     }
 
+    private function readWorkerLaunchField(key:String):String {
+        var url:String = String(_root._url || "");
+        var queryAt:Number = url.indexOf("?");
+        if (queryAt < 0) return "";
+        var fields:Array = url.substr(queryAt + 1).split("&");
+        var prefix:String = key + "=";
+        for (var i:Number = 0; i < fields.length; i++) {
+            if (String(fields[i]).indexOf(prefix) == 0)
+                return unescape(String(fields[i]).substr(prefix.length));
+        }
+        return "";
+    }
+
+    private function acceptWorkerPorts(rawData:String):Void {
+        var descriptor:Object = jsonParser.parse(rawData);
+        var hp:Number = Number(descriptor.httpPort);
+        var sp:Number = Number(descriptor.socketPort);
+        var actualOrigin:String = unescape(_workerOrigin).split("|").join(":").toLowerCase();
+        var expectedOrigin:String = unescape(String(descriptor.swfOrigin || "")).split("|").join(":").toLowerCase();
+        if (descriptor.arenaWorker !== true
+                || String(descriptor.workerId || "") == ""
+                || String(descriptor.sessionEpoch || "") == ""
+                || descriptor.workerId !== _root.cf7ArenaWorkerId
+                || descriptor.sessionEpoch !== _root.cf7ArenaSessionEpoch
+                || actualOrigin != expectedOrigin
+                || !(hp > 0 && hp < 65536) || hp != Math.floor(hp)
+                || !(sp > 0 && sp < 65536) || sp != Math.floor(sp) || hp == sp) {
+            _workerRetired = true;
+            transitionTo(S_DISCONNECTED);
+            trace("[ServerManager] Worker descriptor identity rejected");
+            return;
+        }
+        currentPort = hp;
+        socketPort = sp;
+        socketHost = "127.0.0.1";
+        transitionTo(S_SOCKET_CONNECTING);
+    }
+
     // 获取单例实例
     public static function getInstance():ServerManager {
         if (instance == null) {
@@ -233,6 +296,10 @@ class org.flashNight.neur.Server.ServerManager {
      * 状态转换 + 入口动作。所有状态变更必须通过此方法。
      */
     private function transitionTo(newState:Number):Void {
+        if (_workerMode && (newState == S_HTTP_PROBING || newState == S_FETCHING_PORT)) {
+            _workerRetired = true;
+            newState = S_DISCONNECTED;
+        }
         var oldState:Number = _state;
         _state = newState;
         _stateEnteredFrame = currentFrame;
@@ -343,9 +410,9 @@ class org.flashNight.neur.Server.ServerManager {
         // ---- 状态机 tick ----
         if (_state == S_DISCONNECTED) {
             // 等待重连延迟
-            if (_retryCount < MAX_RETRIES
+            if (!_workerRetired && _retryCount < MAX_RETRIES
                 && (currentFrame - _stateEnteredFrame) >= RETRY_DELAY) {
-                transitionTo(S_HTTP_PROBING);
+                transitionTo(_workerMode && socketPort > 0 ? S_SOCKET_CONNECTING : S_HTTP_PROBING);
             }
         }
 

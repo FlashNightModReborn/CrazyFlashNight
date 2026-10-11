@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <title>Armory Panel Harness — A兵团·武器库</title>
+  <link rel="stylesheet" href="../../../css/workbench/tokens.css">
+  <link rel="stylesheet" href="../../../css/panels/armory.css">
+  <style>
+    html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#050607}
+    #stage{width:1024px;height:576px;margin:12px auto;border:1px solid #333;position:relative}
+    #toolbar{position:fixed;top:8px;right:12px;z-index:10;font:12px "Microsoft YaHei";color:#ccc}
+    #toolbar button{margin-left:6px;padding:4px 10px;background:#1b1d21;color:#ddd;border:1px solid #444;cursor:pointer}
+    #toolbar button.active{border-color:#c0272d;color:#fff}
+  </style>
+</head>
+<body>
+<div id="toolbar">类目：
+  <button data-cat="武器合成" class="active">武器合成</button>
+  <button data-cat="饰品合成">饰品合成</button>
+  <button data-cat="进阶防具">进阶防具</button>
+  <button data-cat="基础防具">基础防具</button>
+</div>
+<div id="stage"></div>
+<script>window.CF7_ARMORY_BP_ROOT = '../../../assets/armory-blueprints/';</script>
+<script src="../armory.js"></script>
+<script>
+var RECIPES = {
+  '武器合成': [
+    {recipeIndex:0, title:'秋月', availability:'ready', canCraftOne:true, batchEligible:true,
+     baseCost:{money:1200,kpoints:0},
+     output:{displayName:'秋月', icon:'秋月', description:'以相位调频技术重压缩的光棱弹芯，出膛后沿标定轨线展开为持续射线场。'}},
+    {recipeIndex:1, title:'AK47火麒麟', availability:'material_missing', canCraftOne:false, batchEligible:false,
+     baseCost:{money:600,kpoints:0},
+     output:{displayName:'AK47火麒麟', icon:'AK47火麒麟', description:'A兵团制式战术匕首的改型，刀脊加厚、护手改为一体铸钢。'}},
+    {recipeIndex:2, title:'镜之虎彻', availability:'ready', canCraftOne:true, batchEligible:true,
+     baseCost:{money:2400,kpoints:5},
+     output:{displayName:'镜之虎彻', icon:'镜之虎彻', description:'轻量化框架手枪，扳机行程缩短 40%。'}},
+    {recipeIndex:3, title:'炎寒对剑', availability:'ready', canCraftOne:true, batchEligible:true,
+     baseCost:{money:3000,kpoints:8},
+     output:{displayName:'炎寒对剑', icon:'炎寒对剑', description:'一热一寒的对剑，剑脊内藏双回路。'}},
+    {recipeIndex:4, title:'輪舞', availability:'ready', canCraftOne:true, batchEligible:false,
+     baseCost:{money:1800,kpoints:0},
+     output:{displayName:'輪舞', icon:'輪舞', description:'回旋刃阵，投掷后自动归手。'}},
+    {recipeIndex:5, title:'忍者执剑', availability:'insufficient_money', canCraftOne:false, batchEligible:false,
+     baseCost:{money:5000,kpoints:12},
+     output:{displayName:'忍者执剑', icon:'忍者执剑', description:'旧式忍者直刃，轻量化开锋。'}}
+  ],
+  '饰品合成': [
+    {recipeIndex:0, title:'A兵团项链', availability:'ready', canCraftOne:true, batchEligible:true,
+     baseCost:{money:800,kpoints:0},
+     output:{displayName:'A兵团项链', icon:'A兵团项链', description:'兵团制式身份链，内嵌微缩军牌。'}}
+  ],
+  '进阶防具': [
+    {recipeIndex:0, title:'A兵团精致战术背心', availability:'ready', canCraftOne:true, batchEligible:true,
+     baseCost:{money:5600,kpoints:0},
+     output:{displayName:'A兵团精致战术背心', icon:'A兵团精致战术背心', description:'精致线战术背心，插板舱位升级、肩带快拆。'}},
+    {recipeIndex:1, title:'三相猪鼻防毒面具', availability:'level_locked', canCraftOne:false, batchEligible:false,
+     baseCost:{money:4200,kpoints:0},
+     output:{displayName:'A兵团三相猪鼻式防毒面具', icon:'A兵团三相猪鼻式防毒面具', description:'三相过滤，正面密封一体化。'}}
+  ],
+  '基础防具': [
+    {recipeIndex:0, title:'A兵团制式战术背心', availability:'ready', canCraftOne:true, batchEligible:true,
+     baseCost:{money:1800,kpoints:0},
+     output:{displayName:'A兵团制式战术背心', icon:'A兵团制式战术背心', description:'制式防弹背心，标准 III 级插板舱。'}},
+    {recipeIndex:1, title:'A兵团制式战术裤', availability:'insufficient_money', canCraftOne:false, batchEligible:true,
+     baseCost:{money:900,kpoints:0},
+     output:{displayName:'A兵团制式战术裤', icon:'A兵团制式战术裤', description:'耐磨考杜拉混纺裤身，膝位双层补强。'}}
+  ]
+};
+var MATS = [
+  {displayName:'精钢锭', icon:'A兵团项链', required:4, owned:6, consumed:true, enough:true},
+  {displayName:'合成纤维布', icon:'A兵团制式战术背心', required:8, owned:3, consumed:true, enough:false},
+  {displayName:'军规铆钉', icon:'A兵团制式战术皮鞋', required:12, owned:20, consumed:true, enough:true}
+];
+var host = {
+  category:'武器合成',
+  request:function(cmd, payload, cb) {
+    setTimeout(function() {
+      if (cmd === 'snapshot') {
+        cb({success:true, note:'产线就绪', balance:{money:128400, kpoints:37},
+            recipes:RECIPES[host.category] || []});
+      } else if (cmd === 'preview') {
+        cb({success:true, canCommit:true, craftToken:'tk-' + payload.recipeIndex + '-' + payload.craftCount,
+            maxCraftCount:8, infrastructure:[{name:'武器工坊', appliance:'重型车床', met:true}],
+            materials:MATS});
+      } else if (cmd === 'commit') {
+        cb({success:true, crafted:{displayName:'（样品）'}});
+      }
+    }, 40);
+    return 1;
+  },
+  toast:function(m){ console.log('toast:', m); },
+  cue:function(){},
+  iconHtml:function(name, cls) {
+    var file = (window.__ICONS__ && window.__ICONS__[name] && window.__ICONS__[name].f1) || '';
+    var src = file ? '../../../icons/' + file
+      : 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==';
+    return '<img src="' + src + '" alt="" class="' + (cls||'') + '">';
+  },
+  formatNumber:function(n){ return String(n).replace(/\B(?=(\d{3})+(?!\d))/g, ','); },
+  requestClose:function(){ console.log('close'); }
+};
+var stage = document.getElementById('stage');
+function mountCat(cat) {
+  host.category = cat;
+  if (window.ArmoryPanel) ArmoryPanel.unmount();
+  stage.innerHTML = '';
+  ArmoryPanel.mount(stage, host);
+  var btns = document.querySelectorAll('#toolbar button');
+  for (var i = 0; i < btns.length; i++) {
+    btns[i].classList.toggle('active', btns[i].getAttribute('data-cat') === cat);
+  }
+}
+var tb = document.getElementById('toolbar');
+tb.addEventListener('click', function(e) {
+  var cat = e.target && e.target.getAttribute('data-cat');
+  if (cat) mountCat(cat);
+});
+fetch('../../../icons/manifest.json').then(function(r) { return r.json(); }).then(function(m) {
+  window.__ICONS__ = m;
+}).finally(function() { mountCat('武器合成'); });
+</script>
+</body>
+</html>

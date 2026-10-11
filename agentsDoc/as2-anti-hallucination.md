@@ -78,8 +78,9 @@
 ## 2. AS2 vs JavaScript 易混淆点
 
 ### 空值访问与判空
-- AS2 `undefined.prop` 返回 `undefined` 不崩溃。链式 `a.b.c.d` 直接访问，**禁止逐级判空**
-- **禁止**：`if (a != undefined && a.b != undefined && a.b.c != undefined)`
+- AS2 `undefined.prop` 返回 `undefined` 不崩溃。普通对象的纯字段读取可直接用 `a.b.c.d`，不要仅为防崩溃逐级判空。
+- 末端正向条件已拒绝缺失值时可去掉重复祖先检查，例如 `meta.segmentKind == "fork"` 或 `typeof view.refresh == "function"`。
+- 不能机械删除存在性门：`obj != null && obj.disabled !== true`、双缺失值相等、NaN 比较、proto-null 字典，以及身份/权限/epoch、一次性动作、带副作用调用须逐点保留语义；函数调用仍须保持 receiver。性能与回归边界见 [判空分类](as2-performance.md#null-guards)。
 
 ### 作用域与 this
 - AS2 `var` 有函数作用域（类似 JS），无 `let`/`const`
@@ -110,6 +111,7 @@
 - **`for...in` 遍历顺序是稳定的**（Ruffle 项目验证）：原型链属性优先 → 自身属性按 reverse insertion order → DisplayObject 子对象按 depth 降序。删除属性后顺序仍稳定
 
 ### 对象字面量与键名
+- 不用 JavaScript 直觉推定字面量内表达式的求值顺序；将数组拆成标量前用真实 CS6 或字节码核对。HUD 的护盾数组实测先读 maximum 再读 capacity；涉及属性访问器时保持当次值与调用顺序，见 [只读展示采样](as2-performance.md#display-sampling)。
 - 键名**不加引号**：`{name: "sword", damage: 10}`（`{"name": ...}` 虽不报错但非惯用风格）
 - 保留字/特殊字符键名用括号记法：`obj["lt"] = 5`（点记法 `obj.lt` 会被解析为运算符而报错，详见「Flash 4 遗留保留字」）
 

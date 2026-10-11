@@ -1,0 +1,3 @@
+﻿trace("FocusedTestRunId ai-diagnostics Start: __FOCUSED_RUN_ID__");
+org.flashNight.arki.unit.UnitAI.combat.AIDiagnosticsTest.runAllTests();
+trace("FocusedTestRunId ai-diagnostics Complete: __FOCUSED_RUN_ID__");

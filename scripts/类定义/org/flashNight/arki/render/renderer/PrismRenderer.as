@@ -72,7 +72,7 @@ class org.flashNight.arki.render.renderer.PrismRenderer {
         var intensity:Number = VM.cfgIntensity(meta);
 
         // 折射线处理
-        var isFork:Boolean = (meta != null && meta.segmentKind == "fork");
+        var isFork:Boolean = (meta.segmentKind == "fork");
         if (isFork) {
             baseThickness *= forkThicknessMul;
             // 色相偏移（模拟棱镜色散）

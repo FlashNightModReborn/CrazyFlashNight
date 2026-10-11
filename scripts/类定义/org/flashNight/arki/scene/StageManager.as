@@ -293,7 +293,7 @@ class org.flashNight.arki.scene.StageManager {
             return;
         }
 
-        initializeStageWorld(stageInfoList[currentStage], false);
+        initializeStageWorld(stageInfoList[currentStage], false, initStageToken);
         } catch (stageSetupError) {
             handleInitStageFailure(calibrationFirstStage, initStageToken, stageSetupError);
         }
@@ -301,7 +301,7 @@ class org.flashNight.arki.scene.StageManager {
 
     /** 普通子图与 Warlord 临时战场共用同一套物理 world 初始化。 */
     private function initializeStageWorld(
-            stageInfo:StageInfo, isWarlordAction:Boolean):Void {
+            stageInfo:StageInfo, isWarlordAction:Boolean, initStageToken:String):Void {
         currentStageInfo = stageInfo;
 
         var basicInfo = currentStageInfo.basicInfo;
@@ -467,7 +467,7 @@ class org.flashNight.arki.scene.StageManager {
         _global.ASSetPropFlags(gameworld, unIterables, 1, false);
 
         if (!isWarlordAction && isCalibrationHostStage()) {
-            initCalibrationHostStage(basicInfo);
+            initCalibrationHostStage(basicInfo, initStageToken);
             return;
         }
 
@@ -760,7 +760,7 @@ class org.flashNight.arki.scene.StageManager {
         publishWarlordActionLifecycle("frame209_claimed",
             String(slot.binding.encounterId));
         try {
-            initializeStageWorld(slot.stageInfo, true);
+            initializeStageWorld(slot.stageInfo, true, "");
             publishWarlordActionLifecycle("stage_world_initialized",
                 String(slot.binding.encounterId));
             var activated:Object = org.flashNight.arki.scene
@@ -1731,7 +1731,7 @@ class org.flashNight.arki.scene.StageManager {
         return _root.斗兽标定模式 === true && _root.角斗场对手类型 == "calibration";
     }
 
-    private function initCalibrationHostStage(basicInfo:Object):Void {
+    private function initCalibrationHostStage(basicInfo:Object, expectedToken:String):Void {
         _root.当前通关的关卡 = "";
         _root.当前关卡名 = "斗兽标定竞技场";
         _root.关卡类型 = "斗兽标定";
@@ -1745,6 +1745,11 @@ class org.flashNight.arki.scene.StageManager {
         gameworld.出生地.是否从门加载主角 = false;
         _global.ASSetPropFlags(gameworld, ["_arenaCalibrationStage", "佣兵已进场"], 1, false);
 
+        // Capture the ordinary identity before loaders/Start listeners can
+        // replace a MovieClip at this path. The cleared field token is not authority.
+        var readyWorld:MovieClip = gameworld;
+        var readyIdentity:Object = org.flashNight.arki.scene.StageReturnFlow.worldIdentity(readyWorld);
+
         _root.加载场景背景(basicInfo.Background);
         _root.加载后景(environment);
 
@@ -1752,7 +1757,7 @@ class org.flashNight.arki.scene.StageManager {
             _root.场景转换函数.上次切换帧数 = _root.帧计时器.当前帧数;
         }
         gameworld.dispatcher.publish("Start");
-        ArenaCalibrationService.onCalibrationStageReady();
+        ArenaCalibrationService.onCalibrationStageReady(readyWorld, readyIdentity, expectedToken);
     }
 
 

@@ -102,6 +102,20 @@ namespace CF7Launcher.Bus
             return new LegacyHttpAccessPolicy(token, path, body);
         }
 
+        internal static LegacyHttpAccessPolicy CreateWorker(string stateRoot, string workerId, string sessionEpoch)
+        {
+            EnsureCurrentUserOnlyDirectory(stateRoot);
+            byte[] token = RandomNumberGenerator.GetBytes(TokenBytes);
+            string path = Path.Combine(stateRoot, "control-credential.json");
+            string body = new JObject {
+                ["schema"] = "arena-worker.control-credential.v1",
+                ["workerId"] = workerId, ["sessionEpoch"] = sessionEpoch,
+                ["header"] = HeaderName, ["token"] = ToBase64Url(token)
+            }.ToString(Formatting.None);
+            CF7Launcher.ArenaWorker.ArenaWorkerPolicy.WriteNewAtomic(path, body);
+            return new LegacyHttpAccessPolicy(token, path, body);
+        }
+
         public bool IsBrowserOriginRequest(HttpListenerRequest request)
         {
             if (request == null) return true;
@@ -133,6 +147,7 @@ namespace CF7Launcher.Bus
         public static bool IsPrivilegedPath(string path)
         {
             return string.Equals(path, "/console", StringComparison.Ordinal)
+                || string.Equals(path, "/arena-worker", StringComparison.Ordinal)
                 || string.Equals(path, "/status", StringComparison.Ordinal)
                 || string.Equals(path, "/task", StringComparison.Ordinal)
                 || string.Equals(path, "/shutdown", StringComparison.Ordinal)

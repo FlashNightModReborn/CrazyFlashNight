@@ -17,6 +17,7 @@ DEST = ROOT / 'launcher/web/assets/bookshelf/shelf'
 DESIGN = ROOT / 'docs/design-data/bookshelf-shelf-draft.json'
 CATALOG = ROOT / 'data/books/catalog.json'
 SOURCE = ROOT / 'tools/bookshelf-graybox/out'
+V4_SOURCE = ROOT / 'tools/bookshelf-v4'
 
 
 def sha(data):
@@ -152,6 +153,37 @@ def source_assets():
     return channels, assets
 
 
+def v4_assets():
+    """Import the delivered Blender export; keep its editable source closure pinned.
+
+    This does not run Blender or claim a local geometry rebuild. Updating geometry
+    requires exporting model-source/bookshelf-v3.glb, then rerunning this importer.
+    """
+    model = (V4_SOURCE / 'model-source/bookshelf-v3.glb').read_bytes()
+    audit = glb_audit(model)
+    assert audit['bytes'] < 2 * 1024 * 1024 and audit['triangles'] < 12000, 'V4 model budget exceeded'
+    assert audit['images'] == 26, 'Unexpected v4 texture set'
+    doc, _ = glb_parse(model)
+    nodes = {node.get('name'): node for node in doc['nodes']}
+    for item in read(V4_SOURCE / 'model-source/semantic-nodes.json'):
+        node = nodes[item['name']]
+        extras = node.get('extras', {})
+        for key in ['entryKey', 'kind', 'pullMax']:
+            assert extras.get(key) == item.get(key), 'V4 semantic drift: ' + item['name'] + ':' + key
+    for name, data in glb_images(model).items():
+        assert data == (V4_SOURCE / 'model-source/textures' / (name + '.png')).read_bytes(), 'V4 embedded texture drift: ' + name
+    inputs = [p for p in V4_SOURCE.rglob('*') if p.is_file() and '__pycache__' not in p.parts]
+    inputs += [ROOT / 'launcher/web/modules/bookshelf-shelf-scene.js',
+               ROOT / 'launcher/web/modules/bookshelf-panel.js', ROOT / 'launcher/web/css/bookshelf.css']
+    inputs += sorted((ROOT / 'launcher/web/modules/bookshelf/shelf').glob('*.*'))
+    records = [{'path': p.relative_to(ROOT).as_posix(), 'bytes': p.stat().st_size, 'sha256': sha(p.read_bytes())}
+               for p in sorted(inputs, key=lambda p: p.relative_to(ROOT).as_posix())]
+    manifest = {'schema': 'bookshelf-interactive.v4', 'model': 'v3.glb', 'sha256': sha(model), 'audit': audit,
+                'sourceScope': 'Delivered Blender export and paired sources; importing verifies bytes, not a Blender rebuild',
+                'sources': records}
+    return {'v3.glb': model, 'v4-manifest.json': encoded(manifest)}
+
+
 def assemble(source):
     scene = (source / 'scene.glb').read_bytes()
     report = read(source / 'report.json')
@@ -176,6 +208,7 @@ def assemble(source):
         assert all(mesh in node_names for mesh in entry['meshes']), 'Entry mesh missing from GLB'
     output = {'scene.glb': scene, 'config.json': encoded(config), 'report.json': encoded(report)}
     output.update(textures)
+    output.update(v4_assets())
     manifest = {'schema': 'bookshelf-shelf.v1',
                 'scope': 'Bookshelf overview graybox presentation; no Host, save or gameplay authority',
                 'generatorInputs': generator_inputs(report),

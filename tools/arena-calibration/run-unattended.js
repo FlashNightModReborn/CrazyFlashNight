@@ -41,6 +41,8 @@ const {
   writeJsonFile,
 } = require("./lib/arena-calibration-core");
 const { assertSchemaInstance } = require("./lib/schema-registry");
+const { captureProtectedSaveSnapshot, findSolFiles } = require("./lib/unattended-save-safety");
+const { writeImmutableBytes, writeImmutableJson } = require("./lib/immutable-evidence");
 
 const TERMINAL_STATES = new Set(["completed", "failed", "aborted"]);
 const DEFAULT_AGENT_SLOT = "cf7_agent_arena_calibration";
@@ -276,78 +278,8 @@ function backupFile(src, backupDir, label) {
   fs.mkdirSync(backupDir, { recursive: true });
   const base = path.basename(src);
   const dest = path.join(backupDir, `${label}-${base}`);
-  fs.copyFileSync(src, dest);
+  writeImmutableBytes(dest, fs.readFileSync(src));
   return dest;
-}
-
-function findSolFiles(root, slot) {
-  const appData = process.env.APPDATA;
-  if (!appData) return [];
-  const sharedRoot = path.join(appData, "Macromedia", "Flash Player", "#SharedObjects");
-  if (!fs.existsSync(sharedRoot)) return [];
-  const fileName = `${slot}.sol`;
-  const rootNeedle = path.basename(root).toLowerCase();
-  const results = [];
-  const stack = [sharedRoot];
-  while (stack.length > 0) {
-    const dir = stack.pop();
-    let entries = [];
-    try { entries = fs.readdirSync(dir, { withFileTypes: true }); }
-    catch (_error) { continue; }
-    for (const entry of entries) {
-      const full = path.join(dir, entry.name);
-      if (entry.isDirectory()) {
-        stack.push(full);
-      } else if (entry.isFile() && entry.name === fileName) {
-        const lower = full.toLowerCase();
-        if (lower.includes(rootNeedle) && lower.includes("crazyflasher7mercenaryempire.swf")) {
-          results.push(full);
-        }
-      }
-    }
-  }
-  return results;
-}
-
-function fileFingerprint(root, filePath, slot, kind) {
-  const bytes = fs.readFileSync(filePath);
-  const stat = fs.statSync(filePath);
-  const insideRoot = path.relative(root, filePath);
-  const pathKey = crypto.createHash("sha256").update(path.resolve(filePath).toLowerCase(), "utf8").digest("hex").slice(0, 16);
-  return {
-    key: `${kind}:${slot}:${pathKey}`,
-    kind,
-    slot,
-    path: insideRoot.startsWith("..") ? `${kind}/${path.basename(filePath)}` : toProjectRelative(root, filePath),
-    sha256: `sha256:${crypto.createHash("sha256").update(bytes).digest("hex")}`,
-    size: stat.size,
-  };
-}
-
-function captureProtectedSaveSnapshot(root, targetSlot) {
-  const savesDir = path.join(root, "saves");
-  const slots = fs.existsSync(savesDir)
-    ? fs.readdirSync(savesDir)
-        .filter((name) => /^crazyflasher7_saves\d*\.json$/.test(name))
-        .map((name) => path.basename(name, ".json"))
-        .filter((slot) => slot !== targetSlot)
-        .sort()
-    : [];
-  const files = [];
-  slots.forEach((slot) => {
-    const jsonPath = saveJsonPath(root, slot);
-    if (fs.existsSync(jsonPath)) files.push(fileFingerprint(root, jsonPath, slot, "shadow_json"));
-    findSolFiles(root, slot).sort().forEach((solPath) => {
-      files.push(fileFingerprint(root, solPath, slot, "flash_sol"));
-    });
-  });
-  files.sort((left, right) => left.key.localeCompare(right.key) || left.sha256.localeCompare(right.sha256));
-  return {
-    capturedAt: new Date().toISOString(),
-    targetSlot,
-    files,
-    snapshotHash: sha256OfValue(files.map(({ key, sha256, size }) => ({ key, sha256, size }))),
-  };
 }
 
 function compareProtectedSaveSnapshots(before, after) {
@@ -447,8 +379,8 @@ function prepareManifest(root, args) {
       });
 
   const batchDir = path.join(root, "tmp", "arena-calibration", "batches", manifest.batchId);
-  const manifestPath = path.join(batchDir, "case_manifest.json");
-  writeJsonFile(manifestPath, manifest);
+  const manifestPath = path.join(batchDir, `case-manifest-${manifest.manifestHash.slice(7)}.json`);
+  writeImmutableJson(manifestPath, manifest);
   return {
     manifest,
     manifestPath,
@@ -929,7 +861,23 @@ function tailText(text, limit = 6000) {
   return text.slice(text.length - limit);
 }
 
-async function runBatch(port, manifestPathRel, args) {
+function assertBatchIdentity(status, manifestPathRel, manifest, args, owner) {
+  const expected = {
+    batchId: manifest.batchId, manifestHash: manifest.manifestHash,
+    manifestPath: manifestPathRel, assignmentId: args.assignmentId, attemptId: args.attemptId,
+  };
+  if (owner) Object.assign(expected, { workerId: owner.workerId, sessionEpoch: owner.sessionEpoch });
+  const mismatch = Object.entries(expected).find(([key, value]) => !value || !status || status[key] !== value);
+  if (mismatch || !status.workerId || !status.sessionEpoch) {
+    const error = new Error(`arena batch identity mismatch: ${mismatch ? mismatch[0] : "workerId/sessionEpoch"}`);
+    error.phase = "batch_identity";
+    throw error;
+  }
+}
+
+async function runBatch(port, manifestPathRel, args, manifest, dependencies = {}) {
+  const callArena = dependencies.arena || arena;
+  const delay = dependencies.sleep || sleep;
   let start = null;
   let status = null;
   if (args.cancelFile && fs.existsSync(args.cancelFile)) {
@@ -940,9 +888,15 @@ async function runBatch(port, manifestPathRel, args) {
     throw error;
   }
   try {
-    start = await arena(port, "startBatch", { manifestPath: manifestPathRel });
+    start = await callArena(port, "startBatch", {
+      manifestPath: manifestPathRel, batchId: manifest.batchId, manifestHash: manifest.manifestHash,
+      assignmentId: args.assignmentId, attemptId: args.attemptId,
+    });
+    if (start.success !== false || start.error === "batch_already_running") {
+      assertBatchIdentity(start, manifestPathRel, manifest, args);
+    }
   } catch (error) {
-    error.phase = "startBatch";
+    if (!error.phase) error.phase = "startBatch";
     error.start = start;
     throw error;
   }
@@ -955,12 +909,16 @@ async function runBatch(port, manifestPathRel, args) {
 
   const deadline = args.batchTimeoutMs > 0 ? Date.now() + args.batchTimeoutMs : Number.POSITIVE_INFINITY;
   try {
-    status = await arena(port, "status");
+    status = await callArena(port, "status");
+    assertBatchIdentity(status, manifestPathRel, manifest, args, start);
     while (!TERMINAL_STATES.has(status.state)) {
       if (args.cancelFile && fs.existsSync(args.cancelFile)) {
         let abortStatus = null;
         try {
-          abortStatus = await arena(port, "abort", { batchId: status.batchId });
+          abortStatus = await callArena(port, "abort", {
+            batchId: manifest.batchId, assignmentId: args.assignmentId, attemptId: args.attemptId,
+          });
+          assertBatchIdentity(abortStatus, manifestPathRel, manifest, args, start);
           if (abortStatus && abortStatus.state) status = abortStatus;
         } catch (_error) { }
         const error = new Error(`external cancel signal requested bounded batch yield: ${toProjectRelative(projectRoot(), args.cancelFile)}`);
@@ -974,7 +932,10 @@ async function runBatch(port, manifestPathRel, args) {
       if (Date.now() > deadline) {
         let abortStatus = null;
         try {
-          abortStatus = await arena(port, "abort", { batchId: status.batchId });
+          abortStatus = await callArena(port, "abort", {
+            batchId: manifest.batchId, assignmentId: args.assignmentId, attemptId: args.attemptId,
+          });
+          assertBatchIdentity(abortStatus, manifestPathRel, manifest, args, start);
           if (abortStatus && abortStatus.state) status = abortStatus;
         } catch (_error) { }
         const error = new Error(`batch timed out after ${args.batchTimeoutMs}ms and abort was requested`);
@@ -983,8 +944,9 @@ async function runBatch(port, manifestPathRel, args) {
         error.lastStatus = abortStatus || status;
         throw error;
       }
-      await sleep(args.pollMs);
-      status = await arena(port, "status");
+      await delay(args.pollMs);
+      status = await callArena(port, "status");
+      assertBatchIdentity(status, manifestPathRel, manifest, args, start);
     }
   } catch (error) {
     if (!error.phase) error.phase = "poll";
@@ -1058,7 +1020,7 @@ function analyzeResult(root, resultPathRel, outputs, manifest) {
   return { resultPath, rows, summary };
 }
 
-function analyzeAttemptResult(root, resultPathRel, summaryPath, summaryMdPath, manifest) {
+function analyzeAttemptResult(root, resultPathRel, summaryPath, summaryMdPath, manifest, snapshotPath) {
   const result = {
     resultPath: resultPathRel || null,
     resultPathAbs: null,
@@ -1072,13 +1034,20 @@ function analyzeAttemptResult(root, resultPathRel, summaryPath, summaryMdPath, m
     result.error = "missing resultPath";
     return result;
   }
-  const resultPath = resolveInputPath(root, resultPathRel);
+  let resultPath = resolveInputPath(root, resultPathRel);
   result.resultPathAbs = resultPath;
   if (!fs.existsSync(resultPath)) {
     result.error = `result JSONL not found: ${resultPath}`;
     return result;
   }
   try {
+    if (snapshotPath) {
+      writeImmutableBytes(snapshotPath, fs.readFileSync(resultPath));
+      result.sourceResultPath = resultPathRel;
+      resultPath = snapshotPath;
+      result.resultPath = toProjectRelative(root, snapshotPath);
+      result.resultPathAbs = snapshotPath;
+    }
     result.rows = readJsonLines(resultPath);
     if (result.rows.length > 0) {
       validateResultRowsAgainstManifest(result.rows, manifest, resultPathRel);
@@ -1119,9 +1088,11 @@ async function waitForResultFile(root, resultPathRel, timeoutMs, pollMs) {
   return false;
 }
 
-function attemptOutputPaths(root, outputs, attemptIndex, batchId) {
-  const prefix = `attempt-${attemptIndex}-${batchId}`;
+function attemptOutputPaths(root, outputs, attemptIndex, batchId, attemptId) {
+  const prefix = `attempt-${attemptIndex}-${batchId}-${attemptId}`;
   return {
+    result: path.join(outputs.runDir, `${prefix}-results.jsonl`),
+    receipt: path.join(outputs.runDir, `${prefix}-receipt.json`),
     summary: path.join(outputs.runDir, `${prefix}-summary.json`),
     summaryMd: path.join(outputs.runDir, `${prefix}-summary.md`),
   };
@@ -1256,8 +1227,8 @@ function writeRerunManifest(root, sourceManifest, rows, reason, requestedPath) {
   if (!manifest) return null;
   const manifestPath = requestedPath
     ? resolveInputPath(root, requestedPath)
-    : path.join(root, "tmp", "arena-calibration", "batches", manifest.batchId, "case_manifest.json");
-  writeJsonFile(manifestPath, manifest);
+    : path.join(root, "tmp", "arena-calibration", "batches", manifest.batchId, `case-manifest-${manifest.manifestHash.slice(7)}.json`);
+  writeImmutableJson(manifestPath, manifest);
   return {
     manifest,
     manifestPath,
@@ -1337,8 +1308,8 @@ function formatReportMarkdown(report) {
 }
 
 function defaultOutputPaths(root, batchId, args) {
-  const runDir = path.join(root, "tmp", "arena-calibration", "unattended", `${timestampId()}-${batchId}`);
-  return {
+  const runDir = path.join(root, "tmp", "arena-calibration", "unattended", `${timestampId()}-${batchId}-${crypto.randomUUID()}`);
+  const outputs = {
     runDir,
     summary: args.summary ? resolveInputPath(root, args.summary) : path.join(runDir, "summary.json"),
     summaryMd: args.summaryMd ? resolveInputPath(root, args.summaryMd) : path.join(runDir, "summary.md"),
@@ -1346,6 +1317,10 @@ function defaultOutputPaths(root, batchId, args) {
     reportMd: args.reportMd ? resolveInputPath(root, args.reportMd) : path.join(runDir, "run-report.md"),
     rerunManifest: args.rerunManifest ? resolveInputPath(root, args.rerunManifest) : null,
   };
+  for (const key of ["summary", "summaryMd", "report", "reportMd", "rerunManifest"]) {
+    if (outputs[key] && fs.existsSync(outputs[key])) throw new Error(`refusing to overwrite prior ${key}: ${outputs[key]}`);
+  }
+  return outputs;
 }
 
 function runCheck() {
@@ -1686,6 +1661,8 @@ async function main(argv) {
       const attemptIndex = report.attempts.length + 1;
       const attempt = {
         index: attemptIndex,
+        assignmentId: `assignment-${crypto.randomUUID()}`,
+        attemptId: `attempt-${crypto.randomUUID()}`,
         batchId: current.manifest.batchId,
         manifestHash: current.manifest.manifestHash,
         manifestPath: current.manifestPathRel,
@@ -1733,7 +1710,9 @@ async function main(argv) {
         report.httpPort = ready.port;
         report.finalAgentStatus = ready.status;
 
-        const batch = await runBatch(ready.port, current.manifestPathRel, args);
+        const batch = await runBatch(ready.port, current.manifestPathRel, {
+          ...args, assignmentId: attempt.assignmentId, attemptId: attempt.attemptId,
+        }, current.manifest);
         const finalRuntimeIdentity = verifyRuntimeIdentity(
           root,
           ready.port,
@@ -1750,7 +1729,7 @@ async function main(argv) {
         attempt.status = batch.status && batch.status.state ? batch.status.state : "unknown";
         resultPathRel = resultPathFromBatchOutcome(current.manifest, batch, null);
       } catch (error) {
-        if (error && error.phase === "runtime_identity") throw error;
+        if (error && ["runtime_identity", "batch_identity"].includes(error.phase)) throw error;
         const terminalStatus = error.lastStatus && TERMINAL_STATES.has(error.lastStatus.state)
           ? error.lastStatus.state
           : null;
@@ -1771,7 +1750,7 @@ async function main(argv) {
       attempt.completedAt = new Date().toISOString();
       report.finalArenaStatus = attempt.finalArenaStatus;
 
-      const attemptOutputs = attemptOutputPaths(root, outputs, attempt.index, current.manifest.batchId);
+      const attemptOutputs = attemptOutputPaths(root, outputs, attempt.index, current.manifest.batchId, attempt.attemptId);
       if (attempt.error && (attempt.error.phase === "batch_timeout" || attempt.error.phase === "external_cancel")) {
         await waitForResultFile(root, resultPathRel, Math.max(5000, args.pollMs * 2), args.pollMs);
       }
@@ -1780,14 +1759,17 @@ async function main(argv) {
         resultPathRel,
         attemptOutputs.summary,
         attemptOutputs.summaryMd,
-        current.manifest
+        current.manifest,
+        attemptOutputs.result
       );
       attempt.resultPath = analyzed.resultPath;
+      attempt.sourceResultPath = analyzed.sourceResultPath || null;
       attempt.resultRows = analyzed.rows.length;
       attempt.summaryPath = analyzed.summaryPath;
       attempt.summaryMdPath = analyzed.summaryMdPath;
       attempt.summaryTotals = analyzed.summary ? analyzed.summary.totals : null;
       attempt.analysisError = analyzed.error;
+      writeImmutableJson(attemptOutputs.receipt, attempt);
 
       const reason = attempt.status === "completed"
         ? "missing_or_abnormal_rows"
@@ -1901,7 +1883,12 @@ async function main(argv) {
   }
 }
 
-main(process.argv.slice(2)).catch((error) => {
-  console.error(error.message);
-  process.exit(error.isUsageError ? 2 : 1);
-});
+if (require.main === module) {
+  main(process.argv.slice(2)).catch((error) => {
+    console.error(error.message);
+    process.exit(error.isUsageError ? 2 : 1);
+  });
+}
+
+module.exports = { analyzeAttemptResult, assertBatchIdentity, captureProtectedSaveSnapshot,
+  compareProtectedSaveSnapshots, defaultOutputPaths, findSolFiles, isValidSaveData, runBatch };

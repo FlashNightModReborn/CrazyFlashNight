@@ -11,6 +11,129 @@ namespace CF7Launcher.Tests.Guardian
 {
     public class SceneTransitionWindowOrderTests
     {
+        [Theory]
+        [InlineData(false)]
+        [InlineData(true)]
+        public void WorkerFirstShowAndReshowStayBelowForeignWindowWithoutActivation(bool compositionSurface)
+        {
+            RunSta(() => {
+                using var owner=new ObservedForm(); owner.Show();
+                using var world=new ObservedForm {Owner=owner}; world.Show();
+                using var foreign=new ObservedForm(); foreign.Show(); Raise(foreign);
+                using Form curtain=compositionSurface
+                    ? new CompositionHelpSurface(owner,"unused-web-root","unused-profile",transition:true,
+                        presentationPolicy:SceneTransitionPresentationPolicy.ArenaWorker)
+                    : new SceneTransitionBackingForm(SceneTransitionPresentationPolicy.ArenaWorker);
+                curtain.Owner=owner; curtain.ShowInTaskbar=false; curtain.FormBorderStyle=FormBorderStyle.None;
+                curtain.StartPosition=FormStartPosition.Manual; curtain.Bounds=owner.Bounds;
+                var foreground=GetForegroundWindow(); owner.Changes=0;
+                for(int i=0;i<2;i++) {
+                    curtain.Show();
+                    Assert.True(SceneTransitionWindowOrder.IsPresented(curtain));
+                    Assert.True(IsAbove(foreign.Handle,curtain.Handle));
+                    Assert.True(IsAbove(curtain.Handle,world.Handle));
+                    Assert.True(IsAbove(world.Handle,owner.Handle));
+                    Assert.Equal(foreground,GetForegroundWindow());
+                    Assert.Equal(0,GetWindowLong(curtain.Handle,-20)&0x00000008);
+                    Assert.NotEqual(0,GetWindowLong(curtain.Handle,-20)&0x08000000);
+                    curtain.Hide();
+                }
+                Assert.Equal(0,owner.Changes);
+            });
+        }
+
+        [Fact]
+        public void WorkerPreheatedSurfaceBindsOwnerThenShowsWithoutMovingTheOwnerOrForeignWindow()
+        {
+            RunSta(() => {
+                using var owner=new ObservedForm(); owner.Show();
+                using var world=new ObservedForm {Owner=owner}; world.Show();
+                using var foreign=new ObservedForm(); foreign.Show(); Raise(foreign);
+                using var curtain=new CompositionHelpSurface(owner,"unused-web-root","unused-profile",transition:true,
+                    presentationPolicy:SceneTransitionPresentationPolicy.ArenaWorker);
+                var foreground=GetForegroundWindow(); owner.Changes=0;
+                // PrepareAsync creates the native surface before ResumePanel binds Form.Owner.
+                Assert.Null(curtain.Owner);
+                IntPtr preheatedHandle=curtain.Handle;
+                Assert.False(SceneTransitionWindowOrder.IsPresented(curtain));
+                Assert.Equal(foreground,GetForegroundWindow()); Assert.Equal(0,owner.Changes);
+                Assert.True(IsAbove(foreign.Handle,world.Handle)); Assert.True(IsAbove(world.Handle,owner.Handle));
+                Assert.NotEqual(0,GetWindowLong(preheatedHandle,-20)&0x08000000);
+                Assert.Equal(0,GetWindowLong(preheatedHandle,-20)&0x00000008);
+
+                curtain.Owner=owner; curtain.Bounds=owner.Bounds;
+                Assert.Equal(preheatedHandle,curtain.Handle); Assert.Equal(owner.Handle,GetWindow(curtain.Handle,4));
+                Assert.False(SceneTransitionWindowOrder.IsPresented(curtain));
+                Assert.Equal(foreground,GetForegroundWindow()); Assert.Equal(0,owner.Changes);
+                Assert.True(IsAbove(foreign.Handle,world.Handle)); Assert.True(IsAbove(world.Handle,owner.Handle));
+
+                for(int i=0;i<2;i++) {
+                    curtain.Show();
+                    Assert.Equal(preheatedHandle,curtain.Handle);
+                    Assert.True(SceneTransitionWindowOrder.IsPresented(curtain));
+                    Assert.True(IsAbove(foreign.Handle,curtain.Handle)); Assert.True(IsAbove(curtain.Handle,world.Handle));
+                    Assert.True(IsAbove(world.Handle,owner.Handle));
+                    Assert.NotEqual(0,GetWindowLong(curtain.Handle,-20)&0x08000000);
+                    Assert.Equal(0,GetWindowLong(curtain.Handle,-20)&0x00000008);
+                    Assert.Equal(foreground,GetForegroundWindow()); Assert.Equal(0,owner.Changes);
+                    curtain.Hide();
+                    Assert.False(SceneTransitionWindowOrder.IsPresented(curtain));
+                    Assert.Equal(foreground,GetForegroundWindow()); Assert.Equal(0,owner.Changes);
+                }
+            });
+        }
+
+        [Fact]
+        public void WorkerRepairMovesOnlyWithinOwnerBandAndPreservesForeignBoundary()
+        {
+            RunSta(() => {
+                using var owner=new ObservedForm(); owner.Show();
+                using var curtain=new ObservedForm {Owner=owner}; curtain.Show();
+                using var hud=new ObservedForm {Owner=owner}; hud.Show(); Raise(hud);
+                using var foreign=new ObservedForm(); foreign.Show(); Raise(foreign);
+                Assert.True(IsAbove(foreign.Handle,hud.Handle)); Assert.True(IsAbove(hud.Handle,curtain.Handle));
+                var foreground=GetForegroundWindow(); owner.Changes=curtain.Changes=0;
+                Assert.True(SceneTransitionWindowOrder.RaiseIfCovered(curtain,owner,preserveForeignOrder:true));
+                Assert.True(IsAbove(foreign.Handle,curtain.Handle)); Assert.True(IsAbove(curtain.Handle,hud.Handle));
+                Assert.Equal(foreground,GetForegroundWindow()); Assert.Equal(0,owner.Changes);
+                Assert.Equal(1,curtain.Changes);
+                for(int i=0;i<40;i++) Assert.False(SceneTransitionWindowOrder.RaiseIfCovered(curtain,owner,preserveForeignOrder:true));
+                Assert.Equal(1,curtain.Changes);
+                Raise(hud); // A sibling across the foreign boundary is not permission to cross it.
+                Assert.True(IsAbove(hud.Handle,foreign.Handle));
+                Assert.False(SceneTransitionWindowOrder.RaiseIfCovered(curtain,owner,preserveForeignOrder:true));
+                Assert.True(IsAbove(foreign.Handle,curtain.Handle)); Assert.Equal(foreground,GetForegroundWindow());
+            });
+        }
+
+        [Theory]
+        [InlineData(false)]
+        [InlineData(true)]
+        public void WorkerShowAndRepairNeverJoinAnOwnedTopmostWindow(bool compositionSurface)
+        {
+            RunSta(() => {
+                using var owner=new ObservedForm(); owner.Show(); Raise(owner);
+                using var world=new ObservedForm {Owner=owner}; world.Show(); Raise(world);
+                using var cursor=new ObservedForm {Owner=owner,TopMost=true}; cursor.Show();
+                using Form curtain=compositionSurface
+                    ? new CompositionHelpSurface(owner,"unused-web-root","unused-profile",transition:true,
+                        presentationPolicy:SceneTransitionPresentationPolicy.ArenaWorker)
+                    : new SceneTransitionBackingForm(SceneTransitionPresentationPolicy.ArenaWorker);
+                curtain.Owner=owner; curtain.ShowInTaskbar=false; curtain.FormBorderStyle=FormBorderStyle.None;
+                curtain.StartPosition=FormStartPosition.Manual; curtain.Bounds=owner.Bounds;
+                var foreground=GetForegroundWindow(); owner.Changes=0; curtain.Show();
+                Assert.True(IsAbove(cursor.Handle,curtain.Handle)); Assert.True(IsAbove(curtain.Handle,world.Handle));
+                Assert.Equal(0,GetWindowLong(curtain.Handle,-20)&0x00000008);
+                Assert.NotEqual(0,GetWindowLong(cursor.Handle,-20)&0x00000008);
+                Raise(world);
+                Assert.True(SceneTransitionWindowOrder.RaiseIfCovered(curtain,owner,preserveForeignOrder:true));
+                Assert.True(IsAbove(cursor.Handle,curtain.Handle)); Assert.True(IsAbove(curtain.Handle,world.Handle));
+                Assert.Equal(0,GetWindowLong(curtain.Handle,-20)&0x00000008);
+                Assert.Equal(0,GetWindowLong(owner.Handle,-20)&0x00000008);
+                Assert.Equal(foreground,GetForegroundWindow()); Assert.Equal(0,owner.Changes);
+            });
+        }
+
         [Fact]
         public void NativeShownBookshelf_CanDeliverReturnAndRepairOrderWithManagedVisibilityFalse()
         {
@@ -182,6 +305,7 @@ namespace CF7Launcher.Tests.Guardian
         }
         [DllImport("user32.dll")] private static extern IntPtr GetForegroundWindow();
         [DllImport("user32.dll")] private static extern IntPtr GetWindow(IntPtr hwnd, uint command);
+        [DllImport("user32.dll", EntryPoint="GetWindowLongW")] private static extern int GetWindowLong(IntPtr hwnd,int index);
         [DllImport("user32.dll")] private static extern bool SetWindowPos(IntPtr hwnd, IntPtr after,
             int x, int y, int width, int height, uint flags);
     }

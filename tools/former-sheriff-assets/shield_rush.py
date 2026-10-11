@@ -483,7 +483,19 @@ def build_action():
             b.frame(lay,f,elements=[el])
         layers.append(lay)
     # A wide front area in man-local space, hidden through _visible, not alpha.
-    hit=b.instance(b.PREFIX+'接口/透明判定',(4,0,0,16,155,-190),True,'冲撞区域')
+    # The isolated NPC import previously compiled the shared transparent
+    # interface as an empty sprite. Use an explicit geometry symbol (also copied
+    # into the NPC closure), and hide the INSTANCE in AS2 instead of its fill.
+    hit_name=PREFIX+'冲撞判定实体'
+    hit_shape=E.parse(str(b.ROOT/'flashswf/arts/things切割/LIBRARY/判定使用.xml'),b.PARSER).getroot()
+    hit_shape.set('name',hit_name)
+    for attr in list(hit_shape.attrib):
+        if attr.startswith('linkage') or attr in ('itemID','lastModified'):del hit_shape.attrib[attr]
+    for layer in hit_shape.findall('.//x:DOMLayer',b.NS):
+        layer.attrib.pop('outline',None);layer.attrib.pop('useOutlineView',None)
+    for color in hit_shape.findall('.//x:SolidColor',b.NS):color.set('alpha','1')
+    b.GENERATED[hit_name]=hit_shape
+    hit=b.instance(hit_name,(4,0,0,16,155,-190),True,'冲撞区域')
     hitlayer=b.layer('碰撞定位',[hit]);hitlayer.find('x:frames/x:DOMFrame',b.NS).set('duration',str(COUNT));layers.insert(1,hitlayer)
     shadow=E.parse(str(shadow_source()),b.PARSER).getroot()
     shadow.set('name',PREFIX+'接地阴影')

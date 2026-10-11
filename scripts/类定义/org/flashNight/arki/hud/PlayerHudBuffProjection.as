@@ -3,7 +3,8 @@ class org.flashNight.arki.hud.PlayerHudBuffProjection {
     private var manager:Object;
     private var entries:Array;
     private var generation:Number;
-    public function PlayerHudBuffProjection() { entries = []; generation = 0; }
+    private var snapshotRows:Array;
+    public function PlayerHudBuffProjection() { entries = []; generation = 0; snapshotRows = []; }
     public function initialize(value:Object):Void {
         if (value === manager) return;
         deinitialize();
@@ -16,17 +17,19 @@ class org.flashNight.arki.hud.PlayerHudBuffProjection {
         manager.eventDispatcher.subscribe("remove", removeIcon, this);
     }
     public function deinitialize():Void {
-        if (manager != null && manager.eventDispatcher != null && !manager.eventDispatcher.isDestroyed()) {
-            manager.eventDispatcher.unsubscribe("add", addIcon, this);
-            manager.eventDispatcher.unsubscribe("remove", removeIcon, this);
+        var dispatcher:Object = manager.eventDispatcher;
+        if (dispatcher != null && !dispatcher.isDestroyed()) {
+            dispatcher.unsubscribe("add", addIcon, this);
+            dispatcher.unsubscribe("remove", removeIcon, this);
         }
         manager = null;
         entries.length = 0;
+        snapshotRows = [];
     }
     public function update():Void { }
     public function addIcon(id:String, buff:Object):Void {
         for (var i:Number = 0; i < entries.length; i++) if (entries[i].id == id) return;
-        entries.push({id:id, buff:buff});
+        entries.push({id:id, wireId:generation + ":" + id, buff:buff});
     }
     public function removeIcon(id:String):Void {
         for (var i:Number = 0; i < entries.length; i++) {
@@ -34,7 +37,8 @@ class org.flashNight.arki.hud.PlayerHudBuffProjection {
         }
     }
     public function snapshot():Array {
-        var rows:Array = [];
+        var previous:Array = snapshotRows;
+        var rows:Array = previous.length == entries.length ? null : [];
         for (var i:Number = 0; i < entries.length; i++) {
             var entry:Object = entries[i];
             var timer:Object = entry.buff.getPrimaryTimer();
@@ -42,9 +46,18 @@ class org.flashNight.arki.hud.PlayerHudBuffProjection {
             var remain:Number = timer == null ? 0 : Number(timer.getRemaining());
             if (!isFinite(total) || total < 0) total = 0;
             if (!isFinite(remain)) remain = 0;
-            rows.push({id:generation + ":" + entry.id, timed:timer != null,
-                total:total, remaining:Math.max(0, remain)});
+            remain = Math.max(0, remain);
+            var timed:Boolean = timer != null;
+            var row:Object = previous[i];
+            if (row == null || row.id !== entry.wireId || row.timed !== timed || row.total !== total || row.remaining !== remain) {
+                // Copy only after the first changed row. The old array and its rows
+                // stay immutable for pending packets and forced resynchronization.
+                if (rows == null) rows = previous.slice(0, i);
+                row = {id:entry.wireId, timed:timed, total:total, remaining:remain};
+            }
+            if (rows != null) rows.push(row);
         }
-        return rows;
+        if (rows != null) snapshotRows = rows;
+        return snapshotRows;
     }
 }

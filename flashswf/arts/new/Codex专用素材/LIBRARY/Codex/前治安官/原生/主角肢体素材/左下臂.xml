@@ -1,0 +1,24 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="Codex/前治安官/原生/主角肢体素材/左下臂" lastUniqueIdentifier="15">
+  <timeline>
+    <DOMTimeline name="左下臂">
+      <layers>
+        <DOMLayer name="Layer 1" color="#B5F5B0" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/重装特勤/部件/右下臂" selected="true" centerPoint3DX="18.5" centerPoint3DY="95.6" symbolType="graphic">
+                  <matrix>
+                    <Matrix tx="1.05" ty="39.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

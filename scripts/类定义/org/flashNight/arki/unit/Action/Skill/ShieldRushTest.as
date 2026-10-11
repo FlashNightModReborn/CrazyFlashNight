@@ -67,6 +67,7 @@ class org.flashNight.arki.unit.Action.Skill.ShieldRushTest {
             var bullet={_x:p.shootX,_y:p.shootY};
             var collider=ShieldRushTest.hitFactory.createFromBullet(bullet,p.区域定位area);
             var b:Object={xMin:collider.left,xMax:collider.right,yMin:collider.top,yMax:collider.bottom};
+            ShieldRushTest.check(b.xMax>b.xMin && b.yMax>b.yMin && Math.abs(b.xMin-ShieldRushTest.u._x)<1000,"published native hitbox has real finite geometry near player");
             if(ShieldRushTest.caseId==8 || ShieldRushTest.caseId==9) {
                 for(var targetIndex:Number=0;targetIndex<ShieldRushTest.watched.targetHits.length;targetIndex++) {
                     var tx:Number=(100+350*targetIndex)*(ShieldRushTest.caseId==8?-1:1);

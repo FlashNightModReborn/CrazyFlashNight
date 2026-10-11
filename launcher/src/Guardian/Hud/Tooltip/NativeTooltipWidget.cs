@@ -656,7 +656,7 @@ namespace CF7Launcher.Guardian.Hud.Tooltip
             GraphicsState bodyState = g.Save();
             try
             {
-                g.SetClip(body);
+                g.SetClip(body, CombineMode.Intersect);
                 int bodyPad = NativeTooltipLayout.Px(
                     NativeTooltipLayout.PinnedBodyPadBase, scale);
                 int scrollY = ScrollOffsetPx(plan, _scrollLine);
@@ -728,7 +728,7 @@ namespace CF7Launcher.Guardian.Hud.Tooltip
             GraphicsState state = g.Save();
             try
             {
-                if (clip.HasValue) g.SetClip(clip.Value);
+                if (clip.HasValue) g.SetClip(clip.Value, CombineMode.Intersect);
                 int count = Math.Min(lines.Count - startLine, maxLines);
                 float cy = y;
                 for (int i = 0; i < count; i++)

@@ -46,7 +46,7 @@ class org.flashNight.arki.unit.Action.Skill.DrugInputService {
             DrugInputService.syncSwitchView(view, switchKeyCode, rootRef);
             var switchResult:Object = DrugInputService.updateSwitch(
                 unit, switchKeyDown, inputEnabled, rootRef, view);
-            var switched:Boolean = switchResult != null && switchResult.switched === true;
+            var switched:Boolean = switchResult.switched === true;
             if (switched) DrugInputService.syncBankView(view, inventory);
 
             for (var lane:Number = 0; lane < DrugInputService.LANE_COUNT; lane++) {
@@ -63,7 +63,7 @@ class org.flashNight.arki.unit.Action.Skill.DrugInputService {
                     rootRef,
                     null
                 );
-                if (result && result.used) usedCount++;
+                if (result.used) usedCount++;
             }
             return usedCount;
         };
@@ -407,7 +407,7 @@ class org.flashNight.arki.unit.Action.Skill.DrugInputService {
         var controller:Object = view["控制器" + lane];
         if (controller) {
             controller.inputOwnedByAS = true;
-            if (root && root.keyshow && controller.mytext && !isNaN(keyCode)
+            if (root.keyshow && controller.mytext && !isNaN(keyCode)
                 && controller.__drugDisplayedKeyCode !== keyCode) {
                 controller.__drugDisplayedKeyCode = keyCode;
                 controller.mytext.text = root.keyshow(keyCode);
@@ -421,7 +421,7 @@ class org.flashNight.arki.unit.Action.Skill.DrugInputService {
         var controller:Object = view.控制器4;
         if (controller) {
             controller.inputOwnedByAS = true;
-            if (root && root.keyshow && controller.mytext && !isNaN(keyCode)
+            if (root.keyshow && controller.mytext && !isNaN(keyCode)
                     && controller.__drugDisplayedKeyCode !== keyCode) {
                 controller.__drugDisplayedKeyCode = keyCode;
                 controller.mytext.text = root.keyshow(keyCode);
@@ -488,7 +488,7 @@ class org.flashNight.arki.unit.Action.Skill.DrugInputService {
         if (!inventory || typeof inventory.getItem != "function" || (bank != 0 && bank != 1)) return false;
         for (var lane:Number = 0; lane < LANE_COUNT; lane++) {
             var item:Object = inventory.getItem(String(physicalSlotFor(bank, lane)));
-            if (item != null && item.name != undefined && item.name != "" && Number(item.value) > 0) return true;
+            if (item.name != undefined && item.name != "" && Number(item.value) > 0) return true;
         }
         return false;
     }

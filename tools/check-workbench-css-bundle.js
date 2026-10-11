@@ -32,6 +32,8 @@ const IMPORTS = [
     './panels/chemistry.css',
     './panels/commune.css',
     './panels/bartending.css',
+    './panels/armory.css',
+    './panels/ironspear.css',
     './workbench/equipment-inspector.css',
     './workbench/skills.css',
     './workbench/equipment-tuning.css',
@@ -51,6 +53,7 @@ const IMPORTS = [
     './gym-panel.css',
     './book-comic.css',
     './ragchat.css',
+    './panels/tablet.css',
     './workbench/utilities.css'
 ];
 

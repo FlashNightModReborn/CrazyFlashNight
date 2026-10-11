@@ -1,4 +1,4 @@
-﻿const { contextBridge, ipcRenderer } = require("electron");
+const { contextBridge, ipcRenderer } = require("electron");
 
 contextBridge.exposeInMainWorld("cf7Balance", {
   runtime: "electron",
@@ -19,6 +19,11 @@ contextBridge.exposeInMainWorld("cf7Balance", {
   getChangelog: () => ipcRenderer.invoke("cf7:get-changelog"),
   runValidation: () => ipcRenderer.invoke("cf7:run-validation"),
   getFieldConfig: () => ipcRenderer.invoke("cf7:get-field-config"),
-  saveFieldConfig: (config) => ipcRenderer.invoke("cf7:save-field-config", config)
+  saveFieldConfig: (config) => ipcRenderer.invoke("cf7:save-field-config", config),
+  monsterGetTables: () => ipcRenderer.invoke("cf7:monster-get-tables"),
+  monsterSaveTable: (payload) => ipcRenderer.invoke("cf7:monster-save-table", payload),
+  monsterRefresh: () => ipcRenderer.invoke("cf7:monster-refresh"),
+  monsterTableApply: (options) => ipcRenderer.invoke("cf7:monster-table-apply", options),
+  monsterSolve: (options) => ipcRenderer.invoke("cf7:monster-solve", options)
 });
 

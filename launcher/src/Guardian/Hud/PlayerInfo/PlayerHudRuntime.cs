@@ -25,6 +25,7 @@ internal sealed class PlayerHudRuntime : IPanelHudCompanion, IDisposable
     private bool _sharedActive,_changingBackend,_backendChanged;
 
     internal OverlayBase[] PresentationSurfaces => new OverlayBase[] { _buffs, _resources, _bottom };
+    private Action<double,double,int,int>? _mainTimingObserver;
 
     internal PlayerHudRuntime(Form owner, Control anchor, PlayerInfoSplitSurface resources,
         PlayerHudController controller, string iconsRoot, NativeHudOverlay existingHud,bool shareMainHud=false)
@@ -38,6 +39,8 @@ internal sealed class PlayerHudRuntime : IPanelHudCompanion, IDisposable
             _bottom.RenderTimingObserver = (paint, commit, width, height) => profiler.Render("bottom", paint, commit, width, height);
             _buffs.RenderTimingObserver = (paint, commit, width, height) => profiler.Render("buff", paint, commit, width, height);
             _resources.RenderTimingObserver = (paint, commit, width, height) => profiler.Render("resources", paint, commit, width, height);
+            if(shareMainHud)existingHud.RenderTimingObserver=_mainTimingObserver=
+                (paint,commit,width,height)=>profiler.Render("main",paint,commit,width,height);
         }
         try
         {
@@ -58,6 +61,7 @@ internal sealed class PlayerHudRuntime : IPanelHudCompanion, IDisposable
             _resources.PresentationChanged += RestoreStack;
             _queryTimer = new Timer { Interval = 250 };
             _queryTimer.Tick += OnTick; _queryTimer.Start();
+            if (shareMainHud) existingHud.PartialRepaintEnabled = true;
         }
         catch
         {
@@ -175,10 +179,14 @@ internal sealed class PlayerHudRuntime : IPanelHudCompanion, IDisposable
     {
         if (_disposed) return; _disposed = true;
         SetSharedWorld(null);
+        if (_shareMainHud) _existingHud.PartialRepaintEnabled = false;
         _existingHud.PresentationChanged -= RestoreStack;
         _bottom.PresentationChanged -= RestoreStack; _buffs.PresentationChanged -= RestoreStack; _resources.PresentationChanged -= RestoreStack;
         _queryTimer.Stop(); _queryTimer.Tick -= OnTick; _queryTimer.Dispose();
         _resources.RenderTimingObserver = null; _bottom.RenderTimingObserver = null; _buffs.RenderTimingObserver = null;
+        if(_mainTimingObserver!=null && ReferenceEquals(_existingHud.RenderTimingObserver,_mainTimingObserver))
+            _existingHud.RenderTimingObserver=null;
+        _mainTimingObserver=null;
         _bottom.RemoveWidget(_resourceTooltip.Widget);_resourceTooltip.Dispose();_bottom.Dispose(); _buffs.Dispose(); _controller.Dispose();
         // Program owns and drains the resource raster pipeline through its existing shutdown path.
     }

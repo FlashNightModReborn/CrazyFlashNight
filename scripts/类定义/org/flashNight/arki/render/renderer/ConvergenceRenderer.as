@@ -73,7 +73,7 @@ class org.flashNight.arki.render.renderer.ConvergenceRenderer {
         var T:Number = VM.cfgNum(config, "thickness", DEFAULT_THICKNESS) * intensity;
         railSpread *= intensity;
 
-        var isFork:Boolean = (meta != null && meta.segmentKind == "fork");
+        var isFork:Boolean = (meta.segmentKind == "fork");
         if (isFork) { railSpread *= 0.5; T *= 0.6; }
 
         var dx:Number = arc.endX - arc.startX;
@@ -432,7 +432,7 @@ class org.flashNight.arki.render.renderer.ConvergenceRenderer {
         // ─────────────────────────────────────────────────────────────
         if (lod < 1) {
             var hitSize:Number = T * 5.0 * scale * intensity;
-            if (meta != null && meta.segmentKind == "pierce"
+            if (meta.segmentKind == "pierce"
                 && meta.hitPoints != null) {
                 var hitPoints:Array = meta.hitPoints;
                 var hpLen:Number = hitPoints.length;

@@ -76,7 +76,7 @@ namespace CF7Launcher.Tasks
             _getLaunchSaveStatus = getLaunchSaveStatus ?? delegate { return null; };
         }
 
-        public void SetLaunchFlow(GameLaunchFlow launchFlow)
+        public void SetLaunchFlow(GameLaunchFlow launchFlow, bool useBootstrapLoad = false)
         {
             lock (_gate)
             {
@@ -97,6 +97,7 @@ namespace CF7Launcher.Tasks
                 _startGame = delegate(string slot, bool fresh, bool deferJsReveal, bool requireFlashReveal)
                 {
                     if (fresh) launchFlow.StartFreshGame(slot, deferJsReveal, requireFlashReveal);
+                    else if (useBootstrapLoad) launchFlow.StartGameFromBootstrap(slot, deferJsReveal, requireFlashReveal);
                     else launchFlow.StartGame(slot, deferJsReveal, requireFlashReveal);
                 };
                 _revealOk = delegate { launchFlow.OnJsRevealOk(); };

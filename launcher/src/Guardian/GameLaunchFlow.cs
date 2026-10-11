@@ -2668,7 +2668,7 @@ namespace CF7Launcher.Guardian
                         LogManager.Log("[RevealProbe] panel_swap.flash_show " + ElapsedMs(tFlash).ToString("0.0") + "ms");
 
                         long tAct = System.Diagnostics.Stopwatch.GetTimestamp();
-                        _form.Activate();
+                        if (!_form.ArenaWorkerMode) _form.Activate();
                         LogManager.Log("[RevealProbe] panel_swap.activate " + ElapsedMs(tAct).ToString("0.0") + "ms");
                     }
                 }
@@ -3367,6 +3367,13 @@ namespace CF7Launcher.Guardian
                 case State.Resetting:
                     return;  // 已处理或未启动, 忽略
                 case State.Ready:
+                    if (_form != null && _form.ArenaWorkerMode)
+                    {
+                        CancelZombieTimer();
+                        _windowManager?.ResetEmbedState();
+                        lock (_stateLock) { TransitionToError("worker_flash_exited"); }
+                        return;
+                    }
                     // Phase 2b-ext: Ready 但 reveal 尚未执行 → 属于"启动阶段"而非"玩家关游戏",
                     // 转 Error 让 BootstrapUI retry; reveal 已执行才视为玩家正常关游戏 ForceExit.
                     bool revealDone;

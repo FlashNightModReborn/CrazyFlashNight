@@ -5,7 +5,7 @@
   <!-- orphan="true" = XML present in LIBRARY/ but not in DOMDocument <Include>; 
        Flash IDE library panel cannot see it but .swf compile may still expose linkage -->
 
-  <!-- 5699 unique assets -->
+  <!-- 5721 unique assets -->
   <asset id="(劣质)蓝色刀光" swf="flashswf/arts/new/雾人整合特效.swf" symbolName="尚未整理/(劣质)蓝色刀光/(劣质)蓝色刀光" />
   <asset id="0" swf="flashswf/arts/new/3XD的素材.swf" symbolName="1主武器/一部分武器/武器部分/mk23/MK23手枪" />
   <asset id="1" swf="flashswf/arts/new/3XD的素材.swf" symbolName="1主武器/一部分武器1/武器本体/PKM战术版/元件 16" />
@@ -450,6 +450,18 @@
   <asset id="刀-龙破军霜" swf="flashswf/arts/new/fs配置素材.swf" symbolName="龙破军霜/刀-龙破军霜" />
   <asset id="刀虚影特效" swf="flashswf/arts/new/乔恩.swf" symbolName="特效与子弹相关/特效/刀虚影特效" />
   <asset id="刺弹炮枪火" swf="flashswf/arts/new/lady.swf" symbolName="特效文件存放/刺弹炮枪火文件/刺弹炮枪火" />
+  <asset id="前治安官动作-兴奋剂" swf="flashswf/arts/new/Codex专用素材.swf" symbolName="Codex/前治安官/原生/容器/技能容器/技能容器-兴奋剂" />
+  <asset id="前治安官动作-小跳" swf="flashswf/arts/new/Codex专用素材.swf" symbolName="Codex/前治安官/原生/容器/技能容器/技能容器-小跳" />
+  <asset id="前治安官动作-持盾冲刺" swf="flashswf/arts/new/Codex专用素材.swf" symbolName="Codex/前治安官二阶段/持盾冲刺" />
+  <asset id="前治安官动作-持盾刺击" swf="flashswf/arts/new/Codex专用素材.swf" symbolName="Codex/前治安官二阶段/持盾刺击" />
+  <asset id="前治安官动作-持盾射击" swf="flashswf/arts/new/Codex专用素材.swf" symbolName="Codex/前治安官二阶段/持盾射击" />
+  <asset id="前治安官动作-持盾待机" swf="flashswf/arts/new/Codex专用素材.swf" symbolName="Codex/前治安官二阶段/持盾待机" />
+  <asset id="前治安官动作-棍棒" swf="flashswf/arts/new/Codex专用素材.swf" symbolName="Codex/前治安官/原生/容器/兵器攻击容器/平A/兵器攻击容器-棍棒1连招" />
+  <asset id="前治安官动作-盾冲" swf="flashswf/arts/new/Codex专用素材.swf" symbolName="Codex/前治安官/固定盾冲/战技容器-特勤盾冲" />
+  <asset id="前治安官动作-盾击" swf="flashswf/arts/new/Codex专用素材.swf" symbolName="Codex/前治安官二阶段/盾击" />
+  <asset id="前治安官动作-翻滚换弹" swf="flashswf/arts/new/Codex专用素材.swf" symbolName="Codex/前治安官/原生/容器/技能容器/技能容器-翻滚换弹" />
+  <asset id="前治安官动作-铁布衫" swf="flashswf/arts/new/Codex专用素材.swf" symbolName="Codex/前治安官/原生/容器/技能容器/技能容器-铁布衫" />
+  <asset id="前治安官落盾" swf="flashswf/arts/new/Codex专用素材.swf" symbolName="Codex/前治安官二阶段/落盾" />
   <asset id="剑光特效" swf="flashswf/arts/things.swf" symbolName="2.冷兵器相关/黑铁的剑相关/剑光特效" />
   <asset id="剑气波" swf="flashswf/arts/原版素材库-子弹.swf" symbolName="子弹-气功组/剑气波" />
   <asset id="剑气波竖" swf="flashswf/arts/原版素材库-子弹.swf" symbolName="子弹-气功组/剑气波竖" />
@@ -636,7 +648,9 @@
   <asset id="图标-92式胸甲" swf="flashswf/arts/things.swf" symbolName="0.防具相关/92&amp;61套装/图标-92式胸甲" />
   <asset id="图标-92式腿甲" swf="flashswf/arts/things.swf" symbolName="0.防具相关/92&amp;61套装/图标-92式腿甲" />
   <asset id="图标-92式装甲鞋" swf="flashswf/arts/things.swf" symbolName="0.防具相关/92&amp;61套装/图标-92式装甲鞋" />
+  <asset id="图标-AA12" swf="flashswf/arts/new/3XD的素材.swf" symbolName="1主武器/AA12普通/图标-AA12" />
   <asset id="图标-AA12丧尸" swf="flashswf/arts/new/3XD的素材.swf" symbolName="1主武器/AA12丧尸/图标-AA12丧尸" />
+  <asset id="图标-AA12战术版" swf="flashswf/arts/new/3XD的素材.swf" symbolName="1主武器/AA12战术版/图标-AA12战术版" />
   <asset id="图标-AK200" swf="flashswf/arts/new/3XD的素材.swf" symbolName="1主武器/一部分武器/武器部分/ak200/图标-AK200" />
   <asset id="图标-AK47" swf="flashswf/arts/things.swf" symbolName="1.枪械相关/长枪/图标-AK47" />
   <asset id="图标-AK47火麒麟" swf="flashswf/arts/new/雾人装备调整.swf" symbolName="2.热兵器/火麒麟AK47/图标-AK47火麒麟" />
@@ -856,6 +870,8 @@
   <asset id="图标-OPDW17" swf="flashswf/arts/new/偷吃屑鱼坟头贡品.swf" symbolName="图标/opdw图标" />
   <asset id="图标-OPDW17EXL" swf="flashswf/arts/new/天网豪华单间.swf" />
   <asset id="图标-OPDW17EXS" swf="flashswf/arts/new/天网豪华单间.swf" />
+  <asset id="图标-Origin12" swf="flashswf/arts/new/3XD的素材.swf" symbolName="2副武器/Origin12/图标-Origin12" />
+  <asset id="图标-Origin12战术版" swf="flashswf/arts/new/3XD的素材.swf" symbolName="2副武器/Origin12战术版/图标-Origin12战术版" />
   <asset id="图标-P90" swf="flashswf/arts/things.swf" symbolName="1.枪械相关/手枪/图标-P90" />
   <asset id="图标-P90战术版" swf="flashswf/arts/things.swf" symbolName="1.枪械相关/手枪/P90战术版/图标-P90战术版" />
   <asset id="图标-PF98A" swf="flashswf/arts/new/fs配置素材.swf" symbolName="长枪/PF98A/图标-PF98A" />
@@ -3536,6 +3552,7 @@
   <asset id="敌人-凤凰眷属飞行小型" swf="flashswf/arts/new/魔神菲尼克斯.swf" symbolName="小兵/敌人-凤凰眷属飞行小型" />
   <asset id="敌人-凤凰眷属黑金" swf="flashswf/arts/new/魔神菲尼克斯.swf" symbolName="小兵/敌人-凤凰眷属黑金" />
   <asset id="敌人-刀狙少女" swf="flashswf/arts/new/3XD做的npc.swf" symbolName="刀狙少女/敌人-刀狙少女" />
+  <asset id="敌人-前治安官" swf="flashswf/arts/new/Codex专用素材.swf" symbolName="Codex/前治安官/敌人-前治安官" />
   <asset id="敌人-剑道社社员" swf="flashswf/arts/new/大学人员.swf" symbolName="敌人动画合集/敌人-剑道社社员" />
   <asset id="敌人-剑道社长" swf="flashswf/arts/new/剑道社长.swf" />
   <asset id="敌人-劫掠少女" swf="flashswf/arts/new/3XD做的npc.swf" symbolName="劫掠少女/敌人-劫掠少女" />
@@ -3790,6 +3807,8 @@
   <asset id="枪-手枪-N99" swf="flashswf/arts/new/偷吃屑鱼坟头贡品.swf" />
   <asset id="枪-手枪-OPDW17" swf="flashswf/arts/new/偷吃屑鱼坟头贡品.swf" />
   <asset id="枪-手枪-OPDW17EXS" swf="flashswf/arts/new/天网豪华单间.swf" />
+  <asset id="枪-手枪-Origin12" swf="flashswf/arts/new/3XD的素材.swf" symbolName="2副武器/Origin12/枪-手枪-Origin12" />
+  <asset id="枪-手枪-Origin12战术版" swf="flashswf/arts/new/3XD的素材.swf" symbolName="2副武器/Origin12战术版/枪-手枪-Origin12战术版" />
   <asset id="枪-手枪-P90" swf="flashswf/arts/things.swf" symbolName="1.枪械相关/手枪/枪-手枪-P90" />
   <asset id="枪-手枪-P90战术版" swf="flashswf/arts/things.swf" symbolName="1.枪械相关/手枪/P90战术版/枪-手枪-P90战术版" />
   <asset id="枪-手枪-PMM" swf="flashswf/arts/new/原体融合生物.swf" />
@@ -3872,7 +3891,9 @@
   <asset id="枪-长枪-53式步骑枪" swf="flashswf/arts/new/fs配置素材.swf" symbolName="长枪/53式步骑枪/53式步骑枪" />
   <asset id="枪-长枪-53式步骑枪墨冰" swf="flashswf/arts/new/变体武器.swf" symbolName="1.枪械相关/长枪/53式步骑枪/0.墨冰/枪-长枪-53式步骑枪墨冰" />
   <asset id="枪-长枪-53式步骑枪狱火" swf="flashswf/arts/new/变体武器.swf" symbolName="1.枪械相关/长枪/53式步骑枪/1.狱火/枪-长枪-53式步骑枪狱火" />
+  <asset id="枪-长枪-AA12" swf="flashswf/arts/new/3XD的素材.swf" symbolName="1主武器/AA12普通/枪-长枪-AA12" />
   <asset id="枪-长枪-AA12丧尸" swf="flashswf/arts/new/3XD的素材.swf" symbolName="1主武器/AA12丧尸/枪-长枪-AA12丧尸" />
+  <asset id="枪-长枪-AA12战术版" swf="flashswf/arts/new/3XD的素材.swf" symbolName="1主武器/AA12战术版/枪-长枪-AA12战术版" />
   <asset id="枪-长枪-AK200" swf="flashswf/arts/new/3XD的素材.swf" symbolName="1主武器/一部分武器/武器部分/ak200/枪-长枪-AK200" />
   <asset id="枪-长枪-AK47" swf="flashswf/arts/things.swf" symbolName="1.枪械相关/长枪/枪-长枪-AK47" />
   <asset id="枪-长枪-AK47火麒麟" swf="flashswf/arts/new/雾人装备调整.swf" symbolName="2.热兵器/火麒麟AK47/枪-长枪-AK47火麒麟" />
@@ -4216,6 +4237,7 @@
   <asset id="物品图标" swf="flashswf/UI/物品与技能相关界面.swf" symbolName="物品栏/新版物品图标" />
   <asset id="物品改装界面" swf="flashswf/UI/物品改装界面.swf" symbolName="UI重构/物品改装界面" />
   <asset id="物品栏界面" swf="flashswf/UI/物品与技能相关界面.swf" symbolName="新版物品栏界面" />
+  <asset id="特勤飞盔" swf="flashswf/arts/new/Codex专用素材.swf" symbolName="Codex/前治安官/飞盔" />
   <asset id="特效-猩红天秤余波" swf="flashswf/arts/things0.swf" symbolName="Codex/Ti61-血剑战技/特效-猩红天秤余波" />
   <asset id="特殊友军-保护仪器" swf="flashswf/arts/new/素材库-诺亚新敌人.swf" symbolName="保护仪器/特殊友军-保护仪器" />
   <asset id="特殊敌人-兵工厂中枢" swf="flashswf/arts/new/素材库-诺亚新敌人.swf" symbolName="兵工厂特殊单位/特殊敌人-兵工厂中枢" />

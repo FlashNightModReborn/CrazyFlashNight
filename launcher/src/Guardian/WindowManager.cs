@@ -143,6 +143,7 @@ namespace CF7Launcher.Guardian
 
         private const int SW_HIDE = 0;
         private const int SW_SHOW = 5;
+        private const int SW_SHOWNOACTIVATE = 4;
 
         private const int GWL_STYLE = -16;
         private const int WS_CAPTION = 0x00C00000;
@@ -155,6 +156,7 @@ namespace CF7Launcher.Guardian
         private const uint SWP_NOSIZE = 0x0001;
         private const uint SWP_NOZORDER = 0x0004;
         private const uint SWP_FRAMECHANGED = 0x0020;
+        private const uint SWP_NOACTIVATE = 0x0010;
         private const uint GA_ROOT = 2;
 
         private readonly IFlashFocusWindowApi _focusApi;
@@ -178,9 +180,11 @@ namespace CF7Launcher.Guardian
         private EmbedPhase _embedPhase;
         private int _currentFlashPid;
 
-        public WindowManager()
+        private readonly bool _allowForeground = true;
+        public WindowManager(bool allowForeground = true)
             : this(new Win32FlashFocusWindowApi(), IntPtr.Zero)
         {
+            _allowForeground = allowForeground;
         }
 
         internal WindowManager(
@@ -449,7 +453,7 @@ namespace CF7Launcher.Guardian
 
             // 4) SWP_FRAMECHANGED 强制非客户区重算
             if (!SetWindowPos(hwnd, IntPtr.Zero, 0, 0, 0, 0,
-                SWP_NOMOVE | SWP_NOSIZE | SWP_NOZORDER | SWP_FRAMECHANGED))
+                SWP_NOMOVE | SWP_NOSIZE | SWP_NOZORDER | SWP_FRAMECHANGED | (_allowForeground ? 0u : SWP_NOACTIVATE)))
                 LogWin32Failure("SetWindowPos(hidden framechanged)", hwnd);
 
             // 5) SetParent 到隐藏宿主
@@ -671,7 +675,7 @@ namespace CF7Launcher.Guardian
                 ApplyFlashChildStyle(hwnd, "embed");
 
                 if (!SetWindowPos(hwnd, IntPtr.Zero, 0, 0, 0, 0,
-                    SWP_NOMOVE | SWP_NOSIZE | SWP_NOZORDER | SWP_FRAMECHANGED))
+                    SWP_NOMOVE | SWP_NOSIZE | SWP_NOZORDER | SWP_FRAMECHANGED | (_allowForeground ? 0u : SWP_NOACTIVATE)))
                     LogWin32Failure("SetWindowPos(embed framechanged)", hwnd);
                 SetParentLogged(hwnd, _hostPanel.Handle, "SetParent(embed host)");
             }
@@ -684,7 +688,7 @@ namespace CF7Launcher.Guardian
                 DwmSetWindowAttribute(hwnd, DWMWA_CLOAK, ref cloakOff, sizeof(int));
             }
             catch { }
-            ShowWindow(hwnd, SW_SHOW);
+            ShowWindow(hwnd, _allowForeground ? SW_SHOW : SW_SHOWNOACTIVATE);
             ResizeFlashToPanel();
 
             _hostPanel.Resize -= OnHostPanelResize;
@@ -792,7 +796,7 @@ namespace CF7Launcher.Guardian
                     style = style & ~WS_CHILD;
                     SetWindowLongLogged(_flashHwnd, GWL_STYLE, style, "SetWindowLong(detach remove WS_CHILD)");
                     if (!SetWindowPos(_flashHwnd, IntPtr.Zero, 0, 0, 0, 0,
-                        SWP_NOMOVE | SWP_NOSIZE | SWP_NOZORDER | SWP_FRAMECHANGED))
+                        SWP_NOMOVE | SWP_NOSIZE | SWP_NOZORDER | SWP_FRAMECHANGED | (_allowForeground ? 0u : SWP_NOACTIVATE)))
                         LogWin32Failure("SetWindowPos(detach framechanged)", _flashHwnd);
                     SetParentLogged(_flashHwnd, IntPtr.Zero, "SetParent(detach desktop)");
                 }
@@ -868,6 +872,7 @@ namespace CF7Launcher.Guardian
         /// </summary>
         internal bool HandoffFlashFocusBeforePanelHide(string reason, IntPtr expectedPanelForeground)
         {
+            if (!_allowForeground) return false;
             // 同步交接仅尝试一次；前台已变化时不调用 SetForegroundWindow，也不绑外部输入队列。
             IntPtr flash = _flashHwnd;
             try
@@ -938,6 +943,7 @@ namespace CF7Launcher.Guardian
             bool requireSetForegroundSuccess,
             bool requireExactInnerFocus,Func<bool> stillEligible=null)
         {
+            if (!_allowForeground) return false;
             long totalStart = Stopwatch.GetTimestamp();
             PerfTrace.Mark("focus_restore.start", reason);
 
@@ -962,23 +968,26 @@ namespace CF7Launcher.Guardian
             bool sfwOk1 = false;
             try
             {
-                sfwOk1 = _focusApi.SetForegroundWindow(
-                    flashHwnd);
+                using (PerfTrace.PanelScope("focus_restore.set_foreground", reason))
+                    sfwOk1 = _focusApi.SetForegroundWindow(
+                        flashHwnd);
             }
             catch (Exception ex)
             {
                 LogManager.Log("[FocusRestore] " + reason + " pass1 SetForegroundWindow threw: " + ex.Message);
             }
             if(stillEligible!=null && !stillEligible())return false;
-            try { _focusApi.SetFocus(flashHwnd); } catch { }
+            try { using (PerfTrace.PanelScope("focus_restore.set_focus", reason)) _focusApi.SetFocus(flashHwnd); } catch { }
 
             IntPtr fgAfter1 =
                 _focusApi.GetForegroundWindow();
             // 三个事实分开判定：SFW 返回值 / 前台根匹配 / Flash 线程内部焦点。
-            bool rootMatch1 =
-                IsFlashForegroundRoot(flashHwnd, fgAfter1);
-            bool innerMatch1 =
-                IsFlashInnerFocusHeld(flashHwnd);
+            bool rootMatch1;
+            using (PerfTrace.PanelScope("focus_restore.verify_root", reason))
+                rootMatch1 = IsFlashForegroundRoot(flashHwnd, fgAfter1);
+            bool innerMatch1;
+            using (PerfTrace.PanelScope("focus_restore.verify_inner", reason))
+                innerMatch1 = IsFlashInnerFocusHeld(flashHwnd);
             double pass1Ms = ElapsedMs(pass1Start);
             PerfTrace.Duration("focus_restore.pass1", pass1Start, reason);
             if ((!requireSetForegroundSuccess || sfwOk1)

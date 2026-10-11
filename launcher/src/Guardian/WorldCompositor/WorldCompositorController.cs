@@ -95,6 +95,9 @@ namespace CF7Launcher.Guardian.WorldCompositor
         private bool _permissionChecked, _borderless;
         private double _waitingStateMs;
         private double _requiredFrameMs, _startedMs, _lastLogMs;
+        private readonly bool _profileHudCosts=Environment.GetEnvironmentVariable("CF7_PLAYER_HUD_PROFILE")=="1";
+        private bool _hudCostProfiling;
+        private string _hudCostProfileId;
         private float[] _lastSettings;
         // LUT 路径（lut-set-v1）：_lutActive=原生当前在 LUT 分支；_lastLut/_lastLutLight 是变更检测
         // （变更才上传，不逐帧传）；会话重建（StopCapture/ResetSource）时随 _lastSettings 一并复位。
@@ -456,6 +459,7 @@ namespace CF7Launcher.Guardian.WorldCompositor
                     IntPtr worldVisual=_compositionScene.AcquireVisual(0);
                     try { _native=new NativeCompositorSession(module,_owner.Handle,(uint)Environment.ProcessId,_surface.Handle,0,_borderless,worldVisual); }
                     finally { Marshal.Release(worldVisual); }
+                    StartHudCostProfile();
                     _damageRasterScene=_opaqueHudEnabled ? new OpaqueHudRasterScene(_native,0) : _compositionScene;
                     _resourceRasterScene=_opaqueHudEnabled && !_playerHudFaulted ? new OpaqueHudRasterScene(_native,1) : null;
                     _bottomRasterScene=_opaqueHudEnabled && !_playerHudFaulted ? new OpaqueHudRasterScene(_native,2) : null;
@@ -668,6 +672,7 @@ namespace CF7Launcher.Guardian.WorldCompositor
                 if (!ready && NowMs()-Math.Max(_startedMs,_requiredFrameMs)>10000) throw new TimeoutException("世界捕获没有恢复有效画面");
                 if (NowMs()-_lastLogMs>1000) {
                     _lastLogMs=NowMs();
+                    LogHudCosts(stats);
                     var timing=CF7Launcher.Diagnostic.FocusTrace.Enabled ? _native.ReadTiming() : null;
                     if(timing.HasValue) {
                         var sample=timing.Value;
@@ -687,6 +692,32 @@ namespace CF7Launcher.Guardian.WorldCompositor
             } catch (Exception error) {
                 EnterRenderFault("tick", error);
             } finally { _starting=false; }
+        }
+        private void StartHudCostProfile()
+        {
+            _hudCostProfiling=false;_hudCostProfileId=null;
+            if(!_profileHudCosts)return;
+            try {
+                if(_native?.HudCostSamplingAvailable!=true)return;
+                _native.SetHudCostSampling(true);
+                _hudCostProfileId="hwc:"+Guid.NewGuid().ToString("N");_hudCostProfiling=true;
+            } catch(Exception error) {LogManager.Log("[WorldHudCost] sampling unavailable: "+error.Message);}
+        }
+        private void LogHudCosts(NativeCompositorSession.Stats stats)
+        {
+            if(!_hudCostProfiling)return;
+            try {
+                LogManager.Log("[WorldHudCost] "+Newtonsoft.Json.JsonConvert.SerializeObject(new {
+                    id=_hudCostProfileId,source="native",scene=_frame?.Scene,
+                    received=stats.Received,presented=stats.Presented,
+                    raster=_native.ReadHudRaster(),work=_native.ReadWork(),cost=_native.ReadHudCost(),
+                    scope="Cumulative diagnostic CPU copy spans and asynchronous GPU world/HUD intervals; excludes WGC, Present, DWM and physical scanout"
+                }));
+            } catch(Exception error) {
+                _hudCostProfiling=false;
+                try {_native?.SetHudCostSampling(false);} catch { }
+                LogManager.Log("[WorldHudCost] sampling stopped: "+error.Message);
+            }
         }
         internal void BindInput(NativePointerBridge bridge,WorldCompositionSurface surface)
         {
@@ -986,6 +1017,7 @@ namespace CF7Launcher.Guardian.WorldCompositor
             _lastBulletCapAttemptMs=0;
             _lastBulletFrameLogTicks=0;
             _surface?.Hide();
+            _hudCostProfiling=false;_hudCostProfileId=null;
             DamagePresentation.Adopt(null, Rectangle.Empty, false);
             ResourcePresentation.Adopt(null, Rectangle.Empty, false);
             BottomPresentation.Adopt(null, Rectangle.Empty, false);

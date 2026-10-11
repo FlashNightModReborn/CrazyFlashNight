@@ -1,0 +1,1769 @@
+{
+  "schema": "cf7-as2-hotpath-evidence.v1",
+  "date": "2026-10-10",
+  "sourceBaseCommit": "5361c1aed8f9c04b18fb943a24795489dfbfa1ce",
+  "authorizationScope": [
+    "ai-diagnostics",
+    "hud-cooldowns",
+    "hud-resource-hints",
+    "map-scene-observation",
+    "redundant-null-guards"
+  ],
+  "states": {
+    "compiled": true,
+    "localAvm1SuitesExecuted": true,
+    "candidateExecuted": true,
+    "equipmentWorkbenchE2eVerified": false,
+    "newRuntimePromoted": false,
+    "commitCreated": false,
+    "pushed": false
+  },
+  "suites": [
+    {
+      "name": "hud-candidate-09",
+      "runner": "scripts/run-player-hud-tests.ps1",
+      "runIds": [
+        {
+          "domain": "player-hud",
+          "runId": "982eef0d842b45fd812d797e0e4e8e15"
+        }
+      ],
+      "exitCode": 0,
+      "compilerErrors": 0,
+      "compilerWarnings": 0,
+      "retry32k": 0,
+      "summaries": [
+        "--- PlayerHudServiceTest: 117/117 passed, 0 failed ---",
+        "PlayerHudHotPathTest Tests Passed: 19",
+        "PlayerHudHotPathTest Tests Failed: 0"
+      ],
+      "receipt": {
+        "path": "tmp/as2-perf-20261010/runs/hud-candidate-09.json",
+        "sha256": "304BF0A547E78F144C5915A30F212AD580FBD6F59130F4FEBF570892FF41F469",
+        "bytes": 4459
+      },
+      "trace": {
+        "path": "tmp/as2-perf-20261010/runs/hud-candidate-09.flashlog.txt",
+        "sha256": "3A2BCE316F66137E089D258976D36BDFF568815BE9F67B856AB990D8F3F1B481",
+        "bytes": 13474
+      },
+      "compiledTarget": "scripts/TestLoader.swf",
+      "testSwf": {
+        "path": "tmp/as2-perf-20261010/runs/hud-candidate-09.swf",
+        "sha256": "17688DCF142A5A6E6CA07D6B86207A254881628241447711E176DBE014B8EFA1",
+        "bytes": 883286
+      }
+    },
+    {
+      "name": "resource-candidate-04",
+      "runner": "scripts/run-skill-resource-tests.ps1",
+      "runIds": [
+        {
+          "domain": "skill-resource",
+          "runId": "562a33670061476e9e2aefeafd60014e"
+        }
+      ],
+      "exitCode": 0,
+      "compilerErrors": 0,
+      "compilerWarnings": 0,
+      "retry32k": 0,
+      "summaries": [
+        "SkillResourceServiceTest Tests Passed: 479",
+        "SkillResourceServiceTest Tests Failed: 0"
+      ],
+      "receipt": {
+        "path": "tmp/as2-perf-20261010/runs/resource-candidate-04.json",
+        "sha256": "9FF4B6C8B4F058584CB27BD5BE36F228D7FD574ED7ADEE54D414CB27BF823867",
+        "bytes": 9157
+      },
+      "trace": {
+        "path": "tmp/as2-perf-20261010/runs/resource-candidate-04.flashlog.txt",
+        "sha256": "AC57384688103681DE4658E6CB1D75085E5D533EFE3B4D7BCBE57201BD707B06",
+        "bytes": 932
+      },
+      "compiledTarget": "scripts/TestLoader.swf",
+      "testSwf": {
+        "path": "tmp/as2-perf-20261010/runs/resource-candidate-04.swf",
+        "sha256": "48C58951E2F6C86255EEC9EF6CD2B90902008587F2AA31C229210F29F6C81AAC",
+        "bytes": 847512
+      }
+    },
+    {
+      "name": "map-candidate-02",
+      "runner": "scripts/run-map-domain-tests.ps1",
+      "runIds": [
+        {
+          "domain": "map-domain",
+          "runId": "ed10180ffa494806a5f6002dae1d0302"
+        }
+      ],
+      "exitCode": 0,
+      "compilerErrors": 0,
+      "compilerWarnings": 0,
+      "retry32k": 0,
+      "summaries": [
+        "MapDomainBridgeTest Tests Passed: 75",
+        "MapDomainBridgeTest Tests Failed: 0",
+        "MapSceneObservationTest Tests Passed: 79",
+        "MapSceneObservationTest Tests Failed: 0"
+      ],
+      "receipt": {
+        "path": "tmp/as2-perf-20261010/runs/map-candidate-02.json",
+        "sha256": "2A816D29909292BE60271CF0036B7FCEA1C521B3CB5870A4511F6229DAD6169B",
+        "bytes": 2613
+      },
+      "trace": {
+        "path": "tmp/as2-perf-20261010/runs/map-candidate-02.flashlog.txt",
+        "sha256": "39A5B2D199FF511D23C243513B74D159BDD71FA7B2DAE9688BD7E68A90EE55BD",
+        "bytes": 7618
+      },
+      "compiledTarget": "scripts/TestLoader.swf",
+      "testSwf": {
+        "path": "tmp/as2-perf-20261010/runs/map-candidate-02.swf",
+        "sha256": "840920EC8B3F263B8AA5D85CE7292E65FBA429CA967060BC66D6AD115C440945",
+        "bytes": 855420
+      }
+    },
+    {
+      "name": "guard-candidate-01",
+      "runner": "scripts/run-as2-guard-tests.ps1",
+      "runIds": [
+        {
+          "domain": "as2-guard",
+          "runId": "252cf7bcc9eb4d68b5b92269fc8720f5"
+        }
+      ],
+      "exitCode": 0,
+      "compilerErrors": 0,
+      "compilerWarnings": 0,
+      "retry32k": 0,
+      "summaries": [
+        "Avm1GuardContractTest Tests Passed: 77",
+        "Avm1GuardContractTest Tests Failed: 0"
+      ],
+      "receipt": {
+        "path": "tmp/as2-perf-20261010/runs/guard-candidate-01.json",
+        "sha256": "1CE60D5A514DDF01C79A5DC42E03F6C17EC101FB24C7FB4A9E77504887D8A87B",
+        "bytes": 4725
+      },
+      "trace": {
+        "path": "tmp/as2-perf-20261010/runs/guard-candidate-01.flashlog.txt",
+        "sha256": "1B3C995CC04CB095A50A1DEF0FBFB5232F4F3317ACDC1C3FECBAE45B34858FCF",
+        "bytes": 800
+      },
+      "compiledTarget": "scripts/TestLoader.swf",
+      "testSwf": {
+        "path": "tmp/as2-perf-20261010/runs/guard-candidate-01.swf",
+        "sha256": "406858210C9C0148330EFB4289D813B381E59FF3820B9608BF1D3C1C18D3A12A",
+        "bytes": 862976
+      }
+    },
+    {
+      "name": "ai-candidate-02",
+      "runner": "scripts/run-ai-diagnostics-tests.ps1",
+      "runIds": [
+        {
+          "domain": "ai-diagnostics",
+          "runId": "50cbb3375c474acf8a24af82d0094fcc"
+        }
+      ],
+      "exitCode": 0,
+      "compilerErrors": 0,
+      "compilerWarnings": 0,
+      "retry32k": 0,
+      "summaries": [
+        "AIDiagnosticsTest Tests Passed: 98",
+        "AIDiagnosticsTest Tests Failed: 0"
+      ],
+      "receipt": {
+        "path": "tmp/as2-perf-20261010/runs/ai-candidate-02.json",
+        "sha256": "788E1F6281BE4C6872D41E0C8A866FE85300318F5CA314609E581AEFE0FFE349",
+        "bytes": 9159
+      },
+      "trace": {
+        "path": "tmp/as2-perf-20261010/runs/ai-candidate-02.flashlog.txt",
+        "sha256": "61E9F39A35D5F39BADDF9FF76A6699349630355D3C51364E58132757631AE7CB",
+        "bytes": 687
+      },
+      "compiledTarget": "scripts/TestLoader.swf",
+      "testSwf": {
+        "path": "tmp/as2-perf-20261010/runs/ai-candidate-02.swf",
+        "sha256": "0D27EF41CEF1E5A30E1A8A1B527A1204AF30EEF74683EA51C0D364F66A2EB97E",
+        "bytes": 875528
+      }
+    },
+    {
+      "name": "ray-guard-candidate-01",
+      "runner": "scripts/run-ray-visual-tests.ps1",
+      "runIds": [
+        {
+          "domain": "ray-visual",
+          "runId": "d14efff55ff74035bd9caabdfde83535"
+        }
+      ],
+      "exitCode": 0,
+      "compilerErrors": 0,
+      "compilerWarnings": 0,
+      "retry32k": 0,
+      "summaries": [
+        "RayVisualBridgeTest Tests Passed: 130",
+        "RayVisualBridgeTest Tests Failed: 0",
+        "===== RayVfxManagerTest 结束: run=120, pass=120, fail=0 =====",
+        "RayGuardContractTest Tests Passed: 193",
+        "RayGuardContractTest Tests Failed: 0"
+      ],
+      "receipt": {
+        "path": "tmp/as2-perf-20261010/runs/ray-guard-candidate-01.json",
+        "sha256": "82BCE3A35DD3AA3435689C6A9CD1DD09E392BD77045C0DF0405E4E6C2DE3A429",
+        "bytes": 9154
+      },
+      "trace": {
+        "path": "tmp/as2-perf-20261010/runs/ray-guard-candidate-01.flashlog.txt",
+        "sha256": "A007A4FC7E6D493A4A85FB84CA00250F28849C7B6D32F3F6EBD94023C00AD615",
+        "bytes": 34529
+      },
+      "compiledTarget": "scripts/TestLoader.swf",
+      "testSwf": {
+        "path": "tmp/as2-perf-20261010/runs/ray-guard-candidate-01.swf",
+        "sha256": "78E907111273B0072230EE3CCAD38171A82E5AD6C0CB5D66CBD59E9AD01F591D",
+        "bytes": 863905
+      }
+    },
+    {
+      "name": "manual-candidate-01",
+      "runner": "scripts/run-player-manual-input-tests.ps1",
+      "runIds": [
+        {
+          "domain": "player-manual-input",
+          "runId": "67b7a7d387c749ccbb148f43deaf990f"
+        }
+      ],
+      "exitCode": 0,
+      "compilerErrors": 0,
+      "compilerWarnings": 0,
+      "retry32k": 0,
+      "summaries": [
+        "--- LongGunSubWeaponCoreTest: 511/511 passed, 0 failed ---",
+        "--- PistolRecoilCoreTest: 30/30 passed, 0 failed ---",
+        "--- ManualCooldownServiceTest: 57/57 passed, 0 failed ---",
+        "--- DrugInputServiceTest: 58/58 passed, 0 failed ---",
+        "--- KeyManagerMigrationTest: 14/14 passed, 0 failed ---"
+      ],
+      "receipt": {
+        "path": "tmp/as2-perf-20261010/runs/manual-candidate-01.json",
+        "sha256": "8122F33F16D1E8FB9931DBD29D0C905088971F528F70F85621D1656691B76D8A",
+        "bytes": 4736
+      },
+      "trace": {
+        "path": "tmp/as2-perf-20261010/runs/manual-candidate-01.flashlog.txt",
+        "sha256": "175D0A17DE2CBF282E9CF48D8903A437C951745B935DA7F2A4A5BB18709FC1B7",
+        "bytes": 45028
+      },
+      "compiledTarget": "scripts/TestLoader.swf",
+      "testSwf": {
+        "path": "tmp/as2-perf-20261010/runs/manual-candidate-01.swf",
+        "sha256": "E0899D483A4A32EA44AAB8F2FA9A14B64DF5F25814A4338B3C716EEDD4320D14",
+        "bytes": 888129
+      }
+    }
+  ],
+  "hostConsumers": {
+    "filter": "PlayerHud + MapDomainCore/Session/MapHudPayloadParse/MapTaskResponse",
+    "counters": {
+      "total": "263",
+      "executed": "263",
+      "passed": "263",
+      "failed": "0",
+      "error": "0",
+      "timeout": "0",
+      "aborted": "0",
+      "inconclusive": "0",
+      "passedButRunAborted": "0",
+      "notRunnable": "0",
+      "notExecuted": "0",
+      "disconnected": "0",
+      "warning": "0",
+      "completed": "0",
+      "inProgress": "0",
+      "pending": "0"
+    },
+    "trx": {
+      "path": "tmp/as2-perf-20261010/host-tests/as2-perf-host-consumers.trx",
+      "sha256": "6C7088FB2DAD647B7EEEE10671CD340378590F61E063F7080020943C7E4A185A",
+      "bytes": 416309
+    }
+  },
+  "localBenchmarks": [
+    {
+      "run": "hud-candidate-09",
+      "label": "cooldown_active_0",
+      "iterations": 300,
+      "baselineMs": [
+        210,
+        180,
+        187,
+        175,
+        184
+      ],
+      "candidateMs": [
+        36,
+        35,
+        29,
+        32,
+        36
+      ],
+      "baselineMedianMs": 184,
+      "candidateMedianMs": 35,
+      "medianReductionPercent": 80.98,
+      "scope": "Local AVM1 batch; not full-frame FPS"
+    },
+    {
+      "run": "hud-candidate-09",
+      "label": "cooldown_active_1",
+      "iterations": 300,
+      "baselineMs": [
+        267,
+        205,
+        207,
+        262,
+        186
+      ],
+      "candidateMs": [
+        33,
+        33,
+        34,
+        32,
+        27
+      ],
+      "baselineMedianMs": 207,
+      "candidateMedianMs": 33,
+      "medianReductionPercent": 84.06,
+      "scope": "Local AVM1 batch; not full-frame FPS"
+    },
+    {
+      "run": "hud-candidate-09",
+      "label": "cooldown_active_18",
+      "iterations": 300,
+      "baselineMs": [
+        192,
+        223,
+        203,
+        201,
+        195
+      ],
+      "candidateMs": [
+        34,
+        56,
+        30,
+        31,
+        28
+      ],
+      "baselineMedianMs": 201,
+      "candidateMedianMs": 31,
+      "medianReductionPercent": 84.58,
+      "scope": "Local AVM1 batch; not full-frame FPS"
+    },
+    {
+      "run": "resource-candidate-04",
+      "label": "resource_quantity_0",
+      "iterations": 200,
+      "baselineMs": [
+        103,
+        111,
+        110,
+        107,
+        104
+      ],
+      "candidateMs": [
+        51,
+        54,
+        55,
+        55,
+        51
+      ],
+      "baselineMedianMs": 107,
+      "candidateMedianMs": 54,
+      "medianReductionPercent": 49.53,
+      "scope": "Local AVM1 batch; not full-frame FPS"
+    },
+    {
+      "run": "resource-candidate-04",
+      "label": "resource_quantity_1",
+      "iterations": 200,
+      "baselineMs": [
+        106,
+        124,
+        137,
+        123,
+        164
+      ],
+      "candidateMs": [
+        57,
+        59,
+        70,
+        60,
+        54
+      ],
+      "baselineMedianMs": 124,
+      "candidateMedianMs": 59,
+      "medianReductionPercent": 52.42,
+      "scope": "Local AVM1 batch; not full-frame FPS"
+    },
+    {
+      "run": "resource-candidate-04",
+      "label": "resource_quantity_2",
+      "iterations": 200,
+      "baselineMs": [
+        54,
+        56,
+        59,
+        122,
+        79
+      ],
+      "candidateMs": [
+        51,
+        52,
+        57,
+        81,
+        100
+      ],
+      "baselineMedianMs": 59,
+      "candidateMedianMs": 57,
+      "medianReductionPercent": 3.39,
+      "scope": "Local AVM1 batch; not full-frame FPS"
+    },
+    {
+      "run": "map-candidate-02",
+      "label": "map_scene_unchanged",
+      "iterations": 500,
+      "baselineMs": [
+        164,
+        139,
+        150,
+        155,
+        153
+      ],
+      "candidateMs": [
+        9,
+        10,
+        10,
+        8,
+        10
+      ],
+      "baselineMedianMs": 153,
+      "candidateMedianMs": 10,
+      "medianReductionPercent": 93.46,
+      "scope": "Local AVM1 batch; not full-frame FPS"
+    },
+    {
+      "run": "map-candidate-02",
+      "label": "map_scene_changing",
+      "iterations": 500,
+      "baselineMs": [
+        183,
+        182,
+        170,
+        173,
+        182
+      ],
+      "candidateMs": [
+        13,
+        14,
+        13,
+        17,
+        16
+      ],
+      "baselineMedianMs": 182,
+      "candidateMedianMs": 14,
+      "medianReductionPercent": 92.31,
+      "scope": "Local AVM1 batch; not full-frame FPS"
+    },
+    {
+      "run": "guard-candidate-01",
+      "label": "guard_depth3_present",
+      "iterations": 10000,
+      "baselineMs": [
+        58,
+        57,
+        71,
+        57,
+        65
+      ],
+      "candidateMs": [
+        40,
+        41,
+        42,
+        40,
+        44
+      ],
+      "baselineMedianMs": 58,
+      "candidateMedianMs": 41,
+      "medianReductionPercent": 29.31,
+      "scope": "Local AVM1 batch; not full-frame FPS"
+    },
+    {
+      "run": "guard-candidate-01",
+      "label": "guard_depth3_missing",
+      "iterations": 10000,
+      "baselineMs": [
+        27,
+        26,
+        26,
+        26,
+        22
+      ],
+      "candidateMs": [
+        26,
+        25,
+        26,
+        26,
+        24
+      ],
+      "baselineMedianMs": 26,
+      "candidateMedianMs": 26,
+      "medianReductionPercent": 0.0,
+      "scope": "Local AVM1 batch; not full-frame FPS"
+    },
+    {
+      "run": "ai-candidate-02",
+      "label": "ai_trace_full_vs_off",
+      "iterations": 80,
+      "baselineMs": [
+        44,
+        43,
+        43,
+        49,
+        44
+      ],
+      "candidateMs": [
+        22,
+        21,
+        21,
+        21,
+        22
+      ],
+      "baselineMedianMs": 44,
+      "candidateMedianMs": 21,
+      "medianReductionPercent": 52.27,
+      "scope": "Local AVM1 batch; not full-frame FPS"
+    }
+  ],
+  "guardCompile": {
+    "samples": [
+      {
+        "name": "publish-guard-original-1",
+        "round": 1,
+        "variant": "original",
+        "exitCode": 0,
+        "flashPid": 9056,
+        "flashCpuMs": 110015.625,
+        "wallMs": 112802.9174,
+        "swf": {
+          "path": "tmp/as2-perf-20261010/runs/publish-guard-original-1.swf",
+          "sha256": "6F429D534106B0CF18F92DDA03DE4D3B23A2158DC355C06A43C30974B24B868A",
+          "bytes": 1497620
+        },
+        "startedUtc": "2026-10-09T17:57:58.8116986Z",
+        "finishedUtc": "2026-10-09T17:59:51.6663085Z",
+        "compiledTarget": "scripts/asLoader.swf"
+      },
+      {
+        "name": "publish-guard-guarded-1",
+        "round": 1,
+        "variant": "guarded",
+        "exitCode": 0,
+        "flashPid": 9056,
+        "flashCpuMs": 115265.625,
+        "wallMs": 117789.2764,
+        "swf": {
+          "path": "tmp/as2-perf-20261010/runs/publish-guard-guarded-1.swf",
+          "sha256": "B81334122CEFA137D6D7DAB40C19A215C02BCA94A7218BA82E5D0192E392FBAE",
+          "bytes": 1497477
+        },
+        "startedUtc": "2026-10-09T17:59:54.1420542Z",
+        "finishedUtc": "2026-10-09T18:01:51.9930267Z",
+        "compiledTarget": "scripts/asLoader.swf"
+      },
+      {
+        "name": "publish-guard-original-2",
+        "round": 2,
+        "variant": "original",
+        "exitCode": 0,
+        "flashPid": 9056,
+        "flashCpuMs": 111984.375,
+        "wallMs": 114883.1205,
+        "swf": {
+          "path": "tmp/as2-perf-20261010/runs/publish-guard-original-2.swf",
+          "sha256": "0E2C8118D4D76E606AFCFD3988A6359A642DE8AC099386D54174A9169CB7B40E",
+          "bytes": 1497620
+        },
+        "startedUtc": "2026-10-09T18:01:54.2550405Z",
+        "finishedUtc": "2026-10-09T18:03:49.1878448Z",
+        "compiledTarget": "scripts/asLoader.swf"
+      },
+      {
+        "name": "publish-guard-guarded-2",
+        "round": 2,
+        "variant": "guarded",
+        "exitCode": 0,
+        "flashPid": 9056,
+        "flashCpuMs": 114828.125,
+        "wallMs": 117827.5752,
+        "swf": {
+          "path": "tmp/as2-perf-20261010/runs/publish-guard-guarded-2.swf",
+          "sha256": "0E41BAA24F0D8D20C39CC323E7FFF9A0212AF0EEF97D10883A6FB10BB6CDF1C3",
+          "bytes": 1497479
+        },
+        "startedUtc": "2026-10-09T18:03:51.2440727Z",
+        "finishedUtc": "2026-10-09T18:05:49.1269956Z",
+        "compiledTarget": "scripts/asLoader.swf"
+      },
+      {
+        "name": "publish-guard-original-3",
+        "round": 3,
+        "variant": "original",
+        "exitCode": 0,
+        "flashPid": 9056,
+        "flashCpuMs": 116484.375,
+        "wallMs": 119813.1116,
+        "swf": {
+          "path": "tmp/as2-perf-20261010/runs/publish-guard-original-3.swf",
+          "sha256": "E771997B683DD7C0D9D0EC6D799CBBBA11A0D9662CAAA21B415B78866756796A",
+          "bytes": 1497620
+        },
+        "startedUtc": "2026-10-09T18:05:51.0596081Z",
+        "finishedUtc": "2026-10-09T18:07:50.9300107Z",
+        "compiledTarget": "scripts/asLoader.swf"
+      },
+      {
+        "name": "publish-guard-guarded-3",
+        "round": 3,
+        "variant": "guarded",
+        "exitCode": 0,
+        "flashPid": 9056,
+        "flashCpuMs": 114640.625,
+        "wallMs": 117764.90920000001,
+        "swf": {
+          "path": "tmp/as2-perf-20261010/runs/publish-guard-guarded-3.swf",
+          "sha256": "F18791C84CF969D4F359EF01201777EDF81DB9DD661984036237A5482D886C75",
+          "bytes": 1497478
+        },
+        "startedUtc": "2026-10-09T18:07:52.9839570Z",
+        "finishedUtc": "2026-10-09T18:09:50.8009792Z",
+        "compiledTarget": "scripts/asLoader.swf"
+      }
+    ],
+    "summary": {
+      "original": {
+        "wallMs": [
+          112802.9174,
+          114883.1205,
+          119813.1116
+        ],
+        "flashCpuMs": [
+          110015.625,
+          111984.375,
+          116484.375
+        ],
+        "wallMedianMs": 114883.1205,
+        "flashCpuMedianMs": 111984.375
+      },
+      "guarded": {
+        "wallMs": [
+          117789.2764,
+          117827.5752,
+          117764.90920000001
+        ],
+        "flashCpuMs": [
+          115265.625,
+          114828.125,
+          114640.625
+        ],
+        "wallMedianMs": 117789.2764,
+        "flashCpuMedianMs": 114828.125
+      },
+      "conclusion": "No stable compilation speedup; guarded wall median is higher in this three-pair sample."
+    }
+  },
+  "bytecode": {
+    "schema": "cf7-as2-guard-bytecode-comparison.v1",
+    "scope": "Only the 43 reviewed guard sites differ within each pair; SWFs compiled by real CS6, read-only parsing.",
+    "sourceFiles": 19,
+    "sites": 43,
+    "pairs": [
+      {
+        "round": 1,
+        "changedClasses": [
+          {
+            "class": "__Packages.org.flashNight.arki.bullet.BulletComponent.Loader.ShellLoader",
+            "originalBytes": 1256,
+            "guardedBytes": 1192,
+            "deltaBytes": -64
+          },
+          {
+            "class": "__Packages.org.flashNight.arki.render.RayVfxManager",
+            "originalBytes": 17978,
+            "guardedBytes": 17812,
+            "deltaBytes": -166
+          },
+          {
+            "class": "__Packages.org.flashNight.arki.unit.Action.Skill.DrugInputService",
+            "originalBytes": 16318,
+            "guardedBytes": 16247,
+            "deltaBytes": -71
+          },
+          {
+            "class": "__Packages.org.flashNight.arki.unit.Action.Shoot.LongGunSubWeaponCore",
+            "originalBytes": 32045,
+            "guardedBytes": 31997,
+            "deltaBytes": -48
+          },
+          {
+            "class": "__Packages.org.flashNight.arki.render.renderer.PrismRenderer",
+            "originalBytes": 4453,
+            "guardedBytes": 4437,
+            "deltaBytes": -16
+          },
+          {
+            "class": "__Packages.org.flashNight.arki.render.renderer.RadianceRenderer",
+            "originalBytes": 3350,
+            "guardedBytes": 3334,
+            "deltaBytes": -16
+          },
+          {
+            "class": "__Packages.org.flashNight.arki.render.renderer.SpectrumRenderer",
+            "originalBytes": 4354,
+            "guardedBytes": 4338,
+            "deltaBytes": -16
+          },
+          {
+            "class": "__Packages.org.flashNight.arki.render.renderer.PhaseResonanceRenderer",
+            "originalBytes": 4063,
+            "guardedBytes": 4047,
+            "deltaBytes": -16
+          },
+          {
+            "class": "__Packages.org.flashNight.arki.render.renderer.WaveRenderer",
+            "originalBytes": 5340,
+            "guardedBytes": 5324,
+            "deltaBytes": -16
+          },
+          {
+            "class": "__Packages.org.flashNight.arki.render.renderer.ThermalRenderer",
+            "originalBytes": 4013,
+            "guardedBytes": 3997,
+            "deltaBytes": -16
+          },
+          {
+            "class": "__Packages.org.flashNight.arki.render.renderer.VortexRenderer",
+            "originalBytes": 4241,
+            "guardedBytes": 4225,
+            "deltaBytes": -16
+          },
+          {
+            "class": "__Packages.org.flashNight.arki.render.renderer.PlasmaRenderer",
+            "originalBytes": 4206,
+            "guardedBytes": 4190,
+            "deltaBytes": -16
+          },
+          {
+            "class": "__Packages.org.flashNight.arki.render.renderer.ConvergenceRenderer",
+            "originalBytes": 39291,
+            "guardedBytes": 39259,
+            "deltaBytes": -32
+          },
+          {
+            "class": "__Packages.org.flashNight.arki.render.renderer.BaguaRodRenderer",
+            "originalBytes": 6778,
+            "guardedBytes": 6762,
+            "deltaBytes": -16
+          },
+          {
+            "class": "__Packages.org.flashNight.arki.render.renderer.FlameStreamRenderer",
+            "originalBytes": 19623,
+            "guardedBytes": 19607,
+            "deltaBytes": -16
+          },
+          {
+            "class": "__Packages.org.flashNight.arki.unit.Action.Skill.WeaponSkillInputService",
+            "originalBytes": 6053,
+            "guardedBytes": 5968,
+            "deltaBytes": -85
+          },
+          {
+            "class": "__Packages.org.flashNight.arki.unit.Action.Skill.QuickSkillInputService",
+            "originalBytes": 5488,
+            "guardedBytes": 5436,
+            "deltaBytes": -52
+          },
+          {
+            "class": "__Packages.org.flashNight.arki.hud.PlayerHudService",
+            "originalBytes": 32690,
+            "guardedBytes": 32660,
+            "deltaBytes": -30
+          },
+          {
+            "class": "__Packages.org.flashNight.arki.hud.PlayerHudBuffProjection",
+            "originalBytes": 2084,
+            "guardedBytes": 2033,
+            "deltaBytes": -51
+          }
+        ],
+        "changedClassCount": 19,
+        "classActionDeltaBytes": -759,
+        "compressedDeltaBytes": -143,
+        "uncompressedDeltaBytes": -759
+      },
+      {
+        "round": 2,
+        "changedClasses": [
+          {
+            "class": "__Packages.org.flashNight.arki.bullet.BulletComponent.Loader.ShellLoader",
+            "originalBytes": 1256,
+            "guardedBytes": 1192,
+            "deltaBytes": -64
+          },
+          {
+            "class": "__Packages.org.flashNight.arki.render.RayVfxManager",
+            "originalBytes": 17978,
+            "guardedBytes": 17812,
+            "deltaBytes": -166
+          },
+          {
+            "class": "__Packages.org.flashNight.arki.unit.Action.Skill.DrugInputService",
+            "originalBytes": 16318,
+            "guardedBytes": 16247,
+            "deltaBytes": -71
+          },
+          {
+            "class": "__Packages.org.flashNight.arki.unit.Action.Shoot.LongGunSubWeaponCore",
+            "originalBytes": 32045,
+            "guardedBytes": 31997,
+            "deltaBytes": -48
+          },
+          {
+            "class": "__Packages.org.flashNight.arki.render.renderer.PrismRenderer",
+            "originalBytes": 4453,
+            "guardedBytes": 4437,
+            "deltaBytes": -16
+          },
+          {
+            "class": "__Packages.org.flashNight.arki.render.renderer.RadianceRenderer",
+            "originalBytes": 3350,
+            "guardedBytes": 3334,
+            "deltaBytes": -16
+          },
+          {
+            "class": "__Packages.org.flashNight.arki.render.renderer.SpectrumRenderer",
+            "originalBytes": 4354,
+            "guardedBytes": 4338,
+            "deltaBytes": -16
+          },
+          {
+            "class": "__Packages.org.flashNight.arki.render.renderer.PhaseResonanceRenderer",
+            "originalBytes": 4063,
+            "guardedBytes": 4047,
+            "deltaBytes": -16
+          },
+          {
+            "class": "__Packages.org.flashNight.arki.render.renderer.WaveRenderer",
+            "originalBytes": 5340,
+            "guardedBytes": 5324,
+            "deltaBytes": -16
+          },
+          {
+            "class": "__Packages.org.flashNight.arki.render.renderer.ThermalRenderer",
+            "originalBytes": 4013,
+            "guardedBytes": 3997,
+            "deltaBytes": -16
+          },
+          {
+            "class": "__Packages.org.flashNight.arki.render.renderer.VortexRenderer",
+            "originalBytes": 4241,
+            "guardedBytes": 4225,
+            "deltaBytes": -16
+          },
+          {
+            "class": "__Packages.org.flashNight.arki.render.renderer.PlasmaRenderer",
+            "originalBytes": 4206,
+            "guardedBytes": 4190,
+            "deltaBytes": -16
+          },
+          {
+            "class": "__Packages.org.flashNight.arki.render.renderer.ConvergenceRenderer",
+            "originalBytes": 39291,
+            "guardedBytes": 39259,
+            "deltaBytes": -32
+          },
+          {
+            "class": "__Packages.org.flashNight.arki.render.renderer.BaguaRodRenderer",
+            "originalBytes": 6778,
+            "guardedBytes": 6762,
+            "deltaBytes": -16
+          },
+          {
+            "class": "__Packages.org.flashNight.arki.render.renderer.FlameStreamRenderer",
+            "originalBytes": 19623,
+            "guardedBytes": 19607,
+            "deltaBytes": -16
+          },
+          {
+            "class": "__Packages.org.flashNight.arki.unit.Action.Skill.WeaponSkillInputService",
+            "originalBytes": 6053,
+            "guardedBytes": 5968,
+            "deltaBytes": -85
+          },
+          {
+            "class": "__Packages.org.flashNight.arki.unit.Action.Skill.QuickSkillInputService",
+            "originalBytes": 5488,
+            "guardedBytes": 5436,
+            "deltaBytes": -52
+          },
+          {
+            "class": "__Packages.org.flashNight.arki.hud.PlayerHudService",
+            "originalBytes": 32690,
+            "guardedBytes": 32660,
+            "deltaBytes": -30
+          },
+          {
+            "class": "__Packages.org.flashNight.arki.hud.PlayerHudBuffProjection",
+            "originalBytes": 2084,
+            "guardedBytes": 2033,
+            "deltaBytes": -51
+          }
+        ],
+        "changedClassCount": 19,
+        "classActionDeltaBytes": -759,
+        "compressedDeltaBytes": -141,
+        "uncompressedDeltaBytes": -759
+      },
+      {
+        "round": 3,
+        "changedClasses": [
+          {
+            "class": "__Packages.org.flashNight.arki.bullet.BulletComponent.Loader.ShellLoader",
+            "originalBytes": 1256,
+            "guardedBytes": 1192,
+            "deltaBytes": -64
+          },
+          {
+            "class": "__Packages.org.flashNight.arki.render.RayVfxManager",
+            "originalBytes": 17978,
+            "guardedBytes": 17812,
+            "deltaBytes": -166
+          },
+          {
+            "class": "__Packages.org.flashNight.arki.unit.Action.Skill.DrugInputService",
+            "originalBytes": 16318,
+            "guardedBytes": 16247,
+            "deltaBytes": -71
+          },
+          {
+            "class": "__Packages.org.flashNight.arki.unit.Action.Shoot.LongGunSubWeaponCore",
+            "originalBytes": 32045,
+            "guardedBytes": 31997,
+            "deltaBytes": -48
+          },
+          {
+            "class": "__Packages.org.flashNight.arki.render.renderer.PrismRenderer",
+            "originalBytes": 4453,
+            "guardedBytes": 4437,
+            "deltaBytes": -16
+          },
+          {
+            "class": "__Packages.org.flashNight.arki.render.renderer.RadianceRenderer",
+            "originalBytes": 3350,
+            "guardedBytes": 3334,
+            "deltaBytes": -16
+          },
+          {
+            "class": "__Packages.org.flashNight.arki.render.renderer.SpectrumRenderer",
+            "originalBytes": 4354,
+            "guardedBytes": 4338,
+            "deltaBytes": -16
+          },
+          {
+            "class": "__Packages.org.flashNight.arki.render.renderer.PhaseResonanceRenderer",
+            "originalBytes": 4063,
+            "guardedBytes": 4047,
+            "deltaBytes": -16
+          },
+          {
+            "class": "__Packages.org.flashNight.arki.render.renderer.WaveRenderer",
+            "originalBytes": 5340,
+            "guardedBytes": 5324,
+            "deltaBytes": -16
+          },
+          {
+            "class": "__Packages.org.flashNight.arki.render.renderer.ThermalRenderer",
+            "originalBytes": 4013,
+            "guardedBytes": 3997,
+            "deltaBytes": -16
+          },
+          {
+            "class": "__Packages.org.flashNight.arki.render.renderer.VortexRenderer",
+            "originalBytes": 4241,
+            "guardedBytes": 4225,
+            "deltaBytes": -16
+          },
+          {
+            "class": "__Packages.org.flashNight.arki.render.renderer.PlasmaRenderer",
+            "originalBytes": 4206,
+            "guardedBytes": 4190,
+            "deltaBytes": -16
+          },
+          {
+            "class": "__Packages.org.flashNight.arki.render.renderer.ConvergenceRenderer",
+            "originalBytes": 39291,
+            "guardedBytes": 39259,
+            "deltaBytes": -32
+          },
+          {
+            "class": "__Packages.org.flashNight.arki.render.renderer.BaguaRodRenderer",
+            "originalBytes": 6778,
+            "guardedBytes": 6762,
+            "deltaBytes": -16
+          },
+          {
+            "class": "__Packages.org.flashNight.arki.render.renderer.FlameStreamRenderer",
+            "originalBytes": 19623,
+            "guardedBytes": 19607,
+            "deltaBytes": -16
+          },
+          {
+            "class": "__Packages.org.flashNight.arki.unit.Action.Skill.WeaponSkillInputService",
+            "originalBytes": 6053,
+            "guardedBytes": 5968,
+            "deltaBytes": -85
+          },
+          {
+            "class": "__Packages.org.flashNight.arki.unit.Action.Skill.QuickSkillInputService",
+            "originalBytes": 5488,
+            "guardedBytes": 5436,
+            "deltaBytes": -52
+          },
+          {
+            "class": "__Packages.org.flashNight.arki.hud.PlayerHudService",
+            "originalBytes": 32690,
+            "guardedBytes": 32660,
+            "deltaBytes": -30
+          },
+          {
+            "class": "__Packages.org.flashNight.arki.hud.PlayerHudBuffProjection",
+            "originalBytes": 2084,
+            "guardedBytes": 2033,
+            "deltaBytes": -51
+          }
+        ],
+        "changedClassCount": 19,
+        "classActionDeltaBytes": -759,
+        "compressedDeltaBytes": -142,
+        "uncompressedDeltaBytes": -759
+      }
+    ],
+    "baseline": {
+      "path": "tmp/as2-perf-20261010/baseline/asLoader-fresh.swf",
+      "sha256": "1B397D8C2CA7097D47C5A58793D6D8DF77AC9ACF399F0086E3E54C4E1B911111",
+      "compressedBytes": 1496612,
+      "uncompressedBytes": 5913903,
+      "classCount": 718
+    },
+    "final": {
+      "path": "tmp/as2-perf-20261010/runs/publish-guard-guarded-3.swf",
+      "sha256": "F18791C84CF969D4F359EF01201777EDF81DB9DD661984036237A5482D886C75",
+      "compressedBytes": 1497478,
+      "uncompressedBytes": 5916398,
+      "classCount": 718
+    },
+    "fullChangeCompressedDeltaBytes": 866,
+    "fullChangeUncompressedDeltaBytes": 2495
+  },
+  "functionSizeGate": {
+    "total": 12700,
+    "max": 60000,
+    "over": [],
+    "top": [
+      {
+        "owner": "DoAction[sprite=1 frame=0]",
+        "type": "DefineFunction2",
+        "name": "(anon)",
+        "codeSize": 51684
+      },
+      {
+        "owner": "DoAction[sprite=1 frame=0]",
+        "type": "DefineFunction2",
+        "name": "(anon)",
+        "codeSize": 48056
+      },
+      {
+        "owner": "DoAction[sprite=1 frame=0]",
+        "type": "DefineFunction2",
+        "name": "(anon)",
+        "codeSize": 45361
+      },
+      {
+        "owner": "DoAction[sprite=1 frame=0]",
+        "type": "DefineFunction2",
+        "name": "(anon)",
+        "codeSize": 44688
+      },
+      {
+        "owner": "DoAction[sprite=1 frame=0]",
+        "type": "DefineFunction2",
+        "name": "(anon)",
+        "codeSize": 40492
+      },
+      {
+        "owner": "DoAction[sprite=1 frame=0]",
+        "type": "DefineFunction2",
+        "name": "(anon)",
+        "codeSize": 36905
+      },
+      {
+        "owner": "DoAction[sprite=1 frame=0]",
+        "type": "DefineFunction2",
+        "name": "(anon)",
+        "codeSize": 35495
+      },
+      {
+        "owner": "DoAction[sprite=1 frame=0]",
+        "type": "DefineFunction2",
+        "name": "(anon)",
+        "codeSize": 35273
+      },
+      {
+        "owner": "DoAction[sprite=1 frame=0]",
+        "type": "DefineFunction2",
+        "name": "(anon)",
+        "codeSize": 35023
+      },
+      {
+        "owner": "DoAction[sprite=1 frame=0]",
+        "type": "DefineFunction2",
+        "name": "(anon)",
+        "codeSize": 34236
+      },
+      {
+        "owner": "DoAction[sprite=1 frame=0]",
+        "type": "DefineFunction2",
+        "name": "(anon)",
+        "codeSize": 32764
+      },
+      {
+        "owner": "DoAction[sprite=1 frame=0]",
+        "type": "DefineFunction2",
+        "name": "(anon)",
+        "codeSize": 32304
+      },
+      {
+        "owner": "DoAction[sprite=1 frame=0]",
+        "type": "DefineFunction2",
+        "name": "(anon)",
+        "codeSize": 30579
+      },
+      {
+        "owner": "DoAction[sprite=1 frame=0]",
+        "type": "DefineFunction2",
+        "name": "(anon)",
+        "codeSize": 29088
+      },
+      {
+        "owner": "DoAction[sprite=1 frame=0]",
+        "type": "DefineFunction2",
+        "name": "(anon)",
+        "codeSize": 29053
+      }
+    ]
+  },
+  "ownershipGate": {
+    "mainOrgClasses": 0,
+    "loaderOrgClasses": 711,
+    "intersection": 0,
+    "log": {
+      "path": "tmp/as2-perf-20261010/final-class-ownership.log",
+      "sha256": "A72496815811A708D029DD3F47A0E297D722286C20260B92CAF7DBFB8786872B",
+      "bytes": 226
+    }
+  },
+  "rayDrawingParity": {
+    "baseline": "ray-guard-baseline-01",
+    "candidate": "ray-guard-candidate-01",
+    "baselineCases": 180,
+    "candidateCases": 180,
+    "differences": 0,
+    "scope": "Forwarded actual MovieClip draw-call counts, two numeric fingerprints and resulting bounds; not visual human acceptance"
+  },
+  "productionObservation": {
+    "baseline": {
+      "report": {
+        "path": "tmp/as2-perf-20261010/baseline-smoke.json",
+        "sha256": "87EF2809BE225237BA6427CCCD42F19B05C45785837183B619E370297937ABD6",
+        "bytes": 13086
+      },
+      "launcherLog": {
+        "path": "tmp/as2-perf-20261010/runs/baseline-smoke.launcher.log",
+        "sha256": "69C8AE8D2E94378BA7F1F4D1A27D4CAB1A310DE32ECCA3500274DED8DFB8AC1B",
+        "bytes": 256574
+      },
+      "status": "failed",
+      "error": {
+        "code": "snapshot_gate_timeout",
+        "phase": "snapshot_gate",
+        "message": "active workbench and first equipment-tuning snapshot were not both confirmed within 60000ms",
+        "details": {
+          "watermarkTotal": 1115,
+          "lastLogTotal": 1414,
+          "requiredMarkers": [
+            "event=equipment_tuning_panel_bound",
+            "event=equipment_tuning_snapshot_confirmed"
+          ]
+        }
+      },
+      "runtimeIdentity": {
+        "runtimeMode": "isolated_candidate",
+        "processPath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\runtime-candidates\\v2\\perf-policy-1009-u1\\runtime\\CRAZYFLASHER7MercenaryEmpire.Core.exe",
+        "coreSha256": "AE0D1E9634BBD14636AB9E8F6A8CB2878A92933A7F80E31DEC2648C8346D281C",
+        "buildIdentity": "6AA1A05B6DFA6AE23CC5D35E94ECB6B5BF1131D3627EEDD6A036C9694573AEE7",
+        "payloadClosure": "A1CD4F77103938F93B5DB5F1E7E743B92502848E902655A4C6836C8ADDC72776",
+        "pid": 23680,
+        "verified": true
+      },
+      "attemptId": "3f926fbbba964dfdb6fe88782a5863e6",
+      "gameEnteredObserved": true,
+      "enterRequestCount": 1,
+      "shutdownSuccess": true,
+      "profileWindows": [
+        {
+          "id": "php:62c09c063b494d1db447e592f397857d",
+          "source": "as2",
+          "samples": 300,
+          "windowMs": 9960,
+          "meanMs": 5.23,
+          "p50Ms": 4,
+          "p95Ms": 10,
+          "maxMs": 48,
+          "packets": 7,
+          "encodedBytes": 21152
+        },
+        {
+          "id": "php:62c09c063b494d1db447e592f397857d",
+          "source": "as2",
+          "samples": 300,
+          "windowMs": 10002,
+          "meanMs": 4.85,
+          "p50Ms": 3,
+          "p95Ms": 7,
+          "maxMs": 39,
+          "packets": 5,
+          "encodedBytes": 19680
+        },
+        {
+          "id": "php:62c09c063b494d1db447e592f397857d",
+          "source": "as2",
+          "samples": 300,
+          "windowMs": 9989,
+          "meanMs": 4.95666666666667,
+          "p50Ms": 3,
+          "p95Ms": 7,
+          "maxMs": 60,
+          "packets": 5,
+          "encodedBytes": 19680
+        },
+        {
+          "id": "php:62c09c063b494d1db447e592f397857d",
+          "source": "as2",
+          "samples": 300,
+          "windowMs": 10013,
+          "meanMs": 4.87,
+          "p50Ms": 3,
+          "p95Ms": 7,
+          "maxMs": 60,
+          "packets": 5,
+          "encodedBytes": 19680
+        },
+        {
+          "id": "php:62c09c063b494d1db447e592f397857d",
+          "source": "as2",
+          "samples": 300,
+          "windowMs": 10466,
+          "meanMs": 5.56333333333333,
+          "p50Ms": 4,
+          "p95Ms": 12,
+          "maxMs": 75,
+          "packets": 5,
+          "encodedBytes": 19680
+        },
+        {
+          "id": "php:62c09c063b494d1db447e592f397857d",
+          "source": "as2",
+          "samples": 300,
+          "windowMs": 9998,
+          "meanMs": 4.95333333333333,
+          "p50Ms": 3,
+          "p95Ms": 7,
+          "maxMs": 53,
+          "packets": 5,
+          "encodedBytes": 19680
+        }
+      ],
+      "steadyHudCaptureMeanMs": 5.038666666666665,
+      "steadySampleCount": 1500,
+      "coldWindowExcludedFromSteadyMean": true,
+      "wire": {
+        "cooldownRows": 18,
+        "allCooldownRowsNumericTriples": true,
+        "full": true,
+        "groupNames": [
+          "buffs",
+          "combat",
+          "cooldowns",
+          "loadout",
+          "resources",
+          "vitals"
+        ]
+      },
+      "scope": "Real isolated-candidate boot, clone load and HUD projection; paused workbench wait, one run per variant; equipment snapshot gate did not close"
+    },
+    "candidate": {
+      "report": {
+        "path": "tmp/as2-perf-20261010/candidate-smoke-02.json",
+        "sha256": "9811A16BE03C7914A3C8FA2EBD73D43CAE9A00D84D72EE7A83A87291974BF936",
+        "bytes": 12673
+      },
+      "launcherLog": {
+        "path": "tmp/as2-perf-20261010/runs/candidate-smoke-02.launcher.log",
+        "sha256": "B0572191BD5446340EB47A62D33F0B4C7C998C5D85D86939C2672159845C561C",
+        "bytes": 140691
+      },
+      "status": "failed",
+      "error": {
+        "code": "snapshot_gate_timeout",
+        "phase": "snapshot_gate",
+        "message": "active workbench and first equipment-tuning snapshot were not both confirmed within 60000ms",
+        "details": {
+          "watermarkTotal": 472,
+          "lastLogTotal": 772,
+          "requiredMarkers": [
+            "event=equipment_tuning_panel_bound",
+            "event=equipment_tuning_snapshot_confirmed"
+          ]
+        }
+      },
+      "runtimeIdentity": {
+        "runtimeMode": "isolated_candidate",
+        "processPath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\runtime-candidates\\v2\\perf-policy-1009-u1\\runtime\\CRAZYFLASHER7MercenaryEmpire.Core.exe",
+        "coreSha256": "AE0D1E9634BBD14636AB9E8F6A8CB2878A92933A7F80E31DEC2648C8346D281C",
+        "buildIdentity": "6AA1A05B6DFA6AE23CC5D35E94ECB6B5BF1131D3627EEDD6A036C9694573AEE7",
+        "payloadClosure": "A1CD4F77103938F93B5DB5F1E7E743B92502848E902655A4C6836C8ADDC72776",
+        "pid": 24744,
+        "verified": true
+      },
+      "attemptId": "51b6daa0fd25427f966735e33d572710",
+      "gameEnteredObserved": true,
+      "enterRequestCount": 1,
+      "shutdownSuccess": true,
+      "profileWindows": [
+        {
+          "id": "php:1214e3c8014a4045aa2f432d79ff5c19",
+          "source": "as2",
+          "samples": 300,
+          "windowMs": 9932,
+          "meanMs": 4.07333333333333,
+          "p50Ms": 2,
+          "p95Ms": 8,
+          "maxMs": 73,
+          "packets": 7,
+          "encodedBytes": 21152
+        },
+        {
+          "id": "php:1214e3c8014a4045aa2f432d79ff5c19",
+          "source": "as2",
+          "samples": 300,
+          "windowMs": 10010,
+          "meanMs": 3.87,
+          "p50Ms": 2,
+          "p95Ms": 9,
+          "maxMs": 45,
+          "packets": 5,
+          "encodedBytes": 19680
+        },
+        {
+          "id": "php:1214e3c8014a4045aa2f432d79ff5c19",
+          "source": "as2",
+          "samples": 300,
+          "windowMs": 9999,
+          "meanMs": 3.81333333333333,
+          "p50Ms": 2,
+          "p95Ms": 6,
+          "maxMs": 44,
+          "packets": 5,
+          "encodedBytes": 19680
+        },
+        {
+          "id": "php:1214e3c8014a4045aa2f432d79ff5c19",
+          "source": "as2",
+          "samples": 300,
+          "windowMs": 9999,
+          "meanMs": 3.70666666666667,
+          "p50Ms": 2,
+          "p95Ms": 6,
+          "maxMs": 49,
+          "packets": 5,
+          "encodedBytes": 19680
+        },
+        {
+          "id": "php:1214e3c8014a4045aa2f432d79ff5c19",
+          "source": "as2",
+          "samples": 300,
+          "windowMs": 9999,
+          "meanMs": 3.95666666666667,
+          "p50Ms": 2,
+          "p95Ms": 9,
+          "maxMs": 46,
+          "packets": 5,
+          "encodedBytes": 19680
+        },
+        {
+          "id": "php:1214e3c8014a4045aa2f432d79ff5c19",
+          "source": "as2",
+          "samples": 300,
+          "windowMs": 9997,
+          "meanMs": 4.02,
+          "p50Ms": 2,
+          "p95Ms": 8,
+          "maxMs": 71,
+          "packets": 5,
+          "encodedBytes": 19680
+        }
+      ],
+      "steadyHudCaptureMeanMs": 3.873333333333334,
+      "steadySampleCount": 1500,
+      "coldWindowExcludedFromSteadyMean": true,
+      "wire": {
+        "cooldownRows": 18,
+        "allCooldownRowsNumericTriples": true,
+        "full": true,
+        "groupNames": [
+          "buffs",
+          "combat",
+          "cooldowns",
+          "loadout",
+          "resources",
+          "vitals"
+        ]
+      },
+      "scope": "Real isolated-candidate boot, clone load and HUD projection; paused workbench wait, one run per variant; equipment snapshot gate did not close"
+    },
+    "hudCaptureMeanReductionPercent": 23.13
+  },
+  "candidateSmokeFailureBeforeHelperFix": {
+    "report": {
+      "path": "tmp/as2-perf-20261010/candidate-smoke.json",
+      "sha256": "DBF5B200E7F786903A87F2166A897604FC35CAB8969334D8C3DA8B18B3B5AFC0",
+      "bytes": 5727
+    },
+    "reason": "The old harness counted the same-Core HotkeyGuard child as a second Guardian; normal shutdown completed."
+  },
+  "helperGateRepair": {
+    "scope": "Read-only process classification in existing test runner; no native/runtime/input-hook change",
+    "offlineChecks": "tools/equipment-tuning/run-checks.js: 9 suites passed",
+    "observation": {
+      "path": "tmp/as2-perf-20261010/smoke-02-process-observation.json",
+      "sha256": "919171D0DC32FA143A20B5D73CDE10ED2E398AADC4DAF3E33025ACD8B9A054AB",
+      "bytes": 1201
+    }
+  },
+  "saveProtection": {
+    "candidate": {
+      "scope": "Non-target save shadows and exact-installation SOL files; only the dedicated clone is excluded",
+      "checkedAt": "2026-10-09T18:22:54.920Z",
+      "beforeCount": 24,
+      "afterCount": 24,
+      "unchanged": true,
+      "changed": []
+    },
+    "baseline": {
+      "scope": "Non-target save shadows and exact-installation SOL files; only the dedicated clone is excluded",
+      "checkedAt": "2026-10-09T18:27:00.878Z",
+      "beforeCount": 24,
+      "afterCount": 24,
+      "unchanged": true,
+      "changed": []
+    },
+    "firstAttemptRawCheck": {
+      "scope": "Non-target save shadows and exact-installation SOL files; only the dedicated clone is excluded",
+      "checkedAt": "2026-10-09T18:14:37.994Z",
+      "beforeCount": 25,
+      "afterCount": 25,
+      "unchanged": false,
+      "changed": [
+        "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\saves\\.launcher-version-marker.json"
+      ]
+    },
+    "firstAttemptExplanation": "Only .launcher-version-marker.json changed. LauncherVersionGate rewrites this app metadata on startup; the existing save-universe contract excludes it. All 24 non-target player/agent save files remained byte-identical."
+  },
+  "preserved": {
+    "testLoaderSource": true,
+    "formalRuntimeManifest": true,
+    "formalConsensus": true
+  },
+  "finalAsLoader": {
+    "path": "scripts/asLoader.swf",
+    "sha256": "F18791C84CF969D4F359EF01201777EDF81DB9DD661984036237A5482D886C75",
+    "bytes": 1497478
+  },
+  "sourceFiles": [
+    {
+      "path": "scripts/run-ai-diagnostics-tests.ps1",
+      "sha256": "311BBFE33F87BD94538063627344FAAB24792508FF724C799EA292A5A609DAE6",
+      "bytes": 1322
+    },
+    {
+      "path": "scripts/run-as2-guard-tests.ps1",
+      "sha256": "8099C463D8008A0E63C0C36A623D92346916CCBE42A355CD95B050A0E214BFE8",
+      "bytes": 1456
+    },
+    {
+      "path": "scripts/run-map-domain-tests.ps1",
+      "sha256": "2930DBB81772119109E1CEF8C140DB7EB802B99A8666B89ABF1D856CBD95EF96",
+      "bytes": 1527
+    },
+    {
+      "path": "scripts/run-player-hud-tests.ps1",
+      "sha256": "86C55A665FC9BD8CCACCA432CF6507D02C33526A0FDD94A3B8CA3EAC87CB9B3C",
+      "bytes": 1526
+    },
+    {
+      "path": "scripts/run-ray-visual-tests.ps1",
+      "sha256": "A6988A4F314E5EED3ED2171076032EB06807C5BC44F6D804AD81279AD6E62151",
+      "bytes": 2967
+    },
+    {
+      "path": "scripts/run-skill-resource-tests.ps1",
+      "sha256": "7C365B72D95D5C880231881C18FF9010B35A241D6F8E32CA84CB1B7BC9B1C254",
+      "bytes": 1181
+    },
+    {
+      "path": "scripts/类定义/org/flashNight/arki/bullet/BulletComponent/Loader/ShellLoader.as",
+      "sha256": "F3FCD1A60E105AB0ABD04989D69E14540ED78774E18A8AFD35C29A344A51436A",
+      "bytes": 1095
+    },
+    {
+      "path": "scripts/类定义/org/flashNight/arki/hud/PlayerHudBuffProjection.as",
+      "sha256": "D908D7C1C690711EAB05FE58DA4E35D1D539AF6C40D9061E3BCB6807F6947CD7",
+      "bytes": 2322
+    },
+    {
+      "path": "scripts/类定义/org/flashNight/arki/hud/PlayerHudHotPathTest.as",
+      "sha256": "1E2579A77C1477A316B8B86717CA1467C0AE0E9C3985DD37D3A05045C24AB69E",
+      "bytes": 8105
+    },
+    {
+      "path": "scripts/类定义/org/flashNight/arki/hud/PlayerHudService.as",
+      "sha256": "702A0E2E4F1AA36942E7E84479F950F30329AE6E0890847F8E97EF72C31A16F6",
+      "bytes": 32444
+    },
+    {
+      "path": "scripts/类定义/org/flashNight/arki/map/MapDomainBridge.as",
+      "sha256": "E6DA78B80FEB7EB4C36A289048EF86AFE9906C7EEC8BCB999B7DD2DA02666652",
+      "bytes": 25381
+    },
+    {
+      "path": "scripts/类定义/org/flashNight/arki/map/MapDomainBridgeTest.as",
+      "sha256": "388680B35F0233159BFB4DB907A25A995B45B4FCB40232CB75BEC3AC5EE2A4AA",
+      "bytes": 40710
+    },
+    {
+      "path": "scripts/类定义/org/flashNight/arki/map/MapFactsSampler.as",
+      "sha256": "1F1BC3AC9D4DA0D33AF718BA01013364B185FAE3F6163139C846AF9D7BF32805",
+      "bytes": 4145
+    },
+    {
+      "path": "scripts/类定义/org/flashNight/arki/map/MapSceneObservationTest.as",
+      "sha256": "7BB98437BCDDE89007DE7D093D80088781CF0E95DF846DB2732C66E2E2032AF3",
+      "bytes": 9600
+    },
+    {
+      "path": "scripts/类定义/org/flashNight/arki/render/RayGuardContractTest.as",
+      "sha256": "22342944A583BF5BFE9D8A3AF816C54159AC127D2C4EE39CEE28E2F9825D1C59",
+      "bytes": 6938
+    },
+    {
+      "path": "scripts/类定义/org/flashNight/arki/render/RayVfxManager.as",
+      "sha256": "3EED3E7E96FA6F8402EBACBF8BBDD70D83AEA4AF41DF326FB77BD91E84BA5096",
+      "bytes": 39898
+    },
+    {
+      "path": "scripts/类定义/org/flashNight/arki/render/renderer/BaguaRodRenderer.as",
+      "sha256": "215EA1A37254689A0E0F7E7AD78DDED697D85E7D49B05F65AA89F5198DA6CE6F",
+      "bytes": 17633
+    },
+    {
+      "path": "scripts/类定义/org/flashNight/arki/render/renderer/ConvergenceRenderer.as",
+      "sha256": "533ED2927481613F57016B77AEEE68ED1D35A43BE169AAFC2433C62EC6AB9AFC",
+      "bytes": 76343
+    },
+    {
+      "path": "scripts/类定义/org/flashNight/arki/render/renderer/FlameStreamRenderer.as",
+      "sha256": "11E386A732D4E8570BF646E34C0F7A869E80631DA2056B386B2D2DBD7B0000FC",
+      "bytes": 30226
+    },
+    {
+      "path": "scripts/类定义/org/flashNight/arki/render/renderer/PhaseResonanceRenderer.as",
+      "sha256": "F18105E65B6ADF61719E7E48E193BD4C6C641B641BAA8309B55EF48AB058EAA1",
+      "bytes": 12489
+    },
+    {
+      "path": "scripts/类定义/org/flashNight/arki/render/renderer/PlasmaRenderer.as",
+      "sha256": "7EE1A388EBA16CAAD5600223AF0982F184BFC3266FD73D08F426B68087F06114",
+      "bytes": 11423
+    },
+    {
+      "path": "scripts/类定义/org/flashNight/arki/render/renderer/PrismRenderer.as",
+      "sha256": "2BC07B0D5729F5199EFE8790D6951F94783ED6231C41F5557668E61901D77A8E",
+      "bytes": 11796
+    },
+    {
+      "path": "scripts/类定义/org/flashNight/arki/render/renderer/RadianceRenderer.as",
+      "sha256": "72AFFB5D30FE6F8D592E73689555D3D7089B64879AEB9857443AF2FCFC2D625B",
+      "bytes": 9474
+    },
+    {
+      "path": "scripts/类定义/org/flashNight/arki/render/renderer/SpectrumRenderer.as",
+      "sha256": "B0BA4BD95AD56E4E554A4D9E004032FAFE6E252BBEF29B161B57F90860E5EA19",
+      "bytes": 12863
+    },
+    {
+      "path": "scripts/类定义/org/flashNight/arki/render/renderer/ThermalRenderer.as",
+      "sha256": "46730FE2A940723AF8C1BEA9AABC4A0BB23D1E78FA60419DB265BE52BBDDC5D7",
+      "bytes": 10066
+    },
+    {
+      "path": "scripts/类定义/org/flashNight/arki/render/renderer/VortexRenderer.as",
+      "sha256": "C7A9A229BD3A329DD9A599112DCFBABD88448B116856C85568BFECFB974EA020",
+      "bytes": 11547
+    },
+    {
+      "path": "scripts/类定义/org/flashNight/arki/render/renderer/WaveRenderer.as",
+      "sha256": "CE1982B7581EEBF3BE1860E5646761D4B67E6BB1DAE18B779620F940F8030856",
+      "bytes": 17920
+    },
+    {
+      "path": "scripts/类定义/org/flashNight/arki/skill/SkillResourceService.as",
+      "sha256": "B4BE3CADFA131F93E5C861DDA23C0076FED9657AC4627A2158119632EE6D4332",
+      "bytes": 10756
+    },
+    {
+      "path": "scripts/类定义/org/flashNight/arki/skill/SkillResourceServiceTest.as",
+      "sha256": "3472704F33EACF47AD33A62A5679575BCACF973BF99290555932500DE1964B74",
+      "bytes": 11874
+    },
+    {
+      "path": "scripts/类定义/org/flashNight/arki/unit/Action/Shoot/LongGunSubWeaponCore.as",
+      "sha256": "F10FC16339C12D71C9FC3FC00FE856CBBC836460909F6AE7EBC10E40484500E8",
+      "bytes": 46800
+    },
+    {
+      "path": "scripts/类定义/org/flashNight/arki/unit/Action/Skill/DrugInputService.as",
+      "sha256": "948854DE5717B0607D2B610307DF7ECF00CDD46E585BEAE093A03CF07B71A824",
+      "bytes": 26501
+    },
+    {
+      "path": "scripts/类定义/org/flashNight/arki/unit/Action/Skill/ManualCooldownService.as",
+      "sha256": "ECE3708FE06F14703A576532A8D0C6BF86F072161BB1B07D0F63987581ECA925",
+      "bytes": 8926
+    },
+    {
+      "path": "scripts/类定义/org/flashNight/arki/unit/Action/Skill/QuickSkillInputService.as",
+      "sha256": "20EAF6E1A7587A91CB33EEBEBCE63786DAC0558BA5EE507375767ED4BC3FAD41",
+      "bytes": 8586
+    },
+    {
+      "path": "scripts/类定义/org/flashNight/arki/unit/Action/Skill/WeaponSkillInputService.as",
+      "sha256": "A653CF623D812EE54AC5178B3FF00E3153E39A092110DD419EF903FA606F55FD",
+      "bytes": 9320
+    },
+    {
+      "path": "scripts/类定义/org/flashNight/arki/unit/UnitAI/combat/AIDiagnosticsTest.as",
+      "sha256": "7FEF5592E86F4EB01AE4D3818C5D3752F0C67AFE78C84EF6BA2B9AD3D9EF098D",
+      "bytes": 15080
+    },
+    {
+      "path": "scripts/类定义/org/flashNight/arki/unit/UnitAI/combat/WeaponEvaluator.as",
+      "sha256": "3CAA548D4D63471F8EA62E2C6D0B526914FE9D72B49B5AE100762EC85BFFC21A",
+      "bytes": 25161
+    },
+    {
+      "path": "scripts/类定义/org/flashNight/arki/unit/UnitAI/combat/scoring/ScoringPipeline.as",
+      "sha256": "485EC7ED202060092A84A634B8BF6648265ADD6B78AB9C0D0A1E6636BCC4B073",
+      "bytes": 6733
+    },
+    {
+      "path": "scripts/类定义/org/flashNight/gesh/object/Avm1GuardContractTest.as",
+      "sha256": "E787A461D915827F20A96410A90485AF8E55FC5199B8E785A2444099B13A5953",
+      "bytes": 10680
+    },
+    {
+      "path": "scripts/逻辑/单位函数/单位函数_fs_aka_玩家模板迁移.as",
+      "sha256": "3283BCABE0C3D13960386BDAD68DE1C34965DA74C42B1A42446FDDEA9612BF56",
+      "bytes": 128870
+    },
+    {
+      "path": "tools/equipment-tuning/run-checks.js",
+      "sha256": "3AEC3480AEB83D5C53A8C2F89855FD8FEB6B189796AAB8652C99A824737E722E",
+      "bytes": 21614
+    },
+    {
+      "path": "tools/equipment-tuning/run-unattended.js",
+      "sha256": "50D0A17B23D96F67B9A24D3624776485AF2DB3169B824E5E699A1C62F46A7A9F",
+      "bytes": 91027
+    }
+  ],
+  "finalDevEntry": {
+    "schema": "cf7-local-dev-runtime-status.v1",
+    "selectionState": "ready",
+    "pointerState": "ready",
+    "pointerReason": "",
+    "pointerPath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\runtime-dev\\active.v1.json",
+    "currentBuildIdentityHash": "6AA1A05B6DFA6AE23CC5D35E94ECB6B5BF1131D3627EEDD6A036C9694573AEE7",
+    "matchingCandidateCount": 1,
+    "matchingPayloadClosureCount": 1,
+    "matchingPayloadClosureHashes": [
+      "A1CD4F77103938F93B5DB5F1E7E743B92502848E902655A4C6836C8ADDC72776"
+    ],
+    "candidateRoot": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\runtime-candidates\\v2\\perf-policy-1009-u1",
+    "candidateCorePath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\runtime-candidates\\v2\\perf-policy-1009-u1\\runtime\\CRAZYFLASHER7MercenaryEmpire.Core.dll",
+    "candidateCoreSha256": "AE0D1E9634BBD14636AB9E8F6A8CB2878A92933A7F80E31DEC2648C8346D281C",
+    "payloadClosureHash": "A1CD4F77103938F93B5DB5F1E7E743B92502848E902655A4C6836C8ADDC72776",
+    "deploymentStatus": "NOT_DEPLOYED"
+  },
+  "compiledDefaultFlags": {
+    "asLoaderSha256": "F18791C84CF969D4F359EF01201777EDF81DB9DD661984036237A5482D886C75",
+    "pcode": {
+      "path": "tmp/as2-perf-20261010/final-pcode/scripts/DefineSprite_1_asLoader/frame_1/DoAction.pcode",
+      "sha256": "0C9559C52549F8990322C6D785DC23D174A1637A748F810C48FA1D3E4140816D",
+      "bytes": 3012879
+    },
+    "assignments": [
+      "Push register2, \"AI调试模式\", false; SetMember",
+      "Push register2, \"AI日志级别\", 0; SetMember"
+    ]
+  },
+  "documentationGate": {
+    "exitCode": 0,
+    "log": {
+      "path": "tmp/as2-perf-20261010/runs/doc-governance.log",
+      "sha256": "23E0521025309E24E7716071DAB9FA3FFB463F90C26A6AE369F0431BD76AFCCC",
+      "bytes": 3623
+    },
+    "notes": "Only pre-existing non-blocking line/link debt warnings"
+  },
+  "knownLimitations": [
+    "No combat FPS or long-frame percentile claim",
+    "No human visual/physical-input acceptance",
+    "Equipment workbench snapshot timed out with both original and candidate AS2; underlying cause not diagnosed in this scope",
+    "No native runtime promotion or standard-entry business acceptance"
+  ],
+  "localEvidenceDirectory": "tmp/as2-perf-20261010",
+  "recordedAtStage": "pre_commit_validation"
+}

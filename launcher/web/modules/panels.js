@@ -46,7 +46,8 @@ var Panels = (function() {
         if (id === 'skills' || id === 'crafting' || id === 'kshop'
                 || id === 'settings' || id === 'surgery'
                 || id === 'npcshop' || id === 'blackmarket' || id === 'team' || id === 'gym'
-                || id === 'warlord' || id === 'bookshelf' || id === 'book-comic') {
+                || id === 'warlord' || id === 'bookshelf' || id === 'book-comic'
+                || id === 'tablet') {
             closeMessage.panelInstanceId = readPanelInstanceId(initData);
             if (id === 'npcshop' && isNpcShopOuterCloseReason(reason)) {
                 closeMessage.reason = reason;
@@ -64,7 +65,8 @@ var Panels = (function() {
         return id === 'loot' || id === 'workbench' || id === 'skills'
             || id === 'settings' || id === 'surgery'
             || id === 'crafting' || id === 'kshop' || id === 'npcshop'
-            || id === 'blackmarket' || id === 'team' || id === 'gym' || id === 'warlord' || id === 'bookshelf' || id === 'book-comic';
+            || id === 'blackmarket' || id === 'team' || id === 'gym' || id === 'warlord' || id === 'bookshelf' || id === 'book-comic'
+            || id === 'tablet';
     }
 
     function safeBridgeSend(message, context) {

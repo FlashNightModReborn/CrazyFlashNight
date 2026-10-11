@@ -321,7 +321,7 @@ function normalizeCase(input, defaults, index, errors) {
     ),
     tags: normalizeTags(input.tags, `${fieldName}.tags`, errors),
     plannerReason:
-      input.plannerReason === undefined
+      input.plannerReason === undefined || input.plannerReason === ""
         ? ""
         : assertString(input.plannerReason, `${fieldName}.plannerReason`, errors),
     spawnDistance: parsePositiveInteger(
@@ -790,6 +790,11 @@ function normalizeResultRow(input) {
   if (row.schema !== RESULT_SCHEMA) {
     errors.push(`schema must be ${RESULT_SCHEMA}`);
   }
+  for (const field of ["workerId", "sessionEpoch", "assignmentId", "attemptId"]) {
+    if (input[field] !== undefined) row[field] = assertString(input[field], field, errors);
+  }
+  if (input.skillStateAudit !== undefined) row.skillStateAudit = normalizeJsonObject(input.skillStateAudit, "skillStateAudit", errors);
+  if (input.presentationAudit !== undefined) row.presentationAudit = normalizeJsonObject(input.presentationAudit, "presentationAudit", errors);
   if (errors.length > 0) {
     fail(`invalid result row ${input.caseId || ""}/${input.runId || ""}:\n- ${errors.join("\n- ")}`);
   }

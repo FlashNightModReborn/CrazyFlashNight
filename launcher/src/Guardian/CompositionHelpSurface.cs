@@ -38,6 +38,8 @@ namespace CF7Launcher.Guardian
         private readonly string _webRoot;
         private readonly string _profileRoot;
         private readonly bool _transition;
+        private readonly SceneTransitionPresentationPolicy _presentationPolicy = SceneTransitionPresentationPolicy.Interactive;
+        private bool _backgroundTransition;
         private readonly string _hostName, _pageUrl;
         private CoreWebView2Environment? _environment;
         private CompositionSceneHost? _scene;
@@ -59,12 +61,15 @@ namespace CF7Launcher.Guardian
         internal event Action? TransitionFailed;
         internal Func<JObject, string, JObject?>? TutorialPreferenceRequested;
 
-        internal CompositionHelpSurface(Form owner, string webRoot, string profileRoot, bool transition = false)
+        internal CompositionHelpSurface(Form owner, string webRoot, string profileRoot, bool transition = false,
+            SceneTransitionPresentationPolicy? presentationPolicy = null)
         {
             _owner = owner ?? throw new ArgumentNullException(nameof(owner));
             _webRoot = webRoot ?? throw new ArgumentNullException(nameof(webRoot));
             _profileRoot = profileRoot ?? throw new ArgumentNullException(nameof(profileRoot));
             _transition = transition;
+            _presentationPolicy = transition ? presentationPolicy ?? SceneTransitionPresentationPolicy.Interactive
+                : SceneTransitionPresentationPolicy.Interactive;
             _hostName = transition ? "cf7-transition.local" : HostName;
             _pageUrl = transition ? "https://cf7-transition.local/scene-transition.html" : PageUrl;
             Text = transition ? "CF7 Scene Transition" : "CF7 Help";
@@ -83,6 +88,7 @@ namespace CF7Launcher.Guardian
                 var value = base.CreateParams;
                 // DirectComposition supplies the complete alpha surface, including fade edges.
                 if (_transition) value.ExStyle |= 0x00200000 | 0x80; // NOREDIRECTIONBITMAP | TOOLWINDOW
+                if (_presentationPolicy.NonActivating) value.ExStyle |= 0x08000000; // NOACTIVATE
                 return value;
             }
         }
@@ -166,7 +172,7 @@ namespace CF7Launcher.Guardian
             SyncViewport();
             // 仅当前台已属本进程窗口（游戏/owner 同进程）才允许激活；
             // 外部前台窗口时不抢焦点。
-            if (ForegroundIsSameProcess()) {
+            if (!_presentationPolicy.NonActivating && ForegroundIsSameProcess()) {
                 Activate();
                 _web.MoveFocus(CoreWebView2MoveFocusReason.Programmatic);
             }
@@ -246,13 +252,19 @@ namespace CF7Launcher.Guardian
         }
 
         // The transition is a separate fixed projection endpoint; it never enters panel pause/snapshot.
-        internal bool PresentTransition(Rectangle rect) {
+        internal bool PresentTransition(Rectangle rect, bool backgroundQualified = false) {
             using var latency = CF7Launcher.Diagnostic.InputLatencyProbe.Measure("surface_present");
-            if (!_transition || !Ready || _web == null || !CanRestoreGameFocus) return false;
+            if (!_transition || !Ready || _web == null
+                || !_presentationPolicy.CanPresentSurface(_owner.Visible,_owner.WindowState==FormWindowState.Minimized,
+                    CanRestoreGameFocus,backgroundQualified)) return false;
+            _backgroundTransition = _presentationPolicy.NonActivating && backgroundQualified;
             if (!_active) return ResumePanel(rect) && CommitGeometry(rect, SessionGeneration);
             _committed = rect;
             if (Bounds != rect) Bounds = rect;
-            if (!Visible) { Show(); Activate(); _web.MoveFocus(CoreWebView2MoveFocusReason.Programmatic); }
+            if (!Visible) {
+                Show();
+                if (!_presentationPolicy.NonActivating) { Activate(); _web.MoveFocus(CoreWebView2MoveFocusReason.Programmatic); }
+            }
             SyncViewport();
             return true;
         }
@@ -264,16 +276,18 @@ namespace CF7Launcher.Guardian
         internal void HideTransition() {
             if (!_transition || _disposed) return;
             _active = false; _committed = Rectangle.Empty;
+            _backgroundTransition = false;
             _pressedButtons = 0; _capturedButton = false; Capture = false;
             if (Visible) Hide();
             SyncViewport();
         }
         internal void SuppressTransition() {
+            _backgroundTransition = false;
             if (_transition && !_disposed && Visible) { _pressedButtons = 0; _capturedButton = false; Capture = false; Hide(); SyncViewport(); }
         }
         internal void RaiseTransition() {
-            if (_transition && Active && Visible && CanRestoreGameFocus)
-                SceneTransitionWindowOrder.RaiseIfCovered(this, _owner);
+            if (_transition && Active && Visible && (CanRestoreGameFocus || _backgroundTransition))
+                SceneTransitionWindowOrder.RaiseIfCovered(this, _owner,preserveForeignOrder:_presentationPolicy.NonActivating);
         }
         internal bool TransitionInputReleased => _pressedButtons == 0
             && (GetAsyncKeyState(0x01) | GetAsyncKeyState(0x02) | GetAsyncKeyState(0x0D) | GetAsyncKeyState(0x20)) >= 0;
@@ -453,7 +467,7 @@ namespace CF7Launcher.Guardian
         protected override void OnActivated(EventArgs e)
         {
             base.OnActivated(e);
-            if (Active && _web != null)
+            if (!_presentationPolicy.NonActivating && Active && _web != null)
                 _web.MoveFocus(CoreWebView2MoveFocusReason.Programmatic);
         }
 
@@ -467,7 +481,7 @@ namespace CF7Launcher.Guardian
             BeginInvoke((Action)(() => {
                 if (_disposed || !_active || IsDisposed) return;
                 if (!ForegroundIsOurs()) {
-                    if (_transition) { Hide(); SyncViewport(); }
+                    if (_transition) { if (!_backgroundTransition) { Hide(); SyncViewport(); } }
                     else RequestClose("deactivated");
                 }
             }));
@@ -508,6 +522,10 @@ namespace CF7Launcher.Guardian
 
         protected override void WndProc(ref Message m)
         {
+            if (_presentationPolicy.NonActivating) {
+                SceneTransitionWindowOrder.ConstrainBackgroundShow(ref m,this,_owner);
+                if (m.Msg == WmMouseActivate) { m.Result = new IntPtr(4); return; } // MA_NOACTIVATEANDEAT
+            }
             bool input = m.Msg is WmMouseMove or WmMouseLeave or WmLButtonDown
                 or WmLButtonUp or WmRButtonDown or WmRButtonUp or WmMouseWheel
                 or WmLButtonDoubleClick or WmRButtonDoubleClick;

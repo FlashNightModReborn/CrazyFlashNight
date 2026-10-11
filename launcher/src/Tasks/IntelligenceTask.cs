@@ -89,7 +89,8 @@ namespace CF7Launcher.Tasks
         {
             "paragraph", "heading", "list", "table", "quote", "divider", "stamp", "note",
             "handwritten", "annotation", "terminalLog", "redaction", "decryptBlock", "blueprint", "timeline",
-            "hardwareExtract", "surfaceMark", "paperFragment", "paperStage"
+            "hardwareExtract", "surfaceMark", "paperFragment", "paperStage",
+            "figure"
         };
 
         private static readonly HashSet<string> H5InlineTypes = new HashSet<string>(StringComparer.Ordinal)
@@ -153,6 +154,12 @@ namespace CF7Launcher.Tasks
         {
             "block", "bar", "garble", "mojibake", "symbol"
         };
+
+        private static readonly System.Text.RegularExpressions.Regex H5FigureSrc =
+            new System.Text.RegularExpressions.Regex(
+                @"^assets/(?:[\w.-]+/)*[\w.-]+\.(?:svg|png|webp)$",
+                System.Text.RegularExpressions.RegexOptions.IgnoreCase
+                | System.Text.RegularExpressions.RegexOptions.CultureInvariant);
 
         public IntelligenceTask(string projectRoot)
             : this(projectRoot, (Func<bool>)null, null)
@@ -1137,6 +1144,17 @@ namespace CF7Launcher.Tasks
                         error = "h5_unknown_note_tone";
                         return false;
                     }
+                }
+            }
+            if (type == "figure")
+            {
+                // 插图 src 只放行 launcher/web/assets/ 下的相对路径：
+                // 禁目录穿越（..）、绝对路径、协议与反斜杠。与 Web 端 FIGURE_SRC 一致。
+                string src = obj.Value<string>("src") ?? string.Empty;
+                if (!H5FigureSrc.IsMatch(src) || src.Contains(".."))
+                {
+                    error = "h5_invalid_figure_src";
+                    return false;
                 }
             }
 

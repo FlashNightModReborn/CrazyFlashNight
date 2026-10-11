@@ -179,10 +179,11 @@ namespace CF7Launcher.Save
             NormalizeKnownEmptyArrayField(pending, "receipts");
 
             JObject report = pending["report"] as JObject;
-            if (!HasExactVersion(report, 1)) return;
+            if (!HasExactVersion(report, 1) && !HasExactVersion(report, 2)) return;
 
             NormalizeKnownEmptyArrayField(report, "kills");
             NormalizeKnownEmptyArrayField(report, "itemFlows");
+            if (HasExactVersion(report, 2)) NormalizeKnownEmptyArrayField(report, "allies");
         }
 
         private static void NormalizeKnownEmptyArrayField(JObject owner, string fieldName)

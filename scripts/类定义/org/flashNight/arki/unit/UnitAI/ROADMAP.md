@@ -162,6 +162,8 @@ metrics = {
 
 ### 2.4 测试框架
 
+诊断开关已有局部 AS2 回归入口 `scripts/run-ai-diagnostics-tests.ps1`：真实评分/选择管线、受控随机源与武器 DPS 缓存时点；默认日志 OFF，按需启用。这一专项只证明诊断等价性，不代表下面的完整 AI 测试框架或战斗 A/B 已完成。
+
 基于 Phase 1 的 AIEnvironment mock + UnitAIData 聚合字段：
 
 ```

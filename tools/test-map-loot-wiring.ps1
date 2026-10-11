@@ -48,7 +48,8 @@ function Assert-Regex([string]$Text, [string]$Pattern, [string]$Label) {
             $Text,
             $Pattern,
             [Text.RegularExpressions.RegexOptions]::CultureInvariant -bor
-            [Text.RegularExpressions.RegexOptions]::Singleline)) {
+            [Text.RegularExpressions.RegexOptions]::Singleline,
+            [TimeSpan]::FromSeconds(5))) {
         throw "$Label missing regex '$Pattern'"
     }
 }
@@ -103,7 +104,8 @@ foreach ($flashRendererToken in @("资源箱界面", "attachMovie(", "createInve
         "interaction cannot construct a Flash loot renderer")
 }
 Assert-Regex $interaction (
-    'var\s+lootDeath:Object\s*=\s*LootContainerService\.observeDeath\(target\);' +
+    'var\s+lootDeath:Object\s*=\s*org\.flashNight\.arki\.item\.MapChestStashService\.isStashed\(target\)' +
+    '\s*\?\s*\{handled:true,\s*ownKill:true\}\s*:\s*LootContainerService\.observeDeath\(target\);' +
     '[\s\S]*?lootDeath\.handled === true[\s\S]*?lootDeath\.ownKill !== true' +
     '[\s\S]*?trace\("\[LootContainer\] unexpected target death:'
 ) "unexpected loot death is visible and remains fail closed"
@@ -376,7 +378,7 @@ $rootCleanupText = $sceneFlow.Substring(
 Assert-Ordered $rootCleanupText @(
     "if (!SceneManager.instance.removeGameWorld())",
     "_root.淡出动画.stop()",
-    "_root.__安排游戏世界清理重试()",
+    "_root.__安排游戏世界清理重试(清理请求)",
     "return false",
     "CollisionLayerRenderer.clearAll()"
 ) "fade timeline blocks before root teardown"

@@ -1,0 +1,71 @@
+<DOMSymbolItem xmlns="http://ns.adobe.com/xfl/2008/" name="Codex/前治安官二阶段/手枪弹匣" symbolType="graphic">
+  <timeline>
+    <DOMTimeline name="手枪弹匣">
+      <layers>
+        <DOMLayer name="R26 原生矢量" color="#4FFF4F">
+          <frames>
+            <DOMFrame index="0" duration="1" keyMode="9728">
+              <elements>
+                <DOMShape isFloating="true">
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#2B3030"/>
+                    </FillStyle>
+                  </fills>
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke weight="2.2" scaleMode="normal" caps="none" joints="miter">
+                        <fill>
+                          <SolidColor color="#141A1B"/>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
+                  <edges>
+                    <Edge edges="!-160 -60|-120 880|180 860|140 -60|-160 -60" fillStyle0="1" strokeStyle="1"/>
+                  </edges>
+                </DOMShape>
+                <DOMShape isFloating="true">
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#181E20"/>
+                    </FillStyle>
+                  </fills>
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke weight="2" scaleMode="normal" caps="none" joints="miter">
+                        <fill>
+                          <SolidColor color="#121617"/>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
+                  <edges>
+                    <Edge edges="!-160 860|-160 960|240 940|220 840|-160 860" fillStyle0="1" strokeStyle="1"/>
+                  </edges>
+                </DOMShape>
+                <DOMShape isFloating="true">
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke weight="1.2" scaleMode="normal" caps="none" joints="miter">
+                        <fill>
+                          <SolidColor color="#606461"/>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
+                  <edges>
+                    <Edge edges="!-60 20|40 20|80 740" strokeStyle="1"/>
+                    <Edge edges="!-80 240|-20 240" strokeStyle="1"/>
+                    <Edge edges="!-60 440|0 440" strokeStyle="1"/>
+                    <Edge edges="!-60 640|20 640" strokeStyle="1"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

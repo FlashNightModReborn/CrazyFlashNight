@@ -127,6 +127,20 @@ _root.gameCommands["toggleTablet"] = function() {
     }
 };
 
+// 平板 Web 面板入口（替代 Flash 平板）：由 Host TABLET 命令触发，快照基建等级后经
+// panel_request 打开 web 侧 'tablet' 面板。等级归属仍是 _root.基建系统.infrastructure。
+_root.gameCommands["openTabletWeb"] = function():Void {
+    if (_root.__tabletLiteJson == undefined) _root.__tabletLiteJson = new LiteJSON();
+    var infraJson:String = _root.__tabletLiteJson.stringifySafe(
+        (_root.平板基建等级快照 != undefined) ? _root.平板基建等级快照() : {}
+    );
+    _root.server.sendSocketMessage(
+        org.flashNight.arki.ui.PanelRequestEnvelope.build(
+            "tablet", "tablet_cmd", [], [{name:"infrastructure", value:infraJson}]
+        )
+    );
+};
+
 _root.gameCommands["safeExit"] = function() {
     // 安全退出界面已迁移到 Launcher Web 侧
     // 只触发存盘，sv:1/sv:2/sv:3 分别通知存盘中/成功/失败

@@ -360,10 +360,12 @@ namespace CF7Launcher.Guardian
             bool takeForeground,
             bool sessionForeground,
             Func<string, bool> restorer,
-            string reason)
+            string reason,
+            bool curtainOwnsFocus = false,
+            bool transitionConnected = false)
         {
             if (disposed || panelMode || !takeForeground || !sessionForeground
-                || restorer == null)
+                || restorer == null || curtainOwnsFocus && transitionConnected)
                 return false;
             return restorer(reason);
         }
@@ -464,6 +466,7 @@ namespace CF7Launcher.Guardian
             ItemUse,
             Loadout,
             Skills,
+            Tablet,
             Unsupported
         }
 
@@ -488,6 +491,7 @@ namespace CF7Launcher.Guardian
             if (domain == "item_use") return PanelDomainRoute.ItemUse;
             if (domain == "loadout") return PanelDomainRoute.Loadout;
             if (domain == "skills") return PanelDomainRoute.Skills;
+            if (domain == "tablet") return PanelDomainRoute.Tablet;
             return PanelDomainRoute.Unsupported;
         }
 
@@ -1355,6 +1359,7 @@ namespace CF7Launcher.Guardian
         private LootTask _lootTask;
         private LootPanelCoordinator _lootPanelCoordinator;
         private NpcShopTask _npcShopTask;
+        private TabletTask _tabletTask;
         private CraftingTask _craftingTask;
         private MaterialShopNavigationCoordinator
             _materialShopNavigationCoordinator;
@@ -3709,6 +3714,7 @@ namespace CF7Launcher.Guardian
 
         private void EnsureCursorHook()
         {
+            if ((_owner as GuardianForm)?.ArenaWorkerMode == true) return;
             if (InvokeRequired) throw new InvalidOperationException("Cursor hook requires the UI message-loop thread.");
             if (_cursorHook != IntPtr.Zero || _disposed)
                 return;
@@ -4887,6 +4893,16 @@ namespace CF7Launcher.Guardian
             task.SetPostToWeb(PostToWeb);
             task.SetInvoker(delegate(Action a) { try { this.BeginInvoke(a); } catch {} });
             BindCurrentMaterialShopNavigationOwners();
+        }
+
+        public void SetTabletTask(TabletTask task)
+        {
+            _tabletTask = task;
+            if (task == null) return;
+            task.SetPostToWeb(PostToWeb);
+            task.SetInvoker(delegate(Action a) { try { this.BeginInvoke(a); } catch {} });
+            task.SetActivePanelProvider(
+                () => _panelHost != null ? _panelHost.ActivePanelName : null);
         }
 
         public void SetCraftingTask(CraftingTask task)
@@ -6261,19 +6277,23 @@ namespace CF7Launcher.Guardian
             try
             {
                 PerfTrace.Mark(perfEvent, panelTag);
+                bool curtainOwnsFocus = _panelHost?.SceneTransition?.OwnsCurtain == true;
+                bool transitionConnected = _panelHost?.SceneTransition?.Task.Connected == true;
                 bool restored = TryInvokePanelCloseFocusRestore(
                     _disposed,
                     _panelMode,
                     _panelTakeForeground,
                     currentSessionForeground,
                     _flashFocusRestorer,
-                    reason);
+                    reason,
+                    curtainOwnsFocus,
+                    transitionConnected);
                 LogPanelCloseFocusTrace(
                     trace,
                     "restore_result",
                     currentForeground,
                     "attempt=" + attempt + " result="
-                        + (restored ? "success" : "failed"));
+                        + (restored ? "success" : curtainOwnsFocus && transitionConnected ? "deferred_to_curtain" : "failed"));
                 return restored;
             }
             catch (Exception ex)
@@ -7586,6 +7606,20 @@ namespace CF7Launcher.Guardian
                     + " to NpcShopTask, _npcShopTask=" + (_npcShopTask != null ? "ok" : "NULL"));
                 if (_npcShopTask != null) _npcShopTask.HandleWebRequest(cmd, parsed);
                 else RespondPanelDomainError(parsed, "npcshop_unavailable");
+                return;
+            }
+            if (domainRoute == PanelDomainRoute.Tablet)
+            {
+                if (!HasExactActivePanelOwnerBinding(parsed, "tablet"))
+                {
+                    LogManager.Log(
+                        "[TabletTask] rejected expired/foreign owner envelope");
+                    RespondPanelDomainError(
+                        parsed, "panel_instance_expired");
+                    return;
+                }
+                if (_tabletTask != null) _tabletTask.HandleWebRequest(parsed);
+                else RespondPanelDomainError(parsed, "tablet_unavailable");
                 return;
             }
             if (domainRoute == PanelDomainRoute.Crafting)

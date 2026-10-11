@@ -856,7 +856,8 @@ _root.__安排游戏世界清理重试 = function(清理请求:Object):Void {
 		if (_root.清除游戏世界组件(清理请求)) {
 			if (org.flashNight.arki.scene.SceneTransitionGuard.ownsFade(清理请求)
 					&& typeof _root.淡出动画.play == "function") {
-				_root.淡出动画.play();
+				if (typeof _root.完成Web清场 != "function"
+						|| !_root.完成Web清场(_root.淡出动画)) _root.淡出动画.play();
 			}
 		}
 	}, 1);

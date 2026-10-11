@@ -16,6 +16,8 @@ namespace CF7Launcher.Guardian.WorldCompositor
         private readonly TimingReadDelegate _readTiming;
         private readonly HudRasterDelegate _hudRaster;
         private readonly HudRasterReadDelegate _readHudRaster;
+        private readonly HudCostSetDelegate _setHudCostSampling;
+        private readonly HudCostReadDelegate _readHudCost;
         private readonly CaptureSizeDelegate _captureSize;
         private readonly CropDelegate _crop;
         private readonly ModeDelegate _mode;
@@ -59,6 +61,8 @@ namespace CF7Launcher.Guardian.WorldCompositor
                 _readTiming=TryExport<TimingReadDelegate>("ProbeGetTimingStats");
                 _hudRaster=TryExport<HudRasterDelegate>("ProbeSetHudRaster");
                 _readHudRaster=TryExport<HudRasterReadDelegate>("ProbeGetHudRasterStats");
+                _setHudCostSampling=TryExport<HudCostSetDelegate>("ProbeSetHudCostSampling");
+                _readHudCost=TryExport<HudCostReadDelegate>("ProbeGetHudCostStats");
                 _captureSize=Export<CaptureSizeDelegate>("ProbeGetCaptureSize"); // reject an old unpaired DLL
                 _crop = Export<CropDelegate>("ProbeSetCrop"); _mode = Export<ModeDelegate>("ProbeSetMode");
                 _matrix=Export<MatrixDelegate>("ProbeSetMatrix"); _active=Export<ActiveDelegate>("ProbeSetActive");
@@ -148,6 +152,19 @@ namespace CF7Launcher.Guardian.WorldCompositor
             var value=new HudRasterStats {Size=(uint)Marshal.SizeOf<HudRasterStats>()};
             if (_session==IntPtr.Zero || _readHudRaster==null || _readHudRaster(_session,ref value)!=1)
                 throw new InvalidOperationException("Opaque HUD raster statistics unavailable.");
+            return value;
+        }
+        internal bool HudCostSamplingAvailable => _setHudCostSampling!=null && _readHudCost!=null;
+        internal void SetHudCostSampling(bool enabled)
+        {
+            if(!HudCostSamplingAvailable || _session==IntPtr.Zero || _setHudCostSampling(_session,enabled?1:0)!=1)
+                throw new InvalidOperationException("Explicit HUD cost sampling unavailable.");
+        }
+        internal HudCostStats ReadHudCost()
+        {
+            var value=new HudCostStats {Size=(uint)Marshal.SizeOf<HudCostStats>()};
+            if(!HudCostSamplingAvailable || _session==IntPtr.Zero || _readHudCost(_session,ref value)!=1)
+                throw new InvalidOperationException("HUD cost statistics unavailable.");
             return value;
         }
         internal System.Drawing.Size ReadCaptureSize()
@@ -369,6 +386,18 @@ namespace CF7Launcher.Guardian.WorldCompositor
             public uint Size,VisibleLayers;
             public ulong Accepted,CopiedBytes,Uploads,UploadedBytes,Draws;
         }
+        [StructLayout(LayoutKind.Sequential)]
+        internal struct HudCostStats
+        {
+            public uint Size,Enabled,Retained,Started;
+            public ulong Completed,Disjoint,Dropped,Errors;
+            public double WorldMsTotal,HudMsTotal,WorldP50Ms,WorldP95Ms,WorldP99Ms,HudP50Ms,HudP95Ms,HudP99Ms;
+            public ulong CopySamples,CopyBytes;
+            public double AllocationCpuMs,CopyCpuMs;
+            public ulong PoolReuses,PoolAllocations,CachedBytes;
+        }
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)] private delegate int HudCostSetDelegate(IntPtr handle,int enabled);
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)] private delegate int HudCostReadDelegate(IntPtr handle,ref HudCostStats stats);
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)] private delegate int HudRasterDelegate(
             IntPtr handle,int layer,IntPtr pixels,int width,int height,int stride,int x,int y);
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)] private delegate int HudRasterReadDelegate(

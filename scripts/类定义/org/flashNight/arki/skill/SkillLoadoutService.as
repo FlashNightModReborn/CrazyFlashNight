@@ -110,14 +110,8 @@ class org.flashNight.arki.skill.SkillLoadoutService {
     public static function getHudDescriptors():Object {
         // Display-only memoization. Writes and release gates still synchronize()
         // independently; legacy in-place edits are observed by copied scalar inputs.
+        if (hudInputsMatch()) return _hudDescriptors;
         var inputs:Array = hudInputs();
-        if (inputs != null && _hudInputs != null && inputs.length == _hudInputs.length) {
-            var same:Boolean = true;
-            for (var index:Number = 0; index < inputs.length; index++) {
-                if (inputs[index] !== _hudInputs[index]) { same = false; break; }
-            }
-            if (same) return _hudDescriptors;
-        }
         var sync:Object = synchronize();
         var slots:Array = [];
         for (var slot:Number = 1; slot < 13; slot++) {
@@ -127,6 +121,41 @@ class org.flashNight.arki.skill.SkillLoadoutService {
         _hudInputs = inputs;
         _hudDescriptors = {revision:_revision, slots:slots};
         return _hudDescriptors;
+    }
+
+    /**
+     * Compare against copied scalar inputs without allocating the next input array.
+     * Rows and metadata are still read on every call: legacy in-place edits cannot
+     * hide behind a reference/revision cache. Misses retain the original full scan.
+     */
+    private static function hudInputsMatch():Boolean {
+        var inputs:Array = _hudInputs;
+        if (inputs == null || !isReady()) return false;
+        var r:Object = root();
+        var table:Array = r.主角技能表;
+        if (table.length > SKILL_ROW_COUNT || inputs[0] !== r || inputs[1] !== _revision
+                || inputs[2] !== table || inputs[3] !== table.length || inputs[4] !== r.技能表对象
+                || inputs[5] !== r.等级 || inputs[6] !== r.技能点数) return false;
+        var cursor:Number = 7;
+        for (var i:Number = 0; i < SKILL_ROW_COUNT; i++) {
+            var exists:Boolean = table.hasOwnProperty(String(i));
+            var row = table[i];
+            if (exists !== inputs[cursor++] || row !== inputs[cursor++]) return false;
+            if (!exists) continue;
+            if (!(row instanceof Array) || row.length < 5 || row.length !== inputs[cursor++]) return false;
+            for (var j:Number = 0; j < 5; j++) if (row[j] !== inputs[cursor++]) return false;
+            var metadata:Object = r.技能表对象[normalizeRowName(row[0])];
+            if (metadata !== inputs[cursor++]) return false;
+            if (metadata != null) {
+                for (j = 0; j < _hudMetadataKeys.length; j++) {
+                    if (metadata[_hudMetadataKeys[j]] !== inputs[cursor++]) return false;
+                }
+            }
+        }
+        for (i = 1; i <= QUICK_SLOT_COUNT; i++) {
+            if (r["快捷技能栏" + i] !== inputs[cursor++] || keyLabel(i) !== inputs[cursor++]) return false;
+        }
+        return cursor == inputs.length;
     }
 
     /** Bounded raw inputs to scanState/descriptorFromScan; never a gameplay authority. */

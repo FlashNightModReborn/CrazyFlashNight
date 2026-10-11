@@ -1,0 +1,34 @@
+<DOMDocument xmlns="http://ns.adobe.com/xfl/2008/" width="500" height="500" frameRate="30" xflVersion="2.2" creatorInfo="Adobe Flash Professional CS6" platform="Windows">
+  <symbols>
+    <Include href="FormerSheriffLibrary.xml"/>
+    <Include href="FormerSheriffNameplate.xml"/>
+  <Include href="SheriffImport0.xml"/><Include href="SheriffImport1.xml"/><Include href="SheriffImport2.xml"/><Include href="SheriffImport3.xml"/><Include href="SheriffImport4.xml"/><Include href="SheriffImport5.xml"/><Include href="SheriffImport6.xml"/><Include href="SheriffImport7.xml"/></symbols>
+  <timelines>
+    <DOMTimeline name="原生单位测试宿主">
+      <layers>
+        <DOMLayer name="共享库导入">
+          <frames>
+            <DOMFrame index="0" duration="1" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[stop();
+#include "../TestLoader.as"]]></script>
+              </Actionscript>
+              <elements>
+                <DOMSymbolInstance libraryItemName="FormerSheriffLibrary" name="anchor0">
+                  <matrix>
+                    <Matrix tx="-1000" ty="-1000"/>
+                  </matrix>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="FormerSheriffNameplate" name="anchor1">
+                  <matrix>
+                    <Matrix tx="-1000" ty="-1000"/>
+                  </matrix>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          <DOMFrame index="1" duration="1" keyMode="9728"><elements><DOMSymbolInstance libraryItemName="SheriffImport0"><matrix><Matrix tx="-2000" ty="-2000"/></matrix></DOMSymbolInstance><DOMSymbolInstance libraryItemName="SheriffImport1"><matrix><Matrix tx="-2000" ty="-2000"/></matrix></DOMSymbolInstance><DOMSymbolInstance libraryItemName="SheriffImport2"><matrix><Matrix tx="-2000" ty="-2000"/></matrix></DOMSymbolInstance><DOMSymbolInstance libraryItemName="SheriffImport3"><matrix><Matrix tx="-2000" ty="-2000"/></matrix></DOMSymbolInstance><DOMSymbolInstance libraryItemName="SheriffImport4"><matrix><Matrix tx="-2000" ty="-2000"/></matrix></DOMSymbolInstance><DOMSymbolInstance libraryItemName="SheriffImport5"><matrix><Matrix tx="-2000" ty="-2000"/></matrix></DOMSymbolInstance><DOMSymbolInstance libraryItemName="SheriffImport6"><matrix><Matrix tx="-2000" ty="-2000"/></matrix></DOMSymbolInstance><DOMSymbolInstance libraryItemName="SheriffImport7"><matrix><Matrix tx="-2000" ty="-2000"/></matrix></DOMSymbolInstance></elements></DOMFrame></frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timelines>
+</DOMDocument>

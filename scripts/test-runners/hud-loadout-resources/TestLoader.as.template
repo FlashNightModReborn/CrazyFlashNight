@@ -1,0 +1,3 @@
+﻿trace("FocusedTestRunId hud-loadout-resources Start: __FOCUSED_RUN_ID__");
+org.flashNight.arki.hud.PlayerHudLoadoutResourceTest.runAllTests();
+trace("FocusedTestRunId hud-loadout-resources Complete: __FOCUSED_RUN_ID__");

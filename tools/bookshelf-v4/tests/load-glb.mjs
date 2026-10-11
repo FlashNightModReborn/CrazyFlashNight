@@ -1,0 +1,12 @@
+// Node-only geometry loader for QA. No renderer, textures or browser shims.
+import fs from 'node:fs';
+export function loadGeometryGlb(path, THREE) {
+ const bytes=fs.readFileSync(path); if(bytes.readUInt32LE(0)!==0x46546c67||bytes.readUInt32LE(4)!==2||bytes.readUInt32LE(8)!==bytes.length)throw Error('Invalid GLB');
+ let json,bin;for(let at=12;at<bytes.length;){const n=bytes.readUInt32LE(at),type=bytes.readUInt32LE(at+4);at+=8;const chunk=bytes.subarray(at,at+n);if(type===0x4e4f534a)json=JSON.parse(chunk.toString());if(type===0x004e4942)bin=chunk;at+=n;}
+ const nodes=json.nodes.map(n=>{const o=new THREE.Group();o.name=n.name||'';o.userData={...n.extras};if(n.matrix){o.matrix.fromArray(n.matrix);o.matrix.decompose(o.position,o.quaternion,o.scale);}else{o.position.fromArray(n.translation||[0,0,0]);o.quaternion.fromArray(n.rotation||[0,0,0,1]);o.scale.fromArray(n.scale||[1,1,1]);}
+  if(n.mesh!==undefined)for(const p of json.meshes[n.mesh].primitives){const a=json.accessors[p.attributes.POSITION],v=json.bufferViews[a.bufferView];if(a.componentType!==5126||a.type!=='VEC3'||a.sparse)throw Error('Unsupported POSITION');const pos=new Float32Array(a.count*3);for(let i=0;i<a.count;i++)for(let k=0;k<3;k++)pos[i*3+k]=bin.readFloatLE((v.byteOffset||0)+(a.byteOffset||0)+i*(v.byteStride||12)+k*4);const geometry=new THREE.BufferGeometry();geometry.setAttribute('position',new THREE.BufferAttribute(pos,3));if(p.indices!==undefined){const ia=json.accessors[p.indices],iv=json.bufferViews[ia.bufferView],width={5121:1,5123:2,5125:4}[ia.componentType],indices=[];for(let j=0;j<ia.count;j++)indices.push(bin.readUIntLE((iv.byteOffset||0)+(ia.byteOffset||0)+j*(iv.byteStride||width),width));geometry.setIndex(indices);}const mesh=new THREE.Mesh(geometry,new THREE.MeshBasicMaterial());mesh.name=o.name+'__primitive';o.add(mesh);}
+  return o;});
+ json.nodes.forEach((n,i)=>(n.children||[]).forEach(c=>nodes[i].add(nodes[c])));const root=new THREE.Group();root.name='QA_GLTF_SCENE';for(const i of json.scenes[json.scene||0].nodes)root.add(nodes[i]);root.updateMatrixWorld(true);return {root,json,nodes};
+}
+export function trsSnapshot(root){const m={};root.traverse(n=>m[n.uuid]={name:n.name,p:n.position.toArray(),q:n.quaternion.toArray(),s:n.scale.toArray(),parent:n.parent?.uuid,visible:n.visible});return m;}
+export function box(root,THREE){root.updateWorldMatrix(true,true);const b=new THREE.Box3().setFromObject(root,true);return {min:b.min.toArray(),max:b.max.toArray(),size:b.getSize(new THREE.Vector3()).toArray()};}

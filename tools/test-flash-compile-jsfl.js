@@ -201,6 +201,7 @@ function testExplicitQuitRunsAfterSuccessfulPublish() {
   assert.deepEqual(quitPhase.closed, [quitPhase.canonicalTargetURI]);
   assert.equal(quitPhase.files.get(quitPhase.doneMarker), "ok");
   assert.deepEqual(quitPhase.quitCalls, [false]);
+  assert.deepEqual(quitPhase.playerEvents, ["close-players"]);
   assert.match(quitPhase.files.get(quitPhase.outputLog), /quit Flash after completed publish/);
 }
 

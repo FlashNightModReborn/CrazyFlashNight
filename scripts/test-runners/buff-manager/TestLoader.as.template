@@ -1,0 +1,12 @@
+﻿trace("FocusedTestRunId buff-manager Start: __FOCUSED_RUN_ID__");
+org.flashNight.arki.component.Buff.test.BuffManagerTest.runAllTests();
+var managerSuite:Object = org.flashNight.arki.component.Buff.test.BuffManagerTest;
+var bugfixSuite:Object = org.flashNight.arki.component.Buff.test.BugfixRegressionTest;
+var pathSuite:Object = org.flashNight.arki.component.Buff.test.PathBindingTest;
+trace("BuffManagerTest Tests Passed: " + managerSuite.passedCount);
+trace("BuffManagerTest Tests Failed: " + managerSuite.failedCount);
+trace("BuffManagerBugfix Tests Passed: " + bugfixSuite.passedCount);
+trace("BuffManagerBugfix Tests Failed: " + bugfixSuite.failedCount);
+trace("BuffManagerPathBinding Tests Passed: " + pathSuite.passedCount);
+trace("BuffManagerPathBinding Tests Failed: " + pathSuite.failedCount);
+trace("FocusedTestRunId buff-manager Complete: __FOCUSED_RUN_ID__");

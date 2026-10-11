@@ -25,7 +25,7 @@
               <Actionscript>
                 <script><![CDATA[stop();
 flag = true;
-if (霰弹值 <= 1 || 击中地图)
+if (霰弹值 <= 1 || (stateFlags & 32) != 0)
 {
 	this.removeMovieClip();
 }

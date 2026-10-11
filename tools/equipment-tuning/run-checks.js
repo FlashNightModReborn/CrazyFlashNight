@@ -511,6 +511,50 @@ function checkCloneFilesystemSafety() {
 
     runner.assertExclusiveLauncherProcess([], null);
     runner.assertExclusiveLauncherProcess([{ pid: 1234, processPath: "fixture" }], 1234);
+    const corePath = "C:\\fixture runtime\\CRAZYFLASHER7MercenaryEmpire.Core.exe";
+    const guardian = { pid: 1234, processPath: corePath, parentPid: 1,
+      commandLine: '"' + corePath + '" --project-root "C:\\fixture"' };
+    const guard = { pid: 2345, processPath: corePath, parentPid: 1234,
+      commandLine: '"' + corePath + '" --hotkey-guard 1234 01234567-89ab-cdef-0123-456789abcdef' };
+    for (const suffix of ["", " --diag-input"]) {
+      const classified = runner.filterOwnedHotkeyGuards([
+        guardian, { ...guard, commandLine: guard.commandLine + suffix },
+      ]);
+      if (classified.length !== 1 || classified[0].pid !== guardian.pid) {
+        throw new Error("same-Core direct hotkey helper was mistaken for a second Guardian");
+      }
+      runner.assertExclusiveLauncherProcess(classified, guardian.pid);
+      expectRejected("helper cannot authorize an unverified Guardian",
+        () => runner.assertExclusiveLauncherProcess(classified, null),
+        "unverified_launcher_process_present");
+    }
+    const invalidHelpers = [
+      { ...guard, parentPid: 9999 },
+      { ...guard, parentPid: undefined },
+      { ...guard, processPath: "C:\\other\\CRAZYFLASHER7MercenaryEmpire.Core.exe" },
+      { ...guard, processPath: null },
+      { ...guard, commandLine: guard.commandLine.replace("guard 1234", "guard 9999") },
+      { ...guard, commandLine: guard.commandLine.replace("--hotkey-guard", "--HOTKEY-GUARD") },
+      { ...guard, commandLine: guard.commandLine + " --project-root C:\\other" },
+      { ...guard, commandLine: guard.commandLine.replace("01234567-89ab-cdef-0123-456789abcdef", "invalid") },
+      { ...guard, commandLine: null },
+      { ...guard, commandLine: '"C:\\other.exe"' + guard.commandLine.slice(corePath.length + 2) },
+    ];
+    for (let index = 0; index < invalidHelpers.length; index++) {
+      const classified = runner.filterOwnedHotkeyGuards([guardian, invalidHelpers[index]]);
+      expectRejected("unverified helper remains a blocker " + index,
+        () => runner.assertExclusiveLauncherProcess(classified, guardian.pid),
+        "launcher_process_not_exclusive");
+    }
+    if (runner.filterOwnedHotkeyGuards([guard]).length !== 1) {
+      throw new Error("orphan hotkey helper was hidden before clone preparation");
+    }
+    const duplicateGuards = runner.filterOwnedHotkeyGuards([
+      guardian, guard, { ...guard, pid: 3456 },
+    ]);
+    expectRejected("duplicate helper processes remain blockers",
+      () => runner.assertExclusiveLauncherProcess(duplicateGuards, guardian.pid),
+      "launcher_process_not_exclusive");
     expectRejected(
       "unverified Launcher process",
       () => runner.assertExclusiveLauncherProcess([

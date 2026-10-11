@@ -1,0 +1,36 @@
+<DOMSymbolItem xmlns="http://ns.adobe.com/xfl/2008/" name="Codex/前治安官二阶段/枪口火光" symbolType="graphic">
+  <timeline>
+    <DOMTimeline name="枪口火光">
+      <layers>
+        <DOMLayer name="R26 原生矢量" color="#4FFF4F">
+          <frames>
+            <DOMFrame index="0" duration="1" keyMode="9728">
+              <elements>
+                <DOMShape isFloating="true">
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#EFBB73" alpha="0.85"/>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge edges="!0 0|20 40|180 100|160 40|340 -20|120 -20|160 -80|0 0" fillStyle0="1"/>
+                  </edges>
+                </DOMShape>
+                <DOMShape isFloating="true">
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#FFF5CE"/>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge edges="!0 0|60 40|200 0|0 0" fillStyle0="1"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

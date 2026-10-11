@@ -105,7 +105,7 @@ bootstrap preflight
 - AS2 所有权变化由 `PlayerAssetTransaction` 在领域最外层提交后生成 detached receipt，再经 XMLSocket fire-and-forget `loot` v1 发送 `{v,direction,kind,itemKey,name,count,source,operationId,icon?,tier?,mergeScope?,reason?}`。完全缺 `v` 的旧格式只为现役 kill/gain 兼容；v1 错型、缺必填、未知 source 或非 safe 正整数均 fail-closed。
 - `LootFeedTask` 只把已提交事实投影到 NativeHud `LootFeedWidget`；资产写入/回滚仍由 AS2 领域权威负责，消费者失败不能反向破坏资产。地图 `loot_response` 是另一业务域，常驻 feed 无 Web fallback。范围、source 表、所有权排除项与存档终点见[玩家物资事务与双向播报 ADR](../docs/玩家物资事务与双向播报-ADR-2026-08-22.md)。
 - `LootFeedModel` 统一五槽池与可恢复队列；视觉键为 `direction/kind/itemKey/tier/派生调度策略/eliteLevel`，且展示名/图标须一致。`operationId/reason/mergeScope/raw source` 只留在 Host 幂等与审计层；跨 raw source 仅在策略完全相同且都非 `unknown` 时合并。`reload` 为 immediate exact-aggregate；Host 按 operation/effect 去重并拒绝冲突重放。
-- 绘制采用 5 个 26px 直角卡、20px 图标与 12px 名称，宽度在 96–220px 内按 8px 微量化。gain 沿用 `×N` 且一件省略数量；loss 使用珊瑚红 `−N`，一件也明确显示 `−1`。精英使用琥珀分段轨，Boss 使用金色双轨；任务、开箱与普通物资不借用 Boss 视觉。
+- 绘制采用 5 个 26px 直角卡、20px 图标与 12px 名称，宽度在 96–220px 内按 8px 微量化。gain 沿用 `×N` 且一件省略数量；资产 loss 使用珊瑚红 `−N`，一件也明确显示 `−1`。击杀带「击杀」标签，精英使用琥珀分段轨，Boss 使用金色双轨；我方倒地带青色「我方」标签、加深蓝底与青色轮廓、头像上的琥珀警告三角及独立「倒地」状态列，状态不画成资产 `−1`。标签与状态固定留位，长姓名省略。任务、开箱与普通物资不借用 Boss 视觉。
   入场只做 4px/180ms SmoothStep 垂直归位；计数按 125ms 提交，用 180ms/1–2px SmoothStep 交叉淡化并仅在数字区增加有界色洗/底沿，击杀按本批增量增强但不缩放整卡、不发粒子；退场 280ms，动画图标最多运行 450ms 后冻结。静态持有不申请重绘，视觉签名 32ms 采样且仍受 NativeHud 33ms 合成硬上限约束；socket burst 维持单 UI drain / 单批决策，bounds 只随卡片/等待行或方向感知的计数位数桶变化（gain `1→2`、loss `9→10` 才跨桶）。
 - `LootIconCatalog` 从 `launcher/web/icons/manifest.json`、敌人头像 manifest 与 `launcher/data/doll-portraits` 解析图标。64px `Bitmap` 只由有界 LRU 持有，图标帧集不得跨 LRU 淘汰保存位图引用；动画整组超过预算时降级静态首帧。
 - 主角/佣兵击杀缺少预烘焙头像时，Host 发 WebView2 message `{type:"dollBake",key,requestId,tuple}`。Web 只负责渲染，并经 allowlisted task `doll_bake_result` 回传 `{key,requestId,pngBase64|error}`；`requestId` 必须与当前 key 的唯一在飞项 exact 匹配。缺失、foreign、duplicate、timeout 后迟到或无在飞项的回包一律拒绝，且不得清除更新请求。
@@ -138,6 +138,7 @@ Agent Runtime 的 wire、受信 runner、credential bootstrap、30 秒预算和 
 | [src/Save](src/Save/) | 启动期存档决议、备份、repair 与用户存档操作 |
 | [src/Audio](src/Audio/) | Audio Platform v2 managed bridge、协调与专项诊断 |
 | [src/AgentRuntime](src/AgentRuntime/) | named pipe、MCP/JSON adapters、观察与写 lease |
+| [src/ArenaWorker](src/ArenaWorker/) | 显式斗兽 Worker 候选入口、独立进程/目录租约、固定专用槽与逐次执行身份；见 [P0–P1 合同](../docs/Arena-Worker-P0-P1-施工与验证-2026-10-11.md) |
 | [src/Config](src/Config/) | `config.toml` 与用户偏好解析 |
 | [web](web/) | Bootstrap、Overlay、Panel、minigame、样式和静态资源 |
 | [native](native/) | bootstrap 和原生 side-car 源码 |
@@ -162,6 +163,12 @@ U12 游戏内过场由 `SceneTransitionController` 复用独立合成表面。�
 基地捕获完成只更新同一页面的就绪能力，保留同一个 DOM、Core、HWND、密度、搜索及滚动状态；AS2 先结束过场时间轴，Host 再取得普通面板暂停。提前关闭由原 exact 业务关闭裁决，加载页继续遮盖；失败重试保留同一奖励会话及未知写锁。
 同一不可变报告的接通/关闭意图可跨加载/提示的显示 revision 前进；request/generation、单次准入与未知锁仍受校验。世界呈现、失败导航和 Loot 业务 revision 保持各自 exact 权威，不能据此重复写奖励。
 固定页面仅向既有 Loot/库存域开放 exact 当前实例入口，不进入通用 Web 任务路由。AS2 保留导航、奖励暂存与保存权威。按 commit `c724305c374de423bce06bd39de0b27e09638f4c` 加 2026-10-02 工作区核对，协议、自动门和人验见 [U12 专项](../docs/U12过场Web迁移与人力验收-2026-10-01.md)。
+
+未提交的 Arena Worker 候选通过进程入口固定 `SceneTransitionPresentationPolicy`：仅无报告的 v1 普通过场可在 Host Ready、连接有效、窗口可见且未最小化时于后台呈现。仍须取得真实 Web 绘制回执并满足原生场景围栏；不激活窗口、不交还焦点，也不得越过其他可见应用窗口提层。无玩家标定场景使用绑定执行身份、世界普通对象身份和过场代际的专用 ready / released 通知；完成真实揭幕后才生成首局单位和启动计时，不发布普通 `SceneReady` / `SceneTransitionReleased`。普通 Guardian、帮助、书架与奖励过场保留既有前台资格。
+
+Worker 默认固定 180p／LOW、最低表现预算与 320×180 输出，关闭 HUD、伤害数字和 Web 装饰性表现；仍保留真实场景围栏和 30 帧玩法时钟，普通性能配置不变。请求值与实际应用值分别记录。实现与候选实测边界见 [Worker P0–P1 合同](../docs/Arena-Worker-P0-P1-施工与验证-2026-10-11.md)。
+
+实际栅格受 DPI 和有效客户区影响，不能把 180 上限写成实际源高度。本轮机器资格绑定连续亮屏状态与真实新帧 / 揭幕链；未把临时亮屏请求加入产品默认行为。最低表现候选已完成单 Worker、双 Worker、单侧故障与普通入口回归，短期完整吞吐比 1.4343；不代签 TDP、长时热稳态或人类输入体验。
 
 ## 构建、候选与发布
 
@@ -315,6 +322,7 @@ Help composition 端点仅新增 `tutorial_preference:disable_auto_open` / `tuto
 | `--hotkey-guard <pid> <mvid>` | 宿主内部 | 以同一 Core apphost 启动独立键盘守护进程；父路径与模块身份必须一致 |
 | `--diag-input` | 守护子模式内部 | 只随 hotkey-guard 输出有界白名单键态，不启动游戏或采任意键盘文本 |
 | `--bus-only` | 开发 | 跳过正式 Flash 启动链，保留 Bus/Overlay 供 CS6 testMovie 或工具连接 |
+| `--arena-worker <absolute-launch.json>` | 候选实验内部 | 在合法独立资源根启动一个 Host / Flash，固定专用存档并开放受鉴权的窄控制面；仅接受已验证 isolated candidate |
 | `--force-webview-fail` | 测试 | 强制 WebView2 预检失败分支 |
 | `--verify-only` | bootstrap verifier | 校验正式根部署后退出 |
 | `--verify-runtime-only` | candidate verifier | 校验 isolated candidate 后退出 |
@@ -387,6 +395,7 @@ Bootstrap 建角遮罩按 `openRequestId` 关联，snapshot 与有效首帧（�
 | `gym` | 业务 Panel（健身训练、进度与完成结算） | `modules/gym/gym-panel.js` |
 | `settings` | 全屏工具 / Launcher bootstrap shell | `modules/settings-panel.js` |
 | `skills` | 工作台 | `modules/skills.js` |
+| `tablet` | 平板联络与基建 Panel；当前实例经 Host 转发到 AS2 权威 | `modules/tablet.js` |
 | `help` | 工具 Panel；[共享教程目录与轨迹](../docs/U8引导迁移与共享教程基座-2026-09-30.md)，工作台帮助使用内部 SecondaryPage | `modules/help-panel.js` |
 | `jukebox` | 工具 Panel | `modules/jukebox/jukebox-panel.js` |
 | `cutscene-test` | 开发 Panel | `modules/cutscene-test.js` |

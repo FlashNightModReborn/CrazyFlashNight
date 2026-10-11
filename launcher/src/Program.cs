@@ -16,6 +16,7 @@ using CF7Launcher.AgentRuntime.Security;
 using CF7Launcher.AgentRuntime.Sessions;
 using CF7Launcher.AgentRuntime.TrustedRunner;
 using CF7Launcher.Bus;
+using CF7Launcher.ArenaWorker;
 using CF7Launcher.Config;
 using CF7Launcher.Diagnostic;
 using CF7Launcher.Guardian;
@@ -514,8 +515,21 @@ class Program
         // 独立输入进程复用同一不可变 Core，先验证父进程路径和模块身份，不触达存档/游戏启动。
         if (HotkeyGuard.IsInvocation(args)) return HotkeyGuard.Run(args[1..]);
 
+        // ExitGuard 覆盖测试探针（phase1 矩阵最后一行）：仅 CF7_EXITGUARD_PROBE=<毫秒>
+        // 显式门控时激活，早于 diagnostics/启动组件，不触达存档/游戏启动。
+        // 真实 GuardianForm + ForceExit 走完整 DoExit；OnShutdownEarly 注入
+        // Thread.Sleep(ms) 阻塞，验证 ExitGuard 8s 强杀仍生效（exit code 1）。
+        string exitGuardProbe = Environment.GetEnvironmentVariable("CF7_EXITGUARD_PROBE");
+        if (exitGuardProbe != null)
+        {
+            int earlySleepMs;
+            if (!int.TryParse(exitGuardProbe, out earlySleepMs)) earlySleepMs = 10000;
+            return CF7Launcher.Guardian.ExitGuardProbe.Run(earlySleepMs);
+        }
+
         // candidate runtime-only 是显式的人类验收能力，不能让目录 walk-up 隐式触发。
         string explicitProjectRoot = TryGetProjectRootFromArgs(args);
+        if (Array.IndexOf(args, "--arena-worker") >= 0) StartupFailureReporter.SuppressInteractiveDialogs = true;
         string earlyProjectRoot = explicitProjectRoot
                                   ?? TryWalkUpForProjectRoot(Environment.ProcessPath)
                                   ?? Path.GetDirectoryName(Environment.ProcessPath);
@@ -525,6 +539,16 @@ class Program
         if (!VerifyDeployedRuntimeBundle(explicitProjectRoot, out isolatedRuntimeCandidate))
         {
             StartupDiagnostics.Exit("runtime_bundle_self_check_failed");
+            return 2;
+        }
+        ArenaWorkerPolicy workerPolicy;
+        try
+        {
+            workerPolicy = ArenaWorkerPolicy.Parse(args, explicitProjectRoot, isolatedRuntimeCandidate);
+        }
+        catch (Exception ex)
+        {
+            StartupDiagnostics.Exception("arena_worker_invocation_rejected", ex);
             return 2;
         }
         // Explicit, exclusive candidate path. Runtime verification above is
@@ -560,11 +584,9 @@ class Program
                 "audio_v2_qualification_invocation_rejected");
             return 2;
         }
-        return MainAfterStartupDiagnostics(
-            args,
-            earlyProjectRoot,
-            isolatedRuntimeCandidate,
-            audioQualificationRunId);
+        using (workerPolicy)
+            return MainAfterStartupDiagnostics(
+                args, earlyProjectRoot, isolatedRuntimeCandidate, audioQualificationRunId, workerPolicy);
     }
 
     // Headless scripts normally probe through the native bootstrap first, but the invariant
@@ -763,7 +785,8 @@ class Program
         string[] args,
         string earlyProjectRoot,
         bool isolatedRuntimeCandidate,
-        string audioQualificationRunId)
+        string audioQualificationRunId,
+        ArenaWorkerPolicy workerPolicy)
     {
         long processStart = Stopwatch.GetTimestamp();
         PerfTrace.SetProcessStart(processStart);
@@ -771,7 +794,7 @@ class Program
 
         // 单例检查
         bool createdNew;
-        Mutex mutex = new Mutex(true, "Global\\CF7ME_Guardian", out createdNew);
+        Mutex mutex = new Mutex(true, workerPolicy?.MutexName ?? "Global\\CF7ME_Guardian", out createdNew);
         if (!createdNew)
         {
             StartupDiagnostics.Exit("singleton_already_running");
@@ -799,10 +822,8 @@ class Program
 
         try
         {
-            return Run(
-                args,
-                isolatedRuntimeCandidate,
-                audioQualificationRunId);
+            workerPolicy?.Claim();
+            return Run(args, isolatedRuntimeCandidate, audioQualificationRunId, workerPolicy);
         }
         catch (Exception ex)
         {
@@ -993,7 +1014,8 @@ class Program
     static int Run(
         string[] args,
         bool isolatedRuntimeCandidate,
-        string audioQualificationRunId)
+        string audioQualificationRunId,
+        ArenaWorkerPolicy workerPolicy)
     {
         // 定位项目根目录:
         // 1. 优先 bootstrap 传 --project-root <abs>（FDD 产物在 projectRoot/runtime/ 子目录,
@@ -1095,6 +1117,7 @@ class Program
         long configStart = Stopwatch.GetTimestamp();
         StartupDiagnostics.Mark("config.load_start");
         AppConfig config = new AppConfig(projectRoot);
+        workerPolicy?.ValidateApplicationPaths(config);
         PerfTrace.Duration("config.load", configStart);
         StartupDiagnostics.Mark("config.load_ok",
             "preparationNavigationV1="
@@ -1112,7 +1135,9 @@ class Program
             config.WebView2DisableGpu,
             config.WebView2AdditionalArgs,
             config.WebView2DeveloperMode,
-            isolatedRuntimeCandidate);
+            isolatedRuntimeCandidate,
+            arenaWorkerMode: workerPolicy != null,
+            arenaWorkerMinimalRendering: workerPolicy?.Performance.MaxRenderHeight == 180);
         _guardianForm = form;
         PerfTrace.Duration("guardian.form_construct", formStart);
         PerfTrace.Mark("guardian.form_constructed");
@@ -1140,19 +1165,27 @@ class Program
             projectRoot);
 
         // 开发用 Ctrl+G GPU 探针：仅 config.devGpuProbeHotkey=true 时启用。玩家版默认不注入。
-        if (config.DevGpuProbeHotkey)
+        if (workerPolicy == null && config.DevGpuProbeHotkey)
             form.EnableDevGpuProbeHotkey();
 
         // UserGpuPreferences 在子进程创建时被 Windows 读取。WebView2 真正 spawn 发生在 Application.Run
         // 触发 BootstrapPanel.Load 之后，所以这里写入仍然赶得上；放在日志通道就绪之后可以把诊断完整写进 launcher.log。
-        GpuPreferenceManager.ApplyIfNeeded(projectRoot, config.GpuPreference);
+        if (workerPolicy == null) GpuPreferenceManager.ApplyIfNeeded(projectRoot, config.GpuPreference);
         // Phase 2b: 用户级偏好 (lastPlayedSlot / introEnabled), 落盘到 launcher_user_prefs.json
-        CF7Launcher.Config.UserPrefs userPrefs = new CF7Launcher.Config.UserPrefs(projectRoot);
+        CF7Launcher.Config.UserPrefs userPrefs = workerPolicy == null
+            ? new CF7Launcher.Config.UserPrefs(projectRoot)
+            : new CF7Launcher.Config.UserPrefs(projectRoot, Path.Combine(workerPolicy.StateRoot, "preferences"));
+        if (workerPolicy != null)
+        {
+            userPrefs.Performance = workerPolicy.Performance;
+            userPrefs.HitNumberMode = "off";
+            userPrefs.ReducedPresentation = true;
+        }
 
         HighDpiCompatibilityResult dpiCompat = DetectDpiCompatibility(projectRoot, exePath);
         DpiDiagnostics.LogProcessStartup(DpiAwarenessBootstrap.Result, dpiCompat);
         DpiDiagnostics.LogWindow("GuardianForm", form.Handle);
-        HighDpiCompatibilityDetector.ScheduleRiskWarning(form, dpiCompat, userPrefs);
+        if (workerPolicy == null) HighDpiCompatibilityDetector.ScheduleRiskWarning(form, dpiCompat, userPrefs);
         if (busOnly)
             LogManager.Log("[Guardian] --bus-only mode: skipping Flash Player startup");
 
@@ -1200,7 +1233,8 @@ class Program
         // Flash Player 本地信任配置（确保 SWF 可访问网络）
         // 使用 try/finally 确保所有退出路径都调用 RevokeTrust
         StartupDiagnostics.Mark("flash_trust.start");
-        bool trustAcquired = FlashTrustManager.EnsureTrust(projectRoot);
+        bool trustAcquired = workerPolicy != null ? workerPolicy.AcquireTrust() : FlashTrustManager.EnsureTrust(projectRoot);
+        if (workerPolicy != null && !trustAcquired) throw new InvalidOperationException("Worker trust lease failed.");
         if (!trustAcquired)
         {
             LogManager.Log("[Guardian] WARNING: Flash trust not configured — SWF may fail to connect");
@@ -1318,7 +1352,7 @@ class Program
         TaskRegistry.RegisterAudioV2(router, audioTask);
         StartupDiagnostics.Mark("task.audio_v2_routes_registered");
 
-        int httpPort = portAlloc.ClaimPort();
+        int httpPort = workerPolicy != null ? 0 : portAlloc.ClaimPort();
 
         ExactProcessXmlSocketPeerAuthority
             exactXmlSocketPeerAuthority = null;
@@ -1338,7 +1372,7 @@ class Program
         XmlSocketServer socketServer = new XmlSocketServer(
             router,
             xmlSocketPeerAuthority);
-        int socketPort = portAlloc.ClaimPort();
+        int socketPort = workerPolicy != null ? 0 : portAlloc.ClaimPort();
         bool socketStarted = false;
         if (socketPort >= 0)
         {
@@ -1369,6 +1403,7 @@ class Program
             try { musicCatalog.Dispose(); } catch { }
             return 1;
         }
+        socketPort = socketServer.Port;
         StartupDiagnostics.Mark("socket.start_ok", "port=" + socketPort);
 
         // The stimulus surface is candidate-only and remains a separate pipe from
@@ -1390,7 +1425,12 @@ class Program
 
         LegacyHttpAccessPolicy legacyHttpAccess =
             LegacyHttpAccessPolicy.DenyAll();
-        if (legacyHttpAutomation)
+        if (workerPolicy != null)
+        {
+            legacyHttpAccess = LegacyHttpAccessPolicy.CreateWorker(workerPolicy.StateRoot,
+                workerPolicy.WorkerId, workerPolicy.SessionEpoch);
+        }
+        else if (legacyHttpAutomation)
         {
             try
             {
@@ -1431,6 +1471,9 @@ class Program
             projectRoot,
             socketServer,
             legacyHttpAccess);
+        if (workerPolicy != null)
+            httpServer.SetArenaWorkerControl(_ => new Newtonsoft.Json.Linq.JObject {
+                ["success"] = false, ["error"] = "worker_initializing" });
         // 列车 C-C1：[BootstrapAS] 日志批次转发到 bootstrap 面板；
         // bus-only 模式 BootstrapPanel 为 null，sink 内可空容忍。
         httpServer.SetBootstrapLogSink(
@@ -1440,7 +1483,7 @@ class Program
         {
             using (PerfTrace.Scope("http.start"))
             {
-                httpStarted = httpServer.Start(httpPort);
+                httpStarted = workerPolicy != null ? httpServer.StartWorkerPort() : httpServer.Start(httpPort);
             }
         }
         if (httpPort < 0 || !httpStarted)
@@ -1472,6 +1515,7 @@ class Program
             try { musicCatalog.Dispose(); } catch { }
             return 1;
         }
+        httpPort = httpServer.Port;
         StartupDiagnostics.Mark("http.start_ok", "port=" + httpPort);
 
         router.OnConsoleResult += delegate(string json)
@@ -1614,7 +1658,7 @@ class Program
         Func<IntPtr> flashHwndProvider = delegate { return form.GetFlashHwnd(); };
         // WindowManager 早声明：WebOverlay 构造时需要它的 RestoreFlashInputFocus primitive；
         // 实际 form.BindWindowManager / perfEngine.SetActivationState / OnKillFlash 还在后面统一装配。
-        WindowManager windowManager = new WindowManager();
+        WindowManager windowManager = new WindowManager(allowForeground: workerPolicy == null);
         Func<bool> compositionHelpOwnsInput = () => false;
         WebOverlayForm webOverlay;
         using (PerfTrace.Scope("web_overlay.construct"))
@@ -1627,15 +1671,15 @@ class Program
                 return !compositionHelpOwnsInput() && windowManager.RestoreFlashInputFocus(reason);
             };
             webOverlay = new WebOverlayForm(form, form.FlashHostPanel, webDir, projectRoot,
-                config.WebOverlayLowEffects,
-                config.WebOverlayDisableCssAnimations,
-                config.WebOverlayDisableVisualizers,
-                config.WebOverlayFrameRateLimit,
+                workerPolicy != null || config.WebOverlayLowEffects,
+                workerPolicy != null || config.WebOverlayDisableCssAnimations,
+                workerPolicy != null || config.WebOverlayDisableVisualizers,
+                workerPolicy != null ? 15 : config.WebOverlayFrameRateLimit,
                 config.WebView2DisableGpu,
                 config.WebView2AdditionalArgs,
                 config.WebView2DeveloperMode,
-                config.WebOverlayPanelTakeForeground,
-                config.WebOverlayHotReload,
+                workerPolicy == null && config.WebOverlayPanelTakeForeground,
+                workerPolicy == null && config.WebOverlayHotReload,
                 flashFocusRestorer, mapRuntimeContent.Definition,
                 windowManager.HandoffFlashFocusBeforePanelHide);
         }
@@ -1643,7 +1687,7 @@ class Program
         webOverlay.IdleFlashFocusRestorer = eligible => windowManager.RestoreFlashInputFocus(
             "app_reactivated_idle", () => !compositionHelpOwnsInput() && eligible());
         CF7Launcher.Guardian.Hud.INativeCursor cursorOverlay = null;
-        if (config.NativeCursorOverlayEnabled)
+        if (workerPolicy == null && config.NativeCursorOverlayEnabled)
         {
             string cursorAssetDir = Path.Combine(webDir, "assets", "cursor", "native");
             if (config.UseDesktopCursorOverlay)
@@ -1741,11 +1785,13 @@ class Program
 
         // === AI 聊天终端（CFN-RAG exe）装配 ===
         // Host 侧承担 exe 发现/静默拉起/健康轮询与存档绑定；socket 断连时 best-effort 解绑。
-        CF7Launcher.RagTerminal.RagTerminalService ragTerminalService =
-            new CF7Launcher.RagTerminal.RagTerminalService(
-                projectRoot, config.RagTerminalExePath);
-        commandRouter.SetRagTerminalService(ragTerminalService);
-        socketServer.OnClientDisconnected += ragTerminalService.UnbindInBackground;
+        CF7Launcher.RagTerminal.RagTerminalService ragTerminalService = null;
+        if (workerPolicy == null)
+        {
+            ragTerminalService = new CF7Launcher.RagTerminal.RagTerminalService(projectRoot, config.RagTerminalExePath);
+            commandRouter.SetRagTerminalService(ragTerminalService);
+            socketServer.OnClientDisconnected += ragTerminalService.UnbindInBackground;
+        }
 
         // === Native HUD + PanelHostController 完整装配（唯一路径）===
         // 所有 panel 打开走 PanelHost.OpenPanel → snapshot/backdrop/EX_STYLE/HUD-suspend 序列。
@@ -1767,7 +1813,7 @@ class Program
             CF7Launcher.Guardian.Hud.PlayerInfo.PlayerInfoSplitSurface
                 .FixtureCaseEnvironment);
         string playerInfoFixtureCase = null;
-        if (!string.IsNullOrEmpty(playerInfoFixtureRaw))
+        if (workerPolicy == null && !string.IsNullOrEmpty(playerInfoFixtureRaw))
         {
             if (busOnly)
             {
@@ -1788,7 +1834,7 @@ class Program
         }
         // 装配块保留独立作用域，隔离 widget 等局部变量。
         {
-            nativeHud = new NativeHudOverlay(form, form.FlashHostPanel);
+            nativeHud = new NativeHudOverlay(form, form.FlashHostPanel, presentationEnabled: workerPolicy == null);
             backdrop = new NativePanelBackdrop(form);
             if (playerInfoFixtureCase != null)
             {
@@ -1846,12 +1892,15 @@ class Program
                     if (form.InvokeRequired) form.BeginInvoke(callback); else callback();
                 });
             socketServer.OnClientDisconnected += playerHudController.Disconnected;
-            if (playerInfoSurface == null)
-                playerInfoSurface = CF7Launcher.Guardian.Hud.PlayerInfo.PlayerInfoSplitSurface.CreateLive(
-                    form, form.FlashHostPanel, playerHudController.State);
-            playerHudRuntime = new CF7Launcher.Guardian.Hud.PlayerInfo.PlayerHudRuntime(
-                form, form.FlashHostPanel, playerInfoSurface, playerHudController,
-                Path.Combine(projectRoot, "launcher", "web", "icons"), nativeHud, shareMainHud: playerInfoFixtureCase==null);
+            if (workerPolicy == null)
+            {
+                if (playerInfoSurface == null)
+                    playerInfoSurface = CF7Launcher.Guardian.Hud.PlayerInfo.PlayerInfoSplitSurface.CreateLive(
+                        form, form.FlashHostPanel, playerHudController.State);
+                playerHudRuntime = new CF7Launcher.Guardian.Hud.PlayerInfo.PlayerHudRuntime(
+                    form, form.FlashHostPanel, playerInfoSurface, playerHudController,
+                    Path.Combine(projectRoot, "launcher", "web", "icons"), nativeHud, shareMainHud: playerInfoFixtureCase==null);
+            }
             IPanelHudCompanion panelHudCompanion = playerHudRuntime;
             panelHost = new PanelHostController(form, webOverlay, nativeHud, backdrop,
                 inputShield, hnOverlay, cursorOverlay, form.GetPanelEscapeSource(), flashHwndProvider,
@@ -2047,7 +2096,7 @@ class Program
                 || launchFlow.CurrentState == "WaitingGameReady" || launchFlow.CurrentState == "Ready"),
             windowManager.SetFlashRenderHeight, () => windowManager.RestoreFlashInputFocus("world_pointer"),
             bulletCatalog:bulletVisualCatalog,combatFxCatalog:combatFxCatalog,overlays:worldOverlays,
-            opaqueHudEnabled:playerInfoFixtureCase==null);
+            opaqueHudEnabled:workerPolicy==null && playerInfoFixtureCase==null);
         hnOverlay.SetSharedPresentation(worldCompositor.DamagePresentation);
         if(playerInfoFixtureCase==null)playerHudRuntime?.SetSharedWorld(worldCompositor);
         var renderSettings=RenderScheduleSettings.Load(Path.Combine(projectRoot,"launcher","data","world-lighting","render-schedule.json"));
@@ -2055,17 +2104,23 @@ class Program
         worldCompositor.ReadFlashSourceSize=() => windowManager.ActualFlashSourceSize;
         worldCompositor.PerformanceUnavailable=perfEngine.NotifyRenderUnavailable;
         var initialRender=RenderSchedule.Stages(userPrefs.Performance,windowManager.AvailableFlashSourceHeight)[0];
-        worldCompositor.ApplyRenderSelection(initialRender,renderSettings.Sharpness);
+        worldCompositor.ApplyRenderSelection(initialRender,workerPolicy==null ? renderSettings.Sharpness : 0);
         windowManager.SetFlashRenderHeight(initialRender.Height);
         perfEngine.ConfigureRenderSchedule(renderSettings,
             (command,selection) => { if (!form.IsDisposed) form.BeginInvoke(new Action(() => {
                 if(!perfEngine.IsCurrentRenderRequest(command)) return;
                 frameTask.ConfigureNativeVisualBudget(selection.EffectLevel);
                 worldCompositor.ApplyRenderSelection(selection,
-                    selection.Height<windowManager.AvailableFlashSourceHeight ? renderSettings.Sharpness : 0,
+                    workerPolicy==null && selection.Height<windowManager.AvailableFlashSourceHeight ? renderSettings.Sharpness : 0,
                     size => perfEngine.ConfirmRenderApplied(command,selection,size));
             })); },
             () => worldCompositor.SchedulingAllowed,() => windowManager.AvailableFlashSourceHeight,userPrefs.Performance);
+        if (workerPolicy != null)
+            LogManager.Log("event=arena_worker_presentation_policy requestedFlashHeight=" + initialRender.Height
+                + " requestedClient=" + form.ClientSize.Width + "x" + form.ClientSize.Height
+                + " quality=" + initialRender.Quality
+                + " nativeHud=off playerHud=off hitNumbers=off webEffects=off webFrameRateLimit=15 sharpening=off"
+                + " worldCapture=required projectilePresentation=retained");
         socketServer.OnClientDisconnected += perfEngine.ResetRenderSource;
         Action<Action> dispatchToUi = action =>
         {
@@ -2082,7 +2137,9 @@ class Program
             () => !form.IsShutdownAdmissionClosed && launchFlow?.CurrentState == "Ready",
             worldCompositor.IsTransitionScenePresented,
             foreground => windowManager.HandoffFlashFocusBeforePanelHide("scene_transition:before_hide",foreground),
-            worldOverlays, worldCompositor.HoldTransitionInput);
+            worldOverlays, worldCompositor.HoldTransitionInput,
+            presentationPolicy:workerPolicy==null ? SceneTransitionPresentationPolicy.Interactive
+                : SceneTransitionPresentationPolicy.ArenaWorker);
         // The returned character may render below the still-visible bookshelf.
         // Repair its order in the same UI callback that shows the world HWND.
         worldCompositor.PresentationShown += sceneTransition.RestoreRetainedBookshelfOrder;
@@ -2270,6 +2327,7 @@ class Program
             webOverlay.TryOpenKShopForMaterialNavigation,
             webOverlay.CloseKShopForMaterialNavigationNoFail);
         HairdresserTask hairdresserTask = new HairdresserTask(socketServer);
+        TabletTask tabletTask = new TabletTask(socketServer);
         PlasticSurgeryTask plasticSurgeryTask = new PlasticSurgeryTask(socketServer);
         GaragePurchaseTask garagePurchaseTask = new GaragePurchaseTask(socketServer);
         BookComicTask bookComicTask = new BookComicTask(socketServer);
@@ -2504,7 +2562,10 @@ class Program
         MapDomainTask mapDomainTask = new MapDomainTask(socketServer, mapRuntimeContent, mapCatalog, projectRoot);
         webOverlay.SetMapDomain(mapDomainTask);
         ArenaTask arenaTask = new ArenaTask(socketServer, projectRoot);
-        ArenaCalibrationTask arenaCalibrationTask = new ArenaCalibrationTask(socketServer, projectRoot);
+        ArenaCalibrationTask arenaCalibrationTask = new ArenaCalibrationTask(socketServer, projectRoot,
+            workerPolicy?.WorkerId ?? "guardian", workerPolicy?.SessionEpoch,
+            allowOwnedFlashRebind: workerPolicy == null,
+            allowFaultInjection: workerPolicy?.AllowFaultInjection == true);
         arenaTask.SetCalibrationTask(arenaCalibrationTask);
         WarlordBattleTask warlordBattleTask = new WarlordBattleTask(
             socketServer,
@@ -2592,8 +2653,10 @@ class Program
         CF7Launcher.Save.LauncherVersionGate.GateResult versionGate = null;
         try
         {
-            versionGate = CF7Launcher.Save.LauncherVersionGate.Check(archiveTask.SavesDir);
-            CF7Launcher.Save.LauncherVersionGate.WriteMarker(archiveTask.SavesDir);
+            versionGate = workerPolicy == null
+                ? CF7Launcher.Save.LauncherVersionGate.Check(archiveTask.SavesDir)
+                : new CF7Launcher.Save.LauncherVersionGate.GateResult { Reason = "arena_worker_no_marker_write" };
+            if (workerPolicy == null) CF7Launcher.Save.LauncherVersionGate.WriteMarker(archiveTask.SavesDir);
             if (versionGate.ShouldShowToast)
             {
                 LogManager.Log("[VersionGate] WARN reason=" + versionGate.Reason
@@ -2713,7 +2776,7 @@ class Program
 
         using (PerfTrace.Scope("task.registry_register_all"))
         {
-            TaskRegistry.RegisterAll(router, gomokuTask, toastTask, frameTask, stageOutcomeTask, warlordStageTask, warlordBattleTask, dataQueryTask, audioTask, dollBakeTask, shopTask, inventoryTask, lootTask, lootFeedTask, lootPanelCoordinator, npcShopTask, craftingTask, materialShopAccessTask, hairdresserTask, plasticSurgeryTask, garagePurchaseTask, sleepTask, bookshelfTask, gymTrainingTask, settingsTask, equipmentTuningTask, characterBuildTask, itemUseTask, skillTask, mapTask, stageSelectTask, arenaTask, arenaCalibrationTask, agentControlTask, petTask, mercTask, taskTask, intelligenceTask, blackMarketTask, archiveTask, benchTask, fontPackTask, webOverlay, commandRouter, mapDomainTask, nativeInteractionTask, nativeDialogueTask, worldLightingTask, lutLabTask, nativeGuidanceTask, sceneTransition.Task, bookComicTask);
+            TaskRegistry.RegisterAll(router, gomokuTask, toastTask, frameTask, stageOutcomeTask, warlordStageTask, warlordBattleTask, dataQueryTask, audioTask, dollBakeTask, shopTask, inventoryTask, lootTask, lootFeedTask, lootPanelCoordinator, npcShopTask, craftingTask, materialShopAccessTask, hairdresserTask, plasticSurgeryTask, garagePurchaseTask, sleepTask, bookshelfTask, gymTrainingTask, settingsTask, equipmentTuningTask, characterBuildTask, itemUseTask, skillTask, mapTask, stageSelectTask, arenaTask, arenaCalibrationTask, agentControlTask, petTask, mercTask, taskTask, intelligenceTask, blackMarketTask, archiveTask, benchTask, fontPackTask, webOverlay, commandRouter, mapDomainTask, nativeInteractionTask, nativeDialogueTask, worldLightingTask, lutLabTask, nativeGuidanceTask, sceneTransition.Task, bookComicTask, tabletTask);
         }
         StartupDiagnostics.Mark("task.registry_register_all_ok");
 
@@ -2726,6 +2789,7 @@ class Program
         webOverlay.SetLootTask(lootTask);
         webOverlay.SetLootPanelCoordinator(lootPanelCoordinator);
         webOverlay.SetNpcShopTask(npcShopTask);
+        webOverlay.SetTabletTask(tabletTask);
         webOverlay.SetCraftingTask(craftingTask);
         webOverlay.SetMaterialShopNavigationCoordinator(
             materialShopNavigationCoordinator);
@@ -2866,7 +2930,7 @@ class Program
             // standalone 实例回 409，用户手动启动的进程不受影响。
             // 必须排在上面「顺序敏感」两步与 overlay Hide 之后：这是最长 1.5 秒的同步 HTTP 等待，
             // 早于卸鼠标钩子会让全系统鼠标消息多排队 1.5 秒。此处 UI 已全部隐藏，等待不可见。
-            try { ragTerminalService.ShutdownEmbeddedOnExit(); }
+            try { ragTerminalService?.ShutdownEmbeddedOnExit(); }
             catch (Exception ex)
             {
                 LogManager.Log(
@@ -2916,9 +2980,17 @@ class Program
             + ",\"legacyHttpAuthFile\":"
             + JsonSerializer.Serialize(legacyHttpAccess.CredentialFilePath)
             + "}";
+        if (workerPolicy != null)
+            portsJson = workerPolicy.PortsDocument(httpPort, socketPort).ToString(Newtonsoft.Json.Formatting.None);
         try
         {
-            File.WriteAllText(portsFile, portsJson);
+            if (workerPolicy == null) File.WriteAllText(portsFile, portsJson);
+            else
+            {
+                using var portStream = new FileStream(portsFile, FileMode.CreateNew, FileAccess.Write, FileShare.Read);
+                using var portWriter = new StreamWriter(portStream, new System.Text.UTF8Encoding(false));
+                portWriter.Write(portsJson);
+            }
             LogManager.Log("[Guardian] Wrote " + portsFile);
             StartupDiagnostics.Mark("ports.write_ok", portsJson);
         }
@@ -2926,6 +2998,7 @@ class Program
         {
             LogManager.Log("[Guardian] Failed to write ports file: " + ex.Message);
             StartupDiagnostics.Warn("ports.write_failed", ex.Message);
+            if (workerPolicy != null) throw;
         }
 
         LogManager.Log("[Guardian] Bus ready: HTTP=" + httpPort + " Socket=" + socketPort);
@@ -2980,7 +3053,8 @@ class Program
             try { socketServer.Dispose(); } catch { }
             try { httpServer.Dispose(); } catch { }
             try { if (panelHost != null) panelHost.Dispose(); } catch { }
-            playerHudRuntime?.Dispose();
+            if (playerHudRuntime != null) playerHudRuntime.Dispose();
+            else playerHudController?.Dispose();
         DrainAndDisposePlayerInfoSurface(playerInfoSurface);
             try { if (inputShield != null) inputShield.Dispose(); } catch { }
             try { if (webOverlay != null) webOverlay.Dispose(); } catch { }
@@ -2988,7 +3062,7 @@ class Program
             try { if (nativeHud != null) nativeHud.Dispose(); } catch { }
             try { hnOverlay.Dispose(); } catch { }
             try { v8Runtime.Dispose(); } catch { }
-            try { File.Delete(portsFile); } catch { }
+            try { if (workerPolicy == null || File.ReadAllText(portsFile) == portsJson) File.Delete(portsFile); } catch { }
             LogManager.Shutdown();
             StartupDiagnostics.Mark("bus_only.shutdown_complete");
 
@@ -3000,7 +3074,7 @@ class Program
         // 快捷键拦截（独立进程）
         string guardExe = Environment.ProcessPath;
         Process guardProc = null;
-        if (File.Exists(guardExe))
+        if (workerPolicy == null && File.Exists(guardExe))
         {
             try
             {
@@ -3046,7 +3120,10 @@ class Program
 
         // 守护进程核心（windowManager 已在 WebOverlay 构造前 early-declared，flashFocusRestorer 依赖它）
         ProcessManager processManager = new ProcessManager(
-            config.FlashPlayerPath, config.SwfPath);
+            config.FlashPlayerPath, config.SwfPath,
+            workerPolicy == null ? null : workerPolicy.ConfigureFlashStart);
+        if (workerPolicy != null)
+            arenaCalibrationTask.TransportPoisoned += _ => ThreadPool.QueueUserWorkItem(__ => processManager.KillFlash());
 
         // The Bootstrap/frontdoor owns only this fixed historical main-menu
         // track. It waits for Audio v2 Ready and is handed to GameLaunchFlow;
@@ -3173,7 +3250,7 @@ class Program
                 .FLASH_REVEAL_WATCHDOG_DEFAULT_MS,
             /* persistLastPlayedSlot */ delegate(string slotKey)
             {
-                if (userPrefs == null) return;
+                if (userPrefs == null || workerPolicy != null) return;
                 userPrefs.LastPlayedSlot = slotKey;
                 userPrefs.Save();
             },
@@ -3181,7 +3258,17 @@ class Program
 
         // Phase A Step A2: wire launchFlow 到 GuardianForm（OnFormClosing 状态分流 + 热键 state-aware guard）
         form.InitializeLaunchFlow(launchFlow);
-        agentControlTask.SetLaunchFlow(launchFlow);
+        agentControlTask.SetLaunchFlow(launchFlow, useBootstrapLoad: workerPolicy != null);
+        if (workerPolicy != null)
+        {
+            var windowObserver = new ArenaWorkerWindowObserver(form.Handle,
+                () => windowManager.FlashHwnd, () => processManager.FlashProcess,
+                () => frameTask.FpsBuffer.Performance);
+            var controller = new ArenaWorkerController(workerPolicy, agentControlTask, arenaCalibrationTask,
+                () => processManager.FlashProcess, () => form.ForceExit(),
+                windowObservation: windowObserver.Capture, performanceObservation: windowObserver.CapturePerformance);
+            httpServer.SetArenaWorkerControl(controller.Handle, controller.ResponseWritten);
+        }
 
         // Standard-mode XMLSocket admission is a game-process invariant, not
         // an Agent Runtime availability feature. Bind it directly to
@@ -3235,6 +3322,7 @@ class Program
                         {
                             exactXmlSocketPeerAuthority
                                 .ClearExpectedProcess();
+                            arenaCalibrationTask.ObserveOwnedFlashIdentity(null);
                             if (exactFlashLifecycle)
                             {
                                 LogManager.Log(
@@ -3245,6 +3333,11 @@ class Program
                                         ? "xml_socket_expected_process_unavailable"
                                         : xmlPeerReason));
                             }
+                        }
+                        else
+                        {
+                            arenaCalibrationTask.ObserveOwnedFlashIdentity(
+                                exactXmlSocketPeerAuthority.CaptureExpectedIdentity());
                         }
                     }
                 }
@@ -3257,6 +3350,7 @@ class Program
                         {
                             exactXmlSocketPeerAuthority
                                 .ClearExpectedProcess();
+                            arenaCalibrationTask.ObserveOwnedFlashIdentity(null);
                             LogManager.Log(
                                 "[XmlSocket] lifecycle sync failed: "
                                 + ex.Message);
@@ -3283,6 +3377,7 @@ class Program
                 {
                     exactXmlSocketPeerAuthority
                         .ClearExpectedProcess();
+                    arenaCalibrationTask.ObserveOwnedFlashIdentity(null);
                 }
             };
             launchFlow.OnStateChanged +=
@@ -3313,7 +3408,7 @@ class Program
         };
         if (form.BootstrapPanel != null)
         {
-            form.BootstrapPanel.OnJsMessage += delegate(string json)
+            Action<string> routeBootstrap = delegate(string json)
             {
                 CF7Launcher.Guardian.BootstrapMessageHandler.Handle(
                     json,
@@ -3324,6 +3419,11 @@ class Program
                     userPrefs,
                     fontPackTask);
             };
+            form.BootstrapPanel.OnJsMessage += delegate(string json)
+            {
+                if (workerPolicy == null) routeBootstrap(json);
+                else ArenaWorkerPolicy.RouteBootstrapMessage(json, routeBootstrap);
+            };
             // FontPackTask 进度推送 → bootstrap fontpack_progress 消息
             CF7Launcher.Guardian.Handlers.FontPackCommandHandler.RegisterProgressSink(
                 form.BootstrapPanel, fontPackTask);
@@ -3333,7 +3433,7 @@ class Program
         // lifetime only. Surface discovery is deliberately absent: UI-owned
         // callbacks refresh this exact HWND/process cache and the timer only
         // reads the frozen cache.
-        if (!legacyHttpAutomation)
+        if (!legacyHttpAutomation && workerPolicy == null)
         {
         int agentRuntimeIngressDetached = 0;
         AgentRuntimeSurfaceCache agentSurfaceCache = null;
@@ -3795,6 +3895,8 @@ class Program
         PerfTrace.Mark("guardian.bootstrap_ready");
         PerfTrace.FlushCounters("bootstrap_ready");
 
+        // Descriptor is published only after the exact-process authority and control graph exist.
+        workerPolicy?.PublishOwner(httpPort, socketPort);
         // 消息循环: ctx (GuardianForm MainForm, BootstrapPanel 作为其子控件，Ready 时 panel swap)
         Application.Run(ctx);
         StartupDiagnostics.Mark("application.run_returned");
@@ -3897,7 +3999,8 @@ class Program
         try { socketServer.Dispose(); } catch { }
         try { httpServer.Dispose(); } catch { }
         try { if (panelHost != null) panelHost.Dispose(); } catch { }
-        playerHudRuntime?.Dispose();
+        if (playerHudRuntime != null) playerHudRuntime.Dispose();
+        else playerHudController?.Dispose();
         DrainAndDisposePlayerInfoSurface(playerInfoSurface);
         try { if (inputShield != null) inputShield.Dispose(); } catch { }
         try { if (webOverlay != null) webOverlay.Dispose(); } catch { }
@@ -3905,7 +4008,7 @@ class Program
         try { if (nativeHud != null) nativeHud.Dispose(); } catch { }
         try { hnOverlay.Dispose(); } catch { }
         try { v8Runtime.Dispose(); } catch { }
-        try { File.Delete(portsFile); } catch { }
+        try { if (workerPolicy == null || File.ReadAllText(portsFile) == portsJson) File.Delete(portsFile); } catch { }
         LogManager.Shutdown();
         StartupDiagnostics.Mark("guardian.shutdown_complete");
 
@@ -3924,11 +4027,11 @@ class Program
             catch { }
             // 统一出口：无论正常退出还是早退（Flash/SWF 缺失、端口失败等），
             // 都确保清理本次写入的信任条目，不留残留
-            if (trustAcquired)
+            if (trustAcquired && workerPolicy == null)
                 FlashTrustManager.RevokeTrust();
 
             // UserGpuPreferences 注册表条目一律在退出时清理，避免玩家卸载后残留。
-            try { GpuPreferenceManager.Revert(projectRoot); } catch { }
+            try { if (workerPolicy == null) GpuPreferenceManager.Revert(projectRoot); } catch { }
             try { PerfTrace.Shutdown(); } catch { }
             StartupDiagnostics.Mark("core.run_finally_complete");
         }

@@ -450,6 +450,36 @@ namespace CF7Launcher.Tests.Guardian
         }
 
         [Fact]
+        public void PanelCloseFocusRestore_LiveCurtainOwnsHandoffUntilRelease()
+        {
+            int calls = 0;
+            Func<string, bool> restore = _ => { calls++; return true; };
+            Assert.False(WebOverlayForm.TryInvokePanelCloseFocusRestore(
+                false, false, true, true, restore, "panel_close:idle:stage-select", true, true));
+            Assert.False(WebOverlayForm.TryInvokePanelCloseFocusRestore(
+                false, false, true, true, restore, "panel_close:settled:stage-select", true, true));
+            Assert.Equal(0, calls);
+            // Once the curtain has released, normal foreground guards still apply.
+            Assert.False(WebOverlayForm.TryInvokePanelCloseFocusRestore(
+                false, false, true, false, restore, "panel_close:settled:stage-select", false, true));
+            Assert.True(WebOverlayForm.TryInvokePanelCloseFocusRestore(
+                false, false, true, true, restore, "panel_close:settled:stage-select", false, true));
+            Assert.Equal(1, calls);
+        }
+
+        [Fact]
+        public void PanelCloseFocusRestore_DisconnectedCurtainDoesNotSuppressFallback()
+        {
+            int calls = 0;
+            Func<string, bool> restore = _ => { calls++; return true; };
+            Assert.True(WebOverlayForm.TryInvokePanelCloseFocusRestore(
+                false, false, true, true, restore, "panel_close:idle:stage-select", true, false));
+            Assert.False(WebOverlayForm.TryInvokePanelCloseFocusRestore(
+                false, false, true, false, restore, "panel_close:idle:stage-select", true, false));
+            Assert.Equal(1, calls);
+        }
+
+        [Fact]
         public void PanelCloseFocusRestore_SessionThenExternalSkipsAndConsumesSettled()
         {
             int consumedGeneration = 0;

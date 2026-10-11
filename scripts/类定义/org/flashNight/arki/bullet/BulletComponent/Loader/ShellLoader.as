@@ -14,7 +14,7 @@ class org.flashNight.arki.bullet.BulletComponent.Loader.ShellLoader implements I
         var shellInfo:Object = {};
         var shellNode:Object = data.shell;
 
-        if(shellNode != undefined && shellNode.casing != undefined)
+        if(shellNode.casing != undefined)
         {
             shellInfo.弹壳 = shellNode.casing;
         }
@@ -23,9 +23,9 @@ class org.flashNight.arki.bullet.BulletComponent.Loader.ShellLoader implements I
             return null;
         }
 
-        shellInfo.myX = (shellNode != undefined && shellNode.xOffset != undefined) ? Number(shellNode.xOffset) : 0;
-        shellInfo.myY = (shellNode != undefined && shellNode.yOffset != undefined) ? Number(shellNode.yOffset) : 0;
-        shellInfo.模拟方式 = (shellNode != undefined && shellNode.simulationMethod != undefined) ? shellNode.simulationMethod : "标准";
+        shellInfo.myX = (shellNode.xOffset != undefined) ? Number(shellNode.xOffset) : 0;
+        shellInfo.myY = (shellNode.yOffset != undefined) ? Number(shellNode.yOffset) : 0;
+        shellInfo.模拟方式 = (shellNode.simulationMethod != undefined) ? shellNode.simulationMethod : "标准";
 
         return shellInfo;
     }

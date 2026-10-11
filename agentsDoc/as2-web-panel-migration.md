@@ -26,6 +26,14 @@
 
 旧淡出时间轴第 17 帧的 `__returnFadeActive` 释放是副本初始化 admission 合同，不能随遮罩延长到揭幕结束；Web 遮罩由独立投影身份继续等待 `SceneReady` 和目标帧。修改这段时序需覆盖生产副本 admission，防止初始化与揭幕相互等待。
 
+长尾优化候选仅缩短原动画的等待帧：第 6 帧清场返回成功后，安排进入原第 13 帧；第 17 帧先释放初始化标志、执行原 dirty save 守卫，再安排进入第 30 帧。两次推进都经过至少一次实际 `EnterFrame` 边界；未获 covered、清场受阻、foreign fade、已取消或失败的请求不能推进。第 15 帧任务检查、第 30 帧新世界 `SceneReady` 与 Host capture fence、第 36 帧交接保持原权威。延迟清场没有 Web 接管时续播原时间线，重复完成回调保留已安排的帧边界。
+
+当前已连接的转场持有遮罩时，普通面板关闭不再调用 Flash 子窗口焦点恢复，由转场按当前前台归属完成交还；断连仍走原关闭兜底。
+
+结算 `lootMaterials` 只读投影沿用目录、材料身份、exact 当前 loot session 与业务 revision 校验，返回 `{name,displayName,icon,owned}`。专用 `executeMaterialStocks` 每次读取当前数量，不构建来源/配方/用途图，也不淘汰材料档案的 frozen detail snapshot。完整材料档案继续使用 v2 snapshot/detail 合同。计时须区分 AS2 elapsed scope、精确 fid 的 Host 往返、浏览器挂载帧和真实前台；见[加载与面板长尾调查](../docs/加载与面板长尾调查-2026-10-11.md)。
+
+完整材料档案仅在一次同步 snapshot 构建中按 category + recipeIndex 复用配方解析与展示投影，每个材料仍校验当前引用与原始数量；同产品不同配方不合并。复用不跨 refresh，详情继续深拷贝；禁止把展示层非法数量兜底值当作权威数量。最新编译与实测状态以调查记录为准。
+
 基地返回 token/run 精确一致、报告已经 durable 暂存时，v2 `scene_transition` 携带不可变 `report/reportVisible/reportHandoff`。原 Loot Panel/View 先以无业务权威的预览显示；Host 确认 covered 后自动经原 Loot 权威绑定，原操作即可与加载并行，每次请求只申请一次，不新增按钮。绑定复用现有 View/DOM/Core/HWND 和阅读状态；固定源与 exact panel/chest/container/epoch/run 同时成立才开放既有 Loot/库存域，拒绝其他任务及 foreign 实例，不复制业务后端。
 
 该请求内 `manageReport/closeReport` 是同一不可变报告的内部意图，加载/提示的显示 revision 前进不能使在途意图失效。Host 要求同一 request/generation、整数 `1 ≤ 意图 revision ≤ 当前显示 revision`、报告可用及既有操作锁，AS2 再核请求、原返回 token/run 和关闭权威；未来/畸形/foreign 仍拒绝。已经接受的 covered 证明仅随同一报告请求延续，新请求、hide 或断连清除。世界呈现回执、失败导航和 Loot 奖励/库存/关闭的业务 revision 仍要求各自的 exact 权威；不能用该显示意图规则重放未知写。

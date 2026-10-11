@@ -1789,3 +1789,21 @@ _root.gameCommands["openNpcShop"] = function(params):Boolean {
     );
     return _root.server.sendSocketMessage(payload);
 };
+
+// 平板 Web 面板联络页的「进入商店」：同一 openNpcShop 权威路径 + callId 回执，
+// 回执走 tablet_response 由 Host TabletTask 关联储备后回包 tablet 面板。
+_root.gameCommands["tabletOpenNpcShop"] = function(params:Object):Void {
+    var shopId:String = params == undefined ? "" : String(params.shopId || "");
+    var ok:Boolean = false;
+    try {
+        ok = _root.gameCommands["openNpcShop"] != undefined
+            && _root.gameCommands["openNpcShop"]({shopId:shopId, source:"tablet_contacts"}) === true;
+    } catch (e) {
+        trace("[tabletOpenNpcShop] openNpcShop threw: " + e);
+        ok = false;
+    }
+    if (_root.平板回执 != undefined) {
+        _root.平板回执(params, {task:"tablet_response", ok:(ok === true), name:shopId,
+            error:(ok === true ? "" : "shop_unavailable")});
+    }
+};

@@ -365,7 +365,7 @@
 }
 .loot-settlement-kills {
     display:grid; grid-template-columns:repeat(auto-fill,minmax(142px,1fr));
-    grid-auto-rows:min-content; align-content:start; gap:5px;
+    grid-auto-rows:min-content; align-content:start; align-items:start; gap:5px;
 }
 .loot-settlement-kill-card {
     position:relative; display:grid; grid-template-columns:42px minmax(0,1fr) auto;
@@ -458,6 +458,46 @@
     border:1px solid color-mix(in srgb,var(--wb-semantic-warning) 45%,transparent);
     background:color-mix(in srgb,var(--wb-bg) 92%,transparent);
     font-size:10px;
+}
+.loot-settlement-unit-details { grid-column:1 / -1; min-width:0; color:var(--wb-text); }
+.loot-settlement-unit-details summary {
+    display:flex; align-items:center; min-height:26px; cursor:pointer;
+    color:var(--wb-focus); font-size:11px;
+}
+.loot-settlement-unit-details summary::before { content:'▸'; margin-right:5px; }
+.loot-settlement-unit-details[open] summary::before { content:'▾'; }
+.loot-settlement-unit-details p { margin:4px 0; font-size:11px; overflow-wrap:anywhere; }
+.loot-settlement-unit-details dl {
+    display:grid; grid-template-columns:40px minmax(0,1fr); gap:3px 6px; margin:6px 0;
+    font-size:11px; line-height:1.4;
+}
+.loot-settlement-unit-details dt { color:var(--wb-muted); }
+.loot-settlement-unit-details dd { margin:0; overflow-wrap:anywhere; }
+.loot-settlement-kill-card[data-ally-state="dead"] > strong,
+.loot-settlement-kill-card[data-ally-state="retreated"] > strong { color:var(--wb-semantic-danger); }
+.loot-settlement-kill-card[data-ally-state="revived"] > strong { color:var(--wb-semantic-success); }
+.loot-stage-settlement .loot-settlement-kill-card[data-ally-state="dead"] > strong,
+.loot-stage-settlement .loot-settlement-kill-card[data-ally-state="retreated"] > strong { color:var(--wb-semantic-danger); }
+.loot-stage-settlement .loot-settlement-kill-card[data-ally-state="revived"] > strong { color:var(--wb-semantic-success); }
+.loot-settlement-unit-badge,.loot-settlement-unit-index,.loot-settlement-unit-hero,
+.loot-settlement-unit-legend { display:none; }
+.loot-settlement-report.loot-settlement-compact .loot-settlement-unit-state { display:none; }
+.loot-settlement-report.loot-settlement-compact .loot-settlement-unit-badge { display:inline; }
+.loot-settlement-report.loot-settlement-compact .loot-settlement-unit-index,
+.loot-settlement-report.loot-settlement-compact .loot-settlement-unit-hero {
+    display:block; position:absolute; z-index:3; top:0; padding:1px 2px;
+    color:var(--wb-text); background:color-mix(in srgb,var(--wb-bg) 92%,transparent);
+    font:700 10px/1 Consolas,monospace;
+}
+.loot-settlement-report.loot-settlement-compact .loot-settlement-unit-index { left:0; }
+.loot-settlement-report.loot-settlement-compact .loot-settlement-unit-hero { right:0; color:var(--wb-focus); }
+.loot-settlement-report.loot-settlement-compact .loot-settlement-unit-details > :not(summary) { display:none; }
+.loot-settlement-report.loot-settlement-compact .loot-settlement-unit-details summary {
+    position:absolute; z-index:4; inset:0; min-height:0; font-size:0;
+}
+.loot-settlement-report.loot-settlement-compact .loot-settlement-unit-details summary::before { display:none; }
+.loot-settlement-report.loot-settlement-compact .loot-settlement-unit-legend {
+    display:block; margin:0; color:var(--wb-muted); font-size:10px; line-height:1.4;
 }
 .loot-settlement-flow-section {
     flex:0 0 auto;

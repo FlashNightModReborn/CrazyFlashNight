@@ -1,0 +1,3 @@
+﻿trace("FocusedTestRunId arena-worker-protocol Start: __FOCUSED_RUN_ID__");
+org.flashNight.arki.merc.ArenaWorkerProtocolTest.runAllTests();
+trace("FocusedTestRunId arena-worker-protocol Complete: __FOCUSED_RUN_ID__");

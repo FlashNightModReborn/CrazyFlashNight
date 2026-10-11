@@ -6,6 +6,31 @@
 **决策日期**：2026-08-27
 **既有发布基线**：2026-08-27 A3 正式列车保留为历史基线；下述 2026-08-29 增量现已由独立 release source、双 signer / 双 faultDomain、原子 promotion、部署推送与远端 Audit 取代其“未部署”状态。两轮部署后的正式入口证据都没有重跑关卡业务，因此均不称本功能业务 `standard_entry_verified`。
 
+## 0F. 2026-10-09 友军损失与人形个体战报（待人工验收）
+
+本增量原版已完成专项验证和正式部署，身份及发布证据见本节末尾；真人业务验收仍待完成。2026-10-10 的固定友军显示归并为后续 Web 修订，单独验证，不沿用原版列车的业务或视觉结论。
+
+本修订专项门：Loot Node 99/99、1024×576 浏览器 131/131、lazy-cancel 6/6、工作台 ratchet 68/68、文档治理通过。浏览器新增用例覆盖 14 个固定友军＋2 个相同配置人形、三种状态分别合并、主角独立、重复倒地、只读详情、方块几何与关闭清理；组内姓名、等级和倒地次数完全相同的说明再次按数量归并，避免悬浮详情重复铺行。与远端主线 `b5d7592b66db7e17314f6c4edc88c590c93a0f0c` 整合后，全站严格 UI 审计的 4 项军械库样式问题及 CSS facade 的军械库 import 登记缺项在未修改父版本同样存在，本修订不改这些输入、不增加问题；不得写成整合树全站检查通过。本机旧基线的 0 error / 0 warning 与 CSS 闭包通过仅为先前基线证据。这些为生产页面脚本与 CSS 的夹具证据，待真人关卡结算复验；本修订不改 AS2、Native 或已部署 runtime 字节。
+
+**2026-10-10 友军显示归并**：Web 仅将固定外观、同兵种、同头像、同精英标记且同最终状态的友军合并展示；紧凑模式保留 48×48 方块，以“亡 ×N／撤 ×N／复 ×N”呈现状态与单位数。可换装人形和主角始终独立，姓名、外观及装备完全相同也不合并；序号只用于独立记录。完整与紧凑模式共享同一投影，展开或共享悬浮注释可查组内每个单位原有的姓名、等级和倒地次数；×N 表示单位数，倒地次数另行累加。冻结的逐单位 allies、损失总计、主角倒地总计、未展开个数、战报版本及 fingerprint 均不改写；同一类型的阵亡、撤退与复活分组，战斗中的实时倒地播报仍按实例和生命期独立。
+
+新生成的冻结战报独立升级为 `report.v=2`；stage outcome、loot admission、持久化 store/pending 仍保留各自的 v1 协议。旧 v1 pending 战报原版本恢复，不改其 fingerprint，也不把未记录的友军损失解释为零。AS2 存档解码和 admission 共用同一 v1/v2 规范化入口；Host、SceneTransition 和 Web 严格接受对应版本的封闭字段。AMF0 空对象修复仅对 v2 的新增 `allies` 扩展，非空对象及未知版本继续拒绝。
+
+`UnitBattleRecord` 在单位初始化分配普通数据实例标识，每条生命独立 down/kill guard。近战 death、kill 状态切换前、模板死亡检测及九命猫妖直接恢复 HP 均闭合同一生命期；保留原 DeathEvent 的清理订阅。enemyKilled 在回调时检查当前 PLAYER 阵营，所以中立单位被我方击杀可计入，第三方互杀不计入。当前 PLAYER 的佣兵、战宠、剧情友军均可记录，不用 mercenary 名单或初始阵营筛选友军死亡。
+
+友军首次倒地立刻发布 `loot v1 / loss / casualty / source=ally_casualty`，priority 4、Guaranteed、Immediate，优先于 Boss，且不等待 400ms 最低可见时间。operationId 与 itemKey 均为实例＋生命标识，重入不重复播报，同名单位不合并。头像仍按同一外观元组缓存复用。该消息是战斗事实，不进入资产 receipt，也不增加物资消耗。主角倒地由 `heroDowns` 单独计数；`totalAllyDowns` 与 `totalAllyLosses` 不包含主角。结算按单位列出 `dead / retreated / revived`（阵亡／撤退／已复活）；复活移除当前损失，再次倒地增加次数但最终只算一个单位。冻结时仍处于死亡且未复活的单位列为阵亡；返回冻结后不接收生命期回流。每个单位的姓名、等级、精英、外观及装备/武器文本分别来自首次倒地或首次击杀时快照，后续生命不改写首次配置；展开操作只读，不发 inventory 命令。
+
+可换装的人形（`hasDressup===true` 或主角模板）在结算按 unitId 独立保留；相同兵种、姓名、外观和装备也不合并。固定外观怪继续按类型 ×N 聚合。同一实例复活后被再次击杀，保留一个实例记录及其击杀次数。v2 kill 在原六字段上增加 `individual / unitId / level / loadout`；友军记录使用 `unitId / key / displayName / iconName / doll / eliteLevel / level / loadout / status / downs / isHero`。loadout 为十一固定字符串槽：head/body/leg/hand/foot/neck/primary/secondary1/secondary2/melee/grenade；每槽最多 128 字符，等级 0–9999。
+
+详情上限为固定怪 96 类、人形 128 个、友军 64 个；`omittedKillTypes / omittedIndividualKills / omittedAllies` 分别显示未展开类型、未展开的人形击杀次数和未展开的友军个数。总击杀、倒地与最终损失在上限外仍准确；未展开友军的复活也可扣回最终损失。界面不因溢出把人形重新聚合，完整/紧凑密度沿用同一左栏纵向滚屏，紧凑模式所有单位保留原 48×48 方块体型，以记录序号、击杀次数、亡/撤/复及主角角标呈现差异，图例解释状态；悬停或键盘聚焦通过共享 PanelTooltip 只读展示姓名、等级及冻结配置，完整模式保留可展开记录。
+
+自动门：合并主线后 map/loot focused 1031 项（StageRunSession 830、Loot 189、Planner 12；另有 BoxInteraction 53 项），Host 全量 6911 passed / 19 既有 skipped；播报区分修订的 battle/loot focused 469 项，Loot Node 93 项，1024×576 浏览器 123 项＋lazy-cancel 6 项。最终 asLoader 经 CS6 新鲜编译器 0/0、SWF 刷新、单一类归属、生成闭包与函数体门。正式 CAS 的生产 Native renderer 75 项及 16 项旧／新数量字样逐像素核对通过，最新实际窗口 / WebView2 61 项和屏幕像素核对全部通过，含紧凑方块与键盘注释。此前前台焦点阻挡的失败样本保留，未放宽前台准入门。CAS 不保留开发构建 metadata，隔离实窗驱动只将报告身份的读取改为实际 manifest，61 项断言及生产程序集均保持原样；适配源与来源哈希随验收包归档。fixture 不代签真人 PVE、标准入口业务旅程或真实存档重启。
+
+
+**2026-10-10 正式发布**：维护者明确授权先完成发布列车。冻结源码 `99fc18a7c865160ff270ff36fda1d0dcb411c46a`、不可变标签 `runtime-build-v2/20261010-battle-records-feed-v1`；本地 X509 与 [GitHub hosted OIDC 构建 38001331100](https://github.com/FlashNightModReborn/CrazyFlashNight/actions/runs/38001331100) 对 identity `F852BCCE1DFC56A24C2E0AD69657118AC8EFF052197793928663192A92404411`、closure `0683F820F20328E45C8BC3B10DA19C027BF709ACF8EAF4A84472E45F7AEFCBA3` 达成双 signer / 双 faultDomain 共识，production policy 47/47。唯一 writer 已原子部署，安装入口 `--verify-only` exit 0；正式 Core SHA-256 `26562A5F00EE9D8F75071F120A35E2B7ECF497C423B1FB688896EC97A38B2A08`。发布供应链成立，真人战斗、视觉与旧／新结算保存重启验收仍为 `PENDING`。完整发布身份和部署推送审计回执见 [runtime 发布记录](runtime-build-reproducibility.md#battle-records-release-20261010)。
+
+人工验收：同名人形逐个展开配置；友军倒地→复活→再次倒地→撤退；战宠/剧情友军与中立单位；紧凑/完整布局、长名和滚动；确认 loss 播报立即出现且不重复。至少一轮由正式生产战斗链返回结算，核对主角倒地不算友军损失，并读回一份旧 v1 pending 结算。
+
 ## 0E. 2026-09-11 明确任务选择、单次返回与到达确认（隔离候选）
 
 **正式发布收尾**：本节隔离候选现已完成双故障域共识、40/40 发布检查与原子部署，部署提交为 `70220aecee920299347226e9509809ca2d2681e4`。当前状态 `HUMAN_ACCEPTANCE_PASSED / promoted`；后文候选／未部署描述属于历史时点。正式程序与验收候选字节一致，部署后的业务旅程未重复执行。完整发布身份与证明见 [runtime 发布记录](runtime-build-reproducibility.md#2026-09-11-当前正式发布任务交付选择单次返回与走门保护)。
@@ -307,7 +332,7 @@ dead + exact current hero
 
 视觉与关卡内原生卡分属两套已有真源：原生卡复用常驻 `NativeHudTheme`；返回基地后的 Web 结算复用 Launcher 首页与 Settings 的黑铁终端语言。`stage_settlement` 根单独挂 terminal skin，直接消费 `tokens.css` 的 `--launcher-* / --dls-* / --term-*` 及 `terminal.css` 的品牌铭牌/切角构件；黑底栅格、扫描线、锈红结构线、DLS 青主操作与骨金数字与启动器/设置保持同源。该 skin 不作用于 `map_chest`、普通库存或其他 Workbench。
 
-- 左栏“行动报告”：在同一纵向滚屏里依次展示关卡、难度、outcome、关卡帧时、总击杀、最多 96 类敌人，以及物资获得/消耗；极端类型数由这一滚屏承接，不再用击杀/物资页签切断上下文；
+- 左栏“行动报告”：在同一纵向滚屏里依次展示关卡、难度、outcome、关卡帧时、总击杀、最多 96 类固定敌人、128 个可换装人形、友军个体损失，以及物资获得/消耗；极端类型数由这一滚屏承接，不再用击杀/物资页签切断上下文；
 - 物资记录复用领域提交后的现役物资播报投影，按 gain/loss 展示拾取、奖励、消耗等最多 96 种聚合事实及遗漏计数；断开 Native feed 不影响 `StageRunSession` 本地记录；
 - “完整/紧凑”：复用一个 `GridDensityController`，全新偏好默认紧凑并同时作用于左栏敌人/物资卡、右栏奖励格和材料存量；紧凑档保留头像/图标、数量和 tooltip/ARIA 名称，完整档显示名称与明细；玩家选择按既有工作台偏好持久化；
 - 敌人头像：有 doll tuple 时复用 `DollBake.renderTupleDataUrl`，并发上限 2、同 tuple promise 缓存；否则复用 `EnemyPortraits` 的 manifest/variant/fallback 链。头像内部不再放敌人名称首字作为 fallback；加载失败只显示中性占位，避免透明画像与文字叠印；

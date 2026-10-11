@@ -1,0 +1,116 @@
+{
+  "schema": "cf7.bookshelf-v3.layout.1",
+  "units": "design-units; use uniform integration scale",
+  "cabinet": {
+    "width": 23.5,
+    "depth": 4.65,
+    "height": 17.3,
+    "frameThickness": 0.3
+  },
+  "tiers": [
+    {
+      "key": "lower",
+      "floorZ": 2.95,
+      "ceilingZ": 9.75,
+      "clearHeight": 6.8
+    },
+    {
+      "key": "upper",
+      "floorZ": 10.05,
+      "ceilingZ": 16.85,
+      "clearHeight": 6.8
+    }
+  ],
+  "bookMaximum": {
+    "width": 1.38,
+    "height": 6.55,
+    "depth": 3.9,
+    "yawDegrees": 10,
+    "projectedWidth": 2.036,
+    "projectedDepth": 4.081
+  },
+  "currentBooks": [
+    {
+      "entryKey": "dust",
+      "tier": "upper",
+      "centerX": -8.5
+    },
+    {
+      "entryKey": "babylon",
+      "tier": "upper",
+      "centerX": -6.36
+    },
+    {
+      "entryKey": "guardian",
+      "tier": "upper",
+      "centerX": -4.17
+    },
+    {
+      "entryKey": "sail-twins",
+      "tier": "lower",
+      "centerX": -8.5
+    }
+  ],
+  "reserveSlots": [
+    {
+      "slotId": "upper-02",
+      "tier": "upper",
+      "centerX": 0.3
+    },
+    {
+      "slotId": "upper-04",
+      "tier": "upper",
+      "centerX": 2.6
+    },
+    {
+      "slotId": "upper-06",
+      "tier": "upper",
+      "centerX": 4.9
+    },
+    {
+      "slotId": "lower-02",
+      "tier": "lower",
+      "centerX": -3.7
+    }
+  ],
+  "capacity": {
+    "ordinaryBooks": 8,
+    "collectionEntrances": 1,
+    "totalCurrentEntrances": 5,
+    "currentOrdinaryBooks": 4,
+    "futureSlotsVisible": false,
+    "currentTransformsRemainFixed": true,
+    "claim": "8 ordinary books plus CF1-6 collection with current transforms fixed; 12 not claimed"
+  },
+  "collection": {
+    "entryKey": "crazy-flasher",
+    "tier": "lower",
+    "centerX": 3.0,
+    "width": 5.65,
+    "height": 6.55,
+    "depth": 3.95,
+    "childEntries": [
+      "cf1",
+      "cf2",
+      "cf3",
+      "cf4",
+      "cf5",
+      "cf6"
+    ]
+  },
+  "archives": {
+    "meaning": "CF7 resident character archives, not per-book progress",
+    "demoData": true,
+    "quickEntries": [
+      "archive:current",
+      "archive:recent02",
+      "archive:recent03"
+    ],
+    "directoryEntry": "archive:all",
+    "quickSlotsAreCapacityLimit": false,
+    "requiresDetailConfirmationBeforeSwitch": true,
+    "supportsCreateDeleteOverwrite": false,
+    "drawerTravel": 3.15,
+    "furtherDirectoryRows": "Web panel in later integration; physical folders demonstrate directory without implying a five-file limit"
+  }
+}

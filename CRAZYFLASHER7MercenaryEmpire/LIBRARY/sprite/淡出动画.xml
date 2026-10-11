@@ -92,7 +92,7 @@ _root.等待Web过场遮罩(this);
             </DOMFrame>
             <DOMFrame index="5" duration="7" keyMode="9728">
               <Actionscript>
-                <script><![CDATA[_root.清除游戏世界组件();]]></script>
+                <script><![CDATA[if (_root.清除游戏世界组件()) _root.完成Web清场(this);]]></script>
               </Actionscript>
               <elements/>
             </DOMFrame>
@@ -117,6 +117,7 @@ this.__returnFadeActive = false;
 // flushDurableNow，到达本帧时 dirty 已清零；只有 SceneChanged 之后又有新 mutator 标脏
 // 才触发本守卫。audit 漏标的 mutator 也由 SceneChanged hook 兜底，数据不丢。
 if (_root.存档系统.dirtyMark) _root.存档系统.requestSave("ui.fade_out");
+_root.完成Web场景初始化(this);
 ]]></script>
               </Actionscript>
               <elements/>

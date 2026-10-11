@@ -1,0 +1,225 @@
+{
+  "package": "bookshelf-v4-maintenance-sources",
+  "archiveRoot": "bookshelf-interactive-v4-light",
+  "purpose": "Supplement to the separately delivered v4 light runtime package. Merge matching top-level folders; no runtime-file replacements.",
+  "pairedRuntimeFilename": "bookshelf-interactive-v4-light.zip",
+  "pairedRuntimeSHA256": "4b393fbf9a4b075c952a400bc4d309ce233f25d34aff77681487e94bac72d2a7",
+  "authority": {
+    "physicalAssets": "model-source/bookshelf-v3.blend plus rebuild scripts and textures",
+    "v4Layout": "web/modules/layout-core.mjs and web/modules/layout-three.js in the light runtime",
+    "layoutSnapshots": "Derived only; not an independent authority",
+    "offlineRender": "render-reference.py; not browser validation"
+  },
+  "files": [
+    {
+      "path": "SOURCES_README.zh-CN.md",
+      "bytes": 5565,
+      "sha256": "0521604275945dc0bd9d8bb9b7dbb1fde8df66994375521a7c172fabcee4e3b7"
+    },
+    {
+      "path": "model-source/README-v3-original.md",
+      "bytes": 6171,
+      "sha256": "4a7912bcffbd20053b95865166790b08d8cff1382cbff6f5d553f5226c392ae7"
+    },
+    {
+      "path": "model-source/bookshelf-v3.blend",
+      "bytes": 3294216,
+      "sha256": "5ae5ce22307ed50d27c451dd310cc62d3994204f3112f91b37f85b66b99fb472"
+    },
+    {
+      "path": "model-source/build.py",
+      "bytes": 10776,
+      "sha256": "682f2459062e845471d0ca644809c549dd76a5a8c1720a11b8d82895b4135b3e"
+    },
+    {
+      "path": "model-source/layout.json",
+      "bytes": 2466,
+      "sha256": "d2fd3bafde870d0e8989c0b62d97cf195c9366d4d67b65b9d9b6a6c464680f7b"
+    },
+    {
+      "path": "model-source/make_labels.py",
+      "bytes": 1569,
+      "sha256": "e5afd065b3476e3820f87a3b2f8d53deabc4afe43ee99a0aebd82ef24345055f"
+    },
+    {
+      "path": "model-source/modelstats.json",
+      "bytes": 247,
+      "sha256": "26a9b33d161eccf38b40c8e9f0c8ceb6624dd47fa4086f4660a1ede2ae9bea6c"
+    },
+    {
+      "path": "model-source/semantic-nodes.json",
+      "bytes": 6673,
+      "sha256": "b7bf8aff31c0978a58c716db7658eb84194137ed56f182e3d6fd4f5f9332827e"
+    },
+    {
+      "path": "model-source/source-manifest.json",
+      "bytes": 1740,
+      "sha256": "2aa798dcc1ad2881cee08f398adfe90d0a04d000201afb00a0af70843ae13436"
+    },
+    {
+      "path": "model-source/states.py",
+      "bytes": 936,
+      "sha256": "3c12bd03266190ed0a71a4b42016d5886a08b430d6c297874134042081f1dee3"
+    },
+    {
+      "path": "model-source/textures/archive-all.png",
+      "bytes": 15633,
+      "sha256": "f04ef9942a1f00e2f1130b32999f4d686f2a7849fb7d6d5a7a0ede38266c30f0"
+    },
+    {
+      "path": "model-source/textures/archive-current.png",
+      "bytes": 17295,
+      "sha256": "9eb0b4d6219a9bac352bc0abcce65ff26e64d533254e67a77280b7c823cfa490"
+    },
+    {
+      "path": "model-source/textures/archive-demo01.png",
+      "bytes": 23081,
+      "sha256": "d9b6983c2120d115a80785e0a1d519d31d6c4a61e93efc2299ec18b1b502721c"
+    },
+    {
+      "path": "model-source/textures/archive-demo02.png",
+      "bytes": 24411,
+      "sha256": "02eec89e831d8e8f5327b310ad8a0e72e5bcf507fb03bf30c2e78a621a04abcb"
+    },
+    {
+      "path": "model-source/textures/archive-demo03.png",
+      "bytes": 25035,
+      "sha256": "40d2ecbaf6362af528ad08cf1576abff190c48c3e5056ce085ced818aad5c478"
+    },
+    {
+      "path": "model-source/textures/archive-demo04.png",
+      "bytes": 23640,
+      "sha256": "bdd7af2b2a2f996158d526f46d42b8d037636cdc667e45a046580abcb0904b63"
+    },
+    {
+      "path": "model-source/textures/archive-demo05.png",
+      "bytes": 24481,
+      "sha256": "0b77c8c3bec3555cf6d5e44445f91e9fff05bdd73d18da9eced605531fb62f9b"
+    },
+    {
+      "path": "model-source/textures/archive-recent02.png",
+      "bytes": 25398,
+      "sha256": "a2468979ec48032e1281093d697ddcd9fa51b2a025f3591575ca6f456a3fb73d"
+    },
+    {
+      "path": "model-source/textures/archive-recent03.png",
+      "bytes": 26021,
+      "sha256": "813dc127520ee711faee68004468903922036dc6d2ee7dd99eec90ef20d9b682"
+    },
+    {
+      "path": "model-source/textures/box-crazy-flasher.png",
+      "bytes": 53112,
+      "sha256": "c87010701279e08363e8ae646c5edf1f716fa1958add546cd8da0b9b2b1f2c27"
+    },
+    {
+      "path": "model-source/textures/case-spine-cf1.png",
+      "bytes": 15092,
+      "sha256": "79f73b85855bad5a3247a7c7c7238a5decc3adb6de9aa30ffaa99aeeb1996d30"
+    },
+    {
+      "path": "model-source/textures/case-spine-cf2.png",
+      "bytes": 16770,
+      "sha256": "97dad503db460e875e7df4de02be80118e5b0ef4f64cc6fa2aeaa2913328debe"
+    },
+    {
+      "path": "model-source/textures/case-spine-cf3.png",
+      "bytes": 17671,
+      "sha256": "14ebf5cbbb0c6f77915992dfb56dcae78d1dffcae68c29a95865184ff7c6e4cb"
+    },
+    {
+      "path": "model-source/textures/case-spine-cf4.png",
+      "bytes": 16252,
+      "sha256": "7aabeed80e8ec0d41f869429ec73eb1a35391b04c8c89ff6395a69fd8d5dffd2"
+    },
+    {
+      "path": "model-source/textures/case-spine-cf5.png",
+      "bytes": 15671,
+      "sha256": "bc7cc8937311291e33d4ccaa6f60a6a076d3672f38c2308f43eff7cfc423651a"
+    },
+    {
+      "path": "model-source/textures/case-spine-cf6.png",
+      "bytes": 18009,
+      "sha256": "fcaa9ac27e291c121759d240a97355211b35f2f3504c825615838f8d9d888d3e"
+    },
+    {
+      "path": "model-source/textures/disc-cf1.png",
+      "bytes": 11335,
+      "sha256": "ea80b7c8ea500e753318131c310ce4ac3af99d23f3d22b94b3e814f4e270babc"
+    },
+    {
+      "path": "model-source/textures/disc-cf2.png",
+      "bytes": 11200,
+      "sha256": "7b226643617925fa6f8f35882d5e4d97303fea03ee50a0dc0de7643fc5a948ab"
+    },
+    {
+      "path": "model-source/textures/disc-cf3.png",
+      "bytes": 11898,
+      "sha256": "71cdddcad7991efc7fadf001641a1f97babcd4d3e8c61afe14492303d9b4d27d"
+    },
+    {
+      "path": "model-source/textures/disc-cf4.png",
+      "bytes": 11372,
+      "sha256": "fac1abaa56618308145be2a038cb9c2fb9ca15ae3dcd34375e4f97c077980707"
+    },
+    {
+      "path": "model-source/textures/disc-cf5.png",
+      "bytes": 10284,
+      "sha256": "a5bf0eda2406ba754e07f5dac44fcd075e01f5da3fa45bf49152235c094a5787"
+    },
+    {
+      "path": "model-source/textures/disc-cf6.png",
+      "bytes": 12174,
+      "sha256": "73bbc1209952fd5485aacc4a09eded881436ba0ac8f4a0884eb3a697c0309651"
+    },
+    {
+      "path": "model-source/textures/spine-babylon.png",
+      "bytes": 94909,
+      "sha256": "6f77942b033fd5da97a33f2dec773361be1424dcceefe61c7cf9947c479d0d08"
+    },
+    {
+      "path": "model-source/textures/spine-dust.png",
+      "bytes": 89547,
+      "sha256": "e9ac208e6f0e0fa49d94a3a1682870003438f6784b2385695fc67c1f80fbdb71"
+    },
+    {
+      "path": "model-source/textures/spine-guardian.png",
+      "bytes": 70552,
+      "sha256": "4a465fbceeb31aa9ee6134bbd6eaad3caea9e9586c0224991add3b9bd78e0a78"
+    },
+    {
+      "path": "model-source/textures/spine-sail-twins.png",
+      "bytes": 13394,
+      "sha256": "d42a51737ab18435d8fc43b570bdf585a9a4e38111dd34286101801595aa7dc0"
+    },
+    {
+      "path": "references/actual-layouts.json",
+      "bytes": 65103,
+      "sha256": "b89deb5e200a581348408d8eabb5086cb5f6f5517bdd60f77ecbdc1b5d9f7b70"
+    },
+    {
+      "path": "references/layout-source.sha256",
+      "bytes": 94,
+      "sha256": "26f36c8da88e7d4a08ce097864adc645828679c3d5016778fd41d2bf0afc9153"
+    },
+    {
+      "path": "render-reference.py",
+      "bytes": 15531,
+      "sha256": "566758d0a5d75b47bc846028aca05ea6b1fd4d894ec2619ed17ccbbff7180b6e"
+    },
+    {
+      "path": "source-qa/blend-dependencies.json",
+      "bytes": 11083,
+      "sha256": "699faa5aa55b6a193d63ec74d3275a92a73488a7bf0e11050a4312b08df4939d"
+    },
+    {
+      "path": "source-qa/package-validation.json",
+      "bytes": 895,
+      "sha256": "93e8016f0cff06f8d0eb5b1dc639609adfa27c59733a13b77463bc4ced3a17a6"
+    },
+    {
+      "path": "source-qa/verify-blend.py",
+      "bytes": 2741,
+      "sha256": "a8e596d4cdbbc10f551381c3ed32cad4339a255cc681e35fd1c847963132f360"
+    }
+  ]
+}

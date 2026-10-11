@@ -29,6 +29,8 @@ JSON/Markdown 报告固定记录 `runtimeMode`、`processPath`、`coreSha256`、
 
 任何 clone/SOL 变更前，runner 都会枚举 Launcher Core 进程：没有可认证 Legacy HTTP context 时必须为零进程；有 context 时也只允许该已认证 PID 唯一存在。“端口不可用”不能再被解释为“Launcher 不存在”。`saves/` 祖先、seed、旧 target 与新 target 都必须是 exact regular/non-reparse/realpath；target 以同目录独占临时文件写入并替换，Windows 文件身份使用 BigInt `dev/ino/size/mtimeNs` 复验。
 
+正常 Core 会用同一个可执行文件启动热键助手。进程清单只排除同路径、内核父 PID 与参数所指父 PID 一致、精确 `--hotkey-guard <pid> <mvid> [--diag-input]` 形态的单个直接子进程；助手不能授权其父进程。未知路径/参数、孤立或重复助手仍进入独占检查，第二个 Guardian 仍失败关闭。此分类由 `run-checks.js` 的正负夹具覆盖，不修改运行库或输入钩子。
+
 `seedSha256`、`seededTargetSha256`/`targetSha256` 永久表示播种时事实，不会被启动写回覆盖。首个权威 snapshot 后，runner 至少取得两个相同完整 JSON 样本并以单调时钟稳定 1000ms，另写 `gateBaseline`。若 baseline 与播种 SHA 不同，只允许 `startup_normalization.v1` 的窄语义等价：移除根 `lastSaved`、统一空 `mods`，并只对四个明确的来源缓存数组排序；角色与等级必须不变。这个等价还必须由同一 attempt 的严格顺序 `start 水位 < handoff < title-frame < Archive <= snapshot` 解释，且 Archive 的 slot/path/UTF-16 char count 全匹配，否则失败。baseline 绑定 attempt、panel/view、snapshot call/source/stateRef/line、捕获后日志水位、语义 SHA、角色/等级，以及句柄读取所得 BigInt `dev/ino/mtimeNs`；闭合后再次复验完整 runtime identity 与唯一 Launcher 进程。旧版或半程 report 不能补签，必须重新运行 opener。`--report/--report-md` 自定义路径仅供 open-only 诊断；后续 live receipt Gate 只接受默认 canonical `tmp/equipment-tuning/unattended/<run>/run-report.json`。
 
 上述本地证据用于拦截陈旧进程、竞态、路径替换和误绑定；报告 JSON 没有 Host 签名或 MAC，因此不是针对恶意同用户进程的密码学 attestation，不得把本门的通过外推为该威胁模型已关闭。

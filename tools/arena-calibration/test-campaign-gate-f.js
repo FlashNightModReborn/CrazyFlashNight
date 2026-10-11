@@ -14,7 +14,7 @@ const {
   createIdleGrant,
   createProducerRegistry,
 } = require("./lib/campaign-resource-arbiter");
-const { CampaignSupervisor } = require("./lib/campaign-supervisor");
+const { CampaignSupervisor, executionClosureIdentity, sha256File } = require("./lib/campaign-supervisor");
 const {
   aggregateAttention,
   captureDiskHealth,
@@ -65,6 +65,8 @@ function writeRows(filePath, rows) {
 function copyExecutionClosure(tempRoot) {
   [
     "tools/arena-calibration/lib/arena-calibration-core.js",
+    "tools/arena-calibration/lib/immutable-evidence.js",
+    "tools/arena-calibration/lib/unattended-save-safety.js",
     "tools/arena-calibration/run-unattended.js",
     "tools/arena-calibration/schemas/case-manifest.schema.json",
     "tools/arena-calibration/schemas/result.schema.json",
@@ -129,6 +131,12 @@ function main() {
   const tempRoot = fs.mkdtempSync(path.join(os.tmpdir(), "cf7-arena-gate-f-"));
   try {
     copyExecutionClosure(tempRoot);
+    const closureBefore = executionClosureIdentity(tempRoot, HASH("manifest"), RUNTIME);
+    const helperPath = path.join(tempRoot, "tools/arena-calibration/lib/unattended-save-safety.js");
+    const helperBytes = fs.readFileSync(helperPath);
+    fs.appendFileSync(helperPath, "\n// isolated closure mutation fixture\n");
+    assert.notStrictEqual(executionClosureIdentity(tempRoot, HASH("manifest"), RUNTIME), closureBefore);
+    fs.writeFileSync(helperPath, helperBytes);
     const manifest = createPilotManifest({ batchId: "gate-f-fixture-batch", repeat: 10, timeoutFrames: 1800 });
     const manifestPath = path.join(tempRoot, "tmp", "gate-f-fixture", "case_manifest.json");
     writeJson(manifestPath, manifest);
@@ -509,6 +517,11 @@ function main() {
     });
     assert.strictEqual(second.disposition.acceptedCount, 5);
     assert.strictEqual(second.attention.event.proposalWindow.status, "insufficient_data");
+    const firstArtifactPath = path.join(supervisor.journal.root, "artifacts", `${first.artifact.artifactId}.json`);
+    const firstArtifactBytes = fs.readFileSync(firstArtifactPath);
+    const firstReceiptPath = path.join(supervisor.journal.root, "artifacts", `${first.compatibility.receiptId}.json`);
+    const firstReceiptBytes = fs.readFileSync(firstReceiptPath);
+    clockNow = "2026-08-27T12:30:00.000Z";
     const duplicate = supervisor.importShard({
       shardId: "gate-f-shard-01",
       shardKind: "unattended",
@@ -525,6 +538,35 @@ function main() {
     assert.strictEqual(duplicate.disposition.acceptedCount, 0);
     assert.strictEqual(duplicate.disposition.duplicateCount, 5);
     assert.strictEqual(duplicate.attention.duplicate, true);
+    assert.strictEqual(duplicate.artifact.artifactHash, second.artifact.artifactHash);
+    assert.strictEqual(duplicate.artifact.createdAt, second.artifact.createdAt);
+    assert.strictEqual(duplicate.compatibility.receiptHash, second.compatibility.receiptHash);
+    assert.deepStrictEqual(fs.readFileSync(firstArtifactPath), firstArtifactBytes);
+    assert.deepStrictEqual(fs.readFileSync(firstReceiptPath), firstReceiptBytes);
+    assert.strictEqual(supervisor.snapshot().committedRunKeys.length, 10);
+
+    const repeatImport = () => supervisor.importShard({
+      shardId: "gate-f-shard-01", shardKind: "unattended", manifestPath: relativeManifest,
+      resultPath: relativeSecond, runReportPath: path.relative(tempRoot, reportPath),
+      battleSemanticsCohortId: draft.battleSemanticsCohortId, allowPartial: true, complete: true,
+      gateFPlanHash: plan.planHash, attentionMeasurement: measurement, attentionPolicy: draft.attentionPolicy,
+    });
+    const originalRaw = fs.readFileSync(secondResult);
+    fs.appendFileSync(secondResult, "\n");
+    assert.throws(repeatImport, /immutable evidence collision/, "same logical import with changed bytes must fail closed");
+    fs.writeFileSync(secondResult, originalRaw);
+    const conflictingRows = JSON.parse(JSON.stringify(rows.slice(5)));
+    conflictingRows[0].durationMs += 1;
+    writeRows(secondResult, conflictingRows);
+    assert.throws(repeatImport, /conflicting durable result identity/);
+    fs.writeFileSync(secondResult, originalRaw);
+    report.completedAt = "2026-08-27T12:31:00.000Z";
+    writeJson(reportPath, report);
+    assert.throws(repeatImport, /immutable evidence collision/, "a report replacement must not rewrite durable evidence");
+    for (const imported of [first, second]) {
+      assert.strictEqual(sha256File(path.resolve(tempRoot, imported.artifact.resultPath)), imported.artifact.resultSha256);
+      assert.strictEqual(sha256File(path.resolve(tempRoot, imported.artifact.runReportPath)), imported.artifact.runReportSha256);
+    }
     assert.strictEqual(supervisor.snapshot().committedRunKeys.length, 10);
 
     const wrongBinding = JSON.parse(JSON.stringify(measurement));

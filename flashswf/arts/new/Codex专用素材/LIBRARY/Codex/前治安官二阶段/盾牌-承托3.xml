@@ -1,0 +1,118 @@
+<DOMSymbolItem xmlns="http://ns.adobe.com/xfl/2008/" name="Codex/前治安官二阶段/盾牌-承托3">
+  <timeline>
+    <DOMTimeline name="盾牌-承托3">
+      <layers>
+        <DOMLayer name="盾内可折叠承托 / 不依赖人物服装" color="#4FFF4F">
+          <frames>
+            <DOMFrame index="0" duration="1" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/前治安官二阶段/换弹承托" symbolType="movie clip" name="换弹承托">
+                  <matrix>
+                    <Matrix a="4.413961734" b="-0.118380083" c="0.194404748" d="4.252713032" tx="97.691483840" ty="69.764723552"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="Codex/前治安官二阶段/接口" symbolType="movie clip" name="承托枪位">
+                  <matrix>
+                    <Matrix a="1.000000000" b="0.000000000" c="0.000000000" d="1.000000000" tx="14.603591711" ty="76.251023048"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="同源灯头 / 持续出光" color="#4FFF4F">
+          <frames>
+            <DOMFrame index="0" duration="1" keyMode="9728">
+              <elements><DOMSymbolInstance libraryItemName="Codex/重装特勤/接口/透明判定" symbolType="movie clip" name="手电口">
+                  <matrix>
+                    <Matrix a="1.000000000" b="0.000000000" c="-0.000000000" d="1.000000000" tx="50.000000000" ty="108.000000000"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="内侧 / 15帧实体遮挡" color="#4FFF4F">
+          <frames>
+            <DOMFrame index="0" duration="1" keyMode="9728">
+              <elements><DOMSymbolInstance libraryItemName="Codex/重装特勤/战技/枪盾内侧/帧14" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="1.000000000" b="0.000000000" c="0.000000000" d="1.000000000" tx="0.000000000" ty="0.000000000"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="枪灯沿滑轨转移" color="#4FFF4F">
+          <frames>
+            <DOMFrame index="0" duration="1" keyMode="9728">
+              <elements><DOMSymbolInstance libraryItemName="Codex/重装特勤/战技/同源枪灯" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="1.000000000" b="0.000000000" c="-0.000000000" d="1.000000000" tx="50.000000000" ty="108.000000000"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="Codex/重装特勤/战技/灯头亮面" symbolType="movie clip" name="灯晕">
+                  <matrix>
+                    <Matrix a="1.000000000" b="0.000000000" c="-0.000000000" d="1.000000000" tx="50.000000000" ty="108.000000000"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="滑座与连接臂" color="#4FFF4F">
+          <frames>
+            <DOMFrame index="0" duration="1" keyMode="9728">
+              <elements><DOMSymbolInstance libraryItemName="Codex/重装特勤/战技/枪灯滑轨/帧14" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="1.000000000" b="0.000000000" c="0.000000000" d="1.000000000" tx="0.000000000" ty="0.000000000"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="沿用战术手电光束" color="#4FFF4F">
+          <frames>
+            <DOMFrame index="0" duration="1" keyMode="9728">
+              <elements><DOMSymbolInstance name="装备光束" libraryItemName="Codex/重装特勤/武器/特勤手电光束" blendMode="add">
+                  <matrix>
+                    <Matrix a="1.0" b="0.0" c="0.0" d="1.0" tx="50.0" ty="105.0"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter blurX="28" blurY="28"/>
+                  </filters>
+                <Actionscript><script><![CDATA[onClipEvent(load) { this._visible=false; }]]></script></Actionscript></DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

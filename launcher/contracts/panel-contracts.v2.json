@@ -503,6 +503,28 @@
       ],
       "numericFields": [],
       "sourceChecks": []
+    },
+    {
+      "id": "tablet",
+      "wireDomain": "tablet",
+      "hostTask": "launcher/src/Tasks/TabletTask.cs",
+      "flashResponseTask": "tablet_response",
+      "hostResponseHandler": "tabletTask.HandleFlashResponse",
+      "hostPayloadMode": "normalized",
+      "flashCommandHandler": null,
+      "flashSources": [
+        "scripts/引擎/引擎_lsy_基建系统.as",
+        "scripts/通信/通信_aka_Agent联动.as",
+        "scripts/逻辑系统分区/商店系统_兼容.as"
+      ],
+      "commands": [
+        { "cmd": "snapshot", "action": "tabletInfraSync", "capability": "query", "access": "read", "businessDecisionOwner": "as2" },
+        { "cmd": "upgrade", "action": "tabletInfraUpgrade", "capability": "transaction", "access": "write", "businessDecisionOwner": "as2" },
+        { "cmd": "open_npc_shop", "action": "tabletOpenNpcShop", "capability": "transaction", "access": "read", "businessDecisionOwner": "as2" },
+        { "cmd": "open_ragchat", "action": "openRagTerminal", "capability": "transaction", "access": "read", "businessDecisionOwner": "as2" }
+      ],
+      "numericFields": [],
+      "sourceChecks": []
     }
   ],
   "vectors": {

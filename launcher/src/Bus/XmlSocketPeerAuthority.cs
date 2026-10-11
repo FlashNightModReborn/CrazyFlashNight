@@ -240,6 +240,11 @@ namespace CF7Launcher.Bus
             }
         }
 
+        internal XmlSocketPeerProcessIdentity CaptureExpectedIdentity()
+        {
+            lock (_sync) return _expected;
+        }
+
         internal void SetExpectedForTests(
             XmlSocketPeerProcessIdentity identity)
         {

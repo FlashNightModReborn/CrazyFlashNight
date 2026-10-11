@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading;
+using System.Collections.Generic;
 using CF7Launcher.AgentRuntime.Security;
 using CF7Launcher.Diagnostic;
 using Newtonsoft.Json;
@@ -2011,12 +2012,15 @@ namespace CF7Launcher.Guardian
             normalized = null;
             var baseReport = report == null ? null : (JObject)report.DeepClone();
             baseReport?.Remove("rewardStashed");
-            if (!HasExactKeys(baseReport, "v", "runId", "stageName", "difficulty",
-                    "outcome", "activeFrames", "totalKills", "omittedKillTypes",
-                    "totalItemGains", "totalItemLosses", "omittedItemFlowTypes",
-                    "rewardRollOmissions", "kills", "itemFlows"))
-                return false;
             int version;
+            if (report == null || !TryReadInteger(report["v"], 1, 2, out version)) return false;
+            var reportKeys = new List<string> { "v", "runId", "stageName", "difficulty",
+                "outcome", "activeFrames", "totalKills", "omittedKillTypes",
+                "totalItemGains", "totalItemLosses", "omittedItemFlowTypes",
+                "rewardRollOmissions", "kills", "itemFlows" };
+            if (version == 2) reportKeys.AddRange(new[] { "omittedIndividualKills", "totalAllyDowns",
+                "totalAllyLosses", "heroDowns", "omittedAllies", "allies" });
+            if (!HasExactKeys(baseReport, reportKeys.ToArray())) return false;
             string runId;
             string stageName;
             string difficulty;
@@ -2029,7 +2033,7 @@ namespace CF7Launcher.Guardian
             long omittedItemFlowTypes;
             if (report["rewardStashed"] != null && report["rewardStashed"].Type != JTokenType.Boolean) return false;
             long rewardRollOmissions;
-            if (!TryReadInteger(report["v"], 1, 1, out version)
+            if (!TryReadInteger(report["v"], 1, 2, out version)
                 || !TryReadOpaque(report["runId"], out runId)
                 || !TryReadBoundedText(report["stageName"], 96, false, out stageName)
                 || !TryReadBoundedText(report["difficulty"], 48, false, out difficulty)
@@ -2051,20 +2055,26 @@ namespace CF7Launcher.Guardian
                 return false;
 
             JArray kills = report["kills"] as JArray;
-            if (kills == null || kills.Count > 96) return false;
+            if (kills == null || kills.Count > (version == 2 ? 224 : 96)) return false;
+            var unitIds = new HashSet<string>(StringComparer.Ordinal);
+            int individualRecords = 0;
             JArray normalizedKills = new JArray();
             long projectedKills = 0;
             for (int i = 0; i < kills.Count; i++)
             {
                 JObject kill;
                 long count;
-                if (!TryNormalizeSettlementKill(kills[i] as JObject, out kill, out count))
+                if (!TryNormalizeSettlementKill(kills[i] as JObject, version, out kill, out count))
                     return false;
                 if (projectedKills > 9007199254740991L - count) return false;
                 projectedKills += count;
+                if (version == 2 && kill.Value<bool>("individual"))
+                {
+                    if (!unitIds.Add(kill.Value<string>("unitId")) || ++individualRecords > 128) return false;
+                }
                 normalizedKills.Add(kill);
             }
-            if (projectedKills > totalKills) return false;
+            if (projectedKills > totalKills || kills.Count - individualRecords > 96) return false;
 
             JArray itemFlows = report["itemFlows"] as JArray;
             if (itemFlows == null || itemFlows.Count > 96) return false;
@@ -2096,7 +2106,7 @@ namespace CF7Launcher.Guardian
 
             normalized = new JObject
             {
-                ["v"] = 1,
+                ["v"] = version,
                 ["runId"] = runId,
                 ["stageName"] = stageName,
                 ["difficulty"] = difficulty,
@@ -2112,6 +2122,48 @@ namespace CF7Launcher.Guardian
                 ["kills"] = normalizedKills,
                 ["itemFlows"] = normalizedItemFlows
             };
+            if (version == 2)
+            {
+                long omittedIndividualKills, totalAllyDowns, totalAllyLosses, heroDowns, omittedAllies;
+                if (!TryReadLong(report["omittedIndividualKills"], 0, 9007199254740991L, out omittedIndividualKills)
+                    || !TryReadLong(report["totalAllyDowns"], 0, 9007199254740991L, out totalAllyDowns)
+                    || !TryReadLong(report["totalAllyLosses"], 0, 9007199254740991L, out totalAllyLosses)
+                    || !TryReadLong(report["heroDowns"], 0, 9007199254740991L, out heroDowns)
+                    || !TryReadLong(report["omittedAllies"], 0, 9007199254740991L, out omittedAllies)
+                    || omittedIndividualKills > totalKills - projectedKills || totalAllyLosses > totalAllyDowns)
+                    return false;
+                var allies = report["allies"] as JArray;
+                if (allies == null || allies.Count > 64) return false;
+                var normalizedAllies = new JArray();
+                unitIds.Clear();
+                long projectedAllyLosses = 0, projectedDowns = 0, projectedHeroDowns = 0;
+                foreach (var entry in allies)
+                {
+                    JObject ally;
+                    if (!TryNormalizeSettlementAlly(entry as JObject, out ally)
+                        || !unitIds.Add(ally.Value<string>("unitId"))) return false;
+                    long downs = ally.Value<long>("downs");
+                    if (ally.Value<bool>("isHero"))
+                    {
+                        if (projectedHeroDowns > heroDowns - downs) return false;
+                        projectedHeroDowns += downs;
+                    }
+                    else
+                    {
+                        if (projectedDowns > totalAllyDowns - downs) return false;
+                        projectedDowns += downs;
+                        if (ally.Value<string>("status") != "revived") projectedAllyLosses++;
+                    }
+                    normalizedAllies.Add(ally);
+                }
+                if (projectedAllyLosses > totalAllyLosses || totalAllyLosses - projectedAllyLosses > omittedAllies) return false;
+                normalized["omittedIndividualKills"] = omittedIndividualKills;
+                normalized["totalAllyDowns"] = totalAllyDowns;
+                normalized["totalAllyLosses"] = totalAllyLosses;
+                normalized["heroDowns"] = heroDowns;
+                normalized["omittedAllies"] = omittedAllies;
+                normalized["allies"] = normalizedAllies;
+            }
             return true;
         }
 
@@ -2268,13 +2320,13 @@ namespace CF7Launcher.Guardian
         }
 
         private static bool TryNormalizeSettlementKill(
-            JObject value, out JObject normalized, out long count)
+            JObject value, int version, out JObject normalized, out long count)
         {
             normalized = null;
             count = 0;
-            if (!HasExactKeys(value, "key", "displayName", "iconName", "doll",
-                    "eliteLevel", "count"))
-                return false;
+            var keys = new List<string> { "key", "displayName", "iconName", "doll", "eliteLevel", "count" };
+            if (version == 2) keys.AddRange(new[] { "individual", "unitId", "level", "loadout" });
+            if (!HasExactKeys(value, keys.ToArray())) return false;
             string key;
             string displayName;
             string iconName;
@@ -2305,6 +2357,70 @@ namespace CF7Launcher.Guardian
                 ["eliteLevel"] = eliteLevel,
                 ["count"] = count
             };
+            if (version == 2)
+            {
+                string unitId;
+                int level;
+                if (value["individual"]?.Type != JTokenType.Boolean
+                    || !TryReadBoundedText(value["unitId"], 96, true, out unitId)
+                    || !TryReadInteger(value["level"], 0, 9999, out level)) return false;
+                bool individual = value.Value<bool>("individual");
+                JObject loadout = null;
+                if (individual)
+                {
+                    if (!IsOpaque(unitId) || doll == null
+                        || !TryNormalizeSettlementLoadout(value["loadout"] as JObject, out loadout)) return false;
+                }
+                else if (unitId != "" || level != 0 || value["loadout"]?.Type != JTokenType.Null) return false;
+                normalized["individual"] = individual;
+                normalized["unitId"] = unitId;
+                normalized["level"] = level;
+                normalized["loadout"] = loadout != null ? (JToken)loadout : JValue.CreateNull();
+            }
+            return true;
+        }
+
+        private static bool TryNormalizeSettlementAlly(JObject value, out JObject normalized)
+        {
+            normalized = null;
+            if (!HasExactKeys(value, "unitId", "key", "displayName", "iconName", "doll", "eliteLevel",
+                "level", "loadout", "status", "downs", "isHero")) return false;
+            string unitId, key, name, icon, status;
+            int elite, level;
+            long downs;
+            if (!TryReadBoundedText(value["unitId"],96,false,out unitId) || !IsOpaque(unitId)
+                || !TryReadBoundedText(value["key"],128,false,out key)
+                || !TryReadBoundedText(value["displayName"],96,false,out name)
+                || !TryReadBoundedText(value["iconName"],128,true,out icon)
+                || !TryReadInteger(value["eliteLevel"],0,16,out elite)
+                || !TryReadInteger(value["level"],0,9999,out level)
+                || !TryReadLong(value["downs"],1,9007199254740991L,out downs)
+                || value["isHero"]?.Type != JTokenType.Boolean
+                || !TryReadBoundedText(value["status"],16,false,out status)
+                || (status != "dead" && status != "retreated" && status != "revived")) return false;
+            JObject doll = null, loadout = null;
+            if (value["doll"]?.Type != JTokenType.Null
+                && !TryNormalizeSettlementDoll(value["doll"] as JObject,out doll)) return false;
+            if (value["loadout"]?.Type != JTokenType.Null
+                && !TryNormalizeSettlementLoadout(value["loadout"] as JObject,out loadout)) return false;
+            normalized = (JObject)value.DeepClone();
+            return true;
+        }
+
+        private static bool TryNormalizeSettlementLoadout(JObject value, out JObject normalized)
+        {
+            normalized = null;
+            string[] keys = { "head", "body", "leg", "hand", "foot", "neck", "primary",
+                "secondary1", "secondary2", "melee", "grenade" };
+            if (!HasExactKeys(value, keys)) return false;
+            var result = new JObject();
+            foreach (var key in keys)
+            {
+                string item;
+                if (!TryReadBoundedText(value[key],128,true,out item)) return false;
+                result[key] = item;
+            }
+            normalized = result;
             return true;
         }
 

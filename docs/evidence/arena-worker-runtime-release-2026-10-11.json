@@ -1,0 +1,134 @@
+{
+  "schema": "cf7-arena-worker-runtime-release-evidence.v1",
+  "recordedAtUtc": "2026-10-11T09:22:08.8809561Z",
+  "state": "promoted",
+  "authorization": "2026-10-11 用户明确授权提交推送、云端共识、构建部署与推送；范围为 Arena Worker P0/P1。",
+  "source": {
+    "commit": "2b1fb74477a57b27a712a483b6eaee73fbc3a15f",
+    "tree": "2281a2421496eab7d25835eb6f8bed49f0eaa55d",
+    "tag": "refs/tags/runtime-build-v2/20261011-arena-worker-p0p1-v1",
+    "upstreamIntegrated": "07ef4d1429d704973453dd501e08ad750c362374",
+    "scopedSourceFileCount": 79,
+    "deploymentCommit": "5dd7d23f3dbdea0db52912e6db7f51132f631327"
+  },
+  "request": {
+    "schema": "cf7-runtime-build-request.v2",
+    "requestId": "058416A0F489E502BF53860820FA58D7E3248C5A3BCD3AEAC09A22B8D55ABB19",
+    "sourceKind": "Treeish",
+    "releaseTreeOid": "2281a2421496eab7d25835eb6f8bed49f0eaa55d",
+    "sourceCommitOid": "2b1fb74477a57b27a712a483b6eaee73fbc3a15f",
+    "requestCommitOid": "2bf09538ba04a61d473d672866032631dbb65bbf",
+    "bundleTreeOid": "e9f131fd109d3821d761fb5c0de459076927d9d9",
+    "artifactSourceHash": "F51AEF4AE74858D2A62EEF06BC099E4D3F2026E12FA13254BA48CEEF5394FFCE",
+    "producerRecipeHash": "05AA73475D685FB8E8BB7F028449B3EA539DD8E7110C2AAE3395661EC18EEA64",
+    "toolchainLockHash": "DFA769829F9740196DEF63351A00AAC309E50A2CA0A768759334EB2A2161DD36",
+    "policyHash": "A542659D49F3CCE8B41657AED25FA928D7A38FEC3365314FA4C19B8294C38679",
+    "buildIdentityHash": "5DBDD55B4E41A99954F2E96B3437DE3FFC06DEFC6773677BE26CC93BBE41E45B",
+    "bundleFile": "source.bundle",
+    "bundleSha256": "0F6825F130A912F9BCEF13E0959F3788A990AA6C419BBA145AA75840F771F253",
+    "requiredQuorum": 2,
+    "createdAtUtc": "2026-10-11T08:48:25.5678267Z"
+  },
+  "payload": {
+    "buildIdentityHash": "5DBDD55B4E41A99954F2E96B3437DE3FFC06DEFC6773677BE26CC93BBE41E45B",
+    "closure": "DED864E04FCF8339DC6B73AF78FB4EB63D9C613D85C155F4F1256CC73834E92E",
+    "fileCount": 43,
+    "coreDllSha256": "D184F369AB1A106EC161ACA093FE44C5908EA5DBAE6AE3FC5D9ADA2CAD3F1068",
+    "manifestSha256": "AB3CF7CF1587508420CE384909FFC4FB3640A210C1932757C79A3FFAC0A4F0CE",
+    "equalsPrivateTestedRuntimePayload": true
+  },
+  "builds": {
+    "local": {
+      "builderId": "builder-local-c",
+      "builderKeyId": "CFB70E2D339ACB25E9B6C2873DF4F1AEEBA8EA75AD23B825724B27FCA70C0B86",
+      "faultDomain": "physical-host-c",
+      "candidateRoot": "C:\\qaw11\\cas\\candidates\\5DBDD55B4E41A99954F2E96B3437DE3FFC06DEFC6773677BE26CC93BBE41E45B\\DED864E04FCF8339DC6B73AF78FB4EB63D9C613D85C155F4F1256CC73834E92E",
+      "attestationSha256": "C5DB9C984F363FCA65E97CABFFF71B2A94CC43C801C3B7FD45A8D421648E16E9"
+    },
+    "cloud": {
+      "runId": 38126520046,
+      "url": "https://github.com/FlashNightModReborn/CrazyFlashNight/actions/runs/38126520046",
+      "status": "completed",
+      "conclusion": "success",
+      "sourceCommitOid": "2b1fb74477a57b27a712a483b6eaee73fbc3a15f",
+      "artifactScope": "attestation-only",
+      "artifactId": 11697353244,
+      "artifactArchiveBytes": 10808,
+      "artifactArchiveSha256": "2aabfdf2dad85b5b7f0e742accb2a6adb7937638c80aea9ff826036601958246",
+      "proofSha256": "144433F60E5BDB49F14EA4EB3176626218909701442F230C186C380C83B4B101",
+      "builderIdentityHash": "89F25691C66106852E0B3B9F0DA76AAFDEF137E9DD40B667F94450D5CDD20BE8",
+      "faultDomain": "github-hosted-windows"
+    }
+  },
+  "policy": {
+    "profile": "production",
+    "passed": true,
+    "checks": 47,
+    "receiptSha256": "7B49954BD5CA13D8549092B3EC069834896F62CDF78A818F9DB3932ACB723FE5",
+    "candidateRoot": "C:\\qaw11\\cas\\candidates\\5DBDD55B4E41A99954F2E96B3437DE3FFC06DEFC6773677BE26CC93BBE41E45B\\DED864E04FCF8339DC6B73AF78FB4EB63D9C613D85C155F4F1256CC73834E92E",
+    "candidatePayloadClosureHash": "DED864E04FCF8339DC6B73AF78FB4EB63D9C613D85C155F4F1256CC73834E92E"
+  },
+  "promotion": {
+    "writer": "tools/promote-runtime-bundle.ps1",
+    "promotedAtUtc": "2026-10-11T09:06:34.9860651Z",
+    "signerCount": 2,
+    "faultDomainCount": 2,
+    "installedBootstrapVerifyOnly": {
+      "exitCode": 0,
+      "scope": "full installed payload integrity; no gameplay",
+      "evidence": "promotion succeeds only after synchronous bootstrap --verify-only exit 0"
+    },
+    "rollbackArchive": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\runtime-promotions\\20261011T090603919Z-6d91ba38dbb740baa3310bca6f65dd6e\\previous"
+  },
+  "as2": {
+    "compilerErrors": 0,
+    "compilerWarnings": 0,
+    "workerProtocolPassed": 52,
+    "skillCachePassed": 21,
+    "asLoaderBytes": 6007550,
+    "asLoaderSha256": "601CD42C51FF8CC1156E0CA7D4A688DC15E7CA65384F9F537E04136C05FA3B4D",
+    "scope": "Fresh main CS6 suites and publish after upstream integration; original uncompressed publish settings retained."
+  },
+  "checks": {
+    "nodeRunChecksExitCode": 0,
+    "docGovernanceExitCode": 0,
+    "gitDiffCheckExitCode": 0,
+    "preparedTrackedAssets": 22,
+    "initialPrepareExpectedFailure": "上游前治安官尚未进入存档修复字典；生成器补齐后随源码提交，冻结后的 prepare 22 项全等。原日志保留。"
+  },
+  "sourceAudit": {
+    "runId": 38125503809,
+    "url": "https://github.com/FlashNightModReborn/CrazyFlashNight/actions/runs/38125503809",
+    "conclusion": "success",
+    "state": "source-ahead",
+    "deploymentChanged": false
+  },
+  "remoteAudit": {
+    "runId": 38127546260,
+    "url": "https://github.com/FlashNightModReborn/CrazyFlashNight/actions/runs/38127546260",
+    "status": "completed",
+    "conclusion": "success",
+    "headSha": "5dd7d23f3dbdea0db52912e6db7f51132f631327",
+    "replayedState": "promoted",
+    "deploymentChanged": true,
+    "signerCount": 2,
+    "faultDomainCount": 2,
+    "fileCount": 43,
+    "payloadClosureHash": "DED864E04FCF8339DC6B73AF78FB4EB63D9C613D85C155F4F1256CC73834E92E",
+    "logSha256": "2538EE30C891FFAF0B68118027C94275BA51D4AEB2BC12386EFDA6CB575707EC"
+  },
+  "experienceEvidence": {
+    "privateCandidateP0P1AndFaultVerified": true,
+    "privateCandidateNormalSingletonAndLegacyVerified": true,
+    "p1ThroughputRatio": 1.4342677348940398,
+    "p2ExpansionReference": 1.6,
+    "p2Implemented": false,
+    "newMergedResourceCohortBusinessJourneyExecuted": false,
+    "standardEntryVerified": false,
+    "humanVisualAndPhysicalInputAccepted": false,
+    "weakMachineAndLongRunAccepted": false,
+    "playerSavesUsedForReleaseTests": false,
+    "details": "docs/Arena-Worker-P0-P1-施工与验证-2026-10-11.md",
+    "negativePrivateProbeAndWrapperEvidencePreserved": true
+  }
+}

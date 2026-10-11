@@ -4,6 +4,7 @@ import org.flashNight.arki.item.RewardStashService;
 import org.flashNight.aven.test.*;
 
 import org.flashNight.arki.scene.StageRunSession;
+import org.flashNight.arki.unit.UnitBattleRecord;
 import org.flashNight.arki.component.Effect.EffectSystem;
 import org.flashNight.arki.item.EquipmentUtil;
 import org.flashNight.arki.item.ItemUtil;
@@ -23,6 +24,7 @@ import org.flashNight.arki.stageSelect.StageSelectPanelService;
 import org.flashNight.arki.stageSelect.StageClearHistory;
 import org.flashNight.arki.task.TaskPanelService;
 import org.flashNight.arki.task.TaskUtil;
+import org.flashNight.arki.unit.UnitComponent.Initializer.EventComponent.EnemyKilledEventComponent;
 import org.flashNight.arki.unit.UnitComponent.Initializer.EventComponent.KillEventComponent;
 import org.flashNight.arki.unit.UnitComponent.Initializer.EventComponent.RespawnEventComponent;
 import org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheManager;
@@ -30,6 +32,22 @@ import org.flashNight.neur.Event.EventDispatcher;
 
 /** StageRunSession 的 outcome/life 正交状态、复活与结算冻结 focused 回归。 */
 class org.flashNight.arki.scene.StageRunSessionTest {
+
+    private static var _calibrationContextSeq:Number = 0;
+
+    private static function calibrationContext(params:Object):Object {
+        params.callId = ++_calibrationContextSeq;
+        params.workerId = "focused";
+        params.sessionEpoch = "focused-session";
+        params.assignmentId = "focused-assignment";
+        params.attemptId = "focused-attempt";
+        params.manifestHash = "sha256:" + "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa";
+        params.caseId = "focused-case";
+        params.caseHash = "sha256:" + "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb";
+        params.runId = String(params.batchId) + "-r001";
+        params.repeatIndex = 1;
+        return params;
+    }
     private static var _passed:Number = 0;
     private static var _failed:Number = 0;
     private static var _backup:Object;
@@ -49,6 +67,10 @@ class org.flashNight.arki.scene.StageRunSessionTest {
         testStageClearHistory();
         testOutcomeLifeAndFrameClock();
         testKillReportAndRewardFreeze();
+        testBattleUnitLifecycle();
+        testRealEnemyKilledCurrentFaction();
+        testIndividualBattleReportFreezeAndRestore();
+        testBattleReportBounds();
         testAssetFlowReportAndBoundedTypes();
         testVictoryThenDeathCanReviveExactlyOnce();
         testRealDispatcherReceivesHeroArgument();
@@ -89,6 +111,7 @@ class org.flashNight.arki.scene.StageRunSessionTest {
         testFocusInputSamplingIsBounded();
         testLifecycleAdmissionAndReservation();
         testStageManagerReservationAuthority();
+        testCalibrationReadyTokenPropagation();
         testStageLoaderRootExactlyOnce();
         testStageManagerProjectionFailures();
         testProductionSceneTransitionAuthority();
@@ -306,6 +329,218 @@ class org.flashNight.arki.scene.StageRunSessionTest {
             "reward random spans above AVM1 int range fail closed");
         assertFalse(StageRunSession.begin("覆盖关卡", "简单"),
             "a frozen unclaimed reward blocks run overwrite");
+    }
+
+    private static function battleUnit(name:String, faction):MovieClip {
+        var unit:MovieClip = _root.createEmptyMovieClip(name, _root.getNextHighestDepth());
+        unit.兵种 = "主角-男";
+        unit.hasDressup = true;
+        unit.名字 = "同名斗士";
+        unit.是否为敌人 = faction;
+        unit.等级 = 24;
+        unit.脸型 = "男变装-基本脸型";
+        unit.性别 = "男";
+        unit.长枪 = "第一把长枪";
+        unit.hp = 0;
+        unit.dispatcher = new EventDispatcher();
+        UnitBattleRecord.initialize(unit);
+        return unit;
+    }
+
+    private static function testBattleUnitLifecycle():Void {
+        resetWorld(0);
+        StageRunSession.begin("友军生命期", "挑战");
+        var oldFeed:Function = _root.发布物资变更消息;
+        _root.__battleRecordFeeds = [];
+        _root.发布物资变更消息 = function(direction,kind,key,count,source,tier,icon,operationId):Void {
+            _root.__battleRecordFeeds.push({kind:kind,key:key,direction:direction,operationId:operationId});
+        };
+        var ally:MovieClip = battleUnit("__brAlly", false);
+        ally.dispatcher.subscribe("death", function():Void { _root.__brDeathProbe++; }, ally);
+        _root.__brDeathProbe = 0;
+        ally.dispatcher.publish("death", ally);
+        ally.dispatcher.publish("death", ally);
+        UnitBattleRecord.onDown(ally);
+        var report:Object = StageRunSession.testOnlyBattleReport();
+        assertEquals(2, _root.__brDeathProbe, "battle subscriber retains unrelated death handlers");
+        assertEquals(1, report.totalAllyDowns, "death event and fallback deduplicate one life");
+        assertEquals(1, report.totalAllyLosses, "down ally counts as one current loss");
+        assertEquals(1, report.allies.length, "one unit has one ally record");
+        assertEquals(1, _root.__battleRecordFeeds.length, "reentrant death emits one casualty fact");
+        assertEquals("casualty", _root.__battleRecordFeeds[0].kind, "casualty has a dedicated kind");
+        assertEquals("loss", _root.__battleRecordFeeds[0].direction, "casualty is a loss fact");
+        ally.hp = 100;
+        UnitBattleRecord.onRevive(ally);
+        UnitBattleRecord.onRevive(ally);
+        report = StageRunSession.testOnlyBattleReport();
+        assertEquals(0, report.totalAllyLosses, "revival removes the current loss exactly once");
+        assertEquals("revived", report.allies[0].status, "revival retains the individual record");
+        ally.hp = 0;
+        UnitBattleRecord.onDown(ally);
+        ally.死亡撤退 = true;
+        UnitBattleRecord.onRetire(ally);
+        report = StageRunSession.testOnlyBattleReport();
+        assertEquals(2, report.allies[0].downs, "second life increments downs on the same unit");
+        assertEquals(1, report.totalAllyLosses, "two lives still yield one final lost unit");
+        assertEquals("retreated", report.allies[0].status, "terminal retreat replaces dead status");
+        assertTrue(_root.__battleRecordFeeds[0].operationId !== _root.__battleRecordFeeds[1].operationId,
+            "each life has a distinct feed identity");
+        var hero:MovieClip = battleUnit("hero", false);
+        UnitBattleRecord.onDown(hero);
+        var neutral:MovieClip = battleUnit("__brNeutral", null);
+        UnitBattleRecord.onDown(neutral);
+        report = StageRunSession.testOnlyBattleReport();
+        assertEquals(1, report.heroDowns, "controlled hero is counted separately");
+        assertEquals(1, report.totalAllyLosses, "hero down never increases allied final loss");
+        assertEquals(2, report.allies.length, "hostile neutral is excluded from allied records");
+        var enemy:MovieClip = battleUnit("__brEnemy", true);
+        assertTrue(UnitBattleRecord.claimPlayerKill(enemy), "a dead enemy grants one kill fact");
+        assertFalse(UnitBattleRecord.claimPlayerKill(enemy), "duplicate enemyKilled cannot grant a second kill");
+        enemy.hp = 100; UnitBattleRecord.onRevive(enemy); enemy.hp = 0;
+        assertTrue(UnitBattleRecord.claimPlayerKill(enemy), "a genuinely revived enemy grants its next life kill");
+        var identity:String = String(report.allies[0].unitId);
+        ally.removeMovieClip();
+        ally = battleUnit("__brAlly", false);
+        UnitBattleRecord.onDown(ally);
+        report = StageRunSession.testOnlyBattleReport();
+        assertEquals(3, report.allies.length, "reused MovieClip path creates a new unit record");
+        assertTrue(identity !== report.allies[2].unitId, "unit identity survives AVM1 path reuse");
+        ally.removeMovieClip(); hero.removeMovieClip(); neutral.removeMovieClip(); enemy.removeMovieClip();
+        _root.发布物资变更消息 = oldFeed;
+        delete _root.__battleRecordFeeds; delete _root.__brDeathProbe;
+    }
+
+    private static function testRealEnemyKilledCurrentFaction():Void {
+        resetWorld(0);
+        StageRunSession.begin("真实击杀事件", "挑战");
+        var oldStats:Object = _root.killStats;
+        var oldFeed:Function = _root.发布击杀播报;
+        _root.killStats = {total:0,byType:{}};
+        _root.__brKillFeeds = 0;
+        _root.发布击杀播报 = function(unit:MovieClip):Void {
+            _root.__brKillFeeds++;
+            StageRunSession.recordKillProjection(UnitBattleRecord.snapshotAtDeath(unit));
+        };
+        var shooter:MovieClip = battleUnit("__brShooter", true);
+        shooter.hp = 100;
+        EnemyKilledEventComponent.initialize(shooter);
+        var enemy:MovieClip = battleUnit("__brShotEnemy", true);
+        shooter.dispatcher.publish("enemyKilled", enemy, undefined);
+        assertEquals(0, _root.killStats.total, "enemy shooter cannot claim a player kill");
+        assertEquals(0, _root.__brKillFeeds, "third-party kill does not emit the player feed");
+        shooter.是否为敌人 = false;
+        shooter.dispatcher.publish("enemyKilled", enemy, undefined);
+        assertEquals(1, _root.killStats.total, "callback reads the shooter's current faction after initialization");
+        assertEquals(1, StageRunSession.testOnlyBattleReport().totalKills, "real dispatcher reaches the stage report");
+        shooter.dispatcher.publish("enemyKilled", enemy, undefined);
+        assertEquals(1, _root.killStats.total, "duplicate real event cannot grant another kill");
+        var ally:MovieClip = battleUnit("__brShotAlly", false);
+        shooter.dispatcher.publish("enemyKilled", ally, undefined);
+        assertEquals(1, _root.killStats.total, "allied target is excluded before the kill claim");
+        var neutral:MovieClip = battleUnit("__brShotNeutral", null);
+        shooter.是否为敌人 = null;
+        shooter.dispatcher.publish("enemyKilled", neutral, undefined);
+        assertEquals(1, _root.killStats.total, "hostile neutral shooter does not receive player credit");
+        shooter.是否为敌人 = false;
+        shooter.dispatcher.publish("enemyKilled", neutral, undefined);
+        assertEquals(2, _root.killStats.total, "player kill of hostile neutral remains eligible");
+        assertEquals(2, StageRunSession.testOnlyBattleReport().totalKills, "hostile neutral kill enters the settlement");
+        enemy.hp = 100;
+        UnitBattleRecord.onRevive(enemy);
+        enemy.长枪 = "复活后换枪";
+        enemy.hp = 0;
+        shooter.dispatcher.publish("enemyKilled", enemy, undefined);
+        var report:Object = StageRunSession.testOnlyBattleReport();
+        assertEquals(3, _root.killStats.total, "true revival grants the next real-event kill");
+        assertEquals(2, report.kills.length, "same unit's next life retains one individual card");
+        assertEquals(2, report.kills[0].count, "individual card counts kills across its lives");
+        assertEquals("第一把长枪", report.kills[0].loadout.primary, "individual card retains its first-kill equipment");
+        var other:MovieClip = battleUnit("__brShotOther", true);
+        shooter.是否为敌人 = true;
+        shooter.dispatcher.publish("enemyKilled", other, undefined);
+        assertEquals(3, _root.killStats.total, "switching away from player faction stops future credit");
+        shooter.是否为敌人 = false;
+        other.element = true;
+        shooter.dispatcher.publish("enemyKilled", other, undefined);
+        assertEquals(3, _root.killStats.total, "map element never becomes a battle unit kill");
+        other.element = false;
+        other.hp = 100;
+        shooter.dispatcher.publish("enemyKilled", other, undefined);
+        assertEquals(3, _root.killStats.total, "live target cannot grant a premature kill");
+        shooter.removeMovieClip(); enemy.removeMovieClip(); ally.removeMovieClip();
+        neutral.removeMovieClip(); other.removeMovieClip();
+        _root.killStats = oldStats;
+        _root.发布击杀播报 = oldFeed;
+        delete _root.__brKillFeeds;
+    }
+
+    private static function testIndividualBattleReportFreezeAndRestore():Void {
+        resetWorld(0);
+        StageRunSession.begin("人形配置快照", "挑战");
+        var first:MovieClip = battleUnit("__brFirst", true);
+        var second:MovieClip = battleUnit("__brSecond", true);
+        var a:Object = UnitBattleRecord.snapshot(first);
+        var b:Object = UnitBattleRecord.snapshot(second);
+        second.长枪 = "之后换装";
+        StageRunSession.recordKillProjection(a);
+        StageRunSession.recordKillProjection(b);
+        StageRunSession.recordKillProjection({key:"enemy.fixed",displayName:"固定敌人",iconName:"",doll:null,eliteLevel:0});
+        StageRunSession.recordKillProjection({key:"enemy.fixed",displayName:"固定敌人",iconName:"",doll:null,eliteLevel:0});
+        var ally:MovieClip = battleUnit("__brFrozenAlly", false);
+        UnitBattleRecord.onDown(ally);
+        StageRunSession.finish("victory");
+        assertTrue(StageRunSession.prepareSettlement(), "new battle report freezes before durable settlement");
+        var report:Object = StageRunSession.testOnlyBattleReport();
+        assertEquals(2, report.v, "new report has its own v2 schema");
+        assertEquals(3, report.kills.length, "two same-name humanoids and one fixed group stay distinct");
+        assertEquals(1, report.kills[0].count, "first humanoid is not merged with its sibling");
+        assertEquals(1, report.kills[1].count, "second humanoid remains independent");
+        assertEquals(2, report.kills[2].count, "fixed monsters retain type aggregation");
+        assertEquals("第一把长枪", report.kills[1].loadout.primary, "weapon summary freezes before later changes");
+        assertTrue(report.kills[0].unitId !== report.kills[1].unitId, "appearance sharing does not alias unit identity");
+        assertEquals(24, report.kills[0].level, "individual level is frozen");
+        assertTrue(StageRunSession.persistPreparedSettlement().success, "v2 report passes the AS2 persisted decoder");
+        var pending:Object = _root._saveExt.stageSettlement.pending;
+        var savedRunId:String = String(report.runId);
+        first.长枪 = "新枪";
+        assertEquals("第一把长枪", pending.report.kills[0].loadout.primary, "persisted equipment is independent of live units");
+        StageRunSession.testOnlyReset();
+        assertTrue(StageRunSession.restorePendingSettlement().success, "v2 report restores without reroll");
+        report = StageRunSession.testOnlyBattleReport();
+        assertEquals(savedRunId, report.runId, "restart retains the report identity");
+        assertEquals(2, report.v, "restart retains report version");
+        assertEquals(1, report.allies.length, "restart retains ally loss facts");
+        assertEquals("第一把长枪", report.kills[0].loadout.primary, "restart retains frozen weapons");
+        first.removeMovieClip(); second.removeMovieClip(); ally.removeMovieClip();
+    }
+
+    private static function testBattleReportBounds():Void {
+        resetWorld(0);
+        StageRunSession.begin("战报上限", "挑战");
+        var unit:MovieClip = battleUnit("__brBound", true);
+        var snapshot:Object = UnitBattleRecord.snapshot(unit);
+        for (var i:Number = 0; i < 130; i++) {
+            snapshot.unitId = "unit.bound." + i;
+            StageRunSession.recordKillProjection(snapshot);
+        }
+        for (i = 0; i < 66; i++) {
+            snapshot.unitId = "ally.bound." + i;
+            var token:Object = StageRunSession.recordAllyDown(snapshot, false, null);
+            if (i == 65) StageRunSession.recordAllyRevive(token);
+        }
+        var report:Object = StageRunSession.testOnlyBattleReport();
+        assertEquals(130, report.totalKills, "individual overflow does not lose kill totals");
+        assertEquals(128, report.kills.length, "individual records have an independent bound");
+        assertEquals(2, report.omittedIndividualKills, "omitted individual kill facts are explicit");
+        assertEquals(0, report.omittedKillTypes, "individual overflow never becomes a merged type");
+        assertEquals(64, report.allies.length, "allied detail list is bounded");
+        assertEquals(2, report.omittedAllies, "omitted allied units are explicit");
+        assertEquals(66, report.totalAllyDowns, "allied overflow retains all downs");
+        assertEquals(65, report.totalAllyLosses, "revival beyond detail cap still corrects final losses");
+        StageRunSession.finish("retreat");
+        assertTrue(StageRunSession.prepareSettlement(), "bounded v2 report freezes");
+        assertTrue(StageRunSession.persistPreparedSettlement().success, "bounded v2 report persists without recombination");
+        unit.removeMovieClip();
     }
 
     private static function testLifecycleAdmissionAndReservation():Void {
@@ -748,6 +983,106 @@ class org.flashNight.arki.scene.StageRunSessionTest {
         StageRunSession.cancelStageStart(restartToken);
         _root.淡出动画 = oldFade;
         _root.返回基地 = oldReturnBase;
+    }
+
+    /** Execute the actual initStage -> initializeStageWorld -> calibration host token path. */
+    private static function testCalibrationReadyTokenPropagation():Void {
+        resetWorld(0);
+        var manager:StageManager = StageManager.getInstance();
+        manager.dispose();
+        var savedWorld:Object = _root.gameworld;
+        var keys:Array = ["斗兽标定模式", "角斗场对手类型", "当前关卡名", "当前关卡难度",
+            "当前通关的关卡", "关卡类型", "敌人同伴数", "敌人总数", "当前为战斗地图",
+            "加载场景背景", "加载后景", "绘制地图碰撞箱", "通过数组绘制地图碰撞箱",
+            "场景转换函数", "Xmin", "Xmax", "Ymin", "Ymax", "d_倒计时显示"];
+        var saved:Object = {};
+        for (var k:Number = 0; k < keys.length; k++) saved[keys[k]] = _root[keys[k]];
+        var weatherApi:Object = org.flashNight.arki.weather.WeatherSystem;
+        var depthApi:Object = org.flashNight.gesh.depth.DepthManager;
+        var lightsApi:Object = org.flashNight.arki.render.SceneLightBridge;
+        var calibrationApi:Object = org.flashNight.arki.merc.ArenaCalibrationService;
+        var originalWeather:Function = weatherApi.getInstance;
+        var originalDepth:Object = depthApi.instance;
+        var originalLights:Function = lightsApi.configure;
+        var originalReady:Function = calibrationApi.onCalibrationStageReady;
+        var holder:MovieClip = _root.createEmptyMovieClip("__calibrationStageTokenFixture", _root.getNextHighestDepth());
+        var observed:Object = {readyCount:0, startCount:0};
+        var prepared:Boolean = false;
+        var token:String = "";
+        try {
+            var world:MovieClip = holder.createEmptyMovieClip("world", 1);
+            _root.gameworld = world;
+            world.createEmptyMovieClip("出生地", 1);
+            world.createEmptyMovieClip("背景", 2);
+            world.createEmptyMovieClip("门1", 3);
+            world.createEmptyMovieClip("地图", 4);
+            world.dispatcher = {publish:function(eventName:String):Void {
+                if (eventName != "Start") return;
+                observed.startCount++;
+                observed.identityAtStart = _root.gameworld.__stageReturnWorldIdentity;
+                _root.gameworld.removeMovieClip();
+                _root.gameworld = holder.createEmptyMovieClip("world", 1);
+                org.flashNight.arki.scene.StageReturnFlow.worldIdentity(_root.gameworld);
+            }};
+            var environment:Object = {对齐原点:false, Xmin:0, Xmax:960, Ymin:100, Ymax:500,
+                背景长:960, 背景高:540, 门:[null,{}], 背景元素:[], 地图碰撞箱:[], 场景灯:[]};
+            var config:Object = {value:environment,
+                getStageEnv:function(url:String):Object {return this.value;},
+                getStageEnvDefault:function():Object {return this.value;},
+                setInfiniteMapEnvInfo:function(value:Object):Void {}};
+            var weather:Object = {config:config, getEnvConfig:function():Object {return this.config;}};
+            weatherApi.getInstance = function():Object {return weather;};
+            depthApi.instance = {calibrate:function(low:Number, high:Number):Void {}};
+            lightsApi.configure = function(base:Array, extra:Array, key:String):Void {};
+            _root.加载场景背景 = function(value):Void {};
+            _root.加载后景 = function(value):Void {};
+            _root.绘制地图碰撞箱 = function():Void {};
+            _root.通过数组绘制地图碰撞箱 = function(value):Void {};
+            _root.场景转换函数 = {是否从门加载角色:false};
+            _root.d_倒计时显示 = {};
+            calibrationApi.onCalibrationStageReady = function(readyWorld:Object,
+                    readyIdentity:Object, readyToken:String):Void {
+                observed.readyCount++;
+                observed.token = readyToken;
+                observed.fieldToken = manager["stageStartToken"];
+                observed.samePathRebound = readyWorld === _root.gameworld;
+                observed.capturedBeforeStart = readyIdentity === observed.identityAtStart;
+                observed.rejectsReplacement = readyIdentity !== _root.gameworld.__stageReturnWorldIdentity;
+            };
+            _root.斗兽标定模式 = false;
+            _root.角斗场对手类型 = undefined;
+            token = StageRunSession.reserveStageStart("arena_calibration", "DEATH MATCH角斗场", "");
+            var stageData:Array = [{BasicInformation:{Background:"token-fixture.swf"},
+                Instances:{Instance:[]}, SpawnPoint:{Point:[]}, Pickups:{Pickup:[]}, Wave:{SubWave:[]}}];
+            prepared = manager.initialize(stageData, null, token, true);
+            manager["sceneManager"] = {gameworld:world, addBodyLayers:function(width:Number, height:Number):Void {}};
+            manager["stageEventHandler"] = {init:function(value):Void {}, clear:function():Void {}};
+            _root.斗兽标定模式 = true;
+            _root.角斗场对手类型 = "calibration";
+            manager.initStage();
+            observed.noOrdinaryRun = StageRunSession.testOnlySnapshot() == null
+                && !StageRunSession.isStageStartReservationValid(token)
+                && StageRunSession.getStageStartBlockReason() == "calibration_active";
+        } catch (fixtureError) {
+            observed.error = String(fixtureError);
+        } finally {
+            try { manager.dispose(); } catch (cleanupError) { observed.cleanupError = String(cleanupError); }
+            weatherApi.getInstance = originalWeather;
+            depthApi.instance = originalDepth;
+            lightsApi.configure = originalLights;
+            calibrationApi.onCalibrationStageReady = originalReady;
+            holder.removeMovieClip();
+            _root.gameworld = savedWorld;
+            for (var j:Number = 0; j < keys.length; j++) _root[keys[j]] = saved[keys[j]];
+        }
+        assertTrue(prepared && token != "", "real calibration token-flow fixture reserves and prepares an exact stage");
+        assertTrue(observed.readyCount == 1 && observed.token === token && observed.fieldToken === "",
+            "real initStage passes its captured token through initializeStageWorld after clearing the field");
+        assertTrue(observed.startCount == 1 && observed.samePathRebound === true
+                && observed.capturedBeforeStart === true && observed.rejectsReplacement === true,
+            "calibration host captures the plain world identity before a real same-path Start replacement");
+        assertTrue(observed.noOrdinaryRun === true && observed.error == undefined && observed.cleanupError == undefined,
+            "calibration token-flow creates no ordinary run and restores its fixture: " + String(observed.error || ""));
     }
 
     private static function minimalManagerStage(timePoolRef:String):Object {
@@ -2515,12 +2850,12 @@ class org.flashNight.arki.scene.StageRunSessionTest {
         assertTrue(ArenaController.prepareArenaStage(0, 0, "",
             function():Void {}, function():Void {}, true),
             "calibration abort coverage owns a pending reservation");
-        ArenaCalibrationService.testOnlySetPendingRun({
+        ArenaCalibrationService.testOnlySetPendingRun(calibrationContext({
             callId:"calibration-abort-old", batchId:"batch-abort"
-        });
-        ArenaCalibrationService.handleAbort({
+        }));
+        ArenaCalibrationService.handleAbort(calibrationContext({
             callId:"calibration-abort", batchId:"batch-abort"
-        });
+        }));
         var afterAbortToken:String = StageRunSession.reserveStageStart(
             "after_calibration_abort", "abort 后关卡", "简单");
         assertTrue(afterAbortToken != "",
@@ -2530,13 +2865,13 @@ class org.flashNight.arki.scene.StageRunSessionTest {
         assertTrue(ArenaController.prepareArenaStage(0, 0, "",
             function():Void {}, function():Void {}, true),
             "calibration supersede coverage owns the old pending reservation");
-        ArenaCalibrationService.testOnlySetPendingRun({
+        ArenaCalibrationService.testOnlySetPendingRun(calibrationContext({
             callId:"calibration-superseded", batchId:"batch-old"
-        });
-        ArenaCalibrationService.handleRun({
+        }));
+        ArenaCalibrationService.handleRun(calibrationContext({
             callId:"calibration-new", batchId:"batch-new",
             blueRoster:[], redRoster:[]
-        });
+        }));
         var afterSupersedeToken:String = StageRunSession.reserveStageStart(
             "after_calibration_supersede", "supersede 后关卡", "简单");
         assertTrue(afterSupersedeToken != "",
@@ -2563,15 +2898,15 @@ class org.flashNight.arki.scene.StageRunSessionTest {
                 token:String(stageStartToken || "")
             });
         };
-        ArenaCalibrationService.handleRun({
+        ArenaCalibrationService.handleRun(calibrationContext({
             callId:"calibration-race-error-a", batchId:"race-error-a",
             blueRoster:calibrationRoster, redRoster:calibrationRoster
-        });
+        }));
         var calibrationTokenA:String = String(calibrationLoads[0].token || "");
-        ArenaCalibrationService.handleRun({
+        ArenaCalibrationService.handleRun(calibrationContext({
             callId:"calibration-race-error-b", batchId:"race-error-b",
             blueRoster:calibrationRoster, redRoster:calibrationRoster
-        });
+        }));
         assertEquals(2, calibrationLoads.length,
             "calibration supersede starts one exact replacement load");
         var calibrationTokenB:String = String(calibrationLoads[1].token || "");
@@ -2590,16 +2925,16 @@ class org.flashNight.arki.scene.StageRunSessionTest {
         assertTrue(_root.淡出动画.fadeCount == 1
                 && StageRunSession.isStageStartReservationValid(calibrationTokenB),
             "calibration B success alone commits exactly its own pending fade");
-        ArenaCalibrationService.handleAbort({
+        ArenaCalibrationService.handleAbort(calibrationContext({
             callId:"calibration-race-abort-b", batchId:"race-error-b"
-        });
+        }));
         assertTrue(StageRunSession.isStageStartReservationValid(calibrationTokenB)
                 && _root.淡出动画.fadeCount == 1,
             "abort after calibration fade commit is rejected without dismantling B");
-        ArenaCalibrationService.handleRun({
+        ArenaCalibrationService.handleRun(calibrationContext({
             callId:"calibration-race-supersede-c", batchId:"race-error-c",
             blueRoster:calibrationRoster, redRoster:calibrationRoster
-        });
+        }));
         assertTrue(calibrationLoads.length == 2
                 && StageRunSession.isStageStartReservationValid(calibrationTokenB)
                 && _root.淡出动画.fadeCount == 1,
@@ -2614,14 +2949,14 @@ class org.flashNight.arki.scene.StageRunSessionTest {
 
         calibrationLoads = [];
         _root.淡出动画.fadeCount = 0;
-        ArenaCalibrationService.handleRun({
+        ArenaCalibrationService.handleRun(calibrationContext({
             callId:"calibration-race-success-a", batchId:"race-success-a",
             blueRoster:calibrationRoster, redRoster:calibrationRoster
-        });
-        ArenaCalibrationService.handleRun({
+        }));
+        ArenaCalibrationService.handleRun(calibrationContext({
             callId:"calibration-race-success-b", batchId:"race-success-b",
             blueRoster:calibrationRoster, redRoster:calibrationRoster
-        });
+        }));
         var calibrationSuccessTokenB:String = String(calibrationLoads[1].token || "");
         calibrationLoads[0].loaded({});
         assertTrue(calibrationSuccessTokenB != ""
@@ -2670,10 +3005,10 @@ class org.flashNight.arki.scene.StageRunSessionTest {
             }
         };
         _root.淡出动画 = calibrationFade;
-        ArenaCalibrationService.handleRun({
+        ArenaCalibrationService.handleRun(calibrationContext({
             callId:"calibration-fade-fail-a", batchId:"fade-fail-a",
             blueRoster:calibrationRoster, redRoster:calibrationRoster
-        });
+        }));
         var failedCalibrationLoad:Object = calibrationLoads[0];
         var failedCalibrationToken:String = String(failedCalibrationLoad.token || "");
         failedCalibrationLoad.loaded({});
@@ -2695,10 +3030,10 @@ class org.flashNight.arki.scene.StageRunSessionTest {
             "calibration fade throw exact-releases A and restores every transition global");
 
         calibrationFade.throwNext = false;
-        ArenaCalibrationService.handleRun({
+        ArenaCalibrationService.handleRun(calibrationContext({
             callId:"calibration-fade-retry-b", batchId:"fade-retry-b",
             blueRoster:calibrationRoster, redRoster:calibrationRoster
-        });
+        }));
         var fadeRetryTokenB:String = calibrationLoads.length > 1
             ? String(calibrationLoads[1].token || "") : "";
         assertTrue(calibrationLoads.length == 2 && fadeRetryTokenB != ""
@@ -2712,9 +3047,9 @@ class org.flashNight.arki.scene.StageRunSessionTest {
                 && _root.关卡类型 == "原关卡类型"
                 && _root.押金 == 321 && _root.角斗场奖金 == 654,
             "late callbacks from fade-failed A cannot mutate or cancel pending B");
-        ArenaCalibrationService.handleAbort({
+        ArenaCalibrationService.handleAbort(calibrationContext({
             callId:"calibration-fade-retry-abort", batchId:"fade-retry-b"
-        });
+        }));
         assertTrue(StageRunSession.canStartStage(),
             "replacement B remains exactly abortable after A fade failure");
 
@@ -2733,14 +3068,14 @@ class org.flashNight.arki.scene.StageRunSessionTest {
             }
         };
         _root.server = throwingCalibrationResponses;
-        ArenaCalibrationService.handleRun({
+        ArenaCalibrationService.handleRun(calibrationContext({
             callId:"calibration-response-throw-a", batchId:"response-throw-a",
             blueRoster:calibrationRoster, redRoster:calibrationRoster
-        });
-        ArenaCalibrationService.handleRun({
+        }));
+        ArenaCalibrationService.handleRun(calibrationContext({
             callId:"calibration-response-throw-b", batchId:"response-throw-b",
             blueRoster:calibrationRoster, redRoster:calibrationRoster
-        });
+        }));
         var responseThrowTokenB:String = calibrationLoads.length > 1
             ? String(calibrationLoads[1].token || "") : "";
         assertTrue(calibrationLoads.length == 2 && responseThrowTokenB != ""

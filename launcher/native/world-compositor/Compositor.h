@@ -55,6 +55,18 @@ struct ProbeHudRasterStats {
     uint64_t accepted, copiedBytes, uploads, uploadedBytes, draws;
 };
 static_assert(sizeof(ProbeHudRasterStats)==48,"HUD raster diagnostic layout");
+// Explicit diagnostic extension; disabled in normal gameplay. GPU timestamps
+// split world/effects from HUD upload/draw, excluding Present and WGC capture.
+// CPU allocation/copy spans are recorded separately. Existing ABI 12 is intact.
+struct ProbeHudCostStats {
+    uint32_t size,enabled,retained,started;
+    uint64_t completed,disjoint,dropped,errors;
+    double worldMsTotal,hudMsTotal,worldP50Ms,worldP95Ms,worldP99Ms,hudP50Ms,hudP95Ms,hudP99Ms;
+    uint64_t copySamples,copyBytes;
+    double allocationCpuMs,copyCpuMs;
+    uint64_t poolReuses,poolAllocations,cachedBytes;
+};
+static_assert(sizeof(ProbeHudCostStats)==168,"HUD cost diagnostic layout");
 static_assert(sizeof(ProbeTimingStats)==88,"Presentation timing diagnostic layout");
 struct ProbeSceneLightStats {
     uint32_t size,count,width,height;
@@ -67,6 +79,10 @@ extern "C" {
 __declspec(dllexport) int __cdecl ProbeSetHudRaster(void* handle, int layer, const void* pixels,
     int width, int height, int stride, int x, int y);
 __declspec(dllexport) int __cdecl ProbeGetHudRasterStats(void* handle, ProbeHudRasterStats* stats);
+// enabled=1 starts a new measurement epoch; enabled=0 stops new samples while
+// already queued GPU queries may finish. Neither operation resets scene state.
+__declspec(dllexport) int __cdecl ProbeSetHudCostSampling(void* handle,int enabled);
+__declspec(dllexport) int __cdecl ProbeGetHudCostStats(void* handle,ProbeHudCostStats* stats);
 // Required scene-light-v1 extension; existing ABI12 record layouts are unchanged.
 // Up to 128 cached world lights, rendered in bounded batches of 16. No camera
 // in this snapshot: panning/zooming samples the existing world-space field.

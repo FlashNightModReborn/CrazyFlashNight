@@ -26,7 +26,7 @@
             </DOMFrame>
             <DOMFrame index="1" duration="15" keyMode="9728">
               <Actionscript>
-                <script><![CDATA[if(击中地图){
+                <script><![CDATA[if((stateFlags & 32) != 0){ // STATE_HIT_MAP
 	_root.add2map(this,2);
   _root.播放音效("锯片碰撞.wav");
 	this.removeMovieClip();

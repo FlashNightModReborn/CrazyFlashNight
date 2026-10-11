@@ -16,7 +16,7 @@ namespace CF7Launcher.Tasks
     /// 注意与地图战利品箱的 LootTask（loot_response 回包）是两个域，命名勿混淆。
     ///
     /// 纸娃娃头像（运行时烘焙路线）：payload.doll 为人形斗士外观元组时，
-    /// kind=="kill" 的图标键由 DollPortraitKey 单点派生（纸娃娃-&lt;hex&gt;，覆盖 payload.icon），
+    /// kind=="kill" 或 "casualty" 的图标键由 DollPortraitKey 单点派生（纸娃娃-&lt;hex&gt;，覆盖 payload.icon），
     /// 并通知 DollPortraitBakeService 异步烘焙（经 WebView2 dressup 渲染器落盘），
     /// 不阻塞 Handle；烘焙失败/桥不可用一律静默降级为占位图标。
     /// </summary>
@@ -37,7 +37,7 @@ namespace CF7Launcher.Tasks
         private static readonly HashSet<string> AllowedKinds = new HashSet<string>(StringComparer.Ordinal)
         {
             "money", "kpoint", "intel", "material", "item", "equip", "kill",
-            "experience", "skillpoint"
+            "experience", "skillpoint", "casualty"
         };
 
         private static readonly HashSet<string> AllowedSources = new HashSet<string>(StringComparer.Ordinal)
@@ -51,7 +51,7 @@ namespace CF7Launcher.Tasks
             "item_use", "task_entry", "arena_entry", "arena_reward",
             "base_upgrade", "tavern_purchase", "vehicle_service",
             "gym_training", "appearance_service", "player_revive",
-            "cheat", "system_reward", "reward_inbox", "kill", "unknown"
+            "cheat", "system_reward", "reward_inbox", "kill", "unknown", "ally_casualty"
         };
 
         private static readonly HashSet<string> AllowedDirections =
@@ -97,11 +97,11 @@ namespace CF7Launcher.Tasks
                     source, reason, mergeScope))
                     return null;
                 // 纸娃娃运行时烘焙：doll 元组有效时图标键单点派生，覆盖/忽略 payload.icon
-                if (kind == "kill" && doll != null)
+                if ((kind == "kill" || kind == "casualty") && doll != null)
                     icon = DollPortraitKey.Compute(doll);
                 _widget.AddEvent(kind, name, count, source, icon, eliteLevel,
                     direction, tier, itemKey);
-                if (kind == "kill" && doll != null && _dollBakeSink != null)
+                if ((kind == "kill" || kind == "casualty") && doll != null && _dollBakeSink != null)
                 {
                     try { _dollBakeSink.EnsurePortrait(doll, icon); }
                     catch (Exception ex) { LogManager.Log("[LootFeed] doll bake enqueue error: " + ex.Message); }
@@ -282,7 +282,9 @@ namespace CF7Launcher.Tasks
             }
             if (!AllowedDirections.Contains(rawDirection)
                 || (rawKind == "kill" && rawDirection != "neutral")
-                || (rawKind != "kill" && rawDirection == "neutral"))
+                || (rawKind != "kill" && rawDirection == "neutral")
+                || (rawKind == "casualty" && (!isVersionOne || rawDirection != "loss"
+                    || rawSource != "ally_casualty")))
             {
                 LogManager.Log("[LootFeed] invalid direction '" + rawDirection + "', dropped");
                 return false;

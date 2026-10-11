@@ -339,17 +339,17 @@ class org.flashNight.arki.unit.Action.Shoot.LongGunSubWeaponCore {
 
     public static function isManualReloadRequest(target:Object):Boolean {
         var request:Object = getReloadRequest(target);
-        return request != null && request.kind == "manual";
+        return request.kind == "manual";
     }
 
     public static function isLinkedReloadRequest(target:Object):Boolean {
         var request:Object = getReloadRequest(target);
-        return request != null && request.kind == "linked";
+        return request.kind == "linked";
     }
 
     public static function isSubweaponReloadRequest(target:Object):Boolean {
         var request:Object = getReloadRequest(target);
-        return request != null && request.weaponType == "长枪副武器";
+        return request.weaponType == "长枪副武器";
     }
 
     public static function clearReloadRequest(target:Object):Void {

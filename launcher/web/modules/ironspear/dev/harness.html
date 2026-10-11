@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <title>Ironspear Panel Harness — 铁枪会·远程商业点</title>
+  <link rel="stylesheet" href="../../../css/workbench/tokens.css">
+  <link rel="stylesheet" href="../../../css/panels/ironspear.css">
+  <style>
+    html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#050607}
+    #stage{width:1024px;height:576px;margin:12px auto;border:1px solid #333;position:relative}
+  </style>
+</head>
+<body>
+<div id="stage"></div>
+<script>window.CF7_IRONSPEAR_ASSET_ROOT = '../../../assets/ironspear/';</script>
+<script src="../ironspear.js"></script>
+<script>
+var RECIPES = [
+  {recipeIndex:0, recipeId:'craft.iron-spear.001', title:'铁枪核心',
+   availability:'ready', canCraftOne:true, batchEligible:true,
+   baseCost:{money:0,kpoints:0},
+   output:{displayName:'铁枪核心', icon:'铁枪核心',
+     description:'铁枪会工艺的枢纽单元：DLS 调谐核心，所有高阶加工的基底件。'}},
+  {recipeIndex:3, recipeId:'craft.iron-spear.004', title:'八门金锁镇暴弹',
+   availability:'ready', canCraftOne:true, batchEligible:true,
+   baseCost:{money:1000,kpoints:10},
+   output:{displayName:'八门金锁镇暴弹', icon:'八门金锁镇暴弹',
+     description:'以八门阵式排布的镇暴弹束，命中瞬间锁闭目标机能。'}},
+  {recipeIndex:7, recipeId:'craft.iron-spear.008', title:'暴君收割机',
+   availability:'material_missing', canCraftOne:false, batchEligible:false,
+   baseCost:{money:10000,kpoints:0},
+   output:{displayName:'暴君收割机', icon:'暴君收割机',
+     description:'僵尸割草机的铁枪会重制版，加装可充电储能单元与配重板。'}},
+  {recipeIndex:10, recipeId:'craft.iron-spear.011', title:'XM556手持改装',
+   availability:'ready', canCraftOne:true, batchEligible:false,
+   baseCost:{money:35000,kpoints:0},
+   output:{displayName:'XM556-H-Stinger', icon:'XM556-H-Stinger',
+     description:'把固定机枪位的 XM556 改成单兵可持的蜂刺构型，水冷外挂。'}},
+  {recipeIndex:18, recipeId:'craft.iron-spear.019', title:'钛合金QJZ171改装图纸',
+   availability:'insufficient_kpoint', canCraftOne:false, batchEligible:false,
+   baseCost:{money:171000,kpoints:17100},
+   output:{displayName:'钛合金QJZ171', icon:'钛合金QJZ171',
+     description:'重机枪钛合金化改造，车架减重、转向增益，纯红激光通道。'}}
+];
+var MATS = [
+  {displayName:'高强度合金', icon:'高强度合金', required:2, owned:5, consumed:true, enough:true},
+  {displayName:'纳米执行单元', icon:'纳米执行单元', required:1, owned:0, consumed:true, enough:false},
+  {displayName:'电脑芯片', icon:'电脑芯片', required:1, owned:3, consumed:true, enough:true},
+  {displayName:'战术导轨', icon:'战术导轨', required:1, owned:2, consumed:false, enough:true}
+];
+var host = {
+  request:function(cmd, payload, cb) {
+    setTimeout(function() {
+      if (cmd === 'snapshot') {
+        cb({success:true, note:'图腾在线', balance:{money:238400, kpoints:1285},
+            recipes:RECIPES});
+      } else if (cmd === 'preview') {
+        cb({success:true, canCommit:true, craftToken:'tk',
+            maxCraftCount:5,
+            infrastructure:[{name:'加工工位', appliance:'图腾节点', met:true}],
+            materials:MATS});
+      } else if (cmd === 'commit') {
+        cb({success:true, crafted:{displayName:'（样件）'}});
+      }
+    }, 40);
+    return 1;
+  },
+  toast:function(m){ console.log('toast:', m); },
+  cue:function(){},
+  iconHtml:function(name, cls) {
+    var file = (window.__ICONS__ && window.__ICONS__[name] && window.__ICONS__[name].f1) || '';
+    var src = file ? '../../../icons/' + file
+      : 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==';
+    return '<img src="' + src + '" alt="" class="' + (cls||'') + '">';
+  },
+  formatNumber:function(n){ return String(n).replace(/\B(?=(\d{3})+(?!\d))/g, ','); },
+  requestClose:function(){ console.log('close'); }
+};
+fetch('../../../icons/manifest.json').then(function(r) { return r.json(); }).then(function(m) {
+  window.__ICONS__ = m;
+}).finally(function() {
+  IronspearPanel.mount(document.getElementById('stage'), host);
+});
+</script>
+</body>
+</html>

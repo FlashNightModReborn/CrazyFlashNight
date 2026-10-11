@@ -26,7 +26,8 @@ var IntelligenceComponentRenderer = (function() {
         hardwareExtract: true,
         surfaceMark: true,
         paperFragment: true,
-        paperStage: true
+        paperStage: true,
+        figure: true
     };
 
     var INLINE_TYPES = {
@@ -101,8 +102,44 @@ var IntelligenceComponentRenderer = (function() {
             case 'surfaceMark': return renderSurfaceMark(block);
             case 'paperFragment': return renderPaperFragment(block, context, 'scatter');
             case 'paperStage': return renderPaperStage(block, context);
+            case 'figure': return renderFigure(block, context);
         }
         return null;
+    }
+
+    // 插图块：白名单内的静态素材 URL（仅 launcher/web/assets/ 相对路径）。
+    // 与 C# H5FigureSrc 正则保持一致；渲染侧再挡一层，防目录穿越/外部协议。
+    // dev harness 下用 window.CF7_INTEL_FIGURE_ROOT 覆写 assets/ 前缀（同 CF7_ARMORY_BP_ROOT 惯例）。
+    var FIGURE_SRC = /^assets\/(?:[\w.-]+\/)*[\w.-]+\.(?:svg|png|webp)$/i;
+    var FIGURE_ROOT = (typeof window !== 'undefined' && window.CF7_INTEL_FIGURE_ROOT)
+        ? String(window.CF7_INTEL_FIGURE_ROOT) : 'assets/';
+    if (FIGURE_ROOT.charAt(FIGURE_ROOT.length - 1) !== '/') FIGURE_ROOT += '/';
+
+    // 蓝图图的基线高度（px）；figure.scale 在此基线上做缩放，
+    // 卡片高度随缩放后图片自适应（不改画布本身）。与 CSS 的 max-height 190px 对应。
+    var FIGURE_BASE_MAX_H = 190;
+
+    function renderFigure(block, context) {
+        var src = typeof block.src === 'string' ? block.src : '';
+        if (!FIGURE_SRC.test(src) || src.indexOf('..') >= 0) return null;
+        var el = document.createElement('figure');
+        var variant = safeClass(block.variant || 'plain');
+        el.className = 'intel-h5-figure intel-h5-figure-' + variant;
+        var img = document.createElement('img');
+        img.src = FIGURE_ROOT + src.slice('assets/'.length);
+        var scale = clampNumber(block.scale, 0.2, 5, 1);
+        if (scale !== 1) img.style.maxHeight = Math.round(FIGURE_BASE_MAX_H * scale) + 'px';
+        img.alt = typeof block.alt === 'string' ? block.alt : '';
+        img.draggable = false;
+        img.loading = 'lazy';
+        el.appendChild(img);
+        if (Array.isArray(block.caption) && block.caption.length) {
+            var cap = document.createElement('figcaption');
+            cap.className = 'intel-h5-figure-caption';
+            appendInline(cap, block.caption, context);
+            el.appendChild(cap);
+        }
+        return el;
     }
 
     function renderPaperStage(block, context) {

@@ -73,5 +73,27 @@ namespace CF7Launcher.Tests.Guardian.Hud.Loot
         {
             Assert.Equal(expected, LootFeedWidget.CountColumnSample("gain", kind, count));
         }
+
+        [Fact]
+        public void CasualtyIdentifiesOurSideAndDownStateWithoutAssetDeduction()
+        {
+            Assert.Equal("我方", LootFeedWidget.BattleTagFor("casualty"));
+            Assert.Equal("击杀", LootFeedWidget.BattleTagFor("kill"));
+            Assert.Equal(string.Empty, LootFeedWidget.BattleTagFor("item"));
+            Assert.Equal("倒地", LootFeedWidget.CountTextForTest("loss", "casualty", 1));
+            Assert.Equal("倒地", LootFeedWidget.CountColumnSample("loss", "casualty", long.MaxValue));
+            Assert.Equal("−1", LootFeedWidget.CountTextForTest("loss", "item", 1));
+        }
+
+        [Theory]
+        [InlineData("casualty", "同名战士 倒地", "同名战士")]
+        [InlineData("casualty", "同名战士 被击倒", "同名战士")]
+        [InlineData("casualty", "倒地侦察员", "倒地侦察员")]
+        [InlineData("kill", "同名战士 倒地", "同名战士 倒地")]
+        public void BattleName_SeparatesOnlyThePublishedCasualtySuffix(
+            string kind, string frozenName, string expected)
+        {
+            Assert.Equal(expected, LootFeedWidget.BattleNameFor(kind, frozenName));
+        }
     }
 }

@@ -1,0 +1,3 @@
+﻿trace("FocusedTestRunId as2-guard Start: __FOCUSED_RUN_ID__");
+org.flashNight.gesh.object.Avm1GuardContractTest.runAllTests();
+trace("FocusedTestRunId as2-guard Complete: __FOCUSED_RUN_ID__");

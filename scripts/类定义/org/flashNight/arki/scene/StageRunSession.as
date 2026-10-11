@@ -13,6 +13,8 @@ import org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheManager;
  */
 class org.flashNight.arki.scene.StageRunSession {
     private static var MAX_KILL_TYPES:Number = 96;
+    private static var MAX_INDIVIDUAL_KILLS:Number = 128;
+    private static var MAX_ALLIES:Number = 64;
     private static var MAX_ITEM_FLOW_TYPES:Number = 96;
     private static var MAX_REWARD_SLOTS:Number = 64;
     private static var REWARD_COLUMNS:Number = 4;
@@ -135,7 +137,16 @@ class org.flashNight.arki.scene.StageRunSession {
             outcome:"active",
             life:"alive",
             activeFrames:0,
+            reportVersion:2,
             totalKills:0,
+            individualKillRecords:0,
+            groupedKillRecords:0,
+            omittedIndividualKills:0,
+            totalAllyDowns:0,
+            totalAllyLosses:0,
+            heroDowns:0,
+            omittedAllies:0,
+            allies:[],
             kills:[],
             killsByKey:{},
             omittedKillTypes:0,
@@ -373,24 +384,34 @@ class org.flashNight.arki.scene.StageRunSession {
         return _run != null && _run.life == "dead" && !_returnRequested;
     }
 
-    /** 发布击杀播报时把同一规范化投影记入本轮；结算前仍允许通关后的继续击杀。 */
+    /** 头像缓存仍按外观复用；人形战报只按单位实例分组。 */
     public static function recordKillProjection(projection:Object):Void {
         if (_run == null || _returnRequested || projection == null) return;
         var key:String = safeText(String(projection.key), 128, "");
         if (key.length == 0) return;
-        _run.totalKills = Number(_run.totalKills) + 1;
-        var mapKey:String = "$" + key;
+        var individual:Boolean = projection.individual === true;
+        var unitId:String = individual ? safeText(String(projection.unitId), 96, "") : "";
+        if (individual && !isSafeToken(unitId, 96)) return;
+        _run.totalKills = safeAddCount(_run.totalKills, 1);
+        var mapKey:String = individual ? "$unit:" + unitId : "$type:" + key;
         var entry:Object = _run.killsByKey[mapKey];
         if (entry != undefined) {
-            entry.count = Number(entry.count) + 1;
-            var incomingElite:Number = safeWhole(projection.eliteLevel, 0, 16, 0);
-            if (incomingElite > Number(entry.eliteLevel)) entry.eliteLevel = incomingElite;
+            entry.count = safeAddCount(entry.count, 1);
+            if (!individual) {
+                var incomingElite:Number = safeWhole(projection.eliteLevel, 0, 16, 0);
+                if (incomingElite > Number(entry.eliteLevel)) entry.eliteLevel = incomingElite;
+            }
             return;
         }
-        if (_run.kills.length >= MAX_KILL_TYPES) {
+        if (individual && _run.individualKillRecords >= MAX_INDIVIDUAL_KILLS) {
+            // 每条未展开的击杀事实计数；不保存无界的 omitted instance-id map。
+            _run.omittedIndividualKills = safeAddCount(_run.omittedIndividualKills, 1);
+            return;
+        }
+        if (!individual && _run.groupedKillRecords >= MAX_KILL_TYPES) {
             if (_run.omittedKillKeys[mapKey] !== true) {
                 _run.omittedKillKeys[mapKey] = true;
-                _run.omittedKillTypes = Number(_run.omittedKillTypes) + 1;
+                _run.omittedKillTypes = safeAddCount(_run.omittedKillTypes, 1);
             }
             return;
         }
@@ -400,10 +421,54 @@ class org.flashNight.arki.scene.StageRunSession {
             iconName:safeText(String(projection.iconName), 128, ""),
             doll:copyDoll(projection.doll),
             eliteLevel:safeWhole(projection.eliteLevel, 0, 16, 0),
-            count:1
+            count:1,
+            individual:individual,
+            unitId:unitId,
+            level:individual ? safeWhole(projection.level, 0, 9999, 0) : 0,
+            loadout:individual ? copyLoadout(projection.loadout) : null
         };
         _run.killsByKey[mapKey] = entry;
         _run.kills.push(entry);
+        if (individual) _run.individualKillRecords++;
+        else _run.groupedKillRecords++;
+    }
+
+    /** 生命期 token 保存在对应单位上；上限外仍保留总计，不持有 MovieClip 引用。 */
+    public static function recordAllyDown(projection:Object, hero:Boolean, token:Object):Object {
+        if (_run == null || _returnRequested || projection == null) return token;
+        if (token == null || token.runId !== _run.runId) {
+            token = {runId:String(_run.runId), unitId:String(projection.unitId),
+                key:String(projection.key), displayName:String(projection.displayName),
+                iconName:String(projection.iconName), doll:copyDoll(projection.doll),
+                eliteLevel:safeWhole(projection.eliteLevel,0,16,0),
+                level:safeWhole(projection.level,0,9999,0),
+                loadout:copyLoadout(projection.loadout), isHero:hero,
+                status:"revived", downs:0};
+            if (_run.allies.length < MAX_ALLIES) _run.allies.push(token);
+            else _run.omittedAllies = safeAddCount(_run.omittedAllies, 1);
+        }
+        if (token.status != "revived") return token;
+        token.status = "dead";
+        token.downs = safeAddCount(token.downs, 1);
+        if (token.isHero) _run.heroDowns = safeAddCount(_run.heroDowns, 1);
+        else {
+            _run.totalAllyDowns = safeAddCount(_run.totalAllyDowns, 1);
+            _run.totalAllyLosses = safeAddCount(_run.totalAllyLosses, 1);
+        }
+        return token;
+    }
+
+    public static function recordAllyRevive(token:Object):Void {
+        if (_run == null || _returnRequested || token == null
+                || token.runId !== _run.runId || token.status != "dead") return;
+        token.status = "revived";
+        if (!token.isHero) _run.totalAllyLosses = Math.max(0, _run.totalAllyLosses - 1);
+    }
+
+    public static function recordAllyRetreat(token:Object):Void {
+        if (_run == null || _returnRequested || token == null
+                || token.runId !== _run.runId || token.status != "dead") return;
+        token.status = "retreated";
     }
 
     /**
@@ -1335,7 +1400,16 @@ class org.flashNight.arki.scene.StageRunSession {
             outcome:String(store.pending.outcome),
             life:String(store.pending.life),
             activeFrames:Number(report.activeFrames),
+            reportVersion:Number(report.v),
             totalKills:Number(report.totalKills),
+            individualKillRecords:0,
+            groupedKillRecords:0,
+            omittedIndividualKills:Number(report.omittedIndividualKills || 0),
+            totalAllyDowns:Number(report.totalAllyDowns || 0),
+            totalAllyLosses:Number(report.totalAllyLosses || 0),
+            heroDowns:Number(report.heroDowns || 0),
+            omittedAllies:Number(report.omittedAllies || 0),
+            allies:report.v == 2 ? clonePlainValue(report.allies, 0) : [],
             kills:clonePlainValue(report.kills, 0),
             killsByKey:{},
             omittedKillTypes:Number(report.omittedKillTypes),
@@ -1730,14 +1804,21 @@ class org.flashNight.arki.scene.StageRunSession {
         var kills:Array = [];
         for (var i:Number = 0; i < _run.kills.length; i++) {
             var source:Object = _run.kills[i];
-            kills.push({
+            var kill:Object = {
                 key:String(source.key),
                 displayName:String(source.displayName),
                 iconName:String(source.iconName),
                 doll:copyDoll(source.doll),
                 eliteLevel:Number(source.eliteLevel),
                 count:Number(source.count)
-            });
+            };
+            if (_run.reportVersion == 2) {
+                kill.individual = source.individual === true;
+                kill.unitId = String(source.unitId || "");
+                kill.level = Number(source.level || 0);
+                kill.loadout = copyLoadout(source.loadout);
+            }
+            kills.push(kill);
         }
         var itemFlows:Array = [];
         for (i = 0; i < _run.itemFlows.length; i++) {
@@ -1754,8 +1835,8 @@ class org.flashNight.arki.scene.StageRunSession {
                 count:Number(source.count)
             });
         }
-        return {
-            v:1,
+        var report:Object = {
+            v:Number(_run.reportVersion),
             runId:String(_run.runId),
             stageName:String(_run.stageName),
             difficulty:String(_run.difficulty),
@@ -1770,6 +1851,24 @@ class org.flashNight.arki.scene.StageRunSession {
             kills:kills,
             itemFlows:itemFlows
         };
+        if (_run.reportVersion == 2) {
+            report.omittedIndividualKills = Number(_run.omittedIndividualKills);
+            report.totalAllyDowns = Number(_run.totalAllyDowns);
+            report.totalAllyLosses = Number(_run.totalAllyLosses);
+            report.heroDowns = Number(_run.heroDowns);
+            report.omittedAllies = Number(_run.omittedAllies);
+            report.allies = [];
+            for (i = 0; i < _run.allies.length; i++) {
+                source = _run.allies[i];
+                report.allies.push({unitId:String(source.unitId), key:String(source.key),
+                    displayName:String(source.displayName), iconName:String(source.iconName),
+                    doll:copyDoll(source.doll), eliteLevel:Number(source.eliteLevel),
+                    level:Number(source.level), loadout:copyLoadout(source.loadout),
+                    status:String(source.status), downs:Number(source.downs),
+                    isHero:source.isHero === true});
+            }
+        }
+        return report;
     }
 
     public static function notifyReturnOptionsChanged():Void { bumpRevision(); pushState(); }
@@ -2185,73 +2284,173 @@ class org.flashNight.arki.scene.StageRunSession {
         return {name:String(raw.name), value:value, lastUpdate:Number(raw.lastUpdate)};
     }
 
+    private static function hasExactReportKeys(value:Object, keys:Array):Boolean {
+        if (!hasOnlyKeys(value, keys)) return false;
+        for (var i:Number = 0; i < keys.length; i++) {
+            if (!value.hasOwnProperty(String(keys[i]))) return false;
+        }
+        return true;
+    }
+
     private static function normalizePersistedReport(raw:Object):Object {
-        if (raw == null || typeof raw != "object" || raw instanceof Array
-                || !hasOnlyKeys(raw, ["v", "runId", "stageName", "difficulty", "outcome",
-                    "activeFrames", "totalKills", "omittedKillTypes", "totalItemGains",
-                    "totalItemLosses", "omittedItemFlowTypes", "rewardRollOmissions",
-                    "kills", "itemFlows"])
-                || Number(raw.v) != 1 || typeof raw.runId != "string"
+        if (raw == null || typeof raw != "object" || raw instanceof Array) return null;
+        var version:Number = Number(raw.v);
+        if (version != 1 && version != 2) return null;
+        var keys:Array = ["v", "runId", "stageName", "difficulty", "outcome",
+            "activeFrames", "totalKills", "omittedKillTypes", "totalItemGains",
+            "totalItemLosses", "omittedItemFlowTypes", "rewardRollOmissions", "kills", "itemFlows"];
+        if (version == 2) keys = keys.concat(["omittedIndividualKills", "totalAllyDowns",
+            "totalAllyLosses", "heroDowns", "omittedAllies", "allies"]);
+        if (!hasOnlyKeys(raw, keys) || (version == 2 && !hasExactReportKeys(raw, keys))
+                || typeof raw.runId != "string"
                 || typeof raw.stageName != "string" || typeof raw.difficulty != "string"
                 || typeof raw.outcome != "string" || !isSafeToken(String(raw.runId), 96)
                 || !isBoundedText(String(raw.stageName), 96, false)
                 || !isBoundedText(String(raw.difficulty), 48, false)
-                || (raw.outcome != "victory" && raw.outcome != "failure"
-                    && raw.outcome != "retreat")
+                || (raw.outcome != "victory" && raw.outcome != "failure" && raw.outcome != "retreat")
                 || !isCount(raw.activeFrames) || !isCount(raw.totalKills)
                 || !isCount(raw.omittedKillTypes) || !isCount(raw.totalItemGains)
                 || !isCount(raw.totalItemLosses) || !isCount(raw.omittedItemFlowTypes)
-                || !isCount(raw.rewardRollOmissions)
-                || !(raw.kills instanceof Array) || raw.kills.length > MAX_KILL_TYPES
-                || !(raw.itemFlows instanceof Array)
-                || raw.itemFlows.length > MAX_ITEM_FLOW_TYPES) return null;
+                || !isCount(raw.rewardRollOmissions) || !(raw.kills instanceof Array)
+                || raw.kills.length > (version == 2 ? MAX_KILL_TYPES + MAX_INDIVIDUAL_KILLS : MAX_KILL_TYPES)
+                || !(raw.itemFlows instanceof Array) || raw.itemFlows.length > MAX_ITEM_FLOW_TYPES) return null;
         var kills:Array = [];
+        var seen:Object = {};
+        var individuals:Number = 0;
+        var projectedKills:Number = 0;
         for (var i:Number = 0; i < raw.kills.length; i++) {
-            var kill:Object = normalizePersistedKill(raw.kills[i]);
+            var kill:Object = normalizePersistedKill(raw.kills[i], version);
             if (kill == null) return null;
+            if (version == 2 && kill.individual) {
+                if (seen["$" + kill.unitId] === true || ++individuals > MAX_INDIVIDUAL_KILLS) return null;
+                seen["$" + kill.unitId] = true;
+            }
+            if (projectedKills > MAX_SAFE_INTEGER - kill.count) return null;
+            projectedKills += kill.count;
             kills.push(kill);
         }
+        if (projectedKills > raw.totalKills || kills.length - individuals > MAX_KILL_TYPES) return null;
         var flows:Array = [];
+        var gains:Number = 0;
+        var losses:Number = 0;
         for (i = 0; i < raw.itemFlows.length; i++) {
             var flow:Object = normalizePersistedFlow(raw.itemFlows[i]);
             if (flow == null) return null;
+            if (flow.direction == "gain") {
+                if (gains > Number(raw.totalItemGains) - flow.count) return null;
+                gains += flow.count;
+            } else {
+                if (losses > Number(raw.totalItemLosses) - flow.count) return null;
+                losses += flow.count;
+            }
             flows.push(flow);
         }
-        return {
-            v:1,
-            runId:String(raw.runId),
-            stageName:String(raw.stageName),
-            difficulty:String(raw.difficulty),
-            outcome:String(raw.outcome),
-            activeFrames:Number(raw.activeFrames),
-            totalKills:Number(raw.totalKills),
-            omittedKillTypes:Number(raw.omittedKillTypes),
-            totalItemGains:Number(raw.totalItemGains),
-            totalItemLosses:Number(raw.totalItemLosses),
-            omittedItemFlowTypes:Number(raw.omittedItemFlowTypes),
-            rewardRollOmissions:Number(raw.rewardRollOmissions),
-            kills:kills,
-            itemFlows:flows
-        };
+        var report:Object = {v:version, runId:String(raw.runId), stageName:String(raw.stageName),
+            difficulty:String(raw.difficulty), outcome:String(raw.outcome),
+            activeFrames:Number(raw.activeFrames), totalKills:Number(raw.totalKills),
+            omittedKillTypes:Number(raw.omittedKillTypes), totalItemGains:Number(raw.totalItemGains),
+            totalItemLosses:Number(raw.totalItemLosses), omittedItemFlowTypes:Number(raw.omittedItemFlowTypes),
+            rewardRollOmissions:Number(raw.rewardRollOmissions), kills:kills, itemFlows:flows};
+        if (version == 1) return report;
+        if (!isCount(raw.omittedIndividualKills) || !isCount(raw.totalAllyDowns)
+                || !isCount(raw.totalAllyLosses) || !isCount(raw.heroDowns)
+                || !isCount(raw.omittedAllies) || !(raw.allies instanceof Array)
+                || raw.allies.length > MAX_ALLIES
+                || raw.omittedIndividualKills > raw.totalKills - projectedKills
+                || raw.totalAllyLosses > raw.totalAllyDowns) return null;
+        var allies:Array = [];
+        seen = {};
+        var projectedLosses:Number = 0;
+        var projectedDowns:Number = 0;
+        var projectedHeroDowns:Number = 0;
+        for (i = 0; i < raw.allies.length; i++) {
+            var ally:Object = normalizePersistedAlly(raw.allies[i]);
+            if (ally == null || seen["$" + ally.unitId] === true) return null;
+            seen["$" + ally.unitId] = true;
+            if (ally.isHero) projectedHeroDowns += ally.downs;
+            else {
+                projectedDowns += ally.downs;
+                if (ally.status != "revived") projectedLosses++;
+            }
+            allies.push(ally);
+        }
+        if (projectedDowns > raw.totalAllyDowns || projectedHeroDowns > raw.heroDowns
+                || projectedLosses > raw.totalAllyLosses
+                || raw.totalAllyLosses - projectedLosses > raw.omittedAllies) return null;
+        report.omittedIndividualKills = Number(raw.omittedIndividualKills);
+        report.totalAllyDowns = Number(raw.totalAllyDowns);
+        report.totalAllyLosses = Number(raw.totalAllyLosses);
+        report.heroDowns = Number(raw.heroDowns);
+        report.omittedAllies = Number(raw.omittedAllies);
+        report.allies = allies;
+        return report;
     }
 
-    private static function normalizePersistedKill(raw:Object):Object {
-        if (raw == null || typeof raw != "object" || raw instanceof Array
-                || !hasOnlyKeys(raw,
-                ["key", "displayName", "iconName", "doll", "eliteLevel", "count"])
+    private static function normalizePersistedKill(raw:Object, version:Number):Object {
+        var keys:Array = ["key", "displayName", "iconName", "doll", "eliteLevel", "count"];
+        if (version == 2) keys = keys.concat(["individual", "unitId", "level", "loadout"]);
+        if (!hasOnlyKeys(raw, keys) || (version == 2 && !hasExactReportKeys(raw, keys))
                 || typeof raw.key != "string" || typeof raw.displayName != "string"
-                || typeof raw.iconName != "string"
-                || !isBoundedText(String(raw.key), 128, false)
-                || !isBoundedText(String(raw.displayName), 96, false)
-                || !isBoundedText(String(raw.iconName), 128, true)
-                || !isWhole(Number(raw.eliteLevel)) || Number(raw.eliteLevel) < 0
-                || Number(raw.eliteLevel) > 16 || !isCount(raw.count)
-                || Number(raw.count) < 1) return null;
+                || typeof raw.iconName != "string" || !isBoundedText(String(raw.key),128,false)
+                || !isBoundedText(String(raw.displayName),96,false) || !isBoundedText(String(raw.iconName),128,true)
+                || !isWhole(Number(raw.eliteLevel)) || Number(raw.eliteLevel) < 0 || Number(raw.eliteLevel) > 16
+                || !isCount(raw.count) || Number(raw.count) < 1) return null;
         var doll:Object = normalizePersistedDoll(raw.doll);
         if (raw.doll != null && doll == null) return null;
-        return {key:String(raw.key), displayName:String(raw.displayName),
-            iconName:String(raw.iconName), doll:doll,
-            eliteLevel:Number(raw.eliteLevel), count:Number(raw.count)};
+        var result:Object = {key:String(raw.key), displayName:String(raw.displayName),
+            iconName:String(raw.iconName), doll:doll, eliteLevel:Number(raw.eliteLevel), count:Number(raw.count)};
+        if (version == 1) return result;
+        if (typeof raw.individual != "boolean" || typeof raw.unitId != "string"
+                || !isWhole(Number(raw.level)) || Number(raw.level) < 0 || Number(raw.level) > 9999) return null;
+        var loadout:Object = normalizePersistedLoadout(raw.loadout);
+        if (raw.individual) {
+            if (!isSafeToken(String(raw.unitId),96) || doll == null || loadout == null) return null;
+        } else if (raw.unitId != "" || raw.level != 0 || raw.loadout != null) return null;
+        result.individual = raw.individual;
+        result.unitId = String(raw.unitId);
+        result.level = Number(raw.level);
+        result.loadout = loadout;
+        return result;
+    }
+
+    private static function normalizePersistedAlly(raw:Object):Object {
+        if (!hasExactReportKeys(raw, ["unitId", "key", "displayName", "iconName", "doll",
+                "eliteLevel", "level", "loadout", "status", "downs", "isHero"])
+                || typeof raw.unitId != "string" || !isSafeToken(String(raw.unitId),96)
+                || typeof raw.key != "string" || !isBoundedText(String(raw.key),128,false)
+                || typeof raw.displayName != "string" || !isBoundedText(String(raw.displayName),96,false)
+                || typeof raw.iconName != "string" || !isBoundedText(String(raw.iconName),128,true)
+                || !isWhole(Number(raw.eliteLevel)) || raw.eliteLevel < 0 || raw.eliteLevel > 16
+                || !isWhole(Number(raw.level)) || raw.level < 0 || raw.level > 9999
+                || !isCount(raw.downs) || raw.downs < 1 || typeof raw.isHero != "boolean"
+                || (raw.status != "dead" && raw.status != "retreated" && raw.status != "revived")) return null;
+        var doll:Object = normalizePersistedDoll(raw.doll);
+        var loadout:Object = normalizePersistedLoadout(raw.loadout);
+        if ((raw.doll != null && doll == null) || (raw.loadout != null && loadout == null)) return null;
+        return {unitId:String(raw.unitId), key:String(raw.key), displayName:String(raw.displayName),
+            iconName:String(raw.iconName), doll:doll, eliteLevel:Number(raw.eliteLevel),
+            level:Number(raw.level), loadout:loadout, status:String(raw.status),
+            downs:Number(raw.downs), isHero:raw.isHero};
+    }
+
+    private static function copyLoadout(raw:Object):Object {
+        if (raw == null) return null;
+        var keys:Array = ["head", "body", "leg", "hand", "foot", "neck",
+            "primary", "secondary1", "secondary2", "melee", "grenade"];
+        var result:Object = {};
+        for (var i:Number = 0; i < keys.length; i++) result[keys[i]] = safeText(String(raw[keys[i]]),128,"");
+        return result;
+    }
+
+    private static function normalizePersistedLoadout(raw:Object):Object {
+        if (raw == null) return null;
+        var keys:Array = ["head", "body", "leg", "hand", "foot", "neck",
+            "primary", "secondary1", "secondary2", "melee", "grenade"];
+        if (!hasOnlyKeys(raw, keys)) return null;
+        for (var i:Number = 0; i < keys.length; i++) {
+            if (typeof raw[keys[i]] != "string" || !isBoundedText(String(raw[keys[i]]),128,true)) return null;
+        }
+        return copyLoadout(raw);
     }
 
     private static function normalizePersistedDoll(raw:Object):Object {
@@ -2324,9 +2523,10 @@ class org.flashNight.arki.scene.StageRunSession {
         if (normalizeEmptyArrayField(pending, "receipts")) changed = true;
         var report:Object = pending.report;
         if (report != null && typeof report == "object" && !(report instanceof Array)
-                && Number(report.v) == 1) {
+                && (Number(report.v) == 1 || Number(report.v) == 2)) {
             if (normalizeEmptyArrayField(report, "kills")) changed = true;
             if (normalizeEmptyArrayField(report, "itemFlows")) changed = true;
+            if (Number(report.v) == 2 && normalizeEmptyArrayField(report, "allies")) changed = true;
         }
         return {ok:true, changed:changed};
     }
@@ -2561,6 +2761,15 @@ class org.flashNight.arki.scene.StageRunSession {
     }
 
     /** focused TestLoader 只读投影与隔离复位。 */
+    /** 只读 admission 与存档共用同一 v1/v2 校验；不升级旧报告。 */
+    public static function normalizeSettlementReport(report:Object):Object {
+        return normalizePersistedReport(report);
+    }
+
+    public static function testOnlyBattleReport():Object {
+        return _run == null ? null : buildReport();
+    }
+
     public static function testOnlySnapshot():Object {
         if (_run == null) return null;
         return {

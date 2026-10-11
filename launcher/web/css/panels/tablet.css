@@ -1,0 +1,274 @@
+/* ── 平板电脑面板（Flash「平板电脑界面」Web 化）──
+   素材：assets/tablet/*.svg 由 tools/bake-tablet-assets.js 从原 SWF 烘焙。
+   版心按烘焙 viewBox ~470×325 等比缩放，DOM 覆盖层按 % 定位。 */
+
+.tablet-shell {
+  /* PanelScale 画布沿用家族 1024×576 */
+}
+.tablet-stage {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: 78%;
+  aspect-ratio: 469.9 / 324.6;
+  background: var(--wb-semantic-tablet-stage-surface);
+  border-radius: 3.2%;
+  box-shadow: var(--wb-semantic-tablet-frame-shadow);
+  overflow: hidden;
+}
+.tablet-bg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  user-select: none;
+}
+.tablet-overlay {
+  position: absolute;
+  inset: 0;
+}
+
+/* 热区：原版即透明按钮盖在烘焙图形上——不带任何 web 外框/悬停光效 */
+.tablet-hotspot {
+  position: absolute;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  outline: none;
+}
+.tablet-hotspot:hover,
+.tablet-hotspot:focus-visible { outline: none; }
+.tablet-hotspot.disabled { cursor: default; }
+
+/* ── 图标层：原 XFL"按钮与图标分离"，Web 同样分 DOM 层才能复现位移/淡入 ── */
+.tablet-icons { position: absolute; inset: 0; pointer-events: none; }
+.tablet-icon {
+  position: absolute;
+  opacity: 0;
+  transition: var(--wb-tablet-icons-transition);
+}
+.tablet-icon.shown { opacity: 1; }
+
+/* 背景交叉淡化层（转场用，结束后隐藏） */
+.tablet-bg-alt {
+  z-index: 1;
+  opacity: 0;
+  transition: var(--wb-tablet-background-transition);
+  pointer-events: none;
+}
+.tablet-bg-alt.on { opacity: 1; }
+
+/* 悬停说明：引导线遮罩扫入的近似（左→右 clip 揭示 + 微淡入） */
+.tablet-hoverdesc {
+  position: absolute;
+  z-index: 3;
+  pointer-events: none;
+  opacity: 0;
+  clip-path: inset(0 100% 0 0);
+  transition: var(--wb-tablet-description-transition);
+}
+.tablet-hoverdesc.on { opacity: 1; clip-path: inset(0 0 0 0); }
+
+/* 唤起/关闭：原 XFL 初始化"中心展开"与各页收起动画的整体近似
+   （用独立 scale/rotate 属性，不与 stage 的 translate 居中冲突） */
+.tablet-stage {
+  transition: var(--wb-tablet-stage-transition);
+}
+.tablet-shell.entering .tablet-stage { scale: .5; rotate: -6deg; opacity: 0; }
+.tablet-shell.closing .tablet-stage { scale: .7; opacity: 0; }
+
+/* 转场期间禁点（原 XFL 按钮占用）与新视图 DOM 内容淡入/淡出：
+   switching 期间旧 DOM 快速淡出（original 两栏内容淡出语义），转场提交后
+   新 DOM 由 entered 动画淡入 */
+.tablet-stage.switching .tablet-overlay { pointer-events: none; }
+/* 旧视图烘焙底图随转场整体淡出（bgAlt 同步承载新视图淡入）：
+   面板图形不再残留到转场最后一刻才瞬切；ambient 装饰层同隐同现 */
+.tablet-bg { transition: var(--wb-tablet-background-transition); }
+.tablet-stage.switching .tablet-bg:not(.tablet-bg-alt) { opacity: 0; }
+.tablet-dom { transition: var(--wb-tablet-content-transition); }
+.tablet-ambient { transition: var(--wb-tablet-content-transition); }
+.tablet-stage.switching .tablet-dom,
+.tablet-stage.switching .tablet-ambient { opacity: 0; }
+/* entered 只在转场提交后作用于新 DOM：switching 同帧叠加时若照旧播放入场动画，
+   animation 会覆盖 switching 的 opacity:0，导致旧内容"消失→闪现→再消失" */
+.tablet-stage.entered:not(.switching) .tablet-dom { animation: var(--wb-tablet-content-enter); }
+@keyframes tablet-in {
+  from { opacity: 0; transform: translateY(5px); }
+  to { opacity: 1; transform: none; }
+}
+.tablet-status {
+  position: absolute;
+  right: 3%;
+  bottom: 3.2%;
+  z-index: 4;
+  color: var(--wb-semantic-tablet-status-text);
+  font-size: 11px;
+  letter-spacing: 0.06em;
+}
+
+/* ── DOM 内容层：行与文本还原原 XFL 排版（文字盖烘焙框，不加 web 按钮壳） ── */
+.tablet-dom {
+  position: absolute;
+  z-index: 2;
+  font-family: 'Microsoft YaHei', 'Segoe UI', sans-serif;
+  color: var(--wb-semantic-tablet-body-text);
+}
+.tablet-dom::-webkit-scrollbar { width: 6px; }
+.tablet-dom::-webkit-scrollbar-thumb { background: var(--wb-semantic-tablet-scroll-thumb); border-radius: 3px; }
+.tablet-dom::-webkit-scrollbar-track { background: var(--wb-semantic-tablet-scroll-track); }
+
+/* 常驻动画层（退出乱码闪变帧序列；无人机单帧 + CSS 摆动模拟原旋翼补间） */
+.tablet-ambient { position: absolute; z-index: 2; pointer-events: none; }
+.tablet-ambient-drone-wiggle {
+  transform-origin: 50% 45%;
+  animation: tablet-drone-wiggle 1.7s ease-in-out infinite alternate;
+}
+@keyframes tablet-drone-wiggle {
+  from { transform: rotate(-1.1deg) scaleY(0.985); }
+  to { transform: rotate(1.1deg) scaleY(1.015); }
+}
+
+/* 联络行：名字文字盖在烘焙行槽位上（原版 = 蓝色名字 + 透明按钮） */
+.tablet-contact-row {
+  position: absolute;
+  display: flex;
+  align-items: center;
+  padding: 0 4%;
+  background: transparent;
+  border: none;
+  color: var(--wb-semantic-tablet-contact-text);
+  font-size: 11px;
+  text-align: left;
+  cursor: pointer;
+  text-shadow: var(--wb-semantic-tablet-contact-glow);
+}
+.tablet-contact-row:hover { color: var(--wb-semantic-tablet-contact-hover); }
+.tablet-contact-row.selected { color: var(--wb-semantic-tablet-contact-selected); }
+
+/* 联络动作按钮文字：原字形是 EditText（烘焙不出），DOM 文字盖烘焙边框 */
+.tablet-contact-btnlabel {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--wb-semantic-tablet-contact-text);
+  font-size: 11px;
+  letter-spacing: 0.05em;
+  text-shadow: var(--wb-semantic-tablet-contact-button-glow);
+  pointer-events: none;
+}
+
+/* 联络立绘：头像框做遮罩，原图等比 cover，超出框裁剪不拉伸 */
+.tablet-contact-face { overflow: hidden; }
+.tablet-contact-face img {
+  width: 100%; height: 100%;
+  object-fit: cover;
+  object-position: 50% 12%;
+  user-select: none;
+}
+
+/* 基建列表：滚动容器 = 原滑动按钮栏；行 = 名字文字盖槽位 */
+.tablet-infra-list { overflow-y: auto; }
+.tablet-infra-row {
+  display: flex;
+  align-items: center;
+  width: 88%;  /* 右侧留给烘焙的滑动槽轨道（按钮宽 120/容器 136） */
+  height: var(--row-h, 10%);
+  margin-bottom: var(--row-gap, 1%);
+  padding: 0 4%;
+  background: transparent;
+  border: none;
+  color: var(--wb-semantic-tablet-row-text);
+  font-size: 11px;
+  text-align: left;
+  cursor: pointer;
+}
+.tablet-infra-row:hover { color: var(--wb-semantic-tablet-strong-text); background: var(--wb-semantic-tablet-infra-hover); }
+.tablet-infra-row.selected {
+  color: var(--wb-semantic-tablet-strong-text);
+  background: var(--wb-semantic-tablet-infra-selected);
+  text-shadow: var(--wb-semantic-tablet-infra-selected-glow);
+}
+
+/* 基建滚动滑块：跟随 scrollTop 的可视层，配合烘焙 rail 底图 */
+.tablet-infra-thumb {
+  position: absolute;
+  background: var(--wb-semantic-tablet-infra-thumb-surface);
+  border: var(--wb-semantic-tablet-infra-thumb-border);
+  border-radius: 2px;
+  pointer-events: none;
+  box-sizing: border-box;
+}
+
+/* 基建信息框：名字/简介/升级需求 对准烘焙文本框；白字同原版 */
+.tablet-infra-name {
+  display: flex;
+  align-items: center;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--wb-semantic-tablet-strong-text);
+}
+.tablet-infra-desc {
+  font-size: 11px;
+  line-height: 1.65;
+  color: var(--wb-semantic-tablet-strong-text);
+  white-space: pre-wrap;
+  overflow-y: auto;
+}
+.tablet-infra-req {
+  font-size: 11px;
+  line-height: 1.6;
+  color: var(--wb-semantic-tablet-strong-text);
+  white-space: pre-wrap;
+  overflow-y: auto;
+}
+
+.tablet-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  width: 100%;
+  text-align: left;
+  background: var(--wb-semantic-tablet-row-surface);
+  border: var(--wb-semantic-tablet-row-border);
+  border-radius: 3px;
+  color: var(--wb-semantic-tablet-row-text);
+  font-size: 12px;
+  padding: 5px 8px;
+  margin-bottom: 4px;
+  cursor: pointer;
+  transition: var(--wb-tablet-row-transition);
+}
+.tablet-row:hover { background: var(--wb-semantic-tablet-row-hover); }
+.tablet-row.selected {
+  background: var(--wb-semantic-tablet-row-selected);
+  border-color: var(--wb-semantic-tablet-row-selected-line);
+}
+.tablet-row em { margin-left: auto; font-style: normal; font-size: 11px; color: var(--wb-semantic-tablet-row-hint); }
+
+.tablet-mat-list { overflow-y: auto; }
+.tablet-mat-icon { width: 18px; height: 18px; object-fit: contain; flex: none; }
+.tablet-mat-tag {
+  margin-left: auto; font-style: normal; font-size: 10px;
+  color: var(--wb-semantic-tablet-material-tag-text); border: var(--wb-semantic-tablet-material-tag-border);
+  border-radius: 2px; padding: 0 4px;
+}
+.tablet-mat-detail { overflow-y: auto; padding: 6px 10px; }
+.tablet-mat-detail h3 {
+  margin: 4px 0 8px; color: var(--wb-semantic-tablet-material-heading); font-size: 16px; letter-spacing: 0.06em;
+}
+.tablet-mat-info {
+  white-space: pre-wrap;
+  font-family: inherit;
+  font-size: 12px;
+  line-height: 1.7;
+  color: var(--wb-semantic-tablet-material-info-text);
+  background: var(--wb-semantic-tablet-material-info-surface);
+  border-left: var(--wb-semantic-tablet-material-info-border);
+  padding: 8px 10px;
+  border-radius: 0 4px 4px 0;
+}
+
+.tablet-dim { color: var(--wb-semantic-tablet-muted-text); font-size: 11.5px; }

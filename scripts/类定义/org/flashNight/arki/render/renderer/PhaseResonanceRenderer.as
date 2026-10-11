@@ -73,7 +73,7 @@ class org.flashNight.arki.render.renderer.PhaseResonanceRenderer {
         var intensity:Number = VM.cfgIntensity(meta);
         var baseThickness:Number = thickness * intensity;
 
-        var isFork:Boolean = (meta != null && meta.segmentKind == "fork");
+        var isFork:Boolean = (meta.segmentKind == "fork");
 
         // LOD 降级：调整条纹数
         var effectiveStripeCount:Number = stripeCount;

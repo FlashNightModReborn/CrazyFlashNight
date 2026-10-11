@@ -853,14 +853,55 @@ async function testPort(port) {
   }
 }
 
+function hotkeyGuardParentPid(record) {
+  if (!record || typeof record.processPath !== "string"
+      || !path.win32.isAbsolute(record.processPath)
+      || typeof record.commandLine !== "string") return null;
+  const prefixes = ['"' + record.processPath + '"', record.processPath];
+  let tail = null;
+  for (const prefix of prefixes) {
+    if (record.commandLine.slice(0, prefix.length).toLowerCase() === prefix.toLowerCase()
+        && /^[ \t]/.test(record.commandLine.slice(prefix.length))) {
+      tail = record.commandLine.slice(prefix.length).trim();
+      break;
+    }
+  }
+  if (tail == null) return null;
+  // Program dispatches this exact, case-sensitive invocation before starting a Guardian.
+  const match = /^--hotkey-guard ([1-9][0-9]*) [0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}( --diag-input)?$/.exec(tail);
+  if (!match) return null;
+  const pid = Number(match[1]);
+  return Number.isSafeInteger(pid) && pid > 0 ? pid : null;
+}
+
+function filterOwnedHotkeyGuards(processes) {
+  const records = Array.isArray(processes) ? processes : [];
+  const byPid = new Map(records.map((entry) => [entry.pid, entry]));
+  const helpers = new Map();
+  for (const record of records) {
+    const parentPid = hotkeyGuardParentPid(record);
+    const parent = byPid.get(parentPid);
+    if (!parent || record.pid === parentPid || record.parentPid !== parentPid
+        || typeof parent.processPath !== "string"
+        || parent.processPath.toLowerCase() !== record.processPath.toLowerCase()
+        || hotkeyGuardParentPid(parent) != null) continue;
+    const siblings = helpers.get(parentPid) || [];
+    siblings.push(record.pid);
+    helpers.set(parentPid, siblings);
+  }
+  // One Core starts one guard. Unknown, orphaned or duplicate helpers remain blockers.
+  const ignored = new Set();
+  for (const pids of helpers.values()) if (pids.length === 1) ignored.add(pids[0]);
+  return records.filter((entry) => !ignored.has(entry.pid));
+}
+
 function queryLauncherCoreProcesses() {
   if (process.platform !== "win32") return [];
   const script = [
     "[Console]::OutputEncoding = [System.Text.UTF8Encoding]::new($false)",
-    "$records = @(Get-Process -Name 'CRAZYFLASHER7MercenaryEmpire.Core' -ErrorAction SilentlyContinue | ForEach-Object {",
-    "  $processPath = $null",
-    "  try { $processPath = $_.Path } catch {}",
-    "  [pscustomobject]@{ pid = $_.Id; processPath = $processPath }",
+    "$ErrorActionPreference = 'Stop'",
+    "$records = @(Get-CimInstance Win32_Process -Filter \"Name = 'CRAZYFLASHER7MercenaryEmpire.Core.exe'\" | ForEach-Object {",
+    "  [pscustomobject]@{ pid = [int]$_.ProcessId; processPath = $_.ExecutablePath; parentPid = [int]$_.ParentProcessId; commandLine = $_.CommandLine }",
     "})",
     "ConvertTo-Json -InputObject $records -Compress",
   ].join("\n");
@@ -891,7 +932,7 @@ function queryLauncherCoreProcesses() {
       "Launcher process inventory was malformed"
     );
   }
-  return parsed;
+  return filterOwnedHotkeyGuards(parsed);
 }
 
 function assertExclusiveLauncherProcess(processes, authenticatedPid) {
@@ -2518,6 +2559,7 @@ module.exports = {
   findFreshHandoff,
   findFreshRevealWatchdog,
   findFreshTitleFrame,
+  filterOwnedHotkeyGuards,
   formatReportMarkdown,
   freshLogRecords,
   isValidSaveData,

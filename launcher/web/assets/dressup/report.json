@@ -1,12 +1,12 @@
 {
   "schema": "cf7-dressup-report-v1",
   "counts": {
-    "items": 1397,
-    "skinKeys": 2933,
+    "items": 1401,
+    "skinKeys": 2937,
     "coveredSkinKeys": 2792,
     "aliasCoveredSkinKeys": 9,
     "coveredExcludingAliasSkinKeys": 2783,
-    "missingSkinKeys": 141,
+    "missingSkinKeys": 145,
     "holdersMale": 21,
     "holdersFemale": 21,
     "battleStates": 7,
@@ -14,56 +14,118 @@
     "compatAliasSkinKeys": 9,
     "manualCompatAliasSkinKeys": 9,
     "autoOppositeGenderCompatAliasSkinKeys": 0,
-    "exportedSkinKeys": 1,
+    "missingExportSkinKeys": 0,
+    "exportedSkinKeys": 0,
     "exportedFrames": 3065,
-    "exportedBasicKeys": 0,
-    "exportedBasicFrames": 0,
+    "exportedBasicKeys": 23,
+    "exportedBasicFrames": 32,
     "metadataErrors": 0,
     "timelineScriptErrors": 0,
     "spriteGraphErrors": 0,
     "staticStopSkinKeys": 0,
     "staticStopCollapsedFrames": 0,
-    "purgedStaleFrames": 1,
+    "purgedStaleFrames": 0,
     "nestedAnimationSkinKeys": 25,
     "nestedLayerUnsupportedDescendants": 0,
     "nestedLayerCompositedDescendants": 0,
     "exportedNestedLayerKeys": 0,
     "exportedNestedLayerFrames": 0,
-    "uniqueFrameImages": 2852,
-    "duplicateFrameRefs": 213,
-    "timelineLogicalFrames": 3065,
-    "timelineFrameEntries": 2854,
-    "timelineCompressedFrameRefs": 211,
-    "conditionalVariantSkinKeys": 1,
-    "conditionalVariantFrames": 1,
-    "conditionalVariantRemovedPlaceObjects": 1,
+    "uniqueFrameImages": 2902,
+    "duplicateFrameRefs": 217,
+    "timelineLogicalFrames": 3119,
+    "timelineFrameEntries": 2904,
+    "timelineCompressedFrameRefs": 215,
+    "conditionalVariantSkinKeys": 0,
+    "conditionalVariantFrames": 0,
+    "conditionalVariantRemovedPlaceObjects": 0,
     "expressionSkinKeys": 0,
     "expressionFrames": 0,
     "expressionFrameImages": 0,
     "missingExpressionFrame": 0,
     "animatedSkinKeys": 17,
     "staticCollapsedSkinKeys": 25,
-    "preservedSkinKeyExports": 2791,
-    "preservedBasicHolderExports": 231
+    "preservedSkinKeyExports": 2792,
+    "preservedBasicHolderExports": 231,
+    "orphanAssetsPurged": 0
   },
   "missingSummary": {
     "byUse": {
       "上装装备": 77,
-      "下装装备": 64
+      "下装装备": 64,
+      "手枪": 2,
+      "长枪": 2
     },
     "byPrefix": {
       "女变装-": 59,
+      "枪-手枪-": 2,
+      "枪-长枪-": 2,
       "男变装-": 82
     }
   },
   "missingSourceAudit": {
     "byReason": {
+      "exact_exported_linkage_not_in_asset_map": 4,
       "exact_xml_without_as_linkage": 3,
       "no_matching_source": 3,
       "opposite_gender_only": 135
     },
-    "actionableSkinKeys": [],
+    "actionableSkinKeys": [
+      "枪-手枪-Origin12",
+      "枪-手枪-Origin12战术版",
+      "枪-长枪-AA12",
+      "枪-长枪-AA12战术版"
+    ],
     "samples": {
+      "exact_exported_linkage_not_in_asset_map": [
+        {
+          "skinKey": "枪-手枪-Origin12",
+          "reason": "exact_exported_linkage_not_in_asset_map",
+          "exactXmlMatches": [
+            {
+              "path": "flashswf/arts/new/3XD的素材/LIBRARY/2副武器/Origin12/枪-手枪-Origin12.xml",
+              "linkageExportForAS": true,
+              "linkageIdentifier": "枪-手枪-Origin12",
+              "symbolName": "2副武器/Origin12/枪-手枪-Origin12"
+            }
+          ]
+        },
+        {
+          "skinKey": "枪-手枪-Origin12战术版",
+          "reason": "exact_exported_linkage_not_in_asset_map",
+          "exactXmlMatches": [
+            {
+              "path": "flashswf/arts/new/3XD的素材/LIBRARY/2副武器/Origin12战术版/枪-手枪-Origin12战术版.xml",
+              "linkageExportForAS": true,
+              "linkageIdentifier": "枪-手枪-Origin12战术版",
+              "symbolName": "2副武器/Origin12战术版/枪-手枪-Origin12战术版"
+            }
+          ]
+        },
+        {
+          "skinKey": "枪-长枪-AA12",
+          "reason": "exact_exported_linkage_not_in_asset_map",
+          "exactXmlMatches": [
+            {
+              "path": "flashswf/arts/new/3XD的素材/LIBRARY/1主武器/AA12普通/枪-长枪-AA12.xml",
+              "linkageExportForAS": true,
+              "linkageIdentifier": "枪-长枪-AA12",
+              "symbolName": "1主武器/AA12普通/枪-长枪-AA12"
+            }
+          ]
+        },
+        {
+          "skinKey": "枪-长枪-AA12战术版",
+          "reason": "exact_exported_linkage_not_in_asset_map",
+          "exactXmlMatches": [
+            {
+              "path": "flashswf/arts/new/3XD的素材/LIBRARY/1主武器/AA12战术版/枪-长枪-AA12战术版.xml",
+              "linkageExportForAS": true,
+              "linkageIdentifier": "枪-长枪-AA12战术版",
+              "symbolName": "1主武器/AA12战术版/枪-长枪-AA12战术版"
+            }
+          ]
+        }
+      ],
       "exact_xml_without_as_linkage": [
         {
           "skinKey": "女变装-二阶军绿防弹衣上臂",
@@ -1736,6 +1798,158 @@
           "swf": "flashswf/arts/things.swf",
           "symbolName": "待整理防具相关汇总/男变装-黑短袖左下臂"
         }
+      },
+      "枪-手枪-Origin12": {
+        "reason": "exact_exported_linkage_not_in_asset_map",
+        "references": [
+          {
+            "item": "Origin12",
+            "use": "手枪",
+            "sourceFile": "武器_手枪_霰弹枪.xml",
+            "fields": [
+              {
+                "gender": "男",
+                "field": "手枪_装扮"
+              },
+              {
+                "gender": "男",
+                "field": "手枪2_装扮"
+              },
+              {
+                "gender": "女",
+                "field": "手枪_装扮"
+              },
+              {
+                "gender": "女",
+                "field": "手枪2_装扮"
+              },
+              {
+                "gender": "<dressup>",
+                "field": "dressup"
+              }
+            ],
+            "mercUsageCount": 0,
+            "mercUsageSamples": []
+          }
+        ],
+        "exactXmlMatches": [
+          {
+            "path": "flashswf/arts/new/3XD的素材/LIBRARY/2副武器/Origin12/枪-手枪-Origin12.xml",
+            "linkageExportForAS": true,
+            "linkageIdentifier": "枪-手枪-Origin12",
+            "symbolName": "2副武器/Origin12/枪-手枪-Origin12"
+          }
+        ]
+      },
+      "枪-手枪-Origin12战术版": {
+        "reason": "exact_exported_linkage_not_in_asset_map",
+        "references": [
+          {
+            "item": "Origin12战术版",
+            "use": "手枪",
+            "sourceFile": "武器_手枪_霰弹枪.xml",
+            "fields": [
+              {
+                "gender": "男",
+                "field": "手枪_装扮"
+              },
+              {
+                "gender": "男",
+                "field": "手枪2_装扮"
+              },
+              {
+                "gender": "女",
+                "field": "手枪_装扮"
+              },
+              {
+                "gender": "女",
+                "field": "手枪2_装扮"
+              },
+              {
+                "gender": "<dressup>",
+                "field": "dressup"
+              }
+            ],
+            "mercUsageCount": 0,
+            "mercUsageSamples": []
+          }
+        ],
+        "exactXmlMatches": [
+          {
+            "path": "flashswf/arts/new/3XD的素材/LIBRARY/2副武器/Origin12战术版/枪-手枪-Origin12战术版.xml",
+            "linkageExportForAS": true,
+            "linkageIdentifier": "枪-手枪-Origin12战术版",
+            "symbolName": "2副武器/Origin12战术版/枪-手枪-Origin12战术版"
+          }
+        ]
+      },
+      "枪-长枪-AA12": {
+        "reason": "exact_exported_linkage_not_in_asset_map",
+        "references": [
+          {
+            "item": "AA12",
+            "use": "长枪",
+            "sourceFile": "武器_长枪_霰弹枪.xml",
+            "fields": [
+              {
+                "gender": "男",
+                "field": "长枪_装扮"
+              },
+              {
+                "gender": "女",
+                "field": "长枪_装扮"
+              },
+              {
+                "gender": "<dressup>",
+                "field": "dressup"
+              }
+            ],
+            "mercUsageCount": 0,
+            "mercUsageSamples": []
+          }
+        ],
+        "exactXmlMatches": [
+          {
+            "path": "flashswf/arts/new/3XD的素材/LIBRARY/1主武器/AA12普通/枪-长枪-AA12.xml",
+            "linkageExportForAS": true,
+            "linkageIdentifier": "枪-长枪-AA12",
+            "symbolName": "1主武器/AA12普通/枪-长枪-AA12"
+          }
+        ]
+      },
+      "枪-长枪-AA12战术版": {
+        "reason": "exact_exported_linkage_not_in_asset_map",
+        "references": [
+          {
+            "item": "AA12战术版",
+            "use": "长枪",
+            "sourceFile": "武器_长枪_霰弹枪.xml",
+            "fields": [
+              {
+                "gender": "男",
+                "field": "长枪_装扮"
+              },
+              {
+                "gender": "女",
+                "field": "长枪_装扮"
+              },
+              {
+                "gender": "<dressup>",
+                "field": "dressup"
+              }
+            ],
+            "mercUsageCount": 0,
+            "mercUsageSamples": []
+          }
+        ],
+        "exactXmlMatches": [
+          {
+            "path": "flashswf/arts/new/3XD的素材/LIBRARY/1主武器/AA12战术版/枪-长枪-AA12战术版.xml",
+            "linkageExportForAS": true,
+            "linkageIdentifier": "枪-长枪-AA12战术版",
+            "symbolName": "1主武器/AA12战术版/枪-长枪-AA12战术版"
+          }
+        ]
       },
       "男变装-JK校服上臂": {
         "reason": "opposite_gender_only",
@@ -5271,6 +5485,58 @@
         "防具_0-19级.xml"
       ]
     },
+    "枪-手枪-Origin12": {
+      "covered": false,
+      "asset": null,
+      "uses": [
+        "手枪"
+      ],
+      "items": [
+        "Origin12"
+      ],
+      "sourceFiles": [
+        "武器_手枪_霰弹枪.xml"
+      ]
+    },
+    "枪-手枪-Origin12战术版": {
+      "covered": false,
+      "asset": null,
+      "uses": [
+        "手枪"
+      ],
+      "items": [
+        "Origin12战术版"
+      ],
+      "sourceFiles": [
+        "武器_手枪_霰弹枪.xml"
+      ]
+    },
+    "枪-长枪-AA12": {
+      "covered": false,
+      "asset": null,
+      "uses": [
+        "长枪"
+      ],
+      "items": [
+        "AA12"
+      ],
+      "sourceFiles": [
+        "武器_长枪_霰弹枪.xml"
+      ]
+    },
+    "枪-长枪-AA12战术版": {
+      "covered": false,
+      "asset": null,
+      "uses": [
+        "长枪"
+      ],
+      "items": [
+        "AA12战术版"
+      ],
+      "sourceFiles": [
+        "武器_长枪_霰弹枪.xml"
+      ]
+    },
     "男变装-JK校服上臂": {
       "covered": false,
       "asset": null,
@@ -6528,15 +6794,20 @@
     }
   },
   "assetExport": {
-    "selectedSkinKeys": 1,
-    "resolvedSkinKeys": 1,
-    "exportedSkinKeys": 1,
-    "exportedFrames": 1,
-    "resolvedBasicKeys": 0,
-    "exportedBasicKeys": 0,
-    "exportedBasicFrames": 0,
+    "selectedSkinKeys": 0,
+    "resolvedSkinKeys": 0,
+    "exportedSkinKeys": 0,
+    "exportedFrames": 0,
+    "resolvedBasicKeys": 23,
+    "exportedBasicKeys": 23,
+    "exportedBasicFrames": 32,
     "missingSymbol": [],
-    "missingBasicSymbol": [],
+    "missingBasicSymbol": [
+      {
+        "linkageId": "女变装-基本脸型",
+        "swf": "flashswf/UI/对话框界面.swf"
+      }
+    ],
     "symbolErrors": [],
     "exportErrors": [],
     "metadataErrors": [],
@@ -6547,7 +6818,7 @@
     "spriteGraphErrors": [],
     "staticStopSkinKeys": 0,
     "staticStopCollapsedFrames": 0,
-    "purgedStaleFrames": 1,
+    "purgedStaleFrames": 0,
     "staticStopSamples": [],
     "nestedAnimationSkinKeys": 0,
     "nestedAnimationSamples": [],
@@ -6556,35 +6827,33 @@
     "exportedNestedLayerKeys": 0,
     "exportedNestedLayerFrames": 0,
     "missingNestedLayerFrame": [],
-    "uniqueFrameImages": 2,
-    "duplicateFrameRefs": 0,
-    "timelineLogicalFrames": 2,
-    "timelineFrameEntries": 2,
-    "timelineCompressedFrameRefs": 0,
-    "timelineCompressionSamples": [],
-    "conditionalVariantSkinKeys": 1,
-    "conditionalVariantFrames": 1,
-    "conditionalVariantRemovedPlaceObjects": 1,
-    "conditionalVariantSamples": [
+    "uniqueFrameImages": 28,
+    "duplicateFrameRefs": 4,
+    "timelineLogicalFrames": 32,
+    "timelineFrameEntries": 28,
+    "timelineCompressedFrameRefs": 4,
+    "timelineCompressionSamples": [
       {
-        "skinKey": "枪-长枪-Codex-特勤霰弹枪",
-        "characterId": 354,
-        "visibleWhen": null,
-        "removed": [
-          {
-            "characterId": 352,
-            "depth": 1,
-            "frame": 1
-          }
-        ]
+        "owner": "basic:男变装-基本脸型",
+        "logicalFrames": 10,
+        "timelineFrames": 6,
+        "savedFrameEntries": 4,
+        "uniqueUris": 6,
+        "longestHoldFrames": 5
       }
     ],
+    "conditionalVariantSkinKeys": 0,
+    "conditionalVariantFrames": 0,
+    "conditionalVariantRemovedPlaceObjects": 0,
+    "conditionalVariantSamples": [],
     "expressionSkinKeys": 0,
     "expressionFrames": 0,
     "expressionFrameImages": 0,
     "missingExpressionFrame": [],
-    "preservedSkinKeyExports": 2791,
-    "preservedBasicHolderExports": 231
+    "preservedSkinKeyExports": 2792,
+    "preservedBasicHolderExports": 231,
+    "orphanAssetsPurged": 0,
+    "orphanAssetSamples": []
   },
   "animatedSkinKeys": [
     {

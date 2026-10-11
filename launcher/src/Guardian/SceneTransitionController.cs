@@ -21,6 +21,7 @@ namespace CF7Launcher.Guardian
         private readonly Func<long,bool> _scenePresented;
         private readonly Func<IntPtr,bool> _handoffFocus;
         private readonly Action<bool> _holdWorldInput;
+        private readonly SceneTransitionPresentationPolicy _presentationPolicy;
         private readonly CompositionHelpSurface _surface;
         private readonly Form _fallback;
         private readonly OverlayBase[] _overlays;
@@ -67,14 +68,16 @@ namespace CF7Launcher.Guardian
         internal SceneTransitionController(Form owner, Control anchor, string projectRoot,
             Action<Action> dispatch, Func<string,bool> send, Func<bool> admitted,
             Func<long,bool> scenePresented, Func<IntPtr,bool> handoffFocus, IEnumerable<OverlayBase> overlays, Action<bool> holdWorldInput,
-            string profileRoot = null)
+            string profileRoot = null, SceneTransitionPresentationPolicy presentationPolicy = null)
         {
+            _presentationPolicy=presentationPolicy ?? SceneTransitionPresentationPolicy.Interactive;
             _owner=owner; _anchor=anchor; _admitted=admitted; _scenePresented=scenePresented; _handoffFocus=handoffFocus;
             _holdWorldInput=holdWorldInput;
             _overlays=overlays.Where(o=>o!=null).Distinct().ToArray();
             _surface=new CompositionHelpSurface(owner,Path.Combine(projectRoot,"launcher","web"),
-                profileRoot ?? Path.Combine(projectRoot,"tmp","unified-live-entry","web-profile"),transition:true);
-            _fallback=new Form {Owner=owner,FormBorderStyle=FormBorderStyle.None,ShowInTaskbar=false,
+                profileRoot ?? Path.Combine(projectRoot,"tmp","unified-live-entry","web-profile"),transition:true,
+                presentationPolicy:_presentationPolicy);
+            _fallback=new SceneTransitionBackingForm(_presentationPolicy) {Owner=owner,FormBorderStyle=FormBorderStyle.None,ShowInTaskbar=false,
                 StartPosition=FormStartPosition.Manual,BackColor=Color.Black,KeyPreview=true,Text="CF7 Transition Recovery"};
             _fallback.Controls.Add(new Label {Dock=DockStyle.Fill,TextAlign=ContentAlignment.MiddleCenter,
                 ForeColor=Color.White,BackColor=Color.Black,Font=new Font("Microsoft YaHei",14),
@@ -151,6 +154,10 @@ namespace CF7Launcher.Guardian
             } finally { _preparing=false; }
         }
         private Rectangle Bounds() => _anchor.RectangleToScreen(_anchor.ClientRectangle);
+        private bool BackgroundCurtainAllowed => _presentationPolicy.AllowsBackgroundCurtain(_latest,Task.Connected,
+            _surface.SettlementInstance.Length>0,_bookshelfReturn?.Active==true,_exclusivePresentation());
+        private bool CurtainCanPresent => _presentationPolicy.CanPresentCurtain(_admitted(),_owner.Visible,
+            _owner.WindowState==FormWindowState.Minimized,Task.Connected,_surface.CanRestoreGameFocus,BackgroundCurtainAllowed);
         private void Tick() {
             using var latency = InputLatencyProbe.Measure("transition_tick");
             if(_disposed || _owner.IsDisposed || _anchor.IsDisposed) return;
@@ -160,7 +167,7 @@ namespace CF7Launcher.Guardian
             {
                 // A return receipt may arrive after the ordinary curtain has gained focus.
                 // Hand off that exact foreground before hiding it; never take focus from another app.
-                if ((_fallback.Visible || _surface.Visible) && _bookshelfReturn.CanPresent && _admitted())
+                if (!_presentationPolicy.NonActivating && (_fallback.Visible || _surface.Visible) && _bookshelfReturn.CanPresent && _admitted())
                 {
                     IntPtr foreground = _surface.CaptureGameForeground();
                     if (foreground != IntPtr.Zero) _handoffFocus(foreground);
@@ -190,8 +197,7 @@ namespace CF7Launcher.Guardian
                 return;
             }
             if(TryCompleteReportHandoff()) return;
-            bool visible=_admitted() && _owner.Visible && _owner.WindowState!=FormWindowState.Minimized
-                && _surface.CanRestoreGameFocus;
+            bool visible=CurtainCanPresent;
             if(!visible) { if(_fallback.Visible)_fallback.Hide(); _surface.SuppressTransition(); return; }
             Rectangle bounds=Bounds();
             if(bounds.Width<1 || bounds.Height<1) return;
@@ -199,10 +205,10 @@ namespace CF7Launcher.Guardian
             // current endpoint has painted this curtain, even when it was already warm.
             if(!_covered || !_surface.Ready || _recovering) {
                 if(_fallback.Bounds!=bounds) _fallback.Bounds=bounds;
-                if(!_fallback.Visible) { _fallback.Show(); _fallback.Activate(); }
+                if(!_fallback.Visible) { _fallback.Show(); if(!_presentationPolicy.NonActivating) _fallback.Activate(); }
             }
             if(!_surface.Ready || _recovering) { RestoreWindowOrder(); return; }
-            if(!_surface.PresentTransition(bounds)) return;
+            if(!_surface.PresentTransition(bounds,BackgroundCurtainAllowed)) return;
             var projection=(JObject)_latest.DeepClone();
             projection["type"]="scene_transition"; projection["connected"]=Task.Connected;
             projection["generation"]=Task.Epoch;
@@ -240,6 +246,7 @@ namespace CF7Launcher.Guardian
                 return;
             }
             if(!_surface.Visible) return;
+            if(_presentationPolicy.NonActivating && (!CurtainCanPresent || !SceneTransitionWindowOrder.IsPresented(_surface))) return;
             if(type!="scene_transition_presented") return;
             string kind=p["kind"]?.Type==JTokenType.String?p.Value<string>("kind"):null;
             if(kind=="covered") { if(Task.Presented(p)) { _covered=true; _fallback.Hide(); } }
@@ -258,8 +265,7 @@ namespace CF7Launcher.Guardian
                 _owner.BeginInvoke((Action)(()=> {
                     _orderQueued=false;
                     // A hide, disconnect or Alt+Tab may happen before this callback.
-                    if(!_disposed && _latest!=null && !_revealed && _admitted()
-                        && _owner.Visible && _owner.WindowState!=FormWindowState.Minimized && _surface.CanRestoreGameFocus)
+                    if(!_disposed && _latest!=null && !_revealed && CurtainCanPresent)
                         RestoreWindowOrder();
                 }));
             } catch(InvalidOperationException) { _orderQueued=false; }
@@ -268,7 +274,8 @@ namespace CF7Launcher.Guardian
             if (_exclusivePresentation() || _bookshelfReturn?.Active == true) return;
             bool showSurface=_surface.Active && !_recovering;
             if(_fallback.Visible) SceneTransitionWindowOrder.RaiseIfCovered(_fallback,_owner,
-                showSurface && _surface.Visible ? _surface.Handle : IntPtr.Zero);
+                showSurface && _surface.Visible ? _surface.Handle : IntPtr.Zero,
+                preserveForeignOrder:_presentationPolicy.NonActivating);
             if(showSurface) _surface.RaiseTransition();
         }
         private void HidePresentation(bool handoff) {
@@ -276,7 +283,8 @@ namespace CF7Launcher.Guardian
             // Pin the live foreground and hand it to the game root before any Hide call.
             // The existing primitive checks that exact HWND again and never retries against
             // a foreign foreground window; an intentional Alt+Tab remains untouched.
-            if(AllowsFocusHandoff(handoff, _admitted(), _exclusivePresentation() || _bookshelfReturn?.Active == true)) {
+            if(!_presentationPolicy.NonActivating
+                && AllowsFocusHandoff(handoff, _admitted(), _exclusivePresentation() || _bookshelfReturn?.Active == true)) {
                 IntPtr foreground=_surface.CaptureGameForeground();
                 if(foreground!=IntPtr.Zero && !_handoffFocus(foreground))
                     LogManager.Log("event=scene_transition_handoff_failed id="+_identity);
@@ -333,6 +341,23 @@ namespace CF7Launcher.Guardian
             foreach(var overlay in _overlays) overlay.PresentationChanged-=OnOverlayPresented;
             _holdWorldInput(false);
             _timer.Dispose(); _surface.Dispose(); _fallback.Dispose();
+        }
+    }
+
+    internal sealed class SceneTransitionBackingForm : Form
+    {
+        private readonly SceneTransitionPresentationPolicy _policy=SceneTransitionPresentationPolicy.Interactive;
+        internal SceneTransitionBackingForm(SceneTransitionPresentationPolicy policy) => _policy=policy;
+        protected override bool ShowWithoutActivation => _policy.NonActivating;
+        protected override CreateParams CreateParams {
+            get { var value=base.CreateParams; if(_policy.NonActivating) value.ExStyle|=0x08000000; return value; }
+        }
+        protected override void WndProc(ref Message message) {
+            if(_policy.NonActivating) {
+                SceneTransitionWindowOrder.ConstrainBackgroundShow(ref message,this,Owner);
+                if(message.Msg==0x0021) { message.Result=new IntPtr(4); return; }
+            }
+            base.WndProc(ref message);
         }
     }
 }

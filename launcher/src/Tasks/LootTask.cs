@@ -18,6 +18,7 @@ namespace CF7Launcher.Tasks
         private sealed class PendingRequest
         {
             public int FlashCallId;
+            public long TimingForwardedAt;
             public string WebCallId;
             public string WebCmd;
             public string OperationId;
@@ -490,6 +491,8 @@ namespace CF7Launcher.Tasks
             JObject flash = PanelBridge.BuildFlashCommand(action, entry.FlashCallId, normalized);
             LogManager.Log("event=loot_request_forwarded cmd=" + cmd
                 + " callId=" + entry.FlashCallId + " pending=" + PendingCount);
+            if (PerfTrace.PanelTimingEnabled)
+                entry.TimingForwardedAt = System.Diagnostics.Stopwatch.GetTimestamp();
             bool sent = false;
             try { sent = _trySend(flash.ToString(Formatting.None) + "\0"); }
             catch (Exception ex)
@@ -530,6 +533,9 @@ namespace CF7Launcher.Tasks
                     if (respond != null) respond(null);
                     return;
                 }
+                if (PerfTrace.PanelTimingEnabled && entry.TimingForwardedAt > 0)
+                    PerfTrace.Duration("loot.request.response", entry.TimingForwardedAt,
+                        entry.WebCmd + " call=" + fid);
                 if (entry.IsDetachedReconcile
                     && !DetachedReconcileContextMatchesLocked(entry, readyGeneration))
                 {

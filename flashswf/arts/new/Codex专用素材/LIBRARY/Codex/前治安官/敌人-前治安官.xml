@@ -1,0 +1,1080 @@
+<DOMSymbolItem xmlns="http://ns.adobe.com/xfl/2008/" name="Codex/前治安官/敌人-前治安官" linkageExportForAS="true" linkageExportInFirstFrame="true" linkageIdentifier="敌人-前治安官">
+  <timeline>
+    <DOMTimeline name="敌人-前治安官">
+      <layers>
+        <DOMLayer name="状态标签" color="#4FFF4F">
+          <frames>
+            <DOMFrame index="0" duration="1" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="1" duration="1" keyMode="9728" name="容器" labelType="name">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="2" duration="1" keyMode="9728" name="空手站立" labelType="name">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="3" duration="1" keyMode="9728" name="长枪站立" labelType="name">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="4" duration="1" keyMode="9728" name="长枪行走" labelType="name">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="5" duration="1" keyMode="9728" name="长枪跑" labelType="name">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="6" duration="1" keyMode="9728" name="手枪站立" labelType="name">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="7" duration="1" keyMode="9728" name="手枪行走" labelType="name">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="8" duration="1" keyMode="9728" name="手枪跑" labelType="name">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="9" duration="1" keyMode="9728" name="兵器站立" labelType="name">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="10" duration="1" keyMode="9728" name="兵器行走" labelType="name">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="11" duration="1" keyMode="9728" name="兵器跑" labelType="name">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="12" duration="1" keyMode="9728" name="被击" labelType="name">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="13" duration="1" keyMode="9728" name="击倒" labelType="name">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="14" duration="1" keyMode="9728" name="倒地" labelType="name">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="15" duration="1" keyMode="9728" name="血腥死" labelType="name">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="16" duration="1" keyMode="9728" name="转阶段击倒" labelType="name">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="17" duration="1" keyMode="9728" name="转阶段落地" labelType="name">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="18" duration="1" keyMode="9728" name="转阶段起身" labelType="name">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="初始化" color="#4FFF4F">
+          <frames>
+            <DOMFrame index="0" duration="1" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[_root.前治安官初始化(this); stop();]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="人物文字信息" color="#BDB2FA" locked="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="19" keyMode="9728">
+              <elements><DOMSymbolInstance libraryItemName="Codex/前治安官/原生/sprite/新版人物文字信息" name="人物文字信息" cacheAsBitmap="true" centerPoint3DX="81.5" centerPoint3DY="-117.4">
+                  <matrix>
+                    <Matrix tx="1" ty="-155"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="area" color="#3CB9C0" locked="true" outline="true" useOutlineView="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="1" keyMode="9728">
+              <elements><DOMSymbolInstance libraryItemName="Codex/前治安官/原生/主角肢体素材/Symbol 6" name="area" centerPoint3DX="-13.95" centerPoint3DY="-114">
+                  <matrix>
+                    <Matrix a="2.11715698242188" d="5.48248291015625" tx="-26.45" ty="-126.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="1" duration="1" keyMode="9728">
+              <elements><DOMSymbolInstance libraryItemName="Codex/前治安官/原生/主角肢体素材/Symbol 6" name="area" centerPoint3DX="-13.95" centerPoint3DY="-114">
+                  <matrix>
+                    <Matrix a="2.11715698242188" d="5.48248291015625" tx="-26.45" ty="-126.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="2" duration="1" keyMode="9728">
+              <elements><DOMSymbolInstance libraryItemName="Codex/前治安官/原生/主角肢体素材/Symbol 6" name="area" centerPoint3DX="-13.95" centerPoint3DY="-114">
+                  <matrix>
+                    <Matrix a="2.11715698242188" d="5.48248291015625" tx="-26.45" ty="-126.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="3" duration="1" keyMode="9728">
+              <elements><DOMSymbolInstance libraryItemName="Codex/前治安官/原生/主角肢体素材/Symbol 6" name="area" centerPoint3DX="-13.95" centerPoint3DY="-114">
+                  <matrix>
+                    <Matrix a="2.11715698242188" d="5.48248291015625" tx="-26.45" ty="-126.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="4" duration="1" keyMode="9728">
+              <elements><DOMSymbolInstance libraryItemName="Codex/前治安官/原生/主角肢体素材/Symbol 6" name="area" centerPoint3DX="-13.95" centerPoint3DY="-114">
+                  <matrix>
+                    <Matrix a="2.11715698242188" d="5.48248291015625" tx="-26.45" ty="-126.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="5" duration="1" keyMode="9728">
+              <elements><DOMSymbolInstance libraryItemName="Codex/前治安官/原生/主角肢体素材/Symbol 6" name="area" centerPoint3DX="-13.95" centerPoint3DY="-114">
+                  <matrix>
+                    <Matrix a="2.11715698242188" d="5.48248291015625" tx="-26.45" ty="-126.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="6" duration="1" keyMode="9728">
+              <elements><DOMSymbolInstance libraryItemName="Codex/前治安官/原生/主角肢体素材/Symbol 6" name="area" centerPoint3DX="-13.95" centerPoint3DY="-114">
+                  <matrix>
+                    <Matrix a="2.11715698242188" d="5.48248291015625" tx="-26.45" ty="-126.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="7" duration="1" keyMode="9728">
+              <elements><DOMSymbolInstance libraryItemName="Codex/前治安官/原生/主角肢体素材/Symbol 6" name="area" centerPoint3DX="-13.95" centerPoint3DY="-114">
+                  <matrix>
+                    <Matrix a="2.11715698242188" d="5.48248291015625" tx="-26.45" ty="-126.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="8" duration="1" keyMode="9728">
+              <elements><DOMSymbolInstance libraryItemName="Codex/前治安官/原生/主角肢体素材/Symbol 6" name="area" centerPoint3DX="-13.95" centerPoint3DY="-114">
+                  <matrix>
+                    <Matrix a="2.11715698242188" d="5.48248291015625" tx="-26.45" ty="-126.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="9" duration="1" keyMode="9728">
+              <elements><DOMSymbolInstance libraryItemName="Codex/前治安官/原生/主角肢体素材/Symbol 6" name="area" centerPoint3DX="-13.95" centerPoint3DY="-114">
+                  <matrix>
+                    <Matrix a="2.11715698242188" d="5.48248291015625" tx="-26.45" ty="-126.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="10" duration="1" keyMode="9728">
+              <elements><DOMSymbolInstance libraryItemName="Codex/前治安官/原生/主角肢体素材/Symbol 6" name="area" centerPoint3DX="-13.95" centerPoint3DY="-114">
+                  <matrix>
+                    <Matrix a="2.11715698242188" d="5.48248291015625" tx="-26.45" ty="-126.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="11" duration="1" keyMode="9728">
+              <elements><DOMSymbolInstance libraryItemName="Codex/前治安官/原生/主角肢体素材/Symbol 6" name="area" centerPoint3DX="-13.95" centerPoint3DY="-114">
+                  <matrix>
+                    <Matrix a="2.11715698242188" d="5.48248291015625" tx="-26.45" ty="-126.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="12" duration="1" keyMode="9728">
+              <elements><DOMSymbolInstance libraryItemName="Codex/前治安官/原生/主角肢体素材/Symbol 6" name="area" centerPoint3DX="-13.95" centerPoint3DY="-114">
+                  <matrix>
+                    <Matrix a="2.11715698242188" d="5.48248291015625" tx="-26.45" ty="-126.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="13" duration="1" keyMode="9728">
+              <elements><DOMSymbolInstance libraryItemName="Codex/前治安官/原生/主角肢体素材/Symbol 6" name="area" centerPoint3DX="-13.95" centerPoint3DY="-114">
+                  <matrix>
+                    <Matrix a="2.11715698242188" d="5.48248291015625" tx="-26.45" ty="-126.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="14" duration="1" keyMode="9728">
+              <elements><DOMSymbolInstance libraryItemName="Codex/前治安官/原生/主角肢体素材/Symbol 6" name="area" centerPoint3DX="-13.95" centerPoint3DY="-114">
+                  <matrix>
+                    <Matrix a="2.11715698242188" d="5.48248291015625" tx="-26.45" ty="-126.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="15" duration="1" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="16" duration="1" keyMode="9728">
+              <elements><DOMSymbolInstance libraryItemName="Codex/前治安官/原生/主角肢体素材/Symbol 6" name="area" centerPoint3DX="-13.95" centerPoint3DY="-114">
+                  <matrix>
+                    <Matrix a="2.11715698242188" d="5.48248291015625" tx="-26.45" ty="-126.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="17" duration="1" keyMode="9728">
+              <elements><DOMSymbolInstance libraryItemName="Codex/前治安官/原生/主角肢体素材/Symbol 6" name="area" centerPoint3DX="-13.95" centerPoint3DY="-114">
+                  <matrix>
+                    <Matrix a="2.11715698242188" d="5.48248291015625" tx="-26.45" ty="-126.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="18" duration="1" keyMode="9728">
+              <elements><DOMSymbolInstance libraryItemName="Codex/前治安官/原生/主角肢体素材/Symbol 6" name="area" centerPoint3DX="-13.95" centerPoint3DY="-114">
+                  <matrix>
+                    <Matrix a="2.11715698242188" d="5.48248291015625" tx="-26.45" ty="-126.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="持枪下身上层" color="#9933CC" locked="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="1" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="1" duration="1" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="2" duration="1" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="3" duration="1" keyMode="9728">
+              <elements><DOMSymbolInstance libraryItemName="Codex/前治安官/原生/移动射击动画层/长枪-手枪2站立右腿" centerPoint3DX="232.3" centerPoint3DY="217.65">
+                  <matrix>
+                    <Matrix a="0.277084350585938" d="0.276992797851563" tx="3.4" ty="-62.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="4" duration="1" keyMode="9728">
+              <elements><DOMSymbolInstance libraryItemName="Codex/前治安官/原生/移动射击动画层/长枪-手枪2行走右腿" centerPoint3DX="232.3" centerPoint3DY="217.65">
+                  <matrix>
+                    <Matrix a="0.277084350585938" d="0.276992797851563" tx="3.4" ty="-62.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent (enterFrame) {
+    if(_parent.移动射击倒退){
+        if(this._currentframe == 1){
+            gotoAndStop("end");
+        }else{
+            gotoAndStop(this._currentframe-1);
+        }
+    }else{
+        play();
+    }
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="5" duration="1" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="6" duration="1" keyMode="9728">
+              <elements><DOMSymbolInstance libraryItemName="Codex/前治安官/原生/移动射击动画层/手枪-双枪站立右腿" centerPoint3DX="232.3" centerPoint3DY="217.65">
+                  <matrix>
+                    <Matrix a="0.277084350585938" d="0.276992797851563" tx="3.4" ty="-62.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="7" duration="1" keyMode="9728">
+              <elements><DOMSymbolInstance libraryItemName="Codex/前治安官/原生/移动射击动画层/手枪-双枪行走右腿" centerPoint3DX="232.3" centerPoint3DY="217.65">
+                  <matrix>
+                    <Matrix a="0.277084350585938" d="0.276992797851563" tx="3.4" ty="-62.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent (enterFrame) {
+    if(_parent.移动射击倒退){
+        if(this._currentframe == 1){
+            gotoAndStop("end");
+        }else{
+            gotoAndStop(this._currentframe-1);
+        }
+    }else{
+        play();
+    }
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="8" duration="1" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="9" duration="1" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="10" duration="1" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="11" duration="1" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="12" duration="1" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="13" duration="1" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="14" duration="1" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="15" duration="1" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="16" duration="1" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="17" duration="1" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="18" duration="1" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="动画层" color="#32BDEF" current="true" isSelected="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="1" keyMode="9728">
+              <elements><DOMSymbolInstance libraryItemName="Codex/前治安官/原生/sprite/空手待机" name="man" selected="true" centerPoint3DX="191.6" centerPoint3DY="218">
+                  <matrix>
+                    <Matrix a="0.277084350585938" d="0.276901245117188" tx="3.4" ty="-62.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="1" duration="1" keyMode="9728">
+              <elements><DOMSymbolInstance libraryItemName="Codex/前治安官/原生/容器/容器" name="container" centerPoint3DX="2825.1" centerPoint3DY="1793.4">
+                  <matrix>
+                    <Matrix a="0.277084350585938" d="0.276901245117188" tx="3.4" ty="-62.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="2" duration="1" keyMode="9728">
+              <elements><DOMSymbolInstance libraryItemName="Codex/前治安官/原生/sprite/空手待机" name="man" selected="true" centerPoint3DX="191.6" centerPoint3DY="218">
+                  <matrix>
+                    <Matrix a="0.277084350585938" d="0.276901245117188" tx="3.4" ty="-62.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="3" duration="1" keyMode="9728">
+              <elements><DOMSymbolInstance libraryItemName="Codex/前治安官/原生/移动射击动画层/长枪上身" name="man" centerPoint3DX="232.3" centerPoint3DY="217.65">
+                  <matrix>
+                    <Matrix a="0.277084350585938" d="0.276992797851563" tx="3.4" ty="-62.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="4" duration="1" keyMode="9728">
+              <elements><DOMSymbolInstance libraryItemName="Codex/前治安官/原生/移动射击动画层/长枪上身" name="man" centerPoint3DX="235.9" centerPoint3DY="216.45">
+                  <matrix>
+                    <Matrix a="0.277084350585938" d="0.276992797851563" tx="7" ty="-63.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="5" duration="1" keyMode="9728">
+              <elements><DOMSymbolInstance libraryItemName="Codex/前治安官/原生/sprite/Symbol 627" name="man" selected="true" centerPoint3DX="233.1" centerPoint3DY="219.5">
+                  <matrix>
+                    <Matrix a="0.277084350585938" d="0.276809692382813" tx="3.35" ty="-60.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="6" duration="1" keyMode="9728">
+              <elements><DOMSymbolInstance libraryItemName="Codex/前治安官/原生/移动射击动画层/手枪上身" name="man" centerPoint3DX="229.8" centerPoint3DY="216.05">
+                  <matrix>
+                    <Matrix a="0.277084350585938" d="0.276992797851563" tx="3.4" ty="-62.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="7" duration="1" keyMode="9728">
+              <elements><DOMSymbolInstance libraryItemName="Codex/前治安官/原生/移动射击动画层/手枪上身" name="man" centerPoint3DX="233.4" centerPoint3DY="214.85">
+                  <matrix>
+                    <Matrix a="0.277084350585938" d="0.276992797851563" tx="7" ty="-63.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="8" duration="1" keyMode="9728">
+              <elements><DOMSymbolInstance libraryItemName="Codex/前治安官/原生/sprite/Symbol 639" name="man" centerPoint3DX="246.1" centerPoint3DY="219.5">
+                  <matrix>
+                    <Matrix a="0.277084350585938" d="0.276809692382813" tx="3.35" ty="-60.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="9" duration="1" keyMode="9728">
+              <elements><DOMSymbolInstance libraryItemName="Codex/前治安官/原生/sprite/兵器待机" name="man" selected="true" centerPoint3DX="223.1" centerPoint3DY="209.55">
+                  <matrix>
+                    <Matrix a="0.277084350585938" d="0.276992797851563" tx="3.4" ty="-62.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent (load) {
+    if (_parent.兵器动作类型 == "短兵")
+    {
+        if (_parent.格斗架势 == false)
+        {
+            gotoAndPlay("短兵站立");
+        }
+        else
+        {
+            gotoAndPlay("短兵格斗架势");
+        }
+
+    }
+    else if (_parent.兵器动作类型 == "双刀")
+    {
+        if (_parent.格斗架势 == false)
+        {
+            gotoAndPlay("双刀站立");
+        }
+        else
+        {
+            gotoAndPlay("双刀格斗架势");
+        }
+    }
+    else if (_parent.兵器动作类型 == "疾影")
+    {
+        if (_parent.格斗架势 == false)
+        {
+            gotoAndPlay("疾影站立");
+        }
+        else
+        {
+            gotoAndPlay("疾影格斗架势");
+        }
+    }
+    else if (_parent.兵器动作类型 == "长柄" || _parent.兵器动作类型 == "长枪" || _parent.兵器动作类型 == "长棍")
+    {
+        if (_parent.格斗架势 == false)
+        {
+            gotoAndPlay("长柄站立");
+        }
+        else
+        {
+            gotoAndPlay("长柄格斗架势");
+        }
+    }
+    else
+    {
+        if (_parent.格斗架势 == false)
+        {
+            gotoAndStop("站立");
+            play();
+        }
+        else if (_parent.格斗架势 == true)
+        {
+            gotoAndStop("格斗架势");
+            play();
+        }
+    }
+}]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="10" duration="1" keyMode="9728">
+              <elements><DOMSymbolInstance libraryItemName="Codex/前治安官/原生/sprite/兵器走路" name="man" centerPoint3DX="274.4" centerPoint3DY="213.6">
+                  <matrix>
+                    <Matrix a="0.277084350585938" d="0.276809692382813" tx="3.35" ty="-60.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="11" duration="1" keyMode="9728">
+              <elements><DOMSymbolInstance libraryItemName="Codex/前治安官/原生/sprite/兵器跑" name="man" centerPoint3DX="301.9" centerPoint3DY="292.35">
+                  <matrix>
+                    <Matrix a="0.277084350585938" d="0.276809692382813" tx="3.35" ty="-60.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="12" duration="1" keyMode="9728">
+              <elements><DOMSymbolInstance libraryItemName="Codex/前治安官/原生/sprite/Symbol 137" name="man" centerPoint3DX="294.85" centerPoint3DY="293.1">
+                  <matrix>
+                    <Matrix a="0.277084350585938" d="0.276901245117188" tx="3.4" ty="-62.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent (load) {
+    _parent.格斗架势 = true;
+    gotoAndPlay(_parent.攻击模式 + random(2));
+}]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="13" duration="1" keyMode="9728">
+              <elements><DOMSymbolInstance libraryItemName="Codex/前治安官/原生/sprite/被击飞击倒" name="man" centerPoint3DX="340.55" centerPoint3DY="234.9">
+                  <matrix>
+                    <Matrix a="0.277084350585938" d="0.276901245117188" tx="3.4" ty="-62.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="14" duration="1" keyMode="9728">
+              <elements><DOMSymbolInstance libraryItemName="Codex/前治安官/原生/sprite/Symbol 144" name="man" selected="true" centerPoint3DX="279.4" centerPoint3DY="158.85">
+                  <matrix>
+                    <Matrix a="0.277084350585938" d="0.276901245117188" tx="3.4" ty="-62.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent (load) {
+    _parent._y = _parent.Z轴坐标;
+    _parent.倒地 = true;
+    _parent.格斗架势 = true;
+    if (_parent._name == _root.控制目标 && !_root.限制系统.DisableKnockdownProtection)
+    {
+        _parent.无敌 = true;
+        _parent.防止无限飞 = true;
+    }
+    this.onUnload = function()
+    {
+        _parent.倒地 = false;
+        if (_parent._name == _root.控制目标)
+        {
+            _parent.无敌 = false;
+            _parent.防止无限飞 = false;
+        }
+    };
+}]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="15" duration="1" keyMode="9728">
+              <elements><DOMSymbolInstance libraryItemName="Codex/前治安官/原生/sprite/Symbol 825" name="man" centerPoint3DX="621.55" centerPoint3DY="340.05">
+                  <matrix>
+                    <Matrix a="0.277084350585938" d="0.276901245117188" tx="3.4" ty="-62.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent (load) {
+    function 死()
+    {
+        _parent.死亡检测();
+    }
+    _parent._y = _parent.Z轴坐标;
+    _parent.倒地 = true;
+    _parent.格斗架势 = true;
+    if(_parent.死亡撤退){
+        gotoAndPlay("撤退");
+    }else{
+        _root.主角函数.跳转到招式(this, "a", 6);
+    }
+    this.onUnload = function()
+    {
+        _parent.倒地 = false;
+    };
+}]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="16" duration="1" keyMode="9728">
+              <elements><DOMSymbolInstance libraryItemName="Codex/前治安官/转阶段击倒" name="man" centerPoint3DX="340.55" centerPoint3DY="234.9">
+                  <matrix>
+                    <Matrix a="0.277084350585938" d="0.276901245117188" tx="3.4" ty="-62.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="17" duration="1" keyMode="9728">
+              <elements><DOMSymbolInstance libraryItemName="Codex/前治安官/转阶段落地" name="man" selected="true" centerPoint3DX="279.4" centerPoint3DY="158.85">
+                  <matrix>
+                    <Matrix a="0.277084350585938" d="0.276901245117188" tx="3.4" ty="-62.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="18" duration="1" keyMode="9728">
+              <elements><DOMSymbolInstance libraryItemName="Codex/前治安官/转阶段起身" name="man" selected="true" centerPoint3DX="279.4" centerPoint3DY="158.85">
+                  <matrix>
+                    <Matrix a="0.277084350585938" d="0.276901245117188" tx="3.4" ty="-62.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="持枪下身下层" color="#FF800A" locked="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="1" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="1" duration="1" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="2" duration="1" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="3" duration="1" keyMode="9728">
+              <elements><DOMSymbolInstance libraryItemName="Codex/前治安官/原生/移动射击动画层/长枪-手枪站立左腿" centerPoint3DX="232.3" centerPoint3DY="217.65">
+                  <matrix>
+                    <Matrix a="0.277084350585938" d="0.276992797851563" tx="3.4" ty="-62.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="4" duration="1" keyMode="9728">
+              <elements><DOMSymbolInstance libraryItemName="Codex/前治安官/原生/移动射击动画层/长枪-手枪行走左腿" centerPoint3DX="232.3" centerPoint3DY="217.65">
+                  <matrix>
+                    <Matrix a="0.277084350585938" d="0.276992797851563" tx="3.4" ty="-62.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent (enterFrame) {
+    if(_parent.移动射击倒退){
+        if(this._currentframe == 1){
+            gotoAndStop("end");
+        }else{
+            gotoAndStop(this._currentframe-1);
+        }
+    }else{
+        play();
+    }
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="5" duration="1" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="6" duration="1" keyMode="9728">
+              <elements><DOMSymbolInstance libraryItemName="Codex/前治安官/原生/移动射击动画层/长枪-手枪站立左腿" centerPoint3DX="232.3" centerPoint3DY="217.65">
+                  <matrix>
+                    <Matrix a="0.277084350585938" d="0.276992797851563" tx="3.4" ty="-62.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="7" duration="1" keyMode="9728">
+              <elements><DOMSymbolInstance libraryItemName="Codex/前治安官/原生/移动射击动画层/长枪-手枪行走左腿" centerPoint3DX="232.3" centerPoint3DY="217.65">
+                  <matrix>
+                    <Matrix a="0.277084350585938" d="0.276992797851563" tx="3.4" ty="-62.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent (enterFrame) {
+    if(_parent.移动射击倒退){
+        if(this._currentframe == 1){
+            gotoAndStop("end");
+        }else{
+            gotoAndStop(this._currentframe-1);
+        }
+    }else{
+        play();
+    }
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="8" duration="1" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="9" duration="1" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="10" duration="1" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="11" duration="1" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="12" duration="1" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="13" duration="1" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="14" duration="1" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="15" duration="1" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="16" duration="1" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="17" duration="1" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="18" duration="1" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="底层背景" color="#9933CC" locked="true" outline="true" useOutlineView="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="1" keyMode="9728">
+              <elements><DOMSymbolInstance libraryItemName="Codex/前治安官/原生/属性标签标志元件/底层背景标签" name="底层背景">
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="1" duration="1" keyMode="9728">
+              <elements><DOMSymbolInstance libraryItemName="Codex/前治安官/原生/属性标签标志元件/底层背景标签" name="底层背景">
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="2" duration="1" keyMode="9728">
+              <elements><DOMSymbolInstance libraryItemName="Codex/前治安官/原生/属性标签标志元件/底层背景标签" name="底层背景">
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="3" duration="1" keyMode="9728">
+              <elements><DOMSymbolInstance libraryItemName="Codex/前治安官/原生/属性标签标志元件/底层背景标签" name="底层背景">
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="4" duration="1" keyMode="9728">
+              <elements><DOMSymbolInstance libraryItemName="Codex/前治安官/原生/属性标签标志元件/底层背景标签" name="底层背景">
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="5" duration="1" keyMode="9728">
+              <elements><DOMSymbolInstance libraryItemName="Codex/前治安官/原生/属性标签标志元件/底层背景标签" name="底层背景">
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="6" duration="1" keyMode="9728">
+              <elements><DOMSymbolInstance libraryItemName="Codex/前治安官/原生/属性标签标志元件/底层背景标签" name="底层背景">
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="7" duration="1" keyMode="9728">
+              <elements><DOMSymbolInstance libraryItemName="Codex/前治安官/原生/属性标签标志元件/底层背景标签" name="底层背景">
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="8" duration="1" keyMode="9728">
+              <elements><DOMSymbolInstance libraryItemName="Codex/前治安官/原生/属性标签标志元件/底层背景标签" name="底层背景">
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="9" duration="1" keyMode="9728">
+              <elements><DOMSymbolInstance libraryItemName="Codex/前治安官/原生/属性标签标志元件/底层背景标签" name="底层背景">
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="10" duration="1" keyMode="9728">
+              <elements><DOMSymbolInstance libraryItemName="Codex/前治安官/原生/属性标签标志元件/底层背景标签" name="底层背景">
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="11" duration="1" keyMode="9728">
+              <elements><DOMSymbolInstance libraryItemName="Codex/前治安官/原生/属性标签标志元件/底层背景标签" name="底层背景">
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="12" duration="1" keyMode="9728">
+              <elements><DOMSymbolInstance libraryItemName="Codex/前治安官/原生/属性标签标志元件/底层背景标签" name="底层背景">
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="13" duration="1" keyMode="9728">
+              <elements><DOMSymbolInstance libraryItemName="Codex/前治安官/原生/属性标签标志元件/底层背景标签" name="底层背景">
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="14" duration="1" keyMode="9728">
+              <elements><DOMSymbolInstance libraryItemName="Codex/前治安官/原生/属性标签标志元件/底层背景标签" name="底层背景">
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="15" duration="1" keyMode="9728">
+              <elements><DOMSymbolInstance libraryItemName="Codex/前治安官/原生/属性标签标志元件/底层背景标签" name="底层背景">
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="16" duration="1" keyMode="9728">
+              <elements><DOMSymbolInstance libraryItemName="Codex/前治安官/原生/属性标签标志元件/底层背景标签" name="底层背景">
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="17" duration="1" keyMode="9728">
+              <elements><DOMSymbolInstance libraryItemName="Codex/前治安官/原生/属性标签标志元件/底层背景标签" name="底层背景">
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="18" duration="1" keyMode="9728">
+              <elements><DOMSymbolInstance libraryItemName="Codex/前治安官/原生/属性标签标志元件/底层背景标签" name="底层背景">
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="啥时候把阴影放到外面图层来啊" color="#9933CC" locked="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="1" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="1" duration="1" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="2" duration="1" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="3" duration="1" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="4" duration="1" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="5" duration="1" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="6" duration="1" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="7" duration="1" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="8" duration="1" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="9" duration="1" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="10" duration="1" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="11" duration="1" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="12" duration="1" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="13" duration="1" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="14" duration="1" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="15" duration="1" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="16" duration="1" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="17" duration="1" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="18" duration="1" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

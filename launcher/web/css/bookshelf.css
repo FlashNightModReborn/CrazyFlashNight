@@ -149,3 +149,20 @@
 #bookshelf-detail .bookshelf-record-reward{font-size:16px}
 #bookshelf-detail .bookshelf-run-records{padding:10px 14px}
 #bookshelf-detail .bookshelf-record-summary{margin-bottom:6px}
+
+/* The v4 scene uses the existing logical canvas and shared PanelScale. */
+.bookshelf-panel.bookshelf-nav-collapsed:not(.is-reading):not(.is-original) .bookshelf-body{grid-template-columns:minmax(0,1fr)}
+.bookshelf-panel.bookshelf-nav-collapsed:not(.is-reading):not(.is-original) .bookshelf-body>nav{display:none}
+.bookshelf-panel:is(.is-reading,.is-original) #bookshelf-toggle-nav{display:none}
+.bookshelf-panel .v4-scene-ui{position:absolute;inset:0;pointer-events:none;font-size:14px}
+.bookshelf-panel .v4-scene-ui button{pointer-events:auto;min-height:36px;padding:6px 9px;font-size:14px;background:#1c2936;color:#e5eaf1}
+.bookshelf-panel .v4-scene-ui button:hover:not(:disabled){background:#304356}
+.bookshelf-panel .v4-browser-tools{position:absolute;top:10px;left:10px;right:10px;display:flex;flex-wrap:wrap;gap:5px}
+.bookshelf-panel .v4-inspector{position:absolute;right:12px;bottom:28px;max-width:310px;max-height:calc(100% - 88px);overflow:auto;box-sizing:border-box;padding:12px;background:#17222def;border:1px solid #71818b;border-radius:8px;pointer-events:auto;box-shadow:0 8px 28px #0005;scrollbar-width:thin;scrollbar-color:#71818b #17222d}
+.bookshelf-panel .v4-selection{font-size:16px;overflow-wrap:anywhere}
+.bookshelf-panel .v4-help{margin:8px 0;color:#bac5d1;line-height:1.5}
+.bookshelf-panel .v4-actions,.bookshelf-panel .v4-disc-list{display:flex;flex-wrap:wrap;gap:5px;margin-top:7px}
+.bookshelf-panel .v4-disc-list button[aria-pressed=true]{border-color:#d8bd8f}
+.bookshelf-panel .v4-layout-label{position:absolute;bottom:8px;left:12px;color:#b1c0ce;font-size:12px;pointer-events:none}
+.bookshelf-panel .v4-archive-detail{white-space:pre-line;line-height:1.7;margin-top:8px;overflow-wrap:anywhere}
+.bookshelf-panel .v4-archive-detail button{display:block;margin:5px 0;width:100%;text-align:left}

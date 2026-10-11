@@ -87,7 +87,9 @@ powershell -NoProfile -ExecutionPolicy Bypass -File launcher/perf/flash-composit
 
 ## 共享数字层与呈现诊断
 
-2026-10-08 工作区增量将世界和非交互伤害数字接入同一 HWND 的 DirectComposition 树。数字仍按实际范围绘制和上传，沿用量化增长缓存；旧数字窗口在共享路径可用时不显示。Native HUD、PlayerInfo、光标和大多数 Web 面板尚未迁移，多个 visual 也不等于单一交换链或绕过 DWM/MPO。实施边界、诊断与待办见[启动与统一呈现优化](../../../docs/startup-input-presentation-optimization.md)。
+当前世界、伤害数字、PlayerInfo 资源/底栏/Buff 和完整主 HUD 已接入共享呈现，HUD 槽保留原层序与成组回退。光标和多数 Web 面板仍有独立呈现归属，共享输出不等于绕过 DWM/MPO。实施与部署边界见[启动与统一呈现优化](../../../docs/startup-input-presentation-optimization.md)。
+
+2026-10-10 共享主 HUD 脏区域重绘和 Native 有界像素缓冲复用已形成隔离候选；成本分解、测量入口、候选哈希与 GPU/CPU 证据边界见[专项记录](../../../docs/shared-hud-render-cost-2026-10-10.md)。现有 `CF7_PLAYER_HUD_PROFILE=1` 可记录主 HUD 绘制/提交及异步 Native GPU 区间，默认关闭。它不测 DWM、物理扫描或真实战斗 FPS。
 
 只在已构建且完成清单核验的隔离候选上运行共享像素夹具，不启动真实游戏或注入物理输入：
 
@@ -104,7 +106,7 @@ Remove-Item Env:CF7_TEST_SHARED_WORLD_CANDIDATE
 <a id="首版动态分辨率调度"></a>
 ## 动态分辨率与性能方案
 
-2026-10-09 当前开发批：C# 是唯一策略与本机配置权威，AS2 只测量 Flash 实际帧时间、执行完整表现目标并回报；断连保持末次有效状态。AS2 自主后备、前馈 hold、旧两字段 P 指令及 Host 旧两档控制器已退役。旧存档“性能等级上限”仅保留 schema 兼容，不再约束调度，Web 不再展示该控制。维护者已反馈“可行”并授权合并上游、提交推送；本批仍为 `NOT_DEPLOYED`，具体回归范围见[本机性能方案验收记录](../../../docs/设置-Web-Panel-人工体验验收-2026-08-21.md#2026-10-09-本机性能方案开发批)，不将该反馈扩大为全部战斗、弱机收益或跨屏 DPI 证明。
+2026-10-09 开发版性能方案：C# 是唯一策略与本机配置权威，AS2 只测量 Flash 实际帧时间、执行完整表现目标并回报；断连保持末次有效状态。AS2 自主后备、前馈 hold、旧两字段 P 指令及 Host 旧两档控制器已退役。旧存档“性能等级上限”仅保留 schema 兼容，不再约束调度，Web 不再展示该控制。维护者反馈“可行”并授权正式发布后，本批已完成 RuntimeBundleV2 promotion 与普通入口启动/关闭检查，测试员可从普通正式入口回归；身份与证明见[本轮发布记录](../../../docs/runtime-build-reproducibility.md#2026-10-09-本机性能方案与统一画面调度正式发布)。具体回归范围见[本机性能方案验收记录](../../../docs/设置-Web-Panel-人工体验验收-2026-08-21.md#2026-10-09-本机性能方案开发批)，不将反馈或入口检查扩大为全部战斗、弱机收益或跨屏 DPI 证明。
 
 `PerformancePolicy` 持有 `通用/性能/画质`、`自动/固定` 与可选绝对绘制高度上限，存于 Host `UserPrefs`，只保留当前与上一组；相同方案重应用不覆盖撤销点，撤销后消耗上一组。固定模式采用所选预设最高允许的完整目标；它不固定一个随 AS2 preset 改义的数组序号。内部档位唯一来源为 `RenderSchedule.Stages`，首版参数为起点，不声称全硬件最优。配置界面先不开放档位编辑、任意策略或学习系统。
 

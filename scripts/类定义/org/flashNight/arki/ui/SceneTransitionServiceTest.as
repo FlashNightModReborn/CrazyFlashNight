@@ -6,6 +6,8 @@ class org.flashNight.arki.ui.SceneTransitionServiceTest {
     private static var sent:Array;
     private static var counters:Object;
     private static var released:Array;
+    private static var calibrationReleases:Array;
+    private static var ordinaryReadyCount:Number;
     private static function onReleased(world:Object,token:String,identity:Object):Void {
         released.push({world:world,identity:identity});
     }
@@ -13,9 +15,10 @@ class org.flashNight.arki.ui.SceneTransitionServiceTest {
         if (ok) passed++; else {failed++; trace("[SceneTransition FAIL] "+label);}
     }
     private static function fixture(frame:Number):Object {
-        counters = {plays:0,stops:0,retries:0,returns:0};
+        counters = {plays:0,stops:0,retries:0,returns:0,jumps:0};
         return {_currentframe:frame,
             play:function():Void {counters.plays++;},stop:function():Void {counters.stops++;},
+            gotoAndPlay:function(frame:Number):Void {counters.jumps++;counters.target=frame;this._currentframe=frame;},
             淡出跳转帧:function(frame:String,token:String):Void {counters.retries++;}};
     }
     public static function runAllTests():Void {
@@ -154,6 +157,47 @@ class org.flashNight.arki.ui.SceneTransitionServiceTest {
         check(counters.returns==1 && _root.场景进入位置名=="出生地","return uses existing authority and spawn");
         SceneTransitionService.clear();
         check(sent[sent.length-1].phase=="hide","terminal identity tombstone emitted");
+        fade=fixture(6); _root.淡出动画=fade; SceneTransitionService.begin(fade);
+        var managedCleanup:Boolean=SceneTransitionService.cleanupCompleted(fade);
+        SceneTransitionService.tick(); SceneTransitionService.tick();
+        check(!managedCleanup && counters.jumps==0,"cleanup advancement cannot substitute for curtain coverage");
+        cover=sent[sent.length-1];
+        SceneTransitionService.presented({requestId:cover.requestId,revision:cover.revision,kind:"covered"});
+        managedCleanup=SceneTransitionService.cleanupCompleted({_currentframe:6});
+        check(!managedCleanup && counters.stops==0,"foreign fade cannot schedule timeline advancement");
+        SceneTransitionService.cleanupCompleted(fade);
+        check(counters.stops==1 && counters.jumps==0,"successful cleanup pins only the waiting frame");
+        managedCleanup=SceneTransitionService.cleanupCompleted(fade);
+        check(managedCleanup && counters.stops==1,"duplicate cleanup completion retains frame ownership without resetting its fence");
+        SceneTransitionService.tick();
+        check(counters.jumps==0,"cleanup preserves an EnterFrame boundary");
+        SceneTransitionService.tick();
+        check(counters.jumps==1 && counters.target==13,"cleanup crosses only blank frames and still enters original load frame");
+        fade._currentframe=15; SceneTransitionService.initializationCompleted(fade);
+        SceneTransitionService.tick(); SceneTransitionService.tick();
+        check(counters.jumps==1,"task checks and frame-17 save guard cannot be skipped");
+        fade._currentframe=17; SceneTransitionService.initializationCompleted(fade);
+        SceneTransitionService.tick();
+        check(counters.jumps==1,"initialization preserves its own frame boundary");
+        SceneTransitionService.tick();
+        check(counters.jumps==2 && counters.target==30,"initialization advances to original reveal gate");
+        SceneTransitionService.awaitReveal(fade);
+        check(sent[sent.length-1].phase!="reveal","shortened wait still requires new-world SceneReady");
+        SceneTransitionService.clear();
+        fade=fixture(6); _root.淡出动画=fade; SceneTransitionService.begin(fade); cover=sent[sent.length-1];
+        SceneTransitionService.presented({requestId:cover.requestId,revision:cover.revision,kind:"covered"});
+        SceneTransitionService.cleanupCompleted(fade); SceneTransitionService.clear();
+        SceneTransitionService.tick(); SceneTransitionService.tick();
+        check(counters.jumps==0,"retired session cannot perform a scheduled jump");
+        SceneTransitionService.begin(fade); cover=sent[sent.length-1];
+        SceneTransitionService.presented({requestId:cover.requestId,revision:cover.revision,kind:"covered"});
+        SceneTransitionService.cleanupCompleted(fade); fade._currentframe=37; SceneTransitionService.failed(fade);
+        SceneTransitionService.tick(); SceneTransitionService.tick();
+        check(counters.jumps==0,"load failure cancels a pending blank-frame skip");
+        SceneTransitionService.clear();
+        check(!SceneTransitionService.cleanupCompleted(fade),
+            "unmanaged legacy cleanup can resume its original fade timeline");
+        testCalibrationPresentation();
         _root.淡出动画=old.fade; _root.gameworld=old.world; _root.加载背景列表=old.data;
         _root.初期关卡列表=old.stages; _root.关卡标志=old.flag; _root.主线任务进度=old.progress;
         _root.从加载失败返回=old.returned; _root.场景进入位置名=old.entry;
@@ -173,5 +217,107 @@ class org.flashNight.arki.ui.SceneTransitionServiceTest {
         var reveal:Object=sent[sent.length-1];
         SceneTransitionService.presented({requestId:reveal.requestId,revision:reveal.revision,kind:"revealed"});
         return fade;
+    }
+
+    private static function onCalibrationReleased(owner:Object,context:Object,world:Object,
+            identity:Object,fade:Object,projection:Object):Void {
+        calibrationReleases.push({owner:owner,context:context,world:world,identity:identity,
+            fade:fade,projection:projection});
+    }
+    private static function onOrdinaryReady(world:Object,token:String,identity:Object):Void {
+        ordinaryReadyCount++;
+    }
+    private static function calibrationFixture(holder:MovieClip):Object {
+        SceneTransitionService.clear();
+        if (holder.world != undefined) holder.world.removeMovieClip();
+        var previous:MovieClip=holder.createEmptyMovieClip("world",1);
+        _root.gameworld=previous;
+        var previousIdentity:Object=org.flashNight.arki.scene.StageReturnFlow.worldIdentity(previous);
+        var fade:Object=fixture(5); _root.淡出动画=fade;
+        SceneTransitionService.begin(fade); var cover:Object=sent[sent.length-1];
+        SceneTransitionService.presented({requestId:cover.requestId,revision:cover.revision,kind:"covered"});
+        previous.removeMovieClip();
+        var world:MovieClip=holder.createEmptyMovieClip("world",1);
+        _root.gameworld=world; world._arenaCalibrationStage=true;
+        var identity:Object=org.flashNight.arki.scene.StageReturnFlow.worldIdentity(world);
+        fade._currentframe=17; SceneTransitionService.tick(); SceneTransitionService.setTip(fade,"calibration");
+        return {world:world,identity:identity,previous:previous,previousIdentity:previousIdentity,
+            fade:fade,projection:fade.__transitionProjectionIdentity,owner:{token:"calibration.owner"},
+            context:{workerId:"w01",sessionEpoch:"session01",assignmentId:"assignment01",attemptId:"attempt01",
+                batchId:"batch01",manifestHash:"manifest01",caseId:"case01",caseHash:"casehash01",runId:"run01",repeatIndex:1}};
+    }
+    private static function readyCalibration(value:Object):Boolean {
+        return SceneTransitionService.calibrationWorldReady(value.world,value.identity,value.fade,
+            value.projection,value.owner,value.context,onCalibrationReleased);
+    }
+    private static function testCalibrationPresentation():Void {
+        var oldWorld:Object=_root.gameworld, oldFade:Object=_root.淡出动画;
+        var ordinaryBefore:Number=released.length;
+        ordinaryReadyCount=0; calibrationReleases=[];
+        EventBus.getInstance().subscribe("SceneReady",onOrdinaryReady,SceneTransitionServiceTest);
+        var holder:MovieClip=_root.createEmptyMovieClip("__calibrationCurtainFixture",_root.getNextHighestDepth());
+        var value:Object=calibrationFixture(holder);
+        check(value.previous===value.world && value.previousIdentity!==value.identity,
+            "real same-path MovieClip rebind keeps a distinct captured ordinary identity");
+        check(!SceneTransitionService.calibrationWorldReady(value.world,value.previousIdentity,value.fade,
+            value.projection,value.owner,value.context,onCalibrationReleased),"old same-path world identity cannot admit calibration readiness");
+        check(!SceneTransitionService.calibrationWorldReady(value.world,value.identity,value.fade,
+            {},value.owner,value.context,onCalibrationReleased),"foreign fade projection identity is rejected");
+        check(!SceneTransitionService.calibrationWorldReady(value.world,value.identity,value.fade,
+            value.projection,value.owner,value.context,null),"missing release callback cannot borrow ordinary arrival");
+        value.world._arenaCalibrationStage=false;
+        check(!readyCalibration(value),"ordinary world cannot use calibration presentation admission");
+        value.world._arenaCalibrationStage=true;
+        check(readyCalibration(value),"exact no-player world admits dedicated visual readiness");
+        check(sent[sent.length-1].phase=="loading" && calibrationReleases.length==0 && ordinaryReadyCount==0,
+            "visual readiness before frame 30 neither reveals nor publishes ordinary SceneReady");
+        check(readyCalibration(value),"duplicate exact dedicated readiness is idempotent");
+        check(!SceneTransitionService.calibrationWorldReady(value.world,value.identity,value.fade,
+            value.projection,{},value.context,onCalibrationReleased),"another owner cannot replace the dedicated waiter");
+        check(!SceneTransitionService.calibrationWorldReady(value.world,value.identity,value.fade,
+            value.projection,value.owner,{},onCalibrationReleased),"another context cannot replace the frozen dedicated waiter");
+        value.fade._currentframe=30; SceneTransitionService.awaitReveal(value.fade);
+        var reveal:Object=sent[sent.length-1];
+        check(reveal.phase=="reveal" && calibrationReleases.length==0,
+            "frame 30 asks the existing native/Web fence without releasing the run");
+        var plays:Number=counters.plays;
+        SceneTransitionService.presented({requestId:reveal.requestId,revision:reveal.revision-1,kind:"revealed"});
+        check(counters.plays==plays && calibrationReleases.length==0,"stale reveal cannot release the calibration tail");
+        SceneTransitionService.presented({requestId:reveal.requestId,revision:reveal.revision,kind:"revealed"});
+        check(counters.plays==plays+1 && calibrationReleases.length==0,"exact reveal still waits for original frame 36");
+        value.fade._currentframe=36; SceneTransitionService.tick();
+        check(calibrationReleases.length==1 && calibrationReleases[0].owner===value.owner
+            && calibrationReleases[0].context===value.context && calibrationReleases[0].identity===value.identity
+            && calibrationReleases[0].projection===value.projection && sent[sent.length-1].phase=="hide",
+            "successful tail hides first and returns the exact dedicated world/context once");
+        check(released.length==ordinaryBefore && ordinaryReadyCount==0,
+            "dedicated release emits neither ordinary SceneReady nor SceneTransitionReleased");
+        SceneTransitionService.clear();
+        check(calibrationReleases.length==1,"duplicate clear cannot replay the dedicated release");
+
+        var modes:Array=["early","frame1","error","world","epoch","fade"];
+        for(var i:Number=0;i<modes.length;i++) {
+            value=calibrationFixture(holder); readyCalibration(value);
+            value.fade._currentframe=30; SceneTransitionService.awaitReveal(value.fade);
+            reveal=sent[sent.length-1];
+            SceneTransitionService.presented({requestId:reveal.requestId,revision:reveal.revision,kind:"revealed"});
+            if(modes[i]=="early") SceneTransitionService.clear();
+            else if(modes[i]=="frame1") {value.fade._currentframe=1;SceneTransitionService.tick();}
+            else if(modes[i]=="error") {value.fade._currentframe=37;SceneTransitionService.failed(value.fade);SceneTransitionService.clear();}
+            else {
+                if(modes[i]=="world") {
+                    value.world.removeMovieClip(); _root.gameworld=holder.createEmptyMovieClip("world",1);
+                    _root.gameworld._arenaCalibrationStage=true;
+                    org.flashNight.arki.scene.StageReturnFlow.worldIdentity(_root.gameworld);
+                } else if(modes[i]=="epoch") org.flashNight.arki.weather.WorldLightingBridge.sceneChanged();
+                else value.fade.__transitionProjectionIdentity={};
+                value.fade._currentframe=36; SceneTransitionService.tick();
+            }
+            check(calibrationReleases.length==1 && released.length==ordinaryBefore && ordinaryReadyCount==0,
+                "cancelled or replaced dedicated presentation cannot release a run: "+modes[i]);
+        }
+        SceneTransitionService.clear(); holder.removeMovieClip();
+        _root.gameworld=oldWorld; _root.淡出动画=oldFade;
+        EventBus.getInstance().unsubscribe("SceneReady",onOrdinaryReady,SceneTransitionServiceTest);
     }
 }

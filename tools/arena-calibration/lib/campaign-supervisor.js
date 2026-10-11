@@ -10,6 +10,12 @@ const {
 } = require("./arena-calibration-core");
 const { assertSchemaInstance } = require("./schema-registry");
 const {
+  persistImmutableRecord,
+  sha256Bytes,
+  snapshotBytes,
+  writeImmutableJson,
+} = require("./immutable-evidence");
+const {
   validateIdleGrant,
 } = require("./campaign-resource-arbiter");
 const {
@@ -94,6 +100,8 @@ function validateResultRowsAgainstManifest(rows, manifest, label, options) {
 function executionClosureIdentity(root, manifestHash, runtimeIdentity) {
   const sourcePaths = [
     "tools/arena-calibration/lib/arena-calibration-core.js",
+    "tools/arena-calibration/lib/immutable-evidence.js",
+    "tools/arena-calibration/lib/unattended-save-safety.js",
     "tools/arena-calibration/run-unattended.js",
     "tools/arena-calibration/schemas/case-manifest.schema.json",
     "tools/arena-calibration/schemas/result.schema.json",
@@ -301,9 +309,12 @@ class CampaignSupervisor {
     const manifestPath = resolveInsideRoot(this.projectRoot, input.manifestPath, "shard manifest");
     const resultPath = resolveInsideRoot(this.projectRoot, input.resultPath, "shard result JSONL");
     const runReportPath = resolveInsideRoot(this.projectRoot, input.runReportPath, "shard run report");
-    const manifest = readJsonFile(manifestPath);
-    const rows = readJsonLines(resultPath);
-    const report = readJsonFile(runReportPath);
+    const manifestBytes = fs.readFileSync(manifestPath);
+    const resultBytes = fs.readFileSync(resultPath);
+    const reportBytes = fs.readFileSync(runReportPath);
+    const manifest = JSON.parse(manifestBytes.toString("utf8"));
+    const rows = resultBytes.toString("utf8").split(/\r?\n/).filter((line) => line.trim()).map((line) => JSON.parse(line));
+    const report = JSON.parse(reportBytes.toString("utf8"));
     const validation = validateResultRowsAgainstManifest(rows, manifest, input.shardId, {
       allowPartial: input.allowPartial === true,
     });
@@ -313,7 +324,8 @@ class CampaignSupervisor {
         && entry.manifestHash === manifest.manifestHash
         && entry.resultPath === resultPathRelative)
       : null;
-    const topLevelBinding = report.batchId === manifest.batchId && report.rows === rows.length;
+    const topLevelBinding = report.batchId === manifest.batchId && report.manifestHash === manifest.manifestHash
+      && report.resultPath === resultPathRelative && report.rows === rows.length;
     const attemptBinding = reportAttempt && reportAttempt.resultRows === rows.length;
     if (input.allowPartial === true) {
       if (!attemptBinding && !topLevelBinding) {
@@ -340,6 +352,9 @@ class CampaignSupervisor {
     if (input.recordAttention === false && (input.allowPartial !== true || input.complete === true)) {
       throw new Error("attention may only be deferred for an incomplete partial import");
     }
+    if (input.recordAttention !== false) verifyAttentionMeasurement(input.attentionMeasurement, {
+      campaignId: this.campaignId, shardId: safeId(input.shardId, "shard"), shardKind: input.shardKind || "unattended",
+    });
 
     const createdAt = this.clock();
     const executionArtifactIdentity = executionClosureIdentity(this.projectRoot, manifest.manifestHash, {
@@ -350,7 +365,8 @@ class CampaignSupervisor {
       payloadClosure: report.runtimeIdentity.payloadClosure,
       verified: report.runtimeIdentity.verified,
     });
-    const compatibility = createCompatibilityReceipt({
+    const artifactDir = path.join(this.journal.root, "artifacts");
+    const compatibilityInput = createCompatibilityReceipt({
       receiptId: `compat-${safeId(input.shardId, "shard")}-${manifest.manifestHash.slice(7, 23)}`,
       shardId: input.shardId,
       executionArtifactIdentity,
@@ -366,11 +382,10 @@ class CampaignSupervisor {
       reason: input.compatibilityReason || "Campaign-only orchestration changes do not enter the frozen battle semantics closure.",
       createdAt,
     });
-    if (!compatibility.compatible) throw new Error("execution artifact is not compatible with the requested battle semantics cohort");
+    if (!compatibilityInput.compatible) throw new Error("execution artifact is not compatible with the requested battle semantics cohort");
     const statusCounts = {};
     rows.forEach((row) => { statusCounts[row.status] = (statusCounts[row.status] || 0) + 1; });
-    const resultSha256 = sha256File(resultPath);
-    const artifactSuffix = resultSha256.slice("sha256:".length, "sha256:".length + 16);
+    const resultSha256 = sha256Bytes(resultBytes);
     const runKey = `${input.shardId}|${manifest.manifestHash}|${resultSha256}`;
     const rowRunKeys = rows.map((row) => resultRunKey(manifest.manifestHash, row));
     const committedForShard = this.journal.state.events
@@ -383,20 +398,69 @@ class CampaignSupervisor {
     if (input.complete === true && projectedRunKeys.size !== validation.expectedRows) {
       throw new Error(`completed shard has ${projectedRunKeys.size} durable rows; expected ${validation.expectedRows}`);
     }
+    // A repeated logical run may be excluded only when the original durable
+    // bytes remain resolvable and its result content agrees. Never let a new
+    // report turn a conflicting result into a successful duplicate.
+    const priorArtifacts = new Map();
+    let priorCompatibility = null;
+    rows.forEach((row, index) => {
+      const prior = this.journal.state.events.find(({ event }) => event.eventType === "result_committed"
+        && event.payload.runKey === rowRunKeys[index]);
+      if (!prior) return;
+      const payload = prior.event.payload;
+      let previousRows = priorArtifacts.get(payload.artifactId);
+      if (!previousRows) {
+        const previous = readJsonFile(path.join(artifactDir, `${payload.artifactId}.json`));
+        if (previous.artifactHash !== payload.artifactHash
+            || previous.artifactHash !== sha256OfValue(withoutHash(previous, "artifactHash"))) {
+          throw new Error("prior durable artifact integrity mismatch");
+        }
+        const previousManifest = readJsonFile(resolveInsideRoot(this.projectRoot, previous.manifestPath, "prior durable manifest"));
+        verifyManifestIntegrity(previousManifest, "prior durable manifest");
+        if (previousManifest.manifestHash !== previous.manifestHash) throw new Error("prior durable manifest identity mismatch");
+        const previousReport = resolveInsideRoot(this.projectRoot, previous.runReportPath, "prior durable report");
+        if (sha256File(previousReport) !== previous.runReportSha256) throw new Error("prior durable report integrity mismatch");
+        if (!priorCompatibility) priorCompatibility = fs.readdirSync(artifactDir)
+          .filter((name) => /^compat-.*\.json$/.test(name)).map((name) => readJsonFile(path.join(artifactDir, name)));
+        const receipts = priorCompatibility.filter((entry) => entry.receiptHash === previous.cohortCompatibilityReceiptRef);
+        if (payload.compatibilityReceiptHash !== previous.cohortCompatibilityReceiptRef || receipts.length !== 1
+            || receipts[0].receiptHash !== sha256OfValue(withoutHash(receipts[0], "receiptHash"))) {
+          throw new Error("prior durable compatibility receipt integrity mismatch");
+        }
+        const previousResult = resolveInsideRoot(this.projectRoot, previous.resultPath, "prior durable result");
+        if (sha256File(previousResult) !== previous.resultSha256) throw new Error("prior durable result integrity mismatch");
+        previousRows = new Map(readJsonLines(previousResult).map((entry) => [resultRunKey(previous.manifestHash, entry), entry]));
+        priorArtifacts.set(payload.artifactId, previousRows);
+      }
+      if (sha256OfValue(previousRows.get(rowRunKeys[index]) || null) !== sha256OfValue(row)) {
+        throw new Error(`conflicting durable result identity: ${rowRunKeys[index]}`);
+      }
+    });
+    const importKey = sha256OfValue({ shardId: input.shardId, manifestHash: manifest.manifestHash, resultPath: resultPathRelative });
+    writeImmutableJson(path.join(artifactDir, "imports", `${importKey.slice(7)}.json`), {
+      manifestSha256: sha256Bytes(manifestBytes), resultSha256, runReportSha256: sha256Bytes(reportBytes),
+      compatibilityIdentity: sha256OfValue(withoutHash(withoutHash(compatibilityInput, "createdAt"), "receiptHash")),
+    });
+    const snapshots = path.join(artifactDir, "raw");
+    const manifestSnapshot = snapshotBytes(snapshots, manifestBytes, "json");
+    const resultSnapshot = snapshotBytes(snapshots, resultBytes, "jsonl");
+    const reportSnapshot = snapshotBytes(snapshots, reportBytes, "json");
+    const compatibility = persistImmutableRecord(artifactDir, "compat", compatibilityInput, "receiptId", "receiptHash",
+      (value) => assertSchemaInstance(COMPATIBILITY_SCHEMA, value, "cohort compatibility receipt"));
     const complete = input.complete === true
       || (input.complete !== false && validation.complete && report.status === "completed");
-    const artifact = {
+    const artifactInput = {
       schema: EXECUTION_ARTIFACT_SCHEMA,
-      artifactId: safeId(`execution-${input.shardId}-${artifactSuffix}`, "execution-artifact"),
+      artifactId: "pending",
       campaignId: this.campaignId,
       shardId: safeId(input.shardId, "shard"),
       runKey,
-      manifestPath: relativePath(this.projectRoot, manifestPath),
+      manifestPath: relativePath(this.projectRoot, manifestSnapshot.filePath),
       manifestHash: manifest.manifestHash,
-      resultPath: resultPathRelative,
+      resultPath: relativePath(this.projectRoot, resultSnapshot.filePath),
       resultSha256,
-      runReportPath: relativePath(this.projectRoot, runReportPath),
-      runReportSha256: sha256File(runReportPath),
+      runReportPath: relativePath(this.projectRoot, reportSnapshot.filePath),
+      runReportSha256: reportSnapshot.sha256,
       runtimeIdentity: {
         runtimeMode: report.runtimeIdentity.runtimeMode,
         processPath: report.runtimeIdentity.processPath,
@@ -418,12 +482,8 @@ class CampaignSupervisor {
       createdAt,
       artifactHash: "",
     };
-    artifact.artifactHash = sha256OfValue(withoutHash(artifact, "artifactHash"));
-    assertSchemaInstance(EXECUTION_ARTIFACT_SCHEMA, artifact, "execution artifact");
-
-    const artifactDir = path.join(this.journal.root, "artifacts");
-    writeJsonAtomic(path.join(artifactDir, `${artifact.artifactId}.json`), artifact);
-    writeJsonAtomic(path.join(artifactDir, `${compatibility.receiptId}.json`), compatibility);
+    const artifact = persistImmutableRecord(artifactDir, "execution", artifactInput, "artifactId", "artifactHash",
+      (value) => assertSchemaInstance(EXECUTION_ARTIFACT_SCHEMA, value, "execution artifact"));
     const dispositions = rows.map((row, index) => this.journal.appendResultOnce(rowRunKeys[index], {
       shardId: artifact.shardId,
       artifactId: artifact.artifactId,

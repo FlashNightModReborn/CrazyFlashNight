@@ -176,6 +176,8 @@ try {
         Assert-Equal "bullet source/tool/resource closure is policy-bound: $bulletInput" 'policy' `
             $repositoryInputOwners[[string]$bulletInput]
     }
+    Assert-Equal 'equipment tuning runner contract is policy-bound documentation' 'policy' `
+        $repositoryInputOwners['tools/equipment-tuning/README.md']
     if ($InputClassificationOnly) {
         Write-Host "Runtime v2 input classification passed: $script:checks checks; no build, signatures or certificate writes." -ForegroundColor Green
         return

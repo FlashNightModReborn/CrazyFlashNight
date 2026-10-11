@@ -51,6 +51,9 @@ namespace CF7Launcher.Guardian.Hud
 
         /// <summary>
         /// 渲染入口。被 NativeHudOverlay 在合成 bitmap 时调用。
+        /// 必须保留调用方裁剪区；内部裁剪用 Intersect，并用 Save/Restore 恢复。
+        /// 绘制范围须在 CompositeBounds（未提供时 ScreenBounds）及容器 padding 内；
+        /// 位置、范围或显隐变化须发 BoundsOrVisibilityChanged，不能只请求重绘。
         /// </summary>
         /// <param name="g">共享 Graphics（指向 NativeHud 的 _composedBitmap）</param>
         /// <param name="dpr">设备像素比</param>

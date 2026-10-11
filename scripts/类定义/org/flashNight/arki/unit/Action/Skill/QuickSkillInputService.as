@@ -52,10 +52,10 @@ class org.flashNight.arki.unit.Action.Skill.QuickSkillInputService {
                     view,
                     keyCode
                 );
-                if (result && result.released) releasedCount++;
+                if (result.released) releasedCount++;
             }
 
-            if (releasedCount > 0 && interfaceRoot && interfaceRoot.刷新mp显示) {
+            if (releasedCount > 0 && interfaceRoot.刷新mp显示) {
                 interfaceRoot.刷新mp显示();
             }
 
@@ -188,7 +188,7 @@ class org.flashNight.arki.unit.Action.Skill.QuickSkillInputService {
 
     private static function getSkillSlot(view:Object, slotIndex:Number):Object {
         // TestLoader 的显式 fixture 仍可隔离测试输入锁存；生产读路径只认领域描述符。
-        if (view && view.__skillInputFixture === true) return view["快捷技能栏" + slotIndex];
+        if (view.__skillInputFixture === true) return view["快捷技能栏" + slotIndex];
         var descriptor:Object = SkillLoadoutService.getSlotDescriptor(slotIndex);
         if (!descriptor || descriptor.stateHealth != "ok" || descriptor.writeBlocked === true) return null;
         descriptor.__domainDescriptor = true;
@@ -204,7 +204,7 @@ class org.flashNight.arki.unit.Action.Skill.QuickSkillInputService {
     }
 
     private static function isEquippedSkill(skillSlot:Object):Boolean {
-        if (skillSlot && skillSlot.__domainDescriptor === true) {
+        if (skillSlot.__domainDescriptor === true) {
             return skillSlot.equipped === true
                 && SkillReleaseGuard.normalizeSkillName(skillSlot.skillKey) != null
                 && !isNaN(Number(skillSlot.mp)) && Number(skillSlot.mp) >= 0

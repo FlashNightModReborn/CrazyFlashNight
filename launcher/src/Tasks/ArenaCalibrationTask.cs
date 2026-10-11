@@ -10,6 +10,7 @@ using Newtonsoft.Json.Linq;
 using CF7Launcher.Bus;
 using CF7Launcher.Data;
 using CF7Launcher.Guardian;
+using CF7Launcher.ArenaWorker;
 
 namespace CF7Launcher.Tasks
 {
@@ -67,6 +68,9 @@ namespace CF7Launcher.Tasks
             public string RunId;
             public DateTime StartedAtUtc;
             public bool Aborted;
+            public JObject Identity;
+            public string TransportError;
+            public int SocketGeneration;
         }
 
         private readonly string _projectRoot;
@@ -78,6 +82,21 @@ namespace CF7Launcher.Tasks
         private static readonly Regex BatchIdPattern = new Regex("^[A-Za-z0-9][A-Za-z0-9._-]{0,63}$", RegexOptions.Compiled);
         private static readonly Regex SourceIdPattern = new Regex("^[A-Za-z0-9][A-Za-z0-9._:-]{0,127}$", RegexOptions.Compiled);
         private Action<JObject> _batchCompleted;
+        private readonly string _workerId;
+        private string _sessionEpoch;
+        private readonly bool _allowOwnedFlashRebind;
+        private readonly bool _allowFaultInjection;
+        private readonly Func<DateTime> _faultUtcNow;
+        private JObject _faultReceipt;
+        private XmlSocketPeerProcessIdentity _observedOwnedFlash;
+        private XmlSocketPeerProcessIdentity _batchOwnedFlash;
+        private string _assignmentId;
+        private string _attemptId;
+        private bool _transportPoisoned;
+        private Func<int> _readyGeneration;
+        private Func<int, string, bool> _sendForGeneration;
+        private Action<int> _retireGeneration;
+        public event Action<string> TransportPoisoned;
 
         private int _seq;
         private volatile bool _abortRequested;
@@ -94,20 +113,28 @@ namespace CF7Launcher.Tasks
         private int _totalRuns;
         private int _completedRuns;
 
-        public ArenaCalibrationTask(XmlSocketServer socket, string projectRoot)
+        public ArenaCalibrationTask(XmlSocketServer socket, string projectRoot,
+            string workerId = "guardian", string sessionEpoch = null, bool allowOwnedFlashRebind = true,
+            bool allowFaultInjection = false)
             : this(
                 projectRoot,
                 delegate { return socket != null && socket.IsClientReady; },
                 delegate(string payload) { if (socket != null) socket.Send(payload); },
-                null)
+                null, workerId, sessionEpoch, allowOwnedFlashRebind, allowFaultInjection)
         {
+            _readyGeneration = delegate { return socket != null && socket.TryGetReadyGeneration(out int gen) ? gen : 0; };
+            _sendForGeneration = delegate(int gen, string payload) { return socket != null && socket.TrySendIfGen(payload, gen); };
+            _retireGeneration = delegate(int gen) { if (socket != null) socket.ForceCloseCurrentClientIfGen(gen); };
+            if (socket != null) socket.OnClientDisconnectedForGeneration += HandleTransportDisconnected;
         }
 
         public ArenaCalibrationTask(
             string projectRoot,
             Func<bool> isClientReady,
             Action<string> send,
-            Func<int, int> timeoutMsFromFrames)
+            Func<int, int> timeoutMsFromFrames,
+            string workerId = "guardian", string sessionEpoch = null, bool allowOwnedFlashRebind = true,
+            bool allowFaultInjection = false, Func<DateTime> faultUtcNow = null)
         {
             _projectRoot = string.IsNullOrEmpty(projectRoot)
                 ? AppDomain.CurrentDomain.BaseDirectory
@@ -115,11 +142,139 @@ namespace CF7Launcher.Tasks
             _isClientReady = isClientReady ?? delegate { return false; };
             _send = send ?? delegate { };
             _timeoutMsFromFrames = timeoutMsFromFrames ?? DefaultTransportTimeoutMsFromFrames;
+            _workerId = ArenaRunIdentity.ReadId(new JObject { ["workerId"] = workerId }, "workerId");
+            _sessionEpoch = ArenaRunIdentity.ReadId(new JObject { ["sessionEpoch"] = sessionEpoch ?? Guid.NewGuid().ToString("N") }, "sessionEpoch");
+            _allowOwnedFlashRebind = allowOwnedFlashRebind;
+            _allowFaultInjection = allowFaultInjection;
+            _faultUtcNow = faultUtcNow ?? (() => DateTime.UtcNow);
+            _readyGeneration = delegate { return _isClientReady() ? 1 : 0; };
+            _sendForGeneration = delegate(int gen, string payload) { _send(payload); return true; };
         }
 
         public void SetBatchCompletedHandler(Action<JObject> handler)
         {
             _batchCompleted = handler;
+        }
+
+        // Supplied only by Program's existing successful exact-process authority
+        // binding. Socket generations alone never provide recovery authority.
+        internal void ObserveOwnedFlashIdentity(XmlSocketPeerProcessIdentity identity)
+        {
+            lock (_lock) _observedOwnedFlash = identity;
+        }
+
+        internal XmlSocketPeerProcessIdentity CaptureFaultProcessIdentity()
+        {
+            lock (_lock) return _allowFaultInjection ? _batchOwnedFlash : null;
+        }
+
+        internal JObject FaultStopFlash(JObject request, IArenaWorkerFaultProcess process)
+        {
+            string faultId = ArenaRunIdentity.ReadId(request, "faultId");
+            bool killIssued = false;
+            JObject receipt;
+            lock (_lock)
+            {
+                if (!_allowFaultInjection) return BuildError("worker_fault_not_enabled", "Fault injection was not enabled for this launch.");
+                if (_faultReceipt != null) return BuildError("fault_already_claimed", "This Worker has already consumed its fault ticket.");
+                if (_state != "running" || _abortRequested || _transportPoisoned || _pending.Count != 1)
+                    return BuildError("fault_run_not_pending", "There is no single authoritative outstanding run.");
+                PendingRun pending = null;
+                foreach (PendingRun value in _pending.Values) pending = value;
+                if (pending.Done.IsSet || pending.Response != null || pending.TransportError != null || pending.Aborted
+                    || !ArenaRunIdentity.Matches(pending.Identity, request))
+                    return BuildError("fault_context_mismatch", "The preselected run is no longer the exact outstanding run.");
+                if (pending.SocketGeneration <= 0 || pending.SocketGeneration != _readyGeneration())
+                    return BuildError("fault_generation_mismatch", "The outstanding run no longer owns the ready transport generation.");
+                if (process == null || !SameFaultProcess(_batchOwnedFlash, process.Identity)
+                    || !SameFaultProcess(_observedOwnedFlash, process.Identity))
+                    return BuildError("fault_process_mismatch", "The held process does not own this outstanding run.");
+                try
+                {
+                    if (!process.IsAlive) return BuildError("fault_process_exited", "The held process has already exited.");
+                }
+                catch (Exception ex)
+                {
+                    return BuildError("fault_process_unavailable", ex.GetType().Name);
+                }
+
+                receipt = ArenaRunIdentity.Capture(pending.Identity);
+                receipt["schema"] = "arena-worker.fault-receipt.v1";
+                receipt["faultId"] = faultId;
+                receipt["flashProcess"] = new JObject {
+                    ["pid"] = process.Identity.ProcessId,
+                    ["processStartUtcTicks"] = process.Identity.StartTimeUtc.UtcTicks.ToString(System.Globalization.CultureInfo.InvariantCulture),
+                    ["processPath"] = process.Identity.ExecutablePath
+                };
+                receipt["socketGeneration"] = pending.SocketGeneration;
+                // Store dates as dates so the first reply and later status parsing use
+                // the same Json.NET wire representation, including fractional zeros.
+                receipt["claimedAtUtc"] = _faultUtcNow();
+                receipt["killAttempted"] = true;
+                receipt["killIssued"] = JValue.CreateNull();
+                receipt["processExitObserved"] = false;
+                receipt["outcome"] = "claimed";
+                _faultReceipt = receipt; // Every exception after this point consumes the one-shot ticket.
+                receipt["killIssuedAtUtc"] = _faultUtcNow();
+                try
+                {
+                    // Do not wait, dispatch UI, retire a socket or manufacture a result under this lock.
+                    // Response completion and the next run cannot pass the same authority lock during Kill.
+                    process.Kill();
+                    killIssued = true;
+                    receipt["killIssued"] = true;
+                    receipt["killReturnedAtUtc"] = _faultUtcNow();
+                    receipt["outcome"] = "kill_issued";
+                }
+                catch (Exception ex)
+                {
+                    receipt["outcome"] = "unknown";
+                    receipt["error"] = ex.GetType().Name;
+                }
+            }
+
+            bool exited = false;
+            string observationError = null;
+            if (killIssued)
+            {
+                try { exited = process.WaitForExit(5000); }
+                catch (Exception ex) { observationError = ex.GetType().Name; }
+            }
+            lock (_lock)
+            {
+                if (killIssued && exited && observationError == null)
+                {
+                    receipt["processExitObserved"] = true;
+                    receipt["exitObservedAtUtc"] = _faultUtcNow();
+                    receipt["outcome"] = "killed";
+                }
+                else
+                {
+                    receipt["outcome"] = "unknown";
+                    if (observationError != null) receipt["error"] = observationError;
+                    else if (killIssued) receipt["error"] = "exit_observation_timeout";
+                }
+                LogManager.Log("event=arena_worker_fault worker=" + _workerId + " fault=" + faultId
+                    + " run=" + receipt.Value<string>("runId") + " outcome=" + receipt.Value<string>("outcome"));
+                return receipt.Value<string>("outcome") == "killed"
+                    ? BuildStatus(true, "fault_killed")
+                    : BuildError("fault_outcome_unknown", "The one-shot fault outcome is unknown; inspect this receipt and do not replay it.");
+            }
+        }
+
+        private static bool SameFaultProcess(XmlSocketPeerProcessIdentity left, XmlSocketPeerProcessIdentity right)
+            => left != null && right != null && left.ProcessId == right.ProcessId
+                && left.StartTimeUtc.UtcTicks == right.StartTimeUtc.UtcTicks
+                && string.Equals(left.ExecutablePath, right.ExecutablePath, StringComparison.OrdinalIgnoreCase);
+
+        private bool CanRebindAfterTransportLoss()
+        {
+            return _allowOwnedFlashRebind && _pending.Count == 0
+                && _batchOwnedFlash != null && _observedOwnedFlash != null
+                && (_batchOwnedFlash.ProcessId != _observedOwnedFlash.ProcessId
+                    || _batchOwnedFlash.StartTimeUtc.UtcTicks != _observedOwnedFlash.StartTimeUtc.UtcTicks
+                    || !string.Equals(_batchOwnedFlash.ExecutablePath, _observedOwnedFlash.ExecutablePath,
+                        StringComparison.OrdinalIgnoreCase));
         }
 
         public string HandleControl(JObject msg)
@@ -155,13 +310,21 @@ namespace CF7Launcher.Tasks
             lock (_lock)
             {
                 if (_pending.TryGetValue(fid, out pending))
-                    _pending.Remove(fid);
-            }
-
-            if (pending != null)
-            {
-                pending.Response = msg;
-                pending.Done.Set();
+                {
+                    JObject result = msg["result"] as JObject ?? msg;
+                    if (!ArenaRunIdentity.Matches(pending.Identity, result)
+                        || _readyGeneration() != pending.SocketGeneration)
+                    {
+                        LogManager.Log("[ArenaCalibrationTask] rejected non-matching run response callId=" + fid);
+                        pending = null;
+                    }
+                    else
+                    {
+                        _pending.Remove(fid);
+                        pending.Response = (JObject)msg.DeepClone();
+                        pending.Done.Set();
+                    }
+                }
             }
 
             respond(null);
@@ -174,8 +337,12 @@ namespace CF7Launcher.Tasks
 
             string manifestPath = ResolveManifestPath(msg.Value<string>("manifestPath"));
             BatchManifest manifest = LoadAndNormalizeManifest(manifestPath);
+            if (msg["batchId"] != null && msg.Value<string>("batchId") != manifest.BatchId)
+                return BuildError("batch_mismatch", "requested batchId does not match manifest");
+            if (msg["manifestHash"] != null && msg.Value<string>("manifestHash") != manifest.ManifestHash)
+                return BuildError("manifest_mismatch", "requested manifestHash does not match manifest");
             Action startWorker;
-            JObject result = StartNormalizedBatch(manifest, manifestPath, null, null, out startWorker);
+            JObject result = StartNormalizedBatch(manifest, manifestPath, msg, null, null, out startWorker);
             if (startWorker != null)
                 startWorker();
             return result;
@@ -211,6 +378,7 @@ namespace CF7Launcher.Tasks
                 return StartNormalizedBatch(
                     manifest,
                     null,
+                    msg,
                     beforeWorkerStart,
                     batchCompleted,
                     out startWorker);
@@ -226,6 +394,7 @@ namespace CF7Launcher.Tasks
         private JObject StartNormalizedBatch(
             BatchManifest manifest,
             string manifestPath,
+            JObject request,
             Action<JObject> beforeWorkerStart,
             Action<JObject> batchCompleted,
             out Action startWorker)
@@ -235,15 +404,34 @@ namespace CF7Launcher.Tasks
             {
                 if (_state == "running")
                     return BuildError("batch_already_running", "arena calibration batch is already running");
+                if (_transportPoisoned)
+                {
+                    if (!CanRebindAfterTransportLoss())
+                        return BuildError("transport_poisoned", "a new exact owned Flash is required after transport loss; Workers must restart the Host");
+                    _sessionEpoch = Guid.NewGuid().ToString("N");
+                    _transportPoisoned = false;
+                }
+                if ((request["workerId"] != null && ArenaRunIdentity.ReadId(request, "workerId") != _workerId)
+                    || (request["sessionEpoch"] != null && ArenaRunIdentity.ReadId(request, "sessionEpoch") != _sessionEpoch))
+                    return BuildError("session_mismatch", "requested worker/session does not match this Host");
+                string assignmentId = ArenaRunIdentity.ReadId(request, "assignmentId", Guid.NewGuid().ToString("N"));
+                string attemptId = ArenaRunIdentity.ReadId(request, "attemptId", Guid.NewGuid().ToString("N"));
 
-                string batchDir = ResolveBatchDir(manifest.BatchId);
+                string batchDir = Path.Combine(ResolveBatchDir(manifest.BatchId), "attempts", attemptId);
+                RejectReparseAncestors(batchDir);
                 Directory.CreateDirectory(batchDir);
-                _frozenManifestPath = Path.Combine(batchDir, "case_manifest.json");
-                File.WriteAllText(_frozenManifestPath, manifest.Frozen.ToString(Formatting.Indented) + Environment.NewLine, new UTF8Encoding(false));
-
-                _resultPath = ResolveResultPath(manifest.BatchId, IsCustomMatchManifest(manifest));
-                if (File.Exists(_resultPath))
-                    File.Delete(_resultPath);
+                string frozenPath = Path.Combine(batchDir, "case_manifest.json");
+                string resultPath = Path.Combine(batchDir, "results.jsonl");
+                // Exclusive create is the attempt admission. Never overwrite an old receipt.
+                using (var resultFile = new FileStream(resultPath, FileMode.CreateNew, FileAccess.Write, FileShare.Read)) { }
+                using (var manifestFile = new FileStream(frozenPath, FileMode.CreateNew, FileAccess.Write, FileShare.Read))
+                using (var writer = new StreamWriter(manifestFile, new UTF8Encoding(false)))
+                    writer.WriteLine(manifest.Frozen.ToString(Formatting.Indented));
+                _frozenManifestPath = frozenPath;
+                _resultPath = resultPath;
+                _assignmentId = assignmentId;
+                _attemptId = attemptId;
+                _batchOwnedFlash = _observedOwnedFlash;
 
                 _abortRequested = false;
                 _state = "running";
@@ -286,10 +474,19 @@ namespace CF7Launcher.Tasks
             string batchId = msg.Value<string>("batchId");
             string activeBatchId = null;
             bool shouldNotifyFlash = false;
+            JObject abortIdentity = null;
+            int abortGeneration = 0;
             lock (_lock)
             {
                 if (!string.IsNullOrEmpty(batchId) && !string.IsNullOrEmpty(_batchId) && batchId != _batchId)
                     return BuildError("batch_mismatch", "requested batchId does not match active batch");
+                foreach (string key in new[] { "workerId", "sessionEpoch", "assignmentId", "attemptId" })
+                {
+                    string expected = key == "workerId" ? _workerId : key == "sessionEpoch" ? _sessionEpoch
+                        : key == "assignmentId" ? _assignmentId : _attemptId;
+                    if (msg[key] != null && ArenaRunIdentity.ReadId(msg, key) != expected)
+                        return BuildError("attempt_mismatch", "abort identity does not match active attempt");
+                }
 
                 if (_state == "idle" || _state == "completed" || _state == "failed" || _state == "aborted")
                     return BuildStatus(true, "not_running");
@@ -299,13 +496,15 @@ namespace CF7Launcher.Tasks
                 shouldNotifyFlash = true;
                 foreach (PendingRun pending in _pending.Values)
                 {
+                    abortIdentity = pending.Identity;
+                    abortGeneration = pending.SocketGeneration;
                     pending.Aborted = true;
                     pending.Done.Set();
                 }
             }
 
             if (shouldNotifyFlash)
-                DispatchAbortToFlash(activeBatchId, "batch abort requested");
+                DispatchAbortToFlash(activeBatchId, "batch abort requested", abortIdentity, abortGeneration);
 
             return BuildStatus(true, "abort_requested");
         }
@@ -318,17 +517,19 @@ namespace CF7Launcher.Tasks
                 {
                     for (int repeatIndex = 1; repeatIndex <= testCase.Repeat; repeatIndex++)
                     {
-                        if (_abortRequested)
+                        if (_abortRequested || _transportPoisoned)
                             break;
                         RunSingleCase(manifest, testCase, repeatIndex);
                     }
-                    if (_abortRequested)
+                    if (_abortRequested || _transportPoisoned)
                         break;
                 }
 
                 lock (_lock)
                 {
-                    if (_abortRequested && _state == "running")
+                    if (_transportPoisoned && _state == "running")
+                        _state = "failed";
+                    else if (_abortRequested && _state == "running")
                         _state = "aborted";
                     else if (_state == "running")
                         _state = "completed";
@@ -395,29 +596,46 @@ namespace CF7Launcher.Tasks
             lock (_lock)
             {
                 fid = ++_seq;
+                pending.SocketGeneration = _readyGeneration();
+                pending.Identity = ArenaRunIdentity.Capture(BuildFlashCommand(manifest, testCase, repeatIndex, runId, fid));
                 _pending[fid] = pending;
                 _currentCaseId = testCase.CaseId;
                 _currentRunId = runId;
             }
 
-            if (!_isClientReady())
+            if (pending.SocketGeneration == 0)
             {
                 RemovePending(fid);
                 AppendResultRow(BuildSyntheticResult(manifest, testCase, repeatIndex, runId, startedAt,
                     "bridge_lost", "none", "Flash socket client disconnected before run dispatch"));
                 MarkCompleted();
+                PoisonTransport("Flash socket client disconnected before run dispatch", pending.SocketGeneration);
                 return;
             }
 
             JObject command = BuildFlashCommand(manifest, testCase, repeatIndex, runId, fid);
-            _send(command.ToString(Formatting.None) + "\0");
+            try
+            {
+                if (pending.TransportError == null
+                    && !_sendForGeneration(pending.SocketGeneration, command.ToString(Formatting.None) + "\0"))
+                    pending.TransportError = "Flash socket generation changed or run dispatch failed";
+            }
+            catch (Exception ex)
+            {
+                pending.TransportError = "Flash run dispatch failed: " + ex.GetType().Name;
+            }
 
             int timeoutMs = _timeoutMsFromFrames(testCase.TimeoutFrames);
-            bool completed = pending.Done.Wait(timeoutMs);
+            bool completed = pending.TransportError == null && pending.Done.Wait(timeoutMs);
             RemovePending(fid);
 
             JObject row;
-            if (pending.Aborted || _abortRequested)
+            if (pending.TransportError != null)
+            {
+                row = BuildSyntheticResult(manifest, testCase, repeatIndex, runId, startedAt,
+                    "bridge_lost", "none", pending.TransportError);
+            }
+            else if (pending.Aborted || _abortRequested)
             {
                 row = BuildSyntheticResult(manifest, testCase, repeatIndex, runId, startedAt,
                     "aborted", "none", "batch aborted");
@@ -434,6 +652,35 @@ namespace CF7Launcher.Tasks
 
             AppendResultRow(row);
             MarkCompleted();
+            if (row.Value<string>("status") == "bridge_lost")
+                PoisonTransport(pending.TransportError ?? "Host transport deadline elapsed before AS2 arena calibration response", pending.SocketGeneration);
+        }
+
+        private void HandleTransportDisconnected(int generation)
+        {
+            lock (_lock)
+            {
+                foreach (PendingRun pending in _pending.Values)
+                {
+                    if (pending.SocketGeneration != generation) continue;
+                    pending.TransportError = "Flash socket disconnected during this exact run";
+                    pending.Done.Set();
+                }
+            }
+        }
+
+        private void PoisonTransport(string reason, int generation)
+        {
+            lock (_lock)
+            {
+                if (_transportPoisoned) return;
+                _transportPoisoned = true;
+                _lastError = reason;
+            }
+            // Retire only the connection captured by this run. A replacement
+            // connection is never used to cancel or complete the old run.
+            try { if (generation != 0) _retireGeneration?.Invoke(generation); } catch { }
+            try { TransportPoisoned?.Invoke(reason); } catch { }
         }
 
         private JObject BuildFlashCommand(BatchManifest manifest, CalibrationCase testCase, int repeatIndex, string runId, int fid)
@@ -442,6 +689,10 @@ namespace CF7Launcher.Tasks
             command["task"] = "cmd";
             command["action"] = "arenaCalibrationRun";
             command["callId"] = fid;
+            command["workerId"] = _workerId;
+            command["sessionEpoch"] = _sessionEpoch;
+            command["assignmentId"] = _assignmentId;
+            command["attemptId"] = _attemptId;
             command["batchId"] = manifest.BatchId;
             command["manifestHash"] = manifest.ManifestHash;
             command["caseId"] = testCase.CaseId;
@@ -461,7 +712,7 @@ namespace CF7Launcher.Tasks
             return command;
         }
 
-        private void DispatchAbortToFlash(string batchId, string reason)
+        private void DispatchAbortToFlash(string batchId, string reason, JObject capturedIdentity, int capturedGeneration)
         {
             if (!_isClientReady())
             {
@@ -470,9 +721,12 @@ namespace CF7Launcher.Tasks
             }
 
             int fid;
+            int generation = capturedGeneration;
+            JObject identity = capturedIdentity;
             lock (_lock)
             {
                 fid = ++_seq;
+                if (generation == 0) generation = _readyGeneration();
             }
 
             JObject command = new JObject();
@@ -481,10 +735,11 @@ namespace CF7Launcher.Tasks
             command["callId"] = fid;
             command["batchId"] = batchId ?? "";
             command["reason"] = reason ?? "abort";
+            if (identity != null) ArenaRunIdentity.Copy(identity, command);
 
             try
             {
-                _send(command.ToString(Formatting.None) + "\0");
+                _sendForGeneration(generation, command.ToString(Formatting.None) + "\0");
             }
             catch (Exception ex)
             {
@@ -510,6 +765,7 @@ namespace CF7Launcher.Tasks
                 winner = status == "timeout" ? "timeout" : "none";
 
             JObject row = BuildResultEnvelope(manifest, testCase, repeatIndex, runId, startedAtUtc, status, winner);
+            ArenaRunIdentity.Copy(ArenaRunIdentity.Capture(result), row);
             CopyOptionalNumber(result, row, "frames");
             CopyOptionalNumber(result, row, "durationMs");
             CopyOptionalNumber(result, row, "spawnDistance");
@@ -527,6 +783,10 @@ namespace CF7Launcher.Tasks
             row["blueSpawnPositions"] = CloneArrayOrEmpty(result["blueSpawnPositions"]);
             row["redSpawnPositions"] = CloneArrayOrEmpty(result["redSpawnPositions"]);
             row["formationAudit"] = CloneObjectOrEmpty(result["formationAudit"]);
+            if (result["skillStateAudit"] is JObject)
+                row["skillStateAudit"] = result["skillStateAudit"].DeepClone();
+            if (result["presentationAudit"] is JObject)
+                row["presentationAudit"] = result["presentationAudit"].DeepClone();
             row["blue"] = NormalizeSideSummary(result.Value<JObject>("blue"));
             row["red"] = NormalizeSideSummary(result.Value<JObject>("red"));
             row["blueUnitResults"] = NormalizeUnitResults(result["blueUnitResults"]);
@@ -572,6 +832,10 @@ namespace CF7Launcher.Tasks
         {
             JObject row = new JObject();
             row["schema"] = "arena-calibration.result.v1";
+            row["workerId"] = _workerId;
+            row["sessionEpoch"] = _sessionEpoch;
+            row["assignmentId"] = _assignmentId;
+            row["attemptId"] = _attemptId;
             row["batchId"] = manifest.BatchId;
             row["manifestHash"] = manifest.ManifestHash;
             row["caseId"] = testCase.CaseId;
@@ -636,6 +900,11 @@ namespace CF7Launcher.Tasks
                 status["success"] = success;
                 status["ok"] = success;
                 status["task"] = "arena_calibration";
+                status["workerId"] = _workerId;
+                status["sessionEpoch"] = _sessionEpoch;
+                status["assignmentId"] = _assignmentId;
+                status["attemptId"] = _attemptId;
+                status["transportPoisoned"] = _transportPoisoned;
                 status["state"] = _state;
                 status["note"] = note;
                 status["batchId"] = _batchId;
@@ -649,6 +918,8 @@ namespace CF7Launcher.Tasks
                 status["currentRunId"] = _currentRunId;
                 status["lastError"] = _lastError;
                 status["lastResult"] = _lastResultRow != null ? _lastResultRow.DeepClone() : JValue.CreateNull();
+                if (_allowFaultInjection)
+                    status["faultReceipt"] = _faultReceipt != null ? _faultReceipt.DeepClone() : JValue.CreateNull();
                 return status;
             }
         }
@@ -678,6 +949,7 @@ namespace CF7Launcher.Tasks
                 throw new InvalidOperationException("manifestPath must stay under tmp/arena-calibration");
             if (!File.Exists(full))
                 throw new FileNotFoundException("manifestPath not found", full);
+            RejectReparseAncestors(full);
             return full;
         }
 
@@ -1234,24 +1506,16 @@ namespace CF7Launcher.Tasks
             return full;
         }
 
-        private static bool IsCustomMatchManifest(BatchManifest manifest)
+        private static void RejectReparseAncestors(string path)
         {
-            if (manifest == null || manifest.Frozen == null)
-                return false;
-            JObject planner = manifest.Frozen["planner"] as JObject;
-            return string.Equals(planner != null ? planner.Value<string>("name") : null,
-                "arena-custom-match",
-                StringComparison.Ordinal);
-        }
-
-        private string ResolveResultPath(string batchId, bool customMatch)
-        {
-            string logName = customMatch ? "arena-custom" : "arena-calibration";
-            string root = Path.GetFullPath(Path.Combine(_projectRoot, "logs", logName));
-            Directory.CreateDirectory(root);
-            string full = Path.GetFullPath(Path.Combine(root, batchId + "-results.jsonl"));
-            EnsurePathUnderDirectory(full, root, "resultPath");
-            return full;
+            string current = Path.GetFullPath(path);
+            while (!string.IsNullOrEmpty(current))
+            {
+                if ((File.Exists(current) || Directory.Exists(current))
+                    && (File.GetAttributes(current) & FileAttributes.ReparsePoint) != 0)
+                    throw new InvalidOperationException("Arena paths cannot contain reparse points");
+                current = Path.GetDirectoryName(current);
+            }
         }
 
         private static void EnsurePathUnderDirectory(string fullPath, string directoryRoot, string fieldName)

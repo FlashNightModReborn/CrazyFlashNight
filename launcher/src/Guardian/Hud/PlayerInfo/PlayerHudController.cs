@@ -25,6 +25,8 @@ internal sealed class PlayerHudController : IDisposable
     private long _nextId, _lastQuery, _hoverSequence;
     private long _generation, _adoptedGeneration = -1;
     private long _profileGeneration = -1;
+    private long _panelTimingGeneration = -1;
+    private readonly string _panelTimingId = "pt:" + Guid.NewGuid().ToString("N");
     internal long Generation => System.Threading.Interlocked.Read(ref _generation);
     private string? _pendingId, _hoverId;
     private bool _resourceHover;
@@ -102,6 +104,9 @@ internal sealed class PlayerHudController : IDisposable
         if (Profiler != null && CanInteract && _profileGeneration != Generation &&
             Send(new JObject { ["action"] = "playerHudProfile", ["enabled"] = true, ["profileId"] = Profiler.Id }))
             _profileGeneration = Generation;
+        if (PerfTrace.PanelTimingEnabled && CanInteract && _panelTimingGeneration != Generation &&
+            Send(new JObject { ["action"] = "panelTimingProfile", ["v"] = 1, ["enabled"] = true, ["profileId"] = _panelTimingId }))
+            _panelTimingGeneration = Generation;
     }
 
     internal void Disconnected()

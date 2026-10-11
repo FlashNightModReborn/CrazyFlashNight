@@ -1,0 +1,67 @@
+<ns0:DOMDocument xmlns:ns0="http://ns.adobe.com/xfl/2008/" width="680" height="480" frameRate="30" xflVersion="2.2" creatorInfo="Adobe Flash Professional CS6" platform="Windows">
+  <ns0:symbols>
+    <ns0:Include href="PhaseTwoImport0.xml"/>
+    <ns0:Include href="PhaseTwoImport1.xml"/>
+    <ns0:Include href="PhaseTwoImport2.xml"/>
+    <ns0:Include href="PhaseTwoImport3.xml"/>
+    <ns0:Include href="PhaseTwoImport4.xml"/>
+  </ns0:symbols>
+  <ns0:timelines>
+    <ns0:DOMTimeline name="二阶段动作原生预览">
+      <ns0:layers>
+        <ns0:DOMLayer name="测试入口" color="#4FFF4F">
+          <ns0:frames>
+            <ns0:DOMFrame index="0" duration="1" keyMode="9728">
+              <ns0:Actionscript>
+                <ns0:script><![CDATA[stop();
+#include "../TestLoader.as"]]></ns0:script>
+              </ns0:Actionscript>
+              <ns0:elements>
+                <ns0:DOMSymbolInstance libraryItemName="PhaseTwoImport0" symbolType="movie clip">
+                  <ns0:matrix>
+                    <ns0:Matrix a="1.000000000" b="0.000000000" c="0.000000000" d="1.000000000" tx="-3000.000000000" ty="-3000.000000000"/>
+                  </ns0:matrix>
+                  <ns0:transformationPoint>
+                    <ns0:Point/>
+                  </ns0:transformationPoint>
+                </ns0:DOMSymbolInstance>
+                <ns0:DOMSymbolInstance libraryItemName="PhaseTwoImport1" symbolType="movie clip">
+                  <ns0:matrix>
+                    <ns0:Matrix a="1.000000000" b="0.000000000" c="0.000000000" d="1.000000000" tx="-3000.000000000" ty="-3000.000000000"/>
+                  </ns0:matrix>
+                  <ns0:transformationPoint>
+                    <ns0:Point/>
+                  </ns0:transformationPoint>
+                </ns0:DOMSymbolInstance>
+                <ns0:DOMSymbolInstance libraryItemName="PhaseTwoImport2" symbolType="movie clip">
+                  <ns0:matrix>
+                    <ns0:Matrix a="1.000000000" b="0.000000000" c="0.000000000" d="1.000000000" tx="-3000.000000000" ty="-3000.000000000"/>
+                  </ns0:matrix>
+                  <ns0:transformationPoint>
+                    <ns0:Point/>
+                  </ns0:transformationPoint>
+                </ns0:DOMSymbolInstance>
+                <ns0:DOMSymbolInstance libraryItemName="PhaseTwoImport3" symbolType="movie clip">
+                  <ns0:matrix>
+                    <ns0:Matrix a="1.000000000" b="0.000000000" c="0.000000000" d="1.000000000" tx="-3000.000000000" ty="-3000.000000000"/>
+                  </ns0:matrix>
+                  <ns0:transformationPoint>
+                    <ns0:Point/>
+                  </ns0:transformationPoint>
+                </ns0:DOMSymbolInstance>
+                <ns0:DOMSymbolInstance libraryItemName="PhaseTwoImport4" symbolType="movie clip">
+                  <ns0:matrix>
+                    <ns0:Matrix a="1.000000000" b="0.000000000" c="0.000000000" d="1.000000000" tx="-3000.000000000" ty="-3000.000000000"/>
+                  </ns0:matrix>
+                  <ns0:transformationPoint>
+                    <ns0:Point/>
+                  </ns0:transformationPoint>
+                </ns0:DOMSymbolInstance>
+              </ns0:elements>
+            </ns0:DOMFrame>
+          </ns0:frames>
+        </ns0:DOMLayer>
+      </ns0:layers>
+    </ns0:DOMTimeline>
+  </ns0:timelines>
+</ns0:DOMDocument>
