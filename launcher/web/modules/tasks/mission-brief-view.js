@@ -8,9 +8,12 @@
         var dialogueHtml = options.dialogueHtml || escHtml;
         var limitsHtml = options.limitsHtml ? options.limitsHtml(options.limits || []) : '';
         var rewardsHtml = options.rewardsHtml ? options.rewardsHtml(detail.rewards || []) : '';
+        var extraRewards = options.extraRewards || [];
+        var extraRewardsHtml = (options.rewardsHtml && extraRewards.length) ? options.rewardsHtml(extraRewards) : '';
         var dialogueMode = options.dialogueMode === 'brief' ? 'brief' : 'rich';
         var dialogueButtonText = options.dialogueButtonText || '缩略模式';
         var rewardsTitle = options.rewardsTitle || '任务奖励';
+        var extraRewardsTitle = options.extraRewardsTitle || '追加奖励';
         var title = detail.title || detail.stageName || '任务简报';
         var meta = '';
 
@@ -29,6 +32,7 @@
                 '<div class="dgn-section-title">限制词条</div>' +
                 '<div class="dgn-limits">' + limitsHtml + '</div>' +
                 ((detail.rewards && detail.rewards.length) ? '<div class="dgn-section-title">' + escHtml(rewardsTitle) + '</div><div class="dgn-rewards">' + rewardsHtml + '</div>' : '') +
+                (extraRewardsHtml ? '<div class="dgn-section-title">' + escHtml(extraRewardsTitle) + '</div><div class="dgn-rewards">' + extraRewardsHtml + '</div>' : '') +
                 '<div class="dgn-section-title dgn-dialogue-title"><span>任务简报</span>' +
                     '<button type="button" class="tlv-dia-mode-btn dgn-dia-mode-btn" data-dialogue-mode-toggle="1">' + escHtml(dialogueButtonText) + '</button></div>' +
                 '<div class="dgn-dialogue cf-dialogue" data-dialogue-mode="' + dialogueMode + '"><div class="tlv-dia-empty">加载简报…</div></div>' +

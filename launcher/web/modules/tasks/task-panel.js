@@ -1596,6 +1596,11 @@
         _dungeonViewEl.innerHTML = '<div class="dgn-loading">加载副本…</div>';
         var reqSession = _session;
         var reqTask = _dungeonTaskId;
+        // 挑战追加奖励存于静态 catalog（dungeon.challenge.rewards；AS2 dungeonDetail 不回传
+        // challenge.rewards）。懒加载完成后重渲补齐挑战档奖励区。
+        loadCatalog(function() {
+            if (reqSession === _session && _tab === 'dungeon' && _dungeonTaskId === reqTask && _dungeonDetail) renderDungeon();
+        });
         loadDungeonPosters(function() {
             if (reqSession !== _session || _tab !== 'dungeon' || _dungeonTaskId !== reqTask) return;
             sendPanelMsg('dungeonDetail', { taskId: idForRequest(reqTask) }, function(data) {
@@ -1663,6 +1668,15 @@
         var mode = _dungeonMode;
         var limits = (mode === 'challenge') ? d.challengeLimits : d.normalLimits;
         var diff = (mode === 'challenge') ? d.challengeDifficulty : d.stageDifficulty;
+        // 挑战追加奖励：AS2 只在挑战通关结算时叠加（TaskRewardCommit concat），运行态 detail 不含；
+        // 从同源 data/task/*.json 派生的静态 catalog 读取，仅挑战档显示为独立追加区。
+        var challengeRewards = null;
+        if (mode === 'challenge' && d.hasChallenge && _catalog && _catalog.tasks) {
+            var catTask = _catalog.tasks[String(_dungeonTaskId)];
+            if (catTask && catTask.dungeon && catTask.dungeon.challenge) {
+                challengeRewards = catTask.dungeon.challenge.rewards;
+            }
+        }
         var poster = dungeonPosterUrl(d.imageurl);
         var kGate = (d.kDeposit <= 0) || d.affordVCoin;
         var canEnter = d.affordMoney && d.levelOk && kGate && (mode !== 'challenge' || d.hasChallenge);
@@ -1691,6 +1705,8 @@
                 limits: limits,
                 limitsHtml: dungeonLimitChips,
                 rewardsHtml: dungeonRewardsHtml,
+                extraRewards: challengeRewards,
+                extraRewardsTitle: '挑战追加奖励',
                 escHtml: escHtml,
                 dialogueHtml: dialogueHtml,
                 dialogueMode: _dialogueMode,

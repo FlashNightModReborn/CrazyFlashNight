@@ -175,6 +175,14 @@
         };
         var CHAIN_SEQ = { '主线': [[101, 1], [102, 2]], '支线': [[103, 1]], '大学': [[104, 1]], '后勤': [[105, 1]], '挑战': [[107, 1]], '异形': [[108, 1]], '情报': [[109, 1]], '彩蛋': [[110, 1], [111, 2]] };
         var CHAIN_UNSEQ = { '委托': [106] };
+        // 委托 dungeon 扩展（镜像 catalog 的 dungeon 子对象）：106 带挑战档+追加奖励 →
+        // 副本 tab 挑战模式验证「挑战追加奖励」区（dungeonDetail 运行态不含 challenge.rewards）。
+        var DUNGEON = {
+            106: { imageurl: 'flashswf/images/wanted_lixiaolong_index.swf', getNpc: '赏金中介',
+                   deposit: 10000, kDeposit: 0, restrictedLevel: 8, recommendedLevel: '16-22',
+                   challenge: { difficulty: '地狱', limitations: ['DisableCompanion'],
+                                rewards: [rw('机密情报', 1)] } }
+        };
         // 前置依赖（图表边）：主线 101→102 脊柱；侧链挂在主线里程碑（跨链边）；110 无前置；106 委托不入图；111 未接取(locked)
         var REQ = { 101: [], 102: [101], 103: [101], 104: [102], 105: [101], 107: [102], 108: [102], 109: [101], 110: [], 106: [], 111: [110] };
         function buildCatalog() {
@@ -187,6 +195,7 @@
                     itemReqs: dd.itemReqs, rewards: dd.rewards, req: (REQ[id] || []),
                     hasGetConv: cf[0], hasFinishConv: cf[1]
                 };
+                if (DUNGEON[id]) tasks[String(id)].dungeon = DUNGEON[id];
             }
             var chains = {};
             for (var cn in CHAIN_SEQ) {

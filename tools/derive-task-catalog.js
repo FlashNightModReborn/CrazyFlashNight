@@ -258,7 +258,12 @@ function buildCatalog(rawTasks, taskTexts) {
             const ch = (t.challenge && typeof t.challenge === 'object')
                 ? {
                     difficulty: t.challenge.difficulty != null ? String(t.challenge.difficulty) : '',
-                    limitations: Array.isArray(t.challenge.limitations) ? t.challenge.limitations.slice() : []
+                    limitations: Array.isArray(t.challenge.limitations) ? t.challenge.limitations.slice() : [],
+                    // 挑战追加奖励（AS2 dungeonDetail 不回传 challenge.rewards，副本面板
+                    // 挑战档奖励区由此静态目录补齐；与 TaskUtil.tasks 同源 data/task/*.json）
+                    rewards: Array.isArray(t.challenge.rewards)
+                        ? t.challenge.rewards.map(function (r) { return parseNameCount(r); })
+                        : []
                 }
                 : null;
             tasks[idKey].dungeon = {
