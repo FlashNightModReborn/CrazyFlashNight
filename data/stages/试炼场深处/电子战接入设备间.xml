@@ -27,6 +27,11 @@
     <SubStage id="0">
         <BasicInformation>
             <Background>flashswf/backgrounds/Survival_mode_BG.swf</Background>
+            <BGM>
+                <Command>play</Command>
+                <Title>The Time Is Now</Title>
+                <Loop>true</Loop>
+            </BGM>
         </BasicInformation>
         <SpawnPoint>
             <Point id="0">
@@ -122,6 +127,16 @@
             <Message>浮士德兄弟阵亡，任务失败</Message>
             <StageProgress>Fail</StageProgress>
         </Event>
+        <Event>
+            <EventName>UnitEmergency</EventName>
+            <Parameter>牛仔</Parameter>
+            <Message>牛仔情况危急！</Message>
+        </Event>
+        <Event>
+            <EventName>UnitEmergency</EventName>
+            <Parameter>浮士德兄弟</Parameter>
+            <Message>浮士德兄弟情况危急！</Message>
+        </Event>
         <Wave>
             <SubWave id="0">
                 <WaveInformation>
@@ -135,6 +150,9 @@
                         <Quantity>1</Quantity>
                         <Level>50</Level>
                         <SpawnIndex>left</SpawnIndex>
+                        <Parameters>
+                            <hpEmergency>0.5</hpEmergency>
+                        </Parameters>
                     </Enemy>
                     <Enemy>
                         <Type>兵种162</Type>
@@ -172,6 +190,9 @@
                         <Quantity>1</Quantity>
                         <Level>55</Level>
                         <SpawnIndex>left</SpawnIndex>
+                        <Parameters>
+                            <hpEmergency>0.5</hpEmergency>
+                        </Parameters>
                     </Enemy>
                     <Enemy>
                         <Type>兵种167</Type>
@@ -270,6 +291,21 @@
             <Message>Lee阵亡，任务失败</Message>
             <StageProgress>Fail</StageProgress>
         </Event>
+        <Event>
+            <EventName>UnitEmergency</EventName>
+            <Parameter>牛仔</Parameter>
+            <Message>牛仔情况危急！</Message>
+        </Event>
+        <Event>
+            <EventName>UnitEmergency</EventName>
+            <Parameter>浮士德兄弟</Parameter>
+            <Message>浮士德兄弟情况危急！</Message>
+        </Event>
+        <Event>
+            <EventName>UnitEmergency</EventName>
+            <Parameter>Lee</Parameter>
+            <Message>Lee情况危急！</Message>
+        </Event>
         <Wave>
             <SubWave id="0">
                 <WaveInformation>
@@ -283,6 +319,9 @@
                         <Quantity>1</Quantity>
                         <Level>55</Level>
                         <SpawnIndex>left</SpawnIndex>
+                        <Parameters>
+                            <hpEmergency>0.5</hpEmergency>
+                        </Parameters>
                     </Enemy>
                     <Enemy>
                         <Type>兵种378</Type>
@@ -291,6 +330,9 @@
                         <Quantity>1</Quantity>
                         <Level>55</Level>
                         <SpawnIndex>left</SpawnIndex>
+                        <Parameters>
+                            <hpEmergency>0.5</hpEmergency>
+                        </Parameters>
                     </Enemy>
                     <Enemy>
                         <Type>兵种175</Type>
@@ -325,6 +367,9 @@
                         <Quantity>1</Quantity>
                         <Level>55</Level>
                         <SpawnIndex>left</SpawnIndex>
+                        <Parameters>
+                            <hpEmergency>0.5</hpEmergency>
+                        </Parameters>
                     </Enemy>
                     <Enemy>
                         <Type>兵种362</Type>
@@ -446,6 +491,16 @@
             <Message>Lee阵亡，任务失败</Message>
             <StageProgress>Fail</StageProgress>
         </Event>
+        <Event>
+            <EventName>UnitEmergency</EventName>
+            <Parameter>牛仔</Parameter>
+            <Message>牛仔情况危急！</Message>
+        </Event>
+        <Event>
+            <EventName>UnitEmergency</EventName>
+            <Parameter>Lee</Parameter>
+            <Message>Lee情况危急！</Message>
+        </Event>
         <Wave>
             <SubWave id="0">
                 <WaveInformation>
@@ -459,6 +514,9 @@
                         <Quantity>1</Quantity>
                         <Level>55</Level>
                         <SpawnIndex>left</SpawnIndex>
+                        <Parameters>
+                            <hpEmergency>0.5</hpEmergency>
+                        </Parameters>
                     </Enemy>
                     <Enemy>
                         <Type>兵种257</Type>
@@ -467,6 +525,9 @@
                         <Quantity>1</Quantity>
                         <Level>55</Level>
                         <SpawnIndex>left</SpawnIndex>
+                        <Parameters>
+                            <hpEmergency>0.5</hpEmergency>
+                        </Parameters>
                     </Enemy>
                     <Enemy>
                         <Type>兵种381</Type>
@@ -1056,7 +1117,8 @@
             </Instance>
         </Instances>
         <Event>
-            <EventName>Start</EventName>
+            <EventName>WaveFinished</EventName>
+            <Parameter>0</Parameter>
             <Dialogue id="0">
                 <Name>$PC</Name>
                 <Title>$PC_TITLE</Title>
@@ -1100,6 +1162,16 @@
             <Message>Lee阵亡，任务失败</Message>
             <StageProgress>Fail</StageProgress>
         </Event>
+        <Event>
+            <EventName>UnitEmergency</EventName>
+            <Parameter>牛仔</Parameter>
+            <Message>牛仔情况危急！</Message>
+        </Event>
+        <Event>
+            <EventName>UnitEmergency</EventName>
+            <Parameter>Lee</Parameter>
+            <Message>Lee情况危急！</Message>
+        </Event>
         <Wave>
             <SubWave id="0">
                 <WaveInformation>
@@ -1113,6 +1185,9 @@
                         <Quantity>1</Quantity>
                         <Level>55</Level>
                         <SpawnIndex>left</SpawnIndex>
+                        <Parameters>
+                            <hpEmergency>0.5</hpEmergency>
+                        </Parameters>
                     </Enemy>
                     <Enemy>
                         <Type>兵种257</Type>
@@ -1121,6 +1196,9 @@
                         <Quantity>1</Quantity>
                         <Level>55</Level>
                         <SpawnIndex>left</SpawnIndex>
+                        <Parameters>
+                            <hpEmergency>0.5</hpEmergency>
+                        </Parameters>
                     </Enemy>
                     <Enemy>
                         <Type>兵种381</Type>
@@ -1140,6 +1218,9 @@
                         <Quantity>2</Quantity>
                         <Level>60</Level>
                         <SpawnIndex>front</SpawnIndex>
+                        <Parameters>
+                            <方向>左</方向>
+                        </Parameters>
                     </Enemy>
                     <Enemy>
                         <Type>兵种363</Type>
@@ -1147,6 +1228,9 @@
                         <Quantity>2</Quantity>
                         <Level>60</Level>
                         <SpawnIndex>front</SpawnIndex>
+                        <Parameters>
+                            <方向>左</方向>
+                        </Parameters>
                     </Enemy>
                     <Enemy>
                         <Type>兵种364</Type>
@@ -1154,6 +1238,9 @@
                         <Quantity>2</Quantity>
                         <Level>60</Level>
                         <SpawnIndex>front</SpawnIndex>
+                        <Parameters>
+                            <方向>左</方向>
+                        </Parameters>
                     </Enemy>
                 </EnemyGroup>
             </SubWave>

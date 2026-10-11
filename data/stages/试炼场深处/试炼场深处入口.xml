@@ -62,6 +62,7 @@
                 <IsHostile>false</IsHostile>
                 <Parameters>
                     <publishStageEvent>true</publishStageEvent>
+                    <hpEmergency>0.5</hpEmergency>
                 </Parameters>
             </Enemy>
         </Event>
@@ -70,6 +71,11 @@
             <Parameter>浮士德兄弟</Parameter>
             <Message>浮士德兄弟阵亡，任务失败</Message>
             <StageProgress>Fail</StageProgress>
+        </Event>
+        <Event>
+            <EventName>UnitEmergency</EventName>
+            <Parameter>浮士德兄弟</Parameter>
+            <Message>浮士德兄弟情况危急！</Message>
         </Event>
         <Event>
             <EventName>UnitDeath</EventName>
