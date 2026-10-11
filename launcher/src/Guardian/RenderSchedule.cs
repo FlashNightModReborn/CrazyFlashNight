@@ -94,6 +94,8 @@ namespace CF7Launcher.Guardian
             var list=new List<RenderSelection>();
             for(int i=0;i<specs.Length;i++) {
                 var (percent,quality,effects)=specs[i];
+                // The Worker-only fixed 180p target starts at the existing lowest visual budget.
+                if (policy.Preset=="performance" && policy.Mode=="fixed" && policy.MaxRenderHeight==180) effects=2;
                 // The absolute ceiling survives fullscreen; scaling within that
                 // budget still gives small windows a real resolution lever.
                 var next=new RenderSelection(i,Math.Max(1,(int)Math.Round(limit*percent/100.0)),quality,effects);

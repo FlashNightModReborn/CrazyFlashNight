@@ -5,6 +5,7 @@ using System.Net;
 using System.Text;
 using System.Threading;
 using CF7Launcher.Guardian;
+using Newtonsoft.Json.Linq;
 
 namespace CF7Launcher.Bus
 {
@@ -46,6 +47,25 @@ namespace CF7Launcher.Bus
         private MessageRouter _router;
         private Action _shutdownAction;
         private Action<string> _bootstrapLogSink;
+        private Func<JObject, JObject> _arenaWorkerControl;
+        private Action<JObject> _arenaWorkerResponseWritten;
+
+        internal void SetArenaWorkerControl(Func<JObject, JObject> handler, Action<JObject> responseWritten = null)
+        {
+            _arenaWorkerControl = handler;
+            _arenaWorkerResponseWritten = responseWritten;
+        }
+
+        internal bool StartWorkerPort()
+        {
+            for (int attempt = 0; attempt < 24; attempt++)
+            {
+                int port = System.Security.Cryptography.RandomNumberGenerator.GetInt32(20000, 60000);
+                if (Start(port)) return true;
+                try { _listener?.Close(); } catch { }
+            }
+            return false;
+        }
 
         // 诊断包打包器依赖：在 launcher 完整初始化后注入
         private string _swfPathForDiagnostic;
@@ -196,6 +216,31 @@ namespace CF7Launcher.Bus
                     return;
                 }
 
+                if (_arenaWorkerControl != null && LegacyHttpAccessPolicy.IsPrivilegedPath(path))
+                {
+                    if (path != "/arena-worker" || method != "POST")
+                    {
+                        ctx.Response.StatusCode = 403;
+                        WriteResponse(ctx, "{\"ok\":false,\"error\":\"worker_route_forbidden\"}");
+                        return;
+                    }
+                    // The Worker has no console, generic task, save-push or diagnostic write surface.
+                    if (ctx.Request.ContentLength64 < 0 || ctx.Request.ContentLength64 > 65536)
+                    {
+                        ctx.Response.StatusCode = 413;
+                        WriteResponse(ctx, "{\"ok\":false,\"error\":\"worker_body_size\"}");
+                        return;
+                    }
+                    using var reader = new StreamReader(ctx.Request.InputStream, Encoding.UTF8);
+                    JObject request = JObject.Parse(reader.ReadToEnd());
+                    ctx.Response.ContentType = "application/json";
+                    JObject response = _arenaWorkerControl(request);
+                    if (request.Value<string>("action") == "shutdown"
+                        && response.Value<bool?>("success") == true && response.Value<bool?>("shutdownRequested") == true)
+                        ctx.Response.KeepAlive = false;
+                    WriteArenaWorkerResponse(response, body => WriteResponse(ctx, body), _arenaWorkerResponseWritten);
+                    return;
+                }
                 if (path == "/testConnection" && method == "POST")
                     HandleTestConnection(ctx);
                 else if (path == "/getSocketPort" && method == "GET")
@@ -831,6 +876,15 @@ namespace CF7Launcher.Bus
                 body = Encoding.UTF8.GetString(buffer.ToArray());
                 return true;
             }
+        }
+
+        internal static void WriteArenaWorkerResponse(JObject response, Action<string> writeResponse,
+            Action<JObject> responseWritten)
+        {
+            // writeResponse includes both OutputStream.Write and Response.Close. Exceptions
+            // leave delivery unknown and must not commit the admitted Worker shutdown.
+            writeResponse(response.ToString(Newtonsoft.Json.Formatting.None));
+            responseWritten?.Invoke(response);
         }
 
         private static void WriteResponse(HttpListenerContext ctx, string body)

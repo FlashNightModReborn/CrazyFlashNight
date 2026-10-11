@@ -304,24 +304,37 @@ _root.主角函数.初始化可用技能 = function() {
         return;
     }
 
+    // 类方法与时间轴都可调用此入口；生成输入必须与写入技能表的 this 属于同一单位。
+    var 名字:String = this.名字;
+    var 等级:Number = this.等级;
+
     // 缓存 _root 引用，减少链式访问开销
     var 主角函数:Object = _root.主角函数;
     var 技能缓存:Object = _root.技能缓存;
     var 技能点数表:Array = _root.技能点数查找表;
 
-    var 技术档位:Number = (this.personality && this.personality.技术) ? (Math.round(this.personality.技术 * 4)) : 0;
+    // 标定中同名单位会跨局复用；定义按实际生成输入分开，运行时冷却逐单位持有。
+    var 标定技能隔离:Boolean = (this._arenaCalibrationUnit === true);
+    var 有刀:Number = this.刀 ? 1 : 0;
+    var 有枪:Number = (this.长枪 || this.手枪 || this.手枪2) ? 2 : 0;
+    var 装备组合:Number = 有刀 + 有枪;
+    var 技术值:Number = (this.personality && this.personality.技术) ? this.personality.技术 : 0;
+    var 技术档位:Number = Math.round(技术值 * 4);
     var 缓存键:String = 名字 + "_" + 等级 + "_t" + 技术档位;
+    if (标定技能隔离) {
+        缓存键 = org.flashNight.arki.merc.ArenaSkillCache.makeKey(名字, 等级, 装备组合, 技术值);
+    }
     if (技能缓存 && 技能缓存[缓存键] != undefined) {
-        this.已学技能表 = 技能缓存[缓存键];
+        this.已学技能表 = 标定技能隔离
+            ? org.flashNight.arki.merc.ArenaSkillCache.copyForUnit(技能缓存[缓存键])
+            : 技能缓存[缓存键];
+        if (标定技能隔离) {
+            org.flashNight.arki.merc.ArenaSkillCache.recordInitialState(this, this.已学技能表, 缓存键, true);
+        }
         return;
     }
 
     var 可学技能数:Number = 3 + ((等级 / 5) >> 0); // 位运算替代Math.floor
-
-    // 计算装备组合索引: 0=无刀无枪, 1=有刀无枪, 2=无刀有枪, 3=有刀有枪
-    var 有刀:Number = 刀 ? 1 : 0;
-    var 有枪:Number = (长枪 || 手枪 || 手枪2) ? 2 : 0;
-    var 装备组合:Number = 有刀 + 有枪;
 
     // 内联种子初始化
     var 种子:Number = 等级;
@@ -428,7 +441,12 @@ _root.主角函数.初始化可用技能 = function() {
         this.已学技能表.push(可用技能强化表[i]);
     }
 
-    技能缓存[缓存键] = this.已学技能表;
+    if (标定技能隔离) {
+        技能缓存[缓存键] = org.flashNight.arki.merc.ArenaSkillCache.copyForUnit(this.已学技能表);
+        org.flashNight.arki.merc.ArenaSkillCache.recordInitialState(this, this.已学技能表, 缓存键, false);
+    } else {
+        技能缓存[缓存键] = this.已学技能表;
+    }
 };
 
 _root.主角函数.行走_玩家 = function() {

@@ -3714,6 +3714,7 @@ namespace CF7Launcher.Guardian
 
         private void EnsureCursorHook()
         {
+            if ((_owner as GuardianForm)?.ArenaWorkerMode == true) return;
             if (InvokeRequired) throw new InvalidOperationException("Cursor hook requires the UI message-loop thread.");
             if (_cursorHook != IntPtr.Zero || _disposed)
                 return;

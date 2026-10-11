@@ -15,6 +15,16 @@ namespace CF7Launcher.Config
         {
             string roaming = ResolveRoaming(roamingAppData);
             string directory = Path.Combine(roaming, "CF7FlashNight", "flash-temp");
+            return PrepareDirectory(start, directory);
+        }
+
+        internal static string PrepareWorker(ProcessStartInfo start, string directory)
+        {
+            return PrepareDirectory(start, CF7Launcher.ArenaWorker.ArenaWorkerPolicy.CanonicalPath(directory));
+        }
+
+        private static string PrepareDirectory(ProcessStartInfo start, string directory)
+        {
             Directory.CreateDirectory(directory);
             string probe = Path.Combine(directory, ".write-probe-" + Guid.NewGuid().ToString("N"));
             string renamed = probe + ".committed";

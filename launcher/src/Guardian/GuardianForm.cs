@@ -156,18 +156,47 @@ namespace CF7Launcher.Guardian
             bool bootstrapWebView2DisableGpu,
             string bootstrapWebView2AdditionalArgs,
             bool bootstrapWebView2DeveloperMode,
-            bool isolatedRuntimeCandidate)
+            bool isolatedRuntimeCandidate,
+            bool arenaWorkerMode = false,
+            bool arenaWorkerMinimalRendering = false)
         {
+            if (arenaWorkerMinimalRendering && !arenaWorkerMode)
+                throw new ArgumentException("Minimal Worker rendering requires Arena Worker mode.");
+            ArenaWorkerMode = arenaWorkerMode;
             InitializeComponent(
                 bootstrapWebDir,
                 bootstrapWebView2DisableGpu,
                 bootstrapWebView2AdditionalArgs,
                 bootstrapWebView2DeveloperMode,
                 isolatedRuntimeCandidate);
-            SetupTrayIcon();
-            SetupHotkeys();
-            SetupForegroundWatchdog();
+            if (arenaWorkerMinimalRendering)
+            {
+                // Reduce both the Flash raster and the native output surface.
+                // Bootstrap and scene-reveal callbacks still run through their real browser.
+                var workerClient = new Size(320, 180);
+                MinimumSize = SizeFromClientSize(workerClient);
+                ClientSize = workerClient;
+            }
+            if (!ArenaWorkerMode)
+            {
+                SetupTrayIcon();
+                SetupHotkeys();
+                SetupForegroundWatchdog();
+            }
+            else ShowInTaskbar = false;
             LogManager.Init(this, _logBox);
+        }
+
+        internal bool ArenaWorkerMode { get; }
+        protected override bool ShowWithoutActivation => ArenaWorkerMode || base.ShowWithoutActivation;
+        protected override CreateParams CreateParams
+        {
+            get
+            {
+                CreateParams result = base.CreateParams;
+                if (ArenaWorkerMode) result.ExStyle |= 0x08000000; // WS_EX_NOACTIVATE
+                return result;
+            }
         }
 
         public void BindWindowManager(WindowManager wm)

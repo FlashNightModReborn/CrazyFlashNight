@@ -94,6 +94,7 @@ namespace CF7Launcher.Diagnostic
 
     public static class StartupFailureReporter
     {
+        internal static bool SuppressInteractiveDialogs { get; set; }
         public static StartupFailureReport ReportTerminalFailure(
             IWin32Window owner,
             string projectRoot,
@@ -244,7 +245,7 @@ namespace CF7Launcher.Diagnostic
 
         private static void ShowDialog(IWin32Window owner, StartupFailureReport report)
         {
-            if (report == null) return;
+            if (report == null || SuppressInteractiveDialogs) return;
             try
             {
                 using (StartupFailureDialog dialog = new StartupFailureDialog(report))

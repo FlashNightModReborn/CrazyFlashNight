@@ -164,7 +164,8 @@ namespace CF7Launcher.Bus
                 // 避免把端口暴露到外部网络。
                 _listener = new TcpListener(IPAddress.Loopback, port);
                 _listener.Start();
-                Port = port;
+                Port = ((IPEndPoint)_listener.LocalEndpoint).Port;
+                port = Port;
                 _running = true;
 
                 _acceptThread = new Thread(delegate() { AcceptLoop(_listener); });

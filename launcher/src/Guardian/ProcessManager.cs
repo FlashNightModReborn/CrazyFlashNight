@@ -14,6 +14,7 @@ namespace CF7Launcher.Guardian
         private readonly string _flashPlayerPath;
         private readonly string _swfPath;
         private readonly DateTime _startTime;
+        private readonly Action<ProcessStartInfo> _configureStart;
 
         /// <summary>
         /// Phase 1d：事件携带退出的 Process 引用（二重防御，订阅方可识别是否为当前 attempt 的进程）。
@@ -22,11 +23,12 @@ namespace CF7Launcher.Guardian
 
         public Process FlashProcess { get { lock (_lock) { return _flashProcess; } } }
 
-        public ProcessManager(string flashPlayerPath, string swfPath)
+        public ProcessManager(string flashPlayerPath, string swfPath, Action<ProcessStartInfo> configureStart = null)
         {
             _flashPlayerPath = flashPlayerPath;
             _swfPath = swfPath;
             _startTime = DateTime.MinValue;
+            _configureStart = configureStart;
         }
 
         public bool Start()
@@ -37,7 +39,9 @@ namespace CF7Launcher.Guardian
                 psi.FileName = _flashPlayerPath;
                 psi.Arguments = "\"" + _swfPath + "\"";
                 psi.UseShellExecute = false;
-                string flashTemp = CF7Launcher.Config.FlashStorageEnvironment.Prepare(psi);
+                if (_configureStart != null) _configureStart(psi);
+                else CF7Launcher.Config.FlashStorageEnvironment.Prepare(psi);
+                string flashTemp = psi.Environment["TEMP"];
                 LogManager.Log("[FlashStorage] child TEMP/TMP=" + flashTemp + " environment="
                     + CF7Launcher.Config.FlashStorageEnvironment.Snapshot().ToString(Newtonsoft.Json.Formatting.None));
                 // 注意：不要在这里设 psi.WindowStyle = ProcessWindowStyle.Hidden.

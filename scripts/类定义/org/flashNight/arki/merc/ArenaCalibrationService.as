@@ -34,6 +34,8 @@ class org.flashNight.arki.merc.ArenaCalibrationService {
     private static var _pendingRun:Object = undefined;
     private static var _pendingStageRequest:Object = undefined;
     private static var _transitionStarted:Boolean = false;
+    private static var _presentedWorldIdentity:Object = undefined;
+    private static var _presentedScene:Number = -1;
     private static var _originalLoadGameWorldUnit:Function = undefined;
     private static var _loaderHookInstalled:Boolean = false;
     private static var _runSeq:Number = 0;
@@ -81,8 +83,22 @@ class org.flashNight.arki.merc.ArenaCalibrationService {
     public static function testOnlySetPendingRun(params:Object):Void {
         _active = undefined;
         _pendingRun = params;
+        if (params != undefined) params._arenaContext = captureRunContext(params);
         _pendingStageRequest = undefined;
         _transitionStarted = false;
+        _presentedWorldIdentity = undefined;
+        _presentedScene = -1;
+    }
+
+    /** focused TestLoader owner setup；测试必须调用真实 loader hook 验登记。 */
+    public static function testOnlySetPhaseOwner(owner:Object):Void {
+        if (owner == undefined) {
+            restorePhaseSpawnHook();
+            _active = undefined;
+            return;
+        }
+        _active = owner;
+        installPhaseSpawnHook();
     }
 
     /** focused TestLoader 专用：纯函数投影阵型坐标，不读写 gameworld。 */
@@ -122,6 +138,16 @@ class org.flashNight.arki.merc.ArenaCalibrationService {
     public static function handleRun(params:Object):Void {
         if (params == undefined) params = {};
         var callId = params.callId;
+        var context:Object = captureRunContext(params);
+        if (context == undefined) {
+            sendResponse({task:"arena_calibration_response", callId:callId,
+                success:false, status:"invalid_case", winner:"none",
+                errors:[{code:"invalid_context", message:"exact run context is required"}]}, undefined);
+            return;
+        }
+        // Capture a plain-object value before any asynchronous stage transition.
+        params = ObjectUtil.clone(params);
+        params._arenaContext = context;
 
         if (_active != undefined) {
             finish("aborted", "none", [{code: "aborted", message: "superseded by a new calibration run"}]);
@@ -139,7 +165,7 @@ class org.flashNight.arki.merc.ArenaCalibrationService {
                     blue: emptySideSummary(),
                     red: emptySideSummary(),
                     errors: [{code: "stage_transition_pending", message: "calibration stage transition is already committed"}]
-                });
+                }, context);
                 return;
             }
             var supersededRun:Object = _pendingRun;
@@ -159,7 +185,7 @@ class org.flashNight.arki.merc.ArenaCalibrationService {
                 blue: emptySideSummary(),
                 red: emptySideSummary(),
                 errors: [{code: "aborted", message: "superseded by a new calibration run before stage ready"}]
-            });
+            }, supersededRun._arenaContext);
         }
 
         if (!isLoaderReady()) {
@@ -174,7 +200,7 @@ class org.flashNight.arki.merc.ArenaCalibrationService {
                 blue: emptySideSummary(),
                 red: emptySideSummary(),
                 errors: [{code: "stage_failed", message: "unit loader or calibration stage loader is not ready"}]
-            });
+            }, context);
             return;
         }
 
@@ -193,7 +219,7 @@ class org.flashNight.arki.merc.ArenaCalibrationService {
                 blue: emptySideSummary(),
                 red: emptySideSummary(),
                 errors: errors
-            });
+            }, context);
             return;
         }
 
@@ -211,7 +237,15 @@ class org.flashNight.arki.merc.ArenaCalibrationService {
                 blue: emptySideSummary(),
                 red: emptySideSummary(),
                 errors: errors.length > 0 ? errors : [{code: "stage_failed", message: "failed to enter calibration arena stage"}]
-            });
+            }, context);
+            return;
+        }
+
+        if (!isCalibrationWorldPresented()) {
+            sendResponse({task:"arena_calibration_response", callId:callId,
+                success:false, status:"stage_failed", winner:"none", frames:0, durationMs:0,
+                blue:emptySideSummary(), red:emptySideSummary(),
+                errors:[{code:"calibration_presentation_pending", message:"calibration world has no exact completed reveal"}]}, context);
             return;
         }
 
@@ -228,7 +262,7 @@ class org.flashNight.arki.merc.ArenaCalibrationService {
                 blue: emptySideSummary(),
                 red: emptySideSummary(),
                 errors: errors.length > 0 ? errors : [{code: "stage_failed", message: "calibration arena stage is not ready"}]
-            });
+            }, context);
             return;
         }
 
@@ -276,7 +310,7 @@ class org.flashNight.arki.merc.ArenaCalibrationService {
             cleanupUnits(redUnits);
             resetCalibrationSource();
             clearCalibrationGlobals();
-            sendResponse(row);
+            sendResponse(row, context);
             return;
         }
 
@@ -284,6 +318,8 @@ class org.flashNight.arki.merc.ArenaCalibrationService {
         if (isNaN(timeoutFrames) || timeoutFrames < 1) timeoutFrames = 5400;
 
         _active = {
+            context: context,
+            presentationAtStart: capturePresentationAudit(),
             callId: callId,
             batchId: String(params.batchId || ""),
             caseId: String(params.caseId || ""),
@@ -321,16 +357,54 @@ class org.flashNight.arki.merc.ArenaCalibrationService {
         installClock();
     }
 
-    public static function onCalibrationStageReady():Void {
-        _transitionStarted = false;
-        if (_pendingRun == undefined) {
-            _pendingStageRequest = undefined;
-            clearCalibrationGlobals();
+    public static function onCalibrationStageReady(world:Object, worldIdentity:Object, expectedToken:String):Void {
+        var request:Object = _pendingStageRequest;
+        if (!matchesPendingStageRequest(request, expectedToken) || _transitionStarted !== true
+                || !sameRunContext(request.runContext, _pendingRun._arenaContext)
+                || world != _root.gameworld || world._arenaCalibrationStage !== true
+                || worldIdentity == undefined || worldIdentity !== _root.gameworld.__stageReturnWorldIdentity
+                || request.presentationFade != _root.淡出动画 || request.presentationIdentity == undefined
+                || request.presentationIdentity !== _root.淡出动画.__transitionProjectionIdentity) return;
+        if (request.presentationRegistered === true) return;
+
+        // Configure the empty visual world before asking Host for its native
+        // scene fence. No actors, run clock or ordinary SceneReady are admitted.
+        var errors:Array = [];
+        if (!prepareCalibrationStage(errors) || !isRuntimeReady()) {
+            handleStageDataFailed(request, expectedToken);
             return;
         }
+        request.readyWorld = world;
+        request.readyIdentity = worldIdentity;
+        request.readyScene = org.flashNight.arki.weather.WorldLightingBridge.sceneNumber();
+        request.presentationRegistered = org.flashNight.arki.ui.SceneTransitionService.calibrationWorldReady(
+            world, worldIdentity, request.presentationFade, request.presentationIdentity,
+            request, ObjectUtil.clone(request.runContext),
+            org.flashNight.arki.merc.ArenaCalibrationService.onCalibrationPresentationReleased);
+    }
+
+    public static function onCalibrationPresentationReleased(request:Object, context:Object,
+            world:Object, worldIdentity:Object, fade:Object, presentationIdentity:Object):Void {
+        if (!matchesPendingStageRequest(request, request.token) || _transitionStarted !== true
+                || request.presentationRegistered !== true
+                || context == undefined || !sameRunContext(context, request.runContext)
+                || !sameRunContext(context, _pendingRun._arenaContext)
+                || world != _root.gameworld || world._arenaCalibrationStage !== true
+                || worldIdentity == undefined || worldIdentity !== request.readyIdentity
+                || worldIdentity !== _root.gameworld.__stageReturnWorldIdentity
+                || fade != _root.淡出动画 || fade != request.presentationFade || fade._currentframe != 36
+                || presentationIdentity !== request.presentationIdentity
+                || presentationIdentity !== _root.淡出动画.__transitionProjectionIdentity
+                || request.readyScene != org.flashNight.arki.weather.WorldLightingBridge.sceneNumber()
+                || org.flashNight.arki.ui.SceneTransitionService.isPresentationPending()) return;
         var params:Object = _pendingRun;
+        // Consume before starting the original runner: duplicate/late callbacks
+        // cannot start another run. This receipt survives finish on this world only.
+        _presentedWorldIdentity = worldIdentity;
+        _presentedScene = request.readyScene;
         _pendingRun = undefined;
         _pendingStageRequest = undefined;
+        _transitionStarted = false;
         handleRun(params);
     }
 
@@ -360,6 +434,16 @@ class org.flashNight.arki.merc.ArenaCalibrationService {
         if (params == undefined) params = {};
         var callId = params.callId;
         var batchId:String = String(params.batchId || "");
+        var context:Object = captureRunContext(params);
+        var currentContext:Object = _active != undefined ? _active.context
+            : (_pendingRun != undefined ? _pendingRun._arenaContext : undefined);
+        if (context == undefined || (currentContext != undefined
+                && !sameRunContext(context, currentContext))) {
+            sendResponse({task:"arena_calibration_response", callId:callId,
+                success:false, status:"error", winner:"none",
+                errors:[{code:"context_mismatch", message:"abort must name the exact active run"}]}, context);
+            return;
+        }
 
         if (_pendingRun != undefined) {
             if (batchId != "" && String(_pendingRun.batchId || "") != "" && batchId != String(_pendingRun.batchId || "")) {
@@ -374,7 +458,7 @@ class org.flashNight.arki.merc.ArenaCalibrationService {
                     blue: emptySideSummary(),
                     red: emptySideSummary(),
                     errors: [{code: "batch_mismatch", message: "abort batchId does not match pending calibration run"}]
-                });
+                }, context);
                 return;
             }
 
@@ -390,7 +474,7 @@ class org.flashNight.arki.merc.ArenaCalibrationService {
                     blue: emptySideSummary(),
                     red: emptySideSummary(),
                     errors: [{code: "stage_transition_pending", message: "calibration stage transition can no longer be aborted"}]
-                });
+                }, context);
                 return;
             }
 
@@ -409,7 +493,7 @@ class org.flashNight.arki.merc.ArenaCalibrationService {
                 blue: emptySideSummary(),
                 red: emptySideSummary(),
                 errors: [{code: "aborted", message: String(params.reason || "abort requested before stage ready")}]
-            });
+            }, context);
             return;
         }
 
@@ -425,7 +509,7 @@ class org.flashNight.arki.merc.ArenaCalibrationService {
                 blue: emptySideSummary(),
                 red: emptySideSummary(),
                 errors: [{code: "not_running", message: "no active calibration run"}]
-            });
+            }, context);
             return;
         }
 
@@ -441,7 +525,7 @@ class org.flashNight.arki.merc.ArenaCalibrationService {
                 blue: summarizeSide(_active.blueUnits),
                 red: summarizeSide(_active.redUnits),
                 errors: [{code: "batch_mismatch", message: "abort batchId does not match active calibration run"}]
-            });
+            }, context);
             return;
         }
 
@@ -529,7 +613,15 @@ class org.flashNight.arki.merc.ArenaCalibrationService {
         applyCalibrationTransitionGlobals();
         _transitionStarted = true;
         try {
-            _root.淡出动画.淡出跳转帧(CALIBRATION_STAGE_LINKAGE);
+            expectedRequest.presentationFade = _root.淡出动画;
+            var fadeAccepted = _root.淡出动画.淡出跳转帧(CALIBRATION_STAGE_LINKAGE);
+            if (fadeAccepted === false) {
+                _transitionStarted = false;
+                handleStageDataFailed(expectedRequest, expectedToken);
+                return;
+            }
+            // The real fade entry synchronously begins its Web projection.
+            expectedRequest.presentationIdentity = _root.淡出动画.__transitionProjectionIdentity;
         } catch (fadeError) {
             trace("[ArenaCalibration] stage fade failed: " + fadeError);
             _transitionStarted = false;
@@ -562,7 +654,7 @@ class org.flashNight.arki.merc.ArenaCalibrationService {
             blue: emptySideSummary(),
             red: emptySideSummary(),
             errors: [{code: "stage_failed", message: "failed to load calibration arena stage data"}]
-        });
+        }, params._arenaContext);
     }
 
     private static function matchesPendingStageRequest(
@@ -587,6 +679,13 @@ class org.flashNight.arki.merc.ArenaCalibrationService {
 
     private static function isCalibrationStageActive():Boolean {
         return _root.gameworld != undefined && _root.gameworld._arenaCalibrationStage === true;
+    }
+
+    private static function isCalibrationWorldPresented():Boolean {
+        return _presentedWorldIdentity != undefined
+            && _presentedWorldIdentity === _root.gameworld.__stageReturnWorldIdentity
+            && _presentedScene == org.flashNight.arki.weather.WorldLightingBridge.sceneNumber()
+            && !org.flashNight.arki.ui.SceneTransitionService.isPresentationPending();
     }
 
     private static function isLoaderReady():Boolean {
@@ -847,6 +946,7 @@ class org.flashNight.arki.merc.ArenaCalibrationService {
                 var startMaxHp:Number = readUnitMaxHp(mc);
                 out.push({
                     mc: mc,
+                    skillState: captureSkillState(mc),
                     startMaxHp: startMaxHp,
                     estimatedStartMaxHp: estimatedMaxHp,
                     startSnapshotReady: (startMaxHp > 0),
@@ -1019,6 +1119,7 @@ class org.flashNight.arki.merc.ArenaCalibrationService {
         for (var i:Number = 0; i < units.length; i++) {
             var record:Object = units[i];
             if (record == undefined) continue;
+            if (record.skillState == undefined) record.skillState = captureSkillState(record.mc);
             if (record.startSnapshotReady == true && record.initialHpApplied == true) continue;
 
             var unitMax:Number = Number(record.startMaxHp);
@@ -1238,6 +1339,7 @@ class org.flashNight.arki.merc.ArenaCalibrationService {
         if (parentRecord != undefined) {
             if (initObject == undefined) initObject = {};
             initObject.是否为敌人 = (parentRecord.isEnemy == true);
+            initObject._arenaCalibrationUnit = true;
         }
         var mc:MovieClip = original(id, name, depth, initObject);
         handleSpawnedUnit(id, name, initObject, mc, parentRecord);
@@ -1246,7 +1348,8 @@ class org.flashNight.arki.merc.ArenaCalibrationService {
 
     public static function handleSpawnedUnit(id:String, name:String, initObject:Object, mc:MovieClip, parentRecord:Object):Void {
         if (_active == undefined || mc == undefined || mc._parent == undefined) return;
-        if (mc._arenaCalibrationUnit === true) return;
+        if (mc._arenaCalibrationUnit === true
+                && mc._arenaCalibrationRun === _active.runId) return;
 
         if (parentRecord == undefined) {
             parentRecord = findPhaseSpawnParentRecord(String(name || mc._name), initObject);
@@ -1319,6 +1422,8 @@ class org.flashNight.arki.merc.ArenaCalibrationService {
 
         var record:Object = {
             mc: mc,
+            skillState: captureSkillState(mc),
+            spawnName: String(name || mc._name || ""),
             startMaxHp: startMaxHp,
             estimatedStartMaxHp: estimatedMaxHp,
             startSnapshotReady: true,
@@ -1488,8 +1593,10 @@ class org.flashNight.arki.merc.ArenaCalibrationService {
     private static function finish(status:String, winner:String, errors:Array):Void {
         if (_active == undefined) return;
 
+        var context:Object = _active.context;
         var blue:Object = summarizeSide(_active.blueUnits);
         var red:Object = summarizeSide(_active.redUnits);
+        var presentationAtEnd:Object = capturePresentationAudit();
         var resp:Object = {
             task: "arena_calibration_response",
             callId: _active.callId,
@@ -1512,6 +1619,10 @@ class org.flashNight.arki.merc.ArenaCalibrationService {
             authorityContext: _active.authorityContext != undefined ? _active.authorityContext : {},
             blue: blue,
             red: red,
+            skillStateAudit: {blue:summarizeSkillState(_active.blueUnits), red:summarizeSkillState(_active.redUnits)},
+            presentationAudit: {qualityAtStart:_active.presentationAtStart.qualityApplied,
+                qualityApplied:presentationAtEnd.qualityApplied,
+                atStart:_active.presentationAtStart, atEnd:presentationAtEnd},
             blueUnitResults: summarizeUnitResults(_active.blueUnits),
             redUnitResults: summarizeUnitResults(_active.redUnits),
             errors: errors
@@ -1528,7 +1639,7 @@ class org.flashNight.arki.merc.ArenaCalibrationService {
         cleanupUnits(auxUnits);
         resetCalibrationSource();
         clearCalibrationGlobals();
-        sendResponse(resp);
+        sendResponse(resp, context);
     }
 
     private static function countAlive(units:Array):Number {
@@ -1712,6 +1823,7 @@ class org.flashNight.arki.merc.ArenaCalibrationService {
         var requestIdentity:Object = {
             generation: _stageRequestSeq,
             params: params,
+            runContext: ObjectUtil.clone(params._arenaContext),
             token: ""
         };
         _pendingRun = params;
@@ -2154,7 +2266,94 @@ class org.flashNight.arki.merc.ArenaCalibrationService {
         return value;
     }
 
-    private static function sendResponse(resp:Object):Void {
+    private static function finiteAuditNumber(value):Object {
+        return typeof value == "number" && !isNaN(value) && (value - value) == 0 ? value : null;
+    }
+
+    private static function capturePresentationAudit():Object {
+        var scheduler:Object = _root.帧计时器.scheduler;
+        var available:Boolean = typeof scheduler.getPerformanceLevel == "function"
+            && typeof scheduler.getLastAppliedSoftU == "function"
+            && typeof scheduler.getAppliedCommand == "function"
+            && typeof scheduler.getSceneEpoch == "function";
+        var audit:Object = {
+            observed:false,
+            qualityApplied:typeof _root._quality == "string" ? String(_root._quality) : null,
+            performanceLevel:available ? finiteAuditNumber(scheduler.getPerformanceLevel()) : null,
+            lastAppliedSoftU:available ? finiteAuditNumber(scheduler.getLastAppliedSoftU()) : null,
+            appliedCommand:available ? finiteAuditNumber(scheduler.getAppliedCommand()) : null,
+            sceneEpoch:available ? finiteAuditNumber(scheduler.getSceneEpoch()) : null,
+            paused:typeof _root.暂停 == "boolean" ? _root.暂停 : null,
+            frameRate:finiteAuditNumber(_root.帧计时器.帧率)
+        };
+        audit.observed = available && audit.qualityApplied != null
+            && audit.performanceLevel != null && audit.lastAppliedSoftU != null
+            && audit.appliedCommand != null && audit.sceneEpoch != null
+            && audit.paused != null && audit.frameRate != null;
+        return audit;
+    }
+
+    private static function captureSkillState(mc:MovieClip):Object {
+        var state:Object = mc._arenaCalibrationSkillState;
+        return state != undefined ? ObjectUtil.clone(state) : undefined;
+    }
+
+    private static function summarizeSkillState(units:Array):Array {
+        var rows:Array = [];
+        for (var i:Number = 0; i < units.length; i++) {
+            var record:Object = units[i];
+            rows.push({unit:String(record.unitType || ""), sourceId:String(record.sourceId || ""),
+                name:String(record.spawnName || ""), observed:record.skillState != undefined,
+                state:record.skillState != undefined ? ObjectUtil.clone(record.skillState) : null});
+        }
+        return rows;
+    }
+
+    private static function captureRunContext(params:Object):Object {
+        if (params == undefined || typeof params.callId != "number"
+                || !(params.callId > 0) || Math.floor(params.callId) != params.callId) return undefined;
+        var keys:Array = ["workerId", "sessionEpoch", "assignmentId", "attemptId",
+            "batchId", "manifestHash", "caseId", "caseHash", "runId"];
+        var context:Object = {};
+        for (var i:Number = 0; i < keys.length; i++) {
+            var key:String = keys[i];
+            var value = params[key];
+            if (typeof value != "string" || value.length == 0 || value.length > 256) return undefined;
+            for (var j:Number = 0; j < value.length; j++) {
+                if (value.charCodeAt(j) < 32) return undefined;
+            }
+            if (key == "manifestHash" || key == "caseHash") {
+                if (value.length != 71 || value.substr(0, 7) != "sha256:") return undefined;
+                for (var h:Number = 7; h < value.length; h++) {
+                    if ("0123456789abcdef".indexOf(value.charAt(h)) < 0) return undefined;
+                }
+            }
+            context[key] = value;
+        }
+        if (typeof params.repeatIndex != "number" || !(params.repeatIndex > 0)
+                || Math.floor(params.repeatIndex) != params.repeatIndex) return undefined;
+        context.repeatIndex = params.repeatIndex;
+        if (String(_root.cf7ArenaWorker || "") == "1"
+                && (context.workerId !== _root.cf7ArenaWorkerId
+                    || context.sessionEpoch !== _root.cf7ArenaSessionEpoch)) return undefined;
+        return context;
+    }
+
+    private static function sameRunContext(left:Object, right:Object):Boolean {
+        var keys:Array = ["workerId", "sessionEpoch", "assignmentId", "attemptId",
+            "batchId", "manifestHash", "caseId", "caseHash", "runId", "repeatIndex"];
+        for (var i:Number = 0; i < keys.length; i++) {
+            if (left[keys[i]] !== right[keys[i]]) return false;
+        }
+        return true;
+    }
+
+    private static function sendResponse(resp:Object, context:Object):Void {
+        if (context != undefined) {
+            var keys:Array = ["workerId", "sessionEpoch", "assignmentId", "attemptId",
+                "batchId", "manifestHash", "caseId", "caseHash", "runId", "repeatIndex"];
+            for (var i:Number = 0; i < keys.length; i++) resp[keys[i]] = context[keys[i]];
+        }
         try {
             _root.server.sendSocketMessage(_json.stringifySafe(resp));
         } catch (responseError) {

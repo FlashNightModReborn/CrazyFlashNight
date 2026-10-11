@@ -41,11 +41,37 @@ namespace CF7Launcher
 
         private static readonly Lazy<RuntimeLock> Specification = new Lazy<RuntimeLock>(ReadLock);
         private static bool _runtimeBundleVerified;
+        private static string _workerCacheRoot;
         private static readonly Lazy<Task<string>> Prepared = new Lazy<Task<string>>(
-            () => Task.Run(() => Prepare(Path.Combine(AppContext.BaseDirectory, "webview2"),
-                Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
-                    "CF7Launcher", "WebView2", "Fixed"), Specification.Value,
-                Volatile.Read(ref _runtimeBundleVerified))));
+            () => Task.Run(PrepareSelectedRuntime));
+
+        internal static void ConfigureWorkerCache(string privateCacheRoot)
+        {
+            if (Prepared.IsValueCreated) throw new InvalidOperationException("Worker cache must be selected before WebView2 preparation.");
+            _workerCacheRoot = CF7Launcher.ArenaWorker.ArenaWorkerPolicy.CanonicalPath(privateCacheRoot);
+        }
+
+        private static string PrepareSelectedRuntime()
+        {
+            string shared = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
+                "CF7Launcher", "WebView2", "Fixed");
+            if (_workerCacheRoot != null)
+                return PrepareWorkerRuntime(Path.Combine(AppContext.BaseDirectory, "webview2"), shared, _workerCacheRoot,
+                    Specification.Value, Volatile.Read(ref _runtimeBundleVerified));
+            return Prepare(Path.Combine(AppContext.BaseDirectory, "webview2"), shared,
+                Specification.Value, Volatile.Read(ref _runtimeBundleVerified));
+        }
+
+        internal static string PrepareWorkerRuntime(string payload, string shared, string privateCache,
+            RuntimeLock specification, bool verified)
+        {
+            // Existing immutable engines may be shared read-only. A Worker
+            // never quarantines or repairs the ordinary user's cache.
+            string existing = SafePath(SafePath(shared, specification.Version + "-" + specification.CabSha256), "engine");
+            try { VerifyTree(existing, specification.Files); return existing; }
+            catch (Exception ex) when (ex is IOException || ex is InvalidDataException || ex is UnauthorizedAccessException) { }
+            return Prepare(payload, privateCache, specification, verified);
+        }
 
         internal static void AdmitVerifiedRuntime(string runtimeDirectory)
         {

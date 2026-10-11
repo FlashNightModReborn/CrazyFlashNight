@@ -138,6 +138,7 @@ Agent Runtime 的 wire、受信 runner、credential bootstrap、30 秒预算和 
 | [src/Save](src/Save/) | 启动期存档决议、备份、repair 与用户存档操作 |
 | [src/Audio](src/Audio/) | Audio Platform v2 managed bridge、协调与专项诊断 |
 | [src/AgentRuntime](src/AgentRuntime/) | named pipe、MCP/JSON adapters、观察与写 lease |
+| [src/ArenaWorker](src/ArenaWorker/) | 显式斗兽 Worker 候选入口、独立进程/目录租约、固定专用槽与逐次执行身份；见 [P0–P1 合同](../docs/Arena-Worker-P0-P1-施工与验证-2026-10-11.md) |
 | [src/Config](src/Config/) | `config.toml` 与用户偏好解析 |
 | [web](web/) | Bootstrap、Overlay、Panel、minigame、样式和静态资源 |
 | [native](native/) | bootstrap 和原生 side-car 源码 |
@@ -162,6 +163,12 @@ U12 游戏内过场由 `SceneTransitionController` 复用独立合成表面。�
 基地捕获完成只更新同一页面的就绪能力，保留同一个 DOM、Core、HWND、密度、搜索及滚动状态；AS2 先结束过场时间轴，Host 再取得普通面板暂停。提前关闭由原 exact 业务关闭裁决，加载页继续遮盖；失败重试保留同一奖励会话及未知写锁。
 同一不可变报告的接通/关闭意图可跨加载/提示的显示 revision 前进；request/generation、单次准入与未知锁仍受校验。世界呈现、失败导航和 Loot 业务 revision 保持各自 exact 权威，不能据此重复写奖励。
 固定页面仅向既有 Loot/库存域开放 exact 当前实例入口，不进入通用 Web 任务路由。AS2 保留导航、奖励暂存与保存权威。按 commit `c724305c374de423bce06bd39de0b27e09638f4c` 加 2026-10-02 工作区核对，协议、自动门和人验见 [U12 专项](../docs/U12过场Web迁移与人力验收-2026-10-01.md)。
+
+未提交的 Arena Worker 候选通过进程入口固定 `SceneTransitionPresentationPolicy`：仅无报告的 v1 普通过场可在 Host Ready、连接有效、窗口可见且未最小化时于后台呈现。仍须取得真实 Web 绘制回执并满足原生场景围栏；不激活窗口、不交还焦点，也不得越过其他可见应用窗口提层。无玩家标定场景使用绑定执行身份、世界普通对象身份和过场代际的专用 ready / released 通知；完成真实揭幕后才生成首局单位和启动计时，不发布普通 `SceneReady` / `SceneTransitionReleased`。普通 Guardian、帮助、书架与奖励过场保留既有前台资格。
+
+Worker 默认固定 180p／LOW、最低表现预算与 320×180 输出，关闭 HUD、伤害数字和 Web 装饰性表现；仍保留真实场景围栏和 30 帧玩法时钟，普通性能配置不变。请求值与实际应用值分别记录。实现与候选实测边界见 [Worker P0–P1 合同](../docs/Arena-Worker-P0-P1-施工与验证-2026-10-11.md)。
+
+实际栅格受 DPI 和有效客户区影响，不能把 180 上限写成实际源高度。本轮机器资格绑定连续亮屏状态与真实新帧 / 揭幕链；未把临时亮屏请求加入产品默认行为。最低表现候选已完成单 Worker、双 Worker、单侧故障与普通入口回归，短期完整吞吐比 1.4343；不代签 TDP、长时热稳态或人类输入体验。
 
 ## 构建、候选与发布
 
@@ -315,6 +322,7 @@ Help composition 端点仅新增 `tutorial_preference:disable_auto_open` / `tuto
 | `--hotkey-guard <pid> <mvid>` | 宿主内部 | 以同一 Core apphost 启动独立键盘守护进程；父路径与模块身份必须一致 |
 | `--diag-input` | 守护子模式内部 | 只随 hotkey-guard 输出有界白名单键态，不启动游戏或采任意键盘文本 |
 | `--bus-only` | 开发 | 跳过正式 Flash 启动链，保留 Bus/Overlay 供 CS6 testMovie 或工具连接 |
+| `--arena-worker <absolute-launch.json>` | 候选实验内部 | 在合法独立资源根启动一个 Host / Flash，固定专用存档并开放受鉴权的窄控制面；仅接受已验证 isolated candidate |
 | `--force-webview-fail` | 测试 | 强制 WebView2 预检失败分支 |
 | `--verify-only` | bootstrap verifier | 校验正式根部署后退出 |
 | `--verify-runtime-only` | candidate verifier | 校验 isolated candidate 后退出 |

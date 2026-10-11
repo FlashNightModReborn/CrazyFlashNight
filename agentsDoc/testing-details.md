@@ -1274,6 +1274,15 @@ JSONL call 30 秒，MCP active call 从 handler 到 buffered response copy/flush
 
 ### 竞技场斗兽标定（campaign 门）
 
+**独立 Worker 的 P0–P1 候选实验**：另跑 `test-worker-context.js`、`test-worker-experiment.js`、`test-worker-evidence.js`、`test-worker-isolation-probe.js` 与 `test-worker-p0-metrics.js`（均由下述 `run-checks.js` 汇总）。AS2 追加 `scripts/run-arena-worker-protocol-tests.ps1` 与 `scripts/run-arena-skill-cache-tests.ps1`，分别覆盖真实身份回声/迟到回包/派生单位登记及真实人物模板冷暖缓存。双开必须绑定独立 Host/Flash、端口、完整 SWF 来源和专用槽，并在全部回收后核对全局非目标存档；资格与准确命令见 [Worker P0–P1 合同](../docs/Arena-Worker-P0-P1-施工与验证-2026-10-11.md)。该候选实验不接入 Gate F 生产 journal，也不代签星期级资格或正式 runtime。
+
+后台 Worker 还须验证实际场景过场：只有进程入口选择的无报告 v1 后台呈现策略可放行；盖幕必须由真实 Web 绘制回报，揭幕继续等待原生场景围栏。无玩家标定专用通知必须绑定当前执行、世界普通对象身份和过场代际；首局单位与计时须等待严格 released，旧世界、旧代际、取消和十字段不符的回调均拒绝。同世界 warm 运行也要核对已呈现的代际。AS2 运行 `scripts/run-scene-transition-tests.ps1`、Worker protocol 与 Map/Loot suite，覆盖真实 StageManager 令牌传递、Start 前身份捕获及普通到达事件隔离。Host focused 应覆盖普通入口不受影响、断线/隐藏/最小化/奖励/书架拒绝后台资格，以及实际窗口首显与调序不激活、不越过其他可见应用窗口。纯策略断言、遮罩下的战斗结果和等待期间的 render sample 都不能代替完整揭幕后的战斗帧时钟与最终原始结果。
+
+最低负载 Worker 追加 Host `ArenaWorkerPresentationTests`：固定 180p／LOW 与最低表现预算、320×180 输出，关闭 HUD 后任何 ready / resume / widget 事件不得重新启用动画；普通入口默认值须不变。Worker 校验线程测试要让真实资源读取停在屏障内，同时证明另一实际 HTTP 连接能收完整响应，且真实 timeout / reset 仍失败；校验算法、完整墙钟与部分失败证据不能省略。退出测试绑定该响应的真实 Write + Close 后才允许一次关闭，不用延时或最终 PID 消失代签 ACK。故障测试要求双层 opt-in、Host 同锁内核对完整十字段 / pending / generation / owned process 并持有句柄，只终止一次；结果未知只读该会话缓存收据，缺失继续失败；首次回包与 status / result 的收据字节须一致，日期小数尾零不能因反序列化改变校验值。现场故障还须以原预选 run 核对目标真实 `bridge_lost` 与邻居在实际退出之后完成，不能事后换 runId。
+
+
+真实 Worker 呈现资格还须区分请求上限、DPI 后实际源栅格与输出尺寸，绑定真实 covered / native fence / revealed 链和首局实际时钟。连续显示通知须覆盖 owned Host / Flash 全生命周期；ready 一次、保持亮屏 API 返回成功或清理退出码都不代替区间资格，heartbeat 也不是新的状态采样。未知 / 熄屏 / 退订或观察间隙使该区间失格；临时改变物理显示状态须已有明确授权，结束后释放本线程请求，不改永久电源计划。普通入口回归须识别同 Core 的精确 owned hotkey-guard 子模式，但不能仅按名称放行；查询修正只可续查已完成同一批次，不重放写操作。
+
 必跑：`npm --prefix tools/arena-calibration ci --ignore-scripts --no-audit --no-fund` + `node tools/arena-calibration/run-checks.js`（Ajv 2020 编译全部 schema，合法/非法实例双向验收，并含 `intake-workbook.js --check`、Campaign 13-action fixture、`run-unattended.js --check` 的参数/authority/阵型 rerun、生产原始 JSONL、manifest/case 绑定、build-gate、report、
 关停 PID 与 reveal 后进档时序自检）+ `node tools/test-agent-entry-contract.js` + `launcher/tests/run_tests.ps1`；
 新 Host candidate 必须先独立 build，再传 `--candidate-root <精确绝对 candidateRoot>`，嵌入 `launcher-build` / `launcher` gate 必须 fail-fast；改 AS2 runner / 存档装载 / agent 进档入口时追加 `scripts/compile_test.ps1 -Target publish` / `-Target test`。

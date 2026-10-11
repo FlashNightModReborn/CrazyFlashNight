@@ -102,6 +102,7 @@ namespace CF7Launcher.Guardian
         private int _padding = 6;
         private bool _suspendedForPanel;
         private bool _ready;
+        private readonly bool _presentationEnabled;
 
         // 上一帧 hud 屏幕原点；用于决定是否需要 SetWindowPos
         private Point _hudOrigin;
@@ -111,9 +112,10 @@ namespace CF7Launcher.Guardian
         // 默认 IntPtr.Zero → 退回 HWND_TOP（仅 widget 未注册前的过渡态使用）
         private IntPtr _zOrderInsertAfter;
 
-        public NativeHudOverlay(Form owner, Control anchor)
+        public NativeHudOverlay(Form owner, Control anchor, bool presentationEnabled = true)
             : base(owner, anchor, 1024f, 576f)
         {
+            _presentationEnabled = presentationEnabled;
             // 注册与 FocusTrace 开关解耦：注册表反映存活的 HUD 实例，
             // 诊断关闭时只是多一条注册项，probe 采集仍由 FocusTrace.Enabled 门控。
             InitializeFocusInputProbe();
@@ -131,6 +133,7 @@ namespace CF7Launcher.Guardian
         /// <summary>由 Program.cs 在所有 widget 注册完毕后调用。</summary>
         public void SetReady()
         {
+            if (!_presentationEnabled) return;
             _ready = true;
             RecomputeBounds();
         }
@@ -1010,7 +1013,7 @@ namespace CF7Launcher.Guardian
         {
             INativeHudResumable resumable = widget as INativeHudResumable;
             if (resumable == null) return;
-            try { resumable.SetHostSuppressed(_suspendedForPanel || !_ownerVisible); }
+            try { resumable.SetHostSuppressed(!_presentationEnabled || _suspendedForPanel || !_ownerVisible); }
             catch (Exception ex) { LogManager.Log("[NativeHud] widget SetHostSuppressed throw: " + ex.Message); }
         }
 

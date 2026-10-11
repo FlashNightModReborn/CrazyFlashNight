@@ -24,6 +24,37 @@ namespace CF7Launcher.Config
         private static readonly List<string> _ownedLeasePaths = new List<string>();
         private static string _leasedRoot;
 
+        internal static IDisposable CreateWorkerLease(string projectRoot, string workerId, string sessionEpoch,
+            string roamingAppData = null)
+        {
+            string directory = Path.Combine(roamingAppData ?? Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
+                "Macromedia", "Flash Player", "#Security", "FlashPlayerTrust");
+            CF7Launcher.ArenaWorker.ArenaWorkerPolicy.CanonicalPath(directory);
+            Directory.CreateDirectory(directory);
+            string name = "cf7me-arena-" + workerId + "-" + sessionEpoch + ".cfg";
+            if (Path.GetFileName(name) != name) throw new InvalidOperationException("Invalid Worker trust lease name.");
+            string path = Path.Combine(directory, name);
+            using (var stream = new FileStream(path, FileMode.CreateNew, FileAccess.Write, FileShare.Read))
+            using (var writer = new StreamWriter(stream, Utf8Bom)) writer.Write(Path.GetFullPath(projectRoot));
+            return new WorkerTrustLease(path, System.Security.Cryptography.SHA256.HashData(File.ReadAllBytes(path)));
+        }
+
+        private sealed class WorkerTrustLease : IDisposable
+        {
+            private readonly string _path;
+            private readonly byte[] _hash;
+            internal WorkerTrustLease(string path, byte[] hash) { _path = path; _hash = hash; }
+            public void Dispose()
+            {
+                try
+                {
+                    if (File.Exists(_path) && System.Security.Cryptography.CryptographicOperations.FixedTimeEquals(
+                        _hash, System.Security.Cryptography.SHA256.HashData(File.ReadAllBytes(_path)))) File.Delete(_path);
+                }
+                catch (Exception ex) { LogManager.Log("[FlashTrust] Worker lease retained: " + ex.GetType().Name); }
+            }
+        }
+
         /// <summary>
         /// 写入信任文件（租约）。Guardian 启动时调用。
         /// 优先写用户级目录（无需管理员），失败时尝试系统级目录。

@@ -12,6 +12,10 @@
   ],
   "properties": {
     "schema": { "const": "arena-calibration.result.v1" },
+    "workerId": { "type": "string", "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,127}$" },
+    "sessionEpoch": { "type": "string", "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,127}$" },
+    "assignmentId": { "type": "string", "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,127}$" },
+    "attemptId": { "type": "string", "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,127}$" },
     "batchId": { "type": "string", "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,63}$" },
     "manifestHash": { "$ref": "#/$defs/sha256" },
     "caseId": { "type": "string", "minLength": 1 },
@@ -43,6 +47,21 @@
       "type": "object",
       "additionalProperties": { "$ref": "#/$defs/jsonValue" }
     },
+    "skillStateAudit": {
+      "type": "object", "additionalProperties": false, "required": ["blue", "red"],
+      "properties": {
+        "blue": { "type": "array", "items": { "$ref": "#/$defs/skillStateUnit" } },
+        "red": { "type": "array", "items": { "$ref": "#/$defs/skillStateUnit" } }
+      }
+    },
+    "presentationAudit": {
+      "type": "object", "additionalProperties": false, "required": ["qualityAtStart", "qualityApplied"],
+      "properties": {
+        "qualityAtStart": { "type": "string", "minLength": 1 }, "qualityApplied": { "type": "string", "minLength": 1 },
+        "atStart": { "$ref": "#/$defs/presentationState" }, "atEnd": { "$ref": "#/$defs/presentationState" }
+      },
+      "dependentRequired": { "atStart": ["atEnd"], "atEnd": ["atStart"] }
+    },
     "blue": { "$ref": "#/$defs/sideSummary" },
     "red": { "$ref": "#/$defs/sideSummary" },
     "blueUnitResults": { "type": "array", "items": { "$ref": "#/$defs/unitResult" } },
@@ -51,7 +70,58 @@
     "startedAt": { "type": ["string", "null"] },
     "completedAt": { "type": ["string", "null"] }
   },
+  "dependentRequired": {
+    "workerId": ["sessionEpoch", "assignmentId", "attemptId"],
+    "sessionEpoch": ["workerId", "assignmentId", "attemptId"],
+    "assignmentId": ["workerId", "sessionEpoch", "attemptId"],
+    "attemptId": ["workerId", "sessionEpoch", "assignmentId"]
+  },
   "$defs": {
+    "presentationState": {
+      "type": "object", "additionalProperties": false,
+      "required": ["observed", "qualityApplied", "performanceLevel", "lastAppliedSoftU", "appliedCommand", "sceneEpoch", "paused", "frameRate"],
+      "properties": {
+        "observed": { "type": "boolean" }, "qualityApplied": { "type": ["string", "null"] },
+        "performanceLevel": { "type": ["number", "null"] }, "lastAppliedSoftU": { "type": ["number", "null"] },
+        "appliedCommand": { "type": ["number", "null"] }, "sceneEpoch": { "type": ["number", "null"] },
+        "paused": { "type": ["boolean", "null"] }, "frameRate": { "type": ["number", "null"] }
+      },
+      "allOf": [{
+        "if": { "properties": { "observed": { "const": true } } },
+        "then": { "properties": {
+          "qualityApplied": { "type": "string", "minLength": 1 }, "performanceLevel": { "type": "number" },
+          "lastAppliedSoftU": { "type": "number" }, "appliedCommand": { "type": "number" },
+          "sceneEpoch": { "type": "number" }, "paused": { "type": "boolean" }, "frameRate": { "type": "number" }
+        } }
+      }]
+    },
+    "skillStateUnit": {
+      "type": "object", "additionalProperties": false,
+      "required": ["unit", "sourceId", "name", "observed", "state"],
+      "properties": {
+        "unit": { "type": "string" }, "sourceId": { "type": "string" }, "name": { "type": "string" },
+        "observed": { "type": "boolean" },
+        "state": {
+          "oneOf": [
+            { "type": "null" },
+            {
+              "type": "object", "additionalProperties": false,
+              "required": ["cacheKey", "cacheHit", "skillCount", "cooldownsClear", "definitionSignature"],
+              "properties": {
+                "cacheKey": { "type": "string" }, "cacheHit": { "type": "boolean" },
+                "skillCount": { "type": "integer", "minimum": 0 },
+                "cooldownsClear": { "type": "boolean" }, "definitionSignature": { "type": "string" }
+              }
+            }
+          ]
+        }
+      },
+      "allOf": [{
+        "if": { "properties": { "observed": { "const": true } } },
+        "then": { "properties": { "state": { "type": "object" } } },
+        "else": { "properties": { "state": { "type": "null" } } }
+      }]
+    },
     "sha256": { "type": "string", "pattern": "^sha256:[a-f0-9]{64}$" },
     "formation": { "enum": ["column", "line", "wedge", "shield", "grid"] },
     "jsonValue": {

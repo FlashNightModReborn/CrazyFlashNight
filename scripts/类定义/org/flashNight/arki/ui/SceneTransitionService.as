@@ -144,6 +144,7 @@ class org.flashNight.arki.ui.SceneTransitionService {
     }
     private static function onSceneReady(world:Object, token:String, identity:Object):Void {
         var s:Object = _session;
+        if (s != null && s.calibrationOwner != null) return;
         if (!owns(s,_root.淡出动画) || world != _root.gameworld || identity == null
             || identity !== _root.gameworld.__stageReturnWorldIdentity || identity === s.oldWorld) return;
         if (s.worldReady && (s.readyIdentity !== identity || s.targetScene != WorldLightingBridge.sceneNumber())) {
@@ -157,10 +158,39 @@ class org.flashNight.arki.ui.SceneTransitionService {
         s.targetScene = WorldLightingBridge.sceneNumber();
         requestReveal();
     }
+
+    /** Presentation-only admission for the exact no-player calibration world. */
+    public static function calibrationWorldReady(world:Object, identity:Object, fade:Object,
+            projectionIdentity:Object, owner:Object, context:Object, onReleased:Function):Boolean {
+        var s:Object = _session;
+        if (!owns(s,fade) || fade != _root.淡出动画 || projectionIdentity == null
+                || projectionIdentity !== s.identity || owner == null || context == null
+                || typeof onReleased != "function" || s.report != null || s.covered !== true
+                || (s.phase != "cover" && s.phase != "loading")
+                || world != _root.gameworld || world._arenaCalibrationStage !== true
+                || identity == null || identity !== _root.gameworld.__stageReturnWorldIdentity
+                || identity === s.oldWorld || (s.calibrationOwner != null && s.calibrationOwner !== owner)) return false;
+        if (s.calibrationOwner != null) {
+            return s.calibrationContext === context && s.readyIdentity === identity
+                && s.calibrationReleased === onReleased && s.targetScene == WorldLightingBridge.sceneNumber();
+        }
+        s.calibrationOwner = owner;
+        s.calibrationContext = context;
+        s.calibrationReleased = onReleased;
+        s.worldReady = true;
+        s.readyWorld = world;
+        s.readyIdentity = identity;
+        s.targetScene = WorldLightingBridge.sceneNumber();
+        requestReveal();
+        return true;
+    }
     private static function requestReveal():Void {
         var s:Object = _session;
         if (s == null || !owns(s,s.fade) || !s.worldReady || s.fade._currentframe != 30
             || s.phase == "error" || s.phase == "reveal") return;
+        if (s.calibrationOwner != null && (s.readyWorld != _root.gameworld
+                || s.readyIdentity !== _root.gameworld.__stageReturnWorldIdentity
+                || s.targetScene != WorldLightingBridge.sceneNumber())) return;
         org.flashNight.dev.PanelTiming.finish("transition.reveal_requested",s.timingStarted,_sequence);
         s.phase = "reveal"; s.revision++; publish();
     }
@@ -176,6 +206,7 @@ class org.flashNight.arki.ui.SceneTransitionService {
         if (p == null || !owns(s,s.fade) || p.requestId !== s.requestId
             || typeof p.revision != "number" || p.revision < 1 || p.revision > s.revision
             || p.revision != Math.floor(p.revision)) return;
+        if (s.calibrationOwner != null && s.targetScene != WorldLightingBridge.sceneNumber()) return;
         if (p.kind == "covered" && !s.covered && s.phase != "error" && s.phase != "reveal") {
             org.flashNight.dev.PanelTiming.finish("transition.covered",s.timingStarted,_sequence);
             s.covered = true;
@@ -281,6 +312,7 @@ class org.flashNight.arki.ui.SceneTransitionService {
             && s.revealed === true && s.worldReady === true
             && s.readyWorld === _root.gameworld
             && s.readyIdentity === _root.gameworld.__stageReturnWorldIdentity;
+        if (s.calibrationOwner != null && s.targetScene != WorldLightingBridge.sceneNumber()) released = false;
         _session = null;
         if (s != null) {
             _retired = {version:s.report == null ? 1 : 2,requestId:s.requestId,revision:s.revision+1,phase:"hide",
@@ -290,7 +322,14 @@ class org.flashNight.arki.ui.SceneTransitionService {
             // hide 先于任何会暂停世界的报告开窗；重复 clear 或取消都不发布成功交接。
             if (released) {
                 org.flashNight.dev.PanelTiming.finish("transition.released",s.timingStarted,_sequence);
-                EventBus.getInstance().publish("SceneTransitionReleased",s.readyWorld,s.arrivalToken,s.readyIdentity);
+                if (s.calibrationOwner != null) {
+                    var callback:Function = s.calibrationReleased;
+                    s.calibrationReleased = null;
+                    if (typeof callback == "function") callback(s.calibrationOwner,s.calibrationContext,
+                        s.readyWorld,s.readyIdentity,s.fade,s.identity);
+                } else {
+                    EventBus.getInstance().publish("SceneTransitionReleased",s.readyWorld,s.arrivalToken,s.readyIdentity);
+                }
             }
         }
     }

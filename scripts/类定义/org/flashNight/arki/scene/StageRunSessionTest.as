@@ -32,6 +32,22 @@ import org.flashNight.neur.Event.EventDispatcher;
 
 /** StageRunSession 的 outcome/life 正交状态、复活与结算冻结 focused 回归。 */
 class org.flashNight.arki.scene.StageRunSessionTest {
+
+    private static var _calibrationContextSeq:Number = 0;
+
+    private static function calibrationContext(params:Object):Object {
+        params.callId = ++_calibrationContextSeq;
+        params.workerId = "focused";
+        params.sessionEpoch = "focused-session";
+        params.assignmentId = "focused-assignment";
+        params.attemptId = "focused-attempt";
+        params.manifestHash = "sha256:" + "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa";
+        params.caseId = "focused-case";
+        params.caseHash = "sha256:" + "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb";
+        params.runId = String(params.batchId) + "-r001";
+        params.repeatIndex = 1;
+        return params;
+    }
     private static var _passed:Number = 0;
     private static var _failed:Number = 0;
     private static var _backup:Object;
@@ -95,6 +111,7 @@ class org.flashNight.arki.scene.StageRunSessionTest {
         testFocusInputSamplingIsBounded();
         testLifecycleAdmissionAndReservation();
         testStageManagerReservationAuthority();
+        testCalibrationReadyTokenPropagation();
         testStageLoaderRootExactlyOnce();
         testStageManagerProjectionFailures();
         testProductionSceneTransitionAuthority();
@@ -966,6 +983,106 @@ class org.flashNight.arki.scene.StageRunSessionTest {
         StageRunSession.cancelStageStart(restartToken);
         _root.淡出动画 = oldFade;
         _root.返回基地 = oldReturnBase;
+    }
+
+    /** Execute the actual initStage -> initializeStageWorld -> calibration host token path. */
+    private static function testCalibrationReadyTokenPropagation():Void {
+        resetWorld(0);
+        var manager:StageManager = StageManager.getInstance();
+        manager.dispose();
+        var savedWorld:Object = _root.gameworld;
+        var keys:Array = ["斗兽标定模式", "角斗场对手类型", "当前关卡名", "当前关卡难度",
+            "当前通关的关卡", "关卡类型", "敌人同伴数", "敌人总数", "当前为战斗地图",
+            "加载场景背景", "加载后景", "绘制地图碰撞箱", "通过数组绘制地图碰撞箱",
+            "场景转换函数", "Xmin", "Xmax", "Ymin", "Ymax", "d_倒计时显示"];
+        var saved:Object = {};
+        for (var k:Number = 0; k < keys.length; k++) saved[keys[k]] = _root[keys[k]];
+        var weatherApi:Object = org.flashNight.arki.weather.WeatherSystem;
+        var depthApi:Object = org.flashNight.gesh.depth.DepthManager;
+        var lightsApi:Object = org.flashNight.arki.render.SceneLightBridge;
+        var calibrationApi:Object = org.flashNight.arki.merc.ArenaCalibrationService;
+        var originalWeather:Function = weatherApi.getInstance;
+        var originalDepth:Object = depthApi.instance;
+        var originalLights:Function = lightsApi.configure;
+        var originalReady:Function = calibrationApi.onCalibrationStageReady;
+        var holder:MovieClip = _root.createEmptyMovieClip("__calibrationStageTokenFixture", _root.getNextHighestDepth());
+        var observed:Object = {readyCount:0, startCount:0};
+        var prepared:Boolean = false;
+        var token:String = "";
+        try {
+            var world:MovieClip = holder.createEmptyMovieClip("world", 1);
+            _root.gameworld = world;
+            world.createEmptyMovieClip("出生地", 1);
+            world.createEmptyMovieClip("背景", 2);
+            world.createEmptyMovieClip("门1", 3);
+            world.createEmptyMovieClip("地图", 4);
+            world.dispatcher = {publish:function(eventName:String):Void {
+                if (eventName != "Start") return;
+                observed.startCount++;
+                observed.identityAtStart = _root.gameworld.__stageReturnWorldIdentity;
+                _root.gameworld.removeMovieClip();
+                _root.gameworld = holder.createEmptyMovieClip("world", 1);
+                org.flashNight.arki.scene.StageReturnFlow.worldIdentity(_root.gameworld);
+            }};
+            var environment:Object = {对齐原点:false, Xmin:0, Xmax:960, Ymin:100, Ymax:500,
+                背景长:960, 背景高:540, 门:[null,{}], 背景元素:[], 地图碰撞箱:[], 场景灯:[]};
+            var config:Object = {value:environment,
+                getStageEnv:function(url:String):Object {return this.value;},
+                getStageEnvDefault:function():Object {return this.value;},
+                setInfiniteMapEnvInfo:function(value:Object):Void {}};
+            var weather:Object = {config:config, getEnvConfig:function():Object {return this.config;}};
+            weatherApi.getInstance = function():Object {return weather;};
+            depthApi.instance = {calibrate:function(low:Number, high:Number):Void {}};
+            lightsApi.configure = function(base:Array, extra:Array, key:String):Void {};
+            _root.加载场景背景 = function(value):Void {};
+            _root.加载后景 = function(value):Void {};
+            _root.绘制地图碰撞箱 = function():Void {};
+            _root.通过数组绘制地图碰撞箱 = function(value):Void {};
+            _root.场景转换函数 = {是否从门加载角色:false};
+            _root.d_倒计时显示 = {};
+            calibrationApi.onCalibrationStageReady = function(readyWorld:Object,
+                    readyIdentity:Object, readyToken:String):Void {
+                observed.readyCount++;
+                observed.token = readyToken;
+                observed.fieldToken = manager["stageStartToken"];
+                observed.samePathRebound = readyWorld === _root.gameworld;
+                observed.capturedBeforeStart = readyIdentity === observed.identityAtStart;
+                observed.rejectsReplacement = readyIdentity !== _root.gameworld.__stageReturnWorldIdentity;
+            };
+            _root.斗兽标定模式 = false;
+            _root.角斗场对手类型 = undefined;
+            token = StageRunSession.reserveStageStart("arena_calibration", "DEATH MATCH角斗场", "");
+            var stageData:Array = [{BasicInformation:{Background:"token-fixture.swf"},
+                Instances:{Instance:[]}, SpawnPoint:{Point:[]}, Pickups:{Pickup:[]}, Wave:{SubWave:[]}}];
+            prepared = manager.initialize(stageData, null, token, true);
+            manager["sceneManager"] = {gameworld:world, addBodyLayers:function(width:Number, height:Number):Void {}};
+            manager["stageEventHandler"] = {init:function(value):Void {}, clear:function():Void {}};
+            _root.斗兽标定模式 = true;
+            _root.角斗场对手类型 = "calibration";
+            manager.initStage();
+            observed.noOrdinaryRun = StageRunSession.testOnlySnapshot() == null
+                && !StageRunSession.isStageStartReservationValid(token)
+                && StageRunSession.getStageStartBlockReason() == "calibration_active";
+        } catch (fixtureError) {
+            observed.error = String(fixtureError);
+        } finally {
+            try { manager.dispose(); } catch (cleanupError) { observed.cleanupError = String(cleanupError); }
+            weatherApi.getInstance = originalWeather;
+            depthApi.instance = originalDepth;
+            lightsApi.configure = originalLights;
+            calibrationApi.onCalibrationStageReady = originalReady;
+            holder.removeMovieClip();
+            _root.gameworld = savedWorld;
+            for (var j:Number = 0; j < keys.length; j++) _root[keys[j]] = saved[keys[j]];
+        }
+        assertTrue(prepared && token != "", "real calibration token-flow fixture reserves and prepares an exact stage");
+        assertTrue(observed.readyCount == 1 && observed.token === token && observed.fieldToken === "",
+            "real initStage passes its captured token through initializeStageWorld after clearing the field");
+        assertTrue(observed.startCount == 1 && observed.samePathRebound === true
+                && observed.capturedBeforeStart === true && observed.rejectsReplacement === true,
+            "calibration host captures the plain world identity before a real same-path Start replacement");
+        assertTrue(observed.noOrdinaryRun === true && observed.error == undefined && observed.cleanupError == undefined,
+            "calibration token-flow creates no ordinary run and restores its fixture: " + String(observed.error || ""));
     }
 
     private static function minimalManagerStage(timePoolRef:String):Object {
@@ -2733,12 +2850,12 @@ class org.flashNight.arki.scene.StageRunSessionTest {
         assertTrue(ArenaController.prepareArenaStage(0, 0, "",
             function():Void {}, function():Void {}, true),
             "calibration abort coverage owns a pending reservation");
-        ArenaCalibrationService.testOnlySetPendingRun({
+        ArenaCalibrationService.testOnlySetPendingRun(calibrationContext({
             callId:"calibration-abort-old", batchId:"batch-abort"
-        });
-        ArenaCalibrationService.handleAbort({
+        }));
+        ArenaCalibrationService.handleAbort(calibrationContext({
             callId:"calibration-abort", batchId:"batch-abort"
-        });
+        }));
         var afterAbortToken:String = StageRunSession.reserveStageStart(
             "after_calibration_abort", "abort 后关卡", "简单");
         assertTrue(afterAbortToken != "",
@@ -2748,13 +2865,13 @@ class org.flashNight.arki.scene.StageRunSessionTest {
         assertTrue(ArenaController.prepareArenaStage(0, 0, "",
             function():Void {}, function():Void {}, true),
             "calibration supersede coverage owns the old pending reservation");
-        ArenaCalibrationService.testOnlySetPendingRun({
+        ArenaCalibrationService.testOnlySetPendingRun(calibrationContext({
             callId:"calibration-superseded", batchId:"batch-old"
-        });
-        ArenaCalibrationService.handleRun({
+        }));
+        ArenaCalibrationService.handleRun(calibrationContext({
             callId:"calibration-new", batchId:"batch-new",
             blueRoster:[], redRoster:[]
-        });
+        }));
         var afterSupersedeToken:String = StageRunSession.reserveStageStart(
             "after_calibration_supersede", "supersede 后关卡", "简单");
         assertTrue(afterSupersedeToken != "",
@@ -2781,15 +2898,15 @@ class org.flashNight.arki.scene.StageRunSessionTest {
                 token:String(stageStartToken || "")
             });
         };
-        ArenaCalibrationService.handleRun({
+        ArenaCalibrationService.handleRun(calibrationContext({
             callId:"calibration-race-error-a", batchId:"race-error-a",
             blueRoster:calibrationRoster, redRoster:calibrationRoster
-        });
+        }));
         var calibrationTokenA:String = String(calibrationLoads[0].token || "");
-        ArenaCalibrationService.handleRun({
+        ArenaCalibrationService.handleRun(calibrationContext({
             callId:"calibration-race-error-b", batchId:"race-error-b",
             blueRoster:calibrationRoster, redRoster:calibrationRoster
-        });
+        }));
         assertEquals(2, calibrationLoads.length,
             "calibration supersede starts one exact replacement load");
         var calibrationTokenB:String = String(calibrationLoads[1].token || "");
@@ -2808,16 +2925,16 @@ class org.flashNight.arki.scene.StageRunSessionTest {
         assertTrue(_root.淡出动画.fadeCount == 1
                 && StageRunSession.isStageStartReservationValid(calibrationTokenB),
             "calibration B success alone commits exactly its own pending fade");
-        ArenaCalibrationService.handleAbort({
+        ArenaCalibrationService.handleAbort(calibrationContext({
             callId:"calibration-race-abort-b", batchId:"race-error-b"
-        });
+        }));
         assertTrue(StageRunSession.isStageStartReservationValid(calibrationTokenB)
                 && _root.淡出动画.fadeCount == 1,
             "abort after calibration fade commit is rejected without dismantling B");
-        ArenaCalibrationService.handleRun({
+        ArenaCalibrationService.handleRun(calibrationContext({
             callId:"calibration-race-supersede-c", batchId:"race-error-c",
             blueRoster:calibrationRoster, redRoster:calibrationRoster
-        });
+        }));
         assertTrue(calibrationLoads.length == 2
                 && StageRunSession.isStageStartReservationValid(calibrationTokenB)
                 && _root.淡出动画.fadeCount == 1,
@@ -2832,14 +2949,14 @@ class org.flashNight.arki.scene.StageRunSessionTest {
 
         calibrationLoads = [];
         _root.淡出动画.fadeCount = 0;
-        ArenaCalibrationService.handleRun({
+        ArenaCalibrationService.handleRun(calibrationContext({
             callId:"calibration-race-success-a", batchId:"race-success-a",
             blueRoster:calibrationRoster, redRoster:calibrationRoster
-        });
-        ArenaCalibrationService.handleRun({
+        }));
+        ArenaCalibrationService.handleRun(calibrationContext({
             callId:"calibration-race-success-b", batchId:"race-success-b",
             blueRoster:calibrationRoster, redRoster:calibrationRoster
-        });
+        }));
         var calibrationSuccessTokenB:String = String(calibrationLoads[1].token || "");
         calibrationLoads[0].loaded({});
         assertTrue(calibrationSuccessTokenB != ""
@@ -2888,10 +3005,10 @@ class org.flashNight.arki.scene.StageRunSessionTest {
             }
         };
         _root.淡出动画 = calibrationFade;
-        ArenaCalibrationService.handleRun({
+        ArenaCalibrationService.handleRun(calibrationContext({
             callId:"calibration-fade-fail-a", batchId:"fade-fail-a",
             blueRoster:calibrationRoster, redRoster:calibrationRoster
-        });
+        }));
         var failedCalibrationLoad:Object = calibrationLoads[0];
         var failedCalibrationToken:String = String(failedCalibrationLoad.token || "");
         failedCalibrationLoad.loaded({});
@@ -2913,10 +3030,10 @@ class org.flashNight.arki.scene.StageRunSessionTest {
             "calibration fade throw exact-releases A and restores every transition global");
 
         calibrationFade.throwNext = false;
-        ArenaCalibrationService.handleRun({
+        ArenaCalibrationService.handleRun(calibrationContext({
             callId:"calibration-fade-retry-b", batchId:"fade-retry-b",
             blueRoster:calibrationRoster, redRoster:calibrationRoster
-        });
+        }));
         var fadeRetryTokenB:String = calibrationLoads.length > 1
             ? String(calibrationLoads[1].token || "") : "";
         assertTrue(calibrationLoads.length == 2 && fadeRetryTokenB != ""
@@ -2930,9 +3047,9 @@ class org.flashNight.arki.scene.StageRunSessionTest {
                 && _root.关卡类型 == "原关卡类型"
                 && _root.押金 == 321 && _root.角斗场奖金 == 654,
             "late callbacks from fade-failed A cannot mutate or cancel pending B");
-        ArenaCalibrationService.handleAbort({
+        ArenaCalibrationService.handleAbort(calibrationContext({
             callId:"calibration-fade-retry-abort", batchId:"fade-retry-b"
-        });
+        }));
         assertTrue(StageRunSession.canStartStage(),
             "replacement B remains exactly abortable after A fade failure");
 
@@ -2951,14 +3068,14 @@ class org.flashNight.arki.scene.StageRunSessionTest {
             }
         };
         _root.server = throwingCalibrationResponses;
-        ArenaCalibrationService.handleRun({
+        ArenaCalibrationService.handleRun(calibrationContext({
             callId:"calibration-response-throw-a", batchId:"response-throw-a",
             blueRoster:calibrationRoster, redRoster:calibrationRoster
-        });
-        ArenaCalibrationService.handleRun({
+        }));
+        ArenaCalibrationService.handleRun(calibrationContext({
             callId:"calibration-response-throw-b", batchId:"response-throw-b",
             blueRoster:calibrationRoster, redRoster:calibrationRoster
-        });
+        }));
         var responseThrowTokenB:String = calibrationLoads.length > 1
             ? String(calibrationLoads[1].token || "") : "";
         assertTrue(calibrationLoads.length == 2 && responseThrowTokenB != ""
