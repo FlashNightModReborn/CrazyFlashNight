@@ -1,0 +1,213 @@
+{
+  "schema": "cf7.panel-loading-runtime-release.v1",
+  "state": "promoted",
+  "authorization": "用户明确授权获取云端共识、构建部署推送，并协调 Arena Worker 主代理加两个常驻子代理完成 P0-P1",
+  "source": {
+    "commit": "155160229b280ead5c53bc7f79761ce845febc8a",
+    "tree": "e2e50fd98550d84c81a2628a83037faf1e53a57a",
+    "tag": "runtime-build-v2/20261011-panel-loading-v2",
+    "requestId": "864475D9D71AC2DFC7D9662F5DE28EC54398A05C7CB22F287462F2F46EBC4374"
+  },
+  "identity": {
+    "artifactSourceHash": "0E31B844CF247329EF36D1DD93ABA7CD2CA483B42636FB617266A1CD428190CE",
+    "producerRecipeHash": "05AA73475D685FB8E8BB7F028449B3EA539DD8E7110C2AAE3395661EC18EEA64",
+    "toolchainLockHash": "DFA769829F9740196DEF63351A00AAC309E50A2CA0A768759334EB2A2161DD36",
+    "policyHash": "9B6F0616078CD2136A48E178F0CDEE72C2997BA8A13AF373D1121923FC49143A",
+    "buildIdentityHash": "647261007E876BD462B492314492E1419F186960A5D15625A1807522087C7F12",
+    "payloadClosureHash": "F5D0D45BF10B00C2C33856313999E8D1B3E99D1DAD8C088B7C517829195D4461",
+    "coreSha256": "478A483193E2DAE244C6B81258DA22FEA26427D85F35FCFF9B61E3D84881EE51",
+    "manifestSha256": "3658C7AE2E96DE2E2B43E4D24FC4A6E78C9FAB200CE89C5AE7A42716DAFB6728",
+    "payloadFiles": 43
+  },
+  "policy": {
+    "passed": 47,
+    "total": 47,
+    "receiptSha256": "3EA31C00F52FA8D3F797AEF686825B87968C23EFE01D6BD29C376AA4FEB14DE8",
+    "failedV1": {
+      "sourceCommit": "ed64e139aeca9e2bda12691743a5cadc1c7ec4be",
+      "requestId": "E2330DAF085881276BB3F10BF992E2AC2BF4BF141553DFD42E707510AAECCE00",
+      "passed": 44,
+      "total": 47,
+      "supersededBy": "864475D9D71AC2DFC7D9662F5DE28EC54398A05C7CB22F287462F2F46EBC4374",
+      "cloudDispatched": false,
+      "tagMoved": false,
+      "failureReasons": [
+        "stale material source sidecar",
+        "new tablet CSS exceeded color/duration/easing ceilings"
+      ]
+    },
+    "debtCeilingsRaised": false,
+    "tabletDeclarationsExpandedEquivalent": 44,
+    "materialDictionaryXmlUnchanged": true
+  },
+  "quorum": {
+    "signers": 2,
+    "faultDomains": [
+      "physical-host-c",
+      "github-hosted-windows"
+    ],
+    "local": {
+      "builder": "builder-local-c",
+      "keyId": "CFB70E2D339ACB25E9B6C2873DF4F1AEEBA8EA75AD23B825724B27FCA70C0B86",
+      "nonExportablePrivateKey": true,
+      "reusedSameBuildIdentityProof": true
+    },
+    "cloud": {
+      "runId": 38101712904,
+      "url": "https://github.com/FlashNightModReborn/CrazyFlashNight/actions/runs/38101712904",
+      "builderIdentityHash": "3264C95464C5381A7054B05CE3FC762BE2E16E88E0E7A371CB7D3CBBAC9CBC4E",
+      "status": "success",
+      "verified": true,
+      "transportScope": "attestation-only"
+    }
+  },
+  "promotion": {
+    "promotedAtUtc": "10/11/2026 01:35:58",
+    "deploymentCommit": "0cd4fee2e731413fbe9711dc3886a1142a2b96a0",
+    "bootstrapFullInstallVerifyPassed": true,
+    "rollback": "tmp/runtime-promotions/20261011T013516928Z-6bf2989b26254538ae7317b209262194/previous",
+    "audit": {
+      "runId": 38103139352,
+      "url": "https://github.com/FlashNightModReborn/CrazyFlashNight/actions/runs/38103139352",
+      "status": "success",
+      "state": "promoted",
+      "deploymentChanged": true,
+      "signers": 2,
+      "faultDomains": 2,
+      "strictReplay": true
+    }
+  },
+  "standardEntry": {
+    "runtimeMode": "formal_runtime",
+    "startupIdentityVerified": true,
+    "guardianBusReady": true,
+    "corePid": 6004,
+    "flashPid": 20180,
+    "exactSocketConnected": true,
+    "prewarmHandshakeHeld": true,
+    "attemptId": "96598a17c1174879abda3fac12b208a2",
+    "saveConfirmClicked": false,
+    "noSelectionDeadlineResetToIdle": true,
+    "normalUserClosingObserved": true,
+    "shutdownFence": "no_binding",
+    "ownedCoreAndStandaloneExited": true,
+    "osExitCodeAvailable": false,
+    "forcedTermination": false,
+    "businessJourneyExecuted": false,
+    "physicalInputAttestation": false,
+    "standardEntryVerified": false,
+    "negativeFirstSmoke": {
+      "corePid": 1964,
+      "flashPid": 23208,
+      "reason": "prewarm_socket_connect_timeout",
+      "unauthorizedPeerMismatchObserved": true,
+      "peerOwnerPidCaptured": false,
+      "retained": true
+    },
+    "testPlayerCleanup": {
+      "api": "fl.closeAllPlayerDocuments",
+      "loaderOriginalBytesRestored": true,
+      "loaderSha256": "505DD61F4C07B99D553E860103BBA799DCD4C7410458B277B313CB100E41A386",
+      "compilerMutation": false,
+      "swfMutation": false
+    }
+  },
+  "protection": {
+    "originalSavePreferenceFiles": 28,
+    "changed": 0,
+    "launchVersionMarkerExcluded": true
+  },
+  "performanceEvidence": "docs/reports/加载与面板长尾证据-2026-10-11.json",
+  "coordination": {
+    "threadId": "01a122b2-0ef0-7f22-be73-acd4ed59dfe5",
+    "title": "核实基建审计并核算成本",
+    "spec": "主代理加两个常驻子代理",
+    "scope": "Arena Worker P0-P1",
+    "status": "isolated_implementation_active_release_ready_for_final_handoff",
+    "mainMigrationGate": "release audit, documentation, cleanup and explicit handoff",
+    "workerHostSwfMustBePaired": true,
+    "workerProductionPublishAuthorized": false
+  },
+  "artifacts": [
+    {
+      "path": "tmp/scene-loading-investigation-20261010/release-local-worker-01.log",
+      "bytes": 42010,
+      "sha256": "6BD8452AA10275D808646A127A5D50D609822584C6258FA071BAB8E43618C556"
+    },
+    {
+      "path": "tmp/scene-loading-investigation-20261010/release-local-worker-02.log",
+      "bytes": 699,
+      "sha256": "D494E0D39D3435EF37F035A871BC4D31F12B15726B961BCA01E21D61E811032F"
+    },
+    {
+      "path": "tmp/scene-loading-investigation-20261010/release-policy-01.log",
+      "bytes": 32440,
+      "sha256": "F41504A4976F64221FC98A71B10C8CB5BB88255AA2B8DE237498980E39DF8D59"
+    },
+    {
+      "path": "tmp/scene-loading-investigation-20261010/release-policy-02.log",
+      "bytes": 32327,
+      "sha256": "192CFBBA39149E88487813F665693084CF6C675DDDFFD4A26B140EF27E976896"
+    },
+    {
+      "path": "tmp/scene-loading-investigation-20261010/release-cloud-02.log",
+      "bytes": 38689,
+      "sha256": "A0967E79ECCD84568F91760B9A94803BCDA5F7C8E8103AAD727C82F4C2A5686A"
+    },
+    {
+      "path": "tmp/scene-loading-investigation-20261010/release-promotion-02.log",
+      "bytes": 1641,
+      "sha256": "600F0E2E27E20DE22DE7C6D4C21D85E86DDADEF9B91F8C22F3BCAFCC7308A8B7"
+    },
+    {
+      "path": "tmp/scene-loading-investigation-20261010/release-formal-entry-01.log",
+      "bytes": 1428,
+      "sha256": "4FAA51C1FDC1315DEFC559718E14FB932204B4AE6F2049A9D12E4C50B1016526"
+    },
+    {
+      "path": "tmp/scene-loading-investigation-20261010/release-formal-entry-01.launcher.log",
+      "bytes": 1577436,
+      "sha256": "A18514910540B9CFFD02E8312B6C392C572365DDD5A4A2F399E45C0296A9FBC3"
+    },
+    {
+      "path": "tmp/scene-loading-investigation-20261010/release-formal-entry-02.log",
+      "bytes": 1428,
+      "sha256": "31A7DEC31387873210709FF2A1E57C6FCC9979E578E4DF07E30A83AEF7CDF0FE"
+    },
+    {
+      "path": "tmp/scene-loading-investigation-20261010/release-formal-entry-02.launcher.log",
+      "bytes": 1603852,
+      "sha256": "046023108E9B28B092AAC7E523AD3848805CAC0397054297FF5CA9A7D76995C9"
+    },
+    {
+      "path": "tmp/scene-loading-investigation-20261010/release-test-player-cleanup-01.log",
+      "bytes": 262,
+      "sha256": "273ACA2C302AECD94FB6C6D9C4133BB5F7816092352424D194270A29AA3F3E29"
+    },
+    {
+      "path": "tmp/scene-loading-investigation-20261010/release-tablet-token-equivalence.json",
+      "bytes": 124,
+      "sha256": "F1D2CF7EFDD22D9B930A7A6912D76AA35AEBD589E541EA76150D354636DCBFCD"
+    },
+    {
+      "path": "tmp/scene-loading-investigation-20261010/release-protected-saves-after.json",
+      "bytes": 146,
+      "sha256": "19C4E0AD396A287BE7712B6878B7C38DDC21466153D7D1E9CA031BDB775F30F7"
+    },
+    {
+      "path": "tmp/scene-loading-investigation-20261010/release-index-recovery-01.json",
+      "bytes": 265,
+      "sha256": "A0645C89B02A40F78D9B9D844F90D5679DE02C1BF6DDDF2C40F06DE4AB87B539"
+    },
+    {
+      "path": "tmp/scene-loading-investigation-20261010/release-source-audit-38099669037.log",
+      "bytes": 78799,
+      "sha256": "E5EAD70B2897B49BA2F2EF45449DC70F5927EFBF618F35488186E41A237A33DF"
+    },
+    {
+      "path": "tmp/scene-loading-investigation-20261010/release-deployment-audit-38103139352.log",
+      "bytes": 80248,
+      "sha256": "0634EA1F4BAC9AEF5A3A740A907EBB47A059CDCADECB97471632575196CD7AFD"
+    }
+  ]
+}
