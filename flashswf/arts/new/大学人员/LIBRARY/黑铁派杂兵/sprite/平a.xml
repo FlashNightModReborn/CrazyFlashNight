@@ -1,8 +1,12 @@
 <DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="黑铁派杂兵/sprite/平a" itemID="693aeb53-0000271b" lastModified="1767880635" lastUniqueIdentifier="270">
   <timeline>
-    <DOMTimeline name="平a" currentFrame="1" guides="&lt;guidelines&gt;&lt;guideline direction=&quot;h&quot;&gt;637&lt;/guideline&gt;&lt;guideline direction=&quot;v&quot;&gt;262&lt;/guideline&gt;&lt;/guidelines&gt;">
+    <DOMTimeline name="平a" currentFrame="1" guides='&lt;guidelines&gt;&lt;guideline direction="h"&gt;637&lt;/guideline&gt;&lt;guideline direction="v"&gt;262&lt;/guideline&gt;&lt;/guidelines&gt;'>
       <layers>
-        <DOMLayer name="敌人短攻击初始化" color="#33AA66"><frames><DOMFrame index="0" keyMode="9728"><elements/><Actionscript><script><![CDATA[// 大学敌人时间轴：敌人 AI 决定入口，帧事件只负责本次攻击。
+        <DOMLayer name="敌人短攻击初始化" color="#33AA66">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[// 大学敌人时间轴：敌人 AI 决定入口，帧事件只负责本次攻击。
 连招下一段 = undefined;
 function 攻击有效()
 {
@@ -31,7 +35,13 @@ function 攻击时可斜向改变移动方向(速度)
         _root.敌人二级函数.Z轴追踪移动.call(this, 速度 / 2);
     }
 }
-]]></script></Actionscript></DOMFrame></frames></DOMLayer><DOMLayer name="label" color="#9933CC" autoNamed="false">
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="label" color="#9933CC" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="36" name="a0" labelType="name" keyMode="9728">
               <elements/>
@@ -69,7 +79,8 @@ function 攻击时可斜向改变移动方向(速度)
                   <transformationPoint>
                     <Point x="-0.2" y="0.4"/>
                   </transformationPoint>
-                <Actionscript><script><![CDATA[onClipEvent (load) {
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent (load) {
     if (_parent.攻击有效())
     {
         var 单位 = _parent._parent;
@@ -84,7 +95,9 @@ function 攻击时可斜向改变移动方向(速度)
         单位.刀口位置生成子弹(单位, 参数);
     }
 }
-]]></script></Actionscript></DOMSymbolInstance>
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
               </elements>
             </DOMFrame>
             <DOMFrame index="9" keyMode="9728">
@@ -99,7 +112,8 @@ function 攻击时可斜向改变移动方向(速度)
                   <transformationPoint>
                     <Point x="71.95" y="-71.3"/>
                   </transformationPoint>
-                <Actionscript><script><![CDATA[onClipEvent (load) {
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent (load) {
     if (_parent.攻击有效())
     {
         var 单位 = _parent._parent;
@@ -114,7 +128,9 @@ function 攻击时可斜向改变移动方向(速度)
         单位.刀口位置生成子弹(单位, 参数);
     }
 }
-]]></script></Actionscript></DOMSymbolInstance>
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
               </elements>
             </DOMFrame>
             <DOMFrame index="11" duration="4" keyMode="9728">
@@ -207,7 +223,8 @@ function 攻击时可斜向改变移动方向(速度)
                   <transformationPoint>
                     <Point x="-0.3" y="0.45"/>
                   </transformationPoint>
-                <Actionscript><script><![CDATA[onClipEvent (load) {
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent (load) {
     if (_parent.攻击有效())
     {
         var 单位 = _parent._parent;
@@ -222,7 +239,9 @@ function 攻击时可斜向改变移动方向(速度)
         单位.刀口位置生成子弹(单位, 参数);
     }
 }
-]]></script></Actionscript></DOMSymbolInstance>
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
               </elements>
             </DOMFrame>
             <DOMFrame index="18" duration="5" keyMode="9728">
@@ -240,7 +259,8 @@ function 攻击时可斜向改变移动方向(速度)
                   <transformationPoint>
                     <Point x="-0.3" y="0.45"/>
                   </transformationPoint>
-                <Actionscript><script><![CDATA[onClipEvent (load) {
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent (load) {
     if (_parent.攻击有效())
     {
         var 单位 = _parent._parent;
@@ -255,7 +275,9 @@ function 攻击时可斜向改变移动方向(速度)
         单位.刀口位置生成子弹(单位, 参数);
     }
 }
-]]></script></Actionscript></DOMSymbolInstance>
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
               </elements>
             </DOMFrame>
             <DOMFrame index="28" duration="8" keyMode="9728">
@@ -281,7 +303,7 @@ function 攻击时可斜向改变移动方向(速度)
                     <Color redMultiplier="0" blueMultiplier="0" greenMultiplier="0" redOffset="255" blueOffset="255" greenOffset="255"/>
                   </color>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="黑铁派杂兵/黑铁派杂兵素材/主角肢体素材/刀" centerPoint3DX="-296.6" centerPoint3DY="-128.5" name="刀">
+                <DOMSymbolInstance libraryItemName="黑铁派杂兵/黑铁派杂兵素材/主角肢体素材/刀" name="刀" centerPoint3DX="-296.6" centerPoint3DY="-128.5">
                   <matrix>
                     <Matrix a="-1.00840759277344" b="0.246337890625" c="0.246337890625" d="1.00840759277344" tx="-135.65" ty="-269.4"/>
                   </matrix>
@@ -500,7 +522,7 @@ function 攻击时可斜向改变移动方向(速度)
                     <Color alphaMultiplier="0.75" redMultiplier="0" blueMultiplier="0" greenMultiplier="0"/>
                   </color>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="黑铁派杂兵/黑铁派杂兵素材/主角肢体素材/刀" centerPoint3DX="-275.65" centerPoint3DY="-109.45" name="刀">
+                <DOMSymbolInstance libraryItemName="黑铁派杂兵/黑铁派杂兵素材/主角肢体素材/刀" name="刀" centerPoint3DX="-275.65" centerPoint3DY="-109.45">
                   <matrix>
                     <Matrix a="-0.97747802734375" b="0.349395751953125" c="0.349395751953125" d="0.97747802734375" tx="-131.65" ty="-267.25"/>
                   </matrix>
@@ -719,7 +741,7 @@ function 攻击时可斜向改变移动方向(速度)
                     <Color alphaMultiplier="0.75" redMultiplier="0" blueMultiplier="0" greenMultiplier="0"/>
                   </color>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="黑铁派杂兵/黑铁派杂兵素材/主角肢体素材/刀" centerPoint3DX="-284.85" centerPoint3DY="-90.7" name="刀">
+                <DOMSymbolInstance libraryItemName="黑铁派杂兵/黑铁派杂兵素材/主角肢体素材/刀" name="刀" centerPoint3DX="-284.85" centerPoint3DY="-90.7">
                   <matrix>
                     <Matrix a="-0.9454345703125" b="0.4285888671875" c="0.4285888671875" d="0.9454345703125" tx="-154.4" ty="-259.4"/>
                   </matrix>
@@ -899,7 +921,7 @@ function 攻击时可斜向改变移动方向(速度)
                     <Color alphaMultiplier="0.75" redMultiplier="0" blueMultiplier="0" greenMultiplier="0"/>
                   </color>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="黑铁派杂兵/黑铁派杂兵素材/主角肢体素材/刀" centerPoint3DX="-284.55" centerPoint3DY="-87.95" name="刀">
+                <DOMSymbolInstance libraryItemName="黑铁派杂兵/黑铁派杂兵素材/主角肢体素材/刀" name="刀" centerPoint3DX="-284.55" centerPoint3DY="-87.95">
                   <matrix>
                     <Matrix a="-0.9454345703125" b="0.4285888671875" c="0.4285888671875" d="0.9454345703125" tx="-154.1" ty="-256.65"/>
                   </matrix>
@@ -1079,7 +1101,7 @@ function 攻击时可斜向改变移动方向(速度)
                     <Color alphaMultiplier="0.5" redMultiplier="0" blueMultiplier="0" greenMultiplier="0"/>
                   </color>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="黑铁派杂兵/黑铁派杂兵素材/主角肢体素材/刀" centerPoint3DX="-284.55" centerPoint3DY="-87.95" name="刀">
+                <DOMSymbolInstance libraryItemName="黑铁派杂兵/黑铁派杂兵素材/主角肢体素材/刀" name="刀" centerPoint3DX="-284.55" centerPoint3DY="-87.95">
                   <matrix>
                     <Matrix a="-0.9454345703125" b="0.4285888671875" c="0.4285888671875" d="0.9454345703125" tx="-154.1" ty="-256.65"/>
                   </matrix>
@@ -1211,7 +1233,7 @@ function 攻击时可斜向改变移动方向(速度)
             </DOMFrame>
             <DOMFrame index="13" duration="2" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="黑铁派杂兵/黑铁派杂兵素材/主角肢体素材/刀" centerPoint3DX="-199.05" centerPoint3DY="-246.5" name="刀">
+                <DOMSymbolInstance libraryItemName="黑铁派杂兵/黑铁派杂兵素材/主角肢体素材/刀" name="刀" centerPoint3DX="-199.05" centerPoint3DY="-246.5">
                   <matrix>
                     <Matrix a="-0.98333740234375" b="-0.332626342773438" c="-0.332626342773438" d="0.98333740234375" tx="11.55" ty="-278.45"/>
                   </matrix>
@@ -1429,7 +1451,8 @@ function 攻击时可斜向改变移动方向(速度)
                     </FillStyle>
                   </fills>
                   <edges>
-                    <Edge fillStyle1="1" edges="!8380 -2197[10281 325 9976 2477!9976 2477[9675 4629 7345 5153!7345 5153[5015 5676 2027 4263!2027 4263[-962 2849 -2861 327!-2861 327[-4760 -2194 -4457 -4346!-4457 -4346[-4153 -6498 -1827 -7023!-1827 -7023[505 -7546 3494 -6132!3494 -6132 [6482 -4720 8380 -2197"/>
+                    <Edge fillStyle1="1" edges="!8380 -2197[10281 325 9976 2477!9976 2477[9675 4629 7345 5153!7345 5153[5015 5676 2027 4263!2027 4263[-962 2849 -2861 327!-2861 327[-4760 -2194 -4457 -4346!-4457 -4346[-4153 -6498 -1827 -7023!-1827 -7023[505 -7546 3494 -6132!3494 -6132
+[6482 -4720 8380 -2197"/>
                   </edges>
                 </DOMShape>
               </elements>
@@ -1450,7 +1473,9 @@ function 攻击时可斜向改变移动方向(速度)
                     </FillStyle>
                   </fills>
                   <edges>
-                    <Edge fillStyle1="1" edges=" !10231 -2444[12351 370 12011 2770!12011 2770[11675 5171 9076 5756!9076 5756[6477 6339 3143 4763!3143 4763[-191 3185 -2310 372!-2310 372[-4428 -2441 -4090 -4841!-4090 -4841[-3751 -7242 -1156 -7828!-1156 -7828[1445 -8411 4780 -6834!4780  -6834[8113 -5259 10231 -2444"/>
+                    <Edge fillStyle1="1" edges="
+!10231 -2444[12351 370 12011 2770!12011 2770[11675 5171 9076 5756!9076 5756[6477 6339 3143 4763!3143 4763[-191 3185 -2310 372!-2310 372[-4428 -2441 -4090 -4841!-4090 -4841[-3751 -7242 -1156 -7828!-1156 -7828[1445 -8411 4780 -6834!4780
+ -6834[8113 -5259 10231 -2444"/>
                   </edges>
                 </DOMShape>
               </elements>
@@ -4507,7 +4532,7 @@ function 攻击时可斜向改变移动方向(速度)
           <frames>
             <DOMFrame index="0" duration="6" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
-                <DOMSymbolInstance libraryItemName="黑铁派杂兵/黑铁派杂兵素材/主角肢体素材/刀" centerPoint3DX="169.65" centerPoint3DY="-38.25" name="刀">
+                <DOMSymbolInstance libraryItemName="黑铁派杂兵/黑铁派杂兵素材/主角肢体素材/刀" name="刀" centerPoint3DX="169.65" centerPoint3DY="-38.25">
                   <matrix>
                     <Matrix a="0.69268798828125" b="0.71484375" c="-0.71484375" d="0.69268798828125" tx="133.1" ty="-240"/>
                   </matrix>
@@ -4519,7 +4544,7 @@ function 攻击时可斜向改变移动方向(速度)
             </DOMFrame>
             <DOMFrame index="6" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="黑铁派杂兵/黑铁派杂兵素材/主角肢体素材/刀" centerPoint3DX="161.15" centerPoint3DY="-81.45" name="刀">
+                <DOMSymbolInstance libraryItemName="黑铁派杂兵/黑铁派杂兵素材/主角肢体素材/刀" name="刀" centerPoint3DX="161.15" centerPoint3DY="-81.45">
                   <matrix>
                     <Matrix a="0.798507690429688" b="0.594284057617188" c="-0.594284057617188" d="0.798507690429688" tx="92.65" ty="-274.7"/>
                   </matrix>
@@ -4537,7 +4562,7 @@ function 攻击时可斜向改变移动方向(速度)
             </DOMFrame>
             <DOMFrame index="23" duration="2" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="黑铁派杂兵/黑铁派杂兵素材/主角肢体素材/刀" centerPoint3DX="183" centerPoint3DY="-55.4" name="刀">
+                <DOMSymbolInstance libraryItemName="黑铁派杂兵/黑铁派杂兵素材/主角肢体素材/刀" name="刀" centerPoint3DX="183" centerPoint3DY="-55.4">
                   <matrix>
                     <Matrix a="0.488754272460938" b="0.86016845703125" c="-0.86016845703125" d="0.488754272460938" tx="146.45" ty="-257.15"/>
                   </matrix>

@@ -140,8 +140,6 @@ if (_parent._parent.性别 === "女")
 !378 -153|378 -138"/>
                         <Edge fillStyle0="1" fillStyle1="1" strokeStyle="1" edges="
 !378 -234[381 -236 385 -236"/>
-                        <Edge fillStyle0="1" fillStyle1="5" strokeStyle="1" edges="
-!644 -455|647 -452"/>
                         <Edge fillStyle0="1" fillStyle1="5" edges="
 !647 -452|648 -450!648 -450|645 -449"/>
                         <Edge fillStyle0="1" fillStyle1="5" strokeStyle="1" edges="
@@ -178,6 +176,8 @@ if (_parent._parent.性别 === "女")
  926 -608"/>
                         <Edge fillStyle0="1" edges="
 !926 -608|926 -606"/>
+                        <Edge fillStyle0="1" fillStyle1="5" strokeStyle="1" edges="
+!644 -455|647 -452"/>
                         <Edge fillStyle0="5" fillStyle1="5" strokeStyle="1" edges="
 !669 -418|682 -418"/>
                         <Edge fillStyle0="5" fillStyle1="4" strokeStyle="1" edges="
@@ -258,18 +258,18 @@ if (_parent._parent.性别 === "女")
 !732 -103|728 -131"/>
                         <Edge fillStyle0="2" fillStyle1="1" edges="
 !420 -154|400 -154"/>
-                        <Edge fillStyle0="1" fillStyle1="1" strokeStyle="1" edges="
-!1149 -364[1115 -348 1081 -343!1081 -343[1015 -343 1012 -342!1012 -342[1007 -342 1002 -341!1002 -341[1000 -342 998 -341!998 -341[994 -341 990 -342!990 -342[988 -343 986 -343!986 -343[984 -343 982 -343!982 -343[981 -346 977 -345"/>
                         <Edge fillStyle0="1" strokeStyle="1" edges="
-!1162 -230|1162 -232!1162 -232|1159 -233!1159 -233|1149 -361!1149 -361|1149 -364"/>
-                        <Edge fillStyle0="2" strokeStyle="1" edges="
-!1140 -440|1139 -443!1139 -443[1121 -585 1093 -645"/>
+!1149 -364|1140 -440"/>
                         <Edge fillStyle0="1" fillStyle1="2" strokeStyle="1" edges="
 !1140 -440[1121 -428 1085 -421!1085 -421[1081 -421 1079 -420!1079 -420[1005 -419 999 -418!999 -418|998 -418!998 -418[997 -418 995 -418!995 -418[990 -417 984 -417"/>
                         <Edge fillStyle0="1" fillStyle1="2" edges="
 !984 -417|974 -418"/>
+                        <Edge fillStyle0="2" strokeStyle="1" edges="
+!1140 -440|1139 -443!1139 -443[1121 -585 1093 -645"/>
                         <Edge fillStyle0="1" strokeStyle="1" edges="
-!1149 -364|1140 -440"/>
+!1162 -230|1162 -232!1162 -232|1159 -233!1159 -233|1149 -361!1149 -361|1149 -364"/>
+                        <Edge fillStyle0="1" fillStyle1="1" strokeStyle="1" edges="
+!1149 -364[1115 -348 1081 -343!1081 -343[1015 -343 1012 -342!1012 -342[1007 -342 1002 -341!1002 -341[1000 -342 998 -341!998 -341[994 -341 990 -342!990 -342[988 -343 986 -343!986 -343[984 -343 982 -343!982 -343[981 -346 977 -345"/>
                         <Edge fillStyle0="4" fillStyle1="1" strokeStyle="1" edges="
 !862 -259|844 -311"/>
                         <Edge fillStyle0="4" fillStyle1="6" edges="
@@ -281,17 +281,19 @@ if (_parent._parent.性别 === "女")
                         <Edge fillStyle0="1" fillStyle1="1" strokeStyle="1" edges="
 !936 -320|926 -317!926 -317|844 -311!863 -257|941 -254"/>
                         <Edge fillStyle0="1" fillStyle1="2" strokeStyle="1" edges="
+!926 -185[930 -184 932 -184!932 -184[935 -185 936 -187!936 -187|949 -180"/>
+                        <Edge fillStyle0="1" fillStyle1="2" edges="
+!926 -186|926 -185"/>
+                        <Edge fillStyle0="1" fillStyle1="2" strokeStyle="1" edges="
 !988 -216[992 -216 994 -215!994 -215[997 -214 998 -214!998 -214[1006 -212 1015 -212!1015 -212[1021 -212 1025 -212!1025 -212[1029 -213 1088 -213!1088 -213|1089 -213!1089 -213[1091 -214 1092 -214!1092 -214[1119 -217 1139 -230"/>
                         <Edge fillStyle0="1" fillStyle1="2" edges="
-!1139 -230|1162 -230!926 -186|926 -185"/>
-                        <Edge fillStyle0="1" fillStyle1="2" strokeStyle="1" edges="
-!926 -185[930 -184 932 -184!932 -184[935 -185 936 -187!936 -187|949 -180"/>
+!1139 -230|1162 -230"/>
+                        <Edge fillStyle0="1" fillStyle1="6" edges="
+!872 -221[893 -220 872 -219"/>
                         <Edge fillStyle0="1" fillStyle1="2" edges="
 !874 -192|897 -193"/>
                         <Edge fillStyle0="1" fillStyle1="2" strokeStyle="1" edges="
 !897 -193[914 -189 926 -186"/>
-                        <Edge fillStyle0="1" fillStyle1="6" edges="
-!872 -221[893 -220 872 -219"/>
                         <Edge fillStyle0="1" fillStyle1="1" strokeStyle="1" edges="
 !984 -278|1133 -279"/>
                         <Edge fillStyle1="2" strokeStyle="1" edges="
@@ -800,7 +802,7 @@ if (_parent._parent.性别 === "女")
                         <Edge fillStyle0="1" fillStyle1="2" edges="
 !928 576|981 427"/>
                         <Edge fillStyle0="2" edges="
-!684 338|682 338!682 336|684 338"/>
+!682 336|684 338!684 338|682 338"/>
                         <Edge fillStyle0="1" strokeStyle="1" edges="
 !684 602|682 602"/>
                         <Edge fillStyle0="1" edges="
@@ -914,13 +916,13 @@ if (_parent._parent.性别 === "女")
                         <Edge fillStyle0="2" fillStyle1="2" strokeStyle="1" edges="
 !-1131 383[-1169 364 -1211 346"/>
                         <Edge fillStyle1="2" edges="
-!-405 679|-405 682"/>
-                        <Edge fillStyle1="1" edges="
-!-405 682|-398 682"/>
+!-214 575|-210 576!-210 576|-214 569!-214 569|-214 575"/>
                         <Edge fillStyle1="2" strokeStyle="1" edges="
 !-398 682|-405 679"/>
                         <Edge fillStyle1="2" edges="
-!-214 575|-210 576!-210 576|-214 569!-214 569|-214 575"/>
+!-405 679|-405 682"/>
+                        <Edge fillStyle1="1" edges="
+!-405 682|-398 682"/>
                         <Edge fillStyle0="1" fillStyle1="2" edges="
 !-405 682[-441 686 -579 746"/>
                         <Edge fillStyle0="2" fillStyle1="2" strokeStyle="1" edges="
