@@ -29,16 +29,16 @@
 
 ## 0.5 施工状态（2026-06-13 落地）
 
-P0–P5 **全部建成**，`tools/cf7-animate-kit/` 已入库。机器可验证部分全绿，GUI/Animate 部分待人工 smoke-test。
+P0–P5 **全部建成**，`tools/cf7-animate-kit/` 已入库。机器可验证部分全绿；Animate 内部分据 2026-06-13 真机记录（见下「真机联调」段）已在 Animate 2024 验证。剩余缺口见文末「待人工 smoke-test」。
 
 | 阶段 | 包 | 状态 | 验证 |
 |---|---|---|---|
 | P0 | `core/amf` + `cli sol` | ✅ | 38 测试含 7 fixture **字节级 round-trip** + **Rust flash_lso 金标 JSON** 双 oracle；真实 8KB 游戏存档通过 |
 | P1 | `core/an` + `an-host` + `cli an` | ✅ | tmpdir 维护测试 + `an doctor` 在真机发现 Animate 2024 安装；`containsMachineId:false` 守护测试 |
 | P3 | `core/authoring` + `cli art` | ✅ | XFL 解析/lint/查重测试 + 真实 1568 符号工程解析通过 |
-| P3 | `jsfl-host` | 🟡 代码完成 | 纯 JSFL，**需 Animate 内 smoke-test**（见包 README） |
-| P2 | `web`（Electron cockpit） | 🟡 构建通过 | typecheck 0 错 + `vite build`+`esbuild` 产出 main.cjs；**GUI 行为需人工 smoke-test** |
-| P4 | `cep-panel`（CEP 面板） | 🟡 构建通过 | typecheck 0 错 + 产出自包含扩展 dist；**需 Animate 内 smoke-test** |
+| P3 | `jsfl-host` | ✅（Animate 2024） | 据 2026-06-13 真机记录：33 个 dispatcher case 全部跑通（只读函数用 live 档、变更型用 `fl.createDocument()` scratch 废档不保存）；**记录仅覆盖 Animate 2024，跨版本签名漂移未测**（见包 README confidence 列） |
+| P2 | `web`（Electron cockpit） | 🟡 部分验证 | typecheck 0 错 + `vite build`+`esbuild` 产出 main.cjs；据 2026-06-13 记录 GUI 跑通并有截图（**截图未入库，仅文字记录**）；**各维护按钮（装插件/jvm/缓存/侧边栏/SOL 编辑）未逐项覆盖** |
+| P4 | `cep-panel`（CEP 面板） | ✅（Animate 2024） | typecheck 0 错 + 产出自包含扩展 dist；据 2026-06-13 真机记录已装进 Animate 2024 并跑通 6 个标签页（白屏根因=CEF 拒载外部 module，已用 singlefile 内联修复） |
 | P5 | 文档/打包 | ✅ | source-audit / clean-room-boundary / operation-manual / sign-zxp |
 
 机器门：`npm run typecheck` 0 错、`npm test` **42/42** 绿、两个 GUI `npm run typecheck` + `npm run build` 通过。
@@ -57,8 +57,7 @@ P0–P5 **全部建成**，`tools/cf7-animate-kit/` 已入库。机器可验证�
 - **owner 拍板:醉尘仙的 运镜/表情/走路 等"沙雕动画"功能对 CF7 无用,不做**。
 - **完整开发/交接总览见 [docs/DEVELOPMENT.md](docs/DEVELOPMENT.md)**(架构 + 开发循环 + CEP 踩坑手册 + 怎么加函数 + 故障速查)。
 
-**待人工 smoke-test（无法 headless 验证）**：① `web` Electron GUI 各按钮（装插件/jvm/缓存/侧边/SOL 编辑）在装 Animate 的 Win 机；
-② `cep-panel` 在 Animate 内加载 + 四个标签页；③ `jsfl-host` 各函数（尤其 `SpriteSheetExporter` 签名因版本而异）。
+**待人工 smoke-test（剩余缺口，2026-10-12 对账）**：① `web` Electron cockpit 各维护按钮逐项（装/删插件 SWF、改 `jvm.ini`、清 WindowSWF 缓存、收侧边栏、SOL 树编辑+backup 存盘）——记录只到「GUI 跑通+截图」，按钮级未覆盖；② `jsfl-host` 跨版本签名漂移——33 case 的记录仅覆盖真机 Animate 2024，`SpriteSheetExporter`/`exportSpriteSheet` 等选项名随 build 而异，非 2024 环境（含 CS6 走 runner 的路径）未测。
 
 **已知小项**：`cep-panel` 经 core barrel 间接引入 `anEnv`→`node:path`（被 Vite externalize），CEP 开 Node 下无害，
 可后续用 core 子路径导出瘦身。**P5 面板纵深**（库内重复符号一键合并 UI、帧↔JSON 写回、配色批量应用 UI）属增强：

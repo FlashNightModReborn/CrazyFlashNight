@@ -9,6 +9,13 @@ the named functions through `CSInterface.evalScript`.
 > AnimateSDK JSFL reference, but `SpriteSheetExporter` / `exportSpriteSheet`
 > option names and a few signatures vary by Animate build — **smoke-test against
 > the installed Animate version before relying on a batch** (see below).
+>
+> Per the 2026-06-13 on-machine record, all 33 dispatcher cases ran on a real
+> Animate 2024 install (read-only functions against the live document, mutating
+> ones against `fl.createDocument()` scratch docs that were never saved). That
+> record covers **Animate 2024 only** — other builds (including the CS6 runner
+> path) remain unverified; the per-function confidence column below reflects
+> that scope.
 
 ## Bridge contract
 

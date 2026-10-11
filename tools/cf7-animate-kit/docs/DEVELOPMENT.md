@@ -149,7 +149,9 @@ npm run build -w @cf7-animate-kit/cep-panel   # vite(singlefile 内联)+ copy-as
 
 > 另有 3 个底层/工具函数不在标签表里:`ping`(健康检查)、`probe`(Doctor 条用,回 flVersion + 能力位)、`publish`(发布当前文档,`document.publish`)。**dispatcher 共 33 个 case**(7 工具/发现 + wave1 8 + wave2 11 + wave3 7),逐个见 [jsfl-host README](../packages/jsfl-host/README.md)。
 
-非面板交付:`core` .sol/AMF0 编解码(字节级+Rust 金标双 oracle 测过,反哺 cf7-save-repair)、`an-host` AN 维护、`web` cockpit(已真机跑通+截图)、headless `art run` JSFL runner。
+非面板交付:`core` .sol/AMF0 编解码(字节级+Rust 金标双 oracle 测过,反哺 cf7-save-repair)、`an-host` AN 维护、`web` cockpit(2026-06-13 记录载真机跑通+截图,截图未入库;各维护按钮未逐项覆盖)、headless `art run` JSFL runner。
+
+> 剩余 smoke-test 缺口(2026-10-12 对账,与 DevSpec §0.5 同步):① `web` cockpit 各维护按钮逐项(装/删插件、jvm、缓存、侧边栏、SOL 编辑);② `jsfl-host` 跨版本签名漂移——上述真机记录仅覆盖 Animate 2024,非 2024 build(含 CS6 runner 路径)的 `SpriteSheetExporter` 等未测。
 
 完整函数 args/返回/confidence:见 [packages/jsfl-host/README.md](../packages/jsfl-host/README.md)。
 
